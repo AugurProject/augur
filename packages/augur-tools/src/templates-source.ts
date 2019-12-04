@@ -23,9 +23,6 @@ import {
   ENTERTAINMENT,
   CRYPTO,
   BITCOIN,
-  USD,
-  USDT,
-  EUR,
   ETHEREUM,
   LITECOIN,
   PGA,
@@ -47,6 +44,9 @@ import {
   TENNIS_SINGLES_EVENTS,
   TENNIS_DOUBLES_EVENTS,
   ENTERTAINMENT_EVENT_DEP_TEAMS,
+  CRYPTO_BTC_CURRENCY_MARKETS,
+  CRYPTO_ETH_CURRENCY_MARKETS,
+  CRYPTO_LTC_CURRENCY_MARKETS,
 } from './templates-lists';
 
 const YES_NO = 'YesNo';
@@ -95,7 +95,8 @@ export const TEMPLATES = {
                       text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as Invalid.`,
                     },
                     {
-                      text: 'Includes regulation, any play-offs and sudden death',
+                      text:
+                        'Includes regulation, any play-offs and sudden death',
                     },
                   ],
                 },
@@ -174,11 +175,12 @@ export const TEMPLATES = {
                       text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as invalid`,
                     },
                     {
-                      text: 'Includes regulation, any play-offs and sudden death',
+                      text:
+                        'Includes regulation, any play-offs and sudden death',
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
-                    }
+                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                    },
                   ],
                 },
               },
@@ -221,7 +223,8 @@ export const TEMPLATES = {
                       text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as Invalid.`,
                     },
                     {
-                      text: 'Includes regulation, any play-offs and sudden death',
+                      text:
+                        'Includes regulation, any play-offs and sudden death',
                     },
                   ],
                 },
@@ -300,11 +303,12 @@ export const TEMPLATES = {
                       text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as invalid`,
                     },
                     {
-                      text: 'Includes regulation, any play-offs and sudden death',
+                      text:
+                        'Includes regulation, any play-offs and sudden death',
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
-                    }
+                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                    },
                   ],
                 },
               },
@@ -347,7 +351,8 @@ export const TEMPLATES = {
                       text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as Invalid.`,
                     },
                     {
-                      text: 'Includes regulation, any play-offs and sudden death',
+                      text:
+                        'Includes regulation, any play-offs and sudden death',
                     },
                   ],
                 },
@@ -426,11 +431,12 @@ export const TEMPLATES = {
                       text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as invalid`,
                     },
                     {
-                      text: 'Includes regulation, any play-offs and sudden death',
+                      text:
+                        'Includes regulation, any play-offs and sudden death',
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
-                    }
+                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                    },
                   ],
                 },
               },
@@ -469,8 +475,7 @@ export const TEMPLATES = {
                   text: `Includes any Regulation, overtime and any shoot-outs. `,
                 },
                 {
-                  text:
-                    `The game must go 55 minutes or more to be considered official. If it does not, the game will be considered unofficial and 'No' should be deemed the winning outcome.`,
+                  text: `The game must go 55 minutes or more to be considered official. If it does not, the game will be considered unofficial and 'No' should be deemed the winning outcome.`,
                 },
                 {
                   text: `If game is not played market should resolve as 'No'`,
@@ -513,8 +518,7 @@ export const TEMPLATES = {
                   text: `Includes any Regulation, overtime and any shoot-outs.`,
                 },
                 {
-                  text:
-                    `The game must go 55 minutes or more to be considered official. If it does not, the game will be considered unofficial and 'No' should be deemed the winning outcome.`,
+                  text: `The game must go 55 minutes or more to be considered official. If it does not, the game will be considered unofficial and 'No' should be deemed the winning outcome.`,
                 },
                 {
                   text: `If game is not played market should resolve as 'No'`,
@@ -735,9 +739,9 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
-                }
-              ]
+                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                },
+              ],
             },
           },
           {
@@ -766,9 +770,9 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
-                }
-              ]
+                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                },
+              ],
             },
           },
           {
@@ -965,8 +969,8 @@ export const TEMPLATES = {
                       text: `If a player is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
-                    }
+                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                    },
                   ],
                 },
               },
@@ -1108,8 +1112,8 @@ export const TEMPLATES = {
                       text: `If either player is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
-                    }
+                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                    },
                   ],
                 },
               },
@@ -1832,7 +1836,8 @@ export const TEMPLATES = {
                   },
                   {
                     id: 3,
-                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP,
+                    type:
+                      TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP,
                     inputSourceId: 1,
                     placeholder: `Select Team`,
                     values: BASKETBALL_EVENT_DEP_TEAMS,
@@ -1841,9 +1846,9 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
-                    }
-                  ]
+                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                    },
+                  ],
                 },
               },
               {
@@ -1875,8 +1880,8 @@ export const TEMPLATES = {
                       text: `In the event of an award is given to more than 1 player. The player who averaged the most points per game (determined to the first decimal place, meaning a player averaging 36.1 points per game would win over the player averaging 36 points per game) for the regular the season will be the tie breaker. In the event of an additional tie, The regular season Field Goal % will be the final tie breaker.`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
-                    }
+                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                    },
                   ],
                 },
               },
@@ -1921,8 +1926,8 @@ export const TEMPLATES = {
                       text: `For most made 3-pointers, the player with the highest 3 point %, should be used as the tie breaker.`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
-                    }
+                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                    },
                   ],
                 },
               },
@@ -2301,9 +2306,9 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
-                    }
-                  ]
+                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                    },
+                  ],
                 },
               },
               {
@@ -2335,8 +2340,8 @@ export const TEMPLATES = {
                       text: `In the event of an award is given to more than 1 player. The player who averaged the most points per game (determined to the first decimal place, meaning a player averaging 36.1 points per game would win over the player averaging 36 points per game) for the regular the season will be the tie breaker. In the event of an additional tie, The regular season Field Goal % will be the final tie breaker.`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
-                    }
+                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                    },
                   ],
                 },
               },
@@ -2381,8 +2386,8 @@ export const TEMPLATES = {
                       text: `For most made 3-pointers, the player with the highest 3 point %, should be used as the tie breaker.`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
-                    }
+                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                    },
                   ],
                 },
               },
@@ -2816,7 +2821,8 @@ export const TEMPLATES = {
                   },
                   {
                     id: 4,
-                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP,
+                    type:
+                      TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP,
                     inputSourceId: 2,
                     placeholder: `Select Team`,
                     values: NCAA_BASKETBALL_CONF_DEP_TEAMS,
@@ -2828,8 +2834,8 @@ export const TEMPLATES = {
                       text: `The winner is determined by the team who wins their conference tournament championship game`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
-                    }
+                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                    },
                   ],
                 },
               },
@@ -2870,9 +2876,9 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
-                    }
-                  ]
+                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                    },
+                  ],
                 },
               },
             ],
@@ -2941,12 +2947,10 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text:
-                    `In the event of a shortened game, results are official after (and, unless otherwise stated, bets shall be settled subject to the completion of) 5 innings of play, or 4.5 innings should the home team be leading at the commencement of the bottom of the 5th innings. Should a game be called, if the result is official in accordance with this rule, the winner will be determined by the score/stats after the last full inning completed (unless the home team score to tie, or take the lead in the bottom half of the inning, in which circumstances the winner is determined by the score/stats at the time the game is suspended). If the game does not reach the "official time limit", or ends in a tie, the market should resolve as 'No Winner'`,
+                  text: `In the event of a shortened game, results are official after (and, unless otherwise stated, bets shall be settled subject to the completion of) 5 innings of play, or 4.5 innings should the home team be leading at the commencement of the bottom of the 5th innings. Should a game be called, if the result is official in accordance with this rule, the winner will be determined by the score/stats after the last full inning completed (unless the home team score to tie, or take the lead in the bottom half of the inning, in which circumstances the winner is determined by the score/stats at the time the game is suspended). If the game does not reach the "official time limit", or ends in a tie, the market should resolve as 'No Winner'`,
                 },
                 {
-                  text:
-                    `If event is postponed and concludes after markets event expiration the market should resolve as 'No Winner'`,
+                  text: `If event is postponed and concludes after markets event expiration the market should resolve as 'No Winner'`,
                 },
                 {
                   text: `If the game is not played market should resolve as 'No Winner'`,
@@ -2990,9 +2994,9 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
-                }
-              ]
+                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                },
+              ],
             },
           },
           {
@@ -3042,12 +3046,10 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text:
-                    `In the event of a shortened game, results are official after (and, unless otherwise stated, bets shall be settled subject to the completion of) 5 innings of play, or 4.5 innings should the home team be leading at the commencement of the bottom of the 5th innings. Should a game be called, if the result is official in accordance with this rule, the winner will be determined by the score/stats after the last full inning completed (unless the home team score to tie, or take the lead in the bottom half of the inning, in which circumstances the winner is determined by the score/stats at the time the game is suspended). If the game does not reach the "official time limit", or ends in a tie, the market should resolve as 'No Winner'`,
+                  text: `In the event of a shortened game, results are official after (and, unless otherwise stated, bets shall be settled subject to the completion of) 5 innings of play, or 4.5 innings should the home team be leading at the commencement of the bottom of the 5th innings. Should a game be called, if the result is official in accordance with this rule, the winner will be determined by the score/stats after the last full inning completed (unless the home team score to tie, or take the lead in the bottom half of the inning, in which circumstances the winner is determined by the score/stats at the time the game is suspended). If the game does not reach the "official time limit", or ends in a tie, the market should resolve as 'No Winner'`,
                 },
                 {
-                  text:
-                    `If event is postponed and concludes after markets event expiration the market should resolve as 'No Winner'`,
+                  text: `If event is postponed and concludes after markets event expiration the market should resolve as 'No Winner'`,
                 },
                 {
                   text: `If the game is not played market should resolve as 'No Winner'`,
@@ -3105,12 +3107,10 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text:
-                    `In the event of a shortened game, results are official after (and, unless otherwise stated, bets shall be settled subject to the completion of) 5 innings of play, or 4.5 innings should the home team be leading at the commencement of the bottom of the 5th innings. Should a game be called, if the result is official in accordance with this rule, the winner will be determined by the score/stats after the last full inning completed (unless the home team score to tie, or take the lead in the bottom half of the inning, in which circumstances the winner is determined by the score/stats at the time the game is suspended). If the game does not reach the "official time limit", or ends in a tie, the market should resolve as 'No Winner'`,
+                  text: `In the event of a shortened game, results are official after (and, unless otherwise stated, bets shall be settled subject to the completion of) 5 innings of play, or 4.5 innings should the home team be leading at the commencement of the bottom of the 5th innings. Should a game be called, if the result is official in accordance with this rule, the winner will be determined by the score/stats after the last full inning completed (unless the home team score to tie, or take the lead in the bottom half of the inning, in which circumstances the winner is determined by the score/stats at the time the game is suspended). If the game does not reach the "official time limit", or ends in a tie, the market should resolve as 'No Winner'`,
                 },
                 {
-                  text:
-                    `If event is postponed and concludes after markets event expiration the market should resolve as 'No Winner'`,
+                  text: `If event is postponed and concludes after markets event expiration the market should resolve as 'No Winner'`,
                 },
                 {
                   text: `If the game is not played market should resolve as 'No Winner'`,
@@ -3147,9 +3147,9 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
-                }
-              ]
+                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                },
+              ],
             },
           },
           {
@@ -3562,7 +3562,8 @@ export const TEMPLATES = {
                   },
                   {
                     id: 3,
-                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP,
+                    type:
+                      TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP,
                     inputSourceId: 1,
                     placeholder: `Select Team`,
                     values: FOOTBALL_EVENT_DEP_TEAMS,
@@ -3571,9 +3572,9 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
-                    }
-                  ]
+                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                    },
+                  ],
                 },
               },
               {
@@ -3602,9 +3603,9 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
-                    }
-                  ]
+                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                    },
+                  ],
                 },
               },
               {
@@ -3991,9 +3992,9 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
-                    }
-                  ]
+                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                    },
+                  ],
                 },
               },
               {
@@ -4023,8 +4024,8 @@ export const TEMPLATES = {
                       text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as 'No'`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
-                    }
+                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                    },
                   ],
                 },
               },
@@ -4152,8 +4153,8 @@ export const TEMPLATES = {
                   text: `House, Senate and presidential candidates must register a Statement of Candidacy for the specific office and electioin cycle with the Federal Election Commission`,
                 },
                 {
-                  text: `Vice-President nomination is selected by the political party, replacement of nomination will not change market results, because person had been nominated. Declining nomination is not considered nominated`
-                }
+                  text: `Vice-President nomination is selected by the political party, replacement of nomination will not change market results, because person had been nominated. Declining nomination is not considered nominated`,
+                },
               ],
             },
           },
@@ -4184,9 +4185,10 @@ export const TEMPLATES = {
                   text: `U.S. Vice President is elected with President as their running mate`,
                 },
                 {
-                  text: 'The candidate elected president/vice president shall be female.'
-                }
-              ]
+                  text:
+                    'The candidate elected president/vice president shall be female.',
+                },
+              ],
             },
           },
           {
@@ -4213,8 +4215,8 @@ export const TEMPLATES = {
                   text: `The U.S. House of Representatives shall, by simple majority vote, approve or pass one or more articles of impeachment.`,
                 },
                 {
-                  text: `The Senate's judgment or decision, whether to be convicted, acquitted or removed from office does not change market results.`
-                }
+                  text: `The Senate's judgment or decision, whether to be convicted, acquitted or removed from office does not change market results.`,
+                },
               ],
             },
           },
@@ -4251,8 +4253,8 @@ export const TEMPLATES = {
                   text: `The winning party will win the majority of 270 electoral votes.`,
                 },
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
-                }
+                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                },
               ],
             },
           },
@@ -4279,8 +4281,8 @@ export const TEMPLATES = {
                   text: `The winning candidate will have at least 270 electoral votes to win the presidential election.`,
                 },
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
-                }
+                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                },
               ],
             },
           },
@@ -4319,8 +4321,8 @@ export const TEMPLATES = {
                   text: `The candidate who receives a majority of the party's delegates wins their party's nomination.`,
                 },
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
-                }
+                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                },
               ],
             },
           },
@@ -4353,8 +4355,8 @@ export const TEMPLATES = {
                   text: `The winning outcome is the party which controls the majority of seats, according to the results of the election, not determined by the current controlling party at event expiration.`,
                 },
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
-                }
+                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                },
               ],
             },
           },
@@ -4397,8 +4399,8 @@ export const TEMPLATES = {
                   text: `The winning outcome is the party which controls the majority of seats, following the results of the election, not determined by the current controlling party at event expiration`,
                 },
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
-                }
+                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                },
               ],
             },
           },
@@ -4445,8 +4447,8 @@ export const TEMPLATES = {
                   text: `The winner of the primary is the candidate recognized and/or announced by the state`,
                 },
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
-                }
+                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                },
               ],
             },
           },
@@ -4512,7 +4514,8 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: "Rules of impeachment is dictated by the person's location/country government",
+                  text:
+                    "Rules of impeachment is dictated by the person's location/country government",
                 },
               ],
             },
@@ -4538,10 +4541,12 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: "If person mentioned in question shall cease to hold the office of papacy for any reason",
+                  text:
+                    'If person mentioned in question shall cease to hold the office of papacy for any reason',
                 },
                 {
-                  text: "Announcement of future resignation does not count as leaving the office, until actual resignation takes effect",
+                  text:
+                    'Announcement of future resignation does not count as leaving the office, until actual resignation takes effect',
                 },
               ],
             },
@@ -4581,8 +4586,8 @@ export const TEMPLATES = {
                   text: `If location/country does not have the stated position in market, market should resolve as "Invalid"`,
                 },
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
-                }
+                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                },
               ],
             },
           },
@@ -4625,12 +4630,12 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Closing date is determine by the location of the exchange, where the stock is traded`
+                  text: `Closing date is determine by the location of the exchange, where the stock is traded`,
                 },
                 {
-                  text: `Trading denomination is determined by the exchange the stock is traded on`
-                }
-              ]
+                  text: `Trading denomination is determined by the exchange the stock is traded on`,
+                },
+              ],
             },
           },
           {
@@ -4669,12 +4674,12 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Trading dates are determine by the location of the exchange, where the stock is traded`
+                  text: `Trading dates are determine by the location of the exchange, where the stock is traded`,
                 },
                 {
-                  text: `Trading denomination is determined by the exchange the stock is traded on`
-                }
-              ]
+                  text: `Trading denomination is determined by the exchange the stock is traded on`,
+                },
+              ],
             },
           },
           {
@@ -4702,12 +4707,12 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Closing date is determine by the location of the exchange, where the stock is traded`
+                  text: `Closing date is determine by the location of the exchange, where the stock is traded`,
                 },
                 {
-                  text: `Trading denomination is determined by the exchange the stock is traded on`
+                  text: `Trading denomination is determined by the exchange the stock is traded on`,
                 },
-              ]
+              ],
             },
           },
         ],
@@ -4740,9 +4745,9 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Closing date is determine by the location of the exchange, where the underlying stocks for the index are traded`
+                  text: `Closing date is determine by the location of the exchange, where the underlying stocks for the index are traded`,
                 },
-              ]
+              ],
             },
           },
           {
@@ -4766,9 +4771,9 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Closing date is determine by the location of the exchange, where the underlying stocks for the index are traded`
+                  text: `Closing date is determine by the location of the exchange, where the underlying stocks for the index are traded`,
                 },
-              ]
+              ],
             },
           },
         ],
@@ -4830,7 +4835,7 @@ export const TEMPLATES = {
             type: TemplateInputType.DROPDOWN,
             defaultLabel: `Select Event First`,
             placeholder: `Award`,
-            values: []
+            values: [],
           },
           {
             id: 2,
@@ -4902,7 +4907,8 @@ export const TEMPLATES = {
         resolutionRules: {
           [REQUIRED]: [
             {
-              text: 'Gross total should include the first Friday through Sunday of the movie release and does not include extra days due to holidays',
+              text:
+                'Gross total should include the first Friday through Sunday of the movie release and does not include extra days due to holidays',
             },
           ],
         },
@@ -4942,8 +4948,8 @@ export const TEMPLATES = {
                 'The market should resolve as "multiple hosts" if more than one of the possible outcomes hosts the event. If only one of the potential outcomes hosts with multiple people, then the individual outcome would be the winner.',
             },
             {
-              text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
-            }
+              text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+            },
           ],
         },
       },
@@ -4957,7 +4963,7 @@ export const TEMPLATES = {
             type: TemplateInputType.DROPDOWN,
             defaultLabel: `Select Event First`,
             placeholder: `Award`,
-            values: []
+            values: [],
           },
           {
             id: 1,
@@ -4982,9 +4988,9 @@ export const TEMPLATES = {
         resolutionRules: {
           [REQUIRED]: [
             {
-              text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
-            }
-          ]
+              text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+            },
+          ],
         },
       },
     ],
@@ -4992,1051 +4998,403 @@ export const TEMPLATES = {
   [CRYPTO]: {
     children: {
       [BITCOIN]: {
-        children: {
-          [USD]: {
-            templates: [
+        templates: [
+          {
+            marketType: YES_NO,
+            question: `Will the price of [0] open on or above [1] on [2], according to TradingView.com "[3]"?`,
+            example: `Will the price of BTC/USD open on or above 8000 on December 31, 2019, according to TradingView.com "BTCUSD (crypto - Coinbase)"?`,
+            inputs: [
               {
-                marketType: YES_NO,
-                question: `Will the price of BTC close on or above [0] USD on [1] on [2]?`,
-                example: `Will the price of BTC close on or above $8000 USD on Coinbase Pro (pro.coinbase.com) on December 31, 2019?`,
-                inputs: [
-                  {
-                    id: 0,
-                    type: TemplateInputType.TEXT,
-                    placeholder: `Value #`,
-                    validationType: ValidationType.NUMBER,
-                  },
-                  {
-                    id: 1,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Exchange`,
-                    values: LIST_VALUES.BTC_USD_EXCHANGES,
-                  },
-                  {
-                    id: 2,
-                    type: TemplateInputType.DATEYEAR,
-                    placeholder: `Day of Year`,
-                  },
-                ],
-                resolutionRules: {
-                  [REQUIRED]: [
-                    {
-                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
-                    },
-                    {
-                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Bittrex (bittrex.com) should be used.`
-                    },
-                    {
-                      text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
-                    }
-                  ]
-                },
+                id: 0,
+                type: TemplateInputType.DROPDOWN_QUESTION_DEP,
+                placeholder: `Token Pair`,
+                inputDestId: 3,
+                values: LIST_VALUES.BTC_CURRENCY_PAIRS,
+                inputDestValues: CRYPTO_BTC_CURRENCY_MARKETS,
               },
               {
-                marketType: YES_NO,
-                question: `Will the price of BTC, exceed [0] USD, on [1] anytime between the open of [2] and close of [3]?`,
-                example: `Will the price of BTC exceed $8000 USD on Coinbase Pro (pro.coinbase.com) anytime between the open of September 1, 2019 and close of December 31, 2019?`,
-                inputs: [
-                  {
-                    id: 0,
-                    type: TemplateInputType.TEXT,
-                    placeholder: `Value #`,
-                    validationType: ValidationType.NUMBER,
-                  },
-                  {
-                    id: 1,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Exchange`,
-                    values: LIST_VALUES.BTC_USD_EXCHANGES,
-                  },
-                  {
-                    id: 2,
-                    type: TemplateInputType.DATEYEAR,
-                    placeholder: `Open, Day of Year`,
-                  },
-                  {
-                    id: 3,
-                    type: TemplateInputType.DATEYEAR,
-                    placeholder: `Close, Day of Year`,
-                  },
-                ],
-                resolutionRules: {
-                  [REQUIRED]: [
-                    {
-                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
-                    },
-                    {
-                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Bittrex (bittrex.com) should be used.`
-                    },
-                    {
-                      text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
-                    }
-                  ]
-                },
+                id: 1,
+                type: TemplateInputType.TEXT,
+                placeholder: `Value #`,
+                validationType: ValidationType.NUMBER,
               },
               {
-                marketType: SCALAR,
-                question: `What price will BTC close at in USD on [0] on [1]?`,
-                example: `What price will BTC close at in USD on December 31, 2019 on Coinbase Pro (pro.coinbase.com)?`,
-                denomination: 'USD',
-                inputs: [
-                  {
-                    id: 0,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Exchange`,
-                    values: LIST_VALUES.BTC_USD_EXCHANGES,
-                  },
-                  {
-                    id: 1,
-                    type: TemplateInputType.DATEYEAR,
-                    placeholder: `Day of Year`,
-                  },
-                ],
-                resolutionRules: {
-                  [REQUIRED]: [
-                    {
-                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
-                    },
-                    {
-                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Bittrex (bittrex.com) should be used.`
-                    },
-                    {
-                      text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
-                    }
-                  ]
-                },
+                id: 2,
+                type: TemplateInputType.DATEYEAR,
+                placeholder: `Day of Year`,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.DROPDOWN,
+                defaultLabel: `Select Pair First`,
+                placeholder: `Market Source`,
+                values: [],
               },
             ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Opening datetime is determine by open price for market trading pair on tradingview.com`,
+                },
+                {
+                  text: `If trading pair market isn't available on tradingview.com, refer to actual exchange. For example if coinbase trading view data feed is down, find opening price on hourly candle adjusted for timezone of UTC-0 of date referenced in market question.`,
+                },
+              ],
+            },
           },
-          [USDT]: {
-            templates: [
+          {
+            marketType: YES_NO,
+            question: `Will the price of [0], exceed [1] anytime between the open of [2] and close of [3], according to TradingView.com "[4]"?`,
+            example: `Will the price of BTC/USD exceed 8000 anytime between the open of September 1, 2019 and close of December 31, 2019, according to TradingView.com "BTCUSD (crypto - Coinbase)"?`,
+            inputs: [
               {
-                marketType: YES_NO,
-                question: `Will the price of BTC close on or above [0] USDT on [1] on [2]?`,
-                example: `Will the price of BTC close on or above $8000 USDT on Binance (binance.com) on December 31, 2019?`,
-                inputs: [
-                  {
-                    id: 0,
-                    type: TemplateInputType.TEXT,
-                    placeholder: `Value #`,
-                    validationType: ValidationType.NUMBER,
-                  },
-                  {
-                    id: 1,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Exchange`,
-                    values: LIST_VALUES.USDT_EXCHANGES,
-                  },
-                  {
-                    id: 2,
-                    type: TemplateInputType.DATEYEAR,
-                    placeholder: `Day of Year`,
-                  },
-                ],
-                resolutionRules: {
-                  [REQUIRED]: [
-                    {
-                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
-                    },
-                    {
-                      text: `If Bittrex is exchange in market question and not available by the end of designated reporting timeframe, Huobi Global (hbg.com) should be used.`
-                    },
-                    {
-                      text: `If Bittrex is not the exchange in market question, Bittrex (bittrex.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
-                    }
-                  ]
-                },
+                id: 0,
+                type: TemplateInputType.DROPDOWN_QUESTION_DEP,
+                placeholder: `Token Pair`,
+                inputDestId: 3,
+                values: LIST_VALUES.BTC_CURRENCY_PAIRS,
+                inputDestValues: CRYPTO_BTC_CURRENCY_MARKETS,
               },
               {
-                marketType: YES_NO,
-                question: `Will the price of BTC, exceed [0] USDT, on [1] anytime between the open of [2] and close of [3]?`,
-                example: `Will the price of BTC exceed $8000 USDT on Binance (binance.com) anytime between the open of September 1, 2019 and close of December 31, 2019?`,
-                inputs: [
-                  {
-                    id: 0,
-                    type: TemplateInputType.TEXT,
-                    placeholder: `Value #`,
-                    validationType: ValidationType.NUMBER,
-                  },
-                  {
-                    id: 1,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Exchange`,
-                    values: LIST_VALUES.USDT_EXCHANGES,
-                  },
-                  {
-                    id: 2,
-                    type: TemplateInputType.DATEYEAR,
-                    placeholder: `Open, Day of Year`,
-                  },
-                  {
-                    id: 3,
-                    type: TemplateInputType.DATEYEAR,
-                    placeholder: `Close, Day of Year`,
-                  },
-                ],
-                resolutionRules: {
-                  [REQUIRED]: [
-                    {
-                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
-                    },
-                    {
-                      text: `If Bittrex is exchange in market question and not available by the end of designated reporting timeframe, Huobi Global (hbg.com) should be used.`
-                    },
-                    {
-                      text: `If Bittrex is not the exchange in market question, Bittrex (bittrex.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
-                    }
-                  ]
-                },
+                id: 1,
+                type: TemplateInputType.TEXT,
+                placeholder: `Value #`,
+                validationType: ValidationType.NUMBER,
               },
               {
-                marketType: SCALAR,
-                question: `What price will BTC close at in USDT on [0] on [1]?`,
-                example: `What price will BTC close at in USDT on December 31, 2019 on Binance (binance.com)?`,
-                denomination: 'USDT',
-                inputs: [
-                  {
-                    id: 0,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Exchange`,
-                    values: LIST_VALUES.USDT_EXCHANGES,
-                  },
-                  {
-                    id: 1,
-                    type: TemplateInputType.DATEYEAR,
-                    placeholder: `Day of Year`,
-                  },
-                ],
-                resolutionRules: {
-                  [REQUIRED]: [
-                    {
-                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
-                    },
-                    {
-                      text: `If Bittrex is exchange in market question and not available by the end of designated reporting timeframe, Huobi Global (hbg.com) should be used.`
-                    },
-                    {
-                      text: `If Bittrex is not the exchange in market question, Bittrex (bittrex.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
-                    }
-                  ]
-                },
+                id: 2,
+                type: TemplateInputType.DATEYEAR,
+                placeholder: `Open, Day of Year`,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.DATEYEAR,
+                placeholder: `Close, Day of Year`,
+              },
+              {
+                id: 4,
+                type: TemplateInputType.DROPDOWN,
+                defaultLabel: `Select Pair First`,
+                placeholder: `Market Source`,
+                values: [],
               },
             ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Opening datetime is determine by open price for market trading pair on tradingview.com`,
+                },
+                {
+                  text: `If trading pair market isn't available on tradingview.com, refer to actual exchange. For example if coinbase trading view data feed is down, find opening price on hourly candle adjusted for timezone of UTC-0 of date referenced in market question.`,
+                },
+              ],
+            },
           },
-          [EUR]: {
-            templates: [
+          {
+            marketType: SCALAR,
+            question: `What price will [0] open at on [1], according to TradingView.com "[2]"?`,
+            example: `What price will BTC/USD open at on December 31, 2019, according to TradingView.com "for BTCUSD (crypto - Coinbase)"?`,
+            denomination: 'Price',
+            inputs: [
               {
-                marketType: YES_NO,
-                question: `Will the price of BTC close on or above [0] EUR on [1] on [2]?`,
-                example: `Will the price of BTC close on or above 8000 EUR on Coinbase Pro (pro.coinbase.com) on December 31, 2019?`,
-                inputs: [
-                  {
-                    id: 0,
-                    type: TemplateInputType.TEXT,
-                    placeholder: `Value #`,
-                    validationType: ValidationType.NUMBER,
-                  },
-                  {
-                    id: 1,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Exchange`,
-                    values: LIST_VALUES.EUR_EXCHANGES,
-                  },
-                  {
-                    id: 2,
-                    type: TemplateInputType.DATEYEAR,
-                    placeholder: `Day of Year`,
-                  },
-                ],
-                resolutionRules: {
-                  [REQUIRED]: [
-                    {
-                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
-                    },
-                    {
-                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
-                    },
-                    {
-                      text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
-                    }
-                  ]
-                },
+                id: 0,
+                type: TemplateInputType.DROPDOWN_QUESTION_DEP,
+                placeholder: `Token Pair`,
+                inputDestId: 3,
+                values: LIST_VALUES.BTC_CURRENCY_PAIRS,
+                inputDestValues: CRYPTO_BTC_CURRENCY_MARKETS,
               },
               {
-                marketType: YES_NO,
-                question: `Will the price of BTC, exceed [0] EUR, on [1] anytime between the open of [2] and close of [3]?`,
-                example: `Will the price of BTC exceed 8000 EUR on Coinbase Pro (pro.coinbase.com) anytime between the open of September 1, 2019 and close of December 31, 2019?`,
-                inputs: [
-                  {
-                    id: 0,
-                    type: TemplateInputType.TEXT,
-                    placeholder: `Value #`,
-                    validationType: ValidationType.NUMBER,
-                  },
-                  {
-                    id: 1,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Exchange`,
-                    values: LIST_VALUES.EUR_EXCHANGES,
-                  },
-                  {
-                    id: 2,
-                    type: TemplateInputType.DATEYEAR,
-                    placeholder: `Open, Day of Year`,
-                  },
-                  {
-                    id: 3,
-                    type: TemplateInputType.DATEYEAR,
-                    placeholder: `Close, Day of Year`,
-                  },
-                ],
-                resolutionRules: {
-                  [REQUIRED]: [
-                    {
-                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
-                    },
-                    {
-                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
-                    },
-                    {
-                      text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
-                    }
-                  ]
-                },
+                id: 1,
+                type: TemplateInputType.DATEYEAR,
+                placeholder: `Day of Year`,
               },
               {
-                marketType: SCALAR,
-                question: `What price will BTC close at in EUR on [0] on [1]?`,
-                example: `What price will BTC close at in EUR on December 31, 2019 on Coinbase Pro (pro.coinbase.com)?`,
-                denomination: 'EUR',
-                inputs: [
-                  {
-                    id: 0,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Exchange`,
-                    values: LIST_VALUES.EUR_EXCHANGES,
-                  },
-                  {
-                    id: 1,
-                    type: TemplateInputType.DATEYEAR,
-                    placeholder: `Day of Year`,
-                  },
-                ],
-                resolutionRules: {
-                  [REQUIRED]: [
-                    {
-                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
-                    },
-                    {
-                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
-                    },
-                    {
-                      text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
-                    }
-                  ]
-                },
+                id: 2,
+                type: TemplateInputType.DROPDOWN,
+                defaultLabel: `Select Pair First`,
+                placeholder: `Market Source`,
+                values: [],
               },
             ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Opening datetime is determine by open price for market trading pair on tradingview.com`,
+                },
+                {
+                  text: `If trading pair market isn't available on tradingview.com, refer to actual exchange. For example if coinbase trading view data feed is down, find opening price on hourly candle adjusted for timezone of UTC-0 of date referenced in market question.`,
+                },
+              ],
+            },
           },
-        },
+        ],
       },
       [ETHEREUM]: {
-        children: {
-          [USD]: {
-            templates: [
+        templates: [
+          {
+            marketType: YES_NO,
+            question: `Will the price of [0] open on or above [1] on [2], according to TradingView.com "[3]"?`,
+            example: `Will the price of BTC/USD open on or above 8000 on December 31, 2019, according to TradingView.com "BTCUSD (crypto - Coinbase)"?`,
+            inputs: [
               {
-                marketType: YES_NO,
-                question: `Will the price of ETH close on or above [0] USD on [1] on [2]?`,
-                example: `Will the price of ETH close on or above $200 USD on Coinbase Pro (pro.coinbase.com) on December 31, 2019?`,
-                inputs: [
-                  {
-                    id: 0,
-                    type: TemplateInputType.TEXT,
-                    placeholder: `Value #`,
-                    validationType: ValidationType.NUMBER,
-                  },
-                  {
-                    id: 1,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Exchange`,
-                    values: LIST_VALUES.NON_BTC_USD_EXCHANGES,
-                  },
-                  {
-                    id: 2,
-                    type: TemplateInputType.DATEYEAR,
-                    placeholder: `Day of Year`,
-                  },
-                ],
-                resolutionRules: {
-                  [REQUIRED]: [
-                    {
-                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
-                    },
-                    {
-                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
-                    },
-                    {
-                      text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
-                    }
-                  ]
-                },
+                id: 0,
+                type: TemplateInputType.DROPDOWN_QUESTION_DEP,
+                placeholder: `Token Pair`,
+                inputDestId: 3,
+                values: LIST_VALUES.ETH_CURRENCY_PAIRS,
+                inputDestValues: CRYPTO_ETH_CURRENCY_MARKETS,
               },
               {
-                marketType: YES_NO,
-                question: `Will the price of ETH, exceed [0] USD, on [1] anytime between the open of [2] and close of [3]?`,
-                example: `Will the price of ETH exceed $200 USD on Coinbase Pro (pro.coinbase.com) anytime between the open of September 1, 2019 and close of December 31, 2019?`,
-                inputs: [
-                  {
-                    id: 0,
-                    type: TemplateInputType.TEXT,
-                    placeholder: `Value #`,
-                    validationType: ValidationType.NUMBER,
-                  },
-                  {
-                    id: 1,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Exchange`,
-                    values: LIST_VALUES.NON_BTC_USD_EXCHANGES,
-                  },
-                  {
-                    id: 2,
-                    type: TemplateInputType.DATEYEAR,
-                    placeholder: `Open, Day of Year`,
-                  },
-                  {
-                    id: 3,
-                    type: TemplateInputType.DATEYEAR,
-                    placeholder: `Close, Day of Year`,
-                  },
-                ],
-                resolutionRules: {
-                  [REQUIRED]: [
-                    {
-                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
-                    },
-                    {
-                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
-                    },
-                    {
-                      text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
-                    }
-                  ]
-                },
+                id: 1,
+                type: TemplateInputType.TEXT,
+                placeholder: `Value #`,
+                validationType: ValidationType.NUMBER,
               },
               {
-                marketType: SCALAR,
-                question: `What price will ETH close at in USD on [0] on [1]?`,
-                example: `What price will ETH close at in USD on December 31, 2019 on Coinbase Pro (pro.coinbase.com)?`,
-                denomination: 'USD',
-                inputs: [
-                  {
-                    id: 0,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Exchange`,
-                    values: LIST_VALUES.NON_BTC_USD_EXCHANGES,
-                  },
-                  {
-                    id: 1,
-                    type: TemplateInputType.DATEYEAR,
-                    placeholder: `Day of Year`,
-                  },
-                ],
-                resolutionRules: {
-                  [REQUIRED]: [
-                    {
-                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
-                    },
-                    {
-                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
-                    },
-                    {
-                      text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
-                    }
-                  ]
-                },
+                id: 2,
+                type: TemplateInputType.DATEYEAR,
+                placeholder: `Day of Year`,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.DROPDOWN,
+                defaultLabel: `Select Pair First`,
+                placeholder: `Market Source`,
+                values: [],
               },
             ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Opening datetime is determine by open price for market trading pair on tradingview.com`,
+                },
+                {
+                  text: `If trading pair market isn't available on tradingview.com, refer to actual exchange. For example if coinbase trading view data feed is down, find opening price on hourly candle adjusted for timezone of UTC-0 of date referenced in market question.`,
+                },
+              ],
+            },
           },
-          [USDT]: {
-            templates: [
+          {
+            marketType: YES_NO,
+            question: `Will the price of [0], exceed [1] anytime between the open of [2] and close of [3], according to TradingView.com "[4]"?`,
+            example: `Will the price of BTC/USD exceed 8000 anytime between the open of September 1, 2019 and close of December 31, 2019, according to TradingView.com "BTCUSD (crypto - Coinbase)"?`,
+            inputs: [
               {
-                marketType: YES_NO,
-                question: `Will the price of ETH close on or above [0] USDT on [1] on [2]?`,
-                example: `Will the price of ETH close on or above 200 USDT on Binance (binance.com) on December 31, 2019?`,
-                inputs: [
-                  {
-                    id: 0,
-                    type: TemplateInputType.TEXT,
-                    placeholder: `Value #`,
-                    validationType: ValidationType.NUMBER,
-                  },
-                  {
-                    id: 1,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Exchange`,
-                    values: LIST_VALUES.USDT_EXCHANGES,
-                  },
-                  {
-                    id: 2,
-                    type: TemplateInputType.DATEYEAR,
-                    placeholder: `Day of Year`,
-                  },
-                ],
-                resolutionRules: {
-                  [REQUIRED]: [
-                    {
-                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
-                    },
-                    {
-                      text: `If Bittrex is exchange in market question and not available by the end of designated reporting timeframe, Huobi Global (hbg.com) should be used.`
-                    },
-                    {
-                      text: `If Bittrex is not the exchange in market question, Bittrex (bittrex.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
-                    }
-                  ]
-                },
+                id: 0,
+                type: TemplateInputType.DROPDOWN_QUESTION_DEP,
+                placeholder: `Token Pair`,
+                inputDestId: 3,
+                values: LIST_VALUES.ETH_CURRENCY_PAIRS,
+                inputDestValues: CRYPTO_ETH_CURRENCY_MARKETS,
               },
               {
-                marketType: YES_NO,
-                question: `Will the price of ETH, exceed [0] USDT, on [1] anytime between the open of [2] and close of [3]?`,
-                example: `Will the price of ETH exceed 200 USDT on Binance (binance.com) anytime between the open of September 1, 2019 and close of December 31, 2019?`,
-                inputs: [
-                  {
-                    id: 0,
-                    type: TemplateInputType.TEXT,
-                    placeholder: `Value #`,
-                    validationType: ValidationType.NUMBER,
-                  },
-                  {
-                    id: 1,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Exchange`,
-                    values: LIST_VALUES.USDT_EXCHANGES,
-                  },
-                  {
-                    id: 2,
-                    type: TemplateInputType.DATEYEAR,
-                    placeholder: `Open, Day of Year`,
-                  },
-                  {
-                    id: 3,
-                    type: TemplateInputType.DATEYEAR,
-                    placeholder: `Close, Day of Year`,
-                  },
-                ],
-                resolutionRules: {
-                  [REQUIRED]: [
-                    {
-                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
-                    },
-                    {
-                      text: `If Bittrex is exchange in market question and not available by the end of designated reporting timeframe, Huobi Global (hbg.com) should be used.`
-                    },
-                    {
-                      text: `If Bittrex is not the exchange in market question, Bittrex (bittrex.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
-                    }
-                  ]
-                },
+                id: 1,
+                type: TemplateInputType.TEXT,
+                placeholder: `Value #`,
+                validationType: ValidationType.NUMBER,
               },
               {
-                marketType: SCALAR,
-                question: `What price will ETH close at in USDT on [0] on [1]?`,
-                example: `What price will ETH close at in USDT on December 31, 2019 on Binance (binance.com)?`,
-                denomination: 'USDT',
-                inputs: [
-                  {
-                    id: 0,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Exchange`,
-                    values: LIST_VALUES.USDT_EXCHANGES,
-                  },
-                  {
-                    id: 1,
-                    type: TemplateInputType.DATEYEAR,
-                    placeholder: `Day of Year`,
-                  },
-                ],
-                resolutionRules: {
-                  [REQUIRED]: [
-                    {
-                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
-                    },
-                    {
-                      text: `If Bittrex is exchange in market question and not available by the end of designated reporting timeframe, Huobi Global (hbg.com) should be used.`
-                    },
-                    {
-                      text: `If Bittrex is not the exchange in market question, Bittrex (bittrex.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
-                    }
-                  ]
-                },
+                id: 2,
+                type: TemplateInputType.DATEYEAR,
+                placeholder: `Open, Day of Year`,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.DATEYEAR,
+                placeholder: `Close, Day of Year`,
+              },
+              {
+                id: 4,
+                type: TemplateInputType.DROPDOWN,
+                defaultLabel: `Select Pair First`,
+                placeholder: `Market Source`,
+                values: [],
               },
             ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Opening datetime is determine by open price for market trading pair on tradingview.com`,
+                },
+                {
+                  text: `If trading pair market isn't available on tradingview.com, refer to actual exchange. For example if coinbase trading view data feed is down, find opening price on hourly candle adjusted for timezone of UTC-0 of date referenced in market question.`,
+                },
+              ],
+            },
           },
-          [EUR]: {
-            templates: [
+          {
+            marketType: SCALAR,
+            question: `What price will [0] open at on [1], according to TradingView.com "[2]"?`,
+            example: `What price will BTC/USD open at on December 31, 2019, according to TradingView.com "for BTCUSD (crypto - Coinbase)"?`,
+            denomination: 'Price',
+            inputs: [
               {
-                marketType: YES_NO,
-                question: `Will the price of ETH close on or above [0] EUR on [1] on [2]?`,
-                example: `Will the price of ETH close on or above 200 EUR on Coinbase Pro (pro.coinbase.com) on December 31, 2019?`,
-                inputs: [
-                  {
-                    id: 0,
-                    type: TemplateInputType.TEXT,
-                    placeholder: `Value #`,
-                    validationType: ValidationType.NUMBER,
-                  },
-                  {
-                    id: 1,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Exchange`,
-                    values: LIST_VALUES.EUR_EXCHANGES,
-                  },
-                  {
-                    id: 2,
-                    type: TemplateInputType.DATEYEAR,
-                    placeholder: `Day of Year`,
-                  },
-                ],
-                resolutionRules: {
-                  [REQUIRED]: [
-                    {
-                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
-                    },
-                    {
-                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
-                    },
-                    {
-                      text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
-                    }
-                  ]
-                },
+                id: 0,
+                type: TemplateInputType.DROPDOWN_QUESTION_DEP,
+                placeholder: `Token Pair`,
+                inputDestId: 2,
+                values: LIST_VALUES.ETH_CURRENCY_PAIRS,
+                inputDestValues: CRYPTO_ETH_CURRENCY_MARKETS,
               },
               {
-                marketType: YES_NO,
-                question: `Will the price of ETH, exceed [0] EUR, on [1] anytime between the open of [2] and close of [3]?`,
-                example: `Will the price of ETH exceed 200 EUR on Coinbase Pro (pro.coinbase.com) anytime between the open of September 1, 2019 and close of December 31, 2019?`,
-                inputs: [
-                  {
-                    id: 0,
-                    type: TemplateInputType.TEXT,
-                    placeholder: `Value #`,
-                    validationType: ValidationType.NUMBER,
-                  },
-                  {
-                    id: 1,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Exchange`,
-                    values: LIST_VALUES.EUR_EXCHANGES,
-                  },
-                  {
-                    id: 2,
-                    type: TemplateInputType.DATEYEAR,
-                    placeholder: `Open, Day of Year`,
-                  },
-                  {
-                    id: 3,
-                    type: TemplateInputType.DATEYEAR,
-                    placeholder: `Close, Day of Year`,
-                  },
-                ],
-                resolutionRules: {
-                  [REQUIRED]: [
-                    {
-                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
-                    },
-                    {
-                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
-                    },
-                    {
-                      text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
-                    }
-                  ]
-                },
+                id: 1,
+                type: TemplateInputType.DATEYEAR,
+                placeholder: `Day of Year`,
               },
               {
-                marketType: SCALAR,
-                question: `What price will ETH close at in EUR on [0] on [1]?`,
-                example: `What price will ETH close at in EUR on December 31, 2019 on Coinbase Pro (pro.coinbase.com)?`,
-                denomination: 'EUR',
-                inputs: [
-                  {
-                    id: 0,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Exchange`,
-                    values: LIST_VALUES.EUR_EXCHANGES,
-                  },
-                  {
-                    id: 1,
-                    type: TemplateInputType.DATEYEAR,
-                    placeholder: `Day of Year`,
-                  },
-                ],
-                resolutionRules: {
-                  [REQUIRED]: [
-                    {
-                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
-                    },
-                    {
-                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
-                    },
-                    {
-                      text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
-                    }
-                  ]
-                },
+                id: 2,
+                type: TemplateInputType.DROPDOWN,
+                defaultLabel: `Select Pair First`,
+                placeholder: `Market Source`,
+                values: [],
               },
             ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Opening datetime is determine by open price for market trading pair on tradingview.com`,
+                },
+                {
+                  text: `If trading pair market isn't available on tradingview.com, refer to actual exchange. For example if coinbase trading view data feed is down, find opening price on hourly candle adjusted for timezone of UTC-0 of date referenced in market question.`,
+                },
+              ],
+            },
           },
-        },
+        ],
       },
       [LITECOIN]: {
-        children: {
-          [USD]: {
-            templates: [
+        templates: [
+          {
+            marketType: YES_NO,
+            question: `Will the price of [0] open on or above [1] on [2], according to TradingView.com "[3]"?`,
+            example: `Will the price of BTC/USD open on or above 8000 on December 31, 2019, according to TradingView.com "BTCUSD (crypto - Coinbase)"?`,
+            inputs: [
               {
-                marketType: YES_NO,
-                question: `Will the price of LTC close on or above [0] USD on [1] on [2]?`,
-                example: `Will the price of LTC close on or above $100 USD on Coinbase Pro (pro.coinbase.com) on December 31, 2019?`,
-                inputs: [
-                  {
-                    id: 0,
-                    type: TemplateInputType.TEXT,
-                    placeholder: `Value #`,
-                    validationType: ValidationType.NUMBER,
-                  },
-                  {
-                    id: 1,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Exchange`,
-                    values: LIST_VALUES.NON_BTC_USD_EXCHANGES,
-                  },
-                  {
-                    id: 2,
-                    type: TemplateInputType.DATEYEAR,
-                    placeholder: `Day of Year`,
-                  },
-                ],
-                resolutionRules: {
-                  [REQUIRED]: [
-                    {
-                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
-                    },
-                    {
-                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
-                    },
-                    {
-                      text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
-                    }
-                  ]
-                },
+                id: 0,
+                type: TemplateInputType.DROPDOWN_QUESTION_DEP,
+                placeholder: `Token Pair`,
+                inputDestId: 3,
+                values: LIST_VALUES.LTC_CURRENCY_PAIRS,
+                inputDestValues: CRYPTO_LTC_CURRENCY_MARKETS,
               },
               {
-                marketType: YES_NO,
-                question: `Will the price of LTC, exceed [0] USD, on [1] anytime between the open of [2] and close of [3]?`,
-                example: `Will the price of LTC exceed $100 USD on Coinbase Pro (pro.coinbase.com) anytime between the open of September 1, 2019 and close of December 31, 2019?`,
-                inputs: [
-                  {
-                    id: 0,
-                    type: TemplateInputType.TEXT,
-                    placeholder: `Value #`,
-                    validationType: ValidationType.NUMBER,
-                  },
-                  {
-                    id: 1,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Exchange`,
-                    values: LIST_VALUES.NON_BTC_USD_EXCHANGES,
-                  },
-                  {
-                    id: 2,
-                    type: TemplateInputType.DATEYEAR,
-                    placeholder: `Open, Day of Year`,
-                  },
-                  {
-                    id: 3,
-                    type: TemplateInputType.DATEYEAR,
-                    placeholder: `Close, Day of Year`,
-                  },
-                ],
-                resolutionRules: {
-                  [REQUIRED]: [
-                    {
-                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
-                    },
-                    {
-                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
-                    },
-                    {
-                      text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
-                    }
-                  ]
-                },
+                id: 1,
+                type: TemplateInputType.TEXT,
+                placeholder: `Value #`,
+                validationType: ValidationType.NUMBER,
               },
               {
-                marketType: SCALAR,
-                question: `What price will LTC close at in USD on [0] on [1]?`,
-                example: `What price will LTC close at in USD on December 31, 2019 on Coinbase Pro (pro.coinbase.com)?`,
-                denomination: 'USD',
-                inputs: [
-                  {
-                    id: 0,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Exchange`,
-                    values: LIST_VALUES.NON_BTC_USD_EXCHANGES,
-                  },
-                  {
-                    id: 1,
-                    type: TemplateInputType.DATEYEAR,
-                    placeholder: `Day of Year`,
-                  },
-                ],
-                resolutionRules: {
-                  [REQUIRED]: [
-                    {
-                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
-                    },
-                    {
-                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
-                    },
-                    {
-                      text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
-                    }
-                  ]
-                },
+                id: 2,
+                type: TemplateInputType.DATEYEAR,
+                placeholder: `Day of Year`,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.DROPDOWN,
+                defaultLabel: `Select Pair First`,
+                placeholder: `Market Source`,
+                values: [],
               },
             ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Opening datetime is determine by open price for market trading pair on tradingview.com`,
+                },
+                {
+                  text: `If trading pair market isn't available on tradingview.com, refer to actual exchange. For example if coinbase trading view data feed is down, find opening price on hourly candle adjusted for timezone of UTC-0 of date referenced in market question.`,
+                },
+              ],
+            },
           },
-          [USDT]: {
-            templates: [
+          {
+            marketType: YES_NO,
+            question: `Will the price of [0], exceed [1] anytime between the open of [2] and close of [3], according to TradingView.com "[4]"?`,
+            example: `Will the price of BTC/USD exceed 8000 anytime between the open of September 1, 2019 and close of December 31, 2019, according to TradingView.com "BTCUSD (crypto - Coinbase)"?`,
+            inputs: [
               {
-                marketType: YES_NO,
-                question: `Will the price of LTC close on or above [0] USDT on [1] on [2]?`,
-                example: `Will the price of LTC close on or above 100 USDT on Binance (binance.com) on December 31, 2019?`,
-                inputs: [
-                  {
-                    id: 0,
-                    type: TemplateInputType.TEXT,
-                    placeholder: `Value #`,
-                    validationType: ValidationType.NUMBER,
-                  },
-                  {
-                    id: 1,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Exchange`,
-                    values: LIST_VALUES.USDT_EXCHANGES,
-                  },
-                  {
-                    id: 2,
-                    type: TemplateInputType.DATEYEAR,
-                    placeholder: `Day of Year`,
-                  },
-                ],
-                resolutionRules: {
-                  [REQUIRED]: [
-                    {
-                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
-                    },
-                    {
-                      text: `If Bittrex is exchange in market question and not available by the end of designated reporting timeframe, Huobi Global (hbg.com) should be used.`
-                    },
-                    {
-                      text: `If Bittrex is not the exchange in market question, Bittrex (bittrex.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
-                    }
-                  ]
-                },
+                id: 0,
+                type: TemplateInputType.DROPDOWN_QUESTION_DEP,
+                placeholder: `Token Pair`,
+                inputDestId: 4,
+                values: LIST_VALUES.LTC_CURRENCY_PAIRS,
+                inputDestValues: CRYPTO_LTC_CURRENCY_MARKETS,
               },
               {
-                marketType: YES_NO,
-                question: `Will the price of LTC, exceed [0] USDT, on [1] anytime between the open of [2] and close of [3]?`,
-                example: `Will the price of LTC exceed 100 USDT on Binance (binance.com) anytime between the open of September 1, 2019 and close of December 31, 2019?`,
-                inputs: [
-                  {
-                    id: 0,
-                    type: TemplateInputType.TEXT,
-                    placeholder: `Value #`,
-                    validationType: ValidationType.NUMBER,
-                  },
-                  {
-                    id: 1,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Exchange`,
-                    values: LIST_VALUES.USDT_EXCHANGES,
-                  },
-                  {
-                    id: 2,
-                    type: TemplateInputType.DATEYEAR,
-                    placeholder: `Open, Day of Year`,
-                  },
-                  {
-                    id: 3,
-                    type: TemplateInputType.DATEYEAR,
-                    placeholder: `Close, Day of Year`,
-                  },
-                ],
-                resolutionRules: {
-                  [REQUIRED]: [
-                    {
-                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
-                    },
-                    {
-                      text: `If Bittrex is exchange in market question and not available by the end of designated reporting timeframe, Huobi Global (hbg.com) should be used.`
-                    },
-                    {
-                      text: `If Bittrex is not the exchange in market question, Bittrex (bittrex.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
-                    }
-                  ]
-                },
+                id: 1,
+                type: TemplateInputType.TEXT,
+                placeholder: `Value #`,
+                validationType: ValidationType.NUMBER,
               },
               {
-                marketType: SCALAR,
-                question: `What price will LTC close at in USDT on [0] on [1]?`,
-                example: `What price will LTC close at in USDT on December 31, 2019 on Binance (binance.com)?`,
-                denomination: 'USDT',
-                inputs: [
-                  {
-                    id: 0,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Exchange`,
-                    values: LIST_VALUES.USDT_EXCHANGES,
-                  },
-                  {
-                    id: 1,
-                    type: TemplateInputType.DATEYEAR,
-                    placeholder: `Day of Year`,
-                  },
-                ],
-                resolutionRules: {
-                  [REQUIRED]: [
-                    {
-                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
-                    },
-                    {
-                      text: `If Bittrex is exchange in market question and not available by the end of designated reporting timeframe, Huobi Global (hbg.com) should be used.`
-                    },
-                    {
-                      text: `If Bittrex is not the exchange in market question, Bittrex (bittrex.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
-                    }
-                  ]
-                },
+                id: 2,
+                type: TemplateInputType.DATEYEAR,
+                placeholder: `Open, Day of Year`,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.DATEYEAR,
+                placeholder: `Close, Day of Year`,
+              },
+              {
+                id: 4,
+                type: TemplateInputType.DROPDOWN,
+                defaultLabel: `Select Pair First`,
+                placeholder: `Market Source`,
+                values: [],
               },
             ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Opening datetime is determine by open price for market trading pair on tradingview.com`,
+                },
+                {
+                  text: `If trading pair market isn't available on tradingview.com, refer to actual exchange. For example if coinbase trading view data feed is down, find opening price on hourly candle adjusted for timezone of UTC-0 of date referenced in market question.`,
+                },
+              ],
+            },
           },
-          [EUR]: {
-            templates: [
+          {
+            marketType: SCALAR,
+            question: `What price will [0] open at on [1], according to TradingView.com "[2]"?`,
+            example: `What price will BTC/USD open at on December 31, 2019, according to TradingView.com "for BTCUSD (crypto - Coinbase)"?`,
+            denomination: 'Price',
+            inputs: [
               {
-                marketType: YES_NO,
-                question: `Will the price of LTC close on or above [0] EUR on [1] on [2]?`,
-                example: `Will the price of LTC close on or above 100 EUR on Coinbase Pro (pro.coinbase.com) on December 31, 2019?`,
-                inputs: [
-                  {
-                    id: 0,
-                    type: TemplateInputType.TEXT,
-                    placeholder: `Value #`,
-                    validationType: ValidationType.NUMBER,
-                  },
-                  {
-                    id: 1,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Exchange`,
-                    values: LIST_VALUES.EUR_EXCHANGES,
-                  },
-                  {
-                    id: 2,
-                    type: TemplateInputType.DATEYEAR,
-                    placeholder: `Day of Year`,
-                  },
-                ],
-                resolutionRules: {
-                  [REQUIRED]: [
-                    {
-                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
-                    },
-                    {
-                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
-                    },
-                    {
-                      text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
-                    }
-                  ]
-                },
+                id: 0,
+                type: TemplateInputType.DROPDOWN_QUESTION_DEP,
+                placeholder: `Token Pair`,
+                inputDestId: 2,
+                values: LIST_VALUES.LTC_CURRENCY_PAIRS,
+                inputDestValues: CRYPTO_LTC_CURRENCY_MARKETS,
               },
               {
-                marketType: YES_NO,
-                question: `Will the price of LTC, exceed [0] EUR, on [1] anytime between the open of [2] and close of [3]?`,
-                example: `Will the price of LTC exceed $40 EUR on Coinbase Pro (pro.coinbase.com) anytime between the open of September 1, 2019 and close of December 31, 2019?`,
-                inputs: [
-                  {
-                    id: 0,
-                    type: TemplateInputType.TEXT,
-                    placeholder: `Value #`,
-                    validationType: ValidationType.NUMBER,
-                  },
-                  {
-                    id: 1,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Exchange`,
-                    values: LIST_VALUES.EUR_EXCHANGES,
-                  },
-                  {
-                    id: 2,
-                    type: TemplateInputType.DATEYEAR,
-                    placeholder: `Open, Day of Year`,
-                  },
-                  {
-                    id: 3,
-                    type: TemplateInputType.DATEYEAR,
-                    placeholder: `Close, Day of Year`,
-                  },
-                ],
-                resolutionRules: {
-                  [REQUIRED]: [
-                    {
-                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
-                    },
-                    {
-                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
-                    },
-                    {
-                      text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
-                    }
-                  ]
-                },
+                id: 1,
+                type: TemplateInputType.DATEYEAR,
+                placeholder: `Day of Year`,
               },
               {
-                marketType: SCALAR,
-                question: `What price will LTC close at in EUR on [0] on [1]?`,
-                example: `What price will LTC close at in EUR on December 31, 2019 on Coinbase Pro (pro.coinbase.com)?`,
-                denomination: 'EUR',
-                inputs: [
-                  {
-                    id: 0,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Exchange`,
-                    values: LIST_VALUES.EUR_EXCHANGES,
-                  },
-                  {
-                    id: 1,
-                    type: TemplateInputType.DATEYEAR,
-                    placeholder: `Day of Year`,
-                  },
-                ],
-                resolutionRules: {
-                  [REQUIRED]: [
-                    {
-                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
-                    },
-                    {
-                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
-                    },
-                    {
-                      text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
-                    }
-                  ]
-                },
+                id: 2,
+                type: TemplateInputType.DROPDOWN,
+                defaultLabel: `Select Pair First`,
+                placeholder: `Market Source`,
+                values: [],
               },
             ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Opening datetime is determine by open price for market trading pair on tradingview.com`,
+                },
+                {
+                  text: `If trading pair market isn't available on tradingview.com, refer to actual exchange. For example if coinbase trading view data feed is down, find opening price on hourly candle adjusted for timezone of UTC-0 of date referenced in market question.`,
+                },
+              ],
+            },
           },
-        },
+        ],
       },
     },
   },
