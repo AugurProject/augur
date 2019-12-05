@@ -628,7 +628,12 @@ export function addScripts(flash: FlashSession) {
       {
         name: 'resolutionRules',
         description: 'resolution rules separated by \n ',
-        required: true
+        required: true,
+      },
+      {
+        name: 'endTime',
+        description: 'market end time, also called event expiration',
+        required: true,
       }
     ],
     async call(this: FlashSession, args: FlashArguments) {
@@ -637,7 +642,8 @@ export function addScripts(flash: FlashSession) {
         const templateInfo = String(args.templateInfo);
         const outcomesString = String(args.outcomes);
         const resolutionRules = String(args.resolutionRules);
-        this.log(validateMarketTemplate(title, templateInfo, outcomesString, resolutionRules));
+        const endTime = Number(args.endTime);
+        this.log(validateMarketTemplate(title, templateInfo, outcomesString, resolutionRules, endTime));
       } catch (e) {
         this.log(e);
       }

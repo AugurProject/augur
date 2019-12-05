@@ -301,7 +301,13 @@ function isDependencyOutcomesCorrect(
   return result;
 }
 
-export const isTemplateMarket = (title, template: ExtraInfoTemplate, outcomes: string[], longDescription: string, errors: string[] = []) => {
+function estimatedDateTimeAfterMarketEndTime(inputs: ExtraInfoTemplateInput[], endTime: number) {
+  const input = inputs.find(i => i.type === TemplateInputType.ESTDATETIME);
+  if (!input) return true;
+  return Number(input.timestamp) > Number(endTime);
+}
+
+export const isTemplateMarket = (title, template: ExtraInfoTemplate, outcomes: string[], longDescription: string, endTime: number, errors: string[] = []) => {
   if (!template || !template.hash || !template.question || template.inputs.length === 0) {
     errors.push('value missing template | hash | question | inputs');
     return false;
@@ -321,6 +327,12 @@ export const isTemplateMarket = (title, template: ExtraInfoTemplate, outcomes: s
     });
     if (checkMarketTitle !== title) {
       errors.push('populated title does not match title given');
+      return false;
+    }
+
+    // check ESTDATETIME isn't after market event expiration
+    if (estimatedDateTimeAfterMarketEndTime(template.inputs, endTime)) {
+      errors.push('estimated schedule date time is after market event expiration endTime');
       return false;
     }
 
