@@ -316,7 +316,7 @@ export interface NewMarketPropertyValidations {
   outcomes?: string | string[];
 }
 export interface NewMarket {
-  uniqueId: number;
+  uniqueId: string;
   isValid: boolean;
   validations:
     | NewMarketPropertiesValidations
@@ -364,7 +364,7 @@ export interface LinkContent {
 };
 
 export interface Draft {
-  uniqueId: number;
+  uniqueId: string;
   created: number;
   updated: number;
   isValid: boolean;

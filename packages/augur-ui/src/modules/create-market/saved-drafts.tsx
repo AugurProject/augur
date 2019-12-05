@@ -7,6 +7,7 @@ import { PillLabel } from "modules/common/labels";
 import { SCRATCH, TEMPLATE } from "modules/create-market/constants";
 
 import Styles from "modules/create-market/saved-drafts.styles";
+import { CancelTextButton } from "modules/common/buttons";
 
 interface SavedDraftsProps {
   drafts: Drafts;
@@ -33,15 +34,10 @@ const DraftRow: React.FC<DraftRowProps> = (props) => {
           props.updatePage(props.draft.template ? TEMPLATE : SCRATCH);
         }}
       >
-        <PillLabel label="Draft" />
-        <div>
-          <span>{props.draft.description}</span>
-          <span>Saved: {date.toString()}</span>
-        </div>
+        <span>{props.draft.description}</span>
+        <span>Saved: {date.toString()}</span>
       </button>
-      <button onClick={() => props.removeDraft(props.draft.uniqueId)}>
-        Delete
-      </button>
+      <CancelTextButton text={'Delete'} action={() => props.removeDraft(props.draft.uniqueId)} />
     </div>
   );
 };

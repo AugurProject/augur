@@ -5,58 +5,40 @@
 }
 
 .DraftRow {
-  border-bottom: 2px solid @color-dark-grey;
+  border-bottom: 1px solid @color-dark-grey;
   display: flex;
   flex-grow: 1;
-  padding: @size-16 @size-40;
+  padding: @size-16 @size-32;
   background-color: @color-module-background;
   flex-direction: row;
   cursor: pointer;
+  align-items: center;
 
   > button:first-of-type {
     display: flex;
     flex: 1;
-
-    > div {
-      align-items: flex-start;
-      display: flex;
-      flex-direction: column;
-      flex: 1;
+    flex-direction: column;
       
-      > span:first-of-type {
-        .text-12-medium;
+    > span:first-of-type {
+      .text-12-medium;
 
-        color: @color-primary-text;
-        text-align: left;
-      }
-
-      > span:last-of-type {
-        .mono-12;
-
-        color: @color-secondary-text;
-        margin-top: @size-4;
-        text-align: left;
-      }
+      color: @color-primary-text;
+      text-align: left;
     }
 
-    > span {
-      max-height: fit-content;
-      padding: @size-6 @size-8;
-      margin-right: @size-28;
+    > span:last-of-type {
+      .mono-12;
+
+      color: @color-secondary-text;
+      margin-top: @size-4;
+      text-align: left;
     }
+  }
+
+  > button:last-of-type {
+    height: min-content;
   }
   
-  > button:last-of-type {
-  	.mono-12;
-
-  	color: @color-primary-action;
-  	text-transform: uppercase;
-  }
-
-  &:not(:last-of-type) {
-    margin-bottom: 2px;
-  }
-
   @media @breakpoint-mobile-mid {
     padding: @size-16 @size-16;
     
@@ -65,5 +47,9 @@
         display: none;
       }
     }
+  }
+
+  &:last-of-type {
+    border-bottom: 0;
   }
 }
