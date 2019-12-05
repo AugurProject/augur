@@ -1,4 +1,5 @@
-import { TEMPLATES, CategoryTemplate } from '@augurproject/artifacts';
+import { TEMPLATES, CategoryTemplate, isTemplateMarket, ExtraInfoTemplate } from '@augurproject/artifacts';
+import { stringTo32ByteHex } from '@augurproject/sdk';
 
 export const showTemplateByHash = (hash: string): string => {
   console.log("show template by hash");
@@ -19,3 +20,19 @@ const findTemplate = (category: CategoryTemplate, hash: string): string => {
   template = category.templates.find(t => t.hash === hash);
   return template;
 };
+
+export const validateMarketTemplate = (title: string, templateInfo: string, outcomesString: string, longDescription: string): string => {
+  const extraInfoTemplate = JSON.parse(templateInfo) as ExtraInfoTemplate;
+  let outcomes = [];
+  if (outcomesString) {
+    outcomes = outcomesString.split(',').map(stringTo32ByteHex);
+  }
+  const errors = [];
+  const result = isTemplateMarket(title, extraInfoTemplate, outcomes, longDescription, errors);
+
+  if (result) return 'Yes, this is a templated market';
+  const error = errors[0];
+  return `No, not a templated market, error: ${error}`;
+
+}
+
