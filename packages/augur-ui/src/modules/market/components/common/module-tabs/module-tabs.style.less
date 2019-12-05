@@ -14,15 +14,34 @@
 
     > li {
       color: @color-secondary-text;
+      margin: 0 @size-8;
+      border-bottom: @size-2 solid transparent;
+
+      &.ActiveTab {
+        color: @color-primary-text;
+        border-bottom: @size-2 solid @color-primary-action;
+      
+        .IsNew::before {
+          background: @color-outcome-four;
+          border-radius: @border-radius-default;
+          content: ' ';
+          height: @size-4;
+          position: absolute;
+          right: -@size-4;
+          top: -@size-4;
+          width: @size-4;
+        }
+      }
 
       &:hover {
         color: @color-primary-text;
       }
 
       > button {
-        .mono-11-bold;
+        .mono-12-bold;
 
-        padding: @size-8 @size-16;
+        height: 100%;
+        padding: 0;
         position: relative;
         white-space: nowrap;
         text-transform: uppercase;
@@ -31,12 +50,13 @@
   }
 
   @media @breakpoint-mobile-mid {
+    height: @size-48;
+    max-height: @size-48;
+
     > ul {
       > li {
         > button {
-          .text-9-bold;
-
-          padding: @size-12 @size-16;
+          .text-12-bold;
         }
       }
     }
@@ -45,21 +65,6 @@
 
 .IsNew {
   position: relative;
-}
-
-.ActiveTab {
-  color: @color-primary-text !important;
-
-  .IsNew::before {
-    background: @color-outcome-four;
-    border-radius: @border-radius-default;
-    content: ' ';
-    height: @size-4;
-    position: absolute;
-    right: -@size-4;
-    top: -@size-4;
-    width: @size-4;
-  }
 }
 
 .IsNew::before {
@@ -111,10 +116,6 @@
     align-items: center;
     display: flex;
     justify-content: center;
-
-    > button {
-      padding: @size-14 0;
-    }
   }
 }
 
@@ -147,7 +148,6 @@
   background-color: unset;
   border: 0;
   overflow-x: auto;
-  padding: 0 @size-8;
 
   > li {
     > button {
@@ -165,17 +165,5 @@
 
 .ActiveNoBorder {
   border: 0;
-  padding-bottom: @size-4;
   position: relative;
-
-  &::after {
-    background-color: @color-primary-action;
-    border-radius: @size-9;
-    bottom: 0;
-    content: "";
-    height: 2px;
-    left: 0;
-    position: absolute;
-    right: 0;
-  }
 }
