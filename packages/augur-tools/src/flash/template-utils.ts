@@ -1,4 +1,4 @@
-import { TEMPLATES, CategoryTemplate, isTemplateMarket, ExtraInfoTemplate } from '@augurproject/artifacts';
+import { TEMPLATES, CategoryTemplate, isTemplateMarket, ExtraInfoTemplate, generateResolutionRulesHash } from '@augurproject/artifacts';
 import { stringTo32ByteHex } from '@augurproject/sdk';
 
 export const showTemplateByHash = (hash: string): string => {
@@ -27,8 +27,13 @@ export const validateMarketTemplate = (title: string, templateInfo: string, outc
   if (outcomesString) {
     outcomes = outcomesString.split(',').map(stringTo32ByteHex);
   }
+  let details = longDescription;
+  if (longDescription) {
+    const splits = longDescription.split('\\n');
+    details = splits.join('\n');
+  }
   const errors = [];
-  const result = isTemplateMarket(title, extraInfoTemplate, outcomes, longDescription, errors);
+  const result = isTemplateMarket(title, extraInfoTemplate, outcomes, details, errors);
 
   if (result) return 'Yes, this is a templated market';
   const error = errors[0];
