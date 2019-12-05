@@ -4,13 +4,14 @@ import 'ROOT/IAugur.sol';
 import 'ROOT/libraries/Initializable.sol';
 import 'ROOT/libraries/token/VariableSupplyToken.sol';
 import 'ROOT/reporting/IOICash.sol';
+import 'ROOT/MKRShutdownHandler.sol';
 
 
 /**
  * @title OI Cash
  * @dev A Wrapper contract for the deployed Cash contract which Augur considers OI. Cash can be deposited and will count toward OI for reporting fee calculations and will extract a reporting fee on withdrawl
  */
-contract OICash is VariableSupplyToken, Initializable, IOICash {
+contract OICash is VariableSupplyToken, Initializable, IOICash, MKRShutdownHandler {
     using SafeMathUint256 for uint256;
 
     IAugur public augur;
@@ -30,6 +31,8 @@ contract OICash is VariableSupplyToken, Initializable, IOICash {
         universe = _universe;
         erc1820Registry = IERC1820Registry(_erc1820RegistryAddress);
         initialize1820InterfaceImplementations();
+
+        initializeMKRShutdownHandler(_augur.lookup("DaiVat"), _augur.lookup("Cash"));
     }
 
     function deposit(uint256 _amount) external returns (bool) {
@@ -54,10 +57,10 @@ contract OICash is VariableSupplyToken, Initializable, IOICash {
             _feesOwed = _feesOwed.sub(feesPaid);
             feesPaid = 0;
             _payout = _payout.sub(_feesOwed);
-            cash.transfer(address(universe.getOrCreateNextDisputeWindow(false)), _feesOwed);
+            cashTransfer(address(universe.getOrCreateNextDisputeWindow(false)), _feesOwed);
         }
 
-        cash.transfer(msg.sender, _payout);
+        cashTransfer(msg.sender, _payout);
 
         return true;
     }

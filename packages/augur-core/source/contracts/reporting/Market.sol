@@ -8,6 +8,7 @@ import 'ROOT/reporting/IReportingParticipant.sol';
 import 'ROOT/reporting/IDisputeCrowdsourcer.sol';
 import 'ROOT/reporting/IV2ReputationToken.sol';
 import 'ROOT/external/IAffiliateValidator.sol';
+import 'ROOT/external/IDaiVat.sol';
 import 'ROOT/reporting/IAffiliates.sol';
 import 'ROOT/factories/IDisputeCrowdsourcerFactory.sol';
 import 'ROOT/ICash.sol';
@@ -86,6 +87,8 @@ contract Market is Initializable, Ownable, IMarket {
         InitialReporterFactory _initialReporterFactory = InitialReporterFactory(_augur.lookup("InitialReporterFactory"));
         participants.push(_initialReporterFactory.createInitialReporter(_augur, _designatedReporterAddress));
         shareToken = IShareToken(_augur.lookup("ShareToken"));
+        IDaiVat _daiVat = IDaiVat(_augur.lookup("DaiVat"));
+        _daiVat.hope(address(_augur));
     }
 
     function assessFees() private {

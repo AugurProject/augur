@@ -14,13 +14,14 @@ import 'ROOT/libraries/math/SafeMathUint256.sol';
 import 'ROOT/reporting/IDisputeWindow.sol';
 import 'ROOT/libraries/token/VariableSupplyToken.sol';
 import 'ROOT/IAugur.sol';
+import 'ROOT/MKRShutdownHandler.sol';
 
 
 /**
  * @title Dispute Window
  * @notice A contract used to encapsulate a window of time in which markets can be disputed as well as the pot where reporting fees are collected and distributed.
  */
-contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow {
+contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow, MKRShutdownHandler {
     using SafeMathUint256 for uint256;
 
     IAugur public augur;
@@ -45,6 +46,8 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow {
         participationTokensEnabled = _participationTokensEnabled;
         erc1820Registry = IERC1820Registry(_erc1820RegistryAddress);
         initialize1820InterfaceImplementations();
+
+        initializeMKRShutdownHandler(_augur.lookup("DaiVat"), address(cash));
     }
 
     function onMarketFinalized() public {
@@ -130,7 +133,7 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow {
         if (_cashBalance != 0) {
             // Pay out fees
             _feePayoutShare = _cashBalance.mul(_attoParticipationTokens).div(_supply);
-            cash.transfer(_account, _feePayoutShare);
+            cashTransfer(_account, _feePayoutShare);
         }
 
         augur.logParticipationTokensRedeemed(universe, _account, _attoParticipationTokens, _feePayoutShare);

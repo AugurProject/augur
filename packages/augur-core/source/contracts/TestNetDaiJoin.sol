@@ -12,8 +12,13 @@ contract TestNetDaiJoin is IDaiJoin {
     uint constant ONE = 10 ** 27;
 
     constructor(address vat_, address dai_) public {
+        live = 1;
         vat = IDaiVat(vat_);
         dai = ICash(dai_);
+    }
+
+    function cage() external {
+        live = 0;
     }
 
     function mul(uint x, uint y) internal pure returns (uint z) {
@@ -26,6 +31,7 @@ contract TestNetDaiJoin is IDaiJoin {
     }
 
     function exit(address usr, uint wad) public {
+        require(live == 1, "DaiJoin/not-live");
         address urn = msg.sender;
         vat.move(urn, address(this), mul(ONE, wad));
         dai.joinMint(usr, wad);

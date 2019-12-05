@@ -19,6 +19,7 @@ import 'ROOT/trading/Order.sol';
 import 'ROOT/reporting/Reporting.sol';
 import 'ROOT/libraries/ContractExists.sol';
 import 'ROOT/ITime.sol';
+import 'ROOT/MKRShutdownHandler.sol';
 
 
 // Centralized approval authority and event emissions
@@ -27,7 +28,7 @@ import 'ROOT/ITime.sol';
  * @title Augur
  * @notice The core global contract of the Augur platform. Provides a contract registry and and authority on which contracts should be trusted.
  */
-contract Augur is IAugur, IAugurCreationDataGetter {
+contract Augur is IAugur, IAugurCreationDataGetter, MKRShutdownHandler {
     using SafeMathUint256 for uint256;
     using ContractExists for address;
 
@@ -112,9 +113,12 @@ contract Augur is IAugur, IAugurCreationDataGetter {
         registry[_key] = _address;
         if (_key == "ShareToken" || _key == "MarketFactory") {
             trustedSender[_address] = true;
-        }
-        if (_key == "Time") {
+        } else if (_key == "Time") {
             time = ITime(_address);
+        } else if (_key == "DaiVat") {
+            vat = IDaiVat(_address);
+        } else if (_key == "Cash") {
+            cash = ICash(_address);
         }
         emit RegisterContract(_address, _key);
         return true;
@@ -191,9 +195,9 @@ contract Augur is IAugur, IAugurCreationDataGetter {
     // Transfer
     //
 
-    function trustedTransfer(IERC20 _token, address _from, address _to, uint256 _amount) public returns (bool) {
+    function trustedTransfer(address _from, address _to, uint256 _amount) public returns (bool) {
         require(trustedSender[msg.sender]);
-        require(_token.transferFrom(_from, _to, _amount));
+        cashTransferFrom(_from, _to, _amount);
         return true;
     }
 

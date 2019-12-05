@@ -20,13 +20,14 @@ import 'ROOT/external/IDaiPot.sol';
 import 'ROOT/external/IDaiJoin.sol';
 import 'ROOT/utility/IFormulas.sol';
 import 'ROOT/IAugur.sol';
+import 'ROOT/MKRShutdownHandler.sol';
 
 
 /**
  * @title Universe
  * @notice A Universe encapsulates a whole instance of Augur. In the event of a fork in a Universe it will split into child Universes which each represent a different version of the truth with respect to how the forking market should resolve.
  */
-contract Universe is IUniverse {
+contract Universe is IUniverse, MKRShutdownHandler {
     using SafeMathUint256 for uint256;
 
     IAugur public augur;
@@ -97,6 +98,8 @@ contract Universe is IUniverse {
         daiVat.hope(address(daiPot));
         daiVat.hope(address(daiJoin));
         cash.approve(address(daiJoin), 2 ** 256 - 1);
+
+        initializeMKRShutdownHandler(address(daiVat), address(cash));
     }
 
     function assertContractsNotZero() private view {
@@ -684,13 +687,15 @@ contract Universe is IUniverse {
 
     function withdrawSDaiFromDSR(uint256 _sDaiAmount) private returns (bool) {
         daiPot.exit(_sDaiAmount);
-        daiJoin.exit(address(this), daiVat.dai(address(this)).div(DAI_ONE));
+        if (daiJoin.live() == 1) {
+            daiJoin.exit(address(this), daiVat.dai(address(this)).div(DAI_ONE));
+        }
         return true;
     }
 
     function deposit(address _sender, uint256 _amount, address _market) public returns (bool) {
         require(augur.isTrustedSender(msg.sender) || msg.sender == _sender || msg.sender == address(openInterestCash));
-        augur.trustedTransfer(cash, _sender, address(this), _amount);
+        augur.trustedTransfer(_sender, address(this), _amount);
         totalBalance = totalBalance.add(_amount);
         marketBalance[_market] = marketBalance[_market].add(_amount);
         saveDaiInDSR(_amount);
@@ -705,7 +710,7 @@ contract Universe is IUniverse {
         totalBalance = totalBalance.sub(_amount);
         marketBalance[_market] = marketBalance[_market].sub(_amount);
         withdrawDaiFromDSR(_amount);
-        cash.transfer(_recipient, _amount);
+        cashTransfer(_recipient, _amount);
         return true;
     }
 
@@ -717,7 +722,7 @@ contract Universe is IUniverse {
         _extraCash = cash.balanceOf(address(this));
         // The amount in the DSR pot and VAT must cover our totalBalance of Dai
         assert(daiPot.pie(address(this)).mul(_chi).add(daiVat.dai(address(this))) >= totalBalance.mul(DAI_ONE));
-        cash.transfer(address(getOrCreateNextDisputeWindow(false)), _extraCash);
+        cashTransfer(address(getOrCreateNextDisputeWindow(false)), _extraCash);
         return true;
     }
 }

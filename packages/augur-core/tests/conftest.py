@@ -663,6 +663,12 @@ class ContractsFixture:
         address = market.getShareToken(outcome)
         return self.applySignature("ShareToken", address)
 
+    def MKRShutdown(self):
+        daiVat = self.contracts['DaiVat']
+        daiJoin = self.contracts['DaiJoin']
+        daiVat.cage()
+        daiJoin.cage()
+
 @pytest.fixture(scope="session")
 def fixture(request):
     return ContractsFixture(request)

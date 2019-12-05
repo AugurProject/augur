@@ -51,7 +51,6 @@ library Order {
         bytes32 worseOrderId;
     }
 
-    // No validation is needed here as it is simply a library function for organizing data
     function create(IAugur _augur, IAugurTrading _augurTrading, address _creator, uint256 _outcome, Order.Types _type, uint256 _attoshares, uint256 _price, IMarket _market, bytes32 _betterOrderId, bytes32 _worseOrderId, IERC20 _kycToken) internal view returns (Data memory) {
         require(_outcome < _market.getNumberOfOutcomes(), "Order.create: Outcome is not within market range");
         require(_price != 0, "Order.create: Price may not be 0");
@@ -106,14 +105,6 @@ library Order {
         return (_fillerDirection == Order.TradeDirections.Long) ? Order.Types.Ask : Order.Types.Bid;
     }
 
-    function escrowFunds(Order.Data memory _orderData) internal returns (bool) {
-        if (_orderData.orderType == Order.Types.Ask) {
-            return escrowFundsForAsk(_orderData);
-        } else if (_orderData.orderType == Order.Types.Bid) {
-            return escrowFundsForBid(_orderData);
-        }
-    }
-
     function saveOrder(Order.Data memory _orderData, bytes32 _tradeGroupId, IOrders _orders) internal returns (bytes32) {
         getOrderId(_orderData, _orders);
         uint256[] memory _uints = new uint256[](5);
@@ -128,72 +119,5 @@ library Order {
         _bytes32s[2] = _tradeGroupId;
         _bytes32s[3] = _orderData.id;
         return _orders.saveOrder(_uints, _bytes32s, _orderData.orderType, _orderData.market, _orderData.creator, _orderData.kycToken);
-    }
-
-    //
-    // Private functions
-    //
-
-    function escrowFundsForBid(Order.Data memory _orderData) private returns (bool) {
-        require(_orderData.moneyEscrowed == 0, "Order.escrowFundsForBid: New order had money escrowed. This should not be possible");
-        require(_orderData.sharesEscrowed == 0, "Order.escrowFundsForBid: New order had shares escrowed. This should not be possible");
-        uint256 _attosharesToCover = _orderData.amount;
-        uint256 _numberOfShortOutcomes = _orderData.market.getNumberOfOutcomes() - 1;
-
-        uint256[] memory _shortOutcomes = new uint256[](_numberOfShortOutcomes);
-        uint256 _indexOutcome = 0;
-        for (uint256 _i = 0; _i < _numberOfShortOutcomes; _i++) {
-            if (_i == _orderData.outcome) {
-                _indexOutcome++;
-            }
-            _shortOutcomes[_i] = _indexOutcome;
-            _indexOutcome++;
-        }
-
-        // Figure out how many almost-complete-sets (just missing `outcome` share) the creator has
-        uint256 _attosharesHeld = _orderData.shareToken.lowestBalanceOfMarketOutcomes(_orderData.market, _shortOutcomes, _orderData.creator);
-
-        // Take shares into escrow if they have any almost-complete-sets
-        if (_attosharesHeld > 0) {
-            _orderData.sharesEscrowed = SafeMathUint256.min(_attosharesHeld, _attosharesToCover);
-            _attosharesToCover -= _orderData.sharesEscrowed;
-            uint256[] memory _values = new uint256[](_numberOfShortOutcomes);
-            for (uint256 _i = 0; _i < _numberOfShortOutcomes; _i++) {
-                _values[_i] = _orderData.sharesEscrowed;
-            }
-            _orderData.shareToken.unsafeBatchTransferFrom(_orderData.creator, address(_orderData.augurTrading), _orderData.shareToken.getTokenIds(_orderData.market, _shortOutcomes), _values);
-        }
-
-        // If not able to cover entire order with shares alone, then cover remaining with tokens
-        if (_attosharesToCover > 0) {
-            _orderData.moneyEscrowed = _attosharesToCover.mul(_orderData.price);
-            _orderData.cash.transferFrom(_orderData.creator, address(_orderData.augurTrading), _orderData.moneyEscrowed);
-        }
-
-        return true;
-    }
-
-    function escrowFundsForAsk(Order.Data memory _orderData) private returns (bool) {
-        require(_orderData.moneyEscrowed == 0, "Order.escrowFundsForAsk: New order had money escrowed. This should not be possible");
-        require(_orderData.sharesEscrowed == 0, "Order.escrowFundsForAsk: New order had shares escrowed. This should not be possible");
-        uint256 _attosharesToCover = _orderData.amount;
-
-        // Figure out how many shares of the outcome the creator has
-        uint256 _attosharesHeld = _orderData.shareToken.balanceOfMarketOutcome(_orderData.market, _orderData.outcome, _orderData.creator);
-
-        // Take shares in escrow if user has shares
-        if (_attosharesHeld > 0) {
-            _orderData.sharesEscrowed = SafeMathUint256.min(_attosharesHeld, _attosharesToCover);
-            _attosharesToCover -= _orderData.sharesEscrowed;
-            _orderData.shareToken.unsafeTransferFrom(_orderData.creator, address(_orderData.augurTrading), _orderData.shareToken.getTokenId(_orderData.market, _orderData.outcome), _orderData.sharesEscrowed);
-        }
-
-        // If not able to cover entire order with shares alone, then cover remaining with tokens
-        if (_attosharesToCover > 0) {
-            _orderData.moneyEscrowed = _orderData.market.getNumTicks().sub(_orderData.price).mul(_attosharesToCover);
-            _orderData.cash.transferFrom(_orderData.creator, address(_orderData.augurTrading), _orderData.moneyEscrowed);
-        }
-
-        return true;
     }
 }

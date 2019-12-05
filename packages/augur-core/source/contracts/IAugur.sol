@@ -10,7 +10,7 @@ import 'ROOT/trading/Order.sol';
 contract IAugur {
     function createChildUniverse(bytes32 _parentPayoutDistributionHash, uint256[] memory _parentPayoutNumerators) public returns (IUniverse);
     function isKnownUniverse(IUniverse _universe) public view returns (bool);
-    function trustedTransfer(IERC20 _token, address _from, address _to, uint256 _amount) public returns (bool);
+    function trustedTransfer(address _from, address _to, uint256 _amount) public returns (bool);
     function isTrustedSender(address _address) public returns (bool);
     function onCategoricalMarketCreated(uint256 _endTime, string memory _extraInfo, IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feePerCashInAttoCash, bytes32[] memory _outcomes) public returns (bool);
     function onYesNoMarketCreated(uint256 _endTime, string memory _extraInfo, IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feePerCashInAttoCash) public returns (bool);

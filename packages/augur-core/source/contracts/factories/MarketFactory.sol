@@ -31,7 +31,7 @@ contract MarketFactory is CloneFactory, IMarketFactory {
         IReputationToken _reputationToken = _universe.getReputationToken();
         require(_reputationToken.transfer(address(_market), _reputationToken.balanceOf(address(this))));
         if (_sender != _augur.lookup("WarpSync")) {
-            require(_augur.trustedTransfer(ICash(_augur.lookup("Cash")), _sender, address(_market), _universe.getOrCacheValidityBond()));
+            require(_augur.trustedTransfer(_sender, address(_market), _universe.getOrCacheValidityBond()));
         }
 
         // Market param validation
