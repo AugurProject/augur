@@ -32,7 +32,7 @@ describe('State API :: Universe :: ', () => {
     await john.approveCentralAuthority();
     await mary.approveCentralAuthority();
     await bob.approveCentralAuthority();
-  }, 120000);
+  });
 
   beforeEach(async () => {
     const provider = await baseProvider.fork();
@@ -59,12 +59,14 @@ describe('State API :: Universe :: ', () => {
 
     const market = await john.createReasonableYesNoMarket();
     await actualDB.sync(john.augur, mock.constants.chunkSize, 0);
-    const marketInfo = (await api.route('getMarketsInfo', {marketIds: [market.address]}))[0];
+    const marketInfo = (await api.route('getMarketsInfo',
+      { marketIds: [market.address] }))[0];
 
     await fork(john, marketInfo);
 
     const repTokenAddress = await john.augur.contracts.universe.getReputationToken_();
-    const repToken = john.augur.contracts.reputationTokenFromAddress(repTokenAddress, john.augur.networkId);
+    const repToken = john.augur.contracts.reputationTokenFromAddress(
+      repTokenAddress, john.augur.networkId);
 
     const invalidNumerators = getPayoutNumerators(marketInfo, 0);
     const noNumerators = getPayoutNumerators(marketInfo, 1);
@@ -106,7 +108,7 @@ describe('State API :: Universe :: ', () => {
       ],
     });
 
-  }, 200000);
+  });
 
   test('getForkMigrationTotals : Categorical', async () => {
     const universe = john.augur.contracts.universe;
@@ -124,12 +126,14 @@ describe('State API :: Universe :: ', () => {
       ['foo', 'bar', 'happiness', 'smile'].map(formatBytes32String)
     );
     await actualDB.sync(john.augur, mock.constants.chunkSize, 0);
-    const marketInfo = (await api.route('getMarketsInfo', {marketIds: [market.address]}))[0];
+    const marketInfo = (await api.route('getMarketsInfo',
+      { marketIds: [market.address] }))[0];
 
     await fork(john, marketInfo);
 
     const repTokenAddress = await john.augur.contracts.universe.getReputationToken_();
-    const repToken = john.augur.contracts.reputationTokenFromAddress(repTokenAddress, john.augur.networkId);
+    const repToken = john.augur.contracts.reputationTokenFromAddress(
+      repTokenAddress, john.augur.networkId);
 
     const invalidNumerators = getPayoutNumerators(marketInfo, 0);
     const fooNumerators = getPayoutNumerators(marketInfo, 1);
@@ -176,7 +180,7 @@ describe('State API :: Universe :: ', () => {
       ],
     });
 
-  }, 200000);
+  });
 
   test('getForkMigrationTotals : Scalar', async () => {
     const universe = john.augur.contracts.universe;
@@ -192,7 +196,8 @@ describe('State API :: Universe :: ', () => {
 
     const market = await john.createReasonableScalarMarket();
     await actualDB.sync(john.augur, mock.constants.chunkSize, 0);
-    const marketInfo = (await api.route('getMarketsInfo', {marketIds: [market.address]}))[0];
+    const marketInfo = (await api.route('getMarketsInfo',
+      { marketIds: [market.address] }))[0];
 
     const invalidNumerators = getPayoutNumerators(marketInfo, 'invalid');
     const fooOutcome = makeValidScalarOutcome(marketInfo);
@@ -201,7 +206,8 @@ describe('State API :: Universe :: ', () => {
     await fork(john, marketInfo);
 
     const repTokenAddress = await john.augur.contracts.universe.getReputationToken_();
-    const repToken = john.augur.contracts.reputationTokenFromAddress(repTokenAddress, john.augur.networkId);
+    const repToken = john.augur.contracts.reputationTokenFromAddress(
+      repTokenAddress, john.augur.networkId);
 
     await john.repFaucet(new BigNumber(1e21));
 
@@ -218,7 +224,7 @@ describe('State API :: Universe :: ', () => {
       outcomes: [
         {
           outcomeName: 'Invalid',
-          outcome:     '0',
+          outcome: '0',
           amount: '1000000000000000000000',
           isInvalid: true,
           payoutNumerators: [
@@ -229,7 +235,7 @@ describe('State API :: Universe :: ', () => {
         },
         {
           outcomeName: '116000000000000000000',
-          outcome:     '116000000000000000000',
+          outcome: '116000000000000000000',
           amount: '1000000000000000000000',
           payoutNumerators: [
             '0',
@@ -239,7 +245,7 @@ describe('State API :: Universe :: ', () => {
         },
       ],
     });
-  }, 200000);
+  });
 
   test('getUniverseChildren : Genesis', async () => {
     const genesisUniverse = john.augur.contracts.universe;

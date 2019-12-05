@@ -7,7 +7,7 @@ import { SyncStatus } from './SyncStatus';
 import { DisputeDatabase } from './DisputeDB';
 import { CurrentOrdersDatabase } from './CurrentOrdersDB';
 import { MarketDB } from './MarketDB';
-import { IBlockAndLogStreamerListener, LogCallbackType } from './BlockAndLogStreamerListener';
+import { BlockAndLogStreamerListenerInterface, LogCallbackType } from './BlockAndLogStreamerListener';
 import {
   CompleteSetsPurchasedLog,
   CompleteSetsSoldLog,
@@ -66,7 +66,7 @@ export class DB {
   private currentOrdersDatabase: CurrentOrdersDatabase;
   private marketDatabase: MarketDB;
   private zeroXOrders: ZeroXOrders;
-  private blockAndLogStreamerListener: IBlockAndLogStreamerListener;
+  private blockAndLogStreamerListener: BlockAndLogStreamerListenerInterface;
   private augur: Augur;
   readonly dexieDB: Dexie;
   syncStatus: SyncStatus;
@@ -120,10 +120,10 @@ export class DB {
    * @param {Array<DerivedDBConfiguration>} derivedDBConfigurations Array of custom event objects
    * @param {Array<UserSpecificDBConfiguration>} userSpecificDBConfiguration Array of user-specific event objects
    * @param {TableFactoryType} TableFactory Factory function generatin PouchDB instance
-   * @param {IBlockAndLogStreamerListener} blockAndLogStreamerListener Stream listener for blocks and logs
+   * @param {BlockAndLogStreamerListenerInterface} blockAndLogStreamerListener Stream listener for blocks and logs
    * @returns {Promise<DB>} Promise to a DB controller object
    */
-  static createAndInitializeDB(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, augur: Augur, blockAndLogStreamerListener: IBlockAndLogStreamerListener): Promise<DB> {
+  static createAndInitializeDB(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, augur: Augur, blockAndLogStreamerListener: BlockAndLogStreamerListenerInterface): Promise<DB> {
     const dbName = `augur-${networkId}`;
     const dbController = new DB(new Dexie(dbName));
 
@@ -144,7 +144,7 @@ export class DB {
    * @param blockAndLogStreamerListener
    * @return {Promise<void>}
    */
-  async initializeDB(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, blockAndLogStreamerListener: IBlockAndLogStreamerListener): Promise<DB> {
+  async initializeDB(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, blockAndLogStreamerListener: BlockAndLogStreamerListenerInterface): Promise<DB> {
     this.networkId = networkId;
     this.blockstreamDelay = blockstreamDelay;
     this.blockAndLogStreamerListener = blockAndLogStreamerListener;

@@ -290,11 +290,13 @@ describe('State API :: Users :: ', () => {
     await john.setTimestamp(newTime);
 
     // Purchase participation tokens
-    let curDisputeWindowAddress = await john.getOrCreateCurrentDisputeWindow(false);
+    let curDisputeWindowAddress = await john.getOrCreateCurrentDisputeWindow(
+      false);
     let curDisputeWindow = await john.augur.contracts.disputeWindowFromAddress(
       curDisputeWindowAddress
     );
-    await john.buyParticipationTokens(curDisputeWindow.address, new BigNumber(1));
+    await john.buyParticipationTokens(curDisputeWindow.address,
+      new BigNumber(1));
 
     await john.repFaucet(new BigNumber(1e25));
     await mary.repFaucet(new BigNumber(1e25));
@@ -343,7 +345,8 @@ describe('State API :: Users :: ', () => {
     );
 
     // Redeem participation tokens
-    await john.redeemParticipationTokens(disputeWindow.address, john.account.publicKey);
+    await john.redeemParticipationTokens(disputeWindow.address,
+      john.account.publicKey);
 
     // Claim initial reporter
     let initialReporter = await john.getInitialReporter(johnYesNoMarket);
@@ -398,7 +401,8 @@ describe('State API :: Users :: ', () => {
     } catch (error) {
       errorMessage = error.message;
     }
-    expect(errorMessage).toEqual('startTime must be less than or equal to endTime');
+    expect(errorMessage).
+      toEqual('startTime must be less than or equal to endTime');
 
     let stats = await api.route('getAccountTimeRangedStats', {
       universe: universe.address,
@@ -650,7 +654,8 @@ describe('State API :: Users :: ', () => {
     curDisputeWindow = await john.augur.contracts.disputeWindowFromAddress(
       curDisputeWindowAddress
     );
-    await john.buyParticipationTokens(curDisputeWindow.address, new BigNumber(1));
+    await john.buyParticipationTokens(curDisputeWindow.address,
+      new BigNumber(1));
 
     // Dispute 2 times
     for (let disputeRound = 1; disputeRound <= 3; disputeRound++) {
@@ -696,7 +701,8 @@ describe('State API :: Users :: ', () => {
     );
 
     // Redeem participation tokens
-    await john.redeemParticipationTokens(disputeWindow.address, john.account.publicKey);
+    await john.redeemParticipationTokens(disputeWindow.address,
+      john.account.publicKey);
 
     // Claim initial reporter
     initialReporter = await john.getInitialReporter(johnYesNoMarket2);
@@ -730,7 +736,7 @@ describe('State API :: Users :: ', () => {
       redeemedPositions: 4,
       successfulDisputes: 2,
     });
-  }, 400000);
+  });
 
   test(':getProfitLoss & getProfitLossSummary ', async () => {
     const market1 = await john.createReasonableYesNoMarket();
