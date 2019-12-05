@@ -24,7 +24,7 @@ import { isTemplateMarket } from '@augurproject/artifacts';
 
 interface MarketOrderBookData {
   _id: string;
-  invalidFilter: boolean;
+  invalidFilter: number;
   liquidity: LiquidityResults;
 }
 
@@ -190,8 +190,8 @@ export class MarketDB extends DerivedDB {
   }
 
   // A Market is marked as True in the invalidFilter if the best bid for Invalid on the book would not be profitable to take were the market Valid
-  async recalcInvalidFilter(orderbook: OrderBook, marketData: MarketData, feeMultiplier: BigNumber, estimatedTradeGasCostInAttoDai: BigNumber, estimatedClaimGasCostInAttoDai: BigNumber): Promise<boolean> {
-    if (orderbook[INVALID_OUTCOME].bids.length < 1) return false;
+  async recalcInvalidFilter(orderbook: OrderBook, marketData: MarketData, feeMultiplier: BigNumber, estimatedTradeGasCostInAttoDai: BigNumber, estimatedClaimGasCostInAttoDai: BigNumber): Promise<number> {
+    if (orderbook[INVALID_OUTCOME].bids.length < 1) return 0;
 
     const bestBid = orderbook[INVALID_OUTCOME].bids[0];
 
@@ -212,7 +212,7 @@ export class MarketDB extends DerivedDB {
 
     const validProfit = validRevenue.minus(validCost);
 
-    return validProfit.gt(MINIMUM_INVALID_ORDER_VALUE_IN_ATTO_DAI);
+    return validProfit.gt(MINIMUM_INVALID_ORDER_VALUE_IN_ATTO_DAI) ? 1 : 0;
   }
 
   protected processDoc(log: ParsedLog): ParsedLog {

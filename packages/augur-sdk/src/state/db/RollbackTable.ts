@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 import { Augur } from '../../Augur';
-import { Dexie } from "dexie";
+import Dexie from "dexie";
 import { DB } from './DB';
 import { AbstractTable, BaseDocument, ID } from './AbstractTable';
 import { SyncStatus } from './SyncStatus';
@@ -49,7 +49,7 @@ export class RollbackTable extends AbstractTable {
     async rollback(blockNumber: number): Promise<void> {
         // Remove each change from blockNumber onward
         this.rollingBack = true;
-        if (this.standardRollback) {
+        if (this.isStandardRollback) {
             await this.standardRollback(blockNumber);
         } else {
             await this.rollupRollback(blockNumber);
@@ -81,11 +81,11 @@ export class RollbackTable extends AbstractTable {
         _.each(lastDocs, (doc) => {
             delete doc["tableName"];
             delete doc["rollbackBlockNumber"];
-            delete doc["primaryKey"];
             if (doc[DELETE_KEY]) {
                 delete doc[DELETE_KEY];
-                docsToDelete.push(doc);
+                docsToDelete.push(doc["primaryKey"]);
             } else {
+                delete doc["primaryKey"];
                 docsToPut.push(doc);
             }
         });
