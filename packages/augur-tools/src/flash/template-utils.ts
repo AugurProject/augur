@@ -1,4 +1,4 @@
-import { TEMPLATES, CategoryTemplate, isTemplateMarket, ExtraInfoTemplate, generateResolutionRulesHash } from '@augurproject/artifacts';
+import { TEMPLATES, CategoryTemplate, isTemplateMarket, ExtraInfoTemplate } from '@augurproject/artifacts';
 import { stringTo32ByteHex } from '@augurproject/sdk';
 
 export const showTemplateByHash = (hash: string): string => {
