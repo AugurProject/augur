@@ -330,7 +330,6 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               this.updateState(
                 {
                   ...this.state,
-                  ...order,
                   orderDaiEstimate: neworderDaiEstimate,
                   orderEscrowdDai: newOrder.costInDai.formatted,
                   trade: newOrder,
@@ -404,7 +403,6 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
             this.updateState(
               {
                 ...this.state,
-                ...order,
                 orderQuantity: numShares,
                 orderEscrowdDai: newOrder.costInDai.formatted,
                 trade: newOrder,
