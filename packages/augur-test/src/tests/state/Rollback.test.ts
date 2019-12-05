@@ -4,11 +4,6 @@ import { ACCOUNTS, loadSeedFile, defaultSeedPath } from "@augurproject/tools";
 
 const mock = makeDbMock();
 
-beforeEach(async () => {
-  mock.cancelFail();
-  await mock.wipeDB();
-});
-
 let augur: Augur;
 beforeAll(async () => {
   const seed = await loadSeedFile(defaultSeedPath);
@@ -29,9 +24,8 @@ test('sync databases', async () => {
     mock.constants.blockstreamDelay
   );
 
-  const syncableDBName =
-    mock.constants.networkId + '-DisputeCrowdsourcerCompleted';
-  const metaDBName = mock.constants.networkId + '-BlockNumbersSequenceIds';
+  const syncableDBName = 'DisputeCrowdsourcerCompleted';
+  const metaDBName = 'BlockNumbersSequenceIds';
   const universe = '0x11149d40d255fCeaC54A3ee3899807B0539bad60';
 
   const originalHighestSyncedBlockNumbers: any = {};
@@ -77,51 +71,17 @@ test('sync databases', async () => {
   );
 
   // Verify that 2 new blocks were added to SyncableDB
-  const queryObj: any = {
-    selector: { universe },
-    fields: ['_id', 'universe'],
-    sort: ['_id'],
-  };
-  let result = await db.findInSyncableDB(syncableDBName, queryObj);
-  // TODO Remove warning property from expected result once indexes are being used on SyncableDBs
-  expect(result).toEqual(
-    expect.objectContaining({
-      docs: [
-        {
-          _id:
-            10000000000 +
-            originalHighestSyncedBlockNumbers[syncableDBName] +
-            1 +
-            '.00000000001',
-          universe,
-        },
-        {
-          _id:
-            10000000000 +
-            originalHighestSyncedBlockNumbers[syncableDBName] +
-            2 +
-            '.00000000001',
-          universe,
-        },
-      ],
-      warning:
-        'no matching index found, create an index to optimize query time',
-    })
-  );
-
-  // TODO If derived DBs are used, verify MetaDB contents before & after rollback
+  let result = await db.DisputeCrowdsourcerCompleted.toArray();
+  expect(result[0].blockNumber).toEqual(originalHighestSyncedBlockNumbers[syncableDBName] + 1);
+  expect(result[0].logIndex).toEqual(1);
+  expect(result[1].blockNumber).toEqual(originalHighestSyncedBlockNumbers[syncableDBName] + 2);
+  expect(result[1].logIndex).toEqual(1);
 
   await db.rollback(highestSyncedBlockNumber - 1);
 
   // Verify that newest 2 blocks were removed from SyncableDB
-  result = await db.findInSyncableDB(syncableDBName, queryObj);
-  expect(result).toEqual(
-    expect.objectContaining({
-      docs: [],
-      warning:
-        'no matching index found, create an index to optimize query time',
-    })
-  );
+  result = await db.DisputeCrowdsourcerCompleted.toArray();
+  expect(result).toEqual([]);
 
   expect(await db.syncStatus.getHighestSyncBlock(syncableDBName)).toBe(originalHighestSyncedBlockNumbers[syncableDBName]);
   expect(await db.syncStatus.getHighestSyncBlock(metaDBName)).toBe(originalHighestSyncedBlockNumbers[metaDBName]);

@@ -29,7 +29,6 @@ import {
   handleTxPending,
   handleTxFailure,
   handleSDKReadyEvent,
-  handleUserDataSyncedEvent,
   handleTokensMintedLog,
   handleGnosisStateUpdate,
 } from 'modules/events/actions/log-handlers';
@@ -51,7 +50,6 @@ const StartUpEvents = {
 };
 
 const EVENTS = {
-  [SubscriptionEventName.UserDataSynced]: wrapLogHandler(handleUserDataSyncedEvent),
   [SubscriptionEventName.NewBlock]: wrapLogHandler(handleNewBlockLog),
   [SubscriptionEventName.MarketCreated]: wrapLogHandler(handleMarketCreatedLog),
   [SubscriptionEventName.MarketMigrated]: wrapLogHandler(

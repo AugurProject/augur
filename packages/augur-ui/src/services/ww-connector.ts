@@ -73,15 +73,6 @@ export class WebWorkerConnector extends Connectors.BaseConnector {
     return this.worker;
   }
 
-  async syncUserData(account: string): Promise<any> {
-    return this.worker.postMessage({
-      id: iterator.next().value,
-      method: 'syncUserData',
-      params: [account],
-      jsonrpc: '2.0',
-    });
-  }
-
   messageReceived(message: any): void {
     if (message.result) {
       if (this.subscriptions[message.result.eventName]) {

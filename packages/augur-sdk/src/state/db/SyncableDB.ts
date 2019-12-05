@@ -1,10 +1,11 @@
 import * as _ from 'lodash';
-import { AbstractDB, BaseDocument } from './AbstractDB';
+import { BaseDocument } from './AbstractTable';
 import { Augur } from '../../Augur';
 import { DB } from './DB';
 import { Log, ParsedLog } from '@augurproject/types';
 import { SyncStatus } from './SyncStatus';
 import { SubscriptionEventName } from '../../constants';
+import { RollbackTable } from './RollbackTable';
 
 export interface Document extends BaseDocument {
   blockNumber: number;
@@ -13,41 +14,23 @@ export interface Document extends BaseDocument {
 /**
  * Stores event logs for non-user-specific events.
  */
-export class SyncableDB extends AbstractDB {
-  protected augur: Augur;
+export class SyncableDB extends RollbackTable {
   protected eventName: string;
-  private syncStatus: SyncStatus;
-  private idFields: string[];
-  private syncing: boolean;
-  private rollingBack: boolean;
 
   constructor(
     augur: Augur,
     db: DB,
     networkId: number,
     eventName: string,
-    dbName: string = db.getDatabaseName(eventName),
-    idFields: string[] = [],
+    dbName: string = eventName,
     indexes: string[] = []
   ) {
-    super(networkId, dbName, db.pouchDBFactory);
-    this.augur = augur;
+    super(networkId, augur, dbName, db);
     this.eventName = eventName;
-    this.syncStatus = db.syncStatus;
-    this.idFields = idFields;
-
-    for(const item of [...this.idFields, ...indexes, 'blockNumber']) {
-      this.createIndex({
-        index: {
-          fields: [item],
-        },
-      });
-    }
 
     db.notifySyncableDBAdded(this);
     db.registerEventListener(this.eventName, this.addNewBlock);
 
-    this.syncing = false;
     this.rollingBack = false;
   }
 
@@ -112,14 +95,12 @@ export class SyncableDB extends AbstractDB {
       this.parseLogArrays(logs);
     }
 
-    let success = true;
     let documents;
     if (logs.length > 0) {
-      documents = _.map(logs, this.processLog.bind(this));
       // If this is a table which is keyed by fields (meaning we are doing updates to a value instead of pulling in a history of events) we only want the most recent document for any given id
       if (this.idFields.length > 0) {
         documents = _.values(
-          _.mapValues(_.groupBy(documents, '_id'), idDocuments => {
+          _.mapValues(_.groupBy(logs, this.getIDValue.bind(this)), idDocuments => {
             return _.reduce(
               idDocuments,
               (val, doc) => {
@@ -138,75 +119,25 @@ export class SyncableDB extends AbstractDB {
           })
         );
       }
-      documents = _.sortBy(documents, '_id');
 
-      success = await this.bulkUpsertOrderedDocuments(
-        documents[0]._id,
-        documents
-      );
+      await this.bulkUpsertDocuments(documents);
     }
-    if (success) {
-      if (documents && (documents as any[]).length) {
-        _.each(documents, (document: any) => {
-          this.augur.getAugurEventEmitter().emit(this.eventName, {
-            eventName: this.eventName,
-            ...document,
-          });
+    if (documents && (documents as any[]).length) {
+      _.each(documents, (document: any) => {
+        this.augur.getAugurEventEmitter().emit(this.eventName, {
+          eventName: this.eventName,
+          ...document,
         });
-      }
-
-      await this.syncStatus.setHighestSyncBlock(this.dbName, blocknumber, this.syncing);
-    } else {
-      throw new Error('Unable to add new block');
+      });
     }
+
+    await this.syncStatus.setHighestSyncBlock(this.dbName, blocknumber, this.syncing);
 
     return blocknumber;
   };
 
-  async rollback(blockNumber: number): Promise<void> {
-    // Remove each change from blockNumber onward
-    this.rollingBack = true;
-
-    try {
-      const blocksToRemove = await this.db.find({
-        selector: { blockNumber: { $gte: blockNumber } },
-        fields: ['_id', 'blockNumber', '_rev'],
-      });
-      for (const doc of blocksToRemove.docs) {
-        await this.db.remove(doc._id, doc._rev);
-      }
-
-      if (this.augur.syncableFlexSearch && this.eventName === SubscriptionEventName.MarketCreated) {
-        await this.augur.syncableFlexSearch.removeMarketCreatedDocs(blocksToRemove.docs);
-      }
-
-      await this.syncStatus.setHighestSyncBlock(this.dbName, --blockNumber, this.syncing, true);
-    } catch (err) {
-      console.error(err);
-    }
-
-    this.rollingBack = false;
-  }
-
   protected async getLogs(augur: Augur, startBlock: number, endBlock: number): Promise<ParsedLog[]> {
     return augur.events.getLogs(this.eventName, startBlock, endBlock);
-  }
-
-  protected processLog(log: Log): BaseDocument {
-    if (!log.blockNumber) {
-      throw new Error(`Corrupt log: ${JSON.stringify(log)}`);
-    }
-    let _id = '';
-    // @TODO: This works in bulk sync currently because we process logs chronologically. When we switch to reverse chrono for bulk sync we'll need to add more logic
-    if (this.idFields.length > 0) {
-      // need to preserve order of fields in id
-      for (const fieldName of this.idFields) {
-        _id += _.get(log, fieldName);
-      }
-    } else {
-      _id = `${(log.blockNumber + 10000000000).toPrecision(21)}${log.logIndex}`;
-    }
-    return Object.assign({ _id }, log);
   }
 
   getFullEventName(): string {

@@ -3,9 +3,9 @@ import { MarketData } from '../logs/types';
 // because flexsearch is a UMD type lib
 const flexSearch = require('flexsearch');
 import { Index, SearchOptions, SearchResults } from 'flexsearch';
+import Dexie from 'dexie';
 
 export interface MarketFields {
-  id: string;
   market: string;
   universe: string;
   marketCreator: string;
@@ -28,7 +28,7 @@ export class SyncableFlexSearch {
         worker: false, // TODO: Check impact on performance before enabling worker option in FlexSearch
         doc:
         {
-          id: "id",
+          id: "market",
           start: "start",
           end: "end",
           field: [
@@ -79,7 +79,6 @@ export class SyncableFlexSearch {
       }
 
       await this.flexSearchIndex.add({
-        id: marketCreatedDoc._id,
         market: marketCreatedDoc.market,
         universe: marketCreatedDoc.universe,
         marketCreator: marketCreatedDoc.marketCreator,
@@ -95,11 +94,11 @@ export class SyncableFlexSearch {
     }
   }
 
-  async removeMarketCreatedDocs(marketCreatedDocs: any[]) {
-    for (const marketCreatedDoc of marketCreatedDocs) {
-      if (marketCreatedDoc._id) {
-        await this.flexSearchIndex.remove(marketCreatedDoc._id);
+  async removeMarketCreatedDocs(marketCreatedDocs: Dexie.Collection<any, any>) {
+    await marketCreatedDocs.each(async (marketCreatedDoc) => {
+      if (marketCreatedDoc.market) {
+        await this.flexSearchIndex.remove(marketCreatedDoc.market);
       }
-    }
+    });
   }
 }

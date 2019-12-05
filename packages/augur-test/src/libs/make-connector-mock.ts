@@ -10,10 +10,6 @@ export function makeConnectorMock(json: object): Connectors.BaseConnector {
       return true;
     }
 
-    async syncUserData(params?: any): Promise<any> {
-      return true;
-    }
-
     async disconnect(): Promise<any> {
       return true;
     }

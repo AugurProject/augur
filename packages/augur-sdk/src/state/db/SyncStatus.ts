@@ -1,4 +1,5 @@
-import { AbstractDB, PouchDBFactoryType } from "./AbstractDB";
+import { AbstractTable } from "./AbstractTable";
+import { DB } from './DB';
 
 interface SyncDocument {
   _id?: string;
@@ -7,34 +8,19 @@ interface SyncDocument {
   syncing: boolean;
 }
 
-export class SyncStatus extends AbstractDB {
+export class SyncStatus extends AbstractTable {
   readonly defaultStartSyncBlockNumber: number;
 
-  constructor(networkId: number, defaultStartSyncBlockNumber: number, dbFactory: PouchDBFactoryType) {
-    super(networkId, networkId + "-SyncStatus", dbFactory);
+  constructor(networkId: number, defaultStartSyncBlockNumber: number, db: DB) {
+    super(networkId, "SyncStatus", db.dexieDB);
     this.defaultStartSyncBlockNumber = defaultStartSyncBlockNumber;
-
-    this.db.createIndex({
-      index: {
-        fields: ["syncing"],
-      },
-    });
-
-    this.db.createIndex({
-      index: {
-        fields: ["blockNumber"],
-      },
-    });
   }
 
-  async setHighestSyncBlock(databaseDocumentId: string, blockNumber: number, syncing: boolean, rollback = false): Promise<PouchDB.UpsertResponse> {
-    return this.db.upsert(databaseDocumentId, (document: SyncDocument) => {
-      // make sure the truly highest block is always being used
-      document.blockNumber = rollback ? blockNumber : Math.max(blockNumber, document.blockNumber || this.defaultStartSyncBlockNumber);
-      document.syncing = syncing;
-
-      // db.upsert sets _rev and _id so we don't have to
-      return document;
+  async setHighestSyncBlock(eventName: string, blockNumber: number, syncing: boolean): Promise<void> {
+    await this.table.put({
+      eventName,
+      syncing,
+      blockNumber,
     });
   }
 
@@ -44,23 +30,17 @@ export class SyncStatus extends AbstractDB {
   }
 
   async getLowestSyncingBlockForAllDBs(): Promise<number> {
-    const lowestBlock = await this.find({
-      selector: {
-        syncing: true,
-        blockNumber: { $gt: 0 },
-      },
-      sort: [{ blockNumber: 'asc' }],
-      fields: ["blockNumber", "syncing", "_id"],
-    });
+    const results = await this.table.where("syncing").equals(1);
+    const sorted = await results.sortBy("blockNumber");
 
-    if (lowestBlock.docs && lowestBlock.docs.length > 0) {
-      return (lowestBlock.docs[0] as any).blockNumber;
+    if (sorted.length > 0) {
+      return (sorted[0] as any).blockNumber;
     } else {
       return -1;
     }
   }
 
-  async updateSyncingToFalse(dbName: string): Promise<PouchDB.UpsertResponse> {
+  async updateSyncingToFalse(dbName: string): Promise<void> {
     const highestBlock = await this.getHighestSyncBlock(dbName);
     return this.setHighestSyncBlock(dbName, highestBlock, false);
   }

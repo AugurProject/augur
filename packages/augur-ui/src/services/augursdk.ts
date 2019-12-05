@@ -132,16 +132,7 @@ export class SDK {
         this.sdk.setUseGnosisSafe(true);
         this.sdk.setUseGnosisRelay(true);
         this.sdk.setGnosisSafeAddress(safeAddress);
-
-        console.log('SYNC [safe] USER data', safeAddress);
-        this.sdk.syncUserData(safeAddress);
-        updateUser(safeAddress);
       }
-      else {
-        console.log('SYNC [non-safe] USER data', address);
-        this.sdk.syncUserData(address);
-      }
-
     }
   }
 

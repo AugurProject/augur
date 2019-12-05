@@ -12,19 +12,11 @@ export class DisputeDatabase extends DerivedDB {
     networkId: number,
     name: string,
     mergeEventNames: string[],
-    idFields: string[],
     augur: Augur
   ) {
-    super(db, networkId, name, mergeEventNames, idFields, augur);
+    super(db, networkId, name, mergeEventNames, augur);
 
     this.requiresOrder = true;
-
-    this.db.createIndex({
-      index: {
-        ddoc: 'marketIndex',
-        fields: ['market'],
-      },
-    });
   }
 
   protected processDoc(log: ParsedLog): ParsedLog {
