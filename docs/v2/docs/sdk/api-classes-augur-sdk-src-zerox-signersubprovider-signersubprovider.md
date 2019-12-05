@@ -39,7 +39,7 @@ sidebar_label: SignerSubprovider
 
 ⊕ **new SignerSubprovider**(signer: *`EthersSigner`*): [SignerSubprovider](api-classes-augur-sdk-src-zerox-signersubprovider-signersubprovider.md)
 
-*Defined in [augur-sdk/src/zeroX/SignerSubprovider.ts:8](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/zeroX/SignerSubprovider.ts#L8)*
+*Defined in [augur-sdk/src/zeroX/SignerSubprovider.ts:8](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/zeroX/SignerSubprovider.ts#L8)*
 
 Instantiates a new SignerSubprovider
 
@@ -61,7 +61,7 @@ ___
 
 **● signer**: *`EthersSigner`*
 
-*Defined in [augur-sdk/src/zeroX/SignerSubprovider.ts:8](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/zeroX/SignerSubprovider.ts#L8)*
+*Defined in [augur-sdk/src/zeroX/SignerSubprovider.ts:8](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/zeroX/SignerSubprovider.ts#L8)*
 
 ___
 
@@ -97,7 +97,7 @@ ___
 
 *Overrides Subprovider.handleRequest*
 
-*Defined in [augur-sdk/src/zeroX/SignerSubprovider.ts:26](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/zeroX/SignerSubprovider.ts#L26)*
+*Defined in [augur-sdk/src/zeroX/SignerSubprovider.ts:26](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/zeroX/SignerSubprovider.ts#L26)*
 
 This method conforms to the web3-provider-engine interface. It is called internally by the ProviderEngine when it is this subproviders turn to handle a JSON RPC request.
 

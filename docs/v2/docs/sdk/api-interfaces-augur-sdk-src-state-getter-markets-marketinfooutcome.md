@@ -29,7 +29,7 @@ sidebar_label: MarketInfoOutcome
 
 **● description**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:121](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Markets.ts#L121)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:121](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L121)*
 
 ___
 <a id="id"></a>
@@ -38,7 +38,7 @@ ___
 
 **● id**: *`number`*
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:119](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Markets.ts#L119)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:119](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L119)*
 
 ___
 <a id="price"></a>
@@ -47,7 +47,7 @@ ___
 
 **● price**: *`string` \| `null`*
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:120](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Markets.ts#L120)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:120](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L120)*
 
 ___
 <a id="volume"></a>
@@ -56,7 +56,7 @@ ___
 
 **● volume**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:122](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Markets.ts#L122)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:122](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L122)*
 
 ___
 

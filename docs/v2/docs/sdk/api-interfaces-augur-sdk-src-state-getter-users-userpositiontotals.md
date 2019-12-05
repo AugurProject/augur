@@ -27,7 +27,7 @@ sidebar_label: UserPositionTotals
 
 **● totalFrozenFunds**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/Users.ts:142](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Users.ts#L142)*
+*Defined in [augur-sdk/src/state/getter/Users.ts:142](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Users.ts#L142)*
 
 ___
 <a id="tradingpositionstotal"></a>
@@ -36,7 +36,7 @@ ___
 
 **● tradingPositionsTotal**: *`object`*
 
-*Defined in [augur-sdk/src/state/getter/Users.ts:143](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Users.ts#L143)*
+*Defined in [augur-sdk/src/state/getter/Users.ts:143](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Users.ts#L143)*
 
 #### Type declaration
 

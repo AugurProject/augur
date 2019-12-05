@@ -26,7 +26,7 @@ sidebar_label: MaxLiquiditySpread
 
 **FifteenPercent**:  = "15"
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:62](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Markets.ts#L62)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:62](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L62)*
 
 ___
 <a id="onehundredpercent"></a>
@@ -35,7 +35,7 @@ ___
 
 **OneHundredPercent**:  = "100"
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:60](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Markets.ts#L60)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:60](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L60)*
 
 ___
 <a id="tenpercent"></a>
@@ -44,7 +44,7 @@ ___
 
 **TenPercent**:  = "10"
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:63](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Markets.ts#L63)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:63](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L63)*
 
 ___
 <a id="twentypercent"></a>
@@ -53,7 +53,7 @@ ___
 
 **TwentyPercent**:  = "20"
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:61](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Markets.ts#L61)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:61](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L61)*
 
 ___
 <a id="zeropercent"></a>
@@ -62,7 +62,7 @@ ___
 
 **ZeroPercent**:  = "0"
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:64](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Markets.ts#L64)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:64](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L64)*
 
 ___
 

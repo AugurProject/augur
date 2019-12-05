@@ -30,7 +30,7 @@ sidebar_label: DisputeWindow
 
 **● address**: *[Address](api-modules-augur-sdk-src-state-logs-types-module.md#address)*
 
-*Defined in [augur-sdk/src/api/HotLoading.ts:21](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/HotLoading.ts#L21)*
+*Defined in [augur-sdk/src/api/HotLoading.ts:21](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/HotLoading.ts#L21)*
 
 ___
 <a id="endtime"></a>
@@ -39,7 +39,7 @@ ___
 
 **● endTime**: *`number`*
 
-*Defined in [augur-sdk/src/api/HotLoading.ts:23](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/HotLoading.ts#L23)*
+*Defined in [augur-sdk/src/api/HotLoading.ts:23](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/HotLoading.ts#L23)*
 
 ___
 <a id="fees"></a>
@@ -48,7 +48,7 @@ ___
 
 **● fees**: *`string`*
 
-*Defined in [augur-sdk/src/api/HotLoading.ts:25](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/HotLoading.ts#L25)*
+*Defined in [augur-sdk/src/api/HotLoading.ts:25](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/HotLoading.ts#L25)*
 
 ___
 <a id="purchased"></a>
@@ -57,7 +57,7 @@ ___
 
 **● purchased**: *`string`*
 
-*Defined in [augur-sdk/src/api/HotLoading.ts:24](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/HotLoading.ts#L24)*
+*Defined in [augur-sdk/src/api/HotLoading.ts:24](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/HotLoading.ts#L24)*
 
 ___
 <a id="starttime"></a>
@@ -66,7 +66,7 @@ ___
 
 **● startTime**: *`number`*
 
-*Defined in [augur-sdk/src/api/HotLoading.ts:22](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/HotLoading.ts#L22)*
+*Defined in [augur-sdk/src/api/HotLoading.ts:22](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/HotLoading.ts#L22)*
 
 ___
 

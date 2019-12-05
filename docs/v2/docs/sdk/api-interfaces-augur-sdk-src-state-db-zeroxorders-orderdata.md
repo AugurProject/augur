@@ -33,7 +33,7 @@ sidebar_label: OrderData
 
 **● exchange**: *`string`*
 
-*Defined in [augur-sdk/src/state/db/ZeroXOrders.ts:23](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L23)*
+*Defined in [augur-sdk/src/state/db/ZeroXOrders.ts:23](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L23)*
 
 ___
 <a id="kyctoken"></a>
@@ -42,7 +42,7 @@ ___
 
 **● kycToken**: *`string`*
 
-*Defined in [augur-sdk/src/state/db/ZeroXOrders.ts:22](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L22)*
+*Defined in [augur-sdk/src/state/db/ZeroXOrders.ts:22](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L22)*
 
 ___
 <a id="market"></a>
@@ -51,7 +51,7 @@ ___
 
 **● market**: *`string`*
 
-*Defined in [augur-sdk/src/state/db/ZeroXOrders.ts:18](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L18)*
+*Defined in [augur-sdk/src/state/db/ZeroXOrders.ts:18](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L18)*
 
 ___
 <a id="ordertype"></a>
@@ -60,7 +60,7 @@ ___
 
 **● orderType**: *`string`*
 
-*Defined in [augur-sdk/src/state/db/ZeroXOrders.ts:21](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L21)*
+*Defined in [augur-sdk/src/state/db/ZeroXOrders.ts:21](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L21)*
 
 ___
 <a id="outcome"></a>
@@ -69,7 +69,7 @@ ___
 
 **● outcome**: *`string`*
 
-*Defined in [augur-sdk/src/state/db/ZeroXOrders.ts:20](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L20)*
+*Defined in [augur-sdk/src/state/db/ZeroXOrders.ts:20](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L20)*
 
 ___
 <a id="price"></a>
@@ -78,7 +78,7 @@ ___
 
 **● price**: *`string`*
 
-*Defined in [augur-sdk/src/state/db/ZeroXOrders.ts:19](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L19)*
+*Defined in [augur-sdk/src/state/db/ZeroXOrders.ts:19](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L19)*
 
 ___
 

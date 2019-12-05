@@ -28,7 +28,7 @@ sidebar_label: PayoutNumeratorValue
 
 **● invalid**: *`boolean`*
 
-*Defined in [augur-sdk/src/utils.ts:130](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/utils.ts#L130)*
+*Defined in [augur-sdk/src/utils.ts:130](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/utils.ts#L130)*
 
 ___
 <a id="malformed"></a>
@@ -37,7 +37,7 @@ ___
 
 **● malformed**: *`boolean`*
 
-*Defined in [augur-sdk/src/utils.ts:129](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/utils.ts#L129)*
+*Defined in [augur-sdk/src/utils.ts:129](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/utils.ts#L129)*
 
 ___
 <a id="outcome"></a>
@@ -46,7 +46,7 @@ ___
 
 **● outcome**: *`string` \| `null`*
 
-*Defined in [augur-sdk/src/utils.ts:131](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/utils.ts#L131)*
+*Defined in [augur-sdk/src/utils.ts:131](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/utils.ts#L131)*
 
 ___
 

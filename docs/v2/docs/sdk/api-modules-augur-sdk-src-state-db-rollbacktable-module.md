@@ -27,7 +27,7 @@ sidebar_label: augur-sdk/src/state/db/RollbackTable
 
 **● DELETE_KEY**: *"DELETION_KEY_MARKER"* = "DELETION_KEY_MARKER"
 
-*Defined in [augur-sdk/src/state/db/RollbackTable.ts:10](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/RollbackTable.ts#L10)*
+*Defined in [augur-sdk/src/state/db/RollbackTable.ts:10](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/RollbackTable.ts#L10)*
 
 ___
 <a id="standard_primary_key"></a>
@@ -36,7 +36,7 @@ ___
 
 **● STANDARD_PRIMARY_KEY**: *`string`[]* =  ["blockNumber", "logIndex"]
 
-*Defined in [augur-sdk/src/state/db/RollbackTable.ts:8](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/RollbackTable.ts#L8)*
+*Defined in [augur-sdk/src/state/db/RollbackTable.ts:8](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/RollbackTable.ts#L8)*
 
 ___
 

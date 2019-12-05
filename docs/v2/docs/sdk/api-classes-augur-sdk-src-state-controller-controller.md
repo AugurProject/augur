@@ -42,7 +42,7 @@ sidebar_label: Controller
 
 ⊕ **new Controller**(augur: *[Augur](api-classes-augur-sdk-src-augur-augur.md)*, db: *`Promise`<[DB](api-classes-augur-sdk-src-state-db-db-db.md)>*, blockAndLogStreamerListener: *[BlockAndLogStreamerListenerInterface](api-interfaces-augur-sdk-src-state-db-blockandlogstreamerlistener-blockandlogstreamerlistenerinterface.md)*): [Controller](api-classes-augur-sdk-src-state-controller-controller.md)
 
-*Defined in [augur-sdk/src/state/Controller.ts:17](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/Controller.ts#L17)*
+*Defined in [augur-sdk/src/state/Controller.ts:17](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/Controller.ts#L17)*
 
 **Parameters:**
 
@@ -64,7 +64,7 @@ ___
 
 **● augur**: *[Augur](api-classes-augur-sdk-src-augur-augur.md)*
 
-*Defined in [augur-sdk/src/state/Controller.ts:20](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/Controller.ts#L20)*
+*Defined in [augur-sdk/src/state/Controller.ts:20](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/Controller.ts#L20)*
 
 ___
 <a id="blockandlogstreamerlistener"></a>
@@ -73,7 +73,7 @@ ___
 
 **● blockAndLogStreamerListener**: *[BlockAndLogStreamerListenerInterface](api-interfaces-augur-sdk-src-state-db-blockandlogstreamerlistener-blockandlogstreamerlistenerinterface.md)*
 
-*Defined in [augur-sdk/src/state/Controller.ts:22](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/Controller.ts#L22)*
+*Defined in [augur-sdk/src/state/Controller.ts:22](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/Controller.ts#L22)*
 
 ___
 <a id="db"></a>
@@ -82,7 +82,7 @@ ___
 
 **● db**: *`Promise`<[DB](api-classes-augur-sdk-src-state-db-db-db.md)>*
 
-*Defined in [augur-sdk/src/state/Controller.ts:21](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/Controller.ts#L21)*
+*Defined in [augur-sdk/src/state/Controller.ts:21](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/Controller.ts#L21)*
 
 ___
 <a id="events"></a>
@@ -91,7 +91,7 @@ ___
 
 **● events**: *`any`*
 
-*Defined in [augur-sdk/src/state/Controller.ts:17](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/Controller.ts#L17)*
+*Defined in [augur-sdk/src/state/Controller.ts:17](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/Controller.ts#L17)*
 
 ___
 <a id="latestblock"></a>
@@ -100,7 +100,7 @@ ___
 
 **● latestBlock**: *`Block`*
 
-*Defined in [augur-sdk/src/state/Controller.ts:14](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/Controller.ts#L14)*
+*Defined in [augur-sdk/src/state/Controller.ts:14](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/Controller.ts#L14)*
 
 ___
 <a id="throttled"></a>
@@ -109,7 +109,7 @@ ___
 
 **● throttled**: *`any`*
 
-*Defined in [augur-sdk/src/state/Controller.ts:15](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/Controller.ts#L15)*
+*Defined in [augur-sdk/src/state/Controller.ts:15](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/Controller.ts#L15)*
 
 ___
 
@@ -121,7 +121,7 @@ ___
 
 ▸ **getLatestBlock**(): `Promise`<`Block`>
 
-*Defined in [augur-sdk/src/state/Controller.ts:87](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/Controller.ts#L87)*
+*Defined in [augur-sdk/src/state/Controller.ts:87](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/Controller.ts#L87)*
 
 **Returns:** `Promise`<`Block`>
 
@@ -132,7 +132,7 @@ ___
 
 ▸ **notifyNewBlockEvent**(): `Promise`<`void`>
 
-*Defined in [augur-sdk/src/state/Controller.ts:64](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/Controller.ts#L64)*
+*Defined in [augur-sdk/src/state/Controller.ts:64](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/Controller.ts#L64)*
 
 **Returns:** `Promise`<`void`>
 
@@ -143,7 +143,7 @@ ___
 
 ▸ **run**(): `Promise`<`void`>
 
-*Defined in [augur-sdk/src/state/Controller.ts:27](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/Controller.ts#L27)*
+*Defined in [augur-sdk/src/state/Controller.ts:27](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/Controller.ts#L27)*
 
 **Returns:** `Promise`<`void`>
 
@@ -154,7 +154,7 @@ ___
 
 ▸ **updateMarketsData**(blockNumber: *`number`*, allLogs: *[ParsedLog](api-interfaces-augur-types-types-logs-parsedlog.md)[]*): `Promise`<`void`>
 
-*Defined in [augur-sdk/src/state/Controller.ts:44](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/Controller.ts#L44)*
+*Defined in [augur-sdk/src/state/Controller.ts:44](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/Controller.ts#L44)*
 
 **Parameters:**
 

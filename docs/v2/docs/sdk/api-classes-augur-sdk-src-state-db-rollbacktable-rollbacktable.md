@@ -61,7 +61,7 @@ sidebar_label: RollbackTable
 
 *Overrides [AbstractTable](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md).[constructor](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md#constructor)*
 
-*Defined in [augur-sdk/src/state/db/RollbackTable.ts:21](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/RollbackTable.ts#L21)*
+*Defined in [augur-sdk/src/state/db/RollbackTable.ts:21](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/RollbackTable.ts#L21)*
 
 **Parameters:**
 
@@ -84,7 +84,7 @@ ___
 
 **● augur**: *[Augur](api-classes-augur-sdk-src-augur-augur.md)*
 
-*Defined in [augur-sdk/src/state/db/RollbackTable.ts:16](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/RollbackTable.ts#L16)*
+*Defined in [augur-sdk/src/state/db/RollbackTable.ts:16](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/RollbackTable.ts#L16)*
 
 ___
 <a id="dbname"></a>
@@ -95,7 +95,7 @@ ___
 
 *Inherited from [AbstractTable](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md).[dbName](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md#dbname)*
 
-*Defined in [augur-sdk/src/state/db/AbstractTable.ts:15](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/AbstractTable.ts#L15)*
+*Defined in [augur-sdk/src/state/db/AbstractTable.ts:15](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/AbstractTable.ts#L15)*
 
 ___
 <a id="idfields"></a>
@@ -106,7 +106,7 @@ ___
 
 *Inherited from [AbstractTable](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md).[idFields](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md#idfields)*
 
-*Defined in [augur-sdk/src/state/db/AbstractTable.ts:16](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/AbstractTable.ts#L16)*
+*Defined in [augur-sdk/src/state/db/AbstractTable.ts:16](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/AbstractTable.ts#L16)*
 
 ___
 <a id="isstandardrollback"></a>
@@ -115,7 +115,7 @@ ___
 
 **● isStandardRollback**: *`boolean`*
 
-*Defined in [augur-sdk/src/state/db/RollbackTable.ts:20](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/RollbackTable.ts#L20)*
+*Defined in [augur-sdk/src/state/db/RollbackTable.ts:20](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/RollbackTable.ts#L20)*
 
 ___
 <a id="networkid"></a>
@@ -126,7 +126,7 @@ ___
 
 *Inherited from [AbstractTable](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md).[networkId](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md#networkid)*
 
-*Defined in [augur-sdk/src/state/db/AbstractTable.ts:14](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/AbstractTable.ts#L14)*
+*Defined in [augur-sdk/src/state/db/AbstractTable.ts:14](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/AbstractTable.ts#L14)*
 
 ___
 <a id="rollbacktable"></a>
@@ -135,7 +135,7 @@ ___
 
 **● rollbackTable**: *`Table`<`any`, `any`>*
 
-*Defined in [augur-sdk/src/state/db/RollbackTable.ts:21](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/RollbackTable.ts#L21)*
+*Defined in [augur-sdk/src/state/db/RollbackTable.ts:21](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/RollbackTable.ts#L21)*
 
 ___
 <a id="rollingback"></a>
@@ -144,7 +144,7 @@ ___
 
 **● rollingBack**: *`boolean`*
 
-*Defined in [augur-sdk/src/state/db/RollbackTable.ts:18](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/RollbackTable.ts#L18)*
+*Defined in [augur-sdk/src/state/db/RollbackTable.ts:18](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/RollbackTable.ts#L18)*
 
 ___
 <a id="syncstatus"></a>
@@ -153,7 +153,7 @@ ___
 
 **● syncStatus**: *[SyncStatus](api-classes-augur-sdk-src-state-db-syncstatus-syncstatus.md)*
 
-*Defined in [augur-sdk/src/state/db/RollbackTable.ts:19](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/RollbackTable.ts#L19)*
+*Defined in [augur-sdk/src/state/db/RollbackTable.ts:19](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/RollbackTable.ts#L19)*
 
 ___
 <a id="syncing"></a>
@@ -162,7 +162,7 @@ ___
 
 **● syncing**: *`boolean`*
 
-*Defined in [augur-sdk/src/state/db/RollbackTable.ts:17](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/RollbackTable.ts#L17)*
+*Defined in [augur-sdk/src/state/db/RollbackTable.ts:17](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/RollbackTable.ts#L17)*
 
 ___
 <a id="table"></a>
@@ -173,7 +173,7 @@ ___
 
 *Inherited from [AbstractTable](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md).[table](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md#table)*
 
-*Defined in [augur-sdk/src/state/db/AbstractTable.ts:13](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/AbstractTable.ts#L13)*
+*Defined in [augur-sdk/src/state/db/AbstractTable.ts:13](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/AbstractTable.ts#L13)*
 
 ___
 
@@ -187,7 +187,7 @@ ___
 
 *Inherited from [AbstractTable](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md).[allDocs](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md#alldocs)*
 
-*Defined in [augur-sdk/src/state/db/AbstractTable.ts:30](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/AbstractTable.ts#L30)*
+*Defined in [augur-sdk/src/state/db/AbstractTable.ts:30](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/AbstractTable.ts#L30)*
 
 **Returns:** `Promise`<`any`[]>
 
@@ -200,7 +200,7 @@ ___
 
 *Inherited from [AbstractTable](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md).[bulkUpsertDocuments](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md#bulkupsertdocuments)*
 
-*Defined in [augur-sdk/src/state/db/AbstractTable.ts:42](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/AbstractTable.ts#L42)*
+*Defined in [augur-sdk/src/state/db/AbstractTable.ts:42](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/AbstractTable.ts#L42)*
 
 **Parameters:**
 
@@ -219,7 +219,7 @@ ___
 
 *Inherited from [AbstractTable](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md).[clearDB](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md#cleardb)*
 
-*Defined in [augur-sdk/src/state/db/AbstractTable.ts:26](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/AbstractTable.ts#L26)*
+*Defined in [augur-sdk/src/state/db/AbstractTable.ts:26](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/AbstractTable.ts#L26)*
 
 **Returns:** `Promise`<`void`>
 
@@ -232,7 +232,7 @@ ___
 
 *Inherited from [AbstractTable](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md).[find](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md#find)*
 
-*Defined in [augur-sdk/src/state/db/AbstractTable.ts:57](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/AbstractTable.ts#L57)*
+*Defined in [augur-sdk/src/state/db/AbstractTable.ts:57](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/AbstractTable.ts#L57)*
 
 **Parameters:**
 
@@ -251,7 +251,7 @@ ___
 
 *Inherited from [AbstractTable](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md).[getDocument](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md#getdocument)*
 
-*Defined in [augur-sdk/src/state/db/AbstractTable.ts:38](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/AbstractTable.ts#L38)*
+*Defined in [augur-sdk/src/state/db/AbstractTable.ts:38](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/AbstractTable.ts#L38)*
 
 **Type parameters:**
 
@@ -273,7 +273,7 @@ ___
 
 *Inherited from [AbstractTable](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md).[getDocumentCount](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md#getdocumentcount)*
 
-*Defined in [augur-sdk/src/state/db/AbstractTable.ts:34](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/AbstractTable.ts#L34)*
+*Defined in [augur-sdk/src/state/db/AbstractTable.ts:34](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/AbstractTable.ts#L34)*
 
 **Returns:** `Promise`<`number`>
 
@@ -286,7 +286,7 @@ ___
 
 *Inherited from [AbstractTable](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md).[getIDValue](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md#getidvalue)*
 
-*Defined in [augur-sdk/src/state/db/AbstractTable.ts:61](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/AbstractTable.ts#L61)*
+*Defined in [augur-sdk/src/state/db/AbstractTable.ts:61](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/AbstractTable.ts#L61)*
 
 **Parameters:**
 
@@ -303,7 +303,7 @@ ___
 
 ▸ **rollback**(blockNumber: *`number`*): `Promise`<`void`>
 
-*Defined in [augur-sdk/src/state/db/RollbackTable.ts:49](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/RollbackTable.ts#L49)*
+*Defined in [augur-sdk/src/state/db/RollbackTable.ts:49](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/RollbackTable.ts#L49)*
 
 **Parameters:**
 
@@ -320,7 +320,7 @@ ___
 
 ▸ **rollupRollback**(blockNumber: *`number`*): `Promise`<`void`>
 
-*Defined in [augur-sdk/src/state/db/RollbackTable.ts:67](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/RollbackTable.ts#L67)*
+*Defined in [augur-sdk/src/state/db/RollbackTable.ts:67](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/RollbackTable.ts#L67)*
 
 **Parameters:**
 
@@ -337,7 +337,7 @@ ___
 
 ▸ **standardRollback**(blockNumber: *`number`*): `Promise`<`void`>
 
-*Defined in [augur-sdk/src/state/db/RollbackTable.ts:61](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/RollbackTable.ts#L61)*
+*Defined in [augur-sdk/src/state/db/RollbackTable.ts:61](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/RollbackTable.ts#L61)*
 
 **Parameters:**
 
@@ -356,7 +356,7 @@ ___
 
 *Overrides [AbstractTable](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md).[upsertDocument](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md#upsertdocument)*
 
-*Defined in [augur-sdk/src/state/db/RollbackTable.ts:32](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/RollbackTable.ts#L32)*
+*Defined in [augur-sdk/src/state/db/RollbackTable.ts:32](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/RollbackTable.ts#L32)*
 
 **Parameters:**
 

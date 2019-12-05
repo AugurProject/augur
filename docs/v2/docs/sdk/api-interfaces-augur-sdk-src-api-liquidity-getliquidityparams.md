@@ -32,7 +32,7 @@ sidebar_label: GetLiquidityParams
 
 **● feePerCashInAttoCash**: *`BigNumber`*
 
-*Defined in [augur-sdk/src/api/Liquidity.ts:45](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Liquidity.ts#L45)*
+*Defined in [augur-sdk/src/api/Liquidity.ts:45](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Liquidity.ts#L45)*
 
 ___
 <a id="markettype"></a>
@@ -41,7 +41,7 @@ ___
 
 **● marketType**: *[MarketType](api-enums-augur-sdk-src-state-logs-types-markettype.md)*
 
-*Defined in [augur-sdk/src/api/Liquidity.ts:43](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Liquidity.ts#L43)*
+*Defined in [augur-sdk/src/api/Liquidity.ts:43](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Liquidity.ts#L43)*
 
 ___
 <a id="numoutcomes"></a>
@@ -50,7 +50,7 @@ ___
 
 **● numOutcomes**: *`number`*
 
-*Defined in [augur-sdk/src/api/Liquidity.ts:46](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Liquidity.ts#L46)*
+*Defined in [augur-sdk/src/api/Liquidity.ts:46](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Liquidity.ts#L46)*
 
 ___
 <a id="numticks"></a>
@@ -59,7 +59,7 @@ ___
 
 **● numTicks**: *`BigNumber`*
 
-*Defined in [augur-sdk/src/api/Liquidity.ts:42](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Liquidity.ts#L42)*
+*Defined in [augur-sdk/src/api/Liquidity.ts:42](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Liquidity.ts#L42)*
 
 ___
 <a id="orderbook"></a>
@@ -68,7 +68,7 @@ ___
 
 **● orderBook**: *[OrderBook](api-interfaces-augur-sdk-src-api-liquidity-orderbook.md)*
 
-*Defined in [augur-sdk/src/api/Liquidity.ts:41](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Liquidity.ts#L41)*
+*Defined in [augur-sdk/src/api/Liquidity.ts:41](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Liquidity.ts#L41)*
 
 ___
 <a id="reportingfeedivisor"></a>
@@ -77,7 +77,7 @@ ___
 
 **● reportingFeeDivisor**: *`BigNumber`*
 
-*Defined in [augur-sdk/src/api/Liquidity.ts:44](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Liquidity.ts#L44)*
+*Defined in [augur-sdk/src/api/Liquidity.ts:44](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Liquidity.ts#L44)*
 
 ___
 <a id="spread"></a>
@@ -86,7 +86,7 @@ ___
 
 **● spread**: *`number`*
 
-*Defined in [augur-sdk/src/api/Liquidity.ts:47](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Liquidity.ts#L47)*
+*Defined in [augur-sdk/src/api/Liquidity.ts:47](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Liquidity.ts#L47)*
 
 ___
 

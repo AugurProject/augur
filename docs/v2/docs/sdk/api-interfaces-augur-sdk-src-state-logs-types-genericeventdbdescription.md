@@ -28,7 +28,7 @@ sidebar_label: GenericEventDBDescription
 
 **● EventName**: *`string`*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:10](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/logs/types.ts#L10)*
+*Defined in [augur-sdk/src/state/logs/types.ts:10](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L10)*
 
 ___
 <a id="indexes"></a>
@@ -37,7 +37,7 @@ ___
 
 **● indexes**: *`string`[]*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:11](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/logs/types.ts#L11)*
+*Defined in [augur-sdk/src/state/logs/types.ts:11](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L11)*
 
 ___
 <a id="primarykey"></a>
@@ -46,7 +46,7 @@ ___
 
 **● primaryKey**: *`string`*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:12](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/logs/types.ts#L12)*
+*Defined in [augur-sdk/src/state/logs/types.ts:12](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L12)*
 
 ___
 

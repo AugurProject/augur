@@ -31,7 +31,7 @@ sidebar_label: augur-sdk/src/state/db/AbstractTable
 
 **Ƭ ID**: *[PrimitiveID](api-modules-augur-sdk-src-state-db-abstracttable-module.md#primitiveid) \| `Array`<[PrimitiveID](api-modules-augur-sdk-src-state-db-abstracttable-module.md#primitiveid)>*
 
-*Defined in [augur-sdk/src/state/db/AbstractTable.ts:6](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/AbstractTable.ts#L6)*
+*Defined in [augur-sdk/src/state/db/AbstractTable.ts:6](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/AbstractTable.ts#L6)*
 
 ___
 <a id="primitiveid"></a>
@@ -40,7 +40,7 @@ ___
 
 **Ƭ PrimitiveID**: *`string` \| `number` \| `Date`*
 
-*Defined in [augur-sdk/src/state/db/AbstractTable.ts:4](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/AbstractTable.ts#L4)*
+*Defined in [augur-sdk/src/state/db/AbstractTable.ts:4](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/AbstractTable.ts#L4)*
 
 ___
 

@@ -30,7 +30,7 @@ sidebar_label: MarketReportingState
 
 **AwaitingFinalization**:  = "AwaitingFinalization"
 
-*Defined in [augur-sdk/src/constants.ts:172](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/constants.ts#L172)*
+*Defined in [augur-sdk/src/constants.ts:172](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/constants.ts#L172)*
 
 ___
 <a id="awaitingforkmigration"></a>
@@ -39,7 +39,7 @@ ___
 
 **AwaitingForkMigration**:  = "AwaitingForkMigration"
 
-*Defined in [augur-sdk/src/constants.ts:175](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/constants.ts#L175)*
+*Defined in [augur-sdk/src/constants.ts:175](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/constants.ts#L175)*
 
 ___
 <a id="awaitingnextwindow"></a>
@@ -48,7 +48,7 @@ ___
 
 **AwaitingNextWindow**:  = "AwaitingNextWindow"
 
-*Defined in [augur-sdk/src/constants.ts:171](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/constants.ts#L171)*
+*Defined in [augur-sdk/src/constants.ts:171](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/constants.ts#L171)*
 
 ___
 <a id="crowdsourcingdispute"></a>
@@ -57,7 +57,7 @@ ___
 
 **CrowdsourcingDispute**:  = "CrowdsourcingDispute"
 
-*Defined in [augur-sdk/src/constants.ts:170](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/constants.ts#L170)*
+*Defined in [augur-sdk/src/constants.ts:170](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/constants.ts#L170)*
 
 ___
 <a id="designatedreporting"></a>
@@ -66,7 +66,7 @@ ___
 
 **DesignatedReporting**:  = "DesignatedReporting"
 
-*Defined in [augur-sdk/src/constants.ts:168](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/constants.ts#L168)*
+*Defined in [augur-sdk/src/constants.ts:168](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/constants.ts#L168)*
 
 ___
 <a id="finalized"></a>
@@ -75,7 +75,7 @@ ___
 
 **Finalized**:  = "Finalized"
 
-*Defined in [augur-sdk/src/constants.ts:173](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/constants.ts#L173)*
+*Defined in [augur-sdk/src/constants.ts:173](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/constants.ts#L173)*
 
 ___
 <a id="forking"></a>
@@ -84,7 +84,7 @@ ___
 
 **Forking**:  = "Forking"
 
-*Defined in [augur-sdk/src/constants.ts:174](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/constants.ts#L174)*
+*Defined in [augur-sdk/src/constants.ts:174](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/constants.ts#L174)*
 
 ___
 <a id="openreporting"></a>
@@ -93,7 +93,7 @@ ___
 
 **OpenReporting**:  = "OpenReporting"
 
-*Defined in [augur-sdk/src/constants.ts:169](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/constants.ts#L169)*
+*Defined in [augur-sdk/src/constants.ts:169](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/constants.ts#L169)*
 
 ___
 <a id="prereporting"></a>
@@ -102,7 +102,7 @@ ___
 
 **PreReporting**:  = "PreReporting"
 
-*Defined in [augur-sdk/src/constants.ts:167](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/constants.ts#L167)*
+*Defined in [augur-sdk/src/constants.ts:167](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/constants.ts#L167)*
 
 ___
 

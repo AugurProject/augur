@@ -32,7 +32,7 @@ sidebar_label: Document
 
 **● blockNumber**: *`number`*
 
-*Defined in [augur-sdk/src/state/db/SyncableDB.ts:11](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/SyncableDB.ts#L11)*
+*Defined in [augur-sdk/src/state/db/SyncableDB.ts:11](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/SyncableDB.ts#L11)*
 
 ___
 

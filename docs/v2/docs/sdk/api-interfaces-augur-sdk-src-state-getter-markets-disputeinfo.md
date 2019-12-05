@@ -30,7 +30,7 @@ sidebar_label: DisputeInfo
 
 **● bondSizeOfNewStake**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:171](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Markets.ts#L171)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:171](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L171)*
 
 ___
 <a id="disputepacingon"></a>
@@ -39,7 +39,7 @@ ___
 
 **● disputePacingOn**: *`boolean`*
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:169](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Markets.ts#L169)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:169](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L169)*
 
 ___
 <a id="disputewindow"></a>
@@ -48,7 +48,7 @@ ___
 
 **● disputeWindow**: *`object`*
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:164](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Markets.ts#L164)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:164](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L164)*
 
 #### Type declaration
 
@@ -65,7 +65,7 @@ ___
 
 **● stakeCompletedTotal**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:170](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Markets.ts#L170)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:170](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L170)*
 
 ___
 <a id="stakes"></a>
@@ -74,7 +74,7 @@ ___
 
 **● stakes**: *[StakeDetails](api-interfaces-augur-sdk-src-state-getter-markets-stakedetails.md)[]*
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:172](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Markets.ts#L172)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:172](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L172)*
 
 ___
 

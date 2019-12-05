@@ -73,7 +73,7 @@ sidebar_label: augur-sdk/src/state/getter/Markets
 
 **● GetMaxLiquiditySpread**: *`KeyofC`<`object`>* =  t.keyof(MaxLiquiditySpreadValue)
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:68](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Markets.ts#L68)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:68](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L68)*
 
 ___
 <a id="gettemplatefiltervalue"></a>
@@ -82,7 +82,7 @@ ___
 
 **● GetTemplateFilterValue**: *`KeyofC`<`object`>* =  t.keyof(TemplateFilters)
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:69](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Markets.ts#L69)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:69](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L69)*
 
 ___
 <a id="extrainfotype"></a>
@@ -101,7 +101,7 @@ ___
   }),
 ])
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:836](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Markets.ts#L836)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:836](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L836)*
 
 ___
 <a id="getmarketsparamsspecific"></a>
@@ -128,7 +128,7 @@ ___
   }),
 ])
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:71](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Markets.ts#L71)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:71](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L71)*
 
 ___
 <a id="getmarketssortby-1"></a>
@@ -137,7 +137,7 @@ ___
 
 **● getMarketsSortBy**: *`KeyofC`<`object`>* =  t.keyof(GetMarketsSortBy)
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:67](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Markets.ts#L67)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:67](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L67)*
 
 ___
 <a id="outcomeidtype"></a>
@@ -146,7 +146,7 @@ ___
 
 **● outcomeIdType**: *`UnionC`<[`KeyofC`<`object`>, `NumberC`, `NullC`, `UndefinedC`]>* =  t.union([OutcomeParam, t.number, t.null, t.undefined])
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:247](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Markets.ts#L247)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:247](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L247)*
 
 ___
 
@@ -158,7 +158,7 @@ ___
 
 ▸ **convertAttoDaiToDisplay**(atto: *`BigNumber`*, decimalPlaces?: *`number`*): `string`
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:832](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Markets.ts#L832)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:832](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L832)*
 
 **Parameters:**
 
@@ -176,7 +176,7 @@ ___
 
 ▸ **filterOrderFilledLogs**(orderFilledLogs: *[ParsedOrderEventLog](api-interfaces-augur-sdk-src-state-logs-types-parsedordereventlog.md)[]*, params: *`t.TypeOf`<`TypeC`>*): [ParsedOrderEventLog](api-interfaces-augur-sdk-src-state-logs-types-parsedordereventlog.md)[]
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:848](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Markets.ts#L848)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:848](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L848)*
 
 **Parameters:**
 
@@ -194,7 +194,7 @@ ___
 
 ▸ **formatStakeDetails**(db: *[DB](api-classes-augur-sdk-src-state-db-db-db.md)*, market: *[MarketData](api-interfaces-augur-sdk-src-state-logs-types-marketdata.md)*, stakeDetails: *[DisputeDoc](api-interfaces-augur-sdk-src-state-logs-types-disputedoc.md)[]*): [StakeDetails](api-interfaces-augur-sdk-src-state-getter-markets-stakedetails.md)[]
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:1123](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Markets.ts#L1123)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:1123](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L1123)*
 
 **Parameters:**
 
@@ -213,7 +213,7 @@ ___
 
 ▸ **getLiquidityOrderBook**(augur: *[Augur](api-classes-augur-sdk-src-augur-augur.md)*, db: *[DB](api-classes-augur-sdk-src-state-db-db-db.md)*, marketId: *`string`*): `Promise`<[OrderBook](api-interfaces-augur-sdk-src-api-liquidity-orderbook.md)>
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:1299](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Markets.ts#L1299)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:1299](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L1299)*
 
 Gets a MarketOrderBook for a market and converts it to an OrderBook object.
 
@@ -234,7 +234,7 @@ ___
 
 ▸ **getMarketOutcomes**(db: *[DB](api-classes-augur-sdk-src-state-db-db-db.md)*, marketData: *[MarketData](api-interfaces-augur-sdk-src-state-logs-types-marketdata.md)*, scalarDenomination: *`string`*, tickSize: *`BigNumber`*, minPrice: *`BigNumber`*, parsedOrderEventLogs: *[ParsedOrderEventLog](api-interfaces-augur-sdk-src-state-logs-types-parsedordereventlog.md)[]*): [MarketInfoOutcome](api-interfaces-augur-sdk-src-state-getter-markets-marketinfooutcome.md)[]
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:880](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Markets.ts#L880)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:880](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L880)*
 
 **Parameters:**
 
@@ -256,7 +256,7 @@ ___
 
 ▸ **getMarketsCategoriesMeta**(marketsResults: *[MarketInfo](api-interfaces-augur-sdk-src-state-getter-markets-marketinfo.md)[]*): [MarketListMetaCategories](api-interfaces-augur-sdk-src-state-getter-markets-marketlistmetacategories.md)
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:1159](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Markets.ts#L1159)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:1159](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L1159)*
 
 **Parameters:**
 
@@ -273,7 +273,7 @@ ___
 
 ▸ **getMarketsInfo**(db: *[DB](api-classes-augur-sdk-src-state-db-db-db.md)*, markets: *[MarketData](api-interfaces-augur-sdk-src-state-logs-types-marketdata.md)[]*, reportingFeeDivisor: *`BigNumber`*): `Promise`<[MarketInfo](api-interfaces-augur-sdk-src-state-getter-markets-marketinfo.md)[]>
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:982](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Markets.ts#L982)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:982](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L982)*
 
 **Parameters:**
 
@@ -292,7 +292,7 @@ ___
 
 ▸ **getMarketsSearchResults**(universe: *`string`*, query: *`string`*, categories: *`string`[]*, augur: *[Augur](api-classes-augur-sdk-src-augur-augur.md)*): `Promise`<`Array`<`SearchResults`<[MarketFields](api-interfaces-augur-sdk-src-state-db-syncableflexsearch-marketfields.md)>>>
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:1202](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Markets.ts#L1202)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:1202](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L1202)*
 
 **Parameters:**
 
@@ -312,7 +312,7 @@ ___
 
 ▸ **getPeriodStartTime**(globalStarttime: *`number`*, periodStartime: *`number`*, period: *`number`*): `number`
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:969](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Markets.ts#L969)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:969](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L969)*
 
 **Parameters:**
 
@@ -334,7 +334,7 @@ ___
 
 **MaxLiquiditySpreadValue**: *`object`*
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:45](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Markets.ts#L45)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:45](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L45)*
 
 <a id="maxliquidityspreadvalue.0"></a>
 
@@ -342,7 +342,7 @@ ___
 
 **● 0**: *`null`* =  null
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:50](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Markets.ts#L50)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:50](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L50)*
 
 ___
 <a id="maxliquidityspreadvalue.10"></a>
@@ -351,7 +351,7 @@ ___
 
 **● 10**: *`null`* =  null
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:49](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Markets.ts#L49)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:49](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L49)*
 
 ___
 <a id="maxliquidityspreadvalue.100"></a>
@@ -360,7 +360,7 @@ ___
 
 **● 100**: *`null`* =  null
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:46](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Markets.ts#L46)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:46](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L46)*
 
 ___
 <a id="maxliquidityspreadvalue.15"></a>
@@ -369,7 +369,7 @@ ___
 
 **● 15**: *`null`* =  null
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:48](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Markets.ts#L48)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:48](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L48)*
 
 ___
 <a id="maxliquidityspreadvalue.20"></a>
@@ -378,7 +378,7 @@ ___
 
 **● 20**: *`null`* =  null
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:47](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Markets.ts#L47)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:47](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L47)*
 
 ___
 

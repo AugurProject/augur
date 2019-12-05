@@ -50,7 +50,7 @@ sidebar_label: AbstractTable
 
 ⊕ **new AbstractTable**(networkId: *`number`*, dbName: *`string`*, db: *`Dexie`*): [AbstractTable](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md)
 
-*Defined in [augur-sdk/src/state/db/AbstractTable.ts:16](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/AbstractTable.ts#L16)*
+*Defined in [augur-sdk/src/state/db/AbstractTable.ts:16](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/AbstractTable.ts#L16)*
 
 **Parameters:**
 
@@ -72,7 +72,7 @@ ___
 
 **● dbName**: *`string`*
 
-*Defined in [augur-sdk/src/state/db/AbstractTable.ts:15](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/AbstractTable.ts#L15)*
+*Defined in [augur-sdk/src/state/db/AbstractTable.ts:15](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/AbstractTable.ts#L15)*
 
 ___
 <a id="idfields"></a>
@@ -81,7 +81,7 @@ ___
 
 **● idFields**: *`string`[]*
 
-*Defined in [augur-sdk/src/state/db/AbstractTable.ts:16](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/AbstractTable.ts#L16)*
+*Defined in [augur-sdk/src/state/db/AbstractTable.ts:16](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/AbstractTable.ts#L16)*
 
 ___
 <a id="networkid"></a>
@@ -90,7 +90,7 @@ ___
 
 **● networkId**: *`number`*
 
-*Defined in [augur-sdk/src/state/db/AbstractTable.ts:14](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/AbstractTable.ts#L14)*
+*Defined in [augur-sdk/src/state/db/AbstractTable.ts:14](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/AbstractTable.ts#L14)*
 
 ___
 <a id="table"></a>
@@ -99,7 +99,7 @@ ___
 
 **● table**: *`Table`<`any`, `any`>*
 
-*Defined in [augur-sdk/src/state/db/AbstractTable.ts:13](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/AbstractTable.ts#L13)*
+*Defined in [augur-sdk/src/state/db/AbstractTable.ts:13](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/AbstractTable.ts#L13)*
 
 ___
 
@@ -111,7 +111,7 @@ ___
 
 ▸ **allDocs**(): `Promise`<`any`[]>
 
-*Defined in [augur-sdk/src/state/db/AbstractTable.ts:30](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/AbstractTable.ts#L30)*
+*Defined in [augur-sdk/src/state/db/AbstractTable.ts:30](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/AbstractTable.ts#L30)*
 
 **Returns:** `Promise`<`any`[]>
 
@@ -122,7 +122,7 @@ ___
 
 ▸ **bulkUpsertDocuments**(documents: *`Array`<[BaseDocument](api-interfaces-augur-sdk-src-state-db-abstracttable-basedocument.md)>*): `Promise`<`void`>
 
-*Defined in [augur-sdk/src/state/db/AbstractTable.ts:42](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/AbstractTable.ts#L42)*
+*Defined in [augur-sdk/src/state/db/AbstractTable.ts:42](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/AbstractTable.ts#L42)*
 
 **Parameters:**
 
@@ -139,7 +139,7 @@ ___
 
 ▸ **clearDB**(): `Promise`<`void`>
 
-*Defined in [augur-sdk/src/state/db/AbstractTable.ts:26](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/AbstractTable.ts#L26)*
+*Defined in [augur-sdk/src/state/db/AbstractTable.ts:26](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/AbstractTable.ts#L26)*
 
 **Returns:** `Promise`<`void`>
 
@@ -150,7 +150,7 @@ ___
 
 ▸ **find**(request: *`__type`*): `Promise`<`Collection`<`any`, `any`>>
 
-*Defined in [augur-sdk/src/state/db/AbstractTable.ts:57](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/AbstractTable.ts#L57)*
+*Defined in [augur-sdk/src/state/db/AbstractTable.ts:57](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/AbstractTable.ts#L57)*
 
 **Parameters:**
 
@@ -167,7 +167,7 @@ ___
 
 ▸ **getDocument**<`Document`>(id: *`string`*): `Promise`<`Document` \| `undefined`>
 
-*Defined in [augur-sdk/src/state/db/AbstractTable.ts:38](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/AbstractTable.ts#L38)*
+*Defined in [augur-sdk/src/state/db/AbstractTable.ts:38](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/AbstractTable.ts#L38)*
 
 **Type parameters:**
 
@@ -187,7 +187,7 @@ ___
 
 ▸ **getDocumentCount**(): `Promise`<`number`>
 
-*Defined in [augur-sdk/src/state/db/AbstractTable.ts:34](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/AbstractTable.ts#L34)*
+*Defined in [augur-sdk/src/state/db/AbstractTable.ts:34](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/AbstractTable.ts#L34)*
 
 **Returns:** `Promise`<`number`>
 
@@ -198,7 +198,7 @@ ___
 
 ▸ **getIDValue**(document: *`any`*): [ID](api-modules-augur-sdk-src-state-db-abstracttable-module.md#id)
 
-*Defined in [augur-sdk/src/state/db/AbstractTable.ts:61](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/AbstractTable.ts#L61)*
+*Defined in [augur-sdk/src/state/db/AbstractTable.ts:61](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/AbstractTable.ts#L61)*
 
 **Parameters:**
 
@@ -215,7 +215,7 @@ ___
 
 ▸ **upsertDocument**(documentID: *[ID](api-modules-augur-sdk-src-state-db-abstracttable-module.md#id)*, document: *[BaseDocument](api-interfaces-augur-sdk-src-state-db-abstracttable-basedocument.md)*): `Promise`<`void`>
 
-*Defined in [augur-sdk/src/state/db/AbstractTable.ts:49](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/AbstractTable.ts#L49)*
+*Defined in [augur-sdk/src/state/db/AbstractTable.ts:49](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/AbstractTable.ts#L49)*
 
 **Parameters:**
 

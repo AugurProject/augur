@@ -28,7 +28,7 @@ sidebar_label: MatchingOrders
 
 **● orderIds**: *`string`[]*
 
-*Defined in [augur-sdk/src/api/ZeroX.ts:117](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/ZeroX.ts#L117)*
+*Defined in [augur-sdk/src/api/ZeroX.ts:117](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/ZeroX.ts#L117)*
 
 ___
 <a id="orders"></a>
@@ -37,7 +37,7 @@ ___
 
 **● orders**: *[ZeroXTradeOrder](api-interfaces-augur-sdk-src-api-zerox-zeroxtradeorder.md)[]*
 
-*Defined in [augur-sdk/src/api/ZeroX.ts:115](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/ZeroX.ts#L115)*
+*Defined in [augur-sdk/src/api/ZeroX.ts:115](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/ZeroX.ts#L115)*
 
 ___
 <a id="signatures"></a>
@@ -46,7 +46,7 @@ ___
 
 **● signatures**: *`string`[]*
 
-*Defined in [augur-sdk/src/api/ZeroX.ts:116](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/ZeroX.ts#L116)*
+*Defined in [augur-sdk/src/api/ZeroX.ts:116](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/ZeroX.ts#L116)*
 
 ___
 

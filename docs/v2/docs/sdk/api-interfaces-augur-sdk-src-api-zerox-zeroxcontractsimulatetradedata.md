@@ -30,7 +30,7 @@ sidebar_label: ZeroXContractSimulateTradeData
 
 **● _numFills**: *`BigNumber`*
 
-*Defined in [augur-sdk/src/api/ZeroX.ts:86](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/ZeroX.ts#L86)*
+*Defined in [augur-sdk/src/api/ZeroX.ts:86](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/ZeroX.ts#L86)*
 
 ___
 <a id="_settlementfees"></a>
@@ -39,7 +39,7 @@ ___
 
 **● _settlementFees**: *`BigNumber`*
 
-*Defined in [augur-sdk/src/api/ZeroX.ts:83](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/ZeroX.ts#L83)*
+*Defined in [augur-sdk/src/api/ZeroX.ts:83](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/ZeroX.ts#L83)*
 
 ___
 <a id="_sharesdepleted"></a>
@@ -48,7 +48,7 @@ ___
 
 **● _sharesDepleted**: *`BigNumber`*
 
-*Defined in [augur-sdk/src/api/ZeroX.ts:84](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/ZeroX.ts#L84)*
+*Defined in [augur-sdk/src/api/ZeroX.ts:84](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/ZeroX.ts#L84)*
 
 ___
 <a id="_sharesfilled"></a>
@@ -57,7 +57,7 @@ ___
 
 **● _sharesFilled**: *`BigNumber`*
 
-*Defined in [augur-sdk/src/api/ZeroX.ts:82](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/ZeroX.ts#L82)*
+*Defined in [augur-sdk/src/api/ZeroX.ts:82](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/ZeroX.ts#L82)*
 
 ___
 <a id="_tokensdepleted"></a>
@@ -66,7 +66,7 @@ ___
 
 **● _tokensDepleted**: *`BigNumber`*
 
-*Defined in [augur-sdk/src/api/ZeroX.ts:85](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/ZeroX.ts#L85)*
+*Defined in [augur-sdk/src/api/ZeroX.ts:85](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/ZeroX.ts#L85)*
 
 ___
 

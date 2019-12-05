@@ -29,7 +29,7 @@ sidebar_label: LeftRightLiquidity
 
 **● left**: *`BigNumber`*
 
-*Defined in [augur-sdk/src/api/Liquidity.ts:32](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Liquidity.ts#L32)*
+*Defined in [augur-sdk/src/api/Liquidity.ts:32](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Liquidity.ts#L32)*
 
 ___
 <a id="right"></a>
@@ -38,7 +38,7 @@ ___
 
 **● right**: *`BigNumber`*
 
-*Defined in [augur-sdk/src/api/Liquidity.ts:33](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Liquidity.ts#L33)*
+*Defined in [augur-sdk/src/api/Liquidity.ts:33](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Liquidity.ts#L33)*
 
 ___
 

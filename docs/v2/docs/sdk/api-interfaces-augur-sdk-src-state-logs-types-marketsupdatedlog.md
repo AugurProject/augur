@@ -26,7 +26,7 @@ sidebar_label: MarketsUpdatedLog
 
 **● data**: *[MarketData](api-interfaces-augur-sdk-src-state-logs-types-marketdata.md)[]*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:28](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/logs/types.ts#L28)*
+*Defined in [augur-sdk/src/state/logs/types.ts:28](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L28)*
 
 ___
 

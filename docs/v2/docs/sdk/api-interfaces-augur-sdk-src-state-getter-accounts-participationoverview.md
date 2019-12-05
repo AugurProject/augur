@@ -29,7 +29,7 @@ sidebar_label: ParticipationOverview
 
 **● contracts**: *[ParticipationContract](api-interfaces-augur-sdk-src-state-getter-accounts-participationcontract.md)[]*
 
-*Defined in [augur-sdk/src/state/getter/Accounts.ts:100](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Accounts.ts#L100)*
+*Defined in [augur-sdk/src/state/getter/Accounts.ts:100](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Accounts.ts#L100)*
 
 ___
 <a id="totalclaimable"></a>
@@ -38,7 +38,7 @@ ___
 
 **● totalClaimable**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/Accounts.ts:98](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Accounts.ts#L98)*
+*Defined in [augur-sdk/src/state/getter/Accounts.ts:98](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Accounts.ts#L98)*
 
 ___
 <a id="totalfees"></a>
@@ -47,7 +47,7 @@ ___
 
 **● totalFees**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/Accounts.ts:99](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Accounts.ts#L99)*
+*Defined in [augur-sdk/src/state/getter/Accounts.ts:99](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Accounts.ts#L99)*
 
 ___
 <a id="totalstaked"></a>
@@ -56,7 +56,7 @@ ___
 
 **● totalStaked**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/Accounts.ts:97](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Accounts.ts#L97)*
+*Defined in [augur-sdk/src/state/getter/Accounts.ts:97](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Accounts.ts#L97)*
 
 ___
 

@@ -33,7 +33,7 @@ sidebar_label: BlockAndLogStreamerInterface
 
 **● reconcileNewBlock**: *`function`*
 
-*Defined in [augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:28](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L28)*
+*Defined in [augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:28](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L28)*
 
 #### Type declaration
 ▸(block: *`TBlock`*): `Promise`<`void`>
@@ -53,7 +53,7 @@ ___
 
 **● subscribeToOnBlockAdded**: *`function`*
 
-*Defined in [augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:29](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L29)*
+*Defined in [augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:29](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L29)*
 
 #### Type declaration
 ▸(onBlockAdded: *`function`*): `string`
@@ -73,7 +73,7 @@ ___
 
 **● subscribeToOnBlockRemoved**: *`function`*
 
-*Defined in [augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:30](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L30)*
+*Defined in [augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:30](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L30)*
 
 #### Type declaration
 ▸(onBlockRemoved: *`function`*): `string`
@@ -93,7 +93,7 @@ ___
 
 **● subscribeToOnLogsAdded**: *`function`*
 
-*Defined in [augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:33](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L33)*
+*Defined in [augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:33](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L33)*
 
 #### Type declaration
 ▸(onLogsAdded: *`function`*): `string`
@@ -113,7 +113,7 @@ ___
 
 **● subscribeToOnLogsRemoved**: *`function`*
 
-*Defined in [augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:36](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L36)*
+*Defined in [augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:36](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L36)*
 
 #### Type declaration
 ▸(onLogsRemoved: *`function`*): `string`

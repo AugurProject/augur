@@ -29,7 +29,7 @@ sidebar_label: ContractInfo
 
 **● address**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/Accounts.ts:77](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Accounts.ts#L77)*
+*Defined in [augur-sdk/src/state/getter/Accounts.ts:77](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Accounts.ts#L77)*
 
 ___
 <a id="amount"></a>
@@ -38,7 +38,7 @@ ___
 
 **● amount**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/Accounts.ts:78](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Accounts.ts#L78)*
+*Defined in [augur-sdk/src/state/getter/Accounts.ts:78](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Accounts.ts#L78)*
 
 ___
 <a id="isclaimable"></a>
@@ -47,7 +47,7 @@ ___
 
 **● isClaimable**: *`boolean`*
 
-*Defined in [augur-sdk/src/state/getter/Accounts.ts:80](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Accounts.ts#L80)*
+*Defined in [augur-sdk/src/state/getter/Accounts.ts:80](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Accounts.ts#L80)*
 
 ___
 <a id="marketid"></a>
@@ -56,7 +56,7 @@ ___
 
 **● marketId**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/Accounts.ts:79](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Accounts.ts#L79)*
+*Defined in [augur-sdk/src/state/getter/Accounts.ts:79](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Accounts.ts#L79)*
 
 ___
 

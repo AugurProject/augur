@@ -24,7 +24,7 @@ sidebar_label: OrderEventType
 
 **Cancel**:  = 1
 
-*Defined in [augur-sdk/src/constants.ts:180](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/constants.ts#L180)*
+*Defined in [augur-sdk/src/constants.ts:180](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/constants.ts#L180)*
 
 ___
 <a id="create"></a>
@@ -33,7 +33,7 @@ ___
 
 **Create**:  = 0
 
-*Defined in [augur-sdk/src/constants.ts:179](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/constants.ts#L179)*
+*Defined in [augur-sdk/src/constants.ts:179](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/constants.ts#L179)*
 
 ___
 <a id="fill"></a>
@@ -42,7 +42,7 @@ ___
 
 **Fill**:  = 2
 
-*Defined in [augur-sdk/src/constants.ts:181](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/constants.ts#L181)*
+*Defined in [augur-sdk/src/constants.ts:181](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/constants.ts#L181)*
 
 ___
 

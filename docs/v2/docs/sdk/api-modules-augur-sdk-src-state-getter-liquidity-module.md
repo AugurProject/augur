@@ -41,7 +41,7 @@ sidebar_label: augur-sdk/src/state/getter/Liquidity
     spread: t.number,
 })
 
-*Defined in [augur-sdk/src/state/getter/Liquidity.ts:24](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Liquidity.ts#L24)*
+*Defined in [augur-sdk/src/state/getter/Liquidity.ts:24](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Liquidity.ts#L24)*
 
 ___
 <a id="order"></a>
@@ -53,7 +53,7 @@ ___
     amount: t.string,
 })
 
-*Defined in [augur-sdk/src/state/getter/Liquidity.ts:8](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Liquidity.ts#L8)*
+*Defined in [augur-sdk/src/state/getter/Liquidity.ts:8](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Liquidity.ts#L8)*
 
 ___
 <a id="orderbook"></a>
@@ -65,7 +65,7 @@ ___
     OutcomeOrderBook,
 )
 
-*Defined in [augur-sdk/src/state/getter/Liquidity.ts:19](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Liquidity.ts#L19)*
+*Defined in [augur-sdk/src/state/getter/Liquidity.ts:19](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Liquidity.ts#L19)*
 
 ___
 <a id="outcomeorderbook"></a>
@@ -77,7 +77,7 @@ ___
     asks: t.array(Order),
 })
 
-*Defined in [augur-sdk/src/state/getter/Liquidity.ts:13](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Liquidity.ts#L13)*
+*Defined in [augur-sdk/src/state/getter/Liquidity.ts:13](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Liquidity.ts#L13)*
 
 ___
 

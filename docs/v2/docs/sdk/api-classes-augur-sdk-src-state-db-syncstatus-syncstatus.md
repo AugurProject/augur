@@ -53,7 +53,7 @@ sidebar_label: SyncStatus
 
 *Overrides [AbstractTable](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md).[constructor](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md#constructor)*
 
-*Defined in [augur-sdk/src/state/db/SyncStatus.ts:12](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/SyncStatus.ts#L12)*
+*Defined in [augur-sdk/src/state/db/SyncStatus.ts:12](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/SyncStatus.ts#L12)*
 
 **Parameters:**
 
@@ -77,7 +77,7 @@ ___
 
 *Inherited from [AbstractTable](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md).[dbName](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md#dbname)*
 
-*Defined in [augur-sdk/src/state/db/AbstractTable.ts:15](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/AbstractTable.ts#L15)*
+*Defined in [augur-sdk/src/state/db/AbstractTable.ts:15](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/AbstractTable.ts#L15)*
 
 ___
 <a id="defaultstartsyncblocknumber"></a>
@@ -86,7 +86,7 @@ ___
 
 **● defaultStartSyncBlockNumber**: *`number`*
 
-*Defined in [augur-sdk/src/state/db/SyncStatus.ts:12](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/SyncStatus.ts#L12)*
+*Defined in [augur-sdk/src/state/db/SyncStatus.ts:12](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/SyncStatus.ts#L12)*
 
 ___
 <a id="idfields"></a>
@@ -97,7 +97,7 @@ ___
 
 *Inherited from [AbstractTable](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md).[idFields](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md#idfields)*
 
-*Defined in [augur-sdk/src/state/db/AbstractTable.ts:16](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/AbstractTable.ts#L16)*
+*Defined in [augur-sdk/src/state/db/AbstractTable.ts:16](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/AbstractTable.ts#L16)*
 
 ___
 <a id="networkid"></a>
@@ -108,7 +108,7 @@ ___
 
 *Inherited from [AbstractTable](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md).[networkId](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md#networkid)*
 
-*Defined in [augur-sdk/src/state/db/AbstractTable.ts:14](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/AbstractTable.ts#L14)*
+*Defined in [augur-sdk/src/state/db/AbstractTable.ts:14](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/AbstractTable.ts#L14)*
 
 ___
 <a id="table"></a>
@@ -119,7 +119,7 @@ ___
 
 *Inherited from [AbstractTable](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md).[table](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md#table)*
 
-*Defined in [augur-sdk/src/state/db/AbstractTable.ts:13](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/AbstractTable.ts#L13)*
+*Defined in [augur-sdk/src/state/db/AbstractTable.ts:13](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/AbstractTable.ts#L13)*
 
 ___
 
@@ -133,7 +133,7 @@ ___
 
 *Inherited from [AbstractTable](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md).[allDocs](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md#alldocs)*
 
-*Defined in [augur-sdk/src/state/db/AbstractTable.ts:30](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/AbstractTable.ts#L30)*
+*Defined in [augur-sdk/src/state/db/AbstractTable.ts:30](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/AbstractTable.ts#L30)*
 
 **Returns:** `Promise`<`any`[]>
 
@@ -146,7 +146,7 @@ ___
 
 *Inherited from [AbstractTable](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md).[bulkUpsertDocuments](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md#bulkupsertdocuments)*
 
-*Defined in [augur-sdk/src/state/db/AbstractTable.ts:42](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/AbstractTable.ts#L42)*
+*Defined in [augur-sdk/src/state/db/AbstractTable.ts:42](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/AbstractTable.ts#L42)*
 
 **Parameters:**
 
@@ -165,7 +165,7 @@ ___
 
 *Inherited from [AbstractTable](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md).[clearDB](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md#cleardb)*
 
-*Defined in [augur-sdk/src/state/db/AbstractTable.ts:26](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/AbstractTable.ts#L26)*
+*Defined in [augur-sdk/src/state/db/AbstractTable.ts:26](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/AbstractTable.ts#L26)*
 
 **Returns:** `Promise`<`void`>
 
@@ -178,7 +178,7 @@ ___
 
 *Inherited from [AbstractTable](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md).[find](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md#find)*
 
-*Defined in [augur-sdk/src/state/db/AbstractTable.ts:57](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/AbstractTable.ts#L57)*
+*Defined in [augur-sdk/src/state/db/AbstractTable.ts:57](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/AbstractTable.ts#L57)*
 
 **Parameters:**
 
@@ -197,7 +197,7 @@ ___
 
 *Inherited from [AbstractTable](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md).[getDocument](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md#getdocument)*
 
-*Defined in [augur-sdk/src/state/db/AbstractTable.ts:38](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/AbstractTable.ts#L38)*
+*Defined in [augur-sdk/src/state/db/AbstractTable.ts:38](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/AbstractTable.ts#L38)*
 
 **Type parameters:**
 
@@ -219,7 +219,7 @@ ___
 
 *Inherited from [AbstractTable](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md).[getDocumentCount](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md#getdocumentcount)*
 
-*Defined in [augur-sdk/src/state/db/AbstractTable.ts:34](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/AbstractTable.ts#L34)*
+*Defined in [augur-sdk/src/state/db/AbstractTable.ts:34](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/AbstractTable.ts#L34)*
 
 **Returns:** `Promise`<`number`>
 
@@ -230,7 +230,7 @@ ___
 
 ▸ **getHighestSyncBlock**(dbName: *`string`*): `Promise`<`number`>
 
-*Defined in [augur-sdk/src/state/db/SyncStatus.ts:27](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/SyncStatus.ts#L27)*
+*Defined in [augur-sdk/src/state/db/SyncStatus.ts:27](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/SyncStatus.ts#L27)*
 
 **Parameters:**
 
@@ -249,7 +249,7 @@ ___
 
 *Inherited from [AbstractTable](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md).[getIDValue](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md#getidvalue)*
 
-*Defined in [augur-sdk/src/state/db/AbstractTable.ts:61](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/AbstractTable.ts#L61)*
+*Defined in [augur-sdk/src/state/db/AbstractTable.ts:61](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/AbstractTable.ts#L61)*
 
 **Parameters:**
 
@@ -266,7 +266,7 @@ ___
 
 ▸ **getLowestSyncingBlockForAllDBs**(): `Promise`<`number`>
 
-*Defined in [augur-sdk/src/state/db/SyncStatus.ts:32](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/SyncStatus.ts#L32)*
+*Defined in [augur-sdk/src/state/db/SyncStatus.ts:32](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/SyncStatus.ts#L32)*
 
 **Returns:** `Promise`<`number`>
 
@@ -277,7 +277,7 @@ ___
 
 ▸ **setHighestSyncBlock**(eventName: *`string`*, blockNumber: *`number`*, syncing: *`boolean`*): `Promise`<`void`>
 
-*Defined in [augur-sdk/src/state/db/SyncStatus.ts:19](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/SyncStatus.ts#L19)*
+*Defined in [augur-sdk/src/state/db/SyncStatus.ts:19](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/SyncStatus.ts#L19)*
 
 **Parameters:**
 
@@ -296,7 +296,7 @@ ___
 
 ▸ **updateSyncingToFalse**(dbName: *`string`*): `Promise`<`void`>
 
-*Defined in [augur-sdk/src/state/db/SyncStatus.ts:43](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/SyncStatus.ts#L43)*
+*Defined in [augur-sdk/src/state/db/SyncStatus.ts:43](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/SyncStatus.ts#L43)*
 
 **Parameters:**
 
@@ -315,7 +315,7 @@ ___
 
 *Inherited from [AbstractTable](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md).[upsertDocument](api-classes-augur-sdk-src-state-db-abstracttable-abstracttable.md#upsertdocument)*
 
-*Defined in [augur-sdk/src/state/db/AbstractTable.ts:49](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/AbstractTable.ts#L49)*
+*Defined in [augur-sdk/src/state/db/AbstractTable.ts:49](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/AbstractTable.ts#L49)*
 
 **Parameters:**
 

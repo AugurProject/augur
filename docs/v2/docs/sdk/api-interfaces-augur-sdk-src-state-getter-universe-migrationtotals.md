@@ -27,7 +27,7 @@ sidebar_label: MigrationTotals
 
 **● marketId**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/Universe.ts:27](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Universe.ts#L27)*
+*Defined in [augur-sdk/src/state/getter/Universe.ts:27](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Universe.ts#L27)*
 
 ___
 <a id="outcomes"></a>
@@ -36,7 +36,7 @@ ___
 
 **● outcomes**: *[MigrationOutcome](api-interfaces-augur-sdk-src-state-getter-universe-migrationoutcome.md)[]*
 
-*Defined in [augur-sdk/src/state/getter/Universe.ts:28](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Universe.ts#L28)*
+*Defined in [augur-sdk/src/state/getter/Universe.ts:28](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Universe.ts#L28)*
 
 ___
 

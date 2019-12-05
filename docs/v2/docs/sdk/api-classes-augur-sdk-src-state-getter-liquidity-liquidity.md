@@ -30,7 +30,7 @@ sidebar_label: Liquidity
 
 **● getMarketLiquidityRankingParams**: *`TypeC`<`object`>* =  GetMarketLiquidityRankingParams
 
-*Defined in [augur-sdk/src/state/getter/Liquidity.ts:41](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Liquidity.ts#L41)*
+*Defined in [augur-sdk/src/state/getter/Liquidity.ts:41](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Liquidity.ts#L41)*
 
 ___
 
@@ -42,7 +42,7 @@ ___
 
 ▸ **getMarketLiquidityRanking**(augur: *[Augur](api-classes-augur-sdk-src-augur-augur.md)*, db: *[DB](api-classes-augur-sdk-src-state-db-db-db.md)*, params: *`t.TypeOf`<`TypeC`>*): `Promise`<[MarketLiquidityRanking](api-interfaces-augur-sdk-src-state-getter-liquidity-marketliquidityranking.md)>
 
-*Defined in [augur-sdk/src/state/getter/Liquidity.ts:44](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Liquidity.ts#L44)*
+*Defined in [augur-sdk/src/state/getter/Liquidity.ts:44](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Liquidity.ts#L44)*
 
 **Parameters:**
 

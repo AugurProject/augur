@@ -33,7 +33,7 @@ sidebar_label: CalculateGnosisSafeAddressParams
 
 *Inherited from [CreateGnosisSafeViaRelayParams](api-interfaces-augur-sdk-src-api-gnosis-creategnosissafeviarelayparams.md).[owner](api-interfaces-augur-sdk-src-api-gnosis-creategnosissafeviarelayparams.md#owner)*
 
-*Defined in [augur-sdk/src/api/Gnosis.ts:22](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Gnosis.ts#L22)*
+*Defined in [augur-sdk/src/api/Gnosis.ts:22](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Gnosis.ts#L22)*
 
 ___
 <a id="payment"></a>
@@ -42,7 +42,7 @@ ___
 
 **● payment**: *`string`*
 
-*Defined in [augur-sdk/src/api/Gnosis.ts:29](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Gnosis.ts#L29)*
+*Defined in [augur-sdk/src/api/Gnosis.ts:29](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Gnosis.ts#L29)*
 
 ___
 <a id="paymenttoken"></a>
@@ -53,7 +53,7 @@ ___
 
 *Inherited from [CreateGnosisSafeViaRelayParams](api-interfaces-augur-sdk-src-api-gnosis-creategnosissafeviarelayparams.md).[paymentToken](api-interfaces-augur-sdk-src-api-gnosis-creategnosissafeviarelayparams.md#paymenttoken)*
 
-*Defined in [augur-sdk/src/api/Gnosis.ts:23](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Gnosis.ts#L23)*
+*Defined in [augur-sdk/src/api/Gnosis.ts:23](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Gnosis.ts#L23)*
 
 ___
 <a id="safe"></a>
@@ -62,7 +62,7 @@ ___
 
 **● safe**: *`string`*
 
-*Defined in [augur-sdk/src/api/Gnosis.ts:28](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Gnosis.ts#L28)*
+*Defined in [augur-sdk/src/api/Gnosis.ts:28](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Gnosis.ts#L28)*
 
 ___
 

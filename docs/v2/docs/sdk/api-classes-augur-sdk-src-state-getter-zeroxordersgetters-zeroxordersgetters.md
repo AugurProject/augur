@@ -30,7 +30,7 @@ sidebar_label: ZeroXOrdersGetters
 
 **● GetZeroXOrdersParams**: *`PartialC`<`object`>* =  ZeroXOrdersParams
 
-*Defined in [augur-sdk/src/state/getter/ZeroXOrdersGetters.ts:48](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/ZeroXOrdersGetters.ts#L48)*
+*Defined in [augur-sdk/src/state/getter/ZeroXOrdersGetters.ts:48](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/ZeroXOrdersGetters.ts#L48)*
 
 ___
 
@@ -42,7 +42,7 @@ ___
 
 ▸ **getZeroXOrders**(augur: *[Augur](api-classes-augur-sdk-src-augur-augur.md)*, db: *[DB](api-classes-augur-sdk-src-state-db-db-db.md)*, params: *`t.TypeOf`<`PartialC`>*): `Promise`<[ZeroXOrders](api-interfaces-augur-sdk-src-state-getter-zeroxordersgetters-zeroxorders.md)>
 
-*Defined in [augur-sdk/src/state/getter/ZeroXOrdersGetters.ts:53](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/ZeroXOrdersGetters.ts#L53)*
+*Defined in [augur-sdk/src/state/getter/ZeroXOrdersGetters.ts:53](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/ZeroXOrdersGetters.ts#L53)*
 
 **Parameters:**
 
