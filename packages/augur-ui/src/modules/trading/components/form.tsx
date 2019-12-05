@@ -660,7 +660,7 @@ class Form extends Component<FromProps, FormState> {
     );
     const isScalerWithDenomination: boolean = market.marketType === SCALAR;
     // TODO: figure out default outcome after we figure out ordering of the outcomes
-    const defaultOutcome = selectedOutcome ? selectedOutcome.id : 2;
+    const defaultOutcome = selectedOutcome !== null ? selectedOutcome.id : 2;
     let advancedOptions = advancedDropdownOptions;
     if (!Ox_ENABLED) {
       advancedOptions = [advancedOptions[0], advancedOptions[2]];

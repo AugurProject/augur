@@ -505,6 +505,7 @@ export interface QueryEndpoints {
   ethereum_node_http?: string;
   ethereum_node_ws?: string;
   [MARKET_ID_PARAM_NAME]?: string;
+  [OUTCOME_ID_PARAM_NAME]?: string;
   [RETURN_PARAM_NAME]?: string;
   [CATEGORY_PARAM_NAME]?: string;
   [TAGS_PARAM_NAME]?: string;

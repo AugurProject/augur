@@ -301,6 +301,7 @@ export default class MarketCard extends React.Component<
                 showOutcomeNumber={showOutcomeNumber}
                 canDispute={canDispute}
                 canSupport={canSupport}
+                marketId={id}
               />
               {outcomesFormatted &&
                 outcomesFormatted.length > showOutcomeNumber &&
