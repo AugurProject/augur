@@ -32,7 +32,7 @@ sidebar_label: SnapshotCounterDocument
 
 **● snapshotCounter**: *`number`*
 
-*Defined in [augur-sdk/src/state/db/ZeroXOrders.ts:31](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L31)*
+*Defined in [augur-sdk/src/state/db/ZeroXOrders.ts:31](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L31)*
 
 ___
 

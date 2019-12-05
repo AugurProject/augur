@@ -27,7 +27,7 @@ sidebar_label: LiquidityOrderBookInfo
 
 **● lowestSpread**: *`number` \| `undefined`*
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:232](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/getter/Markets.ts#L232)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:232](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Markets.ts#L232)*
 
 ___
 <a id="orderbook"></a>
@@ -36,7 +36,7 @@ ___
 
 **● orderBook**: *[OrderBook](api-interfaces-augur-sdk-src-api-liquidity-orderbook.md)*
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:233](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/getter/Markets.ts#L233)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:233](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Markets.ts#L233)*
 
 ___
 

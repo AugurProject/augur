@@ -36,7 +36,7 @@ sidebar_label: MarketFields
 
 **● _scalarDenomination**: *`string`*
 
-*Defined in [augur-sdk/src/state/db/SyncableFlexSearch.ts:17](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/db/SyncableFlexSearch.ts#L17)*
+*Defined in [augur-sdk/src/state/db/SyncableFlexSearch.ts:17](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/SyncableFlexSearch.ts#L17)*
 
 ___
 <a id="category1"></a>
@@ -45,7 +45,7 @@ ___
 
 **● category1**: *`string`*
 
-*Defined in [augur-sdk/src/state/db/SyncableFlexSearch.ts:12](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/db/SyncableFlexSearch.ts#L12)*
+*Defined in [augur-sdk/src/state/db/SyncableFlexSearch.ts:12](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/SyncableFlexSearch.ts#L12)*
 
 ___
 <a id="category2"></a>
@@ -54,7 +54,7 @@ ___
 
 **● category2**: *`string`*
 
-*Defined in [augur-sdk/src/state/db/SyncableFlexSearch.ts:13](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/db/SyncableFlexSearch.ts#L13)*
+*Defined in [augur-sdk/src/state/db/SyncableFlexSearch.ts:13](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/SyncableFlexSearch.ts#L13)*
 
 ___
 <a id="category3"></a>
@@ -63,7 +63,7 @@ ___
 
 **● category3**: *`string`*
 
-*Defined in [augur-sdk/src/state/db/SyncableFlexSearch.ts:14](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/db/SyncableFlexSearch.ts#L14)*
+*Defined in [augur-sdk/src/state/db/SyncableFlexSearch.ts:14](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/SyncableFlexSearch.ts#L14)*
 
 ___
 <a id="description"></a>
@@ -72,7 +72,7 @@ ___
 
 **● description**: *`string`*
 
-*Defined in [augur-sdk/src/state/db/SyncableFlexSearch.ts:15](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/db/SyncableFlexSearch.ts#L15)*
+*Defined in [augur-sdk/src/state/db/SyncableFlexSearch.ts:15](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/SyncableFlexSearch.ts#L15)*
 
 ___
 <a id="end"></a>
@@ -81,7 +81,7 @@ ___
 
 **● end**: *`Date`*
 
-*Defined in [augur-sdk/src/state/db/SyncableFlexSearch.ts:19](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/db/SyncableFlexSearch.ts#L19)*
+*Defined in [augur-sdk/src/state/db/SyncableFlexSearch.ts:19](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/SyncableFlexSearch.ts#L19)*
 
 ___
 <a id="longdescription"></a>
@@ -90,7 +90,7 @@ ___
 
 **● longDescription**: *`string`*
 
-*Defined in [augur-sdk/src/state/db/SyncableFlexSearch.ts:16](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/db/SyncableFlexSearch.ts#L16)*
+*Defined in [augur-sdk/src/state/db/SyncableFlexSearch.ts:16](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/SyncableFlexSearch.ts#L16)*
 
 ___
 <a id="market"></a>
@@ -99,7 +99,7 @@ ___
 
 **● market**: *`string`*
 
-*Defined in [augur-sdk/src/state/db/SyncableFlexSearch.ts:9](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/db/SyncableFlexSearch.ts#L9)*
+*Defined in [augur-sdk/src/state/db/SyncableFlexSearch.ts:9](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/SyncableFlexSearch.ts#L9)*
 
 ___
 <a id="marketcreator"></a>
@@ -108,7 +108,7 @@ ___
 
 **● marketCreator**: *`string`*
 
-*Defined in [augur-sdk/src/state/db/SyncableFlexSearch.ts:11](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/db/SyncableFlexSearch.ts#L11)*
+*Defined in [augur-sdk/src/state/db/SyncableFlexSearch.ts:11](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/SyncableFlexSearch.ts#L11)*
 
 ___
 <a id="start"></a>
@@ -117,7 +117,7 @@ ___
 
 **● start**: *`Date`*
 
-*Defined in [augur-sdk/src/state/db/SyncableFlexSearch.ts:18](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/db/SyncableFlexSearch.ts#L18)*
+*Defined in [augur-sdk/src/state/db/SyncableFlexSearch.ts:18](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/SyncableFlexSearch.ts#L18)*
 
 ___
 <a id="universe"></a>
@@ -126,7 +126,7 @@ ___
 
 **● universe**: *`string`*
 
-*Defined in [augur-sdk/src/state/db/SyncableFlexSearch.ts:10](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/db/SyncableFlexSearch.ts#L10)*
+*Defined in [augur-sdk/src/state/db/SyncableFlexSearch.ts:10](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/SyncableFlexSearch.ts#L10)*
 
 ___
 

@@ -31,7 +31,7 @@ sidebar_label: AccountTimeRangedStatsResult
 
 **● marketsCreated**: *`number`*
 
-*Defined in [augur-sdk/src/state/getter/Users.ts:78](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/getter/Users.ts#L78)*
+*Defined in [augur-sdk/src/state/getter/Users.ts:78](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Users.ts#L78)*
 
 ___
 <a id="marketstraded"></a>
@@ -40,7 +40,7 @@ ___
 
 **● marketsTraded**: *`number`*
 
-*Defined in [augur-sdk/src/state/getter/Users.ts:81](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/getter/Users.ts#L81)*
+*Defined in [augur-sdk/src/state/getter/Users.ts:81](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Users.ts#L81)*
 
 ___
 <a id="numberoftrades"></a>
@@ -49,7 +49,7 @@ ___
 
 **● numberOfTrades**: *`number`*
 
-*Defined in [augur-sdk/src/state/getter/Users.ts:76](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/getter/Users.ts#L76)*
+*Defined in [augur-sdk/src/state/getter/Users.ts:76](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Users.ts#L76)*
 
 ___
 <a id="positions"></a>
@@ -58,7 +58,7 @@ ___
 
 **● positions**: *`number`*
 
-*Defined in [augur-sdk/src/state/getter/Users.ts:72](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/getter/Users.ts#L72)*
+*Defined in [augur-sdk/src/state/getter/Users.ts:72](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Users.ts#L72)*
 
 ___
 <a id="redeemedpositions"></a>
@@ -67,7 +67,7 @@ ___
 
 **● redeemedPositions**: *`number`*
 
-*Defined in [augur-sdk/src/state/getter/Users.ts:87](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/getter/Users.ts#L87)*
+*Defined in [augur-sdk/src/state/getter/Users.ts:87](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Users.ts#L87)*
 
 ___
 <a id="successfuldisputes"></a>
@@ -76,7 +76,7 @@ ___
 
 **● successfulDisputes**: *`number`*
 
-*Defined in [augur-sdk/src/state/getter/Users.ts:84](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/getter/Users.ts#L84)*
+*Defined in [augur-sdk/src/state/getter/Users.ts:84](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Users.ts#L84)*
 
 ___
 

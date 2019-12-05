@@ -30,7 +30,7 @@ sidebar_label: Status
 
 **● getSyncDataParams**: *`TypeC`<`object`>* =  t.type({})
 
-*Defined in [augur-sdk/src/state/getter/status.ts:14](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/getter/status.ts#L14)*
+*Defined in [augur-sdk/src/state/getter/status.ts:14](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/status.ts#L14)*
 
 ___
 
@@ -42,7 +42,7 @@ ___
 
 ▸ **getSyncData**(augur: *[Augur](api-classes-augur-sdk-src-augur-augur.md)*, db: *[DB](api-classes-augur-sdk-src-state-db-db-db.md)*, params: *`t.TypeOf`<`TypeC`>*): `Promise`<[SyncData](api-interfaces-augur-sdk-src-state-getter-status-syncdata.md)>
 
-*Defined in [augur-sdk/src/state/getter/status.ts:17](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/getter/status.ts#L17)*
+*Defined in [augur-sdk/src/state/getter/status.ts:17](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/status.ts#L17)*
 
 **Parameters:**
 

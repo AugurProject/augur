@@ -54,7 +54,7 @@ sidebar_label: Timestamped
 
 **● timestamp**: *[Timestamp](api-modules-augur-sdk-src-state-logs-types-module.md#timestamp)*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:16](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/logs/types.ts#L16)*
+*Defined in [augur-sdk/src/state/logs/types.ts:16](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/logs/types.ts#L16)*
 
 ___
 

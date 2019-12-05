@@ -33,7 +33,7 @@ sidebar_label: CreateScalarMarketParams
 
 **● affiliateFeeDivisor**: *`BigNumber`*
 
-*Defined in [augur-sdk/src/api/Market.ts:29](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Market.ts#L29)*
+*Defined in [augur-sdk/src/api/Market.ts:29](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Market.ts#L29)*
 
 ___
 <a id="affiliatevalidator"></a>
@@ -42,7 +42,7 @@ ___
 
 **● affiliateValidator**: *`string`*
 
-*Defined in [augur-sdk/src/api/Market.ts:28](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Market.ts#L28)*
+*Defined in [augur-sdk/src/api/Market.ts:28](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Market.ts#L28)*
 
 ___
 <a id="designatedreporter"></a>
@@ -51,7 +51,7 @@ ___
 
 **● designatedReporter**: *`string`*
 
-*Defined in [augur-sdk/src/api/Market.ts:30](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Market.ts#L30)*
+*Defined in [augur-sdk/src/api/Market.ts:30](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Market.ts#L30)*
 
 ___
 <a id="endtime"></a>
@@ -60,7 +60,7 @@ ___
 
 **● endTime**: *`BigNumber`*
 
-*Defined in [augur-sdk/src/api/Market.ts:26](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Market.ts#L26)*
+*Defined in [augur-sdk/src/api/Market.ts:26](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Market.ts#L26)*
 
 ___
 <a id="extrainfo"></a>
@@ -69,7 +69,7 @@ ___
 
 **● extraInfo**: *`string`*
 
-*Defined in [augur-sdk/src/api/Market.ts:31](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Market.ts#L31)*
+*Defined in [augur-sdk/src/api/Market.ts:31](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Market.ts#L31)*
 
 ___
 <a id="feepercashinattocash"></a>
@@ -78,7 +78,7 @@ ___
 
 **● feePerCashInAttoCash**: *`BigNumber`*
 
-*Defined in [augur-sdk/src/api/Market.ts:27](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Market.ts#L27)*
+*Defined in [augur-sdk/src/api/Market.ts:27](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Market.ts#L27)*
 
 ___
 <a id="numticks"></a>
@@ -87,7 +87,7 @@ ___
 
 **● numTicks**: *`BigNumber`*
 
-*Defined in [augur-sdk/src/api/Market.ts:33](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Market.ts#L33)*
+*Defined in [augur-sdk/src/api/Market.ts:33](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Market.ts#L33)*
 
 ___
 <a id="prices"></a>
@@ -96,7 +96,7 @@ ___
 
 **● prices**: *`BigNumber`[]*
 
-*Defined in [augur-sdk/src/api/Market.ts:32](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Market.ts#L32)*
+*Defined in [augur-sdk/src/api/Market.ts:32](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Market.ts#L32)*
 
 ___
 

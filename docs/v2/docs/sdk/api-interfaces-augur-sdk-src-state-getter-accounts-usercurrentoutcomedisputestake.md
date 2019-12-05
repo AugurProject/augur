@@ -30,7 +30,7 @@ sidebar_label: UserCurrentOutcomeDisputeStake
 
 **● isInvalid**: *`boolean`*
 
-*Defined in [augur-sdk/src/state/getter/Accounts.ts:131](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/getter/Accounts.ts#L131)*
+*Defined in [augur-sdk/src/state/getter/Accounts.ts:131](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Accounts.ts#L131)*
 
 ___
 <a id="malformed"></a>
@@ -39,7 +39,7 @@ ___
 
 **● malformed**: *`boolean`*
 
-*Defined in [augur-sdk/src/state/getter/Accounts.ts:132](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/getter/Accounts.ts#L132)*
+*Defined in [augur-sdk/src/state/getter/Accounts.ts:132](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Accounts.ts#L132)*
 
 ___
 <a id="outcome"></a>
@@ -48,7 +48,7 @@ ___
 
 **● outcome**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/Accounts.ts:130](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/getter/Accounts.ts#L130)*
+*Defined in [augur-sdk/src/state/getter/Accounts.ts:130](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Accounts.ts#L130)*
 
 ___
 <a id="payoutnumerators"></a>
@@ -57,7 +57,7 @@ ___
 
 **● payoutNumerators**: *`string`[]*
 
-*Defined in [augur-sdk/src/state/getter/Accounts.ts:133](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/getter/Accounts.ts#L133)*
+*Defined in [augur-sdk/src/state/getter/Accounts.ts:133](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Accounts.ts#L133)*
 
 ___
 <a id="userstakecurrent"></a>
@@ -66,7 +66,7 @@ ___
 
 **● userStakeCurrent**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/Accounts.ts:134](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/getter/Accounts.ts#L134)*
+*Defined in [augur-sdk/src/state/getter/Accounts.ts:134](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Accounts.ts#L134)*
 
 ___
 

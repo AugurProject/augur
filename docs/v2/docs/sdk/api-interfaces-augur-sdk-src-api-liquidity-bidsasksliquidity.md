@@ -27,7 +27,7 @@ sidebar_label: BidsAsksLiquidity
 
 **● asks**: *`BigNumber`*
 
-*Defined in [augur-sdk/src/api/Liquidity.ts:23](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Liquidity.ts#L23)*
+*Defined in [augur-sdk/src/api/Liquidity.ts:23](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Liquidity.ts#L23)*
 
 ___
 <a id="bids"></a>
@@ -36,7 +36,7 @@ ___
 
 **● bids**: *`BigNumber`*
 
-*Defined in [augur-sdk/src/api/Liquidity.ts:22](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Liquidity.ts#L22)*
+*Defined in [augur-sdk/src/api/Liquidity.ts:22](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Liquidity.ts#L22)*
 
 ___
 

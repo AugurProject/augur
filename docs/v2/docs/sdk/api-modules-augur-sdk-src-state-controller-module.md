@@ -26,7 +26,7 @@ sidebar_label: augur-sdk/src/state/Controller
 
 **● settings**: *`any`* =  require('./settings.json')
 
-*Defined in [augur-sdk/src/state/Controller.ts:11](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/Controller.ts#L11)*
+*Defined in [augur-sdk/src/state/Controller.ts:11](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/Controller.ts#L11)*
 
 ___
 

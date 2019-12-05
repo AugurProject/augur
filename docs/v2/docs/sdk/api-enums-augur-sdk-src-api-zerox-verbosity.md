@@ -28,7 +28,7 @@ sidebar_label: Verbosity
 
 **Debug**:  = 5
 
-*Defined in [augur-sdk/src/api/ZeroX.ts:40](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/ZeroX.ts#L40)*
+*Defined in [augur-sdk/src/api/ZeroX.ts:40](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/ZeroX.ts#L40)*
 
 ___
 <a id="error"></a>
@@ -37,7 +37,7 @@ ___
 
 **Error**:  = 2
 
-*Defined in [augur-sdk/src/api/ZeroX.ts:37](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/ZeroX.ts#L37)*
+*Defined in [augur-sdk/src/api/ZeroX.ts:37](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/ZeroX.ts#L37)*
 
 ___
 <a id="fatal"></a>
@@ -46,7 +46,7 @@ ___
 
 **Fatal**:  = 1
 
-*Defined in [augur-sdk/src/api/ZeroX.ts:36](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/ZeroX.ts#L36)*
+*Defined in [augur-sdk/src/api/ZeroX.ts:36](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/ZeroX.ts#L36)*
 
 ___
 <a id="info"></a>
@@ -55,7 +55,7 @@ ___
 
 **Info**:  = 4
 
-*Defined in [augur-sdk/src/api/ZeroX.ts:39](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/ZeroX.ts#L39)*
+*Defined in [augur-sdk/src/api/ZeroX.ts:39](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/ZeroX.ts#L39)*
 
 ___
 <a id="panic"></a>
@@ -64,7 +64,7 @@ ___
 
 **Panic**:  = 0
 
-*Defined in [augur-sdk/src/api/ZeroX.ts:35](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/ZeroX.ts#L35)*
+*Defined in [augur-sdk/src/api/ZeroX.ts:35](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/ZeroX.ts#L35)*
 
 ___
 <a id="trace"></a>
@@ -73,7 +73,7 @@ ___
 
 **Trace**:  = 6
 
-*Defined in [augur-sdk/src/api/ZeroX.ts:41](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/ZeroX.ts#L41)*
+*Defined in [augur-sdk/src/api/ZeroX.ts:41](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/ZeroX.ts#L41)*
 
 ___
 <a id="warn"></a>
@@ -82,7 +82,7 @@ ___
 
 **Warn**:  = 3
 
-*Defined in [augur-sdk/src/api/ZeroX.ts:38](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/ZeroX.ts#L38)*
+*Defined in [augur-sdk/src/api/ZeroX.ts:38](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/ZeroX.ts#L38)*
 
 ___
 

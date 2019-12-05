@@ -28,7 +28,7 @@ sidebar_label: augur-sdk/src/state/create-api
 
 **● settings**: *`any`* =  require('./settings.json')
 
-*Defined in [augur-sdk/src/state/create-api.ts:13](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/create-api.ts#L13)*
+*Defined in [augur-sdk/src/state/create-api.ts:13](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/create-api.ts#L13)*
 
 ___
 
@@ -40,7 +40,7 @@ ___
 
 ▸ **buildAPI**(ethNodeUrl: *`string`*, account?: *`string`*, enableFlexSearch?: *`boolean`*): `Promise`<[API](api-classes-augur-sdk-src-state-getter-api-api.md)>
 
-*Defined in [augur-sdk/src/state/create-api.ts:43](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/create-api.ts#L43)*
+*Defined in [augur-sdk/src/state/create-api.ts:43](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/create-api.ts#L43)*
 
 **Parameters:**
 
@@ -59,7 +59,7 @@ ___
 
 ▸ **buildDeps**(ethNodeUrl: *`string`*, account?: *`string`*, enableFlexSearch?: *`boolean`*): `Promise`<`object`>
 
-*Defined in [augur-sdk/src/state/create-api.ts:15](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/create-api.ts#L15)*
+*Defined in [augur-sdk/src/state/create-api.ts:15](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/create-api.ts#L15)*
 
 **Parameters:**
 
@@ -78,7 +78,7 @@ ___
 
 ▸ **create**(ethNodeUrl: *`string`*, account?: *`string`*, enableFlexSearch?: *`boolean`*): `Promise`<`object`>
 
-*Defined in [augur-sdk/src/state/create-api.ts:34](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/create-api.ts#L34)*
+*Defined in [augur-sdk/src/state/create-api.ts:34](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/create-api.ts#L34)*
 
 **Parameters:**
 

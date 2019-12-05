@@ -27,7 +27,7 @@ sidebar_label: OutcomeOrderBook
 
 **● asks**: *[Order](api-interfaces-augur-sdk-src-api-liquidity-order.md)[]*
 
-*Defined in [augur-sdk/src/api/Liquidity.ts:14](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Liquidity.ts#L14)*
+*Defined in [augur-sdk/src/api/Liquidity.ts:14](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Liquidity.ts#L14)*
 
 ___
 <a id="bids"></a>
@@ -36,7 +36,7 @@ ___
 
 **● bids**: *[Order](api-interfaces-augur-sdk-src-api-liquidity-order.md)[]*
 
-*Defined in [augur-sdk/src/api/Liquidity.ts:13](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Liquidity.ts#L13)*
+*Defined in [augur-sdk/src/api/Liquidity.ts:13](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Liquidity.ts#L13)*
 
 ___
 

@@ -32,7 +32,7 @@ sidebar_label: PlatformActivityStatsResult
 
 **● activeUsers**: *`number`*
 
-*Defined in [augur-sdk/src/state/getter/Platform.ts:24](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/getter/Platform.ts#L24)*
+*Defined in [augur-sdk/src/state/getter/Platform.ts:24](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Platform.ts#L24)*
 
 ___
 <a id="amountstaked"></a>
@@ -41,7 +41,7 @@ ___
 
 **● amountStaked**: *`BigNumber`*
 
-*Defined in [augur-sdk/src/state/getter/Platform.ts:35](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/getter/Platform.ts#L35)*
+*Defined in [augur-sdk/src/state/getter/Platform.ts:35](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Platform.ts#L35)*
 
 ___
 <a id="disputedmarkets"></a>
@@ -50,7 +50,7 @@ ___
 
 **● disputedMarkets**: *`number`*
 
-*Defined in [augur-sdk/src/state/getter/Platform.ts:36](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/getter/Platform.ts#L36)*
+*Defined in [augur-sdk/src/state/getter/Platform.ts:36](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Platform.ts#L36)*
 
 ___
 <a id="marketscreated"></a>
@@ -59,7 +59,7 @@ ___
 
 **● marketsCreated**: *`number`*
 
-*Defined in [augur-sdk/src/state/getter/Platform.ts:32](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/getter/Platform.ts#L32)*
+*Defined in [augur-sdk/src/state/getter/Platform.ts:32](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Platform.ts#L32)*
 
 ___
 <a id="numberoftrades"></a>
@@ -68,7 +68,7 @@ ___
 
 **● numberOfTrades**: *`number`*
 
-*Defined in [augur-sdk/src/state/getter/Platform.ts:28](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/getter/Platform.ts#L28)*
+*Defined in [augur-sdk/src/state/getter/Platform.ts:28](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Platform.ts#L28)*
 
 ___
 <a id="openinterest"></a>
@@ -77,7 +77,7 @@ ___
 
 **● openInterest**: *`BigNumber`*
 
-*Defined in [augur-sdk/src/state/getter/Platform.ts:29](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/getter/Platform.ts#L29)*
+*Defined in [augur-sdk/src/state/getter/Platform.ts:29](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Platform.ts#L29)*
 
 ___
 <a id="volume"></a>
@@ -86,7 +86,7 @@ ___
 
 **● volume**: *`BigNumber`*
 
-*Defined in [augur-sdk/src/state/getter/Platform.ts:34](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/getter/Platform.ts#L34)*
+*Defined in [augur-sdk/src/state/getter/Platform.ts:34](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Platform.ts#L34)*
 
 ___
 

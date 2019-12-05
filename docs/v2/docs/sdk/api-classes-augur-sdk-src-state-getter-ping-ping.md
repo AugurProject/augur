@@ -30,7 +30,7 @@ sidebar_label: Ping
 
 **● PingParams**: *`TypeC`<`object`>* =  t.type({})
 
-*Defined in [augur-sdk/src/state/getter/Ping.ts:10](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/getter/Ping.ts#L10)*
+*Defined in [augur-sdk/src/state/getter/Ping.ts:10](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Ping.ts#L10)*
 
 ___
 
@@ -42,7 +42,7 @@ ___
 
 ▸ **ping**(db: *[DB](api-classes-augur-sdk-src-state-db-db-db.md)*, params: *`t.TypeOf`<`TypeC`>*): `Promise`<[Pong](api-interfaces-augur-sdk-src-state-getter-ping-pong.md)>
 
-*Defined in [augur-sdk/src/state/getter/Ping.ts:13](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/getter/Ping.ts#L13)*
+*Defined in [augur-sdk/src/state/getter/Ping.ts:13](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Ping.ts#L13)*
 
 **Parameters:**
 

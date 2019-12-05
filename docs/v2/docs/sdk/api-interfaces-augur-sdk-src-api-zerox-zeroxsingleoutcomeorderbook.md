@@ -27,7 +27,7 @@ sidebar_label: ZeroXSingleOutcomeOrderBook
 
 **● buyOrders**: *[ZeroXOrder](api-interfaces-augur-sdk-src-api-zerox-zeroxorder.md)[]*
 
-*Defined in [augur-sdk/src/api/ZeroX.ts:77](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/ZeroX.ts#L77)*
+*Defined in [augur-sdk/src/api/ZeroX.ts:77](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/ZeroX.ts#L77)*
 
 ___
 <a id="sellorders"></a>
@@ -36,7 +36,7 @@ ___
 
 **● sellorders**: *[ZeroXOrder](api-interfaces-augur-sdk-src-api-zerox-zeroxorder.md)[]*
 
-*Defined in [augur-sdk/src/api/ZeroX.ts:78](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/ZeroX.ts#L78)*
+*Defined in [augur-sdk/src/api/ZeroX.ts:78](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/ZeroX.ts#L78)*
 
 ___
 

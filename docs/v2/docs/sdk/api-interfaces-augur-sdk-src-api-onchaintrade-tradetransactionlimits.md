@@ -27,7 +27,7 @@ sidebar_label: TradeTransactionLimits
 
 **● gasLimit**: *`BigNumber`*
 
-*Defined in [augur-sdk/src/api/OnChainTrade.ts:41](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/OnChainTrade.ts#L41)*
+*Defined in [augur-sdk/src/api/OnChainTrade.ts:41](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/OnChainTrade.ts#L41)*
 
 ___
 <a id="looplimit"></a>
@@ -36,7 +36,7 @@ ___
 
 **● loopLimit**: *`BigNumber`*
 
-*Defined in [augur-sdk/src/api/OnChainTrade.ts:40](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/OnChainTrade.ts#L40)*
+*Defined in [augur-sdk/src/api/OnChainTrade.ts:40](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/OnChainTrade.ts#L40)*
 
 ___
 

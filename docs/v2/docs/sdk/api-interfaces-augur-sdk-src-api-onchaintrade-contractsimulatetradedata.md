@@ -30,7 +30,7 @@ sidebar_label: ContractSimulateTradeData
 
 **● _numFills**: *`BigNumber`*
 
-*Defined in [augur-sdk/src/api/OnChainTrade.ts:61](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/OnChainTrade.ts#L61)*
+*Defined in [augur-sdk/src/api/OnChainTrade.ts:61](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/OnChainTrade.ts#L61)*
 
 ___
 <a id="_settlementfees"></a>
@@ -39,7 +39,7 @@ ___
 
 **● _settlementFees**: *`BigNumber`*
 
-*Defined in [augur-sdk/src/api/OnChainTrade.ts:58](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/OnChainTrade.ts#L58)*
+*Defined in [augur-sdk/src/api/OnChainTrade.ts:58](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/OnChainTrade.ts#L58)*
 
 ___
 <a id="_sharesdepleted"></a>
@@ -48,7 +48,7 @@ ___
 
 **● _sharesDepleted**: *`BigNumber`*
 
-*Defined in [augur-sdk/src/api/OnChainTrade.ts:59](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/OnChainTrade.ts#L59)*
+*Defined in [augur-sdk/src/api/OnChainTrade.ts:59](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/OnChainTrade.ts#L59)*
 
 ___
 <a id="_sharesfilled"></a>
@@ -57,7 +57,7 @@ ___
 
 **● _sharesFilled**: *`BigNumber`*
 
-*Defined in [augur-sdk/src/api/OnChainTrade.ts:57](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/OnChainTrade.ts#L57)*
+*Defined in [augur-sdk/src/api/OnChainTrade.ts:57](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/OnChainTrade.ts#L57)*
 
 ___
 <a id="_tokensdepleted"></a>
@@ -66,7 +66,7 @@ ___
 
 **● _tokensDepleted**: *`BigNumber`*
 
-*Defined in [augur-sdk/src/api/OnChainTrade.ts:60](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/OnChainTrade.ts#L60)*
+*Defined in [augur-sdk/src/api/OnChainTrade.ts:60](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/OnChainTrade.ts#L60)*
 
 ___
 

@@ -29,7 +29,7 @@ sidebar_label: MarketOrderBookOrder
 
 **● cumulativeShares**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:213](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/getter/Markets.ts#L213)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:213](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Markets.ts#L213)*
 
 ___
 <a id="mysize"></a>
@@ -38,7 +38,7 @@ ___
 
 **● mySize**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:214](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/getter/Markets.ts#L214)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:214](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Markets.ts#L214)*
 
 ___
 <a id="price"></a>
@@ -47,7 +47,7 @@ ___
 
 **● price**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:211](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/getter/Markets.ts#L211)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:211](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Markets.ts#L211)*
 
 ___
 <a id="shares"></a>
@@ -56,7 +56,7 @@ ___
 
 **● shares**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:212](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/getter/Markets.ts#L212)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:212](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Markets.ts#L212)*
 
 ___
 

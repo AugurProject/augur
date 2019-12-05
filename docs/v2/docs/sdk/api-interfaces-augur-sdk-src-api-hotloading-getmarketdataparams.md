@@ -26,7 +26,7 @@ sidebar_label: GetMarketDataParams
 
 **● market**: *`string`*
 
-*Defined in [augur-sdk/src/api/HotLoading.ts:29](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/HotLoading.ts#L29)*
+*Defined in [augur-sdk/src/api/HotLoading.ts:29](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/HotLoading.ts#L29)*
 
 ___
 

@@ -38,7 +38,7 @@ sidebar_label: NativePlaceTradeParams
 
 **● direction**: *`0` \| `1`*
 
-*Defined in [augur-sdk/src/api/OnChainTrade.ts:14](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/OnChainTrade.ts#L14)*
+*Defined in [augur-sdk/src/api/OnChainTrade.ts:14](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/OnChainTrade.ts#L14)*
 
 ___
 <a id="donotcreateorders"></a>
@@ -47,7 +47,7 @@ ___
 
 **● doNotCreateOrders**: *`boolean`*
 
-*Defined in [augur-sdk/src/api/OnChainTrade.ts:22](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/OnChainTrade.ts#L22)*
+*Defined in [augur-sdk/src/api/OnChainTrade.ts:22](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/OnChainTrade.ts#L22)*
 
 ___
 <a id="fingerprint"></a>
@@ -56,7 +56,7 @@ ___
 
 **● fingerprint**: *`string`*
 
-*Defined in [augur-sdk/src/api/OnChainTrade.ts:20](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/OnChainTrade.ts#L20)*
+*Defined in [augur-sdk/src/api/OnChainTrade.ts:20](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/OnChainTrade.ts#L20)*
 
 ___
 <a id="kyctoken"></a>
@@ -65,7 +65,7 @@ ___
 
 **● kycToken**: *`string`*
 
-*Defined in [augur-sdk/src/api/OnChainTrade.ts:21](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/OnChainTrade.ts#L21)*
+*Defined in [augur-sdk/src/api/OnChainTrade.ts:21](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/OnChainTrade.ts#L21)*
 
 ___
 <a id="market"></a>
@@ -74,7 +74,7 @@ ___
 
 **● market**: *`string`*
 
-*Defined in [augur-sdk/src/api/OnChainTrade.ts:15](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/OnChainTrade.ts#L15)*
+*Defined in [augur-sdk/src/api/OnChainTrade.ts:15](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/OnChainTrade.ts#L15)*
 
 ___
 <a id="numoutcomes"></a>
@@ -83,7 +83,7 @@ ___
 
 **● numOutcomes**: *`3` \| `4` \| `5` \| `6` \| `7` \| `8`*
 
-*Defined in [augur-sdk/src/api/OnChainTrade.ts:17](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/OnChainTrade.ts#L17)*
+*Defined in [augur-sdk/src/api/OnChainTrade.ts:17](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/OnChainTrade.ts#L17)*
 
 ___
 <a id="numticks"></a>
@@ -92,7 +92,7 @@ ___
 
 **● numTicks**: *`BigNumber`*
 
-*Defined in [augur-sdk/src/api/OnChainTrade.ts:16](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/OnChainTrade.ts#L16)*
+*Defined in [augur-sdk/src/api/OnChainTrade.ts:16](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/OnChainTrade.ts#L16)*
 
 ___
 <a id="outcome"></a>
@@ -101,7 +101,7 @@ ___
 
 **● outcome**: *`0` \| `1` \| `2` \| `3` \| `4` \| `5` \| `6` \| `7`*
 
-*Defined in [augur-sdk/src/api/OnChainTrade.ts:18](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/OnChainTrade.ts#L18)*
+*Defined in [augur-sdk/src/api/OnChainTrade.ts:18](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/OnChainTrade.ts#L18)*
 
 ___
 <a id="tradegroupid"></a>
@@ -110,7 +110,7 @@ ___
 
 **● tradeGroupId**: *`string`*
 
-*Defined in [augur-sdk/src/api/OnChainTrade.ts:19](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/OnChainTrade.ts#L19)*
+*Defined in [augur-sdk/src/api/OnChainTrade.ts:19](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/OnChainTrade.ts#L19)*
 
 ___
 

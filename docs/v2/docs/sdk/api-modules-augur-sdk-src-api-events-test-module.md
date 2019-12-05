@@ -22,7 +22,7 @@ sidebar_label: augur-sdk/src/api/Events.test
 
 ▸ **makeProviderMock**(opts?: *`any`*): [Provider](api-interfaces-augur-sdk-src-ethereum-provider-provider.md)
 
-*Defined in [augur-sdk/src/api/Events.test.ts:8](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Events.test.ts#L8)*
+*Defined in [augur-sdk/src/api/Events.test.ts:8](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Events.test.ts#L8)*
 
 **Parameters:**
 

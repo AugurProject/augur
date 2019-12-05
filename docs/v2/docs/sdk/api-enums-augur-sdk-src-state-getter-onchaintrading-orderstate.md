@@ -25,7 +25,7 @@ sidebar_label: OrderState
 
 **ALL**:  = "ALL"
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:86](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L86)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:86](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L86)*
 
 ___
 <a id="canceled"></a>
@@ -34,7 +34,7 @@ ___
 
 **CANCELED**:  = "CANCELED"
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:89](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L89)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:89](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L89)*
 
 ___
 <a id="filled"></a>
@@ -43,7 +43,7 @@ ___
 
 **FILLED**:  = "FILLED"
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:88](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L88)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:88](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L88)*
 
 ___
 <a id="open"></a>
@@ -52,7 +52,7 @@ ___
 
 **OPEN**:  = "OPEN"
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:87](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L87)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:87](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L87)*
 
 ___
 

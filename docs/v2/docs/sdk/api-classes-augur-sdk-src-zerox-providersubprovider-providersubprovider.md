@@ -39,7 +39,7 @@ sidebar_label: ProviderSubprovider
 
 ⊕ **new ProviderSubprovider**(provider: *[Provider](api-interfaces-augur-sdk-src-ethereum-provider-provider.md)*): [ProviderSubprovider](api-classes-augur-sdk-src-zerox-providersubprovider-providersubprovider.md)
 
-*Defined in [augur-sdk/src/zeroX/ProviderSubprovider.ts:9](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/zeroX/ProviderSubprovider.ts#L9)*
+*Defined in [augur-sdk/src/zeroX/ProviderSubprovider.ts:9](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/zeroX/ProviderSubprovider.ts#L9)*
 
 Instantiates a new SignerSubprovider
 
@@ -61,7 +61,7 @@ ___
 
 **● provider**: *[Provider](api-interfaces-augur-sdk-src-ethereum-provider-provider.md)*
 
-*Defined in [augur-sdk/src/zeroX/ProviderSubprovider.ts:9](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/zeroX/ProviderSubprovider.ts#L9)*
+*Defined in [augur-sdk/src/zeroX/ProviderSubprovider.ts:9](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/zeroX/ProviderSubprovider.ts#L9)*
 
 ___
 
@@ -97,7 +97,7 @@ ___
 
 *Overrides Subprovider.handleRequest*
 
-*Defined in [augur-sdk/src/zeroX/ProviderSubprovider.ts:27](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/zeroX/ProviderSubprovider.ts#L27)*
+*Defined in [augur-sdk/src/zeroX/ProviderSubprovider.ts:27](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/zeroX/ProviderSubprovider.ts#L27)*
 
 This method conforms to the web3-provider-engine interface. It is called internally by the ProviderEngine when it is this subproviders turn to handle a JSON RPC request.
 

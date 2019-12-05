@@ -36,7 +36,7 @@ sidebar_label: OutcomeOrderBook
 
 **● spread**: *`null`*
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:223](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/getter/Markets.ts#L223)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:223](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Markets.ts#L223)*
 
 ___
 

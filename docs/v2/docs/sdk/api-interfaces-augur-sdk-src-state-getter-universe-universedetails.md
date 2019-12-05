@@ -34,7 +34,7 @@ sidebar_label: UniverseDetails
 
 **● children**: *[UniverseDetails](api-interfaces-augur-sdk-src-state-getter-universe-universedetails.md)[]*
 
-*Defined in [augur-sdk/src/state/getter/Universe.ts:49](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/getter/Universe.ts#L49)*
+*Defined in [augur-sdk/src/state/getter/Universe.ts:49](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Universe.ts#L49)*
 
 ___
 <a id="creationtimestamp"></a>
@@ -43,7 +43,7 @@ ___
 
 **● creationTimestamp**: *`number`*
 
-*Defined in [augur-sdk/src/state/getter/Universe.ts:43](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/getter/Universe.ts#L43)*
+*Defined in [augur-sdk/src/state/getter/Universe.ts:43](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Universe.ts#L43)*
 
 ___
 <a id="id"></a>
@@ -52,7 +52,7 @@ ___
 
 **● id**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/Universe.ts:41](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/getter/Universe.ts#L41)*
+*Defined in [augur-sdk/src/state/getter/Universe.ts:41](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Universe.ts#L41)*
 
 ___
 <a id="numberofmarkets"></a>
@@ -61,7 +61,7 @@ ___
 
 **● numberOfMarkets**: *`number`*
 
-*Defined in [augur-sdk/src/state/getter/Universe.ts:48](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/getter/Universe.ts#L48)*
+*Defined in [augur-sdk/src/state/getter/Universe.ts:48](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Universe.ts#L48)*
 
 ___
 <a id="outcomename"></a>
@@ -70,7 +70,7 @@ ___
 
 **● outcomeName**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/Universe.ts:44](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/getter/Universe.ts#L44)*
+*Defined in [augur-sdk/src/state/getter/Universe.ts:44](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Universe.ts#L44)*
 
 ___
 <a id="parentuniverseid"></a>
@@ -79,7 +79,7 @@ ___
 
 **● parentUniverseId**: *`string` \| `null`*
 
-*Defined in [augur-sdk/src/state/getter/Universe.ts:42](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/getter/Universe.ts#L42)*
+*Defined in [augur-sdk/src/state/getter/Universe.ts:42](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Universe.ts#L42)*
 
 ___
 <a id="totalopeninterest"></a>
@@ -88,7 +88,7 @@ ___
 
 **● totalOpenInterest**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/Universe.ts:47](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/getter/Universe.ts#L47)*
+*Defined in [augur-sdk/src/state/getter/Universe.ts:47](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Universe.ts#L47)*
 
 ___
 <a id="totalrepsupply"></a>
@@ -97,7 +97,7 @@ ___
 
 **● totalRepSupply**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/Universe.ts:46](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/getter/Universe.ts#L46)*
+*Defined in [augur-sdk/src/state/getter/Universe.ts:46](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Universe.ts#L46)*
 
 ___
 <a id="usersrep"></a>
@@ -106,7 +106,7 @@ ___
 
 **● usersRep**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/Universe.ts:45](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/getter/Universe.ts#L45)*
+*Defined in [augur-sdk/src/state/getter/Universe.ts:45](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Universe.ts#L45)*
 
 ___
 

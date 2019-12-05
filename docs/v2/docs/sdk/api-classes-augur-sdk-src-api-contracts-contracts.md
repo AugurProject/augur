@@ -70,7 +70,7 @@ sidebar_label: Contracts
 
 ⊕ **new Contracts**(addresses: *`ContractAddresses`*, dependencies: *`ContractDependenciesEthers`*): [Contracts](api-classes-augur-sdk-src-api-contracts-contracts.md)
 
-*Defined in [augur-sdk/src/api/Contracts.ts:35](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Contracts.ts#L35)*
+*Defined in [augur-sdk/src/api/Contracts.ts:35](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Contracts.ts#L35)*
 
 **Parameters:**
 
@@ -91,7 +91,7 @@ ___
 
 **● ZeroXTrade**: *`ZeroXTrade`*
 
-*Defined in [augur-sdk/src/api/Contracts.ts:24](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Contracts.ts#L24)*
+*Defined in [augur-sdk/src/api/Contracts.ts:24](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Contracts.ts#L24)*
 
 ___
 <a id="affiliatevalidator"></a>
@@ -100,7 +100,7 @@ ___
 
 **● affiliateValidator**: *`AffiliateValidator`*
 
-*Defined in [augur-sdk/src/api/Contracts.ts:32](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Contracts.ts#L32)*
+*Defined in [augur-sdk/src/api/Contracts.ts:32](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Contracts.ts#L32)*
 
 ___
 <a id="affiliates"></a>
@@ -109,7 +109,7 @@ ___
 
 **● affiliates**: *`Affiliates`*
 
-*Defined in [augur-sdk/src/api/Contracts.ts:31](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Contracts.ts#L31)*
+*Defined in [augur-sdk/src/api/Contracts.ts:31](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Contracts.ts#L31)*
 
 ___
 <a id="augur"></a>
@@ -118,7 +118,7 @@ ___
 
 **● augur**: *`Augur`*
 
-*Defined in [augur-sdk/src/api/Contracts.ts:9](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Contracts.ts#L9)*
+*Defined in [augur-sdk/src/api/Contracts.ts:9](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Contracts.ts#L9)*
 
 ___
 <a id="augurtrading"></a>
@@ -127,7 +127,7 @@ ___
 
 **● augurTrading**: *`AugurTrading`*
 
-*Defined in [augur-sdk/src/api/Contracts.ts:10](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Contracts.ts#L10)*
+*Defined in [augur-sdk/src/api/Contracts.ts:10](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Contracts.ts#L10)*
 
 ___
 <a id="buyparticipationtokens"></a>
@@ -136,7 +136,7 @@ ___
 
 **● buyParticipationTokens**: *`BuyParticipationTokens`*
 
-*Defined in [augur-sdk/src/api/Contracts.ts:25](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Contracts.ts#L25)*
+*Defined in [augur-sdk/src/api/Contracts.ts:25](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Contracts.ts#L25)*
 
 ___
 <a id="cancelorder"></a>
@@ -145,7 +145,7 @@ ___
 
 **● cancelOrder**: *`CancelOrder`*
 
-*Defined in [augur-sdk/src/api/Contracts.ts:15](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Contracts.ts#L15)*
+*Defined in [augur-sdk/src/api/Contracts.ts:15](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Contracts.ts#L15)*
 
 ___
 <a id="cash"></a>
@@ -154,7 +154,7 @@ ___
 
 **● cash**: *`Cash`*
 
-*Defined in [augur-sdk/src/api/Contracts.ts:12](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Contracts.ts#L12)*
+*Defined in [augur-sdk/src/api/Contracts.ts:12](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Contracts.ts#L12)*
 
 ___
 <a id="cashfaucet"></a>
@@ -163,7 +163,7 @@ ___
 
 **● cashFaucet**: *`CashFaucet`*
 
-*Defined in [augur-sdk/src/api/Contracts.ts:27](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Contracts.ts#L27)*
+*Defined in [augur-sdk/src/api/Contracts.ts:27](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Contracts.ts#L27)*
 
 ___
 <a id="createorder"></a>
@@ -172,7 +172,7 @@ ___
 
 **● createOrder**: *`CreateOrder`*
 
-*Defined in [augur-sdk/src/api/Contracts.ts:14](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Contracts.ts#L14)*
+*Defined in [augur-sdk/src/api/Contracts.ts:14](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Contracts.ts#L14)*
 
 ___
 <a id="dependencies"></a>
@@ -181,7 +181,7 @@ ___
 
 **● dependencies**: *`ContractDependenciesEthers`*
 
-*Defined in [augur-sdk/src/api/Contracts.ts:35](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Contracts.ts#L35)*
+*Defined in [augur-sdk/src/api/Contracts.ts:35](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Contracts.ts#L35)*
 
 ___
 <a id="fillorder"></a>
@@ -190,7 +190,7 @@ ___
 
 **● fillOrder**: *`FillOrder`*
 
-*Defined in [augur-sdk/src/api/Contracts.ts:16](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Contracts.ts#L16)*
+*Defined in [augur-sdk/src/api/Contracts.ts:16](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Contracts.ts#L16)*
 
 ___
 <a id="gnosissafe"></a>
@@ -199,7 +199,7 @@ ___
 
 **● gnosisSafe**: *`GnosisSafe`*
 
-*Defined in [augur-sdk/src/api/Contracts.ts:22](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Contracts.ts#L22)*
+*Defined in [augur-sdk/src/api/Contracts.ts:22](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Contracts.ts#L22)*
 
 ___
 <a id="gnosissaferegistry"></a>
@@ -208,7 +208,7 @@ ___
 
 **● gnosisSafeRegistry**: *`GnosisSafeRegistry`*
 
-*Defined in [augur-sdk/src/api/Contracts.ts:28](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Contracts.ts#L28)*
+*Defined in [augur-sdk/src/api/Contracts.ts:28](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Contracts.ts#L28)*
 
 ___
 <a id="hotloading"></a>
@@ -217,7 +217,7 @@ ___
 
 **● hotLoading**: *`HotLoading`*
 
-*Defined in [augur-sdk/src/api/Contracts.ts:29](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Contracts.ts#L29)*
+*Defined in [augur-sdk/src/api/Contracts.ts:29](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Contracts.ts#L29)*
 
 ___
 <a id="legacyreputationtoken"></a>
@@ -226,7 +226,7 @@ ___
 
 **● legacyReputationToken**: *`LegacyReputationToken`*
 
-*Defined in [augur-sdk/src/api/Contracts.ts:20](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Contracts.ts#L20)*
+*Defined in [augur-sdk/src/api/Contracts.ts:20](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Contracts.ts#L20)*
 
 ___
 <a id="orders"></a>
@@ -235,7 +235,7 @@ ___
 
 **● orders**: *`Orders`*
 
-*Defined in [augur-sdk/src/api/Contracts.ts:13](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Contracts.ts#L13)*
+*Defined in [augur-sdk/src/api/Contracts.ts:13](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Contracts.ts#L13)*
 
 ___
 <a id="proxyfactory"></a>
@@ -244,7 +244,7 @@ ___
 
 **● proxyFactory**: *`ProxyFactory`*
 
-*Defined in [augur-sdk/src/api/Contracts.ts:23](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Contracts.ts#L23)*
+*Defined in [augur-sdk/src/api/Contracts.ts:23](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Contracts.ts#L23)*
 
 ___
 <a id="redeemstake"></a>
@@ -253,7 +253,7 @@ ___
 
 **● redeemStake**: *`RedeemStake`*
 
-*Defined in [augur-sdk/src/api/Contracts.ts:26](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Contracts.ts#L26)*
+*Defined in [augur-sdk/src/api/Contracts.ts:26](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Contracts.ts#L26)*
 
 ___
 <a id="reputationtoken"></a>
@@ -262,7 +262,7 @@ ___
 
 **● reputationToken**: *[SomeRepToken](api-modules-augur-sdk-src-api-contracts-module.md#somereptoken) \| `null`* =  null
 
-*Defined in [augur-sdk/src/api/Contracts.ts:34](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Contracts.ts#L34)*
+*Defined in [augur-sdk/src/api/Contracts.ts:34](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Contracts.ts#L34)*
 
 ___
 <a id="sharetoken"></a>
@@ -271,7 +271,7 @@ ___
 
 **● shareToken**: *`ShareToken`*
 
-*Defined in [augur-sdk/src/api/Contracts.ts:18](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Contracts.ts#L18)*
+*Defined in [augur-sdk/src/api/Contracts.ts:18](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Contracts.ts#L18)*
 
 ___
 <a id="simulatetrade"></a>
@@ -280,7 +280,7 @@ ___
 
 **● simulateTrade**: *`SimulateTrade`*
 
-*Defined in [augur-sdk/src/api/Contracts.ts:21](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Contracts.ts#L21)*
+*Defined in [augur-sdk/src/api/Contracts.ts:21](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Contracts.ts#L21)*
 
 ___
 <a id="time"></a>
@@ -289,7 +289,7 @@ ___
 
 **● time**: *[SomeTime](api-modules-augur-sdk-src-api-contracts-module.md#sometime) \| `void`*
 
-*Defined in [augur-sdk/src/api/Contracts.ts:19](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Contracts.ts#L19)*
+*Defined in [augur-sdk/src/api/Contracts.ts:19](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Contracts.ts#L19)*
 
 ___
 <a id="trade"></a>
@@ -298,7 +298,7 @@ ___
 
 **● trade**: *`Trade`*
 
-*Defined in [augur-sdk/src/api/Contracts.ts:17](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Contracts.ts#L17)*
+*Defined in [augur-sdk/src/api/Contracts.ts:17](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Contracts.ts#L17)*
 
 ___
 <a id="universe"></a>
@@ -307,7 +307,7 @@ ___
 
 **● universe**: *`Universe`*
 
-*Defined in [augur-sdk/src/api/Contracts.ts:11](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Contracts.ts#L11)*
+*Defined in [augur-sdk/src/api/Contracts.ts:11](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Contracts.ts#L11)*
 
 ___
 <a id="zeroxexchange"></a>
@@ -316,7 +316,7 @@ ___
 
 **● zeroXExchange**: *`Exchange`*
 
-*Defined in [augur-sdk/src/api/Contracts.ts:30](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Contracts.ts#L30)*
+*Defined in [augur-sdk/src/api/Contracts.ts:30](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Contracts.ts#L30)*
 
 ___
 
@@ -328,7 +328,7 @@ ___
 
 ▸ **disputeWindowFromAddress**(address: *`string`*): `DisputeWindow`
 
-*Defined in [augur-sdk/src/api/Contracts.ts:110](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Contracts.ts#L110)*
+*Defined in [augur-sdk/src/api/Contracts.ts:110](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Contracts.ts#L110)*
 
 **Parameters:**
 
@@ -345,7 +345,7 @@ ___
 
 ▸ **getInitialReporter**(initialReporterAddress: *`string`*): `InitialReporter`
 
-*Defined in [augur-sdk/src/api/Contracts.ts:114](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Contracts.ts#L114)*
+*Defined in [augur-sdk/src/api/Contracts.ts:114](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Contracts.ts#L114)*
 
 **Parameters:**
 
@@ -362,7 +362,7 @@ ___
 
 ▸ **getReportingParticipant**(reportingParticipantAddress: *`string`*): `DisputeCrowdsourcer`
 
-*Defined in [augur-sdk/src/api/Contracts.ts:118](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Contracts.ts#L118)*
+*Defined in [augur-sdk/src/api/Contracts.ts:118](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Contracts.ts#L118)*
 
 **Parameters:**
 
@@ -379,7 +379,7 @@ ___
 
 ▸ **getReputationToken**(): [SomeRepToken](api-modules-augur-sdk-src-api-contracts-module.md#somereptoken)
 
-*Defined in [augur-sdk/src/api/Contracts.ts:80](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Contracts.ts#L80)*
+*Defined in [augur-sdk/src/api/Contracts.ts:80](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Contracts.ts#L80)*
 
 **Returns:** [SomeRepToken](api-modules-augur-sdk-src-api-contracts-module.md#somereptoken)
 
@@ -390,7 +390,7 @@ ___
 
 ▸ **getTime**(): [SomeTime](api-modules-augur-sdk-src-api-contracts-module.md#sometime)
 
-*Defined in [augur-sdk/src/api/Contracts.ts:72](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Contracts.ts#L72)*
+*Defined in [augur-sdk/src/api/Contracts.ts:72](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Contracts.ts#L72)*
 
 **Returns:** [SomeTime](api-modules-augur-sdk-src-api-contracts-module.md#sometime)
 
@@ -401,7 +401,7 @@ ___
 
 ▸ **gnosisSafeFromAddress**(address: *`string`*): `GnosisSafe`
 
-*Defined in [augur-sdk/src/api/Contracts.ts:126](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Contracts.ts#L126)*
+*Defined in [augur-sdk/src/api/Contracts.ts:126](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Contracts.ts#L126)*
 
 **Parameters:**
 
@@ -418,7 +418,7 @@ ___
 
 ▸ **isTimeControlled**(contract: *[SomeTime](api-modules-augur-sdk-src-api-contracts-module.md#sometime)*): `boolean`
 
-*Defined in [augur-sdk/src/api/Contracts.ts:122](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Contracts.ts#L122)*
+*Defined in [augur-sdk/src/api/Contracts.ts:122](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Contracts.ts#L122)*
 
 **Parameters:**
 
@@ -435,7 +435,7 @@ ___
 
 ▸ **marketFromAddress**(address: *`string`*): `Market`
 
-*Defined in [augur-sdk/src/api/Contracts.ts:102](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Contracts.ts#L102)*
+*Defined in [augur-sdk/src/api/Contracts.ts:102](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Contracts.ts#L102)*
 
 **Parameters:**
 
@@ -452,7 +452,7 @@ ___
 
 ▸ **reputationTokenFromAddress**(address: *`string`*, networkId: *`string`*): [SomeRepToken](api-modules-augur-sdk-src-api-contracts-module.md#somereptoken)
 
-*Defined in [augur-sdk/src/api/Contracts.ts:93](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Contracts.ts#L93)*
+*Defined in [augur-sdk/src/api/Contracts.ts:93](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Contracts.ts#L93)*
 
 **Parameters:**
 
@@ -470,7 +470,7 @@ ___
 
 ▸ **setReputationToken**(networkId: *`string`*): `Promise`<`void`>
 
-*Defined in [augur-sdk/src/api/Contracts.ts:88](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Contracts.ts#L88)*
+*Defined in [augur-sdk/src/api/Contracts.ts:88](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Contracts.ts#L88)*
 
 **Parameters:**
 
@@ -487,7 +487,7 @@ ___
 
 ▸ **shareTokenFromAddress**(address: *`string`*): `ShareToken`
 
-*Defined in [augur-sdk/src/api/Contracts.ts:106](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Contracts.ts#L106)*
+*Defined in [augur-sdk/src/api/Contracts.ts:106](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Contracts.ts#L106)*
 
 **Parameters:**
 
@@ -504,7 +504,7 @@ ___
 
 ▸ **universeFromAddress**(address: *`string`*): `Universe`
 
-*Defined in [augur-sdk/src/api/Contracts.ts:98](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Contracts.ts#L98)*
+*Defined in [augur-sdk/src/api/Contracts.ts:98](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Contracts.ts#L98)*
 
 **Parameters:**
 

@@ -29,7 +29,7 @@ sidebar_label: GnosisSafeDeploymentStatusParams
 
 **● owner**: *[Address](api-modules-augur-sdk-src-state-logs-types-module.md#address)*
 
-*Defined in [augur-sdk/src/api/Gnosis.ts:33](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Gnosis.ts#L33)*
+*Defined in [augur-sdk/src/api/Gnosis.ts:33](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Gnosis.ts#L33)*
 
 ___
 <a id="safe"></a>
@@ -38,7 +38,7 @@ ___
 
 **● safe**: *[Address](api-modules-augur-sdk-src-state-logs-types-module.md#address)*
 
-*Defined in [augur-sdk/src/api/Gnosis.ts:34](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Gnosis.ts#L34)*
+*Defined in [augur-sdk/src/api/Gnosis.ts:34](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Gnosis.ts#L34)*
 
 ___
 

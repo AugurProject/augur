@@ -29,7 +29,7 @@ sidebar_label: CreateGnosisSafeViaRelayParams
 
 **● owner**: *`string`*
 
-*Defined in [augur-sdk/src/api/Gnosis.ts:22](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Gnosis.ts#L22)*
+*Defined in [augur-sdk/src/api/Gnosis.ts:22](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Gnosis.ts#L22)*
 
 ___
 <a id="paymenttoken"></a>
@@ -38,7 +38,7 @@ ___
 
 **● paymentToken**: *`string`*
 
-*Defined in [augur-sdk/src/api/Gnosis.ts:23](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Gnosis.ts#L23)*
+*Defined in [augur-sdk/src/api/Gnosis.ts:23](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Gnosis.ts#L23)*
 
 ___
 

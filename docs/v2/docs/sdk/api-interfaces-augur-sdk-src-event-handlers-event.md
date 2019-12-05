@@ -30,7 +30,7 @@ sidebar_label: Event
 
 **● eventName**: *`string`*
 
-*Defined in [augur-sdk/src/event-handlers.ts:8](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/event-handlers.ts#L8)*
+*Defined in [augur-sdk/src/event-handlers.ts:8](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/event-handlers.ts#L8)*
 
 ___
 

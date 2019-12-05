@@ -28,7 +28,7 @@ sidebar_label: MarketListMeta
 
 **● categories**: *[MarketListMetaCategories](api-interfaces-augur-sdk-src-state-getter-markets-marketlistmetacategories.md)*
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:108](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/getter/Markets.ts#L108)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:108](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Markets.ts#L108)*
 
 ___
 <a id="filteredoutcount"></a>
@@ -37,7 +37,7 @@ ___
 
 **● filteredOutCount**: *`number`*
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:109](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/getter/Markets.ts#L109)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:109](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Markets.ts#L109)*
 
 ___
 <a id="marketcount"></a>
@@ -46,7 +46,7 @@ ___
 
 **● marketCount**: *`number`*
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:110](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/getter/Markets.ts#L110)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:110](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Markets.ts#L110)*
 
 ___
 

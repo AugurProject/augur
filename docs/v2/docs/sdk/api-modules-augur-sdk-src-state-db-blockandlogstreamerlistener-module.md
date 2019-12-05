@@ -37,7 +37,7 @@ sidebar_label: augur-sdk/src/state/db/BlockAndLogStreamerListener
 
 **Ƭ BlockCallback**: *`function`*
 
-*Defined in [augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:53](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L53)*
+*Defined in [augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:53](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L53)*
 
 #### Type declaration
 ▸(block: *`Block`*): `void`
@@ -57,7 +57,7 @@ ___
 
 **Ƭ EventTopics**: *`string` \| `string`[]*
 
-*Defined in [augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:70](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L70)*
+*Defined in [augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:70](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L70)*
 
 ___
 <a id="genericlogcallbacktype"></a>
@@ -66,7 +66,7 @@ ___
 
 **Ƭ GenericLogCallbackType**: *`function`*
 
-*Defined in [augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:51](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L51)*
+*Defined in [augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:51](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L51)*
 
 #### Type declaration
 ▸(blockIdentifier: *`T`*, logs: *`P`[]*): `void`
@@ -87,7 +87,7 @@ ___
 
 **Ƭ LogCallbackType**: *[GenericLogCallbackType](api-modules-augur-sdk-src-state-db-blockandlogstreamerlistener-module.md#genericlogcallbacktype)<`number`, [ParsedLog](api-interfaces-augur-types-types-logs-parsedlog.md)>*
 
-*Defined in [augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:55](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L55)*
+*Defined in [augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:55](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L55)*
 
 ___
 

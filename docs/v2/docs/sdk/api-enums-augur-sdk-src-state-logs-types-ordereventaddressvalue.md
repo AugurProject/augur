@@ -24,7 +24,7 @@ sidebar_label: OrderEventAddressValue
 
 **kycToken**:  = 0
 
-*Defined in [augur-sdk/src/state/logs/types.ts:262](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/logs/types.ts#L262)*
+*Defined in [augur-sdk/src/state/logs/types.ts:262](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/logs/types.ts#L262)*
 
 ___
 <a id="ordercreator"></a>
@@ -33,7 +33,7 @@ ___
 
 **orderCreator**:  = 1
 
-*Defined in [augur-sdk/src/state/logs/types.ts:263](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/logs/types.ts#L263)*
+*Defined in [augur-sdk/src/state/logs/types.ts:263](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/logs/types.ts#L263)*
 
 ___
 <a id="orderfiller"></a>
@@ -42,7 +42,7 @@ ___
 
 **orderFiller**:  = 2
 
-*Defined in [augur-sdk/src/state/logs/types.ts:264](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/logs/types.ts#L264)*
+*Defined in [augur-sdk/src/state/logs/types.ts:264](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/logs/types.ts#L264)*
 
 ___
 

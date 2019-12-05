@@ -24,7 +24,7 @@ sidebar_label: OrderEventType
 
 **Cancel**:  = 1
 
-*Defined in [augur-sdk/src/state/logs/types.ts:250](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/logs/types.ts#L250)*
+*Defined in [augur-sdk/src/state/logs/types.ts:250](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/logs/types.ts#L250)*
 
 ___
 <a id="create"></a>
@@ -33,7 +33,7 @@ ___
 
 **Create**:  = 0
 
-*Defined in [augur-sdk/src/state/logs/types.ts:249](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/logs/types.ts#L249)*
+*Defined in [augur-sdk/src/state/logs/types.ts:249](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/logs/types.ts#L249)*
 
 ___
 <a id="fill"></a>
@@ -42,7 +42,7 @@ ___
 
 **Fill**:  = 2
 
-*Defined in [augur-sdk/src/state/logs/types.ts:251](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/logs/types.ts#L251)*
+*Defined in [augur-sdk/src/state/logs/types.ts:251](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/logs/types.ts#L251)*
 
 ___
 

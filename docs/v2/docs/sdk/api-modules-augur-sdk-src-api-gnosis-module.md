@@ -34,7 +34,7 @@ sidebar_label: augur-sdk/src/api/Gnosis
 
 **● AUGUR_GNOSIS_SAFE_NONCE**: *`872838000000`* = 872838000000
 
-*Defined in [augur-sdk/src/api/Gnosis.ts:19](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Gnosis.ts#L19)*
+*Defined in [augur-sdk/src/api/Gnosis.ts:19](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Gnosis.ts#L19)*
 
 ___
 <a id="intervalid"></a>
@@ -43,7 +43,7 @@ ___
 
 **● intervalId**: *`any`* =  null
 
-*Defined in [augur-sdk/src/api/Gnosis.ts:44](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/Gnosis.ts#L44)*
+*Defined in [augur-sdk/src/api/Gnosis.ts:44](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/Gnosis.ts#L44)*
 
 ___
 

@@ -27,7 +27,7 @@ sidebar_label: GetDisputeWindowParams
 
 **● augur**: *[Address](api-modules-augur-sdk-src-state-logs-types-module.md#address)*
 
-*Defined in [augur-sdk/src/api/HotLoading.ts:16](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/HotLoading.ts#L16)*
+*Defined in [augur-sdk/src/api/HotLoading.ts:16](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/HotLoading.ts#L16)*
 
 ___
 <a id="universe"></a>
@@ -36,7 +36,7 @@ ___
 
 **● universe**: *[Address](api-modules-augur-sdk-src-state-logs-types-module.md#address)*
 
-*Defined in [augur-sdk/src/api/HotLoading.ts:17](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/api/HotLoading.ts#L17)*
+*Defined in [augur-sdk/src/api/HotLoading.ts:17](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/api/HotLoading.ts#L17)*
 
 ___
 

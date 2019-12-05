@@ -30,7 +30,7 @@ sidebar_label: augur-sdk/src/state/getter/Router
 
 **Ƭ GetterFunction**: *`function`*
 
-*Defined in [augur-sdk/src/state/getter/Router.ts:32](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/getter/Router.ts#L32)*
+*Defined in [augur-sdk/src/state/getter/Router.ts:32](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Router.ts#L32)*
 
 #### Type declaration
 ▸(db: *[DB](api-classes-augur-sdk-src-state-db-db-db.md)*, params: *`T`*): `Promise`<`unknown`>
@@ -54,7 +54,7 @@ ___
 
 ▸ **Getter**(alternateInterface?: *`string`*): `(Anonymous function)`
 
-*Defined in [augur-sdk/src/state/getter/Router.ts:8](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/getter/Router.ts#L8)*
+*Defined in [augur-sdk/src/state/getter/Router.ts:8](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/Router.ts#L8)*
 
 **Parameters:**
 

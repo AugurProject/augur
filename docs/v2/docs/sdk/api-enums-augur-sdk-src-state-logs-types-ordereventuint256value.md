@@ -31,7 +31,7 @@ sidebar_label: OrderEventUint256Value
 
 **amount**:  = 1
 
-*Defined in [augur-sdk/src/state/logs/types.ts:269](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/logs/types.ts#L269)*
+*Defined in [augur-sdk/src/state/logs/types.ts:269](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/logs/types.ts#L269)*
 
 ___
 <a id="amountfilled"></a>
@@ -40,7 +40,7 @@ ___
 
 **amountFilled**:  = 6
 
-*Defined in [augur-sdk/src/state/logs/types.ts:274](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/logs/types.ts#L274)*
+*Defined in [augur-sdk/src/state/logs/types.ts:274](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/logs/types.ts#L274)*
 
 ___
 <a id="fees"></a>
@@ -49,7 +49,7 @@ ___
 
 **fees**:  = 5
 
-*Defined in [augur-sdk/src/state/logs/types.ts:273](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/logs/types.ts#L273)*
+*Defined in [augur-sdk/src/state/logs/types.ts:273](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/logs/types.ts#L273)*
 
 ___
 <a id="outcome"></a>
@@ -58,7 +58,7 @@ ___
 
 **outcome**:  = 2
 
-*Defined in [augur-sdk/src/state/logs/types.ts:270](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/logs/types.ts#L270)*
+*Defined in [augur-sdk/src/state/logs/types.ts:270](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/logs/types.ts#L270)*
 
 ___
 <a id="price"></a>
@@ -67,7 +67,7 @@ ___
 
 **price**:  = 0
 
-*Defined in [augur-sdk/src/state/logs/types.ts:268](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/logs/types.ts#L268)*
+*Defined in [augur-sdk/src/state/logs/types.ts:268](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/logs/types.ts#L268)*
 
 ___
 <a id="sharesescrowed"></a>
@@ -76,7 +76,7 @@ ___
 
 **sharesEscrowed**:  = 8
 
-*Defined in [augur-sdk/src/state/logs/types.ts:276](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/logs/types.ts#L276)*
+*Defined in [augur-sdk/src/state/logs/types.ts:276](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/logs/types.ts#L276)*
 
 ___
 <a id="sharesrefund"></a>
@@ -85,7 +85,7 @@ ___
 
 **sharesRefund**:  = 4
 
-*Defined in [augur-sdk/src/state/logs/types.ts:272](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/logs/types.ts#L272)*
+*Defined in [augur-sdk/src/state/logs/types.ts:272](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/logs/types.ts#L272)*
 
 ___
 <a id="timestamp"></a>
@@ -94,7 +94,7 @@ ___
 
 **timestamp**:  = 7
 
-*Defined in [augur-sdk/src/state/logs/types.ts:275](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/logs/types.ts#L275)*
+*Defined in [augur-sdk/src/state/logs/types.ts:275](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/logs/types.ts#L275)*
 
 ___
 <a id="tokenrefund"></a>
@@ -103,7 +103,7 @@ ___
 
 **tokenRefund**:  = 3
 
-*Defined in [augur-sdk/src/state/logs/types.ts:271](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/logs/types.ts#L271)*
+*Defined in [augur-sdk/src/state/logs/types.ts:271](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/logs/types.ts#L271)*
 
 ___
 <a id="tokensescrowed"></a>
@@ -112,7 +112,7 @@ ___
 
 **tokensEscrowed**:  = 9
 
-*Defined in [augur-sdk/src/state/logs/types.ts:277](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/logs/types.ts#L277)*
+*Defined in [augur-sdk/src/state/logs/types.ts:277](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/logs/types.ts#L277)*
 
 ___
 

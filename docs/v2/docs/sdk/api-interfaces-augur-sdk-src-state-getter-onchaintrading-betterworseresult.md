@@ -27,7 +27,7 @@ sidebar_label: BetterWorseResult
 
 **● betterOrderId**: *`string` \| `null`*
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:146](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L146)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:146](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L146)*
 
 ___
 <a id="worseorderid"></a>
@@ -36,7 +36,7 @@ ___
 
 **● worseOrderId**: *`string` \| `null`*
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:147](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L147)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:147](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L147)*
 
 ___
 

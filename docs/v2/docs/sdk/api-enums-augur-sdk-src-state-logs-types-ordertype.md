@@ -23,7 +23,7 @@ sidebar_label: OrderType
 
 **Ask**:  = 1
 
-*Defined in [augur-sdk/src/state/logs/types.ts:245](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/logs/types.ts#L245)*
+*Defined in [augur-sdk/src/state/logs/types.ts:245](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/logs/types.ts#L245)*
 
 ___
 <a id="bid"></a>
@@ -32,7 +32,7 @@ ___
 
 **Bid**:  = 0
 
-*Defined in [augur-sdk/src/state/logs/types.ts:244](https://github.com/AugurProject/augur/blob/3727cd4ec9/packages/augur-sdk/src/state/logs/types.ts#L244)*
+*Defined in [augur-sdk/src/state/logs/types.ts:244](https://github.com/AugurProject/augur/blob/304ca83772/packages/augur-sdk/src/state/logs/types.ts#L244)*
 
 ___
 
