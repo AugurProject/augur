@@ -43,7 +43,7 @@ sidebar_label: OrderEventLog
 
 **● addressData**: *[Address](api-modules-augur-sdk-src-state-logs-types-module.md#address)[]*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:213](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L213)*
+*Defined in [augur-sdk/src/state/logs/types.ts:213](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L213)*
 
 ___
 <a id="blockhash"></a>
@@ -54,7 +54,7 @@ ___
 
 *Inherited from [Log](api-interfaces-augur-sdk-src-state-logs-types-log.md).[blockHash](api-interfaces-augur-sdk-src-state-logs-types-log.md#blockhash)*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:21](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L21)*
+*Defined in [augur-sdk/src/state/logs/types.ts:21](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L21)*
 
 ___
 <a id="blocknumber"></a>
@@ -65,7 +65,7 @@ ___
 
 *Inherited from [Log](api-interfaces-augur-sdk-src-state-logs-types-log.md).[blockNumber](api-interfaces-augur-sdk-src-state-logs-types-log.md#blocknumber)*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:20](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L20)*
+*Defined in [augur-sdk/src/state/logs/types.ts:20](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L20)*
 
 ___
 <a id="eventtype"></a>
@@ -74,7 +74,7 @@ ___
 
 **● eventType**: *[OrderEventType](api-enums-augur-sdk-src-state-logs-types-ordereventtype.md)*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:209](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L209)*
+*Defined in [augur-sdk/src/state/logs/types.ts:209](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L209)*
 
 ___
 <a id="logindex"></a>
@@ -85,7 +85,7 @@ ___
 
 *Inherited from [Log](api-interfaces-augur-sdk-src-state-logs-types-log.md).[logIndex](api-interfaces-augur-sdk-src-state-logs-types-log.md#logindex)*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:24](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L24)*
+*Defined in [augur-sdk/src/state/logs/types.ts:24](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L24)*
 
 ___
 <a id="market"></a>
@@ -94,7 +94,7 @@ ___
 
 **● market**: *[Address](api-modules-augur-sdk-src-state-logs-types-module.md#address)*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:208](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L208)*
+*Defined in [augur-sdk/src/state/logs/types.ts:208](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L208)*
 
 ___
 <a id="orderid"></a>
@@ -103,7 +103,7 @@ ___
 
 **● orderId**: *[Bytes32](api-modules-augur-sdk-src-state-logs-types-module.md#bytes32)*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:211](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L211)*
+*Defined in [augur-sdk/src/state/logs/types.ts:211](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L211)*
 
 ___
 <a id="ordertype"></a>
@@ -112,7 +112,7 @@ ___
 
 **● orderType**: *[OrderType](api-enums-augur-sdk-src-state-logs-types-ordertype.md)*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:210](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L210)*
+*Defined in [augur-sdk/src/state/logs/types.ts:210](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L210)*
 
 ___
 <a id="timestamp"></a>
@@ -123,7 +123,7 @@ ___
 
 *Inherited from [Timestamped](api-interfaces-augur-sdk-src-state-logs-types-timestamped.md).[timestamp](api-interfaces-augur-sdk-src-state-logs-types-timestamped.md#timestamp)*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:16](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L16)*
+*Defined in [augur-sdk/src/state/logs/types.ts:16](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L16)*
 
 ___
 <a id="tradegroupid"></a>
@@ -132,7 +132,7 @@ ___
 
 **● tradeGroupId**: *[Bytes32](api-modules-augur-sdk-src-state-logs-types-module.md#bytes32)*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:212](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L212)*
+*Defined in [augur-sdk/src/state/logs/types.ts:212](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L212)*
 
 ___
 <a id="transactionhash"></a>
@@ -143,7 +143,7 @@ ___
 
 *Inherited from [Log](api-interfaces-augur-sdk-src-state-logs-types-log.md).[transactionHash](api-interfaces-augur-sdk-src-state-logs-types-log.md#transactionhash)*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:23](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L23)*
+*Defined in [augur-sdk/src/state/logs/types.ts:23](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L23)*
 
 ___
 <a id="transactionindex"></a>
@@ -154,7 +154,7 @@ ___
 
 *Inherited from [Log](api-interfaces-augur-sdk-src-state-logs-types-log.md).[transactionIndex](api-interfaces-augur-sdk-src-state-logs-types-log.md#transactionindex)*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:22](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L22)*
+*Defined in [augur-sdk/src/state/logs/types.ts:22](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L22)*
 
 ___
 <a id="uint256data"></a>
@@ -163,7 +163,7 @@ ___
 
 **● uint256Data**: *`string`[]*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:214](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L214)*
+*Defined in [augur-sdk/src/state/logs/types.ts:214](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L214)*
 
 ___
 <a id="universe"></a>
@@ -172,7 +172,7 @@ ___
 
 **● universe**: *[Address](api-modules-augur-sdk-src-state-logs-types-module.md#address)*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:207](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L207)*
+*Defined in [augur-sdk/src/state/logs/types.ts:207](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L207)*
 
 ___
 

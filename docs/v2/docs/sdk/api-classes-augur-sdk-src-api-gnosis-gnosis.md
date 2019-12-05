@@ -47,7 +47,7 @@ sidebar_label: Gnosis
 
 ⊕ **new Gnosis**(provider: *[Provider](api-interfaces-augur-sdk-src-ethereum-provider-provider.md)*, gnosisRelay: *`IGnosisRelayAPI`*, augur: *[Augur](api-classes-augur-sdk-src-augur-augur.md)*, dependencies: *`ContractDependenciesGnosis`*): [Gnosis](api-classes-augur-sdk-src-api-gnosis-gnosis.md)
 
-*Defined in [augur-sdk/src/api/Gnosis.ts:46](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Gnosis.ts#L46)*
+*Defined in [augur-sdk/src/api/Gnosis.ts:46](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Gnosis.ts#L46)*
 
 **Parameters:**
 
@@ -70,7 +70,7 @@ ___
 
 **● augur**: *[Augur](api-classes-augur-sdk-src-augur-augur.md)*
 
-*Defined in [augur-sdk/src/api/Gnosis.ts:50](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Gnosis.ts#L50)*
+*Defined in [augur-sdk/src/api/Gnosis.ts:50](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Gnosis.ts#L50)*
 
 ___
 <a id="dependencies"></a>
@@ -79,7 +79,7 @@ ___
 
 **● dependencies**: *`ContractDependenciesGnosis`*
 
-*Defined in [augur-sdk/src/api/Gnosis.ts:51](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Gnosis.ts#L51)*
+*Defined in [augur-sdk/src/api/Gnosis.ts:51](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Gnosis.ts#L51)*
 
 ___
 <a id="gnosisrelay"></a>
@@ -88,7 +88,7 @@ ___
 
 **● gnosisRelay**: *`IGnosisRelayAPI`*
 
-*Defined in [augur-sdk/src/api/Gnosis.ts:49](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Gnosis.ts#L49)*
+*Defined in [augur-sdk/src/api/Gnosis.ts:49](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Gnosis.ts#L49)*
 
 ___
 <a id="provider"></a>
@@ -97,7 +97,7 @@ ___
 
 **● provider**: *[Provider](api-interfaces-augur-sdk-src-ethereum-provider-provider.md)*
 
-*Defined in [augur-sdk/src/api/Gnosis.ts:48](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Gnosis.ts#L48)*
+*Defined in [augur-sdk/src/api/Gnosis.ts:48](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Gnosis.ts#L48)*
 
 ___
 <a id="safestocheck"></a>
@@ -106,7 +106,7 @@ ___
 
 **● safesToCheck**: *[GnosisSafeStatusPayload](api-interfaces-augur-sdk-src-api-gnosis-gnosissafestatuspayload.md)[]* =  []
 
-*Defined in [augur-sdk/src/api/Gnosis.ts:68](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Gnosis.ts#L68)*
+*Defined in [augur-sdk/src/api/Gnosis.ts:68](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Gnosis.ts#L68)*
 
 ___
 
@@ -118,7 +118,7 @@ ___
 
 ▸ **buildGnosisSetupData**(account: *`string`*, payment?: *`string`*): `Promise`<`string`>
 
-*Defined in [augur-sdk/src/api/Gnosis.ts:387](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Gnosis.ts#L387)*
+*Defined in [augur-sdk/src/api/Gnosis.ts:387](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Gnosis.ts#L387)*
 
 **Parameters:**
 
@@ -136,7 +136,7 @@ ___
 
 ▸ **buildRegistrationData**(): `Promise`<`string`>
 
-*Defined in [augur-sdk/src/api/Gnosis.ts:357](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Gnosis.ts#L357)*
+*Defined in [augur-sdk/src/api/Gnosis.ts:357](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Gnosis.ts#L357)*
 
 **Returns:** `Promise`<`string`>
 
@@ -147,7 +147,7 @@ ___
 
 ▸ **calculateGnosisSafeAddress**(params: *[CalculateGnosisSafeAddressParams](api-interfaces-augur-sdk-src-api-gnosis-calculategnosissafeaddressparams.md)*): `Promise`<`string`>
 
-*Defined in [augur-sdk/src/api/Gnosis.ts:221](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Gnosis.ts#L221)*
+*Defined in [augur-sdk/src/api/Gnosis.ts:221](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Gnosis.ts#L221)*
 
 *__desc__*: Calculates the safe address from creation params. Generally used to confirm safe address in local storage is correct and valid.
 
@@ -166,7 +166,7 @@ ___
 
 ▸ **createGnosisSafeDirectlyWithETH**(account: *`string`*): `Promise`<`string`>
 
-*Defined in [augur-sdk/src/api/Gnosis.ts:268](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Gnosis.ts#L268)*
+*Defined in [augur-sdk/src/api/Gnosis.ts:268](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Gnosis.ts#L268)*
 
 **Parameters:**
 
@@ -183,7 +183,7 @@ ___
 
 ▸ **createGnosisSafeViaRelay**(params: *[CreateGnosisSafeViaRelayParams](api-interfaces-augur-sdk-src-api-gnosis-creategnosissafeviarelayparams.md)*): `Promise`<`SafeResponse`>
 
-*Defined in [augur-sdk/src/api/Gnosis.ts:286](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Gnosis.ts#L286)*
+*Defined in [augur-sdk/src/api/Gnosis.ts:286](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Gnosis.ts#L286)*
 
 **Parameters:**
 
@@ -200,7 +200,7 @@ ___
 
 ▸ **gasStation**(): `Promise`<`GasStationResponse`>
 
-*Defined in [augur-sdk/src/api/Gnosis.ts:336](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Gnosis.ts#L336)*
+*Defined in [augur-sdk/src/api/Gnosis.ts:336](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Gnosis.ts#L336)*
 
 **Returns:** `Promise`<`GasStationResponse`>
 
@@ -211,7 +211,7 @@ ___
 
 ▸ **getGnosisSafeAddress**(account: *`string`*): `Promise`<`string`>
 
-*Defined in [augur-sdk/src/api/Gnosis.ts:264](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Gnosis.ts#L264)*
+*Defined in [augur-sdk/src/api/Gnosis.ts:264](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Gnosis.ts#L264)*
 
 **Parameters:**
 
@@ -228,7 +228,7 @@ ___
 
 ▸ **getGnosisSafeDeploymentStatusViaRelay**(params: *[GnosisSafeDeploymentStatusParams](api-interfaces-augur-sdk-src-api-gnosis-gnosissafedeploymentstatusparams.md)*): `Promise`<`GnosisSafeStateReponse`>
 
-*Defined in [augur-sdk/src/api/Gnosis.ts:340](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Gnosis.ts#L340)*
+*Defined in [augur-sdk/src/api/Gnosis.ts:340](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Gnosis.ts#L340)*
 
 **Parameters:**
 
@@ -245,7 +245,7 @@ ___
 
 ▸ **getOrCreateGnosisSafe**(params: *[CalculateGnosisSafeAddressParams](api-interfaces-augur-sdk-src-api-gnosis-calculategnosissafeaddressparams.md) \| [Address](api-modules-augur-sdk-src-state-logs-types-module.md#address)*): `Promise`<[CalculateGnosisSafeAddressParams](api-interfaces-augur-sdk-src-api-gnosis-calculategnosissafeaddressparams.md) \| [Address](api-modules-augur-sdk-src-state-logs-types-module.md#address)>
 
-*Defined in [augur-sdk/src/api/Gnosis.ts:131](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Gnosis.ts#L131)*
+*Defined in [augur-sdk/src/api/Gnosis.ts:131](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Gnosis.ts#L131)*
 
 *__desc__*: Start the gnosis workflow. Updates on status will be available via event emitter if relay transaction is appropriate..
 
@@ -265,7 +265,7 @@ ___
 
 ▸ **onNewBlock**(): `Promise`<`void`>
 
-*Defined in [augur-sdk/src/api/Gnosis.ts:73](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Gnosis.ts#L73)*
+*Defined in [augur-sdk/src/api/Gnosis.ts:73](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Gnosis.ts#L73)*
 
 **Returns:** `Promise`<`void`>
 

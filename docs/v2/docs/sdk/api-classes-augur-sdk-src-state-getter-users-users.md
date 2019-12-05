@@ -47,7 +47,7 @@ sidebar_label: Users
     }),
   ])
 
-*Defined in [augur-sdk/src/state/getter/Users.ts:168](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Users.ts#L168)*
+*Defined in [augur-sdk/src/state/getter/Users.ts:168](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Users.ts#L168)*
 
 ___
 <a id="getprofitlossparams"></a>
@@ -56,7 +56,7 @@ ___
 
 **● getProfitLossParams**: *`IntersectionC`<[`PartialC`<`object`>, `PartialC`<`object`>]>* =  getProfitLossParams
 
-*Defined in [augur-sdk/src/state/getter/Users.ts:183](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Users.ts#L183)*
+*Defined in [augur-sdk/src/state/getter/Users.ts:183](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Users.ts#L183)*
 
 ___
 <a id="getprofitlosssummaryparams"></a>
@@ -65,7 +65,7 @@ ___
 
 **● getProfitLossSummaryParams**: *`PartialC`<`object`>* =  getProfitLossSummaryParams
 
-*Defined in [augur-sdk/src/state/getter/Users.ts:184](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Users.ts#L184)*
+*Defined in [augur-sdk/src/state/getter/Users.ts:184](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Users.ts#L184)*
 
 ___
 <a id="getuseraccountparams"></a>
@@ -74,7 +74,7 @@ ___
 
 **● getUserAccountParams**: *`PartialC`<`object`>* =  getUserAccountParams
 
-*Defined in [augur-sdk/src/state/getter/Users.ts:185](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Users.ts#L185)*
+*Defined in [augur-sdk/src/state/getter/Users.ts:185](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Users.ts#L185)*
 
 ___
 <a id="getusertradingpositionsparams"></a>
@@ -86,7 +86,7 @@ ___
     sortOptions,
   ])
 
-*Defined in [augur-sdk/src/state/getter/Users.ts:179](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Users.ts#L179)*
+*Defined in [augur-sdk/src/state/getter/Users.ts:179](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Users.ts#L179)*
 
 ___
 
@@ -98,7 +98,7 @@ ___
 
 ▸ **getAccountTimeRangedStats**(augur: *[Augur](api-classes-augur-sdk-src-augur-augur.md)*, db: *[DB](api-classes-augur-sdk-src-state-db-db-db.md)*, params: *`t.TypeOf`<`IntersectionC`>*): `Promise`<[AccountTimeRangedStatsResult](api-interfaces-augur-sdk-src-state-getter-users-accounttimerangedstatsresult.md)>
 
-*Defined in [augur-sdk/src/state/getter/Users.ts:299](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Users.ts#L299)*
+*Defined in [augur-sdk/src/state/getter/Users.ts:299](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Users.ts#L299)*
 
 **Parameters:**
 
@@ -117,7 +117,7 @@ ___
 
 ▸ **getProfitLoss**(augur: *[Augur](api-classes-augur-sdk-src-augur-augur.md)*, db: *[DB](api-classes-augur-sdk-src-state-db-db-db.md)*, params: *`t.TypeOf`<`IntersectionC`>*): `Promise`<[MarketTradingPosition](api-interfaces-augur-sdk-src-state-getter-users-markettradingposition.md)[]>
 
-*Defined in [augur-sdk/src/state/getter/Users.ts:649](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Users.ts#L649)*
+*Defined in [augur-sdk/src/state/getter/Users.ts:649](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Users.ts#L649)*
 
 **Parameters:**
 
@@ -136,7 +136,7 @@ ___
 
 ▸ **getProfitLossSummary**(augur: *[Augur](api-classes-augur-sdk-src-augur-augur.md)*, db: *[DB](api-classes-augur-sdk-src-state-db-db-db.md)*, params: *`t.TypeOf`<`PartialC`>*): `Promise`<`NumericDictionary`<[MarketTradingPosition](api-interfaces-augur-sdk-src-state-getter-users-markettradingposition.md)>>
 
-*Defined in [augur-sdk/src/state/getter/Users.ts:779](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Users.ts#L779)*
+*Defined in [augur-sdk/src/state/getter/Users.ts:779](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Users.ts#L779)*
 
 **Parameters:**
 
@@ -155,7 +155,7 @@ ___
 
 ▸ **getUserAccountData**(augur: *[Augur](api-classes-augur-sdk-src-augur-augur.md)*, db: *[DB](api-classes-augur-sdk-src-state-db-db-db.md)*, params: *`t.TypeOf`<`PartialC`>*): `Promise`<[UserAccountDataResult](api-interfaces-augur-sdk-src-state-getter-users-useraccountdataresult.md)>
 
-*Defined in [augur-sdk/src/state/getter/Users.ts:188](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Users.ts#L188)*
+*Defined in [augur-sdk/src/state/getter/Users.ts:188](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Users.ts#L188)*
 
 **Parameters:**
 
@@ -174,7 +174,7 @@ ___
 
 ▸ **getUserTradingPositions**(augur: *[Augur](api-classes-augur-sdk-src-augur-augur.md)*, db: *[DB](api-classes-augur-sdk-src-state-db-db-db.md)*, params: *`t.TypeOf`<`IntersectionC`>*): `Promise`<[UserTradingPositions](api-interfaces-augur-sdk-src-state-getter-users-usertradingpositions.md)>
 
-*Defined in [augur-sdk/src/state/getter/Users.ts:428](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Users.ts#L428)*
+*Defined in [augur-sdk/src/state/getter/Users.ts:428](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Users.ts#L428)*
 
 **Parameters:**
 

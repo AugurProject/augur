@@ -23,7 +23,7 @@ sidebar_label: augur-sdk/src/state/HTTPEndpoint
 
 ▸ **createApp**(api: *[API](api-classes-augur-sdk-src-state-getter-api-api.md)*): `express.Application`
 
-*Defined in [augur-sdk/src/state/HTTPEndpoint.ts:14](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/HTTPEndpoint.ts#L14)*
+*Defined in [augur-sdk/src/state/HTTPEndpoint.ts:14](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/HTTPEndpoint.ts#L14)*
 
 **Parameters:**
 
@@ -40,7 +40,7 @@ ___
 
 ▸ **run**(api: *[API](api-classes-augur-sdk-src-state-getter-api-api.md)*, endpointSettings: *[EndpointSettings](api-interfaces-augur-sdk-src-state-getter-types-endpointsettings.md)*): `Promise`<`any`>
 
-*Defined in [augur-sdk/src/state/HTTPEndpoint.ts:47](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/HTTPEndpoint.ts#L47)*
+*Defined in [augur-sdk/src/state/HTTPEndpoint.ts:47](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/HTTPEndpoint.ts#L47)*
 
 **Parameters:**
 

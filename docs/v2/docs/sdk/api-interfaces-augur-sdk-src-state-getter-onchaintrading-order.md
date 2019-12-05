@@ -46,7 +46,7 @@ sidebar_label: Order
 
 **● amount**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:108](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L108)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:108](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L108)*
 
 ___
 <a id="amountfilled"></a>
@@ -55,7 +55,7 @@ ___
 
 **● amountFilled**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:109](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L109)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:109](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L109)*
 
 ___
 <a id="canceledblocknumber"></a>
@@ -64,7 +64,7 @@ ___
 
 **● canceledBlockNumber**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:115](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L115)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:115](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L115)*
 
 ___
 <a id="canceledtime"></a>
@@ -73,7 +73,7 @@ ___
 
 **● canceledTime**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:117](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L117)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:117](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L117)*
 
 ___
 <a id="canceledtransactionhash"></a>
@@ -82,7 +82,7 @@ ___
 
 **● canceledTransactionHash**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:116](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L116)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:116](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L116)*
 
 ___
 <a id="creationblocknumber"></a>
@@ -91,7 +91,7 @@ ___
 
 **● creationBlockNumber**: *`number`*
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:119](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L119)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:119](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L119)*
 
 ___
 <a id="creationtime"></a>
@@ -100,7 +100,7 @@ ___
 
 **● creationTime**: *`number`*
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:118](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L118)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:118](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L118)*
 
 ___
 <a id="fullprecisionamount"></a>
@@ -109,7 +109,7 @@ ___
 
 **● fullPrecisionAmount**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:111](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L111)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:111](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L111)*
 
 ___
 <a id="fullprecisionprice"></a>
@@ -118,7 +118,7 @@ ___
 
 **● fullPrecisionPrice**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:110](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L110)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:110](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L110)*
 
 ___
 <a id="kyctoken"></a>
@@ -127,7 +127,7 @@ ___
 
 **● kycToken**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:112](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L112)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:112](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L112)*
 
 ___
 <a id="logindex"></a>
@@ -136,7 +136,7 @@ ___
 
 **● logIndex**: *`number`*
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:104](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L104)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:104](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L104)*
 
 ___
 <a id="orderid"></a>
@@ -145,7 +145,7 @@ ___
 
 **● orderId**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:102](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L102)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:102](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L102)*
 
 ___
 <a id="orderstate"></a>
@@ -154,7 +154,7 @@ ___
 
 **● orderState**: *[OrderState](api-enums-augur-sdk-src-state-getter-onchaintrading-orderstate.md)*
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:106](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L106)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:106](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L106)*
 
 ___
 <a id="originalfullprecisionamount"></a>
@@ -163,7 +163,7 @@ ___
 
 **● originalFullPrecisionAmount**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:120](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L120)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:120](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L120)*
 
 ___
 <a id="owner"></a>
@@ -172,7 +172,7 @@ ___
 
 **● owner**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:105](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L105)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:105](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L105)*
 
 ___
 <a id="price"></a>
@@ -181,7 +181,7 @@ ___
 
 **● price**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:107](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L107)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:107](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L107)*
 
 ___
 <a id="sharesescrowed"></a>
@@ -190,7 +190,7 @@ ___
 
 **● sharesEscrowed**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:114](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L114)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:114](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L114)*
 
 ___
 <a id="tokensescrowed"></a>
@@ -199,7 +199,7 @@ ___
 
 **● tokensEscrowed**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:113](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L113)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:113](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L113)*
 
 ___
 <a id="transactionhash"></a>
@@ -208,7 +208,7 @@ ___
 
 **● transactionHash**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:103](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L103)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:103](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L103)*
 
 ___
 

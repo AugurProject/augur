@@ -37,7 +37,7 @@ sidebar_label: augur-sdk/src/api/OnChainTrade
 
 ▸ **stringTo32ByteHex**(stringToEncode: *`string`*): `string`
 
-*Defined in [augur-sdk/src/api/OnChainTrade.ts:9](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/OnChainTrade.ts#L9)*
+*Defined in [augur-sdk/src/api/OnChainTrade.ts:9](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/OnChainTrade.ts#L9)*
 
 **Parameters:**
 

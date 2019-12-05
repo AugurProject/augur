@@ -32,7 +32,7 @@ sidebar_label: Document
 
 **● blockNumber**: *`number`*
 
-*Defined in [augur-sdk/src/state/db/ZeroXOrders.ts:27](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L27)*
+*Defined in [augur-sdk/src/state/db/ZeroXOrders.ts:27](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L27)*
 
 ___
 

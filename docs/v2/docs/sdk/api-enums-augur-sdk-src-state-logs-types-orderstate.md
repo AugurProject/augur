@@ -25,7 +25,7 @@ sidebar_label: OrderState
 
 **ALL**:  = "ALL"
 
-*Defined in [augur-sdk/src/state/logs/types.ts:255](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L255)*
+*Defined in [augur-sdk/src/state/logs/types.ts:255](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L255)*
 
 ___
 <a id="canceled"></a>
@@ -34,7 +34,7 @@ ___
 
 **CANCELED**:  = "CANCELED"
 
-*Defined in [augur-sdk/src/state/logs/types.ts:258](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L258)*
+*Defined in [augur-sdk/src/state/logs/types.ts:258](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L258)*
 
 ___
 <a id="filled"></a>
@@ -43,7 +43,7 @@ ___
 
 **FILLED**:  = "FILLED"
 
-*Defined in [augur-sdk/src/state/logs/types.ts:257](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L257)*
+*Defined in [augur-sdk/src/state/logs/types.ts:257](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L257)*
 
 ___
 <a id="open"></a>
@@ -52,7 +52,7 @@ ___
 
 **OPEN**:  = "OPEN"
 
-*Defined in [augur-sdk/src/state/logs/types.ts:256](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L256)*
+*Defined in [augur-sdk/src/state/logs/types.ts:256](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L256)*
 
 ___
 

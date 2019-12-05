@@ -29,7 +29,7 @@ sidebar_label: Order
 
 **● amount**: *`BigNumber`*
 
-*Defined in [augur-sdk/src/api/OnChainTrade.ts:45](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/OnChainTrade.ts#L45)*
+*Defined in [augur-sdk/src/api/OnChainTrade.ts:45](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/OnChainTrade.ts#L45)*
 
 ___
 <a id="displayprice"></a>
@@ -38,7 +38,7 @@ ___
 
 **● displayPrice**: *`BigNumber`*
 
-*Defined in [augur-sdk/src/api/OnChainTrade.ts:46](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/OnChainTrade.ts#L46)*
+*Defined in [augur-sdk/src/api/OnChainTrade.ts:46](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/OnChainTrade.ts#L46)*
 
 ___
 <a id="displaysharesescrowed"></a>
@@ -47,7 +47,7 @@ ___
 
 **● displaySharesEscrowed**: *`BigNumber`*
 
-*Defined in [augur-sdk/src/api/OnChainTrade.ts:47](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/OnChainTrade.ts#L47)*
+*Defined in [augur-sdk/src/api/OnChainTrade.ts:47](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/OnChainTrade.ts#L47)*
 
 ___
 <a id="owner"></a>
@@ -56,7 +56,7 @@ ___
 
 **● owner**: *`string`*
 
-*Defined in [augur-sdk/src/api/OnChainTrade.ts:48](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/OnChainTrade.ts#L48)*
+*Defined in [augur-sdk/src/api/OnChainTrade.ts:48](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/OnChainTrade.ts#L48)*
 
 ___
 

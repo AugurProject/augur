@@ -36,7 +36,7 @@ sidebar_label: API
 
 ⊕ **new API**(augur: *[Augur](api-classes-augur-sdk-src-augur-augur.md)*, db: *`Promise`<[DB](api-classes-augur-sdk-src-state-db-db-db.md)>*): [API](api-classes-augur-sdk-src-state-getter-api-api.md)
 
-*Defined in [augur-sdk/src/state/getter/API.ts:20](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/API.ts#L20)*
+*Defined in [augur-sdk/src/state/getter/API.ts:20](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/API.ts#L20)*
 
 **Parameters:**
 
@@ -57,7 +57,7 @@ ___
 
 **● augur**: *[Augur](api-classes-augur-sdk-src-augur-augur.md)*
 
-*Defined in [augur-sdk/src/state/getter/API.ts:18](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/API.ts#L18)*
+*Defined in [augur-sdk/src/state/getter/API.ts:18](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/API.ts#L18)*
 
 ___
 <a id="db"></a>
@@ -66,7 +66,7 @@ ___
 
 **● db**: *`Promise`<[DB](api-classes-augur-sdk-src-state-db-db-db.md)>*
 
-*Defined in [augur-sdk/src/state/getter/API.ts:19](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/API.ts#L19)*
+*Defined in [augur-sdk/src/state/getter/API.ts:19](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/API.ts#L19)*
 
 ___
 <a id="router"></a>
@@ -75,7 +75,7 @@ ___
 
 **● router**: *[Router](api-classes-augur-sdk-src-state-getter-router-router.md)*
 
-*Defined in [augur-sdk/src/state/getter/API.ts:20](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/API.ts#L20)*
+*Defined in [augur-sdk/src/state/getter/API.ts:20](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/API.ts#L20)*
 
 ___
 
@@ -87,7 +87,7 @@ ___
 
 ▸ **route**(name: *`string`*, params: *`any`*): `Promise`<`any`>
 
-*Defined in [augur-sdk/src/state/getter/API.ts:28](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/API.ts#L28)*
+*Defined in [augur-sdk/src/state/getter/API.ts:28](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/API.ts#L28)*
 
 **Parameters:**
 

@@ -46,7 +46,7 @@ sidebar_label: Trade
 
 ⊕ **new Trade**(augur: *[Augur](api-classes-augur-sdk-src-augur-augur.md)*): [Trade](api-classes-augur-sdk-src-api-trade-trade.md)
 
-*Defined in [augur-sdk/src/api/Trade.ts:32](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Trade.ts#L32)*
+*Defined in [augur-sdk/src/api/Trade.ts:32](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Trade.ts#L32)*
 
 **Parameters:**
 
@@ -66,7 +66,7 @@ ___
 
 **● augur**: *[Augur](api-classes-augur-sdk-src-augur-augur.md)*
 
-*Defined in [augur-sdk/src/api/Trade.ts:32](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Trade.ts#L32)*
+*Defined in [augur-sdk/src/api/Trade.ts:32](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Trade.ts#L32)*
 
 ___
 
@@ -78,7 +78,7 @@ ___
 
 ▸ **getOnChainTradeParams**(params: *[PlaceTradeDisplayParams](api-interfaces-augur-sdk-src-api-trade-placetradedisplayparams.md)*): [NativePlaceTradeChainParams](api-interfaces-augur-sdk-src-api-onchaintrade-nativeplacetradechainparams.md)
 
-*Defined in [augur-sdk/src/api/Trade.ts:59](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Trade.ts#L59)*
+*Defined in [augur-sdk/src/api/Trade.ts:59](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Trade.ts#L59)*
 
 **Parameters:**
 
@@ -95,7 +95,7 @@ ___
 
 ▸ **maxExpirationTime**(): `BigNumber`
 
-*Defined in [augur-sdk/src/api/Trade.ts:50](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Trade.ts#L50)*
+*Defined in [augur-sdk/src/api/Trade.ts:50](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Trade.ts#L50)*
 
 **Returns:** `BigNumber`
 
@@ -106,7 +106,7 @@ ___
 
 ▸ **onChain**(): [OnChainTrade](api-classes-augur-sdk-src-api-onchaintrade-onchaintrade.md)
 
-*Defined in [augur-sdk/src/api/Trade.ts:46](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Trade.ts#L46)*
+*Defined in [augur-sdk/src/api/Trade.ts:46](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Trade.ts#L46)*
 
 **Returns:** [OnChainTrade](api-classes-augur-sdk-src-api-onchaintrade-onchaintrade.md)
 
@@ -117,7 +117,7 @@ ___
 
 ▸ **placeOnChainTrade**(params: *[PlaceTradeParams](api-interfaces-augur-sdk-src-api-trade-placetradeparams.md)*): `Promise`<`void`>
 
-*Defined in [augur-sdk/src/api/Trade.ts:71](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Trade.ts#L71)*
+*Defined in [augur-sdk/src/api/Trade.ts:71](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Trade.ts#L71)*
 
 **Parameters:**
 
@@ -136,7 +136,7 @@ ___
 
 *Implementation of [TradeAPI](api-interfaces-augur-sdk-src-api-trade-tradeapi.md).[placeTrade](api-interfaces-augur-sdk-src-api-trade-tradeapi.md#placetrade)*
 
-*Defined in [augur-sdk/src/api/Trade.ts:54](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Trade.ts#L54)*
+*Defined in [augur-sdk/src/api/Trade.ts:54](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Trade.ts#L54)*
 
 **Parameters:**
 
@@ -155,7 +155,7 @@ ___
 
 *Implementation of [TradeAPI](api-interfaces-augur-sdk-src-api-trade-tradeapi.md).[simulateTrade](api-interfaces-augur-sdk-src-api-trade-tradeapi.md#simulatetrade)*
 
-*Defined in [augur-sdk/src/api/Trade.ts:82](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Trade.ts#L82)*
+*Defined in [augur-sdk/src/api/Trade.ts:82](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Trade.ts#L82)*
 
 **Parameters:**
 
@@ -172,7 +172,7 @@ ___
 
 ▸ **simulateTradeGasLimit**(params: *[PlaceTradeDisplayParams](api-interfaces-augur-sdk-src-api-trade-placetradedisplayparams.md)*): `Promise`<`BigNumber`>
 
-*Defined in [augur-sdk/src/api/Trade.ts:93](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Trade.ts#L93)*
+*Defined in [augur-sdk/src/api/Trade.ts:93](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Trade.ts#L93)*
 
 **Parameters:**
 
@@ -191,7 +191,7 @@ ___
 
 *Implementation of [TradeAPI](api-interfaces-augur-sdk-src-api-trade-tradeapi.md).[useZeroX](api-interfaces-augur-sdk-src-api-trade-tradeapi.md#usezerox)*
 
-*Defined in [augur-sdk/src/api/Trade.ts:38](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Trade.ts#L38)*
+*Defined in [augur-sdk/src/api/Trade.ts:38](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Trade.ts#L38)*
 
 **Returns:** `boolean`
 
@@ -202,7 +202,7 @@ ___
 
 ▸ **zeroX**(): [ZeroX](api-classes-augur-sdk-src-api-zerox-zerox.md)
 
-*Defined in [augur-sdk/src/api/Trade.ts:42](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Trade.ts#L42)*
+*Defined in [augur-sdk/src/api/Trade.ts:42](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Trade.ts#L42)*
 
 **Returns:** [ZeroX](api-classes-augur-sdk-src-api-zerox-zerox.md)
 

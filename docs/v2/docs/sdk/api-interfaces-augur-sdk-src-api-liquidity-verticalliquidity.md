@@ -35,7 +35,7 @@ sidebar_label: VerticalLiquidity
 
 *Inherited from [LeftRightLiquidity](api-interfaces-augur-sdk-src-api-liquidity-leftrightliquidity.md).[left](api-interfaces-augur-sdk-src-api-liquidity-leftrightliquidity.md#left)*
 
-*Defined in [augur-sdk/src/api/Liquidity.ts:32](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Liquidity.ts#L32)*
+*Defined in [augur-sdk/src/api/Liquidity.ts:32](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Liquidity.ts#L32)*
 
 ___
 <a id="right"></a>
@@ -46,7 +46,7 @@ ___
 
 *Inherited from [LeftRightLiquidity](api-interfaces-augur-sdk-src-api-liquidity-leftrightliquidity.md).[right](api-interfaces-augur-sdk-src-api-liquidity-leftrightliquidity.md#right)*
 
-*Defined in [augur-sdk/src/api/Liquidity.ts:33](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Liquidity.ts#L33)*
+*Defined in [augur-sdk/src/api/Liquidity.ts:33](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Liquidity.ts#L33)*
 
 ___
 

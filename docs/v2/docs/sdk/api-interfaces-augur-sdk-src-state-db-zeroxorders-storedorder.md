@@ -36,7 +36,7 @@ sidebar_label: StoredOrder
 
 **● amount**: *`string`*
 
-*Defined in [augur-sdk/src/state/db/ZeroXOrders.ts:37](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L37)*
+*Defined in [augur-sdk/src/state/db/ZeroXOrders.ts:37](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L37)*
 
 ___
 <a id="exchange"></a>
@@ -47,7 +47,7 @@ ___
 
 *Inherited from [OrderData](api-interfaces-augur-sdk-src-state-db-zeroxorders-orderdata.md).[exchange](api-interfaces-augur-sdk-src-state-db-zeroxorders-orderdata.md#exchange)*
 
-*Defined in [augur-sdk/src/state/db/ZeroXOrders.ts:23](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L23)*
+*Defined in [augur-sdk/src/state/db/ZeroXOrders.ts:23](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L23)*
 
 ___
 <a id="kyctoken"></a>
@@ -58,7 +58,7 @@ ___
 
 *Inherited from [OrderData](api-interfaces-augur-sdk-src-state-db-zeroxorders-orderdata.md).[kycToken](api-interfaces-augur-sdk-src-state-db-zeroxorders-orderdata.md#kyctoken)*
 
-*Defined in [augur-sdk/src/state/db/ZeroXOrders.ts:22](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L22)*
+*Defined in [augur-sdk/src/state/db/ZeroXOrders.ts:22](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L22)*
 
 ___
 <a id="market"></a>
@@ -69,7 +69,7 @@ ___
 
 *Inherited from [OrderData](api-interfaces-augur-sdk-src-state-db-zeroxorders-orderdata.md).[market](api-interfaces-augur-sdk-src-state-db-zeroxorders-orderdata.md#market)*
 
-*Defined in [augur-sdk/src/state/db/ZeroXOrders.ts:18](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L18)*
+*Defined in [augur-sdk/src/state/db/ZeroXOrders.ts:18](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L18)*
 
 ___
 <a id="orderhash"></a>
@@ -78,7 +78,7 @@ ___
 
 **● orderHash**: *`string`*
 
-*Defined in [augur-sdk/src/state/db/ZeroXOrders.ts:35](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L35)*
+*Defined in [augur-sdk/src/state/db/ZeroXOrders.ts:35](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L35)*
 
 ___
 <a id="ordertype"></a>
@@ -89,7 +89,7 @@ ___
 
 *Inherited from [OrderData](api-interfaces-augur-sdk-src-state-db-zeroxorders-orderdata.md).[orderType](api-interfaces-augur-sdk-src-state-db-zeroxorders-orderdata.md#ordertype)*
 
-*Defined in [augur-sdk/src/state/db/ZeroXOrders.ts:21](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L21)*
+*Defined in [augur-sdk/src/state/db/ZeroXOrders.ts:21](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L21)*
 
 ___
 <a id="outcome"></a>
@@ -100,7 +100,7 @@ ___
 
 *Inherited from [OrderData](api-interfaces-augur-sdk-src-state-db-zeroxorders-orderdata.md).[outcome](api-interfaces-augur-sdk-src-state-db-zeroxorders-orderdata.md#outcome)*
 
-*Defined in [augur-sdk/src/state/db/ZeroXOrders.ts:20](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L20)*
+*Defined in [augur-sdk/src/state/db/ZeroXOrders.ts:20](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L20)*
 
 ___
 <a id="price"></a>
@@ -111,7 +111,7 @@ ___
 
 *Inherited from [OrderData](api-interfaces-augur-sdk-src-state-db-zeroxorders-orderdata.md).[price](api-interfaces-augur-sdk-src-state-db-zeroxorders-orderdata.md#price)*
 
-*Defined in [augur-sdk/src/state/db/ZeroXOrders.ts:19](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L19)*
+*Defined in [augur-sdk/src/state/db/ZeroXOrders.ts:19](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L19)*
 
 ___
 <a id="signedorder"></a>
@@ -120,7 +120,7 @@ ___
 
 **● signedOrder**: *`SignedOrder`*
 
-*Defined in [augur-sdk/src/state/db/ZeroXOrders.ts:36](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L36)*
+*Defined in [augur-sdk/src/state/db/ZeroXOrders.ts:36](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L36)*
 
 ___
 

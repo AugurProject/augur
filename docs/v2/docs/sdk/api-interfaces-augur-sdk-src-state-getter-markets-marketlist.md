@@ -27,7 +27,7 @@ sidebar_label: MarketList
 
 **● markets**: *[MarketInfo](api-interfaces-augur-sdk-src-state-getter-markets-marketinfo.md)[]*
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:114](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L114)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:114](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Markets.ts#L114)*
 
 ___
 <a id="meta"></a>
@@ -36,7 +36,7 @@ ___
 
 **● meta**: *[MarketListMeta](api-interfaces-augur-sdk-src-state-getter-markets-marketlistmeta.md)*
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:115](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L115)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:115](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Markets.ts#L115)*
 
 ___
 

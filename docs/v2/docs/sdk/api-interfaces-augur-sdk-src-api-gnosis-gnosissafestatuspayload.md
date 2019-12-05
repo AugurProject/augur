@@ -33,7 +33,7 @@ sidebar_label: GnosisSafeStatusPayload
 
 *Inherited from [GnosisSafeDeploymentStatusParams](api-interfaces-augur-sdk-src-api-gnosis-gnosissafedeploymentstatusparams.md).[owner](api-interfaces-augur-sdk-src-api-gnosis-gnosissafedeploymentstatusparams.md#owner)*
 
-*Defined in [augur-sdk/src/api/Gnosis.ts:33](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Gnosis.ts#L33)*
+*Defined in [augur-sdk/src/api/Gnosis.ts:33](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Gnosis.ts#L33)*
 
 ___
 <a id="safe"></a>
@@ -44,7 +44,7 @@ ___
 
 *Inherited from [GnosisSafeDeploymentStatusParams](api-interfaces-augur-sdk-src-api-gnosis-gnosissafedeploymentstatusparams.md).[safe](api-interfaces-augur-sdk-src-api-gnosis-gnosissafedeploymentstatusparams.md#safe)*
 
-*Defined in [augur-sdk/src/api/Gnosis.ts:34](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Gnosis.ts#L34)*
+*Defined in [augur-sdk/src/api/Gnosis.ts:34](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Gnosis.ts#L34)*
 
 ___
 <a id="status"></a>
@@ -53,7 +53,7 @@ ___
 
 **● status**: *`GnosisSafeState`*
 
-*Defined in [augur-sdk/src/api/Gnosis.ts:39](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Gnosis.ts#L39)*
+*Defined in [augur-sdk/src/api/Gnosis.ts:39](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Gnosis.ts#L39)*
 
 ___
 <a id="txhash"></a>
@@ -62,7 +62,7 @@ ___
 
 **● txHash**: *`string`*
 
-*Defined in [augur-sdk/src/api/Gnosis.ts:40](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Gnosis.ts#L40)*
+*Defined in [augur-sdk/src/api/Gnosis.ts:40](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Gnosis.ts#L40)*
 
 ___
 

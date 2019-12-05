@@ -50,7 +50,7 @@ sidebar_label: HotLoadMarketInfo
 
 **● author**: *`string`*
 
-*Defined in [augur-sdk/src/api/HotLoading.ts:40](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/HotLoading.ts#L40)*
+*Defined in [augur-sdk/src/api/HotLoading.ts:40](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/HotLoading.ts#L40)*
 
 ___
 <a id="categories"></a>
@@ -59,7 +59,7 @@ ___
 
 **● categories**: *`string`[]*
 
-*Defined in [augur-sdk/src/api/HotLoading.ts:56](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/HotLoading.ts#L56)*
+*Defined in [augur-sdk/src/api/HotLoading.ts:56](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/HotLoading.ts#L56)*
 
 ___
 <a id="consensus"></a>
@@ -68,7 +68,7 @@ ___
 
 **● consensus**: *[PayoutNumeratorValue](api-interfaces-augur-sdk-src-utils-payoutnumeratorvalue.md)*
 
-*Defined in [augur-sdk/src/api/HotLoading.ts:51](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/HotLoading.ts#L51)*
+*Defined in [augur-sdk/src/api/HotLoading.ts:51](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/HotLoading.ts#L51)*
 
 ___
 <a id="cumulativescale"></a>
@@ -77,7 +77,7 @@ ___
 
 **● cumulativeScale**: *`string`*
 
-*Defined in [augur-sdk/src/api/HotLoading.ts:39](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/HotLoading.ts#L39)*
+*Defined in [augur-sdk/src/api/HotLoading.ts:39](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/HotLoading.ts#L39)*
 
 ___
 <a id="description"></a>
@@ -86,7 +86,7 @@ ___
 
 **● description**: *`string`*
 
-*Defined in [augur-sdk/src/api/HotLoading.ts:46](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/HotLoading.ts#L46)*
+*Defined in [augur-sdk/src/api/HotLoading.ts:46](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/HotLoading.ts#L46)*
 
 ___
 <a id="designatedreporter"></a>
@@ -95,7 +95,7 @@ ___
 
 **● designatedReporter**: *`string`*
 
-*Defined in [augur-sdk/src/api/HotLoading.ts:41](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/HotLoading.ts#L41)*
+*Defined in [augur-sdk/src/api/HotLoading.ts:41](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/HotLoading.ts#L41)*
 
 ___
 <a id="details"></a>
@@ -104,7 +104,7 @@ ___
 
 **● details**: *`string` \| `null`*
 
-*Defined in [augur-sdk/src/api/HotLoading.ts:48](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/HotLoading.ts#L48)*
+*Defined in [augur-sdk/src/api/HotLoading.ts:48](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/HotLoading.ts#L48)*
 
 ___
 <a id="endtime"></a>
@@ -113,7 +113,7 @@ ___
 
 **● endTime**: *`number`*
 
-*Defined in [augur-sdk/src/api/HotLoading.ts:45](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/HotLoading.ts#L45)*
+*Defined in [augur-sdk/src/api/HotLoading.ts:45](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/HotLoading.ts#L45)*
 
 ___
 <a id="id"></a>
@@ -122,7 +122,7 @@ ___
 
 **● id**: *[Address](api-modules-augur-sdk-src-state-logs-types-module.md#address)*
 
-*Defined in [augur-sdk/src/api/HotLoading.ts:33](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/HotLoading.ts#L33)*
+*Defined in [augur-sdk/src/api/HotLoading.ts:33](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/HotLoading.ts#L33)*
 
 ___
 <a id="marketcreatorfeerate"></a>
@@ -131,7 +131,7 @@ ___
 
 **● marketCreatorFeeRate**: *`string`*
 
-*Defined in [augur-sdk/src/api/HotLoading.ts:53](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/HotLoading.ts#L53)*
+*Defined in [augur-sdk/src/api/HotLoading.ts:53](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/HotLoading.ts#L53)*
 
 ___
 <a id="markettype"></a>
@@ -140,7 +140,7 @@ ___
 
 **● marketType**: *`string`*
 
-*Defined in [augur-sdk/src/api/HotLoading.ts:35](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/HotLoading.ts#L35)*
+*Defined in [augur-sdk/src/api/HotLoading.ts:35](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/HotLoading.ts#L35)*
 
 ___
 <a id="maxprice"></a>
@@ -149,7 +149,7 @@ ___
 
 **● maxPrice**: *`string`*
 
-*Defined in [augur-sdk/src/api/HotLoading.ts:38](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/HotLoading.ts#L38)*
+*Defined in [augur-sdk/src/api/HotLoading.ts:38](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/HotLoading.ts#L38)*
 
 ___
 <a id="minprice"></a>
@@ -158,7 +158,7 @@ ___
 
 **● minPrice**: *`string`*
 
-*Defined in [augur-sdk/src/api/HotLoading.ts:37](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/HotLoading.ts#L37)*
+*Defined in [augur-sdk/src/api/HotLoading.ts:37](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/HotLoading.ts#L37)*
 
 ___
 <a id="numoutcomes"></a>
@@ -167,7 +167,7 @@ ___
 
 **● numOutcomes**: *`number`*
 
-*Defined in [augur-sdk/src/api/HotLoading.ts:36](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/HotLoading.ts#L36)*
+*Defined in [augur-sdk/src/api/HotLoading.ts:36](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/HotLoading.ts#L36)*
 
 ___
 <a id="numticks"></a>
@@ -176,7 +176,7 @@ ___
 
 **● numTicks**: *`string`*
 
-*Defined in [augur-sdk/src/api/HotLoading.ts:49](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/HotLoading.ts#L49)*
+*Defined in [augur-sdk/src/api/HotLoading.ts:49](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/HotLoading.ts#L49)*
 
 ___
 <a id="openinterest"></a>
@@ -185,7 +185,7 @@ ___
 
 **● openInterest**: *`string`*
 
-*Defined in [augur-sdk/src/api/HotLoading.ts:43](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/HotLoading.ts#L43)*
+*Defined in [augur-sdk/src/api/HotLoading.ts:43](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/HotLoading.ts#L43)*
 
 ___
 <a id="outcomes"></a>
@@ -194,7 +194,7 @@ ___
 
 **● outcomes**: *[MarketInfoOutcome](api-interfaces-augur-sdk-src-state-getter-markets-marketinfooutcome.md)[]*
 
-*Defined in [augur-sdk/src/api/HotLoading.ts:52](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/HotLoading.ts#L52)*
+*Defined in [augur-sdk/src/api/HotLoading.ts:52](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/HotLoading.ts#L52)*
 
 ___
 <a id="reportingfeerate"></a>
@@ -203,7 +203,7 @@ ___
 
 **● reportingFeeRate**: *`string`*
 
-*Defined in [augur-sdk/src/api/HotLoading.ts:55](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/HotLoading.ts#L55)*
+*Defined in [augur-sdk/src/api/HotLoading.ts:55](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/HotLoading.ts#L55)*
 
 ___
 <a id="reportingstate"></a>
@@ -212,7 +212,7 @@ ___
 
 **● reportingState**: *`string`*
 
-*Defined in [augur-sdk/src/api/HotLoading.ts:44](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/HotLoading.ts#L44)*
+*Defined in [augur-sdk/src/api/HotLoading.ts:44](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/HotLoading.ts#L44)*
 
 ___
 <a id="scalardenomination"></a>
@@ -221,7 +221,7 @@ ___
 
 **● scalarDenomination**: *`string` \| `null`*
 
-*Defined in [augur-sdk/src/api/HotLoading.ts:47](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/HotLoading.ts#L47)*
+*Defined in [augur-sdk/src/api/HotLoading.ts:47](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/HotLoading.ts#L47)*
 
 ___
 <a id="settlementfee"></a>
@@ -230,7 +230,7 @@ ___
 
 **● settlementFee**: *`string`*
 
-*Defined in [augur-sdk/src/api/HotLoading.ts:54](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/HotLoading.ts#L54)*
+*Defined in [augur-sdk/src/api/HotLoading.ts:54](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/HotLoading.ts#L54)*
 
 ___
 <a id="template"></a>
@@ -239,7 +239,7 @@ ___
 
 **● template**: *`ExtraInfoTemplate`*
 
-*Defined in [augur-sdk/src/api/HotLoading.ts:57](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/HotLoading.ts#L57)*
+*Defined in [augur-sdk/src/api/HotLoading.ts:57](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/HotLoading.ts#L57)*
 
 ___
 <a id="ticksize"></a>
@@ -248,7 +248,7 @@ ___
 
 **● tickSize**: *`string`*
 
-*Defined in [augur-sdk/src/api/HotLoading.ts:50](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/HotLoading.ts#L50)*
+*Defined in [augur-sdk/src/api/HotLoading.ts:50](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/HotLoading.ts#L50)*
 
 ___
 <a id="universe"></a>
@@ -257,7 +257,7 @@ ___
 
 **● universe**: *[Address](api-modules-augur-sdk-src-state-logs-types-module.md#address)*
 
-*Defined in [augur-sdk/src/api/HotLoading.ts:34](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/HotLoading.ts#L34)*
+*Defined in [augur-sdk/src/api/HotLoading.ts:34](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/HotLoading.ts#L34)*
 
 ___
 <a id="volume"></a>
@@ -266,7 +266,7 @@ ___
 
 **● volume**: *`string`*
 
-*Defined in [augur-sdk/src/api/HotLoading.ts:42](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/HotLoading.ts#L42)*
+*Defined in [augur-sdk/src/api/HotLoading.ts:42](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/HotLoading.ts#L42)*
 
 ___
 

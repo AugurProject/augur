@@ -40,7 +40,7 @@ sidebar_label: DirectConnector
 
 **● augur**: *[Augur](api-classes-augur-sdk-src-augur-augur.md)*
 
-*Defined in [augur-sdk/src/connector/direct-connector.ts:8](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/connector/direct-connector.ts#L8)*
+*Defined in [augur-sdk/src/connector/direct-connector.ts:8](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/connector/direct-connector.ts#L8)*
 
 ___
 <a id="db"></a>
@@ -49,7 +49,7 @@ ___
 
 **● db**: *[DB](api-classes-augur-sdk-src-state-db-db-db.md)*
 
-*Defined in [augur-sdk/src/connector/direct-connector.ts:9](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/connector/direct-connector.ts#L9)*
+*Defined in [augur-sdk/src/connector/direct-connector.ts:9](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/connector/direct-connector.ts#L9)*
 
 ___
 <a id="subscriptions"></a>
@@ -60,7 +60,7 @@ ___
 
 *Inherited from [BaseConnector](api-classes-augur-sdk-src-connector-baseconnector-baseconnector.md).[subscriptions](api-classes-augur-sdk-src-connector-baseconnector-baseconnector.md#subscriptions)*
 
-*Defined in [augur-sdk/src/connector/baseConnector.ts:5](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/connector/baseConnector.ts#L5)*
+*Defined in [augur-sdk/src/connector/baseConnector.ts:5](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/connector/baseConnector.ts#L5)*
 
 #### Type declaration
 
@@ -82,7 +82,7 @@ ___
 
 *Overrides [BaseConnector](api-classes-augur-sdk-src-connector-baseconnector-baseconnector.md).[bindTo](api-classes-augur-sdk-src-connector-baseconnector-baseconnector.md#bindto)*
 
-*Defined in [augur-sdk/src/connector/direct-connector.ts:25](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/connector/direct-connector.ts#L25)*
+*Defined in [augur-sdk/src/connector/direct-connector.ts:25](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/connector/direct-connector.ts#L25)*
 
 **Type parameters:**
 
@@ -105,7 +105,7 @@ ___
 
 *Inherited from [BaseConnector](api-classes-augur-sdk-src-connector-baseconnector-baseconnector.md).[callbackWrapper](api-classes-augur-sdk-src-connector-baseconnector-baseconnector.md#callbackwrapper)*
 
-*Defined in [augur-sdk/src/connector/baseConnector.ts:17](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/connector/baseConnector.ts#L17)*
+*Defined in [augur-sdk/src/connector/baseConnector.ts:17](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/connector/baseConnector.ts#L17)*
 
 **Type parameters:**
 
@@ -127,7 +127,7 @@ ___
 
 *Overrides [BaseConnector](api-classes-augur-sdk-src-connector-baseconnector-baseconnector.md).[connect](api-classes-augur-sdk-src-connector-baseconnector-baseconnector.md#connect)*
 
-*Defined in [augur-sdk/src/connector/direct-connector.ts:16](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/connector/direct-connector.ts#L16)*
+*Defined in [augur-sdk/src/connector/direct-connector.ts:16](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/connector/direct-connector.ts#L16)*
 
 **Parameters:**
 
@@ -146,7 +146,7 @@ ___
 
 *Overrides [BaseConnector](api-classes-augur-sdk-src-connector-baseconnector-baseconnector.md).[disconnect](api-classes-augur-sdk-src-connector-baseconnector-baseconnector.md#disconnect)*
 
-*Defined in [augur-sdk/src/connector/direct-connector.ts:20](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/connector/direct-connector.ts#L20)*
+*Defined in [augur-sdk/src/connector/direct-connector.ts:20](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/connector/direct-connector.ts#L20)*
 
 **Returns:** `Promise`<`any`>
 
@@ -157,7 +157,7 @@ ___
 
 ▸ **initialize**(augur: *[Augur](api-classes-augur-sdk-src-augur-augur.md)*, db: *[DB](api-classes-augur-sdk-src-state-db-db-db.md)*): `void`
 
-*Defined in [augur-sdk/src/connector/direct-connector.ts:11](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/connector/direct-connector.ts#L11)*
+*Defined in [augur-sdk/src/connector/direct-connector.ts:11](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/connector/direct-connector.ts#L11)*
 
 **Parameters:**
 
@@ -177,7 +177,7 @@ ___
 
 *Overrides [BaseConnector](api-classes-augur-sdk-src-connector-baseconnector-baseconnector.md).[off](api-classes-augur-sdk-src-connector-baseconnector-baseconnector.md#off)*
 
-*Defined in [augur-sdk/src/connector/direct-connector.ts:34](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/connector/direct-connector.ts#L34)*
+*Defined in [augur-sdk/src/connector/direct-connector.ts:34](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/connector/direct-connector.ts#L34)*
 
 **Parameters:**
 
@@ -196,7 +196,7 @@ ___
 
 *Overrides [BaseConnector](api-classes-augur-sdk-src-connector-baseconnector-baseconnector.md).[on](api-classes-augur-sdk-src-connector-baseconnector-baseconnector.md#on)*
 
-*Defined in [augur-sdk/src/connector/direct-connector.ts:31](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/connector/direct-connector.ts#L31)*
+*Defined in [augur-sdk/src/connector/direct-connector.ts:31](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/connector/direct-connector.ts#L31)*
 
 **Parameters:**
 

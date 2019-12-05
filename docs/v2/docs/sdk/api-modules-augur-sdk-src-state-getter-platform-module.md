@@ -40,7 +40,7 @@ sidebar_label: augur-sdk/src/state/getter/Platform
 
 ▸ **formatTimestamp**(timestamp: *`number`*): `string`
 
-*Defined in [augur-sdk/src/state/getter/Platform.ts:199](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Platform.ts#L199)*
+*Defined in [augur-sdk/src/state/getter/Platform.ts:199](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Platform.ts#L199)*
 
 **Parameters:**
 
@@ -57,7 +57,7 @@ ___
 
 ▸ **getActiveUsers**(universe: *`string`*, startTime: *`number`*, endTime: *`number`*, db: *[DB](api-classes-augur-sdk-src-state-db-db-db.md)*): `Promise`<`number`>
 
-*Defined in [augur-sdk/src/state/getter/Platform.ts:75](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Platform.ts#L75)*
+*Defined in [augur-sdk/src/state/getter/Platform.ts:75](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Platform.ts#L75)*
 
 **Parameters:**
 
@@ -77,7 +77,7 @@ ___
 
 ▸ **getAmountStaked**(universe: *`string`*, startTime: *`number`*, endTime: *`number`*, db: *[DB](api-classes-augur-sdk-src-state-db-db-db.md)*): `Promise`<`BigNumber`>
 
-*Defined in [augur-sdk/src/state/getter/Platform.ts:146](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Platform.ts#L146)*
+*Defined in [augur-sdk/src/state/getter/Platform.ts:146](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Platform.ts#L146)*
 
 **Parameters:**
 
@@ -97,7 +97,7 @@ ___
 
 ▸ **getDisputedMarkets**(universe: *`string`*, startTime: *`number`*, endTime: *`number`*, db: *[DB](api-classes-augur-sdk-src-state-db-db-db.md)*): `Promise`<`number`>
 
-*Defined in [augur-sdk/src/state/getter/Platform.ts:164](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Platform.ts#L164)*
+*Defined in [augur-sdk/src/state/getter/Platform.ts:164](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Platform.ts#L164)*
 
 **Parameters:**
 
@@ -117,7 +117,7 @@ ___
 
 ▸ **getMarketCount**(universe: *`string`*, startTime: *`number`*, endTime: *`number`*, db: *[DB](api-classes-augur-sdk-src-state-db-db-db.md)*): `Promise`<`number`>
 
-*Defined in [augur-sdk/src/state/getter/Platform.ts:117](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Platform.ts#L117)*
+*Defined in [augur-sdk/src/state/getter/Platform.ts:117](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Platform.ts#L117)*
 
 **Parameters:**
 
@@ -137,7 +137,7 @@ ___
 
 ▸ **getOpenInterest**(universe: *`string`*, augur: *[Augur](api-classes-augur-sdk-src-augur-augur.md)*): `Promise`<`BigNumber`>
 
-*Defined in [augur-sdk/src/state/getter/Platform.ts:112](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Platform.ts#L112)*
+*Defined in [augur-sdk/src/state/getter/Platform.ts:112](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Platform.ts#L112)*
 
 **Parameters:**
 
@@ -155,7 +155,7 @@ ___
 
 ▸ **getTradeCount**(universe: *`string`*, startTime: *`number`*, endTime: *`number`*, db: *[DB](api-classes-augur-sdk-src-state-db-db-db.md)*): `Promise`<`number`>
 
-*Defined in [augur-sdk/src/state/getter/Platform.ts:97](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Platform.ts#L97)*
+*Defined in [augur-sdk/src/state/getter/Platform.ts:97](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Platform.ts#L97)*
 
 **Parameters:**
 
@@ -175,7 +175,7 @@ ___
 
 ▸ **getVolume**(universe: *`string`*, startTime: *`number`*, endTime: *`number`*, db: *[DB](api-classes-augur-sdk-src-state-db-db-db.md)*): `Promise`<`BigNumber`>
 
-*Defined in [augur-sdk/src/state/getter/Platform.ts:129](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Platform.ts#L129)*
+*Defined in [augur-sdk/src/state/getter/Platform.ts:129](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Platform.ts#L129)*
 
 **Parameters:**
 
@@ -195,7 +195,7 @@ ___
 
 ▸ **makeGetField**(universe: *[Address](api-modules-augur-sdk-src-state-logs-types-module.md#address)*, startTime: *`number`*, endTime: *`number`*): `(Anonymous function)`
 
-*Defined in [augur-sdk/src/state/getter/Platform.ts:203](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Platform.ts#L203)*
+*Defined in [augur-sdk/src/state/getter/Platform.ts:203](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Platform.ts#L203)*
 
 **Parameters:**
 
@@ -214,7 +214,7 @@ ___
 
 ▸ **timeConstraint**(startTime: *`number`*, endTime: *`number`*): [TimeConstraint](api-interfaces-augur-sdk-src-state-getter-platform-timeconstraint.md)
 
-*Defined in [augur-sdk/src/state/getter/Platform.ts:187](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Platform.ts#L187)*
+*Defined in [augur-sdk/src/state/getter/Platform.ts:187](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Platform.ts#L187)*
 
 **Parameters:**
 

@@ -30,7 +30,7 @@ sidebar_label: HorizontalLiquidity
 
 **● total**: *`BigNumber`*
 
-*Defined in [augur-sdk/src/api/Liquidity.ts:27](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Liquidity.ts#L27)*
+*Defined in [augur-sdk/src/api/Liquidity.ts:27](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Liquidity.ts#L27)*
 
 ___
 

@@ -24,7 +24,7 @@ sidebar_label: MarketType
 
 **Categorical**:  = 1
 
-*Defined in [augur-sdk/src/state/logs/types.ts:159](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L159)*
+*Defined in [augur-sdk/src/state/logs/types.ts:159](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L159)*
 
 ___
 <a id="scalar"></a>
@@ -33,7 +33,7 @@ ___
 
 **Scalar**:  = 2
 
-*Defined in [augur-sdk/src/state/logs/types.ts:160](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L160)*
+*Defined in [augur-sdk/src/state/logs/types.ts:160](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L160)*
 
 ___
 <a id="yesno"></a>
@@ -42,7 +42,7 @@ ___
 
 **YesNo**:  = 0
 
-*Defined in [augur-sdk/src/state/logs/types.ts:158](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L158)*
+*Defined in [augur-sdk/src/state/logs/types.ts:158](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L158)*
 
 ___
 

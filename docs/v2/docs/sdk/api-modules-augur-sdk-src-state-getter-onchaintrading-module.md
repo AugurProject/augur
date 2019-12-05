@@ -58,7 +58,7 @@ sidebar_label: augur-sdk/src/state/getter/OnChainTrading
   price: t.number,
 })
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:138](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L138)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:138](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L138)*
 
 ___
 <a id="ordertype"></a>
@@ -70,7 +70,7 @@ ___
   sell: null,
 })
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:133](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L133)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:133](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L133)*
 
 ___
 <a id="ordersparams"></a>
@@ -88,7 +88,7 @@ ___
   makerTaker
 })
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:52](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L52)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:52](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L52)*
 
 ___
 <a id="outcomeparam"></a>
@@ -106,7 +106,7 @@ ___
   7: null,
 })
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:33](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L33)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:33](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L33)*
 
 ___
 <a id="tradinghistoryparams"></a>
@@ -121,7 +121,7 @@ ___
   filterFinalized: t.boolean,
 })
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:25](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L25)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:25](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L25)*
 
 ___
 <a id="zero"></a>
@@ -130,7 +130,7 @@ ___
 
 **● ZERO**: *`BigNumber`* =  new BigNumber(0)
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:23](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L23)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:23](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L23)*
 
 ___
 <a id="makertaker"></a>
@@ -139,7 +139,7 @@ ___
 
 **● makerTaker**: *`KeyofC`<`object`>* =  t.keyof(makerTakerValues)
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:50](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L50)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:50](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L50)*
 
 ___
 
@@ -151,7 +151,7 @@ ___
 
 ▸ **getMarkets**(marketIds: *`string`[]*, db: *[DB](api-classes-augur-sdk-src-state-db-db-db.md)*, filterFinalized: *`boolean`*): `Promise`<`Dictionary`<[MarketData](api-interfaces-augur-sdk-src-state-logs-types-marketdata.md)>>
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:504](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L504)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:504](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L504)*
 
 **Parameters:**
 
@@ -173,7 +173,7 @@ ___
 
 **makerTakerValues**: *`object`*
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:44](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L44)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:44](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L44)*
 
 <a id="makertakervalues.either"></a>
 
@@ -181,7 +181,7 @@ ___
 
 **● either**: *`string`* = "either"
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:45](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L45)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:45](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L45)*
 
 ___
 <a id="makertakervalues.maker"></a>
@@ -190,7 +190,7 @@ ___
 
 **● maker**: *`string`* = "maker"
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:46](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L46)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:46](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L46)*
 
 ___
 <a id="makertakervalues.taker"></a>
@@ -199,7 +199,7 @@ ___
 
 **● taker**: *`string`* = "taker"
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:47](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L47)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:47](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L47)*
 
 ___
 

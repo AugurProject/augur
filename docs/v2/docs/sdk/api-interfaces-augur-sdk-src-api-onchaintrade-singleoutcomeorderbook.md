@@ -27,7 +27,7 @@ sidebar_label: SingleOutcomeOrderBook
 
 **● buyOrders**: *[Order](api-interfaces-augur-sdk-src-api-onchaintrade-order.md)[]*
 
-*Defined in [augur-sdk/src/api/OnChainTrade.ts:52](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/OnChainTrade.ts#L52)*
+*Defined in [augur-sdk/src/api/OnChainTrade.ts:52](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/OnChainTrade.ts#L52)*
 
 ___
 <a id="sellorders"></a>
@@ -36,7 +36,7 @@ ___
 
 **● sellorders**: *[Order](api-interfaces-augur-sdk-src-api-onchaintrade-order.md)[]*
 
-*Defined in [augur-sdk/src/api/OnChainTrade.ts:53](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/OnChainTrade.ts#L53)*
+*Defined in [augur-sdk/src/api/OnChainTrade.ts:53](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/OnChainTrade.ts#L53)*
 
 ___
 

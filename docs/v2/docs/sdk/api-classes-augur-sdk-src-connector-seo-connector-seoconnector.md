@@ -41,7 +41,7 @@ sidebar_label: SEOConnector
 
 *Inherited from [SingleThreadConnector](api-classes-augur-sdk-src-connector-single-thread-connector-singlethreadconnector.md).[api](api-classes-augur-sdk-src-connector-single-thread-connector-singlethreadconnector.md#api)*
 
-*Defined in [augur-sdk/src/connector/single-thread-connector.ts:9](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/connector/single-thread-connector.ts#L9)*
+*Defined in [augur-sdk/src/connector/single-thread-connector.ts:9](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/connector/single-thread-connector.ts#L9)*
 
 ___
 <a id="events"></a>
@@ -52,7 +52,7 @@ ___
 
 *Inherited from [SingleThreadConnector](api-classes-augur-sdk-src-connector-single-thread-connector-singlethreadconnector.md).[events](api-classes-augur-sdk-src-connector-single-thread-connector-singlethreadconnector.md#events)*
 
-*Defined in [augur-sdk/src/connector/single-thread-connector.ts:10](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/connector/single-thread-connector.ts#L10)*
+*Defined in [augur-sdk/src/connector/single-thread-connector.ts:10](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/connector/single-thread-connector.ts#L10)*
 
 ___
 <a id="subscriptions"></a>
@@ -63,7 +63,7 @@ ___
 
 *Inherited from [BaseConnector](api-classes-augur-sdk-src-connector-baseconnector-baseconnector.md).[subscriptions](api-classes-augur-sdk-src-connector-baseconnector-baseconnector.md#subscriptions)*
 
-*Defined in [augur-sdk/src/connector/baseConnector.ts:5](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/connector/baseConnector.ts#L5)*
+*Defined in [augur-sdk/src/connector/baseConnector.ts:5](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/connector/baseConnector.ts#L5)*
 
 #### Type declaration
 
@@ -87,7 +87,7 @@ ___
 
 *Overrides [BaseConnector](api-classes-augur-sdk-src-connector-baseconnector-baseconnector.md).[bindTo](api-classes-augur-sdk-src-connector-baseconnector-baseconnector.md#bindto)*
 
-*Defined in [augur-sdk/src/connector/single-thread-connector.ts:24](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/connector/single-thread-connector.ts#L24)*
+*Defined in [augur-sdk/src/connector/single-thread-connector.ts:24](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/connector/single-thread-connector.ts#L24)*
 
 **Type parameters:**
 
@@ -110,7 +110,7 @@ ___
 
 *Inherited from [BaseConnector](api-classes-augur-sdk-src-connector-baseconnector-baseconnector.md).[callbackWrapper](api-classes-augur-sdk-src-connector-baseconnector-baseconnector.md#callbackwrapper)*
 
-*Defined in [augur-sdk/src/connector/baseConnector.ts:17](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/connector/baseConnector.ts#L17)*
+*Defined in [augur-sdk/src/connector/baseConnector.ts:17](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/connector/baseConnector.ts#L17)*
 
 **Type parameters:**
 
@@ -132,7 +132,7 @@ ___
 
 *Overrides [SingleThreadConnector](api-classes-augur-sdk-src-connector-single-thread-connector-singlethreadconnector.md).[connect](api-classes-augur-sdk-src-connector-single-thread-connector-singlethreadconnector.md#connect)*
 
-*Defined in [augur-sdk/src/connector/seo-connector.ts:6](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/connector/seo-connector.ts#L6)*
+*Defined in [augur-sdk/src/connector/seo-connector.ts:6](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/connector/seo-connector.ts#L6)*
 
 **Parameters:**
 
@@ -154,7 +154,7 @@ ___
 
 *Overrides [BaseConnector](api-classes-augur-sdk-src-connector-baseconnector-baseconnector.md).[disconnect](api-classes-augur-sdk-src-connector-baseconnector-baseconnector.md#disconnect)*
 
-*Defined in [augur-sdk/src/connector/single-thread-connector.ts:19](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/connector/single-thread-connector.ts#L19)*
+*Defined in [augur-sdk/src/connector/single-thread-connector.ts:19](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/connector/single-thread-connector.ts#L19)*
 
 **Returns:** `Promise`<`any`>
 
@@ -169,7 +169,7 @@ ___
 
 *Overrides [BaseConnector](api-classes-augur-sdk-src-connector-baseconnector-baseconnector.md).[off](api-classes-augur-sdk-src-connector-baseconnector-baseconnector.md#off)*
 
-*Defined in [augur-sdk/src/connector/single-thread-connector.ts:37](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/connector/single-thread-connector.ts#L37)*
+*Defined in [augur-sdk/src/connector/single-thread-connector.ts:37](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/connector/single-thread-connector.ts#L37)*
 
 **Parameters:**
 
@@ -190,7 +190,7 @@ ___
 
 *Overrides [BaseConnector](api-classes-augur-sdk-src-connector-baseconnector-baseconnector.md).[on](api-classes-augur-sdk-src-connector-baseconnector-baseconnector.md#on)*
 
-*Defined in [augur-sdk/src/connector/single-thread-connector.ts:30](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/connector/single-thread-connector.ts#L30)*
+*Defined in [augur-sdk/src/connector/single-thread-connector.ts:30](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/connector/single-thread-connector.ts#L30)*
 
 **Parameters:**
 

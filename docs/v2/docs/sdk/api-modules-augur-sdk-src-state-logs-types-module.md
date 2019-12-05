@@ -99,7 +99,7 @@ sidebar_label: augur-sdk/src/state/logs/types
 
 **Ƭ Address**: *`string`*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:4](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L4)*
+*Defined in [augur-sdk/src/state/logs/types.ts:4](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L4)*
 
 ___
 <a id="bytes32"></a>
@@ -108,7 +108,7 @@ ___
 
 **Ƭ Bytes32**: *`string`*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:5](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L5)*
+*Defined in [augur-sdk/src/state/logs/types.ts:5](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L5)*
 
 ___
 <a id="payoutnumerators"></a>
@@ -117,7 +117,7 @@ ___
 
 **Ƭ PayoutNumerators**: *`string`[]*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:6](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L6)*
+*Defined in [augur-sdk/src/state/logs/types.ts:6](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L6)*
 
 ___
 <a id="timestamp"></a>
@@ -126,7 +126,7 @@ ___
 
 **Ƭ Timestamp**: *`string`*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:7](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L7)*
+*Defined in [augur-sdk/src/state/logs/types.ts:7](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L7)*
 
 ___
 
@@ -138,7 +138,7 @@ ___
 
 **● ORDER_EVENT_AMOUNT**: *"uint256Data.1"* = "uint256Data.1"
 
-*Defined in [augur-sdk/src/state/logs/types.ts:284](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L284)*
+*Defined in [augur-sdk/src/state/logs/types.ts:284](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L284)*
 
 ___
 <a id="order_event_amount_filled"></a>
@@ -147,7 +147,7 @@ ___
 
 **● ORDER_EVENT_AMOUNT_FILLED**: *"uint256Data.6"* = "uint256Data.6"
 
-*Defined in [augur-sdk/src/state/logs/types.ts:289](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L289)*
+*Defined in [augur-sdk/src/state/logs/types.ts:289](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L289)*
 
 ___
 <a id="order_event_creator"></a>
@@ -156,7 +156,7 @@ ___
 
 **● ORDER_EVENT_CREATOR**: *"addressData.1"* = "addressData.1"
 
-*Defined in [augur-sdk/src/state/logs/types.ts:281](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L281)*
+*Defined in [augur-sdk/src/state/logs/types.ts:281](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L281)*
 
 ___
 <a id="order_event_fees"></a>
@@ -165,7 +165,7 @@ ___
 
 **● ORDER_EVENT_FEES**: *"uint256Data.5"* = "uint256Data.5"
 
-*Defined in [augur-sdk/src/state/logs/types.ts:288](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L288)*
+*Defined in [augur-sdk/src/state/logs/types.ts:288](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L288)*
 
 ___
 <a id="order_event_filler"></a>
@@ -174,7 +174,7 @@ ___
 
 **● ORDER_EVENT_FILLER**: *"addressData.2"* = "addressData.2"
 
-*Defined in [augur-sdk/src/state/logs/types.ts:282](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L282)*
+*Defined in [augur-sdk/src/state/logs/types.ts:282](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L282)*
 
 ___
 <a id="order_event_kyc_token"></a>
@@ -183,7 +183,7 @@ ___
 
 **● ORDER_EVENT_KYC_TOKEN**: *"addressData.0"* = "addressData.0"
 
-*Defined in [augur-sdk/src/state/logs/types.ts:280](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L280)*
+*Defined in [augur-sdk/src/state/logs/types.ts:280](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L280)*
 
 ___
 <a id="order_event_outcome"></a>
@@ -192,7 +192,7 @@ ___
 
 **● ORDER_EVENT_OUTCOME**: *"uint256Data.2"* = "uint256Data.2"
 
-*Defined in [augur-sdk/src/state/logs/types.ts:285](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L285)*
+*Defined in [augur-sdk/src/state/logs/types.ts:285](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L285)*
 
 ___
 <a id="order_event_price"></a>
@@ -201,7 +201,7 @@ ___
 
 **● ORDER_EVENT_PRICE**: *"uint256Data.0"* = "uint256Data.0"
 
-*Defined in [augur-sdk/src/state/logs/types.ts:283](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L283)*
+*Defined in [augur-sdk/src/state/logs/types.ts:283](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L283)*
 
 ___
 <a id="order_event_shares_escrowed"></a>
@@ -210,7 +210,7 @@ ___
 
 **● ORDER_EVENT_SHARES_ESCROWED**: *"uint256Data.8"* = "uint256Data.8"
 
-*Defined in [augur-sdk/src/state/logs/types.ts:291](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L291)*
+*Defined in [augur-sdk/src/state/logs/types.ts:291](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L291)*
 
 ___
 <a id="order_event_shares_refund"></a>
@@ -219,7 +219,7 @@ ___
 
 **● ORDER_EVENT_SHARES_REFUND**: *"uint256Data.4"* = "uint256Data.4"
 
-*Defined in [augur-sdk/src/state/logs/types.ts:287](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L287)*
+*Defined in [augur-sdk/src/state/logs/types.ts:287](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L287)*
 
 ___
 <a id="order_event_timestamp"></a>
@@ -228,7 +228,7 @@ ___
 
 **● ORDER_EVENT_TIMESTAMP**: *"uint256Data.7"* = "uint256Data.7"
 
-*Defined in [augur-sdk/src/state/logs/types.ts:290](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L290)*
+*Defined in [augur-sdk/src/state/logs/types.ts:290](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L290)*
 
 ___
 <a id="order_event_tokens_escrowed"></a>
@@ -237,7 +237,7 @@ ___
 
 **● ORDER_EVENT_TOKENS_ESCROWED**: *"uint256Data.9"* = "uint256Data.9"
 
-*Defined in [augur-sdk/src/state/logs/types.ts:292](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L292)*
+*Defined in [augur-sdk/src/state/logs/types.ts:292](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L292)*
 
 ___
 <a id="order_event_token_refund"></a>
@@ -246,7 +246,7 @@ ___
 
 **● ORDER_EVENT_TOKEN_REFUND**: *"uint256Data.3"* = "uint256Data.3"
 
-*Defined in [augur-sdk/src/state/logs/types.ts:286](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L286)*
+*Defined in [augur-sdk/src/state/logs/types.ts:286](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L286)*
 
 ___
 

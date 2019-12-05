@@ -26,7 +26,7 @@ sidebar_label: TimeConstraint
 
 **● $and**: *`Array`<`object`>*
 
-*Defined in [augur-sdk/src/state/getter/Platform.ts:182](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Platform.ts#L182)*
+*Defined in [augur-sdk/src/state/getter/Platform.ts:182](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Platform.ts#L182)*
 
 ___
 

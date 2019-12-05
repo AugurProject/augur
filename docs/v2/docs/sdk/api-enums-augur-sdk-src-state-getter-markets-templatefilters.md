@@ -24,7 +24,7 @@ sidebar_label: TemplateFilters
 
 **all**:  = "all"
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:54](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L54)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:54](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Markets.ts#L54)*
 
 ___
 <a id="customonly"></a>
@@ -33,7 +33,7 @@ ___
 
 **customOnly**:  = "customOnly"
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:56](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L56)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:56](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Markets.ts#L56)*
 
 ___
 <a id="templateonly"></a>
@@ -42,7 +42,7 @@ ___
 
 **templateOnly**:  = "templateOnly"
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:55](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L55)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:55](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Markets.ts#L55)*
 
 ___
 

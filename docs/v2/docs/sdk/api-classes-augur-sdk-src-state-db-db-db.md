@@ -93,7 +93,7 @@ sidebar_label: DB
 
 ⊕ **new DB**(dexieDB: *`Dexie`*): [DB](api-classes-augur-sdk-src-state-db-db-db.md)
 
-*Defined in [augur-sdk/src/state/db/DB.ts:106](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L106)*
+*Defined in [augur-sdk/src/state/db/DB.ts:106](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L106)*
 
 **Parameters:**
 
@@ -113,7 +113,7 @@ ___
 
 **● augur**: *[Augur](api-classes-augur-sdk-src-augur-augur.md)*
 
-*Defined in [augur-sdk/src/state/db/DB.ts:70](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L70)*
+*Defined in [augur-sdk/src/state/db/DB.ts:70](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L70)*
 
 ___
 <a id="blockandlogstreamerlistener"></a>
@@ -122,7 +122,7 @@ ___
 
 **● blockAndLogStreamerListener**: *[BlockAndLogStreamerListenerInterface](api-interfaces-augur-sdk-src-state-db-blockandlogstreamerlistener-blockandlogstreamerlistenerinterface.md)*
 
-*Defined in [augur-sdk/src/state/db/DB.ts:69](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L69)*
+*Defined in [augur-sdk/src/state/db/DB.ts:69](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L69)*
 
 ___
 <a id="blockstreamdelay"></a>
@@ -131,7 +131,7 @@ ___
 
 **● blockstreamDelay**: *`number`*
 
-*Defined in [augur-sdk/src/state/db/DB.ts:62](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L62)*
+*Defined in [augur-sdk/src/state/db/DB.ts:62](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L62)*
 
 ___
 <a id="currentordersdatabase"></a>
@@ -140,7 +140,7 @@ ___
 
 **● currentOrdersDatabase**: *[CurrentOrdersDatabase](api-classes-augur-sdk-src-state-db-currentordersdb-currentordersdatabase.md)*
 
-*Defined in [augur-sdk/src/state/db/DB.ts:66](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L66)*
+*Defined in [augur-sdk/src/state/db/DB.ts:66](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L66)*
 
 ___
 <a id="dexiedb"></a>
@@ -149,7 +149,7 @@ ___
 
 **● dexieDB**: *`Dexie`*
 
-*Defined in [augur-sdk/src/state/db/DB.ts:71](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L71)*
+*Defined in [augur-sdk/src/state/db/DB.ts:71](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L71)*
 
 ___
 <a id="disputedatabase"></a>
@@ -158,7 +158,7 @@ ___
 
 **● disputeDatabase**: *[DisputeDatabase](api-classes-augur-sdk-src-state-db-disputedb-disputedatabase.md)*
 
-*Defined in [augur-sdk/src/state/db/DB.ts:65](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L65)*
+*Defined in [augur-sdk/src/state/db/DB.ts:65](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L65)*
 
 ___
 <a id="genericeventdbdescriptions"></a>
@@ -199,7 +199,7 @@ ___
     { EventName: 'ShareTokenBalanceChanged', indexes: ['[universe+account]'], primaryKey: '[account+market+outcome]'},
   ]
 
-*Defined in [augur-sdk/src/state/db/DB.ts:74](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L74)*
+*Defined in [augur-sdk/src/state/db/DB.ts:74](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L74)*
 
 ___
 <a id="marketdatabase"></a>
@@ -208,7 +208,7 @@ ___
 
 **● marketDatabase**: *[MarketDB](api-classes-augur-sdk-src-state-db-marketdb-marketdb.md)*
 
-*Defined in [augur-sdk/src/state/db/DB.ts:67](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L67)*
+*Defined in [augur-sdk/src/state/db/DB.ts:67](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L67)*
 
 ___
 <a id="networkid"></a>
@@ -217,7 +217,7 @@ ___
 
 **● networkId**: *`number`*
 
-*Defined in [augur-sdk/src/state/db/DB.ts:61](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L61)*
+*Defined in [augur-sdk/src/state/db/DB.ts:61](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L61)*
 
 ___
 <a id="syncstatus"></a>
@@ -226,7 +226,7 @@ ___
 
 **● syncStatus**: *[SyncStatus](api-classes-augur-sdk-src-state-db-syncstatus-syncstatus.md)*
 
-*Defined in [augur-sdk/src/state/db/DB.ts:72](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L72)*
+*Defined in [augur-sdk/src/state/db/DB.ts:72](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L72)*
 
 ___
 <a id="syncabledatabases"></a>
@@ -235,7 +235,7 @@ ___
 
 **● syncableDatabases**: *`object`*
 
-*Defined in [augur-sdk/src/state/db/DB.ts:63](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L63)*
+*Defined in [augur-sdk/src/state/db/DB.ts:63](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L63)*
 
 #### Type declaration
 
@@ -248,7 +248,7 @@ ___
 
 **● zeroXOrders**: *[ZeroXOrders](api-classes-augur-sdk-src-state-db-zeroxorders-zeroxorders.md)*
 
-*Defined in [augur-sdk/src/state/db/DB.ts:68](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L68)*
+*Defined in [augur-sdk/src/state/db/DB.ts:68](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L68)*
 
 ___
 
@@ -260,7 +260,7 @@ ___
 
 **get CompleteSetsPurchased**(): `Table`<[CompleteSetsPurchasedLog](api-interfaces-augur-sdk-src-state-logs-types-completesetspurchasedlog.md), `any`>
 
-*Defined in [augur-sdk/src/state/db/DB.ts:353](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L353)*
+*Defined in [augur-sdk/src/state/db/DB.ts:353](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L353)*
 
 **Returns:** `Table`<[CompleteSetsPurchasedLog](api-interfaces-augur-sdk-src-state-logs-types-completesetspurchasedlog.md), `any`>
 
@@ -271,7 +271,7 @@ ___
 
 **get CompleteSetsSold**(): `Table`<[CompleteSetsSoldLog](api-interfaces-augur-sdk-src-state-logs-types-completesetssoldlog.md), `any`>
 
-*Defined in [augur-sdk/src/state/db/DB.ts:354](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L354)*
+*Defined in [augur-sdk/src/state/db/DB.ts:354](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L354)*
 
 **Returns:** `Table`<[CompleteSetsSoldLog](api-interfaces-augur-sdk-src-state-logs-types-completesetssoldlog.md), `any`>
 
@@ -282,7 +282,7 @@ ___
 
 **get CurrentOrders**(): `Table`<[CurrentOrder](api-interfaces-augur-sdk-src-state-logs-types-currentorder.md), `any`>
 
-*Defined in [augur-sdk/src/state/db/DB.ts:386](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L386)*
+*Defined in [augur-sdk/src/state/db/DB.ts:386](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L386)*
 
 **Returns:** `Table`<[CurrentOrder](api-interfaces-augur-sdk-src-state-logs-types-currentorder.md), `any`>
 
@@ -293,7 +293,7 @@ ___
 
 **get Dispute**(): `Table`<[DisputeDoc](api-interfaces-augur-sdk-src-state-logs-types-disputedoc.md), `any`>
 
-*Defined in [augur-sdk/src/state/db/DB.ts:385](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L385)*
+*Defined in [augur-sdk/src/state/db/DB.ts:385](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L385)*
 
 **Returns:** `Table`<[DisputeDoc](api-interfaces-augur-sdk-src-state-logs-types-disputedoc.md), `any`>
 
@@ -304,7 +304,7 @@ ___
 
 **get DisputeCrowdsourcerCompleted**(): `Table`<[DisputeCrowdsourcerCompletedLog](api-interfaces-augur-sdk-src-state-logs-types-disputecrowdsourcercompletedlog.md), `any`>
 
-*Defined in [augur-sdk/src/state/db/DB.ts:356](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L356)*
+*Defined in [augur-sdk/src/state/db/DB.ts:356](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L356)*
 
 **Returns:** `Table`<[DisputeCrowdsourcerCompletedLog](api-interfaces-augur-sdk-src-state-logs-types-disputecrowdsourcercompletedlog.md), `any`>
 
@@ -315,7 +315,7 @@ ___
 
 **get DisputeCrowdsourcerContribution**(): `Table`<[DisputeCrowdsourcerContributionLog](api-interfaces-augur-sdk-src-state-logs-types-disputecrowdsourcercontributionlog.md), `any`>
 
-*Defined in [augur-sdk/src/state/db/DB.ts:355](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L355)*
+*Defined in [augur-sdk/src/state/db/DB.ts:355](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L355)*
 
 **Returns:** `Table`<[DisputeCrowdsourcerContributionLog](api-interfaces-augur-sdk-src-state-logs-types-disputecrowdsourcercontributionlog.md), `any`>
 
@@ -326,7 +326,7 @@ ___
 
 **get DisputeCrowdsourcerCreated**(): `Table`<[DisputeCrowdsourcerCreatedLog](api-interfaces-augur-sdk-src-state-logs-types-disputecrowdsourcercreatedlog.md), `any`>
 
-*Defined in [augur-sdk/src/state/db/DB.ts:357](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L357)*
+*Defined in [augur-sdk/src/state/db/DB.ts:357](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L357)*
 
 **Returns:** `Table`<[DisputeCrowdsourcerCreatedLog](api-interfaces-augur-sdk-src-state-logs-types-disputecrowdsourcercreatedlog.md), `any`>
 
@@ -337,7 +337,7 @@ ___
 
 **get DisputeCrowdsourcerRedeemed**(): `Table`<[DisputeCrowdsourcerRedeemedLog](api-interfaces-augur-sdk-src-state-logs-types-disputecrowdsourcerredeemedlog.md), `any`>
 
-*Defined in [augur-sdk/src/state/db/DB.ts:358](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L358)*
+*Defined in [augur-sdk/src/state/db/DB.ts:358](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L358)*
 
 **Returns:** `Table`<[DisputeCrowdsourcerRedeemedLog](api-interfaces-augur-sdk-src-state-logs-types-disputecrowdsourcerredeemedlog.md), `any`>
 
@@ -348,7 +348,7 @@ ___
 
 **get DisputeWindowCreated**(): `Table`<[DisputeWindowCreatedLog](api-interfaces-augur-sdk-src-state-logs-types-disputewindowcreatedlog.md), `any`>
 
-*Defined in [augur-sdk/src/state/db/DB.ts:359](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L359)*
+*Defined in [augur-sdk/src/state/db/DB.ts:359](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L359)*
 
 **Returns:** `Table`<[DisputeWindowCreatedLog](api-interfaces-augur-sdk-src-state-logs-types-disputewindowcreatedlog.md), `any`>
 
@@ -359,7 +359,7 @@ ___
 
 **get InitialReportSubmitted**(): `Table`<[InitialReportSubmittedLog](api-interfaces-augur-sdk-src-state-logs-types-initialreportsubmittedlog.md), `any`>
 
-*Defined in [augur-sdk/src/state/db/DB.ts:361](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L361)*
+*Defined in [augur-sdk/src/state/db/DB.ts:361](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L361)*
 
 **Returns:** `Table`<[InitialReportSubmittedLog](api-interfaces-augur-sdk-src-state-logs-types-initialreportsubmittedlog.md), `any`>
 
@@ -370,7 +370,7 @@ ___
 
 **get InitialReporterRedeemed**(): `Table`<[InitialReporterRedeemedLog](api-interfaces-augur-sdk-src-state-logs-types-initialreporterredeemedlog.md), `any`>
 
-*Defined in [augur-sdk/src/state/db/DB.ts:360](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L360)*
+*Defined in [augur-sdk/src/state/db/DB.ts:360](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L360)*
 
 **Returns:** `Table`<[InitialReporterRedeemedLog](api-interfaces-augur-sdk-src-state-logs-types-initialreporterredeemedlog.md), `any`>
 
@@ -381,7 +381,7 @@ ___
 
 **get InitialReporterTransferred**(): `Table`<[InitialReporterTransferredLog](api-interfaces-augur-sdk-src-state-logs-types-initialreportertransferredlog.md), `any`>
 
-*Defined in [augur-sdk/src/state/db/DB.ts:362](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L362)*
+*Defined in [augur-sdk/src/state/db/DB.ts:362](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L362)*
 
 **Returns:** `Table`<[InitialReporterTransferredLog](api-interfaces-augur-sdk-src-state-logs-types-initialreportertransferredlog.md), `any`>
 
@@ -392,7 +392,7 @@ ___
 
 **get MarketCreated**(): `Table`<[MarketCreatedLog](api-interfaces-augur-sdk-src-state-logs-types-marketcreatedlog.md), `any`>
 
-*Defined in [augur-sdk/src/state/db/DB.ts:363](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L363)*
+*Defined in [augur-sdk/src/state/db/DB.ts:363](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L363)*
 
 **Returns:** `Table`<[MarketCreatedLog](api-interfaces-augur-sdk-src-state-logs-types-marketcreatedlog.md), `any`>
 
@@ -403,7 +403,7 @@ ___
 
 **get MarketFinalized**(): `Table`<[MarketFinalizedLog](api-interfaces-augur-sdk-src-state-logs-types-marketfinalizedlog.md), `any`>
 
-*Defined in [augur-sdk/src/state/db/DB.ts:364](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L364)*
+*Defined in [augur-sdk/src/state/db/DB.ts:364](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L364)*
 
 **Returns:** `Table`<[MarketFinalizedLog](api-interfaces-augur-sdk-src-state-logs-types-marketfinalizedlog.md), `any`>
 
@@ -414,7 +414,7 @@ ___
 
 **get MarketMigrated**(): `Table`<[MarketMigratedLog](api-interfaces-augur-sdk-src-state-logs-types-marketmigratedlog.md), `any`>
 
-*Defined in [augur-sdk/src/state/db/DB.ts:365](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L365)*
+*Defined in [augur-sdk/src/state/db/DB.ts:365](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L365)*
 
 **Returns:** `Table`<[MarketMigratedLog](api-interfaces-augur-sdk-src-state-logs-types-marketmigratedlog.md), `any`>
 
@@ -425,7 +425,7 @@ ___
 
 **get MarketOIChanged**(): `Table`<[MarketOIChangedLog](api-interfaces-augur-sdk-src-state-logs-types-marketoichangedlog.md), `any`>
 
-*Defined in [augur-sdk/src/state/db/DB.ts:369](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L369)*
+*Defined in [augur-sdk/src/state/db/DB.ts:369](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L369)*
 
 **Returns:** `Table`<[MarketOIChangedLog](api-interfaces-augur-sdk-src-state-logs-types-marketoichangedlog.md), `any`>
 
@@ -436,7 +436,7 @@ ___
 
 **get MarketParticipantsDisavowed**(): `Table`<[MarketParticipantsDisavowedLog](api-interfaces-augur-sdk-src-state-logs-types-marketparticipantsdisavowedlog.md), `any`>
 
-*Defined in [augur-sdk/src/state/db/DB.ts:366](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L366)*
+*Defined in [augur-sdk/src/state/db/DB.ts:366](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L366)*
 
 **Returns:** `Table`<[MarketParticipantsDisavowedLog](api-interfaces-augur-sdk-src-state-logs-types-marketparticipantsdisavowedlog.md), `any`>
 
@@ -447,7 +447,7 @@ ___
 
 **get MarketTransferred**(): `Table`<[MarketTransferredLog](api-interfaces-augur-sdk-src-state-logs-types-markettransferredlog.md), `any`>
 
-*Defined in [augur-sdk/src/state/db/DB.ts:367](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L367)*
+*Defined in [augur-sdk/src/state/db/DB.ts:367](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L367)*
 
 **Returns:** `Table`<[MarketTransferredLog](api-interfaces-augur-sdk-src-state-logs-types-markettransferredlog.md), `any`>
 
@@ -458,7 +458,7 @@ ___
 
 **get MarketVolumeChanged**(): `Table`<[MarketVolumeChangedLog](api-interfaces-augur-sdk-src-state-logs-types-marketvolumechangedlog.md), `any`>
 
-*Defined in [augur-sdk/src/state/db/DB.ts:368](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L368)*
+*Defined in [augur-sdk/src/state/db/DB.ts:368](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L368)*
 
 **Returns:** `Table`<[MarketVolumeChangedLog](api-interfaces-augur-sdk-src-state-logs-types-marketvolumechangedlog.md), `any`>
 
@@ -469,7 +469,7 @@ ___
 
 **get Markets**(): `Table`<[MarketData](api-interfaces-augur-sdk-src-state-logs-types-marketdata.md), `any`>
 
-*Defined in [augur-sdk/src/state/db/DB.ts:384](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L384)*
+*Defined in [augur-sdk/src/state/db/DB.ts:384](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L384)*
 
 **Returns:** `Table`<[MarketData](api-interfaces-augur-sdk-src-state-logs-types-marketdata.md), `any`>
 
@@ -480,7 +480,7 @@ ___
 
 **get OrderEvent**(): `Table`<[ParsedOrderEventLog](api-interfaces-augur-sdk-src-state-logs-types-parsedordereventlog.md), `any`>
 
-*Defined in [augur-sdk/src/state/db/DB.ts:370](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L370)*
+*Defined in [augur-sdk/src/state/db/DB.ts:370](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L370)*
 
 **Returns:** `Table`<[ParsedOrderEventLog](api-interfaces-augur-sdk-src-state-logs-types-parsedordereventlog.md), `any`>
 
@@ -491,7 +491,7 @@ ___
 
 **get ParticipationTokensRedeemed**(): `Table`<[ParticipationTokensRedeemedLog](api-interfaces-augur-sdk-src-state-logs-types-participationtokensredeemedlog.md), `any`>
 
-*Defined in [augur-sdk/src/state/db/DB.ts:371](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L371)*
+*Defined in [augur-sdk/src/state/db/DB.ts:371](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L371)*
 
 **Returns:** `Table`<[ParticipationTokensRedeemedLog](api-interfaces-augur-sdk-src-state-logs-types-participationtokensredeemedlog.md), `any`>
 
@@ -502,7 +502,7 @@ ___
 
 **get ProfitLossChanged**(): `Table`<[ProfitLossChangedLog](api-interfaces-augur-sdk-src-state-logs-types-profitlosschangedlog.md), `any`>
 
-*Defined in [augur-sdk/src/state/db/DB.ts:372](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L372)*
+*Defined in [augur-sdk/src/state/db/DB.ts:372](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L372)*
 
 **Returns:** `Table`<[ProfitLossChangedLog](api-interfaces-augur-sdk-src-state-logs-types-profitlosschangedlog.md), `any`>
 
@@ -513,7 +513,7 @@ ___
 
 **get ReportingParticipantDisavowed**(): `Table`<[ReportingParticipantDisavowedLog](api-interfaces-augur-sdk-src-state-logs-types-reportingparticipantdisavowedlog.md), `any`>
 
-*Defined in [augur-sdk/src/state/db/DB.ts:373](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L373)*
+*Defined in [augur-sdk/src/state/db/DB.ts:373](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L373)*
 
 **Returns:** `Table`<[ReportingParticipantDisavowedLog](api-interfaces-augur-sdk-src-state-logs-types-reportingparticipantdisavowedlog.md), `any`>
 
@@ -524,7 +524,7 @@ ___
 
 **get ShareTokenBalanceChanged**(): `Table`<[ShareTokenBalanceChangedLog](api-interfaces-augur-sdk-src-state-logs-types-sharetokenbalancechangedlog.md), `any`>
 
-*Defined in [augur-sdk/src/state/db/DB.ts:383](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L383)*
+*Defined in [augur-sdk/src/state/db/DB.ts:383](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L383)*
 
 **Returns:** `Table`<[ShareTokenBalanceChangedLog](api-interfaces-augur-sdk-src-state-logs-types-sharetokenbalancechangedlog.md), `any`>
 
@@ -535,7 +535,7 @@ ___
 
 **get TimestampSet**(): `Table`<[TimestampSetLog](api-interfaces-augur-sdk-src-state-logs-types-timestampsetlog.md), `any`>
 
-*Defined in [augur-sdk/src/state/db/DB.ts:374](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L374)*
+*Defined in [augur-sdk/src/state/db/DB.ts:374](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L374)*
 
 **Returns:** `Table`<[TimestampSetLog](api-interfaces-augur-sdk-src-state-logs-types-timestampsetlog.md), `any`>
 
@@ -546,7 +546,7 @@ ___
 
 **get TokenBalanceChanged**(): `Table`<[TokenBalanceChangedLog](api-interfaces-augur-sdk-src-state-logs-types-tokenbalancechangedlog.md), `any`>
 
-*Defined in [augur-sdk/src/state/db/DB.ts:375](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L375)*
+*Defined in [augur-sdk/src/state/db/DB.ts:375](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L375)*
 
 **Returns:** `Table`<[TokenBalanceChangedLog](api-interfaces-augur-sdk-src-state-logs-types-tokenbalancechangedlog.md), `any`>
 
@@ -557,7 +557,7 @@ ___
 
 **get TokensMinted**(): `Table`<[TokensMinted](api-interfaces-augur-sdk-src-state-logs-types-tokensminted.md), `any`>
 
-*Defined in [augur-sdk/src/state/db/DB.ts:376](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L376)*
+*Defined in [augur-sdk/src/state/db/DB.ts:376](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L376)*
 
 **Returns:** `Table`<[TokensMinted](api-interfaces-augur-sdk-src-state-logs-types-tokensminted.md), `any`>
 
@@ -568,7 +568,7 @@ ___
 
 **get TokensTransferred**(): `Table`<[TokensTransferredLog](api-interfaces-augur-sdk-src-state-logs-types-tokenstransferredlog.md), `any`>
 
-*Defined in [augur-sdk/src/state/db/DB.ts:377](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L377)*
+*Defined in [augur-sdk/src/state/db/DB.ts:377](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L377)*
 
 **Returns:** `Table`<[TokensTransferredLog](api-interfaces-augur-sdk-src-state-logs-types-tokenstransferredlog.md), `any`>
 
@@ -579,7 +579,7 @@ ___
 
 **get TradingProceedsClaimed**(): `Table`<[TradingProceedsClaimedLog](api-interfaces-augur-sdk-src-state-logs-types-tradingproceedsclaimedlog.md), `any`>
 
-*Defined in [augur-sdk/src/state/db/DB.ts:378](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L378)*
+*Defined in [augur-sdk/src/state/db/DB.ts:378](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L378)*
 
 **Returns:** `Table`<[TradingProceedsClaimedLog](api-interfaces-augur-sdk-src-state-logs-types-tradingproceedsclaimedlog.md), `any`>
 
@@ -590,7 +590,7 @@ ___
 
 **get TransferBatch**(): `Table`<[TransferBatchLog](api-interfaces-augur-sdk-src-state-logs-types-transferbatchlog.md), `any`>
 
-*Defined in [augur-sdk/src/state/db/DB.ts:382](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L382)*
+*Defined in [augur-sdk/src/state/db/DB.ts:382](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L382)*
 
 **Returns:** `Table`<[TransferBatchLog](api-interfaces-augur-sdk-src-state-logs-types-transferbatchlog.md), `any`>
 
@@ -601,7 +601,7 @@ ___
 
 **get TransferSingle**(): `Table`<[TransferSingleLog](api-interfaces-augur-sdk-src-state-logs-types-transfersinglelog.md), `any`>
 
-*Defined in [augur-sdk/src/state/db/DB.ts:381](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L381)*
+*Defined in [augur-sdk/src/state/db/DB.ts:381](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L381)*
 
 **Returns:** `Table`<[TransferSingleLog](api-interfaces-augur-sdk-src-state-logs-types-transfersinglelog.md), `any`>
 
@@ -612,7 +612,7 @@ ___
 
 **get UniverseCreated**(): `Table`<[UniverseCreatedLog](api-interfaces-augur-sdk-src-state-logs-types-universecreatedlog.md), `any`>
 
-*Defined in [augur-sdk/src/state/db/DB.ts:379](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L379)*
+*Defined in [augur-sdk/src/state/db/DB.ts:379](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L379)*
 
 **Returns:** `Table`<[UniverseCreatedLog](api-interfaces-augur-sdk-src-state-logs-types-universecreatedlog.md), `any`>
 
@@ -623,7 +623,7 @@ ___
 
 **get UniverseForked**(): `Table`<[UniverseForkedLog](api-interfaces-augur-sdk-src-state-logs-types-universeforkedlog.md), `any`>
 
-*Defined in [augur-sdk/src/state/db/DB.ts:380](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L380)*
+*Defined in [augur-sdk/src/state/db/DB.ts:380](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L380)*
 
 **Returns:** `Table`<[UniverseForkedLog](api-interfaces-augur-sdk-src-state-logs-types-universeforkedlog.md), `any`>
 
@@ -634,7 +634,7 @@ ___
 
 **get ZeroXOrders**(): `Table`<[StoredOrder](api-interfaces-augur-sdk-src-state-db-zeroxorders-storedorder.md), `any`>
 
-*Defined in [augur-sdk/src/state/db/DB.ts:387](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L387)*
+*Defined in [augur-sdk/src/state/db/DB.ts:387](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L387)*
 
 **Returns:** `Table`<[StoredOrder](api-interfaces-augur-sdk-src-state-db-zeroxorders-storedorder.md), `any`>
 
@@ -648,7 +648,7 @@ ___
 
 ▸ **addNewBlock**(dbName: *`string`*, blockLogs: *`any`*): `Promise`<`void`>
 
-*Defined in [augur-sdk/src/state/db/DB.ts:317](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L317)*
+*Defined in [augur-sdk/src/state/db/DB.ts:317](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L317)*
 
 Adds a new block to a SyncableDB/UserSyncableDB and updates MetaDB.
 
@@ -670,7 +670,7 @@ ___
 
 ▸ **generateSchemas**(): [Schemas](api-interfaces-augur-sdk-src-state-db-db-schemas.md)
 
-*Defined in [augur-sdk/src/state/db/DB.ts:186](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L186)*
+*Defined in [augur-sdk/src/state/db/DB.ts:186](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L186)*
 
 **Returns:** [Schemas](api-interfaces-augur-sdk-src-state-db-db-schemas.md)
 
@@ -681,7 +681,7 @@ ___
 
 ▸ **getNumRowsFromDB**(dbName: *`string`*, request?: *`__type`*): `Promise`<`number`>
 
-*Defined in [augur-sdk/src/state/db/DB.ts:341](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L341)*
+*Defined in [augur-sdk/src/state/db/DB.ts:341](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L341)*
 
 Queries a DB to get a row count.
 
@@ -702,7 +702,7 @@ ___
 
 ▸ **getSyncStartingBlock**(): `Promise`<`number`>
 
-*Defined in [augur-sdk/src/state/db/DB.ts:269](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L269)*
+*Defined in [augur-sdk/src/state/db/DB.ts:269](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L269)*
 
 Gets the block number at which to begin syncing. (That is, the lowest last-synced block across all event log databases or the upload block number for this network.)
 
@@ -716,7 +716,7 @@ ___
 
 ▸ **getSyncableDatabase**(dbName: *`string`*): [SyncableDB](api-classes-augur-sdk-src-state-db-syncabledb-syncabledb.md)
 
-*Defined in [augur-sdk/src/state/db/DB.ts:283](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L283)*
+*Defined in [augur-sdk/src/state/db/DB.ts:283](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L283)*
 
 Gets a syncable database based upon the name
 
@@ -735,7 +735,7 @@ ___
 
 ▸ **initializeDB**(networkId: *`number`*, blockstreamDelay: *`number`*, defaultStartSyncBlockNumber: *`number`*, blockAndLogStreamerListener: *[BlockAndLogStreamerListenerInterface](api-interfaces-augur-sdk-src-state-db-blockandlogstreamerlistener-blockandlogstreamerlistenerinterface.md)*): `Promise`<[DB](api-classes-augur-sdk-src-state-db-db-db.md)>
 
-*Defined in [augur-sdk/src/state/db/DB.ts:147](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L147)*
+*Defined in [augur-sdk/src/state/db/DB.ts:147](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L147)*
 
 Creates databases to be used for syncing.
 
@@ -757,7 +757,7 @@ ___
 
 ▸ **notifySyncableDBAdded**(db: *[SyncableDB](api-classes-augur-sdk-src-state-db-syncabledb-syncabledb.md)*): `void`
 
-*Defined in [augur-sdk/src/state/db/DB.ts:208](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L208)*
+*Defined in [augur-sdk/src/state/db/DB.ts:208](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L208)*
 
 Called from SyncableDB constructor once SyncableDB is successfully created.
 
@@ -776,7 +776,7 @@ ___
 
 ▸ **registerEventListener**(eventNames: *`string` \| `string`[]*, callback: *[LogCallbackType](api-modules-augur-sdk-src-state-db-blockandlogstreamerlistener-module.md#logcallbacktype)*): `void`
 
-*Defined in [augur-sdk/src/state/db/DB.ts:212](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L212)*
+*Defined in [augur-sdk/src/state/db/DB.ts:212](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L212)*
 
 **Parameters:**
 
@@ -794,7 +794,7 @@ ___
 
 ▸ **rollback**(blockNumber: *`number`*): `Promise`<`void`>
 
-*Defined in [augur-sdk/src/state/db/DB.ts:292](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L292)*
+*Defined in [augur-sdk/src/state/db/DB.ts:292](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L292)*
 
 Rolls back all blocks from blockNumber onward.
 
@@ -813,7 +813,7 @@ ___
 
 ▸ **sync**(augur: *[Augur](api-classes-augur-sdk-src-augur-augur.md)*, chunkSize: *`number`*, blockstreamDelay: *`number`*): `Promise`<`void`>
 
-*Defined in [augur-sdk/src/state/db/DB.ts:223](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L223)*
+*Defined in [augur-sdk/src/state/db/DB.ts:223](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L223)*
 
 Syncs generic events and user-specific events with blockchain and updates MetaDB info.
 
@@ -834,7 +834,7 @@ ___
 
 ▸ **createAndInitializeDB**(networkId: *`number`*, blockstreamDelay: *`number`*, defaultStartSyncBlockNumber: *`number`*, augur: *[Augur](api-classes-augur-sdk-src-augur-augur.md)*, blockAndLogStreamerListener: *[BlockAndLogStreamerListenerInterface](api-interfaces-augur-sdk-src-state-db-blockandlogstreamerlistener-blockandlogstreamerlistenerinterface.md)*): `Promise`<[DB](api-classes-augur-sdk-src-state-db-db-db.md)>
 
-*Defined in [augur-sdk/src/state/db/DB.ts:126](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/DB.ts#L126)*
+*Defined in [augur-sdk/src/state/db/DB.ts:126](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/DB.ts#L126)*
 
 Creates and returns a new dbController.
 

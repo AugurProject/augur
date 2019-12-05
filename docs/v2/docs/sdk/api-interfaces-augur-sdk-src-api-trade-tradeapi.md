@@ -33,7 +33,7 @@ sidebar_label: TradeAPI
 
 ▸ **placeTrade**(params: *[PlaceTradeDisplayParams](api-interfaces-augur-sdk-src-api-trade-placetradedisplayparams.md)*): `Promise`<`void`>
 
-*Defined in [augur-sdk/src/api/Trade.ts:16](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Trade.ts#L16)*
+*Defined in [augur-sdk/src/api/Trade.ts:16](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Trade.ts#L16)*
 
 **Parameters:**
 
@@ -50,7 +50,7 @@ ___
 
 ▸ **simulateTrade**(params: *[PlaceTradeDisplayParams](api-interfaces-augur-sdk-src-api-trade-placetradedisplayparams.md)*): `Promise`<[SimulateTradeData](api-interfaces-augur-sdk-src-api-trade-simulatetradedata.md)>
 
-*Defined in [augur-sdk/src/api/Trade.ts:14](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Trade.ts#L14)*
+*Defined in [augur-sdk/src/api/Trade.ts:14](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Trade.ts#L14)*
 
 **Parameters:**
 
@@ -67,7 +67,7 @@ ___
 
 ▸ **simulateTradeGasLimit**(params: *[NativePlaceTradeDisplayParams](api-interfaces-augur-sdk-src-api-onchaintrade-nativeplacetradedisplayparams.md)*): `Promise`<`BigNumber`>
 
-*Defined in [augur-sdk/src/api/Trade.ts:15](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Trade.ts#L15)*
+*Defined in [augur-sdk/src/api/Trade.ts:15](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Trade.ts#L15)*
 
 **Parameters:**
 
@@ -84,7 +84,7 @@ ___
 
 ▸ **useZeroX**(): `boolean`
 
-*Defined in [augur-sdk/src/api/Trade.ts:13](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Trade.ts#L13)*
+*Defined in [augur-sdk/src/api/Trade.ts:13](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Trade.ts#L13)*
 
 **Returns:** `boolean`
 

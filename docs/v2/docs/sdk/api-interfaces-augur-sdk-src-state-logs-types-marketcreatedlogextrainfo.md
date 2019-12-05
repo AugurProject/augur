@@ -30,7 +30,7 @@ sidebar_label: MarketCreatedLogExtraInfo
 
 **● _scalarDenomination**: *`string`*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:125](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L125)*
+*Defined in [augur-sdk/src/state/logs/types.ts:125](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L125)*
 
 ___
 <a id="categories"></a>
@@ -39,7 +39,7 @@ ___
 
 **● categories**: *`string`[]*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:126](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L126)*
+*Defined in [augur-sdk/src/state/logs/types.ts:126](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L126)*
 
 ___
 <a id="description"></a>
@@ -48,7 +48,7 @@ ___
 
 **● description**: *`string`*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:123](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L123)*
+*Defined in [augur-sdk/src/state/logs/types.ts:123](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L123)*
 
 ___
 <a id="longdescription"></a>
@@ -57,7 +57,7 @@ ___
 
 **● longDescription**: *`string`*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:124](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L124)*
+*Defined in [augur-sdk/src/state/logs/types.ts:124](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L124)*
 
 ___
 <a id="tags"></a>
@@ -66,7 +66,7 @@ ___
 
 **● tags**: *`string`[]*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:127](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L127)*
+*Defined in [augur-sdk/src/state/logs/types.ts:127](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L127)*
 
 ___
 

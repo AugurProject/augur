@@ -27,7 +27,7 @@ sidebar_label: MarketOrderBook
 
 **● marketId**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:227](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L227)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:227](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Markets.ts#L227)*
 
 ___
 <a id="orderbook"></a>
@@ -36,7 +36,7 @@ ___
 
 **● orderBook**: *[OutcomeOrderBook](api-interfaces-augur-sdk-src-state-getter-markets-outcomeorderbook.md)*
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:228](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L228)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:228](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Markets.ts#L228)*
 
 ___
 

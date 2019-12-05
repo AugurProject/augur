@@ -28,7 +28,7 @@ sidebar_label: ZeroXOrder
 
 **● amount**: *`BigNumber`*
 
-*Defined in [augur-sdk/src/api/ZeroX.ts:71](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/ZeroX.ts#L71)*
+*Defined in [augur-sdk/src/api/ZeroX.ts:71](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/ZeroX.ts#L71)*
 
 ___
 <a id="displayprice"></a>
@@ -37,7 +37,7 @@ ___
 
 **● displayPrice**: *`BigNumber`*
 
-*Defined in [augur-sdk/src/api/ZeroX.ts:72](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/ZeroX.ts#L72)*
+*Defined in [augur-sdk/src/api/ZeroX.ts:72](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/ZeroX.ts#L72)*
 
 ___
 <a id="owner"></a>
@@ -46,7 +46,7 @@ ___
 
 **● owner**: *`string`*
 
-*Defined in [augur-sdk/src/api/ZeroX.ts:73](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/ZeroX.ts#L73)*
+*Defined in [augur-sdk/src/api/ZeroX.ts:73](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/ZeroX.ts#L73)*
 
 ___
 

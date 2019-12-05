@@ -23,7 +23,7 @@ sidebar_label: augur-sdk/src/state/Sync
 
 ▸ **createAPIAndController**(ethNodeUrl: *`string`*, account?: *`string`*, enableFlexSearch?: *`boolean`*): `Promise`<`object`>
 
-*Defined in [augur-sdk/src/state/Sync.ts:5](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/Sync.ts#L5)*
+*Defined in [augur-sdk/src/state/Sync.ts:5](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/Sync.ts#L5)*
 
 **Parameters:**
 
@@ -42,7 +42,7 @@ ___
 
 ▸ **start**(ethNodeUrl: *`string`*, account?: *`string`*, enableFlexSearch?: *`boolean`*): `Promise`<[API](api-classes-augur-sdk-src-state-getter-api-api.md)>
 
-*Defined in [augur-sdk/src/state/Sync.ts:9](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/Sync.ts#L9)*
+*Defined in [augur-sdk/src/state/Sync.ts:9](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/Sync.ts#L9)*
 
 **Parameters:**
 

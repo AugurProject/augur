@@ -31,7 +31,7 @@ sidebar_label: CreateYesNoMarketParams
 
 **● affiliateFeeDivisor**: *`BigNumber`*
 
-*Defined in [augur-sdk/src/api/Market.ts:10](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Market.ts#L10)*
+*Defined in [augur-sdk/src/api/Market.ts:10](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Market.ts#L10)*
 
 ___
 <a id="affiliatevalidator"></a>
@@ -40,7 +40,7 @@ ___
 
 **● affiliateValidator**: *`string`*
 
-*Defined in [augur-sdk/src/api/Market.ts:9](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Market.ts#L9)*
+*Defined in [augur-sdk/src/api/Market.ts:9](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Market.ts#L9)*
 
 ___
 <a id="designatedreporter"></a>
@@ -49,7 +49,7 @@ ___
 
 **● designatedReporter**: *`string`*
 
-*Defined in [augur-sdk/src/api/Market.ts:11](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Market.ts#L11)*
+*Defined in [augur-sdk/src/api/Market.ts:11](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Market.ts#L11)*
 
 ___
 <a id="endtime"></a>
@@ -58,7 +58,7 @@ ___
 
 **● endTime**: *`BigNumber`*
 
-*Defined in [augur-sdk/src/api/Market.ts:7](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Market.ts#L7)*
+*Defined in [augur-sdk/src/api/Market.ts:7](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Market.ts#L7)*
 
 ___
 <a id="extrainfo"></a>
@@ -67,7 +67,7 @@ ___
 
 **● extraInfo**: *`string`*
 
-*Defined in [augur-sdk/src/api/Market.ts:12](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Market.ts#L12)*
+*Defined in [augur-sdk/src/api/Market.ts:12](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Market.ts#L12)*
 
 ___
 <a id="feepercashinattocash"></a>
@@ -76,7 +76,7 @@ ___
 
 **● feePerCashInAttoCash**: *`BigNumber`*
 
-*Defined in [augur-sdk/src/api/Market.ts:8](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Market.ts#L8)*
+*Defined in [augur-sdk/src/api/Market.ts:8](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Market.ts#L8)*
 
 ___
 

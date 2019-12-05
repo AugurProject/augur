@@ -30,7 +30,7 @@ sidebar_label: CategoryStat
 
 **● categories**: *[CategoryStats](api-interfaces-augur-sdk-src-state-getter-markets-categorystats.md)*
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:241](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L241)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:241](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Markets.ts#L241)*
 
 ___
 <a id="category"></a>
@@ -39,7 +39,7 @@ ___
 
 **● category**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:237](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L237)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:237](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Markets.ts#L237)*
 
 ___
 <a id="numberofmarkets"></a>
@@ -48,7 +48,7 @@ ___
 
 **● numberOfMarkets**: *`number`*
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:238](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L238)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:238](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Markets.ts#L238)*
 
 ___
 <a id="openinterest"></a>
@@ -57,7 +57,7 @@ ___
 
 **● openInterest**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:240](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L240)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:240](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Markets.ts#L240)*
 
 ___
 <a id="volume"></a>
@@ -66,7 +66,7 @@ ___
 
 **● volume**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:239](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L239)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:239](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Markets.ts#L239)*
 
 ___
 

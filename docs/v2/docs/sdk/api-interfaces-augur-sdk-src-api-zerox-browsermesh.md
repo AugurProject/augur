@@ -29,7 +29,7 @@ sidebar_label: BrowserMesh
 
 ▸ **addOrdersAsync**(orders: *`SignedOrder`[]*): `Promise`<`ValidationResults`>
 
-*Defined in [augur-sdk/src/api/ZeroX.ts:59](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/ZeroX.ts#L59)*
+*Defined in [augur-sdk/src/api/ZeroX.ts:59](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/ZeroX.ts#L59)*
 
 **Parameters:**
 
@@ -46,7 +46,7 @@ ___
 
 ▸ **onError**(handler: *`function`*): `void`
 
-*Defined in [augur-sdk/src/api/ZeroX.ts:57](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/ZeroX.ts#L57)*
+*Defined in [augur-sdk/src/api/ZeroX.ts:57](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/ZeroX.ts#L57)*
 
 **Parameters:**
 
@@ -63,7 +63,7 @@ ___
 
 ▸ **onOrderEvents**(handler: *`function`*): `void`
 
-*Defined in [augur-sdk/src/api/ZeroX.ts:58](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/ZeroX.ts#L58)*
+*Defined in [augur-sdk/src/api/ZeroX.ts:58](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/ZeroX.ts#L58)*
 
 **Parameters:**
 
@@ -80,7 +80,7 @@ ___
 
 ▸ **startAsync**(): `Promise`<`void`>
 
-*Defined in [augur-sdk/src/api/ZeroX.ts:56](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/ZeroX.ts#L56)*
+*Defined in [augur-sdk/src/api/ZeroX.ts:56](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/ZeroX.ts#L56)*
 
 **Returns:** `Promise`<`void`>
 

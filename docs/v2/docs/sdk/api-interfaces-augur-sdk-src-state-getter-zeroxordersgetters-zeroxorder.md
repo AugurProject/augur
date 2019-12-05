@@ -55,7 +55,7 @@ sidebar_label: ZeroXOrder
 
 *Inherited from [Order](api-interfaces-augur-sdk-src-state-getter-onchaintrading-order.md).[amount](api-interfaces-augur-sdk-src-state-getter-onchaintrading-order.md#amount)*
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:108](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L108)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:108](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L108)*
 
 ___
 <a id="amountfilled"></a>
@@ -66,7 +66,7 @@ ___
 
 *Inherited from [Order](api-interfaces-augur-sdk-src-state-getter-onchaintrading-order.md).[amountFilled](api-interfaces-augur-sdk-src-state-getter-onchaintrading-order.md#amountfilled)*
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:109](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L109)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:109](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L109)*
 
 ___
 <a id="canceledblocknumber"></a>
@@ -77,7 +77,7 @@ ___
 
 *Inherited from [Order](api-interfaces-augur-sdk-src-state-getter-onchaintrading-order.md).[canceledBlockNumber](api-interfaces-augur-sdk-src-state-getter-onchaintrading-order.md#canceledblocknumber)*
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:115](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L115)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:115](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L115)*
 
 ___
 <a id="canceledtime"></a>
@@ -88,7 +88,7 @@ ___
 
 *Inherited from [Order](api-interfaces-augur-sdk-src-state-getter-onchaintrading-order.md).[canceledTime](api-interfaces-augur-sdk-src-state-getter-onchaintrading-order.md#canceledtime)*
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:117](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L117)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:117](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L117)*
 
 ___
 <a id="canceledtransactionhash"></a>
@@ -99,7 +99,7 @@ ___
 
 *Inherited from [Order](api-interfaces-augur-sdk-src-state-getter-onchaintrading-order.md).[canceledTransactionHash](api-interfaces-augur-sdk-src-state-getter-onchaintrading-order.md#canceledtransactionhash)*
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:116](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L116)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:116](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L116)*
 
 ___
 <a id="creationblocknumber"></a>
@@ -110,7 +110,7 @@ ___
 
 *Inherited from [Order](api-interfaces-augur-sdk-src-state-getter-onchaintrading-order.md).[creationBlockNumber](api-interfaces-augur-sdk-src-state-getter-onchaintrading-order.md#creationblocknumber)*
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:119](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L119)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:119](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L119)*
 
 ___
 <a id="creationtime"></a>
@@ -121,7 +121,7 @@ ___
 
 *Inherited from [Order](api-interfaces-augur-sdk-src-state-getter-onchaintrading-order.md).[creationTime](api-interfaces-augur-sdk-src-state-getter-onchaintrading-order.md#creationtime)*
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:118](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L118)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:118](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L118)*
 
 ___
 <a id="expirationtimeseconds"></a>
@@ -130,7 +130,7 @@ ___
 
 **● expirationTimeSeconds**: *`BigNumber`*
 
-*Defined in [augur-sdk/src/state/getter/ZeroXOrdersGetters.ts:18](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/ZeroXOrdersGetters.ts#L18)*
+*Defined in [augur-sdk/src/state/getter/ZeroXOrdersGetters.ts:18](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/ZeroXOrdersGetters.ts#L18)*
 
 ___
 <a id="fullprecisionamount"></a>
@@ -141,7 +141,7 @@ ___
 
 *Inherited from [Order](api-interfaces-augur-sdk-src-state-getter-onchaintrading-order.md).[fullPrecisionAmount](api-interfaces-augur-sdk-src-state-getter-onchaintrading-order.md#fullprecisionamount)*
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:111](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L111)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:111](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L111)*
 
 ___
 <a id="fullprecisionprice"></a>
@@ -152,7 +152,7 @@ ___
 
 *Inherited from [Order](api-interfaces-augur-sdk-src-state-getter-onchaintrading-order.md).[fullPrecisionPrice](api-interfaces-augur-sdk-src-state-getter-onchaintrading-order.md#fullprecisionprice)*
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:110](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L110)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:110](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L110)*
 
 ___
 <a id="kyctoken"></a>
@@ -163,7 +163,7 @@ ___
 
 *Inherited from [Order](api-interfaces-augur-sdk-src-state-getter-onchaintrading-order.md).[kycToken](api-interfaces-augur-sdk-src-state-getter-onchaintrading-order.md#kyctoken)*
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:112](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L112)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:112](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L112)*
 
 ___
 <a id="logindex"></a>
@@ -174,7 +174,7 @@ ___
 
 *Inherited from [Order](api-interfaces-augur-sdk-src-state-getter-onchaintrading-order.md).[logIndex](api-interfaces-augur-sdk-src-state-getter-onchaintrading-order.md#logindex)*
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:104](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L104)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:104](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L104)*
 
 ___
 <a id="makerassetamount"></a>
@@ -183,7 +183,7 @@ ___
 
 **● makerAssetAmount**: *`BigNumber`*
 
-*Defined in [augur-sdk/src/state/getter/ZeroXOrdersGetters.ts:19](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/ZeroXOrdersGetters.ts#L19)*
+*Defined in [augur-sdk/src/state/getter/ZeroXOrdersGetters.ts:19](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/ZeroXOrdersGetters.ts#L19)*
 
 ___
 <a id="makerassetdata"></a>
@@ -192,7 +192,7 @@ ___
 
 **● makerAssetData**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/ZeroXOrdersGetters.ts:22](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/ZeroXOrdersGetters.ts#L22)*
+*Defined in [augur-sdk/src/state/getter/ZeroXOrdersGetters.ts:22](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/ZeroXOrdersGetters.ts#L22)*
 
 ___
 <a id="orderid"></a>
@@ -203,7 +203,7 @@ ___
 
 *Inherited from [Order](api-interfaces-augur-sdk-src-state-getter-onchaintrading-order.md).[orderId](api-interfaces-augur-sdk-src-state-getter-onchaintrading-order.md#orderid)*
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:102](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L102)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:102](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L102)*
 
 ___
 <a id="orderstate"></a>
@@ -214,7 +214,7 @@ ___
 
 *Inherited from [Order](api-interfaces-augur-sdk-src-state-getter-onchaintrading-order.md).[orderState](api-interfaces-augur-sdk-src-state-getter-onchaintrading-order.md#orderstate)*
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:106](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L106)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:106](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L106)*
 
 ___
 <a id="originalfullprecisionamount"></a>
@@ -225,7 +225,7 @@ ___
 
 *Inherited from [Order](api-interfaces-augur-sdk-src-state-getter-onchaintrading-order.md).[originalFullPrecisionAmount](api-interfaces-augur-sdk-src-state-getter-onchaintrading-order.md#originalfullprecisionamount)*
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:120](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L120)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:120](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L120)*
 
 ___
 <a id="owner"></a>
@@ -236,7 +236,7 @@ ___
 
 *Inherited from [Order](api-interfaces-augur-sdk-src-state-getter-onchaintrading-order.md).[owner](api-interfaces-augur-sdk-src-state-getter-onchaintrading-order.md#owner)*
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:105](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L105)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:105](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L105)*
 
 ___
 <a id="price"></a>
@@ -247,7 +247,7 @@ ___
 
 *Inherited from [Order](api-interfaces-augur-sdk-src-state-getter-onchaintrading-order.md).[price](api-interfaces-augur-sdk-src-state-getter-onchaintrading-order.md#price)*
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:107](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L107)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:107](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L107)*
 
 ___
 <a id="salt"></a>
@@ -256,7 +256,7 @@ ___
 
 **● salt**: *`BigNumber`*
 
-*Defined in [augur-sdk/src/state/getter/ZeroXOrdersGetters.ts:21](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/ZeroXOrdersGetters.ts#L21)*
+*Defined in [augur-sdk/src/state/getter/ZeroXOrdersGetters.ts:21](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/ZeroXOrdersGetters.ts#L21)*
 
 ___
 <a id="sharesescrowed"></a>
@@ -267,7 +267,7 @@ ___
 
 *Inherited from [Order](api-interfaces-augur-sdk-src-state-getter-onchaintrading-order.md).[sharesEscrowed](api-interfaces-augur-sdk-src-state-getter-onchaintrading-order.md#sharesescrowed)*
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:114](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L114)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:114](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L114)*
 
 ___
 <a id="signature"></a>
@@ -276,7 +276,7 @@ ___
 
 **● signature**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/ZeroXOrdersGetters.ts:24](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/ZeroXOrdersGetters.ts#L24)*
+*Defined in [augur-sdk/src/state/getter/ZeroXOrdersGetters.ts:24](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/ZeroXOrdersGetters.ts#L24)*
 
 ___
 <a id="takerassetamount"></a>
@@ -285,7 +285,7 @@ ___
 
 **● takerAssetAmount**: *`BigNumber`*
 
-*Defined in [augur-sdk/src/state/getter/ZeroXOrdersGetters.ts:20](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/ZeroXOrdersGetters.ts#L20)*
+*Defined in [augur-sdk/src/state/getter/ZeroXOrdersGetters.ts:20](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/ZeroXOrdersGetters.ts#L20)*
 
 ___
 <a id="takerassetdata"></a>
@@ -294,7 +294,7 @@ ___
 
 **● takerAssetData**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/ZeroXOrdersGetters.ts:23](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/ZeroXOrdersGetters.ts#L23)*
+*Defined in [augur-sdk/src/state/getter/ZeroXOrdersGetters.ts:23](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/ZeroXOrdersGetters.ts#L23)*
 
 ___
 <a id="tokensescrowed"></a>
@@ -305,7 +305,7 @@ ___
 
 *Inherited from [Order](api-interfaces-augur-sdk-src-state-getter-onchaintrading-order.md).[tokensEscrowed](api-interfaces-augur-sdk-src-state-getter-onchaintrading-order.md#tokensescrowed)*
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:113](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L113)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:113](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L113)*
 
 ___
 <a id="transactionhash"></a>
@@ -316,7 +316,7 @@ ___
 
 *Inherited from [Order](api-interfaces-augur-sdk-src-state-getter-onchaintrading-order.md).[transactionHash](api-interfaces-augur-sdk-src-state-getter-onchaintrading-order.md#transactionhash)*
 
-*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:103](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L103)*
+*Defined in [augur-sdk/src/state/getter/OnChainTrading.ts:103](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L103)*
 
 ___
 

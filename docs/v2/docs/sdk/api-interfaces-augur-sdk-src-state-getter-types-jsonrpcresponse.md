@@ -29,7 +29,7 @@ sidebar_label: JsonRpcResponse
 
 **● error**: *`any`*
 
-*Defined in [augur-sdk/src/state/getter/types.ts:23](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/types.ts#L23)*
+*Defined in [augur-sdk/src/state/getter/types.ts:23](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/types.ts#L23)*
 
 ___
 <a id="id"></a>
@@ -38,7 +38,7 @@ ___
 
 **● id**: *`string` \| `number` \| `null`*
 
-*Defined in [augur-sdk/src/state/getter/types.ts:20](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/types.ts#L20)*
+*Defined in [augur-sdk/src/state/getter/types.ts:20](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/types.ts#L20)*
 
 ___
 <a id="jsonrpc"></a>
@@ -47,7 +47,7 @@ ___
 
 **● jsonrpc**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/types.ts:21](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/types.ts#L21)*
+*Defined in [augur-sdk/src/state/getter/types.ts:21](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/types.ts#L21)*
 
 ___
 <a id="result"></a>
@@ -56,7 +56,7 @@ ___
 
 **● result**: *`any`*
 
-*Defined in [augur-sdk/src/state/getter/types.ts:22](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/types.ts#L22)*
+*Defined in [augur-sdk/src/state/getter/types.ts:22](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/types.ts#L22)*
 
 ___
 

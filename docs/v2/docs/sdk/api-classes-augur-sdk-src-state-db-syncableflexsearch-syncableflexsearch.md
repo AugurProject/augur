@@ -37,7 +37,7 @@ sidebar_label: SyncableFlexSearch
 
 ⊕ **new SyncableFlexSearch**(): [SyncableFlexSearch](api-classes-augur-sdk-src-state-db-syncableflexsearch-syncableflexsearch.md)
 
-*Defined in [augur-sdk/src/state/db/SyncableFlexSearch.ts:22](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/SyncableFlexSearch.ts#L22)*
+*Defined in [augur-sdk/src/state/db/SyncableFlexSearch.ts:22](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/SyncableFlexSearch.ts#L22)*
 
 **Returns:** [SyncableFlexSearch](api-classes-augur-sdk-src-state-db-syncableflexsearch-syncableflexsearch.md)
 
@@ -51,7 +51,7 @@ ___
 
 **● flexSearchIndex**: *`Index`<[MarketFields](api-interfaces-augur-sdk-src-state-db-syncableflexsearch-marketfields.md)>*
 
-*Defined in [augur-sdk/src/state/db/SyncableFlexSearch.ts:22](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/SyncableFlexSearch.ts#L22)*
+*Defined in [augur-sdk/src/state/db/SyncableFlexSearch.ts:22](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/SyncableFlexSearch.ts#L22)*
 
 ___
 
@@ -63,7 +63,7 @@ ___
 
 ▸ **addMarketCreatedDocs**(marketCreatedDocs: *[MarketData](api-interfaces-augur-sdk-src-state-logs-types-marketdata.md)[]*): `Promise`<`void`>
 
-*Defined in [augur-sdk/src/state/db/SyncableFlexSearch.ts:58](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/SyncableFlexSearch.ts#L58)*
+*Defined in [augur-sdk/src/state/db/SyncableFlexSearch.ts:58](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/SyncableFlexSearch.ts#L58)*
 
 **Parameters:**
 
@@ -80,7 +80,7 @@ ___
 
 ▸ **removeMarketCreatedDocs**(marketCreatedDocs: *`Collection`<`any`, `any`>*): `Promise`<`void`>
 
-*Defined in [augur-sdk/src/state/db/SyncableFlexSearch.ts:97](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/SyncableFlexSearch.ts#L97)*
+*Defined in [augur-sdk/src/state/db/SyncableFlexSearch.ts:97](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/SyncableFlexSearch.ts#L97)*
 
 **Parameters:**
 
@@ -97,7 +97,7 @@ ___
 
 ▸ **search**(query: *`string`*, options?: *`SearchOptions`*): `Promise`<`Array`<`SearchResults`<[MarketFields](api-interfaces-augur-sdk-src-state-db-syncableflexsearch-marketfields.md)>>>
 
-*Defined in [augur-sdk/src/state/db/SyncableFlexSearch.ts:50](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/SyncableFlexSearch.ts#L50)*
+*Defined in [augur-sdk/src/state/db/SyncableFlexSearch.ts:50](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/SyncableFlexSearch.ts#L50)*
 
 **Parameters:**
 
@@ -115,7 +115,7 @@ ___
 
 ▸ **where**(whereObj: *`object`*): `Promise`<`Array`<`SearchResults`<[MarketFields](api-interfaces-augur-sdk-src-state-db-syncableflexsearch-marketfields.md)>>>
 
-*Defined in [augur-sdk/src/state/db/SyncableFlexSearch.ts:54](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/SyncableFlexSearch.ts#L54)*
+*Defined in [augur-sdk/src/state/db/SyncableFlexSearch.ts:54](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/SyncableFlexSearch.ts#L54)*
 
 **Parameters:**
 

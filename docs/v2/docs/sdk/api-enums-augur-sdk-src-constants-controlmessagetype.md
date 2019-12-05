@@ -29,7 +29,7 @@ sidebar_label: ControlMessageType
 
 **BulkOrphansCheckFinished**:  = "BulkOrphansCheckFinished"
 
-*Defined in [augur-sdk/src/constants.ts:79](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/constants.ts#L79)*
+*Defined in [augur-sdk/src/constants.ts:79](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/constants.ts#L79)*
 
 ___
 <a id="bulkorphanscheckstarted"></a>
@@ -38,7 +38,7 @@ ___
 
 **BulkOrphansCheckStarted**:  = "BulkOrphansCheckStarted"
 
-*Defined in [augur-sdk/src/constants.ts:80](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/constants.ts#L80)*
+*Defined in [augur-sdk/src/constants.ts:80](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/constants.ts#L80)*
 
 ___
 <a id="bulksyncfinished"></a>
@@ -47,7 +47,7 @@ ___
 
 **BulkSyncFinished**:  = "BulkSyncFinished"
 
-*Defined in [augur-sdk/src/constants.ts:81](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/constants.ts#L81)*
+*Defined in [augur-sdk/src/constants.ts:81](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/constants.ts#L81)*
 
 ___
 <a id="bulksyncstarted"></a>
@@ -56,7 +56,7 @@ ___
 
 **BulkSyncStarted**:  = "BulkSyncStarted"
 
-*Defined in [augur-sdk/src/constants.ts:82](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/constants.ts#L82)*
+*Defined in [augur-sdk/src/constants.ts:82](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/constants.ts#L82)*
 
 ___
 <a id="servererror"></a>
@@ -65,7 +65,7 @@ ___
 
 **ServerError**:  = "ServerError"
 
-*Defined in [augur-sdk/src/constants.ts:83](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/constants.ts#L83)*
+*Defined in [augur-sdk/src/constants.ts:83](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/constants.ts#L83)*
 
 ___
 <a id="serverstart"></a>
@@ -74,7 +74,7 @@ ___
 
 **ServerStart**:  = "ServerStart"
 
-*Defined in [augur-sdk/src/constants.ts:84](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/constants.ts#L84)*
+*Defined in [augur-sdk/src/constants.ts:84](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/constants.ts#L84)*
 
 ___
 <a id="websocketclose"></a>
@@ -83,7 +83,7 @@ ___
 
 **WebsocketClose**:  = "WebsocketClose"
 
-*Defined in [augur-sdk/src/constants.ts:85](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/constants.ts#L85)*
+*Defined in [augur-sdk/src/constants.ts:85](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/constants.ts#L85)*
 
 ___
 <a id="websocketerror"></a>
@@ -92,7 +92,7 @@ ___
 
 **WebsocketError**:  = "WebsocketError"
 
-*Defined in [augur-sdk/src/constants.ts:86](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/constants.ts#L86)*
+*Defined in [augur-sdk/src/constants.ts:86](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/constants.ts#L86)*
 
 ___
 

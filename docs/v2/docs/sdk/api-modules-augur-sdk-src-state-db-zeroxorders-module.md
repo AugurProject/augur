@@ -33,7 +33,7 @@ sidebar_label: augur-sdk/src/state/db/ZeroXOrders
 
 **● EXPECTED_ASSET_DATA_LENGTH**: *`714`* = 714
 
-*Defined in [augur-sdk/src/state/db/ZeroXOrders.ts:15](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L15)*
+*Defined in [augur-sdk/src/state/db/ZeroXOrders.ts:15](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L15)*
 
 ___
 

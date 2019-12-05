@@ -30,7 +30,7 @@ sidebar_label: ExtendedFilter
 
 **● address**: *`Array`<`string` \| `string`[]>*
 
-*Defined in [augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:20](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L20)*
+*Defined in [augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:20](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L20)*
 
 ___
 <a id="blockhash"></a>
@@ -39,7 +39,7 @@ ___
 
 **● blockhash**: *`string`*
 
-*Defined in [augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:17](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L17)*
+*Defined in [augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:17](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L17)*
 
 ___
 <a id="fromblock"></a>
@@ -48,7 +48,7 @@ ___
 
 **● fromBlock**: *`number` \| `string`*
 
-*Defined in [augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:18](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L18)*
+*Defined in [augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:18](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L18)*
 
 ___
 <a id="toblock"></a>
@@ -57,7 +57,7 @@ ___
 
 **● toBlock**: *`number` \| `string`*
 
-*Defined in [augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:19](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L19)*
+*Defined in [augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:19](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L19)*
 
 ___
 <a id="topics"></a>
@@ -66,7 +66,7 @@ ___
 
 **● topics**: *`Array`<`string` \| `string`[]>*
 
-*Defined in [augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:21](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L21)*
+*Defined in [augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:21](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L21)*
 
 ___
 

@@ -46,7 +46,7 @@ sidebar_label: Events
 
 ⊕ **new Events**(provider: *[Provider](api-interfaces-augur-sdk-src-ethereum-provider-provider.md)*, augurAddress: *`string`*, augurTradingAddress: *`string`*, shareTokenAddress: *`string`*): [Events](api-classes-augur-sdk-src-api-events-events.md)
 
-*Defined in [augur-sdk/src/api/Events.ts:19](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Events.ts#L19)*
+*Defined in [augur-sdk/src/api/Events.ts:19](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Events.ts#L19)*
 
 **Parameters:**
 
@@ -69,7 +69,7 @@ ___
 
 **● augurAddress**: *`string`*
 
-*Defined in [augur-sdk/src/api/Events.ts:7](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Events.ts#L7)*
+*Defined in [augur-sdk/src/api/Events.ts:7](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Events.ts#L7)*
 
 ___
 <a id="augurtradingaddress"></a>
@@ -78,7 +78,7 @@ ___
 
 **● augurTradingAddress**: *`string`*
 
-*Defined in [augur-sdk/src/api/Events.ts:8](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Events.ts#L8)*
+*Defined in [augur-sdk/src/api/Events.ts:8](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Events.ts#L8)*
 
 ___
 <a id="contractaddresstoname"></a>
@@ -87,7 +87,7 @@ ___
 
 **● contractAddressToName**: *`object`*
 
-*Defined in [augur-sdk/src/api/Events.ts:19](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Events.ts#L19)*
+*Defined in [augur-sdk/src/api/Events.ts:19](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Events.ts#L19)*
 
 #### Type declaration
 
@@ -98,7 +98,7 @@ ___
 
 **● provider**: *[Provider](api-interfaces-augur-sdk-src-ethereum-provider-provider.md)*
 
-*Defined in [augur-sdk/src/api/Events.ts:6](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Events.ts#L6)*
+*Defined in [augur-sdk/src/api/Events.ts:6](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Events.ts#L6)*
 
 ___
 <a id="sharetokenaddress"></a>
@@ -107,7 +107,7 @@ ___
 
 **● shareTokenAddress**: *`string`*
 
-*Defined in [augur-sdk/src/api/Events.ts:9](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Events.ts#L9)*
+*Defined in [augur-sdk/src/api/Events.ts:9](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Events.ts#L9)*
 
 ___
 
@@ -119,7 +119,7 @@ ___
 
 ▸ **getEventContractAddress**(eventName: *`string`*): `string`
 
-*Defined in [augur-sdk/src/api/Events.ts:48](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Events.ts#L48)*
+*Defined in [augur-sdk/src/api/Events.ts:48](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Events.ts#L48)*
 
 **Parameters:**
 
@@ -136,7 +136,7 @@ ___
 
 ▸ **getEventContractName**(eventName: *`string`*): `any`
 
-*Defined in [augur-sdk/src/api/Events.ts:43](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Events.ts#L43)*
+*Defined in [augur-sdk/src/api/Events.ts:43](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Events.ts#L43)*
 
 **Parameters:**
 
@@ -153,7 +153,7 @@ ___
 
 ▸ **getEventTopics**(eventName: *`string`*): `string`[]
 
-*Defined in [augur-sdk/src/api/Events.ts:55](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Events.ts#L55)*
+*Defined in [augur-sdk/src/api/Events.ts:55](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Events.ts#L55)*
 
 **Parameters:**
 
@@ -170,7 +170,7 @@ ___
 
 ▸ **getLogs**(eventName: *`string`*, fromBlock: *`number`*, toBlock: *`number` \| "latest"*, additionalTopics?: *`Array`<`string` \| `string`[]>*): `Promise`<[ParsedLog](api-interfaces-augur-types-types-logs-parsedlog.md)[]>
 
-*Defined in [augur-sdk/src/api/Events.ts:34](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Events.ts#L34)*
+*Defined in [augur-sdk/src/api/Events.ts:34](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Events.ts#L34)*
 
 **Parameters:**
 
@@ -190,7 +190,7 @@ ___
 
 ▸ **parseLogs**(logs: *[Log](api-interfaces-augur-types-types-logs-log.md)[]*): [ParsedLog](api-interfaces-augur-types-types-logs-parsedlog.md)[]
 
-*Defined in [augur-sdk/src/api/Events.ts:59](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Events.ts#L59)*
+*Defined in [augur-sdk/src/api/Events.ts:59](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Events.ts#L59)*
 
 **Parameters:**
 
@@ -210,7 +210,7 @@ ___
 
 **eventNameToContractName**: *`object`*
 
-*Defined in [augur-sdk/src/api/Events.ts:11](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Events.ts#L11)*
+*Defined in [augur-sdk/src/api/Events.ts:11](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Events.ts#L11)*
 
 <a id="eventnametocontractname.marketvolumechanged"></a>
 
@@ -218,7 +218,7 @@ ___
 
 **● MarketVolumeChanged**: *`string`* = "AugurTrading"
 
-*Defined in [augur-sdk/src/api/Events.ts:16](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Events.ts#L16)*
+*Defined in [augur-sdk/src/api/Events.ts:16](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Events.ts#L16)*
 
 ___
 <a id="eventnametocontractname.orderevent"></a>
@@ -227,7 +227,7 @@ ___
 
 **● OrderEvent**: *`string`* = "AugurTrading"
 
-*Defined in [augur-sdk/src/api/Events.ts:14](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Events.ts#L14)*
+*Defined in [augur-sdk/src/api/Events.ts:14](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Events.ts#L14)*
 
 ___
 <a id="eventnametocontractname.profitlosschanged"></a>
@@ -236,7 +236,7 @@ ___
 
 **● ProfitLossChanged**: *`string`* = "AugurTrading"
 
-*Defined in [augur-sdk/src/api/Events.ts:15](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Events.ts#L15)*
+*Defined in [augur-sdk/src/api/Events.ts:15](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Events.ts#L15)*
 
 ___
 <a id="eventnametocontractname.transferbatch"></a>
@@ -245,7 +245,7 @@ ___
 
 **● TransferBatch**: *`string`* = "ShareToken"
 
-*Defined in [augur-sdk/src/api/Events.ts:13](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Events.ts#L13)*
+*Defined in [augur-sdk/src/api/Events.ts:13](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Events.ts#L13)*
 
 ___
 <a id="eventnametocontractname.transfersingle"></a>
@@ -254,7 +254,7 @@ ___
 
 **● TransferSingle**: *`string`* = "ShareToken"
 
-*Defined in [augur-sdk/src/api/Events.ts:12](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/Events.ts#L12)*
+*Defined in [augur-sdk/src/api/Events.ts:12](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/Events.ts#L12)*
 
 ___
 

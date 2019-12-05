@@ -25,7 +25,7 @@ sidebar_label: TXEventName
 
 **AwaitingSigning**:  = "AwaitingSigning"
 
-*Defined in [augur-sdk/src/constants.ts:54](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/constants.ts#L54)*
+*Defined in [augur-sdk/src/constants.ts:54](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/constants.ts#L54)*
 
 ___
 <a id="failure"></a>
@@ -34,7 +34,7 @@ ___
 
 **Failure**:  = "Failure"
 
-*Defined in [augur-sdk/src/constants.ts:57](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/constants.ts#L57)*
+*Defined in [augur-sdk/src/constants.ts:57](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/constants.ts#L57)*
 
 ___
 <a id="pending"></a>
@@ -43,7 +43,7 @@ ___
 
 **Pending**:  = "Pending"
 
-*Defined in [augur-sdk/src/constants.ts:55](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/constants.ts#L55)*
+*Defined in [augur-sdk/src/constants.ts:55](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/constants.ts#L55)*
 
 ___
 <a id="success"></a>
@@ -52,7 +52,7 @@ ___
 
 **Success**:  = "Success"
 
-*Defined in [augur-sdk/src/constants.ts:56](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/constants.ts#L56)*
+*Defined in [augur-sdk/src/constants.ts:56](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/constants.ts#L56)*
 
 ___
 

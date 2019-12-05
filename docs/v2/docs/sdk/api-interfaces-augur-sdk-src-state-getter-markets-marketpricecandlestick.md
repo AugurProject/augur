@@ -33,7 +33,7 @@ sidebar_label: MarketPriceCandlestick
 
 **● end**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:188](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L188)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:188](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Markets.ts#L188)*
 
 ___
 <a id="max"></a>
@@ -42,7 +42,7 @@ ___
 
 **● max**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:190](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L190)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:190](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Markets.ts#L190)*
 
 ___
 <a id="min"></a>
@@ -51,7 +51,7 @@ ___
 
 **● min**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:189](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L189)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:189](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Markets.ts#L189)*
 
 ___
 <a id="sharevolume"></a>
@@ -60,7 +60,7 @@ ___
 
 **● shareVolume**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:192](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L192)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:192](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Markets.ts#L192)*
 
 ___
 <a id="start"></a>
@@ -69,7 +69,7 @@ ___
 
 **● start**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:187](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L187)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:187](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Markets.ts#L187)*
 
 ___
 <a id="starttimestamp"></a>
@@ -78,7 +78,7 @@ ___
 
 **● startTimestamp**: *`number`*
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:186](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L186)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:186](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Markets.ts#L186)*
 
 ___
 <a id="tokenvolume"></a>
@@ -87,7 +87,7 @@ ___
 
 **● tokenVolume**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:193](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L193)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:193](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Markets.ts#L193)*
 
 ___
 <a id="volume"></a>
@@ -96,7 +96,7 @@ ___
 
 **● volume**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:191](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L191)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:191](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Markets.ts#L191)*
 
 ___
 

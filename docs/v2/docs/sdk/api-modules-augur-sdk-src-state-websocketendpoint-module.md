@@ -25,7 +25,7 @@ sidebar_label: augur-sdk/src/state/WebsocketEndpoint
 
 ▸ **isSafe**(websocket: *`WebSocket`*): `boolean`
 
-*Defined in [augur-sdk/src/state/WebsocketEndpoint.ts:16](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/WebsocketEndpoint.ts#L16)*
+*Defined in [augur-sdk/src/state/WebsocketEndpoint.ts:16](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/WebsocketEndpoint.ts#L16)*
 
 **Parameters:**
 
@@ -42,7 +42,7 @@ ___
 
 ▸ **run**<`TBigNumber`>(api: *[API](api-classes-augur-sdk-src-state-getter-api-api.md)*, endpointSettings: *[EndpointSettings](api-interfaces-augur-sdk-src-state-getter-types-endpointsettings.md)*, controlEmitter: *`EventEmitter`*): `Promise`<`void`>
 
-*Defined in [augur-sdk/src/state/WebsocketEndpoint.ts:37](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/WebsocketEndpoint.ts#L37)*
+*Defined in [augur-sdk/src/state/WebsocketEndpoint.ts:37](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/WebsocketEndpoint.ts#L37)*
 
 **Type parameters:**
 
@@ -64,7 +64,7 @@ ___
 
 ▸ **safePing**(websocket: *`WebSocket`*): `void`
 
-*Defined in [augur-sdk/src/state/WebsocketEndpoint.ts:31](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/WebsocketEndpoint.ts#L31)*
+*Defined in [augur-sdk/src/state/WebsocketEndpoint.ts:31](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/WebsocketEndpoint.ts#L31)*
 
 **Parameters:**
 
@@ -81,7 +81,7 @@ ___
 
 ▸ **safeSend**(websocket: *`WebSocket`*, payload: *`string`*): `void`
 
-*Defined in [augur-sdk/src/state/WebsocketEndpoint.ts:25](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/WebsocketEndpoint.ts#L25)*
+*Defined in [augur-sdk/src/state/WebsocketEndpoint.ts:25](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/WebsocketEndpoint.ts#L25)*
 
 **Parameters:**
 

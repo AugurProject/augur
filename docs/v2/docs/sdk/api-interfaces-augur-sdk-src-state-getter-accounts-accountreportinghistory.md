@@ -29,7 +29,7 @@ sidebar_label: AccountReportingHistory
 
 **● disputing**: *[ContractOverview](api-interfaces-augur-sdk-src-state-getter-accounts-contractoverview.md) \| `null`*
 
-*Defined in [augur-sdk/src/state/getter/Accounts.ts:106](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Accounts.ts#L106)*
+*Defined in [augur-sdk/src/state/getter/Accounts.ts:106](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Accounts.ts#L106)*
 
 ___
 <a id="participationtokens"></a>
@@ -38,7 +38,7 @@ ___
 
 **● participationTokens**: *[ParticipationOverview](api-interfaces-augur-sdk-src-state-getter-accounts-participationoverview.md)*
 
-*Defined in [augur-sdk/src/state/getter/Accounts.ts:107](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Accounts.ts#L107)*
+*Defined in [augur-sdk/src/state/getter/Accounts.ts:107](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Accounts.ts#L107)*
 
 ___
 <a id="repwinnings"></a>
@@ -47,7 +47,7 @@ ___
 
 **● repWinnings**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/Accounts.ts:104](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Accounts.ts#L104)*
+*Defined in [augur-sdk/src/state/getter/Accounts.ts:104](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Accounts.ts#L104)*
 
 ___
 <a id="reporting"></a>
@@ -56,7 +56,7 @@ ___
 
 **● reporting**: *[ContractOverview](api-interfaces-augur-sdk-src-state-getter-accounts-contractoverview.md) \| `null`*
 
-*Defined in [augur-sdk/src/state/getter/Accounts.ts:105](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Accounts.ts#L105)*
+*Defined in [augur-sdk/src/state/getter/Accounts.ts:105](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Accounts.ts#L105)*
 
 ___
 

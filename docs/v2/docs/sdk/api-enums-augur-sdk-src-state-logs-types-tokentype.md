@@ -27,7 +27,7 @@ sidebar_label: TokenType
 
 **DisputeCrowdsourcer**: 
 
-*Defined in [augur-sdk/src/state/logs/types.ts:327](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L327)*
+*Defined in [augur-sdk/src/state/logs/types.ts:327](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L327)*
 
 ___
 <a id="feetoken"></a>
@@ -36,7 +36,7 @@ ___
 
 **FeeToken**: 
 
-*Defined in [augur-sdk/src/state/logs/types.ts:329](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L329)*
+*Defined in [augur-sdk/src/state/logs/types.ts:329](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L329)*
 
 ___
 <a id="feewindow"></a>
@@ -45,7 +45,7 @@ ___
 
 **FeeWindow**: 
 
-*Defined in [augur-sdk/src/state/logs/types.ts:328](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L328)*
+*Defined in [augur-sdk/src/state/logs/types.ts:328](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L328)*
 
 ___
 <a id="participationtoken"></a>
@@ -54,7 +54,7 @@ ___
 
 **ParticipationToken**: 
 
-*Defined in [augur-sdk/src/state/logs/types.ts:330](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L330)*
+*Defined in [augur-sdk/src/state/logs/types.ts:330](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L330)*
 
 ___
 <a id="reputationtoken"></a>
@@ -63,7 +63,7 @@ ___
 
 **ReputationToken**: 
 
-*Defined in [augur-sdk/src/state/logs/types.ts:325](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L325)*
+*Defined in [augur-sdk/src/state/logs/types.ts:325](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L325)*
 
 ___
 <a id="sharetoken"></a>
@@ -72,7 +72,7 @@ ___
 
 **ShareToken**: 
 
-*Defined in [augur-sdk/src/state/logs/types.ts:326](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L326)*
+*Defined in [augur-sdk/src/state/logs/types.ts:326](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L326)*
 
 ___
 

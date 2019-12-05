@@ -29,7 +29,7 @@ sidebar_label: GetMarketsSortBy
 
 **disputeRound**:  = "disputeRound"
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:41](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L41)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:41](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Markets.ts#L41)*
 
 ___
 <a id="endtime"></a>
@@ -38,7 +38,7 @@ ___
 
 **endTime**:  = "endTime"
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:39](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L39)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:39](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Markets.ts#L39)*
 
 ___
 <a id="lasttradedtimestamp"></a>
@@ -47,7 +47,7 @@ ___
 
 **lastTradedTimestamp**:  = "lastTradedTimestamp"
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:40](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L40)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:40](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Markets.ts#L40)*
 
 ___
 <a id="liquidity"></a>
@@ -56,7 +56,7 @@ ___
 
 **liquidity**:  = "liquidity"
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:36](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L36)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:36](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Markets.ts#L36)*
 
 ___
 <a id="marketoi"></a>
@@ -65,7 +65,7 @@ ___
 
 **marketOI**:  = "marketOI"
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:35](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L35)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:35](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Markets.ts#L35)*
 
 ___
 <a id="timestamp"></a>
@@ -74,7 +74,7 @@ ___
 
 **timestamp**:  = "timestamp"
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:38](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L38)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:38](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Markets.ts#L38)*
 
 ___
 <a id="totalrepstakedinmarket"></a>
@@ -83,7 +83,7 @@ ___
 
 **totalRepStakedInMarket**:  = "totalRepStakedInMarket"
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:42](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L42)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:42](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Markets.ts#L42)*
 
 ___
 <a id="volume"></a>
@@ -92,7 +92,7 @@ ___
 
 **volume**:  = "volume"
 
-*Defined in [augur-sdk/src/state/getter/Markets.ts:37](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Markets.ts#L37)*
+*Defined in [augur-sdk/src/state/getter/Markets.ts:37](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Markets.ts#L37)*
 
 ___
 

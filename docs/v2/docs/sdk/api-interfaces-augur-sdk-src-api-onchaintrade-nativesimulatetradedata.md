@@ -31,7 +31,7 @@ sidebar_label: NativeSimulateTradeData
 
 **● loopLimit**: *`BigNumber`*
 
-*Defined in [augur-sdk/src/api/OnChainTrade.ts:70](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/OnChainTrade.ts#L70)*
+*Defined in [augur-sdk/src/api/OnChainTrade.ts:70](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/OnChainTrade.ts#L70)*
 
 ___
 <a id="numfills"></a>
@@ -40,7 +40,7 @@ ___
 
 **● numFills**: *`BigNumber`*
 
-*Defined in [augur-sdk/src/api/OnChainTrade.ts:69](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/OnChainTrade.ts#L69)*
+*Defined in [augur-sdk/src/api/OnChainTrade.ts:69](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/OnChainTrade.ts#L69)*
 
 ___
 <a id="settlementfees"></a>
@@ -49,7 +49,7 @@ ___
 
 **● settlementFees**: *`BigNumber`*
 
-*Defined in [augur-sdk/src/api/OnChainTrade.ts:66](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/OnChainTrade.ts#L66)*
+*Defined in [augur-sdk/src/api/OnChainTrade.ts:66](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/OnChainTrade.ts#L66)*
 
 ___
 <a id="sharesdepleted"></a>
@@ -58,7 +58,7 @@ ___
 
 **● sharesDepleted**: *`BigNumber`*
 
-*Defined in [augur-sdk/src/api/OnChainTrade.ts:67](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/OnChainTrade.ts#L67)*
+*Defined in [augur-sdk/src/api/OnChainTrade.ts:67](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/OnChainTrade.ts#L67)*
 
 ___
 <a id="sharesfilled"></a>
@@ -67,7 +67,7 @@ ___
 
 **● sharesFilled**: *`BigNumber`*
 
-*Defined in [augur-sdk/src/api/OnChainTrade.ts:65](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/OnChainTrade.ts#L65)*
+*Defined in [augur-sdk/src/api/OnChainTrade.ts:65](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/OnChainTrade.ts#L65)*
 
 ___
 <a id="tokensdepleted"></a>
@@ -76,7 +76,7 @@ ___
 
 **● tokensDepleted**: *`BigNumber`*
 
-*Defined in [augur-sdk/src/api/OnChainTrade.ts:68](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/api/OnChainTrade.ts#L68)*
+*Defined in [augur-sdk/src/api/OnChainTrade.ts:68](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/api/OnChainTrade.ts#L68)*
 
 ___
 

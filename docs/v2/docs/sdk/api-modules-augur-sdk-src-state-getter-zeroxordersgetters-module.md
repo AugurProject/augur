@@ -39,7 +39,7 @@ sidebar_label: augur-sdk/src/state/getter/ZeroXOrdersGetters
   ignoreOrders: t.array(t.string),
 })
 
-*Defined in [augur-sdk/src/state/getter/ZeroXOrdersGetters.ts:37](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/ZeroXOrdersGetters.ts#L37)*
+*Defined in [augur-sdk/src/state/getter/ZeroXOrdersGetters.ts:37](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/ZeroXOrdersGetters.ts#L37)*
 
 ___
 

@@ -30,7 +30,7 @@ sidebar_label: Filter
 
 **● address**: *`string`*
 
-*Defined in [augur-types/types/logs.ts:36](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-types/types/logs.ts#L36)*
+*Defined in [augur-types/types/logs.ts:36](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-types/types/logs.ts#L36)*
 
 ___
 <a id="blockhash"></a>
@@ -39,7 +39,7 @@ ___
 
 **● blockhash**: *`string`*
 
-*Defined in [augur-types/types/logs.ts:33](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-types/types/logs.ts#L33)*
+*Defined in [augur-types/types/logs.ts:33](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-types/types/logs.ts#L33)*
 
 ___
 <a id="fromblock"></a>
@@ -48,7 +48,7 @@ ___
 
 **● fromBlock**: *`number` \| `string`*
 
-*Defined in [augur-types/types/logs.ts:34](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-types/types/logs.ts#L34)*
+*Defined in [augur-types/types/logs.ts:34](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-types/types/logs.ts#L34)*
 
 ___
 <a id="toblock"></a>
@@ -57,7 +57,7 @@ ___
 
 **● toBlock**: *`number` \| `string`*
 
-*Defined in [augur-types/types/logs.ts:35](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-types/types/logs.ts#L35)*
+*Defined in [augur-types/types/logs.ts:35](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-types/types/logs.ts#L35)*
 
 ___
 <a id="topics"></a>
@@ -66,7 +66,7 @@ ___
 
 **● topics**: *`Array`<`string` \| `string`[]>*
 
-*Defined in [augur-types/types/logs.ts:37](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-types/types/logs.ts#L37)*
+*Defined in [augur-types/types/logs.ts:37](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-types/types/logs.ts#L37)*
 
 ___
 

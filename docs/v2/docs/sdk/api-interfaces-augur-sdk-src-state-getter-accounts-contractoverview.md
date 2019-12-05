@@ -28,7 +28,7 @@ sidebar_label: ContractOverview
 
 **● contracts**: *[ContractInfo](api-interfaces-augur-sdk-src-state-getter-accounts-contractinfo.md)[]*
 
-*Defined in [augur-sdk/src/state/getter/Accounts.ts:86](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Accounts.ts#L86)*
+*Defined in [augur-sdk/src/state/getter/Accounts.ts:86](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Accounts.ts#L86)*
 
 ___
 <a id="totalclaimable"></a>
@@ -37,7 +37,7 @@ ___
 
 **● totalClaimable**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/Accounts.ts:85](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Accounts.ts#L85)*
+*Defined in [augur-sdk/src/state/getter/Accounts.ts:85](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Accounts.ts#L85)*
 
 ___
 <a id="totalstaked"></a>
@@ -46,7 +46,7 @@ ___
 
 **● totalStaked**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/Accounts.ts:84](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Accounts.ts#L84)*
+*Defined in [augur-sdk/src/state/getter/Accounts.ts:84](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Accounts.ts#L84)*
 
 ___
 

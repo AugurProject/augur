@@ -23,7 +23,7 @@ sidebar_label: augur-sdk/src/state/utils/utils
 
 ▸ **sleep**(milliseconds: *`number`*): `Promise`<`void`>
 
-*Defined in [augur-sdk/src/state/utils/utils.ts:1](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/utils/utils.ts#L1)*
+*Defined in [augur-sdk/src/state/utils/utils.ts:1](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/utils/utils.ts#L1)*
 
 **Parameters:**
 
@@ -40,7 +40,7 @@ ___
 
 ▸ **toAscii**(hex: *`string`*): `string`
 
-*Defined in [augur-sdk/src/state/utils/utils.ts:5](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/utils/utils.ts#L5)*
+*Defined in [augur-sdk/src/state/utils/utils.ts:5](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/utils/utils.ts#L5)*
 
 **Parameters:**
 

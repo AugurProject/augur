@@ -29,7 +29,7 @@ sidebar_label: LogCallbackMetaData
 
 **● contractAddress**: *`string`*
 
-*Defined in [augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:73](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L73)*
+*Defined in [augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:73](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L73)*
 
 ___
 <a id="eventnames"></a>
@@ -38,7 +38,7 @@ ___
 
 **● eventNames**: *[EventTopics](api-modules-augur-sdk-src-state-db-blockandlogstreamerlistener-module.md#eventtopics)*
 
-*Defined in [augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:74](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L74)*
+*Defined in [augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:74](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L74)*
 
 ___
 <a id="onlogsadded"></a>
@@ -47,7 +47,7 @@ ___
 
 **● onLogsAdded**: *[LogCallbackType](api-modules-augur-sdk-src-state-db-blockandlogstreamerlistener-module.md#logcallbacktype)*
 
-*Defined in [augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:75](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L75)*
+*Defined in [augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:75](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L75)*
 
 ___
 <a id="topics"></a>
@@ -56,7 +56,7 @@ ___
 
 **● topics**: *`string`[]*
 
-*Defined in [augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:76](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L76)*
+*Defined in [augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:76](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L76)*
 
 ___
 

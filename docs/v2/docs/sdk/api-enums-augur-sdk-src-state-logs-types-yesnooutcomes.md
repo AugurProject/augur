@@ -23,7 +23,7 @@ sidebar_label: YesNoOutcomes
 
 **No**:  = "No"
 
-*Defined in [augur-sdk/src/state/logs/types.ts:175](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L175)*
+*Defined in [augur-sdk/src/state/logs/types.ts:175](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L175)*
 
 ___
 <a id="yes"></a>
@@ -32,7 +32,7 @@ ___
 
 **Yes**:  = "Yes"
 
-*Defined in [augur-sdk/src/state/logs/types.ts:176](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L176)*
+*Defined in [augur-sdk/src/state/logs/types.ts:176](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L176)*
 
 ___
 

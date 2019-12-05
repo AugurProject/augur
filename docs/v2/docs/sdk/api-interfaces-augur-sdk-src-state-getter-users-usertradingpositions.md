@@ -29,7 +29,7 @@ sidebar_label: UserTradingPositions
 
 **● frozenFundsTotal**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/Users.ts:137](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Users.ts#L137)*
+*Defined in [augur-sdk/src/state/getter/Users.ts:137](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Users.ts#L137)*
 
 ___
 <a id="tradingpositions"></a>
@@ -38,7 +38,7 @@ ___
 
 **● tradingPositions**: *[TradingPosition](api-interfaces-augur-sdk-src-state-getter-users-tradingposition.md)[]*
 
-*Defined in [augur-sdk/src/state/getter/Users.ts:132](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Users.ts#L132)*
+*Defined in [augur-sdk/src/state/getter/Users.ts:132](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Users.ts#L132)*
 
 ___
 <a id="tradingpositionspermarket"></a>
@@ -47,7 +47,7 @@ ___
 
 **● tradingPositionsPerMarket**: *`object`*
 
-*Defined in [augur-sdk/src/state/getter/Users.ts:133](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Users.ts#L133)*
+*Defined in [augur-sdk/src/state/getter/Users.ts:133](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Users.ts#L133)*
 
 #### Type declaration
 
@@ -60,7 +60,7 @@ ___
 
 **● unrealizedRevenue24hChangePercent**: *`string`*
 
-*Defined in [augur-sdk/src/state/getter/Users.ts:138](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/getter/Users.ts#L138)*
+*Defined in [augur-sdk/src/state/getter/Users.ts:138](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/getter/Users.ts#L138)*
 
 ___
 

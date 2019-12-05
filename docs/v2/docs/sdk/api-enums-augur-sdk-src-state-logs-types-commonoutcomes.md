@@ -23,7 +23,7 @@ sidebar_label: CommonOutcomes
 
 **Invalid**:  = "Invalid"
 
-*Defined in [augur-sdk/src/state/logs/types.ts:171](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L171)*
+*Defined in [augur-sdk/src/state/logs/types.ts:171](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L171)*
 
 ___
 <a id="malformed"></a>
@@ -32,7 +32,7 @@ ___
 
 **Malformed**:  = "malformed outcome"
 
-*Defined in [augur-sdk/src/state/logs/types.ts:170](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L170)*
+*Defined in [augur-sdk/src/state/logs/types.ts:170](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L170)*
 
 ___
 

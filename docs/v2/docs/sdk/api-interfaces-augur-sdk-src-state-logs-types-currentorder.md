@@ -54,7 +54,7 @@ sidebar_label: CurrentOrder
 
 *Inherited from [ParsedOrderEventLog](api-interfaces-augur-sdk-src-state-logs-types-parsedordereventlog.md).[amount](api-interfaces-augur-sdk-src-state-logs-types-parsedordereventlog.md#amount)*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:228](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L228)*
+*Defined in [augur-sdk/src/state/logs/types.ts:228](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L228)*
 
 ___
 <a id="amountfilled"></a>
@@ -65,7 +65,7 @@ ___
 
 *Inherited from [ParsedOrderEventLog](api-interfaces-augur-sdk-src-state-logs-types-parsedordereventlog.md).[amountFilled](api-interfaces-augur-sdk-src-state-logs-types-parsedordereventlog.md#amountfilled)*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:233](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L233)*
+*Defined in [augur-sdk/src/state/logs/types.ts:233](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L233)*
 
 ___
 <a id="blockhash"></a>
@@ -76,7 +76,7 @@ ___
 
 *Inherited from [Log](api-interfaces-augur-sdk-src-state-logs-types-log.md).[blockHash](api-interfaces-augur-sdk-src-state-logs-types-log.md#blockhash)*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:21](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L21)*
+*Defined in [augur-sdk/src/state/logs/types.ts:21](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L21)*
 
 ___
 <a id="blocknumber"></a>
@@ -87,7 +87,7 @@ ___
 
 *Inherited from [Log](api-interfaces-augur-sdk-src-state-logs-types-log.md).[blockNumber](api-interfaces-augur-sdk-src-state-logs-types-log.md#blocknumber)*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:20](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L20)*
+*Defined in [augur-sdk/src/state/logs/types.ts:20](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L20)*
 
 ___
 <a id="eventtype"></a>
@@ -98,7 +98,7 @@ ___
 
 *Inherited from [ParsedOrderEventLog](api-interfaces-augur-sdk-src-state-logs-types-parsedordereventlog.md).[eventType](api-interfaces-augur-sdk-src-state-logs-types-parsedordereventlog.md#eventtype)*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:220](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L220)*
+*Defined in [augur-sdk/src/state/logs/types.ts:220](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L220)*
 
 ___
 <a id="fees"></a>
@@ -109,7 +109,7 @@ ___
 
 *Inherited from [ParsedOrderEventLog](api-interfaces-augur-sdk-src-state-logs-types-parsedordereventlog.md).[fees](api-interfaces-augur-sdk-src-state-logs-types-parsedordereventlog.md#fees)*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:232](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L232)*
+*Defined in [augur-sdk/src/state/logs/types.ts:232](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L232)*
 
 ___
 <a id="kyctoken"></a>
@@ -120,7 +120,7 @@ ___
 
 *Inherited from [ParsedOrderEventLog](api-interfaces-augur-sdk-src-state-logs-types-parsedordereventlog.md).[kycToken](api-interfaces-augur-sdk-src-state-logs-types-parsedordereventlog.md#kyctoken)*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:224](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L224)*
+*Defined in [augur-sdk/src/state/logs/types.ts:224](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L224)*
 
 ___
 <a id="logindex"></a>
@@ -131,7 +131,7 @@ ___
 
 *Inherited from [Log](api-interfaces-augur-sdk-src-state-logs-types-log.md).[logIndex](api-interfaces-augur-sdk-src-state-logs-types-log.md#logindex)*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:24](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L24)*
+*Defined in [augur-sdk/src/state/logs/types.ts:24](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L24)*
 
 ___
 <a id="market"></a>
@@ -142,7 +142,7 @@ ___
 
 *Inherited from [ParsedOrderEventLog](api-interfaces-augur-sdk-src-state-logs-types-parsedordereventlog.md).[market](api-interfaces-augur-sdk-src-state-logs-types-parsedordereventlog.md#market)*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:219](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L219)*
+*Defined in [augur-sdk/src/state/logs/types.ts:219](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L219)*
 
 ___
 <a id="open"></a>
@@ -151,7 +151,7 @@ ___
 
 **● open**: *`number`*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:240](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L240)*
+*Defined in [augur-sdk/src/state/logs/types.ts:240](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L240)*
 
 ___
 <a id="ordercreator"></a>
@@ -162,7 +162,7 @@ ___
 
 *Inherited from [ParsedOrderEventLog](api-interfaces-augur-sdk-src-state-logs-types-parsedordereventlog.md).[orderCreator](api-interfaces-augur-sdk-src-state-logs-types-parsedordereventlog.md#ordercreator)*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:225](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L225)*
+*Defined in [augur-sdk/src/state/logs/types.ts:225](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L225)*
 
 ___
 <a id="orderfiller"></a>
@@ -173,7 +173,7 @@ ___
 
 *Inherited from [ParsedOrderEventLog](api-interfaces-augur-sdk-src-state-logs-types-parsedordereventlog.md).[orderFiller](api-interfaces-augur-sdk-src-state-logs-types-parsedordereventlog.md#orderfiller)*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:226](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L226)*
+*Defined in [augur-sdk/src/state/logs/types.ts:226](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L226)*
 
 ___
 <a id="orderid"></a>
@@ -184,7 +184,7 @@ ___
 
 *Inherited from [ParsedOrderEventLog](api-interfaces-augur-sdk-src-state-logs-types-parsedordereventlog.md).[orderId](api-interfaces-augur-sdk-src-state-logs-types-parsedordereventlog.md#orderid)*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:222](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L222)*
+*Defined in [augur-sdk/src/state/logs/types.ts:222](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L222)*
 
 ___
 <a id="ordertype"></a>
@@ -195,7 +195,7 @@ ___
 
 *Inherited from [ParsedOrderEventLog](api-interfaces-augur-sdk-src-state-logs-types-parsedordereventlog.md).[orderType](api-interfaces-augur-sdk-src-state-logs-types-parsedordereventlog.md#ordertype)*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:221](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L221)*
+*Defined in [augur-sdk/src/state/logs/types.ts:221](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L221)*
 
 ___
 <a id="outcome"></a>
@@ -206,7 +206,7 @@ ___
 
 *Inherited from [ParsedOrderEventLog](api-interfaces-augur-sdk-src-state-logs-types-parsedordereventlog.md).[outcome](api-interfaces-augur-sdk-src-state-logs-types-parsedordereventlog.md#outcome)*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:229](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L229)*
+*Defined in [augur-sdk/src/state/logs/types.ts:229](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L229)*
 
 ___
 <a id="price"></a>
@@ -217,7 +217,7 @@ ___
 
 *Inherited from [ParsedOrderEventLog](api-interfaces-augur-sdk-src-state-logs-types-parsedordereventlog.md).[price](api-interfaces-augur-sdk-src-state-logs-types-parsedordereventlog.md#price)*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:227](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L227)*
+*Defined in [augur-sdk/src/state/logs/types.ts:227](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L227)*
 
 ___
 <a id="sharesescrowed"></a>
@@ -228,7 +228,7 @@ ___
 
 *Inherited from [ParsedOrderEventLog](api-interfaces-augur-sdk-src-state-logs-types-parsedordereventlog.md).[sharesEscrowed](api-interfaces-augur-sdk-src-state-logs-types-parsedordereventlog.md#sharesescrowed)*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:235](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L235)*
+*Defined in [augur-sdk/src/state/logs/types.ts:235](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L235)*
 
 ___
 <a id="sharesrefund"></a>
@@ -239,7 +239,7 @@ ___
 
 *Inherited from [ParsedOrderEventLog](api-interfaces-augur-sdk-src-state-logs-types-parsedordereventlog.md).[sharesRefund](api-interfaces-augur-sdk-src-state-logs-types-parsedordereventlog.md#sharesrefund)*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:231](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L231)*
+*Defined in [augur-sdk/src/state/logs/types.ts:231](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L231)*
 
 ___
 <a id="timestamp"></a>
@@ -252,7 +252,7 @@ ___
 
 *Overrides [Timestamped](api-interfaces-augur-sdk-src-state-logs-types-timestamped.md).[timestamp](api-interfaces-augur-sdk-src-state-logs-types-timestamped.md#timestamp)*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:234](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L234)*
+*Defined in [augur-sdk/src/state/logs/types.ts:234](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L234)*
 
 ___
 <a id="tokenrefund"></a>
@@ -263,7 +263,7 @@ ___
 
 *Inherited from [ParsedOrderEventLog](api-interfaces-augur-sdk-src-state-logs-types-parsedordereventlog.md).[tokenRefund](api-interfaces-augur-sdk-src-state-logs-types-parsedordereventlog.md#tokenrefund)*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:230](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L230)*
+*Defined in [augur-sdk/src/state/logs/types.ts:230](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L230)*
 
 ___
 <a id="tokensescrowed"></a>
@@ -274,7 +274,7 @@ ___
 
 *Inherited from [ParsedOrderEventLog](api-interfaces-augur-sdk-src-state-logs-types-parsedordereventlog.md).[tokensEscrowed](api-interfaces-augur-sdk-src-state-logs-types-parsedordereventlog.md#tokensescrowed)*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:236](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L236)*
+*Defined in [augur-sdk/src/state/logs/types.ts:236](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L236)*
 
 ___
 <a id="tradegroupid"></a>
@@ -285,7 +285,7 @@ ___
 
 *Inherited from [ParsedOrderEventLog](api-interfaces-augur-sdk-src-state-logs-types-parsedordereventlog.md).[tradeGroupId](api-interfaces-augur-sdk-src-state-logs-types-parsedordereventlog.md#tradegroupid)*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:223](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L223)*
+*Defined in [augur-sdk/src/state/logs/types.ts:223](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L223)*
 
 ___
 <a id="transactionhash"></a>
@@ -296,7 +296,7 @@ ___
 
 *Inherited from [Log](api-interfaces-augur-sdk-src-state-logs-types-log.md).[transactionHash](api-interfaces-augur-sdk-src-state-logs-types-log.md#transactionhash)*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:23](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L23)*
+*Defined in [augur-sdk/src/state/logs/types.ts:23](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L23)*
 
 ___
 <a id="transactionindex"></a>
@@ -307,7 +307,7 @@ ___
 
 *Inherited from [Log](api-interfaces-augur-sdk-src-state-logs-types-log.md).[transactionIndex](api-interfaces-augur-sdk-src-state-logs-types-log.md#transactionindex)*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:22](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L22)*
+*Defined in [augur-sdk/src/state/logs/types.ts:22](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L22)*
 
 ___
 <a id="universe"></a>
@@ -318,7 +318,7 @@ ___
 
 *Inherited from [ParsedOrderEventLog](api-interfaces-augur-sdk-src-state-logs-types-parsedordereventlog.md).[universe](api-interfaces-augur-sdk-src-state-logs-types-parsedordereventlog.md#universe)*
 
-*Defined in [augur-sdk/src/state/logs/types.ts:218](https://github.com/AugurProject/augur/blob/1e1466f1d3/packages/augur-sdk/src/state/logs/types.ts#L218)*
+*Defined in [augur-sdk/src/state/logs/types.ts:218](https://github.com/AugurProject/augur/blob/0787bf1a23/packages/augur-sdk/src/state/logs/types.ts#L218)*
 
 ___
 
