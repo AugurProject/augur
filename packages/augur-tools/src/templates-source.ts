@@ -2174,7 +2174,7 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `WNBA (Point Spread): [0] to win by more than [1].5 points over the [1]?`,
+                question: `WNBA (Point Spread): [0] to win by more than [1].5 points over the [2]?`,
                 example: `WNBA (Point Spread): Phoenix Mercury to win by more than 10.5 points over the Seattle Storm?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
                 inputs: [
                   {
@@ -2708,12 +2708,12 @@ export const TEMPLATES = {
                   {
                     id: 6,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                    placeholder: `[0] -[1].5`,
+                    placeholder: `[1] -[2].5`,
                   },
                   {
                     id: 7,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                    placeholder: `[2] +[1].5`,
+                    placeholder: `[3] +[2].5`,
                   },
                 ],
                 resolutionRules: {
