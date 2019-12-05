@@ -75,6 +75,7 @@ interface MarketViewProps {
   hotloadMarket: Function;
   canHotload: boolean;
   removeAlert: Function;
+  outcomeId?: number;
 }
 
 interface DefaultOrderPropertiesMap {
@@ -124,9 +125,9 @@ export default class MarketView extends Component<
       extendOutcomesList: cat5 ? true : false,
       extendOrders: false,
       selectedOrderProperties: this.DEFAULT_ORDER_PROPERTIES,
-      selectedOutcomeId: props.market
+      selectedOutcomeId: props.outcomeId !== null ? props.outcomeId : (props.market
         ? props.market.defaultSelectedOutcomeId
-        : undefined,
+        : undefined),
       fixedPrecision: 4,
       tutorialError: '',
       selectedOutcomeProperties: {
@@ -184,7 +185,12 @@ export default class MarketView extends Component<
       closeMarketLoadingModal,
       tradingTutorial,
       updateModal,
+      selectedOutcomeId
     } = prevProps;
+
+    if (this.props.outcomeId !== prevProps.outcomeId && this.props.outcomeId !== null) {
+      this.setState({selectedOutcomeId: this.props.outcomeId})
+    }
 
     if (tradingTutorial) {
       if (

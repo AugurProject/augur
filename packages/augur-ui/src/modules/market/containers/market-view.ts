@@ -4,7 +4,7 @@ import MarketView from 'modules/market/components/market-view/market-view';
 import { loadFullMarket } from 'modules/markets/actions/load-full-market';
 import { selectMarket, selectSortedMarketOutcomes } from 'modules/markets/selectors/market';
 import parseQuery from 'modules/routes/helpers/parse-query';
-import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names';
+import { MARKET_ID_PARAM_NAME, OUTCOME_ID_PARAM_NAME } from 'modules/routes/constants/param-names';
 import {
   MODAL_MARKET_REVIEW,
   MARKET_REVIEW_SEEN,
@@ -29,6 +29,9 @@ import { getMarketAgeInDays, formatDate, convertUnixToFormattedDate } from 'util
 const mapStateToProps = (state, ownProps) => {
   const { connection, universe } = state;
   const marketId = parseQuery(ownProps.location.search)[MARKET_ID_PARAM_NAME];
+  const queryOutcomeId = parseQuery(ownProps.location.search)[OUTCOME_ID_PARAM_NAME];
+  const outcomeId = queryOutcomeId ? parseInt(queryOutcomeId) : null;
+
   let market = {};
   const tradingTutorial = marketId === TRADING_TUTORIAL;
   if (tradingTutorial) {
@@ -84,6 +87,7 @@ const mapStateToProps = (state, ownProps) => {
     market,
     marketId,
     universe,
+    outcomeId,
     marketReviewSeen,
     sortedOutcomes: selectSortedMarketOutcomes(
       market.marketType,
