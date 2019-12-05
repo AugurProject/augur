@@ -2174,7 +2174,7 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `WNBA (Point Spread): [0] to win by more than [1].5 points over the [1]?`,
+                question: `WNBA (Point Spread): [0] to win by more than [1].5 points over the [2]?`,
                 example: `WNBA (Point Spread): Phoenix Mercury to win by more than 10.5 points over the Seattle Storm?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
                 inputs: [
                   {
@@ -2708,12 +2708,12 @@ export const TEMPLATES = {
                   {
                     id: 6,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                    placeholder: `[0] -[1].5`,
+                    placeholder: `[1] -[2].5`,
                   },
                   {
                     id: 7,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                    placeholder: `[2] +[1].5`,
+                    placeholder: `[3] +[2].5`,
                   },
                 ],
                 resolutionRules: {
@@ -5034,10 +5034,10 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Opening datetime is determine by open price for market trading pair on tradingview.com`,
+                  text: `Opening date and time is determined by the opening price of the market trading pair on tradingview.com.`,
                 },
                 {
-                  text: `If trading pair market isn't available on tradingview.com, refer to actual exchange. For example if coinbase trading view data feed is down, find opening price on hourly candle adjusted for timezone of UTC-0 of date referenced in market question.`,
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is down, you must find the opening price on Coinbase's exchange by using the hourly candle. If you are not in the timezone UTC-0, you must ensure that you are looking at the equivilant of 00:00 UTC-0 on the hourly at the date specified in the market question.`,
                 },
               ],
             },
@@ -5082,10 +5082,10 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Opening datetime is determine by open price for market trading pair on tradingview.com`,
+                  text: `Opening date and time is determined by the opening price of the market trading pair on tradingview.com.`,
                 },
                 {
-                  text: `If trading pair market isn't available on tradingview.com, refer to actual exchange. For example if coinbase trading view data feed is down, find opening price on hourly candle adjusted for timezone of UTC-0 of date referenced in market question.`,
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is down, you must find the opening price on Coinbase's exchange by using the hourly candle. If you are not in the timezone UTC-0, you must ensure that you are looking at the equivilant of 00:00 UTC-0 on the hourly at the date specified in the market question.`,
                 },
               ],
             },
@@ -5120,10 +5120,10 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Opening datetime is determine by open price for market trading pair on tradingview.com`,
+                  text: `Opening date and time is determined by the opening price of the market trading pair on tradingview.com.`,
                 },
                 {
-                  text: `If trading pair market isn't available on tradingview.com, refer to actual exchange. For example if coinbase trading view data feed is down, find opening price on hourly candle adjusted for timezone of UTC-0 of date referenced in market question.`,
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is down, you must find the opening price on Coinbase's exchange by using the hourly candle. If you are not in the timezone UTC-0, you must ensure that you are looking at the equivilant of 00:00 UTC-0 on the hourly at the date specified in the market question.`,
                 },
               ],
             },
@@ -5167,10 +5167,10 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Opening datetime is determine by open price for market trading pair on tradingview.com`,
+                  text: `Opening date and time is determined by the opening price of the market trading pair on tradingview.com.`,
                 },
                 {
-                  text: `If trading pair market isn't available on tradingview.com, refer to actual exchange. For example if coinbase trading view data feed is down, find opening price on hourly candle adjusted for timezone of UTC-0 of date referenced in market question.`,
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is down, you must find the opening price on Coinbase's exchange by using the hourly candle. If you are not in the timezone UTC-0, you must ensure that you are looking at the equivilant of 00:00 UTC-0 on the hourly at the date specified in the market question.`,
                 },
               ],
             },
@@ -5215,10 +5215,10 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Opening datetime is determine by open price for market trading pair on tradingview.com`,
+                  text: `Opening date and time is determined by the opening price of the market trading pair on tradingview.com.`,
                 },
                 {
-                  text: `If trading pair market isn't available on tradingview.com, refer to actual exchange. For example if coinbase trading view data feed is down, find opening price on hourly candle adjusted for timezone of UTC-0 of date referenced in market question.`,
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is down, you must find the opening price on Coinbase's exchange by using the hourly candle. If you are not in the timezone UTC-0, you must ensure that you are looking at the equivilant of 00:00 UTC-0 on the hourly at the date specified in the market question.`,
                 },
               ],
             },
@@ -5253,10 +5253,10 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Opening datetime is determine by open price for market trading pair on tradingview.com`,
+                  text: `Opening date and time is determined by the opening price of the market trading pair on tradingview.com.`,
                 },
                 {
-                  text: `If trading pair market isn't available on tradingview.com, refer to actual exchange. For example if coinbase trading view data feed is down, find opening price on hourly candle adjusted for timezone of UTC-0 of date referenced in market question.`,
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is down, you must find the opening price on Coinbase's exchange by using the hourly candle. If you are not in the timezone UTC-0, you must ensure that you are looking at the equivilant of 00:00 UTC-0 on the hourly at the date specified in the market question.`,
                 },
               ],
             },
@@ -5300,10 +5300,10 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Opening datetime is determine by open price for market trading pair on tradingview.com`,
+                  text: `Opening date and time is determined by the opening price of the market trading pair on tradingview.com.`,
                 },
                 {
-                  text: `If trading pair market isn't available on tradingview.com, refer to actual exchange. For example if coinbase trading view data feed is down, find opening price on hourly candle adjusted for timezone of UTC-0 of date referenced in market question.`,
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is down, you must find the opening price on Coinbase's exchange by using the hourly candle. If you are not in the timezone UTC-0, you must ensure that you are looking at the equivilant of 00:00 UTC-0 on the hourly at the date specified in the market question.`,
                 },
               ],
             },
@@ -5348,10 +5348,10 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Opening datetime is determine by open price for market trading pair on tradingview.com`,
+                  text: `Opening date and time is determined by the opening price of the market trading pair on tradingview.com.`,
                 },
                 {
-                  text: `If trading pair market isn't available on tradingview.com, refer to actual exchange. For example if coinbase trading view data feed is down, find opening price on hourly candle adjusted for timezone of UTC-0 of date referenced in market question.`,
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is down, you must find the opening price on Coinbase's exchange by using the hourly candle. If you are not in the timezone UTC-0, you must ensure that you are looking at the equivilant of 00:00 UTC-0 on the hourly at the date specified in the market question.`,
                 },
               ],
             },
@@ -5386,10 +5386,10 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Opening datetime is determine by open price for market trading pair on tradingview.com`,
+                  text: `Opening date and time is determined by the opening price of the market trading pair on tradingview.com.`,
                 },
                 {
-                  text: `If trading pair market isn't available on tradingview.com, refer to actual exchange. For example if coinbase trading view data feed is down, find opening price on hourly candle adjusted for timezone of UTC-0 of date referenced in market question.`,
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is down, you must find the opening price on Coinbase's exchange by using the hourly candle. If you are not in the timezone UTC-0, you must ensure that you are looking at the equivilant of 00:00 UTC-0 on the hourly at the date specified in the market question.`,
                 },
               ],
             },
