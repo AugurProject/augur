@@ -108,7 +108,7 @@ class Form extends Component<FromProps, FormState> {
     DO_NOT_CREATE_ORDERS: string;
     EST_DAI: string;
     SELECTED_NAV: string;
-    EXPIRATION_DATE: number;
+    EXPIRATION_DATE: string;
   };
 
   MINIMUM_TRADE_VALUE: BigNumber;
@@ -159,6 +159,7 @@ class Form extends Component<FromProps, FormState> {
     this.changeOutcomeDropdown = this.changeOutcomeDropdown.bind(this);
     this.updateTestProperty = this.updateTestProperty.bind(this);
     this.clearOrderFormProperties = this.clearOrderFormProperties.bind(this);
+    this.updateAndValidate = this.updateAndValidate.bind(this);
   }
 
   componentDidUpdate() {
@@ -172,8 +173,9 @@ class Form extends Component<FromProps, FormState> {
       this.state[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]
     ) {
       this.setState({
-        [this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]:
-          this.props[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS],
+        [this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]: this.props[
+          this.INPUT_TYPES.DO_NOT_CREATE_ORDERS
+        ],
       });
     }
   }
@@ -230,7 +232,7 @@ class Form extends Component<FromProps, FormState> {
     value,
     errors: object,
     isOrderValid: boolean,
-    fromExternal
+    fromExternal: boolean
   ): TestResults {
     let errorCount = 0;
     let passedTest = !!isOrderValid;
@@ -451,6 +453,14 @@ class Form extends Component<FromProps, FormState> {
     return { isOrderValid, errors, errorCount };
   }
 
+  updateAndValidate(property: string, rawValue) {
+    const { updateOrderProperty } = this.props;
+    const newValues = { [property]: rawValue };
+    this.setState(newValues);
+    updateOrderProperty(newValues);
+    return this.validateForm(property, rawValue);
+  }
+
   validateForm(property: string, rawValue) {
     const {
       updateOrderProperty,
@@ -488,96 +498,89 @@ class Form extends Component<FromProps, FormState> {
       clearOrderForm(false);
     }
 
-    updateOrderProperty(
+    let orderQuantity = updatedState[this.INPUT_TYPES.QUANTITY];
+    const orderPrice = updatedState[this.INPUT_TYPES.PRICE];
+    let orderDaiEstimate = updatedState[this.INPUT_TYPES.EST_DAI];
+
+    if (property === this.INPUT_TYPES.QUANTITY) {
+      orderDaiEstimate = '';
+    } else if (
+      property === this.INPUT_TYPES.EST_DAI ||
+      (property === this.INPUT_TYPES.EST_DAI && value === '')
+    ) {
+      orderQuantity = '';
+    }
+
+    const order = {
+      [this.INPUT_TYPES.QUANTITY]: orderQuantity
+        ? createBigNumber(orderQuantity).toFixed()
+        : orderQuantity,
+      [this.INPUT_TYPES.PRICE]: orderPrice
+        ? createBigNumber(orderPrice).toFixed()
+        : orderPrice,
+      [this.INPUT_TYPES.EST_DAI]: orderDaiEstimate
+        ? createBigNumber(orderDaiEstimate).toFixed()
+        : orderDaiEstimate,
+      selectedNav,
+    };
+
+    // update the local state of this form then make call to calculate total or shares
+    this.setState(
       {
-        [property]: value,
+        ...updatedState,
+        errors: {
+          ...validationResults.errors,
+        },
+        errorCount: validationResults.errorCount,
+        isOrderValid: validationResults.isOrderValid,
       },
       () => {
-        let orderQuantity = updatedState[this.INPUT_TYPES.QUANTITY];
-        const orderPrice = updatedState[this.INPUT_TYPES.PRICE];
-        let orderDaiEstimate = updatedState[this.INPUT_TYPES.EST_DAI];
-
-        if (property === this.INPUT_TYPES.QUANTITY) {
-          orderDaiEstimate = '';
-        } else if (
-          property === this.INPUT_TYPES.EST_DAI ||
-          (property === this.INPUT_TYPES.EST_DAI && value === '')
+        if (
+          validationResults.errorCount === 0 &&
+          validationResults.isOrderValid
         ) {
-          orderQuantity = '';
-        }
-
-        const order = {
-          [this.INPUT_TYPES.QUANTITY]: orderQuantity
-            ? createBigNumber(orderQuantity).toFixed()
-            : orderQuantity,
-          [this.INPUT_TYPES.PRICE]: orderPrice
-            ? createBigNumber(orderPrice).toFixed()
-            : orderPrice,
-          [this.INPUT_TYPES.EST_DAI]: orderDaiEstimate
-            ? createBigNumber(orderDaiEstimate).toFixed()
-            : orderDaiEstimate,
-          selectedNav,
-        };
-
-        // update the local state of this form then make call to calculate total or shares
-        this.setState(
-          {
-            ...updatedState,
-            errors: {
-              ...validationResults.errors,
-            },
-            errorCount: validationResults.errorCount,
-            isOrderValid: validationResults.isOrderValid,
-          },
-          () => {
-            if (
-              validationResults.errorCount === 0 &&
-              validationResults.isOrderValid
-            ) {
-              if (
-                order[this.INPUT_TYPES.QUANTITY] &&
-                order[this.INPUT_TYPES.PRICE] &&
-                order[this.INPUT_TYPES.QUANTITY] !== '0' &&
-                (((!this.state.lastInputModified ||
-                  this.state.lastInputModified === this.INPUT_TYPES.QUANTITY) &&
-                  property === this.INPUT_TYPES.PRICE) ||
-                  property === this.INPUT_TYPES.QUANTITY)
-              ) {
-                updateTradeTotalCost(order);
-              } else if (
-                order[this.INPUT_TYPES.EST_DAI] &&
-                order[this.INPUT_TYPES.PRICE] &&
-                order[this.INPUT_TYPES.EST_DAI] !== '0' &&
-                ((this.state.lastInputModified === this.INPUT_TYPES.EST_DAI &&
-                  property === this.INPUT_TYPES.PRICE) ||
-                  property === this.INPUT_TYPES.EST_DAI)
-              ) {
-                updateTradeNumShares(order);
-              }
-            }
-            if (
-              property === this.INPUT_TYPES.PRICE &&
-              validationResults.errors[this.INPUT_TYPES.PRICE].length === 0
-            ) {
-              if (
-                this.state.lastInputModified === this.INPUT_TYPES.QUANTITY &&
-                validationResults.errors[this.INPUT_TYPES.QUANTITY].length === 0
-              ) {
-                updateTradeTotalCost(order);
-              } else if (
-                this.state.lastInputModified === this.INPUT_TYPES.EST_DAI &&
-                validationResults.errors[this.INPUT_TYPES.EST_DAI].length === 0
-              ) {
-                updateTradeNumShares(order);
-              }
-            }
-            if (property !== this.INPUT_TYPES.PRICE) {
-              this.setState({
-                lastInputModified: property,
-              });
-            }
+          if (
+            order[this.INPUT_TYPES.QUANTITY] &&
+            order[this.INPUT_TYPES.PRICE] &&
+            order[this.INPUT_TYPES.QUANTITY] !== '0' &&
+            (((!this.state.lastInputModified ||
+              this.state.lastInputModified === this.INPUT_TYPES.QUANTITY) &&
+              property === this.INPUT_TYPES.PRICE) ||
+              property === this.INPUT_TYPES.QUANTITY)
+          ) {
+            updateTradeTotalCost(order);
+          } else if (
+            order[this.INPUT_TYPES.EST_DAI] &&
+            order[this.INPUT_TYPES.PRICE] &&
+            order[this.INPUT_TYPES.EST_DAI] !== '0' &&
+            ((this.state.lastInputModified === this.INPUT_TYPES.EST_DAI &&
+              property === this.INPUT_TYPES.PRICE) ||
+              property === this.INPUT_TYPES.EST_DAI)
+          ) {
+            updateTradeNumShares(order);
           }
-        );
+        }
+        if (
+          property === this.INPUT_TYPES.PRICE &&
+          validationResults.errors[this.INPUT_TYPES.PRICE].length === 0
+        ) {
+          if (
+            this.state.lastInputModified === this.INPUT_TYPES.QUANTITY &&
+            validationResults.errors[this.INPUT_TYPES.QUANTITY].length === 0
+          ) {
+            updateTradeTotalCost(order);
+          } else if (
+            this.state.lastInputModified === this.INPUT_TYPES.EST_DAI &&
+            validationResults.errors[this.INPUT_TYPES.EST_DAI].length === 0
+          ) {
+            updateTradeNumShares(order);
+          }
+        }
+        if (property !== this.INPUT_TYPES.PRICE) {
+          this.setState({
+            lastInputModified: property,
+          });
+        }
       }
     );
   }
@@ -636,7 +639,8 @@ class Form extends Component<FromProps, FormState> {
       tradingTutorial,
       orderPriceEntered,
       orderAmountEntered,
-      selectedNav
+      selectedNav,
+      updateOrderProperty,
     } = this.props;
     const s = this.state;
 
@@ -654,7 +658,6 @@ class Form extends Component<FromProps, FormState> {
     const quantityValue = convertExponentialToDecimal(
       s[this.INPUT_TYPES.QUANTITY]
     );
-
     const isScalerWithDenomination: boolean = market.marketType === SCALAR;
     // TODO: figure out default outcome after we figure out ordering of the outcomes
     const defaultOutcome = selectedOutcome ? selectedOutcome.id : 2;
@@ -704,13 +707,17 @@ class Form extends Component<FromProps, FormState> {
                     : 1
                 }
                 placeholder="0.00"
-                defaultValue={quantityValue}
+                value={quantityValue}
                 tabIndex={tradingTutorial ? -1 : 1}
-                onChange={e =>
-                  this.validateForm(this.INPUT_TYPES.QUANTITY, e.target.value)
-                }
+                onChange={e => {
+                  this.updateAndValidate(
+                    this.INPUT_TYPES.QUANTITY,
+                    e.target.value
+                  );
+                }}
                 onBlur={e => {
-                  if (!initialLiquidity && !tradingTutorial) orderAmountEntered(selectedNav, market.id)
+                  if (!initialLiquidity && !tradingTutorial)
+                    orderAmountEntered(selectedNav, market.id);
                 }}
               />
               <span
@@ -744,14 +751,13 @@ class Form extends Component<FromProps, FormState> {
                 min={min}
                 placeholder="0.00"
                 tabIndex={tradingTutorial ? -1 : 2}
-                defaultValue={
-                  s[this.INPUT_TYPES.PRICE]
-                }
+                defaultValue={s[this.INPUT_TYPES.PRICE]}
                 onChange={e =>
-                  this.validateForm(this.INPUT_TYPES.PRICE, e.target.value)
+                  this.updateAndValidate(this.INPUT_TYPES.PRICE, e.target.value)
                 }
                 onBlur={e => {
-                  if (!initialLiquidity && !tradingTutorial) orderPriceEntered(selectedNav, market.id)
+                  if (!initialLiquidity && !tradingTutorial)
+                    orderPriceEntered(selectedNav, market.id);
                 }}
               />
               <span
@@ -798,7 +804,10 @@ class Form extends Component<FromProps, FormState> {
                     : s[this.INPUT_TYPES.EST_DAI]
                 }
                 onChange={e =>
-                  this.validateForm(this.INPUT_TYPES.EST_DAI, e.target.value)
+                  this.updateAndValidate(
+                    this.INPUT_TYPES.EST_DAI,
+                    e.target.value
+                  )
                 }
               />
               <span
@@ -838,10 +847,16 @@ class Form extends Component<FromProps, FormState> {
             </li>
           )}
           <li>
-            <label className={initialLiquidity ? Styles.Liquidity : Styles.smallLabel}>
+            <label
+              className={
+                initialLiquidity ? Styles.Liquidity : Styles.smallLabel
+              }
+            >
               {ExclamationCircle}
               <span>
-                {`Max cost of ${orderEscrowdDai === '' ? '-' : orderEscrowdDai} $ will be escrowed`}
+                {`Max cost of ${
+                  orderEscrowdDai === '' ? '-' : orderEscrowdDai
+                } $ will be escrowed`}
               </span>
             </label>
           </li>
