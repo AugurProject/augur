@@ -29,7 +29,8 @@ import { getMarketAgeInDays, formatDate, convertUnixToFormattedDate } from 'util
 const mapStateToProps = (state, ownProps) => {
   const { connection, universe } = state;
   const marketId = parseQuery(ownProps.location.search)[MARKET_ID_PARAM_NAME];
-  const outcomeId = parseInt(parseQuery(ownProps.location.search)[OUTCOME_ID_PARAM_NAME]);
+  const queryOutcomeId = parseQuery(ownProps.location.search)[OUTCOME_ID_PARAM_NAME];
+  const outcomeId = queryOutcomeId ? parseInt(queryOutcomeId) : null;
 
   let market = {};
   const tradingTutorial = marketId === TRADING_TUTORIAL;
