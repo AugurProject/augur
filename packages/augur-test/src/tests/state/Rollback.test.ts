@@ -1,6 +1,9 @@
 import { Augur } from '@augurproject/sdk';
-import { makeTestAugur, makeDbMock } from '../../libs';
-import { ACCOUNTS, loadSeedFile, defaultSeedPath } from "@augurproject/tools";
+import { makeTestAugur, makeDbMock, makeProvider } from '../../libs';
+import { ContractAPI, ACCOUNTS, loadSeedFile, defaultSeedPath } from "@augurproject/tools";
+import { stringTo32ByteHex } from '../../libs/Utils';
+import { BigNumber } from 'bignumber.js';
+
 
 const mock = makeDbMock();
 
@@ -85,4 +88,53 @@ test('sync databases', async () => {
 
   expect(await db.syncStatus.getHighestSyncBlock(syncableDBName)).toBe(originalHighestSyncedBlockNumbers[syncableDBName]);
   expect(await db.syncStatus.getHighestSyncBlock(metaDBName)).toBe(originalHighestSyncedBlockNumbers[metaDBName]);
+});
+
+test('rollback derived database', async () => {
+  const seed = await loadSeedFile(defaultSeedPath);
+  const provider = await makeProvider(seed, ACCOUNTS);
+
+  const john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, seed.addresses);
+  const db = mock.makeDB(john.augur, ACCOUNTS);
+
+  await john.approveCentralAuthority();
+
+  // Create a market
+  const market = await john.createReasonableMarket([stringTo32ByteHex('A'), stringTo32ByteHex('B')]);
+
+  // Place a bid order on Invalid
+  let bid = new BigNumber(0);
+  let outcome = new BigNumber(0);
+  let numShares = new BigNumber(10**18);
+  let price = new BigNumber(50);
+
+  await john.simplePlaceOrder(market.address, bid, numShares, price, outcome);
+
+  // We monkeypatch the sync here to simulate updates from blockstream instead of bulk sync which normally doesnt store data in the rollback table
+  const marketTable = (await db)["marketDatabase"];
+  const oldHandleMergeEvent = marketTable.handleMergeEvent;
+  marketTable.handleMergeEvent = (async (
+    blocknumber: number,
+    logs: any[],
+    syncing = false
+  ): Promise<number> => {
+    marketTable.syncing = false;
+    const retVal = await oldHandleMergeEvent.bind(marketTable)(blocknumber, logs, syncing);
+    return retVal;
+  }).bind(marketTable);
+
+  // Sync
+  await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+  let marketData = await (await db).Markets.get(market.address);
+
+  // Confirm the invalidFilter has been set due to this order on the market data
+  await expect(marketData.invalidFilter).toEqual(1);
+
+  // Now we'll rollback the block this update came in
+  await (await db).rollback(marketData.blockNumber);
+
+  marketData = await (await db).Markets.get(market.address);
+
+  // Confirm the invalidFilter has been set due to this order on the market data
+  await expect(marketData.invalidFilter).toEqual(0);
 });

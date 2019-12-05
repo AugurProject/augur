@@ -41,7 +41,7 @@ describe('State API :: Market Sorts', () => {
     marketData = await (await db).Markets.get(market.address);
 
     // The Invalid filter is still not hit because the bid would be unprofitable to take if the market were valid, so no one would take it even if the market was Valid
-    await expect(marketData.invalidFilter).toEqual(false);
+    await expect(marketData.invalidFilter).toEqual(0);
 
     // Bid something better
     numShares = new BigNumber(10**18);
@@ -52,7 +52,7 @@ describe('State API :: Market Sorts', () => {
     marketData = await (await db).Markets.get(market.address);
 
     // The Invalid filter is now hit because this Bid would be profitable for a filler assuming the market were actually Valid
-    await expect(marketData.invalidFilter).toEqual(true);
+    await expect(marketData.invalidFilter).toEqual(1);
 
   });
   test(': horizontal liquidity', async () => {
