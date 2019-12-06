@@ -212,6 +212,7 @@ export const handleMarketCreatedLog = (log: any) => (
   if (isUserDataUpdate) {
     handleAlert(log, CREATEMARKET, false, dispatch, getState);
     dispatch(marketCreationCreated(log.market, log.extraInfo));
+    dispatch(loadMarketsInfo([log.market]));
   }
 };
 
