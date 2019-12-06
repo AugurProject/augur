@@ -42,7 +42,6 @@ export const MENS = 'Mens';
 export const WOMENS = 'Womens';
 export const SINGLES = 'Singles';
 export const DOUBLES = 'Doubles';
-export const KNFL = 'KNFL';
 
 interface TimezoneDateObject {
   formattedUtc: string;

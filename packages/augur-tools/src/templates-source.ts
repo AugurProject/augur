@@ -33,7 +33,6 @@ import {
   SINGLES,
   DOUBLES,
   WNBA,
-  KNFL,
 } from './templates-template';
 import {
   LIST_VALUES,
