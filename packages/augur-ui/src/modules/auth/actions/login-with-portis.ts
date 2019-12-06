@@ -3,7 +3,7 @@ import { toChecksumAddress } from 'ethereumjs-util';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { PersonalSigningWeb3Provider } from 'utils/personal-signing-web3-provider';
-import Portis, { INetwork } from '@portis/web3';
+import { INetwork } from '@portis/web3';
 import Web3 from 'web3';
 import {
   ACCOUNT_TYPES,
@@ -37,6 +37,8 @@ export const loginWithPortis = (forceRegisterPage = false) => async (
 
   if (portisNetwork) {
     try {
+      // Only inject Portis if we are using Portis
+      const Portis = require('@portis/web3');
       const portis = new Portis(PORTIS_API_KEY, portisNetwork, {
         scope: ['email'],
         registerPageByDefault: forceRegisterPage,
