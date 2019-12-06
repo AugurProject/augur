@@ -73,9 +73,9 @@ contract Market is Initializable, Ownable, IMarket {
         _numOutcomes += 1; // The INVALID outcome is always first
         universe = _universe;
         cash = ICash(_augur.lookup("Cash"));
-        warpSync = IWarpSync(augur.lookup("WarpSync"));
+        warpSync = IWarpSync(_augur.lookup("WarpSync"));
         affiliateValidator = _affiliateValidator;
-        affiliates = IAffiliates(augur.lookup("Affiliates"));
+        affiliates = IAffiliates(_augur.lookup("Affiliates"));
         owner = _creator;
         repBondOwner = owner;
         cash.approve(address(_augur), MAX_APPROVAL_AMOUNT);
@@ -85,9 +85,9 @@ contract Market is Initializable, Ownable, IMarket {
         numTicks = _numTicks;
         feeDivisor = _feePerCashInAttoCash == 0 ? 0 : 1 ether / _feePerCashInAttoCash;
         affiliateFeeDivisor = _affiliateFeeDivisor;
-        InitialReporterFactory _initialReporterFactory = InitialReporterFactory(augur.lookup("InitialReporterFactory"));
-        participants.push(_initialReporterFactory.createInitialReporter(augur, _designatedReporterAddress));
-        shareToken = IShareToken(augur.lookup("ShareToken"));
+        InitialReporterFactory _initialReporterFactory = InitialReporterFactory(_augur.lookup("InitialReporterFactory"));
+        participants.push(_initialReporterFactory.createInitialReporter(_augur, _designatedReporterAddress));
+        shareToken = IShareToken(_augur.lookup("ShareToken"));
     }
 
     function assessFees() private {
