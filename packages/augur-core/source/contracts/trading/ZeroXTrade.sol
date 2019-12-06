@@ -32,6 +32,9 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
     // EIP712 Domain Version value
     string constant internal EIP712_DOMAIN_VERSION = "2";
 
+    // EIP1271 Order With Hash Selector
+    bytes4 constant public EIP1271_ORDER_WITH_HASH_SELECTOR = 0x3efe50c8;
+
     // Hash of the EIP712 Domain Separator Schema
     bytes32 constant internal EIP712_DOMAIN_SEPARATOR_SCHEMA_HASH = keccak256(
         abi.encodePacked(
@@ -410,6 +413,21 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         _zeroXOrder.makerAssetData = _assetData;
         _zeroXOrder.takerAssetData = _assetData;
         _orderHash = _exchange.getOrderInfo(_zeroXOrder).orderHash;
+    }
+
+    function encodeEIP1271OrderWithHash(
+        IExchange.Order memory _zeroXOrder,
+        bytes32 _orderHash
+    )
+        public
+        pure
+        returns (bytes memory encoded)
+    {
+        return abi.encodeWithSelector(
+            EIP1271_ORDER_WITH_HASH_SELECTOR,
+            _zeroXOrder,
+            _orderHash
+        );
     }
 
     function () external payable {}
