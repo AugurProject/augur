@@ -53,6 +53,18 @@ const YES_NO = 'YesNo';
 const CATEGORICAL = 'Categorical';
 const SCALAR = 'Scalar';
 
+/*
+  Add new templates or update templates here keeping the same strcuture as TEMPLATES.
+  The template objects will be merge together to for one template object that is used by the UI.
+  Update generate-templates.ts to include new template structures so that can be added.
+  After new template structure is released create a TEMPLATE(X) where X is next number 3, 4, 5, ...
+*/
+export const TEMPLATES2 = {
+
+};
+
+
+
 export const TEMPLATES = {
   [SPORTS]: {
     children: {
