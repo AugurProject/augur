@@ -119,7 +119,7 @@ export function checkAddress(value) {
 }
 
 export function checkOutcomesArray(value) {
-  const validOutcomes = value.filter(outcome => outcome && outcome !== '');
+  const validOutcomes = value.filter(outcome => outcome && outcome.trim() !== '');
   if (validOutcomes.length < 2) {
     if (!validOutcomes.length) {
       return ['Enter an outcome', 'Enter an outcome'];
@@ -131,15 +131,15 @@ export function checkOutcomesArray(value) {
   } else {
     const errors = Array(value.length).fill('');
     const invalid = value.findIndex(
-      outcome => outcome && outcome.toLowerCase() === INVALID_OUTCOME.toLowerCase()
+      outcome => outcome && outcome.trim().toLowerCase() === INVALID_OUTCOME.toLowerCase()
     );
     if (invalid !== -1)
       errors[invalid] = ['Can\'t enter "Market is Invalid" as an outcome'];
 
     let dupes = {};
     value.forEach((outcome, index) => {
-      dupes[outcome.toLowerCase()] = dupes[outcome.toLowerCase()] || [];
-      dupes[outcome.toLowerCase()].push(index);
+      dupes[outcome.trim().toLowerCase()] = dupes[outcome.trim().toLowerCase()] || [];
+      dupes[outcome.trim().toLowerCase()].push(index);
     });
     Object.keys(dupes).map(key => {
       if (dupes[key].length > 1) {
