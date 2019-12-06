@@ -397,8 +397,12 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
     }
 
     function createZeroXOrder(uint8 _type, uint256 _attoshares, uint256 _price, address _market, uint8 _outcome, address _kycToken, uint256 _expirationTimeSeconds, IExchange _exchange, uint256 _salt) public view returns (IExchange.Order memory _zeroXOrder, bytes32 _orderHash) {
+        return createZeroXOrderFor(msg.sender, _type, _attoshares, _price, _market, _outcome, _kycToken, _expirationTimeSeconds, _exchange, _salt);
+    }
+
+    function createZeroXOrderFor(address _maker, uint8 _type, uint256 _attoshares, uint256 _price, address _market, uint8 _outcome, address _kycToken, uint256 _expirationTimeSeconds, IExchange _exchange, uint256 _salt) public view returns (IExchange.Order memory _zeroXOrder, bytes32 _orderHash) {
         bytes memory _assetData = encodeAssetData(IMarket(_market), _price, _outcome, _type, IERC20(_kycToken), _exchange);
-        _zeroXOrder.makerAddress = msg.sender;
+        _zeroXOrder.makerAddress = _maker;
         _zeroXOrder.makerAssetAmount = _attoshares;
         _zeroXOrder.takerAssetAmount = _attoshares;
         _zeroXOrder.expirationTimeSeconds = _expirationTimeSeconds;
