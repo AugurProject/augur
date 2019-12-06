@@ -70,6 +70,7 @@ services:
 
   0x-mesh:
     image: 0xorg/mesh:0xV3
+    hostname: 0x
     ports:
       - 60557:60557 # rpc_port_number
       - 60558:60558 # P2PTCPPort
