@@ -126,10 +126,6 @@ export function formatShares(num: NumStrBigNumber, opts: FormattedNumberOptions 
     ...opts,
   });
 
-  if (formattedShares.formattedValue === 1) {
-    formattedShares.full = makeFull(formattedShares.formatted, " Share");
-  }
-
   return formattedShares;
 }
 
