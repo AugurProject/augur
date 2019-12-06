@@ -11,9 +11,11 @@ import {
   DropdownDependencies,
 } from '../templates-template';
 import { TEMPLATES } from '../templates-source';
+import { retiredTemplates } from '../templates-retired';
 
 const templateString = '//##TEMPLATES##';
 const templateValidationString = '//##TEMPLATE_VALIDATIONS##';
+const templateRetiredTemplatesString ='//##RETIRED_TEMPLATES';
 const templateArtifactsFile = '../augur-artifacts/src/templates.ts';
 const templateTemplateFile = './src/templates-template.ts';
 
@@ -31,15 +33,26 @@ export const generateTemplateValidations = async () => {
   topCategories.map(c => addTemplates(newTemplates[c], validations));
   const newTemplateValue = `export const TEMPLATES = ${JSON.stringify(newTemplates)};`;
   const newValidation = `TEMPLATE_VALIDATIONS = ${JSON.stringify(validations)};`;
+  const newRetiredTemplates = `RETIRED_TEMPLATES = ${JSON.stringify(retiredTemplates)}`;
 
   if (!fs.existsSync(templateTemplateFile)) return console.error(templateTemplateFile, 'does not exist');
 
   const contents = fs.readFileSync(templateTemplateFile, 'utf8');
 
-  const setNewTemplatesValues = contents.replace(templateString, newTemplateValue);
-  const setNewTemplateValidations = setNewTemplatesValues.replace(templateValidationString, newValidation);
+  const setNewTemplatesValues = contents.replace(
+    templateString,
+    newTemplateValue
+  );
+  const setNewTemplateValidations = setNewTemplatesValues.replace(
+    templateValidationString,
+    newValidation
+  );
+  const setRetiredTemplates = setNewTemplateValidations.replace(
+    templateRetiredTemplatesString,
+    newRetiredTemplates
+  );
 
-  fs.writeFileSync(templateArtifactsFile, setNewTemplateValidations, 'utf8');
+  fs.writeFileSync(templateArtifactsFile, setRetiredTemplates, 'utf8');
 };
 
 const addTemplates = (category: CategoryTemplate, validations: TemplateValidation) => {

@@ -11,6 +11,7 @@ import { NameValuePair } from 'modules/portfolio/types';
 import {
   TEMPLATES,
   TEMPLATE_VALIDATIONS,
+  RETIRED_TEMPLATES,
   Categories,
   Template,
   TemplateInput,
@@ -228,7 +229,11 @@ const getTemplatesByMarketType = (
   marketType
 ) => {
   const values = categoryTemplates.filter(t => t.marketType === marketType);
-  return deepClone<Template[]>(values);
+  const viewable = values.reduce(
+    (p, v) => (RETIRED_TEMPLATES.find(r => r.hash === v.hash) ? p : [...p, v]),
+    []
+  );
+  return deepClone<Template[]>(viewable);
 };
 
 export const getTemplateReadableDescription = (template: Template) => {
