@@ -29,12 +29,11 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
   const topAskPrice = topAsk.price;
 
   const lastPrice = getValue(outcome, "lastPrice");
-  const lastPricePercent = getValue(outcome, "lastPricePercent.full");
 
   const columnProperties = [
     {
       key: "outcomeName",
-      columnType: COLUMN_TYPES.TEXT,
+      columnType: outcome.id === INVALID_OUTCOME_ID ? COLUMN_TYPES.INVALID_LABEL : COLUMN_TYPES.TEXT,
       text: outcomeName,
       keyId: outcomeName,
       showExtraNumber: !oP.scalarDenomination,
@@ -49,12 +48,14 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       key: "topBidPrice",
       columnType: COLUMN_TYPES.VALUE,
       value: topBidPrice,
+      useFull: true,
       showEmptyDash: true,
     },
     {
       key: "topAskPrice",
       columnType: COLUMN_TYPES.VALUE,
       value: topAskPrice,
+      useFull: true,
       showEmptyDash: true,
     },
     {
@@ -67,6 +68,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       key: "lastPrice",
       columnType: COLUMN_TYPES.VALUE,
       value: lastPrice,
+      useFull: true,
       addIndicator: true,
       outcome,
       location: "tradingPage",
