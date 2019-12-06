@@ -48,12 +48,14 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       key: "topBidPrice",
       columnType: COLUMN_TYPES.VALUE,
       value: topBidPrice,
+      useFull: true,
       showEmptyDash: true,
     },
     {
       key: "topAskPrice",
       columnType: COLUMN_TYPES.VALUE,
       value: topAskPrice,
+      useFull: true,
       showEmptyDash: true,
     },
     {
@@ -66,6 +68,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       key: "lastPrice",
       columnType: COLUMN_TYPES.VALUE,
       value: lastPrice,
+      useFull: true,
       addIndicator: true,
       outcome,
       location: "tradingPage",
