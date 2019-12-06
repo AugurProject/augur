@@ -42,9 +42,9 @@ const OpenOrderExpandedContent = (props: OpenOrderExpandedContentProps) => {
         <div>
           <div>
             <LinearPropertyLabel
-              label="Total Cost (DAI)"
+              label="Total Cost ($)"
               highlightFirst
-              value={(tokensEscrowed && tokensEscrowed.formatted) || 0}
+              value={(tokensEscrowed && tokensEscrowed.full) || 0}
             />
             <LinearPropertyLabel
               label="Total Cost (Shares)"

@@ -126,6 +126,7 @@ export interface ValueLabelProps {
   showDenomination: boolean;
   keyId?: string;
   showEmptyDash: boolean;
+  useFull: boolean;
 }
 
 interface SizableValueLabelProps extends ValueLabelProps {
@@ -340,8 +341,9 @@ export const ValueLabel = (props: ValueLabelProps) => {
         data-for={`valueLabel-${fullPrecision}-${denominationLabel}-${props.keyId}`}
         data-iscapture="true"
       >
-        {`${frontFacingLabel}${postfix}`}
-        <span>{denominationLabel}</span>
+        {props.useFull && props.value.full}
+        {!props.useFull && `${frontFacingLabel}${postfix}`}
+        {!props.useFull && <span>{denominationLabel}</span>}
       </label>
       {postfix.length !== 0 && (
         <ReactTooltip
@@ -546,7 +548,7 @@ export const LinearPropertyLabel = ({
             })}
           >
             {value && value.formatted
-              ? `${value.formatted} ${showDenomination ? value.formatted : ''}`
+              ? `${showDenomination ? value.full : value.formatted}`
               : value}
           </span>
         )}
@@ -559,7 +561,7 @@ export const LinearPropertyLabel = ({
             })}
           >
             {value && value.formatted
-              ? `${value.formatted} ${showDenomination ? value.denomination : ''}`
+              ? `${showDenomination ? value.full : value.formatted}`
               : value}
           </span>
         )}

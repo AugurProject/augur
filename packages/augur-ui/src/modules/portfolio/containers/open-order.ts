@@ -23,7 +23,6 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
   const unmatchedShares = getValue(openOrder, "unmatchedShares");
   const orderLabel =
     openOrder.description || openOrder.name || openOrder.outcomeName;
-
   const columnProperties = [
     {
       key: "orderName",
@@ -46,12 +45,14 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       key: "avgPrice",
       columnType: COLUMN_TYPES.VALUE,
       value: openOrder.avgPrice && avgPrice,
+      useFull: true,
       keyId: "openOrder-price-" + openOrder.id,
     },
     {
       key: "tokensEscrowed",
       columnType: COLUMN_TYPES.VALUE,
       value: tokensEscrowed,
+      useFull: true,
       keyId: "openOrder-tokensEscrowed-" + openOrder.id,
     },
     {

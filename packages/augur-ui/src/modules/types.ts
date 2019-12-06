@@ -166,7 +166,7 @@ export interface FormattedNumber {
 export interface FormattedNumberOptions {
   decimals?: number;
   decimalsRounded?: number;
-  denomination?: string;
+  denomination?: Function;
   roundUp?: boolean;
   roundDown?: boolean;
   positiveSign?: boolean;
