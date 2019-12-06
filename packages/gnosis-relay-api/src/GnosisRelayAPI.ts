@@ -127,9 +127,7 @@ export class GnosisRelayAPI implements IGnosisRelayAPI {
         return result.data;
     }
     catch(error) {
-      const err = error.response ? error.response.data : error;
-      console.error('createSafe', err);
-      throw err;
+      throw error.response ? error.response.data : error;
     }
   }
 

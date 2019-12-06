@@ -46,7 +46,7 @@ let intervalId = null;
 export class Gnosis {
   constructor(
     private readonly provider: Provider,
-    private readonly gnosisRelay: IGnosisRelayAPI,
+    readonly gnosisRelay: IGnosisRelayAPI,
     private readonly augur: Augur,
     private readonly dependencies: ContractDependenciesGnosis
   ) {

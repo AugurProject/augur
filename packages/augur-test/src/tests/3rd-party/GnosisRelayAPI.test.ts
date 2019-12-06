@@ -22,6 +22,12 @@ const {
     SAFE_FUNDER_PUBLIC_KEY: '0x913dA4198E6bE1D5f5E4a40D0667f70C0B5430Eb',
     URL: 'http://localhost:8545',
   },
+  'kovan': {
+    RELAY_API: 'https://gnosis.kovan.augur.net/api/',
+    SAFE_FUNDER_PRIVATE_KEY: process.env.SAFE_FUNDER_PRIVATE_KEY,
+    SAFE_FUNDER_PUBLIC_KEY: process.env.SAFE_FUNDER_PUBLIC_KEY,
+    URL: 'https://eth-kovan.alchemyapi.io/jsonrpc/1FomA6seLdWDvpIRvL9J5NhwPHLIGbWA',
+  },
 }[ENV];
 
 const DUMMY_ADDRESS = '0x0000000000000000000000000000000000000003';
