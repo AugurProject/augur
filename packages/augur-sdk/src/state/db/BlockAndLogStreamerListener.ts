@@ -236,7 +236,7 @@ export class BlockAndLogStreamerListener
       // Assuming all db updates will be complete when these promises resolve.
       await Promise.all(logCallbackPromises);
 
-      // Fire this after all "filtered" log callbacks are processed.
+    // Fire this after all "filtered" log callbacks are processed.
       const allLogsCallbackMetaDataPromises = this.allLogsCallbackMetaData.map(
         cb => cb(blockNumber, this.deps.parseLogs(logs))
       );
@@ -270,6 +270,9 @@ export class BlockAndLogStreamerListener
     // on node and filter by address on our side.
     // See: https://github.com/ethers-io/ethers.js/issues/473
     const { address, ...filter } = this.buildFilter();
+
+    // With a wide open filter we get events from unknow sources.
+    if(_.isEmpty(filter.topics)) return;
 
     const logs = await this.deps.getLogs({
       ...filter,
