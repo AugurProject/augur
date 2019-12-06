@@ -321,8 +321,8 @@ function isRetiredAutofail(hash:string) {
 }
 
 export const isTemplateMarket = (title, template: ExtraInfoTemplate, outcomes: string[], longDescription: string, endTime: string, errors: string[] = []) => {
-  if (!template || !template.hash || !template.question || template.inputs.length === 0) {
-    errors.push('value missing template | hash | question | inputs');
+  if (!template || !template.hash || !template.question || template.inputs.length === 0 || !endTime) {
+    errors.push('value missing template | hash | question | inputs | endTime');
     return false;
   }
 
