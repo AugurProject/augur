@@ -82,7 +82,7 @@ describe('BlockstreamListener', () => {
   ];
 
   const buildBlock = (blockNumber: number): Block => ({
-    number: `${blockNumber}`,
+    number: `0x${blockNumber.toString(16)}`,
     hash: `HASH-${blockNumber}`,
     parentHash: `HASH-${blockNumber - 1}`,
   });
@@ -244,7 +244,11 @@ describe('BlockstreamListener', () => {
         expect(onNewLogCallback).toHaveBeenNthCalledWith(1, 1233, []);
         expect(onNewLogCallback).toHaveBeenNthCalledWith(2, 1233, []);
         expect(onNewLogCallback).toHaveBeenNthCalledWith(3, 1234, []);
-        expect(onNewLogCallback).toHaveBeenNthCalledWith(4, 1234, []);
+        expect(onNewLogCallback).toHaveBeenNthCalledWith(4, 1234, [
+          expect.objectContaining({
+            transactionHash: 'HASHONE',
+          }),
+        ]);
       });
 
       test('should no longer query for blocks when a log has shown up for a subsequent block', async () => {
