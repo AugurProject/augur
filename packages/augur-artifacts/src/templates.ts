@@ -1,4 +1,5 @@
 import { ethers } from 'ethers';
+import { BigNumber } from 'ethers/utils';
 export const REQUIRED = 'REQUIRED';
 export const CHOICE = 'CHOICE';
 // Market templates
@@ -319,7 +320,7 @@ function isRetiredAutofail(hash:string) {
   return found.autoFail;
 }
 
-export const isTemplateMarket = (title, template: ExtraInfoTemplate, outcomes: string[], longDescription: string, endTime: number, errors: string[] = []) => {
+export const isTemplateMarket = (title, template: ExtraInfoTemplate, outcomes: string[], longDescription: string, endTime: string, errors: string[] = []) => {
   if (!template || !template.hash || !template.question || template.inputs.length === 0) {
     errors.push('value missing template | hash | question | inputs');
     return false;
@@ -348,7 +349,7 @@ export const isTemplateMarket = (title, template: ExtraInfoTemplate, outcomes: s
     }
 
     // check ESTDATETIME isn't after market event expiration
-    if (estimatedDateTimeAfterMarketEndTime(template.inputs, endTime)) {
+    if (estimatedDateTimeAfterMarketEndTime(template.inputs, new BigNumber(endTime).toNumber())) {
       errors.push('estimated schedule date time is after market event expiration endTime');
       return false;
     }
