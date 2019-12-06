@@ -244,11 +244,7 @@ describe('BlockstreamListener', () => {
         expect(onNewLogCallback).toHaveBeenNthCalledWith(1, 1233, []);
         expect(onNewLogCallback).toHaveBeenNthCalledWith(2, 1233, []);
         expect(onNewLogCallback).toHaveBeenNthCalledWith(3, 1234, []);
-        expect(onNewLogCallback).toHaveBeenNthCalledWith(4, 1234, [
-          expect.objectContaining({
-            transactionHash: 'HASHONE',
-          }),
-        ]);
+        expect(onNewLogCallback).toHaveBeenNthCalledWith(4, 1234, []);
       });
 
       test('should no longer query for blocks when a log has shown up for a subsequent block', async () => {
