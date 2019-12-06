@@ -15,7 +15,7 @@ const DeadCodePlugin = require("webpack-deadcode-plugin");
 // DEVELOPMENT CONFIG
 if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === "development") {
   baseConfig = merge(baseConfig, {
-    devtool: "eval-source-map",
+    // devtool: "eval-source-map",
     optimization: {
       // https://webpack.js.org/configuration/optimization/#optimization-usedexports
       // `unusedExports: true` is required by DeadCodePlugin

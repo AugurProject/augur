@@ -5,14 +5,15 @@
   flex-direction: row;
   grid-template-columns: repeat(5, 1fr);
   min-height: @size-32;
-  padding: @size-10 @size-24 @size-10 @size-10;
+  max-height: @size-32;
+  padding: 0 @size-16;
   width: 100%;
 
   > li {
-    .mono-9-bold;
+    .mono-10-bold;
 
     align-items: center;
-    color: @color-inactive-text;
+    color: @color-secondary-text;
     display: flex;
     flex-grow: 1;
     padding: 0;
@@ -20,8 +21,6 @@
     white-space: nowrap;
 
     &:first-child {
-      font-weight: normal;
-      margin: auto 0;
       padding-left: 0;
     }
 
@@ -33,9 +32,6 @@
 
   &.Extended {
     grid-template-columns: repeat(6, 1fr);
-    padding-right: 0;
-    min-height: unset;
-    max-height: unset;
   }
 }
 
@@ -54,7 +50,7 @@
 .DataTableHeader__extended {
   background: @color-table-header;
   grid-template-columns: repeat(6, 1fr) 6.2rem;
-  padding: @size-6 @size-16;
+  padding: 0 @size-16;
 }
 
 .PositionHeader__extended {

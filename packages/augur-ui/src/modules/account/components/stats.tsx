@@ -19,7 +19,7 @@ const Stats = (props: StatsProps) => (
           formatNumber(property.value, {
             decimals: 2,
             decimalsRounded: 2,
-            denomination: "",
+            denomination: () => "",
             positiveSign: false,
             zeroStyled: true,
           } as any).minimized

@@ -2,12 +2,12 @@
 
 .Row {
   display: grid;
-  flex-direction: row;
-  flex-grow: 1;
+  height: 100%;
+  align-items: center;
   grid-template-columns: repeat(5, 1fr);
 
   > li {
-    .mono-9-bold;
+    .mono-10-bold;
 
     align-items: center;
     color: @color-primary-text;
@@ -16,16 +16,15 @@
     white-space: nowrap;
 
     > span > label {
-      .mono-9;
+      .mono-10-medium;
       
       margin-bottom: 0;
     }
 
     &:first-child {
-      .mono-9-bold;
+      .mono-10-bold;
 
       display: block;
-      margin: auto 0;
       max-width: 100%;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -48,6 +47,8 @@
 }
 
 .Row1 {
+  width: 100%;
+
   > li {
     &:nth-of-type(5),
     &:nth-of-type(6) {
@@ -80,7 +81,10 @@
 }
 
 .SingleRow {
-  padding: @size-4 @size-24 @size-4 @size-16;
+  padding: 0 @size-16;
+  height: @size-21;
+  max-height: @size-21;
+  min-height: @size-21;
 }
 
 .BottomBorder {

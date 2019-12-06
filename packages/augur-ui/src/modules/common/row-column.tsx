@@ -67,6 +67,7 @@ function selectColumn(columnType: string, properties: Properties) {
                   value={properties.value}
                   keyId={properties.keyId}
                   showEmptyDash={properties.showEmptyDash}
+                  useFull={properties.useFull}
                 />
               </button>
             )}
@@ -75,6 +76,7 @@ function selectColumn(columnType: string, properties: Properties) {
                 value={properties.value}
                 keyId={properties.keyId}
                 showEmptyDash={properties.showEmptyDash}
+                useFull={properties.useFull}
               />
             )}
           </>
