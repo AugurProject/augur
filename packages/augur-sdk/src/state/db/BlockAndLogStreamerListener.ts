@@ -284,7 +284,7 @@ export class BlockAndLogStreamerListener
 
     const maxBlockNumberReturned = Math.max(...blocksReturned);
     const maxBlockIndex = Math.max(
-      this.currentSuspectBlocks.findIndex(block => parseInt(block.number, 10) === maxBlockNumberReturned),
+      this.currentSuspectBlocks.findIndex(block => parseInt(block.number, 16) === maxBlockNumberReturned),
       this.currentSuspectBlocks.length - this.blockWindowWidth
     );
 
