@@ -293,7 +293,7 @@ export class BlockAndLogStreamerListener
 
     for (let i = 0; i < blocksToEmit.length; i++) {
       const currentBlock = blocksToEmit[i];
-      const logsToEmit = logs.filter((log) => parseInt(currentBlock.number, 10) === log.blockNumber);
+      const logsToEmit = logs.filter((log) => parseInt(currentBlock.number, 16) === log.blockNumber);
       await this.onLogsAdded(currentBlock.hash, logsToEmit);
     }
   };
