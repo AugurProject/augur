@@ -659,8 +659,7 @@ contract Universe is IUniverse {
     }
 
     function withdrawDaiFromDSR(uint256 _amount) private returns (bool) {
-        daiPot.drip();
-        uint256 _chi = daiPot.chi();
+        uint256 _chi = daiPot.drip();
         uint256 _sDaiAmount = _amount.mul(DAI_ONE) / _chi; // sDai may be lower than the amount needed to retrieve `amount` from the VAT. We cover for this rounding error below
         if (_sDaiAmount.mul(_chi) < _amount.mul(DAI_ONE)) {
             _sDaiAmount += 1;
