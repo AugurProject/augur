@@ -5,6 +5,7 @@ import {
   SubscriptionEventName,
 } from '@augurproject/sdk';
 import { Callback } from '@augurproject/sdk/src/events';
+import Worker from 'worker-loader?inline!./Sync.worker.ts';
 
 interface OutstandingRequest {
   id: number;
@@ -27,7 +28,7 @@ export class WebWorkerConnector extends Connectors.BaseConnector {
   subscriptions: { [event: string]: { id: string; callback: Callback } } = {};
 
   async connect(ethNodeUrl: string, account?: string): Promise<any> {
-    this.worker = new Worker('./Sync.worker.ts', { type: 'module' });
+    this.worker = new Worker();
 
     this.worker.postMessage({
       id: iterator.next().value,
@@ -71,15 +72,6 @@ export class WebWorkerConnector extends Connectors.BaseConnector {
     };
 
     return this.worker;
-  }
-
-  async syncUserData(account: string): Promise<any> {
-    return this.worker.postMessage({
-      id: iterator.next().value,
-      method: 'syncUserData',
-      params: [account],
-      jsonrpc: '2.0',
-    });
   }
 
   messageReceived(message: any): void {

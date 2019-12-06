@@ -152,7 +152,8 @@ describe('3rd Party :: ZeroX :: ', () => {
     await expect(order.price).toEqual('0.22');
     await expect(order.amount).toEqual('1');
     await expect(order.kycToken).toEqual(kycToken);
-    await expect(order.expirationTimeSeconds).toEqual(expirationTime.toString());
+    await expect(order.expirationTimeSeconds).
+      toEqual(expirationTime.toString());
   }, 120000);
 
   test('ZeroX Trade :: placeTrade', async () => {

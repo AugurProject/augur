@@ -1,4 +1,10 @@
 import { IPFSWorkerProxy } from 'services/ipfs';
+import store from 'store';
+import {
+  addAnalytic,
+  removeAnalytic,
+  SEND_DELAY_SECONDS,
+} from 'modules/app/actions/analytics-management';
 
 declare global {
   interface Window {
@@ -24,17 +30,25 @@ const ipfsPlugin = (userConfig: {
         window.ipfsIsLoaded = true;
       });
     },
-    page: ({ payload }) => {
-      console.log('ipfsPlugin - page', payload);
-
+    page: ({payload}) => {
       removeMetaCallbackOnPayload(payload);
+      const analyticId = `${payload.properties.hash}-${payload.meta.timestamp}`;
+      store.dispatch(addAnalytic(payload, analyticId));
 
-      IPFSWorkerProxy.sendMessage(payload, 'augur-analytics');
+      setTimeout(() => {
+        IPFSWorkerProxy.sendMessage(payload, 'augur-analytics');
+        store.dispatch(removeAnalytic(analyticId));
+      }, SEND_DELAY_SECONDS * 1000);
     },
     track: ({ payload }) => {
       removeMetaCallbackOnPayload(payload);
+      const analyticId = `${payload.event}-${payload.meta.timestamp}`;
+      store.dispatch(addAnalytic(payload, analyticId));
 
-      IPFSWorkerProxy.sendMessage(payload, 'augur-analytics');
+      setTimeout(() => {
+        IPFSWorkerProxy.sendMessage(payload, 'augur-analytics');
+        store.dispatch(removeAnalytic(analyticId));
+      }, SEND_DELAY_SECONDS * 1000);
     },
     identify: ({ payload }) => {
       removeMetaCallbackOnPayload(payload);

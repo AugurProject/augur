@@ -26,8 +26,8 @@ describe('State API :: Market Sorts', () => {
 
     // With no orders on the book the invalidFilter will be false
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
-    let marketData = await (await db).findMarkets({selector: { market: market.address }});
-    await expect(marketData[0].invalidFilter).toEqual(false);
+    let marketData = await (await db).Markets.get(market.address);
+    await expect(marketData.invalidFilter).toEqual(0);
 
     // Place a bid order on Invalid
     let bid = new BigNumber(0);
@@ -38,10 +38,10 @@ describe('State API :: Market Sorts', () => {
     await john.simplePlaceOrder(market.address, bid, numShares, price, outcome);
 
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
-    marketData = await (await db).findMarkets({selector: { market: market.address }});
+    marketData = await (await db).Markets.get(market.address);
 
     // The Invalid filter is still not hit because the bid would be unprofitable to take if the market were valid, so no one would take it even if the market was Valid
-    await expect(marketData[0].invalidFilter).toEqual(false);
+    await expect(marketData.invalidFilter).toEqual(0);
 
     // Bid something better
     numShares = new BigNumber(10**18);
@@ -49,10 +49,10 @@ describe('State API :: Market Sorts', () => {
     await john.simplePlaceOrder(market.address, bid, numShares, price, outcome);
 
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
-    marketData = await (await db).findMarkets({selector: { market: market.address }});
+    marketData = await (await db).Markets.get(market.address);
 
     // The Invalid filter is now hit because this Bid would be profitable for a filler assuming the market were actually Valid
-    await expect(marketData[0].invalidFilter).toEqual(true);
+    await expect(marketData.invalidFilter).toEqual(1);
 
   });
   test(': horizontal liquidity', async () => {
@@ -64,8 +64,8 @@ describe('State API :: Market Sorts', () => {
 
     // With no orders on the book the liquidity scores won't exist
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
-    let marketData = await (await db).findMarkets({selector: { market: market.address }});
-    await expect(marketData[0].liquidity).toEqual({
+    let marketData = await (await db).Markets.get(market.address);
+    await expect(marketData.liquidity).toEqual({
       "0": "000000000000000000000000000000",
       "10": "000000000000000000000000000000",
       "100": "000000000000000000000000000000",
@@ -86,9 +86,9 @@ describe('State API :: Market Sorts', () => {
     await john.simplePlaceOrder(market.address, ask, numShares, price, outcomeA);
 
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
-    marketData = await (await db).findMarkets({selector: { market: market.address }});
+    marketData = await (await db).Markets.get(market.address);
 
-    await expect(marketData[0].liquidity[10]).toEqual("000000000102000000000000000000");
+    await expect(marketData.liquidity[10]).toEqual("000000000102000000000000000000");
 
   });
 
@@ -109,18 +109,18 @@ describe('State API :: Market Sorts', () => {
     await john.simplePlaceOrder(market.address, ask, numShares, askPrice, outcomeA);
 
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
-    let marketData = await (await db).findMarkets({selector: { market: market.address }});
+    let marketData = await (await db).Markets.get(market.address);
 
-    await expect(marketData[0].liquidity[10]).toEqual("000000000000000000000000000000");
+    await expect(marketData.liquidity[10]).toEqual("000000000000000000000000000000");
 
     // Set up vertical liquidity and confirm it ranks
     await john.simplePlaceOrder(market.address, ask, numShares, askPrice, outcomeB);
     await john.simplePlaceOrder(market.address, ask, numShares, askPrice, outcomeC);
 
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
-    marketData = await (await db).findMarkets({selector: { market: market.address }});
+    marketData = await (await db).Markets.get(market.address);
 
-    await expect(marketData[0].liquidity[10]).toEqual("000000001470000000000000000000");
+    await expect(marketData.liquidity[10]).toEqual("000000001470000000000000000000");
 
   });
 });

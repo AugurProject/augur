@@ -7,8 +7,7 @@ import { Account } from "../constants";
 import { providers } from "ethers";
 import { Connectors, Events, SubscriptionEventName } from "@augurproject/sdk";
 import { API } from "@augurproject/sdk/build/state/getter/API";
-import { PouchDBFactory } from "@augurproject/sdk/build/state/db/AbstractDB";
-import { IBlockAndLogStreamerListener } from "@augurproject/sdk/build/state/db/BlockAndLogStreamerListener";
+import { BlockAndLogStreamerListenerInterface } from "@augurproject/sdk/build/state/db/BlockAndLogStreamerListener";
 import { DB } from "@augurproject/sdk/build/state/db/DB";
 import { EmptyConnector } from "@augurproject/sdk";
 import { BaseConnector } from "@augurproject/sdk/build/connector";
@@ -212,15 +211,13 @@ export class FlashSession {
       listenForBlockAdded: () => {},
       listenForEvent: () => {},
       startBlockStreamListener: () => {},
-    } as unknown as IBlockAndLogStreamerListener;
+    } as unknown as BlockAndLogStreamerListenerInterface;
 
     return DB.createAndInitializeDB(
       Number(this.user.augur.networkId),
       0,
       0,
-      [this.user.account.publicKey],
       this.user.augur,
-      PouchDBFactory({adapter: 'memory'}),
       listener
     );
   }

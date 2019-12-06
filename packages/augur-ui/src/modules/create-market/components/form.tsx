@@ -110,6 +110,8 @@ interface FormProps {
   openCreateMarketModal: Function;
   currentTimestamp: number;
   needsApproval: boolean;
+  marketCreationStarted: Function;
+  marketCreationSaved: Function;
 }
 
 interface FormState {
@@ -289,7 +291,7 @@ export default class Form extends React.Component<FormProps, FormState> {
   };
 
   nextPage = () => {
-    const { newMarket, updateNewMarket, isTemplate } = this.props;
+    const { newMarket, updateNewMarket, isTemplate, marketCreationStarted } = this.props;
     const { currentStep, marketType, template } = newMarket;
 
     const { contentPages } = this.state;
@@ -300,6 +302,12 @@ export default class Form extends React.Component<FormProps, FormState> {
         ? contentPages.length - 1
         : currentStep + 1;
     updateNewMarket({ currentStep: newStep });
+
+    const { mainContent } = contentPages[currentStep];
+    if (isTemplate && template && mainContent === TEMPLATE_PICKER) {
+      marketCreationStarted(template.question, true);
+    }
+    
     this.node && this.node.scrollIntoView();
   };
 
@@ -366,6 +374,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       drafts,
       updateDraft,
       isTemplate,
+      marketCreationSaved
     } = this.props;
 
     if (newMarket.description === EMPTY_STATE.description) {
@@ -390,21 +399,24 @@ export default class Form extends React.Component<FormProps, FormState> {
     } else {
       // create new draft
       const createdDate = currentTimestamp;
+      const key = createdDate + '-' + newMarket.description;
       const draftMarket = {
         ...newMarket,
         currentStep,
-        uniqueId: createdDate,
+        uniqueId: key,
         created: createdDate,
         updated: createdDate,
       };
 
-      addDraft(createdDate, draftMarket);
+      addDraft(key, draftMarket);
       updateNewMarket({
-        uniqueId: createdDate,
+        uniqueId: key,
         created: createdDate,
         updated: createdDate,
       });
     }
+
+    marketCreationSaved(newMarket.template && newMarket.template.name, isTemplate);
   };
 
   evaluate = (validationsObj: Validations) => {

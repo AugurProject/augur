@@ -6,6 +6,9 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { updateAppStatus, GNOSIS_ENABLED, Ox_ENABLED } from 'modules/app/actions/update-app-status';
+import { loadAccountDataFromLocalStorage } from './load-account-data-from-local-storage';
+import { IS_LOGGED, updateAuthStatus } from 'modules/auth/actions/auth-status';
+import { loadAccountData } from 'modules/auth/actions/load-account-data';
 
 export const updateSdk = (
   loginAccount: Partial<LoginAccount>,
@@ -53,6 +56,10 @@ export const updateSdk = (
         false
       );
     }
+    dispatch(loadAccountDataFromLocalStorage(loginAccount.address));
+    dispatch(updateAuthStatus(IS_LOGGED, true));
+    dispatch(loadAccountData());
+
   } catch (error) {
     logError(error);
   }

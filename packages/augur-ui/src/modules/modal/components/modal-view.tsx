@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
 import classNames from 'classnames';
 
 import ModalSignTransaction from 'modules/modal/containers/modal-sign-transaction';
@@ -175,6 +175,7 @@ interface ModalViewProps {
     type: string;
   };
   closeModal: Function;
+  trackModalViewed: Function;
 }
 
 export default class ModalView extends Component<ModalViewProps> {
@@ -185,12 +186,17 @@ export default class ModalView extends Component<ModalViewProps> {
   }
 
   componentDidMount() {
-    const { closeModal } = this.props;
+    const { closeModal, modal, trackModalViewed } = this.props;
     window.onpopstate = () => {
       closeModal();
     };
 
     window.addEventListener('keydown', this.handleKeyDown);
+
+    trackModalViewed({
+      modal: modal.type, 
+      from: window.location.href
+    })
   }
 
   componentWillUnmount() {

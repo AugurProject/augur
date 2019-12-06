@@ -38,14 +38,6 @@ export class WebsocketConnector extends BaseConnector {
     return this.socket.open();
   }
 
-  async syncUserData(account: string): Promise<any> {
-    return this.socket.sendRequest({
-      method: 'syncUserData',
-      params: [account],
-      jsonrpc: '2.0',
-    });
-  }
-
   messageReceived(message: any) {
     if (message.result) {
       if (this.subscriptions[message.eventName]) {

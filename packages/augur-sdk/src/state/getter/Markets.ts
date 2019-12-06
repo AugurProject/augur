@@ -29,6 +29,7 @@ import * as _ from "lodash";
 import * as t from "io-ts";
 import { pipe } from "fp-ts/lib/pipeable";
 import { fold } from "fp-ts/lib/Either";
+import Dexie from "dexie";
 
 export enum GetMarketsSortBy {
   marketOI = 'marketOI',
@@ -288,18 +289,14 @@ export class Markets {
     db: DB,
     params: t.TypeOf<typeof Markets.getMarketPriceCandlestickParams>
   ): Promise<MarketPriceCandlesticks> {
-    const marketCreatedLogs = await db.findMarketCreatedLogs({
-      selector: { market: params.marketId },
-    });
-    if (marketCreatedLogs.length < 1) {
+    const market = await db.Markets.get(params.marketId);
+    if (!market) {
       throw new Error(
         `No marketId for getMarketPriceCandlesticks: ${params.marketId}`
       );
     }
 
-    const orderFilledLogs = await db.findOrderFilledLogs({
-      selector: { market: params.marketId, eventType: OrderEventType.Fill },
-    });
+    const orderFilledLogs = await db.OrderEvent.where("[market+eventType]").equals([params.marketId, OrderEventType.Fill]).toArray();
     const filteredOrderFilledLogs = filterOrderFilledLogs(
       orderFilledLogs,
       params
@@ -329,7 +326,7 @@ export class Markets {
           // a Candlestick after the temporary Candlestick.tokenVolume
           // is removed (see note on Candlestick.tokenVolume).
 
-          const marketDoc = marketCreatedLogs[0];
+          const marketDoc = market;
           const minPrice = new BigNumber(marketDoc.prices[0]);
           const maxPrice = new BigNumber(marketDoc.prices[1]);
           const numTicks = new BigNumber(marketDoc.numTicks);
@@ -426,9 +423,7 @@ export class Markets {
     db: DB,
     params: t.TypeOf<typeof Markets.getMarketPriceHistoryParams>
   ): Promise<MarketPriceHistory> {
-    const orderFilledLogs = await db.findOrderFilledLogs({
-      selector: { market: params.marketId, eventType: OrderEventType.Fill },
-    });
+    const orderFilledLogs = await db.OrderEvent.where("[market+eventType]").equals([params.marketId, OrderEventType.Fill]).toArray();
     orderFilledLogs.sort((a: ParsedOrderEventLog, b: ParsedOrderEventLog) => {
       return new BigNumber(a.timestamp).minus(b.timestamp).toNumber();
     });
@@ -463,10 +458,9 @@ export class Markets {
     if (!(await augur.contracts.augur.isKnownUniverse_(params.universe))) {
       throw new Error('Unknown universe: ' + params.universe);
     }
+
     params.maxLiquiditySpread = typeof params.maxLiquiditySpread === 'undefined' ? MaxLiquiditySpread.OneHundredPercent : params.maxLiquiditySpread;
     params.includeInvalidMarkets = typeof params.includeInvalidMarkets === 'undefined' ? true : params.includeInvalidMarkets;
-    params.search = typeof params.search === 'undefined' ? '' : params.search;
-    params.categories = typeof params.categories === 'undefined' ? [] : params.categories;
     params.sortBy = typeof params.sortBy === 'undefined' ? GetMarketsSortBy.liquidity : params.sortBy;
     params.isSortDescending = typeof params.isSortDescending === 'undefined' ? true : params.isSortDescending;
     params.limit = typeof params.limit === 'undefined' ? 10 : params.limit;
@@ -476,128 +470,100 @@ export class Markets {
     const reportingFeeDivisor = await universe.getOrCacheReportingFeeDivisor_();
 
     // Get Market docs for all markets with the specified filters
-    const request = {
-      selector: {
-        universe: params.universe,
-        marketCreator: params.creator,
-        designatedReporter: params.designatedReporter,
-      },
-      sort: undefined,
-      limit: undefined,
-      offset: undefined
-    };
-
-    const marketsFTSResults = await getMarketsSearchResults(params.universe, params.search, params.categories, augur);
-    const numMarketDocs = marketsFTSResults.length;
+    const numMarketDocs = await db.Markets.count();
+    let marketIds: string[] = [];
+    let useMarketIds = params.search || params.categories || params.userPortfolioAddress;
+    let useCreator = false;
 
     if (params.search || params.categories) {
-      const marketIds = _.map(marketsFTSResults, "market");
-      request.selector = Object.assign(request.selector, {
-        market: { $in: marketIds },
-      });
-    }
-
-    if (params.maxEndTime) {
-      request.selector = Object.assign(request.selector, {
-        endTime: { $lt: `0x${params.maxEndTime.toString(16)}` },
-      });
-    }
-
-    if (params.templateFilter) {
-      if (params.templateFilter === TemplateFilters.templateOnly) {
-        request.selector = Object.assign(request.selector, {
-          isTemplate: { $eq: true },
-        });
-      } else if (params.templateFilter === TemplateFilters.customOnly) {
-        request.selector = Object.assign(request.selector, {
-          isTemplate: { $eq: false },
-        });
-      }
+      const marketsFTSResults = await getMarketsSearchResults(params.universe, params.search || '', params.categories || [], augur);
+      marketIds = _.map(marketsFTSResults, "market");
     }
 
     // Filter out markets not related to the specified user
     if (params.userPortfolioAddress) {
-      const profitLossLogs = await db.findProfitLossChangedLogs(params.userPortfolioAddress, { selector: { universe: params.universe }});
-      const stakeLogs = await db.findDisputeCrowdsourcerContributionLogs({ selector: {
-        universe: params.universe,
-        reporter: params.userPortfolioAddress,
-      }});
-      const initialReportLogs = await db.findInitialReportSubmittedLogs({ selector: {
-        universe: params.universe,
-        reporter: params.userPortfolioAddress,
-      }});
+      const profitLossLogs = await db.ProfitLossChanged.where('[universe+account+timestamp]').between([
+        params.universe,
+        params.userPortfolioAddress,
+        Dexie.minKey
+      ], [
+        params.universe,
+        params.userPortfolioAddress,
+        Dexie.maxKey
+      ]).toArray();
+      const stakeLogs = await db.DisputeCrowdsourcerContribution.where('[universe+reporter]').equals([params.universe, params.userPortfolioAddress]).toArray();
+      const initialReportLogs = await db.InitialReportSubmitted.where('[universe+reporter]').equals([params.universe, params.userPortfolioAddress]).toArray();
+      const creatorMarkets = await db.Markets.where("marketCreator").equals(params.userPortfolioAddress).toArray();
+      const creatorMarketIds = _.map(creatorMarkets, 'market');
       const profitLossMarketIds = _.map(profitLossLogs, 'market');
       const stakeMarketIds = _.map(stakeLogs, 'market');
       const initialReportMarketIds = _.map(initialReportLogs, 'market');
-      const userMarketIds = profitLossMarketIds.concat(stakeMarketIds, initialReportMarketIds);
-      request.selector = Object.assign(request.selector, {
-        $or: [
-          { market: { $in: userMarketIds } },
-          { marketCreator: params.userPortfolioAddress },
-        ],
-      });
+      const userMarketIds = profitLossMarketIds.concat(stakeMarketIds, initialReportMarketIds, creatorMarketIds);
+      if (params.search || params.categories) {
+        marketIds = _.intersection(marketIds, userMarketIds);
+      } else {
+        marketIds = userMarketIds;
+      }
     }
 
-    if (params.reportingStates) {
-      request.selector = Object.assign(request.selector, {
-        reportingState: { $in: params.reportingStates },
-      });
+    let marketsCollection: Dexie.Collection<MarketData, any>;
+    let usedReportingStates = false;
+
+    if (useMarketIds) {
+      marketsCollection = db.Markets.where("market").anyOf(marketIds);
+    } else if (params.creator) {
+      useCreator = true;
+      marketsCollection = db.Markets.where("marketCreator").equals(params.creator);
+    } else if (params.reportingStates) {
+      usedReportingStates = true;
+      marketsCollection = db.Markets.where("reportingState").anyOf(params.reportingStates);
+    } else {
+      console.warn("No indexed field is being used for this market query. This is probably not an efficient query");
+      marketsCollection = db.Markets.toCollection();
     }
+
+    // Prepare filter values before loop
+    const formattedEndTime = params.maxEndTime ? `0x${params.maxEndTime.toString(16)}` : '';
+    let feePercent = 0;
 
     if (params.maxFee) {
       const reportingFee = new BigNumber(1).div(reportingFeeDivisor);
       const maxMarketCreatorFee = new BigNumber(params.maxFee).minus(reportingFee);
-      request.selector = Object.assign(request.selector, {
-        feePercent: { $lte: maxMarketCreatorFee.toNumber() },
-      });
+      feePercent = maxMarketCreatorFee.toNumber();
     }
 
-    if (params.maxLiquiditySpread) {
-      if (params.maxLiquiditySpread === MaxLiquiditySpread.ZeroPercent) {
-        // TODO populate hasRecentlyDepletedLiquidity in the market derived DB. Currently will always produce false
-        request.selector = Object.assign(request.selector, {
-          hasRecentlyDepletedLiquidity: true,
-        });
-      } else if (params.maxLiquiditySpread !== MaxLiquiditySpread.OneHundredPercent) {
-        request.selector = Object.assign(request.selector, {
-          [`liquidity.${params.maxLiquiditySpread}`]: { $gt: "000000000000000000000000000000" },
-        });
+    let marketData = await marketsCollection.and((market) => {
+      // Apply reporting states if we did the original query without using that index
+      if (!usedReportingStates && params.reportingStates) {
+        if (!params.reportingStates.includes(market.reportingState)) return false;
       }
-    }
-
-    if (params.includeInvalidMarkets !== true) {
-      request.selector = Object.assign(request.selector, {
-        invalidFilter: { $ne: true },
-      });
-    }
-
-    if (params.sortBy) {
-      // PouchDB requires that any sort param be specified in the selector and that the sort field be the first in the index field list
-      let sortBy: string = params.sortBy;
-      if (params.sortBy === "liquidity") {
-        sortBy = `liquidity.${params.maxLiquiditySpread}`;
+      // Apply creator if we did the original query without using that index
+      if (!useCreator && params.creator) {
+        if (params.creator !== market.marketCreator) return false;
       }
-      // liquidity 0 is actually a euphamism for no liquidity. No reason to sort in that case
-      if (sortBy !== "liquidity.0") {
-        if (request.selector[sortBy] === undefined) {
-          request.selector = Object.assign(request.selector, {
-            [sortBy]: { $gte: null },
-          });
-          request['use_index'] = sortBy;
+      // Apply max end time
+      if (params.maxEndTime && market.endTime >= formattedEndTime) return false;
+      // Apply template filter
+      if (params.templateFilter) {
+        if (params.templateFilter === TemplateFilters.templateOnly && !market.isTemplate) return false;
+        if (params.templateFilter === TemplateFilters.customOnly && market.isTemplate) return false;
+      }
+      // Apply designatedReporter
+      if (params.designatedReporter && market.designatedReporter !== params.designatedReporter) return false;
+      // Apply max Fee
+      if (params.maxFee && market.feePercent > feePercent) return false;
+      // Apply invalid filter
+      if (params.includeInvalidMarkets !== true && market.invalidFilter) return false;
+      // Liquidity filtering
+      if (params.maxLiquiditySpread) {
+        // TODO hasRecentlyDepletedLiquidity == true on ZeroPercent spread
+        if (params.maxLiquiditySpread !== MaxLiquiditySpread.OneHundredPercent) {
+          if (market.liquidity[params.maxLiquiditySpread] === "000000000000000000000000000000") return false;
         }
-        request.sort = [{[sortBy]: params.isSortDescending ? "desc" : "asc"}];
       }
-    }
+      return true;
+    }).toArray();
 
-    // Placed here intentionally so that we base the filter count off of the conditions above and then only the fee, liquidity, and invalid filters.
-    let marketData = await db.findMarkets(request);
-    const finalMarketIds = _.map(marketData, "market");
-    let filteredMarketsFTSResults = _.filter(marketsFTSResults, (marketFields) => { return finalMarketIds[marketFields["market"]] });
-
-    // TODO: We would normally add the pagination params to the request at this point because we want to get the full filtered row counts in the queries above. If we refactor those into another getter we can just initialize the request with these and apply them
-    // request.limit = params.limit;
-    // request.offset = params.offset;
-    // NOTE: This data _could_ come in a standalone request which would let us do in query pagination. Should investigate if we need that as noted above in the TODO
     const filteredOutCount = numMarketDocs - marketData.length;
 
     const meta = {
@@ -605,13 +571,18 @@ export class Markets {
       marketCount: marketData.length
     }
 
+    if (params.sortBy) {
+      let sortBy = params.sortBy;
+      marketData = _.orderBy(marketData, (item) => sortBy === "liquidity" ? item[sortBy][params.maxLiquiditySpread] : item[sortBy], params.isSortDescending ? "desc" : "asc");
+    }
+
+    marketData = marketData.slice(params.offset, params.offset + params.limit);
+
     // Get markets info to return
     let marketsInfo: MarketInfo[] = await getMarketsInfo(db, marketData, reportingFeeDivisor);
 
     // Get categories meta data
     const categories = getMarketsCategoriesMeta(marketsInfo);
-
-    marketsInfo = marketsInfo.slice(params.offset, params.offset + params.limit);
 
     return {
       markets: marketsInfo,
@@ -744,7 +715,7 @@ export class Markets {
   ): Promise<MarketInfo[]> {
     if(params.marketIds.length === 0) return [];
 
-    const markets = await db.findMarkets({ selector: { market: { $in: params.marketIds } }});
+    const markets = await db.dexieDB["Markets"].where("market").anyOfIgnoreCase(params.marketIds).toArray();
     const reportingFeeDivisor = await augur.contracts.universe.getOrCacheReportingFeeDivisor_();
 
     return getMarketsInfo(db, markets, reportingFeeDivisor);
@@ -758,14 +729,12 @@ export class Markets {
   ): Promise<string[]> {
     const { universe, reportingStates } = params;
 
-    const marketLogs = await db.findMarkets({
-      selector: {
-        universe,
-        // optionally filter on reporting state
-        ...(reportingStates ? { reportingState: { $in: reportingStates }} : {}),
-      },
-      fields: [ 'extraInfo' ]
-    });
+    let marketLogs: MarketData[];
+    if (reportingStates) {
+      marketLogs = await db.Markets.where("reportingState").anyOfIgnoreCase(reportingStates).and((log) => log.universe === universe).toArray();
+    } else {
+      marketLogs = await db.Markets.where("universe").equals(universe).toArray();
+    }
 
     const allCategories: {[category: string]: null} = {};
     marketLogs.forEach((log) => {
@@ -790,19 +759,10 @@ export class Markets {
     // case-insensitive
     const primaryCategories = params.categories.map((category) => category.toLowerCase());
 
-    const allMarkets = await db.findMarkets({
-      selector: {
-        universe,
-        // exclude markets that are finalized or awaiting finalization
-        reportingState: {
-          $nin: [
-              MarketReportingState.AwaitingFinalization,
-              MarketReportingState.Finalized
-          ],
-        },
-      },
-      fields: [ 'extraInfo', 'volume', 'marketOI' ],
-    });
+    const allMarkets = await db.Markets.where("reportingState").noneOf([
+      MarketReportingState.AwaitingFinalization,
+      MarketReportingState.Finalized
+    ]).and((log) => log.universe === universe).toArray();
 
     const markets = allMarkets.map((market) => {
       const extraInfo = market.extraInfo;
@@ -1025,12 +985,9 @@ async function getMarketsInfo(
   reportingFeeDivisor: BigNumber
 ): Promise<MarketInfo[]> {
   const marketIds = _.map(markets, "market");
-  // TODO add marketIndex to this DB and specify here through use_index
-  const orderFilledLogs = await db.findOrderFilledLogs({ selector: { market: { $in: marketIds } }});
-  let disputeDocs = await db.findDisputeDocs({
-    selector: { market: { $in: marketIds }},
-    use_index: "marketIndex"
-  });
+  // TODO This is just used to get the last price. This can be acheived far more efficiently than pulling all order events for all time 
+  const orderFilledLogs = await db.dexieDB["OrderEvent"].where("market").anyOfIgnoreCase(marketIds).and(function(item) { return item.eventType === OrderEventType.Fill }).toArray();
+  const disputeDocs = await db.dexieDB["Dispute"].where("market").anyOfIgnoreCase(marketIds).toArray();
   const disputeDocsByMarket = _.groupBy(disputeDocs, "market");
   const orderFilledLogsByMarket = _.groupBy(orderFilledLogs, "market");
 
@@ -1265,6 +1222,7 @@ async function getMarketsSearchResults(
  * @param {Augur} augur Augur object to use for setting `hasRecentlyDepletedLiquidity`
  * @param {Array<Object>} marketsResults Array of market objects to add `hasRecentlyDepletedLiquidity` to
  */
+/*
 async function setHasRecentlyDepletedLiquidity(db: DB, augur: Augur, marketsResults: any[]): Promise<Array<{}>>  {
   // Create market ID => marketsResults index mapping
   const keyedMarkets = {};
@@ -1329,6 +1287,7 @@ async function setHasRecentlyDepletedLiquidity(db: DB, augur: Augur, marketsResu
 
   return marketsResults;
 }
+*/
 
 /**
  * Gets a MarketOrderBook for a market and converts it to an OrderBook object.

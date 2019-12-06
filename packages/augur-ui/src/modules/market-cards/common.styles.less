@@ -22,7 +22,11 @@
 		> span:last-of-type {
 			.mono-12;
 
-			color: @color-secondary-text;
+			color: @color-primary-text;
+
+			&.Zero {
+				color: @color-secondary-text;
+			}
 		}
 	}
 
@@ -243,7 +247,7 @@
 	}
 
 	&.Scalar {
-		> div:first-of-type {
+		> span:first-of-type {
 			grid-column: 1 / span 2;
 		}
 	}

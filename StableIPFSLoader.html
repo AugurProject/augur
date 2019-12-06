@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="fragment" content="!" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Decentralized Prediction Markets | Augur</title>
+    <meta
+      name="description"
+      content="Augur is a decentralized oracle and prediction market protocol built on the Ethereum blockchain. It allows you to forecast events and be rewarded for predicting them correctly."
+    />
+    <script src="https://unpkg.com/ipfs/dist/index.min.js"></script>
+    <script>
+      function addErrorMessage(message) {
+        const messageNode = document.createElement('p');
+        messageNode.innerHTML = message;
+        document.getElementsByClassName('errors')[0].append(messageNode);
+        document.getElementsByClassName(
+          'loading-augur'
+        )[0].children[0].textContent = 'Request to load Augur via IPFS failed';
+      }
+
+      (async function() {
+        const node = await window.Ipfs.create();
+        const pageData = await fetch(window.location.href);
+
+        if (!pageData.ok) {
+          return addErrorMessage(pageData.statusText);
+        } else {
+          await node.add(await pageData.text());
+        }
+
+        let githubData, ipfsHash;
+
+        try {
+          const githubReleaseApiUrl =
+            'https://api.github.com/repos/AugurProject/augur/releases';
+          githubData = await fetch(githubReleaseApiUrl);
+
+          if (!githubData.ok) {
+            return addErrorMessage(data.statusText);
+          }
+
+          githubData = await githubData.json();
+
+          if (githubData.length === 0) {
+            return addErrorMessage(
+              'It appears that Augur has no releases. You can check that on our <a href="https://github.com/AugurProject/augur/releases">GitHub Releases</a>.'
+            );
+          }
+        } catch (e) {
+          return addErrorMessage(e.message);
+        }
+
+        const ipfsAsset = githubData[0].assets.find(
+          asset => asset.name.substring(asset.name.length - 5) === '.ipfs'
+        );
+
+        if (!ipfsAsset) {
+          return addErrorMessage(
+            `We couldn't find the IPFS hash. Check our <a href="https://github.com/AugurProject/augur/tags">GitHub Tags</a> for an asset with ".ipfs" extension. ${ipfsAsset}`
+          );
+        } else {
+          ipfsHash = ipfsAsset.name.substring(0, ipfsAsset.name.length - 5);
+        }
+
+        try {
+          const augurUrl = `/ipfs/${ipfsHash}/`;
+          document
+            .getElementsByTagName('base')[0]
+            .setAttribute('href', augurUrl);
+          const augurData = await fetch(augurUrl);
+
+          if (!augurData.ok) {
+            return addErrorMessage(augurData.statusText);
+          }
+
+          const el = document.createElement('html');
+          el.innerHTML = await augurData.text();
+          window.resEl = el;
+          document.head.innerHTML += el.querySelector('head').innerHTML;
+          document.body.innerHTML = el.querySelector('body').innerHTML;
+
+          el.querySelectorAll('script').forEach(s => {
+            const ns = document.createElement('script');
+            ns.src = s.src;
+            document.head.appendChild(ns);
+          });
+        } catch (e) {
+          return addErrorMessage(e.message);
+        }
+      })().then(res => {});
+    </script>
+    <base href="" />
+    <style>
+      /* http://meyerweb.com/eric/tools/css/reset/
+         v2.0 | 20110126
+         License: none (public domain)
+      */
+
+      html, body, div, span, applet, object, iframe,
+      h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+      a, abbr, acronym, address, big, cite, code,
+      del, dfn, em, img, ins, kbd, q, s, samp,
+      small, strike, strong, sub, sup, tt, var,
+      b, u, i, center,
+      dl, dt, dd, ol, ul, li,
+      fieldset, form, label, legend,
+      table, caption, tbody, tfoot, thead, tr, th, td,
+      article, aside, canvas, details, embed,
+      figure, figcaption, footer, header, hgroup,
+      menu, nav, output, ruby, section, summary,
+      time, mark, audio, video {
+        margin: 0;
+        padding: 0;
+        border: 0;
+        font-size: 100%;
+        font: inherit;
+        vertical-align: baseline;
+      }
+      /* HTML5 display-role reset for older browsers */
+      article, aside, details, figcaption, figure,
+      footer, header, hgroup, menu, nav, section {
+        display: block;
+      }
+      body {
+        line-height: 1;
+      }
+      ol, ul {
+        list-style: none;
+      }
+      blockquote, q {
+        quotes: none;
+      }
+      blockquote:before, blockquote:after,
+      q:before, q:after {
+        content: '';
+        content: none;
+      }
+      table {
+        border-collapse: collapse;
+        border-spacing: 0;
+      }
+
+      .loading-augur {
+        width: 100%;
+        text-align: center;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .loading-augur > h1 {
+        font-size: 1.5em;
+        font-weight: bold;
+        margin: 0 auto 16px;
+      }
+
+      .loading-augur > .errors {
+        color: red;
+      }
+
+      .loading-augur > .errors > p {
+        margin: 0 auto 5px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="loading-augur">
+      <h1>Loading Augur</h1>
+      <div class="errors"></div>
+    </div>
+  </body>
+</html>

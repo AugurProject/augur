@@ -22,6 +22,7 @@ const CHUNK_SIZE = 100000;
 const outcome0 = new BigNumber(0);
 const outcome1 = new BigNumber(1);
 describe('State API :: Markets :: ', () => {
+  let mockDB
   let db: Promise<DB>;
   let api: API;
   let john: ContractAPI;
@@ -39,8 +40,6 @@ describe('State API :: Markets :: ', () => {
     john = await ContractAPI.userWrapper(ACCOUNTS[0], baseProvider, addresses);
     mary = await ContractAPI.userWrapper(ACCOUNTS[1], baseProvider, addresses);
     bob = await ContractAPI.userWrapper(ACCOUNTS[2], baseProvider, addresses);
-    db = makeDbMock().makeDB(john.augur, ACCOUNTS);
-    api = new API(john.augur, db);
     await john.approveCentralAuthority();
     await mary.approveCentralAuthority();
     await bob.approveCentralAuthority();
@@ -113,7 +112,7 @@ describe('State API :: Markets :: ', () => {
   });
 
   // NOTE: Full-text searching is also tested in MarketDerivedDB.test.ts
-  test(':getMarkets', async () => {
+  test(':getMarkets general', async () => {
     const universe = john.augur.contracts.universe;
 
     const yesNoMarket1 = john.augur.contracts.marketFromAddress(markets['yesNoMarket1']);
@@ -303,7 +302,7 @@ describe('State API :: Markets :: ', () => {
       markets: [],
       meta: {
         categories: {},
-        filteredOutCount: 0,
+        filteredOutCount: 6,
         marketCount: 0,
       },
     });
@@ -394,34 +393,6 @@ describe('State API :: Markets :: ', () => {
     });
 
     expect(marketList.markets.length).toEqual(6);
-
-    /* TODO: When the market / outcome derived DB for OrderEvents is made and the market derived DB uses it to populate lastTradedTimestamp uncomment
-    marketList = await api.route('getMarkets', {
-      universe: universe.address,
-      sortBy: GetMarketsSortBy.lastTradedTimestamp,
-    });
-    expect(marketList.markets.length).toEqual(6);
-    console.log(`MARKETS: ${JSON.stringify(marketList.markets)}`);
-    expect(marketList.markets[0].id).toEqual(scalarMarket1.address);
-    expect(marketList.markets[1].id).toEqual(categoricalMarket1.address);
-    expect(marketList.markets[2].id).toEqual(yesNoMarket1.address);
-    expect(marketList.markets[3].id).toEqual(categoricalMarket2.address);
-    expect(marketList.markets[4].id).toEqual(scalarMarket2.address);
-    expect(marketList.markets[5].id).toEqual(yesNoMarket2.address);
-
-    marketList = await api.route('getMarkets', {
-      universe: universe.address,
-      sortBy: GetMarketsSortBy.lastTradedTimestamp,
-      isSortDescending: false,
-    });
-    expect(marketList.markets.length).toEqual(6);
-    expect(marketList.markets[0].id).toEqual(categoricalMarket2.address);
-    expect(marketList.markets[1].id).toEqual(scalarMarket2.address);
-    expect(marketList.markets[2].id).toEqual(yesNoMarket2.address);
-    expect(marketList.markets[3].id).toEqual(yesNoMarket1.address);
-    expect(marketList.markets[4].id).toEqual(categoricalMarket1.address);
-    expect(marketList.markets[5].id).toEqual(scalarMarket1.address);
-    */
 
     // Create some liquidity
     numShares = new BigNumber(10**18).multipliedBy(10);
@@ -631,7 +602,6 @@ describe('State API :: Markets :: ', () => {
       stringTo32ByteHex(''),
       stringTo32ByteHex('42')
     );
-
 
     const actualDB = await db;
     await actualDB.sync(john.augur, CHUNK_SIZE, 0);
@@ -1449,7 +1419,8 @@ describe('State API :: Markets :: ', () => {
     });
 
     test('should return a complete orderbook for john', async () => {
-      const yesNoMarket = john.augur.contracts.marketFromAddress(markets['yesNoMarket']);
+      const yesNoMarket = john.augur.contracts.marketFromAddress(
+        markets['yesNoMarket']);
       await (await db).sync(john.augur, CHUNK_SIZE, 0);
       const orderBook = (await api.route('getMarketOrderBook', {
         marketId: yesNoMarket.address,
@@ -1522,7 +1493,7 @@ describe('State API :: Markets :: ', () => {
           },
         },
       });
-    }, 200000);
+    });
 
     test('should return mysize of zero for mary', async () => {
       const yesNoMarket = john.augur.contracts.marketFromAddress(markets['yesNoMarket']);
@@ -1964,7 +1935,7 @@ describe('State API :: Markets :: ', () => {
     info = infos[0];
 
     expect(info).toHaveProperty('disavowed');
-    expect(info['disavowed']).toEqual(true);
+    expect(info['disavowed']).toEqual(1);
   });
 
   test(':getCategories : all reporting states', async () => {
@@ -2102,7 +2073,6 @@ describe('State API :: Markets :: ', () => {
         'nonexistent' // will be empty because it's never used as a category
       ],
     });
-    console.log(JSON.stringify(stats, null, 2))
     expect(stats).toEqual({
       'yesno 2 primary': {
         category: 'yesno 2 primary',

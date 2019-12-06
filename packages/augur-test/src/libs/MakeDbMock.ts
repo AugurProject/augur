@@ -1,85 +1,33 @@
-import { PouchDBFactoryType } from "@augurproject/sdk/build/state/db/AbstractDB";
-import PouchDB from "pouchdb";
+import Dexie from 'dexie';
 import { DB } from "@augurproject/sdk/build/state/db/DB";
 import { Augur } from "@augurproject/sdk";
 import { Account } from "@augurproject/tools";
-import { IBlockAndLogStreamerListener } from "@augurproject/sdk/build/state/db/BlockAndLogStreamerListener";
+import { BlockAndLogStreamerListenerInterface } from "@augurproject/sdk/build/state/db/BlockAndLogStreamerListener";
 import * as _ from "lodash";
+import * as fs from "fs";
 import uuid = require("uuid");
+import { configureDexieForNode } from "@augurproject/sdk/build/state/utils/DexieIDBShim";
 
-interface Databases {
-  [dbName: string]: PouchDB.Database;
-}
+configureDexieForNode(true);
+
+let MOCK_NET_ID = 0;
 
 export function makeDbMock(prefix:string = uuid.v4()) {
+
+  MOCK_NET_ID++;
+
   const mockState = {
-    dbs: {} as Databases,
-    failCountdown: -1,  // default state never fails
-    alwaysFail: false,
+    db: undefined as Promise<DB>,
   };
 
-  function fail() {
-    mockState.failCountdown--;
-    return mockState.alwaysFail || mockState.failCountdown === 0;
-  }
-
-  class MockPouchDB extends PouchDB {
-    public allDocs<Model>(options?: any): Promise<any> {
-      if (fail()) {
-        throw Error("This was an intentional, mocked failure of allDocs");
-      }
-      if (options) {
-        return super.allDocs(options);
-      } else {
-        return super.allDocs();
-      }
-    }
-
-    public get<Model>(docId: any, options?: any): Promise<any> {
-      if (fail()) {
-        throw Error("This was an intentional, mocked failure of get");
-      }
-      if (options) {
-        return super.get(docId, options);
-      } else {
-        return super.get(docId);
-      }
-    }
-
-    public put<Model>(doc: any, options?: any): Promise<any> {
-      if (fail()) {
-        throw Error("This was an intentional, mocked failure of put");
-      }
-      if (options) {
-        return super.put(doc, options);
-      } else {
-        return super.put(doc);
-      }
-    }
-  }
-
-  function getDBName(dbNamespace:string, dbName:string) {
-    return `${dbNamespace}/db/${dbName}`;
-  }
-
-  function makeFactory(dbNamespace:string = uuid.v4()): PouchDBFactoryType {
-    return (dbName: string) => {
-      const fullDbName = getDBName(dbNamespace, dbName);
-      const db = new MockPouchDB(fullDbName, { adapter: "memory" });
-      mockState.dbs[fullDbName] = db;
-      return db;
-    };
-  }
-
   async function wipeDB(): Promise<void> {
-    await Promise.all(Object.values(mockState.dbs).map((db) => {
-      return db.destroy();
+    const db = await mockState.db;
+    await Promise.all(Object.values(db.dexieDB.tables).map((db) => {
+      return db.clear();
     }));
-
-    mockState.dbs = {};
   }
 
-  function makeBlockAndLogStreamerListener(): IBlockAndLogStreamerListener {
+  function makeBlockAndLogStreamerListener(): BlockAndLogStreamerListenerInterface {
     return {
       listenForBlockRemoved: jest.fn(),
       listenForBlockAdded: jest.fn(),
@@ -93,30 +41,24 @@ export function makeDbMock(prefix:string = uuid.v4()) {
   const constants = {
     chunkSize: 100000,
     blockstreamDelay: 10,
-    networkId: 4,
+    networkId: MOCK_NET_ID,
     defaultStartSyncBlockNumber: 0,
   };
 
   return {
-    makeFactory,
     wipeDB,
     constants,
-    getDatabaseByName: (dbName:string) => mockState.dbs[getDBName(prefix, dbName)],
-    failNext: () => mockState.failCountdown = 1,
-    failInN: (n: number) => mockState.failCountdown = n,
-    failForever: () => mockState.alwaysFail = true,
-    cancelFail: () => {
-      mockState.failCountdown = -1;
-      mockState.alwaysFail = false;
-    },
-    makeDB: (augur: Augur, accounts: Account[]) => DB.createAndInitializeDB(
-      constants.networkId,
-      constants.blockstreamDelay,
-      constants.defaultStartSyncBlockNumber,
-      _.map(accounts, "publicKey"),
-      augur,
-      makeFactory(prefix),
-      makeBlockAndLogStreamerListener(),
-    ),
+    makeDB: (augur: Augur, accounts: Account[]) => {
+      const db = DB.createAndInitializeDB(
+        constants.networkId,
+        constants.blockstreamDelay,
+        constants.defaultStartSyncBlockNumber,
+        augur,
+        makeBlockAndLogStreamerListener()
+      );
+      mockState.db = db;
+
+      return db;
+    }
   };
 }

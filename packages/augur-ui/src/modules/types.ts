@@ -316,7 +316,7 @@ export interface NewMarketPropertyValidations {
   outcomes?: string | string[];
 }
 export interface NewMarket {
-  uniqueId: number;
+  uniqueId: string;
   isValid: boolean;
   validations:
     | NewMarketPropertiesValidations
@@ -364,7 +364,7 @@ export interface LinkContent {
 };
 
 export interface Draft {
-  uniqueId: number;
+  uniqueId: string;
   created: number;
   updated: number;
   isValid: boolean;
@@ -408,13 +408,15 @@ export interface Analytics {
 }
 
 export interface Analytic {
-  addedTimestamp: number;
   type: string;
   eventName: string;
   payload: AnalyticPayload;
 }
 
-export interface AnalyticPayload {}
+export interface AnalyticPayload {
+  addedTimestamp: number;
+  userAgent: string;
+}
 
 export interface MarketsList {
   isSearching: boolean;
@@ -503,6 +505,7 @@ export interface QueryEndpoints {
   ethereum_node_http?: string;
   ethereum_node_ws?: string;
   [MARKET_ID_PARAM_NAME]?: string;
+  [OUTCOME_ID_PARAM_NAME]?: string;
   [RETURN_PARAM_NAME]?: string;
   [CATEGORY_PARAM_NAME]?: string;
   [TAGS_PARAM_NAME]?: string;

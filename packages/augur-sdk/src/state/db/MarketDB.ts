@@ -24,7 +24,7 @@ import { isTemplateMarket } from '@augurproject/artifacts';
 
 interface MarketOrderBookData {
   _id: string;
-  invalidFilter: boolean;
+  invalidFilter: number;
   liquidity: LiquidityResults;
 }
 
@@ -50,8 +50,7 @@ export class MarketDB extends DerivedDB {
       'MarketFinalized',
       'MarketParticipantsDisavowed',
       'MarketMigrated'
-    ], ['market'],
-      augur);
+    ], augur);
 
     this.events = this.augur.getAugurEventEmitter();
 
@@ -72,17 +71,18 @@ export class MarketDB extends DerivedDB {
   }
 
   async doSync(highestAvailableBlockNumber: number): Promise<void> {
+    this.syncing = true;
     await super.doSync(highestAvailableBlockNumber);
     await this.syncOrderBooks(true);
     const timestamp = (await this.augur.getTimestamp()).toNumber();
     await this.processTimestamp(timestamp, highestAvailableBlockNumber);
     await this.syncFTS();
+    this.syncing = false;
   }
 
   syncFTS = async (): Promise<void> => {
     if (this.augur.syncableFlexSearch) {
-      const allDocs = await this.allDocs();
-      let marketDocs: any[] = allDocs.rows ? allDocs.rows.map(row => row.doc) : [];
+      let marketDocs = await this.allDocs();
       marketDocs = marketDocs.slice(0, marketDocs.length - 1);
       await this.augur.syncableFlexSearch.addMarketCreatedDocs(marketDocs);
     }
@@ -90,25 +90,15 @@ export class MarketDB extends DerivedDB {
 
   syncOrderBooks = async (syncing: boolean): Promise<void> => {
     const highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(this.dbName);
-    let success = true;
     const documents = [];
-    const request = {
-      selector: {
-        blockNumber: { $gte: highestSyncedBlockNumber },
-      },
-    };
 
-    const currentOrderLogs = await this.stateDB.findCurrentOrderLogs(request);
+    const currentOrderLogs = await this.stateDB.CurrentOrders.where("blockNumber").aboveOrEqual(highestSyncedBlockNumber).toArray();
 
     if (currentOrderLogs.length < 1) return;
 
     const marketIds: string[] = _.uniq(_.map(currentOrderLogs, 'market')) as string[];
     const highestBlockNumber: number = _.max(_.map(currentOrderLogs, 'blockNumber')) as number;
-    const marketsData = await this.stateDB.findMarkets({
-      selector: {
-        market: { $in: marketIds },
-      },
-    });
+    const marketsData = await this.stateDB.Markets.where("market").anyOf(marketIds).toArray();
 
     const marketDataById = _.keyBy(marketsData, 'market');
 
@@ -120,17 +110,14 @@ export class MarketDB extends DerivedDB {
       const doc = await this.getOrderBookData(this.augur, marketId, marketDataById[marketId], reportingFeeDivisor, ETHInAttoDAI);
       // This is needed to make rollbacks work properly
       doc['blockNumber'] = highestBlockNumber;
+      doc['market'] = marketId;
       documents.push(doc);
     }
 
-    success = await this.bulkUpsertUnorderedDocuments(documents);
+    await this.bulkUpsertDocuments(documents);
 
-    if (success) {
-      if (!syncing) {
-        await this.syncStatus.setHighestSyncBlock(this.dbName, highestBlockNumber, false);
-      }
-    } else {
-      throw new Error('Syncing market orderbook liquidity stats failed');
+    if (!syncing) {
+      await this.syncStatus.setHighestSyncBlock(this.dbName, highestBlockNumber, false);
     }
   }
 
@@ -173,13 +160,9 @@ export class MarketDB extends DerivedDB {
   }
 
   async getOrderBook(marketData: MarketData, numOutcomes: number, estimatedTradeGasCostInAttoDai: BigNumber): Promise<OrderBook> {
-    const currentOrdersResponse = await this.stateDB.findCurrentOrderLogs({
-      selector : {
-        market: marketData.market,
-        amount: { $gt: '0x00' },
-        eventType: { $ne: 1 },
-      },
-    });
+    const currentOrdersResponse = await this.stateDB.CurrentOrders.where("[market+open]").equals([marketData.market, 1]).and((order) => {
+      return order.amount > '0x00';
+    }).toArray();
 
     const currentOrdersByOutcome = _.groupBy(currentOrdersResponse, (order) => new BigNumber(order.outcome).toNumber());
     for (let outcome = 0; outcome < numOutcomes; outcome++) {
@@ -207,8 +190,8 @@ export class MarketDB extends DerivedDB {
   }
 
   // A Market is marked as True in the invalidFilter if the best bid for Invalid on the book would not be profitable to take were the market Valid
-  async recalcInvalidFilter(orderbook: OrderBook, marketData: MarketData, feeMultiplier: BigNumber, estimatedTradeGasCostInAttoDai: BigNumber, estimatedClaimGasCostInAttoDai: BigNumber): Promise<boolean> {
-    if (orderbook[INVALID_OUTCOME].bids.length < 1) return false;
+  async recalcInvalidFilter(orderbook: OrderBook, marketData: MarketData, feeMultiplier: BigNumber, estimatedTradeGasCostInAttoDai: BigNumber, estimatedClaimGasCostInAttoDai: BigNumber): Promise<number> {
+    if (orderbook[INVALID_OUTCOME].bids.length < 1) return 0;
 
     const bestBid = orderbook[INVALID_OUTCOME].bids[0];
 
@@ -229,7 +212,7 @@ export class MarketDB extends DerivedDB {
 
     const validProfit = validRevenue.minus(validCost);
 
-    return validProfit.gt(MINIMUM_INVALID_ORDER_VALUE_IN_ATTO_DAI);
+    return validProfit.gt(MINIMUM_INVALID_ORDER_VALUE_IN_ATTO_DAI) ? 1 : 0;
   }
 
   protected processDoc(log: ParsedLog): ParsedLog {
@@ -242,13 +225,13 @@ export class MarketDB extends DerivedDB {
 
   private processMarketCreated = (log: ParsedLog): ParsedLog => {
     log['reportingState'] = MarketReportingState.PreReporting;
-    log['finalized'] = false;
-    log['invalidFilter'] = false;
+    log['finalized'] = 0;
+    log['invalidFilter'] = 0;
     log['marketOI'] = '0x00';
     log['volume'] = '0x00';
     log['disputeRound'] = '0x00';
     log['totalRepStakedInMarket'] = '0x00';
-    log['hasRecentlyDepletedLiquidity'] = false;
+    log['hasRecentlyDepletedLiquidity'] = 0;
     log['liquidity'] = {
       0: '000000000000000000000000000000',
       10: '000000000000000000000000000000',
@@ -263,7 +246,7 @@ export class MarketDB extends DerivedDB {
       log['extraInfo'] = JSON.parse(log['extraInfo']);
       log['extraInfo'].categories = log['extraInfo'].categories.map((category) => category.toLowerCase());
       if(log['extraInfo'].template) {
-        log['isTemplate'] = isTemplateMarket(log['extraInfo'].description, log['extraInfo'].template, log['outcomes'], log['extraInfo'].longDescription);
+        log['isTemplate'] = isTemplateMarket(log['extraInfo'].description, log['extraInfo'].template, log['outcomes'], log['extraInfo'].longDescription, log['endTime']);
       }
     } catch (err) {
       log['extraInfo'] = {};
@@ -294,7 +277,7 @@ export class MarketDB extends DerivedDB {
     log['reportingState'] = MarketReportingState.Finalized;
     log['finalizationBlockNumber'] = log['blockNumber'];
     log['finalizationTime'] = log['timestamp'];
-    log['finalized'] = true;
+    log['finalized'] = 1;
     return log;
   }
 
@@ -309,7 +292,7 @@ export class MarketDB extends DerivedDB {
   }
 
   private processMarketParticipantsDisavowed(log: ParsedLog): ParsedLog {
-    log['disavowed'] = true;
+    log['disavowed'] = 1;
     return log;
   }
 
@@ -331,17 +314,13 @@ export class MarketDB extends DerivedDB {
   private async processTimestamp(timestamp: number, blockNumber: number): Promise<void> {
     await this.waitOnLock(this.HANDLE_MERGE_EVENT_LOCK, 2000, 50);
 
-    const eligibleMarketDocs = await this.find({
-      selector: {
-        reportingState: { $in: [
-          MarketReportingState.PreReporting,
-          MarketReportingState.DesignatedReporting,
-          MarketReportingState.CrowdsourcingDispute,
-          MarketReportingState.AwaitingNextWindow,
-        ] }
-      }
-    });
-    const eligibleMarketsData = eligibleMarketDocs.docs as unknown as MarketData[];
+    const eligibleMarketDocs = await this.table.where("reportingState").anyOfIgnoreCase([
+      MarketReportingState.PreReporting,
+      MarketReportingState.DesignatedReporting,
+      MarketReportingState.CrowdsourcingDispute,
+      MarketReportingState.AwaitingNextWindow,
+    ]).toArray();
+    const eligibleMarketsData = eligibleMarketDocs as unknown as MarketData[];
     const updateDocs = [];
 
     for (const marketData of eligibleMarketsData) {
@@ -359,10 +338,9 @@ export class MarketDB extends DerivedDB {
           reportingState = MarketReportingState.DesignatedReporting;
       }
 
-      if (reportingState) {
+      if (reportingState && reportingState != marketData.reportingState) {
         updateDocs.push({
-          _id: marketData._id,
-          market: marketData._id,
+          market: marketData.market,
           blockNumber,
           reportingState
         });
@@ -370,7 +348,7 @@ export class MarketDB extends DerivedDB {
     }
 
     if (updateDocs.length > 0) {
-      await this.bulkUpsertUnorderedDocuments(updateDocs);
+      await this.bulkUpsertDocuments(updateDocs);
     }
   }
 }

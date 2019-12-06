@@ -6,6 +6,7 @@ import {
 } from "modules/markets/actions/update-new-market";
 import Landing from "modules/create-market/landing";
 import getValue from "utils/get-value";
+import { marketCreationStarted } from "services/analytics/helpers";
 
 const mapStateToProps = state => ({
   newMarket: state.newMarket,
@@ -16,6 +17,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   updateNewMarket: data => dispatch(updateNewMarket(data)),
   clearNewMarket: () => dispatch(clearNewMarket()),
+  marketCreationStarted: (templateName, isTemplate) => dispatch(marketCreationStarted(templateName, isTemplate)),
 });
 
 const LandingContainer = withRouter(

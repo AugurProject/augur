@@ -18,15 +18,17 @@ import {
 import {
   MARKET_ID_PARAM_NAME,
   RETURN_PARAM_NAME,
+  OUTCOME_ID_PARAM_NAME
 } from "modules/routes/constants/param-names";
 
 interface MarketLinkProps {
   id: string;
   linkType?: string;
   className?: string;
+  outcomeId?: string;
 }
 
-const MarketLink: React.FC<MarketLinkProps> = ({ linkType, className, id, children }) => {
+const MarketLink: React.FC<MarketLinkProps> = ({ linkType, className, id, outcomeId, children }) => {
   let path;
 
   switch (linkType) {
@@ -43,9 +45,13 @@ const MarketLink: React.FC<MarketLinkProps> = ({ linkType, className, id, childr
       path = makePath(MARKET);
   }
 
-  const queryLink = {
+  let queryLink = {
     [MARKET_ID_PARAM_NAME]: id,
   };
+
+  if (outcomeId) {
+    queryLink[OUTCOME_ID_PARAM_NAME] = outcomeId;
+  }
 
   if (linkType === TYPE_DISPUTE || linkType === TYPE_REPORT) {
     queryLink[RETURN_PARAM_NAME] = location.hash;

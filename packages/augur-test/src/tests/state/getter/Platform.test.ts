@@ -7,6 +7,7 @@ import { BigNumber } from 'bignumber.js';
 import { ContractInterfaces } from '@augurproject/core';
 import { PlatformActivityStatsResult } from '@augurproject/sdk/build/state/getter/Platform';
 import { fork } from '@augurproject/tools';
+import uuid = require('uuid');
 
 const mock = makeDbMock();
 
@@ -27,7 +28,7 @@ describe('State API :: get-platform-activity-stats :: ', () => {
     api = new API(john.augur, db);
     await john.approveCentralAuthority();
     await mary.approveCentralAuthority();
-  }, 120000);
+  });
 
   test('getPlatformActivityStats', async () => {
     // Create markets with multiple users
@@ -78,12 +79,12 @@ describe('State API :: get-platform-activity-stats :: ', () => {
       activeUsers: 2,
       disputedMarkets: 1,
       marketsCreated: 3,
-      numberOfTrades: 3,
+      numberOfTrades: 9,
     });
     expect(stats.amountStaked.toString()).toEqual('4650537188053131103515648');
     expect(stats.openInterest.toString()).toEqual('2040000000000000');
     expect(stats.volume.toString()).toEqual('0.006093');
-  }, 200000);
+  });
 });
 
 async function getPlatformActivityStats(
@@ -138,7 +139,7 @@ async function fillOrders(
   for (let i = 0; i < outcomes.length; i++) {
     const outcome = outcomes[i];
     const vary = variation[i];
-    const tradeGroupId = String(40 + vary);
+    const tradeGroupId = Math.floor(Math.random() * 10**12).toFixed();
     const sharesMultiply = vary;
     await user.fillOrder(
       await user.getBestOrderId(bid, market.address, outcome),

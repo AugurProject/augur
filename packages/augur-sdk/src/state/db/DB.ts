@@ -1,16 +1,13 @@
 import { Augur } from '../../Augur';
-import { SECONDS_IN_A_DAY, SECONDS_IN_AN_HOUR, SubscriptionEventName } from '../../constants';
-import { PouchDBFactoryType, AbstractDB } from './AbstractDB';
+import { SubscriptionEventName } from '../../constants';
+import Dexie from 'dexie';
 import { SyncableDB } from './SyncableDB';
 import { SyncStatus } from './SyncStatus';
-import { TrackedUsers } from './TrackedUsers';
-import { UserSyncableDB } from './UserSyncableDB';
-import { DerivedDB } from './DerivedDB';
-import { LiquidityDB, LiquidityLastUpdated, MarketHourlyLiquidity } from './LiquidityDB';
+//import { LiquidityDB, LiquidityLastUpdated, MarketHourlyLiquidity } from './LiquidityDB';
 import { DisputeDatabase } from './DisputeDB';
 import { CurrentOrdersDatabase } from './CurrentOrdersDB';
 import { MarketDB } from './MarketDB';
-import { IBlockAndLogStreamerListener, LogCallbackType } from './BlockAndLogStreamerListener';
+import { BlockAndLogStreamerListenerInterface, LogCallbackType } from './BlockAndLogStreamerListener';
 import {
   CompleteSetsPurchasedLog,
   CompleteSetsSoldLog,
@@ -22,6 +19,7 @@ import {
   GenericEventDBDescription,
   InitialReporterRedeemedLog,
   InitialReportSubmittedLog,
+  InitialReporterTransferredLog,
   MarketCreatedLog,
   MarketData,
   DisputeDoc,
@@ -29,20 +27,29 @@ import {
   MarketMigratedLog,
   MarketVolumeChangedLog,
   MarketOIChangedLog,
-  OrderEventType,
+  MarketParticipantsDisavowedLog,
+  MarketTransferredLog,
   ParsedOrderEventLog,
   ParticipationTokensRedeemedLog,
   ProfitLossChangedLog,
+  ReportingParticipantDisavowedLog,
   TimestampSetLog,
   TokenBalanceChangedLog,
   ShareTokenBalanceChangedLog,
   TokensMinted,
   TradingProceedsClaimedLog,
+  TokensTransferredLog,
+  TransferSingleLog,
+  TransferBatchLog,
   UniverseForkedLog,
   UniverseCreatedLog,
+  CurrentOrder,
 } from '../logs/types';
 import { ZeroXOrders, StoredOrder } from './ZeroXOrders';
-import { GetMarketsSortBy, MaxLiquiditySpread } from '../getter/Markets';
+
+interface Schemas {
+  [table: string]: string;
+}
 
 export interface DerivedDBConfiguration {
   name: string;
@@ -50,58 +57,56 @@ export interface DerivedDBConfiguration {
   idFields?: string[];
 }
 
-export interface UserSpecificDBConfiguration {
-  name: string;
-  eventName?: string;
-  idFields?: string[];
-  numAdditionalTopics: number;
-  userTopicIndicies: number[];
-}
-
 export class DB {
   private networkId: number;
   private blockstreamDelay: number;
-  private trackedUsers: TrackedUsers;
-  private genericEventDBDescriptions: GenericEventDBDescription[];
   private syncableDatabases: { [dbName: string]: SyncableDB } = {};
-  private derivedDatabases: { [dbName: string]: DerivedDB } = {};
-  private liquidityDatabase: LiquidityDB;
+  //private liquidityDatabase: LiquidityDB;
   private disputeDatabase: DisputeDatabase;
   private currentOrdersDatabase: CurrentOrdersDatabase;
   private marketDatabase: MarketDB;
   private zeroXOrders: ZeroXOrders;
-  private blockAndLogStreamerListener: IBlockAndLogStreamerListener;
+  private blockAndLogStreamerListener: BlockAndLogStreamerListenerInterface;
   private augur: Augur;
-  readonly pouchDBFactory: PouchDBFactoryType;
+  readonly dexieDB: Dexie;
   syncStatus: SyncStatus;
 
-  // TODO Update numAdditionalTopics/userTopicIndexes once contract events are updated
-  readonly userSpecificDBs: UserSpecificDBConfiguration[] = [
-    {
-      'name': 'TokensMinted',
-      'numAdditionalTopics': 3,
-      'userTopicIndicies': [2],
-    },
-    {
-      'name': 'TokensTransferred',
-      'numAdditionalTopics': 3,
-      'userTopicIndicies': [1, 2],
-    },
-    {
-      'name': 'ProfitLossChanged',
-      'numAdditionalTopics': 3,
-      'userTopicIndicies': [2],
-    },
-    {
-      'name': 'TokenBalanceChanged',
-      'numAdditionalTopics': 2,
-      'userTopicIndicies': [1],
-      'idFields': ['token'],
-    },
+  readonly genericEventDBDescriptions: GenericEventDBDescription[] = [
+    { EventName: 'CompleteSetsPurchased', indexes: ['timestamp'] },
+    { EventName: 'CompleteSetsSold', indexes: ['timestamp'] },
+    { EventName: 'DisputeCrowdsourcerCompleted', indexes: ['market', 'timestamp', 'disputeCrowdsourcer'] },
+    { EventName: 'DisputeCrowdsourcerContribution', indexes: ['timestamp', 'market', '[universe+reporter]'] },
+    { EventName: 'DisputeCrowdsourcerCreated', indexes: ['disputeCrowdsourcer'] },
+    { EventName: 'DisputeCrowdsourcerRedeemed', indexes: ['timestamp', 'reporter'] },
+    { EventName: 'DisputeWindowCreated', indexes: [] },
+    { EventName: 'InitialReporterRedeemed', indexes: ['timestamp', 'reporter'] },
+    { EventName: 'InitialReportSubmitted', indexes: ['timestamp', 'reporter', '[universe+reporter]'] },
+    { EventName: 'InitialReporterTransferred', indexes: [] },
+    { EventName: 'MarketCreated', indexes: ['market', 'timestamp', '[universe+timestamp]'] },
+    { EventName: 'MarketFinalized', indexes: ['market'] },
+    { EventName: 'MarketMigrated', indexes: ['market'] },
+    { EventName: 'MarketParticipantsDisavowed', indexes: [] },
+    { EventName: 'MarketTransferred', indexes: [] },
+    { EventName: 'MarketVolumeChanged', indexes: [], primaryKey: 'market' },
+    { EventName: 'MarketOIChanged', indexes: [], primaryKey: 'market' },
+    { EventName: 'OrderEvent', indexes: ['market', 'timestamp', 'orderId', '[universe+eventType+timestamp]', '[market+eventType]', 'eventType', 'orderCreator', 'orderFiller'] },
+    { EventName: 'ParticipationTokensRedeemed', indexes: ['timestamp'] },
+    { EventName: 'ProfitLossChanged', indexes: ['[universe+account+timestamp]', 'account'] },
+    { EventName: 'ReportingParticipantDisavowed', indexes: [] },
+    { EventName: 'TimestampSet', indexes: ['newTimestamp'] },
+    { EventName: 'TokenBalanceChanged', indexes: ['[universe+owner+tokenType]'], primaryKey: '[owner+token]' },
+    { EventName: 'TokensMinted', indexes: [] },
+    { EventName: 'TokensTransferred', indexes: [] },
+    { EventName: 'TradingProceedsClaimed', indexes: ['timestamp'] },
+    { EventName: 'UniverseCreated', indexes: ['childUniverse', 'parentUniverse'] },
+    { EventName: 'UniverseForked', indexes: ['universe'] },
+    { EventName: 'TransferSingle', indexes: []},
+    { EventName: 'TransferBatch', indexes: []},
+    { EventName: 'ShareTokenBalanceChanged', indexes: ['[universe+account]'], primaryKey: '[account+market+outcome]'},
   ];
 
-  constructor(pouchDBFactory: PouchDBFactoryType) {
-    this.pouchDBFactory = pouchDBFactory;
+  constructor(dexieDB: Dexie) {
+    this.dexieDB = dexieDB;
   }
 
   /**
@@ -114,17 +119,17 @@ export class DB {
    * @param {Array<string>} genericEventNames Array of names for generic event types
    * @param {Array<DerivedDBConfiguration>} derivedDBConfigurations Array of custom event objects
    * @param {Array<UserSpecificDBConfiguration>} userSpecificDBConfiguration Array of user-specific event objects
-   * @param {PouchDBFactoryType} pouchDBFactory Factory function generatin PouchDB instance
-   * @param {IBlockAndLogStreamerListener} blockAndLogStreamerListener Stream listener for blocks and logs
+   * @param {TableFactoryType} TableFactory Factory function generatin PouchDB instance
+   * @param {BlockAndLogStreamerListenerInterface} blockAndLogStreamerListener Stream listener for blocks and logs
    * @returns {Promise<DB>} Promise to a DB controller object
    */
-  static createAndInitializeDB(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: string[], augur: Augur, pouchDBFactory: PouchDBFactoryType, blockAndLogStreamerListener: IBlockAndLogStreamerListener): Promise<DB> {
-    const dbController = new DB(pouchDBFactory);
+  static createAndInitializeDB(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, augur: Augur, blockAndLogStreamerListener: BlockAndLogStreamerListenerInterface): Promise<DB> {
+    const dbName = `augur-${networkId}`;
+    const dbController = new DB(new Dexie(dbName));
 
     dbController.augur = augur;
-    dbController.genericEventDBDescriptions = augur.genericEventDBDescriptions;
 
-    return dbController.initializeDB(networkId, blockstreamDelay, defaultStartSyncBlockNumber, trackedUsers, blockAndLogStreamerListener);
+    return dbController.initializeDB(networkId, blockstreamDelay, defaultStartSyncBlockNumber, blockAndLogStreamerListener);
   }
 
   /**
@@ -139,42 +144,33 @@ export class DB {
    * @param blockAndLogStreamerListener
    * @return {Promise<void>}
    */
-  async initializeDB(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: string[], blockAndLogStreamerListener: IBlockAndLogStreamerListener): Promise<DB> {
+  async initializeDB(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, blockAndLogStreamerListener: BlockAndLogStreamerListenerInterface): Promise<DB> {
     this.networkId = networkId;
     this.blockstreamDelay = blockstreamDelay;
-    this.syncStatus = new SyncStatus(networkId, defaultStartSyncBlockNumber, this.pouchDBFactory);
-    this.trackedUsers = new TrackedUsers(networkId, this.pouchDBFactory);
     this.blockAndLogStreamerListener = blockAndLogStreamerListener;
+
+    const schemas = this.generateSchemas();
+
+    this.dexieDB.version(1).stores(schemas);
+
+    await this.dexieDB.open();
+
+    this.syncStatus = new SyncStatus(networkId, defaultStartSyncBlockNumber, this);
 
     // Create SyncableDBs for generic event types & UserSyncableDBs for user-specific event types
     for (const genericEventDBDescription of this.genericEventDBDescriptions) {
-      new SyncableDB(this.augur, this, networkId, genericEventDBDescription.EventName, this.getDatabaseName(genericEventDBDescription.EventName), [], genericEventDBDescription.indexes);
+      new SyncableDB(this.augur, this, networkId, genericEventDBDescription.EventName, genericEventDBDescription.EventName, genericEventDBDescription.indexes);
     }
 
-    this.liquidityDatabase = new LiquidityDB(this.augur, this, networkId, 'Liquidity');
+    // TODO this.liquidityDatabase = new LiquidityDB(this.augur, this, networkId, 'Liquidity');
 
     // Custom Derived DBs here
-    this.disputeDatabase = new DisputeDatabase(this, networkId, 'Dispute', ['InitialReportSubmitted', 'DisputeCrowdsourcerCreated', 'DisputeCrowdsourcerContribution', 'DisputeCrowdsourcerCompleted'], ['market', 'payoutNumerators'], this.augur);
-    this.currentOrdersDatabase = new CurrentOrdersDatabase(this, networkId, 'CurrentOrders', ['OrderEvent'], ['orderId'], this.augur);
+    this.disputeDatabase = new DisputeDatabase(this, networkId, 'Dispute', ['InitialReportSubmitted', 'DisputeCrowdsourcerCreated', 'DisputeCrowdsourcerContribution', 'DisputeCrowdsourcerCompleted'], this.augur);
+    this.currentOrdersDatabase = new CurrentOrdersDatabase(this, networkId, 'CurrentOrders', ['OrderEvent'], this.augur);
     this.marketDatabase = new MarketDB(this, networkId, this.augur);
-
-    // Create Indexes
-    await this.generateIndexes();
 
     // Zero X Orders. Only on if a mesh client has been provided
     this.zeroXOrders = this.augur.zeroX ? await ZeroXOrders.create(this, networkId, this.augur): undefined;
-
-    // add passed in tracked users to the tracked uses db
-    for (const trackedUser of trackedUsers) {
-      await this.trackedUsers.setUserTracked(trackedUser);
-    }
-
-    // iterate over all known tracked users
-    for (const trackedUser of await this.trackedUsers.getUsers()) {
-      for (const userSpecificEvent of this.userSpecificDBs) {
-        new UserSyncableDB(this.augur, this, networkId, userSpecificEvent.name, trackedUser, userSpecificEvent.numAdditionalTopics, userSpecificEvent.userTopicIndicies, userSpecificEvent.idFields);
-      }
-    }
 
     // Always start syncing from 10 blocks behind the lowest
     // last-synced block (in case of restarting after a crash)
@@ -187,6 +183,23 @@ export class DB {
     return this;
   }
 
+  generateSchemas() : Schemas {
+    const schemas: Schemas = {};
+    for (const genericEventDBDescription of this.genericEventDBDescriptions) {
+      let primaryKey = "[blockNumber+logIndex]";
+      if (genericEventDBDescription.primaryKey) primaryKey = genericEventDBDescription.primaryKey;
+      const fields = [primaryKey,"blockNumber"].concat(genericEventDBDescription.indexes);
+      schemas[genericEventDBDescription.EventName] = fields.join(',');
+    }
+    schemas["Markets"] = "market,reportingState,universe,marketCreator,timestamp,finalized,blockNumber";
+    schemas["CurrentOrders"] = "orderId,[market+open],[market+outcome+orderType],orderCreator,orderFiller,blockNumber";
+    schemas["Dispute"] = "[market+payoutNumerators],market,blockNumber";
+    schemas["ZeroXOrders"] = "orderHash, [market+outcome+orderType],blockNumber";
+    schemas["SyncStatus"] = "eventName,blockNumber,syncing";
+    schemas["Rollback"] = ",[tableName+rollbackBlockNumber]";
+    return schemas;
+  }
+
   /**
    * Called from SyncableDB constructor once SyncableDB is successfully created.
    *
@@ -196,45 +209,8 @@ export class DB {
     this.syncableDatabases[db.dbName] = db;
   }
 
-  /**
-   * Called from DerivedDB constructor once DerivedDB is successfully created.
-   *
-   * @param {DerivedDB} db dbController that utilizes the DerivedDB
-   */
-  notifyDerivedDBAdded(db: DerivedDB): void {
-    this.derivedDatabases[db.dbName] = db;
-  }
-
-  notifyLiquidityDBAdded(db: LiquidityDB): void {
-    this.liquidityDatabase = db;
-  }
-
   registerEventListener(eventNames: string | string[], callback: LogCallbackType): void {
     this.blockAndLogStreamerListener.listenForEvent(eventNames, callback);
-  }
-
-  async generateIndexes(): Promise<void> {
-    // Generate the market DB sort indexes. These likely could be improved to include additional fields somehow
-    for (let field in GetMarketsSortBy) {
-      if (field === "liquidity") {
-        for (let liquiditySpreadKey in MaxLiquiditySpread) {
-          const liquiditySpread = MaxLiquiditySpread[liquiditySpreadKey];
-          await this.marketDatabase.createIndex({
-            index: {
-              fields: [`liquidity.${liquiditySpread}`],
-              ddoc: `liquidity.${liquiditySpread}`
-            }
-          });
-        }
-      } else {
-        await this.marketDatabase.createIndex({
-          index: {
-            fields: [field],
-            ddoc: field
-          }
-        });
-      }
-    }
   }
 
   /**
@@ -250,7 +226,7 @@ export class DB {
 
     console.log('Syncing generic log DBs');
     for (const genericEventDBDescription of this.genericEventDBDescriptions) {
-      const dbName = this.getDatabaseName(genericEventDBDescription.EventName);
+      const dbName = genericEventDBDescription.EventName;
       dbSyncPromises.push(
         this.syncableDatabases[dbName].sync(
           augur,
@@ -276,75 +252,11 @@ export class DB {
     await this.marketDatabase.sync(highestAvailableBlockNumber);
 
     // Update LiquidityDatabase and set it to update whenever there's a new block
-    await this.liquidityDatabase.updateLiquidity(augur, this, (await augur.getTimestamp()).toNumber());
+    //await this.liquidityDatabase.updateLiquidity(augur, this, (await augur.getTimestamp()).toNumber());
 
-    this.augur.getAugurEventEmitter().on(SubscriptionEventName.NewBlock, (args) => this.liquidityDatabase.updateLiquidity(this.augur, this, args.timestamp));
+    //this.augur.getAugurEventEmitter().on(SubscriptionEventName.NewBlock, (args) => this.liquidityDatabase.updateLiquidity(this.augur, this, args.timestamp));
     this.augur.getAugurEventEmitter().emit(SubscriptionEventName.SDKReady, {
       eventName: SubscriptionEventName.SDKReady,
-    });
-
-    await this.syncUserData(chunkSize, blockstreamDelay, highestAvailableBlockNumber, augur);
-  }
-
-  /**
-   * Syncs all UserSyncableDBs. (If a user has been added to this.trackedUsers and
-   * does not have a UserSyncableDB, the UserSyncableDB will be created.)
-   *
-   * @param {Augur} augur Augur object with which to sync
-   * @param {number} chunkSize Number of blocks to retrieve at a time when syncing logs
-   * @param {number} blockstreamDelay Number of blocks by which blockstream is behind the blockchain
-   * @param {number} highestAvailableBlockNumber Number of the highest available block
-   */
-  async syncUserData(chunkSize: number, blockstreamDelay: number, highestAvailableBlockNumber: number, augur: Augur): Promise<void> {
-    const dbSyncPromises = [];
-    console.log('Syncing user-specific log DBs');
-    for (const trackedUser of await this.trackedUsers.getUsers()) {
-      for (const userSpecificEvent of this.userSpecificDBs) {
-        const dbName = this.getDatabaseName(userSpecificEvent.name, trackedUser);
-        dbSyncPromises.push(
-          this.syncableDatabases[dbName].sync(
-            augur,
-            chunkSize,
-            blockstreamDelay,
-            highestAvailableBlockNumber
-          )
-        );
-      }
-    }
-
-    // Only emit this if actually did something....
-    if((await Promise.all(dbSyncPromises)).length > 0) await this.emitUserDataSynced();
-  }
-
-  async addTrackedUser(account: string, chunkSize: number, blockstreamDelay: number): Promise<void> {
-    const highestAvailableBlockNumber = await this.augur.provider.getBlockNumber();
-    if (!(await this.trackedUsers.getUsers()).includes(account)) {
-      await this.trackedUsers.setUserTracked(account);
-      const dbSyncPromises = [];
-      for (const userSpecificEvent of this.userSpecificDBs) {
-        const dbName = this.getDatabaseName(userSpecificEvent.name, account);
-        if (!this.getSyncableDatabase(dbName)) {
-          // Create DB
-          new UserSyncableDB(this.augur, this, this.networkId, userSpecificEvent.name, account, userSpecificEvent.numAdditionalTopics, userSpecificEvent.userTopicIndicies, userSpecificEvent.idFields);
-          dbSyncPromises.push(
-            this.syncableDatabases[dbName].sync(
-              this.augur,
-              chunkSize,
-              blockstreamDelay,
-              highestAvailableBlockNumber
-            )
-          );
-        }
-      }
-    }
-
-    await this.emitUserDataSynced();
-  }
-
-  async emitUserDataSynced(): Promise<void> {
-    this.augur.getAugurEventEmitter().emit(SubscriptionEventName.UserDataSynced, {
-      eventName: SubscriptionEventName.UserDataSynced,
-      trackedUsers: await this.trackedUsers.getUsers(),
     });
   }
 
@@ -357,28 +269,10 @@ export class DB {
   async getSyncStartingBlock(): Promise<number> {
     const highestSyncBlocks = [];
     for (const genericEventDBDescription of this.genericEventDBDescriptions) {
-      highestSyncBlocks.push(await this.syncStatus.getHighestSyncBlock(this.getDatabaseName(genericEventDBDescription.EventName)));
-    }
-    for (const trackedUser of await this.trackedUsers.getUsers()) {
-      for (const userSpecificEvent of this.userSpecificDBs) {
-        highestSyncBlocks.push(await this.syncStatus.getHighestSyncBlock(this.getDatabaseName(userSpecificEvent.name, trackedUser)));
-      }
+      highestSyncBlocks.push(await this.syncStatus.getHighestSyncBlock(genericEventDBDescription.EventName));
     }
     const lowestLastSyncBlock = Math.min.apply(null, highestSyncBlocks);
     return Math.max.apply(null, [lowestLastSyncBlock - this.blockstreamDelay, this.syncStatus.defaultStartSyncBlockNumber]);
-  }
-
-  /**
-   * Creates a name for a SyncableDB/UserSyncableDB based on `eventName` & `trackableUserAddress`.
-   *
-   * @param {string} eventName Event log name
-   * @param {string=} trackableUserAddress User address to append to DB name
-   */
-  getDatabaseName(eventName: string, trackableUserAddress?: string) {
-    if (trackableUserAddress) {
-      return this.networkId + '-' + eventName + '-' + trackableUserAddress;
-    }
-    return this.networkId + '-' + eventName;
   }
 
   /**
@@ -391,22 +285,6 @@ export class DB {
   }
 
   /**
-   * Gets a derived database based upon the name
-   *
-   * @param {string} dbName The name of the database
-   */
-  getDerivedDatabase(dbName: string): DerivedDB {
-    return this.derivedDatabases[dbName];
-  }
-
-  /**
-   * Gets the liquidity database
-   */
-  getLiquidityDatabase(): LiquidityDB {
-    return this.liquidityDatabase;
-  }
-
-  /**
    * Rolls back all blocks from blockNumber onward.
    *
    * @param {number} blockNumber Oldest block number to delete
@@ -415,16 +293,8 @@ export class DB {
     const dbRollbackPromises = [];
     // Perform rollback on SyncableDBs & UserSyncableDBs
     for (const genericEventDBDescription of this.genericEventDBDescriptions) {
-      const dbName = this.getDatabaseName(genericEventDBDescription.EventName);
+      const dbName = genericEventDBDescription.EventName;
       dbRollbackPromises.push(this.syncableDatabases[dbName].rollback(blockNumber));
-    }
-
-    // Perform rollback on UserSyncableDBs
-    for (const trackedUser of await this.trackedUsers.getUsers()) {
-      for (const userSpecificEvent of this.userSpecificDBs) {
-        const dbName = this.getDatabaseName(userSpecificEvent.name, trackedUser);
-        dbRollbackPromises.push(this.syncableDatabases[dbName].rollback(blockNumber));
-      }
     }
 
     // Perform rollback on derived DBs
@@ -461,405 +331,60 @@ export class DB {
     }
   }
 
-  // TODO Combine find functions into single function
-
-  /**
-   * Queries a SyncableDB.
-   *
-   * @param {string} dbName Name of the SyncableDB to query
-   * @param {PouchDB.Find.FindRequest<{}>} request Query object
-   * @returns {Promise<PouchDB.Find.FindResponse<{}>>} Promise to a FindResponse
-   */
-  async findInSyncableDB(dbName: string, request: PouchDB.Find.FindRequest<{}>): Promise<PouchDB.Find.FindResponse<{}>> {
-    if (this.syncableDatabases[dbName]) {
-      return this.syncableDatabases[dbName].find(request);
-    }
-    else {
-      return {} as PouchDB.Find.FindResponse<{}>;
-    }
-  }
-
-  /**
-   * Queries a DerivedDB.
-   *
-   * @param {string} dbName Name of the SyncableDB to query
-   * @param {PouchDB.Find.FindRequest<{}>} request Query object
-   * @returns {Promise<PouchDB.Find.FindResponse<{}>>} Promise to a FindResponse
-   */
-  async findInDerivedDB(dbName: string, request: PouchDB.Find.FindRequest<{}>): Promise<PouchDB.Find.FindResponse<{}>> {
-    return this.derivedDatabases[dbName].find(request);
-  }
-
   /**
    * Queries a DB to get a row count.
    *
    * @param {string} dbName Name of the DB to query
-   * @param {boolean} derived Boolean indicating if this is a derived DB
-   * @param {PouchDB.Find.FindRequest<{}>} Optional request Query object to narrow results
+   * @param {{}} Optional request Query object to narrow results
    * @returns {Promise<number>} Promise to a number of rows
    */
-  async getNumRowsFromDB(dbName: string, derived: boolean, request?: PouchDB.Find.FindRequest<{}>): Promise<number> {
-    const fullDBName = this.getDatabaseName(dbName);
-    const db: AbstractDB = derived ? this.derivedDatabases[fullDBName] : this.syncableDatabases[fullDBName];
-    let numIndexes = db.numIndexes;
+  async getNumRowsFromDB(dbName: string, request?: {}): Promise<number> {
+    const fullDBName = dbName;
+    const table: Dexie.Table<any, any> = this.dexieDB[fullDBName];
 
     if (request) {
-      const results = await db.find(request);
-      return results.docs.length;
+      const results = await table.where(request);
+      return results.count();
     }
 
-    const info = await db.info();
-    return info.doc_count - numIndexes;
+    return table.count();
   }
 
-  /**
-   * Queries the CompleteSetsPurchased DB
-   *
-   * @param {PouchDB.Find.FindRequest<{}>} request Query object
-   * @returns {Promise<Array<CompleteSetsPurchasedLog>>}
-   */
-  async findCompleteSetsPurchasedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<CompleteSetsPurchasedLog[]> {
-    const results = await this.findInSyncableDB(this.getDatabaseName('CompleteSetsPurchased'), request);
-    return results.docs as unknown as CompleteSetsPurchasedLog[];
-  }
-
-  /**
-   * Queries the CompleteSetsSold DB
-   *
-   * @param {PouchDB.Find.FindRequest<{}>} request Query object
-   * @returns {Promise<Array<CompleteSetsSoldLog>>}
-   */
-  async findCompleteSetsSoldLogs(request: PouchDB.Find.FindRequest<{}>): Promise<CompleteSetsSoldLog[]> {
-    const results = await this.findInSyncableDB(this.getDatabaseName('CompleteSetsSold'), request);
-    return results.docs as unknown as CompleteSetsSoldLog[];
-  }
-
-  /**
-   * Queries the DisputeCrowdsourcerCompleted DB
-   *
-   * @param {PouchDB.Find.FindRequest<{}>} request Query object
-   * @returns {Promise<Array<DisputeCrowdsourcerCompletedLog>>}
-   */
-  async findDisputeCrowdsourcerCompletedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<DisputeCrowdsourcerCompletedLog[]> {
-    const results = await this.findInSyncableDB(this.getDatabaseName('DisputeCrowdsourcerCompleted'), request);
-    return results.docs as unknown as DisputeCrowdsourcerCompletedLog[];
-  }
-
-  /**
-   * Queries the DisputeCrowdsourcerContribution DB
-   *
-   * @param {PouchDB.Find.FindRequest<{}>} request Query object
-   * @returns {Promise<Array<DisputeCrowdsourcerContributionLog>>}
-   */
-  async findDisputeCrowdsourcerContributionLogs(request: PouchDB.Find.FindRequest<{}>): Promise<DisputeCrowdsourcerContributionLog[]> {
-    const results = await this.findInSyncableDB(this.getDatabaseName('DisputeCrowdsourcerContribution'), request);
-    return results.docs as unknown as DisputeCrowdsourcerContributionLog[];
-  }
-
-  /**
-   * Queries the DisputeCrowdsourcerCreated DB
-   *
-   * @param {PouchDB.Find.FindRequest<{}>} request Query object
-   * @returns {Promise<Array<DisputeCrowdsourcerCreatedLog>>}
-   */
-  async findDisputeCrowdsourcerCreatedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<DisputeCrowdsourcerCreatedLog[]> {
-    const results = await this.findInSyncableDB(this.getDatabaseName('DisputeCrowdsourcerCreated'), request);
-    return results.docs as unknown as DisputeCrowdsourcerCreatedLog[];
-  }
-
-  /**
-   * Queries the DisputeCrowdsourcerRedeemed DB
-   *
-   * @param {PouchDB.Find.FindRequest<{}>} request Query object
-   * @returns {Promise<Array<DisputeCrowdsourcerRedeemedLog>>}
-   */
-  async findDisputeCrowdsourcerRedeemedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<DisputeCrowdsourcerRedeemedLog[]> {
-    const results = await this.findInSyncableDB(this.getDatabaseName('DisputeCrowdsourcerRedeemed'), request);
-    return results.docs as unknown as DisputeCrowdsourcerRedeemedLog[];
-  }
-
-  /**
-   * Queries the DisputeWindowCreated DB
-   *
-   * @param {PouchDB.Find.FindRequest<{}>} request Query object
-   * @returns {Promise<Array<DisputeWindowCreatedLog>>}
-   */
-  async findDisputeWindowCreatedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<DisputeWindowCreatedLog[]> {
-    const results = await this.findInSyncableDB(this.getDatabaseName('DisputeWindowCreated'), request);
-    return results.docs as unknown as DisputeWindowCreatedLog[];
-  }
-
-  /**
-   * Queries the InitialReporterRedeemed DB
-   *
-   * @param {PouchDB.Find.FindRequest<{}>} request Query object
-   * @returns {Promise<Array<InitialReporterRedeemedLog>>}
-   */
-  async findInitialReporterRedeemedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<InitialReporterRedeemedLog[]> {
-    const results = await this.findInSyncableDB(this.getDatabaseName('InitialReporterRedeemed'), request);
-    return results.docs as unknown as InitialReporterRedeemedLog[];
-  }
-
-  /**
-   * Queries the InitialReportSubmitted DB
-   *
-   * @param {PouchDB.Find.FindRequest<{}>} request Query object
-   * @returns {Promise<Array<InitialReportSubmittedLog>>}
-   */
-  async findInitialReportSubmittedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<InitialReportSubmittedLog[]> {
-    const results = await this.findInSyncableDB(this.getDatabaseName('InitialReportSubmitted'), request);
-    return results.docs as unknown as InitialReportSubmittedLog[];
-  }
-
-  /**
-   * Queries the MarketCreated DB
-   *
-   * @param {PouchDB.Find.FindRequest<{}>} request Query object
-   * @returns {Promise<Array<MarketCreatedLog>>}
-   */
-  async findMarketCreatedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<MarketCreatedLog[]> {
-    const results = await this.findInSyncableDB(this.getDatabaseName('MarketCreated'), request);
-    return results.docs as unknown as MarketCreatedLog[];
-  }
-
-  /**
-   * Queries the MarketFinalized DB
-   *
-   * @param {PouchDB.Find.FindRequest<{}>} request Query object
-   * @returns {Promise<Array<MarketFinalizedLog>>}
-   */
-  async findMarketFinalizedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<MarketFinalizedLog[]> {
-    const results = await this.findInSyncableDB(this.getDatabaseName('MarketFinalized'), request);
-    return results.docs as unknown as MarketFinalizedLog[];
-  }
-
-  /**
-   * Queries the MarketMigrated DB
-   *
-   * @param {PouchDB.Find.FindRequest<{}>} request Query object
-   * @returns {Promise<Array<MarketMigratedLog>>}
-   */
-  async findMarketMigratedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<MarketMigratedLog[]> {
-    const results = await this.findInSyncableDB(this.getDatabaseName('MarketMigrated'), request);
-    return results.docs as unknown as MarketMigratedLog[];
-  }
-
-  /**
-   * Queries the MarketVolumeChanged DB
-   *
-   * @param {PouchDB.Find.FindRequest<{}>} request Query object
-   * @returns {Promise<Array<MarketVolumeChangedLog>>}
-   */
-  async findMarketVolumeChangedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<MarketVolumeChangedLog[]> {
-    const results = await this.findInSyncableDB(this.getDatabaseName('MarketVolumeChanged'), request);
-    return results.docs as unknown as MarketVolumeChangedLog[];
-  }
-
-  /**
-   * Queries the MarketOIChanged DB
-   *
-   * @param {PouchDB.Find.FindRequest<{}>} request Query object
-   * @returns {Promise<Array<MarketOIChangedLog>>}
-   */
-  async findMarketOIChangedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<MarketOIChangedLog[]> {
-    const results = await this.findInSyncableDB(this.getDatabaseName('MarketOIChanged'), request);
-    return results.docs as unknown as MarketOIChangedLog[];
-  }
-
-  /**
-   * Queries the OrderEvent DB for Cancel events
-   *
-   * @param {PouchDB.Find.FindRequest<{}>} request Query object
-   * @returns {Promise<Array<ParsedOrderEventLog>>}
-   */
-  async findOrderCanceledLogs(request: PouchDB.Find.FindRequest<{}>): Promise<ParsedOrderEventLog[]> {
-    request.selector['eventType'] = OrderEventType.Cancel;
-    const results = await this.findInSyncableDB(this.getDatabaseName('OrderEvent'), request);
-    const logs = results.docs as unknown as ParsedOrderEventLog[];
-    for (const log of logs) log.timestamp = log.timestamp;
-    return logs;
-  }
-
-  /**
-   * Queries the OrderEvent DB for Create events
-   *
-   * @param {PouchDB.Find.FindRequest<{}>} request Query object
-   * @returns {Promise<Array<ParsedOrderEventLog>>}
-   */
-  async findOrderCreatedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<ParsedOrderEventLog[]> {
-    request.selector['eventType'] = OrderEventType.Create;
-    const results = await this.findInSyncableDB(this.getDatabaseName('OrderEvent'), request);
-    const logs = results.docs as unknown as ParsedOrderEventLog[];
-    for (const log of logs) log.timestamp = log.timestamp;
-    return logs;
-  }
-
-  /**
-   * Queries the OrderEvent DB for Fill events
-   *
-   * @param {PouchDB.Find.FindRequest<{}>} request Query object
-   * @returns {Promise<Array<ParsedOrderEventLog>>}
-   */
-  async findOrderFilledLogs(request: PouchDB.Find.FindRequest<{}>): Promise<ParsedOrderEventLog[]> {
-    request.selector['eventType'] = OrderEventType.Fill;
-    const results = await this.findInSyncableDB(this.getDatabaseName('OrderEvent'), request);
-    const logs = results.docs as unknown as ParsedOrderEventLog[];
-    for (const log of logs) log.timestamp = log.timestamp;
-    return logs;
-  }
-
-  /**
-   * Queries the ParticipationTokensRedeemed DB
-   *
-   * @param {PouchDB.Find.FindRequest<{}>} request Query object
-   * @returns {Promise<Array<ParticipationTokensRedeemedLog>>}
-   */
-  async findParticipationTokensRedeemedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<ParticipationTokensRedeemedLog[]> {
-    const results = await this.findInSyncableDB(this.getDatabaseName('ParticipationTokensRedeemed'), request);
-    return results.docs as unknown as ParticipationTokensRedeemedLog[];
-  }
-
-  /**
-   * Queries the ProfitLossChanged DB
-   *
-   * @param {string} the user whose logs are being retreived
-   * @param {PouchDB.Find.FindRequest<{}>} request Query object
-   * @returns {Promise<Array<ProfitLossChangedLog>>}
-   */
-  async findProfitLossChangedLogs(user: string, request: PouchDB.Find.FindRequest<{}>): Promise<ProfitLossChangedLog[]> {
-    const results = await this.findInSyncableDB(this.getDatabaseName('ProfitLossChanged', user), request);
-    return results.docs as unknown as ProfitLossChangedLog[];
-  }
-
-  /**
-   * Queries the TimestampSet DB
-   *
-   * @param {PouchDB.Find.FindRequest<{}>} request Query object
-   * @returns {Promise<Array<TimestampSetLog>>}
-   */
-  async findTimestampSetLogs(request: PouchDB.Find.FindRequest<{}>): Promise<TimestampSetLog[]> {
-    const results = await this.findInSyncableDB(this.getDatabaseName('TimestampSet'), request);
-    return results.docs as unknown as TimestampSetLog[];
-  }
-
-  async allUniverseForkedLogs(): Promise<UniverseForkedLog[]> {
-    return this.syncableDatabases[this.getDatabaseName("UniverseForked")].allDocs()
-    .then((docs) => {
-      return docs.rows
-      .filter((doc) => !/^_design/.test(doc.id))
-      .map((doc) => doc.doc);
-    }) as unknown as UniverseForkedLog[];
-  }
-
-  /**
-   * Queries the TokenBalanceChanged DB
-   *
-   * @param {string} the user whose logs are being retreived
-   * @param {PouchDB.Find.FindRequest<{}>} request Query object
-   * @returns {Promise<Array<TokenBalanceChangedLog>>}
-   */
-  async findTokenBalanceChangedLogs(user: string, request: PouchDB.Find.FindRequest<{}>): Promise<TokenBalanceChangedLog[]> {
-    const results = await this.findInSyncableDB(this.getDatabaseName('TokenBalanceChanged', user), request);
-    return results.docs as unknown as TokenBalanceChangedLog[];
-  }
-
-  /**
-   * Queries the ShareTokenBalanceChanged DB
-   *
-   * @param {PouchDB.Find.FindRequest<{}>} request Query object
-   * @returns {Promise<Array<TokenBalanceChangedLog>>}
-   */
-  async findShareTokenBalanceChangedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<ShareTokenBalanceChangedLog[]> {
-    const results = await this.findInSyncableDB(this.getDatabaseName('ShareTokenBalanceChanged'), request);
-    return results.docs as unknown as ShareTokenBalanceChangedLog[];
-  }
-
-  async findTokensMintedLogs(user: string, request: PouchDB.Find.FindRequest<{}>): Promise<TokensMinted[]> {
-    const results = await this.findInSyncableDB(this.getDatabaseName('TokensMinted', user), request);
-    return results.docs as unknown as TokensMinted[];
-  }
-
-  /**
-   * Queries the TradingProceedsClaimed DB
-   *
-   * @param {PouchDB.Find.FindRequest<{}>} request Query object
-   * @returns {Promise<Array<TradingProceedsClaimedLog>>}
-   */
-  async findTradingProceedsClaimedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<TradingProceedsClaimedLog[]> {
-    const results = await this.findInSyncableDB(this.getDatabaseName('TradingProceedsClaimed'), request);
-    return results.docs as unknown as TradingProceedsClaimedLog[];
-  }
-
-  /**
-   * Queries the UniverseForked DB
-   *
-   * @param {PouchDB.Find.FindRequest<{}>} request Query object
-   * @returns {Promise<Array<UniverseForkedLog>>}
-   */
-  async findUniverseCreatedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<UniverseCreatedLog[]> {
-    const results = await this.findInSyncableDB(this.getDatabaseName("UniverseCreated"), request);
-    return results.docs as unknown as UniverseCreatedLog[];
-  }
-
-  /**
-   * Queries the UniverseCreated DB
-   *
-   * @param {PouchDB.Find.FindRequest<{}>} request Query object
-   * @returns {Promise<Array<UniverseForkedLog>>}
-   */
-  async findUniverseForkedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<UniverseForkedLog[]> {
-    const results = await this.findInSyncableDB(this.getDatabaseName('UniverseForked'), request);
-    return results.docs as unknown as UniverseForkedLog[];
-  }
-
-  /**
-   * Queries the CurrentOrders DB
-   *
-   * @param {PouchDB.Find.FindRequest<{}>} request Query object
-   * @returns {Promise<Array<ParsedOrderEventLog>>}
-   */
-  async findCurrentOrderLogs(request: PouchDB.Find.FindRequest<{}>): Promise<ParsedOrderEventLog[]> {
-    const results = await this.findInDerivedDB(this.getDatabaseName('CurrentOrders'), request);
-    const logs = results.docs as unknown as ParsedOrderEventLog[];
-    for (const log of logs) log.timestamp = log.timestamp;
-    return logs;
-  }
-
-  /**
-   * Queries the Dispute DB
-   *
-   * @param {PouchDB.Find.FindRequest<{}>} request Query object
-   * @returns {Promise<Array<DisputeDoc>>}
-   */
-  async findDisputeDocs(request: PouchDB.Find.FindRequest<{}>): Promise<DisputeDoc[]> {
-    const results = await this.findInDerivedDB(this.getDatabaseName('Dispute'), request);
-    const logs = results.docs as unknown as DisputeDoc[];
-    return logs;
-  }
-
-  /**
-   * Queries the ZeroXOrders DB
-   *
-   * @param {PouchDB.Find.FindRequest<{}>} request Query object
-   * @returns {Promise<Array<StoredOrder>>}
-   */
-  async findZeroXOrderLogs(request: PouchDB.Find.FindRequest<{}>): Promise<StoredOrder[]> {
-    if (!this.zeroXOrders) throw new Error("ZeroX orders not available as no mesh client was provided");
-    const results = await this.zeroXOrders.find(request);
-    const logs = results.docs as unknown as StoredOrder[];
-    return logs;
-  }
-
-  /**
-   * Queries the Markets DB
-   *
-   * @param {PouchDB.Find.FindRequest<{}>} request Query object
-   * @returns {Promise<Array<MarketData>>}
-   */
-  async findMarkets(request: PouchDB.Find.FindRequest<{}>): Promise<MarketData[]> {
-    const results = await this.findInDerivedDB(this.getDatabaseName('Markets'), request);
-    return results.docs as unknown as MarketData[];
-  }
+  get CompleteSetsPurchased() { return this.dexieDB["CompleteSetsPurchased"] as Dexie.Table<CompleteSetsPurchasedLog, any>; }
+  get CompleteSetsSold() { return this.dexieDB["CompleteSetsSold"] as Dexie.Table<CompleteSetsSoldLog, any>; }
+  get DisputeCrowdsourcerContribution() { return this.dexieDB["DisputeCrowdsourcerContribution"] as Dexie.Table<DisputeCrowdsourcerContributionLog, any>; }
+  get DisputeCrowdsourcerCompleted() { return this.dexieDB["DisputeCrowdsourcerCompleted"] as Dexie.Table<DisputeCrowdsourcerCompletedLog, any>; }
+  get DisputeCrowdsourcerCreated() { return this.dexieDB["DisputeCrowdsourcerCreated"] as Dexie.Table<DisputeCrowdsourcerCreatedLog, any>; }
+  get DisputeCrowdsourcerRedeemed() { return this.dexieDB["DisputeCrowdsourcerRedeemed"] as Dexie.Table<DisputeCrowdsourcerRedeemedLog, any>; }
+  get DisputeWindowCreated() { return this.dexieDB["DisputeWindowCreated"] as Dexie.Table<DisputeWindowCreatedLog, any>; }
+  get InitialReporterRedeemed() { return this.dexieDB["InitialReporterRedeemed"] as Dexie.Table<InitialReporterRedeemedLog, any>; }
+  get InitialReportSubmitted() { return this.dexieDB["InitialReportSubmitted"] as Dexie.Table<InitialReportSubmittedLog, any>; }
+  get InitialReporterTransferred() { return this.dexieDB["InitialReporterTransferred"] as Dexie.Table<InitialReporterTransferredLog, any>; }
+  get MarketCreated() { return this.dexieDB["MarketCreated"] as Dexie.Table<MarketCreatedLog, any>; }
+  get MarketFinalized() { return this.dexieDB["MarketFinalized"] as Dexie.Table<MarketFinalizedLog, any>; }
+  get MarketMigrated() { return this.dexieDB["MarketMigrated"] as Dexie.Table<MarketMigratedLog, any>; }
+  get MarketParticipantsDisavowed() { return this.dexieDB["MarketParticipantsDisavowed"] as Dexie.Table<MarketParticipantsDisavowedLog, any>; }
+  get MarketTransferred() { return this.dexieDB["MarketTransferred"] as Dexie.Table<MarketTransferredLog, any>; }
+  get MarketVolumeChanged() { return this.dexieDB["MarketVolumeChanged"] as Dexie.Table<MarketVolumeChangedLog, any>; }
+  get MarketOIChanged() { return this.dexieDB["MarketOIChanged"] as Dexie.Table<MarketOIChangedLog, any>; }
+  get OrderEvent() { return this.dexieDB["OrderEvent"] as Dexie.Table<ParsedOrderEventLog, any>; }
+  get ParticipationTokensRedeemed() { return this.dexieDB["ParticipationTokensRedeemed"] as Dexie.Table<ParticipationTokensRedeemedLog, any>; }
+  get ProfitLossChanged() { return this.dexieDB["ProfitLossChanged"] as Dexie.Table<ProfitLossChangedLog, any>; }
+  get ReportingParticipantDisavowed() { return this.dexieDB["ReportingParticipantDisavowed"] as Dexie.Table<ReportingParticipantDisavowedLog, any>; }
+  get TimestampSet() { return this.dexieDB["TimestampSet"] as Dexie.Table<TimestampSetLog, any>; }
+  get TokenBalanceChanged() { return this.dexieDB["TokenBalanceChanged"] as Dexie.Table<TokenBalanceChangedLog, any>; }
+  get TokensMinted() { return this.dexieDB["TokensMinted"] as Dexie.Table<TokensMinted, any>; }
+  get TokensTransferred() { return this.dexieDB["TokensTransferred"] as Dexie.Table<TokensTransferredLog, any>; }
+  get TradingProceedsClaimed() { return this.dexieDB["TradingProceedsClaimed"] as Dexie.Table<TradingProceedsClaimedLog, any>; }
+  get UniverseCreated() { return this.dexieDB["UniverseCreated"] as Dexie.Table<UniverseCreatedLog, any>; }
+  get UniverseForked() { return this.dexieDB["UniverseForked"] as Dexie.Table<UniverseForkedLog, any>; }
+  get TransferSingle() { return this.dexieDB["TransferSingle"] as Dexie.Table<TransferSingleLog, any>; }
+  get TransferBatch() { return this.dexieDB["TransferBatch"] as Dexie.Table<TransferBatchLog, any>; }
+  get ShareTokenBalanceChanged() { return this.dexieDB["ShareTokenBalanceChanged"] as Dexie.Table<ShareTokenBalanceChangedLog, any>; }
+  get Markets() { return this.dexieDB["Markets"] as Dexie.Table<MarketData, any>; }
+  get Dispute() { return this.dexieDB["Dispute"] as Dexie.Table<DisputeDoc, any>; }
+  get CurrentOrders() { return this.dexieDB["CurrentOrders"] as Dexie.Table<CurrentOrder, any>; }
+  get ZeroXOrders() { return this.dexieDB["ZeroXOrders"] as Dexie.Table<StoredOrder, any>; }
 
   /**
    * Queries the Liquidity DB for hourly liquidity of markets
@@ -868,6 +393,7 @@ export class DB {
    * @param {string?} marketIds Array of market IDs to filter by
    * @returns {Promise<MarketHourlyLiquidity[]>}
    */
+  /*
   async findRecentMarketsLiquidityDocs(currentTimestamp: number, marketIds?: string[]): Promise<MarketHourlyLiquidity[]> {
     const secondsPerHour = SECONDS_IN_AN_HOUR.toNumber();
     const mostRecentOnTheHourTimestamp = currentTimestamp - (currentTimestamp % secondsPerHour);
@@ -888,12 +414,13 @@ export class DB {
 
     return marketsLiquidity.docs as unknown as MarketHourlyLiquidity[];
   }
-
+  */
   /**
    * Queries the Liquidity DB for hourly liquidity of all markets
    *
    * @returns {Promise<number|undefined>}
    */
+  /*
   async findLiquidityLastUpdatedTimestamp(): Promise<number|undefined> {
     const lastUpdatedResults = await this.liquidityDatabase.find({
       selector: {
@@ -906,4 +433,5 @@ export class DB {
     }
     return undefined;
   }
+  */
 }

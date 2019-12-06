@@ -1,13 +1,11 @@
 import { Augur } from '@augurproject/sdk';
-import { makeTestAugur, makeDbMock } from '../../libs';
-import { ACCOUNTS, loadSeedFile, defaultSeedPath } from "@augurproject/tools";
+import { makeTestAugur, makeDbMock, makeProvider } from '../../libs';
+import { ContractAPI, ACCOUNTS, loadSeedFile, defaultSeedPath } from "@augurproject/tools";
+import { stringTo32ByteHex } from '../../libs/Utils';
+import { BigNumber } from 'bignumber.js';
+
 
 const mock = makeDbMock();
-
-beforeEach(async () => {
-  mock.cancelFail();
-  await mock.wipeDB();
-});
 
 let augur: Augur;
 beforeAll(async () => {
@@ -29,9 +27,8 @@ test('sync databases', async () => {
     mock.constants.blockstreamDelay
   );
 
-  const syncableDBName =
-    mock.constants.networkId + '-DisputeCrowdsourcerCompleted';
-  const metaDBName = mock.constants.networkId + '-BlockNumbersSequenceIds';
+  const syncableDBName = 'DisputeCrowdsourcerCompleted';
+  const metaDBName = 'BlockNumbersSequenceIds';
   const universe = '0x11149d40d255fCeaC54A3ee3899807B0539bad60';
 
   const originalHighestSyncedBlockNumbers: any = {};
@@ -77,52 +74,67 @@ test('sync databases', async () => {
   );
 
   // Verify that 2 new blocks were added to SyncableDB
-  const queryObj: any = {
-    selector: { universe },
-    fields: ['_id', 'universe'],
-    sort: ['_id'],
-  };
-  let result = await db.findInSyncableDB(syncableDBName, queryObj);
-  // TODO Remove warning property from expected result once indexes are being used on SyncableDBs
-  expect(result).toEqual(
-    expect.objectContaining({
-      docs: [
-        {
-          _id:
-            10000000000 +
-            originalHighestSyncedBlockNumbers[syncableDBName] +
-            1 +
-            '.00000000001',
-          universe,
-        },
-        {
-          _id:
-            10000000000 +
-            originalHighestSyncedBlockNumbers[syncableDBName] +
-            2 +
-            '.00000000001',
-          universe,
-        },
-      ],
-      warning:
-        'no matching index found, create an index to optimize query time',
-    })
-  );
-
-  // TODO If derived DBs are used, verify MetaDB contents before & after rollback
+  let result = await db.DisputeCrowdsourcerCompleted.toArray();
+  expect(result[0].blockNumber).toEqual(originalHighestSyncedBlockNumbers[syncableDBName] + 1);
+  expect(result[0].logIndex).toEqual(1);
+  expect(result[1].blockNumber).toEqual(originalHighestSyncedBlockNumbers[syncableDBName] + 2);
+  expect(result[1].logIndex).toEqual(1);
 
   await db.rollback(highestSyncedBlockNumber - 1);
 
   // Verify that newest 2 blocks were removed from SyncableDB
-  result = await db.findInSyncableDB(syncableDBName, queryObj);
-  expect(result).toEqual(
-    expect.objectContaining({
-      docs: [],
-      warning:
-        'no matching index found, create an index to optimize query time',
-    })
-  );
+  result = await db.DisputeCrowdsourcerCompleted.toArray();
+  expect(result).toEqual([]);
 
   expect(await db.syncStatus.getHighestSyncBlock(syncableDBName)).toBe(originalHighestSyncedBlockNumbers[syncableDBName]);
   expect(await db.syncStatus.getHighestSyncBlock(metaDBName)).toBe(originalHighestSyncedBlockNumbers[metaDBName]);
+});
+
+test('rollback derived database', async () => {
+  const seed = await loadSeedFile(defaultSeedPath);
+  const provider = await makeProvider(seed, ACCOUNTS);
+
+  const john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, seed.addresses);
+  const db = mock.makeDB(john.augur, ACCOUNTS);
+
+  await john.approveCentralAuthority();
+
+  // Create a market
+  const market = await john.createReasonableMarket([stringTo32ByteHex('A'), stringTo32ByteHex('B')]);
+
+  // Place a bid order on Invalid
+  let bid = new BigNumber(0);
+  let outcome = new BigNumber(0);
+  let numShares = new BigNumber(10**18);
+  let price = new BigNumber(50);
+
+  await john.simplePlaceOrder(market.address, bid, numShares, price, outcome);
+
+  // We monkeypatch the sync here to simulate updates from blockstream instead of bulk sync which normally doesnt store data in the rollback table
+  const marketTable = (await db)["marketDatabase"];
+  const oldHandleMergeEvent = marketTable.handleMergeEvent;
+  marketTable.handleMergeEvent = (async (
+    blocknumber: number,
+    logs: any[],
+    syncing = false
+  ): Promise<number> => {
+    marketTable.syncing = false;
+    const retVal = await oldHandleMergeEvent.bind(marketTable)(blocknumber, logs, syncing);
+    return retVal;
+  }).bind(marketTable);
+
+  // Sync
+  await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+  let marketData = await (await db).Markets.get(market.address);
+
+  // Confirm the invalidFilter has been set due to this order on the market data
+  await expect(marketData.invalidFilter).toEqual(1);
+
+  // Now we'll rollback the block this update came in
+  await (await db).rollback(marketData.blockNumber);
+
+  marketData = await (await db).Markets.get(market.address);
+
+  // Confirm the invalidFilter has been set due to this order on the market data
+  await expect(marketData.invalidFilter).toEqual(0);
 });

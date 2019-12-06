@@ -38,6 +38,7 @@ import MigrateMarketNotice from 'modules/market-cards/containers/migrate-market-
 
 import Styles from 'modules/market-cards/market-card.styles.less';
 import MarketTitle from 'modules/market/containers/market-title';
+import { MARKET_LIST_CARD } from 'services/analytics/helpers';
 
 interface MarketCardProps {
   market: MarketData;
@@ -56,6 +57,7 @@ interface MarketCardProps {
   hasStaked?: boolean;
   dispute: Function;
   migrateMarketModal: Function;
+  marketLinkCopied: Function;
 }
 
 interface MarketCardState {
@@ -96,6 +98,7 @@ export default class MarketCard extends React.Component<
       hasPosition,
       hasStaked,
       dispute,
+      marketLinkCopied,
     } = this.props;
 
     const s = this.state;
@@ -240,7 +243,7 @@ export default class MarketCard extends React.Component<
               />
             </div>
             <DotSelection>
-              <div id='copy_marketId' data-clipboard-text={id}>
+              <div id='copy_marketId' data-clipboard-text={id} onClick={() => marketLinkCopied(market.id, MARKET_LIST_CARD)}>
                 {PaperClip} {COPY_MARKET_ID}
               </div>
               <div id='copy_author' data-clipboard-text={author}>
@@ -298,6 +301,7 @@ export default class MarketCard extends React.Component<
                 showOutcomeNumber={showOutcomeNumber}
                 canDispute={canDispute}
                 canSupport={canSupport}
+                marketId={id}
               />
               {outcomesFormatted &&
                 outcomesFormatted.length > showOutcomeNumber &&

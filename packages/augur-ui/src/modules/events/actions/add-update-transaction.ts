@@ -54,6 +54,7 @@ import {
 } from 'modules/events/actions/liquidity-transactions';
 import { addAlert, updateAlert } from 'modules/alerts/actions/alerts';
 import { getDeconstructedMarketId } from 'modules/create-market/helpers/construct-market-params';
+import { orderCreated } from 'services/analytics/helpers';
 
 export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
   dispatch: ThunkDispatch<void, any, Action>,
@@ -146,6 +147,13 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
           updatePendingOrderStatus(tradeGroupId, marketId, eventName, hash)
         );
         if (eventName === TXEventName.Success) {
+          const order: UIOrder = convertTransactionOrderToUIOrder(
+            txStatus.hash,
+            txStatus.transaction.params,
+            txStatus.eventName,
+            market
+          );
+          dispatch(orderCreated(marketId, order));
           dispatch(removePendingOrder(tradeGroupId, marketId));
         }
         break;

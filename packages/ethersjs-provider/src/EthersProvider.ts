@@ -209,7 +209,7 @@ export class EthersProvider extends ethers.providers.BaseProvider
     return contractInterface;
   }
 
-  async getLogs(filter: Filter): Promise<Log[]> {
+  getLogs = async (filter: Filter): Promise<Log[]> => {
     const logs = await super.getLogs(filter);
     return logs.map<Log>(log => ({
       name: '',

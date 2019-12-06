@@ -35,6 +35,7 @@
     "tools": "yarn workspace @augurproject/tools",
     "an": "yarn workspace @augurproject/node",
     "flash": "yarn workspace @augurproject/tools flash",
+    "flash-util": "yarn workspace @augurproject/tools flash run -n none",
     "check": "gts check",
     "fix": "gts fix"
   },
@@ -48,7 +49,6 @@
     "@types/knex": "0.15.2",
     "@types/lodash": "4.14.138",
     "@types/md5-file": "4.0.0",
-    "@types/pouchdb": "6.4.0",
     "@types/sqlite3": "3.1.5",
     "@types/uuid": "3.4.5",
     "@types/web3": "1.0.19",

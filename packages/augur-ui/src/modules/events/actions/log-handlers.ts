@@ -62,6 +62,7 @@ import {
 } from 'modules/app/actions/update-app-status';
 import { GnosisSafeState } from '@augurproject/gnosis-relay-api/build/GnosisRelayAPI';
 import { loadAnalytics } from 'modules/app/actions/analytics-management';
+import { marketCreationCreated, orderFilled } from 'services/analytics/helpers';
 
 const handleAlert = (
   log: any,
@@ -133,27 +134,16 @@ export const handleGnosisStateUpdate = (response) => (
 };
 
 export const handleSDKReadyEvent = () => (
-  dispatch: ThunkDispatch<void, any, Action>
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
 ) => {
   // wire up events for sdk
   augurSdk.subscribe(dispatch);
+
   // app is connected when subscribed to sdk
   dispatch(updateConnectionStatus(true));
   dispatch(loadUniverseForkingInfo());
   dispatch(getCategoryStats())
-};
-
-export const handleUserDataSyncedEvent = (log: Events.UserDataSynced) => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
-  const { loginAccount } = getState();
-  const { mixedCaseAddress, address } = loginAccount;
-  if (mixedCaseAddress && log.trackedUsers.includes(mixedCaseAddress)) {
-    dispatch(loadAccountDataFromLocalStorage(address));
-    dispatch(updateAuthStatus(IS_LOGGED, true));
-    dispatch(loadAccountData());
-  }
 };
 
 export const handleNewBlockLog = (log: Events.NewBlock) => (
@@ -177,7 +167,7 @@ export const handleNewBlockLog = (log: Events.NewBlock) => (
     dispatch(loadAnalytics(getState().analytics, blockchain.currentAugurTimestamp));
   }
 
-  if (  
+  if (
     getState().appStatus.gnosisEnabled &&
     getState().appStatus.gnosisStatus !== GnosisSafeState.AVAILABLE
   ) {
@@ -221,7 +211,7 @@ export const handleMarketCreatedLog = (log: any) => (
   }
   if (isUserDataUpdate) {
     handleAlert(log, CREATEMARKET, false, dispatch, getState);
-    dispatch(loadCreateMarketHistory());
+    dispatch(marketCreationCreated(log.market, log.extraInfo));
   }
 };
 
@@ -335,6 +325,7 @@ export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
     handleAlert(log, PUBLICFILLORDER, true, dispatch, getState);
     dispatch(loadUserFilledOrders({ marketId }));
     dispatch(loadAccountOpenOrders({ marketId }));
+    dispatch(orderFilled(marketId, log, isSameAddress(log.orderCreator, address)));
   }
   dispatch(loadMarketTradingHistory(marketId));
   if (isCurrentMarket(marketId)) dispatch(loadMarketOrderBook(marketId));

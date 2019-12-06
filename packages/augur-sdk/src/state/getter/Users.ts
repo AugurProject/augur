@@ -2,13 +2,14 @@ import { BigNumber } from 'bignumber.js';
 import { DB } from '../db/DB';
 import { Getter } from './Router';
 import { NumericDictionary } from 'lodash';
+import Dexie from 'dexie';
 import {
   ProfitLossChangedLog,
   ParsedOrderEventLog,
-  Doc,
   Timestamped,
   MarketData,
   OrderState,
+  Log,
 } from '../logs/types';
 import {
   DisputeCrowdsourcerRedeemed,
@@ -23,7 +24,7 @@ import {
   convertOnChainPriceToDisplayPrice,
 } from '../../index';
 import { sortOptions } from './types';
-import { MarketReportingState } from '../../constants';
+import { MarketReportingState, OrderEventType } from '../../constants';
 
 import * as _ from 'lodash';
 import * as t from 'io-ts';
@@ -314,61 +315,9 @@ export class Users {
       throw new Error('startTime must be less than or equal to endTime');
     }
 
-    const marketsRequest = {
-      selector: {
-        $and: [
-          { marketCreator: params.account },
-          { universe: params.universe },
-          { timestamp: { $gte: `0x${startTime.toString(16)}` } },
-          { timestamp: { $lte: `0x${endTime.toString(16)}` } },
-        ],
-      },
-    };
-
-    const initialReporterRequest = {
-      selector: {
-        $and: [
-          { reporter: params.account },
-          { universe: params.universe },
-          { timestamp: { $gte: `0x${startTime.toString(16)}` } },
-          { timestamp: { $lte: `0x${endTime.toString(16)}` } },
-        ],
-      },
-    };
-
-    const disputeCrowdourcerRequest = {
-      selector: {
-        $and: [
-          { reporter: params.account },
-          { universe: params.universe },
-          { timestamp: { $gte: `0x${startTime.toString(16)}` } },
-          { timestamp: { $lte: `0x${endTime.toString(16)}` } },
-        ],
-      },
-    };
-
-    const profitLossChangedRequest = {
-      selector: {
-        $and: [
-          { account: params.account },
-          { netPosition: { $ne: 0 } },
-          { universe: params.universe },
-          { timestamp: { $gte: `0x${startTime.toString(16)}` } },
-          { timestamp: { $lte: `0x${endTime.toString(16)}` } },
-        ],
-      },
-    };
-
-    const orderFilledRequest = {
-      selector: {
-        $or: [{ orderCeator: params.account }, { orderFiller: params.account }],
-        $and: [
-          { universe: params.universe },
-          { timestamp: { $gte: `0x${startTime.toString(16)}` } },
-          { timestamp: { $lte: `0x${endTime.toString(16)}` } },
-        ],
-      },
-    };
+    const universe = params.universe;
+    const formattedStartTime = `0x${startTime.toString(16)}`;
+    const formattedEndTime = `0x${endTime.toString(16)}`;
 
     const compareArrays = (lhs: string[], rhs: string[]): number => {
       let equal = 1;
@@ -382,38 +331,33 @@ export class Users {
       return equal;
     };
 
-    const marketsCreatedLog = await db.findMarketCreatedLogs(marketsRequest);
+    const marketsCreatedLog = await db.MarketCreated.where('[universe+timestamp]').between([universe, formattedStartTime], [universe, formattedEndTime], true, true).and((log) => {
+      return log.marketCreator === params.account;
+    }).toArray();
 
     const marketsCreated = marketsCreatedLog.length;
-    const initialReporterReedeemedLogs = await db.findInitialReporterRedeemedLogs(
-      initialReporterRequest
-    );
-    const disputeCrowdsourcerReedeemedLogs = await db.findDisputeCrowdsourcerRedeemedLogs(
-      disputeCrowdourcerRequest
-    );
+
+    const initialReporterReedeemedLogs = await db.InitialReporterRedeemed.where("timestamp").between(formattedStartTime, formattedEndTime, true, true).and((log) => {
+      return log.reporter === params.account && log.universe === params.universe;
+    }).toArray();
+
+    const disputeCrowdsourcerReedeemedLogs = await db.DisputeCrowdsourcerRedeemed.where("reporter").equals(params.account).and((log) => {
+      if (log.universe !== params.universe) return false;
+      if (log.timestamp < `0x${startTime.toString(16)}`) return false;
+      if (log.timestamp > `0x${endTime.toString(16)}`) return false;
+      return true;
+    }).toArray();
 
     const successfulDisputes = _.sum(
       await Promise.all(
         ((disputeCrowdsourcerReedeemedLogs as any) as DisputeCrowdsourcerRedeemed[]).map(
           async (log: DisputeCrowdsourcerRedeemed) => {
-            const marketFinalization = {
-              selector: {
-                $and: [
-                  { market: log.market },
-                  { universe: params.universe },
-                  { timestamp: { $gte: `0x${startTime.toString(16)}` } },
-                  { timestamp: { $lte: `0x${endTime.toString(16)}` } },
-                ],
-              },
-            };
+            // TODO: If this is a slowdown this could be a single query outside of the loop
+            const market = await db.Markets.get(log.market);
 
-            const markets = ((await db.findMarketFinalizedLogs(
-              marketFinalization
-            )) as any) as MarketFinalized[];
-
-            if (markets.length) {
+            if (market.finalized) {
               return compareArrays(
-                markets[0].winningPayoutNumerators,
+                market.winningPayoutNumerators,
                 log.payoutNumerators
               );
             } else {
@@ -427,7 +371,17 @@ export class Users {
     const redeemedPositions =
       initialReporterReedeemedLogs.length + successfulDisputes;
 
-    const orderFilledLogs = await db.findOrderFilledLogs(orderFilledRequest);
+    const orderFilledLogs = await db.OrderEvent.where('[universe+eventType+timestamp]').between([
+      params.universe,
+      OrderEventType.Fill,
+      `0x${startTime.toString(16)}`
+    ], [
+      params.universe,
+      OrderEventType.Fill,
+      `0x${endTime.toString(16)}`
+    ], true, true).and((log) => {
+      return log.orderCreator === params.account || log.orderFiller === params.account;
+    }).toArray();
     const numberOfTrades = _.uniqWith(
       (orderFilledLogs as any) as OrderEvent[],
       (a: OrderEvent, b: OrderEvent) => {
@@ -442,10 +396,17 @@ export class Users {
       }
     ).length;
 
-    const profitLossChangedLogs = await db.findProfitLossChangedLogs(
+    const profitLossChangedLogs = await db.ProfitLossChanged.where('[universe+account+timestamp]').between([
+      params.universe,
       params.account,
-      profitLossChangedRequest
-    );
+      `0x${startTime.toString(16)}`
+    ], [
+      params.universe,
+      params.account,
+      `0x${endTime.toString(16)}`
+    ], true, true).and((log) => {
+      return log.netPosition !== '0x00';
+    }).toArray();
     const positions = _.uniqWith(
       (profitLossChangedLogs as any) as ProfitLossChanged[],
       (a: ProfitLossChanged, b: ProfitLossChanged) => {
@@ -474,78 +435,49 @@ export class Users {
         "'getUserTradingPositions' requires a 'universe' or 'marketId' param be provided"
       );
     }
-    const request = {
-      selector: {
-        universe: params.universe,
-        market: params.marketId,
-        account: params.account,
-      },
-      sort: params.sortBy ? [params.sortBy] : undefined,
-      limit: params.limit,
-      skip: params.offset,
-    };
     let tradingPositions = null;
     let marketTradingPositions = null;
     let frozenFundsTotal = null;
     let profitLossSummary = null;
 try {
+    let profitLossCollection = await db.ProfitLossChanged.where('account').equals(params.account);
+    if (params.limit) profitLossCollection = profitLossCollection.limit(params.limit);
+    if (params.offset) profitLossCollection = profitLossCollection.offset(params.offset);
+    const profitLossRecords = await profitLossCollection.and((log) => {
+      if (params.universe && log.universe !== params.universe) return false;
+      if (params.marketId && log.market !== params.marketId) return false;
+      return true;
+    }).toArray();
     const profitLossResultsByMarketAndOutcome = reduceMarketAndOutcomeDocsToOnlyLatest(
-      await getProfitLossRecordsByMarketAndOutcome(db, params.account, request)
+      await getProfitLossRecordsByMarketAndOutcome(db, params.account, profitLossRecords)
     );
 
-    const orderFilledRequest = {
-      selector: {
-        universe: params.universe,
-        market: params.marketId,
-        $or: [
-          { orderCreator: params.account },
-          { orderFiller: params.account },
-        ],
-      },
-    };
-
-    const allOrderFilledRequest = {
-      selector: {
-        universe: params.universe,
-        market: params.marketId,
-      },
-    };
-
-    const ordersFilledResultsByMarketAndOutcome = reduceMarketAndOutcomeDocsToOnlyLatest(
-      await getOrderFilledRecordsByMarketAndOutcome(db, orderFilledRequest)
-    );
-
+    let allOrders: ParsedOrderEventLog[];
+    if (params.marketId) {
+      allOrders = await db.OrderEvent.where('[market+eventType]').equals([params.marketId, OrderEventType.Fill]).toArray();
+    } else {
+      allOrders = await db.OrderEvent.where('eventType').equals(OrderEventType.Fill).toArray();
+    }
     const allOrdersFilledResultsByMarketAndOutcome = reduceMarketAndOutcomeDocsToOnlyLatest(
-      await getOrderFilledRecordsByMarketAndOutcome(db, allOrderFilledRequest)
+      await getOrderFilledRecordsByMarketAndOutcome(db, allOrders)
+    );
+    
+    const orders = _.filter(allOrders, (log) => {
+      return log.orderCreator === params.account || log.orderFiller === params.account;
+    });
+    const ordersFilledResultsByMarketAndOutcome = reduceMarketAndOutcomeDocsToOnlyLatest(
+      await getOrderFilledRecordsByMarketAndOutcome(db, orders)
     );
 
     const marketIds = _.keys(profitLossResultsByMarketAndOutcome);
 
-    const marketsData = await db.findMarkets({
-      selector: { market: { $in: marketIds } },
-    });
+    const marketsData = await db.Markets.where("market").anyOf(marketIds).toArray();
     const markets = _.keyBy(marketsData, 'market');
 
-    const marketFinalizedRequest = {
-      selector: {
-        universe: params.universe,
-        market: { $in: marketIds },
-      },
-    };
-
-    const marketFinalizedResults = await db.findMarketFinalizedLogs(
-      marketFinalizedRequest
-    );
+    const marketFinalizedResults = await db.MarketFinalized.where("market").anyOf(marketIds).toArray();
     const marketFinalizedByMarket = _.keyBy(marketFinalizedResults, 'market');
 
-    const shareTokenBalances = await db.findShareTokenBalanceChangedLogs(
-      {
-        selector: {
-          universe: params.universe,
-          account: params.account,
-        },
-      }
-    );
+    const shareTokenBalances = await db.ShareTokenBalanceChanged.where('[universe+account]').equals([params.universe, params.account]).toArray();
     const shareTokenBalancesByMarket = _.groupBy(shareTokenBalances, 'market');
     const shareTokenBalancesByMarketandOutcome = _.mapValues(
       shareTokenBalancesByMarket,
@@ -613,14 +545,15 @@ try {
     );
 
     // Create mapping for market/outcome balances
-    const tokenBalanceChangedLogs = await db.findShareTokenBalanceChangedLogs(
-      {
-        selector: {
-          market: { $in: marketIds },
-          account: params.account,
-        },
-      }
-    );
+    const tokenBalanceChangedLogs = await db.TokenBalanceChanged.where("[owner+token]").between([
+      params.account,
+      Dexie.minKey
+    ],[
+      params.account,
+      Dexie.maxKey
+    ], true, true).and((log) => {
+      return marketIds.includes(log.market);
+    }).toArray();
     const marketOutcomeBalances = {};
     for (const tokenBalanceChangedLog of tokenBalanceChangedLogs) {
       if (!marketOutcomeBalances[tokenBalanceChangedLog.market]) {
@@ -688,10 +621,7 @@ try {
       new BigNumber(0)
     );
 
-    const ownedMarketsResponse = await db.findMarkets({ selector: {
-      marketCreator: params.account,
-      finalized: false,
-    }});
+    const ownedMarketsResponse = await db.Markets.where("marketCreator").equals(params.account).and((log) => !log.finalized).toArray();
     const ownedMarkets = _.map(ownedMarketsResponse, "market");
     const totalValidityBonds = await augur.contracts.hotLoading.getTotalValidityBonds_(ownedMarkets);
     frozenFundsTotal = frozenFundsTotal.plus(totalValidityBonds);
@@ -734,61 +664,45 @@ try {
         ? Math.ceil((endTime - startTime) / DEFAULT_NUMBER_OF_BUCKETS)
         : params.periodInterval;
 
-    const profitLossRequest = {
-      selector: {
-        $and: [
-          { universe: params.universe },
-          { account: params.account },
-          { timestamp: { $lte: `0x${endTime.toString(16)}` } },
-          { timestamp: { $gte: `0x${startTime.toString(16)}` } },
-        ],
-      },
-    };
+    const profitLossOrders = await db.ProfitLossChanged.where('[universe+account+timestamp]').between([
+      params.universe,
+      params.account,
+      `0x${startTime.toString(16)}`
+    ], [
+      params.universe,
+      params.account,
+      `0x${endTime.toString(16)}`
+    ], true, true).toArray();
     const profitLossByMarketAndOutcome = await getProfitLossRecordsByMarketAndOutcome(
       db,
       params.account!,
-      profitLossRequest
+      profitLossOrders
     );
 
-    const orderFilledRequest = {
-      selector: {
-        $or: [
-          { orderCreator: params.account },
-          { orderFiller: params.account },
-        ],
-        $and: [
-          { universe: params.universe },
-          { timestamp: { $lte: `0x${endTime.toString(16)}` } },
-          { timestamp: { $gte: `0x${startTime.toString(16)}` } },
-        ],
-      },
-    };
+    const orders = await db.OrderEvent.where('[universe+eventType+timestamp]').between([
+      params.universe,
+      OrderEventType.Fill,
+      `0x${startTime.toString(16)}`
+    ], [
+      params.universe,
+      OrderEventType.Fill,
+      `0x${endTime.toString(16)}`
+    ], true, true).and((log) => {
+      return log.orderFiller === params.account || log.orderCreator === params.account;
+    }).toArray();
     const ordersFilledResultsByMarketAndOutcome = await getOrderFilledRecordsByMarketAndOutcome(
       db,
-      orderFilledRequest
+      orders
     );
 
     const marketIds = _.keys(profitLossByMarketAndOutcome);
 
-    const marketFinalizedRequest = {
-      selector: {
-        $and: [
-          { universe: params.universe },
-          { market: { $in: marketIds } },
-          { timestamp: { $lte: `0x${endTime.toString(16)}` } },
-          { timestamp: { $gte: `0x${startTime.toString(16)}` } },
-        ],
-      },
-    };
-
-    const marketFinalizedResults = await db.findMarketFinalizedLogs(
-      marketFinalizedRequest
-    );
+    const marketFinalizedResults = await db.MarketFinalized.where("market").anyOf(marketIds).and((log) => {
+      return log.timestamp <= `0x${endTime.toString(16)}` && log.timestamp >= `0x${startTime.toString(16)}`;
+    }).toArray();
     const marketFinalizedByMarket = _.keyBy(marketFinalizedResults, 'market');
 
-    const marketsResponse = await db.findMarkets({
-      selector: { market: { $in: marketIds } },
-    });
+    const marketsResponse = await db.Markets.where("market").anyOf(marketIds).toArray();
     const markets = _.keyBy(marketsResponse, 'market');
 
     const buckets = bucketRangeByInterval(startTime, endTime, periodInterval);
@@ -1043,9 +957,8 @@ function bucketRangeByInterval(
 async function getProfitLossRecordsByMarketAndOutcome(
   db: DB,
   account: string,
-  request: PouchDB.Find.FindRequest<{}>
+  profitLossResult: ProfitLossChangedLog[]
 ): Promise<_.Dictionary<_.Dictionary<ProfitLossChangedLog[]>>> {
-  const profitLossResult = await db.findProfitLossChangedLogs(account, request);
   return groupDocumentsByMarketAndOutcome<ProfitLossChangedLog>(
     profitLossResult
   );
@@ -1053,16 +966,15 @@ async function getProfitLossRecordsByMarketAndOutcome(
 
 async function getOrderFilledRecordsByMarketAndOutcome(
   db: DB,
-  request: PouchDB.Find.FindRequest<{}>
+  orders: ParsedOrderEventLog[]
 ): Promise<_.Dictionary<_.Dictionary<ParsedOrderEventLog[]>>> {
-  const orderFilled = await db.findOrderFilledLogs(request);
   return groupDocumentsByMarketAndOutcome<ParsedOrderEventLog>(
-    orderFilled,
+    orders,
     'outcome'
   );
 }
 
-function groupDocumentsByMarketAndOutcome<TDoc extends Doc>(
+function groupDocumentsByMarketAndOutcome<TDoc extends Log>(
   docs: TDoc[],
   outcomeField = 'outcome'
 ): _.Dictionary<_.Dictionary<TDoc[]>> {
@@ -1070,12 +982,12 @@ function groupDocumentsByMarketAndOutcome<TDoc extends Doc>(
   return _.mapValues(byMarket, marketResult => {
     const outcomeResultsInMarket = _.groupBy(marketResult, outcomeField);
     return _.mapValues(outcomeResultsInMarket, outcomeResults => {
-      return _.sortBy(outcomeResults, '_id');
+      return _.sortBy(outcomeResults, ['blockNumber', 'logIndex']);
     });
   });
 }
 
-function reduceMarketAndOutcomeDocsToOnlyLatest<TDoc extends Doc>(
+function reduceMarketAndOutcomeDocsToOnlyLatest<TDoc extends Log>(
   docs: _.Dictionary<_.Dictionary<TDoc[]>>
 ): _.Dictionary<_.Dictionary<TDoc>> {
   return _.mapValues(docs, marketResults => {
@@ -1085,7 +997,8 @@ function reduceMarketAndOutcomeDocsToOnlyLatest<TDoc extends Doc>(
         (latestResult: TDoc, outcomeResult) => {
           if (
             !latestResult ||
-            new BigNumber(latestResult._id).lt(new BigNumber(outcomeResult._id))
+            latestResult.blockNumber < outcomeResult.blockNumber ||
+            latestResult.blockNumber === outcomeResult.blockNumber && latestResult.logIndex < outcomeResult.logIndex
           ) {
             return outcomeResult;
           }

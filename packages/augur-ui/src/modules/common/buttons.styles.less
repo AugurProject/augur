@@ -208,13 +208,16 @@
 
 .BuyOrderButton {
   .Button;
+  .mono-12-bold;
 
   background: fade(@color-positive, 10%);
   border-color: @color-positive;
+  border-width: 2px;
   color: @color-positive;
   height: @button-height-default;
   max-height: @button-height-default;
-  padding: @button-padding-orders;
+  text-transform: uppercase;
+  width: 100%;
 
   &:disabled {
     background: fade(@color-positive, 5%);
@@ -257,13 +260,16 @@
 
 .SellOrderButton {
   .Button;
-
+  .mono-12-bold;
+  
   background: fade(@color-negative, 10%);
   border-color: @color-negative;
+  border-width: 2px;
   color: @color-negative;
   height: @button-height-default;
   max-height: @button-height-default;
-  padding: @button-padding-orders;
+  text-transform: uppercase;
+  width: 100%;
 
   &:disabled {
     background: fade(@color-negative, 5%);

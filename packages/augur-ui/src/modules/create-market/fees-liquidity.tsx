@@ -4,11 +4,9 @@ import { TextInput } from "modules/common/form";
 import { LargeSubheaders } from "modules/create-market/components/common";
 import InitialLiquidity from "modules/create-market/containers/initial-liquidity";
 import OrderBook from "modules/market-charts/containers/order-book";
-import TradingForm from "modules/market/containers/trading-form";
+import TradingForm from "modules/trading/components/trading-form";
 import {
   BUY,
-  SCALAR,
-  YES_NO,
   CATEGORICAL
 } from "modules/common/constants";
 import FilterSwitchBox from "modules/portfolio/containers/filter-switch-box";

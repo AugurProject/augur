@@ -4,7 +4,7 @@ import * as fp from 'lodash/fp';
 import { Augur } from '../Augur';
 import { SubscriptionEventName } from '../constants';
 import { Subscriptions } from '../subscriptions';
-import { IBlockAndLogStreamerListener } from './db/BlockAndLogStreamerListener';
+import { BlockAndLogStreamerListenerInterface } from './db/BlockAndLogStreamerListener';
 import { DB } from './db/DB';
 import { Markets } from './getter/Markets';
 
@@ -19,7 +19,7 @@ export class Controller {
   constructor(
     private augur: Augur,
     private db: Promise<DB>,
-    private blockAndLogStreamerListener: IBlockAndLogStreamerListener
+    private blockAndLogStreamerListener: BlockAndLogStreamerListenerInterface
   ) {
     this.events = new Subscriptions(augur.getAugurEventEmitter());
   }

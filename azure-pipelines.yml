@@ -141,7 +141,7 @@ jobs:
       - bash: |
           set -euo pipefail
           free -m
-          yarn test --verbose --runInBand --ci --reporters=default --reporters=jest-junit
+          yarn test --verbose --ci --reporters=default --reporters=jest-junit
         displayName: yarn test
         condition:  eq(variables['JOB_TRIGGER_TEST'], 'true')
         env:
