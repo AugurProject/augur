@@ -1,7 +1,7 @@
 @import (reference) '~assets/styles/shared';
 
 .Header {
-  .text-24-bold;
+  .text-22-bold;
 
   color: @color-primary-text;
   margin-bottom: @size-24;
@@ -61,7 +61,7 @@
 }
 
 .LargeSubheaders {
-  margin-bottom: @size-32;
+  margin-bottom: @size-16;
 
   > h2 {
     margin-bottom: 0;
@@ -78,7 +78,7 @@
 
   &.Small {
     > p {
-      margin-top: @size-2;
+      margin-top: @size-8;
     }
   }
 }
@@ -103,7 +103,7 @@
 .SmallHeaderLink {
   > span,
   > button {
-    .text-14;
+    .text-12;
   }
 
   > span {
@@ -333,10 +333,6 @@
     max-width: 200px;
   }
 
-  > button {
-    margin-top: @size-24;
-  }
-
   &.NoDark {
     background: transparent;
     padding: 0;
@@ -502,7 +498,7 @@
     .text-16-medium;
 
     color: @color-primary-text;
-    margin: @size-32 0 @size-8;
+    margin-bottom: @size-32 0 @size-8;
   }
 
   > span {

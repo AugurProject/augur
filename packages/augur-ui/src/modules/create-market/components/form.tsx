@@ -73,7 +73,7 @@ import {
   isValidFee,
   checkForUserInputFilled,
 } from 'modules/common/validations';
-import { buildformattedDate } from 'utils/format-date';
+import { buildformattedDate, convertUnixToFormattedDate } from 'utils/format-date';
 import TemplatePicker from 'modules/create-market/containers/template-picker';
 
 import Styles from 'modules/create-market/components/form.styles.less';
@@ -656,6 +656,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       history,
       needsApproval,
       isTemplate,
+      currentTimestamp
     } = this.props;
     const { contentPages, categoryStats } = this.state;
 
@@ -725,6 +726,8 @@ export default class Form extends React.Component<FormProps, FormState> {
                 )}
                 market={{
                 ...newMarket,
+                creationTimeFormatted: convertUnixToFormattedDate(currentTimestamp),
+                endTimeFormatted: convertUnixToFormattedDate(newMarket.endTimeFormatted.timestamp),
                 maxPriceBigNumber: createBigNumber(newMarket.maxPrice),
                 minPriceBigNumber: createBigNumber(newMarket.minPrice),
                 details: isTemplate
