@@ -25,10 +25,10 @@ export const generateTemplateValidations = async () => {
 
   const templateValidations = templateItems.map(t => generateValidations(t));
 
-  const newValidationObj = mergeStructures<TemplateValidation>(
+  const newValidationObj = merge.all(
     templateValidations.map(tv => tv.validations)
   );
-  const newTemplateValueObj = mergeStructures<Template>(
+  const newTemplateValueObj = merge.all(
     templateValidations.map(tv => tv.template)
   );
   if (!fs.existsSync(templateTemplateFile))
@@ -76,43 +76,7 @@ const generateValidations = (
   topCategories.map(c => addTemplates(newTemplates[c], validations));
   return { template: newTemplates, validations };
 };
-/*
-export const generateTemplateValidations = async () => {
-  const validations = {
-    templateValidation: null,
-    templateValidationResRules: null,
-    requiredOutcomes: null,
-    outcomeDependencies: null,
-    substituteDependencies: null,
-    marketQuestionDependencies: null,
-  };
-  let newTemplates = JSON.parse(JSON.stringify(TEMPLATES));
-  const topCategories = Object.keys(newTemplates);
-  topCategories.map(c => addTemplates(newTemplates[c], validations));
-  const newTemplateValue = `export const TEMPLATES = ${JSON.stringify(newTemplates)};`;
-  const newValidation = `TEMPLATE_VALIDATIONS = ${JSON.stringify(validations)};`;
-  const newRetiredTemplates = `RETIRED_TEMPLATES = ${JSON.stringify(retiredTemplates)}`;
 
-  if (!fs.existsSync(templateTemplateFile)) return console.error(templateTemplateFile, 'does not exist');
-
-  const contents = fs.readFileSync(templateTemplateFile, 'utf8');
-
-  const setNewTemplatesValues = contents.replace(
-    templateString,
-    newTemplateValue
-  );
-  const setNewTemplateValidations = setNewTemplatesValues.replace(
-    templateValidationString,
-    newValidation
-  );
-  const setRetiredTemplates = setNewTemplateValidations.replace(
-    templateRetiredTemplatesString,
-    newRetiredTemplates
-  );
-
-  fs.writeFileSync(templateArtifactsFile, setRetiredTemplates, 'utf8');
-};
-*/
 const addTemplates = (
   category: CategoryTemplate,
   validations: TemplateValidation
@@ -264,9 +228,5 @@ function escapeSpecialCharacters(value: string) {
     replacementValue = replacementValue.replace(i.find, i.rep);
   });
   return replacementValue;
-}
-
-function mergeStructures<T>(objs: T[] = []): T {
-  return merge.all(objs);
 }
 
