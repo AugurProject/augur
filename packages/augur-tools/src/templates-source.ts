@@ -33,6 +33,7 @@ import {
   SINGLES,
   DOUBLES,
   WNBA,
+  KNFL,
 } from './templates-template';
 import {
   LIST_VALUES,
@@ -52,6 +53,16 @@ import {
 const YES_NO = 'YesNo';
 const CATEGORICAL = 'Categorical';
 const SCALAR = 'Scalar';
+
+/*
+  Add new templates or update templates here keeping the same strcuture as TEMPLATES.
+  The template objects will be merge together to for one template object that is used by the UI
+*/
+export const TEMPLATES2 = {
+
+};
+
+
 
 export const TEMPLATES = {
   [SPORTS]: {

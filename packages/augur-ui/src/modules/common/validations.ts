@@ -231,7 +231,7 @@ export function checkForUserInputFilled(inputs, endTimeFormatted) {
         } else if (
           endTimeFormatted.timestamp &&
           input.userInputObject.endTimeFormatted &&
-          input.userInputObject.endTimeFormatted.timestamp >
+          input.userInputObject.endTimeFormatted.timestamp >=
             endTimeFormatted.timestamp
         ) {
           validations.setEndTime = 'Date must be before event expiration time';
