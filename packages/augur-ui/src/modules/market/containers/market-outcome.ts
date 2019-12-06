@@ -29,12 +29,11 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
   const topAskPrice = topAsk.price;
 
   const lastPrice = getValue(outcome, "lastPrice");
-  const lastPricePercent = getValue(outcome, "lastPricePercent.full");
 
   const columnProperties = [
     {
       key: "outcomeName",
-      columnType: COLUMN_TYPES.TEXT,
+      columnType: outcome.id === INVALID_OUTCOME_ID ? COLUMN_TYPES.INVALID_LABEL : COLUMN_TYPES.TEXT,
       text: outcomeName,
       keyId: outcomeName,
       showExtraNumber: !oP.scalarDenomination,

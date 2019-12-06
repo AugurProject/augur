@@ -18,6 +18,7 @@ import { CheckCircleIcon } from 'modules/common/icons';
 import { OutcomeFormatted, FormattedNumber, MarketData } from 'modules/types';
 import { formatDai, formatAttoRep, formatNumber } from 'utils/format-number';
 import { Getters } from '@augurproject/sdk';
+import { InvalidLabel } from 'modules/common/labels';
 import { SecondaryButton } from 'modules/common/buttons';
 
 import Styles from 'modules/market-cards/common.styles.less';
@@ -60,7 +61,7 @@ export const Outcome = (props: OutcomeProps) => {
         })}
       >
         <div>
-          <span>{props.description}</span>
+          {props.invalid ? <InvalidLabel text={props.description} keyid={`${props.marketId}_${props.description}`} /> : <span>{props.description}</span>}
           <span className={classNames({[Styles.Zero]: percent === 0})}>
             {percent === 0
               ? `0.00${props.isScalar ? '' : '%'}`
