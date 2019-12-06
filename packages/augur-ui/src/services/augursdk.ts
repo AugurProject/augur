@@ -132,6 +132,7 @@ export class SDK {
         this.sdk.setUseGnosisSafe(true);
         this.sdk.setUseGnosisRelay(true);
         this.sdk.setGnosisSafeAddress(safeAddress);
+        updateUser(safeAddress);
       }
     }
   }
