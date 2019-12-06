@@ -119,7 +119,7 @@ export function checkAddress(value) {
 }
 
 export function checkOutcomesArray(value) {
-  const validOutcomes = value.filter(outcome => outcome && outcome !== '');
+  const validOutcomes = value.filter(outcome => outcome && outcome.trim() !== '');
   if (validOutcomes.length < 2) {
     if (!validOutcomes.length) {
       return ['Enter an outcome', 'Enter an outcome'];
