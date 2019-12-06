@@ -48,7 +48,7 @@ import { Subscriptions } from './subscriptions';
 
 export class Augur<TProvider extends Provider = Provider> {
   readonly provider: TProvider;
-  private readonly dependencies: ContractDependenciesGnosis;
+  readonly dependencies: ContractDependenciesGnosis;
 
   readonly networkId: NetworkId;
   readonly events: Events;
@@ -171,8 +171,10 @@ export class Augur<TProvider extends Provider = Provider> {
   async getAccount(): Promise<string | null> {
     let account;
     if (this.dependencies.useSafe) {
+      console.log('LITOF', 'getAccount usesafe=true', this.dependencies.safeAddress);
       account = this.dependencies.safeAddress;
     } else {
+      console.log('LITOF', 'getAccount usesafe=false', this.dependencies.address);
       account = await this.dependencies.address;
     }
     if (!account) return account;

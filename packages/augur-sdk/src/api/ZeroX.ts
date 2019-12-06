@@ -246,6 +246,7 @@ export class ZeroX {
 
   async placeOnChainOrder(params: ZeroXPlaceTradeParams): Promise<string> {
     const salt = new BigNumber(Date.now());
+
     const result = await this.augur.contracts.ZeroXTrade.createZeroXOrder_(
       new BigNumber(params.direction),
       params.amount,
@@ -260,7 +261,11 @@ export class ZeroX {
     const signedOrder = result[0];
     const orderHash: string = result[1];
     const makerAddress: string = signedOrder[0];
-    const signature = await this.signOrderHash(orderHash, makerAddress);
+
+    const account = await this.augur.getAccount();
+    console.log('LITOF', 'placeOrder addresses', account, this.augur.dependencies.address, this.augur.dependencies.safeAddress, makerAddress);
+    const signature = await this.signOrderHash(orderHash, this.augur.dependencies.address);
+
     const zeroXOrder = {
       chainId: Number(this.augur.networkId),
       exchangeAddress: this.augur.addresses.Exchange,
@@ -280,6 +285,32 @@ export class ZeroX {
       salt: new BigNumber(signedOrder[9]._hex),
       signature,
     };
+
+    // TODO
+    // signature without the type -> isValidSignature_(...) -> true
+    // signature with the type -> isValidSignature_(...) -> ERROR
+
+    const wallet = this.augur.contracts.gnosisSafeFromAddress(makerAddress);
+    console.log('LITOF', 'maker addr and wallet addr', makerAddress, wallet.address);
+    console.log('LITOF', 'wallet domain sep (tests if wallet exists)', await wallet.domainSeparator_());
+    // TODO returns `0x08c379a0` which apparently means there's a revert message here
+    //  only there's no message provided?
+    console.log('LITOF', 'verify signature on wallet', await wallet.isValidSignature_(orderHash, signature));
+
+    const isValidSigUntyped = await this.augur.contracts.zeroXExchange.isValidSignature_(
+      signedOrder,
+      orderHash,
+      signature.slice(0, -2),
+    );
+    console.log('LITOF', 'untyped signature valid:', isValidSigUntyped); // -> false
+
+    // TODO contract call fails (Call returned '0x' indicating failure)
+    const isValidSig = await this.augur.contracts.zeroXExchange.isValidSignature_(
+      signedOrder,
+      orderHash,
+      signature,
+    );
+    console.log('LITOF', 'wallet-typed signature valid:', isValidSig);
 
     let validation;
     if (this.browserMesh) {
@@ -303,12 +334,13 @@ export class ZeroX {
     const signature = await signatureUtils.ecSignHashAsync(
       this.providerEngine,
       orderHash,
-      maker
+      maker,
     );
-    return signatureUtils.convertToSignatureWithType(
+    const a = signatureUtils.convertToSignatureWithType(
       signature,
       SignatureType.Wallet
     );
+    return a;
   }
 
   async simulateTrade(

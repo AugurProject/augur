@@ -56,10 +56,13 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
 
   async getDefaultAddress(): Promise<string | undefined> {
     if (this.useSafe && this.safeAddress) {
+      console.log('LOTIF', 'gnosisDep.getDefAddr: using safe addr', this.safeAddress)
       return getAddress(this.safeAddress);
     }
 
-    return super.getDefaultAddress();
+    const defaultAddress = await super.getDefaultAddress();
+    console.log('LOTIF', 'gnosisDep.getDefAddr: using default addr', defaultAddress)
+    return defaultAddress
   }
 
   setSigner(signer: EthersSigner) {
@@ -280,10 +283,12 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
 
     let gasEstimates: RelayTxEstimateResponse;
     if (this.useRelay) {
+      console.log(`estimate tx via relay: ${JSON.stringify(relayEstimateRequest, null, 2)}`);
       gasEstimates = await this.estimateTransactionViaRelay(
         relayEstimateRequest
       );
     } else {
+      console.log(`gasEstimates: ${JSON.stringify(tx, null, 2)}`);
       gasEstimates = await this.estimateTransactionDirectly(tx);
     }
 
@@ -296,6 +301,7 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
     const gasToken = this.gasToken;
     const refundReceiver = NULL_ADDRESS;
 
+    console.log(`getTXHash: ${JSON.stringify({to, value, data, operation, safeTxGas, baseGas, gasPrice, gasToken, refundReceiver, nonce}, null, 2)}`);
     const txHashBytes = await this.gnosisSafe.getTransactionHash(
       to,
       value,
@@ -308,6 +314,7 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
       refundReceiver,
       nonce
     );
+    console.log('getTXHash worked')
 
     this._currentSignRequest = this.signer
       .signMessage(ethers.utils.arrayify(txHashBytes))

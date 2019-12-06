@@ -94,7 +94,7 @@ describe('Gnosis Relay API', () => {
         console.log(safeStatus);
       }
 
-      if(safeStatus.status === GnosisSafeState.CREATED) {
+      if (safeStatus.status === GnosisSafeState.CREATED) {
         // Wait for safeCreate tx to confirm.
         await provider.waitForTransaction(safeStatus.txHash);
       }

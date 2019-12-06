@@ -34,7 +34,8 @@ async function getOrCreateSafe(person: ContractAPI, initialPayment=new BigNumber
 }
 
 async function getSafeStatus(person: ContractAPI, safe: string) {
-  const status = await person.getGnosisSafeDeploymentStatusViaRelay(person.account.publicKey, safe);
+  const status = await person.augur.checkSafe(person.account.publicKey, safe);
+  // const status = await person.getGnosisSafeDeploymentStatusViaRelay(person.account.publicKey, safe);
   if (typeof status === 'string') {
     return status;
   } else if (typeof status === 'object' && typeof status.status === 'string') {
@@ -53,12 +54,16 @@ async function fundSafe(person: ContractAPI, safe=undefined, amount=new BigNumbe
   let status: string;
   for (let i = 0; i < 10; i++) {
     status = await getSafeStatus(person, safe);
-    if (status === GnosisSafeState.AVAILABLE) {
-      return safe
+    console.log('LITOF', 'funding safe status', status);
+    if (status !== GnosisSafeState.WAITING_FOR_FUNDS) {
+      break;
     }
     await sleep(2000);
   }
-  return null;
+
+  await sleep(10000);
+
+  return safe;
 }
 
 describe('3rd Party :: ZeroX :: ', () => {
@@ -98,6 +103,14 @@ describe('3rd Party :: ZeroX :: ', () => {
     const safeStatus = await getSafeStatus(john, safe);
     console.log(`Safe ${safe}: ${safeStatus}`);
     expect(safeStatus).toBe(GnosisSafeState.AVAILABLE);
+    console.log('LITOF', 'john gnosis safe addr:', await john.getGnosisSafeAddress(john.account.publicKey))
+
+    await john.augur.setGasPrice(new BigNumber(90000));
+    console.log('LITOF', 'begin setting safe addr');
+    john.setGnosisSafeAddress(safe);
+    console.log('LITOF', 'finish setting safe addr');
+    john.setUseGnosisSafe(true);
+    john.setUseGnosisRelay(true);
   }, 120000);
 
   afterAll(() => {
@@ -122,6 +135,7 @@ describe('3rd Party :: ZeroX :: ', () => {
     const displayPrice = new BigNumber(.22);
     const kycToken = '0x000000000000000000000000000000000000000C';
     const expirationTime = new BigNumber(new Date().valueOf()).plus(1000000);
+    console.log('LITOF', 'PLACE 0X ORDER')
     await john.placeZeroXOrder({
       direction,
       market: market.address,
@@ -139,6 +153,7 @@ describe('3rd Party :: ZeroX :: ', () => {
       displayShares: new BigNumber(0),
       expirationTime,
     });
+    console.log('LITOF', 'DID PLACE 0X ORDER')
 
     // Terrible, but not clear how else to wait on the mesh event propagating to the callback and it finishing updating the DB...
     await sleep(300);
