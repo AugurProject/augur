@@ -9,7 +9,6 @@ import SharedStyles from 'modules/market/components/market-orders-positions-tabl
 import HeaderStyles from 'modules/portfolio/components/common/data-table-header.styles.less';
 import { OutcomeFormatted } from 'modules/types';
 import { ToggleExtendButton } from 'modules/common/buttons';
-import { BigNumber } from 'utils/create-big-number';
 
 interface MarketOutcomesListProps {
   outcomesFormatted: OutcomeFormatted[];
@@ -18,8 +17,6 @@ interface MarketOutcomesListProps {
   scalarDenomination: string | undefined;
   marketType: string;
   marketId: string;
-  minPriceBigNumber: BigNumber;
-  maxPriceBigNumber: BigNumber;
   popUp: boolean;
   toggle: Function;
   hideOutcomes?: boolean;
@@ -43,8 +40,6 @@ export default class MarketOutcomesList extends Component<
       updateSelectedOutcome,
       marketType,
       scalarDenomination,
-      minPriceBigNumber,
-      maxPriceBigNumber,
       popUp,
       marketId,
       toggle,
@@ -71,7 +66,7 @@ export default class MarketOutcomesList extends Component<
             <li>Best Bid</li>
             <li>Best Ask</li>
             <li>Ask Qty</li>
-            <li>Last</li>
+            <li>Last Price</li>
           </ul>
           <div>
             {outcomesFormatted.filter(o => o.isTradeable).map(outcome => (
