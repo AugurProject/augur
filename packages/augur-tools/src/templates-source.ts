@@ -642,7 +642,7 @@ export const TEMPLATES = {
                 },
                 {
                   text:
-                    'The game must go 55 minutes or more to be considered official if not, market should resolve as "No winner"',
+                    `The game must go 55 minutes or more to be considered official if not, market should resolve as 'No winner'`,
                 },
               ],
             },
@@ -701,7 +701,7 @@ export const TEMPLATES = {
                 },
                 {
                   text:
-                    'The game must go 55 minutes or more to be considered official if not, market should resolve as "No winner"',
+                    `The game must go 55 minutes or more to be considered official if not, market should resolve as 'No winner'`,
                 },
               ],
             },
