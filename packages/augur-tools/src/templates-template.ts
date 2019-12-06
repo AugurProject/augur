@@ -310,7 +310,7 @@ function isDependencyOutcomesCorrect(
 
 function estimatedDateTimeAfterMarketEndTime(inputs: ExtraInfoTemplateInput[], endTime: number) {
   const input = inputs.find(i => i.type === TemplateInputType.ESTDATETIME);
-  if (!input) return true;
+  if (!input) return false;
   return Number(input.timestamp) > Number(endTime);
 }
 
