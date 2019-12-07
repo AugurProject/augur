@@ -219,8 +219,6 @@ contract ShareToken is ITyped, Initializable, ERC1155, IShareToken, ReentrancyGu
 
         require(cash.transfer(_recipient, _payout));
 
-        IUniverse _universe = _market.getUniverse();
-
         _market.assertBalances();
         return (_creatorFee, _reportingFee);
     }

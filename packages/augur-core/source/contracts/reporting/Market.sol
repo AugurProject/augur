@@ -13,7 +13,6 @@ import 'ROOT/factories/IDisputeCrowdsourcerFactory.sol';
 import 'ROOT/ICash.sol';
 import 'ROOT/factories/InitialReporterFactory.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
-import 'ROOT/libraries/math/SafeMathInt256.sol';
 import 'ROOT/reporting/Reporting.sol';
 import 'ROOT/reporting/IInitialReporter.sol';
 import 'ROOT/IWarpSync.sol';
@@ -26,7 +25,6 @@ import 'ROOT/libraries/token/IERC1155.sol';
  */
 contract Market is Initializable, Ownable, IMarket {
     using SafeMathUint256 for uint256;
-    using SafeMathInt256 for int256;
 
     // Constants
     uint256 private constant MAX_APPROVAL_AMOUNT = 2 ** 256 - 1;
