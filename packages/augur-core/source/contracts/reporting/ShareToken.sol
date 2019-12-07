@@ -238,11 +238,13 @@ contract ShareToken is ITyped, Initializable, ERC1155, IShareToken, ReentrancyGu
     function sellCompleteSetsForTrade(IMarket _market, uint256 _outcome, uint256 _amount, address _shortParticipant, address _longParticipant, address _shortRecipient, address _longRecipient, uint256 _price, address _sourceAccount, bytes32 _fingerprint) external returns (uint256 _creatorFee, uint256 _reportingFee) {
         require(isApprovedForAll(_shortParticipant, msg.sender) == true, "ERC1155: need operator approval to burn short account shares");
         require(isApprovedForAll(_longParticipant, msg.sender) == true, "ERC1155: need operator approval to burn long account shares");
+        uint256 _numTicks = markets[address(_market)].numTicks;
+        require(_numTicks != 0, "Invalid Market provided");
 
         _internalTransferFrom(_shortParticipant, _longParticipant, getTokenId(_market, _outcome), _amount, bytes(""), false);
         (uint256 _payout, uint256 _creatorFee, uint256 _reportingFee) = burnCompleteSets(_market, _longParticipant, _amount, _sourceAccount, _fingerprint);
 
-        uint256 _longPayout = _payout.mul(_price) / _market.getNumTicks();
+        uint256 _longPayout = _payout.mul(_price) / _numTicks;
         require(cash.transfer(_longRecipient, _longPayout));
         require(cash.transfer(_shortRecipient, _payout.sub(_longPayout)));
 
