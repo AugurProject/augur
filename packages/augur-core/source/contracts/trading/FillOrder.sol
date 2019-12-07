@@ -484,7 +484,7 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
     }
 
     function fillOrder(address _filler, bytes32 _orderId, uint256 _amountFillerWants, bytes32 _tradeGroupId, bytes32 _fingerprint) external returns (uint256) {
-        require(msg.sender == trade || msg.sender == address(this));
+        require(msg.sender == trade);
         Trade.Data memory _tradeData = Trade.create(storedContracts, _orderId, _filler, _amountFillerWants, _fingerprint);
         return fillOrderInternal(_filler, _tradeData, _amountFillerWants, _tradeGroupId);
     }

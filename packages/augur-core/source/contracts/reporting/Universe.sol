@@ -93,9 +93,22 @@ contract Universe is IUniverse {
         daiVat = IDaiVat(augur.lookup("DaiVat"));
         daiPot = IDaiPot(augur.lookup("DaiPot"));
         daiJoin = IDaiJoin(augur.lookup("DaiJoin"));
+        assertContractsNotZero();
         daiVat.hope(address(daiPot));
         daiVat.hope(address(daiJoin));
         cash.approve(address(daiJoin), 2 ** 256 - 1);
+    }
+
+    function assertContractsNotZero() private {
+        require(marketFactory != IMarketFactory(0));
+        require(disputeWindowFactory != IDisputeWindowFactory(0));
+        require(shareToken != IShareToken(0));
+        require(repPriceOracle != IRepPriceOracle(0));
+        require(formulas != IFormulas(0));
+        require(cash != ICash(0));
+        require(daiVat != IDaiVat(0));
+        require(daiPot != IDaiPot(0));
+        require(daiJoin != IDaiJoin(0));
     }
 
     function fork() public returns (bool) {
@@ -652,15 +665,14 @@ contract Universe is IUniverse {
 
     function saveDaiInDSR(uint256 _amount) private returns (bool) {
         daiJoin.join(address(this), _amount);
-        daiPot.drip();
-        uint256 _sDaiAmount = _amount.mul(DAI_ONE) / daiPot.chi(); // sDai may be lower than the full amount joined above. This means the VAT may have some dust and we'll be saving less than intended by a dust amount
+        uint256 _chi = daiPot.drip();
+        uint256 _sDaiAmount = _amount.mul(DAI_ONE) / _chi; // sDai may be lower than the full amount joined above. This means the VAT may have some dust and we'll be saving less than intended by a dust amount
         daiPot.join(_sDaiAmount);
         return true;
     }
 
     function withdrawDaiFromDSR(uint256 _amount) private returns (bool) {
-        daiPot.drip();
-        uint256 _chi = daiPot.chi();
+        uint256 _chi = daiPot.drip();
         uint256 _sDaiAmount = _amount.mul(DAI_ONE) / _chi; // sDai may be lower than the amount needed to retrieve `amount` from the VAT. We cover for this rounding error below
         if (_sDaiAmount.mul(_chi) < _amount.mul(DAI_ONE)) {
             _sDaiAmount += 1;
@@ -699,12 +711,12 @@ contract Universe is IUniverse {
 
     function sweepInterest() public returns (bool) {
         uint256 _extraCash = 0;
-        daiPot.drip();
+        uint256 _chi = daiPot.drip();
         withdrawSDaiFromDSR(daiPot.pie(address(this))); // Pull out all funds
         saveDaiInDSR(totalBalance); // Put the required funds back in savings
         _extraCash = cash.balanceOf(address(this));
         // The amount in the DSR pot and VAT must cover our totalBalance of Dai
-        assert(daiPot.pie(address(this)).mul(daiPot.chi()).add(daiVat.dai(address(this))) >= totalBalance.mul(DAI_ONE));
+        assert(daiPot.pie(address(this)).mul(_chi).add(daiVat.dai(address(this))) >= totalBalance.mul(DAI_ONE));
         cash.transfer(address(getOrCreateNextDisputeWindow(false)), _extraCash);
         return true;
     }

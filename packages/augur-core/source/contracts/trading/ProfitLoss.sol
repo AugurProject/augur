@@ -60,7 +60,7 @@ contract ProfitLoss is Initializable {
     }
 
     function recordTrade(IUniverse _universe, IMarket _market, address _longAddress, address _shortAddress, uint256 _outcome, int256 _amount, int256 _price, uint256 _numLongTokens, uint256 _numShortTokens, uint256 _numLongShares, uint256 _numShortShares) external returns (bool) {
-        require(msg.sender == fillOrder || msg.sender == address(this));
+        require(msg.sender == fillOrder);
         int256 _numTicks = int256(_market.getNumTicks());
         int256  _longFrozenTokenDelta = int256(_numLongTokens).sub(int256(_numLongShares).mul(_numTicks.sub(_price)));
         int256  _shortFrozenTokenDelta = int256(_numShortTokens).sub(int256(_numShortShares).mul(_price));
