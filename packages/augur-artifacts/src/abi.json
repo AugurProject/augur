@@ -24878,6 +24878,87 @@
 			"constant": true,
 			"inputs": [
 				{
+					"components": [
+						{
+							"name": "makerAddress",
+							"type": "address"
+						},
+						{
+							"name": "takerAddress",
+							"type": "address"
+						},
+						{
+							"name": "feeRecipientAddress",
+							"type": "address"
+						},
+						{
+							"name": "senderAddress",
+							"type": "address"
+						},
+						{
+							"name": "makerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "takerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "makerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "takerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"name": "makerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "makerFeeAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerFeeAssetData",
+							"type": "bytes"
+						}
+					],
+					"name": "_zeroXOrder",
+					"type": "tuple"
+				},
+				{
+					"name": "_orderHash",
+					"type": "bytes32"
+				}
+			],
+			"name": "encodeEIP1271OrderWithHash",
+			"outputs": [
+				{
+					"name": "encoded",
+					"type": "bytes"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
 					"name": "owners",
 					"type": "address[]"
 				},
@@ -25132,6 +25213,123 @@
 			"type": "function"
 		},
 		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_maker",
+					"type": "address"
+				},
+				{
+					"name": "_type",
+					"type": "uint8"
+				},
+				{
+					"name": "_attoshares",
+					"type": "uint256"
+				},
+				{
+					"name": "_price",
+					"type": "uint256"
+				},
+				{
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"name": "_outcome",
+					"type": "uint8"
+				},
+				{
+					"name": "_kycToken",
+					"type": "address"
+				},
+				{
+					"name": "_expirationTimeSeconds",
+					"type": "uint256"
+				},
+				{
+					"name": "_exchange",
+					"type": "address"
+				},
+				{
+					"name": "_salt",
+					"type": "uint256"
+				}
+			],
+			"name": "createZeroXOrderFor",
+			"outputs": [
+				{
+					"components": [
+						{
+							"name": "makerAddress",
+							"type": "address"
+						},
+						{
+							"name": "takerAddress",
+							"type": "address"
+						},
+						{
+							"name": "feeRecipientAddress",
+							"type": "address"
+						},
+						{
+							"name": "senderAddress",
+							"type": "address"
+						},
+						{
+							"name": "makerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "takerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "makerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "takerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"name": "makerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "makerFeeAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerFeeAssetData",
+							"type": "bytes"
+						}
+					],
+					"name": "_zeroXOrder",
+					"type": "tuple"
+				},
+				{
+					"name": "_orderHash",
+					"type": "bytes32"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
 			"constant": false,
 			"inputs": [
 				{
@@ -25147,6 +25345,20 @@
 			"outputs": [],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "EIP1271_ORDER_WITH_HASH_SELECTOR",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bytes4"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{

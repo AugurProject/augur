@@ -246,6 +246,7 @@ export class ZeroX {
 
   async placeOnChainOrder(params: ZeroXPlaceTradeParams): Promise<string> {
     const salt = new BigNumber(Date.now());
+
     const result = await this.augur.contracts.ZeroXTrade.createZeroXOrder_(
       new BigNumber(params.direction),
       params.amount,
@@ -260,7 +261,9 @@ export class ZeroX {
     const signedOrder = result[0];
     const orderHash: string = result[1];
     const makerAddress: string = signedOrder[0];
-    const signature = await this.signOrderHash(orderHash, makerAddress);
+
+    const signature = await this.signOrderHash(orderHash, this.augur.dependencies.address);
+
     const zeroXOrder = {
       chainId: Number(this.augur.networkId),
       exchangeAddress: this.augur.addresses.Exchange,
@@ -303,7 +306,7 @@ export class ZeroX {
     const signature = await signatureUtils.ecSignHashAsync(
       this.providerEngine,
       orderHash,
-      maker
+      maker,
     );
     return signatureUtils.convertToSignatureWithType(
       signature,

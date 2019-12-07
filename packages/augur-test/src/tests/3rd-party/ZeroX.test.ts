@@ -34,7 +34,7 @@ async function getOrCreateSafe(person: ContractAPI, initialPayment=new BigNumber
 }
 
 async function getSafeStatus(person: ContractAPI, safe: string) {
-  const status = await person.getGnosisSafeDeploymentStatusViaRelay(person.account.publicKey, safe);
+  const status = await person.augur.checkSafe(person.account.publicKey, safe);
   if (typeof status === 'string') {
     return status;
   } else if (typeof status === 'object' && typeof status.status === 'string') {
@@ -53,12 +53,15 @@ async function fundSafe(person: ContractAPI, safe=undefined, amount=new BigNumbe
   let status: string;
   for (let i = 0; i < 10; i++) {
     status = await getSafeStatus(person, safe);
-    if (status === GnosisSafeState.AVAILABLE) {
-      return safe
+    if (status !== GnosisSafeState.WAITING_FOR_FUNDS) {
+      break;
     }
     await sleep(2000);
   }
-  return null;
+
+  await sleep(10000);
+
+  return safe;
 }
 
 describe('3rd Party :: ZeroX :: ', () => {
@@ -98,6 +101,11 @@ describe('3rd Party :: ZeroX :: ', () => {
     const safeStatus = await getSafeStatus(john, safe);
     console.log(`Safe ${safe}: ${safeStatus}`);
     expect(safeStatus).toBe(GnosisSafeState.AVAILABLE);
+
+    await john.augur.setGasPrice(new BigNumber(90000));
+    john.setGnosisSafeAddress(safe);
+    john.setUseGnosisSafe(true);
+    john.setUseGnosisRelay(true);
   }, 120000);
 
   afterAll(() => {

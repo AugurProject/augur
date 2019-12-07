@@ -48,7 +48,7 @@ import { Subscriptions } from './subscriptions';
 
 export class Augur<TProvider extends Provider = Provider> {
   readonly provider: TProvider;
-  private readonly dependencies: ContractDependenciesGnosis;
+  readonly dependencies: ContractDependenciesGnosis;
 
   readonly networkId: NetworkId;
   readonly events: Events;
