@@ -93,11 +93,10 @@
 }
 
 .TextLabel {
+  .text-12;
+
   color: inherit;
-  font-size: @size-12;
-  font-weight: 400;
   letter-spacing: 0.3px;
-  line-height: @size-12;
   text-transform: capitalize;
   z-index: @default-z-index;
 
@@ -115,6 +114,31 @@
     max-width: 320px;
     padding: @size-12 @size-12 @size-8;
   }
+}
+
+.InvalidLabel {
+  color: @color-outcome-invalid;
+  display: flex;
+
+  > label {
+    margin-left: @size-8;
+    margin-bottom: 0;
+
+    > svg {
+      height: @size-12;
+      width: @size-12;
+
+      > circle {
+        stroke: @color-secondary-text;
+        fill: none;
+      }
+
+      > path {
+        fill: @color-secondary-text;
+      }
+    }
+  }
+
 }
 
 .HoverValueLabel {

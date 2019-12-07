@@ -61,8 +61,6 @@ export default class Landing extends React.Component<LandingProps> {
             <LargeSubheaders
               link
               copyType={MARKET_COPY_LIST.USE_A_TEMPLATE}
-              underline
-              ownLine
               header="Use a market template"
               subheader="Templates simplify the creation of new markets and reduce errors in the market making process. "
             />

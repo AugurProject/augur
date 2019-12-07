@@ -65,7 +65,7 @@ export function formatEther(num: NumStrBigNumber, opts: FormattedNumberOptions =
   return formatNumber(num, {
     decimals: ETHER_NUMBER_OF_DECIMALS,
     decimalsRounded: ETHER_NUMBER_OF_DECIMALS,
-    denomination: " ETH",
+    denomination: v => `${v} ETH`,
     positiveSign: false,
     zeroStyled: false,
     blankZero: false,
@@ -78,7 +78,7 @@ export function formatEtherEstimate(num: NumStrBigNumber, opts: FormattedNumberO
   return formatNumber(num, {
     decimals: ETHER_NUMBER_OF_DECIMALS,
     decimalsRounded: ETHER_NUMBER_OF_DECIMALS,
-    denomination: " ETH (estimated)",
+    denomination: v => `${v} ETH (estimated)`,
     positiveSign: false,
     zeroStyled: false,
     blankZero: false,
@@ -91,7 +91,7 @@ export function formatDaiEstimate(num: NumStrBigNumber, opts: FormattedNumberOpt
   return formatNumber(num, {
     decimals: 2,
     decimalsRounded: 2,
-    denomination: " DAI (estimated)",
+    denomination: v => `$${v} (estimated)`,
     positiveSign: false,
     zeroStyled: false,
     blankZero: false,
@@ -104,7 +104,7 @@ export function formatPercent(num: NumStrBigNumber, opts: FormattedNumberOptions
   return formatNumber(num, {
     decimals: 2,
     decimalsRounded: 0,
-    denomination: "%",
+    denomination: v => `${v}%`,
     positiveSign: false,
     zeroStyled: false,
     blankZero: false,
@@ -117,7 +117,7 @@ export function formatShares(num: NumStrBigNumber, opts: FormattedNumberOptions 
   const formattedShares = formatNumber(num, {
     decimals: SHARES_NUMBER_OF_DECIMALS,
     decimalsRounded: SHARES_NUMBER_OF_DECIMALS,
-    denomination: ` Shares`,
+    denomination: v => `${v} Shares`,
     minimized: false,
     zeroStyled: false,
     blankZero: false,
@@ -126,10 +126,6 @@ export function formatShares(num: NumStrBigNumber, opts: FormattedNumberOptions 
     ...opts,
   });
 
-  if (formattedShares.formattedValue === 1) {
-    formattedShares.full = makeFull(formattedShares.formatted, " Share");
-  }
-
   return formattedShares;
 }
 
@@ -137,7 +133,7 @@ export function formatDai(num: NumStrBigNumber, opts: FormattedNumberOptions = {
   return formatNumber(num, {
     decimals: 2,
     decimalsRounded: 2,
-    denomination: " DAI",
+    denomination: v => `$${v}`,
     positiveSign: false,
     zeroStyled: false,
     blankZero: false,
@@ -150,7 +146,7 @@ export function formatRep(num: NumStrBigNumber, opts: FormattedNumberOptions = {
   return formatNumber(num, {
     decimals: 4,
     decimalsRounded: 4,
-    denomination: " REP",
+    denomination: v => `${v} REP`,
     positiveSign: false,
     zeroStyled: false,
     blankZero: false,
@@ -163,7 +159,7 @@ export function formatRepTokens(num: NumStrBigNumber, opts: FormattedNumberOptio
   return formatNumber(num, {
     decimals: 2,
     decimalsRounded: 2,
-    denomination: " REP Tokens",
+    denomination: v => `${v} REP Tokens`,
     positiveSign: false,
     zeroStyled: false,
     blankZero: false,
@@ -206,7 +202,7 @@ export function optionsBlank(): FormattedNumberOptions {
   return {
     decimals: 0,
     decimalsRounded: 0,
-    denomination: "",
+    denomination: v => "",
     roundUp: false,
     roundDown: false,
     positiveSign: false,
@@ -244,13 +240,13 @@ export function formatAttoRep(num: NumStrBigNumber, opts: FormattedNumberOptions
       decimals: 4,
       decimalsRounded: 4,
       blankZero: false,
-      denomination: " REP",
+      denomination: v => `${v} REP`,
     },
   );
 }
 
 export function formatAttoDai(num: NumStrBigNumber ): FormattedNumber {
-  const opts = Object.assign(optionsBlank(), { decimals: 2, decimalsRounded: 2, denomination: " DAI" })
+  const opts = Object.assign(optionsBlank(), { decimals: 2, decimalsRounded: 2, denomination: v => `${v} DAI` })
   return formatAttoEth(num, opts);
 }
 
@@ -274,7 +270,7 @@ export function formatGasCost(num: NumStrBigNumber, opts: FormattedNumberOptions
   return formatNumber(num, {
     decimals: 0,
     decimalsRounded: 0,
-    denomination: " GWEI",
+    denomination: v => `${v} GWEI`,
     positiveSign: false,
     zeroStyled: false,
     blankZero: false,
@@ -303,7 +299,7 @@ export function formatNumber(
 
   decimals = decimals || 0;
   decimalsRounded = decimalsRounded || 0;
-  denomination = denomination || "";
+  denomination = denomination || ((v) => "");
   positiveSign = !!positiveSign;
   roundUp = !!roundUp;
   roundDown = !!roundDown;
@@ -422,8 +418,8 @@ export function formatNumber(
     o.formatted = o.minimized;
   }
 
-  o.denomination = denomination;
-  o.full = makeFull(o.formatted, o.denomination); // should this use this?
+  o.denomination = denomination("");
+  o.full = denomination(o.formatted);
 
   if (typeof num === "string" && isNaN(parseFloat(num)) || o.formatted === "0") {
     o.formatted = ZERO.toFixed(decimalsRounded);
@@ -447,10 +443,6 @@ function addBigUnitPostfix(value, formattedValue) {
     postfixed = addCommas(formattedValue);
   }
   return postfixed;
-}
-
-export function makeFull(formatted, denomination) {
-  return formatted + denomination;
 }
 
 export function cutOffDecimal(value, numDigits) {

@@ -236,7 +236,7 @@ export class BlockAndLogStreamerListener
       // Assuming all db updates will be complete when these promises resolve.
       await Promise.all(logCallbackPromises);
 
-      // Fire this after all "filtered" log callbacks are processed.
+    // Fire this after all "filtered" log callbacks are processed.
       const allLogsCallbackMetaDataPromises = this.allLogsCallbackMetaData.map(
         cb => cb(blockNumber, this.deps.parseLogs(logs))
       );
@@ -271,6 +271,9 @@ export class BlockAndLogStreamerListener
     // See: https://github.com/ethers-io/ethers.js/issues/473
     const { address, ...filter } = this.buildFilter();
 
+    // With a wide open filter we get events from unknow sources.
+    if(_.isEmpty(filter.topics)) return;
+
     const logs = await this.deps.getLogs({
       ...filter,
 
@@ -284,7 +287,7 @@ export class BlockAndLogStreamerListener
 
     const maxBlockNumberReturned = Math.max(...blocksReturned);
     const maxBlockIndex = Math.max(
-      this.currentSuspectBlocks.findIndex(block => parseInt(block.number, 10) === maxBlockNumberReturned),
+      this.currentSuspectBlocks.findIndex(block => parseInt(block.number, 16) === maxBlockNumberReturned),
       this.currentSuspectBlocks.length - this.blockWindowWidth
     );
 
@@ -293,7 +296,7 @@ export class BlockAndLogStreamerListener
 
     for (let i = 0; i < blocksToEmit.length; i++) {
       const currentBlock = blocksToEmit[i];
-      const logsToEmit = logs.filter((log) => parseInt(currentBlock.number, 10) === log.blockNumber);
+      const logsToEmit = logs.filter((log) => parseInt(currentBlock.number, 16) === log.blockNumber);
       await this.onLogsAdded(currentBlock.hash, logsToEmit);
     }
   };

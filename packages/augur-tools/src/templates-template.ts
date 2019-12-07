@@ -1,4 +1,5 @@
 import { ethers } from 'ethers';
+import { BigNumber } from 'ethers/utils';
 export const REQUIRED = 'REQUIRED';
 export const CHOICE = 'CHOICE';
 // Market templates
@@ -157,6 +158,11 @@ export interface TemplateInput {
   }
 }
 
+export interface RetiredTemplate {
+  hash: string;
+  autoFail: boolean;
+}
+
 export enum ValidationType {
   WHOLE_NUMBER = 'WHOLE_NUMBER',
   NUMBER = 'NUMBER',
@@ -210,6 +216,7 @@ export const ValidationTemplateInputType = {
 };
 
 export let TEMPLATE_VALIDATIONS = {};
+export let RETIRED_TEMPLATES = [];
 
 function hasSubstituteOutcomes(
   inputs: ExtraInfoTemplateInput[],
@@ -303,17 +310,28 @@ function isDependencyOutcomesCorrect(
 
 function estimatedDateTimeAfterMarketEndTime(inputs: ExtraInfoTemplateInput[], endTime: number) {
   const input = inputs.find(i => i.type === TemplateInputType.ESTDATETIME);
-  if (!input) return true;
+  if (!input) return false;
   return Number(input.timestamp) > Number(endTime);
 }
 
-export const isTemplateMarket = (title, template: ExtraInfoTemplate, outcomes: string[], longDescription: string, endTime: number, errors: string[] = []) => {
-  if (!template || !template.hash || !template.question || template.inputs.length === 0) {
-    errors.push('value missing template | hash | question | inputs');
+function isRetiredAutofail(hash:string) {
+  const found: RetiredTemplate = RETIRED_TEMPLATES.find((t: RetiredTemplate) => t.hash === hash);
+  if (!found) return false;
+  return found.autoFail;
+}
+
+export const isTemplateMarket = (title, template: ExtraInfoTemplate, outcomes: string[], longDescription: string, endTime: string, errors: string[] = []) => {
+  if (!template || !template.hash || !template.question || template.inputs.length === 0 || !endTime) {
+    errors.push('value missing template | hash | question | inputs | endTime');
     return false;
   }
 
   try {
+    if (isRetiredAutofail(template.hash)){
+      errors.push('template hash has been retired and set to auto-fail');
+      return false;
+    }
+
     const validation = TEMPLATE_VALIDATIONS[template.hash] as TemplateValidation;
     if (!!!validation) {
       errors.push('no validation found for hash');
@@ -331,7 +349,7 @@ export const isTemplateMarket = (title, template: ExtraInfoTemplate, outcomes: s
     }
 
     // check ESTDATETIME isn't after market event expiration
-    if (estimatedDateTimeAfterMarketEndTime(template.inputs, endTime)) {
+    if (estimatedDateTimeAfterMarketEndTime(template.inputs, new BigNumber(endTime).toNumber())) {
       errors.push('estimated schedule date time is after market event expiration endTime');
       return false;
     }
@@ -401,6 +419,8 @@ export const isTemplateMarket = (title, template: ExtraInfoTemplate, outcomes: s
     return false;
   }
 };
+
+//##RETIRED_TEMPLATES
 
 //##TEMPLATES##
 

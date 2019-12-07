@@ -82,7 +82,7 @@ describe('BlockstreamListener', () => {
   ];
 
   const buildBlock = (blockNumber: number): Block => ({
-    number: `${blockNumber}`,
+    number: `0x${blockNumber.toString(16)}`,
     hash: `HASH-${blockNumber}`,
     parentHash: `HASH-${blockNumber - 1}`,
   });

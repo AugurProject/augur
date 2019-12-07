@@ -140,15 +140,14 @@ export function addScripts(flash: FlashSession) {
       if (this.noProvider()) return;
       const user = await this.ensureUser();
 
-      const target = String(args.target);
       const amount = Number(args.amount);
       const atto = new BigNumber(amount).times(_1_ETH);
 
       await user.faucet(atto);
 
       // if we have a target we transfer from current account to target.
-      if(target) {
-        await user.augur.contracts.cash.transfer(target, atto);
+      if(args.target) {
+        await user.augur.contracts.cash.transfer(String(args.target), atto);
       }
     },
   });
@@ -218,13 +217,12 @@ export function addScripts(flash: FlashSession) {
       const user = await this.ensureUser();
       const amount = Number(args.amount);
       const atto = new BigNumber(amount).times(_1_ETH);
-      const target = String(args.target);
 
       await user.repFaucet(atto);
 
       // if we have a target we transfer from current account to target.
-      if(target) {
-        await user.augur.contracts.reputationToken.transfer(target, atto);
+      if(args.target) {
+        await user.augur.contracts.reputationToken.transfer(String(args.target), atto);
       }
     },
   });
