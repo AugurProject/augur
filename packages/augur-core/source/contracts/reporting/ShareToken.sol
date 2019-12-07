@@ -154,6 +154,7 @@ contract ShareToken is ITyped, Initializable, ERC1155, IShareToken, ReentrancyGu
         uint256 _numTicks = markets[address(_market)].numTicks;
 
         require(_numOutcomes != 0, "Invalid Market provided");
+        require(_longOutcome < _numOutcomes);
 
         IUniverse _universe = _market.getUniverse();
 
