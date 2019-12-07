@@ -34,7 +34,7 @@ contract ReputationToken is VariableSupplyToken, IV2ReputationToken {
         universe = _universe;
         parentUniverse = _parentUniverse;
         warpSync = _augur.lookup("WarpSync");
-        legacyRepToken = IERC20(augur.lookup("LegacyReputationToken"));
+        legacyRepToken = IERC20(_augur.lookup("LegacyReputationToken"));
         erc1820Registry = IERC1820Registry(_erc1820RegistryAddress);
         initialize1820InterfaceImplementations();
     }

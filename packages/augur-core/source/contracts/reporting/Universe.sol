@@ -643,7 +643,7 @@ contract Universe is IUniverse {
     }
 
     function createMarketInternal(uint256 _endTime, uint256 _feePerCashInAttoCash, IAffiliateValidator _affiliateValidator, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, address _sender, uint256 _numOutcomes, uint256 _numTicks) private returns (IMarket _newMarket) {
-        getReputationToken().trustedUniverseTransfer(_sender, address(marketFactory), getOrCacheMarketRepBond());
+        reputationToken.trustedUniverseTransfer(_sender, address(marketFactory), getOrCacheMarketRepBond());
         _newMarket = marketFactory.createMarket(augur, this, _endTime, _feePerCashInAttoCash, _affiliateValidator, _affiliateFeeDivisor, _designatedReporterAddress, _sender, _numOutcomes, _numTicks);
         markets[address(_newMarket)] = true;
         shareToken.initializeMarket(_newMarket, _numOutcomes + 1, _numTicks); // To account for Invalid

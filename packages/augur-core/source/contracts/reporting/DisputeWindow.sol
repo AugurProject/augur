@@ -39,8 +39,8 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow {
         universe = _universe;
         duration = _duration;
         windowId = _disputeWindowId;
-        cash = ICash(augur.lookup("Cash"));
-        buyParticipationTokens = augur.lookup("BuyParticipationTokens");
+        cash = ICash(_augur.lookup("Cash"));
+        buyParticipationTokens = _augur.lookup("BuyParticipationTokens");
         startTime = _startTime;
         participationTokensEnabled = _participationTokensEnabled;
         erc1820Registry = IERC1820Registry(_erc1820RegistryAddress);

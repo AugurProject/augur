@@ -215,11 +215,9 @@ contract ShareToken is ITyped, Initializable, ERC1155, IShareToken, ReentrancyGu
      */
     function sellCompleteSets(IMarket _market, address _holder, address _recipient, uint256 _amount, bytes32 _fingerprint) external returns (uint256 _creatorFee, uint256 _reportingFee) {
         require(_holder == msg.sender || isApprovedForAll(_holder, msg.sender) == true, "ERC1155: need operator approval to sell complete sets");
+        
         (uint256 _payout, uint256 _creatorFee, uint256 _reportingFee) = burnCompleteSets(_market, _holder, _amount, _holder, _fingerprint);
-
         require(cash.transfer(_recipient, _payout));
-
-        IUniverse _universe = _market.getUniverse();
 
         _market.assertBalances();
         return (_creatorFee, _reportingFee);
