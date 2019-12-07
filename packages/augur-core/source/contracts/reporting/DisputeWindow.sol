@@ -67,7 +67,7 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow {
 
         if (_repBond >= _currentInitialReportBond / 2) {
             initialReportBondTotal = initialReportBondTotal.add(_repBond);
-            if (!_market.designatedReporterWasCorrect()) {
+            if (!_market.initialReporterWasCorrect()) {
                 incorrectDesignatedReportTotal = incorrectDesignatedReportTotal.add(_repBond);
             }
         }

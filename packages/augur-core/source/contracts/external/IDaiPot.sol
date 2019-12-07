@@ -6,7 +6,7 @@ contract IDaiPot {
     uint256 public dsr;  // The Dai Savings Rate
     uint256 public chi;  // The Rate Accumulator
 
-    function drip() public;
+    function drip() public returns (uint256);
     function join(uint wad) public;
     function exit(uint wad) public;
 }

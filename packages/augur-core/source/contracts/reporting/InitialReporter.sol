@@ -122,7 +122,7 @@ contract InitialReporter is Ownable, BaseReportingParticipant, Initializable, II
     /**
      * @return Bool indicating if the report was ultimately the finalzied payout
      */
-    function designatedReporterWasCorrect() public view returns (bool) {
+    function initialReporterWasCorrect() public view returns (bool) {
         return payoutDistributionHash == market.getWinningPayoutDistributionHash();
     }
 

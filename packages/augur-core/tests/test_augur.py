@@ -2,6 +2,7 @@
 
 from eth_tester.exceptions import TransactionFailed
 from pytest import raises, fixture as pytest_fixture
+from utils import AssertLog, stringToBytes
 
 
 def test_is_known_universe(augur, universe):
@@ -26,6 +27,17 @@ def test_log_requires(augur, universe):
 def test_register_non_contract(localFixture, augur):
     with raises(TransactionFailed):
         augur.registerContract("Testing", localFixture.accounts[0])
+
+def test_logs(localFixture, augur):
+    RegisterContractLog = {
+        "contractAddress": augur.address,
+        "key": stringToBytes("Testing")
+    }
+    with AssertLog(localFixture, "RegisterContract", RegisterContractLog):
+        augur.registerContract("Testing", augur.address)
+
+    with AssertLog(localFixture, "FinishDeployment", {}):
+        augur.finishDeployment()
 
 @pytest_fixture(scope="session")
 def localSnapshot(fixture, kitchenSinkSnapshot):
