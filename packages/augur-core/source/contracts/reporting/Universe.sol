@@ -99,7 +99,7 @@ contract Universe is IUniverse {
         cash.approve(address(daiJoin), 2 ** 256 - 1);
     }
 
-    function assertContractsNotZero() private {
+    function assertContractsNotZero() private view {
         require(marketFactory != IMarketFactory(0));
         require(disputeWindowFactory != IDisputeWindowFactory(0));
         require(shareToken != IShareToken(0));
