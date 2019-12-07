@@ -30,6 +30,7 @@ contract RepPriceOracle is IRepPriceOracle, Initializable {
         augur = _augur;
         cash = _augur.lookup("Cash");
         uniswapFactory = IUniswapV2Factory(_augur.lookup("UniswapV2Factory"));
+        endInitialization();
     }
 
     // TODO: Consider when this should be called other than when the price is requested as part of new fee setting
