@@ -13,6 +13,26 @@ def test_init(contractsFixture, market):
 
     assert shareToken.getTypeName() == stringToBytes("ShareToken")
 
+def test_bad_input_to_trade_functions(contractsFixture, universe, market, cash):
+    shareToken = contractsFixture.contracts["ShareToken"]
+
+    cost = 10 * market.getNumTicks()
+    account = contractsFixture.accounts[1]
+    cash.faucet(cost, sender=account)
+
+    # cant provide an invalid outcome
+    with raises(TransactionFailed):
+        shareToken.buyCompleteSetsForTrade(market.address, 10, 257, account, account, sender = account)
+
+    shareToken.buyCompleteSetsForTrade(market.address, 10, 1, account, account, sender = account)
+
+    # can't provide an invalid market
+    shareToken.setApprovalForAll(contractsFixture.accounts[0], True, sender=account)
+    with raises(TransactionFailed):
+        shareToken.sellCompleteSetsForTrade(nullAddress, 1, 10, account, account, account, account, 4, account, longTo32Bytes(11))
+
+    shareToken.sellCompleteSetsForTrade(market.address, 1, 10, account, account, account, account, 4, account, longTo32Bytes(11))
+
 def test_safeTransferFrom(contractsFixture, universe, market, cash):
     shareToken = contractsFixture.contracts['ShareToken']
 
