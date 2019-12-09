@@ -111,7 +111,7 @@ export default function setAlertText(alert: any, callback: Function) {
     }
 
     const marketId = alert.params.market || alert.params._market;
-
+    if (!marketId) return;
     switch (alert.name.toUpperCase()) {
       // CancelOrder
       case CANCELORDER: {

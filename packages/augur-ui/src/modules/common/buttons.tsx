@@ -390,12 +390,12 @@ export const ViewTransactionDetailsButton = (
       [Styles.Light]: props.light,
     })}
   >
-    {ViewIcon}
     <EtherscanLink
       showNonLink
       txhash={props.transactionHash}
       label={props.label ? props.label : 'View'}
     />
+    {ViewIcon}
   </div>
 );
 

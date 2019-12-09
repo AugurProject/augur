@@ -439,7 +439,7 @@ export class Users {
     let marketTradingPositions = null;
     let frozenFundsTotal = null;
     let profitLossSummary = null;
-try {
+  try {
     let profitLossCollection = await db.ProfitLossChanged.where('account').equals(params.account);
     if (params.limit) profitLossCollection = profitLossCollection.limit(params.limit);
     if (params.offset) profitLossCollection = profitLossCollection.offset(params.offset);
@@ -461,7 +461,7 @@ try {
     const allOrdersFilledResultsByMarketAndOutcome = reduceMarketAndOutcomeDocsToOnlyLatest(
       await getOrderFilledRecordsByMarketAndOutcome(db, allOrders)
     );
-    
+
     const orders = _.filter(allOrders, (log) => {
       return log.orderCreator === params.account || log.orderFiller === params.account;
     });
@@ -543,9 +543,8 @@ try {
         return sumTradingPositions(tradingPositions);
       }
     );
-
     // Create mapping for market/outcome balances
-    const tokenBalanceChangedLogs = await db.TokenBalanceChanged.where("[owner+token]").between([
+    const tokenBalanceChangedLogs = await db.ShareTokenBalanceChanged.where("[account+market+outcome]").between([
       params.account,
       Dexie.minKey
     ],[
@@ -554,6 +553,7 @@ try {
     ], true, true).and((log) => {
       return marketIds.includes(log.market);
     }).toArray();
+
     const marketOutcomeBalances = {};
     for (const tokenBalanceChangedLog of tokenBalanceChangedLogs) {
       if (!marketOutcomeBalances[tokenBalanceChangedLog.market]) {
@@ -634,7 +634,7 @@ try {
       account: params.account,
     });
   } catch(e) {
-    console.log(e)
+    console.error('getUserTradingPositions', e);
   }
     return {
       tradingPositions,
