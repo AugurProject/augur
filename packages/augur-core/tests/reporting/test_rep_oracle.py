@@ -2,10 +2,13 @@ from eth_tester.exceptions import TransactionFailed
 from utils import longToHexString, nullAddress
 from pytest import raises
 
-def test_rep_oracle(contractsFixture, market, universe):
+def test_rep_oracle(contractsFixture, augur, market, universe):
     repOracle = contractsFixture.contracts["RepPriceOracle"]
     cash = contractsFixture.contracts["Cash"]
     reputationToken = contractsFixture.applySignature('TestNetReputationToken', universe.getReputationToken())
+
+    with raises(TransactionFailed):
+        repOracle.initialize(augur.address)
 
     account = contractsFixture.accounts[0]
 

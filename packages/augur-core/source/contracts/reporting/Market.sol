@@ -13,7 +13,6 @@ import 'ROOT/factories/IDisputeCrowdsourcerFactory.sol';
 import 'ROOT/ICash.sol';
 import 'ROOT/factories/InitialReporterFactory.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
-import 'ROOT/libraries/math/SafeMathInt256.sol';
 import 'ROOT/reporting/Reporting.sol';
 import 'ROOT/reporting/IInitialReporter.sol';
 import 'ROOT/IWarpSync.sol';
@@ -26,7 +25,6 @@ import 'ROOT/libraries/token/IERC1155.sol';
  */
 contract Market is Initializable, Ownable, IMarket {
     using SafeMathUint256 for uint256;
-    using SafeMathInt256 for int256;
 
     // Constants
     uint256 private constant MAX_APPROVAL_AMOUNT = 2 ** 256 - 1;
@@ -73,9 +71,9 @@ contract Market is Initializable, Ownable, IMarket {
         _numOutcomes += 1; // The INVALID outcome is always first
         universe = _universe;
         cash = ICash(_augur.lookup("Cash"));
-        warpSync = IWarpSync(augur.lookup("WarpSync"));
+        warpSync = IWarpSync(_augur.lookup("WarpSync"));
         affiliateValidator = _affiliateValidator;
-        affiliates = IAffiliates(augur.lookup("Affiliates"));
+        affiliates = IAffiliates(_augur.lookup("Affiliates"));
         owner = _creator;
         repBondOwner = owner;
         cash.approve(address(_augur), MAX_APPROVAL_AMOUNT);
@@ -85,9 +83,9 @@ contract Market is Initializable, Ownable, IMarket {
         numTicks = _numTicks;
         feeDivisor = _feePerCashInAttoCash == 0 ? 0 : 1 ether / _feePerCashInAttoCash;
         affiliateFeeDivisor = _affiliateFeeDivisor;
-        InitialReporterFactory _initialReporterFactory = InitialReporterFactory(augur.lookup("InitialReporterFactory"));
-        participants.push(_initialReporterFactory.createInitialReporter(augur, _designatedReporterAddress));
-        shareToken = IShareToken(augur.lookup("ShareToken"));
+        InitialReporterFactory _initialReporterFactory = InitialReporterFactory(_augur.lookup("InitialReporterFactory"));
+        participants.push(_initialReporterFactory.createInitialReporter(_augur, _designatedReporterAddress));
+        shareToken = IShareToken(_augur.lookup("ShareToken"));
     }
 
     function assessFees() private {

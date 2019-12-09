@@ -1,22 +1,27 @@
 from datetime import timedelta
 from eth_tester.exceptions import TransactionFailed
 from pytest import raises, mark
-from utils import stringToBytes, AssertLog, EtherDelta, TokenDelta
+from utils import stringToBytes, AssertLog, EtherDelta, TokenDelta, nullAddress
 from reporting_utils import proceedToDesignatedReporting
 
-def test_market_creation(contractsFixture, universe, market):
+def test_market_creation(contractsFixture, augur, universe, market):
+    marketFactory = contractsFixture.contracts["MarketFactory"]
     account0 = contractsFixture.accounts[0]
     numTicks = market.getNumTicks()
 
     market = None
+    endTime = contractsFixture.contracts["Time"].getTimestamp() + timedelta(days=1).total_seconds()
 
     marketCreatedLog = {
         "extraInfo": 'so extra',
-        "endTime": contractsFixture.contracts["Time"].getTimestamp() + timedelta(days=1).total_seconds(),
+        "endTime": endTime,
         "marketCreator": account0,
         "designatedReporter": account0,
         "noShowBond": universe.getOrCacheMarketRepBond(),
     }
+
+    with raises(TransactionFailed):
+        market = marketFactory.createMarket(augur.address, endTime, 0, nullAddress, 0, account0, account0, 3, 100)
 
     with AssertLog(contractsFixture, "MarketCreated", marketCreatedLog):
         market = contractsFixture.createReasonableYesNoMarket(universe, extraInfo="so extra")

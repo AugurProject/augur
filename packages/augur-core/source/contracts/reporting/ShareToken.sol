@@ -154,6 +154,7 @@ contract ShareToken is ITyped, Initializable, ERC1155, IShareToken, ReentrancyGu
         uint256 _numTicks = markets[address(_market)].numTicks;
 
         require(_numOutcomes != 0, "Invalid Market provided");
+        require(_longOutcome < _numOutcomes);
 
         IUniverse _universe = _market.getUniverse();
 
@@ -215,11 +216,9 @@ contract ShareToken is ITyped, Initializable, ERC1155, IShareToken, ReentrancyGu
      */
     function sellCompleteSets(IMarket _market, address _holder, address _recipient, uint256 _amount, bytes32 _fingerprint) external returns (uint256 _creatorFee, uint256 _reportingFee) {
         require(_holder == msg.sender || isApprovedForAll(_holder, msg.sender) == true, "ERC1155: need operator approval to sell complete sets");
+        
         (uint256 _payout, uint256 _creatorFee, uint256 _reportingFee) = burnCompleteSets(_market, _holder, _amount, _holder, _fingerprint);
-
         require(cash.transfer(_recipient, _payout));
-
-        IUniverse _universe = _market.getUniverse();
 
         _market.assertBalances();
         return (_creatorFee, _reportingFee);
@@ -242,6 +241,7 @@ contract ShareToken is ITyped, Initializable, ERC1155, IShareToken, ReentrancyGu
         require(isApprovedForAll(_longParticipant, msg.sender) == true, "ERC1155: need operator approval to burn long account shares");
 
         _internalTransferFrom(_shortParticipant, _longParticipant, getTokenId(_market, _outcome), _amount, bytes(""), false);
+        // NOTE: burnCompleteSets will validate the market provided is legitimate
         (uint256 _payout, uint256 _creatorFee, uint256 _reportingFee) = burnCompleteSets(_market, _longParticipant, _amount, _sourceAccount, _fingerprint);
 
         uint256 _longPayout = _payout.mul(_price) / _market.getNumTicks();
