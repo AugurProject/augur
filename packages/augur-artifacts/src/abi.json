@@ -6102,6 +6102,45 @@
 			"constant": false,
 			"inputs": [
 				{
+					"name": "_endTime",
+					"type": "uint256"
+				},
+				{
+					"name": "_extraInfo",
+					"type": "string"
+				},
+				{
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"name": "_marketCreator",
+					"type": "address"
+				},
+				{
+					"name": "_designatedReporter",
+					"type": "address"
+				},
+				{
+					"name": "_feePerCashInAttoCash",
+					"type": "uint256"
+				}
+			],
+			"name": "onYesNoMarketCreated",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
 					"name": "_universe",
 					"type": "address"
 				},
@@ -6212,6 +6251,49 @@
 				}
 			],
 			"name": "logReputationTokensBurned",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_endTime",
+					"type": "uint256"
+				},
+				{
+					"name": "_extraInfo",
+					"type": "string"
+				},
+				{
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"name": "_marketCreator",
+					"type": "address"
+				},
+				{
+					"name": "_designatedReporter",
+					"type": "address"
+				},
+				{
+					"name": "_feePerCashInAttoCash",
+					"type": "uint256"
+				},
+				{
+					"name": "_outcomes",
+					"type": "bytes32[]"
+				}
+			],
+			"name": "onCategoricalMarketCreated",
 			"outputs": [
 				{
 					"name": "",
@@ -6599,53 +6681,6 @@
 				}
 			],
 			"name": "logMarketOIChanged",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_endTime",
-					"type": "uint256"
-				},
-				{
-					"name": "_extraInfo",
-					"type": "string"
-				},
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_marketCreator",
-					"type": "address"
-				},
-				{
-					"name": "_designatedReporter",
-					"type": "address"
-				},
-				{
-					"name": "_feePerCashInAttoCash",
-					"type": "uint256"
-				},
-				{
-					"name": "_prices",
-					"type": "int256[]"
-				},
-				{
-					"name": "_numTicks",
-					"type": "uint256"
-				}
-			],
-			"name": "logScalarMarketCreated",
 			"outputs": [
 				{
 					"name": "",
@@ -7222,45 +7257,6 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "_endTime",
-					"type": "uint256"
-				},
-				{
-					"name": "_extraInfo",
-					"type": "string"
-				},
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_marketCreator",
-					"type": "address"
-				},
-				{
-					"name": "_designatedReporter",
-					"type": "address"
-				},
-				{
-					"name": "_feePerCashInAttoCash",
-					"type": "uint256"
-				}
-			],
-			"name": "logYesNoMarketCreated",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
 					"name": "_universe",
 					"type": "address"
 				},
@@ -7544,11 +7540,15 @@
 					"type": "uint256"
 				},
 				{
-					"name": "_outcomes",
-					"type": "bytes32[]"
+					"name": "_prices",
+					"type": "int256[]"
+				},
+				{
+					"name": "_numTicks",
+					"type": "uint256"
 				}
 			],
-			"name": "logCategoricalMarketCreated",
+			"name": "onScalarMarketCreated",
 			"outputs": [
 				{
 					"name": "",
@@ -8649,6 +8649,29 @@
 				}
 			],
 			"name": "ShareTokenBalanceChanged",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": false,
+					"name": "contractAddress",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"name": "key",
+					"type": "bytes32"
+				}
+			],
+			"name": "RegisterContract",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [],
+			"name": "FinishDeployment",
 			"type": "event"
 		}
 	],
@@ -11990,7 +12013,12 @@
 			"constant": false,
 			"inputs": [],
 			"name": "drip",
-			"outputs": [],
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
 			"payable": false,
 			"stateMutability": "nonpayable",
 			"type": "function"
@@ -15889,20 +15917,6 @@
 		{
 			"constant": true,
 			"inputs": [],
-			"name": "designatedReporterWasCorrect",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
 			"name": "getReportTimestamp",
 			"outputs": [
 				{
@@ -15967,6 +15981,20 @@
 			"outputs": [],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "initialReporterWasCorrect",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -16748,20 +16776,6 @@
 			"type": "function"
 		},
 		{
-			"constant": true,
-			"inputs": [],
-			"name": "designatedReporterWasCorrect",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
 			"constant": false,
 			"inputs": [
 				{
@@ -16910,6 +16924,20 @@
 				{
 					"name": "",
 					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "initialReporterWasCorrect",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
 				}
 			],
 			"payable": false,

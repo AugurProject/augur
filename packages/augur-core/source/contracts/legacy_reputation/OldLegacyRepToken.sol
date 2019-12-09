@@ -68,7 +68,7 @@ contract OldLegacyReputationToken is DelegationTarget, ITyped, Initializable, Va
 
     function migrateOut(IReputationToken _destination, uint256 _attotokens) public whenNotMigratingFromLegacy returns (bool) {
         require(_attotokens > 0);
-        assertReputationTokenIsLegitSibling(_destination);
+        assertReputationTokenIsLegitChild(_destination);
         burn(msg.sender, _attotokens);
         _destination.migrateIn(msg.sender, _attotokens);
         return true;
@@ -135,7 +135,7 @@ contract OldLegacyReputationToken is DelegationTarget, ITyped, Initializable, Va
         return internalNoHooksTransfer(_source, _destination, _attotokens);
     }
 
-    function assertReputationTokenIsLegitSibling(IReputationToken _shadyReputationToken) private view {
+    function assertReputationTokenIsLegitChild(IReputationToken _shadyReputationToken) private view {
         IUniverse _shadyUniverse = _shadyReputationToken.getUniverse();
         require(universe.isParentOf(_shadyUniverse));
         IUniverse _legitUniverse = _shadyUniverse;

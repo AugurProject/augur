@@ -69,6 +69,9 @@ contract Augur is IAugur, IAugurCreationDataGetter {
     event ReportingFeeChanged(address indexed universe, uint256 reportingFee);
     event ShareTokenBalanceChanged(address indexed universe, address indexed account, address indexed market, uint256 outcome, uint256 balance);
 
+    event RegisterContract(address contractAddress, bytes32 key);
+    event FinishDeployment();
+
     mapping(address => bool) private markets;
     mapping(address => bool) private universes;
     mapping(address => bool) private crowdsourcers;
@@ -86,7 +89,7 @@ contract Augur is IAugur, IAugurCreationDataGetter {
     uint256 public forkCounter;
     mapping (address => uint256) universeForkIndex;
 
-    uint256 public upgradeTimestamp;
+    uint256 public upgradeTimestamp = Reporting.getInitialUpgradeTimestamp();
 
     int256 private constant DEFAULT_MIN_PRICE = 0;
     int256 private constant DEFAULT_MAX_PRICE = 1 ether;
@@ -98,7 +101,6 @@ contract Augur is IAugur, IAugurCreationDataGetter {
 
     constructor() public {
         uploader = msg.sender;
-        upgradeTimestamp = Reporting.getInitialUpgradeTimestamp();
     }
 
     //
@@ -115,6 +117,7 @@ contract Augur is IAugur, IAugurCreationDataGetter {
         if (_key == "Time") {
             time = ITime(_address);
         }
+        emit RegisterContract(_address, _key);
         return true;
     }
 
@@ -129,6 +132,7 @@ contract Augur is IAugur, IAugurCreationDataGetter {
 
     function finishDeployment() public onlyUploader returns (bool) {
         uploader = address(1);
+        emit FinishDeployment();
         return true;
     }
 
@@ -255,7 +259,7 @@ contract Augur is IAugur, IAugurCreationDataGetter {
     // Logging
     //
 
-    function logCategoricalMarketCreated(uint256 _endTime, string memory _extraInfo, IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feePerCashInAttoCash, bytes32[] memory _outcomes) public returns (bool) {
+    function onCategoricalMarketCreated(uint256 _endTime, string memory _extraInfo, IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feePerCashInAttoCash, bytes32[] memory _outcomes) public returns (bool) {
         IUniverse _universe = getAndValidateUniverse(msg.sender);
         markets[address(_market)] = true;
         int256[] memory _prices = new int256[](2);
@@ -269,7 +273,7 @@ contract Augur is IAugur, IAugurCreationDataGetter {
         return true;
     }
 
-    function logYesNoMarketCreated(uint256 _endTime, string memory _extraInfo, IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feePerCashInAttoCash) public returns (bool) {
+    function onYesNoMarketCreated(uint256 _endTime, string memory _extraInfo, IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feePerCashInAttoCash) public returns (bool) {
         IUniverse _universe = getAndValidateUniverse(msg.sender);
         markets[address(_market)] = true;
         int256[] memory _prices = new int256[](2);
@@ -282,7 +286,7 @@ contract Augur is IAugur, IAugurCreationDataGetter {
         return true;
     }
 
-    function logScalarMarketCreated(uint256 _endTime, string memory _extraInfo, IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feePerCashInAttoCash, int256[] memory _prices, uint256 _numTicks)  public returns (bool) {
+    function onScalarMarketCreated(uint256 _endTime, string memory _extraInfo, IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feePerCashInAttoCash, int256[] memory _prices, uint256 _numTicks)  public returns (bool) {
         IUniverse _universe = getAndValidateUniverse(msg.sender);
         require(_prices.length == 2);
         require(_prices[0] < _prices[1]);
