@@ -228,18 +228,18 @@ error: `outcome array has duplicates`
 ^Will the (S&P 500 Index|Dow Jones Industrial Average|Nasdaq Composite|Wilshire 5000|Russell 1000|NYSE Composite|MSCI World Index|FTSE All-World Index|Dow Jones Global Titans 50|S&P Global 100 Index|FTSE 100|DAX|Shanghai SE Composite|Hang Seng|Nikkei 225|S&P/TSX Composite|CAC 40|All Ordinaries|BSE Sensex 30|KOSPI Index|VIX) close on or above [0-9]+.*[0-9]* on (January|February|March|April|May|June|July|August|September|October|November|December) ([0-9]){2}, 20|([0-9]{2})\\?$
 ```
 Notice that dropdown values are included and specific date format has to be met.
-error: `populated market quetion does not match regex`
+error: `populated market question does not match regex`
 
-9. Most categorical templates have required outcomes, example, "Other (Field)" is required so that a market can resolve with a valid outcome of the winning outcome isn't listed explicitly.
+9. Most categorical templates have required outcomes, for example, "Other (Field)" is required so that a market can resolve with a valid outcome of the winning outcome isn't listed explicitly.
 error: `required outcomes are missing`
 
-10. Special data dropdown dependencies have to be met, example, a crypto BTC/USD market can not use BTC/EUR source for market resolution.
+10. Special data dropdown dependencies have to be met, for example, a crypto BTC/USD market can not use BTC/EUR source for market resolution.
 error: `market question dropdown dependencies values are incorrect`
 
 11. There is also possible Special data dropdown dependencies for outcomes, if an American Football market is for AFC football championship. NFC teams can not be used as outcomes.
 error: `outcome dependencies are incorrect`
 
-12. There are categorical markets that use market quesiton inputs in outcomes. These values need to match, example Point Sread markets have the team name and points in the outcome. `[Team A] -[Whole #].5` gets updated with the team choice and points from market question to produce the outcome. example `Arizona Cardinals -4.5`
+12. There are categorical markets that use market question inputs in outcomes. These values need to match, example Point Spread markets have the team name and points in the outcome. `[Team A] -[Whole #].5` gets updated with the team choice and points from market question to produce the outcome. example `Arizona Cardinals -4.5`
 error: `outcomes values from substituted market question inputs are incorrect`
 
 13. The resolution rules hash of passed in resolution rules needs to match the hash of the resolution rules in the validation structure.

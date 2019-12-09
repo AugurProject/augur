@@ -370,7 +370,7 @@ export const isTemplateMarket = (title, template: ExtraInfoTemplate, outcomes: s
 
     // reg ex to verify market question dropdown values and inputs
     if (!isValidTemplateMarket(validation.templateValidation, checkMarketTitle)) {
-      errors.push('populated market quetion does not match regex');
+      errors.push('populated market question does not match regex');
       return false;
     }
 
