@@ -316,8 +316,8 @@ export const ACCOUNT_CREATED = 'Onboarding - Account Created';
 export const ADDED_DAI = 'Added Dai';
 
 // Modal event names
-export const MODAL_CLOSED = 'Modal - Modal Closed';
-export const MODAL_VIEWED = 'Modal - Modal Viewed';
+export const MODAL_CLOSED = 'Modal Closed';
+export const MODAL_VIEWED = 'Modal Viewed';
 
 // Market/ Market list events
 export const MARKET_LINK_COPIED = 'Market Link Copied';

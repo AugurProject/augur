@@ -13,7 +13,7 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
-  trackModalViewed: (payload) => dispatch(track(MODAL_VIEWED, payload)),
+  trackModalViewed: (modalName, payload) => dispatch(track(modalName + ' - ' + MODAL_VIEWED, payload)),
 });
 
 export default withRouter(
