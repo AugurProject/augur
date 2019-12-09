@@ -27,8 +27,8 @@ import {
   NativePlaceTradeDisplayParams,
   NativePlaceTradeChainParams,
   TradeTransactionLimits,
-  NativePlaceTradeParams
 } from './OnChainTrade';
+import { ethers } from 'ethers';
 
 
 export enum Verbosity {
@@ -260,14 +260,23 @@ export class ZeroX {
     );
     const signedOrder = result[0];
     const orderHash: string = result[1];
-    const makerAddress: string = signedOrder[0];
+    const gnosisSafeAddress: string = signedOrder[0];
 
-    const signature = await this.signOrderHash(orderHash, this.augur.dependencies.address);
+    const gnosisSafe = this.augur.contracts.gnosisSafeFromAddress(gnosisSafeAddress);
+
+    const eip1271OrderWithHash = await this.augur.contracts.ZeroXTrade.encodeEIP1271OrderWithHash_(signedOrder, orderHash);
+    const messageHash = await gnosisSafe.getMessageHash_(eip1271OrderWithHash);
+
+    const signatureType = '07'; // in v3 this is EIP1271Wallet
+
+    const signedMessage = await this.augur.signMessage(messageHash);
+    const {r, s, v} = ethers.utils.splitSignature(signedMessage);
+    const signature = `0x${r.slice(2)}${s.slice(2)}${(v+4).toString(16)}${signatureType}`;
 
     const zeroXOrder = {
       chainId: Number(this.augur.networkId),
       exchangeAddress: this.augur.addresses.Exchange,
-      makerAddress,
+      makerAddress: gnosisSafeAddress,
       makerAssetData: signedOrder[10],
       makerFeeAssetData: signedOrder[12],
       makerAssetAmount: new BigNumber(signedOrder[4]._hex),
@@ -310,7 +319,8 @@ export class ZeroX {
     );
     return signatureUtils.convertToSignatureWithType(
       signature,
-      SignatureType.Wallet
+      // SignatureType.EIP1271Wallet, // -> 0x07
+      0x07,
     );
   }
 
