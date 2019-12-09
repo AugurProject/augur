@@ -259,14 +259,6 @@ export class ZeroX {
     return hash;
   }
 
-  async addOrder(order) {
-    if (this.browserMesh) {
-      return this.browserMesh.addOrdersAsync([order]);
-    } else {
-      return this.meshClient.addOrdersAsync([order]);
-    }
-  }
-
   async createZeroXOrder(params: ZeroXPlaceTradeParams) {
     const salt = new BigNumber(Date.now());
     const result = await this.augur.contracts.ZeroXTrade.createZeroXOrder_(
@@ -324,17 +316,12 @@ export class ZeroX {
     return `0x${r.slice(2)}${s.slice(2)}${(v+4).toString(16)}${signatureType}`;
   }
 
-  async signOrderHash(orderHash: string, maker: string): Promise<string> {
-    const signature = await signatureUtils.ecSignHashAsync(
-      this.providerEngine,
-      orderHash,
-      maker,
-    );
-    return signatureUtils.convertToSignatureWithType(
-      signature,
-      // SignatureType.EIP1271Wallet, // -> 0x07
-      0x07,
-    );
+  async addOrder(order) {
+    if (this.browserMesh) {
+      return this.browserMesh.addOrdersAsync([order]);
+    } else {
+      return this.meshClient.addOrdersAsync([order]);
+    }
   }
 
   async simulateTrade(
