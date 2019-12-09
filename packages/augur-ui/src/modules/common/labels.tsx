@@ -358,7 +358,8 @@ export const ValueLabel = (props: ValueLabelProps) => {
           data-event="mouseover"
           data-event-off="blur scroll"
         >
-          {`${fullPrecision} ${denominationLabel}`}
+          {props.useFull && props.value.full}
+          {!props.useFull && `${fullPrecision} ${denominationLabel}`}
         </ReactTooltip>
       )}
     </span>

@@ -415,7 +415,6 @@ class Form extends Component<FromProps, FormState> {
         quantity,
         errors,
         isOrderValid,
-        nextProps,
         fromExternal
       );
 
@@ -658,14 +657,13 @@ class Form extends Component<FromProps, FormState> {
     const quantityValue = convertExponentialToDecimal(
       s[this.INPUT_TYPES.QUANTITY]
     );
-    const isScalerWithDenomination: boolean = market.marketType === SCALAR;
+    const isScaler: boolean = marketType === SCALAR;
     // TODO: figure out default outcome after we figure out ordering of the outcomes
     const defaultOutcome = selectedOutcome !== null ? selectedOutcome.id : 2;
     let advancedOptions = advancedDropdownOptions;
     if (!Ox_ENABLED) {
       advancedOptions = [advancedOptions[0], advancedOptions[2]];
     }
-
     return (
       <div className={Styles.TradingForm}>
         <div className={classNames(Styles.Outcome, Styles.HideOnMobile)}>
@@ -732,7 +730,7 @@ class Form extends Component<FromProps, FormState> {
           </li>
           <li>
             <label htmlFor="tr__input--limit-price">
-              {marketType === SCALAR ? 'Outcome' : 'Limit Price'}
+              {isScaler ? 'Outcome' : 'Limit Price'}
             </label>
             <div
               className={classNames(Styles.TradingForm__input__container, {
@@ -763,15 +761,13 @@ class Form extends Component<FromProps, FormState> {
               <span
                 className={classNames({
                   [`${Styles.isScalar_largeText}`]:
-                    isScalerWithDenomination &&
-                    (market.scalarDenomination || []).length <= 24,
+                    isScaler && (market.scalarDenomination || []).length <= 24,
                   [`${Styles.isScalar_smallText}`]:
-                    isScalerWithDenomination &&
-                    (market.scalarDenomination || []).length > 24,
+                    isScaler && (market.scalarDenomination || []).length > 24,
                   [`${Styles.error}`]: s.errors[this.INPUT_TYPES.PRICE].length,
                 })}
               >
-                {isScalerWithDenomination ? market.scalarDenomination : '$'}
+                {isScaler ? market.scalarDenomination : '$'}
               </span>
             </div>
           </li>

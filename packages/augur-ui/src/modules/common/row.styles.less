@@ -5,10 +5,10 @@
   height: 100%;
   align-items: center;
   grid-template-columns: repeat(5, 1fr);
-  padding: 0 @size-16;
+  width: 100%;
 
   > li {
-    .mono-10-bold;
+    .mono-10-medium;
 
     align-items: center;
     color: @color-primary-text;
@@ -23,9 +23,8 @@
     }
 
     &:first-child {
-      .mono-10-bold;
+      .mono-10-medium;
 
-      display: block;
       max-width: 100%;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -92,7 +91,16 @@
 }
 
 .BottomBorder {
-  border-bottom: 0.0625rem solid @color-dark-grey;
+  padding: 0 1rem;
+
+  > ul > li {
+    border-bottom: 0.0625rem solid @color-dark-grey;
+    height: 100%;
+  }
+
+  &.Row4Parent:last-of-type > ul > li {
+    border-bottom: none;
+  }
 }
 
 .TopBorder {
@@ -179,7 +187,7 @@
 
 .Row4 {
   grid-template-columns: 2fr repeat(5, 1fr);
-  padding: @size-5 @size-24 @size-5 @size-16;
+  padding: 0 @size-24 0 @size-16;
   position: relative;
 
   > li {
