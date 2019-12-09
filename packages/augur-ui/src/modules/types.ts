@@ -264,6 +264,7 @@ export interface UIOrder {
   hash?: string;
   numTicks: number;
   minPrice: string;
+  creationTime?: DateFormattedObject;
 }
 
 export interface CreateLiquidityOrders {
