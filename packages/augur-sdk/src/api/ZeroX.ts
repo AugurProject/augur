@@ -245,8 +245,30 @@ export class ZeroX {
   }
 
   async placeOnChainOrder(params: ZeroXPlaceTradeParams): Promise<string> {
-    const salt = new BigNumber(Date.now());
+    const { order, hash }  = await this.createZeroXOrder(params);
+    const validation = await this.addOrder(order);
+    if (validation.rejected.length > 0) {
+      console.log(JSON.stringify(validation.rejected, null, 2));
+      throw Error(
+        `0x add order validation failure: ${JSON.stringify(
+          validation.rejected[0]
+        )}`
+      );
+    }
 
+    return hash;
+  }
+
+  async addOrder(order) {
+    if (this.browserMesh) {
+      return this.browserMesh.addOrdersAsync([order]);
+    } else {
+      return this.meshClient.addOrdersAsync([order]);
+    }
+  }
+
+  async createZeroXOrder(params: ZeroXPlaceTradeParams) {
+    const salt = new BigNumber(Date.now());
     const result = await this.augur.contracts.ZeroXTrade.createZeroXOrder_(
       new BigNumber(params.direction),
       params.amount,
@@ -258,8 +280,36 @@ export class ZeroX {
       this.augur.addresses.Exchange,
       salt
     );
-    const signedOrder = result[0];
-    const orderHash: string = result[1];
+    const order = result[0];
+    const hash = result[1];
+    const gnosisSafeAddress: string = order[0];
+    const signature = await this.signOrder(order, hash);
+
+    return {
+      order: {
+        chainId: Number(this.augur.networkId),
+        exchangeAddress: this.augur.addresses.Exchange,
+        makerAddress: gnosisSafeAddress,
+        makerAssetData: order[10],
+        makerFeeAssetData: order[12],
+        makerAssetAmount: new BigNumber(order[4]._hex),
+        makerFee: new BigNumber(order[6]._hex),
+        takerAddress: order[1],
+        takerAssetData: order[11],
+        takerFeeAssetData: order[13],
+        takerAssetAmount: new BigNumber(order[5]._hex),
+        takerFee: new BigNumber(order[7]._hex),
+        senderAddress: order[3],
+        feeRecipientAddress: order[2],
+        expirationTimeSeconds: new BigNumber(order[8]._hex),
+        salt: new BigNumber(order[9]._hex),
+        signature,
+      },
+      hash,
+    };
+  }
+
+  async signOrder(signedOrder: any, orderHash: string): Promise<string> {
     const gnosisSafeAddress: string = signedOrder[0];
 
     const gnosisSafe = this.augur.contracts.gnosisSafeFromAddress(gnosisSafeAddress);
@@ -271,44 +321,7 @@ export class ZeroX {
 
     const signedMessage = await this.augur.signMessage(messageHash);
     const {r, s, v} = ethers.utils.splitSignature(signedMessage);
-    const signature = `0x${r.slice(2)}${s.slice(2)}${(v+4).toString(16)}${signatureType}`;
-
-    const zeroXOrder = {
-      chainId: Number(this.augur.networkId),
-      exchangeAddress: this.augur.addresses.Exchange,
-      makerAddress: gnosisSafeAddress,
-      makerAssetData: signedOrder[10],
-      makerFeeAssetData: signedOrder[12],
-      makerAssetAmount: new BigNumber(signedOrder[4]._hex),
-      makerFee: new BigNumber(signedOrder[6]._hex),
-      takerAddress: signedOrder[1],
-      takerAssetData: signedOrder[11],
-      takerFeeAssetData: signedOrder[13],
-      takerAssetAmount: new BigNumber(signedOrder[5]._hex),
-      takerFee: new BigNumber(signedOrder[7]._hex),
-      senderAddress: signedOrder[3],
-      feeRecipientAddress: signedOrder[2],
-      expirationTimeSeconds: new BigNumber(signedOrder[8]._hex),
-      salt: new BigNumber(signedOrder[9]._hex),
-      signature,
-    };
-
-    let validation;
-    if (this.browserMesh) {
-      validation = await this.browserMesh.addOrdersAsync([zeroXOrder]);
-    } else {
-      validation = await this.meshClient.addOrdersAsync([zeroXOrder]);
-    }
-    if (validation.rejected.length > 0) {
-      console.log(JSON.stringify(validation.rejected, null, 2));
-      throw Error(
-        `0x add order validation failure: ${JSON.stringify(
-          validation.rejected[0]
-        )}`
-      );
-    }
-
-    return orderHash;
+    return `0x${r.slice(2)}${s.slice(2)}${(v+4).toString(16)}${signatureType}`;
   }
 
   async signOrderHash(orderHash: string, maker: string): Promise<string> {
