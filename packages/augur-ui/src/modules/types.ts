@@ -496,6 +496,7 @@ export interface EthereumNodeOptions {
 }
 
 export interface EnvObject {
+  useWeb3Transport: boolean;
   'ethereum-node': EthereumNodeOptions;
   universe?: string;
   '0x-endpoint'?: string,
