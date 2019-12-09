@@ -11,6 +11,7 @@ import { BigNumber } from "bignumber.js";
 import { Getter } from "./Router";
 import { OrderState, Order } from "./OnChainTrading";
 import { StoredOrder } from "../db/ZeroXOrders";
+import Dexie from 'dexie'
 
 import * as t from "io-ts";
 
@@ -63,8 +64,11 @@ export class ZeroXOrdersGetters {
     const orderType = params.orderType ? `0x0${params.orderType}` : undefined;
 
     let currentOrdersResponse;
-    if (typeof outcome === 'undefined' && typeof orderType === 'undefined') {
-      currentOrdersResponse = await db.ZeroXOrders.toArray();
+    if (typeof outcome === 'undefined' || typeof orderType === 'undefined') {
+      currentOrdersResponse = await db.ZeroXOrders.where('[market+outcome+orderType]').between(
+        [params.marketId, Dexie.minKey, Dexie.minKey],
+        [params.marketId, Dexie.maxKey, Dexie.maxKey],
+      ).toArray();
     } else {
       currentOrdersResponse = await db.ZeroXOrders.where('[market+outcome+orderType]').equals([
         params.marketId,
