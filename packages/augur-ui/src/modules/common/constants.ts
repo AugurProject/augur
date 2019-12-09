@@ -1059,7 +1059,7 @@ export const TRADING_TUTORIAL_COPY = {
     subheader: [
       {
         text:
-          'In edition you can select an available order from the order book to automatically fill into your order ticket.',
+          'Alternatively, you can select an available order from the order book to automatically fill into your order ticket.',
       },
       {
         text:
