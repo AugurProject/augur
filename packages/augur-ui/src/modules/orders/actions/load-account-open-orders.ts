@@ -18,7 +18,6 @@ export const loadAccountOpenOrders = (
     orderState: OPEN,
     filterFinalized: true
   });
-  console.log('user open orders', JSON.stringify(orders));
   if (marketIdAggregator) marketIdAggregator(Object.keys(orders));
   dispatch(updateUserOpenOrders(orders));
   if (options.marketId) {
