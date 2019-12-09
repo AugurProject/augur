@@ -199,6 +199,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         payable
         returns (uint256)
     {
+        require(_orders.length > 0);
         uint256 _fillAmountRemaining = _requestedFillAmount;
 
         transferFromAllowed = true;

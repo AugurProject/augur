@@ -491,6 +491,7 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
 
     function fillZeroXOrder(IMarket _market, uint256 _outcome, IERC20 _kycToken, uint256 _price, Order.Types _orderType, uint256 _amount, address _creator, bytes32 _tradeGroupId, bytes32 _fingerprint, address _filler) external returns (uint256) {
         require(msg.sender == zeroXTrade);
+        require(augur.isKnownMarket(_market));
         Trade.OrderData memory _orderData = Trade.createOrderData(storedContracts.shareToken, _market, _outcome, _kycToken, _price, _orderType, _amount, _creator);
         Trade.Data memory _tradeData = Trade.createWithData(storedContracts, _orderData, _filler, _amount, _fingerprint);
         return fillOrderInternal(_filler, _tradeData, _amount, _tradeGroupId);
