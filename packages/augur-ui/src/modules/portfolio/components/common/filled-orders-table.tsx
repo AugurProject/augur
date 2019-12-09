@@ -30,7 +30,7 @@ const FilledOrdersTable = (props: FilledOrdersTableProps) => {
         <ul>
           <li>Filled</li>
           <li>Time Stamp</li>
-          <li>TX Details</li>
+          <li>Transaction Details</li>
         </ul>
         {filledOrder.trades.map((trade: MarketData, i: number) => (
           <ul key={i}>
@@ -40,7 +40,7 @@ const FilledOrdersTable = (props: FilledOrdersTableProps) => {
             <li>{trade.timestamp.formattedShort}</li>
             <li>
               <ViewTransactionDetailsButton
-                label={'VIEW etherscan tx'}
+                label={'VIEW Etherscan Transaction'}
                 light
                 transactionHash={trade.transactionHash}
               />
