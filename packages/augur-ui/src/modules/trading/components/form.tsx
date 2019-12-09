@@ -751,7 +751,7 @@ class Form extends Component<FromProps, FormState> {
                 min={min}
                 placeholder="0.00"
                 tabIndex={tradingTutorial ? -1 : 2}
-                defaultValue={s[this.INPUT_TYPES.PRICE]}
+                value={s[this.INPUT_TYPES.PRICE]}
                 onChange={e =>
                   this.updateAndValidate(this.INPUT_TYPES.PRICE, e.target.value)
                 }
