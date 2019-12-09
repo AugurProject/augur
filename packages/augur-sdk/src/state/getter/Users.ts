@@ -439,293 +439,203 @@ export class Users {
     let marketTradingPositions = null;
     let frozenFundsTotal = null;
     let profitLossSummary = null;
+  try {
+    let profitLossCollection = await db.ProfitLossChanged.where('account').equals(params.account);
+    if (params.limit) profitLossCollection = profitLossCollection.limit(params.limit);
+    if (params.offset) profitLossCollection = profitLossCollection.offset(params.offset);
+    const profitLossRecords = await profitLossCollection.and((log) => {
+      if (params.universe && log.universe !== params.universe) return false;
+      if (params.marketId && log.market !== params.marketId) return false;
+      return true;
+    }).toArray();
+    const profitLossResultsByMarketAndOutcome = reduceMarketAndOutcomeDocsToOnlyLatest(
+      await getProfitLossRecordsByMarketAndOutcome(db, params.account, profitLossRecords)
+    );
 
-    try {
-      let profitLossCollection = await db.ProfitLossChanged.where(
-        'account'
-      ).equals(params.account);
-      if (params.limit)
-        profitLossCollection = profitLossCollection.limit(params.limit);
-      if (params.offset)
-        profitLossCollection = profitLossCollection.offset(params.offset);
-      const profitLossRecords = await profitLossCollection
-        .and(log => {
-          if (params.universe && log.universe !== params.universe) return false;
-          if (params.marketId && log.market !== params.marketId) return false;
-          return true;
-        })
-        .toArray();
-      const profitLossResultsByMarketAndOutcome = reduceMarketAndOutcomeDocsToOnlyLatest(
-        await getProfitLossRecordsByMarketAndOutcome(
-          db,
-          params.account,
-          profitLossRecords
-        )
-      );
+    let allOrders: ParsedOrderEventLog[];
+    if (params.marketId) {
+      allOrders = await db.OrderEvent.where('[market+eventType]').equals([params.marketId, OrderEventType.Fill]).toArray();
+    } else {
+      allOrders = await db.OrderEvent.where('eventType').equals(OrderEventType.Fill).toArray();
+    }
+    const allOrdersFilledResultsByMarketAndOutcome = reduceMarketAndOutcomeDocsToOnlyLatest(
+      await getOrderFilledRecordsByMarketAndOutcome(db, allOrders)
+    );
 
-      let allOrders: ParsedOrderEventLog[];
-      if (params.marketId) {
-        allOrders = await db.OrderEvent.where('[market+eventType]')
-          .equals([params.marketId, OrderEventType.Fill])
-          .toArray();
-      } else {
-        allOrders = await db.OrderEvent.where('eventType')
-          .equals(OrderEventType.Fill)
-          .toArray();
+    const orders = _.filter(allOrders, (log) => {
+      return log.orderCreator === params.account || log.orderFiller === params.account;
+    });
+    const ordersFilledResultsByMarketAndOutcome = reduceMarketAndOutcomeDocsToOnlyLatest(
+      await getOrderFilledRecordsByMarketAndOutcome(db, orders)
+    );
+
+    const marketIds = _.keys(profitLossResultsByMarketAndOutcome);
+
+    const marketsData = await db.Markets.where("market").anyOf(marketIds).toArray();
+    const markets = _.keyBy(marketsData, 'market');
+
+    const marketFinalizedResults = await db.MarketFinalized.where("market").anyOf(marketIds).toArray();
+    const marketFinalizedByMarket = _.keyBy(marketFinalizedResults, 'market');
+
+    const shareTokenBalances = await db.ShareTokenBalanceChanged.where('[universe+account]').equals([params.universe, params.account]).toArray();
+    const shareTokenBalancesByMarket = _.groupBy(shareTokenBalances, 'market');
+    const shareTokenBalancesByMarketandOutcome = _.mapValues(
+      shareTokenBalancesByMarket,
+      marketShares => {
+        return _.keyBy(marketShares, 'outcome');
       }
-      const allOrdersFilledResultsByMarketAndOutcome = reduceMarketAndOutcomeDocsToOnlyLatest(
-        await getOrderFilledRecordsByMarketAndOutcome(db, allOrders)
-      );
+    );
 
-      const orders = _.filter(allOrders, log => {
-        return (
-          log.orderCreator === params.account ||
-          log.orderFiller === params.account
-        );
-      });
-      const ordersFilledResultsByMarketAndOutcome = reduceMarketAndOutcomeDocsToOnlyLatest(
-        await getOrderFilledRecordsByMarketAndOutcome(db, orders)
-      );
-
-      const marketIds = _.keys(profitLossResultsByMarketAndOutcome);
-
-      const marketsData = await db.Markets.where('market')
-        .anyOf(marketIds)
-        .toArray();
-      const markets = _.keyBy(marketsData, 'market');
-
-      const marketFinalizedResults = await db.MarketFinalized.where('market')
-        .anyOf(marketIds)
-        .toArray();
-      const marketFinalizedByMarket = _.keyBy(marketFinalizedResults, 'market');
-
-      const shareTokenBalances = await db.ShareTokenBalanceChanged.where(
-        '[universe+account]'
-      )
-        .equals([params.universe, params.account])
-        .toArray();
-      const shareTokenBalancesByMarket = _.groupBy(
-        shareTokenBalances,
-        'market'
-      );
-      const shareTokenBalancesByMarketandOutcome = _.mapValues(
-        shareTokenBalancesByMarket,
-        marketShares => {
-          return _.keyBy(marketShares, 'outcome');
-        }
-      );
-
-      // map Latest PLs to Trading Positions
-      const tradingPositionsByMarketAndOutcome = _.mapValues(
-        profitLossResultsByMarketAndOutcome,
-        profitLossResultsByOutcome => {
-          return _.mapValues(
-            profitLossResultsByOutcome,
-            (profitLossResult: ProfitLossChangedLog) => {
-              const marketDoc = markets[profitLossResult.market];
-              if (
-                !ordersFilledResultsByMarketAndOutcome[
-                  profitLossResult.market
-                ] ||
-                !ordersFilledResultsByMarketAndOutcome[profitLossResult.market][
-                  profitLossResult.outcome
-                ]
-              ) {
-                return null;
-              }
-              let outcomeValue = new BigNumber(
-                allOrdersFilledResultsByMarketAndOutcome[
-                  profitLossResult.market
-                ][profitLossResult.outcome]!.price
-              );
-              if (marketFinalizedByMarket[profitLossResult.market]) {
-                outcomeValue = new BigNumber(
-                  marketFinalizedByMarket[
-                    profitLossResult.market
-                  ].winningPayoutNumerators[
-                    new BigNumber(profitLossResult.outcome).toNumber()
-                  ]
-                );
-              }
-              const tradingPosition = getTradingPositionFromProfitLossFrame(
-                profitLossResult,
-                marketDoc,
-                outcomeValue,
-                new BigNumber(profitLossResult.timestamp).toNumber(),
-                shareTokenBalancesByMarketandOutcome
-              );
-
-              return tradingPosition;
+    // map Latest PLs to Trading Positions
+    const tradingPositionsByMarketAndOutcome = _.mapValues(
+      profitLossResultsByMarketAndOutcome,
+      profitLossResultsByOutcome => {
+        return _.mapValues(
+          profitLossResultsByOutcome,
+          (profitLossResult: ProfitLossChangedLog) => {
+            const marketDoc = markets[profitLossResult.market];
+            if (
+              !ordersFilledResultsByMarketAndOutcome[profitLossResult.market] ||
+              !ordersFilledResultsByMarketAndOutcome[profitLossResult.market][
+                profitLossResult.outcome
+              ]
+            ) {
+              return null;
             }
-          );
-        }
-      );
-
-      tradingPositions = _.flatten(
-        _.values(_.mapValues(tradingPositionsByMarketAndOutcome, _.values))
-      ).filter(t => t !== null);
-
-      marketTradingPositions = _.mapValues(
-        tradingPositionsByMarketAndOutcome,
-        tradingPositionsByOutcome => {
-          const tradingPositions = _.values(
-            _.omitBy(tradingPositionsByOutcome, _.isNull)
-          );
-          return sumTradingPositions(tradingPositions);
-        }
-      );
-      // Create mapping for market/outcome balances
-      const tokenBalanceChangedLogs = await db.ShareTokenBalanceChanged.where(
-        '[account+market+outcome]'
-      )
-        .between(
-          [params.account, Dexie.minKey],
-          [params.account, Dexie.maxKey],
-          true,
-          true
-        )
-        .and(log => {
-          return marketIds.includes(log.market);
-        })
-        .toArray();
-
-      const marketOutcomeBalances = {};
-      for (const tokenBalanceChangedLog of tokenBalanceChangedLogs) {
-        if (!marketOutcomeBalances[tokenBalanceChangedLog.market]) {
-          marketOutcomeBalances[tokenBalanceChangedLog.market] = {};
-        }
-        marketOutcomeBalances[tokenBalanceChangedLog.market][
-          new BigNumber(tokenBalanceChangedLog.outcome).toNumber()
-        ] = tokenBalanceChangedLog.balance;
-      }
-      // Set unclaimedProceeds & unclaimedProfit
-      for (const marketData of marketsData) {
-        marketTradingPositions[marketData.market].unclaimedProceeds = '0';
-        marketTradingPositions[marketData.market].unclaimedProfit = '0';
-        if (
-          marketData.reportingState === MarketReportingState.Finalized ||
-          MarketReportingState.AwaitingFinalization
-        ) {
-          if (marketData.tentativeWinningPayoutNumerators) {
-            for (const tentativeWinningPayoutNumerator in marketData.tentativeWinningPayoutNumerators) {
-              if (
-                marketOutcomeBalances[marketData.market] &&
-                marketData.tentativeWinningPayoutNumerators[
-                  tentativeWinningPayoutNumerator
-                ] !== '0x00' &&
-                marketOutcomeBalances[marketData.market][
-                  tentativeWinningPayoutNumerator
+            let outcomeValue = new BigNumber(
+              allOrdersFilledResultsByMarketAndOutcome[profitLossResult.market][
+                profitLossResult.outcome
+              ]!.price
+            );
+            if (marketFinalizedByMarket[profitLossResult.market]) {
+              outcomeValue = new BigNumber(
+                marketFinalizedByMarket[
+                  profitLossResult.market
+                ].winningPayoutNumerators[
+                  new BigNumber(profitLossResult.outcome).toNumber()
                 ]
-              ) {
-                const numShares = new BigNumber(
-                  marketOutcomeBalances[marketData.market][
-                    tentativeWinningPayoutNumerator
-                  ]
-                );
-                const reportingFeeDivisor = marketData.feeDivisor;
-                const reportingFee = new BigNumber(
-                  tokenBalanceChangedLogs[0].balance
-                ).div(reportingFeeDivisor);
-                const unclaimedProceeds = numShares
-                  .times(
-                    marketData.tentativeWinningPayoutNumerators[
-                      tentativeWinningPayoutNumerator
-                    ]
-                  )
-                  .minus(marketData.feePerCashInAttoCash)
-                  .minus(reportingFee);
+              );
+            }
+            const tradingPosition = getTradingPositionFromProfitLossFrame(
+              profitLossResult,
+              marketDoc,
+              outcomeValue,
+              new BigNumber(profitLossResult.timestamp).toNumber(),
+              shareTokenBalancesByMarketandOutcome
+            );
 
-                marketTradingPositions[
-                  marketData.market
-                ].unclaimedProceeds = new BigNumber(
-                  marketTradingPositions[marketData.market].unclaimedProceeds
-                )
-                  .plus(unclaimedProceeds)
-                  .toString();
-                marketTradingPositions[
-                  marketData.market
-                ].unclaimedProfit = new BigNumber(unclaimedProceeds)
-                  .minus(
-                    new BigNumber(
-                      marketTradingPositions[marketData.market].unrealizedCost
-                    ).times(QUINTILLION)
-                  )
-                  .toString();
-              }
+            return tradingPosition;
+          }
+        );
+      }
+    );
+
+    tradingPositions = _.flatten(
+      _.values(_.mapValues(tradingPositionsByMarketAndOutcome, _.values))
+    ).filter(t => t !== null);
+
+    marketTradingPositions = _.mapValues(
+      tradingPositionsByMarketAndOutcome,
+      tradingPositionsByOutcome => {
+        const tradingPositions = _.values(
+          _.omitBy(tradingPositionsByOutcome, _.isNull)
+        );
+        return sumTradingPositions(tradingPositions);
+      }
+    );
+    // Create mapping for market/outcome balances
+    const tokenBalanceChangedLogs = await db.ShareTokenBalanceChanged.where("[account+market+outcome]").between([
+      params.account,
+      Dexie.minKey
+    ],[
+      params.account,
+      Dexie.maxKey
+    ], true, true).and((log) => {
+      return marketIds.includes(log.market);
+    }).toArray();
+
+    const marketOutcomeBalances = {};
+    for (const tokenBalanceChangedLog of tokenBalanceChangedLogs) {
+      if (!marketOutcomeBalances[tokenBalanceChangedLog.market]) {
+        marketOutcomeBalances[tokenBalanceChangedLog.market] = {};
+      }
+      marketOutcomeBalances[tokenBalanceChangedLog.market][new BigNumber(tokenBalanceChangedLog.outcome).toNumber()] = tokenBalanceChangedLog.balance;
+    }
+    // Set unclaimedProceeds & unclaimedProfit
+    for (const marketData of marketsData) {
+      marketTradingPositions[marketData.market].unclaimedProceeds = '0';
+      marketTradingPositions[marketData.market].unclaimedProfit = '0';
+      if (marketData.reportingState === MarketReportingState.Finalized || MarketReportingState.AwaitingFinalization) {
+        if (marketData.tentativeWinningPayoutNumerators) {
+          for (const tentativeWinningPayoutNumerator in marketData.tentativeWinningPayoutNumerators) {
+            if (marketOutcomeBalances[marketData.market] && marketData.tentativeWinningPayoutNumerators[tentativeWinningPayoutNumerator] !== '0x00' && marketOutcomeBalances[marketData.market][tentativeWinningPayoutNumerator]) {
+              const numShares = new BigNumber(marketOutcomeBalances[marketData.market][tentativeWinningPayoutNumerator]);
+              const reportingFeeDivisor = marketData.feeDivisor;
+              const reportingFee = new BigNumber(tokenBalanceChangedLogs[0].balance).div(reportingFeeDivisor);
+              const unclaimedProceeds = numShares.times(marketData.tentativeWinningPayoutNumerators[tentativeWinningPayoutNumerator])
+                .minus(marketData.feePerCashInAttoCash)
+                .minus(reportingFee);
+
+              marketTradingPositions[marketData.market].unclaimedProceeds = new BigNumber(marketTradingPositions[marketData.market].unclaimedProceeds).plus(unclaimedProceeds).toString();
+              marketTradingPositions[marketData.market].unclaimedProfit = new BigNumber(unclaimedProceeds).minus(new BigNumber(marketTradingPositions[marketData.market].unrealizedCost).times(QUINTILLION)).toString();
             }
           }
         }
       }
-      // Format unclaimedProceeds & unclaimedProfit to Dai with 2 decimal places
-      for (const marketData of marketsData) {
-        marketTradingPositions[
-          marketData.market
-        ].unclaimedProceeds = new BigNumber(
-          marketTradingPositions[marketData.market].unclaimedProceeds
-        )
-          .dividedBy(QUINTILLION)
-          .toFixed(2);
-        marketTradingPositions[
-          marketData.market
-        ].unclaimedProfit = new BigNumber(
-          marketTradingPositions[marketData.market].unclaimedProfit
-        )
-          .dividedBy(QUINTILLION)
-          .toFixed(2);
-        marketTradingPositions[
-          marketData.market
-        ].userSharesBalances = marketOutcomeBalances[marketData.market]
-          ? Object.keys(marketOutcomeBalances[marketData.market]).reduce(
-              (p, outcome) => {
-                p[outcome] = convertOnChainAmountToDisplayAmount(
-                  new BigNumber(
-                    marketOutcomeBalances[marketData.market][outcome]
-                  ),
-                  numTicksToTickSize(
-                    new BigNumber(marketData.numTicks),
-                    new BigNumber(marketData.prices[0]),
-                    new BigNumber(marketData.prices[1])
-                  )
-                );
-                return p;
-              },
-              {}
-            )
-          : {};
-      }
-
-      // tradingPositions filters out users create open orders, need to use `profitLossResultsByMarketAndOutcome` to calc total frozen funds
-      const allProfitLossResults = _.flatten(
-        _.values(_.mapValues(profitLossResultsByMarketAndOutcome, _.values))
-      );
-      frozenFundsTotal = _.reduce(
-        allProfitLossResults,
-        (value, tradingPosition) => {
-          return value.plus(tradingPosition.frozenFunds);
-        },
-        new BigNumber(0)
-      );
-
-      const ownedMarketsResponse = await db.Markets.where('marketCreator')
-        .equals(params.account)
-        .and(log => !log.finalized)
-        .toArray();
-      const ownedMarkets = _.map(ownedMarketsResponse, 'market');
-      const totalValidityBonds = await augur.contracts.hotLoading.getTotalValidityBonds_(
-        ownedMarkets
-      );
-      frozenFundsTotal = frozenFundsTotal.plus(totalValidityBonds);
-
-      const universe = params.universe
-        ? params.universe
-        : await augur.getMarket(params.marketId).getUniverse_();
-      profitLossSummary = await Users.getProfitLossSummary(augur, db, {
-        universe,
-        account: params.account,
-      });
-    } catch (e) {
-      console.error('getUserTradingPositions', e);
     }
+    // Format unclaimedProceeds & unclaimedProfit to Dai with 2 decimal places
+    for (const marketData of marketsData) {
+      marketTradingPositions[marketData.market].unclaimedProceeds = new BigNumber(marketTradingPositions[marketData.market].unclaimedProceeds).dividedBy(QUINTILLION).toFixed(2);
+      marketTradingPositions[marketData.market].unclaimedProfit = new BigNumber(marketTradingPositions[marketData.market].unclaimedProfit).dividedBy(QUINTILLION).toFixed(2);
+      marketTradingPositions[
+        marketData.market
+      ].userSharesBalances = marketOutcomeBalances[marketData.market]
+        ? Object.keys(marketOutcomeBalances[marketData.market]).reduce(
+            (p, outcome) => {
+              p[outcome] = convertOnChainAmountToDisplayAmount(
+                new BigNumber(
+                  marketOutcomeBalances[marketData.market][outcome]
+                ),
+                numTicksToTickSize(
+                  new BigNumber(marketData.numTicks),
+                  new BigNumber(marketData.prices[0]),
+                  new BigNumber(marketData.prices[1])
+                )
+              );
+              return p;
+            },
+            {}
+          )
+        : {};
+    }
+
+    // tradingPositions filters out users create open orders, need to use `profitLossResultsByMarketAndOutcome` to calc total frozen funds
+    const allProfitLossResults = _.flatten(
+      _.values(_.mapValues(profitLossResultsByMarketAndOutcome, _.values))
+    );
+    frozenFundsTotal = _.reduce(
+      allProfitLossResults,
+      (value, tradingPosition) => {
+        return value.plus(tradingPosition.frozenFunds);
+      },
+      new BigNumber(0)
+    );
+
+    const ownedMarketsResponse = await db.Markets.where("marketCreator").equals(params.account).and((log) => !log.finalized).toArray();
+    const ownedMarkets = _.map(ownedMarketsResponse, "market");
+    const totalValidityBonds = await augur.contracts.hotLoading.getTotalValidityBonds_(ownedMarkets);
+    frozenFundsTotal = frozenFundsTotal.plus(totalValidityBonds);
+
+    const universe = params.universe
+      ? params.universe
+      : await augur.getMarket(params.marketId).getUniverse_();
+    profitLossSummary = await Users.getProfitLossSummary(augur, db, {
+      universe,
+      account: params.account,
+    });
+  } catch(e) {
+    console.error('getUserTradingPositions', e);
+  }
     return {
       tradingPositions,
       tradingPositionsPerMarket: marketTradingPositions,
