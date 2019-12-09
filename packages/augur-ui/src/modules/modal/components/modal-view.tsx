@@ -193,7 +193,7 @@ export default class ModalView extends Component<ModalViewProps> {
 
     window.addEventListener('keydown', this.handleKeyDown);
 
-    trackModalViewed({
+    trackModalViewed(modal.type, {
       modal: modal.type, 
       from: window.location.href
     })

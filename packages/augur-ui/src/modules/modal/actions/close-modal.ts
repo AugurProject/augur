@@ -13,7 +13,7 @@ export const closeModal = () => (
   const { modal } = getState();
   if (modal.type) {
     dispatch(
-      track(MODAL_CLOSED, {
+      track(modal.type + ' - ' + MODAL_CLOSED, {
         modal: modal.type,
       })
     );
