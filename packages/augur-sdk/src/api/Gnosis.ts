@@ -74,7 +74,7 @@ export class Gnosis {
     for (const s of this.safesToCheck) {
       const status = await this.getGnosisSafeDeploymentStatusViaRelay(s);
       this.augur.setGnosisStatus(status.status);
-      if ([GnosisSafeState.AVAILABLE, GnosisSafeState.CREATED].includes(status.status)) {
+      if (status.status === GnosisSafeState.AVAILABLE) {
         const signerAddress = await this.dependencies.signer.getAddress();
         if (signerAddress === s.owner) {
           this.augur.setGnosisSafeAddress(ethUtil.toChecksumAddress(s.safe));
