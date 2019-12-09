@@ -569,8 +569,8 @@ contract Market is Initializable, Ownable, IMarket {
     /**
      * @return Bool indicating if the initial reporter was correct
      */
-    function designatedReporterWasCorrect() public view returns (bool) {
-        return getInitialReporter().designatedReporterWasCorrect();
+    function initialReporterWasCorrect() public view returns (bool) {
+        return getInitialReporter().initialReporterWasCorrect();
     }
 
     /**

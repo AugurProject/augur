@@ -59,7 +59,7 @@ export class EthersProvider extends ethers.providers.BaseProvider
         const _this = this;
         retry(
           { times, interval },
-          async function(callback) {
+          async callback => {
             let results: any;
             try {
               results = await _this.provider.perform(item.message, item.params);
@@ -209,8 +209,39 @@ export class EthersProvider extends ethers.providers.BaseProvider
     return contractInterface;
   }
 
+  private async _getLogs(filter: Filter): Promise<ethers.providers.Log[]> {
+    try {
+      return await super.getLogs(filter);
+    } catch (e) {
+      // Check if infura log limit error.
+      // See https://infura.io/docs/ethereum/json-rpc/eth_getLogs.
+      if (e.code !== -32005) {
+        throw e;
+      }
+
+      // bisect the block window.
+      const midBlock = Math.floor(
+        (Number(filter.toBlock) + Number(filter.fromBlock)) / 2
+      );
+
+      // Presumably we would never have more than 10k logs in one block but just in case.
+      if (Number(filter.fromBlock) === midBlock) throw e;
+
+      return [
+        ...(await this._getLogs({
+          ...filter,
+          toBlock: midBlock,
+        })),
+        ...(await this._getLogs({
+          ...filter,
+          fromBlock: midBlock + 1,
+        })),
+      ];
+    }
+  }
+
   getLogs = async (filter: Filter): Promise<Log[]> => {
-    const logs = await super.getLogs(filter);
+    const logs = await this._getLogs(filter);
     return logs.map<Log>(log => ({
       name: '',
       transactionHash: '',

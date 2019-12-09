@@ -35,6 +35,8 @@ contract ReputationToken is VariableSupplyToken, IV2ReputationToken {
         parentUniverse = _parentUniverse;
         warpSync = _augur.lookup("WarpSync");
         legacyRepToken = IERC20(_augur.lookup("LegacyReputationToken"));
+        require(warpSync != address(0));
+        require(legacyRepToken != IERC20(0));
         erc1820Registry = IERC1820Registry(_erc1820RegistryAddress);
         initialize1820InterfaceImplementations();
     }
@@ -114,7 +116,7 @@ contract ReputationToken is VariableSupplyToken, IV2ReputationToken {
         return internalNoHooksTransfer(_source, _destination, _attotokens);
     }
 
-    function assertReputationTokenIsLegitSibling(IReputationToken _shadyReputationToken) private view {
+    function assertReputationTokenIsLegitChild(IReputationToken _shadyReputationToken) private view {
         IUniverse _universe = _shadyReputationToken.getUniverse();
         require(universe.isParentOf(_universe));
         require(_universe.getReputationToken() == _shadyReputationToken);

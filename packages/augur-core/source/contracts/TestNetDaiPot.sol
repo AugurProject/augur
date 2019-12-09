@@ -63,13 +63,14 @@ contract TestNetDaiPot is IDaiPot {
         require(y == 0 || (z = x * y) / y == x);
     }
 
-    function drip() public {
+    function drip() public returns (uint256) {
         uint256 _now = time.getTimestamp();
         require(_now >= rho);
         uint chi_ = Sub(rmul(rpow(dsr, _now - rho, ONE), chi), chi);
         chi = Add(chi, chi_);
         rho  = _now;
         vat.suck(address(0), address(this), Mul(Pie, chi_));
+        return chi;
     }
 
     function setDSR(uint256 _dsr) public returns (bool) {
