@@ -498,7 +498,15 @@ export interface EthereumNodeOptions {
 export interface EnvObject {
   'ethereum-node': EthereumNodeOptions;
   universe?: string;
-  useWeb3Transport: boolean;
+  '0x-endpoint'?: string,
+  'gnosis-relay'?: string,
+  sdkEndpoint?: string,
+  debug?: EnvDebugOptions,
+}
+
+export interface EnvDebugOptions {
+  connect: boolean;
+  broadcast: boolean;
 }
 
 export interface QueryEndpoints {
