@@ -62,11 +62,16 @@ export class ZeroXOrdersGetters {
     const outcome = params.outcome ? `0x0${params.outcome.toString()}` : undefined;
     const orderType = params.orderType ? `0x0${params.orderType}` : undefined;
 
-    let currentOrdersResponse = await db.ZeroXOrders.where('[market+outcome+orderType]').equals([
-      params.marketId,
-      outcome,
-      orderType
-    ]).toArray();
+    let currentOrdersResponse;
+    if (typeof outcome === 'undefined' && typeof orderType === 'undefined') {
+      currentOrdersResponse = await db.ZeroXOrders.toArray();
+    } else {
+      currentOrdersResponse = await db.ZeroXOrders.where('[market+outcome+orderType]').equals([
+        params.marketId,
+        outcome,
+        orderType
+      ]).toArray();
+    }
 
     if (params.matchPrice) {
       if (!params.orderType) throw new Error("Cannot specify match price without order type");
