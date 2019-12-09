@@ -322,6 +322,11 @@ export class OnChainTrading {
     if (params.universe) {
       currentOrdersResponse = await db.CurrentOrders.where('orderCreator').equals(params.account).or('orderFiller').equals(params.account).and((log) => {
         return log.universe === params.universe;
+      }).and((log) => {
+        if (params.orderState === OrderState.OPEN && log.amount === "0x00") return false;
+        if (params.orderState === OrderState.CANCELED && log.eventType !== OrderEventType.Cancel) return false;
+        if (params.orderState === OrderState.FILLED && log.eventType !== OrderEventType.Fill) return false;
+        return true;
       }).toArray();
     } else {
       currentOrdersResponse = await db.CurrentOrders.where('[market+outcome+orderType]').between([
@@ -337,7 +342,7 @@ export class OnChainTrading {
           if (log.orderCreator != params.account && log.orderFiller != params.account) return false;
         }
 
-        if (params.orderState === OrderState.OPEN && log.amount == "0x00") return false;
+        if (params.orderState === OrderState.OPEN && log.amount === "0x00") return false;
         if (params.orderState === OrderState.CANCELED && log.eventType !== OrderEventType.Cancel) return false;
         if (params.orderState === OrderState.FILLED && log.eventType !== OrderEventType.Fill) return false;
 
