@@ -74,9 +74,9 @@ describe('3rd Party :: ZeroX :: ', () => {
   const mock = makeDbMock();
 
   beforeAll(async () => {
-    const networkId = 102; // our dev geth node's network id
-    const providerJohn = new EthersProvider(new JsonRpcProvider('http://localhost:8545', networkId), 5, 0, 40);
-    const providerMary = new EthersProvider(new JsonRpcProvider('http://localhost:8545', networkId), 5, 0, 40);
+    const providerJohn = new EthersProvider(new JsonRpcProvider('http://localhost:8545'), 5, 0, 40);
+    const providerMary = new EthersProvider(new JsonRpcProvider('http://localhost:8545'), 5, 0, 40);
+    const networkId = await providerJohn.getNetworkId();
     const addresses = Addresses[networkId];
 
     meshClientJohn = new WSClient('ws://localhost:60557');
