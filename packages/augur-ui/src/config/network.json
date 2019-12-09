@@ -8,6 +8,7 @@
       "connectionTimeout": 60000
     },
     "gnosis-relay": "http://localhost:8000/api/",
+    "0x-endpoint": "ws://localhost:60557",
     "universe": null,
     "debug": {
       "connect": true,

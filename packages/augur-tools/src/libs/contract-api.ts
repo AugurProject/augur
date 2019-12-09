@@ -536,9 +536,13 @@ export class ContractAPI {
     const reputationToken = this.augur.contracts.getReputationToken();
     if (typeof reputationToken['faucet'] === 'function') {
       await reputationToken['faucet'](attoRep);
-    }else {
+    } else {
       throw Error('Cannot faucet REP with non-test version of REP contract.');
     }
+  }
+
+  async transferCash(to: string, attoCash: BigNumber): Promise<void> {
+    await this.augur.contracts.cash.transfer(to, attoCash);
   }
 
   async approve(wei: BigNumber): Promise<void> {

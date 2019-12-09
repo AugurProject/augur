@@ -1,4 +1,4 @@
-version: '3.5'
+version: '3.7'
 
 volumes:
   nginx-shared:
@@ -14,29 +14,40 @@ services:
       - nginx-shared:/nginx
     depends_on:
       - web
+    networks:
+      - augur
   db:
     image: postgres:10-alpine
     ports:
       - "5432:5432"
+    networks:
+      - augur
   web:
     image: augurproject/safe-relay-service_web:latest
     env_file:
       - .env
+    environment:
+      - SAFE_CONTRACT_ADDRESS=${GNOSIS_SAFE_CONTRACT_ADDRESS}
+      - SAFE_OLD_CONTRACT_ADDRESS=${GNOSIS_SAFE_CONTRACT_ADDRESS}
+      - SAFE_PROXY_FACTORY_ADDRESS=${PROXY_FACTORY_CONTRACT_ADDRESS}
     depends_on:
       - db
       - redis
-      - geth
     working_dir: /app
     ports:
       - "8888:8888"
     volumes:
       - nginx-shared:/nginx
     command: docker/web/run_web.sh
+    networks:
+      - augur
 
   redis:
     image: redis:4-alpine
     ports:
       - "6379:6379"
+    networks:
+      - augur
 
   worker: &worker
     image: augurproject/safe-relay-service_web:latest
@@ -45,15 +56,37 @@ services:
     depends_on:
       - db
       - redis
-      - geth
+      - web
     command: docker/web/celery/worker/run.sh
+    networks:
+      - augur
 
   scheduler:
     <<: *worker
     command: docker/web/celery/scheduler/run.sh
+    restart: on-failure
+    networks:
+      - augur
 
-  geth:
-    image: augurproject/dev-pop-geth-v2:6e9aed144bf4d54674d91ae169ce5c18
+  0x-mesh:
+    image: 0xorg/mesh:0xV3
+    hostname: 0x
     ports:
-      - "8545:8545"
+      - 60557:60557 # rpc_port_number
+      - 60558:60558 # P2PTCPPort
+      - 60559:60559 # P2PWebSocketsPort
+    environment:
+      - ETHEREUM_CHAIN_ID=${ETHEREUM_CHAIN_ID}
+      - CUSTOM_CONTRACT_ADDRESSES=${CUSTOM_CONTRACT_ADDRESSES}
+      - ETHEREUM_RPC_URL=http://geth:8545
+      - USE_BOOTSTRAP_LIST=false
+      - BLOCK_POLLING_INTERVAL=1s
+      - ETHEREUM_RPC_MAX_REQUESTS_PER_24_HR_UTC=169120 # needed when polling interval is 1s
+      - VERBOSITY=4 # 5=debug 6=trace
+      - RPC_ADDR=0.0.0.0:60557
+    networks:
+      - augur
 
+networks:
+  augur:
+    name: augur
