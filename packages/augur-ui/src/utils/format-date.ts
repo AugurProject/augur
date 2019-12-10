@@ -68,7 +68,7 @@ export function formatDate(d, timezone: string = null): DateFormattedObject {
   return {
     value: date,
     formattedUtcShortTime: `${utcTimeWithSeconds.join(':')}`,
-    formattedShortTime: `${local24hrTimeWithSeconds.join(':')}`,
+    formattedShortTime: `${convertTwoDigitValues(local24hrTimeWithSeconds).join(':')}`,
     formattedLocalShortDateSecondary: `${date.getDate()} ${
       shortMonths[date.getMonth()]
     } ${date.getFullYear()}`,
@@ -99,7 +99,7 @@ export function formatDate(d, timezone: string = null): DateFormattedObject {
     )} ${localAMPM} ${timezoneName}`,
     formattedLocalShortDateTimeNoTimezone: `${
       shortMonths[date.getMonth()]
-    } ${date.getDate()} ${date.getFullYear()} ${local24hrTimeWithSeconds.join(
+    } ${date.getDate()} ${date.getFullYear()} ${convertTwoDigitValues(local24hrTimeWithSeconds).join(
       ':'
     )}`,
     formattedUtc: `${
@@ -113,6 +113,7 @@ export function formatDate(d, timezone: string = null): DateFormattedObject {
   };
 }
 
+const convertTwoDigitValues = (values: number[]) => values.map(v => `0${v}`.slice(-2));
 function ampm(time: string): string {
   const value = parseInt(time, 10);
   return value < 12 ? 'AM' : 'PM';
