@@ -364,7 +364,7 @@
   }
 
   .Row4 {
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(6, 1fr);
     padding-left: @size-12;
     padding-right: @size-12;
 
@@ -373,8 +373,16 @@
     }
 
     > li {
-      &:last-of-type {
+      &:first-of-type {
+        grid-column: unset;
+        margin-bottom: 0;
+      }
+      &:nth-of-type(2) {
         position: relative;
+        justify-content: flex-end;
+        text-align: right;
+      }
+      &:last-of-type {
         > span {
           display: flex;
         }
