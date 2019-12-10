@@ -204,7 +204,6 @@ export class Accounts<TBigNumber> {
       const market = marketsById[crowdsourcer.market];
       const crowdsourcerCompleted = disputeCrowdsourcerCompletedLogsById[crowdsourcer.token];
       let isClaimable = false;
-      console.log(`CS: ${crowdsourcer.token} RS: ${market.reportingState} CC: ${crowdsourcerCompleted} WIN: ${crowdsourcerCompleted.payoutNumerators.toString() === market.tentativeWinningPayoutNumerators.toString()}`);
       if (market.reportingState === MarketReportingState.AwaitingFinalization || market.reportingState === MarketReportingState.Finalized) {
         // If the market is finalized/finalizable and this bond was correct its claimable, otherwise we leave it out entirely
         isClaimable = !crowdsourcerCompleted || crowdsourcerCompleted.payoutNumerators.toString() === market.tentativeWinningPayoutNumerators.toString();
@@ -231,13 +230,13 @@ export class Accounts<TBigNumber> {
     const participationTokens = await db.TokenBalanceChanged.where("[universe+owner+tokenType]").equals([params.universe, params.account, 2]).and((log) => {
       return log.balance > "0x00";
     }).toArray();
-    
+
     const universe = augur.getUniverse(params.universe);
     const curDisputeWindowAddress = await universe.getCurrentDisputeWindow_(false);
 
     // NOTE: We do not expect this to be a large list. In the standard/expected case this will be one item (maybe 2), so the cash balance call is likely low impact
     const participationTokenContractInfo: ParticipationContract[] = [];
-    
+
     for (let tokenBalanceLog of participationTokens) {
       const amountFees = (await augur.contracts.cash.balanceOf_(tokenBalanceLog.token)).toFixed();
       const isClaimable = tokenBalanceLog.token !== curDisputeWindowAddress;
@@ -318,7 +317,7 @@ export class Accounts<TBigNumber> {
       const orderCanceledLogs = await db.OrderEvent.where('[universe+eventType+timestamp]').between([params.universe, OrderEventType.Cancel, formattedStartTime], [params.universe, OrderEventType.Cancel, formattedEndTime], true, true).and((log) => {
         return log.orderCreator === params.account;
       }).toArray();
-      
+
       const marketInfo = await Accounts.getMarketCreatedInfo(
         db,
         orderCanceledLogs
