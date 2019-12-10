@@ -74,6 +74,16 @@
     base64-arraybuffer "^0.2.0"
     browserfs "^1.4.3"
 
+"@0x/mesh-browser@6.1.2-beta":
+  version "6.1.2-beta"
+  resolved "https://registry.yarnpkg.com/@0x/mesh-browser/-/mesh-browser-6.1.2-beta.tgz#573808dda73a3d5fd527bb6a951142e9211f8177"
+  integrity sha512-Y0T4Ge3h6+qtH/SAoD4qtAtF0XnIlI5+Hd239bkL+/rCQMxUvMYglkbwrpaHuv24YJclpvuhkf16xTkHdeJu3Q==
+  dependencies:
+    "@0x/order-utils" "^8.3.0"
+    "@0x/utils" "^4.5.0"
+    base64-arraybuffer "^0.2.0"
+    browserfs "^1.4.3"
+
 "@0x/mesh-rpc-client@6.1.1-beta":
   version "6.1.1-beta"
   resolved "https://registry.yarnpkg.com/@0x/mesh-rpc-client/-/mesh-rpc-client-6.1.1-beta.tgz#5bfcd70246558782f28e69c1b1fa85ed1ed41734"

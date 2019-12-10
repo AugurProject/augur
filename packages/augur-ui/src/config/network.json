@@ -66,6 +66,7 @@
       "connectionTimeout": 60000
     },
     "gnosis-relay": "https://safe-relay.rinkeby.gnosis.pm/",
+    "0x-endpoint": null,
     "universe": null,
     "debug": {
       "connect": true,
@@ -81,6 +82,7 @@
       "connectionTimeout": 60000
     },
     "gnosis-relay": "https://gnosis.kovan.augur.net/api/",
+    "0x-endpoint": null,
     "universe": null,
     "debug": {
       "connect": true,

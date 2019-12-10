@@ -23,6 +23,7 @@ import { analytics } from './analytics';
 import { WebWorkerConnector } from './ww-connector';
 import { isLocalHost } from 'utils/is-localhost';
 import { WSClient } from '@0x/mesh-rpc-client';
+import { Mesh } from '@0x/mesh-browser';
 
 export class SDK {
   sdk: Augur<Provider> | null = null;
@@ -61,16 +62,23 @@ export class SDK {
 
     const connector = this.pickConnector(env['sdkEndpoint']);
 
+    const ethereumRPCURL = env['ethereum-node'].http
+      ? env['ethereum-node'].http
+      : 'http://localhost:8545';
+
     connector.connect(
-      env['ethereum-node'].http
-        ? env['ethereum-node'].http
-        : 'http://localhost:8545',
+      ethereumRPCURL,
       account,
     );
 
     const enableFlexSearch = false; // TODO configurable
     const meshClient = env['0x-endpoint'] ? new WSClient(env['0x-endpoint']) : undefined;
-    const meshBrowser = undefined; // TODO configurable
+    const meshBrowser = new Mesh({
+      ethereumRPCURL,
+      ethereumChainID: Number(this.networkId),
+    });
+
+    await meshBrowser.startAsync();
 
     this.sdk = await Augur.create<Provider>(
       ethersProvider,
