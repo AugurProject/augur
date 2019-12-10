@@ -7,6 +7,7 @@
   min-height: @size-32;
   max-height: @size-32;
   width: 100%;
+  margin-right: @size-26;
 
   > li {
     .mono-10-bold;
@@ -55,7 +56,7 @@
 .PositionHeader__extended {
   background: @color-table-header;
   grid-template-columns: repeat(6, 1fr);
-  padding-right: @size-24;
+  padding-right: @size-16;
 }
 
 .FilledOrdersHeader__extended {
@@ -165,14 +166,19 @@
   }
 
   .OutcomesHeader {
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(6, 1fr);
     padding: 0 @size-12;
 
     > li {
       font-size: @size-9;
 
+      &:first-of-type {
+        display: flex;
+      }
+
       &:nth-of-type(2) {
-        text-align: left;
+        text-align: right;
+        justify-content: flex-end;
       }
     }
   }

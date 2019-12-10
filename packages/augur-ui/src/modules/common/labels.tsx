@@ -200,7 +200,7 @@ interface ValueDenominationProps {
 interface TimeLabelProps {
   label: string;
   time: DateFormattedObject;
-  showLocal: boolean;
+  showLocal?: boolean;
   hint?: React.ReactNode;
 }
 
@@ -231,7 +231,7 @@ export const TimeLabel = ({ label, time, showLocal, hint }: TimeLabelProps) => {
         )}
       </span>
       <span>{time && time.formattedShortUtc}</span>
-      {showLocal && <span>{time && time.formattedShortTimezone}</span>}
+      {showLocal && <span>{time && time.formattedLocalShortDateTimeNoTimezone}</span>}
     </div>
   );
 };

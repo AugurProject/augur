@@ -94,6 +94,8 @@ import {
 } from 'modules/create-market/template-navigation';
 import { selectSortedMarketOutcomes } from 'modules/markets/selectors/market';
 import { createBigNumber } from 'utils/create-big-number';
+import makeQuery from 'modules/routes/helpers/make-query';
+import { CREATE_MARKET_FORM_PARAM_NAME } from 'modules/routes/constants/param-names';
 
 interface FormProps {
   newMarket: NewMarket;
@@ -226,7 +228,9 @@ export default class Form extends React.Component<FormProps, FormState> {
         if (!close) {
           this.props.history.push({
             pathname: makePath(CREATE_MARKET, null),
-            state: isTemplate ? TEMPLATE : SCRATCH,
+            search: makeQuery({
+              [CREATE_MARKET_FORM_PARAM_NAME]: isTemplate ? TEMPLATE : SCRATCH,
+            }),
           });
           cb && cb(false);
         } else {

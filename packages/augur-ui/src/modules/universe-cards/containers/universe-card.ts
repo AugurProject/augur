@@ -13,7 +13,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
     currentUniverseId: state.universe.id,
     parentUniverseId: state.universe.parentUniverseId,
     creationTimestamp: convertUnixToFormattedDate(universe.creationTimestamp)
-      .formattedLocalShortTime,
+      .formattedLocalShortWithUtcOffset,
     outcomeName: universe.outcomeName,
     account: state.loginAccount.address,
     breakdown: [

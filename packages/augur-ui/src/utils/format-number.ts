@@ -1,12 +1,12 @@
-import { BigNumber, createBigNumber } from "utils/create-big-number";
+import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import {
   encodeNumberAsBase10String,
   encodeNumberAsJSNumber,
   unfix,
-} from "@augurproject/utils";
-import { ZERO, TEN, ETHER } from "modules/common/constants";
-import addCommas from "utils/add-commas-to-number";
-import { FormattedNumber, FormattedNumberOptions } from "modules/types";
+} from '@augurproject/utils';
+import { ZERO, TEN, ETHER } from 'modules/common/constants';
+import addCommas from 'utils/add-commas-to-number';
+import { FormattedNumber, FormattedNumberOptions } from 'modules/types';
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
   Produces a formatted number object used for display and calculations
@@ -61,7 +61,10 @@ export const SHARES_NUMBER_OF_DECIMALS = 4;
 const SMALLEST_NUMBER_DECIMAL_PLACES = 8;
 const USUAL_NUMBER_DECIMAL_PLACES = 4;
 
-export function formatEther(num: NumStrBigNumber, opts: FormattedNumberOptions = {}): FormattedNumber {
+export function formatEther(
+  num: NumStrBigNumber,
+  opts: FormattedNumberOptions = {}
+): FormattedNumber {
   return formatNumber(num, {
     decimals: ETHER_NUMBER_OF_DECIMALS,
     decimalsRounded: ETHER_NUMBER_OF_DECIMALS,
@@ -74,7 +77,10 @@ export function formatEther(num: NumStrBigNumber, opts: FormattedNumberOptions =
   });
 }
 
-export function formatEtherEstimate(num: NumStrBigNumber, opts: FormattedNumberOptions = {}): FormattedNumber {
+export function formatEtherEstimate(
+  num: NumStrBigNumber,
+  opts: FormattedNumberOptions = {}
+): FormattedNumber {
   return formatNumber(num, {
     decimals: ETHER_NUMBER_OF_DECIMALS,
     decimalsRounded: ETHER_NUMBER_OF_DECIMALS,
@@ -87,11 +93,19 @@ export function formatEtherEstimate(num: NumStrBigNumber, opts: FormattedNumberO
   });
 }
 
-export function formatDaiEstimate(num: NumStrBigNumber, opts: FormattedNumberOptions = {}): FormattedNumber {
+export function formatDaiEstimate(
+  num: NumStrBigNumber,
+  opts: FormattedNumberOptions = {}
+): FormattedNumber {
   return formatNumber(num, {
     decimals: 2,
     decimalsRounded: 2,
-    denomination: v => `$${v} (estimated)`,
+    
+    denomination: v => {
+      const isNegative = Number(v) < 0;
+      const val = isNegative ? createBigNumber(v).abs().toFixed(2) : v;
+      return `${isNegative ? '-' : ''}$${val} (estimated)`;
+    },
     positiveSign: false,
     zeroStyled: false,
     blankZero: false,
@@ -100,7 +114,10 @@ export function formatDaiEstimate(num: NumStrBigNumber, opts: FormattedNumberOpt
   });
 }
 
-export function formatPercent(num: NumStrBigNumber, opts: FormattedNumberOptions = {}): FormattedNumber {
+export function formatPercent(
+  num: NumStrBigNumber,
+  opts: FormattedNumberOptions = {}
+): FormattedNumber {
   return formatNumber(num, {
     decimals: 2,
     decimalsRounded: 0,
@@ -113,7 +130,10 @@ export function formatPercent(num: NumStrBigNumber, opts: FormattedNumberOptions
   });
 }
 
-export function formatShares(num: NumStrBigNumber, opts: FormattedNumberOptions = {}): FormattedNumber {
+export function formatShares(
+  num: NumStrBigNumber,
+  opts: FormattedNumberOptions = {}
+): FormattedNumber {
   const formattedShares = formatNumber(num, {
     decimals: SHARES_NUMBER_OF_DECIMALS,
     decimalsRounded: SHARES_NUMBER_OF_DECIMALS,
@@ -129,11 +149,22 @@ export function formatShares(num: NumStrBigNumber, opts: FormattedNumberOptions 
   return formattedShares;
 }
 
-export function formatDai(num: NumStrBigNumber, opts: FormattedNumberOptions = {}): FormattedNumber {
+export function formatDai(
+  num: NumStrBigNumber,
+  opts: FormattedNumberOptions = {}
+): FormattedNumber {
   return formatNumber(num, {
     decimals: 2,
     decimalsRounded: 2,
-    denomination: v => `$${v}`,
+    denomination: v => {
+      const isNegative = Number(v) < 0;
+      const val = isNegative
+        ? createBigNumber(v)
+            .abs()
+            .toFixed(2)
+        : v;
+      return `${isNegative ? '-' : ''}$${val}`;
+    },
     positiveSign: false,
     zeroStyled: false,
     blankZero: false,
@@ -142,7 +173,10 @@ export function formatDai(num: NumStrBigNumber, opts: FormattedNumberOptions = {
   });
 }
 
-export function formatRep(num: NumStrBigNumber, opts: FormattedNumberOptions = {}): FormattedNumber {
+export function formatRep(
+  num: NumStrBigNumber,
+  opts: FormattedNumberOptions = {}
+): FormattedNumber {
   return formatNumber(num, {
     decimals: 4,
     decimalsRounded: 4,
@@ -155,7 +189,10 @@ export function formatRep(num: NumStrBigNumber, opts: FormattedNumberOptions = {
   });
 }
 
-export function formatRepTokens(num: NumStrBigNumber, opts: FormattedNumberOptions = {}): FormattedNumber {
+export function formatRepTokens(
+  num: NumStrBigNumber,
+  opts: FormattedNumberOptions = {}
+): FormattedNumber {
   return formatNumber(num, {
     decimals: 2,
     decimalsRounded: 2,
@@ -172,14 +209,14 @@ export function formatNone(): FormattedNumber {
   return {
     value: 0,
     formattedValue: 0,
-    formatted: "-",
+    formatted: '-',
     roundedValue: 0,
-    rounded: "-",
-    roundedFormatted: "-",
-    minimized: "-",
-    denomination: "",
-    full: "-",
-    fullPrecision: "0",
+    rounded: '-',
+    roundedFormatted: '-',
+    minimized: '-',
+    denomination: '',
+    full: '-',
+    fullPrecision: '0',
   };
 }
 
@@ -187,14 +224,14 @@ export function formatBlank(): FormattedNumber {
   return {
     value: 0,
     formattedValue: 0,
-    formatted: "",
+    formatted: '',
     roundedValue: 0,
-    rounded: "",
-    roundedFormatted: "",
-    minimized: "",
-    denomination: "",
-    full: "",
-    fullPrecision: "0",
+    rounded: '',
+    roundedFormatted: '',
+    minimized: '',
+    denomination: '',
+    full: '',
+    fullPrecision: '0',
   };
 }
 
@@ -202,7 +239,7 @@ export function optionsBlank(): FormattedNumberOptions {
   return {
     decimals: 0,
     decimalsRounded: 0,
-    denomination: v => "",
+    denomination: v => '',
     roundUp: false,
     roundDown: false,
     positiveSign: false,
@@ -212,24 +249,35 @@ export function optionsBlank(): FormattedNumberOptions {
     bigUnitPostfix: false,
   };
 }
-export function sumAndformatGasCostToEther(gases: NumStrBigNumber[], opts: FormattedNumberOptions = optionsBlank(), gasPrice: NumStrBigNumber): string {
+export function sumAndformatGasCostToEther(
+  gases: NumStrBigNumber[],
+  opts: FormattedNumberOptions = optionsBlank(),
+  gasPrice: NumStrBigNumber
+): string {
   const summedGas = gases.reduce(
-    (p, g) => createBigNumber(unfix(g, "number")).plus(p),
-    ZERO,
+    (p, g) => createBigNumber(unfix(g, 'number')).plus(p),
+    ZERO
   );
 
   const estimatedGasCost = createBigNumber(summedGas).times(
-    createBigNumber(gasPrice),
+    createBigNumber(gasPrice)
   );
 
   return formatGasCost(estimatedGasCost, opts).value;
 }
 
-export function formatGasCostToEther(num: NumStrBigNumber, opts: FormattedNumberOptions = optionsBlank(), gasPrice: NumStrBigNumber): string {
+export function formatGasCostToEther(
+  num: NumStrBigNumber,
+  opts: FormattedNumberOptions = optionsBlank(),
+  gasPrice: NumStrBigNumber
+): string {
   return sumAndformatGasCostToEther([num], opts, gasPrice);
 }
 
-export function formatAttoRep(num: NumStrBigNumber, opts: FormattedNumberOptions = optionsBlank()): FormattedNumber {
+export function formatAttoRep(
+  num: NumStrBigNumber,
+  opts: FormattedNumberOptions = optionsBlank()
+): FormattedNumber {
   if (!num) return formatBlank();
   return formatNumber(
     createBigNumber(num.toFixed())
@@ -241,17 +289,32 @@ export function formatAttoRep(num: NumStrBigNumber, opts: FormattedNumberOptions
       decimalsRounded: 4,
       blankZero: false,
       denomination: v => `${v} REP`,
-    },
+    }
   );
 }
 
-export function formatAttoDai(num: NumStrBigNumber ): FormattedNumber {
-  const opts = Object.assign(optionsBlank(), { decimals: 2, decimalsRounded: 2, denomination: v => `${v} DAI` })
+export function formatAttoDai(num: NumStrBigNumber): FormattedNumber {
+  const opts = Object.assign(optionsBlank(), {
+    decimals: 2,
+    decimalsRounded: 2,
+    denomination: v => {
+      const isNegative = Number(v) < 0;
+      const val = isNegative
+        ? createBigNumber(v)
+            .abs()
+            .toFixed(2)
+        : v;
+      return `${isNegative ? '-' : ''}$${val}`;
+    },
+  });
   return formatAttoEth(num, opts);
 }
 
 // At some point potentially refactor all this to be more generic (e.g formatAttoAmount)
-export function formatAttoEth(num: NumStrBigNumber, opts: FormattedNumberOptions = optionsBlank()): FormattedNumber {
+export function formatAttoEth(
+  num: NumStrBigNumber,
+  opts: FormattedNumberOptions = optionsBlank()
+): FormattedNumber {
   if (!num) return formatBlank();
   return formatNumber(
     createBigNumber(num.toFixed())
@@ -261,12 +324,15 @@ export function formatAttoEth(num: NumStrBigNumber, opts: FormattedNumberOptions
       decimals: ETHER_NUMBER_OF_DECIMALS,
       decimalsRounded: ETHER_NUMBER_OF_DECIMALS,
       blankZero: false,
-      ...opts
-    },
+      ...opts,
+    }
   );
 }
 
-export function formatGasCost(num: NumStrBigNumber, opts: FormattedNumberOptions): FormattedNumber {
+export function formatGasCost(
+  num: NumStrBigNumber,
+  opts: FormattedNumberOptions
+): FormattedNumber {
   return formatNumber(num, {
     decimals: 0,
     decimalsRounded: 0,
@@ -281,7 +347,7 @@ export function formatGasCost(num: NumStrBigNumber, opts: FormattedNumberOptions
 
 export function formatNumber(
   num: NumStrBigNumber,
-  opts: FormattedNumberOptions = optionsBlank(),
+  opts: FormattedNumberOptions = optionsBlank()
 ): FormattedNumber {
   const value = num != null ? createBigNumber(num, 10) : ZERO;
   const { minimized, bigUnitPostfix } = opts;
@@ -299,7 +365,7 @@ export function formatNumber(
 
   decimals = decimals || 0;
   decimalsRounded = decimalsRounded || 0;
-  denomination = denomination || ((v) => "");
+  denomination = denomination || (v => '');
   positiveSign = !!positiveSign;
   roundUp = !!roundUp;
   roundDown = !!roundDown;
@@ -323,30 +389,30 @@ export function formatNumber(
     roundingMode = BigNumber.ROUND_HALF_EVEN;
   }
   let formatSigFig = false;
-  if (typeof num === "string" && isNaN(parseFloat(num))) {
+  if (typeof num === 'string' && isNaN(parseFloat(num))) {
     o.value = 0;
     o.formattedValue = 0;
-    o.formatted = "0";
+    o.formatted = '0';
     o.roundedValue = 0;
-    o.rounded = "0";
-    o.roundedFormatted = "0";
-    o.minimized = "0";
-    o.fullPrecision = "0";
+    o.rounded = '0';
+    o.roundedFormatted = '0';
+    o.minimized = '0';
+    o.fullPrecision = '0';
   } else {
     const useSignificantFiguresThreshold = TEN.exponentiatedBy(
       new BigNumber(decimals, 10)
         .minus(1)
         .negated()
-        .toNumber(),
+        .toNumber()
     );
     const roundToZeroThreshold = ZERO;
     o.value = value.toNumber();
     if (value.abs().lt(roundToZeroThreshold)) {
       // value is less than zero
-      o.formattedValue = "0";
+      o.formattedValue = '0';
     } else if (value.abs().lt(useSignificantFiguresThreshold)) {
       if (!decimals) {
-        o.formattedValue = "0";
+        o.formattedValue = '0';
       } else {
         formatSigFig = true;
         o.formattedValue = value.toPrecision(decimals, roundingMode);
@@ -359,9 +425,7 @@ export function formatNumber(
         .toFixed(decimals);
     }
 
-    const zeroFixed = ZERO.toFixed(
-      USUAL_NUMBER_DECIMAL_PLACES,
-    );
+    const zeroFixed = ZERO.toFixed(USUAL_NUMBER_DECIMAL_PLACES);
 
     if (bigUnitPostfix && !formatSigFig) {
       o.formatted = addBigUnitPostfix(value, o.formattedValue);
@@ -369,20 +433,17 @@ export function formatNumber(
       // for numbers smaller than the set number of decimals - ie ones with scientific notation
       let formatted = value.toFixed(decimals || USUAL_NUMBER_DECIMAL_PLACES);
 
-      if (formatted === zeroFixed || formatted === "-" + zeroFixed) {
+      if (formatted === zeroFixed || formatted === '-' + zeroFixed) {
         // if this is equal to zero, try to show significant digits up to 8 digit places
         formatted = value.toFixed(SMALLEST_NUMBER_DECIMAL_PLACES);
         if (
-          formatted ===
-            ZERO.toFixed(SMALLEST_NUMBER_DECIMAL_PLACES) ||
-          formatted ===
-            "-" +
-              ZERO.toFixed(SMALLEST_NUMBER_DECIMAL_PLACES)
+          formatted === ZERO.toFixed(SMALLEST_NUMBER_DECIMAL_PLACES) ||
+          formatted === '-' + ZERO.toFixed(SMALLEST_NUMBER_DECIMAL_PLACES)
         ) {
           formatted = zeroFixed; // if there are no significant digits in the 8 decimal places, just use zero
         } else {
           formatted = value.toFixed(
-            1 - Math.floor(Math.log(value.abs().toNumber()) / Math.log(10)),
+            1 - Math.floor(Math.log(value.abs().toNumber()) / Math.log(10))
           ); // find first two significant digit
         }
       }
@@ -418,10 +479,13 @@ export function formatNumber(
     o.formatted = o.minimized;
   }
 
-  o.denomination = denomination("");
+  o.denomination = denomination('');
   o.full = denomination(o.formatted);
 
-  if (typeof num === "string" && isNaN(parseFloat(num)) || o.formatted === "0") {
+  if (
+    (typeof num === 'string' && isNaN(parseFloat(num))) ||
+    o.formatted === '0'
+  ) {
     o.formatted = ZERO.toFixed(decimalsRounded);
   }
   return o;
@@ -429,16 +493,16 @@ export function formatNumber(
 
 function addBigUnitPostfix(value, formattedValue) {
   let postfixed;
-  if (value.gt(createBigNumber("1000000000000", 10))) {
-    postfixed = "> 1T";
-  } else if (value.gt(createBigNumber("10000000000", 10))) {
+  if (value.gt(createBigNumber('1000000000000', 10))) {
+    postfixed = '> 1T';
+  } else if (value.gt(createBigNumber('10000000000', 10))) {
     postfixed =
-      value.dividedBy(createBigNumber("1000000000", 10)).toFixed(0) + "B";
-  } else if (value.gt(createBigNumber("10000000", 10))) {
+      value.dividedBy(createBigNumber('1000000000', 10)).toFixed(0) + 'B';
+  } else if (value.gt(createBigNumber('10000000', 10))) {
     postfixed =
-      value.dividedBy(createBigNumber("1000000", 10)).toFixed(0) + "M";
-  } else if (value.gt(createBigNumber("10000", 10))) {
-    postfixed = value.dividedBy(createBigNumber("1000", 10)).toFixed(0) + "K";
+      value.dividedBy(createBigNumber('1000000', 10)).toFixed(0) + 'M';
+  } else if (value.gt(createBigNumber('10000', 10))) {
+    postfixed = value.dividedBy(createBigNumber('1000', 10)).toFixed(0) + 'K';
   } else {
     postfixed = addCommas(formattedValue);
   }
@@ -446,9 +510,9 @@ function addBigUnitPostfix(value, formattedValue) {
 }
 
 export function cutOffDecimal(value, numDigits) {
-  const decimals = (value + "").split(".");
+  const decimals = (value + '').split('.');
   if (decimals[1] && decimals[1].length > numDigits) {
-    return decimals[0] + "." + decimals[1].substring(0, numDigits);
+    return decimals[0] + '.' + decimals[1].substring(0, numDigits);
   }
   return value;
 }

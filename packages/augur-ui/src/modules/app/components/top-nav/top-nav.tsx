@@ -11,6 +11,7 @@ import { GlobalChat } from 'modules/global-chat/components/global-chat';
 import Styles from 'modules/app/components/top-nav/top-nav.styles.less';
 import { NavMenuItem } from 'modules/types';
 import { helpIcon } from 'modules/common/icons';
+import { log } from 'util';
 
 interface TopNavProps {
   isLogged: boolean;
@@ -30,6 +31,7 @@ const TopNav = ({
   showMigrateRepButton = false,
 }: TopNavProps) => {
   const isCurrentItem = item => {
+    if (item.route === 'markets' && currentBasePath === 'market') return true;
     return item.route === currentBasePath;
   };
 
@@ -44,7 +46,7 @@ const TopNav = ({
           const selected = isCurrentItem(item);
           if (item.title === 'Create') {
             return (
-              <div className={Styles.CreateButton} key={item.title}>
+              <li className={Styles.CreateButton} key={item.title}>
                 <Link to={item.route ? makePath(item.route) : null}>
                   <SecondaryButton
                     disabled={isDisabled}
@@ -52,7 +54,7 @@ const TopNav = ({
                     action={() => null}
                   />
                 </Link>
-              </div>
+              </li>
             );
           }
           return (

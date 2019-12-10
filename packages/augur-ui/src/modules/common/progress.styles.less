@@ -134,37 +134,6 @@
   }
 }
 
-.MarketTimeline {
-  height: 100%;
-  width: 100%;
-
-  > div {
-    display: flex;
-    justify-content: space-between;
-    line-height: @size-10;
-  }
-
-  > div:last-of-type {
-    > span > span {
-      .mono-10;
-
-      color: @color-primary-text;
-    }
-
-    > span:last-of-type {
-      text-align: right;
-    }
-  }
-
-  > div.fade:last-of-type {
-    > span:first-of-type {
-      > span {
-        color: @color-inactive-text;
-      }
-    }
-  }
-}
-
 .WindowProgress {
   background: @color-module-background;
   border: 1px solid @color-dark-grey;

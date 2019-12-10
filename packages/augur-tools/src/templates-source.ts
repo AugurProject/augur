@@ -4642,7 +4642,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Closing date is determine by the location of the exchange, where the stock is traded`,
+                  text: `Closing date is determined by the location of the exchange, where the stock is traded`,
                 },
                 {
                   text: `Trading denomination is determined by the exchange the stock is traded on`,
@@ -4686,7 +4686,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Trading dates are determine by the location of the exchange, where the stock is traded`,
+                  text: `Trading dates are determined by the location of the exchange, where the stock is traded`,
                 },
                 {
                   text: `Trading denomination is determined by the exchange the stock is traded on`,
@@ -4719,7 +4719,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Closing date is determine by the location of the exchange, where the stock is traded`,
+                  text: `Closing date is determined by the location of the exchange, where the stock is traded`,
                 },
                 {
                   text: `Trading denomination is determined by the exchange the stock is traded on`,
@@ -4757,7 +4757,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Closing date is determine by the location of the exchange, where the underlying stocks for the index are traded`,
+                  text: `Closing date is determined by the location of the exchange, where the underlying stocks for the index are traded`,
                 },
               ],
             },
@@ -4783,7 +4783,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Closing date is determine by the location of the exchange, where the underlying stocks for the index are traded`,
+                  text: `Closing date is determined by the location of the exchange, where the underlying stocks for the index are traded`,
                 },
               ],
             },

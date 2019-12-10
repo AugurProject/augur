@@ -609,7 +609,7 @@ export class MarketReview extends Component<
 
         {details && (
           <div>
-            <p>Additional details</p>
+            <p>Resolution rules</p>
             {showReadMore && !readMore && readMoreSection}
             {(!showReadMore || readMore) && <div>{details}</div>}
           </div>
@@ -619,7 +619,7 @@ export class MarketReview extends Component<
           <div>
             <p>Event Expiration</p>
             <div>{endTime.formattedUtc}</div>
-            <div>{endTime.formattedTimezone}</div>
+            <div>{endTime.formattedLocalTimezone}</div>
           </div>
         )}
       </section>

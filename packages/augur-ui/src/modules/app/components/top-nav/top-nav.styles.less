@@ -13,10 +13,18 @@
     display: flex;
     align-items: center;
     border-bottom: 1px solid @color-dark-grey;
+    max-height: 37px;
+    min-height: 37px;
 
     > li {
+      border-bottom: 2px solid transparent;
+      height: 100%;
+      max-height: 37px;
+      min-height: 37px;
       width: auto;
       margin: 0 @size-16;
+      display: flex;
+      align-items: center;
     }
 
     > li:hover {
@@ -29,10 +37,9 @@
 
     > li a {
       display: flex;
-      margin: @size-13 0;
 
       > span {
-        .text-9-bold;
+        .text-12-bold;
 
         color: @color-secondary-text;
         text-transform: uppercase;
@@ -40,13 +47,9 @@
     }
 
     .Selected {
+      border-bottom: 2px solid @color-primary-action;
+
       > a {
-        border-bottom-width: @size-1;
-        border-bottom-style: solid;
-        color: @color-primary-action;
-        margin-bottom: @size-6;
-        margin-top: @size-9;
-        padding-bottom: @size-3;
         text-decoration: none;
       }
 
@@ -56,14 +59,10 @@
     }
 
     .CreateButton {
-      border-bottom: none;
-      margin-left: @size-24;
-      text-transform: uppercase;
-
       button {
-        .text-9-bold;
+        .mono-10-bold;
 
-        padding: @size-4 @size-8;
+        padding: @size-4 @size-6;
         text-transform: uppercase;
       }
     }

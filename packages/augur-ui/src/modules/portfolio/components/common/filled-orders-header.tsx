@@ -25,9 +25,7 @@ const FilledOrdersHeader = (props: FilledOrdersHeaderProps) => (
     <li>Price</li>
     <li>Fill Date</li>
     <li>
-      {props.extendedView ? "Number" : "No. of"}
-      <br />
-      {props.extendedView && "of "} Fills
+      Fills
     </li>
   </ul>
 );

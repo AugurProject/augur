@@ -642,6 +642,7 @@ export function addScripts(flash: FlashSession) {
         const resolutionRules = String(args.resolutionRules);
         const endTime = Number(args.endTime);
         this.log(validateMarketTemplate(title, templateInfo, outcomesString, resolutionRules, endTime));
+
       } catch (e) {
         this.log(e);
       }

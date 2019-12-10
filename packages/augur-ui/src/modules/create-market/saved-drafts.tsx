@@ -25,7 +25,7 @@ interface DraftRowProps {
 }
 
 const DraftRow: React.FC<DraftRowProps> = (props) => {
-  const date = formatDate(new Date(props.draft.updated * 1000)).formattedLocalShortTime;
+  const date = formatDate(new Date(props.draft.updated * 1000)).formattedLocalShortWithUtcOffset;
   return (
     <div className={Styles.DraftRow}>
       <button

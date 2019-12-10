@@ -17,13 +17,13 @@
     white-space: nowrap;
 
     > span > label {
-      .mono-10-medium;
+      .mono-10-bold;
       
       margin-bottom: 0;
     }
 
     &:first-child {
-      .mono-10-medium;
+      .mono-10-bold;
 
       max-width: 100%;
       overflow: hidden;
@@ -74,24 +74,17 @@
   border: 0;
 }
 
-.ParentSingleRow {
-  &:not(:first-of-type) {
-    border-top: 0.0625rem solid @color-dark-grey;
-  }
-}
-
 .SingleRow {
   height: @size-21;
   max-height: @size-21;
   min-height: @size-21;
-
-  &:hover {
-    background: @color-module-background-action-focus;
-  }
+  padding: 0 @size-16;
+  border-bottom: 0.0625rem solid @color-dark-grey;
 }
 
 .BottomBorder {
   padding: 0 1rem;
+  border: 0;
 
   > ul > li {
     border-bottom: 0.0625rem solid @color-dark-grey;
@@ -154,6 +147,7 @@
 .SingleRow3 {
   background-color: @color-module-background;
   padding: 0 @size-16;
+  border: 0;
 
   > div {
     padding: @size-4 0;
@@ -241,9 +235,17 @@
 }
 
 @media @breakpoint-mobile-mid {
+
+  .BottomBorder {
+    > ul > li {
+      border-bottom: 0;
+    }
+  }
+
   .Row {
     grid-template-columns: repeat(3, 1fr);
     position: relative;
+    padding: @size-4 0;
 
     > li {
       > span > label {
@@ -283,15 +285,11 @@
   .SingleRow {
     border-bottom: 1px solid @color-secondary-action-outline;
     border-radius: @border-radius-default;
-    padding-bottom: @size-12;
     padding-left: @size-16;
     padding-right: @size-20;
-  }
-
-  .ParentSingleRow {
-    border-radius: @border-radius-default;
-    border-top: 0;
-    margin-top: 0.125rem;
+    min-height: unset;
+    height: unset;
+    max-height: unset;
   }
 
   .GroupRow {
@@ -302,6 +300,7 @@
   .Row2 {
     grid-template-columns: repeat(5, 1fr);
     position: relative;
+    padding: @size-4 0;
 
     > li {
       &:first-child {
@@ -365,15 +364,25 @@
   }
 
   .Row4 {
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(6, 1fr);
+    padding-left: @size-12;
+    padding-right: @size-12;
 
     &::before {
       width: 2px;
     }
 
     > li {
-      &:last-of-type {
+      &:first-of-type {
+        grid-column: unset;
+        margin-bottom: 0;
+      }
+      &:nth-of-type(2) {
         position: relative;
+        justify-content: flex-end;
+        text-align: right;
+      }
+      &:last-of-type {
         > span {
           display: flex;
         }

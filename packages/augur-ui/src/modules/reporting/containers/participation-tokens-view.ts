@@ -2,11 +2,7 @@ import { connect } from 'react-redux';
 import { ParticipationTokensView } from 'modules/reporting/common';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { MODAL_PARTICIPATE, ZERO } from 'modules/common/constants';
-import {
-  formatAttoDai,
-  formatAttoRep,
-  formatPercent,
-} from 'utils/format-number';
+import { formatAttoDai, formatAttoRep, formatPercent, } from 'utils/format-number';
 import { createBigNumber } from 'utils/create-big-number';
 import { AppState } from 'store';
 
@@ -32,21 +28,29 @@ const mapStateToProps = (state: AppState) => {
           .times(ONE_HUNDRED_BECAUSE_PERCENTAGES)
       : 0
   );
-  const participationTokensClaimable =
+  const pastParticipationTokensPurchased =
     (participationTokens && createBigNumber(participationTokens.totalClaimable)) || ZERO;
-  const participationTokensClaimableFees =
-    (participationTokens && participationTokens.totalFees) || ZERO;
-  const hasRedeemable = isLoggedIn && participationTokensClaimable.gt(ZERO);
+
+  const participationTokensClaimableFees = participationTokens && participationTokens.contracts
+    ? participationTokens.contracts
+        .filter(c => c.isClaimable)
+        .map(c => c.amountFees)
+        .reduce((accumulator, currentValue) => {
+          const bigAccumulator = createBigNumber(accumulator) || ZERO;
+          const bigCurrentValue = createBigNumber(currentValue) || ZERO;
+          return bigCurrentValue.plus(bigAccumulator);
+        }, ZERO)
+    : ZERO;
+
+  const hasRedeemable = isLoggedIn && pastParticipationTokensPurchased.gt(ZERO);
 
   return {
     disputeWindowFees: formatAttoDai(fees || 0),
     purchasedParticipationTokens,
     tokensOwned: formatAttoRep(tokenAmount),
     percentageOfTotalFees,
-    participationTokensClaimable: formatAttoRep(participationTokensClaimable),
-    participationTokensClaimableFees: formatAttoDai(
-      participationTokensClaimableFees
-    ),
+    pastParticipationTokensPurchased: formatAttoRep(pastParticipationTokensPurchased),
+    participationTokensClaimableFees: formatAttoDai(participationTokensClaimableFees),
     disablePurchaseButton,
     hasRedeemable,
   };
