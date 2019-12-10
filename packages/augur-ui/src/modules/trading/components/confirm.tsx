@@ -15,7 +15,7 @@ import {
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import Styles from 'modules/trading/components/confirm.styles.less';
-import { XIcon, ExclamationCircle, InfoIcon, InformationIcon } from 'modules/common/icons';
+import { XIcon, ExclamationCircle, InfoIcon, InformationIcon, QuestionIcon } from 'modules/common/icons';
 import { formatGasCostToEther, formatShares, formatDai } from 'utils/format-number';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import { LinearPropertyLabel } from 'modules/common/labels';
@@ -282,12 +282,14 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
             </div>
             <LinearPropertyLabel
               label="Estimated Fee"
-              value={`${orderShareTradingFee.rounded} DAI`}
+              value={orderShareTradingFee}
+              showDenomination={true}
             />
             <LinearPropertyLabel
               label="Profit"
-              value={`${orderShareProfit.rounded} DAI`}
+              value={orderShareProfit}
               accentValue={notProfitable}
+              showDenomination={true}
             />
           </div>
         )}
@@ -309,7 +311,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
                   data-tip
                   data-for="tooltip--confirm"
                 >
-                  {InfoIcon}
+                  {QuestionIcon}
                 </label>
                 <ReactTooltip
                   id="tooltip--confirm"
@@ -336,11 +338,13 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
             </div>
             <LinearPropertyLabel
               label="Max Profit"
-              value={`${potentialDaiProfit.formatted} DAI`}
+              value={potentialDaiProfit}
+              showDenomination={true}
             />
             <LinearPropertyLabel
               label="Max Loss"
-              value={`${potentialDaiLoss.formatted} DAI`}
+              value={potentialDaiLoss}
+              showDenomination={true}
             />
           </div>
         )}

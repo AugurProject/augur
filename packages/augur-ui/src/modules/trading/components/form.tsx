@@ -474,19 +474,7 @@ class Form extends Component<FromProps, FormState> {
       ...this.state,
       [property]: value,
     };
-
-    if (value === '') {
-      clearOrderForm(false);
-      return this.setState(
-        {
-          [property]: '',
-        },
-        () => {
-          updateOrderProperty({ [property]: value });
-        }
-      );
-    }
-
+    
     const validationResults = this.orderValidation(
       updatedState,
       property,
@@ -684,14 +672,14 @@ class Form extends Component<FromProps, FormState> {
           <li>
             <label htmlFor="tr__input--quantity">Quantity</label>
             <div
-              className={classNames(Styles.TradingForm__input__container, {
+              className={classNames(Styles.TradingFormInputContainer, {
                 [Styles.error]: s.errors[this.INPUT_TYPES.QUANTITY].length,
               })}
             >
               <input
                 className={classNames(
                   FormStyles.Form__input,
-                  Styles.TradingForm__input,
+                  Styles.TradingFormInput,
                   {
                     [`${Styles.error}`]: s.errors[this.INPUT_TYPES.QUANTITY]
                       .length,
@@ -730,17 +718,17 @@ class Form extends Component<FromProps, FormState> {
           </li>
           <li>
             <label htmlFor="tr__input--limit-price">
-              {isScaler ? 'Outcome' : 'Limit Price'}
+              Limit Price
             </label>
             <div
-              className={classNames(Styles.TradingForm__input__container, {
+              className={classNames(Styles.TradingFormInputContainer, {
                 [Styles.error]: s.errors[this.INPUT_TYPES.PRICE].length,
               })}
             >
               <input
                 className={classNames(
                   FormStyles.Form__input,
-                  Styles.TradingForm__input
+                  Styles.TradingFormInput
                 )}
                 id="tr__input--limit-price"
                 type="number"
@@ -774,14 +762,14 @@ class Form extends Component<FromProps, FormState> {
           <li className={Styles['TradingForm__limit-price']}>
             <label htmlFor="tr__input--limit-price">Total Order Value</label>
             <div
-              className={classNames(Styles.TradingForm__input__container, {
+              className={classNames(Styles.TradingFormInputContainer, {
                 [`${Styles.error}`]: s.errors[this.INPUT_TYPES.EST_DAI].length,
               })}
             >
               <input
                 className={classNames(
                   FormStyles.Form__input,
-                  Styles.TradingForm__input,
+                  Styles.TradingFormInput,
                   {
                     [`${Styles.error}`]: s.errors[this.INPUT_TYPES.EST_DAI]
                       .length,
@@ -818,24 +806,22 @@ class Form extends Component<FromProps, FormState> {
           </li>
           {!initialLiquidity && (
             <li>
-              <div>
-                <CancelTextButton
-                  text="25%"
-                  action={() => this.updateTotalValue(0.25)}
-                />
-                <CancelTextButton
-                  text="50%"
-                  action={() => this.updateTotalValue(0.5)}
-                />
-                <CancelTextButton
-                  text="75%"
-                  action={() => this.updateTotalValue(0.75)}
-                />
-                <CancelTextButton
-                  text="100%"
-                  action={() => this.updateTotalValue(1)}
-                />
-              </div>
+              <CancelTextButton
+                text="25%"
+                action={() => this.updateTotalValue(0.25)}
+              />
+              <CancelTextButton
+                text="50%"
+                action={() => this.updateTotalValue(0.5)}
+              />
+              <CancelTextButton
+                text="75%"
+                action={() => this.updateTotalValue(0.75)}
+              />
+              <CancelTextButton
+                text="100%"
+                action={() => this.updateTotalValue(1)}
+              />
               <CancelTextButton
                 text="clear"
                 action={() => this.clearOrderFormProperties()}
@@ -971,9 +957,9 @@ class Form extends Component<FromProps, FormState> {
           )}
         </ul>
         {errors.length > 0 && (
-          <div className={Styles.TradingForm__error_message_container}>
+          <div className={Styles.ErrorContainer}>
             {errors.map(error => (
-              <div key={error} className={Styles.TradingForm__error_message}>
+              <div key={error} className={Styles.Error}>
                 {ExclamationCircle} <span>{error}</span>
               </div>
             ))}

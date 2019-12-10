@@ -32,7 +32,9 @@ const getMarketPath = id => {
 };
 
 const mapStateToProps = (state, ownProps) => {
-  const { authStatus, loginAccount, appStatus, blockchain } = state;
+  const { authStatus, loginAccount, appStatus, accountPositions, userOpenOrders } = state;
+  const marketId = ownProps.market.id;
+  const hasHistory = !!accountPositions[marketId] || !!userOpenOrders[marketId];
   const { 
     gnosisEnabled: Gnosis_ENABLED,
     gnosisStatus,
@@ -42,6 +44,7 @@ const mapStateToProps = (state, ownProps) => {
     : !!loginAccount.balances.eth && !!loginAccount.balances.dai;
 
   return {
+    hasHistory,
     gasPrice: getGasPrice(state),
     hasFunds,
     isLogged: authStatus.isLogged,

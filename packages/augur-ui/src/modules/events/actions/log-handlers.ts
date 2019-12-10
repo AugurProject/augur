@@ -108,6 +108,7 @@ export const handleTxSuccess = (txStatus: Events.TXStatus) => (
 ) => {
   console.log('TxSuccess Transaction', txStatus.transaction.name);
   dispatch(addUpdateTransaction(txStatus));
+  dispatch(updateAssets());
 };
 
 export const handleTxPending = (txStatus: Events.TXStatus) => (
