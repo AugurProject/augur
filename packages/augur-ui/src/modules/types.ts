@@ -58,8 +58,7 @@ export interface TimezoneDateObject {
 export interface DateFormattedObject {
   value: Date;
   formattedShortTime: string;
-  formattedShort: string;
-  formattedLocalShort: string;
+  formattedLocalShortDate: string;
   formattedLocalShortTime: string;
   formattedLocalShortDateSecondary: string;
   timestamp: number;

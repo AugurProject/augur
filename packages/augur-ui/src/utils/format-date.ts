@@ -51,9 +51,9 @@ export function formatDate(d, timezone: string = null): DateFormattedObject {
   const utcAMPM: string = ampm(('0' + date.getUTCHours()).slice(-2));
 
   // Locat Time Formatting
-  const localTime: Array<number> = [date.getHours(), date.getMinutes()];
-  const localAMPM: string = ampm(localTime[0].toString());
-  const localTimeTwelve: Array<string> = getTwelveHourTime(localTime);
+  const local24hrTimeWithSeconds: Array<number> = [date.getHours(), date.getMinutes(), date.getSeconds()];
+  const localAMPM: string = ampm(local24hrTimeWithSeconds[0].toString());
+  const localTimeTwelve: Array<string> = getTwelveHourTime(local24hrTimeWithSeconds);
   const localOffset: number = (date.getTimezoneOffset() / 60) * -1;
   const localOffsetFormatted: string =
     localOffset > 0 ? `+${localOffset}` : localOffset.toString();
@@ -68,20 +68,17 @@ export function formatDate(d, timezone: string = null): DateFormattedObject {
   return {
     value: date,
     formattedShortTime: `${utcTimeWithSeconds.join(':')}`,
-    formattedShort: `${shortMonths[date.getUTCMonth()]}${(
-      '0' + date.getUTCDate()
-    ).slice(-2)} ${date.getUTCFullYear()} ${utcTimeWithSeconds.join(':')}`,
     formattedLocalShortDateSecondary: `${date.getDate()} ${
       shortMonths[date.getMonth()]
     } ${date.getFullYear()}`,
-    formattedLocalShort: `${
+    formattedLocalShortDate: `${
       shortMonths[date.getMonth()]
-    } ${date.getDate()}, ${date.getFullYear()} (UTC ${localOffsetFormatted})`, // local time
+    } ${date.getDate()} ${date.getFullYear()}`,
     formattedLocalShortTime: `${
       shortMonths[date.getMonth()]
     } ${date.getDate()}, ${date.getFullYear()} ${localTimeTwelve.join(
       ':'
-    )} ${localAMPM} (UTC ${localOffsetFormatted})`, // local time
+    )} ${localAMPM} (UTC ${localOffsetFormatted})`,
     timestamp: date.getTime() / 1000,
     utcLocalOffset: localOffset,
     clockTimeLocal: `${localTimeTwelve.join(
@@ -101,9 +98,9 @@ export function formatDate(d, timezone: string = null): DateFormattedObject {
     )} ${localAMPM} ${timezoneName}`,
     formattedShortTimezone: `${
       shortMonths[date.getMonth()]
-    } ${date.getDate()} ${date.getFullYear()} ${localTimeTwelve.join(
+    } ${date.getDate()} ${date.getFullYear()} ${local24hrTimeWithSeconds.join(
       ':'
-    )} ${localAMPM} ${timezoneName}`,
+    )} ${timezoneName}`,
     formattedUtc: `${
       months[date.getUTCMonth()]
     } ${date.getUTCDate()}, ${date.getUTCFullYear()} ${utcTimeTwelve.join(

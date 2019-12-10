@@ -37,7 +37,7 @@ const FilledOrdersTable = (props: FilledOrdersTableProps) => {
             <li>
               <ValueLabel value={formatShares(trade.amount)} />
             </li>
-            <li>{trade.timestamp.formattedShort}</li>
+            <li>{trade.timestamp.formattedShortTimezone}</li>
             <li>
               <ViewTransactionDetailsButton
                 label={'VIEW Etherscan Transaction'}
@@ -59,7 +59,7 @@ const FilledOrdersTable = (props: FilledOrdersTableProps) => {
             <LinearPropertyLabel
               highlightFirst
               label="Timestamp"
-              value={trade.timestamp.formattedShort}
+              value={trade.timestamp.formattedShortTimezone}
             />
             <LinearPropertyViewTransaction
               highlightFirst
