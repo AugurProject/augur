@@ -156,11 +156,6 @@ const Row = (props: RowProps) => {
           )}
         </div>
         ) : (
-        // <div
-        //   className={classNames({
-        //     [Styles.ParentSingleRow]: isSingle
-        //   })}
-        // >
         <>
           {(noToggle && extendedViewNotOnMobile && !matches) &&
             <div className={classNames(Styles.SingleRow, Styles.BottomBorder)}>
@@ -207,7 +202,6 @@ const Row = (props: RowProps) => {
             />
           }
           </>
-      // </div>
       )}
     </Media>
   );

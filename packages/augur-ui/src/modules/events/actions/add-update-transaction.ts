@@ -1,3 +1,4 @@
+import store, { AppState } from 'store';
 import {
   addCanceledOrder,
   removeCanceledOrder,
@@ -253,5 +254,18 @@ function addOrder(
     return console.log(
       `Could not process order to add pending order for market ${market.id}`
     );
-  dispatch(addPendingOrder(order, market.id));
+
+  const { blockchain } = store.getState() as AppState;
+
+  dispatch(
+    addPendingOrder(
+      {
+        ...order,
+        creationTime: convertUnixToFormattedDate(
+          blockchain.currentAugurTimestamp
+        ),
+      },
+      market.id
+    )
+  );
 }

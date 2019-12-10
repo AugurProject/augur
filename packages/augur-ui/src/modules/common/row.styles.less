@@ -74,24 +74,17 @@
   border: 0;
 }
 
-.ParentSingleRow {
-  &:not(:first-of-type) {
-    border-top: 0.0625rem solid @color-dark-grey;
-  }
-}
-
 .SingleRow {
   height: @size-21;
   max-height: @size-21;
   min-height: @size-21;
-
-  &:hover {
-    background: @color-module-background-action-focus;
-  }
+  padding: 0 @size-16;
+  border-bottom: 0.0625rem solid @color-dark-grey;
 }
 
 .BottomBorder {
   padding: 0 1rem;
+  border: 0;
 
   > ul > li {
     border-bottom: 0.0625rem solid @color-dark-grey;
@@ -154,6 +147,7 @@
 .SingleRow3 {
   background-color: @color-module-background;
   padding: 0 @size-16;
+  border: 0;
 
   > div {
     padding: @size-4 0;
@@ -286,12 +280,6 @@
     padding-bottom: @size-12;
     padding-left: @size-16;
     padding-right: @size-20;
-  }
-
-  .ParentSingleRow {
-    border-radius: @border-radius-default;
-    border-top: 0;
-    margin-top: 0.125rem;
   }
 
   .GroupRow {
