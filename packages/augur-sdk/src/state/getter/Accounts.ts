@@ -204,7 +204,6 @@ export class Accounts<TBigNumber> {
       const market = marketsById[crowdsourcer.market];
       const crowdsourcerCompleted = disputeCrowdsourcerCompletedLogsById[crowdsourcer.token];
       let isClaimable = false;
-      console.log(`CS: ${crowdsourcer.token} RS: ${market.reportingState} CC: ${crowdsourcerCompleted} WIN: ${crowdsourcerCompleted.payoutNumerators.toString() === market.tentativeWinningPayoutNumerators.toString()}`);
       if (market.reportingState === MarketReportingState.AwaitingFinalization || market.reportingState === MarketReportingState.Finalized) {
         // If the market is finalized/finalizable and this bond was correct its claimable, otherwise we leave it out entirely
         isClaimable = !crowdsourcerCompleted || crowdsourcerCompleted.payoutNumerators.toString() === market.tentativeWinningPayoutNumerators.toString();
@@ -235,16 +234,19 @@ export class Accounts<TBigNumber> {
     const universe = augur.getUniverse(params.universe);
     const curDisputeWindowAddress = await universe.getCurrentDisputeWindow_(false);
 
-    // NOTE: We do not expect this to be a large list. In the standard/expected case this will be one item (maybe 2), so the cash balance call is likely low impact
+    // NOTE: We do not expect this to be a large list. In the standard/expected case this will be one item (maybe 2), so the cash balance & totalSupply calls are likely low impact
     const participationTokenContractInfo: ParticipationContract[] = [];
     
     for (let tokenBalanceLog of participationTokens) {
-      const amountFees = (await augur.contracts.cash.balanceOf_(tokenBalanceLog.token)).toFixed();
+      const totalFees = await augur.contracts.cash.balanceOf_(tokenBalanceLog.token);
+      const totalPTSupply = await augur.contracts.disputeWindowFromAddress(tokenBalanceLog.token).totalSupply_();
+      const amount = new BigNumber(tokenBalanceLog.balance);
+      const amountFees = amount.div(totalPTSupply).multipliedBy(totalFees);
       const isClaimable = tokenBalanceLog.token !== curDisputeWindowAddress;
       participationTokenContractInfo.push({
         address: tokenBalanceLog.token,
-        amount: new BigNumber(tokenBalanceLog.balance).toFixed(),
-        amountFees,
+        amount: amount.toFixed(),
+        amountFees: amountFees.toFixed(),
         isClaimable
       });
     };
