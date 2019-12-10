@@ -818,24 +818,22 @@ class Form extends Component<FromProps, FormState> {
           </li>
           {!initialLiquidity && (
             <li>
-              <div>
-                <CancelTextButton
-                  text="25%"
-                  action={() => this.updateTotalValue(0.25)}
-                />
-                <CancelTextButton
-                  text="50%"
-                  action={() => this.updateTotalValue(0.5)}
-                />
-                <CancelTextButton
-                  text="75%"
-                  action={() => this.updateTotalValue(0.75)}
-                />
-                <CancelTextButton
-                  text="100%"
-                  action={() => this.updateTotalValue(1)}
-                />
-              </div>
+              <CancelTextButton
+                text="25%"
+                action={() => this.updateTotalValue(0.25)}
+              />
+              <CancelTextButton
+                text="50%"
+                action={() => this.updateTotalValue(0.5)}
+              />
+              <CancelTextButton
+                text="75%"
+                action={() => this.updateTotalValue(0.75)}
+              />
+              <CancelTextButton
+                text="100%"
+                action={() => this.updateTotalValue(1)}
+              />
               <CancelTextButton
                 text="clear"
                 action={() => this.clearOrderFormProperties()}

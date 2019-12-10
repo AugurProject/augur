@@ -13,11 +13,17 @@
   margin-right: @size-12;
   padding-bottom: @size-8;
 
+  &:not(:first-of-type) {
+    margin-top: @size-12;
+  }
+
   > div[class*='LinearPropertyLabel'] {
     > span {
-      .mono-10-bold;
+      .mono-10-medium;
 
       &:first-of-type {
+        .mono-10-bold;
+
         color: @color-secondary-text;
       }
     }
@@ -41,21 +47,20 @@
   color: @color-secondary-text;
   display: flex;
   flex-direction: row;
-  margin-bottom: @size-4;
 }
 
 .TooltipContainer {
-  display: inline-block;
+  display: flex;
   padding-bottom: 0;
-  position: relative;
 }
 
 .AggregatePosition {
-  .mono-12-bold;
+  .text-12-medium;
 
   color: @color-primary-text;
   padding-bottom: @size-4;
   text-transform: uppercase;
+  margin: @size-8 0 @size-10;
 
   &.short {
     color: @color-negative;
@@ -68,10 +73,7 @@
 
 .Tooltip {
   color: @color-secondary-text;
-  margin-left: @size-8;
-  position: absolute;
-  top: -0.1875rem;
-  width: 5rem;
+  margin-left: @size-4;
 }
 
 .TooltipHint {
@@ -83,13 +85,12 @@
     width: @size-12;
 
     > circle {
-      fill: @color-secondary-text;
+      fill: none;
       stroke: @color-secondary-text;
-      stroke-width: 1.5;
     }
 
     > path {
-      fill: @color-inactive-text;
+      fill: @color-secondary-text;
     }
   }
 }

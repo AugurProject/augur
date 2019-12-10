@@ -54,34 +54,34 @@
         align-items: center;
         border: none;
         flex-direction: row;
-        font-size: @size-12;
-        min-height: @size-16;
+        min-height: @size-22;
+        display: flex;
+        flex: 1;
 
         > button {
           .mono-10-bold;
+          
+          min-height: @size-22;
+          padding: @size-3 @size-6;
         }
 
-        > div {
-          display: flex;
-          flex: 1;
+        > button:not(:first-of-type) {
+          margin-left: @size-4;
+        }
 
-          > button {
-            .mono-10-bold;
-          }
-
-          > button:not(:first-of-type) {
-            margin-left: @size-4;
-          }
+        > button:last-of-type {
+          margin-left: auto;
         }
 
         > label {
-          .mono-9-bold;
+          .mono-10-bold;
 
           color: @color-primary-text;
           margin-bottom: 0;
           padding: 0;
           margin-left: @size-22;
           margin-top: @size-1;
+          text-transform: uppercase;
         }
       }
 
@@ -105,6 +105,9 @@
 
         > button {
           .mono-10-bold;
+
+          min-height: @size-22;
+          padding: @size-3 @size-6;
         }
       }
 
@@ -180,6 +183,7 @@
             > circle {
               opacity: 1;
               stroke: @color-primary-text;
+              fill: none;
             }
 
             > rect {
@@ -202,6 +206,7 @@
             > circle {
               opacity: 1;
               stroke: @color-primary-text;
+              fill: none;
             }
 
             > rect {
