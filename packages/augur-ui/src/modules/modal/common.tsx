@@ -609,7 +609,7 @@ export class MarketReview extends Component<
 
         {details && (
           <div>
-            <p>Additional details</p>
+            <p>Resolution rules</p>
             {showReadMore && !readMore && readMoreSection}
             {(!showReadMore || readMore) && <div>{details}</div>}
           </div>

@@ -228,7 +228,7 @@ export default class MarketHeader extends Component<
                 {preview ? <PreviewMarketTitle market={market} /> : <MarketTitle id={market.marketId} noLink />}
                 {details.length > 0 && (
                   <div className={Styles.Details}>
-                    <h4>Additional Details</h4>
+                    <h4>Resolution Rules</h4>
                     <div>
                       <label
                         ref={detailsContainer => {
