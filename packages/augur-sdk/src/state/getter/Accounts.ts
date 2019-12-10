@@ -9,13 +9,12 @@ import {
   InitialReporterRedeemedLog,
   InitialReportSubmittedLog,
   MarketCreatedLog,
+  MarketData,
+  OrderEventType,
+  OrderType,
   ParsedOrderEventLog,
   ParticipationTokensRedeemedLog,
   TradingProceedsClaimedLog,
-  OrderType,
-  TokenType,
-  MarketData,
-  OrderEventType,
 } from '../logs/types';
 import { sortOptions } from './types';
 import {
@@ -24,10 +23,11 @@ import {
   convertOnChainAmountToDisplayAmount,
   describeMarketOutcome,
   describeUniverseOutcome,
-  marketTypeToName, PayoutNumeratorValue
+  marketTypeToName,
+  PayoutNumeratorValue
 } from '../../index';
-import { SECONDS_IN_A_DAY, MarketReportingState } from '../../constants';
-import { compareObjects, getOutcomeValue, convertOnChainPriceToDisplayPrice, numTicksToTickSize } from '../../utils';
+import { MarketReportingState } from '../../constants';
+import { compareObjects, convertOnChainPriceToDisplayPrice, numTicksToTickSize } from '../../utils';
 import * as _ from "lodash";
 import * as t from 'io-ts';
 
@@ -230,13 +230,13 @@ export class Accounts<TBigNumber> {
     const participationTokens = await db.TokenBalanceChanged.where("[universe+owner+tokenType]").equals([params.universe, params.account, 2]).and((log) => {
       return log.balance > "0x00";
     }).toArray();
-    
+
     const universe = augur.getUniverse(params.universe);
     const curDisputeWindowAddress = await universe.getCurrentDisputeWindow_(false);
 
     // NOTE: We do not expect this to be a large list. In the standard/expected case this will be one item (maybe 2), so the cash balance & totalSupply calls are likely low impact
     const participationTokenContractInfo: ParticipationContract[] = [];
-    
+
     for (let tokenBalanceLog of participationTokens) {
       const totalFees = await augur.contracts.cash.balanceOf_(tokenBalanceLog.token);
       const totalPTSupply = await augur.contracts.disputeWindowFromAddress(tokenBalanceLog.token).totalSupply_();
@@ -320,7 +320,7 @@ export class Accounts<TBigNumber> {
       const orderCanceledLogs = await db.OrderEvent.where('[universe+eventType+timestamp]').between([params.universe, OrderEventType.Cancel, formattedStartTime], [params.universe, OrderEventType.Cancel, formattedEndTime], true, true).and((log) => {
         return log.orderCreator === params.account;
       }).toArray();
-      
+
       const marketInfo = await Accounts.getMarketCreatedInfo(
         db,
         orderCanceledLogs
