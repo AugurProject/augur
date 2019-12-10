@@ -14,7 +14,7 @@
         padding: @size-16 @size-32;
       }
 
-      > div.TradingForm__input__container {
+      > div.TradingFormInputContainer {
         max-height: @size-32;
         min-height: @size-32;
 
@@ -223,7 +223,7 @@
   }
 }
 
-.TradingForm__error_message_container {
+.ErrorContainer {
   background: fade(@color-error, 20%);
   border: 1px solid @color-error;
   border-radius: 3px;
@@ -235,13 +235,17 @@
   padding: @size-13 @size-8;
 }
 
-.TradingForm__error_message {
+.Error {
   .mono-10-bold;
 
+  align-items: center;
   color: @color-primary-text;
   margin-bottom: @size-4;
   text-transform: uppercase;
-  white-space: nowrap;
+  display: grid;
+  grid-gap: @size-8;
+  grid-template-columns: @size-12 auto;
+  grid-template-rows: auto;
 
   &:last-of-type {
     margin-bottom: 0;
@@ -265,10 +269,6 @@
     > path {
       fill: @color-error;
     }
-  }
-
-  span {
-    white-space: nowrap;
   }
 }
 
@@ -301,7 +301,7 @@
   }
 }
 
-.TradingForm__input {
+.TradingFormInput {
   display: flex;
   flex-grow: 1;
   padding: @size-10 @size-12;
@@ -310,7 +310,7 @@
   line-height: normal;
 }
 
-.TradingForm__input__container {
+.TradingFormInputContainer {
   .mono-11;
 
   align-items: center;
@@ -382,7 +382,7 @@
     padding-top: 0;
   }
 
-  .TradingForm__input__container {
+  .TradingFormInputContainer {
     > span {
       font-size: @size-10;
     }
