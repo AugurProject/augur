@@ -16,12 +16,7 @@ import { Addresses } from '@augurproject/artifacts';
 import { GnosisRelayAPI, GnosisSafeState } from '@augurproject/gnosis-relay-api';
 
 async function calculateSafeAddress(person: ContractAPI, initialPayment=new BigNumber(1e21)) {
-  return person.augur.gnosis.calculateGnosisSafeAddress({
-    owner: person.account.publicKey,
-    payment: initialPayment.toString(),
-    paymentToken: '', // ignored
-    safe: '', // ignored
-  })
+  return person.augur.gnosis.calculateGnosisSafeAddress(person.account.publicKey, '0x0');
 }
 
 async function getOrCreateSafe(person: ContractAPI, initialPayment=new BigNumber(1e21)): Promise<string> {

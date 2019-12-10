@@ -1,20 +1,20 @@
 import { abi } from '@augurproject/artifacts';
 import {
+  GasStationResponse,
   GnosisSafeState,
   GnosisSafeStateReponse,
   IGnosisRelayAPI,
   SafeResponse,
-  GasStationResponse,
 } from '@augurproject/gnosis-relay-api';
 import { BigNumber } from 'bignumber.js';
 import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis';
 import { Abi } from 'ethereum';
 import * as ethUtil from 'ethereumjs-util';
 import { ethers, utils as ethersUtils } from 'ethers';
+import { formatBytes32String } from 'ethers/utils';
 import { NULL_ADDRESS, Provider, SubscriptionEventName } from '..';
 import { Augur } from '../Augur';
 import { Address } from '../state/logs/types';
-import { formatBytes32String } from 'ethers/utils';
 
 export const AUGUR_GNOSIS_SAFE_NONCE = 872838000000;
 
@@ -148,13 +148,13 @@ export class Gnosis {
 
     // Validate previous relay creation params.
     if (typeof params === 'object') {
-      const safe = await this.calculateGnosisSafeAddress(params);
+      const safe = await this.calculateGnosisSafeAddress(owner, params.payment);
       const status = await this.getGnosisSafeDeploymentStatusViaRelay(params);
 
       this.augur.setGnosisStatus(status.status);
 
       // Normalize addresses
-      if (safe.toLowerCase() !== params.safe.toLowerCase()) {
+      if (ethUtil.toChecksumAddress(safe) !== ethUtil.toChecksumAddress(params.safe)) {
         // TODO handle this in the UI
         console.log(
           `Saved relay safe creation params invalid. Calculated safe address is ${safe}. Passed params: ${JSON.stringify(
@@ -185,21 +185,15 @@ export class Gnosis {
     }
 
 
-    try {
-      const result: SafeResponse = await this.createGnosisSafeViaRelay({
-        owner,
-        paymentToken: this.augur.contracts.cash.address,
-      }) as SafeResponse;
+    const result: SafeResponse = await this.createGnosisSafeViaRelay({
+      owner,
+      paymentToken: this.augur.contracts.cash.address,
+    }) as SafeResponse;
 
-
-      return {
-        ...result,
-        owner,
-      };
-    }
-
-      return restoreAddress;
-    }
+    return {
+      ...result,
+      owner,
+    };
   }
 
   /**
@@ -208,14 +202,12 @@ export class Gnosis {
    * @returns {Promise<string>}
    */
   async calculateGnosisSafeAddress(
-    params: CalculateGnosisSafeAddressParams
+    owner: string,
+    payment: string,
   ): Promise<string> {
-    const gnosisSafeRegistryAddress = this.augur.contracts.gnosisSafeRegistry
-      .address;
-
     const gnosisSafeData = await this.buildGnosisSetupData(
-      params.owner,
-      params.payment
+      owner,
+      payment
     );
 
     // This _could_ be made into a constant if this ends up being a problem in any way
@@ -284,7 +276,6 @@ export class Gnosis {
 
     const setupData = await this.buildRegistrationData();
 
-    try {
       const response = await this.gnosisRelay.createSafe({
         saltNonce: AUGUR_GNOSIS_SAFE_NONCE,
         owners: [params.owner],
@@ -294,6 +285,15 @@ export class Gnosis {
         setupData,
       });
 
+      const calculatedSafeAddress = await this.calculateGnosisSafeAddress(
+        params.owner,
+        response.payment
+      );
+      if(ethUtil.toChecksumAddress(calculatedSafeAddress) !== ethUtil.toChecksumAddress(response.safe)) {
+        this.augur.setGnosisStatus(GnosisSafeState.ERROR);
+        throw new Error(`Potential malicious relay. Returned ${response.safe}. Expected ${calculatedSafeAddress}`);
+      }
+
       this.safesToCheck.push({
         safe: ethUtil.toChecksumAddress(response.safe),
         owner: params.owner,
@@ -302,24 +302,9 @@ export class Gnosis {
 
       this.augur.setGnosisStatus(GnosisSafeState.WAITING_FOR_FUNDS);
 
+      await this.onNewBlock();
+
       return response;
-    } catch(error) {
-      const restoreAddress = await this.calculateGnosisSafeAddress({
-        payment: '1',
-        owner: params.owner,
-        safe: null,
-        paymentToken: null,
-      });
-
-      this.safesToCheck.push({
-        safe: ethUtil.toChecksumAddress(restoreAddress),
-        owner: params.owner,
-        status: GnosisSafeState.WAITING_FOR_FUNDS,
-      });
-
-      this.augur.setGnosisStatus(GnosisSafeState.WAITING_FOR_FUNDS);
-      throw ethUtil.toChecksumAddress(restoreAddress);
-    }
   }
 
   async gasStation(): Promise<GasStationResponse> {
