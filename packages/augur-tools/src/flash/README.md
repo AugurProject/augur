@@ -195,7 +195,7 @@ Script to help market creators to verify their market will be validated as a tem
 --endTime: is the timestamp for event expiration of the market, endTime in market creation transaction.
 --resolutionRules: resolution rules separated by '\n' that would be included in extraInfo in market creation transaction.
 
-The script will return '' for successful, meaning validation verified the market would be considered a templated market
+The script will return 'success' for successful, meaning validation verified the market would be considered a templated market
 
 If there is a failed validation step, `error: ...` and give an error of why.
 Errors:

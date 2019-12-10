@@ -51,7 +51,7 @@ export const validateMarketTemplate = (
       errors
     );
 
-    if (result) return '';
+    if (result) return "success";
     const error = errors[0];
     return `error: ${error}`;
   } catch (e) {
