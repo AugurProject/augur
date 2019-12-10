@@ -185,7 +185,7 @@ export class SDK {
     const signerNetworkId = this.signerNetworkId;
 
     if (!localNetwork || !signerNetworkId) return undefined;
-    return localNetwork.toString() === signerNetworkId.toString();
+    return localNetwork.toFixed() === signerNetworkId.toFixed();
   }
 }
 

@@ -56,7 +56,7 @@ function toCapitalizeCase(label) {
   return label.charAt(0).toUpperCase() + label.slice(1);
 }
 export function getInfo(params: any, status: string, marketInfo: MarketData) {
-  const outcome = new BigNumber(params.outcome || params._outcome).toString();
+  const outcome = new BigNumber(params.outcome || params._outcome).toFixed();
   const outcomeDescription = getOutcomeNameWithOutcome(marketInfo, outcome);
   let orderType = params.orderType === BUY_INDEX ? BUY : SELL;
 
@@ -85,7 +85,7 @@ export function getInfo(params: any, status: string, marketInfo: MarketData) {
   const amount = convertOnChainAmountToDisplayAmount(
     createBigNumber(params.amount || params._amount),
     tickSize
-  ).toString();
+  ).toFixed();
 
   return {
     price,
@@ -214,7 +214,7 @@ export default function setAlertText(alert: any, callback: Function) {
               ) {
                 // creator
                 const orders = userOpenOrders[alert.params.market];
-                const outcome = new BigNumber(alert.params.outcome).toString();
+                const outcome = new BigNumber(alert.params.outcome).toFixed();
                 const foundOrder =
                   orders &&
                   orders[outcome] &&
@@ -264,7 +264,7 @@ export default function setAlertText(alert: any, callback: Function) {
               ) {
                 // creator
                 const orders = userOpenOrders[alert.params.market];
-                const outcome = new BigNumber(alert.params.outcome).toString();
+                const outcome = new BigNumber(alert.params.outcome).toFixed();
                 const foundOrder =
                   orders &&
                   orders[outcome] &&

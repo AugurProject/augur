@@ -3,7 +3,7 @@ export default function convertExponentialToDecimal(
 ): string {
   // got from davidjs blog
   // sanity check - is it exponential number
-  const str = exponentialNumber && exponentialNumber.toString();
+  const str = exponentialNumber && exponentialNumber.toFixed();
   if (str.indexOf("e") !== -1) {
     const exponent = parseInt(str.split("-")[1], 10);
     const result =

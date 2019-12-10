@@ -19,7 +19,7 @@ export function formatAbiRawDecodedData(inputType, decodedData) {
   } else if (inputType.startsWith("bool")) {
     return decodedData;
   }
-  return decodedData.toString();
+  return decodedData.toFixed();
 }
 
 

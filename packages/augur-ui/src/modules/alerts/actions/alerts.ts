@@ -85,13 +85,13 @@ export function updateExistingAlert(id, alert) {
 
 function createUniqueOrderId(alert) {
   const price = alert.params._price
-    ? alert.params._price.toString()
-    : new BigNumber(alert.params.price).toString();
+    ? alert.params._price.toFixed()
+    : new BigNumber(alert.params.price).toFixed();
   const outcome = alert.params._outcome
-    ? alert.params._outcome.toString()
-    : new BigNumber(alert.params.outcome).toString();
+    ? alert.params._outcome.toFixed()
+    : new BigNumber(alert.params.outcome).toFixed();
   const direction = alert.params._direction
-    ? alert.params._direction.toString()
+    ? alert.params._direction.toFixed()
     : alert.params.orderType;
 
   return `${alert.id}_${price}_${outcome}_${direction}`;

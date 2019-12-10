@@ -232,7 +232,7 @@ export function formatGasCostToEther(num: NumStrBigNumber, opts: FormattedNumber
 export function formatAttoRep(num: NumStrBigNumber, opts: FormattedNumberOptions = optionsBlank()): FormattedNumber {
   if (!num) return formatBlank();
   return formatNumber(
-    createBigNumber(num.toString())
+    createBigNumber(num.toFixed())
       .dividedBy(ETHER)
       .toNumber(),
     {
@@ -254,7 +254,7 @@ export function formatAttoDai(num: NumStrBigNumber ): FormattedNumber {
 export function formatAttoEth(num: NumStrBigNumber, opts: FormattedNumberOptions = optionsBlank()): FormattedNumber {
   if (!num) return formatBlank();
   return formatNumber(
-    createBigNumber(num.toString())
+    createBigNumber(num.toFixed())
       .dividedBy(ETHER)
       .toNumber(),
     {

@@ -1429,7 +1429,7 @@ describe('State API :: Markets :: ', () => {
       expect(orderBook).toEqual({
         marketId: yesNoMarket.address,
         orderBook: {
-          [outcome0.toString()]: {
+          [outcome0.toFixed()]: {
             spread: '0',
             asks: [
               {
@@ -1460,7 +1460,7 @@ describe('State API :: Markets :: ', () => {
               },
             ],
           },
-          [outcome1.toString()]: {
+          [outcome1.toFixed()]: {
             spread: '0',
             asks: [
               {
@@ -1506,7 +1506,7 @@ describe('State API :: Markets :: ', () => {
       expect(orderBook).toMatchObject({
         marketId: yesNoMarket.address,
         orderBook: {
-          [outcome0.toString()]: {
+          [outcome0.toFixed()]: {
             spread: '0',
             asks: [
               {
@@ -1525,7 +1525,7 @@ describe('State API :: Markets :: ', () => {
               },
             ],
           },
-          [outcome1.toString()]: {
+          [outcome1.toFixed()]: {
             spread: '0',
             asks: [
               {

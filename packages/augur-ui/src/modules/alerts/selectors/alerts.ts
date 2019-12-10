@@ -25,7 +25,7 @@ export const selectInfoAlertsAndSeenCount = createSelector(
       filteredAlerts = alerts
         .filter(
           alert =>
-            (alert.networkId === networkId.toString() &&
+            (alert.networkId === networkId.toFixed() &&
               alert.universe === universe.id &&
               alert.description &&
               (alert.status.toUpperCase() === FAILURE.toUpperCase() ||

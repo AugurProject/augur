@@ -34,40 +34,40 @@ test('numTicksToTickSize', () => {
   const minPrice = new BigNumber(0);
   const maxPrice = new BigNumber(1e18).times(10);
   const numTicks = new BigNumber(10000);
-  expect(numTicksToTickSize(numTicks, minPrice, maxPrice).toString()).toEqual('0.001');
+  expect(numTicksToTickSize(numTicks, minPrice, maxPrice).toFixed()).toEqual('0.001');
 });
 
 test('numTicksToTickSizeWithDisplayPrices', () => {
   const minPrice = new BigNumber(0);
   const maxPrice = new BigNumber(10);
   const numTicks = new BigNumber(10000);
-  expect(numTicksToTickSizeWithDisplayPrices(numTicks, minPrice, maxPrice).toString()).toEqual('0.001');
+  expect(numTicksToTickSizeWithDisplayPrices(numTicks, minPrice, maxPrice).toFixed()).toEqual('0.001');
 });
 
 test('convertOnChainAmountToDisplayAmount', () => {
   const onChainAmount = new BigNumber(1e18).times(23);
   const tickSize = new BigNumber('0.001');
-  expect(convertOnChainAmountToDisplayAmount(onChainAmount, tickSize).toString()).toEqual('23000');
+  expect(convertOnChainAmountToDisplayAmount(onChainAmount, tickSize).toFixed()).toEqual('23000');
 });
 
 test('convertDisplayAmountToOnChainAmount', () => {
   const displayAmount = new BigNumber(23);
   const tickSize = new BigNumber('0.001');
-  expect(convertDisplayAmountToOnChainAmount(displayAmount, tickSize).toString()).toEqual('23000000000000000');
+  expect(convertDisplayAmountToOnChainAmount(displayAmount, tickSize).toFixed()).toEqual('23000000000000000');
 });
 
 test('convertOnChainPriceToDisplayPrice', () => {
   const onChainPrice = new BigNumber(20000);
   const minPrice = new BigNumber(1e18).times(3);
   const tickSize = new BigNumber('0.001');
-  expect(convertOnChainPriceToDisplayPrice(onChainPrice, minPrice, tickSize).toString()).toEqual('23');
+  expect(convertOnChainPriceToDisplayPrice(onChainPrice, minPrice, tickSize).toFixed()).toEqual('23');
 });
 
 test('convertDisplayPriceToOnChainPrice', () => {
   const displayPrice = new BigNumber(23);
   const minPrice = new BigNumber(3);
   const tickSize = new BigNumber('0.001');
-  expect(convertDisplayPriceToOnChainPrice(displayPrice, minPrice, tickSize).toString()).toEqual('20000');
+  expect(convertDisplayPriceToOnChainPrice(displayPrice, minPrice, tickSize).toFixed()).toEqual('20000');
 });
 
 test('calculate payout numerators value : malformed : no payout', () => {

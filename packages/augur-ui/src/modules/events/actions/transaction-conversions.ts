@@ -12,7 +12,7 @@ export function convertTransactionOrderToUIOrder(hash: string, onChainOrder, sta
   const numTicks = createBigNumber(market.numTicks);
   const tickSize = numTicksToTickSize(numTicks, onChainMinPrice, onChainMaxPrice);
   const price = convertOnChainPriceToDisplayPrice(onChainOrder[TX_PRICE], onChainMinPrice, tickSize).toString(10);
-  const amount = convertOnChainAmountToDisplayAmount(onChainOrder[TX_AMOUNT], tickSize).toString();
+  const amount = convertOnChainAmountToDisplayAmount(onChainOrder[TX_AMOUNT], tickSize).toFixed();
   return {
     id: onChainOrder[TX_TRADE_GROUP_ID],
     marketId: onChainOrder[TX_MARKET_ID],

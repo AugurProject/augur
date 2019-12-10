@@ -19,7 +19,7 @@ export async function dispute(user: ContractAPI, market: MarketInfo, slow: boole
   await user.setTimestamp(new BigNumber(market.endTime + 1));
 
   // Do the initial report, creating the first dispute window.
-  const extraStake = slow ? SOME_REP.toString() : '0';
+  const extraStake = slow ? SOME_REP.toFixed() : '0';
   await user.doInitialReport(marketContract, payoutNumerators, '', extraStake);
   // Contribution (dispute) fulfills the first dispute bond,
   // pushing into next dispute round that takes additional stake into account.

@@ -48,14 +48,14 @@ export class ReportingUtils {
 
             let ethBalance = await fixture.getEthBalance();
             console.log("ethBalance after buying complete set", ethBalance.toString());
-            console.log("numOwnedShares after buying complete set", numOwnedShares.toString());
+            console.log("numOwnedShares after buying complete set", numOwnedShares.toFixed());
 
             // Sell Complete Sets
             let numOwnedSharesBefore = await fixture.getNumSharesInMarket(market, outcome);
-            console.log("numOwnedShares before selling complete set", numOwnedSharesBefore.toString());
+            console.log("numOwnedShares before selling complete set", numOwnedSharesBefore.toFixed());
             await fixture.sellCompleteSets(market, numShares);
             numOwnedSharesBefore = await fixture.getNumSharesInMarket(market, outcome);
-            console.log("numOwnedShares after selling complete set", numOwnedSharesBefore.toString());
+            console.log("numOwnedShares after selling complete set", numOwnedSharesBefore.toFixed());
         } else {
             const disputeWindow = await fixture.getDisputeWindow(market);
             const disputeWindowStartTime = await disputeWindow.getStartTime_();
@@ -84,7 +84,7 @@ export class ReportingUtils {
             const stakeInOutcome = await market.getStakeInOutcome_(chosenPayoutHash);
             const amount = participantStake.multipliedBy(new BigNumber(2)).minus(stakeInOutcome.multipliedBy(new BigNumber(3)));
             await fixture.contribute(market, chosenPayoutNumerators, amount);
-            console.log("Staked", amount.toString());
+            console.log("Staked", amount.toFixed());
             const forkingMarket = await market.getForkingMarket_();
             const marketDisputeWindow = await market.getDisputeWindow_();
             expect(forkingMarket !== ZERO_ADDRESS || marketDisputeWindow !== disputeWindowAddress).to.be.true;

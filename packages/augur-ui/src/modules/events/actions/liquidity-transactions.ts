@@ -108,7 +108,7 @@ export function processOnChainPriceOrderType(
     createBigNumber(onChainPrice),
     createBigNumber(minPrice),
     createBigNumber(tickSize)
-  ).toString();
+  ).toFixed();
   const type = orderType.eq(ZERO) ? BUY : SELL;
   return { type, price };
 }

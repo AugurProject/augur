@@ -79,10 +79,10 @@ export class LiquidityDB extends AbstractTable {
                 // Only save liquidity if it's > 0
                 if (new BigNumber(marketLiquidity).gt(0)) {
                   marketsLiquidityDocs.push({
-                    _id: market + '_' + marketsLiquidityParams[market].spread + '_' + mostRecentOnTheHourTimestamp.toString(),
+                    _id: market + '_' + marketsLiquidityParams[market].spread + '_' + mostRecentOnTheHourTimestamp.toFixed(),
                     market,
                     spread: marketsLiquidityParams[market].spread,
-                    liquidity: marketLiquidity.toString(),
+                    liquidity: marketLiquidity.toFixed(),
                     timestamp: mostRecentOnTheHourTimestamp.toNumber(),
                   });
                 }

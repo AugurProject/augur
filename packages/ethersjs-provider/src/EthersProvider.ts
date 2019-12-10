@@ -93,7 +93,7 @@ export class EthersProvider extends ethers.providers.BaseProvider
   }
 
   async getNetworkId(): Promise<NetworkId> {
-    return (await this.getNetwork()).chainId.toString() as NetworkId;
+    return (await this.getNetwork()).chainId.toFixed() as NetworkId;
   }
 
   async getBlockNumber(): Promise<number> {
@@ -177,7 +177,7 @@ export class EthersProvider extends ethers.providers.BaseProvider
     const contractInterface = this.getContractInterface(contractName);
     const parsedLog = contractInterface.parseLog(log);
     const omittedValues = _.map(_.range(parsedLog.values.length), n =>
-      n.toString()
+      n.toFixed()
     );
     omittedValues.push('length');
     const logValues = _.omit(parsedLog.values, omittedValues);

@@ -189,9 +189,9 @@ export function getOutcomeValue(market: MarketData, payoutNumerators: string[]):
   const numTicks = new BigNumber(market['numTicks']);
   const marketType = marketTypeToName(market.marketType);
   return calculatePayoutNumeratorsValue(
-    convertAttoValueToDisplayValue(maxPrice).toString(),
-    convertAttoValueToDisplayValue(minPrice).toString(),
-    numTicks.toString(),
+    convertAttoValueToDisplayValue(maxPrice).toFixed(),
+    convertAttoValueToDisplayValue(minPrice).toFixed(),
+    numTicks.toFixed(),
     marketType,
     payoutNumerators
   );

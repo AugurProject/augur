@@ -52,11 +52,11 @@ export function formatDate(d, timezone: string = null): DateFormattedObject {
 
   // Locat Time Formatting
   const localTime: Array<number> = [date.getHours(), date.getMinutes()];
-  const localAMPM: string = ampm(localTime[0].toString());
+  const localAMPM: string = ampm(localTime[0].toFixed());
   const localTimeTwelve: Array<string> = getTwelveHourTime(localTime);
   const localOffset: number = (date.getTimezoneOffset() / 60) * -1;
   const localOffsetFormatted: string =
-    localOffset > 0 ? `+${localOffset}` : localOffset.toString();
+    localOffset > 0 ? `+${localOffset}` : localOffset.toFixed();
   const timezoneLocal: string = timezone
     ? date.toLocaleTimeString('en-US', {
         timeZone: timezone,
@@ -135,8 +135,8 @@ function convertToTwelveHour(value: number): number {
 
 function getTwelveHourTime(time: Array<number>): Array<string> {
   const values: Array<string> = new Array(time.length);
-  values[0] = convertToTwelveHour(time[0]).toString();
-  values[1] = time[1].toString();
+  values[0] = convertToTwelveHour(time[0]).toFixed();
+  values[1] = time[1].toFixed();
   if (time[1] < 10) values[1] = '0' + time[1];
 
   return values;
