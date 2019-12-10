@@ -261,7 +261,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
         potentialDaiProfit &&
         potentialDaiProfit.value <= 0);
 
-        return (
+    return (
       <section className={Styles.TradingConfirm}>
         {shareCost && shareCost.value !== 0 && (
           <div className={Styles.details}>

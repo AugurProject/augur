@@ -53,6 +53,7 @@ interface WrapperProps {
   gasPrice: number;
   Gnosis_ENABLED: boolean;
   hasFunds: boolean;
+  hasHistory: boolean;
   isLogged: boolean;
   initialLiquidity?: boolean;
   tradingTutorial?: boolean;
@@ -383,6 +384,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       loginModal,
       addFundsModal,
       gnosisStatus,
+      hasHistory,
     } = this.props;
     let {
       marketType,
@@ -462,6 +464,9 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
         break;
     }
     const buySelected = selectedNav === BUY;
+    const orderEmpty =
+      orderPrice === '' && orderQuantity === '' && orderDaiEstimate === '';
+    const showTip = !hasHistory && orderEmpty;
     return (
       <section className={Styles.Wrapper}>
         <div>
@@ -552,6 +557,12 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
             />
           )}
         <div>{actionButton}</div>
+        {showTip && (
+          <div>
+            <span>TIP:</span> If you think an outcome won't occur, you can sell
+            shares that you don't own.
+          </div>
+        )}
       </section>
     );
   }
