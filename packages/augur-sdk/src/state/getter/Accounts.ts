@@ -9,13 +9,12 @@ import {
   InitialReporterRedeemedLog,
   InitialReportSubmittedLog,
   MarketCreatedLog,
+  MarketData,
+  OrderEventType,
+  OrderType,
   ParsedOrderEventLog,
   ParticipationTokensRedeemedLog,
   TradingProceedsClaimedLog,
-  OrderType,
-  TokenType,
-  MarketData,
-  OrderEventType,
 } from '../logs/types';
 import { sortOptions } from './types';
 import {
@@ -24,10 +23,11 @@ import {
   convertOnChainAmountToDisplayAmount,
   describeMarketOutcome,
   describeUniverseOutcome,
-  marketTypeToName, PayoutNumeratorValue
+  marketTypeToName,
+  PayoutNumeratorValue
 } from '../../index';
-import { SECONDS_IN_A_DAY, MarketReportingState } from '../../constants';
-import { compareObjects, getOutcomeValue, convertOnChainPriceToDisplayPrice, numTicksToTickSize } from '../../utils';
+import { MarketReportingState } from '../../constants';
+import { compareObjects, convertOnChainPriceToDisplayPrice, numTicksToTickSize } from '../../utils';
 import * as _ from "lodash";
 import * as t from 'io-ts';
 

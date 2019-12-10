@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { ParticipationTokensView } from 'modules/reporting/common';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { MODAL_PARTICIPATE, ZERO } from 'modules/common/constants';
-import { formatAttoDai, formatAttoRep, formatDai, formatPercent, } from 'utils/format-number';
+import { formatAttoDai, formatAttoRep, formatPercent, } from 'utils/format-number';
 import { createBigNumber } from 'utils/create-big-number';
 import { AppState } from 'store';
 
