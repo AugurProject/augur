@@ -19,7 +19,10 @@
 
       &.ActiveTab {
         color: @color-primary-text;
-        border-bottom: @size-2 solid @color-primary-action;
+
+        @media @breakpoint-mobile {
+          border-bottom: @size-2 solid @color-primary-action;
+        }
       
         .IsNew::before {
           background: @color-outcome-four;
