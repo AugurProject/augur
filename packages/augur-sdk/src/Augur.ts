@@ -71,6 +71,7 @@ export class Augur<TProvider extends Provider = Provider> {
   private txAwaitingSigningCallback: TXStatusCallback;
   private txPendingCallback: TXStatusCallback;
   private txFailureCallback: TXStatusCallback;
+  private txRelayerDownCallback: TXStatusCallback;
 
   constructor(
     provider: TProvider,
@@ -285,6 +286,8 @@ export class Augur<TProvider extends Provider = Provider> {
       this.txSuccessCallback = callback;
     } else if (eventName === TXEventName.Failure) {
       this.txFailureCallback = callback;
+    } else if (eventName === TXEventName.RelayerDown) {
+      this.txRelayerDownCallback = callback;
     }
   }
 
@@ -301,6 +304,8 @@ export class Augur<TProvider extends Provider = Provider> {
       this.txSuccessCallback = null;
     } else if (eventName === TXEventName.Failure) {
       this.txFailureCallback = null;
+    } else if (eventName === TXEventName.RelayerDown) {
+      this.txRelayerDownCallback = null;
     }
   }
 
@@ -536,6 +541,16 @@ export class Augur<TProvider extends Provider = Provider> {
             hash,
           } as TXStatus;
           this.txFailureCallback(txn);
+        } else if (
+          status === TransactionStatus.RELAYER_DOWN &&
+          this.txRelayerDownCallback
+        ) {
+          const txn: TXStatus = {
+            transaction,
+            eventName: TXEventName.RelayerDown,
+            hash,
+          } as TXStatus;
+          this.txRelayerDownCallback(txn);
         }
       }
     );

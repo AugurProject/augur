@@ -33,6 +33,7 @@ import {
   DOINITIALREPORT,
   PUBLICFILLORDER,
   PUBLICTRADE,
+  MODA_WALLET_ERROR,
 } from 'modules/common/constants';
 import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
@@ -45,6 +46,7 @@ import { GNOSIS_STATUS, updateAppStatus, } from 'modules/app/actions/update-app-
 import { GnosisSafeState } from '@augurproject/gnosis-relay-api/build/GnosisRelayAPI';
 import { loadAnalytics } from 'modules/app/actions/analytics-management';
 import { marketCreationCreated, orderFilled } from 'services/analytics/helpers';
+import { updateModal } from 'modules/modal/actions/update-modal';
 
 const handleAlert = (
   log: any,
@@ -109,6 +111,15 @@ export const handleTxFailure = (txStatus: Events.TXStatus) => (
   dispatch(addUpdateTransaction(txStatus));
 };
 
+export const handleTxRelayerDown = (txStatus: Events.TXStatus) => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  console.log('TxRelayerDown Transaction', txStatus.transaction.name);
+  dispatch(addUpdateTransaction(txStatus));
+};
+
+
 export const handleGnosisStateUpdate = (response) => (
   dispatch: ThunkDispatch<void, any, Action>
 ) => {
@@ -129,11 +140,11 @@ export const handleSDKReadyEvent = () => (
   dispatch(getCategoryStats())
 };
 
-export const handleNewBlockLog = (log: Events.NewBlock) => (
+export const handleNewBlockLog = (log: Events.NewBlock) => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { blockchain } = getState();
+  const { blockchain, loginAccount, appStatus } = getState();
   dispatch(
     updateBlockchain({
       currentBlockNumber: log.highestAvailableBlockNumber,
@@ -155,8 +166,19 @@ export const handleNewBlockLog = (log: Events.NewBlock) => (
     getState().appStatus.gnosisStatus !== GnosisSafeState.AVAILABLE
   ) {
     const status = augurSdk.sdk.gnosis.augur.getGnosisStatus();
+
     if (status) {
       dispatch(updateAppStatus(GNOSIS_STATUS, status));
+      if (appStatus.gnosisStatus !== GnosisSafeState.ERROR && status === GnosisSafeState.ERROR) {
+        const hasEth = (await loginAccount.meta.signer.provider.getBalance(loginAccount.meta.signer._address)).gt(0);
+        const errorMessage = `${hasEth ? `If you need to make the transaction now transaction costs will be paid in ETH from your ${loginAccount.meta.accountType} wallet.` : `If you need to make the transaction now please add ETH to your ${loginAccount.meta.accountType} wallet: ${loginAccount.meta.signer._address}.`}`;
+        dispatch(updateModal({
+          type: MODA_WALLET_ERROR,
+          error: errorMessage,
+          title: 'We\'re having trouble processing transactions',
+          heading: 'We\'re currently experiencing a technical difficulty processing transaction fees in Dai. If possible please come back later to process this transaction.',
+        }));
+      }
     }
   }
 };

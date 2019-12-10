@@ -4,7 +4,6 @@ import {
   handleDisputeCrowdsourcerCreatedLog,
   handleDisputeCrowdsourcerRedeemedLog,
   handleDisputeWindowCreatedLog,
-  handleGnosisStateUpdate,
   handleInitialReporterRedeemedLog,
   handleInitialReporterTransferredLog,
   handleInitialReportSubmittedLog,
@@ -21,9 +20,7 @@ import {
   handleParticipationTokensRedeemedLog,
   handleProfitLossChangedLog,
   handleReportingParticipantDisavowedLog,
-  handleSDKReadyEvent,
   handleTokenBalanceChangedLog,
-  handleTokensMintedLog,
   handleTokensTransferredLog,
   handleTradingProceedsClaimedLog,
   handleTxAwaitingSigning,
@@ -31,6 +28,10 @@ import {
   handleTxPending,
   handleTxSuccess,
   handleUniverseForkedLog,
+  handleTxRelayerDown,
+  handleSDKReadyEvent,
+  handleTokensMintedLog,
+  handleGnosisStateUpdate,
 } from 'modules/events/actions/log-handlers';
 import { wrapLogHandler } from 'modules/events/actions/wrap-log-handler';
 import { ThunkDispatch } from 'redux-thunk';
@@ -124,6 +125,7 @@ const EVENTS = {
   [TXEventName.Success]: wrapLogHandler(handleTxSuccess),
   [TXEventName.Pending]: wrapLogHandler(handleTxPending),
   [TXEventName.Failure]: wrapLogHandler(handleTxFailure),
+  [TXEventName.RelayerDown]: wrapLogHandler(handleTxRelayerDown),
 };
 
 export const listenToUpdates = (Augur: Augur<Provider>) => (
