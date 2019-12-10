@@ -30,17 +30,17 @@ const FilledOrdersTable = (props: FilledOrdersTableProps) => {
         <ul>
           <li>Filled</li>
           <li>Time Stamp</li>
-          <li>TX Details</li>
+          <li>Transaction Details</li>
         </ul>
         {filledOrder.trades.map((trade: MarketData, i: number) => (
           <ul key={i}>
             <li>
               <ValueLabel value={formatShares(trade.amount)} />
             </li>
-            <li>{trade.timestamp.formattedShort}</li>
+            <li>{trade.timestamp.formattedLocalShortDateTimeNoTimezone}</li>
             <li>
               <ViewTransactionDetailsButton
-                label={'VIEW etherscan tx'}
+                label={'VIEW Etherscan Transaction'}
                 light
                 transactionHash={trade.transactionHash}
               />
@@ -59,7 +59,7 @@ const FilledOrdersTable = (props: FilledOrdersTableProps) => {
             <LinearPropertyLabel
               highlightFirst
               label="Timestamp"
-              value={trade.timestamp.formattedShort}
+              value={trade.timestamp.formattedLocalShortDateTimeNoTimezone}
             />
             <LinearPropertyViewTransaction
               highlightFirst

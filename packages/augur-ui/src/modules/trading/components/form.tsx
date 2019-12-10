@@ -415,7 +415,6 @@ class Form extends Component<FromProps, FormState> {
         quantity,
         errors,
         isOrderValid,
-        nextProps,
         fromExternal
       );
 
@@ -475,18 +474,6 @@ class Form extends Component<FromProps, FormState> {
       ...this.state,
       [property]: value,
     };
-
-    if (value === '') {
-      clearOrderForm(false);
-      return this.setState(
-        {
-          [property]: '',
-        },
-        () => {
-          updateOrderProperty({ [property]: value });
-        }
-      );
-    }
 
     const validationResults = this.orderValidation(
       updatedState,
@@ -658,14 +645,13 @@ class Form extends Component<FromProps, FormState> {
     const quantityValue = convertExponentialToDecimal(
       s[this.INPUT_TYPES.QUANTITY]
     );
-    const isScalerWithDenomination: boolean = market.marketType === SCALAR;
+    const isScaler: boolean = marketType === SCALAR;
     // TODO: figure out default outcome after we figure out ordering of the outcomes
     const defaultOutcome = selectedOutcome !== null ? selectedOutcome.id : 2;
     let advancedOptions = advancedDropdownOptions;
     if (!Ox_ENABLED) {
       advancedOptions = [advancedOptions[0], advancedOptions[2]];
     }
-
     return (
       <div className={Styles.TradingForm}>
         <div className={classNames(Styles.Outcome, Styles.HideOnMobile)}>
@@ -686,14 +672,14 @@ class Form extends Component<FromProps, FormState> {
           <li>
             <label htmlFor="tr__input--quantity">Quantity</label>
             <div
-              className={classNames(Styles.TradingForm__input__container, {
+              className={classNames(Styles.TradingFormInputContainer, {
                 [Styles.error]: s.errors[this.INPUT_TYPES.QUANTITY].length,
               })}
             >
               <input
                 className={classNames(
                   FormStyles.Form__input,
-                  Styles.TradingForm__input,
+                  Styles.TradingFormInput,
                   {
                     [`${Styles.error}`]: s.errors[this.INPUT_TYPES.QUANTITY]
                       .length,
@@ -732,17 +718,17 @@ class Form extends Component<FromProps, FormState> {
           </li>
           <li>
             <label htmlFor="tr__input--limit-price">
-              {marketType === SCALAR ? 'Outcome' : 'Limit Price'}
+              Limit Price
             </label>
             <div
-              className={classNames(Styles.TradingForm__input__container, {
+              className={classNames(Styles.TradingFormInputContainer, {
                 [Styles.error]: s.errors[this.INPUT_TYPES.PRICE].length,
               })}
             >
               <input
                 className={classNames(
                   FormStyles.Form__input,
-                  Styles.TradingForm__input
+                  Styles.TradingFormInput
                 )}
                 id="tr__input--limit-price"
                 type="number"
@@ -763,29 +749,27 @@ class Form extends Component<FromProps, FormState> {
               <span
                 className={classNames({
                   [`${Styles.isScalar_largeText}`]:
-                    isScalerWithDenomination &&
-                    (market.scalarDenomination || []).length <= 24,
+                    isScaler && (market.scalarDenomination || []).length <= 24,
                   [`${Styles.isScalar_smallText}`]:
-                    isScalerWithDenomination &&
-                    (market.scalarDenomination || []).length > 24,
+                    isScaler && (market.scalarDenomination || []).length > 24,
                   [`${Styles.error}`]: s.errors[this.INPUT_TYPES.PRICE].length,
                 })}
               >
-                {isScalerWithDenomination ? market.scalarDenomination : '$'}
+                {isScaler ? market.scalarDenomination : '$'}
               </span>
             </div>
           </li>
           <li className={Styles['TradingForm__limit-price']}>
             <label htmlFor="tr__input--limit-price">Total Order Value</label>
             <div
-              className={classNames(Styles.TradingForm__input__container, {
+              className={classNames(Styles.TradingFormInputContainer, {
                 [`${Styles.error}`]: s.errors[this.INPUT_TYPES.EST_DAI].length,
               })}
             >
               <input
                 className={classNames(
                   FormStyles.Form__input,
-                  Styles.TradingForm__input,
+                  Styles.TradingFormInput,
                   {
                     [`${Styles.error}`]: s.errors[this.INPUT_TYPES.EST_DAI]
                       .length,
@@ -822,24 +806,22 @@ class Form extends Component<FromProps, FormState> {
           </li>
           {!initialLiquidity && (
             <li>
-              <div>
-                <CancelTextButton
-                  text="25%"
-                  action={() => this.updateTotalValue(0.25)}
-                />
-                <CancelTextButton
-                  text="50%"
-                  action={() => this.updateTotalValue(0.5)}
-                />
-                <CancelTextButton
-                  text="75%"
-                  action={() => this.updateTotalValue(0.75)}
-                />
-                <CancelTextButton
-                  text="100%"
-                  action={() => this.updateTotalValue(1)}
-                />
-              </div>
+              <CancelTextButton
+                text="25%"
+                action={() => this.updateTotalValue(0.25)}
+              />
+              <CancelTextButton
+                text="50%"
+                action={() => this.updateTotalValue(0.5)}
+              />
+              <CancelTextButton
+                text="75%"
+                action={() => this.updateTotalValue(0.75)}
+              />
+              <CancelTextButton
+                text="100%"
+                action={() => this.updateTotalValue(1)}
+              />
               <CancelTextButton
                 text="clear"
                 action={() => this.clearOrderFormProperties()}
@@ -944,7 +926,7 @@ class Form extends Component<FromProps, FormState> {
                       {
                         convertUnixToFormattedDate(
                           s[this.INPUT_TYPES.EXPIRATION_DATE]
-                        ).formattedLocalShortTime
+                        ).formattedLocalShortWithUtcOffset
                       }
                     </span>
                   )}
@@ -975,9 +957,9 @@ class Form extends Component<FromProps, FormState> {
           )}
         </ul>
         {errors.length > 0 && (
-          <div className={Styles.TradingForm__error_message_container}>
+          <div className={Styles.ErrorContainer}>
             {errors.map(error => (
-              <div key={error} className={Styles.TradingForm__error_message}>
+              <div key={error} className={Styles.Error}>
                 {ExclamationCircle} <span>{error}</span>
               </div>
             ))}

@@ -873,6 +873,7 @@ export const COLUMN_TYPES = {
   [INVALID_LABEL]: INVALID_LABEL,
   [CANCEL_TEXT_BUTTON]: CANCEL_TEXT_BUTTON,
   [MOVEMENT_LABEL]: MOVEMENT_LABEL,
+  [PLAIN]: PLAIN,
 };
 
 // Login method variables
@@ -1059,7 +1060,7 @@ export const TRADING_TUTORIAL_COPY = {
     subheader: [
       {
         text:
-          'In edition you can select an available order from the order book to automatically fill into your order ticket.',
+          'Alternatively, you can select an available order from the order book to automatically fill into your order ticket.',
       },
       {
         text:

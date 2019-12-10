@@ -58,9 +58,9 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       keyId: "filledOrder-orderPrice-" + filledOrder.id,
     },
     {
-      key: "formattedShortDate",
+      key: "formattedLocalShortDate",
       columnType: COLUMN_TYPES.PLAIN,
-      value: filledOrder.timestamp.formattedShortDate,
+      value: filledOrder.timestamp.formattedLocalShortDate,
     },
     {
       key: "length",

@@ -642,6 +642,7 @@ export function addScripts(flash: FlashSession) {
         const resolutionRules = String(args.resolutionRules);
         const endTime = Number(args.endTime);
         this.log(validateMarketTemplate(title, templateInfo, outcomesString, resolutionRules, endTime));
+
       } catch (e) {
         this.log(e);
       }
@@ -1098,63 +1099,15 @@ export function addScripts(flash: FlashSession) {
   });
 
   flash.addScript({
-    name: '0x-docker',
-    async call(this: FlashSession) {
+    name: 'network-id',
+    async call(this: FlashSession): Promise<string> {
       if (this.noProvider()) return null;
-
       const networkId = await this.provider.getNetworkId();
-      const ethNode = this.network.http;
-      const addresses = Addresses[networkId];
-
-      // We set --net=host so that 0x mesh docker can talk to the host, where
-      // the ethnode is being run. It might be elsewhere in non-dev deployments.
-      // This is also making the '-p', options unnecessary.
-
-      console.log('Starting 0x mesh');
-      const mesh = spawn('docker', [
-        'run',
-        '--rm',
-        '-p', '60557:60557',
-        '-p', '60558:60558',
-        '-p', '60559:60559',
-        '-e', 'ETHEREUM_NETWORK_ID=42', // doesn't understand atypical network ids
-        '--net=host',
-        '-e', `ETHEREUM_RPC_URL=${ethNode}`,
-        '-e', 'USE_BOOTSTRAP_LIST=false',
-        '-e', 'BLOCK_POLLING_INTERVAL=1s',
-        `-e', 'CUSTOM_CONTRACT_ADDRESSES='${JSON.stringify(addresses)}'`,
-        '-e', 'VERBOSITY=5',
-        '0xorg/mesh:latest',
-      ]);
-
-      mesh.on('error', console.error);
-      mesh.on('exit', (code, signal) => {
-        console.log(`Exiting 0x mesh with code=${code} and signal=${signal}`)
-      });
-      mesh.stdout.on('data', (data) => {
-        console.log(data.toString());
-      });
-      mesh.stderr.on('data', (data) => {
-        console.error(data.toString());
-      });
-    },
-  })
-  flash.addScript({
-    name: 'get-contract-address',
-    options: [
-      {
-        name: 'name',
-        abbr: 'n',
-        description: 'Name of contract',
-      },
-    ],
-    async call(
-      this: FlashSession,
-      args: FlashArguments
-    ): Promise<void> {
-      console.log(this.contractAddresses[args['name'] as string]);
+      console.log(networkId);
+      return networkId;
     },
   });
+
   flash.addScript({
     name: 'check-safe-registration',
     options: [
@@ -1203,7 +1156,8 @@ export function addScripts(flash: FlashSession) {
         '-e', `CUSTOM_CONTRACT_ADDRESSES=${JSON.stringify(addresses)}`,
         '-e', 'VERBOSITY=4', // 5=debug 6=trace
         '-e', 'RPC_ADDR=0x:60557', // need to use "0x" network
-        '0xorg/mesh:7.1.1-beta-0xv3', // TODO update this until we hit a stable release
+        // '0xorg/mesh:7.1.1-beta-0xv3',
+        '0xorg/mesh:0xV3',
       ]);
 
       mesh.on('error', console.error);
@@ -1217,6 +1171,48 @@ export function addScripts(flash: FlashSession) {
         console.error(data.toString());
       });
     },
-  })
+  });
 
+  flash.addScript({
+    name: 'get-contract-address',
+    options: [
+      {
+        name: 'name',
+        abbr: 'n',
+        description: 'Name of contract',
+        required: true,
+      },
+    ],
+    async call(
+      this: FlashSession,
+      args: FlashArguments
+    ): Promise<string> {
+      const name = args.name as string;
+      const address = this.contractAddresses[name];
+      console.log(address);
+      return address;
+    },
+  });
+
+    flash.addScript({
+    name: 'get-all-contract-addresses',
+    options: [
+      {
+        name: 'ugly',
+        abbr: 'u',
+        description: 'print the addresses json as a blob instead of nicely formatted',
+        flag: true,
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const ugly = args.ugly as boolean;
+      if (this.noProvider()) return;
+
+      if (ugly) {
+        console.log(JSON.stringify(this.contractAddresses))
+      } else {
+        console.log(JSON.stringify(this.contractAddresses, null, 2))
+      }
+    },
+  });
 }

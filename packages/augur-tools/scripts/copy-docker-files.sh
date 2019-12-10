@@ -8,14 +8,26 @@ BLOCK_TEMP2=".temp3.file"
 ADDRESSES="../augur-artifacts/src/local-addresses.json"
 BLOCKS="../augur-artifacts/src/local-upload-block-numbers.json"
 
+docker pull $IMAGE
+
 echo "processing $IMAGE $ADDRESSES"
 docker run --rm --entrypoint cat $IMAGE /augur/packages/augur-artifacts/src/local-addresses.json > $TEMP1
-node scripts/merge-json-files -p $ADDRESSES -s $TEMP1 -o $ADD_TEMP2
+if [[ -f $ADDRESSES ]]; then
+  node scripts/merge-json-files -p $ADDRESSES -s $TEMP1 -o $ADD_TEMP2
+  cat $ADD_TEMP2 > $ADDRESSES
+else
+  mv $TEMP1 $ADDRESSES
+fi
 ADD_RESULT_CODE=$?
 
 echo "processing $IMAGE $BLOCKS"
 docker run --rm --entrypoint cat $IMAGE /augur/packages/augur-artifacts/src/local-upload-block-numbers.json > $TEMP1
-node scripts/merge-json-files -p $BLOCKS -s $TEMP1 -o $BLOCK_TEMP2
+if [[ -f $BLOCKS ]]; then
+  node scripts/merge-json-files -p $BLOCKS -s $TEMP1 -o $BLOCK_TEMP2
+  cat $BLOCK_TEMP2 > $BLOCKS
+else
+  mv $TEMP1 $BLOCKS
+fi
 ADD_BLOCK_CODE=$?
 
 if [ $ADD_RESULT_CODE -eq 1 ]; then
@@ -32,6 +44,4 @@ if [ $ADD_BLOCK_CODE -eq 1 ]; then
  exit
 fi
 
-cat $ADD_TEMP2 > $ADDRESSES
-cat $BLOCK_TEMP2 > $BLOCKS
 rm -rf $TEMP1 $ADD_TEMP2 $BLOCK_TEMP2

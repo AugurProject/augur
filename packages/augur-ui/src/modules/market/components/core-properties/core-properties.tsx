@@ -102,10 +102,10 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({ market, reportingBarSho
                       The trading settlement fee is a combination of the Market
                       Creator Fee (
                       <b>
-                        {getValue(market, 'marketCreatorFeeRatePercent.full')}
+                        {formatPercent(Number(market.marketCreatorFeeRate) * 100).full}
                       </b>
                       ) and the Reporting Fee (
-                      <b>{getValue(market, 'reportingFeeRatePercent.full')}</b>)
+                      <b>{formatPercent(Number(market.reportingFeeRate) * 100).full}</b>)
                     </p>
                   </>
                 }

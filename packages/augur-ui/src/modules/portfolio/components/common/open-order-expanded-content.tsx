@@ -4,7 +4,7 @@ import classNames from "classnames";
 import getValue from "utils/get-value";
 import { LinearPropertyLabel } from "modules/common/labels";
 import { CancelTextButton } from "modules/common/buttons";
-import MarketLink from "modules/market/components/market-link/market-link";
+import MarketTitle from 'modules/market/containers/market-title';
 import { Order } from "modules/portfolio/types";
 
 import Styles from "modules/portfolio/components/common/expanded-content.styles.less";
@@ -19,7 +19,7 @@ const OpenOrderExpandedContent = (props: OpenOrderExpandedContentProps) => {
 
   const tokensEscrowed = getValue(openOrder, "tokensEscrowed");
   const sharesEscrowed = getValue(openOrder, "sharesEscrowed");
-  const creationTime = getValue(openOrder, "creationTime.formattedShort");
+  const creationTime = getValue(openOrder, "creationTime.formattedLocalShortDateTimeNoTimezone");
 
   return (
     <div className={Styles.OrderInfo}>
@@ -31,9 +31,7 @@ const OpenOrderExpandedContent = (props: OpenOrderExpandedContentProps) => {
         {isSingle && (
           <span>
             {openOrder.marketId ? (
-              <MarketLink id={openOrder.marketId}>
-                {openOrder.marketDescription}
-              </MarketLink>
+              <MarketTitle id={openOrder.marketId} />
             ) : (
               openOrder.marketDescription
             )}

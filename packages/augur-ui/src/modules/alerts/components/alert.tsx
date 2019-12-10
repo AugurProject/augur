@@ -75,7 +75,7 @@ export default class Alert extends Component<AlertProps, {}> {
                 <span className={Styles.Timestamp}>
                   {
                     convertUnixToFormattedDate(timestampInMilliseconds / 1000)
-                      .formattedLocalShortTime
+                      .formattedLocalShortWithUtcOffset
                   }
                 </span>
                 <span className={Styles.EtherLink}>

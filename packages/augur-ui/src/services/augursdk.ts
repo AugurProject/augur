@@ -22,6 +22,7 @@ import { isMobileSafari } from 'utils/is-safari';
 import { analytics } from './analytics';
 import { WebWorkerConnector } from './ww-connector';
 import { isLocalHost } from 'utils/is-localhost';
+import { WSClient } from '@0x/mesh-rpc-client';
 
 export class SDK {
   sdk: Augur<Provider> | null = null;
@@ -67,12 +68,19 @@ export class SDK {
       account,
     );
 
+    const enableFlexSearch = false; // TODO configurable
+    const meshClient = env['0x-endpoint'] ? new WSClient(env['0x-endpoint']) : undefined;
+    const meshBrowser = undefined; // TODO configurable
+
     this.sdk = await Augur.create<Provider>(
       ethersProvider,
       contractDependencies,
       Addresses[this.networkId],
       connector,
       gnosisRelay,
+      enableFlexSearch,
+      meshClient,
+      meshBrowser,
     );
 
     if (!isEmpty(account)) {

@@ -8,6 +8,8 @@ import {
 import {
   MARKET_ID_PARAM_NAME,
   RETURN_PARAM_NAME,
+  OUTCOME_ID_PARAM_NAME,
+  CREATE_MARKET_FORM_PARAM_NAME,
 } from './routes/constants/param-names';
 import { AnyAction } from 'redux';
 import { EthersSigner } from 'contract-dependencies-ethers/build/ContractDependenciesEthers';
@@ -51,24 +53,22 @@ export interface Alert {
 
 export interface TimezoneDateObject {
   formattedUtc: string;
-  formattedTimezone: string;
+  formattedLocalTimezone: string;
   timestamp: number;
 }
 
 export interface DateFormattedObject {
   value: Date;
-  formatted: string;
-  formattedShortDate: string;
+  formattedUtcShortTime: string;
   formattedShortTime: string;
-  formattedShort: string;
-  formattedLocalShort: string;
-  formattedLocalShortTime: string;
+  formattedLocalShortDate: string;
+  formattedLocalShortWithUtcOffset: string;
   formattedLocalShortDateSecondary: string;
   timestamp: number;
   utcLocalOffset: number;
   clockTimeLocal: string;
-  formattedTimezone: string;
-  formattedShortTimezone: string;
+  formattedLocalTimezone: string;
+  formattedLocalShortDateTimeNoTimezone: string;
   formattedSimpleData: string;
   formattedUtcShortDate: string;
   clockTimeUtc: string;
@@ -264,6 +264,7 @@ export interface UIOrder {
   hash?: string;
   numTicks: number;
   minPrice: string;
+  creationTime?: DateFormattedObject;
 }
 
 export interface CreateLiquidityOrders {
@@ -496,9 +497,18 @@ export interface EthereumNodeOptions {
 }
 
 export interface EnvObject {
+  useWeb3Transport: boolean;
   'ethereum-node': EthereumNodeOptions;
   universe?: string;
-  useWeb3Transport: boolean;
+  '0x-endpoint'?: string,
+  'gnosis-relay'?: string,
+  sdkEndpoint?: string,
+  debug?: EnvDebugOptions,
+}
+
+export interface EnvDebugOptions {
+  connect: boolean;
+  broadcast: boolean;
 }
 
 export interface QueryEndpoints {
@@ -509,6 +519,7 @@ export interface QueryEndpoints {
   [RETURN_PARAM_NAME]?: string;
   [CATEGORY_PARAM_NAME]?: string;
   [TAGS_PARAM_NAME]?: string;
+  [CREATE_MARKET_FORM_PARAM_NAME]?: string;
 }
 export interface Endpoints {
   ethereumNodeHTTP: string;

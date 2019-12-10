@@ -21,9 +21,9 @@ export interface TimeLabelProps {
 }
 
 export interface TimeProgressBarProps {
-  startTime: DateFormattedObject | number;
-  endTime: DateFormattedObject | number;
-  currentTime: DateFormattedObject | number;
+  startTime: DateFormattedObject;
+  endTime: DateFormattedObject;
+  currentTime: DateFormattedObject;
 }
 
 export interface MarketProgressProps {
@@ -266,45 +266,6 @@ export const TimeProgressBar = (props: TimeProgressBarProps) => {
   );
 };
 
-export const MarketTimeline = (props: TimeProgressBarProps) => {
-  const { startTime, endTime, currentTime } = props;
-  const formattedEndTime: DateFormattedObject = endTime;
-  let formattedCurrentTime: DateFormattedObject | number = currentTime;
-
-  if (!currentTime) {
-    return null;
-  }
-
-  if (typeof currentTime !== 'object') {
-    formattedCurrentTime = format.convertUnixToFormattedDate(currentTime);
-  }
-  const currentTimestamp = formattedCurrentTime.timestamp;
-  const endTimestamp = formattedEndTime.timestamp;
-  const hasPassed = currentTimestamp > endTimestamp;
-  return (
-    <div className={Styles.MarketTimeline}>
-      <div
-        className={classNames({
-          [Styles.reported]: hasPassed,
-          [Styles.open]: !hasPassed,
-        })}
-      >
-        <span>Date Created</span>
-        <span>{`Event Expiration`}</span>
-      </div>
-      <TimeProgressBar {...props} />
-      <div
-        className={classNames({
-          [Styles.fade]: hasPassed,
-        })}
-      >
-        <TimeLabel time={startTime} />
-        <TimeLabel time={endTime} />
-      </div>
-    </div>
-  );
-};
-
 const getWindowLabels = (
   start: DateFormattedObject,
   end: DateFormattedObject
@@ -312,11 +273,11 @@ const getWindowLabels = (
   const startLabel = `${start.formattedUtcShortDate.substring(
     0,
     start.formattedUtcShortDate.indexOf(',')
-  )} ${start.formattedShortTime} (UTC)`;
+  )} ${start.formattedUtcShortTime} (UTC)`;
   const endLabel = `${end.formattedUtcShortDate.substring(
     0,
     end.formattedUtcShortDate.indexOf(',')
-  )} ${end.formattedShortTime} (UTC)`;
+  )} ${end.formattedUtcShortTime} (UTC)`;
   const dayLabels = format.getFullDaysBetween(start.timestamp, end.timestamp);
   return {
     startLabel,

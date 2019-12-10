@@ -27,14 +27,15 @@ with open(localuploadblockfile, 'r') as f:
     localuploadblocks = json.load(f)
 
 for network in localaddress:
-    print('Old addresses')
-    print(addresses[network])
-    print('New addresses')
-    print(localaddress[network])
-    print('New upload blocks')
-    print(localuploadblocks[network])
-    addresses[network] = localaddress[network]
-    uploadblocks[network] = localuploadblocks[network]
+    if network in addresses:
+        print('Old addresses')
+        print(addresses[network])
+        print('New addresses')
+        print(localaddress[network])
+        print('New upload blocks')
+        print(localuploadblocks[network])
+        addresses[network] = localaddress[network]
+        uploadblocks[network] = localuploadblocks[network]
 
 with open(addressfile, 'w', encoding='utf-8') as f:
     json.dump(addresses, f, ensure_ascii=False, indent=1)

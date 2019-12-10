@@ -9,13 +9,12 @@ import {
   InitialReporterRedeemedLog,
   InitialReportSubmittedLog,
   MarketCreatedLog,
+  MarketData,
+  OrderEventType,
+  OrderType,
   ParsedOrderEventLog,
   ParticipationTokensRedeemedLog,
   TradingProceedsClaimedLog,
-  OrderType,
-  TokenType,
-  MarketData,
-  OrderEventType,
 } from '../logs/types';
 import { sortOptions } from './types';
 import {
@@ -24,10 +23,11 @@ import {
   convertOnChainAmountToDisplayAmount,
   describeMarketOutcome,
   describeUniverseOutcome,
-  marketTypeToName, PayoutNumeratorValue
+  marketTypeToName,
+  PayoutNumeratorValue
 } from '../../index';
-import { SECONDS_IN_A_DAY, MarketReportingState } from '../../constants';
-import { compareObjects, getOutcomeValue, convertOnChainPriceToDisplayPrice, numTicksToTickSize } from '../../utils';
+import { MarketReportingState } from '../../constants';
+import { compareObjects, convertOnChainPriceToDisplayPrice, numTicksToTickSize } from '../../utils';
 import * as _ from "lodash";
 import * as t from 'io-ts';
 
@@ -204,7 +204,6 @@ export class Accounts<TBigNumber> {
       const market = marketsById[crowdsourcer.market];
       const crowdsourcerCompleted = disputeCrowdsourcerCompletedLogsById[crowdsourcer.token];
       let isClaimable = false;
-      console.log(`CS: ${crowdsourcer.token} RS: ${market.reportingState} CC: ${crowdsourcerCompleted} WIN: ${crowdsourcerCompleted.payoutNumerators.toString() === market.tentativeWinningPayoutNumerators.toString()}`);
       if (market.reportingState === MarketReportingState.AwaitingFinalization || market.reportingState === MarketReportingState.Finalized) {
         // If the market is finalized/finalizable and this bond was correct its claimable, otherwise we leave it out entirely
         isClaimable = !crowdsourcerCompleted || crowdsourcerCompleted.payoutNumerators.toString() === market.tentativeWinningPayoutNumerators.toString();
@@ -231,20 +230,23 @@ export class Accounts<TBigNumber> {
     const participationTokens = await db.TokenBalanceChanged.where("[universe+owner+tokenType]").equals([params.universe, params.account, 2]).and((log) => {
       return log.balance > "0x00";
     }).toArray();
-    
+
     const universe = augur.getUniverse(params.universe);
     const curDisputeWindowAddress = await universe.getCurrentDisputeWindow_(false);
 
-    // NOTE: We do not expect this to be a large list. In the standard/expected case this will be one item (maybe 2), so the cash balance call is likely low impact
+    // NOTE: We do not expect this to be a large list. In the standard/expected case this will be one item (maybe 2), so the cash balance & totalSupply calls are likely low impact
     const participationTokenContractInfo: ParticipationContract[] = [];
-    
+
     for (let tokenBalanceLog of participationTokens) {
-      const amountFees = (await augur.contracts.cash.balanceOf_(tokenBalanceLog.token)).toFixed();
+      const totalFees = await augur.contracts.cash.balanceOf_(tokenBalanceLog.token);
+      const totalPTSupply = await augur.contracts.disputeWindowFromAddress(tokenBalanceLog.token).totalSupply_();
+      const amount = new BigNumber(tokenBalanceLog.balance);
+      const amountFees = amount.div(totalPTSupply).multipliedBy(totalFees);
       const isClaimable = tokenBalanceLog.token !== curDisputeWindowAddress;
       participationTokenContractInfo.push({
         address: tokenBalanceLog.token,
-        amount: new BigNumber(tokenBalanceLog.balance).toFixed(),
-        amountFees,
+        amount: amount.toFixed(),
+        amountFees: amountFees.toFixed(),
         isClaimable
       });
     };
@@ -318,7 +320,7 @@ export class Accounts<TBigNumber> {
       const orderCanceledLogs = await db.OrderEvent.where('[universe+eventType+timestamp]').between([params.universe, OrderEventType.Cancel, formattedStartTime], [params.universe, OrderEventType.Cancel, formattedEndTime], true, true).and((log) => {
         return log.orderCreator === params.account;
       }).toArray();
-      
+
       const marketInfo = await Accounts.getMarketCreatedInfo(
         db,
         orderCanceledLogs

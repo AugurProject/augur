@@ -1,6 +1,6 @@
-import { ContractAPI, ACCOUNTS, loadSeedFile, defaultSeedPath } from '@augurproject/tools';
+import { ContractAPI, ACCOUNTS } from '@augurproject/tools';
 import { BigNumber } from 'bignumber.js';
-import { makeDbMock, makeProvider } from '../../libs';
+import { makeDbMock } from '../../libs';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
 import { WSClient } from '@0x/mesh-rpc-client';
 import { Connectors } from '@augurproject/sdk';
@@ -10,9 +10,59 @@ import { ZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGet
 import { sleep } from '@augurproject/core/build/libraries/HelperFunctions';
 import { formatBytes32String } from 'ethers/utils';
 import * as _ from 'lodash';
-import { EthersProvider } from '@augurproject/ethersjs-provider/build';
+import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { JsonRpcProvider } from 'ethers/providers';
 import { Addresses } from '@augurproject/artifacts';
+import { GnosisRelayAPI, GnosisSafeState } from '@augurproject/gnosis-relay-api';
+
+async function calculateSafeAddress(person: ContractAPI, initialPayment=new BigNumber(1e21)) {
+  return person.augur.gnosis.calculateGnosisSafeAddress({
+    owner: person.account.publicKey,
+    payment: initialPayment.toString(),
+    paymentToken: '', // ignored
+    safe: '', // ignored
+  })
+}
+
+async function getOrCreateSafe(person: ContractAPI, initialPayment=new BigNumber(1e21)): Promise<string> {
+  try {
+    const safeResponse = await person.createGnosisSafeViaRelay(person.augur.addresses.Cash);
+    return safeResponse.safe
+  } catch (e) {
+    return calculateSafeAddress(person, initialPayment);
+  }
+}
+
+async function getSafeStatus(person: ContractAPI, safe: string) {
+  const status = await person.augur.checkSafe(person.account.publicKey, safe);
+  if (typeof status === 'string') {
+    return status;
+  } else if (typeof status === 'object' && typeof status.status === 'string') {
+    return status.status
+  } else {
+    throw Error(`Received erroneous response when deploying safe via relay: "${status}"`);
+  }
+}
+
+async function fundSafe(person: ContractAPI, safe=undefined, amount=new BigNumber(1e21)) {
+  safe = safe || await getOrCreateSafe(person, amount);
+
+  await person.faucet(new BigNumber(1e21));
+  await person.transferCash(safe, new BigNumber(1e21));
+
+  let status: string;
+  for (let i = 0; i < 10; i++) {
+    status = await getSafeStatus(person, safe);
+    if (status !== GnosisSafeState.WAITING_FOR_FUNDS) {
+      break;
+    }
+    await sleep(2000);
+  }
+
+  await sleep(10000);
+
+  return safe;
+}
 
 describe('3rd Party :: ZeroX :: ', () => {
   let john: ContractAPI;
@@ -24,9 +74,9 @@ describe('3rd Party :: ZeroX :: ', () => {
   const mock = makeDbMock();
 
   beforeAll(async () => {
-    const networkId = 12346; // our dev geth node's network id
-    const providerJohn = new EthersProvider(new JsonRpcProvider('http://localhost:8545', networkId), 5, 0, 40);
-    const providerMary = new EthersProvider(new JsonRpcProvider('http://localhost:8545', networkId), 5, 0, 40);
+    const providerJohn = new EthersProvider(new JsonRpcProvider('http://localhost:8545'), 5, 0, 40);
+    const providerMary = new EthersProvider(new JsonRpcProvider('http://localhost:8545'), 5, 0, 40);
+    const networkId = await providerJohn.getNetworkId();
     const addresses = Addresses[networkId];
 
     meshClientJohn = new WSClient('ws://localhost:60557');
@@ -36,8 +86,8 @@ describe('3rd Party :: ZeroX :: ', () => {
     const connectorJohn = new Connectors.DirectConnector();
     const connectorMary = new Connectors.DirectConnector();
 
-    john = await ContractAPI.userWrapper(ACCOUNTS[0], providerJohn, addresses, connectorJohn, undefined, meshClientJohn, meshBrowser);
-    mary = await ContractAPI.userWrapper(ACCOUNTS[1], providerMary, addresses, connectorMary, undefined, meshClientMary, meshBrowser);
+    john = await ContractAPI.userWrapper(ACCOUNTS[0], providerJohn, addresses, connectorJohn, new GnosisRelayAPI('http://localhost:8000/api/'), meshClientJohn, meshBrowser);
+    mary = await ContractAPI.userWrapper(ACCOUNTS[1], providerMary, addresses, connectorMary, new GnosisRelayAPI('http://localhost:8000/api/'), meshClientMary, meshBrowser);
     const dbPromise = mock.makeDB(john.augur, ACCOUNTS);
     db = await dbPromise;
     connectorJohn.initialize(john.augur, db);
@@ -45,7 +95,18 @@ describe('3rd Party :: ZeroX :: ', () => {
     api = new API(john.augur, dbPromise);
     await john.approveCentralAuthority();
     await mary.approveCentralAuthority();
-  }, 60000);
+
+    // setup gnosis
+    const safe = await fundSafe(john);
+    const safeStatus = await getSafeStatus(john, safe);
+    console.log(`Safe ${safe}: ${safeStatus}`);
+    expect(safeStatus).toBe(GnosisSafeState.AVAILABLE);
+
+    await john.augur.setGasPrice(new BigNumber(90000));
+    john.setGnosisSafeAddress(safe);
+    john.setUseGnosisSafe(true);
+    john.setUseGnosisRelay(true);
+  }, 120000);
 
   afterAll(() => {
     meshClientJohn.destroy();
@@ -101,7 +162,7 @@ describe('3rd Party :: ZeroX :: ', () => {
     await expect(order.kycToken).toEqual(kycToken);
     await expect(order.expirationTimeSeconds).
       toEqual(expirationTime.toString());
-  });
+  }, 120000);
 
   test('ZeroX Trade :: placeTrade', async () => {
     // Give John enough cash to pay for the 0x order.

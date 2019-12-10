@@ -11,7 +11,7 @@ export const marketTradingPriceTimeSeries = (marketPriceHistory, outcome) => {
   const datedPriceHistory = sortedPriceHistory.reduce((p, item, i) => {
     if (item.outcome !== outcome) return p;
     const dateBreakDown = convertUnixToFormattedDate(item.timestamp);
-    const date = dateBreakDown.formattedShortDate;
+    const date = dateBreakDown.formattedLocalShortDate;
     const time = dateBreakDown.formattedShortTime;
     // todo: need to undo this rounding here
     const trade = {

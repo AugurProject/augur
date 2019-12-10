@@ -36,7 +36,7 @@ const MarketTemplateTitle: React.FC<MarketTemplateTitleProps> = ({
     let userInput = i.userInput;
     if (i.type === TemplateInputType.ESTDATETIME) {
       userInput = convertUnixToFormattedDate(Number(i.userInput))
-        .formattedShortTimezone;
+        .formattedLocalShortDateTimeNoTimezone;
     }
 
     return {

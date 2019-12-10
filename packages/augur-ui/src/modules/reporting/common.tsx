@@ -1068,7 +1068,7 @@ export interface ParticipationTokensViewProps {
   purchasedParticipationTokens: FormattedNumber;
   tokensOwned: FormattedNumber;
   percentageOfTotalFees: FormattedNumber;
-  participationTokensClaimable: FormattedNumber;
+  pastParticipationTokensPurchased: FormattedNumber;
   participationTokensClaimableFees: FormattedNumber;
   disablePurchaseButton: boolean;
   hasRedeemable: boolean;
@@ -1083,7 +1083,7 @@ export const ParticipationTokensView = (
     purchasedParticipationTokens,
     tokensOwned,
     percentageOfTotalFees,
-    participationTokensClaimable,
+    pastParticipationTokensPurchased,
     participationTokensClaimableFees,
     disablePurchaseButton,
     hasRedeemable,
@@ -1139,7 +1139,7 @@ export const ParticipationTokensView = (
       <Subheaders
         info
         header="Participation Tokens Purchased"
-        subheader={participationTokensClaimable.formatted}
+        subheader={pastParticipationTokensPurchased.formatted}
         tooltipText={'The total amount of unredeemed participation tokens you\ve purchased for past reporting minus any you\'ve lost for incorrect reporting'}
       />
       <Subheaders

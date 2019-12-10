@@ -32,6 +32,9 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
     // EIP712 Domain Version value
     string constant internal EIP712_DOMAIN_VERSION = "2";
 
+    // EIP1271 Order With Hash Selector
+    bytes4 constant public EIP1271_ORDER_WITH_HASH_SELECTOR = 0x3efe50c8;
+
     // Hash of the EIP712 Domain Separator Schema
     bytes32 constant internal EIP712_DOMAIN_SEPARATOR_SCHEMA_HASH = keccak256(
         abi.encodePacked(
@@ -386,8 +389,12 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
     }
 
     function createZeroXOrder(uint8 _type, uint256 _attoshares, uint256 _price, address _market, uint8 _outcome, address _kycToken, uint256 _expirationTimeSeconds, uint256 _salt) public view returns (IExchange.Order memory _zeroXOrder, bytes32 _orderHash) {
+        return createZeroXOrderFor(msg.sender, _type, _attoshares, _price, _market, _outcome, _kycToken, _expirationTimeSeconds, _salt);
+    }
+
+    function createZeroXOrderFor(address _maker, uint8 _type, uint256 _attoshares, uint256 _price, address _market, uint8 _outcome, address _kycToken, uint256 _expirationTimeSeconds, uint256 _salt) public view returns (IExchange.Order memory _zeroXOrder, bytes32 _orderHash) {
         bytes memory _assetData = encodeAssetData(IMarket(_market), _price, _outcome, _type, IERC20(_kycToken));
-        _zeroXOrder.makerAddress = msg.sender;
+        _zeroXOrder.makerAddress = _maker;
         _zeroXOrder.makerAssetAmount = _attoshares;
         _zeroXOrder.takerAssetAmount = _attoshares;
         _zeroXOrder.expirationTimeSeconds = _expirationTimeSeconds;
@@ -395,6 +402,21 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         _zeroXOrder.makerAssetData = _assetData;
         _zeroXOrder.takerAssetData = _assetData;
         _orderHash = exchange.getOrderInfo(_zeroXOrder).orderHash;
+    }
+
+    function encodeEIP1271OrderWithHash(
+        IExchange.Order memory _zeroXOrder,
+        bytes32 _orderHash
+    )
+        public
+        pure
+        returns (bytes memory encoded)
+    {
+        return abi.encodeWithSelector(
+            EIP1271_ORDER_WITH_HASH_SELECTOR,
+            _zeroXOrder,
+            _orderHash
+        );
     }
 
     function () external payable {}

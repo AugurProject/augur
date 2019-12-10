@@ -1,7 +1,7 @@
 @import (reference) '~assets/styles/shared';
 
 .Heading {
-  .mono-11-bold;
+  .mono-12-bold;
 
   align-items: center;
   background-color: @color-dark-grey;
@@ -19,7 +19,8 @@
   }
 }
 
-.OutcomesList > div > div > div > ul > li:first-of-type {
+.OutcomesList > div > div > div > ul > li:first-of-type > span > label,
+.OutcomesList > div > div > div > ul > li:first-of-type > span {
   .text-11-medium;
 }
 
@@ -35,7 +36,7 @@
   }
 
   .Heading {
-    .mono-11-bold;
+    .mono-12-bold;
     
     text-transform: uppercase;
     padding: @size-12 @size-16;
