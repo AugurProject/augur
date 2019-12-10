@@ -273,11 +273,11 @@ const getWindowLabels = (
   const startLabel = `${start.formattedUtcShortDate.substring(
     0,
     start.formattedUtcShortDate.indexOf(',')
-  )} ${start.formattedShortTime} (UTC)`;
+  )} ${start.formattedUtcShortTime} (UTC)`;
   const endLabel = `${end.formattedUtcShortDate.substring(
     0,
     end.formattedUtcShortDate.indexOf(',')
-  )} ${end.formattedShortTime} (UTC)`;
+  )} ${end.formattedUtcShortTime} (UTC)`;
   const dayLabels = format.getFullDaysBetween(start.timestamp, end.timestamp);
   return {
     startLabel,

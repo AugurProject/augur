@@ -19,7 +19,7 @@ const OpenOrderExpandedContent = (props: OpenOrderExpandedContentProps) => {
 
   const tokensEscrowed = getValue(openOrder, "tokensEscrowed");
   const sharesEscrowed = getValue(openOrder, "sharesEscrowed");
-  const creationTime = getValue(openOrder, "creationTime.formattedShortTimezone");
+  const creationTime = getValue(openOrder, "creationTime.formattedLocalShortDateTimeNoTimezone");
 
   return (
     <div className={Styles.OrderInfo}>

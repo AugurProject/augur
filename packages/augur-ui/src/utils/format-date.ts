@@ -67,14 +67,15 @@ export function formatDate(d, timezone: string = null): DateFormattedObject {
 
   return {
     value: date,
-    formattedShortTime: `${utcTimeWithSeconds.join(':')}`,
+    formattedUtcShortTime: `${utcTimeWithSeconds.join(':')}`,
+    formattedShortTime: `${local24hrTimeWithSeconds.join(':')}`,
     formattedLocalShortDateSecondary: `${date.getDate()} ${
       shortMonths[date.getMonth()]
     } ${date.getFullYear()}`,
     formattedLocalShortDate: `${
       shortMonths[date.getMonth()]
     } ${date.getDate()} ${date.getFullYear()}`,
-    formattedLocalShortTime: `${
+    formattedLocalShortWithUtcOffset: `${
       shortMonths[date.getMonth()]
     } ${date.getDate()}, ${date.getFullYear()} ${localTimeTwelve.join(
       ':'
@@ -96,11 +97,11 @@ export function formatDate(d, timezone: string = null): DateFormattedObject {
     } ${date.getDate()}, ${date.getFullYear()} ${localTimeTwelve.join(
       ':'
     )} ${localAMPM} ${timezoneName}`,
-    formattedShortTimezone: `${
+    formattedLocalShortDateTimeNoTimezone: `${
       shortMonths[date.getMonth()]
     } ${date.getDate()} ${date.getFullYear()} ${local24hrTimeWithSeconds.join(
       ':'
-    )} ${timezoneName}`,
+    )}`,
     formattedUtc: `${
       months[date.getUTCMonth()]
     } ${date.getUTCDate()}, ${date.getUTCFullYear()} ${utcTimeTwelve.join(
