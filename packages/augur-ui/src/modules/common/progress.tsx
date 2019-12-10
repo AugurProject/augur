@@ -21,9 +21,9 @@ export interface TimeLabelProps {
 }
 
 export interface TimeProgressBarProps {
-  startTime: DateFormattedObject | number;
-  endTime: DateFormattedObject | number;
-  currentTime: DateFormattedObject | number;
+  startTime: DateFormattedObject;
+  endTime: DateFormattedObject;
+  currentTime: DateFormattedObject;
 }
 
 export interface MarketProgressProps {
@@ -263,45 +263,6 @@ export const TimeProgressBar = (props: TimeProgressBarProps) => {
       <span style={percentDone} />
       <span style={percentToGo} />
     </span>
-  );
-};
-
-export const MarketTimeline = (props: TimeProgressBarProps) => {
-  const { startTime, endTime, currentTime } = props;
-  const formattedEndTime: DateFormattedObject = endTime;
-  let formattedCurrentTime: DateFormattedObject | number = currentTime;
-
-  if (!currentTime) {
-    return null;
-  }
-
-  if (typeof currentTime !== 'object') {
-    formattedCurrentTime = format.convertUnixToFormattedDate(currentTime);
-  }
-  const currentTimestamp = formattedCurrentTime.timestamp;
-  const endTimestamp = formattedEndTime.timestamp;
-  const hasPassed = currentTimestamp > endTimestamp;
-  return (
-    <div className={Styles.MarketTimeline}>
-      <div
-        className={classNames({
-          [Styles.reported]: hasPassed,
-          [Styles.open]: !hasPassed,
-        })}
-      >
-        <span>Date Created</span>
-        <span>{`Event Expiration`}</span>
-      </div>
-      <TimeProgressBar {...props} />
-      <div
-        className={classNames({
-          [Styles.fade]: hasPassed,
-        })}
-      >
-        <TimeLabel time={startTime} />
-        <TimeLabel time={endTime} />
-      </div>
-    </div>
   );
 };
 

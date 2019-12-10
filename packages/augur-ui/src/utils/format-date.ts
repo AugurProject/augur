@@ -67,14 +67,6 @@ export function formatDate(d, timezone: string = null): DateFormattedObject {
 
   return {
     value: date,
-    formatted: `${
-      months[date.getUTCMonth()]
-    } ${date.getUTCDate()}, ${date.getUTCFullYear()} ${utcTimeTwelve.join(
-      ':'
-    )} ${utcAMPM}`, // UTC time
-    formattedShortDate: `${('0' + date.getUTCDate()).slice(-2)}${
-      shortMonths[date.getUTCMonth()]
-    } ${date.getUTCFullYear()}`,
     formattedShortTime: `${utcTimeWithSeconds.join(':')}`,
     formattedShort: `${shortMonths[date.getUTCMonth()]}${(
       '0' + date.getUTCDate()
@@ -102,7 +94,7 @@ export function formatDate(d, timezone: string = null): DateFormattedObject {
       shortMonths[date.getUTCMonth()]
     } ${date.getUTCDate()}, ${date.getUTCFullYear()}`,
     clockTimeUtc: `${utcTimeTwelve.join(':')} ${utcAMPM} - UTC`,
-    formattedTimezone: `${
+    formattedLocalTimezone: `${
       months[date.getMonth()]
     } ${date.getDate()}, ${date.getFullYear()} ${localTimeTwelve.join(
       ':'
@@ -183,7 +175,7 @@ export function buildformattedDate(
   }
   const abbr = getTimezoneAbbr(endTime.toDate(), timezone);
   const timezoneFormat = endTime.format(LONG_FORMAT);
-  const formattedTimezone = `${timezoneFormat} (${abbr})`;
+  const formattedLocalTimezone = `${timezoneFormat} (${abbr})`;
 
   const adjOffset = createBigNumber(offset || ZERO).times("-1").toNumber();
   endTime.add(adjOffset, 'hours');
@@ -193,7 +185,7 @@ export function buildformattedDate(
 
   return {
     formattedUtc: formattedUtc,
-    formattedTimezone: formattedTimezone,
+    formattedLocalTimezone: formattedLocalTimezone,
     timestamp: endTime.unix(),
   };
 }

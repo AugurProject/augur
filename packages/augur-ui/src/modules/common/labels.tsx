@@ -200,7 +200,7 @@ interface ValueDenominationProps {
 interface TimeLabelProps {
   label: string;
   time: DateFormattedObject;
-  showLocal: boolean;
+  showLocal?: boolean;
   hint?: React.ReactNode;
 }
 
