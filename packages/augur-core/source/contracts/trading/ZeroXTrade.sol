@@ -76,9 +76,11 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
     function initialize(IAugur _augur, IAugurTrading _augurTrading) public beforeInitialized {
         endInitialization();
         cash = ICash(_augur.lookup("Cash"));
+        require(cash != ICash(0));
         shareToken = IShareToken(_augur.lookup("ShareToken"));
-
+        require(shareToken != IShareToken(0));
         fillOrder = IFillOrder(_augurTrading.lookup("FillOrder"));
+        require(fillOrder != IFillOrder(0));
 
         EIP712_DOMAIN_HASH = keccak256(
             abi.encodePacked(
