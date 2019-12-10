@@ -166,14 +166,19 @@
   }
 
   .OutcomesHeader {
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(6, 1fr);
     padding: 0 @size-12;
 
     > li {
       font-size: @size-9;
 
+      &:first-of-type {
+        display: flex;
+      }
+
       &:nth-of-type(2) {
-        text-align: left;
+        text-align: right;
+        justify-content: flex-end;
       }
     }
   }
