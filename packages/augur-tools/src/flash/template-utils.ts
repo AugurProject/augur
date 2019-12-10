@@ -22,24 +22,40 @@ const findTemplate = (category: CategoryTemplate, hash: string): string => {
   return template;
 };
 
-export const validateMarketTemplate = (title: string, templateInfo: string, outcomesString: string, longDescription: string, endTime: number): string => {
-  const extraInfoTemplate = JSON.parse(templateInfo) as ExtraInfoTemplate;
-  let outcomes = [];
-  if (outcomesString) {
-    outcomes = outcomesString.split(',').map(stringTo32ByteHex);
-  }
-  let details = longDescription;
-  if (longDescription) {
-    const splits = longDescription.split('\\n');
-    details = splits.join('\n');
-  }
-  const endTimeHex = new BigNumber(endTime).toHexString();
-  const errors = [];
-  const result = isTemplateMarket(title, extraInfoTemplate, outcomes, details, endTimeHex, errors);
+export const validateMarketTemplate = (
+  title: string,
+  templateInfo: string,
+  outcomesString: string,
+  longDescription: string,
+  endTime: number
+): string => {
+  try {
+    const extraInfoTemplate = JSON.parse(templateInfo) as ExtraInfoTemplate;
+    let outcomes = [];
+    if (outcomesString) {
+      outcomes = outcomesString.split(',').map(stringTo32ByteHex);
+    }
+    let details = longDescription;
+    if (longDescription) {
+      const splits = longDescription.split('\\n');
+      details = splits.join('\n');
+    }
+    const endTimeHex = new BigNumber(endTime).toHexString();
+    const errors = [];
+    const result = isTemplateMarket(
+      title,
+      extraInfoTemplate,
+      outcomes,
+      details,
+      endTimeHex,
+      errors
+    );
 
-  if (result) return 'Yes, this is a templated market';
-  const error = errors[0];
-  return `No, not a templated market, error: ${error}`;
-
-}
+    if (result) return '';
+    const error = errors[0];
+    return `error: ${error}`;
+  } catch (e) {
+    return `error: unknown, ${e}`;
+  }
+};
 
