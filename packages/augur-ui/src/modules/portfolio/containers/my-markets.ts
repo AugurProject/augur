@@ -21,7 +21,7 @@ const mapStateToProps = (state: AppState) => {
     disputingWindowEndTime: state.universe.disputeWindow && state.universe.disputeWindow.endTime || 0,
   };
 };
-// TOJDO confirm with TOm whats up with this, getBalance Only
+// TODO confirm with Tom whats up with this, getBalance Only
 const mapDispatchToProps = dispatch => ({
   removePendingMarket: id => dispatch(removePendingData(id, CREATE_MARKET)),
   retrySubmitMarket: data => dispatch(retrySubmitMarket(data)),

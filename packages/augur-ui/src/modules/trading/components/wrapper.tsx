@@ -24,16 +24,6 @@ import { calculateTotalOrderValue } from 'modules/trades/helpers/calc-order-prof
 import { formatDai } from 'utils/format-number';
 import { GnosisSafeState } from '@augurproject/gnosis-relay-api';
 
-// TODO: refactor the need to use this function.
-function pick(object, keys) {
-  return keys.reduce((obj, key) => {
-    if (object && object.hasOwnProperty(key)) {
-      obj[key] = object[key];
-    }
-    return obj;
-  }, {});
-}
-
 export interface SelectedOrderProperties {
   orderPrice: string;
   orderQuantity: string;
@@ -211,9 +201,18 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
   }
 
   updateParentOrderValues() {
-    this.props.updateSelectedOrderProperties({
-      ...pick(this.state, Object.keys(this.props.selectedOrderProperties)),
-    });
+    const {
+      orderPrice,
+      orderQuantity,
+      selectedNav
+    } = this.state;
+    this.props.updateSelectedOrderProperties(
+      {
+        orderPrice,
+        orderQuantity,
+        selectedNav
+      }
+    );
   }
 
   updateNewOrderProperties(selectedOrderProperties) {
