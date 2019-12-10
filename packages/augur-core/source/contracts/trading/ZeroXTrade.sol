@@ -121,6 +121,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
     /// @return       The _owner's balance of the Token type requested
     function balanceOf(address owner, uint256 id) external view returns (uint256) {
         (address _market, uint256 _price, uint8 _outcome, uint8 _type) = unpackTokenId(id);
+        // NOTE: An invalid order type will cause a failure here. That is malformed input so we don't mind reverting in such a case
         Order.Types _orderType = Order.Types(_type);
         if (_orderType == Order.Types.Ask) {
             return askBalance(owner, IMarket(_market), _outcome, _price);
