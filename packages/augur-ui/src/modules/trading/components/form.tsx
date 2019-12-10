@@ -474,7 +474,7 @@ class Form extends Component<FromProps, FormState> {
       ...this.state,
       [property]: value,
     };
-    
+
     const validationResults = this.orderValidation(
       updatedState,
       property,
@@ -926,7 +926,7 @@ class Form extends Component<FromProps, FormState> {
                       {
                         convertUnixToFormattedDate(
                           s[this.INPUT_TYPES.EXPIRATION_DATE]
-                        ).formattedLocalShortTime
+                        ).formattedLocalShortWithUtcOffset
                       }
                     </span>
                   )}

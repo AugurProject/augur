@@ -46,7 +46,7 @@ const MarketTemplateTitle: React.FC<MarketTemplateTitleProps> = ({
   if (!template || !template.inputs) return null;
   const convertedInputs: TemplateInput[] = template.inputs.map(i => ({
     userInput: (i.type === TemplateInputType.ESTDATETIME || i.type === TemplateInputType.DATETIME)
-      ? convertUnixToFormattedDate(Number(i.timestamp)).formattedShortTimezone
+      ? convertUnixToFormattedDate(Number(i.timestamp)).formattedLocalShortDateTimeNoTimezone
       : i.value,
     id: i.id,
     type: i.type as TemplateInputType,

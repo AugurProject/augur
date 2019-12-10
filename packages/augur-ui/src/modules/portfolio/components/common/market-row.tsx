@@ -10,7 +10,7 @@ import { SubmitTextButton } from 'modules/common/buttons';
 import Styles from 'modules/portfolio/components/common/market-row.styles.less';
 
 export interface TimeObject {
-  formattedShortDate: string;
+  formattedUtcShortDate: string;
 }
 export interface FormatObject {
   formatted: string;
