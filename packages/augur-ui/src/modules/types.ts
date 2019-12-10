@@ -8,6 +8,8 @@ import {
 import {
   MARKET_ID_PARAM_NAME,
   RETURN_PARAM_NAME,
+  OUTCOME_ID_PARAM_NAME,
+  CREATE_MARKET_FORM_PARAM_NAME,
 } from './routes/constants/param-names';
 import { AnyAction } from 'redux';
 import { EthersSigner } from 'contract-dependencies-ethers/build/ContractDependenciesEthers';
@@ -519,6 +521,7 @@ export interface QueryEndpoints {
   [RETURN_PARAM_NAME]?: string;
   [CATEGORY_PARAM_NAME]?: string;
   [TAGS_PARAM_NAME]?: string;
+  [CREATE_MARKET_FORM_PARAM_NAME]?: string;
 }
 export interface Endpoints {
   ethereumNodeHTTP: string;

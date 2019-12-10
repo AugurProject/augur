@@ -9,6 +9,11 @@ import Landing from "modules/create-market/containers/landing";
 import Styles from "modules/create-market/components/create-market-view/create-market-view.styles.less";
 import { NewMarket, UIOrder, NodeStyleCallback, LoginAccountMeta, Universe } from "modules/types";
 import { Getters } from "@augurproject/sdk/src";
+import parseQuery from "modules/routes/helpers/parse-query";
+import { CREATE_MARKET_FORM_PARAM_NAME } from "modules/routes/constants/param-names";
+import makeQuery from "modules/routes/helpers/make-query";
+import makePath from "modules/routes/helpers/make-path";
+import { CREATE_MARKET } from "modules/routes/constants/views";
 
 interface CreateMarketViewProps extends RouteComponentProps<{}> {
   categoryStats: Getters.Markets.CategoryStats;
@@ -42,12 +47,22 @@ export default class CreateMarketView extends React.Component<
   CreateMarketViewState
 > {
   state: CreateMarketViewState = {
-    page: this.props.history.location.state || LANDING,
-
+    page: parseQuery(this.props.location.search)[CREATE_MARKET_FORM_PARAM_NAME] || LANDING,
   };
 
+  componentDidUpdate(prevProps) {
+    if (parseQuery(this.props.location.search)[CREATE_MARKET_FORM_PARAM_NAME] !== parseQuery(prevProps.location.search)[CREATE_MARKET_FORM_PARAM_NAME]){
+      this.setState({page: parseQuery(this.props.location.search)[CREATE_MARKET_FORM_PARAM_NAME] || LANDING});
+    }
+  }
+
   updatePage = (page: string) => {
-    this.setState({ page });
+    this.props.history.push({
+      pathname: makePath(CREATE_MARKET, null),
+      search: makeQuery({
+        [CREATE_MARKET_FORM_PARAM_NAME]: page,
+      }),
+    });
   }
 
   componentDidMount() {
