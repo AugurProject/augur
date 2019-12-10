@@ -39,7 +39,7 @@ const mapStateToProps = (state: AppState) => {
           const bigAccumulator = createBigNumber(accumulator) || ZERO;
           const bigCurrentValue = createBigNumber(currentValue) || ZERO;
           return bigCurrentValue.plus(bigAccumulator);
-        })
+        }, ZERO)
     : ZERO;
 
   const hasRedeemable = isLoggedIn && pastParticipationTokensPurchased.gt(ZERO);
