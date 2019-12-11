@@ -8847,11 +8847,11 @@
 		{
 			"constant": true,
 			"inputs": [],
-			"name": "RAY",
+			"name": "daiVat",
 			"outputs": [
 				{
 					"name": "",
-					"type": "uint256"
+					"type": "address"
 				}
 			],
 			"payable": false,
@@ -8861,11 +8861,11 @@
 		{
 			"constant": true,
 			"inputs": [],
-			"name": "daiVat",
+			"name": "RAY",
 			"outputs": [
 				{
 					"name": "",
-					"type": "address"
+					"type": "uint256"
 				}
 			],
 			"payable": false,
@@ -19689,48 +19689,6 @@
 		{
 			"constant": true,
 			"inputs": [],
-			"name": "fillOrder",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "createOrder",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "cancelOrder",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
 			"name": "augur",
 			"outputs": [
 				{
@@ -19763,20 +19721,6 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "profitLoss",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -20700,20 +20644,6 @@
 		{
 			"constant": true,
 			"inputs": [],
-			"name": "RAY",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
 			"name": "daiVat",
 			"outputs": [
 				{
@@ -20840,6 +20770,20 @@
 				},
 				{
 					"name": "_duration",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "RAY",
+			"outputs": [
+				{
+					"name": "",
 					"type": "uint256"
 				}
 			],

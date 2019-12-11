@@ -2601,6 +2601,52 @@ This function may revert to prevent the operation from being executed.
 
 
 
+### `CashSender`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#CashSender.initializeCashSender(address,address)"><code class="function-signature">initializeCashSender(address _vat, address _cash)</code></a></li><li><a href="#CashSender.cashTransfer(address,uint256)"><code class="function-signature">cashTransfer(address _to, uint256 _amount)</code></a></li><li><a href="#CashSender.cashTransferFrom(address,address,uint256)"><code class="function-signature">cashTransferFrom(address _from, address _to, uint256 _amount)</code></a></li><li><a href="#CashSender.shutdownTransfer(address,address,uint256)"><code class="function-signature">shutdownTransfer(address _from, address _to, uint256 _amount)</code></a></li><li><a href="#CashSender.vatDaiToDai(uint256)"><code class="function-signature">vatDaiToDai(uint256 _vDaiAmount)</code></a></li><li><a href="#CashSender.daiToVatDai(uint256)"><code class="function-signature">daiToVatDai(uint256 _daiAmount)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="CashSender.initializeCashSender(address,address)"></a><code class="function-signature">initializeCashSender(address _vat, address _cash)</code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="CashSender.cashTransfer(address,uint256)"></a><code class="function-signature">cashTransfer(address _to, uint256 _amount)</code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="CashSender.cashTransferFrom(address,address,uint256)"></a><code class="function-signature">cashTransferFrom(address _from, address _to, uint256 _amount)</code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="CashSender.shutdownTransfer(address,address,uint256)"></a><code class="function-signature">shutdownTransfer(address _from, address _to, uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="CashSender.vatDaiToDai(uint256)"></a><code class="function-signature">vatDaiToDai(uint256 _vDaiAmount) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="CashSender.daiToVatDai(uint256)"></a><code class="function-signature">daiToVatDai(uint256 _daiAmount) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+
+
 ### `CloneFactory`
 
 
@@ -2772,52 +2818,6 @@ This function may revert to prevent the operation from being executed.
 
 
 <h4><a class="anchor" aria-hidden="true" id="IMarketFactory.createMarket(contract IAugur,uint256,uint256,contract IAffiliateValidator,uint256,address,address,uint256,uint256)"></a><code class="function-signature">createMarket(contract IAugur _augur, uint256 _endTime, uint256 _feePerCashInAttoCash, contract IAffiliateValidator _affiliateValidator, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, address _sender, uint256 _numOutcomes, uint256 _numTicks) <span class="return-arrow">→</span> <span class="return-type">contract IMarket</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-
-
-### `CashSender`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#CashSender.initializeCashSender(address,address)"><code class="function-signature">initializeCashSender(address _vat, address _cash)</code></a></li><li><a href="#CashSender.cashTransfer(address,uint256)"><code class="function-signature">cashTransfer(address _to, uint256 _amount)</code></a></li><li><a href="#CashSender.cashTransferFrom(address,address,uint256)"><code class="function-signature">cashTransferFrom(address _from, address _to, uint256 _amount)</code></a></li><li><a href="#CashSender.shutdownTransfer(address,address,uint256)"><code class="function-signature">shutdownTransfer(address _from, address _to, uint256 _amount)</code></a></li><li><a href="#CashSender.vatDaiToDai(uint256)"><code class="function-signature">vatDaiToDai(uint256 _vDaiAmount)</code></a></li><li><a href="#CashSender.daiToVatDai(uint256)"><code class="function-signature">daiToVatDai(uint256 _daiAmount)</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="CashSender.initializeCashSender(address,address)"></a><code class="function-signature">initializeCashSender(address _vat, address _cash)</code><span class="function-visibility">internal</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="CashSender.cashTransfer(address,uint256)"></a><code class="function-signature">cashTransfer(address _to, uint256 _amount)</code><span class="function-visibility">internal</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="CashSender.cashTransferFrom(address,address,uint256)"></a><code class="function-signature">cashTransferFrom(address _from, address _to, uint256 _amount)</code><span class="function-visibility">internal</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="CashSender.shutdownTransfer(address,address,uint256)"></a><code class="function-signature">shutdownTransfer(address _from, address _to, uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="CashSender.vatDaiToDai(uint256)"></a><code class="function-signature">vatDaiToDai(uint256 _vDaiAmount) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="CashSender.daiToVatDai(uint256)"></a><code class="function-signature">daiToVatDai(uint256 _daiAmount) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
 
 
 
@@ -4056,46 +4056,6 @@ https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section
 to learn more about how these ids are created.
 
 This function call must use less than 30 000 gas.
-
-
-
-
-
-### `IProfitLoss`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IProfitLoss.initialize(contract IAugur)"><code class="function-signature">initialize(contract IAugur _augur)</code></a></li><li><a href="#IProfitLoss.recordFrozenFundChange(contract IUniverse,contract IMarket,address,uint256,int256)"><code class="function-signature">recordFrozenFundChange(contract IUniverse _universe, contract IMarket _market, address _account, uint256 _outcome, int256 _frozenFundDelta)</code></a></li><li><a href="#IProfitLoss.adjustTraderProfitForFees(contract IMarket,address,uint256,uint256)"><code class="function-signature">adjustTraderProfitForFees(contract IMarket _market, address _trader, uint256 _outcome, uint256 _fees)</code></a></li><li><a href="#IProfitLoss.recordTrade(contract IUniverse,contract IMarket,address,address,uint256,int256,int256,uint256,uint256,uint256,uint256)"><code class="function-signature">recordTrade(contract IUniverse _universe, contract IMarket _market, address _longAddress, address _shortAddress, uint256 _outcome, int256 _amount, int256 _price, uint256 _numLongTokens, uint256 _numShortTokens, uint256 _numLongShares, uint256 _numShortShares)</code></a></li><li><a href="#IProfitLoss.recordClaim(contract IMarket,address,uint256[])"><code class="function-signature">recordClaim(contract IMarket _market, address _account, uint256[] _outcomeFees)</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IProfitLoss.initialize(contract IAugur)"></a><code class="function-signature">initialize(contract IAugur _augur)</code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IProfitLoss.recordFrozenFundChange(contract IUniverse,contract IMarket,address,uint256,int256)"></a><code class="function-signature">recordFrozenFundChange(contract IUniverse _universe, contract IMarket _market, address _account, uint256 _outcome, int256 _frozenFundDelta) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IProfitLoss.adjustTraderProfitForFees(contract IMarket,address,uint256,uint256)"></a><code class="function-signature">adjustTraderProfitForFees(contract IMarket _market, address _trader, uint256 _outcome, uint256 _fees) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IProfitLoss.recordTrade(contract IUniverse,contract IMarket,address,address,uint256,int256,int256,uint256,uint256,uint256,uint256)"></a><code class="function-signature">recordTrade(contract IUniverse _universe, contract IMarket _market, address _longAddress, address _shortAddress, uint256 _outcome, int256 _amount, int256 _price, uint256 _numLongTokens, uint256 _numShortTokens, uint256 _numLongShares, uint256 _numShortShares) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IProfitLoss.recordClaim(contract IMarket,address,uint256[])"></a><code class="function-signature">recordClaim(contract IMarket _market, address _account, uint256[] _outcomeFees) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
-
-
 
 
 

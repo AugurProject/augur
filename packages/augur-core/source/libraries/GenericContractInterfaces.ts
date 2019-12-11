@@ -3069,18 +3069,18 @@ export class Cash<TBigNumber> extends Contract<TBigNumber> {
 		return <TBigNumber>result[0]
 	}
 
-	public RAY_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"RAY","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [], options.sender)
-		return <TBigNumber>result[0]
-	}
-
 	public daiVat_ = async (options?: { sender?: string }): Promise<string> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"daiVat","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [], options.sender)
 		return <string>result[0]
+	}
+
+	public RAY_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"RAY","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <TBigNumber>result[0]
 	}
 
 	public faucet = async (amount: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
@@ -9225,27 +9225,6 @@ export class ShareToken<TBigNumber> extends Contract<TBigNumber> {
 		return <{_creatorFee: TBigNumber, _reportingFee: TBigNumber}>result
 	}
 
-	public fillOrder_ = async (options?: { sender?: string }): Promise<string> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"fillOrder","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [], options.sender)
-		return <string>result[0]
-	}
-
-	public createOrder_ = async (options?: { sender?: string }): Promise<string> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"createOrder","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [], options.sender)
-		return <string>result[0]
-	}
-
-	public cancelOrder_ = async (options?: { sender?: string }): Promise<string> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"cancelOrder","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [], options.sender)
-		return <string>result[0]
-	}
-
 	public augur_ = async (options?: { sender?: string }): Promise<string> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"augur","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
@@ -9270,13 +9249,6 @@ export class ShareToken<TBigNumber> extends Contract<TBigNumber> {
 		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_market","type":"address"},{"name":"_amount","type":"uint256"}],"name":"calculateReportingFee","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		const result = await this.localCall(abi, [market, amount], options.sender)
 		return <TBigNumber>result[0]
-	}
-
-	public profitLoss_ = async (options?: { sender?: string }): Promise<string> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"profitLoss","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [], options.sender)
-		return <string>result[0]
 	}
 
 	public totalSupplyForMarketOutcome_ = async (market: string, outcome: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
@@ -9754,13 +9726,6 @@ export class Universe<TBigNumber> extends Contract<TBigNumber> {
 		return <string>result[0]
 	}
 
-	public RAY_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"RAY","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [], options.sender)
-		return <TBigNumber>result[0]
-	}
-
 	public daiVat_ = async (options?: { sender?: string }): Promise<string> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"daiVat","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
@@ -9825,6 +9790,13 @@ export class Universe<TBigNumber> extends Contract<TBigNumber> {
 		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"_timestamp","type":"uint256"},{"name":"_initial","type":"bool"}],"name":"getDisputeWindowStartTimeAndDuration","outputs":[{"name":"_startTime","type":"uint256"},{"name":"_duration","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [timestamp, initial], options.sender)
 		return <{_startTime: TBigNumber, _duration: TBigNumber}>result
+	}
+
+	public RAY_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"RAY","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <TBigNumber>result[0]
 	}
 
 	public getInitialReportMinValue_ = async (options?: { sender?: string }): Promise<TBigNumber> => {

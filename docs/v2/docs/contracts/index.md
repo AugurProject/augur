@@ -682,6 +682,52 @@ Allows the current owner to transfer control of the contract to a newOwner.
 
 
 
+### `CashSender`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#CashSender.initializeCashSender(address,address)"><code class="function-signature">initializeCashSender(address _vat, address _cash)</code></a></li><li><a href="#CashSender.cashTransfer(address,uint256)"><code class="function-signature">cashTransfer(address _to, uint256 _amount)</code></a></li><li><a href="#CashSender.cashTransferFrom(address,address,uint256)"><code class="function-signature">cashTransferFrom(address _from, address _to, uint256 _amount)</code></a></li><li><a href="#CashSender.shutdownTransfer(address,address,uint256)"><code class="function-signature">shutdownTransfer(address _from, address _to, uint256 _amount)</code></a></li><li><a href="#CashSender.vatDaiToDai(uint256)"><code class="function-signature">vatDaiToDai(uint256 _vDaiAmount)</code></a></li><li><a href="#CashSender.daiToVatDai(uint256)"><code class="function-signature">daiToVatDai(uint256 _daiAmount)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="CashSender.initializeCashSender(address,address)"></a><code class="function-signature">initializeCashSender(address _vat, address _cash)</code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="CashSender.cashTransfer(address,uint256)"></a><code class="function-signature">cashTransfer(address _to, uint256 _amount)</code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="CashSender.cashTransferFrom(address,address,uint256)"></a><code class="function-signature">cashTransferFrom(address _from, address _to, uint256 _amount)</code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="CashSender.shutdownTransfer(address,address,uint256)"></a><code class="function-signature">shutdownTransfer(address _from, address _to, uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="CashSender.vatDaiToDai(uint256)"></a><code class="function-signature">vatDaiToDai(uint256 _vDaiAmount) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="CashSender.daiToVatDai(uint256)"></a><code class="function-signature">daiToVatDai(uint256 _daiAmount) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+
+
 ### `ContractExists`
 
 
@@ -2471,52 +2517,6 @@ MUST emit when the URI is updated for a token ID.
 
 
 <h4><a class="anchor" aria-hidden="true" id="IV2ReputationToken.mintForWarpSync(uint256,address)"></a><code class="function-signature">mintForWarpSync(uint256 _amountToMint, address _target) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-
-
-### `CashSender`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#CashSender.initializeCashSender(address,address)"><code class="function-signature">initializeCashSender(address _vat, address _cash)</code></a></li><li><a href="#CashSender.cashTransfer(address,uint256)"><code class="function-signature">cashTransfer(address _to, uint256 _amount)</code></a></li><li><a href="#CashSender.cashTransferFrom(address,address,uint256)"><code class="function-signature">cashTransferFrom(address _from, address _to, uint256 _amount)</code></a></li><li><a href="#CashSender.shutdownTransfer(address,address,uint256)"><code class="function-signature">shutdownTransfer(address _from, address _to, uint256 _amount)</code></a></li><li><a href="#CashSender.vatDaiToDai(uint256)"><code class="function-signature">vatDaiToDai(uint256 _vDaiAmount)</code></a></li><li><a href="#CashSender.daiToVatDai(uint256)"><code class="function-signature">daiToVatDai(uint256 _daiAmount)</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="CashSender.initializeCashSender(address,address)"></a><code class="function-signature">initializeCashSender(address _vat, address _cash)</code><span class="function-visibility">internal</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="CashSender.cashTransfer(address,uint256)"></a><code class="function-signature">cashTransfer(address _to, uint256 _amount)</code><span class="function-visibility">internal</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="CashSender.cashTransferFrom(address,address,uint256)"></a><code class="function-signature">cashTransferFrom(address _from, address _to, uint256 _amount)</code><span class="function-visibility">internal</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="CashSender.shutdownTransfer(address,address,uint256)"></a><code class="function-signature">shutdownTransfer(address _from, address _to, uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="CashSender.vatDaiToDai(uint256)"></a><code class="function-signature">vatDaiToDai(uint256 _vDaiAmount) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="CashSender.daiToVatDai(uint256)"></a><code class="function-signature">daiToVatDai(uint256 _daiAmount) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
 
 
 
