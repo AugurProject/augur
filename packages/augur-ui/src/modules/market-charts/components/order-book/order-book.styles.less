@@ -169,25 +169,16 @@
 }
 
 .Midmarket {
-  .mono-9-bold;
+  .mono-10-bold;
 
-  background-color: fade(@color-dark-grey, 70%);
-  color: @color-inactive-text;
-  margin: 1px 0;
-  padding: @size-6 @size-12;
+  border-bottom: 1px solid @color-dark-grey;
+  border-top: 1px solid @color-dark-grey;
+  background: @color-table-header;
+  color: @color-secondary-text;
   text-transform: uppercase;
-
-  > div {
-    align-items: center;
-    display: flex;
-    justify-content: center;
-
-    > span:first-of-type {
-      margin-right: @size-6;
-    }
-
-    > span:last-of-type {
-      margin-left: 2px;
-    }
-  }
+  height: @size-24;
+  max-height: @size-24;
+  min-height: @size-24;
+  text-align: center;
+  padding: @size-5;
 }

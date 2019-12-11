@@ -222,15 +222,11 @@ export default class OrderBook extends Component<
         {!hide && (
           <div className={Styles.Midmarket}>
             {hasOrders && (
-              <div>
-                <span>Spread:</span>
-                {orderBook.spread
-                  ? createBigNumber(orderBook.spread).toFixed(
-                      pricePrecision
-                    )
-                  : '—'}
-                {orderBook.spread && <span>DAI</span>}
-              </div>
+              `spread: ${orderBook.spread
+                ? createBigNumber(orderBook.spread).toFixed(
+                    pricePrecision
+                  )
+                : '—'} ${orderBook.spread ? 'DAI($)' : ''}`
             )}
           </div>
         )}
