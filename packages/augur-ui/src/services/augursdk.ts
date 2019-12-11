@@ -155,8 +155,6 @@ export class SDK {
   pickConnector(sdkEndpoint: string) {
     if (sdkEndpoint) {
       return new Connectors.WebsocketConnector(sdkEndpoint);
-    } else if (isMobileSafari()) {
-      return new Connectors.SEOConnector()
     } else {
       return new WebWorkerConnector();
     }
