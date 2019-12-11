@@ -695,7 +695,7 @@ contract Universe is IUniverse, MKRShutdownHandler {
 
     function deposit(address _sender, uint256 _amount, address _market) public returns (bool) {
         require(augur.isTrustedSender(msg.sender) || msg.sender == _sender || msg.sender == address(openInterestCash));
-        augur.trustedTransfer(_sender, address(this), _amount);
+        augur.trustedCashTransfer(_sender, address(this), _amount);
         totalBalance = totalBalance.add(_amount);
         marketBalance[_market] = marketBalance[_market].add(_amount);
         saveDaiInDSR(_amount);

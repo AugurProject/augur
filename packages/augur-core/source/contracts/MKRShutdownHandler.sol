@@ -11,7 +11,7 @@ contract MKRShutdownHandler {
     ICash public cash;
     IDaiVat public vat;
 
-    uint constant DAI_ONE = 10 ** 27;
+    uint constant MKR_ONE = 10 ** 27;
 
     function initializeMKRShutdownHandler(address _vat, address _cash) internal {
         vat = IDaiVat(_vat);
@@ -40,12 +40,19 @@ contract MKRShutdownHandler {
     }
 
     function shutdownTransfer(address _from, address _to, uint256 _amount) internal returns (uint256) {
-        uint256 _cashBalance = cash.balanceOf(_from);
-        if (_cashBalance < _amount) {
-            uint256 _vDaiToTransfer = vat.dai(_from).min(_amount.mul(DAI_ONE));
+        if (cash.balanceOf(_from) < _amount) {
+            uint256 _vDaiToTransfer = vat.dai(_from).min(daiToVatDai(_amount));
             vat.move(_from, _to, _vDaiToTransfer);
-            _amount -= _vDaiToTransfer.div(DAI_ONE);
+            _amount -= vatDaiToDai(_vDaiToTransfer);
         }
         return _amount;
+    }
+
+    function vatDaiToDai(uint256 _vDaiAmount) public returns (uint256) {
+        return _vDaiAmount.div(MKR_ONE);
+    }
+
+    function daiToVatDai(uint256 _daiAmount) public returns (uint256) {
+        return _daiAmount.mul(MKR_ONE);
     }
 }
