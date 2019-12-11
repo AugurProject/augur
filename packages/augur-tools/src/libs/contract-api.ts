@@ -169,7 +169,7 @@ export class ContractAPI {
       const cost = numTicks.plus(price.multipliedBy(-1)).multipliedBy(numShares);
       await this.faucet(cost);
     } else {
-      throw Error(`Invalid order type ${type.toFixed()}`);
+      throw Error(`Invalid order type ${type.toString()}`);
     }
 
     const events = await this.augur.contracts.createOrder.publicCreateOrder(

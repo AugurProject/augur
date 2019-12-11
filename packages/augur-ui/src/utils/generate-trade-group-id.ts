@@ -5,7 +5,7 @@ export function generateTradeGroupId() {
   return ethers.utils.formatBytes32String(
     uuid
       .v4()
-      .toFixed()
+      .toString()
       .substring(1, 32)
   );
 }

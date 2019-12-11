@@ -387,7 +387,7 @@ export class ZeroX {
     ignoreOrders?: string[]
   ): Promise<MatchingOrders> {
     const orderType = params.direction == 0 ? '1' : '0';
-    const outcome = params.outcome.toFixed();
+    const outcome = params.outcome.toString();
     const zeroXOrders = await this.augur.getZeroXOrders({
       marketId: params.market,
       outcome: params.outcome,
@@ -446,10 +446,10 @@ export class ZeroX {
     params: ZeroXPlaceTradeParams
   ): Promise<string | null> {
     if (params.outcome >= params.numOutcomes) {
-      return `Invalid outcome given for trade: ${params.outcome.toFixed()}. Must be between 0 and ${params.numOutcomes.toFixed()}`;
+      return `Invalid outcome given for trade: ${params.outcome.toString()}. Must be between 0 and ${params.numOutcomes.toString()}`;
     }
     if (params.price.lte(0) || params.price.gte(params.numTicks)) {
-      return `Invalid price given for trade: ${params.price.toFixed()}. Must be between 0 and ${params.numTicks.toFixed()}`;
+      return `Invalid price given for trade: ${params.price.toString()}. Must be between 0 and ${params.numTicks.toString()}`;
     }
 
     const amountNotCoveredByShares = params.amount.minus(params.shares);
@@ -468,12 +468,12 @@ export class ZeroX {
         this.augur.contracts.augur.address
       );
       if (cashAllowance.lt(cost)) {
-        return `Cash allowance: ${cashAllowance.toFixed()} will not cover trade cost: ${cost.toFixed()}`;
+        return `Cash allowance: ${cashAllowance.toString()} will not cover trade cost: ${cost.toString()}`;
       }
 
       const cashBalance = await this.augur.contracts.cash.balanceOf_(account);
       if (cashBalance.lt(cost)) {
-        return `Cash balance: ${cashBalance.toFixed()} will not cover trade cost: ${cost.toFixed()}`;
+        return `Cash balance: ${cashBalance.toString()} will not cover trade cost: ${cost.toString()}`;
       }
     }
 

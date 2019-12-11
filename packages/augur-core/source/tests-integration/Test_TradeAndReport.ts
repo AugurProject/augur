@@ -70,7 +70,7 @@ describe('TradeAndReport', () => {
         const repAmountToMigrate = new BigNumber(9000000).multipliedBy(new BigNumber(10).pow(18));
         await fixture.migrateOutByPayout(reputationToken, [new BigNumber(0), numTicks, new BigNumber(0)], repAmountToMigrate);
         const finalRepTotalMigrated = await childUniverseReputationToken.getTotalMigrated_();
-        expect(finalRepTotalMigrated.minus(initialRepTotalMigrated).toFixed()).to.equal(repAmountToMigrate.toFixed());
+        expect(finalRepTotalMigrated.minus(initialRepTotalMigrated).toString()).to.equal(repAmountToMigrate.toString());
 
         const isFinalized = await market.isFinalized_();
         expect(isFinalized).to.be.true;

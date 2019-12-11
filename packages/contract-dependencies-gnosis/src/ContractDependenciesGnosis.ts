@@ -209,7 +209,7 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
       safe: this.safeAddress,
       to,
       data: transaction.data,
-      value: value ? new BigNumber(value.toFixed()) : new BigNumber(0),
+      value: value ? new BigNumber(value.toString()) : new BigNumber(0),
       operation: Operation.Call,
       gasToken: this.gasToken,
     };

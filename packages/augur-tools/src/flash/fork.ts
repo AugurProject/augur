@@ -21,7 +21,7 @@ export async function fork(user: ContractAPI, market: MarketInfo): Promise<boole
   await user.setTimestamp(new BigNumber(market.endTime + 1));
 
   // Do the initial report, creating the first dispute window.
-  await user.doInitialReport(marketContract, payoutNumerators, '', SOME_REP.toFixed());
+  await user.doInitialReport(marketContract, payoutNumerators, '', SOME_REP.toString());
 
   // Contribution (dispute) fulfills the first dispute bond,
   // pushing into next dispute round that takes additional stake into account.

@@ -145,7 +145,7 @@ export class OnChainTrade {
   }
 
   async checkIfTradeValid(params: NativePlaceTradeChainParams): Promise<string | null> {
-    if (params.outcome >= params.numOutcomes) return `Invalid outcome given for trade: ${params.outcome.toFixed()}. Must be between 0 and ${params.numOutcomes.toFixed()}`;
+    if (params.outcome >= params.numOutcomes) return `Invalid outcome given for trade: ${params.outcome.toString()}. Must be between 0 and ${params.numOutcomes.toString()}`;
     if (params.price.lte(0) || params.price.gte(params.numTicks)) return `Invalid price given for trade: ${params.price.toString()}. Must be between 0 and ${params.numTicks.toString()}`;
 
     const amountNotCoveredByShares = params.amount.minus(params.shares);

@@ -56,7 +56,7 @@ export function formatDate(d, timezone: string = null): DateFormattedObject {
   const localTimeTwelve: Array<string> = getTwelveHourTime(local24hrTimeWithSeconds);
   const localOffset: number = (date.getTimezoneOffset() / 60) * -1;
   const localOffsetFormatted: string =
-    localOffset > 0 ? `+${localOffset}` : localOffset.toFixed();
+    localOffset > 0 ? `+${localOffset}` : localOffset.toString();
   const timezoneLocal: string = timezone
     ? date.toLocaleTimeString('en-US', {
         timeZone: timezone,
@@ -126,8 +126,8 @@ function convertToTwelveHour(value: number): number {
 
 function getTwelveHourTime(time: Array<number>): Array<string> {
   const values: Array<string> = new Array(time.length);
-  values[0] = convertToTwelveHour(time[0]).toFixed();
-  values[1] = time[1].toFixed();
+  values[0] = convertToTwelveHour(time[0]).toString();
+  values[1] = time[1].toString();
   if (time[1] < 10) values[1] = '0' + time[1];
 
   return values;

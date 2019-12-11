@@ -234,7 +234,7 @@ export function connectAugur(
               windowApp.localStorage.getItem(loginAccount.address)) ||
             '';
           const storedUniverseId = JSON.parse(loginAddress).selectedUniverse[
-            getNetworkId().toFixed()
+            getNetworkId().toString()
           ];
           universeId = !storedUniverseId ? universeId : storedUniverseId;
         }

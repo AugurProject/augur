@@ -60,7 +60,7 @@ export class ZeroXOrdersGetters {
       throw new Error("'getOrders' requires 'marketId' param be provided");
     }
 
-    const outcome = params.outcome ? `0x0${params.outcome.toFixed()}` : undefined;
+    const outcome = params.outcome ? `0x0${params.outcome.toString()}` : undefined;
     const orderType = params.orderType ? `0x0${params.orderType}` : undefined;
 
     let currentOrdersResponse;

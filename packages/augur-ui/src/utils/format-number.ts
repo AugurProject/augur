@@ -280,7 +280,7 @@ export function formatAttoRep(
 ): FormattedNumber {
   if (!num) return formatBlank();
   return formatNumber(
-    createBigNumber(num.toFixed())
+    createBigNumber(num.toString())
       .dividedBy(ETHER)
       .toNumber(),
     {
@@ -317,7 +317,7 @@ export function formatAttoEth(
 ): FormattedNumber {
   if (!num) return formatBlank();
   return formatNumber(
-    createBigNumber(num.toFixed())
+    createBigNumber(num.toString())
       .dividedBy(ETHER)
       .toNumber(),
     {

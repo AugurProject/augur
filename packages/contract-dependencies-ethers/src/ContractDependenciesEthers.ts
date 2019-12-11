@@ -60,7 +60,7 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
     const transactionObj: Transaction<ethers.utils.BigNumber> = {
       to: transaction.to,
       data: transaction.data,
-      value: transaction.value ? new ethers.utils.BigNumber(transaction.value.toFixed()) : new ethers.utils.BigNumber(0)
+      value: transaction.value ? new ethers.utils.BigNumber(transaction.value.toString()) : new ethers.utils.BigNumber(0)
     }
     if (transaction.from) {
       transactionObj.from = transaction.from;
@@ -116,9 +116,9 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
     const results = this.abiCoder.decode(abiParameters, encoded);
     return _.map(results, (result) => {
       if (isInstanceOfEthersBigNumber(result)) {
-        return new BigNumber(result.toFixed());
+        return new BigNumber(result.toString());
       } else if (isInstanceOfArray(result) && result.length > 0 && isInstanceOfEthersBigNumber(result[0])) {
-        return _.map(result, (value) => new BigNumber(value.toFixed()));
+        return _.map(result, (value) => new BigNumber(value.toString()));
       }
       return result;
     });
