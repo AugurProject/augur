@@ -79,90 +79,70 @@ class OrderBookSide extends Component<OrderBookSideProps, {}> {
       ? orderBook.asks || []
       : orderBook.bids || [];
     return (
-      <div className={Styles.Side}>
+      <div
+        className={classNames(Styles.Side, { [Styles.Asks]: isAsks })}
+        ref={side => {
+          this.side = side;
+        }}
+      >
         {orderBookOrders.length === 0 && (
           <div className={Styles.NoOrders}>
             {isAsks ? `Add Offer` : `Add Bid`}
           </div>
         )}
-        <div
-          className={classNames({ [Styles.Asks]: isAsks })}
-          ref={side => {
-            this.side = side;
-          }}
-        >
-          {orderBookOrders.map((order, i) => {
-            const hasSize = order.mySize !== '0';
-            const shouldEncompass =
-              (hoveredOrderIndex !== null &&
-                isAsks &&
-                hoveredSide === ASKS &&
-                i > hoveredOrderIndex) ||
-              (hoveredOrderIndex !== null &&
-                !isAsks &&
-                hoveredSide === BIDS &&
-                i < hoveredOrderIndex);
-            const isHovered = i === hoveredOrderIndex && hoveredSide === type;
-            return (
-              <button
-                key={order.cumulativeShares + i}
-                className={classNames({
-                  [Styles.Positive]: isAsks,
-                  [Styles.Hover]: isHovered,
-                  [Styles.EncompassedHover]: shouldEncompass,
-                })}
-                onMouseEnter={() => setHovers(i, type)}
-                onMouseLeave={() => setHovers(null, null)}
-                onClick={() =>
-                  updateSelectedOrderProperties({
-                    orderPrice: order.price,
-                    orderQuantity: order.cumulativeShares,
-                    selectedNav: isAsks ? BUY : SELL,
-                    selfTrade: hasSize,
-                  })
-                }
-              >
-                <div>
-                  <div
-                    className={classNames({ [Styles.Neg]: isAsks })}
-                    style={{ right: order.quantityScale + '%' }}
-                  />
-                </div>
+        {orderBookOrders.map((order, i) => {
+          const hasSize = order.mySize !== '0';
+          const shouldEncompass =
+            (hoveredOrderIndex !== null &&
+              isAsks &&
+              hoveredSide === ASKS &&
+              i > hoveredOrderIndex) ||
+            (hoveredOrderIndex !== null &&
+              !isAsks &&
+              hoveredSide === BIDS &&
+              i < hoveredOrderIndex);
+          const isHovered = i === hoveredOrderIndex && hoveredSide === type;
+          return (
+            <div
+              key={order.cumulativeShares + i}
+              className={classNames({
+                [Styles.AskSide]: isAsks,
+                [Styles.Hover]: isHovered,
+                [Styles.EncompassedHover]: shouldEncompass,
+              })}
+              onMouseEnter={() => setHovers(i, type)}
+              onMouseLeave={() => setHovers(null, null)}
+              onClick={() =>
+                updateSelectedOrderProperties({
+                  orderPrice: order.price,
+                  orderQuantity: order.cumulativeShares,
+                  selectedNav: isAsks ? BUY : SELL,
+                  selfTrade: hasSize,
+                })
+              }
+            >
+              <div>
                 <div
-                  className={classNames({
-                    [Styles.Ask]: isAsks,
-                    [Styles.Bid]: !isAsks,
-                  })}
-                >
-                  <HoverValueLabel
-                    value={formatShares(order.shares)}
-                    showEmptyDash={true}
-                    showDenomination={false}
-                  />
-                </div>
-                <div
-                  className={classNames({
-                    [Styles.Ask]: isAsks,
-                    [Styles.Bid]: !isAsks,
-                  })}
-                >
-                  {createBigNumber(order.price).toFixed(pricePrecision)}
-                </div>
-                <div
-                  className={classNames({
-                    [Styles.Ask]: isAsks,
-                    [Styles.Bid]: !isAsks,
-                    [Styles.NoSize]: !hasSize,
-                  })}
-                >
-                  {hasSize
-                    ? createBigNumber(order.mySize).toFixed(fixedPrecision)
-                    : '—'}
-                </div>
-              </button>
-            );
-          })}
-        </div>
+                  className={classNames({ [Styles.Neg]: isAsks })}
+                  style={{ width: 100 - order.quantityScale + '%' }}
+                />
+              </div>
+              <HoverValueLabel
+                value={formatShares(order.shares)}
+                showEmptyDash={true}
+                showDenomination={false}
+              />
+              <span>
+                {createBigNumber(order.price).toFixed(pricePrecision)}
+              </span>
+              <span>
+                {hasSize
+                  ? createBigNumber(order.mySize).toFixed(fixedPrecision)
+                  : '—'}
+              </span>
+            </div>
+          );
+        })}
       </div>
     );
   }
