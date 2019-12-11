@@ -15,14 +15,14 @@ import 'ROOT/libraries/Initializable.sol';
 import 'ROOT/IAugur.sol';
 import 'ROOT/trading/IProfitLoss.sol';
 import 'ROOT/trading/IAugurTrading.sol';
-import 'ROOT/MKRShutdownHandler.sol';
+import 'ROOT/CashSender.sol';
 
 
 /**
  * @title Cancel Order
  * @notice This allows you to cancel orders on the book.
  */
-contract CancelOrder is Initializable, ReentrancyGuard, ICancelOrder, MKRShutdownHandler {
+contract CancelOrder is Initializable, ReentrancyGuard, ICancelOrder, CashSender {
 
     IAugurTrading public augurTrading;
     IOrders public orders;
@@ -39,7 +39,7 @@ contract CancelOrder is Initializable, ReentrancyGuard, ICancelOrder, MKRShutdow
         orders = IOrders(_augurTrading.lookup("Orders"));
         profitLoss = IProfitLoss(_augurTrading.lookup("ProfitLoss"));
 
-        initializeMKRShutdownHandler(_augur.lookup("DaiVat"), address(cash));
+        initializeCashSender(_augur.lookup("DaiVat"), address(cash));
     }
 
     /**

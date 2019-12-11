@@ -20,14 +20,14 @@ import 'ROOT/external/IDaiPot.sol';
 import 'ROOT/external/IDaiJoin.sol';
 import 'ROOT/utility/IFormulas.sol';
 import 'ROOT/IAugur.sol';
-import 'ROOT/MKRShutdownHandler.sol';
+import 'ROOT/CashSender.sol';
 
 
 /**
  * @title Universe
  * @notice A Universe encapsulates a whole instance of Augur. In the event of a fork in a Universe it will split into child Universes which each represent a different version of the truth with respect to how the forking market should resolve.
  */
-contract Universe is IUniverse, MKRShutdownHandler {
+contract Universe is IUniverse, CashSender {
     using SafeMathUint256 for uint256;
 
     IAugur public augur;
@@ -99,7 +99,7 @@ contract Universe is IUniverse, MKRShutdownHandler {
         daiVat.hope(address(daiJoin));
         cash.approve(address(daiJoin), 2 ** 256 - 1);
 
-        initializeMKRShutdownHandler(address(daiVat), address(cash));
+        initializeCashSender(address(daiVat), address(cash));
     }
 
     function assertContractsNotZero() private view {

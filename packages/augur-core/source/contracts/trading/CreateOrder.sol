@@ -12,14 +12,14 @@ import 'ROOT/IAugur.sol';
 import 'ROOT/trading/IProfitLoss.sol';
 import 'ROOT/trading/IAugurTrading.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
-import 'ROOT/MKRShutdownHandler.sol';
+import 'ROOT/CashSender.sol';
 
 
 /**
  * @title Create Order
  * @notice Exposes functions to place an order on the book for other parties to take
  */
-contract CreateOrder is Initializable, ReentrancyGuard, MKRShutdownHandler {
+contract CreateOrder is Initializable, ReentrancyGuard, CashSender {
     using SafeMathUint256 for uint256;
     using Order for Order.Data;
 
@@ -39,7 +39,7 @@ contract CreateOrder is Initializable, ReentrancyGuard, MKRShutdownHandler {
         profitLoss = IProfitLoss(_augurTrading.lookup("ProfitLoss"));
         orders = IOrders(_augurTrading.lookup("Orders"));
 
-        initializeMKRShutdownHandler(_augur.lookup("DaiVat"), _augur.lookup("Cash"));
+        initializeCashSender(_augur.lookup("DaiVat"), _augur.lookup("Cash"));
     }
 
     /**

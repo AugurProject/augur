@@ -19,7 +19,7 @@ import 'ROOT/trading/Order.sol';
 import 'ROOT/reporting/Reporting.sol';
 import 'ROOT/libraries/ContractExists.sol';
 import 'ROOT/ITime.sol';
-import 'ROOT/MKRShutdownHandler.sol';
+import 'ROOT/CashSender.sol';
 
 
 // Centralized approval authority and event emissions
@@ -28,7 +28,7 @@ import 'ROOT/MKRShutdownHandler.sol';
  * @title Augur
  * @notice The core global contract of the Augur platform. Provides a contract registry and and authority on which contracts should be trusted.
  */
-contract Augur is IAugur, IAugurCreationDataGetter, MKRShutdownHandler {
+contract Augur is IAugur, IAugurCreationDataGetter, CashSender {
     using SafeMathUint256 for uint256;
     using ContractExists for address;
 

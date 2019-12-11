@@ -8,14 +8,14 @@ import 'ROOT/libraries/Initializable.sol';
 import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/trading/IProfitLoss.sol';
 import 'ROOT/IAugur.sol';
-import 'ROOT/MKRShutdownHandler.sol';
+import 'ROOT/CashSender.sol';
 
 
 /**
  * @title Share Token
  * @notice ERC1155 contract to hold all Augur share token balances
  */
-contract ShareToken is ITyped, Initializable, ERC1155, IShareToken, ReentrancyGuard, MKRShutdownHandler {
+contract ShareToken is ITyped, Initializable, ERC1155, IShareToken, ReentrancyGuard, CashSender {
 
     string constant public name = "Shares";
     string constant public symbol = "SHARE";
@@ -54,7 +54,7 @@ contract ShareToken is ITyped, Initializable, ERC1155, IShareToken, ReentrancyGu
         profitLoss = IProfitLoss(_augur.lookup("ProfitLoss"));
         cash = ICash(_augur.lookup("Cash"));
 
-        initializeMKRShutdownHandler(_augur.lookup("DaiVat"), address(cash));
+        initializeCashSender(_augur.lookup("DaiVat"), address(cash));
     }
 
     /**

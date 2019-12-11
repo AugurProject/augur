@@ -14,14 +14,14 @@ import 'ROOT/libraries/math/SafeMathUint256.sol';
 import 'ROOT/reporting/IDisputeWindow.sol';
 import 'ROOT/libraries/token/VariableSupplyToken.sol';
 import 'ROOT/IAugur.sol';
-import 'ROOT/MKRShutdownHandler.sol';
+import 'ROOT/CashSender.sol';
 
 
 /**
  * @title Dispute Window
  * @notice A contract used to encapsulate a window of time in which markets can be disputed as well as the pot where reporting fees are collected and distributed.
  */
-contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow, MKRShutdownHandler {
+contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow, CashSender {
     using SafeMathUint256 for uint256;
 
     IAugur public augur;
@@ -47,7 +47,7 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow, MK
         erc1820Registry = IERC1820Registry(_erc1820RegistryAddress);
         initialize1820InterfaceImplementations();
 
-        initializeMKRShutdownHandler(_augur.lookup("DaiVat"), address(cash));
+        initializeCashSender(_augur.lookup("DaiVat"), address(cash));
     }
 
     function onMarketFinalized() public {
