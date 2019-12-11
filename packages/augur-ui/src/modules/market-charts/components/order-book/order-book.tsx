@@ -209,7 +209,6 @@ export default class OrderBook extends Component<
           title="Order Book"
           headers={['quantity', 'price', 'my quantity']}
           toggle={toggle}
-          extended={extend}
           hide={hide}
         />
         <OrderBookSide
