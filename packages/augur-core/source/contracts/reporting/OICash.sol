@@ -28,6 +28,7 @@ contract OICash is VariableSupplyToken, Initializable, IOICash, MKRShutdownHandl
         cash = ICash(_augur.lookup("Cash"));
         cash.approve(address(_augur), MAX_APPROVAL_AMOUNT);
         shareToken = IShareToken(_augur.lookup("ShareToken"));
+        require(shareToken != IShareToken(0));
         universe = _universe;
         erc1820Registry = IERC1820Registry(_erc1820RegistryAddress);
         initialize1820InterfaceImplementations();

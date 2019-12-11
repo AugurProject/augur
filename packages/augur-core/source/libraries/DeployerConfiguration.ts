@@ -48,6 +48,8 @@ const EXTERNAL_ADDRESSES: NetworksToExternalAddresses = {
   thunder: {},
   ropsten: {},
   kovan: {
+    // from https://github.com/0xProject/0x-mesh/blob/a428703d64b084f41ff11d678b47a1d01135c6f1/ethereum/contract_addresses.go
+    ZeroXExchange: "0x30589010550762d2f0d06f650d8e8b6ade6dbf4b",
     /*
     MCDCol: "0xc7aa227823789e363f29679f23f7e8f6d9904a9b",
     MCDColJoin: "0xebbd300bb527f1d50abd937f8ca11d7fd0e5b68b",

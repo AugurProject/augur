@@ -180,7 +180,7 @@ async function getMigrationOutcomes(
       outcome: outcome.outcome,
       isMalformed: outcome.malformed,
       isInvalid: outcome.invalid,
-      amount: (await getRepSupply(augur, childUniverse)).toString(),
+      amount: (await getRepSupply(augur, childUniverse)).toFixed(),
       payoutNumerators,
     };
   }));

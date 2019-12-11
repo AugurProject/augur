@@ -48,6 +48,11 @@ contract Orders is IOrders, Initializable {
         cancelOrder = _augurTrading.lookup("CancelOrder");
         trade = _augurTrading.lookup("Trade");
         profitLoss = IProfitLoss(_augurTrading.lookup("ProfitLoss"));
+        require(createOrder != address(0));
+        require(fillOrder != address(0));
+        require(cancelOrder != address(0));
+        require(trade != address(0));
+        require(profitLoss != IProfitLoss(0));
     }
 
     /**
