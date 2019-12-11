@@ -35,8 +35,8 @@
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: auto;
-    grid-gap: 0 @size-64;
-    padding: 0 @size-16 0 @size-35;
+    padding:0 @size-16;
+    grid-gap: 0 @size-48;
 
     > li {
       .mono-10-bold;
@@ -44,6 +44,11 @@
       color: @color-secondary-text;
       text-transform: uppercase;
       white-space: nowrap;
+      text-align: right;
+    }
+    
+    > li:nth-of-type(2) {
+      text-align: center;
     }
   }
 }

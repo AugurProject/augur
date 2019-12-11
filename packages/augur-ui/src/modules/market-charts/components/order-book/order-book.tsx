@@ -20,6 +20,8 @@ interface OrderBookSideProps {
   setHovers: Function;
   type: string;
   scrollToTop: boolean;
+  hoveredSide?: string;
+  hoveredOrderIndex?: number;
 }
 
 interface OrderBookProps {
@@ -30,13 +32,12 @@ interface OrderBookProps {
   fixedPrecision: number;
   pricePrecision: number;
   toggle: boolean;
-  extend: boolean;
   hide: boolean;
 }
 
 interface OrderBookState {
-  hoveredOrderIndex: number;
-  hoveredSide: number;
+  hoveredOrderIndex?: number;
+  hoveredSide?: string;
 }
 
 class OrderBookSide extends Component<OrderBookSideProps, {}> {
@@ -72,96 +73,95 @@ class OrderBookSide extends Component<OrderBookSideProps, {}> {
       setHovers,
       type,
     } = this.props;
+    const isAsks = type === ASKS;
 
-    const orderBookOrders =
-      type === ASKS ? orderBook.asks || [] : orderBook.bids || [];
-
+    const orderBookOrders = isAsks
+      ? orderBook.asks || []
+      : orderBook.bids || [];
     return (
       <div className={Styles.Side}>
-        {orderBookOrders.length === 0 &&
-          <div className={Styles.NoOrders}>{type === ASKS ? `Add Offer` : `Add Bid`} </div>
-        }
+        {orderBookOrders.length === 0 && (
+          <div className={Styles.NoOrders}>
+            {isAsks ? `Add Offer` : `Add Bid`}
+          </div>
+        )}
         <div
-          className={classNames({ [Styles.Asks]: type === ASKS })}
+          className={classNames({ [Styles.Asks]: isAsks })}
           ref={side => {
             this.side = side;
           }}
         >
-          {orderBookOrders.map((order, i) => (
-            <button
-              key={order.cumulativeShares + i}
-              className={classNames({
-                [Styles.Positive]: type === ASKS,
-                [Styles.BidHead]:
-                  i === orderBook.asks.length - 1 && type === ASKS,
-                [Styles.AskHead]: i === 0 && type === BIDS,
-                [Styles.Hover]: i === hoveredOrderIndex && hoveredSide === type,
-                [Styles.EncompassedHover]:
-                  (hoveredOrderIndex !== null &&
-                    type === ASKS &&
-                    hoveredSide === ASKS &&
-                    i > hoveredOrderIndex) ||
-                  (hoveredOrderIndex !== null &&
-                    type === BIDS &&
-                    hoveredSide === BIDS &&
-                    i < hoveredOrderIndex),
-              })}
-              onMouseEnter={() => {
-                setHovers(i, type);
-              }}
-              onMouseLeave={() => {
-                setHovers(null, null);
-              }}
-              onClick={() =>
-                updateSelectedOrderProperties({
-                  orderPrice: order.price,
-                  orderQuantity: order.cumulativeShares,
-                  selectedNav: type === ASKS ? BUY : SELL,
-                  selfTrade: order.mySize !== '0',
-                })
-              }
-            >
-              <div>
+          {orderBookOrders.map((order, i) => {
+            const hasSize = order.mySize !== '0';
+            const shouldEncompass =
+              (hoveredOrderIndex !== null &&
+                isAsks &&
+                hoveredSide === ASKS &&
+                i > hoveredOrderIndex) ||
+              (hoveredOrderIndex !== null &&
+                !isAsks &&
+                hoveredSide === BIDS &&
+                i < hoveredOrderIndex);
+            const isHovered = i === hoveredOrderIndex && hoveredSide === type;
+            return (
+              <button
+                key={order.cumulativeShares + i}
+                className={classNames({
+                  [Styles.Positive]: isAsks,
+                  [Styles.Hover]: isHovered,
+                  [Styles.EncompassedHover]: shouldEncompass,
+                })}
+                onMouseEnter={() => setHovers(i, type)}
+                onMouseLeave={() => setHovers(null, null)}
+                onClick={() =>
+                  updateSelectedOrderProperties({
+                    orderPrice: order.price,
+                    orderQuantity: order.cumulativeShares,
+                    selectedNav: isAsks ? BUY : SELL,
+                    selfTrade: hasSize,
+                  })
+                }
+              >
+                <div>
                   <div
-                    className={classNames({ [Styles.Neg]: type === ASKS })}
+                    className={classNames({ [Styles.Neg]: isAsks })}
                     style={{ right: order.quantityScale + '%' }}
                   />
                 </div>
-              <div
-                className={classNames({
-                  [Styles.Ask]: type === ASKS,
-                  [Styles.Bid]: type === BIDS,
-                })}
-              >
-                <HoverValueLabel
-                  value={formatShares(order.shares)}
-                  showEmptyDash={true}
-                  showDenomination={false}
-                />
-              </div>
-              <div
-                className={classNames({
-                  [Styles.Ask]: type === ASKS,
-                  [Styles.Bid]: type === BIDS,
-                })}
-              >
-                {createBigNumber(order.price).toFixed(pricePrecision)}
-              </div>
-              <div
-                className={classNames({
-                  [Styles.Ask]: type === ASKS,
-                  [Styles.Bid]: type === BIDS,
-                  [Styles.NoSize]: order.mySize === '0',
-                })}
-              >
-                {order.mySize !== '0'
-                  ? createBigNumber(order.mySize)
-                      .toFixed(fixedPrecision)
-                      .toString()
-                  : '—'}
-              </div>
-            </button>
-          ))}
+                <div
+                  className={classNames({
+                    [Styles.Ask]: isAsks,
+                    [Styles.Bid]: !isAsks,
+                  })}
+                >
+                  <HoverValueLabel
+                    value={formatShares(order.shares)}
+                    showEmptyDash={true}
+                    showDenomination={false}
+                  />
+                </div>
+                <div
+                  className={classNames({
+                    [Styles.Ask]: isAsks,
+                    [Styles.Bid]: !isAsks,
+                  })}
+                >
+                  {createBigNumber(order.price).toFixed(pricePrecision)}
+                </div>
+                <div
+                  className={classNames({
+                    [Styles.Ask]: isAsks,
+                    [Styles.Bid]: !isAsks,
+                    [Styles.NoSize]: !hasSize,
+                  })}
+                >
+                  {hasSize
+                    ? createBigNumber(order.mySize).toFixed(fixedPrecision)
+                    : '—'}
+                </div>
+              </button>
+            );
+          })}
         </div>
       </div>
     );
@@ -185,22 +185,15 @@ export default class OrderBook extends Component<
     hoveredSide: null,
   };
 
-  setHovers = (hoveredOrderIndex: number, hoveredSide: number) => {
+  setHovers = (hoveredOrderIndex: number, hoveredSide: string) => {
     this.setState({
-      hoveredOrderIndex: hoveredOrderIndex,
-      hoveredSide: hoveredSide,
+      hoveredOrderIndex,
+      hoveredSide,
     });
   };
 
   render() {
-    const {
-      pricePrecision,
-      hasOrders,
-      toggle,
-      extend,
-      hide,
-      orderBook
-    } = this.props;
+    const { pricePrecision, hasOrders, toggle, hide, orderBook } = this.props;
     const s = this.state;
 
     return (
@@ -221,13 +214,12 @@ export default class OrderBook extends Component<
         />
         {!hide && (
           <div className={Styles.Midmarket}>
-            {hasOrders && (
-              `spread: ${orderBook.spread
-                ? createBigNumber(orderBook.spread).toFixed(
-                    pricePrecision
-                  )
-                : '—'} ${orderBook.spread ? 'DAI($)' : ''}`
-            )}
+            {hasOrders &&
+              `spread: ${
+                orderBook.spread
+                  ? createBigNumber(orderBook.spread).toFixed(pricePrecision)
+                  : '—'
+              } ${orderBook.spread ? 'DAI($)' : ''}`}
           </div>
         )}
         <OrderBookSide
