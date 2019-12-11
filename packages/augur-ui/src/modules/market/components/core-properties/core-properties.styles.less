@@ -16,7 +16,18 @@
       grid-template-rows: @size-34 @size-34;
       margin: @size-12 @size-16;
       flex: 1;
-  
+
+      > div[class*="PropertyLabel"] > {
+        span:first-of-type {
+          .mono-10-bold;
+
+          margin-bottom: @size-4;
+        }
+
+        span:last-of-type {
+          .text-12-medium;
+        }
+      }
     }
   }
 
@@ -102,6 +113,25 @@
 
   > div:first-of-type {
     margin-bottom: @size-8;
+  }
+
+  > div[class*="TimeLabel"] {
+    span:first-of-type {
+      .mono-10-bold;
+      
+      margin-bottom: @size-4;
+    }
+
+    span:nth-of-type(2) {
+      .mono-12-medium;
+
+      color: @color-primary-text;
+      margin-bottom: @size-2;
+    }
+
+    span:nth-of-type(3) {
+      .mono-9-bold;
+    }
   }
 }
 
