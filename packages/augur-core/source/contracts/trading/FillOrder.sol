@@ -462,8 +462,13 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
             profitLoss: IProfitLoss(_augurTrading.lookup("ProfitLoss")),
             shareToken: IShareToken(_augur.lookup("ShareToken"))
         });
+        require(storedContracts.orders != IOrders(0));
+        require(storedContracts.profitLoss != IProfitLoss(0));
+        require(storedContracts.shareToken != IShareToken(0));
         trade = _augurTrading.lookup("Trade");
+        require(trade != address(0));
         zeroXTrade = _augurTrading.lookup("ZeroXTrade");
+        require(zeroXTrade != address(0));
         _cash.approve(address(_augur), MAX_APPROVAL_AMOUNT);
     }
 

@@ -24,6 +24,7 @@ contract GnosisSafeRegistry is Initializable {
         endInitialization();
         augur = _augur;
         gnosisSafeMasterCopy = _augur.lookup("GnosisSafe");
+        require(gnosisSafeMasterCopy != address(0));
         IProxyFactory _proxyFactory = IProxyFactory(_augur.lookup("ProxyFactory"));
         proxyCodeHash = keccak256(_proxyFactory.proxyRuntimeCode());
         return true;
