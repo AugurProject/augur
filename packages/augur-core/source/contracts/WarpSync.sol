@@ -47,6 +47,7 @@ contract WarpSync is IWarpSync, Initializable {
         IMarket _market = IMarket(msg.sender);
         IUniverse _universe = _market.getUniverse();
 
+        // NOTE: This validates that the market is legitimate. A malicious market has no way of modifying this mapping to pass here.
         if (markets[address(_universe)] != address(_market)) {
             return;
         }

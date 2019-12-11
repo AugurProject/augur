@@ -85,7 +85,8 @@
     "debug": {
       "connect": true,
       "broadcast": false
-    }
+    },
+    "0x-endpoint": "wss://kovan.augur.net/0x"
   },
   "srt": {
     "ethereum-node": {

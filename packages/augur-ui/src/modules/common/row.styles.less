@@ -189,6 +189,14 @@
       display: flex;
       padding-left: 0;
 
+      > span {
+        .text-11-bold;
+
+        > label {
+          .text-11-bold;
+        }
+      }
+
       > span:nth-of-type(2) {
         color: @color-secondary-text;
         display: inline-block;
@@ -365,8 +373,7 @@
 
   .Row4 {
     grid-template-columns: repeat(6, 1fr);
-    padding-left: @size-12;
-    padding-right: @size-12;
+    padding: @size-12;
 
     &::before {
       width: 2px;
@@ -376,7 +383,18 @@
       &:first-of-type {
         grid-column: unset;
         margin-bottom: 0;
+
+        > span > label {
+          white-space: normal;
+          max-height: @size-26;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+        }
       }
+
       &:nth-of-type(2) {
         position: relative;
         justify-content: flex-end;

@@ -69,7 +69,7 @@ export class SDK {
     );
 
     const enableFlexSearch = false; // TODO configurable
-    const meshClient = env['0x-endpoint'] ? new WSClient(env['0x-endpoint']) : undefined;
+    // const meshClient = env['0x-endpoint'] ? new WSClient(env['0x-endpoint']) : undefined;
     const meshBrowser = undefined; // TODO configurable
 
     this.sdk = await Augur.create<Provider>(
@@ -79,7 +79,7 @@ export class SDK {
       connector,
       gnosisRelay,
       enableFlexSearch,
-      meshClient,
+      undefined, // TODO - Enable when we fix relayer errors
       meshBrowser,
     );
 
@@ -155,8 +155,6 @@ export class SDK {
   pickConnector(sdkEndpoint: string) {
     if (sdkEndpoint) {
       return new Connectors.WebsocketConnector(sdkEndpoint);
-    } else if (isMobileSafari()) {
-      return new Connectors.SEOConnector()
     } else {
       return new WebWorkerConnector();
     }

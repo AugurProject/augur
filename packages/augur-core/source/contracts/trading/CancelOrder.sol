@@ -34,12 +34,15 @@ contract CancelOrder is Initializable, ReentrancyGuard, ICancelOrder, CashSender
         endInitialization();
         cash = ICash(_augur.lookup("Cash"));
         shareToken = IShareToken(_augur.lookup("ShareToken"));
+        require(shareToken != IShareToken(0));
 
         augurTrading = _augurTrading;
         orders = IOrders(_augurTrading.lookup("Orders"));
+        require(orders != IOrders(0));
         profitLoss = IProfitLoss(_augurTrading.lookup("ProfitLoss"));
 
         initializeCashSender(_augur.lookup("DaiVat"), address(cash));
+        require(profitLoss != IProfitLoss(0));
     }
 
     /**

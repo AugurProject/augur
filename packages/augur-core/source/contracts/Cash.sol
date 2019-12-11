@@ -42,6 +42,8 @@ contract Cash is ITyped, ICash, ICashFaucet {
     function initialize(IAugur _augur) public returns (bool) {
         daiJoin = IDaiJoin(_augur.lookup("DaiJoin"));
         daiVat = IDaiVat(_augur.lookup("DaiVat"));
+        require(daiJoin != IDaiJoin(0));
+        require(daiVat != IDaiVat(0));
         wards[address(this)] = 1;
         wards[address(daiJoin)] = 1;
         return true;
