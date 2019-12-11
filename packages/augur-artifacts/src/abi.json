@@ -8847,7 +8847,7 @@
 		{
 			"constant": true,
 			"inputs": [],
-			"name": "DAI_ONE",
+			"name": "RAY",
 			"outputs": [
 				{
 					"name": "",
@@ -20700,7 +20700,7 @@
 		{
 			"constant": true,
 			"inputs": [],
-			"name": "DAI_ONE",
+			"name": "RAY",
 			"outputs": [
 				{
 					"name": "",

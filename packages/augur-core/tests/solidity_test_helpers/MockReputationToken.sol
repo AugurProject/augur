@@ -51,7 +51,7 @@ contract MockReputationToken is ITyped, Initializable, MockVariableSupplyToken, 
         setMigrateInValue = _setMigrateInValue;
     }
 
-    function settrustedCashTransfer(bool _setTrustedTransferValue) public {
+    function setTrustedCashTransfer(bool _setTrustedTransferValue) public {
         setTrustedTransferValue = _setTrustedTransferValue;
     }
 

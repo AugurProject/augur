@@ -111,6 +111,7 @@ contract Market is Initializable, Ownable, IMarket {
      */
     function increaseValidityBond(uint256 _attoCash) public returns (bool) {
         require(!isFinalized());
+        // NOTE: In the event of a MKR shutdown this may become impossible as the supply of DAI decreases.
         cash.transferFrom(msg.sender, address(this), _attoCash);
         universe.deposit(address(this), _attoCash, address(this));
         validityBondAttoCash = validityBondAttoCash.add(_attoCash);

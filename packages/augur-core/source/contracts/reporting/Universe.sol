@@ -74,7 +74,7 @@ contract Universe is IUniverse, CashSender {
     IDaiPot public daiPot;
     IDaiJoin public daiJoin;
 
-    uint256 constant public DAI_ONE = 10 ** 27;
+    uint256 constant public RAY = 10 ** 27;
 
     constructor(IAugur _augur, IUniverse _parentUniverse, bytes32 _parentPayoutDistributionHash, uint256[] memory _payoutNumerators) public {
         augur = _augur;
@@ -669,15 +669,15 @@ contract Universe is IUniverse, CashSender {
     function saveDaiInDSR(uint256 _amount) private returns (bool) {
         daiJoin.join(address(this), _amount);
         uint256 _chi = daiPot.drip();
-        uint256 _sDaiAmount = _amount.mul(DAI_ONE) / _chi; // sDai may be lower than the full amount joined above. This means the VAT may have some dust and we'll be saving less than intended by a dust amount
+        uint256 _sDaiAmount = _amount.mul(RAY) / _chi; // sDai may be lower than the full amount joined above. This means the VAT may have some dust and we'll be saving less than intended by a dust amount
         daiPot.join(_sDaiAmount);
         return true;
     }
 
     function withdrawDaiFromDSR(uint256 _amount) private returns (bool) {
         uint256 _chi = daiPot.drip();
-        uint256 _sDaiAmount = _amount.mul(DAI_ONE) / _chi; // sDai may be lower than the amount needed to retrieve `amount` from the VAT. We cover for this rounding error below
-        if (_sDaiAmount.mul(_chi) < _amount.mul(DAI_ONE)) {
+        uint256 _sDaiAmount = _amount.mul(RAY) / _chi; // sDai may be lower than the amount needed to retrieve `amount` from the VAT. We cover for this rounding error below
+        if (_sDaiAmount.mul(_chi) < _amount.mul(RAY)) {
             _sDaiAmount += 1;
         }
         _sDaiAmount = _sDaiAmount.min(daiPot.pie(address(this))); // Never try to draw more than the balance in the pot. If we have less than needed we _must_ have enough already in the VAT provided no negative interest was ever applied
@@ -688,7 +688,7 @@ contract Universe is IUniverse, CashSender {
     function withdrawSDaiFromDSR(uint256 _sDaiAmount) private returns (bool) {
         daiPot.exit(_sDaiAmount);
         if (daiJoin.live() == 1) {
-            daiJoin.exit(address(this), daiVat.dai(address(this)).div(DAI_ONE));
+            daiJoin.exit(address(this), daiVat.dai(address(this)).div(RAY));
         }
         return true;
     }
@@ -721,7 +721,7 @@ contract Universe is IUniverse, CashSender {
         saveDaiInDSR(totalBalance); // Put the required funds back in savings
         _extraCash = cash.balanceOf(address(this));
         // The amount in the DSR pot and VAT must cover our totalBalance of Dai
-        assert(daiPot.pie(address(this)).mul(_chi).add(daiVat.dai(address(this))) >= totalBalance.mul(DAI_ONE));
+        assert(daiPot.pie(address(this)).mul(_chi).add(daiVat.dai(address(this))) >= totalBalance.mul(RAY));
         cashTransfer(address(getOrCreateNextDisputeWindow(false)), _extraCash);
         return true;
     }

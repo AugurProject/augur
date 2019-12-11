@@ -3069,9 +3069,9 @@ export class Cash<TBigNumber> extends Contract<TBigNumber> {
 		return <TBigNumber>result[0]
 	}
 
-	public DAI_ONE_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
+	public RAY_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"DAI_ONE","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"RAY","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [], options.sender)
 		return <TBigNumber>result[0]
 	}
@@ -9754,9 +9754,9 @@ export class Universe<TBigNumber> extends Contract<TBigNumber> {
 		return <string>result[0]
 	}
 
-	public DAI_ONE_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
+	public RAY_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"DAI_ONE","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"RAY","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [], options.sender)
 		return <TBigNumber>result[0]
 	}

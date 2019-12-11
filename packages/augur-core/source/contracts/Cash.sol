@@ -28,7 +28,7 @@ contract Cash is ITyped, ICash, ICashFaucet {
     string constant public name = "Cash";
     string constant public symbol = "CASH";
 
-    uint256 constant public DAI_ONE = 10 ** 27;
+    uint256 constant public RAY = 10 ** 27;
 
     mapping(address => uint) internal balances;
     uint256 public supply;
@@ -115,7 +115,7 @@ contract Cash is ITyped, ICash, ICashFaucet {
     }
 
     function faucet(uint256 _amount) public returns (bool) {
-        daiVat.faucet(address(daiJoin), _amount * DAI_ONE);
+        daiVat.faucet(address(daiJoin), _amount * RAY);
         mint(msg.sender, _amount);
         return true;
     }
