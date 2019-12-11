@@ -12,7 +12,15 @@
   min-width: 325px;
   width: 100%;
   max-height: 45%;
+  min-height: 150px;
   overflow-y: auto;
+  display: flex;
+  flex-flow: column;
+  flex: 1;
+
+  &.Scrollable {
+    display: block;
+  }
 
   &.Asks {
     justify-content: flex-end;
@@ -33,6 +41,10 @@
 
     &.NoPadding {
       padding-right: 0;
+
+      > span:last-of-type {
+        padding-right: @size-8;
+      }
     }
 
     &:not(.NoOrders)::before {
@@ -84,7 +96,6 @@
       &:last-of-type {
         color: @color-secondary-text;
         grid-column: 3 / span 1;
-        padding-right: @size-16;
       }
     }
 

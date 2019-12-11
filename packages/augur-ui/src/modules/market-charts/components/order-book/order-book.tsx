@@ -79,9 +79,10 @@ class OrderBookSide extends Component<OrderBookSideProps, {}> {
       : orderBook.bids || [];
 
     const noPadding = this.side && this.side.scrollHeight !== this.side.clientHeight;
+    const isScrollable = this.side && (orderBookOrders.length * 20) > this.side.clientHeight;
     return (
       <div
-        className={classNames(Styles.Side, { [Styles.Asks]: isAsks })}
+        className={classNames(Styles.Side, { [Styles.Asks]: isAsks, [Styles.Scrollable]: isScrollable })}
         ref={side => {
           this.side = side;
         }}
