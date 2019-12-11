@@ -171,10 +171,6 @@ export class Gnosis {
           });
         }
 
-        intervalId = setInterval(() => {
-          this.onNewBlock();
-        }, 5000);
-
         return params;
       } else if (status.status === GnosisSafeState.CREATED) {
         this.augur
@@ -195,19 +191,12 @@ export class Gnosis {
         paymentToken: this.augur.contracts.cash.address,
       }) as SafeResponse;
 
-      intervalId = setInterval(() => {
-        this.onNewBlock();
-      }, 5000);
 
       return {
         ...result,
         owner,
       };
     }
-    catch (restoreAddress) {
-      intervalId = setInterval(() => {
-        this.onNewBlock();
-      }, 5000);
 
       return restoreAddress;
     }
