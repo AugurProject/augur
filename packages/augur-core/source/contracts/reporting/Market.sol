@@ -148,10 +148,10 @@ contract Market is Initializable, Ownable, IMarket {
         repBond = 0;
         // If the designated reporter showed up and is not also the rep bond owner return the rep bond to the bond owner. Otherwise it will be used as stake in the first report.
         if (_reporter == _initialReporter.getDesignatedReporter() && _reporter != repBondOwner) {
-            require(_reputationToken.noHooksTransfer(repBondOwner, _initialReportStake));
+            require(_reputationToken.transfer(repBondOwner, _initialReportStake));
             _reputationToken.trustedMarketTransfer(_reporter, address(_initialReporter), _initialReportStake);
         } else {
-            require(_reputationToken.noHooksTransfer(address(_initialReporter), _initialReportStake));
+            require(_reputationToken.transfer(address(_initialReporter), _initialReportStake));
         }
         return _initialReportStake;
     }
@@ -315,7 +315,7 @@ contract Market is Initializable, Ownable, IMarket {
             if (_reportingParticipant.getPayoutDistributionHash() == winningPayoutDistributionHash) {
                 // The last participant's owed REP will not actually be 40% ROI in the event it was created through pre-emptive contributions. We just give them all the remaining non burn REP
                 uint256 amountToTransfer = j == participants.length - 1 ? _reputationToken.balanceOf(address(this)) : _reportingParticipant.getSize().mul(2) / 5;
-                require(_reputationToken.noHooksTransfer(address(_reportingParticipant), amountToTransfer));
+                require(_reputationToken.transfer(address(_reportingParticipant), amountToTransfer));
             }
         }
     }
@@ -483,7 +483,7 @@ contract Market is Initializable, Ownable, IMarket {
         if (repBond > 0) {
             IV2ReputationToken _reputationToken = getReputationToken();
             uint256 _repBond = repBond;
-            require(_reputationToken.noHooksTransfer(repBondOwner, _repBond));
+            require(_reputationToken.transfer(repBondOwner, _repBond));
             repBond = 0;
         } else {
             _initialParticipant.returnRepFromDisavow();

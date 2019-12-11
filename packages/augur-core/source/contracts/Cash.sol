@@ -31,7 +31,6 @@ contract Cash is ITyped, ICash, ICashFaucet {
     uint256 constant public DAI_ONE = 10 ** 27;
 
     mapping(address => uint) internal balances;
-    uint256 public supply;
     mapping(address => mapping(address => uint256)) internal allowed;
 
     uint8 constant public decimals = 18;
@@ -74,10 +73,6 @@ contract Cash is ITyped, ICash, ICashFaucet {
         balances[_to] = balances[_to].add(_amount);
         emit Transfer(_from, _to, _amount);
         return true;
-    }
-
-    function totalSupply() public view returns (uint256) {
-        return supply;
     }
 
     function balanceOf(address _owner) public view returns (uint256) {
@@ -137,7 +132,7 @@ contract Cash is ITyped, ICash, ICashFaucet {
 
     function mint(address _target, uint256 _amount) internal returns (bool) {
         balances[_target] = balances[_target].add(_amount);
-        supply = supply.add(_amount);
+        totalSupply = totalSupply.add(_amount);
         emit Mint(_target, _amount);
         emit Transfer(address(0), _target, _amount);
         return true;
@@ -147,7 +142,7 @@ contract Cash is ITyped, ICash, ICashFaucet {
         require(balanceOf(_target) >= _amount, "BURN Not enough funds");
 
         balances[_target] = balances[_target].sub(_amount);
-        supply = supply.sub(_amount);
+        totalSupply = totalSupply.sub(_amount);
 
         emit Burn(_target, _amount);
         return true;
