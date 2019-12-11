@@ -34,41 +34,29 @@ interface MarketsListFiltersProps {
 }
 
 const MarketsListFilters = (props: MarketsListFiltersProps) => {
-  const [selectedFee, setSelectedFee] = useState(props.maxFee);
-  const [selectedSpread, setSelectedSpread] = useState(
-    props.maxLiquiditySpread
-  );
-  const [showInvalidDefault, setShowInvalidDefault] = useState(
-    String(props.includeInvalidMarkets)
-  );
-  const [templateFilter, setTemplateFilter] = useState(props.allTemplateFilter);
-
   useEffect(() => {
     const filterOptionsFromQuery = parseQuery(props.location.search);
     if (
       filterOptionsFromQuery.maxFee &&
-      filterOptionsFromQuery.maxFee !== selectedFee
+      filterOptionsFromQuery.maxFee !== props.maxFee
     ) {
-      setSelectedFee(filterOptionsFromQuery.maxFee);
       props.updateMaxFee(filterOptionsFromQuery.maxFee);
     }
     if (
       filterOptionsFromQuery.selectedFee &&
-      filterOptionsFromQuery.selectedFee !== selectedSpread
+      filterOptionsFromQuery.selectedFee !== props.maxLiquiditySpread
     ) {
-      setSelectedSpread(filterOptionsFromQuery.selectedSpread);
       props.updateMaxSpread(filterOptionsFromQuery.selectedSpread);
     }
     if (
       filterOptionsFromQuery.templateFilter &&
-      filterOptionsFromQuery.templateFilter !== templateFilter
+      filterOptionsFromQuery.templateFilter !== props.allTemplateFilter
     ) {
-      setTemplateFilter(filterOptionsFromQuery.templateFilter);
       props.updateTemplateFilter(filterOptionsFromQuery.templateFilter);
     }
   }, [props.location.search]);
 
-  if (!selectedFee) return null;
+  if (!props.maxLiquiditySpread) return null;
 
   return (
     <div className={Styles.Filters}>
@@ -89,10 +77,9 @@ const MarketsListFilters = (props: MarketsListFiltersProps) => {
 
         <RadioBarGroup
           radioButtons={templateFilterValues}
-          defaultSelected={templateFilter}
+          defaultSelected={props.allTemplateFilter}
           onChange={(value: string) => {
             updateQuery(TEMPLATE_FILTER, value, props.location, props.history);
-            setTemplateFilter(value);
             props.updateTemplateFilter(value);
           }}
         />
@@ -107,7 +94,7 @@ const MarketsListFilters = (props: MarketsListFiltersProps) => {
 
         <RadioBarGroup
           radioButtons={feeFilters}
-          defaultSelected={selectedFee}
+          defaultSelected={props.maxFee}
           onChange={(value: string) => {
             updateQuery(
               MAXFEE_PARAM_NAME,
@@ -115,7 +102,6 @@ const MarketsListFilters = (props: MarketsListFiltersProps) => {
               props.location,
               props.history
             );
-            setSelectedFee(value);
             props.updateMaxFee(value);
           }}
         />
@@ -130,7 +116,7 @@ const MarketsListFilters = (props: MarketsListFiltersProps) => {
 
         <RadioBarGroup
           radioButtons={spreadFilters}
-          defaultSelected={selectedSpread}
+          defaultSelected={props.maxLiquiditySpread}
           onChange={(value: string) => {
             updateQuery(
               SPREAD_PARAM_NAME,
@@ -138,7 +124,6 @@ const MarketsListFilters = (props: MarketsListFiltersProps) => {
               props.location,
               props.history
             );
-            setSelectedSpread(value);
             props.updateMaxSpread(value);
           }}
         />
@@ -153,7 +138,7 @@ const MarketsListFilters = (props: MarketsListFiltersProps) => {
 
         <RadioBarGroup
           radioButtons={invalidFilters}
-          defaultSelected={showInvalidDefault}
+          defaultSelected={String(props.includeInvalidMarkets)}
           onChange={(value: string) => {
             updateQuery(
               SHOW_INVALID_MARKETS_PARAM_NAME,
@@ -161,7 +146,6 @@ const MarketsListFilters = (props: MarketsListFiltersProps) => {
               props.location,
               props.history
             );
-            setShowInvalidDefault(value);
             props.updateShowInvalid(value);
           }}
         />
