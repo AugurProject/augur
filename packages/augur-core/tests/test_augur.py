@@ -15,7 +15,7 @@ def test_known_universe_child_creation_failure(augur):
 
 def test_trusted_transfer_amount_failure(augur):
     with raises(TransactionFailed):
-        augur.trustedTransfer(augur.address, augur.address, 0)
+        augur.trustedCashTransfer(augur.address, augur.address, 0)
 
 def test_log_requires(augur, universe):
     with raises(TransactionFailed):

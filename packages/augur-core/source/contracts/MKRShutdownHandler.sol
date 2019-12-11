@@ -11,7 +11,7 @@ contract MKRShutdownHandler {
     ICash public cash;
     IDaiVat public vat;
 
-    uint constant MKR_ONE = 10 ** 27;
+    uint constant RAY = 10 ** 27;
 
     function initializeMKRShutdownHandler(address _vat, address _cash) internal {
         vat = IDaiVat(_vat);
@@ -48,11 +48,11 @@ contract MKRShutdownHandler {
         return _amount;
     }
 
-    function vatDaiToDai(uint256 _vDaiAmount) public returns (uint256) {
-        return _vDaiAmount.div(MKR_ONE);
+    function vatDaiToDai(uint256 _vDaiAmount) public pure returns (uint256) {
+        return _vDaiAmount.div(RAY);
     }
 
-    function daiToVatDai(uint256 _daiAmount) public returns (uint256) {
-        return _daiAmount.mul(MKR_ONE);
+    function daiToVatDai(uint256 _daiAmount) public pure returns (uint256) {
+        return _daiAmount.mul(RAY);
     }
 }

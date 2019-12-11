@@ -5935,33 +5935,6 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "_from",
-					"type": "address"
-				},
-				{
-					"name": "_to",
-					"type": "address"
-				},
-				{
-					"name": "_amount",
-					"type": "uint256"
-				}
-			],
-			"name": "trustedTransfer",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
 					"name": "_universe",
 					"type": "address"
 				},
@@ -6104,6 +6077,25 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_daiAmount",
+					"type": "uint256"
+				}
+			],
+			"name": "daiToVatDai",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
 			"type": "function"
 		},
 		{
@@ -6300,6 +6292,25 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_vDaiAmount",
+					"type": "uint256"
+				}
+			],
+			"name": "vatDaiToDai",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
 			"type": "function"
 		},
 		{
@@ -6597,6 +6608,33 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_from",
+					"type": "address"
+				},
+				{
+					"name": "_to",
+					"type": "address"
+				},
+				{
+					"name": "_amount",
+					"type": "uint256"
+				}
+			],
+			"name": "trustedCashTransfer",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -13712,10 +13750,6 @@
 					"type": "address"
 				},
 				{
-					"name": "_universe",
-					"type": "address"
-				},
-				{
 					"name": "_endTime",
 					"type": "uint256"
 				},
@@ -14986,6 +15020,25 @@
 		},
 		{
 			"constant": true,
+			"inputs": [
+				{
+					"name": "_daiAmount",
+					"type": "uint256"
+				}
+			],
+			"name": "daiToVatDai",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
 			"inputs": [],
 			"name": "isActive",
 			"outputs": [
@@ -15093,6 +15146,25 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_vDaiAmount",
+					"type": "uint256"
+				}
+			],
+			"name": "vatDaiToDai",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
 			"type": "function"
 		},
 		{
@@ -17329,6 +17401,25 @@
 			"type": "function"
 		},
 		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_daiAmount",
+					"type": "uint256"
+				}
+			],
+			"name": "daiToVatDai",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
 			"constant": false,
 			"inputs": [
 				{
@@ -17442,6 +17533,25 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_vDaiAmount",
+					"type": "uint256"
+				}
+			],
+			"name": "vatDaiToDai",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
 			"type": "function"
 		},
 		{
@@ -19248,6 +19358,25 @@
 			"constant": true,
 			"inputs": [
 				{
+					"name": "_daiAmount",
+					"type": "uint256"
+				}
+			],
+			"name": "daiToVatDai",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
 					"name": "_tokenId",
 					"type": "uint256"
 				}
@@ -19354,6 +19483,25 @@
 			"outputs": [],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_vDaiAmount",
+					"type": "uint256"
+				}
+			],
+			"name": "vatDaiToDai",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
 			"type": "function"
 		},
 		{
@@ -20420,6 +20568,25 @@
 		},
 		{
 			"constant": true,
+			"inputs": [
+				{
+					"name": "_daiAmount",
+					"type": "uint256"
+				}
+			],
+			"name": "daiToVatDai",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
 			"inputs": [],
 			"name": "repPriceOracle",
 			"outputs": [
@@ -20556,6 +20723,25 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_vDaiAmount",
+					"type": "uint256"
+				}
+			],
+			"name": "vatDaiToDai",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
 			"type": "function"
 		},
 		{
@@ -22239,6 +22425,25 @@
 	],
 	"CancelOrder": [
 		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_daiAmount",
+					"type": "uint256"
+				}
+			],
+			"name": "daiToVatDai",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
 			"constant": false,
 			"inputs": [
 				{
@@ -22269,6 +22474,25 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_vDaiAmount",
+					"type": "uint256"
+				}
+			],
+			"name": "vatDaiToDai",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
 			"type": "function"
 		},
 		{
@@ -22396,6 +22620,25 @@
 	"CreateOrder": [
 		{
 			"constant": true,
+			"inputs": [
+				{
+					"name": "_daiAmount",
+					"type": "uint256"
+				}
+			],
+			"name": "daiToVatDai",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
 			"inputs": [],
 			"name": "trade",
 			"outputs": [
@@ -22420,6 +22663,25 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_vDaiAmount",
+					"type": "uint256"
+				}
+			],
+			"name": "vatDaiToDai",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
 			"type": "function"
 		},
 		{
