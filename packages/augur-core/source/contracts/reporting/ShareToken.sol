@@ -6,7 +6,6 @@ import 'ROOT/libraries/ReentrancyGuard.sol';
 import 'ROOT/libraries/ITyped.sol';
 import 'ROOT/libraries/Initializable.sol';
 import 'ROOT/reporting/IMarket.sol';
-import 'ROOT/trading/IProfitLoss.sol';
 import 'ROOT/IAugur.sol';
 
 
@@ -28,30 +27,12 @@ contract ShareToken is ITyped, Initializable, ERC1155, IShareToken, ReentrancyGu
 
     IAugur public augur;
     ICash public cash;
-    address public createOrder;
-    address public fillOrder;
-    address public cancelOrder;
-    IProfitLoss public profitLoss;
-
-    mapping(address => bool) private doesNotUpdatePnl;
 
     function initialize(IAugur _augur) external beforeInitialized {
         endInitialization();
         augur = _augur;
-
-        address _createOrder = _augur.lookup("CreateOrder");
-        address _fillOrder = _augur.lookup("FillOrder");
-        address _cancelOrder = _augur.lookup("CancelOrder");
-
-        doesNotUpdatePnl[_createOrder] = true;
-        doesNotUpdatePnl[_fillOrder] = true;
-        doesNotUpdatePnl[_cancelOrder] = true;
-
-        createOrder = _createOrder;
-        fillOrder = _fillOrder;
-        cancelOrder = _cancelOrder;
-        profitLoss = IProfitLoss(_augur.lookup("ProfitLoss"));
         cash = ICash(_augur.lookup("Cash"));
+        require(cash != ICash(0));
     }
 
     /**

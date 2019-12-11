@@ -529,6 +529,7 @@ class ContractsFixture:
             if getattr(self.contracts[contractName], "initializeERC1820", None):
                 self.contracts[contractName].initializeERC1820(self.contracts['Augur'].address)
             elif getattr(self.contracts[contractName], "initialize", None):
+                print('Initializing ' + contractName)
                 self.contracts[contractName].initialize(self.contracts['Augur'].address)
             else:
                 raise "contract has no 'initialize' method on it."

@@ -211,6 +211,7 @@ Deploying to: ${networkConfiguration.networkName}
         mapping['BuyParticipationTokens'] = this.contracts.get('BuyParticipationTokens').address!;
         mapping['RedeemStake'] = this.contracts.get('RedeemStake').address!;
         mapping['AugurTrading'] = this.contracts.get('AugurTrading').address!;
+        mapping['ZeroXExchange'] = this.contracts.get('Exchange').address!;
         for (let contract of this.contracts) {
             if (/^I[A-Z].*/.test(contract.contractName)) continue;
             if (contract.contractName === 'TimeControlled') continue;
@@ -230,6 +231,21 @@ Deploying to: ${networkConfiguration.networkName}
             }
             if (contract.relativeFilePath.startsWith('legacy_reputation/')) continue;
             if (contract.relativeFilePath.startsWith('external/')) continue;
+
+            // 0x
+            if (this.configuration.externalAddresses.ZeroXExchange && [
+              'ERC20Proxy',
+              'ERC721Proxy',
+              'ERC1155Proxy',
+              'Exchange',
+              'Coordinator',
+              'CoordinatorRegistry',
+              'DevUtils',
+              'WETH9',
+              'ZRXToken',
+            ].includes(contract.contractName)) continue;
+            if (contract.contractName === 'Exchange') continue;
+
             if (contract.contractName !== 'Map' && contract.relativeFilePath.startsWith('libraries/')) continue;
             if (['Cash', 'TestNetDaiVat', 'TestNetDaiPot', 'TestNetDaiJoin'].includes(contract.contractName)) continue;
             if (['IAugur', 'IDisputeCrowdsourcer', 'IDisputeWindow', 'IUniverse', 'IMarket', 'IReportingParticipant', 'IReputationToken', 'IOrders', 'IShareToken', 'Order', 'IV2ReputationToken', 'IInitialReporter'].includes(contract.contractName)) continue;

@@ -169,7 +169,7 @@
     "@0x/typescript-typings" "^4.3.0"
     lodash "^4.17.11"
 
-"@0x/subproviders@5.0.4", "@0x/subproviders@^5.0.4":
+"@0x/subproviders@^5.0.4":
   version "5.0.4"
   resolved "https://registry.yarnpkg.com/@0x/subproviders/-/subproviders-5.0.4.tgz#e4b165634ef6a50c4bd41baacf0dbd2a9390c2f8"
   integrity sha512-1LiGcOXkP5eUOl/0JRqkrqYtCvIL4NJj1GbbLIRq4TvkfqrRbF7zJM2SaayxPo3Z48zVsqk0ZE5+RrNAdK/Rrg==

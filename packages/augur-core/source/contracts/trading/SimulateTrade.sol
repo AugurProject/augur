@@ -56,9 +56,12 @@ contract SimulateTrade is Initializable {
         endInitialization();
         augur = _augur;
         shareToken = IShareToken(augur.lookup("ShareToken"));
+        require(shareToken != IShareToken(0));
 
         orders = IOrders(_augurTrading.lookup("Orders"));
         zeroXTrade = IZeroXTrade(_augurTrading.lookup("ZeroXTrade"));
+        require(orders != IOrders(0));
+        require(zeroXTrade != IZeroXTrade(0));
     }
 
     function create(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, address _sender, IERC20 _kycToken) internal view returns (SimulationData memory) {
