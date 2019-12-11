@@ -8,12 +8,11 @@
 }
 
 .Side {
-  flex: 1;
   justify-content: flex-start;
-  display: flex;
-  flex-flow: column;
   min-width: 325px;
   width: 100%;
+  max-height: 45%;
+  overflow-y: auto;
 
   &.Asks {
     justify-content: flex-end;
@@ -31,6 +30,10 @@
     margin-top: 1px;
     cursor: pointer;
     padding-right: @size-16;
+
+    &.NoPadding {
+      padding-right: 0;
+    }
 
     &:not(.NoOrders)::before {
       background-color: @color-positive;
