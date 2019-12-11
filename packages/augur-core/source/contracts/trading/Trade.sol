@@ -48,10 +48,14 @@ contract Trade is Initializable, ReentrancyGuard {
         endInitialization();
         augur = _augur;
         cash = ICash(augur.lookup("Cash"));
+        require(cash != ICash(0));
 
         createOrder = ICreateOrder(_augurTrading.lookup("CreateOrder"));
         fillOrder = IFillOrder(_augurTrading.lookup("FillOrder"));
         orders = IOrders(_augurTrading.lookup("Orders"));
+        require(createOrder != ICreateOrder(0));
+        require(fillOrder != IFillOrder(0));
+        require(orders != IOrders(0));
     }
 
     function create(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, uint256 _loopLimit, bytes32 _fingerprint, address _sender, IERC20 _kycToken) internal pure returns (Data memory) {

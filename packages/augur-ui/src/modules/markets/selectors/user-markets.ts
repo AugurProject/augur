@@ -30,12 +30,12 @@ export const selectAuthorOwnedMarkets = createSelector(
     });
     filteredMarkets = pendingMarkets.concat(filteredMarkets);
     return filteredMarkets.map(m => {
-      const pendingOrderId = m.transactionHash || generateTxParameterId(m.txParams);
+      const pendingMarketId = m.id || m.transactionHash || generateTxParameterId(m.txParams);
       return {
         ...m,
-        hasPendingLiquidityOrders: !!pendingLiquidityOrders[pendingOrderId],
-        orderBook: pendingLiquidityOrders[pendingOrderId],
-        recentlyTraded: getLastTradeTimestamp(marketTradingHistory[pendingOrderId])
+        hasPendingLiquidityOrders: !!pendingLiquidityOrders[pendingMarketId],
+        orderBook: pendingLiquidityOrders[pendingMarketId],
+        recentlyTraded: getLastTradeTimestamp(marketTradingHistory[pendingMarketId])
       }
     });
   }

@@ -61,7 +61,7 @@ contract ReputationToken is VariableSupplyToken, IV2ReputationToken {
     }
 
     function migrateIn(address _reporter, uint256 _attotokens) public returns (bool) {
-        IUniverse _parentUniverse = universe.getParentUniverse();
+        IUniverse _parentUniverse = parentUniverse;
         require(ReputationToken(msg.sender) == _parentUniverse.getReputationToken());
         require(augur.getTimestamp() < _parentUniverse.getForkEndTime());
         mint(_reporter, _attotokens);
@@ -74,9 +74,8 @@ contract ReputationToken is VariableSupplyToken, IV2ReputationToken {
     }
 
     function mintForReportingParticipant(uint256 _amountMigrated) public returns (bool) {
-        IUniverse _parentUniverse = universe.getParentUniverse();
         IReportingParticipant _reportingParticipant = IReportingParticipant(msg.sender);
-        require(_parentUniverse.isContainerForReportingParticipant(_reportingParticipant));
+        require(parentUniverse.isContainerForReportingParticipant(_reportingParticipant));
         // simulate a 40% ROI which would have occured during a normal dispute had this participant's outcome won the dispute
         uint256 _bonus = _amountMigrated.mul(2) / 5;
         mint(address(_reportingParticipant), _bonus);
@@ -149,11 +148,11 @@ contract ReputationToken is VariableSupplyToken, IV2ReputationToken {
     function getTotalTheoreticalSupply() public view returns (uint256) {
         uint256 _totalSupply = totalSupply();
         if (parentUniverse == IUniverse(0)) {
-            return Reporting.getInitialREPSupply().max(_totalSupply);
+            return _totalSupply.add(legacyRepToken.totalSupply()).sub(legacyRepToken.balanceOf(address(1))).sub(legacyRepToken.balanceOf(address(0)));
         } else if (augur.getTimestamp() >= parentUniverse.getForkEndTime()) {
             return _totalSupply;
         } else {
-            return _totalSupply + parentUniverse.getReputationToken().totalSupply();
+            return _totalSupply + parentUniverse.getReputationToken().getTotalTheoreticalSupply();
         }
     }
 

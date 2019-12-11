@@ -37,12 +37,17 @@ contract ProfitLoss is Initializable {
     function initialize(IAugur _augur, IAugurTrading _augurTrading) public beforeInitialized {
         endInitialization();
         shareToken = _augur.lookup("ShareToken");
+        require(shareToken != address(0));
 
         augurTrading = _augurTrading;
         createOrder = _augurTrading.lookup("CreateOrder");
         cancelOrder = _augurTrading.lookup("CancelOrder");
         fillOrder = _augurTrading.lookup("FillOrder");
         orders = IOrders(_augurTrading.lookup("Orders"));
+        require(createOrder != address(0));
+        require(fillOrder != address(0));
+        require(cancelOrder != address(0));
+        require(orders != IOrders(0));
     }
 
     function recordFrozenFundChange(IUniverse _universe, IMarket _market, address _account, uint256 _outcome, int256 _frozenFundDelta) external returns (bool) {

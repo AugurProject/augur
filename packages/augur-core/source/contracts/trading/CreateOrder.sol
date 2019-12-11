@@ -33,8 +33,11 @@ contract CreateOrder is Initializable, ReentrancyGuard {
 
         augurTrading = _augurTrading;
         trade = _augurTrading.lookup("Trade");
+        require(trade != address(0));
         profitLoss = IProfitLoss(_augurTrading.lookup("ProfitLoss"));
+        require(profitLoss != IProfitLoss(0));
         orders = IOrders(_augurTrading.lookup("Orders"));
+        require(orders != IOrders(0));
     }
 
     /**

@@ -18,7 +18,7 @@ const sortByOptions = [
     comp(marketA, marketB) {
       if (marketA.pending) return 1;
       if (marketB.pending) return 0;
-      return marketA.endTime.timestamp - marketB.endTime.timestamp;
+      return marketA.endTime - marketB.endTime;
     },
   },
   {
@@ -34,7 +34,7 @@ const sortByOptions = [
     label: 'Creation Time',
     value: 'creationTime',
     comp(marketA, marketB) {
-      return marketB.creationTime.timestamp - marketA.creationTime.timestamp;
+      return marketB.creationTime - marketA.creationTime;
     },
   },
 ];

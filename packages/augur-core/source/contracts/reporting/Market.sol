@@ -72,8 +72,10 @@ contract Market is Initializable, Ownable, IMarket {
         universe = _universe;
         cash = ICash(_augur.lookup("Cash"));
         warpSync = IWarpSync(_augur.lookup("WarpSync"));
+        require(warpSync != IWarpSync(0));
         affiliateValidator = _affiliateValidator;
         affiliates = IAffiliates(_augur.lookup("Affiliates"));
+        require(affiliates != IAffiliates(0));
         owner = _creator;
         repBondOwner = owner;
         cash.approve(address(_augur), MAX_APPROVAL_AMOUNT);
@@ -86,6 +88,7 @@ contract Market is Initializable, Ownable, IMarket {
         InitialReporterFactory _initialReporterFactory = InitialReporterFactory(_augur.lookup("InitialReporterFactory"));
         participants.push(_initialReporterFactory.createInitialReporter(_augur, _designatedReporterAddress));
         shareToken = IShareToken(_augur.lookup("ShareToken"));
+        require(shareToken != IShareToken(0));
     }
 
     function assessFees() private {

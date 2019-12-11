@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
+import Media from 'react-media';
 
 import { SCALAR } from 'modules/common/constants';
 import MarketOutcomesListOutcome from 'modules/market/containers/market-outcome';
@@ -9,6 +10,7 @@ import SharedStyles from 'modules/market/components/market-orders-positions-tabl
 import HeaderStyles from 'modules/portfolio/components/common/data-table-header.styles.less';
 import { OutcomeFormatted } from 'modules/types';
 import { ToggleExtendButton } from 'modules/common/buttons';
+import { SMALL_MOBILE } from 'modules/common/constants';
 
 interface MarketOutcomesListProps {
   outcomesFormatted: OutcomeFormatted[];
@@ -43,7 +45,7 @@ export default class MarketOutcomesList extends Component<
       popUp,
       marketId,
       toggle,
-      hideOutcomes
+      hideOutcomes,
     } = this.props;
 
     return (
@@ -54,32 +56,77 @@ export default class MarketOutcomesList extends Component<
             {toggle && <ToggleExtendButton toggle={toggle} />}
           </h3>
         )}
-        <div className={classNames(SharedStyles.Table, SharedStyles.Outcomes, {[SharedStyles.HideOutcomes]: hideOutcomes})}>
+        <div
+          className={classNames(SharedStyles.Table, SharedStyles.Outcomes, {
+            [SharedStyles.HideOutcomes]: hideOutcomes,
+          })}
+        >
           <ul
             className={classNames(
               HeaderStyles.DataTableHeader,
               HeaderStyles.OutcomesHeader
             )}
           >
-            <li>Outcome</li>
-            <li>Bid Qty</li>
-            <li>Best Bid</li>
-            <li>Best Ask</li>
-            <li>Ask Qty</li>
-            <li>Last Price</li>
+            <Media query={SMALL_MOBILE}>
+              {matches =>
+                matches ? (
+                  <>
+                    <li>Outcome</li>
+                    <li>
+                      Bid
+                      <br />
+                      Qty
+                    </li>
+                    <li>
+                      Best
+                      <br />
+                      Bid
+                    </li>
+                    <li>
+                      Best
+                      <br />
+                      Ask
+                    </li>
+                    <li>
+                      Ask
+                      <br />
+                      Qty
+                    </li>
+                    <li>
+                      Last
+                      <br />
+                      Price
+                    </li>
+                  </>
+                ) : (
+                  <>
+                    <li>Outcome</li>
+                    <li>Bid Qty</li>
+                    <li>Best Bid</li>
+                    <li>Best Ask</li>
+                    <li>Ask Qty</li>
+                    <li>Last Price</li>
+                  </>
+                )
+              }
+            </Media>
           </ul>
           <div>
-            {outcomesFormatted.filter(o => o.isTradeable).map(outcome => (
-              <MarketOutcomesListOutcome
-                key={outcome.id}
-                marketId={marketId}
-                outcome={outcome}
-                selectedOutcomeId={selectedOutcomeId}
-                updateSelectedOutcome={updateSelectedOutcome}
-                marketType={marketType}
-                scalarDenomination={marketType === SCALAR && scalarDenomination}
-              />
-            ))}
+            {outcomesFormatted
+              .filter(o => o.isTradeable)
+              .map(outcome => (
+                <MarketOutcomesListOutcome
+                  key={outcome.id}
+                  marketId={marketId}
+                  outcome={outcome}
+                  selectedOutcomeId={selectedOutcomeId}
+                  updateSelectedOutcome={updateSelectedOutcome}
+                  marketType={marketType}
+                  scalarDenomination={
+                    marketType === SCALAR && scalarDenomination
+                  }
+                />
+              ))}
           </div>
         </div>
       </section>

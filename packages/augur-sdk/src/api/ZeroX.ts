@@ -4,8 +4,6 @@ import {
   ValidationResults,
   WSClient,
 } from '@0x/mesh-rpc-client';
-import { signatureUtils } from '@0x/order-utils';
-import { Web3ProviderEngine } from '@0x/subproviders';
 import { SignatureType, SignedOrder } from '@0x/types';
 import { Event } from '@augurproject/core/build/libraries/ContractInterfaces';
 import { BigNumber } from 'bignumber.js';
@@ -20,8 +18,6 @@ import {
   numTicksToTickSizeWithDisplayPrices,
   QUINTILLION,
 } from '../utils';
-import { ProviderSubprovider } from '../zeroX/ProviderSubprovider';
-import { SignerSubprovider } from '../zeroX/SignerSubprovider';
 import { Augur } from './../Augur';
 import {
   NativePlaceTradeDisplayParams,
@@ -121,7 +117,6 @@ export class ZeroX {
   private readonly augur: Augur;
   private readonly meshClient: WSClient;
   private readonly browserMesh: BrowserMesh;
-  private readonly providerEngine: Web3ProviderEngine;
 
   constructor(augur: Augur, meshClient?: WSClient, browserMesh?: BrowserMesh) {
     if (!(browserMesh || meshClient)) {
@@ -134,13 +129,6 @@ export class ZeroX {
     if (this.browserMesh) {
       this.browserMesh.startAsync();
     }
-
-    this.providerEngine = new Web3ProviderEngine();
-    this.providerEngine.addProvider(new SignerSubprovider(this.augur.signer));
-    this.providerEngine.addProvider(
-      new ProviderSubprovider(this.augur.provider)
-    );
-    this.providerEngine.start();
   }
 
   async subscribeToMeshEvents(
