@@ -27,10 +27,12 @@ contract RepPriceOracle is IRepPriceOracle, Initializable {
     uint256 public genesisInitialRepPriceinAttoCash = 9 * 10**18;
 
     function initialize(IAugur _augur) public beforeInitialized {
+        endInitialization();
         augur = _augur;
         cash = _augur.lookup("Cash");
+        require(cash != address(0));
         uniswapFactory = IUniswapV2Factory(_augur.lookup("UniswapV2Factory"));
-        endInitialization();
+        require(uniswapFactory != IUniswapV2Factory(0));
     }
 
     // TODO: Consider when this should be called other than when the price is requested as part of new fee setting
