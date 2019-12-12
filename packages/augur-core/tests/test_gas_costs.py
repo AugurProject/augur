@@ -31,7 +31,7 @@ CLAIM_PROCEEDS_CATEGORICAL_MARKET = 1121349
 # Other
 UNIVERSE_CREATE =   6780628
 
-#pytestmark = mark.skip(reason="Just for testing gas cost")
+pytestmark = mark.skip(reason="Just for testing gas cost")
 
 def test_universe_creation(localFixture, augur, market, universe):
     proceedToFork(localFixture, market, universe)
