@@ -928,25 +928,6 @@ describe('State API :: Accounts :: ', () => {
     ]);
   });
 
-  test(':getAllOrders', async () => {
-    let allOrders: AllOrders = await api.route('getAllOrders', {
-      account: john.account.publicKey,
-    });
-    await expect(Object.keys(allOrders).length).toEqual(8);
-
-    allOrders = await api.route('getAllOrders', {
-      account: john.account.publicKey,
-      makerTaker: 'either',
-    });
-    await expect(Object.keys(allOrders).length).toEqual(8);
-
-    allOrders = await api.route('getAllOrders', {
-      account: john.account.publicKey,
-      filterFinalized: true,
-    });
-    await expect(Object.keys(allOrders).length).toEqual(5);
-  });
-
   test(':getUserCurrentDisputeStake', async () => {
     // Create market, do an initial report, and then dispute to multiple outcomes and multiple times
     const johnYesNoMarket = await john.createReasonableYesNoMarket();
@@ -992,7 +973,7 @@ describe('State API :: Accounts :: ', () => {
         account: ACCOUNTS[0].publicKey,
       }
     );
-    
+
     await expect(userCurrentDisputeStake).toContainEqual({
       outcome: "0",
       isInvalid: true,
