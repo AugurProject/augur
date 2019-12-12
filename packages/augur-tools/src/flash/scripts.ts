@@ -1129,6 +1129,26 @@ export function addScripts(flash: FlashSession) {
   }});
 
   flash.addScript({
+    name: 'get-safe-nonce',
+    options: [
+      {
+        name: 'target',
+        abbr: 't',
+        description: 'address to check registry contract for the safe address.',
+      },
+    ],
+    async call(
+      this: FlashSession,
+      args: FlashArguments
+    ): Promise<void> {
+      if (this.noProvider()) return null;
+      const user = await this.ensureUser(this.network, false);
+      const gnosisSafe = await user.augur.contracts.gnosisSafeFromAddress(args['target'] as string);
+
+      console.log(await gnosisSafe.nonce_());
+  }});
+
+  flash.addScript({
     name: '0x-docker',
     async call(this: FlashSession) {
       if (this.noProvider()) return null;
