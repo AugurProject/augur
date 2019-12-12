@@ -1424,6 +1424,7 @@ describe('State API :: Markets :: ', () => {
       await (await db).sync(john.augur, CHUNK_SIZE, 0);
       const orderBook = (await api.route('getMarketOrderBook', {
         marketId: yesNoMarket.address,
+        account: john.account.publicKey,
       })) as MarketOrderBook;
 
       expect(orderBook).toEqual({
