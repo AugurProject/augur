@@ -92,7 +92,7 @@ describe('State API :: Accounts :: ', () => {
             yesNoMarket1,
           yesPayoutSet
         );
-        await mary.contribute(market, yesPayoutSet, remainingToFill);
+        if (remainingToFill.gte(0)) await mary.contribute(market, yesPayoutSet, remainingToFill);
       } else {
         await john.contribute(
             yesNoMarket1,
@@ -103,7 +103,7 @@ describe('State API :: Accounts :: ', () => {
             yesNoMarket1,
           noPayoutSet
         );
-        await john.contribute(yesNoMarket1, noPayoutSet, remainingToFill);
+        if (remainingToFill.gte(0)) await john.contribute(yesNoMarket1, noPayoutSet, remainingToFill);
       }
     }
 
@@ -185,7 +185,7 @@ describe('State API :: Accounts :: ', () => {
             account: ACCOUNTS[1].publicKey,
         }
     );
-    expect(accountRepStakeSummary.repWinnings).toEqual("839233398437500002");
+    expect(accountRepStakeSummary.repWinnings).toEqual("839233501409956566");
     expect(accountRepStakeSummary.reporting.contracts.length).toEqual(0);
     expect(accountRepStakeSummary.disputing.contracts.length).toEqual(1);
     expect(accountRepStakeSummary.disputing.contracts[0].isClaimable).toEqual(true);

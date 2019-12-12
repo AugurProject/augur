@@ -314,7 +314,9 @@ describe('State API :: Users :: ', () => {
           johnYesNoMarket,
           yesPayoutSet
         );
-        await mary.contribute(market, yesPayoutSet, remainingToFill);
+        if (remainingToFill.gte(0)) {
+          await mary.contribute(market, yesPayoutSet, remainingToFill);
+        }
       } else {
         await john.contribute(
           johnYesNoMarket,
@@ -325,7 +327,9 @@ describe('State API :: Users :: ', () => {
           johnYesNoMarket,
           noPayoutSet
         );
-        await john.contribute(johnYesNoMarket, noPayoutSet, remainingToFill);
+        if (remainingToFill.gte(0)) {
+          await john.contribute(johnYesNoMarket, noPayoutSet, remainingToFill);
+        }
       }
     }
 
@@ -670,7 +674,9 @@ describe('State API :: Users :: ', () => {
           johnYesNoMarket2,
           yesPayoutSet
         );
-        await mary.contribute(market, yesPayoutSet, remainingToFill);
+        if (remainingToFill.gte(0)) {
+          await mary.contribute(market, yesPayoutSet, remainingToFill);
+        }
       } else {
         await john.contribute(
           johnYesNoMarket2,
@@ -681,7 +687,9 @@ describe('State API :: Users :: ', () => {
           johnYesNoMarket2,
           noPayoutSet
         );
-        await john.contribute(johnYesNoMarket2, noPayoutSet, remainingToFill);
+        if (remainingToFill.gte(0)) {
+          await john.contribute(johnYesNoMarket2, noPayoutSet, remainingToFill);
+        }
       }
     }
 
@@ -727,7 +735,6 @@ describe('State API :: Users :: ', () => {
       universe: universe.address,
       account: ACCOUNTS[0].publicKey,
     });
-    // console.log("stats3", stats);
     expect(stats).toMatchObject({
       marketsCreated: 6,
       marketsTraded: 6,
@@ -826,7 +833,6 @@ describe('State API :: Users :: ', () => {
     await expect(Number.parseFloat(thirtyDayPLSummary.realized)).toEqual(trades[3].realizedPL);
     await expect(Number.parseFloat(thirtyDayPLSummary.unrealized)).toEqual(0.5);
     await expect(Number.parseFloat(thirtyDayPLSummary.frozenFunds)).toEqual(9.5);
-
   });
 
   test(':getUserTradingPositions binary-1', async () => {
