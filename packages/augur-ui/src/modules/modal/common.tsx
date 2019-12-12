@@ -619,7 +619,7 @@ export class MarketReview extends Component<
           <div>
             <p>Event Expiration</p>
             <div>{endTime.formattedUtc}</div>
-            <div>{endTime.formattedLocalTimezone}</div>
+            <div>{endTime.formattedLocalShortDateTimeWithTimezone}</div>
           </div>
         )}
       </section>
