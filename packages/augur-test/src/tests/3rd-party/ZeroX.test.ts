@@ -164,7 +164,43 @@ describe('3rd Party :: ZeroX :: ', () => {
       toEqual(expirationTime.toString());
   }, 120000);
 
-  test('ZeroX Trade :: placeTrade', async () => {
+  test('State API :: ZeroX :: getOrders :: Poor', async () => {
+    // Create a market
+    const market = await john.createReasonableMarket([
+      stringTo32ByteHex('A'),
+      stringTo32ByteHex('B'),
+    ]);
+    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+
+    // Give John enough cash to pay for the 0x order.
+    await john.faucet(new BigNumber(1e22));
+
+    // Place an order
+    const direction = 0;
+    const outcome = 0;
+    const displayPrice = new BigNumber(.22);
+    const kycToken = '0x000000000000000000000000000000000000000C';
+    const expirationTime = new BigNumber(new Date().valueOf()).plus(1000000);
+    await expect(john.placeZeroXOrder({
+        direction,
+        market: market.address,
+        numTicks: await market.getNumTicks_(),
+        numOutcomes: 3,
+        outcome,
+        tradeGroupId: '42',
+        fingerprint: formatBytes32String('11'),
+        kycToken,
+        doNotCreateOrders: false,
+        displayMinPrice: new BigNumber(0),
+        displayMaxPrice: new BigNumber(1),
+        displayAmount: new BigNumber(1e20), // insane amount
+        displayPrice,
+        displayShares: new BigNumber(0),
+        expirationTime,
+      })).rejects.toThrow();
+  }, 120000);
+
+  test.skip('ZeroX Trade :: placeTrade', async () => {
     // Give John enough cash to pay for the 0x order.
     await john.faucet(new BigNumber(1e22));
 
@@ -201,7 +237,7 @@ describe('3rd Party :: ZeroX :: ', () => {
     await expect(maryShares.toNumber()).toEqual(10 ** 16 / 2);
   });
 
-  test('Trade :: simulateTrade', async () => {
+  test.skip('Trade :: simulateTrade', async () => {
     // Give John enough cash to pay for the 0x order.
     await john.faucet(new BigNumber(1e22));
 
