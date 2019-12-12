@@ -17,7 +17,7 @@ contract DisputeCrowdsourcerFactory is CloneFactory, IDisputeCrowdsourcerFactory
         IMarket _market = IMarket(msg.sender);
         require(_augur.isKnownMarket(_market), "DisputeCrowdsourcerFactory: Market specified is unrecognized by Augur");
         IDisputeCrowdsourcer _disputeCrowdsourcer = IDisputeCrowdsourcer(createClone(_augur.lookup("DisputeCrowdsourcer")));
-        _disputeCrowdsourcer.initialize(_augur, _market, _size, _payoutDistributionHash, _payoutNumerators, _augur.lookup("ERC1820Registry"), _crowdsourcerGeneration);
+        _disputeCrowdsourcer.initialize(_augur, _market, _size, _payoutDistributionHash, _payoutNumerators, _crowdsourcerGeneration);
         return _disputeCrowdsourcer;
     }
 }

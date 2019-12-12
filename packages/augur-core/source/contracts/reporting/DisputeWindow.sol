@@ -34,7 +34,7 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow, Ca
     uint256 public windowId;
     uint256 public duration;
 
-    function initialize(IAugur _augur, IUniverse _universe, uint256 _disputeWindowId, bool _participationTokensEnabled, uint256 _duration, uint256 _startTime, address _erc1820RegistryAddress) public beforeInitialized {
+    function initialize(IAugur _augur, IUniverse _universe, uint256 _disputeWindowId, bool _participationTokensEnabled, uint256 _duration, uint256 _startTime) public beforeInitialized {
         endInitialization();
         augur = _augur;
         universe = _universe;
@@ -46,8 +46,6 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow, Ca
         require(buyParticipationTokens != address(0));
         startTime = _startTime;
         participationTokensEnabled = _participationTokensEnabled;
-        erc1820Registry = IERC1820Registry(_erc1820RegistryAddress);
-        initialize1820InterfaceImplementations();
 
         initializeCashSender(_augur.lookup("DaiVat"), address(cash));
     }
@@ -127,7 +125,7 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow, Ca
         uint256 _cashBalance = cash.balanceOf(address(this));
 
         // Burn tokens and send back REP
-        uint256 _supply = totalSupply();
+        uint256 _supply = totalSupply;
         burn(_account, _attoParticipationTokens);
         require(getReputationToken().transfer(_account, _attoParticipationTokens));
 
@@ -203,10 +201,10 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow, Ca
     }
 
     function onMint(address _target, uint256 _amount) internal {
-        augur.logParticipationTokensMinted(universe, _target, _amount, totalSupply(), balances[_target]);
+        augur.logParticipationTokensMinted(universe, _target, _amount, totalSupply, balances[_target]);
     }
 
     function onBurn(address _target, uint256 _amount) internal {
-        augur.logParticipationTokensBurned(universe, _target, _amount, totalSupply(), balances[_target]);
+        augur.logParticipationTokensBurned(universe, _target, _amount, totalSupply, balances[_target]);
     }
 }

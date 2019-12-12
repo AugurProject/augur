@@ -22,7 +22,7 @@ contract OICash is VariableSupplyToken, Initializable, IOICash, CashSender {
 
     uint256 private constant MAX_APPROVAL_AMOUNT = 2 ** 256 - 1;
 
-    function initialize(IAugur _augur, IUniverse _universe, address _erc1820RegistryAddress) external beforeInitialized {
+    function initialize(IAugur _augur, IUniverse _universe) external beforeInitialized {
         endInitialization();
         augur = _augur;
         cash = ICash(_augur.lookup("Cash"));
@@ -30,8 +30,6 @@ contract OICash is VariableSupplyToken, Initializable, IOICash, CashSender {
         shareToken = IShareToken(_augur.lookup("ShareToken"));
         require(shareToken != IShareToken(0));
         universe = _universe;
-        erc1820Registry = IERC1820Registry(_erc1820RegistryAddress);
-        initialize1820InterfaceImplementations();
 
         initializeCashSender(_augur.lookup("DaiVat"), _augur.lookup("Cash"));
     }

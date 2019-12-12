@@ -107,8 +107,8 @@ contract OldLegacyReputationToken is DelegationTarget, ITyped, Initializable, Va
     }
 
     function transferFrom(address _from, address _to, uint _value) public whenNotMigratingFromLegacy returns (bool) {
-        require(_value <= _allowances[_from][msg.sender], "Not enough funds allowed");
-        _allowances[_from][msg.sender] = _allowances[_from][msg.sender].sub(_value);
+        require(_value <= allowances[_from][msg.sender], "Not enough funds allowed");
+        allowances[_from][msg.sender] = allowances[_from][msg.sender].sub(_value);
         balances[_from] = balances[_from].sub(_value);
         balances[_to] = balances[_to].add(_value);
         emit Transfer(_from, _to, _value);
@@ -117,22 +117,26 @@ contract OldLegacyReputationToken is DelegationTarget, ITyped, Initializable, Va
 
     function trustedUniverseTransfer(address _source, address _destination, uint256 _attotokens) public whenNotMigratingFromLegacy returns (bool) {
         require(IUniverse(msg.sender) == universe);
-        return internalNoHooksTransfer(_source, _destination, _attotokens);
+        _transfer(_source, _destination, _attotokens);
+        return true;
     }
 
     function trustedMarketTransfer(address _source, address _destination, uint256 _attotokens) public whenNotMigratingFromLegacy returns (bool) {
         require(universe.isContainerForMarket(IMarket(msg.sender)));
-        return internalNoHooksTransfer(_source, _destination, _attotokens);
+        _transfer(_source, _destination, _attotokens);
+        return true;
     }
 
     function trustedReportingParticipantTransfer(address _source, address _destination, uint256 _attotokens) public whenNotMigratingFromLegacy returns (bool) {
         require(universe.isContainerForReportingParticipant(IReportingParticipant(msg.sender)));
-        return internalNoHooksTransfer(_source, _destination, _attotokens);
+        _transfer(_source, _destination, _attotokens);
+        return true;
     }
 
     function trustedDisputeWindowTransfer(address _source, address _destination, uint256 _attotokens) public whenNotMigratingFromLegacy returns (bool) {
         require(universe.isContainerForDisputeWindow(IDisputeWindow(msg.sender)));
-        return internalNoHooksTransfer(_source, _destination, _attotokens);
+        _transfer(_source, _destination, _attotokens);
+        return true;
     }
 
     function assertReputationTokenIsLegitChild(IReputationToken _shadyReputationToken) private view {
@@ -214,7 +218,7 @@ contract OldLegacyReputationToken is DelegationTarget, ITyped, Initializable, Va
 
         mint(_holder, amount);
 
-        if (targetSupply == supply) {
+        if (targetSupply == totalSupply) {
             isMigratingFromLegacy = false;
         }
         return true;

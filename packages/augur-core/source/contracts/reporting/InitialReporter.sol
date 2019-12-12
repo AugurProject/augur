@@ -1,6 +1,5 @@
 pragma solidity 0.5.10;
 
-import 'ROOT/libraries/IERC1820Registry.sol';
 import 'ROOT/libraries/Initializable.sol';
 import 'ROOT/reporting/IInitialReporter.sol';
 import 'ROOT/reporting/IMarket.sol';

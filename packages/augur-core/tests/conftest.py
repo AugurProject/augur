@@ -525,12 +525,9 @@ class ContractsFixture:
         self.uploadAndAddToAugur("../source/contracts/uniswap/UniswapV2Factory.sol", constructorArgs=["", 1])
 
     def initializeAllContracts(self):
-        coreContractsToInitialize = ['Time','LegacyReputationToken','GnosisSafeRegistry','ShareToken','WarpSync','RepPriceOracle']
+        coreContractsToInitialize = ['Time','GnosisSafeRegistry','ShareToken','WarpSync','RepPriceOracle']
         for contractName in coreContractsToInitialize:
-            if getattr(self.contracts[contractName], "initializeERC1820", None):
-                self.contracts[contractName].initializeERC1820(self.contracts['Augur'].address)
-            elif getattr(self.contracts[contractName], "initialize", None):
-                print('Initializing ' + contractName)
+            if getattr(self.contracts[contractName], "initialize", None):
                 self.contracts[contractName].initialize(self.contracts['Augur'].address)
             else:
                 raise "contract has no 'initialize' method on it."
@@ -719,11 +716,6 @@ def kitchenSinkSnapshot(fixture, augurInitializedSnapshot):
     fixture.uploadAndAddToAugur("solidity_test_helpers/Constants.sol")
     fixture.contracts['DaiPot'].setDSR(1000000564701133626865910626) # 5% a day
 
-    tokensFail = fixture.upload("solidity_test_helpers/ERC777Fail.sol")
-    erc1820Registry = fixture.contracts['ERC1820Registry']
-    erc1820Registry.setInterfaceImplementer(fixture.accounts[0], erc1820Registry.interfaceHash("ERC777TokensSender"), tokensFail.address)
-    erc1820Registry.setInterfaceImplementer(fixture.accounts[0], erc1820Registry.interfaceHash("ERC777TokensRecipient"), tokensFail.address)
-
     snapshot = fixture.createSnapshot()
     snapshot['universe'] = universe
     snapshot['cash'] = cash
@@ -733,7 +725,6 @@ def kitchenSinkSnapshot(fixture, augurInitializedSnapshot):
     snapshot['categorical8Market'] = categorical8Market
     snapshot['scalarMarket'] = scalarMarket
     snapshot['reputationToken'] = fixture.applySignature('ReputationToken', universe.getReputationToken())
-    snapshot['tokensFail'] = tokensFail
     return snapshot
 
 @pytest.fixture
@@ -773,9 +764,6 @@ def scalarMarket(kitchenSinkFixture, kitchenSinkSnapshot):
 def reputationToken(kitchenSinkFixture, kitchenSinkSnapshot):
     return kitchenSinkFixture.applySignature(None, kitchenSinkSnapshot['reputationToken'].address, kitchenSinkSnapshot['reputationToken'].abi)
 
-@pytest.fixture
-def tokensFail(kitchenSinkFixture, kitchenSinkSnapshot):
-    return kitchenSinkFixture.applySignature(None, kitchenSinkSnapshot['tokensFail'].address, kitchenSinkSnapshot['tokensFail'].abi)
 
 # TODO: globally replace this with `fixture` and `kitchenSinkSnapshot` as appropriate then delete this
 @pytest.fixture(scope="session")

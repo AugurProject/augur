@@ -18,7 +18,7 @@ contract DisputeWindowFactory is CloneFactory, IDisputeWindowFactory {
         IUniverse _universe = IUniverse(msg.sender);
         require(_augur.isKnownUniverse(_universe), "DisputeWindowFactory: Universe specified is unrecognized by Augur");
         IDisputeWindow _disputeWindow = IDisputeWindow(createClone(_augur.lookup("DisputeWindow")));
-        _disputeWindow.initialize(_augur, _universe, _disputeWindowId, _participationTokensEnabled, _windowDuration, _startTime, _augur.lookup("ERC1820Registry"));
+        _disputeWindow.initialize(_augur, _universe, _disputeWindowId, _participationTokensEnabled, _windowDuration, _startTime);
         return _disputeWindow;
     }
 }
