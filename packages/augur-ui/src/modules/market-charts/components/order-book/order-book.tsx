@@ -78,8 +78,7 @@ class OrderBookSide extends Component<OrderBookSideProps, {}> {
       ? orderBook.asks || []
       : orderBook.bids || [];
 
-    const noPadding = this.side && this.side.scrollHeight !== this.side.clientHeight;
-    const isScrollable = this.side && (orderBookOrders.length * 20) > this.side.clientHeight;
+    const isScrollable = this.side && (orderBookOrders.length * 20) >= this.side.clientHeight;
     return (
       <div
         className={classNames(Styles.Side, { [Styles.Asks]: isAsks, [Styles.Scrollable]: isScrollable })}
@@ -111,7 +110,6 @@ class OrderBookSide extends Component<OrderBookSideProps, {}> {
                 [Styles.AskSide]: isAsks,
                 [Styles.Hover]: isHovered,
                 [Styles.EncompassedHover]: shouldEncompass,
-                [Styles.NoPadding]: noPadding
               })}
               onMouseEnter={() => setHovers(i, type)}
               onMouseLeave={() => setHovers(null, null)}
