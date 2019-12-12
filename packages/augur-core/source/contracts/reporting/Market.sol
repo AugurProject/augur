@@ -755,6 +755,7 @@ contract Market is Initializable, Ownable, IMarket {
      * @return Bool True
      */
     function transferRepBondOwnership(address _newOwner) public returns (bool) {
+        require(_newOwner != address(0));
         require(msg.sender == repBondOwner);
         repBondOwner = _newOwner;
         return true;
