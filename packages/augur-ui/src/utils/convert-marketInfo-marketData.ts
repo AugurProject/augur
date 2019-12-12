@@ -1,4 +1,4 @@
-import { calculatePayoutNumeratorsValue, Getters } from '@augurproject/sdk';
+import { Getters } from '@augurproject/sdk';
 import { MarketData, Consensus, OutcomeFormatted } from 'modules/types';
 import {
   REPORTING_STATE,
@@ -112,7 +112,6 @@ function processOutcomes(
       ? formatNumber(outcome.price, {
           decimals: 2,
           decimalsRounded: 1,
-          denomination: '',
           positiveSign: false,
           zeroStyled: true,
         })
