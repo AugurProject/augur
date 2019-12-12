@@ -516,6 +516,7 @@ class ContractsFixture:
         self.contracts["ZeroXExchange"].registerAssetProxy(zeroXContracts["ERC20Proxy"])
         self.contracts["ERC1155Proxy"].addAuthorizedAddress(zeroXContracts["ZeroXExchange"])
         self.contracts["ERC20Proxy"].addAuthorizedAddress(zeroXContracts["ZeroXExchange"])
+        self.contracts['AugurTrading'].registerContract("ZeroXExchange".ljust(32, '\x00').encode('utf-8'), zeroXContracts["ZeroXExchange"])
         return zeroXContracts
 
     def uploadUniswapContracts(self):

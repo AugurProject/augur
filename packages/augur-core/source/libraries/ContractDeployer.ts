@@ -158,7 +158,7 @@ Deploying to: ${networkConfiguration.networkName}
         // 0x Exchange
         if (externalAddresses.ZeroXExchange) {
             console.log(`Registering 0x Exchange Contract at ${externalAddresses.ZeroXExchange}`);
-            await this.augur!.registerContract(stringTo32ByteHex('ZeroXExchange'), externalAddresses.ZeroXExchange);
+            await this.augurTrading!.registerContract(stringTo32ByteHex('ZeroXExchange'), externalAddresses.ZeroXExchange);
         } else {
             await this.upload0xContracts();
         }
