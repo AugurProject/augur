@@ -796,7 +796,7 @@ def test_gnosis_safe_trade(contractsFixture, augur, cash, market, universe, gnos
     gnosisSafe = contractsFixture.applySignature("GnosisSafe", gnosisSafeAddress)
 
     # First we'll create a signed order
-    rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrderFor(gnosisSafeAddress, BID, fix(2), 60, market.address, YES, nullAddress, expirationTime, zeroXExchange.address, salt)
+    rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrderFor(gnosisSafeAddress, BID, fix(2), 60, market.address, YES, nullAddress, expirationTime, salt)
     
     EIP1271OrderWithHash = ZeroXTrade.encodeEIP1271OrderWithHash(rawZeroXOrderData, orderHash)
     messageHash = gnosisSafe.getMessageHash(EIP1271OrderWithHash)
