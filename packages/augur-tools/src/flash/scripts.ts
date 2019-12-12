@@ -1145,7 +1145,7 @@ export function addScripts(flash: FlashSession) {
       const user = await this.ensureUser(this.network, false);
       const gnosisSafe = await user.augur.contracts.gnosisSafeFromAddress(args['target'] as string);
 
-      console.log(await gnosisSafe.nonce_());
+      console.log((await gnosisSafe.nonce_()).toString());
   }});
 
   flash.addScript({
