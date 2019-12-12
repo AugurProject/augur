@@ -35,6 +35,8 @@ export interface StoredOrder extends OrderData {
   orderHash: string,
   signedOrder: SignedOrder,
   amount: string,
+  orderCreator: string,
+  orderFiller: string,
 }
 
 /**
@@ -105,7 +107,7 @@ export class ZeroXOrders extends AbstractTable {
     const augurOrderData = this.parseAssetData(order.signedOrder.makerAssetData);
     // Currently the API for mesh browser and the client API diverge here but we dont want to do string parsing per order to be compliant for the browser case
     const amount = order.fillableTakerAssetAmount.toFixed();
-    const savedOrder = Object.assign({ signedOrder: order.signedOrder, amount, orderHash: order.orderHash }, augurOrderData);
+    const savedOrder = Object.assign({ orderFiller: order.signedOrder.takerAddress, orderCreator: order.signedOrder.makerAddress, signedOrder: order.signedOrder, amount, orderHash: order.orderHash }, augurOrderData);
     return savedOrder;
   }
 

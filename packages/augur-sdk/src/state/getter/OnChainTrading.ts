@@ -19,6 +19,7 @@ import {
 
 import * as t from "io-ts";
 import Dexie from "dexie";
+import { OrdersFactory } from "../../api/OrdersFactory";
 
 const ZERO = new BigNumber(0);
 
@@ -267,8 +268,7 @@ export class OnChainTrading {
       throw new Error("'getAllOrders' requires an 'account' param be provided");
     }
 
-    const currentOrdersResponse = await db.CurrentOrders.where("orderCreator").equals(params.account).or("orderFiller").equals(params.account).and((log) => log.amount > '0x00').toArray();
-
+    const currentOrdersResponse = await new OrdersFactory().getUserOrders(augur, db, {account: params.account});
     const marketIds = _.map(currentOrdersResponse, 'market');
     const markets = await getMarkets(
       marketIds,
@@ -277,7 +277,7 @@ export class OnChainTrading {
     );
 
     return currentOrdersResponse.reduce(
-      (orders: AllOrders, orderEventDoc: ParsedOrderEventLog) => {
+      (orders: AllOrders, orderEventDoc: any) => {
         const marketDoc = markets[orderEventDoc.market];
         if (!marketDoc) return orders;
         const minPrice = new BigNumber(marketDoc.prices[0]);
