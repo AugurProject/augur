@@ -5,7 +5,7 @@ import { DB } from '@augurproject/sdk/build/state/db/DB';
 import { WSClient } from '@0x/mesh-rpc-client';
 import { Connectors } from '@augurproject/sdk';
 import { API } from '@augurproject/sdk/build/state/getter/API';
-import { stringTo32ByteHex } from '../../libs/Utils';
+import { NULL_ADDRESS, stringTo32ByteHex } from '../../libs/Utils';
 import { ZeroXOrder, ZeroXOrders } from "@augurproject/sdk/build/state/getter/ZeroXOrdersGetters";
 import { sleep } from '@augurproject/core/build/libraries/HelperFunctions';
 import { formatBytes32String } from 'ethers/utils';
@@ -15,22 +15,16 @@ import { JsonRpcProvider } from 'ethers/providers';
 import { Addresses } from '@augurproject/artifacts';
 import { GnosisRelayAPI, GnosisSafeState } from '@augurproject/gnosis-relay-api';
 
-async function calculateSafeAddress(person: ContractAPI, initialPayment=new BigNumber(1e21)) {
-  return person.augur.gnosis.calculateGnosisSafeAddress({
-    owner: person.account.publicKey,
-    payment: initialPayment.toString(),
-    paymentToken: '', // ignored
-    safe: '', // ignored
-  })
-}
-
 async function getOrCreateSafe(person: ContractAPI, initialPayment=new BigNumber(1e21)): Promise<string> {
-  try {
-    const safeResponse = await person.createGnosisSafeViaRelay(person.augur.addresses.Cash);
-    return safeResponse.safe
-  } catch (e) {
-    return person.augur.contracts.gnosisSafeRegistry.getSafe_(person.account.publicKey);
+  const safeFromRegistry = await person.augur.contracts.gnosisSafeRegistry.getSafe_(person.account.publicKey);
+  if(safeFromRegistry !== NULL_ADDRESS) {
+    console.log(`Found safe: ${safeFromRegistry}`);
+    return safeFromRegistry;
   }
+
+  console.log('Attempting to create safe via relay');
+  const safeResponse = await person.createGnosisSafeViaRelay(person.augur.addresses.Cash);
+  return safeResponse.safe
 }
 
 async function getSafeStatus(person: ContractAPI, safe: string) {
