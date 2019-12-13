@@ -3,8 +3,8 @@ import { AbstractTable, BaseDocument } from './AbstractTable';
 import { SyncStatus } from './SyncStatus';
 import { Augur } from '../../Augur';
 import { DB } from './DB';
-import { OrderInfo, OrderEvent } from '@0x/mesh-rpc-client';
-import { getAddress } from "ethers/utils/address";
+import { OrderInfo, OrderEvent, BigNumber } from "@0x/mesh-rpc-client";
+import { getAddress } from 'ethers/utils/address';
 import { SignedOrder } from '@0x/types';
 
 // This database clears its contents on every sync.
@@ -33,8 +33,25 @@ export interface SnapshotCounterDocument extends BaseDocument {
 
 export interface StoredOrder extends OrderData {
   orderHash: string,
-  signedOrder: SignedOrder,
+  signedOrder: StoredSignedOrder,
   amount: string,
+}
+
+export interface StoredSignedOrder {
+  signature: string;
+  senderAddress: string;
+  makerAddress: string;
+  takerAddress: string;
+  makerFee: string;
+  takerFee: string;
+  makerAssetAmount: string;
+  takerAssetAmount: string;
+  makerAssetData: string;
+  takerAssetData: string;
+  salt: string;
+  exchangeAddress: string;
+  feeRecipientAddress: string;
+  expirationTimeSeconds: string;
 }
 
 /**
@@ -51,7 +68,7 @@ export class ZeroXOrders extends AbstractTable {
     networkId: number,
     augur: Augur
   ) {
-    super(networkId, "ZeroXOrders", db.dexieDB);
+    super(networkId, 'ZeroXOrders', db.dexieDB);
     this.syncStatus = db.syncStatus;
     this.stateDB = db;
     this.augur = augur;
@@ -66,7 +83,7 @@ export class ZeroXOrders extends AbstractTable {
   }
 
   async subscribeToMeshEvents(): Promise<void> {
-    return await this.augur.zeroX.subscribeToMeshEvents(this.handleMeshEvent.bind(this));
+    return this.augur.zeroX.subscribeToMeshEvents(this.handleMeshEvent.bind(this));
   }
 
   async handleMeshEvent(orderEvents: OrderEvent[]): Promise<void> {
@@ -74,11 +91,11 @@ export class ZeroXOrders extends AbstractTable {
     let documents = _.map(filteredOrders, this.processOrder.bind(this));
     documents = _.filter(documents, this.validateStoredOrder.bind(this));
     await this.bulkUpsertDocuments(documents);
-    this.augur.getAugurEventEmitter().emit("ZeroXOrders", documents);
+    this.augur.getAugurEventEmitter().emit('ZeroXOrders', documents);
   }
 
   async sync(): Promise<void> {
-    const orders: Array<OrderInfo> = await this.augur.zeroX.getOrders();
+    const orders: OrderInfo[] = await this.augur.zeroX.getOrders();
     let documents;
     if (orders.length > 0) {
       documents = _.filter(orders, this.validateOrder.bind(this));
@@ -86,7 +103,7 @@ export class ZeroXOrders extends AbstractTable {
       documents = _.filter(documents, this.validateStoredOrder.bind(this));
       await this.bulkUpsertDocuments(documents);
     }
-    this.augur.getAugurEventEmitter().emit("ZeroXOrders", {});
+    this.augur.getAugurEventEmitter().emit('ZeroXOrders', {});
   }
 
   validateOrder(order: OrderInfo): boolean {
@@ -104,9 +121,33 @@ export class ZeroXOrders extends AbstractTable {
   processOrder(order: OrderInfo): StoredOrder {
     const augurOrderData = this.parseAssetData(order.signedOrder.makerAssetData);
     // Currently the API for mesh browser and the client API diverge here but we dont want to do string parsing per order to be compliant for the browser case
-    const amount = order.fillableTakerAssetAmount.toFixed();
-    const savedOrder = Object.assign({ signedOrder: order.signedOrder, amount, orderHash: order.orderHash }, augurOrderData);
-    return savedOrder;
+    const signedOrder = order.signedOrder;
+    return {
+      market: augurOrderData.market,
+      price: augurOrderData.price,
+      outcome: augurOrderData.outcome,
+      orderType: augurOrderData.orderType,
+      kycToken: augurOrderData.kycToken,
+      exchange: augurOrderData.exchange,
+      orderHash: order.orderHash,
+      amount: order.fillableTakerAssetAmount.toFixed(),
+      signedOrder: {
+        signature: signedOrder.signature,
+        senderAddress: signedOrder.senderAddress,
+        makerAddress: signedOrder.makerAddress,
+        takerAddress: signedOrder.takerAddress,
+        makerFee: signedOrder.makerFee.toFixed(),
+        takerFee: signedOrder.takerFee.toFixed(),
+        makerAssetAmount: signedOrder.makerAssetAmount.toFixed(),
+        takerAssetAmount: signedOrder.takerAssetAmount.toFixed(),
+        makerAssetData: signedOrder.makerAssetData,
+        takerAssetData: signedOrder.takerAssetData,
+        salt: signedOrder.salt.toFixed(),
+        exchangeAddress: signedOrder.exchangeAddress,
+        feeRecipientAddress: signedOrder.feeRecipientAddress,
+        expirationTimeSeconds: signedOrder.expirationTimeSeconds.toFixed(),
+      },
+    }
   }
 
   parseAssetData(assetData: string): OrderData {

@@ -6,7 +6,7 @@ import { WSClient } from '@0x/mesh-rpc-client';
 import { Connectors } from '@augurproject/sdk';
 import { API } from '@augurproject/sdk/build/state/getter/API';
 import { stringTo32ByteHex } from '../../libs/Utils';
-import { ZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
+import { ZeroXOrder, ZeroXOrders } from "@augurproject/sdk/build/state/getter/ZeroXOrdersGetters";
 import { sleep } from '@augurproject/core/build/libraries/HelperFunctions';
 import { formatBytes32String } from 'ethers/utils';
 import * as _ from 'lodash';
@@ -155,13 +155,13 @@ describe('3rd Party :: ZeroX :: ', () => {
     const orders: ZeroXOrders = await api.route('getZeroXOrders', {
       marketId: market.address,
     });
-    const order = _.values(orders[market.address][0]['0'])[0];
+    const order: ZeroXOrder = _.values(orders[market.address][0]['0'])[0];
     await expect(order).not.toBeUndefined();
     await expect(order.price).toEqual('0.22');
     await expect(order.amount).toEqual('1');
     await expect(order.kycToken).toEqual(kycToken);
-    await expect(order.expirationTimeSeconds).
-      toEqual(expirationTime.toString());
+    await expect(order.expirationTimeSeconds.toString()).
+      toEqual(expirationTime.toFixed());
   }, 120000);
 
   test('State API :: ZeroX :: getOrders :: Poor', async () => {

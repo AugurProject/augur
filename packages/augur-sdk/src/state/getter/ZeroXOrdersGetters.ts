@@ -1,19 +1,19 @@
-import { sortOptions } from "./types";
-import { DB } from "../db/DB";
-import * as _ from "lodash";
+import { sortOptions } from './types';
+import { DB } from '../db/DB';
+import * as _ from 'lodash';
 import {
   Augur,
   convertOnChainAmountToDisplayAmount,
   convertOnChainPriceToDisplayPrice,
   numTicksToTickSize,
-} from "../../index";
-import { BigNumber } from "bignumber.js";
-import { Getter } from "./Router";
-import { OrderState, Order } from "./OnChainTrading";
-import { StoredOrder } from "../db/ZeroXOrders";
+} from '../../index';
+import { BigNumber } from 'bignumber.js';
+import { Getter } from './Router';
+import { OrderState, Order } from './OnChainTrading';
+import { StoredOrder } from '../db/ZeroXOrders';
 import Dexie from 'dexie'
 
-import * as t from "io-ts";
+import * as t from 'io-ts';
 
 export interface ZeroXOrder extends Order {
   expirationTimeSeconds: BigNumber;
@@ -78,12 +78,12 @@ export class ZeroXOrdersGetters {
     }
 
     if (params.matchPrice) {
-      if (!params.orderType) throw new Error("Cannot specify match price without order type");
+      if (!params.orderType) throw new Error('Cannot specify match price without order type');
       const price = new BigNumber(params.matchPrice, 16);
       currentOrdersResponse = _.filter((currentOrdersResponse), (storedOrder) => {
         // 0 == "buy"
         const orderPrice = new BigNumber(storedOrder.price, 16);
-        return params.orderType == "0" ? orderPrice.lte(price) : orderPrice.gte(price);
+        return params.orderType == '0' ? orderPrice.lte(price) : orderPrice.gte(price);
       });
     }
 
@@ -92,7 +92,7 @@ export class ZeroXOrdersGetters {
 
     return currentOrdersResponse.reduce(
       (orders: ZeroXOrders, order: StoredOrder) => {
-        const orderId = order["_id"];
+        const orderId = order['_id'];
         if (params.ignoreOrders && _.includes(params.ignoreOrders, orderId)) return orders;
         const minPrice = new BigNumber(marketDoc.prices[0]);
         const maxPrice = new BigNumber(marketDoc.prices[1]);
@@ -113,7 +113,7 @@ export class ZeroXOrdersGetters {
         ).toString(10);
         const outcome = new BigNumber(order.outcome).toNumber();
         const orderType = new BigNumber(order.orderType).toNumber();
-        let orderState = OrderState.OPEN;
+        const orderState = OrderState.OPEN;
         if (!orders[params.marketId]) orders[params.marketId] = {};
         if (!orders[params.marketId][outcome]) orders[params.marketId][outcome] = {};
         if (!orders[params.marketId][outcome][orderType]) {
@@ -127,13 +127,13 @@ export class ZeroXOrdersGetters {
           amount,
           kycToken: order.kycToken,
           amountFilled,
-          expirationTimeSeconds: order.signedOrder.expirationTimeSeconds,
+          expirationTimeSeconds: new BigNumber(order.signedOrder.expirationTimeSeconds),
           fullPrecisionPrice: price,
           fullPrecisionAmount: amount,
-          originalFullPrecisionAmount: "0",
-          makerAssetAmount: order.signedOrder.makerAssetAmount,
-          takerAssetAmount: order.signedOrder.takerAssetAmount,
-          salt: order.signedOrder.salt,
+          originalFullPrecisionAmount: '0',
+          makerAssetAmount: new BigNumber(order.signedOrder.makerAssetAmount),
+          takerAssetAmount: new BigNumber(order.signedOrder.takerAssetAmount),
+          salt: new BigNumber(order.signedOrder.salt),
           makerAssetData: order.signedOrder.makerAssetData,
           takerAssetData: order.signedOrder.takerAssetData,
           signature: order.signedOrder.signature
