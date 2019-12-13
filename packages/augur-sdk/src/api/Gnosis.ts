@@ -40,9 +40,6 @@ export interface GnosisSafeStatusPayload
   txHash?: string;
 }
 
-// TODO remove when onBlock event works - see #4809
-let intervalId = null;
-
 export class Gnosis {
   constructor(
     private readonly provider: Provider,
@@ -116,7 +113,6 @@ export class Gnosis {
 
       // Clear the "watch" when we reach a terminal safe state.
       if ([GnosisSafeState.AVAILABLE, GnosisSafeState.ERROR].includes(status.status)) {
-        clearInterval(intervalId); // No need to poll blocks anymore
         this.safesToCheck = this.safesToCheck.filter(r => s.safe !== r.safe);
       }
     }
