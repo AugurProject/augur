@@ -660,6 +660,7 @@ export default class MarketView extends Component<
                                   toggle={this.toggleTradeHistory}
                                   extend={extendTradeHistory}
                                   hide={extendOrderBook}
+                                  marketType={market.marketType}
                                 />
                               )}
                             </div>
@@ -988,6 +989,7 @@ export default class MarketView extends Component<
                             outcome={outcomeId}
                             toggle={this.toggleTradeHistory}
                             extend={extendTradeHistory}
+                            marketType={market.marketType}
                             hide={extendOrderBook}
                             tradingTutorial={tradingTutorial}
                             groupedTradeHistory={market.groupedTradeHistory}

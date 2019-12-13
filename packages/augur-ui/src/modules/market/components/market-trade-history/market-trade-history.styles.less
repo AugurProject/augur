@@ -15,94 +15,68 @@
     flex-direction: column;
     flex-grow: 1;
     overflow: overlay;
-    overflow-y: auto;
     max-height: 50vh;
   }
 }
 
 .TradeHistoryTable {
-  > ul:first-of-type {
-    background-color: fade(@color-module-background, 70%);
-    color: @color-inactive-text;
-    display: flex;
-    width: 100%;
-    top: 0;
-    z-index: @above-all-content;
+  display: flex;
+  flex-flow: column nowrap;
 
-    > li {
-      display: table-cell;
-      padding-bottom: @size-6;
-      padding-top: @size-6;
-      text-align: right;
-
-      &:first-child {
-        .mono-9-bold;
-
-        padding-left: @size-16;
-        text-align: left;
-        text-transform: uppercase;
-      }
-
-      &:nth-of-type(2) {
-        .mono-9;
-
-        margin: 0 @size-4;
-      }
-
-      &:last-child {
-        .mono-9;
-        
-        padding-right: @size-24;
-      }
-    }
+  &:not(:first-of-type) {
+    border-top: 2px solid @color-dark-grey;
   }
 
-  > ul:not(:first-of-type) {
-    .mono-9;
+  > span {
+    .mono-10-bold;
 
-    background-color: @color-module-background;
-    color: @color-primary-text;
-    display: flex;
-    position: relative;
+    color: fade(@color-secondary-text, 75%);
+    height: 100%;
+    max-height: @size-20;
+    min-height: @size-20;
+    padding: @size-4 @size-8;
+    text-transform: uppercase;
     width: 100%;
+  }
 
-    > li {
-      padding-bottom: @size-6;
-      padding-top: @size-6;
+  > ul {
+    .mono-10-medium;
 
-      &:first-of-type {
-        background-color: @color-positive;
-        width: 1px;
+    align-items: center;
+    height: @size-20;
+    max-height: @size-20;
+    min-height: @size-20;
+    margin-bottom: 1px;
+    border-left: 1px solid @color-positive;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto;
+    grid-gap: 0 @size-16;
 
-        &.Neg {
-          background-color: @color-negative;
-        }
+    &.Sell {
+      border-left: 1px solid @color-negative;
+
+      > li:nth-of-type(2) {
+        color: @color-negative;
       }
+    }
 
-      &:first-child {
-        text-align: left;
-        margin-bottom: 1px;
-      }
+    > li:first-of-type {
+      color: @color-primary-text;
+      margin-left: auto;
+      text-align: right;
+    }
 
-      &:nth-child(2) {
-        color: @color-primary-text;
-        flex: 1;
-        justify-content: right;
-        padding-left: @size-10;
-      }
+    > li:nth-of-type(2) {
+      color: @color-positive;
+      text-align: right;
+    }
 
-      &:nth-child(3) {
-        flex: 1;
-        justify-content: right;
-        padding-left: @size-16;
-      }
-
-      &:last-child {
-        color: @color-primary-text;
-        opacity: 0.8;
-        padding-right: @size-16;
-        text-align: right;
-      }
+    > li:last-of-type {
+      color: fade(@color-secondary-text, 80%);
+      text-align: right;
+      padding-right: @size-16;
     }
   }
 }
@@ -115,22 +89,14 @@
   position: relative;
 }
 
-.Buy {
-  color: @color-positive;
-}
-
-.Sell {
-  color: @color-negative;
-}
-
 .Up {
-  border-bottom-color: fade(@color-positive, 50%);
-  border-width: 0 3.5px @size-6;
+  border-bottom-color: fade(@color-secondary-text, 50%);
+  border-width: 0 @size-4 @size-5;
   top: -@size-8;
 }
 
 .Down {
-  border-top-color: fade(@color-negative, 50%);
-  border-width: @size-6 3.5px 0;
+  border-top-color: fade(@color-secondary-text, 50%);
+  border-width: @size-5 @size-4 0;
   top: @size-9
 }
