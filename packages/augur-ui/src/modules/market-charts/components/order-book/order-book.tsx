@@ -3,7 +3,7 @@ import classNames from 'classnames';
 
 import OrderHeader from 'modules/market-charts/components/order-header/order-header';
 import { HoverValueLabel } from 'modules/common/labels';
-import { ASKS, BIDS, BUY, SELL } from 'modules/common/constants';
+import { ASKS, BIDS, BUY, SELL, SCALAR, BINARY_CATEGORICAL_SHARE_OPTIONS } from 'modules/common/constants';
 
 import Styles from 'modules/market-charts/components/order-book/order-book.styles.less';
 import { OutcomeOrderBook } from 'modules/types';
@@ -19,6 +19,7 @@ interface OrderBookSideProps {
   pricePrecision: number;
   setHovers: Function;
   type: string;
+  marketType: string;
   scrollToTop: boolean;
   hoveredSide?: string;
   hoveredOrderIndex?: number;
@@ -71,8 +72,10 @@ class OrderBookSide extends Component<OrderBookSideProps, {}> {
       hoveredOrderIndex,
       setHovers,
       type,
+      marketType,
     } = this.props;
     const isAsks = type === ASKS;
+    const opts = marketType === SCALAR ? {} : BINARY_CATEGORICAL_SHARE_OPTIONS;
 
     const orderBookOrders = isAsks
       ? orderBook.asks || []
@@ -129,7 +132,8 @@ class OrderBookSide extends Component<OrderBookSideProps, {}> {
                 />
               </div>
               <HoverValueLabel
-                value={formatShares(order.shares)}
+                value={formatShares(order.shares, opts)}
+                useFull={true}
                 showEmptyDash={true}
                 showDenomination={false}
               />

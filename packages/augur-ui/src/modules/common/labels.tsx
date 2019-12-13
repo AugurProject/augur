@@ -438,11 +438,12 @@ export class HoverValueLabel extends React.Component<
     hover: false,
   };
   render() {
-    if (!this.props.value || this.props.value === null) return <span />;
+    const { value, showDenomination, useFull } = this.props;
+    if (!value || value === null) return <span />;
 
     const expandedValues = formatExpandedValue(
-      this.props.value,
-      this.props.showDenomination,
+      value,
+      showDenomination,
       true,
       '99999'
     );
@@ -472,22 +473,25 @@ export class HoverValueLabel extends React.Component<
       >
         {this.state.hover && postfix.length !== 0 ? (
           <span>
-            <span>
-              {firstHalfFull}
-              {secondHalfFull && '.'}
-            </span>
-            <span>{secondHalfFull}</span>
+            {useFull && value.full}
+            {!useFull && (
+              <span>
+                {firstHalfFull}
+                {secondHalfFull && '.'}
+              </span>
+              <span>{secondHalfFull}</span>
+            )}
           </span>
         ) : (
           <span>
-            <span>
-              {firstHalf}
-              {secondHalf && '.'}
-            </span>
-            <span>
-              {secondHalf}
-              {postfix}
-            </span>
+            {useFull && value.formatted}
+            {!useFull && (
+              <span>
+                {firstHalf}
+                {secondHalf && '.'}
+              </span>
+              <span>{secondHalf} {postfix}</span>
+            )}
           </span>
         )}
       </span>
