@@ -475,22 +475,26 @@ export class HoverValueLabel extends React.Component<
           <span>
             {useFull && value.full}
             {!useFull && (
-              <span>
-                {firstHalfFull}
-                {secondHalfFull && '.'}
-              </span>
-              <span>{secondHalfFull}</span>
+              <>
+                <span>
+                  {firstHalfFull}
+                  {secondHalfFull && '.'}
+                </span>
+                <span>{secondHalfFull}</span>
+              </>
             )}
           </span>
         ) : (
           <span>
             {useFull && value.formatted}
             {!useFull && (
-              <span>
-                {firstHalf}
-                {secondHalf && '.'}
-              </span>
-              <span>{secondHalf} {postfix}</span>
+              <>
+                <span>
+                  {firstHalf}
+                  {secondHalf && '.'}
+                </span>
+                <span>{secondHalf} {postfix}</span>
+              </>
             )}
           </span>
         )}
