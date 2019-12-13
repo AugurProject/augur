@@ -40,12 +40,19 @@ def test_one_bid_on_books_buy_full_order(withSelf, contractsFixture, cash, marke
     assert orders.getBetterOrderId(orderID) == longTo32Bytes(0)
     assert orders.getWorseOrderId(orderID) == longTo32Bytes(0)
 
-def test_one_bid_on_books_buy_partial_order(contractsFixture, cash, market):
+@mark.parametrize('afterMkrShutdown', [
+    True,
+    False
+])
+def test_one_bid_on_books_buy_partial_order(afterMkrShutdown, contractsFixture, cash, market):
     createOrder = contractsFixture.contracts['CreateOrder']
     trade = contractsFixture.contracts['Trade']
     fillOrder = contractsFixture.contracts['FillOrder']
     orders = contractsFixture.contracts['Orders']
     tradeGroupID = longTo32Bytes(42)
+
+    if (afterMkrShutdown):
+        contractsFixture.MKRShutdown()
 
     # create order
     with BuyWithCash(cash, fix('2', '60'), contractsFixture.accounts[1], "create order"):

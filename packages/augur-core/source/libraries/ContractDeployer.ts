@@ -158,7 +158,7 @@ Deploying to: ${networkConfiguration.networkName}
         // 0x Exchange
         if (externalAddresses.ZeroXExchange) {
             console.log(`Registering 0x Exchange Contract at ${externalAddresses.ZeroXExchange}`);
-            await this.augur!.registerContract(stringTo32ByteHex('ZeroXExchange'), externalAddresses.ZeroXExchange);
+            await this.augurTrading!.registerContract(stringTo32ByteHex('ZeroXExchange'), externalAddresses.ZeroXExchange);
         } else {
             await this.upload0xContracts();
         }
@@ -526,8 +526,7 @@ Deploying to: ${networkConfiguration.networkName}
 
     public async initializeLegacyRep(): Promise<void> {
         const legacyReputationToken = new LegacyReputationToken(this.dependencies, this.getContractAddress('LegacyReputationToken'));
-        await legacyReputationToken.initializeERC1820(this.augur!.address);
-        await legacyReputationToken.faucet(new BigNumber(1));
+        await legacyReputationToken.faucet(new BigNumber(11000000).multipliedBy(10**18));
         const defaultAddress = await this.signer.getAddress();
         const legacyBalance = await legacyReputationToken.balanceOf_(defaultAddress);
         if (!legacyBalance || legacyBalance.isEqualTo(0)) {

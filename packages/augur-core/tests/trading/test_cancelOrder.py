@@ -5,11 +5,18 @@ from pytest import raises, mark
 from utils import longTo32Bytes, longToHexString, fix, AssertLog, BuyWithCash, nullAddress
 from constants import BID, ASK, YES, NO
 
-def test_cancelBid(contractsFixture, cash, market, universe):
+@mark.parametrize('afterMkrShutdown', [
+    True,
+    False
+])
+def test_cancelBid(afterMkrShutdown, contractsFixture, cash, market, universe):
     createOrder = contractsFixture.contracts['CreateOrder']
     cancelOrder = contractsFixture.contracts['CancelOrder']
     orders = contractsFixture.contracts['Orders']
     shareToken = contractsFixture.contracts["ShareToken"]
+
+    if (afterMkrShutdown):
+        contractsFixture.MKRShutdown()
 
     orderType = BID
     amount = fix(1)

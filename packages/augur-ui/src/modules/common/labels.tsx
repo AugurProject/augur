@@ -231,7 +231,7 @@ export const TimeLabel = ({ label, time, showLocal, hint }: TimeLabelProps) => {
         )}
       </span>
       <span>{time && time.formattedShortUtc}</span>
-      {showLocal && <span>{time && time.formattedLocalShortDateTimeNoTimezone}</span>}
+      {showLocal && <span>{time && time.formattedLocalShortDateTimeWithTimezone}</span>}
     </div>
   );
 };

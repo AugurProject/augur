@@ -118,12 +118,17 @@
     transition: left 0.2s ease-in-out;
     width: 100%;
     z-index: @mask-above;
+    position: absolute;
+    top: 0;
+    z-index: 100;
+    height: 100vh;
 
     &.mobileShow {
       left: 0;
       width: 100%;
+      padding-bottom: @size-32;
 
-      > div {
+      > div:first-of-type {
         align-items: center;
         background: @color-module-background;
         border-bottom: 1px solid @color-dark-grey;
@@ -147,6 +152,19 @@
 
         > button > svg > path {
           stroke: @color-primary-text;
+        }
+      }
+
+      > div:nth-of-type(2) {
+        padding: 0 @size-10 @size-10;
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: @above-all-content-top-layer;
+
+        > button {
+          width: 100%;
         }
       }
     }
@@ -184,7 +202,6 @@
 
   .InnerNav__menu--main,
   .InnerNav__menu--submenu {
-    height: calc(100vh - 100px);
     overflow-x: hidden;
     overflow-y: auto;
     width: 100%;

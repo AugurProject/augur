@@ -6,7 +6,6 @@ import { ToggleExtendButton } from "modules/common/buttons";
 interface OrderHeaderProps {
   title: string;
   headers: Array<any>;
-  extended: boolean;
   toggle: any;
   hide: boolean;
 }
@@ -14,7 +13,6 @@ interface OrderHeaderProps {
 const OrderHeader = ({
   title,
   headers,
-  extended,
   toggle,
   hide
 }: OrderHeaderProps) => (
@@ -24,17 +22,11 @@ const OrderHeader = ({
       <ToggleExtendButton toggle={toggle} />
     </span>
     {!hide && (
-      <div>
-        <div>
-          {headers[0]}
-        </div>
-        <div>
-          {headers[1]}
-        </div>
-        <div>
-          {headers[2]}
-        </div>
-      </div>
+      <ul>
+        <li>{headers[0]}</li>
+        <li>{headers[1]}</li>
+        <li>{headers[2]}</li>
+      </ul>
     )}
   </section>
 );

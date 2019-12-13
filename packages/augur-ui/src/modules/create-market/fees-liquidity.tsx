@@ -193,7 +193,7 @@ export default class FeesLiquidity extends React.Component<
           title="Initial liquidity"
           filterLabel="orders"
           data={orderBook[s.selectedOutcome] || []}
-          bottomBarContent={<OpenOrdersHeader showTotalCost />}
+          bottomBarContent={<OpenOrdersHeader showTotalCost noRightMargin/>}
           renderRows={this.renderRows}
         />
         <QuadBox

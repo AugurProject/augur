@@ -92,7 +92,7 @@ export class ContractAPI {
     const marketCreationFee = await this.augur.contracts.universe.getOrCacheValidityBond_();
     const repBond = await this.getRepBond();
     await this.faucet(marketCreationFee);
-    await this.repFaucet(repBond);
+    await this.repFaucet(repBond.plus(10**18));
   }
 
   async createReasonableYesNoMarket(): Promise<ContractInterfaces.Market> {

@@ -1,4 +1,4 @@
-import { calculatePayoutNumeratorsValue, Getters } from '@augurproject/sdk';
+import { Getters } from '@augurproject/sdk';
 import { MarketData, Consensus, OutcomeFormatted } from 'modules/types';
 import {
   REPORTING_STATE,
@@ -21,11 +21,6 @@ import {
 import { createBigNumber } from './create-big-number';
 import { keyBy } from './key-by';
 import { getOutcomeNameWithOutcome } from './get-outcome';
-import {
-  ExtraInfoTemplate,
-  ExtraInfoTemplateInput,
-} from '@augurproject/sdk/src/state/logs/types';
-import { isValidTemplateMarket } from 'modules/create-market/get-template';
 
 export function convertMarketInfoToMarketData(
   marketInfo: Getters.Markets.MarketInfo
@@ -112,7 +107,6 @@ function processOutcomes(
       ? formatNumber(outcome.price, {
           decimals: 2,
           decimalsRounded: 1,
-          denomination: '',
           positiveSign: false,
           zeroStyled: true,
         })

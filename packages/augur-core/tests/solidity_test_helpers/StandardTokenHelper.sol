@@ -1,19 +1,13 @@
 pragma solidity ^0.5.10;
 
 import 'ROOT/IAugur.sol';
-import 'ROOT/libraries/token/StandardToken.sol';
+import 'ROOT/libraries/token/ERC20.sol';
 
 
-contract StandardTokenHelper is StandardToken {
-    function initialize(IAugur _augur) public returns (bool) {
-        erc1820Registry = IERC1820Registry(_augur.lookup("ERC1820Registry"));
-        initialize1820InterfaceImplementations();
-        return true;
-    }
-
+contract StandardTokenHelper is ERC20 {
     function faucet(uint256 _amount) public returns (bool) {
         balances[msg.sender] = balances[msg.sender].add(_amount);
-        supply = supply.add(_amount);
+        totalSupply = totalSupply.add(_amount);
         return true;
     }
 

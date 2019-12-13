@@ -20,7 +20,7 @@ const sortByOptions = [
     label: "Market Creation",
     value: "marketCreation",
     comp(marketA, marketB) {
-      return marketB.creationTime.timestamp - marketA.creationTime.timestamp;
+      return marketB.creationTime - marketA.creationTime;
     }
   },
   {

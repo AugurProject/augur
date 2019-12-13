@@ -40,7 +40,6 @@ interface MarketHeaderProps {
   maxPrice: BigNumber;
   minPrice: BigNumber;
   market: MarketData;
-  currentTime: number;
   marketType: string;
   scalarDenomination: string;
   isLogged: boolean;
@@ -70,7 +69,6 @@ export default class MarketHeader extends Component<
   static defaultProps = {
     scalarDenomination: null,
     marketType: null,
-    currentTime: 0,
     isFavorite: false,
     isLogged: false,
     toggleFavorite: () => {},
@@ -141,7 +139,6 @@ export default class MarketHeader extends Component<
       maxPrice,
       scalarDenomination,
       market,
-      currentTime,
       isLogged,
       isFavorite,
       history,
@@ -157,9 +154,9 @@ export default class MarketHeader extends Component<
       marketLinkCopied
     } = this.props;
     let { details } = this.props;
-    const { headerCollapsed } = this.state;
+    const { headerCollapsed, showReadMore, detailsHeight } = this.state;
     const detailsTooLong =
-      market.details && this.state.detailsHeight > OVERFLOW_DETAILS_LENGTH;
+      market.details && detailsHeight > OVERFLOW_DETAILS_LENGTH;
 
     if (marketType === SCALAR) {
       const denomination = scalarDenomination ? ` ${scalarDenomination}` : '';
@@ -228,7 +225,7 @@ export default class MarketHeader extends Component<
                 {preview ? <PreviewMarketTitle market={market} /> : <MarketTitle id={market.marketId} noLink />}
                 {details.length > 0 && (
                   <div className={Styles.Details}>
-                    <h4>Resolution Rules</h4>
+                    <h4>Resolution Details</h4>
                     <div>
                       <label
                         ref={detailsContainer => {
@@ -236,20 +233,19 @@ export default class MarketHeader extends Component<
                         }}
                         className={classNames(Styles.AdditionalDetails, {
                           [Styles.Tall]:
-                            detailsTooLong && this.state.showReadMore,
+                            detailsTooLong && showReadMore,
                         })}
                       >
                         <MarkdownRenderer text={details} hideLabel />
                       </label>
-
                       {detailsTooLong && (
                         <button
                           className={classNames({
-                            [Styles.Less]: this.state.showReadMore,
+                            [Styles.Less]: showReadMore,
                           })}
                           onClick={this.toggleReadMore}
                         >
-                          {!this.state.showReadMore
+                          {!showReadMore
                             ? ChevronDown({ stroke: '#FFFFFF' })
                             : ChevronUp()}
                         </button>

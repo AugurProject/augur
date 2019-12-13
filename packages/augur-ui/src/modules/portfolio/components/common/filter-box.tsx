@@ -95,21 +95,21 @@ const FilterBox: React.FC<FilterBoxProps> = props => {
         comp = (marketA, marketB) => {
           // Not found endTime prop in Market interface
           if (
-            marketA.endTime.timestamp < currentAugurTimestamp &&
-            marketB.endTime.timestamp < currentAugurTimestamp
+            marketA.endTime < currentAugurTimestamp &&
+            marketB.endTime < currentAugurTimestamp
           ) {
-            return marketB.endTime.timestamp - marketA.endTime.timestamp;
+            return marketB.endTime - marketA.endTime;
           }
 
-          if (marketA.endTime.timestamp < currentAugurTimestamp) {
+          if (marketA.endTime < currentAugurTimestamp) {
             return 1;
           }
 
-          if (marketB.endTime.timestamp < currentAugurTimestamp) {
+          if (marketB.endTime < currentAugurTimestamp) {
             return -1;
           }
 
-          return marketA.endTime.timestamp - marketB.endTime.timestamp;
+          return marketA.endTime - marketB.endTime;
         };
       }
 

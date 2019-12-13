@@ -67,7 +67,8 @@ module.exports = {
         test: /\.js$/,
         use: ["source-map-loader"],
         enforce: "pre",
-        include: /@augurproject\/.*/
+        include: /@augurproject\/.*/,
+        exclude: /node_modules\/.*/,
       },
       {
         test: /npm-cli|node-hid/,

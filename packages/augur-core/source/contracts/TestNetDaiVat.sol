@@ -6,6 +6,10 @@ import 'ROOT/external/IDaiVat.sol';
 contract TestNetDaiVat is IDaiVat {
     mapping(address => mapping (address => uint)) public can;
 
+    function cage() external {
+        live = 0;
+    }
+
     function add(uint x, uint y) internal pure returns (uint z) {
         require((z = x + y) >= x);
     }
