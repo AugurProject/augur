@@ -312,7 +312,7 @@ function isDependencyOutcomesCorrect(
 function estimatedDateTimeAfterMarketEndTime(inputs: ExtraInfoTemplateInput[], endTime: number) {
   const input = inputs.find(i => i.type === TemplateInputType.ESTDATETIME);
   if (!input) return false;
-  return Number(input.timestamp) > Number(endTime);
+  return Number(input.timestamp) >= Number(endTime);
 }
 
 function dateStartAfterMarketEndTime(inputs: ExtraInfoTemplateInput[], endTime: number) {
@@ -420,8 +420,8 @@ export const isTemplateMarket = (title, template: ExtraInfoTemplate, outcomes: s
     // verify resolution rules
     const marketResolutionRules = hashResolutionRules(longDescription);
     if (marketResolutionRules !== validation.templateValidationResRules) {
-      // errors.push('hash of resolution details is different than validation resolution rules hash');
-      // return false;
+      errors.push('hash of resolution details is different than validation resolution rules hash');
+      return false;
     }
 
    return true;
