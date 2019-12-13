@@ -42,6 +42,7 @@
   },
   "dependencies": {
     "@analytics/segment": "0.4.0",
+    "@0x/mesh-browser": "7.2.1-beta-0xv3",
     "@0x/order-utils": "8.4.0",
     "@augurproject/sdk": "2.0.0-alpha.2",
     "@augurproject/utils": "2.0.0-alpha.2",

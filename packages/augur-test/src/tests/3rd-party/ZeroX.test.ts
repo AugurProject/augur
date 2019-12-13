@@ -29,7 +29,7 @@ async function getOrCreateSafe(person: ContractAPI, initialPayment=new BigNumber
     const safeResponse = await person.createGnosisSafeViaRelay(person.augur.addresses.Cash);
     return safeResponse.safe
   } catch (e) {
-    return calculateSafeAddress(person, initialPayment);
+    return person.augur.contracts.gnosisSafeRegistry.getSafe_(person.account.publicKey);
   }
 }
 
