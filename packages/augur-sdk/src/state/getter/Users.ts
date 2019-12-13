@@ -217,7 +217,7 @@ export class Users {
         marketTradeHistory = await OnChainTrading.getTradingHistory(augur, db, { marketIds: uniqMarketIds });
       }
 
-      userOpenOrders = await OnChainTrading.getOrders(augur, db, {
+      userOpenOrders = await OnChainTrading.getOpenOrders(augur, db, {
         account: params.account,
         universe: params.universe,
         orderState: OrderState.OPEN,

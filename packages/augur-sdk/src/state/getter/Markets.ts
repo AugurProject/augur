@@ -601,7 +601,7 @@ export class Markets {
     params: t.TypeOf<typeof Markets.getMarketOrderBookParams>
   ): Promise<MarketOrderBook> {
     const account = params.account;
-    const orders = await OnChainTrading.getOrders(augur, db, {
+    const orders = await OnChainTrading.getOpenOrders(augur, db, {
       marketId: params.marketId,
       orderState: OrderState.OPEN,
     });

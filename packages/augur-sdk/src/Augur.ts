@@ -337,9 +337,9 @@ export class Augur<TProvider extends Provider = Provider> {
     return this.bindTo(OnChainTrading.getTradingHistory)(params);
   };
   getTradingOrders = (
-    params: Parameters<typeof OnChainTrading.getOrders>[2]
-  ): ReturnType<typeof OnChainTrading.getOrders> => {
-    return this.bindTo(OnChainTrading.getOrders)(params);
+    params: Parameters<typeof OnChainTrading.getOpenOrders>[2]
+  ): ReturnType<typeof OnChainTrading.getOpenOrders> => {
+    return this.bindTo(OnChainTrading.getOpenOrders)(params);
   };
   getMarketOrderBook = (
     params: Parameters<typeof Markets.getMarketOrderBook>[2]
