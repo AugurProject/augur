@@ -978,7 +978,7 @@ export const WordTrail: React.FC<WordTrailProps> = ({
     {children}
     {items.map(({ label, onClick }, index) => (
       <button
-        key={label}
+        key={`${label}-${index}`}
         data-testid={`${typeLabel}-${index}`}
         className={Styles.WordTrailButton}
         onClick={e => onClick()}
