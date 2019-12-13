@@ -338,7 +338,7 @@ export const ValueLabel = (props: ValueLabelProps) => {
   } = expandedValues;
 
   return (
-    <span className={Styles.ValueLabel}>
+    <span className={classNames(Styles.ValueLabel, {[Styles.DarkDash]: props.value.full === '-'})}>
       <label
         data-tip
         data-for={`valueLabel-${fullPrecision}-${denominationLabel}-${props.keyId}`}
