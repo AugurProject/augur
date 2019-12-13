@@ -14,13 +14,14 @@ import 'ROOT/libraries/math/SafeMathUint256.sol';
 import 'ROOT/reporting/IDisputeWindow.sol';
 import 'ROOT/libraries/token/VariableSupplyToken.sol';
 import 'ROOT/IAugur.sol';
+import 'ROOT/CashSender.sol';
 
 
 /**
  * @title Dispute Window
  * @notice A contract used to encapsulate a window of time in which markets can be disputed as well as the pot where reporting fees are collected and distributed.
  */
-contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow {
+contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow, CashSender {
     using SafeMathUint256 for uint256;
 
     IAugur public augur;
@@ -33,7 +34,7 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow {
     uint256 public windowId;
     uint256 public duration;
 
-    function initialize(IAugur _augur, IUniverse _universe, uint256 _disputeWindowId, bool _participationTokensEnabled, uint256 _duration, uint256 _startTime, address _erc1820RegistryAddress) public beforeInitialized {
+    function initialize(IAugur _augur, IUniverse _universe, uint256 _disputeWindowId, bool _participationTokensEnabled, uint256 _duration, uint256 _startTime) public beforeInitialized {
         endInitialization();
         augur = _augur;
         universe = _universe;
@@ -45,8 +46,8 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow {
         require(buyParticipationTokens != address(0));
         startTime = _startTime;
         participationTokensEnabled = _participationTokensEnabled;
-        erc1820Registry = IERC1820Registry(_erc1820RegistryAddress);
-        initialize1820InterfaceImplementations();
+
+        initializeCashSender(_augur.lookup("DaiVat"), address(cash));
     }
 
     function onMarketFinalized() public {
@@ -124,7 +125,7 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow {
         uint256 _cashBalance = cash.balanceOf(address(this));
 
         // Burn tokens and send back REP
-        uint256 _supply = totalSupply();
+        uint256 _supply = totalSupply;
         burn(_account, _attoParticipationTokens);
         require(getReputationToken().transfer(_account, _attoParticipationTokens));
 
@@ -132,7 +133,7 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow {
         if (_cashBalance != 0) {
             // Pay out fees
             _feePayoutShare = _cashBalance.mul(_attoParticipationTokens).div(_supply);
-            cash.transfer(_account, _feePayoutShare);
+            cashTransfer(_account, _feePayoutShare);
         }
 
         augur.logParticipationTokensRedeemed(universe, _account, _attoParticipationTokens, _feePayoutShare);
@@ -200,10 +201,10 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow {
     }
 
     function onMint(address _target, uint256 _amount) internal {
-        augur.logParticipationTokensMinted(universe, _target, _amount, totalSupply(), balances[_target]);
+        augur.logParticipationTokensMinted(universe, _target, _amount, totalSupply, balances[_target]);
     }
 
     function onBurn(address _target, uint256 _amount) internal {
-        augur.logParticipationTokensBurned(universe, _target, _amount, totalSupply(), balances[_target]);
+        augur.logParticipationTokensBurned(universe, _target, _amount, totalSupply, balances[_target]);
     }
 }

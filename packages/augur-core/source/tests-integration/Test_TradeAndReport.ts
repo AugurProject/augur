@@ -67,7 +67,7 @@ describe('TradeAndReport', () => {
         const childUniverseReputationToken = await fixture.getChildUniverseReputationToken(payoutDistributionHash);
         const initialRepTotalMigrated = await childUniverseReputationToken.getTotalMigrated_();
         expect(initialRepTotalMigrated === new BigNumber('366666666666666667016192')); // TODO: calculate this value instead of hard-coding it
-        const repAmountToMigrate = new BigNumber(9000000).multipliedBy(new BigNumber(10).pow(18));
+        const repAmountToMigrate = new BigNumber(18000000).multipliedBy(new BigNumber(10).pow(18));
         await fixture.migrateOutByPayout(reputationToken, [new BigNumber(0), numTicks, new BigNumber(0)], repAmountToMigrate);
         const finalRepTotalMigrated = await childUniverseReputationToken.getTotalMigrated_();
         expect(finalRepTotalMigrated.minus(initialRepTotalMigrated).toString()).to.equal(repAmountToMigrate.toString());

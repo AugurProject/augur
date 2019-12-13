@@ -15,7 +15,7 @@ import 'ROOT/factories/IReputationTokenFactory.sol';
 contract TestNetReputationTokenFactory is IReputationTokenFactory {
     function createReputationToken(IAugur _augur, IUniverse _parentUniverse) public returns (IV2ReputationToken) {
         IUniverse _universe = IUniverse(msg.sender);
-        IV2ReputationToken _reputationToken = IV2ReputationToken(new TestNetReputationToken(_augur, _universe, _parentUniverse, _augur.lookup("ERC1820Registry")));
+        IV2ReputationToken _reputationToken = IV2ReputationToken(new TestNetReputationToken(_augur, _universe, _parentUniverse));
         return _reputationToken;
     }
 }

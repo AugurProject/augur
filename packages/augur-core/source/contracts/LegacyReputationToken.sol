@@ -1,6 +1,5 @@
 pragma solidity 0.5.10;
 
-import 'ROOT/libraries/IERC1820Registry.sol';
 import 'ROOT/legacy_reputation/OldLegacyRepToken.sol';
 
 
@@ -10,12 +9,6 @@ contract LegacyReputationToken is OldLegacyReputationToken {
     string public constant name = "Reputation";
     string public constant symbol = "REP";
     uint8 public constant decimals = 18;
-
-    function initializeERC1820(IAugur _augur) public returns (bool) {
-        erc1820Registry = IERC1820Registry(_augur.lookup("ERC1820Registry"));
-        initialize1820InterfaceImplementations();
-        return true;
-    }
 
     function faucet(uint256 _amount) public returns (bool) {
         require(_amount < 2 ** 128);

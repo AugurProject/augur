@@ -1550,7 +1550,7 @@ describe('State API :: Markets :: ', () => {
     });
   });
 
-  test(':getMarketsInfo', async () => {
+  test(':getMarketsInfo general', async () => {
     const yesNoMarket = await john.createReasonableYesNoMarket();
     const categoricalMarket = await john.createReasonableMarket(
       [stringTo32ByteHex('A'), stringTo32ByteHex('B'), stringTo32ByteHex('C')]
@@ -1772,10 +1772,13 @@ describe('State API :: Markets :: ', () => {
     expect(reportingStates).toContain(MarketReportingState.CrowdsourcingDispute);
     expect(reportingStates).toContain(MarketReportingState.OpenReporting);
 
-    // Dispute 10 times
+    const universe = api.augur.contracts.universeFromAddress(await yesNoMarket.getUniverse_());
+    const threshold = await universe.getDisputeThresholdForDisputePacing_();
+
+    // Dispute 11 times (its this high because of abnormal REP levels)
     mary.repFaucet(new BigNumber(10**18).multipliedBy(1000000));
     john.repFaucet(new BigNumber(10**18).multipliedBy(1000000));
-    for (let disputeRound = 1; disputeRound <= 11; disputeRound++) {
+    for (let disputeRound = 1; disputeRound <= 12; disputeRound++) {
       if (disputeRound % 2 !== 0) {
         const market = await mary.getMarketContract(yesNoMarket.address);
         await mary.contribute(market, yesPayoutSet, new BigNumber(25000));
@@ -1783,14 +1786,14 @@ describe('State API :: Markets :: ', () => {
           yesNoMarket,
           yesPayoutSet
         );
-        await mary.contribute(market, yesPayoutSet, remainingToFill);
+        if (remainingToFill.gte(0)) await mary.contribute(market, yesPayoutSet, remainingToFill);
       } else {
         await john.contribute(yesNoMarket, noPayoutSet, new BigNumber(25000));
         const remainingToFill = await john.getRemainingToFill(
           yesNoMarket,
           noPayoutSet
         );
-        await john.contribute(yesNoMarket, noPayoutSet, remainingToFill);
+        if (remainingToFill.gte(0)) await john.contribute(yesNoMarket, noPayoutSet, remainingToFill);
       }
     }
 
@@ -1815,7 +1818,7 @@ describe('State API :: Markets :: ', () => {
       .toEqual(MarketReportingState.OpenReporting);
 
     // Continue disputing
-    for (let disputeRound = 12; disputeRound <= 19; disputeRound++) {
+    for (let disputeRound = 13; disputeRound <= 19; disputeRound++) {
       if (disputeRound % 2 !== 0) {
         const market = await mary.getMarketContract(yesNoMarket.address);
         await mary.contribute(market, yesPayoutSet, new BigNumber(25000));
@@ -1823,14 +1826,14 @@ describe('State API :: Markets :: ', () => {
           yesNoMarket,
           yesPayoutSet
         );
-        await mary.contribute(market, yesPayoutSet, remainingToFill);
+        if (remainingToFill.gte(0)) await mary.contribute(market, yesPayoutSet, remainingToFill);
       } else {
         await john.contribute(yesNoMarket, noPayoutSet, new BigNumber(25000));
         const remainingToFill = await john.getRemainingToFill(
           yesNoMarket,
           noPayoutSet
         );
-        await john.contribute(yesNoMarket, noPayoutSet, remainingToFill);
+        if (remainingToFill.gte(0)) await john.contribute(yesNoMarket, noPayoutSet, remainingToFill);
       }
       newTime = newTime.plus(SECONDS_IN_A_DAY.times(7))
       ;
@@ -1845,7 +1848,7 @@ describe('State API :: Markets :: ', () => {
       yesNoMarket,
       noPayoutSet
     );
-    await john.contribute(yesNoMarket, noPayoutSet, remainingToFill);
+    if (remainingToFill.gte(0)) await john.contribute(yesNoMarket, noPayoutSet, remainingToFill);
 
     await (await db).sync(john.augur, CHUNK_SIZE, 0);
 

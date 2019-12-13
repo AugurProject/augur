@@ -581,7 +581,7 @@ describe('State API :: Accounts :: ', () => {
         outcome: 1,
         outcomeDescription: 'No',
         price: '0',
-        quantity: '349680582682291667',
+        quantity: '349680625587481902',
         total: '0',
       },
     ]);
@@ -620,7 +620,7 @@ describe('State API :: Accounts :: ', () => {
           johnYesNoMarket,
           yesPayoutSet
         );
-        await mary.contribute(market, yesPayoutSet, remainingToFill);
+        if (remainingToFill.gte(0)) await mary.contribute(market, yesPayoutSet, remainingToFill);
       } else {
         await john.contribute(
           johnYesNoMarket,
@@ -631,7 +631,7 @@ describe('State API :: Accounts :: ', () => {
           johnYesNoMarket,
           noPayoutSet
         );
-        await john.contribute(johnYesNoMarket, noPayoutSet, remainingToFill);
+        if (remainingToFill.gte(0)) await john.contribute(johnYesNoMarket, noPayoutSet, remainingToFill);
       }
     }
 
@@ -667,7 +667,7 @@ describe('State API :: Accounts :: ', () => {
         outcome: 1,
         outcomeDescription: 'No',
         price: '0',
-        quantity: '1049041748046850001',
+        quantity: '1049041876762420706',
         total: '0',
       },
     ]);
@@ -749,7 +749,7 @@ describe('State API :: Accounts :: ', () => {
         outcomeDescription: 'No',
         price: '0',
         quantity: '0',
-        total: '349680582682291667',
+        total: '349680625587481902',
       },
       {
         action: 'CLAIM_WINNING_CROWDSOURCERS',
@@ -879,7 +879,7 @@ describe('State API :: Accounts :: ', () => {
         outcome: 1,
         outcomeDescription: 'No',
         price: '0',
-        quantity: '349680582682291667',
+        quantity: '349680625587481902',
         total: '0',
       },
     ]);
