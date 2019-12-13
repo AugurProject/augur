@@ -16,6 +16,8 @@ contract Cash is ITyped, ICash, ICashFaucet {
     using SafeMathUint256 for uint256;
     uint256 public constant ETERNAL_APPROVAL_VALUE = 2 ** 256 - 1;
 
+    uint256 public totalSupply;
+    
     event Mint(address indexed target, uint256 value);
     event Burn(address indexed target, uint256 value);
 

@@ -34,7 +34,7 @@ contract Market is Initializable, Ownable, IMarket {
     // Contract Refs
     IUniverse private universe;
     IDisputeWindow private disputeWindow;
-    ICash private cash;
+    ICash public cash;
     IAugur public augur;
     IWarpSync public warpSync;
     IShareToken public shareToken;
@@ -60,8 +60,8 @@ contract Market is Initializable, Ownable, IMarket {
     // Collections
     IReportingParticipant[] public participants;
 
-    mapping(bytes32 => address) private crowdsourcers;
-    uint256 private crowdsourcerGeneration;
+    mapping(bytes32 => address) public crowdsourcers;
+    uint256 public crowdsourcerGeneration;
 
     mapping (address => uint256) public affiliateFeesAttoCash;
 

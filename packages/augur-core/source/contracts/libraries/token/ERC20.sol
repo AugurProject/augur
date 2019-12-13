@@ -30,8 +30,10 @@ import 'ROOT/libraries/math/SafeMathUint256.sol';
  */
 contract ERC20 is IERC20 {
     using SafeMathUint256 for uint256;
-    
+
     uint8 constant public decimals = 18;
+
+    uint256 public totalSupply;
 
     mapping (address => uint256) public balances;
 
