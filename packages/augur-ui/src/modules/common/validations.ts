@@ -192,6 +192,7 @@ export function checkForUserInputFilled(inputs, endTimeFormatted) {
         input.type === TemplateInputType.USER_DESCRIPTION_OUTCOME ||
         input.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME ||
         input.type === TemplateInputType.DATEYEAR ||
+        input.type === TemplateInputType.DATESTART ||
         input.type === TemplateInputType.DROPDOWN ||
         input.type === TemplateInputType.DROPDOWN_QUESTION_DEP ||
         input.type === TemplateInputType.DENOMINATION_DROPDOWN) &&
@@ -216,6 +217,18 @@ export function checkForUserInputFilled(inputs, endTimeFormatted) {
       } else {
         return '';
       }
+    } else if (input.type === TemplateInputType.DATESTART) {
+      if (input.setEndTime === null) {
+        return 'Choose a date'
+      } else if (
+        endTimeFormatted && endTimeFormatted.timestamp &&
+        input.setEndTime &&
+        input.setEndTime >=
+          endTimeFormatted.timestamp
+      ) {
+        return 'Date must be before event expiration time';
+      }
+      return '';
     } else if (
       input.type === TemplateInputType.DATETIME ||
       input.type === TemplateInputType.ESTDATETIME
@@ -229,7 +242,7 @@ export function checkForUserInputFilled(inputs, endTimeFormatted) {
         if (input.userInputObject.endTime === null) {
           validations.setEndTime = 'Choose a date';
         } else if (
-          endTimeFormatted.timestamp &&
+          endTimeFormatted && endTimeFormatted.timestamp &&
           input.userInputObject.endTimeFormatted &&
           input.userInputObject.endTimeFormatted.timestamp >=
             endTimeFormatted.timestamp
