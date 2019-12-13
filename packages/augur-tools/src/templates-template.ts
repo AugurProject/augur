@@ -318,7 +318,7 @@ function estimatedDateTimeAfterMarketEndTime(inputs: ExtraInfoTemplateInput[], e
 function dateStartAfterMarketEndTime(inputs: ExtraInfoTemplateInput[], endTime: number) {
   const input = inputs.find(i => i.type === TemplateInputType.DATESTART);
   if (!input) return false;
-  return Number(input.timestamp) > Number(endTime);
+  return Number(input.timestamp) >= Number(endTime);
 }
 
 function isRetiredAutofail(hash:string) {
