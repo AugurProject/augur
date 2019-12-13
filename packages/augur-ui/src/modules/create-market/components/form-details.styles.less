@@ -23,7 +23,13 @@
 
     > div {
     	display: flex;
-    	flex-direction: column;
+		flex-direction: column;
+		
+		&:first-of-type {
+			> div[class*="InputHeading"] > {
+				margin-top: @size-16;
+			}
+		}
 	}
 	
 	&.Template {
