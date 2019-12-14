@@ -208,6 +208,7 @@
   .generate-indexed-color-outcome-classes({
     &.Row4-@{newIndex} {
       cursor: pointer;
+      &.active,
       &:hover {
         background: @color-module-background-action-focus;
       };
@@ -372,7 +373,7 @@
   }
 
   .Row4 {
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: 2fr repeat(5, 1fr);
     padding: @size-12;
 
     &::before {

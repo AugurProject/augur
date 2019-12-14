@@ -8,160 +8,123 @@
 }
 
 .Side {
-  flex: 1 1;
-  font-size: @size-12;
-  font-weight: 400;
-  height: auto;
-  justify-content: flex-end;
-  letter-spacing: 0.3px;
-  line-height: @size-12;
-  text-transform: capitalize;
-  position: relative;
+  justify-content: flex-start;
+  min-width: 325px;
+  width: 100%;
+  max-height: 45%;
+  min-height: 150px;
+  overflow-y: overlay;
+  display: flex;
+  flex-flow: column;
+  flex: 1;
 
-  > div {
-    bottom: 0;
-    left: 0;
-    max-height: 100%;
-    overflow: overlay;
-    overflow-y: auto;
-    position: absolute;
-    right: 0;
-    top: 0;
+  &.Scrollable {
+    display: block;
+  }
 
-    &.Asks {
-      top: unset;
+  &.Asks {
+    justify-content: flex-end;
+
+    > div:not(.NoOrders) > span:nth-of-type(2) {
+      color: @color-negative;
+    }
+  }
+
+  > div:not(.NoOrders) {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto;
+    grid-gap: 0 @size-16;
+    margin-top: 1px;
+    cursor: pointer;
+
+    &:not(.NoOrders)::before {
+      background-color: @color-positive;
+      content: '';
+      grid-column: 1 / span 1;
+      grid-row: 1 / span 1;
+      height: @size-20;
+      width: 1px;
     }
 
-    > button {
-      display: flex;
-      padding: @size-4 @size-16 @size-4 @size-10;
-      position: relative;
-      width: 100%;
+    &.AskSide {
+      margin-bottom: 1px;
+      margin-top: 0;
 
       &::before {
-        background-color: @color-positive;
-        bottom: 0;
-        content: '';
-        display: block;
-        height: @size-18;
-        left: 0;
-        position: absolute;
-        top: 55%;
-        transform: translate(-50%, -50%);
-        width: 1px;
+        background-color: @color-negative;
+      }
+    }
+
+    &.Hover {
+      background-color: @color-module-background-action-focus;
+
+      &::before {
+        width: @size-6;
+      }
+    }
+
+    > span {
+      .mono-10-medium;
+
+      align-items: center;
+      align-self: center;
+      grid-row: 1 / span 1;
+      text-align: right;
+
+      &:first-of-type {
+        grid-column: 1 / span 1;
+        color: @color-primary-text;
+        margin-left: auto;
       }
 
-      &.Positive {
-        &::before {
-          background-color: @color-negative;
-        }
+      &:nth-of-type(2) {
+        grid-column: 2 / span 1;
+        padding-right: @size-16;
+        color: @color-positive;
       }
 
-      &.Hover {
-        background-color: @color-module-background-action-focus;
-
-        &::before {
-          width: @size-6;
-        }
+      &:last-of-type {
+        color: @color-secondary-text;
+        grid-column: 3 / span 1;
+        padding-right: @size-20;
       }
+    }
 
-      > div:not(:first-of-type) {
-        z-index: @above-all-content;
-      }
+    > div {
+      grid-column: 1 / span 3;
+      grid-row: 1 / span 1;
+      max-width: @size-38;
 
-      > div:first-of-type {
-        max-width: @size-38;
-        width: @size-38;
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
+      > div {
+        background-color: fade(@color-positive, 50%);
+        cursor: pointer;
+        pointer-events: none;
+        z-index: @default-z-index;
+        height: 100%;
 
-        > div {
-          background-color: fade(@color-positive, 50%);
-          bottom: 0;
-          cursor: pointer;
-          left: 0;
-          pointer-events: none;
-          position: absolute;
-          top: 1px;
-          z-index: @default-z-index;
-
-          &.Neg {
-            background-color: fade(@color-negative, 50%);
-          }
+        &.Neg {
+          background-color: fade(@color-negative, 50%);
         }
       }
     }
   }
 }
 
-.NoOrders {
-  .mono-10;
+div.NoOrders {
+  .mono-10-medium;
 
   align-items: center;
   align-self: center;
   color: @color-inactive-text;
   display: flex;
   justify-content: center;
+  height: 100%;
+  width: 100%;
 }
 
 .EncompassedHover {
   background-color: @color-module-background-action-focus;
-}
-
-.AskHead {
-  .Ask {
-    color: @color-primary-text;
-  }
-}
-
-.BidHead {
-  .Bid {
-    color: @color-primary-text;
-  }
-}
-
-.Ask,
-.Bid {
-  &:nth-of-type(2) {
-    justify-content: flex-start;
-  }
-
-  &:nth-of-type(3) {
-    justify-content: center;
-  }
-}
-
-.Ask {
-  .mono-9;
-
-  color: @color-primary-text;
-  display: flex;
-  flex: 1;
-  justify-content: flex-end;
-  overflow: hidden;
-  line-height: @size-11;
-
-  &:nth-child(3) {
-    color: @color-negative;
-  }
-}
-
-.Bid {
-  .mono-9;
-
-  color: @color-primary-text;
-  display: flex;
-  flex: 1;
-  justify-content: flex-end;
-  overflow: hidden;
-  line-height: @size-11;
-
-  &:nth-child(3) {
-    color: @color-positive;
-  }
 }
 
 .NoSize {
@@ -169,25 +132,16 @@
 }
 
 .Midmarket {
-  .mono-9-bold;
+  .mono-10-bold;
 
-  background-color: fade(@color-dark-grey, 70%);
-  color: @color-inactive-text;
-  margin: 1px 0;
-  padding: @size-6 @size-12;
+  border-bottom: 1px solid @color-dark-grey;
+  border-top: 1px solid @color-dark-grey;
+  background: @color-table-header;
+  color: @color-secondary-text;
   text-transform: uppercase;
-
-  > div {
-    align-items: center;
-    display: flex;
-    justify-content: center;
-
-    > span:first-of-type {
-      margin-right: @size-6;
-    }
-
-    > span:last-of-type {
-      margin-left: 2px;
-    }
-  }
+  height: @size-24;
+  max-height: @size-24;
+  min-height: @size-24;
+  text-align: center;
+  padding: @size-5;
 }

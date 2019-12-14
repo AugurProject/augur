@@ -4,7 +4,7 @@ from pytest import raises, mark
 from reporting_utils import proceedToNextRound
 from utils import AssertLog, TokenDelta, EtherDelta
 
-DAI_ONE = 10**27
+RAY = 10**27
 
 # variant where DSR on or off before sweep
 def test_dsr_interest(contractsFixture, market, universe, cash):
@@ -12,7 +12,7 @@ def test_dsr_interest(contractsFixture, market, universe, cash):
     daiVat = contractsFixture.contracts["DaiVat"]
     shareToken = contractsFixture.contracts['ShareToken']
 
-    assert daiPot.setDSR(DAI_ONE)
+    assert daiPot.setDSR(RAY)
 
     # Buy complete sets to put funds in
     numCompleteSets = 10**18

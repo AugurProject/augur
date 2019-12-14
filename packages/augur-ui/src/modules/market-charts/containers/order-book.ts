@@ -42,6 +42,7 @@ const mapStateToProps = (state, ownProps) => {
       !isEmpty(cumulativeOrderBook[ASKS]),
     minPrice,
     maxPrice,
+    marketType: market.marketType,
   };
 };
 

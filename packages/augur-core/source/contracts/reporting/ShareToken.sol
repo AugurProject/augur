@@ -7,13 +7,14 @@ import 'ROOT/libraries/ITyped.sol';
 import 'ROOT/libraries/Initializable.sol';
 import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/IAugur.sol';
+import 'ROOT/CashSender.sol';
 
 
 /**
  * @title Share Token
  * @notice ERC1155 contract to hold all Augur share token balances
  */
-contract ShareToken is ITyped, Initializable, ERC1155, IShareToken, ReentrancyGuard {
+contract ShareToken is ITyped, Initializable, ERC1155, IShareToken, ReentrancyGuard, CashSender {
 
     string constant public name = "Shares";
     string constant public symbol = "SHARE";
@@ -32,6 +33,8 @@ contract ShareToken is ITyped, Initializable, ERC1155, IShareToken, ReentrancyGu
         endInitialization();
         augur = _augur;
         cash = ICash(_augur.lookup("Cash"));
+
+        initializeCashSender(_augur.lookup("DaiVat"), address(cash));
         require(cash != ICash(0));
     }
 
@@ -177,7 +180,7 @@ contract ShareToken is ITyped, Initializable, ERC1155, IShareToken, ReentrancyGu
     function publicSellCompleteSets(IMarket _market, uint256 _amount) external returns (uint256 _creatorFee, uint256 _reportingFee) {
         (uint256 _payout, uint256 _creatorFee, uint256 _reportingFee) = burnCompleteSets(_market, msg.sender, _amount, msg.sender, bytes32(0));
 
-        require(cash.transfer(msg.sender, _payout));
+        cashTransfer(msg.sender, _payout);
 
         IUniverse _universe = _market.getUniverse();
         augur.logCompleteSetsSold(_universe, _market, msg.sender, _amount, _creatorFee.add(_reportingFee));
@@ -199,7 +202,8 @@ contract ShareToken is ITyped, Initializable, ERC1155, IShareToken, ReentrancyGu
         require(_holder == msg.sender || isApprovedForAll(_holder, msg.sender) == true, "ERC1155: need operator approval to sell complete sets");
         
         (uint256 _payout, uint256 _creatorFee, uint256 _reportingFee) = burnCompleteSets(_market, _holder, _amount, _holder, _fingerprint);
-        require(cash.transfer(_recipient, _payout));
+
+        cashTransfer(_recipient, _payout);
 
         _market.assertBalances();
         return (_creatorFee, _reportingFee);
@@ -226,8 +230,8 @@ contract ShareToken is ITyped, Initializable, ERC1155, IShareToken, ReentrancyGu
         (uint256 _payout, uint256 _creatorFee, uint256 _reportingFee) = burnCompleteSets(_market, _longParticipant, _amount, _sourceAccount, _fingerprint);
 
         uint256 _longPayout = _payout.mul(_price) / _market.getNumTicks();
-        require(cash.transfer(_longRecipient, _longPayout));
-        require(cash.transfer(_shortRecipient, _payout.sub(_longPayout)));
+        cashTransfer(_longRecipient, _longPayout);
+        cashTransfer(_shortRecipient, _payout.sub(_longPayout));
 
         _market.assertBalances();
         return (_creatorFee, _reportingFee);
@@ -272,7 +276,7 @@ contract ShareToken is ITyped, Initializable, ERC1155, IShareToken, ReentrancyGu
         _universe.withdraw(address(this), _payout.add(_reportingFee), address(_market));
 
         if (_reportingFee != 0) {
-            require(cash.transfer(address(_universe.getOrCreateNextDisputeWindow(false)), _reportingFee));
+            cashTransfer(address(_universe.getOrCreateNextDisputeWindow(false)), _reportingFee);
         }
 
         augur.logMarketOIChanged(_universe, _market);
@@ -324,13 +328,13 @@ contract ShareToken is ITyped, Initializable, ERC1155, IShareToken, ReentrancyGu
 
     function distributeProceeds(IMarket _market, address _shareHolder, uint256 _shareHolderShare, uint256 _creatorShare, uint256 _reporterShare, bytes32 _fingerprint) private {
         if (_shareHolderShare > 0) {
-            require(cash.transfer(_shareHolder, _shareHolderShare));
+            cashTransfer(_shareHolder, _shareHolderShare);
         }
         if (_creatorShare > 0) {
             _market.recordMarketCreatorFees(_creatorShare, _shareHolder, _fingerprint);
         }
         if (_reporterShare > 0) {
-            require(cash.transfer(address(_market.getUniverse().getOrCreateNextDisputeWindow(false)), _reporterShare));
+            cashTransfer(address(_market.getUniverse().getOrCreateNextDisputeWindow(false)), _reporterShare);
         }
     }
 

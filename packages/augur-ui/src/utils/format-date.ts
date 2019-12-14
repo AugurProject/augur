@@ -92,8 +92,8 @@ export function formatDate(d, timezone: string = null): DateFormattedObject {
       shortMonths[date.getUTCMonth()]
     } ${date.getUTCDate()}, ${date.getUTCFullYear()}`,
     clockTimeUtc: `${utcTimeTwelve.join(':')} ${utcAMPM} - UTC`,
-    formattedLocalTimezone: `${
-      months[date.getMonth()]
+    formattedLocalShortDateTimeWithTimezone: `${
+      shortMonths[date.getMonth()]
     } ${date.getDate()}, ${date.getFullYear()} ${localTimeTwelve.join(
       ':'
     )} ${localAMPM} ${timezoneName}`,
@@ -174,7 +174,7 @@ export function buildformattedDate(
   }
   const abbr = getTimezoneAbbr(endTime.toDate(), timezone);
   const timezoneFormat = endTime.format(LONG_FORMAT);
-  const formattedLocalTimezone = `${timezoneFormat} (${abbr})`;
+  const formattedLocalShortDateTimeWithTimezone = `${timezoneFormat} (${abbr})`;
 
   const adjOffset = createBigNumber(offset || ZERO).times("-1").toNumber();
   endTime.add(adjOffset, 'hours');
@@ -184,7 +184,7 @@ export function buildformattedDate(
 
   return {
     formattedUtc: formattedUtc,
-    formattedLocalTimezone: formattedLocalTimezone,
+    formattedLocalShortDateTimeWithTimezone: formattedLocalShortDateTimeWithTimezone,
     timestamp: endTime.unix(),
   };
 }

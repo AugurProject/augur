@@ -5075,7 +5075,7 @@ export const TEMPLATES = {
               },
               {
                 id: 2,
-                type: TemplateInputType.DATEYEAR,
+                type: TemplateInputType.DATESTART,
                 placeholder: `Open, Day of Year`,
               },
               {
@@ -5208,7 +5208,7 @@ export const TEMPLATES = {
               },
               {
                 id: 2,
-                type: TemplateInputType.DATEYEAR,
+                type: TemplateInputType.DATESTART,
                 placeholder: `Open, Day of Year`,
               },
               {
@@ -5341,7 +5341,7 @@ export const TEMPLATES = {
               },
               {
                 id: 2,
-                type: TemplateInputType.DATEYEAR,
+                type: TemplateInputType.DATESTART,
                 placeholder: `Open, Day of Year`,
               },
               {

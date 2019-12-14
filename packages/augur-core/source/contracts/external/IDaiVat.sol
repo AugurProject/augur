@@ -11,6 +11,7 @@ contract IDaiVat {
     }
 
     mapping (bytes32 => Ilk)                       public ilks;
+    uint256 public live = 1;  // Access Flag
 
     mapping (address => uint256) public dai;  // [rad]
     function hope(address usr) public;

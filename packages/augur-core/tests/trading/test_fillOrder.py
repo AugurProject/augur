@@ -117,7 +117,7 @@ def test_publicFillOrder_bid_scalar(contractsFixture, cash, scalarMarket, univer
     assert orders.getWorseOrderId(orderID) == longTo32Bytes(0)
     assert fillOrderID == 0
 
-def test_fill_order_with_shares_escrowed_sell_with_shares(contractsFixture, cash, market, universe, tokensFail):
+def test_fill_order_with_shares_escrowed_sell_with_shares(contractsFixture, cash, market, universe):
     createOrder = contractsFixture.contracts['CreateOrder']
     fillOrder = contractsFixture.contracts['FillOrder']
     orders = contractsFixture.contracts['Orders']
@@ -137,10 +137,8 @@ def test_fill_order_with_shares_escrowed_sell_with_shares(contractsFixture, cash
     assert orderID
 
     # fill order with shares
-    tokensFail.setFail(True)
     assert fillOrder.publicFillOrder(orderID, fix(1), "43", fingerprint) == 0
 
-    tokensFail.setFail(False)
     assert shareToken.balanceOfMarketOutcome(market.address, NO, contractsFixture.accounts[0]) == 0
     assert orders.getAmount(orderID) == 0
     assert orders.getPrice(orderID) == 0

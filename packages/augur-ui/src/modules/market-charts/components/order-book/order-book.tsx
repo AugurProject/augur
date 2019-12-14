@@ -3,7 +3,7 @@ import classNames from 'classnames';
 
 import OrderHeader from 'modules/market-charts/components/order-header/order-header';
 import { HoverValueLabel } from 'modules/common/labels';
-import { ASKS, BIDS, BUY, SELL } from 'modules/common/constants';
+import { ASKS, BIDS, BUY, SELL, SCALAR, BINARY_CATEGORICAL_SHARE_OPTIONS } from 'modules/common/constants';
 
 import Styles from 'modules/market-charts/components/order-book/order-book.styles.less';
 import { OutcomeOrderBook } from 'modules/types';
@@ -19,7 +19,10 @@ interface OrderBookSideProps {
   pricePrecision: number;
   setHovers: Function;
   type: string;
+  marketType: string;
   scrollToTop: boolean;
+  hoveredSide?: string;
+  hoveredOrderIndex?: number;
 }
 
 interface OrderBookProps {
@@ -30,13 +33,12 @@ interface OrderBookProps {
   fixedPrecision: number;
   pricePrecision: number;
   toggle: boolean;
-  extend: boolean;
   hide: boolean;
 }
 
 interface OrderBookState {
-  hoveredOrderIndex: number;
-  hoveredSide: number;
+  hoveredOrderIndex?: number;
+  hoveredSide?: string;
 }
 
 class OrderBookSide extends Component<OrderBookSideProps, {}> {
@@ -54,7 +56,6 @@ class OrderBookSide extends Component<OrderBookSideProps, {}> {
     const { orderBook, scrollToTop } = this.props;
     if (
       scrollToTop &&
-      prevProps.orderBook.asks.length &&
       JSON.stringify(prevProps.orderBook.asks) !==
         JSON.stringify(orderBook.asks)
     ) {
@@ -71,98 +72,82 @@ class OrderBookSide extends Component<OrderBookSideProps, {}> {
       hoveredOrderIndex,
       setHovers,
       type,
+      marketType,
     } = this.props;
+    const isAsks = type === ASKS;
+    const opts = marketType === SCALAR ? {} : BINARY_CATEGORICAL_SHARE_OPTIONS;
 
-    const orderBookOrders =
-      type === ASKS ? orderBook.asks || [] : orderBook.bids || [];
+    const orderBookOrders = isAsks
+      ? orderBook.asks || []
+      : orderBook.bids || [];
 
+    const isScrollable = this.side && (orderBookOrders.length * 20) >= this.side.clientHeight;
     return (
-      <div className={Styles.Side}>
-        {orderBookOrders.length === 0 &&
-          <div className={Styles.NoOrders}>{type === ASKS ? `Add Offer` : `Add Bid`} </div>
-        }
-        <div
-          className={classNames({ [Styles.Asks]: type === ASKS })}
-          ref={side => {
-            this.side = side;
-          }}
-        >
-          {orderBookOrders.map((order, i) => (
-            <button
+      <div
+        className={classNames(Styles.Side, { [Styles.Asks]: isAsks, [Styles.Scrollable]: isScrollable })}
+        ref={side => {
+          this.side = side;
+        }}
+      >
+        {orderBookOrders.length === 0 && (
+          <div className={Styles.NoOrders}>
+            {isAsks ? `Add Offer` : `Add Bid`}
+          </div>
+        )}
+        {orderBookOrders.map((order, i) => {
+          const hasSize = order.mySize !== '0';
+          const shouldEncompass =
+            (hoveredOrderIndex !== null &&
+              isAsks &&
+              hoveredSide === ASKS &&
+              i > hoveredOrderIndex) ||
+            (hoveredOrderIndex !== null &&
+              !isAsks &&
+              hoveredSide === BIDS &&
+              i < hoveredOrderIndex);
+          const isHovered = i === hoveredOrderIndex && hoveredSide === type;
+          return (
+            <div
               key={order.cumulativeShares + i}
               className={classNames({
-                [Styles.Positive]: type === ASKS,
-                [Styles.BidHead]:
-                  i === orderBook.asks.length - 1 && type === ASKS,
-                [Styles.AskHead]: i === 0 && type === BIDS,
-                [Styles.Hover]: i === hoveredOrderIndex && hoveredSide === type,
-                [Styles.EncompassedHover]:
-                  (hoveredOrderIndex !== null &&
-                    type === ASKS &&
-                    hoveredSide === ASKS &&
-                    i > hoveredOrderIndex) ||
-                  (hoveredOrderIndex !== null &&
-                    type === BIDS &&
-                    hoveredSide === BIDS &&
-                    i < hoveredOrderIndex),
+                [Styles.AskSide]: isAsks,
+                [Styles.Hover]: isHovered,
+                [Styles.EncompassedHover]: shouldEncompass,
               })}
-              onMouseEnter={() => {
-                setHovers(i, type);
-              }}
-              onMouseLeave={() => {
-                setHovers(null, null);
-              }}
+              onMouseEnter={() => setHovers(i, type)}
+              onMouseLeave={() => setHovers(null, null)}
               onClick={() =>
                 updateSelectedOrderProperties({
                   orderPrice: order.price,
                   orderQuantity: order.cumulativeShares,
-                  selectedNav: type === ASKS ? BUY : SELL,
-                  selfTrade: order.mySize !== '0',
+                  selectedNav: isAsks ? BUY : SELL,
+                  selfTrade: hasSize,
                 })
               }
             >
               <div>
-                  <div
-                    className={classNames({ [Styles.Neg]: type === ASKS })}
-                    style={{ right: order.quantityScale + '%' }}
-                  />
-                </div>
-              <div
-                className={classNames({
-                  [Styles.Ask]: type === ASKS,
-                  [Styles.Bid]: type === BIDS,
-                })}
-              >
-                <HoverValueLabel
-                  value={formatShares(order.shares)}
-                  showEmptyDash={true}
-                  showDenomination={false}
+                <div
+                  className={classNames({ [Styles.Neg]: isAsks })}
+                  style={{ width: 100 - order.quantityScale + '%' }}
                 />
               </div>
-              <div
-                className={classNames({
-                  [Styles.Ask]: type === ASKS,
-                  [Styles.Bid]: type === BIDS,
-                })}
-              >
+              <HoverValueLabel
+                value={formatShares(order.shares, opts)}
+                useFull={true}
+                showEmptyDash={true}
+                showDenomination={false}
+              />
+              <span>
                 {createBigNumber(order.price).toFixed(pricePrecision)}
-              </div>
-              <div
-                className={classNames({
-                  [Styles.Ask]: type === ASKS,
-                  [Styles.Bid]: type === BIDS,
-                  [Styles.NoSize]: order.mySize === '0',
-                })}
-              >
-                {order.mySize !== '0'
-                  ? createBigNumber(order.mySize)
-                      .toFixed(fixedPrecision)
-                      .toString()
+              </span>
+              <span>
+                {hasSize
+                  ? createBigNumber(order.mySize).toFixed(fixedPrecision)
                   : '—'}
-              </div>
-            </button>
-          ))}
-        </div>
+              </span>
+            </div>
+          );
+        })}
       </div>
     );
   }
@@ -185,22 +170,15 @@ export default class OrderBook extends Component<
     hoveredSide: null,
   };
 
-  setHovers = (hoveredOrderIndex: number, hoveredSide: number) => {
+  setHovers = (hoveredOrderIndex: number, hoveredSide: string) => {
     this.setState({
-      hoveredOrderIndex: hoveredOrderIndex,
-      hoveredSide: hoveredSide,
+      hoveredOrderIndex,
+      hoveredSide,
     });
   };
 
   render() {
-    const {
-      pricePrecision,
-      hasOrders,
-      toggle,
-      extend,
-      hide,
-      orderBook
-    } = this.props;
+    const { pricePrecision, hasOrders, toggle, hide, orderBook } = this.props;
     const s = this.state;
 
     return (
@@ -209,7 +187,6 @@ export default class OrderBook extends Component<
           title="Order Book"
           headers={['quantity', 'price', 'my quantity']}
           toggle={toggle}
-          extended={extend}
           hide={hide}
         />
         <OrderBookSide
@@ -222,17 +199,12 @@ export default class OrderBook extends Component<
         />
         {!hide && (
           <div className={Styles.Midmarket}>
-            {hasOrders && (
-              <div>
-                <span>Spread:</span>
-                {orderBook.spread
-                  ? createBigNumber(orderBook.spread).toFixed(
-                      pricePrecision
-                    )
-                  : '—'}
-                {orderBook.spread && <span>DAI</span>}
-              </div>
-            )}
+            {hasOrders &&
+              `spread: ${
+                orderBook.spread
+                  ? createBigNumber(orderBook.spread).toFixed(pricePrecision)
+                  : '—'
+              } ${orderBook.spread ? 'DAI($)' : ''}`}
           </div>
         )}
         <OrderBookSide

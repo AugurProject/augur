@@ -602,7 +602,7 @@ export class Markets {
   ): Promise<MarketOrderBook> {
     const account = params.account;
     const orders = await OnChainTrading.getOrders(augur, db, {
-      ...params,
+      marketId: params.marketId,
       orderState: OrderState.OPEN,
     });
 

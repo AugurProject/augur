@@ -3,10 +3,18 @@ from pytest import fixture, raises, mark
 from utils import longToHexString, EtherDelta, TokenDelta, PrintGasUsed, BuyWithCash
 from reporting_utils import generateFees
 
-def test_participation_tokens(kitchenSinkFixture, universe, market, cash):
+
+@mark.parametrize('afterMkrShutdown', [
+    True,
+    False
+])
+def test_participation_tokens(afterMkrShutdown, kitchenSinkFixture, universe, market, cash):
     reputationToken = kitchenSinkFixture.applySignature("ReputationToken", universe.getReputationToken())
 
     disputeWindow = kitchenSinkFixture.applySignature("DisputeWindow", universe.getOrCreateNextDisputeWindow(False))
+
+    if (afterMkrShutdown):
+        kitchenSinkFixture.MKRShutdown()
 
     # Generate Fees
     generateFees(kitchenSinkFixture, universe, market)

@@ -20,13 +20,14 @@ import 'ROOT/external/IDaiPot.sol';
 import 'ROOT/external/IDaiJoin.sol';
 import 'ROOT/utility/IFormulas.sol';
 import 'ROOT/IAugur.sol';
+import 'ROOT/CashSender.sol';
 
 
 /**
  * @title Universe
  * @notice A Universe encapsulates a whole instance of Augur. In the event of a fork in a Universe it will split into child Universes which each represent a different version of the truth with respect to how the forking market should resolve.
  */
-contract Universe is IUniverse {
+contract Universe is IUniverse, CashSender {
     using SafeMathUint256 for uint256;
 
     IAugur public augur;
@@ -73,7 +74,7 @@ contract Universe is IUniverse {
     IDaiPot public daiPot;
     IDaiJoin public daiJoin;
 
-    uint256 constant public DAI_ONE = 10 ** 27;
+    uint256 constant public RAY = 10 ** 27;
 
     constructor(IAugur _augur, IUniverse _parentUniverse, bytes32 _parentPayoutDistributionHash, uint256[] memory _payoutNumerators) public {
         augur = _augur;
@@ -97,6 +98,8 @@ contract Universe is IUniverse {
         daiVat.hope(address(daiPot));
         daiVat.hope(address(daiJoin));
         cash.approve(address(daiJoin), 2 ** 256 - 1);
+
+        initializeCashSender(address(daiVat), address(cash));
     }
 
     function assertContractsNotZero() private view {
@@ -666,15 +669,15 @@ contract Universe is IUniverse {
     function saveDaiInDSR(uint256 _amount) private returns (bool) {
         daiJoin.join(address(this), _amount);
         uint256 _chi = daiPot.drip();
-        uint256 _sDaiAmount = _amount.mul(DAI_ONE) / _chi; // sDai may be lower than the full amount joined above. This means the VAT may have some dust and we'll be saving less than intended by a dust amount
+        uint256 _sDaiAmount = _amount.mul(RAY) / _chi; // sDai may be lower than the full amount joined above. This means the VAT may have some dust and we'll be saving less than intended by a dust amount
         daiPot.join(_sDaiAmount);
         return true;
     }
 
     function withdrawDaiFromDSR(uint256 _amount) private returns (bool) {
         uint256 _chi = daiPot.drip();
-        uint256 _sDaiAmount = _amount.mul(DAI_ONE) / _chi; // sDai may be lower than the amount needed to retrieve `amount` from the VAT. We cover for this rounding error below
-        if (_sDaiAmount.mul(_chi) < _amount.mul(DAI_ONE)) {
+        uint256 _sDaiAmount = _amount.mul(RAY) / _chi; // sDai may be lower than the amount needed to retrieve `amount` from the VAT. We cover for this rounding error below
+        if (_sDaiAmount.mul(_chi) < _amount.mul(RAY)) {
             _sDaiAmount += 1;
         }
         _sDaiAmount = _sDaiAmount.min(daiPot.pie(address(this))); // Never try to draw more than the balance in the pot. If we have less than needed we _must_ have enough already in the VAT provided no negative interest was ever applied
@@ -684,13 +687,15 @@ contract Universe is IUniverse {
 
     function withdrawSDaiFromDSR(uint256 _sDaiAmount) private returns (bool) {
         daiPot.exit(_sDaiAmount);
-        daiJoin.exit(address(this), daiVat.dai(address(this)).div(DAI_ONE));
+        if (daiJoin.live() == 1) {
+            daiJoin.exit(address(this), daiVat.dai(address(this)).div(RAY));
+        }
         return true;
     }
 
     function deposit(address _sender, uint256 _amount, address _market) public returns (bool) {
         require(augur.isTrustedSender(msg.sender) || msg.sender == _sender || msg.sender == address(openInterestCash));
-        augur.trustedTransfer(cash, _sender, address(this), _amount);
+        augur.trustedCashTransfer(_sender, address(this), _amount);
         totalBalance = totalBalance.add(_amount);
         marketBalance[_market] = marketBalance[_market].add(_amount);
         saveDaiInDSR(_amount);
@@ -705,7 +710,7 @@ contract Universe is IUniverse {
         totalBalance = totalBalance.sub(_amount);
         marketBalance[_market] = marketBalance[_market].sub(_amount);
         withdrawDaiFromDSR(_amount);
-        cash.transfer(_recipient, _amount);
+        cashTransfer(_recipient, _amount);
         return true;
     }
 
@@ -716,8 +721,8 @@ contract Universe is IUniverse {
         saveDaiInDSR(totalBalance); // Put the required funds back in savings
         _extraCash = cash.balanceOf(address(this));
         // The amount in the DSR pot and VAT must cover our totalBalance of Dai
-        assert(daiPot.pie(address(this)).mul(_chi).add(daiVat.dai(address(this))) >= totalBalance.mul(DAI_ONE));
-        cash.transfer(address(getOrCreateNextDisputeWindow(false)), _extraCash);
+        assert(daiPot.pie(address(this)).mul(_chi).add(daiVat.dai(address(this))) >= totalBalance.mul(RAY));
+        cashTransfer(address(getOrCreateNextDisputeWindow(false)), _extraCash);
         return true;
     }
 }

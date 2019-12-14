@@ -4,13 +4,20 @@ from pytest import raises, mark
 from utils import stringToBytes, AssertLog, EtherDelta, TokenDelta, nullAddress
 from reporting_utils import proceedToDesignatedReporting
 
-def test_market_creation(contractsFixture, augur, universe, market):
+@mark.parametrize('afterMkrShutdown', [
+    True,
+    False
+])
+def test_market_creation(afterMkrShutdown, contractsFixture, augur, universe, market):
     marketFactory = contractsFixture.contracts["MarketFactory"]
     account0 = contractsFixture.accounts[0]
     numTicks = market.getNumTicks()
 
     market = None
     endTime = contractsFixture.contracts["Time"].getTimestamp() + timedelta(days=1).total_seconds()
+
+    if (afterMkrShutdown):
+        contractsFixture.MKRShutdown()
 
     marketCreatedLog = {
         "extraInfo": 'so extra',
