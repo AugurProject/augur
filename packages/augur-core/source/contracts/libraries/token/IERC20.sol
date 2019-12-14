@@ -2,8 +2,7 @@ pragma solidity 0.5.10;
 
 
 contract IERC20 {
-    uint256 public totalSupply;
-    
+    function totalSupply() external view returns (uint256);
     function balanceOf(address owner) public view returns (uint256);
     function transfer(address to, uint256 amount) public returns (bool);
     function transferFrom(address from, address to, uint256 amount) public returns (bool);

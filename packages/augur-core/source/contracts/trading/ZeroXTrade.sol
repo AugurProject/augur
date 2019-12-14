@@ -351,6 +351,15 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
             address _kycToken
         )
     {
+         // Read the bytes4 from array memory
+        assembly {
+            _assetProxyId := mload(add(_assetData, 32))
+            // Solidity does not require us to clean the trailing bytes. We do it anyway
+            _assetProxyId := and(_assetProxyId, 0xFFFFFFFF00000000000000000000000000000000000000000000000000000000)
+        }
+
+        require(_assetProxyId == ERC1155_PROXY_ID, "WRONG_PROXY_ID");
+
         assembly {
             // Skip selector and length to get to the first parameter:
             _assetData := add(_assetData, 36)

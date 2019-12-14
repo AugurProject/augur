@@ -13,6 +13,7 @@ import 'ROOT/trading/IProfitLoss.sol';
 import 'ROOT/trading/IAugurTrading.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
 import 'ROOT/CashSender.sol';
+import 'ROOT/libraries/TokenId.sol';
 
 
 /**
@@ -152,7 +153,7 @@ contract CreateOrder is Initializable, ReentrancyGuard, CashSender {
             for (uint256 _i = 0; _i < _numberOfShortOutcomes; _i++) {
                 _values[_i] = _orderData.sharesEscrowed;
             }
-            _orderData.shareToken.unsafeBatchTransferFrom(_orderData.creator, address(_orderData.augurTrading), _orderData.shareToken.getTokenIds(_orderData.market, _shortOutcomes), _values);
+            _orderData.shareToken.unsafeBatchTransferFrom(_orderData.creator, address(_orderData.augurTrading), TokenId.getTokenIds(_orderData.market, _shortOutcomes), _values);
         }
 
         // If not able to cover entire order with shares alone, then cover remaining with tokens
@@ -176,7 +177,7 @@ contract CreateOrder is Initializable, ReentrancyGuard, CashSender {
         if (_attosharesHeld > 0) {
             _orderData.sharesEscrowed = SafeMathUint256.min(_attosharesHeld, _attosharesToCover);
             _attosharesToCover -= _orderData.sharesEscrowed;
-            _orderData.shareToken.unsafeTransferFrom(_orderData.creator, address(_orderData.augurTrading), _orderData.shareToken.getTokenId(_orderData.market, _orderData.outcome), _orderData.sharesEscrowed);
+            _orderData.shareToken.unsafeTransferFrom(_orderData.creator, address(_orderData.augurTrading), TokenId.getTokenId(_orderData.market, _orderData.outcome), _orderData.sharesEscrowed);
         }
 
         // If not able to cover entire order with shares alone, then cover remaining with tokens

@@ -24,8 +24,17 @@ import 'ROOT/CashSender.sol';
 contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow, CashSender {
     using SafeMathUint256 for uint256;
 
+    uint256 public invalidMarketsTotal;
+    uint256 public validityBondTotal;
+
+    uint256 public incorrectDesignatedReportTotal;
+    uint256 public initialReportBondTotal;
+
+    uint256 public designatedReportNoShowsTotal;
+    uint256 public designatedReporterNoShowBondTotal;
+
     IAugur public augur;
-    IUniverse private universe;
+    IUniverse public universe;
     ICash public cash;
     address public buyParticipationTokens;
     uint256 private startTime;

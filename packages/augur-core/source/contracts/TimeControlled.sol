@@ -5,7 +5,7 @@ import 'ROOT/IAugur.sol';
 
 
 contract TimeControlled is ITime {
-    uint256 private timestamp = 1;
+    uint256 public timestamp = 1;
 
     IAugur public augur;
 

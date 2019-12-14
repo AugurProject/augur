@@ -50,7 +50,7 @@ contract AugurTrading is IAugurTrading {
     event ProfitLossChanged(address indexed universe, address indexed market, address indexed account, uint256 outcome, int256 netPosition, uint256 avgPrice, int256 realizedProfit, int256 frozenFunds, int256 realizedCost, uint256 timestamp);
     event MarketVolumeChanged(address indexed universe, address indexed market, uint256 volume, uint256[] outcomeVolumes);
 
-    mapping(address => bool) private trustedSender;
+    mapping(address => bool) public trustedSender;
 
     address public uploader;
     mapping(bytes32 => address) private registry;
