@@ -354,8 +354,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
          // Read the bytes4 from array memory
         assembly {
             _assetProxyId := mload(add(_assetData, 32))
-            // Solidity does not require us to clean the trailing bytes.
-            // We do it anyway
+            // Solidity does not require us to clean the trailing bytes. We do it anyway
             _assetProxyId := and(_assetProxyId, 0xFFFFFFFF00000000000000000000000000000000000000000000000000000000)
         }
 
