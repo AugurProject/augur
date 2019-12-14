@@ -18,7 +18,6 @@ import 'ROOT/libraries/TokenId.sol';
 
 library Trade {
     using SafeMathUint256 for uint256;
-    using TokenId for IShareToken;
 
     enum Direction {
         Long,

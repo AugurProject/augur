@@ -23,7 +23,6 @@ import 'ROOT/libraries/TokenId.sol';
 contract CreateOrder is Initializable, ReentrancyGuard, CashSender {
     using SafeMathUint256 for uint256;
     using Order for Order.Data;
-    using TokenId for IShareToken;
 
     IAugur public augur;
     IAugurTrading public augurTrading;

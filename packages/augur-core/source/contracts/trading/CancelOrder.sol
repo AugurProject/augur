@@ -24,7 +24,6 @@ import 'ROOT/libraries/TokenId.sol';
  * @notice This allows you to cancel orders on the book.
  */
 contract CancelOrder is Initializable, ReentrancyGuard, ICancelOrder, CashSender {
-    using TokenId for IShareToken;
 
     IAugurTrading public augurTrading;
     IOrders public orders;

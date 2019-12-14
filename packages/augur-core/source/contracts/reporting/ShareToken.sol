@@ -16,7 +16,6 @@ import 'ROOT/libraries/TokenId.sol';
  * @notice ERC1155 contract to hold all Augur share token balances
  */
 contract ShareToken is ITyped, Initializable, ERC1155, IShareToken, ReentrancyGuard, CashSender {
-    using TokenId for IShareToken;
 
     string constant public name = "Shares";
     string constant public symbol = "SHARE";
