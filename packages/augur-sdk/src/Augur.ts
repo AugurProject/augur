@@ -217,6 +217,10 @@ export class Augur<TProvider extends Provider = Provider> {
     this.dependencies.setUseRelay(useRelay);
   }
 
+  getUseGnosisSafe(): boolean {
+    return this.dependencies.useSafe;
+  }
+
   checkSafe(owner:Address, safe: Address): Promise<GnosisSafeStateReponse> {
     return this.gnosis.getGnosisSafeDeploymentStatusViaRelay({
       owner,
