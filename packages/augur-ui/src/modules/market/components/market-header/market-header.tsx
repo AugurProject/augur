@@ -12,7 +12,11 @@ import MarketHeaderBar from 'modules/market/containers/market-header-bar';
 import { BigNumber } from 'bignumber.js';
 import Styles from 'modules/market/components/market-header/market-header.styles.less';
 import CoreProperties from 'modules/market/components/core-properties/core-properties';
-import { WordTrail, MarketTypeLabel, TemplateShield } from 'modules/common/labels';
+import {
+  WordTrail,
+  MarketTypeLabel,
+  TemplateShield,
+} from 'modules/common/labels';
 import makeQuery from 'modules/routes/helpers/make-query';
 import {
   CATEGORY_PARAM_NAME,
@@ -149,7 +153,7 @@ export default class MarketHeader extends Component<
       totalSteps,
       text,
       showTutorialDetails,
-      marketLinkCopied
+      marketLinkCopied,
     } = this.props;
     let { details } = this.props;
     const { headerCollapsed, showReadMore, detailsHeight } = this.state;
@@ -173,7 +177,10 @@ export default class MarketHeader extends Component<
       }));
 
     const categoriesWithClick = process(market.categories) || [];
-    const resolutionSource = (market.designatedReporter.toUpperCase() === market.author.toUpperCase()) ? 'General Knowledge' : market.designatedReporter;
+    const resolutionSource =
+      market.designatedReporter.toUpperCase() === market.author.toUpperCase()
+        ? 'General Knowledge'
+        : market.designatedReporter;
     return (
       <section
         className={classNames(
@@ -189,7 +196,11 @@ export default class MarketHeader extends Component<
       >
         {!headerCollapsed && (
           <div>
-            <div className={classNames({[Styles.ShowTutorial]: showTutorialDetails})}>
+            <div
+              className={classNames({
+                [Styles.ShowTutorial]: showTutorialDetails,
+              })}
+            >
               <div>
                 <WordTrail items={[...categoriesWithClick]}>
                   <button
@@ -205,7 +216,11 @@ export default class MarketHeader extends Component<
                   marketAddress={market.id}
                   marketDescription={description}
                 />
-                <div id="copy_marketId" data-clipboard-text={market.id} onClick={() => marketLinkCopied(market.id, MARKET_PAGE)}>
+                <div
+                  id="copy_marketId"
+                  data-clipboard-text={market.id}
+                  onClick={() => marketLinkCopied(market.id, MARKET_PAGE)}
+                >
                   {CopyAlternateIcon}
                 </div>
                 {toggleFavorite && (
@@ -218,7 +233,11 @@ export default class MarketHeader extends Component<
                 )}
               </div>
               <div>
-                {preview ? <PreviewMarketTitle market={market} /> : <MarketTitle id={market.marketId} noLink />}
+                {preview ? (
+                  <PreviewMarketTitle market={market} />
+                ) : (
+                  <MarketTitle id={market.marketId} noLink />
+                )}
                 <div className={Styles.Details}>
                   <h4>Resolution Source</h4>
                   <p>{resolutionSource}</p>
@@ -232,8 +251,7 @@ export default class MarketHeader extends Component<
                           this.detailsContainer = detailsContainer;
                         }}
                         className={classNames(Styles.AdditionalDetails, {
-                          [Styles.Tall]:
-                            detailsTooLong && showReadMore,
+                          [Styles.Tall]: detailsTooLong && showReadMore,
                         })}
                       >
                         <MarkdownRenderer text={details} hideLabel />
@@ -255,7 +273,11 @@ export default class MarketHeader extends Component<
                 )}
               </div>
             </div>
-            <div className={classNames({[Styles.ShowTutorial]: showTutorialData})}>
+            <div
+              className={classNames({
+                [Styles.ShowTutorial]: showTutorialData,
+              })}
+            >
               <div className={Styles.Properties}>
                 {(market.id || preview) && (
                   <MarketHeaderBar
