@@ -144,7 +144,7 @@ Deploying to: ${networkConfiguration.networkName}
 
         // Proxy Factory & Gnosis Safe
         if (externalAddresses.ProxyFactory) {
-            if (!externalAddresses.ProxyFactory) {
+            if (!externalAddresses.GnosisSafe) {
                 throw new Error('Must provide ALL Gnosis contracts if any are provided');
             }
 
