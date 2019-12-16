@@ -12,7 +12,7 @@ import { SignedOrder } from '@0x/types';
 // 1. To recalculate liquidity metrics. This can be stale so when the derived market DB is synced it should not wait for this to complete (it will already have recorded liquidity data from previous syncs)
 // 2. To cache market orderbooks so a complete pull isnt needed on every subsequent load.
 
-const EXPECTED_ASSET_DATA_LENGTH = 714;
+const EXPECTED_ASSET_DATA_LENGTH = 650;
 
 export interface OrderData {
   market: string;
@@ -35,6 +35,7 @@ export interface StoredOrder extends OrderData {
   orderHash: string,
   signedOrder: StoredSignedOrder,
   amount: string,
+  orderCreator: string,
 }
 
 export interface StoredSignedOrder {
@@ -131,6 +132,7 @@ export class ZeroXOrders extends AbstractTable {
       exchange: augurOrderData.exchange,
       orderHash: order.orderHash,
       amount: order.fillableTakerAssetAmount.toFixed(),
+      orderCreator: signedOrder.makerAddress,
       signedOrder: {
         signature: signedOrder.signature,
         senderAddress: signedOrder.senderAddress,
@@ -153,12 +155,12 @@ export class ZeroXOrders extends AbstractTable {
   parseAssetData(assetData: string): OrderData {
     const data = assetData.substr(2); // remove the 0x
     return {
-      market: getAddress(`0x${data.substr(456, 40)}`),
-      price: `0x${data.substr(496, 20)}`,
-      outcome: `0x${data.substr(516, 2)}`,
-      orderType: `0x${data.substr(518, 2)}`,
-      kycToken: getAddress(`0x${data.substr(288, 40)}`),
-      exchange: getAddress(`0x${data.substr(352, 40)}`),
+      market: getAddress(`0x${data.substr(392, 40)}`),
+      price: `0x${data.substr(432, 20)}`,
+      outcome: `0x${data.substr(452, 2)}`,
+      orderType: `0x${data.substr(454, 2)}`,
+      kycToken: getAddress(`0x${data.substr(224, 40)}`),
+      exchange: getAddress(`0x${data.substr(288, 40)}`),
     }
   }
 }

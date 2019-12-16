@@ -41,14 +41,14 @@ export interface TradeTransactionLimits {
   gasLimit: BigNumber;
 }
 
-export interface Order {
+interface Order {
   amount: BigNumber;
   displayPrice: BigNumber;
   displaySharesEscrowed: BigNumber;
   owner: string;
 }
 
-export interface SingleOutcomeOrderBook {
+interface SingleOutcomeOrderBook {
   buyOrders: Order[];
   sellorders: Order[];
 }

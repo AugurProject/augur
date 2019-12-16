@@ -266,6 +266,7 @@ export class Markets {
     t.type({ marketId: t.string }),
     t.partial({
       outcomeId: t.union([outcomeIdType, t.array(outcomeIdType)]),
+      account: t.string
     }),
   ]);
 
@@ -599,9 +600,9 @@ export class Markets {
     db: DB,
     params: t.TypeOf<typeof Markets.getMarketOrderBookParams>
   ): Promise<MarketOrderBook> {
-    const account = await augur.getAccount();
-    const orders = await OnChainTrading.getOrders(augur, db, {
-      ...params,
+    const account = params.account;
+    const orders = await OnChainTrading.getOpenOrders(augur, db, {
+      marketId: params.marketId,
       orderState: OrderState.OPEN,
     });
 
@@ -985,7 +986,7 @@ async function getMarketsInfo(
   reportingFeeDivisor: BigNumber
 ): Promise<MarketInfo[]> {
   const marketIds = _.map(markets, "market");
-  // TODO This is just used to get the last price. This can be acheived far more efficiently than pulling all order events for all time 
+  // TODO This is just used to get the last price. This can be acheived far more efficiently than pulling all order events for all time
   const orderFilledLogs = await db.dexieDB["OrderEvent"].where("market").anyOfIgnoreCase(marketIds).and(function(item) { return item.eventType === OrderEventType.Fill }).toArray();
   const disputeDocs = await db.dexieDB["Dispute"].where("market").anyOfIgnoreCase(marketIds).toArray();
   const disputeDocsByMarket = _.groupBy(disputeDocs, "market");

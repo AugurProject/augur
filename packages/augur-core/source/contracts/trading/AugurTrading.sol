@@ -12,6 +12,7 @@ import 'ROOT/trading/IOrders.sol';
 import 'ROOT/trading/Order.sol';
 import 'ROOT/trading/IProfitLoss.sol';
 import 'ROOT/libraries/ContractExists.sol';
+import 'ROOT/external/IDaiVat.sol';
 
 
 // Centralized approval authority and event emissions for trading.
@@ -81,11 +82,13 @@ contract AugurTrading is IAugurTrading {
 
         shareToken = IShareToken(augur.lookup("ShareToken"));
         ICash _cash = ICash(augur.lookup("Cash"));
+        IDaiVat _daiVat = IDaiVat(augur.lookup("DaiVat"));
 
         for (uint256 i = 0; i < _names.length; i++) {
             address _address = registry[_names[i]];
             shareToken.setApprovalForAll(_address, true);
             _cash.approve(_address, MAX_APPROVAL_AMOUNT);
+            _daiVat.hope(_address);
         }
     }
 

@@ -55,13 +55,20 @@ def test_helpers(kitchenSinkFixture, scalarMarket):
     assert creatorShare == 13.0 * market.getNumTicks() * 0.01
     assert shareholderShare == 13.0 * market.getNumTicks() * 0.98
 
-def test_redeem_shares_in_yesNo_market(kitchenSinkFixture, universe, cash, market):
+@mark.parametrize('afterMkrShutdown', [
+    True,
+    False
+])
+def test_redeem_shares_in_yesNo_market(afterMkrShutdown, kitchenSinkFixture, universe, cash, market):
     shareToken = kitchenSinkFixture.contracts["ShareToken"]
     expectedValue = 1 * market.getNumTicks()
     expectedReporterFees = expectedValue / universe.getOrCacheReportingFeeDivisor()
     expectedMarketCreatorFees = expectedValue / market.getMarketCreatorSettlementFeeDivisor()
     expectedSettlementFees = expectedReporterFees + expectedMarketCreatorFees
     expectedPayout = expectedValue - expectedSettlementFees
+
+    if (afterMkrShutdown):
+        kitchenSinkFixture.MKRShutdown()
 
     assert universe.getOpenInterestInAttoCash() == 0
 
@@ -82,16 +89,31 @@ def test_redeem_shares_in_yesNo_market(kitchenSinkFixture, universe, cash, marke
         'fees': 2,
     }
 
-    with TokenDelta(cash, expectedMarketCreatorFees, market.getOwner(), "market creator fees not paid"):
-        with TokenDelta(cash, expectedReporterFees, universe.getOrCreateNextDisputeWindow(False), "Reporter fees not paid"):
-            # redeem shares with a1
-            with AssertLog(kitchenSinkFixture, "TradingProceedsClaimed", tradingProceedsClaimedLog):
-                shareToken.claimTradingProceeds(market.address, kitchenSinkFixture.accounts[1], longTo32Bytes(11))
-            # redeem shares with a2
-            shareToken.claimTradingProceeds(market.address, kitchenSinkFixture.accounts[2], longTo32Bytes(11))
+    daiVat = kitchenSinkFixture.contracts['DaiVat']
+    disputeWindow = universe.getOrCreateNextDisputeWindow(False)
+    originalDisputeWindowBalance = cash.balanceOf(disputeWindow)
+    originalMarketCreatorBalance = cash.balanceOf(market.getOwner())
+
+    # redeem shares with a1
+    with AssertLog(kitchenSinkFixture, "TradingProceedsClaimed", tradingProceedsClaimedLog):
+        shareToken.claimTradingProceeds(market.address, kitchenSinkFixture.accounts[1], longTo32Bytes(11))
+    # redeem shares with a2
+    shareToken.claimTradingProceeds(market.address, kitchenSinkFixture.accounts[2], longTo32Bytes(11))
+
+    newDisputeWindowBalance = cash.balanceOf(disputeWindow) + daiVat.dai(disputeWindow) / 10**27
+    assert newDisputeWindowBalance == expectedReporterFees + originalDisputeWindowBalance
+
+    if afterMkrShutdown:
+        newMarketCreatorBalanceFromFees = (daiVat.dai(market.getOwner()) - 10**46) / 10**27 # - 10**46 is subtracting winnings to get fees
+    else:
+        newMarketCreatorBalanceFromFees = cash.balanceOf(market.getOwner())
+    assert newMarketCreatorBalanceFromFees == int(expectedMarketCreatorFees) + originalMarketCreatorBalance
 
     # assert a1 ends up with cash (minus fees) and a2 does not
-    assert cash.balanceOf(kitchenSinkFixture.accounts[1]) == expectedPayout
+    if afterMkrShutdown:
+        assert daiVat.dai(kitchenSinkFixture.accounts[1]) / 10**27 == expectedPayout
+    else:
+        assert cash.balanceOf(kitchenSinkFixture.accounts[1]) == expectedPayout
 
     assert shareToken.balanceOfMarketOutcome(market.address, YES, kitchenSinkFixture.accounts[1]) == 0
     assert shareToken.balanceOfMarketOutcome(market.address, YES, kitchenSinkFixture.accounts[2]) == 0

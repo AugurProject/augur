@@ -1,14 +1,22 @@
 #!/usr/bin/env python
 
 from eth_tester.exceptions import TransactionFailed
-from pytest import raises
+from pytest import raises, mark
 from utils import fix, AssertLog, nullAddress, TokenDelta
 from constants import YES, NO
 
-def test_openInterestCash(contractsFixture, augur, universe, cash, market):
+@mark.parametrize('afterMkrShutdown', [
+    True,
+    False
+])
+def test_openInterestCash(afterMkrShutdown, contractsFixture, augur, universe, cash, market):
     constants = contractsFixture.contracts["Constants"]
+    daiVat = contractsFixture.contracts["DaiVat"]
     openInterestCashAddress = universe.openInterestCash()
     openInterestCash = contractsFixture.applySignature("OICash", openInterestCashAddress)
+
+    if (afterMkrShutdown):
+        contractsFixture.MKRShutdown()
 
     account1 = contractsFixture.accounts[0]
     account2 = contractsFixture.accounts[1]
@@ -43,9 +51,17 @@ def test_openInterestCash(contractsFixture, augur, universe, cash, market):
 
     expectedFees = depositAmount / reportingFeeDivisor
     expectedPayout = depositAmount - expectedFees
-    with TokenDelta(cash, expectedPayout, account1):
-        with TokenDelta(cash, expectedFees, disputeWindowAddress):
-            assert openInterestCash.withdraw(depositAmount)
+
+    originalAccountBalance = cash.balanceOf(account1)
+    originalWindowBalance = cash.balanceOf(disputeWindowAddress)
+
+    assert openInterestCash.withdraw(depositAmount)
+
+    newAccountBalance = cash.balanceOf(account1) + daiVat.dai(account1) / 10**27
+    newWindowBalance = cash.balanceOf(disputeWindowAddress) + daiVat.dai(disputeWindowAddress) / 10**27
+
+    assert newAccountBalance == originalAccountBalance + expectedPayout
+    assert newWindowBalance == originalWindowBalance + expectedFees
 
     assert universe.totalBalance() == initialUniverseTotalBalance
     assert universe.marketBalance(nullAddress) == 0

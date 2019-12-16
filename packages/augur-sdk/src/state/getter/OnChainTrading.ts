@@ -19,6 +19,7 @@ import {
 
 import * as t from "io-ts";
 import Dexie from "dexie";
+import { ZeroXOrdersGetters, ZeroXOrders } from "./ZeroXOrdersGetters";
 
 const ZERO = new BigNumber(0);
 
@@ -56,8 +57,6 @@ export const OrdersParams = t.partial({
   orderType: t.string,
   account: t.string,
   orderState: t.string,
-  filterFinalized: t.boolean,
-  makerTaker
 });
 
 export interface MarketTradingHistory {
@@ -135,13 +134,6 @@ export const OrderType = t.keyof({
   sell: null,
 });
 
-export const BetterWorseOrdersParams = t.type({
-  marketId: t.string,
-  outcome: t.number,
-  orderType: OrderType,
-  price: t.number,
-});
-
 export interface BetterWorseResult {
   betterOrderId: string | null;
   worseOrderId: string | null;
@@ -157,7 +149,6 @@ export class OnChainTrading {
     filterFinalized: t.boolean,
   });
   static GetOrdersParams = t.intersection([sortOptions, OrdersParams]);
-  static GetBetterWorseOrdersParams = BetterWorseOrdersParams;
 
   @Getter('GetTradingHistoryParams')
   static async getTradingHistory(
@@ -257,66 +248,20 @@ export class OnChainTrading {
     );
   }
 
-  @Getter('GetAllOrdersParams')
-  static async getAllOrders(
-    augur: Augur,
-    db: DB,
-    params: t.TypeOf<typeof OnChainTrading.GetAllOrdersParams>
-  ): Promise<AllOrders> {
-    if (!params.account) {
-      throw new Error("'getAllOrders' requires an 'account' param be provided");
-    }
-
-    const currentOrdersResponse = await db.CurrentOrders.where("orderCreator").equals(params.account).or("orderFiller").equals(params.account).and((log) => log.amount > '0x00').toArray();
-
-    const marketIds = _.map(currentOrdersResponse, 'market');
-    const markets = await getMarkets(
-      marketIds,
-      db,
-      params.filterFinalized
-    );
-
-    return currentOrdersResponse.reduce(
-      (orders: AllOrders, orderEventDoc: ParsedOrderEventLog) => {
-        const marketDoc = markets[orderEventDoc.market];
-        if (!marketDoc) return orders;
-        const minPrice = new BigNumber(marketDoc.prices[0]);
-        const maxPrice = new BigNumber(marketDoc.prices[1]);
-        const numTicks = new BigNumber(marketDoc.numTicks);
-        const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
-        const marketId = orderEventDoc.market;
-        const orderId = orderEventDoc.orderId;
-        const sharesEscrowed = convertOnChainAmountToDisplayAmount(
-          new BigNumber(orderEventDoc.sharesEscrowed, 16),
-          tickSize
-        ).toString(10);
-        const tokensEscrowed = new BigNumber(orderEventDoc.tokensEscrowed, 16)
-        .dividedBy(10 ** 18)
-        .toString(10);
-        orders[orderId] = {
-          orderId,
-          tokensEscrowed,
-          sharesEscrowed,
-          marketId,
-        };
-        return orders;
-      },
-      {} as AllOrders
-    );
-  }
-
   @Getter('GetOrdersParams')
-  static async getOrders(
+  static async getOpenOrders(
     augur: Augur,
     db: DB,
     params: t.TypeOf<typeof OnChainTrading.GetOrdersParams>
-  ): Promise<Orders> {
+  ): Promise<ZeroXOrders> {
     if (!params.marketId && !params.universe) {
       throw new Error(
         "'getOrders' requires a 'marketId' or 'universe' param be provided"
       );
     }
 
+    return ZeroXOrdersGetters.getZeroXOrders(augur, db, params);
+    /*
     let currentOrdersResponse: ParsedOrderEventLog[];
 
     if (params.universe) {
@@ -446,63 +391,7 @@ export class OnChainTrading {
       },
       {} as Orders
     );
-  }
-
-  @Getter('GetBetterWorseOrdersParams')
-  static async getBetterWorseOrders(
-    augur: Augur,
-    db: DB,
-    params: t.TypeOf<typeof OnChainTrading.GetBetterWorseOrdersParams>
-  ): Promise<BetterWorseResult> {
-    const desiredOrderType = params.orderType === 'buy' ? 0 : 1;
-
-    const currentOrdersResponse = await db.CurrentOrders.where("[market+open]").equals([params.marketId, 1]).and((log) => {
-      return log.outcome === `0x0${params.outcome.toString()}` && log.orderType === desiredOrderType;
-    }).toArray();
-    const marketDoc = await db.Markets.get(params.marketId);
-    if (!marketDoc) {
-      throw new Error(`Market ${params.marketId} not found.`);
-    }
-    const minPrice = new BigNumber(marketDoc.prices[0]);
-    const maxPrice = new BigNumber(marketDoc.prices[1]);
-    const numTicks = new BigNumber(marketDoc.numTicks);
-    const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
-    const onChainPrice = convertDisplayPriceToOnChainPrice(
-      new BigNumber(params.price),
-      minPrice,
-      tickSize
-    );
-    const [lesserOrders, greaterOrders] = _.partition(
-      currentOrdersResponse,
-      order => new BigNumber(order.price).lt(onChainPrice)
-    );
-    const greaterOrder = _.reduce(
-      greaterOrders,
-      (result, order) =>
-        result.orderId === null || new BigNumber(order.price).lt(result.price)
-          ? { orderId: order.orderId, price: new BigNumber(order.price) }
-          : result,
-      { orderId: null, price: ZERO }
-    );
-    const lesserOrder = _.reduce(
-      lesserOrders,
-      (result, order) =>
-        result.orderId === null || new BigNumber(order.price).gt(result.price)
-          ? { orderId: order.orderId, price: new BigNumber(order.price) }
-          : result,
-      { orderId: null, price: ZERO }
-    );
-    if (params.orderType === 'buy') {
-      return {
-        betterOrderId: greaterOrder.orderId,
-        worseOrderId: lesserOrder.orderId,
-      };
-    } else {
-      return {
-        betterOrderId: lesserOrder.orderId,
-        worseOrderId: greaterOrder.orderId,
-      };
-    }
+    */
   }
 }
 

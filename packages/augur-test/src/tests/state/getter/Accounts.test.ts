@@ -581,7 +581,7 @@ describe('State API :: Accounts :: ', () => {
         outcome: 1,
         outcomeDescription: 'No',
         price: '0',
-        quantity: '349680582682291667',
+        quantity: '349680625587481902',
         total: '0',
       },
     ]);
@@ -620,7 +620,7 @@ describe('State API :: Accounts :: ', () => {
           johnYesNoMarket,
           yesPayoutSet
         );
-        await mary.contribute(market, yesPayoutSet, remainingToFill);
+        if (remainingToFill.gte(0)) await mary.contribute(market, yesPayoutSet, remainingToFill);
       } else {
         await john.contribute(
           johnYesNoMarket,
@@ -631,7 +631,7 @@ describe('State API :: Accounts :: ', () => {
           johnYesNoMarket,
           noPayoutSet
         );
-        await john.contribute(johnYesNoMarket, noPayoutSet, remainingToFill);
+        if (remainingToFill.gte(0)) await john.contribute(johnYesNoMarket, noPayoutSet, remainingToFill);
       }
     }
 
@@ -667,7 +667,7 @@ describe('State API :: Accounts :: ', () => {
         outcome: 1,
         outcomeDescription: 'No',
         price: '0',
-        quantity: '1049041748046850001',
+        quantity: '1049041876762420706',
         total: '0',
       },
     ]);
@@ -749,7 +749,7 @@ describe('State API :: Accounts :: ', () => {
         outcomeDescription: 'No',
         price: '0',
         quantity: '0',
-        total: '349680582682291667',
+        total: '349680625587481902',
       },
       {
         action: 'CLAIM_WINNING_CROWDSOURCERS',
@@ -879,7 +879,7 @@ describe('State API :: Accounts :: ', () => {
         outcome: 1,
         outcomeDescription: 'No',
         price: '0',
-        quantity: '349680582682291667',
+        quantity: '349680625587481902',
         total: '0',
       },
     ]);
@@ -928,25 +928,6 @@ describe('State API :: Accounts :: ', () => {
     ]);
   });
 
-  test(':getAllOrders', async () => {
-    let allOrders: AllOrders = await api.route('getAllOrders', {
-      account: john.account.publicKey,
-    });
-    await expect(Object.keys(allOrders).length).toEqual(8);
-
-    allOrders = await api.route('getAllOrders', {
-      account: john.account.publicKey,
-      makerTaker: 'either',
-    });
-    await expect(Object.keys(allOrders).length).toEqual(8);
-
-    allOrders = await api.route('getAllOrders', {
-      account: john.account.publicKey,
-      filterFinalized: true,
-    });
-    await expect(Object.keys(allOrders).length).toEqual(5);
-  });
-
   test(':getUserCurrentDisputeStake', async () => {
     // Create market, do an initial report, and then dispute to multiple outcomes and multiple times
     const johnYesNoMarket = await john.createReasonableYesNoMarket();
@@ -992,7 +973,7 @@ describe('State API :: Accounts :: ', () => {
         account: ACCOUNTS[0].publicKey,
       }
     );
-    
+
     await expect(userCurrentDisputeStake).toContainEqual({
       outcome: "0",
       isInvalid: true,

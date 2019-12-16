@@ -87,16 +87,23 @@ export class WithdrawForm extends Component<
   };
 
   handleMax = () => {
-    const { loginAccount, fallBackGasCosts } = this.props;
-    const { currency } = this.state;
+    const { loginAccount, fallBackGasCosts, Gnosis_ENABLED, gasPrice } = this.props;
+    const { currency, relayerGasCosts } = this.state;
+  
+    const gasEstimate = Gnosis_ENABLED
+    ? formatGasCostToEther(
+        relayerGasCosts,
+        { decimalsRounded: 4 },
+        gasPrice,
+      )
+    : fallBackGasCosts[currency.toLowerCase()];
+
     const fullAmount = createBigNumber(
       loginAccount.balances[currency.toLowerCase()]
     );
-    const valueMinusGas = fullAmount.minus(fallBackGasCosts.eth.fullPrecision);
+    const valueMinusGas = fullAmount.minus(createBigNumber(gasEstimate.fullPrecision));
     const resolvedValue = valueMinusGas.lt(ZERO) ? ZERO : valueMinusGas;
-    this.amountChange(
-      currency === ETH ? resolvedValue.toFixed() : fullAmount.toFixed()
-    );
+    this.amountChange(resolvedValue.toFixed());
   };
 
   amountChange = (amount: string) => {

@@ -125,7 +125,7 @@ def test_publicBuyCompleteSets(contractsFixture, universe, cash, market):
     assert shareToken.totalSupplyForMarketOutcome(market.address, NO) == 10, "Increase in yes shares purchased for this market should be 10"
     assert universe.getOpenInterestInAttoCash() == cost, "Open interest in the universe increases by the cost in ETH of the sets purchased"
 
-def test_publicSellCompleteSets(contractsFixture, universe, cash, market, tokensFail):
+def test_publicSellCompleteSets(contractsFixture, universe, cash, market):
     orders = contractsFixture.contracts['Orders']
     shareToken = contractsFixture.contracts["ShareToken"]
 
@@ -140,7 +140,6 @@ def test_publicSellCompleteSets(contractsFixture, universe, cash, market, tokens
     shareToken.buyCompleteSets(market.address, account, 10)
     assert universe.getOpenInterestInAttoCash() == 10 * market.getNumTicks()
 
-    tokensFail.setFail(True)
     completeSetsSoldLog = {
         "universe": universe.address,
         "market": market.address,
@@ -159,7 +158,6 @@ def test_publicSellCompleteSets(contractsFixture, universe, cash, market, tokens
         with AssertLog(contractsFixture, "MarketOIChanged", marketOIChanged):
             result = shareToken.publicSellCompleteSets(market.address, 9, longTo32Bytes(11))
 
-    tokensFail.setFail(False)
     assert universe.getOpenInterestInAttoCash() == 1 * market.getNumTicks()
 
     assert shareToken.balanceOfMarketOutcome(market.address, YES, contractsFixture.accounts[0]) == 1, "Should have 1 share of outcome yes"

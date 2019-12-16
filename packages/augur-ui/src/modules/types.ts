@@ -53,7 +53,7 @@ export interface Alert {
 
 export interface TimezoneDateObject {
   formattedUtc: string;
-  formattedLocalTimezone: string;
+  formattedLocalShortDateTimeWithTimezone: string;
   timestamp: number;
 }
 
@@ -67,7 +67,7 @@ export interface DateFormattedObject {
   timestamp: number;
   utcLocalOffset: number;
   clockTimeLocal: string;
-  formattedLocalTimezone: string;
+  formattedLocalShortDateTimeWithTimezone: string;
   formattedLocalShortDateTimeNoTimezone: string;
   formattedSimpleData: string;
   formattedUtcShortDate: string;

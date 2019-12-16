@@ -261,7 +261,6 @@ export class ZeroX {
       new BigNumber(params.outcome),
       params.kycToken,
       params.expirationTime,
-      this.augur.addresses.Exchange,
       salt
     );
     const order = result[0];

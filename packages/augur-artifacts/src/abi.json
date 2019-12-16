@@ -6080,6 +6080,25 @@
 			"type": "function"
 		},
 		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_daiAmount",
+					"type": "uint256"
+				}
+			],
+			"name": "daiToVatDai",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
 			"constant": false,
 			"inputs": [
 				{
@@ -6227,6 +6246,20 @@
 			"type": "function"
 		},
 		{
+			"constant": true,
+			"inputs": [],
+			"name": "vat",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
 			"constant": false,
 			"inputs": [
 				{
@@ -6259,6 +6292,25 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_vDaiAmount",
+					"type": "uint256"
+				}
+			],
+			"name": "vatDaiToDai",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
 			"type": "function"
 		},
 		{
@@ -6556,6 +6608,33 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_from",
+					"type": "address"
+				},
+				{
+					"name": "_to",
+					"type": "address"
+				},
+				{
+					"name": "_amount",
+					"type": "uint256"
+				}
+			],
+			"name": "trustedCashTransfer",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -6892,6 +6971,20 @@
 				{
 					"name": "",
 					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "cash",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
 				}
 			],
 			"payable": false,
@@ -7436,37 +7529,6 @@
 			"constant": false,
 			"inputs": [],
 			"name": "finishDeployment",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_token",
-					"type": "address"
-				},
-				{
-					"name": "_from",
-					"type": "address"
-				},
-				{
-					"name": "_to",
-					"type": "address"
-				},
-				{
-					"name": "_amount",
-					"type": "uint256"
-				}
-			],
-			"name": "trustedTransfer",
 			"outputs": [
 				{
 					"name": "",
@@ -8679,20 +8741,6 @@
 		{
 			"constant": true,
 			"inputs": [],
-			"name": "supply",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
 			"name": "name",
 			"outputs": [
 				{
@@ -8785,11 +8833,11 @@
 		{
 			"constant": true,
 			"inputs": [],
-			"name": "DAI_ONE",
+			"name": "daiVat",
 			"outputs": [
 				{
 					"name": "",
-					"type": "uint256"
+					"type": "address"
 				}
 			],
 			"payable": false,
@@ -8799,11 +8847,11 @@
 		{
 			"constant": true,
 			"inputs": [],
-			"name": "daiVat",
+			"name": "RAY",
 			"outputs": [
 				{
 					"name": "",
-					"type": "address"
+					"type": "uint256"
 				}
 			],
 			"payable": false,
@@ -9287,231 +9335,6 @@
 			"payable": false,
 			"stateMutability": "nonpayable",
 			"type": "constructor"
-		}
-	],
-	"ERC1820Registry": [
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_addr",
-					"type": "address"
-				},
-				{
-					"name": "_interfaceHash",
-					"type": "bytes32"
-				},
-				{
-					"name": "_implementer",
-					"type": "address"
-				}
-			],
-			"name": "setInterfaceImplementer",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_addr",
-					"type": "address"
-				}
-			],
-			"name": "getManager",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_addr",
-					"type": "address"
-				},
-				{
-					"name": "_newManager",
-					"type": "address"
-				}
-			],
-			"name": "setManager",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_interfaceName",
-					"type": "string"
-				}
-			],
-			"name": "interfaceHash",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "pure",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_interfaceHash",
-					"type": "bytes32"
-				}
-			],
-			"name": "isERC165Interface",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "pure",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_contract",
-					"type": "address"
-				},
-				{
-					"name": "_interfaceId",
-					"type": "bytes4"
-				}
-			],
-			"name": "updateERC165Cache",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_addr",
-					"type": "address"
-				},
-				{
-					"name": "_interfaceHash",
-					"type": "bytes32"
-				}
-			],
-			"name": "getInterfaceImplementer",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_contract",
-					"type": "address"
-				},
-				{
-					"name": "_interfaceId",
-					"type": "bytes4"
-				}
-			],
-			"name": "implementsERC165InterfaceNoCache",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_contract",
-					"type": "address"
-				},
-				{
-					"name": "_interfaceId",
-					"type": "bytes4"
-				}
-			],
-			"name": "implementsERC165Interface",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"name": "addr",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "interfaceHash",
-					"type": "bytes32"
-				},
-				{
-					"indexed": true,
-					"name": "implementer",
-					"type": "address"
-				}
-			],
-			"name": "InterfaceImplementerSet",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"name": "addr",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "newManager",
-					"type": "address"
-				}
-			],
-			"name": "ManagerChanged",
-			"type": "event"
 		}
 	],
 	"GnosisSafe": [
@@ -10596,43 +10419,6 @@
 	"LegacyReputationToken": [
 		{
 			"constant": true,
-			"inputs": [
-				{
-					"name": "",
-					"type": "address"
-				},
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"name": "_allowances",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "defaultOperators",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address[]"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
 			"inputs": [],
 			"name": "name",
 			"outputs": [
@@ -10649,11 +10435,11 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "spender",
+					"name": "_spender",
 					"type": "address"
 				},
 				{
-					"name": "value",
+					"name": "_amount",
 					"type": "uint256"
 				}
 			],
@@ -10739,6 +10525,25 @@
 		},
 		{
 			"constant": true,
+			"inputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"name": "balances",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
 			"inputs": [],
 			"name": "decimals",
 			"outputs": [
@@ -10752,9 +10557,41 @@
 			"type": "function"
 		},
 		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_spender",
+					"type": "address"
+				},
+				{
+					"name": "_addedValue",
+					"type": "uint256"
+				}
+			],
+			"name": "increaseAllowance",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"constant": true,
-			"inputs": [],
-			"name": "granularity",
+			"inputs": [
+				{
+					"name": "",
+					"type": "address"
+				},
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"name": "allowances",
 			"outputs": [
 				{
 					"name": "",
@@ -10808,73 +10645,6 @@
 			"type": "function"
 		},
 		{
-			"constant": true,
-			"inputs": [],
-			"name": "erc1820Registry",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "sender",
-					"type": "address"
-				},
-				{
-					"name": "recipient",
-					"type": "address"
-				},
-				{
-					"name": "amount",
-					"type": "uint256"
-				},
-				{
-					"name": "data",
-					"type": "bytes"
-				},
-				{
-					"name": "operatorData",
-					"type": "bytes"
-				}
-			],
-			"name": "operatorSend",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_spender",
-					"type": "address"
-				},
-				{
-					"name": "_subtractedValue",
-					"type": "uint256"
-				}
-			],
-			"name": "decreaseApproval",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
 			"constant": false,
 			"inputs": [
 				{
@@ -10901,7 +10671,7 @@
 			"constant": true,
 			"inputs": [
 				{
-					"name": "tokenHolder",
+					"name": "_account",
 					"type": "address"
 				}
 			],
@@ -11019,20 +10789,6 @@
 			"type": "function"
 		},
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "operator",
-					"type": "address"
-				}
-			],
-			"name": "authorizeOperator",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [],
 			"name": "symbol",
@@ -11050,15 +10806,15 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "_recipient",
+					"name": "_reporter",
 					"type": "address"
 				},
 				{
-					"name": "_amount",
+					"name": "_attotokens",
 					"type": "uint256"
 				}
 			],
-			"name": "noHooksTransfer",
+			"name": "migrateIn",
 			"outputs": [
 				{
 					"name": "",
@@ -11073,37 +10829,15 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "recipient",
+					"name": "_spender",
 					"type": "address"
 				},
 				{
-					"name": "amount",
-					"type": "uint256"
-				},
-				{
-					"name": "data",
-					"type": "bytes"
-				}
-			],
-			"name": "send",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_reporter",
-					"type": "address"
-				},
-				{
-					"name": "_attotokens",
+					"name": "_subtractedValue",
 					"type": "uint256"
 				}
 			],
-			"name": "migrateIn",
+			"name": "decreaseAllowance",
 			"outputs": [
 				{
 					"name": "",
@@ -11141,25 +10875,6 @@
 				}
 			],
 			"name": "transfer",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_augur",
-					"type": "address"
-				}
-			],
-			"name": "initializeERC1820",
 			"outputs": [
 				{
 					"name": "",
@@ -11229,52 +10944,6 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "_spender",
-					"type": "address"
-				},
-				{
-					"name": "_addedValue",
-					"type": "uint256"
-				}
-			],
-			"name": "increaseApproval",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "operator",
-					"type": "address"
-				},
-				{
-					"name": "tokenHolder",
-					"type": "address"
-				}
-			],
-			"name": "isOperatorFor",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
 					"name": "_token",
 					"type": "address"
 				}
@@ -11327,11 +10996,11 @@
 			"constant": true,
 			"inputs": [
 				{
-					"name": "holder",
+					"name": "_owner",
 					"type": "address"
 				},
 				{
-					"name": "spender",
+					"name": "_spender",
 					"type": "address"
 				}
 			],
@@ -11420,20 +11089,6 @@
 					"type": "bool"
 				}
 			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "operator",
-					"type": "address"
-				}
-			],
-			"name": "revokeOperator",
-			"outputs": [],
 			"payable": false,
 			"stateMutability": "nonpayable",
 			"type": "function"
@@ -11534,141 +11189,6 @@
 				}
 			],
 			"name": "Approval",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"name": "operator",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "from",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "to",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"name": "amount",
-					"type": "uint256"
-				},
-				{
-					"indexed": false,
-					"name": "data",
-					"type": "bytes"
-				},
-				{
-					"indexed": false,
-					"name": "operatorData",
-					"type": "bytes"
-				}
-			],
-			"name": "Sent",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"name": "operator",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "to",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"name": "amount",
-					"type": "uint256"
-				},
-				{
-					"indexed": false,
-					"name": "data",
-					"type": "bytes"
-				},
-				{
-					"indexed": false,
-					"name": "operatorData",
-					"type": "bytes"
-				}
-			],
-			"name": "Minted",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"name": "operator",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "from",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"name": "amount",
-					"type": "uint256"
-				},
-				{
-					"indexed": false,
-					"name": "data",
-					"type": "bytes"
-				},
-				{
-					"indexed": false,
-					"name": "operatorData",
-					"type": "bytes"
-				}
-			],
-			"name": "Burned",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"name": "operator",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "tokenHolder",
-					"type": "address"
-				}
-			],
-			"name": "AuthorizedOperator",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"name": "operator",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "tokenHolder",
-					"type": "address"
-				}
-			],
-			"name": "RevokedOperator",
 			"type": "event"
 		}
 	],
@@ -11822,6 +11342,29 @@
 			"outputs": [],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [],
+			"name": "cage",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "live",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -12078,6 +11621,15 @@
 			"type": "function"
 		},
 		{
+			"constant": false,
+			"inputs": [],
+			"name": "cage",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"constant": true,
 			"inputs": [
 				{
@@ -12146,6 +11698,20 @@
 			"outputs": [],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "live",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -12259,43 +11825,6 @@
 	"TestNetReputationToken": [
 		{
 			"constant": true,
-			"inputs": [
-				{
-					"name": "",
-					"type": "address"
-				},
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"name": "_allowances",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "defaultOperators",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address[]"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
 			"inputs": [],
 			"name": "name",
 			"outputs": [
@@ -12312,11 +11841,11 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "spender",
+					"name": "_spender",
 					"type": "address"
 				},
 				{
-					"name": "value",
+					"name": "_amount",
 					"type": "uint256"
 				}
 			],
@@ -12363,15 +11892,15 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "holder",
+					"name": "_sender",
 					"type": "address"
 				},
 				{
-					"name": "recipient",
+					"name": "_recipient",
 					"type": "address"
 				},
 				{
-					"name": "amount",
+					"name": "_amount",
 					"type": "uint256"
 				}
 			],
@@ -12384,6 +11913,25 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"name": "balances",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -12401,9 +11949,41 @@
 			"type": "function"
 		},
 		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_spender",
+					"type": "address"
+				},
+				{
+					"name": "_addedValue",
+					"type": "uint256"
+				}
+			],
+			"name": "increaseAllowance",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"constant": true,
-			"inputs": [],
-			"name": "granularity",
+			"inputs": [
+				{
+					"name": "",
+					"type": "address"
+				},
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"name": "allowances",
 			"outputs": [
 				{
 					"name": "",
@@ -12472,76 +12052,9 @@
 		},
 		{
 			"constant": true,
-			"inputs": [],
-			"name": "erc1820Registry",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
 			"inputs": [
 				{
-					"name": "sender",
-					"type": "address"
-				},
-				{
-					"name": "recipient",
-					"type": "address"
-				},
-				{
-					"name": "amount",
-					"type": "uint256"
-				},
-				{
-					"name": "data",
-					"type": "bytes"
-				},
-				{
-					"name": "operatorData",
-					"type": "bytes"
-				}
-			],
-			"name": "operatorSend",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_spender",
-					"type": "address"
-				},
-				{
-					"name": "_subtractedValue",
-					"type": "uint256"
-				}
-			],
-			"name": "decreaseApproval",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "tokenHolder",
+					"name": "_account",
 					"type": "address"
 				}
 			],
@@ -12654,20 +12167,6 @@
 			"type": "function"
 		},
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "operator",
-					"type": "address"
-				}
-			],
-			"name": "authorizeOperator",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [],
 			"name": "symbol",
@@ -12679,51 +12178,6 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_recipient",
-					"type": "address"
-				},
-				{
-					"name": "_amount",
-					"type": "uint256"
-				}
-			],
-			"name": "noHooksTransfer",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "recipient",
-					"type": "address"
-				},
-				{
-					"name": "amount",
-					"type": "uint256"
-				},
-				{
-					"name": "data",
-					"type": "bytes"
-				}
-			],
-			"name": "send",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -12753,11 +12207,34 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "recipient",
+					"name": "_spender",
 					"type": "address"
 				},
 				{
-					"name": "amount",
+					"name": "_subtractedValue",
+					"type": "uint256"
+				}
+			],
+			"name": "decreaseAllowance",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_recipient",
+					"type": "address"
+				},
+				{
+					"name": "_amount",
 					"type": "uint256"
 				}
 			],
@@ -12836,52 +12313,6 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "_spender",
-					"type": "address"
-				},
-				{
-					"name": "_addedValue",
-					"type": "uint256"
-				}
-			],
-			"name": "increaseApproval",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "operator",
-					"type": "address"
-				},
-				{
-					"name": "tokenHolder",
-					"type": "address"
-				}
-			],
-			"name": "isOperatorFor",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
 					"name": "_amountMigrated",
 					"type": "uint256"
 				}
@@ -12901,11 +12332,11 @@
 			"constant": true,
 			"inputs": [
 				{
-					"name": "holder",
+					"name": "_owner",
 					"type": "address"
 				},
 				{
-					"name": "spender",
+					"name": "_spender",
 					"type": "address"
 				}
 			],
@@ -12974,20 +12405,6 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "operator",
-					"type": "address"
-				}
-			],
-			"name": "revokeOperator",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
 					"name": "_source",
 					"type": "address"
 				},
@@ -13023,10 +12440,6 @@
 				},
 				{
 					"name": "_parentUniverse",
-					"type": "address"
-				},
-				{
-					"name": "_erc1820RegistryAddress",
 					"type": "address"
 				}
 			],
@@ -13076,141 +12489,6 @@
 				}
 			],
 			"name": "Approval",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"name": "operator",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "from",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "to",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"name": "amount",
-					"type": "uint256"
-				},
-				{
-					"indexed": false,
-					"name": "data",
-					"type": "bytes"
-				},
-				{
-					"indexed": false,
-					"name": "operatorData",
-					"type": "bytes"
-				}
-			],
-			"name": "Sent",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"name": "operator",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "to",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"name": "amount",
-					"type": "uint256"
-				},
-				{
-					"indexed": false,
-					"name": "data",
-					"type": "bytes"
-				},
-				{
-					"indexed": false,
-					"name": "operatorData",
-					"type": "bytes"
-				}
-			],
-			"name": "Minted",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"name": "operator",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "from",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"name": "amount",
-					"type": "uint256"
-				},
-				{
-					"indexed": false,
-					"name": "data",
-					"type": "bytes"
-				},
-				{
-					"indexed": false,
-					"name": "operatorData",
-					"type": "bytes"
-				}
-			],
-			"name": "Burned",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"name": "operator",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "tokenHolder",
-					"type": "address"
-				}
-			],
-			"name": "AuthorizedOperator",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"name": "operator",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "tokenHolder",
-					"type": "address"
-				}
-			],
-			"name": "RevokedOperator",
 			"type": "event"
 		}
 	],
@@ -13642,10 +12920,6 @@
 					"type": "address"
 				},
 				{
-					"name": "_universe",
-					"type": "address"
-				},
-				{
 					"name": "_endTime",
 					"type": "uint256"
 				},
@@ -13922,43 +13196,6 @@
 	"DisputeCrowdsourcer": [
 		{
 			"constant": true,
-			"inputs": [
-				{
-					"name": "",
-					"type": "address"
-				},
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"name": "_allowances",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "defaultOperators",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address[]"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
 			"inputs": [],
 			"name": "name",
 			"outputs": [
@@ -13975,11 +13212,11 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "spender",
+					"name": "_spender",
 					"type": "address"
 				},
 				{
-					"name": "value",
+					"name": "_amount",
 					"type": "uint256"
 				}
 			],
@@ -14063,15 +13300,15 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "holder",
+					"name": "_sender",
 					"type": "address"
 				},
 				{
-					"name": "recipient",
+					"name": "_recipient",
 					"type": "address"
 				},
 				{
-					"name": "amount",
+					"name": "_amount",
 					"type": "uint256"
 				}
 			],
@@ -14087,41 +13324,22 @@
 			"type": "function"
 		},
 		{
-			"constant": false,
+			"constant": true,
 			"inputs": [
 				{
-					"name": "_augur",
+					"name": "",
 					"type": "address"
-				},
+				}
+			],
+			"name": "balances",
+			"outputs": [
 				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_size",
-					"type": "uint256"
-				},
-				{
-					"name": "_payoutDistributionHash",
-					"type": "bytes32"
-				},
-				{
-					"name": "_payoutNumerators",
-					"type": "uint256[]"
-				},
-				{
-					"name": "_erc1820RegistryAddress",
-					"type": "address"
-				},
-				{
-					"name": "_crowdsourcerGeneration",
+					"name": "",
 					"type": "uint256"
 				}
 			],
-			"name": "initialize",
-			"outputs": [],
 			"payable": false,
-			"stateMutability": "nonpayable",
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -14140,6 +13358,29 @@
 		},
 		{
 			"constant": false,
+			"inputs": [
+				{
+					"name": "_spender",
+					"type": "address"
+				},
+				{
+					"name": "_addedValue",
+					"type": "uint256"
+				}
+			],
+			"name": "increaseAllowance",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
 			"inputs": [],
 			"name": "fork",
 			"outputs": [],
@@ -14149,60 +13390,25 @@
 		},
 		{
 			"constant": true,
-			"inputs": [],
-			"name": "granularity",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "erc1820Registry",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
 			"inputs": [
 				{
-					"name": "sender",
+					"name": "",
 					"type": "address"
 				},
 				{
-					"name": "recipient",
+					"name": "",
 					"type": "address"
-				},
-				{
-					"name": "amount",
-					"type": "uint256"
-				},
-				{
-					"name": "data",
-					"type": "bytes"
-				},
-				{
-					"name": "operatorData",
-					"type": "bytes"
 				}
 			],
-			"name": "operatorSend",
-			"outputs": [],
+			"name": "allowances",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
 			"payable": false,
-			"stateMutability": "nonpayable",
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -14217,29 +13423,6 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_spender",
-					"type": "address"
-				},
-				{
-					"name": "_subtractedValue",
-					"type": "uint256"
-				}
-			],
-			"name": "decreaseApproval",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -14260,7 +13443,7 @@
 			"constant": true,
 			"inputs": [
 				{
-					"name": "tokenHolder",
+					"name": "_account",
 					"type": "address"
 				}
 			],
@@ -14334,20 +13517,6 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "operator",
-					"type": "address"
-				}
-			],
-			"name": "authorizeOperator",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
 					"name": "_redeemer",
 					"type": "address"
 				}
@@ -14379,51 +13548,6 @@
 		},
 		{
 			"constant": false,
-			"inputs": [
-				{
-					"name": "_recipient",
-					"type": "address"
-				},
-				{
-					"name": "_amount",
-					"type": "uint256"
-				}
-			],
-			"name": "noHooksTransfer",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "recipient",
-					"type": "address"
-				},
-				{
-					"name": "amount",
-					"type": "uint256"
-				},
-				{
-					"name": "data",
-					"type": "bytes"
-				}
-			],
-			"name": "send",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
 			"inputs": [],
 			"name": "correctSize",
 			"outputs": [
@@ -14440,11 +13564,34 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "recipient",
+					"name": "_spender",
 					"type": "address"
 				},
 				{
-					"name": "amount",
+					"name": "_subtractedValue",
+					"type": "uint256"
+				}
+			],
+			"name": "decreaseAllowance",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_recipient",
+					"type": "address"
+				},
+				{
+					"name": "_amount",
 					"type": "uint256"
 				}
 			],
@@ -14460,6 +13607,40 @@
 			"type": "function"
 		},
 		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_augur",
+					"type": "address"
+				},
+				{
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"name": "_size",
+					"type": "uint256"
+				},
+				{
+					"name": "_payoutDistributionHash",
+					"type": "bytes32"
+				},
+				{
+					"name": "_payoutNumerators",
+					"type": "uint256[]"
+				},
+				{
+					"name": "_crowdsourcerGeneration",
+					"type": "uint256"
+				}
+			],
+			"name": "initialize",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"constant": true,
 			"inputs": [],
 			"name": "getReputationToken",
@@ -14467,52 +13648,6 @@
 				{
 					"name": "",
 					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_spender",
-					"type": "address"
-				},
-				{
-					"name": "_addedValue",
-					"type": "uint256"
-				}
-			],
-			"name": "increaseApproval",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "operator",
-					"type": "address"
-				},
-				{
-					"name": "tokenHolder",
-					"type": "address"
-				}
-			],
-			"name": "isOperatorFor",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
 				}
 			],
 			"payable": false,
@@ -14542,11 +13677,11 @@
 			"constant": true,
 			"inputs": [
 				{
-					"name": "holder",
+					"name": "_owner",
 					"type": "address"
 				},
 				{
-					"name": "spender",
+					"name": "_spender",
 					"type": "address"
 				}
 			],
@@ -14618,20 +13753,6 @@
 			"type": "function"
 		},
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "operator",
-					"type": "address"
-				}
-			],
-			"name": "revokeOperator",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [],
 			"name": "getStake",
@@ -14688,190 +13809,18 @@
 			],
 			"name": "Approval",
 			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"name": "operator",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "from",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "to",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"name": "amount",
-					"type": "uint256"
-				},
-				{
-					"indexed": false,
-					"name": "data",
-					"type": "bytes"
-				},
-				{
-					"indexed": false,
-					"name": "operatorData",
-					"type": "bytes"
-				}
-			],
-			"name": "Sent",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"name": "operator",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "to",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"name": "amount",
-					"type": "uint256"
-				},
-				{
-					"indexed": false,
-					"name": "data",
-					"type": "bytes"
-				},
-				{
-					"indexed": false,
-					"name": "operatorData",
-					"type": "bytes"
-				}
-			],
-			"name": "Minted",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"name": "operator",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "from",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"name": "amount",
-					"type": "uint256"
-				},
-				{
-					"indexed": false,
-					"name": "data",
-					"type": "bytes"
-				},
-				{
-					"indexed": false,
-					"name": "operatorData",
-					"type": "bytes"
-				}
-			],
-			"name": "Burned",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"name": "operator",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "tokenHolder",
-					"type": "address"
-				}
-			],
-			"name": "AuthorizedOperator",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"name": "operator",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "tokenHolder",
-					"type": "address"
-				}
-			],
-			"name": "RevokedOperator",
-			"type": "event"
 		}
 	],
 	"DisputeWindow": [
 		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "",
-					"type": "address"
-				},
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"name": "_allowances",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "defaultOperators",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address[]"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
 			"constant": false,
 			"inputs": [
 				{
-					"name": "spender",
+					"name": "_spender",
 					"type": "address"
 				},
 				{
-					"name": "value",
+					"name": "_amount",
 					"type": "uint256"
 				}
 			],
@@ -14916,6 +13865,25 @@
 		},
 		{
 			"constant": true,
+			"inputs": [
+				{
+					"name": "_daiAmount",
+					"type": "uint256"
+				}
+			],
+			"name": "daiToVatDai",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
 			"inputs": [],
 			"name": "isActive",
 			"outputs": [
@@ -14932,15 +13900,15 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "holder",
+					"name": "_sender",
 					"type": "address"
 				},
 				{
-					"name": "recipient",
+					"name": "_recipient",
 					"type": "address"
 				},
 				{
-					"name": "amount",
+					"name": "_amount",
 					"type": "uint256"
 				}
 			],
@@ -14953,6 +13921,25 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"name": "balances",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -15000,6 +13987,43 @@
 		{
 			"constant": true,
 			"inputs": [],
+			"name": "vat",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_spender",
+					"type": "address"
+				},
+				{
+					"name": "_addedValue",
+					"type": "uint256"
+				}
+			],
+			"name": "increaseAllowance",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
 			"name": "validityBondTotal",
 			"outputs": [
 				{
@@ -15009,6 +14033,25 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_vDaiAmount",
+					"type": "uint256"
+				}
+			],
+			"name": "vatDaiToDai",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
 			"type": "function"
 		},
 		{
@@ -15041,26 +14084,21 @@
 		},
 		{
 			"constant": true,
-			"inputs": [],
-			"name": "granularity",
+			"inputs": [
+				{
+					"name": "",
+					"type": "address"
+				},
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"name": "allowances",
 			"outputs": [
 				{
 					"name": "",
 					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "erc1820Registry",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
 				}
 			],
 			"payable": false,
@@ -15082,36 +14120,6 @@
 			"type": "function"
 		},
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "sender",
-					"type": "address"
-				},
-				{
-					"name": "recipient",
-					"type": "address"
-				},
-				{
-					"name": "amount",
-					"type": "uint256"
-				},
-				{
-					"name": "data",
-					"type": "bytes"
-				},
-				{
-					"name": "operatorData",
-					"type": "bytes"
-				}
-			],
-			"name": "operatorSend",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [],
 			"name": "incorrectDesignatedReportTotal",
@@ -15126,33 +14134,10 @@
 			"type": "function"
 		},
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_spender",
-					"type": "address"
-				},
-				{
-					"name": "_subtractedValue",
-					"type": "uint256"
-				}
-			],
-			"name": "decreaseApproval",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [
 				{
-					"name": "tokenHolder",
+					"name": "_account",
 					"type": "address"
 				}
 			],
@@ -15236,20 +14221,6 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "operator",
-					"type": "address"
-				}
-			],
-			"name": "authorizeOperator",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
 					"name": "_account",
 					"type": "address"
 				}
@@ -15303,29 +14274,6 @@
 			"type": "function"
 		},
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_recipient",
-					"type": "address"
-				},
-				{
-					"name": "_amount",
-					"type": "uint256"
-				}
-			],
-			"name": "noHooksTransfer",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [],
 			"name": "windowId",
@@ -15343,37 +14291,15 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "recipient",
+					"name": "_spender",
 					"type": "address"
 				},
 				{
-					"name": "amount",
-					"type": "uint256"
-				},
-				{
-					"name": "data",
-					"type": "bytes"
-				}
-			],
-			"name": "send",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "recipient",
-					"type": "address"
-				},
-				{
-					"name": "amount",
+					"name": "_subtractedValue",
 					"type": "uint256"
 				}
 			],
-			"name": "transfer",
+			"name": "decreaseAllowance",
 			"outputs": [
 				{
 					"name": "",
@@ -15388,36 +14314,21 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "_augur",
+					"name": "_recipient",
 					"type": "address"
 				},
 				{
-					"name": "_universe",
-					"type": "address"
-				},
-				{
-					"name": "_disputeWindowId",
+					"name": "_amount",
 					"type": "uint256"
-				},
-				{
-					"name": "_participationTokensEnabled",
-					"type": "bool"
-				},
-				{
-					"name": "_duration",
-					"type": "uint256"
-				},
-				{
-					"name": "_startTime",
-					"type": "uint256"
-				},
-				{
-					"name": "_erc1820RegistryAddress",
-					"type": "address"
 				}
 			],
-			"name": "initialize",
-			"outputs": [],
+			"name": "transfer",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
 			"payable": false,
 			"stateMutability": "nonpayable",
 			"type": "function"
@@ -15468,52 +14379,6 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "_spender",
-					"type": "address"
-				},
-				{
-					"name": "_addedValue",
-					"type": "uint256"
-				}
-			],
-			"name": "increaseApproval",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "operator",
-					"type": "address"
-				},
-				{
-					"name": "tokenHolder",
-					"type": "address"
-				}
-			],
-			"name": "isOperatorFor",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
 					"name": "_attotokens",
 					"type": "uint256"
 				}
@@ -15544,14 +14409,48 @@
 			"type": "function"
 		},
 		{
-			"constant": true,
+			"constant": false,
 			"inputs": [
 				{
-					"name": "holder",
+					"name": "_augur",
 					"type": "address"
 				},
 				{
-					"name": "spender",
+					"name": "_universe",
+					"type": "address"
+				},
+				{
+					"name": "_disputeWindowId",
+					"type": "uint256"
+				},
+				{
+					"name": "_participationTokensEnabled",
+					"type": "bool"
+				},
+				{
+					"name": "_duration",
+					"type": "uint256"
+				},
+				{
+					"name": "_startTime",
+					"type": "uint256"
+				}
+			],
+			"name": "initialize",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_owner",
+					"type": "address"
+				},
+				{
+					"name": "_spender",
 					"type": "address"
 				}
 			],
@@ -15592,20 +14491,6 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "operator",
-					"type": "address"
-				}
-			],
-			"name": "revokeOperator",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -15650,141 +14535,6 @@
 				}
 			],
 			"name": "Approval",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"name": "operator",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "from",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "to",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"name": "amount",
-					"type": "uint256"
-				},
-				{
-					"indexed": false,
-					"name": "data",
-					"type": "bytes"
-				},
-				{
-					"indexed": false,
-					"name": "operatorData",
-					"type": "bytes"
-				}
-			],
-			"name": "Sent",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"name": "operator",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "to",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"name": "amount",
-					"type": "uint256"
-				},
-				{
-					"indexed": false,
-					"name": "data",
-					"type": "bytes"
-				},
-				{
-					"indexed": false,
-					"name": "operatorData",
-					"type": "bytes"
-				}
-			],
-			"name": "Minted",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"name": "operator",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "from",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"name": "amount",
-					"type": "uint256"
-				},
-				{
-					"indexed": false,
-					"name": "data",
-					"type": "bytes"
-				},
-				{
-					"indexed": false,
-					"name": "operatorData",
-					"type": "bytes"
-				}
-			],
-			"name": "Burned",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"name": "operator",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "tokenHolder",
-					"type": "address"
-				}
-			],
-			"name": "AuthorizedOperator",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"name": "operator",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "tokenHolder",
-					"type": "address"
-				}
-			],
-			"name": "RevokedOperator",
 			"type": "event"
 		}
 	],
@@ -17171,51 +15921,14 @@
 	],
 	"OICash": [
 		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "",
-					"type": "address"
-				},
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"name": "_allowances",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "defaultOperators",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address[]"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
 			"constant": false,
 			"inputs": [
 				{
-					"name": "spender",
+					"name": "_spender",
 					"type": "address"
 				},
 				{
-					"name": "value",
+					"name": "_amount",
 					"type": "uint256"
 				}
 			],
@@ -17245,18 +15958,37 @@
 			"type": "function"
 		},
 		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_daiAmount",
+					"type": "uint256"
+				}
+			],
+			"name": "daiToVatDai",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
 			"constant": false,
 			"inputs": [
 				{
-					"name": "holder",
+					"name": "_sender",
 					"type": "address"
 				},
 				{
-					"name": "recipient",
+					"name": "_recipient",
 					"type": "address"
 				},
 				{
-					"name": "amount",
+					"name": "_amount",
 					"type": "uint256"
 				}
 			],
@@ -17269,6 +16001,25 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"name": "balances",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -17324,6 +16075,20 @@
 			"type": "function"
 		},
 		{
+			"constant": true,
+			"inputs": [],
+			"name": "vat",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
 			"constant": false,
 			"inputs": [
 				{
@@ -17347,6 +16112,66 @@
 			"type": "function"
 		},
 		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_spender",
+					"type": "address"
+				},
+				{
+					"name": "_addedValue",
+					"type": "uint256"
+				}
+			],
+			"name": "increaseAllowance",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_vDaiAmount",
+					"type": "uint256"
+				}
+			],
+			"name": "vatDaiToDai",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_augur",
+					"type": "address"
+				},
+				{
+					"name": "_universe",
+					"type": "address"
+				}
+			],
+			"name": "initialize",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"constant": true,
 			"inputs": [],
 			"name": "universe",
@@ -17362,8 +16187,17 @@
 		},
 		{
 			"constant": true,
-			"inputs": [],
-			"name": "granularity",
+			"inputs": [
+				{
+					"name": "",
+					"type": "address"
+				},
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"name": "allowances",
 			"outputs": [
 				{
 					"name": "",
@@ -17372,73 +16206,6 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "erc1820Registry",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "sender",
-					"type": "address"
-				},
-				{
-					"name": "recipient",
-					"type": "address"
-				},
-				{
-					"name": "amount",
-					"type": "uint256"
-				},
-				{
-					"name": "data",
-					"type": "bytes"
-				},
-				{
-					"name": "operatorData",
-					"type": "bytes"
-				}
-			],
-			"name": "operatorSend",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_spender",
-					"type": "address"
-				},
-				{
-					"name": "_subtractedValue",
-					"type": "uint256"
-				}
-			],
-			"name": "decreaseApproval",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -17459,7 +16226,7 @@
 			"constant": true,
 			"inputs": [
 				{
-					"name": "tokenHolder",
+					"name": "_account",
 					"type": "address"
 				}
 			],
@@ -17489,20 +16256,6 @@
 			"type": "function"
 		},
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "operator",
-					"type": "address"
-				}
-			],
-			"name": "authorizeOperator",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [],
 			"name": "cash",
@@ -17514,51 +16267,6 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_recipient",
-					"type": "address"
-				},
-				{
-					"name": "_amount",
-					"type": "uint256"
-				}
-			],
-			"name": "noHooksTransfer",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "recipient",
-					"type": "address"
-				},
-				{
-					"name": "amount",
-					"type": "uint256"
-				},
-				{
-					"name": "data",
-					"type": "bytes"
-				}
-			],
-			"name": "send",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -17579,11 +16287,34 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "recipient",
+					"name": "_spender",
 					"type": "address"
 				},
 				{
-					"name": "amount",
+					"name": "_subtractedValue",
+					"type": "uint256"
+				}
+			],
+			"name": "decreaseAllowance",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_recipient",
+					"type": "address"
+				},
+				{
+					"name": "_amount",
 					"type": "uint256"
 				}
 			],
@@ -17618,82 +16349,14 @@
 			"type": "function"
 		},
 		{
-			"constant": false,
+			"constant": true,
 			"inputs": [
 				{
-					"name": "_augur",
+					"name": "_owner",
 					"type": "address"
 				},
-				{
-					"name": "_universe",
-					"type": "address"
-				},
-				{
-					"name": "_erc1820RegistryAddress",
-					"type": "address"
-				}
-			],
-			"name": "initialize",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
 				{
 					"name": "_spender",
-					"type": "address"
-				},
-				{
-					"name": "_addedValue",
-					"type": "uint256"
-				}
-			],
-			"name": "increaseApproval",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "operator",
-					"type": "address"
-				},
-				{
-					"name": "tokenHolder",
-					"type": "address"
-				}
-			],
-			"name": "isOperatorFor",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "holder",
-					"type": "address"
-				},
-				{
-					"name": "spender",
 					"type": "address"
 				}
 			],
@@ -17720,20 +16383,6 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "operator",
-					"type": "address"
-				}
-			],
-			"name": "revokeOperator",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -17778,141 +16427,6 @@
 				}
 			],
 			"name": "Approval",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"name": "operator",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "from",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "to",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"name": "amount",
-					"type": "uint256"
-				},
-				{
-					"indexed": false,
-					"name": "data",
-					"type": "bytes"
-				},
-				{
-					"indexed": false,
-					"name": "operatorData",
-					"type": "bytes"
-				}
-			],
-			"name": "Sent",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"name": "operator",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "to",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"name": "amount",
-					"type": "uint256"
-				},
-				{
-					"indexed": false,
-					"name": "data",
-					"type": "bytes"
-				},
-				{
-					"indexed": false,
-					"name": "operatorData",
-					"type": "bytes"
-				}
-			],
-			"name": "Minted",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"name": "operator",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "from",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"name": "amount",
-					"type": "uint256"
-				},
-				{
-					"indexed": false,
-					"name": "data",
-					"type": "bytes"
-				},
-				{
-					"indexed": false,
-					"name": "operatorData",
-					"type": "bytes"
-				}
-			],
-			"name": "Burned",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"name": "operator",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "tokenHolder",
-					"type": "address"
-				}
-			],
-			"name": "AuthorizedOperator",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"name": "operator",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "tokenHolder",
-					"type": "address"
-				}
-			],
-			"name": "RevokedOperator",
 			"type": "event"
 		}
 	],
@@ -18130,43 +16644,6 @@
 	"ReputationToken": [
 		{
 			"constant": true,
-			"inputs": [
-				{
-					"name": "",
-					"type": "address"
-				},
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"name": "_allowances",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "defaultOperators",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address[]"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
 			"inputs": [],
 			"name": "name",
 			"outputs": [
@@ -18183,11 +16660,11 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "spender",
+					"name": "_spender",
 					"type": "address"
 				},
 				{
-					"name": "value",
+					"name": "_amount",
 					"type": "uint256"
 				}
 			],
@@ -18234,15 +16711,15 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "holder",
+					"name": "_sender",
 					"type": "address"
 				},
 				{
-					"name": "recipient",
+					"name": "_recipient",
 					"type": "address"
 				},
 				{
-					"name": "amount",
+					"name": "_amount",
 					"type": "uint256"
 				}
 			],
@@ -18255,6 +16732,25 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"name": "balances",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -18272,9 +16768,41 @@
 			"type": "function"
 		},
 		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_spender",
+					"type": "address"
+				},
+				{
+					"name": "_addedValue",
+					"type": "uint256"
+				}
+			],
+			"name": "increaseAllowance",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"constant": true,
-			"inputs": [],
-			"name": "granularity",
+			"inputs": [
+				{
+					"name": "",
+					"type": "address"
+				},
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"name": "allowances",
 			"outputs": [
 				{
 					"name": "",
@@ -18324,76 +16852,9 @@
 		},
 		{
 			"constant": true,
-			"inputs": [],
-			"name": "erc1820Registry",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
 			"inputs": [
 				{
-					"name": "sender",
-					"type": "address"
-				},
-				{
-					"name": "recipient",
-					"type": "address"
-				},
-				{
-					"name": "amount",
-					"type": "uint256"
-				},
-				{
-					"name": "data",
-					"type": "bytes"
-				},
-				{
-					"name": "operatorData",
-					"type": "bytes"
-				}
-			],
-			"name": "operatorSend",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_spender",
-					"type": "address"
-				},
-				{
-					"name": "_subtractedValue",
-					"type": "uint256"
-				}
-			],
-			"name": "decreaseApproval",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "tokenHolder",
+					"name": "_account",
 					"type": "address"
 				}
 			],
@@ -18506,20 +16967,6 @@
 			"type": "function"
 		},
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "operator",
-					"type": "address"
-				}
-			],
-			"name": "authorizeOperator",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [],
 			"name": "symbol",
@@ -18531,51 +16978,6 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_recipient",
-					"type": "address"
-				},
-				{
-					"name": "_amount",
-					"type": "uint256"
-				}
-			],
-			"name": "noHooksTransfer",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "recipient",
-					"type": "address"
-				},
-				{
-					"name": "amount",
-					"type": "uint256"
-				},
-				{
-					"name": "data",
-					"type": "bytes"
-				}
-			],
-			"name": "send",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -18605,11 +17007,34 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "recipient",
+					"name": "_spender",
 					"type": "address"
 				},
 				{
-					"name": "amount",
+					"name": "_subtractedValue",
+					"type": "uint256"
+				}
+			],
+			"name": "decreaseAllowance",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_recipient",
+					"type": "address"
+				},
+				{
+					"name": "_amount",
 					"type": "uint256"
 				}
 			],
@@ -18688,52 +17113,6 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "_spender",
-					"type": "address"
-				},
-				{
-					"name": "_addedValue",
-					"type": "uint256"
-				}
-			],
-			"name": "increaseApproval",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "operator",
-					"type": "address"
-				},
-				{
-					"name": "tokenHolder",
-					"type": "address"
-				}
-			],
-			"name": "isOperatorFor",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
 					"name": "_amountMigrated",
 					"type": "uint256"
 				}
@@ -18753,11 +17132,11 @@
 			"constant": true,
 			"inputs": [
 				{
-					"name": "holder",
+					"name": "_owner",
 					"type": "address"
 				},
 				{
-					"name": "spender",
+					"name": "_spender",
 					"type": "address"
 				}
 			],
@@ -18826,20 +17205,6 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "operator",
-					"type": "address"
-				}
-			],
-			"name": "revokeOperator",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
 					"name": "_source",
 					"type": "address"
 				},
@@ -18875,10 +17240,6 @@
 				},
 				{
 					"name": "_parentUniverse",
-					"type": "address"
-				},
-				{
-					"name": "_erc1820RegistryAddress",
 					"type": "address"
 				}
 			],
@@ -18928,141 +17289,6 @@
 				}
 			],
 			"name": "Approval",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"name": "operator",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "from",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "to",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"name": "amount",
-					"type": "uint256"
-				},
-				{
-					"indexed": false,
-					"name": "data",
-					"type": "bytes"
-				},
-				{
-					"indexed": false,
-					"name": "operatorData",
-					"type": "bytes"
-				}
-			],
-			"name": "Sent",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"name": "operator",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "to",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"name": "amount",
-					"type": "uint256"
-				},
-				{
-					"indexed": false,
-					"name": "data",
-					"type": "bytes"
-				},
-				{
-					"indexed": false,
-					"name": "operatorData",
-					"type": "bytes"
-				}
-			],
-			"name": "Minted",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"name": "operator",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "from",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"name": "amount",
-					"type": "uint256"
-				},
-				{
-					"indexed": false,
-					"name": "data",
-					"type": "bytes"
-				},
-				{
-					"indexed": false,
-					"name": "operatorData",
-					"type": "bytes"
-				}
-			],
-			"name": "Burned",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"name": "operator",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "tokenHolder",
-					"type": "address"
-				}
-			],
-			"name": "AuthorizedOperator",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"name": "operator",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "tokenHolder",
-					"type": "address"
-				}
-			],
-			"name": "RevokedOperator",
 			"type": "event"
 		}
 	],
@@ -19150,6 +17376,25 @@
 			"constant": true,
 			"inputs": [
 				{
+					"name": "_daiAmount",
+					"type": "uint256"
+				}
+			],
+			"name": "daiToVatDai",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
 					"name": "_tokenId",
 					"type": "uint256"
 				}
@@ -19223,6 +17468,20 @@
 			"type": "function"
 		},
 		{
+			"constant": true,
+			"inputs": [],
+			"name": "vat",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
 			"constant": false,
 			"inputs": [
 				{
@@ -19242,6 +17501,25 @@
 			"outputs": [],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_vDaiAmount",
+					"type": "uint256"
+				}
+			],
+			"name": "vatDaiToDai",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
 			"type": "function"
 		},
 		{
@@ -19429,48 +17707,6 @@
 		{
 			"constant": true,
 			"inputs": [],
-			"name": "fillOrder",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "createOrder",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "cancelOrder",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
 			"name": "augur",
 			"outputs": [
 				{
@@ -19503,20 +17739,6 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "profitLoss",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -20308,6 +18530,25 @@
 		},
 		{
 			"constant": true,
+			"inputs": [
+				{
+					"name": "_daiAmount",
+					"type": "uint256"
+				}
+			],
+			"name": "daiToVatDai",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
 			"inputs": [],
 			"name": "repPriceOracle",
 			"outputs": [
@@ -20374,6 +18615,20 @@
 		{
 			"constant": true,
 			"inputs": [],
+			"name": "vat",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
 			"name": "openInterestCash",
 			"outputs": [
 				{
@@ -20407,20 +18662,6 @@
 		{
 			"constant": true,
 			"inputs": [],
-			"name": "DAI_ONE",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
 			"name": "daiVat",
 			"outputs": [
 				{
@@ -20430,6 +18671,25 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_vDaiAmount",
+					"type": "uint256"
+				}
+			],
+			"name": "vatDaiToDai",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
 			"type": "function"
 		},
 		{
@@ -20528,6 +18788,20 @@
 				},
 				{
 					"name": "_duration",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "RAY",
+			"outputs": [
+				{
+					"name": "",
 					"type": "uint256"
 				}
 			],
@@ -22113,6 +20387,25 @@
 	],
 	"CancelOrder": [
 		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_daiAmount",
+					"type": "uint256"
+				}
+			],
+			"name": "daiToVatDai",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
 			"constant": false,
 			"inputs": [
 				{
@@ -22129,6 +20422,39 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "vat",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_vDaiAmount",
+					"type": "uint256"
+				}
+			],
+			"name": "vatDaiToDai",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
 			"type": "function"
 		},
 		{
@@ -22256,6 +20582,25 @@
 	"CreateOrder": [
 		{
 			"constant": true,
+			"inputs": [
+				{
+					"name": "_daiAmount",
+					"type": "uint256"
+				}
+			],
+			"name": "daiToVatDai",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
 			"inputs": [],
 			"name": "trade",
 			"outputs": [
@@ -22266,6 +20611,39 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "vat",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_vDaiAmount",
+					"type": "uint256"
+				}
+			],
+			"name": "vatDaiToDai",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
 			"type": "function"
 		},
 		{
@@ -22387,6 +20765,20 @@
 			"constant": true,
 			"inputs": [],
 			"name": "augurTrading",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "cash",
 			"outputs": [
 				{
 					"name": "",
@@ -24622,6 +23014,119 @@
 		},
 		{
 			"constant": true,
+			"inputs": [
+				{
+					"name": "_maker",
+					"type": "address"
+				},
+				{
+					"name": "_type",
+					"type": "uint8"
+				},
+				{
+					"name": "_attoshares",
+					"type": "uint256"
+				},
+				{
+					"name": "_price",
+					"type": "uint256"
+				},
+				{
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"name": "_outcome",
+					"type": "uint8"
+				},
+				{
+					"name": "_kycToken",
+					"type": "address"
+				},
+				{
+					"name": "_expirationTimeSeconds",
+					"type": "uint256"
+				},
+				{
+					"name": "_salt",
+					"type": "uint256"
+				}
+			],
+			"name": "createZeroXOrderFor",
+			"outputs": [
+				{
+					"components": [
+						{
+							"name": "makerAddress",
+							"type": "address"
+						},
+						{
+							"name": "takerAddress",
+							"type": "address"
+						},
+						{
+							"name": "feeRecipientAddress",
+							"type": "address"
+						},
+						{
+							"name": "senderAddress",
+							"type": "address"
+						},
+						{
+							"name": "makerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "takerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "makerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "takerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"name": "makerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "makerFeeAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerFeeAssetData",
+							"type": "bytes"
+						}
+					],
+					"name": "_zeroXOrder",
+					"type": "tuple"
+				},
+				{
+					"name": "_orderHash",
+					"type": "bytes32"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
 			"inputs": [],
 			"name": "getTransferFromAllowed",
 			"outputs": [
@@ -24772,119 +23277,6 @@
 			"type": "function"
 		},
 		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_type",
-					"type": "uint8"
-				},
-				{
-					"name": "_attoshares",
-					"type": "uint256"
-				},
-				{
-					"name": "_price",
-					"type": "uint256"
-				},
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_outcome",
-					"type": "uint8"
-				},
-				{
-					"name": "_kycToken",
-					"type": "address"
-				},
-				{
-					"name": "_expirationTimeSeconds",
-					"type": "uint256"
-				},
-				{
-					"name": "_exchange",
-					"type": "address"
-				},
-				{
-					"name": "_salt",
-					"type": "uint256"
-				}
-			],
-			"name": "createZeroXOrder",
-			"outputs": [
-				{
-					"components": [
-						{
-							"name": "makerAddress",
-							"type": "address"
-						},
-						{
-							"name": "takerAddress",
-							"type": "address"
-						},
-						{
-							"name": "feeRecipientAddress",
-							"type": "address"
-						},
-						{
-							"name": "senderAddress",
-							"type": "address"
-						},
-						{
-							"name": "makerAssetAmount",
-							"type": "uint256"
-						},
-						{
-							"name": "takerAssetAmount",
-							"type": "uint256"
-						},
-						{
-							"name": "makerFee",
-							"type": "uint256"
-						},
-						{
-							"name": "takerFee",
-							"type": "uint256"
-						},
-						{
-							"name": "expirationTimeSeconds",
-							"type": "uint256"
-						},
-						{
-							"name": "salt",
-							"type": "uint256"
-						},
-						{
-							"name": "makerAssetData",
-							"type": "bytes"
-						},
-						{
-							"name": "takerAssetData",
-							"type": "bytes"
-						},
-						{
-							"name": "makerFeeAssetData",
-							"type": "bytes"
-						},
-						{
-							"name": "takerFeeAssetData",
-							"type": "bytes"
-						}
-					],
-					"name": "_zeroXOrder",
-					"type": "tuple"
-				},
-				{
-					"name": "_orderHash",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
 			"constant": false,
 			"inputs": [
 				{
@@ -25000,6 +23392,41 @@
 				{
 					"name": "balances_",
 					"type": "uint256[]"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"name": "_price",
+					"type": "uint256"
+				},
+				{
+					"name": "_outcome",
+					"type": "uint8"
+				},
+				{
+					"name": "_type",
+					"type": "uint8"
+				},
+				{
+					"name": "_kycToken",
+					"type": "address"
+				}
+			],
+			"name": "encodeAssetData",
+			"outputs": [
+				{
+					"name": "_assetData",
+					"type": "bytes"
 				}
 			],
 			"payable": false,
@@ -25172,25 +23599,6 @@
 					"type": "bytes"
 				}
 			],
-			"name": "getExchangeFromAssetData",
-			"outputs": [
-				{
-					"name": "_exchange",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "pure",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_assetData",
-					"type": "bytes"
-				}
-			],
 			"name": "decodeAssetData",
 			"outputs": [
 				{
@@ -25216,10 +23624,6 @@
 				{
 					"name": "_kycToken",
 					"type": "address"
-				},
-				{
-					"name": "_exchange",
-					"type": "address"
 				}
 			],
 			"payable": false,
@@ -25234,123 +23638,6 @@
 				{
 					"name": "",
 					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_maker",
-					"type": "address"
-				},
-				{
-					"name": "_type",
-					"type": "uint8"
-				},
-				{
-					"name": "_attoshares",
-					"type": "uint256"
-				},
-				{
-					"name": "_price",
-					"type": "uint256"
-				},
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_outcome",
-					"type": "uint8"
-				},
-				{
-					"name": "_kycToken",
-					"type": "address"
-				},
-				{
-					"name": "_expirationTimeSeconds",
-					"type": "uint256"
-				},
-				{
-					"name": "_exchange",
-					"type": "address"
-				},
-				{
-					"name": "_salt",
-					"type": "uint256"
-				}
-			],
-			"name": "createZeroXOrderFor",
-			"outputs": [
-				{
-					"components": [
-						{
-							"name": "makerAddress",
-							"type": "address"
-						},
-						{
-							"name": "takerAddress",
-							"type": "address"
-						},
-						{
-							"name": "feeRecipientAddress",
-							"type": "address"
-						},
-						{
-							"name": "senderAddress",
-							"type": "address"
-						},
-						{
-							"name": "makerAssetAmount",
-							"type": "uint256"
-						},
-						{
-							"name": "takerAssetAmount",
-							"type": "uint256"
-						},
-						{
-							"name": "makerFee",
-							"type": "uint256"
-						},
-						{
-							"name": "takerFee",
-							"type": "uint256"
-						},
-						{
-							"name": "expirationTimeSeconds",
-							"type": "uint256"
-						},
-						{
-							"name": "salt",
-							"type": "uint256"
-						},
-						{
-							"name": "makerAssetData",
-							"type": "bytes"
-						},
-						{
-							"name": "takerAssetData",
-							"type": "bytes"
-						},
-						{
-							"name": "makerFeeAssetData",
-							"type": "bytes"
-						},
-						{
-							"name": "takerFeeAssetData",
-							"type": "bytes"
-						}
-					],
-					"name": "_zeroXOrder",
-					"type": "tuple"
-				},
-				{
-					"name": "_orderHash",
-					"type": "bytes32"
 				}
 			],
 			"payable": false,
@@ -25486,45 +23773,6 @@
 			"type": "function"
 		},
 		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_price",
-					"type": "uint256"
-				},
-				{
-					"name": "_outcome",
-					"type": "uint8"
-				},
-				{
-					"name": "_type",
-					"type": "uint8"
-				},
-				{
-					"name": "_kycToken",
-					"type": "address"
-				},
-				{
-					"name": "_exchange",
-					"type": "address"
-				}
-			],
-			"name": "encodeAssetData",
-			"outputs": [
-				{
-					"name": "_assetData",
-					"type": "bytes"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
 			"constant": false,
 			"inputs": [
 				{
@@ -25615,6 +23863,20 @@
 			],
 			"payable": true,
 			"stateMutability": "payable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "exchange",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -25743,6 +24005,115 @@
 				{
 					"name": "",
 					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_type",
+					"type": "uint8"
+				},
+				{
+					"name": "_attoshares",
+					"type": "uint256"
+				},
+				{
+					"name": "_price",
+					"type": "uint256"
+				},
+				{
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"name": "_outcome",
+					"type": "uint8"
+				},
+				{
+					"name": "_kycToken",
+					"type": "address"
+				},
+				{
+					"name": "_expirationTimeSeconds",
+					"type": "uint256"
+				},
+				{
+					"name": "_salt",
+					"type": "uint256"
+				}
+			],
+			"name": "createZeroXOrder",
+			"outputs": [
+				{
+					"components": [
+						{
+							"name": "makerAddress",
+							"type": "address"
+						},
+						{
+							"name": "takerAddress",
+							"type": "address"
+						},
+						{
+							"name": "feeRecipientAddress",
+							"type": "address"
+						},
+						{
+							"name": "senderAddress",
+							"type": "address"
+						},
+						{
+							"name": "makerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "takerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "makerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "takerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"name": "makerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "makerFeeAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerFeeAssetData",
+							"type": "bytes"
+						}
+					],
+					"name": "_zeroXOrder",
+					"type": "tuple"
+				},
+				{
+					"name": "_orderHash",
+					"type": "bytes32"
 				}
 			],
 			"payable": false,

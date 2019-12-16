@@ -8,7 +8,7 @@ export const selectMarketOutcomeBestBidAsk = orderBook => {
   const formatData = item => {
     return {
       price: formatDai(item.price),
-      shares: formatShares(item.shares),
+      shares: formatShares(item.shares, {decimals: 2, decimalsRounded: 2}),
     };
   };
 

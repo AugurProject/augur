@@ -11,13 +11,16 @@ import 'ROOT/libraries/token/IERC20.sol';
 import 'ROOT/IAugur.sol';
 import 'ROOT/trading/IProfitLoss.sol';
 import 'ROOT/trading/IAugurTrading.sol';
+import 'ROOT/libraries/math/SafeMathUint256.sol';
+import 'ROOT/CashSender.sol';
 
 
 /**
  * @title Create Order
  * @notice Exposes functions to place an order on the book for other parties to take
  */
-contract CreateOrder is Initializable, ReentrancyGuard {
+contract CreateOrder is Initializable, ReentrancyGuard, CashSender {
+    using SafeMathUint256 for uint256;
     using Order for Order.Data;
 
     IAugur public augur;
@@ -37,6 +40,8 @@ contract CreateOrder is Initializable, ReentrancyGuard {
         profitLoss = IProfitLoss(_augurTrading.lookup("ProfitLoss"));
         require(profitLoss != IProfitLoss(0));
         orders = IOrders(_augurTrading.lookup("Orders"));
+
+        initializeCashSender(_augur.lookup("DaiVat"), _augur.lookup("Cash"));
         require(orders != IOrders(0));
     }
 
@@ -64,7 +69,7 @@ contract CreateOrder is Initializable, ReentrancyGuard {
         require(_kycToken == IERC20(0) || _kycToken.balanceOf(_creator) > 0, "Createorder.createOrder: KYC token failure");
         require(msg.sender == trade || msg.sender == address(this));
         Order.Data memory _orderData = Order.create(augur, augurTrading, _creator, _outcome, _type, _attoshares, _price, _market, _betterOrderId, _worseOrderId, _kycToken);
-        Order.escrowFunds(_orderData);
+        escrowFunds(_orderData);
         profitLoss.recordFrozenFundChange(_market.getUniverse(), _market, _creator, _outcome, int256(_orderData.moneyEscrowed));
         /* solium-disable indentation */
         {
@@ -94,7 +99,7 @@ contract CreateOrder is Initializable, ReentrancyGuard {
         IUniverse _universe = _market.getUniverse();
         for (uint256 i = 0; i <  _types.length; i++) {
             Order.Data memory _orderData = Order.create(augur, augurTrading, msg.sender, _outcomes[i], _types[i], _attoshareAmounts[i], _prices[i], _market, bytes32(0), bytes32(0), _kycToken);
-            Order.escrowFunds(_orderData);
+            escrowFunds(_orderData);
             profitLoss.recordFrozenFundChange(_universe, _market, msg.sender, _outcomes[i], int256(_orderData.moneyEscrowed));
             /* solium-disable indentation */
             {
@@ -106,5 +111,80 @@ contract CreateOrder is Initializable, ReentrancyGuard {
         }
 
         return _orders;
+    }
+
+    //
+    // Private functions
+    //
+
+    function escrowFunds(Order.Data memory _orderData) internal returns (bool) {
+        if (_orderData.orderType == Order.Types.Ask) {
+            return escrowFundsForAsk(_orderData);
+        } else if (_orderData.orderType == Order.Types.Bid) {
+            return escrowFundsForBid(_orderData);
+        }
+    }
+
+    function escrowFundsForBid(Order.Data memory _orderData) private returns (bool) {
+        require(_orderData.moneyEscrowed == 0, "Order.escrowFundsForBid: New order had money escrowed. This should not be possible");
+        require(_orderData.sharesEscrowed == 0, "Order.escrowFundsForBid: New order had shares escrowed. This should not be possible");
+        uint256 _attosharesToCover = _orderData.amount;
+        uint256 _numberOfShortOutcomes = _orderData.market.getNumberOfOutcomes() - 1;
+
+        uint256[] memory _shortOutcomes = new uint256[](_numberOfShortOutcomes);
+        uint256 _indexOutcome = 0;
+        for (uint256 _i = 0; _i < _numberOfShortOutcomes; _i++) {
+            if (_i == _orderData.outcome) {
+                _indexOutcome++;
+            }
+            _shortOutcomes[_i] = _indexOutcome;
+            _indexOutcome++;
+        }
+
+        // Figure out how many almost-complete-sets (just missing `outcome` share) the creator has
+        uint256 _attosharesHeld = _orderData.shareToken.lowestBalanceOfMarketOutcomes(_orderData.market, _shortOutcomes, _orderData.creator);
+
+        // Take shares into escrow if they have any almost-complete-sets
+        if (_attosharesHeld > 0) {
+            _orderData.sharesEscrowed = SafeMathUint256.min(_attosharesHeld, _attosharesToCover);
+            _attosharesToCover -= _orderData.sharesEscrowed;
+            uint256[] memory _values = new uint256[](_numberOfShortOutcomes);
+            for (uint256 _i = 0; _i < _numberOfShortOutcomes; _i++) {
+                _values[_i] = _orderData.sharesEscrowed;
+            }
+            _orderData.shareToken.unsafeBatchTransferFrom(_orderData.creator, address(_orderData.augurTrading), _orderData.shareToken.getTokenIds(_orderData.market, _shortOutcomes), _values);
+        }
+
+        // If not able to cover entire order with shares alone, then cover remaining with tokens
+        if (_attosharesToCover > 0) {
+            _orderData.moneyEscrowed = _attosharesToCover.mul(_orderData.price);
+            cashTransferFrom(_orderData.creator, address(_orderData.augurTrading), _orderData.moneyEscrowed);
+        }
+
+        return true;
+    }
+
+    function escrowFundsForAsk(Order.Data memory _orderData) private returns (bool) {
+        require(_orderData.moneyEscrowed == 0, "Order.escrowFundsForAsk: New order had money escrowed. This should not be possible");
+        require(_orderData.sharesEscrowed == 0, "Order.escrowFundsForAsk: New order had shares escrowed. This should not be possible");
+        uint256 _attosharesToCover = _orderData.amount;
+
+        // Figure out how many shares of the outcome the creator has
+        uint256 _attosharesHeld = _orderData.shareToken.balanceOfMarketOutcome(_orderData.market, _orderData.outcome, _orderData.creator);
+
+        // Take shares in escrow if user has shares
+        if (_attosharesHeld > 0) {
+            _orderData.sharesEscrowed = SafeMathUint256.min(_attosharesHeld, _attosharesToCover);
+            _attosharesToCover -= _orderData.sharesEscrowed;
+            _orderData.shareToken.unsafeTransferFrom(_orderData.creator, address(_orderData.augurTrading), _orderData.shareToken.getTokenId(_orderData.market, _orderData.outcome), _orderData.sharesEscrowed);
+        }
+
+        // If not able to cover entire order with shares alone, then cover remaining with tokens
+        if (_attosharesToCover > 0) {
+            _orderData.moneyEscrowed = _orderData.market.getNumTicks().sub(_orderData.price).mul(_attosharesToCover);
+            cashTransferFrom(_orderData.creator, address(_orderData.augurTrading), _orderData.moneyEscrowed);
+        }
+
+        return true;
     }
 }

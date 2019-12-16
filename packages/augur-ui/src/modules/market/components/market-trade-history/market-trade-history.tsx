@@ -34,7 +34,6 @@ export default class MarketTradeHistory extends Component<MarketTradeHistoryProp
           title="Trade History"
           headers={["quantity", "price", "time"]}
           toggle={toggle}
-          extended={extend}
           hide={hide}
         />
         <div>

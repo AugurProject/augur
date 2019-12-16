@@ -29,8 +29,6 @@ export class Cash extends c.Cash<BigNumber> {
 }
 export class CashFaucet extends c.CashFaucet<BigNumber> {
 }
-export class ERC1820Registry extends c.ERC1820Registry<BigNumber> {
-}
 export class GnosisSafe extends c.GnosisSafe<BigNumber> {
 }
 export class GnosisSafeRegistry extends c.GnosisSafeRegistry<BigNumber> {

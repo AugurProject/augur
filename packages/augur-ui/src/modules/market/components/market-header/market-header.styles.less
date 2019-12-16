@@ -43,8 +43,14 @@
       > div:first-of-type {
         flex: 1;
 
-        > div > span {
-          margin: 0 @size-8 0 0;
+        > div {
+          > span {
+            margin: 0 @size-8 0 0;
+          }
+
+          > button[class*="WordTrailButton"] {
+            .mono-10-bold;
+          }
         }
       }
 
@@ -279,7 +285,7 @@ div.Toggle {
   padding: 0;
 
   h4 {
-    .mono-10;
+    .mono-10-bold;
 
     color: @color-secondary-text;
     display: block;
