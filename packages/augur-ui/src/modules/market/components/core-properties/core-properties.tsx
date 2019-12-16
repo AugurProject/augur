@@ -1,13 +1,10 @@
 import React, { useState } from 'react';
 import { EVENT_EXPIRATION_TOOLTIP, SCALAR } from 'modules/common/constants';
 import Styles from 'modules/market/components/core-properties/core-properties.styles.less';
-import getValue from 'utils/get-value';
 import { PropertyLabel, TimeLabel } from 'modules/common/labels';
 import {
   formatPercent,
   formatDai,
-  formatNone,
-  formatNumber,
   formatRep,
   formatAttoRep,
 } from 'utils/format-number';

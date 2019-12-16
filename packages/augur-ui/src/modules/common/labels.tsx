@@ -216,7 +216,7 @@ export const TimeLabel = ({ label, time, showLocal, hint }: TimeLabelProps) => {
               data-tip
               data-for={`tooltip-${label.replace(' ', '-')}`}
             >
-              {InfoIcon}
+              {QuestionIcon}
             </label>
             <ReactTooltip
               id={`tooltip-${label.replace(' ', '-')}`}
@@ -543,7 +543,7 @@ export const PropertyLabel = (props: PropertyLabelProps) => (
             data-tip
             data-for={`tooltip-${props.label.replace(' ', '-')}`}
           >
-            {InfoIcon}
+            {QuestionIcon}
           </label>
           <ReactTooltip
             id={`tooltip-${props.label.replace(' ', '-')}`}

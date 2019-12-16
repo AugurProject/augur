@@ -211,14 +211,12 @@ export default class MarketHeader extends Component<
                   {CopyAlternateIcon}
                 </div>
                 {toggleFavorite && (
-                  <div>
-                    <FavoritesButton
-                      action={() => this.addToFavorites()}
-                      isFavorite={isFavorite}
-                      hideText
-                      disabled={!isLogged}
-                    />
-                  </div>
+                  <FavoritesButton
+                    action={() => this.addToFavorites()}
+                    isFavorite={isFavorite}
+                    hideText
+                    disabled={!isLogged}
+                  />
                 )}
               </div>
               <div>

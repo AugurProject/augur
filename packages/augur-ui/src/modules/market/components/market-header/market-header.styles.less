@@ -78,7 +78,7 @@
           width: @size-20;
         }
 
-        > button:first-of-type {
+        > button[id="facebookButton"] {
           justify-content: flex-end;
           margin-left: auto;
 
@@ -93,7 +93,7 @@
           }
         }
 
-        > button:last-of-type {
+        > button[id="twitterButton"] {
           > svg {
             > path:first-of-type {
               fill: @color-twitter;
@@ -106,8 +106,7 @@
         }
 
         > div:nth-of-type(2),
-        > div:last-of-type {
-          display: flex;
+        > button:last-of-type {
           margin-left: @size-8;
 
           > svg {
