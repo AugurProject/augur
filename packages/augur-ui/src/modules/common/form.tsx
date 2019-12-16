@@ -481,6 +481,7 @@ export const DropdownInputGroup = ({
         placeholder={placeholder}
         autoCompleteList={autoCompleteList}
         onChange={onChangeInput}
+        errorMessage={!showDropdown ? errorMessage : ''}
       />
     )}
     {removable && !disabled && (
