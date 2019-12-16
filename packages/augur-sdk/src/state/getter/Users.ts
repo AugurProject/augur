@@ -291,7 +291,7 @@ export class Users {
       userStakedRep,
       userPositions,
       userPositionTotals,
-      marketsInfo: [...marketList.markets, ...marketsInfo]
+      marketsInfo: [...(marketList || {}).markets, ...marketsInfo]
     };
   }
 
