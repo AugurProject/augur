@@ -5032,7 +5032,7 @@ export const TEMPLATES = {
               },
               {
                 id: 2,
-                type: TemplateInputType.DATEYEAR,
+                type: TemplateInputType.DATESTART,
                 placeholder: `Day of Year`,
               },
               {
@@ -5118,7 +5118,7 @@ export const TEMPLATES = {
               },
               {
                 id: 1,
-                type: TemplateInputType.DATEYEAR,
+                type: TemplateInputType.DATESTART,
                 placeholder: `Day of Year`,
               },
               {
@@ -5165,7 +5165,7 @@ export const TEMPLATES = {
               },
               {
                 id: 2,
-                type: TemplateInputType.DATEYEAR,
+                type: TemplateInputType.DATESTART,
                 placeholder: `Day of Year`,
               },
               {
@@ -5251,7 +5251,7 @@ export const TEMPLATES = {
               },
               {
                 id: 1,
-                type: TemplateInputType.DATEYEAR,
+                type: TemplateInputType.DATESTART,
                 placeholder: `Day of Year`,
               },
               {
@@ -5298,7 +5298,7 @@ export const TEMPLATES = {
               },
               {
                 id: 2,
-                type: TemplateInputType.DATEYEAR,
+                type: TemplateInputType.DATESTART,
                 placeholder: `Day of Year`,
               },
               {
@@ -5384,7 +5384,7 @@ export const TEMPLATES = {
               },
               {
                 id: 1,
-                type: TemplateInputType.DATEYEAR,
+                type: TemplateInputType.DATESTART,
                 placeholder: `Day of Year`,
               },
               {
