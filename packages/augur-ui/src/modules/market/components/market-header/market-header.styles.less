@@ -120,7 +120,7 @@
         display: flex;
         margin-left: 0;
         flex-direction: column;
-        margin-top: @size-10;
+        margin-top: @size-8;
       }
     }
 
@@ -160,11 +160,21 @@ div.Toggle {
     align-items: center;
 
     > button {
+      align-items: center;
+      flex: 1;
       width: unset;
+
+      > h1 {
+        .text-12-bold;
+  
+        color: @color-primary-text;
+        padding: 0;
+        margin: 0;
+      }
     }
 
     > button:first-of-type {
-      width: unset;
+      flex: 0;
 
       > svg {
         height: @size-6;
@@ -175,15 +185,6 @@ div.Toggle {
           fill: unset;
         }
       }
-    }
-
-    > h1 {
-      .text-12-bold;
-
-      color: @color-primary-text;
-      padding: 0;
-      margin: 0;
-      flex: 1;
     }
   }
 }
@@ -301,10 +302,12 @@ div.Toggle {
     > button {
       .text-12;
 
+      align-self: flex-end;
       color: @color-primary-text;
       cursor: pointer;
       margin-left: @size-5;
       text-transform: uppercase;
+      margin-bottom: @size-12;
 
       svg {
         height: @size-12;

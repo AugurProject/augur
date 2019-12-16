@@ -296,20 +296,17 @@ export default class MarketHeader extends Component<
           })}
         >
           {headerCollapsed && (
-            <>
-              <button
-                className={Styles.BackButton}
-                onClick={() => history.goBack()}
-              >
-                {LeftChevron} Back
-              </button>
-              <h1>{description}</h1>
-            </>
+            <button
+              className={Styles.BackButton}
+              onClick={() => history.goBack()}
+            >
+              {LeftChevron} Back
+            </button>
           )}
           <button
             onClick={() => this.setState({ headerCollapsed: !headerCollapsed })}
           >
-            {TwoArrowsOutline}
+            {headerCollapsed && <h1>{description}</h1>} {TwoArrowsOutline}
           </button>
         </div>
       </section>
