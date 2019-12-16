@@ -69,8 +69,7 @@ export class ZeroXOrdersGetters {
 
     let currentOrdersResponse;
     if (!params.marketId && account) {
-      currentOrdersResponse = await db.ZeroXOrders.where('orderCreator')
-        .equals(account)
+      currentOrdersResponse = await db.ZeroXOrders.where({orderCreator: account})
         .toArray();
     } else if (
       typeof outcome === 'undefined' ||
@@ -113,11 +112,11 @@ export class ZeroXOrdersGetters {
       });
     }
 
-    const marketDoc = await (await db).Markets.get(params.marketId);
-    if (!marketDoc) return {};
-
     return currentOrdersResponse.reduce(
-      (orders: ZeroXOrders, order: StoredOrder) => {
+      async (orders: ZeroXOrders, order: StoredOrder) => {
+        // TODO: investigate this might be too slow
+        const marketDoc = await (await db).Markets.get(order.market);
+        if (!marketDoc) return orders;
         const orderId = order['_id'];
         if (params.ignoreOrders && _.includes(params.ignoreOrders, orderId))
           return orders;
