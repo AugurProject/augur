@@ -29,6 +29,7 @@ import { MarketList } from '@augurproject/sdk/build/state/getter/Markets';
 import { generateTemplateValidations } from './generate-templates';
 import { spawn } from 'child_process';
 import { showTemplateByHash, validateMarketTemplate } from './template-utils';
+import { cannedMarkets } from './data/canned-markets';
 
 export function addScripts(flash: FlashSession) {
   flash.addScript({
@@ -177,6 +178,7 @@ export function addScripts(flash: FlashSession) {
     ],
     async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
+      const endPoint = 'ws://localhost:60557';
       const user = await this.ensureUser();
 
       const target = String(args.target);
@@ -324,6 +326,53 @@ export function addScripts(flash: FlashSession) {
       await user.faucet(new BigNumber(10).pow(18).multipliedBy(1000000));
       await user.approve(new BigNumber(10).pow(18).multipliedBy(1000000));
       return createCannedMarketsAndOrders(user);
+    },
+  });
+
+  flash.addScript({
+    name: 'create-YesNo-zeroX-orders',
+    options: [
+      {
+        name: 'marketId',
+        abbr: 'm',
+        description: 'market to create zeroX orders on',
+      },
+      {
+        name: 'meshEndpoint',
+        abbr: 'z',
+        description: 'zeroX mesh endpoint, if not provided ws://localhost:60557 is used',
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const endpoint = 'ws://localhost:60557';
+      const market = String(args.marketId);
+      const mesh = args.meshEndpoint as string || undefined;
+      console.log('mesh', mesh);
+      const meshEndpoint = mesh ? mesh : endpoint;
+      console.log('using mesh endpoint', meshEndpoint);
+      const user = await this.ensureUser(this.network, true, true, null, meshEndpoint);
+      await user.faucet(new BigNumber(10).pow(18).multipliedBy(1000000));
+      await user.approve(new BigNumber(10).pow(18).multipliedBy(1000000));
+      const yesNoMarket = cannedMarkets.find(c => c.marketType === "yesNo");
+      const orderBook = yesNoMarket.orderBook;
+
+
+      const tradeGroupId = formatBytes32String(String(Date.now()));
+
+      for (let a = 0; a < Object.keys(orderBook).length; a++) {
+        const outcome = Number(Object.keys(orderBook)[a]);
+        const buySell = Object.values(orderBook)[a];
+
+        const { buy, sell } = buySell;
+
+        for (const { shares, price } of buy) {
+          await user.createZeroXOrder(market, 0, new BigNumber(shares), new BigNumber(price), outcome, tradeGroupId, new BigNumber(100), 3, new BigNumber(0), new BigNumber(1));
+        }
+
+        for (const { shares, price } of sell) {
+          await user.createZeroXOrder(market, 1, new BigNumber(shares), new BigNumber(price), outcome, tradeGroupId, new BigNumber(100), 3, new BigNumber(0), new BigNumber(1));
+        }
+      }
     },
   });
 

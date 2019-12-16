@@ -197,6 +197,42 @@ export class ContractAPI {
     return orderId;
   }
 
+  async createZeroXOrder(
+    market: string,
+    type: number,
+    numShares: BigNumber,
+    price: BigNumber,
+    outcome: number,
+    tradeGroupId: string,
+    numTicks: BigNumber,
+    numOutcomes: number,
+    displayMinPrice: BigNumber,
+    displayMaxPrice: BigNumber,
+  ): Promise<void> {
+
+    const placeTradeDisplayParams: PlaceTradeDisplayParams = {
+      market,
+      direction: type as 0 | 1,
+      numTicks,
+      numOutcomes: numOutcomes as 3 | 4 | 5 | 6 | 7 | 8,
+      outcome: outcome as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7,
+      tradeGroupId,
+      fingerprint: "",
+      kycToken: NULL_ADDRESS,
+      doNotCreateOrders: false,
+      displayMinPrice,
+      displayMaxPrice,
+      displayAmount: new BigNumber(numShares),
+      displayPrice: new BigNumber(price),
+      displayShares: new BigNumber(0),
+
+    }
+    await this.augur.placeTrade(
+      placeTradeDisplayParams
+    );
+
+  }
+
   async simplePlaceOrder(
     market: string,
     type: BigNumber,
