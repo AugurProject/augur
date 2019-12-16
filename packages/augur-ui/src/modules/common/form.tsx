@@ -484,7 +484,7 @@ export const DropdownInputGroup = ({
         errorMessage={!showDropdown ? errorMessage : ''}
       />
     )}
-    {removable && !disabled && (
+    {removable && !disabled && value !== '' && !showText && (
       <button
         onClick={e => {
           if (showText) {
