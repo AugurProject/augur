@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import { CategoryTagTrail, InReportingLabel } from 'modules/common/labels';
+import { CategoryTagTrail, InReportingLabel, TemplateShield } from 'modules/common/labels';
 import {
   OutcomeGroup,
   LabelValue,
@@ -28,7 +28,6 @@ import {
   PositionIcon,
   DesignatedReporter,
   DisputeStake,
-  TemplateIcon,
 } from 'modules/common/icons';
 import { MarketProgress } from 'modules/common/progress';
 import ChevronFlip from 'modules/common/chevron-flip';
@@ -225,7 +224,8 @@ export default class MarketCard extends React.Component<
                 disputeInfo={disputeInfo}
               />
             )}
-            {isTemplate && TemplateIcon}<CategoryTagTrail categories={categoriesWithClick} />
+            {isTemplate && <TemplateShield marketId={id} />}
+            <CategoryTagTrail categories={categoriesWithClick} />
             <MarketProgress
               reportingState={reportingState}
               currentTime={currentAugurTimestamp}

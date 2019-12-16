@@ -1,4 +1,3 @@
-import { WordTrail } from 'modules/common/labels';
 import React, { Component } from 'react';
 import classNames from 'classnames';
 import {
@@ -7,14 +6,13 @@ import {
   TwoArrowsOutline,
   LeftChevron,
   CopyAlternateIcon,
-  TemplateIcon,
 } from 'modules/common/icons';
 import MarkdownRenderer from 'modules/common/markdown-renderer';
 import MarketHeaderBar from 'modules/market/containers/market-header-bar';
 import { BigNumber } from 'bignumber.js';
 import Styles from 'modules/market/components/market-header/market-header.styles.less';
 import CoreProperties from 'modules/market/components/core-properties/core-properties';
-import { MarketTypeLabel } from 'modules/common/labels';
+import { WordTrail, MarketTypeLabel, TemplateShield } from 'modules/common/labels';
 import makeQuery from 'modules/routes/helpers/make-query';
 import {
   CATEGORY_PARAM_NAME,
@@ -175,7 +173,7 @@ export default class MarketHeader extends Component<
       }));
 
     const categoriesWithClick = process(market.categories) || [];
-
+    const resolutionSource = (market.designatedReporter.toUpperCase() === market.author.toUpperCase()) ? 'General Knowledge' : market.designatedReporter;
     return (
       <section
         className={classNames(
@@ -201,7 +199,7 @@ export default class MarketHeader extends Component<
                     {LeftChevron} Back
                   </button>
                   <MarketTypeLabel marketType={marketType} />
-                  {market.isTemplate && <>{TemplateIcon}</>}
+                  {market.isTemplate && <TemplateShield marketId={market.id} />}
                 </WordTrail>
                 <SocialMediaButtons
                   marketAddress={market.id}
@@ -221,6 +219,10 @@ export default class MarketHeader extends Component<
               </div>
               <div>
                 {preview ? <PreviewMarketTitle market={market} /> : <MarketTitle id={market.marketId} noLink />}
+                <div className={Styles.Details}>
+                  <h4>Resolution Source</h4>
+                  <p>{resolutionSource}</p>
+                </div>
                 {details.length > 0 && (
                   <div className={Styles.Details}>
                     <h4>Resolution Details</h4>

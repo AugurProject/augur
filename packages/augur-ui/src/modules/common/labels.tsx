@@ -11,6 +11,7 @@ import {
   DoubleArrows,
   QuestionIcon,
   LoadingEllipse,
+  TemplateIcon,
 } from 'modules/common/icons';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
@@ -204,37 +205,60 @@ interface TimeLabelProps {
   hint?: React.ReactNode;
 }
 
-export const TimeLabel = ({ label, time, showLocal, hint }: TimeLabelProps) => {
-  return (
-    <div className={Styles.TimeLabel}>
-      <span>
-        {label}
-        {hint && (
-          <>
-            <label
-              className={TooltipStyles.TooltipHint}
-              data-tip
-              data-for={`tooltip-${label.replace(' ', '-')}`}
-            >
-              {QuestionIcon}
-            </label>
-            <ReactTooltip
-              id={`tooltip-${label.replace(' ', '-')}`}
-              className={TooltipStyles.Tooltip}
-              effect="solid"
-              place="right"
-              type="light"
-            >
-              {hint}
-            </ReactTooltip>
-          </>
-        )}
-      </span>
-      <span>{time && time.formattedShortUtc}</span>
-      {showLocal && <span>{time && time.formattedLocalShortDateTimeWithTimezone}</span>}
-    </div>
-  );
-};
+interface TemplateShieldProps {
+  marketId: string;
+}
+
+export const TemplateShield = ({ marketId }: TemplateShieldProps) => (
+  <>
+    <label
+      className={TooltipStyles.TooltipHint}
+      data-tip
+      data-for={`tooltip-${marketId}-templateShield`}
+    >
+      {TemplateIcon}
+    </label>
+    <ReactTooltip
+      id={`tooltip-${marketId}-templateShield`}
+      className={TooltipStyles.Tooltip}
+      effect="solid"
+      place="right"
+      type="light"
+    >
+      Template Markets have pre-defined terms and a greater chance of validly resolving than Custom Markets.
+    </ReactTooltip>
+  </>
+);
+
+export const TimeLabel = ({ label, time, showLocal, hint }: TimeLabelProps) => (
+  <div className={Styles.TimeLabel}>
+    <span>
+      {label}
+      {hint && (
+        <>
+          <label
+            className={TooltipStyles.TooltipHint}
+            data-tip
+            data-for={`tooltip-${label.replace(' ', '-')}`}
+          >
+            {QuestionIcon}
+          </label>
+          <ReactTooltip
+            id={`tooltip-${label.replace(' ', '-')}`}
+            className={TooltipStyles.Tooltip}
+            effect="solid"
+            place="right"
+            type="light"
+          >
+            {hint}
+          </ReactTooltip>
+        </>
+      )}
+    </span>
+    <span>{time && time.formattedShortUtc}</span>
+    {showLocal && <span>{time && time.formattedLocalShortDateTimeWithTimezone}</span>}
+  </div>
+);
 
 export const DashlineNormal = () => (
   <svg width="100%" height="1">

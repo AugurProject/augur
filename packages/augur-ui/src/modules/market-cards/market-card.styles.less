@@ -15,7 +15,9 @@
     padding-top: @size-8;
     padding-left: @size-12;
 
-    > svg {
+    > label {
+      height: @size-16;
+      margin-bottom: 0;
       margin-right: @size-8;
     }
   }
@@ -82,7 +84,7 @@
       flex-flow: row nowrap;
     }
 
-    > div:first-of-type {
+    > div[class*="CategoryTagTrail"] {
       display: flex;
       flex: 1;
     }
@@ -91,7 +93,7 @@
       margin-right: @size-12;
     }
 
-    > div:nth-of-type(2) {
+    > div:nth-of-type(3) {
       > div {
         display: none;
       }
