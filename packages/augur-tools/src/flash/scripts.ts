@@ -347,15 +347,12 @@ export function addScripts(flash: FlashSession) {
       const endpoint = 'ws://localhost:60557';
       const market = String(args.marketId);
       const mesh = args.meshEndpoint as string || undefined;
-      console.log('mesh', mesh);
       const meshEndpoint = mesh ? mesh : endpoint;
-      console.log('using mesh endpoint', meshEndpoint);
       const user = await this.ensureUser(this.network, true, true, null, meshEndpoint);
       await user.faucet(new BigNumber(10).pow(18).multipliedBy(1000000));
       await user.approve(new BigNumber(10).pow(18).multipliedBy(1000000));
       const yesNoMarket = cannedMarkets.find(c => c.marketType === "yesNo");
       const orderBook = yesNoMarket.orderBook;
-
 
       const tradeGroupId = formatBytes32String(String(Date.now()));
 
@@ -366,11 +363,11 @@ export function addScripts(flash: FlashSession) {
         const { buy, sell } = buySell;
 
         for (const { shares, price } of buy) {
-          await user.createZeroXOrder(market, 0, new BigNumber(shares), new BigNumber(price), outcome, tradeGroupId, new BigNumber(100), 3, new BigNumber(0), new BigNumber(1));
+          await user.placeTradeThroughAugur(market, 0, new BigNumber(shares), new BigNumber(price), outcome, tradeGroupId, new BigNumber(100), 3, new BigNumber(0), new BigNumber(1));
         }
 
         for (const { shares, price } of sell) {
-          await user.createZeroXOrder(market, 1, new BigNumber(shares), new BigNumber(price), outcome, tradeGroupId, new BigNumber(100), 3, new BigNumber(0), new BigNumber(1));
+          await user.placeTradeThroughAugur(market, 1, new BigNumber(shares), new BigNumber(price), outcome, tradeGroupId, new BigNumber(100), 3, new BigNumber(0), new BigNumber(1));
         }
       }
     },

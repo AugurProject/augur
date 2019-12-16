@@ -197,7 +197,7 @@ export class ContractAPI {
     return orderId;
   }
 
-  async createZeroXOrder(
+  async placeTradeThroughAugur(
     market: string,
     type: number,
     numShares: BigNumber,
@@ -210,7 +210,7 @@ export class ContractAPI {
     displayMaxPrice: BigNumber,
   ): Promise<void> {
 
-    const placeTradeDisplayParams: PlaceTradeDisplayParams = {
+    await this.augur.placeTrade({
       market,
       direction: type as 0 | 1,
       numTicks,
@@ -226,11 +226,7 @@ export class ContractAPI {
       displayPrice: new BigNumber(price),
       displayShares: new BigNumber(0),
 
-    }
-    await this.augur.placeTrade(
-      placeTradeDisplayParams
-    );
-
+    });
   }
 
   async simplePlaceOrder(
