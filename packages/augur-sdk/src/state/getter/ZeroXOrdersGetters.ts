@@ -68,12 +68,14 @@ export class ZeroXOrdersGetters {
 
     let currentOrdersResponse;
     if (!params.marketId && account) {
+      console.log('get zeroX account', account);
       currentOrdersResponse = await db.ZeroXOrders.where({orderCreator: account})
         .toArray();
     } else if (
       typeof outcome === 'undefined' ||
       typeof orderType === 'undefined'
     ) {
+      console.log("zeroX outcome orderType query", params.marketId);
       currentOrdersResponse = await db.ZeroXOrders.where(
         '[market+outcome+orderType]'
       )
@@ -82,11 +84,13 @@ export class ZeroXOrdersGetters {
           [params.marketId, Dexie.maxKey, Dexie.maxKey]
         )
         .and(order => {
+          console.log('order found', order);
           if (account) return order.orderCreator != params.account;
           return true;
         })
         .toArray();
     } else {
+      console.log('db.ZeroXOrders', db.ZeroXOrders);
       currentOrdersResponse = await db.ZeroXOrders.where(
         '[market+outcome+orderType]'
       )
@@ -109,6 +113,7 @@ export class ZeroXOrdersGetters {
       });
     }
 
+    console.log('currentOrdersResponse', currentOrdersResponse);
     return currentOrdersResponse.reduce(
       async (orders: ZeroXOrders, order: StoredOrder) => {
         // TODO: investigate this might be too slow

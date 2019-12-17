@@ -363,10 +363,12 @@ export function addScripts(flash: FlashSession) {
         const { buy, sell } = buySell;
 
         for (const { shares, price } of buy) {
+          this.log(`creating buy order, ${shares} @ ${price}`);
           await user.placeTradeThroughAugur(market, 0, new BigNumber(shares), new BigNumber(price), outcome, tradeGroupId, new BigNumber(100), 3, new BigNumber(0), new BigNumber(1));
         }
 
         for (const { shares, price } of sell) {
+          this.log(`creating sell order, ${shares} @ ${price}`);
           await user.placeTradeThroughAugur(market, 1, new BigNumber(shares), new BigNumber(price), outcome, tradeGroupId, new BigNumber(100), 3, new BigNumber(0), new BigNumber(1));
         }
       }

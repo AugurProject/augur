@@ -260,6 +260,7 @@ export class OnChainTrading {
       );
     }
 
+    console.log('calling getZeroXOrders', params);
     return ZeroXOrdersGetters.getZeroXOrders(augur, db, params);
     /*
     let currentOrdersResponse: ParsedOrderEventLog[];

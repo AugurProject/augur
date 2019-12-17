@@ -123,6 +123,7 @@ export class ZeroXOrders extends AbstractTable {
     const augurOrderData = this.parseAssetData(order.signedOrder.makerAssetData);
     // Currently the API for mesh browser and the client API diverge here but we dont want to do string parsing per order to be compliant for the browser case
     const signedOrder = order.signedOrder;
+    console.log('processOrder, ZeroXOrders.ts')
     return {
       market: augurOrderData.market,
       price: augurOrderData.price,
@@ -154,6 +155,7 @@ export class ZeroXOrders extends AbstractTable {
 
   parseAssetData(assetData: string): OrderData {
     const data = assetData.substr(2); // remove the 0x
+    console.log('parseAssetData', assetData);
     return {
       market: getAddress(`0x${data.substr(392, 40)}`),
       price: `0x${data.substr(432, 20)}`,
