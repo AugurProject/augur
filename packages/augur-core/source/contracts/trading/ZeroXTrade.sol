@@ -79,8 +79,9 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         cash = ICash(_augur.lookup("Cash"));
         require(cash != ICash(0));
         shareToken = IShareToken(_augur.lookup("ShareToken"));
-        exchange = IExchange(_augurTrading.lookup("ZeroXExchange"));
         require(shareToken != IShareToken(0));
+        exchange = IExchange(_augurTrading.lookup("ZeroXExchange"));
+        require(exchange != IExchange(0));
         fillOrder = IFillOrder(_augurTrading.lookup("FillOrder"));
         require(fillOrder != IFillOrder(0));
 
