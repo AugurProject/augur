@@ -79,7 +79,10 @@
   max-height: @size-21;
   min-height: @size-21;
   padding: 0 @size-16;
-  border-bottom: 0.0625rem solid @color-dark-grey;
+
+  > div:first-of-type {
+    border-bottom: 0.0625rem solid @color-dark-grey;
+  }
 }
 
 .BottomBorder {
