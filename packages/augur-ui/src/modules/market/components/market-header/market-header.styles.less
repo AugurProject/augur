@@ -31,15 +31,13 @@
     align-items: flex-start;
     display: flex;
     width: 100%;
-    padding-left: @size-16;
 
     > div:first-of-type {
       display: flex;
       flex: 1;
-      flex-wrap: wrap;
-      margin-right: @size-8;
-      padding-top: @size-8;
-      flex-direction: column;
+      flex-flow: column wrap;
+      position: relative;
+      min-height: 149px;
 
       > div:first-of-type {
         flex: 1;
@@ -56,26 +54,20 @@
       }
 
       > div {
-        position: relative;
-
         > span {
           .text-18-bold;
 
           color: @color-primary-text;
           flex: 1;
-          margin-bottom: @size-8;
+          margin-bottom: @size-4;
           display: -webkit-box;
           -webkit-line-clamp: 3;
           -webkit-box-orient: vertical;
           overflow: hidden;
           text-overflow: ellipsis;
         }
-      }
 
-      > div.BigTitle {
-        position: relative;
-
-        > span {
+        &.BigTitle > span {
           &:hover {
             position: absolute;
             display: block;
@@ -87,14 +79,18 @@
           }
   
           &:hover + div:first-of-type {
-            margin-top: 71px;
+            margin-top: 67px;
           }
         } 
       }
-
+      
       > div:first-of-type {
         display: flex;
         height: fit-content;
+        max-height: @size-20;
+        padding-left: @size-16;
+        padding-right: @size-8;
+        margin: @size-8 0 @size-4;
 
         > span {
           margin: 0 @size-8 0 0;
@@ -145,16 +141,17 @@
 
       > div:last-of-type {
         display: flex;
+        flex: 1 100%;
         margin-left: 0;
         flex-direction: column;
-        margin-top: @size-8;
+        padding: 0 @size-12 0 @size-16;
       }
     }
 
     > div:last-of-type {
+      align-self: stretch;
       display: flex;
-      border-bottom: 0;
-      border-top: 0;
+      min-height: 149px;
     }
   }
 }
@@ -223,16 +220,14 @@ div.Toggle {
 
 .AdditionalDetails,
 .AdditionalDetails:disabled {
-  background: none;
-  border: 0;
   margin: 0;
-  max-height: @size-52;
-  overflow: hidden;
-  resize: none;
-  text-transform: none;
+  max-height: @size-16;
   transition: max-height 0.15s ease-out;
-  white-space: pre-wrap;
-  margin-bottom: @size-12;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
   > p {
     margin-top: 0;
@@ -242,6 +237,7 @@ div.Toggle {
     max-height: 1000px;
     overflow-y: auto;
     transition: max-height 0.15s ease-in;
+    -webkit-line-clamp: unset;
   }
 }
 
@@ -314,6 +310,19 @@ div.Toggle {
   }
 }
 
+div.ExpandedHeading {
+  position: absolute;
+  width: 100%;
+}
+
+div.ExpandedContent {
+  position: absolute;
+  background: @color-module-background;
+  z-index: @mask-above;
+  box-shadow: 0 @size-8 @size-8 @color-dark-grey;
+  margin-top: @size-32;
+}
+
 .Details {
   padding: 0;
 
@@ -338,6 +347,7 @@ div.Toggle {
   > div {
     display: flex;
     align-items: flex-start;
+    padding-bottom: @size-12;
 
     > button {
       .text-12;
@@ -347,7 +357,6 @@ div.Toggle {
       cursor: pointer;
       margin-left: @size-5;
       text-transform: uppercase;
-      margin-bottom: @size-12;
 
       svg {
         height: @size-12;
@@ -399,7 +408,7 @@ div.Toggle {
   display: flex;
   flex: 1;
   flex-direction: column;
-  min-width: 630px;
+  min-width: 537px;
   background: @color-module-background;
 }
 

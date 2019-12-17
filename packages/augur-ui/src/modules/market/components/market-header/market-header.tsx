@@ -78,6 +78,7 @@ export default class MarketHeader extends Component<
   detailsContainer: any;
   clipboardMarketId: any = new Clipboard('#copy_marketId');
   refTitle: any = null;
+  refNotCollapsed: any = null;
 
   constructor(props) {
     super(props);
@@ -184,7 +185,20 @@ export default class MarketHeader extends Component<
         : market.designatedReporter;
     const bigTitle =
       !!this.refTitle && this.refTitle.firstChild.clientHeight > 60;
-    console.log(bigTitle);
+    const expandedDetails = detailsTooLong && showReadMore;
+    const notExpandedHeight =
+      !headerCollapsed &&
+      !!this.refNotCollapsed &&
+      this.refNotCollapsed.clientHeight;
+
+    const containerStyle = notExpandedHeight
+      ? {
+          height: `${notExpandedHeight}px`,
+          maxHeight: `${notExpandedHeight}px`,
+          minHeight: `${notExpandedHeight}px`,
+        }
+      : {};
+
     return (
       <section
         className={classNames(
@@ -199,13 +213,22 @@ export default class MarketHeader extends Component<
         )}
       >
         {!headerCollapsed && (
-          <div>
+          <div
+            ref={notCollapsed => {
+              this.refNotCollapsed = notCollapsed;
+            }}
+            style={containerStyle}
+          >
             <div
               className={classNames({
                 [Styles.ShowTutorial]: showTutorialDetails,
               })}
             >
-              <div>
+              <div
+                className={classNames({
+                  [Styles.ExpandedHeading]: expandedDetails,
+                })}
+              >
                 <WordTrail items={[...categoriesWithClick]}>
                   <button
                     className={Styles.BackButton}
@@ -240,7 +263,10 @@ export default class MarketHeader extends Component<
                 ref={title => {
                   this.refTitle = title;
                 }}
-                className={classNames({ [Styles.BigTitle]: bigTitle })}
+                className={classNames({
+                  [Styles.BigTitle]: bigTitle,
+                  [Styles.ExpandedContent]: expandedDetails,
+                })}
               >
                 {preview ? (
                   <PreviewMarketTitle market={market} />
@@ -260,7 +286,7 @@ export default class MarketHeader extends Component<
                           this.detailsContainer = detailsContainer;
                         }}
                         className={classNames(Styles.AdditionalDetails, {
-                          [Styles.Tall]: detailsTooLong && showReadMore,
+                          [Styles.Tall]: expandedDetails,
                         })}
                       >
                         <MarkdownRenderer text={details} hideLabel />
