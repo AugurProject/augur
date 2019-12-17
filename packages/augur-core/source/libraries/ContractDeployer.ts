@@ -82,7 +82,8 @@ Deploying to: ${networkConfiguration.networkName}
         const externalAddresses = this.configuration.externalAddresses;
 
         // Legacy REP
-        if (externalAddresses.LegacyReputationToken) {
+        if (this.configuration.isProduction || externalAddresses.LegacyReputationToken) {
+            if (!externalAddresses.LegacyReputationToken) throw new Error('Must provide LegacyReputationToken');
             console.log(`Registering Legacy Rep Contract at ${externalAddresses.LegacyReputationToken}`);
             await this.augur!.registerContract(stringTo32ByteHex('LegacyReputationToken'), externalAddresses.LegacyReputationToken);
         } else {
@@ -90,7 +91,8 @@ Deploying to: ${networkConfiguration.networkName}
         }
 
         // REP price oracle
-        if (externalAddresses.RepPriceOracle) {
+        if (this.configuration.isProduction || externalAddresses.RepPriceOracle) {
+            if (!externalAddresses.RepPriceOracle) throw new Error('Must provide RepPriceOracle');
             console.log(`Registering Rep Price Oracle Contract at ${externalAddresses.RepPriceOracle}`);
             await this.augur!.registerContract(stringTo32ByteHex('RepPriceOracle'), externalAddresses.RepPriceOracle);
         } else {
@@ -98,7 +100,7 @@ Deploying to: ${networkConfiguration.networkName}
         }
 
         // Cash
-        if (externalAddresses.Cash) {
+        if (this.configuration.isProduction || externalAddresses.Cash) {
             if (!(externalAddresses.DaiVat && externalAddresses.DaiPot && externalAddresses.DaiJoin)) {
                 throw new Error('Must provide ALL Maker contracts if any are provided');
             }
@@ -143,7 +145,8 @@ Deploying to: ${networkConfiguration.networkName}
         }
 
         // Proxy Factory & Gnosis Safe
-        if (externalAddresses.ProxyFactory) {
+        if (this.configuration.isProduction || externalAddresses.GnosisSafe) {
+            if (!externalAddresses.GnosisSafe) throw new Error('Must provide GnosisSafe');
             if (!externalAddresses.ProxyFactory) {
                 throw new Error('Must provide ALL Gnosis contracts if any are provided');
             }
@@ -156,7 +159,8 @@ Deploying to: ${networkConfiguration.networkName}
         }
 
         // 0x Exchange
-        if (externalAddresses.ZeroXExchange) {
+        if (this.configuration.isProduction || externalAddresses.ZeroXExchange) {
+            if (!externalAddresses.ZeroXExchange) throw new Error('Must provide ZeroXExchange');
             console.log(`Registering 0x Exchange Contract at ${externalAddresses.ZeroXExchange}`);
             await this.augurTrading!.registerContract(stringTo32ByteHex('ZeroXExchange'), externalAddresses.ZeroXExchange);
         } else {
@@ -164,7 +168,8 @@ Deploying to: ${networkConfiguration.networkName}
         }
 
         // Uniswap
-        if (externalAddresses.UniswapV2Factory) {
+        if (this.configuration.isProduction || externalAddresses.UniswapV2Factory) {
+            if (!externalAddresses.UniswapV2Factory) throw new Error('Must provide UniswapV2Factory');
             console.log(`Registering UniswapV2Factory Contract at ${externalAddresses.UniswapV2Factory}`);
             await this.augur!.registerContract(stringTo32ByteHex('UniswapV2Factory'), externalAddresses.UniswapV2Factory);
         } else {
