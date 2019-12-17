@@ -100,8 +100,12 @@ Deploying to: ${networkConfiguration.networkName}
         }
 
         // Cash
-        if (this.configuration.isProduction || externalAddresses.Cash) {
-            if (!(externalAddresses.DaiVat && externalAddresses.DaiPot && externalAddresses.DaiJoin)) {
+        if (this.configuration.isProduction
+            || externalAddresses.Cash
+            || externalAddresses.DaiVat
+            || externalAddresses.DaiPot
+            || externalAddresses.DaiJoin) {
+            if (!(externalAddresses.Cash && externalAddresses.DaiVat && externalAddresses.DaiPot && externalAddresses.DaiJoin)) {
                 throw new Error('Must provide ALL Maker contracts if any are provided');
             }
 
@@ -145,9 +149,8 @@ Deploying to: ${networkConfiguration.networkName}
         }
 
         // Proxy Factory & Gnosis Safe
-        if (this.configuration.isProduction || externalAddresses.GnosisSafe) {
-            if (!externalAddresses.GnosisSafe) throw new Error('Must provide GnosisSafe');
-            if (!externalAddresses.ProxyFactory) {
+        if (this.configuration.isProduction || externalAddresses.GnosisSafe || externalAddresses.ProxyFactory) {
+            if (!(externalAddresses.ProxyFactory && externalAddresses.GnosisSafe)) {
                 throw new Error('Must provide ALL Gnosis contracts if any are provided');
             }
 
