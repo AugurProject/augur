@@ -217,7 +217,7 @@ export class ContractAPI {
       numOutcomes: numOutcomes as 3 | 4 | 5 | 6 | 7 | 8,
       outcome: outcome as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7,
       tradeGroupId,
-      fingerprint: "",
+      fingerprint: formatBytes32String('11'),
       kycToken: NULL_ADDRESS,
       doNotCreateOrders: false,
       displayMinPrice,

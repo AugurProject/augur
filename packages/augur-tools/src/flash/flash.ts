@@ -11,6 +11,10 @@ import { BlockAndLogStreamerListenerInterface } from "@augurproject/sdk/build/st
 import { DB } from "@augurproject/sdk/build/state/db/DB";
 import { EmptyConnector } from "@augurproject/sdk";
 import { BaseConnector } from "@augurproject/sdk/build/connector";
+import { configureDexieForNode } from "@augurproject/sdk/build/state/utils/DexieIDBShim";
+
+
+configureDexieForNode(true);
 
 export interface FlashOption {
   name: string;
@@ -135,7 +139,7 @@ export class FlashSession {
 
     const connector: BaseConnector = wireUpSdk ? new Connectors.DirectConnector() : new EmptyConnector();
     const gnosisRelay = undefined;
-    const meshClient = meshEndpoint ? new WSClient(meshEndpoint) : undefined;
+    const meshClient = !!meshEndpoint ? new WSClient(meshEndpoint) : undefined;
     this.user = await ContractAPI.userWrapper(
       this.getAccount(accountAddress),
       this.provider,
