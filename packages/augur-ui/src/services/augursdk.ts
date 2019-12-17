@@ -12,6 +12,7 @@ import { EnvObject } from 'modules/types';
 import { isEmpty } from 'utils/is-empty';
 import { analytics } from './analytics';
 import { isLocalHost } from 'utils/is-localhost';
+import { WebWorkerConnector } from 'services/ww-connector';
 
 export class SDK {
   sdk: Augur<Provider> | null = null;
