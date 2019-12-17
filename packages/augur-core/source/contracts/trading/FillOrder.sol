@@ -515,8 +515,8 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
 
         sellCompleteSets(_tradeData);
 
-        uint256 _amountRemainingFillerWants = _tradeData.filler.sharesToSell.add(_tradeData.filler.sharesToBuy);
-        uint256 _amountFilled = _amountFillerWants.sub(_amountRemainingFillerWants);
+        uint256 _tradeSize = _tradeData.filler.sharesToSell.add(_tradeData.filler.sharesToBuy);
+        uint256 _amountFillerWantsRemaining = _amountFillerWants.sub(_tradeSize);
         if (_tradeData.order.orderId != bytes32(0)) {
             _tradeData.contracts.orders.recordFillOrder(_tradeData.order.orderId, _tradeData.getMakerSharesDepleted(), _tradeData.getMakerTokensDepleted(), _amountFilled);
         }
@@ -529,12 +529,12 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
             _tradeData.contracts.profitLoss.adjustTraderProfitForFees(_tradeData.contracts.market, _tradeData.getLongShareBuyerDestination(), _tradeData.order.outcome, _longFees);
             _tradeData.contracts.profitLoss.adjustTraderProfitForFees(_tradeData.contracts.market, _tradeData.getShortShareBuyerDestination(), _tradeData.order.outcome, _shortFees);
         }
-        updateProfitLoss(_tradeData, _amountFilled);
+        updateProfitLoss(_tradeData, _tradeSize);
         if (_tradeData.creator.participantAddress == _tradeData.filler.participantAddress) {
             _tradeData.contracts.profitLoss.recordFrozenFundChange(_tradeData.contracts.universe, _tradeData.contracts.market, _tradeData.creator.participantAddress, _tradeData.order.outcome, -int256(_tokensRefunded));
         }
 
-        return _amountRemainingFillerWants;
+        return _tradeSize;
     }
 
     function sellCompleteSets(Trade.Data memory _tradeData) internal returns (bool) {
