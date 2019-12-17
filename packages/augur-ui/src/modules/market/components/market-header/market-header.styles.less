@@ -264,6 +264,41 @@ div.Toggle {
   }
 }
 
+.CopyButton {
+  position: relative;
+
+  > div {
+    .text-14-bold;
+
+    background: @color-secondary-action;
+    border: @size-1 solid @color-secondary-action-outline;
+    color: @color-primary-text;
+    border-radius: @border-radius-default;
+    padding: @size-4;
+    position: absolute;
+    top: 125%;
+    left: -@size-16;
+    z-index: @mask-above;
+    max-width: @size-52;
+
+    &:before {
+      content: '';
+      position: absolute;
+      top: -@size-5;
+      left: @size-21;
+      margin: 0;
+      border-top: 0;
+      border-left: @size-5 solid transparent;
+      border-right: @size-5 solid transparent;
+      border-bottom: @size-5 solid @color-secondary-action-outline;
+      padding: 0;
+      width: 0;
+      height: 0;
+    }
+  }
+}
+
+
 .MainValues {
   display: flex;
   width: 100%;

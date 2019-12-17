@@ -63,6 +63,7 @@ interface MarketHeaderState {
   showReadMore: boolean;
   detailsHeight: number;
   headerCollapsed: boolean;
+  showCopied: boolean;
 }
 export default class MarketHeader extends Component<
   MarketHeaderProps,
@@ -86,6 +87,7 @@ export default class MarketHeader extends Component<
       showReadMore: false,
       detailsHeight: 0,
       headerCollapsed: false,
+      showCopied: false,
     };
 
     this.gotoFilter = this.gotoFilter.bind(this);
@@ -115,7 +117,8 @@ export default class MarketHeader extends Component<
   }
 
   addToFavorites() {
-    this.props.toggleFavorite(this.props.market.id);
+    const { market, toggleFavorite } = this.props;
+    toggleFavorite(market.id);
   }
 
   gotoFilter(type, value) {
@@ -158,7 +161,12 @@ export default class MarketHeader extends Component<
       marketLinkCopied,
     } = this.props;
     let { details } = this.props;
-    const { headerCollapsed, showReadMore, detailsHeight } = this.state;
+    const {
+      headerCollapsed,
+      showReadMore,
+      detailsHeight,
+      showCopied,
+    } = this.state;
     const detailsTooLong =
       market.details && detailsHeight > OVERFLOW_DETAILS_LENGTH;
 
@@ -246,9 +254,19 @@ export default class MarketHeader extends Component<
                 <div
                   id="copy_marketId"
                   data-clipboard-text={market.id}
-                  onClick={() => marketLinkCopied(market.id, MARKET_PAGE)}
+                  onClick={() => {
+                    marketLinkCopied(market.id, MARKET_PAGE);
+                    this.setState({ showCopied: true }, () => {
+                      setTimeout(
+                        () => this.setState({ showCopied: false }),
+                        2000
+                      );
+                    });
+                  }}
+                  className={Styles.CopyButton}
                 >
                   {CopyAlternateIcon}
+                  {showCopied && <div>Copied</div>}
                 </div>
                 {toggleFavorite && (
                   <FavoritesButton
