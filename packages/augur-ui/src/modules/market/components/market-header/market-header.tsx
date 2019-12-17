@@ -77,6 +77,7 @@ export default class MarketHeader extends Component<
   };
   detailsContainer: any;
   clipboardMarketId: any = new Clipboard('#copy_marketId');
+  refTitle: any = null;
 
   constructor(props) {
     super(props);
@@ -181,6 +182,9 @@ export default class MarketHeader extends Component<
       market.designatedReporter.toUpperCase() === market.author.toUpperCase()
         ? 'General Knowledge'
         : market.designatedReporter;
+    const bigTitle =
+      !!this.refTitle && this.refTitle.firstChild.clientHeight > 60;
+    console.log(bigTitle);
     return (
       <section
         className={classNames(
@@ -232,7 +236,12 @@ export default class MarketHeader extends Component<
                   />
                 )}
               </div>
-              <div>
+              <div
+                ref={title => {
+                  this.refTitle = title;
+                }}
+                className={classNames({ [Styles.BigTitle]: bigTitle })}
+              >
                 {preview ? (
                   <PreviewMarketTitle market={market} />
                 ) : (

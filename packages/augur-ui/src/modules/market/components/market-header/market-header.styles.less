@@ -8,6 +8,7 @@
   display: flex;
   flex: 1;
   flex-direction: column;
+  overflow: visible;
 
   .copy_marketId {
     margin-left: @size-8;
@@ -55,13 +56,40 @@
       }
 
       > div {
+        position: relative;
+
         > span {
           .text-18-bold;
 
           color: @color-primary-text;
-          flex-grow: 1;
+          flex: 1;
           margin-bottom: @size-8;
+          display: -webkit-box;
+          -webkit-line-clamp: 3;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
+      }
+
+      > div.BigTitle {
+        position: relative;
+
+        > span {
+          &:hover {
+            position: absolute;
+            display: block;
+            box-shadow: 0 0 @size-16 @color-dark-grey;
+            -webkit-line-clamp: unset;
+            background: @color-module-background;
+            z-index: @mask-above;
+            padding: @size-4;
+          }
+  
+          &:hover + div:first-of-type {
+            margin-top: 71px;
+          }
+        } 
       }
 
       > div:first-of-type {
@@ -169,6 +197,11 @@ div.Toggle {
         color: @color-primary-text;
         padding: 0;
         margin: 0;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
     }
 
