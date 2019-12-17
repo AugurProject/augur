@@ -35,7 +35,7 @@
     > div:first-of-type {
       display: flex;
       flex: 1;
-      flex-flow: column wrap;
+      flex-flow: column nowrap;
       position: relative;
       min-height: 149px;
 
@@ -278,7 +278,7 @@ div.Toggle {
     position: absolute;
     top: 125%;
     left: -@size-16;
-    z-index: @mask-above;
+    z-index: @mask-modal;
     max-width: @size-52;
 
     &:before {
@@ -356,6 +356,7 @@ div.ExpandedContent {
   z-index: @mask-above;
   box-shadow: 0 @size-8 @size-8 @color-dark-grey;
   margin-top: @size-32;
+  width: 100%;
 }
 
 .Details {
@@ -416,6 +417,7 @@ div.ExpandedContent {
       .text-12;
 
       color: @color-primary-text;
+      flex: 1;
 
       @media @breakpoint-mobile-small {
         display: block;
