@@ -245,11 +245,11 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
     }
 
     function validateOrder(IExchange.Order memory _order) internal view {
-        (IERC1155 _zeroXTradeToken, uint256 _tokenId) = getZeroXTradeTokenData(_order.makerAssetData);
+        (IERC1155 _zeroXTradeTokenMaker, uint256 _tokenIdMaker) = getZeroXTradeTokenData(_order.makerAssetData);
         (IERC1155 _zeroXTradeTokenTaker, uint256 _tokenIdTaker) = getZeroXTradeTokenData(_order.takerAssetData);
-        require(_zeroXTradeToken == _zeroXTradeTokenTaker);
-        require(_tokenId == _tokenIdTaker);
-        require(_zeroXTradeToken == this);
+        require(_zeroXTradeTokenMaker == _zeroXTradeTokenTaker);
+        require(_tokenIdMaker == _tokenIdTaker);
+        require(_zeroXTradeTokenMaker == this);
     }
 
     function doTrade(IExchange.Order memory _order, uint256 _amount, bytes32 _fingerprint, bytes32 _tradeGroupId, address _taker) private returns (uint256) {
