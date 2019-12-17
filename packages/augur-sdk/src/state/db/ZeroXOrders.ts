@@ -77,6 +77,7 @@ export class ZeroXOrders extends AbstractTable {
   }
 
   static async create(db: DB, networkId: number, augur: Augur): Promise<ZeroXOrders> {
+    console.log('ZeroXOrders create');
     const zeroXOrders = new ZeroXOrders(db, networkId, augur);
     await zeroXOrders.clearDB();
     await zeroXOrders.subscribeToMeshEvents();
@@ -88,6 +89,7 @@ export class ZeroXOrders extends AbstractTable {
   }
 
   async handleMeshEvent(orderEvents: OrderEvent[]): Promise<void> {
+    console.log('ZeroXOrders.ts handleMeshEvent');
     const filteredOrders = _.filter(orderEvents, this.validateOrder.bind(this));
     let documents = _.map(filteredOrders, this.processOrder.bind(this));
     documents = _.filter(documents, this.validateStoredOrder.bind(this));

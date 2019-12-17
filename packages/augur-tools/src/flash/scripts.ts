@@ -54,17 +54,32 @@ export function addScripts(flash: FlashSession) {
         description: 'a few scripts need sdk, -u to wire up sdk',
         flag: true,
       },
+      {
+        name: 'useZeroX',
+        abbr: 'z',
+        description: 'use zeroX mesh client endpoint',
+        flag: true,
+      },
+      {
+        name: 'meshEndpoint',
+        abbr: 'x',
+        description: 'use zeroX mesh client endpoint',
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const network = (args.network as NETWORKS) || 'environment';
       const account = args.account as string;
       const useSdk = args.useSdk as boolean;
+      const useZeroX = args.useZeroX as boolean;
       if (account) flash.account = account;
       this.network = NetworkConfiguration.create(network);
       flash.provider = this.makeProvider(this.network);
       const networkId = await this.getNetworkId(flash.provider);
       flash.contractAddresses = Addresses[networkId];
-      await flash.ensureUser(this.network, useSdk);
+      const mesh = args.meshEndpoint as string || undefined;
+      const endpoint = 'ws://localhost:60557';
+      const meshEndpoint = mesh ? mesh : endpoint;
+      await flash.ensureUser(this.network, useSdk, true, null, useZeroX ? meshEndpoint : undefined);
     },
   });
 
