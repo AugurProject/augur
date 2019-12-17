@@ -2,27 +2,16 @@ import { Addresses } from '@augurproject/artifacts';
 
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { GnosisRelayAPI } from '@augurproject/gnosis-relay-api';
-import {
-  Augur,
-  CalculateGnosisSafeAddressParams,
-  Connectors,
-  Provider,
-} from '@augurproject/sdk';
+import { Augur, CalculateGnosisSafeAddressParams, Connectors, Provider, } from '@augurproject/sdk';
 import { EthersSigner } from 'contract-dependencies-ethers';
 
 import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis';
 import { JsonRpcProvider } from 'ethers/providers';
-import {
-  listenToUpdates,
-  unListenToEvents,
-} from 'modules/events/actions/listen-to-updates';
+import { listenToUpdates, unListenToEvents, } from 'modules/events/actions/listen-to-updates';
 import { EnvObject } from 'modules/types';
 import { isEmpty } from 'utils/is-empty';
-import { isMobileSafari } from 'utils/is-safari';
 import { analytics } from './analytics';
-import { WebWorkerConnector } from './ww-connector';
 import { isLocalHost } from 'utils/is-localhost';
-import { WSClient } from '@0x/mesh-rpc-client';
 
 export class SDK {
   sdk: Augur<Provider> | null = null;
