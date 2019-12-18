@@ -1,6 +1,7 @@
 pragma solidity 0.5.10;
 pragma experimental ABIEncoderV2;
 
+import 'ROOT/IAugurCreationDataGetter.sol';
 import "ROOT/libraries/math/SafeMathUint256.sol";
 import "ROOT/libraries/ContractExists.sol";
 import "ROOT/libraries/token/IERC20.sol";
@@ -69,6 +70,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
     // solhint-disable-next-line var-name-mixedcase
     bytes32 public EIP712_DOMAIN_HASH;
 
+    IAugur augur;
     IFillOrder public fillOrder;
     ICash public cash;
     IShareToken public shareToken;
@@ -76,6 +78,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
 
     function initialize(IAugur _augur, IAugurTrading _augurTrading) public beforeInitialized {
         endInitialization();
+        augur = _augur;
         cash = ICash(_augur.lookup("Cash"));
         require(cash != ICash(0));
         shareToken = IShareToken(_augur.lookup("ShareToken"));
@@ -218,7 +221,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         // Do the actual asset exchanges
         for (uint256 i = 0; i < _orders.length && _fillAmountRemaining != 0; i++) {
             IExchange.Order memory _order = _orders[i];
-            validateOrder(_order);
+            validateOrder(_order, _fillAmountRemaining);
 
             // Update 0x and pay protocol fee. This will also validate signatures and order state for us.
             IExchange.FillResults memory totalFillResults = exchange.fillOrder.value(_protocolFee)(
@@ -245,9 +248,12 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         return _fillAmountRemaining;
     }
 
-    function validateOrder(IExchange.Order memory _order) internal view {
+    function validateOrder(IExchange.Order memory _order, uint256 _fillAmountRemaining) internal view {
         (IERC1155 _zeroXTradeToken, uint256 _tokenId) = getZeroXTradeTokenData(_order.makerAssetData);
         (IERC1155 _zeroXTradeTokenTaker, uint256 _tokenIdTaker) = getZeroXTradeTokenData(_order.takerAssetData);
+        (address _market, uint256 _price, uint8 _outcome, uint8 _type) = unpackTokenId(_tokenId);
+        IAugurCreationDataGetter.MarketCreationData memory _marketCreationData = IAugurCreationDataGetter(address(augur)).getMarketCreationData(IMarket(_market));
+        require(_fillAmountRemaining.isMultipleOf(_marketCreationData.recommendedTradeInterval), "Order must be a multiple of the recommended market trade increment");
         require(_zeroXTradeToken == _zeroXTradeTokenTaker);
         require(_tokenId == _tokenIdTaker);
         require(_zeroXTradeToken == this);
@@ -394,6 +400,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
 
     function getZeroXTradeTokenData(bytes memory _assetData) public pure returns (IERC1155 _token, uint256 _tokenId) {
         (bytes4 _assetProxyId, address _tokenAddress, uint256[] memory _tokenIds, uint256[] memory _tokenValues, bytes memory _callbackData, address _kycToken) = decodeAssetData(_assetData);
+        _tokenId = _tokenIds[0];
         _token = IERC1155(_tokenAddress);
     }
 
@@ -408,6 +415,8 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
 
     function createZeroXOrderFor(address _maker, uint8 _type, uint256 _attoshares, uint256 _price, address _market, uint8 _outcome, address _kycToken, uint256 _expirationTimeSeconds, uint256 _salt) public view returns (IExchange.Order memory _zeroXOrder, bytes32 _orderHash) {
         bytes memory _assetData = encodeAssetData(IMarket(_market), _price, _outcome, _type, IERC20(_kycToken));
+        IAugurCreationDataGetter.MarketCreationData memory _marketCreationData = IAugurCreationDataGetter(address(augur)).getMarketCreationData(IMarket(_market));
+        require(_attoshares.isMultipleOf(_marketCreationData.recommendedTradeInterval), "Order must be a multiple of the recommended market trade increment");
         _zeroXOrder.makerAddress = _maker;
         _zeroXOrder.makerAssetAmount = _attoshares;
         _zeroXOrder.takerAssetAmount = _attoshares;

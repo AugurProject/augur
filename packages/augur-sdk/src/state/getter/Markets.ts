@@ -1116,7 +1116,7 @@ async function getMarketsInfo(
       disputeInfo,
       disavowed: marketData.disavowed,
       template,
-      isTemplate: marketData.isTemplate,
+      isTemplate: marketData.isTemplate
     };
   });
 }

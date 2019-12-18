@@ -63,7 +63,7 @@ def test_categorical_market_creation(contractsFixture, universe):
 def test_num_ticks_validation(contractsFixture, universe):
     # Require numTicks != 0
     with raises(TransactionFailed):
-       market = contractsFixture.createReasonableScalarMarket(universe, 30, -10, 0)
+       market = contractsFixture.createReasonableScalarMarket(universe, 30 * 10**18, -10 * 10**18, 0)
 
 def test_transfering_ownership(contractsFixture, universe, market):
     account0 = contractsFixture.accounts[0]

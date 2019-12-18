@@ -254,7 +254,7 @@ def test_cat3_3(contractsFixture, cash, categoricalMarket, universe):
     process_trades(contractsFixture, test_data, cash, categoricalMarket, createOrder, fillOrder, profitLoss)
 
 def test_scalar(contractsFixture, cash, universe):
-    scalarMarket = contractsFixture.createReasonableScalarMarket(universe, 250, 50, 2000000)
+    scalarMarket = contractsFixture.createReasonableScalarMarket(universe, 250 * 10**18, 50 * 10**18, 2000000)
     createOrder = contractsFixture.contracts["CreateOrder"]
     fillOrder = contractsFixture.contracts["FillOrder"]
     profitLoss = contractsFixture.contracts["ProfitLoss"]

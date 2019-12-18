@@ -6458,6 +6458,10 @@
 						{
 							"name": "marketType",
 							"type": "uint8"
+						},
+						{
+							"name": "recommendedTradeInterval",
+							"type": "uint256"
 						}
 					],
 					"name": "",

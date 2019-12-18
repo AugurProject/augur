@@ -93,6 +93,8 @@ contract Augur is IAugur, IAugurCreationDataGetter, CashSender {
 
     int256 private constant DEFAULT_MIN_PRICE = 0;
     int256 private constant DEFAULT_MAX_PRICE = 1 ether;
+    uint256 private constant RECOMMENDED_TRADE_INTERVAL = 10;
+    uint256 private constant DEFAULT_RECOMMENDED_TRADE_INTERVAL = 10 ** 17;
 
     modifier onlyUploader() {
         require(msg.sender == uploader);
@@ -272,6 +274,7 @@ contract Augur is IAugur, IAugurCreationDataGetter, CashSender {
         marketCreationData[address(_market)].marketCreator = _marketCreator;
         marketCreationData[address(_market)].outcomes = _outcomes;
         marketCreationData[address(_market)].marketType = IMarket.MarketType.CATEGORICAL;
+        marketCreationData[address(_market)].recommendedTradeInterval = DEFAULT_RECOMMENDED_TRADE_INTERVAL;
         emit MarketCreated(_universe, _endTime, _extraInfo, _market, _marketCreator, _designatedReporter, _feePerCashInAttoCash, _prices, IMarket.MarketType.CATEGORICAL, 100, _outcomes, _universe.getOrCacheMarketRepBond(), getTimestamp());
         return true;
     }
@@ -285,6 +288,7 @@ contract Augur is IAugur, IAugurCreationDataGetter, CashSender {
         marketCreationData[address(_market)].extraInfo = _extraInfo;
         marketCreationData[address(_market)].marketCreator = _marketCreator;
         marketCreationData[address(_market)].marketType = IMarket.MarketType.YES_NO;
+        marketCreationData[address(_market)].recommendedTradeInterval = DEFAULT_RECOMMENDED_TRADE_INTERVAL;
         emit MarketCreated(_universe, _endTime, _extraInfo, _market, _marketCreator, _designatedReporter, _feePerCashInAttoCash, _prices, IMarket.MarketType.YES_NO, 100, new bytes32[](0), _universe.getOrCacheMarketRepBond(), getTimestamp());
         return true;
     }
@@ -293,11 +297,19 @@ contract Augur is IAugur, IAugurCreationDataGetter, CashSender {
         IUniverse _universe = getAndValidateUniverse(msg.sender);
         require(_prices.length == 2);
         require(_prices[0] < _prices[1]);
+        uint256 _priceRange = uint256(_prices[1] - _prices[0]);
+        require(_priceRange > _numTicks);
         markets[address(_market)] = true;
         marketCreationData[address(_market)].extraInfo = _extraInfo;
         marketCreationData[address(_market)].marketCreator = _marketCreator;
         marketCreationData[address(_market)].displayPrices = _prices;
         marketCreationData[address(_market)].marketType = IMarket.MarketType.SCALAR;
+        // Handle the warp sync market
+        if (_numTicks == 2 ** 256 - 2) {
+            marketCreationData[address(_market)].recommendedTradeInterval = 1;
+        } else {
+            marketCreationData[address(_market)].recommendedTradeInterval = RECOMMENDED_TRADE_INTERVAL.mul(_priceRange).div(_numTicks);
+        }
         emit MarketCreated(_universe, _endTime, _extraInfo, _market, _marketCreator, _designatedReporter, _feePerCashInAttoCash, _prices, IMarket.MarketType.SCALAR, _numTicks, new bytes32[](0), _universe.getOrCacheMarketRepBond(), getTimestamp());
         return true;
     }
