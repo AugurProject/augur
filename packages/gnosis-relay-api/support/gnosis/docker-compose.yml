@@ -90,7 +90,10 @@ services:
       - RPC_ADDR=0.0.0.0:60557
     networks:
       - augur
+    volumes:
+      - ./keys:/usr/mesh/0x_mesh/keys
 
 networks:
   augur:
     name: augur
+
