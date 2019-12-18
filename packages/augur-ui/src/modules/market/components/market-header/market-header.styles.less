@@ -10,10 +10,6 @@
   flex-direction: column;
   overflow: visible;
 
-  .copy_marketId {
-    margin-left: @size-8;
-  }
-
   &.Collapsed {
     color: @color-secondary-text;
     display: flex;
@@ -39,20 +35,7 @@
       position: relative;
       height: 100%;
       min-height: 149px;
-
-      > div:first-of-type {
-        flex: 1;
-
-        > div {
-          > span {
-            margin: 0 @size-8 0 0;
-          }
-
-          > button[class*="WordTrailButton"] {
-            .mono-10-bold;
-          }
-        }
-      }
+      width: 100%;
 
       > div {
         > span {
@@ -60,7 +43,7 @@
 
           color: @color-primary-text;
           flex: 1;
-          margin-bottom: @size-4;
+          margin-bottom: @size-8;
           flex: 0 auto;
         }
 
@@ -87,22 +70,37 @@
         } 
       }
       
-      > div:first-of-type {
+      > div.HeadingBar {
+        align-items: center;
         display: flex;
-        height: fit-content;
+        flex: 1;
+        height: 100%;
         max-height: @size-20;
         padding-left: @size-16;
         padding-right: @size-8;
         margin: @size-8 0 @size-4;
 
-        > span {
-          margin: 0 @size-8 0 0;
+        > div[class*="WordTrail"] > button[class*="WordTrailButton"] {
+          .mono-10-bold;
         }
 
-        > button {
-          height: @size-20;
+        > span {
+          .mono-10-bold;
+
+          margin: 0 @size-8 0 0;
+          height: fit-content;
+        }
+
+        > button:not([class*="BackButton"]) {
+          height: @size-16;
           margin-left: @size-8;
-          width: @size-20;
+          width: @size-16;
+        }
+
+        > label {
+          height: @size-16;
+          margin-bottom: 0;
+          margin-right: @size-8;
         }
 
         > button[id="facebookButton"] {
@@ -110,6 +108,9 @@
           margin-left: auto;
 
           > svg {
+            height: @size-16;
+            width: @size-16;
+
             > path:first-of-type {
               fill: @color-facebook;
             }
@@ -122,6 +123,9 @@
 
         > button[id="twitterButton"] {
           > svg {
+            height: @size-16;
+            width: @size-16;
+
             > path:first-of-type {
               fill: @color-twitter;
             }
@@ -132,17 +136,25 @@
           }
         }
 
-        > div:nth-of-type(2),
+        > div:nth-of-type(3),
         > button:last-of-type {
+          height: @size-16;
           margin-left: @size-8;
 
           > svg {
+            height: @size-16;
+            width: @size-16;
             cursor: pointer;
+            fill: none;
           }
+        }
+
+        > div:nth-of-type(3) > svg > path {
+          fill: @color-primary-text;
         }
       }
 
-      > div:last-of-type {
+      > div.MarketDetails {
         display: flex;
         flex: 1 100%;
         margin-left: 0;
@@ -227,13 +239,14 @@ div.Toggle {
 .AdditionalDetails,
 .AdditionalDetails:disabled {
   margin: 0;
-  max-height: @size-60;
+  max-height: @size-64;
   transition: max-height 0.15s ease-out;
   display: -webkit-box;
   -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+  width: 100%;
 
   > p {
     margin-top: 0;
@@ -300,53 +313,6 @@ div.Toggle {
       padding: 0;
       width: 0;
       height: 0;
-    }
-  }
-}
-
-
-.MainValues {
-  display: flex;
-  width: 100%;
-  padding-left: @size-16;
-
-  > .Properties > section {
-    display: none;
-  }
-
-  > div:first-of-type {
-    flex: 1;
-    margin-right: @size-8;
-
-    &.Collapsed {
-      display: flex;
-      flex: 1;
-      width: 100%;
-    }
-
-    > span,
-    > span > div {
-      .text-18-bold;
-
-      color: @color-primary-text;
-      flex-grow: 1;
-      margin-bottom: @size-8;
-    }
-
-    > div:first-of-type {
-      .mono-9-bold;
-
-      padding: @size-8 0 @size-8;
-
-      > p {
-        margin-bottom: 0;
-      }
-
-      > span {
-        .text-12;
-
-        color: @color-primary-text;
-      }
     }
   }
 }
@@ -468,22 +434,34 @@ div.ExpandedContent {
 
 @media @breakpoint-mobile {
   .MarketHeader {
-    border-radius: 1px;
-
-    > h1 {
-      .text-18-bold;
-
-      display: flex;
-      color: @color-primary-text;
-      margin: 0 @size-8 @size-24;
-    }
+    width: 100%;
 
     > div:first-of-type {
-      align-items: normal;
-      padding-left: 0;
-      overflow: auto;
-      margin-bottom: @size-5;
-      flex-direction: column;
+      // overall wrapper
+      flex-flow: column nowrap;
+
+      > div:first-of-type {
+        // top half details section area
+        > div:first-of-type {
+          // top bar
+          padding-left: @size-12;
+          padding-right: @size-12;
+
+          > div:first-of-type {
+            display: grid;
+            grid-template-columns: @size-24 1fr 1fr;
+            grid-template-rows: @size-20 @size-20;
+
+            > span {
+              grid-column: 2 / span 2;
+            }
+          }
+        }
+
+        > div:last-of-type {
+          padding: 0 @size-12;
+        }
+      }
 
       div.Properties {
         min-width: unset;
@@ -494,70 +472,11 @@ div.ExpandedContent {
           border-top: 0;
         }
       }
-
-      > div:first-of-type {
-        padding-top: @size-12;
-        padding-left: @size-14;
-        align-items: flex-start;
-
-        > div:first-of-type {
-          align-items: flex-end;
-          flex-direction: row;
-
-          > span {
-            align-self: center;
-          }
-
-          > svg {
-            display: flex;
-            margin-right: @size-8;
-          }
-        }
-      }
-    }
-  }
-
-  .Core {
-    flex-direction: column;
-    padding: 0;
-
-    > div {
-      border-radius: @border-radius-default;
     }
   }
 
   .BackButton {
     display: none;
-  }
-
-  .MainValues {
-    flex-direction: column;
-    padding-left: 0;
-
-    > .Properties {
-      border-left: 0;
-      margin-left: 0;
-
-      > section {
-        display: flex;
-        margin-left: @size-14;
-      }
-    }
-
-    > div:first-of-type {
-      padding-left: @size-12;
-
-      > h1 {
-        margin-bottom: @size-12;
-      }
-    }
-  }
-
-  .Time {
-    align-items: normal;
-    background-color: @color-dark-grey;
-    margin: @size-8 0;
-    padding: @size-16;
   }
 
   div.Toggle {

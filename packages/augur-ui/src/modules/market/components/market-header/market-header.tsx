@@ -251,20 +251,19 @@ export default class MarketHeader extends Component<
               })}
             >
               <div
-                className={classNames({
+                className={classNames(Styles.HeadingBar, {
                   [Styles.ExpandedHeading]: expandedDetails,
                 })}
               >
-                <WordTrail items={[...categoriesWithClick]}>
-                  <button
-                    className={Styles.BackButton}
-                    onClick={() => history.goBack()}
-                  >
-                    {LeftChevron} Back
-                  </button>
-                  <MarketTypeLabel marketType={marketType} />
-                  {market.isTemplate && <TemplateShield marketId={market.id} />}
-                </WordTrail>
+                <button
+                  className={Styles.BackButton}
+                  onClick={() => history.goBack()}
+                >
+                  {LeftChevron} Back
+                </button>
+                {market.isTemplate && <TemplateShield marketId={market.id} />}
+                <MarketTypeLabel marketType={marketType} />
+                <WordTrail items={[...categoriesWithClick]} />
                 <SocialMediaButtons
                   marketAddress={market.id}
                   marketDescription={description}
@@ -299,7 +298,7 @@ export default class MarketHeader extends Component<
                 ref={title => {
                   this.refTitle = title;
                 }}
-                className={classNames({
+                className={classNames(Styles.MarketDetails, {
                   [Styles.BigTitle]: bigTitle,
                   [Styles.ExpandedContent]: expandedDetails,
                 })}

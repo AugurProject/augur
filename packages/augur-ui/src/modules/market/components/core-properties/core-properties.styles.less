@@ -111,6 +111,10 @@
   min-width: 240px;
   padding: @size-12 @size-16;
 
+  @media @breakpoint-mobile {
+    min-width: unset;
+  }
+
   > div:first-of-type {
     margin-bottom: @size-8;
   }
