@@ -469,7 +469,6 @@ div.ExpandedContent {
     > div:first-of-type {
       // overall wrapper
       flex-flow: column nowrap;
-      padding-bottom: @size-8;
 
       > div:first-of-type {
         // top half details section area
@@ -482,6 +481,11 @@ div.ExpandedContent {
         min-width: unset;
         border: 0;
         border-top: 1px solid @color-dark-grey;
+
+        > section {
+          margin: @size-12;
+          padding: 0;
+        }
 
         > div:last-of-type {
           border-top: 0;

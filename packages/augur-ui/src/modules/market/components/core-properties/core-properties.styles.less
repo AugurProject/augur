@@ -64,10 +64,12 @@
 
   @media @breakpoint-mobile {
     > div:first-of-type {
+      flex-flow: column nowrap;
       border-top: 1px solid @color-dark-grey;
       
       > div:first-of-type {
-        grid-template-rows: auto auto; 
+        grid-template-rows: auto auto;
+        margin: @size-12;
       }
     }
 
@@ -113,6 +115,19 @@
 
   @media @breakpoint-mobile {
     min-width: unset;
+    border-left: 0;
+    border-top: 1px solid @color-dark-grey;
+    width: 100%;
+    max-width: unset;
+    display: flex;
+    flex-flow: column nowrap;
+    padding: @size-12;
+
+    > div {
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: auto;
+    }
   }
 
   > div:first-of-type {
