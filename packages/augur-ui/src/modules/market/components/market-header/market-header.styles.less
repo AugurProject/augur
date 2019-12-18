@@ -148,6 +148,9 @@
         margin-left: 0;
         flex-direction: column;
         padding: 0 @size-12 0 @size-16;
+        transition-property: box-shadow, z-index, position;
+        transition-duration: 0.15s; 
+        transition-timing-function: ease-out;
       }
     }
 
@@ -224,7 +227,7 @@ div.Toggle {
 .AdditionalDetails,
 .AdditionalDetails:disabled {
   margin: 0;
-  max-height: @size-64;
+  max-height: @size-60;
   transition: max-height 0.15s ease-out;
   display: -webkit-box;
   -webkit-line-clamp: 4;
@@ -360,6 +363,9 @@ div.ExpandedContent {
   box-shadow: 0 @size-8 @size-8 @color-dark-grey;
   margin-top: @size-32;
   width: 100%;
+  transition-property: box-shadow, z-index, position;
+  transition-duration: 0.15s; 
+  transition-timing-function: ease-in;
 }
 
 .Details {

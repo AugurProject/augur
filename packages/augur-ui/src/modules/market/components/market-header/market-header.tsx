@@ -65,6 +65,8 @@ interface MarketHeaderState {
   headerCollapsed: boolean;
   showCopied: boolean;
 }
+
+const test = e => console.log('click', e);
 export default class MarketHeader extends Component<
   MarketHeaderProps,
   MarketHeaderState
@@ -98,6 +100,22 @@ export default class MarketHeader extends Component<
 
   componentDidMount() {
     this.updateDetailsHeight();
+    window.addEventListener('click', e => {
+      const ClickedOnExpandedContent = e
+        .composedPath()
+        .find(
+          ({ className }) =>
+            className === 'string' &&
+            className.includes('market-header-styles_ExpandedContent')
+        );
+      if (!ClickedOnExpandedContent) this.toggleReadMore(true);
+    });
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('click', e => {
+      this.toggleReadMore(true);
+    });
   }
 
   componentDidUpdate(prevProps) {
@@ -112,8 +130,12 @@ export default class MarketHeader extends Component<
     }
   }
 
-  toggleReadMore() {
-    this.setState({ showReadMore: !this.state.showReadMore });
+  toggleReadMore(closeOnly: boolean = false) {
+    if (closeOnly) {
+      this.setState({ showReadMore: false });
+    } else {
+      this.setState({ showReadMore: !this.state.showReadMore });
+    }
   }
 
   addToFavorites() {
@@ -306,7 +328,10 @@ export default class MarketHeader extends Component<
                           className={classNames({
                             [Styles.Less]: showReadMore,
                           })}
-                          onClick={this.toggleReadMore}
+                          onClick={e => {
+                            e.stopPropagation();
+                            this.toggleReadMore();
+                          }}
                         >
                           {!showReadMore
                             ? ChevronDown({ stroke: '#FFFFFF' })
