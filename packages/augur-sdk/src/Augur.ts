@@ -107,7 +107,6 @@ export class Augur<TProvider extends Provider = Provider> {
       meshClient || browserMesh
         ? new ZeroX(this, meshClient, browserMesh)
         : undefined;
-
     this.trade = new Trade(this);
     if (enableFlexSearch && !this.syncableFlexSearch) {
       this.syncableFlexSearch = new SyncableFlexSearch();
@@ -126,7 +125,6 @@ export class Augur<TProvider extends Provider = Provider> {
     meshBrowser: BrowserMesh = undefined
   ): Promise<Augur> {
     const networkId = await provider.getNetworkId();
-
     const augur = new Augur<TProvider>(
       provider,
       dependencies,

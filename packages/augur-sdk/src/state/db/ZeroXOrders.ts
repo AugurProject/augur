@@ -154,7 +154,6 @@ export class ZeroXOrders extends AbstractTable {
 
   parseAssetData(assetData: string): OrderData {
     const data = assetData.substr(2); // remove the 0x
-    console.log('parseAssetData', assetData);
     return {
       market: getAddress(`0x${data.substr(392, 40)}`),
       price: `0x${data.substr(432, 20)}`,
