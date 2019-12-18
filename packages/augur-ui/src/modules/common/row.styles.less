@@ -74,6 +74,19 @@
   border: 0;
 }
 
+
+div.SingleRow3 {
+  background-color: @color-module-background;
+  padding: 0 @size-16;
+  border: 0;
+
+  > div,
+  > div:first-of-type {
+    padding: @size-4 0;
+    border-bottom: 0;
+  }
+}
+
 .SingleRow {
   height: @size-21;
   max-height: @size-21;
@@ -144,16 +157,6 @@
         width: 1.5rem;
       }
     }
-  }
-}
-
-.SingleRow3 {
-  background-color: @color-module-background;
-  padding: 0 @size-16;
-  border: 0;
-
-  > div {
-    padding: @size-4 0;
   }
 }
 
