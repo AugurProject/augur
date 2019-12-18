@@ -18,7 +18,6 @@ import {
 } from 'modules/events/actions/listen-to-updates';
 import { EnvObject } from 'modules/types';
 import { isEmpty } from 'utils/is-empty';
-import { isMobileSafari } from 'utils/is-safari';
 import { analytics } from './analytics';
 import { WebWorkerConnector } from './ww-connector';
 import { isLocalHost } from 'utils/is-localhost';

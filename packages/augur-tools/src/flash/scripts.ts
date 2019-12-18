@@ -1,7 +1,7 @@
 import { deployContracts } from '../libs/blockchain';
 import { FlashSession, FlashArguments } from './flash';
 import { createCannedMarketsAndOrders } from './create-canned-markets-and-orders';
-import { _1_ETH } from '../constants';
+import { _1_ETH, NULL_ADDRESS } from '../constants';
 import {
   Contracts as compilerOutput,
   Addresses,
@@ -54,17 +54,32 @@ export function addScripts(flash: FlashSession) {
         description: 'a few scripts need sdk, -u to wire up sdk',
         flag: true,
       },
+      {
+        name: 'useZeroX',
+        abbr: 'z',
+        description: 'use zeroX mesh client endpoint',
+        flag: true,
+      },
+      {
+        name: 'meshEndpoint',
+        abbr: 'x',
+        description: 'use zeroX mesh client endpoint',
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const network = (args.network as NETWORKS) || 'environment';
       const account = args.account as string;
       const useSdk = args.useSdk as boolean;
+      const useZeroX = args.useZeroX as boolean;
       if (account) flash.account = account;
       this.network = NetworkConfiguration.create(network);
       flash.provider = this.makeProvider(this.network);
       const networkId = await this.getNetworkId(flash.provider);
       flash.contractAddresses = Addresses[networkId];
-      await flash.ensureUser(this.network, useSdk);
+      const mesh = args.meshEndpoint as string || undefined;
+      const endpoint = 'ws://localhost:60557';
+      const meshEndpoint = mesh ? mesh : endpoint;
+      await flash.ensureUser(this.network, useSdk, true, null, useZeroX ? meshEndpoint : undefined, useZeroX ? true : false);
     },
   });
 
@@ -348,26 +363,60 @@ export function addScripts(flash: FlashSession) {
       const market = String(args.marketId);
       const mesh = args.meshEndpoint as string || undefined;
       const meshEndpoint = mesh ? mesh : endpoint;
-      const user = await this.ensureUser(this.network, true, true, null, meshEndpoint);
+      const user = await this.ensureUser(this.network, true, true, null, meshEndpoint, true);
       await user.faucet(new BigNumber(10).pow(18).multipliedBy(1000000));
       await user.approve(new BigNumber(10).pow(18).multipliedBy(1000000));
       const yesNoMarket = cannedMarkets.find(c => c.marketType === "yesNo");
       const orderBook = yesNoMarket.orderBook;
 
-      const tradeGroupId = formatBytes32String(String(Date.now()));
+      const tradeGroupId = String(Date.now());
 
       for (let a = 0; a < Object.keys(orderBook).length; a++) {
-        const outcome = Number(Object.keys(orderBook)[a]);
+        const outcome = Number(Object.keys(orderBook)[a]) as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
         const buySell = Object.values(orderBook)[a];
 
         const { buy, sell } = buySell;
 
         for (const { shares, price } of buy) {
-          await user.placeTradeThroughAugur(market, 0, new BigNumber(shares), new BigNumber(price), outcome, tradeGroupId, new BigNumber(100), 3, new BigNumber(0), new BigNumber(1));
+          this.log(`creating buy order, ${shares} @ ${price}`);
+          await user.placeZeroXOrder({
+            direction: 0,
+            market,
+            numTicks: new BigNumber(100),
+            numOutcomes: 3,
+            outcome,
+            tradeGroupId,
+            fingerprint: formatBytes32String('11'),
+            kycToken: NULL_ADDRESS,
+            doNotCreateOrders: false,
+            displayMinPrice: new BigNumber(0),
+            displayMaxPrice: new BigNumber(1),
+            displayAmount: new BigNumber(shares),
+            displayPrice: new BigNumber(price),
+            displayShares: new BigNumber(0),
+            expirationTime: new BigNumber(Math.floor((new Date().getTime() / 1000) + 3000)),
+          });
         }
 
         for (const { shares, price } of sell) {
-          await user.placeTradeThroughAugur(market, 1, new BigNumber(shares), new BigNumber(price), outcome, tradeGroupId, new BigNumber(100), 3, new BigNumber(0), new BigNumber(1));
+          this.log(`creating sell order, ${shares} @ ${price}`);
+          await user.placeZeroXOrder({
+            direction: 1,
+            market,
+            numTicks: new BigNumber(100),
+            numOutcomes: 3,
+            outcome,
+            tradeGroupId,
+            fingerprint: formatBytes32String('11'),
+            kycToken: NULL_ADDRESS,
+            doNotCreateOrders: false,
+            displayMinPrice: new BigNumber(0),
+            displayMaxPrice: new BigNumber(1),
+            displayAmount: new BigNumber(shares),
+            displayPrice: new BigNumber(price),
+            displayShares: new BigNumber(0),
+            expirationTime: new BigNumber(Math.floor((new Date().getTime() / 1000) + 3000)),
+          });
         }
       }
     },

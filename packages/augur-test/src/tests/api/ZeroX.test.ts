@@ -62,7 +62,7 @@ describe.skip('Augur API :: ZeroX :: ', () => {
     const outcome = 0;
     const displayPrice = new BigNumber(.22);
     const kycToken = "0x000000000000000000000000000000000000000C";
-    const orderHash = await john.placeZeroXOrder({
+    await john.placeZeroXOrder({
       direction,
       market: market.address,
       numTicks: await market.getNumTicks_(),
@@ -102,7 +102,7 @@ describe.skip('Augur API :: ZeroX :: ', () => {
 
     await john.placeBasicYesNoZeroXTrade(
       0,
-      market1,
+      market1.address,
       outcome,
       new BigNumber(1),
       new BigNumber(0.4),
@@ -114,7 +114,7 @@ describe.skip('Augur API :: ZeroX :: ', () => {
 
     await mary.placeBasicYesNoZeroXTrade(
       1,
-      market1,
+      market1.address,
       outcome,
       new BigNumber(0.5),
       new BigNumber(0.4),
@@ -171,7 +171,7 @@ describe.skip('Augur API :: ZeroX :: ', () => {
 
     await john.placeBasicYesNoZeroXTrade(
       0,
-      market1,
+      market1.address,
       outcome,
       amount,
       price,

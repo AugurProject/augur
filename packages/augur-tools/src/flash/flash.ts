@@ -3,7 +3,7 @@ import { ContractAddresses } from "@augurproject/artifacts";
 import { NetworkConfiguration } from "@augurproject/core";
 import { WSClient } from '@0x/mesh-rpc-client';
 import { ContractAPI } from "../libs/contract-api";
-import { Account } from "../constants";
+import { Account, NULL_ADDRESS } from "../constants";
 import { providers } from "ethers";
 import { Connectors, Events, SubscriptionEventName } from "@augurproject/sdk";
 import { API } from "@augurproject/sdk/build/state/getter/API";
@@ -12,7 +12,9 @@ import { DB } from "@augurproject/sdk/build/state/db/DB";
 import { EmptyConnector } from "@augurproject/sdk";
 import { BaseConnector } from "@augurproject/sdk/build/connector";
 import { configureDexieForNode } from "@augurproject/sdk/build/state/utils/DexieIDBShim";
-
+import { formatBytes32String } from "ethers/utils";
+import { BigNumber } from 'bignumber.js';
+import { GnosisRelayAPI, GnosisSafeState } from '@augurproject/gnosis-relay-api';
 
 configureDexieForNode(true);
 
@@ -126,6 +128,7 @@ export class FlashSession {
     approveCentralAuthority = true,
     accountAddress = null,
     meshEndpoint = null,
+    useGnosis = false,
   ): Promise<ContractAPI> {
     if (typeof this.contractAddresses === 'undefined') {
       throw Error('ERROR: Must load contract addresses first.');
@@ -138,7 +141,7 @@ export class FlashSession {
     if (wireUpSdk) this.usingSdk = true;
 
     const connector: BaseConnector = wireUpSdk ? new Connectors.DirectConnector() : new EmptyConnector();
-    const gnosisRelay = undefined;
+    const gnosisRelay = useGnosis ? new GnosisRelayAPI('http://localhost:8000/api/') : undefined;
     const meshClient = !!meshEndpoint ? new WSClient(meshEndpoint) : undefined;
     this.user = await ContractAPI.userWrapper(
       this.getAccount(accountAddress),
@@ -148,6 +151,16 @@ export class FlashSession {
       gnosisRelay,
       meshClient
     );
+
+    if (useGnosis) {
+      const safe = await this.user.fundSafe();
+      const safeStatus = await this.user.getSafeStatus(safe);
+      console.log(`Safe ${safe}: ${safeStatus}`);
+      await this.user.augur.setGasPrice(new BigNumber(90000));
+      this.user.setGnosisSafeAddress(safe);
+      this.user.setUseGnosisSafe(true);
+      this.user.setUseGnosisRelay(true);
+    }
 
     if (wireUpSdk) {
       network = network || this.network;
