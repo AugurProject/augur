@@ -47,7 +47,6 @@ export class ContractAPI {
     const signer = await makeSigner(account, provider);
     const dependencies = makeGnosisDependencies(provider, gnosisRelay, signer, addresses.Cash, new BigNumber(0), null, account.publicKey);
     const augur = await Augur.create(provider, dependencies, addresses, connector, gnosisRelay, true, meshClient, meshBrowser);
-    console.log('augur.zeroX', !!augur.zeroX)
     return new ContractAPI(augur, provider, dependencies, account);
   }
 
