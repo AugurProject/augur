@@ -249,14 +249,14 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
     }
 
     function validateOrder(IExchange.Order memory _order, uint256 _fillAmountRemaining) internal view {
-        (IERC1155 _zeroXTradeToken, uint256 _tokenId) = getZeroXTradeTokenData(_order.makerAssetData);
+        (IERC1155 _zeroXTradeTokenMaker, uint256 _tokenIdMaker) = getZeroXTradeTokenData(_order.makerAssetData);
         (IERC1155 _zeroXTradeTokenTaker, uint256 _tokenIdTaker) = getZeroXTradeTokenData(_order.takerAssetData);
-        (address _market, uint256 _price, uint8 _outcome, uint8 _type) = unpackTokenId(_tokenId);
+        (address _market, uint256 _price, uint8 _outcome, uint8 _type) = unpackTokenId(_tokenIdMaker);
         IAugurCreationDataGetter.MarketCreationData memory _marketCreationData = IAugurCreationDataGetter(address(augur)).getMarketCreationData(IMarket(_market));
         require(_fillAmountRemaining.isMultipleOf(_marketCreationData.recommendedTradeInterval), "Order must be a multiple of the recommended market trade increment");
-        require(_zeroXTradeToken == _zeroXTradeTokenTaker);
-        require(_tokenId == _tokenIdTaker);
-        require(_zeroXTradeToken == this);
+        require(_zeroXTradeTokenMaker == _zeroXTradeTokenTaker);
+        require(_tokenIdMaker == _tokenIdTaker);
+        require(_zeroXTradeTokenMaker == this);
     }
 
     function doTrade(IExchange.Order memory _order, uint256 _amount, bytes32 _fingerprint, bytes32 _tradeGroupId, address _taker) private returns (uint256) {
