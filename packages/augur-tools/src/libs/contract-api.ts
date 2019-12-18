@@ -199,39 +199,6 @@ export class ContractAPI {
     return orderId;
   }
 
-  async placeTradeThroughAugur(
-    market: string,
-    type: number,
-    numShares: BigNumber,
-    price: BigNumber,
-    outcome: number,
-    tradeGroupId: string,
-    numTicks: BigNumber,
-    numOutcomes: number,
-    displayMinPrice: BigNumber,
-    displayMaxPrice: BigNumber,
-  ): Promise<void> {
-
-    console.log("place trade ", !!this.augur.zeroX);
-    await this.augur.placeTrade({
-      market,
-      direction: type as 0 | 1,
-      numTicks,
-      numOutcomes: numOutcomes as 3 | 4 | 5 | 6 | 7 | 8,
-      outcome: outcome as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7,
-      tradeGroupId,
-      fingerprint: formatBytes32String('11'),
-      kycToken: NULL_ADDRESS,
-      doNotCreateOrders: false,
-      displayMinPrice,
-      displayMaxPrice,
-      displayAmount: new BigNumber(numShares),
-      displayPrice: new BigNumber(price),
-      displayShares: new BigNumber(0),
-      expirationTime: new BigNumber(Math.floor((new Date().getTime() / 1000) + 3000))
-    });
-  }
-
   async simplePlaceOrder(
     market: string,
     type: BigNumber,

@@ -77,7 +77,6 @@ export class ZeroXOrders extends AbstractTable {
   }
 
   static async create(db: DB, networkId: number, augur: Augur): Promise<ZeroXOrders> {
-    console.log('ZeroXOrders create');
     const zeroXOrders = new ZeroXOrders(db, networkId, augur);
     await zeroXOrders.clearDB();
     await zeroXOrders.subscribeToMeshEvents();
@@ -89,7 +88,6 @@ export class ZeroXOrders extends AbstractTable {
   }
 
   async handleMeshEvent(orderEvents: OrderEvent[]): Promise<void> {
-    console.log('ZeroXOrders.ts handleMeshEvent');
     const filteredOrders = _.filter(orderEvents, this.validateOrder.bind(this));
     let documents = _.map(filteredOrders, this.processOrder.bind(this));
     documents = _.filter(documents, this.validateStoredOrder.bind(this));
@@ -125,7 +123,6 @@ export class ZeroXOrders extends AbstractTable {
     const augurOrderData = this.parseAssetData(order.signedOrder.makerAssetData);
     // Currently the API for mesh browser and the client API diverge here but we dont want to do string parsing per order to be compliant for the browser case
     const signedOrder = order.signedOrder;
-    console.log('processOrder, ZeroXOrders.ts')
     return {
       market: augurOrderData.market,
       price: augurOrderData.price,

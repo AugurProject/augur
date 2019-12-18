@@ -70,7 +70,7 @@ describe('3rd Party :: ZeroX :: ', () => {
       john.setUseGnosisRelay(true);
     }, 120000);
 
-    test('State API :: ZeroX :: placeThengetOrders', async () => {
+    test('State API :: ZeroX :: placeThenGetOrders', async () => {
       // Create a market
       const market = await john.createReasonableMarket([
         stringTo32ByteHex('A'),
@@ -87,8 +87,7 @@ describe('3rd Party :: ZeroX :: ', () => {
       const displayPrice = new BigNumber(.22);
       const kycToken = '0x000000000000000000000000000000000000000C';
       const expirationTime = new BigNumber(new Date().valueOf()).plus(1000000);
-      console.log('place zerox order ')
-      const hash = await john.placeZeroXOrder({
+      await john.placeZeroXOrder({
         direction,
         market: market.address,
         numTicks: await market.getNumTicks_(),
