@@ -314,9 +314,14 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
             address(this),
             _tokenIds,
             _tokenValues,
-            _callbackData,
-            _kycToken
+            _callbackData
         );
+
+        uint256 _assetDataLength = _assetData.length;
+
+        // We must pad the kycToken as the 0x exchnage requires the assetData be a multiple of 32 not counting the selector
+        _assetData = abi.encodePacked(_assetData, bytes32(uint256(address(_kycToken))));
+
         return _assetData;
     }
 
@@ -368,14 +373,16 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         require(_assetProxyId == ERC1155_PROXY_ID, "WRONG_PROXY_ID");
 
         assembly {
-            // Skip selector and length to get to the first parameter:
+            let _length := mload(_assetData)
+            // The kycToken is just appended to the end of the normally abi encoded data
+            _kycToken := mload(add(_assetData, _length))
+            // Skip the length (of bytes variable) and the selector to get to the first parameter.
             _assetData := add(_assetData, 36)
             // Read the value of the first parameter:
             _tokenAddress := mload(_assetData)
             _tokenIds := add(_assetData, mload(add(_assetData, 32)))
             _tokenValues := add(_assetData, mload(add(_assetData, 64)))
             _callbackData := add(_assetData, mload(add(_assetData, 96)))
-            _kycToken := mload(add(_assetData, 128))
         }
 
         return (
