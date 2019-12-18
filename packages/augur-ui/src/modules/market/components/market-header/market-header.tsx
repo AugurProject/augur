@@ -64,9 +64,9 @@ interface MarketHeaderState {
   detailsHeight: number;
   headerCollapsed: boolean;
   showCopied: boolean;
+  notExpandedHeight: boolean | number;
 }
 
-const test = e => console.log('click', e);
 export default class MarketHeader extends Component<
   MarketHeaderProps,
   MarketHeaderState
@@ -90,6 +90,7 @@ export default class MarketHeader extends Component<
       detailsHeight: 0,
       headerCollapsed: false,
       showCopied: false,
+      notExpandedHeight: false,
     };
 
     this.gotoFilter = this.gotoFilter.bind(this);
@@ -99,7 +100,16 @@ export default class MarketHeader extends Component<
   }
 
   componentDidMount() {
+    const notExpandedHeight =
+        !this.state.headerCollapsed &&
+        !!this.refNotCollapsed &&
+        this.refNotCollapsed.firstChild.clientHeight;
     this.updateDetailsHeight();
+
+    if (notExpandedHeight) {
+      this.setState({ notExpandedHeight });
+    }
+    
     window.addEventListener('click', e => {
       const ClickedOnExpandedContent = e
         .composedPath()
@@ -188,6 +198,7 @@ export default class MarketHeader extends Component<
       showReadMore,
       detailsHeight,
       showCopied,
+      notExpandedHeight
     } = this.state;
     const detailsTooLong =
       market.details && detailsHeight > OVERFLOW_DETAILS_LENGTH;
@@ -212,15 +223,9 @@ export default class MarketHeader extends Component<
     const bigTitle =
       !!this.refTitle && this.refTitle.firstChild.clientHeight > 60;
     const expandedDetails = detailsTooLong && showReadMore;
-    const notExpandedHeight =
-      !headerCollapsed &&
-      !!this.refNotCollapsed &&
-      this.refNotCollapsed.clientHeight;
-
+    
     const containerStyle = notExpandedHeight
       ? {
-          height: `${notExpandedHeight}px`,
-          maxHeight: `${notExpandedHeight}px`,
           minHeight: `${notExpandedHeight}px`,
         }
       : {};
@@ -243,12 +248,12 @@ export default class MarketHeader extends Component<
             ref={notCollapsed => {
               this.refNotCollapsed = notCollapsed;
             }}
-            style={containerStyle}
           >
             <div
               className={classNames({
                 [Styles.ShowTutorial]: showTutorialDetails,
               })}
+              style={containerStyle}
             >
               <div
                 className={classNames(Styles.HeadingBar, {

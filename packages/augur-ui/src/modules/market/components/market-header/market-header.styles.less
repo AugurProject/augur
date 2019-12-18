@@ -30,7 +30,7 @@
 
     > div:first-of-type {
       display: flex;
-      flex: 1;
+      flex: 1 100%;
       flex-flow: column nowrap;
       position: relative;
       height: 100%;
@@ -74,14 +74,29 @@
         align-items: center;
         display: flex;
         flex: 1;
-        height: 100%;
+        min-height: @size-20;
         max-height: @size-20;
         padding-left: @size-16;
         padding-right: @size-8;
         margin: @size-8 0 @size-4;
 
-        > div[class*="WordTrail"] > button[class*="WordTrailButton"] {
-          .mono-10-bold;
+        @media @breakpoint-mobile {
+          min-height: @size-40;
+          max-height: @size-40;
+          display: grid;
+          grid-template-columns: @size-24 1fr @size-16 repeat(3, @size-24);
+          grid-template-rows: @size-20 @size-20;
+          padding-left: @size-12;
+          padding-right: @size-12;
+        }
+
+        > div[class*="WordTrail"] {
+          grid-column: 1 / span 6;
+          grid-row: 2;
+
+          > button[class*="WordTrailButton"] {
+            .mono-10-bold;
+          }
         }
 
         > span {
@@ -320,6 +335,12 @@ div.Toggle {
 div.ExpandedHeading {
   position: absolute;
   width: 100%;
+
+  @media @breakpoint-mobile {
+    position: inherit;
+    box-shadow: none;
+    z-index: unset;
+  }
 }
 
 div.ExpandedContent {
@@ -332,6 +353,13 @@ div.ExpandedContent {
   transition-property: box-shadow, z-index, position;
   transition-duration: 0.15s; 
   transition-timing-function: ease-in;
+
+  @media @breakpoint-mobile {
+    margin-top: 0;
+    position: inherit;
+    box-shadow: none;
+    z-index: unset;
+  }
 }
 
 .Details {
@@ -404,12 +432,14 @@ div.ExpandedContent {
 
   @media @breakpoint-mobile {
     > div {
-      flex-direction: column;
-      align-items: center;
-      margin-bottom: @size-12;
+      flex-flow: column nowrap;
 
       > label {
         margin-bottom: @size-8;
+      }
+
+      > button {
+        margin: auto;
       }
     }
   }
@@ -439,25 +469,10 @@ div.ExpandedContent {
     > div:first-of-type {
       // overall wrapper
       flex-flow: column nowrap;
+      padding-bottom: @size-8;
 
       > div:first-of-type {
         // top half details section area
-        > div:first-of-type {
-          // top bar
-          padding-left: @size-12;
-          padding-right: @size-12;
-
-          > div:first-of-type {
-            display: grid;
-            grid-template-columns: @size-24 1fr 1fr;
-            grid-template-rows: @size-20 @size-20;
-
-            > span {
-              grid-column: 2 / span 2;
-            }
-          }
-        }
-
         > div:last-of-type {
           padding: 0 @size-12;
         }
