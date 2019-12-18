@@ -62,7 +62,7 @@ describe.skip('Augur API :: ZeroX :: ', () => {
     const outcome = 0;
     const displayPrice = new BigNumber(.22);
     const kycToken = "0x000000000000000000000000000000000000000C";
-    const orderHash = await john.placeZeroXOrder({
+    await john.placeZeroXOrder({
       direction,
       market: market.address,
       numTicks: await market.getNumTicks_(),
@@ -79,7 +79,7 @@ describe.skip('Augur API :: ZeroX :: ', () => {
       displayShares: new BigNumber(0),
       expirationTime: new BigNumber(450),
     });
-console.log('order created hash', orderHash);
+
     // Terrible, but not clear how else to wait on the mesh event propagating to the callback and it finishing updating the DB...
     await sleep(300);
 
