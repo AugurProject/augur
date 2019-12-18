@@ -187,10 +187,6 @@ export default class MarketHeader extends Component<
       }));
 
     const categoriesWithClick = process(market.categories) || [];
-    const resolutionSource =
-      market.designatedReporter.toUpperCase() === market.author.toUpperCase()
-        ? 'General Knowledge'
-        : market.designatedReporter;
     const bigTitle =
       !!this.refTitle && this.refTitle.firstChild.clientHeight > 60;
     const expandedDetails = detailsTooLong && showReadMore;
@@ -291,10 +287,6 @@ export default class MarketHeader extends Component<
                 ) : (
                   <MarketTitle id={market.marketId} noLink />
                 )}
-                <div className={Styles.Details}>
-                  <h4>Resolution Source</h4>
-                  <p>{resolutionSource}</p>
-                </div>
                 {details.length > 0 && (
                   <div className={Styles.Details}>
                     <h4>Resolution Details</h4>

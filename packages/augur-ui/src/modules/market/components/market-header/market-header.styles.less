@@ -37,6 +37,7 @@
       flex: 1;
       flex-flow: column nowrap;
       position: relative;
+      height: 100%;
       min-height: 149px;
 
       > div:first-of-type {
@@ -60,14 +61,16 @@
           color: @color-primary-text;
           flex: 1;
           margin-bottom: @size-4;
+          flex: 0 auto;
+        }
+
+        &.BigTitle > span {
           display: -webkit-box;
           -webkit-line-clamp: 3;
           -webkit-box-orient: vertical;
           overflow: hidden;
           text-overflow: ellipsis;
-        }
 
-        &.BigTitle > span {
           &:hover {
             position: absolute;
             display: block;
@@ -221,10 +224,10 @@ div.Toggle {
 .AdditionalDetails,
 .AdditionalDetails:disabled {
   margin: 0;
-  max-height: @size-16;
+  max-height: @size-64;
   transition: max-height 0.15s ease-out;
   display: -webkit-box;
-  -webkit-line-clamp: 1;
+  -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
