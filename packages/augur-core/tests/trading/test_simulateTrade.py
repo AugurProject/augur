@@ -113,17 +113,22 @@ def test_multiple_trades(contractsFixture, cash, market, universe):
 
     simulate_then_trade(contractsFixture, LONG, market, outcome, fix(numOrders - 0.5), numOrders + 10, kycToken, fillOnly)
 
-def test_kyc_token(contractsFixture, cash, market, universe):
+def test_kyc_token(contractsFixture, cash, market, universe, reputationToken):
     outcome = YES
     amount = fix(1)
     price = 40
-    kycToken = cash.address
+    kycToken = contractsFixture.applySignature('TestNetReputationToken', reputationToken.address)
     fillOnly = False
 
     account1 = contractsFixture.accounts[1]
 
-    simulate_then_trade(contractsFixture, LONG, market, outcome, amount, price, kycToken, fillOnly, sender=account1)
-    simulate_then_trade(contractsFixture, SHORT, market, outcome, amount, price, kycToken, fillOnly)
+    with raises(TransactionFailed):
+        simulate_then_trade(contractsFixture, LONG, market, outcome, amount, price, kycToken.address, fillOnly, sender=account1)
+
+    kycToken.faucet(1, sender=contractsFixture.accounts[0])
+    kycToken.faucet(1, sender=contractsFixture.accounts[1])
+    simulate_then_trade(contractsFixture, LONG, market, outcome, amount, price, kycToken.address, fillOnly, sender=account1)
+    simulate_then_trade(contractsFixture, SHORT, market, outcome, amount, price, kycToken.address, fillOnly)
 
 def test_self_trade(contractsFixture, cash, market, universe):
     outcome = YES
