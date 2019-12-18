@@ -6458,10 +6458,6 @@
 						{
 							"name": "marketType",
 							"type": "uint8"
-						},
-						{
-							"name": "recommendedTradeInterval",
-							"type": "uint256"
 						}
 					],
 					"name": "",
@@ -24519,6 +24515,20 @@
 			"outputs": [],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "TRADE_INTERVAL_VALUE",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{

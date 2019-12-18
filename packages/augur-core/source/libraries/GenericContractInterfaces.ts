@@ -2304,11 +2304,11 @@ export class Augur<TBigNumber> extends Contract<TBigNumber> {
 		return <TBigNumber>result[0]
 	}
 
-	public getMarketCreationData_ = async (market: string, options?: { sender?: string }): Promise<{ extraInfo: string, marketCreator: string, outcomes: Array<string>, displayPrices: Array<TBigNumber>, marketType: TBigNumber, recommendedTradeInterval: TBigNumber }> => {
+	public getMarketCreationData_ = async (market: string, options?: { sender?: string }): Promise<{ extraInfo: string, marketCreator: string, outcomes: Array<string>, displayPrices: Array<TBigNumber>, marketType: TBigNumber }> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"_market","type":"address"}],"name":"getMarketCreationData","outputs":[{"components":[{"name":"extraInfo","type":"string"},{"name":"marketCreator","type":"address"},{"name":"outcomes","type":"bytes32[]"},{"name":"displayPrices","type":"int256[]"},{"name":"marketType","type":"uint8"},{"name":"recommendedTradeInterval","type":"uint256"}],"name":"","type":"tuple"}],"payable":false,"stateMutability":"view","type":"function"}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"_market","type":"address"}],"name":"getMarketCreationData","outputs":[{"components":[{"name":"extraInfo","type":"string"},{"name":"marketCreator","type":"address"},{"name":"outcomes","type":"bytes32[]"},{"name":"displayPrices","type":"int256[]"},{"name":"marketType","type":"uint8"}],"name":"","type":"tuple"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [market], options.sender)
-		return <{ extraInfo: string, marketCreator: string, outcomes: Array<string>, displayPrices: Array<TBigNumber>, marketType: TBigNumber, recommendedTradeInterval: TBigNumber }>result[0]
+		return <{ extraInfo: string, marketCreator: string, outcomes: Array<string>, displayPrices: Array<TBigNumber>, marketType: TBigNumber }>result[0]
 	}
 
 	public createChildUniverse = async (parentPayoutDistributionHash: string, parentPayoutNumerators: Array<TBigNumber>, options?: { sender?: string }): Promise<Array<Event>> => {
@@ -11439,6 +11439,13 @@ export class ZeroXTrade<TBigNumber> extends Contract<TBigNumber> {
 		options = options || {}
 		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"from","type":"address"},{"name":"to","type":"address"},{"name":"id","type":"uint256"},{"name":"value","type":"uint256"},{"name":"data","type":"bytes"}],"name":"safeTransferFrom","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		await this.localCall(abi, [from, to, id, value, data], options.sender)
+	}
+
+	public TRADE_INTERVAL_VALUE_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"TRADE_INTERVAL_VALUE","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <TBigNumber>result[0]
 	}
 }
 
