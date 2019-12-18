@@ -13,6 +13,9 @@ import {
   FAILURE,
 } from 'modules/common/constants';
 
+import {
+  TXEventName
+} from '@augurproject/sdk';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { formatNone, formatShares, formatDai } from 'utils/format-number';
 import { cancelOrder } from 'modules/orders/actions/cancel-order';
@@ -179,7 +182,7 @@ function getUserOpenOrders(
       marketId,
       outcomeId,
       creationTime: convertUnixToFormattedDate(order.creationTime),
-      pending: !!orderCancellation[order.orderId],
+      pending: !!orderCancellation[order.orderId] && orderCancellation[order.orderId] !== TXEventName.Failure,
       status: order.status,
       orderCancellationStatus: orderCancellation[order.orderId],
       originalShares: formatNone(),
