@@ -69,7 +69,7 @@ const EXTERNAL_ADDRESSES: NetworksToExternalAddresses = {
     LegacyReputationToken: "0x1985365e9f78359a9B6AD760e32412f4a445E862",
     GnosisSafe: "0xb6029EA3B2c51D09a50B53CA8012FeEB05bDa35A",
     ProxyFactory: "0x12302fE9c02ff50939BaAaaf415fc226C078613C",
-    ZeroXExchange: "0x080bf510FCbF18b91105470639e9561022937712",
+    ZeroXExchange: "0x61935cbdd02287b511119ddb11aeb42f1593b7ef",
   },
 };
 

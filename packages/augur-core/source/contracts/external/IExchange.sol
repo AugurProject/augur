@@ -37,6 +37,8 @@ contract IExchange {
     }
     // solhint-enable max-line-length
 
+    function protocolFeeMultiplier() external view returns (uint256);
+
     /// @dev Gets information about an order: status, hash, and amount filled.
     /// @param order Order to gather information on.
     /// @return OrderInfo Information about the order and its state.

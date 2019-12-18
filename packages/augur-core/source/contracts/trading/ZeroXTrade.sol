@@ -79,8 +79,9 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         cash = ICash(_augur.lookup("Cash"));
         require(cash != ICash(0));
         shareToken = IShareToken(_augur.lookup("ShareToken"));
-        exchange = IExchange(_augurTrading.lookup("ZeroXExchange"));
         require(shareToken != IShareToken(0));
+        exchange = IExchange(_augurTrading.lookup("ZeroXExchange"));
+        require(exchange != IExchange(0));
         fillOrder = IFillOrder(_augurTrading.lookup("FillOrder"));
         require(fillOrder != IFillOrder(0));
 
@@ -212,7 +213,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
 
         transferFromAllowed = true;
 
-        uint256 _protocolFee = 150000 * tx.gasprice;
+        uint256 _protocolFee = exchange.protocolFeeMultiplier().mul(tx.gasprice);
 
         // Do the actual asset exchanges
         for (uint256 i = 0; i < _orders.length && _fillAmountRemaining != 0; i++) {
@@ -264,8 +265,8 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         if (_order.makerAddress == _taker) {
             return 0;
         }
-        fillOrder.fillZeroXOrder(IMarket(_augurOrderData.marketAddress), _augurOrderData.outcome, IERC20(_augurOrderData.kycToken), _augurOrderData.price, Order.Types(_augurOrderData.orderType), _amount, _order.makerAddress, _tradeGroupId, _fingerprint, _taker);
-        return _amount;
+        uint256 _amountRemaining = fillOrder.fillZeroXOrder(IMarket(_augurOrderData.marketAddress), _augurOrderData.outcome, IERC20(_augurOrderData.kycToken), _augurOrderData.price, Order.Types(_augurOrderData.orderType), _amount, _order.makerAddress, _tradeGroupId, _fingerprint, _taker);
+        return _amount.sub(_amountRemaining);
     }
 
     function creatorHasFundsForTrade(IExchange.Order memory _order, uint256 _amount) public view returns (bool) {
