@@ -7,7 +7,6 @@ import {
   CalculateGnosisSafeAddressParams,
   Connectors,
   Provider,
-  BrowserMesh,
 } from '@augurproject/sdk';
 import { EthersSigner } from 'contract-dependencies-ethers';
 
