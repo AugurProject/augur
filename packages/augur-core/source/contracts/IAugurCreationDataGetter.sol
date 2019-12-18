@@ -11,7 +11,6 @@ contract IAugurCreationDataGetter {
         bytes32[] outcomes;
         int256[] displayPrices;
         IMarket.MarketType marketType;
-        uint256 recommendedTradeInterval;
     }
 
     function getMarketCreationData(IMarket _market) public view returns (MarketCreationData memory);

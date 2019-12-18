@@ -21,6 +21,8 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
 
     bool transferFromAllowed = false;
 
+    uint256 constant public TRADE_INTERVAL_VALUE = 10 ** 19; // Trade value of 10 DAI
+
     // ERC1155Assets(address,uint256[],uint256[],bytes)
     bytes4 constant public ERC1155_PROXY_ID = 0xa7cb5fb7;
 
@@ -252,8 +254,9 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         (IERC1155 _zeroXTradeTokenMaker, uint256 _tokenIdMaker) = getZeroXTradeTokenData(_order.makerAssetData);
         (IERC1155 _zeroXTradeTokenTaker, uint256 _tokenIdTaker) = getZeroXTradeTokenData(_order.takerAssetData);
         (address _market, uint256 _price, uint8 _outcome, uint8 _type) = unpackTokenId(_tokenIdMaker);
-        IAugurCreationDataGetter.MarketCreationData memory _marketCreationData = IAugurCreationDataGetter(address(augur)).getMarketCreationData(IMarket(_market));
-        require(_fillAmountRemaining.isMultipleOf(_marketCreationData.recommendedTradeInterval), "Order must be a multiple of the recommended market trade increment");
+        uint256 _numTicks = IMarket(_market).getNumTicks();
+        uint256 _tradeInterval = TRADE_INTERVAL_VALUE / _numTicks;
+        require(_fillAmountRemaining.isMultipleOf(_tradeInterval), "Order must be a multiple of the market trade increment");
         require(_zeroXTradeTokenMaker == _zeroXTradeTokenTaker);
         require(_tokenIdMaker == _tokenIdTaker);
         require(_zeroXTradeTokenMaker == this);
@@ -422,8 +425,9 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
 
     function createZeroXOrderFor(address _maker, uint8 _type, uint256 _attoshares, uint256 _price, address _market, uint8 _outcome, address _kycToken, uint256 _expirationTimeSeconds, uint256 _salt) public view returns (IExchange.Order memory _zeroXOrder, bytes32 _orderHash) {
         bytes memory _assetData = encodeAssetData(IMarket(_market), _price, _outcome, _type, IERC20(_kycToken));
-        IAugurCreationDataGetter.MarketCreationData memory _marketCreationData = IAugurCreationDataGetter(address(augur)).getMarketCreationData(IMarket(_market));
-        require(_attoshares.isMultipleOf(_marketCreationData.recommendedTradeInterval), "Order must be a multiple of the recommended market trade increment");
+        uint256 _numTicks = IMarket(_market).getNumTicks();
+        uint256 _tradeInterval = TRADE_INTERVAL_VALUE / _numTicks;
+        require(_attoshares.isMultipleOf(_tradeInterval), "Order must be a multiple of the market trade increment");
         _zeroXOrder.makerAddress = _maker;
         _zeroXOrder.makerAssetAmount = _attoshares;
         _zeroXOrder.takerAssetAmount = _attoshares;
