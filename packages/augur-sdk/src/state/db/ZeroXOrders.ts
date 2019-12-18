@@ -17,7 +17,7 @@ import { BigNumber } from 'bignumber.js';
 const EXPECTED_ASSET_DATA_LENGTH = 650;
 
 const DEFAULT_TRADE_INTERVAL = new BigNumber(10**17);
-const TRADE_INTERVAL_MULTIPLIER = new BigNumber(10);
+const TRADE_INTERVAL_VALUE = new BigNumber(10**19);
 
 export interface OrderData {
   market: string;
@@ -107,13 +107,12 @@ export class ZeroXOrders extends AbstractTable {
 
   validateStoredOrder(storedOrder: StoredOrder, markets: _.Dictionary<MarketData>): boolean {
     // Validate the order is a multiple of the recommended trade interval
-    let recommendedTradeInterval = DEFAULT_TRADE_INTERVAL;
+    let tradeInterval = DEFAULT_TRADE_INTERVAL;
     const marketData = markets[storedOrder.market];
     if (marketData && marketData.marketType == MarketType.Scalar) {
-      const priceRange = new BigNumber(marketData.prices[0]).minus(marketData.prices[0]);
-      recommendedTradeInterval = TRADE_INTERVAL_MULTIPLIER.multipliedBy(priceRange).dividedBy(marketData.numTicks);
+      tradeInterval = TRADE_INTERVAL_VALUE.dividedBy(marketData.numTicks);
     }
-    if (!storedOrder["numberAmount"].mod(recommendedTradeInterval).isEqualTo(0)) return false;
+    if (!storedOrder["numberAmount"].mod(tradeInterval).isEqualTo(0)) return false;
     return true;
   }
 
