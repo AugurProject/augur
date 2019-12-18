@@ -685,6 +685,12 @@ def test_kyc_token(contractsFixture, cash, market, universe, reputationToken):
     orders = [rawZeroXOrderData]
     signatures = [signature]
 
+    # Confirm encoding and decoding functions for the kyc token
+    assetData = ZeroXTrade.encodeAssetData(market.address, 60, YES, ASK, reputationToken.address)
+    (proxyId, tokenAddress, tokenIds, tokenValues, callbackData, kycToken) = ZeroXTrade.decodeAssetData(assetData)
+    assert tokenAddress == ZeroXTrade.address
+    assert kycToken == reputationToken.address
+
     # without the kyc token we cannot fill the order
     cash.faucet(fix('1', '60'), sender=contractsFixture.accounts[2])
     with raises(TransactionFailed):

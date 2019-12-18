@@ -504,7 +504,7 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
     }
 
     function fillOrderInternal(address _filler, Trade.Data memory _tradeData, uint256 _amountFillerWants, bytes32 _tradeGroupId) internal nonReentrant returns (uint256) {
-        require(_tradeData.order.kycToken == IERC20(0) || _tradeData.order.kycToken.balanceOf(_filler) > 0, "FillOrder.fillOrder: KYC token failure");
+        require(_tradeData.order.kycToken == IERC20(0) || (_tradeData.order.kycToken.balanceOf(_filler) > 0 && _tradeData.order.kycToken.balanceOf(_tradeData.creator.participantAddress) > 0), "FillOrder.fillOrder: KYC token failure");
         uint256 _marketCreatorFees;
         uint256 _reporterFees;
 
