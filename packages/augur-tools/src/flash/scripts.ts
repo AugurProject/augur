@@ -79,7 +79,7 @@ export function addScripts(flash: FlashSession) {
       const mesh = args.meshEndpoint as string || undefined;
       const endpoint = 'ws://localhost:60557';
       const meshEndpoint = mesh ? mesh : endpoint;
-      await flash.ensureUser(this.network, useSdk, true, null, useZeroX ? meshEndpoint : undefined);
+      await flash.ensureUser(this.network, useSdk, true, null, useZeroX ? meshEndpoint : undefined, useZeroX ? true : false);
     },
   });
 
@@ -363,7 +363,7 @@ export function addScripts(flash: FlashSession) {
       const market = String(args.marketId);
       const mesh = args.meshEndpoint as string || undefined;
       const meshEndpoint = mesh ? mesh : endpoint;
-      const user = await this.ensureUser(this.network, true, true, null, meshEndpoint);
+      const user = await this.ensureUser(this.network, true, true, null, meshEndpoint, true);
       await user.faucet(new BigNumber(10).pow(18).multipliedBy(1000000));
       await user.approve(new BigNumber(10).pow(18).multipliedBy(1000000));
       const yesNoMarket = cannedMarkets.find(c => c.marketType === "yesNo");

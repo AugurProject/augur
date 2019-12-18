@@ -62,7 +62,6 @@ describe.skip('Augur API :: ZeroX :: ', () => {
     const outcome = 0;
     const displayPrice = new BigNumber(.22);
     const kycToken = "0x000000000000000000000000000000000000000C";
-    console.log('placing zeroX order ');
     const orderHash = await john.placeZeroXOrder({
       direction,
       market: market.address,
