@@ -46,7 +46,7 @@ def test_market_hot_loading_basic(kitchenSinkFixture, augur, cash, market, categ
     marketData = getMarketData(hotLoading, augur, scalarMarket, fillOrder, orders)
     assert marketData.marketType == 2 # SCALAR
     assert marketData.numTicks == 400000
-    assert marketData.displayPrices == [-10, 30]
+    assert marketData.displayPrices == [-10 * 10 **18, 30 * 10 ** 18]
 
 
 def test_trading(kitchenSinkFixture, augur, cash, market):
