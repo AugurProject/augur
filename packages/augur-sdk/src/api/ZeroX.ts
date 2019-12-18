@@ -264,6 +264,7 @@ export class ZeroX {
       salt
     );
     const order = result[0];
+    console.log(order);
     const hash = result[1];
     const makerAddress: string = order[0]; // signer or gnosis safe
     const signature = await this.signOrder(order, hash, this.augur.getUseGnosisSafe());

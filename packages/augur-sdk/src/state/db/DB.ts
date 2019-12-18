@@ -170,6 +170,7 @@ export class DB {
     this.marketDatabase = new MarketDB(this, networkId, this.augur);
 
     // Zero X Orders. Only on if a mesh client has been provided
+    console.log('initializeDB', !!this.augur.zeroX);
     this.zeroXOrders = this.augur.zeroX ? await ZeroXOrders.create(this, networkId, this.augur): undefined;
 
     // Always start syncing from 10 blocks behind the lowest

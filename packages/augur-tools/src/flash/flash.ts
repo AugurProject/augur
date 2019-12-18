@@ -3,7 +3,7 @@ import { ContractAddresses } from "@augurproject/artifacts";
 import { NetworkConfiguration } from "@augurproject/core";
 import { WSClient } from '@0x/mesh-rpc-client';
 import { ContractAPI } from "../libs/contract-api";
-import { Account } from "../constants";
+import { Account, NULL_ADDRESS } from "../constants";
 import { providers } from "ethers";
 import { Connectors, Events, SubscriptionEventName } from "@augurproject/sdk";
 import { API } from "@augurproject/sdk/build/state/getter/API";
@@ -12,7 +12,8 @@ import { DB } from "@augurproject/sdk/build/state/db/DB";
 import { EmptyConnector } from "@augurproject/sdk";
 import { BaseConnector } from "@augurproject/sdk/build/connector";
 import { configureDexieForNode } from "@augurproject/sdk/build/state/utils/DexieIDBShim";
-
+import { formatBytes32String } from "ethers/utils";
+import { BigNumber } from 'bignumber.js';
 
 configureDexieForNode(true);
 
@@ -154,8 +155,10 @@ export class FlashSession {
       if (!network) throw Error('Cannot wire up sdk if network is not set.');
       await this.user.augur.connect(network.http, this.getAccount().publicKey);
       await this.user.augur.on(SubscriptionEventName.NewBlock, this.sdkNewBlock);
+      console.log('makeDB', !!this.user.augur.zeroX)
       this.db = this.makeDB();
       this.api = new API(this.user.augur, this.db);
+      console.log('zeroX active?', !!this.api.augur.zeroX)
     }
 
     if (approveCentralAuthority) {

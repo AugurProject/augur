@@ -113,7 +113,7 @@ describe('3rd Party :: ZeroX :: ', () => {
       john.setUseGnosisRelay(true);
     }, 120000);
 
-    test('State API :: ZeroX :: getOrders', async () => {
+    test('State API :: ZeroX :: placeThengetOrders', async () => {
       // Create a market
       const market = await john.createReasonableMarket([
         stringTo32ByteHex('A'),
@@ -130,7 +130,8 @@ describe('3rd Party :: ZeroX :: ', () => {
       const displayPrice = new BigNumber(.22);
       const kycToken = '0x000000000000000000000000000000000000000C';
       const expirationTime = new BigNumber(new Date().valueOf()).plus(1000000);
-      await john.placeZeroXOrder({
+      console.log('place zerox order ')
+      const hash = await john.placeZeroXOrder({
         direction,
         market: market.address,
         numTicks: await market.getNumTicks_(),
@@ -147,7 +148,7 @@ describe('3rd Party :: ZeroX :: ', () => {
         displayShares: new BigNumber(0),
         expirationTime,
       });
-
+      console.log('hash of zerox order', hash);
       // Terrible, but not clear how else to wait on the mesh event propagating to the callback and it finishing updating the DB...
       await sleep(300);
 
@@ -209,7 +210,7 @@ describe('3rd Party :: ZeroX :: ', () => {
 
       await john.placeBasicYesNoZeroXTrade(
         0,
-        market1,
+        market1.address,
         outcome,
         new BigNumber(1),
         new BigNumber(0.4),
@@ -221,7 +222,7 @@ describe('3rd Party :: ZeroX :: ', () => {
 
       await mary.placeBasicYesNoZeroXTrade(
         1,
-        market1,
+        market1.address,
         outcome,
         new BigNumber(0.5),
         new BigNumber(0.4),
@@ -281,7 +282,7 @@ describe('3rd Party :: ZeroX :: ', () => {
 
       await john.placeBasicYesNoZeroXTrade(
         0,
-        market1,
+        market1.address,
         outcome,
         amount,
         price,

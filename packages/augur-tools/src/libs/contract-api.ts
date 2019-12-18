@@ -45,7 +45,7 @@ export class ContractAPI {
     const signer = await makeSigner(account, provider);
     const dependencies = makeGnosisDependencies(provider, gnosisRelay, signer, addresses.Cash, new BigNumber(0), null, account.publicKey);
     const augur = await Augur.create(provider, dependencies, addresses, connector, gnosisRelay, true, meshClient, meshBrowser);
-
+    console.log('augur.zeroX', !!augur.zeroX)
     return new ContractAPI(augur, provider, dependencies, account);
   }
 
@@ -210,6 +210,7 @@ export class ContractAPI {
     displayMaxPrice: BigNumber,
   ): Promise<void> {
 
+    console.log("place trade ", !!this.augur.zeroX);
     await this.augur.placeTrade({
       market,
       direction: type as 0 | 1,
@@ -225,7 +226,7 @@ export class ContractAPI {
       displayAmount: new BigNumber(numShares),
       displayPrice: new BigNumber(price),
       displayShares: new BigNumber(0),
-
+      expirationTime: new BigNumber(Math.floor((new Date().getTime() / 1000) + 3000))
     });
   }
 
@@ -257,12 +258,12 @@ export class ContractAPI {
     await this.augur.zeroX.placeTrade(params);
   }
 
-  async placeBasicYesNoZeroXTrade(direction: 0 | 1, market: ContractInterfaces.Market, outcome: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7, displayAmount: BigNumber, displayPrice: BigNumber, displayShares: BigNumber, expirationTime: BigNumber): Promise<void> {
+  async placeBasicYesNoZeroXTrade(direction: 0 | 1, market: string, outcome: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7, displayAmount: BigNumber, displayPrice: BigNumber, displayShares: BigNumber, expirationTime: BigNumber): Promise<void> {
     await this.placeZeroXTrade({
       direction,
-      market: market.address,
-      numTicks: await market.getNumTicks_(),
-      numOutcomes: await market.getNumberOfOutcomes_() as unknown as 3 | 4 | 5 | 6 | 7 | 8,
+      market,
+      numTicks: new BigNumber(100),
+      numOutcomes: 3,
       outcome,
       tradeGroupId: formatBytes32String('42'),
       fingerprint: formatBytes32String('11'),
