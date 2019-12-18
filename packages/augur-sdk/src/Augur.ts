@@ -103,13 +103,11 @@ export class Augur<TProvider extends Provider = Provider> {
     this.gnosis = new Gnosis(this.provider, gnosisRelay, this, this.dependencies);
     this.hotLoading = new HotLoading(this);
     this.onChainTrade = new OnChainTrade(this);
-    console.log('using meshClient ', !!meshClient);
     this.zeroX =
       meshClient || browserMesh
         ? new ZeroX(this, meshClient, browserMesh)
         : undefined;
 
-    console.log('this.zeroX', !!this.zeroX);
     this.trade = new Trade(this);
     if (enableFlexSearch && !this.syncableFlexSearch) {
       this.syncableFlexSearch = new SyncableFlexSearch();
@@ -129,8 +127,6 @@ export class Augur<TProvider extends Provider = Provider> {
   ): Promise<Augur> {
     const networkId = await provider.getNetworkId();
 
-    console.log('in create, meshClient', !!meshClient);
-    console.log('in create, meshBrowser', !!meshBrowser);
     const augur = new Augur<TProvider>(
       provider,
       dependencies,
