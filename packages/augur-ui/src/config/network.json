@@ -9,6 +9,13 @@
     },
     "gnosis-relay": "http://localhost:8000/api/",
     "0x-endpoint": "ws://localhost:60557",
+    "0x-mesh": {
+      "bootstrapList": [
+        "/ip4/127.0.0.1/tcp/60557/ws/ipfs/16Uiu2HAmRMgvPQV2UYKXuuCnNaFLpc36PhLp2UKVcL1ePseVcz4y",
+        "/ip4/127.0.0.1/tcp/60558/ipfs/16Uiu2HAmRMgvPQV2UYKXuuCnNaFLpc36PhLp2UKVcL1ePseVcz4y",
+        "/ip4/127.0.0.1/tcp/60559/ws/ipfs/16Uiu2HAmRMgvPQV2UYKXuuCnNaFLpc36PhLp2UKVcL1ePseVcz4y"
+      ]
+    },
     "universe": null,
     "debug": {
       "connect": true,
@@ -81,6 +88,7 @@
       "connectionTimeout": 60000
     },
     "gnosis-relay": "https://gnosis.kovan.augur.net/api/",
+    "0x-eth-node": "https://eth-kovan.alchemyapi.io/jsonrpc/wk8iQPITIJU1L28NfAyVETjeiCwjBvNB",
     "universe": null,
     "debug": {
       "connect": true,

@@ -23,6 +23,7 @@ import { WebWorkerConnector } from './ww-connector';
 import { isLocalHost } from 'utils/is-localhost';
 import { WSClient } from '@0x/mesh-rpc-client';
 import { Mesh } from '@0x/mesh-browser';
+import { NETWORK_IDS } from 'modules/common/constants';
 
 export class SDK {
   sdk: Augur<Provider> | null = null;
@@ -72,11 +73,26 @@ export class SDK {
 
     const enableFlexSearch = false; // TODO configurable
     const meshClient = env['0x-endpoint'] ? new WSClient(env['0x-endpoint']) : undefined;
-
-    const meshBrowser = !isLocalHost() ? new Mesh({
+    const meshBrowserConfig = {
       ethereumRPCURL,
       ethereumChainID: Number(this.networkId),
-    }) : undefined;
+      verbosity: 5,
+    }
+
+    let meshBrowserConfigExtra = {};
+
+    if (![NETWORK_IDS.Kovan, NETWORK_IDS.Mainnet].includes(this.networkId)) {
+      meshBrowserConfigExtra = {
+        ...meshBrowserConfig,
+        customContractAddresses: Addresses[this.networkId],
+        bootstrapList: env['0x-mesh'].bootstrapList,
+      }
+    }
+
+    const meshBrowser = new Mesh({
+      ...meshBrowserConfig,
+      ...meshBrowserConfigExtra,
+    });
 
     this.sdk = await Augur.create<Provider>(
       ethersProvider,
