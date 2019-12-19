@@ -9,7 +9,7 @@ import {
 } from '../../index';
 import { BigNumber } from 'bignumber.js';
 import { Getter } from './Router';
-import { OrderState, Order } from './OnChainTrading';
+import { OrderState, Order, getMarkets } from './OnChainTrading';
 import { StoredOrder } from '../db/ZeroXOrders';
 import Dexie from 'dexie'
 import * as t from 'io-ts';
@@ -108,15 +108,26 @@ export class ZeroXOrdersGetters {
         return params.orderType == '0' ? orderPrice.lte(price) : orderPrice.gte(price);
       });
     }
+    const marketIds = await currentOrdersResponse
+      .reduce((p, o) => Array.from(new Set([...p, o.market])), []);
+      const markets = await getMarkets(
+        marketIds,
+        db,
+        false
+      );
 
     return currentOrdersResponse.reduce(
-      async (orders: ZeroXOrders, order: StoredOrder) => {
+      (orders: ZeroXOrders, order: StoredOrder) => {
+        const marketId = order.market;
         // TODO: investigate this might be too slow
-        const marketDoc = await (await db).Markets.get(order.market);
-        if (!marketDoc) return orders;
-        const orderId = order['_id'];
-        if (params.ignoreOrders && _.includes(params.ignoreOrders, orderId))
+        const marketDoc = markets[marketId];
+        if (!marketDoc) {
           return orders;
+        }
+        const orderId = order['_id'] || order.orderHash;
+        if (params.ignoreOrders && _.includes(params.ignoreOrders, orderId)) {
+          return orders;
+        }
 
         const minPrice = new BigNumber(marketDoc.prices[0]);
         const maxPrice = new BigNumber(marketDoc.prices[1]);
@@ -140,13 +151,12 @@ export class ZeroXOrdersGetters {
         const outcome = new BigNumber(order.outcome).toNumber();
         const orderType = new BigNumber(order.orderType).toNumber();
         const orderState = OrderState.OPEN;
-        if (!orders[params.marketId]) orders[params.marketId] = {};
-        if (!orders[params.marketId][outcome])
-          orders[params.marketId][outcome] = {};
-        if (!orders[params.marketId][outcome][orderType]) {
-          orders[params.marketId][outcome][orderType] = {};
+        if (!orders[marketId]) orders[marketId] = {};
+        if (!orders[marketId][outcome]) orders[marketId][outcome] = {};
+        if (!orders[marketId][outcome][orderType]) {
+          orders[marketId][outcome][orderType] = {};
         }
-        orders[params.marketId][outcome][orderType][orderId] = {
+        orders[marketId][outcome][orderType][orderId] = {
           owner: order.signedOrder.makerAddress,
           orderState,
           orderId,
@@ -165,6 +175,7 @@ export class ZeroXOrdersGetters {
           takerAssetData: order.signedOrder.takerAssetData,
           signature: order.signedOrder.signature,
         } as ZeroXOrder;
+
         return orders;
       },
       {} as ZeroXOrders
