@@ -1,7 +1,7 @@
 import { deployContracts } from '../libs/blockchain';
 import { FlashSession, FlashArguments } from './flash';
 import { createCannedMarketsAndOrders } from './create-canned-markets-and-orders';
-import { _1_ETH } from '../constants';
+import { _1_ETH, NULL_ADDRESS } from '../constants';
 import {
   Contracts as compilerOutput,
   Addresses,
@@ -29,6 +29,7 @@ import { MarketList } from '@augurproject/sdk/build/state/getter/Markets';
 import { generateTemplateValidations } from './generate-templates';
 import { spawn } from 'child_process';
 import { showTemplateByHash, validateMarketTemplate } from './template-utils';
+import { cannedMarkets } from './data/canned-markets';
 
 export function addScripts(flash: FlashSession) {
   flash.addScript({
@@ -324,6 +325,76 @@ export function addScripts(flash: FlashSession) {
       await user.faucet(new BigNumber(10).pow(18).multipliedBy(1000000));
       await user.approve(new BigNumber(10).pow(18).multipliedBy(1000000));
       return createCannedMarketsAndOrders(user);
+    },
+  });
+
+  flash.addScript({
+    name: 'create-YesNo-zeroX-orders',
+    options: [
+      {
+        name: 'marketId',
+        abbr: 'm',
+        description: 'market to create zeroX orders on need to use connect -u -z',
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const market = String(args.marketId);
+      const user = await this.ensureUser();
+      await user.faucet(new BigNumber(10).pow(18).multipliedBy(1000000));
+      await user.approve(new BigNumber(10).pow(18).multipliedBy(1000000));
+      const yesNoMarket = cannedMarkets.find(c => c.marketType === "yesNo");
+      const orderBook = yesNoMarket.orderBook;
+
+      const tradeGroupId = String(Date.now());
+
+      for (let a = 0; a < Object.keys(orderBook).length; a++) {
+        const outcome = Number(Object.keys(orderBook)[a]) as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
+        const buySell = Object.values(orderBook)[a];
+
+        const { buy, sell } = buySell;
+
+        for (const { shares, price } of buy) {
+          this.log(`creating buy order, ${shares} @ ${price}`);
+          await user.placeZeroXOrder({
+            direction: 0,
+            market,
+            numTicks: new BigNumber(100),
+            numOutcomes: 3,
+            outcome,
+            tradeGroupId,
+            fingerprint: formatBytes32String('11'),
+            kycToken: NULL_ADDRESS,
+            doNotCreateOrders: false,
+            displayMinPrice: new BigNumber(0),
+            displayMaxPrice: new BigNumber(1),
+            displayAmount: new BigNumber(shares),
+            displayPrice: new BigNumber(price),
+            displayShares: new BigNumber(0),
+            expirationTime: new BigNumber(Math.floor((new Date().getTime() / 1000) + 3000)),
+          });
+        }
+
+        for (const { shares, price } of sell) {
+          this.log(`creating sell order, ${shares} @ ${price}`);
+          await user.placeZeroXOrder({
+            direction: 1,
+            market,
+            numTicks: new BigNumber(100),
+            numOutcomes: 3,
+            outcome,
+            tradeGroupId,
+            fingerprint: formatBytes32String('11'),
+            kycToken: NULL_ADDRESS,
+            doNotCreateOrders: false,
+            displayMinPrice: new BigNumber(0),
+            displayMaxPrice: new BigNumber(1),
+            displayAmount: new BigNumber(shares),
+            displayPrice: new BigNumber(price),
+            displayShares: new BigNumber(0),
+            expirationTime: new BigNumber(Math.floor((new Date().getTime() / 1000) + 3000)),
+          });
+        }
+      }
     },
   });
 
