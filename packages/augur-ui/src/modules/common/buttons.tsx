@@ -17,6 +17,7 @@ import {
   TwoArrowsOutline,
   XIcon,
   BackIcon,
+  AlternateDaiLogoIcon,
 } from 'modules/common/icons';
 import classNames from 'classnames';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
@@ -61,11 +62,11 @@ export interface DefaultActionButtonProps {
   title?: string;
 }
 
-export interface EthPercentProps {
+export interface DaiPercentProps {
   action: Function;
   disabled?: boolean;
   title?: string;
-  showEth: boolean;
+  showDai: boolean;
 }
 
 export interface OrderButtonProps extends DefaultButtonProps {
@@ -221,14 +222,14 @@ export const CompactButton = (props: DefaultButtonProps) => (
   </button>
 );
 
-export const DaiPercentButton = (props: EthPercentProps) => (
+export const DaiPercentButton = (props: DaiPercentProps) => (
   <button
     onClick={e => props.action(e)}
     className={classNames(Styles.CompactButton, Styles.DaiPercentButton)}
     disabled={props.disabled}
     title={props.title}
   >
-    {!props.showEth ? DaiLogoIcon : PercentIcon}
+    {!props.showDai ? AlternateDaiLogoIcon : PercentIcon}
   </button>
 );
 
