@@ -54,17 +54,32 @@ export function addScripts(flash: FlashSession) {
         description: 'a few scripts need sdk, -u to wire up sdk',
         flag: true,
       },
+      {
+        name: 'useZeroX',
+        abbr: 'z',
+        description: 'use zeroX mesh client endpoint',
+        flag: true,
+      },
+      {
+        name: 'meshEndpoint',
+        abbr: 'x',
+        description: 'use zeroX mesh client endpoint',
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const network = (args.network as NETWORKS) || 'environment';
       const account = args.account as string;
       const useSdk = args.useSdk as boolean;
+      const useZeroX = args.useZeroX as boolean;
       if (account) flash.account = account;
       this.network = NetworkConfiguration.create(network);
       flash.provider = this.makeProvider(this.network);
       const networkId = await this.getNetworkId(flash.provider);
       flash.contractAddresses = Addresses[networkId];
-      await flash.ensureUser(this.network, useSdk);
+      const mesh = args.meshEndpoint as string || undefined;
+      const endpoint = 'ws://localhost:60557';
+      const meshEndpoint = mesh ? mesh : endpoint;
+      await flash.ensureUser(this.network, useSdk, true, null, useZeroX ? meshEndpoint : undefined, useZeroX ? true : false);
     },
   });
 
@@ -178,6 +193,7 @@ export function addScripts(flash: FlashSession) {
     ],
     async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
+      const endPoint = 'ws://localhost:60557';
       const user = await this.ensureUser();
 
       const target = String(args.target);
@@ -271,13 +287,51 @@ export function addScripts(flash: FlashSession) {
   });
 
   flash.addScript({
+    name: 'new-market',
+    options: [
+      {
+        name: 'yesno',
+        abbr: 'y',
+        description: 'create yes no market, default if no options are added',
+        flag: true,
+      },
+      {
+        name: 'categorical',
+        abbr: 'c',
+        description: 'create categorical market',
+        flag: true,
+      },
+      {
+        name: 'scalar',
+        abbr: 's',
+        description: 'create scalar market',
+        flag: true,
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const yesno = args.yesno as boolean;
+      const cat = args.categorical as boolean;
+      const scalar = args.scalar as boolean;
+      if (yesno)
+        await this.call('create-reasonable-yes-no-market', {});
+      if (cat)
+        await this.call('create-reasonable-categorical-market', {outcomes: "first,second,third,fourth,fifth"});
+      if (scalar)
+        await this.call('create-reasonable-scalar-market', {});
+
+      if (!yesno && !cat && !scalar)
+        await this.call('create-reasonable-yes-no-market', {});
+    }
+  });
+
+  flash.addScript({
     name: 'create-reasonable-yes-no-market',
     async call(this: FlashSession) {
       if (this.noProvider()) return;
       const user = await this.ensureUser();
 
       this.market = await user.createReasonableYesNoMarket();
-      this.log(`Created market "${this.market.address}".`);
+      this.log(`Created YesNo market "${this.market.address}".`);
       return this.market;
     },
   });
@@ -300,7 +354,7 @@ export function addScripts(flash: FlashSession) {
         .map(formatBytes32String);
 
       this.market = await user.createReasonableMarket(outcomes);
-      this.log(`Created market "${this.market.address}".`);
+      this.log(`Created Categorical market "${this.market.address}".`);
       return this.market;
     },
   });
@@ -312,7 +366,7 @@ export function addScripts(flash: FlashSession) {
       const user = await this.ensureUser();
 
       this.market = await user.createReasonableScalarMarket();
-      this.log(`Created market "${this.market.address}".`);
+      this.log(`Created Scalar market "${this.market.address}".`);
       return this.market;
     },
   });
@@ -325,76 +379,6 @@ export function addScripts(flash: FlashSession) {
       await user.faucet(new BigNumber(10).pow(18).multipliedBy(1000000));
       await user.approve(new BigNumber(10).pow(18).multipliedBy(1000000));
       return createCannedMarketsAndOrders(user);
-    },
-  });
-
-  flash.addScript({
-    name: 'create-YesNo-zeroX-orders',
-    options: [
-      {
-        name: 'marketId',
-        abbr: 'm',
-        description: 'market to create zeroX orders on need to use connect -u -z',
-      },
-    ],
-    async call(this: FlashSession, args: FlashArguments) {
-      const market = String(args.marketId);
-      const user = await this.ensureUser();
-      await user.faucet(new BigNumber(10).pow(18).multipliedBy(1000000));
-      await user.approve(new BigNumber(10).pow(18).multipliedBy(1000000));
-      const yesNoMarket = cannedMarkets.find(c => c.marketType === "yesNo");
-      const orderBook = yesNoMarket.orderBook;
-
-      const tradeGroupId = String(Date.now());
-
-      for (let a = 0; a < Object.keys(orderBook).length; a++) {
-        const outcome = Number(Object.keys(orderBook)[a]) as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
-        const buySell = Object.values(orderBook)[a];
-
-        const { buy, sell } = buySell;
-
-        for (const { shares, price } of buy) {
-          this.log(`creating buy order, ${shares} @ ${price}`);
-          await user.placeZeroXOrder({
-            direction: 0,
-            market,
-            numTicks: new BigNumber(100),
-            numOutcomes: 3,
-            outcome,
-            tradeGroupId,
-            fingerprint: formatBytes32String('11'),
-            kycToken: NULL_ADDRESS,
-            doNotCreateOrders: false,
-            displayMinPrice: new BigNumber(0),
-            displayMaxPrice: new BigNumber(1),
-            displayAmount: new BigNumber(shares),
-            displayPrice: new BigNumber(price),
-            displayShares: new BigNumber(0),
-            expirationTime: new BigNumber(Math.floor((new Date().getTime() / 1000) + 3000)),
-          });
-        }
-
-        for (const { shares, price } of sell) {
-          this.log(`creating sell order, ${shares} @ ${price}`);
-          await user.placeZeroXOrder({
-            direction: 1,
-            market,
-            numTicks: new BigNumber(100),
-            numOutcomes: 3,
-            outcome,
-            tradeGroupId,
-            fingerprint: formatBytes32String('11'),
-            kycToken: NULL_ADDRESS,
-            doNotCreateOrders: false,
-            displayMinPrice: new BigNumber(0),
-            displayMaxPrice: new BigNumber(1),
-            displayAmount: new BigNumber(shares),
-            displayPrice: new BigNumber(price),
-            displayShares: new BigNumber(0),
-            expirationTime: new BigNumber(Math.floor((new Date().getTime() / 1000) + 3000)),
-          });
-        }
-      }
     },
   });
 
@@ -1197,6 +1181,26 @@ export function addScripts(flash: FlashSession) {
 
       const result = await user.augur.contracts.gnosisSafeRegistry.getSafe_(args['target'] as string);
       console.log(result);
+  }});
+
+  flash.addScript({
+    name: 'get-safe-nonce',
+    options: [
+      {
+        name: 'target',
+        abbr: 't',
+        description: 'address to check registry contract for the safe address.',
+      },
+    ],
+    async call(
+      this: FlashSession,
+      args: FlashArguments
+    ): Promise<void> {
+      if (this.noProvider()) return null;
+      const user = await this.ensureUser(this.network, false);
+      const gnosisSafe = await user.augur.contracts.gnosisSafeFromAddress(args['target'] as string);
+
+      console.log((await gnosisSafe.nonce_()).toString());
   }});
 
   flash.addScript({
