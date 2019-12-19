@@ -91,7 +91,8 @@
   },
   "resolutions": {
     "**/sha3": "2.0.1",
-    "**/leveldown": "5.4.1"
+    "**/leveldown": "5.4.1",
+    "**/bignumber.js": "9.0.0"
   },
   "dependencies": {
     "docusaurus-init": "1.12.0"

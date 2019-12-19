@@ -194,7 +194,7 @@ export class DB {
     schemas["Markets"] = "market,reportingState,universe,marketCreator,timestamp,finalized,blockNumber";
     schemas["CurrentOrders"] = "orderId,[market+open],[market+outcome+orderType],orderCreator,orderFiller,blockNumber";
     schemas["Dispute"] = "[market+payoutNumerators],market,blockNumber";
-    schemas["ZeroXOrders"] = "orderHash, [market+outcome+orderType],blockNumber";
+    schemas["ZeroXOrders"] = "orderHash, [market+outcome+orderType],orderCreator,blockNumber";
     schemas["SyncStatus"] = "eventName,blockNumber,syncing";
     schemas["Rollback"] = ",[tableName+rollbackBlockNumber]";
     return schemas;

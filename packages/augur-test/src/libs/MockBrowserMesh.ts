@@ -1,7 +1,5 @@
-import { OrderInfo, WSClient, OrderEvent, ValidationResults, AcceptedOrderInfo } from '@0x/mesh-rpc-client';
-import { SignedOrder } from '@0x/types';
+import { OrderInfo, WSClient, OrderEvent, ValidationResults, AcceptedOrderInfo, SignedOrder } from '@0x/mesh-rpc-client';
 import { orderHashUtils } from '@0x/order-utils';
-import * as _ from 'lodash';
 
 export class MockBrowserMesh {
     readonly meshClient: WSClient;

@@ -9,13 +9,20 @@ cleanup() {
 
 trap cleanup SIGINT SIGTERM
 
+DEV="${1-false}"
+
 # make sure we have the latest images
 # (workaround until next version of docker supports the --pull flag)
 docker pull augurproject/safe-relay-service_web:latest
 docker pull 0xorg/mesh:0xV3
 
 # run docker image, creating or updating local-addresses.json
-yarn docker:geth:pop
+if [ "$DEV" == "true" ]; then
+  yarn workspace @augurproject/tools docker:geth:detached
+  yarn flash run deploy -w
+else
+  yarn docker:geth:pop
+fi
 
 # pick up the creation of / changes to local-addresses.json
 yarn build

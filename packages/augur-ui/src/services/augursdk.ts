@@ -12,7 +12,8 @@ import { EnvObject } from 'modules/types';
 import { isEmpty } from 'utils/is-empty';
 import { analytics } from './analytics';
 import { isLocalHost } from 'utils/is-localhost';
-import { WebWorkerConnector } from 'services/ww-connector';
+import { WSClient } from '@0x/mesh-rpc-client';
+import { Mesh } from '@0x/mesh-browser';
 
 export class SDK {
   sdk: Augur<Provider> | null = null;
@@ -51,16 +52,22 @@ export class SDK {
 
     const connector = this.pickConnector(env['sdkEndpoint']);
 
+    const ethereumRPCURL = env['ethereum-node'].http
+    ? env['ethereum-node'].http
+    : 'http://localhost:8545';
+
     connector.connect(
-      env['ethereum-node'].http
-        ? env['ethereum-node'].http
-        : 'http://localhost:8545',
+      ethereumRPCURL,
       account,
     );
 
     const enableFlexSearch = false; // TODO configurable
-    // const meshClient = env['0x-endpoint'] ? new WSClient(env['0x-endpoint']) : undefined;
-    const meshBrowser = undefined; // TODO configurable
+    const meshClient = env['0x-endpoint'] ? new WSClient(env['0x-endpoint']) : undefined;
+
+    const meshBrowser = !isLocalHost() ? new Mesh({
+      ethereumRPCURL,
+      ethereumChainID: Number(this.networkId),
+    }) : undefined;
 
     this.sdk = await Augur.create<Provider>(
       ethersProvider,
@@ -69,7 +76,7 @@ export class SDK {
       connector,
       gnosisRelay,
       enableFlexSearch,
-      undefined, // TODO - Enable when we fix relayer errors
+      meshClient,
       meshBrowser,
     );
 

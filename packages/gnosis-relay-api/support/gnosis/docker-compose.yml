@@ -53,6 +53,10 @@ services:
     image: augurproject/safe-relay-service_web:latest
     env_file:
       - .env
+    environment:
+      - SAFE_CONTRACT_ADDRESS=${GNOSIS_SAFE_CONTRACT_ADDRESS}
+      - SAFE_OLD_CONTRACT_ADDRESS=${GNOSIS_SAFE_CONTRACT_ADDRESS}
+      - SAFE_PROXY_FACTORY_ADDRESS=${PROXY_FACTORY_CONTRACT_ADDRESS}
     depends_on:
       - db
       - redis
@@ -86,7 +90,10 @@ services:
       - RPC_ADDR=0.0.0.0:60557
     networks:
       - augur
+    volumes:
+      - ./keys:/usr/mesh/0x_mesh/keys
 
 networks:
   augur:
     name: augur
+

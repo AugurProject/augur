@@ -9,6 +9,7 @@ ARG period_time=5
 
 ENV NETWORK_ID=$network_id
 ENV PERIOD_TIME=$period_time
+ENV NODE_OPTIONS="--max_old_space_size=8192"
 
 RUN apk add --no-cache \
     alpine-sdk \
@@ -28,7 +29,7 @@ COPY . /augur
 WORKDIR /augur
 
 
-RUN yarn install --frozen-lockfile && yarn build
+RUN yarn install --frozen-lockfile --ignore-scripts && yarn build
 
 RUN bash /augur/packages/augur-tools/docker-builder/run-geth-and-deploy.sh
 

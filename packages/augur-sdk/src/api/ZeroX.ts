@@ -25,6 +25,10 @@ import {
   TradeTransactionLimits,
 } from './OnChainTrade';
 import { ethers } from 'ethers';
+import { signatureUtils } from "@0x/order-utils";
+import Web3ProviderEngine = require("web3-provider-engine");
+import { SignerSubprovider } from "@augurproject/core/build/libraries/zeroX/SignerSubprovider";
+import { ProviderSubprovider } from "@augurproject/core/build/libraries/zeroX/ProviderSubprovider";
 
 
 export enum Verbosity {
@@ -261,14 +265,14 @@ export class ZeroX {
     );
     const order = result[0];
     const hash = result[1];
-    const gnosisSafeAddress: string = order[0];
-    const signature = await this.signOrder(order, hash);
+    const makerAddress: string = order[0]; // signer or gnosis safe
+    const signature = await this.signOrder(order, hash, this.augur.getUseGnosisSafe());
 
     return {
       order: {
         chainId: Number(this.augur.networkId),
         exchangeAddress: this.augur.addresses.Exchange,
-        makerAddress: gnosisSafeAddress,
+        makerAddress,
         makerAssetData: order[10],
         makerFeeAssetData: order[12],
         makerAssetAmount: new BigNumber(order[4]._hex),
@@ -283,12 +287,22 @@ export class ZeroX {
         expirationTimeSeconds: new BigNumber(order[8]._hex),
         salt: new BigNumber(order[9]._hex),
         signature,
+        hash, // only used by our mock; safe to send because it's ignored by real mesh
       },
       hash,
     };
   }
 
-  async signOrder(signedOrder: any, orderHash: string): Promise<string> {
+  async signOrder(signedOrder: any, orderHash: string, gnosis=true): Promise<string> {
+    if (gnosis) {
+      return this.signGnosisOrder(signedOrder, orderHash);
+    } else {
+      const maker = await this.augur.getAccount();
+      return this.signSimpleOrder(orderHash, maker)
+    }
+  }
+
+  async signGnosisOrder(signedOrder: any, orderHash: string): Promise<string> {
     const gnosisSafeAddress: string = signedOrder[0];
 
     const gnosisSafe = this.augur.contracts.gnosisSafeFromAddress(gnosisSafeAddress);
@@ -296,11 +310,26 @@ export class ZeroX {
     const eip1271OrderWithHash = await this.augur.contracts.ZeroXTrade.encodeEIP1271OrderWithHash_(signedOrder, orderHash);
     const messageHash = await gnosisSafe.getMessageHash_(eip1271OrderWithHash);
 
-    const signatureType = '07'; // in v3 this is EIP1271Wallet
+    // In 0x v3, '07' is EIP1271Wallet
+    // See https://github.com/0xProject/0x-mesh/blob/0xV3/zeroex/order.go#L51
+    const signatureType = '07';
 
     const signedMessage = await this.augur.signMessage(messageHash);
     const {r, s, v} = ethers.utils.splitSignature(signedMessage);
     return `0x${r.slice(2)}${s.slice(2)}${(v+4).toString(16)}${signatureType}`;
+  }
+
+  async signSimpleOrder(orderHash: string, maker: string): Promise<string> {
+    const providerEngine = new Web3ProviderEngine();
+    providerEngine.addProvider(new SignerSubprovider(this.augur.signer));
+    providerEngine.addProvider(new ProviderSubprovider(this.augur.provider));
+    providerEngine.start();
+
+    return signatureUtils.ecSignHashAsync(
+      providerEngine,
+      orderHash,
+      maker
+    );
   }
 
   async addOrder(order) {

@@ -9,26 +9,39 @@ import { Addresses, UploadBlockNumbers } from '@augurproject/artifacts';
 import { API } from './getter/API';
 import { DB } from './db/DB';
 import { GnosisRelayAPI } from '@augurproject/gnosis-relay-api';
+import { WSClient } from '@0x/mesh-rpc-client';
 
 const settings = require('./settings.json');
 
 async function buildDeps(ethNodeUrl: string, account?: string, enableFlexSearch = false) {
-  const ethersProvider = new EthersProvider(new JsonRpcProvider(ethNodeUrl), 10, 0, 40);
-  const networkId = await ethersProvider.getNetworkId();
-  const gnosisRelay = new GnosisRelayAPI(settings.gnosisRelayURLs[networkId]);
-  const contractDependencies = new ContractDependenciesGnosis(ethersProvider, gnosisRelay, undefined, undefined, undefined, undefined, account);
+  // Necessary because 0x dep web3-provider-fork erroneously references `window`, which does not exist in web workers.
+  // @ts-ignore
+  self.window = self;
 
-  const augur = await Augur.create(ethersProvider, contractDependencies, Addresses[networkId], new EmptyConnector(), undefined, enableFlexSearch);
-  const blockAndLogStreamerListener = BlockAndLogStreamerListener.create(ethersProvider, augur.events.getEventTopics, augur.events.parseLogs, augur.events.getEventContractAddress);
-  const db = DB.createAndInitializeDB(
-    Number(networkId),
-    settings.blockstreamDelay,
-    UploadBlockNumbers[networkId],
-    augur,
-    blockAndLogStreamerListener
-  );
+  try {
+    const ethersProvider = new EthersProvider(new JsonRpcProvider(ethNodeUrl), 10, 0, 40);
+    const networkId = await ethersProvider.getNetworkId();
+    const gnosisRelay = new GnosisRelayAPI(settings.gnosisRelayURLs[networkId]);
+    let meshClient = new WSClient(settings.meshClientURLs[networkId]);
+    const contractDependencies = new ContractDependenciesGnosis(ethersProvider, gnosisRelay, undefined, undefined, undefined, undefined, account);
 
-  return { augur, blockAndLogStreamerListener, db };
+    // remove this line to get WSClient error
+    meshClient = undefined;
+    const augur = await Augur.create(ethersProvider, contractDependencies, Addresses[networkId], new EmptyConnector(), undefined, enableFlexSearch, meshClient);
+    const blockAndLogStreamerListener = BlockAndLogStreamerListener.create(ethersProvider, augur.events.getEventTopics, augur.events.parseLogs, augur.events.getEventContractAddress);
+    const db = DB.createAndInitializeDB(
+      Number(networkId),
+      settings.blockstreamDelay,
+      UploadBlockNumbers[networkId],
+      augur,
+      blockAndLogStreamerListener
+    );
+
+    return { augur, blockAndLogStreamerListener, db };
+  }catch(e) {
+    console.log('WRONG', e)
+  }
+  return null;
 }
 
 export async function create(ethNodeUrl: string, account?: string, enableFlexSearch = false): Promise<{ api: API, controller: Controller }> {
