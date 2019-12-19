@@ -48,12 +48,13 @@ describe('3rd Party :: ZeroX :: ', () => {
       const connectorJohn = new Connectors.DirectConnector();
       const connectorMary = new Connectors.DirectConnector();
       const meshBrowser = undefined;
+
       john = await ContractAPI.userWrapper(ACCOUNTS[0], providerJohn, addresses, connectorJohn, new GnosisRelayAPI('http://localhost:8000/api/'), meshClientJohn, meshBrowser);
       mary = await ContractAPI.userWrapper(ACCOUNTS[1], providerMary, addresses, connectorMary, new GnosisRelayAPI('http://localhost:8000/api/'), meshClientMary, meshBrowser);
       const dbPromise = mock.makeDB(john.augur, ACCOUNTS);
       db = await dbPromise;
       connectorJohn.initialize(john.augur, db);
-      connectorMary.initialize(john.augur, db);
+      connectorMary.initialize(mary.augur, db);
       api = new API(john.augur, dbPromise);
       await john.approveCentralAuthority();
       await mary.approveCentralAuthority();
