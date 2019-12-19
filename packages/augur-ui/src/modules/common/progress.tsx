@@ -136,7 +136,7 @@ const reportingStateToLabelTime = (
     case REPORTING_STATE.AWAITING_FINALIZATION:
     case REPORTING_STATE.FINALIZED:
     default:
-      label = 'Market Resolved';
+      label = 'Expired';
       time = reportingEndTime;
       break;
   }

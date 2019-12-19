@@ -1,10 +1,10 @@
 @import (reference) '~assets/styles/shared';
 
 .ProgressLabel {
-  .mono-9-bold;
+  .mono-10-bold;
 
   align-items: baseline;
-  color: @color-inactive-text;
+  color: @color-secondary-text;
   display: flex;
   flex-flow: column nowrap;
   white-space: nowrap;
@@ -26,12 +26,14 @@
   }
 
   > span:last-of-type {
-    .mono-10;
+    .mono-11-medium;
 
     color: @color-primary-text;
     text-align: left;
     width: 100%;
     margin-top: @size-3;
+    text-transform: uppercase;
+    line-height: @size-13;
 
     @media @breakpoint-mobile {
       .mono-10;
@@ -52,11 +54,15 @@
 
   &.Finished {
     > span:last-of-type {
-      color: @color-inactive-text;
+      color: @color-secondary-text;
     }
   }
 
   &.AlignRight {
+    > span:first-of-type {
+      margin-right: 0;
+    }
+
     > span:last-of-type {
       text-align: right;
     }
