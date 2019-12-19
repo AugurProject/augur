@@ -65,6 +65,7 @@ interface MarketHeaderState {
   headerCollapsed: boolean;
   showCopied: boolean;
   notExpandedHeight: boolean | number;
+  showProperties: boolean;
 }
 
 export default class MarketHeader extends Component<
@@ -87,6 +88,7 @@ export default class MarketHeader extends Component<
     super(props);
     this.state = {
       showReadMore: false,
+      showProperties: false,
       detailsHeight: 0,
       headerCollapsed: false,
       showCopied: false,
@@ -97,6 +99,7 @@ export default class MarketHeader extends Component<
     this.toggleReadMore = this.toggleReadMore.bind(this);
     this.updateDetailsHeight = this.updateDetailsHeight.bind(this);
     this.addToFavorites = this.addToFavorites.bind(this);
+    this.toggleShowProperties = this.toggleShowProperties.bind(this);
   }
 
   componentDidMount() {
@@ -148,6 +151,10 @@ export default class MarketHeader extends Component<
     }
   }
 
+  toggleShowProperties() {
+    this.setState({ showProperties: !this.state.showProperties });
+  }
+
   addToFavorites() {
     const { market, toggleFavorite } = this.props;
     toggleFavorite(market.id);
@@ -196,6 +203,7 @@ export default class MarketHeader extends Component<
     const {
       headerCollapsed,
       showReadMore,
+      showProperties,
       detailsHeight,
       showCopied,
       notExpandedHeight
@@ -338,7 +346,7 @@ export default class MarketHeader extends Component<
                           }}
                         >
                           {!showReadMore
-                            ? ChevronDown({ stroke: '#FFFFFF' })
+                            ? ChevronDown({ stroke: '#D7DDE0' })
                             : ChevronUp()}
                         </button>
                       )}
@@ -352,7 +360,9 @@ export default class MarketHeader extends Component<
                 [Styles.ShowTutorial]: showTutorialData,
               })}
             >
-              <div className={Styles.Properties}>
+              <div className={classNames(Styles.Properties, {
+                [Styles.HideProperties]: !showProperties
+              })}>
                 {(market.id || preview) && (
                   <MarketHeaderBar
                     marketStatus={market.marketStatus}
@@ -373,6 +383,16 @@ export default class MarketHeader extends Component<
                     reportingBarShowing={reportingBarShowing}
                   />
                 )}
+                 <button
+                    onClick={e => {
+                      e.stopPropagation();
+                      this.toggleShowProperties();
+                    }}
+                  >
+                    {!showProperties
+                      ? ChevronDown({ stroke: '#D7DDE0' })
+                      : ChevronUp()}
+                  </button>
               </div>
               {showTutorialData && (
                 <TutorialPopUp

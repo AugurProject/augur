@@ -178,6 +178,10 @@
         transition-property: box-shadow, z-index, position;
         transition-duration: 0.15s; 
         transition-timing-function: ease-out;
+
+        @media @breakpoint-mobile {
+          padding: 0 @size-12;
+        }
       }
     }
 
@@ -185,6 +189,10 @@
       align-self: stretch;
       display: flex;
       min-height: 149px;
+
+      @media @breakpoint-mobile {
+        min-height: unset;
+      }
     }
   }
 }
@@ -439,7 +447,8 @@ div.ExpandedContent {
       }
 
       > button {
-        margin: auto;
+        margin: none;
+        width: 100%;
       }
     }
   }
@@ -452,6 +461,10 @@ div.ExpandedContent {
   flex-direction: column;
   min-width: 537px;
   background: @color-module-background;
+
+  > button {
+    display: none;
+  }
 }
 
 .ShowTutorial {
@@ -470,17 +483,24 @@ div.ExpandedContent {
       // overall wrapper
       flex-flow: column nowrap;
 
-      > div:first-of-type {
-        // top half details section area
-        > div:last-of-type {
-          padding: 0 @size-12;
-        }
-      }
-
       div.Properties {
         min-width: unset;
         border: 0;
         border-top: 1px solid @color-dark-grey;
+
+        &.HideProperties > div[class*="CoreProperties"] > div {
+          > div:first-of-type {
+            display: none;
+          }
+
+          > div:last-of-type {
+            border-top: 0;
+
+            > div:first-of-type {
+              display: none;
+            }
+          }
+        }
 
         > section {
           margin: @size-12;
@@ -489,6 +509,27 @@ div.ExpandedContent {
 
         > div:last-of-type {
           border-top: 0;
+        }
+
+        > button {
+          .text-12;
+    
+          align-self: flex-end;
+          color: @color-primary-text;
+          cursor: pointer;
+          display: block;
+          text-transform: uppercase;
+          margin: 0 0 @size-8;
+          width: 100%;
+    
+          svg {
+            height: @size-12;
+    
+            polyline {
+              stroke: @color-primary-text;
+              stroke-width: 3;
+            }
+          }
         }
       }
     }
