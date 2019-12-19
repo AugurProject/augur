@@ -287,6 +287,7 @@ export class ZeroX {
         expirationTimeSeconds: new BigNumber(order[8]._hex),
         salt: new BigNumber(order[9]._hex),
         signature,
+        hash, // only used by our mock; safe to send because it's ignored by real mesh
       },
       hash,
     };

@@ -109,7 +109,6 @@ export class ZeroXOrdersGetters {
       });
     }
 
-    console.log('currentOrdersResponse', currentOrdersResponse);
     return currentOrdersResponse.reduce(
       async (orders: ZeroXOrders, order: StoredOrder) => {
         // TODO: investigate this might be too slow
