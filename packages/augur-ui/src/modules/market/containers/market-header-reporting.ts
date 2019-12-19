@@ -13,18 +13,18 @@ import {
 import { NodeStyleCallback } from 'modules/types';
 import { createBigNumber } from 'utils/create-big-number';
 import { ZERO } from 'modules/common/constants';
+import { isSameAddress } from 'utils/isSameAddress';
 
 const mapStateToProps = (state, ownProps) => {
   const market = ownProps.market || selectMarket(ownProps.marketId);
   const disputeInfoStakes = market.disputeInfo && market.disputeInfo.stakes;
-
   return {
     currentTimestamp: selectCurrentTimestampInSeconds(state) || 0,
     market,
     isLogged: state.authStatus.isLogged,
     isDesignatedReporter: ownProps.preview
       ? market.designatedReporterType === DESIGNATED_REPORTER_SELF
-      : market.designatedReporter === state.loginAccount.address,
+      : isSameAddress(market.designatedReporter, state.loginAccount.address),
     tentativeWinner: disputeInfoStakes && disputeInfoStakes.find(stake => stake.tentativeWinning),
     canClaimProceeds:
       state.accountPositions[ownProps.marketId] &&

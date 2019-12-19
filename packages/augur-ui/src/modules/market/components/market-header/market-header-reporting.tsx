@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import classNames from 'classnames';
 import Styles from 'modules/market/components/market-header/market-header-reporting.styles.less';
 import {
-  TYPE_DISPUTE,
-  TYPE_REPORT,
   REPORTING_STATE,
   SCALAR,
 } from 'modules/common/constants';
