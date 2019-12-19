@@ -235,7 +235,7 @@ export const LIST_VALUES = {
       label: 'King',
     },
     {
-      value: 'Crowned Prince',
+      value: 'Crowne Prince',
       label: 'Crowne Prince',
     },
     {
