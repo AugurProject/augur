@@ -14,6 +14,10 @@ import { WSClient } from '@0x/mesh-rpc-client';
 const settings = require('./settings.json');
 
 async function buildDeps(ethNodeUrl: string, account?: string, enableFlexSearch = false) {
+  // Necessary because 0x dep web3-provider-fork erroneously references `window`, which does not exist in web workers.
+  // @ts-ignore
+  self.window = self;
+
   try {
     const ethersProvider = new EthersProvider(new JsonRpcProvider(ethNodeUrl), 10, 0, 40);
     const networkId = await ethersProvider.getNetworkId();
