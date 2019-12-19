@@ -5,7 +5,8 @@ import { Augur } from '../../Augur';
 import { DB } from './DB';
 import { MarketData, MarketType } from '../logs/types';
 import { OrderInfo, OrderEvent } from '@0x/mesh-rpc-client';
-import { getAddress } from "ethers/utils/address";
+import { getAddress } from'ethers/utils/address';
+import { defaultAbiCoder, ParamType } from 'ethers/utils';
 import { SignedOrder } from '@0x/types';
 import { BigNumber } from 'bignumber.js';
 
@@ -19,13 +20,36 @@ const EXPECTED_ASSET_DATA_LENGTH = 650;
 const DEFAULT_TRADE_INTERVAL = new BigNumber(10**17);
 const TRADE_INTERVAL_VALUE = new BigNumber(10**19);
 
+// Original ABI from Go
+// [
+//   {
+//     constant: false,
+//     inputs: [
+//       { name: 'address', type: 'address' },
+//       { name: 'ids', type: 'uint256[]' },
+//       { name: 'values', type: 'uint256[]' },
+//       { name: 'callbackData', type: 'bytes' },
+//     ],
+//     name: 'ERC1155Assets',
+//     outputs: [],
+//     payable: false,
+//     stateMutability: 'nonpayable',
+//     type: 'function',
+//   },
+// ];
+const erc1155AssetDataAbi: ParamType[] = [
+  { name: 'address', type: 'address' },
+  { name: 'ids', type: 'uint256[]' },
+  { name: 'values', type: 'uint256[]' },
+  { name: 'callbackData', type: 'bytes' },
+];
+
 export interface OrderData {
   market: string;
   price: string;
   outcome: string;
   orderType: string;
   kycToken: string;
-  exchange: string;
 }
 
 export interface Document extends BaseDocument {
@@ -124,14 +148,22 @@ export class ZeroXOrders extends AbstractTable {
   }
 
   parseAssetData(assetData: string): OrderData {
-    const data = assetData.substr(2); // remove the 0x
+    const decoded = defaultAbiCoder.decode(erc1155AssetDataAbi, assetData);
+
+    console.log(decoded);
+
+    if (decoded.ids.length !== 1) {
+      throw new Error("More than one ID passed into 0x order");
+    }
+
+
+    const tokenid = decoded.ids[0];
     return {
-      market: getAddress(`0x${data.substr(392, 40)}`),
-      price: `0x${data.substr(432, 20)}`,
-      outcome: `0x${data.substr(452, 2)}`,
-      orderType: `0x${data.substr(454, 2)}`,
-      kycToken: getAddress(`0x${data.substr(224, 40)}`),
-      exchange: getAddress(`0x${data.substr(288, 40)}`),
+      market: getAddress(`0x${tokenid.substr(0, 40)}`),
+      price: `0x${tokenid.substr(40, 20)}`,
+      outcome: `0x${tokenid.substr(60, 2)}`,
+      orderType: `0x${tokenid.substr(62, 2)}`,
+      kycToken: getAddress(`0x${assetData.substr(-40, assetData.length)}`),
     }
   }
 }
