@@ -44,7 +44,7 @@ export const ACCOUNTS: Account[] = [
     publicKey: "0x53c3d9be61c8375b34970801c5bd4d1a87860343",
     balance: _1_BILLION_ETH,
   },
-  {
+  { // NOTE: This is used by the Gnosis Relayer so don't use it anywhere else.
     secretKey: "0xcfa5622e09afac03fb5dfa5cb54e52c9d37e06a5b07d5598850b62304639b815",
     publicKey: "0x9d4c6d4b84cd046381923c9bc136d6ff1fe292d9",
     balance: _1_BILLION_ETH,
@@ -52,7 +52,7 @@ export const ACCOUNTS: Account[] = [
   {
     secretKey: "0xa429eeb001c683cf3d8faf4b26d82dbf973fb45b04daad26e1363efd2fd43913",
     publicKey: "0x8fFf40Efec989Fc938bBA8b19584dA08ead986eE",
-    balance: _1_BILLION_ETH,
+    balance: 0, // NOTE: This isn't funded in the geth-poa genesis
   },
 ];
 
