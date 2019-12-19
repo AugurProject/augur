@@ -107,7 +107,7 @@ export class ContractAPI {
       designatedReporter: this.account.publicKey,
       extraInfo: JSON.stringify({
         categories: ['flash', 'Reasonable', 'YesNo'],
-        description: 'description',
+        description: 'YesNo market description',
       }),
     });
   }
@@ -123,7 +123,7 @@ export class ContractAPI {
       designatedReporter: this.account.publicKey,
       extraInfo: JSON.stringify({
         categories: ['flash', 'Reasonable', 'Categorical'],
-        description: 'description',
+        description: 'Categorical market description',
       }),
       outcomes,
     });
@@ -142,7 +142,7 @@ export class ContractAPI {
       designatedReporter: this.account.publicKey,
       extraInfo: JSON.stringify({
         categories: ['flash', 'Reasonable', 'Scalar'],
-        description: 'description',
+        description: 'Scalar market description',
         _scalarDenomination: 'scalar denom 1',
       }),
       numTicks: new BigNumber(20000),

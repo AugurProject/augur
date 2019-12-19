@@ -287,13 +287,51 @@ export function addScripts(flash: FlashSession) {
   });
 
   flash.addScript({
+    name: 'new-market',
+    options: [
+      {
+        name: 'yesno',
+        abbr: 'y',
+        description: 'create yes no market, default if no options are added',
+        flag: true,
+      },
+      {
+        name: 'categorical',
+        abbr: 'c',
+        description: 'create categorical market',
+        flag: true,
+      },
+      {
+        name: 'scalar',
+        abbr: 's',
+        description: 'create scalar market',
+        flag: true,
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const yesno = args.yesno as boolean;
+      const cat = args.categorical as boolean;
+      const scalar = args.scalar as boolean;
+      if (yesno)
+        await this.call('create-reasonable-yes-no-market', {});
+      if (cat)
+        await this.call('create-reasonable-categorical-market', {outcomes: "first,second,third,fourth,fifth"});
+      if (scalar)
+        await this.call('create-reasonable-scalar-market', {});
+
+      if (!yesno && !cat && !scalar)
+        await this.call('create-reasonable-yes-no-market', {});
+    }
+  });
+
+  flash.addScript({
     name: 'create-reasonable-yes-no-market',
     async call(this: FlashSession) {
       if (this.noProvider()) return;
       const user = await this.ensureUser();
 
       this.market = await user.createReasonableYesNoMarket();
-      this.log(`Created market "${this.market.address}".`);
+      this.log(`Created YesNo market "${this.market.address}".`);
       return this.market;
     },
   });
@@ -316,7 +354,7 @@ export function addScripts(flash: FlashSession) {
         .map(formatBytes32String);
 
       this.market = await user.createReasonableMarket(outcomes);
-      this.log(`Created market "${this.market.address}".`);
+      this.log(`Created Categorical market "${this.market.address}".`);
       return this.market;
     },
   });
@@ -328,7 +366,7 @@ export function addScripts(flash: FlashSession) {
       const user = await this.ensureUser();
 
       this.market = await user.createReasonableScalarMarket();
-      this.log(`Created market "${this.market.address}".`);
+      this.log(`Created Scalar market "${this.market.address}".`);
       return this.market;
     },
   });

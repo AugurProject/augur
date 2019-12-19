@@ -25,8 +25,6 @@ async function buildDeps(ethNodeUrl: string, account?: string, enableFlexSearch 
     let meshClient = new WSClient(settings.meshClientURLs[networkId]);
     const contractDependencies = new ContractDependenciesGnosis(ethersProvider, gnosisRelay, undefined, undefined, undefined, undefined, account);
 
-    // remove this line to get WSClient error
-    meshClient = undefined;
     const augur = await Augur.create(ethersProvider, contractDependencies, Addresses[networkId], new EmptyConnector(), undefined, enableFlexSearch, meshClient);
     const blockAndLogStreamerListener = BlockAndLogStreamerListener.create(ethersProvider, augur.events.getEventTopics, augur.events.parseLogs, augur.events.getEventContractAddress);
     const db = DB.createAndInitializeDB(
@@ -39,7 +37,7 @@ async function buildDeps(ethNodeUrl: string, account?: string, enableFlexSearch 
 
     return { augur, blockAndLogStreamerListener, db };
   }catch(e) {
-    console.log('WRONG', e)
+    console.log('Error initializing api', e)
   }
   return null;
 }

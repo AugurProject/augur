@@ -100,7 +100,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       numFills,
       loopLimit,
     } = trade;
-    let numTrades = Math.ceil(numFills / loopLimit);
+    let numTrades = loopLimit ? Math.ceil(numFills / loopLimit) : numFills;
     let needsApproval = false;
     let messages: Message | null = null;
 
