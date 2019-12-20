@@ -270,13 +270,51 @@ export function addScripts(flash: FlashSession) {
   });
 
   flash.addScript({
+    name: 'new-market',
+    options: [
+      {
+        name: 'yesno',
+        abbr: 'y',
+        description: 'create yes no market, default if no options are added',
+        flag: true,
+      },
+      {
+        name: 'categorical',
+        abbr: 'c',
+        description: 'create categorical market',
+        flag: true,
+      },
+      {
+        name: 'scalar',
+        abbr: 's',
+        description: 'create scalar market',
+        flag: true,
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const yesno = args.yesno as boolean;
+      const cat = args.categorical as boolean;
+      const scalar = args.scalar as boolean;
+      if (yesno)
+        await this.call('create-reasonable-yes-no-market', {});
+      if (cat)
+        await this.call('create-reasonable-categorical-market', {outcomes: "first,second,third,fourth,fifth"});
+      if (scalar)
+        await this.call('create-reasonable-scalar-market', {});
+
+      if (!yesno && !cat && !scalar)
+        await this.call('create-reasonable-yes-no-market', {});
+    }
+  });
+
+  flash.addScript({
     name: 'create-reasonable-yes-no-market',
     async call(this: FlashSession) {
       if (this.noProvider()) return;
       const user = await this.ensureUser();
 
       this.market = await user.createReasonableYesNoMarket();
-      this.log(`Created market "${this.market.address}".`);
+      this.log(`Created YesNo market "${this.market.address}".`);
       return this.market;
     },
   });
@@ -299,7 +337,7 @@ export function addScripts(flash: FlashSession) {
         .map(formatBytes32String);
 
       this.market = await user.createReasonableMarket(outcomes);
-      this.log(`Created market "${this.market.address}".`);
+      this.log(`Created Categorical market "${this.market.address}".`);
       return this.market;
     },
   });
@@ -311,7 +349,7 @@ export function addScripts(flash: FlashSession) {
       const user = await this.ensureUser();
 
       this.market = await user.createReasonableScalarMarket();
-      this.log(`Created market "${this.market.address}".`);
+      this.log(`Created Scalar market "${this.market.address}".`);
       return this.market;
     },
   });
@@ -1126,6 +1164,26 @@ export function addScripts(flash: FlashSession) {
 
       const result = await user.augur.contracts.gnosisSafeRegistry.getSafe_(args['target'] as string);
       console.log(result);
+  }});
+
+  flash.addScript({
+    name: 'get-safe-nonce',
+    options: [
+      {
+        name: 'target',
+        abbr: 't',
+        description: 'address to check registry contract for the safe address.',
+      },
+    ],
+    async call(
+      this: FlashSession,
+      args: FlashArguments
+    ): Promise<void> {
+      if (this.noProvider()) return null;
+      const user = await this.ensureUser(this.network, false);
+      const gnosisSafe = await user.augur.contracts.gnosisSafeFromAddress(args['target'] as string);
+
+      console.log((await gnosisSafe.nonce_()).toString());
   }});
 
   flash.addScript({

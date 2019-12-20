@@ -1,7 +1,7 @@
 @import (reference) '~assets/styles/shared';
 
 .OrderInfo {
-  background: @color-module-background;
+  background: @color-active-background;
   display: flex;
   flex: 1;
   flex-direction: row;
@@ -49,12 +49,12 @@
 }
 
 .PositionInfo {
-  background-color: @color-module-background;
+  background-color: @color-active-background;
   display: flex;
   flex: 1;
   flex-direction: row;
   justify-content: flex-end;
-  padding: @size-8 @size-48 @size-8 0;
+  padding: @size-8 @size-42 @size-8 0;
 
   > div {
     align-items: flex-end;
@@ -114,12 +114,10 @@
       }
 
       &.Single {
-        border: 1px solid @color-dark-grey;
         border-radius: @border-radius-default;
         border-top: 0;
         border-top-left-radius: 0;
         border-top-right-radius: 0;
-        padding-left: @size-16;
       }
     }
   }

@@ -97,6 +97,7 @@ export default class Positions extends Component<PositionsProps, PositionsState>
             showPercent
             showPlusMinus
             showColors
+            showBrackets
             size={SizeTypes.SMALL}
             value={market.myPositionsSummary && market.myPositionsSummary.totalPercent.formatted}
           />

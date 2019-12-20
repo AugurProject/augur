@@ -34,6 +34,7 @@ export const placeMarketTrade = ({
   const displayPrice = tradeInProgress.limitPrice;
   const displayAmount = tradeInProgress.numShares;
   const orderType = tradeInProgress.side === BUY ? 0 : 1;
+  const expirationTime = tradeInProgress.expirationTime ? createBigNumber(tradeInProgress.expirationTime) : undefined;
 
   const fingerprint = undefined; // TODO: get this from state
   const kycToken = undefined; // TODO: figure out how kyc tokens are going to be handled
@@ -51,7 +52,8 @@ export const placeMarketTrade = ({
     market.maxPrice,
     displayAmount,
     displayPrice,
-    userShares
+    userShares,
+    expirationTime,
   ).then(() => callback(null, null))
     .catch((err) => callback(err, null));
 };

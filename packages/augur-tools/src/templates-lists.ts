@@ -235,8 +235,8 @@ export const LIST_VALUES = {
       label: 'King',
     },
     {
-      value: 'Prince',
-      label: 'Prince',
+      value: 'Crown Prince',
+      label: 'Crown Prince',
     },
     {
       value: 'Chancellor',
@@ -1257,8 +1257,8 @@ export const LIST_VALUES = {
       label: 'ABERDEEN STANDARD INVESTMENTS SCOTTISH OPEN',
     },
     {
-      value: 'The 149th Open',
-      label: 'The 149th Open',
+      value: 'The Open',
+      label: 'The Open',
     },
     {
       value: 'Betfred British Masters hosted by Lee Westwood	',
@@ -1297,8 +1297,8 @@ export const LIST_VALUES = {
       label: 'KLM Open',
     },
     {
-      value: 'The 2020 Ryder Cup',
-      label: 'The 2020 Ryder Cup',
+      value: 'Ryder Cup',
+      label: 'Ryder Cup',
     },
     {
       value: 'Alfred Dunhill Links Championsip',
