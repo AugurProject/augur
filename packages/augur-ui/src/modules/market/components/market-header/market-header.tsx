@@ -237,7 +237,7 @@ export default class MarketHeader extends Component<
           minHeight: `${notExpandedHeight}px`,
         }
       : {};
-
+    console.log(reportingBarShowing);
     return (
       <section
         className={classNames(
@@ -378,7 +378,6 @@ export default class MarketHeader extends Component<
                 {(market.id || preview) && (
                   <CoreProperties
                     market={market}
-                    alternateView
                     reportingBarShowing={reportingBarShowing}
                   />
                 )}

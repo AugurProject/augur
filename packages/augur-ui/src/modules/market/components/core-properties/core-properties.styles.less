@@ -39,22 +39,33 @@
     > div:first-of-type {
       display: flex;
       align-items: flex-start;
+      padding: @size-12 @size-16;
 
-      > button {
-        padding: @size-12 @size-16 0 @size-32;
-      }
-  
       > div:first-of-type {
-        grid-template-columns: 215px auto;
+        grid-template-columns: 115px 1fr;
         grid-template-rows: @size-34;
+        grid-gap: @size-12 @size-20;
+        margin: 0;
 
-        > div:nth-of-type(2),
-        > div:nth-of-type(4) {
-          flex-direction: column;
-          justify-content: flex-end;
+        > div[class*="TimeLabel"] {
+          align-items: flex-end;
 
-          > span:nth-of-type(3) {
-            line-height: 160%;
+          > span:first-of-type {
+            .mono-10-bold;
+      
+            margin-bottom: @size-4;
+            flex: 1 100%;
+          }
+
+          span:nth-of-type(2) {
+            .mono-12-medium;
+      
+            color: @color-primary-text;
+          }
+      
+          span:nth-of-type(3) {
+            .mono-9-bold;
+
             margin-left: @size-4;
           }
         }
