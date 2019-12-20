@@ -19,7 +19,7 @@ import convertExponentialToDecimal from 'utils/convert-exponential';
 import { MarketData, OutcomeFormatted, OutcomeOrderBook } from 'modules/types';
 import { Getters } from '@augurproject/sdk';
 import { CancelTextButton, TextButtonFlip } from 'modules/common/buttons';
-import moment from 'moment';
+import moment, { Moment } from 'moment';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { SimpleTimeSelector } from 'modules/create-market/components/common';
 
@@ -66,7 +66,7 @@ interface FromProps {
   sortedOutcomes: OutcomeFormatted[];
   updateOrderProperty: Function;
   doNotCreateOrders: boolean;
-  expirationDate: number;
+  expirationDate?: Moment;
   updateSelectedOutcome: Function;
   clearOrderForm: Function;
   updateTradeTotalCost: Function;
@@ -99,6 +99,7 @@ interface FormState {
   advancedOption: string;
   fastForwardDays: number;
   expirationDateOption: string;
+  expirationDate?: Moment;
 }
 
 class Form extends Component<FromProps, FormState> {
@@ -578,7 +579,7 @@ class Form extends Component<FromProps, FormState> {
       [this.INPUT_TYPES.QUANTITY]: '',
       [this.INPUT_TYPES.PRICE]: '',
       [this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]: false,
-      [this.INPUT_TYPES.EXPIRATION_DATE]: '',
+      [this.INPUT_TYPES.EXPIRATION_DATE]: null,
       [this.INPUT_TYPES.SELECTED_NAV]: selectedNav,
       [this.INPUT_TYPES.EST_DAI]: '',
       errors: {
@@ -925,7 +926,7 @@ class Form extends Component<FromProps, FormState> {
                     <span>
                       {
                         convertUnixToFormattedDate(
-                          s[this.INPUT_TYPES.EXPIRATION_DATE]
+                          s[this.INPUT_TYPES.EXPIRATION_DATE] && s[this.INPUT_TYPES.EXPIRATION_DATE].unix()
                         ).formattedLocalShortWithUtcOffset
                       }
                     </span>
@@ -938,7 +939,7 @@ class Form extends Component<FromProps, FormState> {
                           updateState({
                             [this.INPUT_TYPES.EXPIRATION_DATE]: moment(
                               value
-                            ).unix(),
+                            ),
                           });
                         }}
                         currentTime={currentTimestamp}
