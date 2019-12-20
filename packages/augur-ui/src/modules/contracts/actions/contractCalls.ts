@@ -797,7 +797,8 @@ export async function placeTrade(
   maxPrice: BigNumber | string,
   displayAmount: BigNumber | string,
   displayPrice: BigNumber | string,
-  displayShares: BigNumber | string
+  displayShares: BigNumber | string,
+  expirationTime?: BigNumber,
 ): Promise<void> {
   const Augur = augurSdk.get();
   const tradeGroupId = generateTradeGroupId();
@@ -816,6 +817,7 @@ export async function placeTrade(
     displayAmount: createBigNumber(displayAmount),
     displayPrice: createBigNumber(displayPrice),
     displayShares: createBigNumber(displayShares),
+    expirationTime,
   };
   return Augur.placeTrade(params);
 }
