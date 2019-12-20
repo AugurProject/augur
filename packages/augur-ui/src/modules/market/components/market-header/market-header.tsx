@@ -365,7 +365,6 @@ export default class MarketHeader extends Component<
               })}>
                 {(market.id || preview) && (
                   <MarketHeaderBar
-                    marketStatus={market.marketStatus}
                     reportingState={market.reportingState}
                     disputeInfo={market.disputeInfo}
                     endTimeFormatted={market.endTimeFormatted}
