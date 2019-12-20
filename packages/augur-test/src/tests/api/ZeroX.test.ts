@@ -1,6 +1,6 @@
-import { ContractAPI, ACCOUNTS, loadSeedFile, defaultSeedPath } from "@augurproject/tools";
+import { ContractAPI, ACCOUNTS, loadSeedFile, defaultSeedPath } from '@augurproject/tools';
 import { BigNumber } from 'bignumber.js';
-import { makeDbMock, makeProvider } from "../../libs";
+import { makeDbMock, makeProvider } from '../../libs';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
 import { MockMeshServer, SERVER_PORT, stopServer } from '../../libs/MockMeshServer';
 import { WSClient } from '@0x/mesh-rpc-client';
@@ -8,12 +8,12 @@ import { Connectors } from '@augurproject/sdk';
 import { API } from '@augurproject/sdk/build/state/getter/API';
 import { stringTo32ByteHex } from '../../libs/Utils';
 import { ZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
-import { sleep } from "@augurproject/core/build/libraries/HelperFunctions";
-import { MockBrowserMesh } from "../../libs/MockBrowserMesh";
+import { sleep } from '@augurproject/core/build/libraries/HelperFunctions';
+import { MockBrowserMesh } from '../../libs/MockBrowserMesh';
 import { formatBytes32String } from 'ethers/utils';
 import * as _ from 'lodash';
+import { DEADBEEF_ADDRESS } from '@augurproject/tools';
 
-const DEADBEEF_ADDRESS = '0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef';
 describe('Augur API :: ZeroX :: ', () => {
   let john: ContractAPI;
   let johnDB: Promise<DB>;
@@ -64,26 +64,23 @@ describe('Augur API :: ZeroX :: ', () => {
     await (await johnDB).sync(john.augur, mock.constants.chunkSize, 0);
 
     // Place an order
-    const direction = 0;
-    const outcome = 0;
-    const displayPrice = new BigNumber(.22);
     const kycToken = DEADBEEF_ADDRESS;
     const expirationTime = new BigNumber(new Date().valueOf()).plus(10000);
     await john.placeZeroXOrder({
-      direction,
+      direction: 0,
       market: market.address,
       numTicks: await market.getNumTicks_(),
       numOutcomes: 3,
-      outcome,
-      tradeGroupId: "42",
+      outcome: 0,
+      tradeGroupId: '42',
       fingerprint: formatBytes32String('11'),
       kycToken,
       doNotCreateOrders: false,
       displayMinPrice: new BigNumber(0),
       displayMaxPrice: new BigNumber(1),
-      displayAmount: new BigNumber(1),
-      displayPrice,
-      displayShares: new BigNumber(1),
+      displayAmount: new BigNumber(10),
+      displayPrice: new BigNumber(.22),
+      displayShares: new BigNumber(100000),
       expirationTime,
     });
 
@@ -97,9 +94,9 @@ describe('Augur API :: ZeroX :: ', () => {
     const order = _.values(orders[market.address][0]['0'])[0];
     await expect(order).not.toBeUndefined();
     await expect(order.price).toEqual('0.22');
-    await expect(order.amount).toEqual('1');
-    await expect(order.kycToken).toEqual(kycToken);
-    await expect(order.expirationTimeSeconds).toEqual(expirationTime.toFixed());
+    await expect(order.amount).toEqual('10');
+    await expect(order.kycToken.toLowerCase()).toEqual(kycToken.toLowerCase());
+    await expect(order.expirationTimeSeconds.toFixed()).toEqual(expirationTime.toFixed());
   });
 
   test.skip('ZeroX Trade :: placeTrade', async () => {
@@ -145,7 +142,7 @@ describe('Augur API :: ZeroX :: ', () => {
 
     const outcome = 1;
     const price = new BigNumber(0.4);
-    const amount = new BigNumber(10);
+    const amount = new BigNumber(100);
     const zero = new BigNumber(0);
 
     // No orders and a do not create orders param means nothing happens
@@ -206,8 +203,8 @@ describe('Augur API :: ZeroX :: ', () => {
       true
     );
 
-    await expect(simulationData.tokensDepleted).toEqual(fillAmount.multipliedBy(fillPrice));
-    await expect(simulationData.sharesFilled).toEqual(fillAmount);
     await expect(simulationData.numFills).toEqual(new BigNumber(1));
-  });
+    await expect(simulationData.sharesFilled).toEqual(fillAmount);
+    await expect(simulationData.tokensDepleted).toEqual(fillAmount.multipliedBy(fillPrice));
+  }) ;
 });
