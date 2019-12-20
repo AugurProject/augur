@@ -21,8 +21,16 @@
   > span:last-of-type {
     flex-flow: row nowrap;
 
+    > span:last-of-type {
+      margin-top: 0;
+    }
+
     @media @breakpoint-mobile {
       flex-flow: column nowrap;
+
+      > span:last-of-type {
+        margin-top: @size-3;
+      }
     }
   }
 }

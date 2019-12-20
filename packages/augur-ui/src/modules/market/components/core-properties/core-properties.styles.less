@@ -36,10 +36,22 @@
   }
 
   &.ReportingBarShowing {
+    position: relative;
+
     > div:first-of-type {
       display: flex;
       align-items: flex-start;
       padding: @size-12 @size-16;
+
+      &.ShowExtraDetails {
+        background: @color-module-background;
+        border-bottom: 1px solid @color-dark-grey;
+        border-left: 1px solid @color-dark-grey;
+        border-right: 1px solid @color-dark-grey;
+        box-shadow: 0 @size-8 @size-8 @color-dark-grey;
+        position: absolute;
+        z-index: @mask-above;
+      }
 
       > div:first-of-type {
         grid-template-columns: 115px 1fr;

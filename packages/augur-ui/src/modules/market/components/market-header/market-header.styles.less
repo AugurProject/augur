@@ -234,18 +234,25 @@ div.Toggle {
         .text-12-bold;
   
         color: @color-primary-text;
+        flex: 1;
         padding: 0;
         margin: 0;
         display: -webkit-box;
         -webkit-line-clamp: 1;
         -webkit-box-orient: vertical;
         overflow: hidden;
+        text-align: left;
         text-overflow: ellipsis;
+      }
+
+      > section {
+        margin: 0 @size-8 0;
       }
     }
 
     > button:first-of-type {
       flex: 0;
+      margin-left: @size-16;
 
       > svg {
         height: @size-6;

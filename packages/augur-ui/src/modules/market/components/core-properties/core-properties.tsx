@@ -19,7 +19,10 @@ interface CorePropertiesProps {
 }
 
 // TODO: Get market 24 hour volume, currently just using volume
-const CoreProperties: React.FC<CorePropertiesProps> = ({ market, reportingBarShowing }) => {
+const CoreProperties: React.FC<CorePropertiesProps> = ({
+  market,
+  reportingBarShowing,
+}) => {
   const [showExtraDetails, setShowExtraDetails] = useState(false);
 
   return (
@@ -28,14 +31,16 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({ market, reportingBarSho
         [Styles.ReportingBarShowing]: reportingBarShowing,
       })}
     >
-      <div>
+      <div
+        className={classNames({ [Styles.ShowExtraDetails]: showExtraDetails })}
+      >
         <div>
           <PropertyLabel
             label="Total Volume"
             value={
-              (market.volumeFormatted
+              market.volumeFormatted
                 ? market.volumeFormatted.full
-                : formatDai(0).full)
+                : formatDai(0).full
             }
           />
           {reportingBarShowing && (
@@ -56,9 +61,9 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({ market, reportingBarSho
               <PropertyLabel
                 label="Total Dispute Stake"
                 value={
-                  (market.disputeInfo
+                  market.disputeInfo
                     ? formatAttoRep(market.disputeInfo.stakeCompletedTotal).full
-                    : formatRep(0).full)
+                    : formatRep(0).full
                 }
               />
               <TimeLabel
@@ -72,17 +77,17 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({ market, reportingBarSho
               <PropertyLabel
                 label="Open Interest"
                 value={
-                  (market.openInterestFormatted
+                  market.openInterestFormatted
                     ? market.openInterestFormatted.full
-                    : formatDai(0).full)
+                    : formatDai(0).full
                 }
               />
               <PropertyLabel
                 label="24hr Volume"
                 value={
-                  (market.volumeFormatted
+                  market.volumeFormatted
                     ? market.volumeFormatted.full
-                    : formatDai(0).full)
+                    : formatDai(0).full
                 }
               />
               <PropertyLabel
@@ -99,10 +104,20 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({ market, reportingBarSho
                       The trading settlement fee is a combination of the Market
                       Creator Fee (
                       <b>
-                        {formatPercent(Number(market.marketCreatorFeeRate) * 100).full}
+                        {
+                          formatPercent(
+                            Number(market.marketCreatorFeeRate) * 100
+                          ).full
+                        }
                       </b>
                       ) and the Reporting Fee (
-                      <b>{formatPercent(Number(market.reportingFeeRate) * 100).full}</b>)
+                      <b>
+                        {
+                          formatPercent(Number(market.reportingFeeRate) * 100)
+                            .full
+                        }
+                      </b>
+                      )
                     </p>
                   </>
                 }

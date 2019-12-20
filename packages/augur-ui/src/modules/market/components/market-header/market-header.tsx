@@ -104,15 +104,15 @@ export default class MarketHeader extends Component<
 
   componentDidMount() {
     const notExpandedHeight =
-        !this.state.headerCollapsed &&
-        !!this.refNotCollapsed &&
-        this.refNotCollapsed.firstChild.clientHeight;
+      !this.state.headerCollapsed &&
+      !!this.refNotCollapsed &&
+      this.refNotCollapsed.firstChild.clientHeight;
     this.updateDetailsHeight();
 
     if (notExpandedHeight) {
       this.setState({ notExpandedHeight });
     }
-    
+
     window.addEventListener('click', e => {
       const ClickedOnExpandedContent = e
         .composedPath()
@@ -206,7 +206,7 @@ export default class MarketHeader extends Component<
       showProperties,
       detailsHeight,
       showCopied,
-      notExpandedHeight
+      notExpandedHeight,
     } = this.state;
     const detailsTooLong =
       market.details && detailsHeight > OVERFLOW_DETAILS_LENGTH;
@@ -231,13 +231,12 @@ export default class MarketHeader extends Component<
     const bigTitle =
       !!this.refTitle && this.refTitle.firstChild.clientHeight > 60;
     const expandedDetails = detailsTooLong && showReadMore;
-    
+
     const containerStyle = notExpandedHeight
       ? {
           minHeight: `${notExpandedHeight}px`,
         }
       : {};
-    console.log(reportingBarShowing);
     return (
       <section
         className={classNames(
@@ -360,9 +359,11 @@ export default class MarketHeader extends Component<
                 [Styles.ShowTutorial]: showTutorialData,
               })}
             >
-              <div className={classNames(Styles.Properties, {
-                [Styles.HideProperties]: !showProperties
-              })}>
+              <div
+                className={classNames(Styles.Properties, {
+                  [Styles.HideProperties]: !showProperties,
+                })}
+              >
                 {(market.id || preview) && (
                   <MarketHeaderBar
                     reportingState={market.reportingState}
@@ -381,16 +382,16 @@ export default class MarketHeader extends Component<
                     reportingBarShowing={reportingBarShowing}
                   />
                 )}
-                 <button
-                    onClick={e => {
-                      e.stopPropagation();
-                      this.toggleShowProperties();
-                    }}
-                  >
-                    {!showProperties
-                      ? ChevronDown({ stroke: '#D7DDE0' })
-                      : ChevronUp()}
-                  </button>
+                <button
+                  onClick={e => {
+                    e.stopPropagation();
+                    this.toggleShowProperties();
+                  }}
+                >
+                  {!showProperties
+                    ? ChevronDown({ stroke: '#D7DDE0' })
+                    : ChevronUp()}
+                </button>
               </div>
               {showTutorialData && (
                 <TutorialPopUp
@@ -420,7 +421,17 @@ export default class MarketHeader extends Component<
           <button
             onClick={() => this.setState({ headerCollapsed: !headerCollapsed })}
           >
-            {headerCollapsed && <h1>{description}</h1>} {TwoArrowsOutline}
+            {headerCollapsed && (
+              <>
+                <h1>{description}</h1>
+                <MarketHeaderBar
+                  reportingState={market.reportingState}
+                  disputeInfo={market.disputeInfo}
+                  endTimeFormatted={market.endTimeFormatted}
+                />
+              </>
+            )}
+            {TwoArrowsOutline}
           </button>
         </div>
       </section>
