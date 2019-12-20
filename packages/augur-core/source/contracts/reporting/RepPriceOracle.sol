@@ -99,8 +99,7 @@ contract RepPriceOracle is IRepPriceOracle, Initializable {
 
     function initializeUniverse(IV2ReputationToken _reputationToken) private {
         exchangeData[address(_reputationToken)].exchange = getOrCreateUniswapExchange(_reputationToken);
-        uint256 _initialPrice = getInitialPrice(_reputationToken);
-        exchangeData[address(_reputationToken)].price = _initialPrice;
+        exchangeData[address(_reputationToken)].price = getInitialPrice(_reputationToken);
         exchangeData[address(_reputationToken)].blockNumber = block.number;
     }
 
