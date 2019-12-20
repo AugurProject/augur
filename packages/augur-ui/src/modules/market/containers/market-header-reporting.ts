@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { selectMarket } from 'modules/markets/selectors/market';
-import MarketHeaderReporting from 'modules/market/components/market-header/market-header-reporting';
+import { MarketHeaderReporting } from 'modules/market/components/market-header/market-header-reporting';
 import { sendFinalizeMarket } from 'modules/markets/actions/finalize-market';
 import { selectCurrentTimestampInSeconds } from 'store/select-state';
 import { updateModal } from 'modules/modal/actions/update-modal';
@@ -25,7 +25,7 @@ const mapStateToProps = (state, ownProps) => {
     isDesignatedReporter: ownProps.preview
       ? market.designatedReporterType === DESIGNATED_REPORTER_SELF
       : isSameAddress(market.designatedReporter, state.loginAccount.address),
-    tentativeWinner: disputeInfoStakes && disputeInfoStakes.find(stake => stake.tentativeWinning),
+    tentativeWinner: disputeInfoStakes && disputeInfoStakes.find(stake => stake.tentativeWinning) || {},
     canClaimProceeds:
       state.accountPositions[ownProps.marketId] &&
       state.accountPositions[ownProps.marketId].tradingPositionsPerMarket &&
