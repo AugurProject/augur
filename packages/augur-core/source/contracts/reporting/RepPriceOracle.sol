@@ -56,13 +56,12 @@ contract RepPriceOracle is IRepPriceOracle, Initializable {
             return _exchangeData;
         }
 
-        IUniswapV2 _exchange = _exchangeData.exchange;
         // No fee has ever been calculated in this universe and this is being called in a view context. Just return the data with the initial price.
-        if (_exchange == IUniswapV2(0)) {
+        if (_exchangeData.price == 0) {
             _exchangeData.price = getInitialPrice(_reputationToken);
             return _exchangeData;
         }
-        (uint256 _token0Amount, uint256 _token1Amount) = _exchange.getReservesCumulative();
+        (uint256 _token0Amount, uint256 _token1Amount) = _exchangeData.exchange.getReservesCumulative();
         if (_token0Amount == 0 || _token1Amount == 0) {
             return _exchangeData;
         }
