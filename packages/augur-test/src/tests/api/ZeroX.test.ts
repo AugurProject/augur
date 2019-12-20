@@ -99,42 +99,44 @@ describe('Augur API :: ZeroX :: ', () => {
     await expect(order.expirationTimeSeconds.toFixed()).toEqual(expirationTime.toFixed());
   });
 
-  test.skip('ZeroX Trade :: placeTrade', async () => {
+  test('ZeroX Trade :: placeTrade', async () => {
     const market1 = await john.createReasonableYesNoMarket();
 
     const outcome = 1;
+
+    await (await johnDB).sync(john.augur, mock.constants.chunkSize, 0);
 
     await john.placeBasicYesNoZeroXTrade(
       0,
       market1.address,
       outcome,
-      new BigNumber(1),
-      new BigNumber(0.4),
-      new BigNumber(0),
-      new BigNumber(1000000000000000)
-    );
-
-    await mary.placeBasicYesNoZeroXTrade(
-      1,
-      market1.address,
-      outcome,
-      new BigNumber(0.5),
+      new BigNumber(20),
       new BigNumber(0.4),
       new BigNumber(0),
       new BigNumber(1000000000000000)
     );
 
     await (await johnDB).sync(john.augur, mock.constants.chunkSize, 0);
-    await (await maryDB).sync(mary.augur, mock.constants.chunkSize, 0);
+
+    await mary.placeBasicYesNoZeroXTrade(
+      1,
+      market1.address,
+      outcome,
+      new BigNumber(10),
+      new BigNumber(0.4),
+      new BigNumber(0),
+      new BigNumber(1000000000000000)
+    );
+
+    await (await johnDB).sync(john.augur, mock.constants.chunkSize, 0);
 
     const johnOrders = await john.augur.getZeroXOrders({marketId: market1.address, outcome});
-    const maryOrders = await mary.augur.getZeroXOrders({marketId: market1.address, outcome});
 
     const johnShares = await john.getNumSharesInMarket(market1, new BigNumber(outcome));
     const maryShares = await mary.getNumSharesInMarket(market1, new BigNumber(0));
 
-    await expect(johnShares.toNumber()).toEqual(10 ** 16 / 2);
-    await expect(maryShares.toNumber()).toEqual(10 ** 16 / 2);
+    await expect(johnShares.toNumber()).toEqual(10 ** 17);
+    await expect(maryShares.toNumber()).toEqual(10 ** 17);
   });
 
   test('Trade :: simulateTrade', async () => {
