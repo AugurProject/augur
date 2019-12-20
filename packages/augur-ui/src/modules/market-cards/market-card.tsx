@@ -216,7 +216,38 @@ export default class MarketCard extends React.Component<
         className={classNames(Styles.MarketCard, { [Styles.Loading]: loading })}
       >
         <>
-          <div>{InfoIcons}</div>
+        <div>
+            {reportingState === REPORTING_STATE.PRE_REPORTING && (
+              <>
+                <LabelValue
+                  label='Total Volume'
+                  value={volumeFormatted.formatted}
+                  condensed
+                />
+                {!condensed && (
+                  <LabelValue
+                    label='Open Interest'
+                    value={openInterestFormatted.formatted}
+                    condensed
+                  />
+                )}
+              </>
+            )}
+            {reportingState !== REPORTING_STATE.PRE_REPORTING && (
+              <LabelValue
+                condensed
+                label='Total Dispute Stake'
+                value={formatAttoRep(disputeInfo.stakeCompletedTotal).formatted}
+              />
+            )}
+            <MarketProgress
+              reportingState={reportingState}
+              currentTime={currentAugurTimestamp}
+              endTimeFormatted={endTimeFormatted}
+              reportingWindowEndTime={disputeInfo.disputeWindow.endTime}
+              alignRight
+            />
+          </div>
           <div>
             {marketStatus === MARKET_REPORTING && (
               <InReportingLabel
@@ -250,38 +281,6 @@ export default class MarketCard extends React.Component<
                 {Person} {COPY_AUTHOR}
               </div>
             </DotSelection>
-          </div>
-          <div>
-            {reportingState === REPORTING_STATE.PRE_REPORTING && (
-              <>
-                <LabelValue
-                  label='Total Volume'
-                  value={volumeFormatted.formatted}
-                  condensed
-                />
-                {!condensed && (
-                  <LabelValue
-                    label='Open Interest'
-                    value={openInterestFormatted.formatted}
-                    condensed
-                  />
-                )}
-              </>
-            )}
-            {reportingState !== REPORTING_STATE.PRE_REPORTING && (
-              <LabelValue
-                condensed
-                label='Total Dispute Stake'
-                value={formatAttoRep(disputeInfo.stakeCompletedTotal).formatted}
-              />
-            )}
-            <MarketProgress
-              reportingState={reportingState}
-              currentTime={currentAugurTimestamp}
-              endTimeFormatted={endTimeFormatted}
-              reportingWindowEndTime={disputeInfo.disputeWindow.endTime}
-              alignRight
-            />
           </div>
 
           <MarketTitle id={id} />
@@ -329,6 +328,8 @@ export default class MarketCard extends React.Component<
             />
           )}
         </>
+        <div>{InfoIcons}</div>
+
       </div>
     );
   }

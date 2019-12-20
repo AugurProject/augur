@@ -8,7 +8,11 @@
   width: 100%;
 
   > li {
-    .mono-10-medium;
+    .mono-10-bold;
+
+    > button {
+      .mono-10-bold;
+    }
 
     align-items: center;
     color: @color-primary-text;
@@ -23,7 +27,7 @@
     }
 
     &:first-child {
-      .mono-10-bold;
+      .mono-11-bold;
 
       max-width: 100%;
       overflow: hidden;
@@ -74,12 +78,28 @@
   border: 0;
 }
 
+
+div.SingleRow3 {
+  background-color: @color-active-background;
+  padding: 0 @size-16;
+  border: 0;
+
+  > div,
+  > div:first-of-type {
+    padding: @size-4 0;
+    border-bottom: 0;
+  }
+}
+
 .SingleRow {
   height: @size-21;
   max-height: @size-21;
   min-height: @size-21;
   padding: 0 @size-16;
-  border-bottom: 0.0625rem solid @color-dark-grey;
+
+  > div:first-of-type {
+    border-bottom: 0.0625rem solid @color-dark-grey;
+  }
 }
 
 .BottomBorder {
@@ -134,23 +154,12 @@
       position: relative;
 
       > button {
-        height: 1.25rem;
         left: 100%;
         margin-left: 0.375rem;
         position: absolute;
-        width: 1.5rem;
+        width: @size-20;
       }
     }
-  }
-}
-
-.SingleRow3 {
-  background-color: @color-module-background;
-  padding: 0 @size-16;
-  border: 0;
-
-  > div {
-    padding: @size-4 0;
   }
 }
 

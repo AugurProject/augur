@@ -4600,6 +4600,9 @@ export const TEMPLATES = {
                 {
                   text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
                 },
+                {
+                  text: `If the country named in the market question has multiple people with the same title, the market should resolve as 'Invalid'`,
+                },
               ],
             },
           },
@@ -5049,7 +5052,7 @@ export const TEMPLATES = {
                   text: `Opening date and time is determined by the opening price of the market trading pair on tradingview.com.`,
                 },
                 {
-                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is down, you must find the opening price on Coinbase's exchange by using the hourly candle. If you are not in the timezone UTC-0, you must ensure that you are looking at the equivilant of 00:00 UTC-0 on the hourly at the date specified in the market question.`,
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
                 },
               ],
             },
@@ -5097,7 +5100,7 @@ export const TEMPLATES = {
                   text: `Opening date and time is determined by the opening price of the market trading pair on tradingview.com.`,
                 },
                 {
-                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is down, you must find the opening price on Coinbase's exchange by using the hourly candle. If you are not in the timezone UTC-0, you must ensure that you are looking at the equivilant of 00:00 UTC-0 on the hourly at the date specified in the market question.`,
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
                 },
               ],
             },
@@ -5135,7 +5138,7 @@ export const TEMPLATES = {
                   text: `Opening date and time is determined by the opening price of the market trading pair on tradingview.com.`,
                 },
                 {
-                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is down, you must find the opening price on Coinbase's exchange by using the hourly candle. If you are not in the timezone UTC-0, you must ensure that you are looking at the equivilant of 00:00 UTC-0 on the hourly at the date specified in the market question.`,
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
                 },
               ],
             },
@@ -5182,7 +5185,7 @@ export const TEMPLATES = {
                   text: `Opening date and time is determined by the opening price of the market trading pair on tradingview.com.`,
                 },
                 {
-                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is down, you must find the opening price on Coinbase's exchange by using the hourly candle. If you are not in the timezone UTC-0, you must ensure that you are looking at the equivilant of 00:00 UTC-0 on the hourly at the date specified in the market question.`,
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
                 },
               ],
             },
@@ -5230,7 +5233,7 @@ export const TEMPLATES = {
                   text: `Opening date and time is determined by the opening price of the market trading pair on tradingview.com.`,
                 },
                 {
-                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is down, you must find the opening price on Coinbase's exchange by using the hourly candle. If you are not in the timezone UTC-0, you must ensure that you are looking at the equivilant of 00:00 UTC-0 on the hourly at the date specified in the market question.`,
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
                 },
               ],
             },
@@ -5268,7 +5271,7 @@ export const TEMPLATES = {
                   text: `Opening date and time is determined by the opening price of the market trading pair on tradingview.com.`,
                 },
                 {
-                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is down, you must find the opening price on Coinbase's exchange by using the hourly candle. If you are not in the timezone UTC-0, you must ensure that you are looking at the equivilant of 00:00 UTC-0 on the hourly at the date specified in the market question.`,
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
                 },
               ],
             },
@@ -5315,7 +5318,7 @@ export const TEMPLATES = {
                   text: `Opening date and time is determined by the opening price of the market trading pair on tradingview.com.`,
                 },
                 {
-                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is down, you must find the opening price on Coinbase's exchange by using the hourly candle. If you are not in the timezone UTC-0, you must ensure that you are looking at the equivilant of 00:00 UTC-0 on the hourly at the date specified in the market question.`,
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
                 },
               ],
             },
@@ -5363,7 +5366,7 @@ export const TEMPLATES = {
                   text: `Opening date and time is determined by the opening price of the market trading pair on tradingview.com.`,
                 },
                 {
-                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is down, you must find the opening price on Coinbase's exchange by using the hourly candle. If you are not in the timezone UTC-0, you must ensure that you are looking at the equivilant of 00:00 UTC-0 on the hourly at the date specified in the market question.`,
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
                 },
               ],
             },
@@ -5401,7 +5404,7 @@ export const TEMPLATES = {
                   text: `Opening date and time is determined by the opening price of the market trading pair on tradingview.com.`,
                 },
                 {
-                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is down, you must find the opening price on Coinbase's exchange by using the hourly candle. If you are not in the timezone UTC-0, you must ensure that you are looking at the equivilant of 00:00 UTC-0 on the hourly at the date specified in the market question.`,
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
                 },
               ],
             },

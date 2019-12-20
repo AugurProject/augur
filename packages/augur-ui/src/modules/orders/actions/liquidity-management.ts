@@ -160,7 +160,7 @@ export const sendLiquidityOrder = (options: any) => async (
   const orderType = order.type === BUY ? 0 : 1;
   const { orderEstimate } = order;
   const sendOrder = async () => {
-    try {
+   try {
       createLiquidityOrder({
         ...order,
         orderType,
@@ -177,6 +177,8 @@ export const sendLiquidityOrder = (options: any) => async (
 
   if (bnAllowance.lte(0) || bnAllowance.lte(createBigNumber(orderEstimate))) {
     await approveToTrade();
+    sendOrder();
+  } else {
     sendOrder();
   }
 };

@@ -10,11 +10,11 @@
   display: flex;
   flex-flow: row nowrap;
   padding-left: @size-16;
-  transition: none;
+  color: @color-secondary-text;
   width: auto;
 
   > span {
-    .mono-10;
+    .text-10;
 
     color: @color-secondary-text;
     margin-right: 0.25rem;
@@ -26,7 +26,7 @@
     width: 1rem;
 
     > g {
-      fill: @color-secondary-text;
+      fill: @color-primary-text;
     }
   }
 
@@ -39,7 +39,7 @@
     padding: 0;
 
     &:focus {
-      border-color: transparent;
+      border: 0;
     }
 
     &::placeholder {
@@ -59,6 +59,8 @@
 .ContainerFocused {
   flex: 1;
   width: 100%;
+  max-height: @size-25;
+  align-items: center;
 
   > button {
     display: flex;
@@ -66,11 +68,13 @@
 }
 
 .isFocused {
-  background: @color-dark-grey;
-  transition: background 0.25s ease-in;
+  background: @color-module-background;
+  border: 1px solid @color-secondary-action-outline;
+  border-radius: @border-radius-default;
   width: 100%;
   margin-left: 0;
   padding: @size-8 @size-12;
+  transition: background 0.25s ease-in;
 
   > span {
     display: none;

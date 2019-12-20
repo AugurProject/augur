@@ -18,7 +18,7 @@
 }
 
 .InfoParent {
-  background-color: fade(@color-module-background, 40%);
+  background-color: @color-active-background;
   display: flex;
   flex: 1;
 
@@ -28,14 +28,16 @@
     flex: 1;
     flex-direction: column;
     justify-content: flex-end;
-    padding: @size-8 @size-42 @size-8 @size-16;
+    padding: @size-8 @size-26 @size-8 0;
+    border-top: 1px solid @color-dark-grey;
+    margin: 0 @size-16;
 
     @media @breakpoint-mobile {
       align-items: unset;
     }
 
     > div {
-      max-width: 12rem;
+      max-width: 300px;
     }
 
     > span {

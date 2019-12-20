@@ -1,7 +1,7 @@
 @import (reference) '~assets/styles/shared';
 
 .FilledOrders {
-  background-color: @color-secondary-action;
+  background-color: @color-active-background;
   cursor: default;
   display: flex;
   flex-direction: column;
@@ -30,9 +30,9 @@
     }
 
     > ul:first-of-type {
-      .mono-9-bold;
+      .mono-10-bold;
 
-      color: @color-inactive-text;
+      color: @color-secondary-text;
       justify-content: flex-end;
       padding: @size-6 @size-24;
       text-transform: uppercase;
@@ -56,12 +56,12 @@
     }
 
     > ul:not(:first-of-type) {
-      border-top: 1px solid fade(@color-dark-grey, 50%);
+      border-top: 1px solid @color-dark-grey;
       justify-content: flex-end;
       margin: 0 @size-24;
 
       > li {
-        .mono-9;
+        .mono-10-medium;
 
         align-items: center;
         color: @color-primary-text;
@@ -69,10 +69,6 @@
         justify-content: flex-end;
         padding: @size-4 0;
         text-align: right;
-
-        &:last-of-type {
-          padding-right: @size-8;
-        }
 
         &:nth-of-type(2) {
           font-family: @roboto-mono;
@@ -100,7 +96,6 @@
       padding: 0 @size-16;
 
       > div {
-        border-top: 1px solid @color-dark-grey;
         display: block;
         padding-bottom: @size-10;
         padding-top: @size-10;
