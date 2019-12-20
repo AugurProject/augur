@@ -41,9 +41,9 @@ export function formatDate(d, timezone: string = null): DateFormattedObject {
   const date: Date = d instanceof Date ? d : new Date(0);
 
   // UTC Time Formatting
-  const utcTime: Array<number> = [date.getUTCHours(), date.getUTCMinutes()];
-  const utcTimeTwelve: Array<string> = getTwelveHourTime(utcTime);
-  const utcTimeWithSeconds: Array<string> = [
+  const utcTime: number[] = [date.getUTCHours(), date.getUTCMinutes()];
+  const utcTimeTwelve: string[] = getTwelveHourTime(utcTime);
+  const utcTimeWithSeconds: string[] = [
     ('0' + date.getUTCHours()).slice(-2),
     ('0' + date.getUTCMinutes()).slice(-2),
     ('0' + date.getUTCSeconds()).slice(-2),
@@ -51,9 +51,9 @@ export function formatDate(d, timezone: string = null): DateFormattedObject {
   const utcAMPM: string = ampm(('0' + date.getUTCHours()).slice(-2));
 
   // Locat Time Formatting
-  const local24hrTimeWithSeconds: Array<number> = [date.getHours(), date.getMinutes(), date.getSeconds()];
+  const local24hrTimeWithSeconds: number[] = [date.getHours(), date.getMinutes(), date.getSeconds()];
   const localAMPM: string = ampm(local24hrTimeWithSeconds[0].toString());
-  const localTimeTwelve: Array<string> = getTwelveHourTime(local24hrTimeWithSeconds);
+  const localTimeTwelve: string[] = getTwelveHourTime(local24hrTimeWithSeconds);
   const localOffset: number = (date.getTimezoneOffset() / 60) * -1;
   const localOffsetFormatted: string =
     localOffset > 0 ? `+${localOffset}` : localOffset.toString();
@@ -124,8 +124,8 @@ function convertToTwelveHour(value: number): number {
   return hour || 12;
 }
 
-function getTwelveHourTime(time: Array<number>): Array<string> {
-  const values: Array<string> = new Array(time.length);
+function getTwelveHourTime(time: number[]): string[] {
+  const values: string[] = new Array(2);
   values[0] = convertToTwelveHour(time[0]).toString();
   values[1] = time[1].toString();
   if (time[1] < 10) values[1] = '0' + time[1];
@@ -321,9 +321,9 @@ export function getOneWeekInFutureTimestamp(currentUnixTimestamp) {
 export function getFullDaysBetween(
   startUnixTimestamp: number,
   endUnixTimestamp: number,
-): Array<string> {
+): string[] {
   const getDays = getDaysRemaining(endUnixTimestamp, startUnixTimestamp);
-  const daysBetween: Array<string> = [];
+  const daysBetween: string[] = [];
   for (let i = 1; i < getDays; i++) {
     const date = moment(startUnixTimestamp * 1000).utc().startOf('day').add(i, "days");
     daysBetween.push(`${shortMonths[date.utc().month()]} ${date.utc().format("DD")}`);

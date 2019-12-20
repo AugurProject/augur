@@ -21,6 +21,7 @@ import makeQuery from 'modules/routes/helpers/make-query';
 import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names';
 import { addPendingOrder } from 'modules/orders/actions/pending-orders-management';
 import { orderSubmitted } from 'services/analytics/helpers';
+import { AppState } from 'store';
 
 const getMarketPath = id => {
   return {
@@ -31,11 +32,11 @@ const getMarketPath = id => {
   };
 };
 
-const mapStateToProps = (state, ownProps) => {
-  const { authStatus, loginAccount, appStatus, accountPositions, userOpenOrders } = state;
+const mapStateToProps = (state: AppState, ownProps) => {
+  const { authStatus, loginAccount, appStatus, accountPositions, userOpenOrders, blockchain } = state;
   const marketId = ownProps.market.id;
   const hasHistory = !!accountPositions[marketId] || !!userOpenOrders[marketId];
-  const { 
+  const {
     gnosisEnabled: Gnosis_ENABLED,
     gnosisStatus,
   } = appStatus;
@@ -50,6 +51,7 @@ const mapStateToProps = (state, ownProps) => {
     isLogged: authStatus.isLogged,
     Gnosis_ENABLED,
     gnosisStatus,
+    currentTimestamp: blockchain.currentAugurTimestamp,
   };
 };
 

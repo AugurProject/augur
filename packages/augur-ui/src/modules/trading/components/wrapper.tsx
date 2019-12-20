@@ -23,12 +23,13 @@ import { MarketData, OutcomeFormatted, OutcomeOrderBook } from 'modules/types';
 import { calculateTotalOrderValue } from 'modules/trades/helpers/calc-order-profit-loss-percents';
 import { formatDai } from 'utils/format-number';
 import { GnosisSafeState } from '@augurproject/gnosis-relay-api';
+import { Moment } from 'moment';
 
 export interface SelectedOrderProperties {
   orderPrice: string;
   orderQuantity: string;
   selectedNav: string;
-  expirationDate?: number;
+  expirationDate?: Moment;
 }
 
 interface WrapperProps {
@@ -57,6 +58,7 @@ interface WrapperProps {
   isLogged: boolean;
   initialLiquidity?: boolean;
   tradingTutorial?: boolean;
+  currentTimestamp: number;
 }
 
 interface WrapperState {
@@ -67,7 +69,7 @@ interface WrapperState {
   gasCostEst: string;
   selectedNav: string;
   doNotCreateOrders: boolean;
-  expirationDate: number;
+  expirationDate: Moment;
   trade: any;
 }
 
@@ -115,7 +117,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       selectedNav: props.selectedOrderProperties.selectedNav || BUY,
       doNotCreateOrders:
         props.selectedOrderProperties.doNotCreateOrders || false,
-      expirationDate: props.selectedOrderProperties.expirationDate || 0,
+      expirationDate: props.selectedOrderProperties.expirationDate || null,
       trade: Wrapper.getDefaultTrade(props),
     };
 
@@ -174,7 +176,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
   clearOrderForm(wholeForm = true) {
     const trade = Wrapper.getDefaultTrade(this.props);
     const expirationDate =
-      this.props.selectedOrderProperties.expirationDate || 0;
+      this.props.selectedOrderProperties.expirationDate || null;
     const updatedState: any = wholeForm
       ? {
           orderPrice: '',
@@ -313,10 +315,17 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
 
   placeMarketTrade(market, selectedOutcome, s) {
     this.props.orderSubmitted(s.selectedNav, market.id);
+    let trade = s.trade;
+    if (this.state.expirationDate) {
+      trade = {
+        ...trade,
+        expirationTime: (this.state.expirationDate.unix() - this.props.currentTimestamp)
+      }
+    }
     this.props.onSubmitPlaceTrade(
       market.id,
       selectedOutcome.id,
-      s.trade,
+      trade,
       s.doNotCreateOrders,
       (err, result) => {
         // onSent/onFailed CB
