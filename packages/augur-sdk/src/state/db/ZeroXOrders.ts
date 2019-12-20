@@ -8,6 +8,7 @@ import { OrderInfo, OrderEvent, BigNumber } from "@0x/mesh-rpc-client";
 import { getAddress } from 'ethers/utils/address';
 import { defaultAbiCoder, ParamType } from 'ethers/utils';
 import { SignedOrder } from '@0x/types';
+import { BigNumber as BN} from 'ethers/utils';
 
 // This database clears its contents on every sync.
 // The primary purposes for even storing this data are:
@@ -63,6 +64,7 @@ export interface StoredOrder extends OrderData {
   orderHash: string,
   signedOrder: StoredSignedOrder,
   amount: string,
+  numberAmount: BigNumber,
   orderCreator: string,
 }
 
@@ -169,6 +171,7 @@ export class ZeroXOrders extends AbstractTable {
       kycToken: augurOrderData.kycToken,
       orderHash: order.orderHash,
       amount: order.fillableTakerAssetAmount.toFixed(),
+      numberAmount: order.fillableTakerAssetAmount,
       orderCreator: signedOrder.makerAddress,
       signedOrder: {
         signature: signedOrder.signature,
@@ -190,22 +193,34 @@ export class ZeroXOrders extends AbstractTable {
   }
 
   parseAssetData(assetData: string): OrderData {
-    const decoded = defaultAbiCoder.decode(erc1155AssetDataAbi, assetData);
+    // Remove the first 10 characters because assetData is prefixed in 0x, and then contains a selector.
+    // Drop the selector and add back to 0x prefix so the AbiDecoder will treat it properly as hex.
+    const decoded = defaultAbiCoder.decode(erc1155AssetDataAbi, `0x${assetData.slice(10)}`);
+    const address = decoded[0] as string;
+    const ids = decoded[1] as BigNumber[];
+    const values = decoded[2] as BigNumber[];
+    const callbackData = decoded[3] as string;
+    const kycToken = getAddress(`0x${assetData.substr(-40, assetData.length)}`);
 
-    console.log(decoded);
-
-    if (decoded.ids.length !== 1) {
+    if (ids.length !== 1) {
       throw new Error("More than one ID passed into 0x order");
     }
 
-
-    const tokenid = decoded.ids[0];
+    // No idea why the BigNumber instance returned here just wont serialize to hex
+    const tokenid = new BN(`${ids[0].toString()}`).toHexString().substr(2);
+    // From ZeroXTrade.sol
+    //  assembly {
+    //      _market := shr(96, and(_tokenId, 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF000000000000000000000000))
+    //      _price := shr(16,  and(_tokenId, 0x0000000000000000000000000000000000000000FFFFFFFFFFFFFFFFFFFF0000))
+    //      _outcome := shr(8, and(_tokenId, 0x000000000000000000000000000000000000000000000000000000000000FF00))
+    //      _type :=           and(_tokenId, 0x00000000000000000000000000000000000000000000000000000000000000FF)
+    //  }
     return {
       market: getAddress(`0x${tokenid.substr(0, 40)}`),
       price: `0x${tokenid.substr(40, 20)}`,
       outcome: `0x${tokenid.substr(60, 2)}`,
       orderType: `0x${tokenid.substr(62, 2)}`,
-      kycToken: getAddress(`0x${assetData.substr(-40, assetData.length)}`),
-    }
+      kycToken,
+    };
   }
 }

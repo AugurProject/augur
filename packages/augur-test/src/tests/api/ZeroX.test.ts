@@ -13,6 +13,7 @@ import { MockBrowserMesh } from "../../libs/MockBrowserMesh";
 import { formatBytes32String } from 'ethers/utils';
 import * as _ from 'lodash';
 
+const DEADBEEF_ADDRESS = '0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef';
 describe('Augur API :: ZeroX :: ', () => {
   let john: ContractAPI;
   let johnDB: Promise<DB>;
@@ -66,7 +67,7 @@ describe('Augur API :: ZeroX :: ', () => {
     const direction = 0;
     const outcome = 0;
     const displayPrice = new BigNumber(.22);
-    const kycToken = "0x000000000000000000000000000000000000000C";
+    const kycToken = DEADBEEF_ADDRESS;
     const expirationTime = new BigNumber(new Date().valueOf()).plus(10000);
     await john.placeZeroXOrder({
       direction,
@@ -144,7 +145,7 @@ describe('Augur API :: ZeroX :: ', () => {
 
     const outcome = 1;
     const price = new BigNumber(0.4);
-    const amount = new BigNumber(1);
+    const amount = new BigNumber(10);
     const zero = new BigNumber(0);
 
     // No orders and a do not create orders param means nothing happens
@@ -192,7 +193,7 @@ describe('Augur API :: ZeroX :: ', () => {
     await (await johnDB).sync(john.augur, mock.constants.chunkSize, 0);
     await (await maryDB).sync(mary.augur, mock.constants.chunkSize, 0);
 
-    const fillAmount = new BigNumber(0.5);
+    const fillAmount = new BigNumber(50);
     const fillPrice = new BigNumber(0.6);
 
     simulationData = await mary.simulateBasicZeroXYesNoTrade(
