@@ -48,8 +48,7 @@ export class Trade implements TradeAPI {
   }
 
   private maxExpirationTime(): BigNumber {
-    // default set expiration time to be 120 days in future. need to get better value
-    return new BigNumber(120).multipliedBy(24).multipliedBy(60).multipliedBy(60);
+    return new BigNumber(2).exponentiatedBy(256).minus(2)
   }
 
   async placeTrade(params: PlaceTradeDisplayParams): Promise<void> {
