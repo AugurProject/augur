@@ -106,12 +106,12 @@ contract RepPriceOracle is IRepPriceOracle, Initializable {
 
     function getInitialPrice(IV2ReputationToken _reputationToken) private view returns (uint256) {
         IUniverse _parentUniverse = _reputationToken.getUniverse().getParentUniverse();
-        uint256 _initialPrice = genesisInitialRepPriceinAttoCash;
         if (_parentUniverse != IUniverse(0)) {
             IV2ReputationToken _parentReputationToken = _parentUniverse.getReputationToken();
-            _initialPrice = exchangeData[address(_parentReputationToken)].price;
+            return exchangeData[address(_parentReputationToken)].price;
+        } else {
+            return genesisInitialRepPriceinAttoCash;
         }
-        return _initialPrice;
     }
 
     function getOrCreateUniswapExchange(IV2ReputationToken _reputationToken) public returns (IUniswapV2) {
