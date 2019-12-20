@@ -100,7 +100,7 @@ describe('3rd Party :: ZeroX :: ', () => {
         doNotCreateOrders: false,
         displayMinPrice: new BigNumber(0),
         displayMaxPrice: new BigNumber(1),
-        displayAmount: new BigNumber(1),
+        displayAmount: new BigNumber(10),
         displayPrice,
         displayShares: new BigNumber(0),
         expirationTime,
@@ -115,7 +115,7 @@ describe('3rd Party :: ZeroX :: ', () => {
       const order: ZeroXOrder = _.values(orders[market.address][0]['0'])[0];
       await expect(order).not.toBeUndefined();
       await expect(order.price).toEqual('0.22');
-      await expect(order.amount).toEqual('1');
+      await expect(order.amount).toEqual('10');
       await expect(order.kycToken).toEqual(kycToken);
       await expect(order.expirationTimeSeconds.toString()).toEqual(expirationTime.toFixed());
     }, 120000);
