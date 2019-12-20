@@ -15,7 +15,9 @@
     padding-top: @size-8;
     padding-left: @size-12;
 
-    > svg {
+    > label {
+      height: @size-16;
+      margin-bottom: 0;
       margin-right: @size-8;
     }
   }
@@ -58,7 +60,7 @@
       flex-flow: row nowrap;
     }
 
-    > div:first-of-type {
+    > div[class*="CategoryTagTrail"] {
       display: flex;
       flex: 1;
     }
@@ -71,21 +73,11 @@
       }
     }
 
-    > div:nth-of-type(2) {
-      > div {
-        display: none;
-      }
-
-      > button {
-        margin-right: 0 !important;
-
-        &:hover {
-          text-decoration: underline;
-        }
-      }
+    > div:nth-of-type(2) > div {
+      display: none;
     }
 
-    > div:last-of-type {
+    > div[class*="DotSelection"] {
       > div > div > svg {
         fill: @color-inactive-text;
         stroke-width: 0.5;
@@ -93,6 +85,13 @@
         height: @size-16;
         margin-right: @size-16;
         width: @size-16;
+      }
+      > button {
+        margin-right: 0 !important;
+
+        &:hover {
+          text-decoration: underline;
+        }
       }
     }
   }

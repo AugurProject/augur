@@ -1,6 +1,5 @@
 import React from "react";
 
-import MarketLink from "modules/market/components/market-link/market-link";
 import {
   CountdownProgress,
   MarketProgress,

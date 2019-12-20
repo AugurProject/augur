@@ -971,7 +971,8 @@ div.ButtonsRow:last-of-type {
     flex-direction: column;
 
     > button {
-      margin-top: @size-8;
+      margin: @size-8 auto;
+      max-width: fit-content;
     }
   }
 
@@ -2316,6 +2317,9 @@ div.ButtonsRow:last-of-type {
     }
 
     > div:nth-of-type(1n) {
+      background: none;
+      border: 0;
+      border-radius: 0;
       border-top: 1px solid @color-dark-grey;
       display: flex;
       height: @size-32;

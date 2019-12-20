@@ -15,7 +15,7 @@
 
   > span:first-of-type {
     display: flex;
-    align-items: center;
+    align-items: end;
 
     > label {
       display: inline-block;
@@ -24,18 +24,16 @@
       width: @size-12;
 
       > svg {
-        fill: none;
         height: @size-12;
         width: @size-12;
-
+    
         > circle {
-          fill: @color-primary-text;
-          stroke: @color-primary-text;
-          stroke-width: 1.5;
+          fill: none;
+          stroke: @color-secondary-text;
         }
-
+    
         > path {
-          fill: @color-inactive-text;
+          fill: @color-secondary-text;
         }
       }
     }
@@ -174,7 +172,7 @@
   > span:first-of-type {
     .mono-9-bold;
 
-    align-items: center;
+    align-items: end;
     color: @color-secondary-text;
     display: flex;
     flex-flow: row nowrap;
@@ -188,18 +186,16 @@
       width: @size-12;
 
       > svg {
-        fill: none;
         height: @size-12;
         width: @size-12;
-
+    
         > circle {
-          fill: @color-primary-text;
-          stroke: @color-primary-text;
-          stroke-width: 1.5;
+          fill: none;
+          stroke: @color-secondary-text;
         }
-
+    
         > path {
-          fill: @color-inactive-text;
+          fill: @color-secondary-text;
         }
       }
     }
@@ -711,9 +707,10 @@ div.LinearPropertyViewTransaction {
   // Required to make ellipsis work.
   min-width: 0;
 
-  > svg {
+  > label {
     display: flex;
     margin-right: @size-8;
+    margin-bottom: 0;
   }
 
   > button {

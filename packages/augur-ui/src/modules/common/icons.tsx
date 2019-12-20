@@ -212,15 +212,10 @@ export const MarketIcon = (
 
 export const CopyAlternateIcon = (
   <svg
-    width="20"
-    height="20"
     viewBox="0 0 20 20"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
   >
     <path
       d="M13.1818 2H4.45455C3.65091 2 3 2.65091 3 3.45455V13.6364H4.45455V3.45455H13.1818V2ZM15.3636 4.90909H7.36364C6.56 4.90909 5.90909 5.56 5.90909 6.36364V16.5455C5.90909 17.3491 6.56 18 7.36364 18H15.3636C16.1673 18 16.8182 17.3491 16.8182 16.5455V6.36364C16.8182 5.56 16.1673 4.90909 15.3636 4.90909ZM15.3636 16.5455H7.36364V6.36364H15.3636V16.5455Z"
-      fill="#E9E5F2"
     />
   </svg>
 );
@@ -2175,7 +2170,6 @@ export const TemplateIcon = (
     height="16"
     viewBox="0 0 16 16"
     fill="none"
-    xmlns="http://www.w3.org/2000/svg"
   >
     <circle cx="8" cy="8" r="7.5" fill="#252429" stroke="#3C3B43" />
     <g clipPath="url(#clip0)">
