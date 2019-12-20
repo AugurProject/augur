@@ -23,6 +23,7 @@ import {
   selectPendingOrdersState,
 } from 'store/select-state';
 import { createSelector } from 'reselect';
+import { ORDER_EVENT_SHARES_ESCROWED } from '@augurproject/sdk/src/state/logs/types';
 
 function selectMarketsDataStateMarket(state, marketId) {
   return selectMarketInfosState(state)[marketId];
@@ -71,6 +72,8 @@ export const selectUserOpenOrders = createSelector(
         ...o,
         unmatchedShares: formatShares(o.amount),
         avgPrice: formatDai(o.fullPrecisionPrice),
+        tokensEscrowed: formatDai(0, {zeroStyled: true}),
+        sharesEscrowed: formatShares(0, {zeroStyled: true}),
         pending: !!o.status, // TODO: can show status of transaction in the future
         status: o.status,
       }))

@@ -216,13 +216,17 @@ error: `populated title does not match title given`
 5. For some templates they use ESTDATETIME input type, which is a timestamp for the estimated time the event is scheduled to start. that timestamp can not be before the market's expiration time (endTime)
 error: `estimated schedule date time is after market event expiration endTime`
 
-6. Template inputs can not have duplicate values
+6. For some templates they use DATESTART input type, which is a timestamp for the day the event is scheduled to start. that timestamp can not be before the market's expiration time (endTime)
+error: `start date is after market event expiration endTime`
+
+
+7. Template inputs can not have duplicate values
 error: `template input values have duplicates`
 
-7. Outcome values can not have duplicate values
+8. Outcome values can not have duplicate values
 error: `outcome array has duplicates`
 
-8. Validations have a regex for Market questions (title) based on input values needed to populated the market question template. Example, `Will the CAC 40 close on or above 5200 on December 6, 2019?` has to meet the following regex.
+9. Validations have a regex for Market questions (title) based on input values needed to populated the market question template. Example, `Will the CAC 40 close on or above 5200 on December 6, 2019?` has to meet the following regex.
 
 ```
 ^Will the (S&P 500 Index|Dow Jones Industrial Average|Nasdaq Composite|Wilshire 5000|Russell 1000|NYSE Composite|MSCI World Index|FTSE All-World Index|Dow Jones Global Titans 50|S&P Global 100 Index|FTSE 100|DAX|Shanghai SE Composite|Hang Seng|Nikkei 225|S&P/TSX Composite|CAC 40|All Ordinaries|BSE Sensex 30|KOSPI Index|VIX) close on or above [0-9]+.*[0-9]* on (January|February|March|April|May|June|July|August|September|October|November|December) ([0-9]){2}, 20|([0-9]{2})\\?$
@@ -230,19 +234,19 @@ error: `outcome array has duplicates`
 Notice that dropdown values are included and specific date format has to be met.
 error: `populated market question does not match regex`
 
-9. Most categorical templates have required outcomes, for example, "Other (Field)" is required so that a market can resolve with a valid outcome of the winning outcome isn't listed explicitly.
+10. Most categorical templates have required outcomes, for example, "Other (Field)" is required so that a market can resolve with a valid outcome of the winning outcome isn't listed explicitly.
 error: `required outcomes are missing`
 
-10. Special data dropdown dependencies have to be met, for example, a crypto BTC/USD market can not use BTC/EUR source for market resolution.
+11. Special data dropdown dependencies have to be met, for example, a crypto BTC/USD market can not use BTC/EUR source for market resolution.
 error: `market question dropdown dependencies values are incorrect`
 
-11. There is also possible Special data dropdown dependencies for outcomes, if an American Football market is for AFC football championship. NFC teams can not be used as outcomes.
+12. There is also possible Special data dropdown dependencies for outcomes, if an American Football market is for AFC football championship. NFC teams can not be used as outcomes.
 error: `outcome dependencies are incorrect`
 
-12. There are categorical markets that use market question inputs in outcomes. These values need to match, example Point Spread markets have the team name and points in the outcome. `[Team A] -[Whole #].5` gets updated with the team choice and points from market question to produce the outcome. example `Arizona Cardinals -4.5`
+13. There are categorical markets that use market question inputs in outcomes. These values need to match, example Point Spread markets have the team name and points in the outcome. `[Team A] -[Whole #].5` gets updated with the team choice and points from market question to produce the outcome. example `Arizona Cardinals -4.5`
 error: `outcomes values from substituted market question inputs are incorrect`
 
-13. The resolution rules hash of passed in resolution rules needs to match the hash of the resolution rules in the validation structure.
+14. The resolution rules hash of passed in resolution rules needs to match the hash of the resolution rules in the validation structure.
 error: `hash of resolution details is different than validation resolution rules hash`
 
-14. For unexpected result like a crash error will be formated like `unknown, ...` with catch exception.
+15. For unexpected result like a crash error will be formated like `unknown, ...` with catch exception.

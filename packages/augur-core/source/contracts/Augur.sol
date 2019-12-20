@@ -93,6 +93,8 @@ contract Augur is IAugur, IAugurCreationDataGetter, CashSender {
 
     int256 private constant DEFAULT_MIN_PRICE = 0;
     int256 private constant DEFAULT_MAX_PRICE = 1 ether;
+    uint256 private constant RECOMMENDED_TRADE_INTERVAL = 10;
+    uint256 private constant DEFAULT_RECOMMENDED_TRADE_INTERVAL = 10 ** 17;
 
     modifier onlyUploader() {
         require(msg.sender == uploader);
@@ -293,6 +295,8 @@ contract Augur is IAugur, IAugurCreationDataGetter, CashSender {
         IUniverse _universe = getAndValidateUniverse(msg.sender);
         require(_prices.length == 2);
         require(_prices[0] < _prices[1]);
+        uint256 _priceRange = uint256(_prices[1] - _prices[0]);
+        require(_priceRange > _numTicks);
         markets[address(_market)] = true;
         marketCreationData[address(_market)].extraInfo = _extraInfo;
         marketCreationData[address(_market)].marketCreator = _marketCreator;

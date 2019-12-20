@@ -22,7 +22,7 @@ contract ReputationToken is VariableSupplyToken, IV2ReputationToken {
 
     string constant public name = "Reputation";
     IUniverse internal universe;
-    IUniverse internal parentUniverse;
+    IUniverse public parentUniverse;
     uint256 internal totalMigrated;
     IERC20 public legacyRepToken;
     IAugur public augur;

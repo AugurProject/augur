@@ -16,6 +16,7 @@ import 'ROOT/IAugur.sol';
 import 'ROOT/trading/IProfitLoss.sol';
 import 'ROOT/trading/IAugurTrading.sol';
 import 'ROOT/CashSender.sol';
+import 'ROOT/libraries/TokenId.sol';
 
 
 /**
@@ -113,10 +114,10 @@ contract CancelOrder is Initializable, ReentrancyGuard, ICancelOrder, CashSender
                     _values[_i] = _sharesEscrowed;
                     _indexOutcome++;
                 }
-                uint256[] memory _tokenIds = shareToken.getTokenIds(_market, _shortOutcomes);
+                uint256[] memory _tokenIds = TokenId.getTokenIds(_market, _shortOutcomes);
                 shareToken.unsafeBatchTransferFrom(address(augurTrading), _sender, _tokenIds, _values);
             } else {
-                shareToken.unsafeTransferFrom(address(augurTrading), _sender, shareToken.getTokenId(_market, _outcome), _sharesEscrowed);
+                shareToken.unsafeTransferFrom(address(augurTrading), _sender, TokenId.getTokenId(_market, _outcome), _sharesEscrowed);
             }
         }
 

@@ -53,12 +53,14 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       columnType: COLUMN_TYPES.VALUE,
       value: tokensEscrowed,
       useFull: true,
+      showEmptyDash: true,
       keyId: "openOrder-tokensEscrowed-" + openOrder.id,
     },
     {
       key: "sharesEscrowed",
       columnType: COLUMN_TYPES.VALUE,
       value: sharesEscrowed,
+      showEmptyDash: true,
       keyId: "openOrder-sharesEscrowed-" + openOrder.id,
     },
     {

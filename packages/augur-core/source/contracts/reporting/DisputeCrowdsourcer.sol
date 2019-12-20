@@ -13,8 +13,8 @@ import 'ROOT/IAugur.sol';
  * @notice A bond used during the disputing phase of a Market lifecycle.
  */
 contract DisputeCrowdsourcer is VariableSupplyToken, BaseReportingParticipant, IDisputeCrowdsourcer, Initializable {
-    IUniverse internal universe;
-    uint256 internal crowdsourcerGeneration;
+    IUniverse public universe;
+    uint256 public crowdsourcerGeneration;
 
     string constant public name = "Dispute Crowdsourcer Token";
     string constant public symbol = "DISP";

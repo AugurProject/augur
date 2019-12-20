@@ -21,7 +21,8 @@ contract WarpSync is IWarpSync, Initializable {
 
     uint256 private constant MARKET_LENGTH = 1 days;
     uint256 private constant MAX_NUM_TICKS = 2 ** 256 - 2;
-    int256[] private PRICES = [0, 1 ether];
+    // min int256 and max int256 for prices
+    int256[] private PRICES = [int256(uint256(1) << 255), int256(~(uint256(1) << 255))];
     string private constant EXTRA_INFO = '{"description":"What will the next Augur Warp Sync hash be?","longDescription":"What will the Augur SDK warp sync hash be for the last block with a timestamp less than the reporting start timestamp for this market?"}';
 
     function initialize(IAugur _augur) public beforeInitialized returns (bool) {

@@ -1,18 +1,13 @@
 import { Getters } from '@augurproject/sdk/build';
 import { updateAlert } from 'modules/alerts/actions/alerts';
 import {
-  loadMarketAccountPositions,
   loadAccountPositionsTotals,
+  loadMarketAccountPositions,
 } from 'modules/positions/actions/load-account-positions';
 import { loadMarketOrderBook } from 'modules/orders/actions/load-market-order-book';
-import {
-  removeMarket,
-  updateMarketsData,
-} from 'modules/markets/actions/update-markets-data';
+import { removeMarket, updateMarketsData, } from 'modules/markets/actions/update-markets-data';
 import { isCurrentMarket } from 'modules/trades/helpers/is-current-market';
-import {
-  loadMarketsInfo,
-} from 'modules/markets/actions/load-markets-info';
+import { loadMarketsInfo, } from 'modules/markets/actions/load-markets-info';
 import {
   loadMarketTradingHistory,
   loadUserFilledOrders,
@@ -30,36 +25,23 @@ import { addUpdateTransaction } from 'modules/events/actions/add-update-transact
 import { augurSdk } from 'services/augursdk';
 import { updateConnectionStatus } from 'modules/app/actions/update-connection';
 import { checkAccountAllowance } from 'modules/auth/actions/approve-account';
-import { IS_LOGGED, updateAuthStatus } from 'modules/auth/actions/auth-status';
-import { loadAccountData } from 'modules/auth/actions/load-account-data';
-import { loadAccountDataFromLocalStorage } from 'modules/auth/actions/load-account-data-from-local-storage';
 import {
   CANCELORDER,
-  PUBLICTRADE,
   CLAIMTRADINGPROCEEDS,
-  DOINITIALREPORT,
-  CREATEMARKET,
-  PUBLICFILLORDER,
   CONTRIBUTE,
+  CREATEMARKET,
+  DOINITIALREPORT,
+  PUBLICFILLORDER,
+  PUBLICTRADE,
 } from 'modules/common/constants';
 import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
-import {
-  isOnReportingPage,
-  isOnDisputingPage,
-} from 'modules/trades/helpers/is-on-page';
-import {
-  reloadReportingPage,
-  reloadDisputingPage,
-} from 'modules/reporting/actions/update-reporting-list';
-import { loadCreateMarketHistory } from 'modules/markets/actions/load-create-market-history';
+import { isOnDisputingPage, isOnReportingPage, } from 'modules/trades/helpers/is-on-page';
+import { reloadDisputingPage, reloadReportingPage, } from 'modules/reporting/actions/update-reporting-list';
 import { loadUniverseForkingInfo } from 'modules/universe/actions/load-forking-info';
 import { loadUniverseDetails } from 'modules/universe/actions/load-universe-details';
 import { getCategoryStats } from 'modules/create-market/actions/get-category-stats';
-import {
-  updateAppStatus,
-  GNOSIS_STATUS,
-} from 'modules/app/actions/update-app-status';
+import { GNOSIS_STATUS, updateAppStatus, } from 'modules/app/actions/update-app-status';
 import { GnosisSafeState } from '@augurproject/gnosis-relay-api/build/GnosisRelayAPI';
 import { loadAnalytics } from 'modules/app/actions/analytics-management';
 import { marketCreationCreated, orderFilled } from 'services/analytics/helpers';

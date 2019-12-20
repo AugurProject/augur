@@ -30,6 +30,9 @@ import 'ROOT/CashSender.sol';
 contract Universe is IUniverse, CashSender {
     using SafeMathUint256 for uint256;
 
+    uint256 public creationTime;
+    mapping(address => uint256) public marketBalance;
+
     IAugur public augur;
     IUniverse private parentUniverse;
     IFormulas public formulas;
@@ -46,21 +49,21 @@ contract Universe is IUniverse, CashSender {
     uint256 private disputeThresholdForFork;
     uint256 private disputeThresholdForDisputePacing;
     uint256 private initialReportMinValue;
-    mapping(uint256 => IDisputeWindow) private disputeWindows;
+    mapping(uint256 => IDisputeWindow) public disputeWindows;
     mapping(address => bool) private markets;
     mapping(bytes32 => IUniverse) private childUniverses;
     uint256 private openInterestInAttoCash;
     IMarketFactory public marketFactory;
     IDisputeWindowFactory public disputeWindowFactory;
 
-    mapping (address => uint256) private validityBondInAttoCash;
-    mapping (address => uint256) private designatedReportStakeInAttoRep;
-    mapping (address => uint256) private designatedReportNoShowBondInAttoRep;
+    mapping (address => uint256) public validityBondInAttoCash;
+    mapping (address => uint256) public designatedReportStakeInAttoRep;
+    mapping (address => uint256) public designatedReportNoShowBondInAttoRep;
     uint256 public previousValidityBondInAttoCash;
     uint256 public previousDesignatedReportStakeInAttoRep;
     uint256 public previousDesignatedReportNoShowBondInAttoRep;
 
-    mapping (address => uint256) private shareSettlementFeeDivisor;
+    mapping (address => uint256) public shareSettlementFeeDivisor;
     uint256 public previousReportingFeeDivisor;
 
     uint256 constant public INITIAL_WINDOW_ID_BUFFER = 365 days * 10 ** 8;

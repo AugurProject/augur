@@ -172,6 +172,7 @@ export enum TemplateInputType {
   TEXT = 'TEXT', // simple text input in market question
   DATEYEAR = 'DATEYEAR', // date picker in market question
   DATETIME = 'DATETIME', // date time with timezone picker
+  DATESTART = 'DATESTART',
   ESTDATETIME = 'ESTDATETIME', // estimated scheduled start time date time picker with timezone
   DROPDOWN = 'DROPDOWN', // dropdown list, found in market question
   DENOMINATION_DROPDOWN = 'DENOMINATION_DROPDOWN', // list of denomination values for scalar market
@@ -311,7 +312,13 @@ function isDependencyOutcomesCorrect(
 function estimatedDateTimeAfterMarketEndTime(inputs: ExtraInfoTemplateInput[], endTime: number) {
   const input = inputs.find(i => i.type === TemplateInputType.ESTDATETIME);
   if (!input) return false;
-  return Number(input.timestamp) > Number(endTime);
+  return Number(input.timestamp) >= Number(endTime);
+}
+
+function dateStartAfterMarketEndTime(inputs: ExtraInfoTemplateInput[], endTime: number) {
+  const input = inputs.find(i => i.type === TemplateInputType.DATESTART);
+  if (!input) return false;
+  return Number(input.timestamp) >= Number(endTime);
 }
 
 function isRetiredAutofail(hash:string) {
@@ -351,6 +358,12 @@ export const isTemplateMarket = (title, template: ExtraInfoTemplate, outcomes: s
     // check ESTDATETIME isn't after market event expiration
     if (estimatedDateTimeAfterMarketEndTime(template.inputs, new BigNumber(endTime).toNumber())) {
       errors.push('estimated schedule date time is after market event expiration endTime');
+      return false;
+    }
+
+    // check DATESTART isn't after market event expiration
+    if (dateStartAfterMarketEndTime(template.inputs, new BigNumber(endTime).toNumber())) {
+      errors.push('start date is after market event expiration endTime');
       return false;
     }
 

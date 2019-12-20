@@ -811,7 +811,7 @@ export const InputFactory = (props: InputFactoryProps) => {
         value={input.userInput}
       />
     );
-  } else if (input.type === TemplateInputType.DATEYEAR) {
+  } else if (input.type === TemplateInputType.DATEYEAR || input.type === TemplateInputType.DATESTART ) {
     return (
       <DatePickerSelector
         onChange={value => {

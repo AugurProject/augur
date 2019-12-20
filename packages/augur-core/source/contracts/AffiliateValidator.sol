@@ -6,11 +6,11 @@ import 'ROOT/external/IAffiliateValidator.sol';
 
 contract AffiliateValidator is Ownable, IAffiliateValidator {
     // Mapping of affiliate address to their key
-    mapping (address => bytes32) keys;
+    mapping (address => bytes32) public keys;
 
-    mapping (address => bool) operators;
+    mapping (address => bool) public operators;
 
-    mapping (uint256 => bool) usedSalts;
+    mapping (uint256 => bool) public usedSalts;
 
     function addOperator(address _operator) external onlyOwner {
         operators[_operator] = true;

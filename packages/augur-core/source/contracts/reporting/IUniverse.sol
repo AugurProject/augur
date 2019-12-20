@@ -9,8 +9,8 @@ import 'ROOT/reporting/IShareToken.sol';
 
 
 contract IUniverse {
-    uint256 public creationTime;
-    mapping(address => uint256) public marketBalance;
+    function creationTime() external view returns (uint256);
+    function marketBalance(address) external view returns (uint256);
 
     function fork() public returns (bool);
     function updateForkValues() public returns (bool);

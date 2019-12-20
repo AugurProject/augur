@@ -11,14 +11,14 @@ import 'ROOT/libraries/token/IERC20.sol';
 
 
 contract IDisputeWindow is ITyped, IERC20 {
-    uint256 public invalidMarketsTotal;
-    uint256 public validityBondTotal;
+    function invalidMarketsTotal() external view returns (uint256);
+    function validityBondTotal() external view returns (uint256);
 
-    uint256 public incorrectDesignatedReportTotal;
-    uint256 public initialReportBondTotal;
+    function incorrectDesignatedReportTotal() external view returns (uint256);
+    function initialReportBondTotal() external view returns (uint256);
 
-    uint256 public designatedReportNoShowsTotal;
-    uint256 public designatedReporterNoShowBondTotal;
+    function designatedReportNoShowsTotal() external view returns (uint256);
+    function designatedReporterNoShowBondTotal() external view returns (uint256);
 
     function initialize(IAugur _augur, IUniverse _universe, uint256 _disputeWindowId, bool _participationTokensEnabled, uint256 _duration, uint256 _startTime) public;
     function trustedBuy(address _buyer, uint256 _attotokens) public returns (bool);
