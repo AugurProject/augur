@@ -140,10 +140,10 @@
     jsonschema "^1.2.0"
     lodash.values "^4.3.0"
 
-"@0x/mesh-browser@7.2.1-beta-0xv3":
-  version "7.2.1-beta-0xv3"
-  resolved "https://registry.yarnpkg.com/@0x/mesh-browser/-/mesh-browser-7.2.1-beta-0xv3.tgz#f0d2daea4e26b5d1dbef33b41b60dd8ea2f01b26"
-  integrity sha512-3l+in1FcuYEZslZTDixjPtAO/c6dGwvYwIiAl3JAcqx+AzM70KNsJ7EUY+J0IStqPyu0eox1pVAjVaaKaYcbSA==
+"@0x/mesh-browser@8.0.0-beta-0xv3":
+  version "8.0.0-beta-0xv3"
+  resolved "https://registry.yarnpkg.com/@0x/mesh-browser/-/mesh-browser-8.0.0-beta-0xv3.tgz#1bb2d4239e540bb0affb11bce291c11b687ab3c0"
+  integrity sha512-h3UJn5BLQ8yazRUjlgEVKGj7lYHlvZ3t3kursMSEDVgTd6NkdcVgJBRJ6Ra/OVcWVyyHpg16IvG9feHuGGXgAQ==
   dependencies:
     "@0x/order-utils" "8.5.0-beta.1"
     "@0x/utils" "4.6.0-beta.1"

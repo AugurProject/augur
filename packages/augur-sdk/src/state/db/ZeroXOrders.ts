@@ -118,6 +118,8 @@ export class ZeroXOrders extends AbstractTable {
   }
 
   async handleMeshEvent(orderEvents: OrderEvent[]): Promise<void> {
+    if (orderEvents.length < 1) return;
+    console.log(`Mesh events recieved: ${JSON.stringify(orderEvents)}`);
     const filteredOrders = _.filter(orderEvents, this.validateOrder.bind(this));
     let documents = _.map(filteredOrders, this.processOrder.bind(this));
     documents = _.filter(documents, this.validateStoredOrder.bind(this));

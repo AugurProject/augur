@@ -127,6 +127,7 @@ export class ZeroX {
     this.meshClient = meshClient;
     this.browserMesh = browserMesh;
     if (this.browserMesh) {
+      this.browserMesh.onError((err) => { console.error(`BROWSER MESH ERROR: ${JSON.stringify(err)}`); })
       this.browserMesh.startAsync();
     }
   }
@@ -309,9 +310,10 @@ export class ZeroX {
     // See https://github.com/0xProject/0x-mesh/blob/0xV3/zeroex/order.go#L51
     const signatureType = '07';
 
-    const signedMessage = await this.augur.signMessage(messageHash);
+    const signedMessage = await this.augur.signMessage(ethers.utils.arrayify(messageHash));
     const {r, s, v} = ethers.utils.splitSignature(signedMessage);
-    return `0x${r.slice(2)}${s.slice(2)}${(v+4).toString(16)}${signatureType}`;
+    const signature = `0x${r.slice(2)}${s.slice(2)}${(v+4).toString(16)}${signatureType}`;
+    return signature;
   }
 
   async signSimpleOrder(orderHash: string): Promise<string> {
