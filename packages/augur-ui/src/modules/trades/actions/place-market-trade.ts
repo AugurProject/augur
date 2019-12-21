@@ -55,5 +55,8 @@ export const placeMarketTrade = ({
     userShares,
     expirationTime,
   ).then(() => callback(null, null))
-    .catch((err) => callback(err, null));
+    .catch((err) => {
+      console.log(err);
+      callback(err, null)
+    });
 };
