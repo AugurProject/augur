@@ -25,10 +25,6 @@ import {
   TradeTransactionLimits,
 } from './OnChainTrade';
 import { ethers } from 'ethers';
-import { signatureUtils } from "@0x/order-utils";
-import Web3ProviderEngine = require("web3-provider-engine");
-import { SignerSubprovider } from "@augurproject/core/build/libraries/zeroX/SignerSubprovider";
-import { ProviderSubprovider } from "@augurproject/core/build/libraries/zeroX/ProviderSubprovider";
 
 
 export enum Verbosity {
@@ -297,8 +293,7 @@ export class ZeroX {
     if (gnosis) {
       return this.signGnosisOrder(signedOrder, orderHash);
     } else {
-      const maker = await this.augur.getAccount();
-      return this.signSimpleOrder(orderHash, maker)
+      return this.signSimpleOrder(orderHash)
     }
   }
 
@@ -319,17 +314,13 @@ export class ZeroX {
     return `0x${r.slice(2)}${s.slice(2)}${(v+4).toString(16)}${signatureType}`;
   }
 
-  async signSimpleOrder(orderHash: string, maker: string): Promise<string> {
-    const providerEngine = new Web3ProviderEngine();
-    providerEngine.addProvider(new SignerSubprovider(this.augur.signer));
-    providerEngine.addProvider(new ProviderSubprovider(this.augur.provider));
-    providerEngine.start();
+  async signSimpleOrder(orderHash: string): Promise<string> {
+    // See https://github.com/0xProject/0x-mesh/blob/0xV3/zeroex/order.go#L51
+    const signatureType = '03';
 
-    return signatureUtils.ecSignHashAsync(
-      providerEngine,
-      orderHash,
-      maker
-    );
+    const signedMessage = await this.augur.signMessage(ethers.utils.arrayify(orderHash));
+    const {r, s, v} = ethers.utils.splitSignature(signedMessage);
+    return `0x${(v).toString(16)}${r.slice(2)}${s.slice(2)}${signatureType}`;
   }
 
   async addOrder(order) {
