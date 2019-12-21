@@ -253,7 +253,7 @@ export const PaperAirplaneIcon = (
 
 export const TwoArrowsOutline = (
   <svg viewBox="0 0 6 12">
-    <path d="M1 3L3 1L5 3M5 9L3 11L1 9" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M1 3L3 1L5 3M5 9L3 11L1 9" strokeLinecap="round" strokeLinejoin="round"/>
   </svg>
 );
 
