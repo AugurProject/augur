@@ -272,35 +272,36 @@ export class Gnosis {
 
     const setupData = await this.buildRegistrationData();
 
-      const response = await this.gnosisRelay.createSafe({
-        saltNonce: AUGUR_GNOSIS_SAFE_NONCE,
-        owners: [params.owner],
-        threshold: 1,
-        paymentToken: params.paymentToken,
-        to: gnosisSafeRegistryAddress,
-        setupData,
-      });
+    const response = await this.gnosisRelay.createSafe({
+      saltNonce: AUGUR_GNOSIS_SAFE_NONCE,
+      owners: [params.owner],
+      threshold: 1,
+      paymentToken: params.paymentToken,
+      to: gnosisSafeRegistryAddress,
+      setupData,
+    });
+    console.log('LUNA', 2, JSON.stringify(response, null, 2))
 
-      const calculatedSafeAddress = await this.calculateGnosisSafeAddress(
-        params.owner,
-        response.payment
-      );
-      if(ethUtil.toChecksumAddress(calculatedSafeAddress) !== ethUtil.toChecksumAddress(response.safe)) {
-        this.augur.setGnosisStatus(GnosisSafeState.ERROR);
-        throw new Error(`Potential malicious relay. Returned ${response.safe}. Expected ${calculatedSafeAddress}`);
-      }
+    const calculatedSafeAddress = await this.calculateGnosisSafeAddress(
+      params.owner,
+      response.payment
+    );
+    if(ethUtil.toChecksumAddress(calculatedSafeAddress) !== ethUtil.toChecksumAddress(response.safe)) {
+      this.augur.setGnosisStatus(GnosisSafeState.ERROR);
+      throw new Error(`Potential malicious relay. Returned ${response.safe}. Expected ${calculatedSafeAddress}`);
+    }
 
-      this.safesToCheck.push({
-        safe: ethUtil.toChecksumAddress(response.safe),
-        owner: params.owner,
-        status: GnosisSafeState.WAITING_FOR_FUNDS,
-      });
+    this.safesToCheck.push({
+      safe: ethUtil.toChecksumAddress(response.safe),
+      owner: params.owner,
+      status: GnosisSafeState.WAITING_FOR_FUNDS,
+    });
 
-      this.augur.setGnosisStatus(GnosisSafeState.WAITING_FOR_FUNDS);
+    this.augur.setGnosisStatus(GnosisSafeState.WAITING_FOR_FUNDS);
 
-      await this.onNewBlock();
+    await this.onNewBlock();
 
-      return response;
+    return response;
   }
 
   async gasStation(): Promise<GasStationResponse> {

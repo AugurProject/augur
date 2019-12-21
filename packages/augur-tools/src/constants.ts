@@ -16,7 +16,7 @@ export const ACCOUNTS: Account[] = [
   },
   {
     secretKey: '0x48c5da6dff330a9829d843ea90c2629e8134635a294c7e62ad4466eb2ae03712',
-    publicKey: '0xbd355a7e5a7adb23b51f54027e624bfe0e238df6',
+    publicKey: '0xbd355A7e5a7ADb23b51F54027E624BfE0e238DF6',
     balance: _1_BILLION_ETH,
   },
   {
