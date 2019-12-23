@@ -10,22 +10,28 @@ import { API } from './getter/API';
 import { DB } from './db/DB';
 import { GnosisRelayAPI } from '@augurproject/gnosis-relay-api';
 import { WSClient } from '@0x/mesh-rpc-client';
+import { Mesh } from '@0x/mesh-browser';
 
 const settings = require('./settings.json');
 
 async function buildDeps(ethNodeUrl: string, account?: string, enableFlexSearch = false) {
-  // Necessary because 0x dep web3-provider-fork erroneously references `window`, which does not exist in web workers.
-  // @ts-ignore
-  self.window = self;
 
   try {
     const ethersProvider = new EthersProvider(new JsonRpcProvider(ethNodeUrl), 10, 0, 40);
     const networkId = await ethersProvider.getNetworkId();
     const gnosisRelay = new GnosisRelayAPI(settings.gnosisRelayURLs[networkId]);
-    let meshClient = new WSClient(settings.meshClientURLs[networkId]);
+    const meshClient = new WSClient(settings.meshClientURLs[networkId]);
     const contractDependencies = new ContractDependenciesGnosis(ethersProvider, gnosisRelay, undefined, undefined, undefined, undefined, account);
 
-    const augur = await Augur.create(ethersProvider, contractDependencies, Addresses[networkId], new EmptyConnector(), undefined, enableFlexSearch, meshClient);
+    // TODO: when 0x mesh can be run in a webworker fixed the below to pass in valid Mesh object.
+    const activateMesh = false;
+    const meshBrowser = activateMesh ? new Mesh({
+      ethereumRPCURL: ethNodeUrl,
+      ethereumChainID: Number(networkId),
+      verbosity: 5,
+    }) : undefined;
+
+    const augur = await Augur.create(ethersProvider, contractDependencies, Addresses[networkId], new EmptyConnector(), undefined, enableFlexSearch, meshClient, meshBrowser);
     const blockAndLogStreamerListener = BlockAndLogStreamerListener.create(ethersProvider, augur.events.getEventTopics, augur.events.parseLogs, augur.events.getEventContractAddress);
     const db = DB.createAndInitializeDB(
       Number(networkId),

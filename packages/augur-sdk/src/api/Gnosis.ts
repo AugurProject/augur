@@ -16,7 +16,7 @@ import { NULL_ADDRESS, Provider, SubscriptionEventName } from '..';
 import { Augur } from '../Augur';
 import { Address } from '../state/logs/types';
 
-export const AUGUR_GNOSIS_SAFE_NONCE = 872838000000;
+export const AUGUR_GNOSIS_SAFE_NONCE = 872838000002;
 
 export interface CreateGnosisSafeViaRelayParams {
   owner: string;
