@@ -48,7 +48,7 @@ export class Trade implements TradeAPI {
   }
 
   private maxExpirationTime(): BigNumber {
-    return new BigNumber(2).exponentiatedBy(256).minus(2)
+    return new BigNumber(8640000000000000);
   }
 
   async placeTrade(params: PlaceTradeDisplayParams): Promise<void> {

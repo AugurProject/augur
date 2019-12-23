@@ -74,7 +74,7 @@ services:
 
   0x-mesh:
     image: 0xorg/mesh:0xV3
-    restart: always
+    restart: on-failure
     hostname: 0x
     ports:
       - 60557:60557 # rpc_port_number
