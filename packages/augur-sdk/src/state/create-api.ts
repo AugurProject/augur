@@ -15,6 +15,9 @@ import { Mesh } from '@0x/mesh-browser';
 const settings = require('./settings.json');
 
 async function buildDeps(ethNodeUrl: string, account?: string, enableFlexSearch = false) {
+  // Necessary because 0x dep web3-provider-fork erroneously references `window`, which does not exist in web workers.
+  // @ts-ignore
+  self.window = self;
 
   try {
     const ethersProvider = new EthersProvider(new JsonRpcProvider(ethNodeUrl), 10, 0, 40);
@@ -24,12 +27,13 @@ async function buildDeps(ethNodeUrl: string, account?: string, enableFlexSearch 
     const contractDependencies = new ContractDependenciesGnosis(ethersProvider, gnosisRelay, undefined, undefined, undefined, undefined, account);
 
     // TODO: when 0x mesh can be run in a webworker fixed the below to pass in valid Mesh object.
-    const activateMesh = false;
-    const meshBrowser = activateMesh ? new Mesh({
+    const meshBrowser = undefined;
+    /*new Mesh({
       ethereumRPCURL: ethNodeUrl,
       ethereumChainID: Number(networkId),
       verbosity: 5,
-    }) : undefined;
+    });
+    */
 
     const augur = await Augur.create(ethersProvider, contractDependencies, Addresses[networkId], new EmptyConnector(), undefined, enableFlexSearch, meshClient, meshBrowser);
     const blockAndLogStreamerListener = BlockAndLogStreamerListener.create(ethersProvider, augur.events.getEventTopics, augur.events.parseLogs, augur.events.getEventContractAddress);
