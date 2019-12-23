@@ -142,6 +142,14 @@ export const CheckCircleIcon = (
   </svg>
 );
 
+export const PlusCircleIcon = (
+  <svg viewBox="0 0 12 12">
+    <circle cx="6" cy="6" r="6" fillOpacity="0.2"/>
+    <rect rx="0.5" transform="matrix(1 3.37175e-06 3.37175e-06 1 2 5.5)"/>
+    <rect rx="0.5" transform="matrix(3.37175e-06 1 -1 -3.37175e-06 6.5 2)"/>
+  </svg>
+);
+
 export const EthIcon = (
   <svg width="7" height="12" viewBox="0 0 7 12">
     <path d="M3.49891 11.9999L3.49895 12.0001L3.49897 12L7 6.80985L3.49897 8.98586L0 6.80981L3.49891 11.9999Z" />
