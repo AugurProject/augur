@@ -331,6 +331,7 @@ export default class AppView extends Component<AppProps> {
       updateConnectionTray,
       migrateV1Rep,
       showMigrateRepButton,
+      updateModal,
     } = this.props;
 
     const currentPath = parsePath(location.pathname)[0];
@@ -415,6 +416,7 @@ export default class AppView extends Component<AppProps> {
                 currentBasePath={sidebarStatus.currentBasePath}
                 migrateV1Rep={migrateV1Rep}
                 showMigrateRepButton={showMigrateRepButton}
+                updateModal={updateModal}
               />
             </section>
             <AlertsContainer

@@ -10,8 +10,8 @@ import { GlobalChat } from 'modules/global-chat/components/global-chat';
 
 import Styles from 'modules/app/components/top-nav/top-nav.styles.less';
 import { NavMenuItem } from 'modules/types';
-import { helpIcon } from 'modules/common/icons';
-import { log } from 'util';
+import { helpIcon, PlusCircleIcon } from 'modules/common/icons';
+import { MODAL_ADD_FUNDS } from 'modules/common/constants';
 
 interface TopNavProps {
   isLogged: boolean;
@@ -20,6 +20,7 @@ interface TopNavProps {
   isDisabled?: boolean;
   migrateV1Rep: Function;
   showMigrateRepButton: boolean;
+  updateModal: Function;
 }
 
 const TopNav = ({
@@ -29,6 +30,7 @@ const TopNav = ({
   currentBasePath,
   migrateV1Rep,
   showMigrateRepButton = false,
+  updateModal,
 }: TopNavProps) => {
   const isCurrentItem = item => {
     if (item.route === 'markets' && currentBasePath === 'market') return true;
@@ -72,7 +74,7 @@ const TopNav = ({
         })}
         {showMigrateRepButton && (
           <PrimaryButton
-            text='Migrate V1 to V2 REP'
+            text="Migrate V1 to V2 REP"
             action={() => migrateV1Rep()}
           />
         )}
@@ -88,9 +90,9 @@ const TopNav = ({
             <ReactTooltip
               id={'migrateRep'}
               className={TooltipStyles.Tooltip}
-              effect='solid'
-              place='top'
-              type='light'
+              effect="solid"
+              place="top"
+              type="light"
             >
               <p>
                 {
@@ -99,6 +101,15 @@ const TopNav = ({
               </p>
             </ReactTooltip>
           </span>
+        )}
+        {isLogged && (
+          <button
+            className={Styles.AddFunds}
+            title="Add Funds"
+            onClick={() => updateModal({ type: MODAL_ADD_FUNDS })}
+          >
+            Add Funds {PlusCircleIcon}
+          </button>
         )}
       </ul>
       <GlobalChat show={false} numberOfPeers={15} />
