@@ -46,7 +46,8 @@ async function buildDeps(ethNodeUrl: string, account?: string, enableFlexSearch 
     );
 
     return { augur, blockAndLogStreamerListener, db };
-  }catch(e) {
+
+  } catch(e) {
     console.log('Error initializing api', e)
   }
   return null;
