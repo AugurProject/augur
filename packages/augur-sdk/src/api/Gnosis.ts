@@ -280,7 +280,6 @@ export class Gnosis {
       to: gnosisSafeRegistryAddress,
       setupData,
     });
-    console.log('LUNA', 2, JSON.stringify(response, null, 2))
 
     const calculatedSafeAddress = await this.calculateGnosisSafeAddress(
       params.owner,
