@@ -6,6 +6,7 @@ import { ClipLoader } from 'react-spinners';
 import {
   MarketIcon,
   InfoIcon,
+  ScalarIcon,
   CheckCircleIcon,
   HintAlternate,
   DoubleArrows,
@@ -24,6 +25,8 @@ import {
   SHORT,
   ZERO,
   YES_NO,
+  SCALAR,
+  CATEGORICAL,
   REPORTING_STATE,
 } from 'modules/common/constants';
 import { ViewTransactionDetailsButton } from 'modules/common/buttons';
@@ -225,7 +228,8 @@ export const TemplateShield = ({ marketId }: TemplateShieldProps) => (
       place="right"
       type="light"
     >
-      Template Markets have pre-defined terms and a greater chance of validly resolving than Custom Markets.
+      Template Markets have pre-defined terms and a greater chance of validly
+      resolving than Custom Markets.
     </ReactTooltip>
   </>
 );
@@ -256,7 +260,9 @@ export const TimeLabel = ({ label, time, showLocal, hint }: TimeLabelProps) => (
       )}
     </span>
     <span>{time && time.formattedShortUtc}</span>
-    {showLocal && <span>{time && time.formattedLocalShortDateTimeWithTimezone}</span>}
+    {showLocal && (
+      <span>{time && time.formattedLocalShortDateTimeWithTimezone}</span>
+    )}
   </div>
 );
 
@@ -362,7 +368,11 @@ export const ValueLabel = (props: ValueLabelProps) => {
   } = expandedValues;
 
   return (
-    <span className={classNames(Styles.ValueLabel, {[Styles.DarkDash]: props.value.full === '-'})}>
+    <span
+      className={classNames(Styles.ValueLabel, {
+        [Styles.DarkDash]: props.value.full === '-',
+      })}
+    >
       <label
         data-tip
         data-for={`valueLabel-${fullPrecision}-${denominationLabel}-${props.keyId}`}
@@ -517,7 +527,9 @@ export class HoverValueLabel extends React.Component<
                   {firstHalf}
                   {secondHalf && '.'}
                 </span>
-                <span>{secondHalf} {postfix}</span>
+                <span>
+                  {secondHalf} {postfix}
+                </span>
               </>
             )}
           </span>
@@ -633,14 +645,25 @@ export const LinearPropertyLabel = ({
   </div>
 );
 
-export const MarketTypeLabel = (props: MarketTypeProps) => {
-  if (!props.marketType) {
+export const MarketTypeLabel = ({ marketType }: MarketTypeProps) => {
+  if (!marketType) {
     return null;
   }
+  const labelTexts = {
+    [YES_NO]: 'Yes/No',
+    [CATEGORICAL]: 'Categorical',
+    [SCALAR]: 'Scalar Market',
+  };
+  const text = labelTexts[marketType];
+  const isScalar = marketType === SCALAR;
 
   return (
-    <span className={Styles.MarketTypeLabel}>
-      {props.marketType === YES_NO ? 'Yes/No' : props.marketType}
+    <span
+      className={classNames(Styles.MarketTypeLabel, {
+        [Styles.MarketScalarLabel]: isScalar,
+      })}
+    >
+      {text} {isScalar && (ScalarIcon)}
     </span>
   );
 };

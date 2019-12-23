@@ -36,39 +36,6 @@
       height: 100%;
       min-height: 149px;
       width: 100%;
-
-      > div {
-        > span {
-          .text-18-bold;
-
-          color: @color-primary-text;
-          flex: 1;
-          margin-bottom: @size-8;
-          flex: 0 auto;
-        }
-
-        &.BigTitle > span {
-          display: -webkit-box;
-          -webkit-line-clamp: 3;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
-          text-overflow: ellipsis;
-
-          &:hover {
-            position: absolute;
-            display: block;
-            box-shadow: 0 0 @size-16 @color-dark-grey;
-            -webkit-line-clamp: unset;
-            background: @color-module-background;
-            z-index: @mask-above;
-            padding: @size-4;
-          }
-  
-          &:hover + div:first-of-type {
-            margin-top: 67px;
-          }
-        } 
-      }
       
       > div.HeadingBar {
         align-items: center;
@@ -182,6 +149,37 @@
 
         @media @breakpoint-mobile {
           padding: 0 @size-12;
+        }
+
+        > span {
+          .text-18-bold;
+
+          color: @color-primary-text;
+          flex: 1;
+          margin-bottom: @size-8;
+          flex: 0 auto;
+        }
+
+        &.BigTitle > span {
+          display: -webkit-box;
+          -webkit-line-clamp: 3;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+          text-overflow: ellipsis;
+
+          &:hover {
+            position: absolute;
+            display: block;
+            box-shadow: 0 0 @size-16 @color-dark-grey;
+            -webkit-line-clamp: unset;
+            background: @color-module-background;
+            z-index: @mask-above;
+            padding: @size-4;
+          }
+  
+          &:hover + div:first-of-type {
+            margin-top: 67px;
+          }
         }
       }
     }
