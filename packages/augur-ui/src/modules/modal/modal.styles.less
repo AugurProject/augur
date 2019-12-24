@@ -2838,7 +2838,25 @@ div.ButtonsRow:last-of-type {
       flex-direction: column;
       padding: 0 @size-40;
 
-      > span:nth-of-type(2) {
+      > section {
+        max-height: @size-16;
+        height: @size-16;
+        display: flex;
+        flex-flow: row nowrap;
+
+        > label {
+          margin-bottom: 0;
+          margin-left: @size-8;
+        }
+
+        > span {
+          display: flex;
+          align-items: center;
+          height: @size-16;
+        }
+      }
+
+      > span:nth-of-type(1) {
         .text-24-bold;
 
         color: @color-primary-text;
