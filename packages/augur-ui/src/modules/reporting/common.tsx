@@ -688,7 +688,7 @@ export class ReportingBondsView extends Component<
       createBigNumber(threshold).lt(createBigNumber(inputStakeValue))
     ) {
       this.setState({
-        stakeError: 'Value is bigger than the REP threshold',
+        stakeError: `Value is bigger than the REP threshold: ${threshold}`,
         disabled: true,
       });
     } else {
