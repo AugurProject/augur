@@ -83,7 +83,7 @@ export class MarketDB extends DerivedDB {
   syncFTS = async (): Promise<void> => {
     if (this.augur.syncableFlexSearch) {
       let marketDocs = await this.allDocs();
-      marketDocs = marketDocs.slice(0, marketDocs.length - 1);
+      marketDocs = marketDocs.slice(0, marketDocs.length);
       await this.augur.syncableFlexSearch.addMarketCreatedDocs(marketDocs);
     }
   }

@@ -473,7 +473,7 @@ export class Markets {
     // Get Market docs for all markets with the specified filters
     const numMarketDocs = await db.Markets.count();
     let marketIds: string[] = [];
-    let useMarketIds = params.search || params.categories || params.userPortfolioAddress;
+    let useMarketIds = params.search || (params.categories && params.categories.length > 0) || params.userPortfolioAddress;
     let useCreator = false;
 
     if (params.search || params.categories) {
