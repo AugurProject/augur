@@ -147,7 +147,8 @@ export class ZeroX {
     if (!this.meshClient) {
       throw Error('getOrders is not supported on browser mesh');
     }
-    return this.meshClient.getOrdersAsync();
+    const response = await this.meshClient.getOrdersAsync();
+    return response.ordersInfos;
   }
 
   async placeTrade(params: ZeroXPlaceTradeDisplayParams): Promise<void> {
