@@ -47,7 +47,7 @@ describe('3rd Party :: ZeroX :: ', () => {
   describe('with gnosis', () => {
     beforeAll(async () => {
       const johnConnector = new Connectors.DirectConnector();
-      john = await ContractAPI.userWrapper(ACCOUNTS[0], providerJohn, addresses, johnConnector, new GnosisRelayAPI('http://localhost:8000/api/'), meshClient, undefined);
+      john = await ContractAPI.userWrapper(ACCOUNTS[0], providerJohn, addresses, johnConnector, new GnosisRelayAPI('http://localhost:8888/api/'), meshClient, undefined);
       johnDB = mock.makeDB(john.augur, ACCOUNTS);
       johnConnector.initialize(john.augur, await johnDB);
       johnAPI = new API(john.augur, johnDB);
@@ -62,15 +62,16 @@ describe('3rd Party :: ZeroX :: ', () => {
       john.setUseGnosisRelay(true);
 
       const maryConnector = new Connectors.DirectConnector();
-      mary = await ContractAPI.userWrapper(ACCOUNTS[1], providerMary, addresses, maryConnector, new GnosisRelayAPI('http://localhost:8000/api/'), meshClient, undefined);
+      mary = await ContractAPI.userWrapper(ACCOUNTS[2], providerMary, addresses, maryConnector, new GnosisRelayAPI('http://localhost:8888/api/'), meshClient, undefined);
       maryDB = mock.makeDB(mary.augur, ACCOUNTS);
       maryConnector.initialize(mary.augur, await maryDB);
       maryAPI = new API(mary.augur, maryDB);
       await mary.approveCentralAuthority();
-      const marySafe = await mary.fundSafe().catch((e) => console.error(`Safe funding failed: ${e}`));
+      const marySafe = await mary.fundSafe().catch((e) => console.error(`Safe funding failed: ${JSON.stringify(e)}`));
       const marySafeStatus = await mary.getSafeStatus(marySafe);
       console.log(`Safe ${marySafe}: ${marySafeStatus}`);
       expect(marySafeStatus).toBe(GnosisSafeState.AVAILABLE);
+      await mary.sendEther(marySafe, new BigNumber(10**20));
       await mary.augur.setGasPrice(new BigNumber(90000));
       mary.setGnosisSafeAddress(marySafe);
       mary.setUseGnosisSafe(true);
@@ -179,6 +180,7 @@ describe('3rd Party :: ZeroX :: ', () => {
       );
 
       await (await johnDB).sync(john.augur, mock.constants.chunkSize, 0);
+      await (await maryDB).sync(mary.augur, mock.constants.chunkSize, 0);
 
       await mary.placeBasicYesNoZeroXTrade(
         1,
@@ -191,6 +193,7 @@ describe('3rd Party :: ZeroX :: ', () => {
       );
 
       await (await johnDB).sync(john.augur, mock.constants.chunkSize, 0);
+      await (await maryDB).sync(john.augur, mock.constants.chunkSize, 0);
 
       const johnShares = await john.getNumSharesInMarket(market1, new BigNumber(outcome));
       const maryShares = await mary.getNumSharesInMarket(market1, new BigNumber(0));

@@ -169,7 +169,12 @@ export class Augur<TProvider extends Provider = Provider> {
   }
 
   async getAccount(): Promise<string | null> {
-    const account = this.dependencies.safeAddress || this.dependencies.address || await this.dependencies.signer.getAddress();
+    let account = this.dependencies.address;
+    if (this.dependencies.useSafe && this.dependencies.safeAddress) {
+      account = this.dependencies.safeAddress;
+    } else if (!account) {
+      account = await this.dependencies.signer.getAddress();
+    }
     if (!account) return null;
     return getAddress(account);
   }
