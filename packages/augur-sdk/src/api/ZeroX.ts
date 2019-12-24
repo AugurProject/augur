@@ -1,9 +1,9 @@
 import {
   OrderEvent,
   OrderInfo,
-  ValidationResults,
   WSClient,
 } from '@0x/mesh-rpc-client';
+import { ValidationResults } from '@0x/mesh-browser';
 import { SignatureType, SignedOrder } from '@0x/types';
 import { Event } from '@augurproject/core/build/libraries/ContractInterfaces';
 import { BigNumber } from 'bignumber.js';
@@ -52,7 +52,7 @@ export interface BrowserMesh {
   startAsync(): Promise<void>;
   onError(handler: (err: Error) => void): void;
   onOrderEvents(handler: (events: OrderEvent[]) => void): void;
-  addOrdersAsync(orders: SignedOrder[]): Promise<ValidationResults>;
+  addOrdersAsync(orders: SignedOrder[], pinned?: boolean): Promise<ValidationResults>;
 }
 
 export interface ZeroXPlaceTradeDisplayParams extends NativePlaceTradeDisplayParams {

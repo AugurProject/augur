@@ -1255,7 +1255,7 @@ export function addScripts(flash: FlashSession) {
       args: FlashArguments
     ): Promise<void> {
       if (this.noProvider()) return null;
-      const user = await this.ensureUser(this.network, false);
+      const user = await this.ensureUser(this.network, false, false);
 
       const result = await user.augur.contracts.gnosisSafeRegistry.getSafe_(args['target'] as string);
       console.log(result);

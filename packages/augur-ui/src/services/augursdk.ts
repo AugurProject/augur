@@ -64,27 +64,6 @@ export class SDK {
     );
 
     const enableFlexSearch = false; // TODO configurable
-    const meshClient = env['0x-endpoint'] ? new WSClient(env['0x-endpoint']) : undefined;
-    const meshBrowserConfig = {
-      ethereumRPCURL,
-      ethereumChainID: Number(this.networkId),
-      verbosity: 5,
-    }
-
-    let meshBrowserConfigExtra = {};
-
-    if (![NETWORK_IDS.Kovan, NETWORK_IDS.Mainnet].includes(this.networkId)) {
-      meshBrowserConfigExtra = {
-        ...meshBrowserConfig,
-        customContractAddresses: Addresses[this.networkId],
-        bootstrapList: env['0x-mesh'].bootstrapList,
-      }
-    }
-
-    const meshBrowser = new Mesh({
-      ...meshBrowserConfig,
-      ...meshBrowserConfigExtra,
-    });
 
     this.sdk = await Augur.create<Provider>(
       ethersProvider,
@@ -93,8 +72,6 @@ export class SDK {
       connector,
       gnosisRelay,
       enableFlexSearch,
-      meshClient,
-      meshBrowser,
     );
 
     if (!isEmpty(account)) {
