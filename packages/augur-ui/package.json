@@ -5,7 +5,7 @@
   "author": "The Augur Developers <team@augur.net>",
   "license": "AAL",
   "engines": {
-    "node": "8 || 9 || 10 || 11"
+    "node": "8 || 9 || 10"
   },
   "main": "src/index.js",
   "repository": {
