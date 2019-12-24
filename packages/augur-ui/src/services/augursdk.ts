@@ -12,9 +12,6 @@ import { EnvObject } from 'modules/types';
 import { isEmpty } from 'utils/is-empty';
 import { analytics } from './analytics';
 import { isLocalHost } from 'utils/is-localhost';
-import { WSClient } from '@0x/mesh-rpc-client';
-import { Mesh } from '@0x/mesh-browser';
-import { NETWORK_IDS } from 'modules/common/constants';
 import { WebWorkerConnector } from './ww-connector';
 
 export class SDK {
