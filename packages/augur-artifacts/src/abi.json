@@ -16714,11 +16714,11 @@
 					"type": "address"
 				},
 				{
-					"name": "cashAmount",
+					"name": "cashAmountAccumulated",
 					"type": "uint256"
 				},
 				{
-					"name": "repAmount",
+					"name": "repAmountAccumulated",
 					"type": "uint256"
 				},
 				{
