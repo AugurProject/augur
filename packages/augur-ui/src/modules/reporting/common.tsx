@@ -673,7 +673,7 @@ export class ReportingBondsView extends Component<
 
   updateInputtedStake = (inputStakeValue: string) => {
     const { updateInputtedStake, inputScalarOutcome, userAttoRep } = this.props;
-    const { isScalar } = this.state;
+    const { isScalar, threshold } = this.state;
 
     if (isNaN(Number(inputStakeValue))) {
       this.setState({ stakeError: 'Enter a valid number', disabled: true });
@@ -682,6 +682,13 @@ export class ReportingBondsView extends Component<
     ) {
       this.setState({
         stakeError: 'Value is bigger than user REP balance',
+        disabled: true,
+      });
+    } else if (
+      createBigNumber(threshold).lt(createBigNumber(inputStakeValue))
+    ) {
+      this.setState({
+        stakeError: `Value is bigger than the REP threshold: ${threshold}`,
         disabled: true,
       });
     } else {
