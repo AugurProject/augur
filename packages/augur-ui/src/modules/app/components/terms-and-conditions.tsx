@@ -1,6 +1,6 @@
 import React from "react";
 import Styles from "modules/app/components/terms-and-conditions.styles.less";
-// TODO: Add augur version?
+
 const TermsAndConditions = () => (
   <footer className={Styles.TermsAndConditions}>
     <a
