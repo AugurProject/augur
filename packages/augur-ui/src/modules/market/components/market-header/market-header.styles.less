@@ -51,19 +51,38 @@
           min-height: @size-40;
           max-height: @size-40;
           display: grid;
-          grid-template-columns: @size-24 1fr @size-16 repeat(3, @size-24);
+          grid-template-columns: min-content 1fr @size-16 repeat(3, @size-24);
           grid-template-rows: @size-20 @size-20;
           padding-left: @size-12;
           padding-right: @size-12;
+
+          // > span[class*="MarketTypeLabel"] {
+          //   grid-column: 2 / span 1;
+          // }
+
+          > div[class*="WordTrail"] {
+            grid-column: 1 / span 6;
+            grid-row: 2;
+          }
+
+          > button[id="facebookButton"] {
+            grid-column: 3 / span 1;
+          }
+          > button[id="twitterButton"] {
+            grid-column: 4 / span 1;
+          }
+
+          > div[class*="CopyButton"] {
+            grid-column: 5 / span 1;
+          }
+
+          > button[class*="FavoriteButton"] {
+            grid-column: 6 / span 1;
+          }
         }
 
-        > div[class*="WordTrail"] {
-          grid-column: 1 / span 6;
-          grid-row: 2;
-
-          > button[class*="WordTrailButton"] {
-            .mono-10-bold;
-          }
+        > div[class*="WordTrail"] > button[class*="WordTrailButton"] {
+          .mono-10-bold;
         }
 
         > span {
