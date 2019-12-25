@@ -376,8 +376,11 @@ div.OutcomeNameDisplay {
   .OutcomeSelectionArea {
     padding: @size-12;
     width: 100%;
-    margin-top: @size-8;
     background: @color-module-background;
+    position: fixed;
+    z-index: @mask-above;
+    left: 0;
+    top: 112px;
 
     > h1 {
       .text-14-bold;
@@ -388,6 +391,8 @@ div.OutcomeNameDisplay {
   }
 
   .TradesMobile {
+    padding-top: 116px;
+
     > div,
     > section {
       border: 1px solid @color-dark-grey;
