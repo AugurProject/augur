@@ -274,8 +274,7 @@ export default class MarketHeader extends Component<
                   {LeftChevron} Back
                 </button>
                 <MarketTypeLabel marketType={marketType} />
-                {/* {market.isTemplate && <TemplateShield marketId={market.id} />} */}
-                <TemplateShield marketId={market.id} />
+                {market.isTemplate && <TemplateShield marketId={market.id} />}
                 <WordTrail items={[...categoriesWithClick]} />
                 <SocialMediaButtons
                   marketAddress={market.id}
