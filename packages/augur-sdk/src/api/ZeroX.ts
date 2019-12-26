@@ -1,6 +1,9 @@
 if (typeof window === "undefined" && typeof self !== "undefined") {
   //@ts-ignore
   self.window = self;
+}
+if (typeof global === "undefined" && typeof self !== "undefined") {
+  //@ts-ignore
   self.global = self;
 }
 
