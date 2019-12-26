@@ -111,54 +111,99 @@
         }
       }
 
-      &:nth-of-type(7) {
-        display: flex;
-        flex-direction: row;
+      &.AdvancedShown {
+        display: grid;
+        grid-gap: @size-8 @size-4;
+        grid-template-columns: repeat(2, auto) 1fr;
+        grid-template-rows: auto;
 
         > span {
-          .text-10;
+          .mono-10-medium;
+
+          color: @color-primary-text;
+          grid-row: 2;
+          grid-column: 1 / span 3;
+          text-align: right;
+        }
+
+        > span.tipText {
+          .text-12;
 
           color: @color-dark-text;
-          margin-left: @size-12;
+          text-align: left;
+        }
+
+        > div[class*="TextInput"],
+        > div[class*="Normal"] {
+          height: @size-24;
+          max-width: 100%;
+
+          > button > span {
+            padding: 0 @size-8 0 0;
+          }
         }
 
         > div:first-of-type {
           > button {
             .mono-10-bold;
+
+            > span {
+              padding: 0 @size-8 0 0;
+            }
           }
-          
-          height: fit-content;
         }
 
-        > div:nth-of-type(2) {
-          display: flex;
-          flex-direction: column;
-          flex: 1;
+        > div[class*="TextInput"] > div > input {
+          min-width: @size-36;
+          width: @size-36;
+          padding: 0 @size-8;
+          height: @size-24;
+        }
 
-          > div:first-of-type {
-            display: flex;
-            justify-content: flex-end;
+        > div[class*="Normal"]:nth-of-type(2) {
+          grid-column: 3;
+        }
 
-            > div > div > input {
-              min-width: @size-36;
-              width: @size-36;
-              padding: @size-4 @size-8;
-              height: unset;
-            }
-
-            > div:last-of-type {
-              margin-left: @size-3;
-            }
-          }
+        > div[class*="DateTimeSelector"] {
+          grid-row: 2;
+          grid-column: 2 / span 2;
+          margin-left: @size-4;
 
           > span {
-            .mono-10;
+            display: grid;
+            grid-gap: @size-4;
+            grid-template-columns: auto auto;
+            margin: 0;
 
-            color: @color-primary-text;
-            text-transform: uppercase;
-            margin-top: @size-8;
-            text-align: right;
-            white-space: nowrap;
+            > div[class*="DatePicker"] {
+              margin-right: 0;
+
+              > div > div > div > div[class*="DateInput_1"] {
+                width: 100%;
+
+                > input[class*="DateInput_input"] {
+                  height: @size-22;
+                  width: 100%;
+                }
+              } 
+            }
+
+            > div[class*="TimeSelector"] {
+              margin-right: 0;
+
+              > button {
+                height: @size-22;
+              }
+            }
+
+            > section[class*="Timezones"] {
+              grid-column: 1 / span 2;
+
+              > div[class*="TextInput"] > div > input {
+                height: @size-22;
+                width: 100%;
+              }
+            }
           }
         }
       }
