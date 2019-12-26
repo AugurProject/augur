@@ -56,7 +56,7 @@ export const Scalar = ({ closeAction, cb = () => {} }: ScalarProps) => {
             settles below your Sale price you win the difference.{' '}
             <ExternalLinkButton
               label="Learn More"
-              URL="https://docs.augur.net/"
+              URL="https://augur.gitbook.io/help-center/market-creation-1/trading-faq"
             />
           </li>
         </ul>
