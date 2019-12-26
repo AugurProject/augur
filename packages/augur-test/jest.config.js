@@ -4,7 +4,7 @@ module.exports = {
     "<rootDir>/src/tests/connector",
     "<rootDir>/src/tests/flash", // has a single very long test
     "<rootDir>/src/tests/state",
-    // "<rootDir>/src/tests/3rd-party", // TODO comment out because this cannot run in CI
+    "<rootDir>/src/tests/3rd-party", // TODO comment out because this cannot run in CI
     // "<rootDir>/src/tests/ui", // disabled because this has its own jest config
   ],
   "transform": {
