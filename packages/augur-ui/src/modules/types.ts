@@ -174,6 +174,7 @@ export interface FormattedNumberOptions {
   minimized?: boolean;
   blankZero?: boolean;
   bigUnitPostfix?: boolean;
+  removeComma?: boolean;
 }
 
 export interface CreateMarketData {

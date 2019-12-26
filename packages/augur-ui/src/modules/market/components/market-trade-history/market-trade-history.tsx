@@ -4,7 +4,11 @@ import React, { Component } from 'react';
 import classNames from 'classnames';
 
 import { formatShares } from 'utils/format-number';
-import { SELL, SCALAR, BINARY_CATEGORICAL_SHARE_OPTIONS } from 'modules/common/constants';
+import {
+  SELL,
+  SCALAR,
+  BINARY_CATEGORICAL_SHARE_OPTIONS,
+} from 'modules/common/constants';
 import { HoverValueLabel } from 'modules/common/labels';
 import OrderHeader from 'modules/market-charts/components/order-header/order-header';
 
@@ -27,10 +31,13 @@ export default class MarketTradeHistory extends Component<
       groupedTradeHistoryVolume,
       toggle,
       hide,
-      marketType
+      marketType,
     } = this.props;
 
-    const opts = marketType === SCALAR ? {} : BINARY_CATEGORICAL_SHARE_OPTIONS;
+    const opts =
+      marketType === SCALAR
+        ? { removeComma: true }
+        : { ...BINARY_CATEGORICAL_SHARE_OPTIONS, removeComma: true };
 
     return (
       <section className={Styles.TradeHistory}>
