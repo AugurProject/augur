@@ -1,3 +1,8 @@
+if (typeof window === "undefined" && typeof self !== "undefined") {
+  //@ts-ignore
+  self.window = self;
+}
+
 import {
   OrderEvent,
   OrderInfo,
