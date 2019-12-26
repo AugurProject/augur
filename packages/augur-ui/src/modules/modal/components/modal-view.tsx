@@ -48,6 +48,7 @@ import ModalWalletError from 'modules/modal/containers/modal-wallet-error';
 import ModalAugurUsesDai from 'modules/modal/containers/modal-augur-uses-dai';
 import ModalTutorialOutro from 'modules/modal/containers/modal-tutorial-outro';
 import ModalTutorialIntro from 'modules/modal/containers/modal-tutorial-intro';
+import ModalScalar from 'modules/modal/containers/modal-scalar'
 
 import * as TYPES from 'modules/common/constants';
 
@@ -164,6 +165,8 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalAugurUsesDai />
     case TYPES.MODA_WALLET_ERROR:
       return <ModalWalletError />
+    case TYPES.MODAL_SCALAR_MARKET:
+      return <ModalScalar {...modal} />
     default:
       return <div />;
   }
