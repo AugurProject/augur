@@ -44,6 +44,7 @@ export interface DescriptionProps {
 
 export interface ButtonsRowProps {
   buttons: Array<DefaultButtonProps>;
+  checkBox?: CheckboxCTAProps;
 }
 
 export interface AlertMessageProps {

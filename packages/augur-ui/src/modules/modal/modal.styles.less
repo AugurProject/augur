@@ -3003,3 +3003,58 @@ div.ButtonsRow:last-of-type {
     }
   }
 }
+
+.Scalar {
+  .Message;
+
+  > header {
+    border-bottom: 0;
+  }
+
+  > main {
+    .text-14;
+    border-top: 1px solid @color-secondary-action-outline;
+    border-bottom: 1px solid @color-secondary-action-outline;
+    color: @color-primary-text;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+    grid-gap: @size-16 0;
+
+    > h4 {
+      .text-14-medium;
+    }
+  
+    > ul {
+      padding-left: @size-24;
+      list-style: disc;
+      > li {
+        margin: @size-8 0;
+  
+        > button {
+          background: none;
+          border: 0;
+        }
+      }
+    }
+  }
+
+  > div:last-of-type {
+    align-items: center;
+    display: flex;
+    flex-flow: row nowrap;
+    padding: @size-16 @size-24;
+
+    > label {
+      color: @color-secondary-text;
+      display: flex;
+      flex-flow: row nowrap;
+      flex: 1;
+      margin-bottom: 0;
+
+      > div {
+        margin-right: @size-24;
+      }
+    }
+  }
+}
