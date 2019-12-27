@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
-import { EVENT_EXPIRATION_TOOLTIP, SCALAR } from 'modules/common/constants';
+import {
+  EVENT_EXPIRATION_TOOLTIP,
+  SCALAR,
+  BINARY_CATEGORICAL_FORMAT_OPTIONS,
+} from 'modules/common/constants';
 import Styles from 'modules/market/components/core-properties/core-properties.styles.less';
 import { PropertyLabel, TimeLabel } from 'modules/common/labels';
 import {
@@ -24,7 +28,11 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({
   reportingBarShowing,
 }) => {
   const [showExtraDetails, setShowExtraDetails] = useState(false);
-
+  const isScalar = market.marketType === SCALAR;
+  const opts =
+    isScalar
+      ? {}
+      : { ...BINARY_CATEGORICAL_FORMAT_OPTIONS };
   return (
     <div
       className={classNames(Styles.CoreProperties, {
@@ -94,8 +102,8 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({
                 label="Estimated Fee"
                 value={
                   market.settlementFeePercent
-                    ? market.settlementFeePercent.full
-                    : formatPercent(market.settlementFee).full
+                    ? formatPercent(market.settlementFeePercent.formattedValue, opts).full
+                    : formatPercent(Number(market.settlementFee) * 100, opts).full
                 }
                 hint={
                   <>
@@ -156,7 +164,7 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({
         )}
       </div>
 
-      {market.marketType === SCALAR &&
+      {isScalar &&
         (!reportingBarShowing || showExtraDetails) && (
           <div className={Styles.ScalarBox}>
             <MarketScalarOutcomeDisplay
