@@ -121,7 +121,7 @@ export interface MatchingOrders {
 export class ZeroX {
   private readonly augur: Augur;
   private readonly meshClient: WSClient;
-  private readonly browserMesh: BrowserMesh;
+  private browserMesh: BrowserMesh;
 
   constructor(augur: Augur, meshClient?: WSClient, browserMesh?: BrowserMesh) {
     if (!(browserMesh || meshClient)) {
@@ -131,8 +131,14 @@ export class ZeroX {
     this.augur = augur;
     this.meshClient = meshClient;
     this.browserMesh = browserMesh;
+  }
+
+  setMesh(mesh: BrowserMesh) {
+    this.browserMesh = mesh;
+  }
+
+  startAsync() {
     if (this.browserMesh) {
-      this.browserMesh.onError((err) => { console.error(`BROWSER MESH ERROR: ${JSON.stringify(err)}`); })
       this.browserMesh.startAsync();
     }
   }
