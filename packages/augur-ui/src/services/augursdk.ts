@@ -53,16 +53,9 @@ export class SDK {
       Addresses[this.networkId].Cash,
     );
 
-    const connector = this.pickConnector(env['sdkEndpoint']);
-
     const ethereumRPCURL = env['ethereum-node'].http
     ? env['ethereum-node'].http
     : 'http://localhost:8545';
-
-    connector.connect(
-      ethereumRPCURL,
-      account,
-    );
 
     const enableFlexSearch = false; // TODO configurable
     const meshClient = env['0x-endpoint'] ? new WSClient(env['0x-endpoint']) : undefined;
@@ -87,6 +80,12 @@ export class SDK {
       ...meshBrowserConfigExtra,
     });
 
+    const connector = this.pickConnector(env['sdkEndpoint']);
+    await connector.connect(
+      ethereumRPCURL,
+      account,
+    );
+
     this.sdk = await Augur.create<Provider>(
       ethersProvider,
       contractDependencies,
@@ -102,6 +101,7 @@ export class SDK {
       await this.getOrCreateGnosisSafe(account);
     }
 
+    //@ts-ignore
     window.AugurSDK = this.sdk;
 
     return this.sdk;
@@ -171,7 +171,7 @@ export class SDK {
     if (sdkEndpoint) {
       return new Connectors.WebsocketConnector(sdkEndpoint);
     } else {
-      return new WebWorkerConnector();
+      return new Connectors.SingleThreadConnector();
     }
   }
 

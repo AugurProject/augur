@@ -51,7 +51,7 @@ export class Gnosis {
     // TODO this currently doesn't work - using setInterval as workaround - see #4809
     // Check safe status on new block. Possible to wait for a transfer event to show up in the DB if this is problematic.
     augur
-      .getAugurEventEmitter()
+      .events
       .on(SubscriptionEventName.NewBlock, this.onNewBlock);
 
     this.provider.storeAbiData(abi.GnosisSafe as Abi, 'GnosisSafe');
@@ -105,7 +105,7 @@ export class Gnosis {
       }
 
       this.augur
-        .getAugurEventEmitter()
+        .events
         .emit(SubscriptionEventName.GnosisSafeStatus, {
           ...s,
           status,
@@ -131,7 +131,7 @@ export class Gnosis {
     const safe = await this.getGnosisSafeAddress(owner);
     if (ethersUtils.getAddress(safe) !== ethersUtils.getAddress(NULL_ADDRESS)) {
       this.augur
-        .getAugurEventEmitter()
+        .events
         .emit(SubscriptionEventName.GnosisSafeStatus, {
           status: GnosisSafeState.AVAILABLE,
           safe,
@@ -170,7 +170,7 @@ export class Gnosis {
         return params;
       } else if (status.status === GnosisSafeState.CREATED) {
         this.augur
-          .getAugurEventEmitter()
+          .events
           .emit(SubscriptionEventName.GnosisSafeStatus, {
             status: GnosisSafeState.CREATED,
             safe: params.safe,

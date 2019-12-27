@@ -1,8 +1,3 @@
-if (typeof window === "undefined" && typeof self !== "undefined") {
-  //@ts-ignore
-  self.window = self;
-}
-
 import {
   OrderEvent,
   OrderInfo,
@@ -132,18 +127,18 @@ export class ZeroX {
     this.meshClient = meshClient;
     this.browserMesh = browserMesh;
     if (this.browserMesh) {
-      this.browserMesh.onError((err) => { console.error(`BROWSER MESH ERROR: ${JSON.stringify(err)}`); })
+      this.browserMesh.onError((err) => { console.log('BROWSER MESH ERROR', err); })
       this.browserMesh.startAsync();
     }
   }
 
-  async subscribeToMeshEvents(
+  subscribeToMeshEvents(
     callback: (orderEvents: OrderEvent[]) => void
-  ): Promise<void> {
+  ) {
     if (this.browserMesh) {
-      await this.browserMesh.onOrderEvents(callback);
+      this.browserMesh.onOrderEvents(callback);
     } else {
-      await this.meshClient.subscribeToOrdersAsync(callback);
+      this.meshClient.subscribeToOrdersAsync(callback);
     }
   }
 

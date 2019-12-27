@@ -74,7 +74,7 @@ export class WebsocketConnector extends BaseConnector {
     });
     this.subscriptions[eventName] = {
       id: response.result.subscription,
-      callback: super.callbackWrapper(callback),
+      callback: super.callbackWrapper(eventName, callback),
     };
   }
 
