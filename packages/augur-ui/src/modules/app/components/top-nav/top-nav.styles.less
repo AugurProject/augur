@@ -67,18 +67,56 @@
       }
     }
 
-    > button {
+    > button:not(.AddFunds) {
       background: @color-primary-action;
       color: @color-dark-grey;
       position: absolute;
-      right: @size-48;
+      right: calc(96px + @size-48);
     }
 
     > span {
       height: @size-19;
       position: absolute;
-      right: 0;
+      right: 96px;
       width: @size-32;
+    }
+  }
+}
+
+button.AddFunds {
+  .mono-10-bold;
+
+  align-items: center;
+  background: fade(@color-positive, 20%);
+  border: 1px solid @color-open;
+  border-radius: @border-radius-default;
+  color: @color-primary-text;
+  display: flex;
+  justify-content: center;
+  min-height: @size-22;
+  height: @size-22;
+  max-height: @size-22;
+  width: 80px;
+  min-width: 80px;
+  max-width: 80px;
+  text-transform: uppercase;
+  position: absolute;
+  right: @size-16;
+
+  > svg {
+    fill: none;
+    height: @size-12;
+    width: @size-12;
+    margin-left: @size-4;
+
+    > circle {
+      fill: @color-positive;
+    }
+
+    > rect {
+      fill: @color-primary-text;
+      height: 1px;
+      width: @size-8;
     }
   }
 }

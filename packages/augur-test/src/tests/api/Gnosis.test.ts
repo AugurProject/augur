@@ -147,6 +147,7 @@ describe('Gnosis :: ', () => {
       gasPriceEstimated: '0x1',
       gasEstimated: '0x7270e0',
       payment: '0x7270e0',
+      callback: '0x0000000000000000000000000000000000000000'
     };
 
     jest.spyOn(mockGnosisRelay, 'createSafe').mockResolvedValue(fakeResponse);

@@ -203,7 +203,7 @@ def pytest_configure(config):
     # register an additional marker
     config.addinivalue_line("markers", "cover: use coverage contracts")
 
-TRADING_CONTRACTS = ['CreateOrder','FillOrder','CancelOrder','Trade','Orders','ZeroXTrade','ProfitLoss','SimulateTrade']
+TRADING_CONTRACTS = ['CreateOrder','FillOrder','CancelOrder','Trade','Orders','ZeroXTrade','ProfitLoss','SimulateTrade','GnosisSafeRegistry']
 
 class ContractsFixture:
     signatures = {}
@@ -525,7 +525,7 @@ class ContractsFixture:
         self.uploadAndAddToAugur("../source/contracts/uniswap/UniswapV2Factory.sol", constructorArgs=["", 1])
 
     def initializeAllContracts(self):
-        coreContractsToInitialize = ['Time','GnosisSafeRegistry','ShareToken','WarpSync','RepPriceOracle']
+        coreContractsToInitialize = ['Time','ShareToken','WarpSync','RepPriceOracle']
         for contractName in coreContractsToInitialize:
             if getattr(self.contracts[contractName], "initialize", None):
                 self.contracts[contractName].initialize(self.contracts['Augur'].address)

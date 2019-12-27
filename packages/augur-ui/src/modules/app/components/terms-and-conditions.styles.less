@@ -3,77 +3,22 @@
 .TermsAndConditions {
   .text-12;
 
-  color: @color-primary-text;
+  align-items: center;
+  border-top: 1px solid @color-dark-grey;
+  color: @color-secondary-text;
   display: flex;
-  flex: 0 0 auto;
-  justify-content: space-between;
-  text-align: center;
-  white-space: nowrap;
+  flex-flow: row nowrap;
+  height: @size-40;
+  justify-content: flex-end;
+  // padding-right needs to be more than the size of global chat button
+  padding: 0 105px 0 @size-40;
 
-  > div {
-    flex: 0 0 auto;
-    padding: 0 @size-4;
-
-    a,
-    span {
-      flex: none;
-    }
-
-    a {
-      align-self: flex-start;
-    }
-
-    span {
-      align-self: flex-end;
-      font-weight: @weight-bold;
-    }
-
-    a::after,
-    span::after {
-      content: "|";
-      padding: 0 @size-8;
-
-      @media @breakpoint-mobile-medium {
-        content: "";
-        padding: 0;
-      }
-    }
-
-    a:last-child::after,
-    span:last-child::after {
-      content: "";
-    }
-
-    span > span {
-      font-weight: normal;
-    }
-
-    span > span::after {
-      content: "";
-      padding: 0;
-    }
+  > a {
+    padding: 0 @size-16;
+    text-decoration: underline;
   }
 
-  @media @breakpoint-mobile-medium {
-    & {
-      display: flex;
-      flex-flow: column wrap;
-      flex-grow: 0;
-    }
-
-    > div {
-      align-content: space-around;
-      display: flex;
-      flex-flow: column wrap;
-
-      a,
-      span {
-        .text-12;
-
-        align-self: flex-start;
-        flex-basis: 100%;
-        padding: @size-8 0;
-      }
-    }
+  > a:last-of-type {
+    border-left: 1px solid @color-secondary-text;
   }
 }

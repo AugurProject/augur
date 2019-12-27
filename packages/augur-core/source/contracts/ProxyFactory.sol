@@ -1,6 +1,21 @@
 pragma solidity 0.5.10;
 
 
+/// @title IProxy - Helper interface to access masterCopy of the Proxy on-chain
+/// @author Richard Meissner - <richard@gnosis.io>
+interface IProxy {
+    function masterCopy() external view returns (address);
+}
+
+
+interface IProxyCreationCallback {
+    function proxyCreated(Proxy proxy, address _mastercopy, bytes calldata initializer, uint256 saltNonce) external;
+}
+
+
+/// @title Proxy - Generic proxy contract allows to execute all transactions applying the code of a master contract.
+/// @author Stefan George - <stefan@gnosis.io>
+/// @author Richard Meissner - <richard@gnosis.io>
 contract Proxy {
 
     // masterCopy always needs to be first declared variable, to ensure that it is at the same location in the contracts to which calls are delegated.
@@ -88,6 +103,7 @@ contract ProxyFactory {
         assembly {
             proxy := create2(0x0, add(0x20, deploymentData), mload(deploymentData), salt)
         }
+        require(address(proxy) != address(0), "Create2 call failed");
     }
 
     /// @dev Allows to create new proxy contact and execute a message call to the new proxy within one transaction.
@@ -106,6 +122,21 @@ contract ProxyFactory {
             }
         }
         emit ProxyCreation(proxy);
+    }
+
+    /// @dev Allows to create new proxy contact, execute a message call to the new proxy and call a specified callback within one transaction
+    /// @param _mastercopy Address of master copy.
+    /// @param initializer Payload for message call sent to new proxy contract.
+    /// @param saltNonce Nonce that will be used to generate the salt to calculate the address of the new proxy contract.
+    /// @param callback Callback that will be invoced after the new proxy contract has been successfully deployed and initialized.
+    function createProxyWithCallback(address _mastercopy, bytes memory initializer, uint256 saltNonce, IProxyCreationCallback callback)
+        public
+        returns (Proxy proxy)
+    {
+        uint256 saltNonceWithCallback = uint256(keccak256(abi.encodePacked(saltNonce, callback)));
+        proxy = createProxyWithNonce(_mastercopy, initializer, saltNonceWithCallback);
+        if (address(callback) != address(0))
+            callback.proxyCreated(proxy, _mastercopy, initializer, saltNonce);
     }
 
     /// @dev Allows to get the address for a new proxy contact created via `createProxyWithNonce`

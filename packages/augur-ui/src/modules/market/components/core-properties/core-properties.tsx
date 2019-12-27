@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import { EVENT_EXPIRATION_TOOLTIP, SCALAR } from 'modules/common/constants';
+import {
+  EVENT_EXPIRATION_TOOLTIP,
+  SCALAR,
+  BINARY_CATEGORICAL_FORMAT_OPTIONS,
+} from 'modules/common/constants';
 import Styles from 'modules/market/components/core-properties/core-properties.styles.less';
-import getValue from 'utils/get-value';
 import { PropertyLabel, TimeLabel } from 'modules/common/labels';
 import {
   formatPercent,
   formatDai,
-  formatNone,
-  formatNumber,
   formatRep,
   formatAttoRep,
 } from 'utils/format-number';
@@ -22,23 +23,32 @@ interface CorePropertiesProps {
 }
 
 // TODO: Get market 24 hour volume, currently just using volume
-const CoreProperties: React.FC<CorePropertiesProps> = ({ market, reportingBarShowing }) => {
+const CoreProperties: React.FC<CorePropertiesProps> = ({
+  market,
+  reportingBarShowing,
+}) => {
   const [showExtraDetails, setShowExtraDetails] = useState(false);
-
+  const isScalar = market.marketType === SCALAR;
+  const opts =
+    isScalar
+      ? {}
+      : { ...BINARY_CATEGORICAL_FORMAT_OPTIONS };
   return (
     <div
       className={classNames(Styles.CoreProperties, {
         [Styles.ReportingBarShowing]: reportingBarShowing,
       })}
     >
-      <div>
+      <div
+        className={classNames({ [Styles.ShowExtraDetails]: showExtraDetails })}
+      >
         <div>
           <PropertyLabel
             label="Total Volume"
             value={
-              (market.volumeFormatted
+              market.volumeFormatted
                 ? market.volumeFormatted.full
-                : formatDai(0).full)
+                : formatDai(0).full
             }
           />
           {reportingBarShowing && (
@@ -59,9 +69,9 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({ market, reportingBarSho
               <PropertyLabel
                 label="Total Dispute Stake"
                 value={
-                  (market.disputeInfo
+                  market.disputeInfo
                     ? formatAttoRep(market.disputeInfo.stakeCompletedTotal).full
-                    : formatRep(0).full)
+                    : formatRep(0).full
                 }
               />
               <TimeLabel
@@ -75,25 +85,25 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({ market, reportingBarSho
               <PropertyLabel
                 label="Open Interest"
                 value={
-                  (market.openInterestFormatted
+                  market.openInterestFormatted
                     ? market.openInterestFormatted.full
-                    : formatDai(0).full)
+                    : formatDai(0).full
                 }
               />
               <PropertyLabel
                 label="24hr Volume"
                 value={
-                  (market.volumeFormatted
+                  market.volumeFormatted
                     ? market.volumeFormatted.full
-                    : formatDai(0).full)
+                    : formatDai(0).full
                 }
               />
               <PropertyLabel
                 label="Estimated Fee"
                 value={
                   market.settlementFeePercent
-                    ? market.settlementFeePercent.full
-                    : formatPercent(market.settlementFee).full
+                    ? formatPercent(market.settlementFeePercent.formattedValue, opts).full
+                    : formatPercent(Number(market.settlementFee) * 100, opts).full
                 }
                 hint={
                   <>
@@ -102,10 +112,20 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({ market, reportingBarSho
                       The trading settlement fee is a combination of the Market
                       Creator Fee (
                       <b>
-                        {formatPercent(Number(market.marketCreatorFeeRate) * 100).full}
+                        {
+                          formatPercent(
+                            Number(market.marketCreatorFeeRate) * 100
+                          ).full
+                        }
                       </b>
                       ) and the Reporting Fee (
-                      <b>{formatPercent(Number(market.reportingFeeRate) * 100).full}</b>)
+                      <b>
+                        {
+                          formatPercent(Number(market.reportingFeeRate) * 100)
+                            .full
+                        }
+                      </b>
+                      )
                     </p>
                   </>
                 }
@@ -144,7 +164,7 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({ market, reportingBarSho
         )}
       </div>
 
-      {market.marketType === SCALAR &&
+      {isScalar &&
         (!reportingBarShowing || showExtraDetails) && (
           <div className={Styles.ScalarBox}>
             <MarketScalarOutcomeDisplay

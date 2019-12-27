@@ -904,48 +904,46 @@ export const SimpleTimeSelector = (props: EstimatedStartSelectorProps) => {
   }, [endTime, hour, minute, meridiem, timezone, offset, offsetName]);
 
   return (
-    <div>
-      <DateTimeSelector
-        setEndTime={endTime}
-        condensedStyle
-        onChange={(label, value) => {
-          switch (label) {
-            case 'timezoneDropdown':
-              const { offset, timezone, offsetName } = value;
-              setOffset(Number(offset));
-              setTimezone(timezone);
-              setOffsetName(offsetName);
-              break;
-            case 'setEndTime':
-              setEndTime(value);
-              break;
-            case 'timeSelector':
-              if (value.hour) setHour(value.hour);
-              if (value.minute) setMinute(value.minute);
-              if (value.meridiem) setMeridiem(value.meridiem);
-              break;
-            case 'minute':
-              setMinute(value);
-              break;
-            case 'hour':
-              setHour(value);
-              break;
-            case 'meridiem':
-              setMeridiem(value);
-              break;
-            default:
-              break;
-          }
-        }}
-        hour={hour ? String(hour) : null}
-        minute={minute ? String(minute) : null}
-        meridiem={meridiem}
-        timezone={timezone}
-        currentTimestamp={currentTime}
-        endTimeFormatted={endTimeFormatted}
-        uniqueKey={'startTime'}
-      />
-    </div>
+    <DateTimeSelector
+      setEndTime={endTime}
+      condensedStyle
+      onChange={(label, value) => {
+        switch (label) {
+          case 'timezoneDropdown':
+            const { offset, timezone, offsetName } = value;
+            setOffset(Number(offset));
+            setTimezone(timezone);
+            setOffsetName(offsetName);
+            break;
+          case 'setEndTime':
+            setEndTime(value);
+            break;
+          case 'timeSelector':
+            if (value.hour) setHour(value.hour);
+            if (value.minute) setMinute(value.minute);
+            if (value.meridiem) setMeridiem(value.meridiem);
+            break;
+          case 'minute':
+            setMinute(value);
+            break;
+          case 'hour':
+            setHour(value);
+            break;
+          case 'meridiem':
+            setMeridiem(value);
+            break;
+          default:
+            break;
+        }
+      }}
+      hour={hour ? String(hour) : null}
+      minute={minute ? String(minute) : null}
+      meridiem={meridiem}
+      timezone={timezone}
+      currentTimestamp={currentTime}
+      endTimeFormatted={endTimeFormatted}
+      uniqueKey={'startTime'}
+    />
   );
 };
 

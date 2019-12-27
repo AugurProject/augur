@@ -15,7 +15,7 @@
 
   > span:first-of-type {
     display: flex;
-    align-items: center;
+    align-items: end;
 
     > label {
       display: inline-block;
@@ -24,18 +24,16 @@
       width: @size-12;
 
       > svg {
-        fill: none;
         height: @size-12;
         width: @size-12;
-
+    
         > circle {
-          fill: @color-primary-text;
-          stroke: @color-primary-text;
-          stroke-width: 1.5;
+          fill: none;
+          stroke: @color-secondary-text;
         }
-
+    
         > path {
-          fill: @color-inactive-text;
+          fill: @color-secondary-text;
         }
       }
     }
@@ -174,7 +172,7 @@
   > span:first-of-type {
     .mono-9-bold;
 
-    align-items: center;
+    align-items: end;
     color: @color-secondary-text;
     display: flex;
     flex-flow: row nowrap;
@@ -188,18 +186,16 @@
       width: @size-12;
 
       > svg {
-        fill: none;
         height: @size-12;
         width: @size-12;
-
+    
         > circle {
-          fill: @color-primary-text;
-          stroke: @color-primary-text;
-          stroke-width: 1.5;
+          fill: none;
+          stroke: @color-secondary-text;
         }
-
+    
         > path {
-          fill: @color-inactive-text;
+          fill: @color-secondary-text;
         }
       }
     }
@@ -465,7 +461,7 @@ div.LinearPropertyViewTransaction {
 }
 
 .MarketTypeLabel {
-  .mono-9-bold;
+  .mono-10-bold;
 
   background: fade(@color-secondary-text, 30%);
   border-radius: @border-radius-default;
@@ -473,8 +469,34 @@ div.LinearPropertyViewTransaction {
   color: @color-primary-text;
   line-height: @size-11;
   max-width: fit-content;
-  padding: 0 @size-2;
+  padding: 0 @size-4;
   text-transform: uppercase;
+  white-space: nowrap;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+
+  &.MarketScalarLabel {
+    background: fade(@color-scalar, 20%);
+    color: @color-scalar;
+
+    > svg {
+      fill: none;
+      height: @size-6;
+      margin-left: @size-4;
+      width: @size-20;
+
+      >rect {
+        fill: @color-scalar;
+        height: 1.5px;
+        width: @size-20;
+      }
+
+      > path {
+        fill: @color-scalar;
+      }
+    }
+  }
 }
 
 .MarketStatus {
@@ -711,9 +733,10 @@ div.LinearPropertyViewTransaction {
   // Required to make ellipsis work.
   min-width: 0;
 
-  > svg {
+  > label {
     display: flex;
     margin-right: @size-8;
+    margin-bottom: 0;
   }
 
   > button {

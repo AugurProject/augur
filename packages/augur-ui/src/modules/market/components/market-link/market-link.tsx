@@ -58,11 +58,10 @@ const MarketLink: React.FC<MarketLinkProps> = ({ linkType, className, id, outcom
   }
 
   return (
-    <span>
+    <span className={className}>
       {id ? (
         <Link
           data-testid={"link-" + id}
-          className={className}
           to={{
             pathname: path,
             search: makeQuery(queryLink)

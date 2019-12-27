@@ -412,12 +412,7 @@ class Form extends Component<FromProps, FormState> {
         isOrderValid: isThisOrderValid,
         errors: quantityErrors,
         errorCount: quantityErrorCount,
-      } = this.testQuantity(
-        quantity,
-        errors,
-        isOrderValid,
-        fromExternal
-      );
+      } = this.testQuantity(quantity, errors, isOrderValid, fromExternal);
 
       quantityValid = isThisOrderValid;
       errorCount += quantityErrorCount;
@@ -718,9 +713,7 @@ class Form extends Component<FromProps, FormState> {
             </div>
           </li>
           <li>
-            <label htmlFor="tr__input--limit-price">
-              Limit Price
-            </label>
+            <label htmlFor="tr__input--limit-price">Limit Price</label>
             <div
               className={classNames(Styles.TradingFormInputContainer, {
                 [Styles.error]: s.errors[this.INPUT_TYPES.PRICE].length,
@@ -860,7 +853,7 @@ class Form extends Component<FromProps, FormState> {
             </li>
           )}
           {s.showAdvanced && (
-            <li>
+            <li className={Styles.AdvancedShown}>
               <SquareDropdown
                 defaultValue={advancedOptions[0].value}
                 options={advancedOptions}
@@ -886,47 +879,45 @@ class Form extends Component<FromProps, FormState> {
                 }}
               />
               {s.advancedOption === '1' && (
-                <div>
-                  <div>
-                    {s.expirationDateOption ===
-                      EXPIRATION_DATE_OPTIONS.DAYS && (
-                      <TextInput
-                        value={s.fastForwardDays.toString()}
-                        placeholder={'0'}
-                        onChange={value => {
-                          const days =
-                            value === '' || isNaN(value) ? 0 : parseInt(value);
-                          updateState({
-                            [this.INPUT_TYPES.EXPIRATION_DATE]: moment
-                              .unix(currentTimestamp)
-                              .add(days, 'days'),
-                          });
-                          this.setState({ fastForwardDays: days });
-                        }}
-                      />
-                    )}
-                    <SquareDropdown
-                      defaultValue={EXPIRATION_DATE_OPTIONS.DAYS}
-                      options={[
-                        {
-                          label: 'Days',
-                          value: EXPIRATION_DATE_OPTIONS.DAYS,
-                        },
-                        {
-                          label: 'Custom',
-                          value: EXPIRATION_DATE_OPTIONS.CUSTOM,
-                        },
-                      ]}
+                <>
+                  {s.expirationDateOption === EXPIRATION_DATE_OPTIONS.DAYS && (
+                    <TextInput
+                      value={s.fastForwardDays.toString()}
+                      placeholder={'0'}
                       onChange={value => {
-                        this.setState({ expirationDateOption: value });
+                        const days =
+                          value === '' || isNaN(value) ? 0 : parseInt(value);
+                        updateState({
+                          [this.INPUT_TYPES.EXPIRATION_DATE]: moment
+                            .unix(currentTimestamp)
+                            .add(days, 'days'),
+                        });
+                        this.setState({ fastForwardDays: days });
                       }}
                     />
-                  </div>
+                  )}
+                  <SquareDropdown
+                    defaultValue={EXPIRATION_DATE_OPTIONS.DAYS}
+                    options={[
+                      {
+                        label: 'Days',
+                        value: EXPIRATION_DATE_OPTIONS.DAYS,
+                      },
+                      {
+                        label: 'Custom',
+                        value: EXPIRATION_DATE_OPTIONS.CUSTOM,
+                      },
+                    ]}
+                    onChange={value => {
+                      this.setState({ expirationDateOption: value });
+                    }}
+                  />
                   {s.expirationDateOption === EXPIRATION_DATE_OPTIONS.DAYS && (
                     <span>
                       {
                         convertUnixToFormattedDate(
-                          s[this.INPUT_TYPES.EXPIRATION_DATE] && s[this.INPUT_TYPES.EXPIRATION_DATE].unix()
+                          s[this.INPUT_TYPES.EXPIRATION_DATE] &&
+                            s[this.INPUT_TYPES.EXPIRATION_DATE].unix()
                         ).formattedLocalShortWithUtcOffset
                       }
                     </span>
@@ -946,10 +937,10 @@ class Form extends Component<FromProps, FormState> {
                       />
                     </section>
                   )}
-                </div>
+                </>
               )}
               {s.advancedOption === ADVANCED_OPTIONS.FILL && (
-                <span>
+                <span className={Styles.tipText}>
                   Fill Only will fill up to the specified amount. Can be
                   partially filled and will cancel the remaining balance.
                 </span>
