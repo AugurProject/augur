@@ -4640,7 +4640,7 @@ export const TEMPLATES = {
                 id: 3,
                 type: TemplateInputType.DATEYEAR,
                 placeholder: `Day of Year`,
-                validationType: ValidationType.NONWEEKEND,
+                validationType: ValidationType.WEEKDAYONLY,
               },
             ],
             resolutionRules: {
@@ -4683,13 +4683,13 @@ export const TEMPLATES = {
                 id: 3,
                 type: TemplateInputType.DATEYEAR,
                 placeholder: `Start Day of Year`,
-                validationType: ValidationType.NONWEEKEND,
+                validationType: ValidationType.WEEKDAYONLY,
               },
               {
                 id: 4,
                 type: TemplateInputType.DATEYEAR,
                 placeholder: `End Day of Year`,
-                validationType: ValidationType.NONWEEKEND,
+                validationType: ValidationType.WEEKDAYONLY,
               },
             ],
             resolutionRules: {
@@ -4726,7 +4726,7 @@ export const TEMPLATES = {
                 id: 2,
                 type: TemplateInputType.DATEYEAR,
                 placeholder: `Day of Year`,
-                validationType: ValidationType.NONWEEKEND,
+                validationType: ValidationType.WEEKDAYONLY,
               },
             ],
             resolutionRules: {
@@ -4768,7 +4768,7 @@ export const TEMPLATES = {
                 id: 2,
                 type: TemplateInputType.DATEYEAR,
                 placeholder: `Day of Year`,
-                validationType: ValidationType.NONWEEKEND,
+                validationType: ValidationType.WEEKDAYONLY,
               },
             ],
             resolutionRules: {
@@ -4798,7 +4798,7 @@ export const TEMPLATES = {
                 id: 2,
                 type: TemplateInputType.DATEYEAR,
                 placeholder: `Day of Year`,
-                validationType: ValidationType.NONWEEKEND,
+                validationType: ValidationType.WEEKDAYONLY,
               },
             ],
             resolutionRules: {

@@ -189,12 +189,12 @@ export function checkForUserInputFilled(inputs, endTimeFormatted) {
     ) {
       return 'Must enter a valid number';
     }
-    else if (input.type === TemplateInputType.DATEYEAR && input.validationType === ValidationType.NONWEEKEND){
+    else if (input.type === TemplateInputType.DATEYEAR && input.validationType === ValidationType.WEEKDAYONLY){
       // day can not be a weekend
       if (input.setEndTime) {
         const dayOfWeek = moment.unix(input.setEndTime).weekday()
         if (dayOfWeek === SATURDAY_DAY_OF_WEEK || dayOfWeek === SUNDAY_DAY_OF_WEEK) {
-          return 'non-weekend is required';
+          return 'weekday is required';
         }
         return '';
       }

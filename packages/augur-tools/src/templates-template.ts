@@ -166,7 +166,7 @@ export interface RetiredTemplate {
 export enum ValidationType {
   WHOLE_NUMBER = 'WHOLE_NUMBER',
   NUMBER = 'NUMBER',
-  NONWEEKEND = 'NONWEEKEND',
+  WEEKDAYONLY = 'WEEKDAYONLY',
 }
 
 export enum TemplateInputType {
