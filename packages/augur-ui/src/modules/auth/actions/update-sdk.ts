@@ -9,6 +9,7 @@ import { updateAppStatus, GNOSIS_ENABLED, Ox_ENABLED } from 'modules/app/actions
 import { loadAccountDataFromLocalStorage } from './load-account-data-from-local-storage';
 import { IS_LOGGED, updateAuthStatus } from 'modules/auth/actions/auth-status';
 import { loadAccountData } from 'modules/auth/actions/load-account-data';
+import { updateAssets } from 'modules/auth/actions/update-assets';
 
 export const updateSdk = (
   loginAccount: Partial<LoginAccount>,
@@ -59,6 +60,7 @@ export const updateSdk = (
     dispatch(loadAccountDataFromLocalStorage(loginAccount.address));
     dispatch(updateAuthStatus(IS_LOGGED, true));
     dispatch(loadAccountData());
+    dispatch(updateAssets());
 
   } catch (error) {
     logError(error);
