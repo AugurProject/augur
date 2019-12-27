@@ -9,7 +9,7 @@ import {
   BUY,
   SELL,
   SCALAR,
-  BINARY_CATEGORICAL_SHARE_OPTIONS,
+  BINARY_CATEGORICAL_FORMAT_OPTIONS,
 } from 'modules/common/constants';
 
 import Styles from 'modules/market-charts/components/order-book/order-book.styles.less';
@@ -85,7 +85,7 @@ class OrderBookSide extends Component<OrderBookSideProps, {}> {
     const opts =
       marketType === SCALAR
         ? { removeComma: true }
-        : { ...BINARY_CATEGORICAL_SHARE_OPTIONS, removeComma: true };
+        : { ...BINARY_CATEGORICAL_FORMAT_OPTIONS, removeComma: true };
     const orderBookOrders = isAsks
       ? orderBook.asks || []
       : orderBook.bids || [];

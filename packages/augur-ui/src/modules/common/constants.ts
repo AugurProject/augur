@@ -878,7 +878,7 @@ export const COLUMN_TYPES = {
   [PLAIN]: PLAIN,
 };
 
-export const BINARY_CATEGORICAL_SHARE_OPTIONS = {
+export const BINARY_CATEGORICAL_FORMAT_OPTIONS = {
   decimals: 2,
   decimalsRounded: 2,
 };
