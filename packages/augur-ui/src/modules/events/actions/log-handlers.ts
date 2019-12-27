@@ -239,6 +239,7 @@ export const handleTokenBalanceChangedLog = (
 };
 
 export const handleOrderLog = (log: any) => {
+  console.log('Order Event: ', log);
   const type = log.eventType;
   switch (type) {
     case Logs.OrderEventType.Cancel: {
