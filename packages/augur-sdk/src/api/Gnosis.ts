@@ -275,7 +275,6 @@ export class Gnosis {
 
     const setupData = await this.buildRegistrationData();
 
-<<<<<<< HEAD
     const response = await this.gnosisRelay.createSafe({
       saltNonce: AUGUR_GNOSIS_SAFE_NONCE,
       owners: [params.owner],
