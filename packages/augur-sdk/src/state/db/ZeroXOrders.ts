@@ -124,7 +124,7 @@ export class ZeroXOrders extends AbstractTable {
     let documents = _.map(filteredOrders, this.processOrder.bind(this));
     documents = _.filter(documents, this.validateStoredOrder.bind(this));
     await this.bulkUpsertDocuments(documents);
-    this.augur.getAugurEventEmitter().emit('ZeroXOrders', documents);
+    this.augur.events.emit('ZeroXOrders', documents);
   }
 
   async sync(): Promise<void> {
@@ -140,7 +140,7 @@ export class ZeroXOrders extends AbstractTable {
       });
       await this.bulkUpsertDocuments(documents);
     }
-    this.augur.getAugurEventEmitter().emit('ZeroXOrders', {});
+    this.augur.events.emit('ZeroXOrders', {});
   }
 
   validateOrder(order: OrderInfo): boolean {

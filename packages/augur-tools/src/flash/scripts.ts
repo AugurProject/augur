@@ -665,7 +665,7 @@ export function addScripts(flash: FlashSession) {
         removed: log.removed || false,
       }));
 
-      let parsedLogs = user.augur.events.parseLogs(logsWithBlockNumber);
+      let parsedLogs = user.augur.contractEvents.parseLogs(logsWithBlockNumber);
 
       // Logs from AugurV1 require additional calls to the blockchain.
       if (v1) {

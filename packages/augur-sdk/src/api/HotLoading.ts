@@ -191,7 +191,7 @@ export class HotLoading {
         template,
     }
 
-    this.augur.getAugurEventEmitter().emit(SubscriptionEventName.MarketsUpdated, { marketsInfo });
+    this.augur.events.emit(SubscriptionEventName.MarketsUpdated, { marketsInfo });
     return marketsInfo;
   }
 

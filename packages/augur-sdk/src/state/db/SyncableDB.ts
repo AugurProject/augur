@@ -124,7 +124,7 @@ export class SyncableDB extends RollbackTable {
     }
     if (documents && (documents as any[]).length) {
       _.each(documents, (document: any) => {
-        this.augur.getAugurEventEmitter().emit(this.eventName, {
+        this.augur.events.emit(this.eventName, {
           eventName: this.eventName,
           ...document,
         });
@@ -137,7 +137,7 @@ export class SyncableDB extends RollbackTable {
   };
 
   protected async getLogs(augur: Augur, startBlock: number, endBlock: number): Promise<ParsedLog[]> {
-    return augur.events.getLogs(this.eventName, startBlock, endBlock);
+    return augur.contractEvents.getLogs(this.eventName, startBlock, endBlock);
   }
 
   getFullEventName(): string {

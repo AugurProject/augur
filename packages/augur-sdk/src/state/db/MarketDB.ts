@@ -36,7 +36,6 @@ interface LiquidityResults {
  * Market specific derived DB intended for filtering purposes
  */
 export class MarketDB extends DerivedDB {
-  private readonly events;
   readonly liquiditySpreads = [10, 15, 20, 100];
   private readonly docProcessMap;
 
@@ -52,8 +51,6 @@ export class MarketDB extends DerivedDB {
       'MarketMigrated'
     ], augur);
 
-    this.events = this.augur.getAugurEventEmitter();
-
     this.docProcessMap = {
       'MarketCreated': this.processMarketCreated.bind(this),
       'InitialReportSubmitted': this.processInitialReportSubmitted,
@@ -65,9 +62,9 @@ export class MarketDB extends DerivedDB {
       'MarketMigrated': this.processMarketMigrated,
     };
 
-    this.events.subscribe('DerivedDB:updated:CurrentOrders', this.syncOrderBooks);
-    this.events.subscribe('controller:new:block', this.processNewBlock);
-    this.events.subscribe('TimestampSet', this.processTimestampSet);
+    this.augur.events.subscribe('DerivedDB:updated:CurrentOrders', this.syncOrderBooks);
+    this.augur.events.subscribe('controller:new:block', this.processNewBlock);
+    this.augur.events.subscribe('TimestampSet', this.processTimestampSet);
   }
 
   async doSync(highestAvailableBlockNumber: number): Promise<void> {
