@@ -3768,46 +3768,107 @@ export class GnosisSafeRegistry<TBigNumber> extends Contract<TBigNumber> {
 		super(dependencies, address)
 	}
 
-	public callRegister = async (gnosisSafeRegistry: string, augur: string, createOrder: string, fillOrder: string, cash: string, shareToken: string, affiliates: string, fingerprint: string, referralAddress: string, options?: { sender?: string }): Promise<Array<Event>> => {
+	public setupForAugur = async (augur: string, createOrder: string, fillOrder: string, cash: string, shareToken: string, affiliates: string, fingerprint: string, referralAddress: string, options?: { sender?: string }): Promise<Array<Event>> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_gnosisSafeRegistry","type":"address"},{"name":"_augur","type":"address"},{"name":"_createOrder","type":"address"},{"name":"_fillOrder","type":"address"},{"name":"_cash","type":"address"},{"name":"_shareToken","type":"address"},{"name":"_affiliates","type":"address"},{"name":"_fingerprint","type":"bytes32"},{"name":"_referralAddress","type":"address"}],"name":"callRegister","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.remoteCall(abi, [gnosisSafeRegistry, augur, createOrder, fillOrder, cash, shareToken, affiliates, fingerprint, referralAddress], 'callRegister', options.sender)
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_augur","type":"address"},{"name":"_createOrder","type":"address"},{"name":"_fillOrder","type":"address"},{"name":"_cash","type":"address"},{"name":"_shareToken","type":"address"},{"name":"_affiliates","type":"address"},{"name":"_fingerprint","type":"bytes32"},{"name":"_referralAddress","type":"address"}],"name":"setupForAugur","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [augur, createOrder, fillOrder, cash, shareToken, affiliates, fingerprint, referralAddress], 'setupForAugur', options.sender)
 	}
 	
-	public callRegister_estimateGas = async (gnosisSafeRegistry: string, augur: string, createOrder: string, fillOrder: string, cash: string, shareToken: string, affiliates: string, fingerprint: string, referralAddress: string, options?: { sender?: string }): Promise<TBigNumber> => {
+	public setupForAugur_estimateGas = async (augur: string, createOrder: string, fillOrder: string, cash: string, shareToken: string, affiliates: string, fingerprint: string, referralAddress: string, options?: { sender?: string }): Promise<TBigNumber> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_gnosisSafeRegistry","type":"address"},{"name":"_augur","type":"address"},{"name":"_createOrder","type":"address"},{"name":"_fillOrder","type":"address"},{"name":"_cash","type":"address"},{"name":"_shareToken","type":"address"},{"name":"_affiliates","type":"address"},{"name":"_fingerprint","type":"bytes32"},{"name":"_referralAddress","type":"address"}],"name":"callRegister","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.estimateGas(abi, [gnosisSafeRegistry, augur, createOrder, fillOrder, cash, shareToken, affiliates, fingerprint, referralAddress], 'callRegister', options.sender)
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_augur","type":"address"},{"name":"_createOrder","type":"address"},{"name":"_fillOrder","type":"address"},{"name":"_cash","type":"address"},{"name":"_shareToken","type":"address"},{"name":"_affiliates","type":"address"},{"name":"_fingerprint","type":"bytes32"},{"name":"_referralAddress","type":"address"}],"name":"setupForAugur","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [augur, createOrder, fillOrder, cash, shareToken, affiliates, fingerprint, referralAddress], 'setupForAugur', options.sender)
 	}
 
-	public callRegister_ = async (gnosisSafeRegistry: string, augur: string, createOrder: string, fillOrder: string, cash: string, shareToken: string, affiliates: string, fingerprint: string, referralAddress: string, options?: { sender?: string }): Promise<void> => {
+	public setupForAugur_ = async (augur: string, createOrder: string, fillOrder: string, cash: string, shareToken: string, affiliates: string, fingerprint: string, referralAddress: string, options?: { sender?: string }): Promise<void> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_gnosisSafeRegistry","type":"address"},{"name":"_augur","type":"address"},{"name":"_createOrder","type":"address"},{"name":"_fillOrder","type":"address"},{"name":"_cash","type":"address"},{"name":"_shareToken","type":"address"},{"name":"_affiliates","type":"address"},{"name":"_fingerprint","type":"bytes32"},{"name":"_referralAddress","type":"address"}],"name":"callRegister","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		await this.localCall(abi, [gnosisSafeRegistry, augur, createOrder, fillOrder, cash, shareToken, affiliates, fingerprint, referralAddress], options.sender)
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_augur","type":"address"},{"name":"_createOrder","type":"address"},{"name":"_fillOrder","type":"address"},{"name":"_cash","type":"address"},{"name":"_shareToken","type":"address"},{"name":"_affiliates","type":"address"},{"name":"_fingerprint","type":"bytes32"},{"name":"_referralAddress","type":"address"}],"name":"setupForAugur","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		await this.localCall(abi, [augur, createOrder, fillOrder, cash, shareToken, affiliates, fingerprint, referralAddress], options.sender)
 	}
 
-	public register = async (options?: { sender?: string }): Promise<Array<Event>> => {
+	public proxyCreated = async (proxy: string, mastercopy: string, initializer: string, saltNonce: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[],"name":"register","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.remoteCall(abi, [], 'register', options.sender)
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_proxy","type":"address"},{"name":"_mastercopy","type":"address"},{"name":"_initializer","type":"bytes"},{"name":"_saltNonce","type":"uint256"}],"name":"proxyCreated","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [proxy, mastercopy, initializer, saltNonce], 'proxyCreated', options.sender)
 	}
 	
-	public register_estimateGas = async (options?: { sender?: string }): Promise<TBigNumber> => {
+	public proxyCreated_estimateGas = async (proxy: string, mastercopy: string, initializer: string, saltNonce: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[],"name":"register","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.estimateGas(abi, [], 'register', options.sender)
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_proxy","type":"address"},{"name":"_mastercopy","type":"address"},{"name":"_initializer","type":"bytes"},{"name":"_saltNonce","type":"uint256"}],"name":"proxyCreated","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [proxy, mastercopy, initializer, saltNonce], 'proxyCreated', options.sender)
 	}
 
-	public register_ = async (options?: { sender?: string }): Promise<void> => {
+	public proxyCreated_ = async (proxy: string, mastercopy: string, initializer: string, saltNonce: TBigNumber, options?: { sender?: string }): Promise<void> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[],"name":"register","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		await this.localCall(abi, [], options.sender)
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_proxy","type":"address"},{"name":"_mastercopy","type":"address"},{"name":"_initializer","type":"bytes"},{"name":"_saltNonce","type":"uint256"}],"name":"proxyCreated","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		await this.localCall(abi, [proxy, mastercopy, initializer, saltNonce], options.sender)
+	}
+
+	public affiliates_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"affiliates","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
+	public initialize = async (augur: string, augurTrading: string, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_augur","type":"address"},{"name":"_augurTrading","type":"address"}],"name":"initialize","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [augur, augurTrading], 'initialize', options.sender)
+	}
+	
+	public initialize_estimateGas = async (augur: string, augurTrading: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_augur","type":"address"},{"name":"_augurTrading","type":"address"}],"name":"initialize","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [augur, augurTrading], 'initialize', options.sender)
+	}
+
+	public initialize_ = async (augur: string, augurTrading: string, options?: { sender?: string }): Promise<boolean> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_augur","type":"address"},{"name":"_augurTrading","type":"address"}],"name":"initialize","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const result = await this.localCall(abi, [augur, augurTrading], options.sender)
+		return <boolean>result[0]
+	}
+
+	public generateCreate2_ = async (address: string, salt: string, hashedInitCode: string, options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"_address","type":"address"},{"name":"_salt","type":"bytes32"},{"name":"_hashedInitCode","type":"bytes32"}],"name":"generateCreate2","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"pure","type":"function"}
+		const result = await this.localCall(abi, [address, salt, hashedInitCode], options.sender)
+		return <string>result[0]
+	}
+
+	public fillOrder_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"fillOrder","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
+	public createOrder_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"createOrder","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
+	public deploymentData_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"deploymentData","outputs":[{"name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
 	}
 
 	public accountSafes_ = async (arg0: string, arg1: TBigNumber, options?: { sender?: string }): Promise<string> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"","type":"address"},{"name":"","type":"uint256"}],"name":"accountSafes","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [arg0, arg1], options.sender)
+		return <string>result[0]
+	}
+
+	public shareToken_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"shareToken","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
 		return <string>result[0]
 	}
 
@@ -3822,6 +3883,13 @@ export class GnosisSafeRegistry<TBigNumber> extends Contract<TBigNumber> {
 		options = options || {}
 		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"_account","type":"address"}],"name":"getSafe","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [account], options.sender)
+		return <string>result[0]
+	}
+
+	public cash_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"cash","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
 		return <string>result[0]
 	}
 
@@ -3850,23 +3918,11 @@ export class GnosisSafeRegistry<TBigNumber> extends Contract<TBigNumber> {
 		await this.localCall(abi, [], options.sender)
 	}
 
-	public initialize = async (augur: string, options?: { sender?: string }): Promise<Array<Event>> => {
+	public proxyFactory_ = async (options?: { sender?: string }): Promise<string> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_augur","type":"address"}],"name":"initialize","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.remoteCall(abi, [augur], 'initialize', options.sender)
-	}
-	
-	public initialize_estimateGas = async (augur: string, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_augur","type":"address"}],"name":"initialize","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.estimateGas(abi, [augur], 'initialize', options.sender)
-	}
-
-	public initialize_ = async (augur: string, options?: { sender?: string }): Promise<boolean> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_augur","type":"address"}],"name":"initialize","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		const result = await this.localCall(abi, [augur], options.sender)
-		return <boolean>result[0]
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"proxyFactory","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
 	}
 
 	public gnosisSafeMasterCopy_ = async (options?: { sender?: string }): Promise<string> => {
@@ -4458,6 +4514,25 @@ export class ProxyFactory<TBigNumber> extends Contract<TBigNumber> {
 		options = options || {}
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"proxyRuntimeCode","outputs":[{"name":"","type":"bytes"}],"payable":false,"stateMutability":"pure","type":"function"}
 		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
+	public createProxyWithCallback = async (mastercopy: string, initializer: string, saltNonce: TBigNumber, callback: string, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_mastercopy","type":"address"},{"name":"initializer","type":"bytes"},{"name":"saltNonce","type":"uint256"},{"name":"callback","type":"address"}],"name":"createProxyWithCallback","outputs":[{"name":"proxy","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [mastercopy, initializer, saltNonce, callback], 'createProxyWithCallback', options.sender)
+	}
+	
+	public createProxyWithCallback_estimateGas = async (mastercopy: string, initializer: string, saltNonce: TBigNumber, callback: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_mastercopy","type":"address"},{"name":"initializer","type":"bytes"},{"name":"saltNonce","type":"uint256"},{"name":"callback","type":"address"}],"name":"createProxyWithCallback","outputs":[{"name":"proxy","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [mastercopy, initializer, saltNonce, callback], 'createProxyWithCallback', options.sender)
+	}
+
+	public createProxyWithCallback_ = async (mastercopy: string, initializer: string, saltNonce: TBigNumber, callback: string, options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_mastercopy","type":"address"},{"name":"initializer","type":"bytes"},{"name":"saltNonce","type":"uint256"},{"name":"callback","type":"address"}],"name":"createProxyWithCallback","outputs":[{"name":"proxy","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const result = await this.localCall(abi, [mastercopy, initializer, saltNonce, callback], options.sender)
 		return <string>result[0]
 	}
 }
