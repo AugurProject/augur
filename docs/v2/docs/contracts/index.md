@@ -3608,35 +3608,41 @@ divides bytes signature into `uint8 v, bytes32 r, bytes32 s`.
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#GnosisSafeRegistry.initialize(contract IAugur)"><code class="function-signature">initialize(contract IAugur _augur)</code></a></li><li><a href="#GnosisSafeRegistry.callRegister(address,address,address,address,contract IERC20,contract IERC1155,contract IAffiliates,bytes32,address)"><code class="function-signature">callRegister(address _gnosisSafeRegistry, address _augur, address _createOrder, address _fillOrder, contract IERC20 _cash, contract IERC1155 _shareToken, contract IAffiliates _affiliates, bytes32 _fingerprint, address _referralAddress)</code></a></li><li><a href="#GnosisSafeRegistry.register()"><code class="function-signature">register()</code></a></li><li><a href="#GnosisSafeRegistry.deRegister()"><code class="function-signature">deRegister()</code></a></li><li><a href="#GnosisSafeRegistry.getAndValidateSafeFromSender()"><code class="function-signature">getAndValidateSafeFromSender()</code></a></li><li><a href="#GnosisSafeRegistry.getSafe(address)"><code class="function-signature">getSafe(address _account)</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#GnosisSafeRegistry.initialize(contract IAugur,contract IAugurTrading)"><code class="function-signature">initialize(contract IAugur _augur, contract IAugurTrading _augurTrading)</code></a></li><li><a href="#GnosisSafeRegistry.setupForAugur(address,address,address,contract IERC20,contract IERC1155,contract IAffiliates,bytes32,address)"><code class="function-signature">setupForAugur(address _augur, address _createOrder, address _fillOrder, contract IERC20 _cash, contract IERC1155 _shareToken, contract IAffiliates _affiliates, bytes32 _fingerprint, address _referralAddress)</code></a></li><li><a href="#GnosisSafeRegistry.proxyCreated(address,address,bytes,uint256)"><code class="function-signature">proxyCreated(address _proxy, address _mastercopy, bytes _initializer, uint256 _saltNonce)</code></a></li><li><a href="#GnosisSafeRegistry.validateSafeCreation(address[],address,address,bytes,uint256)"><code class="function-signature">validateSafeCreation(address[] _owners, address _proxy, address _mastercopy, bytes _initializer, uint256 _saltNonce)</code></a></li><li><a href="#GnosisSafeRegistry.generateCreate2(address,bytes32,bytes32)"><code class="function-signature">generateCreate2(address _address, bytes32 _salt, bytes32 _hashedInitCode)</code></a></li><li><a href="#GnosisSafeRegistry.deRegister()"><code class="function-signature">deRegister()</code></a></li><li><a href="#GnosisSafeRegistry.getSafe(address)"><code class="function-signature">getSafe(address _account)</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul></div>
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="GnosisSafeRegistry.initialize(contract IAugur)"></a><code class="function-signature">initialize(contract IAugur _augur) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="GnosisSafeRegistry.callRegister(address,address,address,address,contract IERC20,contract IERC1155,contract IAffiliates,bytes32,address)"></a><code class="function-signature">callRegister(address _gnosisSafeRegistry, address _augur, address _createOrder, address _fillOrder, contract IERC20 _cash, contract IERC1155 _shareToken, contract IAffiliates _affiliates, bytes32 _fingerprint, address _referralAddress)</code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="GnosisSafeRegistry.initialize(contract IAugur,contract IAugurTrading)"></a><code class="function-signature">initialize(contract IAugur _augur, contract IAugurTrading _augurTrading) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="GnosisSafeRegistry.register()"></a><code class="function-signature">register()</code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="GnosisSafeRegistry.setupForAugur(address,address,address,contract IERC20,contract IERC1155,contract IAffiliates,bytes32,address)"></a><code class="function-signature">setupForAugur(address _augur, address _createOrder, address _fillOrder, contract IERC20 _cash, contract IERC1155 _shareToken, contract IAffiliates _affiliates, bytes32 _fingerprint, address _referralAddress)</code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="GnosisSafeRegistry.proxyCreated(address,address,bytes,uint256)"></a><code class="function-signature">proxyCreated(address _proxy, address _mastercopy, bytes _initializer, uint256 _saltNonce)</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="GnosisSafeRegistry.validateSafeCreation(address[],address,address,bytes,uint256)"></a><code class="function-signature">validateSafeCreation(address[] _owners, address _proxy, address _mastercopy, bytes _initializer, uint256 _saltNonce)</code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="GnosisSafeRegistry.generateCreate2(address,bytes32,bytes32)"></a><code class="function-signature">generateCreate2(address _address, bytes32 _salt, bytes32 _hashedInitCode) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">public</span></h4>
 
 
 
 
 
 <h4><a class="anchor" aria-hidden="true" id="GnosisSafeRegistry.deRegister()"></a><code class="function-signature">deRegister()</code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="GnosisSafeRegistry.getAndValidateSafeFromSender()"></a><code class="function-signature">getAndValidateSafeFromSender() <span class="return-arrow">→</span> <span class="return-type">contract IGnosisSafe</span></code><span class="function-visibility">internal</span></h4>
 
 
 
@@ -3694,7 +3700,7 @@ divides bytes signature into `uint8 v, bytes32 r, bytes32 s`.
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IGnosisSafe.getThreshold()"><code class="function-signature">getThreshold()</code></a></li><li><a href="#IGnosisSafe.getOwners()"><code class="function-signature">getOwners()</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IGnosisSafe.getThreshold()"><code class="function-signature">getThreshold()</code></a></li><li><a href="#IGnosisSafe.getOwners()"><code class="function-signature">getOwners()</code></a></li><li><a href="#IGnosisSafe.setup(address[],uint256,address,bytes,address,address,uint256,address payable)"><code class="function-signature">setup(address[] _owners, uint256 _threshold, address to, bytes data, address fallbackHandler, address paymentToken, uint256 payment, address payable paymentReceiver)</code></a></li></ul></div>
 
 
 
@@ -3705,6 +3711,12 @@ divides bytes signature into `uint8 v, bytes32 r, bytes32 s`.
 
 
 <h4><a class="anchor" aria-hidden="true" id="IGnosisSafe.getOwners()"></a><code class="function-signature">getOwners() <span class="return-arrow">→</span> <span class="return-type">address[]</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IGnosisSafe.setup(address[],uint256,address,bytes,address,address,uint256,address payable)"></a><code class="function-signature">setup(address[] _owners, uint256 _threshold, address to, bytes data, address fallbackHandler, address paymentToken, uint256 payment, address payable paymentReceiver)</code><span class="function-visibility">external</span></h4>
 
 
 
@@ -4171,6 +4183,22 @@ Copies the allowances of a batch of addresses from the legacy contract. This is 
 
 
 
+### `IProxyCreationCallback`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IProxyCreationCallback.proxyCreated(contract Proxy,address,bytes,uint256)"><code class="function-signature">proxyCreated(contract Proxy proxy, address _mastercopy, bytes initializer, uint256 saltNonce)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IProxyCreationCallback.proxyCreated(contract Proxy,address,bytes,uint256)"></a><code class="function-signature">proxyCreated(contract Proxy proxy, address _mastercopy, bytes initializer, uint256 saltNonce)</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+
+
 ### `Proxy`
 
 
@@ -4198,7 +4226,7 @@ Fallback function forwards all transactions and returns all received return data
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ProxyFactory.createProxy(address,bytes)"><code class="function-signature">createProxy(address masterCopy, bytes data)</code></a></li><li><a href="#ProxyFactory.proxyRuntimeCode()"><code class="function-signature">proxyRuntimeCode()</code></a></li><li><a href="#ProxyFactory.proxyCreationCode()"><code class="function-signature">proxyCreationCode()</code></a></li><li><a href="#ProxyFactory.deployProxyWithNonce(address,bytes,uint256)"><code class="function-signature">deployProxyWithNonce(address _mastercopy, bytes initializer, uint256 saltNonce)</code></a></li><li><a href="#ProxyFactory.createProxyWithNonce(address,bytes,uint256)"><code class="function-signature">createProxyWithNonce(address _mastercopy, bytes initializer, uint256 saltNonce)</code></a></li><li><a href="#ProxyFactory.calculateCreateProxyWithNonceAddress(address,bytes,uint256)"><code class="function-signature">calculateCreateProxyWithNonceAddress(address _mastercopy, bytes initializer, uint256 saltNonce)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#ProxyFactory.ProxyCreation(contract Proxy)"><code class="function-signature">ProxyCreation(contract Proxy proxy)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ProxyFactory.createProxy(address,bytes)"><code class="function-signature">createProxy(address masterCopy, bytes data)</code></a></li><li><a href="#ProxyFactory.proxyRuntimeCode()"><code class="function-signature">proxyRuntimeCode()</code></a></li><li><a href="#ProxyFactory.proxyCreationCode()"><code class="function-signature">proxyCreationCode()</code></a></li><li><a href="#ProxyFactory.deployProxyWithNonce(address,bytes,uint256)"><code class="function-signature">deployProxyWithNonce(address _mastercopy, bytes initializer, uint256 saltNonce)</code></a></li><li><a href="#ProxyFactory.createProxyWithNonce(address,bytes,uint256)"><code class="function-signature">createProxyWithNonce(address _mastercopy, bytes initializer, uint256 saltNonce)</code></a></li><li><a href="#ProxyFactory.createProxyWithCallback(address,bytes,uint256,contract IProxyCreationCallback)"><code class="function-signature">createProxyWithCallback(address _mastercopy, bytes initializer, uint256 saltNonce, contract IProxyCreationCallback callback)</code></a></li><li><a href="#ProxyFactory.calculateCreateProxyWithNonceAddress(address,bytes,uint256)"><code class="function-signature">calculateCreateProxyWithNonceAddress(address _mastercopy, bytes initializer, uint256 saltNonce)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#ProxyFactory.ProxyCreation(contract Proxy)"><code class="function-signature">ProxyCreation(contract Proxy proxy)</code></a></li></ul></div>
 
 
 
@@ -4238,6 +4266,16 @@ Allows to create new proxy contact and execute a message call to the new proxy w
  @param _mastercopy Address of master copy.
  @param initializer Payload for message call sent to new proxy contract.
  @param saltNonce Nonce that will be used to generate the salt to calculate the address of the new proxy contract.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ProxyFactory.createProxyWithCallback(address,bytes,uint256,contract IProxyCreationCallback)"></a><code class="function-signature">createProxyWithCallback(address _mastercopy, bytes initializer, uint256 saltNonce, contract IProxyCreationCallback callback) <span class="return-arrow">→</span> <span class="return-type">contract Proxy</span></code><span class="function-visibility">public</span></h4>
+
+Allows to create new proxy contact, execute a message call to the new proxy and call a specified callback within one transaction
+ @param _mastercopy Address of master copy.
+ @param initializer Payload for message call sent to new proxy contract.
+ @param saltNonce Nonce that will be used to generate the salt to calculate the address of the new proxy contract.
+ @param callback Callback that will be invoced after the new proxy contract has been successfully deployed and initialized.
 
 
 

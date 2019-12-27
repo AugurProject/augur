@@ -37,8 +37,7 @@ export class MockGnosisRelayAPI implements IGnosisRelayAPI {
    * @returns {Promise<>}
    */
   async createSafe(createSafeTx: CreateSafeData): Promise<SafeResponse> {
-    const gnosisSafeRegistryAddress = this.payer.augur.contracts
-      .gnosisSafeRegistry.address;
+    const gnosisSafeRegistryAddress = this.payer.augur.contracts.gnosisSafeRegistry.address;
 
     const gasPrice = new BigNumber(1);
     const gasEstimated = new BigNumber(7500000);
@@ -71,12 +70,13 @@ export class MockGnosisRelayAPI implements IGnosisRelayAPI {
       ['uint256'],
       [AUGUR_GNOSIS_SAFE_NONCE]
     );
-
+    const saltNonceWithCallback = ethUtil.keccak256(encodedNonce + this.payer.augur.contracts.gnosisSafeRegistry.address.substr(2));
     const salt = ethUtil.keccak256(
       '0x' +
         ethUtil.keccak256(gnosisSafeData).toString('hex') +
-        encodedNonce.substr(2)
+        saltNonceWithCallback.toString('hex')
     );
+
     const initCode = proxyCreationCode + constructorData.substr(2);
 
     const safe =
@@ -99,6 +99,7 @@ export class MockGnosisRelayAPI implements IGnosisRelayAPI {
       gasPriceEstimated: prefixHex(gasPrice),
       gasEstimated: prefixHex(gasEstimated),
       payment: prefixHex(payment),
+      callback: gnosisSafeRegistryAddress
     };
 
     return this.currentCreateSafeResponse;
@@ -111,6 +112,7 @@ export class MockGnosisRelayAPI implements IGnosisRelayAPI {
    * @returns {Promise<>}
    */
   async checkSafe(safeAddress: string): Promise<GnosisSafeStateReponse> {
+    const gnosisSafeRegistryAddress = this.payer.augur.contracts.gnosisSafeRegistry.address;
     const balance = await this.payer.augur.contracts.cash.balanceOf_(
       safeAddress
     );
@@ -123,11 +125,12 @@ export class MockGnosisRelayAPI implements IGnosisRelayAPI {
     if (!this.currentTxHash) {
       const data = this.payer.provider.encodeContractFunction(
         'ProxyFactory',
-        'createProxyWithNonce',
+        'createProxyWithCallback',
         [
           this.currentCreateSafeResponse.masterCopy,
           this.currentCreateSafeResponse.setupData,
-          new BigNumber(AUGUR_GNOSIS_SAFE_NONCE)
+          new BigNumber(AUGUR_GNOSIS_SAFE_NONCE),
+          gnosisSafeRegistryAddress
         ]
       );
 

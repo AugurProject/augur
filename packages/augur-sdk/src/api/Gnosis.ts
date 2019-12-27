@@ -219,10 +219,11 @@ export class Gnosis {
       ['uint256'],
       [AUGUR_GNOSIS_SAFE_NONCE]
     );
+    const saltNonceWithCallback = ethUtil.keccak256(encodedNonce + this.augur.contracts.gnosisSafeRegistry.address.substr(2));
     const salt = ethUtil.keccak256(
       '0x' +
         ethUtil.keccak256(gnosisSafeData).toString('hex') +
-        encodedNonce.substr(2)
+        saltNonceWithCallback.toString('hex')
     );
     const initCode = proxyCreationCode + constructorData.substr(2);
 
@@ -279,6 +280,7 @@ export class Gnosis {
         paymentToken: params.paymentToken,
         to: gnosisSafeRegistryAddress,
         setupData,
+        callback: gnosisSafeRegistryAddress
       });
 
       const calculatedSafeAddress = await this.calculateGnosisSafeAddress(
@@ -339,9 +341,8 @@ export class Gnosis {
     const referralAddress = NULL_ADDRESS;
     return this.provider.encodeContractFunction(
       'GnosisSafeRegistry',
-      'callRegister',
+      'setupForAugur',
       [
-        gnosisSafeRegistryAddress,
         augurAddress,
         createOrderAddress,
         fillOrderAddress,
