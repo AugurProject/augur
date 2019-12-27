@@ -150,12 +150,14 @@ export interface TemplateInput {
   validationType?: ValidationType;
   values?: ValueLabelPair[];
   sublabel?: string;
+  dateAfterId?: number;
   inputSourceId?: number; // input id as source of text to get list values
   defaultLabel?: string; // dropdown default label shown
   inputDestId?: number; // target input to set list values
   inputDestValues: { // dropdown source data structure to use to set target input list values
     [key: string]: ValueLabelPair[];
   }
+  setEndTime?: number;
 }
 
 export interface RetiredTemplate {

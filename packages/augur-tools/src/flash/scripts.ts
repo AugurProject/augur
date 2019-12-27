@@ -673,17 +673,19 @@ export function addScripts(flash: FlashSession) {
       }
     ],
     async call(this: FlashSession, args: FlashArguments) {
+      let result = null;
       try {
         const title = String(args.title);
         const templateInfo = String(args.templateInfo);
         const outcomesString = String(args.outcomes);
         const resolutionRules = String(args.resolutionRules);
         const endTime = Number(args.endTime);
-        this.log(validateMarketTemplate(title, templateInfo, outcomesString, resolutionRules, endTime));
-
+        result = validateMarketTemplate(title, templateInfo, outcomesString, resolutionRules, endTime)
+        this.log(result);
       } catch (e) {
         this.log(e);
       }
+      return result;
     },
   });
 

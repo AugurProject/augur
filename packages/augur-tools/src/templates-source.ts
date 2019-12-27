@@ -4687,6 +4687,7 @@ export const TEMPLATES = {
               },
               {
                 id: 4,
+                dateAfterId: 3,
                 type: TemplateInputType.DATEYEAR,
                 placeholder: `End Day of Year`,
                 validationType: ValidationType.WEEKDAYONLY,
@@ -5104,6 +5105,7 @@ export const TEMPLATES = {
               },
               {
                 id: 3,
+                dateAfterId: 2,
                 type: TemplateInputType.DATEYEAR,
                 placeholder: `Close, Day of Year`,
               },
@@ -5237,6 +5239,7 @@ export const TEMPLATES = {
               },
               {
                 id: 3,
+                dateAfterId: 2,
                 type: TemplateInputType.DATEYEAR,
                 placeholder: `Close, Day of Year`,
               },
@@ -5370,6 +5373,7 @@ export const TEMPLATES = {
               },
               {
                 id: 3,
+                dateAfterId: 2,
                 type: TemplateInputType.DATEYEAR,
                 placeholder: `Close, Day of Year`,
               },
