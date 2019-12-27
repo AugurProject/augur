@@ -1,9 +1,10 @@
-import { INVALID_OUTCOME, OUTCOME_MAX_LENGTH } from 'modules/create-market/constants';
+import { INVALID_OUTCOME, OUTCOME_MAX_LENGTH, SATURDAY_DAY_OF_WEEK, SUNDAY_DAY_OF_WEEK } from 'modules/create-market/constants';
 import isAddress from 'modules/auth/helpers/is-address';
 import { createBigNumber } from 'utils/create-big-number';
 import { ZERO } from './constants';
 import { NewMarketPropertiesValidations } from 'modules/types';
 import { ValidationType, TemplateInputType } from '@augurproject/artifacts';
+import moment from 'moment';
 
 export function isFilledString(value, readable, message) {
   if (value && value.trim().length > 0 && value !== '') return '';
@@ -187,6 +188,17 @@ export function checkForUserInputFilled(inputs, endTimeFormatted) {
       checkValidNumber(input.userInput)
     ) {
       return 'Must enter a valid number';
+    }
+    else if (input.type === TemplateInputType.DATEYEAR && input.validationType === ValidationType.NONWEEKEND){
+      // day can not be a weekend
+      if (input.setEndTime) {
+        const dayOfWeek = moment.unix(input.setEndTime).weekday()
+        if (dayOfWeek === SATURDAY_DAY_OF_WEEK || dayOfWeek === SUNDAY_DAY_OF_WEEK) {
+          return 'non-weekend is required';
+        }
+        return '';
+      }
+      if (!input.userInput) return 'Input is required';
     } else if (
       (input.type === TemplateInputType.TEXT ||
         input.type === TemplateInputType.USER_DESCRIPTION_OUTCOME ||

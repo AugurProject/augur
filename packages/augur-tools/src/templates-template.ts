@@ -166,13 +166,14 @@ export interface RetiredTemplate {
 export enum ValidationType {
   WHOLE_NUMBER = 'WHOLE_NUMBER',
   NUMBER = 'NUMBER',
+  NONWEEKEND = 'NONWEEKEND',
 }
 
 export enum TemplateInputType {
   TEXT = 'TEXT', // simple text input in market question
   DATEYEAR = 'DATEYEAR', // date picker in market question
   DATETIME = 'DATETIME', // date time with timezone picker
-  DATESTART = 'DATESTART',
+  DATESTART = 'DATESTART', // market end time can not be before the start of this day
   ESTDATETIME = 'ESTDATETIME', // estimated scheduled start time date time picker with timezone
   DROPDOWN = 'DROPDOWN', // dropdown list, found in market question
   DENOMINATION_DROPDOWN = 'DENOMINATION_DROPDOWN', // list of denomination values for scalar market
