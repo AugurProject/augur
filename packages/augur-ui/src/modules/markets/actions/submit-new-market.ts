@@ -72,7 +72,7 @@ export function submitNewMarket(
                     i.type === TemplateInputType.DATETIME && !!i.userInputObject
                       ? (i.userInputObject as UserInputDateTime)
                           .endTimeFormatted.timestamp
-                      : (i.type === TemplateInputType.DATESTART && i.setEndTime || null),
+                      : ((i.type === TemplateInputType.DATESTART || i.type === TemplateInputType.DATEYEAR )&& i.setEndTime || null),
                 },
               ]
             : p,
