@@ -23,6 +23,7 @@ import ModalBuyDai from 'modules/modal/containers/modal-buy-dai';
 import ModalDiscard from 'modules/modal/containers/modal-discard';
 import ModalMarketReview from 'modules/modal/containers/modal-market-review';
 import ModalClaimFees from 'modules/modal/containers/modal-claim-fees';
+import ModalClaimParticipationTokens from 'modules/modal/containers/modal-claim-participation-tokens';
 import ModalParticipate from 'modules/modal/containers/modal-participate';
 import ModalNetworkConnect from 'modules/modal/containers/modal-network-connect';
 import ModalDisclaimer from 'modules/modal/containers/modal-disclaimer';
@@ -130,6 +131,8 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalClaimReportingFeesForkedMarket {...modal} />;
     case TYPES.MODAL_CLAIM_FEES:
       return <ModalClaimFees {...modal} />;
+    case TYPES.MODAL_CLAIM_PARTICIPATION_TOKENS:
+      return <ModalClaimParticipationTokens {...modal} />;
     case TYPES.MODAL_DISCLAIMER:
       return <ModalDisclaimer {...modal} />;
     case TYPES.MODAL_TRADING_OVERLAY:
@@ -194,7 +197,7 @@ export default class ModalView extends Component<ModalViewProps> {
     window.addEventListener('keydown', this.handleKeyDown);
 
     trackModalViewed(modal.type, {
-      modal: modal.type, 
+      modal: modal.type,
       from: window.location.href
     })
   }
