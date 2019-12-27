@@ -19,14 +19,14 @@ export const selectUserMarketPositions = createSelector(
   selectMarketUserPositions,
   (marketInfo, marketAccountPositions): Getters.Users.TradingPosition[] => {
     if (!marketInfo || !marketAccountPositions || !marketAccountPositions.tradingPositions) return [];
-
+      const { marketType } = marketInfo;
       const userPositions = Object.values(
         marketAccountPositions.tradingPositions || []
       ).map((value) => {
         const position = value as Getters.Users.TradingPosition;
         const outcome = marketInfo.outcomes[position.outcome];
         return {
-          ...positionSummary(position, outcome),
+          ...positionSummary(position, outcome, marketType),
           outcomeName: outcome.description
         };
       });

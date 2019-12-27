@@ -9,7 +9,6 @@ import { CancelTextButton } from 'modules/common/buttons';
 
 import Styles from 'modules/market/components/market-orders-positions-table/open-orders-table.styles';
 import { MarketData, NodeStyleCallback, UIOrder, DefaultOrderProperties } from 'modules/types';
-import { NumberedList } from 'modules/create-market/components/common';
 
 interface MarketOrdersPositionsTableProps {
   hasPending?: boolean,
