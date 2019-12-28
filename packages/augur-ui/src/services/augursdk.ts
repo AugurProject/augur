@@ -87,6 +87,7 @@ export class SDK {
       ethereumRPCURL,
       ethereumChainID: Number(this.networkId),
       verbosity: 5,
+      customContractAddresses: Addresses[this.networkId],
       bootstrapList: env['0x-mesh'].bootstrapList,
     }
 
@@ -128,26 +129,9 @@ export class SDK {
             this.connectToBrowserMesh();
          }
      });
-     window.AugurSDK.zeroX.browserMesh = meshBrowser;
+     window.AugurSDK.zeroX.browserMesh = mesh;
      window.AugurSDK.zeroX.browserMesh.startAsync();
   }
-
-  addErrorHandler(mesh: browserMesh, meshConfig: Config) {
-    if (mesh) {
-      mesh.onError((err) => { 
-      console.log("Browser mesh error");
-      console.log(err.message);
-      console.log(err.stack); 
-      if(err.message == ) {
-        console.log("Restarting Mesh Sync");
-        let newMesh = new Mesh(meshConfig);
-        this.addErrorHandler(newMesh, meshConfig);
-        window.AugurSDK.zeroX.setMesh(newMesh);
-        window.AugurSDK.zeroX.startAsync();
-        }
-      });
-  }}
-
 
   /**
    * @name getOrCreateGnosisSafe
