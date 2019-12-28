@@ -1,4 +1,3 @@
-
 import { Augur } from '../Augur';
 import { BlockAndLogStreamerListener } from './db/BlockAndLogStreamerListener';
 import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis';
@@ -18,8 +17,19 @@ async function buildDeps(ethNodeUrl: string, account?: string, enableFlexSearch 
   try {
     const ethersProvider = new EthersProvider(new JsonRpcProvider(ethNodeUrl), 10, 0, 40);
     const networkId = await ethersProvider.getNetworkId();
-    const gnosisRelay = new GnosisRelayAPI(settings.gnosisRelayURLs[networkId]);
-    let meshClient = new WSClient(settings.meshClientURLs[networkId]);
+
+    const gnosisRelayURL = settings.gnosisRelayURLs[networkId];
+    if (typeof gnosisRelayURL === "undefined") {
+      throw new Error(`No gnosis relayer url defined for network: ${networkId}, check settings.json`);
+    }
+
+    const meshClientURL = settings.meshClientURL[networkId];
+    if (typeof meshClientURL === "undefined") {
+      throw new Error(`No mesh client url defined for network: ${networkId}, check settings.json`);
+    }
+
+    const gnosisRelay = new GnosisRelayAPI(gnosisRelayURL);
+    const meshClient = new WSClient(settings.meshClientURLs[networkId]);
     const contractDependencies = new ContractDependenciesGnosis(ethersProvider, gnosisRelay, undefined, undefined, undefined, undefined, account);
 
     const augur = await Augur.create(ethersProvider, contractDependencies, Addresses[networkId], new EmptyConnector(), undefined, enableFlexSearch, meshClient);
