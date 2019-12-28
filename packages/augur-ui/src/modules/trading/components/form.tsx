@@ -17,11 +17,16 @@ import { TextInput } from 'modules/common/form';
 import getPrecision from 'utils/get-number-precision';
 import convertExponentialToDecimal from 'utils/convert-exponential';
 import { MarketData, OutcomeFormatted, OutcomeOrderBook } from 'modules/types';
+import { MarketType } from '@augurproject/sdk/src/state/logs/types';
 import { Getters } from '@augurproject/sdk';
+import { convertDisplayAmountToOnChainAmount } from '@augurproject/sdk';
 import { CancelTextButton, TextButtonFlip } from 'modules/common/buttons';
 import moment, { Moment } from 'moment';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { SimpleTimeSelector } from 'modules/create-market/components/common';
+
+const DEFAULT_TRADE_INTERVAL = new BigNumber(10**17);
+const TRADE_INTERVAL_VALUE = new BigNumber(10**19);
 
 const DEFAULT_EXPIRATION_DAYS = 30;
 
@@ -128,7 +133,7 @@ class Form extends Component<FromProps, FormState> {
 
     this.MINIMUM_TRADE_VALUE = createBigNumber(1, 10).dividedBy(10000);
     this.orderValidation = this.orderValidation.bind(this);
-    this.testQuantity = this.testQuantity.bind(this);
+    this.testQuantityAndExpiry = this.testQuantityAndExpiry.bind(this);
     this.testPrice = this.testPrice.bind(this);
     this.testTotal = this.testTotal.bind(this);
 
@@ -229,12 +234,19 @@ class Form extends Component<FromProps, FormState> {
     return { isOrderValid: passedTest, errors, errorCount };
   }
 
-  testQuantity(
+  testQuantityAndExpiry(
     value,
     errors: object,
     isOrderValid: boolean,
-    fromExternal: boolean
+    fromExternal: boolean,
+    nextProps,
+    expiration?
   ): TestResults {
+    const props = nextProps || this.props;
+    const {
+      market,
+      marketType,
+    } = props;
     let errorCount = 0;
     let passedTest = !!isOrderValid;
     const precision = getPrecision(value, 0);
@@ -262,6 +274,26 @@ class Form extends Component<FromProps, FormState> {
         `Precision must be ${UPPER_FIXED_PRECISION_BOUND} decimals or less`
       );
     }
+    
+    let tradeInterval = DEFAULT_TRADE_INTERVAL;
+    if (marketType == MarketType.Scalar) {
+      tradeInterval = TRADE_INTERVAL_VALUE.dividedBy(market.numTicks);
+    }
+    if (!convertDisplayAmountToOnChainAmount(value, market.tickSize).mod(tradeInterval).isEqualTo(0)) {
+      errorCount += 1;
+      passedTest = false;
+      errors[this.INPUT_TYPES.QUANTITY].push(
+        `Quantity must be a multiple of ${tradeInterval.multipliedBy(market.numTicks).dividedBy(10**18)}`
+        );
+    }
+
+    // if (expiration - moment.now() < 60) {
+    //   errorCount += 1;
+    //   passedTest = false;
+    //   errors[this.INPUT_TYPES.QUANTITY].push(
+    //     `Order expires less than 60 seconds into the future`
+    //     );
+    // }
     return { isOrderValid: passedTest, errors, errorCount };
   }
 
@@ -396,6 +428,10 @@ class Form extends Component<FromProps, FormState> {
       order[this.INPUT_TYPES.EST_DAI] &&
       createBigNumber(order[this.INPUT_TYPES.EST_DAI]);
 
+    // expiration needs to be wired up, then we need to check that orders have appropriate expiration dates
+    // const expiration =
+      // order[this.INPUT_TYPES.EXPIRATION_DATE].unix()?
+
     const {
       isOrderValid: priceValid,
       errors: priceErrors,
@@ -412,12 +448,8 @@ class Form extends Component<FromProps, FormState> {
         isOrderValid: isThisOrderValid,
         errors: quantityErrors,
         errorCount: quantityErrorCount,
-      } = this.testQuantity(
-        quantity,
-        errors,
-        isOrderValid,
-        fromExternal
-      );
+      } = this.testQuantityAndExpiry(quantity, errors, isOrderValid, fromExternal, nextProps);
+      // } = this.testQuantityAndExpiry(quantity, errors, isOrderValid, fromExternal, nextProps, expiration);
 
       quantityValid = isThisOrderValid;
       errorCount += quantityErrorCount;
@@ -718,9 +750,7 @@ class Form extends Component<FromProps, FormState> {
             </div>
           </li>
           <li>
-            <label htmlFor="tr__input--limit-price">
-              Limit Price
-            </label>
+            <label htmlFor="tr__input--limit-price">Limit Price</label>
             <div
               className={classNames(Styles.TradingFormInputContainer, {
                 [Styles.error]: s.errors[this.INPUT_TYPES.PRICE].length,
@@ -860,7 +890,7 @@ class Form extends Component<FromProps, FormState> {
             </li>
           )}
           {s.showAdvanced && (
-            <li>
+            <li className={Styles.AdvancedShown}>
               <SquareDropdown
                 defaultValue={advancedOptions[0].value}
                 options={advancedOptions}
@@ -886,47 +916,45 @@ class Form extends Component<FromProps, FormState> {
                 }}
               />
               {s.advancedOption === '1' && (
-                <div>
-                  <div>
-                    {s.expirationDateOption ===
-                      EXPIRATION_DATE_OPTIONS.DAYS && (
-                      <TextInput
-                        value={s.fastForwardDays.toString()}
-                        placeholder={'0'}
-                        onChange={value => {
-                          const days =
-                            value === '' || isNaN(value) ? 0 : parseInt(value);
-                          updateState({
-                            [this.INPUT_TYPES.EXPIRATION_DATE]: moment
-                              .unix(currentTimestamp)
-                              .add(days, 'days'),
-                          });
-                          this.setState({ fastForwardDays: days });
-                        }}
-                      />
-                    )}
-                    <SquareDropdown
-                      defaultValue={EXPIRATION_DATE_OPTIONS.DAYS}
-                      options={[
-                        {
-                          label: 'Days',
-                          value: EXPIRATION_DATE_OPTIONS.DAYS,
-                        },
-                        {
-                          label: 'Custom',
-                          value: EXPIRATION_DATE_OPTIONS.CUSTOM,
-                        },
-                      ]}
+                <>
+                  {s.expirationDateOption === EXPIRATION_DATE_OPTIONS.DAYS && (
+                    <TextInput
+                      value={s.fastForwardDays.toString()}
+                      placeholder={'0'}
                       onChange={value => {
-                        this.setState({ expirationDateOption: value });
+                        const days =
+                          value === '' || isNaN(value) ? 0 : parseInt(value);
+                        updateState({
+                          [this.INPUT_TYPES.EXPIRATION_DATE]: moment
+                            .unix(currentTimestamp)
+                            .add(days, 'days'),
+                        });
+                        this.setState({ fastForwardDays: days });
                       }}
                     />
-                  </div>
+                  )}
+                  <SquareDropdown
+                    defaultValue={EXPIRATION_DATE_OPTIONS.DAYS}
+                    options={[
+                      {
+                        label: 'Days',
+                        value: EXPIRATION_DATE_OPTIONS.DAYS,
+                      },
+                      {
+                        label: 'Custom',
+                        value: EXPIRATION_DATE_OPTIONS.CUSTOM,
+                      },
+                    ]}
+                    onChange={value => {
+                      this.setState({ expirationDateOption: value });
+                    }}
+                  />
                   {s.expirationDateOption === EXPIRATION_DATE_OPTIONS.DAYS && (
                     <span>
                       {
                         convertUnixToFormattedDate(
-                          s[this.INPUT_TYPES.EXPIRATION_DATE] && s[this.INPUT_TYPES.EXPIRATION_DATE].unix()
+                          s[this.INPUT_TYPES.EXPIRATION_DATE] &&
+                            s[this.INPUT_TYPES.EXPIRATION_DATE].unix()
                         ).formattedLocalShortWithUtcOffset
                       }
                     </span>
@@ -946,10 +974,10 @@ class Form extends Component<FromProps, FormState> {
                       />
                     </section>
                   )}
-                </div>
+                </>
               )}
               {s.advancedOption === ADVANCED_OPTIONS.FILL && (
-                <span>
+                <span className={Styles.tipText}>
                   Fill Only will fill up to the specified amount. Can be
                   partially filled and will cancel the remaining balance.
                 </span>

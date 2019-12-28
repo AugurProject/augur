@@ -361,6 +361,7 @@ export function formatNumber(
     positiveSign,
     zeroStyled,
     blankZero,
+    removeComma = false,
   } = opts;
 
   decimals = decimals || 0;
@@ -428,7 +429,7 @@ export function formatNumber(
     const zeroFixed = ZERO.toFixed(USUAL_NUMBER_DECIMAL_PLACES);
 
     if (bigUnitPostfix && !formatSigFig) {
-      o.formatted = addBigUnitPostfix(value, o.formattedValue);
+      o.formatted = addBigUnitPostfix(value, o.formattedValue, removeComma);
     } else if (formatSigFig) {
       // for numbers smaller than the set number of decimals - ie ones with scientific notation
       let formatted = value.toFixed(decimals || USUAL_NUMBER_DECIMAL_PLACES);
@@ -449,7 +450,7 @@ export function formatNumber(
       }
       o.formatted = formatted;
     } else {
-      o.formatted = addCommas(o.formattedValue);
+      o.formatted = addCommas(o.formattedValue, removeComma);
     }
     o.fullPrecision = value.toFixed();
     o.roundedValue = value
@@ -457,9 +458,9 @@ export function formatNumber(
       .integerValue(roundingMode)
       .dividedBy(decimalsRoundedValue);
     o.roundedFormatted = bigUnitPostfix
-      ? addBigUnitPostfix(value, o.roundedValue.toFixed(decimalsRounded))
-      : addCommas(o.roundedValue.toFixed(decimalsRounded));
-    o.minimized = addCommas(encodeNumberAsBase10String(o.formattedValue));
+      ? addBigUnitPostfix(value, o.roundedValue.toFixed(decimalsRounded), removeComma)
+      : addCommas(o.roundedValue.toFixed(decimalsRounded), removeComma);
+    o.minimized = addCommas(encodeNumberAsBase10String(o.formattedValue), removeComma);
     o.rounded = encodeNumberAsBase10String(o.roundedValue);
     o.formattedValue = encodeNumberAsJSNumber(o.formattedValue, false);
     o.roundedValue = o.roundedValue;
@@ -491,7 +492,7 @@ export function formatNumber(
   return o;
 }
 
-function addBigUnitPostfix(value, formattedValue) {
+function addBigUnitPostfix(value, formattedValue, removeComma = false) {
   let postfixed;
   if (value.gt(createBigNumber('1000000000000', 10))) {
     postfixed = '> 1T';
@@ -504,7 +505,7 @@ function addBigUnitPostfix(value, formattedValue) {
   } else if (value.gt(createBigNumber('10000', 10))) {
     postfixed = value.dividedBy(createBigNumber('1000', 10)).toFixed(0) + 'K';
   } else {
-    postfixed = addCommas(formattedValue);
+    postfixed = addCommas(formattedValue, removeComma);
   }
   return postfixed;
 }

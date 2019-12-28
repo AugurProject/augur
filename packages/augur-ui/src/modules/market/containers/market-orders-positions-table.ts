@@ -6,7 +6,6 @@ import { selectMarket } from 'modules/markets/selectors/market';
 import { cancelAllOpenOrders } from 'modules/orders/actions/cancel-order';
 import { selectUserFilledOrders } from 'modules/orders/selectors/filled-orders';
 import getUserOpenOrders from 'modules/orders/selectors/user-open-orders';
-import { TRADING_TUTORIAL } from 'modules/common/constants';
 
 const mapStateToProps = (state, ownProps) => {
   const market = ownProps.market || selectMarket(ownProps.marketId);

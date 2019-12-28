@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { selectMarket } from 'modules/markets/selectors/market';
-import MarketHeaderReporting from 'modules/market/components/market-header/market-header-reporting';
+import { MarketHeaderReporting } from 'modules/market/components/market-header/market-header-reporting';
 import { sendFinalizeMarket } from 'modules/markets/actions/finalize-market';
 import { selectCurrentTimestampInSeconds } from 'store/select-state';
 import { updateModal } from 'modules/modal/actions/update-modal';
@@ -13,19 +13,19 @@ import {
 import { NodeStyleCallback } from 'modules/types';
 import { createBigNumber } from 'utils/create-big-number';
 import { ZERO } from 'modules/common/constants';
+import { isSameAddress } from 'utils/isSameAddress';
 
 const mapStateToProps = (state, ownProps) => {
   const market = ownProps.market || selectMarket(ownProps.marketId);
   const disputeInfoStakes = market.disputeInfo && market.disputeInfo.stakes;
-
   return {
     currentTimestamp: selectCurrentTimestampInSeconds(state) || 0,
     market,
     isLogged: state.authStatus.isLogged,
     isDesignatedReporter: ownProps.preview
       ? market.designatedReporterType === DESIGNATED_REPORTER_SELF
-      : market.designatedReporter === state.loginAccount.address,
-    tentativeWinner: disputeInfoStakes && disputeInfoStakes.find(stake => stake.tentativeWinning),
+      : isSameAddress(market.designatedReporter, state.loginAccount.address),
+    tentativeWinner: disputeInfoStakes && disputeInfoStakes.find(stake => stake.tentativeWinning) || {},
     canClaimProceeds:
       state.accountPositions[ownProps.marketId] &&
       state.accountPositions[ownProps.marketId].tradingPositionsPerMarket &&

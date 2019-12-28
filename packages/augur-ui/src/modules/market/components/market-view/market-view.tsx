@@ -20,11 +20,13 @@ import {
   BUY,
   PUBLICFILLORDER,
   LONG,
+  SCALAR,
   TRADING_TUTORIAL,
   TRADING_TUTORIAL_STEPS,
   TRADING_TUTORIAL_COPY,
   MODAL_TUTORIAL_OUTRO,
   MODAL_TUTORIAL_INTRO,
+  MODAL_SCALAR_MARKET,
   TUTORIAL_QUANTITY,
   TUTORIAL_PRICE,
   TRADING_TUTORIAL_OUTCOMES,
@@ -57,6 +59,7 @@ interface MarketViewProps {
   market: MarketData;
   marketId: string;
   marketReviewSeen: boolean;
+  scalarModalSeen: boolean;
   marketReviewModal: Function;
   currentTimestamp: number;
   isConnected: boolean;
@@ -93,6 +96,7 @@ interface MarketViewState {
   tutorialStep: number;
   introShowing: boolean;
   tutorialError: string;
+  hasShownScalarModal: boolean;
 }
 
 export default class MarketView extends Component<
@@ -120,6 +124,7 @@ export default class MarketView extends Component<
     this.state = {
       introShowing: false,
       tutorialStep: TRADING_TUTORIAL_STEPS.INTRO_MODAL,
+      hasShownScalarModal: false,
       extendOrderBook: false,
       extendTradeHistory: false,
       extendOutcomesList: cat5 ? true : false,
@@ -218,6 +223,9 @@ export default class MarketView extends Component<
     }
     if (isMarketLoading !== this.props.isMarketLoading) {
       closeMarketLoadingModal();
+    }
+    if (!tradingTutorial && !this.props.scalarModalSeen && this.props.marketType === SCALAR && !this.state.hasShownScalarModal) {
+      this.props.updateModal({ type: MODAL_SCALAR_MARKET, cb: () => this.setState({ hasShownScalarModal: true }) });
     }
   }
 

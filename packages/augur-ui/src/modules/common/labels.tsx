@@ -6,11 +6,13 @@ import { ClipLoader } from 'react-spinners';
 import {
   MarketIcon,
   InfoIcon,
+  ScalarIcon,
   CheckCircleIcon,
   HintAlternate,
   DoubleArrows,
   QuestionIcon,
   LoadingEllipse,
+  TemplateIcon,
 } from 'modules/common/icons';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
@@ -23,6 +25,8 @@ import {
   SHORT,
   ZERO,
   YES_NO,
+  SCALAR,
+  CATEGORICAL,
   REPORTING_STATE,
 } from 'modules/common/constants';
 import { ViewTransactionDetailsButton } from 'modules/common/buttons';
@@ -204,37 +208,63 @@ interface TimeLabelProps {
   hint?: React.ReactNode;
 }
 
-export const TimeLabel = ({ label, time, showLocal, hint }: TimeLabelProps) => {
-  return (
-    <div className={Styles.TimeLabel}>
-      <span>
-        {label}
-        {hint && (
-          <>
-            <label
-              className={TooltipStyles.TooltipHint}
-              data-tip
-              data-for={`tooltip-${label.replace(' ', '-')}`}
-            >
-              {InfoIcon}
-            </label>
-            <ReactTooltip
-              id={`tooltip-${label.replace(' ', '-')}`}
-              className={TooltipStyles.Tooltip}
-              effect="solid"
-              place="right"
-              type="light"
-            >
-              {hint}
-            </ReactTooltip>
-          </>
-        )}
-      </span>
-      <span>{time && time.formattedShortUtc}</span>
-      {showLocal && <span>{time && time.formattedLocalShortDateTimeWithTimezone}</span>}
-    </div>
-  );
-};
+interface TemplateShieldProps {
+  marketId: string;
+}
+
+export const TemplateShield = ({ marketId }: TemplateShieldProps) => (
+  <>
+    <label
+      className={TooltipStyles.TooltipHint}
+      data-tip
+      data-for={`tooltip-${marketId}-templateShield`}
+    >
+      {TemplateIcon}
+    </label>
+    <ReactTooltip
+      id={`tooltip-${marketId}-templateShield`}
+      className={TooltipStyles.Tooltip}
+      effect="solid"
+      place="right"
+      type="light"
+    >
+      Template Markets have pre-defined terms and a greater chance of validly
+      resolving than Custom Markets.
+    </ReactTooltip>
+  </>
+);
+
+export const TimeLabel = ({ label, time, showLocal, hint }: TimeLabelProps) => (
+  <div className={Styles.TimeLabel}>
+    <span>
+      {label}
+      {hint && (
+        <>
+          <label
+            className={TooltipStyles.TooltipHint}
+            data-tip
+            data-for={`tooltip-${label.replace(' ', '-')}`}
+          >
+            {QuestionIcon}
+          </label>
+          <ReactTooltip
+            id={`tooltip-${label.replace(' ', '-')}`}
+            className={TooltipStyles.Tooltip}
+            effect="solid"
+            place="right"
+            type="light"
+          >
+            {hint}
+          </ReactTooltip>
+        </>
+      )}
+    </span>
+    <span>{time && time.formattedShortUtc}</span>
+    {showLocal && (
+      <span>{time && time.formattedLocalShortDateTimeWithTimezone}</span>
+    )}
+  </div>
+);
 
 export const DashlineNormal = () => (
   <svg width="100%" height="1">
@@ -338,7 +368,11 @@ export const ValueLabel = (props: ValueLabelProps) => {
   } = expandedValues;
 
   return (
-    <span className={classNames(Styles.ValueLabel, {[Styles.DarkDash]: props.value.full === '-'})}>
+    <span
+      className={classNames(Styles.ValueLabel, {
+        [Styles.DarkDash]: props.value.full === '-',
+      })}
+    >
       <label
         data-tip
         data-for={`valueLabel-${fullPrecision}-${denominationLabel}-${props.keyId}`}
@@ -493,7 +527,9 @@ export class HoverValueLabel extends React.Component<
                   {firstHalf}
                   {secondHalf && '.'}
                 </span>
-                <span>{secondHalf} {postfix}</span>
+                <span>
+                  {secondHalf} {postfix}
+                </span>
               </>
             )}
           </span>
@@ -543,7 +579,7 @@ export const PropertyLabel = (props: PropertyLabelProps) => (
             data-tip
             data-for={`tooltip-${props.label.replace(' ', '-')}`}
           >
-            {InfoIcon}
+            {QuestionIcon}
           </label>
           <ReactTooltip
             id={`tooltip-${props.label.replace(' ', '-')}`}
@@ -609,14 +645,25 @@ export const LinearPropertyLabel = ({
   </div>
 );
 
-export const MarketTypeLabel = (props: MarketTypeProps) => {
-  if (!props.marketType) {
+export const MarketTypeLabel = ({ marketType }: MarketTypeProps) => {
+  if (!marketType) {
     return null;
   }
+  const labelTexts = {
+    [YES_NO]: 'Yes/No',
+    [CATEGORICAL]: 'Categorical',
+    [SCALAR]: 'Scalar Market',
+  };
+  const text = labelTexts[marketType];
+  const isScalar = marketType === SCALAR;
 
   return (
-    <span className={Styles.MarketTypeLabel}>
-      {props.marketType === YES_NO ? 'Yes/No' : props.marketType}
+    <span
+      className={classNames(Styles.MarketTypeLabel, {
+        [Styles.MarketScalarLabel]: isScalar,
+      })}
+    >
+      {text} {isScalar && (ScalarIcon)}
     </span>
   );
 };

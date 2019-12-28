@@ -89,17 +89,20 @@
 
 .Content {
   background: @color-module-background;
-  border-radius: @border-radius-default;
   display: flex;
-  flex-direction: row;
   padding: @size-12 @size-16;
   justify-content: space-between;
   border-top: 1px solid @color-dark-grey;
 
+  > button {
+    margin-left: auto;
+
+    @media @breakpoint-mobile {
+      margin-left: unset;
+    }
+  }
+
   @media @breakpoint-mobile {
-    border-top: 1px solid @color-dark-grey;
-    border-bottom: 1px solid @color-dark-grey;
-    border-radius: 0;
     flex-direction: column;
 
     > div:first-of-type {
@@ -119,31 +122,18 @@
     flex-direction: column;
   }
 
-  &.Set {
-    min-width: 250px;
-
-    > div:first-of-type {
-      > span:first-of-type {
-        .mono-12-bold;
-
-        color: @color-outcome-four;
-        text-transform: uppercase;
-      }
-    }
-  }
-
   &.Dispute,
   &.Set {
     > div:first-of-type {
       > span:first-of-type {
-        .mono-11-bold;
+        .mono-12-bold;
 
         text-transform: uppercase;
-        color: @color-tenative-winner;
+        color: @color-secondary-text;
       }
 
       > span:not(:first-of-type) {
-        .text-12-bold;
+        .text-11-medium;
 
         color: @color-primary-text;
         margin-top: @size-4;
@@ -152,9 +142,14 @@
   }
 
   &.Set {
+    min-width: 250px;
+
     > div:first-of-type {
       > span:first-of-type {
-        color: @color-open;
+        .mono-12-bold;
+
+        color: @color-tenative-winner;
+        text-transform: uppercase;
       }
     }
   }

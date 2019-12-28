@@ -219,10 +219,11 @@ export class Gnosis {
       ['uint256'],
       [AUGUR_GNOSIS_SAFE_NONCE]
     );
+    const saltNonceWithCallback = ethUtil.keccak256(encodedNonce + this.augur.contracts.gnosisSafeRegistry.address.substr(2));
     const salt = ethUtil.keccak256(
       '0x' +
         ethUtil.keccak256(gnosisSafeData).toString('hex') +
-        encodedNonce.substr(2)
+        saltNonceWithCallback.toString('hex')
     );
     const initCode = proxyCreationCode + constructorData.substr(2);
 
@@ -243,19 +244,22 @@ export class Gnosis {
   }
 
   async createGnosisSafeDirectlyWithETH(account: string): Promise<string> {
+    const gnosisSafeRegistryAddress = this.augur.contracts.gnosisSafeRegistry.address;
     const gnosisSafeData = await this.buildGnosisSetupData(account);
 
     // Make transaction to proxy factory
     const nonce = AUGUR_GNOSIS_SAFE_NONCE;
-    const proxy = this.augur.contracts.proxyFactory.createProxyWithNonce_(
+    const proxy = this.augur.contracts.proxyFactory.createProxyWithCallback_(
       this.augur.contracts.gnosisSafe.address,
       gnosisSafeData,
-      new BigNumber(nonce)
+      new BigNumber(nonce),
+      gnosisSafeRegistryAddress
     );
-    await this.augur.contracts.proxyFactory.createProxyWithNonce(
+    await this.augur.contracts.proxyFactory.createProxyWithCallback(
       this.augur.contracts.gnosisSafe.address,
       gnosisSafeData,
-      new BigNumber(nonce)
+      new BigNumber(nonce),
+      gnosisSafeRegistryAddress
     );
     return proxy;
   }
@@ -267,8 +271,7 @@ export class Gnosis {
       throw new Error('No Gnosis Relay provided to Augur SDK');
     }
 
-    const gnosisSafeRegistryAddress = this.augur.contracts.gnosisSafeRegistry
-      .address;
+    const gnosisSafeRegistryAddress = this.augur.contracts.gnosisSafeRegistry.address;
 
     const setupData = await this.buildRegistrationData();
 
@@ -279,13 +282,14 @@ export class Gnosis {
       paymentToken: params.paymentToken,
       to: gnosisSafeRegistryAddress,
       setupData,
+      callback: gnosisSafeRegistryAddress
     });
 
     const calculatedSafeAddress = await this.calculateGnosisSafeAddress(
       params.owner,
       response.payment
     );
-    if(ethUtil.toChecksumAddress(calculatedSafeAddress) !== ethUtil.toChecksumAddress(response.safe)) {
+    if (ethUtil.toChecksumAddress(calculatedSafeAddress) !== ethUtil.toChecksumAddress(response.safe)) {
       this.augur.setGnosisStatus(GnosisSafeState.ERROR);
       throw new Error(`Potential malicious relay. Returned ${response.safe}. Expected ${calculatedSafeAddress}`);
     }
@@ -325,9 +329,6 @@ export class Gnosis {
   }
 
   private async buildRegistrationData() {
-    const gnosisSafeRegistryAddress = this.augur.contracts.gnosisSafeRegistry
-      .address;
-
     const cashAddress = this.augur.contracts.cash.address;
     const shareTokenAddress = this.augur.contracts.shareToken.address;
     const augurAddress = this.augur.contracts.augur.address;
@@ -339,9 +340,8 @@ export class Gnosis {
     const referralAddress = NULL_ADDRESS;
     return this.provider.encodeContractFunction(
       'GnosisSafeRegistry',
-      'callRegister',
+      'setupForAugur',
       [
-        gnosisSafeRegistryAddress,
         augurAddress,
         createOrderAddress,
         fillOrderAddress,
@@ -356,8 +356,7 @@ export class Gnosis {
 
   private async buildGnosisSetupData(account: string, payment = '0') {
     const cashAddress = this.augur.contracts.cash.address;
-    const gnosisSafeRegistryAddress = this.augur.contracts.gnosisSafeRegistry
-      .address;
+    const gnosisSafeRegistryAddress = this.augur.contracts.gnosisSafeRegistry.address;
 
     const registrationData = await this.buildRegistrationData();
     /*

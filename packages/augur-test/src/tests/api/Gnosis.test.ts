@@ -34,7 +34,8 @@ describe('Gnosis :: ', () => {
       undefined
     );
 
-    mockGnosisRelay = new MockGnosisRelayAPI(mary);
+    mockGnosisRelay = new MockGnosisRelayAPI();
+    mockGnosisRelay.initialize(mary)
     john = await ContractAPI.userWrapper(
       ACCOUNTS[0],
       providerFork,
@@ -147,6 +148,7 @@ describe('Gnosis :: ', () => {
       gasPriceEstimated: '0x1',
       gasEstimated: '0x7270e0',
       payment: '0x7270e0',
+      callback: '0x0000000000000000000000000000000000000000'
     };
 
     jest.spyOn(mockGnosisRelay, 'createSafe').mockResolvedValue(fakeResponse);

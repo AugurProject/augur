@@ -10276,10 +10276,6 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "_gnosisSafeRegistry",
-					"type": "address"
-				},
-				{
 					"name": "_augur",
 					"type": "address"
 				},
@@ -10312,7 +10308,7 @@
 					"type": "address"
 				}
 			],
-			"name": "callRegister",
+			"name": "setupForAugur",
 			"outputs": [],
 			"payable": false,
 			"stateMutability": "nonpayable",
@@ -10320,11 +10316,134 @@
 		},
 		{
 			"constant": false,
-			"inputs": [],
-			"name": "register",
+			"inputs": [
+				{
+					"name": "_proxy",
+					"type": "address"
+				},
+				{
+					"name": "_mastercopy",
+					"type": "address"
+				},
+				{
+					"name": "_initializer",
+					"type": "bytes"
+				},
+				{
+					"name": "_saltNonce",
+					"type": "uint256"
+				}
+			],
+			"name": "proxyCreated",
 			"outputs": [],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "affiliates",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_augur",
+					"type": "address"
+				},
+				{
+					"name": "_augurTrading",
+					"type": "address"
+				}
+			],
+			"name": "initialize",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_address",
+					"type": "address"
+				},
+				{
+					"name": "_salt",
+					"type": "bytes32"
+				},
+				{
+					"name": "_hashedInitCode",
+					"type": "bytes32"
+				}
+			],
+			"name": "generateCreate2",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "fillOrder",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "createOrder",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "deploymentData",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bytes32"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -10340,6 +10459,20 @@
 				}
 			],
 			"name": "accountSafes",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "shareToken",
 			"outputs": [
 				{
 					"name": "",
@@ -10385,6 +10518,20 @@
 		},
 		{
 			"constant": true,
+			"inputs": [],
+			"name": "cash",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
 			"inputs": [
 				{
 					"name": "",
@@ -10412,22 +10559,17 @@
 			"type": "function"
 		},
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_augur",
-					"type": "address"
-				}
-			],
-			"name": "initialize",
+			"constant": true,
+			"inputs": [],
+			"name": "proxyFactory",
 			"outputs": [
 				{
 					"name": "",
-					"type": "bool"
+					"type": "address"
 				}
 			],
 			"payable": false,
-			"stateMutability": "nonpayable",
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -11353,6 +11495,37 @@
 			],
 			"payable": false,
 			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_mastercopy",
+					"type": "address"
+				},
+				{
+					"name": "initializer",
+					"type": "bytes"
+				},
+				{
+					"name": "saltNonce",
+					"type": "uint256"
+				},
+				{
+					"name": "callback",
+					"type": "address"
+				}
+			],
+			"name": "createProxyWithCallback",
+			"outputs": [
+				{
+					"name": "proxy",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{

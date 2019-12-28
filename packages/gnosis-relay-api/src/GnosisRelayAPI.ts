@@ -22,6 +22,7 @@ export interface CreateSafeData {
   paymentToken: string;
   fallbackHandler?: string;
   setupData?: string;
+  callback?: string;
 }
 
 export interface RelayTxEstimateData {
@@ -52,6 +53,7 @@ export interface SafeResponse {
   setupData: string;
   gasEstimated: string;
   gasPriceEstimated: string;
+  callback: string;
 }
 
 export interface GasStationResponse {

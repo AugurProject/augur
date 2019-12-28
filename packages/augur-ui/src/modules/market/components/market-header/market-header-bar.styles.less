@@ -7,73 +7,30 @@
   justify-content: space-between;
   margin: @size-10 @size-18;
 
+  @media @breakpoint-mobile {
+    margin: 0 @size-14 @size-16;
+    padding-top: @size-18;
+  }
+
   > span:first-of-type {
     .mono-9-bold;
 
     margin-right: @size-16;
   }
 
-  > button {
-    margin-left: auto;
-  }
+  > span:last-of-type {
+    flex-flow: row nowrap;
 
-  > div:last-of-type {
-    margin-top: @size-4;
-
-    @media @breakpoint-mobile {
+    > span:last-of-type {
       margin-top: 0;
     }
 
-    > div > div > svg {
-      fill: @color-inactive-text;
-      stroke: @color-inactive-text;
-      stroke-width: 0.5;
-    }
-  }
-
-  > div:not(:last-of-type) {
-    align-items: flex-end;
-    display: flex;
-    flex-grow: 1;
-    justify-content: flex-end;
-
     @media @breakpoint-mobile {
-      min-width: @size-10;
-      width: 67px;
-    }
-  }
+      flex-flow: column nowrap;
 
-  > div:last-of-type > div {
-    > div {
-      > svg {
-        height: @size-16;
-        margin-right: @size-12;
-        width: @size-15;
+      > span:last-of-type {
+        margin-top: @size-3;
       }
-    }
-
-    > div:first-of-type {
-      > svg {
-        transform: scale(1.5);
-      }
-    }
-  }
-}
-
-@media @breakpoint-mobile {
-  .HeaderBar {
-    display: flex;
-    margin: 0 @size-14 @size-16;
-    padding-top: @size-18;
-
-    > div:first-of-type {
-      button svg {
-        margin: 0;
-      }
-    }
-
-    > div:last-of-type {
-      padding: 0 0 0 @size-8;
     }
   }
 }

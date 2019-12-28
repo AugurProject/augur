@@ -35,7 +35,7 @@ import { Contracts, ContractData } from './Contracts';
 import { Dependencies } from '../libraries/GenericContractInterfaces';
 import { ContractAddresses, NetworkId, setAddresses, setUploadBlockNumber } from '@augurproject/artifacts';
 
-const TRADING_CONTRACTS = ['CreateOrder','FillOrder','CancelOrder','Trade','Orders','ZeroXTrade','ProfitLoss','SimulateTrade','ZeroXExchange']
+const TRADING_CONTRACTS = ['CreateOrder','FillOrder','CancelOrder','Trade','Orders','ZeroXTrade','ProfitLoss','SimulateTrade','ZeroXExchange','GnosisSafeRegistry']
 
 export class ContractDeployer {
     private readonly configuration: DeployerConfiguration;
@@ -507,7 +507,7 @@ Deploying to: ${networkConfiguration.networkName}
 
         const GnosisSafeRegistryContract = await this.getContractAddress('GnosisSafeRegistry');
         const gnosisSafeRegistry = new GnosisSafeRegistry(this.dependencies, GnosisSafeRegistryContract);
-        promises.push(gnosisSafeRegistry.initialize(this.augur!.address));
+        promises.push(gnosisSafeRegistry.initialize(this.augur!.address, this.augurTrading!.address));
 
         const WarpSyncContract = await this.getContractAddress('WarpSync');
         const warpSync = new WarpSync(this.dependencies, WarpSyncContract);

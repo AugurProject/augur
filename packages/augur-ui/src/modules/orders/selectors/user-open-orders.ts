@@ -9,8 +9,8 @@ import {
   SELL_INDEX,
   SELL,
   BUY,
-  OPEN,
-  FAILURE,
+  SCALAR,
+  BINARY_CATEGORICAL_FORMAT_OPTIONS
 } from 'modules/common/constants';
 
 import {
@@ -26,7 +26,6 @@ import {
   selectPendingOrdersState,
 } from 'store/select-state';
 import { createSelector } from 'reselect';
-import { ORDER_EVENT_SHARES_ESCROWED } from '@augurproject/sdk/src/state/logs/types';
 
 function selectMarketsDataStateMarket(state, marketId) {
   return selectMarketInfosState(state)[marketId];
@@ -54,6 +53,8 @@ export const selectUserOpenOrders = createSelector(
   selectPendingOrdersStateMarket,
   (market, userMarketOpenOrders, orderCancellation, pendingOrders) => {
     if (!market) return [];
+    const isScalar = market.marketType === SCALAR;
+    const shareOptions = isScalar ? {} : { ...BINARY_CATEGORICAL_FORMAT_OPTIONS };
     let userOpenOrders =
       market.outcomes
         .map(outcome =>
@@ -64,6 +65,7 @@ export const selectUserOpenOrders = createSelector(
             orderCancellation,
             market.description,
             outcome.description,
+            shareOptions
           )
         )
         .filter(collection => collection.length !== 0)
@@ -73,10 +75,10 @@ export const selectUserOpenOrders = createSelector(
     if (pendingOrders && pendingOrders.length > 0) {
       const formatted = pendingOrders.map(o => ({
         ...o,
-        unmatchedShares: formatShares(o.amount),
+        unmatchedShares: formatShares(o.amount, shareOptions),
         avgPrice: formatDai(o.fullPrecisionPrice),
         tokensEscrowed: formatDai(0, {zeroStyled: true}),
-        sharesEscrowed: formatShares(0, {zeroStyled: true}),
+        sharesEscrowed: formatShares(0, { ...shareOptions, zeroStyled: true }),
         pending: !!o.status, // TODO: can show status of transaction in the future
         status: o.status,
       }))
@@ -94,6 +96,7 @@ function selectUserOpenOrdersInternal(
   orderCancellation,
   marketDescription,
   name,
+  shareOptions
 ) {
   const { loginAccount } = store.getState() as AppState;
   if (!loginAccount.address || userMarketOpenOrders == null) return [];
@@ -106,6 +109,7 @@ function selectUserOpenOrdersInternal(
     orderCancellation,
     marketDescription,
     name,
+    shareOptions
   );
 }
 
@@ -118,6 +122,7 @@ const userOpenOrders = memoize(
     orderCancellation,
     marketDescription,
     name,
+    shareOptions
   ) => {
     const orderData = userMarketOpenOrders[outcomeId];
 
@@ -133,6 +138,7 @@ const userOpenOrders = memoize(
             orderCancellation,
             marketDescription,
             name,
+            shareOptions
           );
     const userAsks =
       orderData == null || orderData[SELL_INDEX] == null
@@ -146,6 +152,7 @@ const userOpenOrders = memoize(
             orderCancellation,
             marketDescription,
             name,
+            shareOptions
           );
 
     const orders = userAsks.concat(userBids);
@@ -165,6 +172,7 @@ function getUserOpenOrders(
   orderCancellation = {},
   marketDescription = '',
   name = '',
+  shareOptions = {},
 ) {
   const typeOrders = orders[orderType];
 
@@ -188,9 +196,9 @@ function getUserOpenOrders(
       originalShares: formatNone(),
       avgPrice: formatDai(order.fullPrecisionPrice),
       matchedShares: formatNone(),
-      unmatchedShares: formatShares(order.amount),
+      unmatchedShares: formatShares(order.amount, shareOptions),
       tokensEscrowed: formatDai(order.tokensEscrowed),
-      sharesEscrowed: formatShares(order.sharesEscrowed),
+      sharesEscrowed: formatShares(order.sharesEscrowed, shareOptions),
       marketDescription,
       name,
       cancelOrder: ({ id, marketId, outcomeId, type }) => {

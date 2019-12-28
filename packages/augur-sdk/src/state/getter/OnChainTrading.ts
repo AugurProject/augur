@@ -261,7 +261,14 @@ export class OnChainTrading {
     }
 
     return ZeroXOrdersGetters.getZeroXOrders(augur, db, params);
-    /*
+  };
+
+  @Getter('GetOrdersParams')
+  static async getOpenOnChainOrders(
+    augur: Augur,
+    db: DB,
+    params: t.TypeOf<typeof OnChainTrading.GetOrdersParams>
+  ): Promise<Orders> {
     let currentOrdersResponse: ParsedOrderEventLog[];
 
     if (params.universe) {
@@ -303,7 +310,7 @@ export class OnChainTrading {
     const markets = await getMarkets(
       marketIds,
       db,
-      params.filterFinalized
+      true
     );
 
     return currentOrdersResponse.reduce(
@@ -391,7 +398,6 @@ export class OnChainTrading {
       },
       {} as Orders
     );
-    */
   }
 }
 

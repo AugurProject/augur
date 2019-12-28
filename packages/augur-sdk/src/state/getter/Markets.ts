@@ -266,7 +266,8 @@ export class Markets {
     t.type({ marketId: t.string }),
     t.partial({
       outcomeId: t.union([outcomeIdType, t.array(outcomeIdType)]),
-      account: t.string
+      account: t.string,
+      onChain: t.boolean, // if false or not present, use 0x orderbook
     }),
   ]);
 
@@ -601,10 +602,19 @@ export class Markets {
     params: t.TypeOf<typeof Markets.getMarketOrderBookParams>
   ): Promise<MarketOrderBook> {
     const account = params.account;
-    const orders = await OnChainTrading.getOpenOrders(augur, db, {
-      marketId: params.marketId,
-      orderState: OrderState.OPEN,
-    });
+
+    let orders;
+    if (params.onChain) {
+      orders = await OnChainTrading.getOpenOnChainOrders(augur, db, {
+        marketId: params.marketId,
+        orderState: OrderState.OPEN,
+      });
+    } else {
+      orders = await OnChainTrading.getOpenOrders(augur, db, {
+        marketId: params.marketId,
+        orderState: OrderState.OPEN,
+      });
+    }
 
     const processOrders = (
       unsortedOrders: {

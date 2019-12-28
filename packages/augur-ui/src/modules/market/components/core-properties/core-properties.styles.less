@@ -36,25 +36,48 @@
   }
 
   &.ReportingBarShowing {
+    position: relative;
+
     > div:first-of-type {
       display: flex;
       align-items: flex-start;
+      padding: @size-12 @size-16;
 
-      > button {
-        padding: @size-12 @size-16 0 @size-32;
+      &.ShowExtraDetails {
+        background: @color-module-background;
+        border-bottom: 1px solid @color-dark-grey;
+        border-left: 1px solid @color-dark-grey;
+        border-right: 1px solid @color-dark-grey;
+        box-shadow: 0 @size-8 @size-8 @color-dark-grey;
+        position: absolute;
+        z-index: @mask-above;
       }
-  
+
       > div:first-of-type {
-        grid-template-columns: 215px auto;
+        grid-template-columns: 115px 1fr;
         grid-template-rows: @size-34;
+        grid-gap: @size-12 @size-20;
+        margin: 0;
 
-        > div:nth-of-type(2),
-        > div:nth-of-type(4) {
-          flex-direction: column;
-          justify-content: flex-end;
+        > div[class*="TimeLabel"] {
+          align-items: flex-end;
 
-          > span:nth-of-type(3) {
-            line-height: 160%;
+          > span:first-of-type {
+            .mono-10-bold;
+      
+            margin-bottom: @size-4;
+            flex: 1 100%;
+          }
+
+          span:nth-of-type(2) {
+            .mono-12-medium;
+      
+            color: @color-primary-text;
+          }
+      
+          span:nth-of-type(3) {
+            .mono-9-bold;
+
             margin-left: @size-4;
           }
         }
@@ -64,10 +87,12 @@
 
   @media @breakpoint-mobile {
     > div:first-of-type {
+      flex-flow: column nowrap;
       border-top: 1px solid @color-dark-grey;
       
       > div:first-of-type {
-        grid-template-rows: auto auto; 
+        grid-template-rows: auto auto;
+        margin: @size-12;
       }
     }
 
@@ -110,6 +135,23 @@
   max-width: 240px;
   min-width: 240px;
   padding: @size-12 @size-16;
+
+  @media @breakpoint-mobile {
+    min-width: unset;
+    border-left: 0;
+    border-top: 1px solid @color-dark-grey;
+    width: 100%;
+    max-width: unset;
+    display: flex;
+    flex-flow: column nowrap;
+    padding: @size-12;
+
+    > div {
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: auto;
+    }
+  }
 
   > div:first-of-type {
     margin-bottom: @size-8;
