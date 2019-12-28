@@ -45,7 +45,16 @@ test('WebsocketConnector :: Should route correctly and handle events', async don
     SubscriptionEventName.NewBlock,
     async (arg: NewBlock): Promise<void> => {
       expect(arg).toEqual(
-        { "0": { "blocksBehindCurrent": 0, "eventName": "NewBlock", "highestAvailableBlockNumber": 88, "lastSyncedBlockNumber": 88, "percentSynced": "0.0000" } }
+        {
+          '0': {
+            blocksBehindCurrent: 0,
+            eventName: SubscriptionEventName.NewBlock,
+            highestAvailableBlockNumber: 88,
+            lastSyncedBlockNumber: 88,
+            percentSynced: '0.0000',
+          },
+          eventName: SubscriptionEventName.NewBlock,
+        }
       );
 
       const getMarkets = connector.bindTo(Markets.getMarkets);
