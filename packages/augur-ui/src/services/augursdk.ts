@@ -87,7 +87,6 @@ export class SDK {
       ethereumRPCURL,
       ethereumChainID: Number(this.networkId),
       verbosity: 5,
-      customContractAddresses: Addresses[this.networkId],
       bootstrapList: env['0x-mesh'].bootstrapList,
     }
 
