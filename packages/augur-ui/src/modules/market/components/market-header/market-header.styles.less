@@ -8,10 +8,7 @@
   display: flex;
   flex: 1;
   flex-direction: column;
-
-  .copy_marketId {
-    margin-left: @size-8;
-  }
+  overflow: visible;
 
   &.Collapsed {
     color: @color-secondary-text;
@@ -30,59 +27,88 @@
     align-items: flex-start;
     display: flex;
     width: 100%;
-    padding-left: @size-16;
 
     > div:first-of-type {
       display: flex;
-      flex: 1;
-      flex-wrap: wrap;
-      margin-right: @size-8;
-      padding-top: @size-8;
-      flex-direction: column;
-
-      > div:first-of-type {
-        flex: 1;
-
-        > div {
-          > span {
-            margin: 0 @size-8 0 0;
-          }
-
-          > button[class*="WordTrailButton"] {
-            .mono-10-bold;
-          }
-        }
-      }
-
-      > div {
-        > span {
-          .text-18-bold;
-
-          color: @color-primary-text;
-          flex-grow: 1;
-          margin-bottom: @size-8;
-        }
-      }
-
-      > div:first-of-type {
+      flex: 1 100%;
+      flex-flow: column nowrap;
+      position: relative;
+      height: 100%;
+      min-height: 149px;
+      width: 100%;
+      
+      > div.HeadingBar {
+        align-items: center;
         display: flex;
-        height: fit-content;
+        flex: 1;
+        min-height: @size-20;
+        max-height: @size-20;
+        padding-left: @size-16;
+        padding-right: @size-8;
+        margin: @size-8 0 @size-4;
+
+        @media @breakpoint-mobile {
+          min-height: @size-40;
+          max-height: @size-40;
+          display: grid;
+          grid-template-columns: min-content 1fr @size-16 repeat(3, @size-24);
+          grid-template-rows: @size-20 @size-20;
+          padding-left: @size-12;
+          padding-right: @size-12;
+
+          > div[class*="WordTrail"] {
+            grid-column: 1 / span 6;
+            grid-row: 2;
+          }
+
+          > button[id="facebookButton"] {
+            grid-column: 3 / span 1;
+          }
+          > button[id="twitterButton"] {
+            grid-column: 4 / span 1;
+          }
+
+          > div[class*="CopyButton"] {
+            grid-column: 5 / span 1;
+          }
+
+          > button[class*="FavoriteButton"] {
+            grid-column: 6 / span 1;
+          }
+        }
+
+        > div[class*="WordTrail"] > button[class*="WordTrailButton"] {
+          .mono-10-bold;
+        }
 
         > span {
+          .mono-10-bold;
+
           margin: 0 @size-8 0 0;
+          height: fit-content;
         }
 
-        > button {
-          height: @size-20;
+        > div[class*="CopyButton"],
+        > button:not([class*="BackButton"]) {
+          height: @size-16;
           margin-left: @size-8;
-          width: @size-20;
+          width: @size-16;
         }
 
-        > button:first-of-type {
+        > label {
+          height: @size-16;
+          margin-bottom: 0;
+          margin-right: @size-8;
+        }
+
+        > button[id="facebookButton"] {
           justify-content: flex-end;
           margin-left: auto;
 
           > svg {
+            height: @size-16;
+            width: @size-16;
+
             > path:first-of-type {
               fill: @color-facebook;
             }
@@ -93,8 +119,11 @@
           }
         }
 
-        > button:last-of-type {
+        > button[id="twitterButton"] {
           > svg {
+            height: @size-16;
+            width: @size-16;
+
             > path:first-of-type {
               fill: @color-twitter;
             }
@@ -105,29 +134,79 @@
           }
         }
 
-        > div:nth-of-type(2),
-        > div:last-of-type {
-          display: flex;
+        > div[class*="CopyButton"],
+        > button:last-of-type {
+          height: @size-16;
           margin-left: @size-8;
 
           > svg {
+            height: @size-16;
+            width: @size-16;
             cursor: pointer;
+            fill: none;
           }
+        }
+
+        > div[class*="CopyButton"] > svg > path {
+          fill: @color-primary-text; 
         }
       }
 
-      > div:last-of-type {
+      > div.MarketDetails {
         display: flex;
+        flex: 1 100%;
         margin-left: 0;
         flex-direction: column;
-        margin-top: @size-10;
+        padding: 0 @size-12 0 @size-16;
+        transition-property: box-shadow, z-index, position;
+        transition-duration: 0.15s; 
+        transition-timing-function: ease-out;
+
+        @media @breakpoint-mobile {
+          padding: 0 @size-12;
+        }
+
+        > span {
+          .text-18-bold;
+
+          color: @color-primary-text;
+          flex: 1;
+          margin-bottom: @size-8;
+          flex: 0 auto;
+        }
+
+        &.BigTitle > span {
+          display: -webkit-box;
+          -webkit-line-clamp: 3;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+          text-overflow: ellipsis;
+
+          &:hover {
+            position: absolute;
+            display: block;
+            box-shadow: 0 0 @size-16 @color-dark-grey;
+            -webkit-line-clamp: unset;
+            background: @color-module-background;
+            z-index: @mask-above;
+            padding: @size-4;
+          }
+  
+          &:hover + div:first-of-type {
+            margin-top: 67px;
+          }
+        }
       }
     }
 
     > div:last-of-type {
+      align-self: stretch;
       display: flex;
-      border-bottom: 0;
-      border-top: 0;
+      min-height: 149px;
+
+      @media @breakpoint-mobile {
+        min-height: unset;
+      }
     }
   }
 }
@@ -160,11 +239,33 @@ div.Toggle {
     align-items: center;
 
     > button {
+      align-items: center;
+      flex: 1;
       width: unset;
+
+      > h1 {
+        .text-12-bold;
+  
+        color: @color-primary-text;
+        flex: 1;
+        padding: 0;
+        margin: 0;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-align: left;
+        text-overflow: ellipsis;
+      }
+
+      > section {
+        margin: 0 @size-8 0;
+      }
     }
 
     > button:first-of-type {
-      width: unset;
+      flex: 0;
+      margin-left: @size-16;
 
       > svg {
         height: @size-6;
@@ -176,30 +277,20 @@ div.Toggle {
         }
       }
     }
-
-    > h1 {
-      .text-12-bold;
-
-      color: @color-primary-text;
-      padding: 0;
-      margin: 0;
-      flex: 1;
-    }
   }
 }
 
 .AdditionalDetails,
 .AdditionalDetails:disabled {
-  background: none;
-  border: 0;
   margin: 0;
-  max-height: @size-52;
-  overflow: hidden;
-  resize: none;
-  text-transform: none;
+  max-height: @size-64;
   transition: max-height 0.15s ease-out;
-  white-space: pre-wrap;
-  margin-bottom: @size-12;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
 
   > p {
     margin-top: 0;
@@ -209,6 +300,7 @@ div.Toggle {
     max-height: 1000px;
     overflow-y: auto;
     transition: max-height 0.15s ease-in;
+    -webkit-line-clamp: unset;
   }
 }
 
@@ -235,49 +327,67 @@ div.Toggle {
   }
 }
 
-.MainValues {
-  display: flex;
-  width: 100%;
-  padding-left: @size-16;
+.CopyButton {
+  position: relative;
 
-  > .Properties > section {
-    display: none;
+  > div {
+    .text-14-bold;
+
+    background: @color-secondary-action;
+    border: @size-1 solid @color-secondary-action-outline;
+    color: @color-primary-text;
+    border-radius: @border-radius-default;
+    padding: @size-4;
+    position: absolute;
+    top: 125%;
+    left: -@size-16;
+    z-index: @mask-modal;
+    max-width: @size-52;
+
+    &:before {
+      content: '';
+      position: absolute;
+      top: -@size-5;
+      left: @size-21;
+      margin: 0;
+      border-top: 0;
+      border-left: @size-5 solid transparent;
+      border-right: @size-5 solid transparent;
+      border-bottom: @size-5 solid @color-secondary-action-outline;
+      padding: 0;
+      width: 0;
+      height: 0;
+    }
   }
+}
 
-  > div:first-of-type {
-    flex: 1;
-    margin-right: @size-8;
+div.ExpandedHeading {
+  position: absolute;
+  width: 100%;
 
-    &.Collapsed {
-      display: flex;
-      flex: 1;
-      width: 100%;
-    }
+  @media @breakpoint-mobile {
+    position: inherit;
+    box-shadow: none;
+    z-index: unset;
+  }
+}
 
-    > span,
-    > span > div {
-      .text-18-bold;
+div.ExpandedContent {
+  position: absolute;
+  background: @color-module-background;
+  z-index: @mask-above;
+  box-shadow: 0 @size-8 @size-8 @color-dark-grey;
+  margin-top: @size-32;
+  width: 100%;
+  transition-property: box-shadow, z-index, position;
+  transition-duration: 0.15s; 
+  transition-timing-function: ease-in;
 
-      color: @color-primary-text;
-      flex-grow: 1;
-      margin-bottom: @size-8;
-    }
-
-    > div:first-of-type {
-      .mono-9-bold;
-
-      padding: @size-8 0 @size-8;
-
-      > p {
-        margin-bottom: 0;
-      }
-
-      > span {
-        .text-12;
-
-        color: @color-primary-text;
-      }
-    }
+  @media @breakpoint-mobile {
+    margin-top: 0;
+    position: inherit;
+    box-shadow: none;
+    z-index: unset;
   }
 }
 
@@ -293,14 +403,24 @@ div.Toggle {
     padding-right: @size-8;
     text-transform: uppercase;
   }
+  
+  > p {
+    .text-12;
+
+    color: @color-primary-text;
+    height: @size-18;
+    margin: @size-2 0 @size-4;
+  }
 
   > div {
     display: flex;
     align-items: flex-start;
+    padding-bottom: @size-12;
 
     > button {
       .text-12;
 
+      align-self: flex-end;
       color: @color-primary-text;
       cursor: pointer;
       margin-left: @size-5;
@@ -319,6 +439,10 @@ div.Toggle {
         align-items: center;
         display: flex;
         margin-top: 0;
+
+        @media @breakpoint-mobile {
+          display: block;
+        }
       }
     }
 
@@ -329,6 +453,7 @@ div.Toggle {
       .text-12;
 
       color: @color-primary-text;
+      flex: 1;
 
       @media @breakpoint-mobile-small {
         display: block;
@@ -340,12 +465,15 @@ div.Toggle {
 
   @media @breakpoint-mobile {
     > div {
-      flex-direction: column;
-      align-items: center;
-      margin-bottom: @size-12;
+      flex-flow: column nowrap;
 
       > label {
         margin-bottom: @size-8;
+      }
+
+      > button {
+        margin: none;
+        width: 100%;
       }
     }
   }
@@ -356,8 +484,12 @@ div.Toggle {
   display: flex;
   flex: 1;
   flex-direction: column;
-  min-width: 630px;
+  min-width: 537px;
   background: @color-module-background;
+
+  > button {
+    display: none;
+  }
 }
 
 .ShowTutorial {
@@ -370,96 +502,66 @@ div.Toggle {
 
 @media @breakpoint-mobile {
   .MarketHeader {
-    border-radius: 1px;
-
-    > h1 {
-      .text-18-bold;
-
-      display: flex;
-      color: @color-primary-text;
-      margin: 0 @size-8 @size-24;
-    }
+    width: 100%;
 
     > div:first-of-type {
-      align-items: normal;
-      padding-left: 0;
-      overflow: auto;
-      margin-bottom: @size-5;
-      flex-direction: column;
+      // overall wrapper
+      flex-flow: column nowrap;
 
       div.Properties {
         min-width: unset;
         border: 0;
         border-top: 1px solid @color-dark-grey;
 
+        &.HideProperties > div[class*="CoreProperties"] > div {
+          > div:first-of-type {
+            display: none;
+          }
+
+          > div:last-of-type {
+            border-top: 0;
+
+            > div:first-of-type {
+              display: none;
+            }
+          }
+        }
+
+        > section {
+          margin: @size-12;
+          padding: 0;
+        }
+
         > div:last-of-type {
           border-top: 0;
         }
-      }
 
-      > div:first-of-type {
-        padding-top: @size-12;
-        padding-left: @size-14;
-        align-items: flex-start;
-
-        > div:first-of-type {
-          align-items: flex-end;
-          flex-direction: row;
-
-          > span {
-            align-self: center;
-          }
-
-          > svg {
-            display: flex;
-            margin-right: @size-8;
+        > button {
+          .text-12;
+    
+          align-self: flex-end;
+          color: @color-primary-text;
+          cursor: pointer;
+          display: block;
+          text-transform: uppercase;
+          margin: 0 0 @size-8;
+          width: 100%;
+    
+          svg {
+            height: @size-12;
+    
+            polyline {
+              stroke: @color-primary-text;
+              stroke-width: 3;
+            }
           }
         }
       }
-    }
-  }
-
-  .Core {
-    flex-direction: column;
-    padding: 0;
-
-    > div {
-      border-radius: @border-radius-default;
     }
   }
 
   .BackButton {
     display: none;
-  }
-
-  .MainValues {
-    flex-direction: column;
-    padding-left: 0;
-
-    > .Properties {
-      border-left: 0;
-      margin-left: 0;
-
-      > section {
-        display: flex;
-        margin-left: @size-14;
-      }
-    }
-
-    > div:first-of-type {
-      padding-left: @size-12;
-
-      > h1 {
-        margin-bottom: @size-12;
-      }
-    }
-  }
-
-  .Time {
-    align-items: normal;
-    background-color: @color-dark-grey;
-    margin: @size-8 0;
-    padding: @size-16;
   }
 
   div.Toggle {

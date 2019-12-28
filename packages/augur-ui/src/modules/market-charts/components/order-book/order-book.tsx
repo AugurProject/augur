@@ -3,7 +3,14 @@ import classNames from 'classnames';
 
 import OrderHeader from 'modules/market-charts/components/order-header/order-header';
 import { HoverValueLabel } from 'modules/common/labels';
-import { ASKS, BIDS, BUY, SELL, SCALAR, BINARY_CATEGORICAL_SHARE_OPTIONS } from 'modules/common/constants';
+import {
+  ASKS,
+  BIDS,
+  BUY,
+  SELL,
+  SCALAR,
+  BINARY_CATEGORICAL_FORMAT_OPTIONS,
+} from 'modules/common/constants';
 
 import Styles from 'modules/market-charts/components/order-book/order-book.styles.less';
 import { OutcomeOrderBook } from 'modules/types';
@@ -75,16 +82,22 @@ class OrderBookSide extends Component<OrderBookSideProps, {}> {
       marketType,
     } = this.props;
     const isAsks = type === ASKS;
-    const opts = marketType === SCALAR ? {} : BINARY_CATEGORICAL_SHARE_OPTIONS;
-
+    const opts =
+      marketType === SCALAR
+        ? { removeComma: true }
+        : { ...BINARY_CATEGORICAL_FORMAT_OPTIONS, removeComma: true };
     const orderBookOrders = isAsks
       ? orderBook.asks || []
       : orderBook.bids || [];
 
-    const isScrollable = this.side && (orderBookOrders.length * 20) >= this.side.clientHeight;
+    const isScrollable =
+      this.side && orderBookOrders.length * 20 >= this.side.clientHeight;
     return (
       <div
-        className={classNames(Styles.Side, { [Styles.Asks]: isAsks, [Styles.Scrollable]: isScrollable })}
+        className={classNames(Styles.Side, {
+          [Styles.Asks]: isAsks,
+          [Styles.Scrollable]: isScrollable,
+        })}
         ref={side => {
           this.side = side;
         }}
@@ -106,6 +119,7 @@ class OrderBookSide extends Component<OrderBookSideProps, {}> {
               hoveredSide === BIDS &&
               i < hoveredOrderIndex);
           const isHovered = i === hoveredOrderIndex && hoveredSide === type;
+
           return (
             <div
               key={order.cumulativeShares + i}

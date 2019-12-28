@@ -1,4 +1,3 @@
-import { WordTrail } from 'modules/common/labels';
 import React, { Component } from 'react';
 import classNames from 'classnames';
 import {
@@ -7,14 +6,17 @@ import {
   TwoArrowsOutline,
   LeftChevron,
   CopyAlternateIcon,
-  TemplateIcon,
 } from 'modules/common/icons';
 import MarkdownRenderer from 'modules/common/markdown-renderer';
 import MarketHeaderBar from 'modules/market/containers/market-header-bar';
 import { BigNumber } from 'bignumber.js';
 import Styles from 'modules/market/components/market-header/market-header.styles.less';
 import CoreProperties from 'modules/market/components/core-properties/core-properties';
-import { MarketTypeLabel } from 'modules/common/labels';
+import {
+  WordTrail,
+  MarketTypeLabel,
+  TemplateShield,
+} from 'modules/common/labels';
 import makeQuery from 'modules/routes/helpers/make-query';
 import {
   CATEGORY_PARAM_NAME,
@@ -61,7 +63,11 @@ interface MarketHeaderState {
   showReadMore: boolean;
   detailsHeight: number;
   headerCollapsed: boolean;
+  showCopied: boolean;
+  notExpandedHeight: boolean | number;
+  showProperties: boolean;
 }
+
 export default class MarketHeader extends Component<
   MarketHeaderProps,
   MarketHeaderState
@@ -75,23 +81,54 @@ export default class MarketHeader extends Component<
   };
   detailsContainer: any;
   clipboardMarketId: any = new Clipboard('#copy_marketId');
+  refTitle: any = null;
+  refNotCollapsed: any = null;
 
   constructor(props) {
     super(props);
     this.state = {
       showReadMore: false,
+      showProperties: false,
       detailsHeight: 0,
       headerCollapsed: false,
+      showCopied: false,
+      notExpandedHeight: false,
     };
 
     this.gotoFilter = this.gotoFilter.bind(this);
     this.toggleReadMore = this.toggleReadMore.bind(this);
     this.updateDetailsHeight = this.updateDetailsHeight.bind(this);
     this.addToFavorites = this.addToFavorites.bind(this);
+    this.toggleShowProperties = this.toggleShowProperties.bind(this);
   }
 
   componentDidMount() {
+    const notExpandedHeight =
+      !this.state.headerCollapsed &&
+      !!this.refNotCollapsed &&
+      this.refNotCollapsed.firstChild.clientHeight;
     this.updateDetailsHeight();
+
+    if (notExpandedHeight) {
+      this.setState({ notExpandedHeight });
+    }
+
+    window.addEventListener('click', e => {
+      const ClickedOnExpandedContent = e
+        .composedPath()
+        .find(
+          ({ className }) =>
+            className === 'string' &&
+            className.includes('market-header-styles_ExpandedContent')
+        );
+      if (!ClickedOnExpandedContent) this.toggleReadMore(true);
+    });
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('click', e => {
+      this.toggleReadMore(true);
+    });
   }
 
   componentDidUpdate(prevProps) {
@@ -106,12 +143,21 @@ export default class MarketHeader extends Component<
     }
   }
 
-  toggleReadMore() {
-    this.setState({ showReadMore: !this.state.showReadMore });
+  toggleReadMore(closeOnly: boolean = false) {
+    if (closeOnly) {
+      this.setState({ showReadMore: false });
+    } else {
+      this.setState({ showReadMore: !this.state.showReadMore });
+    }
+  }
+
+  toggleShowProperties() {
+    this.setState({ showProperties: !this.state.showProperties });
   }
 
   addToFavorites() {
-    this.props.toggleFavorite(this.props.market.id);
+    const { market, toggleFavorite } = this.props;
+    toggleFavorite(market.id);
   }
 
   gotoFilter(type, value) {
@@ -151,10 +197,17 @@ export default class MarketHeader extends Component<
       totalSteps,
       text,
       showTutorialDetails,
-      marketLinkCopied
+      marketLinkCopied,
     } = this.props;
     let { details } = this.props;
-    const { headerCollapsed, showReadMore, detailsHeight } = this.state;
+    const {
+      headerCollapsed,
+      showReadMore,
+      showProperties,
+      detailsHeight,
+      showCopied,
+      notExpandedHeight,
+    } = this.state;
     const detailsTooLong =
       market.details && detailsHeight > OVERFLOW_DETAILS_LENGTH;
 
@@ -175,7 +228,15 @@ export default class MarketHeader extends Component<
       }));
 
     const categoriesWithClick = process(market.categories) || [];
+    const bigTitle =
+      !!this.refTitle && this.refTitle.firstChild.clientHeight > 60;
+    const expandedDetails = detailsTooLong && showReadMore;
 
+    const containerStyle = notExpandedHeight
+      ? {
+          minHeight: `${notExpandedHeight}px`,
+        }
+      : {};
     return (
       <section
         className={classNames(
@@ -190,39 +251,75 @@ export default class MarketHeader extends Component<
         )}
       >
         {!headerCollapsed && (
-          <div>
-            <div className={classNames({[Styles.ShowTutorial]: showTutorialDetails})}>
-              <div>
-                <WordTrail items={[...categoriesWithClick]}>
-                  <button
-                    className={Styles.BackButton}
-                    onClick={() => history.goBack()}
-                  >
-                    {LeftChevron} Back
-                  </button>
-                  <MarketTypeLabel marketType={marketType} />
-                  {market.isTemplate && <>{TemplateIcon}</>}
-                </WordTrail>
+          <div
+            ref={notCollapsed => {
+              this.refNotCollapsed = notCollapsed;
+            }}
+          >
+            <div
+              className={classNames({
+                [Styles.ShowTutorial]: showTutorialDetails,
+              })}
+              style={containerStyle}
+            >
+              <div
+                className={classNames(Styles.HeadingBar, {
+                  [Styles.ExpandedHeading]: expandedDetails,
+                })}
+              >
+                <button
+                  className={Styles.BackButton}
+                  onClick={() => history.goBack()}
+                >
+                  {LeftChevron} Back
+                </button>
+                <MarketTypeLabel marketType={marketType} />
+                {market.isTemplate && <TemplateShield marketId={market.id} />}
+                <WordTrail items={[...categoriesWithClick]} />
                 <SocialMediaButtons
                   marketAddress={market.id}
                   marketDescription={description}
                 />
-                <div id="copy_marketId" data-clipboard-text={market.id} onClick={() => marketLinkCopied(market.id, MARKET_PAGE)}>
+                <div
+                  id="copy_marketId"
+                  data-clipboard-text={market.id}
+                  onClick={() => {
+                    marketLinkCopied(market.id, MARKET_PAGE);
+                    this.setState({ showCopied: true }, () => {
+                      setTimeout(
+                        () => this.setState({ showCopied: false }),
+                        2000
+                      );
+                    });
+                  }}
+                  className={Styles.CopyButton}
+                >
                   {CopyAlternateIcon}
+                  {showCopied && <div>Copied</div>}
                 </div>
                 {toggleFavorite && (
-                  <div>
-                    <FavoritesButton
-                      action={() => this.addToFavorites()}
-                      isFavorite={isFavorite}
-                      hideText
-                      disabled={!isLogged}
-                    />
-                  </div>
+                  <FavoritesButton
+                    action={() => this.addToFavorites()}
+                    isFavorite={isFavorite}
+                    hideText
+                    disabled={!isLogged}
+                  />
                 )}
               </div>
-              <div>
-                {preview ? <PreviewMarketTitle market={market} /> : <MarketTitle id={market.marketId} noLink />}
+              <div
+                ref={title => {
+                  this.refTitle = title;
+                }}
+                className={classNames(Styles.MarketDetails, {
+                  [Styles.BigTitle]: bigTitle,
+                  [Styles.ExpandedContent]: expandedDetails,
+                })}
+              >
+                {preview ? (
+                  <PreviewMarketTitle market={market} />
+                ) : (
+                  <MarketTitle id={market.marketId} noLink />
+                )}
                 {details.length > 0 && (
                   <div className={Styles.Details}>
                     <h4>Resolution Details</h4>
@@ -232,8 +329,7 @@ export default class MarketHeader extends Component<
                           this.detailsContainer = detailsContainer;
                         }}
                         className={classNames(Styles.AdditionalDetails, {
-                          [Styles.Tall]:
-                            detailsTooLong && showReadMore,
+                          [Styles.Tall]: expandedDetails,
                         })}
                       >
                         <MarkdownRenderer text={details} hideLabel />
@@ -243,10 +339,13 @@ export default class MarketHeader extends Component<
                           className={classNames({
                             [Styles.Less]: showReadMore,
                           })}
-                          onClick={this.toggleReadMore}
+                          onClick={e => {
+                            e.stopPropagation();
+                            this.toggleReadMore();
+                          }}
                         >
                           {!showReadMore
-                            ? ChevronDown({ stroke: '#FFFFFF' })
+                            ? ChevronDown({ stroke: '#D7DDE0' })
                             : ChevronUp()}
                         </button>
                       )}
@@ -255,11 +354,18 @@ export default class MarketHeader extends Component<
                 )}
               </div>
             </div>
-            <div className={classNames({[Styles.ShowTutorial]: showTutorialData})}>
-              <div className={Styles.Properties}>
+            <div
+              className={classNames({
+                [Styles.ShowTutorial]: showTutorialData,
+              })}
+            >
+              <div
+                className={classNames(Styles.Properties, {
+                  [Styles.HideProperties]: !showProperties,
+                })}
+              >
                 {(market.id || preview) && (
                   <MarketHeaderBar
-                    marketStatus={market.marketStatus}
                     reportingState={market.reportingState}
                     disputeInfo={market.disputeInfo}
                     endTimeFormatted={market.endTimeFormatted}
@@ -273,10 +379,19 @@ export default class MarketHeader extends Component<
                 {(market.id || preview) && (
                   <CoreProperties
                     market={market}
-                    alternateView
                     reportingBarShowing={reportingBarShowing}
                   />
                 )}
+                <button
+                  onClick={e => {
+                    e.stopPropagation();
+                    this.toggleShowProperties();
+                  }}
+                >
+                  {!showProperties
+                    ? ChevronDown({ stroke: '#D7DDE0' })
+                    : ChevronUp()}
+                </button>
               </div>
               {showTutorialData && (
                 <TutorialPopUp
@@ -296,19 +411,26 @@ export default class MarketHeader extends Component<
           })}
         >
           {headerCollapsed && (
-            <>
-              <button
-                className={Styles.BackButton}
-                onClick={() => history.goBack()}
-              >
-                {LeftChevron} Back
-              </button>
-              <h1>{description}</h1>
-            </>
+            <button
+              className={Styles.BackButton}
+              onClick={() => history.goBack()}
+            >
+              {LeftChevron} Back
+            </button>
           )}
           <button
             onClick={() => this.setState({ headerCollapsed: !headerCollapsed })}
           >
+            {headerCollapsed && (
+              <>
+                <h1>{description}</h1>
+                <MarketHeaderBar
+                  reportingState={market.reportingState}
+                  disputeInfo={market.disputeInfo}
+                  endTimeFormatted={market.endTimeFormatted}
+                />
+              </>
+            )}
             {TwoArrowsOutline}
           </button>
         </div>

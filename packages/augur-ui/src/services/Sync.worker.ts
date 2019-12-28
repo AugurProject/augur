@@ -45,7 +45,7 @@ const api: Promise<API> = new Promise<API>((resolve) => {
 });
 
 const subscriptions:Promise<Subscriptions> = api.then((api:API) => {
-  return api.augur.getAugurEventEmitter();
+  return api.augur.events;
 });
 
 ctx.addEventListener('message', async (message: any) => {

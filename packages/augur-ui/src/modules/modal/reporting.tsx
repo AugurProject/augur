@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { MarketData, DisputeInputtedValues } from 'modules/types';
 import { Title } from 'modules/modal/common';
 import { SecondaryButton } from 'modules/common/buttons';
-import { MarketTypeLabel, RepBalance } from 'modules/common/labels';
+import { MarketTypeLabel, RepBalance, TemplateShield } from 'modules/common/labels';
 import { Subheaders } from 'modules/reporting/common';
 import {
   ReportingRadioBarGroup,
@@ -292,6 +292,8 @@ export default class ModalReporting extends Component<
       details,
       creationTimeFormatted,
       endTimeFormatted,
+      isTemplate,
+      id
     } = market;
 
     return (
@@ -302,7 +304,10 @@ export default class ModalReporting extends Component<
             {migrateRep &&
               <MigrateRepInfo />
             }
-            <MarketTypeLabel marketType={marketType} />
+            <section>
+              <MarketTypeLabel marketType={marketType} />
+              {isTemplate && <TemplateShield marketId={id} />}
+            </section>
             <span>{description}</span>
             <Subheaders
               small

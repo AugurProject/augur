@@ -12,7 +12,7 @@ import { CreateYesNoMarketParams, CreateCategoricalMarketParams, CreateScalarMar
 import { Gnosis } from "./api/Gnosis";
 import { HotLoading, DisputeWindow, GetDisputeWindowParams } from "./api/HotLoading";
 import { EmptyConnector } from "./connector/empty-connector";
-import { Events } from "./api/Events";
+import { ContractEvents } from "./api/ContractEvents";
 import { Markets } from "./state/getter/Markets";
 import { Universe } from "./state/getter/Universe";
 import { Platform } from "./state/getter/Platform";
@@ -51,7 +51,7 @@ export class Augur<TProvider extends Provider = Provider> {
   private readonly dependencies: ContractDependenciesGnosis;
 
   readonly networkId: NetworkId;
-  readonly events: Events;
+  readonly contractEvents: ContractEvents;
   readonly addresses: ContractAddresses;
   readonly contracts: Contracts;
   readonly onChainTrade: OnChainTrade;
@@ -65,7 +65,7 @@ export class Augur<TProvider extends Provider = Provider> {
   connector: BaseConnector;
   readonly liquidity: Liquidity;
   readonly hotLoading: HotLoading;
-  readonly subscriptions: Subscriptions;
+  readonly events: Subscriptions;
 
   private txSuccessCallback: TXStatusCallback;
   private txAwaitingSigningCallback: TXStatusCallback;
@@ -90,16 +90,15 @@ export class Augur<TProvider extends Provider = Provider> {
       this.connector = connector;
     }
 
-    this.subscriptions = new Subscriptions(augurEmitter);
-
-    this.subscriptions.on(SubscriptionEventName.GnosisSafeStatus, this.updateGnosisSafe.bind(this));
+    this.events = new Subscriptions(augurEmitter);
+    this.events.on(SubscriptionEventName.GnosisSafeStatus, this.updateGnosisSafe.bind(this));
 
     // API
     this.addresses = addresses;
     this.contracts = new Contracts(this.addresses, this.dependencies);
     this.market = new Market(this);
     this.liquidity = new Liquidity(this);
-    this.events = new Events(this.provider, this.addresses.Augur, this.addresses.AugurTrading, this.addresses.ShareToken);
+    this.contractEvents = new ContractEvents(this.provider, this.addresses.Augur, this.addresses.AugurTrading, this.addresses.ShareToken);
     this.gnosis = new Gnosis(this.provider, gnosisRelay, this, this.dependencies);
     this.hotLoading = new HotLoading(this);
     this.onChainTrade = new OnChainTrade(this);
@@ -426,10 +425,6 @@ export class Augur<TProvider extends Provider = Provider> {
     return this.hotLoading.getCurrentDisputeWindowData(params);
   }
 
-
-  getAugurEventEmitter(): EventNameEmitter {
-    return this.subscriptions;
-  }
 
   async simulateTrade(
     params: PlaceTradeDisplayParams

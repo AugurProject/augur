@@ -25,7 +25,7 @@ const MarketTitle: React.FC<MarketTitleProps> = ({
   noLink,
 }) =>
   isTemplate ? (
-    <MarketLink id={noLink ? null : id}>
+    <MarketLink className={Styles.MarketTemplateTitle} id={noLink ? null : id}>
       <MarketTemplateTitle template={template} />
     </MarketLink>
   ) : (
@@ -58,9 +58,15 @@ const MarketTemplateTitle: React.FC<MarketTemplateTitleProps> = ({
   );
 
   return (
-    <div className={Styles.MarketTemplateTitle}>
-      <span>{question}</span>
-      {estDateTime && <span>Estimated sheduled start time: {estDateTime.userInput}</span>}
-    </div>
+    <>
+      {!estDateTime && question}
+      {estDateTime && (
+        <>
+          <span>{question}</span>
+          <span>Estimated sheduled start time: {estDateTime.userInput}</span>
+        </>
+        )
+      }
+    </>
   );
 };

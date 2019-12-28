@@ -254,8 +254,9 @@ export class DB {
     // Update LiquidityDatabase and set it to update whenever there's a new block
     //await this.liquidityDatabase.updateLiquidity(augur, this, (await augur.getTimestamp()).toNumber());
 
-    //this.augur.getAugurEventEmitter().on(SubscriptionEventName.NewBlock, (args) => this.liquidityDatabase.updateLiquidity(this.augur, this, args.timestamp));
-    this.augur.getAugurEventEmitter().emit(SubscriptionEventName.SDKReady, {
+    //this.augur.events.on(SubscriptionEventName.NewBlock, (args) => this.liquidityDatabase.updateLiquidity(this.augur, this, args.timestamp));
+    console.log("Syncing Complete - SDK Ready");
+    this.augur.events.emit(SubscriptionEventName.SDKReady, {
       eventName: SubscriptionEventName.SDKReady,
     });
   }

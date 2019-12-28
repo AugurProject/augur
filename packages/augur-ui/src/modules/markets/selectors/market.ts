@@ -1,4 +1,4 @@
-import { formatDai, formatNumber, formatAttoDai } from 'utils/format-number';
+import { formatNumber } from 'utils/format-number';
 import {
   YES_NO,
   SCALAR,

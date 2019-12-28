@@ -9,21 +9,20 @@ import {
 import { selectMarket } from 'modules/markets/selectors/market';
 import { toggleFavorite } from 'modules/markets/actions/update-favorites';
 import { marketLinkCopied } from 'services/analytics/helpers';
+import { isSameAddress } from 'utils/isSameAddress';
 
 const mapStateToProps = (state, ownProps) => {
   const market = ownProps.market || selectMarket(ownProps.marketId);
 
   const { reportingState, consensusFormatted: consensus } = market;
   let reportingBarShowing = false;
-  const isDesignatedReporter =
-    market.designatedReporter === state.loginAccount.address;
 
   if (
     consensus ||
     reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE ||
     reportingState === REPORTING_STATE.OPEN_REPORTING ||
     (reportingState === REPORTING_STATE.DESIGNATED_REPORTING &&
-      isDesignatedReporter)
+      isSameAddress(market.designatedReporter, state.loginAccount.address))
   ) {
     reportingBarShowing = true;
   }

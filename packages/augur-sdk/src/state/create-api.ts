@@ -15,10 +15,6 @@ import { WSClient } from '@0x/mesh-rpc-client';
 const settings = require('./settings.json');
 
 async function buildDeps(ethNodeUrl: string, account?: string, enableFlexSearch = false) {
-  // Necessary because 0x dep web3-provider-fork erroneously references `window`, which does not exist in web workers.
-  // @ts-ignore
-  self.window = self;
-
   try {
     const ethersProvider = new EthersProvider(new JsonRpcProvider(ethNodeUrl), 10, 0, 40);
     const networkId = await ethersProvider.getNetworkId();
@@ -27,7 +23,7 @@ async function buildDeps(ethNodeUrl: string, account?: string, enableFlexSearch 
     const contractDependencies = new ContractDependenciesGnosis(ethersProvider, gnosisRelay, undefined, undefined, undefined, undefined, account);
 
     const augur = await Augur.create(ethersProvider, contractDependencies, Addresses[networkId], new EmptyConnector(), undefined, enableFlexSearch, meshClient);
-    const blockAndLogStreamerListener = BlockAndLogStreamerListener.create(ethersProvider, augur.events.getEventTopics, augur.events.parseLogs, augur.events.getEventContractAddress);
+    const blockAndLogStreamerListener = BlockAndLogStreamerListener.create(ethersProvider, augur.contractEvents.getEventTopics, augur.contractEvents.parseLogs, augur.contractEvents.getEventContractAddress);
     const db = DB.createAndInitializeDB(
       Number(networkId),
       settings.blockstreamDelay,

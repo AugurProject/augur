@@ -10,7 +10,7 @@ import {
   ValueLabel,
 } from 'modules/common/labels';
 import { ViewTransactionDetailsButton } from 'modules/common/buttons';
-
+import { SCALAR, BINARY_CATEGORICAL_FORMAT_OPTIONS } from 'modules/common/constants';
 import Styles from 'modules/portfolio/components/common/filled-orders-table.styles.less';
 import MarketTitle from 'modules/market/containers/market-title';
 
@@ -21,6 +21,7 @@ export interface FilledOrdersTableProps {
 
 const FilledOrdersTable = (props: FilledOrdersTableProps) => {
   const { filledOrder, showMarketInfo } = props;
+  const opts = filledOrder.marketType === SCALAR ? {} : { ...BINARY_CATEGORICAL_FORMAT_OPTIONS };
   return (
     <div className={Styles.FilledOrders}>
       <div>
@@ -35,7 +36,7 @@ const FilledOrdersTable = (props: FilledOrdersTableProps) => {
         {filledOrder.trades.map((trade: MarketData, i: number) => (
           <ul key={i}>
             <li>
-              <ValueLabel value={formatShares(trade.amount)} />
+              <ValueLabel value={formatShares(trade.amount, opts)} />
             </li>
             <li>{trade.timestamp.formattedLocalShortDateTimeNoTimezone}</li>
             <li>
@@ -54,7 +55,7 @@ const FilledOrdersTable = (props: FilledOrdersTableProps) => {
             <LinearPropertyLabel
               highlightFirst
               label="Filled"
-              value={formatShares(trade.amount).formatted}
+              value={formatShares(trade.amount, opts).formatted}
             />
             <LinearPropertyLabel
               highlightFirst

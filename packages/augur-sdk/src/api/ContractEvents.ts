@@ -2,7 +2,7 @@ import { Provider, Log, ParsedLog } from "..";
 import { abi } from "@augurproject/artifacts";
 import { Abi } from "ethereum";
 
-export class Events {
+export class ContractEvents {
   private readonly provider: Provider;
   private readonly augurAddress: string;
   private readonly augurTradingAddress: string;
