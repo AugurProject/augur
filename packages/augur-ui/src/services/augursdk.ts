@@ -44,6 +44,14 @@ export class SDK {
     const ethersProvider = new EthersProvider(provider, 10, 0, 40);
     this.networkId = await ethersProvider.getNetworkId();
 
+
+    if (typeof Addresses[this.networkId] === "undefined") {
+      if (this.networkId !== "1") {
+        console.log(`Contract addresses aren't available for network ${this.networkId}. If you're running in development mode, be sure to have started a local ethereum node, and then have rebuilt using yarn build before starting the dev server`);
+      }
+      throw new Error(`Unable to read contract addresses for network: ${this.networkId}. Known addresses: ${JSON.stringify(Addresses)}`);
+    }
+
     const gnosisRelay = gnosisRelayEndpoint ?
       new GnosisRelayAPI(gnosisRelayEndpoint) :
       undefined;
@@ -82,13 +90,6 @@ export class SDK {
     };
 
     const meshBrowser = new Mesh(this.meshConfig);
-
-    this.meshConfig = {
-      ethereumRPCURL,
-      ethereumChainID: Number(this.networkId),
-      verbosity: 5,
-      bootstrapList: env['0x-mesh'].bootstrapList,
-    }
 
     const connector = this.pickConnector(env['sdkEndpoint']);
     await connector.connect(
