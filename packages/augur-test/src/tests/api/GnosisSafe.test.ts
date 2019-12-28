@@ -17,7 +17,8 @@ beforeAll(async () => {
     undefined
   );
 
-  mockGnosisRelay = new MockGnosisRelayAPI(mary);
+  mockGnosisRelay = new MockGnosisRelayAPI();
+  mockGnosisRelay.initialize(mary);
   john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, seed.addresses, undefined, mockGnosisRelay);
 });
 
