@@ -91,12 +91,12 @@ export class SyncableDB extends RollbackTable {
       return -1;
     }
 
-    if (this.eventName === SubscriptionEventName.OrderEvent) {
-      this.parseLogArrays(logs);
-    }
-
     let documents;
     if (logs.length > 0) {
+      if (this.eventName === SubscriptionEventName.OrderEvent) {
+        this.parseLogArrays(logs);
+      }
+
       // If this is a table which is keyed by fields (meaning we are doing updates to a value instead of pulling in a history of events) we only want the most recent document for any given id
       if (this.idFields.length > 0) {
         documents = _.values(
