@@ -9,6 +9,7 @@
     },
     "meshClientURLs": {
         "12346": "ws://localhost:60557",
+        "102": "ws://localhost:60557",
         "42": "wss://v2.augur.net/0x-ws"
     },
     "testAccounts": [
