@@ -330,6 +330,14 @@ export class ZeroX {
     }
   }
 
+  async cancelOrder(order) {
+    if (this.browserMesh) {
+      return this.browserMesh.addOrdersAsync([order]);
+    } else {
+      return this.meshClient.addOrdersAsync([order]);
+    }
+  }
+
   async simulateTrade(
     params: ZeroXPlaceTradeDisplayParams
   ): Promise<ZeroXSimulateTradeData> {
