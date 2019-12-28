@@ -113,12 +113,23 @@ export class SDK {
 
     //@ts-ignore
     window.AugurSDK = this.sdk;
-
-    this.addErrorHandler(meshBrowser, this.meshConfig);
-    window.AugurSDK.zeroX.setMesh(meshBrowser);
-    window.AugurSDK.zeroX.startAsync();
-
+    this.connectToBrowserMesh();
     return this.sdk;
+  }
+
+  connectToBrowserMesh() { 
+     const mesh = new Mesh(this.meshConfig);
+     mesh.onError((err) => {
+        console.log("Browser mesh error");
+        console.log(err.message);
+        console.log(err.stack); 
+        if(err.message == "timed out waiting for first block to be processed by Mesh node. Check your backing Ethereum RPC endpoint") {
+            console.log("Restarting Mesh Sync");  
+            this.connectToBrowserMesh();
+         }
+     });
+     window.AugurSDK.zeroX.browserMesh = meshBrowser;
+     window.AugurSDK.zeroX.browserMesh.startAsync();
   }
 
   addErrorHandler(mesh: browserMesh, meshConfig: Config) {
@@ -127,7 +138,7 @@ export class SDK {
       console.log("Browser mesh error");
       console.log(err.message);
       console.log(err.stack); 
-      if(err.message == "timed out waiting for first block to be processed by Mesh node. Check your backing Ethereum RPC endpoint") {
+      if(err.message == ) {
         console.log("Restarting Mesh Sync");
         let newMesh = new Mesh(meshConfig);
         this.addErrorHandler(newMesh, meshConfig);
