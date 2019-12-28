@@ -116,7 +116,7 @@ export interface MatchingOrders {
 export class ZeroX {
   private readonly augur: Augur;
   private readonly meshClient: WSClient;
-  private browserMesh: BrowserMesh;
+  public browserMesh: BrowserMesh;
 
   constructor(augur: Augur, meshClient?: WSClient, browserMesh?: BrowserMesh) {
     if (!(browserMesh || meshClient)) {
