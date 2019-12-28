@@ -20,16 +20,17 @@ async function buildDeps(ethNodeUrl: string, account?: string, enableFlexSearch 
 
     const gnosisRelayURL = settings.gnosisRelayURLs[networkId];
     if (typeof gnosisRelayURL === "undefined") {
-      throw new Error(`No gnosis relayer url defined for network: ${networkId}, check settings.json`);
+      console.log(`No gnosis relayer url defined for network: ${networkId}, check settings.json -- using defaults`);
     }
 
-    const meshClientURL = settings.meshClientURL[networkId];
+    let meshClientURL = settings.meshClientURL[networkId];
     if (typeof meshClientURL === "undefined") {
-      throw new Error(`No mesh client url defined for network: ${networkId}, check settings.json`);
+     console.log(`No mesh client url defined for network: ${networkId}, check settings.json -- using defaults`);
+     meshClientURL = "ws://localhost:60557";
     }
 
     const gnosisRelay = new GnosisRelayAPI(gnosisRelayURL);
-    const meshClient = new WSClient(settings.meshClientURLs[networkId]);
+    const meshClient = new WSClient(meshClientURL);
     const contractDependencies = new ContractDependenciesGnosis(ethersProvider, gnosisRelay, undefined, undefined, undefined, undefined, account);
 
     const augur = await Augur.create(ethersProvider, contractDependencies, Addresses[networkId], new EmptyConnector(), undefined, enableFlexSearch, meshClient);
