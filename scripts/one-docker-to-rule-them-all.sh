@@ -4,7 +4,7 @@ set -euo pipefail
 
 cleanup() {
   echo "stopping geth docker image"
-  docker stop geth
+  docker kill geth
 }
 
 trap cleanup SIGINT SIGTERM

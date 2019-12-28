@@ -44,6 +44,14 @@ export class SDK {
     const ethersProvider = new EthersProvider(provider, 10, 0, 40);
     this.networkId = await ethersProvider.getNetworkId();
 
+
+    if (typeof Addresses[this.networkId] === "undefined") {
+      if (this.networkId !== "1") {
+        console.log(`Contract addresses aren't available for network ${this.networkId}. If you're running in development mode, be sure to have started a local ethereum node, and then have rebuilt using yarn build before starting the dev server`);
+      }
+      throw new Error(`Unable to read contract addresses for network: ${this.networkId}. Known addresses: ${JSON.stringify(Addresses)}`);
+    }
+
     const gnosisRelay = gnosisRelayEndpoint ?
       new GnosisRelayAPI(gnosisRelayEndpoint) :
       undefined;
@@ -81,14 +89,7 @@ export class SDK {
       ...meshBrowserConfigExtra,
     };
 
-    const meshBrowser = new Mesh(this.meshConfig);
-
-    this.meshConfig = {
-      ethereumRPCURL,
-      ethereumChainID: Number(this.networkId),
-      verbosity: 5,
-      bootstrapList: env['0x-mesh'].bootstrapList,
-    }
+    const meshBrowser = this.createBrowserMesh();
 
     const connector = this.pickConnector(env['sdkEndpoint']);
     await connector.connect(
@@ -104,33 +105,39 @@ export class SDK {
       gnosisRelay,
       enableFlexSearch,
       meshClient,
-      meshBrowser,
+      meshBrowser
     );
+
+    meshBrowser.startAsync();
 
     if (!isEmpty(account)) {
       await this.getOrCreateGnosisSafe(account);
     }
 
-    //@ts-ignore
     window.AugurSDK = this.sdk;
-    window.AugurSDK.zeroX.browserMesh.startAsync();
-    this.connectToBrowserMesh();
     return this.sdk;
   }
 
-  connectToBrowserMesh() { 
-     const mesh = new Mesh(this.meshConfig);
+  createBrowserMesh(meshConfig: Config) {
+     const mesh = new Mesh(meshConfig);
      mesh.onError((err) => {
         console.log("Browser mesh error");
         console.log(err.message);
-        console.log(err.stack); 
+        console.log(err.stack);
         if(err.message == "timed out waiting for first block to be processed by Mesh node. Check your backing Ethereum RPC endpoint") {
-            console.log("Restarting Mesh Sync");  
-            this.connectToBrowserMesh();
+            console.log("Restarting Mesh Sync");
+            // The relay code wont let you override addresses so we need to do this whacky thing
+            const meshConfig = {
+              ethereumRPCURL: this.meshConfig.ethereumRPCURL,
+              ethereumChainID:  this.meshConfig.ethereumChainID,
+              verbosity: 5,
+              bootstrapList: this.meshConfig.bootstrapList
+            };
+            this.sdk.zeroX.browserMesh = this.createBrowserMesh(meshConfig);
+            this.sdk.zeroX.browserMesh.startAsync();
          }
      });
-     window.AugurSDK.zeroX.browserMesh = mesh;
-     window.AugurSDK.zeroX.browserMesh.startAsync();
+     return mesh;
   }
 
   /**

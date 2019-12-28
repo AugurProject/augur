@@ -4,6 +4,7 @@ import {
   JsonRpcResponse,
   SubscriptionEventName,
 } from '@augurproject/sdk';
+import * as _ from "lodash";
 import { Callback } from '@augurproject/sdk/src/events';
 import Worker from 'worker-loader?inline!./Sync.worker.ts';
 
@@ -62,7 +63,8 @@ export class WebWorkerConnector extends Connectors.BaseConnector {
           this.messageReceived(eventData);
         }
       } catch (error) {
-        console.error('Bad Web Worker response: ' + error);
+        console.log('Bad Web Worker response: ', error);
+        console.log(error.stack);
       }
     };
 
@@ -113,7 +115,7 @@ export class WebWorkerConnector extends Connectors.BaseConnector {
   ): Promise<void> {
     this.subscriptions[eventName] = {
       id: '',
-      callback: this.callbackWrapper(callback),
+      callback: this.callbackWrapper(eventName, callback),
     };
     this.worker.postMessage({
       id: iterator.next().value,

@@ -43,8 +43,8 @@
     "prepush": "yarn test && node scripts/pre-push.js"
   },
   "dependencies": {
-    "@analytics/segment": "0.4.0",
     "@0x/order-utils": "8.4.0",
+    "@analytics/segment": "0.4.0",
     "@augurproject/sdk": "2.0.0-alpha.2",
     "@augurproject/utils": "2.0.0-alpha.2",
     "@ledgerhq/hw-app-eth": "4.70.0",
@@ -119,6 +119,7 @@
     "chalk": "2.4.2",
     "clean-css": "4.2.1",
     "clean-webpack-plugin": "^3.0.0",
+    "compression": "1.7.4",
     "copy-webpack-plugin": "4.6.0",
     "css-loader": "1.0.1",
     "cssnano": "4.1.10",
