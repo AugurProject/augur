@@ -111,26 +111,24 @@ export class SDK {
       await this.getOrCreateGnosisSafe(account);
     }
 
-    //@ts-ignore
     window.AugurSDK = this.sdk;
-    window.AugurSDK.zeroX.browserMesh.startAsync();
     this.connectToBrowserMesh();
     return this.sdk;
   }
 
-  connectToBrowserMesh() { 
+  connectToBrowserMesh() {
      const mesh = new Mesh(this.meshConfig);
      mesh.onError((err) => {
         console.log("Browser mesh error");
         console.log(err.message);
-        console.log(err.stack); 
+        console.log(err.stack);
         if(err.message == "timed out waiting for first block to be processed by Mesh node. Check your backing Ethereum RPC endpoint") {
-            console.log("Restarting Mesh Sync");  
+            console.log("Restarting Mesh Sync");
             this.connectToBrowserMesh();
          }
      });
-     window.AugurSDK.zeroX.browserMesh = mesh;
-     window.AugurSDK.zeroX.browserMesh.startAsync();
+     this.sdk.zeroX.browserMesh = mesh;
+     this.sdk.zeroX.browserMesh.startAsync();
   }
 
   /**
