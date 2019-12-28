@@ -118,15 +118,22 @@ export class SDK {
     return this.sdk;
   }
 
-  createBrowserMesh() {
-     const mesh = new Mesh(this.meshConfig);
+  createBrowserMesh(meshConfig: Config) {
+     const mesh = new Mesh(meshConfig);
      mesh.onError((err) => {
         console.log("Browser mesh error");
         console.log(err.message);
         console.log(err.stack);
         if(err.message == "timed out waiting for first block to be processed by Mesh node. Check your backing Ethereum RPC endpoint") {
             console.log("Restarting Mesh Sync");
-            this.sdk.zeroX.browserMesh = this.createBrowserMesh();
+            // The relay code wont let you override addresses so we need to do this whacky thing
+            const meshConfig = {
+              ethereumRPCURL: this.meshConfig.ethereumRPCURL,
+              ethereumChainID:  this.meshConfig.ethereumChainID,
+              verbosity: 5,
+              bootstrapList: this.meshConfig.bootstrapList
+            };
+            this.sdk.zeroX.browserMesh = this.createBrowserMesh(meshConfig);
             this.sdk.zeroX.browserMesh.startAsync();
          }
      });
