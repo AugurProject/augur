@@ -75,6 +75,7 @@ export class Trade implements TradeAPI {
         expirationTime: params.expirationTime || this.maxExpirationTime(),
       })
     } else {
+      console.log("Not using 0x");
       return this.onChain().placeOnChainTrade(params);
     }
   }
@@ -86,6 +87,7 @@ export class Trade implements TradeAPI {
         expirationTime: params.expirationTime || this.maxExpirationTime(),
       });
     } else {
+      console.log("Not using 0x");
       return this.onChain().simulateTrade(params);
     }
   }
@@ -97,6 +99,7 @@ export class Trade implements TradeAPI {
         expirationTime: params.expirationTime || this.maxExpirationTime(),
       });
     } else {
+      console.log("Not using 0x");
       return this.onChain().simulateTradeGasLimit(params);
     }
   }
