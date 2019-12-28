@@ -14,7 +14,7 @@ import { isEmpty } from 'utils/is-empty';
 import { analytics } from './analytics';
 import { isLocalHost } from 'utils/is-localhost';
 import { WSClient } from '@0x/mesh-rpc-client';
-import { Mesh } from '@0x/mesh-browser';
+import { Mesh, Config } from '@0x/mesh-browser';
 import { NETWORK_IDS } from 'modules/common/constants';
 import { WebWorkerConnector } from './ww-connector';
 
@@ -26,6 +26,7 @@ export class SDK {
   networkId: string;
   account: string;
   private signerNetworkId: string;
+  private meshConfig: Config;
 
   async makeApi(
     provider: JsonRpcProvider,
@@ -75,10 +76,19 @@ export class SDK {
       }
     }
 
-    const meshBrowser = new Mesh({
+    this.meshConfig = {
       ...meshBrowserConfig,
       ...meshBrowserConfigExtra,
-    });
+    };
+
+    const meshBrowser = new Mesh(this.meshConfig);
+
+    this.meshConfig = {
+      ethereumRPCURL,
+      ethereumChainID: Number(this.networkId),
+      verbosity: 5,
+      bootstrapList: env['0x-mesh'].bootstrapList,
+    }
 
     const connector = this.pickConnector(env['sdkEndpoint']);
     await connector.connect(
@@ -103,8 +113,23 @@ export class SDK {
 
     //@ts-ignore
     window.AugurSDK = this.sdk;
-
+    this.connectToBrowserMesh();
     return this.sdk;
+  }
+
+  connectToBrowserMesh() { 
+     const mesh = new Mesh(this.meshConfig);
+     mesh.onError((err) => {
+        console.log("Browser mesh error");
+        console.log(err.message);
+        console.log(err.stack); 
+        if(err.message == "timed out waiting for first block to be processed by Mesh node. Check your backing Ethereum RPC endpoint") {
+            console.log("Restarting Mesh Sync");  
+            this.connectToBrowserMesh();
+         }
+     });
+     window.AugurSDK.zeroX.browserMesh = mesh;
+     window.AugurSDK.zeroX.browserMesh.startAsync();
   }
 
   /**
