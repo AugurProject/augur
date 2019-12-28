@@ -9,6 +9,7 @@ import { getAddress } from 'ethers/utils/address';
 import { defaultAbiCoder, ParamType } from 'ethers/utils';
 import { SignedOrder } from '@0x/types';
 import { BigNumber as BN} from 'ethers/utils';
+import moment, { Moment } from 'moment';
 
 // This database clears its contents on every sync.
 // The primary purposes for even storing this data are:
@@ -162,6 +163,7 @@ export class ZeroXOrders extends AbstractTable {
       tradeInterval = TRADE_INTERVAL_VALUE.dividedBy(marketData.numTicks);
     }
     if (!storedOrder["numberAmount"].mod(tradeInterval).isEqualTo(0)) return false;
+    if (parseInt(storedOrder.signedOrder.expirationTimeSeconds) - moment.now() < 60) return false;
     return true;
   }
 

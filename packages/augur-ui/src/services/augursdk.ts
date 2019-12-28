@@ -113,6 +113,7 @@ export class SDK {
 
     //@ts-ignore
     window.AugurSDK = this.sdk;
+    window.AugurSDK.zeroX.browserMesh.startAsync();
     this.connectToBrowserMesh();
     return this.sdk;
   }
