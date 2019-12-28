@@ -89,7 +89,7 @@ export class SDK {
       ...meshBrowserConfigExtra,
     };
 
-    const meshBrowser = new Mesh(this.meshConfig);
+    const meshBrowser = this.createBrowserMesh();
 
     const connector = this.pickConnector(env['sdkEndpoint']);
     await connector.connect(
@@ -105,19 +105,20 @@ export class SDK {
       gnosisRelay,
       enableFlexSearch,
       meshClient,
-      meshBrowser,
+      meshBrowser
     );
+
+    meshBrowser.startAsync();
 
     if (!isEmpty(account)) {
       await this.getOrCreateGnosisSafe(account);
     }
 
     window.AugurSDK = this.sdk;
-    this.connectToBrowserMesh();
     return this.sdk;
   }
 
-  connectToBrowserMesh() {
+  createBrowserMesh() {
      const mesh = new Mesh(this.meshConfig);
      mesh.onError((err) => {
         console.log("Browser mesh error");
@@ -125,11 +126,11 @@ export class SDK {
         console.log(err.stack);
         if(err.message == "timed out waiting for first block to be processed by Mesh node. Check your backing Ethereum RPC endpoint") {
             console.log("Restarting Mesh Sync");
-            this.connectToBrowserMesh();
+            this.sdk.zeroX.browserMesh = this.createBrowserMesh();
+            this.sdk.zeroX.browserMesh.startAsync();
          }
      });
-     this.sdk.zeroX.browserMesh = mesh;
-     this.sdk.zeroX.browserMesh.startAsync();
+     return mesh;
   }
 
   /**
