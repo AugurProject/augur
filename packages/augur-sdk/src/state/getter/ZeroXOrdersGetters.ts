@@ -13,6 +13,7 @@ import { OrderState, Order, getMarkets } from './OnChainTrading';
 import { StoredOrder } from '../db/ZeroXOrders';
 import Dexie from 'dexie'
 import * as t from 'io-ts';
+import { getAddress } from "ethers/utils/address";
 
 export interface ZeroXOrder extends Order {
   expirationTimeSeconds: BigNumber;
@@ -62,18 +63,15 @@ export class ZeroXOrdersGetters {
 
     const outcome = params.outcome
       ? `0x0${params.outcome.toString()}`
-      : undefined;
-    const orderType = params.orderType ? `0x0${params.orderType}` : undefined;
-    const account = params.account;
+      : null;
+    const orderType = params.orderType ? `0x0${params.orderType}` : null;
+    const account = params.account ? getAddress(params.account) : null;
 
     let currentOrdersResponse;
     if (!params.marketId && account) {
       currentOrdersResponse = await db.ZeroXOrders.where({orderCreator: account})
         .toArray();
-    } else if (
-      typeof outcome === 'undefined' ||
-      typeof orderType === 'undefined'
-    ) {
+    } else if (!outcome || !orderType) {
       currentOrdersResponse = await db.ZeroXOrders.where(
         '[market+outcome+orderType]'
       )
@@ -82,8 +80,7 @@ export class ZeroXOrdersGetters {
           [params.marketId, Dexie.maxKey, Dexie.maxKey]
         )
         .and(order => {
-          if (account) return order.orderCreator == params.account;
-          return true;
+          return !account || order.orderCreator === account;
         })
         .toArray();
     } else {
@@ -92,8 +89,7 @@ export class ZeroXOrdersGetters {
       )
         .equals([params.marketId, outcome, orderType])
         .and(order => {
-          if (account) return order.orderCreator != params.account;
-          return true;
+          return !account || order.orderCreator === account;
         })
         .toArray();
     }
@@ -110,7 +106,7 @@ export class ZeroXOrdersGetters {
     }
     const marketIds = await currentOrdersResponse
       .reduce((p, o) => Array.from(new Set([...p, o.market])), []);
-      const markets = await getMarkets(
+    const markets = await getMarkets(
         marketIds,
         db,
         false

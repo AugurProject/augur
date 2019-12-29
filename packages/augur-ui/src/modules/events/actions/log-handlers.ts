@@ -260,7 +260,7 @@ export const handleOrderCreatedLog = (log: Logs.ParsedOrderEventLog) => (
   const marketId = log.market;
   const isUserDataUpdate = isSameAddress(
     log.orderCreator,
-    getState().loginAccount.address
+    getState().loginAccount.mixedCaseAddress
   );
   if (isUserDataUpdate) {
     handleAlert(log, PUBLICTRADE, false, dispatch, getState);
@@ -278,7 +278,7 @@ export const handleOrderCanceledLog = (log: Logs.ParsedOrderEventLog) => (
   const marketId = log.market;
   const isUserDataUpdate = isSameAddress(
     log.orderCreator,
-    getState().loginAccount.address
+    getState().loginAccount.mixedCaseAddress
   );
   if (isUserDataUpdate) {
     // TODO: do we need to remove stuff based on events?

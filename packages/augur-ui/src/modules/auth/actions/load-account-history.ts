@@ -23,7 +23,7 @@ async function loadTransactions(
   appState: AppState
 ) {
   const { universe, loginAccount } = appState;
-  const { address } = loginAccount;
+  const { mixedCaseAddress: address } = loginAccount;
   dispatch(loadDisputeWindow()); // need to load dispute window for user to claim reporting fees
 
   const Augur = augurSdk.get();
