@@ -89,7 +89,7 @@ export class SDK {
       ...meshBrowserConfigExtra,
     };
 
-    const meshBrowser = this.createBrowserMesh();
+    const meshBrowser = this.createBrowserMesh(this.meshConfig);
 
     const connector = this.pickConnector(env['sdkEndpoint']);
     await connector.connect(

@@ -148,6 +148,7 @@ export class ZeroX {
   }
 
   async placeTrade(params: ZeroXPlaceTradeDisplayParams): Promise<void> {
+    console.log(JSON.stringify(params) + "Logged trade params");
     const onChainTradeParams = this.getOnChainTradeParams(params);
     return this.placeOnChainTrade(onChainTradeParams);
   }
@@ -191,6 +192,8 @@ export class ZeroX {
       params,
       ignoreOrders
     );
+
+    console.log(JSON.stringify(orders) + "Logged orders");
 
     const numOrders = _.size(orders);
 
@@ -472,7 +475,7 @@ export class ZeroX {
     params: ZeroXPlaceTradeParams
   ): Promise<string | null> {
     if (params.outcome >= params.numOutcomes) {
-      return `Invalid outcome given for trade: ${params.outcome.toString()}. Must be between 0 and ${params.numOutcomes.toString()}`;
+      return "Invalid outcome given for trade: ${params.outcome.toString()}. Must be between 0 and ${params.numOutcomes.toString()}";
     }
     if (params.price.lte(0) || params.price.gte(params.numTicks)) {
       return `Invalid price given for trade: ${params.price.toString()}. Must be between 0 and ${params.numTicks.toString()}`;
@@ -512,7 +515,9 @@ export class ZeroX {
   ): BigNumber {
     let amountRemaining = tradeOnChainAmountRemaining;
     for (const event of events) {
+      console.log(JSON.stringify(event) + "Order EEEvents");
       if (event.name === 'OrderEvent') {
+        console.log(JSON.stringify(event) + "Order Eventz");
         const eventParams = event.parameters as OrderEventLog;
         if (eventParams.eventType === 0) {
           // Create
