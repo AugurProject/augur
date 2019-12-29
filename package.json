@@ -33,6 +33,7 @@
     "docker:all": "./scripts/one-docker-to-rule-them-all.sh",
     "sdk": "yarn workspace @augurproject/sdk",
     "tools": "yarn workspace @augurproject/tools",
+    "ui": "yarn workspace @augurproject/ui",
     "an": "yarn workspace @augurproject/node",
     "flash": "yarn workspace @augurproject/tools flash",
     "flash-util": "yarn workspace @augurproject/tools flash run -n none",
