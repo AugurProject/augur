@@ -1,5 +1,5 @@
 import TrezorSigner from "modules/auth/helpers/trezor-signer";
-import { toChecksumAddress } from "ethereumjs-util";
+import { getAddress } from "ethers/utils/address";"
 import { ACCOUNT_TYPES } from "modules/common/constants";
 import { updateSdk } from "modules/auth/actions/update-sdk";
 
@@ -14,7 +14,7 @@ export default function loginWithTrezor(
 
     const loginAccount = {
       address,
-      mixedCaseAddress: toChecksumAddress(address),
+      mixedCaseAddress: getAddress(address),
       meta: {
         address,
         signer,
