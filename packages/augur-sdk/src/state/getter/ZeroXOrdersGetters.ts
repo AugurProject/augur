@@ -105,7 +105,6 @@ export class ZeroXOrdersGetters {
       currentOrdersResponse = _.filter(currentOrdersResponse, storedOrder => {
         // 0 == "buy"
         const orderPrice = new BigNumber(storedOrder.price, 16);
-        // return params.orderType == '0' ? orderPrice.lte(price) : orderPrice.gte(price);
         return params.orderType == '0' ? orderPrice.gte(price) : orderPrice.lte(price);
       });
     }

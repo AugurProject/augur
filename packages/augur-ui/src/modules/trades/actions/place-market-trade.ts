@@ -30,10 +30,6 @@ export const placeMarketTrade = ({
   const needsApproval = createBigNumber(loginAccount.allowance).lt(tradeInProgress.totalCost.value);
   if (needsApproval) await approveToTrade();
   // we need to make sure approvals went through before doing trade / the rest of this function
-  console.log(tradeInProgress);
-  console.log(JSON.stringify(tradeInProgress));
-  console.log("Apple");
-  // this isn't right, idk if shares depleted is supposed to be part of it or not but 
   const userShares = createBigNumber(tradeInProgress.shareCost || 0, 10);
 
   const displayPrice = tradeInProgress.limitPrice;

@@ -673,6 +673,7 @@ export class Markets {
       };
     };
 
+    // add sorting logic in here for by size
     const bucketAndSortOrdersByPrice = (unsortedOrders: {
       [orderId: string]: Order;
     },
