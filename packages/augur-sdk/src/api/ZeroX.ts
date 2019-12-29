@@ -484,6 +484,7 @@ export class ZeroX {
     }
 
     const amountNotCoveredByShares = params.amount.minus(params.shares);
+
     const cost =
       params.direction == 0
         ? params.price.multipliedBy(amountNotCoveredByShares)

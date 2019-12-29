@@ -329,6 +329,10 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       s.doNotCreateOrders,
       (err, result) => {
         // onSent/onFailed CB
+        if(err) {
+          console.log(err);
+          console.log(JSON.stringify(err));
+        }
         if (!err) {
           this.clearOrderForm();
         }
