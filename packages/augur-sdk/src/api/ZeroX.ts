@@ -5,6 +5,7 @@ import {
 } from '@0x/mesh-rpc-client';
 import { ValidationResults } from '@0x/mesh-browser';
 import { SignatureType, SignedOrder } from '@0x/types';
+import { ExchangeFillEvent } from '@0x/mesh-browser';
 import { Event } from '@augurproject/core/build/libraries/ContractInterfaces';
 import { BigNumber } from 'bignumber.js';
 import * as _ from 'lodash';
@@ -148,7 +149,6 @@ export class ZeroX {
   }
 
   async placeTrade(params: ZeroXPlaceTradeDisplayParams): Promise<void> {
-    console.log(JSON.stringify(params) + "Logged trade params");
     const onChainTradeParams = this.getOnChainTradeParams(params);
     return this.placeOnChainTrade(onChainTradeParams);
   }
@@ -193,6 +193,8 @@ export class ZeroX {
       ignoreOrders
     );
 
+    const account = await this.augur.getAccount();
+
     console.log(JSON.stringify(orders) + "Logged orders");
 
     const numOrders = _.size(orders);
@@ -220,7 +222,7 @@ export class ZeroX {
       { attachedEth: protocolFee }
     );
 
-    const amountRemaining = this.getTradeAmountRemaining(params.amount, result);
+    const amountRemaining = this.getTradeAmountRemaining(account, params.amount, result);
     if (amountRemaining.gt(0)) {
       params.amount = amountRemaining;
       // On successive iterations we specify previously taken signed orders since its possible we do another loop before the mesh has updated our view on the orderbook
@@ -509,15 +511,18 @@ export class ZeroX {
     return null;
   }
 
-  private getTradeAmountRemaining(
+  private getTradeAmountRemaining(account,
     tradeOnChainAmountRemaining: BigNumber,
     events: Event[]
   ): BigNumber {
     let amountRemaining = tradeOnChainAmountRemaining;
     for (const event of events) {
-      console.log(JSON.stringify(event) + "Order EEEvents");
+      if(event.name === "Fill" && (event.parameters as ExchangeFillEvent).makerAddress == account) {
+        const onChainAmountFilled =
+            (event.parameters as ExchangeFillEvent).makerAssetFilledAmount;
+        amountRemaining = amountRemaining.minus(onChainAmountFilled);
+      }
       if (event.name === 'OrderEvent') {
-        console.log(JSON.stringify(event) + "Order Eventz");
         const eventParams = event.parameters as OrderEventLog;
         if (eventParams.eventType === 0) {
           // Create

@@ -163,6 +163,7 @@ export class ZeroXOrders extends AbstractTable {
       tradeInterval = TRADE_INTERVAL_VALUE.dividedBy(marketData.numTicks);
     }
     if (!storedOrder["numberAmount"].mod(tradeInterval).isEqualTo(0)) return false;
+    if (storedOrder["numberAmount"] == new BigNumber(0)) return false;
     if (parseInt(storedOrder.signedOrder.expirationTimeSeconds) - moment.now() < 60) return false;
     return true;
   }
