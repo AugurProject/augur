@@ -180,6 +180,14 @@ export default class AppView extends Component<AppProps> {
     this.checkIsMobile();
   }
 
+  compomentWillUnmount() {
+    window.addEventListener('click', e => {
+      updateConnectionTray(false);
+      updateHelpMenuState(false);
+    });
+    window.removeEventListener('resize', this.handleWindowResize);
+  }
+
   componentDidUpdate(prevProps: AppProps) {
     const {
       isMobile,
