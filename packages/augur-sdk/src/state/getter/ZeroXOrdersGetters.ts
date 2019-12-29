@@ -82,7 +82,7 @@ export class ZeroXOrdersGetters {
           [params.marketId, Dexie.maxKey, Dexie.maxKey]
         )
         .and(order => {
-          if (account) return order.orderCreator != params.account;
+          if (account) return order.orderCreator == params.account;
           return true;
         })
         .toArray();
