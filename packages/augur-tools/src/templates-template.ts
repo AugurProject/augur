@@ -113,6 +113,12 @@ export interface DropdownDependencies {
     [key: string]: string[];
   };
 }
+
+export interface DateDependencies {
+  id: number;
+  weekdayOnly?: boolean;
+  dateAfterId?: number;
+}
 export interface TemplateValidation {
   templateValidation: string;
   templateValidationResRules: string;
@@ -120,6 +126,7 @@ export interface TemplateValidation {
   outcomeDependencies: DropdownDependencies;
   substituteDependencies: string[];
   marketQuestionDependencies: DropdownDependencies;
+  dateDependencies: DateDependencies[];
 }
 
 export interface TemplateValidationHash {

@@ -10,9 +10,11 @@ import {
   TemplateValidation,
   generateResolutionRulesHash,
   DropdownDependencies,
+  DateDependencies,
 } from '../templates-template';
 import { TEMPLATES, TEMPLATES2 } from '../templates-source';
 import { retiredTemplates } from '../templates-retired';
+import { ValidationType } from '@augurproject/artifacts/src';
 
 const templateString = '//##TEMPLATES##';
 const templateValidationString = '//##TEMPLATE_VALIDATIONS##';
@@ -70,6 +72,7 @@ const generateValidations = (
     outcomeDependencies: null,
     substituteDependencies: null,
     marketQuestionDependencies: null,
+    dateDependencies: null,
   };
   let newTemplates = JSON.parse(JSON.stringify(templates));
   const topCategories = Object.keys(newTemplates);
@@ -107,6 +110,7 @@ const addTemplates = (
         outcomeDependencies: getDropdownDependencies(t.inputs),
         substituteDependencies: getSubstituteOutcomeDependencies(t.inputs),
         marketQuestionDependencies: getMarketQuestionDependencies(t.inputs),
+        dateDependencies: getDateDependencies(t.inputs),
       };
     });
   }
@@ -155,6 +159,20 @@ function getMarketQuestionDependencies(
     listValues = getDependencies(hasDepend, hasDepend.inputDestValues);
   }
   return listValues;
+}
+
+function getDateDependencies(
+  inputs: TemplateInput[]
+): DateDependencies[] {
+  return inputs
+    .filter(
+      i => i.dateAfterId || i.validationType === ValidationType.WEEKDAYONLY
+    )
+    .map(i => ({
+      id: i.id,
+      weekdayOnly: i.validationType === ValidationType.WEEKDAYONLY,
+      dateAfterId: i.dateAfterId,
+    }));
 }
 
 function getDependencies(
