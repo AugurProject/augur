@@ -71,7 +71,7 @@ describe('3rd Party :: ZeroX :: ', () => {
       const marySafeStatus = await mary.getSafeStatus(marySafe);
       console.log(`Safe ${marySafe}: ${marySafeStatus}`);
       expect(marySafeStatus).toBe(GnosisSafeState.AVAILABLE);
-      await mary.sendEther(marySafe, new BigNumber(10**20));
+      await john.sendEther(marySafe, new BigNumber(10**15));
       await mary.augur.setGasPrice(new BigNumber(90000));
       mary.setGnosisSafeAddress(marySafe);
       mary.setUseGnosisSafe(true);
@@ -79,6 +79,7 @@ describe('3rd Party :: ZeroX :: ', () => {
     }, 120000);
 
     test('State API :: ZeroX :: placeThenGetOrders', async () => {
+      await expect(mary.augur.getUseGnosisSafe()).toEqual(true);
       // Create a market
       const market = await john.createReasonableMarket([
         stringTo32ByteHex('A'),
