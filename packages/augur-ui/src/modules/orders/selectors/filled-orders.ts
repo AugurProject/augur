@@ -79,7 +79,7 @@ function findOrders(
       }
 
       const timestampFormatted = convertUnixToFormattedDate(timestamp);
-      const marketDescription = marketInfos.description;
+      const { marketType, description: marketDescription } = marketInfos;
       const outcomeValue = marketInfos.outcomes.find(o => o.id === outcome);
       if (foundOrder) {
         foundOrder.trades.push({
@@ -91,6 +91,7 @@ function findOrders(
           transactionHash,
           marketId,
           marketDescription,
+          marketType,
           logIndex,
         });
 
@@ -118,6 +119,7 @@ function findOrders(
           amount: amountBN,
           marketId,
           marketDescription,
+          marketType,
           originalQuantity,
           logIndex,
           trades: [
@@ -130,6 +132,7 @@ function findOrders(
               transactionHash,
               marketId,
               marketDescription,
+              marketType,
               logIndex,
             },
           ],

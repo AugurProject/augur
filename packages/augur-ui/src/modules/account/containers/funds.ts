@@ -1,7 +1,7 @@
 import { connect } from "react-redux";
 
 import Funds from "modules/account/components/funds";
-import { formatEther, formatPercent } from "utils/format-number";
+import { formatDai, formatPercent } from "utils/format-number";
 import {
   selectLoginAccount,
   selectAccountFunds,
@@ -25,10 +25,10 @@ const mapStateToProps = (state: AppState) => {
   return {
     repStaked: repTotalAmountStakedFormatted.formatted,
     repBalance: repBalanceFormatted.formatted,
-    totalFrozenFunds: formatEther(totalFrozenFunds).formatted,
-    totalAvailableTradingBalance: formatEther(totalAvailableTradingBalance)
+    totalFrozenFunds: formatDai(totalFrozenFunds).formatted,
+    totalAvailableTradingBalance: formatDai(totalAvailableTradingBalance)
       .formatted,
-    totalAccountValue: formatEther(totalAccountValue).formatted,
+    totalAccountValue: formatDai(totalAccountValue).formatted,
     realizedPLPercent: formatPercent(tradingPositionsTotal.unrealizedRevenue24hChangePercent)
       .formattedValue,
   };

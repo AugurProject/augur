@@ -7,7 +7,7 @@ import { formatShares } from 'utils/format-number';
 import {
   SELL,
   SCALAR,
-  BINARY_CATEGORICAL_SHARE_OPTIONS,
+  BINARY_CATEGORICAL_FORMAT_OPTIONS,
 } from 'modules/common/constants';
 import { HoverValueLabel } from 'modules/common/labels';
 import OrderHeader from 'modules/market-charts/components/order-header/order-header';
@@ -33,11 +33,12 @@ export default class MarketTradeHistory extends Component<
       hide,
       marketType,
     } = this.props;
+    const isScalar = marketType === SCALAR;
 
     const opts =
-      marketType === SCALAR
+        isScalar
         ? { removeComma: true }
-        : { ...BINARY_CATEGORICAL_SHARE_OPTIONS, removeComma: true };
+        : { ...BINARY_CATEGORICAL_FORMAT_OPTIONS, removeComma: true };
 
     return (
       <section className={Styles.TradeHistory}>
@@ -70,7 +71,7 @@ export default class MarketTradeHistory extends Component<
                         />
                       </li>
                       <li>
-                        {priceTime.price.toFixed(4)}
+                        {priceTime.price.toFixed(isScalar ? 4 : 2)}
                         <span
                           className={classNames({
                             [Styles.Up]: !isSell,
