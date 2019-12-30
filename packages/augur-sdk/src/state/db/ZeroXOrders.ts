@@ -163,8 +163,6 @@ export class ZeroXOrders extends AbstractTable {
       tradeInterval = TRADE_INTERVAL_VALUE.dividedBy(marketData.numTicks);
     }
     if (!storedOrder["numberAmount"].mod(tradeInterval).isEqualTo(0)) return false;
-    console.log(storedOrder.orderHash);
-    console.log("Banana");
     if (storedOrder["numberAmount"] == new BigNumber(0)) {
       this.table.where('orderHash').equals(storedOrder.orderHash).delete();
       return false;

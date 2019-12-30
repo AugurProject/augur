@@ -60,7 +60,7 @@ export class ContractAPI {
   async sendEther(to: string, amount: BigNumber): Promise<void> {
     await this.dependencies.signer.sendTransaction({
       to,
-      value: amount.toFixed(),
+      value: `0x${amount.toString(16)}`,
     })
   }
 
