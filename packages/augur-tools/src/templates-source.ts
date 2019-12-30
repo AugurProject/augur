@@ -4640,6 +4640,7 @@ export const TEMPLATES = {
                 id: 3,
                 type: TemplateInputType.DATEYEAR,
                 placeholder: `Day of Year`,
+                validationType: ValidationType.WEEKDAYONLY,
               },
             ],
             resolutionRules: {
@@ -4649,6 +4650,9 @@ export const TEMPLATES = {
                 },
                 {
                   text: `Trading denomination is determined by the exchange the stock is traded on`,
+                },
+                {
+                  text: `If trading day in market question is a weekend or holiday when exchange is not open this market should resolve as invalid`,
                 },
               ],
             },
@@ -4679,11 +4683,14 @@ export const TEMPLATES = {
                 id: 3,
                 type: TemplateInputType.DATEYEAR,
                 placeholder: `Start Day of Year`,
+                validationType: ValidationType.WEEKDAYONLY,
               },
               {
                 id: 4,
+                dateAfterId: 3,
                 type: TemplateInputType.DATEYEAR,
                 placeholder: `End Day of Year`,
+                validationType: ValidationType.WEEKDAYONLY,
               },
             ],
             resolutionRules: {
@@ -4693,6 +4700,9 @@ export const TEMPLATES = {
                 },
                 {
                   text: `Trading denomination is determined by the exchange the stock is traded on`,
+                },
+                {
+                  text: `If trading day in market question is a weekend or holiday when exchange is not open this market should resolve as invalid`,
                 },
               ],
             },
@@ -4717,6 +4727,7 @@ export const TEMPLATES = {
                 id: 2,
                 type: TemplateInputType.DATEYEAR,
                 placeholder: `Day of Year`,
+                validationType: ValidationType.WEEKDAYONLY,
               },
             ],
             resolutionRules: {
@@ -4726,6 +4737,9 @@ export const TEMPLATES = {
                 },
                 {
                   text: `Trading denomination is determined by the exchange the stock is traded on`,
+                },
+                {
+                  text: `If trading day in market question is a weekend or holiday when exchange is not open this market should resolve as invalid`,
                 },
               ],
             },
@@ -4755,12 +4769,16 @@ export const TEMPLATES = {
                 id: 2,
                 type: TemplateInputType.DATEYEAR,
                 placeholder: `Day of Year`,
+                validationType: ValidationType.WEEKDAYONLY,
               },
             ],
             resolutionRules: {
               [REQUIRED]: [
                 {
                   text: `Closing date is determined by the location of the exchange, where the underlying stocks for the index are traded`,
+                },
+                {
+                  text: `If trading day in market question is a weekend or holiday when exchange is not open this market should resolve as invalid`,
                 },
               ],
             },
@@ -4781,12 +4799,16 @@ export const TEMPLATES = {
                 id: 2,
                 type: TemplateInputType.DATEYEAR,
                 placeholder: `Day of Year`,
+                validationType: ValidationType.WEEKDAYONLY,
               },
             ],
             resolutionRules: {
               [REQUIRED]: [
                 {
                   text: `Closing date is determined by the location of the exchange, where the underlying stocks for the index are traded`,
+                },
+                {
+                  text: `If trading day in market question is a weekend or holiday when exchange is not open this market should resolve as invalid`,
                 },
               ],
             },
@@ -5083,6 +5105,7 @@ export const TEMPLATES = {
               },
               {
                 id: 3,
+                dateAfterId: 2,
                 type: TemplateInputType.DATEYEAR,
                 placeholder: `Close, Day of Year`,
               },
@@ -5216,6 +5239,7 @@ export const TEMPLATES = {
               },
               {
                 id: 3,
+                dateAfterId: 2,
                 type: TemplateInputType.DATEYEAR,
                 placeholder: `Close, Day of Year`,
               },
@@ -5349,6 +5373,7 @@ export const TEMPLATES = {
               },
               {
                 id: 3,
+                dateAfterId: 2,
                 type: TemplateInputType.DATEYEAR,
                 placeholder: `Close, Day of Year`,
               },

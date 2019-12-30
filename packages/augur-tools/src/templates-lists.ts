@@ -7869,22 +7869,6 @@ export const LIST_VALUES = {
       value: 'NYSE Composite',
     },
     {
-      label: 'MSCI World Index',
-      value: 'MSCI World Index',
-    },
-    {
-      label: 'FTSE All-World Index',
-      value: 'FTSE All-World Index',
-    },
-    {
-      label: 'Dow Jones Global Titans 50',
-      value: 'Dow Jones Global Titans 50',
-    },
-    {
-      label: 'S&P Global 100 Index',
-      value: 'S&P Global 100 Index',
-    },
-    {
       label: 'FTSE 100',
       value: 'FTSE 100',
     },
