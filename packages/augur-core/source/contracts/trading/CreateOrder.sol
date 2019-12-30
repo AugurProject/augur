@@ -94,6 +94,9 @@ contract CreateOrder is Initializable, ReentrancyGuard, CashSender {
      */
     function publicCreateOrders(uint256[] memory _outcomes, Order.Types[] memory _types, uint256[] memory _attoshareAmounts, uint256[] memory _prices, IMarket _market, bytes32 _tradeGroupId, IERC20 _kycToken) public nonReentrant returns (bytes32[] memory _orders) {
         require(augur.isKnownMarket(_market));
+        require(_outcomes.length == _types.length);
+        require(_outcomes.length == _attoshareAmounts.length);
+        require(_outcomes.length == _prices.length);
         require(_kycToken == IERC20(0) || _kycToken.balanceOf(msg.sender) > 0, "Createorder.publicCreateOrders: KYC token failure");
         _orders = new bytes32[]( _types.length);
 

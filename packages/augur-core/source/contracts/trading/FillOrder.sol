@@ -483,6 +483,8 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
      */
     function publicFillOrder(bytes32 _orderId, uint256 _amountFillerWants, bytes32 _tradeGroupId, bytes32 _fingerprint) external returns (uint256) {
         address _filler = msg.sender;
+        IERC20 _kycToken = storedContracts.orders.getKYCToken(_orderId);
+        require(_kycToken == IERC20(0) || _kycToken.balanceOf(_filler) > 0, "FillOrder.fillOrder: KYC token failure");
         Trade.Data memory _tradeData = Trade.create(storedContracts, _orderId, _filler, _amountFillerWants, _fingerprint);
         uint256 _result = fillOrderInternal(_filler, _tradeData, _amountFillerWants, _tradeGroupId);
         _tradeData.contracts.market.assertBalances();
@@ -491,6 +493,8 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
 
     function fillOrder(address _filler, bytes32 _orderId, uint256 _amountFillerWants, bytes32 _tradeGroupId, bytes32 _fingerprint) external returns (uint256) {
         require(msg.sender == trade);
+        IERC20 _kycToken = storedContracts.orders.getKYCToken(_orderId);
+        require(_kycToken == IERC20(0) || _kycToken.balanceOf(_filler) > 0, "FillOrder.fillOrder: KYC token failure");
         Trade.Data memory _tradeData = Trade.create(storedContracts, _orderId, _filler, _amountFillerWants, _fingerprint);
         return fillOrderInternal(_filler, _tradeData, _amountFillerWants, _tradeGroupId);
     }
@@ -498,13 +502,13 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
     function fillZeroXOrder(IMarket _market, uint256 _outcome, IERC20 _kycToken, uint256 _price, Order.Types _orderType, uint256 _amount, address _creator, bytes32 _tradeGroupId, bytes32 _fingerprint, address _filler) external returns (uint256) {
         require(msg.sender == zeroXTrade);
         require(augur.isKnownMarket(_market));
+        require(_kycToken == IERC20(0) || _kycToken.balanceOf(_filler) > 0, "FillOrder.fillOrder: KYC token failure");
         Trade.OrderData memory _orderData = Trade.createOrderData(storedContracts.shareToken, _market, _outcome, _kycToken, _price, _orderType, _amount, _creator);
         Trade.Data memory _tradeData = Trade.createWithData(storedContracts, _orderData, _filler, _amount, _fingerprint);
         return fillOrderInternal(_filler, _tradeData, _amount, _tradeGroupId);
     }
 
     function fillOrderInternal(address _filler, Trade.Data memory _tradeData, uint256 _amountFillerWants, bytes32 _tradeGroupId) internal nonReentrant returns (uint256) {
-        require(_tradeData.order.kycToken == IERC20(0) || _tradeData.order.kycToken.balanceOf(_filler) > 0, "FillOrder.fillOrder: KYC token failure");
         uint256 _marketCreatorFees;
         uint256 _reporterFees;
 
