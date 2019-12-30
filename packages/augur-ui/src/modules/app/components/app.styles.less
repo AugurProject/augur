@@ -50,6 +50,10 @@ h6 {
   @media @breakpoint-mobile {
     /* topbar mobile height */
     grid-template-rows: @top-bar-height-mobile auto;
+    display: block;
+    padding-top: @top-bar-height-mobile;
+    overflow-y: auto;
+    height: max-content;
   }
 
   &.TradingTutorial {
@@ -94,6 +98,9 @@ h6 {
     grid-template-columns: none;
     grid-template-rows: 0 auto;
     margin-left: 0;
+    display: block;
+    height: fit-content;
+    overflow-y: auto;
   }
 }
 
@@ -119,9 +126,9 @@ h6 {
   overflow-y: auto;
 
   @media @breakpoint-mobile {
+    height: fit-content;
     width: 100vw;
     padding-bottom: @size-16;
-    position: fixed;
 
     &.SideNavOpen {
       opacity: 0.1;
