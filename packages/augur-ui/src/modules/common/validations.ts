@@ -202,9 +202,17 @@ export function checkForUserInputFilled(inputs: TemplateInput[], endTimeFormatte
         if (input.setEndTime) {
           const dayOfWeek = moment.unix(input.setEndTime).weekday()
           if (dayOfWeek === SATURDAY_DAY_OF_WEEK || dayOfWeek === SUNDAY_DAY_OF_WEEK) {
-            return 'weekday is required';
+            return 'Weekday is required';
           }
         }
+      }
+      if (
+        endTimeFormatted && endTimeFormatted.timestamp &&
+        input.setEndTime &&
+        input.setEndTime >=
+          endTimeFormatted.timestamp
+      ) {
+        return 'Date must be before event expiration time';
       }
       return '';
     } else if (

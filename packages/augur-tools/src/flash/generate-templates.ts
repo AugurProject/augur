@@ -11,10 +11,10 @@ import {
   generateResolutionRulesHash,
   DropdownDependencies,
   DateDependencies,
+  ValidationType
 } from '../templates-template';
 import { TEMPLATES, TEMPLATES2 } from '../templates-source';
 import { retiredTemplates } from '../templates-retired';
-import { ValidationType } from '@augurproject/artifacts/src';
 
 const templateString = '//##TEMPLATES##';
 const templateValidationString = '//##TEMPLATE_VALIDATIONS##';
@@ -94,7 +94,7 @@ const addTemplates = (
       const hashValue = generateTemplateHash(t);
       t.hash = hashValue;
       const question = t.question;
-      let regexMarketTitle = `^${escapeSpecialCharacters(question)}$`;
+      let regexMarketTitle = `(^${escapeSpecialCharacters(question)}$)`;
       t.inputs.map((i: TemplateInput) => {
         if (question.indexOf(`[${i.id}]`) > -1) {
           const reg = getValidationValues(i);
@@ -132,7 +132,7 @@ function getRequiredOutcomes(inputs: TemplateInput[]) {
 }
 
 function listToRegEx(values: object[], property: string) {
-  return `(${values.map(v => escapeSpecialCharacters(v[property])).join('|')})`;
+  return `(${values.map(v => escapeSpecialCharacters(v[property])).join('|')}){1}`;
 }
 
 function getDropdownDependencies(
@@ -161,9 +161,7 @@ function getMarketQuestionDependencies(
   return listValues;
 }
 
-function getDateDependencies(
-  inputs: TemplateInput[]
-): DateDependencies[] {
+function getDateDependencies(inputs: TemplateInput[]): DateDependencies[] {
   return inputs
     .filter(
       i => i.dateAfterId || i.validationType === ValidationType.WEEKDAYONLY
@@ -237,6 +235,10 @@ const specialCharacters: SearchReplace[] = [
     find: /\?/g,
     rep: `\\?`,
   },
+  {
+    find: /\//g,
+    rep: `\\/`,
+  },
 ];
 
 function escapeSpecialCharacters(value: string) {
@@ -247,4 +249,3 @@ function escapeSpecialCharacters(value: string) {
   });
   return replacementValue;
 }
-
