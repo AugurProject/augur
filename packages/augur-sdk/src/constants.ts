@@ -92,7 +92,7 @@ export const TRADE_GAS_BUFFER = new BigNumber("100000", 10);
 
 export const MAX_FILLS_PER_TX = new BigNumber("3", 10);
 
-export const MAX_GAS_LIMIT_FOR_TRADE = new BigNumber("3500000", 10);
+export const MAX_GAS_LIMIT_FOR_TRADE = new BigNumber("4500000", 10);
 
 export const PLACE_ORDER_NO_SHARES = {
   2: new BigNumber("547694", 10),

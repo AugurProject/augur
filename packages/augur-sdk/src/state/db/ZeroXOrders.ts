@@ -163,16 +163,16 @@ export class ZeroXOrders extends AbstractTable {
       tradeInterval = TRADE_INTERVAL_VALUE.dividedBy(marketData.numTicks);
     }
     if (!storedOrder["numberAmount"].mod(tradeInterval).isEqualTo(0)) return false;
-
-    console.log("Stored order hash");
-    console.log(storedOrder.orderHash);
     
-    if (storedOrder["numberAmount"] == new BigNumber(0)) {
+    if (storedOrder.numberAmount.isEqualTo(0)) {
+      console.log("Deleted order");
       this.table.where('orderHash').equals(storedOrder.orderHash).delete();
+      this.augur.events.emit('OrderEvent', storedOrder);
       return false;
     }
     if (parseInt(storedOrder.signedOrder.expirationTimeSeconds) - moment.now() < 60) { 
       this.table.where('orderHash').equals(storedOrder.orderHash).delete();
+      this.augur.events.emit('OrderEvent', storedOrder);
       return false;
     };
     return true;
