@@ -961,18 +961,16 @@ class Form extends Component<FromProps, FormState> {
                   )}
                   {s.expirationDateOption ===
                     EXPIRATION_DATE_OPTIONS.CUSTOM && (
-                    <section>
-                      <SimpleTimeSelector
-                        onChange={value => {
-                          updateState({
-                            [this.INPUT_TYPES.EXPIRATION_DATE]: moment(
-                              value
-                            ),
-                          });
-                        }}
-                        currentTime={currentTimestamp}
-                      />
-                    </section>
+                    <SimpleTimeSelector
+                      onChange={value => {
+                        updateState({
+                          [this.INPUT_TYPES.EXPIRATION_DATE]: moment(
+                            value
+                          ),
+                        });
+                      }}
+                      currentTime={currentTimestamp}
+                    />
                   )}
                 </>
               )}
