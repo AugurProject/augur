@@ -57,16 +57,17 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
   const claimReportingFees = sP.claimReportingFees as MarketReportClaimableContracts;
   const modalRows: ActionRowsProps[] = [];
 
-  const reportingParticipants = claimReportingFees.claimableMarkets.marketContracts.reduce(
-    (p, c) => [...p, ...c.contracts],
-    []
-  );
+  const reportingParticipants = participationTokensOnly
+    ? []
+    : claimReportingFees.claimableMarkets.marketContracts.reduce(
+        (p, c) => [...p, ...c.contracts],
+        []
+      );
   const allRedeemStakeOptions = {
     disputeWindows: claimReportingFees.participationContracts.contracts,
     reportingParticipants,
   };
-  const ONE_TRANSACTION = 1;
-  const submitAllTxCount = participationTokensOnly ? ONE_TRANSACTION : redeemStakeBatches(allRedeemStakeOptions);
+  const submitAllTxCount = redeemStakeBatches(allRedeemStakeOptions);
   const claimableMarkets = claimReportingFees.claimableMarkets;
 
   if (!participationTokensOnly) {
