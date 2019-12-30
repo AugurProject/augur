@@ -5751,228 +5751,6 @@
 			"type": "event"
 		}
 	],
-	"AffiliateValidator": [
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"name": "operators",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_hash",
-					"type": "bytes32"
-				},
-				{
-					"name": "_r",
-					"type": "bytes32"
-				},
-				{
-					"name": "_s",
-					"type": "bytes32"
-				},
-				{
-					"name": "_v",
-					"type": "uint8"
-				}
-			],
-			"name": "isValidSignature",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"name": "keys",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_key",
-					"type": "bytes32"
-				},
-				{
-					"name": "_salt",
-					"type": "uint256"
-				},
-				{
-					"name": "_r",
-					"type": "bytes32"
-				},
-				{
-					"name": "_s",
-					"type": "bytes32"
-				},
-				{
-					"name": "_v",
-					"type": "uint8"
-				}
-			],
-			"name": "addKey",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "getOwner",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_operator",
-					"type": "address"
-				}
-			],
-			"name": "addOperator",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_operator",
-					"type": "address"
-				}
-			],
-			"name": "removeOperator",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"name": "usedSalts",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_key",
-					"type": "bytes32"
-				},
-				{
-					"name": "_salt",
-					"type": "uint256"
-				}
-			],
-			"name": "getKeyHash",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "pure",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_account",
-					"type": "address"
-				},
-				{
-					"name": "_referrer",
-					"type": "address"
-				}
-			],
-			"name": "validateReference",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_newOwner",
-					"type": "address"
-				}
-			],
-			"name": "transferOwnership",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		}
-	],
 	"Augur": [
 		{
 			"constant": true,
@@ -13322,6 +13100,233 @@
 			"type": "function"
 		}
 	],
+	"AffiliateValidator": [
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"name": "operators",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_hash",
+					"type": "bytes32"
+				},
+				{
+					"name": "_r",
+					"type": "bytes32"
+				},
+				{
+					"name": "_s",
+					"type": "bytes32"
+				},
+				{
+					"name": "_v",
+					"type": "uint8"
+				}
+			],
+			"name": "isValidSignature",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"name": "keys",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bytes32"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_key",
+					"type": "bytes32"
+				},
+				{
+					"name": "_salt",
+					"type": "uint256"
+				},
+				{
+					"name": "_r",
+					"type": "bytes32"
+				},
+				{
+					"name": "_s",
+					"type": "bytes32"
+				},
+				{
+					"name": "_v",
+					"type": "uint8"
+				}
+			],
+			"name": "addKey",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getOwner",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_operator",
+					"type": "address"
+				}
+			],
+			"name": "addOperator",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_operator",
+					"type": "address"
+				}
+			],
+			"name": "removeOperator",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"name": "usedSalts",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_key",
+					"type": "bytes32"
+				},
+				{
+					"name": "_salt",
+					"type": "uint256"
+				}
+			],
+			"name": "getKeyHash",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bytes32"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_account",
+					"type": "address"
+				},
+				{
+					"name": "_referrer",
+					"type": "address"
+				}
+			],
+			"name": "validateReference",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_newOwner",
+					"type": "address"
+				}
+			],
+			"name": "transferOwnership",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		}
+	],
 	"Affiliates": [
 		{
 			"constant": true,
@@ -13346,6 +13351,25 @@
 			"constant": true,
 			"inputs": [
 				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"name": "affiliateValidators",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
 					"name": "_account",
 					"type": "address"
 				}
@@ -13359,6 +13383,20 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [],
+			"name": "createAffiliateValidator",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -13428,7 +13466,7 @@
 			"type": "function"
 		},
 		{
-			"constant": false,
+			"constant": true,
 			"inputs": [
 				{
 					"name": "_account",
@@ -13447,7 +13485,7 @@
 				}
 			],
 			"payable": false,
-			"stateMutability": "nonpayable",
+			"stateMutability": "view",
 			"type": "function"
 		}
 	],

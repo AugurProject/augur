@@ -14,7 +14,7 @@ import 'ROOT/reporting/IRepPriceOracle.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
 import 'ROOT/ICash.sol';
 import 'ROOT/reporting/IOICash.sol';
-import 'ROOT/external/IAffiliateValidator.sol';
+import 'ROOT/reporting/IAffiliateValidator.sol';
 import 'ROOT/external/IDaiVat.sol';
 import 'ROOT/external/IDaiPot.sol';
 import 'ROOT/external/IDaiJoin.sol';
