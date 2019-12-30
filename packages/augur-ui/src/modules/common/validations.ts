@@ -194,7 +194,7 @@ export function checkForUserInputFilled(inputs: TemplateInput[], endTimeFormatte
       if (input.dateAfterId) {
         const source = inputs.find(i => i.id === input.dateAfterId);
         if (source && input.setEndTime <= source.setEndTime) {
-          return 'Date can not be before open date';
+          return 'Date has to be after open date';
         }
       }
       // day can not be a weekend
