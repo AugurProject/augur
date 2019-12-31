@@ -217,11 +217,6 @@ function getValidationValues(input: TemplateInput) {
   }
 }
 
-interface SearchReplace {
-  find: RegExp;
-  rep: string;
-}
-
 const specialCharacters: SearchReplace[] = [
   {
     find: /\(/g,
