@@ -4,6 +4,7 @@ import { SyncStatus } from './SyncStatus';
 import { Augur } from '../../Augur';
 import { DB } from './DB';
 import { MarketData, MarketType } from '../logs/types';
+import { OrderEventType } from "../../constants";
 import { OrderInfo, OrderEvent, BigNumber } from "@0x/mesh-rpc-client";
 import { getAddress } from 'ethers/utils/address';
 import { defaultAbiCoder, ParamType } from 'ethers/utils';
@@ -126,7 +127,7 @@ export class ZeroXOrders extends AbstractTable {
     documents = _.filter(documents, this.validateStoredOrder.bind(this));
     await this.bulkUpsertDocuments(documents);
     for (const d of documents) {
-      this.augur.events.emit('OrderEvent', d);
+      this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Create, ...d});
     }
   }
 
@@ -143,7 +144,7 @@ export class ZeroXOrders extends AbstractTable {
       });
       await this.bulkUpsertDocuments(documents);
       for (const d of documents) {
-        this.augur.events.emit('OrderEvent', d);
+        this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Create, ...d});
       }
     }
   }
@@ -163,16 +164,16 @@ export class ZeroXOrders extends AbstractTable {
       tradeInterval = TRADE_INTERVAL_VALUE.dividedBy(marketData.numTicks);
     }
     if (!storedOrder["numberAmount"].mod(tradeInterval).isEqualTo(0)) return false;
-    
+
     if (storedOrder.numberAmount.isEqualTo(0)) {
       console.log("Deleted order");
       this.table.where('orderHash').equals(storedOrder.orderHash).delete();
-      this.augur.events.emit('OrderEvent', storedOrder);
+      this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Fill, ...storedOrder});
       return false;
     }
-    if (parseInt(storedOrder.signedOrder.expirationTimeSeconds) - moment.now() < 60) { 
+    if (parseInt(storedOrder.signedOrder.expirationTimeSeconds) - moment.now() < 60) {
       this.table.where('orderHash').equals(storedOrder.orderHash).delete();
-      this.augur.events.emit('OrderEvent', storedOrder);
+      this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Cancel, ...storedOrder});
       return false;
     };
     return true;

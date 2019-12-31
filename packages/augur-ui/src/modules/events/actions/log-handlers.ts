@@ -20,7 +20,7 @@ import { Action } from 'redux';
 import { AppState } from 'store';
 import { updateBlockchain } from 'modules/app/actions/update-blockchain';
 import { isSameAddress } from 'utils/isSameAddress';
-import { Events, Logs, TXEventName } from '@augurproject/sdk';
+import { Events, Logs, TXEventName, OrderEventType } from '@augurproject/sdk';
 import { addUpdateTransaction } from 'modules/events/actions/add-update-transaction';
 import { augurSdk } from 'services/augursdk';
 import { updateConnectionStatus } from 'modules/app/actions/update-connection';
@@ -242,15 +242,17 @@ export const handleOrderLog = (log: any) => {
   console.log('Order Event: ', log);
   const type = log.eventType;
   switch (type) {
-    case Logs.OrderEventType.Cancel: {
-      return handleOrderCanceledLog(log);
-    }
-    case Logs.OrderEventType.Create: {
+    case OrderEventType.Create:
       return handleOrderCreatedLog(log);
-    }
-    default:
+    case OrderEventType.Expire:
+    case OrderEventType.Cancel:
+      return handleOrderCanceledLog(log);
+    case OrderEventType.Fill:
       return handleOrderFilledLog(log);
+    default:
+      console.log(`Unknown order event type "${log.eventType }" for log`, log);
   }
+  return null;
 };
 
 export const handleOrderCreatedLog = (log: Logs.ParsedOrderEventLog) => (
