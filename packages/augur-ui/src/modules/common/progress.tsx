@@ -102,13 +102,14 @@ const determineProgress = (
 const reportingStateToLabelTime = (
   reportingState: string,
   endTimeFormatted: DateFormattedObject,
-  reportingEndTime: DateFormattedObject
+  reportingEndTime: DateFormattedObject,
+  alignRight: boolean
 ) => {
   let label: string = '';
   let time: DateFormattedObject = null;
   switch (reportingState) {
     case REPORTING_STATE.PRE_REPORTING:
-      label = 'Event Expiration';
+      label = `Event Expiration${alignRight ? '' : ':'}`;
       time = endTimeFormatted;
       break;
     case REPORTING_STATE.DESIGNATED_REPORTING:
@@ -158,7 +159,8 @@ export const MarketProgress = (props: MarketProgressProps) => {
   const { label, time } = reportingStateToLabelTime(
     reportingState,
     endTimeFormatted,
-    reportingEndTime
+    reportingEndTime,
+    alignRight
   );
 
   return (

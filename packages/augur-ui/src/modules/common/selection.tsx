@@ -4,7 +4,7 @@ import Styles from 'modules/common/selection.styles';
 import {
   ThickChevron,
   Chevron,
-  DotDotDot,
+  ShareIcon,
 } from 'modules/common/icons';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
@@ -439,7 +439,7 @@ export class DotSelection extends React.Component<
           }}
           onClick={() => this.toggleMenu()}
         >
-          {DotDotDot}
+          {ShareIcon}
         </button>
         {this.state.toggleMenu && (
           <div
