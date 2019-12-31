@@ -38,7 +38,7 @@ describe('3rd Party :: ZeroX :: ', () => {
     addresses = Addresses[networkId];
 
     meshClient = new WSClient('ws://localhost:60557');
-  }, 120000);
+  }, 240000);
 
   afterAll(() => {
     meshClient.destroy();
@@ -76,7 +76,7 @@ describe('3rd Party :: ZeroX :: ', () => {
       mary.setGnosisSafeAddress(marySafe);
       mary.setUseGnosisSafe(true);
       mary.setUseGnosisRelay(true);
-    }, 120000);
+    }, 240000);
 
     test('State API :: ZeroX :: placeThenGetOrders', async () => {
       await expect(mary.augur.getUseGnosisSafe()).toEqual(true);
@@ -126,7 +126,7 @@ describe('3rd Party :: ZeroX :: ', () => {
       await expect(order.amount).toEqual('10');
       await expect(order.kycToken).toEqual(kycToken);
       await expect(order.expirationTimeSeconds.toString()).toEqual(expirationTime.toFixed());
-    }, 120000);
+    }, 240000);
 
     test('State API :: ZeroX :: getOrders :: Poor', async () => {
       // Create a market
@@ -162,7 +162,7 @@ describe('3rd Party :: ZeroX :: ', () => {
         displayShares: new BigNumber(0),
         expirationTime,
       })).rejects.toThrow();
-    }, 120000);
+    }, 240000);
 
     test('ZeroX Trade :: placeTrade', async () => {
       const market1 = await john.createReasonableYesNoMarket();
@@ -201,7 +201,7 @@ describe('3rd Party :: ZeroX :: ', () => {
 
       await expect(johnShares.toNumber()).toEqual(10 ** 17 * 5);
       await expect(maryShares.toNumber()).toEqual(10 ** 17 * 5);
-    }, 120000);
+    }, 240000);
 
     test('Trade :: simulateTrade', async () => {
       // Give John enough cash to pay for the 0x order.
@@ -274,7 +274,7 @@ describe('3rd Party :: ZeroX :: ', () => {
       await expect(simulationData.tokensDepleted).toEqual(fillAmount.multipliedBy(fillPrice));
       await expect(simulationData.sharesFilled).toEqual(fillAmount);
       await expect(simulationData.numFills).toEqual(new BigNumber(1));
-    }, 120000);
+    }, 240000);
   });
 
   describe('without gnosis', () => {
@@ -335,7 +335,7 @@ describe('3rd Party :: ZeroX :: ', () => {
       await expect(order.amount).toEqual('10');
       await expect(order.kycToken).toEqual(kycToken);
       await expect(order.expirationTimeSeconds.toString()).toEqual(expirationTime.toFixed());
-    }, 120000);
+    }, 60000);
 
   });
 });
