@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { ParticipationTokensView } from 'modules/reporting/common';
 import { updateModal } from 'modules/modal/actions/update-modal';
-import { MODAL_PARTICIPATE, ZERO } from 'modules/common/constants';
+import { MODAL_CLAIM_FEES, MODAL_PARTICIPATE, ZERO } from 'modules/common/constants';
 import { formatAttoDai, formatAttoRep, formatPercent, } from 'utils/format-number';
 import { createBigNumber } from 'utils/create-big-number';
 import { AppState } from 'store';
@@ -58,6 +58,7 @@ const mapStateToProps = (state: AppState) => {
 
 const mapDispatchToProps = dispatch => ({
   openModal: () => dispatch(updateModal({ type: MODAL_PARTICIPATE })),
+  openClaimParticipationTokensModal: () => dispatch(updateModal({type: MODAL_CLAIM_FEES, participationTokensOnly: true}))
 });
 
 const ParticipationTokensViewContainer = connect(
