@@ -201,7 +201,7 @@ export function getUnixDateTimeFromComponents(
     .startOf('day');
 
   closingDateTime.set({
-    hour: hour + offset,
+    hour: hour - offset,
     minute: minutes,
   });
   return closingDateTime.unix();

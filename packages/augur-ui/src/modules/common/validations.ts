@@ -291,12 +291,13 @@ export function checkForUserInputFilled(inputs: TemplateInput[], endTimeFormatte
       const timeOffset = input.userInputObject as TimeOffset;
       if (!dateYearSource || !dateYearSource.setEndTime || !timeOffset)
         return '';
+      const OneHourBuffer = 1;
       const closingDateTime = getUnixDateTimeFromComponents(dateYearSource.setEndTime,
-        timeOffset.hour, timeOffset.minutes, timeOffset.offset);
-
+        (timeOffset.hour + OneHourBuffer), timeOffset.minutes, timeOffset.offset);
       if (closingDateTime >= endTimeFormatted.timestamp) {
         return 'Event expiration can not be before exchange closing time';
       }
+      return '';
     } else return '';
   });
 
