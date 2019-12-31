@@ -239,11 +239,10 @@ const specialCharacters: SearchReplace[] = [
     find: /\//g,
     rep: `\\/`,
   },
-];
+] as const;
 
 function escapeSpecialCharacters(value: string) {
   let replacementValue = value;
-  let i: SearchReplace = null;
   specialCharacters.forEach(i => {
     replacementValue = replacementValue.replace(i.find, i.rep);
   });
