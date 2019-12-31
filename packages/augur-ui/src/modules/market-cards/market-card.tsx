@@ -210,9 +210,13 @@ export default class MarketCard extends React.Component<
       isLogged;
     const canSupport = !disputeInfo.disputePacingOn;
 
+    const expandedOptionShowing = outcomesFormatted &&
+    outcomesFormatted.length > showOutcomeNumber &&
+    !expandedView;
+
     return (
       <div
-        className={classNames(Styles.MarketCard, { [Styles.Loading]: loading })}
+        className={classNames(Styles.MarketCard, { [Styles.Loading]: loading, [Styles.Nonexpanding]: !expandedOptionShowing })}
       >
         <>
         <div>
@@ -220,13 +224,13 @@ export default class MarketCard extends React.Component<
               <>
                 <LabelValue
                   label='Total Volume'
-                  value={volumeFormatted.formatted}
+                  value={`$${volumeFormatted.formatted}`}
                   condensed
                 />
                 {!condensed && (
                   <LabelValue
                     label='Open Interest'
-                    value={openInterestFormatted.formatted}
+                    value={`$${openInterestFormatted.formatted}`}
                     condensed
                   />
                 )}
@@ -302,9 +306,7 @@ export default class MarketCard extends React.Component<
                 canSupport={canSupport}
                 marketId={id}
               />
-              {outcomesFormatted &&
-                outcomesFormatted.length > showOutcomeNumber &&
-                !expandedView && (
+              {expandedOptionShowing && (
                   <button onClick={this.expand}>
                     <ChevronFlip
                       stroke='#fff'
@@ -313,7 +315,7 @@ export default class MarketCard extends React.Component<
                       filledInIcon
                       hover
                     />
-                    {s.expanded ? 'show less' : 'view all outcomes'}
+                    {s.expanded ? 'show less' : `${outcomesFormatted.length - showOutcomeNumber} more outcome${outcomesFormatted.length - showOutcomeNumber > 1 ? 's' : ''}`}
                   </button>
                 )}
             </>
