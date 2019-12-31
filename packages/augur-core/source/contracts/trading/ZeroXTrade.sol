@@ -72,7 +72,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
     // solhint-disable-next-line var-name-mixedcase
     bytes32 public EIP712_DOMAIN_HASH;
 
-    IAugur augur;
+    address public augur;
     IFillOrder public fillOrder;
     ICash public cash;
     IShareToken public shareToken;
@@ -80,7 +80,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
 
     function initialize(IAugur _augur, IAugurTrading _augurTrading) public beforeInitialized {
         endInitialization();
-        augur = _augur;
+        augur = address(_augur);
         cash = ICash(_augur.lookup("Cash"));
         require(cash != ICash(0));
         shareToken = IShareToken(_augur.lookup("ShareToken"));
@@ -159,14 +159,16 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
 
         uint256 _attoSharesOwned = shareToken.lowestBalanceOfMarketOutcomes(_market, _shortOutcomes, _owner);
 
-        uint256 _attoSharesPurchasable = cash.balanceOf(_owner).div(_price);
+        uint256 _availableCash = cash.allowance(_owner, augur).min(cash.balanceOf(_owner));
+        uint256 _attoSharesPurchasable = _availableCash.div(_price);
 
         return _attoSharesOwned.add(_attoSharesPurchasable);
     }
 
     function askBalance(address _owner, IMarket _market, uint8 _outcome, uint256 _price) public view returns (uint256) {
         uint256 _attoSharesOwned = shareToken.balanceOfMarketOutcome(_market, _outcome, _owner);
-        uint256 _attoSharesPurchasable = cash.balanceOf(_owner).div(_market.getNumTicks().sub(_price));
+        uint256 _availableCash = cash.allowance(_owner, augur).min(cash.balanceOf(_owner));
+        uint256 _attoSharesPurchasable = _availableCash.div(_market.getNumTicks().sub(_price));
 
         return _attoSharesOwned.add(_attoSharesPurchasable);
     }
