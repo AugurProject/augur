@@ -3,8 +3,9 @@ import isAddress from 'modules/auth/helpers/is-address';
 import { createBigNumber } from 'utils/create-big-number';
 import { ZERO } from './constants';
 import { NewMarketPropertiesValidations } from 'modules/types';
-import { ValidationType, TemplateInputType, TemplateInput, UserInputDateYear, UserInputDateTime } from '@augurproject/artifacts';
+import { ValidationType, TemplateInputType, TemplateInput, UserInputDateTime, TimeOffset } from '@augurproject/artifacts';
 import moment from 'moment';
+import { getUnixDateTimeFromComponents } from 'utils/format-date';
 
 export function isFilledString(value, readable, message) {
   if (value && value.trim().length > 0 && value !== '') return '';
@@ -281,6 +282,20 @@ export function checkForUserInputFilled(inputs: TemplateInput[], endTimeFormatte
         return validations;
       } else {
         return '';
+      }
+    } else if (
+      input.type === TemplateInputType.DATEYEAR_CLOSING &&
+      endTimeFormatted && endTimeFormatted.timestamp
+    ) {
+      const dateYearSource = inputs.find(i => i.id === input.inputDateYearId);
+      const timeOffset = input.userInputObject as TimeOffset;
+      if (!dateYearSource || !dateYearSource.setEndTime || !timeOffset)
+        return '';
+      const closingDateTime = getUnixDateTimeFromComponents(dateYearSource.setEndTime,
+        timeOffset.hour, timeOffset.minutes, timeOffset.offset);
+
+      if (closingDateTime >= endTimeFormatted.timestamp) {
+        return 'Event expiration can not be before exchange closing time';
       }
     } else return '';
   });

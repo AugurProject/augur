@@ -82,12 +82,19 @@ export interface CategoryTemplate {
   children: TemplateChildren;
 }
 
+export interface TimeOffset {
+  offset: number;
+  hour: number;
+  minutes: number;
+}
+
 export type UserInputtedType =
   | UserInputText
   | UserInputDateYear
   | UserInputDateTime
   | UserInputDropdown
-  | UserInputUserOutcome;
+  | UserInputUserOutcome
+  | TimeOffset;
 
 export interface ValueLabelPair {
   label: string;
@@ -168,7 +175,11 @@ export interface TemplateInput {
     // dropdown source data structure to use to set target input list values
     [key: string]: ValueLabelPair[];
   };
+  inputTimeOffset: {
+    [key: string]: TimeOffset;
+  }
   setEndTime?: number;
+  inputDateYearId?: number;
 }
 
 export interface RetiredTemplate {
@@ -188,6 +199,7 @@ export enum TemplateInputType {
   DATETIME = 'DATETIME', // date time with timezone picker
   DATESTART = 'DATESTART', // market end time can not be before the start of this day
   ESTDATETIME = 'ESTDATETIME', // estimated scheduled start time date time picker with timezone
+  DATEYEAR_CLOSING = 'DATEYEAR_CLOSING', // expiration time can not be before this offset on DATEYEAR in market question
   DROPDOWN = 'DROPDOWN', // dropdown list, found in market question
   DENOMINATION_DROPDOWN = 'DENOMINATION_DROPDOWN', // list of denomination values for scalar market
   ADDED_OUTCOME = 'ADDED_OUTCOME', // required outcome that is added to categorical market template

@@ -189,6 +189,24 @@ export function buildformattedDate(
   };
 }
 
+export function getUnixDateTimeFromComponents(
+  dayTimestamp: number,
+  hour: number,
+  minutes: number,
+  offset: number
+) {
+  const closingDateTime = moment
+    .unix(dayTimestamp)
+    .utc()
+    .startOf('day');
+
+  closingDateTime.set({
+    hour: hour + offset,
+    minute: minutes,
+  });
+  return closingDateTime.unix();
+}
+
 export function convertUnixToFormattedDate(integer: number = 0) {
   return formatDate(moment.unix(integer).toDate());
 }

@@ -47,6 +47,7 @@ import {
   CRYPTO_BTC_CURRENCY_MARKETS,
   CRYPTO_ETH_CURRENCY_MARKETS,
   CRYPTO_LTC_CURRENCY_MARKETS,
+  FIN_EXCHANGES_CLOSING_OFFSETS,
 } from './templates-lists';
 
 const YES_NO = 'YesNo';
@@ -4642,6 +4643,14 @@ export const TEMPLATES = {
                 placeholder: `Day of Year`,
                 validationType: ValidationType.WEEKDAYONLY,
               },
+              {
+                id: 4,
+                type: TemplateInputType.DATEYEAR_CLOSING,
+                placeholder: ``,
+                inputDateYearId: 3,
+                inputSourceId: 2,
+                inputTimeOffset: FIN_EXCHANGES_CLOSING_OFFSETS,
+              }
             ],
             resolutionRules: {
               [REQUIRED]: [

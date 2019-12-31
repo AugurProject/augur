@@ -868,6 +868,11 @@ export const InputFactory = (props: InputFactoryProps) => {
                 target.values = list;
               }
             }
+          } else if (TemplateInputType.DROPDOWN) {
+            const target = props.inputs.find(i => i.inputSourceId === input.id);
+            if (value && target && target.type === TemplateInputType.DATEYEAR_CLOSING) {
+              target.userInputObject = target.inputTimeOffset[value];
+            }
           }
           updateData(value);
         }}
