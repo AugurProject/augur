@@ -11399,6 +11399,13 @@ export class ZeroXTrade<TBigNumber> extends Contract<TBigNumber> {
 		return <string>result[0]
 	}
 
+	public augur_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"augur","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
 	public decodeAssetData_ = async (assetData: string, options?: { sender?: string }): Promise<{_assetProxyId: string, _tokenAddress: string, _tokenIds: Array<TBigNumber>, _tokenValues: Array<TBigNumber>, _callbackData: string, _kycToken: string}> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"_assetData","type":"bytes"}],"name":"decodeAssetData","outputs":[{"name":"_assetProxyId","type":"bytes4"},{"name":"_tokenAddress","type":"address"},{"name":"_tokenIds","type":"uint256[]"},{"name":"_tokenValues","type":"uint256[]"},{"name":"_callbackData","type":"bytes"},{"name":"_kycToken","type":"address"}],"payable":false,"stateMutability":"pure","type":"function"}
