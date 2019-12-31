@@ -216,14 +216,14 @@ export default class MarketCard extends React.Component<
 
     return (
       <div
-        className={classNames(Styles.MarketCard, { [Styles.Loading]: loading, [Styles.Nonexpanding]: !expandedOptionShowing })}
+        className={classNames(Styles.MarketCard, { [Styles.Loading]: loading, [Styles.Nonexpanding]: !expandedOptionShowing, [Styles.Condensed]: condensed })}
       >
         <>
         <div>
             {reportingState === REPORTING_STATE.PRE_REPORTING && (
               <>
                 <LabelValue
-                  label='Total Volume'
+                  label={condensed ? 'Volume' : 'Total Volume'}
                   value={`$${volumeFormatted.formatted}`}
                   condensed
                 />
@@ -248,7 +248,6 @@ export default class MarketCard extends React.Component<
               currentTime={currentAugurTimestamp}
               endTimeFormatted={endTimeFormatted}
               reportingWindowEndTime={disputeInfo.disputeWindow.endTime}
-              alignRight
             />
           </div>
           <div>
@@ -266,7 +265,6 @@ export default class MarketCard extends React.Component<
               currentTime={currentAugurTimestamp}
               endTimeFormatted={endTimeFormatted}
               reportingWindowEndTime={disputeInfo.disputeWindow.endTime}
-              alignRight
             />
             <div>
               <div>{InfoIcons}</div>
