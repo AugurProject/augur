@@ -158,8 +158,6 @@ export const handleNewBlockLog = (log: Events.NewBlock) => (
     if (status) {
       dispatch(updateAppStatus(GNOSIS_STATUS, status));
     }
-  } else {
-    dispatch(updateAppStatus(GNOSIS_STATUS, GnosisSafeState.AVAILABLE));
   }
 };
 

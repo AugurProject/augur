@@ -269,16 +269,16 @@ export class Users {
           ),
         ])
       );
-
       const userOpenOrdersMarketIds = Object.keys(userOpenOrders);
-      const marketIds: string[] = Array.from(
-        new Set(
-          ...uniqMarketIds,
-          ...userOpenOrdersMarketIds,
-          ...stakedRepMarketIds,
-          ...userPositionsMarketIds,
-        )
+
+      const set = new Set(
+        uniqMarketIds.concat(userOpenOrdersMarketIds).concat(stakedRepMarketIds).concat(userPositionsMarketIds)
       );
+
+      const marketIds: string[] = Array.from(
+        set
+      );
+
       marketsInfo = await Markets.getMarketsInfo(augur, db, { marketIds });
 
     } catch(e) {
