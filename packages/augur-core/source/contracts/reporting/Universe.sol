@@ -1,4 +1,4 @@
-pragma solidity 0.5.10;
+pragma solidity 0.5.15;
 
 
 import 'ROOT/reporting/IUniverse.sol';
@@ -460,11 +460,6 @@ contract Universe is IUniverse, CashSender {
     /**
      * @return The Market Cap of this Universe's REP
      */
-    function getRepMarketCapInAttoCash() public view returns (uint256) {
-        uint256 _attoCashPerRep = repPriceOracle.getRepPriceInAttoCash(reputationToken);
-        return getRepMarketCapInAttoCashInternal(_attoCashPerRep);
-    }
-
     function pokeRepMarketCapInAttoCash() public returns (uint256) {
         uint256 _attoCashPerRep = repPriceOracle.pokeRepPriceInAttoCash(reputationToken);
         return getRepMarketCapInAttoCashInternal(_attoCashPerRep);
@@ -562,7 +557,7 @@ contract Universe is IUniverse, CashSender {
             return _currentFeeDivisor;
         }
 
-        _currentFeeDivisor = pokeReportingFeeDivisor();
+        _currentFeeDivisor = calculateReportingFeeDivisorInternal();
 
         shareSettlementFeeDivisor[address(_disputeWindow)] = _currentFeeDivisor;
         previousReportingFeeDivisor = _currentFeeDivisor;
@@ -571,7 +566,7 @@ contract Universe is IUniverse, CashSender {
     }
 
     /**
-     * @dev this should be used for estimation purposes as it is a view and does not actually freeze the rate
+     * @dev this should be used for estimation purposes as it is a view and does not actually freeze or recalculate the rate
      * @return The reporting fee for this dispute window
      */
     function getReportingFeeDivisor() public view returns (uint256) {
@@ -581,21 +576,15 @@ contract Universe is IUniverse, CashSender {
             return _currentFeeDivisor;
         }
 
-        return calculateReportingFeeDivisor();
+        if (previousReportingFeeDivisor == 0) {
+            return Reporting.getDefaultReportingFeeDivisor();
+        }
+
+        return previousReportingFeeDivisor;
     }
 
-    function pokeReportingFeeDivisor() public returns (uint256) {
+    function calculateReportingFeeDivisorInternal() private returns (uint256) {
         uint256 _repMarketCapInAttoCash = pokeRepMarketCapInAttoCash();
-        return calculateReportingFeeDivisorInternal(_repMarketCapInAttoCash);
-    }
-
-    function calculateReportingFeeDivisor() public view returns (uint256) {
-        uint256 _repMarketCapInAttoCash = getRepMarketCapInAttoCash();
-        return calculateReportingFeeDivisorInternal(_repMarketCapInAttoCash);
-    }
-
-    function calculateReportingFeeDivisorInternal(uint256 _repMarketCapInAttoCash) private view returns (uint256) {
-        uint256 _repMarketCapInAttoCash = getRepMarketCapInAttoCash();
         uint256 _targetRepMarketCapInAttoCash = getTargetRepMarketCapInAttoCash();
         uint256 _reportingFeeDivisor = 0;
         if (previousReportingFeeDivisor == 0 || _targetRepMarketCapInAttoCash == 0) {

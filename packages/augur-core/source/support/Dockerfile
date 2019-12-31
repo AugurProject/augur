@@ -1,7 +1,7 @@
 # Build a base package for augur-core.
 FROM augurproject/augur-build:latest as augur-build
 
-ARG SOLC_VERSION=v0.5.10
+ARG SOLC_VERSION=v0.5.15
 ARG SOLC_MD5=be02011efd6c6afd27cda02871bd70b3
 ENV PATH="/augur/node_modules/.bin:${PATH}"
 ENV PATH="/usr/bin:${PATH}"

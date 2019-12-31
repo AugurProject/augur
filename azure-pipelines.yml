@@ -4,7 +4,7 @@ variables:
     CORE_IMAGE_LATEST: augurproject/augur-core:monorepo
     PRIMARY_NODE_VERSION: 10.16.x
     GETH_VERSION: v1.8.27
-    SOLC_VERSION: v0.5.10
+    SOLC_VERSION: v0.5.15
     SOLC_MD5: be02011efd6c6afd27cda02871bd70b3
 
 trigger:

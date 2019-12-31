@@ -16,7 +16,7 @@
 
 */
 
-pragma solidity 0.5.10;
+pragma solidity 0.5.15;
 
 import "ROOT/0x/utils/contracts/src/interfaces/IOwnable.sol";
 import "ROOT/0x/utils/contracts/src/LibOwnableRichErrors.sol";

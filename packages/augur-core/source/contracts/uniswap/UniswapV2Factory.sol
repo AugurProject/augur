@@ -1,37 +1,49 @@
-pragma solidity 0.5.10;
+pragma solidity 0.5.15;
 
 import "ROOT/uniswap/interfaces/IUniswapV2Factory.sol";
+import "ROOT/uniswap/interfaces/IUniswapV2.sol";
 import "ROOT/uniswap/UniswapV2.sol";
 
 
-// Mock Uniswap V2 Factory contract for initial testing and early implementation of our Oracle
 contract UniswapV2Factory is IUniswapV2Factory {
+    bytes public exchangeBytecode;
 
-    struct Pair {
-        address token0;
-        address token1;
+    mapping (address => mapping(address => address)) private _getExchange;
+    address[] public exchanges;
+
+    event ExchangeCreated(address indexed token0, address indexed token1, address exchange, uint);
+
+    constructor() public {
+        exchangeBytecode = type(UniswapV2).creationCode;
     }
 
-    mapping (address => Pair) private exchangeToPair;
-    mapping (address => mapping(address => address)) private tokensToExchange;
-
-    constructor(bytes memory, uint256) public {}
-
-    function getPair(address _tokenA, address _tokenB) private pure returns (Pair memory) {
-        return _tokenA < _tokenB ? Pair({ token0: _tokenA, token1: _tokenB }) : Pair({ token0: _tokenB, token1: _tokenA });
+    function sortTokens(address tokenA, address tokenB) public pure returns (address token0, address token1) {
+        return tokenA < tokenB ? (tokenA, tokenB) : (tokenB, tokenA);
     }
 
-    function getExchange(address _tokenA, address _tokenB) external view returns (address) {
-        Pair memory _pair = getPair(_tokenA, _tokenB);
-        return tokensToExchange[_pair.token0][_pair.token1];
+    function getExchange(address tokenA, address tokenB) external view returns (address exchange) {
+        (address token0, address token1) = sortTokens(tokenA, tokenB);
+        return _getExchange[token0][token1];
     }
 
-    function createExchange(address _tokenA, address _tokenB) external returns (address) {
-        Pair memory _pair = getPair(_tokenA, _tokenB);
+    function exchangesCount() external view returns (uint) {
+        return exchanges.length;
+    }
 
-        UniswapV2 _exchange = new UniswapV2();
-        exchangeToPair[address(_exchange)] = _pair;
-        tokensToExchange[_pair.token0][_pair.token1] = address(_exchange);
-        return address(_exchange);
+    function createExchange(address tokenA, address tokenB) external returns (address exchange) {
+        require(tokenA != tokenB, "UniswapV2Factory: SAME_ADDRESS");
+        require(tokenA != address(0) && tokenB != address(0), "UniswapV2Factory: ZERO_ADDRESS");
+        (address token0, address token1) = sortTokens(tokenA, tokenB);
+        require(_getExchange[token0][token1] == address(0), "UniswapV2Factory: EXCHANGE_EXISTS");
+        bytes memory exchangeBytecodeMemory = exchangeBytecode; // load bytecode into memory because create2 requires it
+        bytes32 salt = keccak256(abi.encodePacked(token0, token1));
+        assembly {  // solium-disable-line security/no-inline-assembly
+            exchange := create2(0, add(exchangeBytecodeMemory, 32), mload(exchangeBytecodeMemory), salt)
+        }
+        require(exchange != address(0), "Exchange creation failed");
+        IUniswapV2(exchange).initialize(token0, token1);
+        _getExchange[token0][token1] = exchange;
+        exchanges.push(exchange);
+        emit ExchangeCreated(token0, token1, exchange, exchanges.length);
     }
 }

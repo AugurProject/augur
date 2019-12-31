@@ -104,13 +104,7 @@ def addLiquidity(exchange, cash, reputationToken, cashAmount, repAmount, address
     cash.transfer(exchange.address, cashAmount)
     reputationToken.transfer(exchange.address, repAmount)
 
-    exchange.mintLiquidity(address)
-    # TODO: remove below when Uniswap contracts are public
-    token0, token1 = (cash.address, reputationToken.address) if cash.address < reputationToken.address else (reputationToken.address, cash.address)
-    if (token0 == cash.address):
-        exchange.setReservesCumulative(cashAmount, repAmount)
-    else:
-        exchange.setReservesCumulative(repAmount, cashAmount)
+    exchange.mint(address)
 
 def buyRep(exchange, cash, cashAmount, address):
     cash.faucet(cashAmount)
@@ -126,10 +120,6 @@ def sellRep(exchange, reputationToken, repAmount, address):
 
 def mineBlocks(contractsFixture, exchange, numBlocks, token0Amount, token1Amount):
     contractsFixture.mineBlocks(numBlocks)
-
-    # TODO: remove below when Uniswap contracts are public
-    oldToken0Amount, oldToken1Amount = exchange.getReservesCumulative()
-    exchange.setReservesCumulative(oldToken0Amount + token0Amount * numBlocks, oldToken1Amount + token1Amount * numBlocks)
 
 def roughlyEqual(amount1, amount2, tolerance=5 * 10**16):
     return abs(amount1 - amount2) < tolerance

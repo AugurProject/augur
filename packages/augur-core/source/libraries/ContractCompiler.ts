@@ -56,7 +56,7 @@ export class ContractCompiler {
       /*
         Example output:
           solc, the solidity compiler commandline interface
-          Version: 0.5.10+commit.5a6ea5b1.Darwin.appleclang
+          Version: 0.5.15+commit.5a6ea5b1.Darwin.appleclang
      */
       const output = await this.getCommandOutputFromInput(childProcess, '');
       try {

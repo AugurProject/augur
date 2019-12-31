@@ -1,4 +1,4 @@
-pragma solidity 0.5.10;
+pragma solidity 0.5.15;
 
 import 'ROOT/reporting/IV2ReputationToken.sol';
 import 'ROOT/reporting/IDisputeWindow.sol';
@@ -28,7 +28,6 @@ contract IUniverse {
     function getOrCreateNextDisputeWindow(bool _initial) public returns (IDisputeWindow);
     function getOrCreatePreviousDisputeWindow(bool _initial) public returns (IDisputeWindow);
     function getOpenInterestInAttoCash() public view returns (uint256);
-    function getRepMarketCapInAttoCash() public view returns (uint256);
     function getTargetRepMarketCapInAttoCash() public view returns (uint256);
     function getOrCacheValidityBond() public returns (uint256);
     function getOrCacheDesignatedReportStake() public returns (uint256);

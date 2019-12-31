@@ -1,5 +1,5 @@
 {
-	"compilerVersion": "0.5.10+commit.5a6ea5b1",
+	"compilerVersion": "0.5.15+commit.5a6ea5b1",
 	"contracts": {
 		"0x/asset-proxy/contracts/src/ERC1155Proxy.sol": {
 			"ERC1155Proxy": {

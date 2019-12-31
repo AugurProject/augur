@@ -1,4 +1,4 @@
-pragma solidity 0.5.10;
+pragma solidity 0.5.15;
 
 import 'ROOT/reporting/IV2ReputationToken.sol';
 import 'ROOT/libraries/ITyped.sol';

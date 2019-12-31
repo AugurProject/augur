@@ -16,7 +16,7 @@
 
 */
 
-pragma solidity 0.5.10;
+pragma solidity 0.5.15;
 
 import "ROOT/0x/asset-proxy/contracts/archive/Ownable.sol";
 import "ROOT/0x/asset-proxy/contracts/src/interfaces/IAuthorizable.sol";

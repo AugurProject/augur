@@ -1,4 +1,4 @@
-pragma solidity 0.5.10;
+pragma solidity 0.5.15;
 
 import 'ROOT/IAugur.sol';
 import 'ROOT/libraries/Initializable.sol';
@@ -45,11 +45,7 @@ contract RepPriceOracle is IRepPriceOracle, Initializable {
         return _newExchangeData.price;
     }
 
-    function getRepPriceInAttoCash(IV2ReputationToken _reputationToken) external view returns (uint256) {
-        return calculateNewExchangeData(_reputationToken).price;
-    }
-
-    function calculateNewExchangeData(IV2ReputationToken _reputationToken) private view returns (ExchangeData memory) {
+    function calculateNewExchangeData(IV2ReputationToken _reputationToken) private returns (ExchangeData memory) {
         ExchangeData memory _exchangeData = exchangeData[address(_reputationToken)];
         uint256 _blockNumber = block.number;
         if (_blockNumber == _exchangeData.blockNumber) {
@@ -62,7 +58,9 @@ contract RepPriceOracle is IRepPriceOracle, Initializable {
             _exchangeData.price = getInitialPrice(_reputationToken);
             return _exchangeData;
         }
-        (uint256 _token0Amount, uint256 _token1Amount) = _exchange.getReservesCumulative();
+        _exchange.sync();
+        uint256 _token0Amount = _exchange.price0CumulativeLast();
+        uint256 _token1Amount = _exchange.price1CumulativeLast();
         if (_token0Amount == 0 || _token1Amount == 0) {
             return _exchangeData;
         }
@@ -72,7 +70,7 @@ contract RepPriceOracle is IRepPriceOracle, Initializable {
 
         uint256 _cashAccumulationDelta = _cashAmountAccumulated - _exchangeData.cashAmountAccumulated;
         uint256 _repAccumulationDelta = _repAmountAccumulated - _exchangeData.repAmountAccumulated;
-        // TODO: This should not be possible normally. When the real Uniswap contracts are in this condition can be removed.
+        // Potentially possible if there is an extended period of 0 tokens available
         if (_repAccumulationDelta == 0) {
             return _exchangeData;
         }
