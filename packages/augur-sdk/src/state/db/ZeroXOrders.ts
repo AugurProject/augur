@@ -95,7 +95,6 @@ export class ZeroXOrders extends AbstractTable {
   protected stateDB: DB;
   private augur: Augur;
   readonly tradeTokenAddress: string;
-  private account;
 
   constructor(
     db: DB,
@@ -122,11 +121,12 @@ export class ZeroXOrders extends AbstractTable {
 
   async handleMeshEvent(orderEvents: OrderEvent[]): Promise<void> {
     if (orderEvents.length < 1) return;
-    console.log('Mesh events recieved: ${JSON.stringify(orderEvents)}');
+    console.log('Mesh events recieved')
+    console.log(JSON.stringify(orderEvents));
     // this.account = await this.augur.getAccount();
     const filteredOrders = _.filter(orderEvents, this.validateOrder.bind(this));
     let documents = _.map(filteredOrders, this.processOrder.bind(this));
-    documents = _.filter(documents, await this.validateStoredOrder.bind(this));
+    documents = _.filter(documents, this.validateStoredOrder.bind(this));
     await this.bulkUpsertDocuments(documents);
     for (const d of documents) {
       this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Create, ...d});
@@ -142,8 +142,8 @@ export class ZeroXOrders extends AbstractTable {
       documents = _.map(documents, this.processOrder.bind(this));
       const marketIds: string[] = _.uniq(_.map(documents, "market"));
       const markets = _.keyBy(await this.stateDB.Markets.where("market").anyOf(marketIds).toArray(), "market");
-      documents = _.filter(documents, async (document) => {
-        return await this.validateStoredOrder(document, markets);
+      documents = _.filter(documents, (document) => {
+        return this.validateStoredOrder(document, markets);
       });
       await this.bulkUpsertDocuments(documents);
       for (const d of documents) {
@@ -168,17 +168,22 @@ export class ZeroXOrders extends AbstractTable {
     }
     if (!storedOrder["numberAmount"].mod(tradeInterval).isEqualTo(0)) return false;
 
-    // expired, got filled by the user themselves
+    // expired
+    // filled their own order
+    // unapproved order (had no approvals, this is identical to filling own order from contracts pov, on 0x side looks like a fill)
+    // actual cancel
+    // a regular fill
     if (storedOrder.numberAmount.isEqualTo(0)) {
       console.log("Deleted order");
       this.table.where('orderHash').equals(storedOrder.orderHash).delete();
       
       // console.log(this.account);
-      console.log(storedOrder.signedOrder.makerAddress);
-      console.log(parseInt(storedOrder.signedOrder.expirationTimeSeconds));
-      console.log(moment().unix());
+      // console.log(storedOrder.signedOrder.makerAddress);
+      // console.log(parseInt(storedOrder.signedOrder.expirationTimeSeconds));
+      // console.log(moment().unix());
       // if (storedOrder.signedOrder.makerAddress == this.account || parseInt(storedOrder.signedOrder.expirationTimeSeconds) - moment().unix() < 20) {
         // this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Cancel, ...storedOrder});
+        // return false;
       // }
       this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Fill, ...storedOrder});
       return false;
