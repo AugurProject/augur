@@ -4662,8 +4662,11 @@ export const TEMPLATES = {
                   text: `Trading denomination is determined by the exchange the stock is traded on`,
                 },
                 {
-                  text: `If trading day in market question is a weekend or holiday when exchange is not open this market should resolve as invalid`,
+                  text: `If trading day in market question is a weekend or holiday when exchange is not open this market should resolve as 'Invalid'`,
                 },
+                {
+                  text: `If stock trading ticker symbol is not used in the market question, the market should resolve as 'Invalid'`
+                }
               ],
             },
           },
@@ -4720,8 +4723,11 @@ export const TEMPLATES = {
                   text: `Trading denomination is determined by the exchange the stock is traded on`,
                 },
                 {
-                  text: `If trading day in market question is a weekend or holiday when exchange is not open this market should resolve as invalid`,
+                  text: `If trading day in market question is a weekend or holiday when exchange is not open this market should resolve as 'Invalid'`,
                 },
+                {
+                  text: `If stock trading ticker symbol is not used in the market question, the market should resolve as 'Invalid'`
+                }
               ],
             },
           },
@@ -4765,8 +4771,11 @@ export const TEMPLATES = {
                   text: `Trading denomination is determined by the exchange the stock is traded on`,
                 },
                 {
-                  text: `If trading day in market question is a weekend or holiday when exchange is not open this market should resolve as invalid`,
+                  text: `If trading day in market question is a weekend or holiday when exchange is not open this market should resolve as 'Invalid'`,
                 },
+                {
+                  text: `If stock trading ticker symbol is not used in the market question, the market should resolve as 'Invalid'`
+                }
               ],
             },
           },
@@ -4812,7 +4821,7 @@ export const TEMPLATES = {
                   text: `Closing date is determined by the location of the exchange, where the underlying stocks for the index are traded`,
                 },
                 {
-                  text: `If trading day in market question is a weekend or holiday when exchange is not open this market should resolve as invalid`,
+                  text: `If trading day in market question is a weekend or holiday when exchange is not open this market should resolve as 'Invalid'`,
                 },
               ],
             },
@@ -4850,7 +4859,7 @@ export const TEMPLATES = {
                   text: `Closing date is determined by the location of the exchange, where the underlying stocks for the index are traded`,
                 },
                 {
-                  text: `If trading day in market question is a weekend or holiday when exchange is not open this market should resolve as invalid`,
+                  text: `If trading day in market question is a weekend or holiday when exchange is not open this market should resolve as 'Invalid'`,
                 },
               ],
             },
