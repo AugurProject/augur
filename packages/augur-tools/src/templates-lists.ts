@@ -8115,13 +8115,13 @@ export const LIST_VALUES = {
 
 export const FIN_EXCHANGES_CLOSING_OFFSETS = {
   'New York Stock Exchange (traded in USD)': {
-    offset: -5,
+    offset: -4,
     hour: 16,
     minutes: 0,
   },
   'Nasdaq (traded in USD)': { offset: -5, hour: 16, minutes: 0 },
   'American Stock Exchange (traded in USD)': {
-    offset: -5,
+    offset: -4,
     hour: 16,
     minutes: 0,
   },
@@ -8131,7 +8131,7 @@ export const FIN_EXCHANGES_CLOSING_OFFSETS = {
     minutes: 0,
   },
   'London Stock Exchange (traded in Pound Sterling)': {
-    offset: 1,
+    offset: 0,
     hour: 16,
     minutes: 30,
   },
@@ -8151,7 +8151,7 @@ export const FIN_EXCHANGES_CLOSING_OFFSETS = {
     minutes: 0,
   },
   'Toronto Stock Exchange (traded in Canadian Dollar)': {
-    offset: -5,
+    offset: -4,
     hour: 16,
     minutes: 0,
   },
@@ -8159,12 +8159,12 @@ export const FIN_EXCHANGES_CLOSING_OFFSETS = {
 };
 
 export const FIN_INDEXES_CLOSING_OFFSETS = {
-  'S&P 500 Index': { offset: -5, hour: 16, minutes: 0 },
-  'Dow Jones Industrial Average': { offset: -5, hour: 16, minutes: 0 },
-  'Nasdaq Composite': { offset: -5, hour: 16, minutes: 0 },
-  'Wilshire 5000': { offset: -5, hour: 16, minutes: 0 },
-  'Russell 1000': { offset: -5, hour: 16, minutes: 0 },
-  'NYSE Composite': { offset: -5, hour: 16, minutes: 0 },
+  'S&P 500 Index': { offset: -4, hour: 16, minutes: 0 },
+  'Dow Jones Industrial Average': { offset: -4, hour: 16, minutes: 0 },
+  'Nasdaq Composite': { offset: -4, hour: 16, minutes: 0 },
+  'Wilshire 5000': { offset: -4, hour: 16, minutes: 0 },
+  'Russell 1000': { offset: -4, hour: 16, minutes: 0 },
+  'NYSE Composite': { offset: -4, hour: 16, minutes: 0 },
   'FTSE 100': {
     offset: 1,
     hour: 16,
@@ -8190,7 +8190,7 @@ export const FIN_INDEXES_CLOSING_OFFSETS = {
     hour: 15,
     minutes: 0,
   },
-  'S&P/TSX Composite': { offset: -5, hour: 16, minutes: 0 },
+  'S&P/TSX Composite': { offset: -4, hour: 16, minutes: 0 },
   'CAC 40': { offset: 2, hour: 17, minutes: 30 },
   'All Ordinaries': { offset: 11, hour: 16, minutes: 12 },
   'BSE Sensex 30': { offset: 5.5, hour: 15, minutes: 30 },
@@ -8199,7 +8199,7 @@ export const FIN_INDEXES_CLOSING_OFFSETS = {
     hour: 15,
     minutes: 0,
   },
-  VIX: { offset: -6, hour: 15, minutes: 15 },
+  VIX: { offset: -5, hour: 15, minutes: 15 },
 };
 
 export const CRYPTO_BTC_CURRENCY_MARKETS = {

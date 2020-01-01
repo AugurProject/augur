@@ -283,21 +283,6 @@ export function checkForUserInputFilled(inputs: TemplateInput[], endTimeFormatte
       } else {
         return '';
       }
-    } else if (
-      input.type === TemplateInputType.DATEYEAR_CLOSING &&
-      endTimeFormatted && endTimeFormatted.timestamp
-    ) {
-      const dateYearSource = inputs.find(i => i.id === input.inputDateYearId);
-      const timeOffset = input.userInputObject as TimeOffset;
-      if (!dateYearSource || !dateYearSource.setEndTime || !timeOffset)
-        return '';
-      const OneHourBuffer = 1;
-      const closingDateTime = getUnixDateTimeFromComponents(dateYearSource.setEndTime,
-        (timeOffset.hour + OneHourBuffer), timeOffset.minutes, timeOffset.offset);
-      if (closingDateTime >= endTimeFormatted.timestamp) {
-        return 'Event expiration can not be before exchange closing time';
-      }
-      return '';
     } else return '';
   });
 

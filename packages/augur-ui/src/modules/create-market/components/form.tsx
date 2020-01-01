@@ -32,6 +32,7 @@ import {
   TEMPLATE_PICKER,
   TEMPLATE_INPUTS,
   TEMPLATE,
+  ExchangeClosingMessage,
 } from 'modules/create-market/constants';
 import {
   CATEGORICAL,
@@ -73,7 +74,7 @@ import {
   isValidFee,
   checkForUserInputFilled,
 } from 'modules/common/validations';
-import { buildformattedDate, convertUnixToFormattedDate } from 'utils/format-date';
+import { buildformattedDate, convertUnixToFormattedDate, getUnixDateTimeFromComponents } from 'utils/format-date';
 import TemplatePicker from 'modules/create-market/containers/template-picker';
 
 import Styles from 'modules/create-market/components/form.styles.less';
@@ -96,6 +97,7 @@ import { selectSortedMarketOutcomes } from 'modules/markets/selectors/market';
 import { createBigNumber } from 'utils/create-big-number';
 import makeQuery from 'modules/routes/helpers/make-query';
 import { CREATE_MARKET_FORM_PARAM_NAME } from 'modules/routes/constants/param-names';
+import { TemplateInputType, TimeOffset } from '@augurproject/artifacts';
 
 interface FormProps {
   newMarket: NewMarket;
@@ -311,7 +313,7 @@ export default class Form extends React.Component<FormProps, FormState> {
     if (isTemplate && template && mainContent === TEMPLATE_PICKER) {
       marketCreationStarted(template.question, true);
     }
-    
+
     this.node && this.node.scrollIntoView();
   };
 
@@ -490,8 +492,39 @@ export default class Form extends React.Component<FormProps, FormState> {
         newMarket.offset
       );
       checkValidations.push(
-        dateGreater(endTimeFormatted.timestamp, currentTimestamp)
+        dateGreater(endTimeFormatted.timestamp, currentTimestamp, checkDateGreaterMessage)
       );
+      if (
+        newMarket &&
+        newMarket.template &&
+        newMarket.template.inputs &&
+        newMarket.template.inputs.length > 0
+      ) {
+        const inputs = newMarket.template.inputs;
+        const closing = inputs.find(
+          i => i.type === TemplateInputType.DATEYEAR_CLOSING
+        );
+        if (closing) {
+          const dateYearSource = inputs.find(
+            i => i.id === closing.inputDateYearId
+          );
+          const timeOffset = closing.userInputObject as TimeOffset;
+          if (dateYearSource && dateYearSource.setEndTime && timeOffset) {
+            const OneHourBuffer = 1;
+            const closingDateTime = getUnixDateTimeFromComponents(
+              dateYearSource.setEndTime,
+              timeOffset.hour + OneHourBuffer,
+              timeOffset.minutes,
+              timeOffset.offset
+            );
+            const dateTime = convertUnixToFormattedDate(closingDateTime);
+            const message = `${ExchangeClosingMessage} ${dateTime.formattedLocalShortDateTimeWithTimezone}`;
+            checkValidations.push(
+              dateGreater(endTimeFormatted.timestamp, closingDateTime, message)
+            );
+          }
+        }
+      }
     }
 
     const errorMsg = checkValidations.find(validation => {

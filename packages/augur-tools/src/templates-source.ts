@@ -48,6 +48,7 @@ import {
   CRYPTO_ETH_CURRENCY_MARKETS,
   CRYPTO_LTC_CURRENCY_MARKETS,
   FIN_EXCHANGES_CLOSING_OFFSETS,
+  FIN_INDEXES_CLOSING_OFFSETS,
 } from './templates-lists';
 
 const YES_NO = 'YesNo';
@@ -4701,6 +4702,14 @@ export const TEMPLATES = {
                 placeholder: `End Day of Year`,
                 validationType: ValidationType.WEEKDAYONLY,
               },
+              {
+                id: 5,
+                type: TemplateInputType.DATEYEAR_CLOSING,
+                placeholder: ``,
+                inputDateYearId: 3,
+                inputSourceId: 2,
+                inputTimeOffset: FIN_EXCHANGES_CLOSING_OFFSETS,
+              }
             ],
             resolutionRules: {
               [REQUIRED]: [
@@ -4738,6 +4747,14 @@ export const TEMPLATES = {
                 placeholder: `Day of Year`,
                 validationType: ValidationType.WEEKDAYONLY,
               },
+              {
+                id: 3,
+                type: TemplateInputType.DATEYEAR_CLOSING,
+                placeholder: ``,
+                inputDateYearId: 2,
+                inputSourceId: 1,
+                inputTimeOffset: FIN_EXCHANGES_CLOSING_OFFSETS,
+              }
             ],
             resolutionRules: {
               [REQUIRED]: [
@@ -4780,6 +4797,14 @@ export const TEMPLATES = {
                 placeholder: `Day of Year`,
                 validationType: ValidationType.WEEKDAYONLY,
               },
+              {
+                id: 3,
+                type: TemplateInputType.DATEYEAR_CLOSING,
+                placeholder: ``,
+                inputDateYearId: 2,
+                inputSourceId: 0,
+                inputTimeOffset: FIN_INDEXES_CLOSING_OFFSETS,
+              }
             ],
             resolutionRules: {
               [REQUIRED]: [
@@ -4809,6 +4834,14 @@ export const TEMPLATES = {
                 type: TemplateInputType.DATEYEAR,
                 placeholder: `Day of Year`,
                 validationType: ValidationType.WEEKDAYONLY,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.DATEYEAR_CLOSING,
+                placeholder: ``,
+                inputDateYearId: 2,
+                inputSourceId: 0,
+                inputTimeOffset: FIN_INDEXES_CLOSING_OFFSETS,
               },
             ],
             resolutionRules: {
