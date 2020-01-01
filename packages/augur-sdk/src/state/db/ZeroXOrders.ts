@@ -1,3 +1,4 @@
+
 import * as _ from 'lodash';
 import { AbstractTable, BaseDocument } from './AbstractTable';
 import { SyncStatus } from './SyncStatus';
@@ -121,9 +122,8 @@ export class ZeroXOrders extends AbstractTable {
 
   async handleMeshEvent(orderEvents: OrderEvent[]): Promise<void> {
     if (orderEvents.length < 1) return;
-    console.log('Mesh events recieved')
+    console.log('Mesh events recieved');
     console.log(JSON.stringify(orderEvents));
-    // this.account = await this.augur.getAccount();
     const filteredOrders = _.filter(orderEvents, this.validateOrder.bind(this));
     let documents = _.map(filteredOrders, this.processOrder.bind(this));
     documents = _.filter(documents, this.validateStoredOrder.bind(this));
@@ -137,7 +137,6 @@ export class ZeroXOrders extends AbstractTable {
     const orders: OrderInfo[] = await this.augur.zeroX.getOrders();
     let documents;
     if (orders.length > 0) {
-      // this.account = await this.augur.getAccount();
       documents = _.filter(orders, this.validateOrder.bind(this));
       documents = _.map(documents, this.processOrder.bind(this));
       const marketIds: string[] = _.uniq(_.map(documents, "market"));
@@ -168,26 +167,17 @@ export class ZeroXOrders extends AbstractTable {
     }
     if (!storedOrder["numberAmount"].mod(tradeInterval).isEqualTo(0)) return false;
 
-    // expired
-    // filled their own order
-    // unapproved order (had no approvals, this is identical to filling own order from contracts pov, on 0x side looks like a fill)
-    // actual cancel
-    // a regular fill
     if (storedOrder.numberAmount.isEqualTo(0)) {
       console.log("Deleted order");
       this.table.where('orderHash').equals(storedOrder.orderHash).delete();
-      
-      // console.log(this.account);
-      // console.log(storedOrder.signedOrder.makerAddress);
-      // console.log(parseInt(storedOrder.signedOrder.expirationTimeSeconds));
-      // console.log(moment().unix());
-      // if (storedOrder.signedOrder.makerAddress == this.account || parseInt(storedOrder.signedOrder.expirationTimeSeconds) - moment().unix() < 20) {
-        // this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Cancel, ...storedOrder});
-        // return false;
-      // }
       this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Fill, ...storedOrder});
       return false;
     }
+    if (parseInt(storedOrder.signedOrder.expirationTimeSeconds) - moment().unix() < 60) {
+      this.table.where('orderHash').equals(storedOrder.orderHash).delete();
+      this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Cancel, ...storedOrder});
+      return false;
+    };
     return true;
   }
 

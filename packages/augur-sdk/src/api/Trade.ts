@@ -8,6 +8,7 @@ import {
   NativePlaceTradeParams
 } from './OnChainTrade';
 import { ZeroX, ZeroXSimulateTradeData } from './ZeroX';
+import moment, { Moment } from 'moment';
 
 export interface TradeAPI {
   useZeroX(): boolean
@@ -48,7 +49,8 @@ export class Trade implements TradeAPI {
   }
 
   private maxExpirationTime(): BigNumber {
-    return new BigNumber(8640000000000000);
+    // expire in a year
+    return new BigNumber(moment().unix() + 31557600);
   }
 
   async placeTrade(params: PlaceTradeDisplayParams): Promise<void> {

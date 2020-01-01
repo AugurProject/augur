@@ -691,8 +691,15 @@ export class Markets {
         : Object.keys(bucketsByPrice).sort((a, b) =>
             new BigNumber(a).minus(b).toNumber()
           );
+      
 
-      return prickKeysSorted.map(k => bucketsByPrice[k]);
+      var sortedOrders = prickKeysSorted.map(k => bucketsByPrice[k]);
+      for(var i = 0, size = sortedOrders.length; i < size; i++) {
+        sortedOrders[i].sort(function(a, b) {
+          return parseFloat(b.amount) - parseFloat(a.amount);
+        });
+      }
+      return sortedOrders;
     };
 
     const processMarket = (orders: Orders) => {
