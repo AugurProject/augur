@@ -97,7 +97,7 @@ import { selectSortedMarketOutcomes } from 'modules/markets/selectors/market';
 import { createBigNumber } from 'utils/create-big-number';
 import makeQuery from 'modules/routes/helpers/make-query';
 import { CREATE_MARKET_FORM_PARAM_NAME } from 'modules/routes/constants/param-names';
-import { TemplateInputType, TimeOffset } from '@augurproject/artifacts';
+import { TemplateInputType, TimeOffset, getTemplateExchangeClosingWithBuffer } from '@augurproject/artifacts';
 
 interface FormProps {
   newMarket: NewMarket;
@@ -510,10 +510,9 @@ export default class Form extends React.Component<FormProps, FormState> {
           );
           const timeOffset = closing.userInputObject as TimeOffset;
           if (dateYearSource && dateYearSource.setEndTime && timeOffset) {
-            const OneHourBuffer = 1;
-            const closingDateTime = getUnixDateTimeFromComponents(
+            const closingDateTime = getTemplateExchangeClosingWithBuffer(
               dateYearSource.setEndTime,
-              timeOffset.hour + OneHourBuffer,
+              timeOffset.hour,
               timeOffset.minutes,
               timeOffset.offset
             );
