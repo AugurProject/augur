@@ -451,7 +451,6 @@ function closingDateDependencies(
       timeOffset.minutes,
       timeOffset.offset
     );
-    console.log('closingDateTime', closingDateTime, 'endTime', endTime, closingDateTime >= endTime);
     if (closingDateTime >= endTime) {
       return false;
     }
