@@ -167,6 +167,11 @@ export class ZeroXOrders extends AbstractTable {
     }
     if (!storedOrder["numberAmount"].mod(tradeInterval).isEqualTo(0)) return false;
 
+    // expired
+    // filled their own order
+    // unapproved order (had no approvals, this is identical to filling own order from contracts pov, on 0x side looks like a fill)
+    // actual cancel
+    // a regular fill
     if (storedOrder.numberAmount.isEqualTo(0)) {
       console.log("Deleted order");
       this.table.where('orderHash').equals(storedOrder.orderHash).delete();
@@ -178,6 +183,10 @@ export class ZeroXOrders extends AbstractTable {
       this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Cancel, ...storedOrder});
       return false;
     };
+
+      // if (storedOrder.signedOrder.makerAddress == this.account || parseInt(storedOrder.signedOrder.expirationTimeSeconds) - moment().unix() < 20) {
+        // this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Cancel, ...storedOrder});
+      // }
     return true;
   }
 
