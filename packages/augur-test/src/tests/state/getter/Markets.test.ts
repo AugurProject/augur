@@ -84,7 +84,7 @@ describe('State API :: Markets :: ', () => {
       feePerCashInAttoCash: highFeePerCashInAttoCash,
       affiliateFeeDivisor,
       designatedReporter,
-      prices: [new BigNumber(0), new BigNumber(100)],
+      prices: [new BigNumber(0), new BigNumber(100).multipliedBy(10**18)],
       numTicks: new BigNumber(100),
       extraInfo: '{"categories": ["common", "scalar 1 secondary", "scalar 1 tertiary"], "description": "scalar description 1", "longDescription": "scalar longDescription 1", "_scalarDenomination": "scalar denom 1"}',
     })).address;
@@ -94,7 +94,7 @@ describe('State API :: Markets :: ', () => {
       feePerCashInAttoCash: highFeePerCashInAttoCash,
       affiliateFeeDivisor,
       designatedReporter,
-      prices: [new BigNumber(0), new BigNumber(100)],
+      prices: [new BigNumber(0), new BigNumber(100).multipliedBy(10**18)],
       numTicks: new BigNumber(100),
       extraInfo: '{"categories": ["scalar 2 primary", "scalar 2 secondary", "scalar 2 tertiary"], "description": "scalar description 2", "longDescription": "scalar longDescription 2", "_scalarDenomination": "scalar denom 2"}',
     })).address;
@@ -1805,8 +1805,7 @@ describe('State API :: Markets :: ', () => {
     expect((await api.route('getMarketsInfo', { marketIds: [ scalarMarket.address ]}))[0].reportingState)
       .toEqual(MarketReportingState.OpenReporting);
 
-    const SECONDS_IN_AN_HOUR = SECONDS_IN_A_DAY.div(24);
-    newTime = newTime.plus(SECONDS_IN_A_DAY.times(7)).plus(SECONDS_IN_AN_HOUR).plus(1);
+    newTime = newTime.plus(SECONDS_IN_A_DAY.times(7)).plus(1);
     await john.setTimestamp(newTime);
 
     await (await db).sync(john.augur, CHUNK_SIZE, 0);

@@ -293,6 +293,8 @@ contract Augur is IAugur, IAugurCreationDataGetter, CashSender {
         IUniverse _universe = getAndValidateUniverse(msg.sender);
         require(_prices.length == 2);
         require(_prices[0] < _prices[1]);
+        uint256 _priceRange = uint256(_prices[1] - _prices[0]);
+        require(_priceRange > _numTicks);
         markets[address(_market)] = true;
         marketCreationData[address(_market)].extraInfo = _extraInfo;
         marketCreationData[address(_market)].marketCreator = _marketCreator;

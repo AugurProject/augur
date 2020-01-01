@@ -3,9 +3,11 @@ import { AbstractTable, BaseDocument } from './AbstractTable';
 import { SyncStatus } from './SyncStatus';
 import { Augur } from '../../Augur';
 import { DB } from './DB';
+import { MarketData, MarketType } from '../logs/types';
 import { OrderInfo, OrderEvent } from '@0x/mesh-rpc-client';
 import { getAddress } from "ethers/utils/address";
 import { SignedOrder } from '@0x/types';
+import { BigNumber } from 'bignumber.js';
 
 // This database clears its contents on every sync.
 // The primary purposes for even storing this data are:
@@ -13,6 +15,9 @@ import { SignedOrder } from '@0x/types';
 // 2. To cache market orderbooks so a complete pull isnt needed on every subsequent load.
 
 const EXPECTED_ASSET_DATA_LENGTH = 650;
+
+const DEFAULT_TRADE_INTERVAL = new BigNumber(10**17);
+const TRADE_INTERVAL_VALUE = new BigNumber(10**19);
 
 export interface OrderData {
   market: string;
@@ -83,7 +88,11 @@ export class ZeroXOrders extends AbstractTable {
     if (orders.length > 0) {
       documents = _.filter(orders, this.validateOrder.bind(this));
       documents = _.map(documents, this.processOrder.bind(this));
-      documents = _.filter(documents, this.validateStoredOrder.bind(this));
+      const marketIds: string[] = _.uniq(_.map(documents, "market"));
+      const markets = _.keyBy(await this.stateDB.Markets.where("market").anyOf(marketIds).toArray(), "market");
+      documents = _.filter(documents, (document) => {
+        return this.validateStoredOrder(document, markets);
+      });
       await this.bulkUpsertDocuments(documents);
     }
     this.augur.getAugurEventEmitter().emit("ZeroXOrders", {});
@@ -96,16 +105,21 @@ export class ZeroXOrders extends AbstractTable {
     return true;
   }
 
-  validateStoredOrder(storedOrder: StoredOrder): boolean {
-    // TODO Validate minimum order size
+  validateStoredOrder(storedOrder: StoredOrder, markets: _.Dictionary<MarketData>): boolean {
+    // Validate the order is a multiple of the recommended trade interval
+    let tradeInterval = DEFAULT_TRADE_INTERVAL;
+    const marketData = markets[storedOrder.market];
+    if (marketData && marketData.marketType == MarketType.Scalar) {
+      tradeInterval = TRADE_INTERVAL_VALUE.dividedBy(marketData.numTicks);
+    }
+    if (!storedOrder["numberAmount"].mod(tradeInterval).isEqualTo(0)) return false;
     return true;
   }
 
   processOrder(order: OrderInfo): StoredOrder {
     const augurOrderData = this.parseAssetData(order.signedOrder.makerAssetData);
-    // Currently the API for mesh browser and the client API diverge here but we dont want to do string parsing per order to be compliant for the browser case
-    const amount = order.fillableTakerAssetAmount.toFixed();
-    const savedOrder = Object.assign({ signedOrder: order.signedOrder, amount, orderHash: order.orderHash }, augurOrderData);
+    const amount = order.fillableTakerAssetAmount;
+    const savedOrder = Object.assign({ signedOrder: order.signedOrder, amount: amount.toFixed(), numberAmount: amount, orderHash: order.orderHash }, augurOrderData);
     return savedOrder;
   }
 
