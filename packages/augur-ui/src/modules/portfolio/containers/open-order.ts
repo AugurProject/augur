@@ -72,7 +72,14 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       status: openOrder.status,
       action: (e: Event) => {
         e.stopPropagation();
-        openOrder.cancelOrder(openOrder);
+        console.log(openOrder.id);
+        // var orderToCancel = this.table.where('orderHash').equals(openOrder.id);
+        // orderToCancel = {...orderToCancel,
+          // makerFeeAssetData: "0x",
+          // takerFeeAssetData: "0x"}
+        // await ZeroX.cancelOrder(orderToCancel);
+        // old code from on chain trading
+        // openOrder.cancelOrder(openOrder);
       },
     },
   ];

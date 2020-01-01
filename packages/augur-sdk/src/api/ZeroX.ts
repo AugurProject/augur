@@ -336,11 +336,7 @@ export class ZeroX {
   }
 
   async cancelOrder(order) {
-    if (this.browserMesh) {
-      return this.browserMesh.addOrdersAsync([order]);
-    } else {
-      return this.meshClient.addOrdersAsync([order]);
-    }
+      return await this.augur.contracts.zeroXExchange.cancelOrder(order);
   }
 
   async simulateTrade(
