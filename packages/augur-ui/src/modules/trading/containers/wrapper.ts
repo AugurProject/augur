@@ -52,6 +52,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
     Gnosis_ENABLED,
     gnosisStatus,
     currentTimestamp: blockchain.currentAugurTimestamp,
+    availableDai: loginAccount.balances.dai,
   };
 };
 
