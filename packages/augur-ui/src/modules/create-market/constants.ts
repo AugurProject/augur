@@ -405,7 +405,8 @@ export const END_TIME = 'setEndTime';
 export const CATEGORIES = 'categories';
 export const HOUR = 'hour';
 export const DESIGNATED_REPORTER_ADDRESS = 'designatedReporterAddress';
-
+export const SATURDAY_DAY_OF_WEEK = 6;
+export const SUNDAY_DAY_OF_WEEK = 0;
 export const OUTCOMES = 'outcomes';
 
 export const DENOMINATION = 'scalarDenomination';
@@ -525,6 +526,7 @@ export const TemplateBannerText = {
 export const SelectEventNoticeText =
   'Choose an event in the market question in order to select outcomes.';
 
+export const ExchangeClosingMessage = 'Event expiration can not be before exchange closing, earliest allowed time, ';
 export enum MARKET_COPY_LIST {
   USE_A_TEMPLATE = 'USE_A_TEMPLATE',
   DONT_SEE_CAT = 'DONT_SEE_CAT',

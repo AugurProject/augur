@@ -658,6 +658,7 @@ export function createMarketRetry(market: CreateMarketData) {
     settlementFee: market.txParams._feePerCashInAttoCash,
     affiliateFee: market.txParams._affiliateFeeDivisor,
     offsetName: extraInfo.offsetName,
+    template: extraInfo.template,
   };
 
   return createMarket(newMarket, true);

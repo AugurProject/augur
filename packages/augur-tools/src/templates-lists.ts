@@ -7869,22 +7869,6 @@ export const LIST_VALUES = {
       value: 'NYSE Composite',
     },
     {
-      label: 'MSCI World Index',
-      value: 'MSCI World Index',
-    },
-    {
-      label: 'FTSE All-World Index',
-      value: 'FTSE All-World Index',
-    },
-    {
-      label: 'Dow Jones Global Titans 50',
-      value: 'Dow Jones Global Titans 50',
-    },
-    {
-      label: 'S&P Global 100 Index',
-      value: 'S&P Global 100 Index',
-    },
-    {
       label: 'FTSE 100',
       value: 'FTSE 100',
     },
@@ -8127,6 +8111,95 @@ export const LIST_VALUES = {
       label: 'LTC/EUR',
     },
   ],
+};
+
+export const FIN_EXCHANGES_CLOSING_OFFSETS = {
+  'New York Stock Exchange (traded in USD)': {
+    offset: -4,
+    hour: 16,
+    minutes: 0,
+  },
+  'Nasdaq (traded in USD)': { offset: -5, hour: 16, minutes: 0 },
+  'American Stock Exchange (traded in USD)': {
+    offset: -4,
+    hour: 16,
+    minutes: 0,
+  },
+  'Tokyo Stock Exchange (traded in Japanese Yen)': {
+    offset: 9,
+    hour: 15,
+    minutes: 0,
+  },
+  'London Stock Exchange (traded in Pound Sterling)': {
+    offset: 0,
+    hour: 16,
+    minutes: 30,
+  },
+  'Shanghai Stock Exchange (A shares traded in Yuan)': {
+    offset: 8,
+    hour: 15,
+    minutes: 0,
+  },
+  'Shanghai Stock Exchange (B shares traded in USD)': {
+    offset: 8,
+    hour: 15,
+    minutes: 0,
+  },
+  'Hong Kong Stock Exchange (traded in HKD Hong Kong Dollar)': {
+    offset: 8,
+    hour: 16,
+    minutes: 0,
+  },
+  'Toronto Stock Exchange (traded in Canadian Dollar)': {
+    offset: -4,
+    hour: 16,
+    minutes: 0,
+  },
+  'Euronext NV (traded in Euro)': { offset: 2, hour: 17, minutes: 30 },
+};
+
+export const FIN_INDEXES_CLOSING_OFFSETS = {
+  'S&P 500 Index': { offset: -4, hour: 16, minutes: 0 },
+  'Dow Jones Industrial Average': { offset: -4, hour: 16, minutes: 0 },
+  'Nasdaq Composite': { offset: -4, hour: 16, minutes: 0 },
+  'Wilshire 5000': { offset: -4, hour: 16, minutes: 0 },
+  'Russell 1000': { offset: -4, hour: 16, minutes: 0 },
+  'NYSE Composite': { offset: -4, hour: 16, minutes: 0 },
+  'FTSE 100': {
+    offset: 1,
+    hour: 16,
+    minutes: 30,
+  },
+  DAX: {
+    offset: 2,
+    hour: 13,
+    minutes: 30,
+  },
+  'Shanghai SE Composite': {
+    offset: 8,
+    hour: 15,
+    minutes: 0,
+  },
+  'Hang Seng': {
+    offset: 8,
+    hour: 15,
+    minutes: 0,
+  },
+  'Nikkei 225': {
+    offset: 8,
+    hour: 15,
+    minutes: 0,
+  },
+  'S&P/TSX Composite': { offset: -4, hour: 16, minutes: 0 },
+  'CAC 40': { offset: 2, hour: 17, minutes: 30 },
+  'All Ordinaries': { offset: 11, hour: 16, minutes: 12 },
+  'BSE Sensex 30': { offset: 5.5, hour: 15, minutes: 30 },
+  'KOSPI Index': {
+    offset: 9,
+    hour: 15,
+    minutes: 0,
+  },
+  VIX: { offset: -5, hour: 15, minutes: 15 },
 };
 
 export const CRYPTO_BTC_CURRENCY_MARKETS = {

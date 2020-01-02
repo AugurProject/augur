@@ -7930,11 +7930,11 @@ export class RepPriceOracle<TBigNumber> extends Contract<TBigNumber> {
 		await this.localCall(abi, [augur], options.sender)
 	}
 
-	public exchangeData_ = async (arg0: string, options?: { sender?: string }): Promise<{exchange: string, cashAmount: TBigNumber, repAmount: TBigNumber, blockNumber: TBigNumber, price: TBigNumber}> => {
+	public exchangeData_ = async (arg0: string, options?: { sender?: string }): Promise<{exchange: string, cashAmountAccumulated: TBigNumber, repAmountAccumulated: TBigNumber, blockNumber: TBigNumber, price: TBigNumber}> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"","type":"address"}],"name":"exchangeData","outputs":[{"name":"exchange","type":"address"},{"name":"cashAmount","type":"uint256"},{"name":"repAmount","type":"uint256"},{"name":"blockNumber","type":"uint256"},{"name":"price","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"","type":"address"}],"name":"exchangeData","outputs":[{"name":"exchange","type":"address"},{"name":"cashAmountAccumulated","type":"uint256"},{"name":"repAmountAccumulated","type":"uint256"},{"name":"blockNumber","type":"uint256"},{"name":"price","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [arg0], options.sender)
-		return <{exchange: string, cashAmount: TBigNumber, repAmount: TBigNumber, blockNumber: TBigNumber, price: TBigNumber}>result
+		return <{exchange: string, cashAmountAccumulated: TBigNumber, repAmountAccumulated: TBigNumber, blockNumber: TBigNumber, price: TBigNumber}>result
 	}
 
 	public genesisInitialRepPriceinAttoCash_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
@@ -11514,6 +11514,13 @@ export class ZeroXTrade<TBigNumber> extends Contract<TBigNumber> {
 		options = options || {}
 		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"from","type":"address"},{"name":"to","type":"address"},{"name":"id","type":"uint256"},{"name":"value","type":"uint256"},{"name":"data","type":"bytes"}],"name":"safeTransferFrom","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		await this.localCall(abi, [from, to, id, value, data], options.sender)
+	}
+
+	public TRADE_INTERVAL_VALUE_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"TRADE_INTERVAL_VALUE","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <TBigNumber>result[0]
 	}
 }
 

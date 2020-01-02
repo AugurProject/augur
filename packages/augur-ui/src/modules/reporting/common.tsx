@@ -1071,6 +1071,7 @@ export class UserRepDisplay extends Component<
 
 export interface ParticipationTokensViewProps {
   openModal: Function;
+  openClaimParticipationTokensModal: Function;
   disputeWindowFees: FormattedNumber;
   purchasedParticipationTokens: FormattedNumber;
   tokensOwned: FormattedNumber;
@@ -1086,6 +1087,7 @@ export const ParticipationTokensView = (
 ) => {
   const {
     openModal,
+    openClaimParticipationTokensModal,
     disputeWindowFees,
     purchasedParticipationTokens,
     tokensOwned,
@@ -1160,7 +1162,7 @@ export const ParticipationTokensView = (
       <PrimaryButton
         disabled={!hasRedeemable}
         text="Redeem Past Participation Tokens"
-        action={null}
+        action={openClaimParticipationTokensModal}
       />
     </div>
   );

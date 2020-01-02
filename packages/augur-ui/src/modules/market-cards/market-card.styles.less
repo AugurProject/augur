@@ -60,7 +60,7 @@
       flex-flow: row nowrap;
     }
 
-    > div[class*="CategoryTagTrail"] {
+    > div[class*='CategoryTagTrail'] {
       display: flex;
       flex: 1;
     }
@@ -73,11 +73,14 @@
       }
     }
 
-    > div:nth-of-type(2) > div {
-      display: none;
+    > div:nth-last-child(2) {
+      margin-right: @size-10;
+      > div {
+        display: none;
+      }
     }
 
-    > div[class*="DotSelection"] {
+    > div[class*='DotSelection'] {
       > div > div > svg {
         fill: @color-inactive-text;
         stroke-width: 0.5;
@@ -180,6 +183,8 @@
 
     > div:nth-of-type(1) {
       max-width: 53px;
+      grid-row: 1 / span 2;
+      margin-top: 0;
     }
 
     > div:nth-of-type(2) {
@@ -204,7 +209,57 @@
     }
 
     > div:nth-of-type(7) {
-      max-width: 154px;
+      max-width: 70px;
+      padding-bottom: 1px;
+      grid-row: 3 / span 1;
+    }
+  }
+
+  &.Nonexpanding {
+    > div:last-of-type {
+      align-items: flex-end;
+      grid-row: 3 / span 1;
+    }
+
+    > div:nth-last-of-type(2) {
+      margin-bottom: @size-8;
+      grid-column: 2;
+    }
+
+    > div:nth-of-type(1) {
+      grid-row: 1 / span 2;
+    }
+  }
+
+  &.Condensed {
+    > span {
+      padding-top: 0;
+      margin-top: -@size-4;
+      padding-bottom: @size-12;
+
+      > a {
+        .text-14-bold;
+      }
+    }
+
+    > div:last-of-type {
+      grid-row: 2 / span 1;
+      padding-bottom: @size-12;
+      padding-top: @size-4;
+
+      > div {
+        display: flex;
+      }
+    }
+
+    > div:nth-of-type(1) {
+      grid-row: 1 / span 1;
+      margin-top: @size-10;
+    }
+
+    > div:nth-of-type(2) {
+      padding-top: @size-10;
+      align-items: flex-start;
     }
   }
 
@@ -216,13 +271,35 @@
         grid-row: 1;
       }
     }
+
+    &.Nonexpanding {
+      > div:nth-last-of-type(2) {
+        grid-column: 1 / span 2;
+        margin-bottom: 0;
+      }
+    }
+
+    &.Condensed {
+      > span {
+        padding-bottom: 0;
+        margin: 0;
+      }
+    }
   }
 
   @media @breakpoint-max-tablet {
+
     grid-template-rows: repeat(4, auto);
     grid-template-columns: auto;
     padding: @size-12;
     margin: @size-4 0;
+
+    &.Nonexpanding {
+      > div:nth-last-of-type(2) {
+        grid-column: 1 / span 2;
+        margin-bottom: 0;
+      }
+    }
 
     > div:last-of-type {
       display: none;
@@ -326,6 +403,11 @@
     margin-top: 0;
     height: 100%;
     margin-bottom: @size-12;
+
+    @media @breakpoint-mobile {
+      margin-top: @size-8;
+      margin-bottom: 0;
+    }
 
     @media @breakpoint-max-tablet {
       grid-row: 5;

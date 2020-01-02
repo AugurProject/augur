@@ -462,7 +462,7 @@ export const ActionRows = (props: ActionRowsProps) =>
         </div>
       </section>
       <div>
-        {row.status !== SUCCESS && <PendingLabel status={row.status} />}
+        {row.status && row.status !== SUCCESS && <PendingLabel status={row.status} />}
         {row.status === SUCCESS && <ConfirmedLabel />}
         <SubmitTextButton
           disabled={row.status === SUCCESS || row.status === PENDING}

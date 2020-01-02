@@ -192,7 +192,7 @@
 	border-radius: @border-radius-default;
 	display: flex;
 	flex-direction: column;
-	padding: @size-20 @size-8 @size-6;
+	padding: @size-16 @size-8 @size-6;
 
 	> div:first-of-type {
 		.mono-11-bold;
@@ -330,6 +330,10 @@
 		> rect {
 			stroke: @color-primary-text;
 		}
+	}
+
+	@media @breakpoint-mobile {
+		display: flex;
 	}
 }
 

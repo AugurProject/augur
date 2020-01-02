@@ -16887,11 +16887,11 @@
 					"type": "address"
 				},
 				{
-					"name": "cashAmount",
+					"name": "cashAmountAccumulated",
 					"type": "uint256"
 				},
 				{
-					"name": "repAmount",
+					"name": "repAmountAccumulated",
 					"type": "uint256"
 				},
 				{
@@ -24688,6 +24688,20 @@
 			"outputs": [],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "TRADE_INTERVAL_VALUE",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
