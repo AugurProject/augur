@@ -4,6 +4,8 @@
   display: flex;
   flex: 1;
   height: 100%;
+  max-width: 2000px;
+  margin: 0 auto;
 
   > section {
     display: flex;
@@ -26,6 +28,30 @@
   
     > div:last-of-type {
       margin-left: 0;
+    }
+  }
+}
+
+@media @breakpoint-tablet {
+  .PortfolioView {
+    > section {
+      flex-direction: column;
+
+      > div {
+        margin: @size-16 @size-24;
+
+        &:last-of-type {
+          margin-left: @size-24;
+        }
+
+        > div:first-of-type {
+          margin-bottom: @size-16;
+        }
+
+        > div:last-of-type {
+          margin-bottom: 0;
+        }
+      }
     }
   }
 }

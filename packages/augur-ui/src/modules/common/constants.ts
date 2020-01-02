@@ -848,13 +848,13 @@ export const CREATE_MARKET = 'CREATE_MARKET';
 export const CLAIM_FEE_WINDOWS = 'CLAIM_FEE_WINDOWS';
 
 // Media Queries
-export const SMALL_MOBILE = '(max-width: 900px)'; // matches @breakpoint-mobile-mid
-export const TABLET = '(min-width: 901px) and (max-width: 1280px)';
-export const DESKTOP = '(min-width:1281px) and (max-width: 2000px)';
+export const SMALL_MOBILE = '(max-width: 768px)'; // matches @breakpoint-mobile-mid
+export const TABLET = '(min-width: 769px) and (max-width: 1150px)';
+export const DESKTOP = '(min-width:1151px) and (max-width: 2000px)';
 export const LARGE_DESKTOP = '(min-width: 2001px)';
 // temp tablet breakpoint until trading pg additional breakpoints are implemented
-export const TEMP_TABLET = '(max-width: 1280px)';
-export const TABLET_MAX = '(max-width: 1200px)';
+export const TEMP_TABLET = '(max-width: 1150px)';
+export const TABLET_MAX = '(max-width: 1150px)';
 
 // Sort variables
 export const END_TIME = 'endTime';
