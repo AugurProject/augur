@@ -17,7 +17,7 @@ def signOrder(orderHash, private_key, signaturePostFix="03"):
 def test_trade_1155_behavior(contractsFixture, augur, cash, market, categoricalMarket, universe):
     ZeroXTrade = contractsFixture.contracts['ZeroXTrade']
     shareToken = contractsFixture.contracts['ShareToken']
-    shareToken = contractsFixture.contracts['ShareToken']
+    fillOrder = contractsFixture.contracts['fillOrder']
 
     account = contractsFixture.accounts[0]
     account2 = contractsFixture.accounts[1]
@@ -129,7 +129,7 @@ def test_trade_1155_behavior(contractsFixture, augur, cash, market, categoricalM
     assert marketAccount2Balance == 10 + floor(account2Cash / askPrice)
 
     # The balances take into account the approval of cash
-    cash.approve(augur.address, 500, sender=account2)
+    cash.approve(fillOrder.address, 500, sender=account2)
     assert ZeroXTrade.balanceOf(account2, marketTokenId) == 10 + floor(500 / askPrice)
     assert ZeroXTrade.balanceOf(account2, catMarketTokenId) == 10 + floor(500 / askPrice)
 
