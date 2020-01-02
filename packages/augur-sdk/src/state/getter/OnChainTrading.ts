@@ -405,7 +405,7 @@ export async function getMarkets(
   marketIds: string[],
   db: DB,
   filterFinalized: boolean
-) {
+): Promise<_.Dictionary<MarketData>> {
   let marketsData: MarketData[];
   if (filterFinalized) {
     marketsData = await db.Markets.where("market").anyOf(marketIds).and((log) => {

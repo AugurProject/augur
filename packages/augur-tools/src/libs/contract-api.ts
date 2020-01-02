@@ -222,8 +222,7 @@ export class ContractAPI {
   }
 
   async placeZeroXOrder(params: ZeroXPlaceTradeDisplayParams): Promise<string> {
-    const orderHash = await this.augur.zeroX.placeOrder(params);
-    return orderHash;
+    return this.augur.zeroX.placeOrder(params);
   }
 
   async placeZeroXTrade(params: ZeroXPlaceTradeDisplayParams): Promise<void> {

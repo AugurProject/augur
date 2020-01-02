@@ -102,16 +102,24 @@ describe('Augur API :: ZeroX :: ', () => {
       // Terrible, but not clear how else to wait on the mesh event propagating to the callback and it finishing updating the DB...
       await sleep(300);
 
-      // Get orders for the market
+      // Get orders for this market
       const orders: ZeroXOrders = await johnAPI.route('getZeroXOrders', {
         marketId: market.address,
       });
-      const order = _.values(orders[market.address][0]['0'])[0];
+      const thisOrder = _.values(orders[market.address][0]['0'])[0];
+      // Get this order
+      const order = await johnAPI.route('getZeroXOrder', {
+        orderHash: thisOrder.orderId,
+      });
+      await expect(thisOrder).toEqual(order);
+
       await expect(order).not.toBeUndefined();
       await expect(order.price).toEqual('0.22');
       await expect(order.amount).toEqual('10');
       await expect(order.kycToken.toLowerCase()).toEqual(kycToken.toLowerCase());
       await expect(order.expirationTimeSeconds.toFixed()).toEqual(expirationTime.toFixed());
+
+
     });
 
     test('ZeroX Trade :: placeTrade', async () => {

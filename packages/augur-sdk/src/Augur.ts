@@ -16,7 +16,7 @@ import { ContractEvents } from "./api/ContractEvents";
 import { Markets } from "./state/getter/Markets";
 import { Universe } from "./state/getter/Universe";
 import { Platform } from "./state/getter/Platform";
-import { ZeroXOrdersGetters } from "./state/getter/ZeroXOrdersGetters";
+import { ZeroXOrder, ZeroXOrdersGetters } from "./state/getter/ZeroXOrdersGetters";
 import { Provider } from "./ethereum/Provider";
 import { Status } from "./state/getter/status";
 import { TXStatus } from "./event-handlers";
@@ -416,6 +416,11 @@ export class Augur<TProvider extends Provider = Provider> {
   ): ReturnType<typeof Markets.getCategoryStats> => {
     return this.bindTo(Markets.getCategoryStats)(params);
   };
+  getOrder = (
+    params: Parameters<typeof ZeroXOrdersGetters.getZeroXOrder>[2]
+  ): ReturnType<typeof ZeroXOrdersGetters.getZeroXOrder> => {
+    return this.bindTo(ZeroXOrdersGetters.getZeroXOrder)(params)
+  };
 
   async hotloadMarket(marketId: string) {
     return this.hotLoading.getMarketDataParams({ market: marketId });
@@ -425,7 +430,6 @@ export class Augur<TProvider extends Provider = Provider> {
     return this.hotLoading.getCurrentDisputeWindowData(params);
   }
 
-
   async simulateTrade(
     params: PlaceTradeDisplayParams
   ): Promise<SimulateTradeData> {
@@ -434,6 +438,11 @@ export class Augur<TProvider extends Provider = Provider> {
 
   async placeTrade(params: PlaceTradeDisplayParams): Promise<void> {
     return this.trade.placeTrade(params);
+  }
+
+  async cancelOrder(orderHash: string): Promise<void> {
+    const order = await this.getOrder({ orderHash });
+    await this.zeroX.cancelOrder(order);
   }
 
   async createYesNoMarket(

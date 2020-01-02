@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import classNames from "classnames";
 
 import getValue from "utils/get-value";
@@ -8,6 +8,7 @@ import MarketTitle from 'modules/market/containers/market-title';
 import { Order } from "modules/portfolio/types";
 
 import Styles from "modules/portfolio/components/common/expanded-content.styles.less";
+import { augurSdk } from "services/augursdk";
 
 export interface OpenOrderExpandedContentProps {
   openOrder: Order;
@@ -61,13 +62,8 @@ const OpenOrderExpandedContent = (props: OpenOrderExpandedContentProps) => {
               action={(e: Event) => {
                 e.stopPropagation();
                 console.log(openOrder.id);
-                // var orderToCancel = this.table.where('orderHash').equals(openOrder.id);
-                // orderToCancel = {...orderToCancel,
-                  // makerFeeAssetData: "0x",
-                  // takerFeeAssetData: "0x"}
-                // await ZeroX.cancelOrder(orderToCancel);
-                // old code from on chain trading
-                // openOrder.cancelOrder(openOrder);
+                const augur = augurSdk.get();
+                augur.cancelOrder(openOrder.id)
               }}
               text="Cancel"
             />

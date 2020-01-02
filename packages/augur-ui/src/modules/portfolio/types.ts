@@ -13,7 +13,7 @@ export interface KeyValuePair {
 export interface Order {
   id: number;
   pending?: Boolean;
-  pendingOredr?: Boolean;
+  pendingOrder?: Boolean;
   orderCancellationStatus?: string;
 }
 
