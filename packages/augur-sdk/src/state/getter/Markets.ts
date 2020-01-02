@@ -11,6 +11,7 @@ import {
   OrderEventType,
   OrderType,
   ParsedOrderEventLog,
+  NumOutcomes,
 } from "../logs/types";
 import { ExtraInfoTemplate } from '@augurproject/artifacts';
 import { sortOptions } from "./types";
@@ -126,7 +127,7 @@ export interface MarketInfo {
   id: Address;
   universe: Address;
   marketType: string;
-  numOutcomes: number;
+  numOutcomes: NumOutcomes;
   minPrice: string;
   maxPrice: string;
   cumulativeScale: string;
@@ -691,7 +692,7 @@ export class Markets {
         : Object.keys(bucketsByPrice).sort((a, b) =>
             new BigNumber(a).minus(b).toNumber()
           );
-      
+
 
       var sortedOrders = prickKeysSorted.map(k => bucketsByPrice[k]);
       for(var i = 0, size = sortedOrders.length; i < size; i++) {
@@ -1101,9 +1102,9 @@ async function getMarketsInfo(
       universe: marketData.universe,
       marketType,
       numOutcomes:
-      marketData.outcomes.length > 0
+      (marketData.outcomes.length > 0
           ? marketData.outcomes.length + 1
-          : 3,
+          : 3) as NumOutcomes,
       minPrice: displayMinPrice.toString(10),
       maxPrice: displayMaxPrice.toString(10),
       cumulativeScale: cumulativeScale.toString(10),
