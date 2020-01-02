@@ -21,6 +21,7 @@ const OpenOrderExpandedContent = (props: OpenOrderExpandedContentProps) => {
   const tokensEscrowed = getValue(openOrder, "tokensEscrowed");
   const sharesEscrowed = getValue(openOrder, "sharesEscrowed");
   const creationTime = getValue(openOrder, "creationTime.formattedLocalShortDateTimeNoTimezone");
+  const expiry = getValue(openOrder, 'expiry.formattedLocalShortDateTimeNoTimezone');
 
   return (
     <div className={Styles.OrderInfo}>
@@ -52,8 +53,8 @@ const OpenOrderExpandedContent = (props: OpenOrderExpandedContentProps) => {
             />
             <LinearPropertyLabel
               highlightFirst
-              label="Date"
-              value={creationTime}
+              label="Expiry"
+              value={expiry}
             />
           </div>
           {openOrder.cancelOrder && (
