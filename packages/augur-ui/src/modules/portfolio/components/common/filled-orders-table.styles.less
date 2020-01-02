@@ -78,7 +78,7 @@
       }
     }
 
-    > div:last-of-type {
+    > div {
       display: none;
     }
   }
@@ -99,13 +99,18 @@
         display: block;
         padding-bottom: @size-10;
         padding-top: @size-10;
+
+        > div:last-of-type {
+          max-width: fit-content;
+          margin-left: auto;
+        }
       }
 
       > span {
         .text-11-medium;
 
         color: @color-primary-text;
-        padding: @size-14 0;
+        padding: @size-4 0 @size-2;
 
         > a > span {
           .text-11;
