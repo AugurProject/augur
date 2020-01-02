@@ -25,76 +25,37 @@ def test_rep_oracle(contractsFixture, augur, market, universe):
     repAmount = 1 * 10**18
     addLiquidity(uniswap, cash, reputationToken, cashAmount, repAmount, account)
 
-    # The reserves have been modified so we will have new cumulative values which will affect the perceived price weighted by a single block
-    (reserves0, reserves1) = uniswap.getReservesCumulative()
-    if cash.address > reputationToken.address:
-        repReserves, cashReserves = reserves0, reserves1
-    else:
-        cashReserves, repReserves = reserves0, reserves1
+    # The reserves have been modified, however since this is our first use of actual exchange data we do not have an accurate way to get the correct _delta_ in price. So We use the initial value again.
+    assert repOracle.pokeRepPriceInAttoCash(reputationToken.address) == initialPrice
 
-    assert cashReserves == cashAmount
-    assert repReserves == repAmount
+    # If we "mine" a block and advance the time 1/2 the period value of the oracle we should see the new value significantly closer to the price dictated by reserves. Specifically about half of the difference
+    period = repOracle.period()
+    mineBlock(contractsFixture, period / 2)
 
-    tau = repOracle.tau()
-
-    (exchangeAddress, cashAmount, repAmount, lastBlockNumber, price) = repOracle.exchangeData(reputationToken.address)
-    blockNumber = contractsFixture.getBlockNumber()
-    weight = repOracle.getWeight(blockNumber - lastBlockNumber)
-    deltaPrice = cashReserves * 10**18 / repReserves
-    expectedNewRepPrice = ((initialPrice * (10**18 - weight)) + (deltaPrice * weight)) / 10**18
+    expectedNewRepPrice = initialPrice + ((cashAmount - initialPrice) / 2)
     assert roughlyEqual(repOracle.pokeRepPriceInAttoCash(reputationToken.address), expectedNewRepPrice)
 
-    # If we "mine" tau / 2 blocks we should see the new value significantly closer to the price dictated by reserves. Specifically about half of the difference
-    # TODO: refactor below when Uniswap contracts are public
-    token0, token1 = (cash.address, reputationToken.address) if cash.address < reputationToken.address else (reputationToken.address, cash.address)
-    if (token0 == cash.address):
-        mineBlocks(contractsFixture, uniswap, tau / 2, cashReserves, repReserves)
-    else:
-        mineBlocks(contractsFixture, uniswap, tau / 2, repReserves, cashReserves)
-
-    (exchangeAddress, cashAmount, repAmount, lastBlockNumber, price) = repOracle.exchangeData(reputationToken.address)
-    blockNumber = contractsFixture.getBlockNumber()
-    weight = repOracle.getWeight(blockNumber - lastBlockNumber)
-    deltaPrice = cashReserves * 10**18 / repReserves
-    expectedNewRepPrice = ((initialPrice * (10**18 - weight)) + (deltaPrice * weight)) / 10**18
-    assert roughlyEqual(repOracle.pokeRepPriceInAttoCash(reputationToken.address), expectedNewRepPrice)
-    assert roughlyEqual(expectedNewRepPrice - initialPrice, (cashAmount - initialPrice) / 2)
-
-    # If we "mine" tau blocks then the new value will simply be the price
-    # TODO: refactor below when Uniswap contracts are public
-    if (token0 == cash.address):
-        mineBlocks(contractsFixture, uniswap, tau, cashReserves, repReserves)
-    else:
-        mineBlocks(contractsFixture, uniswap, tau, repReserves, cashReserves)
+    # If we "mine" a block after period time then the new value will simply be the price
+    mineBlock(contractsFixture, period)
 
     assert roughlyEqual(repOracle.pokeRepPriceInAttoCash(reputationToken.address), cashAmount)
 
     # Buy REP and manipulate blockNumber to affect cummulative amounts
     cashAmount = 10**18 # Trade 1 Dai for ~.05 REP
-    buyRep(uniswap, cash, cashAmount, account)
-    # TODO: remove below when Uniswap contracts are public
-    cashReserves = 21 * 10**18
-    repReserves = 95 * 10**16
-    if (token0 == cash.address):
-        mineBlocks(contractsFixture, uniswap, tau, cashReserves, repReserves)
-    else:
-        mineBlocks(contractsFixture, uniswap, tau, repReserves, cashReserves)
+    repAmount = 4.7 * 10**16
+    buyRep(uniswap, cash, cashAmount, repAmount, account)
+    mineBlock(contractsFixture, period)
 
     expectedNewRepPrice = 22 * 10**18 # Cash reserves of ~ 21 Dai and REP reserves of ~.95 REP means a price of 22 Dai / REP
     assert roughlyEqual(repOracle.pokeRepPriceInAttoCash(reputationToken.address), expectedNewRepPrice, 2 * 10**17)
 
     # Now Sell REP
-    repAmount = 1 * 10**17 # Trade .1 REP for 2.2 DAI
-    sellRep(uniswap, reputationToken, repAmount, account)
-    # TODO: remove below when Uniswap contracts are public
-    cashReserves = 188 * 10**17
-    repReserves = 105 * 10**16
-    if (token0 == cash.address):
-        mineBlocks(contractsFixture, uniswap, tau, cashReserves, repReserves)
-    else:
-        mineBlocks(contractsFixture, uniswap, tau, repReserves, cashReserves)
+    repAmount = 1 * 10**17 # Trade .1 REP for 1.8 DAI
+    cashAmount = 1.8 * 10**18
+    sellRep(uniswap, reputationToken, repAmount, cashAmount, account)
+    mineBlock(contractsFixture, period)
 
-    expectedNewRepPrice = 179 * 10**17 # Cash reserves of ~ 18.8 Dai and REP reserves of ~1.05 REP means a price of 17.9 Dai / REP
+    expectedNewRepPrice = 18.3 * 10**18 # Cash reserves of ~ 19.2 Dai and REP reserves of ~1.05 REP means a price of ~18.3 Dai / REP
     assert roughlyEqual(repOracle.pokeRepPriceInAttoCash(reputationToken.address), expectedNewRepPrice, 2 * 10**17)
 
 def addLiquidity(exchange, cash, reputationToken, cashAmount, repAmount, address):
@@ -106,20 +67,22 @@ def addLiquidity(exchange, cash, reputationToken, cashAmount, repAmount, address
 
     exchange.mint(address)
 
-def buyRep(exchange, cash, cashAmount, address):
+def buyRep(exchange, cash, cashAmount, repAmount, address):
     cash.faucet(cashAmount)
     cash.transfer(exchange.address, cashAmount)
 
-    exchange.swap(cash.address, address)
+    exchange.swap(cash.address, repAmount, address)
 
-def sellRep(exchange, reputationToken, repAmount, address):
+def sellRep(exchange, reputationToken, repAmount, cashAmount, address):
     reputationToken.faucet(repAmount)
     reputationToken.transfer(exchange.address, repAmount)
 
-    exchange.swap(reputationToken.address, address)
+    exchange.swap(reputationToken.address, cashAmount, address)
 
-def mineBlocks(contractsFixture, exchange, numBlocks, token0Amount, token1Amount):
-    contractsFixture.mineBlocks(numBlocks)
+def mineBlock(contractsFixture, timePassed):
+    timestamp = contractsFixture.eth_tester.backend.chain.header.timestamp
+    contractsFixture.eth_tester.time_travel(int(timestamp + timePassed))
+    contractsFixture.mineBlocks(100)
 
 def roughlyEqual(amount1, amount2, tolerance=5 * 10**16):
     return abs(amount1 - amount2) < tolerance

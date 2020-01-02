@@ -9,17 +9,20 @@ import 'ROOT/reporting/IRepPriceOracle.sol';
 
 contract RepPriceOracle is IRepPriceOracle, Initializable {
 
+    uint256 constant Q112 = 2**112;
+
     IAugur public augur;
     address public cash;
-    uint256 public tau = 1 days / 15; // The time period (in blocks) of the twa, assuming a block is mined every 15 seconds. TODO: Review this value
+    uint256 public period = 1 days;
     IUniswapV2Factory public uniswapFactory;
 
     struct ExchangeData {
         IUniswapV2 exchange;
-        uint256 cashAmountAccumulated;
-        uint256 repAmountAccumulated;
+        uint256 repPriceAccumulated;
         uint256 blockNumber;
+        uint256 blockTimestamp;
         uint256 price;
+        bool repIsToken0;
     }
 
     mapping(address => ExchangeData) public exchangeData;
@@ -48,58 +51,62 @@ contract RepPriceOracle is IRepPriceOracle, Initializable {
     function calculateNewExchangeData(IV2ReputationToken _reputationToken) private returns (ExchangeData memory) {
         ExchangeData memory _exchangeData = exchangeData[address(_reputationToken)];
         uint256 _blockNumber = block.number;
+        uint256 _blockTimestamp = block.timestamp; // solium-disable-line security/no-block-members
         if (_blockNumber == _exchangeData.blockNumber) {
             return _exchangeData;
         }
 
         IUniswapV2 _exchange = _exchangeData.exchange;
-        // No fee has ever been calculated in this universe and this is being called in a view context. Just return the data with the initial price.
-        if (_exchange == IUniswapV2(0)) {
-            _exchangeData.price = getInitialPrice(_reputationToken);
-            return _exchangeData;
+        if (_blockNumber != _exchange.blockNumberLast()) {
+            _exchange.sync();
         }
-        _exchange.sync();
-        uint256 _token0Amount = _exchange.price0CumulativeLast();
-        uint256 _token1Amount = _exchange.price1CumulativeLast();
-        if (_token0Amount == 0 || _token1Amount == 0) {
+        uint256 _repPriceCumulative = _exchangeData.repIsToken0 ? _exchange.price0CumulativeLast() : _exchange.price1CumulativeLast();
+        if (_repPriceCumulative == 0) {
             return _exchangeData;
         }
 
-        uint256 _cashAmountAccumulated = cash < address(_reputationToken) ? _token0Amount : _token1Amount;
-        uint256 _repAmountAccumulated = cash < address(_reputationToken) ? _token1Amount : _token0Amount;
-
-        uint256 _cashAccumulationDelta = _cashAmountAccumulated - _exchangeData.cashAmountAccumulated;
-        uint256 _repAccumulationDelta = _repAmountAccumulated - _exchangeData.repAmountAccumulated;
-        // Potentially possible if there is an extended period of 0 tokens available
-        if (_repAccumulationDelta == 0) {
+        // The first time we have actual data from the exchange we need to simply record the acumulator value and return the default since we have no accurate _relative_ delta to base the real price off of
+        if (_exchangeData.repPriceAccumulated == 0) {
+            _exchangeData.blockNumber = _blockNumber;
+            _exchangeData.blockTimestamp = _blockTimestamp;
+            _exchangeData.repPriceAccumulated = _repPriceCumulative;
             return _exchangeData;
         }
-        uint256 _deltaPrice = _cashAccumulationDelta * 1 ether / _repAccumulationDelta;
 
-        uint256 _weight = getWeight(_blockNumber - _exchangeData.blockNumber);
-        uint256 _price = (((1 ether - _weight) * _exchangeData.price) + (_weight * _deltaPrice)) / 1 ether;
+        uint256 _blocksElapsed = _blockNumber - _exchangeData.blockNumber;
 
-        _exchangeData.price = _price;
+        uint256 _price = (_repPriceCumulative - _exchangeData.repPriceAccumulated) * 10**18 / _blocksElapsed / Q112;
+        require(_price > 0, "Price should not be 0");
+
+        uint256 _secondsElapsed = _blockTimestamp - _exchangeData.blockTimestamp;
+        uint256 _priceAverage = _price;
+
+        if (_secondsElapsed < period) {
+            _priceAverage = (_exchangeData.price * (period - _secondsElapsed) + _price * _secondsElapsed) / period;
+        }
+
         _exchangeData.blockNumber = _blockNumber;
-        _exchangeData.cashAmountAccumulated = _cashAmountAccumulated;
-        _exchangeData.repAmountAccumulated = _repAmountAccumulated;
-
+        _exchangeData.blockTimestamp = _blockTimestamp;
+        _exchangeData.repPriceAccumulated = _repPriceCumulative;
+        _exchangeData.price = _priceAverage;
         return _exchangeData;
     }
 
-    function getWeight(uint256 _blockDelta) public view returns (uint256) {
-        uint256 _weight = _blockDelta * 1 ether / tau;
-        if (_weight > 1 ether) {
-            return 1 ether;
-        }
-        return _weight;
-    }
-
     function initializeUniverse(IV2ReputationToken _reputationToken) private {
-        exchangeData[address(_reputationToken)].exchange = getOrCreateUniswapExchange(_reputationToken);
+        uint256 _blockNumber = block.number;
+        IUniswapV2 _exchange = getOrCreateUniswapExchange(_reputationToken);
+        exchangeData[address(_reputationToken)].exchange = _exchange;
+        if (_blockNumber != _exchange.blockNumberLast()) {
+            _exchange.sync();
+        }
         uint256 _initialPrice = getInitialPrice(_reputationToken);
         exchangeData[address(_reputationToken)].price = _initialPrice;
-        exchangeData[address(_reputationToken)].blockNumber = block.number;
+        exchangeData[address(_reputationToken)].blockNumber = _blockNumber;
+        exchangeData[address(_reputationToken)].blockTimestamp = block.timestamp; // solium-disable-line security/no-block-members
+        (address token0, address token1) = uniswapFactory.sortTokens(cash, address(_reputationToken));
+        bool repIsToken0 = token0 == address(_reputationToken);
+        exchangeData[address(_reputationToken)].repIsToken0 = repIsToken0;
+        exchangeData[address(_reputationToken)].repPriceAccumulated = repIsToken0 ? _exchange.price0CumulativeLast() : _exchange.price1CumulativeLast();
     }
 
     function getInitialPrice(IV2ReputationToken _reputationToken) private view returns (uint256) {
