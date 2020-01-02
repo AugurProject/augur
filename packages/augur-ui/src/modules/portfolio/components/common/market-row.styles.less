@@ -2,6 +2,13 @@
 
 .MarketRow {
   border-bottom: 1px solid @color-dark-grey;
+  border-bottom-left-radius: @size-20;
+  border-bottom-right-radius: @size-20;
+
+  @media @breakpoint-mobile {
+    border-bottom-left-radius: unset;
+    border-bottom-right-radius: unset;
+  }
 }
 
 .MarketRowContent {
@@ -32,7 +39,15 @@
     }
 
     > div {
+      align-items: center;
+      display: flex;
       padding: 0 0 @size-8;
+
+      > label {
+        margin-bottom: 0;
+        height: @size-16;
+        margin-right: @size-8;
+      }
     }
 
     > span {
@@ -47,9 +62,11 @@
 
       > a {
         display: -webkit-box;
-        -webkit-line-clamp: 3;
+        -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
+        text-overflow: ellipsis;
+        word-break: break-word;
 
         &:hover {
           text-decoration: underline;
