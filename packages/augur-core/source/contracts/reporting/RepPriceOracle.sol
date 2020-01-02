@@ -38,6 +38,12 @@ contract RepPriceOracle is IRepPriceOracle, Initializable {
         require(uniswapFactory != IUniswapV2Factory(0));
     }
 
+    function upgradeUniswapFactory() public {
+        // check ENS registry if address exists for uniswap V2 factory
+        // If not return
+        // set uniswap Factory
+    }
+
     // TODO: Consider when this should be called other than when the price is requested as part of new fee setting
     function pokeRepPriceInAttoCash(IV2ReputationToken _reputationToken) external returns (uint256) {
         if (exchangeData[address(_reputationToken)].exchange == IUniswapV2(0)) {
