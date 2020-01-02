@@ -99,6 +99,12 @@ export interface ExternalLinkButtonProps {
   customLink?: any;
 }
 
+export interface ExternalLinkTextProps {
+  title?: string;
+  label: string;
+  URL: string;
+}
+
 export const PrimaryButton = (props: DefaultButtonProps) => (
   <button
     onClick={e => props.action(e)}
@@ -398,6 +404,22 @@ export const ViewTransactionDetailsButton = (
     />
     {ViewIcon}
   </div>
+);
+
+export const ExternalLinkText = (props: ExternalLinkTextProps) => (
+  <button
+    className={Styles.ExternalLinkText}
+  >
+    {props.URL && (
+      <a href={props.URL} target='blank'>
+        {props.title
+        ? <><strong>{props.title}</strong>{props.label}</>
+        : props.label}
+      </a>
+    )}
+
+    {ViewIcon}
+  </button>
 );
 
 export const ExternalLinkButton = (props: ExternalLinkButtonProps) => (
