@@ -406,8 +406,9 @@ export function addScripts(flash: FlashSession) {
       await user.approve(new BigNumber(10).pow(18).multipliedBy(1000000));
       const yesNoMarket = cannedMarkets.find(c => c.marketType === "yesNo");
       const orderBook = yesNoMarket.orderBook;
-
+      const timestamp = await this.call('get-timestamp', {});
       const tradeGroupId = String(Date.now());
+      const oneHundredDays = 8640000;
 
       for (let a = 0; a < Object.keys(orderBook).length; a++) {
         const outcome = Number(Object.keys(orderBook)[a]) as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
@@ -432,7 +433,7 @@ export function addScripts(flash: FlashSession) {
             displayAmount: new BigNumber(shares),
             displayPrice: new BigNumber(price),
             displayShares: new BigNumber(0),
-            expirationTime: new BigNumber(Math.floor((new Date().getTime() / 1000) + 3000)),
+            expirationTime: new BigNumber(timestamp + oneHundredDays),
           });
         }
 
@@ -453,7 +454,7 @@ export function addScripts(flash: FlashSession) {
             displayAmount: new BigNumber(shares),
             displayPrice: new BigNumber(price),
             displayShares: new BigNumber(0),
-            expirationTime: new BigNumber(Math.floor((new Date().getTime() / 1000) + 3000)),
+            expirationTime: new BigNumber(timestamp + oneHundredDays),
           });
         }
       }
@@ -785,7 +786,7 @@ export function addScripts(flash: FlashSession) {
   flash.addScript({
     name: 'get-timestamp',
     async call(this: FlashSession) {
-      if (this.noProvider()) return;
+      if (this.noProvider()) return 0;
       const user = await this.contractOwner();
 
       const blocktime = await user.getTimestamp();
@@ -798,6 +799,7 @@ export function addScripts(flash: FlashSession) {
           .utc()
           .toString()}\n`
       );
+      return blocktime;
     },
   });
 
