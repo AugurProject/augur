@@ -11,14 +11,13 @@ export const loginWithEdgeEthereumWallet = (
   ethereumWallet: EthereumWallet
 ) => async (dispatch: ThunkDispatch<void, any, Action>) => {
   const mixedCaseAddress: string = ethereumWallet.keys.ethereumAddress;
-  const lowerCaseAddress: string = mixedCaseAddress.toLowerCase();
   const edgeSigner = new EdgeSigner(edgeUiAccount, ethereumWallet);
 
   const loginAccount = {
-    address: lowerCaseAddress,
+    address: mixedCaseAddress,
     mixedCaseAddress: mixedCaseAddress,
     meta: {
-      address: lowerCaseAddress,
+      address: mixedCaseAddress,
       signer: edgeSigner,
       accountType: ACCOUNT_TYPES.EDGE,
       isWeb3: false,

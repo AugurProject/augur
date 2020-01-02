@@ -50,11 +50,12 @@ export const loginWithPortis = (forceRegisterPage = false) => async (
       windowRef.portis = portis;
 
       const initPortis = (portis, account, email = null) => {
+        const address = toChecksumAddress(account);
         const accountObject = {
-          address: account,
-          mixedCaseAddress: toChecksumAddress(account),
+          address: address,
+          mixedCaseAddress: address,
           meta: {
-            address: account,
+            address: address,
             email,
             profileImage: null,
             signer: provider.getSigner(),
