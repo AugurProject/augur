@@ -82,12 +82,19 @@ export interface CategoryTemplate {
   children: TemplateChildren;
 }
 
+export interface TimeOffset {
+  offset: number;
+  hour: number;
+  minutes: number;
+}
+
 export type UserInputtedType =
   | UserInputText
   | UserInputDateYear
   | UserInputDateTime
   | UserInputDropdown
-  | UserInputUserOutcome;
+  | UserInputUserOutcome
+  | TimeOffset;
 
 export interface ValueLabelPair {
   label: string;
@@ -122,6 +129,13 @@ export interface DateDependencies {
   weekdayOnly?: boolean;
   dateAfterId?: number;
 }
+export interface DateInputDependencies {
+  inputDateYearId: number;
+  inputSourceId: number;
+  inputTimeOffset: {
+    [key: string]: TimeOffset;
+  }
+}
 export interface TemplateValidation {
   templateValidation: string;
   templateValidationResRules: string;
@@ -130,6 +144,7 @@ export interface TemplateValidation {
   substituteDependencies: string[];
   marketQuestionDependencies: DropdownDependencies;
   dateDependencies: DateDependencies[];
+  closingDateDependencies: DateInputDependencies[];
 }
 
 export interface TemplateValidationHash {
@@ -168,7 +183,11 @@ export interface TemplateInput {
     // dropdown source data structure to use to set target input list values
     [key: string]: ValueLabelPair[];
   };
+  inputTimeOffset: {
+    [key: string]: TimeOffset;
+  }
   setEndTime?: number;
+  inputDateYearId?: number;
 }
 
 export interface RetiredTemplate {
@@ -188,6 +207,7 @@ export enum TemplateInputType {
   DATETIME = 'DATETIME', // date time with timezone picker
   DATESTART = 'DATESTART', // market end time can not be before the start of this day
   ESTDATETIME = 'ESTDATETIME', // estimated scheduled start time date time picker with timezone
+  DATEYEAR_CLOSING = 'DATEYEAR_CLOSING', // expiration time can not be before this offset on DATEYEAR in market question
   DROPDOWN = 'DROPDOWN', // dropdown list, found in market question
   DENOMINATION_DROPDOWN = 'DENOMINATION_DROPDOWN', // list of denomination values for scalar market
   ADDED_OUTCOME = 'ADDED_OUTCOME', // required outcome that is added to categorical market template
@@ -393,6 +413,52 @@ function dateComparisonDependencies(
   return result;
 }
 
+export function getTemplateExchangeClosingWithBuffer(
+  dayTimestamp: number,
+  hour: number,
+  minutes: number,
+  offset: number
+) {
+  // one hour time buffer after lastest exchange closing is built in.
+  const OneHourBuffer = 1;
+  const closingDateTime = moment
+    .unix(dayTimestamp)
+    .utc()
+    .startOf('day');
+
+  closingDateTime.set({
+    hour: hour - offset + OneHourBuffer,
+    minute: minutes,
+  });
+  return closingDateTime.unix();
+}
+
+function closingDateDependencies(
+  inputs: ExtraInfoTemplateInput[],
+  endTime: number,
+  closingDateDependencies: DateInputDependencies[]
+) {
+  if (!closingDateDependencies) return true;
+  const deps = closingDateDependencies.filter(d => d.inputDateYearId);
+  const result = deps.reduce((p, d) => {
+    const dateYearSource = inputs.find(i => i.id === d.inputDateYearId);
+    const exchangeValue = inputs.find(i => i.id === d.inputSourceId);
+    if (!dateYearSource || !exchangeValue) return false;
+    const timeOffset = d.inputTimeOffset[exchangeValue.value]  as TimeOffset;
+    const closingDateTime = getTemplateExchangeClosingWithBuffer(
+      Number(dateYearSource.timestamp),
+      timeOffset.hour,
+      timeOffset.minutes,
+      timeOffset.offset
+    );
+    if (closingDateTime >= endTime) {
+      return false;
+    }
+    return p;
+  }, true);
+  return result;
+}
+
 function isRetiredAutofail(hash: string) {
   const found: RetiredTemplate = RETIRED_TEMPLATES.find(
     (t: RetiredTemplate) => t.hash === hash
@@ -482,6 +548,12 @@ export const isTemplateMarket = (
       return false;
     }
 
+    if (
+      !closingDateDependencies(template.inputs, new BigNumber(endTime).toNumber(), validation.closingDateDependencies)
+    ) {
+      errors.push('event expiration can not be before exchange close time');
+      return false;
+    }
     // check for input duplicates
     const values = template.inputs.map((i: ExtraInfoTemplateInput) => i.value);
     if (new Set(values).size !== values.length) {

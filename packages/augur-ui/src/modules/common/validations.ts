@@ -3,8 +3,9 @@ import isAddress from 'modules/auth/helpers/is-address';
 import { createBigNumber } from 'utils/create-big-number';
 import { ZERO } from './constants';
 import { NewMarketPropertiesValidations } from 'modules/types';
-import { ValidationType, TemplateInputType, TemplateInput, UserInputDateYear, UserInputDateTime } from '@augurproject/artifacts';
+import { ValidationType, TemplateInputType, TemplateInput, UserInputDateTime, TimeOffset } from '@augurproject/artifacts';
 import moment from 'moment';
+import { getUnixDateTimeFromComponents } from 'utils/format-date';
 
 export function isFilledString(value, readable, message) {
   if (value && value.trim().length > 0 && value !== '') return '';

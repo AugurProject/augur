@@ -526,6 +526,7 @@ export const TemplateBannerText = {
 export const SelectEventNoticeText =
   'Choose an event in the market question in order to select outcomes.';
 
+export const ExchangeClosingMessage = 'Event expiration can not be before exchange closing, earliest allowed time, ';
 export enum MARKET_COPY_LIST {
   USE_A_TEMPLATE = 'USE_A_TEMPLATE',
   DONT_SEE_CAT = 'DONT_SEE_CAT',

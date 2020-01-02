@@ -11,7 +11,8 @@ import {
   generateResolutionRulesHash,
   DropdownDependencies,
   DateDependencies,
-  ValidationType
+  ValidationType,
+  DateInputDependencies
 } from '../templates-template';
 import { TEMPLATES, TEMPLATES2 } from '../templates-source';
 import { retiredTemplates } from '../templates-retired';
@@ -73,6 +74,7 @@ const generateValidations = (
     substituteDependencies: null,
     marketQuestionDependencies: null,
     dateDependencies: null,
+    closingDateDependencies: null,
   };
   let newTemplates = JSON.parse(JSON.stringify(templates));
   const topCategories = Object.keys(newTemplates);
@@ -111,6 +113,7 @@ const addTemplates = (
         substituteDependencies: getSubstituteOutcomeDependencies(t.inputs),
         marketQuestionDependencies: getMarketQuestionDependencies(t.inputs),
         dateDependencies: getDateDependencies(t.inputs),
+        closingDateDependencies: getClosingDateDependencies(t.inputs),
       };
     });
   }
@@ -170,6 +173,18 @@ function getDateDependencies(inputs: TemplateInput[]): DateDependencies[] {
       id: i.id,
       weekdayOnly: i.validationType === ValidationType.WEEKDAYONLY,
       dateAfterId: i.dateAfterId,
+    }));
+}
+
+function getClosingDateDependencies(inputs: TemplateInput[]): DateInputDependencies[] {
+  return inputs
+    .filter(
+      i => i.type === TemplateInputType.DATEYEAR_CLOSING
+    )
+    .map(i => ({
+      inputDateYearId: i.inputDateYearId,
+      inputSourceId: i.inputSourceId,
+      inputTimeOffset: i.inputTimeOffset,
     }));
 }
 
