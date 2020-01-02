@@ -319,7 +319,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
     if (this.state.expirationDate) {
       trade = {
         ...trade,
-        expirationTime: (this.state.expirationDate.unix() - this.props.currentTimestamp)
+        expirationTime: (this.state.expirationDate.unix())
       }
     }
     this.props.onSubmitPlaceTrade(

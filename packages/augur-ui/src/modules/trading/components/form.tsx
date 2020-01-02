@@ -148,6 +148,7 @@ class Form extends Component<FromProps, FormState> {
         [this.INPUT_TYPES.QUANTITY]: [],
         [this.INPUT_TYPES.PRICE]: [],
         [this.INPUT_TYPES.EST_DAI]: [],
+        [this.INPUT_TYPES.EXPIRATION_DATE]: [],
       },
     };
 
@@ -283,17 +284,16 @@ class Form extends Component<FromProps, FormState> {
       errorCount += 1;
       passedTest = false;
       errors[this.INPUT_TYPES.QUANTITY].push(
-        `Quantity must be a multiple of ${tradeInterval.multipliedBy(market.numTicks).dividedBy(10**18)}`
+          `Quantity must be a multiple of ${tradeInterval.multipliedBy(market.numTicks).dividedBy(10**18)}`
         );
     }
-
-    // if (expiration - moment.now() < 60) {
-    //   errorCount += 1;
-    //   passedTest = false;
-    //   errors[this.INPUT_TYPES.QUANTITY].push(
-    //     `Order expires less than 60 seconds into the future`
-    //     );
-    // }
+    if(expiration && expiration - moment().unix() < 60) {
+        errorCount += 1;
+        passedTest = false;
+        errors[this.INPUT_TYPES.EXPIRATION_DATE].push(
+          `Order expires less than 60 seconds into the future`
+          );
+     }
     return { isOrderValid: passedTest, errors, errorCount };
   }
 
@@ -412,6 +412,7 @@ class Form extends Component<FromProps, FormState> {
       [this.INPUT_TYPES.QUANTITY]: [],
       [this.INPUT_TYPES.PRICE]: [],
       [this.INPUT_TYPES.EST_DAI]: [],
+      [this.INPUT_TYPES.EXPIRATION_DATE]: [],
     };
     let isOrderValid = true;
     let errorCount = 0;
@@ -428,9 +429,10 @@ class Form extends Component<FromProps, FormState> {
       order[this.INPUT_TYPES.EST_DAI] &&
       createBigNumber(order[this.INPUT_TYPES.EST_DAI]);
 
-    // expiration needs to be wired up, then we need to check that orders have appropriate expiration dates
-    // const expiration =
-      // order[this.INPUT_TYPES.EXPIRATION_DATE].unix()?
+    const expiration;
+    if(order[this.INPUT_TYPES.EXPIRATION_DATE]) {
+      expiration = moment(order[this.INPUT_TYPES.EXPIRATION_DATE]).unix();
+    }
 
     const {
       isOrderValid: priceValid,
@@ -448,8 +450,7 @@ class Form extends Component<FromProps, FormState> {
         isOrderValid: isThisOrderValid,
         errors: quantityErrors,
         errorCount: quantityErrorCount,
-      } = this.testQuantityAndExpiry(quantity, errors, isOrderValid, fromExternal, nextProps);
-      // } = this.testQuantityAndExpiry(quantity, errors, isOrderValid, fromExternal, nextProps, expiration);
+      } = this.testQuantityAndExpiry(quantity, errors, isOrderValid, fromExternal, nextProps, expiration);
 
       quantityValid = isThisOrderValid;
       errorCount += quantityErrorCount;
@@ -480,8 +481,7 @@ class Form extends Component<FromProps, FormState> {
     errors = { ...errors, ...comboErrors };
     errorCount += comboErrorCount;
 
-    isOrderValid = priceValid && (quantityValid || totalValid) && comboValid;
-
+    isOrderValid = priceValid && quantityValid && totalValid && comboValid;
     return { isOrderValid, errors, errorCount };
   }
 
@@ -502,7 +502,7 @@ class Form extends Component<FromProps, FormState> {
       clearOrderForm,
     } = this.props;
 
-    const value = convertExponentialToDecimal(rawValue);
+    const value = property != 'expirationDate' ? convertExponentialToDecimal(rawValue) : rawValue;
     const updatedState = {
       ...this.state,
       [property]: value,
@@ -521,6 +521,7 @@ class Form extends Component<FromProps, FormState> {
     let orderQuantity = updatedState[this.INPUT_TYPES.QUANTITY];
     const orderPrice = updatedState[this.INPUT_TYPES.PRICE];
     let orderDaiEstimate = updatedState[this.INPUT_TYPES.EST_DAI];
+    let expiration = updatedState[this.INPUT_TYPES.EXPIRATION_DATE];
 
     if (property === this.INPUT_TYPES.QUANTITY) {
       orderDaiEstimate = '';
@@ -541,6 +542,7 @@ class Form extends Component<FromProps, FormState> {
       [this.INPUT_TYPES.EST_DAI]: orderDaiEstimate
         ? createBigNumber(orderDaiEstimate).toFixed()
         : orderDaiEstimate,
+      [this.INPUT_TYPES.EXPIRATION_DATE]: expiration,
       selectedNav,
     };
 
@@ -578,6 +580,13 @@ class Form extends Component<FromProps, FormState> {
               property === this.INPUT_TYPES.EST_DAI)
           ) {
             updateTradeNumShares(order);
+          } 
+          if (order[this.INPUT_TYPES.QUANTITY] &&
+            order[this.INPUT_TYPES.PRICE] && order[this.INPUT_TYPES.EST_DAI] && 
+            order[this.INPUT_TYPES.EST_DAI] != 0 && order[this.INPUT_TYPES.QUANTITY] != 0 &&
+            property === this.INPUT_TYPES.EXPIRATION_DATE
+            ) {
+            updateTradeTotalCost(order);
           }
         }
         if (
@@ -618,6 +627,7 @@ class Form extends Component<FromProps, FormState> {
         [this.INPUT_TYPES.QUANTITY]: [],
         [this.INPUT_TYPES.PRICE]: [],
         [this.INPUT_TYPES.EST_DAI]: [],
+        [this.INPUT_TYPES.EXPIRATION_DATE]: [],
       },
     };
     this.setState(
@@ -672,6 +682,7 @@ class Form extends Component<FromProps, FormState> {
         ...s.errors[this.INPUT_TYPES.QUANTITY],
         ...s.errors[this.INPUT_TYPES.PRICE],
         ...s.errors[this.INPUT_TYPES.EST_DAI],
+        ...s.errors[this.INPUT_TYPES.EXPIRATION_DATE],
       ])
     );
 
@@ -890,7 +901,10 @@ class Form extends Component<FromProps, FormState> {
             </li>
           )}
           {s.showAdvanced && (
-            <li className={Styles.AdvancedShown}>
+            <li className={classNames(Styles.AdvancedShown, {
+                [`${Styles.error}`]: s.errors[this.INPUT_TYPES.EXPIRATION_DATE].length,
+              })}
+            >
               <SquareDropdown
                 defaultValue={advancedOptions[0].value}
                 options={advancedOptions}
@@ -901,13 +915,14 @@ class Form extends Component<FromProps, FormState> {
                           .unix(currentTimestamp)
                           .add(DEFAULT_EXPIRATION_DAYS, 'days')
                       : '';
-
+                  this.updateAndValidate(
+                    this.INPUT_TYPES.EXPIRATION_DATE,
+                    date
+                  );
                   updateState({
-                    [this.INPUT_TYPES.EXPIRATION_DATE]: date,
                     [this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]:
                       value === ADVANCED_OPTIONS.FILL,
                   });
-
                   this.setState({
                     advancedOption: value,
                     fastForwardDays: DEFAULT_EXPIRATION_DAYS,
@@ -924,11 +939,10 @@ class Form extends Component<FromProps, FormState> {
                       onChange={value => {
                         const days =
                           value === '' || isNaN(value) ? 0 : parseInt(value);
-                        updateState({
-                          [this.INPUT_TYPES.EXPIRATION_DATE]: moment
-                            .unix(currentTimestamp)
-                            .add(days, 'days'),
-                        });
+                        this.updateAndValidate(
+                          this.INPUT_TYPES.EXPIRATION_DATE,
+                          moment.unix(currentTimestamp).add(days, 'days')
+                        );
                         this.setState({ fastForwardDays: days });
                       }}
                     />
@@ -951,10 +965,10 @@ class Form extends Component<FromProps, FormState> {
                   />
                   {s.expirationDateOption === EXPIRATION_DATE_OPTIONS.DAYS && (
                     <span>
-                      {
+                      {  
                         convertUnixToFormattedDate(
-                          s[this.INPUT_TYPES.EXPIRATION_DATE] &&
-                            s[this.INPUT_TYPES.EXPIRATION_DATE].unix()
+                          moment(s[this.INPUT_TYPES.EXPIRATION_DATE]) &&
+                            moment(s[this.INPUT_TYPES.EXPIRATION_DATE]).unix()
                         ).formattedLocalShortWithUtcOffset
                       }
                     </span>
@@ -963,11 +977,10 @@ class Form extends Component<FromProps, FormState> {
                     EXPIRATION_DATE_OPTIONS.CUSTOM && (
                     <SimpleTimeSelector
                       onChange={value => {
-                        updateState({
-                          [this.INPUT_TYPES.EXPIRATION_DATE]: moment(
-                            value
-                          ),
-                        });
+                        this.updateAndValidate(
+                          this.INPUT_TYPES.EXPIRATION_DATE,
+                          moment.unix(value.timestamp)
+                        );
                       }}
                       currentTime={currentTimestamp}
                     />
@@ -980,6 +993,13 @@ class Form extends Component<FromProps, FormState> {
                   partially filled and will cancel the remaining balance.
                 </span>
               )}
+              <span
+                className={classNames({
+                  [`${Styles.error}`]: s.errors[this.INPUT_TYPES.EXPIRATION_DATE]
+                    .length,
+                })}
+              >
+              </span>
             </li>
           )}
         </ul>
