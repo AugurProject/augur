@@ -70,6 +70,7 @@ export interface StoredOrder extends OrderData {
   numberAmount: BigNumber,
   orderCreator: string,
   orderId?: string,
+  endState?,
 }
 
 export interface StoredSignedOrder {
@@ -124,22 +125,7 @@ export class ZeroXOrders extends AbstractTable {
   async handleMeshEvent(orderEvents: OrderEvent[]): Promise<void> {
     if (orderEvents.length < 1) return;
     console.log('Mesh events received');
-    var emittedEvents = new Object();
-    var eventKeys = Object.keys(orderEvents);
-    for (const eventKey of eventKeys) {
-      var processedOrder = this.processOrder(orderEvents[eventKey]);
-      if(orderEvents[eventKey].endState == "EXPIRED" || orderEvents[eventKey].endState == "CANCELLED" || orderEvents[eventKey].endState == "INVALID") {
-        this.table.where('orderHash').equals(orderEvents[eventKey].orderHash).delete();
-        this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Cancel, processedOrder});
-      }
-      if(orderEvents[eventKey].endState == "FILLED" || orderEvents[eventKey].endState == "FULLY_FILLED") {
-        if(orderEvents[eventKey].endState == "FULLY_FILLED") {
-          this.table.where('orderHash').equals(orderEvents[eventKey].orderHash).delete();
-        } 
-        this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Fill, processedOrder});
-      }
-    }
-
+    console.log(JSON.stringify(orderEvents));
     const filteredOrders = _.filter(orderEvents, this.validateOrder.bind(this));
     let documents = _.map(filteredOrders, this.processOrder.bind(this));
     documents = _.filter(documents, this.validateStoredOrder.bind(this));
@@ -151,20 +137,6 @@ export class ZeroXOrders extends AbstractTable {
 
   async sync(): Promise<void> {
     const orders: OrderInfo[] = await this.augur.zeroX.getOrders();
-    // for (const order in orders) {
-    //   console.log(order);
-    //   var processedOrder = this.processOrder(order);
-    //   if(order.endState == "EXPIRED" || order.endState == "CANCELLED" || order.endState == "INVALID") {
-    //     console.log("Deleted order");
-    //     this.table.where('orderHash').equals(order.orderHash).delete();
-    //     this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Cancel, processedOrder});
-    //   }
-    //   if(order.endState == "FILLED" || order.endState == "FULLY_FILLED") {
-    //     console.log("Deleted order");
-    //     this.table.where('orderHash').equals(order.orderHash).delete();
-    //     this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Fill, processedOrder});
-    //   }
-    // }
     let documents;
     if (orders.length > 0) {
       documents = _.filter(orders, this.validateOrder.bind(this));
@@ -181,7 +153,7 @@ export class ZeroXOrders extends AbstractTable {
     }
   }
 
-  validateOrder(order: OrderInfo): boolean {
+  validateOrder(order: OrderEvent): boolean {
     if (order.signedOrder.makerAssetData.length !== EXPECTED_ASSET_DATA_LENGTH) return false;
     if (order.signedOrder.makerAssetData !== order.signedOrder.takerAssetData) return false;
     if (order.signedOrder.makerAssetData.substr(34, 40) !== this.tradeTokenAddress) return false;
@@ -191,6 +163,7 @@ export class ZeroXOrders extends AbstractTable {
   validateStoredOrder(storedOrder: StoredOrder, markets: _.Dictionary<MarketData>): boolean {
     // Validate the order is a multiple of the recommended trade interval
     let tradeInterval = DEFAULT_TRADE_INTERVAL;
+    console.log("Signed order validation");
     const marketData = markets[storedOrder.market];
     if (marketData && marketData.marketType == MarketType.Scalar) {
       tradeInterval = TRADE_INTERVAL_VALUE.dividedBy(marketData.numTicks);
@@ -198,12 +171,29 @@ export class ZeroXOrders extends AbstractTable {
     if (!storedOrder["numberAmount"].mod(tradeInterval).isEqualTo(0)) return false;
 
     if (storedOrder.numberAmount.isEqualTo(0)) {
+      console.log("Deleted order");
+      this.table.where('orderHash').equals(storedOrder.orderHash).delete();
+      this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Fill, ...storedOrder});
       return false;
     }
+    // if(storedOrder.endState == "EXPIRED" || storedOrder.endState == "CANCELLED" || storedOrder.endState == "INVALID") {
+    //   this.table.where('orderHash').equals(storedOrder.orderHash).delete();
+    //   this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Cancel, ...storedOrder});
+    //   return false;
+    // }
+    // if(storedOrder.endState == "FILLED" || storedOrder.endState == "FULLY_FILLED") {
+    //   await this.bulkUpsertDocuments([...storedOrder]);
+    //   if(storedOrder.endState == "FULLY_FILLED") {
+    //     this.table.where('orderHash').equals(storedOrder.orderHash).delete();
+    //   } 
+    //   this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Fill, ...storedOrder});
+    //   return false;
+    // }
+
     return true;
   }
 
-  processOrder(order: OrderInfo): StoredOrder {
+  processOrder(order: OrderEvent): StoredOrder {
     const augurOrderData = this.parseAssetData(order.signedOrder.makerAssetData);
     // Currently the API for mesh browser and the client API diverge here but we dont want to do string parsing per order to be compliant for the browser case
     const signedOrder = order.signedOrder;
@@ -218,6 +208,7 @@ export class ZeroXOrders extends AbstractTable {
       amount: order.fillableTakerAssetAmount.toFixed(),
       numberAmount: order.fillableTakerAssetAmount,
       orderCreator: getAddress(signedOrder.makerAddress),
+      endState: order.endState,
       signedOrder: {
         signature: signedOrder.signature,
         senderAddress: getAddress(signedOrder.senderAddress),
