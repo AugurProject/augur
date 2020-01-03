@@ -14,6 +14,7 @@ import {
   REPORTING_ENDS,
 } from "modules/common/constants";
 import MarketTitle from "modules/market/containers/market-title";
+import { MarketReportingState } from '@augurproject/sdk/build';
 
 interface BaseProps {
   market: MarketData;
@@ -202,13 +203,13 @@ export const ReportEndingSoonTemplate = (props: ReportEndingSoonTemplateProps) =
 };
 
 export const DisputeTemplate = (props: DisputeTemplateProps) => {
-  const { description, disputeInfo } = props.market;
+  const { description, disputeInfo, reportingState } = props.market;
 
   if (!disputeInfo) {
     return null;
   }
 
-  const disputeHasEnded = Number(props.currentTime) > disputeInfo.disputeWindow.endTime;
+  const disputeHasEnded = reportingState !== MarketReportingState.CrowdsourcingDispute;
 
   return (
     <Template
