@@ -2,14 +2,16 @@ pragma solidity 0.5.15;
 
 import 'ROOT/IAugur.sol';
 import 'ROOT/libraries/Initializable.sol';
-import 'ROOT/uniswap/interfaces/IUniswapV2.sol';
+import 'ROOT/uniswap/interfaces/IUniswapV2Exchange.sol';
 import 'ROOT/uniswap/interfaces/IUniswapV2Factory.sol';
 import 'ROOT/reporting/IRepPriceOracle.sol';
 import 'ROOT/ens/IENSRegistry.sol';
 import 'ROOT/ens/IENSResolver.sol';
+import 'ROOT/libraries/math/SafeMathUint256.sol';
 
 
 contract RepPriceOracle is IRepPriceOracle, Initializable {
+    using SafeMathUint256 for uint256;
 
     uint256 constant Q112 = 2**112;
 
@@ -23,7 +25,7 @@ contract RepPriceOracle is IRepPriceOracle, Initializable {
     bool public uniswapUpgraded;
 
     struct ExchangeData {
-        IUniswapV2 exchange;
+        IUniswapV2Exchange exchange;
         uint256 repPriceAccumulated;
         uint256 blockNumber;
         uint256 blockTimestamp;
@@ -59,7 +61,7 @@ contract RepPriceOracle is IRepPriceOracle, Initializable {
 
     // TODO: Consider when this should be called other than when the price is requested as part of new fee setting
     function pokeRepPriceInAttoCash(IV2ReputationToken _reputationToken) external returns (uint256) {
-        if (exchangeData[address(_reputationToken)].exchange == IUniswapV2(0)) {
+        if (exchangeData[address(_reputationToken)].exchange == IUniswapV2Exchange(0)) {
             initializeUniverse(_reputationToken);
         }
         ExchangeData memory _newExchangeData = calculateNewExchangeData(_reputationToken);
@@ -70,7 +72,7 @@ contract RepPriceOracle is IRepPriceOracle, Initializable {
     function calculateNewExchangeData(IV2ReputationToken _reputationToken) private returns (ExchangeData memory) {
         ExchangeData memory _exchangeData = exchangeData[address(_reputationToken)];
         uint256 _blockNumber = block.number;
-        uint256 _blockTimestamp = block.timestamp; // solium-disable-line security/no-block-members
+        uint256 _blockTimestamp = block.timestamp;
         if (_blockNumber == _exchangeData.blockNumber) {
             return _exchangeData;
         }
@@ -83,7 +85,7 @@ contract RepPriceOracle is IRepPriceOracle, Initializable {
             return exchangeData[address(_reputationToken)];
         }
 
-        IUniswapV2 _exchange = _exchangeData.exchange;
+        IUniswapV2Exchange _exchange = _exchangeData.exchange;
         if (_blockNumber != _exchange.blockNumberLast()) {
             _exchange.sync();
         }
@@ -100,16 +102,16 @@ contract RepPriceOracle is IRepPriceOracle, Initializable {
             return _exchangeData;
         }
 
-        uint256 _blocksElapsed = _blockNumber - _exchangeData.blockNumber;
+        uint256 _blocksElapsed = _blockNumber.sub(_exchangeData.blockNumber);
 
-        uint256 _price = (_repPriceCumulative - _exchangeData.repPriceAccumulated) * 10**18 / _blocksElapsed / Q112;
+        uint256 _price = _repPriceCumulative.sub(_exchangeData.repPriceAccumulated).mul(10**18) / _blocksElapsed / Q112;
         require(_price > 0, "Price should not be 0");
 
-        uint256 _secondsElapsed = _blockTimestamp - _exchangeData.blockTimestamp;
+        uint256 _secondsElapsed = _blockTimestamp.sub(_exchangeData.blockTimestamp);
         uint256 _priceAverage = _price;
 
         if (_secondsElapsed < period) {
-            _priceAverage = (_exchangeData.price * (period - _secondsElapsed) + _price * _secondsElapsed) / period;
+            _priceAverage = _exchangeData.price.mul(period.sub(_secondsElapsed)).add(_price.mul(_secondsElapsed)) / period;
         }
 
         _exchangeData.blockNumber = _blockNumber;
@@ -121,7 +123,7 @@ contract RepPriceOracle is IRepPriceOracle, Initializable {
 
     function initializeUniverse(IV2ReputationToken _reputationToken) private {
         uint256 _blockNumber = block.number;
-        IUniswapV2 _exchange = getOrCreateUniswapExchange(_reputationToken);
+        IUniswapV2Exchange _exchange = getOrCreateUniswapExchange(_reputationToken);
         exchangeData[address(_reputationToken)].exchange = _exchange;
         if (_blockNumber != _exchange.blockNumberLast()) {
             _exchange.sync();
@@ -129,7 +131,7 @@ contract RepPriceOracle is IRepPriceOracle, Initializable {
         uint256 _initialPrice = getInitialPrice(_reputationToken);
         exchangeData[address(_reputationToken)].price = _initialPrice;
         exchangeData[address(_reputationToken)].blockNumber = _blockNumber;
-        exchangeData[address(_reputationToken)].blockTimestamp = block.timestamp; // solium-disable-line security/no-block-members
+        exchangeData[address(_reputationToken)].blockTimestamp = block.timestamp;
         (address token0, address token1) = uniswapFactory.sortTokens(cash, address(_reputationToken));
         bool repIsToken0 = token0 == address(_reputationToken);
         exchangeData[address(_reputationToken)].repIsToken0 = repIsToken0;
@@ -138,18 +140,18 @@ contract RepPriceOracle is IRepPriceOracle, Initializable {
 
     function getInitialPrice(IV2ReputationToken _reputationToken) private view returns (uint256) {
         IUniverse _parentUniverse = _reputationToken.getUniverse().getParentUniverse();
-        if (_parentUniverse != IUniverse(0)) {
-            IV2ReputationToken _parentReputationToken = _parentUniverse.getReputationToken();
-            return exchangeData[address(_parentReputationToken)].price;
+        if (_parentUniverse == IUniverse(0)) {
+            return genesisInitialRepPriceinAttoCash;
         }
-        return genesisInitialRepPriceinAttoCash;
+        IV2ReputationToken _parentReputationToken = _parentUniverse.getReputationToken();
+        return exchangeData[address(_parentReputationToken)].price;
     }
 
-    function getOrCreateUniswapExchange(IV2ReputationToken _reputationToken) public returns (IUniswapV2) {
+    function getOrCreateUniswapExchange(IV2ReputationToken _reputationToken) public returns (IUniswapV2Exchange) {
         address _exchangeAddress = uniswapFactory.getExchange(cash, address(_reputationToken));
         if (_exchangeAddress == address(0)) {
             _exchangeAddress = uniswapFactory.createExchange(cash, address(_reputationToken));
         }
-        return IUniswapV2(_exchangeAddress);
+        return IUniswapV2Exchange(_exchangeAddress);
     }
 }
