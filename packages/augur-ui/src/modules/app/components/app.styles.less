@@ -118,7 +118,6 @@ h6 {
   }
 }
 
-
 .Main__content {
   height: calc(~"100vh - @{multi-top-bar-height}");
   -webkit-overflow-scrolling: touch;
@@ -135,10 +134,22 @@ h6 {
     }
   }
 
+  > .BettingUI {
+    display: none;
+
+    @media @breakpoint-mobile {
+      display: flex;
+      justify-content: center;
+      margin-top: @size-6;
+      position: absolute;
+      width: 100%;
+    }
+  }
+
   &.Tutorial {
     height: calc(~"100vh - @{multi-top-bar-height} - @{tutorial-banner-height}");
   }
-  
+
   &.ModalShowing {
     @media @breakpoint-max-tablet {
       overflow-y: hidden;

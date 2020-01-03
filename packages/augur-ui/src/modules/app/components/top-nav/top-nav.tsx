@@ -5,7 +5,7 @@ import TooltipStyles from 'modules/common/tooltip.styles.less';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import makePath from 'modules/routes/helpers/make-path';
-import { SecondaryButton, PrimaryButton } from 'modules/common/buttons';
+import { SecondaryButton, PrimaryButton, ExternalLinkText } from 'modules/common/buttons';
 import { GlobalChat } from 'modules/global-chat/components/global-chat';
 
 import Styles from 'modules/app/components/top-nav/top-nav.styles.less';
@@ -73,10 +73,12 @@ const TopNav = ({
           );
         })}
         {showMigrateRepButton && (
-          <PrimaryButton
-            text="Migrate V1 to V2 REP"
-            action={() => migrateV1Rep()}
-          />
+          <div className={Styles.MigrateRep}>
+            <PrimaryButton
+              text="Migrate V1 to V2 REP"
+              action={() => migrateV1Rep()}
+            />
+          </div>
         )}
         {showMigrateRepButton && (
           <span>
@@ -102,6 +104,17 @@ const TopNav = ({
             </ReactTooltip>
           </span>
         )}
+
+        {!isLogged &&
+          <div className={Styles.BettingUI}>
+            <ExternalLinkText
+              title={'Betting Exchange App'}
+              label={' - Coming Soon!'}
+              URL={'https://augur.net'}
+            />
+        </div>
+        }
+
         {isLogged && (
           <button
             className={Styles.AddFunds}
