@@ -57,6 +57,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       key: 'orderPrice',
       columnType: COLUMN_TYPES.VALUE,
       value: orderPrice,
+      useFull: true,
       keyId: 'filledOrder-orderPrice-' + filledOrder.id,
     },
     {

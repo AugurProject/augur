@@ -195,19 +195,26 @@ export const OrderButton = (props: OrderButtonProps) => (
   </button>
 );
 
-export const FavoritesButton = (props: FavoritesButtonProps) => (
+export const FavoritesButton = ({
+  isFavorite,
+  isSmall,
+  action,
+  disabled,
+  title,
+  hideText
+}: FavoritesButtonProps) => (
   <button
-    onClick={e => props.action(e)}
+    onClick={e => action(e)}
     className={classNames(Styles.FavoriteButton, {
-      [Styles.FavoriteButton_Favorite]: props.isFavorite,
-      [Styles.FavoriteButton__small]: props.isSmall,
+      [Styles.FavoriteButton_Favorite]: isFavorite,
+      [Styles.FavoriteButton_small]: isSmall,
     })}
-    disabled={props.disabled}
-    title={props.title}
+    disabled={disabled}
+    title={title}
   >
-    {StarIcon}{' '}
-    {!props.hideText &&
-      `${props.isFavorite ? 'Remove from' : 'Add to'} watchlist`}
+    {StarIcon}
+    {!hideText &&
+      `${isFavorite ? ' Remove from' : ' Add to'} watchlist`}
   </button>
 );
 
