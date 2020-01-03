@@ -51,6 +51,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       key: 'orderQuantity',
       columnType: COLUMN_TYPES.VALUE,
       value: position.purchasePrice,
+      useFull: true,
       keyId: 'position-price-' + position.id,
     },
     {
@@ -58,6 +59,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       key: 'totalCost',
       columnType: COLUMN_TYPES.VALUE,
       value: position.totalCost,
+      useFull: true,
       keyId: 'position-totalCost-' + position.id,
     },
     {
@@ -65,6 +67,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       key: 'totalValue',
       columnType: COLUMN_TYPES.VALUE,
       value: position.totalValue,
+      useFull: true,
       keyId: 'position-totalValue-' + position.id,
     },
     {
@@ -72,6 +75,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       key: 'lastPrice',
       columnType: COLUMN_TYPES.VALUE,
       value: position.lastPrice,
+      useFull: true,
       keyId: 'position-lastPrice-' + position.id,
     },
   ];
@@ -91,21 +95,24 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     columnProperties.push({
       key: 'totalReturns',
       hide: extendedView,
-      columnType: COLUMN_TYPES.PLAIN,
-      value: position.totalReturns.formatted,
+      columnType: COLUMN_TYPES.VALUE,
+      useFull: true,
+      value: position.totalReturns,
     });
   }
   columnProperties.push({
     key: 'unrealizedNet',
     hide: !extendedView,
-    columnType: COLUMN_TYPES.PLAIN,
-    value: position.unrealizedNet.formatted,
+    columnType: COLUMN_TYPES.VALUE,
+    useFull: true,
+    value: position.unrealizedNet,
   });
   columnProperties.push({
     key: 'realizedNet',
     hide: !extendedView,
-    columnType: COLUMN_TYPES.PLAIN,
-    value: position.realizedNet.formatted,
+    columnType: COLUMN_TYPES.VALUE,
+    useFull: true,
+    value: position.realizedNet,
   });
   return {
     ...oP,
