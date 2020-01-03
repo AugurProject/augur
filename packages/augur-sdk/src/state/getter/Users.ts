@@ -643,7 +643,7 @@ export class Users {
   } catch(e) {
     console.error('getUserTradingPositions', e);
   }
-    var openOrdersFrozenFunds = await frozenFundsCalc(augur, db, params, {
+    var openOrdersFrozenFunds = await frozenFundsCalcOpenOrders(augur, db, params, {
       tradingPositions,
       tradingPositionsPerMarket: marketTradingPositions,
       frozenFundsTotal: frozenFundsTotal.dividedBy(QUINTILLION).toFixed(),
@@ -986,7 +986,7 @@ async function getProfitLossRecordsByMarketAndOutcome(
   );
 }
 
-async function frozenFundsCalc(augur: Augur,
+async function frozenFundsCalcOpenOrders(augur: Augur,
     db: DB, params, userPositions: UserTradingPositions) {
       let userOpenOrders = null;
       let marketsInfo = null;
