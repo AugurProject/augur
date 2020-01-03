@@ -62,12 +62,12 @@ const login = (account: string) => (
 ) => {
   const provider = new Web3Provider(window.web3.currentProvider);
   const networkId = window.web3.currentProvider.networkVersion;
-
+  const address = toChecksumAddress(account);
   const accountObject = {
-    address: account,
-    mixedCaseAddress: toChecksumAddress(account),
+    address: address,
+    mixedCaseAddress: address,
     meta: {
-      address: account,
+      address: address,
       signer: provider.getSigner(),
       email: null,
       profileImage: null,

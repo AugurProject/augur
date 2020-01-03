@@ -23,12 +23,12 @@ async function loadTransactions(
   appState: AppState
 ) {
   const { universe, loginAccount } = appState;
-  const { mixedCaseAddress: address } = loginAccount;
+  const { mixedCaseAddress } = loginAccount;
   dispatch(loadDisputeWindow()); // need to load dispute window for user to claim reporting fees
 
   const Augur = augurSdk.get();
-  const userData: Getters.Users.UserAccountDataResult = await Augur.getUserAccountData({universe: universe.id, account: address})
-  dispatch(updateUserFilledOrders(address, userData.userTradeHistory));
+  const userData: Getters.Users.UserAccountDataResult = await Augur.getUserAccountData({universe: universe.id, account: mixedCaseAddress})
+  dispatch(updateUserFilledOrders(mixedCaseAddress, userData.userTradeHistory));
   dispatch(bulkMarketTradingHistory(userData.marketTradeHistory));
 
   const marketsDataById = userData.marketsInfo.reduce((acc, marketData) => ({

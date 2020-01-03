@@ -33,9 +33,9 @@ export const updateSdk = (
       const updateUserAccount = safeAddress => {
         const newAccount = {
           ...loginAccount,
-          meta: { ...loginAccount.meta, address: safeAddress },
+          meta: { ...loginAccount.meta, address: toChecksumAddress(safeAddress) },
           mixedCaseAddress: toChecksumAddress(safeAddress),
-          address: safeAddress.toLowerCase(),
+          address: toChecksumAddress(safeAddress),
         };
         dispatch(updateLoginAccount(newAccount));
         dispatch(updateAppStatus(GNOSIS_ENABLED, true));

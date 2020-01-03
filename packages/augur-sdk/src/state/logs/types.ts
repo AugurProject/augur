@@ -176,6 +176,10 @@ export enum YesNoOutcomes {
   Yes = 'Yes',
 }
 
+export type TradeDirection = 0 | 1;
+export type NumOutcomes = 3 | 4 | 5 | 6 | 7 | 8;
+export type OutcomeNumber = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
+
 export interface MarketVolumeChangedLog extends Log {
   universe: Address;
   market: Address;
