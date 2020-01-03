@@ -696,6 +696,11 @@ export async function cancelOpenOrder(orderId: string) {
   return contracts.cancelOrder.cancelOrder(orderId);
 }
 
+export async function cancelZeroXOpenOrder(orderId: string) {
+  const Augur = augurSdk.get();
+  return Augur.cancelOrder(orderId);
+}
+
 interface MarketLiquidityOrder extends LiquidityOrder {
   marketId: string;
   minPrice: string;

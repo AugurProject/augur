@@ -26,6 +26,7 @@ import {
   selectPendingOrdersState,
 } from 'store/select-state';
 import { createSelector } from 'reselect';
+import { cancelZeroXOpenOrder } from 'modules/contracts/actions/contractCalls';
 
 function selectMarketsDataStateMarket(state, marketId) {
   return selectMarketInfosState(state)[marketId];
@@ -202,7 +203,9 @@ function getUserOpenOrders(
       sharesEscrowed: formatShares(order.sharesEscrowed, shareOptions),
       marketDescription,
       name,
-      cancelOrder: ({ id, marketId, outcomeId, type }) => {
+      cancelOrder: async (order) => {
+        const { id, marketId, outcomeId, type } = order;
+        await cancelZeroXOpenOrder(id);
         store.dispatch(
           cancelOrder({
             orderId: id,

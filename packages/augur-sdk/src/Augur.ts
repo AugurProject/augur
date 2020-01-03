@@ -442,7 +442,18 @@ export class Augur<TProvider extends Provider = Provider> {
 
   async cancelOrder(orderHash: string): Promise<void> {
     const order = await this.getOrder({ orderHash });
-    await this.zeroX.cancelOrder(order);
+
+    // Stub data for cancelling open orders
+    const newOrder = {
+      ...order,
+      feeRecipientAddress: '0x0000000000000000000000000000000000000000',
+      takerAddress: '0x0000000000000000000000000000000000000000',
+      makerAddress: order.owner,
+      senderAddress: '0x0000000000000000000000000000000000000000',
+      makerFee: 0,
+      takerFee: 0,
+    };
+    await this.zeroX.cancelOrder(newOrder);
   }
 
   async createYesNoMarket(
