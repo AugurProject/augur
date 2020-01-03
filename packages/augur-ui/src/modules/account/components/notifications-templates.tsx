@@ -1,18 +1,16 @@
 import React from "react";
 
-import {
-  CountdownProgress,
-  MarketProgress,
-  formatTime,
-} from "modules/common/progress";
+import { CountdownProgress, formatTime, MarketProgress, } from "modules/common/progress";
 import { CancelTextButton } from "modules/common/buttons";
 import { DateFormattedObject, MarketData, MarketReportClaimableContracts } from "modules/types";
 import { formatDai } from "utils/format-number";
 import Styles from "modules/account/components/notification.styles.less";
 
 import {
-  NOTIFICATION_TYPES,
+  DISPUTE_ENDS,
+  MARKET_IN_DISPUTE,
   MARKET_STATUS_MESSAGES,
+  NOTIFICATION_TYPES,
   REPORTING_ENDS,
 } from "modules/common/constants";
 import MarketTitle from "modules/market/containers/market-title";
@@ -141,6 +139,7 @@ const Counter = (props: CounterProps) => {
       );
     } else {
       if (props.currentTime && props.market.disputeInfo.disputeWindow.endTime) {
+        const label = props.type === NOTIFICATION_TYPES[MARKET_IN_DISPUTE] ? DISPUTE_ENDS : REPORTING_ENDS;
         counter = (
           <div className={Styles.Countdown}>
             <MarketProgress
@@ -148,7 +147,7 @@ const Counter = (props: CounterProps) => {
               currentTime={props.currentTime}
               endTimeFormatted={endTimeFormatted}
               reportingWindowEndTime={props.market.disputeInfo.disputeWindow.endTime}
-              customLabel={REPORTING_ENDS}
+              customLabel={label}
             />
           </div>
         );
@@ -209,12 +208,15 @@ export const DisputeTemplate = (props: DisputeTemplateProps) => {
     return null;
   }
 
+  const disputeHasEnded = Number(props.currentTime) > disputeInfo.disputeWindow.endTime;
+
   return (
     <Template
       message={`Dispute round ${
         disputeInfo.disputeWindow.disputeRound
       } for the market: "${description}" is ending soon.`}
       {...props}
+      isDisabled={props.isDisabled || disputeHasEnded}
     />
   );
 };
