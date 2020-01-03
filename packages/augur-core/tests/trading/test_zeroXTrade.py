@@ -17,7 +17,7 @@ def signOrder(orderHash, private_key, signaturePostFix="03"):
 def test_trade_1155_behavior(contractsFixture, augur, cash, market, categoricalMarket, universe):
     ZeroXTrade = contractsFixture.contracts['ZeroXTrade']
     shareToken = contractsFixture.contracts['ShareToken']
-    fillOrder = contractsFixture.contracts['fillOrder']
+    fillOrder = contractsFixture.contracts['FillOrder']
 
     account = contractsFixture.accounts[0]
     account2 = contractsFixture.accounts[1]
