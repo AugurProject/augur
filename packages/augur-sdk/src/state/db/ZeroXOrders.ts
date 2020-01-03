@@ -69,6 +69,7 @@ export interface StoredOrder extends OrderData {
   amount: string,
   numberAmount: BigNumber,
   orderCreator: string,
+  orderId?: string,
 }
 
 export interface StoredSignedOrder {
@@ -195,6 +196,7 @@ export class ZeroXOrders extends AbstractTable {
     // Currently the API for mesh browser and the client API diverge here but we dont want to do string parsing per order to be compliant for the browser case
     const signedOrder = order.signedOrder;
     return {
+      orderId: order.orderHash,
       market: augurOrderData.market,
       price: augurOrderData.price,
       outcome: augurOrderData.outcome,

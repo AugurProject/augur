@@ -25,6 +25,7 @@ import {
 } from '../../index';
 import { sortOptions } from './types';
 import { MarketReportingState, OrderEventType } from '../../constants';
+import { formatBytes32String } from 'ethers/utils';
 
 import * as _ from 'lodash';
 import * as t from 'io-ts';
@@ -32,6 +33,12 @@ import { QUINTILLION } from '../../utils';
 import { OnChainTrading, MarketTradingHistory, Orders } from './OnChainTrading';
 import { MarketInfo, Markets } from './Markets';
 import { Accounts, AccountReportingHistory } from './Accounts';
+import { PlaceTradeDisplayParams } from "../../api/Trade";
+import * as uuid from 'uuid';
+import { ethers } from 'ethers';
+import { convertDisplayAmountToOnChainAmount, convertDisplayPriceToOnChainPrice, numTicksToTickSizeWithDisplayPrices } from '../../utils';
+
+
 
 const DEFAULT_NUMBER_OF_BUCKETS = 30;
 
@@ -222,6 +229,13 @@ export class Users {
         universe: params.universe,
         orderState: OrderState.OPEN,
       });
+      userPositions = await Users.getUserTradingPositions(augur, db, {
+        account: params.account,
+        universe: params.universe,
+      })
+      var totalCostOpenOrders = new BigNumber(0);
+      var markets;
+      if (userOpenOrders) {markets = Object.keys(userOpenOrders);};
 
       marketList = await Markets.getMarkets(augur, db, {
         creator: params.account,
@@ -240,26 +254,19 @@ export class Users {
       if (userStakedRep.disputing && userStakedRep.disputing.contracts.length > 0)
       userStakedRep.disputing.contracts.map(c => [...stakedRepMarketIds, c.marketId]);
 
-
       const positions = await Users.getProfitLossSummary(augur, db, {
         account: params.account,
         universe: params.universe,
       })
-
       if (positions && Object.keys(positions).length > 0) {
         userPositionTotals = {
-          totalFrozenFunds: positions[30].frozenFunds,
+          totalFrozenFunds: userPositions.frozenFundsTotal,
           totalRealizedPL: positions[30].realized,
           tradingPositionsTotal: {
             unrealizedRevenue24hChangePercent: positions[1].unrealizedPercent,
           },
         };
       }
-
-      userPositions = await Users.getUserTradingPositions(augur, db, {
-        account: params.account,
-        universe: params.universe,
-      })
 
       const userPositionsMarketIds: string[] = Array.from(
         new Set([
@@ -275,12 +282,11 @@ export class Users {
         uniqMarketIds.concat(userOpenOrdersMarketIds).concat(stakedRepMarketIds).concat(userPositionsMarketIds)
       );
 
-      const marketIds: string[] = Array.from(
+      var marketIds: string[] = Array.from(
         set
       );
 
       marketsInfo = await Markets.getMarketsInfo(augur, db, { marketIds });
-
     } catch(e) {
       console.error(e);
     }
@@ -486,6 +492,7 @@ export class Users {
       }
     );
 
+    
     // map Latest PLs to Trading Positions
     const tradingPositionsByMarketAndOutcome = _.mapValues(
       profitLossResultsByMarketAndOutcome,
@@ -521,7 +528,7 @@ export class Users {
               marketDoc,
               outcomeValue,
               new BigNumber(profitLossResult.timestamp).toNumber(),
-              shareTokenBalancesByMarketandOutcome
+              shareTokenBalancesByMarketandOutcome,
             );
 
             return tradingPosition;
@@ -636,6 +643,13 @@ export class Users {
   } catch(e) {
     console.error('getUserTradingPositions', e);
   }
+    var openOrdersFrozenFunds = await frozenFundsCalc(augur, db, params, {
+      tradingPositions,
+      tradingPositionsPerMarket: marketTradingPositions,
+      frozenFundsTotal: frozenFundsTotal.dividedBy(QUINTILLION).toFixed(),
+      unrealizedRevenue24hChangePercent: profitLossSummary && profitLossSummary[1].unrealizedPercent || "0",
+    });
+    frozenFundsTotal = frozenFundsTotal.plus(openOrdersFrozenFunds);
     return {
       tradingPositions,
       tradingPositionsPerMarket: marketTradingPositions,
@@ -706,7 +720,6 @@ export class Users {
     const markets = _.keyBy(marketsResponse, 'market');
 
     const buckets = bucketRangeByInterval(startTime, endTime, periodInterval);
-
     return _.map(buckets, bucketTimestamp => {
       const tradingPositionsByMarketAndOutcome = _.mapValues(
         profitLossByMarketAndOutcome,
@@ -761,7 +774,7 @@ export class Users {
                 marketDoc,
                 outcomeValue,
                 bucketTimestamp.toNumber(),
-                null
+                null,
               );
             }
           );
@@ -771,6 +784,7 @@ export class Users {
       const tradingPositions: MarketTradingPosition[] = _.flattenDeep(
         _.map(_.values(tradingPositionsByMarketAndOutcome), _.values)
       );
+
       return sumTradingPositions(tradingPositions);
     });
   }
@@ -823,7 +837,6 @@ export class Users {
           currentValue: '0',
           userSharesBalances: {}
         };
-
         result[days] = sumTradingPositions([endProfit, negativeStartProfit]);
       }
     } catch(e) {
@@ -834,8 +847,9 @@ export class Users {
 }
 
 export function sumTradingPositions(
-  tradingPositions: MarketTradingPosition[]
+  tradingPositions: MarketTradingPosition[],
 ): MarketTradingPosition {
+  console.log(tradingPositions);
   const summedTrade = _.reduce(
     tradingPositions,
     (resultPosition, tradingPosition) => {
@@ -954,6 +968,15 @@ function bucketRangeByInterval(
   return buckets;
 }
 
+function generateTradeGroupId() {
+  return ethers.utils.formatBytes32String(
+    uuid
+      .v4()
+      .toString()
+      .substring(1, 32)
+    );
+}
+
 async function getProfitLossRecordsByMarketAndOutcome(
   db: DB,
   account: string,
@@ -963,6 +986,140 @@ async function getProfitLossRecordsByMarketAndOutcome(
     profitLossResult
   );
 }
+
+async function frozenFundsCalc(augur: Augur,
+    db: DB, params, userPositions: UserTradingPositions) {
+      let userOpenOrders = null;
+      let marketsInfo = null;
+      userOpenOrders = await OnChainTrading.getOpenOrders(augur, db, {
+        account: params.account,
+        universe: params.universe,
+        orderState: OrderState.OPEN,
+      });
+      console.log("banana 2");
+      console.log(userOpenOrders);
+      var totalCostOpenOrders = new BigNumber(0);
+      var markets;
+      if (userOpenOrders) {markets = Object.keys(userOpenOrders);};
+      if (markets) {
+        for (const market of markets) {
+          const outcomes = Object.keys(userOpenOrders[market]);
+          for (const outcome of outcomes) {
+            var buyOrders = userOpenOrders[market][outcome][0];
+            var sellOrders = userOpenOrders[market][outcome][1];
+            var specificBuyOrders;
+            var specificSellOrders;
+            if (buyOrders) {specificBuyOrders = Object.keys(buyOrders);};
+            if (sellOrders) {specificSellOrders = Object.keys(sellOrders);};
+            const fingerprint = formatBytes32String('11'); // TODO: get this from state
+            const doNotCreateOrders = false;
+            var marketIds: string[] = [market];
+            marketsInfo = await Markets.getMarketsInfo(augur, db, { marketIds });
+            const outcomeShares = Object.keys(userPositions.tradingPositionsPerMarket[market].userSharesBalances);
+            if (buyOrders) {
+              for (const specificBuyOrder of specificBuyOrders) {
+                  const tradeGroupId = generateTradeGroupId();
+                  var shortPosition = null;
+                  for (const outcomeNum of outcomeShares) {
+                    if(outcomeNum != outcome) {
+                      if(shortPosition == null) {
+                        shortPosition = userPositions.tradingPositionsPerMarket[market].userSharesBalances[outcomeNum];
+                      }
+                      shortPosition = BigNumber.min(new BigNumber(userPositions.tradingPositionsPerMarket[market].userSharesBalances[outcomeNum]), shortPosition);
+                    }
+                  }
+                  var marketTicks = new BigNumber(marketsInfo[0].numTicks);
+                  var tradeOutcome = parseInt(outcome) as 0 | 5 | 2 | 4 | 3 | 1 | 6 | 7;
+                  var min = new BigNumber(marketsInfo[0].minPrice);
+                  var max = new BigNumber(marketsInfo[0].maxPrice);
+                  var amount = new BigNumber(buyOrders[specificBuyOrder].amount);
+                  var price = new BigNumber(buyOrders[specificBuyOrder].price);
+                  var tradeDisplayShares = new BigNumber(userPositions.tradingPositionsPerMarket[market].userSharesBalances[outcome]);
+                  var tickSize = new BigNumber(marketsInfo[0].tickSize);
+                  const params: PlaceTradeDisplayParams = {
+                      direction: 0,
+                      market: market,
+                      numTicks: marketTicks,
+                      numOutcomes: marketsInfo[0].numOutcomes,
+                      outcome: tradeOutcome,
+                      tradeGroupId: tradeGroupId,
+                      fingerprint: fingerprint,
+                      kycToken: buyOrders[specificBuyOrder].kycToken,
+                      doNotCreateOrders: doNotCreateOrders,
+                      displayMinPrice: min,
+                      displayMaxPrice: max,
+                      displayAmount: amount,
+                      displayPrice: price,
+                      displayShares: tradeDisplayShares,
+                  };
+                  var amount = convertDisplayAmountToOnChainAmount(params.displayAmount, tickSize);
+                  var shares = convertDisplayAmountToOnChainAmount(params.displayShares, tickSize);
+                  // when selling, we want to do this
+                  // var shares = min(shares, amount);
+                  // when buying, we want to do this
+                  var shares = BigNumber.min(shortPosition, amount);
+                  var price = convertDisplayPriceToOnChainPrice(params.displayPrice, params.displayMinPrice, tickSize);
+                  var amountNotCoveredByShares = amount.minus(shares);
+
+                  const cost =
+                    params.direction == 0
+                      ? price.multipliedBy(amountNotCoveredByShares)
+                      : params.numTicks
+                          .minus(price)
+                          .multipliedBy(amountNotCoveredByShares);
+                  console.log(cost.toString());
+                  totalCostOpenOrders = totalCostOpenOrders.plus(cost);
+              };
+            }
+            if (sellOrders) {
+              for (const specificSellOrder of specificSellOrders) {
+                  const tradeGroupId = generateTradeGroupId();
+                  var marketTicks = new BigNumber(marketsInfo[0].numTicks);
+                  var tradeOutcome = parseInt(outcome) as 0 | 5 | 2 | 4 | 3 | 1 | 6 | 7;
+                  var min = new BigNumber(marketsInfo[0].minPrice);
+                  var max = new BigNumber(marketsInfo[0].maxPrice);
+                  var amount = new BigNumber(sellOrders[specificSellOrder].amount);
+                  var price = new BigNumber(sellOrders[specificSellOrder].price);
+                  var tradeDisplayShares = new BigNumber(userPositions.tradingPositionsPerMarket[market].userSharesBalances[outcome]);
+                  var tickSize = new BigNumber(marketsInfo[0].tickSize);
+                  const params: PlaceTradeDisplayParams = {
+                      direction: 0,
+                      market: market,
+                      numTicks: marketTicks,
+                      numOutcomes: marketsInfo[0].numOutcomes,
+                      outcome: tradeOutcome,
+                      tradeGroupId: tradeGroupId,
+                      fingerprint: fingerprint,
+                      kycToken: sellOrders[specificSellOrder].kycToken,
+                      doNotCreateOrders: doNotCreateOrders,
+                      displayMinPrice: min,
+                      displayMaxPrice: max,
+                      displayAmount: amount,
+                      displayPrice: price,
+                      displayShares: tradeDisplayShares,
+                  };
+                  var amount = convertDisplayAmountToOnChainAmount(params.displayAmount, tickSize);
+                  var shares = convertDisplayAmountToOnChainAmount(params.displayShares, tickSize);
+                  // when selling, we want to do this
+                  var shares = BigNumber.min(shares, amount);
+                  var price = convertDisplayPriceToOnChainPrice(params.displayPrice, params.displayMinPrice, tickSize);
+                  var amountNotCoveredByShares = amount.minus(shares);
+
+                  const cost =
+                    params.direction == 0
+                      ? price.multipliedBy(amountNotCoveredByShares)
+                      : params.numTicks
+                          .minus(price)
+                          .multipliedBy(amountNotCoveredByShares);
+                  console.log(cost.toString());
+                  totalCostOpenOrders = totalCostOpenOrders.plus(cost);
+              };
+            }
+          }
+        };
+      };
+      return totalCostOpenOrders;
+  }
 
 async function getOrderFilledRecordsByMarketAndOutcome(
   db: DB,
@@ -1028,7 +1185,7 @@ function getTradingPositionFromProfitLossFrame(
   marketDoc: MarketData,
   onChainOutcomeValue: BigNumber,
   timestamp: number,
-  shareTokenBalancesByMarketandOutcome
+  shareTokenBalancesByMarketandOutcome,
 ): TradingPosition {
   const minPrice = new BigNumber(marketDoc.prices[0]);
   const maxPrice = new BigNumber(marketDoc.prices[1]);
