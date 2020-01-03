@@ -110,7 +110,7 @@ export default function setAlertText(alert: any, callback: Function) {
       return dispatch(callback(alert));
     }
 
-    const marketId = alert.params.market || alert.params._market;
+    const marketId = alert.params.marketId || alert.params.market;
     if (!marketId) return;
     switch (alert.name.toUpperCase()) {
       // CancelOrder
@@ -118,25 +118,22 @@ export default function setAlertText(alert: any, callback: Function) {
         alert.title = 'Order Cancelled';
         dispatch(
           loadMarketsInfoIfNotLoaded([marketId], () => {
+            if (alert.status !== TXEventName.Success) {
+              return;
+            }
             const marketInfo = selectMarket(marketId);
             if (marketInfo === null) return;
             alert.description = marketInfo.description;
-            const amount = alert.params.order.amount;
-            const price = alert.params.order.price;
-            const orderType = alert.params.orderTypeLabel;
-            const outcomeDescription =
-              alert.params.outcomeId === null
-                ? 'Market Is Invalid'
-                : getOutcomeNameWithOutcome(
-                    marketInfo,
-                    alert.params.outcomeId,
-                    false
-                  );
-            alert.details = `${toCapitalizeCase(orderType)}  ${
-              formatShares(amount).formatted
-            } of ${
-              formatDai(price).formatted
-            } of ${outcomeDescription} has been cancelled`;
+
+            const { orderType, price, outcomeDescription } = getInfo(
+              alert.params,
+              alert.status,
+              marketInfo
+            );
+
+            alert.details = `${orderType}  ${
+              formatShares(alert.params.unmatchedShares.formatted).formatted
+            } of ${outcomeDescription} @ ${formatDai(price).formatted}`;
           })
         );
         break;

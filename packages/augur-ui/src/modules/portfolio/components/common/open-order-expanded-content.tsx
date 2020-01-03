@@ -8,7 +8,7 @@ import MarketTitle from 'modules/market/containers/market-title';
 import { Order } from "modules/portfolio/types";
 
 import Styles from "modules/portfolio/components/common/expanded-content.styles.less";
-import { augurSdk } from "services/augursdk";
+import { cancelOrder } from "modules/orders/actions/cancel-order";
 
 export interface OpenOrderExpandedContentProps {
   openOrder: Order;
@@ -62,9 +62,7 @@ const OpenOrderExpandedContent = (props: OpenOrderExpandedContentProps) => {
               disabled={openOrder.pending}
               action={(e: Event) => {
                 e.stopPropagation();
-                console.log(openOrder.id);
-                const augur = augurSdk.get();
-                augur.cancelOrder(openOrder.id)
+                cancelOrder(String(openOrder.id));
               }}
               text="Cancel"
             />

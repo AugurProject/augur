@@ -23,8 +23,14 @@ export interface ZeroXOrder extends Order {
   makerAssetData: string;
   takerAssetData: string;
   signature: string;
-  makerFeeAssetData: '0x',
-  takerFeeAssetData: '0x',
+  makerFeeAssetData: string;
+  takerFeeAssetData: string;
+  feeRecipientAddress: string;
+  takerAddress: string;
+  makerAddress: string;
+  senderAddress: string;
+  makerFee: string;
+  takerFee: string;
 }
 
 export interface ZeroXOrders {
@@ -206,6 +212,12 @@ export class ZeroXOrdersGetters {
       signature: storedOrder.signedOrder.signature,
       makerFeeAssetData: '0x',
       takerFeeAssetData: '0x',
-    } as ZeroXOrder; // TODO this is hiding some missing properties
+      feeRecipientAddress: storedOrder.signedOrder.feeRecipientAddress,
+      takerAddress: storedOrder.signedOrder.takerAddress,
+      makerAddress: storedOrder.signedOrder.makerAddress,
+      senderAddress: storedOrder.signedOrder.senderAddress,
+      makerFee: storedOrder.signedOrder.makerFee,
+      takerFee: storedOrder.signedOrder.takerFee,
+    } as ZeroXOrder ; // TODO this is hiding some missing properties
   }
 }
