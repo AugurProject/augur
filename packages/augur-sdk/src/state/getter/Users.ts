@@ -849,7 +849,6 @@ export class Users {
 export function sumTradingPositions(
   tradingPositions: MarketTradingPosition[],
 ): MarketTradingPosition {
-  console.log(tradingPositions);
   const summedTrade = _.reduce(
     tradingPositions,
     (resultPosition, tradingPosition) => {
@@ -996,8 +995,6 @@ async function frozenFundsCalc(augur: Augur,
         universe: params.universe,
         orderState: OrderState.OPEN,
       });
-      console.log("banana 2");
-      console.log(userOpenOrders);
       var totalCostOpenOrders = new BigNumber(0);
       var markets;
       if (userOpenOrders) {markets = Object.keys(userOpenOrders);};
@@ -1067,7 +1064,6 @@ async function frozenFundsCalc(augur: Augur,
                       : params.numTicks
                           .minus(price)
                           .multipliedBy(amountNotCoveredByShares);
-                  console.log(cost.toString());
                   totalCostOpenOrders = totalCostOpenOrders.plus(cost);
               };
             }
@@ -1111,7 +1107,6 @@ async function frozenFundsCalc(augur: Augur,
                       : params.numTicks
                           .minus(price)
                           .multipliedBy(amountNotCoveredByShares);
-                  console.log(cost.toString());
                   totalCostOpenOrders = totalCostOpenOrders.plus(cost);
               };
             }

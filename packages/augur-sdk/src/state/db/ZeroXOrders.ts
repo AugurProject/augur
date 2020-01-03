@@ -124,7 +124,22 @@ export class ZeroXOrders extends AbstractTable {
   async handleMeshEvent(orderEvents: OrderEvent[]): Promise<void> {
     if (orderEvents.length < 1) return;
     console.log('Mesh events received');
-    console.log(JSON.stringify(orderEvents));
+    var emittedEvents = new Object();
+    var eventKeys = Object.keys(orderEvents);
+    for (const eventKey of eventKeys) {
+      var processedOrder = this.processOrder(orderEvents[eventKey]);
+      if(orderEvents[eventKey].endState == "EXPIRED" || orderEvents[eventKey].endState == "CANCELLED" || orderEvents[eventKey].endState == "INVALID") {
+        this.table.where('orderHash').equals(orderEvents[eventKey].orderHash).delete();
+        this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Cancel, processedOrder});
+      }
+      if(orderEvents[eventKey].endState == "FILLED" || orderEvents[eventKey].endState == "FULLY_FILLED") {
+        if(orderEvents[eventKey].endState == "FULLY_FILLED") {
+          this.table.where('orderHash').equals(orderEvents[eventKey].orderHash).delete();
+        } 
+        this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Fill, processedOrder});
+      }
+    }
+
     const filteredOrders = _.filter(orderEvents, this.validateOrder.bind(this));
     let documents = _.map(filteredOrders, this.processOrder.bind(this));
     documents = _.filter(documents, this.validateStoredOrder.bind(this));
@@ -136,6 +151,20 @@ export class ZeroXOrders extends AbstractTable {
 
   async sync(): Promise<void> {
     const orders: OrderInfo[] = await this.augur.zeroX.getOrders();
+    // for (const order in orders) {
+    //   console.log(order);
+    //   var processedOrder = this.processOrder(order);
+    //   if(order.endState == "EXPIRED" || order.endState == "CANCELLED" || order.endState == "INVALID") {
+    //     console.log("Deleted order");
+    //     this.table.where('orderHash').equals(order.orderHash).delete();
+    //     this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Cancel, processedOrder});
+    //   }
+    //   if(order.endState == "FILLED" || order.endState == "FULLY_FILLED") {
+    //     console.log("Deleted order");
+    //     this.table.where('orderHash').equals(order.orderHash).delete();
+    //     this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Fill, processedOrder});
+    //   }
+    // }
     let documents;
     if (orders.length > 0) {
       documents = _.filter(orders, this.validateOrder.bind(this));
@@ -168,26 +197,9 @@ export class ZeroXOrders extends AbstractTable {
     }
     if (!storedOrder["numberAmount"].mod(tradeInterval).isEqualTo(0)) return false;
 
-    // expired
-    // filled their own order
-    // unapproved order (had no approvals, this is identical to filling own order from contracts pov, on 0x side looks like a fill)
-    // actual cancel
-    // a regular fill
     if (storedOrder.numberAmount.isEqualTo(0)) {
-      console.log("Deleted order");
-      this.table.where('orderHash').equals(storedOrder.orderHash).delete();
-      this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Fill, ...storedOrder});
       return false;
     }
-    if (parseInt(storedOrder.signedOrder.expirationTimeSeconds) - moment().unix() < 60) {
-      this.table.where('orderHash').equals(storedOrder.orderHash).delete();
-      this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Cancel, ...storedOrder});
-      return false;
-    };
-
-      // if (storedOrder.signedOrder.makerAddress == this.account || parseInt(storedOrder.signedOrder.expirationTimeSeconds) - moment().unix() < 20) {
-        // this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Cancel, ...storedOrder});
-      // }
     return true;
   }
 

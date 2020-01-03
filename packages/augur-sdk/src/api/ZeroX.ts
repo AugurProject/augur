@@ -223,6 +223,7 @@ export class ZeroX {
     );
 
     const amountRemaining = this.getTradeAmountRemaining(account, params.amount, result);
+    console.log(amountRemaining.toString());
     if (amountRemaining.gt(0)) {
       params.amount = amountRemaining;
       // On successive iterations we specify previously taken signed orders since its possible we do another loop before the mesh has updated our view on the orderbook
