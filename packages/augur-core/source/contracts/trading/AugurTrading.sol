@@ -185,10 +185,10 @@ contract AugurTrading is IAugurTrading {
         return true;
     }
 
-    function logZeroXOrderFilled(IUniverse _universe, IMarket _market, bytes32 _tradeGroupId, uint8 _orderType, address[] memory _addressData, uint256[] memory _uint256Data) public returns (bool) {
-        require(msg.sender == registry["FillOrder"]);
+    function logZeroXOrderFilled(IUniverse _universe, IMarket _market, bytes32 _orderHash, bytes32 _tradeGroupId, uint8 _orderType, address[] memory _addressData, uint256[] memory _uint256Data) public returns (bool) {
+        require(msg.sender == registry["ZeroXTrade"]);
         _uint256Data[7] = augur.getTimestamp();
-        emit OrderEvent(address(_universe), address(_market), OrderEventType.Fill, _orderType, bytes32(0), _tradeGroupId, _addressData, _uint256Data);
+        emit OrderEvent(address(_universe), address(_market), OrderEventType.Fill, _orderType, _orderHash, _tradeGroupId, _addressData, _uint256Data);
         return true;
     }
 }

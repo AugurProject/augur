@@ -248,6 +248,7 @@ def test_one_bid_on_books_buy_full_order(withSelf, contractsFixture, cash, marke
     # fill signed order
     orderEventLog = {
 	    "eventType": 2,
+        "orderId": orderHash,
 	    "addressData": [nullAddress, contractsFixture.accounts[2] if withSelf else contractsFixture.accounts[1] , contractsFixture.accounts[2]],
 	    "uint256Data": [60, 0, YES, 0, 0, 0, fix(2),  contractsFixture.contracts['Time'].getTimestamp(), 0, 0],
     }
@@ -263,7 +264,7 @@ def test_one_bid_on_books_buy_full_order(withSelf, contractsFixture, cash, marke
         assert shareToken.balanceOfMarketOutcome(market.address, YES, sender) == fix(2)
         assert shareToken.balanceOfMarketOutcome(market.address, NO, contractsFixture.accounts[2]) == fix(2)
     else:
-        assert ZeroXTrade.trade(fix(2), longTo32Bytes(11), tradeGroupID, orders, signatures, sender=contractsFixture.accounts[2], value=150000) == fix(2)
+        assert ZeroXTrade.trade(fix(2), longTo32Bytes(11), tradeGroupID, orders, signatures, sender=contractsFixture.accounts[2], value=150000) == 0
 
 def test_one_bid_on_books_buy_partial_order(contractsFixture, cash, market):
     ZeroXTrade = contractsFixture.contracts['ZeroXTrade']
@@ -281,6 +282,7 @@ def test_one_bid_on_books_buy_partial_order(contractsFixture, cash, market):
     # fill signed order
     orderEventLog = {
 	    "eventType": 2,
+        "orderId": orderHash,
 	    "addressData": [nullAddress, contractsFixture.accounts[1], contractsFixture.accounts[2]],
 	    "uint256Data": [60, 0, YES, 0, 0, 0, fix(1),  contractsFixture.contracts['Time'].getTimestamp(), 0, 0],
     }
