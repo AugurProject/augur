@@ -298,7 +298,7 @@ export default class AppView extends Component<AppProps> {
       icon = <MobileNavHamburgerIcon />;
     } else {
       if (menuState === MOBILE_MENU_STATES.FIRSTMENU_OPEN) {
-        icon = <MobileNavHamburgerIcon />;
+        icon = null;
       } else {
         icon = <MobileNavCloseIcon />;
       }
