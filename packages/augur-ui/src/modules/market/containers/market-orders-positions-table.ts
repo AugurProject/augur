@@ -42,8 +42,8 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  cancelAllOpenOrders: (orders, cb) =>
-    dispatch(cancelAllOpenOrders(orders, cb)),
+  cancelAllOpenOrders: (orders) =>
+    dispatch(cancelAllOpenOrders(orders)),
 });
 
 const MarketOrdersPositionsTableContainer = withRouter(

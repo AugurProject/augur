@@ -183,8 +183,7 @@ export class ZeroXOrders extends AbstractTable {
     if (marketData && marketData.marketType == MarketType.Scalar) {
       tradeInterval = TRADE_INTERVAL_VALUE.dividedBy(marketData.numTicks);
     }
-    if (!storedOrder["numberA
-    mount"].mod(tradeInterval).isEqualTo(0)) return false;
+    if (!storedOrder["numberAmount"].mod(tradeInterval).isEqualTo(0)) return false;
 
     if (storedOrder.numberAmount.isEqualTo(0)) {
       console.log("Deleted order");

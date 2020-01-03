@@ -11,9 +11,7 @@ import {
   BUY,
   SCALAR,
   BINARY_CATEGORICAL_FORMAT_OPTIONS,
-  CANCELORDER
 } from 'modules/common/constants';
-import getUserOpenOrder from 'modules/orders/selectors/select-user-open-order';
 import {
   TXEventName
 } from '@augurproject/sdk';
@@ -27,7 +25,6 @@ import {
   selectPendingOrdersState,
 } from 'store/select-state';
 import { createSelector } from 'reselect';
-import { addAlert } from 'modules/alerts/actions/alerts';
 
 function selectMarketsDataStateMarket(state, marketId) {
   return selectMarketInfosState(state)[marketId];
@@ -204,20 +201,6 @@ function getUserOpenOrders(
       sharesEscrowed: formatShares(order.sharesEscrowed, shareOptions),
       marketDescription,
       name,
-      cancelOrder: (order) => {
-        const { id } = order;
-        store.dispatch(
-          addAlert({
-            id,
-            uniqueId: id,
-            name: CANCELORDER,
-            status: '',
-            params: {
-              ...order,
-            },
-          })
-        );
-        cancelOrder(id);
-      }
+      cancelOrder: (order) => store.dispatch(cancelOrder(order))
     }));
 }
