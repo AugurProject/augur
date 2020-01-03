@@ -17,12 +17,22 @@
   }
 }
 
-@media @breakpoint-mobile {
+@media @breakpoint-mobile-new {
   .OrderMarket {
-    margin-top: 2px;
+    margin-bottom: @size-8;
+    margin-top: 0;
+    border: 1px solid @color-dark-grey;
+
+    &:not(:last-of-type) {
+      margin-bottom: @size-8;
+    }
+
+    &:first-of-type {
+      border-top: 0;
+    }
 
     > div:first-of-type {
-      .text-10;
+      .text-12-medium;
 
       padding: @size-8 @size-12 0;
       margin-bottom: @size-8;

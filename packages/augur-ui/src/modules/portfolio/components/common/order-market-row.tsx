@@ -24,7 +24,7 @@ const OrderMarketRow = (props: OrderMarketRowProps) => {
   }
 
   return (
-    <div className={Styles.OrderMarket}>
+    <section className={Styles.OrderMarket}>
       <div>
         <MarketTitle id={market.marketId} />
       </div>
@@ -37,7 +37,7 @@ const OrderMarketRow = (props: OrderMarketRowProps) => {
           )
         )}
       </div>
-    </div>
+    </section>
   );
 };
 

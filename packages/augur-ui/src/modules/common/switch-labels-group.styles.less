@@ -4,7 +4,11 @@
   display: flex;
   flex: 1;
   justify-content: flex-start;
-  padding: @size-10 @size-10 0 @size-10;
+  padding: @size-10 @size-10 0 0;
+
+  @media @breakpoint-mobile-new {
+    padding-left: @size-10;
+  }
 
   @media @breakpoint-min-desktop-min {
     padding: @size-10 0 0 0;
