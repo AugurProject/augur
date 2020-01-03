@@ -249,7 +249,7 @@ export default class FormDetails extends React.Component<
                 onChange={(value: string) =>
                   onChange('scalarDenomination', value)
                 }
-                disabled={isTemplate}
+                disabled={isTemplate && newMarket.template.denomination}
                 value={scalarDenomination}
                 errorMessage={validations.scalarDenomination}
               />
