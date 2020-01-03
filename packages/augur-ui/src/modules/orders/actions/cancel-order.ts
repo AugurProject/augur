@@ -1,77 +1,52 @@
-import logError from 'utils/log-error';
-import { AppState } from 'store';
-import { ThunkDispatch } from 'redux-thunk';
-import { Action } from 'redux';
-import { NodeStyleCallback } from 'modules/types';
-import getUserOpenOrder from 'modules/orders/selectors/select-user-open-order';
 import {
-  cancelOpenOrders,
-  cancelOpenOrder,
+  cancelZeroXOpenOrder,
+  cancelZeroXOpenBatchOrders,
 } from 'modules/contracts/actions/contractCalls';
-import { addAlert } from 'modules/alerts/actions/alerts';
+import { ThunkDispatch } from 'redux-thunk';
 import { CANCELORDER } from 'modules/common/constants';
+import { addAlert } from 'modules/alerts/actions/alerts';
+import { Action } from 'redux';
 
-export const cancelAllOpenOrders = (orders: any, cb: NodeStyleCallback) => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
+export const cancelAllOpenOrders = orders => async (
+  dispatch: ThunkDispatch<void, any, Action>
 ) => {
-  // TODO: need to figure out max number of orders that can be cancelled at one time
-  cancelOpenOrders(orders.map(o => o.id));
-  if (cb) cb(null);
+  const orderHashes = orders.map(order => order.id);
+  try {
+    orders.forEach(order => {
+      sendCancelAlert(order, dispatch);
+    });
+    await cancelZeroXOpenBatchOrders(orderHashes);
+  } catch (error) {
+    console.error('Error canceling batch orders', error);
+    throw error;
+  }
 };
 
-export const cancelOrder = (
-  { orderId, marketId, outcome, orderTypeLabel }: any,
-  callback: NodeStyleCallback = logError
-) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
-  const { userOpenOrders } = getState();
-  const order = getUserOpenOrder(
-    orderId,
-    marketId,
-    outcome,
-    orderTypeLabel,
-    userOpenOrders
-  );
-  if (order) {
-    // TODO: we'll update state using pending tx events.
-    dispatch(
-      addAlert({
-        id: orderId,
-        uniqueId: orderId,
-        name: CANCELORDER,
-        status: '',
-        params: {
-          marketId,
-          outcomeId: outcome,
-          orderTypeLabel,
-          order,
-        },
-      })
-    );
-    cancelOpenOrder(orderId);
+export const cancelOrder = order => async (
+  dispatch: ThunkDispatch<void, any, Action>
+) => {
+  try {
+    const { id } = order;
+    sendCancelAlert(order, dispatch);
+    await cancelZeroXOpenOrder(id);
+  } catch (error) {
+    console.error('Error canceling order', error);
+    throw error;
   }
+};
 
-  if (!order) {
-    console.log('order not found need to do something in UI');
-  }
-  if (callback) callback(null);
-  /*
-  const market = marketInfos[marketId];
-  if (
-    order &&
-    market
-  ) {
-    const updateStatus = (status: string | null) => {
-      dispatch(
-        updateOrderStatus({
-          orderId,
-          status,
-          marketId,
-          outcome,
-          orderTypeLabel,
-        }),
-      );
-    };
-    updateStatus(CLOSE_DIALOG_PENDING);
-    */
+const sendCancelAlert = (order, dispatch) => {
+  const { id } = order;
+
+  dispatch(
+    addAlert({
+      id,
+      uniqueId: id,
+      name: CANCELORDER,
+      status: '',
+      params: {
+        ...order,
+      },
+    })
+  );
 };

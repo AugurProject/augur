@@ -10,9 +10,8 @@ import {
   SELL,
   BUY,
   SCALAR,
-  BINARY_CATEGORICAL_FORMAT_OPTIONS
+  BINARY_CATEGORICAL_FORMAT_OPTIONS,
 } from 'modules/common/constants';
-
 import {
   TXEventName
 } from '@augurproject/sdk';
@@ -190,8 +189,9 @@ function getUserOpenOrders(
       marketId,
       outcomeId,
       creationTime: convertUnixToFormattedDate(order.creationTime),
+      expiry: convertUnixToFormattedDate(order.expirationTimeSeconds),
       pending: !!orderCancellation[order.orderId] && orderCancellation[order.orderId] !== TXEventName.Failure,
-      status: order.status,
+      status: order.orderState,
       orderCancellationStatus: orderCancellation[order.orderId],
       originalShares: formatNone(),
       avgPrice: formatDai(order.fullPrecisionPrice),
@@ -201,15 +201,6 @@ function getUserOpenOrders(
       sharesEscrowed: formatShares(order.sharesEscrowed, shareOptions),
       marketDescription,
       name,
-      cancelOrder: ({ id, marketId, outcomeId, type }) => {
-        store.dispatch(
-          cancelOrder({
-            orderId: id,
-            marketId,
-            outcome: outcomeId,
-            orderTypeLabel: type,
-          })
-        );
-      },
+      cancelOrder: (order) => store.dispatch(cancelOrder(order))
     }));
 }

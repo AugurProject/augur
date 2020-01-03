@@ -126,8 +126,23 @@ export class ZeroXOrders extends AbstractTable {
     if (orderEvents.length < 1) return;
     console.log('Mesh events received');
     console.log(JSON.stringify(orderEvents));
+
     const filteredOrders = _.filter(orderEvents, this.validateOrder.bind(this));
     let documents = _.map(filteredOrders, this.processOrder.bind(this));
+
+    // Remove Canceled Orders and emit event
+    const canceledOrders =
+      _.filter(orderEvents, (orderEvent => orderEvent.endState === 'CANCELLED'))
+      .map(order => order.orderHash);
+
+    for (const d of documents) {
+      if (canceledOrders.includes(d.orderHash)) {
+        documents = _.filter(documents, (orderEvent => orderEvent.orderHash !== d.orderHash));
+        this.table.where('orderHash').equals(d.orderHash).delete();
+        this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Cancel, orderId: d.orderHash,...d});
+      }
+    }
+
     documents = _.filter(documents, this.validateStoredOrder.bind(this));
     await this.bulkUpsertDocuments(documents);
     for (const d of documents) {
@@ -185,7 +200,7 @@ export class ZeroXOrders extends AbstractTable {
     //   await this.bulkUpsertDocuments([...storedOrder]);
     //   if(storedOrder.endState == "FULLY_FILLED") {
     //     this.table.where('orderHash').equals(storedOrder.orderHash).delete();
-    //   } 
+    //   }
     //   this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Fill, ...storedOrder});
     //   return false;
     // }

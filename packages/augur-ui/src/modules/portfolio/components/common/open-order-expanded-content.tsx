@@ -8,7 +8,7 @@ import MarketTitle from 'modules/market/containers/market-title';
 import { Order } from "modules/portfolio/types";
 
 import Styles from "modules/portfolio/components/common/expanded-content.styles.less";
-import { augurSdk } from "services/augursdk";
+import { cancelOrder } from "modules/orders/actions/cancel-order";
 
 export interface OpenOrderExpandedContentProps {
   openOrder: Order;
@@ -21,6 +21,7 @@ const OpenOrderExpandedContent = (props: OpenOrderExpandedContentProps) => {
   const tokensEscrowed = getValue(openOrder, "tokensEscrowed");
   const sharesEscrowed = getValue(openOrder, "sharesEscrowed");
   const creationTime = getValue(openOrder, "creationTime.formattedLocalShortDateTimeNoTimezone");
+  const expiry = getValue(openOrder, 'expiry.formattedLocalShortDateTimeNoTimezone');
 
   return (
     <div className={Styles.OrderInfo}>
@@ -52,8 +53,8 @@ const OpenOrderExpandedContent = (props: OpenOrderExpandedContentProps) => {
             />
             <LinearPropertyLabel
               highlightFirst
-              label="Date"
-              value={creationTime}
+              label="Expiry"
+              value={expiry}
             />
           </div>
           {openOrder.cancelOrder && (
@@ -61,9 +62,7 @@ const OpenOrderExpandedContent = (props: OpenOrderExpandedContentProps) => {
               disabled={openOrder.pending}
               action={(e: Event) => {
                 e.stopPropagation();
-                console.log(openOrder.id);
-                const augur = augurSdk.get();
-                augur.cancelOrder(openOrder.id)
+                cancelOrder(String(openOrder.id));
               }}
               text="Cancel"
             />
