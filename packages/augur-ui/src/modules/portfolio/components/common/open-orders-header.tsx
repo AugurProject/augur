@@ -35,7 +35,6 @@ const OpenOrdersHeader = (props: OpenOrdersHeaderProps) => (
         (Shares)
       </li>
     )}
-    <li />
   </ul>
 );
 
