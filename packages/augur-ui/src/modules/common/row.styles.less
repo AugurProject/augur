@@ -347,6 +347,7 @@ div.SingleRow3 {
 
   .Row3_a {
     grid-template-columns: repeat(5, 1fr);
+    border-bottom: 1px solid @color-dark-grey;
 
      > li {
       &:last-child {
@@ -359,8 +360,8 @@ div.SingleRow3 {
     padding: 0.75rem 0;
   }
 
-  .SingleRow3 {
-    background: fade(@color-secondary-action, 40%);
+  div.SingleRow3 {
+    background: @color-active-background;
     border: 0;
     padding: 0 @size-12;
   }

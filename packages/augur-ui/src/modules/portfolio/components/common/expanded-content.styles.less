@@ -49,12 +49,12 @@
 }
 
 .PositionInfo {
-  background-color: @color-active-background;
   display: flex;
   flex: 1;
   flex-direction: row;
   justify-content: flex-end;
   padding: @size-8 @size-42 @size-8 0;
+  background: @color-active-background;
 
   > div {
     align-items: flex-end;
@@ -72,6 +72,8 @@
 @media @breakpoint-mobile-mid {
   .PositionInfo {
     padding: 0 0 @size-12;
+    border-bottom: 1px solid @color-dark-grey !important;
+    padding-bottom: @size-8 !important;
 
     > div {
       max-width: unset;
