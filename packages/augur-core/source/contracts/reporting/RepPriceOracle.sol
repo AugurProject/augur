@@ -5,16 +5,22 @@ import 'ROOT/libraries/Initializable.sol';
 import 'ROOT/uniswap/interfaces/IUniswapV2.sol';
 import 'ROOT/uniswap/interfaces/IUniswapV2Factory.sol';
 import 'ROOT/reporting/IRepPriceOracle.sol';
+import 'ROOT/ens/IENSRegistry.sol';
+import 'ROOT/ens/IENSResolver.sol';
 
 
 contract RepPriceOracle is IRepPriceOracle, Initializable {
 
     uint256 constant Q112 = 2**112;
 
+    bytes32 public constant UNISWAP_REGISTRY_ENS_NAME = 0xf259e1e59b6e1e9de21a18289a53332ebc255d2e4ece8a91e0e90c628a9c7f87; // "uniswapv2.eth"; // TODO: set this to the actual namehash of the owned ENS name
+
     IAugur public augur;
     address public cash;
-    uint256 public period = 1 days;
+    uint256 public period = 3 days; // TODO: revisit if this is an appropriate period
     IUniswapV2Factory public uniswapFactory;
+    IENSRegistry public ensRegistry;
+    bool public uniswapUpgraded;
 
     struct ExchangeData {
         IUniswapV2 exchange;
@@ -23,6 +29,7 @@ contract RepPriceOracle is IRepPriceOracle, Initializable {
         uint256 blockTimestamp;
         uint256 price;
         bool repIsToken0;
+        bool upgradeHandled;
     }
 
     mapping(address => ExchangeData) public exchangeData;
@@ -36,12 +43,18 @@ contract RepPriceOracle is IRepPriceOracle, Initializable {
         require(cash != address(0));
         uniswapFactory = IUniswapV2Factory(_augur.lookup("UniswapV2Factory"));
         require(uniswapFactory != IUniswapV2Factory(0));
+        ensRegistry = IENSRegistry(_augur.lookup("ENSRegistry"));
+        require(ensRegistry != IENSRegistry(0));
     }
 
     function upgradeUniswapFactory() public {
-        // check ENS registry if address exists for uniswap V2 factory
-        // If not return
-        // set uniswap Factory
+        require(!uniswapUpgraded, "Already upgraded");
+        IENSResolver _resolver = IENSResolver(ensRegistry.resolver(UNISWAP_REGISTRY_ENS_NAME));
+        require(_resolver != IENSResolver(0), "Resolver for ENS name not found");
+        address _newUniswapFactory = _resolver.addr(UNISWAP_REGISTRY_ENS_NAME);
+        require(_newUniswapFactory != address(0), "Could not get address from resolver");
+        uniswapFactory = IUniswapV2Factory(_newUniswapFactory);
+        uniswapUpgraded = true;
     }
 
     // TODO: Consider when this should be called other than when the price is requested as part of new fee setting
@@ -60,6 +73,14 @@ contract RepPriceOracle is IRepPriceOracle, Initializable {
         uint256 _blockTimestamp = block.timestamp; // solium-disable-line security/no-block-members
         if (_blockNumber == _exchangeData.blockNumber) {
             return _exchangeData;
+        }
+
+        if (uniswapUpgraded && !_exchangeData.upgradeHandled) {
+            uint256 _price = _exchangeData.price;
+            initializeUniverse(_reputationToken);
+            exchangeData[address(_reputationToken)].price = _price;
+            exchangeData[address(_reputationToken)].upgradeHandled = true;
+            return exchangeData[address(_reputationToken)];
         }
 
         IUniswapV2 _exchange = _exchangeData.exchange;
@@ -117,12 +138,11 @@ contract RepPriceOracle is IRepPriceOracle, Initializable {
 
     function getInitialPrice(IV2ReputationToken _reputationToken) private view returns (uint256) {
         IUniverse _parentUniverse = _reputationToken.getUniverse().getParentUniverse();
-        uint256 _initialPrice = genesisInitialRepPriceinAttoCash;
         if (_parentUniverse != IUniverse(0)) {
             IV2ReputationToken _parentReputationToken = _parentUniverse.getReputationToken();
-            _initialPrice = exchangeData[address(_parentReputationToken)].price;
+            return exchangeData[address(_parentReputationToken)].price;
         }
-        return _initialPrice;
+        return genesisInitialRepPriceinAttoCash;
     }
 
     function getOrCreateUniswapExchange(IV2ReputationToken _reputationToken) public returns (IUniswapV2) {
