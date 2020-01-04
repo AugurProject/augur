@@ -15,72 +15,38 @@
     margin: 0;
   }
 
-  > div:first-of-type {
-    .mono-11-bold;
+  > h4 {
+    .mono-12-bold;
 
-    color: @color-primary-text;
+    color: @color-secondary-text;
+    margin-bottom: @size-8;
   }
 
   > div:nth-of-type(2) {
-    margin-top: @size-16;
-  }
-
-  > div:nth-of-type(3) {
     .mono-22-bold;
 
-    margin: @size-2 @size-4 0;
+    margin: @size-2 @size-4 @size-20;
 
     @media @breakpoint-mobile-mid {
-      color: @color-primary-text;
       margin-bottom: @size-12;
     }
+  }
 
-    > svg {
-      fill: @color-primary-text;
-      height: @size-16;
-      margin: 0 0 0 @size-4;
-      width: @size-16;
+  > div[class*="LinearPropertyLabel"] {
+    align-items: baseline;
+    margin-left: @size-56;
+    margin-right: @size-56;
+
+    > span:first-of-type {
+      .mono-10-bold;
+
+      color: @color-secondary-text;
+    }
+
+    > span {
+      .mono-12-medium;
+
+      color: @color-primary-text;
     }
   }
-
-  > div:last-of-type {
-    display: flex;
-    width: 100%;
-  }
-}
-
-.BalanceFrozenFunds {
-  align-items: center;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  text-align: center;
-  width: 100%;
-  max-width: 300px;
-  
-  > div:last-of-type {
-    flex-grow: unset;
-
-    > svg {
-      fill: @color-primary-text;
-      height: @size-12;
-      margin: 0 0 0 @size-4;
-      width: @size-8;
-    }
-  }
-
-  &:last-of-type {
-    > div {
-      margin-botttom: 0;
-    }
-  }
-
-  @media @breakpoint-mobile-mid {
-    max-width: unset;
-  }
-}
-
-.Linear {
-  flex-direction: column;
-  margin-top: @size-20;
 }

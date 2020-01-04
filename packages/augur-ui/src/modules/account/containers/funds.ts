@@ -18,10 +18,9 @@ const mapStateToProps = (state: AppState) => {
   const { tradingPositionsTotal } = loginAccount;
 
   return {
-    totalFrozenFunds: formatDai(totalFrozenFunds).formatted,
-    totalAvailableTradingBalance: formatDai(totalAvailableTradingBalance)
-      .formatted,
-    totalAccountValue: formatDai(totalAccountValue).formatted,
+    totalFrozenFunds: formatDai(totalFrozenFunds, { removeComma: true }),
+    totalAvailableTradingBalance: formatDai(totalAvailableTradingBalance, { removeComma: true }),
+    totalAccountValue: formatDai(totalAccountValue, { removeComma: true }),
     realizedPLPercent: formatPercent(tradingPositionsTotal.unrealizedRevenue24hChangePercent)
       .formattedValue,
   };

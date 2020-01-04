@@ -12,10 +12,11 @@ import Funds from 'modules/account/containers/funds';
 import Stats from 'modules/account/containers/stats';
 import OverviewChart from 'modules/account/containers/overview-chart';
 import Styles from 'modules/account/components/overview.styles.less';
+import { FormattedNumber } from 'modules/types';
 
 export interface OverviewProps {
-  repTotalAmountStakedFormatted: any;
-  repBalanceFormatted: any;
+  repTotalAmountStakedFormatted: FormattedNumber;
+  repBalanceFormatted: FormattedNumber;
   currentAugurTimestamp: number;
   updateTimeframeData: Function;
 }
