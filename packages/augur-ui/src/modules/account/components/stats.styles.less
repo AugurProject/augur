@@ -1,29 +1,38 @@
 @import (reference) '~assets/styles/shared';
 
 .Stats {
+  border-radius: @border-radius-default;
+  background: @color-table-header;
+  padding: @size-16;
   display: grid;
-  grid-column-gap: @size-20;
+  grid-gap: @size-12 @size-16;
   grid-template-columns: repeat(2, 1fr);
   margin-bottom: @size-32;
 
-  > div {
-    margin-bottom: @size-8;
+  > ul:first-of-type {
+    grid-column: 1 / span 2;
+    margin: 0 auto;
   }
 
-  @media @breakpoint-mobile {
-    > div {
-      > span:first-of-type {
-        .text-10;
-      }
+  > div[class*="LinearPropertyLabel"] {
+    align-items: baseline;
+    margin: 0;
 
-      > span:last-of-type {
-        .text-12-bold;
-      }
+    > span:first-of-type {
+      .mono-10-bold;
+
+      color: @color-secondary-text;
+    }
+
+    > span {
+      .mono-12-medium;
+
+      color: @color-primary-text;
     }
   }
 
   @media @breakpoint-mobile-mid {
-    grid-template-columns: repeat(1, 1fr);
+    grid-template-columns: 1fr;
   }
 }
 
