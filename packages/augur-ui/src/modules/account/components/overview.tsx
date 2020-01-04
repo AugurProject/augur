@@ -57,17 +57,21 @@ export default class Overview extends React.Component<
           <div className={Styles.AccountOverview}>
             <Funds />
             <div className={Styles.RepBalances}>
-              <PropertyLabel label="REP Balance" value={repBalanceFormatted.formatted} />
+              <PropertyLabel
+                label="REP Balance"
+                value={repBalanceFormatted.formatted}
+              />
               {RepLogoIcon}
-              <PropertyLabel label="REP Staked" value={repTotalAmountStakedFormatted.formatted} />
-            </div>
-            <div className={Styles.PillSelector}>
-              <PillSelection
-                options={TIMEFRAME_OPTIONS}
-                defaultSelection={TIMEFRAME_OPTIONS[3].id}
-                onChange={this.updateTimeSelection}
+              <PropertyLabel
+                label="REP Staked"
+                value={repTotalAmountStakedFormatted.formatted}
               />
             </div>
+            <PillSelection
+              options={TIMEFRAME_OPTIONS}
+              defaultSelection={TIMEFRAME_OPTIONS[3].id}
+              onChange={this.updateTimeSelection}
+            />
             <Stats />
             <OverviewChart timeframe={selected} />
           </div>
