@@ -416,6 +416,7 @@ export class Augur<TProvider extends Provider = Provider> {
   ): ReturnType<typeof Markets.getCategoryStats> => {
     return this.bindTo(Markets.getCategoryStats)(params);
   };
+
   getOrder = (
     params: Parameters<typeof ZeroXOrdersGetters.getZeroXOrder>[2]
   ): ReturnType<typeof ZeroXOrdersGetters.getZeroXOrder> => {
@@ -443,6 +444,18 @@ export class Augur<TProvider extends Provider = Provider> {
   async cancelOrder(orderHash: string): Promise<void> {
     const order = await this.getOrder({ orderHash });
     await this.zeroX.cancelOrder(order);
+  }
+
+  async batchCancelOrders(orderHashes: string[]): Promise<void> {
+    let orders = [];
+    orderHashes.forEach(async (hash, idx) => {
+      const order = await this.getOrder({ orderHash: hash });
+      orders = orders.concat(order);
+
+      if (idx === orderHashes.length - 1) {
+        await this.zeroX.batchCancelOrders(orders);
+      }
+    });
   }
 
   async createYesNoMarket(
