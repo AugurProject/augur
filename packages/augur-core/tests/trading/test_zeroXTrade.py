@@ -14,10 +14,10 @@ def signOrder(orderHash, private_key, signaturePostFix="03"):
     v, r, s = ecsign(sha3("\x19Ethereum Signed Message:\n32".encode('utf-8') + orderHash), key)
     return "0x" + v.to_bytes(1, "big").hex() + (zpad(bytearray_to_bytestr(int_to_32bytearray(r)), 32) + zpad(bytearray_to_bytestr(int_to_32bytearray(s)), 32)).hex() + signaturePostFix
 
-def test_trade_1155_behavior(contractsFixture, cash, market, categoricalMarket, universe):
+def test_trade_1155_behavior(contractsFixture, augur, cash, market, categoricalMarket, universe):
     ZeroXTrade = contractsFixture.contracts['ZeroXTrade']
     shareToken = contractsFixture.contracts['ShareToken']
-    shareToken = contractsFixture.contracts['ShareToken']
+    fillOrder = contractsFixture.contracts['FillOrder']
 
     account = contractsFixture.accounts[0]
     account2 = contractsFixture.accounts[1]
@@ -127,6 +127,11 @@ def test_trade_1155_behavior(contractsFixture, cash, market, categoricalMarket, 
     (marketAccount1Balance, marketAccount2Balance) = ZeroXTrade.balanceOfBatch([account, account2], [marketTokenId, catMarketTokenId])
     assert marketAccount1Balance == floor(accountCash / askPrice)
     assert marketAccount2Balance == 10 + floor(account2Cash / askPrice)
+
+    # The balances take into account the approval of cash
+    cash.approve(fillOrder.address, 500, sender=account2)
+    assert ZeroXTrade.balanceOf(account2, marketTokenId) == 10 + floor(500 / askPrice)
+    assert ZeroXTrade.balanceOf(account2, catMarketTokenId) == 10 + floor(500 / askPrice)
 
 def test_basic_trading(contractsFixture, cash, market, universe):
     ZeroXTrade = contractsFixture.contracts['ZeroXTrade']
