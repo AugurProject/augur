@@ -70,7 +70,6 @@ export interface StoredOrder extends OrderData {
   numberAmount: BigNumber,
   orderCreator: string,
   orderId?: string,
-  endState?,
 }
 
 export interface StoredSignedOrder {
@@ -124,7 +123,7 @@ export class ZeroXOrders extends AbstractTable {
 
   async handleMeshEvent(orderEvents: OrderEvent[]): Promise<void> {
     if (orderEvents.length < 1) return;
-    console.log('Mesh events received');
+    console.log('Mesh events recieved');
     console.log(JSON.stringify(orderEvents));
     const filteredOrders = _.filter(orderEvents, this.validateOrder.bind(this));
     let documents = _.map(filteredOrders, this.processOrder.bind(this));
@@ -153,7 +152,7 @@ export class ZeroXOrders extends AbstractTable {
     }
   }
 
-  validateOrder(order: OrderEvent): boolean {
+  validateOrder(order: OrderInfo): boolean {
     if (order.signedOrder.makerAssetData.length !== EXPECTED_ASSET_DATA_LENGTH) return false;
     if (order.signedOrder.makerAssetData !== order.signedOrder.takerAssetData) return false;
     if (order.signedOrder.makerAssetData.substr(34, 40) !== this.tradeTokenAddress) return false;
@@ -163,37 +162,36 @@ export class ZeroXOrders extends AbstractTable {
   validateStoredOrder(storedOrder: StoredOrder, markets: _.Dictionary<MarketData>): boolean {
     // Validate the order is a multiple of the recommended trade interval
     let tradeInterval = DEFAULT_TRADE_INTERVAL;
-    console.log("Signed order validation");
     const marketData = markets[storedOrder.market];
     if (marketData && marketData.marketType == MarketType.Scalar) {
       tradeInterval = TRADE_INTERVAL_VALUE.dividedBy(marketData.numTicks);
     }
     if (!storedOrder["numberAmount"].mod(tradeInterval).isEqualTo(0)) return false;
 
+    // expired
+    // filled their own order
+    // unapproved order (had no approvals, this is identical to filling own order from contracts pov, on 0x side looks like a fill)
+    // actual cancel
+    // a regular fill
     if (storedOrder.numberAmount.isEqualTo(0)) {
       console.log("Deleted order");
       this.table.where('orderHash').equals(storedOrder.orderHash).delete();
       this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Fill, ...storedOrder});
       return false;
     }
-    // if(storedOrder.endState == "EXPIRED" || storedOrder.endState == "CANCELLED" || storedOrder.endState == "INVALID") {
-    //   this.table.where('orderHash').equals(storedOrder.orderHash).delete();
-    //   this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Cancel, ...storedOrder});
-    //   return false;
-    // }
-    // if(storedOrder.endState == "FILLED" || storedOrder.endState == "FULLY_FILLED") {
-    //   await this.bulkUpsertDocuments([...storedOrder]);
-    //   if(storedOrder.endState == "FULLY_FILLED") {
-    //     this.table.where('orderHash').equals(storedOrder.orderHash).delete();
-    //   } 
-    //   this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Fill, ...storedOrder});
-    //   return false;
-    // }
+    if (parseInt(storedOrder.signedOrder.expirationTimeSeconds) - moment().unix() < 60) {
+      this.table.where('orderHash').equals(storedOrder.orderHash).delete();
+      this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Cancel, ...storedOrder});
+      return false;
+    };
 
+      // if (storedOrder.signedOrder.makerAddress == this.account || parseInt(storedOrder.signedOrder.expirationTimeSeconds) - moment().unix() < 20) {
+        // this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Cancel, ...storedOrder});
+      // }
     return true;
   }
 
-  processOrder(order: OrderEvent): StoredOrder {
+  processOrder(order: OrderInfo): StoredOrder {
     const augurOrderData = this.parseAssetData(order.signedOrder.makerAssetData);
     // Currently the API for mesh browser and the client API diverge here but we dont want to do string parsing per order to be compliant for the browser case
     const signedOrder = order.signedOrder;
@@ -208,7 +206,6 @@ export class ZeroXOrders extends AbstractTable {
       amount: order.fillableTakerAssetAmount.toFixed(),
       numberAmount: order.fillableTakerAssetAmount,
       orderCreator: getAddress(signedOrder.makerAddress),
-      endState: order.endState,
       signedOrder: {
         signature: signedOrder.signature,
         senderAddress: getAddress(signedOrder.senderAddress),
