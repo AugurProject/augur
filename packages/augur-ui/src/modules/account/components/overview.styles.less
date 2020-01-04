@@ -1,32 +1,59 @@
 @import (reference) '~assets/styles/shared';
 
 .AccountOverview {
-  background: @color-module-background;
-  padding: @size-16 @size-24 0;
-
-  @media @breakpoint-mobile-mid {
-    background: unset;
-    display: flex;
-    flex-direction: column;
-    height: calc(~"100vh - @{multi-top-bar-height-mobile}");
-    padding: 0;
-    margin-top: @size-6;
-    width: 328px;
-    align-self: center;
-  }
-
-  @media @breakpoint-mobile-small {
-    width: auto;
-    align-self: unset;
-  }
+  display: grid;
+  grid-gap: @size-2;
+  margin: @size-12 @size-16;
 }
 
-.PillSelector {
-  display: flex;
-  justify-content: center;
-  margin-bottom: @size-24;
+.RepBalances {
+  align-items: center;
+  border-radius: @border-radius-default;
+  background: @color-table-header;
+  display: grid;
+  grid-template-columns: 1fr @size-30 1fr;
+  grid-template-rows: @size-64;
+  grid-gap: @size-8;
 
-  @media @breakpoint-mobile-mid {
-    margin-bottom: @size-20;
+  > div {
+    margin: 0 auto;
+    
+    > span:last-of-type {
+      text-align: center;
+    }
+  }
+
+  > svg {
+    height: @size-30;
+    width: @size-30;
+    > path {
+      fill: @color-primary-text;
+    }
   }
 }
+//   @media @breakpoint-mobile-mid {
+//     background: unset;
+//     display: flex;
+//     flex-direction: column;
+//     height: calc(~"100vh - @{multi-top-bar-height-mobile}");
+//     padding: 0;
+//     margin-top: @size-6;
+//     width: 328px;
+//     align-self: center;
+//   }
+
+//   @media @breakpoint-mobile-small {
+//     width: auto;
+//     align-self: unset;
+//   }
+// }
+
+// .PillSelector {
+//   display: flex;
+//   justify-content: center;
+//   margin-bottom: @size-24;
+
+//   @media @breakpoint-mobile-mid {
+//     margin-bottom: @size-20;
+//   }
+// }

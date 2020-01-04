@@ -7,7 +7,6 @@ import {
   selectAccountFunds,
 } from "modules/auth/selectors/login-account";
 import { AppState } from "store";
-import { selectReportingBalances } from "../selectors/select-reporting-balances";
 
 const mapStateToProps = (state: AppState) => {
   const loginAccount = selectLoginAccount(state);
@@ -16,15 +15,9 @@ const mapStateToProps = (state: AppState) => {
     totalFrozenFunds,
     totalAccountValue,
   } = selectAccountFunds(state);
-  const {
-    repTotalAmountStakedFormatted,
-    repBalanceFormatted
-  } = selectReportingBalances(state);
   const { tradingPositionsTotal } = loginAccount;
 
   return {
-    repStaked: repTotalAmountStakedFormatted.formatted,
-    repBalance: repBalanceFormatted.formatted,
     totalFrozenFunds: formatDai(totalFrozenFunds).formatted,
     totalAvailableTradingBalance: formatDai(totalAvailableTradingBalance)
       .formatted,

@@ -1,17 +1,21 @@
-import React from "react";
+import React from 'react';
 
 import {
   YOUR_OVERVIEW_TITLE,
   TIMEFRAME_OPTIONS,
-} from "modules/common/constants";
-import QuadBox from "modules/portfolio/components/common/quad-box";
-import { PillSelection } from "modules/common/selection";
-import Funds from "modules/account/containers/funds";
-import Stats from "modules/account/containers/stats";
-import OverviewChart from "modules/account/containers/overview-chart";
-import Styles from "modules/account/components/overview.styles.less";
+} from 'modules/common/constants';
+import { RepLogoIcon } from 'modules/common/icons';
+import { PropertyLabel } from 'modules/common/labels';
+import QuadBox from 'modules/portfolio/components/common/quad-box';
+import { PillSelection } from 'modules/common/selection';
+import Funds from 'modules/account/containers/funds';
+import Stats from 'modules/account/containers/stats';
+import OverviewChart from 'modules/account/containers/overview-chart';
+import Styles from 'modules/account/components/overview.styles.less';
 
 export interface OverviewProps {
+  repTotalAmountStakedFormatted: any;
+  repBalanceFormatted: any;
   currentAugurTimestamp: number;
   updateTimeframeData: Function;
 }
@@ -38,10 +42,11 @@ export default class Overview extends React.Component<
     const startTime =
       period === 0 ? null : this.props.currentAugurTimestamp - period;
     this.props.updateTimeframeData({ startTime });
-  }
+  };
 
   render() {
     const { selected } = this.state;
+    const { repTotalAmountStakedFormatted, repBalanceFormatted } = this.props;
 
     return (
       <QuadBox
@@ -50,6 +55,11 @@ export default class Overview extends React.Component<
         content={
           <div className={Styles.AccountOverview}>
             <Funds />
+            <div className={Styles.RepBalances}>
+              <PropertyLabel label="REP Balance" value={repBalanceFormatted.formatted} />
+              {RepLogoIcon}
+              <PropertyLabel label="REP Staked" value={repTotalAmountStakedFormatted.formatted} />
+            </div>
             <div className={Styles.PillSelector}>
               <PillSelection
                 options={TIMEFRAME_OPTIONS}
@@ -57,7 +67,7 @@ export default class Overview extends React.Component<
                 onChange={this.updateTimeSelection}
               />
             </div>
-            <Stats timeframe={selected} />
+            <Stats />
             <OverviewChart timeframe={selected} />
           </div>
         }

@@ -9,9 +9,9 @@ export interface StatsProps {
   properties: Array<any>;
 }
 
-const Stats = (props: StatsProps) => (
+const Stats = ({ properties }: StatsProps) => (
   <div className={Styles.Stats}>
-    {props.properties.map((property: any) => (
+    {properties.map((property: any) => (
       <LinearPropertyLabel
         key={property.key}
         label={property.label}

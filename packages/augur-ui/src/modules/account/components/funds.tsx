@@ -2,12 +2,10 @@ import React from 'react';
 import classNames from 'classnames';
 
 import { MovementLabel, LinearPropertyLabel } from 'modules/common/labels';
-import { DaiLogoIcon, RepLogoIcon } from 'modules/common/icons';
+import { DaiLogoIcon } from 'modules/common/icons';
 import {
   AVAILABLE_TRADING_BALANCE,
   TOTAL_FROZEN_FUNDS,
-  REP_BALANCE,
-  REP_STAKED,
   TOTAL_ACCOUNT_VALUE_IN_DAI,
 } from 'modules/common/constants';
 import { SizeTypes } from 'modules/types';
@@ -15,24 +13,18 @@ import { SizeTypes } from 'modules/types';
 import Styles from 'modules/account/components/funds.styles.less';
 
 export interface FundsProps {
-  repStaked: number;
-  repBalance: string;
   totalFrozenFunds: string;
   totalAvailableTradingBalance: string;
   totalAccountValue: string;
   realizedPLPercent: string;
 }
 
-const Funds = (props: FundsProps) => {
-  const {
-    totalFrozenFunds,
-    totalAvailableTradingBalance,
-    totalAccountValue,
-    repBalance,
-    repStaked,
-    realizedPLPercent,
-  } = props;
-
+const Funds = ({
+  totalFrozenFunds,
+  totalAvailableTradingBalance,
+  totalAccountValue,
+  realizedPLPercent,
+}: FundsProps) => {
   const tradingBalanceFrozenFunds = [
     {
       title: AVAILABLE_TRADING_BALANCE,
@@ -41,17 +33,6 @@ const Funds = (props: FundsProps) => {
     {
       title: TOTAL_FROZEN_FUNDS,
       value: totalFrozenFunds,
-    },
-  ];
-
-  const repBalanceStaked = [
-    {
-      title: REP_BALANCE,
-      value: repBalance,
-    },
-    {
-      title: REP_STAKED,
-      value: repStaked,
     },
   ];
 
@@ -78,13 +59,6 @@ const Funds = (props: FundsProps) => {
         showDaiLogo
         linear
       />
-      <div>
-        <FundDataRow
-          className={Styles.RepBalanceStaked}
-          columns={repBalanceStaked}
-          showRepLogo
-        />
-      </div>
     </section>
   );
 };
@@ -127,7 +101,6 @@ const FundDataRow = (props: FundDataRowProps) => {
       })}
     >
       {rows[0]}
-      {showRepLogo ? <div>{RepLogoIcon}</div> : null}
       {rows[1]}
     </div>
   );
