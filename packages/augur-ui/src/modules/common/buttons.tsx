@@ -99,6 +99,12 @@ export interface ExternalLinkButtonProps {
   customLink?: any;
 }
 
+export interface ExternalLinkTextProps {
+  title?: string;
+  label: string;
+  URL: string;
+}
+
 export const PrimaryButton = (props: DefaultButtonProps) => (
   <button
     onClick={e => props.action(e)}
@@ -195,19 +201,26 @@ export const OrderButton = (props: OrderButtonProps) => (
   </button>
 );
 
-export const FavoritesButton = (props: FavoritesButtonProps) => (
+export const FavoritesButton = ({
+  isFavorite,
+  isSmall,
+  action,
+  disabled,
+  title,
+  hideText
+}: FavoritesButtonProps) => (
   <button
-    onClick={e => props.action(e)}
+    onClick={e => action(e)}
     className={classNames(Styles.FavoriteButton, {
-      [Styles.FavoriteButton_Favorite]: props.isFavorite,
-      [Styles.FavoriteButton__small]: props.isSmall,
+      [Styles.FavoriteButton_Favorite]: isFavorite,
+      [Styles.FavoriteButton_small]: isSmall,
     })}
-    disabled={props.disabled}
-    title={props.title}
+    disabled={disabled}
+    title={title}
   >
-    {StarIcon}{' '}
-    {!props.hideText &&
-      `${props.isFavorite ? 'Remove from' : 'Add to'} watchlist`}
+    {StarIcon}
+    {!hideText &&
+      `${isFavorite ? ' Remove from' : ' Add to'} watchlist`}
   </button>
 );
 
@@ -398,6 +411,22 @@ export const ViewTransactionDetailsButton = (
     />
     {ViewIcon}
   </div>
+);
+
+export const ExternalLinkText = (props: ExternalLinkTextProps) => (
+  <button
+    className={Styles.ExternalLinkText}
+  >
+    {props.URL && (
+      <a href={props.URL} target='blank'>
+        {props.title
+        ? <><strong>{props.title}</strong>{props.label}</>
+        : props.label}
+      </a>
+    )}
+
+    {ViewIcon}
+  </button>
 );
 
 export const ExternalLinkButton = (props: ExternalLinkButtonProps) => (

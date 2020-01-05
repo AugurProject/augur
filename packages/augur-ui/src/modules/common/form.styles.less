@@ -91,6 +91,11 @@
         > svg {
           grid-column: 2 / span 1;
         }
+
+        > button {
+          grid-row: 1;
+          grid-column: 4;
+        }
       }
 
       > div,
@@ -360,6 +365,7 @@
   cursor: pointer;
   height: unset;
   grid-template-columns: 52px 1fr;
+  margin-right: @size-10;
 
   @media @breakpoint-mobile-mid {
     > svg {

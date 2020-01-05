@@ -1,7 +1,7 @@
 pragma solidity 0.5.10;
 
 import 'ROOT/libraries/Ownable.sol';
-import 'ROOT/external/IAffiliateValidator.sol';
+import 'ROOT/reporting/IAffiliateValidator.sol';
 
 
 contract AffiliateValidator is Ownable, IAffiliateValidator {
@@ -45,13 +45,13 @@ contract AffiliateValidator is Ownable, IAffiliateValidator {
         return operators[recovered];
     }
 
-    function validateReference(address _account, address _referrer) external view {
+    function validateReference(address _account, address _referrer) external view returns (bool) {
         bytes32 _accountKey = keys[_account];
         bytes32 _referralKey = keys[_referrer];
         if (_accountKey == bytes32(0) || _referralKey == bytes32(0)) {
-            revert("Key must be registered for both accounts");
+            return false;
         }
-        require(_accountKey != _referralKey, "Key must not be equal for both accounts");
+        return _accountKey != _referralKey;
     }
 
     function onTransferOwnership(address, address) internal {}

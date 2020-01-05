@@ -1,9 +1,11 @@
-import { INVALID_OUTCOME, OUTCOME_MAX_LENGTH } from 'modules/create-market/constants';
+import { INVALID_OUTCOME, OUTCOME_MAX_LENGTH, SATURDAY_DAY_OF_WEEK, SUNDAY_DAY_OF_WEEK } from 'modules/create-market/constants';
 import isAddress from 'modules/auth/helpers/is-address';
 import { createBigNumber } from 'utils/create-big-number';
 import { ZERO } from './constants';
 import { NewMarketPropertiesValidations } from 'modules/types';
-import { ValidationType, TemplateInputType } from '@augurproject/artifacts';
+import { ValidationType, TemplateInputType, TemplateInput, UserInputDateTime, TimeOffset } from '@augurproject/artifacts';
+import moment from 'moment';
+import { getUnixDateTimeFromComponents } from 'utils/format-date';
 
 export function isFilledString(value, readable, message) {
   if (value && value.trim().length > 0 && value !== '') return '';
@@ -174,7 +176,7 @@ function checkValidNumbers(values) {
   return valid;
 }
 
-export function checkForUserInputFilled(inputs, endTimeFormatted) {
+export function checkForUserInputFilled(inputs: TemplateInput[], endTimeFormatted) {
   const errors = inputs.map(input => {
     if (
       (input.validationType === ValidationType.WHOLE_NUMBER &&
@@ -187,11 +189,37 @@ export function checkForUserInputFilled(inputs, endTimeFormatted) {
       checkValidNumber(input.userInput)
     ) {
       return 'Must enter a valid number';
+    }
+    else if (input.type === TemplateInputType.DATEYEAR) {
+      if (!input.userInput) return 'Input is required';
+      if (input.dateAfterId) {
+        const source = inputs.find(i => i.id === input.dateAfterId);
+        if (source && input.setEndTime <= source.setEndTime) {
+          return 'Date has to be after open date';
+        }
+      }
+      // day can not be a weekend
+      if (input.validationType === ValidationType.WEEKDAYONLY) {
+        if (input.setEndTime) {
+          const dayOfWeek = moment.unix(input.setEndTime).weekday()
+          if (dayOfWeek === SATURDAY_DAY_OF_WEEK || dayOfWeek === SUNDAY_DAY_OF_WEEK) {
+            return 'Weekday is required';
+          }
+        }
+      }
+      if (
+        endTimeFormatted && endTimeFormatted.timestamp &&
+        input.setEndTime &&
+        input.setEndTime >=
+          endTimeFormatted.timestamp
+      ) {
+        return 'Date must be before event expiration time';
+      }
+      return '';
     } else if (
       (input.type === TemplateInputType.TEXT ||
         input.type === TemplateInputType.USER_DESCRIPTION_OUTCOME ||
         input.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME ||
-        input.type === TemplateInputType.DATEYEAR ||
         input.type === TemplateInputType.DATESTART ||
         input.type === TemplateInputType.DROPDOWN ||
         input.type === TemplateInputType.DROPDOWN_QUESTION_DEP ||
@@ -235,16 +263,17 @@ export function checkForUserInputFilled(inputs, endTimeFormatted) {
     ) {
       if (input.userInputObject) {
         let validations: NewMarketPropertiesValidations = {};
-        if (input.userInputObject.hour === null) {
+        const dateTimeInput = input.userInputObject as UserInputDateTime;
+        if (dateTimeInput.hour === null) {
           validations.hour = 'Choose a time';
         }
 
-        if (input.userInputObject.endTime === null) {
+        if (dateTimeInput.endTime === null) {
           validations.setEndTime = 'Choose a date';
         } else if (
           endTimeFormatted && endTimeFormatted.timestamp &&
-          input.userInputObject.endTimeFormatted &&
-          input.userInputObject.endTimeFormatted.timestamp >=
+          dateTimeInput.endTimeFormatted &&
+          dateTimeInput.endTimeFormatted.timestamp >=
             endTimeFormatted.timestamp
         ) {
           validations.setEndTime = 'Date must be before event expiration time';

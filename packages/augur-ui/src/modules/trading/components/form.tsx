@@ -496,7 +496,6 @@ class Form extends Component<FromProps, FormState> {
 
   validateForm(property: string, rawValue) {
     const {
-      updateOrderProperty,
       updateTradeTotalCost,
       updateTradeNumShares,
       selectedNav,
@@ -671,7 +670,6 @@ class Form extends Component<FromProps, FormState> {
       orderPriceEntered,
       orderAmountEntered,
       selectedNav,
-      updateOrderProperty,
     } = this.props;
     const s = this.state;
 
@@ -715,7 +713,7 @@ class Form extends Component<FromProps, FormState> {
         </div>
         <ul>
           <li>
-            <label htmlFor="tr__input--quantity">Quantity</label>
+            <label htmlFor="quantity">Quantity</label>
             <div
               className={classNames(Styles.TradingFormInputContainer, {
                 [Styles.error]: s.errors[this.INPUT_TYPES.QUANTITY].length,
@@ -730,7 +728,7 @@ class Form extends Component<FromProps, FormState> {
                       .length,
                   }
                 )}
-                id="tr__input--quantity"
+                id="quantity"
                 type="number"
                 step={
                   quantityValue && quantityValue !== ''
@@ -740,6 +738,12 @@ class Form extends Component<FromProps, FormState> {
                 placeholder="0.00"
                 value={quantityValue}
                 tabIndex={tradingTutorial ? -1 : 1}
+                onTouchStart={e =>
+                  e.target.scrollIntoView({
+                    block: 'nearest',
+                    behavior: 'smooth',
+                  })
+                }
                 onChange={e => {
                   this.updateAndValidate(
                     this.INPUT_TYPES.QUANTITY,
@@ -762,7 +766,7 @@ class Form extends Component<FromProps, FormState> {
             </div>
           </li>
           <li>
-            <label htmlFor="tr__input--limit-price">Limit Price</label>
+            <label htmlFor="limit-price">Limit Price</label>
             <div
               className={classNames(Styles.TradingFormInputContainer, {
                 [Styles.error]: s.errors[this.INPUT_TYPES.PRICE].length,
@@ -773,7 +777,7 @@ class Form extends Component<FromProps, FormState> {
                   FormStyles.Form__input,
                   Styles.TradingFormInput
                 )}
-                id="tr__input--limit-price"
+                id="limit-price"
                 type="number"
                 step={tickSize}
                 max={max}
@@ -781,6 +785,12 @@ class Form extends Component<FromProps, FormState> {
                 placeholder="0.00"
                 tabIndex={tradingTutorial ? -1 : 2}
                 value={s[this.INPUT_TYPES.PRICE]}
+                onTouchStart={e =>
+                  e.target.scrollIntoView({
+                    block: 'nearest',
+                    behavior: 'smooth',
+                  })
+                }
                 onChange={e =>
                   this.updateAndValidate(this.INPUT_TYPES.PRICE, e.target.value)
                 }
@@ -802,8 +812,8 @@ class Form extends Component<FromProps, FormState> {
               </span>
             </div>
           </li>
-          <li className={Styles['TradingForm__limit-price']}>
-            <label htmlFor="tr__input--limit-price">Total Order Value</label>
+          <li>
+            <label htmlFor="total-order-value">Total Order Value</label>
             <div
               className={classNames(Styles.TradingFormInputContainer, {
                 [`${Styles.error}`]: s.errors[this.INPUT_TYPES.EST_DAI].length,
@@ -818,7 +828,7 @@ class Form extends Component<FromProps, FormState> {
                       .length,
                   }
                 )}
-                id="tr__input--limit-price"
+                id="total-order-value"
                 type="number"
                 disabled={!!initialLiquidity}
                 step={MIN_QUANTITY.toFixed()}
@@ -829,6 +839,12 @@ class Form extends Component<FromProps, FormState> {
                   s[this.INPUT_TYPES.EST_DAI]
                     ? createBigNumber(s[this.INPUT_TYPES.EST_DAI]).toNumber()
                     : s[this.INPUT_TYPES.EST_DAI]
+                }
+                onTouchStart={e =>
+                  e.target.scrollIntoView({
+                    block: 'nearest',
+                    behavior: 'smooth',
+                  })
                 }
                 onChange={e =>
                   this.updateAndValidate(

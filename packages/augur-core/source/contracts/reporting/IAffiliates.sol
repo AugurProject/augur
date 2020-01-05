@@ -1,6 +1,6 @@
 pragma solidity 0.5.10;
 
-import 'ROOT/external/IAffiliateValidator.sol';
+import 'ROOT/reporting/IAffiliateValidator.sol';
 
 
 contract IAffiliates {
@@ -9,4 +9,5 @@ contract IAffiliates {
     function getAccountFingerprint(address _account) external returns (bytes32);
     function getReferrer(address _account) external returns (address);
     function getAndValidateReferrer(address _account, IAffiliateValidator affiliateValidator) external returns (address);
+    function affiliateValidators(address _affiliateValidator) external returns (bool);
 }

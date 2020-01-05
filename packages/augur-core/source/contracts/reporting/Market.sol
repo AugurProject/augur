@@ -7,7 +7,7 @@ import 'ROOT/reporting/IUniverse.sol';
 import 'ROOT/reporting/IReportingParticipant.sol';
 import 'ROOT/reporting/IDisputeCrowdsourcer.sol';
 import 'ROOT/reporting/IV2ReputationToken.sol';
-import 'ROOT/external/IAffiliateValidator.sol';
+import 'ROOT/reporting/IAffiliateValidator.sol';
 import 'ROOT/external/IDaiVat.sol';
 import 'ROOT/reporting/IAffiliates.sol';
 import 'ROOT/factories/IDisputeCrowdsourcerFactory.sol';
@@ -77,6 +77,7 @@ contract Market is Initializable, Ownable, IMarket {
         affiliateValidator = _affiliateValidator;
         affiliates = IAffiliates(_augur.lookup("Affiliates"));
         require(affiliates != IAffiliates(0));
+        require(affiliateValidator == IAffiliateValidator(0) || affiliates.affiliateValidators(address(_affiliateValidator)));
         owner = _creator;
         repBondOwner = owner;
         cash.approve(address(_augur), MAX_APPROVAL_AMOUNT);

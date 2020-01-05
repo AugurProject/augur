@@ -95,6 +95,7 @@ export interface LinearPropertyLabelProps {
   highlightAlternate?: boolean;
   useValueLabel?: boolean;
   showDenomination?: boolean;
+  useFull?: boolean;
 }
 
 export interface LinearPropertyLabelTooltipProps {
@@ -112,6 +113,8 @@ export interface LinearPropertyLabelPercentMovementProps {
   showBrackets?: boolean;
   showPercent?: boolean;
   showPlusMinus?: boolean;
+  useValueLabel?: boolean;
+  useFull?: boolean;
 }
 
 export interface PillLabelProps {
@@ -131,10 +134,10 @@ export interface LinearPropertyLabelViewTransactionProps {
 
 export interface ValueLabelProps {
   value: FormattedNumber;
-  showDenomination: boolean;
+  showDenomination?: boolean;
   keyId?: string;
-  showEmptyDash: boolean;
-  useFull: boolean;
+  showEmptyDash?: boolean;
+  useFull?: boolean;
 }
 
 interface SizableValueLabelProps extends ValueLabelProps {
@@ -606,6 +609,7 @@ export const LinearPropertyLabel = ({
   showDenomination,
   accentValue,
   value,
+  useFull
 }: LinearPropertyLabelProps) => (
   <div
     className={classNames(Styles.LinearPropertyLabel, {
@@ -617,7 +621,7 @@ export const LinearPropertyLabel = ({
     <span>{label}</span>
     <DashlineNormal />
     {useValueLabel ? (
-      <ValueLabel value={value} showDenomination={showDenomination} />
+      <ValueLabel value={value} showDenomination={showDenomination} useFull={useFull} />
     ) : (
       <span
         className={classNames({
@@ -630,7 +634,7 @@ export const LinearPropertyLabel = ({
       </span>
     )}
     {useValueLabel ? (
-      <ValueLabel value={value} showDenomination={showDenomination} />
+      <ValueLabel value={value} showDenomination={showDenomination} useFull={useFull} />
     ) : (
       <span
         className={classNames({
@@ -962,6 +966,8 @@ export const LinearPropertyLabelMovement = (
       value={props.value}
       highlightFirst={props.highlightFirst}
       highlightAlternate
+      useFull={props.useFull}
+      useValueLabel={props.useValueLabel}
     />
     <MovementLabel
       showIcon={props.showIcon}

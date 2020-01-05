@@ -1810,8 +1810,7 @@ describe('State API :: Markets :: ', () => {
     expect((await api.route('getMarketsInfo', { marketIds: [ scalarMarket.address ]}))[0].reportingState)
       .toEqual(MarketReportingState.OpenReporting);
 
-    const SECONDS_IN_AN_HOUR = SECONDS_IN_A_DAY.div(24);
-    newTime = newTime.plus(SECONDS_IN_A_DAY.times(7)).plus(SECONDS_IN_AN_HOUR).plus(1);
+    newTime = newTime.plus(SECONDS_IN_A_DAY.times(7)).plus(1);
     await john.setTimestamp(newTime);
 
     await (await db).sync(john.augur, CHUNK_SIZE, 0);

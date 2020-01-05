@@ -10,6 +10,9 @@ import {
   TemplateValidation,
   generateResolutionRulesHash,
   DropdownDependencies,
+  DateDependencies,
+  ValidationType,
+  DateInputDependencies
 } from '../templates-template';
 import { TEMPLATES, TEMPLATES2 } from '../templates-source';
 import { retiredTemplates } from '../templates-retired';
@@ -70,6 +73,8 @@ const generateValidations = (
     outcomeDependencies: null,
     substituteDependencies: null,
     marketQuestionDependencies: null,
+    dateDependencies: null,
+    closingDateDependencies: null,
   };
   let newTemplates = JSON.parse(JSON.stringify(templates));
   const topCategories = Object.keys(newTemplates);
@@ -91,7 +96,7 @@ const addTemplates = (
       const hashValue = generateTemplateHash(t);
       t.hash = hashValue;
       const question = t.question;
-      let regexMarketTitle = `^${escapeSpecialCharacters(question)}$`;
+      let regexMarketTitle = `(^${escapeSpecialCharacters(question)}$)`;
       t.inputs.map((i: TemplateInput) => {
         if (question.indexOf(`[${i.id}]`) > -1) {
           const reg = getValidationValues(i);
@@ -107,6 +112,8 @@ const addTemplates = (
         outcomeDependencies: getDropdownDependencies(t.inputs),
         substituteDependencies: getSubstituteOutcomeDependencies(t.inputs),
         marketQuestionDependencies: getMarketQuestionDependencies(t.inputs),
+        dateDependencies: getDateDependencies(t.inputs),
+        closingDateDependencies: getClosingDateDependencies(t.inputs),
       };
     });
   }
@@ -128,7 +135,7 @@ function getRequiredOutcomes(inputs: TemplateInput[]) {
 }
 
 function listToRegEx(values: object[], property: string) {
-  return `(${values.map(v => escapeSpecialCharacters(v[property])).join('|')})`;
+  return `(${values.map(v => escapeSpecialCharacters(v[property])).join('|')}){1}`;
 }
 
 function getDropdownDependencies(
@@ -155,6 +162,30 @@ function getMarketQuestionDependencies(
     listValues = getDependencies(hasDepend, hasDepend.inputDestValues);
   }
   return listValues;
+}
+
+function getDateDependencies(inputs: TemplateInput[]): DateDependencies[] {
+  return inputs
+    .filter(
+      i => i.dateAfterId || i.validationType === ValidationType.WEEKDAYONLY
+    )
+    .map(i => ({
+      id: i.id,
+      weekdayOnly: i.validationType === ValidationType.WEEKDAYONLY,
+      dateAfterId: i.dateAfterId,
+    }));
+}
+
+function getClosingDateDependencies(inputs: TemplateInput[]): DateInputDependencies[] {
+  return inputs
+    .filter(
+      i => i.type === TemplateInputType.DATEYEAR_CLOSING
+    )
+    .map(i => ({
+      inputDateYearId: i.inputDateYearId,
+      inputSourceId: i.inputSourceId,
+      inputTimeOffset: i.inputTimeOffset,
+    }));
 }
 
 function getDependencies(
@@ -219,6 +250,10 @@ const specialCharacters: SearchReplace[] = [
     find: /\?/g,
     rep: `\\?`,
   },
+  {
+    find: /\//g,
+    rep: `\\/`,
+  },
 ];
 
 function escapeSpecialCharacters(value: string) {
@@ -229,4 +264,3 @@ function escapeSpecialCharacters(value: string) {
   });
   return replacementValue;
 }
-

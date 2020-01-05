@@ -6,7 +6,6 @@ import { formatShares } from 'utils/format-number';
 import { MarketData } from 'modules/types';
 import {
   LinearPropertyLabel,
-  LinearPropertyViewTransaction,
   ValueLabel,
 } from 'modules/common/labels';
 import { ViewTransactionDetailsButton } from 'modules/common/buttons';
@@ -50,6 +49,9 @@ const FilledOrdersTable = (props: FilledOrdersTableProps) => {
         ))}
       </div>
       <div>
+        {showMarketInfo && (
+          <MarketTitle id={filledOrder.marketId} />
+        )}
         {filledOrder.trades.map((trade: MarketData, i: number) => (
           <div key={i}>
             <LinearPropertyLabel
@@ -62,8 +64,9 @@ const FilledOrdersTable = (props: FilledOrdersTableProps) => {
               label="Timestamp"
               value={trade.timestamp.formattedLocalShortDateTimeNoTimezone}
             />
-            <LinearPropertyViewTransaction
-              highlightFirst
+            <ViewTransactionDetailsButton
+              light
+              label='View Transaction Details'
               transactionHash={trade.transactionHash}
             />
           </div>

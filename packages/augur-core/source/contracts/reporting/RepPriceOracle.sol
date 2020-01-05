@@ -16,8 +16,8 @@ contract RepPriceOracle is IRepPriceOracle, Initializable {
 
     struct ExchangeData {
         IUniswapV2 exchange;
-        uint256 cashAmount;
-        uint256 repAmount;
+        uint256 cashAmountAccumulated;
+        uint256 repAmountAccumulated;
         uint256 blockNumber;
         uint256 price;
     }
@@ -67,24 +67,24 @@ contract RepPriceOracle is IRepPriceOracle, Initializable {
             return _exchangeData;
         }
 
-        uint256 _cashAmount = cash < address(_reputationToken) ? _token0Amount : _token1Amount;
-        uint256 _repAmount = cash < address(_reputationToken) ? _token1Amount : _token0Amount;
+        uint256 _cashAmountAccumulated = cash < address(_reputationToken) ? _token0Amount : _token1Amount;
+        uint256 _repAmountAccumulated = cash < address(_reputationToken) ? _token1Amount : _token0Amount;
 
-        uint256 _cashDelta = _cashAmount - _exchangeData.cashAmount;
-        uint256 _repDelta = _repAmount - _exchangeData.repAmount;
+        uint256 _cashAccumulationDelta = _cashAmountAccumulated - _exchangeData.cashAmountAccumulated;
+        uint256 _repAccumulationDelta = _repAmountAccumulated - _exchangeData.repAmountAccumulated;
         // TODO: This should not be possible normally. When the real Uniswap contracts are in this condition can be removed.
-        if (_repDelta == 0) {
+        if (_repAccumulationDelta == 0) {
             return _exchangeData;
         }
-        uint256 _deltaPrice = _cashDelta * 1 ether / _repDelta;
+        uint256 _deltaPrice = _cashAccumulationDelta * 1 ether / _repAccumulationDelta;
 
         uint256 _weight = getWeight(_blockNumber - _exchangeData.blockNumber);
         uint256 _price = (((1 ether - _weight) * _exchangeData.price) + (_weight * _deltaPrice)) / 1 ether;
 
         _exchangeData.price = _price;
         _exchangeData.blockNumber = _blockNumber;
-        _exchangeData.cashAmount = _cashAmount;
-        _exchangeData.repAmount = _repAmount;
+        _exchangeData.cashAmountAccumulated = _cashAmountAccumulated;
+        _exchangeData.repAmountAccumulated = _repAmountAccumulated;
 
         return _exchangeData;
     }

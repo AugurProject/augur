@@ -9,7 +9,7 @@ import 'ROOT/reporting/IShareToken.sol';
 import 'ROOT/reporting/IReportingParticipant.sol';
 import 'ROOT/reporting/IV2ReputationToken.sol';
 import 'ROOT/reporting/IInitialReporter.sol';
-import 'ROOT/external/IAffiliateValidator.sol';
+import 'ROOT/reporting/IAffiliateValidator.sol';
 import 'ROOT/IAugur.sol';
 
 

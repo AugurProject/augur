@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react';
 import classNames from 'classnames';
 
 import ToggleRow from 'modules/common/toggle-row';
-import { MarketStatusLabel } from 'modules/common/labels';
+import { MarketStatusLabel, TemplateShield } from 'modules/common/labels';
 import MarketTitle from 'modules/market/containers/market-title';
 import { TXEventName } from '@augurproject/sdk';
 import { SubmitTextButton } from 'modules/common/buttons';
@@ -54,6 +54,7 @@ const MarketRow = (props: MarketRowProps) => {
       >
         {props.showState && !props.market.pending && (
           <div>
+            {props.market.isTemplate && <TemplateShield marketId={props.market.id} />}
             <MarketStatusLabel
               reportingState={props.market.reportingState}
               alternate

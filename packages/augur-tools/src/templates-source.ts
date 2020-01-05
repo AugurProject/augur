@@ -47,6 +47,8 @@ import {
   CRYPTO_BTC_CURRENCY_MARKETS,
   CRYPTO_ETH_CURRENCY_MARKETS,
   CRYPTO_LTC_CURRENCY_MARKETS,
+  FIN_EXCHANGES_CLOSING_OFFSETS,
+  FIN_INDEXES_CLOSING_OFFSETS,
 } from './templates-lists';
 
 const YES_NO = 'YesNo';
@@ -4640,7 +4642,16 @@ export const TEMPLATES = {
                 id: 3,
                 type: TemplateInputType.DATEYEAR,
                 placeholder: `Day of Year`,
+                validationType: ValidationType.WEEKDAYONLY,
               },
+              {
+                id: 4,
+                type: TemplateInputType.DATEYEAR_CLOSING,
+                placeholder: ``,
+                inputDateYearId: 3,
+                inputSourceId: 2,
+                inputTimeOffset: FIN_EXCHANGES_CLOSING_OFFSETS,
+              }
             ],
             resolutionRules: {
               [REQUIRED]: [
@@ -4650,6 +4661,12 @@ export const TEMPLATES = {
                 {
                   text: `Trading denomination is determined by the exchange the stock is traded on`,
                 },
+                {
+                  text: `If trading day in market question is a weekend or holiday when exchange is not open this market should resolve as 'Invalid'`,
+                },
+                {
+                  text: `If stock trading ticker symbol is not used in the market question, the market should resolve as 'Invalid'`
+                }
               ],
             },
           },
@@ -4679,12 +4696,23 @@ export const TEMPLATES = {
                 id: 3,
                 type: TemplateInputType.DATEYEAR,
                 placeholder: `Start Day of Year`,
+                validationType: ValidationType.WEEKDAYONLY,
               },
               {
                 id: 4,
+                dateAfterId: 3,
                 type: TemplateInputType.DATEYEAR,
                 placeholder: `End Day of Year`,
+                validationType: ValidationType.WEEKDAYONLY,
               },
+              {
+                id: 5,
+                type: TemplateInputType.DATEYEAR_CLOSING,
+                placeholder: ``,
+                inputDateYearId: 3,
+                inputSourceId: 2,
+                inputTimeOffset: FIN_EXCHANGES_CLOSING_OFFSETS,
+              }
             ],
             resolutionRules: {
               [REQUIRED]: [
@@ -4694,6 +4722,12 @@ export const TEMPLATES = {
                 {
                   text: `Trading denomination is determined by the exchange the stock is traded on`,
                 },
+                {
+                  text: `If trading day in market question is a weekend or holiday when exchange is not open this market should resolve as 'Invalid'`,
+                },
+                {
+                  text: `If stock trading ticker symbol is not used in the market question, the market should resolve as 'Invalid'`
+                }
               ],
             },
           },
@@ -4717,7 +4751,16 @@ export const TEMPLATES = {
                 id: 2,
                 type: TemplateInputType.DATEYEAR,
                 placeholder: `Day of Year`,
+                validationType: ValidationType.WEEKDAYONLY,
               },
+              {
+                id: 3,
+                type: TemplateInputType.DATEYEAR_CLOSING,
+                placeholder: ``,
+                inputDateYearId: 2,
+                inputSourceId: 1,
+                inputTimeOffset: FIN_EXCHANGES_CLOSING_OFFSETS,
+              }
             ],
             resolutionRules: {
               [REQUIRED]: [
@@ -4727,6 +4770,12 @@ export const TEMPLATES = {
                 {
                   text: `Trading denomination is determined by the exchange the stock is traded on`,
                 },
+                {
+                  text: `If trading day in market question is a weekend or holiday when exchange is not open this market should resolve as 'Invalid'`,
+                },
+                {
+                  text: `If stock trading ticker symbol is not used in the market question, the market should resolve as 'Invalid'`
+                }
               ],
             },
           },
@@ -4755,12 +4804,24 @@ export const TEMPLATES = {
                 id: 2,
                 type: TemplateInputType.DATEYEAR,
                 placeholder: `Day of Year`,
+                validationType: ValidationType.WEEKDAYONLY,
               },
+              {
+                id: 3,
+                type: TemplateInputType.DATEYEAR_CLOSING,
+                placeholder: ``,
+                inputDateYearId: 2,
+                inputSourceId: 0,
+                inputTimeOffset: FIN_INDEXES_CLOSING_OFFSETS,
+              }
             ],
             resolutionRules: {
               [REQUIRED]: [
                 {
                   text: `Closing date is determined by the location of the exchange, where the underlying stocks for the index are traded`,
+                },
+                {
+                  text: `If trading day in market question is a weekend or holiday when exchange is not open this market should resolve as 'Invalid'`,
                 },
               ],
             },
@@ -4781,12 +4842,24 @@ export const TEMPLATES = {
                 id: 2,
                 type: TemplateInputType.DATEYEAR,
                 placeholder: `Day of Year`,
+                validationType: ValidationType.WEEKDAYONLY,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.DATEYEAR_CLOSING,
+                placeholder: ``,
+                inputDateYearId: 2,
+                inputSourceId: 0,
+                inputTimeOffset: FIN_INDEXES_CLOSING_OFFSETS,
               },
             ],
             resolutionRules: {
               [REQUIRED]: [
                 {
                   text: `Closing date is determined by the location of the exchange, where the underlying stocks for the index are traded`,
+                },
+                {
+                  text: `If trading day in market question is a weekend or holiday when exchange is not open this market should resolve as 'Invalid'`,
                 },
               ],
             },
@@ -5083,6 +5156,7 @@ export const TEMPLATES = {
               },
               {
                 id: 3,
+                dateAfterId: 2,
                 type: TemplateInputType.DATEYEAR,
                 placeholder: `Close, Day of Year`,
               },
@@ -5216,6 +5290,7 @@ export const TEMPLATES = {
               },
               {
                 id: 3,
+                dateAfterId: 2,
                 type: TemplateInputType.DATEYEAR,
                 placeholder: `Close, Day of Year`,
               },
@@ -5349,6 +5424,7 @@ export const TEMPLATES = {
               },
               {
                 id: 3,
+                dateAfterId: 2,
                 type: TemplateInputType.DATEYEAR,
                 placeholder: `Close, Day of Year`,
               },

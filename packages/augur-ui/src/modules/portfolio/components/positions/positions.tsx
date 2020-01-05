@@ -2,7 +2,7 @@ import React, { Component } from "react";
 
 import FilterBox from "modules/portfolio/containers/filter-box";
 import { CompactButton } from "modules/common/buttons";
-import { MovementLabel } from "modules/common/labels";
+import { MovementLabel, ValueLabel } from "modules/common/labels";
 import PositionsTable from "modules/market/containers/positions-table";
 import { END_TIME } from "modules/common/constants";
 
@@ -87,12 +87,13 @@ export default class Positions extends Component<PositionsProps, PositionsState>
 
   renderRightContent(market) {
     const { showCurrentValue } = this.state;
-
+    const { currentValue, totalReturns } = market.myPositionsSummary;
     return showCurrentValue ? (
-      `$${market.myPositionsSummary && market.myPositionsSummary.currentValue.formatted}`
+      <ValueLabel value={currentValue} useFull />
     ) : (
         <div className={Styles.Column}>
-          <span>${market.myPositionsSummary && market.myPositionsSummary.totalReturns.formatted}</span>
+          
+          <ValueLabel value={totalReturns} useFull />
           <MovementLabel
             showPercent
             showPlusMinus

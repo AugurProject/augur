@@ -1,4 +1,5 @@
 import { ethers } from 'ethers';
+import moment from 'moment';
 import { BigNumber } from 'ethers/utils';
 export const REQUIRED = 'REQUIRED';
 export const CHOICE = 'CHOICE';
@@ -42,6 +43,8 @@ export const MENS = 'Mens';
 export const WOMENS = 'Womens';
 export const SINGLES = 'Singles';
 export const DOUBLES = 'Doubles';
+const SATURDAY_DAY_OF_WEEK = 6;
+const SUNDAY_DAY_OF_WEEK = 0;
 
 interface TimezoneDateObject {
   formattedUtc: string;
@@ -79,12 +82,19 @@ export interface CategoryTemplate {
   children: TemplateChildren;
 }
 
+export interface TimeOffset {
+  offset: number;
+  hour: number;
+  minutes: number;
+}
+
 export type UserInputtedType =
   | UserInputText
   | UserInputDateYear
   | UserInputDateTime
   | UserInputDropdown
-  | UserInputUserOutcome;
+  | UserInputUserOutcome
+  | TimeOffset;
 
 export interface ValueLabelPair {
   label: string;
@@ -113,6 +123,19 @@ export interface DropdownDependencies {
     [key: string]: string[];
   };
 }
+
+export interface DateDependencies {
+  id: number;
+  weekdayOnly?: boolean;
+  dateAfterId?: number;
+}
+export interface DateInputDependencies {
+  inputDateYearId: number;
+  inputSourceId: number;
+  inputTimeOffset: {
+    [key: string]: TimeOffset;
+  }
+}
 export interface TemplateValidation {
   templateValidation: string;
   templateValidationResRules: string;
@@ -120,6 +143,8 @@ export interface TemplateValidation {
   outcomeDependencies: DropdownDependencies;
   substituteDependencies: string[];
   marketQuestionDependencies: DropdownDependencies;
+  dateDependencies: DateDependencies[];
+  closingDateDependencies: DateInputDependencies[];
 }
 
 export interface TemplateValidationHash {
@@ -150,12 +175,19 @@ export interface TemplateInput {
   validationType?: ValidationType;
   values?: ValueLabelPair[];
   sublabel?: string;
+  dateAfterId?: number;
   inputSourceId?: number; // input id as source of text to get list values
   defaultLabel?: string; // dropdown default label shown
   inputDestId?: number; // target input to set list values
-  inputDestValues: { // dropdown source data structure to use to set target input list values
+  inputDestValues: {
+    // dropdown source data structure to use to set target input list values
     [key: string]: ValueLabelPair[];
+  };
+  inputTimeOffset: {
+    [key: string]: TimeOffset;
   }
+  setEndTime?: number;
+  inputDateYearId?: number;
 }
 
 export interface RetiredTemplate {
@@ -166,14 +198,16 @@ export interface RetiredTemplate {
 export enum ValidationType {
   WHOLE_NUMBER = 'WHOLE_NUMBER',
   NUMBER = 'NUMBER',
+  WEEKDAYONLY = 'WEEKDAYONLY',
 }
 
 export enum TemplateInputType {
   TEXT = 'TEXT', // simple text input in market question
   DATEYEAR = 'DATEYEAR', // date picker in market question
   DATETIME = 'DATETIME', // date time with timezone picker
-  DATESTART = 'DATESTART',
+  DATESTART = 'DATESTART', // market end time can not be before the start of this day
   ESTDATETIME = 'ESTDATETIME', // estimated scheduled start time date time picker with timezone
+  DATEYEAR_CLOSING = 'DATEYEAR_CLOSING', // expiration time can not be before this offset on DATEYEAR in market question
   DROPDOWN = 'DROPDOWN', // dropdown list, found in market question
   DENOMINATION_DROPDOWN = 'DENOMINATION_DROPDOWN', // list of denomination values for scalar market
   ADDED_OUTCOME = 'ADDED_OUTCOME', // required outcome that is added to categorical market template
@@ -208,12 +242,12 @@ export interface ExtraInfo {
 
 export const ValidationTemplateInputType = {
   [TemplateInputType.TEXT]: `(.*)`,
-  [ValidationType.WHOLE_NUMBER]: `[0-9]*`,
-  [ValidationType.NUMBER]: `[0-9]+\.*[0-9]*`,
+  [ValidationType.WHOLE_NUMBER]: `[0-9]+`,
+  [ValidationType.NUMBER]: `[0-9]+(\\\.[0-9]+){0,1}`,
   [TemplateInputType.USER_DESCRIPTION_OUTCOME]: `(.*)`,
-  [TemplateInputType.SUBSTITUTE_USER_OUTCOME]: `[0-9]*`,
-  [TemplateInputType.DATETIME]: `(January|February|March|April|May|June|July|August|September|October|November|December) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \\(UTC 0\\)`,
-  [TemplateInputType.DATEYEAR]: `(January|February|March|April|May|June|July|August|September|October|November|December) ([0-9]){2}, 20|([0-9]{2})`,
+  [TemplateInputType.SUBSTITUTE_USER_OUTCOME]: `[0-9]+`,
+  [TemplateInputType.DATETIME]: `(January|February|March|April|May|June|July|August|September|October|November|December){1} ([1-9]|[1-2][0-9]|3[0-1]), 20[0-9]{2} \d\d:\d\d (AM|PM) \\(UTC 0\\)`,
+  [TemplateInputType.DATEYEAR]: `(January|February|March|April|May|June|July|August|September|October|November|December){1} ([1-9]|[1-2][0-9]|3[0-1]), 20[0-9]{2}`,
 };
 
 export let TEMPLATE_VALIDATIONS = {};
@@ -246,7 +280,10 @@ function hasSubstituteOutcomes(
 }
 
 function hasRequiredOutcomes(requiredOutcomes: string[], outcomes: string[]) {
-  return requiredOutcomes.filter(r => outcomes.includes(r)).length === requiredOutcomes.length;
+  return (
+    requiredOutcomes.filter(r => outcomes.includes(r)).length ===
+    requiredOutcomes.length
+  );
 }
 
 export function generateResolutionRulesHash(rules: ResolutionRules) {
@@ -267,7 +304,10 @@ function hashResolutionRules(details) {
   return ethers.utils.sha256(value);
 }
 
-export const isValidTemplateMarket = (templateValidation: string, marketTitle: string) => {
+export const isValidTemplateMarket = (
+  templateValidation: string,
+  marketTitle: string
+) => {
   if (!templateValidation || !templateValidation) return false;
   return !!marketTitle.match(templateValidation);
 };
@@ -277,18 +317,23 @@ function convertOutcomes(outcomes: string[]) {
   return outcomes.map(o => {
     const outcomeDescription = o.replace('0x', '');
     const value = Buffer.from(outcomeDescription, 'hex').toString();
-    return [...value].reduce((p, i) => i.charCodeAt(0) !== 0 ? [...p,i] : p, []).join('')
+    return [...value]
+      .reduce((p, i) => (i.charCodeAt(0) !== 0 ? [...p, i] : p), [])
+      .join('');
   });
 }
 
-function hasMarketQuestionDependencies(validationDep: DropdownDependencies, inputs: ExtraInfoTemplateInput[]) {
+function hasMarketQuestionDependencies(
+  validationDep: DropdownDependencies,
+  inputs: ExtraInfoTemplateInput[]
+) {
   if (!validationDep) return true;
-    const input = inputs.find(i => i.id === validationDep.inputSourceId);
-    if (!input) return false;
-    const correctValues = validationDep.values[input.value] || [];
-    const testValue = inputs.find(i => i.id === validationDep.inputDestId);
-    if (!testValue) return false;
-    return correctValues.includes(testValue.value);
+  const input = inputs.find(i => i.id === validationDep.inputSourceId);
+  if (!input) return false;
+  const correctValues = validationDep.values[input.value] || [];
+  const testValue = inputs.find(i => i.id === validationDep.inputDestId);
+  if (!testValue) return false;
+  return correctValues.includes(testValue.value);
 }
 
 function isDependencyOutcomesCorrect(
@@ -301,45 +346,155 @@ function isDependencyOutcomesCorrect(
   const testOutcomes = outcomes.filter(o => !requiredOutcomes.includes(o));
 
   if (validationDep) {
-      const input = inputs.find(i => i.id === validationDep.inputSourceId);
-      if (!input) result = false;
-      const correctValues = validationDep.values[input.value] || [];
-      result = testOutcomes.filter(o => correctValues.includes(o)).length === testOutcomes.length;
+    const input = inputs.find(i => i.id === validationDep.inputSourceId);
+    if (!input) result = false;
+    const correctValues = validationDep.values[input.value] || [];
+    result =
+      testOutcomes.filter(o => correctValues.includes(o)).length ===
+      testOutcomes.length;
   }
   return result;
 }
 
-function estimatedDateTimeAfterMarketEndTime(inputs: ExtraInfoTemplateInput[], endTime: number) {
+function estimatedDateTimeAfterMarketEndTime(
+  inputs: ExtraInfoTemplateInput[],
+  endTime: number
+) {
   const input = inputs.find(i => i.type === TemplateInputType.ESTDATETIME);
   if (!input) return false;
   return Number(input.timestamp) >= Number(endTime);
 }
 
-function dateStartAfterMarketEndTime(inputs: ExtraInfoTemplateInput[], endTime: number) {
+function dateStartAfterMarketEndTime(
+  inputs: ExtraInfoTemplateInput[],
+  endTime: number
+) {
   const input = inputs.find(i => i.type === TemplateInputType.DATESTART);
   if (!input) return false;
   return Number(input.timestamp) >= Number(endTime);
 }
 
-function isRetiredAutofail(hash:string) {
-  const found: RetiredTemplate = RETIRED_TEMPLATES.find((t: RetiredTemplate) => t.hash === hash);
+function dateNoWeekend(
+  inputs: ExtraInfoTemplateInput[],
+  dateDependencies: DateDependencies[]
+) {
+  if (!dateDependencies) return true;
+  const deps = dateDependencies.filter(d => d.weekdayOnly);
+  const result = deps.reduce((p, d) => {
+    const input = inputs.find(i => i.id === d.id);
+    if (!input) return false;
+    const dayOfWeek = moment.unix(Number(input.timestamp)).weekday();
+    if (
+      dayOfWeek === SATURDAY_DAY_OF_WEEK ||
+      dayOfWeek === SUNDAY_DAY_OF_WEEK
+    ) {
+      return false;
+    }
+    return p;
+  }, true);
+  return result;
+}
+
+function dateComparisonDependencies(
+  inputs: ExtraInfoTemplateInput[],
+  dateDependencies: DateDependencies[]
+) {
+  if (!dateDependencies) return true;
+  const deps = dateDependencies.filter(d => d.dateAfterId);
+  const result = deps.reduce((p, d) => {
+    const dep = inputs.find(i => i.id === d.dateAfterId);
+    const source = inputs.find(i => i.id === d.id);
+    if (!dep || !source) return false;
+    if (dep.timestamp <= source.timestamp) {
+      return false;
+    }
+    return p;
+  }, true);
+  return result;
+}
+
+export function getTemplateExchangeClosingWithBuffer(
+  dayTimestamp: number,
+  hour: number,
+  minutes: number,
+  offset: number
+) {
+  // one hour time buffer after lastest exchange closing is built in.
+  const OneHourBuffer = 1;
+  const closingDateTime = moment
+    .unix(dayTimestamp)
+    .utc()
+    .startOf('day');
+
+  closingDateTime.set({
+    hour: hour - offset + OneHourBuffer,
+    minute: minutes,
+  });
+  return closingDateTime.unix();
+}
+
+function closingDateDependencies(
+  inputs: ExtraInfoTemplateInput[],
+  endTime: number,
+  closingDateDependencies: DateInputDependencies[]
+) {
+  if (!closingDateDependencies) return true;
+  const deps = closingDateDependencies.filter(d => d.inputDateYearId);
+  const result = deps.reduce((p, d) => {
+    const dateYearSource = inputs.find(i => i.id === d.inputDateYearId);
+    const exchangeValue = inputs.find(i => i.id === d.inputSourceId);
+    if (!dateYearSource || !exchangeValue) return false;
+    const timeOffset = d.inputTimeOffset[exchangeValue.value]  as TimeOffset;
+    const closingDateTime = getTemplateExchangeClosingWithBuffer(
+      Number(dateYearSource.timestamp),
+      timeOffset.hour,
+      timeOffset.minutes,
+      timeOffset.offset
+    );
+    if (closingDateTime >= endTime) {
+      return false;
+    }
+    return p;
+  }, true);
+  return result;
+}
+
+function isRetiredAutofail(hash: string) {
+  const found: RetiredTemplate = RETIRED_TEMPLATES.find(
+    (t: RetiredTemplate) => t.hash === hash
+  );
   if (!found) return false;
   return found.autoFail;
 }
 
-export const isTemplateMarket = (title, template: ExtraInfoTemplate, outcomes: string[], longDescription: string, endTime: string, errors: string[] = []) => {
-  if (!template || !template.hash || !template.question || template.inputs.length === 0 || !endTime) {
+export const isTemplateMarket = (
+  title,
+  template: ExtraInfoTemplate,
+  outcomes: string[],
+  longDescription: string,
+  endTime: string,
+  errors: string[] = []
+) => {
+  if (
+    !template ||
+    !template.hash ||
+    !template.question ||
+    template.inputs.length === 0 ||
+    !endTime
+  ) {
     errors.push('value missing template | hash | question | inputs | endTime');
     return false;
   }
 
   try {
-    if (isRetiredAutofail(template.hash)){
+    if (isRetiredAutofail(template.hash)) {
       errors.push('template hash has been retired and set to auto-fail');
       return false;
     }
 
-    const validation = TEMPLATE_VALIDATIONS[template.hash] as TemplateValidation;
+    const validation = TEMPLATE_VALIDATIONS[
+      template.hash
+    ] as TemplateValidation;
     if (!!!validation) {
       errors.push('no validation found for hash');
       return false;
@@ -356,17 +511,49 @@ export const isTemplateMarket = (title, template: ExtraInfoTemplate, outcomes: s
     }
 
     // check ESTDATETIME isn't after market event expiration
-    if (estimatedDateTimeAfterMarketEndTime(template.inputs, new BigNumber(endTime).toNumber())) {
-      errors.push('estimated schedule date time is after market event expiration endTime');
+    if (
+      estimatedDateTimeAfterMarketEndTime(
+        template.inputs,
+        new BigNumber(endTime).toNumber()
+      )
+    ) {
+      errors.push(
+        'estimated schedule date time is after market event expiration endTime'
+      );
       return false;
     }
 
     // check DATESTART isn't after market event expiration
-    if (dateStartAfterMarketEndTime(template.inputs, new BigNumber(endTime).toNumber())) {
+    if (
+      dateStartAfterMarketEndTime(
+        template.inputs,
+        new BigNumber(endTime).toNumber()
+      )
+    ) {
       errors.push('start date is after market event expiration endTime');
       return false;
     }
 
+    // check DATE isn't on weekend
+    if (!dateNoWeekend(template.inputs, validation.dateDependencies)) {
+      errors.push('market question date can not be on weekend');
+      return false;
+    }
+
+    // check DATE dependencies
+    if (
+      !dateComparisonDependencies(template.inputs, validation.dateDependencies)
+    ) {
+      errors.push('market question end date can not be after start date');
+      return false;
+    }
+
+    if (
+      !closingDateDependencies(template.inputs, new BigNumber(endTime).toNumber(), validation.closingDateDependencies)
+    ) {
+      errors.push('event expiration can not be before exchange close time');
+      return false;
+    }
     // check for input duplicates
     const values = template.inputs.map((i: ExtraInfoTemplateInput) => i.value);
     if (new Set(values).size !== values.length) {
@@ -382,7 +569,9 @@ export const isTemplateMarket = (title, template: ExtraInfoTemplate, outcomes: s
     }
 
     // reg ex to verify market question dropdown values and inputs
-    if (!isValidTemplateMarket(validation.templateValidation, checkMarketTitle)) {
+    if (
+      !isValidTemplateMarket(validation.templateValidation, checkMarketTitle)
+    ) {
       errors.push('populated market question does not match regex');
       return false;
     }
@@ -394,7 +583,12 @@ export const isTemplateMarket = (title, template: ExtraInfoTemplate, outcomes: s
     }
 
     // check that dropdown dep values are correct
-    if (!hasMarketQuestionDependencies(validation.marketQuestionDependencies, template.inputs)) {
+    if (
+      !hasMarketQuestionDependencies(
+        validation.marketQuestionDependencies,
+        template.inputs
+      )
+    ) {
       errors.push('market question dropdown dependencies values are incorrect');
       return false;
     }
@@ -407,25 +601,34 @@ export const isTemplateMarket = (title, template: ExtraInfoTemplate, outcomes: s
           template.inputs,
           outcomeValues
         )
-      ){
+      ) {
         errors.push('outcome dependencies are incorrect');
         return false;
       }
     }
 
-    if (!hasSubstituteOutcomes(template.inputs, validation.substituteDependencies, outcomeValues)) {
-      errors.push('outcomes values from substituted market question inputs are incorrect');
+    if (
+      !hasSubstituteOutcomes(
+        template.inputs,
+        validation.substituteDependencies,
+        outcomeValues
+      )
+    ) {
+      errors.push(
+        'outcomes values from substituted market question inputs are incorrect'
+      );
       return false;
     }
     // verify resolution rules
     const marketResolutionRules = hashResolutionRules(longDescription);
     if (marketResolutionRules !== validation.templateValidationResRules) {
-      errors.push('hash of resolution details is different than validation resolution rules hash');
+      errors.push(
+        'hash of resolution details is different than validation resolution rules hash'
+      );
       return false;
     }
 
-   return true;
-
+    return true;
   } catch (e) {
     console.error(e);
     errors.push(e);

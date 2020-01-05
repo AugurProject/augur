@@ -305,6 +305,9 @@ def simulate_then_trade(contractsFixture, market, outcome, orderDirection, order
     initialShareBalance = shareToken.balanceOfMarketOutcome(market.address, shareTokenOutcome, fillerAccount)
 
     expectedAmountRemaining = fillAmount - sharesFilled
+    # Self trades will take the full order in terms of amount remaining
+    makerAccount = orders[0][0]
+    expectedAmountRemaining = expectedAmountRemaining if fillerAccount != makerAccount else 0
     assert ZeroXTrade.trade(fillAmount, fingerprint, tradeGroupID, orders, signatures, sender=fillerAccount, value=150000*len(orders)) == expectedAmountRemaining 
 
     if (tokensDepleted > 0):
