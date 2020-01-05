@@ -4954,8 +4954,8 @@ export const TEMPLATES = {
       },
       {
         marketType: YES_NO,
-        question: `Will [0] gross $[1] USD or more, in it's opening weekend in the US?`,
-        example: `Will Avangers: Endgame gross $350 million USD or more in it's opening weekend in the US?`,
+        question: `Will [0] gross $[1] USD or more over its opening weekend in the US?`,
+        example: `Will Avangers: Endgame gross $350 million USD or more over its opening weekend in the US?`,
         inputs: [
           {
             id: 0,
@@ -4971,15 +4971,20 @@ export const TEMPLATES = {
         resolutionRules: {
           [REQUIRED]: [
             {
-              text: `Gross total should include the first Friday through Sunday of the movie release and does not include extra days due to holidays`,
+              text:
+                'Gross total should include sales from the first Friday (local showing time) through the first Sunday (local showing time) of the movie release',
+            },
+            {
+              text:
+                'Any extra days should not be counted, including early showings, long weekends due to holidays, etc.',
             },
           ],
         },
       },
       {
         marketType: YES_NO,
-        question: `Head-to-Head: Will [0] gross more than [1] on it's opening weekend in the US?`,
-        example: `Head-to-Head: Will Avangers: Endgame gross more than Avangers: Age of Ultron on it's opening weekend in the US?`,
+        question: `Head-to-Head: Will [0] gross more than [1] over their respective opening weekends in the US?`,
+        example: `Head-to-Head: Will Avangers: Endgame gross more than Avangers: Age of Ultron over their respective opening weekends in the US?`,
         inputs: [
           {
             id: 0,
@@ -4996,7 +5001,11 @@ export const TEMPLATES = {
           [REQUIRED]: [
             {
               text:
-                'Gross total should include the first Friday through Sunday of the movie release and does not include extra days due to holidays',
+                'Gross total should include sales from the first Friday (local showing time) through the first Sunday (local showing time) of the movie release',
+            },
+            {
+              text:
+                'Any extra days should not be counted, including early showings, long weekends due to holidays, etc.',
             },
           ],
         },
