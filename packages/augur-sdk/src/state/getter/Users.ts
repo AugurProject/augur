@@ -1095,7 +1095,6 @@ function getLastDocBeforeTimestamp<TDoc extends Timestamped>(
   return undefined;
 }
 
-
 function addEscrowedAmountsDecrementShares(
   order: Order,
   outcome: string,
@@ -1107,38 +1106,49 @@ function addEscrowedAmountsDecrementShares(
   let cost = ZERO;
   const maxPrice = new BigNumber(market.prices[1]);
   const displayMaxPrice = maxPrice.dividedBy(QUINTILLION);
-  const shares = userSharesBalances[outcome] || '0';
-  const askUserSharesBalances = Object.keys(userSharesBalances).reduce(
-    (p, o) =>  outcome === o ? p : [...p, new BigNumber(userSharesBalances[o])], []
-  );
-  const minOutcomeShareAmount = BigNumber.min(...askUserSharesBalances);
-  if (orderType === 0) { // bid
-    const sharesBN = new BigNumber(shares);
-    const useShares = BigNumber.min(new BigNumber(order.amount), sharesBN);
-    const amt = new BigNumber(order.amount).minus(useShares);
-    cost = amt.times(new BigNumber(order.price));
-    userSharesBalances[outcome] = sharesBN.gt(ZERO)
-      ? sharesBN.minus(useShares).toString()
-      : shares;
-  } else { // ask
-    const useShares = BigNumber.min(
+  let sharesUsed = ZERO;
+
+  if (orderType === 0) { // bids
+    const userSharesBalancesRemoveOutcome = Object.keys(
+      userSharesBalances
+    ).reduce(
+      (p, o) =>
+        outcome === o ? p : [...p, new BigNumber(userSharesBalances[o])],
+      []
+    );
+    const minOutcomeShareAmount = userSharesBalancesRemoveOutcome.length > 0 ? BigNumber.min(
+      ...userSharesBalancesRemoveOutcome
+    ) : ZERO;
+    sharesUsed = BigNumber.min(
       new BigNumber(order.amount),
       minOutcomeShareAmount
     );
-    cost = new BigNumber(order.amount)
-      .minus(useShares)
-      .times(displayMaxPrice.minus(new BigNumber(order.price)));
+
+    const amt = new BigNumber(order.amount).minus(sharesUsed);
+    cost = amt.times(new BigNumber(order.price));
+
     Object.keys(userSharesBalances).forEach(o => {
-        if (outcome !== o) {
-          userSharesBalances[o] = new BigNumber(userSharesBalances[o])
-                  .minus(minOutcomeShareAmount)
-                  .toString();
-        }
-    })
+      if (outcome !== o) {
+        userSharesBalances[o] = new BigNumber(userSharesBalances[o])
+          .minus(sharesUsed)
+          .toString();
+      }
+    });
+  } else {  // ask
+    const sharesBN = new BigNumber(userSharesBalances[outcome] || '0');
+    sharesUsed = BigNumber.min(new BigNumber(order.amount), sharesBN);
+
+    cost = new BigNumber(order.amount)
+      .minus(sharesUsed)
+      .times(displayMaxPrice.minus(new BigNumber(order.price)));
+
+    userSharesBalances[outcome] = sharesBN.gt(ZERO)
+      ? sharesBN.minus(sharesUsed).toString()
+      : sharesBN.toString();
   }
+
   order.tokensEscrowed = cost.toString();
-  order.sharesEscrowed =
-    orderType === 0 ? shares : minOutcomeShareAmount.toString();
+  order.sharesEscrowed = sharesUsed.toString();
 }
 
 function getTradingPositionFromProfitLossFrame(
