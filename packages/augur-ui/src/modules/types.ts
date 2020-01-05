@@ -623,6 +623,7 @@ export interface LoginAccount {
   meta?: LoginAccountMeta;
   totalFrozenFunds?: string;
   totalRealizedPL?: string;
+  totalOpenOrdersFrozenFunds?: string;
   tradingPositionsTotal?: UnrealizedRevenue;
   timeframeData?: TimeframeData;
   allowanceFormatted?: FormattedNumber;

@@ -37,8 +37,15 @@ async function loadTransactions(
   }), {});
 
   dispatch(updateMarketsData(marketsDataById));
-  dispatch(updateUserOpenOrders(userData.userOpenOrders));
+  if (userData.userOpenOrders) dispatch(updateUserOpenOrders(userData.userOpenOrders.orders));
   dispatch(updateLoginAccount({ reporting: userData.userStakedRep }));
   if (userData.userPositions) userPositionProcessing(userData.userPositions, dispatch);
   if (userData.userPositionTotals) dispatch(updateLoginAccount(userData.userPositionTotals));
+  if (userData.userOpenOrders)
+    dispatch(
+      updateLoginAccount({
+        totalOpenOrdersFrozenFunds:
+          userData.userOpenOrders.totalOpenOrdersFrozenFunds,
+      })
+    );
 }

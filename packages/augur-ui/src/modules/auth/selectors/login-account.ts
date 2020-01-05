@@ -48,13 +48,18 @@ export const selectAccountFunds = createSelector(
     let totalAvailableTradingBalance = ZERO;
     let totalFrozenFunds = ZERO;
     let totalRealizedPL = ZERO;
+    let totalOpenOrderFunds = loginAccount.totalOpenOrdersFrozenFunds
+      ? loginAccount.totalOpenOrdersFrozenFunds
+      : ZERO;
 
     if (loginAccount.balances.dai && loginAccount.balances.dai) {
       totalAvailableTradingBalance = createBigNumber(loginAccount.balances.dai);
     }
 
     if (loginAccount.totalFrozenFunds) {
-      totalFrozenFunds = createBigNumber(loginAccount.totalFrozenFunds);
+      totalFrozenFunds = createBigNumber(loginAccount.totalFrozenFunds).plus(
+        totalOpenOrderFunds
+      );
     }
 
     if (loginAccount.totalRealizedPL) {

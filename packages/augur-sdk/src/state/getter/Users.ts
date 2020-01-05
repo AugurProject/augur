@@ -30,13 +30,15 @@ import { formatBytes32String } from 'ethers/utils';
 import * as _ from 'lodash';
 import * as t from 'io-ts';
 import { QUINTILLION } from '../../utils';
-import { OnChainTrading, MarketTradingHistory, Orders } from './OnChainTrading';
+import { OnChainTrading, MarketTradingHistory, Orders, getMarkets, Order } from './OnChainTrading';
 import { MarketInfo, Markets } from './Markets';
 import { Accounts, AccountReportingHistory } from './Accounts';
 import { PlaceTradeDisplayParams } from "../../api/Trade";
 import * as uuid from 'uuid';
 import { ethers } from 'ethers';
 import { convertDisplayAmountToOnChainAmount, convertDisplayPriceToOnChainPrice, numTicksToTickSizeWithDisplayPrices } from '../../utils';
+import { StoredOrder } from '../db/ZeroXOrders';
+import { ZeroXOrders } from './ZeroXOrdersGetters';
 
 
 
@@ -72,6 +74,11 @@ const getProfitLossParams = t.intersection([
     outcome: t.number,
   }),
 ]);
+
+export interface UserOpenOrders {
+  orders: ZeroXOrders;
+  totalOpenOrdersFrozenFunds: string;
+}
 
 export interface AccountTimeRangedStatsResult {
   // Yea. The ProfitLossChanged event then
@@ -164,7 +171,7 @@ export interface ProfitLossResult {
 export interface UserAccountDataResult {
   userTradeHistory: MarketTradingHistory;
   marketTradeHistory: MarketTradingHistory;
-  userOpenOrders: Orders;
+  userOpenOrders: UserOpenOrders;
   userStakedRep: AccountReportingHistory;
   userPositions: UserTradingPositions;
   userPositionTotals: UserPositionTotals;
@@ -208,7 +215,7 @@ export class Users {
     let marketsInfo = null;
     let marketList = null;
     let userTradeHistory = null;
-    let userOpenOrders = null;
+    let userOpenOrders: UserOpenOrders = null;
     let userPositions: UserTradingPositions = null;
     let userStakedRep: AccountReportingHistory = null;
     try {
@@ -224,18 +231,15 @@ export class Users {
         marketTradeHistory = await OnChainTrading.getTradingHistory(augur, db, { marketIds: uniqMarketIds });
       }
 
-      userOpenOrders = await OnChainTrading.getOpenOrders(augur, db, {
-        account: params.account,
-        universe: params.universe,
-        orderState: OrderState.OPEN,
-      });
       userPositions = await Users.getUserTradingPositions(augur, db, {
         account: params.account,
         universe: params.universe,
       })
-      var totalCostOpenOrders = new BigNumber(0);
-      var markets;
-      if (userOpenOrders) {markets = Object.keys(userOpenOrders);};
+
+      userOpenOrders = await Users.getUserOpenOrders(augur, db, {
+        account: params.account,
+        universe: params.universe,
+      });
 
       marketList = await Markets.getMarkets(augur, db, {
         creator: params.account,
@@ -258,6 +262,7 @@ export class Users {
         account: params.account,
         universe: params.universe,
       })
+
       if (positions && Object.keys(positions).length > 0) {
         userPositionTotals = {
           totalFrozenFunds: userPositions.frozenFundsTotal,
@@ -276,7 +281,7 @@ export class Users {
           ),
         ])
       );
-      const userOpenOrdersMarketIds = Object.keys(userOpenOrders);
+      const userOpenOrdersMarketIds = Object.keys(userOpenOrders.orders);
 
       const set = new Set(
         uniqMarketIds.concat(userOpenOrdersMarketIds).concat(stakedRepMarketIds).concat(userPositionsMarketIds)
@@ -297,8 +302,68 @@ export class Users {
       userStakedRep,
       userPositions,
       userPositionTotals,
-      marketsInfo: [...(marketList || {}).markets, ...marketsInfo]
+      marketsInfo: [...(marketList || {}).markets, ...marketsInfo],
     };
+  }
+
+  @Getter('getUserAccountParams')
+  static async getUserOpenOrders(
+    augur: Augur,
+    db: DB,
+    params: t.TypeOf<typeof Users.getUserAccountParams>
+  ): Promise<UserOpenOrders> {
+    if (!params.account || !params.universe) {
+      throw new Error(
+        "'getUserOpenOrders' requires 'account' and 'universe' params to be provided"
+      );
+    }
+    const orders = await OnChainTrading.getOpenOrders(augur, db, {
+      account: params.account,
+      universe: params.universe
+    });
+
+    if (!orders || Object.keys(orders).length === 0 ) return { orders: {}, totalOpenOrdersFrozenFunds: "0" };
+
+    const userPositions = await Users.getUserTradingPositions(augur, db, {
+      account: params.account,
+      universe: params.universe,
+    })
+    const positions = userPositions.tradingPositionsPerMarket;
+    /*
+      tokensEscrowed: string; // DAI
+      sharesEscrowed: string; // Shares
+    */
+    const markets = await getMarkets(Object.keys(orders), db, false);
+    let totalCost = new BigNumber(0);
+    Object.keys(orders).forEach(marketId => {
+      const market = markets[marketId];
+      const marketPositions = positions[marketId];
+      let userSharesBalances = marketPositions
+        ? marketPositions.userSharesBalances
+        : {};
+      const outcomes = Object.keys(orders[marketId]);
+      outcomes.forEach(outcome => {
+        const orderTypes = Object.keys(orders[marketId][outcome]);
+        orderTypes.forEach(orderType => {
+          const orderIds = Object.keys(orders[marketId][outcome][orderType]);
+          orderIds.forEach(orderId => {
+            const order = orders[marketId][outcome][orderType][orderId];
+            addEscrowedAmountsDecrementShares(
+              order,
+              outcome,
+              Number(orderType),
+              market,
+              userSharesBalances
+            );
+            totalCost = totalCost.plus(new BigNumber(order.tokensEscrowed));
+          });
+        });
+      });
+    });
+    return {
+      orders,
+      totalOpenOrdersFrozenFunds: totalCost.toString()
+    }
   }
 
   @Getter('getAccountTimeRangedStatsParams')
@@ -492,7 +557,7 @@ export class Users {
       }
     );
 
-    
+
     // map Latest PLs to Trading Positions
     const tradingPositionsByMarketAndOutcome = _.mapValues(
       profitLossResultsByMarketAndOutcome,
@@ -620,6 +685,7 @@ export class Users {
     const allProfitLossResults = _.flatten(
       _.values(_.mapValues(profitLossResultsByMarketAndOutcome, _.values))
     );
+
     frozenFundsTotal = _.reduce(
       allProfitLossResults,
       (value, tradingPosition) => {
@@ -627,7 +693,6 @@ export class Users {
       },
       new BigNumber(0)
     );
-
     const ownedMarketsResponse = await db.Markets.where("marketCreator").equals(params.account).and((log) => !log.finalized).toArray();
     const ownedMarkets = _.map(ownedMarketsResponse, "market");
     const totalValidityBonds = await augur.contracts.hotLoading.getTotalValidityBonds_(ownedMarkets);
@@ -643,14 +708,8 @@ export class Users {
   } catch(e) {
     console.error('getUserTradingPositions', e);
   }
-    var openOrdersFrozenFunds = await frozenFundsCalcOpenOrders(augur, db, params, {
-      tradingPositions,
-      tradingPositionsPerMarket: marketTradingPositions,
-      frozenFundsTotal: frozenFundsTotal.dividedBy(QUINTILLION).toFixed(),
-      unrealizedRevenue24hChangePercent: profitLossSummary && profitLossSummary[1].unrealizedPercent || "0",
-    });
-    frozenFundsTotal = frozenFundsTotal.plus(openOrdersFrozenFunds);
-    return {
+
+   return {
       tradingPositions,
       tradingPositionsPerMarket: marketTradingPositions,
       frozenFundsTotal: frozenFundsTotal.dividedBy(QUINTILLION).toFixed(),
@@ -967,15 +1026,6 @@ function bucketRangeByInterval(
   return buckets;
 }
 
-function generateTradeGroupId() {
-  return ethers.utils.formatBytes32String(
-    uuid
-      .v4()
-      .toString()
-      .substring(1, 32)
-    );
-}
-
 async function getProfitLossRecordsByMarketAndOutcome(
   db: DB,
   account: string,
@@ -985,136 +1035,6 @@ async function getProfitLossRecordsByMarketAndOutcome(
     profitLossResult
   );
 }
-
-async function frozenFundsCalcOpenOrders(augur: Augur,
-    db: DB, params, userPositions: UserTradingPositions) {
-      let userOpenOrders = null;
-      let marketsInfo = null;
-      userOpenOrders = await OnChainTrading.getOpenOrders(augur, db, {
-        account: params.account,
-        universe: params.universe,
-        orderState: OrderState.OPEN,
-      });
-      var totalCostOpenOrders = new BigNumber(0);
-      var markets;
-      if (userOpenOrders) {markets = Object.keys(userOpenOrders);};
-      if (markets) {
-        for (const market of markets) {
-          const outcomes = Object.keys(userOpenOrders[market]);
-          for (const outcome of outcomes) {
-            var buyOrders = userOpenOrders[market][outcome][0];
-            var sellOrders = userOpenOrders[market][outcome][1];
-            var specificBuyOrders;
-            var specificSellOrders;
-            if (buyOrders) {specificBuyOrders = Object.keys(buyOrders);};
-            if (sellOrders) {specificSellOrders = Object.keys(sellOrders);};
-            const fingerprint = formatBytes32String('11'); // TODO: get this from state
-            const doNotCreateOrders = false;
-            var marketIds: string[] = [market];
-            marketsInfo = await Markets.getMarketsInfo(augur, db, { marketIds });
-            const outcomeShares = Object.keys(userPositions.tradingPositionsPerMarket[market].userSharesBalances);
-            if (buyOrders) {
-              for (const specificBuyOrder of specificBuyOrders) {
-                  const tradeGroupId = generateTradeGroupId();
-                  var shortPosition = null;
-                  for (const outcomeNum of outcomeShares) {
-                    if(outcomeNum != outcome) {
-                      if(shortPosition == null) {
-                        shortPosition = userPositions.tradingPositionsPerMarket[market].userSharesBalances[outcomeNum];
-                      }
-                      shortPosition = BigNumber.min(new BigNumber(userPositions.tradingPositionsPerMarket[market].userSharesBalances[outcomeNum]), shortPosition);
-                    }
-                  }
-                  var marketTicks = new BigNumber(marketsInfo[0].numTicks);
-                  var tradeOutcome = parseInt(outcome) as 0 | 5 | 2 | 4 | 3 | 1 | 6 | 7;
-                  var min = new BigNumber(marketsInfo[0].minPrice);
-                  var max = new BigNumber(marketsInfo[0].maxPrice);
-                  var amount = new BigNumber(buyOrders[specificBuyOrder].amount);
-                  var price = new BigNumber(buyOrders[specificBuyOrder].price);
-                  var tradeDisplayShares = new BigNumber(userPositions.tradingPositionsPerMarket[market].userSharesBalances[outcome]);
-                  var tickSize = new BigNumber(marketsInfo[0].tickSize);
-                  const params: PlaceTradeDisplayParams = {
-                      direction: 0,
-                      market: market,
-                      numTicks: marketTicks,
-                      numOutcomes: marketsInfo[0].numOutcomes,
-                      outcome: tradeOutcome,
-                      tradeGroupId: tradeGroupId,
-                      fingerprint: fingerprint,
-                      kycToken: buyOrders[specificBuyOrder].kycToken,
-                      doNotCreateOrders: doNotCreateOrders,
-                      displayMinPrice: min,
-                      displayMaxPrice: max,
-                      displayAmount: amount,
-                      displayPrice: price,
-                      displayShares: tradeDisplayShares,
-                  };
-                  var amount = convertDisplayAmountToOnChainAmount(params.displayAmount, tickSize);
-                  var shares = convertDisplayAmountToOnChainAmount(params.displayShares, tickSize);
-                  // when selling, we want to do this
-                  // var shares = min(shares, amount);
-                  // when buying, we want to do this
-                  var shares = BigNumber.min(shortPosition, amount);
-                  var price = convertDisplayPriceToOnChainPrice(params.displayPrice, params.displayMinPrice, tickSize);
-                  var amountNotCoveredByShares = amount.minus(shares);
-
-                  const cost =
-                    params.direction == 0
-                      ? price.multipliedBy(amountNotCoveredByShares)
-                      : params.numTicks
-                          .minus(price)
-                          .multipliedBy(amountNotCoveredByShares);
-                  totalCostOpenOrders = totalCostOpenOrders.plus(cost);
-              };
-            }
-            if (sellOrders) {
-              for (const specificSellOrder of specificSellOrders) {
-                  const tradeGroupId = generateTradeGroupId();
-                  var marketTicks = new BigNumber(marketsInfo[0].numTicks);
-                  var tradeOutcome = parseInt(outcome) as 0 | 5 | 2 | 4 | 3 | 1 | 6 | 7;
-                  var min = new BigNumber(marketsInfo[0].minPrice);
-                  var max = new BigNumber(marketsInfo[0].maxPrice);
-                  var amount = new BigNumber(sellOrders[specificSellOrder].amount);
-                  var price = new BigNumber(sellOrders[specificSellOrder].price);
-                  var tradeDisplayShares = new BigNumber(userPositions.tradingPositionsPerMarket[market].userSharesBalances[outcome]);
-                  var tickSize = new BigNumber(marketsInfo[0].tickSize);
-                  const params: PlaceTradeDisplayParams = {
-                      direction: 0,
-                      market: market,
-                      numTicks: marketTicks,
-                      numOutcomes: marketsInfo[0].numOutcomes,
-                      outcome: tradeOutcome,
-                      tradeGroupId: tradeGroupId,
-                      fingerprint: fingerprint,
-                      kycToken: sellOrders[specificSellOrder].kycToken,
-                      doNotCreateOrders: doNotCreateOrders,
-                      displayMinPrice: min,
-                      displayMaxPrice: max,
-                      displayAmount: amount,
-                      displayPrice: price,
-                      displayShares: tradeDisplayShares,
-                  };
-                  var amount = convertDisplayAmountToOnChainAmount(params.displayAmount, tickSize);
-                  var shares = convertDisplayAmountToOnChainAmount(params.displayShares, tickSize);
-                  // when selling, we want to do this
-                  var shares = BigNumber.min(shares, amount);
-                  var price = convertDisplayPriceToOnChainPrice(params.displayPrice, params.displayMinPrice, tickSize);
-                  var amountNotCoveredByShares = amount.minus(shares);
-
-                  const cost =
-                    params.direction == 0
-                      ? price.multipliedBy(amountNotCoveredByShares)
-                      : params.numTicks
-                          .minus(price)
-                          .multipliedBy(amountNotCoveredByShares);
-                  totalCostOpenOrders = totalCostOpenOrders.plus(cost);
-              };
-            }
-          }
-        };
-      };
-      return totalCostOpenOrders;
-  }
 
 async function getOrderFilledRecordsByMarketAndOutcome(
   db: DB,
@@ -1173,6 +1093,62 @@ function getLastDocBeforeTimestamp<TDoc extends Timestamped>(
     return _.last(allBeforeTimestamp);
   }
   return undefined;
+}
+
+function addEscrowedAmountsDecrementShares(
+  order: Order,
+  outcome: string,
+  orderType: number,
+  market: MarketData,
+  userSharesBalances: { [outcome: string]: string }
+) {
+  const ZERO = new BigNumber(0);
+  let cost = ZERO;
+  const maxPrice = new BigNumber(market.prices[1]);
+  const displayMaxPrice = maxPrice.dividedBy(QUINTILLION);
+  let sharesUsed = ZERO;
+
+  if (orderType === 0) { // bids
+    const userSharesBalancesRemoveOutcome = Object.keys(
+      userSharesBalances
+    ).reduce(
+      (p, o) =>
+        outcome === o ? p : [...p, new BigNumber(userSharesBalances[o])],
+      []
+    );
+    const minOutcomeShareAmount = userSharesBalancesRemoveOutcome.length > 0 ? BigNumber.min(
+      ...userSharesBalancesRemoveOutcome
+    ) : ZERO;
+    sharesUsed = BigNumber.min(
+      new BigNumber(order.amount),
+      minOutcomeShareAmount
+    );
+
+    const amt = new BigNumber(order.amount).minus(sharesUsed);
+    cost = amt.times(new BigNumber(order.price));
+
+    Object.keys(userSharesBalances).forEach(o => {
+      if (outcome !== o) {
+        userSharesBalances[o] = new BigNumber(userSharesBalances[o])
+          .minus(sharesUsed)
+          .toString();
+      }
+    });
+  } else {  // ask
+    const sharesBN = new BigNumber(userSharesBalances[outcome] || '0');
+    sharesUsed = BigNumber.min(new BigNumber(order.amount), sharesBN);
+
+    cost = new BigNumber(order.amount)
+      .minus(sharesUsed)
+      .times(displayMaxPrice.minus(new BigNumber(order.price)));
+
+    userSharesBalances[outcome] = sharesBN.gt(ZERO)
+      ? sharesBN.minus(sharesUsed).toString()
+      : sharesBN.toString();
+  }
+
+  order.tokensEscrowed = cost.toString();
+  order.sharesEscrowed = sharesUsed.toString();
 }
 
 function getTradingPositionFromProfitLossFrame(
