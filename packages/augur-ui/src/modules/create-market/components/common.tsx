@@ -572,6 +572,7 @@ export const NumberedInput = ({
           onChange={value => onChange(value, number)}
           value={value}
           placeholder={placeholder}
+          maxLength="32"
           errorMessage={errorMessage}
         />
         {removable && <button onClick={e => onRemove(number)}>{XIcon}</button>}
