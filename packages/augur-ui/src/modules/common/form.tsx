@@ -665,7 +665,7 @@ export class CategoryMultiSelect extends Component<
           options={primaryOptions}
           errorMessage={errorMessage && errorMessage[0]}
           value={values[0]}
-          placeholder="Custom Primary Category"
+          placeholder="Enter Custom Category"
           onChangeInput={v =>
             this.handleUpdate(selected, getNewValues(v, 0, values))
           }
