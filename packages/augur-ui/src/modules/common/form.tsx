@@ -923,6 +923,7 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
 }
 
 export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
+  render() {
     const {
       id,
       market,
