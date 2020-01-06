@@ -93,6 +93,8 @@ contract Augur is IAugur, IAugurCreationDataGetter, CashSender {
 
     int256 private constant DEFAULT_MIN_PRICE = 0;
     int256 private constant DEFAULT_MAX_PRICE = 1 ether;
+    uint256 private constant RECOMMENDED_TRADE_INTERVAL = 10;
+    uint256 private constant DEFAULT_RECOMMENDED_TRADE_INTERVAL = 10 ** 17;
 
     modifier onlyUploader() {
         require(msg.sender == uploader);

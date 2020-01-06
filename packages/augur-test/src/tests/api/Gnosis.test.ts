@@ -34,7 +34,8 @@ describe('Gnosis :: ', () => {
       undefined
     );
 
-    mockGnosisRelay = new MockGnosisRelayAPI(mary);
+    mockGnosisRelay = new MockGnosisRelayAPI();
+    mockGnosisRelay.initialize(mary)
     john = await ContractAPI.userWrapper(
       ACCOUNTS[0],
       providerFork,
@@ -60,7 +61,7 @@ describe('Gnosis :: ', () => {
   describe('getOrCreateGnosisSafe method', () => {
     test('should return wallet address if it exists', async done => {
       john.augur
-        .getAugurEventEmitter()
+        .events
         .on(SubscriptionEventName.GnosisSafeStatus, payload => {
           expect(payload).toEqual(
             expect.objectContaining({
@@ -82,7 +83,7 @@ describe('Gnosis :: ', () => {
 
     test('should emit event with status if relay request was created', async done => {
       john.augur
-        .getAugurEventEmitter()
+        .events
         .on(SubscriptionEventName.GnosisSafeStatus, payload => {
           expect(payload).toEqual(
             expect.objectContaining({
@@ -193,10 +194,10 @@ describe('Gnosis :: ', () => {
       const receipt = await john.provider.waitForTransaction(resp.txHash);
       expect(receipt).not.toBeNull();
 
-      john.augur.getAugurEventEmitter().emit(SubscriptionEventName.NewBlock);
+      john.augur.events.emit(SubscriptionEventName.NewBlock);
 
       john.augur
-        .getAugurEventEmitter()
+        .events
         .on(SubscriptionEventName.GnosisSafeStatus, async payload => {
           expect(payload).toMatchObject({
             status: expect.objectContaining({
@@ -215,7 +216,7 @@ describe('Gnosis :: ', () => {
 
       // Cause checkSafe to fire.
       john.augur
-        .getAugurEventEmitter()
+        .events
         .emit(SubscriptionEventName.NewBlock, {});
     });
   });

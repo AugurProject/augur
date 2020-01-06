@@ -6,6 +6,7 @@ import {
   GnosisSafeStateReponse,
   IGnosisRelayAPI,
   SafeResponse,
+  GnosisSafeState,
 } from '@augurproject/gnosis-relay-api';
 import {
   Augur,
@@ -28,6 +29,7 @@ import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis/build';
 import { formatBytes32String } from 'ethers/utils';
 import { Account } from '../constants';
 import { makeGnosisDependencies, makeSigner } from './blockchain';
+import { sleep } from '@augurproject/core/build/libraries/HelperFunctions';
 
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 const ETERNAL_APPROVAL_VALUE = new BigNumber('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'); // 2^256 - 1
@@ -45,7 +47,6 @@ export class ContractAPI {
     const signer = await makeSigner(account, provider);
     const dependencies = makeGnosisDependencies(provider, gnosisRelay, signer, addresses.Cash, new BigNumber(0), null, account.publicKey);
     const augur = await Augur.create(provider, dependencies, addresses, connector, gnosisRelay, true, meshClient, meshBrowser);
-
     return new ContractAPI(augur, provider, dependencies, account);
   }
 
@@ -55,6 +56,13 @@ export class ContractAPI {
     readonly dependencies: ContractDependenciesGnosis,
     public account: Account
   ) {}
+
+  async sendEther(to: string, amount: BigNumber): Promise<void> {
+    await this.dependencies.signer.sendTransaction({
+      to,
+      value: `0x${amount.toString(16)}`,
+    })
+  }
 
   async approveCentralAuthority(): Promise<void> {
     const authority = this.augur.addresses.Augur;
@@ -106,7 +114,7 @@ export class ContractAPI {
       designatedReporter: this.account.publicKey,
       extraInfo: JSON.stringify({
         categories: ['flash', 'Reasonable', 'YesNo'],
-        description: 'description',
+        description: 'YesNo market description',
       }),
     });
   }
@@ -122,7 +130,7 @@ export class ContractAPI {
       designatedReporter: this.account.publicKey,
       extraInfo: JSON.stringify({
         categories: ['flash', 'Reasonable', 'Categorical'],
-        description: 'description',
+        description: 'Categorical market description',
       }),
       outcomes,
     });
@@ -141,7 +149,7 @@ export class ContractAPI {
       designatedReporter: this.account.publicKey,
       extraInfo: JSON.stringify({
         categories: ['flash', 'Reasonable', 'Scalar'],
-        description: 'description',
+        description: 'Scalar market description',
         _scalarDenomination: 'scalar denom 1',
       }),
       numTicks: new BigNumber(20000),
@@ -214,8 +222,7 @@ export class ContractAPI {
   }
 
   async placeZeroXOrder(params: ZeroXPlaceTradeDisplayParams): Promise<string> {
-    const orderHash = await this.augur.zeroX.placeOrder(params);
-    return orderHash;
+    return this.augur.zeroX.placeOrder(params);
   }
 
   async placeZeroXTrade(params: ZeroXPlaceTradeDisplayParams): Promise<void> {
@@ -225,12 +232,12 @@ export class ContractAPI {
     await this.augur.zeroX.placeTrade(params);
   }
 
-  async placeBasicYesNoZeroXTrade(direction: 0 | 1, market: ContractInterfaces.Market, outcome: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7, displayAmount: BigNumber, displayPrice: BigNumber, displayShares: BigNumber, expirationTime: BigNumber): Promise<void> {
+  async placeBasicYesNoZeroXTrade(direction: 0 | 1, market: string, outcome: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7, displayAmount: BigNumber, displayPrice: BigNumber, displayShares: BigNumber, expirationTime: BigNumber): Promise<void> {
     await this.placeZeroXTrade({
       direction,
-      market: market.address,
-      numTicks: await market.getNumTicks_(),
-      numOutcomes: await market.getNumberOfOutcomes_() as unknown as 3 | 4 | 5 | 6 | 7 | 8,
+      market,
+      numTicks: new BigNumber(100),
+      numOutcomes: 3,
       outcome,
       tradeGroupId: formatBytes32String('42'),
       fingerprint: formatBytes32String('11'),
@@ -430,7 +437,7 @@ export class ContractAPI {
   }
 
   async getNumSharesInMarket(market: ContractInterfaces.Market, outcome: BigNumber): Promise<BigNumber> {
-    return this.augur.contracts.shareToken.balanceOfMarketOutcome_(market.address, outcome, this.account.publicKey);
+    return this.augur.contracts.shareToken.balanceOfMarketOutcome_(market.address, outcome, await this.augur.getAccount());
   }
 
   async getOrCreateCurrentDisputeWindow(initial = false): Promise<string> {
@@ -527,6 +534,7 @@ export class ContractAPI {
     let balance = await this.getCashBalance();
     const desired = balance.plus(attoCash);
     while (balance.lt(desired)) {
+      console.log(`FAUCETING. BALANCE: ${balance}. DESIRED: ${desired}`);
       await this.augur.contracts.cashFaucet.faucet(attoCash);
       balance = await this.getCashBalance();
     }
@@ -692,4 +700,46 @@ export class ContractAPI {
     });
   }
 
+  async fundSafe(safe=undefined) {
+    safe = safe || await this.getOrCreateSafe();
+
+    await this.faucet(new BigNumber(1e21));
+    await this.transferCash(safe, new BigNumber(1e21));
+
+    let status: string;
+    for (let i = 0; i < 10; i++) {
+      status = await this.getSafeStatus(safe);
+      if (status !== GnosisSafeState.WAITING_FOR_FUNDS) {
+        break;
+      }
+      await sleep(2000);
+    }
+
+    await sleep(10000);
+
+    return safe;
+  }
+
+  async getOrCreateSafe(): Promise<string> {
+    const safeFromRegistry = await this.augur.contracts.gnosisSafeRegistry.getSafe_(this.account.publicKey);
+    if(safeFromRegistry !== NULL_ADDRESS) {
+      console.log(`Found safe: ${safeFromRegistry}`);
+      return safeFromRegistry;
+    }
+
+    console.log('Attempting to create safe via relay');
+    const safeResponse = await this.createGnosisSafeViaRelay(this.augur.addresses.Cash);
+    return safeResponse.safe
+  }
+
+  async getSafeStatus(safe: string) {
+    const status = await this.augur.checkSafe(this.account.publicKey, safe);
+    if (typeof status === 'string') {
+      return status;
+    } else if (typeof status === 'object' && typeof status.status === 'string') {
+      return status.status
+    } else {
+      throw Error(`Received erroneous response when deploying safe via relay: "${status}"`);
+    }
+  }
 }

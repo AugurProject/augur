@@ -382,8 +382,8 @@ export const DatePickerSelector = (props: DatePickerSelectorProps) => {
         onChange(date.startOf('day').unix());
       }}
       isOutsideRange={day =>
-        day.isAfter(moment(currentTimestamp * 1000).add(6, 'M')) ||
-        day.isBefore(moment(currentTimestamp * 1000))
+        day.isAfter(moment(currentTimestamp * 1000).add(12, 'M')) ||
+        day.isBefore(moment(currentTimestamp * 1000 - 86000))
       }
       numberOfMonths={1}
       onFocusChange={({ focused }) => {
@@ -449,8 +449,8 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
             onChange('setEndTime', date.startOf('day').unix());
           }}
           isOutsideRange={day =>
-            day.isAfter(moment(currentTimestamp * 1000).add(6, 'M')) ||
-            day.isBefore(moment(currentTimestamp * 1000))
+            day.isAfter(moment(currentTimestamp * 1000).add(12, 'M')) ||
+            day.isBefore(moment(currentTimestamp * 1000 - 86000))
           }
           numberOfMonths={1}
           onFocusChange={({ focused }) => {

@@ -1,4 +1,5 @@
 const express = require("express");
+const compression = require("compression");
 const helmet = require("helmet");
 const http = require("http");
 const https = require("https");
@@ -9,6 +10,7 @@ app.use(helmet());
 
 
 if (process.env.NODE_ENV === "development") {
+  app.use(compression({}));
   const webpack = require("webpack");
   const devMiddleware = require("webpack-dev-middleware");
   const hotMiddleware = require("webpack-hot-middleware");
@@ -19,6 +21,7 @@ if (process.env.NODE_ENV === "development") {
   app.use(
     devMiddleware(compiler, {
       publicPath: config.output.publicPath,
+      compress: true,
       stats: {
         colors: true
       }

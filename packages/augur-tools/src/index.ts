@@ -1,13 +1,13 @@
-export * from "./flash";
-export { ContractAPI} from "./libs/contract-api";
+export * from './flash';
+export { ContractAPI} from './libs/contract-api';
 export {
   deployContracts,
   UsefulContractObjects,
   makeSigner,
   makeDependencies,
   makeGnosisDependencies,
-} from "./libs/blockchain";
-import * as blockchain from "./libs/blockchain";
+} from './libs/blockchain';
+import * as blockchain from './libs/blockchain';
 export { blockchain };
 
 export {
@@ -16,6 +16,6 @@ export {
   createDbFromSeed,
   createSeed,
   Seed,
-} from "./libs/ganache";
+} from './libs/ganache';
 
-export { Account, ACCOUNTS } from "./constants";
+export { Account, ACCOUNTS, NULL_ADDRESS, DEADBEEF_ADDRESS } from './constants';

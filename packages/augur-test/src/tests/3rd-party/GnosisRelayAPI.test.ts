@@ -17,7 +17,7 @@ const {
   URL,
 } = {
   'local': {
-    RELAY_API: 'http://localhost:8000/api/',
+    RELAY_API: 'http://localhost:8888/api/',
     SAFE_FUNDER_PRIVATE_KEY: 'fae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a',
     SAFE_FUNDER_PUBLIC_KEY: '0x913dA4198E6bE1D5f5E4a40D0667f70C0B5430Eb',
     URL: 'http://localhost:8545',

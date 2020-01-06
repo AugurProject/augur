@@ -17,7 +17,7 @@ export const loadAccountData = (
 ) => async (dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState) => {
   const { loginAccount, universe, gasPriceInfo } = getState();
-  const { address } = loginAccount;
+  const { mixedCaseAddress: address } = loginAccount;
   if (!address) return callback('account address required');
   const windowApp = windowRef as WindowApp;
   if (

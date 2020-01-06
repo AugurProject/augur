@@ -12,12 +12,12 @@ export default function loginWithLedger(
 ) {
   return async (dispatch: ThunkDispatch<void, any, Action>) => {
     const signer = new LedgerSigner(address, derivationPath, ledgerLib, dispatch);
-
+    const account = toChecksumAddress(address);
     const loginAccount = {
-      address,
-      mixedCaseAddress: toChecksumAddress(address),
+      address: account,
+      mixedCaseAddress: account,
       meta: {
-        address,
+        address: account,
         signer,
         accountType: ACCOUNT_TYPES.LEDGER,
         isWeb3: false,

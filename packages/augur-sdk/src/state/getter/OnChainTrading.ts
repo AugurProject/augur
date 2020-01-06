@@ -19,6 +19,7 @@ import {
 
 import * as t from "io-ts";
 import Dexie from "dexie";
+import { ZeroXOrdersGetters, ZeroXOrders } from "./ZeroXOrdersGetters";
 
 const ZERO = new BigNumber(0);
 
@@ -56,8 +57,6 @@ export const OrdersParams = t.partial({
   orderType: t.string,
   account: t.string,
   orderState: t.string,
-  filterFinalized: t.boolean,
-  makerTaker
 });
 
 export interface MarketTradingHistory {
@@ -135,13 +134,6 @@ export const OrderType = t.keyof({
   sell: null,
 });
 
-export const BetterWorseOrdersParams = t.type({
-  marketId: t.string,
-  outcome: t.number,
-  orderType: OrderType,
-  price: t.number,
-});
-
 export interface BetterWorseResult {
   betterOrderId: string | null;
   worseOrderId: string | null;
@@ -157,7 +149,6 @@ export class OnChainTrading {
     filterFinalized: t.boolean,
   });
   static GetOrdersParams = t.intersection([sortOptions, OrdersParams]);
-  static GetBetterWorseOrdersParams = BetterWorseOrdersParams;
 
   @Getter('GetTradingHistoryParams')
   static async getTradingHistory(
@@ -258,17 +249,26 @@ export class OnChainTrading {
   }
 
   @Getter('GetOrdersParams')
-  static async getOrders(
+  static async getOpenOrders(
     augur: Augur,
     db: DB,
     params: t.TypeOf<typeof OnChainTrading.GetOrdersParams>
-  ): Promise<Orders> {
+  ): Promise<ZeroXOrders> {
     if (!params.marketId && !params.universe) {
       throw new Error(
         "'getOrders' requires a 'marketId' or 'universe' param be provided"
       );
     }
 
+    return ZeroXOrdersGetters.getZeroXOrders(augur, db, params);
+  };
+
+  @Getter('GetOrdersParams')
+  static async getOpenOnChainOrders(
+    augur: Augur,
+    db: DB,
+    params: t.TypeOf<typeof OnChainTrading.GetOrdersParams>
+  ): Promise<Orders> {
     let currentOrdersResponse: ParsedOrderEventLog[];
 
     if (params.universe) {
@@ -310,7 +310,7 @@ export class OnChainTrading {
     const markets = await getMarkets(
       marketIds,
       db,
-      params.filterFinalized
+      true
     );
 
     return currentOrdersResponse.reduce(
@@ -405,7 +405,7 @@ export async function getMarkets(
   marketIds: string[],
   db: DB,
   filterFinalized: boolean
-) {
+): Promise<_.Dictionary<MarketData>> {
   let marketsData: MarketData[];
   if (filterFinalized) {
     marketsData = await db.Markets.where("market").anyOf(marketIds).and((log) => {

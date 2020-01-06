@@ -509,6 +509,7 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
         return fillOrderInternal(_filler, _tradeData, _amount, _tradeGroupId);
     }
 
+
     function fillOrderInternal(address _filler, Trade.Data memory _tradeData, uint256 _amountFillerWants, bytes32 _tradeGroupId) internal nonReentrant returns (uint256 _amountRemainingFillerWants, uint256 _totalFees) {
         uint256 _marketCreatorFees;
         uint256 _reporterFees;

@@ -668,6 +668,10 @@ class ContractsFixture:
         daiVat.cage()
         daiJoin.cage()
 
+    def sendEth(self, sender, receiver, amount):
+        tester = self.testerProvider.ethereum_tester
+        tester.send_transaction({'from': sender, 'to': receiver, 'gas': 30000, 'gas_price': 1, 'value': amount, 'data': '0x'})
+
 @pytest.fixture(scope="session")
 def fixture(request):
     return ContractsFixture(request)

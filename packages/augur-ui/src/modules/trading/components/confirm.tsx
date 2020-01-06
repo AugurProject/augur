@@ -100,7 +100,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       numFills,
       loopLimit,
     } = trade;
-    let numTrades = Math.ceil(numFills / loopLimit);
+    let numTrades = loopLimit ? Math.ceil(numFills / loopLimit) : numFills;
     let needsApproval = false;
     let messages: Message | null = null;
 
@@ -125,7 +125,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       messages = {
         header: 'MULTIPLE TRANSACTIONS',
         type: WARNING,
-        message: `This trade will take ${numTrades} Transactions and 1 approval.`,
+        message: `This trade will take ${numTrades} Transactions and approvals.`,
       };
     }
 
@@ -134,7 +134,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
         header: 'MULTIPLE TRANSACTIONS',
         type: WARNING,
         message: `This trade will take ${numTrades} Transactions${
-          needsApproval ? `, and 1 approval.` : ``
+          needsApproval ? `, and approvals.` : ``
         }`,
       };
     }

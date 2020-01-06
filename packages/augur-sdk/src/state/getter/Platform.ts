@@ -101,6 +101,7 @@ async function getTradeCount(
   db: DB
 ): Promise<number> {
   const orderFilledLogs = await db.OrderEvent.where('timestamp').between(formatTimestamp(startTime), formatTimestamp(endTime), true, true).and((log) => {
+    // @ts-ignore // TODO fix typescipte error here
     return log.eventType === OrderEventType.Fill && log.universe === universe;
   }).toArray();
 
