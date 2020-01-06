@@ -7927,32 +7927,32 @@ export const LIST_VALUES = {
       value: 'American Stock Exchange (traded in USD)',
     },
     {
-      label: 'Tokyo Stock Exchange (traded in Japanese Yen)',
-      value: 'Tokyo Stock Exchange (traded in Japanese Yen)',
+      label: 'Tokyo Stock Exchange (traded in JPY)',
+      value: 'Tokyo Stock Exchange (traded in JPY)',
     },
     {
-      label: 'London Stock Exchange (traded in Pound Sterling)',
-      value: 'London Stock Exchange (traded in Pound Sterling)',
+      label: 'London Stock Exchange (traded in GBP)',
+      value: 'London Stock Exchange (traded in GBP)',
     },
     {
-      label: 'Shanghai Stock Exchange (A shares traded in Yuan)',
-      value: 'Shanghai Stock Exchange (A shares traded in Yuan)',
+      label: 'Shanghai Stock Exchange (A shares traded in CNY)',
+      value: 'Shanghai Stock Exchange (A shares traded in CNY)',
     },
     {
       label: 'Shanghai Stock Exchange (B shares traded in USD)',
       value: 'Shanghai Stock Exchange (B shares traded in USD)',
     },
     {
-      label: 'Hong Kong Stock Exchange (traded in HKD Hong Kong Dollar)',
-      value: 'Hong Kong Stock Exchange (traded in HKD Hong Kong Dollar)',
+      label: 'Hong Kong Stock Exchange (traded in HKD)',
+      value: 'Hong Kong Stock Exchange (traded in HKD)',
     },
     {
-      label: 'Toronto Stock Exchange (traded in Canadian Dollar)',
-      value: 'Toronto Stock Exchange (traded in Canadian Dollar)',
+      label: 'Toronto Stock Exchange (traded in CAD)',
+      value: 'Toronto Stock Exchange (traded in CAD)',
     },
     {
-      label: 'Euronext NV (traded in Euro)',
-      value: 'Euronext NV (traded in Euro)',
+      label: 'Euronext NV (traded in EUR)',
+      value: 'Euronext NV (traded in EUR)',
     },
   ],
   BTC_USD_TRADING_VIEW_EXCHANGES: [
@@ -8125,17 +8125,17 @@ export const FIN_EXCHANGES_CLOSING_OFFSETS = {
     hour: 16,
     minutes: 0,
   },
-  'Tokyo Stock Exchange (traded in Japanese Yen)': {
+  'Tokyo Stock Exchange (traded in JPY)': {
     offset: 9,
     hour: 15,
     minutes: 0,
   },
-  'London Stock Exchange (traded in Pound Sterling)': {
+  'London Stock Exchange (traded in GBP)': {
     offset: 0,
     hour: 16,
     minutes: 30,
   },
-  'Shanghai Stock Exchange (A shares traded in Yuan)': {
+  'Shanghai Stock Exchange (A shares traded in CNY)': {
     offset: 8,
     hour: 15,
     minutes: 0,
@@ -8145,12 +8145,12 @@ export const FIN_EXCHANGES_CLOSING_OFFSETS = {
     hour: 15,
     minutes: 0,
   },
-  'Hong Kong Stock Exchange (traded in HKD Hong Kong Dollar)': {
+  'Hong Kong Stock Exchange (traded in HKD)': {
     offset: 8,
     hour: 16,
     minutes: 0,
   },
-  'Toronto Stock Exchange (traded in Canadian Dollar)': {
+  'Toronto Stock Exchange (traded in CAD)': {
     offset: -4,
     hour: 16,
     minutes: 0,
