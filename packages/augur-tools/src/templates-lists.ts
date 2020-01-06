@@ -1173,16 +1173,16 @@ export const LIST_VALUES = {
       label: 'ISPS Handa Vic Open',
     },
     {
-      value: 'WGC - Mexico Championship	',
-      label: 'WGC - Mexico Championship	',
+      value: 'WGC - Mexico Championship',
+      label: 'WGC - Mexico Championship',
     },
     {
       value: 'Oman Open',
       label: 'Oman Open',
     },
     {
-      value: 'Commercial Bank Qatar Masters	',
-      label: 'Commercial Bank Qatar Masters	',
+      value: 'Commercial Bank Qatar Masters',
+      label: 'Commercial Bank Qatar Masters',
     },
     {
       value: 'Magical Kenya presented by Absa',
@@ -1193,8 +1193,8 @@ export const LIST_VALUES = {
       label: 'Hero Indian Open',
     },
     {
-      value: 'WGC-Dell Technologies Match Play	',
-      label: 'WGC-Dell Technologies Match Play	',
+      value: 'WGC-Dell Technologies Match Play',
+      label: 'WGC-Dell Technologies Match Play',
     },
     {
       value: 'The Masters Tournament',
@@ -1221,16 +1221,16 @@ export const LIST_VALUES = {
       label: 'US PGA Championship',
     },
     {
-      value: 'Made in Denmark presented by FREJA	',
-      label: 'Made in Denmark presented by FREJA	',
+      value: 'Made in Denmark presented by FREJA',
+      label: 'Made in Denmark presented by FREJA',
     },
     {
-      value: 'DUBAI DUTY FREE IRISH OPEN	',
-      label: 'DUBAI DUTY FREE IRISH OPEN	',
+      value: 'DUBAI DUTY FREE IRISH OPEN',
+      label: 'DUBAI DUTY FREE IRISH OPEN',
     },
     {
-      value: 'Trophee Hassan II	',
-      label: 'Trophee Hassan II	',
+      value: 'Trophee Hassan II',
+      label: 'Trophee Hassan II',
     },
     {
       value: 'Scandinavian Invitation',
@@ -1241,8 +1241,8 @@ export const LIST_VALUES = {
       label: 'US Open',
     },
     {
-      value: 'BMW International Open	',
-      label: 'BMW International Open	',
+      value: 'BMW International Open',
+      label: 'BMW International Open',
     },
     {
       value: 'Open de France',
@@ -1261,16 +1261,16 @@ export const LIST_VALUES = {
       label: 'The Open',
     },
     {
-      value: 'Betfred British Masters hosted by Lee Westwood	',
-      label: 'Betfred British Masters hosted by Lee Westwood	',
+      value: 'Betfred British Masters hosted by Lee Westwood',
+      label: 'Betfred British Masters hosted by Lee Westwood',
     },
     {
       value: "Olympic Men's Golf Competition",
       label: "Olympic Men's Golf Competition",
     },
     {
-      value: 'UK Event Confirmed	',
-      label: 'UK Event Confirmed	',
+      value: 'UK Event Confirmed',
+      label: 'UK Event Confirmed',
     },
     {
       value: 'TBC',
@@ -1285,8 +1285,8 @@ export const LIST_VALUES = {
       label: 'Omega European Masters',
     },
     {
-      value: 'Porsche European Open	',
-      label: 'Porsche European Open	',
+      value: 'Porsche European Open',
+      label: 'Porsche European Open',
     },
     {
       value: 'BMW PGA CHAMPIONSHIP',
@@ -1309,8 +1309,8 @@ export const LIST_VALUES = {
       label: 'ITALIAN OPEN',
     },
     {
-      value: 'Mutuactivos Open de España	',
-      label: 'Mutuactivos Open de España	',
+      value: 'Mutuactivos Open de España',
+      label: 'Mutuactivos Open de España',
     },
     {
       value: 'Portugal Masters',
