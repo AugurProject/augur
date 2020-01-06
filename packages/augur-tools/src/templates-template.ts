@@ -126,7 +126,7 @@ export interface DropdownDependencies {
 
 export interface DateDependencies {
   id: number;
-  weekdayOnly?: boolean;
+  noWeekendHolidays?: boolean;
   dateAfterId?: number;
 }
 export interface DateInputDependencies {
@@ -188,6 +188,14 @@ export interface TemplateInput {
   }
   setEndTime?: number;
   inputDateYearId?: number;
+  holidayClosures?: {
+    [key: string]: {
+      [year: number]: {
+        holiday: string,
+        date: number
+      }
+    }
+  }
 }
 
 export interface RetiredTemplate {
@@ -198,7 +206,7 @@ export interface RetiredTemplate {
 export enum ValidationType {
   WHOLE_NUMBER = 'WHOLE_NUMBER',
   NUMBER = 'NUMBER',
-  WEEKDAYONLY = 'WEEKDAYONLY',
+  NOWEEKEND_HOLIDAYS = 'NOWEEKEND_HOLIDAYS',
 }
 
 export enum TemplateInputType {
@@ -379,7 +387,7 @@ function dateNoWeekend(
   dateDependencies: DateDependencies[]
 ) {
   if (!dateDependencies) return true;
-  const deps = dateDependencies.filter(d => d.weekdayOnly);
+  const deps = dateDependencies.filter(d => d.noWeekendHolidays);
   const result = deps.reduce((p, d) => {
     const input = inputs.find(i => i.id === d.id);
     if (!input) return false;

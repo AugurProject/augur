@@ -167,11 +167,11 @@ function getMarketQuestionDependencies(
 function getDateDependencies(inputs: TemplateInput[]): DateDependencies[] {
   return inputs
     .filter(
-      i => i.dateAfterId || i.validationType === ValidationType.WEEKDAYONLY
+      i => i.dateAfterId || i.validationType === ValidationType.NOWEEKEND_HOLIDAYS
     )
     .map(i => ({
       id: i.id,
-      weekdayOnly: i.validationType === ValidationType.WEEKDAYONLY,
+      noWeekendHolidays: i.validationType === ValidationType.NOWEEKEND_HOLIDAYS,
       dateAfterId: i.dateAfterId,
     }));
 }

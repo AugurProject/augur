@@ -8316,3 +8316,67 @@ export const NCAA_BASKETBALL_CONF_DEP_TEAMS = {
   Summit: LIST_VALUES.NCAA_BASKETBALL_SUMMIT,
   'Western Athletic Conference': LIST_VALUES.NCAA_BASKETBALL_WESTERN_ATH_CONF,
 };
+
+export const HOLIDAYS = {
+  NEW_YEARS_DAY: 'New Years Day',
+  MLK: 'MLK Jr Day',
+  WASHINGTON: 'Washington\'s Bday',
+  GOOD_FRIDAY: 'Good Friday',
+  MEMORIAL_DAY: 'Memorial Day',
+  INDEPENDENCE_DAY: 'Independence Day',
+  LABOR_DAY: 'Labor Day',
+  THANKSGIVING: 'Thanksgiving Day',
+  CHRISTMAS: 'Christmas Day',
+  EASTER: 'Easter Monday',
+  LABOUR_DAY: 'Labor Day',
+  EARLY_MAY_BANK_HOLIDAY: 'Early May Bank Holiday',
+  LATE_MAY_BANK_HOLIDAY: 'Late May Bank Holiday',
+} 
+
+export const USA_HOLIDAYS = {
+  [2020]: [
+    {
+      holiday: HOLIDAYS.NEW_YEARS_DAY,
+      date: 1577836800
+    },
+    {
+      holiday: HOLIDAYS.MLK,
+      date: 1579478400
+    }
+  ],
+  [2021]: [
+    {
+      holiday: HOLIDAYS.NEW_YEARS_DAY,
+      date: 1609459200
+    },
+    {
+      holiday: HOLIDAYS.MLK,
+      date: 1610928000
+    }
+  ], 
+  [2022]: [
+    {
+      holiday: HOLIDAYS.NEW_YEARS_DAY,
+      date: 1640995200
+    },
+    {
+      holiday: HOLIDAYS.MLK,
+      date: 1642377600
+    }
+  ]
+};
+
+export const FIN_EXCHANGES_HOLIDAY_CLOSURES = {
+  'New York Stock Exchange (traded in USD)': USA_HOLIDAYS,
+  'Nasdaq (traded in USD)': USA_HOLIDAYS,
+  'American Stock Exchange (traded in USD)': USA_HOLIDAYS,
+};
+
+export const FIN_INDEXES_HOLIDAY_CLOSURES = {
+  'S&P 500 Index': USA_HOLIDAYS,
+  'Dow Jones Industrial Average': USA_HOLIDAYS,
+  'Nasdaq Composite': USA_HOLIDAYS,
+  'Wilshire 5000': USA_HOLIDAYS,
+  'Russell 1000': USA_HOLIDAYS,
+  'NYSE Composite': USA_HOLIDAYS,
+};

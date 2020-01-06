@@ -199,11 +199,27 @@ export function checkForUserInputFilled(inputs: TemplateInput[], endTimeFormatte
         }
       }
       // day can not be a weekend
-      if (input.validationType === ValidationType.WEEKDAYONLY) {
+      if (input.validationType === ValidationType.NOWEEKEND_HOLIDAYS) {
         if (input.setEndTime) {
           const dayOfWeek = moment.unix(input.setEndTime).weekday()
           if (dayOfWeek === SATURDAY_DAY_OF_WEEK || dayOfWeek === SUNDAY_DAY_OF_WEEK) {
             return 'Weekday is required';
+          }
+
+          // check if on holiday 
+          const closing = inputs.find(
+            i => i.type === TemplateInputType.DATEYEAR_CLOSING
+          );
+          if (closing) {
+            const exchange = inputs[closing.inputSourceId];
+            if (exchange.userInput) {
+              const holidayClosures = closing.holidayClosures[exchange.userInput];
+              const inputYear = moment.unix(input.setEndTime).year();
+              const holidayClosuresPerYear = holidayClosures[inputYear];
+              console.log(inputYear);
+              console.log(holidayClosuresPerYear);
+              // loop through, add offset, add buffer, tell if input date is between date and 26 hours
+            }
           }
         }
       }
