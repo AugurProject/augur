@@ -5,7 +5,7 @@ import { ZERO } from './constants';
 import { NewMarketPropertiesValidations } from 'modules/types';
 import { ValidationType, TemplateInputType, TemplateInput, UserInputDateTime, TimeOffset } from '@augurproject/artifacts';
 import moment from 'moment';
-import { getUnixDateTimeFromComponents } from 'utils/format-date';
+import { getUnixDateTimeFromComponents, convertUnixToFormattedDate } from 'utils/format-date';
 
 export function isFilledString(value, readable, message) {
   if (value && value.trim().length > 0 && value !== '') return '';
@@ -200,6 +200,7 @@ export function checkForUserInputFilled(inputs: TemplateInput[], endTimeFormatte
       }
       // day can not be a weekend
       if (input.validationType === ValidationType.NOWEEKEND_HOLIDAYS) {
+        let holidayPresent = '';
         if (input.setEndTime) {
           const dayOfWeek = moment.unix(input.setEndTime).weekday()
           if (dayOfWeek === SATURDAY_DAY_OF_WEEK || dayOfWeek === SUNDAY_DAY_OF_WEEK) {
@@ -216,12 +217,22 @@ export function checkForUserInputFilled(inputs: TemplateInput[], endTimeFormatte
               const holidayClosures = closing.holidayClosures[exchange.userInput];
               const inputYear = moment.unix(input.setEndTime).year();
               const holidayClosuresPerYear = holidayClosures[inputYear];
-              console.log(inputYear);
-              console.log(holidayClosuresPerYear);
-              // loop through, add offset, add buffer, tell if input date is between date and 26 hours
+              const offset = closing.inputTimeOffset[exchange.userInput].offset;
+              holidayClosuresPerYear.forEach(holiday => {
+                const OneHourBuffer = 1;
+                const utcHolidayDate = moment.unix(holiday.date).utc();
+                const convertedUtcHolidayDate = moment(utcHolidayDate).add(offset, 'hours');
+                const startHolidayDate = moment(convertedUtcHolidayDate).subtract(OneHourBuffer, 'hours');
+                const endHolidayDate = moment(startHolidayDate).add(24 + OneHourBuffer, 'hours');
+                if (moment(input.setEndTime * 1000).unix() >= startHolidayDate.unix() && moment(input.setEndTime * 1000).unix() <= endHolidayDate.unix()) {
+                  holidayPresent = `${holiday.holiday} not allowed`;
+                }
+              });
             }
           }
         }
+
+        if (holidayPresent !== '') return holidayPresent;
       }
       if (
         endTimeFormatted && endTimeFormatted.timestamp &&

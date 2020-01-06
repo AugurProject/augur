@@ -193,7 +193,7 @@ export interface TemplateInput {
       [year: number]: {
         holiday: string,
         date: number
-      }
+      }[]
     }
   }
 }
