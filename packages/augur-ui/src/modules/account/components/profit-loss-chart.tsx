@@ -17,7 +17,7 @@ interface ChartState {
 
 const getPointRangeInfo = data => {
   return {
-    hasPositivePoints: data.filter(point => point[1] > 0).length,
+    hasPositivePoints: data.filter(point => point[1] >= 0).length,
     hasNegativePoints: data.filter(point => point[1] < 0).length,
   };
 };
@@ -26,30 +26,11 @@ const positiveColor = '#00F1C4';
 const negativeColor = '#FF7D5E';
 
 const getGradientColor = data => {
-  const { hasPositivePoints, hasNegativePoints } = getPointRangeInfo(data);
-
-  if (hasNegativePoints && !hasPositivePoints) {
+  if (data[data.length-1][1] < 0) {
     return [[0, negativeColor], [1, 'transparent']];
   }
-
   return [[0, positiveColor], [1, 'transparent']];
 };
-
-const getLineColor = data => {
-  const { hasPositivePoints, hasNegativePoints } = getPointRangeInfo(data);
-  if (hasNegativePoints && !hasPositivePoints) {
-    return negativeColor;
-  }
-  return positiveColor;
-};
-
-// const getNegativeColor = data => {
-//   const { hasPositivePoints, hasNegativePoints } = getPointRangeInfo(data);
-//   if (hasPositivePoints && !hasNegativePoints) {
-//     return positiveColor;
-//   }
-//   return negativeColor;
-// };
 
 export default class ProfitLossChart extends Component<ChartProps, ChartState> {
   state: ChartState = {
@@ -225,14 +206,14 @@ export default class ProfitLossChart extends Component<ChartProps, ChartState> {
         ...intervalInfo,
       };
     }
-
+    console.log(!!getPointRangeInfo(data).hasNegativePoints);
     const series = [
       {
         type: 'areaspline',
         lineWidth: HIGHLIGHTED_LINE_WIDTH,
         data,
-        color: getLineColor(data),
-        negativeColor: getLineColor(data),
+        color: positiveColor,
+        negativeColor: !!getPointRangeInfo(data).hasNegativePoints ? negativeColor : positiveColor,
       },
     ];
 
@@ -241,7 +222,6 @@ export default class ProfitLossChart extends Component<ChartProps, ChartState> {
     }) as Highcharts.Options;
 
     this.setState({ options: newOptions });
-
     // initial load
     this.chart = Highcharts.stockChart(this.container, newOptions);
   }
