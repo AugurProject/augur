@@ -85,7 +85,7 @@ export default class ProfitLossChart extends Component<ChartProps, ChartState> {
       chart: {
         type: 'areaspline',
         height: "33%",
-        spacing: [0, 14, 0, 14],
+        spacing: [10, 14, 0, 14],
       },
       credits: {
         enabled: false,
@@ -138,8 +138,7 @@ export default class ProfitLossChart extends Component<ChartProps, ChartState> {
           style: null,
           format: '${value:.2f}',
           formatter() {
-            if (this.value === 0) return '$0';
-            return this.axis.defaultLabelFormatter.call(this);
+            return formatDai(this.value, { removeComma: true }).full;
           },
           align: 'left',
           x: 0,

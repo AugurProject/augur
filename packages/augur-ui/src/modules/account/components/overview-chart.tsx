@@ -33,7 +33,7 @@ export interface UserTimeRangeData {
 
 interface OverviewChartState {
   profitLossData: number[][];
-  profitLossChange: string | null;
+  profitLossChange: number | null;
   profitLossValue: string | null;
   profitLossChangeHasValue: boolean;
   noTrades: boolean;
@@ -124,7 +124,7 @@ export default class OverviewChart extends React.Component<
       if (this.container) {
         this.setState({
           profitLossData,
-          profitLossChange: formatDai(lastData.realized || 0).formatted,
+          profitLossChange: formatDai(lastData.realized || 0).formattedValue,
           profitLossChangeHasValue: !createBigNumber(lastData.realized || 0).eq(
             constants.ZERO
           ),
@@ -169,10 +169,10 @@ export default class OverviewChart extends React.Component<
           <h3>{constants.PROFIT_LOSS_CHART_TITLE}</h3>
           <MovementLabel
             showColors
-            showIcon={true || profitLossChangeHasValue}
+            showIcon={true}
             showPlusMinus
             showBrackets
-            value={Number(profitLossChange)}
+            value={profitLossChange}
             size={SizeTypes.NORMAL}
           />
           <h4>{profitLossValue}</h4>
