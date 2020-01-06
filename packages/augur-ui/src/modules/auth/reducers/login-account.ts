@@ -28,6 +28,14 @@ const DEFAULT_STATE: LoginAccount = {
   settings: {
     showInvalidMarketsBannerFeesOrLiquiditySpread: true,
     showInvalidMarketsBannerHideOrShow: true,
+  },
+  timeframeData: {
+    positions: 0,
+    numberOfTrades: 0,
+    marketsCreated: 0,
+    marketsTraded: 0,
+    successfulDisputes: 0,
+    redeemedPositions: 0,
   }
 };
 

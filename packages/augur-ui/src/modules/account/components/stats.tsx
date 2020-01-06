@@ -13,6 +13,14 @@ export interface StatsProps {
   timeframe: number;
 }
 
+const DEFAULT_OPTIONS = {
+  decimals: 2,
+  decimalsRounded: 2,
+  denomination: () => '',
+  positiveSign: false,
+  zeroStyled: true,
+};
+
 const Stats = ({
   timeframe,
   properties,
@@ -20,37 +28,33 @@ const Stats = ({
   currentAugurTimestamp,
   updateTimeframeData,
 }: StatsProps) => {
-
   useEffect(() => {
     const period = TIMEFRAME_OPTIONS[timeframe].periodInterval;
-    const startTime =
-      period === 0 ? null : currentAugurTimestamp - period;
+    const startTime = period === 0 ? null : currentAugurTimestamp - period;
     updateTimeframeData({ startTime });
   }, [timeframe]);
 
   return (
     <div className={Styles.Stats}>
-    <PillSelection
-      options={TIMEFRAME_OPTIONS}
-      defaultSelection={timeframe}
-      onChange={(selected) => updateSelected(selected)}
-    />
-    {properties.map((property: any) => (
-      <LinearPropertyLabel
-        key={property.key}
-        label={property.label}
-        value={
-          formatNumber(property.value, {
-            decimals: 2,
-            decimalsRounded: 2,
-            denomination: () => '',
-            positiveSign: false,
-            zeroStyled: true,
-          } as any).minimized
-        }
+      <PillSelection
+        options={TIMEFRAME_OPTIONS}
+        defaultSelection={timeframe}
+        onChange={selected => updateSelected(selected)}
       />
-    ))}
-  </div>
+      {properties.map(
+        ({ key, label, value, options = {}, useFull = false }: any) => (
+          <LinearPropertyLabel
+            key={key}
+            label={label}
+            value={formatNumber(value, {
+              ...DEFAULT_OPTIONS,
+              ...options,
+            } as any)}
+            useFull={useFull}
+          />
+        )
+      )}
+    </div>
   );
 };
 

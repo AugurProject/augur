@@ -1,7 +1,6 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { AppState } from "store";
-import getValue from "utils/get-value";
 import Stats from "modules/account/components/stats";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
@@ -18,36 +17,44 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
+  const {
+    positions,
+    numberOfTrades,
+    marketsTraded,
+    marketsCreated,
+    successfulDisputes,
+    redeemedPositions,
+  } = sP.timeframeData;
   const properties = [
     {
       key: 0,
       label: "Positions",
-      value: getValue(sP.timeframeData, "positions"),
+      value: positions,
     },
     {
       key: 1,
       label: "Number of Trades",
-      value: getValue(sP.timeframeData, "numberOfTrades"),
+      value: numberOfTrades,
     },
     {
       key: 2,
       label: "Markets Traded",
-      value: getValue(sP.timeframeData, "marketsTraded"),
+      value: marketsTraded,
     },
     {
       key: 3,
       label: "Markets Created",
-      value: getValue(sP.timeframeData, "marketsCreated"),
+      value: marketsCreated,
     },
     {
       key: 4,
       label: "Successful Disputes",
-      value: getValue(sP.timeframeData, "successfulDisputes"),
+      value: successfulDisputes,
     },
     {
       key: 5,
       label: "Redeemed Positions",
-      value: getValue(sP.timeframeData, "redeemedPositions"),
+      value: redeemedPositions,
     },
   ];
 
