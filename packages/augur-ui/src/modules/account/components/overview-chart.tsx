@@ -93,13 +93,6 @@ export default class OverviewChart extends React.Component<
         currentAugurTimestamp
       );
 
-      // const noTrades = data
-      //   .reduce(
-      //     (p, d) => createBigNumber(d.totalCost || constants.ZERO).plus(p),
-      //     constants.ZERO
-      //   )
-      //   .eq(constants.ZERO);
-
       const lastData =
         data.length > 0
           ? data[data.length - 1]

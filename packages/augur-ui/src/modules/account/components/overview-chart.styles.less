@@ -5,9 +5,10 @@
   background: @color-table-header;
   display: flex;
   flex-direction: column;
-  padding: @size-16 @size-12;
+  padding: @size-16 0;
   border-radius: @border-radius-default;
-  max-height: 220px;
+  max-width: 100%;
+  max-height: 100%;
 
   > h3 {
     .mono-12-bold;
@@ -45,7 +46,6 @@
 .ProfitLossChart {
   margin: 0;
   pointer-events: none;
-  width: 100%;
 
   svg {
     :global {
@@ -54,21 +54,17 @@
       }
 
       g.highcharts-yaxis-labels > text {
+        .mono-9-bold;
         // y axis labels
         fill: @color-primary-text;
-        font-family: @roboto-mono;
-        font-size: @size-9;
-        font-weight: bold;
-        line-height: @size-11;
-
       }
+
       g.highcharts-xaxis-labels > text > tspan,
       g.highcharts-xaxis-labels > text {
+        .mono-9-bold;
         // x axis labels
         fill: @color-primary-text;
-        font-family: @roboto-mono;
-        font-size: @size-9;
-        line-height: @size-11;
+        text-transform: uppercase;
       }
 
       .highcharts-yaxis-labels,

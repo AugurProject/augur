@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Highcharts from 'highcharts/highstock';
 import Styles from 'modules/account/components/overview-chart.styles.less';
-import { formatEther } from 'utils/format-number';
+import { formatDai } from 'utils/format-number';
 import { createBigNumber } from 'utils/create-big-number';
 
 const HIGHLIGHTED_LINE_WIDTH = 1;
@@ -84,8 +84,8 @@ export default class ProfitLossChart extends Component<ChartProps, ChartState> {
       },
       chart: {
         type: 'areaspline',
-        height: 126,
-        spacing: [0, 2, 0, 2],
+        height: "33%",
+        spacing: [0, 14, 0, 14],
       },
       credits: {
         enabled: false,
@@ -174,19 +174,16 @@ export default class ProfitLossChart extends Component<ChartProps, ChartState> {
       )
     );
 
-    const max = formatEther(bnMax.gt(0) ? bnMax.times(1.05) : bnMax, {
-      decimalsRounded: 4,
-    }).formattedValue;
-    const min = formatEther(bnMin.lt(0) ? bnMin.times(1.05) : bnMin, {
-      decimalsRounded: 4,
-    }).formattedValue;
+    const max = formatDai(bnMax.gt(0) ? bnMax.times(1.05) : bnMax)
+      .formattedValue;
+    const min = formatDai(bnMin.lt(0) ? bnMin.times(1.05) : bnMin)
+      .formattedValue;
     const intervalDivision = bnMin.eq(0) || bnMax.eq(0) ? 1.99 : 3;
-    const tickInterval = formatEther(
+    const tickInterval = formatDai(
       bnMax
         .abs()
         .plus(bnMin.abs())
-        .div(intervalDivision),
-      { decimalsRounded: 4 }
+        .div(intervalDivision)
     ).formattedValue;
 
     return {
@@ -201,7 +198,6 @@ export default class ProfitLossChart extends Component<ChartProps, ChartState> {
     const options = this.getDefaultOptions(data);
     const intervalInfo = this.calculateTickInterval(data);
     const tickPositions = [data[0][0], data[data.length - 1][0]];
-
     options.chart = {
       ...options.chart,
       width,
