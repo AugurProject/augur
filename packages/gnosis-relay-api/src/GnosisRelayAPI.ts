@@ -116,6 +116,7 @@ export interface IGnosisRelayAPI {
 
 export class GnosisRelayAPI implements IGnosisRelayAPI {
   readonly relayURL: string;
+  gasEstimateIncreasePercentage: BigNumber = new BigNumber(10);
 
   constructor(relayURL: string) {
     this.relayURL = relayURL;
@@ -183,7 +184,16 @@ export class GnosisRelayAPI implements IGnosisRelayAPI {
 
     try {
       const result = await axios.post(url, relayTxEstimateData);
-      return result.data;
+      const relayTxEstimate: RelayTxEstimateResponse = result.data;
+
+      if (this.gasEstimateIncreasePercentage) {
+        relayTxEstimate.safeTxGas = relayTxEstimate.safeTxGas.plus(
+          relayTxEstimate.safeTxGas.div(
+            new BigNumber(100).div(this.gasEstimateIncreasePercentage))
+        );
+      }
+
+      return relayTxEstimate;
     } catch (error) {
       throw new Error(JSON.stringify(error.response.data));
     }

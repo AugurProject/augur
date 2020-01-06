@@ -89,7 +89,8 @@ export class EthersProvider extends ethers.providers.BaseProvider
   async call(
     transaction: Transaction<ethers.utils.BigNumber>
   ): Promise<string> {
-    return super.call(transaction);
+    const txRequest: ethers.providers.TransactionRequest = transaction;
+    return super.call(txRequest);
   }
 
   async getNetworkId(): Promise<NetworkId> {
@@ -113,7 +114,8 @@ export class EthersProvider extends ethers.providers.BaseProvider
     let gasEstimate = await super.estimateGas(transaction);
     if (this.gasEstimateIncreasePercentage) {
       gasEstimate = gasEstimate.add(
-        gasEstimate.div(this.gasEstimateIncreasePercentage)
+        gasEstimate.div(
+          new ethers.utils.BigNumber(100).div(this.gasEstimateIncreasePercentage))
       );
     }
 
