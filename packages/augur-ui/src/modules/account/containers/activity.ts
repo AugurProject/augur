@@ -11,7 +11,7 @@ const mapStateToProps = (state: AppState) => {
       state.universe.timeframeData &&
       state.universe.timeframeData.openInterest) ||
     0;
-  const openInterest = formatDai(value, { decimals: 2 });
+  const openInterest = formatDai(value, { decimals: 2, removeComma: true });
   return {
     openInterest,
     currentAugurTimestamp: selectCurrentTimestampInSeconds(state),

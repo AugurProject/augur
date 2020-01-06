@@ -19,12 +19,13 @@ const Activity = ({ openInterest }: ActivityProps) => {
   const [selected, setSelected] = useState(TIMEFRAME_OPTIONS[3].id);
   return (
     <div className={Styles.Activity}>
-      <span>Activity</span>
+      <h4>Activity</h4>
       <LinearPropertyLabel
         highlight
         key="openInterest"
         label="Open Interest"
         value={openInterest}
+        useFull={true}
       />
       <PlatformOverviewStats
         timeframe={selected}
