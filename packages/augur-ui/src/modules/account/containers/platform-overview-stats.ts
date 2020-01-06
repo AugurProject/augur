@@ -6,12 +6,17 @@ import Stats from "modules/account/components/stats";
 import { AppState } from "store";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
+import { selectCurrentTimestampInSeconds } from 'store/select-state';
+import { updateTimeframeData } from 'modules/account/actions/update-timeframe-data';
 
 const mapStateToProps = (state: AppState) => ({
-  timeframeData: state.universe.timeframeData
+  timeframeData: state.universe.timeframeData,
+  currentAugurTimestamp: selectCurrentTimestampInSeconds(state),
 });
 
-const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({});
+const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
+  updateTimeframeData: (options: any) => dispatch(updateTimeframeData(options)),
+});
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
   const properties: any = [

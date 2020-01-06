@@ -26,7 +26,7 @@ const positiveColor = '#00F1C4';
 const negativeColor = '#FF7D5E';
 
 const getGradientColor = data => {
-  if (data[data.length-1][1] < 0) {
+  if (data[data.length - 1][1] < 0) {
     return [[0, negativeColor], [1, 'transparent']];
   }
   return [[0, positiveColor], [1, 'transparent']];
@@ -65,7 +65,7 @@ export default class ProfitLossChart extends Component<ChartProps, ChartState> {
       },
       chart: {
         type: 'areaspline',
-        height: "33%",
+        height: '33%',
         spacing: [10, 14, 0, 14],
       },
       credits: {
@@ -206,14 +206,15 @@ export default class ProfitLossChart extends Component<ChartProps, ChartState> {
         ...intervalInfo,
       };
     }
-    console.log(!!getPointRangeInfo(data).hasNegativePoints);
     const series = [
       {
         type: 'areaspline',
         lineWidth: HIGHLIGHTED_LINE_WIDTH,
         data,
         color: positiveColor,
-        negativeColor: !!getPointRangeInfo(data).hasNegativePoints ? negativeColor : positiveColor,
+        negativeColor: !!getPointRangeInfo(data).hasNegativePoints
+          ? negativeColor
+          : positiveColor,
       },
     ];
 
