@@ -1,5 +1,4 @@
 import React from "react";
-import classNames from "classnames";
 
 import { formatNumber } from "utils/format-number";
 import * as constants from "modules/common/constants";

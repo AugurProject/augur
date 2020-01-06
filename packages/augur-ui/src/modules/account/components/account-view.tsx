@@ -4,7 +4,7 @@ import Media from 'react-media';
 import TermsAndConditions from 'modules/app/containers/terms-and-conditions';
 import Notifications from 'modules/account/containers/notifications';
 import Transactions from 'modules/account/containers/transactions';
-import AugurStatus from 'modules/account/containers/augur-status';
+import AugurStatus from 'modules/account/components/augur-status';
 import Favorites from 'modules/portfolio/containers/favorites';
 import OpenMarkets from 'modules/account/containers/open-markets';
 import Overview from 'modules/account/containers/overview';

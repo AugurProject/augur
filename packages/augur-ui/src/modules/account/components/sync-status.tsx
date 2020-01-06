@@ -1,6 +1,7 @@
 import React, { ReactNode } from "react";
 import classNames from "classnames";
 
+import BlockStatus from 'modules/account/components/block-status';
 import {
   Syncing as SyncingIcon,
   ImmediateImportance,
@@ -23,51 +24,50 @@ export interface DataProps {
 }
 
 export interface SyncStatusProps {
-  syncPercent: number;
+  percent: number;
+  blocksBehind: number;
+  highestBlockBn: number;
+  lastProcessedBlockBn: number;
 }
 
-const SyncStatus = (props: SyncStatusProps) => {
-  const Synced = (
-    <div>
-      <span />
-      {SYNCED}
-    </div>
-  );
+const Synced = (
+  <div>
+    <span />
+    {SYNCED}
+  </div>
+);
 
-  const Syncing = (
-    <div>
-      <span>{SyncingIcon}</span>
-      {SYNCING}
-    </div>
-  );
+const Syncing = (
+  <div>
+    <span>{SyncingIcon}</span>
+    {SYNCING}
+  </div>
+);
 
-  const BlocksBehind = (
-    <div>
-      <span>{ImmediateImportance}</span>
-      {SYNCING} <span>{MANY_BLOCKS_BEHIND}</span>
-    </div>
-  );
+const BlocksBehind = (
+  <div>
+    <span>{ImmediateImportance}</span>
+    {SYNCING} <span>{MANY_BLOCKS_BEHIND}</span>
+  </div>
+);
 
-  let data: DataProps = {
-    message: SYNC_MESSAGE_BLOCKSBEHIND,
-    status: BlocksBehind,
-  };
+const SyncStatus = ({
+  percent,
+  blocksBehind,
+  highestBlockBn,
+  lastProcessedBlockBn
+}: SyncStatusProps) => {
+  
+  let message = SYNC_MESSAGE_BLOCKSBEHIND;
+  let status = BlocksBehind;
 
-  const { syncPercent } = props;
-
-  if (syncPercent >= 99.99) {
-    data = {
-      message: SYNC_MESSAGE_SYNCED,
-      status: Synced,
-    };
-  } else if (syncPercent >= 99.9) {
-    data = {
-      message: SYNC_MESSAGE_SYNCING,
-      status: Syncing,
-    };
+  if (percent >= 99.99) {
+    message = SYNC_MESSAGE_SYNCED;
+    status = Synced;
+  } else if (percent >= 99.9) {
+    message = SYNC_MESSAGE_SYNCING;
+    status = Syncing;
   }
-
-  const { message, status } = data;
 
   return (
     <div
@@ -79,8 +79,13 @@ const SyncStatus = (props: SyncStatusProps) => {
     >
       <div>{SYNCING_TITLE}</div>
       {status}
-      <div>{syncPercent}%</div>
+      <div>{percent}%</div>
       <div>{message}</div>
+      <BlockStatus
+        blocksBehind={blocksBehind}
+        highestBlockBn={highestBlockBn}
+        lastProcessedBlockBn={lastProcessedBlockBn}
+      />
     </div>
   );
 };
