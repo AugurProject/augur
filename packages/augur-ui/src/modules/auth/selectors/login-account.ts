@@ -53,7 +53,7 @@ export const selectAccountFunds = createSelector(
       : ZERO;
 
     if (loginAccount.balances.dai && loginAccount.balances.dai) {
-      totalAvailableTradingBalance = createBigNumber(loginAccount.balances.dai);
+      totalAvailableTradingBalance = createBigNumber(loginAccount.balances.dai).minus(totalOpenOrderFunds);
     }
 
     if (loginAccount.totalFrozenFunds) {
