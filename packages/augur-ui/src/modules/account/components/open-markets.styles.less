@@ -35,6 +35,16 @@
   > div {
     padding: 0 0 0 @size-16;
   }
+
+  > span > div[class*="MovementLabel"] {
+    > div[class*="MovementLabel_Icon"] {
+      margin: 0 @size-2 0 0;
+    }
+
+    > div[class*="MovementLabel_Text"] {
+      .mono-11-medium;
+    }
+  }
 }
 
 .BottomBar {
@@ -63,7 +73,7 @@
     }
 
     > div[class*="MovementLabel"] > div[class*="MovementLabel_Icon"] {
-      margin: 0;
+      margin: 0 @size-2 0 0;
     }
   }
 }

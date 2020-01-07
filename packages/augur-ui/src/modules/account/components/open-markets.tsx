@@ -44,7 +44,7 @@ export default class OpenMarkets extends Component<OpenMarketsProps> {
             value={
               marketsObj[market.id].myPositionsSummary.valueChange.formatted
             }
-            size={SizeTypes.NORMAL}
+            size={SizeTypes.LARGE}
           />
         }
         toggleContent={
@@ -71,7 +71,7 @@ export default class OpenMarkets extends Component<OpenMarketsProps> {
 
   render() {
     const { markets, totalPercentage, toggle} = this.props;
-    console.log(totalPercentage);
+
     return (
       <FilterSwitchBox
         filterLabel="markets"
