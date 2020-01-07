@@ -134,7 +134,7 @@ export async function createCannedMarketsAndOrders(person: ContractAPI): Promise
   for (const can of cannedMarkets) {
     const market = await createCannedMarket(person, can);
     markets.push(market);
-    await createOrderBook(person, market, can);
+    // await createOrderBook(person, market, can);
   }
   return markets;
 }
