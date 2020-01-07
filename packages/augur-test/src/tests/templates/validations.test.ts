@@ -104,7 +104,25 @@ const templateValidations = [
     endTime: '1578281600',
     resolutionRules:
       'Closing date is determined by the location of the exchange, where the underlying stocks for the index are traded\nIf trading day in market question is a weekend or holiday when exchange is not open this market should resolve as invalid',
-    result: 'error: market question date can not be on weekend',
+    result: 'error: market question date can not be on weekend or on a holiday',
+  },
+  {
+    title: 'Will the BSE Sensex 30 close on or above 33 on December 29, 2019?',
+    templateInfo:
+      '{"hash":"0x0002f8d51971eb501b583aa57e705e98ea7f2033ed07d89f4703d5738ebf829e","question":"Will the [0] close on or above [1] on [2]?","inputs":[{"id":0,"value":"BSE Sensex 30","type":"DROPDOWN","timestamp":null},{"id":1,"value":"33","type":"TEXT","timestamp":null},{"id":2,"value":"December 29, 2019","type":"DATEYEAR","timestamp":1577645591}]}',
+    endTime: '1578281600',
+    resolutionRules:
+      'Closing date is determined by the location of the exchange, where the underlying stocks for the index are traded\nIf trading day in market question is a weekend or holiday when exchange is not open this market should resolve as invalid',
+    result: 'error: market question date can not be on weekend or on a holiday',
+  },
+  {
+    title: 'Will the BSE Sensex 30 close on or above 33 on January 20, 2020?',
+    templateInfo:
+      '{"hash":"0x0002f8d51971eb501b583aa57e705e98ea7f2033ed07d89f4703d5738ebf829e","question":"Will the [0] close on or above [1] on [2]?","inputs":[{"id":0,"value":"BSE Sensex 30","type":"DROPDOWN","timestamp":null},{"id":1,"value":"33","type":"TEXT","timestamp":null},{"id":2,"value":"January 20, 2020","type":"DATEYEAR","timestamp":1579478400}]}',
+    endTime: '1580404439',
+    resolutionRules:
+      'Closing date is determined by the location of the exchange, where the underlying stocks for the index are traded\nIf trading day in market question is a weekend or holiday when exchange is not open this market should resolve as invalid',
+    result: 'error: market question date can not be on weekend or on a holiday',
   },
   {
     title:

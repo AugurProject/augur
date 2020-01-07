@@ -1,6 +1,7 @@
 import { ethers } from 'ethers';
 import moment from 'moment';
 import { BigNumber } from 'ethers/utils';
+import { failures } from 'io-ts';
 export const REQUIRED = 'REQUIRED';
 export const CHOICE = 'CHOICE';
 // Market templates
@@ -132,6 +133,14 @@ export interface DateDependencies {
 export interface DateInputDependencies {
   inputDateYearId: number;
   inputSourceId: number;
+  holidayClosures?: {
+    [key: string]: {
+      [year: number]: {
+        holiday: string,
+        date: number
+      }[]
+    }
+  };
   inputTimeOffset: {
     [key: string]: TimeOffset;
   }
@@ -382,9 +391,10 @@ function dateStartAfterMarketEndTime(
   return Number(input.timestamp) >= Number(endTime);
 }
 
-function dateNoWeekend(
+function dateNoWeekendHoliday(
   inputs: ExtraInfoTemplateInput[],
-  dateDependencies: DateDependencies[]
+  dateDependencies: DateDependencies[],
+  closingDateDependencies: DateInputDependencies[]
 ) {
   if (!dateDependencies) return true;
   const deps = dateDependencies.filter(d => d.noWeekendHolidays);
@@ -398,6 +408,29 @@ function dateNoWeekend(
     ) {
       return false;
     }
+
+    const closing = closingDateDependencies[0];
+    let holidayPresent = false;
+    if (closing) {
+      const exchange = inputs[closing.inputSourceId];
+      if (exchange.value) {
+        const holidayClosures = closing.holidayClosures[exchange.value];
+        const inputYear = moment.unix(Number(input.timestamp)).year();
+        const holidayClosuresPerYear = holidayClosures[inputYear];
+        const offset = closing.inputTimeOffset[exchange.value].offset;
+        holidayClosuresPerYear.forEach(holiday => {
+          const OneHourBuffer = 1;
+          const utcHolidayDate = moment.unix(holiday.date).utc();
+          const convertedUtcHolidayDate = moment(utcHolidayDate).add(offset, 'hours');
+          const startHolidayDate = moment(convertedUtcHolidayDate).subtract(OneHourBuffer, 'hours');
+          const endHolidayDate = moment(startHolidayDate).add(24 + OneHourBuffer, 'hours');
+          if (moment(Number(input.timestamp)* 1000).unix() >= startHolidayDate.unix() && moment(Number(input.timestamp) * 1000).unix() <= endHolidayDate.unix()) {
+            holidayPresent = true;
+          }
+        });
+     }
+    }
+    if (holidayPresent) return false;
     return p;
   }, true);
   return result;
@@ -543,8 +576,8 @@ export const isTemplateMarket = (
     }
 
     // check DATE isn't on weekend
-    if (!dateNoWeekend(template.inputs, validation.dateDependencies)) {
-      errors.push('market question date can not be on weekend');
+    if (!dateNoWeekendHoliday(template.inputs, validation.dateDependencies, validation.closingDateDependencies)) {
+      errors.push('market question date can not be on weekend or on a holiday');
       return false;
     }
 

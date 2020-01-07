@@ -5,7 +5,7 @@ import { ZERO } from './constants';
 import { NewMarketPropertiesValidations } from 'modules/types';
 import { ValidationType, TemplateInputType, TemplateInput, UserInputDateTime, TimeOffset } from '@augurproject/artifacts';
 import moment from 'moment';
-import { getUnixDateTimeFromComponents, convertUnixToFormattedDate } from 'utils/format-date';
+import { convertUnixToFormattedDate } from 'utils/format-date';
 
 export function isFilledString(value, readable, message) {
   if (value && value.trim().length > 0 && value !== '') return '';

@@ -185,6 +185,7 @@ function getClosingDateDependencies(inputs: TemplateInput[]): DateInputDependenc
       inputDateYearId: i.inputDateYearId,
       inputSourceId: i.inputSourceId,
       inputTimeOffset: i.inputTimeOffset,
+      holidayClosures: i.holidayClosures,
     }));
 }
 
