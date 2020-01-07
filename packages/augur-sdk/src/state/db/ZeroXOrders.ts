@@ -123,7 +123,7 @@ export class ZeroXOrders extends AbstractTable {
 
   async handleMeshEvent(orderEvents: OrderEvent[]): Promise<void> {
     if (orderEvents.length < 1) return;
-    console.log('Mesh events recieved');
+    console.log('Mesh events received');
     console.log(orderEvents);
 
     const filteredOrders = _.filter(orderEvents, this.validateOrder.bind(this));
