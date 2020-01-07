@@ -2,7 +2,7 @@
 
 .Reporting {
 	display: flex;
-	padding: 60px @size-40 80px;
+	padding: @size-60 @size-40 @size-80;
 
 	> div:first-of-type {
 		flex: 1;
@@ -16,11 +16,11 @@
 	}
 
 	@media @breakpoint-smallish-desktop {
-		padding: 0;
+		padding: @size-16 @size-8;
 
 		> div > div:last-of-type {
 			padding: 0 @size-10;
-			
+
 			> div:first-of-type {
 				margin-top: @size-32;
 				max-width: unset;
@@ -36,7 +36,15 @@
 		}
 
 		> div:first-of-type {
-			margin-right: 0;
+			margin-right: @size-8;
 		}
 	}
+
+  @media @breakpoint-max-desktop-min {
+    padding: 0;
+
+    > div:first-of-type {
+      margin-right: 0;
+    }
+  }
 }
