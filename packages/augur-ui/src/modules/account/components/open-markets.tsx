@@ -33,6 +33,7 @@ export default class OpenMarkets extends Component<OpenMarketsProps> {
         key={"position_" + market.id}
         market={marketsObj[market.id]}
         showState={false}
+        addedClass={Styles.OpenMarketsRow}
         rightContent={
           <MovementLabel
             showBrackets
@@ -42,7 +43,7 @@ export default class OpenMarkets extends Component<OpenMarketsProps> {
             value={
               marketsObj[market.id].myPositionsSummary.valueChange.formatted
             }
-            size={SizeTypes.NORMAL}
+            size={SizeTypes.LARGE}
           />
         }
         toggleContent={
@@ -85,9 +86,10 @@ export default class OpenMarkets extends Component<OpenMarketsProps> {
               <MovementLabel
                 showPercent
                 showIcon
+                showBrackets
                 showPlusMinus
                 value={Number(totalPercentage)}
-                size={SizeTypes.LARGE}
+                size={SizeTypes.SMALL}
               />
             </div>
           </div>
