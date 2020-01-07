@@ -12,26 +12,24 @@ export interface BlockStatusProps {
   highestBlockBn: number;
 }
 
-const BlockStatus = (props: BlockStatusProps) => {
-  const { blocksBehind, lastProcessedBlockBn, highestBlockBn } = props;
-  return (
-    <div className={Styles.BlockStatus}>
-      <LinearPropertyLabel
-        highlight
-        label={SYNC_BENIND}
-        value={String(blocksBehind)}
-      />
-      <LinearPropertyLabel
-        highlight
-        label={SYNC_PROCESSED}
-        value={
-          formatNumber(lastProcessedBlockBn.toString()).formatted +
-          '/' +
-          formatNumber(highestBlockBn.toString()).formatted
-        }
-      />
-    </div>
-  );
-};
+const BlockStatus = ({
+  blocksBehind,
+  lastProcessedBlockBn,
+  highestBlockBn,
+}: BlockStatusProps) => (
+  <div className={Styles.BlockStatus}>
+    <LinearPropertyLabel
+      highlight
+      label={SYNC_BENIND}
+      value={String(blocksBehind)}
+    />
+    <LinearPropertyLabel
+      highlight
+      label={SYNC_PROCESSED}
+      value={`${formatNumber(lastProcessedBlockBn).formatted} / 
+        ${formatNumber(highestBlockBn).formatted}`}
+    />
+  </div>
+);
 
 export default BlockStatus;

@@ -30,17 +30,25 @@
 }
 
 .BlockStatus {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  margin: @size-24 0;
-  text-align: center;
-  text-transform: uppercase;
   width: 100%;
 
-  @media @breakpoint-mobile-mid {
-    max-width: unset;
+  > div[class*="LinearPropertyLabel"] {
+    align-items: baseline;
+    align-items: baseline;
+    margin-left: @size-56;
+    margin-right: @size-56;
+
+    > span:first-of-type {
+      .mono-10-bold;
+
+      color: @color-secondary-text;
+    }
+
+    > span {
+      .mono-12-medium;
+
+      color: @color-primary-text;
+    }
   }
 }
 
