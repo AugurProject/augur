@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import moment from 'moment';
 import { BigNumber } from 'ethers/utils';
-import { failures } from 'io-ts';
+
 export const REQUIRED = 'REQUIRED';
 export const CHOICE = 'CHOICE';
 // Market templates
