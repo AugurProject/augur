@@ -416,18 +416,20 @@ function dateNoWeekendHoliday(
       if (exchange.value) {
         const holidayClosures = closing.holidayClosures[exchange.value];
         const inputYear = moment.unix(Number(input.timestamp)).year();
-        const holidayClosuresPerYear = holidayClosures[inputYear];
-        const offset = closing.inputTimeOffset[exchange.value].offset;
-        holidayClosuresPerYear.forEach(holiday => {
-          const OneHourBuffer = 1;
-          const utcHolidayDate = moment.unix(holiday.date).utc();
-          const convertedUtcHolidayDate = moment(utcHolidayDate).add(offset, 'hours');
-          const startHolidayDate = moment(convertedUtcHolidayDate).subtract(OneHourBuffer, 'hours');
-          const endHolidayDate = moment(startHolidayDate).add(24 + OneHourBuffer, 'hours');
-          if (moment(Number(input.timestamp)* 1000).unix() >= startHolidayDate.unix() && moment(Number(input.timestamp) * 1000).unix() <= endHolidayDate.unix()) {
-            holidayPresent = true;
-          }
-        });
+        const holidayClosuresPerYear = holidayClosures && holidayClosures[inputYear];
+        if (holidayClosuresPerYear) {
+          const offset = closing.inputTimeOffset[exchange.value].offset;
+          holidayClosuresPerYear.forEach(holiday => {
+            const OneHourBuffer = 1;
+            const utcHolidayDate = moment.unix(holiday.date).utc();
+            const convertedUtcHolidayDate = moment(utcHolidayDate).add(offset, 'hours');
+            const startHolidayDate = moment(convertedUtcHolidayDate).subtract(OneHourBuffer, 'hours');
+            const endHolidayDate = moment(startHolidayDate).add(24 + OneHourBuffer, 'hours');
+            if (moment(Number(input.timestamp)* 1000).unix() >= startHolidayDate.unix() && moment(Number(input.timestamp) * 1000).unix() <= endHolidayDate.unix()) {
+              holidayPresent = true;
+            }
+          });
+        }
      }
     }
     if (holidayPresent) return false;
@@ -486,14 +488,16 @@ function closingDateDependencies(
     const exchangeValue = inputs.find(i => i.id === d.inputSourceId);
     if (!dateYearSource || !exchangeValue) return false;
     const timeOffset = d.inputTimeOffset[exchangeValue.value]  as TimeOffset;
-    const closingDateTime = getTemplateExchangeClosingWithBuffer(
-      Number(dateYearSource.timestamp),
-      timeOffset.hour,
-      timeOffset.minutes,
-      timeOffset.offset
-    );
-    if (closingDateTime >= endTime) {
-      return false;
+    if (timeOffset) {
+      const closingDateTime = getTemplateExchangeClosingWithBuffer(
+        Number(dateYearSource.timestamp),
+        timeOffset.hour,
+        timeOffset.minutes,
+        timeOffset.offset
+      );
+      if (closingDateTime >= endTime) {
+        return false;
+      }
     }
     return p;
   }, true);

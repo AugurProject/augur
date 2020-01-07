@@ -128,7 +128,7 @@ const templateValidations = [
     title:
       'Will the BSE Sensex 30 close on or above 33.00.01 on December 31, 2019?',
     templateInfo:
-      '{"hash":"0x0002f8d51971eb501b583aa57e705e98ea7f2033ed07d89f4703d5738ebf829e","question":"Will the [0] close on or above [1] on [2]?","inputs":[{"id":0,"value":"BSE Sensex 30","type":"DROPDOWN","timestamp":null},{"id":1,"value":"33.00.01","type":"TEXT","timestamp":null},{"id":2,"value":"December 31, 2019","type":"DATEYEAR","timestamp":1577772000}]}',
+      '{"hash":"0x8e75eae3e5e343e447bc2bddd9e3bb949c2d7bc9f935ab42a293250a36d4b32a","question":"Will the [0] close on or above [1] on [2]?","inputs":[{"id":0,"value":"BSE Sensex 30","type":"DROPDOWN","timestamp":null},{"id":1,"value":"33.00.01","type":"TEXT","timestamp":null},{"id":2,"value":"December 31, 2019","type":"DATEYEAR","timestamp":1577772000}]}',
     endTime: '1578581600',
     resolutionRules:
       'Closing date is determined by the location of the exchange, where the underlying stocks for the index are traded\nIf trading day in market question is a weekend or holiday when exchange is not open this market should resolve as invalid',
@@ -137,7 +137,7 @@ const templateValidations = [
   {
     title: 'Will the Russell 1000 close on or above 14 on January 2, 2020?',
     templateInfo:
-      '{"hash":"0x0002f8d51971eb501b583aa57e705e98ea7f2033ed07d89f4703d5738ebf829e","question":"Will the [0] close on or above [1] on [2]?","inputs":[{"id":0,"value":"Russell 1000","type":"DROPDOWN","timestamp":null},{"id":1,"value":"14","type":"TEXT","timestamp":null},{"id":2,"value":"January 2, 2020","type":"DATEYEAR","timestamp":1577944800}]}',
+      '{"hash":"0x8e75eae3e5e343e447bc2bddd9e3bb949c2d7bc9f935ab42a293250a36d4b32a","question":"Will the [0] close on or above [1] on [2]?","inputs":[{"id":0,"value":"Russell 1000","type":"DROPDOWN","timestamp":null},{"id":1,"value":"14","type":"TEXT","timestamp":null},{"id":2,"value":"January 2, 2020","type":"DATEYEAR","timestamp":1577944800}]}',
     endTime: '1578198860',
     resolutionRules:
       'Closing date is determined by the location of the exchange, where the underlying stocks for the index are traded\nIf trading day in market question is a weekend or holiday when exchange is not open this market should resolve as invalid',
@@ -146,7 +146,7 @@ const templateValidations = [
   {
     title: 'Will the Russell 1000 close on or above 14 on January 2, 2020?',
     templateInfo:
-      '{"hash":"0x0002f8d51971eb501b583aa57e705e98ea7f2033ed07d89f4703d5738ebf829e","question":"Will the [0] close on or above [1] on [2]?","inputs":[{"id":0,"value":"Russell 1000","type":"DROPDOWN","timestamp":null},{"id":1,"value":"14","type":"TEXT","timestamp":null},{"id":2,"value":"January 2, 2020","type":"DATEYEAR","timestamp":1577944800}]}',
+      '{"hash":"0x8e75eae3e5e343e447bc2bddd9e3bb949c2d7bc9f935ab42a293250a36d4b32a","question":"Will the [0] close on or above [1] on [2]?","inputs":[{"id":0,"value":"Russell 1000","type":"DROPDOWN","timestamp":null},{"id":1,"value":"14","type":"TEXT","timestamp":null},{"id":2,"value":"January 2, 2020","type":"DATEYEAR","timestamp":1577944800}]}',
     endTime: '1577988860',
     resolutionRules:
       'Closing date is determined by the location of the exchange, where the underlying stocks for the index are traded\nIf trading day in market question is a weekend or holiday when exchange is not open this market should resolve as invalid',
