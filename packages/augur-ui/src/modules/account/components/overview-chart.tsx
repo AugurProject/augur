@@ -168,7 +168,7 @@ export default class OverviewChart extends React.Component<
         <>
           <h3>{constants.PROFIT_LOSS_CHART_TITLE}</h3>
           <MovementLabel
-            showIcon={true}
+            showIcon
             showPlusMinus
             showBrackets
             value={profitLossChange}

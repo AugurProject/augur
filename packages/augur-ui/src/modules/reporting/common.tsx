@@ -944,7 +944,7 @@ const AllTimeProfitLoss = (props: AllTimeProfitLossProps) => (
         showPlusMinus
         showPercent
         showIcon
-        showBrackets={true}
+        showBrackets
         value={Number(props.repProfitLossPercentageFormatted.roundedValue)}
       />
     </div>
