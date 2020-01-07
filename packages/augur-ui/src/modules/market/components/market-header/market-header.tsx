@@ -236,7 +236,7 @@ export default class MarketHeader extends Component<
 
     const categoriesWithClick = process(market.categories) || [];
     const bigTitle =
-      !!this.refTitle && this.refTitle.firstChild.clientHeight > 60;
+      !!this.refTitle && this.refTitle.firstChild.clientHeight > 64;
     const expandedDetails = detailsTooLong && showReadMore;
 
     const containerStyle = notExpandedHeight
