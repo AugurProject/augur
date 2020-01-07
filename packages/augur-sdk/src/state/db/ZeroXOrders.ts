@@ -18,10 +18,15 @@ import moment, { Moment } from 'moment';
 // 1. To recalculate liquidity metrics. This can be stale so when the derived market DB is synced it should not wait for this to complete (it will already have recorded liquidity data from previous syncs)
 // 2. To cache market orderbooks so a complete pull isnt needed on every subsequent load.
 
-const EXPECTED_ASSET_DATA_LENGTH = 650;
+const EXPECTED_ASSET_DATA_LENGTH = 2186;
 
 const DEFAULT_TRADE_INTERVAL = new BigNumber(10**17);
 const TRADE_INTERVAL_VALUE = new BigNumber(10**19);
+
+const multiAssetDataAbi: ParamType[] = [
+  { name: 'amounts', type: 'uint256[]' },
+  { name: 'nestedAssetData', type: 'bytes[]' },
+];
 
 // Original ABI from Go
 // [
@@ -97,6 +102,8 @@ export class ZeroXOrders extends AbstractTable {
   protected stateDB: DB;
   private augur: Augur;
   readonly tradeTokenAddress: string;
+  readonly cashAssetData: string;
+  readonly shareAssetData: string;
 
   constructor(
     db: DB,
@@ -108,6 +115,10 @@ export class ZeroXOrders extends AbstractTable {
     this.stateDB = db;
     this.augur = augur;
     this.tradeTokenAddress = this.augur.addresses.ZeroXTrade.substr(2).toLowerCase(); // normalize and remove the 0x
+    const cashTokenAddress = this.augur.addresses.Cash.substr(2).toLowerCase(); // normalize and remove the 0x
+    const shareTokenAddress = this.augur.addresses.ShareToken.substr(2).toLowerCase(); // normalize and remove the 0x
+    this.cashAssetData = `0xf47261b0000000000000000000000000${cashTokenAddress}`;
+    this.shareAssetData = `0xa7cb5fb7000000000000000000000000${shareTokenAddress}000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000`;
   }
 
   static async create(db: DB, networkId: number, augur: Augur): Promise<ZeroXOrders> {
@@ -183,7 +194,6 @@ export class ZeroXOrders extends AbstractTable {
   validateOrder(order: OrderInfo): boolean {
     if (order.signedOrder.makerAssetData.length !== EXPECTED_ASSET_DATA_LENGTH) return false;
     if (order.signedOrder.makerAssetData !== order.signedOrder.takerAssetData) return false;
-    if (order.signedOrder.makerAssetData.substr(34, 40) !== this.tradeTokenAddress) return false;
     return true;
   }
 
@@ -203,11 +213,25 @@ export class ZeroXOrders extends AbstractTable {
       return false;
     }
 
+    const multiAssetData = defaultAbiCoder.decode(multiAssetDataAbi, `0x${storedOrder.signedOrder.makerAssetData.slice(10)}`);
+    const amounts = multiAssetData[0] as BigNumber[];
+    if (!amounts[0].eq(1)) return false;
+    if (!amounts[1].eq(0)) return false;
+    if (!amounts[2].eq(0)) return false;
+    const nestedAssetData = multiAssetData[1] as string[];
+    const tradeTokenAssetData = nestedAssetData[0];
+    const cashAssetData = nestedAssetData[1];
+    const shareAssetData = nestedAssetData[2];
+    if (tradeTokenAssetData.substr(34, 40) !== this.tradeTokenAddress) return false;
+    if (cashAssetData != this.cashAssetData) return false;
+    if (shareAssetData != this.shareAssetData) return false;
     return true;
   }
 
   processOrder(order: OrderInfo): StoredOrder {
-    const augurOrderData = ZeroXOrders.parseAssetData(order.signedOrder.makerAssetData);
+    const multiAssetData = defaultAbiCoder.decode(multiAssetDataAbi, `0x${order.signedOrder.makerAssetData.slice(10)}`);
+    const nestedAssetData = multiAssetData[1] as string[];
+    const augurOrderData = ZeroXOrders.parseAssetData(nestedAssetData[0]);
     // Currently the API for mesh browser and the client API diverge here but we dont want to do string parsing per order to be compliant for the browser case
     const signedOrder = order.signedOrder;
     return {
