@@ -391,6 +391,34 @@ function dateStartAfterMarketEndTime(
   return Number(input.timestamp) >= Number(endTime);
 }
 
+export function tellOnHoliday(
+  inputs: ExtraInfoTemplateInput[],
+  input: ExtraInfoTemplateInput,
+  closing: DateInputDependencies,
+) {
+  let holidayPresent = null;
+  const exchange = inputs[closing.inputSourceId];
+  if (exchange.value) {
+    const holidayClosures = closing.holidayClosures[exchange.value];
+    const inputYear = moment.unix(Number(input.timestamp)).year();
+    const holidayClosuresPerYear = holidayClosures && holidayClosures[inputYear];
+    if (holidayClosuresPerYear) {
+      const offset = closing.inputTimeOffset[exchange.value].offset;
+      holidayClosuresPerYear.forEach(holiday => {
+        const OneHourBuffer = 1;
+        const utcHolidayDate = moment.unix(holiday.date).utc();
+        const convertedUtcHolidayDate = moment(utcHolidayDate).add(offset, 'hours');
+        const startHolidayDate = moment(convertedUtcHolidayDate).subtract(OneHourBuffer, 'hours');
+        const endHolidayDate = moment(startHolidayDate).add(24 + OneHourBuffer, 'hours');
+        if (moment(Number(input.timestamp)* 1000).unix() >= startHolidayDate.unix() && moment(Number(input.timestamp) * 1000).unix() <= endHolidayDate.unix()) {
+          holidayPresent = holiday;
+        }
+      });
+    }
+  }
+  return holidayPresent;
+}
+
 function dateNoWeekendHoliday(
   inputs: ExtraInfoTemplateInput[],
   dateDependencies: DateDependencies[],
@@ -410,29 +438,9 @@ function dateNoWeekendHoliday(
     }
 
     const closing = closingDateDependencies[0];
-    let holidayPresent = false;
-    if (closing) {
-      const exchange = inputs[closing.inputSourceId];
-      if (exchange.value) {
-        const holidayClosures = closing.holidayClosures[exchange.value];
-        const inputYear = moment.unix(Number(input.timestamp)).year();
-        const holidayClosuresPerYear = holidayClosures && holidayClosures[inputYear];
-        if (holidayClosuresPerYear) {
-          const offset = closing.inputTimeOffset[exchange.value].offset;
-          holidayClosuresPerYear.forEach(holiday => {
-            const OneHourBuffer = 1;
-            const utcHolidayDate = moment.unix(holiday.date).utc();
-            const convertedUtcHolidayDate = moment(utcHolidayDate).add(offset, 'hours');
-            const startHolidayDate = moment(convertedUtcHolidayDate).subtract(OneHourBuffer, 'hours');
-            const endHolidayDate = moment(startHolidayDate).add(24 + OneHourBuffer, 'hours');
-            if (moment(Number(input.timestamp)* 1000).unix() >= startHolidayDate.unix() && moment(Number(input.timestamp) * 1000).unix() <= endHolidayDate.unix()) {
-              holidayPresent = true;
-            }
-          });
-        }
-     }
+    if (closing && tellOnHoliday(inputs, input, closing)) {
+      return true;
     }
-    if (holidayPresent) return false;
     return p;
   }, true);
   return result;

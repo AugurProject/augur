@@ -3,9 +3,8 @@ import isAddress from 'modules/auth/helpers/is-address';
 import { createBigNumber } from 'utils/create-big-number';
 import { ZERO } from './constants';
 import { NewMarketPropertiesValidations } from 'modules/types';
-import { ValidationType, TemplateInputType, TemplateInput, UserInputDateTime, TimeOffset } from '@augurproject/artifacts';
+import { ValidationType, TemplateInputType, TemplateInput, UserInputDateTime, tellOnHoliday } from '@augurproject/artifacts';
 import moment from 'moment';
-import { convertUnixToFormattedDate } from 'utils/format-date';
 
 export function isFilledString(value, readable, message) {
   if (value && value.trim().length > 0 && value !== '') return '';
@@ -212,27 +211,11 @@ export function checkForUserInputFilled(inputs: TemplateInput[], endTimeFormatte
             i => i.type === TemplateInputType.DATEYEAR_CLOSING
           );
           if (closing) {
-            const exchange = inputs[closing.inputSourceId];
-            if (exchange.userInput) {
-              const holidayClosures = closing.holidayClosures[exchange.userInput];
-              const inputYear = moment.unix(input.setEndTime).year();
-              const holidayClosuresPerYear = holidayClosures[inputYear];
-              const offset = closing.inputTimeOffset[exchange.userInput].offset;
-              holidayClosuresPerYear.forEach(holiday => {
-                const OneHourBuffer = 1;
-                const utcHolidayDate = moment.unix(holiday.date).utc();
-                const convertedUtcHolidayDate = moment(utcHolidayDate).add(offset, 'hours');
-                const startHolidayDate = moment(convertedUtcHolidayDate).subtract(OneHourBuffer, 'hours');
-                const endHolidayDate = moment(startHolidayDate).add(24 + OneHourBuffer, 'hours');
-                if (moment(input.setEndTime * 1000).unix() >= startHolidayDate.unix() && moment(input.setEndTime * 1000).unix() <= endHolidayDate.unix()) {
-                  holidayPresent = `${holiday.holiday} not allowed`;
-                }
-              });
-            }
+          const holiday = tellOnHoliday(inputs, input, closing);
+          if (holiday) {
+            return `${holiday.holiday} not allowed`;
           }
         }
-
-        if (holidayPresent !== '') return holidayPresent;
       }
       if (
         endTimeFormatted && endTimeFormatted.timestamp &&
