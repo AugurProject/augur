@@ -252,6 +252,11 @@ div.ReportingSubheaders {
   line-height: @size-16;
   padding: 0.5rem;
   width: 100%;
+  max-width: 480px;
+
+  @media @breakpoint-mobile-new {
+    max-width: unset;
+  }
 }
 
 .UserRepDisplay {
@@ -283,9 +288,9 @@ div.ReportingSubheaders {
     bottom: 0;
     color: @color-primary-text;
     left: 0;
-    margin: 0;
+    margin: @size-4;
     position: absolute;
-    padding: 0 4rem;
+    padding: 0 @size-64;
     right: 0;
     text-align: center;
     text-transform: capitalize;
@@ -293,7 +298,7 @@ div.ReportingSubheaders {
     z-index: @default-z-index;
     display: flex;
     align-items: center;
-    height: 100%;
+    height: calc(100% - @size-8);
 
     @media @breakpoint-mobile {
       .text-16;
