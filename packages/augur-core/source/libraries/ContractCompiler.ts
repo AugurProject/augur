@@ -99,6 +99,7 @@ export class ContractCompiler {
                 if (error.message.includes('This declaration shadows an existing declaration')) continue;
                 if (error.message.includes('Unused local variable')) continue;
                 if (error.message.includes('Unused function parameter')) continue;
+                if (error.message.includes('The Yul optimiser is still experimental')) continue;
                 errors += error.formattedMessage + '\n';
             }
 
@@ -205,6 +206,7 @@ export class ContractCompiler {
                 "ERC20Proxy",
                 "ERC721Proxy",
                 "ERC1155Proxy",
+                "MultiAssetProxy",
                 "Exchange",
                 "Coordinator",
                 "CoordinatorRegistry",
@@ -235,7 +237,13 @@ export class ContractCompiler {
                 remappings: [ `ROOT=${this.configuration.contractSourceRoot}/`],
                 optimizer: {
                     enabled: true,
-                    runs: 500
+                    runs: 200,
+                    details: {
+                        yul: true,
+                        deduplicate: true,
+                        cse: true,
+                        constantOptimizer: true
+                    }
                 },
                 outputSelection: {
                     '*': {
@@ -246,16 +254,6 @@ export class ContractCompiler {
             },
             sources: {}
         };
-        if (this.configuration.enableSdb) {
-            inputJson.settings.optimizer = {
-                enabled: false
-            };
-            inputJson.settings.outputSelection['*'][''] = [ 'legacyAST' ];
-            inputJson.settings.outputSelection['*']['*'].push('evm.bytecode.sourceMap');
-            inputJson.settings.outputSelection['*']['*'].push('evm.deployedBytecode.object');
-            inputJson.settings.outputSelection['*']['*'].push('evm.deployedBytecode.sourceMap');
-            inputJson.settings.outputSelection['*']['*'].push('evm.methodIdentifiers');
-        }
         for (const file in files) {
             const filePath = filePaths[file].replace(this.configuration.contractSourceRoot, '').replace(/\\/g, '/').replace(/^\//, '');;
             inputJson.sources[filePath] = { content : files[file] };

@@ -14,17 +14,27 @@ import "ROOT/trading/IAugurTrading.sol";
 import 'ROOT/libraries/Initializable.sol';
 import "ROOT/IAugur.sol";
 import 'ROOT/libraries/token/IERC1155.sol';
+import 'ROOT/libraries/LibBytes.sol';
 
 
 contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
     using SafeMathUint256 for uint256;
+    using LibBytes for bytes;
 
     bool transferFromAllowed = false;
 
     uint256 constant public TRADE_INTERVAL_VALUE = 10 ** 19; // Trade value of 10 DAI
 
+    uint256[] private multiAssetValues;
+
+    // ERC20Token(address)
+    bytes4 constant private ERC20_PROXY_ID = 0xf47261b0;
+
     // ERC1155Assets(address,uint256[],uint256[],bytes)
-    bytes4 constant public ERC1155_PROXY_ID = 0xa7cb5fb7;
+    bytes4 constant private MULTI_ASSET_PROXY_ID = 0x94cfcdd7;
+
+    // ERC1155Assets(address,uint256[],uint256[],bytes)
+    bytes4 constant private ERC1155_PROXY_ID = 0xa7cb5fb7;
 
     // EIP191 header for EIP712 prefix
     string constant internal EIP191_HEADER = "\x19\x01";
@@ -78,6 +88,9 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
     IShareToken public shareToken;
     IExchange public exchange;
 
+    bytes public cashAssetData;
+    bytes public shareAssetData; 
+
     function initialize(IAugur _augur, IAugurTrading _augurTrading) public beforeInitialized {
         endInitialization();
         augurTrading = _augurTrading;
@@ -89,6 +102,10 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         require(exchange != IExchange(0));
         fillOrder = IFillOrder(_augurTrading.lookup("FillOrder"));
         require(fillOrder != IFillOrder(0));
+
+        multiAssetValues = [1, 0, 0];
+        cashAssetData = encodeCashAssetData();
+        shareAssetData = encodeShareAssetData();
 
         EIP712_DOMAIN_HASH = keccak256(
             abi.encodePacked(
@@ -309,7 +326,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         return transferFromAllowed;
     }
 
-    /// @dev Encode ERC-1155 asset data into the format described in the AssetProxy contract specification.
+    /// @dev Encode MultiAsset proxy asset data into the format described in the AssetProxy contract specification.
     /// @param _market The address of the market to trade on
     /// @param _price The price used to trade
     /// @param _outcome The outcome to trade on
@@ -324,6 +341,36 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         IERC20 _kycToken
     )
         public
+        view
+        returns (bytes memory _assetData)
+    {
+        bytes[] memory _nestedAssetData = new bytes[](3);
+        _nestedAssetData[0] = encodeTradeAssetData(_market, _price, _outcome, _type, _kycToken);
+        _nestedAssetData[1] = cashAssetData;
+        _nestedAssetData[2] = shareAssetData;
+        bytes memory _data = abi.encodeWithSelector(
+            MULTI_ASSET_PROXY_ID,
+            multiAssetValues,
+            _nestedAssetData
+        );
+        return _data;
+    }
+
+    /// @dev Encode ERC-1155 asset data into the format described in the AssetProxy contract specification.
+    /// @param _market The address of the market to trade on
+    /// @param _price The price used to trade
+    /// @param _outcome The outcome to trade on
+    /// @param _type Either BID == 0 or ASK == 1
+    /// @param _kycToken The kycToken used to restrict filling this order
+    /// @return AssetProxy-compliant asset data describing the set of assets.
+    function encodeTradeAssetData(
+        IMarket _market,
+        uint256 _price,
+        uint8 _outcome,
+        uint8 _type,
+        IERC20 _kycToken
+    )
+        private
         view
         returns (bytes memory _assetData)
     {
@@ -350,6 +397,42 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         return _assetData;
     }
 
+    /// @dev Encode ERC-20 asset data into the format described in the AssetProxy contract specification.
+    /// @return AssetProxy-compliant asset data describing the set of assets.
+    function encodeCashAssetData()
+        private
+        view
+        returns (bytes memory _assetData)
+    {
+        _assetData = abi.encodeWithSelector(
+            ERC20_PROXY_ID,
+            address(cash)
+        );
+
+        return _assetData;
+    }
+
+    /// @dev Encode ERC-1155 asset data into the format described in the AssetProxy contract specification.
+    /// @return AssetProxy-compliant asset data describing the set of assets.
+    function encodeShareAssetData()
+        private
+        view
+        returns (bytes memory _assetData)
+    {
+        uint256[] memory _tokenIds = new uint256[](0);
+        uint256[] memory _tokenValues = new uint256[](0);
+        bytes memory _callbackData = new bytes(0);
+        _assetData = abi.encodeWithSelector(
+            ERC1155_PROXY_ID,
+            address(shareToken),
+            _tokenIds,
+            _tokenValues,
+            _callbackData
+        );
+
+        return _assetData;
+    }
+
     function getTokenId(address _market, uint256 _price, uint8 _outcome, uint8 _type) public pure returns (uint256 _tokenId) {
         // NOTE: we're assuming no one needs a full uint256 for the price value here and cutting to uint80 so we can pack this in a uint256.
         bytes memory _tokenIdBytes = abi.encodePacked(_market, uint80(_price), _outcome, _type);
@@ -367,9 +450,9 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         }
     }
 
-    /// @dev Decode ERC-1155 asset data from the format described in the AssetProxy contract specification.
+    /// @dev Decode MultiAsset asset data from the format described in the AssetProxy contract specification.
     /// @param _assetData AssetProxy-compliant asset data describing an ERC-1155 set of assets.
-    /// @return The ERC-1155 AssetProxy identifier, the address of the ERC-1155
+    /// @return The ERC-1155 AssetProxy identifier, the address of this ERC-1155
     /// contract hosting the assets, an array of the identifiers of the
     /// assets to be traded, an array of asset amounts to be traded, and
     /// callback data.  Each element of the arrays corresponds to the
@@ -377,6 +460,56 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
     /// `memory` are returned as pointers to locations within the memory of
     /// the input parameter `assetData`.
     function decodeAssetData(bytes memory _assetData)
+        public
+        view
+        returns (
+            bytes4 _assetProxyId,
+            address _tokenAddress,
+            uint256[] memory _tokenIds,
+            uint256[] memory _tokenValues,
+            bytes memory _callbackData,
+            address _kycToken
+        )
+    {
+         // Read the bytes4 from array memory
+        assembly {
+            _assetProxyId := mload(add(_assetData, 32))
+            // Solidity does not require us to clean the trailing bytes. We do it anyway
+            _assetProxyId := and(_assetProxyId, 0xFFFFFFFF00000000000000000000000000000000000000000000000000000000)
+        }
+
+        require(_assetProxyId == MULTI_ASSET_PROXY_ID, "WRONG_PROXY_ID");
+
+        uint256[] memory _amounts;
+        bytes[] memory _nestedAssetData;
+
+        // Slice the selector off the asset data
+        bytes memory _noSelectorAssetData = _assetData.slice(4, _assetData.length);
+
+        (_amounts, _nestedAssetData) = abi.decode(_noSelectorAssetData, (uint256[], bytes[]));
+        
+        // Validate storage refs against the decoded values. Need to convert to memory to compare
+        {
+            require(_amounts[0] == 1);
+            require(_amounts[1] == 0);
+            require(_amounts[2] == 0);
+            require(_nestedAssetData[1].equals(cashAssetData));
+            require(_nestedAssetData[2].equals(shareAssetData));
+        }
+
+        return decodeTradeAssetData(_nestedAssetData[0]);
+    }
+
+    /// @dev Decode ERC-1155 asset data from the format described in the AssetProxy contract specification.
+    /// @param _assetData AssetProxy-compliant asset data describing an ERC-1155 set of assets.
+    /// @return The ERC-1155 AssetProxy identifier, the address of this ERC-1155
+    /// contract hosting the assets, an array of the identifiers of the
+    /// assets to be traded, an array of asset amounts to be traded, and
+    /// callback data.  Each element of the arrays corresponds to the
+    /// same-indexed element of the other array.  Return values specified as
+    /// `memory` are returned as pointers to locations within the memory of
+    /// the input parameter `assetData`.
+    function decodeTradeAssetData(bytes memory _assetData)
         public
         pure
         returns (
@@ -430,13 +563,13 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         _data.kycToken = _kycToken;
     }
 
-    function getZeroXTradeTokenData(bytes memory _assetData) public pure returns (IERC1155 _token, uint256 _tokenId) {
+    function getZeroXTradeTokenData(bytes memory _assetData) public view returns (IERC1155 _token, uint256 _tokenId) {
         (bytes4 _assetProxyId, address _tokenAddress, uint256[] memory _tokenIds, uint256[] memory _tokenValues, bytes memory _callbackData, address _kycToken) = decodeAssetData(_assetData);
         _tokenId = _tokenIds[0];
         _token = IERC1155(_tokenAddress);
     }
 
-    function getTokenIdFromOrder(IExchange.Order memory _order) public pure returns (uint256 _tokenId) {
+    function getTokenIdFromOrder(IExchange.Order memory _order) public view returns (uint256 _tokenId) {
         (bytes4 _assetProxyId, address _tokenAddress, uint256[] memory _tokenIds, uint256[] memory _tokenValues, bytes memory _callbackData, address _kycToken) = decodeAssetData(_order.makerAssetData);
         _tokenId = _tokenIds[0];
     }

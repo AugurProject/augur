@@ -2864,11 +2864,76 @@ Fills an order with specified parameters and ECDSA signature.
 
 
 
+### `LibBytes`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#LibBytes.equals(bytes,bytes)"><code class="function-signature">equals(bytes lhs, bytes rhs)</code></a></li><li><a href="#LibBytes.contentAddress(bytes)"><code class="function-signature">contentAddress(bytes input)</code></a></li><li><a href="#LibBytes.memCopy(uint256,uint256,uint256)"><code class="function-signature">memCopy(uint256 dest, uint256 source, uint256 length)</code></a></li><li><a href="#LibBytes.slice(bytes,uint256,uint256)"><code class="function-signature">slice(bytes b, uint256 from, uint256 to)</code></a></li><li><a href="#LibBytes.sliceDestructive(bytes,uint256,uint256)"><code class="function-signature">sliceDestructive(bytes b, uint256 from, uint256 to)</code></a></li><li><a href="#LibBytes.popLastByte(bytes)"><code class="function-signature">popLastByte(bytes b)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="LibBytes.equals(bytes,bytes)"></a><code class="function-signature">equals(bytes lhs, bytes rhs) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
+
+Tests equality of two byte arrays.
+ @param lhs First byte array to compare.
+ @param rhs Second byte array to compare.
+ @return True if arrays are the same. False otherwise.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="LibBytes.contentAddress(bytes)"></a><code class="function-signature">contentAddress(bytes input) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
+
+Gets the memory address for the contents of a byte array.
+ @param input Byte array to lookup.
+ @return memoryAddress Memory address of the contents of the byte array.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="LibBytes.memCopy(uint256,uint256,uint256)"></a><code class="function-signature">memCopy(uint256 dest, uint256 source, uint256 length)</code><span class="function-visibility">internal</span></h4>
+
+Copies `length` bytes from memory location `source` to `dest`.
+ @param dest memory address to copy bytes to.
+ @param source memory address to copy bytes from.
+ @param length number of bytes to copy.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="LibBytes.slice(bytes,uint256,uint256)"></a><code class="function-signature">slice(bytes b, uint256 from, uint256 to) <span class="return-arrow">→</span> <span class="return-type">bytes</span></code><span class="function-visibility">internal</span></h4>
+
+Returns a slices from a byte array.
+ @param b The byte array to take a slice from.
+ @param from The starting index for the slice (inclusive).
+ @param to The final index for the slice (exclusive).
+ @return result The slice containing bytes at indices [from, to)
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="LibBytes.sliceDestructive(bytes,uint256,uint256)"></a><code class="function-signature">sliceDestructive(bytes b, uint256 from, uint256 to) <span class="return-arrow">→</span> <span class="return-type">bytes</span></code><span class="function-visibility">internal</span></h4>
+
+Returns a slice from a byte array without preserving the input.
+ @param b The byte array to take a slice from. Will be destroyed in the process.
+ @param from The starting index for the slice (inclusive).
+ @param to The final index for the slice (exclusive).
+ @return result The slice containing bytes at indices [from, to)
+ @dev When `from == 0`, the original array will match the slice. In other cases its state will be corrupted.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="LibBytes.popLastByte(bytes)"></a><code class="function-signature">popLastByte(bytes b) <span class="return-arrow">→</span> <span class="return-type">bytes1</span></code><span class="function-visibility">internal</span></h4>
+
+Pops the last byte off of a byte array by modifying its length.
+ @param b Byte array that will be modified.
+ @return The byte that was popped off.
+
+
+
+
+
 ### `ZeroXTrade`
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ZeroXTrade.initialize(contract IAugur,contract IAugurTrading)"><code class="function-signature">initialize(contract IAugur _augur, contract IAugurTrading _augurTrading)</code></a></li><li><a href="#ZeroXTrade.safeTransferFrom(address,address,uint256,uint256,bytes)"><code class="function-signature">safeTransferFrom(address from, address to, uint256 id, uint256 value, bytes data)</code></a></li><li><a href="#ZeroXTrade.safeBatchTransferFrom(address,address,uint256[],uint256[],bytes)"><code class="function-signature">safeBatchTransferFrom(address from, address to, uint256[] ids, uint256[] values, bytes data)</code></a></li><li><a href="#ZeroXTrade.balanceOf(address,uint256)"><code class="function-signature">balanceOf(address owner, uint256 id)</code></a></li><li><a href="#ZeroXTrade.totalSupply(uint256)"><code class="function-signature">totalSupply(uint256 id)</code></a></li><li><a href="#ZeroXTrade.bidBalance(address,contract IMarket,uint8,uint256)"><code class="function-signature">bidBalance(address _owner, contract IMarket _market, uint8 _outcome, uint256 _price)</code></a></li><li><a href="#ZeroXTrade.askBalance(address,contract IMarket,uint8,uint256)"><code class="function-signature">askBalance(address _owner, contract IMarket _market, uint8 _outcome, uint256 _price)</code></a></li><li><a href="#ZeroXTrade.balanceOfBatch(address[],uint256[])"><code class="function-signature">balanceOfBatch(address[] owners, uint256[] ids)</code></a></li><li><a href="#ZeroXTrade.setApprovalForAll(address,bool)"><code class="function-signature">setApprovalForAll(address operator, bool approved)</code></a></li><li><a href="#ZeroXTrade.isApprovedForAll(address,address)"><code class="function-signature">isApprovedForAll(address owner, address operator)</code></a></li><li><a href="#ZeroXTrade.trade(uint256,bytes32,bytes32,struct IExchange.Order[],bytes[])"><code class="function-signature">trade(uint256 _requestedFillAmount, bytes32 _fingerprint, bytes32 _tradeGroupId, struct IExchange.Order[] _orders, bytes[] _signatures)</code></a></li><li><a href="#ZeroXTrade.validateOrder(struct IExchange.Order,uint256)"><code class="function-signature">validateOrder(struct IExchange.Order _order, uint256 _fillAmountRemaining)</code></a></li><li><a href="#ZeroXTrade.creatorHasFundsForTrade(struct IExchange.Order,uint256)"><code class="function-signature">creatorHasFundsForTrade(struct IExchange.Order _order, uint256 _amount)</code></a></li><li><a href="#ZeroXTrade.getTransferFromAllowed()"><code class="function-signature">getTransferFromAllowed()</code></a></li><li><a href="#ZeroXTrade.encodeAssetData(contract IMarket,uint256,uint8,uint8,contract IERC20)"><code class="function-signature">encodeAssetData(contract IMarket _market, uint256 _price, uint8 _outcome, uint8 _type, contract IERC20 _kycToken)</code></a></li><li><a href="#ZeroXTrade.getTokenId(address,uint256,uint8,uint8)"><code class="function-signature">getTokenId(address _market, uint256 _price, uint8 _outcome, uint8 _type)</code></a></li><li><a href="#ZeroXTrade.unpackTokenId(uint256)"><code class="function-signature">unpackTokenId(uint256 _tokenId)</code></a></li><li><a href="#ZeroXTrade.decodeAssetData(bytes)"><code class="function-signature">decodeAssetData(bytes _assetData)</code></a></li><li><a href="#ZeroXTrade.parseOrderData(struct IExchange.Order)"><code class="function-signature">parseOrderData(struct IExchange.Order _order)</code></a></li><li><a href="#ZeroXTrade.getZeroXTradeTokenData(bytes)"><code class="function-signature">getZeroXTradeTokenData(bytes _assetData)</code></a></li><li><a href="#ZeroXTrade.getTokenIdFromOrder(struct IExchange.Order)"><code class="function-signature">getTokenIdFromOrder(struct IExchange.Order _order)</code></a></li><li><a href="#ZeroXTrade.createZeroXOrder(uint8,uint256,uint256,address,uint8,address,uint256,uint256)"><code class="function-signature">createZeroXOrder(uint8 _type, uint256 _attoshares, uint256 _price, address _market, uint8 _outcome, address _kycToken, uint256 _expirationTimeSeconds, uint256 _salt)</code></a></li><li><a href="#ZeroXTrade.createZeroXOrderFor(address,uint8,uint256,uint256,address,uint8,address,uint256,uint256)"><code class="function-signature">createZeroXOrderFor(address _maker, uint8 _type, uint256 _attoshares, uint256 _price, address _market, uint8 _outcome, address _kycToken, uint256 _expirationTimeSeconds, uint256 _salt)</code></a></li><li><a href="#ZeroXTrade.encodeEIP1271OrderWithHash(struct IExchange.Order,bytes32)"><code class="function-signature">encodeEIP1271OrderWithHash(struct IExchange.Order _zeroXOrder, bytes32 _orderHash)</code></a></li><li><a href="#ZeroXTrade.fallback()"><code class="function-signature">fallback()</code></a></li><li class="inherited"><a href="trading#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="trading#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="trading#IERC1155.TransferSingle(address,address,address,uint256,uint256)"><code class="function-signature">TransferSingle(address operator, address from, address to, uint256 id, uint256 value)</code></a></li><li class="inherited"><a href="trading#IERC1155.TransferBatch(address,address,address,uint256[],uint256[])"><code class="function-signature">TransferBatch(address operator, address from, address to, uint256[] ids, uint256[] values)</code></a></li><li class="inherited"><a href="trading#IERC1155.ApprovalForAll(address,address,bool)"><code class="function-signature">ApprovalForAll(address owner, address operator, bool approved)</code></a></li><li class="inherited"><a href="trading#IERC1155.URI(string,uint256)"><code class="function-signature">URI(string value, uint256 id)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ZeroXTrade.initialize(contract IAugur,contract IAugurTrading)"><code class="function-signature">initialize(contract IAugur _augur, contract IAugurTrading _augurTrading)</code></a></li><li><a href="#ZeroXTrade.safeTransferFrom(address,address,uint256,uint256,bytes)"><code class="function-signature">safeTransferFrom(address from, address to, uint256 id, uint256 value, bytes data)</code></a></li><li><a href="#ZeroXTrade.safeBatchTransferFrom(address,address,uint256[],uint256[],bytes)"><code class="function-signature">safeBatchTransferFrom(address from, address to, uint256[] ids, uint256[] values, bytes data)</code></a></li><li><a href="#ZeroXTrade.balanceOf(address,uint256)"><code class="function-signature">balanceOf(address owner, uint256 id)</code></a></li><li><a href="#ZeroXTrade.totalSupply(uint256)"><code class="function-signature">totalSupply(uint256 id)</code></a></li><li><a href="#ZeroXTrade.bidBalance(address,contract IMarket,uint8,uint256)"><code class="function-signature">bidBalance(address _owner, contract IMarket _market, uint8 _outcome, uint256 _price)</code></a></li><li><a href="#ZeroXTrade.askBalance(address,contract IMarket,uint8,uint256)"><code class="function-signature">askBalance(address _owner, contract IMarket _market, uint8 _outcome, uint256 _price)</code></a></li><li><a href="#ZeroXTrade.balanceOfBatch(address[],uint256[])"><code class="function-signature">balanceOfBatch(address[] owners, uint256[] ids)</code></a></li><li><a href="#ZeroXTrade.setApprovalForAll(address,bool)"><code class="function-signature">setApprovalForAll(address operator, bool approved)</code></a></li><li><a href="#ZeroXTrade.isApprovedForAll(address,address)"><code class="function-signature">isApprovedForAll(address owner, address operator)</code></a></li><li><a href="#ZeroXTrade.trade(uint256,bytes32,bytes32,struct IExchange.Order[],bytes[])"><code class="function-signature">trade(uint256 _requestedFillAmount, bytes32 _fingerprint, bytes32 _tradeGroupId, struct IExchange.Order[] _orders, bytes[] _signatures)</code></a></li><li><a href="#ZeroXTrade.validateOrder(struct IExchange.Order,uint256)"><code class="function-signature">validateOrder(struct IExchange.Order _order, uint256 _fillAmountRemaining)</code></a></li><li><a href="#ZeroXTrade.creatorHasFundsForTrade(struct IExchange.Order,uint256)"><code class="function-signature">creatorHasFundsForTrade(struct IExchange.Order _order, uint256 _amount)</code></a></li><li><a href="#ZeroXTrade.getTransferFromAllowed()"><code class="function-signature">getTransferFromAllowed()</code></a></li><li><a href="#ZeroXTrade.encodeAssetData(contract IMarket,uint256,uint8,uint8,contract IERC20)"><code class="function-signature">encodeAssetData(contract IMarket _market, uint256 _price, uint8 _outcome, uint8 _type, contract IERC20 _kycToken)</code></a></li><li><a href="#ZeroXTrade.getTokenId(address,uint256,uint8,uint8)"><code class="function-signature">getTokenId(address _market, uint256 _price, uint8 _outcome, uint8 _type)</code></a></li><li><a href="#ZeroXTrade.unpackTokenId(uint256)"><code class="function-signature">unpackTokenId(uint256 _tokenId)</code></a></li><li><a href="#ZeroXTrade.decodeAssetData(bytes)"><code class="function-signature">decodeAssetData(bytes _assetData)</code></a></li><li><a href="#ZeroXTrade.decodeTradeAssetData(bytes)"><code class="function-signature">decodeTradeAssetData(bytes _assetData)</code></a></li><li><a href="#ZeroXTrade.parseOrderData(struct IExchange.Order)"><code class="function-signature">parseOrderData(struct IExchange.Order _order)</code></a></li><li><a href="#ZeroXTrade.getZeroXTradeTokenData(bytes)"><code class="function-signature">getZeroXTradeTokenData(bytes _assetData)</code></a></li><li><a href="#ZeroXTrade.getTokenIdFromOrder(struct IExchange.Order)"><code class="function-signature">getTokenIdFromOrder(struct IExchange.Order _order)</code></a></li><li><a href="#ZeroXTrade.createZeroXOrder(uint8,uint256,uint256,address,uint8,address,uint256,uint256)"><code class="function-signature">createZeroXOrder(uint8 _type, uint256 _attoshares, uint256 _price, address _market, uint8 _outcome, address _kycToken, uint256 _expirationTimeSeconds, uint256 _salt)</code></a></li><li><a href="#ZeroXTrade.createZeroXOrderFor(address,uint8,uint256,uint256,address,uint8,address,uint256,uint256)"><code class="function-signature">createZeroXOrderFor(address _maker, uint8 _type, uint256 _attoshares, uint256 _price, address _market, uint8 _outcome, address _kycToken, uint256 _expirationTimeSeconds, uint256 _salt)</code></a></li><li><a href="#ZeroXTrade.encodeEIP1271OrderWithHash(struct IExchange.Order,bytes32)"><code class="function-signature">encodeEIP1271OrderWithHash(struct IExchange.Order _zeroXOrder, bytes32 _orderHash)</code></a></li><li><a href="#ZeroXTrade.fallback()"><code class="function-signature">fallback()</code></a></li><li class="inherited"><a href="trading#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="trading#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="trading#IERC1155.TransferSingle(address,address,address,uint256,uint256)"><code class="function-signature">TransferSingle(address operator, address from, address to, uint256 id, uint256 value)</code></a></li><li class="inherited"><a href="trading#IERC1155.TransferBatch(address,address,address,uint256[],uint256[])"><code class="function-signature">TransferBatch(address operator, address from, address to, uint256[] ids, uint256[] values)</code></a></li><li class="inherited"><a href="trading#IERC1155.ApprovalForAll(address,address,bool)"><code class="function-signature">ApprovalForAll(address owner, address operator, bool approved)</code></a></li><li class="inherited"><a href="trading#IERC1155.URI(string,uint256)"><code class="function-signature">URI(string value, uint256 id)</code></a></li></ul></div>
 
 
 
@@ -2958,7 +3023,7 @@ Fills an order with specified parameters and ECDSA signature.
 
 <h4><a class="anchor" aria-hidden="true" id="ZeroXTrade.encodeAssetData(contract IMarket,uint256,uint8,uint8,contract IERC20)"></a><code class="function-signature">encodeAssetData(contract IMarket _market, uint256 _price, uint8 _outcome, uint8 _type, contract IERC20 _kycToken) <span class="return-arrow">→</span> <span class="return-type">bytes</span></code><span class="function-visibility">public</span></h4>
 
-Encode ERC-1155 asset data into the format described in the AssetProxy contract specification.
+Encode MultiAsset proxy asset data into the format described in the AssetProxy contract specification.
  @param _market The address of the market to trade on
  @param _price The price used to trade
  @param _outcome The outcome to trade on
@@ -2982,9 +3047,23 @@ Encode ERC-1155 asset data into the format described in the AssetProxy contract 
 
 <h4><a class="anchor" aria-hidden="true" id="ZeroXTrade.decodeAssetData(bytes)"></a><code class="function-signature">decodeAssetData(bytes _assetData) <span class="return-arrow">→</span> <span class="return-type">bytes4,address,uint256[],uint256[],bytes,address</span></code><span class="function-visibility">public</span></h4>
 
+Decode MultiAsset asset data from the format described in the AssetProxy contract specification.
+ @param _assetData AssetProxy-compliant asset data describing an ERC-1155 set of assets.
+ @return The ERC-1155 AssetProxy identifier, the address of this ERC-1155
+ contract hosting the assets, an array of the identifiers of the
+ assets to be traded, an array of asset amounts to be traded, and
+ callback data.  Each element of the arrays corresponds to the
+ same-indexed element of the other array.  Return values specified as
+ `memory` are returned as pointers to locations within the memory of
+ the input parameter `assetData`.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ZeroXTrade.decodeTradeAssetData(bytes)"></a><code class="function-signature">decodeTradeAssetData(bytes _assetData) <span class="return-arrow">→</span> <span class="return-type">bytes4,address,uint256[],uint256[],bytes,address</span></code><span class="function-visibility">public</span></h4>
+
 Decode ERC-1155 asset data from the format described in the AssetProxy contract specification.
  @param _assetData AssetProxy-compliant asset data describing an ERC-1155 set of assets.
- @return The ERC-1155 AssetProxy identifier, the address of the ERC-1155
+ @return The ERC-1155 AssetProxy identifier, the address of this ERC-1155
  contract hosting the assets, an array of the identifiers of the
  assets to be traded, an array of asset amounts to be traded, and
  callback data.  Each element of the arrays corresponds to the
