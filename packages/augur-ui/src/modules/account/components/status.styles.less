@@ -5,27 +5,10 @@
   display: grid;
   grid-gap: @size-4;
   margin: @size-12 @size-16;
+  width: fit-content;
 
-  @media @breakpoint-mobile-mid {
-    background: unset;
-    padding-top: 0;
-    margin: 0 @size-8;
-    width: 328px;
-    align-self: center;
-  }
-
-  @media @breakpoint-mobile-small {
-    width: auto;
-    align-self: unset;
-  }
-
-  > a {
-    .mono-10;
-
-    color: @color-inactive-text;
-    margin: @size-12 0 @size-18;
-    text-align: center;
-    text-decoration-line: underline;
+  @media @breakpoint-mobile {
+    margin: 0;
   }
 }
 
@@ -34,9 +17,10 @@
 
   > div[class*="LinearPropertyLabel"] {
     align-items: baseline;
-    align-items: baseline;
-    margin-left: @size-56;
-    margin-right: @size-56;
+    min-width: 269px;
+    max-width: 80%;
+    margin-left: auto;
+    margin-right: auto;
 
     > span:first-of-type {
       .mono-10-bold;

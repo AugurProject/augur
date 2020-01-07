@@ -1,25 +1,22 @@
 @import (reference) '~assets/styles/shared';
 
 .Funds {
-  align-items: center;
   background: @color-table-header;
   border-radius: @border-radius-default;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
   padding: @size-16;
   text-transform: uppercase;
-
-  @media @breakpoint-mobile-mid {
-    background: unset;
-    margin: 0;
-  }
+  text-align: center;
 
   > h4 {
     .mono-12-bold;
 
     color: @color-secondary-text;
     margin-bottom: @size-8;
+  }
+
+  > div:first-of-type {
+    margin: 0 auto;
+    width: fit-content;
   }
 
   > div:nth-of-type(2) {
@@ -34,8 +31,10 @@
 
   > div[class*="LinearPropertyLabel"] {
     align-items: baseline;
-    margin-left: @size-56;
-    margin-right: @size-56;
+    min-width: 269px;
+    max-width: 80%;
+    margin-left: auto;
+    margin-right: auto;
 
     > span:first-of-type {
       .mono-10-bold;
