@@ -706,8 +706,20 @@ div.ButtonsRow:last-of-type {
 .Message {
   .Container;
 
+  > header > h1 {
+    .text-14;
+    text-transform: capitalize;
+
+    @media @breakpoint-mobile-new {
+      .text-12;
+    }
+  }
   > main > p {
-    .text-12-paragraph;
+    .text-14-paragraph;
+
+    @media @breakpoint-mobile-new {
+      .text-12-paragraph;
+    }
 
     color: @color-primary-text;
     margin: 0 0 @size-16 0;

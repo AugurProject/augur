@@ -28,6 +28,7 @@ import {
   SCALAR,
   CATEGORICAL,
   REPORTING_STATE,
+  DISCORD_LINK,
 } from 'modules/common/constants';
 import { ViewTransactionDetailsButton } from 'modules/common/buttons';
 import { formatNumber } from 'utils/format-number';
@@ -1159,5 +1160,11 @@ export const MarketStateLabel = (props: MarketStateLabelProps) => (
         <span>{LoadingEllipse}</span>
       </div>
     )}
+  </div>
+);
+
+export const DiscordLink = () => (
+  <div className={Styles.discordLink}>
+    If the issue persists please report it on <a href={DISCORD_LINK} target='_blank'>Discord</a>
   </div>
 );
