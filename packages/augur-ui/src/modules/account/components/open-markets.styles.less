@@ -29,6 +29,12 @@
       > div[class*="MovementLabel_Text"] {
         .mono-11-medium;
       }
+
+      > div[class*="undefined"] {
+        .mono-11-medium;
+
+        color: @color-secondary-text;
+      }
     }
   }
 }
@@ -49,6 +55,12 @@
     > div[class*="MovementLabel_Text"] {
       .mono-11-medium;
     }
+
+    > div[class*="undefined"] {
+        .mono-11-medium;
+
+        color: @color-secondary-text;
+      }
   }
 }
 
@@ -77,8 +89,14 @@
       text-transform: uppercase;
     }
 
-    > div[class*="MovementLabel"] > div[class*="MovementLabel_Icon"] {
-      margin: 0 @size-2 0 0;
+    > div[class*="MovementLabel"] {
+      > div[class*="MovementLabel_Icon"] {
+        margin: 0 @size-2 0 0;
+      }
+
+      > div[class*="undefined"] {
+        color: @color-secondary-text;
+      }
     }
   }
 }
