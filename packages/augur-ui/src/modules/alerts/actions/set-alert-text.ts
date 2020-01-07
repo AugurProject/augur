@@ -189,9 +189,7 @@ export default function setAlertText(alert: any, callback: Function) {
           alert.description = alert.params.marketInfo.description;
           alert.details = `${
             toCapitalizeCase(alert.params.orderType)
-          } ${formatShares(alert.params.amount).formatted} of ${
-            formatShares(alert.params.amount).formatted
-          } of ${alert.params.outcome} @ ${
+          } ${formatShares(alert.params.amount).formatted} of ${alert.params.outcome} @ ${
             formatDai(alert.params.price).formatted
           }`;
         } else {
@@ -238,10 +236,8 @@ export default function setAlertText(alert: any, callback: Function) {
                 alert.status,
                 marketInfo
               );
-              alert.details = `${orderType}  ${
+              alert.details = `${orderType} ${
                 formatShares(amount).formatted
-              } of ${
-                formatShares(originalQuantity).formatted
               } of ${outcomeDescription} @ ${formatDai(price).formatted}`;
             })
           );
@@ -250,10 +246,7 @@ export default function setAlertText(alert: any, callback: Function) {
               const marketInfo = selectMarket(marketId);
               if (marketInfo === null) return;
               const { loginAccount, userOpenOrders } = getState() as AppState;
-              let originalQuantity = convertOnChainAmountToDisplayAmount(
-                createBigNumber(alert.params.amountFilled),
-                createBigNumber(marketInfo.tickSize)
-              );
+              let originalQuantity = null;
               let updatedOrderType = alert.params.orderType;
               if (
                 alert.params.orderCreator.toUpperCase() ===
@@ -290,8 +283,7 @@ export default function setAlertText(alert: any, callback: Function) {
               );
               alert.details = `${orderType}  ${
                 formatShares(amount).formatted
-              } of ${
-                formatShares(originalQuantity).formatted
+              } ${ originalQuantity ? ` of ${formatShares(originalQuantity).formatted}` : ''
               } of ${outcomeDescription} @ ${formatDai(price).formatted}`;
             })
           );
