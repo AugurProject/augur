@@ -52,7 +52,7 @@ export interface InReportingLabelProps extends MarketStatusProps {
 }
 
 export interface MovementLabelProps {
-  value: number;
+  value: number | FormattedNumber;
   size: SizeTypes;
   styles?: object;
   showIcon?: boolean;
@@ -61,6 +61,7 @@ export interface MovementLabelProps {
   showPlusMinus?: boolean;
   showCurrency?: string;
   showNegative?: boolean;
+  useFull?: boolean;
 }
 
 export interface MovementIconProps {
@@ -69,13 +70,14 @@ export interface MovementIconProps {
 }
 
 export interface MovementTextProps {
-  value: number;
+  value: number | FormattedNumber;
   size: SizeTypes;
   showBrackets: boolean;
   showPercent: boolean;
   showPlusMinus: boolean;
   showCurrency?: string;
   showNegative?: boolean;
+  useFull?: boolean;
 }
 
 export interface PropertyLabelProps {
@@ -816,29 +818,39 @@ export const MovementIcon = (props: MovementIconProps) => {
   return <div className={`${iconSize} ${iconColor}`}>{MarketIcon}</div>;
 };
 
-export const MovementText = (props: MovementTextProps) => {
-  const getTextSizeStyle: Function = (size: SizeTypes): string =>
+export const MovementText = ({
+  value,
+  size,
+  showPlusMinus,
+  showPercent,
+  showBrackets,
+  showNegative,
+  showCurrency,
+  useFull
+}: MovementTextProps) => {
+  const numberValue = typeof value === 'number' ? value : value.value;
+  const getTextSizeStyle: Function = (sz: SizeTypes): string =>
     classNames(Styles.MovementLabel_Text, {
-      [Styles.MovementLabel_Text_small]: size == SizeTypes.SMALL,
-      [Styles.MovementLabel_Text_normal]: size == SizeTypes.NORMAL,
-      [Styles.MovementLabel_Text_large]: size == SizeTypes.LARGE,
+      [Styles.MovementLabel_Text_small]: sz == SizeTypes.SMALL,
+      [Styles.MovementLabel_Text_normal]: sz == SizeTypes.NORMAL,
+      [Styles.MovementLabel_Text_large]: sz == SizeTypes.LARGE,
     });
-  const getTextColorStyles: Function = (value: number): string =>
+  const getTextColorStyles: Function = (val: number): string =>
     classNames({
-      [Styles.MovementLabel_Text_positive]: value > 0,
-      [Styles.MovementLabel_Text_negative]: value < 0,
-      [Styles.MovementLabel_Text_neutral]: value === 0,
+      [Styles.MovementLabel_Text_positive]: val > 0,
+      [Styles.MovementLabel_Text_negative]: val < 0,
+      [Styles.MovementLabel_Text_neutral]: val === 0,
     });
 
-  const textColorStyle = getTextColorStyles(props.value);
-  const textSizeStyle = getTextSizeStyle(props.size);
+  const textColorStyle = getTextColorStyles(numberValue);
+  const textSizeStyle = getTextSizeStyle(size);
 
   // Transform label
   const removeMinus: Function = (label: number): number => {
-    if (props.value < 0 && !props.showPlusMinus) {
-      return typeof props.value === 'string'
-        ? props.value.replace('-', '')
-        : Math.abs(props.value);
+    if (numberValue < 0 && !showPlusMinus) {
+      return typeof numberValue === 'string'
+        ? numberValue.replace('-', '')
+        : Math.abs(numberValue);
     }
     return label;
   };
@@ -846,36 +858,40 @@ export const MovementText = (props: MovementTextProps) => {
   const toString: Function = (label: number): string => String(label);
 
   const addPlus: Function = (label: string): string => {
-    if (props.value > 0 && props.showPlusMinus) {
+    if (numberValue > 0 && showPlusMinus) {
       return '+'.concat(label);
     }
     return label;
   };
 
   const addPercent: Function = (label: string): string => {
-    if (props.showPercent) {
+    if (showPercent) {
       return `${label}%`;
     }
     return label;
   };
 
   const addBrackets: Function = (label: string): string => {
-    if (props.showBrackets) {
+    if (showBrackets) {
       return `(${label})`;
     }
     return label;
   };
 
-  const formattedString = addBrackets(
-    addPercent(addPlus(toString(removeMinus(props.value))))
+  let formattedString = addBrackets(
+    addPercent(addPlus(toString(removeMinus(numberValue))))
   );
-
+  if (typeof value !== "number" && useFull) {
+    formattedString = addBrackets(value.full);
+  } else if (typeof value !== "number" && !useFull) {
+    formattedString = addBrackets(value.formatted);
+  }
   return (
     <div
       className={`${textColorStyle} ${textSizeStyle}`}
     >
-      {`${props.showNegative && props.value < 0 ? '-' : ''}${
-        !!props.showCurrency ? props.showCurrency : ''
+      {`${showNegative && numberValue < 0 ? '-' : ''}${
+        !!showCurrency ? showCurrency : ''
       }${formattedString}`}
     </div>
   );
@@ -890,32 +906,37 @@ export const MovementLabel = ({
   showPlusMinus = false,
   showIcon = false,
   showCurrency,
-  showNegative
-}: MovementLabelProps) => (
-  <div
-    className={Styles.MovementLabel}
-    style={
-      showIcon
-        ? { ...styles, justifyContent: 'space-between' }
-        : { ...styles, justifyContent: 'flex-end' }
-    }
-  >
-    {showIcon && value !== 0 && (
-      <MovementIcon value={value} size={size} />
-    )}
-    {
-      <MovementText
-        value={value}
-        size={size}
-        showPercent={showPercent}
-        showBrackets={showBrackets}
-        showPlusMinus={showPlusMinus}
-        showCurrency={showCurrency}
-        showNegative={showNegative}
-      />
-    }
-  </div>
-);
+  showNegative,
+  useFull = false,
+}: MovementLabelProps) => {
+  const numberValue = typeof value === 'number' ? value : value.value;
+  return (
+    <div
+      className={Styles.MovementLabel}
+      style={
+        showIcon
+          ? { ...styles, justifyContent: 'space-between' }
+          : { ...styles, justifyContent: 'flex-end' }
+      }
+    >
+      {showIcon && value !== 0 && (
+        <MovementIcon value={numberValue} size={size} />
+      )}
+      {
+        <MovementText
+          value={value}
+          size={size}
+          showPercent={showPercent}
+          showBrackets={showBrackets}
+          showPlusMinus={showPlusMinus}
+          showCurrency={showCurrency}
+          showNegative={showNegative}
+          useFull={useFull}
+        />
+      }
+    </div>
+  );
+};
 
 export const PillLabel = ({ label, hideOnMobile }: PillLabelProps) => (
   <span

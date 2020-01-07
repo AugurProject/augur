@@ -58,9 +58,8 @@ const TopBar: React.FC<TopBarProps> = ({
           <div>
             <span>{realizedPL.label}</span>
             <MovementLabel
-              value={realizedPL.value.value}
-              showNegative
-              showCurrency="$"
+              value={realizedPL.value}
+              useFull
             />
           </div>
         </div>
