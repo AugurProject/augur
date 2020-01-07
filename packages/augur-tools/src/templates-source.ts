@@ -5043,8 +5043,8 @@ export const TEMPLATES = {
       },
       {
         marketType: CATEGORICAL,
-        question: `Who will win for [0] in the [1] [2]?`,
-        example: `Who will win for Best Pop Vocal Album in the 2020 Grammy Awards?`,
+        question: `Who will win [0] in the [1] [2]?`,
+        example: `Who will win Best Pop Vocal Album in the 2020 Grammy Awards?`,
         inputs: [
           {
             id: 0,

@@ -282,8 +282,8 @@ describe('State API :: Universe :: ', () => {
       id: genesisUniverse.address,
       parentUniverseId: NULL_ADDRESS,
       outcomeName: 'Genesis',
-      usersRep: johnRep.toString(),
-      totalRepSupply: totalRep.toString(),
+      usersRep: johnRep.toFixed(),
+      totalRepSupply: totalRep.toFixed(),
       totalOpenInterest: '0',
       numberOfMarkets: 0,
       children: [],
@@ -304,8 +304,8 @@ describe('State API :: Universe :: ', () => {
       id: genesisUniverse.address,
       parentUniverseId: NULL_ADDRESS,
       outcomeName: 'Genesis',
-      usersRep: bobRep.toString(), // aka zero
-      totalRepSupply: totalRep.toString(),
+      usersRep: bobRep.toFixed(), // aka zero
+      totalRepSupply: totalRep.toFixed(),
       totalOpenInterest: '0',
       numberOfMarkets: 0,
       children: [],
@@ -317,8 +317,11 @@ describe('State API :: Universe :: ', () => {
     console.log('Create a market to see how that affects numberOfMarkets.');
     const repBond = await genesisUniverse.getOrCacheMarketRepBond_();
     const market = await john.createReasonableScalarMarket();
-    totalRep = totalRep.plus(repBond).plus(10**18); // not added to john because he put it in the market
+    johnRep = johnRep.plus(10**18).minus(42905190235); // extra fauceted REP, minus bond increase from fauceting REP
+    totalRep = totalRep.plus(repBond).plus(10**18); // repBond not added to john because he put it in the market
+
     await actualDB.sync(john.augur, mock.constants.chunkSize, 0);
+
     universeChildren = await api.route('getUniverseChildren', {
       universe: genesisUniverse.address,
       account: john.account.publicKey,
@@ -327,8 +330,8 @@ describe('State API :: Universe :: ', () => {
       id: genesisUniverse.address,
       parentUniverseId: NULL_ADDRESS,
       outcomeName: 'Genesis',
-      usersRep: "1.1000000999999957094809856e+25",
-      totalRepSupply: totalRep.toString(),
+      usersRep: johnRep.toFixed(),
+      totalRepSupply: totalRep.toFixed(),
       totalOpenInterest: '0',
       numberOfMarkets: 1,
       children: [],
@@ -365,7 +368,7 @@ describe('State API :: Universe :: ', () => {
       id: genesisUniverse.address,
       outcomeName: 'Genesis',
       usersRep: '0', // all all migrated out
-      totalRepSupply: totalRep.toString(),
+      totalRepSupply: totalRep.toFixed(),
       totalOpenInterest: '0',
       numberOfMarkets: 1,
       parentUniverseId: NULL_ADDRESS,
@@ -373,8 +376,8 @@ describe('State API :: Universe :: ', () => {
         {
           parentUniverseId: genesisUniverse.address,
           outcomeName: 'Invalid',
-          usersRep: childUniverseRep.toString(),
-          totalRepSupply: childUniverseRep.toString(),
+          usersRep: childUniverseRep.toFixed(),
+          totalRepSupply: childUniverseRep.toFixed(),
           totalOpenInterest: '0',
           numberOfMarkets: 0,
           children: [],

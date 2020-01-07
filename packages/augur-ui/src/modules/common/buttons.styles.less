@@ -261,7 +261,7 @@
 .SellOrderButton {
   .Button;
   .mono-12-bold;
-  
+
   background: fade(@color-negative, 10%);
   border-color: @color-negative;
   border-width: 2px;
@@ -659,6 +659,38 @@
         &:nth-child(odd) {
           fill: @color-secondary-text;
         }
+      }
+    }
+  }
+}
+
+.ExternalLinkText {
+  .text-14;
+
+  @media @breakpoint-mobile {
+    .text-12;
+  }
+
+  color: @color-primary-text;
+  display: inline-flex;
+
+  > a {
+    color: @color-primary-text;
+  }
+
+  > svg {
+    height: @size-12;
+    margin-left: @size-4;
+    margin-top: @size-2;
+
+    > path {
+      &:nth-child(odd) {
+        fill: @color-secondary-text;
+        stroke: none;
+      }
+
+      &:nth-child(even) {
+        stroke: @color-secondary-text;
       }
     }
   }

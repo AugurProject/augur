@@ -12,11 +12,11 @@ import { CreateYesNoMarketParams, CreateCategoricalMarketParams, CreateScalarMar
 import { Gnosis } from "./api/Gnosis";
 import { HotLoading, DisputeWindow, GetDisputeWindowParams } from "./api/HotLoading";
 import { EmptyConnector } from "./connector/empty-connector";
-import { Events } from "./api/Events";
+import { ContractEvents } from "./api/ContractEvents";
 import { Markets } from "./state/getter/Markets";
 import { Universe } from "./state/getter/Universe";
 import { Platform } from "./state/getter/Platform";
-import { ZeroXOrdersGetters } from "./state/getter/ZeroXOrdersGetters";
+import { ZeroXOrder, ZeroXOrdersGetters } from "./state/getter/ZeroXOrdersGetters";
 import { Provider } from "./ethereum/Provider";
 import { Status } from "./state/getter/status";
 import { TXStatus } from "./event-handlers";
@@ -51,7 +51,7 @@ export class Augur<TProvider extends Provider = Provider> {
   private readonly dependencies: ContractDependenciesGnosis;
 
   readonly networkId: NetworkId;
-  readonly events: Events;
+  readonly contractEvents: ContractEvents;
   readonly addresses: ContractAddresses;
   readonly contracts: Contracts;
   readonly onChainTrade: OnChainTrade;
@@ -65,7 +65,7 @@ export class Augur<TProvider extends Provider = Provider> {
   connector: BaseConnector;
   readonly liquidity: Liquidity;
   readonly hotLoading: HotLoading;
-  readonly subscriptions: Subscriptions;
+  readonly events: Subscriptions;
 
   private txSuccessCallback: TXStatusCallback;
   private txAwaitingSigningCallback: TXStatusCallback;
@@ -90,16 +90,15 @@ export class Augur<TProvider extends Provider = Provider> {
       this.connector = connector;
     }
 
-    this.subscriptions = new Subscriptions(augurEmitter);
-
-    this.subscriptions.on(SubscriptionEventName.GnosisSafeStatus, this.updateGnosisSafe.bind(this));
+    this.events = new Subscriptions(augurEmitter);
+    this.events.on(SubscriptionEventName.GnosisSafeStatus, this.updateGnosisSafe.bind(this));
 
     // API
     this.addresses = addresses;
     this.contracts = new Contracts(this.addresses, this.dependencies);
     this.market = new Market(this);
     this.liquidity = new Liquidity(this);
-    this.events = new Events(this.provider, this.addresses.Augur, this.addresses.AugurTrading, this.addresses.ShareToken);
+    this.contractEvents = new ContractEvents(this.provider, this.addresses.Augur, this.addresses.AugurTrading, this.addresses.ShareToken);
     this.gnosis = new Gnosis(this.provider, gnosisRelay, this, this.dependencies);
     this.hotLoading = new HotLoading(this);
     this.onChainTrade = new OnChainTrade(this);
@@ -169,13 +168,13 @@ export class Augur<TProvider extends Provider = Provider> {
   }
 
   async getAccount(): Promise<string | null> {
-    let account;
-    if (this.dependencies.useSafe) {
+    let account = this.dependencies.address;
+    if (this.dependencies.useSafe && this.dependencies.safeAddress) {
       account = this.dependencies.safeAddress;
-    } else {
-      account = await this.dependencies.address;
+    } else if (!account) {
+      account = await this.dependencies.signer.getAddress();
     }
-    if (!account) return account;
+    if (!account) return null;
     return getAddress(account);
   }
 
@@ -215,6 +214,10 @@ export class Augur<TProvider extends Provider = Provider> {
 
   setUseGnosisRelay(useRelay: boolean): void {
     this.dependencies.setUseRelay(useRelay);
+  }
+
+  getUseGnosisSafe(): boolean {
+    return this.dependencies.useSafe;
   }
 
   checkSafe(owner:Address, safe: Address): Promise<GnosisSafeStateReponse> {
@@ -337,9 +340,9 @@ export class Augur<TProvider extends Provider = Provider> {
     return this.bindTo(OnChainTrading.getTradingHistory)(params);
   };
   getTradingOrders = (
-    params: Parameters<typeof OnChainTrading.getOrders>[2]
-  ): ReturnType<typeof OnChainTrading.getOrders> => {
-    return this.bindTo(OnChainTrading.getOrders)(params);
+    params: Parameters<typeof OnChainTrading.getOpenOrders>[2]
+  ): ReturnType<typeof OnChainTrading.getOpenOrders> => {
+    return this.bindTo(OnChainTrading.getOpenOrders)(params);
   };
   getMarketOrderBook = (
     params: Parameters<typeof Markets.getMarketOrderBook>[2]
@@ -364,6 +367,13 @@ export class Augur<TProvider extends Provider = Provider> {
   ): ReturnType<typeof Users.getUserTradingPositions> => {
     return this.bindTo(Users.getUserTradingPositions)(params);
   };
+
+  getUserOpenOrders = (
+    params: Parameters<typeof Users.getUserOpenOrders>[2]
+  ): ReturnType<typeof Users.getUserOpenOrders> => {
+    return this.bindTo(Users.getUserOpenOrders)(params);
+  };
+
   getProfitLoss = (
     params: Parameters<typeof Users.getProfitLoss>[2]
   ): ReturnType<typeof Users.getProfitLoss> => {
@@ -414,17 +424,18 @@ export class Augur<TProvider extends Provider = Provider> {
     return this.bindTo(Markets.getCategoryStats)(params);
   };
 
+  getOrder = (
+    params: Parameters<typeof ZeroXOrdersGetters.getZeroXOrder>[2]
+  ): ReturnType<typeof ZeroXOrdersGetters.getZeroXOrder> => {
+    return this.bindTo(ZeroXOrdersGetters.getZeroXOrder)(params)
+  };
+
   async hotloadMarket(marketId: string) {
     return this.hotLoading.getMarketDataParams({ market: marketId });
   }
 
   async getDisputeWindow(params: GetDisputeWindowParams): Promise<DisputeWindow> {
     return this.hotLoading.getCurrentDisputeWindowData(params);
-  }
-
-
-  getAugurEventEmitter(): EventNameEmitter {
-    return this.subscriptions;
   }
 
   async simulateTrade(
@@ -435,6 +446,23 @@ export class Augur<TProvider extends Provider = Provider> {
 
   async placeTrade(params: PlaceTradeDisplayParams): Promise<void> {
     return this.trade.placeTrade(params);
+  }
+
+  async cancelOrder(orderHash: string): Promise<void> {
+    const order = await this.getOrder({ orderHash });
+    await this.zeroX.cancelOrder(order);
+  }
+
+  async batchCancelOrders(orderHashes: string[]): Promise<void> {
+    let orders = [];
+    orderHashes.forEach(async (hash, idx) => {
+      const order = await this.getOrder({ orderHash: hash });
+      orders = orders.concat(order);
+
+      if (idx === orderHashes.length - 1) {
+        await this.zeroX.batchCancelOrders(orders);
+      }
+    });
   }
 
   async createYesNoMarket(

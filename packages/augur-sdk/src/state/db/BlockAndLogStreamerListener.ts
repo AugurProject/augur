@@ -266,7 +266,7 @@ export class BlockAndLogStreamerListener
     const suspectBlockNumbers = this.currentSuspectBlocks.map(b => {
       return parseInt(b.number);
     });
-    // Ethers doesn't support multople addresses. FIlter by topic
+    // Ethers doesn't support multiple addresses. Filter by topic
     // on node and filter by address on our side.
     // See: https://github.com/ethers-io/ethers.js/issues/473
     const { address, ...filter } = this.buildFilter();

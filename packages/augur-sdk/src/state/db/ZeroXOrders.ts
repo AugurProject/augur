@@ -1,13 +1,17 @@
+
 import * as _ from 'lodash';
 import { AbstractTable, BaseDocument } from './AbstractTable';
 import { SyncStatus } from './SyncStatus';
 import { Augur } from '../../Augur';
 import { DB } from './DB';
 import { MarketData, MarketType } from '../logs/types';
-import { OrderInfo, OrderEvent } from '@0x/mesh-rpc-client';
-import { getAddress } from "ethers/utils/address";
+import { OrderEventType } from "../../constants";
+import { OrderInfo, OrderEvent, BigNumber } from "@0x/mesh-rpc-client";
+import { getAddress } from 'ethers/utils/address';
+import { defaultAbiCoder, ParamType } from 'ethers/utils';
 import { SignedOrder } from '@0x/types';
-import { BigNumber } from 'bignumber.js';
+import { BigNumber as BN} from 'ethers/utils';
+import moment, { Moment } from 'moment';
 
 // This database clears its contents on every sync.
 // The primary purposes for even storing this data are:
@@ -19,13 +23,36 @@ const EXPECTED_ASSET_DATA_LENGTH = 650;
 const DEFAULT_TRADE_INTERVAL = new BigNumber(10**17);
 const TRADE_INTERVAL_VALUE = new BigNumber(10**19);
 
+// Original ABI from Go
+// [
+//   {
+//     constant: false,
+//     inputs: [
+//       { name: 'address', type: 'address' },
+//       { name: 'ids', type: 'uint256[]' },
+//       { name: 'values', type: 'uint256[]' },
+//       { name: 'callbackData', type: 'bytes' },
+//     ],
+//     name: 'ERC1155Assets',
+//     outputs: [],
+//     payable: false,
+//     stateMutability: 'nonpayable',
+//     type: 'function',
+//   },
+// ];
+const erc1155AssetDataAbi: ParamType[] = [
+  { name: 'address', type: 'address' },
+  { name: 'ids', type: 'uint256[]' },
+  { name: 'values', type: 'uint256[]' },
+  { name: 'callbackData', type: 'bytes' },
+];
+
 export interface OrderData {
   market: string;
   price: string;
   outcome: string;
   orderType: string;
   kycToken: string;
-  exchange: string;
 }
 
 export interface Document extends BaseDocument {
@@ -38,8 +65,28 @@ export interface SnapshotCounterDocument extends BaseDocument {
 
 export interface StoredOrder extends OrderData {
   orderHash: string,
-  signedOrder: SignedOrder,
+  signedOrder: StoredSignedOrder,
   amount: string,
+  numberAmount: BigNumber,
+  orderCreator: string,
+  orderId?: string,
+}
+
+export interface StoredSignedOrder {
+  signature: string;
+  senderAddress: string;
+  makerAddress: string;
+  takerAddress: string;
+  makerFee: string;
+  takerFee: string;
+  makerAssetAmount: string;
+  takerAssetAmount: string;
+  makerAssetData: string;
+  takerAssetData: string;
+  salt: string;
+  exchangeAddress: string;
+  feeRecipientAddress: string;
+  expirationTimeSeconds: string;
 }
 
 /**
@@ -56,7 +103,7 @@ export class ZeroXOrders extends AbstractTable {
     networkId: number,
     augur: Augur
   ) {
-    super(networkId, "ZeroXOrders", db.dexieDB);
+    super(networkId, 'ZeroXOrders', db.dexieDB);
     this.syncStatus = db.syncStatus;
     this.stateDB = db;
     this.augur = augur;
@@ -71,19 +118,39 @@ export class ZeroXOrders extends AbstractTable {
   }
 
   async subscribeToMeshEvents(): Promise<void> {
-    return await this.augur.zeroX.subscribeToMeshEvents(this.handleMeshEvent.bind(this));
+    return this.augur.zeroX.subscribeToMeshEvents(this.handleMeshEvent.bind(this));
   }
 
   async handleMeshEvent(orderEvents: OrderEvent[]): Promise<void> {
+    if (orderEvents.length < 1) return;
+    console.log('Mesh events recieved');
+    console.log(JSON.stringify(orderEvents));
+
     const filteredOrders = _.filter(orderEvents, this.validateOrder.bind(this));
     let documents = _.map(filteredOrders, this.processOrder.bind(this));
+
+    // Remove Canceled Orders and emit event
+    const canceledOrders =
+      _.filter(orderEvents, (orderEvent => orderEvent.endState === 'CANCELLED'))
+      .map(order => order.orderHash);
+
+    for (const d of documents) {
+      if (canceledOrders.includes(d.orderHash)) {
+        documents = _.filter(documents, (orderEvent => orderEvent.orderHash !== d.orderHash));
+        this.table.where('orderHash').equals(d.orderHash).delete();
+        this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Cancel, orderId: d.orderHash,...d});
+      }
+    }
+
     documents = _.filter(documents, this.validateStoredOrder.bind(this));
     await this.bulkUpsertDocuments(documents);
-    this.augur.getAugurEventEmitter().emit("ZeroXOrders", documents);
+    for (const d of documents) {
+      this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Create, ...d});
+    }
   }
 
   async sync(): Promise<void> {
-    const orders: Array<OrderInfo> = await this.augur.zeroX.getOrders();
+    const orders: OrderInfo[] = await this.augur.zeroX.getOrders();
     let documents;
     if (orders.length > 0) {
       documents = _.filter(orders, this.validateOrder.bind(this));
@@ -94,8 +161,10 @@ export class ZeroXOrders extends AbstractTable {
         return this.validateStoredOrder(document, markets);
       });
       await this.bulkUpsertDocuments(documents);
+      for (const d of documents) {
+        this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Create, ...d});
+      }
     }
-    this.augur.getAugurEventEmitter().emit("ZeroXOrders", {});
   }
 
   validateOrder(order: OrderInfo): boolean {
@@ -113,25 +182,107 @@ export class ZeroXOrders extends AbstractTable {
       tradeInterval = TRADE_INTERVAL_VALUE.dividedBy(marketData.numTicks);
     }
     if (!storedOrder["numberAmount"].mod(tradeInterval).isEqualTo(0)) return false;
+
+    // expired
+    // filled their own order
+    // unapproved order (had no approvals, this is identical to filling own order from contracts pov, on 0x side looks like a fill)
+    // actual cancel
+    // a regular fill
+    if (storedOrder.numberAmount.isEqualTo(0)) {
+      console.log("Deleted order");
+      this.table.where('orderHash').equals(storedOrder.orderHash).delete();
+      this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Fill, ...storedOrder});
+      return false;
+    }
+
+    if (parseInt(storedOrder.signedOrder.expirationTimeSeconds) - moment().unix() < 60) {
+      this.table.where('orderHash').equals(storedOrder.orderHash).delete();
+      this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Cancel, ...storedOrder});
+      return false;
+    };
+    // if(storedOrder.endState == "EXPIRED" || storedOrder.endState == "CANCELLED" || storedOrder.endState == "INVALID") {
+    //   this.table.where('orderHash').equals(storedOrder.orderHash).delete();
+    //   this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Cancel, ...storedOrder});
+    //   return false;
+    // }
+    // if(storedOrder.endState == "FILLED" || storedOrder.endState == "FULLY_FILLED") {
+    //   await this.bulkUpsertDocuments([...storedOrder]);
+    //   if(storedOrder.endState == "FULLY_FILLED") {
+    //     this.table.where('orderHash').equals(storedOrder.orderHash).delete();
+    //   }
+    //   this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Fill, ...storedOrder});
+    //   return false;
+    // }
+
+      // if (storedOrder.signedOrder.makerAddress == this.account || parseInt(storedOrder.signedOrder.expirationTimeSeconds) - moment().unix() < 20) {
+        // this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Cancel, ...storedOrder});
+      // }
     return true;
   }
 
   processOrder(order: OrderInfo): StoredOrder {
     const augurOrderData = this.parseAssetData(order.signedOrder.makerAssetData);
-    const amount = order.fillableTakerAssetAmount;
-    const savedOrder = Object.assign({ signedOrder: order.signedOrder, amount: amount.toFixed(), numberAmount: amount, orderHash: order.orderHash }, augurOrderData);
-    return savedOrder;
+    // Currently the API for mesh browser and the client API diverge here but we dont want to do string parsing per order to be compliant for the browser case
+    const signedOrder = order.signedOrder;
+    return {
+      orderId: order.orderHash,
+      market: augurOrderData.market,
+      price: augurOrderData.price,
+      outcome: augurOrderData.outcome,
+      orderType: augurOrderData.orderType,
+      kycToken: augurOrderData.kycToken,
+      orderHash: order.orderHash,
+      amount: order.fillableTakerAssetAmount.toFixed(),
+      numberAmount: order.fillableTakerAssetAmount,
+      orderCreator: getAddress(signedOrder.makerAddress),
+      signedOrder: {
+        signature: signedOrder.signature,
+        senderAddress: getAddress(signedOrder.senderAddress),
+        makerAddress: getAddress(signedOrder.makerAddress),
+        takerAddress: getAddress(signedOrder.takerAddress),
+        makerFee: signedOrder.makerFee.toFixed(),
+        takerFee: signedOrder.takerFee.toFixed(),
+        makerAssetAmount: signedOrder.makerAssetAmount.toFixed(),
+        takerAssetAmount: signedOrder.takerAssetAmount.toFixed(),
+        makerAssetData: signedOrder.makerAssetData,
+        takerAssetData: signedOrder.takerAssetData,
+        salt: signedOrder.salt.toFixed(),
+        exchangeAddress: getAddress(signedOrder.exchangeAddress),
+        feeRecipientAddress: signedOrder.feeRecipientAddress,
+        expirationTimeSeconds: signedOrder.expirationTimeSeconds.toFixed(),
+      },
+    }
   }
 
   parseAssetData(assetData: string): OrderData {
-    const data = assetData.substr(2); // remove the 0x
-    return {
-      market: getAddress(`0x${data.substr(392, 40)}`),
-      price: `0x${data.substr(432, 20)}`,
-      outcome: `0x${data.substr(452, 2)}`,
-      orderType: `0x${data.substr(454, 2)}`,
-      kycToken: getAddress(`0x${data.substr(224, 40)}`),
-      exchange: getAddress(`0x${data.substr(288, 40)}`),
+    // Remove the first 10 characters because assetData is prefixed in 0x, and then contains a selector.
+    // Drop the selector and add back to 0x prefix so the AbiDecoder will treat it properly as hex.
+    const decoded = defaultAbiCoder.decode(erc1155AssetDataAbi, `0x${assetData.slice(10)}`);
+    const address = decoded[0] as string;
+    const ids = decoded[1] as BigNumber[];
+    const values = decoded[2] as BigNumber[];
+    const callbackData = decoded[3] as string;
+    const kycToken = getAddress(`0x${assetData.substr(-40, assetData.length)}`);
+
+    if (ids.length !== 1) {
+      throw new Error("More than one ID passed into 0x order");
     }
+
+    // No idea why the BigNumber instance returned here just wont serialize to hex
+    const tokenid = new BN(`${ids[0].toString()}`).toHexString().substr(2);
+    // From ZeroXTrade.sol
+    //  assembly {
+    //      _market := shr(96, and(_tokenId, 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF000000000000000000000000))
+    //      _price := shr(16,  and(_tokenId, 0x0000000000000000000000000000000000000000FFFFFFFFFFFFFFFFFFFF0000))
+    //      _outcome := shr(8, and(_tokenId, 0x000000000000000000000000000000000000000000000000000000000000FF00))
+    //      _type :=           and(_tokenId, 0x00000000000000000000000000000000000000000000000000000000000000FF)
+    //  }
+    return {
+      market: getAddress(`0x${tokenid.substr(0, 40)}`),
+      price: `0x${tokenid.substr(40, 20)}`,
+      outcome: `0x${tokenid.substr(60, 2)}`,
+      orderType: `0x${tokenid.substr(62, 2)}`,
+      kycToken,
+    };
   }
 }

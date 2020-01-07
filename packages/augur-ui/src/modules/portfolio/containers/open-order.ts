@@ -70,9 +70,9 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       text: "Cancel",
       pending: openOrder.pending || openOrder.pendingOrder,
       status: openOrder.status,
-      action: (e: Event) => {
+      action: async (e: Event) => {
         e.stopPropagation();
-        openOrder.cancelOrder(openOrder);
+        await openOrder.cancelOrder(openOrder);
       },
     },
   ];

@@ -35,11 +35,11 @@ export const loginWithFortmatic = () => async (
       windowRef.fm = fm;
 
       const accounts = await web3.currentProvider.enable();
-      const account = accounts[0];
+      const account = toChecksumAddress(accounts[0]);
 
       const accountObject = {
         address: account,
-        mixedCaseAddress: toChecksumAddress(account),
+        mixedCaseAddress: account,
         meta: {
           address: account,
           signer: provider.getSigner(),

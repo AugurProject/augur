@@ -4,7 +4,7 @@ import 'ROOT/IWarpSync.sol';
 import 'ROOT/reporting/IUniverse.sol';
 import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/reporting/IV2ReputationToken.sol';
-import 'ROOT/external/IAffiliateValidator.sol';
+import 'ROOT/reporting/IAffiliateValidator.sol';
 import 'ROOT/libraries/Initializable.sol';
 
 

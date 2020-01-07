@@ -219,7 +219,7 @@ Deploying to: ${networkConfiguration.networkName}
         mapping['BuyParticipationTokens'] = this.contracts.get('BuyParticipationTokens').address!;
         mapping['RedeemStake'] = this.contracts.get('RedeemStake').address!;
         mapping['AugurTrading'] = this.contracts.get('AugurTrading').address!;
-        mapping['ZeroXExchange'] = this.contracts.get('Exchange').address!;
+        mapping['Exchange'] = this.contracts.get('Exchange').address!;
         for (let contract of this.contracts) {
             if (/^I[A-Z].*/.test(contract.contractName)) continue;
             if (contract.contractName === 'TimeControlled') continue;

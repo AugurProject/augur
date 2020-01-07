@@ -11,6 +11,7 @@ import {
   OrderEventType,
   OrderType,
   ParsedOrderEventLog,
+  NumOutcomes,
 } from "../logs/types";
 import { ExtraInfoTemplate } from '@augurproject/artifacts';
 import { sortOptions } from "./types";
@@ -126,7 +127,7 @@ export interface MarketInfo {
   id: Address;
   universe: Address;
   marketType: string;
-  numOutcomes: number;
+  numOutcomes: NumOutcomes;
   minPrice: string;
   maxPrice: string;
   cumulativeScale: string;
@@ -266,7 +267,8 @@ export class Markets {
     t.type({ marketId: t.string }),
     t.partial({
       outcomeId: t.union([outcomeIdType, t.array(outcomeIdType)]),
-      account: t.string
+      account: t.string,
+      onChain: t.boolean, // if false or not present, use 0x orderbook
     }),
   ]);
 
@@ -473,7 +475,7 @@ export class Markets {
     // Get Market docs for all markets with the specified filters
     const numMarketDocs = await db.Markets.count();
     let marketIds: string[] = [];
-    let useMarketIds = params.search || params.categories || params.userPortfolioAddress;
+    let useMarketIds = params.search || (params.categories && params.categories.length > 0) || params.userPortfolioAddress;
     let useCreator = false;
 
     if (params.search || params.categories) {
@@ -601,10 +603,19 @@ export class Markets {
     params: t.TypeOf<typeof Markets.getMarketOrderBookParams>
   ): Promise<MarketOrderBook> {
     const account = params.account;
-    const orders = await OnChainTrading.getOrders(augur, db, {
-      marketId: params.marketId,
-      orderState: OrderState.OPEN,
-    });
+
+    let orders;
+    if (params.onChain) {
+      orders = await OnChainTrading.getOpenOnChainOrders(augur, db, {
+        marketId: params.marketId,
+        orderState: OrderState.OPEN,
+      });
+    } else {
+      orders = await OnChainTrading.getOpenOrders(augur, db, {
+        marketId: params.marketId,
+        orderState: OrderState.OPEN,
+      });
+    }
 
     const processOrders = (
       unsortedOrders: {
@@ -663,6 +674,7 @@ export class Markets {
       };
     };
 
+    // add sorting logic in here for by size
     const bucketAndSortOrdersByPrice = (unsortedOrders: {
       [orderId: string]: Order;
     },
@@ -681,7 +693,14 @@ export class Markets {
             new BigNumber(a).minus(b).toNumber()
           );
 
-      return prickKeysSorted.map(k => bucketsByPrice[k]);
+
+      var sortedOrders = prickKeysSorted.map(k => bucketsByPrice[k]);
+      for(var i = 0, size = sortedOrders.length; i < size; i++) {
+        sortedOrders[i].sort(function(a, b) {
+          return parseFloat(b.amount) - parseFloat(a.amount);
+        });
+      }
+      return sortedOrders;
     };
 
     const processMarket = (orders: Orders) => {
@@ -1083,9 +1102,9 @@ async function getMarketsInfo(
       universe: marketData.universe,
       marketType,
       numOutcomes:
-      marketData.outcomes.length > 0
+      (marketData.outcomes.length > 0
           ? marketData.outcomes.length + 1
-          : 3,
+          : 3) as NumOutcomes,
       minPrice: displayMinPrice.toString(10),
       maxPrice: displayMaxPrice.toString(10),
       cumulativeScale: cumulativeScale.toString(10),

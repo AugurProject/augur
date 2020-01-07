@@ -7,6 +7,11 @@
     "ethNodeURLs": {
         "4": "https://eth-rinkeby.alchemyapi.io/jsonrpc/Kd37_uEmJGwU6pYq6jrXaJXXi8u9IoOM"
     },
+    "meshClientURLs": {
+        "12346": "ws://localhost:60557",
+        "102": "ws://localhost:60557",
+        "42": "wss://v2.augur.net/0x-ws"
+    },
     "testAccounts": [
         "0x913da4198e6be1d5f5e4a40d0667f70c0b5430eb",
         "0xbd355a7e5a7adb23b51f54027e624bfe0e238df6",

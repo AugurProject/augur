@@ -1,7 +1,7 @@
 import { deployContracts } from '../libs/blockchain';
 import { FlashSession, FlashArguments } from './flash';
 import { createCannedMarketsAndOrders } from './create-canned-markets-and-orders';
-import { _1_ETH } from '../constants';
+import { _1_ETH, NULL_ADDRESS } from '../constants';
 import {
   Contracts as compilerOutput,
   Addresses,
@@ -29,6 +29,7 @@ import { MarketList } from '@augurproject/sdk/build/state/getter/Markets';
 import { generateTemplateValidations } from './generate-templates';
 import { spawn } from 'child_process';
 import { showTemplateByHash, validateMarketTemplate } from './template-utils';
+import { cannedMarkets } from './data/canned-markets';
 
 export function addScripts(flash: FlashSession) {
   flash.addScript({
@@ -53,17 +54,32 @@ export function addScripts(flash: FlashSession) {
         description: 'a few scripts need sdk, -u to wire up sdk',
         flag: true,
       },
+      {
+        name: 'useZeroX',
+        abbr: 'z',
+        description: 'use zeroX mesh client endpoint',
+        flag: true,
+      },
+      {
+        name: 'meshEndpoint',
+        abbr: 'x',
+        description: 'use zeroX mesh client endpoint',
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const network = (args.network as NETWORKS) || 'environment';
       const account = args.account as string;
       const useSdk = args.useSdk as boolean;
+      const useZeroX = args.useZeroX as boolean;
       if (account) flash.account = account;
       this.network = NetworkConfiguration.create(network);
       flash.provider = this.makeProvider(this.network);
       const networkId = await this.getNetworkId(flash.provider);
       flash.contractAddresses = Addresses[networkId];
-      await flash.ensureUser(this.network, useSdk);
+      const mesh = args.meshEndpoint as string || undefined;
+      const endpoint = 'ws://localhost:60557';
+      const meshEndpoint = mesh ? mesh : endpoint;
+      await flash.ensureUser(this.network, useSdk, true, null, useZeroX ? meshEndpoint : undefined, useZeroX ? true : false);
     },
   });
 
@@ -177,6 +193,7 @@ export function addScripts(flash: FlashSession) {
     ],
     async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
+      const endPoint = 'ws://localhost:60557';
       const user = await this.ensureUser();
 
       const target = String(args.target);
@@ -362,6 +379,85 @@ export function addScripts(flash: FlashSession) {
       await user.faucet(new BigNumber(10).pow(18).multipliedBy(1000000));
       await user.approve(new BigNumber(10).pow(18).multipliedBy(1000000));
       return createCannedMarketsAndOrders(user);
+    },
+  });
+
+  flash.addScript({
+    name: 'create-YesNo-zeroX-orders',
+    options: [
+      {
+        name: 'marketId',
+        abbr: 'm',
+        description: 'market to create zeroX orders on',
+      },
+      {
+        name: 'meshEndpoint',
+        abbr: 'z',
+        description: 'zeroX mesh endpoint, if not provided ws://localhost:60557 is used',
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const endpoint = 'ws://localhost:60557';
+      const market = String(args.marketId);
+      const mesh = args.meshEndpoint as string || undefined;
+      const meshEndpoint = mesh ? mesh : endpoint;
+      const user = await this.ensureUser(this.network, true, true, null, meshEndpoint, true);
+      await user.faucet(new BigNumber(10).pow(18).multipliedBy(1000000));
+      await user.approve(new BigNumber(10).pow(18).multipliedBy(1000000));
+      const yesNoMarket = cannedMarkets.find(c => c.marketType === "yesNo");
+      const orderBook = yesNoMarket.orderBook;
+      const timestamp = await this.call('get-timestamp', {});
+      const tradeGroupId = String(Date.now());
+      const oneHundredDays = 8640000;
+
+      for (let a = 0; a < Object.keys(orderBook).length; a++) {
+        const outcome = Number(Object.keys(orderBook)[a]) as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
+        const buySell = Object.values(orderBook)[a];
+
+        const { buy, sell } = buySell;
+
+        for (const { shares, price } of buy) {
+          this.log(`creating buy order, ${shares} @ ${price}`);
+          await user.placeZeroXOrder({
+            direction: 0,
+            market,
+            numTicks: new BigNumber(100),
+            numOutcomes: 3,
+            outcome,
+            tradeGroupId,
+            fingerprint: formatBytes32String('11'),
+            kycToken: NULL_ADDRESS,
+            doNotCreateOrders: false,
+            displayMinPrice: new BigNumber(0),
+            displayMaxPrice: new BigNumber(1),
+            displayAmount: new BigNumber(shares),
+            displayPrice: new BigNumber(price),
+            displayShares: new BigNumber(0),
+            expirationTime: new BigNumber(timestamp + oneHundredDays),
+          });
+        }
+
+        for (const { shares, price } of sell) {
+          this.log(`creating sell order, ${shares} @ ${price}`);
+          await user.placeZeroXOrder({
+            direction: 1,
+            market,
+            numTicks: new BigNumber(100),
+            numOutcomes: 3,
+            outcome,
+            tradeGroupId,
+            fingerprint: formatBytes32String('11'),
+            kycToken: NULL_ADDRESS,
+            doNotCreateOrders: false,
+            displayMinPrice: new BigNumber(0),
+            displayMaxPrice: new BigNumber(1),
+            displayAmount: new BigNumber(shares),
+            displayPrice: new BigNumber(price),
+            displayShares: new BigNumber(0),
+            expirationTime: new BigNumber(timestamp + oneHundredDays),
+          });
+        }
+      }
     },
   });
 
@@ -570,7 +666,7 @@ export function addScripts(flash: FlashSession) {
         removed: log.removed || false,
       }));
 
-      let parsedLogs = user.augur.events.parseLogs(logsWithBlockNumber);
+      let parsedLogs = user.augur.contractEvents.parseLogs(logsWithBlockNumber);
 
       // Logs from AugurV1 require additional calls to the blockchain.
       if (v1) {
@@ -692,7 +788,7 @@ export function addScripts(flash: FlashSession) {
   flash.addScript({
     name: 'get-timestamp',
     async call(this: FlashSession) {
-      if (this.noProvider()) return;
+      if (this.noProvider()) return 0;
       const user = await this.contractOwner();
 
       const blocktime = await user.getTimestamp();
@@ -705,6 +801,7 @@ export function addScripts(flash: FlashSession) {
           .utc()
           .toString()}\n`
       );
+      return blocktime;
     },
   });
 
@@ -1162,7 +1259,7 @@ export function addScripts(flash: FlashSession) {
       args: FlashArguments
     ): Promise<void> {
       if (this.noProvider()) return null;
-      const user = await this.ensureUser(this.network, false);
+      const user = await this.ensureUser(this.network, false, false);
 
       const result = await user.augur.contracts.gnosisSafeRegistry.getSafe_(args['target'] as string);
       console.log(result);

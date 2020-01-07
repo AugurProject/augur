@@ -1173,16 +1173,16 @@ export const LIST_VALUES = {
       label: 'ISPS Handa Vic Open',
     },
     {
-      value: 'WGC - Mexico Championship	',
-      label: 'WGC - Mexico Championship	',
+      value: 'WGC - Mexico Championship',
+      label: 'WGC - Mexico Championship',
     },
     {
       value: 'Oman Open',
       label: 'Oman Open',
     },
     {
-      value: 'Commercial Bank Qatar Masters	',
-      label: 'Commercial Bank Qatar Masters	',
+      value: 'Commercial Bank Qatar Masters',
+      label: 'Commercial Bank Qatar Masters',
     },
     {
       value: 'Magical Kenya presented by Absa',
@@ -1193,8 +1193,8 @@ export const LIST_VALUES = {
       label: 'Hero Indian Open',
     },
     {
-      value: 'WGC-Dell Technologies Match Play	',
-      label: 'WGC-Dell Technologies Match Play	',
+      value: 'WGC-Dell Technologies Match Play',
+      label: 'WGC-Dell Technologies Match Play',
     },
     {
       value: 'The Masters Tournament',
@@ -1221,16 +1221,16 @@ export const LIST_VALUES = {
       label: 'US PGA Championship',
     },
     {
-      value: 'Made in Denmark presented by FREJA	',
-      label: 'Made in Denmark presented by FREJA	',
+      value: 'Made in Denmark presented by FREJA',
+      label: 'Made in Denmark presented by FREJA',
     },
     {
-      value: 'DUBAI DUTY FREE IRISH OPEN	',
-      label: 'DUBAI DUTY FREE IRISH OPEN	',
+      value: 'DUBAI DUTY FREE IRISH OPEN',
+      label: 'DUBAI DUTY FREE IRISH OPEN',
     },
     {
-      value: 'Trophee Hassan II	',
-      label: 'Trophee Hassan II	',
+      value: 'Trophee Hassan II',
+      label: 'Trophee Hassan II',
     },
     {
       value: 'Scandinavian Invitation',
@@ -1241,8 +1241,8 @@ export const LIST_VALUES = {
       label: 'US Open',
     },
     {
-      value: 'BMW International Open	',
-      label: 'BMW International Open	',
+      value: 'BMW International Open',
+      label: 'BMW International Open',
     },
     {
       value: 'Open de France',
@@ -1261,16 +1261,16 @@ export const LIST_VALUES = {
       label: 'The Open',
     },
     {
-      value: 'Betfred British Masters hosted by Lee Westwood	',
-      label: 'Betfred British Masters hosted by Lee Westwood	',
+      value: 'Betfred British Masters hosted by Lee Westwood',
+      label: 'Betfred British Masters hosted by Lee Westwood',
     },
     {
       value: "Olympic Men's Golf Competition",
       label: "Olympic Men's Golf Competition",
     },
     {
-      value: 'UK Event Confirmed	',
-      label: 'UK Event Confirmed	',
+      value: 'UK Event Confirmed',
+      label: 'UK Event Confirmed',
     },
     {
       value: 'TBC',
@@ -1285,8 +1285,8 @@ export const LIST_VALUES = {
       label: 'Omega European Masters',
     },
     {
-      value: 'Porsche European Open	',
-      label: 'Porsche European Open	',
+      value: 'Porsche European Open',
+      label: 'Porsche European Open',
     },
     {
       value: 'BMW PGA CHAMPIONSHIP',
@@ -1309,8 +1309,8 @@ export const LIST_VALUES = {
       label: 'ITALIAN OPEN',
     },
     {
-      value: 'Mutuactivos Open de España	',
-      label: 'Mutuactivos Open de España	',
+      value: 'Mutuactivos Open de España',
+      label: 'Mutuactivos Open de España',
     },
     {
       value: 'Portugal Masters',
@@ -7927,32 +7927,32 @@ export const LIST_VALUES = {
       value: 'American Stock Exchange (traded in USD)',
     },
     {
-      label: 'Tokyo Stock Exchange (traded in Japanese Yen)',
-      value: 'Tokyo Stock Exchange (traded in Japanese Yen)',
+      label: 'Tokyo Stock Exchange (traded in JPY)',
+      value: 'Tokyo Stock Exchange (traded in JPY)',
     },
     {
-      label: 'London Stock Exchange (traded in Pound Sterling)',
-      value: 'London Stock Exchange (traded in Pound Sterling)',
+      label: 'London Stock Exchange (traded in GBP)',
+      value: 'London Stock Exchange (traded in GBP)',
     },
     {
-      label: 'Shanghai Stock Exchange (A shares traded in Yuan)',
-      value: 'Shanghai Stock Exchange (A shares traded in Yuan)',
+      label: 'Shanghai Stock Exchange (A shares traded in CNY)',
+      value: 'Shanghai Stock Exchange (A shares traded in CNY)',
     },
     {
       label: 'Shanghai Stock Exchange (B shares traded in USD)',
       value: 'Shanghai Stock Exchange (B shares traded in USD)',
     },
     {
-      label: 'Hong Kong Stock Exchange (traded in HKD Hong Kong Dollar)',
-      value: 'Hong Kong Stock Exchange (traded in HKD Hong Kong Dollar)',
+      label: 'Hong Kong Stock Exchange (traded in HKD)',
+      value: 'Hong Kong Stock Exchange (traded in HKD)',
     },
     {
-      label: 'Toronto Stock Exchange (traded in Canadian Dollar)',
-      value: 'Toronto Stock Exchange (traded in Canadian Dollar)',
+      label: 'Toronto Stock Exchange (traded in CAD)',
+      value: 'Toronto Stock Exchange (traded in CAD)',
     },
     {
-      label: 'Euronext NV (traded in Euro)',
-      value: 'Euronext NV (traded in Euro)',
+      label: 'Euronext NV (traded in EUR)',
+      value: 'Euronext NV (traded in EUR)',
     },
   ],
   BTC_USD_TRADING_VIEW_EXCHANGES: [
@@ -8125,17 +8125,17 @@ export const FIN_EXCHANGES_CLOSING_OFFSETS = {
     hour: 16,
     minutes: 0,
   },
-  'Tokyo Stock Exchange (traded in Japanese Yen)': {
+  'Tokyo Stock Exchange (traded in JPY)': {
     offset: 9,
     hour: 15,
     minutes: 0,
   },
-  'London Stock Exchange (traded in Pound Sterling)': {
+  'London Stock Exchange (traded in GBP)': {
     offset: 0,
     hour: 16,
     minutes: 30,
   },
-  'Shanghai Stock Exchange (A shares traded in Yuan)': {
+  'Shanghai Stock Exchange (A shares traded in CNY)': {
     offset: 8,
     hour: 15,
     minutes: 0,
@@ -8145,12 +8145,12 @@ export const FIN_EXCHANGES_CLOSING_OFFSETS = {
     hour: 15,
     minutes: 0,
   },
-  'Hong Kong Stock Exchange (traded in HKD Hong Kong Dollar)': {
+  'Hong Kong Stock Exchange (traded in HKD)': {
     offset: 8,
     hour: 16,
     minutes: 0,
   },
-  'Toronto Stock Exchange (traded in Canadian Dollar)': {
+  'Toronto Stock Exchange (traded in CAD)': {
     offset: -4,
     hour: 16,
     minutes: 0,

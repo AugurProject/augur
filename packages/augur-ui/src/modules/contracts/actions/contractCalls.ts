@@ -670,11 +670,13 @@ export async function approveToTrade() {
   const allowance = createBigNumber(99999999999999999999).times(
     TEN_TO_THE_EIGHTEENTH_POWER
   );
-  contracts.cash.approve(augurContract, allowance);
-  contracts.shareToken.setApprovalForAll(contracts.fillOrder.address, true);
-  contracts.shareToken.setApprovalForAll(contracts.createOrder.address, true);
-  contracts.cash.approve(contracts.fillOrder.address, allowance);
-  contracts.cash.approve(contracts.createOrder.address, allowance);
+  await Promise.all([
+    contracts.cash.approve(augurContract, allowance),
+    contracts.shareToken.setApprovalForAll(contracts.fillOrder.address, true),
+    contracts.shareToken.setApprovalForAll(contracts.createOrder.address, true),
+    contracts.cash.approve(contracts.fillOrder.address, allowance),
+    contracts.cash.approve(contracts.createOrder.address, allowance),
+   ]);
 }
 
 export async function getAllowance(account: string): Promise<BigNumber> {
@@ -693,6 +695,16 @@ export async function cancelOpenOrders(orderIds: string[]) {
 export async function cancelOpenOrder(orderId: string) {
   const { contracts } = augurSdk.get();
   return contracts.cancelOrder.cancelOrder(orderId);
+}
+
+export async function cancelZeroXOpenOrder(orderId: string) {
+  const Augur = augurSdk.get();
+  return Augur.cancelOrder(orderId);
+}
+
+export async function cancelZeroXOpenBatchOrders(orderIds: string[]) {
+  const Augur = augurSdk.get();
+  return Augur.batchCancelOrders(orderIds);
 }
 
 interface MarketLiquidityOrder extends LiquidityOrder {

@@ -1,4 +1,5 @@
 import { utils as ethersUtils } from "ethers";
+import { OrderEventType as LogOrderEventType } from "./state/logs/types";
 import { BigNumber } from "bignumber.js";
 
 export const NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
@@ -92,7 +93,7 @@ export const TRADE_GAS_BUFFER = new BigNumber("100000", 10);
 
 export const MAX_FILLS_PER_TX = new BigNumber("3", 10);
 
-export const MAX_GAS_LIMIT_FOR_TRADE = new BigNumber("3500000", 10);
+export const MAX_GAS_LIMIT_FOR_TRADE = new BigNumber("4500000", 10);
 
 export const PLACE_ORDER_NO_SHARES = {
   2: new BigNumber("547694", 10),
@@ -176,7 +177,8 @@ export enum MarketReportingState {
 }
 
 export enum OrderEventType {
-  Create = 0,
-  Cancel = 1,
-  Fill = 2,
+  Create = LogOrderEventType.Create,
+  Cancel = LogOrderEventType.Cancel,
+  Fill   = LogOrderEventType.Fill,
+  Expire = 3
 }

@@ -486,9 +486,9 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
         IERC20 _kycToken = storedContracts.orders.getKYCToken(_orderId);
         require(_kycToken == IERC20(0) || _kycToken.balanceOf(_filler) > 0, "FillOrder.fillOrder: KYC token failure");
         Trade.Data memory _tradeData = Trade.create(storedContracts, _orderId, _filler, _amountFillerWants, _fingerprint);
-        uint256 _result = fillOrderInternal(_filler, _tradeData, _amountFillerWants, _tradeGroupId);
+        (uint256 _amountRemaining, uint256 _fees) = fillOrderInternal(_filler, _tradeData, _amountFillerWants, _tradeGroupId);
         _tradeData.contracts.market.assertBalances();
-        return _result;
+        return _amountRemaining;
     }
 
     function fillOrder(address _filler, bytes32 _orderId, uint256 _amountFillerWants, bytes32 _tradeGroupId, bytes32 _fingerprint) external returns (uint256) {
@@ -496,10 +496,11 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
         IERC20 _kycToken = storedContracts.orders.getKYCToken(_orderId);
         require(_kycToken == IERC20(0) || _kycToken.balanceOf(_filler) > 0, "FillOrder.fillOrder: KYC token failure");
         Trade.Data memory _tradeData = Trade.create(storedContracts, _orderId, _filler, _amountFillerWants, _fingerprint);
-        return fillOrderInternal(_filler, _tradeData, _amountFillerWants, _tradeGroupId);
+        (uint256 _amountRemaining, uint256 _fees) = fillOrderInternal(_filler, _tradeData, _amountFillerWants, _tradeGroupId);
+        return _amountRemaining;
     }
 
-    function fillZeroXOrder(IMarket _market, uint256 _outcome, IERC20 _kycToken, uint256 _price, Order.Types _orderType, uint256 _amount, address _creator, bytes32 _tradeGroupId, bytes32 _fingerprint, address _filler) external returns (uint256) {
+    function fillZeroXOrder(IMarket _market, uint256 _outcome, IERC20 _kycToken, uint256 _price, Order.Types _orderType, address _creator, uint256 _amount, bytes32 _fingerprint, bytes32 _tradeGroupId, address _filler) external returns (uint256 _amountRemaining, uint256 _fees) {
         require(msg.sender == zeroXTrade);
         require(augur.isKnownMarket(_market));
         require(_kycToken == IERC20(0) || _kycToken.balanceOf(_filler) > 0, "FillOrder.fillOrder: KYC token failure");
@@ -508,7 +509,8 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
         return fillOrderInternal(_filler, _tradeData, _amount, _tradeGroupId);
     }
 
-    function fillOrderInternal(address _filler, Trade.Data memory _tradeData, uint256 _amountFillerWants, bytes32 _tradeGroupId) internal nonReentrant returns (uint256) {
+
+    function fillOrderInternal(address _filler, Trade.Data memory _tradeData, uint256 _amountFillerWants, bytes32 _tradeGroupId) internal nonReentrant returns (uint256 _amountRemainingFillerWants, uint256 _totalFees) {
         uint256 _marketCreatorFees;
         uint256 _reporterFees;
 
@@ -524,9 +526,11 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
         if (_tradeData.order.orderId != bytes32(0)) {
             _tradeData.contracts.orders.recordFillOrder(_tradeData.order.orderId, _tradeData.getMakerSharesDepleted(), _tradeData.getMakerTokensDepleted(), _amountFilled);
         }
-        logOrderFilled(_tradeData, _tradeData.order.sharePriceLong, _marketCreatorFees.add(_reporterFees), _amountFilled, _tradeGroupId);
+        _totalFees = _marketCreatorFees.add(_reporterFees);
+        if (_tradeData.order.orderId != bytes32(0)) {
+            logOrderFilled(_tradeData, _tradeData.order.sharePriceLong, _totalFees, _amountFilled, _tradeGroupId);
+        }
         logAndUpdateVolume(_tradeData);
-        uint256 _totalFees = _marketCreatorFees.add(_reporterFees);
         if (_totalFees > 0) {
             uint256 _longFees = _totalFees.mul(_tradeData.order.sharePriceLong).div(_tradeData.contracts.market.getNumTicks());
             uint256 _shortFees = _totalFees.sub(_longFees);
@@ -538,7 +542,7 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
             _tradeData.contracts.profitLoss.recordFrozenFundChange(_tradeData.contracts.universe, _tradeData.contracts.market, _tradeData.creator.participantAddress, _tradeData.order.outcome, -int256(_tokensRefunded));
         }
 
-        return _amountRemainingFillerWants;
+        return (_amountRemainingFillerWants, _totalFees);
     }
 
     function sellCompleteSets(Trade.Data memory _tradeData) internal returns (bool) {
@@ -566,23 +570,6 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
     }
 
     function logOrderFilled(Trade.Data memory _tradeData, uint256 _price, uint256 _fees, uint256 _amountFilled, bytes32 _tradeGroupId) private returns (bool) {
-        if (_tradeData.order.orderId == bytes32(0)) {
-            address[] memory _addressData = new address[](3);
-            uint256[] memory _uint256Data = new uint256[](10);
-            Order.Types _orderType = _tradeData.creator.direction == Trade.Direction.Long ? Order.Types.Bid : Order.Types.Ask;
-            _addressData[0] = address(_tradeData.order.kycToken);
-            _addressData[1] = _tradeData.creator.participantAddress;
-            _addressData[2] = _tradeData.filler.participantAddress;
-            _uint256Data[0] = _price;
-            _uint256Data[1] = 0;
-            _uint256Data[2] = _tradeData.order.outcome;
-            _uint256Data[5] = _fees;
-            _uint256Data[6] = _amountFilled;
-            _uint256Data[8] = 0;
-            _uint256Data[9] = 0;
-            _tradeData.contracts.augurTrading.logZeroXOrderFilled(_tradeData.contracts.universe, _tradeData.contracts.market, _tradeGroupId, uint8(_orderType), _addressData, _uint256Data);
-            return true;
-        }
         _tradeData.contracts.augurTrading.logOrderFilled(_tradeData.contracts.universe, _tradeData.creator.participantAddress, _tradeData.filler.participantAddress, _price, _fees, _amountFilled, _tradeData.order.orderId, _tradeGroupId);
         return true;
     }
@@ -609,8 +596,9 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
     }
 
     function updateProfitLoss(Trade.Data memory _tradeData, uint256 _amountFilled) private returns (bool) {
-        uint256 _numLongTokens = _tradeData.creator.direction == Trade.Direction.Long ? 0 : _tradeData.getFillerTokensDepleted();
-        uint256 _numShortTokens = _tradeData.creator.direction == Trade.Direction.Short ? 0 : _tradeData.getFillerTokensDepleted();
+        uint256 makerTokensDepleted = _tradeData.order.orderId != bytes32(0) ? 0 : _tradeData.getMakerTokensDepleted();
+        uint256 _numLongTokens = _tradeData.creator.direction == Trade.Direction.Long ? makerTokensDepleted : _tradeData.getFillerTokensDepleted();
+        uint256 _numShortTokens = _tradeData.creator.direction == Trade.Direction.Short ? makerTokensDepleted : _tradeData.getFillerTokensDepleted();
         uint256 _numLongShares = _tradeData.creator.direction == Trade.Direction.Long ? _tradeData.getMakerSharesDepleted() : _tradeData.getFillerSharesDepleted();
         uint256 _numShortShares = _tradeData.creator.direction == Trade.Direction.Short ? _tradeData.getMakerSharesDepleted() : _tradeData.getFillerSharesDepleted();
         _tradeData.contracts.profitLoss.recordTrade(_tradeData.contracts.universe, _tradeData.contracts.market, _tradeData.getLongShareBuyerDestination(), _tradeData.getShortShareBuyerDestination(), _tradeData.order.outcome, int256(_amountFilled), int256(_tradeData.order.sharePriceLong), _numLongTokens, _numShortTokens, _numLongShares, _numShortShares);

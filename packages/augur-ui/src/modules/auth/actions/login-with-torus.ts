@@ -44,10 +44,10 @@ export const loginWithTorus = () => async (
       windowRef.torus = torus;
 
       const accounts = await web3.eth.getAccounts();
-      const account = accounts[0];
+      const account = toChecksumAddress(accounts[0]);
       accountObject = {
         address: account,
-        mixedCaseAddress: toChecksumAddress(account),
+        mixedCaseAddress: account,
         meta: {
           address: account,
           email: null,

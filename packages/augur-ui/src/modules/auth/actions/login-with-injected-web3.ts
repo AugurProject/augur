@@ -13,6 +13,7 @@ import { IS_LOGGED, updateAuthStatus } from 'modules/auth/actions/auth-status';
 import { augurSdk } from 'services/augursdk';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { closeModal } from 'modules/modal/actions/close-modal';
+import { logout } from 'modules/auth/actions/logout';
 
 // MetaMask, dapper, Mobile wallets
 export const loginWithInjectedWeb3 = () => (dispatch: ThunkDispatch<void, any, Action>) => {
@@ -44,9 +45,11 @@ export const loginWithInjectedWeb3 = () => (dispatch: ThunkDispatch<void, any, A
   if (windowRef.ethereum && windowRef.ethereum.on) {
     windowRef.ethereum.on('accountsChanged', function(accounts) {
       console.log('refershing account to', accounts[0]);
+      dispatch(logout());
       success(accounts[0], true);
     });
   }
+
 
   return windowRef.ethereum
     .enable()
@@ -59,12 +62,12 @@ const login = (account: string) => (
 ) => {
   const provider = new Web3Provider(window.web3.currentProvider);
   const networkId = window.web3.currentProvider.networkVersion;
-
+  const address = toChecksumAddress(account);
   const accountObject = {
-    address: account,
-    mixedCaseAddress: toChecksumAddress(account),
+    address: address,
+    mixedCaseAddress: address,
     meta: {
-      address: account,
+      address: address,
       signer: provider.getSigner(),
       email: null,
       profileImage: null,

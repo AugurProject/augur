@@ -14,10 +14,10 @@ def signOrder(orderHash, private_key, signaturePostFix="03"):
     v, r, s = ecsign(sha3("\x19Ethereum Signed Message:\n32".encode('utf-8') + orderHash), key)
     return "0x" + v.to_bytes(1, "big").hex() + (zpad(bytearray_to_bytestr(int_to_32bytearray(r)), 32) + zpad(bytearray_to_bytestr(int_to_32bytearray(s)), 32)).hex() + signaturePostFix
 
-def test_trade_1155_behavior(contractsFixture, cash, market, categoricalMarket, universe):
+def test_trade_1155_behavior(contractsFixture, augur, cash, market, categoricalMarket, universe):
     ZeroXTrade = contractsFixture.contracts['ZeroXTrade']
     shareToken = contractsFixture.contracts['ShareToken']
-    shareToken = contractsFixture.contracts['ShareToken']
+    fillOrder = contractsFixture.contracts['FillOrder']
 
     account = contractsFixture.accounts[0]
     account2 = contractsFixture.accounts[1]
@@ -127,6 +127,11 @@ def test_trade_1155_behavior(contractsFixture, cash, market, categoricalMarket, 
     (marketAccount1Balance, marketAccount2Balance) = ZeroXTrade.balanceOfBatch([account, account2], [marketTokenId, catMarketTokenId])
     assert marketAccount1Balance == floor(accountCash / askPrice)
     assert marketAccount2Balance == 10 + floor(account2Cash / askPrice)
+
+    # The balances take into account the approval of cash
+    cash.approve(fillOrder.address, 500, sender=account2)
+    assert ZeroXTrade.balanceOf(account2, marketTokenId) == 10 + floor(500 / askPrice)
+    assert ZeroXTrade.balanceOf(account2, catMarketTokenId) == 10 + floor(500 / askPrice)
 
 def test_basic_trading(contractsFixture, cash, market, universe):
     ZeroXTrade = contractsFixture.contracts['ZeroXTrade']
@@ -243,6 +248,7 @@ def test_one_bid_on_books_buy_full_order(withSelf, contractsFixture, cash, marke
     # fill signed order
     orderEventLog = {
 	    "eventType": 2,
+        "orderId": orderHash,
 	    "addressData": [nullAddress, contractsFixture.accounts[2] if withSelf else contractsFixture.accounts[1] , contractsFixture.accounts[2]],
 	    "uint256Data": [60, 0, YES, 0, 0, 0, fix(2),  contractsFixture.contracts['Time'].getTimestamp(), 0, 0],
     }
@@ -258,7 +264,7 @@ def test_one_bid_on_books_buy_full_order(withSelf, contractsFixture, cash, marke
         assert shareToken.balanceOfMarketOutcome(market.address, YES, sender) == fix(2)
         assert shareToken.balanceOfMarketOutcome(market.address, NO, contractsFixture.accounts[2]) == fix(2)
     else:
-        assert ZeroXTrade.trade(fix(2), longTo32Bytes(11), tradeGroupID, orders, signatures, sender=contractsFixture.accounts[2], value=150000) == fix(2)
+        assert ZeroXTrade.trade(fix(2), longTo32Bytes(11), tradeGroupID, orders, signatures, sender=contractsFixture.accounts[2], value=150000) == 0
 
 def test_one_bid_on_books_buy_partial_order(contractsFixture, cash, market):
     ZeroXTrade = contractsFixture.contracts['ZeroXTrade']
@@ -276,6 +282,7 @@ def test_one_bid_on_books_buy_partial_order(contractsFixture, cash, market):
     # fill signed order
     orderEventLog = {
 	    "eventType": 2,
+        "orderId": orderHash,
 	    "addressData": [nullAddress, contractsFixture.accounts[1], contractsFixture.accounts[2]],
 	    "uint256Data": [60, 0, YES, 0, 0, 0, fix(1),  contractsFixture.contracts['Time'].getTimestamp(), 0, 0],
     }
@@ -820,18 +827,38 @@ def test_gnosis_safe_trade(contractsFixture, augur, cash, market, universe, gnos
     orders = [rawZeroXOrderData]
     signatures = [signature]
 
-    # Lets take the order as another user and confirm assets are traded
+    # Lets take the order as another user also using a gnosis safe and confirm assets are traded
+    saltNonce = 43
+    senderAccount = contractsFixture.accounts[1]
+    gnosisSafeData2 = gnosisSafeMaster.setup_encode([senderAccount], 1, gnosisSafeRegistry.address, gnosisSafeRegistryData, nullAddress, nullAddress, 0, nullAddress)
+    gnosisSafeAddress2 = proxyFactory.createProxyWithNonce(gnosisSafeMaster.address, gnosisSafeData2, saltNonce)
+
+    gnosisSafe2 = contractsFixture.applySignature("GnosisSafe", gnosisSafeAddress2)
+
     assert cash.faucet(fix(1, 60))
     assert cash.transfer(gnosisSafeAddress, fix(1, 60))
-    assert cash.faucet(fix(1, 40), sender=contractsFixture.accounts[1])
+    assert cash.faucet(fix(1, 40))
+    assert cash.transfer(gnosisSafeAddress2, fix(1, 40))
+
     with TokenDelta(cash, -fix(1, 60), gnosisSafeAddress, "Tester 0 cash not taken"):
-        with TokenDelta(cash, -fix(1, 40), contractsFixture.accounts[1], "Tester 1 cash not taken"):
+        with TokenDelta(cash, -fix(1, 40), gnosisSafeAddress2, "Tester 1 cash not taken"):
             with PrintGasUsed(contractsFixture, "ZeroXTrade.trade", 0):
-                amountRemaining = ZeroXTrade.trade(fillAmount, fingerprint, tradeGroupId, orders, signatures, sender=contractsFixture.accounts[1], value=150000)
-                assert amountRemaining == 0
+                nonce = gnosisSafe2.nonce()
+                tradeData = ZeroXTrade.trade_encode(fillAmount, fingerprint, tradeGroupId, orders, signatures)
+                tradeTxHash = gnosisSafe2.getTransactionHash(ZeroXTrade.address, 150000, tradeData, 0, 2000000, 75000, 1, nullAddress, nullAddress, nonce)
+                key = normalize_key(contractsFixture.privateKeys[1].to_hex())
+                v, r, s = ecsign(sha3("\x19Ethereum Signed Message:\n32".encode('utf-8') + tradeTxHash), key)
+                v += 4
+                bytesv = v.to_bytes(1, "big").hex()
+                bytesr = zpad(bytearray_to_bytestr(int_to_32bytearray(r)), 32).hex()
+                bytess = zpad(bytearray_to_bytestr(int_to_32bytearray(s)), 32).hex()
+
+                gnosisSignatures = "0x" + bytesr + bytess + bytesv
+                contractsFixture.sendEth(account, gnosisSafeAddress2, 10**20)
+                gnosisSafe2.execTransaction(ZeroXTrade.address, 150000, tradeData, 0, 2000000, 75000, 1, nullAddress, nullAddress, gnosisSignatures)
 
     yesShareTokenBalance = shareToken.balanceOfMarketOutcome(market.address, YES, gnosisSafeAddress)
-    noShareTokenBalance = shareToken.balanceOfMarketOutcome(market.address, NO, contractsFixture.accounts[1])
+    noShareTokenBalance = shareToken.balanceOfMarketOutcome(market.address, NO, gnosisSafeAddress2)
     assert yesShareTokenBalance == fix(1)
     assert noShareTokenBalance == fix(1)
 

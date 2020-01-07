@@ -1,19 +1,19 @@
-import { sortOptions } from "./types";
 import { DB } from "../db/DB";
 import * as _ from "lodash";
 import {
   Augur,
   convertOnChainAmountToDisplayAmount,
   convertOnChainPriceToDisplayPrice,
-  numTicksToTickSize,
+  numTicksToTickSize
 } from "../../index";
 import { BigNumber } from "bignumber.js";
 import { Getter } from "./Router";
-import { OrderState, Order } from "./OnChainTrading";
+import { getMarkets, Order, OrderState } from "./OnChainTrading";
 import { StoredOrder } from "../db/ZeroXOrders";
-import Dexie from 'dexie'
-
+import Dexie from "dexie";
 import * as t from "io-ts";
+import { getAddress } from "ethers/utils/address";
+import { MarketData } from "../logs/types";
 
 export interface ZeroXOrder extends Order {
   expirationTimeSeconds: BigNumber;
@@ -23,6 +23,14 @@ export interface ZeroXOrder extends Order {
   makerAssetData: string;
   takerAssetData: string;
   signature: string;
+  makerFeeAssetData: string;
+  takerFeeAssetData: string;
+  feeRecipientAddress: string;
+  takerAddress: string;
+  makerAddress: string;
+  senderAddress: string;
+  makerFee: string;
+  takerFee: string;
 }
 
 export interface ZeroXOrders {
@@ -45,8 +53,24 @@ export const ZeroXOrdersParams = t.partial({
   ignoreOrders: t.array(t.string),
 });
 
+export const ZeroXOrderParams = t.type({
+  orderHash: t.string,
+});
+
 export class ZeroXOrdersGetters {
   static GetZeroXOrdersParams = ZeroXOrdersParams;
+  static GetZeroXOrderParams = ZeroXOrderParams;
+
+  @Getter('GetZeroXOrderParams')
+  static async getZeroXOrder(
+    augur: Augur,
+    db: DB,
+    params: t.TypeOf<typeof ZeroXOrdersGetters.GetZeroXOrderParams>
+  ): Promise<ZeroXOrder> {
+    const storedOrder: StoredOrder = await db.ZeroXOrders.where('orderHash').equals(params.orderHash).last();
+    const markets = await getMarkets([storedOrder.market], db, false);
+    return ZeroXOrdersGetters.storedOrderToZeroXOrder(markets, storedOrder);
+  }
 
   // TODO: Split this into a getter for orderbooks and a getter to get matching orders
   // TODO: When getting an orderbook for a specific market if the Database has not finished syncing we should just pull the orderbook from mesh directly
@@ -56,91 +80,144 @@ export class ZeroXOrdersGetters {
     db: DB,
     params: t.TypeOf<typeof ZeroXOrdersGetters.GetZeroXOrdersParams>
   ): Promise<ZeroXOrders> {
-    if (!params.marketId) {
-      throw new Error("'getOrders' requires 'marketId' param be provided");
+
+    if (!params.marketId && !params.account) {
+      throw new Error("'getOrders' requires 'marketId' or 'account' param be provided");
     }
 
-    const outcome = params.outcome ? `0x0${params.outcome.toString()}` : undefined;
-    const orderType = params.orderType ? `0x0${params.orderType}` : undefined;
+    const outcome = params.outcome
+      ? `0x0${params.outcome.toString()}`
+      : null;
+    const orderType = params.orderType ? `0x0${params.orderType}` : null;
+    const account = params.account ? getAddress(params.account) : null;
 
-    let currentOrdersResponse;
-    if (typeof outcome === 'undefined' || typeof orderType === 'undefined') {
-      currentOrdersResponse = await db.ZeroXOrders.where('[market+outcome+orderType]').between(
-        [params.marketId, Dexie.minKey, Dexie.minKey],
-        [params.marketId, Dexie.maxKey, Dexie.maxKey],
-      ).toArray();
+    let storedOrders: StoredOrder[];
+    if (!params.marketId && account) {
+      storedOrders = await db.ZeroXOrders.where({orderCreator: account})
+        .toArray();
+    } else if (!outcome || !orderType) {
+      storedOrders = await db.ZeroXOrders.where(
+        '[market+outcome+orderType]'
+      )
+        .between(
+          [params.marketId, Dexie.minKey, Dexie.minKey],
+          [params.marketId, Dexie.maxKey, Dexie.maxKey]
+        )
+        .and(order => {
+          return !account || order.orderCreator === account;
+        })
+        .toArray();
     } else {
-      currentOrdersResponse = await db.ZeroXOrders.where('[market+outcome+orderType]').equals([
-        params.marketId,
-        outcome,
-        orderType
-      ]).toArray();
+      storedOrders = await db.ZeroXOrders.where('[market+outcome+orderType]')
+        .equals([params.marketId, outcome, orderType])
+        .and(order => !account || order.orderCreator === account)
+        .toArray();
     }
 
     if (params.matchPrice) {
-      if (!params.orderType) throw new Error("Cannot specify match price without order type");
+      if (!params.orderType) throw new Error('Cannot specify match price without order type');
+
       const price = new BigNumber(params.matchPrice, 16);
-      currentOrdersResponse = _.filter((currentOrdersResponse), (storedOrder) => {
+      storedOrders = _.filter(storedOrders, storedOrder => {
         // 0 == "buy"
         const orderPrice = new BigNumber(storedOrder.price, 16);
-        return params.orderType == "0" ? orderPrice.lte(price) : orderPrice.gte(price);
+        return params.orderType == '0' ? orderPrice.gte(price) : orderPrice.lte(price);
       });
     }
 
-    const marketDoc = await (await db).Markets.get(params.marketId);
-    if (!marketDoc) return {};
+    const marketIds: string[] = await storedOrders
+      .reduce((ids, order) => Array.from(new Set([...ids, order.market])), []);
+    const markets = await getMarkets(marketIds, db, false);
 
-    return currentOrdersResponse.reduce(
-      (orders: ZeroXOrders, order: StoredOrder) => {
-        const orderId = order["_id"];
-        if (params.ignoreOrders && _.includes(params.ignoreOrders, orderId)) return orders;
-        const minPrice = new BigNumber(marketDoc.prices[0]);
-        const maxPrice = new BigNumber(marketDoc.prices[1]);
-        const numTicks = new BigNumber(marketDoc.numTicks);
-        const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
-        const amount = convertOnChainAmountToDisplayAmount(
-          new BigNumber(order.amount),
-          tickSize
-        ).toString(10);
-        const amountFilled = convertOnChainAmountToDisplayAmount(
-          (new BigNumber(order.signedOrder.takerAssetAmount)).minus(new BigNumber(order.amount)),
-          tickSize
-        ).toString(10);
-        const price = convertOnChainPriceToDisplayPrice(
-          new BigNumber(order.price, 16),
-          minPrice,
-          tickSize
-        ).toString(10);
-        const outcome = new BigNumber(order.outcome).toNumber();
-        const orderType = new BigNumber(order.orderType).toNumber();
-        let orderState = OrderState.OPEN;
-        if (!orders[params.marketId]) orders[params.marketId] = {};
-        if (!orders[params.marketId][outcome]) orders[params.marketId][outcome] = {};
-        if (!orders[params.marketId][outcome][orderType]) {
-          orders[params.marketId][outcome][orderType] = {};
-        }
-        orders[params.marketId][outcome][orderType][orderId] = {
-          owner: order.signedOrder.makerAddress,
-          orderState,
-          orderId,
-          price,
-          amount,
-          kycToken: order.kycToken,
-          amountFilled,
-          expirationTimeSeconds: order.signedOrder.expirationTimeSeconds,
-          fullPrecisionPrice: price,
-          fullPrecisionAmount: amount,
-          originalFullPrecisionAmount: "0",
-          makerAssetAmount: order.signedOrder.makerAssetAmount,
-          takerAssetAmount: order.signedOrder.takerAssetAmount,
-          salt: order.signedOrder.salt,
-          makerAssetData: order.signedOrder.makerAssetData,
-          takerAssetData: order.signedOrder.takerAssetData,
-          signature: order.signedOrder.signature
-        } as ZeroXOrder;
-        return orders;
-      },
-      {} as ZeroXOrders
-    );
+    return ZeroXOrdersGetters.mapStoredToZeroXOrders(markets, storedOrders, params.ignoreOrders || []);
+  }
+
+  static mapStoredToZeroXOrders(markets: _.Dictionary<MarketData>, storedOrders: StoredOrder[], ignoredOrderIds: string[]): ZeroXOrders {
+    let orders = storedOrders.map((storedOrder) => {
+      return {
+        storedOrder,
+        zeroXOrder: ZeroXOrdersGetters.storedOrderToZeroXOrder(markets, storedOrder)
+      }
+    });
+    // Remove orders somehow belonging to unknown markets
+    orders = orders.filter((order) => order.zeroXOrder !== null);
+    // Remove intentionally ignored orders.
+    orders = orders.filter((order) => ignoredOrderIds.indexOf(order.zeroXOrder.orderId) === -1);
+    // Shape orders into market-order-type tree.
+    return orders.reduce((orders: ZeroXOrders, order): ZeroXOrders => {
+      const { storedOrder, zeroXOrder } = order;
+      const { market } = storedOrder;
+      const { orderId } = zeroXOrder;
+      const outcome = new BigNumber(storedOrder.outcome).toNumber();
+      const orderType = new BigNumber(storedOrder.orderType).toNumber();
+
+      if (!orders[market]) {
+        orders[market] = {};
+      }
+      if (!orders[market][outcome]) {
+        orders[market][outcome] = {};
+      }
+      if (!orders[market][outcome][orderType]) {
+        orders[market][outcome][orderType] = {};
+      }
+
+      orders[market][outcome][orderType][orderId] = zeroXOrder;
+      return orders;
+    }, {} as ZeroXOrders)
+  }
+
+  static storedOrderToZeroXOrder(markets: _.Dictionary<MarketData>, storedOrder: StoredOrder): ZeroXOrder {
+    const market = markets[storedOrder.market];
+    if (!market) {
+      return null; // cannot convert orders unaffiliated with any known market
+    }
+
+    const minPrice = new BigNumber(market.prices[0]);
+    const maxPrice = new BigNumber(market.prices[1]);
+    const numTicks = new BigNumber(market.numTicks);
+    const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
+    const amount = convertOnChainAmountToDisplayAmount(
+      new BigNumber(storedOrder.amount),
+      tickSize
+    ).toString(10);
+    const amountFilled = convertOnChainAmountToDisplayAmount(
+      new BigNumber(storedOrder.signedOrder.takerAssetAmount).minus(
+        new BigNumber(storedOrder.amount)
+      ),
+      tickSize
+    ).toString(10);
+    const price = convertOnChainPriceToDisplayPrice(
+      new BigNumber(storedOrder.price, 16),
+      minPrice,
+      tickSize
+    ).toString(10);
+
+    return {
+      owner: storedOrder.signedOrder.makerAddress,
+      orderState: OrderState.OPEN,
+      orderId: storedOrder['_id'] || storedOrder.orderHash,
+      price,
+      amount,
+      kycToken: storedOrder.kycToken,
+      amountFilled,
+      expirationTimeSeconds: new BigNumber(storedOrder.signedOrder.expirationTimeSeconds),
+      fullPrecisionPrice: price,
+      fullPrecisionAmount: amount,
+      originalFullPrecisionAmount: '0',
+      makerAssetAmount: new BigNumber(storedOrder.signedOrder.makerAssetAmount),
+      takerAssetAmount: new BigNumber(storedOrder.signedOrder.takerAssetAmount),
+      salt: new BigNumber(storedOrder.signedOrder.salt),
+      makerAssetData: storedOrder.signedOrder.makerAssetData,
+      takerAssetData: storedOrder.signedOrder.takerAssetData,
+      signature: storedOrder.signedOrder.signature,
+      makerFeeAssetData: '0x',
+      takerFeeAssetData: '0x',
+      feeRecipientAddress: storedOrder.signedOrder.feeRecipientAddress,
+      takerAddress: storedOrder.signedOrder.takerAddress,
+      makerAddress: storedOrder.signedOrder.makerAddress,
+      senderAddress: storedOrder.signedOrder.senderAddress,
+      makerFee: storedOrder.signedOrder.makerFee,
+      takerFee: storedOrder.signedOrder.takerFee,
+    } as ZeroXOrder ; // TODO this is hiding some missing properties
   }
 }

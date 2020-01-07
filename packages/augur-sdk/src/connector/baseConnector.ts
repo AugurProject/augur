@@ -14,10 +14,10 @@ export abstract class BaseConnector {
   abstract async on(eventName: SubscriptionEventName | string, callback: Callback): Promise<void>;
   abstract async off(eventName: SubscriptionEventName | string): Promise<void>;
 
-  protected callbackWrapper<T extends SubscriptionType>(callback: Callback): (...args: SubscriptionType[]) => void {
+  protected callbackWrapper<T extends SubscriptionType>(eventName: string, callback: Callback): (...args: SubscriptionType[]) => void {
     return (...args: T[]): void => {
       args.map((arg: object) => {
-        const t = {} as SubscriptionType;
+        const t = {eventName} as SubscriptionType;
         Object.assign(t, arg);
         callback(t);
       });

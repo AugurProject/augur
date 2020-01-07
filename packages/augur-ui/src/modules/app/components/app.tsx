@@ -40,6 +40,7 @@ import ForkingBanner from 'modules/reporting/containers/forking-banner';
 import parseQuery from 'modules/routes/helpers/parse-query';
 import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names';
 import makePath from 'modules/routes/helpers/make-path';
+import { ExternalLinkText } from 'modules/common/buttons';
 
 interface AppProps {
   blockchain: Blockchain;
@@ -180,6 +181,14 @@ export default class AppView extends Component<AppProps> {
     this.checkIsMobile();
   }
 
+  compomentWillUnmount() {
+    window.addEventListener('click', e => {
+      updateConnectionTray(false);
+      updateHelpMenuState(false);
+    });
+    window.removeEventListener('resize', this.handleWindowResize);
+  }
+
   componentDidUpdate(prevProps: AppProps) {
     const {
       isMobile,
@@ -298,7 +307,7 @@ export default class AppView extends Component<AppProps> {
       icon = <MobileNavHamburgerIcon />;
     } else {
       if (menuState === MOBILE_MENU_STATES.FIRSTMENU_OPEN) {
-        icon = <MobileNavHamburgerIcon />;
+        icon = null;
       } else {
         icon = <MobileNavCloseIcon />;
       }
@@ -458,6 +467,17 @@ export default class AppView extends Component<AppProps> {
                 role="presentation"
                 id={'mainContent'}
               >
+
+                {!isLogged &&
+                  <div className={Styles.BettingUI}>
+                    <ExternalLinkText
+                      title={'Betting Exchange App'}
+                      label={' - Coming Soon!'}
+                      URL={'https://augur.net'}
+                    />
+                  </div>
+                }
+
                 <ForkingBanner />
 
                 <Routes isLogged={isLogged || restoredAccount} />

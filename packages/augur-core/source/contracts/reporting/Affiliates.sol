@@ -1,6 +1,7 @@
 pragma solidity 0.5.10;
 
-import 'ROOT/external/IAffiliateValidator.sol';
+import 'ROOT/reporting/IAffiliateValidator.sol';
+import 'ROOT/reporting/AffiliateValidator.sol';
 
 
 contract Affiliates {
@@ -10,9 +11,15 @@ contract Affiliates {
     // Maps an account to the referral account. Used to apply affiliate fees on settlement.
     mapping (address => address) public referrals;
 
-    uint256 constant internal AFFILIATE_VALIDATOR_GAS = 30000;
+    // Mapping of valid Affiliate Validators
+    mapping (address => bool) public affiliateValidators;
 
-    bytes4 constant internal AFFILIATE_VALIDATOR_SELECTOR = bytes4(keccak256("validateReference(address,address)"));
+    function createAffiliateValidator() public returns (AffiliateValidator) {
+        AffiliateValidator _affiliateValidator = new AffiliateValidator();
+        _affiliateValidator.transferOwnership(msg.sender);
+        affiliateValidators[address(_affiliateValidator)] = true;
+        return _affiliateValidator;
+    }
 
     function setFingerprint(bytes32 _fingerprint) external {
         fingerprints[msg.sender] = _fingerprint;
@@ -36,7 +43,7 @@ contract Affiliates {
         return referrals[_account];
     }
 
-    function getAndValidateReferrer(address _account, IAffiliateValidator _affiliateValidator) external returns (address) {
+    function getAndValidateReferrer(address _account, IAffiliateValidator _affiliateValidator) external view returns (address) {
         address _referrer = referrals[_account];
         if (_referrer == address(0) || _account == _referrer) {
             return address(0);
@@ -44,14 +51,7 @@ contract Affiliates {
         if (_affiliateValidator == IAffiliateValidator(0)) {
             return _referrer;
         }
-        // We call and limit gas here so that a malicious market maker cannot specify a malicious affiliate validator. It will simply turn off affiliate validation
-        (bool _success,) = address(_affiliateValidator).call.gas(AFFILIATE_VALIDATOR_GAS)(
-            abi.encodeWithSelector(
-                AFFILIATE_VALIDATOR_SELECTOR,
-                _account,
-                _referrer
-            )
-        );
+        bool _success = _affiliateValidator.validateReference(_account, _referrer);
         if (!_success) {
             return address(0);
         }

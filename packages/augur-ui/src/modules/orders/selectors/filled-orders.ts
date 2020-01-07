@@ -1,6 +1,6 @@
 import store from "store";
 import { createBigNumber } from "utils/create-big-number";
-import { BUY, SELL } from "modules/common/constants";
+import { BUY, SELL, ZERO } from "modules/common/constants";
 import { convertUnixToFormattedDate } from "utils/format-date";
 import {
   selectMarketInfosState,
@@ -100,6 +100,12 @@ function findOrders(
         );
         // amount has been format-number'ed
         foundOrder.amount = createBigNumber(foundOrder.amount).plus(amountBN);
+        foundOrder.price = foundOrder.trades
+          .reduce(
+            (p, t) => p.plus(createBigNumber(t.price).times(t.amount)),
+            ZERO
+          )
+          .div(foundOrder.amount)
         foundOrder.trades
           .sort((a, b) => b.logIndex - a.logIndex)
           .sort((a, b) => b.timestamp.timestamp - a.timestamp.timestamp);

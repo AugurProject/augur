@@ -72,7 +72,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
     // solhint-disable-next-line var-name-mixedcase
     bytes32 public EIP712_DOMAIN_HASH;
 
-    IAugur augur;
+    IAugurTrading public augurTrading;
     IFillOrder public fillOrder;
     ICash public cash;
     IShareToken public shareToken;
@@ -80,7 +80,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
 
     function initialize(IAugur _augur, IAugurTrading _augurTrading) public beforeInitialized {
         endInitialization();
-        augur = _augur;
+        augurTrading = _augurTrading;
         cash = ICash(_augur.lookup("Cash"));
         require(cash != ICash(0));
         shareToken = IShareToken(_augur.lookup("ShareToken"));
@@ -159,14 +159,16 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
 
         uint256 _attoSharesOwned = shareToken.lowestBalanceOfMarketOutcomes(_market, _shortOutcomes, _owner);
 
-        uint256 _attoSharesPurchasable = cash.balanceOf(_owner).div(_price);
+        uint256 _availableCash = cash.allowance(_owner, address(fillOrder)).min(cash.balanceOf(_owner));
+        uint256 _attoSharesPurchasable = _availableCash.div(_price);
 
         return _attoSharesOwned.add(_attoSharesPurchasable);
     }
 
     function askBalance(address _owner, IMarket _market, uint8 _outcome, uint256 _price) public view returns (uint256) {
         uint256 _attoSharesOwned = shareToken.balanceOfMarketOutcome(_market, _outcome, _owner);
-        uint256 _attoSharesPurchasable = cash.balanceOf(_owner).div(_market.getNumTicks().sub(_price));
+        uint256 _availableCash = cash.allowance(_owner, address(fillOrder)).min(cash.balanceOf(_owner));
+        uint256 _attoSharesPurchasable = _availableCash.div(_market.getNumTicks().sub(_price));
 
         return _attoSharesOwned.add(_attoSharesPurchasable);
     }
@@ -244,7 +246,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         transferFromAllowed = false;
 
         if (address(this).balance > 0) {
-            msg.sender.transfer(address(this).balance);
+            msg.sender.call.value(address(this).balance);
         }
 
         return _fillAmountRemaining;
@@ -262,7 +264,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         require(_zeroXTradeTokenMaker == this);
     }
 
-    function doTrade(IExchange.Order memory _order, uint256 _amount, bytes32 _fingerprint, bytes32 _tradeGroupId, address _taker) private returns (uint256) {
+    function doTrade(IExchange.Order memory _order, uint256 _amount, bytes32 _fingerprint, bytes32 _tradeGroupId, address _taker) private returns (uint256 _amountFilled) {
         // parseOrderData will validate that the token being traded is the leigitmate one for the market
         AugurOrderData memory _augurOrderData = parseOrderData(_order);
         // If the signed order creator doesnt have enough funds we still want to continue and take their order out of the list
@@ -270,12 +272,32 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         if (!creatorHasFundsForTrade(_order, _amount)) {
             return 0;
         }
-        // If the maker is also the taker we also just skip the trade
+        // If the maker is also the taker we also just skip the trade but treat it as filled for amount remaining purposes
         if (_order.makerAddress == _taker) {
-            return 0;
+            return _amount;
         }
-        uint256 _amountRemaining = fillOrder.fillZeroXOrder(IMarket(_augurOrderData.marketAddress), _augurOrderData.outcome, IERC20(_augurOrderData.kycToken), _augurOrderData.price, Order.Types(_augurOrderData.orderType), _amount, _order.makerAddress, _tradeGroupId, _fingerprint, _taker);
-        return _amount.sub(_amountRemaining);
+        (uint256 _amountRemaining, uint256 _fees) = fillOrder.fillZeroXOrder(IMarket(_augurOrderData.marketAddress), _augurOrderData.outcome, IERC20(_augurOrderData.kycToken), _augurOrderData.price, Order.Types(_augurOrderData.orderType), _order.makerAddress, _amount, _fingerprint, _tradeGroupId, _taker);
+        _amountFilled = _amount.sub(_amountRemaining);
+        logOrderFilled(_order, _augurOrderData, _taker, _tradeGroupId, _amountFilled, _fees);
+        return _amountFilled;
+    }
+
+    function logOrderFilled(IExchange.Order memory _order, AugurOrderData memory _augurOrderData, address _taker, bytes32 _tradeGroupId, uint256 _amountFilled, uint256 _fees) private {
+        bytes32 _orderHash = exchange.getOrderInfo(_order).orderHash;
+        address[] memory _addressData = new address[](3);
+        uint256[] memory _uint256Data = new uint256[](10);
+        Order.Types _orderType = Order.Types(_augurOrderData.orderType);
+        _addressData[0] = _augurOrderData.kycToken;
+        _addressData[1] = _order.makerAddress;
+        _addressData[2] = _taker;
+        _uint256Data[0] = _augurOrderData.price;
+        _uint256Data[1] = 0;
+        _uint256Data[2] = _augurOrderData.outcome;
+        _uint256Data[5] = _fees;
+        _uint256Data[6] = _amountFilled;
+        _uint256Data[8] = 0;
+        _uint256Data[9] = 0;
+        augurTrading.logZeroXOrderFilled(IMarket(_augurOrderData.marketAddress).getUniverse(), IMarket(_augurOrderData.marketAddress), _orderHash, _tradeGroupId, uint8(_orderType), _addressData, _uint256Data);
     }
 
     function creatorHasFundsForTrade(IExchange.Order memory _order, uint256 _amount) public view returns (bool) {
