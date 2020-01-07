@@ -396,8 +396,6 @@ function dateNoWeekendHoliday(
   dateDependencies: DateDependencies[],
   closingDateDependencies: DateInputDependencies[]
 ) {
-  console.log(closingDateDependencies);
-
   if (!dateDependencies) return true;
   const deps = dateDependencies.filter(d => d.noWeekendHolidays);
   const result = deps.reduce((p, d) => {
@@ -539,8 +537,8 @@ export const isTemplateMarket = (
       template.hash
     ] as TemplateValidation;
     if (!!!validation) {
-      //errors.push('no validation found for hash');
-      //return false;
+      errors.push('no validation found for hash');
+      return false;
     }
 
     // check market title/question matches built template question
