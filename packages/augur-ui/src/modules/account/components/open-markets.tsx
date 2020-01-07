@@ -35,7 +35,6 @@ export default class OpenMarkets extends Component<OpenMarketsProps> {
         showState={false}
         rightContent={
           <MovementLabel
-            showColors
             showBrackets
             showPercent
             showIcon
@@ -52,7 +51,6 @@ export default class OpenMarkets extends Component<OpenMarketsProps> {
               <div key={position.outcomeId}>
                 <span>{position.outcomeName}</span>
                 <MovementLabel
-                  showColors
                   showPercent
                   showBrackets
                   showIcon
@@ -85,7 +83,6 @@ export default class OpenMarkets extends Component<OpenMarketsProps> {
             <div>
               <span>24hr</span>
               <MovementLabel
-                showColors
                 showPercent
                 showIcon
                 showPlusMinus

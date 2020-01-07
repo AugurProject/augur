@@ -97,7 +97,6 @@ export default class Positions extends Component<PositionsProps, PositionsState>
           <MovementLabel
             showPercent
             showPlusMinus
-            showColors
             showBrackets
             size={SizeTypes.SMALL}
             value={market.myPositionsSummary && market.myPositionsSummary.totalPercent.formatted}

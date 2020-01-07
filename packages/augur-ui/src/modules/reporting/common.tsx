@@ -940,7 +940,6 @@ const AllTimeProfitLoss = (props: AllTimeProfitLossProps) => (
         size={SizeTypes.SMALL}
       />
       <MovementLabel
-        showColors
         size={SizeTypes.SMALL}
         showPlusMinus
         showPercent

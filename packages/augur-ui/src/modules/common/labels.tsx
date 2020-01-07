@@ -55,7 +55,6 @@ export interface MovementLabelProps {
   value: number;
   size: SizeTypes;
   styles?: object;
-  showColors?: boolean;
   showIcon?: boolean;
   showBrackets?: boolean;
   showPercent?: boolean;
@@ -72,7 +71,6 @@ export interface MovementIconProps {
 export interface MovementTextProps {
   value: number;
   size: SizeTypes;
-  showColors: boolean;
   showBrackets: boolean;
   showPercent: boolean;
   showPlusMinus: boolean;
@@ -109,7 +107,6 @@ export interface LinearPropertyLabelPercentMovementProps {
   value: string;
   accentValue?: boolean;
   numberValue: number;
-  showColors?: boolean;
   showIcon?: boolean;
   showBrackets?: boolean;
   showPercent?: boolean;
@@ -875,7 +872,7 @@ export const MovementText = (props: MovementTextProps) => {
 
   return (
     <div
-      className={`${props.showColors ? textColorStyle : ''} ${textSizeStyle}`}
+      className={`${textColorStyle} ${textSizeStyle}`}
     >
       {`${props.showNegative && props.value < 0 ? '-' : ''}${
         !!props.showCurrency ? props.showCurrency : ''
@@ -888,7 +885,6 @@ export const MovementLabel = ({
   value,
   styles,
   size,
-  showColors = false,
   showPercent = false,
   showBrackets = false,
   showPlusMinus = false,
@@ -911,7 +907,6 @@ export const MovementLabel = ({
       <MovementText
         value={value}
         size={size}
-        showColors={showColors}
         showPercent={showPercent}
         showBrackets={showBrackets}
         showPlusMinus={showPlusMinus}

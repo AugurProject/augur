@@ -7,7 +7,7 @@ import {
   LinearPropertyLabel,
   LinearPropertyLabelMovement,
 } from 'modules/common/labels';
-import { CoreStats } from 'modules/types';
+import { SizeTypes, CoreStats } from 'modules/types';
 import Styles from 'modules/app/components/top-bar.styles.less';
 import { Link } from 'react-router-dom';
 import makePath from 'modules/routes/helpers/make-path';
@@ -57,7 +57,12 @@ const TopBar: React.FC<TopBarProps> = ({
           </div>
           <div>
             <span>{realizedPL.label}</span>
-            <MovementLabel showColors value={realizedPL.value} size='normal' showNegative showCurrency="$" />
+            <MovementLabel
+              value={realizedPL.value.value}
+              size={SizeTypes.NORMAL}
+              showNegative
+              showCurrency="$"
+            />
           </div>
         </div>
       )}

@@ -108,7 +108,6 @@ function selectColumn(columnType: string, properties: Properties) {
           showPercent={properties.showPercent}
           showBrackets={properties.showBrackets}
           showPlusMinus={properties.showPlusMinus}
-          showColors={properties.showColors}
           size={properties.size}
           value={properties.value}
         />
