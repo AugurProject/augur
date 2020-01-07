@@ -254,7 +254,7 @@ div.ReportingSubheaders {
   width: 100%;
   max-width: 480px;
 
-  @media @breakpoint-mobile-new {
+  @media @breakpoint-max-tablet {
     max-width: unset;
   }
 }
@@ -298,6 +298,7 @@ div.ReportingSubheaders {
     z-index: @default-z-index;
     display: flex;
     align-items: center;
+    justify-content: center;
     height: calc(100% - @size-8);
 
     @media @breakpoint-mobile {
