@@ -29,7 +29,7 @@ import { MarketList } from '@augurproject/sdk/build/state/getter/Markets';
 import { generateTemplateValidations } from './generate-templates';
 import { spawn } from 'child_process';
 import { showTemplateByHash, validateMarketTemplate } from './template-utils';
-import { cannedMarkets } from './data/canned-markets';
+import { cannedMarkets, singleOutcomeAsks, singleOutcomeBids } from './data/canned-markets';
 
 export function addScripts(flash: FlashSession) {
   flash.addScript({
@@ -411,6 +411,119 @@ export function addScripts(flash: FlashSession) {
       const oneHundredDays = 8640000;
 
       for (let a = 0; a < Object.keys(orderBook).length; a++) {
+        const outcome = Number(Object.keys(orderBook)[a]) as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
+        const buySell = Object.values(orderBook)[a];
+
+        const { buy, sell } = buySell;
+
+        for (const { shares, price } of buy) {
+          this.log(`creating buy order, ${shares} @ ${price}`);
+          await user.placeZeroXOrder({
+            direction: 0,
+            market,
+            numTicks: new BigNumber(100),
+            numOutcomes: 3,
+            outcome,
+            tradeGroupId,
+            fingerprint: formatBytes32String('11'),
+            kycToken: NULL_ADDRESS,
+            doNotCreateOrders: false,
+            displayMinPrice: new BigNumber(0),
+            displayMaxPrice: new BigNumber(1),
+            displayAmount: new BigNumber(shares),
+            displayPrice: new BigNumber(price),
+            displayShares: new BigNumber(0),
+            expirationTime: new BigNumber(timestamp + oneHundredDays),
+          });
+        }
+
+        for (const { shares, price } of sell) {
+          this.log(`creating sell order, ${shares} @ ${price}`);
+          await user.placeZeroXOrder({
+            direction: 1,
+            market,
+            numTicks: new BigNumber(100),
+            numOutcomes: 3,
+            outcome,
+            tradeGroupId,
+            fingerprint: formatBytes32String('11'),
+            kycToken: NULL_ADDRESS,
+            doNotCreateOrders: false,
+            displayMinPrice: new BigNumber(0),
+            displayMaxPrice: new BigNumber(1),
+            displayAmount: new BigNumber(shares),
+            displayPrice: new BigNumber(price),
+            displayShares: new BigNumber(0),
+            expirationTime: new BigNumber(timestamp + oneHundredDays),
+          });
+        }
+      }
+    },
+  });
+
+  flash.addScript({
+    name: 'create-Cat-zeroX-orders',
+    options: [
+      {
+        name: 'marketId',
+        abbr: 'm',
+        description: 'market to create zeroX orders on',
+      },
+      {
+        name: 'numOutcomes',
+        abbr: 'o',
+        description: 'number of outcomes the market has',
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const endpoint = 'ws://localhost:60557';
+      const market = String(args.marketId);
+      const numOutcomes = Number(args.numOutcomes);
+      const mesh = args.meshEndpoint as string || undefined;
+      const meshEndpoint = mesh ? mesh : endpoint;
+      const user = await this.ensureUser(this.network, true, true, null, meshEndpoint, true);
+      await user.faucet(new BigNumber(10).pow(18).multipliedBy(1000000));
+      await user.approve(new BigNumber(10).pow(18).multipliedBy(1000000));
+      const orderBook = {
+        0: {
+          buy: singleOutcomeBids,
+          sell: singleOutcomeAsks,
+        },
+        1: {
+          buy: singleOutcomeBids,
+          sell: singleOutcomeAsks,
+        },
+        2: {
+          buy: singleOutcomeBids,
+          sell: singleOutcomeAsks,
+        },
+        3: {
+          buy: singleOutcomeBids,
+          sell: singleOutcomeAsks,
+        },
+        4: {
+          buy: singleOutcomeBids,
+          sell: singleOutcomeAsks,
+        },
+        5: {
+          buy: singleOutcomeBids,
+          sell: singleOutcomeAsks,
+        },
+        6: {
+          buy: singleOutcomeBids,
+          sell: singleOutcomeAsks,
+        },
+        7: {
+          buy: singleOutcomeBids,
+          sell: singleOutcomeAsks,
+        },
+      };
+
+      const timestamp = await this.call('get-timestamp', {});
+      const tradeGroupId = String(Date.now());
+      const oneHundredDays = 8640000;
+
+      for (let a = 0; a < numOutcomes; a++) {
         const outcome = Number(Object.keys(orderBook)[a]) as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
         const buySell = Object.values(orderBook)[a];
 
