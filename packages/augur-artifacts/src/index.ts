@@ -66,12 +66,13 @@ export interface ContractAddresses {
     ZeroXTrade?: string;
     Affiliates?: string;
     AffiliateValidator?: string;
+    ProfitLoss?: string;
+
     // 0x
     //   The 0x contract names must be what 0x mesh expects.
     ERC20Proxy?: string;
     ERC721Proxy?: string;
     ERC1155Proxy?: string;
-    ProfitLoss?: string;
     Exchange?: string; // ZeroXExchange
     Coordinator?: string; // ZeroXCoordinator
     DevUtils?: string;
