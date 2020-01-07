@@ -86,8 +86,6 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       showPercent: true,
       showBrackets: true,
       showPlusMinus: true,
-      showColors: true,
-      size: SizeTypes.NORMAL,
       hide: extendedView,
       columnType: COLUMN_TYPES.MOVEMENT_LABEL,
       value: position.totalPercent.roundedFormatted,

@@ -26,7 +26,6 @@ const PositionExpandedContent = (props: PositionExpandedContentProps) => {
           showPercent
           showBrackets
           showPlusMinus
-          showColors
           useFull
           useValueLabel
           label="Total Returns"
@@ -38,7 +37,6 @@ const PositionExpandedContent = (props: PositionExpandedContentProps) => {
           showPercent
           showBrackets
           showPlusMinus
-          showColors
           useFull
           useValueLabel
           label="Realized P/L"
@@ -50,7 +48,6 @@ const PositionExpandedContent = (props: PositionExpandedContentProps) => {
           showPercent
           showBrackets
           showPlusMinus
-          showColors
           useFull
           useValueLabel
           label="Unrealized P/L"

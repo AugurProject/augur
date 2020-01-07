@@ -172,7 +172,6 @@ export default class OverviewChart extends React.Component<
             showPlusMinus
             showBrackets
             value={profitLossChange}
-            size={SizeTypes.NORMAL}
           />
           <h4>{profitLossValue}</h4>
           {isLoading && (

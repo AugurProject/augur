@@ -884,7 +884,7 @@ export const MovementText = (props: MovementTextProps) => {
 export const MovementLabel = ({
   value,
   styles,
-  size,
+  size = SizeTypes.NORMAL,
   showPercent = false,
   showBrackets = false,
   showPlusMinus = false,
@@ -973,7 +973,6 @@ export const LinearPropertyLabelMovement = (
       showPercent={props.showPercent}
       showBrackets={props.showBrackets}
       showPlusMinus={props.showPlusMinus}
-      showColors={props.showColors}
       size={SizeTypes.NORMAL}
       value={props.numberValue}
     />
