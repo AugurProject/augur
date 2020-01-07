@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactTooltip from 'react-tooltip';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 
@@ -9,8 +10,9 @@ import { LogoutIcon } from 'modules/common/icons';
 import { NavMenuItem } from 'modules/types';
 import Styles from 'modules/app/components/side-nav/side-nav.styles.less';
 import HelpResources from 'modules/app/containers/help-resources';
-import { SecondaryButton, PrimaryButton } from 'modules/common/buttons';
-import { Chevron } from 'modules/common/icons';
+import { SecondaryButton } from 'modules/common/buttons';
+import TooltipStyles from 'modules/common/tooltip.styles.less';
+import { helpIcon, Chevron } from 'modules/common/icons';
 
 interface SideNavProps {
   defaultMobileClick: Function;
@@ -78,10 +80,39 @@ const SideNav = ({
             ))}
 
             <div>
-              {showMigrateRepButton && <PrimaryButton
-                text='Migrate V1 to V2 REP'
-                action={() => migrateV1Rep()}
-              />}
+              {showMigrateRepButton && (
+                <span className={Styles.SideNavMigrateRep}>
+                  <SecondaryButton
+                    text='Migrate V1 to V2 REP'
+                    action={() => migrateV1Rep()}
+                  />
+                </span>
+              )}
+
+              {showMigrateRepButton && (
+                <span>
+                  <label
+                    className={classNames(Styles.SideNavMigrateTooltipHint)}
+                    data-tip
+                    data-for={'migrateRep'}
+                  >
+                    {helpIcon}
+                  </label>
+                  <ReactTooltip
+                    id={'migrateRep'}
+                    className={TooltipStyles.Tooltip}
+                    effect="solid"
+                    place="top"
+                    type="light"
+                  >
+                    <p>
+                      {
+                        'You have V1 REP in your wallet. Migrate it to V2 REP to use it in Augur V2'
+                      }
+                    </p>
+                  </ReactTooltip>
+                </span>
+              )}
             </div>
           </ul>
 

@@ -49,6 +49,34 @@
   }
 }
 
+.SideNavMigrateRep {
+  button {
+    .mono-10-bold;
+    text-transform: uppercase;
+  }
+}
+
+.SideNavMigrateTooltipHint {
+  display: inline;
+  position: relative;
+  top: 0.2rem;
+  left: 0.3rem;
+
+  > svg {
+    max-height: @size-16;
+    max-width: @size-16;
+
+    > circle {
+      fill: @color-secondary-action;
+      stroke: @color-secondary-action-outline;
+    }
+
+    > path {
+      fill: @color-primary-text;
+    }
+  }
+}
+
 .SideNav__container {
   background: @color-module-background;
   position: absolute;
