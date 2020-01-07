@@ -19,10 +19,17 @@ const mapDispatchToProps = (dispatch) => ({
     )
 });
 
+const mergeProps = (sP: any, dP: any, oP: any) => ({
+  ...oP,
+  ...sP,
+  ...dP,
+});
+
 const MarketRowContainer = withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps,
+    mergeProps,
   )(MarketRow),
 );
 

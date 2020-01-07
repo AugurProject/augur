@@ -33,6 +33,7 @@ export default class OpenMarkets extends Component<OpenMarketsProps> {
         key={"position_" + market.id}
         market={marketsObj[market.id]}
         showState={false}
+        addedClass={Styles.OpenMarketsRow}
         rightContent={
           <MovementLabel
             showColors
@@ -70,7 +71,7 @@ export default class OpenMarkets extends Component<OpenMarketsProps> {
 
   render() {
     const { markets, totalPercentage, toggle} = this.props;
-
+    console.log(totalPercentage);
     return (
       <FilterSwitchBox
         filterLabel="markets"
@@ -88,9 +89,10 @@ export default class OpenMarkets extends Component<OpenMarketsProps> {
                 showColors
                 showPercent
                 showIcon
+                showBrackets
                 showPlusMinus
                 value={Number(totalPercentage)}
-                size={SizeTypes.LARGE}
+                size={SizeTypes.SMALL}
               />
             </div>
           </div>
