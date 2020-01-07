@@ -57,5 +57,5 @@ export const selectCurrentTimestampInSeconds = createSelector(
 
 export const selectLoginAccountAddress = createSelector(
   selectLoginAccountState,
-  loginAccount => loginAccount.address
+  loginAccount => loginAccount.mixedCaseAddress
 );

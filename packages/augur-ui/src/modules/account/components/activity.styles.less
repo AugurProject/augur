@@ -2,36 +2,35 @@
 
 .Activity {
   align-items: center;
+  background: @color-table-header;
   border-radius: @border-radius-default;
-  border-top: 1px solid @color-dark-grey;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  margin: 0 @size-24;
-  padding-top: @size-24;
+  padding-top: @size-16;
 
-  @media @breakpoint-mobile-mid {
-    border-top: 1px solid @color-module-background;
-    margin: 0;
+  > h4 {
+    .mono-12-bold;
 
-    > div:first-of-type { 
-      max-width: unset;
-    }
-  }
-
-  > span {
-    .mono-11-bold;
-
-    margin-bottom: @size-20;
+    color: @color-secondary-text;
     text-transform: uppercase;
   }
 
-  > div:first-of-type {
-    margin-bottom: @size-24;
-    max-width: 300px;
-  }
+  > div[class*="LinearPropertyLabel"] {
+    align-items: baseline;
+    min-width: 269px;
+    max-width: 80%;
+    margin: @size-24 auto @size-8;
 
-  > ul {
-    margin-bottom: @size-24;
+    > span:first-of-type {
+      .mono-10-bold;
+
+      color: @color-secondary-text;
+    }
+
+    > span {
+      .mono-12-medium;
+
+      color: @color-primary-text;
+    }
   }
 }

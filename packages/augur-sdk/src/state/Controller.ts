@@ -21,7 +21,7 @@ export class Controller {
     private db: Promise<DB>,
     private blockAndLogStreamerListener: BlockAndLogStreamerListenerInterface
   ) {
-    this.events = new Subscriptions(augur.getAugurEventEmitter());
+    this.events = new Subscriptions(augur.events);
   }
 
   async run(): Promise<void> {
@@ -56,7 +56,7 @@ export class Controller {
       marketIds: logMarketIds
     });
 
-    this.augur.getAugurEventEmitter().emit(SubscriptionEventName.MarketsUpdated,  {
+    this.augur.events.emit(SubscriptionEventName.MarketsUpdated,  {
       marketsInfo
     });
   };
@@ -74,7 +74,7 @@ export class Controller {
     const percentSynced = ((lowestBlock / block.number) * 100).toFixed(4);
 
     const timestamp = await this.augur.getTimestamp();
-    this.augur.getAugurEventEmitter().emit(SubscriptionEventName.NewBlock, {
+    this.augur.events.emit(SubscriptionEventName.NewBlock, {
       eventName: SubscriptionEventName.NewBlock,
       highestAvailableBlockNumber: block.number,
       lastSyncedBlockNumber: lowestBlock,

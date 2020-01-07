@@ -91,12 +91,12 @@ export class SyncableDB extends RollbackTable {
       return -1;
     }
 
-    if (this.eventName === SubscriptionEventName.OrderEvent) {
-      this.parseLogArrays(logs);
-    }
-
     let documents;
     if (logs.length > 0) {
+      if (this.eventName === SubscriptionEventName.OrderEvent) {
+        this.parseLogArrays(logs);
+      }
+
       // If this is a table which is keyed by fields (meaning we are doing updates to a value instead of pulling in a history of events) we only want the most recent document for any given id
       if (this.idFields.length > 0) {
         documents = _.values(
@@ -124,7 +124,7 @@ export class SyncableDB extends RollbackTable {
     }
     if (documents && (documents as any[]).length) {
       _.each(documents, (document: any) => {
-        this.augur.getAugurEventEmitter().emit(this.eventName, {
+        this.augur.events.emit(this.eventName, {
           eventName: this.eventName,
           ...document,
         });
@@ -137,7 +137,7 @@ export class SyncableDB extends RollbackTable {
   };
 
   protected async getLogs(augur: Augur, startBlock: number, endBlock: number): Promise<ParsedLog[]> {
-    return augur.events.getLogs(this.eventName, startBlock, endBlock);
+    return augur.contractEvents.getLogs(this.eventName, startBlock, endBlock);
   }
 
   getFullEventName(): string {

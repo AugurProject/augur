@@ -1271,3 +1271,5 @@ export const TUTORIAL_TRADING_HISTORY = {
     createTrade('20Nov 2019', 78, '6', 0.12, '02:23:21', SELL),
   ],
 };
+
+export const DISCORD_LINK = 'https://discord.gg/wWMumZr';

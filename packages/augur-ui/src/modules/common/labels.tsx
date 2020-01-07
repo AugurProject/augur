@@ -28,6 +28,7 @@ import {
   SCALAR,
   CATEGORICAL,
   REPORTING_STATE,
+  DISCORD_LINK,
 } from 'modules/common/constants';
 import { ViewTransactionDetailsButton } from 'modules/common/buttons';
 import { formatNumber } from 'utils/format-number';
@@ -629,7 +630,7 @@ export const LinearPropertyLabel = ({
         })}
       >
         {value && value.formatted
-          ? `${showDenomination ? value.full : value.formatted}`
+          ? `${showDenomination || useFull ? value.full : value.formatted}`
           : value}
       </span>
     )}
@@ -642,7 +643,7 @@ export const LinearPropertyLabel = ({
         })}
       >
         {value && value.formatted
-          ? `${showDenomination ? value.full : value.formatted}`
+          ? `${showDenomination || useFull ? value.full : value.formatted}`
           : value}
       </span>
     )}
@@ -883,40 +884,43 @@ export const MovementText = (props: MovementTextProps) => {
   );
 };
 
-export const MovementLabel = (props: MovementLabelProps) => {
-  const showColors = props.showColors || false; // Red/Green
-  const showPercent = props.showPercent || false; // 0.00%
-  const showBrackets = props.showBrackets || false; // (0.00)
-  const showPlusMinus = props.showPlusMinus || false; // +4.32 / -0.32
-  const showIcon = props.showIcon || false; // 📈 3.2 / 📉 2.1
-
-  return (
-    <div
-      className={Styles.MovementLabel}
-      style={
-        showIcon
-          ? { ...props.styles, justifyContent: 'space-between' }
-          : { ...props.styles, justifyContent: 'flex-end' }
-      }
-    >
-      {showIcon && props.value !== 0 && (
-        <MovementIcon value={props.value} size={props.size} />
-      )}
-      {
-        <MovementText
-          value={props.value}
-          size={props.size}
-          showColors={showColors}
-          showPercent={showPercent}
-          showBrackets={showBrackets}
-          showPlusMinus={showPlusMinus}
-          showCurrency={props.showCurrency}
-          showNegative={props.showNegative}
-        />
-      }
-    </div>
-  );
-};
+export const MovementLabel = ({
+  value,
+  styles,
+  size,
+  showColors = false,
+  showPercent = false,
+  showBrackets = false,
+  showPlusMinus = false,
+  showIcon = false,
+  showCurrency,
+  showNegative
+}: MovementLabelProps) => (
+  <div
+    className={Styles.MovementLabel}
+    style={
+      showIcon
+        ? { ...styles, justifyContent: 'space-between' }
+        : { ...styles, justifyContent: 'flex-end' }
+    }
+  >
+    {showIcon && value !== 0 && (
+      <MovementIcon value={value} size={size} />
+    )}
+    {
+      <MovementText
+        value={value}
+        size={size}
+        showColors={showColors}
+        showPercent={showPercent}
+        showBrackets={showBrackets}
+        showPlusMinus={showPlusMinus}
+        showCurrency={showCurrency}
+        showNegative={showNegative}
+      />
+    }
+  </div>
+);
 
 export const PillLabel = ({ label, hideOnMobile }: PillLabelProps) => (
   <span
@@ -1159,5 +1163,11 @@ export const MarketStateLabel = (props: MarketStateLabelProps) => (
         <span>{LoadingEllipse}</span>
       </div>
     )}
+  </div>
+);
+
+export const DiscordLink = () => (
+  <div className={Styles.discordLink}>
+    If the issue persists please report it on <a href={DISCORD_LINK} target='_blank'>Discord</a>
   </div>
 );

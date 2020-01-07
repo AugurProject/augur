@@ -17,6 +17,7 @@ import { Augur } from '../Augur';
 import { Address } from '../state/logs/types';
 
 export const AUGUR_GNOSIS_SAFE_NONCE = 872838000000;
+let intervalId = null;
 
 export interface CreateGnosisSafeViaRelayParams {
   owner: string;
@@ -51,8 +52,8 @@ export class Gnosis {
     // TODO this currently doesn't work - using setInterval as workaround - see #4809
     // Check safe status on new block. Possible to wait for a transfer event to show up in the DB if this is problematic.
     augur
-      .getAugurEventEmitter()
-      .on(SubscriptionEventName.NewBlock, this.onNewBlock);
+      .events
+      .on(SubscriptionEventName.NewBlock, this.onNewBlock.bind(this));
 
     this.provider.storeAbiData(abi.GnosisSafe as Abi, 'GnosisSafe');
     this.provider.storeAbiData(abi.ProxyFactory as Abi, 'ProxyFactory');
@@ -76,6 +77,9 @@ export class Gnosis {
         if (signerAddress === s.owner) {
           this.augur.setGnosisSafeAddress(ethUtil.toChecksumAddress(s.safe));
           this.augur.setUseGnosisSafe(true);
+          if (intervalId) {
+            clearInterval(intervalId);
+          }
         }
       }
 
@@ -105,7 +109,7 @@ export class Gnosis {
       }
 
       this.augur
-        .getAugurEventEmitter()
+        .events
         .emit(SubscriptionEventName.GnosisSafeStatus, {
           ...s,
           status,
@@ -131,12 +135,20 @@ export class Gnosis {
     const safe = await this.getGnosisSafeAddress(owner);
     if (ethersUtils.getAddress(safe) !== ethersUtils.getAddress(NULL_ADDRESS)) {
       this.augur
-        .getAugurEventEmitter()
+        .events
         .emit(SubscriptionEventName.GnosisSafeStatus, {
           status: GnosisSafeState.AVAILABLE,
           safe,
           owner,
         });
+
+      this.safesToCheck.push({
+        status: GnosisSafeState.AVAILABLE,
+        owner,
+        safe: ethUtil.toChecksumAddress(safe),
+      });
+
+      await this.onNewBlock();
 
       this.augur.setGnosisStatus(GnosisSafeState.AVAILABLE);
       return safe;
@@ -146,8 +158,8 @@ export class Gnosis {
     if (typeof params === 'object') {
       const safe = await this.calculateGnosisSafeAddress(owner, params.payment);
       const status = await this.getGnosisSafeDeploymentStatusViaRelay(params);
-
       this.augur.setGnosisStatus(status.status);
+
 
       // Normalize addresses
       if (ethUtil.toChecksumAddress(safe) !== ethUtil.toChecksumAddress(params.safe)) {
@@ -165,12 +177,16 @@ export class Gnosis {
             owner,
             safe: ethUtil.toChecksumAddress(safe),
           });
+
+          intervalId = setInterval(() => {
+            this.onNewBlock();
+          }, 1000);
         }
 
         return params;
       } else if (status.status === GnosisSafeState.CREATED) {
         this.augur
-          .getAugurEventEmitter()
+          .events
           .emit(SubscriptionEventName.GnosisSafeStatus, {
             status: GnosisSafeState.CREATED,
             safe: params.safe,
@@ -180,16 +196,34 @@ export class Gnosis {
       }
     }
 
+    try {
+      const result: SafeResponse = await this.createGnosisSafeViaRelay({
+        owner,
+        paymentToken: this.augur.contracts.cash.address,
+      }) as SafeResponse;
 
-    const result: SafeResponse = await this.createGnosisSafeViaRelay({
-      owner,
-      paymentToken: this.augur.contracts.cash.address,
-    }) as SafeResponse;
+      return {
+        ...result,
+        owner,
+      };
+    } catch(error) {
+      if (error.exception && error.exception.indexOf('SafeAlreadyExistsException') === 0) {
+        const restoredAddress = error.exception.match(/0x[a-fA-F0-9]{40}/)[0];
 
-    return {
-      ...result,
-      owner,
-    };
+        this.safesToCheck.push({
+          status: GnosisSafeState.WAITING_FOR_FUNDS,
+          owner,
+          safe: ethUtil.toChecksumAddress(restoredAddress),
+        });
+
+        intervalId = setInterval(() => {
+          this.onNewBlock();
+        }, 1000);
+
+        return restoredAddress
+      }
+      throw error;
+    }
   }
 
   /**
@@ -275,36 +309,38 @@ export class Gnosis {
 
     const setupData = await this.buildRegistrationData();
 
-      const response = await this.gnosisRelay.createSafe({
-        saltNonce: AUGUR_GNOSIS_SAFE_NONCE,
-        owners: [params.owner],
-        threshold: 1,
-        paymentToken: params.paymentToken,
-        to: gnosisSafeRegistryAddress,
-        setupData,
-        callback: gnosisSafeRegistryAddress
-      });
+    const response = await this.gnosisRelay.createSafe({
+      saltNonce: AUGUR_GNOSIS_SAFE_NONCE,
+      owners: [params.owner],
+      threshold: 1,
+      paymentToken: params.paymentToken,
+      to: gnosisSafeRegistryAddress,
+      setupData,
+      callback: gnosisSafeRegistryAddress
+    });
 
-      const calculatedSafeAddress = await this.calculateGnosisSafeAddress(
-        params.owner,
-        response.payment
-      );
-      if(ethUtil.toChecksumAddress(calculatedSafeAddress) !== ethUtil.toChecksumAddress(response.safe)) {
-        this.augur.setGnosisStatus(GnosisSafeState.ERROR);
-        throw new Error(`Potential malicious relay. Returned ${response.safe}. Expected ${calculatedSafeAddress}`);
-      }
+    const calculatedSafeAddress = await this.calculateGnosisSafeAddress(
+      params.owner,
+      response.payment
+    );
+    if (ethUtil.toChecksumAddress(calculatedSafeAddress) !== ethUtil.toChecksumAddress(response.safe)) {
+      this.augur.setGnosisStatus(GnosisSafeState.ERROR);
+      throw new Error(`Potential malicious relay. Returned ${response.safe}. Expected ${calculatedSafeAddress}`);
+    }
 
-      this.safesToCheck.push({
-        safe: ethUtil.toChecksumAddress(response.safe),
-        owner: params.owner,
-        status: GnosisSafeState.WAITING_FOR_FUNDS,
-      });
+    this.safesToCheck.push({
+      safe: ethUtil.toChecksumAddress(response.safe),
+      owner: params.owner,
+      status: GnosisSafeState.WAITING_FOR_FUNDS,
+    });
 
-      this.augur.setGnosisStatus(GnosisSafeState.WAITING_FOR_FUNDS);
+    this.augur.setGnosisStatus(GnosisSafeState.WAITING_FOR_FUNDS);
 
-      await this.onNewBlock();
+    intervalId = setInterval(() => {
+      this.onNewBlock();
+    }, 1000);
 
-      return response;
+    return response;
   }
 
   async gasStation(): Promise<GasStationResponse> {

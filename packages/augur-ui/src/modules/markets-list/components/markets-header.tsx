@@ -8,6 +8,7 @@ import {
   CATEGORY_PARAM_NAME,
   MOBILE_MENU_STATES,
 } from 'modules/common/constants';
+import MarketCardFormatSwitcher from 'modules/filter-sort/components/market-card-format-switcher';
 import Styles from 'modules/markets-list/components/markets-header.styles.less';
 import { FilterButton } from 'modules/common/buttons';
 
@@ -19,6 +20,8 @@ interface MarketsHeaderProps {
   isSearchingMarkets: boolean;
   selectedCategory: string[];
   search: string;
+  marketCardFormat: string;
+  updateMarketsListCardFormat: Function;
   updateMobileMenuState: (mobileMenuState: number) => void;
 }
 
@@ -51,6 +54,8 @@ const MarketsHeader: React.FC<MarketsHeaderProps> = props => {
     location,
     selectedCategory,
     search,
+    marketCardFormat,
+    updateMarketsListCardFormat
   } = props;
   const [headerTitle, setHeaderTitle] = React.useState(
     getHeaderTitleFromProps(search, location, selectedCategory)
@@ -84,6 +89,10 @@ const MarketsHeader: React.FC<MarketsHeaderProps> = props => {
       <div>
         <h1>{headerTitle}</h1>
         <FilterSearch isSearchingMarkets={isSearchingMarkets} />
+        <MarketCardFormatSwitcher
+          marketCardFormat={marketCardFormat}
+          updateMarketsListCardFormat={updateMarketsListCardFormat}
+        />
       </div>
     </article>
   );

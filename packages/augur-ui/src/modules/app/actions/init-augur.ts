@@ -182,11 +182,12 @@ export function connectAugur(
 
     // Preload Account
     const preloadAccount = accountType => {
+      const address = toChecksumAddress(loggedInAccount);
       const accountObject = {
-        address: loggedInAccount,
-        mixedCaseAddress: toChecksumAddress(loggedInAccount),
+        address,
+        mixedCaseAddress: address,
         meta: {
-          address: loggedInAccount,
+          address,
           signer: null,
           email: null,
           profileImage: null,

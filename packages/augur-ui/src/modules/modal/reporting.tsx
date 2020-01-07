@@ -31,6 +31,8 @@ import Styles from 'modules/modal/modal.styles.less';
 import { Getters } from '@augurproject/sdk';
 import { loadAccountCurrentDisputeHistory } from 'modules/auth/actions/load-account-reporting';
 import ReleasableRepNotice from 'modules/reporting/containers/releasable-rep-notice';
+import { ExplainerBlock } from 'modules/create-market/components/common';
+import { EventDetailsContent } from 'modules/create-market/constants';
 
 interface ModalReportingProps {
   closeAction: Function;
@@ -295,11 +297,23 @@ export default class ModalReporting extends Component<
       isTemplate,
       id
     } = market;
+    const {
+      explainerBlockTitle,
+      explainerBlockSubtexts,
+      useBullets,
+    } = EventDetailsContent();
 
     return (
       <div className={Styles.ModalReporting}>
         <Title title={title} closeAction={closeAction} bright />
         <main>
+          {explainerBlockTitle && explainerBlockSubtexts && (
+            <ExplainerBlock
+              title={explainerBlockTitle}
+              subtexts={explainerBlockSubtexts}
+              useBullets={useBullets}
+            />
+          )}
           <div>
             {migrateRep &&
               <MigrateRepInfo />

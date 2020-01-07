@@ -71,6 +71,7 @@ export interface ContractAddresses {
     ERC20Proxy?: string;
     ERC721Proxy?: string;
     ERC1155Proxy?: string;
+    ProfitLoss?: string;
     Exchange?: string; // ZeroXExchange
     Coordinator?: string; // ZeroXCoordinator
     DevUtils?: string;

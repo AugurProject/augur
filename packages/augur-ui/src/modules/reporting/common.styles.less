@@ -195,13 +195,13 @@ div.ReportingSubheaders {
         height: @size-12;
         margin-left: @size-4;
         width: @size-12;
-  
+
         > circle {
           fill: @color-secondary-action;
           stroke: @color-secondary-action-outline;
           stroke-width: 1.5;
         }
-  
+
         > path {
           fill: @color-inactive-text;
         }
@@ -252,6 +252,11 @@ div.ReportingSubheaders {
   line-height: @size-16;
   padding: 0.5rem;
   width: 100%;
+  max-width: 480px;
+
+  @media @breakpoint-max-tablet {
+    max-width: unset;
+  }
 }
 
 .UserRepDisplay {
@@ -285,12 +290,16 @@ div.ReportingSubheaders {
     left: 0;
     margin: @size-4;
     position: absolute;
-    padding: 4rem;
+    padding: 0 @size-64;
     right: 0;
     text-align: center;
     text-transform: capitalize;
     top: 0;
     z-index: @default-z-index;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: calc(100% - @size-8);
 
     @media @breakpoint-mobile {
       .text-16;
@@ -589,6 +598,10 @@ div.ReportingSubheaders {
     .text-16-medium;
 
     color: @color-primary-text;
+
+    > a {
+      word-break: break-word;
+    }
   }
 
   > span:nth-of-type(3) {

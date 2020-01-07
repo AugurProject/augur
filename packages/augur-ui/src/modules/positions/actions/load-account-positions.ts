@@ -52,7 +52,7 @@ export const loadAccountPositionsTotals = (
   const { universe, loginAccount } = getState();
   const Augur = augurSdk.get();
   const positions = await Augur.getProfitLossSummary({
-    account: loginAccount.address,
+    account: loginAccount.mixedCaseAddress,
     universe: universe.id,
   });
   dispatch(
@@ -76,7 +76,7 @@ const loadAccountPositionsInternal = (
     return callback(null, {});
   const params = {
     ...options,
-    account: loginAccount.address,
+    account: loginAccount.mixedCaseAddress,
     universe: universe.id,
   };
   const Augur = augurSdk.get();

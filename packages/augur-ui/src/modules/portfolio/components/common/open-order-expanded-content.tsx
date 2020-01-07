@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import classNames from "classnames";
 
 import getValue from "utils/get-value";
@@ -8,6 +8,7 @@ import MarketTitle from 'modules/market/containers/market-title';
 import { Order } from "modules/portfolio/types";
 
 import Styles from "modules/portfolio/components/common/expanded-content.styles.less";
+import { cancelOrder } from "modules/orders/actions/cancel-order";
 
 export interface OpenOrderExpandedContentProps {
   openOrder: Order;
@@ -20,6 +21,7 @@ const OpenOrderExpandedContent = (props: OpenOrderExpandedContentProps) => {
   const tokensEscrowed = getValue(openOrder, "tokensEscrowed");
   const sharesEscrowed = getValue(openOrder, "sharesEscrowed");
   const creationTime = getValue(openOrder, "creationTime.formattedLocalShortDateTimeNoTimezone");
+  const expiry = getValue(openOrder, 'expiry.formattedLocalShortDateTimeNoTimezone');
 
   return (
     <div className={Styles.OrderInfo}>
@@ -51,8 +53,8 @@ const OpenOrderExpandedContent = (props: OpenOrderExpandedContentProps) => {
             />
             <LinearPropertyLabel
               highlightFirst
-              label="Date"
-              value={creationTime}
+              label="Expiry"
+              value={expiry}
             />
           </div>
           {openOrder.cancelOrder && (
@@ -60,7 +62,7 @@ const OpenOrderExpandedContent = (props: OpenOrderExpandedContentProps) => {
               disabled={openOrder.pending}
               action={(e: Event) => {
                 e.stopPropagation();
-                openOrder.cancelOrder(openOrder);
+                cancelOrder(String(openOrder.id));
               }}
               text="Cancel"
             />

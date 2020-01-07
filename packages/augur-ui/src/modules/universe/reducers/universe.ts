@@ -1,5 +1,6 @@
 import { UPDATE_UNIVERSE } from 'modules/universe/actions/update-universe';
 import { RESET_STATE, SWITCH_UNIVERSE } from 'modules/app/actions/reset-state';
+import { ZERO } from 'modules/common/constants';
 import { Universe, BaseAction } from 'modules/types';
 
 const DEFAULT_STATE: Universe = {
@@ -20,6 +21,15 @@ const DEFAULT_STATE: Universe = {
     purchased: '0',
     fees: '0',
   },
+  timeframeData: { 
+    activeUsers: 0,
+    openInterest: ZERO,
+    marketsCreated: 0,
+    numberOfTrades: 0,
+    disputedMarkets: 0,
+    volume: ZERO,
+    amountStaked: ZERO,
+  }
 };
 
 export default function(

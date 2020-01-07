@@ -59,6 +59,7 @@ interface WrapperProps {
   initialLiquidity?: boolean;
   tradingTutorial?: boolean;
   currentTimestamp: number;
+  availableDai: number;
 }
 
 interface WrapperState {
@@ -319,7 +320,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
     if (this.state.expirationDate) {
       trade = {
         ...trade,
-        expirationTime: (this.state.expirationDate.unix() - this.props.currentTimestamp)
+        expirationTime: (this.state.expirationDate.unix())
       }
     }
     this.props.onSubmitPlaceTrade(
@@ -329,6 +330,10 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       s.doNotCreateOrders,
       (err, result) => {
         // onSent/onFailed CB
+        if(err) {
+          console.log(err);
+          console.log(JSON.stringify(err));
+        }
         if (!err) {
           this.clearOrderForm();
         }
@@ -394,6 +399,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       addFundsModal,
       gnosisStatus,
       hasHistory,
+      availableDai
     } = this.props;
     let {
       marketType,
@@ -419,6 +425,10 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       expirationDate,
       trade,
     } = this.state;
+    const insufficientFunds =
+      trade &&
+      trade.totalCost &&
+      createBigNumber(trade.totalCost.value).gte(createBigNumber(availableDai));
     const GnosisUnavailable =
       Gnosis_ENABLED &&
       isLogged &&
@@ -447,7 +457,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
             }
           }
         }}
-        disabled={!trade || !trade.limitPrice || GnosisUnavailable}
+        disabled={!trade || !trade.limitPrice || GnosisUnavailable || insufficientFunds}
       />
     );
     switch (true) {

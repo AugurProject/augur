@@ -1,67 +1,56 @@
-import React from "react";
+import React, { useState } from 'react';
 
 import {
   YOUR_OVERVIEW_TITLE,
   TIMEFRAME_OPTIONS,
-} from "modules/common/constants";
-import QuadBox from "modules/portfolio/components/common/quad-box";
-import { PillSelection } from "modules/common/selection";
-import Funds from "modules/account/containers/funds";
-import Stats from "modules/account/containers/stats";
-import OverviewChart from "modules/account/containers/overview-chart";
-import Styles from "modules/account/components/overview.styles.less";
+} from 'modules/common/constants';
+import { RepLogoIcon } from 'modules/common/icons';
+import { PropertyLabel } from 'modules/common/labels';
+import QuadBox from 'modules/portfolio/components/common/quad-box';
+import Funds from 'modules/account/containers/funds';
+import Stats from 'modules/account/containers/stats';
+import OverviewChart from 'modules/account/containers/overview-chart';
+import Styles from 'modules/account/components/overview.styles.less';
+import { FormattedNumber } from 'modules/types';
 
 export interface OverviewProps {
-  currentAugurTimestamp: number;
-  updateTimeframeData: Function;
+  repTotalAmountStakedFormatted: FormattedNumber;
+  repBalanceFormatted: FormattedNumber;
 }
 
-interface OverviewState {
-  selected: number;
-}
+const Overview = ({
+  repTotalAmountStakedFormatted,
+  repBalanceFormatted,
+}: OverviewProps) => {
+  const [selected, setSelected] = useState(TIMEFRAME_OPTIONS[3].id);
 
-export default class Overview extends React.Component<
-  OverviewProps,
-  OverviewState
-> {
-  state: OverviewState = {
-    selected: TIMEFRAME_OPTIONS[3].id,
-  };
-
-  componentDidMount() {
-    this.updateTimeSelection(TIMEFRAME_OPTIONS[3].id);
-  }
-
-  updateTimeSelection = (id: number) => {
-    this.setState({ selected: id });
-    const period = TIMEFRAME_OPTIONS[id].periodInterval;
-    const startTime =
-      period === 0 ? null : this.props.currentAugurTimestamp - period;
-    this.props.updateTimeframeData({ startTime });
-  }
-
-  render() {
-    const { selected } = this.state;
-
-    return (
-      <QuadBox
-        title={YOUR_OVERVIEW_TITLE}
-        hideHeader
-        content={
-          <div className={Styles.AccountOverview}>
-            <Funds />
-            <div className={Styles.PillSelector}>
-              <PillSelection
-                options={TIMEFRAME_OPTIONS}
-                defaultSelection={TIMEFRAME_OPTIONS[3].id}
-                onChange={this.updateTimeSelection}
-              />
-            </div>
-            <Stats timeframe={selected} />
-            <OverviewChart timeframe={selected} />
+  return (
+    <QuadBox
+      title={YOUR_OVERVIEW_TITLE}
+      hideHeader
+      content={
+        <div className={Styles.AccountOverview}>
+          <Funds />
+          <div className={Styles.RepBalances}>
+            <PropertyLabel
+              label="REP Balance"
+              value={repBalanceFormatted.formatted}
+            />
+            {RepLogoIcon}
+            <PropertyLabel
+              label="REP Staked"
+              value={repTotalAmountStakedFormatted.formatted}
+            />
           </div>
-        }
-      />
-    );
-  }
-}
+          <Stats
+            timeframe={selected}
+            updateSelected={selected => setSelected(selected)}
+          />
+          <OverviewChart timeframe={selected} />
+        </div>
+      }
+    />
+  );
+};
+
+export default Overview;

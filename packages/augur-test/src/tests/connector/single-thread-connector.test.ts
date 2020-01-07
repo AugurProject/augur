@@ -10,13 +10,13 @@ import { BlockAndLogStreamerListener } from '@augurproject/sdk/build/state/db/Bl
 import {
   Markets,
 } from '@augurproject/sdk/build/state/getter/Markets';
-import { SEOConnector } from '@augurproject/sdk/build/connector/seo-connector';
+import { SingleThreadConnector } from '@augurproject/sdk/build/connector';
 import { SubscriptionEventName } from '@augurproject/sdk/build/constants';
 import { NewBlock } from '@augurproject/sdk/build/events';
 import { MarketCreated } from "@augurproject/sdk/build/events";
 import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
 
-let connector: SEOConnector;
+let connector: SingleThreadConnector;
 let provider: EthersProvider;
 let john: ContractAPI;
 let addresses: ContractAddresses;
@@ -33,9 +33,9 @@ jest.mock('@augurproject/sdk/build/state/create-api', () => {
     create: () => {
       const blockAndLogStreamerListener = BlockAndLogStreamerListener.create(
         provider,
-        john.augur.events.getEventTopics,
-        john.augur.events.parseLogs,
-        john.augur.events.getEventContractAddress,
+        john.augur.contractEvents.getEventTopics,
+        john.augur.contractEvents.parseLogs,
+        john.augur.contractEvents.getEventContractAddress,
       );
       const api = new API(john.augur, db);
       const controller = new Controller(
@@ -59,12 +59,12 @@ beforeAll(async () => {
 
   await john.approveCentralAuthority();
 
-  connector = new SEOConnector();
+  connector = new SingleThreadConnector();
   console.log("Connector connecting");
   await connector.connect('');
 });
 
-test('SEOConnector :: Should route correctly and handle events, extraInfo', async done => {
+test('SingleThreadConnector :: Should route correctly and handle events, extraInfo', async done => {
   const yesNoMarket1 = await john.createYesNoMarket({
     endTime: (await john.getTimestamp()).plus(SECONDS_IN_A_DAY),
     feePerCashInAttoCash: new BigNumber(10).pow(18).div(20), // 5% creator fee

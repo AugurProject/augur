@@ -3,6 +3,7 @@ import { SignedOrder } from '@0x/types';
 import * as http from 'http';
 import * as WebSocket from 'websocket';
 import * as _ from 'lodash';
+import { ZeroXOrder } from "@augurproject/sdk/build/state/getter/ZeroXOrdersGetters";
 
 const DEFAULT_STATUS_CODE = 404;
 export const SERVER_PORT = 64321;
@@ -132,7 +133,7 @@ export class MockMeshServer {
         const accepted = [];
         for (const order of newOrders) {
             const storedOrder: StoredOrder = {
-                orderHash: order.orderHash,
+                orderHash: order.hash,
                 signedOrder: order,
                 fillableTakerAssetAmount: order.takerAssetAmount,
             }

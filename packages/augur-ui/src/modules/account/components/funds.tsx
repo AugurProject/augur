@@ -1,13 +1,9 @@
 import React from 'react';
-import classNames from 'classnames';
 
 import { MovementLabel, LinearPropertyLabel } from 'modules/common/labels';
-import { DaiLogoIcon, RepLogoIcon } from 'modules/common/icons';
 import {
   AVAILABLE_TRADING_BALANCE,
   TOTAL_FROZEN_FUNDS,
-  REP_BALANCE,
-  REP_STAKED,
   TOTAL_ACCOUNT_VALUE_IN_DAI,
 } from 'modules/common/constants';
 import { SizeTypes } from 'modules/types';
@@ -15,49 +11,21 @@ import { SizeTypes } from 'modules/types';
 import Styles from 'modules/account/components/funds.styles.less';
 
 export interface FundsProps {
-  repStaked: number;
-  repBalance: string;
-  totalFrozenFunds: string;
-  totalAvailableTradingBalance: string;
-  totalAccountValue: string;
+  totalFrozenFunds: FormattedNumber;
+  totalAvailableTradingBalance: FormattedNumber;
+  totalAccountValue: FormattedNumber;
   realizedPLPercent: string;
 }
 
-const Funds = (props: FundsProps) => {
-  const {
-    totalFrozenFunds,
-    totalAvailableTradingBalance,
-    totalAccountValue,
-    repBalance,
-    repStaked,
-    realizedPLPercent,
-  } = props;
-
-  const tradingBalanceFrozenFunds = [
-    {
-      title: AVAILABLE_TRADING_BALANCE,
-      value: totalAvailableTradingBalance,
-    },
-    {
-      title: TOTAL_FROZEN_FUNDS,
-      value: totalFrozenFunds,
-    },
-  ];
-
-  const repBalanceStaked = [
-    {
-      title: REP_BALANCE,
-      value: repBalance,
-    },
-    {
-      title: REP_STAKED,
-      value: repStaked,
-    },
-  ];
-
+const Funds = ({
+  totalFrozenFunds,
+  totalAvailableTradingBalance,
+  totalAccountValue,
+  realizedPLPercent,
+}: FundsProps) => {
   return (
     <section className={Styles.Funds}>
-      <div>{TOTAL_ACCOUNT_VALUE_IN_DAI}</div>
+      <h4>{TOTAL_ACCOUNT_VALUE_IN_DAI}</h4>
       <MovementLabel
         showColors
         size={SizeTypes.LARGE}
@@ -67,69 +35,16 @@ const Funds = (props: FundsProps) => {
         showBrackets
         value={Number(realizedPLPercent)}
       />
-      <div>
-        {totalAccountValue}
-        {DaiLogoIcon}
-      </div>
-
-      <FundDataRow
-        className={Styles.BalanceFrozenFunds}
-        columns={tradingBalanceFrozenFunds}
-        showDaiLogo
-        linear
+      <div>{totalAccountValue.full}</div>
+      <LinearPropertyLabel
+        value={totalAvailableTradingBalance.full}
+        label={AVAILABLE_TRADING_BALANCE}
       />
-      <div>
-        <FundDataRow
-          className={Styles.RepBalanceStaked}
-          columns={repBalanceStaked}
-          showRepLogo
-        />
-      </div>
+      <LinearPropertyLabel
+        value={totalFrozenFunds.full}
+        label={TOTAL_FROZEN_FUNDS}
+      />
     </section>
-  );
-};
-
-export interface FundDataRowProps {
-  className: string;
-  columns: Array<any>;
-  showRepLogo?: boolean;
-  showDaiLogo?: boolean;
-  linear?: boolean;
-}
-
-const FundDataRow = (props: FundDataRowProps) => {
-  const { columns, showRepLogo, showDaiLogo, linear } = props;
-
-  const rows = columns.map((value: any) => (
-    <>
-      {linear && (
-        <span className={props.className}>
-          <LinearPropertyLabel value={value.value} label={value.title} />
-          <div>{showDaiLogo ? DaiLogoIcon : null}</div>
-        </span>
-      )}
-      {!linear && (
-        <div>
-          <div>{value.title}</div>
-          <div>
-            {value.value}
-            {showDaiLogo ? DaiLogoIcon : null}
-          </div>
-        </div>
-      )}
-    </>
-  ));
-
-  return (
-    <div
-      className={classNames(props.className, {
-        [Styles.Linear]: linear,
-      })}
-    >
-      {rows[0]}
-      {showRepLogo ? <div>{RepLogoIcon}</div> : null}
-      {rows[1]}
-    </div>
   );
 };
 

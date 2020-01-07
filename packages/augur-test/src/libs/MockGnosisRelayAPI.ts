@@ -1,4 +1,4 @@
-import { Abi } from "ethereum";
+import { Abi } from 'ethereum';
 import { abi } from '@augurproject/artifacts';
 import * as ethUtil from 'ethereumjs-util';
 import {
@@ -26,8 +26,12 @@ export class MockGnosisRelayAPI implements IGnosisRelayAPI {
   // If we ever need to have multiple inflight safe creation txs this should become an mapping.
   private currentTxHash: string | null;
   private currentCreateSafeResponse: SafeResponse | null;
+  private payer: ContractAPI;
 
-  constructor(private payer: ContractAPI) {
+  constructor() {}
+
+  initialize(payer: ContractAPI) {
+    this.payer = payer;
     this.payer.provider.storeAbiData(abi.GnosisSafe as Abi, 'ProxyFactory');
   }
 
@@ -147,9 +151,6 @@ export class MockGnosisRelayAPI implements IGnosisRelayAPI {
       const status = await this.payer.provider.getTransaction(response.hash);
 
       this.currentTxHash = response.hash;
-
-      console.log(JSON.stringify(response));
-      console.log(JSON.stringify(status));
     }
 
     return {

@@ -29,7 +29,8 @@ export const placeMarketTrade = ({
 
   const needsApproval = createBigNumber(loginAccount.allowance).lt(tradeInProgress.totalCost.value);
   if (needsApproval) await approveToTrade();
-  const userShares = createBigNumber(tradeInProgress.sharesDepleted || 0, 10);
+  // we need to make sure approvals went through before doing trade / the rest of this function
+  const userShares = createBigNumber(tradeInProgress.shareCost || 0, 10);
 
   const displayPrice = tradeInProgress.limitPrice;
   const displayAmount = tradeInProgress.numShares;
@@ -55,5 +56,7 @@ export const placeMarketTrade = ({
     userShares,
     expirationTime,
   ).then(() => callback(null, null))
-    .catch((err) => callback(err, null));
+    .catch((err) => {
+      callback(err, null)
+    });
 };

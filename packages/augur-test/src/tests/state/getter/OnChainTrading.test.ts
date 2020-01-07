@@ -135,7 +135,7 @@ describe('State API :: Trading :: ', () => {
     await expect(trades[market2.address]).toHaveLength(2);
   });
 
-  test('State API :: Trading :: getOrders', async () => {
+  test('State API :: Trading :: getOpenOnChainOrders', async () => {
     await john.approveCentralAuthority();
     await mary.approveCentralAuthority();
 
@@ -167,7 +167,7 @@ describe('State API :: Trading :: ', () => {
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
     // Get orders for the market
-    let orders: Orders = await api.route('getOrders', {
+    let orders: Orders = await api.route('getOpenOnChainOrders', {
       marketId: market.address,
       orderState: OrderState.OPEN,
     });
@@ -179,7 +179,7 @@ describe('State API :: Trading :: ', () => {
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
     // Get orders for the market
-    orders = await api.route('getOrders', {
+    orders = await api.route('getOpenOnChainOrders', {
       marketId: market.address,
     });
     order = orders[market.address][0]['0'][orderId];
@@ -195,7 +195,7 @@ describe('State API :: Trading :: ', () => {
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
     // Get orders for the market
-    orders = await api.route('getOrders', {
+    orders = await api.route('getOpenOnChainOrders', {
       marketId: market.address,
     });
     order = orders[market.address][0]['0'][orderId];
@@ -205,14 +205,14 @@ describe('State API :: Trading :: ', () => {
     await expect(order.canceledTransactionHash).toEqual(order.transactionHash);
 
     // Get only Open orders
-    orders = await api.route('getOrders', {
+    orders = await api.route('getOpenOnChainOrders', {
       marketId: market.address,
       orderState: OrderState.OPEN,
     });
     await expect(orders).toEqual({});
 
     // Get Canceled orders
-    orders = await api.route('getOrders', {
+    orders = await api.route('getOpenOnChainOrders', {
       marketId: market.address,
       orderState: OrderState.CANCELED,
     });
@@ -238,7 +238,7 @@ describe('State API :: Trading :: ', () => {
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
     // Test `filterFinalized` param
-    orders = await api.route('getOrders', {
+    orders = await api.route('getOpenOnChainOrders', {
       marketId: market.address,
       filterFinalized: true,
     });

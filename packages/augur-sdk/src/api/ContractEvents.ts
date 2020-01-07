@@ -2,7 +2,7 @@ import { Provider, Log, ParsedLog } from "..";
 import { abi } from "@augurproject/artifacts";
 import { Abi } from "ethereum";
 
-export class Events {
+export class ContractEvents {
   private readonly provider: Provider;
   private readonly augurAddress: string;
   private readonly augurTradingAddress: string;
@@ -58,7 +58,13 @@ export class Events {
 
   parseLogs = (logs: Log[]): ParsedLog[] => {
     return logs.map((log) => {
-      const logValues = this.provider.parseLogValues(this.contractAddressToName[log.address], log);
+      const contractName: string|undefined = this.contractAddressToName[log.address];
+      if(typeof contractName === "undefined") {
+        console.log("Could not find contract name for log, check ABI", log);
+        throw new Error(`Recieved a log for an unknown contract at address ${log.address}. Double check that deployment is up to date and new ABIs have been committed.`);
+      }
+
+      const logValues = this.provider.parseLogValues(contractName, log);
       return Object.assign(
         { name: "" },
         logValues,

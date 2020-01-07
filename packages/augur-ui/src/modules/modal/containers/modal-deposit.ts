@@ -71,7 +71,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 
     const currentNetworkId = getNetworkId();
     const currentNetworkParams = networkSettings.find(
-      net => net.networkId === currentNetworkId
+      net => String(net.networkId) === String(currentNetworkId)
     );
 
     // eslint-disable-next-line
@@ -81,7 +81,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 });
 
 function airSwapOnClick(e) {
-  const env = getNetworkId() === 1 ? 'production' : 'sandbox';
+  const env = getNetworkId() === NETWORK_IDS.Mainnet ? 'production' : 'sandbox';
   e.preventDefault();
   // The widget will offer swaps for REP <-> ETH on mainnet
   // It can still be tested on rinkeby, but only AST <-> ETH is offered

@@ -127,7 +127,14 @@ export default class MarketHeader extends Component<
 
   componentWillUnmount() {
     window.removeEventListener('click', e => {
-      this.toggleReadMore(true);
+        const ClickedOnExpandedContent = e
+        .composedPath()
+        .find(
+          ({ className }) =>
+            className === 'string' &&
+            className.includes('market-header-styles_ExpandedContent')
+        );
+      if (!ClickedOnExpandedContent) this.toggleReadMore(true);
     });
   }
 

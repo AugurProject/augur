@@ -5,6 +5,7 @@ import { generateTrade } from 'modules/trades/helpers/generate-trade';
 import { AppState } from 'store';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
+import { BigNumber } from "bignumber.js";
 import { NodeStyleCallback, AccountPositionAction, AccountPosition } from 'modules/types';
 import {
   simulateTrade,
@@ -165,8 +166,25 @@ async function runSimulateTrade(
   const fingerprint = undefined; // TODO: get this from state
   const kycToken = undefined; // TODO: figure out how kyc tokens are going to be handled
   const doNotCreateOrders = false; // TODO: this needs to be passed from order form
+  const userShares;
 
-  const userShares = createBigNumber(marketOutcomeShares[outcomeId] || 0);
+  if (orderType === 0) {
+    const outcomes = Object.keys(marketOutcomeShares);
+    var minShares = null;
+    for (const outcome in outcomes) {
+      if (outcome != outcomeId) {
+        if (minShares === null) {
+          minShares = createBigNumber(marketOutcomeShares[outcome]);
+        }
+        minShares = BigNumber.min(minShares, createBigNumber(marketOutcomeShares[outcome]));
+      }
+    }
+    userShares = minShares || createBigNumber(0);
+  }
+  else {
+    userShares = createBigNumber(marketOutcomeShares[outcomeId] || 0);
+  }
+
 
   const simulateTradeValue: SimulateTradeData = await simulateTrade(
     orderType,

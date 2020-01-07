@@ -3,7 +3,7 @@ import { convertDisplayAmountToOnChainAmount, convertDisplayPriceToOnChainPrice,
 import * as constants from '../constants';
 import { Augur } from './../Augur';
 import { Event } from '@augurproject/core/build/libraries/ContractInterfaces';
-import { OrderEventLog, OrderEventUint256Value } from '../state/logs/types';
+import { OrderEventLog, OrderEventUint256Value, TradeDirection, NumOutcomes, OutcomeNumber } from '../state/logs/types';
 
 // @TODO: TEMP for better worse order ids
 export function stringTo32ByteHex(stringToEncode: string): string {
@@ -11,11 +11,11 @@ export function stringTo32ByteHex(stringToEncode: string): string {
 }
 
 export interface NativePlaceTradeParams {
-  direction: 0 | 1;
+  direction: TradeDirection;
   market: string;
   numTicks: BigNumber;
-  numOutcomes: 3 | 4 | 5 | 6 | 7 | 8;
-  outcome: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
+  numOutcomes: NumOutcomes;
+  outcome: OutcomeNumber;
   tradeGroupId: string;
   fingerprint: string;
   kycToken: string;
@@ -41,14 +41,14 @@ export interface TradeTransactionLimits {
   gasLimit: BigNumber;
 }
 
-export interface Order {
+interface Order {
   amount: BigNumber;
   displayPrice: BigNumber;
   displaySharesEscrowed: BigNumber;
   owner: string;
 }
 
-export interface SingleOutcomeOrderBook {
+interface SingleOutcomeOrderBook {
   buyOrders: Order[];
   sellorders: Order[];
 }

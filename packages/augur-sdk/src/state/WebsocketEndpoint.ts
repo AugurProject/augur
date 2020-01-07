@@ -4,6 +4,7 @@ import http from "http";
 import https from "https";
 import WebSocket from "ws";
 
+import { augurEmitter } from "../events";
 import { API } from "./getter/API";
 import { AddressFormatReviver } from "./AddressFormatReviver";
 import { ControlMessageType } from "../constants";
@@ -11,7 +12,8 @@ import { EventEmitter } from "events";
 import { IsJsonRpcRequest } from "./IsJsonRpcRequest";
 import { JsonRpcRequest, EndpointSettings } from "./getter/types";
 import { MakeJsonRpcError, JsonRpcErrorCode } from "./MakeJsonRpcError";
-import { MakeJsonRpcResponse } from "./MakeJsonRpcResponse";import { Subscriptions } from "../subscriptions";
+import { MakeJsonRpcResponse } from "./MakeJsonRpcResponse";
+import { Subscriptions } from "../subscriptions";
 
 function isSafe(websocket: WebSocket) {
   if (websocket.readyState !== WebSocket.OPEN) {
@@ -58,7 +60,7 @@ export async function run<TBigNumber>(api: API, endpointSettings: EndpointSettin
 
   servers.forEach((server) => {
     server.on("connection", (websocket: WebSocket): void => {
-      const subscriptions = new Subscriptions(api.augur.getAugurEventEmitter());
+      const subscriptions = new Subscriptions(augurEmitter);
       const pingInterval = setInterval(() => safePing(websocket), 12000);
 
       websocket.on("message", (data: WebSocket.Data): void => {

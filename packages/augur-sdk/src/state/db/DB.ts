@@ -194,7 +194,7 @@ export class DB {
     schemas["Markets"] = "market,reportingState,universe,marketCreator,timestamp,finalized,blockNumber";
     schemas["CurrentOrders"] = "orderId,[market+open],[market+outcome+orderType],orderCreator,orderFiller,blockNumber";
     schemas["Dispute"] = "[market+payoutNumerators],market,blockNumber";
-    schemas["ZeroXOrders"] = "orderHash, [market+outcome+orderType],blockNumber";
+    schemas["ZeroXOrders"] = "orderHash, [market+outcome+orderType],orderCreator,blockNumber";
     schemas["SyncStatus"] = "eventName,blockNumber,syncing";
     schemas["Rollback"] = ",[tableName+rollbackBlockNumber]";
     return schemas;
@@ -254,8 +254,9 @@ export class DB {
     // Update LiquidityDatabase and set it to update whenever there's a new block
     //await this.liquidityDatabase.updateLiquidity(augur, this, (await augur.getTimestamp()).toNumber());
 
-    //this.augur.getAugurEventEmitter().on(SubscriptionEventName.NewBlock, (args) => this.liquidityDatabase.updateLiquidity(this.augur, this, args.timestamp));
-    this.augur.getAugurEventEmitter().emit(SubscriptionEventName.SDKReady, {
+    //this.augur.events.on(SubscriptionEventName.NewBlock, (args) => this.liquidityDatabase.updateLiquidity(this.augur, this, args.timestamp));
+    console.log("Syncing Complete - SDK Ready");
+    this.augur.events.emit(SubscriptionEventName.SDKReady, {
       eventName: SubscriptionEventName.SDKReady,
     });
   }

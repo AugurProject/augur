@@ -265,6 +265,7 @@ export const ValidationTemplateInputType = {
   [TemplateInputType.SUBSTITUTE_USER_OUTCOME]: `[0-9]+`,
   [TemplateInputType.DATETIME]: `(January|February|March|April|May|June|July|August|September|October|November|December){1} ([1-9]|[1-2][0-9]|3[0-1]), 20[0-9]{2} \d\d:\d\d (AM|PM) \\(UTC 0\\)`,
   [TemplateInputType.DATEYEAR]: `(January|February|March|April|May|June|July|August|September|October|November|December){1} ([1-9]|[1-2][0-9]|3[0-1]), 20[0-9]{2}`,
+  [TemplateInputType.DATESTART]: `(January|February|March|April|May|June|July|August|September|October|November|December){1} ([1-9]|[1-2][0-9]|3[0-1]), 20[0-9]{2}`,
 };
 
 export let TEMPLATE_VALIDATIONS = {};

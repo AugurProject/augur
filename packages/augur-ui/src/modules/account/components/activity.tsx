@@ -1,10 +1,9 @@
-import React from "react";
+import React, { useState } from 'react';
 
-import { PillSelection } from "modules/common/selection";
-import PlatformOverviewStats from "modules/account/containers/platform-overview-stats";
-import * as constants from "modules/common/constants";
-import { LinearPropertyLabel } from "modules/common/labels";
-import Styles from "modules/account/components/activity.styles.less";
+import PlatformOverviewStats from 'modules/account/containers/platform-overview-stats';
+import { TIMEFRAME_OPTIONS } from 'modules/common/constants';
+import { LinearPropertyLabel } from 'modules/common/labels';
+import Styles from 'modules/account/components/activity.styles.less';
 
 export interface ActivityProps {
   updatePlatformTimeframeData: Function;
@@ -16,43 +15,24 @@ interface ActivityState {
   selected: number;
 }
 
-export default class Activity extends React.Component<
-  ActivityProps,
-  ActivityState
-> {
-  state: ActivityState = {
-    selected: constants.TIMEFRAME_OPTIONS[3].id,
-  };
+const Activity = ({ openInterest }: ActivityProps) => {
+  const [selected, setSelected] = useState(TIMEFRAME_OPTIONS[3].id);
+  return (
+    <div className={Styles.Activity}>
+      <h4>Activity</h4>
+      <LinearPropertyLabel
+        highlight
+        key="openInterest"
+        label="Open Interest"
+        value={openInterest}
+        useFull={true}
+      />
+      <PlatformOverviewStats
+        timeframe={selected}
+        updateSelected={selected => setSelected(selected)}
+      />
+    </div>
+  );
+};
 
-  componentDidMount() {
-    this.updateTimeSelection(constants.TIMEFRAME_OPTIONS[3].id);
-  }
-
-  updateTimeSelection = (id: number) => {
-    this.setState({ selected: id });
-    const period = constants.TIMEFRAME_OPTIONS[id].periodInterval;
-    const startTime =
-      period === 0 ? 0 : this.props.currentAugurTimestamp - period;
-    this.props.updatePlatformTimeframeData(startTime);
-  }
-
-  render() {
-    return (
-      <div className={Styles.Activity}>
-        <span>Activity</span>
-        <LinearPropertyLabel
-          highlight
-          key="openInterest"
-          label="Open Interest"
-          value={this.props.openInterest}
-        />
-        <PillSelection
-          options={constants.TIMEFRAME_OPTIONS}
-          defaultSelection={constants.TIMEFRAME_OPTIONS[3].id}
-          onChange={this.updateTimeSelection}
-        />
-        <PlatformOverviewStats timeframe={this.state.selected} />
-      </div>
-    );
-  }
-}
+export default Activity;
