@@ -1,14 +1,13 @@
 @import (reference) "~assets/styles/shared";
 
 .MarketCardFormats {
-  .mono-12-bold;
+  .mono-10-bold;
 
-  color: @color-primary-text;
+  color: @color-secondary-text;
   display: flex;
 
   @media @breakpoint-mobile {
-    .text-16;
-
+    color: @color-dark-text;
     margin: 0;
   }
 
@@ -45,6 +44,9 @@
   > svg rect,
   > svg path {
     fill: @color-secondary-text;
+    @media @breakpoint-mobile {
+      fill: @color-dark-text;
+    }
   }
 
   &.selected {
