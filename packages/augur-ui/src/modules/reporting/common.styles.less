@@ -283,14 +283,17 @@ div.ReportingSubheaders {
     bottom: 0;
     color: @color-primary-text;
     left: 0;
-    margin: @size-4;
+    margin: 0;
     position: absolute;
-    padding: 4rem;
+    padding: 0 4rem;
     right: 0;
     text-align: center;
     text-transform: capitalize;
     top: 0;
     z-index: @default-z-index;
+    display: flex;
+    align-items: center;
+    height: 100%;
 
     @media @breakpoint-mobile {
       .text-16;
