@@ -19,6 +19,9 @@ import { Getters } from '@augurproject/sdk';
 import classNames from 'classnames';
 import LandingHero from 'modules/markets-list/containers/landing-hero';
 
+import { MovementLabel } from 'modules/common/labels';
+import { formatDai, formatPercent } from 'utils/format-number';
+
 const PAGINATION_COUNT = 10;
 
 interface MarketsViewProps {
@@ -289,6 +292,18 @@ export default class MarketsView extends Component<
           <title>Markets</title>
         </Helmet>
         {!isLogged && !restoredAccount && <LandingHero />}
+        <main className={Styles.test}>
+          <h2>TEST AREA</h2>
+          <MovementLabel value={formatDai("0")} useFull showBrackets />
+          <MovementLabel value={formatDai("5")} useFull showBrackets />
+          <MovementLabel value={formatDai("-100")} useFull showIcon showBrackets />
+          <MovementLabel value={formatPercent("5")} useFull showBrackets />
+          <MovementLabel value={formatDai("0")} useFull showBrackets showPlusMinus />
+          <MovementLabel value={formatDai("5")} useFull showBrackets showPlusMinus showIcon />
+          <MovementLabel value={formatDai("-100")} useFull showIcon showPlusMinus showBrackets />
+          <MovementLabel value={formatPercent("-5")} useFull showBrackets hideNegative />
+          <MovementLabel value={formatPercent("-15")} showBrackets hideNegative />
+        </main>
         <MarketsHeader
           location={location}
           isSearchingMarkets={isSearching}

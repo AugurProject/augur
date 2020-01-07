@@ -21,8 +21,7 @@ const mapStateToProps = (state: AppState) => {
     totalFrozenFunds: formatDai(totalFrozenFunds, { removeComma: true }),
     totalAvailableTradingBalance: formatDai(totalAvailableTradingBalance, { removeComma: true }),
     totalAccountValue: formatDai(totalAccountValue, { removeComma: true }),
-    realizedPLPercent: formatPercent(tradingPositionsTotal.unrealizedRevenue24hChangePercent)
-      .formattedValue,
+    realizedPLPercent: formatPercent(tradingPositionsTotal.unrealizedRevenue24hChangePercent),
   };
 };
 

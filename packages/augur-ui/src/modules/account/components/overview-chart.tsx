@@ -6,7 +6,7 @@ import ProfitLossChart from 'modules/account/components/profit-loss-chart';
 import { MovementLabel } from 'modules/common/labels';
 import Styles from 'modules/account/components/overview-chart.styles.less';
 import { formatDai } from 'utils/format-number';
-import { SizeTypes } from 'modules/types';
+import { FormattedNumber } from 'modules/types';
 import { createBigNumber } from 'utils/create-big-number';
 
 const ALL_TIME = 3;
@@ -33,7 +33,7 @@ export interface UserTimeRangeData {
 
 interface OverviewChartState {
   profitLossData: number[][];
-  profitLossChange: number | null;
+  profitLossChange: FormattedNumber | null;
   profitLossValue: string | null;
   profitLossChangeHasValue: boolean;
   noTrades: boolean;
@@ -124,7 +124,7 @@ export default class OverviewChart extends React.Component<
       if (this.container) {
         this.setState({
           profitLossData,
-          profitLossChange: formatDai(lastData.realized || 0).formattedValue,
+          profitLossChange: formatDai(lastData.realized || 0),
           profitLossChangeHasValue: !createBigNumber(lastData.realized || 0).eq(
             constants.ZERO
           ),
@@ -145,6 +145,7 @@ export default class OverviewChart extends React.Component<
       profitLossChangeHasValue,
       noTrades,
     } = this.state;
+
     let content: any = null;
     const { currentAugurTimestamp } = this.props;
     const isLoading = currentAugurTimestamp === 0;
@@ -172,6 +173,7 @@ export default class OverviewChart extends React.Component<
             showPlusMinus
             showBrackets
             value={profitLossChange}
+            useFull
           />
           <h4>{profitLossValue}</h4>
           {isLoading && (

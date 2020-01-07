@@ -53,7 +53,7 @@ export interface InReportingLabelProps extends MarketStatusProps {
 
 export interface MovementLabelProps {
   value: number | FormattedNumber;
-  size: SizeTypes;
+  size?: SizeTypes;
   styles?: object;
   showIcon?: boolean;
   showBrackets?: boolean;
@@ -62,6 +62,7 @@ export interface MovementLabelProps {
   showCurrency?: string;
   showNegative?: boolean;
   useFull?: boolean;
+  hideNegative?: boolean;
 }
 
 export interface MovementIconProps {
@@ -71,6 +72,7 @@ export interface MovementIconProps {
 
 export interface MovementTextProps {
   value: number | FormattedNumber;
+  numberValue: number;
   size: SizeTypes;
   showBrackets: boolean;
   showPercent: boolean;
@@ -78,6 +80,7 @@ export interface MovementTextProps {
   showCurrency?: string;
   showNegative?: boolean;
   useFull?: boolean;
+  hideNegative?: boolean;
 }
 
 export interface PropertyLabelProps {
@@ -824,11 +827,10 @@ export const MovementText = ({
   showPlusMinus,
   showPercent,
   showBrackets,
-  showNegative,
-  showCurrency,
-  useFull
+  hideNegative,
+  useFull,
+  numberValue
 }: MovementTextProps) => {
-  const numberValue = typeof value === 'number' ? value : value.value;
   const getTextSizeStyle: Function = (sz: SizeTypes): string =>
     classNames(Styles.MovementLabel_Text, {
       [Styles.MovementLabel_Text_small]: sz == SizeTypes.SMALL,
@@ -854,6 +856,19 @@ export const MovementText = ({
     }
     return label;
   };
+
+  const handlePlusMinus: Function = (label: string): string => {
+    if (showPlusMinus) {
+      if (numberValue > 0) {
+        return '+'.concat(label);
+      } 
+    } else {
+      if (numberValue < 0 && hideNegative) {
+        return label.replace('-', '');
+      }
+    }
+    return label;
+  }
 
   const toString: Function = (label: number): string => String(label);
 
@@ -882,17 +897,15 @@ export const MovementText = ({
     addPercent(addPlus(toString(removeMinus(numberValue))))
   );
   if (typeof value !== "number" && useFull) {
-    formattedString = addBrackets(value.full);
+    formattedString = addBrackets(handlePlusMinus(value.full));
   } else if (typeof value !== "number" && !useFull) {
-    formattedString = addBrackets(value.formatted);
+    formattedString = addBrackets(handlePlusMinus(value.formatted));
   }
   return (
     <div
       className={`${textColorStyle} ${textSizeStyle}`}
     >
-      {`${showNegative && numberValue < 0 ? '-' : ''}${
-        !!showCurrency ? showCurrency : ''
-      }${formattedString}`}
+      {formattedString}
     </div>
   );
 };
@@ -907,6 +920,7 @@ export const MovementLabel = ({
   showIcon = false,
   showCurrency,
   showNegative,
+  hideNegative = false,
   useFull = false,
 }: MovementLabelProps) => {
   const numberValue = typeof value === 'number' ? value : value.value;
@@ -919,12 +933,13 @@ export const MovementLabel = ({
           : { ...styles, justifyContent: 'flex-end' }
       }
     >
-      {showIcon && value !== 0 && (
+      {showIcon && numberValue !== 0 && (
         <MovementIcon value={numberValue} size={size} />
       )}
       {
         <MovementText
           value={value}
+          numberValue={numberValue}
           size={size}
           showPercent={showPercent}
           showBrackets={showBrackets}
@@ -932,6 +947,7 @@ export const MovementLabel = ({
           showCurrency={showCurrency}
           showNegative={showNegative}
           useFull={useFull}
+          hideNegative={hideNegative}
         />
       }
     </div>

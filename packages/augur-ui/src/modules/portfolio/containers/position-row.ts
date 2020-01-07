@@ -83,12 +83,12 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
   if (!showPercent) {
     columnProperties.push({
       key: 'totalPercent',
-      showPercent: true,
+      useFull: true,
       showBrackets: true,
       showPlusMinus: true,
       hide: extendedView,
       columnType: COLUMN_TYPES.MOVEMENT_LABEL,
-      value: position.totalPercent.roundedFormatted,
+      value: position.totalPercent,
     });
   } else {
     columnProperties.push({

@@ -942,10 +942,10 @@ const AllTimeProfitLoss = (props: AllTimeProfitLossProps) => (
       <MovementLabel
         size={SizeTypes.SMALL}
         showPlusMinus
-        showPercent
         showIcon
         showBrackets
-        value={Number(props.repProfitLossPercentageFormatted.roundedValue)}
+        value={props.repProfitLossPercentageFormatted}
+        useFull
       />
     </div>
   </div>
