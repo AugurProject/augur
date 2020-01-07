@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import FilterSwitchBox from "modules/portfolio/components/common/filter-switch-box";
 import MarketRow from "modules/portfolio/containers/market-row";
 import { MovementLabel } from "modules/common/labels";
-import { SizeTypes } from "modules/types";
+import { SizeTypes, FormattedNumber } from "modules/types";
 
 import Styles from "modules/account/components/open-markets.styles.less";
 
@@ -14,7 +14,7 @@ function filterComp(input: any, market: any) {
 interface OpenMarketsProps {
   markets: Array<any>;
   marketsObj: object;
-  totalPercentage: string;
+  totalPercentage: FormattedNumber;
   toggle: Function;
 }
 
@@ -69,7 +69,7 @@ export default class OpenMarkets extends Component<OpenMarketsProps> {
 
   render() {
     const { markets, totalPercentage, toggle} = this.props;
-    console.log(totalPercentage);
+
     return (
       <FilterSwitchBox
         filterLabel="markets"
