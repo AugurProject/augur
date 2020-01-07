@@ -8342,6 +8342,26 @@ export const USA_HOLIDAYS = {
     {
       holiday: HOLIDAYS.MLK,
       date: 1579478400
+    },
+    {
+      holiday: HOLIDAYS.WASHINGTON,
+      date: 1581940800
+    },
+    {
+      holiday: HOLIDAYS.GOOD_FRIDAY,
+      date: 1586520000
+    },
+    {
+      holiday: HOLIDAYS.MEMORIAL_DAY,
+      date: 1590408000
+    },
+    {
+      holiday: HOLIDAYS.INDEPENDENCE_DAY,
+      date: 1591185600
+    },
+    {
+      holiday: HOLIDAYS.LABOR_DAY,
+      date: 1599480000
     }
   ],
   [2021]: [
@@ -8352,6 +8372,26 @@ export const USA_HOLIDAYS = {
     {
       holiday: HOLIDAYS.MLK,
       date: 1610928000
+    },
+    {
+      holiday: HOLIDAYS.WASHINGTON,
+      date: 1613390400
+    },
+    {
+      holiday: HOLIDAYS.GOOD_FRIDAY,
+      date: 1618228800
+    },
+    {
+      holiday: HOLIDAYS.MEMORIAL_DAY,
+      date: 1622462400
+    },
+    {
+      holiday: HOLIDAYS.INDEPENDENCE_DAY,
+      date: 1622894400
+    },
+    {
+      holiday: HOLIDAYS.LABOR_DAY,
+      date: 1630929600
     }
   ], 
   [2022]: [
@@ -8362,6 +8402,26 @@ export const USA_HOLIDAYS = {
     {
       holiday: HOLIDAYS.MLK,
       date: 1642377600
+    },
+    {
+      holiday: HOLIDAYS.WASHINGTON,
+      date: 1645444800
+    },
+    {
+      holiday: HOLIDAYS.GOOD_FRIDAY,
+      date: 1650024000
+    },
+    {
+      holiday: HOLIDAYS.MEMORIAL_DAY,
+      date: 1653912000
+    },
+    {
+      holiday: HOLIDAYS.INDEPENDENCE_DAY,
+      date: 1654344000
+    },
+    {
+      holiday: HOLIDAYS.LABOR_DAY,
+      date: 1662379200
     }
   ]
 };
