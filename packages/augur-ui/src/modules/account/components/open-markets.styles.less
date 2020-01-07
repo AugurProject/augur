@@ -6,28 +6,33 @@
 
   > div {
     align-items: center;
-    border-top: 1px solid fade(@color-dark-grey, 50%);
+    border-top: 1px solid @color-dark-grey;
     display: flex;
     flex: 1;
-    flex-direction: row;
     margin: 0 @size-16;
-    padding: @size-4 0;
+    height: @size-28;
+    max-height: @size-28;
+    min-height: @size-28;
 
     > span {
-      .text-11;
+      .text-11-medium;
 
       color: @color-primary-text;
       flex: 1;
     }
-  }
 
-  @media @breakpoint-mobile {
-    > div {
-      margin: 0 @size-16;
-      padding-right: 0;
+    > div[class*="MovementLabel"] {
+      > div[class*="MovementLabel_Icon"] {
+        margin: 0 @size-2 0 0;
+      }
+  
+      > div[class*="MovementLabel_Text"] {
+        .mono-11-medium;
+      }
     }
   }
 }
+
 .OpenMarketsRow {
   min-height: @size-48;
   max-height: @size-48;
