@@ -440,7 +440,7 @@ function dateNoWeekendHoliday(
 
     const closing = closingDateDependencies[0];
     if (closing && tellOnHoliday(inputs, input, closing)) {
-      return true;
+      return false;
     }
     return p;
   }, true);
