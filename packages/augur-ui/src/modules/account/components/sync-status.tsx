@@ -1,20 +1,19 @@
 import React, { ReactNode } from "react";
 import classNames from "classnames";
 
+import BlockStatus from 'modules/account/components/block-status';
 import {
   Syncing as SyncingIcon,
-  ImmediateImportance,
 } from "modules/common/icons";
 import {
   SYNCED,
   SYNCING,
-  MANY_BLOCKS_BEHIND,
   SYNC_MESSAGE_SYNCED,
   SYNC_MESSAGE_SYNCING,
   SYNC_MESSAGE_BLOCKSBEHIND,
   SYNCING_TITLE,
 } from "modules/common/constants";
-
+import { formatPercent } from 'utils/format-number';
 import Styles from "modules/account/components/status.styles.less";
 
 export interface DataProps {
@@ -23,64 +22,59 @@ export interface DataProps {
 }
 
 export interface SyncStatusProps {
-  syncPercent: number;
+  percent: number;
+  blocksBehind: number;
+  highestBlockBn: number;
+  lastProcessedBlockBn: number;
 }
 
-const SyncStatus = (props: SyncStatusProps) => {
-  const Synced = (
-    <div>
-      <span />
-      {SYNCED}
-    </div>
-  );
+const Synced = (
+  <span>
+    <span />
+    {SYNCED}
+  </span>
+);
 
-  const Syncing = (
-    <div>
-      <span>{SyncingIcon}</span>
-      {SYNCING}
-    </div>
-  );
+const Syncing = (
+  <span>
+    <span>{SyncingIcon}</span>
+    {SYNCING}
+  </span>
+);
 
-  const BlocksBehind = (
-    <div>
-      <span>{ImmediateImportance}</span>
-      {SYNCING} <span>{MANY_BLOCKS_BEHIND}</span>
-    </div>
-  );
+const SyncStatus = ({
+  percent,
+  blocksBehind,
+  highestBlockBn,
+  lastProcessedBlockBn
+}: SyncStatusProps) => {
+  
+  let message = SYNC_MESSAGE_BLOCKSBEHIND;
+  let status = Syncing;
+  let style = null;
 
-  let data: DataProps = {
-    message: SYNC_MESSAGE_BLOCKSBEHIND,
-    status: BlocksBehind,
-  };
-
-  const { syncPercent } = props;
-
-  if (syncPercent >= 99.99) {
-    data = {
-      message: SYNC_MESSAGE_SYNCED,
-      status: Synced,
-    };
-  } else if (syncPercent >= 99.9) {
-    data = {
-      message: SYNC_MESSAGE_SYNCING,
-      status: Syncing,
-    };
+  if (percent >= 99.99) {
+    message = SYNC_MESSAGE_SYNCED;
+    status = Synced;
+    style = Styles.synced;
+  } else if (percent >= 99.9) {
+    message = SYNC_MESSAGE_SYNCING;
+    style = Styles.syncing;
   }
-
-  const { message, status } = data;
 
   return (
     <div
-      className={classNames(Styles.SyncStatus, {
-        [Styles.green]: status === Synced,
-        [Styles.yellow]: status === Syncing,
-        [Styles.red]: status === BlocksBehind,
-      })}
+      className={classNames(Styles.SyncStatus, style)}
     >
-      <div>{SYNCING_TITLE}</div>
+      <h4>{SYNCING_TITLE}</h4>
       {status}
-      <div>{syncPercent}%</div>
+      <h5>{formatPercent(percent).full}</h5>
       <div>{message}</div>
+      <BlockStatus
+        blocksBehind={blocksBehind}
+        highestBlockBn={highestBlockBn}
+        lastProcessedBlockBn={lastProcessedBlockBn}
+      />
     </div>
   );
 };

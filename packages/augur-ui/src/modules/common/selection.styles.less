@@ -265,19 +265,15 @@
   });
 }
 
-
-
-
-
 .PillSelection {
   align-items: center;
   display: flex;
   flex-flow: row nowrap;
-  height: @size-32;
+  height: @size-24;
 
   > li {
     background: transparent;
-    border: 1px solid fade(@color-secondary-action-outline, 20%);
+    border: 1px solid @color-secondary-action-outline;
     border-right: 0;
     box-sizing: border-box;
     display: flex;
@@ -286,19 +282,17 @@
     justify-content: center;
     white-space: nowrap;
 
-    &.Selected {
-      background: @color-dark-grey;
-      border-color: @color-dark-grey;
+    &.Selected,
+    &:hover {
+      background: fade(@color-secondary-action-outline, 30%);
+      border-right: 1px solid @color-secondary-action-outline;
+
+      > button {
+        color: @color-primary-text;
+      }
 
       & + li {
         border-left: 0;
-        padding-left: 1px;
-      }
-
-      &:last-of-type {
-        border-bottom-right-radius: @border-radius-default;
-        border-right: 1px solid @color-dark-grey;
-        border-top-right-radius: @border-radius-default;
       }
     }
 
@@ -309,16 +303,15 @@
 
     &:last-of-type {
       border-bottom-right-radius: @border-radius-default;
-      border-right: 1px solid fade(@color-secondary-action-outline, 20%);
+      border-right: 1px solid @color-secondary-action-outline;
       border-top-right-radius: @border-radius-default;
     }
 
     > button {
-      .mono-9;
+      .mono-9-bold;
 
       background: transparent;
-      color: @color-primary-text;
-      line-height: @size-11;
+      color: @color-secondary-text;
       padding: @size-4 @size-16;
       text-transform: uppercase;
     }
