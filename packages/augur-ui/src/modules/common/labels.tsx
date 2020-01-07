@@ -52,7 +52,7 @@ export interface InReportingLabelProps extends MarketStatusProps {
 }
 
 export interface MovementLabelProps {
-  value: number | FormattedNumber;
+  value: FormattedNumber;
   size?: SizeTypes;
   styles?: object;
   showIcon?: boolean;
@@ -105,7 +105,7 @@ export interface LinearPropertyLabelPercentMovementProps {
   label: string;
   value: string;
   accentValue?: boolean;
-  numberValue: number;
+  movementValue: FormattedNumber;
   showIcon?: boolean;
   showBrackets?: boolean;
   showPercent?: boolean;
@@ -964,7 +964,8 @@ export const LinearPropertyLabelMovement = (
       showIcon={props.showIcon}
       showBrackets={props.showBrackets}
       showPlusMinus={props.showPlusMinus}
-      value={props.value}
+      value={props.movementValue}
+      useFull={props.useFull}
     />
   </span>
 );

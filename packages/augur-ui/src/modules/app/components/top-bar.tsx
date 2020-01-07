@@ -5,9 +5,8 @@ import ConnectAccount from 'modules/auth/containers/connect-account';
 import {
   MovementLabel,
   LinearPropertyLabel,
-  LinearPropertyLabelMovement,
 } from 'modules/common/labels';
-import { SizeTypes, CoreStats } from 'modules/types';
+import { CoreStats } from 'modules/types';
 import Styles from 'modules/app/components/top-bar.styles.less';
 import { Link } from 'react-router-dom';
 import makePath from 'modules/routes/helpers/make-path';
