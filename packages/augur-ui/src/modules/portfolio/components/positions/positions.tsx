@@ -122,7 +122,7 @@ export default class Positions extends Component<PositionsProps, PositionsState>
         extend={extend}
         bottomRightContent={
           <CompactButton
-            text={showCurrentValue ? "Current Value" : "Display Total Returns"}
+            text={showCurrentValue ? "Current Value" : "Total Returns"}
             action={this.updateRightContentValue}
           />
         }
