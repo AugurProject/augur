@@ -1,12 +1,10 @@
 @import (reference) '~assets/styles/shared';
 
 .AugurStatusContent {
-  align-items: center;
   background: @color-module-background;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: @size-16 0;
+  display: grid;
+  grid-gap: @size-4;
+  margin: @size-12 @size-16;
 
   @media @breakpoint-mobile-mid {
     background: unset;
@@ -40,127 +38,110 @@
   text-align: center;
   text-transform: uppercase;
   width: 100%;
-  max-width: 300px;
 
   @media @breakpoint-mobile-mid {
     max-width: unset;
   }
 }
 
+
 .SyncStatus {
   align-items: center;
+  background: @color-table-header;
+  border-radius: @border-radius-default;
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  text-transform: uppercase;
+  flex-flow: column nowrap;
+  padding: @size-16 @size-12;
+  width: 100%;
 
-  > div:first-of-type {
-    .mono-11-bold;
-
-    color: @color-primary-text;
-    text-align: center;
-  }
-
-  > div:nth-of-type(2) {
-    .mono-11-bold;
-
-    align-items: center;
-    color: @color-primary-text;
-    display: flex;
-    justify-content: center;
-    margin: @size-12 0 @size-4;
-    text-align: center;
-
+  &.synced {
     > span {
-      margin: 0 @size-4 0 0;
+      color: @color-open;
+
+      > span {
+        background: @color-open;
+        border-radius: 50%;
+        height: @size-12;
+        width: @size-12;
+      }
+    }
+
+    > div:not([class*="BlockStatus"]) {
+      color: @color-open;
+      padding: 0 @size-12;
     }
   }
 
-  > div:nth-of-type(3) {
+  &.syncing {
+    > span {
+      color: @color-reporting;
+      
+      > span > svg > path {
+        fill: @color-reporting;
+      }
+    }
+
+    > div:not([class*="BlockStatus"]) {
+      color: @color-reporting;
+      padding: 0 @size-12;
+    }
+  }
+
+  > h4 {
+    .mono-12-bold;
+
+    color: @color-secondary-text;
+    text-transform: uppercase;
+    margin: 0 0 @size-14;
+  }
+
+  > span {
+    .mono-12-bold;
+
+    align-items: center;
+    color: @color-resolved;
+    display: flex;
+    flex-flow: row nowrap;
+    margin-bottom: @size-2;
+    
+    > span {
+      align-items: center;
+      display: flex;
+      margin-right: @size-4;
+
+      > svg {
+        animation: spin 3s infinite linear;
+        height: @size-12;
+        width: @size-12;
+
+        > path {
+          fill: @color-resolved;
+        }
+      }
+    }
+  }
+
+  > h5 {
     .mono-22-bold;
 
     color: @color-primary-text;
-    text-align: center;
-    line-height: @size-26;
   }
 
-  > div:nth-of-type(4) {
-    .mono-10;
+  > div:not([class*="BlockStatus"]) {
+    .text-12-medium;
 
-    color: @color-reporting;
-    margin: 2px 0 0;
-    text-align: center;
-  }
-
-  @media @breakpoint-mobile-mid {
-    margin-top: @size-6;
-  }
-}
-
-.green {
-  > div:nth-of-type(2) {
-    > span {
-      background: @color-open;
-      border-radius: 50%;
-      height: @size-12;
-      width: @size-12;
-    }
-  }
-
-  > div:nth-of-type(4) {
-    color: @color-open;
-    margin: @size-12 @size-36 0;
-  }
-}
-
-.yellow {
-  > div:nth-of-type(2) {
-    > span svg {
-      animation: spin 3s infinite linear;
-      height: @size-12;
-      width: @size-14;
-    }
-  }
-
-  > div:nth-of-type(4) {
-    color: @color-reporting;
-    margin: @size-12 @size-36 0;
-  }
-}
-
-.red {
-  > div:nth-of-type(2) {
     align-items: center;
-    display: flex;
-
-    > span svg {
-      height: @size-12;
-      width: @size-12;
-
-      > circle {
-        opacity: 0.5;
-        stroke: @color-resolved;
-      }
-
-      > rect {
-        fill: @color-resolved;
-      }
-
-      > path {
-        fill: @color-resolved;
-      }
-    }
-
-    > span:nth-of-type(2) {
-      .text-10;
-
-      margin: 0 0 0 @size-4;
-    }
-  }
-
-  > div:nth-of-type(4) {
+    background: @color-dark-grey;
+    border-radius: @border-radius-default;
     color: @color-resolved;
-    margin: @size-12 @size-36 0;
+    display: flex;
+    flex-flow: row nowrap;
+    height: @size-40;
+    justify-content: center;
+    margin: @size-12 0 @size-16;
+    padding: 0 @size-40;
+    text-align: center;
+    width: 100%;
   }
 }
 

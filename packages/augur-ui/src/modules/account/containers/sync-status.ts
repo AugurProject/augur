@@ -12,7 +12,6 @@ const mapStateToProps = (state: AppState) => {
     highestBlockBn = ZERO,
     lastProcessedBlockBn = ZERO,
   } = selectBlockInfoData(state);
-
   return {
     percent,
     blocksBehind,

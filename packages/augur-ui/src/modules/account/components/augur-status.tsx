@@ -14,7 +14,6 @@ const AugurStatus = () => (
     content={
       <div className={Styles.AugurStatusContent}>
         <SyncStatus />
-        
         <Activity />
       </div>
     }

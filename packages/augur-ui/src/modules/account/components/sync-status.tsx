@@ -4,18 +4,16 @@ import classNames from "classnames";
 import BlockStatus from 'modules/account/components/block-status';
 import {
   Syncing as SyncingIcon,
-  ImmediateImportance,
 } from "modules/common/icons";
 import {
   SYNCED,
   SYNCING,
-  MANY_BLOCKS_BEHIND,
   SYNC_MESSAGE_SYNCED,
   SYNC_MESSAGE_SYNCING,
   SYNC_MESSAGE_BLOCKSBEHIND,
   SYNCING_TITLE,
 } from "modules/common/constants";
-
+import { formatPercent } from 'utils/format-number';
 import Styles from "modules/account/components/status.styles.less";
 
 export interface DataProps {
@@ -31,24 +29,17 @@ export interface SyncStatusProps {
 }
 
 const Synced = (
-  <div>
+  <span>
     <span />
     {SYNCED}
-  </div>
+  </span>
 );
 
 const Syncing = (
-  <div>
+  <span>
     <span>{SyncingIcon}</span>
     {SYNCING}
-  </div>
-);
-
-const BlocksBehind = (
-  <div>
-    <span>{ImmediateImportance}</span>
-    {SYNCING} <span>{MANY_BLOCKS_BEHIND}</span>
-  </div>
+  </span>
 );
 
 const SyncStatus = ({
@@ -59,27 +50,25 @@ const SyncStatus = ({
 }: SyncStatusProps) => {
   
   let message = SYNC_MESSAGE_BLOCKSBEHIND;
-  let status = BlocksBehind;
+  let status = Syncing;
+  let style = null;
 
   if (percent >= 99.99) {
     message = SYNC_MESSAGE_SYNCED;
     status = Synced;
+    style = Styles.synced;
   } else if (percent >= 99.9) {
     message = SYNC_MESSAGE_SYNCING;
-    status = Syncing;
+    style = Styles.syncing;
   }
 
   return (
     <div
-      className={classNames(Styles.SyncStatus, {
-        [Styles.green]: status === Synced,
-        [Styles.yellow]: status === Syncing,
-        [Styles.red]: status === BlocksBehind,
-      })}
+      className={classNames(Styles.SyncStatus, style)}
     >
-      <div>{SYNCING_TITLE}</div>
+      <h4>{SYNCING_TITLE}</h4>
       {status}
-      <div>{percent}%</div>
+      <h5>{formatPercent(percent).full}</h5>
       <div>{message}</div>
       <BlockStatus
         blocksBehind={blocksBehind}
