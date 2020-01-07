@@ -7,10 +7,17 @@ import { CANCELORDER } from 'modules/common/constants';
 import { addAlert } from 'modules/alerts/actions/alerts';
 import { Action } from 'redux';
 
+const BATCH_CANCEL_MAX = 25;
+
 export const cancelAllOpenOrders = orders => async (
   dispatch: ThunkDispatch<void, any, Action>
 ) => {
-  const orderHashes = orders.map(order => order.id);
+  let orderHashes = orders.map(order => order.id);
+
+  if (orderHashes > BATCH_CANCEL_MAX) {
+    orderHashes = orderHashes.slice(0, BATCH_CANCEL_MAX);
+  }
+
   try {
     orders.forEach(order => {
       sendCancelAlert(order, dispatch);
