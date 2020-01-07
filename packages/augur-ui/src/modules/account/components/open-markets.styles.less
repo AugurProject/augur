@@ -6,25 +6,48 @@
 
   > div {
     align-items: center;
-    border-top: 1px solid fade(@color-dark-grey, 50%);
+    border-top: 1px solid @color-dark-grey;
     display: flex;
     flex: 1;
-    flex-direction: row;
     margin: 0 @size-16;
-    padding: @size-4 0;
+    height: @size-28;
+    max-height: @size-28;
+    min-height: @size-28;
 
     > span {
-      .text-11;
+      .text-11-medium;
 
       color: @color-primary-text;
       flex: 1;
     }
+
+    > div[class*="MovementLabel"] {
+      > div[class*="MovementLabel_Icon"] {
+        margin: 0 @size-2 0 0;
+      }
+  
+      > div[class*="MovementLabel_Text"] {
+        .mono-11-medium;
+      }
+    }
+  }
+}
+
+.OpenMarketsRow {
+  min-height: @size-48;
+  max-height: @size-48;
+
+  > div {
+    padding: 0 0 0 @size-16;
   }
 
-  @media @breakpoint-mobile {
-    > div {
-      margin: 0 @size-16;
-      padding-right: 0;
+  > span > div[class*="MovementLabel"] {
+    > div[class*="MovementLabel_Icon"] {
+      margin: 0 @size-2 0 0;
+    }
+
+    > div[class*="MovementLabel_Text"] {
+      .mono-11-medium;
     }
   }
 }
@@ -33,31 +56,31 @@
   display: flex;
   flex: 1;
   justify-content: flex-end;
-  padding-bottom: @size-4;
-  padding-right: @size-8;
+  padding-right: @size-16;
 
   > div {
     align-items: center;
-    background: @color-module-background;
+    background: fade(@color-secondary-action-outline, 30%);
     border-radius: 3px;
     display: flex;
-    margin-bottom: @size-4;
-    margin-top: @size-8;
-    padding: @size-6 @size-8;
+    padding: @size-2 @size-4;
+    max-height: @size-16;
 
     > span {
-      .mono-11;
+      .mono-9-bold;
 
-      color: @color-primary-text;
+      color: @color-secondary-text;
       display: flex;
       flex: 1;
       justify-content: flex-end;
-      padding-right: @size-8;
+      margin-right: @size-8;
       text-transform: uppercase;
     }
 
-    > div > div {
-      font-weight: bold;
+    > div[class*="MovementLabel"] {
+      > div[class*="MovementLabel_Icon"] {
+        margin: 0 @size-2 0 0;
+      }
     }
   }
 }
