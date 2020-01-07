@@ -329,10 +329,15 @@ export class ZeroX {
   }
 
   async addOrder(order) {
-    if (this.browserMesh) {
-      return this.browserMesh.addOrdersAsync([order]);
-    } else {
-      return this.meshClient.addOrdersAsync([order]);
+    try {
+      if (this.browserMesh) {
+        return this.browserMesh.addOrdersAsync([order]);
+      } else {
+        return this.meshClient.addOrdersAsync([order]);
+      }
+    }
+    catch(error) {
+      return setTimeout(this.addOrder(order), 5000);
     }
   }
 
