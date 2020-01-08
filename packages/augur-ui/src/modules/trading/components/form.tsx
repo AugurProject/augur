@@ -276,7 +276,7 @@ class Form extends Component<FromProps, FormState> {
         `Precision must be ${UPPER_FIXED_PRECISION_BOUND} decimals or less`
       );
     }
-    
+
     let tradeInterval = DEFAULT_TRADE_INTERVAL;
     if (marketType == MarketType.Scalar) {
       tradeInterval = TRADE_INTERVAL_VALUE.dividedBy(market.numTicks);
@@ -580,9 +580,9 @@ class Form extends Component<FromProps, FormState> {
               property === this.INPUT_TYPES.EST_DAI)
           ) {
             updateTradeNumShares(order);
-          } 
+          }
           if (order[this.INPUT_TYPES.QUANTITY] &&
-            order[this.INPUT_TYPES.PRICE] && order[this.INPUT_TYPES.EST_DAI] && 
+            order[this.INPUT_TYPES.PRICE] && order[this.INPUT_TYPES.EST_DAI] &&
             order[this.INPUT_TYPES.EST_DAI] != 0 && order[this.INPUT_TYPES.QUANTITY] != 0 &&
             property === this.INPUT_TYPES.EXPIRATION_DATE
             ) {
@@ -895,9 +895,9 @@ class Form extends Component<FromProps, FormState> {
             >
               {ExclamationCircle}
               <span>
-                {`Max cost of ${
+                {`Max cost of $${
                   orderEscrowdDai === '' ? '-' : orderEscrowdDai
-                } $ will be escrowed`}
+                } will be escrowed`}
               </span>
             </label>
           </li>
@@ -982,7 +982,7 @@ class Form extends Component<FromProps, FormState> {
                   />
                   {s.expirationDateOption === EXPIRATION_DATE_OPTIONS.DAYS && (
                     <span>
-                      {  
+                      {
                         convertUnixToFormattedDate(
                           moment(s[this.INPUT_TYPES.EXPIRATION_DATE]) &&
                             moment(s[this.INPUT_TYPES.EXPIRATION_DATE]).unix()
