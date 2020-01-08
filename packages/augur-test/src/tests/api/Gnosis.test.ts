@@ -35,7 +35,7 @@ describe('Gnosis :: ', () => {
     );
 
     mockGnosisRelay = new MockGnosisRelayAPI();
-    mockGnosisRelay.initialize(mary)
+    mockGnosisRelay.initialize(mary);
     john = await ContractAPI.userWrapper(
       ACCOUNTS[0],
       providerFork,
