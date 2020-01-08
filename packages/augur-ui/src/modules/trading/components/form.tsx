@@ -444,7 +444,7 @@ class Form extends Component<FromProps, FormState> {
     errorCount += priceErrorCount;
     errors = { ...errors, ...priceErrors };
 
-    let quantityValid = false;
+    let quantityValid = true;
 
     if (changedProperty !== this.INPUT_TYPES.EST_DAI) {
       const {
@@ -647,9 +647,10 @@ class Form extends Component<FromProps, FormState> {
   updateTotalValue(percent: Number) {
     const { availableDai } = this.props;
 
-    const value = availableDai.times(createBigNumber(percent));
-
-    this.validateForm(this.INPUT_TYPES.EST_DAI, value.toString());
+    const value = availableDai.times(createBigNumber(percent)).integerValue(BigNumber.ROUND_DOWN);
+    this.setState({ [this.INPUT_TYPES.EST_DAI]: value.toString() }, () =>
+      this.validateForm(this.INPUT_TYPES.EST_DAI, value.toString())
+    );
   }
 
   render() {

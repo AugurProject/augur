@@ -112,9 +112,12 @@ export function updateTradeShares({
     if (side === BUY) {
       newShares = createBigNumber(maxCost).dividedBy(scaledPrice);
     }
+
     newTradeDetails.numShares = newShares
       .abs()
-      .toNumber()
+      .dividedBy(10)
+      .integerValue()
+      .multipliedBy(10)
       .toString();
 
     return runSimulateTrade(
