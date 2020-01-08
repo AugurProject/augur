@@ -87,9 +87,7 @@ describe('Gnosis :: ', () => {
         .on(SubscriptionEventName.GnosisSafeStatus, payload => {
           expect(payload).toEqual(
             expect.objectContaining({
-              status: {
-                status: GnosisSafeState.WAITING_FOR_FUNDS,
-              },
+              status: GnosisSafeState.WAITING_FOR_FUNDS,
               safe: expect.stringContaining('0x'),
               owner: john.account.publicKey,
             })
@@ -191,20 +189,15 @@ describe('Gnosis :: ', () => {
       // This is here to make TS happy.
       if (resp.status !== GnosisSafeState.CREATED) return;
 
-      const receipt = await john.provider.waitForTransaction(resp.txHash);
-      expect(receipt).not.toBeNull();
-
-      john.augur.events.emit(SubscriptionEventName.NewBlock);
-
       john.augur
         .events
         .on(SubscriptionEventName.GnosisSafeStatus, async payload => {
-          expect(payload).toMatchObject({
-            status: expect.objectContaining({
-              status: GnosisSafeState.AVAILABLE,
-            }),
+          console.log(10);
+          await expect(payload).toMatchObject({
+            status: GnosisSafeState.AVAILABLE,
           });
 
+          console.log(11);  
           // The registry returns addresses in all upper case.
           await expect(
             john.augur.contracts.gnosisSafeRegistry.getSafe_(
@@ -214,10 +207,8 @@ describe('Gnosis :: ', () => {
           done();
         });
 
-      // Cause checkSafe to fire.
-      john.augur
-        .events
-        .emit(SubscriptionEventName.NewBlock, {});
+      const receipt = await john.provider.waitForTransaction(resp.txHash);
+      await expect(receipt).not.toBeNull();
     });
   });
 });
