@@ -21477,6 +21477,53 @@
 			"type": "function"
 		},
 		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_type",
+					"type": "uint8"
+				},
+				{
+					"name": "_attoshares",
+					"type": "uint256"
+				},
+				{
+					"name": "_price",
+					"type": "uint256"
+				},
+				{
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"name": "_outcome",
+					"type": "uint256"
+				},
+				{
+					"name": "_betterOrderId",
+					"type": "bytes32"
+				},
+				{
+					"name": "_worseOrderId",
+					"type": "bytes32"
+				},
+				{
+					"name": "_tradeGroupId",
+					"type": "bytes32"
+				}
+			],
+			"name": "publicCreateOrder",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bytes32"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"constant": true,
 			"inputs": [
 				{
@@ -21525,61 +21572,6 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_creator",
-					"type": "address"
-				},
-				{
-					"name": "_type",
-					"type": "uint8"
-				},
-				{
-					"name": "_attoshares",
-					"type": "uint256"
-				},
-				{
-					"name": "_price",
-					"type": "uint256"
-				},
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_outcome",
-					"type": "uint256"
-				},
-				{
-					"name": "_betterOrderId",
-					"type": "bytes32"
-				},
-				{
-					"name": "_worseOrderId",
-					"type": "bytes32"
-				},
-				{
-					"name": "_tradeGroupId",
-					"type": "bytes32"
-				},
-				{
-					"name": "_kycToken",
-					"type": "address"
-				}
-			],
-			"name": "createOrder",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -21664,10 +21656,6 @@
 				{
 					"name": "_tradeGroupId",
 					"type": "bytes32"
-				},
-				{
-					"name": "_kycToken",
-					"type": "address"
 				}
 			],
 			"name": "publicCreateOrders",
@@ -21682,8 +21670,26 @@
 			"type": "function"
 		},
 		{
+			"constant": true,
+			"inputs": [],
+			"name": "getInitialized",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
 			"constant": false,
 			"inputs": [
+				{
+					"name": "_creator",
+					"type": "address"
+				},
 				{
 					"name": "_type",
 					"type": "uint8"
@@ -21715,13 +21721,9 @@
 				{
 					"name": "_tradeGroupId",
 					"type": "bytes32"
-				},
-				{
-					"name": "_kycToken",
-					"type": "address"
 				}
 			],
-			"name": "publicCreateOrder",
+			"name": "createOrder",
 			"outputs": [
 				{
 					"name": "",
@@ -21730,20 +21732,6 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "getInitialized",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
 			"type": "function"
 		}
 	],
@@ -21931,6 +21919,39 @@
 			"type": "function"
 		},
 		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_market",
+					"type": "address"
+				}
+			],
+			"name": "getMarketVolume",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getInitialized",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
 			"constant": false,
 			"inputs": [
 				{
@@ -21940,10 +21961,6 @@
 				{
 					"name": "_outcome",
 					"type": "uint256"
-				},
-				{
-					"name": "_kycToken",
-					"type": "address"
 				},
 				{
 					"name": "_price",
@@ -21987,39 +22004,6 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_market",
-					"type": "address"
-				}
-			],
-			"name": "getMarketVolume",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "getInitialized",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
 			"type": "function"
 		}
 	],
@@ -22072,6 +22056,57 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_type",
+					"type": "uint8"
+				},
+				{
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"name": "_amount",
+					"type": "uint256"
+				},
+				{
+					"name": "_price",
+					"type": "uint256"
+				},
+				{
+					"name": "_sender",
+					"type": "address"
+				},
+				{
+					"name": "_blockNumber",
+					"type": "uint256"
+				},
+				{
+					"name": "_outcome",
+					"type": "uint256"
+				},
+				{
+					"name": "_moneyEscrowed",
+					"type": "uint256"
+				},
+				{
+					"name": "_sharesEscrowed",
+					"type": "uint256"
+				}
+			],
+			"name": "getOrderId",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bytes32"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
 			"type": "function"
 		},
 		{
@@ -22251,37 +22286,6 @@
 			"type": "function"
 		},
 		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_type",
-					"type": "uint8"
-				},
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_outcome",
-					"type": "uint256"
-				},
-				{
-					"name": "_kycToken",
-					"type": "address"
-				}
-			],
-			"name": "getWorstOrderId",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
 			"constant": false,
 			"inputs": [
 				{
@@ -22438,37 +22442,6 @@
 		},
 		{
 			"constant": true,
-			"inputs": [
-				{
-					"name": "_type",
-					"type": "uint8"
-				},
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_outcome",
-					"type": "uint256"
-				},
-				{
-					"name": "_kycToken",
-					"type": "address"
-				}
-			],
-			"name": "getBestOrderId",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
 			"inputs": [],
 			"name": "createOrder",
 			"outputs": [
@@ -22499,15 +22472,23 @@
 			"constant": true,
 			"inputs": [
 				{
-					"name": "_orderId",
-					"type": "bytes32"
+					"name": "_type",
+					"type": "uint8"
+				},
+				{
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"name": "_outcome",
+					"type": "uint256"
 				}
 			],
-			"name": "getKYCToken",
+			"name": "getBestOrderId",
 			"outputs": [
 				{
 					"name": "",
-					"type": "address"
+					"type": "bytes32"
 				}
 			],
 			"payable": false,
@@ -22572,20 +22553,6 @@
 		},
 		{
 			"constant": true,
-			"inputs": [],
-			"name": "augurTrading",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
 			"inputs": [
 				{
 					"name": "_type",
@@ -22596,39 +22563,11 @@
 					"type": "address"
 				},
 				{
-					"name": "_amount",
-					"type": "uint256"
-				},
-				{
-					"name": "_price",
-					"type": "uint256"
-				},
-				{
-					"name": "_sender",
-					"type": "address"
-				},
-				{
-					"name": "_blockNumber",
-					"type": "uint256"
-				},
-				{
 					"name": "_outcome",
 					"type": "uint256"
-				},
-				{
-					"name": "_moneyEscrowed",
-					"type": "uint256"
-				},
-				{
-					"name": "_sharesEscrowed",
-					"type": "uint256"
-				},
-				{
-					"name": "_kycToken",
-					"type": "address"
 				}
 			],
-			"name": "getOrderId",
+			"name": "getWorstOrderId",
 			"outputs": [
 				{
 					"name": "",
@@ -22636,7 +22575,21 @@
 				}
 			],
 			"payable": false,
-			"stateMutability": "pure",
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "augurTrading",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -22731,45 +22684,6 @@
 			"type": "function"
 		},
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_uints",
-					"type": "uint256[]"
-				},
-				{
-					"name": "_bytes32s",
-					"type": "bytes32[]"
-				},
-				{
-					"name": "_type",
-					"type": "uint8"
-				},
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_sender",
-					"type": "address"
-				},
-				{
-					"name": "_kycToken",
-					"type": "address"
-				}
-			],
-			"name": "saveOrder",
-			"outputs": [
-				{
-					"name": "_orderId",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [
 				{
@@ -22813,6 +22727,41 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_uints",
+					"type": "uint256[]"
+				},
+				{
+					"name": "_bytes32s",
+					"type": "bytes32[]"
+				},
+				{
+					"name": "_type",
+					"type": "uint8"
+				},
+				{
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"name": "_sender",
+					"type": "address"
+				}
+			],
+			"name": "saveOrder",
+			"outputs": [
+				{
+					"name": "_orderId",
+					"type": "bytes32"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -23526,10 +23475,6 @@
 					"type": "uint256"
 				},
 				{
-					"name": "_kycToken",
-					"type": "address"
-				},
-				{
 					"name": "_fillOnly",
 					"type": "bool"
 				}
@@ -23647,10 +23592,6 @@
 				{
 					"name": "_fingerprint",
 					"type": "bytes32"
-				},
-				{
-					"name": "_kycToken",
-					"type": "address"
 				}
 			],
 			"name": "publicTrade",
@@ -23658,6 +23599,53 @@
 				{
 					"name": "",
 					"type": "bytes32"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_direction",
+					"type": "uint8"
+				},
+				{
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"name": "_outcome",
+					"type": "uint256"
+				},
+				{
+					"name": "_amount",
+					"type": "uint256"
+				},
+				{
+					"name": "_price",
+					"type": "uint256"
+				},
+				{
+					"name": "_tradeGroupId",
+					"type": "bytes32"
+				},
+				{
+					"name": "_loopLimit",
+					"type": "uint256"
+				},
+				{
+					"name": "_fingerprint",
+					"type": "bytes32"
+				}
+			],
+			"name": "publicFillBestOrder",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
 				}
 			],
 			"payable": false,
@@ -23765,57 +23753,6 @@
 			"payable": false,
 			"stateMutability": "view",
 			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_direction",
-					"type": "uint8"
-				},
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_outcome",
-					"type": "uint256"
-				},
-				{
-					"name": "_amount",
-					"type": "uint256"
-				},
-				{
-					"name": "_price",
-					"type": "uint256"
-				},
-				{
-					"name": "_tradeGroupId",
-					"type": "bytes32"
-				},
-				{
-					"name": "_loopLimit",
-					"type": "uint256"
-				},
-				{
-					"name": "_fingerprint",
-					"type": "bytes32"
-				},
-				{
-					"name": "_kycToken",
-					"type": "address"
-				}
-			],
-			"name": "publicFillBestOrder",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
 		}
 	],
 	"ZeroXTrade": [
@@ -23867,139 +23804,12 @@
 		},
 		{
 			"constant": true,
-			"inputs": [
-				{
-					"name": "_maker",
-					"type": "address"
-				},
-				{
-					"name": "_type",
-					"type": "uint8"
-				},
-				{
-					"name": "_attoshares",
-					"type": "uint256"
-				},
-				{
-					"name": "_price",
-					"type": "uint256"
-				},
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_outcome",
-					"type": "uint8"
-				},
-				{
-					"name": "_kycToken",
-					"type": "address"
-				},
-				{
-					"name": "_expirationTimeSeconds",
-					"type": "uint256"
-				},
-				{
-					"name": "_salt",
-					"type": "uint256"
-				}
-			],
-			"name": "createZeroXOrderFor",
-			"outputs": [
-				{
-					"components": [
-						{
-							"name": "makerAddress",
-							"type": "address"
-						},
-						{
-							"name": "takerAddress",
-							"type": "address"
-						},
-						{
-							"name": "feeRecipientAddress",
-							"type": "address"
-						},
-						{
-							"name": "senderAddress",
-							"type": "address"
-						},
-						{
-							"name": "makerAssetAmount",
-							"type": "uint256"
-						},
-						{
-							"name": "takerAssetAmount",
-							"type": "uint256"
-						},
-						{
-							"name": "makerFee",
-							"type": "uint256"
-						},
-						{
-							"name": "takerFee",
-							"type": "uint256"
-						},
-						{
-							"name": "expirationTimeSeconds",
-							"type": "uint256"
-						},
-						{
-							"name": "salt",
-							"type": "uint256"
-						},
-						{
-							"name": "makerAssetData",
-							"type": "bytes"
-						},
-						{
-							"name": "takerAssetData",
-							"type": "bytes"
-						},
-						{
-							"name": "makerFeeAssetData",
-							"type": "bytes"
-						},
-						{
-							"name": "takerFeeAssetData",
-							"type": "bytes"
-						}
-					],
-					"name": "_zeroXOrder",
-					"type": "tuple"
-				},
-				{
-					"name": "_orderHash",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
 			"inputs": [],
 			"name": "getTransferFromAllowed",
 			"outputs": [
 				{
 					"name": "",
 					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "cashAssetData",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bytes"
 				}
 			],
 			"payable": false,
@@ -24035,6 +23845,37 @@
 			],
 			"payable": false,
 			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"name": "_price",
+					"type": "uint256"
+				},
+				{
+					"name": "_outcome",
+					"type": "uint8"
+				},
+				{
+					"name": "_type",
+					"type": "uint8"
+				}
+			],
+			"name": "encodeAssetData",
+			"outputs": [
+				{
+					"name": "_assetData",
+					"type": "bytes"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -24253,41 +24094,6 @@
 		},
 		{
 			"constant": true,
-			"inputs": [
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_price",
-					"type": "uint256"
-				},
-				{
-					"name": "_outcome",
-					"type": "uint8"
-				},
-				{
-					"name": "_type",
-					"type": "uint8"
-				},
-				{
-					"name": "_kycToken",
-					"type": "address"
-				}
-			],
-			"name": "encodeAssetData",
-			"outputs": [
-				{
-					"name": "_assetData",
-					"type": "bytes"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
 			"inputs": [],
 			"name": "fillOrder",
 			"outputs": [
@@ -24416,10 +24222,6 @@
 						{
 							"name": "orderType",
 							"type": "uint8"
-						},
-						{
-							"name": "kycToken",
-							"type": "address"
 						}
 					],
 					"name": "_data",
@@ -24473,10 +24275,6 @@
 				{
 					"name": "_callbackData",
 					"type": "bytes"
-				},
-				{
-					"name": "_kycToken",
-					"type": "address"
 				}
 			],
 			"payable": false,
@@ -24649,10 +24447,6 @@
 				{
 					"name": "_callbackData",
 					"type": "bytes"
-				},
-				{
-					"name": "_kycToken",
-					"type": "address"
 				}
 			],
 			"payable": false,
@@ -24779,6 +24573,115 @@
 				{
 					"name": "",
 					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_maker",
+					"type": "address"
+				},
+				{
+					"name": "_type",
+					"type": "uint8"
+				},
+				{
+					"name": "_attoshares",
+					"type": "uint256"
+				},
+				{
+					"name": "_price",
+					"type": "uint256"
+				},
+				{
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"name": "_outcome",
+					"type": "uint8"
+				},
+				{
+					"name": "_expirationTimeSeconds",
+					"type": "uint256"
+				},
+				{
+					"name": "_salt",
+					"type": "uint256"
+				}
+			],
+			"name": "createZeroXOrderFor",
+			"outputs": [
+				{
+					"components": [
+						{
+							"name": "makerAddress",
+							"type": "address"
+						},
+						{
+							"name": "takerAddress",
+							"type": "address"
+						},
+						{
+							"name": "feeRecipientAddress",
+							"type": "address"
+						},
+						{
+							"name": "senderAddress",
+							"type": "address"
+						},
+						{
+							"name": "makerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "takerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "makerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "takerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"name": "makerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "makerFeeAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerFeeAssetData",
+							"type": "bytes"
+						}
+					],
+					"name": "_zeroXOrder",
+					"type": "tuple"
+				},
+				{
+					"name": "_orderHash",
+					"type": "bytes32"
 				}
 			],
 			"payable": false,
@@ -24918,6 +24821,36 @@
 			"type": "function"
 		},
 		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "from",
+					"type": "address"
+				},
+				{
+					"name": "to",
+					"type": "address"
+				},
+				{
+					"name": "id",
+					"type": "uint256"
+				},
+				{
+					"name": "value",
+					"type": "uint256"
+				},
+				{
+					"name": "data",
+					"type": "bytes"
+				}
+			],
+			"name": "safeTransferFrom",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"constant": true,
 			"inputs": [
 				{
@@ -24939,10 +24872,6 @@
 				{
 					"name": "_outcome",
 					"type": "uint8"
-				},
-				{
-					"name": "_kycToken",
-					"type": "address"
 				},
 				{
 					"name": "_expirationTimeSeconds",
@@ -25020,50 +24949,6 @@
 				{
 					"name": "_orderHash",
 					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "from",
-					"type": "address"
-				},
-				{
-					"name": "to",
-					"type": "address"
-				},
-				{
-					"name": "id",
-					"type": "uint256"
-				},
-				{
-					"name": "value",
-					"type": "uint256"
-				},
-				{
-					"name": "data",
-					"type": "bytes"
-				}
-			],
-			"name": "safeTransferFrom",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "shareAssetData",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bytes"
 				}
 			],
 			"payable": false,

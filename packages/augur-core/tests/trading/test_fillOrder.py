@@ -18,14 +18,14 @@ def test_publicFillOrder_bid(contractsFixture, cash, market, universe):
 
     # create order
     with BuyWithCash(cash, creatorCost, contractsFixture.accounts[1], "complete set buy"):
-        orderID = createOrder.publicCreateOrder(BID, fix(2), 60, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, nullAddress, sender = contractsFixture.accounts[1])
+        orderID = createOrder.publicCreateOrder(BID, fix(2), 60, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, sender = contractsFixture.accounts[1])
 
     # fill best order
     orderEventLog = {
         "universe": universe.address,
         "market": market.address,
         "eventType": 2,
-        "addressData": [nullAddress, contractsFixture.accounts[1], contractsFixture.accounts[2]],
+        "addressData": [contractsFixture.accounts[1], contractsFixture.accounts[2]],
         "uint256Data": [60, 0, YES, 0, 0, 0, fix(2),  contractsFixture.contracts['Time'].getTimestamp(), 0, 0],
     }
 
@@ -73,7 +73,7 @@ def test_publicFillOrder_ask(contractsFixture, cash, market, universe):
 
     # create order
     with BuyWithCash(cash, creatorCost, contractsFixture.accounts[1], "creating order"):
-        orderID = createOrder.publicCreateOrder(ASK, fix(2), 60, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, nullAddress, sender = contractsFixture.accounts[1])
+        orderID = createOrder.publicCreateOrder(ASK, fix(2), 60, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, sender = contractsFixture.accounts[1])
 
     # fill best order
     with BuyWithCash(cash, fillerCost, contractsFixture.accounts[2], "filling order"):
@@ -102,7 +102,7 @@ def test_publicFillOrder_bid_scalar(contractsFixture, cash, scalarMarket, univer
 
     # create order
     with BuyWithCash(cash, creatorCost, contractsFixture.accounts[1], "creating order"):
-        orderID = createOrder.publicCreateOrder(BID, fix(2), 60, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, nullAddress, sender=contractsFixture.accounts[1])
+        orderID = createOrder.publicCreateOrder(BID, fix(2), 60, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, sender=contractsFixture.accounts[1])
 
     # fill best order
     with BuyWithCash(cash, fillerCost, contractsFixture.accounts[2], "filling order"):
@@ -276,9 +276,9 @@ def test_complete_set_auto_sale(contractsFixture, cash, market, universe):
 
     # create non matching orders
     with BuyWithCash(cash, fix('2', '60'), contractsFixture.accounts[1], "create order 1"):
-        orderID1 = createOrder.publicCreateOrder(BID, fix(2), 60, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, nullAddress, sender = contractsFixture.accounts[1])
+        orderID1 = createOrder.publicCreateOrder(BID, fix(2), 60, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, sender = contractsFixture.accounts[1])
     with BuyWithCash(cash, fix('2', '30'), contractsFixture.accounts[1], "create order 2"):
-        orderID2 = createOrder.publicCreateOrder(ASK, fix(2), 70, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, nullAddress, sender = contractsFixture.accounts[1])
+        orderID2 = createOrder.publicCreateOrder(ASK, fix(2), 70, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, sender = contractsFixture.accounts[1])
 
     # Have other users fill them
     with BuyWithCash(cash, fix('2', '40'), contractsFixture.accounts[2], "fill order 1"):
@@ -346,7 +346,7 @@ def test_publicFillOrder_withSelf(contractsFixture, cash, market, universe):
 
     # create order
     with BuyWithCash(cash, creatorCost, contractsFixture.accounts[1], "complete set buy"):
-        orderID = createOrder.publicCreateOrder(BID, fix(2), 60, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, nullAddress, sender = contractsFixture.accounts[1])
+        orderID = createOrder.publicCreateOrder(BID, fix(2), 60, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, sender = contractsFixture.accounts[1])
 
     # fill best order
     with BuyWithCash(cash, fillerCost, contractsFixture.accounts[1], "filling order"):

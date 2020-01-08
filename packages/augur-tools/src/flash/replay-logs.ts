@@ -148,7 +148,7 @@ export class LogReplayer {
     const { universe, market, eventType, orderType, orderId, tradeGroupId, addressData, uint256Data } = log;
 
     // From packages/augur-core/source/contracts/Augur.sol:61
-    const [ kycToken, orderCreator, orderFiller ] = addressData;
+    const [ orderCreator, orderFiller ] = addressData;
     const [ price, amount, outcome, tokenRefund, sharesRefund, fees, amountFilled, timestamp, sharesEscrowed, tokensEscrowed ] = uint256Data;
 
     console.log(`Replaying OrderEvent "${orderId}"`);

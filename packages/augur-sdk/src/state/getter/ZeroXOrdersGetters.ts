@@ -198,7 +198,6 @@ export class ZeroXOrdersGetters {
       orderId: storedOrder['_id'] || storedOrder.orderHash,
       price,
       amount,
-      kycToken: storedOrder.kycToken,
       amountFilled,
       expirationTimeSeconds: new BigNumber(storedOrder.signedOrder.expirationTimeSeconds),
       fullPrecisionPrice: price,

@@ -57,7 +57,6 @@ export interface OrderData {
   price: string;
   outcome: string;
   orderType: string;
-  kycToken: string;
 }
 
 export interface Document extends BaseDocument {
@@ -244,7 +243,6 @@ export class ZeroXOrders extends AbstractTable {
       price: augurOrderData.price,
       outcome: augurOrderData.outcome,
       orderType: augurOrderData.orderType,
-      kycToken: augurOrderData.kycToken,
       orderHash: order.orderHash,
       amount: order.fillableTakerAssetAmount.toFixed(),
       numberAmount: order.fillableTakerAssetAmount,
@@ -276,7 +274,6 @@ export class ZeroXOrders extends AbstractTable {
     const ids = decoded[1] as BigNumber[];
     const values = decoded[2] as BigNumber[];
     const callbackData = decoded[3] as string;
-    const kycToken = getAddress(`0x${assetData.substr(-40, assetData.length)}`);
 
     if (ids.length !== 1) {
       throw new Error('More than one ID passed into 0x order');
@@ -296,7 +293,6 @@ export class ZeroXOrders extends AbstractTable {
       price: `0x${tokenid.substr(40, 20)}`,
       outcome: `0x${tokenid.substr(60, 2)}`,
       orderType: `0x${tokenid.substr(62, 2)}`,
-      kycToken,
     };
   }
 }

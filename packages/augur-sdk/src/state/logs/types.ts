@@ -194,9 +194,8 @@ export interface MarketOIChangedLog extends Log {
 }
 
 //  addressData
-//  0:  kycToken
-//  1:  orderCreator
-//  2:  orderFiller (Fill)
+//  0:  orderCreator
+//  1:  orderFiller (Fill)
 //
 //  uint256Data
 //  0:  price
@@ -225,7 +224,6 @@ export interface ParsedOrderEventLog extends Log, Timestamped {
   orderType: OrderType;
   orderId: Bytes32;
   tradeGroupId: Bytes32;
-  kycToken: Address;
   orderCreator: Address;
   orderFiller: Address;
   price: string;
@@ -286,9 +284,8 @@ export enum OrderState {
 }
 
 export enum OrderEventAddressValue {
-  kycToken = 0,
-  orderCreator = 1,
-  orderFiller = 2,
+  orderCreator = 0,
+  orderFiller = 1,
 }
 
 export enum OrderEventUint256Value {
@@ -304,9 +301,8 @@ export enum OrderEventUint256Value {
   tokensEscrowed = 9,
 }
 
-export const ORDER_EVENT_KYC_TOKEN = 'addressData.0';
-export const ORDER_EVENT_CREATOR = 'addressData.1';
-export const ORDER_EVENT_FILLER = 'addressData.2';
+export const ORDER_EVENT_CREATOR = 'addressData.0';
+export const ORDER_EVENT_FILLER = 'addressData.1';
 export const ORDER_EVENT_PRICE = 'uint256Data.0';
 export const ORDER_EVENT_AMOUNT = 'uint256Data.1';
 export const ORDER_EVENT_OUTCOME = 'uint256Data.2';

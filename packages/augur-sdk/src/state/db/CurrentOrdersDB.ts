@@ -8,9 +8,8 @@ export class CurrentOrdersDatabase extends DerivedDB {
 
   protected processDoc(log: ParsedLog): ParsedLog {
     if (log['addressData']) {
-      log['kycToken'] = log['addressData'][0];
-      log['orderCreator'] = log['addressData'][1];
-      log['orderFiller'] = log['addressData'][2];
+      log['orderCreator'] = log['addressData'][0];
+      log['orderFiller'] = log['addressData'][1];
       delete log['addressData'];
     }
     if (log['uint256Data']) {

@@ -253,7 +253,6 @@ export class ZeroX {
       params.price,
       params.market,
       new BigNumber(params.outcome),
-      params.kycToken,
       params.expirationTime,
       salt
     );

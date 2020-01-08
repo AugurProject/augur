@@ -31,9 +31,8 @@ contract AugurTrading is IAugurTrading {
         Fill
     }
     //  addressData
-    //  0:  kycToken
-    //  1:  orderCreator
-    //  2:  orderFiller (Fill)
+    //  0:  orderCreator
+    //  1:  orderFiller (Fill)
     //
     //  uint256Data
     //  0:  price
@@ -148,7 +147,7 @@ contract AugurTrading is IAugurTrading {
         require(msg.sender == registry["CancelOrder"]);
         IOrders _orders = IOrders(registry["Orders"]);
         (Order.Types _orderType, address[] memory _addressData, uint256[] memory _uint256Data) = _orders.getOrderDataForLogs(_orderId);
-        _addressData[1] = _creator;
+        _addressData[0] = _creator;
         _uint256Data[3] = _tokenRefund;
         _uint256Data[4] = _sharesRefund;
         _uint256Data[7] = augur.getTimestamp();
@@ -169,8 +168,8 @@ contract AugurTrading is IAugurTrading {
         require(msg.sender == registry["FillOrder"]);
         IOrders _orders = IOrders(registry["Orders"]);
         (Order.Types _orderType, address[] memory _addressData, uint256[] memory _uint256Data) = _orders.getOrderDataForLogs(_orderId);
-        _addressData[1] = _creator;
-        _addressData[2] = _filler;
+        _addressData[0] = _creator;
+        _addressData[1] = _filler;
         _uint256Data[0] = _price;
         _uint256Data[5] = _fees;
         _uint256Data[6] = _amountFilled;

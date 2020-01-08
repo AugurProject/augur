@@ -81,14 +81,6 @@ contract Orders is IOrders, Initializable {
 
     /**
      * @param _orderId The id of the order
-     * @return The KYC token associated with the order
-     */
-    function getKYCToken(bytes32 _orderId) public view returns (IERC20) {
-        return orders[_orderId].kycToken;
-    }
-
-    /**
-     * @param _orderId The id of the order
      * @return The remaining amount of the order
      */
     function getAmount(bytes32 _orderId) public view returns (uint256) {
@@ -139,10 +131,9 @@ contract Orders is IOrders, Initializable {
 
     function getOrderDataForLogs(bytes32 _orderId) public view returns (Order.Types _type, address[] memory _addressData, uint256[] memory _uint256Data) {
         Order.Data storage _order = orders[_orderId];
-        _addressData = new address[](3);
+        _addressData = new address[](2);
         _uint256Data = new uint256[](10);
-        _addressData[0] = address(_order.kycToken);
-        _addressData[1] = _order.creator;
+        _addressData[0] = _order.creator;
         _uint256Data[0] = _order.price;
         _uint256Data[1] = _order.amount;
         _uint256Data[2] = _order.outcome;
@@ -188,22 +179,20 @@ contract Orders is IOrders, Initializable {
      * @param _type The type of order. Either BID==0, or ASK==1
      * @param _market The market of the order
      * @param _outcome The outcome of the order
-     * @param _kycToken The KYC token of the order
      * @return The id (if there is one) of the best order that satisfies the given parameters
      */
-    function getBestOrderId(Order.Types _type, IMarket _market, uint256 _outcome, IERC20 _kycToken) public view returns (bytes32) {
-        return bestOrder[getBestOrderWorstOrderHash(_market, _outcome, _type, _kycToken)];
+    function getBestOrderId(Order.Types _type, IMarket _market, uint256 _outcome) public view returns (bytes32) {
+        return bestOrder[getBestOrderWorstOrderHash(_market, _outcome, _type)];
     }
 
     /**
      * @param _type The type of order. Either BID==0, or ASK==1
      * @param _market The market of the order
      * @param _outcome The outcome of the order
-     * @param _kycToken The KYC token of the order
      * @return The id (if there is one) of the worst order that satisfies the given parameters
      */
-    function getWorstOrderId(Order.Types _type, IMarket _market, uint256 _outcome, IERC20 _kycToken) public view returns (bytes32) {
-        return worstOrder[getBestOrderWorstOrderHash(_market, _outcome, _type, _kycToken)];
+    function getWorstOrderId(Order.Types _type, IMarket _market, uint256 _outcome) public view returns (bytes32) {
+        return worstOrder[getBestOrderWorstOrderHash(_market, _outcome, _type)];
     }
 
     /**
@@ -216,11 +205,10 @@ contract Orders is IOrders, Initializable {
      * @param _outcome The outcome of the order
      * @param _moneyEscrowed The amount of Cash tokens escrowed in the order
      * @param _sharesEscrowed The outcome Share tokens escrowed in the order
-     * @param _kycToken The KYC token of the order
      * @return The order id that satisfies the given parameters
      */
-    function getOrderId(Order.Types _type, IMarket _market, uint256 _amount, uint256 _price, address _sender, uint256 _blockNumber, uint256 _outcome, uint256 _moneyEscrowed, uint256 _sharesEscrowed, IERC20 _kycToken) public pure returns (bytes32) {
-        return Order.calculateOrderId(_type, _market, _amount, _price, _sender, _blockNumber, _outcome, _moneyEscrowed, _sharesEscrowed, _kycToken);
+    function getOrderId(Order.Types _type, IMarket _market, uint256 _amount, uint256 _price, address _sender, uint256 _blockNumber, uint256 _outcome, uint256 _moneyEscrowed, uint256 _sharesEscrowed) public pure returns (bytes32) {
+        return Order.calculateOrderId(_type, _market, _amount, _price, _sender, _blockNumber, _outcome, _moneyEscrowed, _sharesEscrowed);
     }
 
     function isBetterPrice(Order.Types _type, uint256 _price, bytes32 _orderId) public view returns (bool) {
@@ -250,16 +238,16 @@ contract Orders is IOrders, Initializable {
     }
 
     function insertOrderIntoList(Order.Data storage _order, bytes32 _betterOrderId, bytes32 _worseOrderId) private returns (bool) {
-        bytes32 _bestOrderWorstOrderHash = getBestOrderWorstOrderHash(_order.market, _order.outcome, _order.orderType, _order.kycToken);
+        bytes32 _bestOrderWorstOrderHash = getBestOrderWorstOrderHash(_order.market, _order.outcome, _order.orderType);
         bytes32 _bestOrderId = bestOrder[_bestOrderWorstOrderHash];
         bytes32 _worstOrderId = worstOrder[_bestOrderWorstOrderHash];
         (_betterOrderId, _worseOrderId) = findBoundingOrders(_order.orderType, _order.price, _bestOrderId, _worstOrderId, _betterOrderId, _worseOrderId);
         if (_order.orderType == Order.Types.Bid) {
-            _bestOrderId = updateBestBidOrder(_order.id, _order.price, _order.outcome, _order.kycToken, _bestOrderWorstOrderHash, _bestOrderId);
-            _worstOrderId = updateWorstBidOrder(_order.id, _order.price, _order.outcome, _order.kycToken, _bestOrderWorstOrderHash, _worstOrderId);
+            _bestOrderId = updateBestBidOrder(_order.id, _order.price, _order.outcome, _bestOrderWorstOrderHash, _bestOrderId);
+            _worstOrderId = updateWorstBidOrder(_order.id, _order.price, _order.outcome, _bestOrderWorstOrderHash, _worstOrderId);
         } else {
-            _bestOrderId = updateBestAskOrder(_order.id, _order.price, _order.outcome, _order.kycToken, _bestOrderWorstOrderHash, _bestOrderId);
-            _worstOrderId = updateWorstAskOrder(_order.id, _order.price, _order.outcome, _order.kycToken, _bestOrderWorstOrderHash, _worstOrderId);
+            _bestOrderId = updateBestAskOrder(_order.id, _order.price, _order.outcome, _bestOrderWorstOrderHash, _bestOrderId);
+            _worstOrderId = updateWorstAskOrder(_order.id, _order.price, _order.outcome, _bestOrderWorstOrderHash, _worstOrderId);
         }
         if (_bestOrderId == _order.id) {
             _betterOrderId = bytes32(0);
@@ -287,7 +275,7 @@ contract Orders is IOrders, Initializable {
     // _worseOrderId = _bytes32s[1]
     // _tradeGroupId = _bytes32s[2]
     // _orderId = _bytes32s[3]
-    function saveOrder(uint256[] calldata _uints, bytes32[] calldata _bytes32s, Order.Types _type, IMarket _market, address _sender, IERC20 _kycToken) external returns (bytes32 _orderId) {
+    function saveOrder(uint256[] calldata _uints, bytes32[] calldata _bytes32s, Order.Types _type, IMarket _market, address _sender) external returns (bytes32 _orderId) {
         require(msg.sender == createOrder || msg.sender == address(this));
         require(_uints[2] < _market.getNumberOfOutcomes(), "Orders.saveOrder: Outcome not in market range");
         _orderId = _bytes32s[3];
@@ -299,7 +287,6 @@ contract Orders is IOrders, Initializable {
         _order.price = _uints[1];
         _order.amount = _uints[0];
         _order.creator = _sender;
-        _order.kycToken = _kycToken;
         _order.moneyEscrowed = _uints[3];
         marketOrderData[address(_market)].totalEscrowed += _uints[3];
         _order.sharesEscrowed = _uints[4];
@@ -352,7 +339,7 @@ contract Orders is IOrders, Initializable {
         Order.Data storage _order = orders[_orderId];
         bytes32 _betterOrderId = _order.betterOrderId;
         bytes32 _worseOrderId = _order.worseOrderId;
-        bytes32 _bestOrderWorstOrderHash = getBestOrderWorstOrderHash(_order.market, _order.outcome, _order.orderType, _order.kycToken);
+        bytes32 _bestOrderWorstOrderHash = getBestOrderWorstOrderHash(_order.market, _order.outcome, _order.orderType);
         if (bestOrder[_bestOrderWorstOrderHash] == _orderId) {
             bestOrder[_bestOrderWorstOrderHash] = _worseOrderId;
         }
@@ -373,7 +360,7 @@ contract Orders is IOrders, Initializable {
     /**
      * @dev If best bid is not set or price higher than best bid price, this order is the new best bid.
      */
-    function updateBestBidOrder(bytes32 _orderId, uint256 _price, uint256 _outcome, IERC20 _kycToken, bytes32 _bestOrderWorstOrderHash, bytes32 _bestBidOrderId) private returns (bytes32) {
+    function updateBestBidOrder(bytes32 _orderId, uint256 _price, uint256 _outcome, bytes32 _bestOrderWorstOrderHash, bytes32 _bestBidOrderId) private returns (bytes32) {
         if (_bestBidOrderId == bytes32(0) || _price > orders[_bestBidOrderId].price) {
             bestOrder[_bestOrderWorstOrderHash] = _orderId;
             return _orderId;
@@ -385,7 +372,7 @@ contract Orders is IOrders, Initializable {
     /**
      * @dev If worst bid is not set or price lower than worst bid price, this order is the new worst bid.
      */
-    function updateWorstBidOrder(bytes32 _orderId, uint256 _price, uint256 _outcome, IERC20 _kycToken, bytes32 _bestOrderWorstOrderHash, bytes32 _worstBidOrderId) private returns (bytes32) {
+    function updateWorstBidOrder(bytes32 _orderId, uint256 _price, uint256 _outcome, bytes32 _bestOrderWorstOrderHash, bytes32 _worstBidOrderId) private returns (bytes32) {
         if (_worstBidOrderId == bytes32(0) || _price <= orders[_worstBidOrderId].price) {
             worstOrder[_bestOrderWorstOrderHash] = _orderId;
             return _orderId;
@@ -397,7 +384,7 @@ contract Orders is IOrders, Initializable {
     /**
      * @dev If best ask is not set or price lower than best ask price, this order is the new best ask.
      */
-    function updateBestAskOrder(bytes32 _orderId, uint256 _price, uint256 _outcome, IERC20 _kycToken, bytes32 _bestOrderWorstOrderHash, bytes32 _bestAskOrderId) private returns (bytes32) {
+    function updateBestAskOrder(bytes32 _orderId, uint256 _price, uint256 _outcome, bytes32 _bestOrderWorstOrderHash, bytes32 _bestAskOrderId) private returns (bytes32) {
         if (_bestAskOrderId == bytes32(0) || _price < orders[_bestAskOrderId].price) {
             bestOrder[_bestOrderWorstOrderHash] = _orderId;
             return _orderId;
@@ -409,7 +396,7 @@ contract Orders is IOrders, Initializable {
     /**
      * @dev If worst ask is not set or price higher than worst ask price, this order is the new worst ask.
      */
-    function updateWorstAskOrder(bytes32 _orderId, uint256 _price, uint256 _outcome, IERC20 _kycToken, bytes32 _bestOrderWorstOrderHash, bytes32 _worstAskOrderId) private returns (bytes32) {
+    function updateWorstAskOrder(bytes32 _orderId, uint256 _price, uint256 _outcome, bytes32 _bestOrderWorstOrderHash, bytes32 _worstAskOrderId) private returns (bytes32) {
         if (_worstAskOrderId == bytes32(0) || _price >= orders[_worstAskOrderId].price) {
             worstOrder[_bestOrderWorstOrderHash] = _orderId;
             return _orderId;
@@ -418,8 +405,8 @@ contract Orders is IOrders, Initializable {
         }
     }
 
-    function getBestOrderWorstOrderHash(IMarket _market, uint256 _outcome, Order.Types _type, IERC20 _kycToken) private pure returns (bytes32) {
-        return sha256(abi.encodePacked(_market, _outcome, _type, _kycToken));
+    function getBestOrderWorstOrderHash(IMarket _market, uint256 _outcome, Order.Types _type) private pure returns (bytes32) {
+        return sha256(abi.encodePacked(_market, _outcome, _type));
     }
 
     function ascendOrderList(Order.Types _type, uint256 _price, bytes32 _lowestOrderId) public view returns (bytes32 _betterOrderId, bytes32 _worseOrderId) {
