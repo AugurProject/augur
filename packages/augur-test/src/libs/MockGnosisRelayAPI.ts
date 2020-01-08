@@ -32,7 +32,6 @@ export class MockGnosisRelayAPI implements IGnosisRelayAPI {
 
   initialize(payer: ContractAPI) {
     this.payer = payer;
-    this.payer.provider.storeAbiData(abi.GnosisSafe as Abi, 'ProxyFactory');
   }
 
   /**
