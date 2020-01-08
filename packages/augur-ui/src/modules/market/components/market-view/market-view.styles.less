@@ -335,13 +335,17 @@
   }
 }
 
-.MarketView__comments {
+.Comments {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
   align-self: center;
   justify-content: center;
   width: calc(100% - 40.625rem);
+
+  > span {
+    display: none;
+  }
 
   > div:first-of-type,
   > div:first-of-type > span,
@@ -469,7 +473,15 @@ div.OutcomeNameDisplay {
     background: @color-dark-grey;
   }
 
-  .MarketView__comments {
+  .Comments {
+    padding-top: @size-48;
     width: 100%;
+
+    > span {
+      background: @color-dark-grey;
+      display: block;
+      height: @size-2;
+      margin: 0 @size-12 @size-8;
+    }
   }
 }
