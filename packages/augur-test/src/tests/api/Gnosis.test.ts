@@ -192,12 +192,10 @@ describe('Gnosis :: ', () => {
       john.augur
         .events
         .on(SubscriptionEventName.GnosisSafeStatus, async payload => {
-          console.log(10);
           await expect(payload).toMatchObject({
             status: GnosisSafeState.AVAILABLE,
           });
 
-          console.log(11);  
           // The registry returns addresses in all upper case.
           await expect(
             john.augur.contracts.gnosisSafeRegistry.getSafe_(
