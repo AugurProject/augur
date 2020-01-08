@@ -8170,7 +8170,7 @@ export const FIN_INDEXES_CLOSING_OFFSETS = {
     hour: 16,
     minutes: 30,
   },
-  DAX: {
+  'DAX': {
     offset: 2,
     hour: 13,
     minutes: 30,
@@ -8337,6 +8337,17 @@ export const HOLIDAYS = {
   NATIONAL_DAY: 'National Day',
   CHRISTMAS_EVE: 'Christmas Eve',
   NEW_YEARS_EVE: 'New Years Eve',
+  LUNAR_NEW_YEAR_1: 'Lunar New Year 1',
+  LUNAR_NEW_YEAR_2: 'Lunar New Year 2',
+  LUNAR_NEW_YEAR_3:'Lunar New Year 3',
+  LUNAR_NEW_YEAR_4: 'Lunar New Year 4',
+  CHING_MING_FESTIVAL: 'Ching Ming Festival',
+  BUDDDHAS_BIRTHDAY: 'Buddha\'s Birthday',
+  TUEN_NG_DAY: 'Tuen Ng Day',
+  SAR_ESTABLISHMENT_DAY: 'Sar Establishment Day',
+  MID_AUTUMN_FESTIVAL: 'Day Following Mid Autumn Festival',
+  CHUNG_YEUNG_DAY: 'Chung Yeung Day',
+  CHRISTMAS_HOLIDAY: 'Christmas Holiday',
 } 
 
 export const USA_HOLIDAYS = {
@@ -8515,10 +8526,6 @@ export const ENGLAND_HOLIDAYS = {
       date: 1586736000
     },
     {
-      holiday: HOLIDAYS.LABOUR_DAY,
-      date: 1588291200
-    },
-    {
       holiday: HOLIDAYS.EARLY_MAY_BANK_HOLIDAY,
       date: 1588896000
     },
@@ -8613,13 +8620,105 @@ export const ENGLAND_HOLIDAYS = {
   ]
 };
 
+export const GERMANY_HOLIDAYS = {
+  [2020]: [
+    {
+      holiday: HOLIDAYS.NEW_YEARS_DAY,
+      date: 1577836800
+    },
+    {
+      holiday: HOLIDAYS.GOOD_FRIDAY,
+      date: 1586520000
+    },
+    {
+      holiday: HOLIDAYS.EASTER_MONDAY,
+      date: 1586736000
+    },
+    {
+      holiday: HOLIDAYS.LABOUR_DAY,
+      date: 1588291200
+    },
+    {
+      holiday: HOLIDAYS.WHITMONDAY,
+      date: 1590969600
+    },
+    {
+      holiday: HOLIDAYS.CHRISTMAS_EVE,
+      date: 1608768000
+    },
+    {
+      holiday: HOLIDAYS.CHRISTMAS,
+      date: 1588291200
+    },
+    {
+      holiday: HOLIDAYS.NEW_YEARS_EVE,
+      date: 1609372800
+    },
+  ],
+  [2021]: [
+    {
+      holiday: HOLIDAYS.NEW_YEARS_DAY,
+      date: 1609459200
+    },
+    {
+      holiday: HOLIDAYS.GOOD_FRIDAY,
+      date: 1618228800
+    },
+    {
+      holiday: HOLIDAYS.EASTER_MONDAY,
+      date: 1617580800
+    },
+    {
+      holiday: HOLIDAYS.WHITMONDAY,
+      date: 1621814400
+    },
+    {
+      holiday: HOLIDAYS.CHRISTMAS_EVE,
+      date: 1640304000
+    },
+    {
+      holiday: HOLIDAYS.CHRISTMAS,
+      date: 1588291200
+    },
+    {
+      holiday: HOLIDAYS.NEW_YEARS_EVE,
+      date: 1640908800
+    },
+  ], 
+  [2022]: [
+    {
+      holiday: HOLIDAYS.NEW_YEARS_DAY,
+      date: 1641168000
+    },
+    {
+      holiday: HOLIDAYS.GOOD_FRIDAY,
+      date: 1649980800
+    },
+    {
+      holiday: HOLIDAYS.EASTER_MONDAY,
+      date: 1650240000
+    },
+    {
+      holiday: HOLIDAYS.WHITMONDAY,
+      date: 1651795200
+    },
+    {
+      holiday: HOLIDAYS.NATIONAL_DAY,
+      date: 1667433600
+    },
+    {
+      holiday: HOLIDAYS.CHRISTMAS,
+      date: 1672012800
+    },
+  ]
+};
 
 export const FIN_EXCHANGES_HOLIDAY_CLOSURES = {
   'New York Stock Exchange (traded in USD)': USA_HOLIDAYS,
   'Nasdaq (traded in USD)': USA_HOLIDAYS,
   'American Stock Exchange (traded in USD)': USA_HOLIDAYS,
   'Euronext NV (traded in Euro)': FRANCE_HOLIDAYS,
-  'London Stock Exchange (traded in GBP)': ENGLAND_HOLIDAYS
+  'London Stock Exchange (traded in GBP)': ENGLAND_HOLIDAYS,
 };
 
 export const FIN_INDEXES_HOLIDAY_CLOSURES = {
@@ -8630,5 +8729,6 @@ export const FIN_INDEXES_HOLIDAY_CLOSURES = {
   'Russell 1000': USA_HOLIDAYS,
   'NYSE Composite': USA_HOLIDAYS,
   'CAC 40': FRANCE_HOLIDAYS,
-  'FTSE 100': ENGLAND_HOLIDAYS
+  'FTSE 100': ENGLAND_HOLIDAYS,
+  'DAX': GERMANY_HOLIDAYS,
 };
