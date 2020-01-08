@@ -19,6 +19,7 @@ import HelpResources from 'modules/app/containers/help-resources';
 interface TopBarProps {
   alertsVisible: boolean;
   isLogged: boolean;
+  isMobile: boolean;
   restoredAccount: boolean;
   stats: CoreStats;
   unseenCount: number;
@@ -30,6 +31,7 @@ interface TopBarProps {
 const TopBar: React.FC<TopBarProps> = ({
   alertsVisible,
   isLogged,
+  isMobile,
   restoredAccount,
   stats,
   unseenCount,
@@ -62,6 +64,7 @@ const TopBar: React.FC<TopBarProps> = ({
         </div>
       )}
       <div>
+        {(!isLogged) && <HelpResources />}
         {!isLogged && !restoredAccount && (
           <SecondaryButton action={() => loginModal()} text={'Login'} />
         )}
@@ -69,8 +72,8 @@ const TopBar: React.FC<TopBarProps> = ({
           <PrimaryButton action={() => signupModal()} text={'Signup'} />
         )}
 
-        {(isLogged || restoredAccount) && <HelpResources />}
-        <ConnectAccount />
+        {!isMobile && (isLogged || restoredAccount) && <HelpResources />}
+        { !isMobile && (<ConnectAccount />)}
 
         {(isLogged || restoredAccount) && (
           <button
