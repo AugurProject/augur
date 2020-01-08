@@ -85,6 +85,7 @@ interface DefaultOrderPropertiesMap {
   [outcomeId: number]: DefaultOrderProperties;
 }
 interface MarketViewState {
+  pane: string | null;
   extendOutcomesList: boolean;
   extendOrders: boolean;
   extendOrderBook: boolean;
@@ -122,6 +123,7 @@ export default class MarketView extends Component<
     const cat5 = this.findType();
 
     this.state = {
+      pane: null,
       introShowing: false,
       tutorialStep: TRADING_TUTORIAL_STEPS.INTRO_MODAL,
       hasShownScalarModal: false,
@@ -432,6 +434,7 @@ export default class MarketView extends Component<
       extendOrders,
       tutorialStep,
       tutorialError,
+      pane,
     } = this.state;
     if (isMarketLoading) {
       if (canHotload && !tradingTutorial) hotloadMarket(marketId);
@@ -564,7 +567,9 @@ export default class MarketView extends Component<
         <Helmet>
           <title>{parseMarketTitle(description)}</title>
         </Helmet>
-        <Media query={TEMP_TABLET}>
+        <Media query={TEMP_TABLET} onChange={matches => {
+          if (matches && pane !== 'Market Info') this.setState({ pane: 'Market Info' });
+        }}>
           {matches =>
             matches ? (
               <>
@@ -583,7 +588,7 @@ export default class MarketView extends Component<
                     </button>
                   }
                 >
-                  <ModulePane label="Market Info">
+                  <ModulePane label="Market Info" onClickCallback={() => this.setState({ pane: 'Market Info' })}>
                     <div
                       className={Styles['MarketView__paneContainer--mobile']}
                     >
@@ -612,6 +617,7 @@ export default class MarketView extends Component<
                   <ModulePane
                     label="Trade"
                     onClickCallback={() => {
+                      this.setState({ pane: 'Trade' });
                       this.node.children[0].children[1].scrollTo({
                         top: 0,
                         behavior: 'smooth',
@@ -700,7 +706,7 @@ export default class MarketView extends Component<
                       />
                     </div>
                   </ModulePane>
-                  <ModulePane label="Orders/Position">
+                  <ModulePane label="Orders/Position" onClickCallback={() => this.setState({ pane: 'Orders/Position' })}>
                     <div
                       className={classNames(
                         Styles['MarketView__paneContainer--mobile']
@@ -721,7 +727,7 @@ export default class MarketView extends Component<
                     </div>
                   </ModulePane>
                 </ModuleTabs>
-                <MarketComments marketId={marketId} networkId={networkId} />
+                {pane !== 'Trade' && <MarketComments marketId={marketId} networkId={networkId} />}
               </>
             ) : (
               <>
