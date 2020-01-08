@@ -46,6 +46,7 @@ describe('Augur API :: ZeroX :: ', () => {
   afterAll(() => {
     meshClient.destroy();
     stopServer();
+    console.log('MARINA', 'STOPPED ALL');
   });
 
   describe('with gnosis', () => {
