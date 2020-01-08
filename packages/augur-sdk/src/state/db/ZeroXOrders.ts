@@ -215,6 +215,7 @@ export class ZeroXOrders extends AbstractTable {
 
     const multiAssetData = defaultAbiCoder.decode(multiAssetDataAbi, `0x${storedOrder.signedOrder.makerAssetData.slice(10)}`);
     const amounts = multiAssetData[0] as BigNumber[];
+    if (amounts.length != 3) return false;
     if (!amounts[0].eq(1)) return false;
     if (!amounts[1].eq(0)) return false;
     if (!amounts[2].eq(0)) return false;

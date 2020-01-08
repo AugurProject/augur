@@ -25,8 +25,6 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
 
     uint256 constant public TRADE_INTERVAL_VALUE = 10 ** 19; // Trade value of 10 DAI
 
-    uint256[] private multiAssetValues;
-
     // ERC20Token(address)
     bytes4 constant private ERC20_PROXY_ID = 0xf47261b0;
 
@@ -103,7 +101,6 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         fillOrder = IFillOrder(_augurTrading.lookup("FillOrder"));
         require(fillOrder != IFillOrder(0));
 
-        multiAssetValues = [1, 0, 0];
         cashAssetData = encodeCashAssetData();
         shareAssetData = encodeShareAssetData();
 
@@ -345,12 +342,16 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         returns (bytes memory _assetData)
     {
         bytes[] memory _nestedAssetData = new bytes[](3);
+        uint256[] memory _multiAssetValues = new uint256[](3);
         _nestedAssetData[0] = encodeTradeAssetData(_market, _price, _outcome, _type, _kycToken);
         _nestedAssetData[1] = cashAssetData;
         _nestedAssetData[2] = shareAssetData;
+        _multiAssetValues[0] = 1;
+        _multiAssetValues[1] = 0;
+        _multiAssetValues[2] = 0;
         bytes memory _data = abi.encodeWithSelector(
             MULTI_ASSET_PROXY_ID,
-            multiAssetValues,
+            _multiAssetValues,
             _nestedAssetData
         );
         return _data;
@@ -488,8 +489,9 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
 
         (_amounts, _nestedAssetData) = abi.decode(_noSelectorAssetData, (uint256[], bytes[]));
         
-        // Validate storage refs against the decoded values. Need to convert to memory to compare
+        // Validate storage refs against the decoded values.
         {
+            require(_amounts.length == 3);
             require(_amounts[0] == 1);
             require(_amounts[1] == 0);
             require(_amounts[2] == 0);

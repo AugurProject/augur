@@ -8,7 +8,7 @@ asn1crypto==0.24.0        # via cryptography
 atomicwrites==1.3.0       # via pytest
 attrdict==2.0.1           # via eth-account
 attrs==19.1.0             # via pytest
-augur-solidity-flattener==0.2.3
+augur-solidity-flattener==0.2.5
 base58==1.0.3             # via multiaddr
 certifi==2019.9.11        # via requests
 cffi==1.12.3              # via cryptography
