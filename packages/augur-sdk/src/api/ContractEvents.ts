@@ -1,6 +1,6 @@
-import { Provider, Log, ParsedLog } from "..";
-import { abi } from "@augurproject/artifacts";
-import { Abi } from "ethereum";
+import { Provider, Log, ParsedLog } from '..';
+import { abi } from '@augurproject/artifacts';
+import { Abi } from 'ethereum';
 
 export class ContractEvents {
   private readonly provider: Provider;
@@ -9,12 +9,12 @@ export class ContractEvents {
   private readonly shareTokenAddress: string;
 
   private readonly eventNameToContractName = {
-    "TransferSingle": "ShareToken",
-    "TransferBatch": "ShareToken",
-    "OrderEvent": "AugurTrading",
-    "ProfitLossChanged": "AugurTrading",
-    "MarketVolumeChanged": "AugurTrading"
-  }
+    'TransferSingle': 'ShareToken',
+    'TransferBatch': 'ShareToken',
+    'OrderEvent': 'AugurTrading',
+    'ProfitLossChanged': 'AugurTrading',
+    'MarketVolumeChanged': 'AugurTrading'
+  };
 
   private readonly contractAddressToName = {};
 
@@ -23,15 +23,15 @@ export class ContractEvents {
     this.augurAddress = augurAddress;
     this.augurTradingAddress = augurTradingAddress;
     this.shareTokenAddress = shareTokenAddress;
-    this.provider.storeAbiData(abi.Augur as Abi, "Augur");
-    this.provider.storeAbiData(abi.AugurTrading as Abi, "AugurTrading");
-    this.provider.storeAbiData(abi.ShareToken as Abi, "ShareToken");
-    this.contractAddressToName[this.augurAddress] = "Augur";
-    this.contractAddressToName[this.augurTradingAddress] = "AugurTrading";
-    this.contractAddressToName[this.shareTokenAddress] = "ShareToken";
+    this.provider.storeAbiData(abi.Augur as Abi, 'Augur');
+    this.provider.storeAbiData(abi.AugurTrading as Abi, 'AugurTrading');
+    this.provider.storeAbiData(abi.ShareToken as Abi, 'ShareToken');
+    this.contractAddressToName[this.augurAddress] = 'Augur';
+    this.contractAddressToName[this.augurTradingAddress] = 'AugurTrading';
+    this.contractAddressToName[this.shareTokenAddress] = 'ShareToken';
   }
 
-  async getLogs(eventName: string, fromBlock: number, toBlock: number | "latest", additionalTopics?: Array<string | string[]>): Promise<ParsedLog[]> {
+  async getLogs(eventName: string, fromBlock: number, toBlock: number | 'latest', additionalTopics?: Array<string | string[]>): Promise<ParsedLog[]> {
     let topics: Array<string | string[]> = this.getEventTopics(eventName);
     if (additionalTopics) {
       topics = topics.concat(additionalTopics);
@@ -42,15 +42,15 @@ export class ContractEvents {
 
   getEventContractName = (eventName: string) => {
     const contractName = this.eventNameToContractName[eventName];
-    return contractName || "Augur";
-  }
+    return contractName || 'Augur';
+  };
 
   getEventContractAddress = (eventName: string) => {
     const contractName = this.getEventContractName(eventName);
-    if (contractName == "ShareToken") return this.shareTokenAddress;
-    if (contractName == "AugurTrading") return this.augurTradingAddress;
+    if (contractName === 'ShareToken') return this.shareTokenAddress;
+    if (contractName === 'AugurTrading') return this.augurTradingAddress;
     return this.augurAddress;
-  }
+  };
 
   getEventTopics = (eventName: string) => {
     return [this.provider.getEventTopic(this.getEventContractName(eventName), eventName)];
@@ -59,14 +59,14 @@ export class ContractEvents {
   parseLogs = (logs: Log[]): ParsedLog[] => {
     return logs.map((log) => {
       const contractName: string|undefined = this.contractAddressToName[log.address];
-      if(typeof contractName === "undefined") {
-        console.log("Could not find contract name for log, check ABI", log);
+      if (typeof contractName === 'undefined') {
+        console.error('Could not find contract name for log, check ABI', log);
         throw new Error(`Recieved a log for an unknown contract at address ${log.address}. Double check that deployment is up to date and new ABIs have been committed.`);
       }
 
       const logValues = this.provider.parseLogValues(contractName, log);
       return Object.assign(
-        { name: "" },
+        { name: '' },
         logValues,
         {
           blockNumber: log.blockNumber,
