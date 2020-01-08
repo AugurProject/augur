@@ -91,15 +91,6 @@ Deploying to: ${networkConfiguration.networkName}
             await this.uploadLegacyRep();
         }
 
-        // REP price oracle
-        if (this.configuration.isProduction || externalAddresses.RepPriceOracle) {
-            if (!externalAddresses.RepPriceOracle) throw new Error('Must provide RepPriceOracle');
-            console.log(`Registering Rep Price Oracle Contract at ${externalAddresses.RepPriceOracle}`);
-            await this.augur!.registerContract(stringTo32ByteHex('RepPriceOracle'), externalAddresses.RepPriceOracle);
-        } else {
-            await this.uploadRepPriceOracle();
-        }
-
         // Cash
         if (this.configuration.isProduction
             || externalAddresses.Cash
@@ -180,6 +171,15 @@ Deploying to: ${networkConfiguration.networkName}
             await this.uploadUniswapContracts();
         }
 
+        // ENS
+        if (this.configuration.isProduction || externalAddresses.ENSRegistry) {
+            if (!externalAddresses.ENSRegistry) throw new Error('Must provide ENSRegistry');
+            console.log(`Registering ENSRegistry Contract at ${externalAddresses.ENSRegistry}`);
+            await this.augur!.registerContract(stringTo32ByteHex('ENSRegistry'), externalAddresses.ENSRegistry);
+        } else {
+            await this.uploadENSContracts();
+        }
+
         await this.initializeAllContracts();
         await this.doTradingApprovals();
 
@@ -231,6 +231,7 @@ Deploying to: ${networkConfiguration.networkName}
             if (contract.contractName === 'CashFaucetProxy') continue;
             if (contract.contractName === 'UniswapV2') continue;
             if (contract.contractName === 'UniswapV2Factory') continue;
+            if (contract.contractName === 'ENSRegistry') continue;
             if (contract.contractName === 'Time') contract = this.configuration.useNormalTime ? contract : this.contracts.get('TimeControlled');
             if (contract.contractName === 'ReputationTokenFactory') contract = this.configuration.isProduction ? contract: this.contracts.get('TestNetReputationTokenFactory');
             if (contract.contractName === 'CashFaucet') {
@@ -331,19 +332,19 @@ Deploying to: ${networkConfiguration.networkName}
 
     private async uploadUniswapContracts(): Promise<string> {
         const uniswapV2FactoryContract = await this.contracts.get('UniswapV2Factory');
-        uniswapV2FactoryContract.address = await this.uploadAndAddToAugur(uniswapV2FactoryContract, 'UniswapV2Factory', ["0x0", 0]);
+        uniswapV2FactoryContract.address = await this.uploadAndAddToAugur(uniswapV2FactoryContract, 'UniswapV2Factory', []);
         return uniswapV2FactoryContract.address;
+    }
+
+    private async uploadENSContracts(): Promise<string> {
+        const ensRegistryContract = await this.contracts.get('ENSRegistry');
+        ensRegistryContract.address = await this.uploadAndAddToAugur(ensRegistryContract, 'ENSRegistry', []);
+        return ensRegistryContract.address;
     }
 
     async uploadLegacyRep(): Promise<string> {
         const contract = await this.contracts.get('LegacyReputationToken');
         contract.address = await this.uploadAndAddToAugur(contract, 'LegacyReputationToken');
-        return contract.address;
-    }
-
-    async uploadRepPriceOracle(): Promise<string> {
-        const contract = await this.contracts.get('RepPriceOracle');
-        contract.address = await this.uploadAndAddToAugur(contract, 'RepPriceOracle');
         return contract.address;
     }
 
@@ -428,6 +429,7 @@ Deploying to: ${networkConfiguration.networkName}
         if (contractName === 'ReputationToken') return;
         if (contractName === 'UniswapV2') return;
         if (contractName === 'UniswapV2Factory') return;
+        if (contractName === 'ENSRegistry') return;
         if (contractName === 'TestNetReputationToken') return;
         if (contractName === 'ProxyFactory') return;
         if (contractName === 'Time') contract = this.configuration.useNormalTime ? contract : this.contracts.get('TimeControlled');
@@ -435,7 +437,6 @@ Deploying to: ${networkConfiguration.networkName}
         if (contract.relativeFilePath.startsWith('legacy_reputation/')) return;
         if (contractName === 'LegacyReputationToken') return;
         if (contractName === 'Cash') return;
-        if (contractName === 'RepPriceOracle') return;
         if (contractName === 'CashFaucet') return;
         if (contractName === 'CashFaucetProxy') return;
         if (contractName === 'GnosisSafe') return;

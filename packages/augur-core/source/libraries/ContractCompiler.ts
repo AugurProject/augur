@@ -134,13 +134,17 @@ export class ContractCompiler {
     async generateFlattenedSolidity(filePath: string): Promise<string> {
         const relativeFilePath = filePath.replace(this.configuration.contractSourceRoot, '').replace(/\\/g, '/');
 
-        const childProcess = exec(format(this.flattenerCommand, this.configuration.contractSourceRoot, relativeFilePath), {
+        const formattedCommand = format(this.flattenerCommand, this.configuration.contractSourceRoot, relativeFilePath);
+        const childProcess = exec(formattedCommand, {
             encoding: 'buffer',
             cwd: this.configuration.contractSourceRoot
         });
         // The flattener removes the pragma experimental line from output so we add it back here
         let result = await this.getCommandOutputFromInput(childProcess, '');
         const originalFileData = (await fs.readFile(filePath)).toString('utf8');
+        if (result == "") {
+            throw new Error(`Failed to flatten ${filePath}`);
+        }
         if (originalFileData.includes('pragma experimental ABIEncoderV2')) {
             result = 'pragma experimental ABIEncoderV2;\n' + result;
         }
@@ -216,7 +220,11 @@ export class ContractCompiler {
                 // Maker
                 "TestNetDaiJoin",
                 "TestNetDaiPot",
-                "TestNetDaiVat"
+                "TestNetDaiVat",
+                // Uniswap
+                "UniswapV2Factory",
+                // ENS
+                "ENSRegistry",
             ];
             const name = path.parse(file).base.replace('.sol', '');
             if (!allowedFilenames.includes(name)) return true;

@@ -6,7 +6,7 @@
 #
 atomicwrites==1.3.0       # via pytest
 attrdict==2.0.1           # via eth-account
-attrs==19.1.0             # via pytest
+attrs==19.1.0             # via jsonschema, pytest
 augur-solidity-flattener==0.2.5
 base58==1.0.3             # via multiaddr
 blake2b-py==0.1.3         # via py-evm
