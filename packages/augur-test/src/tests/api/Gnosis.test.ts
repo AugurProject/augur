@@ -149,7 +149,7 @@ describe('Gnosis :: ', () => {
   });
 
   describe('make safe through relay', () => {
-    test('polling for status', async done => {
+    test.skip('polling for status', async done => {
       const gnosisSafeResponse = await john.createGnosisSafeViaRelay(
         john.augur.contracts.cash.address
       );
