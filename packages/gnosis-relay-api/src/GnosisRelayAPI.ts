@@ -116,7 +116,7 @@ export interface IGnosisRelayAPI {
 
 export class GnosisRelayAPI implements IGnosisRelayAPI {
   readonly relayURL: string;
-  gasEstimateIncreasePercentage: BigNumber = new BigNumber(10);
+  gasEstimateIncreasePercentage: BigNumber | null = new BigNumber(34);
 
   constructor(relayURL: string) {
     this.relayURL = relayURL;

@@ -23,10 +23,7 @@ interface PerformQueueTask {
 export class EthersProvider extends ethers.providers.BaseProvider
   implements EProvider {
   gasLimit: ethers.utils.BigNumber | null = new ethers.utils.BigNumber(7500000);
-  gasEstimateIncreasePercentage: ethers.utils.BigNumber | null = new ethers.utils.BigNumber(
-    10
-  );
-
+  gasEstimateIncreasePercentage: ethers.utils.BigNumber | null = new ethers.utils.BigNumber(34);
   private contractMapping: ContractMapping = {};
   private performQueue: AsyncQueue<PerformQueueTask>;
   readonly provider: ethers.providers.JsonRpcProvider;
