@@ -48,7 +48,8 @@ export class MarketDB extends DerivedDB {
       'DisputeCrowdsourcerCompleted',
       'MarketFinalized',
       'MarketParticipantsDisavowed',
-      'MarketMigrated'
+      'MarketMigrated',
+      'ProfitLossChanged'
     ], augur);
 
     this.docProcessMap = {
@@ -60,6 +61,7 @@ export class MarketDB extends DerivedDB {
       'MarketOIChanged': this.processMarketOIChanged,
       'MarketParticipantsDisavowed': this.processMarketParticipantsDisavowed,
       'MarketMigrated': this.processMarketMigrated,
+      'ProfitLossChanged': this.processProfitLossChanged,
     };
 
     this.augur.events.subscribe('DerivedDB:updated:CurrentOrders', this.syncOrderBooks);
@@ -238,6 +240,8 @@ export class MarketDB extends DerivedDB {
     log['feeDivisor'] = new BigNumber(1).dividedBy(new BigNumber(log['feePerCashInAttoCash'], 16).dividedBy(QUINTILLION)).toNumber();
     log['feePercent'] = new BigNumber(log['feePerCashInAttoCash'], 16).div(QUINTILLION).toNumber();
     log['lastTradedTimestamp'] = 0;
+    log['timestamp'] = new BigNumber(log['timestamp'], 16).toNumber();
+    log['endTime'] = new BigNumber(log['endTime'], 16).toNumber();
     try {
       log['extraInfo'] = JSON.parse(log['extraInfo']);
       log['extraInfo'].categories = log['extraInfo'].categories.map((category) => category.toLowerCase());
@@ -294,6 +298,11 @@ export class MarketDB extends DerivedDB {
 
   private processMarketMigrated(log: ParsedLog): ParsedLog {
     log['universe'] = log['newUniverse'];
+    return log;
+  }
+
+  private processProfitLossChanged(log: ParsedLog): ParsedLog {
+    log['lastTradedTimestamp'] = new BigNumber(log['timestamp'], 16).toNumber();
     return log;
   }
 
