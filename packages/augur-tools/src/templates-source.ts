@@ -4962,7 +4962,7 @@ export const TEMPLATES = {
       {
         marketType: YES_NO,
         question: `Will [0] gross $[1] USD or more, in it's opening weekend in the US?`,
-        example: `Will Avangers: Endgame gross $350 million USD or more in it's opening weekend in the US?`,
+        example: `Will Avengers: Endgame gross $350 million USD or more in it's opening weekend in the US?`,
         inputs: [
           {
             id: 0,
@@ -4986,7 +4986,7 @@ export const TEMPLATES = {
       {
         marketType: YES_NO,
         question: `Head-to-Head: Will [0] gross more than [1] on it's opening weekend in the US?`,
-        example: `Head-to-Head: Will Avangers: Endgame gross more than Avangers: Age of Ultron on it's opening weekend in the US?`,
+        example: `Head-to-Head: Will Avengers: Endgame gross more than Avengers: Age of Ultron on it's opening weekend in the US?`,
         inputs: [
           {
             id: 0,

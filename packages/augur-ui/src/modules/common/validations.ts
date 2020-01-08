@@ -1,9 +1,20 @@
-import { INVALID_OUTCOME, OUTCOME_MAX_LENGTH, SATURDAY_DAY_OF_WEEK, SUNDAY_DAY_OF_WEEK } from 'modules/create-market/constants';
+import {
+  INVALID_OUTCOME,
+  OUTCOME_MAX_LENGTH,
+  SATURDAY_DAY_OF_WEEK,
+  SUNDAY_DAY_OF_WEEK,
+} from 'modules/create-market/constants';
 import isAddress from 'modules/auth/helpers/is-address';
 import { createBigNumber } from 'utils/create-big-number';
 import { ZERO } from './constants';
 import { NewMarketPropertiesValidations } from 'modules/types';
-import { ValidationType, TemplateInputType, TemplateInput, UserInputDateTime, tellOnHoliday } from '@augurproject/artifacts';
+import {
+  ValidationType,
+  TemplateInputType,
+  TemplateInput,
+  UserInputDateTime,
+  tellOnHoliday,
+} from '@augurproject/artifacts';
 import moment from 'moment';
 
 export function isFilledString(value, readable, message) {
@@ -120,7 +131,9 @@ export function checkAddress(value) {
 }
 
 export function checkOutcomesArray(value) {
-  const validOutcomes = value.filter(outcome => outcome && outcome.trim() !== '');
+  const validOutcomes = value.filter(
+    outcome => outcome && outcome.trim() !== ''
+  );
   if (validOutcomes.length < 2) {
     if (!validOutcomes.length) {
       return ['Enter an outcome', 'Enter an outcome'];
@@ -132,14 +145,17 @@ export function checkOutcomesArray(value) {
   } else {
     const errors = Array(value.length).fill('');
     const invalid = value.findIndex(
-      outcome => outcome && outcome.trim().toLowerCase() === INVALID_OUTCOME.toLowerCase()
+      outcome =>
+        outcome &&
+        outcome.trim().toLowerCase() === INVALID_OUTCOME.toLowerCase()
     );
     if (invalid !== -1)
       errors[invalid] = ['Can\'t enter "Market is Invalid" as an outcome'];
 
     let dupes = {};
     value.forEach((outcome, index) => {
-      dupes[outcome.trim().toLowerCase()] = dupes[outcome.trim().toLowerCase()] || [];
+      dupes[outcome.trim().toLowerCase()] =
+        dupes[outcome.trim().toLowerCase()] || [];
       dupes[outcome.trim().toLowerCase()].push(index);
     });
     Object.keys(dupes).map(key => {
@@ -152,7 +168,7 @@ export function checkOutcomesArray(value) {
       if (v.length > OUTCOME_MAX_LENGTH && !errors[i]) {
         errors[i] = ['Outcome can not be more than 32 characters'];
       }
-    })
+    });
     if (errors.filter(error => error !== '').length > 0) return errors;
     return '';
   }
@@ -175,7 +191,10 @@ function checkValidNumbers(values) {
   return valid;
 }
 
-export function checkForUserInputFilled(inputs: TemplateInput[], endTimeFormatted) {
+export function checkForUserInputFilled(
+  inputs: TemplateInput[],
+  endTimeFormatted
+) {
   const errors = inputs.map(input => {
     if (
       (input.validationType === ValidationType.WHOLE_NUMBER &&
@@ -188,8 +207,7 @@ export function checkForUserInputFilled(inputs: TemplateInput[], endTimeFormatte
       checkValidNumber(input.userInput)
     ) {
       return 'Must enter a valid number';
-    }
-    else if (input.type === TemplateInputType.DATEYEAR) {
+    } else if (input.type === TemplateInputType.DATEYEAR) {
       if (!input.userInput) return 'Input is required';
       if (input.dateAfterId) {
         const source = inputs.find(i => i.id === input.dateAfterId);
@@ -201,31 +219,38 @@ export function checkForUserInputFilled(inputs: TemplateInput[], endTimeFormatte
       if (input.validationType === ValidationType.NOWEEKEND_HOLIDAYS) {
         let holidayPresent = '';
         if (input.setEndTime) {
-          const dayOfWeek = moment.unix(input.setEndTime).weekday()
-          if (dayOfWeek === SATURDAY_DAY_OF_WEEK || dayOfWeek === SUNDAY_DAY_OF_WEEK) {
+          const dayOfWeek = moment.unix(input.setEndTime).weekday();
+          if (
+            dayOfWeek === SATURDAY_DAY_OF_WEEK ||
+            dayOfWeek === SUNDAY_DAY_OF_WEEK
+          ) {
             return 'Weekday is required';
           }
 
-          // check if on holiday 
+          // check if on holiday
           const closing = inputs.find(
             i => i.type === TemplateInputType.DATEYEAR_CLOSING
           );
           if (closing) {
-          const holiday = tellOnHoliday(inputs, input, closing);
-          if (holiday) {
-            return `${holiday.holiday} not allowed`;
+            const extraInfoInputs = inputs.map(i => ({id: i.id, value: i.userInput, type: i.type}));
+            const extraInput = ({id: input.id, timestamp: String(input.setEndTime), type: input.type, value: input.userInput});
+            const dateDep = ({ inputDateYearId: closing.inputDateYearId, inputSourceId: closing.inputSourceId, holidayClosures: closing.holidayClosures, inputTimeOffset: closing.inputTimeOffset})
+            const holiday = tellOnHoliday(extraInfoInputs, extraInput, dateDep);
+            if (holiday) {
+              return `Holiday ${holiday.holiday} not allowed`;
+            }
           }
         }
+        if (
+          endTimeFormatted &&
+          endTimeFormatted.timestamp &&
+          input.setEndTime &&
+          input.setEndTime >= endTimeFormatted.timestamp
+        ) {
+          return 'Date must be before event expiration time';
+        }
+        return '';
       }
-      if (
-        endTimeFormatted && endTimeFormatted.timestamp &&
-        input.setEndTime &&
-        input.setEndTime >=
-          endTimeFormatted.timestamp
-      ) {
-        return 'Date must be before event expiration time';
-      }
-      return '';
     } else if (
       (input.type === TemplateInputType.TEXT ||
         input.type === TemplateInputType.USER_DESCRIPTION_OUTCOME ||
@@ -243,12 +268,13 @@ export function checkForUserInputFilled(inputs: TemplateInput[], endTimeFormatte
     ) {
       const possibleDupes = inputs.filter(
         possibleDupeInput =>
-          (
-            (possibleDupeInput.type === TemplateInputType.TEXT ||
-              input.type === TemplateInputType.DROPDOWN) &&
-              (possibleDupeInput.userInput && input.userInput && possibleDupeInput.userInput.toUpperCase() ===
-              input.userInput.toUpperCase()) && input.id !== possibleDupeInput.id
-          )
+          (possibleDupeInput.type === TemplateInputType.TEXT ||
+            input.type === TemplateInputType.DROPDOWN) &&
+          (possibleDupeInput.userInput &&
+            input.userInput &&
+            possibleDupeInput.userInput.toUpperCase() ===
+              input.userInput.toUpperCase()) &&
+          input.id !== possibleDupeInput.id
       );
       if (possibleDupes.length > 0) {
         return 'No repeats allowed';
@@ -257,12 +283,12 @@ export function checkForUserInputFilled(inputs: TemplateInput[], endTimeFormatte
       }
     } else if (input.type === TemplateInputType.DATESTART) {
       if (input.setEndTime === null) {
-        return 'Choose a date'
+        return 'Choose a date';
       } else if (
-        endTimeFormatted && endTimeFormatted.timestamp &&
+        endTimeFormatted &&
+        endTimeFormatted.timestamp &&
         input.setEndTime &&
-        input.setEndTime >=
-          endTimeFormatted.timestamp
+        input.setEndTime >= endTimeFormatted.timestamp
       ) {
         return 'Date must be before event expiration time';
       }
@@ -281,10 +307,10 @@ export function checkForUserInputFilled(inputs: TemplateInput[], endTimeFormatte
         if (dateTimeInput.endTime === null) {
           validations.setEndTime = 'Choose a date';
         } else if (
-          endTimeFormatted && endTimeFormatted.timestamp &&
+          endTimeFormatted &&
+          endTimeFormatted.timestamp &&
           dateTimeInput.endTimeFormatted &&
-          dateTimeInput.endTimeFormatted.timestamp >=
-            endTimeFormatted.timestamp
+          dateTimeInput.endTimeFormatted.timestamp >= endTimeFormatted.timestamp
         ) {
           validations.setEndTime = 'Date must be before event expiration time';
         }
@@ -293,7 +319,8 @@ export function checkForUserInputFilled(inputs: TemplateInput[], endTimeFormatte
       } else {
         return '';
       }
-    } else return '';
+    }
+    return '';
   });
 
   return errors;

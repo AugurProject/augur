@@ -398,7 +398,8 @@ export function tellOnHoliday(
   closing: DateInputDependencies,
 ) {
   let holidayPresent = null;
-  const exchange = inputs[closing.inputSourceId];
+  const exchange = inputs.find(i => i.id === closing.inputSourceId);
+  if (!exchange) return 'exchange not found'; //exchange is required
   if (exchange.value) {
     const holidayClosures = closing.holidayClosures[exchange.value];
     const inputYear = moment.unix(Number(input.timestamp)).year();
@@ -437,11 +438,11 @@ function dateNoWeekendHoliday(
     ) {
       return false;
     }
-
-    const closing = closingDateDependencies[0];
-    if (closing && tellOnHoliday(inputs, input, closing)) {
-      return false;
-    }
+    closingDateDependencies.forEach(closing => {
+      if (closing && tellOnHoliday(inputs, input, closing)) {
+        p = false;
+      }
+    });
     return p;
   }, true);
   return result;
@@ -588,7 +589,7 @@ export const isTemplateMarket = (
       return false;
     }
 
-    // check DATE isn't on weekend
+    // check DATE isn't on weekend or holiday
     if (!dateNoWeekendHoliday(template.inputs, validation.dateDependencies, validation.closingDateDependencies)) {
       errors.push('market question date can not be on weekend or on a holiday');
       return false;
