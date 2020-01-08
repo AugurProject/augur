@@ -20,7 +20,7 @@ import convertExponentialToDecimal from 'utils/convert-exponential';
 import { MarketData, OutcomeFormatted, OutcomeOrderBook } from 'modules/types';
 import { MarketType } from '@augurproject/sdk/src/state/logs/types';
 import { Getters } from '@augurproject/sdk';
-import { convertDisplayAmountToOnChainAmount } from '@augurproject/sdk';
+import { convertDisplayAmountToOnChainAmount, tickSizeToNumTickWithDisplayPrices } from '@augurproject/sdk';
 import { CancelTextButton, TextButtonFlip } from 'modules/common/buttons';
 import moment, { Moment } from 'moment';
 import { convertUnixToFormattedDate } from 'utils/format-date';
@@ -282,10 +282,19 @@ class Form extends Component<FromProps, FormState> {
       tradeInterval = TRADE_INTERVAL_VALUE.dividedBy(market.numTicks);
     }
     if (!convertDisplayAmountToOnChainAmount(value, market.tickSize).mod(tradeInterval).isEqualTo(0)) {
+      let numTicks = market.numTicks;
+      if (!numTicks) {
+        numTicks = tickSizeToNumTickWithDisplayPrices(
+          createBigNumber(market.tickSize),
+          createBigNumber(market.minPrice),
+          createBigNumber(market.maxPrice)
+        );
+      }
+      console.log(numTicks);
       errorCount += 1;
       passedTest = false;
       errors[this.INPUT_TYPES.QUANTITY].push(
-          `Quantity must be a multiple of ${tradeInterval.multipliedBy(market.numTicks).dividedBy(10**18)}`
+          `Quantity must be a multiple of ${tradeInterval.multipliedBy(numTicks).dividedBy(10**18)}`
         );
     }
     if(expiration && expiration - moment().unix() < 60) {
