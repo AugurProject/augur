@@ -105,11 +105,9 @@ function selectColumn(columnType: string, properties: Properties) {
     case COLUMN_TYPES.MOVEMENT_LABEL:
       return (
         <MovementLabel
-          showPercent={properties.showPercent}
+          useFull={properties.useFull}
           showBrackets={properties.showBrackets}
           showPlusMinus={properties.showPlusMinus}
-          showColors={properties.showColors}
-          size={properties.size}
           value={properties.value}
         />
       );

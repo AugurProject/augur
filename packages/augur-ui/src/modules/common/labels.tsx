@@ -52,16 +52,14 @@ export interface InReportingLabelProps extends MarketStatusProps {
 }
 
 export interface MovementLabelProps {
-  value: number;
-  size: SizeTypes;
+  value: FormattedNumber;
+  size?: SizeTypes;
   styles?: object;
-  showColors?: boolean;
   showIcon?: boolean;
   showBrackets?: boolean;
-  showPercent?: boolean;
   showPlusMinus?: boolean;
-  showCurrency?: string;
-  showNegative?: boolean;
+  useFull?: boolean;
+  hideNegative?: boolean;
 }
 
 export interface MovementIconProps {
@@ -70,14 +68,13 @@ export interface MovementIconProps {
 }
 
 export interface MovementTextProps {
-  value: number;
+  value: FormattedNumber;
+  numberValue: number;
   size: SizeTypes;
-  showColors: boolean;
   showBrackets: boolean;
-  showPercent: boolean;
   showPlusMinus: boolean;
-  showCurrency?: string;
-  showNegative?: boolean;
+  useFull: boolean;
+  hideNegative: boolean;
 }
 
 export interface PropertyLabelProps {
@@ -108,8 +105,7 @@ export interface LinearPropertyLabelPercentMovementProps {
   label: string;
   value: string;
   accentValue?: boolean;
-  numberValue: number;
-  showColors?: boolean;
+  movementValue: FormattedNumber;
   showIcon?: boolean;
   showBrackets?: boolean;
   showPercent?: boolean;
@@ -819,67 +815,58 @@ export const MovementIcon = (props: MovementIconProps) => {
   return <div className={`${iconSize} ${iconColor}`}>{MarketIcon}</div>;
 };
 
-export const MovementText = (props: MovementTextProps) => {
-  const getTextSizeStyle: Function = (size: SizeTypes): string =>
+export const MovementText = ({
+  value,
+  size,
+  showPlusMinus,
+  showBrackets,
+  hideNegative,
+  useFull,
+  numberValue
+}: MovementTextProps) => {
+  const getTextSizeStyle: Function = (sz: SizeTypes): string =>
     classNames(Styles.MovementLabel_Text, {
-      [Styles.MovementLabel_Text_small]: size == SizeTypes.SMALL,
-      [Styles.MovementLabel_Text_normal]: size == SizeTypes.NORMAL,
-      [Styles.MovementLabel_Text_large]: size == SizeTypes.LARGE,
+      [Styles.MovementLabel_Text_small]: sz == SizeTypes.SMALL,
+      [Styles.MovementLabel_Text_normal]: sz == SizeTypes.NORMAL,
+      [Styles.MovementLabel_Text_large]: sz == SizeTypes.LARGE,
     });
-  const getTextColorStyles: Function = (value: number): string =>
+  const getTextColorStyles: Function = (val: number): string =>
     classNames({
-      [Styles.MovementLabel_Text_positive]: value > 0,
-      [Styles.MovementLabel_Text_negative]: value < 0,
-      [Styles.MovementLabel_Text_neutral]: value === 0,
+      [Styles.MovementLabel_Text_positive]: val > 0,
+      [Styles.MovementLabel_Text_negative]: val < 0,
+      [Styles.MovementLabel_Text_neutral]: val === 0,
     });
 
-  const textColorStyle = getTextColorStyles(props.value);
-  const textSizeStyle = getTextSizeStyle(props.size);
+  const textColorStyle = getTextColorStyles(numberValue);
+  const textSizeStyle = getTextSizeStyle(size);
 
-  // Transform label
-  const removeMinus: Function = (label: number): number => {
-    if (props.value < 0 && !props.showPlusMinus) {
-      return typeof props.value === 'string'
-        ? props.value.replace('-', '')
-        : Math.abs(props.value);
+  const handlePlusMinus: Function = (label: string): string => {
+    if (showPlusMinus) {
+      if (numberValue > 0) {
+        return '+'.concat(label);
+      } 
+    } else {
+      if (numberValue < 0 && hideNegative) {
+        return label.replace('-', '');
+      }
     }
     return label;
-  };
-
-  const toString: Function = (label: number): string => String(label);
-
-  const addPlus: Function = (label: string): string => {
-    if (props.value > 0 && props.showPlusMinus) {
-      return '+'.concat(label);
-    }
-    return label;
-  };
-
-  const addPercent: Function = (label: string): string => {
-    if (props.showPercent) {
-      return `${label}%`;
-    }
-    return label;
-  };
+  }
 
   const addBrackets: Function = (label: string): string => {
-    if (props.showBrackets) {
+    if (showBrackets) {
       return `(${label})`;
     }
     return label;
   };
 
-  const formattedString = addBrackets(
-    addPercent(addPlus(toString(removeMinus(props.value))))
-  );
+  const formattedString = addBrackets(handlePlusMinus(useFull ? value.full : value.formatted));
 
   return (
     <div
-      className={`${props.showColors ? textColorStyle : ''} ${textSizeStyle}`}
+      className={`${textColorStyle} ${textSizeStyle}`}
     >
-      {`${props.showNegative && props.value < 0 ? '-' : ''}${
-        !!props.showCurrency ? props.showCurrency : ''
-      }${formattedString}`}
+      {formattedString}
     </div>
   );
 };
@@ -887,40 +874,40 @@ export const MovementText = (props: MovementTextProps) => {
 export const MovementLabel = ({
   value,
   styles,
-  size,
-  showColors = false,
-  showPercent = false,
+  size = SizeTypes.NORMAL,
   showBrackets = false,
   showPlusMinus = false,
   showIcon = false,
-  showCurrency,
-  showNegative
-}: MovementLabelProps) => (
-  <div
-    className={Styles.MovementLabel}
-    style={
-      showIcon
-        ? { ...styles, justifyContent: 'space-between' }
-        : { ...styles, justifyContent: 'flex-end' }
-    }
-  >
-    {showIcon && value !== 0 && (
-      <MovementIcon value={value} size={size} />
-    )}
-    {
-      <MovementText
-        value={value}
-        size={size}
-        showColors={showColors}
-        showPercent={showPercent}
-        showBrackets={showBrackets}
-        showPlusMinus={showPlusMinus}
-        showCurrency={showCurrency}
-        showNegative={showNegative}
-      />
-    }
-  </div>
-);
+  hideNegative = false,
+  useFull = false,
+}: MovementLabelProps) => {
+  const numberValue = typeof value === 'number' ? value : value.value;
+  return (
+    <div
+      className={Styles.MovementLabel}
+      style={
+        showIcon
+          ? { ...styles, justifyContent: 'space-between' }
+          : { ...styles, justifyContent: 'flex-end' }
+      }
+    >
+      {showIcon && numberValue !== 0 && (
+        <MovementIcon value={numberValue} size={size} />
+      )}
+      {
+        <MovementText
+          value={value}
+          numberValue={numberValue}
+          size={size}
+          showBrackets={showBrackets}
+          showPlusMinus={showPlusMinus}
+          useFull={useFull}
+          hideNegative={hideNegative}
+        />
+      }
+    </div>
+  );
+};
 
 export const PillLabel = ({ label, hideOnMobile }: PillLabelProps) => (
   <span
@@ -975,12 +962,10 @@ export const LinearPropertyLabelMovement = (
     />
     <MovementLabel
       showIcon={props.showIcon}
-      showPercent={props.showPercent}
       showBrackets={props.showBrackets}
       showPlusMinus={props.showPlusMinus}
-      showColors={props.showColors}
-      size={SizeTypes.NORMAL}
-      value={props.numberValue}
+      value={props.movementValue}
+      useFull={props.useFull}
     />
   </span>
 );

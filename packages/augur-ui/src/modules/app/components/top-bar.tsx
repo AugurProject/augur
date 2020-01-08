@@ -5,7 +5,6 @@ import ConnectAccount from 'modules/auth/containers/connect-account';
 import {
   MovementLabel,
   LinearPropertyLabel,
-  LinearPropertyLabelMovement,
 } from 'modules/common/labels';
 import { CoreStats } from 'modules/types';
 import Styles from 'modules/app/components/top-bar.styles.less';
@@ -57,7 +56,10 @@ const TopBar: React.FC<TopBarProps> = ({
           </div>
           <div>
             <span>{realizedPL.label}</span>
-            <MovementLabel showColors value={realizedPL.value} size='normal' showNegative showCurrency="$" />
+            <MovementLabel
+              value={realizedPL.value}
+              useFull
+            />
           </div>
         </div>
       )}

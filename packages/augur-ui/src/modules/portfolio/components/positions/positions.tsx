@@ -95,12 +95,11 @@ export default class Positions extends Component<PositionsProps, PositionsState>
           
           <ValueLabel value={totalReturns} useFull />
           <MovementLabel
-            showPercent
             showPlusMinus
-            showColors
             showBrackets
             size={SizeTypes.SMALL}
-            value={market.myPositionsSummary && market.myPositionsSummary.totalPercent.formatted}
+            value={market.myPositionsSummary && market.myPositionsSummary.totalPercent}
+            useFull
           />
         </div>
       );
