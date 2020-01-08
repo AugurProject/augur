@@ -209,6 +209,10 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       maxPrice,
       minPrice,
       scalarDenomination,
+      ethToDaiRate,
+      gasLimit,
+      gasPrice,
+      Gnosis_ENABLED
     } = this.props;
 
     const {
@@ -229,6 +233,18 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     const higherLower = side === BUY ? 'higher' : 'lower';
 
     const marketRange = createBigNumber(maxPrice).minus(createBigNumber(minPrice)).abs();
+
+    let gasCostDai = null;
+
+    const gasCost = formatGasCostToEther(
+      gasLimit,
+      { decimalsRounded: 4 },
+      gasPrice
+    );
+
+    if (Gnosis_ENABLED && ethToDaiRate) {
+      gasCostDai = formatDai(ethToDaiRate.multipliedBy(createBigNumber(gasCost)));
+    }
 
     const limitPricePercentage = (side === BUY
       ? createBigNumber(limitPrice)
@@ -280,6 +296,11 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
                 Shares @ ${limitPrice}`
               }
             </div>
+            { gasCostDai.roundedValue.gt(0) > 0 && <LinearPropertyLabel
+              label="EST. TX FEE"
+              value={gasCostDai}
+              showDenomination={true}
+            />}
             <LinearPropertyLabel
               label="Estimated Fee"
               value={orderShareTradingFee}
@@ -336,6 +357,11 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
                 Shares @ ${limitPrice}`
                 }
             </div>
+            {gasCostDai.roundedValue.gt(0) > 0 && <LinearPropertyLabel
+              label="EST. TX FEE"
+              value={gasCostDai}
+              showDenomination={true}
+            />}
             <LinearPropertyLabel
               label="Max Profit"
               value={potentialDaiProfit}
