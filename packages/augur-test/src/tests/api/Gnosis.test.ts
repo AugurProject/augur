@@ -26,16 +26,8 @@ describe('Gnosis :: ', () => {
 
   beforeEach(async () => {
     const providerFork = await provider.fork();
-    const mary = await ContractAPI.userWrapper(
-      ACCOUNTS[1],
-      providerFork,
-      seed.addresses,
-      undefined,
-      undefined
-    );
 
     mockGnosisRelay = new MockGnosisRelayAPI();
-    mockGnosisRelay.initialize(mary);
     john = await ContractAPI.userWrapper(
       ACCOUNTS[0],
       providerFork,
@@ -43,6 +35,7 @@ describe('Gnosis :: ', () => {
       undefined,
       mockGnosisRelay
     );
+    mockGnosisRelay.initialize(john);
   });
 
   test('make safe directly', async () => {
