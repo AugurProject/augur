@@ -86,9 +86,6 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
     IShareToken public shareToken;
     IExchange public exchange;
 
-    bytes public cashAssetData;
-    bytes public shareAssetData; 
-
     function initialize(IAugur _augur, IAugurTrading _augurTrading) public beforeInitialized {
         endInitialization();
         augurTrading = _augurTrading;
@@ -100,9 +97,6 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         require(exchange != IExchange(0));
         fillOrder = IFillOrder(_augurTrading.lookup("FillOrder"));
         require(fillOrder != IFillOrder(0));
-
-        cashAssetData = encodeCashAssetData();
-        shareAssetData = encodeShareAssetData();
 
         EIP712_DOMAIN_HASH = keccak256(
             abi.encodePacked(
@@ -344,8 +338,8 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         bytes[] memory _nestedAssetData = new bytes[](3);
         uint256[] memory _multiAssetValues = new uint256[](3);
         _nestedAssetData[0] = encodeTradeAssetData(_market, _price, _outcome, _type, _kycToken);
-        _nestedAssetData[1] = cashAssetData;
-        _nestedAssetData[2] = shareAssetData;
+        _nestedAssetData[1] = encodeCashAssetData();
+        _nestedAssetData[2] = encodeShareAssetData();
         _multiAssetValues[0] = 1;
         _multiAssetValues[1] = 0;
         _multiAssetValues[2] = 0;
@@ -495,8 +489,8 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
             require(_amounts[0] == 1);
             require(_amounts[1] == 0);
             require(_amounts[2] == 0);
-            require(_nestedAssetData[1].equals(cashAssetData));
-            require(_nestedAssetData[2].equals(shareAssetData));
+            require(_nestedAssetData[1].equals(encodeCashAssetData()));
+            require(_nestedAssetData[2].equals(encodeShareAssetData()));
         }
 
         return decodeTradeAssetData(_nestedAssetData[0]);
