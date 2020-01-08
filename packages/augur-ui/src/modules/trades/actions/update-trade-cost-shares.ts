@@ -167,7 +167,21 @@ async function runSimulateTrade(
   const kycToken = undefined; // TODO: figure out how kyc tokens are going to be handled
   const doNotCreateOrders = false; // TODO: this needs to be passed from order form
 
-  const userShares = new BigNumber(marketOutcomeShares[outcomeId] || 0);
+  let userShares = createBigNumber(marketOutcomeShares[outcomeId] || 0);
+
+  if (orderType === 0) {
+    // ignore trading outcome shares and find min across all other outcome shares.
+    const userSharesBalancesRemoveOutcome = Object.keys(
+      marketOutcomeShares
+    ).reduce(
+      (p, o) =>
+        String(outcomeId) === o ? p : [...p, new BigNumber(marketOutcomeShares[o])],
+      []
+    );
+    userShares = userSharesBalancesRemoveOutcome.length > 0 ? BigNumber.min(
+      ...userSharesBalancesRemoveOutcome
+    ) : ZERO;
+  }
 
   const simulateTradeValue: SimulateTradeData = await simulateTrade(
     orderType,
