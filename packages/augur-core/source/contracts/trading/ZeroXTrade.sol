@@ -261,14 +261,13 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
     }
 
     function validateOrder(IExchange.Order memory _order, uint256 _fillAmountRemaining) internal view {
+        require(_order.takerAssetData.equals(encodeTakerAssetData()));
+        require(_order.takerAssetAmount == _order.makerAssetAmount);
         (IERC1155 _zeroXTradeTokenMaker, uint256 _tokenIdMaker) = getZeroXTradeTokenData(_order.makerAssetData);
-        (IERC1155 _zeroXTradeTokenTaker, uint256 _tokenIdTaker) = getZeroXTradeTokenData(_order.takerAssetData);
         (address _market, uint256 _price, uint8 _outcome, uint8 _type) = unpackTokenId(_tokenIdMaker);
         uint256 _numTicks = IMarket(_market).getNumTicks();
         uint256 _tradeInterval = TRADE_INTERVAL_VALUE / _numTicks;
         require(_fillAmountRemaining.isMultipleOf(_tradeInterval), "Order must be a multiple of the market trade increment");
-        require(_zeroXTradeTokenMaker == _zeroXTradeTokenTaker);
-        require(_tokenIdMaker == _tokenIdTaker);
         require(_zeroXTradeTokenMaker == this);
     }
 
@@ -420,6 +419,27 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         _assetData = abi.encodeWithSelector(
             ERC1155_PROXY_ID,
             address(shareToken),
+            _tokenIds,
+            _tokenValues,
+            _callbackData
+        );
+
+        return _assetData;
+    }
+
+    /// @dev Encode ERC-1155 asset data into the format described in the AssetProxy contract specification.
+    /// @return AssetProxy-compliant asset data describing the set of assets.
+    function encodeTakerAssetData()
+        private
+        view
+        returns (bytes memory _assetData)
+    {
+        uint256[] memory _tokenIds = new uint256[](0);
+        uint256[] memory _tokenValues = new uint256[](0);
+        bytes memory _callbackData = new bytes(0);
+        _assetData = abi.encodeWithSelector(
+            ERC1155_PROXY_ID,
+            address(this),
             _tokenIds,
             _tokenValues,
             _callbackData
@@ -585,7 +605,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         _zeroXOrder.expirationTimeSeconds = _expirationTimeSeconds;
         _zeroXOrder.salt = _salt;
         _zeroXOrder.makerAssetData = _assetData;
-        _zeroXOrder.takerAssetData = _assetData;
+        _zeroXOrder.takerAssetData = encodeTakerAssetData();
         _orderHash = exchange.getOrderInfo(_zeroXOrder).orderHash;
     }
 

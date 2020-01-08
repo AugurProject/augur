@@ -104,6 +104,7 @@ export class ZeroXOrders extends AbstractTable {
   readonly tradeTokenAddress: string;
   readonly cashAssetData: string;
   readonly shareAssetData: string;
+  readonly takerAssetData: string;
 
   constructor(
     db: DB,
@@ -119,6 +120,7 @@ export class ZeroXOrders extends AbstractTable {
     const shareTokenAddress = this.augur.addresses.ShareToken.substr(2).toLowerCase(); // normalize and remove the 0x
     this.cashAssetData = `0xf47261b0000000000000000000000000${cashTokenAddress}`;
     this.shareAssetData = `0xa7cb5fb7000000000000000000000000${shareTokenAddress}000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000`;
+    this.takerAssetData = `0xa7cb5fb7000000000000000000000000${this.tradeTokenAddress}000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000`;
   }
 
   static async create(db: DB, networkId: number, augur: Augur): Promise<ZeroXOrders> {
@@ -192,8 +194,9 @@ export class ZeroXOrders extends AbstractTable {
   }
 
   validateOrder(order: OrderInfo): boolean {
+    if (order.signedOrder.makerAssetAmount !== order.signedOrder.takerAssetAmount) return false;
     if (order.signedOrder.makerAssetData.length !== EXPECTED_ASSET_DATA_LENGTH) return false;
-    if (order.signedOrder.makerAssetData !== order.signedOrder.takerAssetData) return false;
+    if (order.signedOrder.takerAssetData !== this.takerAssetData) return false;
     return true;
   }
 
