@@ -123,15 +123,15 @@ export class ZeroXOrders extends AbstractTable {
 
   async handleMeshEvent(orderEvents: OrderEvent[]): Promise<void> {
     if (orderEvents.length < 1) return;
-    console.log('Mesh events recieved');
-    console.log(JSON.stringify(orderEvents));
+    console.log('Mesh events received');
+    console.log(orderEvents);
 
     const filteredOrders = _.filter(orderEvents, this.validateOrder.bind(this));
     let documents = _.map(filteredOrders, this.processOrder.bind(this));
 
-    // Remove Canceled Orders and emit event
+    // Remove Canceled, Expired, and Invalid Orders and emit event
     const canceledOrders =
-      _.filter(orderEvents, (orderEvent => orderEvent.endState === 'CANCELLED'))
+      _.filter(orderEvents, (orderEvent => orderEvent.endState === 'CANCELLED' || orderEvent.endState === 'EXPIRED' || orderEvent.endState === 'INVALID'))
       .map(order => order.orderHash);
 
     for (const d of documents) {
@@ -142,10 +142,23 @@ export class ZeroXOrders extends AbstractTable {
       }
     }
 
+    // Deal with partial fills and emit event
+    const filledOrders =
+      _.filter(orderEvents, (orderEvent => orderEvent.endState === 'FILLED'))
+      .map(order => order.orderHash);
+
+    for (const d of documents) {
+      if (filledOrders.includes(d.orderHash)) {
+        documents = _.filter(documents, (orderEvent => orderEvent.orderHash !== d.orderHash));
+        await this.bulkUpsertDocuments([...d]);
+        this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Fill, orderId: d.orderHash,...d});
+      }
+    }
+    
     documents = _.filter(documents, this.validateStoredOrder.bind(this));
     await this.bulkUpsertDocuments(documents);
     for (const d of documents) {
-      this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Create, ...d});
+      this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Create, orderId: d.orderHash,...d});
     }
   }
 
@@ -183,40 +196,13 @@ export class ZeroXOrders extends AbstractTable {
     }
     if (!storedOrder["numberAmount"].mod(tradeInterval).isEqualTo(0)) return false;
 
-    // expired
-    // filled their own order
-    // unapproved order (had no approvals, this is identical to filling own order from contracts pov, on 0x side looks like a fill)
-    // actual cancel
-    // a regular fill
     if (storedOrder.numberAmount.isEqualTo(0)) {
-      console.log("Deleted order");
+      console.log("Deleting filled order");
       this.table.where('orderHash').equals(storedOrder.orderHash).delete();
-      this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Fill, ...storedOrder});
+      this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Fill, orderId: storedOrder.orderHash,...storedOrder});
       return false;
     }
 
-    if (parseInt(storedOrder.signedOrder.expirationTimeSeconds) - moment().unix() < 60) {
-      this.table.where('orderHash').equals(storedOrder.orderHash).delete();
-      this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Cancel, ...storedOrder});
-      return false;
-    };
-    // if(storedOrder.endState == "EXPIRED" || storedOrder.endState == "CANCELLED" || storedOrder.endState == "INVALID") {
-    //   this.table.where('orderHash').equals(storedOrder.orderHash).delete();
-    //   this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Cancel, ...storedOrder});
-    //   return false;
-    // }
-    // if(storedOrder.endState == "FILLED" || storedOrder.endState == "FULLY_FILLED") {
-    //   await this.bulkUpsertDocuments([...storedOrder]);
-    //   if(storedOrder.endState == "FULLY_FILLED") {
-    //     this.table.where('orderHash').equals(storedOrder.orderHash).delete();
-    //   }
-    //   this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Fill, ...storedOrder});
-    //   return false;
-    // }
-
-      // if (storedOrder.signedOrder.makerAddress == this.account || parseInt(storedOrder.signedOrder.expirationTimeSeconds) - moment().unix() < 20) {
-        // this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Cancel, ...storedOrder});
-      // }
     return true;
   }
 
