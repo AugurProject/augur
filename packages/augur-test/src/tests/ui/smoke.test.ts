@@ -1,5 +1,4 @@
 import puppeteer from 'puppeteer';
-// import { ACCOUNTS, FlashSession, addScripts, addGanacheScripts } from "@augurproject/tools";
 import path from 'path';
 import fs from 'fs';
 
@@ -7,23 +6,6 @@ const express = require('express');
 const helmet = require('helmet');
 const http = require('http');
 
-const app = express();
-app.use(helmet());
-const webappBuildDir = path.join(__dirname, '../../../../augur-ui/build');
-app.use(express.static(webappBuildDir));
-app.listen = function() { // taken from augur-ui's server.js
-  const server = http.createServer(this);
-  return server.listen.apply(server, arguments);
-};
-
-let page;
-let browser;
-let server;
-// let flash;
-const port = 8080;
-const width = 1920;
-const height = 1080;
-const headless = true;
 
 /* Setup Steps:
   * 1. Start and populate blockchain.
@@ -37,7 +19,25 @@ const headless = true;
   */
 
 describe.skip('Browser testing', () => {
+  let page;
+  let browser;
+  let server;
+  const port = 8080;
+  const width = 1920;
+  const height = 1080;
+  const headless = true;
+  const webappBuildDir = path.join(__dirname, '../../../../augur-ui/build');
+
   beforeAll(async () => {
+    const app = express();
+    app.use(helmet());
+
+    app.use(express.static(webappBuildDir));
+    app.listen = function() { // taken from augur-ui's server.js
+      const server = http.createServer(this);
+      return server.listen.apply(server, arguments);
+    };
+
     server = app.listen(port);
     browser = await puppeteer.launch({
       headless,
@@ -61,8 +61,8 @@ describe.skip('Browser testing', () => {
   });
 
   afterAll(async () => {
-    await browser.close();
-    await server.close();
+    if (browser) await browser.close();
+    if (server) await server.close();
   });
 
   // TODO: Smoke test is skipped until we use CREATE2 for ganache deploy.
@@ -90,4 +90,4 @@ describe.skip('Browser testing', () => {
         timeout: 20000,
       })).resolves.toBeDefined();
   });
-})
+});
