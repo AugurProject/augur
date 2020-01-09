@@ -1,8 +1,6 @@
 /**
  * @todo Update text for FINALIZE once alert triggering is moved
  */
-import moment from 'moment';
-
 import { isEmpty } from 'utils/is-empty';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info';
@@ -171,9 +169,7 @@ export default function setAlertText(alert: any, callback: Function) {
         alert.title = 'Buy participation tokens';
         if (!alert.description && alert.params) {
           if (alert.params.startTime && alert.params.endTime) {
-            const start = moment(alert.params.endTime * 1000).add(1, 'days').unix();
-            const end = moment(alert.params.endTime * 1000).add(8, 'days').unix();
-              alert.details = `Dispute Window ${convertUnixToFormattedDate(start).formattedLocalShortDate} - ${convertUnixToFormattedDate(end).formattedLocalShortDate}`
+              alert.details = `Dispute Window ${convertUnixToFormattedDate(alert.params.startTime).formattedLocalShortDate} - ${convertUnixToFormattedDate(alert.params.endTime).formattedLocalShortDate}`
           }
           alert.description = `Purchased ${
             formatRep(
