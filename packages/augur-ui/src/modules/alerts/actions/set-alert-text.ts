@@ -1,6 +1,7 @@
 /**
  * @todo Update text for FINALIZE once alert triggering is moved
  */
+import moment from 'moment';
 
 import { isEmpty } from 'utils/is-empty';
 import { selectMarket } from 'modules/markets/selectors/market';
@@ -51,6 +52,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { MarketData } from 'modules/types';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import { isSameAddress } from 'utils/isSameAddress';
+import { convertUnixToFormattedDate } from 'utils/format-date';
 
 function toCapitalizeCase(label) {
   return label.charAt(0).toUpperCase() + label.slice(1);
@@ -166,16 +168,21 @@ export default function setAlertText(alert: any, callback: Function) {
       // FeeWindow & Universe
       case BUY:
       case BUYPARTICIPATIONTOKENS:
-        alert.title = 'Buy participation token(s)';
-        if (!alert.description && alert.log) {
-          alert.description = `Purchase ${
+        alert.title = 'Buy participation tokens';
+        if (!alert.description && alert.params) {
+          if (alert.params.startTime && alert.params.endTime) {
+            const start = moment(alert.params.endTime * 1000).add(1, 'days').unix();
+            const end = moment(alert.params.endTime * 1000).add(8, 'days').unix();
+              alert.details = `Dispute Window ${convertUnixToFormattedDate(start).formattedLocalShortDate} - ${convertUnixToFormattedDate(end).formattedLocalShortDate}`
+          }
+          alert.description = `Purchased ${
             formatRep(
-              createBigNumber(alert.log.value).dividedBy(
+              createBigNumber(alert.params._attotokens).dividedBy(
                 TEN_TO_THE_EIGHTEENTH_POWER
               )
             ).formatted
           } Participation Token${
-            alert.log.value === TEN_TO_THE_EIGHTEENTH_POWER ? '' : 's'
+            createBigNumber(alert.params._attotokens).eq(TEN_TO_THE_EIGHTEENTH_POWER) ? '' : 's'
           }`;
         }
         break;
