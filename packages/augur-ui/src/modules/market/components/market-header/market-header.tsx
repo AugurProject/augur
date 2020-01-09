@@ -217,8 +217,8 @@ export default class MarketHeader extends Component<
     } = this.state;
     const detailsTooLong =
       market.details && detailsHeight > OVERFLOW_DETAILS_LENGTH;
-
-    if (marketType === SCALAR) {
+    const isScalar = marketType === SCALAR;
+    if (isScalar) {
       const denomination = scalarDenomination ? ` ${scalarDenomination}` : '';
       const warningText =
         (details.length > 0 ? `\n\n` : ``) +
@@ -280,7 +280,7 @@ export default class MarketHeader extends Component<
                 >
                   {LeftChevron} Back
                 </button>
-                <MarketTypeLabel marketType={marketType} />
+                {isScalar && <MarketTypeLabel marketType={marketType} />}
                 {market.isTemplate && <TemplateShield marketId={market.id} />}
                 <WordTrail items={[...categoriesWithClick]} />
                 <SocialMediaButtons
