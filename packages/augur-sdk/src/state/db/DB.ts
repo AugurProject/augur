@@ -30,6 +30,7 @@ import {
   MarketParticipantsDisavowedLog,
   MarketTransferredLog,
   ParsedOrderEventLog,
+  CancelLog,
   ParticipationTokensRedeemedLog,
   ProfitLossChangedLog,
   ReportingParticipantDisavowedLog,
@@ -90,6 +91,7 @@ export class DB {
     { EventName: 'MarketVolumeChanged', indexes: [], primaryKey: 'market' },
     { EventName: 'MarketOIChanged', indexes: [], primaryKey: 'market' },
     { EventName: 'OrderEvent', indexes: ['market', 'timestamp', 'orderId', '[universe+eventType+timestamp]', '[market+eventType]', 'eventType', 'orderCreator', 'orderFiller'] },
+    { EventName: 'Cancel', indexes: ['[makerAddress+market]'], primaryKey: 'orderHash' },
     { EventName: 'ParticipationTokensRedeemed', indexes: ['timestamp'] },
     { EventName: 'ProfitLossChanged', indexes: ['[universe+account+timestamp]', 'account'] },
     { EventName: 'ReportingParticipantDisavowed', indexes: [] },
@@ -186,17 +188,17 @@ export class DB {
   generateSchemas() : Schemas {
     const schemas: Schemas = {};
     for (const genericEventDBDescription of this.genericEventDBDescriptions) {
-      let primaryKey = "[blockNumber+logIndex]";
+      let primaryKey = '[blockNumber+logIndex]';
       if (genericEventDBDescription.primaryKey) primaryKey = genericEventDBDescription.primaryKey;
-      const fields = [primaryKey,"blockNumber"].concat(genericEventDBDescription.indexes);
+      const fields = [primaryKey,'blockNumber'].concat(genericEventDBDescription.indexes);
       schemas[genericEventDBDescription.EventName] = fields.join(',');
     }
-    schemas["Markets"] = "market,reportingState,universe,marketCreator,timestamp,finalized,blockNumber";
-    schemas["CurrentOrders"] = "orderId,[market+open],[market+outcome+orderType],orderCreator,orderFiller,blockNumber";
-    schemas["Dispute"] = "[market+payoutNumerators],market,blockNumber";
-    schemas["ZeroXOrders"] = "orderHash, [market+outcome+orderType],orderCreator,blockNumber";
-    schemas["SyncStatus"] = "eventName,blockNumber,syncing";
-    schemas["Rollback"] = ",[tableName+rollbackBlockNumber]";
+    schemas['Markets'] = 'market,reportingState,universe,marketCreator,timestamp,finalized,blockNumber';
+    schemas['CurrentOrders'] = 'orderId,[market+open],[market+outcome+orderType],orderCreator,orderFiller,blockNumber';
+    schemas['Dispute'] = '[market+payoutNumerators],market,blockNumber';
+    schemas['ZeroXOrders'] = 'orderHash,[market+outcome+orderType],orderCreator,blockNumber';
+    schemas['SyncStatus'] = 'eventName,blockNumber,syncing';
+    schemas['Rollback'] = ',[tableName+rollbackBlockNumber]';
     return schemas;
   }
 
@@ -369,6 +371,7 @@ export class DB {
   get MarketVolumeChanged() { return this.dexieDB["MarketVolumeChanged"] as Dexie.Table<MarketVolumeChangedLog, any>; }
   get MarketOIChanged() { return this.dexieDB["MarketOIChanged"] as Dexie.Table<MarketOIChangedLog, any>; }
   get OrderEvent() { return this.dexieDB["OrderEvent"] as Dexie.Table<ParsedOrderEventLog, any>; }
+  get Cancel() { return this.dexieDB["Cancel"] as Dexie.Table<CancelLog, any>; }
   get ParticipationTokensRedeemed() { return this.dexieDB["ParticipationTokensRedeemed"] as Dexie.Table<ParticipationTokensRedeemedLog, any>; }
   get ProfitLossChanged() { return this.dexieDB["ProfitLossChanged"] as Dexie.Table<ProfitLossChangedLog, any>; }
   get ReportingParticipantDisavowed() { return this.dexieDB["ReportingParticipantDisavowed"] as Dexie.Table<ReportingParticipantDisavowedLog, any>; }

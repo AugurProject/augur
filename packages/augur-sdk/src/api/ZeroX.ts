@@ -336,11 +336,11 @@ export class ZeroX {
   }
 
   async cancelOrder(order) {
-    return await this.augur.contracts.zeroXExchange.cancelOrder(order);
+    return this.augur.contracts.zeroXExchange.cancelOrder(order);
   }
 
   async batchCancelOrders(orders) {
-    return await this.augur.contracts.zeroXExchange.batchCancelOrders(orders);
+    return this.augur.contracts.zeroXExchange.batchCancelOrders(orders);
   }
 
   async simulateTrade(

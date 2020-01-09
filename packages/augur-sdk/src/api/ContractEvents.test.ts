@@ -56,7 +56,7 @@ test('get logs', async () => {
     fakeValueIMadeUp: 'ddr3',  // not specified in log and cannot be
   };
   const provider = makeProviderMock({ logs, logValues });
-  const contractEvents = new ContractEvents(provider, '0x0', '0x0', '0xthere');
+  const contractEvents = new ContractEvents(provider, '0x0', '0x0', '0xthere', '0x0');
 
   const eventName = 'some event name';
   const fromBlock = 0;
@@ -85,7 +85,7 @@ test('get event topics', async () => {
   const eventTopic = 'foobarington';
   const provider = makeProviderMock({ eventTopic });
 
-  const contractEvents = new ContractEvents(provider, '0x0', '0x0', '0x0');
+  const contractEvents = new ContractEvents(provider, '0x0', '0x0', '0x0', '0x0');
   const topics = await contractEvents.getEventTopics('foobar');
 
   expect(topics).toEqual([eventTopic]);

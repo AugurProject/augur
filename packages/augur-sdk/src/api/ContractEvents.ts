@@ -3,32 +3,32 @@ import { abi } from '@augurproject/artifacts';
 import { Abi } from 'ethereum';
 
 export class ContractEvents {
-  private readonly provider: Provider;
-  private readonly augurAddress: string;
-  private readonly augurTradingAddress: string;
-  private readonly shareTokenAddress: string;
-
   private readonly eventNameToContractName = {
     'TransferSingle': 'ShareToken',
     'TransferBatch': 'ShareToken',
     'OrderEvent': 'AugurTrading',
     'ProfitLossChanged': 'AugurTrading',
-    'MarketVolumeChanged': 'AugurTrading'
+    'MarketVolumeChanged': 'AugurTrading',
+    'Cancel': 'Exchange',
   };
 
   private readonly contractAddressToName = {};
 
-  constructor(provider: Provider, augurAddress: string, augurTradingAddress: string, shareTokenAddress: string) {
-    this.provider = provider;
-    this.augurAddress = augurAddress;
-    this.augurTradingAddress = augurTradingAddress;
-    this.shareTokenAddress = shareTokenAddress;
+  constructor(
+    private readonly provider: Provider,
+    private readonly augurAddress: string,
+    private readonly augurTradingAddress: string,
+    private readonly shareTokenAddress: string,
+    private readonly zeroXExchangeAddress: string,
+    ) {
     this.provider.storeAbiData(abi.Augur as Abi, 'Augur');
     this.provider.storeAbiData(abi.AugurTrading as Abi, 'AugurTrading');
     this.provider.storeAbiData(abi.ShareToken as Abi, 'ShareToken');
+    this.provider.storeAbiData(abi.Exchange as Abi, 'Exchange');
     this.contractAddressToName[this.augurAddress] = 'Augur';
     this.contractAddressToName[this.augurTradingAddress] = 'AugurTrading';
     this.contractAddressToName[this.shareTokenAddress] = 'ShareToken';
+    this.contractAddressToName[this.zeroXExchangeAddress] = 'Exchange';
   }
 
   async getLogs(eventName: string, fromBlock: number, toBlock: number | 'latest', additionalTopics?: Array<string | string[]>): Promise<ParsedLog[]> {
@@ -49,6 +49,7 @@ export class ContractEvents {
     const contractName = this.getEventContractName(eventName);
     if (contractName === 'ShareToken') return this.shareTokenAddress;
     if (contractName === 'AugurTrading') return this.augurTradingAddress;
+    if (contractName === 'Exchange') return this.zeroXExchangeAddress;
     return this.augurAddress;
   };
 
