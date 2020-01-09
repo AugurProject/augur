@@ -844,7 +844,7 @@ export const MovementText = ({
     if (showPlusMinus) {
       if (numberValue > 0) {
         return '+'.concat(label);
-      } 
+      }
     } else {
       if (numberValue < 0 && hideNegative) {
         return label.replace('-', '');
@@ -1151,8 +1151,12 @@ export const MarketStateLabel = (props: MarketStateLabelProps) => (
   </div>
 );
 
-export const DiscordLink = () => (
+interface DiscordLinkProps {
+  label?: string;
+}
+
+export const DiscordLink = (props: DiscordLinkProps) => (
   <div className={Styles.discordLink}>
-    If the issue persists please report it on <a href={DISCORD_LINK} target='_blank'>Discord</a>
+    {props.label}<a href={DISCORD_LINK} target='_blank'>Discord</a>
   </div>
 );

@@ -74,7 +74,7 @@ export const Message = ({
       {callToAction && <CallToAction callToAction={callToAction} />}
       {content && <Content content={content} />}
       {description && <Description description={description} />}
-      {showDiscordLink && <DiscordLink /> }
+      {showDiscordLink && <DiscordLink label='Please try again. If the issue persists please report it on ' /> }
       {subheader && <Subheader subheaderContent={subheader} />}
       {subheader_2 && <Subheader subheaderContent={subheader_2} />}
       {breakdown && <Breakdown rows={breakdown} />}
