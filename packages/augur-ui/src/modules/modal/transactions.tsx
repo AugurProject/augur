@@ -121,17 +121,9 @@ const actionOptions = [
     label: 'Initial Report',
     value: 'INITIAL_REPORT',
   },
-  // { // Removed until V2
-  //   label: "Finalize Market",
-  //   value: "FINALIZE_MARKET",
-  // },
   {
     label: 'Market Creation',
     value: 'MARKET_CREATION',
-  },
-  {
-    label: 'Complete Sets',
-    value: 'COMPLETE_SETS',
   },
 ];
 
