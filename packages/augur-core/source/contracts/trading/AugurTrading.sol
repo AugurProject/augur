@@ -47,7 +47,7 @@ contract AugurTrading is IAugurTrading {
     //  9:	tokensEscrowed
     event OrderEvent(address indexed universe, address indexed market, OrderEventType indexed eventType, uint8 orderType, bytes32 orderId, bytes32 tradeGroupId, address[] addressData, uint256[] uint256Data);
     event ProfitLossChanged(address indexed universe, address indexed market, address indexed account, uint256 outcome, int256 netPosition, uint256 avgPrice, int256 realizedProfit, int256 frozenFunds, int256 realizedCost, uint256 timestamp);
-    event MarketVolumeChanged(address indexed universe, address indexed market, uint256 volume, uint256[] outcomeVolumes);
+    event MarketVolumeChanged(address indexed universe, address indexed market, uint256 volume, uint256[] outcomeVolumes, uint256 timestamp);
 
     mapping(address => bool) public trustedSender;
 
@@ -180,7 +180,7 @@ contract AugurTrading is IAugurTrading {
 
     function logMarketVolumeChanged(IUniverse _universe, address _market, uint256 _volume, uint256[] memory _outcomeVolumes) public returns (bool) {
         require(msg.sender == registry["FillOrder"]);
-        emit MarketVolumeChanged(address(_universe), _market, _volume, _outcomeVolumes);
+        emit MarketVolumeChanged(address(_universe), _market, _volume, _outcomeVolumes, augur.getTimestamp());
         return true;
     }
 

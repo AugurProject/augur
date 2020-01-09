@@ -21228,6 +21228,11 @@
 					"indexed": false,
 					"name": "outcomeVolumes",
 					"type": "uint256[]"
+				},
+				{
+					"indexed": false,
+					"name": "timestamp",
+					"type": "uint256"
 				}
 			],
 			"name": "MarketVolumeChanged",

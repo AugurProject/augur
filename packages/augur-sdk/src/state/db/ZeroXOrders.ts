@@ -18,7 +18,7 @@ import moment, { Moment } from 'moment';
 // 1. To recalculate liquidity metrics. This can be stale so when the derived market DB is synced it should not wait for this to complete (it will already have recorded liquidity data from previous syncs)
 // 2. To cache market orderbooks so a complete pull isnt needed on every subsequent load.
 
-const EXPECTED_ASSET_DATA_LENGTH = 2186;
+const EXPECTED_ASSET_DATA_LENGTH = 2122;
 
 const DEFAULT_TRADE_INTERVAL = new BigNumber(10**17);
 const TRADE_INTERVAL_VALUE = new BigNumber(10**19);
@@ -193,7 +193,7 @@ export class ZeroXOrders extends AbstractTable {
   }
 
   validateOrder(order: OrderInfo): boolean {
-    if (order.signedOrder.makerAssetAmount !== order.signedOrder.takerAssetAmount) return false;
+    if (!order.signedOrder.makerAssetAmount.eq(order.signedOrder.takerAssetAmount)) return false;
     if (order.signedOrder.makerAssetData.length !== EXPECTED_ASSET_DATA_LENGTH) return false;
     if (order.signedOrder.takerAssetData !== this.takerAssetData) return false;
     return true;
