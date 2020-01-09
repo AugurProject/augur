@@ -120,3 +120,22 @@ export async function setUploadBlockNumber(networkId: NetworkId, uploadBlock: nu
 
   await writeFile(filepath, JSON.stringify(contents, null, 2), 'utf8');
 }
+
+
+export function getAddressesForNetwork(networkId: NetworkId): ContractAddresses {
+  const addresses = Addresses[networkId];
+  if (typeof addresses === 'undefined') {
+    if (networkId !== '1') {
+      console.log(
+        `Contract addresses aren't available for network ${networkId}. If you're running in development mode, be sure to have started a local ethereum node, and then have rebuilt using yarn build before starting the dev server`
+      );
+    }
+    throw new Error(
+      `Unable to read contract addresses for network: ${
+        networkId
+      }. Known addresses: ${JSON.stringify(Addresses)}`
+    );
+  }
+
+  return addresses;
+}
