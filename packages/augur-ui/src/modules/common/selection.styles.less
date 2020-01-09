@@ -57,7 +57,8 @@
     }
 
     > button {
-      color: @color-dark-grey;
+      color: @color-primary-text;
+      background-color: @color-secondary-action;
       position: relative;
       text-align: left;
       transition: background-color 0.15s ease;
@@ -65,11 +66,11 @@
       width: 100%;
 
       &:hover {
-        background-color: fade(@color-primary-action, 20%);
+        background-color: @color-secondary-action-outline;
       }
 
       &::before {
-        background-color: fade(@color-primary-action, 10%);
+        background: fade(@color-secondary-action-outline, 50%);
         bottom: 0;
         content: "";
         height: 1px;
@@ -95,10 +96,10 @@
   .Dropdown;
 
   border-color: @color-secondary-action-outline;
-  height: @size-32;
+  height: @size-40;
 
   > button {
-    .mono-11-bold;
+    .text-12-bold;
 
     background: @color-dark-grey;
     padding: 0 @size-12;
@@ -114,8 +115,8 @@
     }
 
     > span {
-      padding: @size-6 0;
-      border-right: 1px solid @color-secondary-action-outline;
+      padding: @size-10 0;
+      border-right: 1px solid @color-secondary-action;
       flex: 1;
       display: flex;
     }
@@ -126,14 +127,14 @@
   }
 
   > div > button {
-    .text-14;
+    .text-12-bold;
 
-    height: 2.5rem;
-    padding: 0 @size-16;
+    height: @size-48;
+    padding: 0 @size-12;
 
     &::before {
-      left: @size-24;
-      right: @size-24;
+      left: @size-12;
+      right: @size-12;
     }
   }
 }

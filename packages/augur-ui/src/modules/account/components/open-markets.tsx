@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import FilterSwitchBox from "modules/portfolio/components/common/filter-switch-box";
 import MarketRow from "modules/portfolio/containers/market-row";
 import { MovementLabel } from "modules/common/labels";
-import { SizeTypes } from "modules/types";
+import { SizeTypes, FormattedNumber } from "modules/types";
 
 import Styles from "modules/account/components/open-markets.styles.less";
 
@@ -14,7 +14,7 @@ function filterComp(input: any, market: any) {
 interface OpenMarketsProps {
   markets: Array<any>;
   marketsObj: object;
-  totalPercentage: string;
+  totalPercentage: FormattedNumber;
   toggle: Function;
 }
 
@@ -33,17 +33,17 @@ export default class OpenMarkets extends Component<OpenMarketsProps> {
         key={"position_" + market.id}
         market={marketsObj[market.id]}
         showState={false}
+        addedClass={Styles.OpenMarketsRow}
         rightContent={
           <MovementLabel
-            showColors
             showBrackets
-            showPercent
+            useFull
             showIcon
             showPlusMinus
             value={
-              marketsObj[market.id].myPositionsSummary.valueChange.formatted
+              marketsObj[market.id].myPositionsSummary.valueChange
             }
-            size={SizeTypes.NORMAL}
+            size={SizeTypes.LARGE}
           />
         }
         toggleContent={
@@ -52,12 +52,11 @@ export default class OpenMarkets extends Component<OpenMarketsProps> {
               <div key={position.outcomeId}>
                 <span>{position.outcomeName}</span>
                 <MovementLabel
-                  showColors
-                  showPercent
                   showBrackets
+                  useFull
                   showIcon
                   showPlusMinus
-                  value={position.unrealizedPercent.formatted}
+                  value={position.unrealizedPercent}
                   size={SizeTypes.SMALL}
                 />
               </div>
@@ -85,12 +84,12 @@ export default class OpenMarkets extends Component<OpenMarketsProps> {
             <div>
               <span>24hr</span>
               <MovementLabel
-                showColors
-                showPercent
                 showIcon
+                showBrackets
                 showPlusMinus
-                value={Number(totalPercentage)}
-                size={SizeTypes.LARGE}
+                value={totalPercentage}
+                useFull
+                size={SizeTypes.SMALL}
               />
             </div>
           </div>

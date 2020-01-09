@@ -35,12 +35,13 @@ export interface MarketRowProps {
   rightContent: ReactNode;
   noToggle?: boolean;
   showPending?: boolean;
+  addedClass?: string | object;
 }
 
 const MarketRow = (props: MarketRowProps) => {
   const content = (
     <div
-      className={classNames(Styles.MarketRowContent, {
+      className={classNames(Styles.MarketRowContent, props.addedClass, {
         [Styles.NoToggle]: props.noToggle,
       })}
     >

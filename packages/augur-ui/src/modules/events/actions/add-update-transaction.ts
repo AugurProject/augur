@@ -37,7 +37,6 @@ import {
 } from 'modules/orders/actions/pending-orders-management';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { AppState } from 'store';
 import { Events, Getters, TXEventName } from '@augurproject/sdk';
 import {
   addPendingData,

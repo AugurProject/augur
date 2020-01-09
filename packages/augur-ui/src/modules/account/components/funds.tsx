@@ -6,7 +6,7 @@ import {
   TOTAL_FROZEN_FUNDS,
   TOTAL_ACCOUNT_VALUE_IN_DAI,
 } from 'modules/common/constants';
-import { SizeTypes } from 'modules/types';
+import { FormattedNumber, SizeTypes } from 'modules/types';
 
 import Styles from 'modules/account/components/funds.styles.less';
 
@@ -14,7 +14,7 @@ export interface FundsProps {
   totalFrozenFunds: FormattedNumber;
   totalAvailableTradingBalance: FormattedNumber;
   totalAccountValue: FormattedNumber;
-  realizedPLPercent: string;
+  realizedPLPercent: FormattedNumber;
 }
 
 const Funds = ({
@@ -27,13 +27,12 @@ const Funds = ({
     <section className={Styles.Funds}>
       <h4>{TOTAL_ACCOUNT_VALUE_IN_DAI}</h4>
       <MovementLabel
-        showColors
         size={SizeTypes.LARGE}
         showPlusMinus
-        showPercent
         showIcon
         showBrackets
-        value={Number(realizedPLPercent)}
+        value={realizedPLPercent}
+        usefull
       />
       <div>{totalAccountValue.full}</div>
       <LinearPropertyLabel

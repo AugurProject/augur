@@ -112,7 +112,7 @@ export class Gnosis {
         .events
         .emit(SubscriptionEventName.GnosisSafeStatus, {
           ...s,
-          status,
+          status: status.status,
         });
 
       // Clear the "watch" when we reach a terminal safe state.

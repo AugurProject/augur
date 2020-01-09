@@ -7,6 +7,7 @@ import getLoginAccountPositions from "modules/positions/selectors/login-account-
 import getSelectLoginAccountTotals from "modules/positions/selectors/login-account-totals";
 import memoize from "memoizee";
 import getMarketsPositionsRecentlyTraded from "modules/portfolio/selectors/select-markets-positions-recently-traded";
+import { formatPercent } from 'utils/format-number';
 
 const mapStateToProps = (state: AppState) => {
   const positions = getLoginAccountPositions();
@@ -35,7 +36,7 @@ const mapStateToProps = (state: AppState) => {
     isLogged: state.authStatus.isLogged,
     markets: marketsPick,
     marketsObj,
-    totalPercentage
+    totalPercentage: formatPercent(totalPercentage),
   };
 };
 

@@ -20,7 +20,7 @@ import convertExponentialToDecimal from 'utils/convert-exponential';
 import { MarketData, OutcomeFormatted, OutcomeOrderBook } from 'modules/types';
 import { MarketType } from '@augurproject/sdk/src/state/logs/types';
 import { Getters } from '@augurproject/sdk';
-import { convertDisplayAmountToOnChainAmount } from '@augurproject/sdk';
+import { convertDisplayAmountToOnChainAmount, tickSizeToNumTickWithDisplayPrices } from '@augurproject/sdk';
 import { CancelTextButton, TextButtonFlip } from 'modules/common/buttons';
 import moment, { Moment } from 'moment';
 import { convertUnixToFormattedDate } from 'utils/format-date';
@@ -276,16 +276,25 @@ class Form extends Component<FromProps, FormState> {
         `Precision must be ${UPPER_FIXED_PRECISION_BOUND} decimals or less`
       );
     }
-    
+
     let tradeInterval = DEFAULT_TRADE_INTERVAL;
     if (marketType == MarketType.Scalar) {
       tradeInterval = TRADE_INTERVAL_VALUE.dividedBy(market.numTicks);
     }
     if (!convertDisplayAmountToOnChainAmount(value, market.tickSize).mod(tradeInterval).isEqualTo(0)) {
+      let numTicks = market.numTicks;
+      if (!numTicks) {
+        numTicks = tickSizeToNumTickWithDisplayPrices(
+          createBigNumber(market.tickSize),
+          createBigNumber(market.minPrice),
+          createBigNumber(market.maxPrice)
+        );
+      }
+      console.log(numTicks);
       errorCount += 1;
       passedTest = false;
       errors[this.INPUT_TYPES.QUANTITY].push(
-          `Quantity must be a multiple of ${tradeInterval.multipliedBy(market.numTicks).dividedBy(10**18)}`
+          `Quantity must be a multiple of ${tradeInterval.multipliedBy(numTicks).dividedBy(10**18)}`
         );
     }
     if(expiration && expiration - moment().unix() < 60) {
@@ -444,7 +453,7 @@ class Form extends Component<FromProps, FormState> {
     errorCount += priceErrorCount;
     errors = { ...errors, ...priceErrors };
 
-    let quantityValid = false;
+    let quantityValid = true;
 
     if (changedProperty !== this.INPUT_TYPES.EST_DAI) {
       const {
@@ -580,9 +589,9 @@ class Form extends Component<FromProps, FormState> {
               property === this.INPUT_TYPES.EST_DAI)
           ) {
             updateTradeNumShares(order);
-          } 
+          }
           if (order[this.INPUT_TYPES.QUANTITY] &&
-            order[this.INPUT_TYPES.PRICE] && order[this.INPUT_TYPES.EST_DAI] && 
+            order[this.INPUT_TYPES.PRICE] && order[this.INPUT_TYPES.EST_DAI] &&
             order[this.INPUT_TYPES.EST_DAI] != 0 && order[this.INPUT_TYPES.QUANTITY] != 0 &&
             property === this.INPUT_TYPES.EXPIRATION_DATE
             ) {
@@ -647,9 +656,10 @@ class Form extends Component<FromProps, FormState> {
   updateTotalValue(percent: Number) {
     const { availableDai } = this.props;
 
-    const value = availableDai.times(createBigNumber(percent));
-
-    this.validateForm(this.INPUT_TYPES.EST_DAI, value.toString());
+    const value = availableDai.times(createBigNumber(percent)).integerValue(BigNumber.ROUND_DOWN);
+    this.setState({ [this.INPUT_TYPES.EST_DAI]: value.toString() }, () =>
+      this.validateForm(this.INPUT_TYPES.EST_DAI, value.toString())
+    );
   }
 
   render() {
@@ -895,9 +905,9 @@ class Form extends Component<FromProps, FormState> {
             >
               {ExclamationCircle}
               <span>
-                {`Max cost of ${
+                {`Max cost of $${
                   orderEscrowdDai === '' ? '-' : orderEscrowdDai
-                } $ will be escrowed`}
+                } will be escrowed`}
               </span>
             </label>
           </li>
@@ -982,7 +992,7 @@ class Form extends Component<FromProps, FormState> {
                   />
                   {s.expirationDateOption === EXPIRATION_DATE_OPTIONS.DAYS && (
                     <span>
-                      {  
+                      {
                         convertUnixToFormattedDate(
                           moment(s[this.INPUT_TYPES.EXPIRATION_DATE]) &&
                             moment(s[this.INPUT_TYPES.EXPIRATION_DATE]).unix()
