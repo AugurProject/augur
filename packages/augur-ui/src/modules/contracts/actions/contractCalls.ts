@@ -667,7 +667,7 @@ export function createMarketRetry(market: CreateMarketData) {
 export async function approveToTrade() {
   const { contracts } = augurSdk.get();
   const augurContract = contracts.augur.address;
-  const allowance = createBigNumber(2**256-1);
+  const allowance = new BigNumber(2).pow(256).minus(1);
   await Promise.all([
     contracts.cash.approve(augurContract, allowance),
     contracts.shareToken.setApprovalForAll(contracts.fillOrder.address, true),
