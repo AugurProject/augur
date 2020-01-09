@@ -331,7 +331,6 @@ export class Accounts<TBigNumber> {
         .and(order => order.orderCreator === params.account)
         .toArray();
 
-      console.log('zeroXCanceledOrders found', zeroXCanceledOrders.length);
       const marketIds: string[] = await zeroXCanceledOrders.reduce(
         (ids, order) => Array.from(new Set([...ids, order.market])),
         []
