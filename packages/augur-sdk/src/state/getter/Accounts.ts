@@ -30,11 +30,15 @@ import { MarketReportingState } from '../../constants';
 import { compareObjects, convertOnChainPriceToDisplayPrice, numTicksToTickSize, convertAttoValueToDisplayValue } from '../../utils';
 import * as _ from "lodash";
 import * as t from 'io-ts';
+import Dexie from 'dexie';
+import { getMarkets } from './OnChainTrading';
+import { StoredOrder } from '../db/ZeroXOrders';
 
 export enum Action {
   ALL = 'ALL',
   BUY = 'BUY',
   SELL = 'SELL',
+  CANCEL = 'CANCEL',
   CLAIM_PARTICIPATION_TOKENS = 'CLAIM_PARTICIPATION_TOKENS',
   CLAIM_TRADING_PROCEEDS = 'CLAIM_TRADING_PROCEEDS',
   CLAIM_WINNING_CROWDSOURCERS = 'CLAIM_WINNING_CROWDSOURCERS',
@@ -313,6 +317,37 @@ export class Accounts<TBigNumber> {
     }
 
     if (
+      (params.action === Action.CANCEL || params.action === Action.ALL) &&
+      (params.coin === Coin.ETH || params.coin === Coin.ALL)
+    ) {
+      const orderType = `0x0${OrderEventType.Cancel}`;
+      const zeroXCanceledOrders = await db.ZeroXOrders.where(
+        '[market+outcome+orderType]'
+      )
+        .between(
+          [Dexie.minKey, orderType, Dexie.minKey],
+          [Dexie.maxKey, orderType, Dexie.maxKey]
+        )
+        .and(order => order.orderCreator === params.account)
+        .toArray();
+
+      console.log('zeroXCanceledOrders found', zeroXCanceledOrders.length);
+      const marketIds: string[] = await zeroXCanceledOrders.reduce(
+        (ids, order) => Array.from(new Set([...ids, order.market])),
+        []
+      );
+      const marketInfo = await Accounts.getMarketCreatedInfoByIds(
+        db,
+        marketIds
+      );
+
+      allFormattedLogs = allFormattedLogs.concat(
+        formatOrderCanceledLogs(zeroXCanceledOrders, marketInfo)
+      );
+      actionCoinComboIsValid = true;
+    }
+
+    if (
       (params.action === Action.CLAIM_PARTICIPATION_TOKENS ||
         params.action === Action.ALL) &&
       (params.coin === Coin.DAI || params.coin === Coin.ALL)
@@ -448,7 +483,6 @@ export class Accounts<TBigNumber> {
     allFormattedLogs.sort(compareObjects(params.sortBy, order));
 
 
-    allFormattedLogs.map(l => console.log('sending', l.price, l.quantity, l.total));
     if (params.limit == null && params.offset == null) return allFormattedLogs;
 
     const start = params.offset || 0;
@@ -518,14 +552,23 @@ export class Accounts<TBigNumber> {
     const markets = transactionLogs.map(
       transactionLogs => transactionLogs.market
     );
-    const marketCreatedLogs = await db.Markets.where("market").anyOfIgnoreCase(markets).toArray();
+    return Accounts.getMarketCreatedInfoByIds(db, markets);
+  }
+
+  static async getMarketCreatedInfoByIds<TBigNumber>(
+    db: DB,
+    marketIds: string[]
+  ): Promise<MarketCreatedInfo> {
+    const marketCreatedLogs = await db.Markets.where("market").anyOfIgnoreCase(marketIds).toArray();
     const marketCreatedInfo: MarketCreatedInfo = {};
     for (let i = 0; i < marketCreatedLogs.length; i++) {
       marketCreatedInfo[marketCreatedLogs[i].market] = marketCreatedLogs[i];
     }
     return marketCreatedInfo;
   }
+
 }
+
 
 function formatOrderFilledLogs(
   transactionLogs: ParsedOrderEventLog[],
@@ -600,6 +643,36 @@ function formatOrderFilledLogs(
   return formattedLogs;
 }
 
+function formatOrderCanceledLogs(
+  storedOrders: StoredOrder[],
+  marketInfo: MarketCreatedInfo
+): AccountTransaction[] {
+  return storedOrders.map(order => {
+    const marketData = marketInfo[order.market];
+    const maxPrice = new BigNumber(marketData.prices[1]);
+    const minPrice = new BigNumber(marketData.prices[0]);
+    const numTicks = new BigNumber(marketData.numTicks);
+    const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
+    const quantity = convertOnChainAmountToDisplayAmount(new BigNumber(order.amount), tickSize);
+    const price = convertOnChainPriceToDisplayPrice(new BigNumber(order.price), minPrice, tickSize);
+    return {
+      action: Action.CANCEL,
+      coin: Coin.DAI,
+      details: 'Cancel order',
+      fee: '0',
+      marketDescription: marketInfo[order.market].extraInfo.description,
+      outcome: new BigNumber(order.outcome).toNumber(),
+      outcomeDescription: describeMarketOutcome(order.outcome, marketInfo[order.market]),
+      price,
+      quantity,
+      // TODO: need to do something about timestamp, using salt as timestamp taking off last 4 numbers
+      timestamp: new BigNumber(order.signedOrder.salt).dividedBy(1000).integerValue().toNumber(),
+      total: '0',
+      transactionHash: order.orderHash,
+    };
+  }) as unknown as AccountTransaction[];
+}
+
 function formatParticipationTokensRedeemedLogs(
   transactionLogs: ParticipationTokensRedeemedLog[]
 ): AccountTransaction[] {
@@ -641,15 +714,14 @@ async function formatTradingProceedsClaimedLogs(
       action: Action.CLAIM_TRADING_PROCEEDS,
       coin: Coin.DAI,
       details: 'Claimed trading proceeds',
-      fee: new BigNumber(fees).toFixed(),
+      fee: convertAttoValueToDisplayValue(new BigNumber(fees)).toString(),
       marketDescription: extraInfo.description,
       outcome: new BigNumber(outcome).toNumber(),
       outcomeDescription: describeMarketOutcome(outcome, marketData),
-      // TODO: verify these conversions are correct
-      price: convertAttoValueToDisplayValue(new BigNumber(numPayoutTokens).div(numShares)).toString(),
+      price: new BigNumber(numPayoutTokens).div(numShares).toString(),
       quantity: convertAttoValueToDisplayValue(new BigNumber(numShares)).toString(),
       timestamp: new BigNumber(timestamp).toNumber(),
-      total: new BigNumber(numPayoutTokens).toString(),
+      total: convertAttoValueToDisplayValue(new BigNumber(numPayoutTokens)).toString(),
       transactionHash,
     });
   }

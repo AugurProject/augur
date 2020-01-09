@@ -270,7 +270,7 @@ describe('State API :: Accounts :: ', () => {
         outcomeDescription: 'No',
         price: '0.22',
         quantity: '30',
-        total: '-23.4',
+        total: '23.4',
       },
       {
         action: 'SELL',
@@ -329,9 +329,9 @@ describe('State API :: Accounts :: ', () => {
         marketDescription: 'Scalar market description',
         outcome: 0,
         outcomeDescription: 'Invalid',
-        price: '0.22',
+        price: '50.22',
         quantity: '20',
-        total: '15.6',
+        total: '3995.6',
       },
       {
         action: 'SELL',
@@ -341,16 +341,11 @@ describe('State API :: Accounts :: ', () => {
         marketDescription: 'Scalar market description',
         outcome: 1,
         outcomeDescription: '50000000000000000000',
-        price: '0.22',
+        price: '50.22',
         quantity: '30',
-        total: '23.4',
+        total: '5993.4',
       },
     ]);
-
-    // Cancel an order
-    await john.cancelOrder(
-      await john.getBestOrderId(bid, johnScalarMarket.address, outcome2)
-    );
 
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
@@ -393,7 +388,7 @@ describe('State API :: Accounts :: ', () => {
         outcome: 1,
         outcomeDescription: 'No',
         price: '0',
-        quantity: '349680625587481902',
+        quantity: '0.349680625587481902',
         total: '0',
       },
     ]);
@@ -411,7 +406,8 @@ describe('State API :: Accounts :: ', () => {
     const curDisputeWindow = await john.augur.contracts.disputeWindowFromAddress(
       curDisputeWindowAddress
     );
-    await john.buyParticipationTokens(curDisputeWindow.address, new BigNumber(1));
+    const amountParticipationTokens = new BigNumber(1).pow(18);
+    await john.buyParticipationTokens(curDisputeWindow.address, amountParticipationTokens);
 
     await john.repFaucet(new BigNumber(1e25));
     await mary.repFaucet(new BigNumber(1e25));
@@ -426,7 +422,7 @@ describe('State API :: Accounts :: ', () => {
         await mary.contribute(
           market,
           yesPayoutSet,
-          new BigNumber(25000)
+          new BigNumber(2).pow(18)
         );
         const remainingToFill = await john.getRemainingToFill(
           johnYesNoMarket,
@@ -437,7 +433,7 @@ describe('State API :: Accounts :: ', () => {
         await john.contribute(
           johnYesNoMarket,
           noPayoutSet,
-          new BigNumber(25000)
+          new BigNumber(2).pow(18)
         );
         const remainingToFill = await john.getRemainingToFill(
           johnYesNoMarket,
@@ -467,7 +463,7 @@ describe('State API :: Accounts :: ', () => {
         outcome: 1,
         outcomeDescription: 'No',
         price: '0',
-        quantity: '25000',
+        quantity: '0.000000000000262144',
         total: '0',
       },
       {
@@ -479,7 +475,7 @@ describe('State API :: Accounts :: ', () => {
         outcome: 1,
         outcomeDescription: 'No',
         price: '0',
-        quantity: '1049041876762420706',
+        quantity: '1.049041876762183562',
         total: '0',
       },
     ]);
@@ -537,7 +533,7 @@ describe('State API :: Accounts :: ', () => {
         outcome: null,
         outcomeDescription: null,
         price: '0',
-        quantity: '1',
+        quantity: '0.000000000000000001',
         total: '1',
       },
     ]);
@@ -595,20 +591,20 @@ describe('State API :: Accounts :: ', () => {
         outcome: 1,
         outcomeDescription: 'No',
         price: '0',
-        quantity: '100000000000',
+        quantity: '0.1',
         total: '0',
       },
       {
         action: 'CLAIM_TRADING_PROCEEDS',
         coin: 'DAI',
         details: 'Claimed trading proceeds',
-        fee: '101000000000',
+        fee: '0.101',
         marketDescription: 'YesNo market description',
         outcome: 2,
         outcomeDescription: 'Yes',
         price: '98.99',
-        quantity: '100000000000',
-        total: '9899000000000',
+        quantity: '0.1',
+        total: '9.899',
       },
     ]);
 
@@ -667,7 +663,7 @@ describe('State API :: Accounts :: ', () => {
         outcome: 1,
         outcomeDescription: 'No',
         price: '0',
-        quantity: '349680625587481902',
+        quantity: '0.349680625587481902',
         total: '0',
       },
     ]);
@@ -690,28 +686,28 @@ describe('State API :: Accounts :: ', () => {
     );
     expect(accountTransactionHistory).toMatchObject([
       {
-        action: 'CANCEL',
+        action: 'CLAIM_TRADING_PROCEEDS',
         coin: 'DAI',
-        details: 'Cancel order',
-        fee: '0',
-        marketDescription: 'Scalar market description',
-        outcome: 0,
-        outcomeDescription: 'Invalid',
-        price: '0',
-        quantity: '0',
-        total: '0',
+        details: 'Claimed trading proceeds',
+        fee: '0.101',
+        marketDescription: 'YesNo market description',
+        outcome: 2,
+        outcomeDescription: 'Yes',
+        price: '98.99',
+        quantity: '0.1',
+        total: '9.899',
       },
       {
-        action: "CLAIM_PARTICIPATION_TOKENS",
-        coin: "DAI",
-        details: "Claimed reporting fees from participation tokens",
-        fee: "0",
-        marketDescription: "",
-        outcome: null,
-        outcomeDescription: null,
-        price: "0",
-        quantity: "1",
-        total: "1",
+        action: 'CLAIM_TRADING_PROCEEDS',
+        coin: 'DAI',
+        details: 'Claimed trading proceeds',
+        fee: '0',
+        marketDescription: 'YesNo market description',
+        outcome: 1,
+        outcomeDescription: 'No',
+        price: '0',
+        quantity: '0.1',
+        total: '0',
       },
     ]);
   });
