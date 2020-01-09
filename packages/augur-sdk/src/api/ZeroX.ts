@@ -3,14 +3,16 @@ import {
   OrderInfo,
   WSClient,
 } from '@0x/mesh-rpc-client';
-import { ValidationResults } from '@0x/mesh-browser';
+import { Addresses } from '@augurproject/artifacts';
+import { EventEmitter } from "events";
+import { Mesh, Config, ValidationResults } from '@0x/mesh-browser';
 import { SignatureType, SignedOrder } from '@0x/types';
 import { ExchangeFillEvent } from '@0x/mesh-browser';
 import { Event } from '@augurproject/core/build/libraries/ContractInterfaces';
 import { BigNumber } from 'bignumber.js';
 import * as _ from 'lodash';
 import * as constants from '../constants';
-import { NULL_ADDRESS } from '../constants';
+import { NULL_ADDRESS, NETWORK_IDS } from '../constants';
 import { OrderEventLog, OrderEventUint256Value } from '../state/logs/types';
 import {
   convertDisplayAmountToOnChainAmount,
@@ -115,29 +117,89 @@ export interface MatchingOrders {
 }
 
 export class ZeroX {
+  public readonly events: EventEmitter = new EventEmitter();
   private readonly augur: Augur;
-  private readonly meshClient: WSClient;
-  public browserMesh: BrowserMesh;
+  private meshClient?: WSClient;
+  private browserMesh?: BrowserMesh;
 
-  constructor(augur: Augur, meshClient?: WSClient, browserMesh?: BrowserMesh) {
-    if (!(browserMesh || meshClient)) {
-      throw Error('ZeroX instance mush have browserMesh, meshClient, or both');
-    }
+  get rpc(): WSClient {
+    return this.meshClient;
+  }
 
+  set rpc(client: WSClient) {
+    this.meshClient = client;
+
+    if (!this.meshClient) return;
+
+    this.meshClient.subscribeToOrdersAsync((orderEvents: OrderEvent[]) => {
+      this.events.emit('RPC:OrderEvent', orderEvents)
+    });
+  }
+
+  get mesh(): BrowserMesh {
+    return this.browserMesh;
+  }
+
+  set mesh(mesh: BrowserMesh) {
+    this.browserMesh = mesh;
+
+    if (!this.browserMesh) return;
+
+    this.browserMesh.onOrderEvents((orderEvents: OrderEvent[]) => {
+      this.events.emit('Mesh:OrderEvent', orderEvents)
+    });
+  }
+
+  constructor(augur: Augur, meshClientEndpoint?: string) {
     this.augur = augur;
-    this.meshClient = meshClient;
-    this.browserMesh = browserMesh;
-  }
 
-  subscribeToMeshEvents(
-    callback: (orderEvents: OrderEvent[]) => void
-  ) {
-    if (this.browserMesh) {
-      this.browserMesh.onOrderEvents(callback);
-    } else {
-      this.meshClient.subscribeToOrdersAsync(callback);
+    if (typeof meshClientEndpoint !== undefined) {
+      this.rpc = new WSClient(meshClientEndpoint);
     }
   }
+
+  createBrowserMesh(ethereumRPCURL: string, ethereumChainID: NETWORK_IDS, bootstrapList?: string[]) {
+    let meshConfig = {
+      ethereumRPCURL,
+      ethereumChainID: Number(ethereumChainID),
+      verbosity: 5,
+    }
+
+    if (![NETWORK_IDS.Kovan, NETWORK_IDS.Mainnet].includes(ethereumChainID)) {
+      meshConfig = {
+        ...meshConfig,
+        customContractAddresses: Addresses[ethereumChainID],
+        bootstrapList
+      }
+    }
+
+    const create = (meshConfig) => {
+      const mesh = new Mesh(meshConfig);
+      mesh.onError((err) => {
+        console.log("Browser mesh error");
+        console.log(err.message);
+        console.log(err.stack);
+        if(err.message == "timed out waiting for first block to be processed by Mesh node. Check your backing Ethereum RPC endpoint") {
+          console.log("Restarting Mesh Sync");
+          // The relay code wont let you override addresses so we need to do this whacky thing
+          const meshConfigFix = {
+            ethereumRPCURL: meshConfig.ethereumRPCURL,
+            ethereumChainID:  meshConfig.ethereumChainID,
+            bootstrapList: meshConfig.bootstrapList,
+            verbosity: 5
+          };
+          this.mesh = create(meshConfigFix);
+          this.mesh.startAsync();
+        }
+      });
+
+      return mesh;
+    }
+
+    this.mesh = create(meshConfig);
+    return this.mesh;
+  }
+
 
   async getOrders(): Promise<OrderInfo[]> {
     // TODO when browser mesh supports this back out to using it if meshClient not provided

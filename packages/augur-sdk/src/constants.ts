@@ -14,6 +14,18 @@ export enum ACCOUNT_TYPES {
   EDGE = "edge",
 }
 
+// network name to id map
+export enum NETWORK_IDS {
+  Mainnet = '1',
+  Ropsten = '3',
+  Rinkeby = '4',
+  Kovan = '42',
+  Private1 = '101',
+  Private2 = '102',
+  Private3 = '103',
+  Private4 = '104',
+};
+
 export enum SubscriptionEventName {
   CompleteSetsPurchased = "CompleteSetsPurchased",
   CompleteSetsSold = "CompleteSetsSold",

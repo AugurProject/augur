@@ -37,7 +37,7 @@ import {
 import { Arrayish } from 'ethers/utils';
 import { GnosisSafeStatusPayload } from './api/Gnosis';
 
-import { BrowserMesh, ZeroX } from './api/ZeroX';
+import { ZeroX } from './api/ZeroX';
 import { SingleThreadConnector } from './connector';
 import {
   augurEmitter,
@@ -79,9 +79,7 @@ export class Augur<TProvider extends Provider = Provider> {
     addresses: ContractAddresses,
     connector: BaseConnector = new EmptyConnector(),
     gnosisRelay: IGnosisRelayAPI = undefined,
-    enableFlexSearch = false,
-    meshClient: WSClient = undefined,
-    browserMesh: BrowserMesh = undefined
+    enableFlexSearch = false
   ) {
     this.provider = provider;
     this.dependencies = dependencies;
@@ -102,10 +100,6 @@ export class Augur<TProvider extends Provider = Provider> {
     this.gnosis = new Gnosis(this.provider, gnosisRelay, this, this.dependencies);
     this.hotLoading = new HotLoading(this);
     this.onChainTrade = new OnChainTrade(this);
-    this.zeroX =
-      meshClient || browserMesh
-        ? new ZeroX(this, meshClient, browserMesh)
-        : undefined;
     this.trade = new Trade(this);
     if (enableFlexSearch && !this.syncableFlexSearch) {
       this.syncableFlexSearch = new SyncableFlexSearch();
@@ -120,8 +114,6 @@ export class Augur<TProvider extends Provider = Provider> {
     connector: BaseConnector = new SingleThreadConnector(),
     gnosisRelay: IGnosisRelayAPI = undefined,
     enableFlexSearch = false,
-    meshClient: WSClient = undefined,
-    meshBrowser: BrowserMesh = undefined
   ): Promise<Augur> {
     const networkId = await provider.getNetworkId();
     const augur = new Augur<TProvider>(
@@ -132,8 +124,6 @@ export class Augur<TProvider extends Provider = Provider> {
       connector,
       gnosisRelay,
       enableFlexSearch,
-      meshClient,
-      meshBrowser
     );
 
     await augur.contracts.setReputationToken(networkId);

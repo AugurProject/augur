@@ -1,7 +1,7 @@
 import { Augur } from '../Augur';
 import { SubscriptionEventName } from '../constants';
 import { Callback } from '../events';
-import { BaseConnector } from '../connector/baseConnector';
+import { BaseConnector } from './baseConnector';
 import { DB } from '../state/db/DB';
 
 export class DirectConnector extends BaseConnector {

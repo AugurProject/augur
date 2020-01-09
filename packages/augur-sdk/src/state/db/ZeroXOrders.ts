@@ -108,20 +108,21 @@ export class ZeroXOrders extends AbstractTable {
     this.stateDB = db;
     this.augur = augur;
     this.tradeTokenAddress = this.augur.addresses.ZeroXTrade.substr(2).toLowerCase(); // normalize and remove the 0x
+    this.subscribeToOrderEvents();
   }
 
   static async create(db: DB, networkId: number, augur: Augur): Promise<ZeroXOrders> {
     const zeroXOrders = new ZeroXOrders(db, networkId, augur);
     await zeroXOrders.clearDB();
-    await zeroXOrders.subscribeToMeshEvents();
     return zeroXOrders;
   }
 
-  async subscribeToMeshEvents(): Promise<void> {
-    return this.augur.zeroX.subscribeToMeshEvents(this.handleMeshEvent.bind(this));
+  subscribeToOrderEvents() {
+    this.augur.zeroX.events.on('Mesh:OrderEvent', (orderEvents) => this.handleOrderEvent(orderEvents).then(() => console.log(`Handled Mesh order events`)));
+    this.augur.zeroX.events.on('RPC:OrderEvent', (orderEvents) => this.handleOrderEvent(orderEvents).then(() => console.log(`Handled RPC order events`)));
   }
 
-  async handleMeshEvent(orderEvents: OrderEvent[]): Promise<void> {
+  async handleOrderEvent(orderEvents: OrderEvent[]): Promise<void> {
     if (orderEvents.length < 1) return;
     console.log('Mesh events recieved');
     console.log(JSON.stringify(orderEvents));

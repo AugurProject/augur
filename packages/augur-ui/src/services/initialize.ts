@@ -7,6 +7,7 @@ export const connect = async (env: EnvObject, callback: NodeStyleCallback = logE
   const signer = undefined;
   const signerNetworkId = undefined;
   const account = undefined;
-  const sdk = await augurSdk.makeApi(new JsonRpcProvider(env["ethereum-node"].http), account, signer, env, signerNetworkId, false, env["gnosis-relay"]);
+  const enableFlexSearch = null;
+  const sdk = await augurSdk.makeApi(new JsonRpcProvider(env["ethereum-node"].http), account, signer, env, false, enableFlexSearch, signerNetworkId, env["gnosis-relay"]);
   callback(null, sdk);
 };

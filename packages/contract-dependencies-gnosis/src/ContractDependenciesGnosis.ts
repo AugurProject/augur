@@ -1,5 +1,6 @@
 import { abi } from '@augurproject/artifacts';
 import {
+  GnosisRelayAPI,
   GnosisSafeState,
   IGnosisRelayAPI,
   Operation,
@@ -17,6 +18,7 @@ import {
   TransactionStatus,
 } from 'contract-dependencies-ethers';
 import { ethers } from 'ethers';
+import { JsonRpcProvider } from 'ethers/providers';
 import { getAddress } from 'ethers/utils/address';
 import * as _ from 'lodash';
 
@@ -46,6 +48,14 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
     if (safeAddress) {
       this.setSafeAddress(safeAddress);
     }
+  }
+
+  static create(provider: EthersProvider, signer: EthersSigner, cashAddress: string, gnosisRelayEndpoint?: string): ContractDependenciesGnosis {
+    const gnosisRelay = gnosisRelayEndpoint
+      ? new GnosisRelayAPI(gnosisRelayEndpoint)
+      : undefined;
+
+    return new ContractDependenciesGnosis(provider, gnosisRelay, signer, cashAddress);
   }
 
   async getDefaultAddress(): Promise<string | undefined> {
