@@ -1,6 +1,6 @@
 import * as Sync from '../state/Sync';
 import { API } from '../state/getter/API';
-import { BaseConnector } from './baseConnector';
+import { BaseConnector } from './base-connector';
 import { SubscriptionEventName } from '../constants';
 import { Subscriptions } from '../subscriptions';
 import { Callback, EventNameEmitter } from '../events';
