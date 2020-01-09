@@ -170,18 +170,16 @@
           .text-18-bold;
 
           color: @color-primary-text;
-          flex: 1;
           margin-bottom: @size-8;
           flex: 0 auto;
-        }
-
-        &.BigTitle > span {
           display: -webkit-box;
           -webkit-line-clamp: 3;
           -webkit-box-orient: vertical;
           overflow: hidden;
           text-overflow: ellipsis;
+        }
 
+        &.BigTitle > span {
           &:hover {
             position: absolute;
             display: block;
