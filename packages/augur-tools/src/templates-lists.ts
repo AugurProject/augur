@@ -8713,12 +8713,178 @@ export const GERMANY_HOLIDAYS = {
   ]
 };
 
+const HONG_KONG_HOLIDAYS = {
+  [2020]: [
+    {
+      holiday: HOLIDAYS.NEW_YEARS_DAY,
+      date: 1577836800
+    },
+    {
+      holiday: HOLIDAYS.LUNAR_NEW_YEAR_3,
+      date: 1609070400
+    },
+    {
+      holiday: HOLIDAYS.LUNAR_NEW_YEAR_4,
+      date: 1609156800
+    },
+    {
+      holiday: HOLIDAYS.GOOD_FRIDAY,
+      date: 1588248000
+    },
+    {
+      holiday: HOLIDAYS.EASTER_MONDAY,
+      date: 1586736000
+    },
+    {
+      holiday: HOLIDAYS.BUDDDHAS_BIRTHDAY,
+      date: 1588248000
+    },
+    {
+      holiday: HOLIDAYS.LABOUR_DAY,
+      date: 1588334400
+    },
+    {
+      holiday: HOLIDAYS.TUEN_NG_DAY,
+      date: 1593086400
+    },
+    {
+      holiday: HOLIDAYS.SAR_ESTABLISHMENT_DAY,
+      date: 1593604800
+    },
+    {
+      holiday: HOLIDAYS.NATIONAL_DAY,
+      date: 1601553600
+    },
+    {
+      holiday: HOLIDAYS.MID_AUTUMN_FESTIVAL,
+      date: 1601640000
+    },
+    {
+      holiday: HOLIDAYS.CHUNG_YEUNG_DAY,
+      date: 1603713600
+    },
+    {
+      holiday: HOLIDAYS.CHRISTMAS_HOLIDAY,
+      date: 1588291200
+    },
+  ],
+  [2021]: [
+    {
+      holiday: HOLIDAYS.NEW_YEARS_DAY,
+      date: 1577836800
+    },
+    {
+      holiday: HOLIDAYS.LUNAR_NEW_YEAR_1,
+      date: 1613131200
+    },
+    {
+      holiday: HOLIDAYS.LUNAR_NEW_YEAR_4,
+      date: 1613390400
+    },
+    {
+      holiday: HOLIDAYS.GOOD_FRIDAY,
+      date: 1586520000
+    },
+    {
+      holiday: HOLIDAYS.EASTER_MONDAY,
+      date: 1586736000
+    },
+    {
+      holiday: HOLIDAYS.CHING_MING_FESTIVAL,
+      date: 1617710400
+    },
+    {
+      holiday: HOLIDAYS.BUDDDHAS_BIRTHDAY,
+      date: 1621425600
+    },
+    {
+      holiday: HOLIDAYS.TUEN_NG_DAY,
+      date: 1623672000
+    },
+    {
+      holiday: HOLIDAYS.SAR_ESTABLISHMENT_DAY,
+      date: 1625140800
+    },
+    {
+      holiday: HOLIDAYS.MID_AUTUMN_FESTIVAL,
+      date: 1632312000
+    },
+    {
+      holiday: HOLIDAYS.CHUNG_YEUNG_DAY,
+      date: 1634212800
+    },
+    {
+      holiday: HOLIDAYS.CHRISTMAS_HOLIDAY,
+      date: 1640606400
+    },
+  ], 
+  [2022]: [
+    {
+      holiday: HOLIDAYS.LUNAR_NEW_YEAR_1,
+      date: 1643716800
+    },
+    {
+      holiday: HOLIDAYS.LUNAR_NEW_YEAR_2,
+      date: 1643803200
+    },
+    {
+      holiday: HOLIDAYS.LUNAR_NEW_YEAR_3,
+      date: 1643889600
+    },
+    {
+      holiday: HOLIDAYS.GOOD_FRIDAY,
+      date: 1586520000
+    },
+    {
+      holiday: HOLIDAYS.EASTER_MONDAY,
+      date: 1586736000
+    },
+    {
+      holiday: HOLIDAYS.CHING_MING_FESTIVAL,
+      date: 1649160000
+    },
+    {
+      holiday: HOLIDAYS.BUDDDHAS_BIRTHDAY,
+      date: 1652097600
+    },
+    {
+      holiday: HOLIDAYS.LABOUR_DAY,
+      date: 1651492800
+    },
+    {
+      holiday: HOLIDAYS.TUEN_NG_DAY,
+      date: 1654257600
+    },
+    {
+      holiday: HOLIDAYS.SAR_ESTABLISHMENT_DAY,
+      date: 1656676800
+    },
+    {
+      holiday: HOLIDAYS.MID_AUTUMN_FESTIVAL,
+      date: 1662984000
+    },
+    {
+      holiday: HOLIDAYS.CHUNG_YEUNG_DAY,
+      date: 1664884800
+    },
+    {
+      holiday: HOLIDAYS.CHRISTMAS_HOLIDAY,
+      date: 1672056000
+    },
+    {
+      holiday: HOLIDAYS.CHRISTMAS_HOLIDAY,
+      date: 1672142400
+    },
+  ]
+};
+
 export const FIN_EXCHANGES_HOLIDAY_CLOSURES = {
   'New York Stock Exchange (traded in USD)': USA_HOLIDAYS,
   'Nasdaq (traded in USD)': USA_HOLIDAYS,
   'American Stock Exchange (traded in USD)': USA_HOLIDAYS,
   'Euronext NV (traded in Euro)': FRANCE_HOLIDAYS,
   'London Stock Exchange (traded in GBP)': ENGLAND_HOLIDAYS,
+  'Hong Kong Stock Exchange (traded in HKD)': HONG_KONG_HOLIDAYS
 };
 
 export const FIN_INDEXES_HOLIDAY_CLOSURES = {
@@ -8731,4 +8897,5 @@ export const FIN_INDEXES_HOLIDAY_CLOSURES = {
   'CAC 40': FRANCE_HOLIDAYS,
   'FTSE 100': ENGLAND_HOLIDAYS,
   'DAX': GERMANY_HOLIDAYS,
+  'Hang Seng': HONG_KONG_HOLIDAYS
 };
