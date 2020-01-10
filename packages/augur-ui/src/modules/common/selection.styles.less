@@ -330,11 +330,11 @@
       height: @size-16;
       margin-top: 0.1875rem;
       width: @size-16;
-  
+
       @media @breakpoint-mobile {
         transform: scale(1.3);
       }
-    } 
+    }
   }
 
   > button:hover,
@@ -385,7 +385,7 @@
     opacity: 0.75;
   }
 
-  > div:first-of-type {
+  > div {
     border-top: 0;
     padding-bottom: @size-8;
 
@@ -395,6 +395,7 @@
   }
 
   > div:last-of-type {
+    padding-bottom: 0;
     padding-top: @size-8;
 
     @media @breakpoint-mobile {
