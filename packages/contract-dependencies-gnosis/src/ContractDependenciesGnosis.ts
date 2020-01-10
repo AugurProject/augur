@@ -191,8 +191,7 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
   async estimateGas(transaction: Transaction<BigNumber>): Promise<BigNumber> {
     if (this.useSafe && this.safeAddress && this.useRelay) {
       transaction.from = this.safeAddress;
-      const response = await this.relayerEstimateGas(transaction);
-      return response;
+      return this.relayerEstimateGas(transaction);
     } else {
       return super.estimateGas(transaction);
     }
@@ -219,8 +218,7 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
     );
     const safeTxGas = new BigNumber(gasEstimates.safeTxGas);
     const baseGas = new BigNumber(gasEstimates.baseGas);
-
-    return safeTxGas.plus(baseGas);
+    return baseGas.plus(safeTxGas);
   }
 
   async estimateTransactionViaRelay(

@@ -371,6 +371,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           {
             orderQuantity: String(numShares),
             orderEscrowdDai: newOrder.costInDai.formatted,
+            orderDaiEstimate: order.orderDaiEstimate,
             trade: newOrder,
             gasCostEst: formattedGasCost,
           },

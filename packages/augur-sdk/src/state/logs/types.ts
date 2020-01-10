@@ -244,6 +244,16 @@ export interface CurrentOrder extends ParsedOrderEventLog {
   open: number; // 0 == false, 1 == true. Can't index booleans
 }
 
+// from IExchangeCore.sol
+export interface CancelLog extends Log {
+  makerAddress: Address;
+  feeRecipientAddress: Address;
+  makerAssetData: Bytes32;
+  takerAssetData: Bytes32;
+  senderAddress: Address;
+  orderHash: Bytes32;
+}
+
 export enum OrderType {
   Bid = 0,
   Ask = 1,

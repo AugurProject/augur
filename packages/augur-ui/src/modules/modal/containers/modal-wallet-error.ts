@@ -18,7 +18,7 @@ const mergeProps = (sP, dP, oP) => {
   return {
     title: 'Something went wrong',
     buttons: [{ text: 'Close', action: () => dP.closeModal() }],
-    description: ['Please try again.', sP.modal.error ? sP.modal.error : ''],
+    description: [sP.modal.error ? sP.modal.error : ''],
     showDiscordLink: true,
     closeAction: () => dP.closeModal(),
   };

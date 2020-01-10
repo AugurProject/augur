@@ -112,9 +112,12 @@ export function updateTradeShares({
     if (side === BUY) {
       newShares = createBigNumber(maxCost).dividedBy(scaledPrice);
     }
+
     newTradeDetails.numShares = newShares
       .abs()
-      .toNumber()
+      .dividedBy(10)
+      .integerValue()
+      .multipliedBy(10)
       .toString();
 
     return runSimulateTrade(
@@ -199,21 +202,7 @@ async function runSimulateTrade(
     userShares
   );
 
-  const gasLimit = await simulateTradeGasLimit(
-    orderType,
-    marketId,
-    market.numOutcomes,
-    outcomeId,
-    fingerprint,
-    kycToken,
-    doNotCreateOrders,
-    market.numTicks,
-    market.minPrice,
-    market.maxPrice,
-    newTradeDetails.numShares,
-    newTradeDetails.limitPrice,
-    userShares
-  );
+  let gasLimit = null;
 
   const totalFee = createBigNumber(simulateTradeValue.settlementFees, 10);
   newTradeDetails.totalFee = totalFee.toFixed();
@@ -228,6 +217,26 @@ async function runSimulateTrade(
     .dividedBy(createBigNumber(simulateTradeValue.tokensDepleted, 10))
     .toFixed();
   if (isNaN(newTradeDetails.feePercent)) newTradeDetails.feePercent = '0';
+
+  if (newTradeDetails.sharesFilled.toNumber() === 0) {
+    gasLimit = createBigNumber(0);
+  } else {
+    gasLimit = await simulateTradeGasLimit(
+      orderType,
+      marketId,
+      market.numOutcomes,
+      outcomeId,
+      fingerprint,
+      kycToken,
+      doNotCreateOrders,
+      market.numTicks,
+      market.minPrice,
+      market.maxPrice,
+      newTradeDetails.numShares,
+      newTradeDetails.limitPrice,
+      userShares
+    );
+  }
 
   // ignore share cost when user is shorting another outcome or longing another outcome
   // and the user doesn't have shares on the traded outcome

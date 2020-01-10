@@ -264,6 +264,10 @@ export class ContractAPI {
   }
 
   async cancelOrder(orderID: string): Promise<void> {
+    await this.augur.cancelOrder(orderID);
+  }
+
+  async cancelNativeOrder(orderID: string): Promise<void> {
     await this.augur.contracts.cancelOrder.cancelOrder(orderID);
   }
 
