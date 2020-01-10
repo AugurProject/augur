@@ -87,7 +87,7 @@ export function submitNewMarket(
 
     let err = null;
     try {
-      createMarket(
+      await createMarket(
         {
           outcomes: market.outcomes,
           scalarDenomination: market.scalarDenomination,
