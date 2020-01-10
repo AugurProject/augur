@@ -280,8 +280,7 @@ export const Transactions: React.FC<TransactionsProps> = props => {
   ) => {
     const filteredTransactions = transactions.filter(
       (Transaction: TransactionInfo) =>
-        (Transaction.coin === coin || coin === 'ALL') &&
-        (Transaction.action === action || action === 'ALL')
+        Transaction.coin === coin || coin === 'ALL'
     );
     return filteredTransactions;
   };

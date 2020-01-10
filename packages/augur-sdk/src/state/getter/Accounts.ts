@@ -16,6 +16,7 @@ import {
   ParticipationTokensRedeemedLog,
   TradingProceedsClaimedLog,
   MarketType,
+  CommonOutcomes,
 } from '../logs/types';
 import { sortOptions } from './types';
 import {
@@ -313,19 +314,18 @@ export class Accounts<TBigNumber> {
         orderLogs
       );
       allFormattedLogs = allFormattedLogs.concat(
-        formatOrderFilledLogs(orderLogs, marketInfo, params)
+        formatOrderFilledLogs(orderLogs, marketInfo)
       );
       actionCoinComboIsValid = true;
     }
 
     if (
       (params.action === Action.OPEN || params.action === Action.ALL) &&
-      (params.coin === Coin.ETH || params.coin === Coin.ALL)
+      (params.coin === Coin.DAI || params.coin === Coin.ALL)
     ) {
       const zeroXOpenOrders = await db.ZeroXOrders.where('orderCreator')
         .equals(params.account)
         .toArray();
-
 
       const marketIds: string[] = await zeroXOpenOrders.reduce(
         (ids, order) => Array.from(new Set([...ids, order.market])),
@@ -344,7 +344,7 @@ export class Accounts<TBigNumber> {
 
     if (
       (params.action === Action.CANCEL || params.action === Action.ALL) &&
-      (params.coin === Coin.ETH || params.coin === Coin.ALL)
+      (params.coin === Coin.DAI || params.coin === Coin.ALL)
     ) {
       const zeroXCanceledOrders = [];
       /* use new collection that is consuming Exchange cancellation events
@@ -372,7 +372,7 @@ export class Accounts<TBigNumber> {
     if (
       (params.action === Action.CLAIM_PARTICIPATION_TOKENS ||
         params.action === Action.ALL) &&
-      (params.coin === Coin.DAI || params.coin === Coin.ALL)
+      (params.coin === Coin.DAI || params.coin === Coin.REP || params.coin === Coin.ALL)
     ) {
       const participationTokensRedeemedLogs = await db.ParticipationTokensRedeemed.where("timestamp").between(formattedStartTime, formattedEndTime, true, true).and((log) => {
         return log.universe === params.universe && log.account === params.account;
@@ -504,7 +504,6 @@ export class Accounts<TBigNumber> {
     const order = params.isSortDescending ? 'desc' : 'asc';
     allFormattedLogs.sort(compareObjects(params.sortBy, order));
 
-
     if (params.limit == null && params.offset == null) return allFormattedLogs;
 
     const start = params.offset || 0;
@@ -591,16 +590,12 @@ export class Accounts<TBigNumber> {
 
 }
 
-
 function formatOrderFilledLogs(
   transactionLogs: ParsedOrderEventLog[],
   marketInfo: MarketCreatedInfo,
-  params: t.TypeOf<typeof Accounts.getAccountTransactionHistoryParams>
 ): AccountTransaction[] {
-  const formattedLogs: AccountTransaction[] = [];
-  for (let i = 0; i < transactionLogs.length; i++) {
-    const transactionLog = transactionLogs[i];
-    const { amountFilled, orderType, orderCreator, orderFiller, fees, outcome, market, timestamp, transactionHash } = transactionLog;
+  return transactionLogs.map((transactionLog: ParsedOrderEventLog) => {
+    const { amountFilled, orderType, fees, outcome, market, timestamp, transactionHash } = transactionLog;
     const onChainPrice = new BigNumber(transactionLog.price);
     const onChainQuantity = new BigNumber(amountFilled);
     const marketData = marketInfo[market];
@@ -612,61 +607,31 @@ function formatOrderFilledLogs(
     const quantity = convertOnChainAmountToDisplayAmount(onChainQuantity, tickSize);
     const price = convertOnChainPriceToDisplayPrice(onChainPrice, minPrice, tickSize);
     let outcomeDescription = describeMarketOutcome(outcome, marketData);
-    if (marketData.marketType === MarketType.Scalar) {
+    if (marketData.marketType === MarketType.Scalar && outcomeDescription != CommonOutcomes.Invalid) {
       outcomeDescription = extraInfo._scalarDenomination;
     }
     const total =
       orderType === OrderType.Bid
         ? convertAttoValueToDisplayValue(maxPrice).minus(price).times(quantity)
         : quantity.times(price);
+    const orderTypeName = orderType === OrderType.Ask ? 'Filled Buy' : 'Filled Sell';
+      return {
+        action: orderTypeName,
+        coin: Coin.DAI,
+        details: orderTypeName,
+        fee: convertAttoValueToDisplayValue(new BigNumber(fees)).toString(),
+        marketDescription: extraInfo.description,
+        outcome: new BigNumber(outcome).toNumber(),
+        outcomeDescription,
+        price: price.toString(),
+        quantity: quantity.toString(),
+        timestamp: new BigNumber(timestamp).toNumber(),
+        total: total.toString(),
+        transactionHash,
+      };
+  })
+};
 
-    if (
-      (params.action === Action.BUY || params.action === Action.ALL) &&
-      ((orderType === OrderType.Bid &&
-        orderCreator === params.account) ||
-        (orderType === OrderType.Ask &&
-          orderFiller === params.account))
-    ) {
-      formattedLogs.push({
-        action: 'Filled Buy',
-        coin: Coin.DAI,
-        details: 'Filled Buy',
-        fee: new BigNumber(fees).toString(),
-        marketDescription: extraInfo.description,
-        outcome: new BigNumber(outcome).toNumber(),
-        outcomeDescription,
-        price: price.toString(),
-        quantity: quantity.toString(),
-        timestamp: new BigNumber(timestamp).toNumber(),
-        total: total.toString(),
-        transactionHash,
-      });
-    }
-    if (
-      (params.action === Action.SELL || params.action === Action.ALL) &&
-      ((orderType === OrderType.Ask &&
-        orderCreator === params.account) ||
-        (orderType === OrderType.Bid &&
-          orderFiller === params.account))
-    ) {
-      formattedLogs.push({
-        action: 'Filled Sell',
-        coin: Coin.DAI,
-        details: 'Filled Sell',
-        fee: new BigNumber(fees).toString(),
-        marketDescription: extraInfo.description,
-        outcome: new BigNumber(outcome).toNumber(),
-        outcomeDescription,
-        price: price.toString(),
-        quantity: quantity.toString(),
-        timestamp: new BigNumber(timestamp).toNumber(),
-        total: total.toString(),
-        transactionHash,
-      });
-    }
-  }
-  return formattedLogs;
-}
 
 function formatZeroXOrders(
   storedOrders: StoredOrder[],
@@ -680,7 +645,7 @@ function formatZeroXOrders(
     const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
     const quantity = convertOnChainAmountToDisplayAmount(new BigNumber(order.amount), tickSize);
     const price = convertOnChainPriceToDisplayPrice(new BigNumber(order.price), minPrice, tickSize);
-    const orderType = order.orderType === `0x${OrderType.Bid}` ? 'Bid' : 'Ask';
+    const orderType = order.orderType === `0x0${OrderType.Bid}` ? 'Bid' : 'Ask';
     let outcomeDescription = describeMarketOutcome(order.outcome, marketData);
     if (marketData.marketType === MarketType.Scalar) {
       outcomeDescription = marketData.extraInfo._scalarDenomination;
