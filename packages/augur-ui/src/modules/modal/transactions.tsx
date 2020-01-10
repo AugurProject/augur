@@ -20,7 +20,7 @@ import { Pagination } from 'modules/common/pagination';
 import { ValueLabel, TextLabel } from 'modules/common/labels';
 import { DatePicker, FormDropdown } from 'modules/common/form';
 import { Title } from 'modules/modal/common';
-import { formatEther, formatShares, formatDai } from 'utils/format-number';
+import { formatShares, formatDai } from 'utils/format-number';
 import Styles from 'modules/modal/modal.styles.less';
 import { createBigNumber } from 'utils/create-big-number';
 
@@ -86,12 +86,12 @@ const actionOptions = [
     value: 'ALL',
   },
   {
-    label: 'Buy',
-    value: 'BUY',
+    label: 'Open',
+    value: 'OPEN',
   },
   {
-    label: 'Sell',
-    value: 'SELL',
+    label: 'Filled',
+    value: 'FILLED',
   },
   {
     label: 'Cancelled',
@@ -121,17 +121,9 @@ const actionOptions = [
     label: 'Initial Report',
     value: 'INITIAL_REPORT',
   },
-  // { // Removed until V2
-  //   label: "Finalize Market",
-  //   value: "FINALIZE_MARKET",
-  // },
   {
     label: 'Market Creation',
     value: 'MARKET_CREATION',
-  },
-  {
-    label: 'Complete Sets',
-    value: 'COMPLETE_SETS',
   },
 ];
 
@@ -262,7 +254,7 @@ export const Transactions: React.FC<TransactionsProps> = props => {
       endDate.unix().valueOf(),
       coin,
       action,
-      (AllTransactions: Array<TransactionInfo>) => {
+      (AllTransactions: TransactionInfo[]) => {
         const filteredTransactions = filterTransactions(
           AllTransactions,
           coin,
@@ -288,8 +280,7 @@ export const Transactions: React.FC<TransactionsProps> = props => {
   ) => {
     const filteredTransactions = transactions.filter(
       (Transaction: TransactionInfo) =>
-        (Transaction.coin === coin || coin === 'ALL') &&
-        (Transaction.action === action || action === 'ALL')
+        Transaction.coin === coin || coin === 'ALL'
     );
     return filteredTransactions;
   };
@@ -319,9 +310,7 @@ export const Transactions: React.FC<TransactionsProps> = props => {
     const timestamp = moment(tx.timestamp * 1000).format('D MMM YYYY HH:mm:ss');
     const key = `${tx.transactionHash}-${tx.timestamp}-${tx.action}-${tx.outcomeDescription}`;
     // we never show the coin type outside of tx.coin so we can just format by shares always here.
-    const quantity = formatShares(
-      convertAttoValueToDisplayValue(createBigNumber(tx.quantity))
-    );
+    const quantity = formatShares(createBigNumber(tx.quantity));
     const actionLabel = actionOptions.find((option: any) => {
       if (option.value === tx.action) return true;
       return false;
@@ -337,7 +326,7 @@ export const Transactions: React.FC<TransactionsProps> = props => {
         }
       />,
       <ValueLabel
-        value={formatEther(Number(tx.price))}
+        value={formatDai(Number(tx.price))}
         showDenomination={false}
         showEmptyDash={false}
       />,
@@ -348,13 +337,13 @@ export const Transactions: React.FC<TransactionsProps> = props => {
       />,
       <span>{tx.coin}</span>,
       <ValueLabel
-        value={formatEther(Number(tx.fee))}
+        value={formatDai(Number(tx.fee))}
         showDenomination={false}
         showEmptyDash={false}
       />,
       <ValueLabel
-        value={formatEther(
-          Number(convertAttoValueToDisplayValue(createBigNumber(tx.total)))
+        value={formatDai(
+          createBigNumber(tx.total)
         )}
         showDenomination={false}
         showEmptyDash={false}
