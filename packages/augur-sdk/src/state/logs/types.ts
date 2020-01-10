@@ -269,6 +269,11 @@ export enum OrderType {
   Ask = 1,
 }
 
+export enum OrderTypeHex {
+  Bid = '0x00',
+  Ask = '0x01',
+}
+
 export enum OrderEventType {
   Create = 0,
   Cancel = 1,

@@ -4,15 +4,14 @@ import { DerivedDB } from './DerivedDB';
 import { DB } from './DB';
 import {
   CLAIM_GAS_COST,
-  DEFAULT_GAS_PRICE_IN_GWEI,
   EULERS_NUMBER,
   INVALID_OUTCOME,
-  MAX_TRADE_GAS_PERCENTAGE_DIVISOR,
   MINIMUM_INVALID_ORDER_VALUE_IN_ATTO_DAI,
   SECONDS_IN_A_YEAR,
   WORST_CASE_FILL,
+  DEFAULT_GAS_PRICE_IN_GWEI,
 } from '../../constants';
-import { MarketData, MarketType, OrderType, TimestampSetLog } from '../logs/types';
+import { MarketData, MarketType, OrderTypeHex, TimestampSetLog } from '../logs/types';
 import { BigNumber } from 'bignumber.js';
 import { OrderBook } from '../../api/Liquidity';
 import { ParsedLog } from '@augurproject/types';
@@ -63,6 +62,7 @@ export class MarketDB extends DerivedDB {
     };
 
     this.augur.events.subscribe('DerivedDB:updated:CurrentOrders', this.syncOrderBooks);
+    this.augur.events.subscribe('DerivedDB:updated:ZeroXOrders', this.syncOrderBooks);
     this.augur.events.subscribe('controller:new:block', this.processNewBlock);
     this.augur.events.subscribe('TimestampSet', this.processTimestampSet);
   }
@@ -89,16 +89,13 @@ export class MarketDB extends DerivedDB {
     const highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(this.dbName);
     const documents = [];
 
-    const currentOrderLogs = await this.stateDB.CurrentOrders.where("blockNumber").aboveOrEqual(highestSyncedBlockNumber).toArray();
+    const currentZeroXOrders = await this.stateDB.ZeroXOrders.toArray();
 
-    if (currentOrderLogs.length < 1) return;
+    if (currentZeroXOrders.length < 1) return;
 
-    const marketIds: string[] = _.uniq(_.map(currentOrderLogs, 'market')) as string[];
-    const highestBlockNumber: number = _.max(_.map(currentOrderLogs, 'blockNumber')) as number;
+    const marketIds: string[] = _.uniq(_.map(currentZeroXOrders, 'market')) as string[];
     const marketsData = await this.stateDB.Markets.where("market").anyOf(marketIds).toArray();
-
     const marketDataById = _.keyBy(marketsData, 'market');
-
     const reportingFeeDivisor = await this.augur.contracts.universe.getReportingFeeDivisor_();
     // TODO Get ETH -> DAI price via uniswap when we integrate that as an oracle
     const ETHInAttoDAI = new BigNumber(200).multipliedBy(10**18);
@@ -106,16 +103,12 @@ export class MarketDB extends DerivedDB {
     for (const marketId of marketIds) {
       const doc = await this.getOrderBookData(this.augur, marketId, marketDataById[marketId], reportingFeeDivisor, ETHInAttoDAI);
       // This is needed to make rollbacks work properly
-      doc['blockNumber'] = highestBlockNumber;
+      doc['blockNumber'] = highestSyncedBlockNumber;
       doc['market'] = marketId;
       documents.push(doc);
     }
 
     await this.bulkUpsertDocuments(documents);
-
-    if (!syncing) {
-      await this.syncStatus.setHighestSyncBlock(this.dbName, highestBlockNumber, false);
-    }
   }
 
   async getOrderBookData(augur: Augur, marketId: string, marketData: MarketData, reportingFeeDivisor: BigNumber, ETHInAttoDAI: BigNumber): Promise<MarketOrderBookData> {
@@ -127,9 +120,7 @@ export class MarketDB extends DerivedDB {
     const feePerCashInAttoCash = new BigNumber(marketData.feePerCashInAttoCash);
     const feeDivisor = new BigNumber(marketData.feeDivisor);
     const numTicks = new BigNumber(marketData.numTicks);
-
     const feeMultiplier = new BigNumber(1).minus(new BigNumber(1).div(reportingFeeDivisor)).minus(new BigNumber(1).div(feeDivisor));
-
     const orderBook = await this.getOrderBook(marketData, numOutcomes, estimatedTradeGasCostInAttoDai);
     const invalidFilter = await this.recalcInvalidFilter(orderBook, marketData, feeMultiplier, estimatedTradeGasCostInAttoDai, estimatedClaimGasCostInAttoDai);
 
@@ -156,33 +147,40 @@ export class MarketDB extends DerivedDB {
   }
 
   async getOrderBook(marketData: MarketData, numOutcomes: number, estimatedTradeGasCostInAttoDai: BigNumber): Promise<OrderBook> {
-    const currentOrdersResponse = await this.stateDB.CurrentOrders.where("[market+open]").equals([marketData.market, 1]).and((order) => {
-      return order.amount > '0x00';
-    }).toArray();
+    const currentOrdersResponse = await this.stateDB.ZeroXOrders
+      .toArray();
 
-    const currentOrdersByOutcome = _.groupBy(currentOrdersResponse, (order) => new BigNumber(order.outcome).toNumber());
+      const currentOrdersFiltered = currentOrdersResponse
+      .filter(m => m.market === marketData.market)
+      .filter(order => order.amount > '0x00');
+
+    const currentOrdersByOutcome = _.groupBy(currentOrdersFiltered, (order) => new BigNumber(order.outcome).toNumber());
     for (let outcome = 0; outcome < numOutcomes; outcome++) {
       if (currentOrdersByOutcome[outcome] === undefined) currentOrdersByOutcome[outcome] = [];
     }
 
-    const outcomeBidAskOrders = _.map(currentOrdersByOutcome, (outcomeOrders) => {
-      // Cut out orders where gas costs > 1% of the trade
-      const sufficientlyLargeOrders = _.filter(outcomeOrders, (order) => {
-        const maxGasCost = new BigNumber(order.amount).multipliedBy(marketData.numTicks).div(MAX_TRADE_GAS_PERCENTAGE_DIVISOR);
-        return maxGasCost.gte(estimatedTradeGasCostInAttoDai);
-      });
-
-      const groupedByOrderType = _.groupBy(sufficientlyLargeOrders, 'orderType');
-
-      const bids = _.reverse(_.sortBy(groupedByOrderType[OrderType.Bid], 'price'));
-      const asks = _.sortBy(groupedByOrderType[OrderType.Ask], 'price');
+    const outcomeBidAskOrders = Object.keys(currentOrdersByOutcome).map((outcomeOrders) => {
+      const groupedByOrderType = _.groupBy(currentOrdersByOutcome[outcomeOrders], 'orderType');
+      const bids = groupedByOrderType ? _.reverse(_.sortBy(groupedByOrderType[OrderTypeHex.Bid], 'price')) : [];
+      const asks = groupedByOrderType ? _.sortBy(groupedByOrderType[OrderTypeHex.Ask], 'price') : [];
 
       return {
         bids,
         asks,
       };
     });
-    return outcomeBidAskOrders;
+
+    return outcomeBidAskOrders.map(order => {
+      if (order.bids === undefined) {
+        order.bids = [];
+      }
+
+      if (order.asks === undefined) {
+        order.asks = [];
+      }
+
+      return order;
+    });
   }
 
   // A Market is marked as True in the invalidFilter if the best bid for Invalid on the book would not be profitable to take were the market Valid
