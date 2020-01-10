@@ -455,12 +455,8 @@ export class Augur<TProvider extends Provider = Provider> {
   }
 
   async cancelOrder(orderHash: string): Promise<void> {
-    if (this.zeroX) {
       const order = await this.getOrder({ orderHash });
       await this.zeroX.cancelOrder(order);
-    } else {
-      console.error('impl onchain cancellations')
-    }
   }
 
   async batchCancelOrders(orderHashes: string[]): Promise<void> {

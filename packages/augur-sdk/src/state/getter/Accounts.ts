@@ -301,7 +301,7 @@ export class Accounts<TBigNumber> {
     const formattedStartTime = `0x${params.earliestTransactionTime.toString(16)}`;
     const formattedEndTime = `0x${params.latestTransactionTime.toString(16)}`;
     if (
-      (params.action === Action.MARKET_CREATION ||
+      (params.action === Action.FILLED ||
         params.action === Action.ALL) &&
       (params.coin === Coin.DAI || params.coin === Coin.ALL)
     ) {
