@@ -34,7 +34,6 @@ import { compareObjects, convertOnChainPriceToDisplayPrice, numTicksToTickSize, 
 import * as _ from "lodash";
 import * as t from 'io-ts';
 import Dexie from 'dexie';
-import { getMarkets } from './OnChainTrading';
 import { StoredOrder, ZeroXOrders } from '../db/ZeroXOrders';
 
 export enum Action {
@@ -302,7 +301,7 @@ export class Accounts<TBigNumber> {
     const formattedStartTime = `0x${params.earliestTransactionTime.toString(16)}`;
     const formattedEndTime = `0x${params.latestTransactionTime.toString(16)}`;
     if (
-      (params.action === Action.FILLED ||
+      (params.action === Action.MARKET_CREATION ||
         params.action === Action.ALL) &&
       (params.coin === Coin.DAI || params.coin === Coin.ALL)
     ) {

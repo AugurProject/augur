@@ -681,7 +681,7 @@ describe('State API :: Accounts :: ', () => {
         sortBy: 'action',
         isSortDescending: false,
         limit: 2,
-        offset: 9,
+        offset: 19,
       }
     );
     expect(accountTransactionHistory).toMatchObject([
