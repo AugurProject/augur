@@ -204,14 +204,14 @@ export enum ValidationType {
 export enum TEXT_PLACEHOLDERS {
   SINGLE_PLAYER = 'Single Player\'s Name',
   MULTIPLE_PLAYER = 'Two Player\'s Names',
-  SINGLE_CANDIDATE = 'Single Candidate\s Name', 
-  SINGLE_PERSON_NAME = 'Single Person\'s Name', 
-  SINGLE_HORSE = 'Single Horse\'s Name', 
+  SINGLE_CANDIDATE = 'Single Candidate\s Name',
+  SINGLE_PERSON_NAME = 'Single Person\'s Name',
+  SINGLE_HORSE = 'Single Horse\'s Name',
   SINGLE_PERSON = 'Single Person',
   SINGLE_LOCATION = 'Single Location',
-  SINGLE_GROUP_OR_MOVIE_TITLE = 'Single Group or Movie Title', 
-  INDIVIDUAL_MOVIE_TITLE = 'Individual Movie Title', 
-  STOCK_OR_ETF = 'Individual Stock or ETF Name', 
+  SINGLE_PERSON_OR_GROUP_OR_MOVIE_TITLE = 'Single Person or Single Group or Movie Title',
+  INDIVIDUAL_MOVIE_TITLE = 'Individual Movie Title',
+  STOCK_OR_ETF = 'Individual Stock or ETF Name',
   INDIVIDUAL_STOCK_OR_ETF_SYMBOL = 'Individual Stock or ETF Ticker Symbol',
 }
 

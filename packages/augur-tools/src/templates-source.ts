@@ -1319,7 +1319,7 @@ export const TEMPLATES = {
                       text: `'If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled".`,
                     },
                     {
-                      text: 'This market is intended to be about a Single Group, if this is not the case, this market should settle as invalid.'
+                      text: 'This market is intended to be about a Single Team verse Single Team, if this is not the case, this market should settle as invalid.'
                     }
                   ],
                 },
@@ -1375,7 +1375,7 @@ export const TEMPLATES = {
                       text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled"`,
                     },
                     {
-                      text: 'This market is intended to be about a Single Group, if this is not the case, this market should settle as invalid.'
+                      text: 'This market is intended to be about a Single Team verse Single Team, if this is not the case, this market should settle as invalid.'
                     }
                   ],
                 },
@@ -1483,7 +1483,7 @@ export const TEMPLATES = {
                       text: `'If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled".`,
                     },
                     {
-                      text: 'This market is intended to be about a Single Group, if this is not the case, this market should settle as invalid.'
+                      text: 'This market is intended to be about a Single Team verse Single Team, if this is not the case, this market should settle as invalid.'
                     }
                   ],
                 },
@@ -3446,7 +3446,7 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: 'This market is intended to be about a [Single Person, Single Group or Movie Title], if this is not the case, this market should settle as invalid.'
+                      text: 'This market is intended to be about a Single Person, if this is not the case, this market should settle as invalid.'
                     }
                   ]
                 },
@@ -5004,7 +5004,7 @@ export const TEMPLATES = {
           {
             id: 0,
             type: TemplateInputType.TEXT,
-            placeholder: TEXT_PLACEHOLDERS.SINGLE_PERSON_NAME,
+            placeholder: TEXT_PLACEHOLDERS.SINGLE_PERSON_OR_GROUP_OR_MOVIE_TITLE,
           },
           {
             id: 1,
