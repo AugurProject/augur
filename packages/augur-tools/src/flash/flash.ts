@@ -5,7 +5,7 @@ import { WSClient } from '@0x/mesh-rpc-client';
 import { ContractAPI } from "../libs/contract-api";
 import { Account, NULL_ADDRESS } from "../constants";
 import { providers } from "ethers";
-import { Connectors, Events, SubscriptionEventName } from "@augurproject/sdk";
+import { Connectors, Events, SubscriptionEventName, ServerConfiguration } from "@augurproject/sdk";
 import { API } from "@augurproject/sdk/build/state/getter/API";
 import { BlockAndLogStreamerListenerInterface } from "@augurproject/sdk/build/state/db/BlockAndLogStreamerListener";
 import { DB } from "@augurproject/sdk/build/state/db/DB";
@@ -140,6 +140,18 @@ export class FlashSession {
 
     if (wireUpSdk) this.usingSdk = true;
 
+
+    const config: ServerConfiguration = {
+      networkId: await this.provider.getNetworkId(),
+      ethereum: {
+        http: network.http
+      },
+      syncing: {
+
+      }
+
+    }
+
     const connector: BaseConnector = wireUpSdk ? new Connectors.DirectConnector() : new EmptyConnector();
     const gnosisRelay = useGnosis ? new GnosisRelayAPI('http://localhost:8000/api/') : undefined;
     const meshClient = !!meshEndpoint ? new WSClient(meshEndpoint) : undefined;
@@ -165,7 +177,7 @@ export class FlashSession {
     if (wireUpSdk) {
       network = network || this.network;
       if (!network) throw Error('Cannot wire up sdk if network is not set.');
-      await this.user.augur.connect(network.http, this.getAccount().publicKey);
+      await connector.connect(config, this.getAccount().publicKey);
       await this.user.augur.on(SubscriptionEventName.NewBlock, this.sdkNewBlock);
       this.db = this.makeDB();
       this.api = new API(this.user.augur, this.db);

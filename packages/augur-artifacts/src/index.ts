@@ -23,16 +23,17 @@ try {
   })
 } catch (e) {}
 
-export type NetworkId =
-    '1'
-    | '3'
-    | '4'
-    | '19'
-    | '42'
-    | '101'
-    | '102'
-    | '103'
-    | '104';
+export enum NetworkId {
+  Mainnet = '1',
+  Ropsten = '3',
+  Rinkeby = '4',
+  Kovan = '42',
+  Private1 = '101',
+  Private2 = '102',
+  Private3 = '103',
+  Private4 = '104',
+  PrivateGanache = '123456',
+};
 
 export interface UploadBlockNumbers {[networkId: string]: number}
 
@@ -138,4 +139,22 @@ export function getAddressesForNetwork(networkId: NetworkId): ContractAddresses 
   }
 
   return addresses;
+}
+
+export function getStartingBlockForNetwork(networkId: NetworkId): number {
+  const blockNumber = UploadBlockNumbers[networkId];
+  if (typeof blockNumber === 'undefined') {
+    if (networkId !== '1') {
+      console.log(
+        `Starting block number isn't available for network ${networkId}. If you're running in development mode, be sure to have started a local ethereum node, and then have rebuilt using yarn build before starting the dev server`
+      );
+    }
+    throw new Error(
+      `Unable to read starting block number for network: ${
+        networkId
+      }. Known starting block numbers: ${JSON.stringify(UploadBlockNumbers)}`
+    );
+  }
+
+  return blockNumber;
 }

@@ -1,3 +1,4 @@
+import { ServerConfiguration } from '../state';
 import { SubscriptionEventName } from "../constants";
 import { Callback, SubscriptionType } from "../events";
 
@@ -5,8 +6,8 @@ export abstract class BaseConnector {
   subscriptions: { [event: string]: { id: string, callback: Callback } } = {};
 
   // Lifecyle of the connector
-  abstract async connect(ethNodeUrl: string, account?: string): Promise<any>;
-  abstract async disconnect(): Promise<any>;
+  abstract async connect(config: ServerConfiguration, account?: string): Promise<void>;
+  abstract async disconnect(): Promise<void>;
 
   // bind API calls
   abstract bindTo<R, P>(f: (db: any, augur: any, params: P) => Promise<R>): (params: P) => Promise<R>;

@@ -12,6 +12,7 @@ import {
 } from '@augurproject/sdk/build/state/getter/Markets';
 import { SingleThreadConnector } from '@augurproject/sdk/build/connector';
 import { SubscriptionEventName } from '@augurproject/sdk/build/constants';
+import { ServerConfiguration } from '@augurproject/sdk/build/state';
 import { NewBlock } from '@augurproject/sdk/build/events';
 import { MarketCreated } from "@augurproject/sdk/build/events";
 import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
@@ -27,9 +28,6 @@ const mock = makeDbMock();
 jest.mock('@augurproject/sdk/build/state/create-api', () => {
   return {
     __esModule: true,
-    buildAPI: () => {
-      return new API(john.augur, db);
-    },
     create: () => {
       const blockAndLogStreamerListener = BlockAndLogStreamerListener.create(
         provider,
@@ -61,7 +59,16 @@ beforeAll(async () => {
 
   connector = new SingleThreadConnector();
   console.log("Connector connecting");
-  await connector.connect('');
+  const config: ServerConfiguration = {
+    networkId: await provider.getNetworkId(),
+    ethereum: {
+      http: ''
+    },
+    syncing: {
+
+    }
+  }
+  await connector.connect(config);
 });
 
 test('SingleThreadConnector :: Should route correctly and handle events, extraInfo', async done => {

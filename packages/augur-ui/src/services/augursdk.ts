@@ -4,6 +4,8 @@ import {
   CalculateGnosisSafeAddressParams,
   Connectors,
   Provider,
+  ClientConfiguration,
+  createClient
 } from '@augurproject/sdk';
 import { EthersSigner } from 'contract-dependencies-ethers';
 
@@ -23,7 +25,7 @@ import { NETWORK_IDS } from 'modules/common/constants';
 import { WebWorkerConnector } from './ww-connector';
 
 export class SDK {
-  sdk: Augur<Provider> | null = null;
+  sdk: Augur | null = null;
   isWeb3Transport = false;
   env: EnvObject = null;
   isSubscribed = false;
@@ -32,42 +34,47 @@ export class SDK {
   private signerNetworkId: string;
   private meshConfig: Config;
 
-  async makeApi(
+  export async function createClient(env: EnvObject, connector: BaseConnector, signer?: EthersSigner, provider?: JsonRpcProvider) {
+
+  async makeClient(
     provider: JsonRpcProvider,
-    account = '',
     signer: EthersSigner,
     env: EnvObject,
     isWeb3 = false,
     enableFlexSearch = false,
     signerNetworkId?: string,
     gnosisRelayEndpoint?: string
-  ): Promise<Augur<Provider>> {
+  ): Promise<Augur> {
     this.networkId = await provider.getNetworkId();
     this.isWeb3Transport = isWeb3;
     this.env = env;
     this.account = account;
     this.signerNetworkId = signerNetworkId;
 
-    const ethereumRPCURL = env['ethereum-node'].http || 'http://localhost:8545';
-    const addresses = getAddressesForNetwork(this.networkId);
-    const contractDependencies = ContractDependenciesGnosis.create(
-      provider,
-      signer,
-      addresses.Cash,
-      gnosisRelayEndpoint,
-    );
+    const clientConfiguration: ClientConfiguration = {
+      networkId: this.networkId,
+      sdk: {
+        ws: env['sdkEndpoint']
+      },
+      ethereum: {
+        http: env['ethereum-node'].http
+      },
+      gnosis: {
+        http: gnosisRelayEndpoint
+      }
+    };
 
-    const connector = this.pickConnector(env['sdkEndpoint']);
-    await connector.connect(ethereumRPCURL, account);
+    const serverConfig: ServerConfiguration = {
+      ...ClientConfiguration,
+      sycing: {
+      }
+    };
 
-    this.sdk = await Augur.create<Provider>(
-      contractDependencies.ethersProvider,
-      contractDependencies,
-      addresses,
-      connector,
-      contractDependencies.gnosisRelay,
-      enableFlexSearch
-    );
+    // TODO don't leave this here
+    const connector = this.pickConnector(clientConfiguration);
+    await connector.connect(serverConfig);
+
+    this.sdk = createClient(clientConfiguration, connector, signer, provider);
 
     if (!isEmpty(account)) {
       await this.getOrCreateGnosisSafe(account);
@@ -154,15 +161,15 @@ export class SDK {
     this.sdk = null;
   }
 
-  pickConnector(sdkEndpoint?: string) {
-    if (sdkEndpoint) {
-      return new Connectors.WebsocketConnector(sdkEndpoint);
+  pickConnector(config: ServerConfiguration) {
+    if (config.sdk.ws) {
+      return new Connectors.WebsocketConnector(config);
     } else {
-      return new Connectors.SingleThreadConnector();
+      return new Connectors.SingleThreadConnector(config);
     }
   }
 
-  get(): Augur<Provider> {
+  get(): Augur {
     if (this.sdk) {
       return this.sdk;
     }

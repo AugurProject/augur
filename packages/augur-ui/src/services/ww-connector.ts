@@ -28,13 +28,13 @@ export class WebWorkerConnector extends Connectors.BaseConnector {
   private worker: any;
   subscriptions: { [event: string]: { id: string; callback: Callback } } = {};
 
-  async connect(ethNodeUrl: string, account?: string): Promise<any> {
+  async connect(config: ServerConfiguration, account?: string): Promise<void> {
     this.worker = new Worker();
 
     this.worker.postMessage({
       id: iterator.next().value,
       method: 'start',
-      params: [ethNodeUrl, account],
+      params: [config.ethereum.http, account],
       jsonrpc: '2.0',
     });
 
@@ -84,7 +84,7 @@ export class WebWorkerConnector extends Connectors.BaseConnector {
     }
   }
 
-  async disconnect(): Promise<any> {
+  async disconnect(): Promise<void> {
     this.worker.terminate();
   }
 

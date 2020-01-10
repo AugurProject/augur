@@ -1,4 +1,4 @@
-import * as Sync from '../state/Sync';
+import { ServerConfiguration, startServer } from '../state';
 import { API } from '../state/getter/API';
 import { BaseConnector } from './base-connector';
 import { SubscriptionEventName } from '../constants';
@@ -6,20 +6,17 @@ import { Subscriptions } from '../subscriptions';
 import { Callback, EventNameEmitter } from '../events';
 
 export class SingleThreadConnector extends BaseConnector {
-  protected api: API;
-  protected events: Subscriptions;
-  subscriptions: { [event: string]: { id: string; callback: Callback } } = {};
-
-  connect = async (ethNodeUrl: string, account?: string): Promise<any> => {
-    this.api = await Sync.start(ethNodeUrl, account, true);
-    this.events = this.api.augur.events;
-
-    return this.api;
+  private api: API;
+  private get events(): Subscriptions {
+    return this.api.augur.events;
   }
 
-  async disconnect(): Promise<any> {
+  async connect(config: ServerConfiguration, account?: string): Promise<void> {
+    this.api = await startServer(config);
+  }
+
+  async disconnect(): Promise<void> {
     this.api = null;
-    return true;
   }
 
   bindTo<R, P>(f: (db: any, augur: any, params: P) => Promise<R>): (params: P) => Promise<R> {

@@ -37,7 +37,7 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
 
   constructor(
     provider: EthersProvider,
-    private readonly gnosisRelay: IGnosisRelayAPI,
+    public readonly gnosisRelay: IGnosisRelayAPI,
     signer: EthersSigner,
     private gasToken: string = NULL_ADDRESS,
     public gasPrice: BigNumber = DEFAULT_GAS_PRICE,

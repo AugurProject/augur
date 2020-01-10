@@ -2,6 +2,8 @@ import { Markets } from '@augurproject/sdk/build/state/getter/Markets';
 import { NewBlock } from '@augurproject/sdk/build/events';
 import { SubscriptionEventName } from '@augurproject/sdk/build/constants';
 import { WebsocketConnector } from '@augurproject/sdk/build/connector/ws-connector';
+import { ServerConfiguration } from '@augurproject/sdk/build/state';
+import { NetworkId } from '@augurproject/artifacts';
 
 jest.mock('websocket-as-promised', () => {
   return {
@@ -38,8 +40,20 @@ jest.mock('websocket-as-promised', () => {
 });
 
 test('WebsocketConnector :: Should route correctly and handle events', async done => {
-  const connector = new WebsocketConnector('http://localhost:9001');
-  await connector.connect('');
+  const config: ServerConfiguration = {
+    networkId: NetworkId.PrivateGanache,
+    ethereum: {
+      http: ''
+    },
+    sdk: {
+      ws: 'ws://localhost:9001'
+    },
+    syncing: {
+
+    }
+  }
+  const connector = new WebsocketConnector();
+  await connector.connect(config);
 
   await connector.on(
     SubscriptionEventName.NewBlock,
