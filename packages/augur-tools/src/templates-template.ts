@@ -1,6 +1,7 @@
 import { ethers } from 'ethers';
 import moment from 'moment';
 import { BigNumber } from 'ethers/utils';
+
 export const REQUIRED = 'REQUIRED';
 export const CHOICE = 'CHOICE';
 // Market templates
@@ -126,12 +127,20 @@ export interface DropdownDependencies {
 
 export interface DateDependencies {
   id: number;
-  weekdayOnly?: boolean;
+  noWeekendHolidays?: boolean;
   dateAfterId?: number;
 }
 export interface DateInputDependencies {
   inputDateYearId: number;
   inputSourceId: number;
+  holidayClosures?: {
+    [key: string]: {
+      [year: number]: {
+        holiday: string,
+        date: number
+      }[]
+    }
+  };
   inputTimeOffset: {
     [key: string]: TimeOffset;
   }
@@ -188,6 +197,14 @@ export interface TemplateInput {
   }
   setEndTime?: number;
   inputDateYearId?: number;
+  holidayClosures?: {
+    [key: string]: {
+      [year: number]: {
+        holiday: string,
+        date: number
+      }[]
+    }
+  }
 }
 
 export interface RetiredTemplate {
@@ -198,7 +215,7 @@ export interface RetiredTemplate {
 export enum ValidationType {
   WHOLE_NUMBER = 'WHOLE_NUMBER',
   NUMBER = 'NUMBER',
-  WEEKDAYONLY = 'WEEKDAYONLY',
+  NOWEEKEND_HOLIDAYS = 'NOWEEKEND_HOLIDAYS',
 }
 
 export enum TemplateInputType {
@@ -375,12 +392,42 @@ function dateStartAfterMarketEndTime(
   return Number(input.timestamp) >= Number(endTime);
 }
 
-function dateNoWeekend(
+export function tellOnHoliday(
   inputs: ExtraInfoTemplateInput[],
-  dateDependencies: DateDependencies[]
+  input: ExtraInfoTemplateInput,
+  closing: DateInputDependencies,
+) {
+  let holidayPresent = null;
+  const exchange = inputs.find(i => i.id === closing.inputSourceId);
+  if (!exchange) return 'exchange not found'; //exchange is required
+  if (exchange.value) {
+    const holidayClosures = closing.holidayClosures[exchange.value];
+    const inputYear = moment.unix(Number(input.timestamp)).year();
+    const holidayClosuresPerYear = holidayClosures && holidayClosures[inputYear];
+    if (holidayClosuresPerYear) {
+      const offset = closing.inputTimeOffset[exchange.value].offset;
+      holidayClosuresPerYear.forEach(holiday => {
+        const OneHourBuffer = 1;
+        const utcHolidayDate = moment.unix(holiday.date).utc();
+        const convertedUtcHolidayDate = moment(utcHolidayDate).add(offset, 'hours');
+        const startHolidayDate = moment(convertedUtcHolidayDate).subtract(OneHourBuffer, 'hours');
+        const endHolidayDate = moment(startHolidayDate).add(24 + OneHourBuffer, 'hours');
+        if (moment(Number(input.timestamp)* 1000).unix() >= startHolidayDate.unix() && moment(Number(input.timestamp) * 1000).unix() <= endHolidayDate.unix()) {
+          holidayPresent = holiday;
+        }
+      });
+    }
+  }
+  return holidayPresent;
+}
+
+function dateNoWeekendHoliday(
+  inputs: ExtraInfoTemplateInput[],
+  dateDependencies: DateDependencies[],
+  closingDateDependencies: DateInputDependencies[]
 ) {
   if (!dateDependencies) return true;
-  const deps = dateDependencies.filter(d => d.weekdayOnly);
+  const deps = dateDependencies.filter(d => d.noWeekendHolidays);
   const result = deps.reduce((p, d) => {
     const input = inputs.find(i => i.id === d.id);
     if (!input) return false;
@@ -391,6 +438,11 @@ function dateNoWeekend(
     ) {
       return false;
     }
+    closingDateDependencies.forEach(closing => {
+      if (closing && tellOnHoliday(inputs, input, closing)) {
+        p = false;
+      }
+    });
     return p;
   }, true);
   return result;
@@ -446,14 +498,16 @@ function closingDateDependencies(
     const exchangeValue = inputs.find(i => i.id === d.inputSourceId);
     if (!dateYearSource || !exchangeValue) return false;
     const timeOffset = d.inputTimeOffset[exchangeValue.value]  as TimeOffset;
-    const closingDateTime = getTemplateExchangeClosingWithBuffer(
-      Number(dateYearSource.timestamp),
-      timeOffset.hour,
-      timeOffset.minutes,
-      timeOffset.offset
-    );
-    if (closingDateTime >= endTime) {
-      return false;
+    if (timeOffset) {
+      const closingDateTime = getTemplateExchangeClosingWithBuffer(
+        Number(dateYearSource.timestamp),
+        timeOffset.hour,
+        timeOffset.minutes,
+        timeOffset.offset
+      );
+      if (closingDateTime >= endTime) {
+        return false;
+      }
     }
     return p;
   }, true);
@@ -535,9 +589,9 @@ export const isTemplateMarket = (
       return false;
     }
 
-    // check DATE isn't on weekend
-    if (!dateNoWeekend(template.inputs, validation.dateDependencies)) {
-      errors.push('market question date can not be on weekend');
+    // check DATE isn't on weekend or holiday
+    if (!dateNoWeekendHoliday(template.inputs, validation.dateDependencies, validation.closingDateDependencies)) {
+      errors.push('market question date can not be on weekend or on a holiday');
       return false;
     }
 
