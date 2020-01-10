@@ -217,7 +217,7 @@ function getValidationValues(input: TemplateInput) {
   }
 }
 
-const specialCharacters: SearchReplace[] = [
+const specialCharacters = [
   {
     find: /\(/g,
     rep: `\\(`,
