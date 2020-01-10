@@ -296,12 +296,12 @@ class Form extends Component<FromProps, FormState> {
           `Quantity must be a multiple of ${tradeInterval.dividedBy(market.tickSize).dividedBy(10**18)}`
         );
     }
-
-    if(expiration && expiration - moment().unix() < 60) {
+    const minOrderLifespan = 70;
+    if(expiration && expiration - moment().unix() < minOrderLifespan) {
         errorCount += 1;
         passedTest = false;
         errors[this.INPUT_TYPES.EXPIRATION_DATE].push(
-          `Order expires less than 60 seconds into the future`
+          `Order expires less than 70 seconds into the future`
           );
      }
     return { isOrderValid: passedTest, errors, errorCount };
