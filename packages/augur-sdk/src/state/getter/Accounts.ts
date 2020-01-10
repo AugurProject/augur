@@ -15,6 +15,7 @@ import {
   ParsedOrderEventLog,
   ParticipationTokensRedeemedLog,
   TradingProceedsClaimedLog,
+  MarketType,
 } from '../logs/types';
 import { sortOptions } from './types';
 import {
@@ -610,7 +611,10 @@ function formatOrderFilledLogs(
     const extraInfo = marketData.extraInfo;
     const quantity = convertOnChainAmountToDisplayAmount(onChainQuantity, tickSize);
     const price = convertOnChainPriceToDisplayPrice(onChainPrice, minPrice, tickSize);
-    const outcomeDescription = describeMarketOutcome(outcome, marketData);
+    let outcomeDescription = describeMarketOutcome(outcome, marketData);
+    if (marketData.marketType === MarketType.Scalar) {
+      outcomeDescription = extraInfo._scalarDenomination;
+    }
     const total =
       orderType === OrderType.Bid
         ? convertAttoValueToDisplayValue(maxPrice).minus(price).times(quantity)
@@ -677,6 +681,10 @@ function formatZeroXOrders(
     const quantity = convertOnChainAmountToDisplayAmount(new BigNumber(order.amount), tickSize);
     const price = convertOnChainPriceToDisplayPrice(new BigNumber(order.price), minPrice, tickSize);
     const orderType = order.orderType === `0x${OrderType.Bid}` ? 'Bid' : 'Ask';
+    let outcomeDescription = describeMarketOutcome(order.outcome, marketData);
+    if (marketData.marketType === MarketType.Scalar) {
+      outcomeDescription = marketData.extraInfo._scalarDenomination;
+    }
     return {
       action: `Open ${orderType}`,
       coin: Coin.DAI,
@@ -684,7 +692,7 @@ function formatZeroXOrders(
       fee: '0',
       marketDescription: marketInfo[order.market].extraInfo.description,
       outcome: new BigNumber(order.outcome).toNumber(),
-      outcomeDescription: describeMarketOutcome(order.outcome, marketInfo[order.market]),
+      outcomeDescription,
       price,
       quantity,
       // TODO: need to do something about timestamp, using salt as timestamp taking off last 4 numbers
