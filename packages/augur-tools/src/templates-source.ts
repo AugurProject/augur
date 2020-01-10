@@ -1227,8 +1227,8 @@ export const TEMPLATES = {
             templates: [
               {
                 marketType: CATEGORICAL,
-                question: `Men's Soccer: Which team will win: [0] vs. [1]?`,
-                example: `Men's Soccer: Which team will win: Real Madrid vs. Manchester United?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+                question: `Men's Football (Soccer): Which team will win: [0] vs. [1]?`,
+                example: `Men's Football (Soccer): Which team will win: Real Madrid vs. Manchester United?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -1272,8 +1272,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `Men's Soccer (Point Spread): [0] to win by more than [1].5 goals over [2]?`,
-                example: `Men's Soccer (Point Spread): Real Madrid to win by more than 1.5 goals over Manchester United?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `Men's Football (Soccer) (Point Spread): [0] to win by more than [1].5 goals over [2]?`,
+                example: `Men's Football (Soccer) (Point Spread): Real Madrid to win by more than 1.5 goals over Manchester United?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -1328,8 +1328,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `Men's Soccer (O/U): [0] vs. [1]: Total goals scored; Over/Under [2].5?`,
-                example: `Men's Soccer (O/U): Real Madrid vs. Manchester United: Total goals scored Over/Under 4.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `Men's Football (Soccer) (O/U): [0] vs. [1]: Total goals scored; Over/Under [2].5?`,
+                example: `Men's Football (Soccer) (O/U): Real Madrid vs. Manchester United: Total goals scored Over/Under 4.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -1388,8 +1388,8 @@ export const TEMPLATES = {
             templates: [
               {
                 marketType: CATEGORICAL,
-                question: `Women's Soccer: Which team will win: [0] vs. [1]?`,
-                example: `Women's Soccer: Which team will win: Real Madrid vs. Manchester United?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+                question: `Women's Football (Soccer): Which team will win: [0] vs. [1]?`,
+                example: `Women's Football (Soccer): Which team will win: Real Madrid vs. Manchester United?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -1436,8 +1436,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `Women's Soccer (Point Spread): [0] to win by more than [1].5 goals over [2]?`,
-                example: `Women's Soccer (Point Spread): Real Madrid to win by more than 1.5 goals over Manchester United?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `Women's Football (Soccer) (Point Spread): [0] to win by more than [1].5 goals over [2]?`,
+                example: `Women's Football (Soccer) (Point Spread): Real Madrid to win by more than 1.5 goals over Manchester United?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -1492,8 +1492,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `Women's Soccer (O/U): [0] vs. [1]: Total goals scored; Over/Under [2].5?`,
-                example: `Women's Soccer (O/U): Real Madrid vs. Manchester United: Total goals scored Over/Under 4.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `Women's Football (Soccer) (O/U): [0] vs. [1]: Total goals scored; Over/Under [2].5?`,
+                example: `Women's Football (Soccer) (O/U): Real Madrid vs. Manchester United: Total goals scored Over/Under 4.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,

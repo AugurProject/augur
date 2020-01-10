@@ -8,8 +8,8 @@ export const setCategories: SortedGroup[] = [
     label: 'Sports',
     subGroup: [
       {
-        value: 'Soccer',
-        label: 'Soccer',
+        value: 'Football (Soccer)',
+        label: 'Football (Soccer)',
         subGroup: [
           { value: 'Copa America', label: 'Copa America' },
           { value: 'Africa Cup of Nations', label: 'Africa Cup of Nations' },

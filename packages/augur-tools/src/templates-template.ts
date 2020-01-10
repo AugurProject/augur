@@ -15,7 +15,7 @@ export const USDT = 'USDT';
 export const EUR = 'EUR';
 
 // Market Subtemplates
-export const SOCCER = 'Soccer';
+export const SOCCER = 'Football (Soccer)';
 export const AMERICAN_FOOTBALL = 'American Football';
 export const BASEBALL = 'Baseball';
 export const GOLF = 'Golf';
