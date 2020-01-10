@@ -81,16 +81,13 @@ const SideNav = ({
 
             <div>
               {showMigrateRepButton && (
-                <span className={Styles.SideNavMigrateRep}>
-                  <SecondaryButton
-                    text='Migrate V1 to V2 REP'
-                    action={() => migrateV1Rep()}
-                  />
-                </span>
-              )}
-
-              {showMigrateRepButton && (
                 <span>
+                  <span className={Styles.SideNavMigrateRep}>
+                    <SecondaryButton
+                      text='Migrate V1 to V2 REP'
+                      action={() => migrateV1Rep()}
+                    />
+                  </span>
                   <label
                     className={classNames(Styles.SideNavMigrateTooltipHint)}
                     data-tip
