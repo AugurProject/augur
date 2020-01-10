@@ -244,7 +244,7 @@ describe('State API :: Accounts :: ', () => {
       {
         universe: john.augur.contracts.universe.address,
         account: ACCOUNTS[1].publicKey,
-        action: Action.SELL,
+        action: Action.FILLED,
       }
     );
     expect(accountTransactionHistory).toMatchObject([
