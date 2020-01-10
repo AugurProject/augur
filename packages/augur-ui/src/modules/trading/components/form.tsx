@@ -18,7 +18,7 @@ import { TextInput } from 'modules/common/form';
 import getPrecision from 'utils/get-number-precision';
 import convertExponentialToDecimal from 'utils/convert-exponential';
 import { MarketData, OutcomeFormatted, OutcomeOrderBook } from 'modules/types';
-import { MarketType } from '@augurproject/sdk/src/state/logs/types';
+import { MarketType, MarketTypeName } from '@augurproject/sdk/src/state/logs/types';
 import { Getters } from '@augurproject/sdk';
 import { convertDisplayAmountToOnChainAmount, tickSizeToNumTickWithDisplayPrices } from '@augurproject/sdk';
 import { CancelTextButton, TextButtonFlip } from 'modules/common/buttons';
@@ -278,7 +278,7 @@ class Form extends Component<FromProps, FormState> {
     }
 
     let tradeInterval = DEFAULT_TRADE_INTERVAL;
-    if (marketType == MarketType.Scalar) {
+    if (market.marketType === MarketTypeName.Scalar) {
       tradeInterval = TRADE_INTERVAL_VALUE.dividedBy(market.numTicks);
     }
     if (!convertDisplayAmountToOnChainAmount(value, market.tickSize).mod(tradeInterval).isEqualTo(0)) {
@@ -290,18 +290,18 @@ class Form extends Component<FromProps, FormState> {
           createBigNumber(market.maxPrice)
         );
       }
-      console.log(numTicks);
       errorCount += 1;
       passedTest = false;
       errors[this.INPUT_TYPES.QUANTITY].push(
-          `Quantity must be a multiple of ${tradeInterval.multipliedBy(numTicks).dividedBy(10**18)}`
+          `Quantity must be a multiple of ${tradeInterval.dividedBy(market.tickSize).dividedBy(10**18)}`
         );
     }
-    if(expiration && expiration - moment().unix() < 60) {
+    const minOrderLifespan = 70;
+    if(expiration && expiration - moment().unix() < minOrderLifespan) {
         errorCount += 1;
         passedTest = false;
         errors[this.INPUT_TYPES.EXPIRATION_DATE].push(
-          `Order expires less than 60 seconds into the future`
+          `Order expires less than 70 seconds into the future`
           );
      }
     return { isOrderValid: passedTest, errors, errorCount };

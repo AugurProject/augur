@@ -21,12 +21,8 @@ import {
   YES_NO,
   PUBLICCREATEORDER,
   PUBLICCREATEORDERS,
-  APPROVE,
-  DOINITIALREPORT,
-  ZERO,
-  PREFILLEDSTAKE,
-  PUBLICFILLBESTORDER,
   PUBLICFILLORDER,
+  BUYPARTICIPATIONTOKENS
 } from 'modules/common/constants';
 import { UIOrder, CreateMarketData } from 'modules/types';
 import { convertTransactionOrderToUIOrder } from 'modules/events/actions/transaction-conversions';
@@ -113,6 +109,32 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
     }
 
     switch (methodCall) {
+      case BUYPARTICIPATIONTOKENS: {
+        if (eventName === TXEventName.Success) {
+          const { universe } = getState();
+          const { disputeWindow } = universe;
+          const { startTime, endTime } = disputeWindow;
+
+          const genHash = hash ? hash : generateTxParameterId(transaction.params);
+          dispatch(
+            updateAlert(genHash, {
+              id: genHash,
+              uniqueId: genHash,
+              params: {
+                ...transaction.params,
+                marketId: 1,
+                startTime,
+                endTime,
+              },
+              status: eventName,
+              timestamp: blockchain.currentAugurTimestamp * 1000,
+              name: methodCall,
+            })
+          );
+        }
+        
+        break;
+      }
       case PUBLICCREATEORDERS: {
         const { marketInfos } = getState();
         const marketId = transaction.params[TX_MARKET_ID];

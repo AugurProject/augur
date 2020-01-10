@@ -330,7 +330,7 @@ export class MarketDB extends DerivedDB {
 
     for (const marketData of eligibleMarketsData) {
       let reportingState: MarketReportingState = null;
-      const marketEnd = new BigNumber(marketData.endTime, 16);
+      const marketEnd = new BigNumber(marketData.endTime);
       const openReportingStart = marketEnd.plus(SECONDS_IN_A_DAY).plus(1);
 
       if (marketData.nextWindowEndTime && timestamp >= new BigNumber(marketData.nextWindowEndTime, 16).toNumber()) {

@@ -167,11 +167,11 @@ function getMarketQuestionDependencies(
 function getDateDependencies(inputs: TemplateInput[]): DateDependencies[] {
   return inputs
     .filter(
-      i => i.dateAfterId || i.validationType === ValidationType.WEEKDAYONLY
+      i => i.dateAfterId || i.validationType === ValidationType.NOWEEKEND_HOLIDAYS
     )
     .map(i => ({
       id: i.id,
-      weekdayOnly: i.validationType === ValidationType.WEEKDAYONLY,
+      noWeekendHolidays: i.validationType === ValidationType.NOWEEKEND_HOLIDAYS,
       dateAfterId: i.dateAfterId,
     }));
 }
@@ -185,6 +185,7 @@ function getClosingDateDependencies(inputs: TemplateInput[]): DateInputDependenc
       inputDateYearId: i.inputDateYearId,
       inputSourceId: i.inputSourceId,
       inputTimeOffset: i.inputTimeOffset,
+      holidayClosures: i.holidayClosures,
     }));
 }
 
@@ -232,12 +233,7 @@ function getValidationValues(input: TemplateInput) {
   }
 }
 
-interface SearchReplace {
-  find: RegExp;
-  rep: string;
-}
-
-const specialCharacters: SearchReplace[] = [
+const specialCharacters = [
   {
     find: /\(/g,
     rep: `\\(`,
@@ -254,11 +250,10 @@ const specialCharacters: SearchReplace[] = [
     find: /\//g,
     rep: `\\/`,
   },
-];
+] as const;
 
 function escapeSpecialCharacters(value: string) {
   let replacementValue = value;
-  let i: SearchReplace = null;
   specialCharacters.forEach(i => {
     replacementValue = replacementValue.replace(i.find, i.rep);
   });

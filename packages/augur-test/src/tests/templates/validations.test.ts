@@ -9,6 +9,7 @@ beforeAll(async () => {
 
 const templateValidations = [
   {
+    skip: false,
     title: 'Will h win the 2020 Arlington Million?',
     templateInfo:
       '{"hash":"0xb1e8150accfc1fb7e312342f9a45f333e7468dbdb39ca696501d221fc72a1675","question":"Will [0] win the [1] [2]?","inputs":[{"id":0,"value":"h","type":"TEXT","timestamp":"h"},{"id":1,"value":"2020","type":"DROPDOWN","timestamp":"2020"},{"id":2,"value":"Arlington Million","type":"DROPDOWN","timestamp":"Arlington Million"}]}',
@@ -18,6 +19,7 @@ const templateValidations = [
     result: 'success',
   },
   {
+    skip: false,
     title:
       'NHL (O/U): Anaheim Ducks vs. Arizona Coyotes: Total goals scored; Over/Under 4.5?',
     templateInfo:
@@ -29,6 +31,7 @@ const templateValidations = [
     result: 'success',
   },
   {
+    skip: false,
     title:
       'NFL (Point Spread): Arizona Cardinals to win by more than 2.5 points over Baltimore Ravens?',
     templateInfo:
@@ -40,6 +43,7 @@ const templateValidations = [
     result: 'success',
   },
   {
+    skip: false,
     title: 'NFL: Will the Arizona Cardinals win vs. the Atlanta Falcons?',
     templateInfo:
       '{"hash":"0xa5807ee39ca0820d64cfea3370d04ae94118dcfd902f6fe7bfa3234fc27f573c","question":"NFL: Will the [0] win vs. the [1]?","inputs":[{"id":0,"value":"Arizona Cardinals","type":"DROPDOWN","timestamp":"Arizona Cardinals"},{"id":1,"value":"Atlanta Falcons","type":"DROPDOWN","timestamp":"Atlanta Falcons"},{"id":2,"value":"1575590400","type":"ESTDATETIME","timestamp":"1575590400"}]}',
@@ -49,6 +53,7 @@ const templateValidations = [
     result: 'success',
   },
   {
+    skip: false,
     title:
       'NFL: Will the Arizona Cardinals & Atlanta Falcons win vs. the Atlanta Falcons?',
     templateInfo:
@@ -59,6 +64,7 @@ const templateValidations = [
     result: 'error: populated market question does not match regex',
   },
   {
+    skip: false,
     title:
       'NFL: Will the Arizona Cardinals Atlanta Falcons win vs. the Atlanta Falcons?',
     templateInfo:
@@ -69,6 +75,7 @@ const templateValidations = [
     result: 'error: populated market question does not match regex',
   },
   {
+    skip: false,
     title:
       'NFL: Will the Arizona Cardinals|Atlanta Falcons win vs. the Atlanta Falcons?',
     templateInfo:
@@ -79,6 +86,7 @@ const templateValidations = [
     result: 'error: populated market question does not match regex',
   },
   {
+    skip: false,
     title:
       'Will the price of BTC/USD, exceed 4 anytime between the open of December 24, 2019 and close of December 31, 2019, according to TradingView.com "BTCUSD (crypto - Bitfinex)"?',
     templateInfo:
@@ -89,55 +97,86 @@ const templateValidations = [
     result: 'error: populated title does not match title given',
   },
   {
-    title: 'Will the CAC 40 close on or above 5200 on December 31, 2019?',
+    skip: false,
+    title: 'blah blah blah blah blah blah?',
     templateInfo:
-      '{"hash":"0x7c631efb5047c650e6afab2b7793caef8d28c6eb0adcf2710497a05f4acbad8d","question":"Will the [0] close on or above [1] on [2]?","inputs":[{"id":0,"value":"CAC 40","type":"DROPDOWN","timestamp":"CAC 40"},{"id":1,"value":"5200","type":"TEXT","timestamp":"5200"},{"id":2,"value":"December 31, 2019","type":"DATEYEAR","timestamp":"1577772000"}]}',
+      '{"hash":"1x111111111137f91b56786842d3cdda72b0d83f7b4ca9ea70b75dc354d5fff9a","question":"Will the [0] close on or above [1] on [2]?","inputs":[{"id":0,"value":"CAC 40","type":"DROPDOWN","timestamp":"CAC 40"},{"id":1,"value":"5200","type":"TEXT","timestamp":"5200"},{"id":2,"value":"December 31, 2019","type":"DATEYEAR","timestamp":"1577772000"}]}',
     endTime: '1575763200',
     resolutionRules:
       'Closing date is determine by the location of the exchange, where the underlying stocks for the index are traded',
     result: 'error: no validation found for hash',
   },
   {
+    skip: false,
     title: 'Will the BSE Sensex 30 close on or above 33 on December 29, 2019?',
     templateInfo:
-      '{"hash":"0x0002f8d51971eb501b583aa57e705e98ea7f2033ed07d89f4703d5738ebf829e","question":"Will the [0] close on or above [1] on [2]?","inputs":[{"id":0,"value":"BSE Sensex 30","type":"DROPDOWN","timestamp":null},{"id":1,"value":"33","type":"TEXT","timestamp":null},{"id":2,"value":"December 29, 2019","type":"DATEYEAR","timestamp":1577645591}]}',
+      '{"hash":"0x7368365b7c637f91b56786842d3cdda72b0d83f7b4ca9ea70b75dc354d5fff9a","question":"Will the [0] close on or above [1] on [2]?","inputs":[{"id":0,"value":"BSE Sensex 30","type":"DROPDOWN","timestamp":null},{"id":1,"value":"33","type":"TEXT","timestamp":null},{"id":2,"value":"December 29, 2019","type":"DATEYEAR","timestamp":1577645591}]}',
     endTime: '1578281600',
     resolutionRules:
       'Closing date is determined by the location of the exchange, where the underlying stocks for the index are traded\nIf trading day in market question is a weekend or holiday when exchange is not open this market should resolve as invalid',
-    result: 'error: market question date can not be on weekend',
+    result: 'error: market question date can not be on weekend or on a holiday',
   },
   {
+    skip: false,
+    title: 'Will the BSE Sensex 30 close on or above 33 on December 29, 2019?',
+    templateInfo:
+      '{"hash":"0x7368365b7c637f91b56786842d3cdda72b0d83f7b4ca9ea70b75dc354d5fff9a","question":"Will the [0] close on or above [1] on [2]?","inputs":[{"id":0,"value":"BSE Sensex 30","type":"DROPDOWN","timestamp":null},{"id":1,"value":"33","type":"TEXT","timestamp":null},{"id":2,"value":"December 29, 2019","type":"DATEYEAR","timestamp":1577645591}]}',
+    endTime: '1578281600',
+    resolutionRules:
+      'Closing date is determined by the location of the exchange, where the underlying stocks for the index are traded\nIf trading day in market question is a weekend or holiday when exchange is not open this market should resolve as invalid',
+    result: 'error: market question date can not be on weekend or on a holiday',
+  },
+  {
+    skip: false,
+    title: 'Will the BSE Sensex 30 close on or above 33 on January 20, 2020?',
+    templateInfo:
+      '{"hash":"0x7368365b7c637f91b56786842d3cdda72b0d83f7b4ca9ea70b75dc354d5fff9a","question":"Will the [0] close on or above [1] on [2]?","inputs":[{"id":0,"value":"BSE Sensex 30","type":"DROPDOWN","timestamp":null},{"id":1,"value":"33","type":"TEXT","timestamp":null},{"id":2,"value":"January 20, 2020","type":"DATEYEAR","timestamp":1579478400}]}',
+    endTime: '1580404439',
+    resolutionRules:
+      'Closing date is determined by the location of the exchange, where the underlying stocks for the index are traded\nIf trading day in market question is a weekend or holiday when exchange is not open this market should resolve as invalid',
+    result: 'error: market question date can not be on weekend or on a holiday',
+  },
+  {
+    skip: false,
     title:
       'Will the BSE Sensex 30 close on or above 33.00.01 on December 31, 2019?',
     templateInfo:
-      '{"hash":"0x0002f8d51971eb501b583aa57e705e98ea7f2033ed07d89f4703d5738ebf829e","question":"Will the [0] close on or above [1] on [2]?","inputs":[{"id":0,"value":"BSE Sensex 30","type":"DROPDOWN","timestamp":null},{"id":1,"value":"33.00.01","type":"TEXT","timestamp":null},{"id":2,"value":"December 31, 2019","type":"DATEYEAR","timestamp":1577772000}]}',
+      '{"hash":"0x7368365b7c637f91b56786842d3cdda72b0d83f7b4ca9ea70b75dc354d5fff9a","question":"Will the [0] close on or above [1] on [2]?","inputs":[{"id":0,"value":"BSE Sensex 30","type":"DROPDOWN","timestamp":null},{"id":1,"value":"33.00.01","type":"TEXT","timestamp":null},{"id":2,"value":"December 31, 2019","type":"DATEYEAR","timestamp":1577772000}]}',
     endTime: '1578581600',
     resolutionRules:
       'Closing date is determined by the location of the exchange, where the underlying stocks for the index are traded\nIf trading day in market question is a weekend or holiday when exchange is not open this market should resolve as invalid',
     result: 'error: populated market question does not match regex',
   },
   {
+    skip: false,
     title: 'Will the Russell 1000 close on or above 14 on January 2, 2020?',
     templateInfo:
-      '{"hash":"0x0002f8d51971eb501b583aa57e705e98ea7f2033ed07d89f4703d5738ebf829e","question":"Will the [0] close on or above [1] on [2]?","inputs":[{"id":0,"value":"Russell 1000","type":"DROPDOWN","timestamp":null},{"id":1,"value":"14","type":"TEXT","timestamp":null},{"id":2,"value":"January 2, 2020","type":"DATEYEAR","timestamp":1577944800}]}',
+      '{"hash":"0x7368365b7c637f91b56786842d3cdda72b0d83f7b4ca9ea70b75dc354d5fff9a","question":"Will the [0] close on or above [1] on [2]?","inputs":[{"id":0,"value":"Russell 1000","type":"DROPDOWN","timestamp":null},{"id":1,"value":"14","type":"TEXT","timestamp":null},{"id":2,"value":"January 2, 2020","type":"DATEYEAR","timestamp":1577944800}]}',
     endTime: '1578198860',
     resolutionRules:
-      'Closing date is determined by the location of the exchange, where the underlying stocks for the index are traded\nIf trading day in market question is a weekend or holiday when exchange is not open this market should resolve as invalid',
+      "Closing date is determined by the location of the exchange, where the underlying stocks for the index are traded\nIf trading day in market question is a weekend or holiday when exchange is not open this market should resolve as 'Invalid'",
     result: 'success',
   },
   {
+    skip: false,
     title: 'Will the Russell 1000 close on or above 14 on January 2, 2020?',
     templateInfo:
-      '{"hash":"0x0002f8d51971eb501b583aa57e705e98ea7f2033ed07d89f4703d5738ebf829e","question":"Will the [0] close on or above [1] on [2]?","inputs":[{"id":0,"value":"Russell 1000","type":"DROPDOWN","timestamp":null},{"id":1,"value":"14","type":"TEXT","timestamp":null},{"id":2,"value":"January 2, 2020","type":"DATEYEAR","timestamp":1577944800}]}',
+      '{"hash":"0x7368365b7c637f91b56786842d3cdda72b0d83f7b4ca9ea70b75dc354d5fff9a","question":"Will the [0] close on or above [1] on [2]?","inputs":[{"id":0,"value":"Russell 1000","type":"DROPDOWN","timestamp":null},{"id":1,"value":"14","type":"TEXT","timestamp":null},{"id":2,"value":"January 2, 2020","type":"DATEYEAR","timestamp":1577944800}]}',
     endTime: '1577988860',
     resolutionRules:
-      'Closing date is determined by the location of the exchange, where the underlying stocks for the index are traded\nIf trading day in market question is a weekend or holiday when exchange is not open this market should resolve as invalid',
+      "Closing date is determined by the location of the exchange, where the underlying stocks for the index are traded\nIf trading day in market question is a weekend or holiday when exchange is not open this market should resolve as 'Invalid'",
     result: 'error: event expiration can not be before exchange close time',
-  },];
+  },
+];
 
 test('flash :: tempalte validation tests', async () => {
-  templateValidations.map(async t => {
+  templateValidations.map(async (t, i) => {
+    if (t.skip) {
+      console.log('skipping', t.title);
+      return;
+    }
     const result = await flash.call('validate-template', t);
+    console.log('index:', i, t.title, result);
     await expect(result).toEqual(t.result);
   });
 });
