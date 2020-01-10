@@ -614,7 +614,7 @@ function formatOrderFilledLogs(
       orderType === OrderType.Bid
         ? convertAttoValueToDisplayValue(maxPrice).minus(price).times(quantity)
         : quantity.times(price);
-    const orderTypeName = orderType === OrderType.Ask ? 'Filled Buy' : 'Filled Sell';
+    const orderTypeName = orderType === OrderType.Ask ? 'Buy' : 'Sell';
       return {
         action: orderTypeName,
         coin: Coin.DAI,
