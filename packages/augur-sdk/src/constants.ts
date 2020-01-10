@@ -56,6 +56,7 @@ export enum TXEventName {
   Pending = "Pending",
   Success = "Success",
   Failure = "Failure",
+  RelayerDown = "RelayerDown",
 }
 
 export function isSubscriptionEventName(eventName: string): string | null {

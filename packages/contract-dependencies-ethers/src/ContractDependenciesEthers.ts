@@ -26,7 +26,8 @@ export enum TransactionStatus {
   AWAITING_SIGNING,
   PENDING,
   SUCCESS,
-  FAILURE
+  FAILURE,
+  RELAYER_DOWN,
 }
 
 export type TransactionStatusCallback = (transaction: TransactionMetadata, status: TransactionStatus, hash?: string) => void;
