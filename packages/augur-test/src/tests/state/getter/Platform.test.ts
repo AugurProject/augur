@@ -61,7 +61,7 @@ describe('State API :: get-platform-activity-stats :: ', () => {
     await fillOrders(mary, scalarMarket, numShares, cost);
 
     // Cancel an order
-    await john.cancelOrder(
+    await john.cancelNativeOrder(
       await john.getBestOrderId(bid, scalarMarket.address, outcome2)
     );
 

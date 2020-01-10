@@ -249,9 +249,9 @@ describe('State API :: Accounts :: ', () => {
     );
     expect(accountTransactionHistory).toMatchObject([
       {
-        action: 'Filled Sell',
+        action: 'Sell',
         coin: 'DAI',
-        details: 'Filled Sell',
+        details: 'Sell',
         fee: '0',
         marketDescription: 'YesNo market description',
         outcome: 0,
@@ -261,9 +261,9 @@ describe('State API :: Accounts :: ', () => {
         total: '15.6',
       },
       {
-        action: 'Filled Sell',
+        action: 'Sell',
         coin: 'DAI',
-        details: 'Filled Sell',
+        details: 'Sell',
         fee: '0',
         marketDescription: 'YesNo market description',
         outcome: 1,
@@ -273,9 +273,9 @@ describe('State API :: Accounts :: ', () => {
         total: '23.4',
       },
       {
-        action: 'Filled Sell',
+        action: 'Sell',
         coin: 'DAI',
-        details: 'Filled Sell',
+        details: 'Sell',
         fee: '0',
         marketDescription: 'YesNo market description',
         outcome: 2,
@@ -285,9 +285,9 @@ describe('State API :: Accounts :: ', () => {
         total: '23.4',
       },
       {
-        action: 'Filled Sell',
+        action: 'Sell',
         coin: 'DAI',
-        details: 'Filled Sell',
+        details: 'Sell',
         fee: '0',
         marketDescription: 'Categorical market description',
         outcome: 0,
@@ -297,9 +297,9 @@ describe('State API :: Accounts :: ', () => {
         total: '15.6',
       },
       {
-        action: 'Filled Sell',
+        action: 'Sell',
         coin: 'DAI',
-        details: 'Filled Sell',
+        details: 'Sell',
         fee: '0',
         marketDescription: 'Categorical market description',
         outcome: 1,
@@ -310,9 +310,9 @@ describe('State API :: Accounts :: ', () => {
         total: '23.4',
       },
       {
-        action: 'Filled Sell',
+        action: 'Sell',
         coin: 'DAI',
-        details: 'Filled Sell',
+        details: 'Sell',
         fee: '0',
         marketDescription: 'Categorical market description',
         outcome: 2,
@@ -322,9 +322,9 @@ describe('State API :: Accounts :: ', () => {
         total: '23.4',
       },
       {
-        action: 'Filled Sell',
+        action: 'Sell',
         coin: 'DAI',
-        details: 'Filled Sell',
+        details: 'Sell',
         fee: '0',
         marketDescription: 'Scalar market description',
         outcome: 0,
@@ -334,9 +334,9 @@ describe('State API :: Accounts :: ', () => {
         total: '3995.6',
       },
       {
-        action: 'Filled Sell',
+        action: 'Sell',
         coin: 'DAI',
-        details: 'Filled Sell',
+        details: 'Sell',
         fee: '0',
         marketDescription: 'Scalar market description',
         outcome: 1,
@@ -626,90 +626,6 @@ describe('State API :: Accounts :: ', () => {
     );
     expect(accountTransactionHistory.length).toEqual(7);
 
-    // Test limit/offset params
-    accountTransactionHistory = await api.route(
-      'getAccountTransactionHistory',
-      {
-        universe: john.augur.contracts.universe.address,
-        account: ACCOUNTS[0].publicKey,
-        action: Action.ALL,
-        coin: Coin.ALL,
-        earliestTransactionTime: 0,
-        latestTransactionTime: (await john.getTimestamp()).toNumber(),
-        sortBy: 'action',
-        limit: 2,
-        offset: 2,
-      }
-    );
-    expect(accountTransactionHistory).toMatchObject([
-      {
-        action: 'MARKET_CREATION',
-        coin: 'DAI',
-        details: 'DAI validity bond for market creation',
-        fee: '0',
-        marketDescription: 'YesNo market description',
-        outcome: null,
-        outcomeDescription: null,
-        price: '0',
-        quantity: '0',
-        total: '0',
-      },
-      {
-        action: 'INITIAL_REPORT',
-        coin: 'REP',
-        details: 'REP staked in initial reports',
-        fee: '0',
-        marketDescription: 'YesNo market description',
-        outcome: 1,
-        outcomeDescription: 'No',
-        price: '0',
-        quantity: '0.349680625587481902',
-        total: '0',
-      },
-    ]);
-
-    // Test isDescending param
-    accountTransactionHistory = await api.route(
-      'getAccountTransactionHistory',
-      {
-        universe: john.augur.contracts.universe.address,
-        account: ACCOUNTS[0].publicKey,
-        action: Action.ALL,
-        coin: Coin.ALL,
-        earliestTransactionTime: 0,
-        latestTransactionTime: (await john.getTimestamp()).toNumber(),
-        sortBy: 'action',
-        isSortDescending: false,
-        limit: 2,
-        offset: 9,
-      }
-    );
-    expect(accountTransactionHistory).toMatchObject([
-      {
-        action: 'Filled Sell',
-        coin: 'DAI',
-        details: 'Filled Sell',
-        fee: '0',
-        marketDescription: 'YesNo market description',
-        outcome: 0,
-        outcomeDescription: 'Invalid',
-        price: '0.22',
-        quantity: '20',
-        total: '15.6',
-      },
-      {
-        action: 'Filled Sell',
-        coin: 'DAI',
-        details: 'Filled Sell',
-        fee: '0',
-        marketDescription: 'YesNo market description',
-        outcome: 1,
-        outcomeDescription: 'No',
-        price: '0.22',
-        quantity: '30',
-        total: '23.4',
-      },
-    ]);
   });
 
   test(':getUserCurrentDisputeStake', async () => {

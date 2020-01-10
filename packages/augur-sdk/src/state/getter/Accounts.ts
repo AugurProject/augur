@@ -17,6 +17,7 @@ import {
   TradingProceedsClaimedLog,
   MarketType,
   CommonOutcomes,
+  CancelLog,
 } from '../logs/types';
 import { sortOptions } from './types';
 import {
@@ -33,8 +34,7 @@ import { compareObjects, convertOnChainPriceToDisplayPrice, numTicksToTickSize, 
 import * as _ from "lodash";
 import * as t from 'io-ts';
 import Dexie from 'dexie';
-import { getMarkets } from './OnChainTrading';
-import { StoredOrder } from '../db/ZeroXOrders';
+import { StoredOrder, ZeroXOrders } from '../db/ZeroXOrders';
 
 export enum Action {
   ALL = 'ALL',
@@ -346,26 +346,25 @@ export class Accounts<TBigNumber> {
       (params.action === Action.CANCEL || params.action === Action.ALL) &&
       (params.coin === Coin.DAI || params.coin === Coin.ALL)
     ) {
-      const zeroXCanceledOrders = [];
-      /* use new collection that is consuming Exchange cancellation events
-      await db.ZeroXOrders.where('eventType')
-        .equals(OrderEventType.Cancel)
-        .and(order => order.orderCreator === params.account)
+
+      const zeroXCanceledOrders = await db.CancelledOrders.where('[makerAddress+market]')
+        .between([params.account, Dexie.minKey],[params.account, Dexie.maxKey])
         .toArray();
-        */
 
       const marketIds: string[] = await zeroXCanceledOrders.reduce(
         (ids, order) => Array.from(new Set([...ids, order.market])),
         []
       );
+
       const marketInfo = await Accounts.getMarketCreatedInfoByIds(
         db,
         marketIds
       );
 
       allFormattedLogs = allFormattedLogs.concat(
-        formatZeroXOrders(zeroXCanceledOrders, marketInfo)
+        formatZeroXCancelledOrders(zeroXCanceledOrders, marketInfo)
       );
+
       actionCoinComboIsValid = true;
     }
 
@@ -614,7 +613,7 @@ function formatOrderFilledLogs(
       orderType === OrderType.Bid
         ? convertAttoValueToDisplayValue(maxPrice).minus(price).times(quantity)
         : quantity.times(price);
-    const orderTypeName = orderType === OrderType.Ask ? 'Filled Buy' : 'Filled Sell';
+    const orderTypeName = orderType === OrderType.Ask ? 'Buy' : 'Sell';
       return {
         action: orderTypeName,
         coin: Coin.DAI,
@@ -668,6 +667,46 @@ function formatZeroXOrders(
   }) as unknown as AccountTransaction[];
 }
 
+function formatZeroXCancelledOrders(
+  storedOrders: CancelLog[],
+  marketInfo: MarketCreatedInfo
+) {
+  return storedOrders.map(order => {
+    const marketData = marketInfo[order.market];
+    const maxPrice = new BigNumber(marketData.prices[1]);
+    const minPrice = new BigNumber(marketData.prices[0]);
+    const numTicks = new BigNumber(marketData.numTicks);
+    const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
+    const values = ZeroXOrders.parseAssetData(order.makerAssetData);
+    const onChainPrice = values.price;
+    const quantity = 0;
+    const price = convertOnChainPriceToDisplayPrice(new BigNumber(onChainPrice), minPrice, tickSize);
+    const orderTypeName = values.orderType === `0x0${OrderType.Bid}` ? 'Bid' : 'Ask';
+    const outcome = new BigNumber(values.outcome);
+    let outcomeDescription = describeMarketOutcome(outcome.toNumber(), marketData);
+    if (marketData.marketType === MarketType.Scalar) {
+      outcomeDescription = marketData.extraInfo._scalarDenomination;
+    }
+
+    if (marketData.marketType === MarketType.Scalar) {
+      outcomeDescription = marketData.extraInfo._scalarDenomination;
+    }
+    return {
+      action: `Cancelled ${orderTypeName}`,
+      coin: Coin.DAI,
+      details: `Cancelled ${orderTypeName}`,
+      fee: '0',
+      marketDescription: marketInfo[order.market].extraInfo.description,
+      outcome: 0, //new BigNumber(order.outcome).toNumber(),
+      outcomeDescription,
+      price,
+      quantity,
+      timestamp: 0, //new BigNumber(order.signedOrder.salt).dividedBy(1000).integerValue().toNumber(),
+      total: '0',
+      transactionHash: order.orderHash,
+    };
+  }) as unknown as AccountTransaction[];
+}
 function formatParticipationTokensRedeemedLogs(
   transactionLogs: ParticipationTokensRedeemedLog[]
 ): AccountTransaction[] {

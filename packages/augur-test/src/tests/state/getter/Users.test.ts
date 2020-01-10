@@ -246,7 +246,7 @@ describe('State API :: Users :: ', () => {
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
     // Cancel an order
-    await john.cancelOrder(
+    await john.cancelNativeOrder(
       await john.getBestOrderId(bid, johnScalarMarket.address, outcome2)
     );
 
@@ -622,7 +622,7 @@ describe('State API :: Users :: ', () => {
     expect(stats).toMatchObject({});
 
     // Cancel an order
-    await john.cancelOrder(
+    await john.cancelNativeOrder(
       await john.getBestOrderId(bid, johnScalarMarket2.address, outcome2)
     );
 

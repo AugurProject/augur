@@ -190,7 +190,7 @@ describe('State API :: Trading :: ', () => {
     await expect(order.orderState).toEqual(OrderState.FILLED);
 
     // Cancel order
-    await john.cancelOrder(orderId);
+    await john.cancelNativeOrder(orderId);
 
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 

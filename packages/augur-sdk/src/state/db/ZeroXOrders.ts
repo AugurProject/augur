@@ -5,8 +5,8 @@ import { SyncStatus } from './SyncStatus';
 import { Augur } from '../../Augur';
 import { DB } from './DB';
 import { MarketData, MarketType } from '../logs/types';
-import { OrderEventType } from "../../constants";
-import { OrderInfo, OrderEvent, BigNumber } from "@0x/mesh-rpc-client";
+import { OrderEventType } from '../../constants';
+import { OrderInfo, OrderEvent, BigNumber } from '@0x/mesh-rpc-client';
 import { getAddress } from 'ethers/utils/address';
 import { defaultAbiCoder, ParamType } from 'ethers/utils';
 import { SignedOrder } from '@0x/types';
@@ -168,8 +168,8 @@ export class ZeroXOrders extends AbstractTable {
     if (orders.length > 0) {
       documents = _.filter(orders, this.validateOrder.bind(this));
       documents = _.map(documents, this.processOrder.bind(this));
-      const marketIds: string[] = _.uniq(_.map(documents, "market"));
-      const markets = _.keyBy(await this.stateDB.Markets.where("market").anyOf(marketIds).toArray(), "market");
+      const marketIds: string[] = _.uniq(_.map(documents, 'market'));
+      const markets = _.keyBy(await this.stateDB.Markets.where('market').anyOf(marketIds).toArray(), 'market');
       documents = _.filter(documents, (document) => {
         return this.validateStoredOrder(document, markets);
       });
@@ -194,10 +194,10 @@ export class ZeroXOrders extends AbstractTable {
     if (marketData && marketData.marketType == MarketType.Scalar) {
       tradeInterval = TRADE_INTERVAL_VALUE.dividedBy(marketData.numTicks);
     }
-    if (!storedOrder["numberAmount"].mod(tradeInterval).isEqualTo(0)) return false;
+    if (!storedOrder['numberAmount'].mod(tradeInterval).isEqualTo(0)) return false;
 
     if (storedOrder.numberAmount.isEqualTo(0)) {
-      console.log("Deleting filled order");
+      console.log('Deleting filled order');
       this.table.where('orderHash').equals(storedOrder.orderHash).delete();
       this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Fill, orderId: storedOrder.orderHash,...storedOrder});
       return false;
@@ -207,7 +207,7 @@ export class ZeroXOrders extends AbstractTable {
   }
 
   processOrder(order: OrderInfo): StoredOrder {
-    const augurOrderData = this.parseAssetData(order.signedOrder.makerAssetData);
+    const augurOrderData = ZeroXOrders.parseAssetData(order.signedOrder.makerAssetData);
     // Currently the API for mesh browser and the client API diverge here but we dont want to do string parsing per order to be compliant for the browser case
     const signedOrder = order.signedOrder;
     return {
@@ -240,7 +240,7 @@ export class ZeroXOrders extends AbstractTable {
     }
   }
 
-  parseAssetData(assetData: string): OrderData {
+  static parseAssetData(assetData: string): OrderData {
     // Remove the first 10 characters because assetData is prefixed in 0x, and then contains a selector.
     // Drop the selector and add back to 0x prefix so the AbiDecoder will treat it properly as hex.
     const decoded = defaultAbiCoder.decode(erc1155AssetDataAbi, `0x${assetData.slice(10)}`);
@@ -251,7 +251,7 @@ export class ZeroXOrders extends AbstractTable {
     const kycToken = getAddress(`0x${assetData.substr(-40, assetData.length)}`);
 
     if (ids.length !== 1) {
-      throw new Error("More than one ID passed into 0x order");
+      throw new Error('More than one ID passed into 0x order');
     }
 
     // No idea why the BigNumber instance returned here just wont serialize to hex
