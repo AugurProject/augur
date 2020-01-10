@@ -11,11 +11,13 @@
 
 .Search {
   .text-16;
+  height: @size-40;
 
   align-items: center;
   background: @color-dark-grey;
-  border: none;
-  border-radius: @size-6;
+  border: 1px solid @color-secondary-action;
+  box-sizing: border-box;
+  border-radius: @size-3;
   color: @color-secondary-text;
   display: flex;
   padding: @size-16 0;
@@ -28,10 +30,10 @@
 
   > svg {
     fill: @color-primary-text;
-    height: @size-16;
-    margin-left: @size-16;
-    min-width: @size-16;
-    width: @size-16;
+    height: @size-14;
+    margin-left: @size-13;
+    min-width: @size-14;
+    width: @size-14;
   }
 
   > input {
@@ -40,7 +42,9 @@
     border: none;
     color: @color-primary-text;
     line-height: normal;
-    padding: 0 0 0 @size-8;
+    height: @size-36;
+    padding: 0 0 0 @size-13;
+    margin: @size-2 0;
     text-overflow: ellipsis;
 
     &::placeholder {
