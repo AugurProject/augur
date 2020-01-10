@@ -284,6 +284,7 @@ export default class MarketHeader extends Component<
                 {market.isTemplate && <TemplateShield marketId={market.id} />}
                 <WordTrail items={[...categoriesWithClick]} />
                 <SocialMediaButtons
+                  listView={false}
                   marketAddress={market.id}
                   marketDescription={description}
                 />
