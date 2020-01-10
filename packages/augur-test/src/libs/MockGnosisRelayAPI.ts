@@ -32,7 +32,6 @@ export class MockGnosisRelayAPI implements IGnosisRelayAPI {
 
   initialize(payer: ContractAPI) {
     this.payer = payer;
-    this.payer.provider.storeAbiData(abi.GnosisSafe as Abi, 'ProxyFactory');
   }
 
   /**
@@ -164,12 +163,15 @@ export class MockGnosisRelayAPI implements IGnosisRelayAPI {
   }
 
   async gasStation(): Promise<GasStationResponse> {
-    throw new Error('Not Implemented');
+    throw new Error('Not Implemented: gasStation');
   }
 
   async estimateTransaction(
     relayTxEstimateData: RelayTxEstimateData
   ): Promise<RelayTxEstimateResponse> {
-    throw new Error('Not Implemented');
+    return {
+      baseGas: new BigNumber(75000),
+      safeTxGas: new BigNumber(80000),
+    };
   }
 }

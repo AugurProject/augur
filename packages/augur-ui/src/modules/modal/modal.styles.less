@@ -724,6 +724,10 @@ div.ButtonsRow:last-of-type {
     color: @color-primary-text;
     margin: 0 0 @size-16 0;
   }
+
+  > div:last-of-type {
+    padding-bottom: @size-24;
+  }
 }
 
 .SignIn,
@@ -802,6 +806,7 @@ div.ButtonsRow:last-of-type {
       .text-12;
 
       color: @color-secondary-text;
+      margin-bottom: @size-5;
 
       > span {
         color: @color-primary-action;
@@ -871,11 +876,11 @@ div.ButtonsRow:last-of-type {
 
   > button:first-of-type {
     margin: 0;
-    background: #0095a3;
+    background: darken(@color-primary-action, 15%);
   }
 
   > button:first-of-type:hover {
-    background: lighten(#0095a3, 5%);
+    background: darken(@color-primary-action, 5%);
   }
 
   > button:last-of-type {

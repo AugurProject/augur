@@ -16,7 +16,7 @@
 @step-2-0: 1280px;
 @step-2-1: 1050px;
 @step-2-15: 965px;
-@step-2-2: 1090px; // Mobile tipping point
+@step-2-2: 1090px;
 @step-2-25: 768px; // Top bar changes
 @step-2-3: 450px;
 
@@ -32,7 +32,7 @@
 // Smallish desktop (up to step 2-0)
 @breakpoint-smallish-desktop: ~"all and (max-width: @{step-2-0})";
 //	Mobile (up to step-2-2)
-@breakpoint-mobile: ~"all and (max-width: @{step-2-2})"; // 900
+@breakpoint-mobile: ~"all and (max-width: @{step-2-25})"; 
 // Mobile (up to step-2-25)
 @breakpoint-mobile-mid: ~"all and (max-width: @{step-2-25})"; // 900 TODO: THIS IS THE 768 one that design has in their mock, using it for now
 // Mobile (up to step-1)

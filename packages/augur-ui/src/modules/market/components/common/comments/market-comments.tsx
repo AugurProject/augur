@@ -9,7 +9,7 @@ interface MarketCommentsProps {
   networkId: string;
 }
 
-export const MarketComments = (props: MarketCommentsProps) => {
+export const MarketComments = ({ marketId, colorScheme, numPosts, networkId }: MarketCommentsProps) => {
   const [didError, setDidError] = useState(false);
   const { FB } = window;
 
@@ -30,12 +30,11 @@ export const MarketComments = (props: MarketCommentsProps) => {
     return null
   };
 
-  const { marketId, colorScheme, numPosts, networkId } = props;
-
   const fbCommentsUrl = `http://www.augur.net/comments/${networkId}/${marketId}`;
 
   return (
-    <section className={Styles.MarketView__comments}>
+    <section className={Styles.Comments}>
+      <span />
       <div
         id='fb-comments'
         className='fb-comments'

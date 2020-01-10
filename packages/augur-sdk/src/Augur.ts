@@ -98,7 +98,13 @@ export class Augur<TProvider extends Provider = Provider> {
     this.contracts = new Contracts(this.addresses, this.dependencies);
     this.market = new Market(this);
     this.liquidity = new Liquidity(this);
-    this.contractEvents = new ContractEvents(this.provider, this.addresses.Augur, this.addresses.AugurTrading, this.addresses.ShareToken);
+    this.contractEvents = new ContractEvents(
+      this.provider,
+      this.addresses.Augur,
+      this.addresses.AugurTrading,
+      this.addresses.ShareToken,
+      this.addresses.Exchange,
+      );
     this.gnosis = new Gnosis(this.provider, gnosisRelay, this, this.dependencies);
     this.hotLoading = new HotLoading(this);
     this.onChainTrade = new OnChainTrade(this);
@@ -454,15 +460,10 @@ export class Augur<TProvider extends Provider = Provider> {
   }
 
   async batchCancelOrders(orderHashes: string[]): Promise<void> {
-    let orders = [];
-    orderHashes.forEach(async (hash, idx) => {
-      const order = await this.getOrder({ orderHash: hash });
-      orders = orders.concat(order);
-
-      if (idx === orderHashes.length - 1) {
-        await this.zeroX.batchCancelOrders(orders);
-      }
+    const orders = orderHashes.map(async (orderHash) => {
+      return this.getOrder({ orderHash })
     });
+    await this.zeroX.batchCancelOrders(orders);
   }
 
   async createYesNoMarket(
