@@ -345,26 +345,29 @@ export class Accounts<TBigNumber> {
       (params.action === Action.CANCEL || params.action === Action.ALL) &&
       (params.coin === Coin.ETH || params.coin === Coin.ALL)
     ) {
-      const zeroXCanceledOrders = [];
-      /* use new collection that is consuming Exchange cancellation events
-      await db.ZeroXOrders.where('eventType')
-        .equals(OrderEventType.Cancel)
-        .and(order => order.orderCreator === params.account)
-        .toArray();
-        */
 
+      const zeroXCanceledOrders = await db.Cancel.where('[makerAddress+market]')
+        .between([params.account, Dexie.minKey], [params.account, Dexie.maxKey])
+        .toArray();
+
+        /*
       const marketIds: string[] = await zeroXCanceledOrders.reduce(
         (ids, order) => Array.from(new Set([...ids, order.market])),
         []
       );
+      */
+     const marketIds = [];
       const marketInfo = await Accounts.getMarketCreatedInfoByIds(
         db,
         marketIds
       );
 
+      allFormattedLogs = [];
+      /*
       allFormattedLogs = allFormattedLogs.concat(
         formatZeroXOrders(zeroXCanceledOrders, marketInfo)
       );
+      */
       actionCoinComboIsValid = true;
     }
 
