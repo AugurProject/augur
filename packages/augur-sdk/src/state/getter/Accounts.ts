@@ -39,6 +39,8 @@ export enum Action {
   BUY = 'BUY',
   SELL = 'SELL',
   CANCEL = 'CANCEL',
+  OPEN = 'OPEN',
+  FILLED = 'FILLED',
   CLAIM_PARTICIPATION_TOKENS = 'CLAIM_PARTICIPATION_TOKENS',
   CLAIM_TRADING_PROCEEDS = 'CLAIM_TRADING_PROCEEDS',
   CLAIM_WINNING_CROWDSOURCERS = 'CLAIM_WINNING_CROWDSOURCERS',
@@ -297,8 +299,7 @@ export class Accounts<TBigNumber> {
     const formattedStartTime = `0x${params.earliestTransactionTime.toString(16)}`;
     const formattedEndTime = `0x${params.latestTransactionTime.toString(16)}`;
     if (
-      (params.action === Action.BUY ||
-        params.action === Action.SELL ||
+      (params.action === Action.FILLED ||
         params.action === Action.ALL) &&
       (params.coin === Coin.DAI || params.coin === Coin.ALL)
     ) {
@@ -317,19 +318,40 @@ export class Accounts<TBigNumber> {
     }
 
     if (
+      (params.action === Action.OPEN || params.action === Action.ALL) &&
+      (params.coin === Coin.ETH || params.coin === Coin.ALL)
+    ) {
+      const zeroXOpenOrders = await db.ZeroXOrders.where('orderCreator')
+        .equals(params.account)
+        .toArray();
+
+
+      const marketIds: string[] = await zeroXOpenOrders.reduce(
+        (ids, order) => Array.from(new Set([...ids, order.market])),
+        []
+      );
+      const marketInfo = await Accounts.getMarketCreatedInfoByIds(
+        db,
+        marketIds
+      );
+
+      allFormattedLogs = allFormattedLogs.concat(
+        formatZeroXOrders(zeroXOpenOrders, marketInfo)
+      );
+      actionCoinComboIsValid = true;
+    }
+
+    if (
       (params.action === Action.CANCEL || params.action === Action.ALL) &&
       (params.coin === Coin.ETH || params.coin === Coin.ALL)
     ) {
-      const orderType = `0x0${OrderEventType.Cancel}`;
-      const zeroXCanceledOrders = await db.ZeroXOrders.where(
-        '[market+outcome+orderType]'
-      )
-        .between(
-          [Dexie.minKey, orderType, Dexie.minKey],
-          [Dexie.maxKey, orderType, Dexie.maxKey]
-        )
+      const zeroXCanceledOrders = [];
+      /* use new collection that is consuming Exchange cancellation events
+      await db.ZeroXOrders.where('eventType')
+        .equals(OrderEventType.Cancel)
         .and(order => order.orderCreator === params.account)
         .toArray();
+        */
 
       const marketIds: string[] = await zeroXCanceledOrders.reduce(
         (ids, order) => Array.from(new Set([...ids, order.market])),
@@ -341,7 +363,7 @@ export class Accounts<TBigNumber> {
       );
 
       allFormattedLogs = allFormattedLogs.concat(
-        formatOrderCanceledLogs(zeroXCanceledOrders, marketInfo)
+        formatZeroXOrders(zeroXCanceledOrders, marketInfo)
       );
       actionCoinComboIsValid = true;
     }
@@ -602,9 +624,9 @@ function formatOrderFilledLogs(
           orderFiller === params.account))
     ) {
       formattedLogs.push({
-        action: Action.BUY,
+        action: 'Filled Buy',
         coin: Coin.DAI,
-        details: 'Buy order',
+        details: 'Filled Buy',
         fee: new BigNumber(fees).toString(),
         marketDescription: extraInfo.description,
         outcome: new BigNumber(outcome).toNumber(),
@@ -624,9 +646,9 @@ function formatOrderFilledLogs(
           orderFiller === params.account))
     ) {
       formattedLogs.push({
-        action: Action.SELL,
+        action: 'Filled Sell',
         coin: Coin.DAI,
-        details: 'Sell order',
+        details: 'Filled Sell',
         fee: new BigNumber(fees).toString(),
         marketDescription: extraInfo.description,
         outcome: new BigNumber(outcome).toNumber(),
@@ -642,7 +664,7 @@ function formatOrderFilledLogs(
   return formattedLogs;
 }
 
-function formatOrderCanceledLogs(
+function formatZeroXOrders(
   storedOrders: StoredOrder[],
   marketInfo: MarketCreatedInfo
 ): AccountTransaction[] {
@@ -654,10 +676,11 @@ function formatOrderCanceledLogs(
     const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
     const quantity = convertOnChainAmountToDisplayAmount(new BigNumber(order.amount), tickSize);
     const price = convertOnChainPriceToDisplayPrice(new BigNumber(order.price), minPrice, tickSize);
+    const orderType = order.orderType === `0x${OrderType.Bid}` ? 'Bid' : 'Ask';
     return {
-      action: Action.CANCEL,
+      action: `Open ${orderType}`,
       coin: Coin.DAI,
-      details: 'Cancel order',
+      details: `Open ${orderType}`,
       fee: '0',
       marketDescription: marketInfo[order.market].extraInfo.description,
       outcome: new BigNumber(order.outcome).toNumber(),

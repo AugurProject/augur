@@ -86,12 +86,12 @@ const actionOptions = [
     value: 'ALL',
   },
   {
-    label: 'Buy',
-    value: 'BUY',
+    label: 'Open',
+    value: 'OPEN',
   },
   {
-    label: 'Sell',
-    value: 'SELL',
+    label: 'Filled',
+    value: 'FILLED',
   },
   {
     label: 'Cancelled',
