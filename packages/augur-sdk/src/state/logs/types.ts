@@ -252,6 +252,7 @@ export interface CancelLog extends Log {
   takerAssetData: Bytes32;
   senderAddress: Address;
   orderHash: Bytes32;
+  market?: Address; // only derived log CancelledOrders
 }
 
 export enum OrderType {

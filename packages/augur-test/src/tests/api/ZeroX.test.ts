@@ -289,6 +289,68 @@ describe('Augur API :: ZeroX :: ', () => {
           expect.stringContaining('0x'),
         ])
       });
+
+      const allDerivedCancels = await (await johnDB).CancelledOrders.toArray();
+      expect(allDerivedCancels.length).toBe(1);
+      expect(allDerivedCancels[0]).toMatchObject({
+        market: market.address,
+        name: 'Cancel',
+        makerAddress: john.account.publicKey,
+        feeRecipientAddress: '0x0000000000000000000000000000000000000000',
+        makerAssetData: expect.stringContaining('0x'),
+        takerAssetData: expect.stringContaining('0x'),
+        senderAddress: john.account.publicKey,
+        orderHash, // TODO fix order hash difference - mock problem?
+        topics: expect.arrayContaining([
+          expect.stringContaining('0x'),
+          expect.stringContaining('0x'),
+          expect.stringContaining('0x'),
+          expect.stringContaining('0x'),
+        ])
+      });
+
+      const primaryKeyOrders = await (await johnDB).CancelledOrders
+        .where('orderHash')
+        .equals(orderHash).toArray();
+      expect(primaryKeyOrders.length).toBe(1);
+      expect(primaryKeyOrders[0]).toMatchObject({
+        market: market.address,
+        name: 'Cancel',
+        makerAddress: john.account.publicKey,
+        feeRecipientAddress: '0x0000000000000000000000000000000000000000',
+        makerAssetData: expect.stringContaining('0x'),
+        takerAssetData: expect.stringContaining('0x'),
+        senderAddress: john.account.publicKey,
+        orderHash, // TODO fix order hash difference - mock problem?
+        topics: expect.arrayContaining([
+          expect.stringContaining('0x'),
+          expect.stringContaining('0x'),
+          expect.stringContaining('0x'),
+          expect.stringContaining('0x'),
+        ])
+      });
+
+      const indexKeyOrders = await (await johnDB).CancelledOrders
+        .where('[makerAddress+market]')
+        .equals([john.account.publicKey, market.address]).toArray();
+      expect(indexKeyOrders.length).toBe(1);
+      expect(indexKeyOrders[0]).toMatchObject({
+        market: market.address,
+        name: 'Cancel',
+        makerAddress: john.account.publicKey,
+        feeRecipientAddress: '0x0000000000000000000000000000000000000000',
+        makerAssetData: expect.stringContaining('0x'),
+        takerAssetData: expect.stringContaining('0x'),
+        senderAddress: john.account.publicKey,
+        orderHash, // TODO fix order hash difference - mock problem?
+        topics: expect.arrayContaining([
+          expect.stringContaining('0x'),
+          expect.stringContaining('0x'),
+          expect.stringContaining('0x'),
+          expect.stringContaining('0x'),
+        ])
+      });
+
     });
   });
 
