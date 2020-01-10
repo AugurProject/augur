@@ -50,6 +50,8 @@ import {
   CRYPTO_LTC_CURRENCY_MARKETS,
   FIN_EXCHANGES_CLOSING_OFFSETS,
   FIN_INDEXES_CLOSING_OFFSETS,
+  FIN_INDEXES_HOLIDAY_CLOSURES,
+  FIN_EXCHANGES_HOLIDAY_CLOSURES,
 } from './templates-lists';
 
 const YES_NO = 'YesNo';
@@ -4718,7 +4720,7 @@ export const TEMPLATES = {
                 id: 3,
                 type: TemplateInputType.DATEYEAR,
                 placeholder: `Day of Year`,
-                validationType: ValidationType.WEEKDAYONLY,
+                validationType: ValidationType.NOWEEKEND_HOLIDAYS,
               },
               {
                 id: 4,
@@ -4727,6 +4729,7 @@ export const TEMPLATES = {
                 inputDateYearId: 3,
                 inputSourceId: 2,
                 inputTimeOffset: FIN_EXCHANGES_CLOSING_OFFSETS,
+                holidayClosures: FIN_EXCHANGES_HOLIDAY_CLOSURES
               }
             ],
             resolutionRules: {
@@ -4775,14 +4778,14 @@ export const TEMPLATES = {
                 id: 3,
                 type: TemplateInputType.DATEYEAR,
                 placeholder: `Start Day of Year`,
-                validationType: ValidationType.WEEKDAYONLY,
+                validationType: ValidationType.NOWEEKEND_HOLIDAYS,
               },
               {
                 id: 4,
                 dateAfterId: 3,
                 type: TemplateInputType.DATEYEAR,
                 placeholder: `End Day of Year`,
-                validationType: ValidationType.WEEKDAYONLY,
+                validationType: ValidationType.NOWEEKEND_HOLIDAYS,
               },
               {
                 id: 5,
@@ -4791,6 +4794,7 @@ export const TEMPLATES = {
                 inputDateYearId: 3,
                 inputSourceId: 2,
                 inputTimeOffset: FIN_EXCHANGES_CLOSING_OFFSETS,
+                holidayClosures: FIN_EXCHANGES_HOLIDAY_CLOSURES
               }
             ],
             resolutionRules: {
@@ -4833,7 +4837,7 @@ export const TEMPLATES = {
                 id: 2,
                 type: TemplateInputType.DATEYEAR,
                 placeholder: `Day of Year`,
-                validationType: ValidationType.WEEKDAYONLY,
+                validationType: ValidationType.NOWEEKEND_HOLIDAYS,
               },
               {
                 id: 3,
@@ -4842,6 +4846,7 @@ export const TEMPLATES = {
                 inputDateYearId: 2,
                 inputSourceId: 1,
                 inputTimeOffset: FIN_EXCHANGES_CLOSING_OFFSETS,
+                holidayClosures: FIN_EXCHANGES_HOLIDAY_CLOSURES
               }
             ],
             resolutionRules: {
@@ -4889,7 +4894,7 @@ export const TEMPLATES = {
                 id: 2,
                 type: TemplateInputType.DATEYEAR,
                 placeholder: `Day of Year`,
-                validationType: ValidationType.WEEKDAYONLY,
+                validationType: ValidationType.NOWEEKEND_HOLIDAYS,
               },
               {
                 id: 3,
@@ -4898,6 +4903,7 @@ export const TEMPLATES = {
                 inputDateYearId: 2,
                 inputSourceId: 0,
                 inputTimeOffset: FIN_INDEXES_CLOSING_OFFSETS,
+                holidayClosures: FIN_INDEXES_HOLIDAY_CLOSURES,
               }
             ],
             resolutionRules: {
@@ -4927,7 +4933,7 @@ export const TEMPLATES = {
                 id: 2,
                 type: TemplateInputType.DATEYEAR,
                 placeholder: `Day of Year`,
-                validationType: ValidationType.WEEKDAYONLY,
+                validationType: ValidationType.NOWEEKEND_HOLIDAYS,
               },
               {
                 id: 3,
@@ -4936,6 +4942,7 @@ export const TEMPLATES = {
                 inputDateYearId: 2,
                 inputSourceId: 0,
                 inputTimeOffset: FIN_INDEXES_CLOSING_OFFSETS,
+                holidayClosures: FIN_INDEXES_HOLIDAY_CLOSURES,
               },
             ],
             resolutionRules: {
@@ -5046,7 +5053,7 @@ export const TEMPLATES = {
       {
         marketType: YES_NO,
         question: `Will [0] gross $[1] USD or more, in it's opening weekend in the US?`,
-        example: `Will Avangers: Endgame gross $350 million USD or more in it's opening weekend in the US?`,
+        example: `Will Avengers: Endgame gross $350 million USD or more in it's opening weekend in the US?`,
         inputs: [
           {
             id: 0,
@@ -5073,7 +5080,7 @@ export const TEMPLATES = {
       {
         marketType: YES_NO,
         question: `Head-to-Head: Will [0] gross more than [1] on it's opening weekend in the US?`,
-        example: `Head-to-Head: Will Avangers: Endgame gross more than Avangers: Age of Ultron on it's opening weekend in the US?`,
+        example: `Head-to-Head: Will Avengers: Endgame gross more than Avengers: Age of Ultron on it's opening weekend in the US?`,
         inputs: [
           {
             id: 0,

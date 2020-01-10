@@ -81,6 +81,7 @@ interface TextInputProps {
   placeholder?: string;
   onChange: Function;
   value?: string;
+  maxLength?: string;
   trailingLabel?: string;
   innerLabel?: string;
   autoCompleteList?: SortedGroup[];
@@ -1308,6 +1309,7 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
       type,
       trailingLabel,
       innerLabel,
+      maxLength,
     } = this.props;
     const { autoCompleteList = [] } = this.props;
     const { showList } = this.state;
@@ -1336,6 +1338,7 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
                 onFocus={() => this.toggleList()}
                 placeholder={placeholder}
                 disabled={disabled}
+                maxLength={maxLength}
               />
               {innerLabel && <span className={Styles.Inner}>{innerLabel}</span>}
               <div
