@@ -8348,6 +8348,21 @@ export const HOLIDAYS = {
   MID_AUTUMN_FESTIVAL: 'Day Following Mid Autumn Festival',
   CHUNG_YEUNG_DAY: 'Chung Yeung Day',
   CHRISTMAS_HOLIDAY: 'Christmas Holiday',
+  LUNAR_NY_EVE: 'Lunar NY Eve',
+  LUNAR_NEW_YEAR_5: 'Lunar New Year 5',
+  LUNAR_NEW_YEAR_6: 'Lunar New Year 6',
+  LABOUR_DAY_1: 'Labour Day1',
+  LABOUR_DAY_HOLIDAY: 'Labour Day Holiday',
+  LABOUR_DAY_HOLIDAY_2: 'Labour Day Holiday 2',
+  DRAGON_BOAT_FESTIVAL: 'Dragon Boat Festival',
+  NATIONAL_DAY_1: 'National Day 1',
+  NATIONAL_DAY_2: 'National Day 2',
+  NATIONAL_DAY_3: 'National Day 3',
+  NATIONAL_DAY_4: 'National Day 4',
+  NATIONAL_DAY_5: 'National Day 5',
+  NATIONAL_DAY_6: 'National Day 6',
+  NATIONAL_DAY_7: 'National Day 7',
+  NATIONAL_DAY_8: 'National Day 8',
 } 
 
 export const USA_HOLIDAYS = {
@@ -8878,13 +8893,201 @@ const HONG_KONG_HOLIDAYS = {
   ]
 };
 
+const CHINA_HOLIDAYS = {
+  [2020]: [
+    {
+      holiday: HOLIDAYS.NEW_YEARS_DAY,
+      date: 1577836800
+    },
+    {
+      holiday: HOLIDAYS.LUNAR_NY_EVE,
+      date: 1579867200
+    },
+    {
+      holiday: HOLIDAYS.LUNAR_NEW_YEAR_3,
+      date: 1580126400
+    },
+    {
+      holiday: HOLIDAYS.LUNAR_NEW_YEAR_4,
+      date: 1580212800
+    },
+    {
+      holiday: HOLIDAYS.LUNAR_NEW_YEAR_5,
+      date: 1580299200
+    },
+    {
+      holiday: HOLIDAYS.LUNAR_NEW_YEAR_6,
+      date: 1580385600
+    },
+    {
+      holiday: HOLIDAYS.CHING_MING_FESTIVAL,
+      date: 1586174400
+    },
+    {
+      holiday: HOLIDAYS.LABOUR_DAY_1,
+      date: 1588334400
+    },
+    {
+      holiday: HOLIDAYS.LABOUR_DAY_HOLIDAY,
+      date: 1588593600
+    },
+    {
+      holiday: HOLIDAYS.LABOUR_DAY_HOLIDAY_2,
+      date: 1588680000
+    },
+    {
+      holiday: HOLIDAYS.DRAGON_BOAT_FESTIVAL,
+      date: 1593086400
+    },
+    {
+      holiday: HOLIDAYS.DRAGON_BOAT_FESTIVAL,
+      date: 1593172800
+    },
+    {
+      holiday: HOLIDAYS.MID_AUTUMN_FESTIVAL,
+      date: 1601553600
+    },
+    {
+      holiday: HOLIDAYS.NATIONAL_DAY_2,
+      date: 1601640000
+    },
+    {
+      holiday: HOLIDAYS.NATIONAL_DAY_5,
+      date: 1601899200
+    },
+    {
+      holiday: HOLIDAYS.NATIONAL_DAY_6,
+      date: 1601985600
+    },
+    {
+      holiday: HOLIDAYS.NATIONAL_DAY_7,
+      date: 1602072000
+    },
+    {
+      holiday: HOLIDAYS.NATIONAL_DAY_8,
+      date: 1602158400
+    },
+  ],
+  [2021]: [
+    {
+      holiday: HOLIDAYS.NEW_YEARS_DAY,
+      date: 1577836800
+    },
+    {
+      holiday: HOLIDAYS.LUNAR_NY_EVE,
+      date: 1613044800
+    },
+    {
+      holiday: HOLIDAYS.LUNAR_NEW_YEAR_1,
+      date: 1613131200
+    },
+    {
+      holiday: HOLIDAYS.LUNAR_NEW_YEAR_4,
+      date: 1613390400
+    },
+    {
+      holiday: HOLIDAYS.LUNAR_NEW_YEAR_5,
+      date: 1613476800
+    },
+    {
+      holiday: HOLIDAYS.LUNAR_NEW_YEAR_6,
+      date: 1613563200
+    },
+    {
+      holiday: HOLIDAYS.CHING_MING_FESTIVAL,
+      date: 1617624000
+    },
+    {
+      holiday: HOLIDAYS.LABOUR_DAY_HOLIDAY,
+      date: 1620043200
+    },
+    {
+      holiday: HOLIDAYS.DRAGON_BOAT_FESTIVAL,
+      date: 1632139200
+    },
+    {
+      holiday: HOLIDAYS.MID_AUTUMN_FESTIVAL,
+      date: 1633089600
+    },
+    {
+      holiday: HOLIDAYS.NATIONAL_DAY_4,
+      date: 1633348800
+    },
+    {
+      holiday: HOLIDAYS.NATIONAL_DAY_5,
+      date: 1633435200
+    },
+    {
+      holiday: HOLIDAYS.NATIONAL_DAY_6,
+      date: 1633521600
+    },
+    {
+      holiday: HOLIDAYS.NATIONAL_DAY_7,
+      date: 1633608000
+    },
+  ], 
+  [2022]: [
+    {
+      holiday: HOLIDAYS.NEW_YEARS_DAY,
+      date: 1641211200
+    },
+    {
+      holiday: HOLIDAYS.LUNAR_NEW_YEAR_1,
+      date: 1643716800
+    },
+    {
+      holiday: HOLIDAYS.LUNAR_NEW_YEAR_2,
+      date: 1643803200
+    },
+    {
+      holiday: HOLIDAYS.LUNAR_NEW_YEAR_3,
+      date: 1643889600
+    },
+    {
+      holiday: HOLIDAYS.LUNAR_NEW_YEAR_4,
+      date: 1643976000
+    },
+    {
+      holiday: HOLIDAYS.CHING_MING_FESTIVAL,
+      date: 1649160000
+    },
+    {
+      holiday: HOLIDAYS.DRAGON_BOAT_FESTIVAL,
+      date: 1654257600
+    },
+    {
+      holiday: HOLIDAYS.NATIONAL_DAY_3,
+      date: 1664798400
+    },
+    {
+      holiday: HOLIDAYS.NATIONAL_DAY_4,
+      date: 1664884800
+    },
+    {
+      holiday: HOLIDAYS.NATIONAL_DAY_5,
+      date: 1664971200
+    },
+    {
+      holiday: HOLIDAYS.NATIONAL_DAY_6,
+      date: 1665057600
+    },
+    {
+      holiday: HOLIDAYS.NATIONAL_DAY_7,
+      date: 1665144000
+    },
+  ]
+};
+
+
 export const FIN_EXCHANGES_HOLIDAY_CLOSURES = {
   'New York Stock Exchange (traded in USD)': USA_HOLIDAYS,
   'Nasdaq (traded in USD)': USA_HOLIDAYS,
   'American Stock Exchange (traded in USD)': USA_HOLIDAYS,
   'Euronext NV (traded in Euro)': FRANCE_HOLIDAYS,
   'London Stock Exchange (traded in GBP)': ENGLAND_HOLIDAYS,
-  'Hong Kong Stock Exchange (traded in HKD)': HONG_KONG_HOLIDAYS
+  'Hong Kong Stock Exchange (traded in HKD)': HONG_KONG_HOLIDAYS,
+  'Shanghai Stock Exchange (A shares traded in CNY)': CHINA_HOLIDAYS,
+  'Shanghai Stock Exchange (B shares traded in USD)': CHINA_HOLIDAYS
 };
 
 export const FIN_INDEXES_HOLIDAY_CLOSURES = {
@@ -8897,5 +9100,6 @@ export const FIN_INDEXES_HOLIDAY_CLOSURES = {
   'CAC 40': FRANCE_HOLIDAYS,
   'FTSE 100': ENGLAND_HOLIDAYS,
   'DAX': GERMANY_HOLIDAYS,
-  'Hang Seng': HONG_KONG_HOLIDAYS
+  'Hang Seng': HONG_KONG_HOLIDAYS,
+  'Shanghai SE Composite': CHINA_HOLIDAYS
 };
