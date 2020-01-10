@@ -159,6 +159,9 @@ export const SWITCH_MODE = 'SWITCH_MODE';
 export const ENABLE_CONTRACT_SUPPORT = 'ENABLE_CONTRACT_SUPPORT';
 export const OTHER_ISSUE = 'OTHER_ISSUE';
 
+// # ZeroX Fee
+export const ZEROX_GAS_FEE = 150000;
+
 // # Market Max Fees
 export const MAX_FEE_100_PERCENT = '1';
 export const MAX_FEE_40_PERCENT = '0.4';

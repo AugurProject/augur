@@ -1,5 +1,5 @@
 import { createBigNumber } from 'utils/create-big-number';
-import { BUY, ZERO } from 'modules/common/constants';
+import { BUY, ZERO, ZEROX_GAS_FEE } from 'modules/common/constants';
 import logError from 'utils/log-error';
 import { generateTrade } from 'modules/trades/helpers/generate-trade';
 import { AppState } from 'store';
@@ -202,7 +202,7 @@ async function runSimulateTrade(
     userShares
   );
 
-  let gasLimit = null;
+  let gasLimit: BigNumber = createBigNumber(0);
 
   const totalFee = createBigNumber(simulateTradeValue.settlementFees, 10);
   newTradeDetails.totalFee = totalFee.toFixed();
@@ -236,8 +236,10 @@ async function runSimulateTrade(
       newTradeDetails.limitPrice,
       userShares
     );
-  }
 
+    // Plus ZeroX Fee (150k Gas)
+    gasLimit = gasLimit.plus(ZEROX_GAS_FEE);
+  }
   // ignore share cost when user is shorting another outcome or longing another outcome
   // and the user doesn't have shares on the traded outcome
   if (
