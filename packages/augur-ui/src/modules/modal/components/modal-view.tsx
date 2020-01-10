@@ -163,7 +163,7 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalAccountCreated />
     case TYPES.MODAL_AUGUR_USES_DAI:
       return <ModalAugurUsesDai />
-    case TYPES.MODA_WALLET_ERROR:
+    case TYPES.MODAL_WALLET_ERROR:
       return <ModalWalletError />
     case TYPES.MODAL_SCALAR_MARKET:
       return <ModalScalar {...modal} />
@@ -197,7 +197,7 @@ export default class ModalView extends Component<ModalViewProps> {
     window.addEventListener('keydown', this.handleKeyDown);
 
     trackModalViewed(modal.type, {
-      modal: modal.type, 
+      modal: modal.type,
       from: window.location.href
     })
   }

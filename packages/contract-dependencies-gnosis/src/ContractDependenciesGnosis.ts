@@ -192,29 +192,12 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
 
     let response = await this.provider.getTransaction(txHash);
 
-    if (response) {
-      this.onTransactionStatusChanged(
-        txMetadata,
-        TransactionStatus.PENDING,
-        txHash
-      );
+    this.onTransactionStatusChanged(
+      txMetadata,
+      TransactionStatus.PENDING,
+      txHash
+    );
 
-      return response.wait();
-    }
-
-    // TODO - current worrkaround / explore a better fix
-    // loop getTransaction calls until we get back a response
-    for (let i = 0; i >= 0; i++) {
-      response = await this.provider.getTransaction(txHash);
-      if (response !== null) {
-        this.onTransactionStatusChanged(
-          txMetadata,
-          TransactionStatus.PENDING,
-          txHash
-        );
-        break;
-      }
-    }
     return response.wait();
   }
 

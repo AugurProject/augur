@@ -9,7 +9,7 @@ import {
   ACCOUNT_TYPES,
   PORTIS_API_KEY,
   NETWORK_IDS,
-  MODA_WALLET_ERROR,
+  MODAL_WALLET_ERROR,
 } from 'modules/common/constants';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { windowRef } from 'utils/window-ref';
@@ -76,8 +76,8 @@ export const loginWithPortis = (forceRegisterPage = false) => async (
         document.querySelector('.por_portis-container').remove();
         dispatch(
           updateModal({
-            type: MODA_WALLET_ERROR,
-            error: error.toString(),
+            type: MODAL_WALLET_ERROR,
+            error: JSON.stringify(error),
           })
         );
       });

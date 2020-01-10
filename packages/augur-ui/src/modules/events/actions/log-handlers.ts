@@ -33,7 +33,7 @@ import {
   DOINITIALREPORT,
   PUBLICFILLORDER,
   PUBLICTRADE,
-  MODA_WALLET_ERROR,
+  MODAL_WALLET_ERROR,
 } from 'modules/common/constants';
 import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
@@ -171,12 +171,12 @@ export const handleNewBlockLog = (log: Events.NewBlock) => async (
       dispatch(updateAppStatus(GNOSIS_STATUS, status));
       if (appStatus.gnosisStatus !== GnosisSafeState.ERROR && status === GnosisSafeState.ERROR) {
         const hasEth = (await loginAccount.meta.signer.provider.getBalance(loginAccount.meta.signer._address)).gt(0);
-        const errorMessage = `${hasEth ? `If you need to make the transaction now transaction costs will be paid in ETH from your ${loginAccount.meta.accountType} wallet.` : `If you need to make the transaction now please add ETH to your ${loginAccount.meta.accountType} wallet: ${loginAccount.meta.signer._address}.`}`;
+        const errorMessage = `We\'re currently experiencing a technical difficulty processing transaction fees in Dai.\n${hasEth ? `If you need to make the transaction now transaction costs will be paid in ETH from your ${loginAccount.meta.accountType} wallet.` : `If you need to make the transaction now please add ETH to your ${loginAccount.meta.accountType} wallet: ${loginAccount.meta.signer._address}.`}`;
         dispatch(updateModal({
-          type: MODA_WALLET_ERROR,
+          type: MODAL_WALLET_ERROR,
           error: errorMessage,
+          showDiscordLink: false,
           title: 'We\'re having trouble processing transactions',
-          heading: 'We\'re currently experiencing a technical difficulty processing transaction fees in Dai. If possible please come back later to process this transaction.',
         }));
       }
     }
