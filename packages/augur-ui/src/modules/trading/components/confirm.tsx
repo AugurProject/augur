@@ -296,7 +296,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
                 Shares @ ${limitPrice}`
               }
             </div>
-            { gasCostDai.roundedValue.gt(0) > 0 && <LinearPropertyLabel
+            { gasCostDai && gasCostDai.roundedValue.gt(0) > 0 && <LinearPropertyLabel
               label="EST. TX FEE"
               value={gasCostDai}
               showDenomination={true}
@@ -357,7 +357,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
                 Shares @ ${limitPrice}`
                 }
             </div>
-            {gasCostDai.roundedValue.gt(0) > 0 && <LinearPropertyLabel
+            {gasCostDai && gasCostDai.roundedValue.gt(0) > 0 && <LinearPropertyLabel
               label="EST. TX FEE"
               value={gasCostDai}
               showDenomination={true}
