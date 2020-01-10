@@ -5,6 +5,7 @@ set -euo pipefail
 cleanup() {
   echo "stopping geth docker image"
   docker kill geth
+  yarn workspace @augurproject/gnosis-relay-api kill-relay
 }
 
 trap cleanup SIGINT SIGTERM
