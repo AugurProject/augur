@@ -220,10 +220,10 @@ class Form extends Component<FromProps, FormState> {
     }
   }
 
-  testTotal(value, errors, isOrderValid, price): TestResults {
+  testTotal(value, errors, isOrderValid, price, quantity): TestResults {
     let errorCount = 0;
     let passedTest = !!isOrderValid;
-    if (value === '') {
+    if (value === '' && price && !!!quantity) {
       return { isOrderValid: false, errors, errorCount };
     }
     if (value && createBigNumber(value).lt(0)) {
@@ -439,7 +439,7 @@ class Form extends Component<FromProps, FormState> {
       order[this.INPUT_TYPES.EST_DAI] &&
       createBigNumber(order[this.INPUT_TYPES.EST_DAI]);
 
-    const expiration;
+    let expiration = null;
     if(order[this.INPUT_TYPES.EXPIRATION_DATE]) {
       expiration = moment(order[this.INPUT_TYPES.EXPIRATION_DATE]).unix();
     }
@@ -471,7 +471,7 @@ class Form extends Component<FromProps, FormState> {
       isOrderValid: totalValid,
       errors: totalErrors,
       errorCount: totalErrorCount,
-    } = this.testTotal(total, errors, isOrderValid, price);
+    } = this.testTotal(total, errors, isOrderValid, price, quantity);
 
     errorCount += totalErrorCount;
     errors = { ...errors, ...totalErrors };
