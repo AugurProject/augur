@@ -347,6 +347,7 @@ export class Accounts<TBigNumber> {
       (params.action === Action.CANCEL || params.action === Action.ALL) &&
       (params.coin === Coin.DAI || params.coin === Coin.ALL)
     ) {
+
       const zeroXCanceledOrders = await db.CancelledOrders.where('[makerAddress+market]')
         .between([params.account, Dexie.minKey],[params.account, Dexie.maxKey])
         .toArray();
@@ -355,6 +356,7 @@ export class Accounts<TBigNumber> {
         (ids, order) => Array.from(new Set([...ids, order.market])),
         []
       );
+
       const marketInfo = await Accounts.getMarketCreatedInfoByIds(
         db,
         marketIds
@@ -363,6 +365,7 @@ export class Accounts<TBigNumber> {
       allFormattedLogs = allFormattedLogs.concat(
         formatZeroXCancelledOrders(zeroXCanceledOrders, marketInfo)
       );
+
       actionCoinComboIsValid = true;
     }
 
