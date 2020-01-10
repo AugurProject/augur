@@ -249,9 +249,9 @@ describe('State API :: Accounts :: ', () => {
     );
     expect(accountTransactionHistory).toMatchObject([
       {
-        action: 'Filled Sell',
+        action: 'Sell',
         coin: 'DAI',
-        details: 'Filled Sell',
+        details: 'Sell',
         fee: '0',
         marketDescription: 'YesNo market description',
         outcome: 0,
@@ -261,9 +261,9 @@ describe('State API :: Accounts :: ', () => {
         total: '15.6',
       },
       {
-        action: 'Filled Sell',
+        action: 'Sell',
         coin: 'DAI',
-        details: 'Filled Sell',
+        details: 'Sell',
         fee: '0',
         marketDescription: 'YesNo market description',
         outcome: 1,
@@ -273,9 +273,9 @@ describe('State API :: Accounts :: ', () => {
         total: '23.4',
       },
       {
-        action: 'Filled Sell',
+        action: 'Sell',
         coin: 'DAI',
-        details: 'Filled Sell',
+        details: 'Sell',
         fee: '0',
         marketDescription: 'YesNo market description',
         outcome: 2,
@@ -285,9 +285,9 @@ describe('State API :: Accounts :: ', () => {
         total: '23.4',
       },
       {
-        action: 'Filled Sell',
+        action: 'Sell',
         coin: 'DAI',
-        details: 'Filled Sell',
+        details: 'Sell',
         fee: '0',
         marketDescription: 'Categorical market description',
         outcome: 0,
@@ -297,9 +297,9 @@ describe('State API :: Accounts :: ', () => {
         total: '15.6',
       },
       {
-        action: 'Filled Sell',
+        action: 'Sell',
         coin: 'DAI',
-        details: 'Filled Sell',
+        details: 'Sell',
         fee: '0',
         marketDescription: 'Categorical market description',
         outcome: 1,
@@ -310,9 +310,9 @@ describe('State API :: Accounts :: ', () => {
         total: '23.4',
       },
       {
-        action: 'Filled Sell',
+        action: 'Sell',
         coin: 'DAI',
-        details: 'Filled Sell',
+        details: 'Sell',
         fee: '0',
         marketDescription: 'Categorical market description',
         outcome: 2,
@@ -322,9 +322,9 @@ describe('State API :: Accounts :: ', () => {
         total: '23.4',
       },
       {
-        action: 'Filled Sell',
+        action: 'Sell',
         coin: 'DAI',
-        details: 'Filled Sell',
+        details: 'Sell',
         fee: '0',
         marketDescription: 'Scalar market description',
         outcome: 0,
@@ -334,9 +334,9 @@ describe('State API :: Accounts :: ', () => {
         total: '3995.6',
       },
       {
-        action: 'Filled Sell',
+        action: 'Sell',
         coin: 'DAI',
-        details: 'Filled Sell',
+        details: 'Sell',
         fee: '0',
         marketDescription: 'Scalar market description',
         outcome: 1,
@@ -686,9 +686,9 @@ describe('State API :: Accounts :: ', () => {
     );
     expect(accountTransactionHistory).toMatchObject([
       {
-        action: 'Filled Sell',
+        action: 'Sell',
         coin: 'DAI',
-        details: 'Filled Sell',
+        details: 'Sell',
         fee: '0',
         marketDescription: 'YesNo market description',
         outcome: 0,
@@ -698,9 +698,9 @@ describe('State API :: Accounts :: ', () => {
         total: '15.6',
       },
       {
-        action: 'Filled Sell',
+        action: 'Sell',
         coin: 'DAI',
-        details: 'Filled Sell',
+        details: 'Sell',
         fee: '0',
         marketDescription: 'YesNo market description',
         outcome: 1,
