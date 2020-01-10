@@ -216,9 +216,13 @@ export class MarketDB extends DerivedDB {
   protected processDoc(log: ParsedLog): ParsedLog {
     const processFunc = this.docProcessMap[log.name];
     if (processFunc) {
-      return processFunc(log);
+      return processFunc({
+        ...log
+      });
     }
-    return log;
+    return {
+      ...log
+    };
   }
 
   private processMarketCreated = (log: ParsedLog): ParsedLog => {
