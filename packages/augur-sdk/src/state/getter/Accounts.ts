@@ -35,7 +35,7 @@ import * as _ from "lodash";
 import * as t from 'io-ts';
 import Dexie from 'dexie';
 import { getMarkets } from './OnChainTrading';
-import { StoredOrder } from '../db/ZeroXOrders';
+import { StoredOrder, ZeroXOrders } from '../db/ZeroXOrders';
 
 export enum Action {
   ALL = 'ALL',
@@ -678,17 +678,24 @@ function formatZeroXCancelledOrders(
     const minPrice = new BigNumber(marketData.prices[0]);
     const numTicks = new BigNumber(marketData.numTicks);
     const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
-    const quantity = 0; //convertOnChainAmountToDisplayAmount(new BigNumber(order.amount), tickSize);
-    const price = 0; //convertOnChainPriceToDisplayPrice(new BigNumber(order.price), minPrice, tickSize);
-    const orderType = "0"; //order.orderType === `0x0${OrderType.Bid}` ? 'Bid' : 'Ask';
-    let outcomeDescription = "0"; //describeMarketOutcome(order.outcome, marketData);
+    const values = ZeroXOrders.parseAssetData(order.makerAssetData);
+    const onChainPrice = values.price;
+    const quantity = 0;
+    const price = convertOnChainPriceToDisplayPrice(new BigNumber(onChainPrice), minPrice, tickSize);
+    const orderTypeName = values.orderType === `0x0${OrderType.Bid}` ? 'Bid' : 'Ask';
+    const outcome = new BigNumber(values.outcome);
+    let outcomeDescription = describeMarketOutcome(outcome.toNumber(), marketData);
+    if (marketData.marketType === MarketType.Scalar) {
+      outcomeDescription = marketData.extraInfo._scalarDenomination;
+    }
+
     if (marketData.marketType === MarketType.Scalar) {
       outcomeDescription = marketData.extraInfo._scalarDenomination;
     }
     return {
-      action: `Cancelled ${orderType}`,
+      action: `Cancelled ${orderTypeName}`,
       coin: Coin.DAI,
-      details: `Cancelled ${orderType}`,
+      details: `Cancelled ${orderTypeName}`,
       fee: '0',
       marketDescription: marketInfo[order.market].extraInfo.description,
       outcome: 0, //new BigNumber(order.outcome).toNumber(),
