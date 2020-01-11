@@ -5,7 +5,7 @@ import {
 } from '@0x/mesh-rpc-client';
 import { getAddressesForNetwork, NetworkId } from '@augurproject/artifacts';
 import { EventEmitter } from "events";
-import { Mesh, Config, ValidationResults, ContractAddresses as ZeroXContractAddresses } from '@0x/mesh-browser';
+import { ValidationResults } from '@0x/mesh-browser';
 import { SignatureType, SignedOrder } from '@0x/types';
 import { ExchangeFillEvent } from '@0x/mesh-browser';
 import { Event } from '@augurproject/core/build/libraries/ContractInterfaces';
@@ -39,8 +39,6 @@ export enum Verbosity {
   Debug = 5,
   Trace = 6,
 }
-
-// NB: Doing this here so that the rest of the code doesn't need to change
 
 export interface BrowserMeshConfiguration {
   verbosity?: Verbosity;
@@ -119,7 +117,6 @@ export interface MatchingOrders {
 }
 
 export class ZeroX {
-  public readonly events: EventEmitter = new EventEmitter();
   private meshClient?: WSClient;
   private browserMesh?: BrowserMesh;
 
@@ -133,7 +130,7 @@ export class ZeroX {
     if (!this.meshClient) return;
 
     this.meshClient.subscribeToOrdersAsync((orderEvents: OrderEvent[]) => {
-      this.events.emit('RPC:OrderEvent', orderEvents)
+      this.augur.events.emit('ZeroX:RPC:OrderEvent', orderEvents)
     });
   }
 
@@ -147,63 +144,15 @@ export class ZeroX {
     if (!this.browserMesh) return;
 
     this.browserMesh.onOrderEvents((orderEvents: OrderEvent[]) => {
-      this.events.emit('Mesh:OrderEvent', orderEvents)
+      this.augur.events.emit('ZeroX:Mesh:OrderEvent', orderEvents)
     });
   }
 
   constructor(private readonly augur: Augur, meshClientEndpoint?: string) {
-    this.augur = augur;
-
-    if (typeof meshClientEndpoint !== undefined) {
+    if (typeof meshClientEndpoint !== "undefined") {
       this.rpc = new WSClient(meshClientEndpoint);
     }
   }
-
-  /**
-   * @forceIgnoreCustomAddresses: bool - Pass if you're attempting to restart a
-   * browser mesh that has crashed. ZeroX will error if the custom addresses
-   * are specified multiple times.
-   */
-  static createBrowserMeshConfig(ethereumRPCURL: string, ethereumChainID: NetworkId , bootstrapList?: string[], forceIgnoreCustomAddresses = false) {
-    let meshConfig: Config = {
-      ethereumRPCURL,
-      ethereumChainID: Number(ethereumChainID),
-      verbosity: 5,
-    }
-
-    if (![NetworkId.Kovan, NetworkId.Mainnet].includes(ethereumChainID.toString() as NetworkId)) {
-      meshConfig.bootstrapList = bootstrapList;
-      if (!forceIgnoreCustomAddresses) {
-        // Our contract addresses have a different type than `customContractAddresses` but the 0x code
-        // normalizes them so it still works. Thus, we just cast it here.
-        meshConfig.customContractAddresses = (getAddressesForNetwork(ethereumChainID) as unknown) as ZeroXContractAddresses;
-      }
-    }
-
-    return meshConfig;
-  }
-
-  private createBrowserMeshRetryFunction(meshConfig: Config) {
-    return (err) => {
-        console.log("Browser mesh error: ", err.message, err.stack);
-        if(err.message === "timed out waiting for first block to be processed by Mesh node. Check your backing Ethereum RPC endpoint") {
-          console.log("Restarting Mesh Sync");
-
-          // Passing `true` as the last parameter to make sure the config doesn't include custom addresses on retry
-          meshConfig = ZeroX.createBrowserMeshConfig(meshConfig.ethereumRPCURL, meshConfig.ethereumChainID.toString() as NetworkId, meshConfig.bootstrapList, true);
-          this.mesh = new Mesh(meshConfig);
-          this.mesh.onError(this.createBrowserMeshRetryFunction(meshConfig));
-          this.mesh.startAsync();
-        }
-    }
-  }
-
-  createBrowserMesh(meshConfig: Config) {
-    this.mesh = new Mesh(meshConfig);
-    this.mesh.onError(this.createBrowserMeshRetryFunction(meshConfig));
-    return this.mesh;
-  }
-
 
   async getOrders(): Promise<OrderInfo[]> {
     // TODO when browser mesh supports this back out to using it if meshClient not provided

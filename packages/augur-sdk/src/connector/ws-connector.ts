@@ -2,7 +2,7 @@ import WebSocket from 'isomorphic-ws';
 import WebSocketAsPromised from 'websocket-as-promised';
 import { SubscriptionEventName } from '../constants';
 import { Callback, SubscriptionType } from '../events';
-import { ServerConfiguration } from "../state";
+import { SDKConfiguration } from "../state";
 import { BaseConnector } from './base-connector';
 
 export class WebsocketConnector extends BaseConnector {
@@ -12,7 +12,7 @@ export class WebsocketConnector extends BaseConnector {
     super();
   }
 
-  async connect(config: ServerConfiguration, account?: string): Promise<void> {
+  async connect(config: SDKConfiguration, account?: string): Promise<void> {
     this.socket = new WebSocketAsPromised(config.sdk.ws, {
       packMessage: (data: any) => JSON.stringify(data),
       unpackMessage: (message: string) => JSON.parse(message),

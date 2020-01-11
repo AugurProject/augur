@@ -5,7 +5,7 @@ import { NetworkId } from "@augurproject/artifacts";
 import { SingleThreadConnector } from "../connector";
 import { SubscriptionEventName } from "../constants";
 import { MarketCreated, NewBlock } from "../events";
-import { ServerConfiguration, startServer } from "./create-api";
+import { SDKConfiguration, startServer } from "./create-api";
 
 
 const settings = require("@augurproject/sdk/src/state/settings.json");
@@ -14,7 +14,7 @@ console.log("Starting web worker");
 
 (async function() {
   try {
-    const config: ServerConfiguration = {
+    const config: SDKConfiguration = {
       networkId: NetworkId.Kovan,
       ethereum: {
         http: settings.ethNodeURLs[4]

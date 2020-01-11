@@ -1,27 +1,37 @@
-import { ServerConfiguration, startServer } from '../state';
+import { SDKConfiguration, startServer } from '../state';
 import { API } from '../state/getter/API';
 import { BaseConnector } from './base-connector';
 import { SubscriptionEventName } from '../constants';
 import { Subscriptions } from '../subscriptions';
 import { Callback, EventNameEmitter } from '../events';
+import { BrowserMesh, ZeroX } from "../api/ZeroX";
 
 export class SingleThreadConnector extends BaseConnector {
-  private api: API;
+  private _api: API;
+  private _zeroX: ZeroX;
   private get events(): Subscriptions {
-    return this.api.augur.events;
+    return this._api.augur.events;
+  }
+  public get mesh(): BrowserMesh {
+    return this._zeroX.mesh;
+  }
+  public set mesh(mesh: BrowserMesh) {
+    this._zeroX.mesh = mesh;
   }
 
-  async connect(config: ServerConfiguration, account?: string): Promise<void> {
-    this.api = await startServer(config);
+  async connect(config: SDKConfiguration, account?: string): Promise<void> {
+    this._api = await startServer(config);
+    this._zeroX = new ZeroX(this._api.augur, config.zeroX.rpc.ws);
+    this._api.augur.zeroX = this._zeroX;
   }
 
   async disconnect(): Promise<void> {
-    this.api = null;
+    this._api = null;
   }
 
   bindTo<R, P>(f: (db: any, augur: any, params: P) => Promise<R>): (params: P) => Promise<R> {
     return async (params: P): Promise<R> => {
-      return this.api.route(f.name, params);
+      return this._api.route(f.name, params);
     };
   }
 
@@ -47,4 +57,4 @@ export class SingleThreadConnector extends BaseConnector {
       return this.events.unsubscribe(subscription.id);
     }
   }
-}
+ }

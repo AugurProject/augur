@@ -11,7 +11,7 @@ import { BlockAndLogStreamerListener } from './db/BlockAndLogStreamerListener';
 import { DB } from './db/DB';
 import { API } from './getter/API';
 
-export interface ClientConfiguration {
+export interface SDKConfiguration {
   networkId: NetworkId,
   sdk?: {
     ws: string,
@@ -23,16 +23,21 @@ export interface ClientConfiguration {
     http: string
   }
   zeroX?: {
+    verbosity: 0|1|2|3|4|5,
     rpc?: {
       ws: string
     },
     mesh?: {
-      bootStrapList?: string[]
+      bootstrapList?: string[]
     }
+  },
+  syncing?: {
+    blockstreamDelay?: number,
+    chunkSize?: number
   }
 };
 
-export async function createClient(config: ClientConfiguration, connector: BaseConnector, account?: string, signer?: EthersSigner, provider?: JsonRpcProvider, enableFlexSearch: boolean = false) {
+export async function createClient(config: SDKConfiguration, connector: BaseConnector, account?: string, signer?: EthersSigner, provider?: JsonRpcProvider, enableFlexSearch: boolean = false) {
   const ethersProvider = new EthersProvider( provider || new JsonRpcProvider(config.ethereum.http), 10, 0, 40);
   const addresses = getAddressesForNetwork(config.networkId);
   const contractDependencies = ContractDependenciesGnosis.create(
@@ -51,18 +56,21 @@ export async function createClient(config: ClientConfiguration, connector: BaseC
   );
 }
 
-export interface ServerConfiguration extends ClientConfiguration {
-  syncing: {
-    blockstreamDelay?: number,
-    chunkSize?: number
-  }
-}
+export async function createServer(config: SDKConfiguration): Promise<{ api: API, controller: Controller }> {
+  // Validate the config -- check that the syncing key exits and use defaults if not
+  config = {
+    syncing: {
+      blockstreamDelay: 10,
+      chunkSize: 100000
+    },
+    ...config
+  };
 
-export async function createServer(config: ServerConfiguration): Promise<{ api: API, controller: Controller }> {
   // On the server side there's no connector layer. Ideally all the server
   // side code would only use the `contracts` interface and not the Augur
   // functionality since that was really originally designed for client connection
   // over a connector TO the server.
+
   const connector = new EmptyConnector();
   const client = await createClient(config, connector, undefined, undefined, undefined, true);
 
@@ -87,7 +95,7 @@ export async function createServer(config: ServerConfiguration): Promise<{ api: 
   return { api, controller };
 }
 
-export async function startServer(config: ServerConfiguration): Promise<API> {
+export async function startServer(config: SDKConfiguration): Promise<API> {
   const { api, controller } = await createServer(config);
 
   await controller.run();

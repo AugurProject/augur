@@ -1,10 +1,10 @@
 import { SubscriptionEventName } from "../constants";
 import { Callback } from "../events";
-import { ServerConfiguration } from "../state";
+import { SDKConfiguration } from "../state";
 import { BaseConnector } from "./base-connector";
 
 export class EmptyConnector extends BaseConnector {
-  async connect(config: ServerConfiguration, account?: string): Promise<void> {
+  async connect(config: SDKConfiguration, account?: string): Promise<void> {
     return;
   }
 

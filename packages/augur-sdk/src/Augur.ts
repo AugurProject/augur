@@ -45,7 +45,7 @@ export class Augur<TProvider extends Provider = Provider> {
   readonly addresses: ContractAddresses;
   readonly contracts: Contracts;
   readonly onChainTrade: OnChainTrade;
-  readonly zeroX: ZeroX;
+  zeroX: ZeroX;
   readonly trade: Trade;
   readonly market: Market;
   readonly gnosis: Gnosis;

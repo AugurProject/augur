@@ -20,7 +20,8 @@ import { isEmpty } from 'utils/is-empty';
 import { analytics } from './analytics';
 import { isLocalHost } from 'utils/is-localhost';
 import { WSClient } from '@0x/mesh-rpc-client';
-import { Mesh, Config } from '@0x/mesh-browser';
+import { Mesh } from '@0x/mesh-browser';
+import { createBrowserMesh } from "./BrowserMesh";
 import { NETWORK_IDS } from 'modules/common/constants';
 import { WebWorkerConnector } from './ww-connector';
 
@@ -32,7 +33,6 @@ export class SDK {
   networkId: string;
   account: string;
   private signerNetworkId: string;
-  private meshConfig: Config;
 
   export async function createClient(env: EnvObject, connector: BaseConnector, signer?: EthersSigner, provider?: JsonRpcProvider) {
 
@@ -51,7 +51,7 @@ export class SDK {
     this.account = account;
     this.signerNetworkId = signerNetworkId;
 
-    const clientConfiguration: ClientConfiguration = {
+    const SDKConfiguration: SDKConfiguration = {
       networkId: this.networkId,
       sdk: {
         ws: env['sdkEndpoint']
@@ -61,20 +61,15 @@ export class SDK {
       },
       gnosis: {
         http: gnosisRelayEndpoint
-      }
-    };
-
-    const serverConfig: ServerConfiguration = {
-      ...ClientConfiguration,
+      },
       sycing: {
       }
     };
 
     // TODO don't leave this here
-    const connector = this.pickConnector(clientConfiguration);
-    await connector.connect(serverConfig);
+    const connector = await this.createConnector(clientConfiguration);
 
-    this.sdk = createClient(clientConfiguration, connector, signer, provider);
+    this.sdk = createClient(config, connector, signer, provider);
 
     if (!isEmpty(account)) {
       await this.getOrCreateGnosisSafe(account);
@@ -161,11 +156,14 @@ export class SDK {
     this.sdk = null;
   }
 
-  pickConnector(config: ServerConfiguration) {
+  async createConnector(config: SDKConfiguration) {
     if (config.sdk.ws) {
-      return new Connectors.WebsocketConnector(config);
+      return new Connectors.WebsocketConnector();
     } else {
-      return new Connectors.SingleThreadConnector(config);
+      const connector = new Connectors.SingleThreadConnector();
+      connector.mesh = createBrowserMesh(config, (err: Error, mesh: Mesh) => {
+        connector.mesh = mesh;
+     });
     }
   }
 

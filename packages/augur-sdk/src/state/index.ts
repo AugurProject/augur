@@ -4,8 +4,7 @@ import * as Logs from './logs/types';
 export { Getters, Logs };
 
 export {
-  ClientConfiguration,
-  ServerConfiguration,
+  SDKConfiguration,
   createClient,
   createServer,
   startServer,

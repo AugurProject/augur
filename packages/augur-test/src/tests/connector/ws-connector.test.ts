@@ -2,7 +2,7 @@ import { Markets } from '@augurproject/sdk/build/state/getter/Markets';
 import { NewBlock } from '@augurproject/sdk/build/events';
 import { SubscriptionEventName } from '@augurproject/sdk/build/constants';
 import { WebsocketConnector } from '@augurproject/sdk/build/connector/ws-connector';
-import { ServerConfiguration } from '@augurproject/sdk/build/state';
+import { SDKConfiguration } from '@augurproject/sdk/build/state';
 import { NetworkId } from '@augurproject/artifacts';
 
 jest.mock('websocket-as-promised', () => {
@@ -40,7 +40,7 @@ jest.mock('websocket-as-promised', () => {
 });
 
 test('WebsocketConnector :: Should route correctly and handle events', async done => {
-  const config: ServerConfiguration = {
+  const config: SDKConfiguration = {
     networkId: NetworkId.PrivateGanache,
     ethereum: {
       http: ''

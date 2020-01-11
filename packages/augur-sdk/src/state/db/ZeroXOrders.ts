@@ -118,8 +118,10 @@ export class ZeroXOrders extends AbstractTable {
   }
 
   subscribeToOrderEvents() {
-    this.augur.zeroX.events.on('Mesh:OrderEvent', (orderEvents) => this.handleOrderEvent(orderEvents).then(() => console.log(`Handled Mesh order events`)));
-    this.augur.zeroX.events.on('RPC:OrderEvent', (orderEvents) => this.handleOrderEvent(orderEvents).then(() => console.log(`Handled RPC order events`)));
+    // This only works if `zeroX` has been set on the augur instance and
+    // it doesn't get over-written so... something.
+    this.augur.events.on('ZeroX:Mesh:OrderEvent', (orderEvents) => this.handleOrderEvent(orderEvents).then(() => console.log(`Handled Mesh order events`)));
+    this.augur.events.on('ZeroX:RPC:OrderEvent', (orderEvents) => this.handleOrderEvent(orderEvents).then(() => console.log(`Handled RPC order events`)));
   }
 
   async handleOrderEvent(orderEvents: OrderEvent[]): Promise<void> {

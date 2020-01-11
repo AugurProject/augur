@@ -1,4 +1,4 @@
-import { ServerConfiguration } from '../state';
+import { SDKConfiguration } from '../state';
 import { SubscriptionEventName } from "../constants";
 import { Callback, SubscriptionType } from "../events";
 
@@ -6,7 +6,7 @@ export abstract class BaseConnector {
   subscriptions: { [event: string]: { id: string, callback: Callback } } = {};
 
   // Lifecyle of the connector
-  abstract async connect(config: ServerConfiguration, account?: string): Promise<void>;
+  abstract async connect(config: SDKConfiguration, account?: string): Promise<void>;
   abstract async disconnect(): Promise<void>;
 
   // bind API calls

@@ -28,7 +28,7 @@ export class WebWorkerConnector extends Connectors.BaseConnector {
   private worker: any;
   subscriptions: { [event: string]: { id: string; callback: Callback } } = {};
 
-  async connect(config: ServerConfiguration, account?: string): Promise<void> {
+  async connect(config: SDKConfiguration, account?: string): Promise<void> {
     this.worker = new Worker();
 
     this.worker.postMessage({

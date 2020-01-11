@@ -1,6 +1,6 @@
 import { NetworkId } from "@augurproject/artifacts";
 import { EventEmitter } from "events";
-import { ServerConfiguration, startServer } from "./create-api";
+import { SDKConfiguration, startServer } from "./create-api";
 import { EndpointSettings } from "./getter/types";
 import * as HTTPEndpoint from "./HTTPEndpoint";
 import * as WebsocketEndpoint from "./WebsocketEndpoint";
@@ -8,7 +8,7 @@ import * as WebsocketEndpoint from "./WebsocketEndpoint";
 export async function run() {
   const settings = require("@augurproject/sdk/src/state/settings.json");
 
-  const config: ServerConfiguration = {
+  const config: SDKConfiguration = {
     networkId: NetworkId.Kovan,
     ethereum: {
       http: settings.ethNodeURLs[4]

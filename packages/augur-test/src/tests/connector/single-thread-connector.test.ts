@@ -12,7 +12,7 @@ import {
 } from '@augurproject/sdk/build/state/getter/Markets';
 import { SingleThreadConnector } from '@augurproject/sdk/build/connector';
 import { SubscriptionEventName } from '@augurproject/sdk/build/constants';
-import { ServerConfiguration } from '@augurproject/sdk/build/state';
+import { SDKConfiguration } from '@augurproject/sdk/build/state';
 import { NewBlock } from '@augurproject/sdk/build/events';
 import { MarketCreated } from "@augurproject/sdk/build/events";
 import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
@@ -59,7 +59,7 @@ beforeAll(async () => {
 
   connector = new SingleThreadConnector();
   console.log("Connector connecting");
-  const config: ServerConfiguration = {
+  const config: SDKConfiguration = {
     networkId: await provider.getNetworkId(),
     ethereum: {
       http: ''
