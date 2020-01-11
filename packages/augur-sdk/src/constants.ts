@@ -90,11 +90,11 @@ export enum ControlMessageType {
 
 export const ETHER = new ethersUtils.BigNumber(10).pow(18);
 
-export const TRADE_GAS_BUFFER = new BigNumber("100000", 10);
+export const TRADE_GAS_BUFFER = new BigNumber("375000", 10);
 
-export const MAX_FILLS_PER_TX = new BigNumber("3", 10);
+export const MAX_FILLS_PER_TX = new BigNumber("5", 10);
 
-export const MAX_GAS_LIMIT_FOR_TRADE = new BigNumber("4500000", 10);
+export const MAX_GAS_LIMIT_FOR_TRADE = new BigNumber("4875000", 10);
 
 export const PLACE_ORDER_NO_SHARES = {
   2: new BigNumber("547694", 10),
@@ -117,13 +117,13 @@ export const PLACE_ORDER_WITH_SHARES = {
 };
 
 export const WORST_CASE_FILL = {
-  2: new BigNumber("933495", 10),
-  3: new BigNumber("1172245", 10),
-  4: new BigNumber("1410995", 10),
-  5: new BigNumber("1649744", 10),
-  6: new BigNumber("1888494", 10),
-  7: new BigNumber("2127244", 10),
-  8: new BigNumber("2365994", 10),
+  2: new BigNumber("750000", 10),
+  3: new BigNumber("879183", 10),
+  4: new BigNumber("1100000", 10),
+  5: new BigNumber("1240000", 10),
+  6: new BigNumber("1416000", 10),
+  7: new BigNumber("1600000", 10),
+  8: new BigNumber("1770000", 10),
 };
 
 export const CLAIM_GAS_COST = new BigNumber(794379);
