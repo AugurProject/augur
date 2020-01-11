@@ -51,6 +51,7 @@ export const ZeroXOrdersParams = t.partial({
   orderState: t.string,
   matchPrice: t.string,
   ignoreOrders: t.array(t.string),
+  expirationCutoffSeconds: t.number,
 });
 
 export const ZeroXOrderParams = t.type({
@@ -121,7 +122,7 @@ export class ZeroXOrdersGetters {
       storedOrders = _.filter(storedOrders, storedOrder => {
         // 0 == "buy"
         const orderPrice = new BigNumber(storedOrder.price, 16);
-        return params.orderType == '0' ? orderPrice.gte(price) : orderPrice.lte(price);
+        return params.orderType === '0' ? orderPrice.gte(price) : orderPrice.lte(price);
       });
     }
 
@@ -129,10 +130,15 @@ export class ZeroXOrdersGetters {
       .reduce((ids, order) => Array.from(new Set([...ids, order.market])), []);
     const markets = await getMarkets(marketIds, db, false);
 
-    return ZeroXOrdersGetters.mapStoredToZeroXOrders(markets, storedOrders, params.ignoreOrders || []);
+    return ZeroXOrdersGetters.mapStoredToZeroXOrders(
+      markets,
+      storedOrders,
+      params.ignoreOrders || [],
+      typeof params.expirationCutoffSeconds === 'number' ? params.expirationCutoffSeconds : 60, // default to one minute
+      );
   }
 
-  static mapStoredToZeroXOrders(markets: _.Dictionary<MarketData>, storedOrders: StoredOrder[], ignoredOrderIds: string[]): ZeroXOrders {
+  static mapStoredToZeroXOrders(markets: _.Dictionary<MarketData>, storedOrders: StoredOrder[], ignoredOrderIds: string[], expirationCutoffSeconds: number): ZeroXOrders {
     let orders = storedOrders.map((storedOrder) => {
       return {
         storedOrder,
@@ -143,6 +149,10 @@ export class ZeroXOrdersGetters {
     orders = orders.filter((order) => order.zeroXOrder !== null);
     // Remove intentionally ignored orders.
     orders = orders.filter((order) => ignoredOrderIds.indexOf(order.zeroXOrder.orderId) === -1);
+    // Remove orders soon to bexpire.
+    const now = Math.floor(new Date().valueOf() / 1000);
+    const expirationCutoffTimestamp = now + expirationCutoffSeconds;
+    orders = orders.filter((order) => order.zeroXOrder.expirationTimeSeconds.toNumber() > expirationCutoffTimestamp);
     // Shape orders into market-order-type tree.
     return orders.reduce((orders: ZeroXOrders, order): ZeroXOrders => {
       const { storedOrder, zeroXOrder } = order;
