@@ -156,10 +156,10 @@ export class ZeroX {
 
   async getOrders(): Promise<OrderInfo[]> {
     // TODO when browser mesh supports this back out to using it if meshClient not provided
-    if (!this.meshClient) {
+    if (!this.rpc) {
       throw Error('getOrders is not supported on browser mesh');
     }
-    const response = await this.meshClient.getOrdersAsync();
+    const response = await this.rpc.getOrdersAsync();
     return response.ordersInfos;
   }
 
