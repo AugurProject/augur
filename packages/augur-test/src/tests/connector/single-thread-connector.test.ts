@@ -28,7 +28,7 @@ const mock = makeDbMock();
 jest.mock('@augurproject/sdk/build/state/create-api', () => {
   return {
     __esModule: true,
-    create: () => {
+    startServer: () => {
       const blockAndLogStreamerListener = BlockAndLogStreamerListener.create(
         provider,
         john.augur.contractEvents.getEventTopics,
@@ -42,7 +42,9 @@ jest.mock('@augurproject/sdk/build/state/create-api', () => {
         blockAndLogStreamerListener
       );
 
-      return { api, controller };
+      controller.run();
+
+      return api;
     },
   };
 });
@@ -63,11 +65,8 @@ beforeAll(async () => {
     networkId: await provider.getNetworkId(),
     ethereum: {
       http: ''
-    },
-    syncing: {
-
     }
-  }
+  };
   await connector.connect(config);
 });
 
