@@ -250,19 +250,50 @@
     grid-row: 1;
     margin: auto;
 
+    // EmptyRadio
     > circle:first-of-type {
       stroke: @color-secondary-action-outline;
       fill: none;
     }
 
     > circle {
-      fill: @color-primary-text;
+      fill: none;
+    }
+  }
+
+  &:hover {
+    > svg {
+      > circle:not(:first-of-type) {
+        fill: @color-secondary-action-outline;
+      }
     }
   }
 
   > h5 {
     grid-column: 2;
     grid-row: 1;
+  }
+
+  // FilledRadio
+  &.Checked {
+    > svg {
+      > circle:first-of-type {
+        stroke: @color-secondary-action-outline;
+        fill: none;
+      }
+  
+      > circle {
+        fill: @color-primary-text;
+      }
+    }
+
+    &:hover {
+      > svg {
+        > circle:not(:first-of-type) {
+          fill: @color-primary-text;
+        }
+      }
+    }
   }
 
   &.MultiSelect {
@@ -1861,6 +1892,10 @@ div.error > div > div > div > div > input {
 }
 
 .CategoryRow:hover span:first-of-type {
+  color: @color-primary-text;
+}
+
+.CategoryRow:hover span:last-of-type {
   color: @color-primary-text;
 }
 

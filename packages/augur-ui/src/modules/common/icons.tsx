@@ -87,6 +87,7 @@ export const Ellipsis = (
 export const EmptyRadio = (
   <svg viewBox="0 0 20 20" fill="none">
     <circle cx="10" cy="10" r="9" strokeWidth="2" />
+    <circle cx="10" cy="10" r="4" />
   </svg>
 );
 

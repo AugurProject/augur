@@ -1071,6 +1071,7 @@ export const RadioBar = ({
 }: RadioBarProps) => (
   <div
     className={classNames(Styles.RadioBar, {
+      [Styles.Checked]: checked,
       [Styles.RadioBarExpanded]: checked && expandable,
       [Styles.RadioBarError]: error,
       [Styles.MultiSelect]: multiSelect,
