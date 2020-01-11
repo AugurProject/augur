@@ -258,7 +258,6 @@ export interface CancelledOrderLog {
   makerAddress: Address;
   feeRecipientAddress: Address;
   market: Address;
-  kycToken: Address;
   price: string;
   outcome: string;
   orderType: string;

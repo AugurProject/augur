@@ -225,7 +225,6 @@ async function runSimulateTrade(
       market.numOutcomes,
       outcomeId,
       fingerprint,
-      kycToken,
       doNotCreateOrders,
       market.numTicks,
       market.minPrice,
