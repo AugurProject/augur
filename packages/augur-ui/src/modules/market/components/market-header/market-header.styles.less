@@ -289,6 +289,12 @@ div.Toggle {
   overflow: hidden;
   text-overflow: ellipsis;
   width: 100%;
+  word-break: break-word;
+
+  @media @breakpoint-mobile {
+    -webkit-line-clamp: 3;
+    max-height: @size-48;
+  }
 
   > p {
     margin-top: 0;
