@@ -15,10 +15,10 @@
 
 .FiltersGroup {
   > div {
-    margin: @size-20 @size-32 @size-14 @size-32;
+    margin: @size-13 @size-32 0 @size-32;
 
     > div {
-      grid-template-columns: 28px auto @size-16;
+      grid-template-columns: @size-32 auto @size-16;
       border: none;
       height: auto;
       margin: 0 0 @size-12 0;
@@ -31,8 +31,9 @@
       }
 
       > h5 {
-        .text-11;
+        .text-12;
 
+        color: @color-secondary-text;
         text-transform: capitalize;
 
         @media @breakpoint-mobile {
@@ -42,7 +43,7 @@
 
       > svg {
         margin: 0;
-        height: @size-13;
+        height: @size-20;
 
         @media @breakpoint-mobile {
           height: 1.25rem;
@@ -55,7 +56,7 @@
     }
 
     > div:last-of-type {
-      margin: 0 0 @size-14 0;
+      margin: 0 0 @size-16 0;
     }
 
     @media @breakpoint-mobile {
@@ -69,7 +70,7 @@
 
     text-transform: uppercase;
     color: @color-primary-text;
-    margin: @size-24 @size-32 0 @size-32;
+    margin: @size-24 @size-32 @size-19 @size-32;
     display: flex;
     align-items: center;
 
