@@ -23,7 +23,7 @@ export interface SDKConfiguration {
     http: string
   }
   zeroX?: {
-    verbosity: 0|1|2|3|4|5,
+    verbosity?: 0|1|2|3|4|5,
     rpc?: {
       ws: string
     },
@@ -56,7 +56,7 @@ export async function createClient(config: SDKConfiguration, connector: BaseConn
   );
 }
 
-export async function createServer(config: SDKConfiguration): Promise<{ api: API, controller: Controller }> {
+export async function createServer(config: SDKConfiguration, account?: string): Promise<{ api: API, controller: Controller }> {
   // Validate the config -- check that the syncing key exits and use defaults if not
   config = {
     syncing: {
@@ -72,7 +72,7 @@ export async function createServer(config: SDKConfiguration): Promise<{ api: API
   // over a connector TO the server.
 
   const connector = new EmptyConnector();
-  const client = await createClient(config, connector, undefined, undefined, undefined, true);
+  const client = await createClient(config, connector, account, undefined, undefined, true);
 
   const ethersProvider = new EthersProvider( new JsonRpcProvider(config.ethereum.http), 10, 0, 40)
   const contractEvents = new ContractEvents(ethersProvider, client.addresses.Augur, client.addresses.AugurTrading, client.addresses.ShareToken);
@@ -95,8 +95,8 @@ export async function createServer(config: SDKConfiguration): Promise<{ api: API
   return { api, controller };
 }
 
-export async function startServer(config: SDKConfiguration): Promise<API> {
-  const { api, controller } = await createServer(config);
+export async function startServer(config: SDKConfiguration, account?: string): Promise<API> {
+  const { api, controller } = await createServer(config, account);
 
   await controller.run();
 
