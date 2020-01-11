@@ -251,7 +251,7 @@
     margin: auto;
 
     > circle:first-of-type {
-      stroke: @color-primary-text;
+      stroke: @color-secondary-action-outline;
       fill: none;
     }
 
@@ -261,8 +261,12 @@
   }
 
   > h5 {
+    .text-12;
+
     grid-column: 2;
     grid-row: 1;
+    color: @color-secondary-text;
+    text-transform: capitalize;
   }
 
   &.MultiSelect {
@@ -1802,14 +1806,14 @@ div.error > div > div > div > div > input {
   justify-content: space-between;
   align-items: center;
   text-transform: capitalize;
-  margin: @size-8 0;
+  margin: @size-13 0;
   user-select: none;
   cursor: pointer;
 
   > span:first-of-type {
-    .text-11;
+    .text-12-bold;
 
-    color: @color-primary-text;
+    color: @color-secondary-text;
     display: flex;
 
     > svg {
@@ -1822,17 +1826,17 @@ div.error > div > div > div > div > input {
   }
 
   > span:last-of-type {
-    .text-10;
+    .text-10-bold;
 
-    color: @color-primary-text;
-    background: @color-secondary-text;
-    border-radius: 4px;
+    color: @color-secondary-text;
+    background: @color-secondary-action;
+    border: 1px solid @color-secondary-action-outline;
+    border-radius: @border-radius-default;
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 20px;
-    height: 16px;
-    background: rgba(175, 167, 193, 0.15);
+    width: @size-21;
+    height: @size-16;
   }
 
   &.active span:first-of-type {
@@ -1851,6 +1855,7 @@ div.error > div > div > div > div > input {
     > span:last-of-type {
       background: none;
       animation: spin 2s linear infinite;
+      border: none;
     }
   }
 

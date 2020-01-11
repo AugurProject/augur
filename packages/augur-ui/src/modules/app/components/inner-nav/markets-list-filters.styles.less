@@ -2,7 +2,7 @@
 
 .Filters {
   display: flex;
-  border-top: 1px solid rgba(175, 167, 193, 0.15);
+  border-top: 1px solid @color-active-background;
   flex-direction: column;
   margin: @size-16 0 0 0;
   overflow: auto;
@@ -18,8 +18,6 @@
     margin: @size-20 @size-32 @size-14 @size-32;
 
     > div {
-
-
       grid-template-columns: 28px auto @size-16;
       border: none;
       height: auto;
@@ -44,7 +42,7 @@
 
       > svg {
         margin: 0;
-        height: 1rem;
+        height: @size-13;
 
         @media @breakpoint-mobile {
           height: 1.25rem;
@@ -67,10 +65,10 @@
   }
 
   > div:first-of-type {
-    .text-11-bold;
+    .text-12-bold;
 
     text-transform: uppercase;
-    color: @color-secondary-text;
+    color: @color-primary-text;
     margin: @size-24 @size-32 0 @size-32;
     display: flex;
     align-items: center;
@@ -92,10 +90,10 @@
   display: flex;
 
   > span:first-of-type {
-    .text-11-bold;
+    .text-12-bold;
 
     text-transform: uppercase;
-    color:@color-secondary-text;
+    color:@color-primary-text;
 
     @media @breakpoint-mobile {
       .text-14-bold;
@@ -103,7 +101,6 @@
   }
 
   > span:last-of-type {
-
     > label {
       margin: 0;
     }
@@ -124,7 +121,7 @@
 }
 
 .Filter_TooltipContainer {
-  margin: 0 0 0 @size-6;
+  margin: 0 0 0 @size-4;
 }
 
 .Searching {
