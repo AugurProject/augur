@@ -159,6 +159,9 @@ export const SWITCH_MODE = 'SWITCH_MODE';
 export const ENABLE_CONTRACT_SUPPORT = 'ENABLE_CONTRACT_SUPPORT';
 export const OTHER_ISSUE = 'OTHER_ISSUE';
 
+// # ZeroX Fee
+export const ZEROX_GAS_FEE = 150000;
+
 // # Market Max Fees
 export const MAX_FEE_100_PERCENT = '1';
 export const MAX_FEE_40_PERCENT = '0.4';
@@ -244,7 +247,7 @@ export enum MARKET_CARD_FORMATS {
   EXPANDED = 'expanded',
 }
 
-export const SEARCH_FILTER_PLACHOLDER = 'Search markets and categories';
+export const SEARCH_FILTER_PLACHOLDER = 'Search markets';
 export const SEARCH_FILTER_PLACHOLDER_MOBILE = 'Search';
 
 // The user should be able to sort by:
@@ -540,7 +543,7 @@ export const MODAL_SIGNUP = 'MODAL_SIGNUP';
 export const MODAL_CONNECT = 'MODAL_CONNECT';
 export const MODAL_LOADING = 'MODAL_LOADING';
 export const MODAL_ACCOUNT_CREATED = 'MODAL_ACCOUNT_CREATED';
-export const MODA_WALLET_ERROR = 'MODA_WALLET_ERROR';
+export const MODAL_WALLET_ERROR = 'MODAL_WALLET_ERROR';
 
 // transactions parameter names
 export const TX_ORDER_ID = '_orderId';
@@ -848,8 +851,8 @@ export const CREATE_MARKET = 'CREATE_MARKET';
 export const CLAIM_FEE_WINDOWS = 'CLAIM_FEE_WINDOWS';
 
 // Media Queries
-export const SMALL_MOBILE = '(max-width: 768px)'; // matches @breakpoint-mobile-mid
-export const TABLET = '(min-width: 769px) and (max-width: 1150px)';
+export const SMALL_MOBILE = '(max-width: 767px)'; // matches @breakpoint-mobile-mid
+export const TABLET = '(min-width: 768px) and (max-width: 1150px)';
 export const DESKTOP = '(min-width:1151px) and (max-width: 2000px)';
 export const LARGE_DESKTOP = '(min-width: 2001px)';
 // temp tablet breakpoint until trading pg additional breakpoints are implemented
@@ -1271,3 +1274,5 @@ export const TUTORIAL_TRADING_HISTORY = {
     createTrade('20Nov 2019', 78, '6', 0.12, '02:23:21', SELL),
   ],
 };
+
+export const DISCORD_LINK = 'https://discord.gg/wWMumZr';

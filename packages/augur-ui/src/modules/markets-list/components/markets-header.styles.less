@@ -67,6 +67,7 @@
       text-transform: capitalize;
 
       @media @breakpoint-mobile {
+        .text-18-bold;
         order: 0;
         margin-bottom: @size-16;
       }
@@ -82,11 +83,12 @@
     }
 
     > div {
-      display: flex;
+      display: none;
       align-items: center;
 
       @media @breakpoint-mobile {
-        flex-direction: column;
+        display: flex;
+        margin-bottom: @size-16;
       }
     }
   }

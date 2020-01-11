@@ -29,6 +29,7 @@ import {
   Exchange,
   ERC1155Proxy,
   ERC20Proxy,
+  MultiAssetProxy,
 } from './ContractInterfaces';
 import { NetworkConfiguration } from './NetworkConfiguration';
 import { Contracts, ContractData } from './Contracts';
@@ -358,6 +359,9 @@ Deploying to: ${networkConfiguration.networkName}
       const erc1155ProxyContract = this.contracts.get('ERC1155Proxy');
       erc1155ProxyContract.address = await this.uploadAndAddToAugur(erc1155ProxyContract, 'ERC1155Proxy');
 
+      const multiAssetProxyContract = this.contracts.get('MultiAssetProxy');
+      multiAssetProxyContract.address = await this.uploadAndAddToAugur(multiAssetProxyContract, 'MultiAssetProxy');
+
       const zeroXExchangeContract = await this.contracts.get('Exchange');
       zeroXExchangeContract.address = await this.uploadAndAddToAugur(zeroXExchangeContract, 'ZeroXExchange', [networkId]);
 
@@ -379,12 +383,20 @@ Deploying to: ${networkConfiguration.networkName}
       const actualZeroXExchangeContract = new Exchange(this.dependencies, zeroXExchangeContract.address);
       await actualZeroXExchangeContract.registerAssetProxy(erc1155ProxyContract.address);
       await actualZeroXExchangeContract.registerAssetProxy(erc20ProxyContract.address);
+      await actualZeroXExchangeContract.registerAssetProxy(multiAssetProxyContract.address);
+
+      const actualMultiAssetProxyContract = new MultiAssetProxy(this.dependencies, multiAssetProxyContract.address);
+      await actualMultiAssetProxyContract.registerAssetProxy(erc1155ProxyContract.address);
+      await actualMultiAssetProxyContract.registerAssetProxy(erc20ProxyContract.address);
+      await actualMultiAssetProxyContract.addAuthorizedAddress(zeroXExchangeContract.address);
 
       const actualERC1155ProxyContract = new ERC1155Proxy(this.dependencies, erc1155ProxyContract.address);
       await actualERC1155ProxyContract.addAuthorizedAddress(zeroXExchangeContract.address);
+      await actualERC1155ProxyContract.addAuthorizedAddress(multiAssetProxyContract.address);
 
       const actualERC20ProxyContract = new ERC20Proxy(this.dependencies, erc20ProxyContract.address);
       await actualERC20ProxyContract.addAuthorizedAddress(zeroXExchangeContract.address);
+      await actualERC20ProxyContract.addAuthorizedAddress(multiAssetProxyContract.address);
 
       return zeroXExchangeContract.address;
     }
@@ -432,6 +444,7 @@ Deploying to: ${networkConfiguration.networkName}
           'ERC20Proxy',
           'ERC721Proxy',
           'ERC1155Proxy',
+          'MultiAssetProxy',
           'Exchange',
           'Coordinator',
           'CoordinatorRegistry',
@@ -607,8 +620,9 @@ Deploying to: ${networkConfiguration.networkName}
 
         // 0x
         mapping['ERC20Proxy'] = this.contracts.get('ERC20Proxy').address!;
-        mapping['ERC721Proxy'] = this.contracts.get('ERC20Proxy').address!;
-        mapping['ERC1155Proxy'] = this.contracts.get('ERC20Proxy').address!;
+        mapping['ERC721Proxy'] = this.contracts.get('ERC721Proxy').address!;
+        mapping['ERC1155Proxy'] = this.contracts.get('ERC1155Proxy').address!;
+        mapping['MultiAssetProxy'] = this.contracts.get('MultiAssetProxy').address!;
         mapping['Exchange'] = this.contracts.get('Exchange').address!;
         mapping['Coordinator'] = this.contracts.get('Coordinator').address!;
         mapping['CoordinatorRegistry'] = this.contracts.get('CoordinatorRegistry').address!;

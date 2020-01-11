@@ -31,9 +31,8 @@ contract AugurTrading is IAugurTrading {
         Fill
     }
     //  addressData
-    //  0:  kycToken
-    //  1:  orderCreator
-    //  2:  orderFiller (Fill)
+    //  0:  orderCreator
+    //  1:  orderFiller (Fill)
     //
     //  uint256Data
     //  0:  price
@@ -48,7 +47,7 @@ contract AugurTrading is IAugurTrading {
     //  9:	tokensEscrowed
     event OrderEvent(address indexed universe, address indexed market, OrderEventType indexed eventType, uint8 orderType, bytes32 orderId, bytes32 tradeGroupId, address[] addressData, uint256[] uint256Data);
     event ProfitLossChanged(address indexed universe, address indexed market, address indexed account, uint256 outcome, int256 netPosition, uint256 avgPrice, int256 realizedProfit, int256 frozenFunds, int256 realizedCost, uint256 timestamp);
-    event MarketVolumeChanged(address indexed universe, address indexed market, uint256 volume, uint256[] outcomeVolumes);
+    event MarketVolumeChanged(address indexed universe, address indexed market, uint256 volume, uint256[] outcomeVolumes, uint256 timestamp);
 
     mapping(address => bool) public trustedSender;
 
@@ -148,7 +147,7 @@ contract AugurTrading is IAugurTrading {
         require(msg.sender == registry["CancelOrder"]);
         IOrders _orders = IOrders(registry["Orders"]);
         (Order.Types _orderType, address[] memory _addressData, uint256[] memory _uint256Data) = _orders.getOrderDataForLogs(_orderId);
-        _addressData[1] = _creator;
+        _addressData[0] = _creator;
         _uint256Data[3] = _tokenRefund;
         _uint256Data[4] = _sharesRefund;
         _uint256Data[7] = augur.getTimestamp();
@@ -169,8 +168,8 @@ contract AugurTrading is IAugurTrading {
         require(msg.sender == registry["FillOrder"]);
         IOrders _orders = IOrders(registry["Orders"]);
         (Order.Types _orderType, address[] memory _addressData, uint256[] memory _uint256Data) = _orders.getOrderDataForLogs(_orderId);
-        _addressData[1] = _creator;
-        _addressData[2] = _filler;
+        _addressData[0] = _creator;
+        _addressData[1] = _filler;
         _uint256Data[0] = _price;
         _uint256Data[5] = _fees;
         _uint256Data[6] = _amountFilled;
@@ -181,7 +180,7 @@ contract AugurTrading is IAugurTrading {
 
     function logMarketVolumeChanged(IUniverse _universe, address _market, uint256 _volume, uint256[] memory _outcomeVolumes) public returns (bool) {
         require(msg.sender == registry["FillOrder"]);
-        emit MarketVolumeChanged(address(_universe), _market, _volume, _outcomeVolumes);
+        emit MarketVolumeChanged(address(_universe), _market, _volume, _outcomeVolumes, augur.getTimestamp());
         return true;
     }
 

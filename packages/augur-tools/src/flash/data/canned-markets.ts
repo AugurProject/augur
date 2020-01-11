@@ -20,17 +20,25 @@ export interface OrderBook {
   [outcome: string]: BuySell;
 }
 
-const singleOutcomeAsks: AskBid[] = [
+export const singleOutcomeAsks: AskBid[] = [
   { shares: "100.00", price: "0.31" },
   { shares: "200.00", price: "0.35" },
   { shares: "300.00", price: "0.40" },
 ];
-const singleOutcomeBids: AskBid[] = [
+export const singleOutcomeBids: AskBid[] = [
   { shares: "100.00", price: "0.30" },
   { shares: "200.00", price: "0.25" },
   { shares: "300.00", price: "0.19" },
 ];
 const yesNoOrderBook: OrderBook = {
+  0: {
+    buy: singleOutcomeBids,
+    sell: singleOutcomeAsks,
+  },
+  1: {
+    buy: singleOutcomeBids,
+    sell: singleOutcomeAsks,
+  },
   2: {
     buy: singleOutcomeBids,
     sell: singleOutcomeAsks,

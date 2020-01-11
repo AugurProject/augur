@@ -21,12 +21,9 @@ import {
   YES_NO,
   PUBLICCREATEORDER,
   PUBLICCREATEORDERS,
-  APPROVE,
-  DOINITIALREPORT,
-  ZERO,
-  PREFILLEDSTAKE,
-  PUBLICFILLBESTORDER,
   PUBLICFILLORDER,
+  BUYPARTICIPATIONTOKENS,
+  MODAL_WALLET_ERROR,
 } from 'modules/common/constants';
 import { UIOrder, CreateMarketData } from 'modules/types';
 import { convertTransactionOrderToUIOrder } from 'modules/events/actions/transaction-conversions';
@@ -37,7 +34,6 @@ import {
 } from 'modules/orders/actions/pending-orders-management';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { AppState } from 'store';
 import { Events, Getters, TXEventName } from '@augurproject/sdk';
 import {
   addPendingData,
@@ -56,24 +52,37 @@ import {
 import { addAlert, updateAlert } from 'modules/alerts/actions/alerts';
 import { getDeconstructedMarketId } from 'modules/create-market/helpers/construct-market-params';
 import { orderCreated } from 'services/analytics/helpers';
+import { updateModal } from 'modules/modal/actions/update-modal';
 
-export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
+export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
   const { eventName, transaction, hash } = txStatus;
   if (transaction) {
     const methodCall = transaction.name.toUpperCase();
-    const { blockchain, alerts } = getState();
+    const { blockchain, alerts, loginAccount } = getState();
 
-    if (eventName === TXEventName.Failure) {
+    if (eventName === TXEventName.RelayerDown) {
+      const hasEth = (await loginAccount.meta.signer.provider.getBalance(loginAccount.meta.signer._address)).gt(0);
+      const errorMessage = `We\'re currently experiencing a technical difficulty processing transaction fees in Dai.\n${hasEth ? `If you need to make the transaction now transaction costs will be paid in ETH from your ${loginAccount.meta.accountType} wallet.` : `If you need to make the transaction now please add ETH to your ${loginAccount.meta.accountType} wallet: ${loginAccount.meta.signer._address}.`}`;
+      dispatch(updateModal({
+        type: MODAL_WALLET_ERROR,
+        error: errorMessage,
+        showDiscordLink: false,
+        title: 'We\'re having trouble processing transactions!',
+      }));
+    }
+
+    if (eventName === TXEventName.Failure || eventName === TXEventName.RelayerDown) {
       const genHash = hash ? hash : generateTxParameterId(transaction.params);
+
       dispatch(
         addAlert({
           id: genHash,
           uniqueId: genHash,
           params: transaction.params,
-          status: eventName,
+          status: TXEventName.Failure,
           timestamp: blockchain.currentAugurTimestamp * 1000,
           name: methodCall,
         })
@@ -114,6 +123,32 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
     }
 
     switch (methodCall) {
+      case BUYPARTICIPATIONTOKENS: {
+        if (eventName === TXEventName.Success) {
+          const { universe } = getState();
+          const { disputeWindow } = universe;
+          const { startTime, endTime } = disputeWindow;
+
+          const genHash = hash ? hash : generateTxParameterId(transaction.params);
+          dispatch(
+            updateAlert(genHash, {
+              id: genHash,
+              uniqueId: genHash,
+              params: {
+                ...transaction.params,
+                marketId: 1,
+                startTime,
+                endTime,
+              },
+              status: eventName,
+              timestamp: blockchain.currentAugurTimestamp * 1000,
+              name: methodCall,
+            })
+          );
+        }
+
+        break;
+      }
       case PUBLICCREATEORDERS: {
         const { marketInfos } = getState();
         const marketId = transaction.params[TX_MARKET_ID];
@@ -157,6 +192,9 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
           dispatch(orderCreated(marketId, order));
           dispatch(removePendingOrder(tradeGroupId, marketId));
         }
+        if (eventName === TXEventName.Failure || eventName === TXEventName.RelayerDown) {
+          dispatch(removePendingOrder(tradeGroupId, marketId));
+        }
         break;
       }
       case CREATEMARKET:
@@ -179,7 +217,7 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
         if (hash && eventName === TXEventName.Success) {
           dispatch(removePendingData(id, CREATE_MARKET));
         }
-        if (hash && eventName === TXEventName.Failure) {
+        if (hash && eventName === TXEventName.Failure || eventName === TXEventName.RelayerDown) {
           // if tx fails, revert hash to generated tx id, for retry
           dispatch(
             updateLiqTransactionParamHash({ txParamHash: hash, txHash: id })

@@ -26,36 +26,33 @@ const PositionExpandedContent = (props: PositionExpandedContentProps) => {
           showPercent
           showBrackets
           showPlusMinus
-          showColors
           useFull
           useValueLabel
           label="Total Returns"
           value={position.totalReturns}
-          numberValue={`${position.totalPercent.roundedFormatted}`}
+          movementValue={position.totalPercent}
         />
         <LinearPropertyLabelMovement
           highlightFirst
           showPercent
           showBrackets
           showPlusMinus
-          showColors
           useFull
           useValueLabel
           label="Realized P/L"
           value={position.realizedNet}
-          numberValue={`${position.realizedPercent.roundedFormatted}`}
+          movementValue={position.realizedPercent}
         />
         <LinearPropertyLabelMovement
           highlightFirst
           showPercent
           showBrackets
           showPlusMinus
-          showColors
           useFull
           useValueLabel
           label="Unrealized P/L"
           value={position.unrealizedNet}
-          numberValue={`${position.unrealizedPercent.roundedFormatted}`}
+          movementValue={position.unrealizedPercent}
         />
       </div>
     </div>

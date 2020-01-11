@@ -283,7 +283,7 @@ div.Onboarding {
   justify-content: space-between;
   padding: @size-24;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 2fr 1fr;
 
   &.Bright {
     > h1 {
@@ -706,11 +706,27 @@ div.ButtonsRow:last-of-type {
 .Message {
   .Container;
 
+  > header > h1 {
+    .text-14;
+    text-transform: capitalize;
+
+    @media @breakpoint-mobile-new {
+      .text-12;
+    }
+  }
   > main > p {
-    .text-12-paragraph;
+    .text-14-paragraph;
+
+    @media @breakpoint-mobile-new {
+      .text-12-paragraph;
+    }
 
     color: @color-primary-text;
     margin: 0 0 @size-16 0;
+  }
+
+  > div:last-of-type {
+    padding-bottom: @size-24;
   }
 }
 
@@ -790,6 +806,7 @@ div.ButtonsRow:last-of-type {
       .text-12;
 
       color: @color-secondary-text;
+      margin-bottom: @size-5;
 
       > span {
         color: @color-primary-action;
@@ -859,11 +876,11 @@ div.ButtonsRow:last-of-type {
 
   > button:first-of-type {
     margin: 0;
-    background: #0095a3;
+    background: darken(@color-primary-action, 15%);
   }
 
   > button:first-of-type:hover {
-    background: lighten(#0095a3, 5%);
+    background: darken(@color-primary-action, 5%);
   }
 
   > button:last-of-type {

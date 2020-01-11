@@ -940,13 +940,12 @@ const AllTimeProfitLoss = (props: AllTimeProfitLossProps) => (
         size={SizeTypes.SMALL}
       />
       <MovementLabel
-        showColors
         size={SizeTypes.SMALL}
         showPlusMinus
-        showPercent
         showIcon
-        showBrackets={true}
-        value={Number(props.repProfitLossPercentageFormatted.roundedValue)}
+        showBrackets
+        value={props.repProfitLossPercentageFormatted}
+        useFull
       />
     </div>
   </div>

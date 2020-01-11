@@ -2,12 +2,11 @@ import React from 'react';
 import * as constants from 'modules/common/constants';
 import logError from 'utils/log-error';
 import { PulseLoader } from 'react-spinners';
-import { DaiLogoIcon } from 'modules/common/icons';
 import ProfitLossChart from 'modules/account/components/profit-loss-chart';
 import { MovementLabel } from 'modules/common/labels';
 import Styles from 'modules/account/components/overview-chart.styles.less';
 import { formatDai } from 'utils/format-number';
-import { SizeTypes } from 'modules/types';
+import { FormattedNumber } from 'modules/types';
 import { createBigNumber } from 'utils/create-big-number';
 
 const ALL_TIME = 3;
@@ -34,11 +33,10 @@ export interface UserTimeRangeData {
 
 interface OverviewChartState {
   profitLossData: number[][];
-  profitLossChange: string | null;
+  profitLossChange: FormattedNumber | null;
   profitLossValue: string | null;
   profitLossChangeHasValue: boolean;
   noTrades: boolean;
-  isLoading: boolean;
 }
 
 const BEGINNING_START_TIME = 1530366577;
@@ -95,13 +93,6 @@ export default class OverviewChart extends React.Component<
         currentAugurTimestamp
       );
 
-      const noTrades = data
-        .reduce(
-          (p, d) => createBigNumber(d.totalCost || constants.ZERO).plus(p),
-          constants.ZERO
-        )
-        .eq(constants.ZERO);
-
       const lastData =
         data.length > 0
           ? data[data.length - 1]
@@ -133,11 +124,11 @@ export default class OverviewChart extends React.Component<
       if (this.container) {
         this.setState({
           profitLossData,
-          profitLossChange: formatDai(lastData.realized || 0).formatted,
+          profitLossChange: formatDai(lastData.realized || 0),
           profitLossChangeHasValue: !createBigNumber(lastData.realized || 0).eq(
             constants.ZERO
           ),
-          profitLossValue: formatDai(lastData.realized).formatted,
+          profitLossValue: formatDai(lastData.realized, { removeComma: true }).full,
           noTrades: false,
         });
       }
@@ -154,10 +145,10 @@ export default class OverviewChart extends React.Component<
       profitLossChangeHasValue,
       noTrades,
     } = this.state;
+
     let content: any = null;
     const { currentAugurTimestamp } = this.props;
     const isLoading = currentAugurTimestamp === 0;
-
     if (noTrades) {
       content = (
         <>
@@ -178,18 +169,13 @@ export default class OverviewChart extends React.Component<
         <>
           <h3>{constants.PROFIT_LOSS_CHART_TITLE}</h3>
           <MovementLabel
-            showColors
-            showIcon={true || profitLossChangeHasValue}
+            showIcon
             showPlusMinus
             showBrackets
-            value={Number(profitLossChange)}
-            size={SizeTypes.NORMAL}
+            value={profitLossChange}
+            useFull
           />
-          <h4>
-            {profitLossValue >= 0
-              ? `$${profitLossValue}`
-              : `-$${Math.abs(profitLossValue)}`}
-          </h4>
+          <h4>{profitLossValue}</h4>
           {isLoading && (
             <PulseLoader
               color="#AFA7C1"

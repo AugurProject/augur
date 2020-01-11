@@ -24,7 +24,7 @@ import {
   Subheader,
 } from "modules/modal/common";
 import {
-  LinearPropertyLabelProps,
+  LinearPropertyLabelProps, DiscordLink,
 } from "modules/common/labels";
 
 import Styles from "modules/modal/modal.styles.less";
@@ -43,6 +43,9 @@ interface MessageProps {
   depositInfo?: DepositInfoProps;
   marketReview?: MarketReviewProps;
   checkbox?: CheckboxCTAProps;
+  subheader?: string;
+  subheader_2?: string;
+  showDiscordLink?: boolean;
 }
 
 export const Message = ({
@@ -61,6 +64,7 @@ export const Message = ({
   buttons,
   subheader,
   subheader_2,
+  showDiscordLink,
 }: MessageProps) => (
   <div className={Styles.Message}>
     <Title title={title} closeAction={closeAction} />
@@ -68,12 +72,9 @@ export const Message = ({
       {alertMessage && <AlertMessage {...alertMessage} />}
       {marketTitle && <MarketTitle title={marketTitle} />}
       {callToAction && <CallToAction callToAction={callToAction} />}
-      {/*
-        // @ts-ignore */}
       {content && <Content content={content} />}
-      {/*
-        // @ts-ignore */}
       {description && <Description description={description} />}
+      {showDiscordLink && <DiscordLink label='Please try again. If the issue persists please report it on ' /> }
       {subheader && <Subheader subheaderContent={subheader} />}
       {subheader_2 && <Subheader subheaderContent={subheader_2} />}
       {breakdown && <Breakdown rows={breakdown} />}

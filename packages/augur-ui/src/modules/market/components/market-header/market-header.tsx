@@ -236,7 +236,7 @@ export default class MarketHeader extends Component<
 
     const categoriesWithClick = process(market.categories) || [];
     const bigTitle =
-      !!this.refTitle && this.refTitle.firstChild.clientHeight > 60;
+      !!this.refTitle && this.refTitle.firstChild.clientHeight > 64;
     const expandedDetails = detailsTooLong && showReadMore;
 
     const containerStyle = notExpandedHeight
@@ -284,6 +284,7 @@ export default class MarketHeader extends Component<
                 {market.isTemplate && <TemplateShield marketId={market.id} />}
                 <WordTrail items={[...categoriesWithClick]} />
                 <SocialMediaButtons
+                  listView={false}
                   marketAddress={market.id}
                   marketDescription={description}
                 />

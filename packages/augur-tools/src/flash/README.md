@@ -217,7 +217,7 @@ error: `populated title does not match title given`
 error: `estimated schedule date time is after market event expiration endTime`
 
 6. For some templates the DATEYEAR input type can not be on a weekend.
-error: `market question date can not be on weekend`
+error: `market question date can not be on weekend or on a holiday`
 
 7. There are templates that give date range in the market question. These templates can not have the end date before the start date.
 error: `market question end date can not be after start date`

@@ -21,19 +21,6 @@
       padding: @size-8 0;
     }
 
-
-    > div:last-of-type {
-      @media @breakpoint-mobile {
-        display: none;
-      }
-    }
-
-    > div > div:last-of-type {
-      @media @breakpoint-mobile {
-        display: none;
-      }
-    }
-
     > button {
       margin-right: @size-12;
     }
@@ -103,11 +90,6 @@
           .text-10;
 
           color: @color-primary-text;
-      }
-
-      > span:nth-of-type(2)::before,
-        span:last-of-type::before {
-        content:'$';
       }
     }
 

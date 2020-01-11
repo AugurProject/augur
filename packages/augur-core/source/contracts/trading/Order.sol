@@ -34,7 +34,6 @@ library Order {
         IMarket market;
         IAugur augur;
         IAugurTrading augurTrading;
-        IERC20 kycToken;
         IShareToken shareToken;
         ICash cash;
 
@@ -51,7 +50,7 @@ library Order {
         bytes32 worseOrderId;
     }
 
-    function create(IAugur _augur, IAugurTrading _augurTrading, address _creator, uint256 _outcome, Order.Types _type, uint256 _attoshares, uint256 _price, IMarket _market, bytes32 _betterOrderId, bytes32 _worseOrderId, IERC20 _kycToken) internal view returns (Data memory) {
+    function create(IAugur _augur, IAugurTrading _augurTrading, address _creator, uint256 _outcome, Order.Types _type, uint256 _attoshares, uint256 _price, IMarket _market, bytes32 _betterOrderId, bytes32 _worseOrderId) internal view returns (Data memory) {
         require(_outcome < _market.getNumberOfOutcomes(), "Order.create: Outcome is not within market range");
         require(_price != 0, "Order.create: Price may not be 0");
         require(_price < _market.getNumTicks(), "Order.create: Price is outside of market range");
@@ -64,7 +63,6 @@ library Order {
             market: _market,
             augur: _augur,
             augurTrading: _augurTrading,
-            kycToken: _kycToken,
             shareToken: _shareToken,
             cash: ICash(_augur.lookup("Cash")),
             id: 0,
@@ -86,15 +84,15 @@ library Order {
 
     function getOrderId(Order.Data memory _orderData, IOrders _orders) internal view returns (bytes32) {
         if (_orderData.id == bytes32(0)) {
-            bytes32 _orderId = calculateOrderId(_orderData.orderType, _orderData.market, _orderData.amount, _orderData.price, _orderData.creator, block.number, _orderData.outcome, _orderData.moneyEscrowed, _orderData.sharesEscrowed, _orderData.kycToken);
+            bytes32 _orderId = calculateOrderId(_orderData.orderType, _orderData.market, _orderData.amount, _orderData.price, _orderData.creator, block.number, _orderData.outcome, _orderData.moneyEscrowed, _orderData.sharesEscrowed);
             require(_orders.getAmount(_orderId) == 0, "Order.getOrderId: New order had amount. This should not be possible");
             _orderData.id = _orderId;
         }
         return _orderData.id;
     }
 
-    function calculateOrderId(Order.Types _type, IMarket _market, uint256 _amount, uint256 _price, address _sender, uint256 _blockNumber, uint256 _outcome, uint256 _moneyEscrowed, uint256 _sharesEscrowed, IERC20 _kycToken) internal pure returns (bytes32) {
-        return sha256(abi.encodePacked(_type, _market, _amount, _price, _sender, _blockNumber, _outcome, _moneyEscrowed, _sharesEscrowed, _kycToken));
+    function calculateOrderId(Order.Types _type, IMarket _market, uint256 _amount, uint256 _price, address _sender, uint256 _blockNumber, uint256 _outcome, uint256 _moneyEscrowed, uint256 _sharesEscrowed) internal pure returns (bytes32) {
+        return sha256(abi.encodePacked(_type, _market, _amount, _price, _sender, _blockNumber, _outcome, _moneyEscrowed, _sharesEscrowed));
     }
 
     function getOrderTradingTypeFromMakerDirection(Order.TradeDirections _creatorDirection) internal pure returns (Order.Types) {
@@ -118,6 +116,6 @@ library Order {
         _bytes32s[1] = _orderData.worseOrderId;
         _bytes32s[2] = _tradeGroupId;
         _bytes32s[3] = _orderData.id;
-        return _orders.saveOrder(_uints, _bytes32s, _orderData.orderType, _orderData.market, _orderData.creator, _orderData.kycToken);
+        return _orders.saveOrder(_uints, _bytes32s, _orderData.orderType, _orderData.market, _orderData.creator);
     }
 }

@@ -181,7 +181,7 @@ export class ZeroXOrdersGetters {
       tickSize
     ).toString(10);
     const amountFilled = convertOnChainAmountToDisplayAmount(
-      new BigNumber(storedOrder.signedOrder.takerAssetAmount).minus(
+      new BigNumber(storedOrder.signedOrder.makerAssetAmount).minus(
         new BigNumber(storedOrder.amount)
       ),
       tickSize
@@ -198,7 +198,6 @@ export class ZeroXOrdersGetters {
       orderId: storedOrder['_id'] || storedOrder.orderHash,
       price,
       amount,
-      kycToken: storedOrder.kycToken,
       amountFilled,
       expirationTimeSeconds: new BigNumber(storedOrder.signedOrder.expirationTimeSeconds),
       fullPrecisionPrice: price,

@@ -78,7 +78,8 @@ export interface DateFormattedObject {
 
 export interface ValueLabelPair {
   label: string;
-  value: string;
+  value: string | FormattedNumber;
+  useFull?: boolean;
 }
 export interface CoreStats {
   availableFunds: ValueLabelPair;

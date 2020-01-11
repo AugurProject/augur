@@ -27,7 +27,7 @@ export const MarketCardFormatSwitcher = (
 
   return (
     <div className={Styles.MarketCardFormats}>
-      View
+      VIEW
       <ViewSwitcher
         handleClick={() =>
           updateMarketsListCardFormat(MARKET_CARD_FORMATS.COMPACT)

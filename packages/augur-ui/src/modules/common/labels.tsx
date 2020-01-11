@@ -28,6 +28,7 @@ import {
   SCALAR,
   CATEGORICAL,
   REPORTING_STATE,
+  DISCORD_LINK,
 } from 'modules/common/constants';
 import { ViewTransactionDetailsButton } from 'modules/common/buttons';
 import { formatNumber } from 'utils/format-number';
@@ -51,16 +52,14 @@ export interface InReportingLabelProps extends MarketStatusProps {
 }
 
 export interface MovementLabelProps {
-  value: number;
-  size: SizeTypes;
+  value: FormattedNumber;
+  size?: SizeTypes;
   styles?: object;
-  showColors?: boolean;
   showIcon?: boolean;
   showBrackets?: boolean;
-  showPercent?: boolean;
   showPlusMinus?: boolean;
-  showCurrency?: string;
-  showNegative?: boolean;
+  useFull?: boolean;
+  hideNegative?: boolean;
 }
 
 export interface MovementIconProps {
@@ -69,14 +68,13 @@ export interface MovementIconProps {
 }
 
 export interface MovementTextProps {
-  value: number;
+  value: FormattedNumber;
+  numberValue: number;
   size: SizeTypes;
-  showColors: boolean;
   showBrackets: boolean;
-  showPercent: boolean;
   showPlusMinus: boolean;
-  showCurrency?: string;
-  showNegative?: boolean;
+  useFull: boolean;
+  hideNegative: boolean;
 }
 
 export interface PropertyLabelProps {
@@ -107,8 +105,7 @@ export interface LinearPropertyLabelPercentMovementProps {
   label: string;
   value: string;
   accentValue?: boolean;
-  numberValue: number;
-  showColors?: boolean;
+  movementValue: FormattedNumber;
   showIcon?: boolean;
   showBrackets?: boolean;
   showPercent?: boolean;
@@ -629,7 +626,7 @@ export const LinearPropertyLabel = ({
         })}
       >
         {value && value.formatted
-          ? `${showDenomination ? value.full : value.formatted}`
+          ? `${showDenomination || useFull ? value.full : value.formatted}`
           : value}
       </span>
     )}
@@ -642,7 +639,7 @@ export const LinearPropertyLabel = ({
         })}
       >
         {value && value.formatted
-          ? `${showDenomination ? value.full : value.formatted}`
+          ? `${showDenomination || useFull ? value.full : value.formatted}`
           : value}
       </span>
     )}
@@ -818,100 +815,94 @@ export const MovementIcon = (props: MovementIconProps) => {
   return <div className={`${iconSize} ${iconColor}`}>{MarketIcon}</div>;
 };
 
-export const MovementText = (props: MovementTextProps) => {
-  const getTextSizeStyle: Function = (size: SizeTypes): string =>
+export const MovementText = ({
+  value,
+  size,
+  showPlusMinus,
+  showBrackets,
+  hideNegative,
+  useFull,
+  numberValue
+}: MovementTextProps) => {
+  const getTextSizeStyle: Function = (sz: SizeTypes): string =>
     classNames(Styles.MovementLabel_Text, {
-      [Styles.MovementLabel_Text_small]: size == SizeTypes.SMALL,
-      [Styles.MovementLabel_Text_normal]: size == SizeTypes.NORMAL,
-      [Styles.MovementLabel_Text_large]: size == SizeTypes.LARGE,
+      [Styles.MovementLabel_Text_small]: sz == SizeTypes.SMALL,
+      [Styles.MovementLabel_Text_normal]: sz == SizeTypes.NORMAL,
+      [Styles.MovementLabel_Text_large]: sz == SizeTypes.LARGE,
     });
-  const getTextColorStyles: Function = (value: number): string =>
+  const getTextColorStyles: Function = (val: number): string =>
     classNames({
-      [Styles.MovementLabel_Text_positive]: value > 0,
-      [Styles.MovementLabel_Text_negative]: value < 0,
-      [Styles.MovementLabel_Text_neutral]: value === 0,
+      [Styles.MovementLabel_Text_positive]: val > 0,
+      [Styles.MovementLabel_Text_negative]: val < 0,
+      [Styles.MovementLabel_Text_neutral]: val === 0,
     });
 
-  const textColorStyle = getTextColorStyles(props.value);
-  const textSizeStyle = getTextSizeStyle(props.size);
+  const textColorStyle = getTextColorStyles(numberValue);
+  const textSizeStyle = getTextSizeStyle(size);
 
-  // Transform label
-  const removeMinus: Function = (label: number): number => {
-    if (props.value < 0 && !props.showPlusMinus) {
-      return typeof props.value === 'string'
-        ? props.value.replace('-', '')
-        : Math.abs(props.value);
+  const handlePlusMinus: Function = (label: string): string => {
+    if (showPlusMinus) {
+      if (numberValue > 0) {
+        return '+'.concat(label);
+      }
+    } else {
+      if (numberValue < 0 && hideNegative) {
+        return label.replace('-', '');
+      }
     }
     return label;
-  };
-
-  const toString: Function = (label: number): string => String(label);
-
-  const addPlus: Function = (label: string): string => {
-    if (props.value > 0 && props.showPlusMinus) {
-      return '+'.concat(label);
-    }
-    return label;
-  };
-
-  const addPercent: Function = (label: string): string => {
-    if (props.showPercent) {
-      return `${label}%`;
-    }
-    return label;
-  };
+  }
 
   const addBrackets: Function = (label: string): string => {
-    if (props.showBrackets) {
+    if (showBrackets) {
       return `(${label})`;
     }
     return label;
   };
 
-  const formattedString = addBrackets(
-    addPercent(addPlus(toString(removeMinus(props.value))))
-  );
+  const formattedString = addBrackets(handlePlusMinus(useFull ? value.full : value.formatted));
 
   return (
     <div
-      className={`${props.showColors ? textColorStyle : ''} ${textSizeStyle}`}
+      className={`${textColorStyle} ${textSizeStyle}`}
     >
-      {`${props.showNegative && props.value < 0 ? '-' : ''}${
-        !!props.showCurrency ? props.showCurrency : ''
-      }${formattedString}`}
+      {formattedString}
     </div>
   );
 };
 
-export const MovementLabel = (props: MovementLabelProps) => {
-  const showColors = props.showColors || false; // Red/Green
-  const showPercent = props.showPercent || false; // 0.00%
-  const showBrackets = props.showBrackets || false; // (0.00)
-  const showPlusMinus = props.showPlusMinus || false; // +4.32 / -0.32
-  const showIcon = props.showIcon || false; // 📈 3.2 / 📉 2.1
-
+export const MovementLabel = ({
+  value,
+  styles,
+  size = SizeTypes.NORMAL,
+  showBrackets = false,
+  showPlusMinus = false,
+  showIcon = false,
+  hideNegative = false,
+  useFull = false,
+}: MovementLabelProps) => {
+  const numberValue = typeof value === 'number' ? value : value.value;
   return (
     <div
       className={Styles.MovementLabel}
       style={
         showIcon
-          ? { ...props.styles, justifyContent: 'space-between' }
-          : { ...props.styles, justifyContent: 'flex-end' }
+          ? { ...styles, justifyContent: 'space-between' }
+          : { ...styles, justifyContent: 'flex-end' }
       }
     >
-      {showIcon && props.value !== 0 && (
-        <MovementIcon value={props.value} size={props.size} />
+      {showIcon && numberValue !== 0 && (
+        <MovementIcon value={numberValue} size={size} />
       )}
       {
         <MovementText
-          value={props.value}
-          size={props.size}
-          showColors={showColors}
-          showPercent={showPercent}
+          value={value}
+          numberValue={numberValue}
+          size={size}
           showBrackets={showBrackets}
           showPlusMinus={showPlusMinus}
-          showCurrency={props.showCurrency}
-          showNegative={props.showNegative}
+          useFull={useFull}
+          hideNegative={hideNegative}
         />
       }
     </div>
@@ -971,12 +962,10 @@ export const LinearPropertyLabelMovement = (
     />
     <MovementLabel
       showIcon={props.showIcon}
-      showPercent={props.showPercent}
       showBrackets={props.showBrackets}
       showPlusMinus={props.showPlusMinus}
-      showColors={props.showColors}
-      size={SizeTypes.NORMAL}
-      value={props.numberValue}
+      value={props.movementValue}
+      useFull={props.useFull}
     />
   </span>
 );
@@ -1159,5 +1148,15 @@ export const MarketStateLabel = (props: MarketStateLabelProps) => (
         <span>{LoadingEllipse}</span>
       </div>
     )}
+  </div>
+);
+
+interface DiscordLinkProps {
+  label?: string;
+}
+
+export const DiscordLink = (props: DiscordLinkProps) => (
+  <div className={Styles.discordLink}>
+    {props.label}<a href={DISCORD_LINK} target='_blank'>Discord</a>
   </div>
 );

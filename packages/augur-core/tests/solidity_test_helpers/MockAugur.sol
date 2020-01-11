@@ -104,7 +104,7 @@ contract MockAugur {
         return true;
     }
 
-    function logOrderCreated(Order.Types _orderType, uint256 _amount, uint256 _price, address _sender, uint256 _tradeGroupId, uint256 _sharesEscrowed, bytes32 _tradeGroupId, bytes32 _orderId, IUniverse _universe, IMarket _market, IERC20 _kycToken, uint256 _outcome) public returns (bool) {
+    function logOrderCreated(Order.Types _orderType, uint256 _amount, uint256 _price, address _sender, uint256 _tradeGroupId, uint256 _sharesEscrowed, bytes32 _tradeGroupId, bytes32 _orderId, IUniverse _universe, IMarket _market, uint256 _outcome) public returns (bool) {
         return true;
     }
 

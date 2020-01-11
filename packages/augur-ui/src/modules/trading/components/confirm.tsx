@@ -209,6 +209,10 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       maxPrice,
       minPrice,
       scalarDenomination,
+      ethToDaiRate,
+      gasLimit,
+      gasPrice,
+      Gnosis_ENABLED
     } = this.props;
 
     const {
@@ -229,6 +233,18 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     const higherLower = side === BUY ? 'higher' : 'lower';
 
     const marketRange = createBigNumber(maxPrice).minus(createBigNumber(minPrice)).abs();
+
+    let gasCostDai = null;
+
+    const gasCost = formatGasCostToEther(
+      gasLimit,
+      { decimalsRounded: 4 },
+      gasPrice
+    );
+
+    if (Gnosis_ENABLED && ethToDaiRate) {
+      gasCostDai = formatDai(ethToDaiRate.multipliedBy(createBigNumber(gasCost)));
+    }
 
     const limitPricePercentage = (side === BUY
       ? createBigNumber(limitPrice)
@@ -281,12 +297,17 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
               }
             </div>
             <LinearPropertyLabel
-              label="Estimated Fee"
+              label='SETTLEMENT FEE'
               value={orderShareTradingFee}
               showDenomination={true}
             />
+            { gasCostDai && gasCostDai.roundedValue.gt(0) > 0 && <LinearPropertyLabel
+              label='EST. TX FEE'
+              value={gasCostDai}
+              showDenomination={true}
+            />}
             <LinearPropertyLabel
-              label="Profit"
+              label='PROFIT LESS FEES'
               value={orderShareProfit}
               accentValue={notProfitable}
               showDenomination={true}
@@ -295,7 +316,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
         )}
         {newOrderAmount !== "0" && (
           <div className={Styles.details}>
-            <div
+             <div
               className={classNames(
                 Styles.properties,
                 Styles.TooltipContainer
@@ -337,15 +358,21 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
                 }
             </div>
             <LinearPropertyLabel
-              label="Max Profit"
+              label='Max Profit'
               value={potentialDaiProfit}
               showDenomination={true}
             />
             <LinearPropertyLabel
-              label="Max Loss"
+              label='Max Loss'
               value={potentialDaiLoss}
               showDenomination={true}
             />
+            {gasCostDai && gasCostDai.roundedValue.gt(0) > 0 && <LinearPropertyLabel
+              label='EST. TX FEE'
+              value={gasCostDai}
+              showDenomination={true}
+            />}
+
           </div>
         )}
         {messages && (

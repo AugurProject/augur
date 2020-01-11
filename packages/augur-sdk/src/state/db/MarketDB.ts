@@ -48,7 +48,7 @@ export class MarketDB extends DerivedDB {
       'DisputeCrowdsourcerCompleted',
       'MarketFinalized',
       'MarketParticipantsDisavowed',
-      'MarketMigrated'
+      'MarketMigrated',
     ], augur);
 
     this.docProcessMap = {
@@ -214,9 +214,13 @@ export class MarketDB extends DerivedDB {
   protected processDoc(log: ParsedLog): ParsedLog {
     const processFunc = this.docProcessMap[log.name];
     if (processFunc) {
-      return processFunc(log);
+      return processFunc({
+        ...log
+      });
     }
-    return log;
+    return {
+      ...log
+    };
   }
 
   private processMarketCreated = (log: ParsedLog): ParsedLog => {
@@ -238,6 +242,8 @@ export class MarketDB extends DerivedDB {
     log['feeDivisor'] = new BigNumber(1).dividedBy(new BigNumber(log['feePerCashInAttoCash'], 16).dividedBy(QUINTILLION)).toNumber();
     log['feePercent'] = new BigNumber(log['feePerCashInAttoCash'], 16).div(QUINTILLION).toNumber();
     log['lastTradedTimestamp'] = 0;
+    log['timestamp'] = new BigNumber(log['timestamp'], 16).toNumber();
+    log['endTime'] = new BigNumber(log['endTime'], 16).toNumber();
     try {
       log['extraInfo'] = JSON.parse(log['extraInfo']);
       log['extraInfo'].categories = log['extraInfo'].categories.map((category) => category.toLowerCase());
@@ -279,6 +285,7 @@ export class MarketDB extends DerivedDB {
 
   private processMarketVolumeChanged(log: ParsedLog): ParsedLog {
     log['volume'] = padHex(log['volume']);
+    log['lastTradedTimestamp'] = new BigNumber(log['timestamp'], 16).toNumber();
     return log;
   }
 
@@ -321,7 +328,7 @@ export class MarketDB extends DerivedDB {
 
     for (const marketData of eligibleMarketsData) {
       let reportingState: MarketReportingState = null;
-      const marketEnd = new BigNumber(marketData.endTime, 16);
+      const marketEnd = new BigNumber(marketData.endTime);
       const openReportingStart = marketEnd.plus(SECONDS_IN_A_DAY).plus(1);
 
       if (marketData.nextWindowEndTime && timestamp >= new BigNumber(marketData.nextWindowEndTime, 16).toNumber()) {

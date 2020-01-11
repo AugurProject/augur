@@ -75,7 +75,7 @@ export async function createServer(config: SDKConfiguration, account?: string): 
   const client = await createClient(config, connector, account, undefined, undefined, true);
 
   const ethersProvider = new EthersProvider( new JsonRpcProvider(config.ethereum.http), 10, 0, 40)
-  const contractEvents = new ContractEvents(ethersProvider, client.addresses.Augur, client.addresses.AugurTrading, client.addresses.ShareToken);
+  const contractEvents = new ContractEvents(ethersProvider, client.addresses.Augur, client.addresses.AugurTrading, client.addresses.ShareToken, client.addresses.Exchange);
   const blockAndLogStreamerListener = BlockAndLogStreamerListener.create(
     ethersProvider,
     contractEvents.getEventTopics,

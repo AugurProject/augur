@@ -94,7 +94,7 @@ contract MixinAssetProxyDispatcher is
 
             // Ensure assetData is padded to 32 bytes (excluding the id) and is at least 4 bytes long
             if (assetData.length % 32 != 4) {
-                revert();
+                revert("BAD ASSET DATA PADDING");
                 /*
                 LibRichErrors.rrevert(LibExchangeRichErrors.AssetProxyDispatchError(
                     LibExchangeRichErrors.AssetProxyDispatchErrorCodes.INVALID_ASSET_DATA_LENGTH,
@@ -110,7 +110,7 @@ contract MixinAssetProxyDispatcher is
 
             // Ensure that assetProxy exists
             if (assetProxy == address(0)) {
-                revert();
+                revert("INVALID ASSET PROXY ID");
                 /*
                 LibRichErrors.rrevert(LibExchangeRichErrors.AssetProxyDispatchError(
                     LibExchangeRichErrors.AssetProxyDispatchErrorCodes.UNKNOWN_ASSET_PROXY,
@@ -134,14 +134,11 @@ contract MixinAssetProxyDispatcher is
 
             // If the transaction did not succeed, revert with the returned data.
             if (!didSucceed) {
-                revert();
-                /*
                 LibRichErrors.rrevert(LibExchangeRichErrors.AssetProxyTransferError(
                     orderHash,
                     assetData,
                     returnData
                 ));
-                */
             }
         }
     }

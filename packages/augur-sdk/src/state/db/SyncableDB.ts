@@ -64,9 +64,8 @@ export class SyncableDB extends RollbackTable {
 
   private parseLogArrays(logs: ParsedLog[]): void {
     for (let i = 0; i < logs.length; i++) {
-      logs[i].kycToken = logs[i].addressData[0];
-      logs[i].orderCreator = logs[i].addressData[1];
-      logs[i].orderFiller = logs[i].addressData[2];
+      logs[i].orderCreator = logs[i].addressData[0];
+      logs[i].orderFiller = logs[i].addressData[1];
 
       logs[i].price = logs[i].uint256Data[0];
       logs[i].amount = logs[i].uint256Data[1];

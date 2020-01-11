@@ -1,7 +1,6 @@
 /**
  * @todo Update text for FINALIZE once alert triggering is moved
  */
-
 import { isEmpty } from 'utils/is-empty';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info';
@@ -51,6 +50,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { MarketData } from 'modules/types';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import { isSameAddress } from 'utils/isSameAddress';
+import { convertUnixToFormattedDate } from 'utils/format-date';
 
 function toCapitalizeCase(label) {
   return label.charAt(0).toUpperCase() + label.slice(1);
@@ -166,16 +166,19 @@ export default function setAlertText(alert: any, callback: Function) {
       // FeeWindow & Universe
       case BUY:
       case BUYPARTICIPATIONTOKENS:
-        alert.title = 'Buy participation token(s)';
-        if (!alert.description && alert.log) {
-          alert.description = `Purchase ${
+        alert.title = 'Buy participation tokens';
+        if (!alert.description && alert.params) {
+          if (alert.params.startTime && alert.params.endTime) {
+              alert.details = `Dispute Window ${convertUnixToFormattedDate(alert.params.startTime).formattedLocalShortDate} - ${convertUnixToFormattedDate(alert.params.endTime).formattedLocalShortDate}`
+          }
+          alert.description = `Purchased ${
             formatRep(
-              createBigNumber(alert.log.value).dividedBy(
+              createBigNumber(alert.params._attotokens).dividedBy(
                 TEN_TO_THE_EIGHTEENTH_POWER
               )
             ).formatted
           } Participation Token${
-            alert.log.value === TEN_TO_THE_EIGHTEENTH_POWER ? '' : 's'
+            createBigNumber(alert.params._attotokens).eq(TEN_TO_THE_EIGHTEENTH_POWER) ? '' : 's'
           }`;
         }
         break;
@@ -189,9 +192,7 @@ export default function setAlertText(alert: any, callback: Function) {
           alert.description = alert.params.marketInfo.description;
           alert.details = `${
             toCapitalizeCase(alert.params.orderType)
-          } ${formatShares(alert.params.amount).formatted} of ${
-            formatShares(alert.params.amount).formatted
-          } of ${alert.params.outcome} @ ${
+          } ${formatShares(alert.params.amount).formatted} of ${alert.params.outcome} @ ${
             formatDai(alert.params.price).formatted
           }`;
         } else {
@@ -238,10 +239,8 @@ export default function setAlertText(alert: any, callback: Function) {
                 alert.status,
                 marketInfo
               );
-              alert.details = `${orderType}  ${
+              alert.details = `${orderType} ${
                 formatShares(amount).formatted
-              } of ${
-                formatShares(originalQuantity).formatted
               } of ${outcomeDescription} @ ${formatDai(price).formatted}`;
             })
           );
@@ -250,10 +249,7 @@ export default function setAlertText(alert: any, callback: Function) {
               const marketInfo = selectMarket(marketId);
               if (marketInfo === null) return;
               const { loginAccount, userOpenOrders } = getState() as AppState;
-              let originalQuantity = convertOnChainAmountToDisplayAmount(
-                createBigNumber(alert.params.amountFilled),
-                createBigNumber(marketInfo.tickSize)
-              );
+              let originalQuantity = null;
               let updatedOrderType = alert.params.orderType;
               if (
                 alert.params.orderCreator.toUpperCase() ===
@@ -290,8 +286,7 @@ export default function setAlertText(alert: any, callback: Function) {
               );
               alert.details = `${orderType}  ${
                 formatShares(amount).formatted
-              } of ${
-                formatShares(originalQuantity).formatted
+              } ${ originalQuantity ? ` of ${formatShares(originalQuantity).formatted}` : ''
               } of ${outcomeDescription} @ ${formatDai(price).formatted}`;
             })
           );

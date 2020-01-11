@@ -6,6 +6,7 @@ import Row from 'modules/common/row';
 import { Properties } from 'modules/common/row-column';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
+import { SizeTypes } from 'modules/types';
 
 const { COLUMN_TYPES, SHORT, BUY, SELL } = constants;
 
@@ -82,14 +83,12 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
   if (!showPercent) {
     columnProperties.push({
       key: 'totalPercent',
-      showPercent: true,
+      useFull: true,
       showBrackets: true,
       showPlusMinus: true,
-      showColors: true,
-      size: 'medium',
       hide: extendedView,
       columnType: COLUMN_TYPES.MOVEMENT_LABEL,
-      value: position.totalPercent.roundedFormatted,
+      value: position.totalPercent,
     });
   } else {
     columnProperties.push({

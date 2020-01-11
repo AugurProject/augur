@@ -572,7 +572,7 @@ Gets the proxy id associated with the proxy address.
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ERC721Proxy.fallback()"><code class="function-signature">fallback()</code></a></li><li><a href="#ERC721Proxy.getProxyId()"><code class="function-signature">getProxyId()</code></a></li><li class="inherited"><a href="src#MixinAuthorizable.addAuthorizedAddress(address)"><code class="function-signature">addAuthorizedAddress(address target)</code></a></li><li class="inherited"><a href="src#MixinAuthorizable.removeAuthorizedAddress(address)"><code class="function-signature">removeAuthorizedAddress(address target)</code></a></li><li class="inherited"><a href="src#MixinAuthorizable.removeAuthorizedAddressAtIndex(address,uint256)"><code class="function-signature">removeAuthorizedAddressAtIndex(address target, uint256 index)</code></a></li><li class="inherited"><a href="src#MixinAuthorizable.getAuthorizedAddresses()"><code class="function-signature">getAuthorizedAddresses()</code></a></li><li class="inherited"><a href="src#Ownable.constructor()"><code class="function-signature">constructor()</code></a></li><li class="inherited"><a href="src#Ownable.transferOwnership(address)"><code class="function-signature">transferOwnership(address newOwner)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="src#IAuthorizable.AuthorizedAddressAdded(address,address)"><code class="function-signature">AuthorizedAddressAdded(address target, address caller)</code></a></li><li class="inherited"><a href="src#IAuthorizable.AuthorizedAddressRemoved(address,address)"><code class="function-signature">AuthorizedAddressRemoved(address target, address caller)</code></a></li><li class="inherited"><a href="src#IOwnable.OwnershipTransferred(address,address)"><code class="function-signature">OwnershipTransferred(address previousOwner, address newOwner)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ERC721Proxy.fallback()"><code class="function-signature">fallback()</code></a></li><li><a href="#ERC721Proxy.getProxyId()"><code class="function-signature">getProxyId()</code></a></li><li class="inherited"><a href="#MixinAuthorizable.addAuthorizedAddress(address)"><code class="function-signature">addAuthorizedAddress(address target)</code></a></li><li class="inherited"><a href="#MixinAuthorizable.removeAuthorizedAddress(address)"><code class="function-signature">removeAuthorizedAddress(address target)</code></a></li><li class="inherited"><a href="#MixinAuthorizable.removeAuthorizedAddressAtIndex(address,uint256)"><code class="function-signature">removeAuthorizedAddressAtIndex(address target, uint256 index)</code></a></li><li class="inherited"><a href="#MixinAuthorizable.getAuthorizedAddresses()"><code class="function-signature">getAuthorizedAddresses()</code></a></li><li class="inherited"><a href="#Ownable.constructor()"><code class="function-signature">constructor()</code></a></li><li class="inherited"><a href="#Ownable.transferOwnership(address)"><code class="function-signature">transferOwnership(address newOwner)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="#IAuthorizable.AuthorizedAddressAdded(address,address)"><code class="function-signature">AuthorizedAddressAdded(address target, address caller)</code></a></li><li class="inherited"><a href="#IAuthorizable.AuthorizedAddressRemoved(address,address)"><code class="function-signature">AuthorizedAddressRemoved(address target, address caller)</code></a></li><li class="inherited"><a href="#IOwnable.OwnershipTransferred(address,address)"><code class="function-signature">OwnershipTransferred(address previousOwner, address newOwner)</code></a></li></ul></div>
 
 
 
@@ -583,6 +583,97 @@ Gets the proxy id associated with the proxy address.
 
 
 <h4><a class="anchor" aria-hidden="true" id="ERC721Proxy.getProxyId()"></a><code class="function-signature">getProxyId() <span class="return-arrow">→</span> <span class="return-type">bytes4</span></code><span class="function-visibility">external</span></h4>
+
+Gets the proxy id associated with the proxy address.
+ @return Proxy id.
+
+
+
+
+
+### `IAssetProxyDispatcher`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IAssetProxyDispatcher.registerAssetProxy(address)"><code class="function-signature">registerAssetProxy(address assetProxy)</code></a></li><li><a href="#IAssetProxyDispatcher.getAssetProxy(bytes4)"><code class="function-signature">getAssetProxy(bytes4 assetProxyId)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#IAssetProxyDispatcher.AssetProxyRegistered(bytes4,address)"><code class="function-signature">AssetProxyRegistered(bytes4 id, address assetProxy)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IAssetProxyDispatcher.registerAssetProxy(address)"></a><code class="function-signature">registerAssetProxy(address assetProxy)</code><span class="function-visibility">external</span></h4>
+
+Registers an asset proxy to its asset proxy id.
+      Once an asset proxy is registered, it cannot be unregistered.
+ @param assetProxy Address of new asset proxy to register.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IAssetProxyDispatcher.getAssetProxy(bytes4)"></a><code class="function-signature">getAssetProxy(bytes4 assetProxyId) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
+
+Gets an asset proxy.
+ @param assetProxyId Id of the asset proxy.
+ @return The asset proxy registered to assetProxyId. Returns 0x0 if no proxy is registered.
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IAssetProxyDispatcher.AssetProxyRegistered(bytes4,address)"></a><code class="function-signature">AssetProxyRegistered(bytes4 id, address assetProxy)</code><span class="function-visibility"></span></h4>
+
+
+
+
+
+### `MixinAssetProxyDispatcher`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#MixinAssetProxyDispatcher.registerAssetProxy(address)"><code class="function-signature">registerAssetProxy(address assetProxy)</code></a></li><li><a href="#MixinAssetProxyDispatcher.getAssetProxy(bytes4)"><code class="function-signature">getAssetProxy(bytes4 assetProxyId)</code></a></li><li><a href="#MixinAssetProxyDispatcher._dispatchTransferFrom(bytes,address,address,uint256)"><code class="function-signature">_dispatchTransferFrom(bytes assetData, address from, address to, uint256 amount)</code></a></li><li class="inherited"><a href="src#Ownable.constructor()"><code class="function-signature">constructor()</code></a></li><li class="inherited"><a href="src#Ownable.transferOwnership(address)"><code class="function-signature">transferOwnership(address newOwner)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="src#IAssetProxyDispatcher.AssetProxyRegistered(bytes4,address)"><code class="function-signature">AssetProxyRegistered(bytes4 id, address assetProxy)</code></a></li><li class="inherited"><a href="src#IOwnable.OwnershipTransferred(address,address)"><code class="function-signature">OwnershipTransferred(address previousOwner, address newOwner)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="MixinAssetProxyDispatcher.registerAssetProxy(address)"></a><code class="function-signature">registerAssetProxy(address assetProxy)</code><span class="function-visibility">external</span></h4>
+
+Registers an asset proxy to its asset proxy id.
+      Once an asset proxy is registered, it cannot be unregistered.
+ @param assetProxy Address of new asset proxy to register.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="MixinAssetProxyDispatcher.getAssetProxy(bytes4)"></a><code class="function-signature">getAssetProxy(bytes4 assetProxyId) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
+
+Gets an asset proxy.
+ @param assetProxyId Id of the asset proxy.
+ @return The asset proxy registered to assetProxyId. Returns 0x0 if no proxy is registered.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="MixinAssetProxyDispatcher._dispatchTransferFrom(bytes,address,address,uint256)"></a><code class="function-signature">_dispatchTransferFrom(bytes assetData, address from, address to, uint256 amount)</code><span class="function-visibility">internal</span></h4>
+
+Forwards arguments to assetProxy and calls `transferFrom`. Either succeeds or throws.
+ @param assetData Byte array encoded for the asset.
+ @param from Address to transfer token from.
+ @param to Address to transfer token to.
+ @param amount Amount of token to transfer.
+
+
+
+
+
+### `MultiAssetProxy`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#MultiAssetProxy.fallback()"><code class="function-signature">fallback()</code></a></li><li><a href="#MultiAssetProxy.getProxyId()"><code class="function-signature">getProxyId()</code></a></li><li class="inherited"><a href="src#MixinAuthorizable.addAuthorizedAddress(address)"><code class="function-signature">addAuthorizedAddress(address target)</code></a></li><li class="inherited"><a href="src#MixinAuthorizable.removeAuthorizedAddress(address)"><code class="function-signature">removeAuthorizedAddress(address target)</code></a></li><li class="inherited"><a href="src#MixinAuthorizable.removeAuthorizedAddressAtIndex(address,uint256)"><code class="function-signature">removeAuthorizedAddressAtIndex(address target, uint256 index)</code></a></li><li class="inherited"><a href="src#MixinAuthorizable.getAuthorizedAddresses()"><code class="function-signature">getAuthorizedAddresses()</code></a></li><li class="inherited"><a href="src#MixinAssetProxyDispatcher.registerAssetProxy(address)"><code class="function-signature">registerAssetProxy(address assetProxy)</code></a></li><li class="inherited"><a href="src#MixinAssetProxyDispatcher.getAssetProxy(bytes4)"><code class="function-signature">getAssetProxy(bytes4 assetProxyId)</code></a></li><li class="inherited"><a href="src#MixinAssetProxyDispatcher._dispatchTransferFrom(bytes,address,address,uint256)"><code class="function-signature">_dispatchTransferFrom(bytes assetData, address from, address to, uint256 amount)</code></a></li><li class="inherited"><a href="src#Ownable.constructor()"><code class="function-signature">constructor()</code></a></li><li class="inherited"><a href="src#Ownable.transferOwnership(address)"><code class="function-signature">transferOwnership(address newOwner)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="src#IAuthorizable.AuthorizedAddressAdded(address,address)"><code class="function-signature">AuthorizedAddressAdded(address target, address caller)</code></a></li><li class="inherited"><a href="src#IAuthorizable.AuthorizedAddressRemoved(address,address)"><code class="function-signature">AuthorizedAddressRemoved(address target, address caller)</code></a></li><li class="inherited"><a href="src#IAssetProxyDispatcher.AssetProxyRegistered(bytes4,address)"><code class="function-signature">AssetProxyRegistered(bytes4 id, address assetProxy)</code></a></li><li class="inherited"><a href="src#IOwnable.OwnershipTransferred(address,address)"><code class="function-signature">OwnershipTransferred(address previousOwner, address newOwner)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="MultiAssetProxy.fallback()"></a><code class="function-signature">fallback()</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="MultiAssetProxy.getProxyId()"></a><code class="function-signature">getProxyId() <span class="return-arrow">→</span> <span class="return-type">bytes4</span></code><span class="function-visibility">external</span></h4>
 
 Gets the proxy id associated with the proxy address.
  @return Proxy id.

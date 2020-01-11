@@ -1,12 +1,12 @@
 import { createBigNumber } from 'utils/create-big-number';
-import { BUY, ZERO } from 'modules/common/constants';
+import { BUY, ZERO, ZEROX_GAS_FEE } from 'modules/common/constants';
 import logError from 'utils/log-error';
 import { generateTrade } from 'modules/trades/helpers/generate-trade';
 import { AppState } from 'store';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { BigNumber } from "bignumber.js";
-import { NodeStyleCallback, AccountPositionAction, AccountPosition } from 'modules/types';
+import { NodeStyleCallback, AccountPosition } from 'modules/types';
 import {
   simulateTrade,
   simulateTradeGasLimit,
@@ -112,9 +112,12 @@ export function updateTradeShares({
     if (side === BUY) {
       newShares = createBigNumber(maxCost).dividedBy(scaledPrice);
     }
+
     newTradeDetails.numShares = newShares
       .abs()
-      .toNumber()
+      .dividedBy(10)
+      .integerValue()
+      .multipliedBy(10)
       .toString();
 
     return runSimulateTrade(
@@ -164,27 +167,23 @@ async function runSimulateTrade(
 
   const orderType: 0 | 1 = newTradeDetails.side === BUY ? 0 : 1;
   const fingerprint = undefined; // TODO: get this from state
-  const kycToken = undefined; // TODO: figure out how kyc tokens are going to be handled
   const doNotCreateOrders = false; // TODO: this needs to be passed from order form
-  const userShares;
+
+  let userShares = createBigNumber(marketOutcomeShares[outcomeId] || 0);
 
   if (orderType === 0) {
-    const outcomes = Object.keys(marketOutcomeShares);
-    var minShares = null;
-    for (const outcome in outcomes) {
-      if (outcome != outcomeId) {
-        if (minShares === null) {
-          minShares = createBigNumber(marketOutcomeShares[outcome]);
-        }
-        minShares = BigNumber.min(minShares, createBigNumber(marketOutcomeShares[outcome]));
-      }
-    }
-    userShares = minShares || createBigNumber(0);
+    // ignore trading outcome shares and find min across all other outcome shares.
+    const userSharesBalancesRemoveOutcome = Object.keys(
+      marketOutcomeShares
+    ).reduce(
+      (p, o) =>
+        String(outcomeId) === o ? p : [...p, new BigNumber(marketOutcomeShares[o])],
+      []
+    );
+    userShares = userSharesBalancesRemoveOutcome.length > 0 ? BigNumber.min(
+      ...userSharesBalancesRemoveOutcome
+    ) : ZERO;
   }
-  else {
-    userShares = createBigNumber(marketOutcomeShares[outcomeId] || 0);
-  }
-
 
   const simulateTradeValue: SimulateTradeData = await simulateTrade(
     orderType,
@@ -192,7 +191,6 @@ async function runSimulateTrade(
     market.numOutcomes,
     outcomeId,
     fingerprint,
-    kycToken,
     doNotCreateOrders,
     market.numTicks,
     market.minPrice,
@@ -202,21 +200,7 @@ async function runSimulateTrade(
     userShares
   );
 
-  const gasLimit = await simulateTradeGasLimit(
-    orderType,
-    marketId,
-    market.numOutcomes,
-    outcomeId,
-    fingerprint,
-    kycToken,
-    doNotCreateOrders,
-    market.numTicks,
-    market.minPrice,
-    market.maxPrice,
-    newTradeDetails.numShares,
-    newTradeDetails.limitPrice,
-    userShares
-  );
+  let gasLimit: BigNumber = createBigNumber(0);
 
   const totalFee = createBigNumber(simulateTradeValue.settlementFees, 10);
   newTradeDetails.totalFee = totalFee.toFixed();
@@ -232,6 +216,27 @@ async function runSimulateTrade(
     .toFixed();
   if (isNaN(newTradeDetails.feePercent)) newTradeDetails.feePercent = '0';
 
+  if (newTradeDetails.sharesFilled.toNumber() === 0) {
+    gasLimit = createBigNumber(0);
+  } else {
+    gasLimit = await simulateTradeGasLimit(
+      orderType,
+      marketId,
+      market.numOutcomes,
+      outcomeId,
+      fingerprint,
+      doNotCreateOrders,
+      market.numTicks,
+      market.minPrice,
+      market.maxPrice,
+      newTradeDetails.numShares,
+      newTradeDetails.limitPrice,
+      userShares
+    );
+
+    // Plus ZeroX Fee (150k Gas)
+    gasLimit = gasLimit.plus(ZEROX_GAS_FEE);
+  }
   // ignore share cost when user is shorting another outcome or longing another outcome
   // and the user doesn't have shares on the traded outcome
   if (

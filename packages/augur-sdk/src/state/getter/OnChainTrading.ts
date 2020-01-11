@@ -108,7 +108,6 @@ export interface Order {
   amountFilled: string;
   fullPrecisionPrice: string;
   fullPrecisionAmount: string;
-  kycToken?: string;
   tokensEscrowed: string; // TODO add to log
   sharesEscrowed: string; // TODO add to log
   canceledBlockNumber?: string;

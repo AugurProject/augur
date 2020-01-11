@@ -21,6 +21,7 @@ import {
 import { FavoritesButton } from 'modules/common/buttons';
 import Clipboard from 'clipboard';
 import { DotSelection } from 'modules/common/selection';
+import SocialMediaButtons from 'modules/market/containers/social-media-buttons';
 import {
   PaperClip,
   Person,
@@ -34,7 +35,7 @@ import ChevronFlip from 'modules/common/chevron-flip';
 import { MarketData } from 'modules/types';
 import { formatAttoRep } from 'utils/format-number';
 import MigrateMarketNotice from 'modules/market-cards/containers/migrate-market-notice';
-
+import { FacebookButton, TwitterButton } from 'modules/common/icons';
 import Styles from 'modules/market-cards/market-card.styles.less';
 import MarketTitle from 'modules/market/containers/market-title';
 import { MARKET_LIST_CARD } from 'services/analytics/helpers';
@@ -276,6 +277,11 @@ export default class MarketCard extends React.Component<
               />
             </div>
             <DotSelection>
+              <SocialMediaButtons
+                listView={true}
+                marketDescription={market.description}
+                marketAddress={market.id}
+              />
               <div id='copy_marketId' data-clipboard-text={id} onClick={() => marketLinkCopied(market.id, MARKET_LIST_CARD)}>
                 {PaperClip} {COPY_MARKET_ID}
               </div>

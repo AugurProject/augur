@@ -61,6 +61,7 @@ export class Augur<TProvider extends Provider = Provider> {
   private txAwaitingSigningCallback: TXStatusCallback;
   private txPendingCallback: TXStatusCallback;
   private txFailureCallback: TXStatusCallback;
+  private txRelayerDownCallback: TXStatusCallback;
 
   constructor(
     provider: TProvider,
@@ -85,7 +86,13 @@ export class Augur<TProvider extends Provider = Provider> {
     this.contracts = new Contracts(this.addresses, this.dependencies);
     this.market = new Market(this);
     this.liquidity = new Liquidity(this);
-    this.contractEvents = new ContractEvents(this.provider, this.addresses.Augur, this.addresses.AugurTrading, this.addresses.ShareToken);
+    this.contractEvents = new ContractEvents(
+      this.provider,
+      this.addresses.Augur,
+      this.addresses.AugurTrading,
+      this.addresses.ShareToken,
+      this.addresses.Exchange,
+      );
     this.gnosis = new Gnosis(this.provider, this, this.dependencies);
     this.hotLoading = new HotLoading(this);
     this.onChainTrade = new OnChainTrade(this);
@@ -254,6 +261,8 @@ export class Augur<TProvider extends Provider = Provider> {
       this.txSuccessCallback = callback;
     } else if (eventName === TXEventName.Failure) {
       this.txFailureCallback = callback;
+    } else if (eventName === TXEventName.RelayerDown) {
+      this.txRelayerDownCallback = callback;
     }
   }
 
@@ -270,6 +279,8 @@ export class Augur<TProvider extends Provider = Provider> {
       this.txSuccessCallback = null;
     } else if (eventName === TXEventName.Failure) {
       this.txFailureCallback = null;
+    } else if (eventName === TXEventName.RelayerDown) {
+      this.txRelayerDownCallback = null;
     }
   }
 
@@ -418,20 +429,15 @@ export class Augur<TProvider extends Provider = Provider> {
   }
 
   async cancelOrder(orderHash: string): Promise<void> {
-    const order = await this.getOrder({ orderHash });
-    await this.zeroX.cancelOrder(order);
+      const order = await this.getOrder({ orderHash });
+      await this.zeroX.cancelOrder(order);
   }
 
   async batchCancelOrders(orderHashes: string[]): Promise<void> {
-    let orders = [];
-    orderHashes.forEach(async (hash, idx) => {
-      const order = await this.getOrder({ orderHash: hash });
-      orders = orders.concat(order);
-
-      if (idx === orderHashes.length - 1) {
-        await this.zeroX.batchCancelOrders(orders);
-      }
+    const orders = orderHashes.map(async (orderHash) => {
+      return this.getOrder({ orderHash })
     });
+    await this.zeroX.batchCancelOrders(orders);
   }
 
   async createYesNoMarket(
@@ -505,6 +511,16 @@ export class Augur<TProvider extends Provider = Provider> {
             hash,
           } as TXStatus;
           this.txFailureCallback(txn);
+        } else if (
+          status === TransactionStatus.RELAYER_DOWN &&
+          this.txRelayerDownCallback
+        ) {
+          const txn: TXStatus = {
+            transaction,
+            eventName: TXEventName.RelayerDown,
+            hash,
+          } as TXStatus;
+          this.txRelayerDownCallback(txn);
         }
       }
     );

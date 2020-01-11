@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { Component, useState } from 'react';
 import classNames from 'classnames';
 import Styles from 'modules/common/selection.styles';
 import {
@@ -67,7 +67,7 @@ interface DotSelectionState {
   toggleMenu: boolean;
 }
 
-class Dropdown extends React.Component<DropdownProps, DropdownState> {
+class Dropdown extends Component<DropdownProps, DropdownState> {
   state: DropdownState = {
     selected: this.props.defaultValue !== null
       ? this.props.options.find(o => o.value === this.props.defaultValue)
@@ -349,49 +349,41 @@ export class StaticLabelDropdown extends Dropdown {
   }
 }
 
-export class PillSelection extends React.Component<
-  PillSelectionProps,
-  PillSelectionState
-> {
-  state: PillSelectionState = {
-    selected: this.props.defaultSelection || 0,
-  };
-
-  buttonSelect = (option: SelectionOption) => {
-    const { onChange } = this.props;
-    if (option.id !== this.state.selected) {
-      this.setState({
-        selected: option.id,
-      });
+export const PillSelection = ({
+  options,
+  onChange,
+  defaultSelection = 0
+}:PillSelectionProps) => {
+  const [selected, setSelected] = useState(defaultSelection);
+  const buttonSelect = (option: SelectionOption) => {
+    if (option.id !== selected) {
+      setSelected(option.id);
       onChange(option.id);
     }
   };
 
-  renderButton = (option: SelectionOption): React.ReactNode => (
+  const renderButton = (option: SelectionOption): React.ReactNode => (
     <li
       className={classNames({
-        [Styles.Selected]: this.state.selected === option.id,
+        [Styles.Selected]: selected === option.id,
       })}
       key={option.label}
     >
-      <button onClick={() => this.buttonSelect(option)}>{option.label}</button>
+      <button onClick={() => buttonSelect(option)}>{option.label}</button>
     </li>
   );
 
-  render() {
-    const { options } = this.props;
-    return (
-      <ul className={Styles.PillSelection}>
-        {options.map(
-          (option: SelectionOption): React.ReactNode =>
-            this.renderButton(option)
-        )}
-      </ul>
-    );
-  }
+  return (
+    <ul className={Styles.PillSelection}>
+      {options.map(
+        (option: SelectionOption): React.ReactNode =>
+          renderButton(option)
+      )}
+    </ul>
+  );
 }
 
-export class DotSelection extends React.Component<
+export class DotSelection extends Component<
   DotSelectionProps,
   DotSelectionState
 > {

@@ -194,8 +194,7 @@ export class ContractAPI {
       outcome,
       betterOrderID,
       worseOrderID,
-      tradeGroupID,
-      NULL_ADDRESS
+      tradeGroupID
     );
 
     let orderId = '';
@@ -247,7 +246,6 @@ export class ContractAPI {
       outcome,
       tradeGroupId: formatBytes32String('42'),
       fingerprint: formatBytes32String('11'),
-      kycToken: NULL_ADDRESS,
       doNotCreateOrders: false,
       displayMinPrice: new BigNumber(0),
       displayMaxPrice: new BigNumber(1),
@@ -261,15 +259,19 @@ export class ContractAPI {
   async takeBestOrder(marketAddress: string, type: BigNumber, numShares: BigNumber, price: BigNumber, outcome: BigNumber, tradeGroupID: string): Promise<void> {
     const cost = numShares.multipliedBy(price);
     await this.faucet(cost);
-    const bestPriceAmount = await this.augur.contracts.trade.publicFillBestOrder_(type, marketAddress, outcome, numShares, price, tradeGroupID, new BigNumber(3), formatBytes32String(""), NULL_ADDRESS);
+    const bestPriceAmount = await this.augur.contracts.trade.publicFillBestOrder_(type, marketAddress, outcome, numShares, price, tradeGroupID, new BigNumber(3), formatBytes32String(""));
     if (bestPriceAmount === new BigNumber(0)) {
       throw new Error('Could not take best Order');
     }
 
-    await this.augur.contracts.trade.publicFillBestOrder(type, marketAddress, outcome, numShares, price, tradeGroupID, new BigNumber(3), formatBytes32String(""), NULL_ADDRESS);
+    await this.augur.contracts.trade.publicFillBestOrder(type, marketAddress, outcome, numShares, price, tradeGroupID, new BigNumber(3), formatBytes32String(""));
   }
 
   async cancelOrder(orderID: string): Promise<void> {
+    await this.augur.cancelOrder(orderID);
+  }
+
+  async cancelNativeOrder(orderID: string): Promise<void> {
     await this.augur.contracts.cancelOrder.cancelOrder(orderID);
   }
 
@@ -297,7 +299,6 @@ export class ContractAPI {
       outcome,
       tradeGroupId: formatBytes32String('42'),
       fingerprint: formatBytes32String('11'),
-      kycToken: NULL_ADDRESS,
       doNotCreateOrders: false,
       displayMinPrice: new BigNumber(0),
       displayMaxPrice: new BigNumber(1),
@@ -316,7 +317,6 @@ export class ContractAPI {
       outcome,
       tradeGroupId: formatBytes32String('42'),
       fingerprint: formatBytes32String('11'),
-      kycToken: NULL_ADDRESS,
       doNotCreateOrders: false,
       displayMinPrice: new BigNumber(0),
       displayMaxPrice: new BigNumber(1),
@@ -336,7 +336,6 @@ export class ContractAPI {
       tradeGroupId: formatBytes32String('42'),
       expirationTime: new BigNumber(Date.now() + 10000000),
       fingerprint: formatBytes32String('11'),
-      kycToken: NULL_ADDRESS,
       doNotCreateOrders,
       displayMinPrice: new BigNumber(0),
       displayMaxPrice: new BigNumber(1),
@@ -363,7 +362,7 @@ export class ContractAPI {
   }
 
   async getBestOrderId(type: BigNumber, market: string, outcome: BigNumber): Promise<string> {
-    const orderID = await this.augur.contracts.orders.getBestOrderId_(type, market, outcome, NULL_ADDRESS);
+    const orderID = await this.augur.contracts.orders.getBestOrderId_(type, market, outcome);
     if (!orderID) {
       throw new Error('Unable to get order price');
     }

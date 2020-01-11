@@ -24,7 +24,6 @@ contract Trade is Initializable, ReentrancyGuard {
     struct Data {
         Order.TradeDirections direction;
         IMarket market;
-        IERC20 kycToken;
         uint256 outcome;
         uint256 amount;
         uint256 price;
@@ -58,13 +57,12 @@ contract Trade is Initializable, ReentrancyGuard {
         require(orders != IOrders(0));
     }
 
-    function create(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, uint256 _loopLimit, bytes32 _fingerprint, address _sender, IERC20 _kycToken) internal pure returns (Data memory) {
+    function create(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, uint256 _loopLimit, bytes32 _fingerprint, address _sender) internal pure returns (Data memory) {
         require(_amount > 0, "Trade.create: Trade amount cannot be 0");
 
         return Data({
             direction: _direction,
             market: _market,
-            kycToken: _kycToken,
             outcome: _outcome,
             amount: _amount,
             price: _price,
@@ -89,11 +87,10 @@ contract Trade is Initializable, ReentrancyGuard {
      * @param _tradeGroupId A Bytes32 value used when attempting to associate multiple orderbook actions with a single TX
      * @param _loopLimit The number of orders to take from the book before completing the tx. Used to limit gas cost
      * @param _fingerprint Fingerprint of the filler used to naively restrict affiliate fee dispursement
-     * @param _kycToken KYC token address if applicable. Specifying this will use an orderbook that is only available to acounts which have a non-zero balance of the specified token
      * @return The Bytes32 orderid of the created order
      */
-    function publicTrade(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, uint256 _loopLimit, bytes32 _fingerprint, IERC20 _kycToken) external returns (bytes32) {
-        return internalTrade(_direction, _market, _outcome, _amount, _price, _betterOrderId, _worseOrderId, _tradeGroupId, _loopLimit, _fingerprint, msg.sender, _kycToken);
+    function publicTrade(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, uint256 _loopLimit, bytes32 _fingerprint) external returns (bytes32) {
+        return internalTrade(_direction, _market, _outcome, _amount, _price, _betterOrderId, _worseOrderId, _tradeGroupId, _loopLimit, _fingerprint, msg.sender);
     }
 
     /**
@@ -106,24 +103,23 @@ contract Trade is Initializable, ReentrancyGuard {
      * @param _tradeGroupId A Bytes32 value used when attempting to associate multiple orderbook actions with a single TX
      * @param _loopLimit The number of orders to take from the book before completing the tx. Used to limit gas cost
      * @param _fingerprint Fingerprint of the filler used to naively restrict affiliate fee dispursement
-     * @param _kycToken KYC token address if applicable. Specifying this will use an orderbook that is only available to acounts which have a non-zero balance of the specified token
      * @return The desired amount remaining that was not filled
      */
-    function publicFillBestOrder(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _tradeGroupId, uint256 _loopLimit, bytes32 _fingerprint, IERC20 _kycToken) external returns (uint256) {
-        return internalFillBestOrder(_direction, _market, _outcome, _amount, _price, _tradeGroupId, _loopLimit, _fingerprint, msg.sender, _kycToken);
+    function publicFillBestOrder(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _tradeGroupId, uint256 _loopLimit, bytes32 _fingerprint) external returns (uint256) {
+        return internalFillBestOrder(_direction, _market, _outcome, _amount, _price, _tradeGroupId, _loopLimit, _fingerprint, msg.sender);
     }
 
-    function internalTrade(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, uint256 _loopLimit, bytes32 _fingerprint, address _sender, IERC20 _kycToken) internal returns (bytes32) {
+    function internalTrade(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, uint256 _loopLimit, bytes32 _fingerprint, address _sender) internal returns (bytes32) {
         require(augur.isKnownMarket(_market));
-        Data memory _tradeData = create(_direction, _market, _outcome, _amount, _price, _betterOrderId, _worseOrderId, _tradeGroupId, _loopLimit, _fingerprint, _sender, _kycToken);
+        Data memory _tradeData = create(_direction, _market, _outcome, _amount, _price, _betterOrderId, _worseOrderId, _tradeGroupId, _loopLimit, _fingerprint, _sender);
         bytes32 _result = trade(_tradeData);
         _market.assertBalances();
         return _result;
     }
 
-    function internalFillBestOrder(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _tradeGroupId, uint256 _loopLimit, bytes32 _fingerprint, address _sender, IERC20 _kycToken) internal returns (uint256) {
+    function internalFillBestOrder(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _tradeGroupId, uint256 _loopLimit, bytes32 _fingerprint, address _sender) internal returns (uint256) {
         require(augur.isKnownMarket(_market));
-        Data memory _tradeData = create(_direction, _market, _outcome, _amount, _price, bytes32(0), bytes32(0), _tradeGroupId, _loopLimit, _fingerprint, _sender, _kycToken);
+        Data memory _tradeData = create(_direction, _market, _outcome, _amount, _price, bytes32(0), bytes32(0), _tradeGroupId, _loopLimit, _fingerprint, _sender);
         uint256 _result = fillBestOrder(_tradeData);
         _market.assertBalances();
         return _result;
@@ -134,14 +130,14 @@ contract Trade is Initializable, ReentrancyGuard {
         if (_bestAmount == 0) {
             return bytes32(uint256(1));
         }
-        return createOrder.createOrder(_tradeData.sender, Order.getOrderTradingTypeFromMakerDirection(_tradeData.direction), _bestAmount, _tradeData.price, _tradeData.market, _tradeData.outcome, _tradeData.betterOrderId, _tradeData.worseOrderId, _tradeData.tradeGroupId, _tradeData.kycToken);
+        return createOrder.createOrder(_tradeData.sender, Order.getOrderTradingTypeFromMakerDirection(_tradeData.direction), _bestAmount, _tradeData.price, _tradeData.market, _tradeData.outcome, _tradeData.betterOrderId, _tradeData.worseOrderId, _tradeData.tradeGroupId);
     }
 
     function fillBestOrder(Data memory _tradeData) internal nonReentrant returns (uint256 _bestAmount) {
         IOrders _orders = orders;
         // we need to fill a BID if we want to SELL and we need to fill an ASK if we want to BUY
         Order.Types _type = Order.getOrderTradingTypeFromFillerDirection(_tradeData.direction);
-        bytes32 _orderId = _orders.getBestOrderId(_type, _tradeData.market, _tradeData.outcome, _tradeData.kycToken);
+        bytes32 _orderId = _orders.getBestOrderId(_type, _tradeData.market, _tradeData.outcome);
         _bestAmount = _tradeData.amount;
         uint256 _orderPrice = _orders.getPrice(_orderId);
         uint256 _lastTradePrice = 0;

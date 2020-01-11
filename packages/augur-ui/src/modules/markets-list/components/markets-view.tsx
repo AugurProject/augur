@@ -298,6 +298,8 @@ export default class MarketsView extends Component<
           selectedCategory={selectedCategories}
           search={search}
           updateMobileMenuState={updateMobileMenuState}
+          marketCardFormat={marketCardFormat}
+          updateMarketsListCardFormat={updateMarketsListCardFormat}
         />
 
         <div
