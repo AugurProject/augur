@@ -20,9 +20,11 @@ export class SingleThreadConnector extends BaseConnector {
   }
 
   async connect(config: SDKConfiguration, account?: string): Promise<void> {
-    this._api = await startServer(config);
-    this._zeroX = new ZeroX(this._api.augur, config.zeroX.rpc.ws);
-    this._api.augur.zeroX = this._zeroX;
+    this._api = await startServer(config, account);
+    if (config.zeroX) {
+      this._zeroX = new ZeroX(this._api.augur, config.zeroX ? config.zeroX.rpc.ws : undefined);
+      this._api.augur.zeroX = this._zeroX;
+    }
   }
 
   async disconnect(): Promise<void> {
