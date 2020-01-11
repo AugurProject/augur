@@ -31,6 +31,7 @@ import {
   MarketTransferredLog,
   ParsedOrderEventLog,
   CancelLog,
+  CancelledOrderLog,
   ParticipationTokensRedeemedLog,
   ProfitLossChangedLog,
   ReportingParticipantDisavowedLog,
@@ -377,7 +378,7 @@ export class DB {
   get MarketOIChanged() { return this.dexieDB['MarketOIChanged'] as Dexie.Table<MarketOIChangedLog, any>; }
   get OrderEvent() { return this.dexieDB['OrderEvent'] as Dexie.Table<ParsedOrderEventLog, any>; }
   get Cancel() { return this.dexieDB['Cancel'] as Dexie.Table<CancelLog, any>; }
-  get CancelledOrders() { return this.dexieDB['CancelledOrders'] as Dexie.Table<CancelLog, any>; }
+  get CancelledOrders() { return this.dexieDB['CancelledOrders'] as Dexie.Table<CancelledOrderLog, any>; }
   get ParticipationTokensRedeemed() { return this.dexieDB['ParticipationTokensRedeemed'] as Dexie.Table<ParticipationTokensRedeemedLog, any>; }
   get ProfitLossChanged() { return this.dexieDB['ProfitLossChanged'] as Dexie.Table<ProfitLossChangedLog, any>; }
   get ReportingParticipantDisavowed() { return this.dexieDB['ReportingParticipantDisavowed'] as Dexie.Table<ReportingParticipantDisavowedLog, any>; }

@@ -10,14 +10,13 @@ import {
   InitialReportSubmittedLog,
   MarketCreatedLog,
   MarketData,
-  OrderEventType,
   OrderType,
   ParsedOrderEventLog,
   ParticipationTokensRedeemedLog,
   TradingProceedsClaimedLog,
   MarketType,
   CommonOutcomes,
-  CancelLog,
+  CancelledOrderLog
 } from '../logs/types';
 import { sortOptions } from './types';
 import {
@@ -31,10 +30,10 @@ import {
 } from '../../index';
 import { MarketReportingState } from '../../constants';
 import { compareObjects, convertOnChainPriceToDisplayPrice, numTicksToTickSize, convertAttoValueToDisplayValue } from '../../utils';
-import * as _ from "lodash";
+import * as _ from 'lodash';
 import * as t from 'io-ts';
 import Dexie from 'dexie';
-import { StoredOrder, ZeroXOrders } from '../db/ZeroXOrders';
+import { StoredOrder } from '../db/ZeroXOrders';
 
 export enum Action {
   ALL = 'ALL',
@@ -159,31 +158,31 @@ export class Accounts<TBigNumber> {
   ): Promise<AccountReportingHistory> {
 
     // Note: we could created a derived DB to do the four lines below in one query. Its unlikely we'll need that though (at least anytime soon) since a single users reports wont scale too high
-    const initialReportSubmittedLogs = await db.InitialReportSubmitted.where("reporter").equalsIgnoreCase(params.account).and((log) => log.universe === params.universe).toArray();
-    const initialReportRedeemedLogs = await db.InitialReporterRedeemed.where("reporter").equalsIgnoreCase(params.account).and((log) => log.universe === params.universe).toArray();
-    const redeemedReports = _.keyBy(initialReportRedeemedLogs, "market")
-    const unredeemedReports = _.filter(initialReportSubmittedLogs, (initialReport) => { return !redeemedReports[initialReport.market] });
+    const initialReportSubmittedLogs = await db.InitialReportSubmitted.where('reporter').equalsIgnoreCase(params.account).and((log) => log.universe === params.universe).toArray();
+    const initialReportRedeemedLogs = await db.InitialReporterRedeemed.where('reporter').equalsIgnoreCase(params.account).and((log) => log.universe === params.universe).toArray();
+    const redeemedReports = _.keyBy(initialReportRedeemedLogs, 'market');
+    const unredeemedReports = _.filter(initialReportSubmittedLogs, (initialReport) => !redeemedReports[initialReport.market]);
 
     // get token balance of crowdsourcers
-    const disputeCrowdsourcerTokens = await db.TokenBalanceChanged.where("[universe+owner+tokenType]").equals([params.universe, params.account, 1]).and((log) => {
-      return log.balance > "0x00";
+    const disputeCrowdsourcerTokens = await db.TokenBalanceChanged.where('[universe+owner+tokenType]').equals([params.universe, params.account, 1]).and((log) => {
+      return log.balance > '0x00';
     }).toArray();
-    const crowdsourcers = _.uniq(_.map(disputeCrowdsourcerTokens, "token"));
+    const crowdsourcers = _.uniq(_.map(disputeCrowdsourcerTokens, 'token'));
     // get created and completed logs for these addresses
-    const disputeCrowdsourcerCreatedLogs = await db.DisputeCrowdsourcerCreated.where("disputeCrowdsourcer").anyOfIgnoreCase(crowdsourcers).toArray();
-    const disputeCrowdsourcerCompletedLogs = await db.DisputeCrowdsourcerCompleted.where("disputeCrowdsourcer").anyOfIgnoreCase(crowdsourcers).toArray();
-    const disputeCrowdsourcerCreatedLogsById = _.keyBy(disputeCrowdsourcerCreatedLogs, "disputeCrowdsourcer");
-    const disputeCrowdsourcerCompletedLogsById = _.keyBy(disputeCrowdsourcerCompletedLogs, "disputeCrowdsourcer");
+    const disputeCrowdsourcerCreatedLogs = await db.DisputeCrowdsourcerCreated.where('disputeCrowdsourcer').anyOfIgnoreCase(crowdsourcers).toArray();
+    const disputeCrowdsourcerCompletedLogs = await db.DisputeCrowdsourcerCompleted.where('disputeCrowdsourcer').anyOfIgnoreCase(crowdsourcers).toArray();
+    const disputeCrowdsourcerCreatedLogsById = _.keyBy(disputeCrowdsourcerCreatedLogs, 'disputeCrowdsourcer');
+    const disputeCrowdsourcerCompletedLogsById = _.keyBy(disputeCrowdsourcerCompletedLogs, 'disputeCrowdsourcer');
 
-    const reportMarkets = _.map(unredeemedReports, "market");
-    const disputeMarkets = _.map(disputeCrowdsourcerTokens, "market");
+    const reportMarkets = _.map(unredeemedReports, 'market');
+    const disputeMarkets = _.map(disputeCrowdsourcerTokens, 'market');
     const marketIds = _.uniq(_.concat(reportMarkets, disputeMarkets));
-    const markets = await db.Markets.where("market").anyOfIgnoreCase(marketIds).toArray();
-    const marketsById = _.keyBy(markets, "market");
+    const markets = await db.Markets.where('market').anyOfIgnoreCase(marketIds).toArray();
+    const marketsById = _.keyBy(markets, 'market');
 
     const reportingContracts: ContractInfo[] = [];
 
-    for (let report of unredeemedReports) {
+    for (const report of unredeemedReports) {
       const market = marketsById[report.market];
       let isClaimable = false;
       if (market.reportingState === MarketReportingState.AwaitingFinalization || market.reportingState === MarketReportingState.Finalized) {
@@ -203,11 +202,11 @@ export class Accounts<TBigNumber> {
       contracts: reportingContracts,
       totalStaked: reportingContracts.reduce((acc, item) => acc.plus(item.amount), new BigNumber(0)).toFixed(),
       totalClaimable: reportingContracts.reduce((acc, item) => acc.plus(item.isClaimable ? item.amount : 0), new BigNumber(0)).toFixed(),
-    }
+    };
 
     const crowdsourcerContracts: ContractInfo[] = [];
 
-    for (let crowdsourcer of disputeCrowdsourcerTokens) {
+    for (const crowdsourcer of disputeCrowdsourcerTokens) {
       const market = marketsById[crowdsourcer.market];
       const crowdsourcerCompleted = disputeCrowdsourcerCompletedLogsById[crowdsourcer.token];
       let isClaimable = false;
@@ -231,11 +230,11 @@ export class Accounts<TBigNumber> {
       contracts: crowdsourcerContracts,
       totalStaked: crowdsourcerContracts.reduce((acc, item) => acc.plus(item.amount), new BigNumber(0)).toFixed(),
       totalClaimable: crowdsourcerContracts.reduce((acc, item) => acc.plus(item.isClaimable ? item.amount : 0), new BigNumber(0)).toFixed(),
-    }
+    };
 
     // Get token balances of type ParticipationToken
-    const participationTokens = await db.TokenBalanceChanged.where("[universe+owner+tokenType]").equals([params.universe, params.account, 2]).and((log) => {
-      return log.balance > "0x00";
+    const participationTokens = await db.TokenBalanceChanged.where('[universe+owner+tokenType]').equals([params.universe, params.account, 2]).and((log) => {
+      return log.balance > '0x00';
     }).toArray();
 
     const universe = augur.getUniverse(params.universe);
@@ -244,7 +243,7 @@ export class Accounts<TBigNumber> {
     // NOTE: We do not expect this to be a large list. In the standard/expected case this will be one item (maybe 2), so the cash balance & totalSupply calls are likely low impact
     const participationTokenContractInfo: ParticipationContract[] = [];
 
-    for (let tokenBalanceLog of participationTokens) {
+    for (const tokenBalanceLog of participationTokens) {
       const totalFees = await augur.contracts.cash.balanceOf_(tokenBalanceLog.token);
       const totalPTSupply = await augur.contracts.disputeWindowFromAddress(tokenBalanceLog.token).totalSupply_();
       const amount = new BigNumber(tokenBalanceLog.balance);
@@ -265,8 +264,8 @@ export class Accounts<TBigNumber> {
       totalFees: participationTokenContractInfo.reduce((acc, item) => acc.plus(item.amountFees), new BigNumber(0)).toFixed(),
     };
 
-    const initialReportsRedeemed = await db.InitialReporterRedeemed.where("reporter").equals(params.account).and((log) => log.universe === params.universe && log.repReceived !== "0x00").toArray();
-    const crowdsourcersRedeemed = await db.DisputeCrowdsourcerRedeemed.where("reporter").equals(params.account).and((log) => log.universe === params.universe && log.repReceived !== "0x00").toArray();
+    const initialReportsRedeemed = await db.InitialReporterRedeemed.where('reporter').equals(params.account).and((log) => log.universe === params.universe && log.repReceived !== '0x00').toArray();
+    const crowdsourcersRedeemed = await db.DisputeCrowdsourcerRedeemed.where('reporter').equals(params.account).and((log) => log.universe === params.universe && log.repReceived !== '0x00').toArray();
     const totalReportWinnings = initialReportsRedeemed.reduce((acc, item) => acc.plus(item.repReceived).minus(item.amountRedeemed), new BigNumber(0));
     const totalDisputeWinnings = crowdsourcersRedeemed.reduce((acc, item) => acc.plus(item.repReceived).minus(item.amountRedeemed), new BigNumber(0));
     const repWinnings = totalReportWinnings.plus(totalDisputeWinnings).toFixed();
@@ -373,7 +372,7 @@ export class Accounts<TBigNumber> {
         params.action === Action.ALL) &&
       (params.coin === Coin.DAI || params.coin === Coin.REP || params.coin === Coin.ALL)
     ) {
-      const participationTokensRedeemedLogs = await db.ParticipationTokensRedeemed.where("timestamp").between(formattedStartTime, formattedEndTime, true, true).and((log) => {
+      const participationTokensRedeemedLogs = await db.ParticipationTokensRedeemed.where('timestamp').between(formattedStartTime, formattedEndTime, true, true).and((log) => {
         return log.universe === params.universe && log.account === params.account;
       }).toArray();
       allFormattedLogs = allFormattedLogs.concat(
@@ -387,7 +386,7 @@ export class Accounts<TBigNumber> {
         params.action === Action.ALL) &&
       (params.coin === Coin.DAI || params.coin === Coin.ALL)
     ) {
-      const tradingProceedsClaimedLogs = await db.TradingProceedsClaimed.where("timestamp").between(formattedStartTime, formattedEndTime, true, true).and((log) => {
+      const tradingProceedsClaimedLogs = await db.TradingProceedsClaimed.where('timestamp').between(formattedStartTime, formattedEndTime, true, true).and((log) => {
         return log.universe === params.universe && log.sender === params.account;
       }).toArray();
       const marketInfo = await Accounts.getMarketCreatedInfo(
@@ -399,7 +398,6 @@ export class Accounts<TBigNumber> {
           tradingProceedsClaimedLogs,
           augur,
           marketInfo,
-          db
         )
       );
       actionCoinComboIsValid = true;
@@ -409,7 +407,7 @@ export class Accounts<TBigNumber> {
       params.action === Action.CLAIM_WINNING_CROWDSOURCERS ||
       params.action === Action.ALL
     ) {
-      const initialReporterRedeemedLogs = await db.InitialReporterRedeemed.where("timestamp").between(formattedStartTime, formattedEndTime, true, true).and((log) => {
+      const initialReporterRedeemedLogs = await db.InitialReporterRedeemed.where('timestamp').between(formattedStartTime, formattedEndTime, true, true).and((log) => {
         return log.universe === params.universe && log.reporter === params.account;
       }).toArray();
       let marketInfo = await Accounts.getMarketCreatedInfo(
@@ -423,7 +421,7 @@ export class Accounts<TBigNumber> {
           params
         )
       );
-      const disputeCrowdsourcerRedeemedLogs = await db.DisputeCrowdsourcerRedeemed.where("timestamp").between(formattedStartTime, formattedEndTime, true, true).and((log) => {
+      const disputeCrowdsourcerRedeemedLogs = await db.DisputeCrowdsourcerRedeemed.where('timestamp').between(formattedStartTime, formattedEndTime, true, true).and((log) => {
         return log.universe === params.universe && log.reporter === params.account;
       }).toArray();
       marketInfo = await Accounts.getMarketCreatedInfo(
@@ -445,7 +443,7 @@ export class Accounts<TBigNumber> {
         params.action === Action.ALL) &&
       (params.coin === Coin.DAI || params.coin === Coin.ALL)
     ) {
-      const marketCreatedLogs = await db.MarketCreated.where("timestamp").between(formattedStartTime, formattedEndTime, true, true).and((log) => {
+      const marketCreatedLogs = await db.MarketCreated.where('timestamp').between(formattedStartTime, formattedEndTime, true, true).and((log) => {
         return log.universe === params.universe && log.marketCreator === params.account;
       }).toArray();
       const marketInfo = formatMarketCreatedLogs(marketCreatedLogs);
@@ -457,7 +455,7 @@ export class Accounts<TBigNumber> {
       (params.action === Action.DISPUTE || params.action === Action.ALL) &&
       (params.coin === Coin.REP || params.coin === Coin.ALL)
     ) {
-      const disputeCrowdsourcerContributionLogs = await db.DisputeCrowdsourcerContribution.where("timestamp").between(formattedStartTime, formattedEndTime, true, true).and((log) => {
+      const disputeCrowdsourcerContributionLogs = await db.DisputeCrowdsourcerContribution.where('timestamp').between(formattedStartTime, formattedEndTime, true, true).and((log) => {
         return log.universe === params.universe && log.reporter === params.account;
       }).toArray();
       const marketInfo = await Accounts.getMarketCreatedInfo(
@@ -479,7 +477,7 @@ export class Accounts<TBigNumber> {
         params.action === Action.ALL) &&
       (params.coin === Coin.REP || params.coin === Coin.ALL)
     ) {
-      const initialReportSubmittedLogs = await db.InitialReportSubmitted.where("timestamp").between(formattedStartTime, formattedEndTime, true, true).and((log) => {
+      const initialReportSubmittedLogs = await db.InitialReportSubmitted.where('timestamp').between(formattedStartTime, formattedEndTime, true, true).and((log) => {
         return log.universe === params.universe && log.reporter === params.account;
       }).toArray();
       const marketInfo = await Accounts.getMarketCreatedInfo(
@@ -530,10 +528,10 @@ export class Accounts<TBigNumber> {
     const marketType = marketTypeToName(market.marketType);
     const displayMaxPrice = convertOnChainPriceToDisplayPrice(maxPrice, minPrice, tickSize).toString();
     const displayMinPrice = convertOnChainPriceToDisplayPrice(minPrice, minPrice, tickSize).toString();
-    const contributions = await db.DisputeCrowdsourcerContribution.where("market").equals(params.marketId).and((log) => {
+    const contributions = await db.DisputeCrowdsourcerContribution.where('market').equals(params.marketId).and((log) => {
       return log.disputeRound === market.disputeRound && log.reporter === params.account;
     }).toArray();
-    const contributionsByPayout = _.map(_.groupBy(contributions, "disputeCrowdsourcer"), (disputeCrowdsourcerContributions) => {
+    const contributionsByPayout = _.map(_.groupBy(contributions, 'disputeCrowdsourcer'), (disputeCrowdsourcerContributions) => {
       const firstContribution = disputeCrowdsourcerContributions[0];
       const payoutNumeratorsValue = calculatePayoutNumeratorsValue(
         displayMaxPrice,
@@ -579,7 +577,7 @@ export class Accounts<TBigNumber> {
     db: DB,
     marketIds: string[]
   ): Promise<MarketCreatedInfo> {
-    const marketCreatedLogs = await db.Markets.where("market").anyOfIgnoreCase(marketIds).toArray();
+    const marketCreatedLogs = await db.Markets.where('market').anyOfIgnoreCase(marketIds).toArray();
     const marketCreatedInfo: MarketCreatedInfo = {};
     for (let i = 0; i < marketCreatedLogs.length; i++) {
       marketCreatedInfo[marketCreatedLogs[i].market] = marketCreatedLogs[i];
@@ -606,7 +604,7 @@ function formatOrderFilledLogs(
     const quantity = convertOnChainAmountToDisplayAmount(onChainQuantity, tickSize);
     const price = convertOnChainPriceToDisplayPrice(onChainPrice, minPrice, tickSize);
     let outcomeDescription = describeMarketOutcome(outcome, marketData);
-    if (marketData.marketType === MarketType.Scalar && outcomeDescription != CommonOutcomes.Invalid) {
+    if (marketData.marketType === MarketType.Scalar && outcomeDescription !== CommonOutcomes.Invalid) {
       outcomeDescription = extraInfo._scalarDenomination;
     }
     const total =
@@ -668,7 +666,7 @@ function formatZeroXOrders(
 }
 
 function formatZeroXCancelledOrders(
-  storedOrders: CancelLog[],
+  storedOrders: CancelledOrderLog[],
   marketInfo: MarketCreatedInfo
 ) {
   return storedOrders.map(order => {
@@ -677,12 +675,11 @@ function formatZeroXCancelledOrders(
     const minPrice = new BigNumber(marketData.prices[0]);
     const numTicks = new BigNumber(marketData.numTicks);
     const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
-    const values = ZeroXOrders.parseAssetData(order.makerAssetData);
-    const onChainPrice = values.price;
+    const onChainPrice = order.price;
     const quantity = 0;
     const price = convertOnChainPriceToDisplayPrice(new BigNumber(onChainPrice), minPrice, tickSize);
-    const orderTypeName = values.orderType === `0x0${OrderType.Bid}` ? 'Bid' : 'Ask';
-    const outcome = new BigNumber(values.outcome);
+    const orderTypeName = order.orderType === `0x0${OrderType.Bid}` ? 'Bid' : 'Ask';
+    const outcome = new BigNumber(order.outcome);
     let outcomeDescription = describeMarketOutcome(outcome.toNumber(), marketData);
     if (marketData.marketType === MarketType.Scalar) {
       outcomeDescription = marketData.extraInfo._scalarDenomination;
@@ -736,7 +733,6 @@ async function formatTradingProceedsClaimedLogs(
   transactionLogs: TradingProceedsClaimedLog[],
   augur: Augur,
   marketInfo: MarketCreatedInfo,
-  db: DB
 ): Promise<AccountTransaction[]> {
   const formattedLogs: AccountTransaction[] = [];
   for (let i = 0; i < transactionLogs.length; i++) {

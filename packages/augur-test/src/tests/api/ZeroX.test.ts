@@ -6,7 +6,7 @@ import { MockMeshServer, SERVER_PORT, stopServer } from '../../libs/MockMeshServ
 import { WSClient } from '@0x/mesh-rpc-client';
 import { Connectors } from '@augurproject/sdk';
 import { API } from '@augurproject/sdk/build/state/getter/API';
-import { stringTo32ByteHex } from '../../libs/Utils';
+import { NULL_ADDRESS, stringTo32ByteHex } from "../../libs/Utils";
 import { ZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
 import { sleep } from '@augurproject/core/build/libraries/HelperFunctions';
 import { MockBrowserMesh } from '../../libs/MockBrowserMesh';
@@ -293,20 +293,15 @@ describe('Augur API :: ZeroX :: ', () => {
       const allDerivedCancels = await (await johnDB).CancelledOrders.toArray();
       expect(allDerivedCancels.length).toBe(1);
       expect(allDerivedCancels[0]).toMatchObject({
-        market: market.address,
-        name: 'Cancel',
-        makerAddress: john.account.publicKey,
-        feeRecipientAddress: '0x0000000000000000000000000000000000000000',
-        makerAssetData: expect.stringContaining('0x'),
-        takerAssetData: expect.stringContaining('0x'),
-        senderAddress: john.account.publicKey,
         orderHash, // TODO fix order hash difference - mock problem?
-        topics: expect.arrayContaining([
-          expect.stringContaining('0x'),
-          expect.stringContaining('0x'),
-          expect.stringContaining('0x'),
-          expect.stringContaining('0x'),
-        ])
+        senderAddress: john.account.publicKey,
+        makerAddress: john.account.publicKey,
+        feeRecipientAddress: NULL_ADDRESS,
+        market: market.address,
+        kycToken: expect.stringMatching(new RegExp(DEADBEEF_ADDRESS, 'i')),
+        price: '0x00000000000000000016',
+        outcome: '0x00',
+        orderType: '0x00',
       });
 
       const primaryKeyOrders = await (await johnDB).CancelledOrders
@@ -314,20 +309,15 @@ describe('Augur API :: ZeroX :: ', () => {
         .equals(orderHash).toArray();
       expect(primaryKeyOrders.length).toBe(1);
       expect(primaryKeyOrders[0]).toMatchObject({
-        market: market.address,
-        name: 'Cancel',
-        makerAddress: john.account.publicKey,
-        feeRecipientAddress: '0x0000000000000000000000000000000000000000',
-        makerAssetData: expect.stringContaining('0x'),
-        takerAssetData: expect.stringContaining('0x'),
-        senderAddress: john.account.publicKey,
         orderHash, // TODO fix order hash difference - mock problem?
-        topics: expect.arrayContaining([
-          expect.stringContaining('0x'),
-          expect.stringContaining('0x'),
-          expect.stringContaining('0x'),
-          expect.stringContaining('0x'),
-        ])
+        senderAddress: john.account.publicKey,
+        makerAddress: john.account.publicKey,
+        feeRecipientAddress: NULL_ADDRESS,
+        market: market.address,
+        kycToken: expect.stringMatching(new RegExp(DEADBEEF_ADDRESS, 'i')),
+        price: '0x00000000000000000016',
+        outcome: '0x00',
+        orderType: '0x00',
       });
 
       const indexKeyOrders = await (await johnDB).CancelledOrders
@@ -335,20 +325,15 @@ describe('Augur API :: ZeroX :: ', () => {
         .equals([john.account.publicKey, market.address]).toArray();
       expect(indexKeyOrders.length).toBe(1);
       expect(indexKeyOrders[0]).toMatchObject({
-        market: market.address,
-        name: 'Cancel',
-        makerAddress: john.account.publicKey,
-        feeRecipientAddress: '0x0000000000000000000000000000000000000000',
-        makerAssetData: expect.stringContaining('0x'),
-        takerAssetData: expect.stringContaining('0x'),
-        senderAddress: john.account.publicKey,
         orderHash, // TODO fix order hash difference - mock problem?
-        topics: expect.arrayContaining([
-          expect.stringContaining('0x'),
-          expect.stringContaining('0x'),
-          expect.stringContaining('0x'),
-          expect.stringContaining('0x'),
-        ])
+        senderAddress: john.account.publicKey,
+        makerAddress: john.account.publicKey,
+        feeRecipientAddress: NULL_ADDRESS,
+        market: market.address,
+        kycToken: expect.stringMatching(new RegExp(DEADBEEF_ADDRESS, 'i')),
+        price: '0x00000000000000000016',
+        outcome: '0x00',
+        orderType: '0x00',
       });
 
     });
