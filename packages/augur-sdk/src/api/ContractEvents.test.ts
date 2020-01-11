@@ -125,14 +125,8 @@ test("throw error if getting log for address that isn't registered", async () =>
   const fromBlock = 0;
   const toBlock = 42;
 
-  let results = null;
-  let threw = false;
-  try {
-    results = await contractEvents.getLogs(eventName, fromBlock, toBlock);
-  } catch(error) {
-    threw = true;
-    expect(error.message).toEqual(`Recieved a log for an unknown contract at address ${logs[0].address}. Double check that deployment is up to date and new ABIs have been committed.`)
-  }
-  expect(threw).toBeTruthy();
-  expect(results).toBeNull();
+  expect.assertions(1);
+  await expect(contractEvents.getLogs(eventName, fromBlock, toBlock)).rejects.toEqual(new Error(
+    `Recieved a log for an unknown contract at address ${logs[0].address}. Double check that deployment is up to date and new ABIs have been committed.`
+  ));
 });
