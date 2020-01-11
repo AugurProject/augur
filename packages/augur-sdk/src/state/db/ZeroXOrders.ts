@@ -232,9 +232,7 @@ export class ZeroXOrders extends AbstractTable {
   }
 
   processOrder(order: OrderInfo): StoredOrder {
-    const multiAssetData = defaultAbiCoder.decode(multiAssetDataAbi, `0x${order.signedOrder.makerAssetData.slice(10)}`);
-    const nestedAssetData = multiAssetData[1] as string[];
-    const augurOrderData = ZeroXOrders.parseAssetData(nestedAssetData[0]);
+    const augurOrderData = ZeroXOrders.parseAssetData(order.signedOrder.makerAssetData);
     // Currently the API for mesh browser and the client API diverge here but we dont want to do string parsing per order to be compliant for the browser case
     const signedOrder = order.signedOrder;
     return {
@@ -267,6 +265,12 @@ export class ZeroXOrders extends AbstractTable {
   }
 
   static parseAssetData(assetData: string): OrderData {
+    const multiAssetData = defaultAbiCoder.decode(multiAssetDataAbi, `0x${assetData.slice(10)}`);
+    const nestedAssetData = multiAssetData[1] as string[];
+    return ZeroXOrders.parseTradeAssetData(nestedAssetData[0]);
+  }
+
+  static parseTradeAssetData(assetData: string): OrderData {
     // Remove the first 10 characters because assetData is prefixed in 0x, and then contains a selector.
     // Drop the selector and add back to 0x prefix so the AbiDecoder will treat it properly as hex.
     const decoded = defaultAbiCoder.decode(erc1155AssetDataAbi, `0x${assetData.slice(10)}`);
