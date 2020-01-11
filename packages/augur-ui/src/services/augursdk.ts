@@ -159,12 +159,13 @@ export class SDK {
   async createConnector(config: SDKConfiguration) {
     if (config.sdk.ws) {
       return new Connectors.WebsocketConnector();
-    } else {
-      const connector = new Connectors.SingleThreadConnector();
-      connector.mesh = createBrowserMesh(config, (err: Error, mesh: Mesh) => {
-        connector.mesh = mesh;
-     });
     }
+
+    const connector = new Connectors.SingleThreadConnector();
+    connector.mesh = createBrowserMesh(config, (err: Error, mesh: Mesh) => {
+      connector.mesh = mesh;
+    });
+    return connector;
   }
 
   get(): Augur {
