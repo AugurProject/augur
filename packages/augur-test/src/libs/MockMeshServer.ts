@@ -6,7 +6,7 @@ import * as _ from 'lodash';
 import { ZeroXOrder } from "@augurproject/sdk/build/state/getter/ZeroXOrdersGetters";
 
 const DEFAULT_STATUS_CODE = 404;
-export const SERVER_PORT = 64321;
+export const SERVER_PORT = 44321;
 // tslint:disable-next-line:custom-no-magic-numbers
 const sixtyFourMB = 64 * 1024 * 1024; // 64MiB
 
@@ -36,12 +36,13 @@ export async function setupServerAsync(): Promise<WebSocket.server> {
         });
 
         wsServer = new WebSocket.server({
+            port: SERVER_PORT,
             httpServer: server,
             autoAcceptConnections: true,
             maxReceivedFrameSize: sixtyFourMB,
             maxReceivedMessageSize: sixtyFourMB,
             fragmentOutgoingMessages: false,
-            keepalive: false,
+            keepalive: true,
             disableNagleAlgorithm: false,
         });
 
@@ -57,7 +58,6 @@ export async function setupServerAsync(): Promise<WebSocket.server> {
 export function stopServer(): void {
     try {
         wsServer.shutDown();
-        server.close();
     } catch (e) {
         logUtils.log('stopServer threw', e);
     }
@@ -66,6 +66,7 @@ export function stopServer(): void {
 export class MockMeshServer {
     readonly orders: {[orderHash: string]: StoredOrder};
     readonly server: WebSocket.Server;
+    private _subInterval: any = null;
 
     constructor(wsServer: WebSocket.Server) {
         this.server = wsServer;
@@ -87,22 +88,41 @@ export class MockMeshServer {
                 let response = "";
                 if (jsonRpcRequest.method == "mesh_getOrders") response = self.getOrders(jsonRpcRequest.id, jsonRpcRequest.params);
                 else if (jsonRpcRequest.method == "mesh_addOrders") response = self.addOrders(jsonRpcRequest.id, jsonRpcRequest.params, connection);
-                else if (jsonRpcRequest.method == "mesh_subscribe") response = self.subscribe(jsonRpcRequest.id);
+                else if (jsonRpcRequest.method == "mesh_subscribe") response = self.subscribe(jsonRpcRequest.id, jsonRpcRequest.params, connection);
                 else throw new Error(`Bad Request: ${jsonRpcRequest.method}`);
                 connection.sendUTF(response);
             }) as any);
         }) as any);
     }
 
-    subscribe(id: number): string {
+    subscribe(id: number, params: string[], connection: WebSocket.connection): string {
+        let subscription =  "0xdeadbeefdeadbeefdeadbeefdeadbeef";
+        const heartbeatSub =  "0xab1a3e8af590364c09d0fa6a12103ada";
+
+        if (params[0] === "heartbeat") {
+            subscription = heartbeatSub;
+            this._subInterval = setInterval(() => {
+                connection.sendUTF(JSON.stringify({
+                    jsonrpc: "2.0",
+                    method: "mesh_subscription",
+                    params: {
+                        subscription: heartbeatSub,
+                        result: "tick"
+                    }
+                }))
+            }, 10000);
+        }
+
         return JSON.stringify({
             id,
             jsonrpc: "2.0",
-            result: "0xab1a3e8af590364c09d0fa6a12103ada"
+            result: subscription
         });
     }
 
     unsubscribe(id: number): string {
+      clearInterval(this._subInterval);
+
       return JSON.stringify({
         id,
         jsonrpc: '2.0',
