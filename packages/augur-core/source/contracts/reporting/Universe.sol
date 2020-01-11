@@ -21,6 +21,8 @@ import 'ROOT/external/IDaiJoin.sol';
 import 'ROOT/utility/IFormulas.sol';
 import 'ROOT/IAugur.sol';
 import 'ROOT/CashSender.sol';
+import 'ROOT/ICPExchange.sol';
+import 'ROOT/factories/IRepExchangeFactory.sol';
 
 
 /**
@@ -77,6 +79,8 @@ contract Universe is IUniverse, CashSender {
     IDaiPot public daiPot;
     IDaiJoin public daiJoin;
 
+    ICPExchange public repExchange;
+
     uint256 constant public RAY = 10 ** 27;
 
     constructor(IAugur _augur, IUniverse _parentUniverse, bytes32 _parentPayoutDistributionHash, uint256[] memory _payoutNumerators) public {
@@ -91,6 +95,7 @@ contract Universe is IUniverse, CashSender {
         openInterestCash = IOICashFactory(augur.lookup("OICashFactory")).createOICash(augur);
         shareToken = IShareToken(augur.lookup("ShareToken"));
         repPriceOracle = IRepPriceOracle(augur.lookup("RepPriceOracle"));
+        repExchange = IRepExchangeFactory(augur.lookup("RepExchangeFactory")).createRepExchange(augur, address(reputationToken));
         updateForkValues();
         formulas = IFormulas(augur.lookup("Formulas"));
         cash = ICash(augur.lookup("Cash"));

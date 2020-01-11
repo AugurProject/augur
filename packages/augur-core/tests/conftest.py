@@ -467,11 +467,6 @@ class ContractsFixture:
         self.contracts['AugurTrading'].registerContract("ZeroXExchange".ljust(32, '\x00').encode('utf-8'), zeroXContracts["ZeroXExchange"])
         return zeroXContracts
 
-    def uploadUniswapContracts(self):
-        resolvedUniswapPath = resolveRelativePath("../source/contracts/uniswap/UniswapV2.sol")
-        self.signatures["UniswapV2"] = self.generateSignature(resolvedUniswapPath)
-        self.uploadAndAddToAugur("../source/contracts/uniswap/UniswapV2Factory.sol")
-
     def initializeAllContracts(self):
         coreContractsToInitialize = ['Time','ShareToken','WarpSync','RepPriceOracle']
         for contractName in coreContractsToInitialize:
@@ -636,7 +631,6 @@ def augurInitializedSnapshot(fixture, baseSnapshot):
     fixture.uploadAllContracts()
     fixture.uploadTestDaiContracts()
     fixture.upload0xContracts()
-    fixture.uploadUniswapContracts()
     fixture.initializeAllContracts()
     fixture.doAugurTradingApprovals()
     fixture.approveCentralAuthority()

@@ -54,6 +54,19 @@ library SafeMathUint256 {
         }
     }
 
+    function sqrt(uint256 y) internal pure returns (uint256 z) {
+        if (y > 3) {
+            uint256 x = (y + 1) / 2;
+            z = y;
+            while (x < z) {
+                z = x;
+                x = (y / x + x) / 2;
+            }
+        } else if (y != 0) {
+            z = 1;
+        }
+    }
+
     function getUint256Min() internal pure returns (uint256) {
         return 0;
     }
