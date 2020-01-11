@@ -41,12 +41,25 @@ div.Tooltip {
     max-width: @size-16;
 
     > circle {
-      fill: @color-secondary-action;
-      stroke: @color-secondary-action-outline;
+      fill: none;
+      stroke: @color-secondary-text;
     }
 
     > path {
-      fill: @color-primary-text;
+      fill: @color-secondary-text;
+      stroke: none;
+    }
+  }
+
+  &:hover {
+    > svg {
+      > circle {
+        stroke: @color-primary-text;
+      }
+
+      > path {
+        fill: @color-primary-text;
+      }
     }
   }
 }
