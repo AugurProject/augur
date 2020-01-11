@@ -346,7 +346,7 @@ def process_trades(contractsFixture, trade_data, cash, market, zeroXTrade, profi
 
         assert cash.faucet(creatorCost, sender = contractsFixture.accounts[1])
 
-        rawZeroXOrderData, orderHash = zeroXTrade.createZeroXOrder(direction, quantity, onChainLongPrice, market.address, trade['outcome'], nullAddress, expirationTime, salt, sender = contractsFixture.accounts[1])
+        rawZeroXOrderData, orderHash = zeroXTrade.createZeroXOrder(direction, quantity, onChainLongPrice, market.address, trade['outcome'], expirationTime, salt, sender = contractsFixture.accounts[1])
         signature = signOrder(orderHash, contractsFixture.privateKeys[1])
 
         avgPrice = int(round((trade['avgPrice'] - minPrice) * market.getNumTicks() / displayRange))

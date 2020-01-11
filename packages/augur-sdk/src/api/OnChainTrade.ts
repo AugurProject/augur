@@ -18,7 +18,6 @@ export interface NativePlaceTradeParams {
   outcome: OutcomeNumber;
   tradeGroupId: string;
   fingerprint: string;
-  kycToken: string;
   doNotCreateOrders: boolean;
 }
 
@@ -110,11 +109,11 @@ export class OnChainTrade {
 
     // @TODO: Use the calculated gasLimit above instead of relying on an estimate once we can send an override gasLimit
     if (params.doNotCreateOrders) {
-      result = await this.augur.contracts.trade.publicFillBestOrder(new BigNumber(params.direction), params.market, new BigNumber(params.outcome), params.amount, params.price, params.tradeGroupId, loopLimit, params.fingerprint, params.kycToken);
+      result = await this.augur.contracts.trade.publicFillBestOrder(new BigNumber(params.direction), params.market, new BigNumber(params.outcome), params.amount, params.price, params.tradeGroupId, loopLimit, params.fingerprint);
     } else {
       // @TODO: Use the state provided better worse orders
       const nullOrderId = stringTo32ByteHex("");
-      result = await this.augur.contracts.trade.publicTrade(new BigNumber(params.direction), params.market, new BigNumber(params.outcome), params.amount, params.price, nullOrderId, nullOrderId, params.tradeGroupId, loopLimit, params.fingerprint, params.kycToken);
+      result = await this.augur.contracts.trade.publicTrade(new BigNumber(params.direction), params.market, new BigNumber(params.outcome), params.amount, params.price, nullOrderId, nullOrderId, params.tradeGroupId, loopLimit, params.fingerprint);
     }
 
     const amountRemaining = this.getTradeAmountRemaining(params.amount, result);
@@ -127,7 +126,7 @@ export class OnChainTrade {
   async simulateTrade(params: NativePlaceTradeDisplayParams): Promise<NativeSimulateTradeData> {
     const onChainTradeParams = this.getOnChainTradeParams(params);
     const tickSize = numTicksToTickSizeWithDisplayPrices(params.numTicks, params.displayMinPrice, params.displayMaxPrice);
-    const simulationData: BigNumber[] = await this.augur.contracts.simulateTrade.simulateTrade_(new BigNumber(params.direction), params.market, new BigNumber(params.outcome), onChainTradeParams.amount, onChainTradeParams.price, params.kycToken, params.doNotCreateOrders) as unknown as BigNumber[];
+    const simulationData: BigNumber[] = await this.augur.contracts.simulateTrade.simulateTrade_(new BigNumber(params.direction), params.market, new BigNumber(params.outcome), onChainTradeParams.amount, onChainTradeParams.price, params.doNotCreateOrders) as unknown as BigNumber[];
     const displaySharesFilled = convertOnChainAmountToDisplayAmount(simulationData[0], tickSize);
     const displaySharesDepleted = convertOnChainAmountToDisplayAmount(simulationData[2], tickSize);
     const displayTokensDepleted = simulationData[1].dividedBy(QUINTILLION);

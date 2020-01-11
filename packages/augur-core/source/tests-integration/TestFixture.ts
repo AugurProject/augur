@@ -105,7 +105,7 @@ export class TestFixture {
         const ethValue = numShares.multipliedBy(price);
 
         await this.cashFaucet.faucet(ethValue);
-        await createOrder.publicCreateOrder(type, numShares, price, market, outcome, betterOrderID, worseOrderID, tradeGroupID, NULL_ADDRESS);
+        await createOrder.publicCreateOrder(type, numShares, price, market, outcome, betterOrderID, worseOrderID, tradeGroupID);
         return;
     }
 
@@ -123,12 +123,12 @@ export class TestFixture {
 
         await this.cashFaucet.faucet(ethValue);
 
-        const bestPriceAmount = await trade.publicFillBestOrder_(type, marketAddress, outcome, numShares, price, tradeGroupID, new BigNumber(3), NULL_ADDRESS, NULL_ADDRESS);
+        const bestPriceAmount = await trade.publicFillBestOrder_(type, marketAddress, outcome, numShares, price, tradeGroupID, new BigNumber(3), NULL_ADDRESS);
         if (bestPriceAmount.isEqualTo(0)) {
             throw new Error('Could not take best Order');
         }
 
-        await trade.publicFillBestOrder(type, marketAddress, outcome, numShares, price, tradeGroupID, new BigNumber(3), NULL_ADDRESS, NULL_ADDRESS);
+        await trade.publicFillBestOrder(type, marketAddress, outcome, numShares, price, tradeGroupID, new BigNumber(3), NULL_ADDRESS);
         return;
     }
 
@@ -168,7 +168,7 @@ export class TestFixture {
         const ordersContract = await this.contractDeployer.getContractAddress('Orders');
         const orders = new Orders(this.dependencies, ordersContract);
 
-        const orderID = await orders.getBestOrderId_(type, market, outcome, NULL_ADDRESS);
+        const orderID = await orders.getBestOrderId_(type, market, outcome);
         if (!orderID) {
             throw new Error('Unable to get order price');
         }

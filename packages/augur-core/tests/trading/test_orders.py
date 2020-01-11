@@ -21,12 +21,11 @@ def test_walkOrderList_bids(contractsFixture, market):
         "sharesEscrowed": 0,
         "betterOrderID": longTo32Bytes(0),
         "worseOrderID": longTo32Bytes(0),
-        "tradeGroupID": stringToBytes("0"),
-        "kycToken": nullAddress
+        "tradeGroupID": stringToBytes("0")
     }
     uints = [order["amount"], order["price"], order["outcome"], order["moneyEscrowed"], order["sharesEscrowed"]]
     bytes32s = [order["betterOrderID"], order["worseOrderID"], order["tradeGroupID"], stringToBytes("0")]
-    orderId5 = orders.testSaveOrder(uints, bytes32s, order["type"], market.address, order["sender"], order["kycToken"])
+    orderId5 = orders.testSaveOrder(uints, bytes32s, order["type"], market.address, order["sender"])
     assert(orderId5 != bytearray(32)), "Save order"
     bestOrderID = orders.getBestOrderId(BID, market.address, outcomeID, nullAddress)
     worstOrderID = orders.getWorstOrderId(BID, market.address, outcomeID, nullAddress)
@@ -56,11 +55,10 @@ def test_walkOrderList_bids(contractsFixture, market):
         "betterOrderID": longTo32Bytes(0),
         "worseOrderID": longTo32Bytes(0),
         "tradeGroupID": stringToBytes("0"),
-        "kycToken": nullAddress
     }
     uints = [order["amount"], order["price"], order["outcome"], order["moneyEscrowed"], order["sharesEscrowed"]]
     bytes32s = [order["betterOrderID"], order["worseOrderID"], order["tradeGroupID"], stringToBytes("0")]
-    orderId6 = orders.testSaveOrder(uints, bytes32s, order["type"], market.address, order["sender"], order["kycToken"])
+    orderId6 = orders.testSaveOrder(uints, bytes32s, order["type"], market.address, order["sender"])
     assert(orderId6 != bytearray(32)), "Save order"
     bestOrderID = orders.getBestOrderId(BID, market.address, outcomeID, nullAddress)
     worstOrderID = orders.getWorstOrderId(BID, market.address, outcomeID, nullAddress)
@@ -90,11 +88,10 @@ def test_walkOrderList_bids(contractsFixture, market):
         "betterOrderID": longTo32Bytes(0),
         "worseOrderID": longTo32Bytes(0),
         "tradeGroupID": stringToBytes("0"),
-        "kycToken": nullAddress
     }
     uints = [order["amount"], order["price"], order["outcome"], order["moneyEscrowed"], order["sharesEscrowed"]]
     bytes32s = [order["betterOrderID"], order["worseOrderID"], order["tradeGroupID"], stringToBytes("0")]
-    orderId7 = orders.testSaveOrder(uints, bytes32s, order["type"], market.address, order["sender"], order["kycToken"])
+    orderId7 = orders.testSaveOrder(uints, bytes32s, order["type"], market.address, order["sender"])
     assert(orderId7 != bytearray(32)), "Save order"
     bestOrderID = orders.getBestOrderId(BID, market.address, outcomeID, nullAddress)
     worstOrderID = orders.getWorstOrderId(BID, market.address, outcomeID, nullAddress)
@@ -129,11 +126,10 @@ def test_walkOrderList_asks(contractsFixture, market):
         "betterOrderID": longTo32Bytes(0),
         "worseOrderID": longTo32Bytes(0),
         "tradeGroupID": stringToBytes("0"),
-        "kycToken": nullAddress
     }
     uints = [order["amount"], order["price"], order["outcome"], order["moneyEscrowed"], order["sharesEscrowed"]]
     bytes32s = [order["betterOrderID"], order["worseOrderID"], order["tradeGroupID"], stringToBytes("0")]
-    orderId8 = orders.testSaveOrder(uints, bytes32s, order["type"], market.address, order["sender"], order["kycToken"])
+    orderId8 = orders.testSaveOrder(uints, bytes32s, order["type"], market.address, order["sender"])
     assert(orderId8 != bytearray(32)), "Save order"
     bestOrderID = orders.getBestOrderId(ASK, market.address, outcomeID, nullAddress)
     worstOrderID = orders.getWorstOrderId(ASK, market.address, outcomeID, nullAddress)
@@ -161,11 +157,10 @@ def test_walkOrderList_asks(contractsFixture, market):
         "betterOrderID": longTo32Bytes(0),
         "worseOrderID": longTo32Bytes(0),
         "tradeGroupID": stringToBytes("0"),
-        "kycToken": nullAddress
     }
     uints = [order["amount"], order["price"], order["outcome"], order["moneyEscrowed"], order["sharesEscrowed"]]
     bytes32s = [order["betterOrderID"], order["worseOrderID"], order["tradeGroupID"], stringToBytes("0")]
-    orderId9 = orders.testSaveOrder(uints, bytes32s, order["type"], market.address, order["sender"], order["kycToken"])
+    orderId9 = orders.testSaveOrder(uints, bytes32s, order["type"], market.address, order["sender"])
     assert(orderId9 != bytearray(32)), "Save order"
     bestOrderID = orders.getBestOrderId(ASK, market.address, outcomeID, nullAddress)
     worstOrderID = orders.getWorstOrderId(ASK, market.address, outcomeID, nullAddress)
@@ -195,11 +190,10 @@ def test_walkOrderList_asks(contractsFixture, market):
         "betterOrderID": longTo32Bytes(0),
         "worseOrderID": longTo32Bytes(0),
         "tradeGroupID": stringToBytes("0"),
-        "kycToken": nullAddress
     }
     uints = [order["amount"], order["price"], order["outcome"], order["moneyEscrowed"], order["sharesEscrowed"]]
     bytes32s = [order["betterOrderID"], order["worseOrderID"], order["tradeGroupID"], stringToBytes("0")]
-    orderId10 = orders.testSaveOrder(uints, bytes32s, order["type"], market.address, order["sender"], order["kycToken"])
+    orderId10 = orders.testSaveOrder(uints, bytes32s, order["type"], market.address, order["sender"])
     assert(orderId10 != bytearray(32)), "Save order"
     bestOrderID = orders.getBestOrderId(ASK, market.address, outcomeID, nullAddress)
     worstOrderID = orders.getWorstOrderId(ASK, market.address, outcomeID, nullAddress)

@@ -167,7 +167,6 @@ async function runSimulateTrade(
 
   const orderType: 0 | 1 = newTradeDetails.side === BUY ? 0 : 1;
   const fingerprint = undefined; // TODO: get this from state
-  const kycToken = undefined; // TODO: figure out how kyc tokens are going to be handled
   const doNotCreateOrders = false; // TODO: this needs to be passed from order form
 
   let userShares = createBigNumber(marketOutcomeShares[outcomeId] || 0);
@@ -192,7 +191,6 @@ async function runSimulateTrade(
     market.numOutcomes,
     outcomeId,
     fingerprint,
-    kycToken,
     doNotCreateOrders,
     market.numTicks,
     market.minPrice,
@@ -227,7 +225,6 @@ async function runSimulateTrade(
       market.numOutcomes,
       outcomeId,
       fingerprint,
-      kycToken,
       doNotCreateOrders,
       market.numTicks,
       market.minPrice,

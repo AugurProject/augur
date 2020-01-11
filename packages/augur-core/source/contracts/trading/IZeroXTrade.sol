@@ -12,7 +12,6 @@ contract IZeroXTrade {
         uint256 price;                          // Price
         uint8 outcome;                          // Outcome
         uint8 orderType;                        // Order Type
-        address kycToken;                       // KYC Token
     }
 
     function parseOrderData(IExchange.Order memory _order) public view returns (AugurOrderData memory _data);

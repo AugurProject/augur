@@ -324,7 +324,13 @@ class ContractsFixture:
                 'remappings': [ 'ROOT=%s/' % resolveRelativePath(self.relativeContractsPath), 'TEST=%s/' % resolveRelativePath(self.relativeTestContractsPath) ],
                 'optimizer': {
                     'enabled': True,
-                    'runs': 200
+                    'runs': 200,
+                    "details": {
+                        "yul": True,
+                        "deduplicate": True,
+                        "cse": True,
+                        "constantOptimizer": True
+                    }
                 },
                 'outputSelection': {
                     "*": {
@@ -498,6 +504,7 @@ class ContractsFixture:
             ("ERC20Proxy", "asset-proxy/contracts/src/ERC20Proxy", []),
             ("ERC721Proxy", "asset-proxy/contracts/src/ERC721Proxy", []),
             ("ERC1155Proxy", "asset-proxy/contracts/src/ERC1155Proxy", []),
+            ("MultiAssetProxy", "asset-proxy/contracts/src/MultiAssetProxy", []),
             ("ZeroXExchange", "exchange/contracts/src/Exchange", [chainId]),
             ("ZeroXCoordinator", "coordinator/contracts/src/Coordinator", ["EXCHANGE", chainId]),
             ("CoordinatorRegistry", "coordinator/contracts/src/registry/CoordinatorRegistry", []),
@@ -514,8 +521,14 @@ class ContractsFixture:
             self.contracts[alias] = contract
         self.contracts["ZeroXExchange"].registerAssetProxy(zeroXContracts["ERC1155Proxy"])
         self.contracts["ZeroXExchange"].registerAssetProxy(zeroXContracts["ERC20Proxy"])
+        self.contracts["ZeroXExchange"].registerAssetProxy(zeroXContracts["MultiAssetProxy"])
+        self.contracts["MultiAssetProxy"].registerAssetProxy(zeroXContracts["ERC1155Proxy"])
+        self.contracts["MultiAssetProxy"].registerAssetProxy(zeroXContracts["ERC20Proxy"])
         self.contracts["ERC1155Proxy"].addAuthorizedAddress(zeroXContracts["ZeroXExchange"])
+        self.contracts["ERC1155Proxy"].addAuthorizedAddress(zeroXContracts["MultiAssetProxy"])
         self.contracts["ERC20Proxy"].addAuthorizedAddress(zeroXContracts["ZeroXExchange"])
+        self.contracts["ERC20Proxy"].addAuthorizedAddress(zeroXContracts["MultiAssetProxy"])
+        self.contracts["MultiAssetProxy"].addAuthorizedAddress(zeroXContracts["ZeroXExchange"])
         self.contracts['AugurTrading'].registerContract("ZeroXExchange".ljust(32, '\x00').encode('utf-8'), zeroXContracts["ZeroXExchange"])
         return zeroXContracts
 

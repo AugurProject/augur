@@ -94,7 +94,6 @@ describe('3rd Party :: ZeroX :: ', () => {
       const direction = 0;
       const outcome = 0;
       const displayPrice = new BigNumber(.22);
-      const kycToken = '0x000000000000000000000000000000000000000C';
       const expirationTime = new BigNumber(new Date().valueOf()).plus(1000000);
       await john.placeZeroXOrder({
         direction,
@@ -104,7 +103,6 @@ describe('3rd Party :: ZeroX :: ', () => {
         outcome,
         tradeGroupId: '42',
         fingerprint: formatBytes32String('11'),
-        kycToken,
         doNotCreateOrders: false,
         displayMinPrice: new BigNumber(0),
         displayMaxPrice: new BigNumber(1),
@@ -124,7 +122,6 @@ describe('3rd Party :: ZeroX :: ', () => {
       await expect(order).not.toBeUndefined();
       await expect(order.price).toEqual('0.22');
       await expect(order.amount).toEqual('10');
-      await expect(order.kycToken).toEqual(kycToken);
       await expect(order.expirationTimeSeconds.toString()).toEqual(expirationTime.toFixed());
     }, 240000);
 
@@ -143,7 +140,6 @@ describe('3rd Party :: ZeroX :: ', () => {
       const direction = 0;
       const outcome = 0;
       const displayPrice = new BigNumber(.22);
-      const kycToken = '0x000000000000000000000000000000000000000C';
       const expirationTime = new BigNumber(new Date().valueOf()).plus(1000000);
       await expect(john.placeZeroXOrder({
         direction,
@@ -153,7 +149,6 @@ describe('3rd Party :: ZeroX :: ', () => {
         outcome,
         tradeGroupId: '42',
         fingerprint: formatBytes32String('11'),
-        kycToken,
         doNotCreateOrders: false,
         displayMinPrice: new BigNumber(0),
         displayMaxPrice: new BigNumber(1),
@@ -302,7 +297,6 @@ describe('3rd Party :: ZeroX :: ', () => {
       const direction = 0;
       const outcome = 0;
       const displayPrice = new BigNumber(.22);
-      const kycToken = '0x000000000000000000000000000000000000000C';
       const expirationTime = new BigNumber(new Date().valueOf()).plus(1000000);
       await john.placeZeroXOrder({
         direction,
@@ -312,7 +306,6 @@ describe('3rd Party :: ZeroX :: ', () => {
         outcome,
         tradeGroupId: '42',
         fingerprint: formatBytes32String('11'),
-        kycToken,
         doNotCreateOrders: false,
         displayMinPrice: new BigNumber(0),
         displayMaxPrice: new BigNumber(1),
@@ -333,7 +326,6 @@ describe('3rd Party :: ZeroX :: ', () => {
       await expect(order).not.toBeUndefined();
       await expect(order.price).toEqual('0.22');
       await expect(order.amount).toEqual('10');
-      await expect(order.kycToken).toEqual(kycToken);
       await expect(order.expirationTimeSeconds.toString()).toEqual(expirationTime.toFixed());
     }, 60000);
 

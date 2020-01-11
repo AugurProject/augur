@@ -14,17 +14,25 @@ import "ROOT/trading/IAugurTrading.sol";
 import 'ROOT/libraries/Initializable.sol';
 import "ROOT/IAugur.sol";
 import 'ROOT/libraries/token/IERC1155.sol';
+import 'ROOT/libraries/LibBytes.sol';
 
 
 contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
     using SafeMathUint256 for uint256;
+    using LibBytes for bytes;
 
     bool transferFromAllowed = false;
 
     uint256 constant public TRADE_INTERVAL_VALUE = 10 ** 19; // Trade value of 10 DAI
 
+    // ERC20Token(address)
+    bytes4 constant private ERC20_PROXY_ID = 0xf47261b0;
+
     // ERC1155Assets(address,uint256[],uint256[],bytes)
-    bytes4 constant public ERC1155_PROXY_ID = 0xa7cb5fb7;
+    bytes4 constant private MULTI_ASSET_PROXY_ID = 0x94cfcdd7;
+
+    // ERC1155Assets(address,uint256[],uint256[],bytes)
+    bytes4 constant private ERC1155_PROXY_ID = 0xa7cb5fb7;
 
     // EIP191 header for EIP712 prefix
     string constant internal EIP191_HEADER = "\x19\x01";
@@ -253,14 +261,13 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
     }
 
     function validateOrder(IExchange.Order memory _order, uint256 _fillAmountRemaining) internal view {
+        require(_order.takerAssetData.equals(encodeTakerAssetData()));
+        require(_order.takerAssetAmount == _order.makerAssetAmount);
         (IERC1155 _zeroXTradeTokenMaker, uint256 _tokenIdMaker) = getZeroXTradeTokenData(_order.makerAssetData);
-        (IERC1155 _zeroXTradeTokenTaker, uint256 _tokenIdTaker) = getZeroXTradeTokenData(_order.takerAssetData);
         (address _market, uint256 _price, uint8 _outcome, uint8 _type) = unpackTokenId(_tokenIdMaker);
         uint256 _numTicks = IMarket(_market).getNumTicks();
         uint256 _tradeInterval = TRADE_INTERVAL_VALUE / _numTicks;
         require(_fillAmountRemaining.isMultipleOf(_tradeInterval), "Order must be a multiple of the market trade increment");
-        require(_zeroXTradeTokenMaker == _zeroXTradeTokenTaker);
-        require(_tokenIdMaker == _tokenIdTaker);
         require(_zeroXTradeTokenMaker == this);
     }
 
@@ -276,7 +283,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         if (_order.makerAddress == _taker) {
             return _amount;
         }
-        (uint256 _amountRemaining, uint256 _fees) = fillOrder.fillZeroXOrder(IMarket(_augurOrderData.marketAddress), _augurOrderData.outcome, IERC20(_augurOrderData.kycToken), _augurOrderData.price, Order.Types(_augurOrderData.orderType), _order.makerAddress, _amount, _fingerprint, _tradeGroupId, _taker);
+        (uint256 _amountRemaining, uint256 _fees) = fillOrder.fillZeroXOrder(IMarket(_augurOrderData.marketAddress), _augurOrderData.outcome, _augurOrderData.price, Order.Types(_augurOrderData.orderType), _order.makerAddress, _amount, _fingerprint, _tradeGroupId, _taker);
         _amountFilled = _amount.sub(_amountRemaining);
         logOrderFilled(_order, _augurOrderData, _taker, _tradeGroupId, _amountFilled, _fees);
         return _amountFilled;
@@ -284,12 +291,11 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
 
     function logOrderFilled(IExchange.Order memory _order, AugurOrderData memory _augurOrderData, address _taker, bytes32 _tradeGroupId, uint256 _amountFilled, uint256 _fees) private {
         bytes32 _orderHash = exchange.getOrderInfo(_order).orderHash;
-        address[] memory _addressData = new address[](3);
+        address[] memory _addressData = new address[](2);
         uint256[] memory _uint256Data = new uint256[](10);
         Order.Types _orderType = Order.Types(_augurOrderData.orderType);
-        _addressData[0] = _augurOrderData.kycToken;
-        _addressData[1] = _order.makerAddress;
-        _addressData[2] = _taker;
+        _addressData[0] = _order.makerAddress;
+        _addressData[1] = _taker;
         _uint256Data[0] = _augurOrderData.price;
         _uint256Data[1] = 0;
         _uint256Data[2] = _augurOrderData.outcome;
@@ -309,21 +315,51 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         return transferFromAllowed;
     }
 
-    /// @dev Encode ERC-1155 asset data into the format described in the AssetProxy contract specification.
+    /// @dev Encode MultiAsset proxy asset data into the format described in the AssetProxy contract specification.
     /// @param _market The address of the market to trade on
     /// @param _price The price used to trade
     /// @param _outcome The outcome to trade on
     /// @param _type Either BID == 0 or ASK == 1
-    /// @param _kycToken The kycToken used to restrict filling this order
     /// @return AssetProxy-compliant asset data describing the set of assets.
     function encodeAssetData(
         IMarket _market,
         uint256 _price,
         uint8 _outcome,
-        uint8 _type,
-        IERC20 _kycToken
+        uint8 _type
     )
         public
+        view
+        returns (bytes memory _assetData)
+    {
+        bytes[] memory _nestedAssetData = new bytes[](3);
+        uint256[] memory _multiAssetValues = new uint256[](3);
+        _nestedAssetData[0] = encodeTradeAssetData(_market, _price, _outcome, _type);
+        _nestedAssetData[1] = encodeCashAssetData();
+        _nestedAssetData[2] = encodeShareAssetData();
+        _multiAssetValues[0] = 1;
+        _multiAssetValues[1] = 0;
+        _multiAssetValues[2] = 0;
+        bytes memory _data = abi.encodeWithSelector(
+            MULTI_ASSET_PROXY_ID,
+            _multiAssetValues,
+            _nestedAssetData
+        );
+        return _data;
+    }
+
+    /// @dev Encode ERC-1155 asset data into the format described in the AssetProxy contract specification.
+    /// @param _market The address of the market to trade on
+    /// @param _price The price used to trade
+    /// @param _outcome The outcome to trade on
+    /// @param _type Either BID == 0 or ASK == 1
+    /// @return AssetProxy-compliant asset data describing the set of assets.
+    function encodeTradeAssetData(
+        IMarket _market,
+        uint256 _price,
+        uint8 _outcome,
+        uint8 _type
+    )
+        private
         view
         returns (bytes memory _assetData)
     {
@@ -342,10 +378,62 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
             _callbackData
         );
 
-        uint256 _assetDataLength = _assetData.length;
+        return _assetData;
+    }
 
-        // We must pad the kycToken as the 0x exchnage requires the assetData be a multiple of 32 not counting the selector
-        _assetData = abi.encodePacked(_assetData, bytes32(uint256(address(_kycToken))));
+    /// @dev Encode ERC-20 asset data into the format described in the AssetProxy contract specification.
+    /// @return AssetProxy-compliant asset data describing the set of assets.
+    function encodeCashAssetData()
+        private
+        view
+        returns (bytes memory _assetData)
+    {
+        _assetData = abi.encodeWithSelector(
+            ERC20_PROXY_ID,
+            address(cash)
+        );
+
+        return _assetData;
+    }
+
+    /// @dev Encode ERC-1155 asset data into the format described in the AssetProxy contract specification.
+    /// @return AssetProxy-compliant asset data describing the set of assets.
+    function encodeShareAssetData()
+        private
+        view
+        returns (bytes memory _assetData)
+    {
+        uint256[] memory _tokenIds = new uint256[](0);
+        uint256[] memory _tokenValues = new uint256[](0);
+        bytes memory _callbackData = new bytes(0);
+        _assetData = abi.encodeWithSelector(
+            ERC1155_PROXY_ID,
+            address(shareToken),
+            _tokenIds,
+            _tokenValues,
+            _callbackData
+        );
+
+        return _assetData;
+    }
+
+    /// @dev Encode ERC-1155 asset data into the format described in the AssetProxy contract specification.
+    /// @return AssetProxy-compliant asset data describing the set of assets.
+    function encodeTakerAssetData()
+        private
+        view
+        returns (bytes memory _assetData)
+    {
+        uint256[] memory _tokenIds = new uint256[](0);
+        uint256[] memory _tokenValues = new uint256[](0);
+        bytes memory _callbackData = new bytes(0);
+        _assetData = abi.encodeWithSelector(
+            ERC1155_PROXY_ID,
+            address(this),
+            _tokenIds,
+            _tokenValues,
+            _callbackData
+        );
 
         return _assetData;
     }
@@ -367,9 +455,9 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         }
     }
 
-    /// @dev Decode ERC-1155 asset data from the format described in the AssetProxy contract specification.
+    /// @dev Decode MultiAsset asset data from the format described in the AssetProxy contract specification.
     /// @param _assetData AssetProxy-compliant asset data describing an ERC-1155 set of assets.
-    /// @return The ERC-1155 AssetProxy identifier, the address of the ERC-1155
+    /// @return The ERC-1155 AssetProxy identifier, the address of this ERC-1155
     /// contract hosting the assets, an array of the identifiers of the
     /// assets to be traded, an array of asset amounts to be traded, and
     /// callback data.  Each element of the arrays corresponds to the
@@ -378,14 +466,63 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
     /// the input parameter `assetData`.
     function decodeAssetData(bytes memory _assetData)
         public
+        view
+        returns (
+            bytes4 _assetProxyId,
+            address _tokenAddress,
+            uint256[] memory _tokenIds,
+            uint256[] memory _tokenValues,
+            bytes memory _callbackData
+        )
+    {
+         // Read the bytes4 from array memory
+        assembly {
+            _assetProxyId := mload(add(_assetData, 32))
+            // Solidity does not require us to clean the trailing bytes. We do it anyway
+            _assetProxyId := and(_assetProxyId, 0xFFFFFFFF00000000000000000000000000000000000000000000000000000000)
+        }
+
+        require(_assetProxyId == MULTI_ASSET_PROXY_ID, "WRONG_PROXY_ID");
+
+        uint256[] memory _amounts;
+        bytes[] memory _nestedAssetData;
+
+        // Slice the selector off the asset data
+        bytes memory _noSelectorAssetData = _assetData.slice(4, _assetData.length);
+
+        (_amounts, _nestedAssetData) = abi.decode(_noSelectorAssetData, (uint256[], bytes[]));
+        
+        // Validate storage refs against the decoded values.
+        {
+            require(_amounts.length == 3);
+            require(_amounts[0] == 1);
+            require(_amounts[1] == 0);
+            require(_amounts[2] == 0);
+            require(_nestedAssetData[1].equals(encodeCashAssetData()));
+            require(_nestedAssetData[2].equals(encodeShareAssetData()));
+        }
+
+        return decodeTradeAssetData(_nestedAssetData[0]);
+    }
+
+    /// @dev Decode ERC-1155 asset data from the format described in the AssetProxy contract specification.
+    /// @param _assetData AssetProxy-compliant asset data describing an ERC-1155 set of assets.
+    /// @return The ERC-1155 AssetProxy identifier, the address of this ERC-1155
+    /// contract hosting the assets, an array of the identifiers of the
+    /// assets to be traded, an array of asset amounts to be traded, and
+    /// callback data.  Each element of the arrays corresponds to the
+    /// same-indexed element of the other array.  Return values specified as
+    /// `memory` are returned as pointers to locations within the memory of
+    /// the input parameter `assetData`.
+    function decodeTradeAssetData(bytes memory _assetData)
+        public
         pure
         returns (
             bytes4 _assetProxyId,
             address _tokenAddress,
             uint256[] memory _tokenIds,
             uint256[] memory _tokenValues,
-            bytes memory _callbackData,
-            address _kycToken
+            bytes memory _callbackData
         )
     {
          // Read the bytes4 from array memory
@@ -399,8 +536,6 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
 
         assembly {
             let _length := mload(_assetData)
-            // The kycToken is just appended to the end of the normally abi encoded data
-            _kycToken := mload(add(_assetData, _length))
             // Skip the length (of bytes variable) and the selector to get to the first parameter.
             _assetData := add(_assetData, 36)
             // Read the value of the first parameter:
@@ -415,38 +550,36 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
             _tokenAddress,
             _tokenIds,
             _tokenValues,
-            _callbackData,
-            _kycToken
+            _callbackData
         );
     }
 
     function parseOrderData(IExchange.Order memory _order) public view returns (AugurOrderData memory _data) {
-        (bytes4 _assetProxyId, address _tokenAddress, uint256[] memory _tokenIds, uint256[] memory _tokenValues, bytes memory _callbackData, address _kycToken) = decodeAssetData(_order.makerAssetData);
+        (bytes4 _assetProxyId, address _tokenAddress, uint256[] memory _tokenIds, uint256[] memory _tokenValues, bytes memory _callbackData) = decodeAssetData(_order.makerAssetData);
         (address _market, uint256 _price, uint8 _outcome, uint8 _type) = unpackTokenId(_tokenIds[0]);
         _data.marketAddress = _market;
         _data.price = _price;
         _data.orderType = _type;
         _data.outcome = _outcome;
-        _data.kycToken = _kycToken;
     }
 
-    function getZeroXTradeTokenData(bytes memory _assetData) public pure returns (IERC1155 _token, uint256 _tokenId) {
-        (bytes4 _assetProxyId, address _tokenAddress, uint256[] memory _tokenIds, uint256[] memory _tokenValues, bytes memory _callbackData, address _kycToken) = decodeAssetData(_assetData);
+    function getZeroXTradeTokenData(bytes memory _assetData) public view returns (IERC1155 _token, uint256 _tokenId) {
+        (bytes4 _assetProxyId, address _tokenAddress, uint256[] memory _tokenIds, uint256[] memory _tokenValues, bytes memory _callbackData) = decodeAssetData(_assetData);
         _tokenId = _tokenIds[0];
         _token = IERC1155(_tokenAddress);
     }
 
-    function getTokenIdFromOrder(IExchange.Order memory _order) public pure returns (uint256 _tokenId) {
-        (bytes4 _assetProxyId, address _tokenAddress, uint256[] memory _tokenIds, uint256[] memory _tokenValues, bytes memory _callbackData, address _kycToken) = decodeAssetData(_order.makerAssetData);
+    function getTokenIdFromOrder(IExchange.Order memory _order) public view returns (uint256 _tokenId) {
+        (bytes4 _assetProxyId, address _tokenAddress, uint256[] memory _tokenIds, uint256[] memory _tokenValues, bytes memory _callbackData) = decodeAssetData(_order.makerAssetData);
         _tokenId = _tokenIds[0];
     }
 
-    function createZeroXOrder(uint8 _type, uint256 _attoshares, uint256 _price, address _market, uint8 _outcome, address _kycToken, uint256 _expirationTimeSeconds, uint256 _salt) public view returns (IExchange.Order memory _zeroXOrder, bytes32 _orderHash) {
-        return createZeroXOrderFor(msg.sender, _type, _attoshares, _price, _market, _outcome, _kycToken, _expirationTimeSeconds, _salt);
+    function createZeroXOrder(uint8 _type, uint256 _attoshares, uint256 _price, address _market, uint8 _outcome, uint256 _expirationTimeSeconds, uint256 _salt) public view returns (IExchange.Order memory _zeroXOrder, bytes32 _orderHash) {
+        return createZeroXOrderFor(msg.sender, _type, _attoshares, _price, _market, _outcome, _expirationTimeSeconds, _salt);
     }
 
-    function createZeroXOrderFor(address _maker, uint8 _type, uint256 _attoshares, uint256 _price, address _market, uint8 _outcome, address _kycToken, uint256 _expirationTimeSeconds, uint256 _salt) public view returns (IExchange.Order memory _zeroXOrder, bytes32 _orderHash) {
-        bytes memory _assetData = encodeAssetData(IMarket(_market), _price, _outcome, _type, IERC20(_kycToken));
+    function createZeroXOrderFor(address _maker, uint8 _type, uint256 _attoshares, uint256 _price, address _market, uint8 _outcome, uint256 _expirationTimeSeconds, uint256 _salt) public view returns (IExchange.Order memory _zeroXOrder, bytes32 _orderHash) {
+        bytes memory _assetData = encodeAssetData(IMarket(_market), _price, _outcome, _type);
         uint256 _numTicks = IMarket(_market).getNumTicks();
         uint256 _tradeInterval = TRADE_INTERVAL_VALUE / _numTicks;
         require(_attoshares.isMultipleOf(_tradeInterval), "Order must be a multiple of the market trade increment");
@@ -456,7 +589,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         _zeroXOrder.expirationTimeSeconds = _expirationTimeSeconds;
         _zeroXOrder.salt = _salt;
         _zeroXOrder.makerAssetData = _assetData;
-        _zeroXOrder.takerAssetData = _assetData;
+        _zeroXOrder.takerAssetData = encodeTakerAssetData();
         _orderHash = exchange.getOrderInfo(_zeroXOrder).orderHash;
     }
 

@@ -165,7 +165,7 @@ def test_create_bid_with_shares_fill_with_shares(contractsFixture, cash, market,
     # 3. fill BID order for YES with shares of YES
     orderFilledEventLog = {
 	    "eventType": 2,
-	    "addressData": [nullAddress, contractsFixture.accounts[1] , contractsFixture.accounts[2]],
+	    "addressData": [contractsFixture.accounts[1] , contractsFixture.accounts[2]],
 	    "uint256Data": [60, 0, YES, 0, 0, completeSetFees, fix(12),  contractsFixture.contracts['Time'].getTimestamp(), 0, 0],
     }
     with AssertLog(contractsFixture, 'OrderEvent', orderFilledEventLog):

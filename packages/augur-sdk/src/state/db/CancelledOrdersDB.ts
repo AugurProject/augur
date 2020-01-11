@@ -27,8 +27,7 @@ export class CancelledOrdersDB extends DerivedDB {
       market,
       price,
       outcome,
-      orderType,
-      kycToken
+      orderType
     } = ZeroXOrders.parseAssetData(makerAssetData);
 
     const cancelledOrderLog: CancelledOrderLog = {
@@ -40,7 +39,6 @@ export class CancelledOrdersDB extends DerivedDB {
       price,
       outcome,
       orderType,
-      kycToken,
       blockNumber,
     };
     return cancelledOrderLog as unknown as ParsedLog;

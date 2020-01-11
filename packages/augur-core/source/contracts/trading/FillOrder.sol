@@ -47,7 +47,6 @@ library Trade {
     struct FilledOrder {
         bytes32 orderId;
         uint256 outcome;
-        IERC20 kycToken;
         uint256 sharePriceRange;
         uint256 sharePriceLong;
         uint256 sharePriceShort;
@@ -77,7 +76,6 @@ library Trade {
     struct OrderData {
         IMarket market;
         uint256 outcome;
-        IERC20 kycToken;
         uint256 price;
         Order.Types orderType;
         uint256 sharesEscrowed;
@@ -98,7 +96,7 @@ library Trade {
 
     function createWithData(StoredContracts memory _storedContracts, OrderData memory _orderData, address _fillerAddress, uint256 _fillerSize, bytes32 _fingerprint) internal view returns (Data memory) {
         Contracts memory _contracts = getContracts(_storedContracts, _orderData.market, _orderData.outcome);
-        FilledOrder memory _order = getOrder(_contracts, _orderData.outcome, _orderData.kycToken, _orderData.price, _orderData.orderId);
+        FilledOrder memory _order = getOrder(_contracts, _orderData.outcome, _orderData.price, _orderData.orderId);
         Participant memory _creator = getMaker(_orderData.sharesEscrowed, _orderData.amount, _orderData.creator, _orderData.orderType);
         uint256[] memory _shortOutcomes = getShortOutcomes(_contracts.market, _orderData.outcome);
         Participant memory _filler = getFiller(_contracts, _orderData.outcome, _shortOutcomes, _orderData.orderType, _fillerAddress, _fillerSize);
@@ -125,7 +123,6 @@ library Trade {
         return OrderData({
             market: _orders.getMarket(_orderId),
             outcome: _orders.getOutcome(_orderId),
-            kycToken: _orders.getKYCToken(_orderId),
             price: _orders.getPrice(_orderId),
             orderType: _orders.getOrderType(_orderId),
             sharesEscrowed: _orders.getOrderSharesEscrowed(_orderId),
@@ -135,13 +132,12 @@ library Trade {
         });
     }
 
-    function createOrderData(IShareToken _shareToken, IMarket _market, uint256 _outcome, IERC20 _kycToken, uint256 _price, Order.Types _orderType, uint256 _amount, address _creator) internal view returns (OrderData memory) {
+    function createOrderData(IShareToken _shareToken, IMarket _market, uint256 _outcome, uint256 _price, Order.Types _orderType, uint256 _amount, address _creator) internal view returns (OrderData memory) {
         uint256 _sharesAvailable = getSharesAvailable(_shareToken, _market, _orderType, _outcome, _amount, _creator);
 
         return OrderData({
             market: _market,
             outcome: _outcome,
-            kycToken: _kycToken,
             price: _price,
             orderType: _orderType,
             sharesEscrowed: _sharesAvailable,
@@ -369,7 +365,7 @@ library Trade {
         });
     }
 
-    function getOrder(Contracts memory _contracts, uint256 _outcome, IERC20 _kycToken, uint256 _price, bytes32 _orderId) private view returns (FilledOrder memory) {
+    function getOrder(Contracts memory _contracts, uint256 _outcome, uint256 _price, bytes32 _orderId) private view returns (FilledOrder memory) {
         uint256 _sharePriceRange;
         uint256 _sharePriceLong;
         uint256 _sharePriceShort;
@@ -377,7 +373,6 @@ library Trade {
         return FilledOrder({
             orderId: _orderId,
             outcome: _outcome,
-            kycToken: _kycToken,
             sharePriceRange: _sharePriceRange,
             sharePriceLong: _sharePriceLong,
             sharePriceShort: _sharePriceShort
@@ -483,8 +478,6 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
      */
     function publicFillOrder(bytes32 _orderId, uint256 _amountFillerWants, bytes32 _tradeGroupId, bytes32 _fingerprint) external returns (uint256) {
         address _filler = msg.sender;
-        IERC20 _kycToken = storedContracts.orders.getKYCToken(_orderId);
-        require(_kycToken == IERC20(0) || _kycToken.balanceOf(_filler) > 0, "FillOrder.fillOrder: KYC token failure");
         Trade.Data memory _tradeData = Trade.create(storedContracts, _orderId, _filler, _amountFillerWants, _fingerprint);
         (uint256 _amountRemaining, uint256 _fees) = fillOrderInternal(_filler, _tradeData, _amountFillerWants, _tradeGroupId);
         _tradeData.contracts.market.assertBalances();
@@ -493,18 +486,15 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
 
     function fillOrder(address _filler, bytes32 _orderId, uint256 _amountFillerWants, bytes32 _tradeGroupId, bytes32 _fingerprint) external returns (uint256) {
         require(msg.sender == trade);
-        IERC20 _kycToken = storedContracts.orders.getKYCToken(_orderId);
-        require(_kycToken == IERC20(0) || _kycToken.balanceOf(_filler) > 0, "FillOrder.fillOrder: KYC token failure");
         Trade.Data memory _tradeData = Trade.create(storedContracts, _orderId, _filler, _amountFillerWants, _fingerprint);
         (uint256 _amountRemaining, uint256 _fees) = fillOrderInternal(_filler, _tradeData, _amountFillerWants, _tradeGroupId);
         return _amountRemaining;
     }
 
-    function fillZeroXOrder(IMarket _market, uint256 _outcome, IERC20 _kycToken, uint256 _price, Order.Types _orderType, address _creator, uint256 _amount, bytes32 _fingerprint, bytes32 _tradeGroupId, address _filler) external returns (uint256 _amountRemaining, uint256 _fees) {
+    function fillZeroXOrder(IMarket _market, uint256 _outcome, uint256 _price, Order.Types _orderType, address _creator, uint256 _amount, bytes32 _fingerprint, bytes32 _tradeGroupId, address _filler) external returns (uint256 _amountRemaining, uint256 _fees) {
         require(msg.sender == zeroXTrade);
         require(augur.isKnownMarket(_market));
-        require(_kycToken == IERC20(0) || _kycToken.balanceOf(_filler) > 0, "FillOrder.fillOrder: KYC token failure");
-        Trade.OrderData memory _orderData = Trade.createOrderData(storedContracts.shareToken, _market, _outcome, _kycToken, _price, _orderType, _amount, _creator);
+        Trade.OrderData memory _orderData = Trade.createOrderData(storedContracts.shareToken, _market, _outcome, _price, _orderType, _amount, _creator);
         Trade.Data memory _tradeData = Trade.createWithData(storedContracts, _orderData, _filler, _amount, _fingerprint);
         return fillOrderInternal(_filler, _tradeData, _amount, _tradeGroupId);
     }
