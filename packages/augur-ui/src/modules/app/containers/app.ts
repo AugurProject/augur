@@ -44,6 +44,7 @@ const mapStateToProps = state => {
     restoredAccount: state.authStatus.restoredAccount,
     isMobile: state.appStatus.isMobile,
     isMobileSmall: state.appStatus.isMobileSmall,
+    isHelpMenuOpen: state.appStatus.isHelpMenuOpen,
     loginAccount: state.loginAccount,
     modal: state.modal,
     toasts: alerts.filter(alert => alert.toast && !alert.seen),
@@ -60,8 +61,8 @@ const mapDispatchToProps = dispatch => ({
   initAugur: (history, overrides, cb) =>
     dispatch(initAugur(history, overrides, cb)),
   updateIsMobile: isMobile => dispatch(updateAppStatus(IS_MOBILE, isMobile)),
-  updateIsMobileSmall: isMobileSmall =>
-    dispatch(updateAppStatus(IS_MOBILE_SMALL, isMobileSmall)),
+  updateHelpMenuState: isHelpMenuOpen => dispatch(updateAppStatus(IS_HELP_MENU_OPEN, isHelpMenuOpen)),
+  updateIsMobileSmall: isMobileSmall => dispatch(updateAppStatus(IS_MOBILE_SMALL, isMobileSmall)),
   updateModal: modal => dispatch(updateModal(modal)),
   finalizeMarket: marketId => dispatch(sendFinalizeMarket(marketId)),
   logout: () => dispatch(logout()),
