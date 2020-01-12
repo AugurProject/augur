@@ -1806,18 +1806,29 @@ div.error > div > div > div > div > input {
   user-select: none;
   cursor: pointer;
 
+  @media @breakpoint-mobile {
+    margin: @size-21 0;
+  }
+
   > span:first-of-type {
     .text-11;
 
     color: @color-primary-text;
     display: flex;
+    line-height: 100%;
 
     > svg {
       margin-right: @size-10;
     }
 
     @media @breakpoint-mobile {
-      .text-14;
+      .text-14-bold;
+
+      line-height: 100%;
+
+      > svg {
+        margin-right: @size-16;
+      }
     }
   }
 
