@@ -1,7 +1,7 @@
 import React, { Component, useState, useEffect, useReducer } from 'react';
 import classNames from 'classnames';
 
-import { SecondaryButton, ExternalLinkButton } from 'modules/common/buttons';
+import { SecondaryButton } from 'modules/common/buttons';
 import {
   TextInput,
   DatePicker,
@@ -30,6 +30,7 @@ import {
 import {
   buildformattedDate,
   convertUnixToFormattedDate,
+  minMarketEndTimeDay,
 } from 'utils/format-date';
 import MarkdownRenderer from 'modules/common/markdown-renderer';
 import {
@@ -341,6 +342,7 @@ interface DateTimeSelectorProps {
   subheader?: string;
   uniqueKey?: string;
   condensedStyle?: boolean;
+  isAfter: number;
 }
 
 interface TimeSelectorParams {
@@ -357,6 +359,8 @@ interface DatePickerSelectorProps {
   placeholder?: string;
   errorMessage?: string;
   condensedStyle?: boolean;
+  isAfter: number;
+  isBefore?: number;
 }
 
 export const DatePickerSelector = (props: DatePickerSelectorProps) => {
@@ -367,6 +371,8 @@ export const DatePickerSelector = (props: DatePickerSelectorProps) => {
     errorMessage,
     placeholder,
     condensedStyle,
+    isAfter,
+    isBefore
   } = props;
 
   const [dateFocused, setDateFocused] = useState(false);
@@ -382,8 +388,8 @@ export const DatePickerSelector = (props: DatePickerSelectorProps) => {
         onChange(date.startOf('day').unix());
       }}
       isOutsideRange={day =>
-        day.isAfter(moment(currentTimestamp * 1000).add(12, 'M')) ||
-        day.isBefore(moment(currentTimestamp * 1000 - 86000))
+        day.isAfter(moment.unix(isAfter)) ||
+        day.isBefore(isBefore ? moment.unix(isBefore) : minMarketEndTimeDay())
       }
       numberOfMonths={1}
       onFocusChange={({ focused }) => {
@@ -414,6 +420,7 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
     subheader,
     uniqueKey,
     condensedStyle,
+    isAfter,
   } = props;
 
   const [dateFocused, setDateFocused] = useState(false);
@@ -449,8 +456,8 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
             onChange('setEndTime', date.startOf('day').unix());
           }}
           isOutsideRange={day =>
-            day.isAfter(moment(currentTimestamp * 1000).add(12, 'M')) ||
-            day.isBefore(moment(currentTimestamp * 1000 - 86000))
+            day.isBefore(minMarketEndTimeDay()) ||
+            day.isAfter(moment(isAfter * 1000))
           }
           numberOfMonths={1}
           onFocusChange={({ focused }) => {
@@ -750,10 +757,11 @@ interface InputFactoryProps {
   newMarket: NewMarket;
   currentTimestamp: number;
   inputs: TemplateInput[];
+  isAfter: number;
 }
 
 export const InputFactory = (props: InputFactoryProps) => {
-  const { input, inputIndex, onChange, newMarket, currentTimestamp } = props;
+  const { input, inputIndex, onChange, newMarket, currentTimestamp, isAfter } = props;
   const { template, outcomes, marketType, validations } = newMarket;
   const { inputs } = template;
 
@@ -824,6 +832,8 @@ export const InputFactory = (props: InputFactoryProps) => {
         currentTimestamp={currentTimestamp}
         placeholder={input.placeholder}
         setEndTime={input.setEndTime}
+        isBefore={input.type === TemplateInputType.DATESTART && currentTimestamp}
+        isAfter={isAfter}
         errorMessage={validations.inputs && validations.inputs[inputIndex]}
       />
     );
@@ -948,6 +958,7 @@ export const SimpleTimeSelector = (props: EstimatedStartSelectorProps) => {
       timezone={timezone}
       currentTimestamp={currentTime}
       endTimeFormatted={endTimeFormatted}
+      isAfter={props.isAfter}
       uniqueKey={'startTime'}
     />
   );
@@ -960,6 +971,7 @@ interface EstimatedStartSelectorProps {
   currentTime: number;
   onChange: Function;
   inputIndex: number;
+  isAfter: number;
 }
 
 export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
@@ -970,6 +982,7 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
     inputIndex,
     currentTime,
     onChange,
+    isAfter,
   } = props;
 
   const [endTime, setEndTime] = useState(
@@ -1096,6 +1109,7 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
         timezone={timezone}
         currentTimestamp={currentTime}
         endTimeFormatted={endTimeFormatted}
+        isAfter={isAfter}
         uniqueKey={'templateEstTime'}
       />
     </div>
@@ -1106,10 +1120,11 @@ export interface QuestionBuilderProps {
   newMarket: NewMarket;
   onChange: Function;
   currentTimestamp: number;
+  isAfter: number;
 }
 
 export const QuestionBuilder = (props: QuestionBuilderProps) => {
-  const { onChange, newMarket, currentTimestamp } = props;
+  const { onChange, newMarket, currentTimestamp, isAfter } = props;
   const { template, marketType } = newMarket;
   const question = template.question.split(' ');
   const inputs = template.inputs;
@@ -1158,6 +1173,7 @@ export const QuestionBuilder = (props: QuestionBuilderProps) => {
                     newMarket={newMarket}
                     currentTimestamp={currentTimestamp}
                     inputs={inputs}
+                    isAfter={isAfter}
                   />
                   {trailing !== '' && <span>{trailing}</span>}
                 </React.Fragment>
@@ -1175,6 +1191,7 @@ export const QuestionBuilder = (props: QuestionBuilderProps) => {
           currentTime={currentTimestamp}
           template={template}
           inputIndex={dateTimeIndex}
+          isAfter={props.isAfter}
         />
       )}
       {marketType === CATEGORICAL && (

@@ -116,6 +116,8 @@ interface FormProps {
   needsApproval: boolean;
   marketCreationStarted: Function;
   marketCreationSaved: Function;
+  hasBalance: boolean;
+  maxMarketEndTime: number;
 }
 
 interface FormState {
@@ -866,6 +868,7 @@ export default class Form extends React.Component<FormProps, FormState> {
                   {secondButton === CREATE && (
                     <PrimaryButton
                       text="Create"
+                      disabled={!this.props.hasBalance}
                       action={() => {
                         openCreateMarketModal(() => {
                           this.setState({ blockShown: true }, () => {

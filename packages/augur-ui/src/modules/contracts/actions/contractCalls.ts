@@ -93,6 +93,14 @@ export async function checkIsKnownUniverse(universeId: string) {
   return result;
 }
 
+let maxEndTime = null; // cache value
+export async function getMaxMarketEndTime(): Promise<number> {
+  const { contracts } = augurSdk.get();
+  if (!maxEndTime) {
+    maxEndTime = await contracts.augur.getMaximumMarketEndDate_();
+  }
+  return new BigNumber(maxEndTime).toNumber();
+}
 
 export async function convertV1ToV2Approve() {
   const { contracts } = augurSdk.get();
@@ -731,7 +739,6 @@ export async function createLiquidityOrder(order: MarketLiquidityOrder) {
     formatBytes32String(''),
     formatBytes32String(''),
     orderProperties.tradeGroupId,
-    NULL_ADDRESS
   );
 }
 
