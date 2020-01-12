@@ -16,7 +16,7 @@ export interface SDKConfiguration {
   sdk?: {
     ws: string,
   },
-  ethereum: {
+  ethereum?: {
     http: string
   },
   gnosis?: {

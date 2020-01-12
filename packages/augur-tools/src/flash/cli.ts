@@ -122,7 +122,7 @@ if (require.main === module) {
 
   if (args.mode === "interactive") {
     const vorpal = makeVorpalCLI(flash);
-    flash.setLogger(vorpal.log.bind(vorpal));
+    flash.log = vorpal.log.bind(vorpal);
     vorpal.show();
   } else if (args.network === "none") {
     flash.call(args.command, args).catch(console.error);
