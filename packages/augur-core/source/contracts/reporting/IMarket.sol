@@ -45,7 +45,7 @@ contract IMarket is IOwnable {
     function deriveMarketCreatorFeeAmount(uint256 _amount) public view returns (uint256);
     function recordMarketCreatorFees(uint256 _marketCreatorFees, address _sourceAccount, bytes32 _fingerprint) public returns (bool);
     function isContainerForReportingParticipant(IReportingParticipant _reportingParticipant) public view returns (bool);
-    function isInvalid() public view returns (bool);
+    function isFinalizedAsInvalid() public view returns (bool);
     function finalize() public returns (bool);
     function initialReporterWasCorrect() public view returns (bool);
     function designatedReporterShowed() public view returns (bool);

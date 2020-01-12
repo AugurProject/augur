@@ -11,8 +11,9 @@ def test_cashSender_usage():
                 continue
             with open(os.path.join(root, file), "r") as auto:
                 data = auto.read()
-                expectedOccurences = 0
-                if (file == "Market.sol"):
-                    expectedOccurences = 1
-                notFound = data.count("cash.transfer") == expectedOccurences
+                notFound = data.count("cash.transfer") == 0
                 assert notFound, "Contract %s has an unexpected cash.transfer in it" % file
+                notFound = data.count("cash.balanceOf") == 0
+                assert notFound, "Contract %s has an unexpected cash.balanceOf in it" % file
+                notFound = data.count("cash.allowance") == 0
+                assert notFound, "Contract %s has an unexpected cash.allowance in it" % file

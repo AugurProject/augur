@@ -18,13 +18,14 @@ import 'ROOT/reporting/Reporting.sol';
 import 'ROOT/reporting/IInitialReporter.sol';
 import 'ROOT/IWarpSync.sol';
 import 'ROOT/libraries/token/IERC1155.sol';
+import 'ROOT/CashSender.sol';
 
 
 /**
  * @title Market
  * @notice The contract which encapsulates event data and payout resolution for the event
  */
-contract Market is Initializable, Ownable, IMarket {
+contract Market is Initializable, Ownable, IMarket, CashSender {
     using SafeMathUint256 for uint256;
 
     // Constants
@@ -81,6 +82,7 @@ contract Market is Initializable, Ownable, IMarket {
         owner = _creator;
         repBondOwner = owner;
         cash.approve(address(_augur), MAX_APPROVAL_AMOUNT);
+        initializeCashSender(_augur.lookup("DaiVat"), address(cash));
         assessFees();
         endTime = _endTime;
         numOutcomes = _numOutcomes;
@@ -99,7 +101,7 @@ contract Market is Initializable, Ownable, IMarket {
         repBond = universe.getOrCacheMarketRepBond();
         require(getReputationToken().balanceOf(address(this)) >= repBond);
         if (owner != address(warpSync)) {
-            validityBondAttoCash = cash.balanceOf(address(this));
+            validityBondAttoCash = cashBalance(address(this));
             require(validityBondAttoCash >= universe.getOrCacheValidityBond());
             universe.deposit(address(this), validityBondAttoCash, address(this));
         }
@@ -112,8 +114,7 @@ contract Market is Initializable, Ownable, IMarket {
      */
     function increaseValidityBond(uint256 _attoCash) public returns (bool) {
         require(!isFinalized());
-        // NOTE: In the event of a MKR shutdown this may become impossible as the supply of DAI decreases.
-        cash.transferFrom(msg.sender, address(this), _attoCash);
+        cashTransferFrom(msg.sender, address(this), _attoCash);
         universe.deposit(address(this), _attoCash, address(this));
         validityBondAttoCash = validityBondAttoCash.add(_attoCash);
         return true;
@@ -376,7 +377,7 @@ contract Market is Initializable, Ownable, IMarket {
     function distributeMarketCreatorAndAffiliateFees(address _affiliateAddress) private {
         uint256 _marketCreatorFeesAttoCash = marketCreatorFeesAttoCash;
         marketCreatorFeesAttoCash = 0;
-        if (!isInvalid()) {
+        if (!isFinalizedAsInvalid()) {
             universe.withdraw(owner, _marketCreatorFeesAttoCash, address(this));
             if (_affiliateAddress != NULL_ADDRESS) {
                 withdrawAffiliateFees(_affiliateAddress);
@@ -394,7 +395,7 @@ contract Market is Initializable, Ownable, IMarket {
      * @return Bool True
      */
     function withdrawAffiliateFees(address _affiliate) public returns (bool) {
-        require(!isInvalid());
+        require(!isFinalizedAsInvalid());
         uint256 _affiliateBalance = affiliateFeesAttoCash[_affiliate];
         if (_affiliateBalance == 0) {
             return true;
@@ -591,7 +592,7 @@ contract Market is Initializable, Ownable, IMarket {
     /**
      * @return Bool indicating if the market resolved as anything other than Invalid
      */
-    function isInvalid() public view returns (bool) {
+    function isFinalizedAsInvalid() public view returns (bool) {
         require(isFinalized());
         if (isForkingMarket()) {
             return getWinningChildPayout(0) > 0;

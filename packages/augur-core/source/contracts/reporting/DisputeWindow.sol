@@ -72,7 +72,7 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow, Ca
 
         if (_validityBond >= _currentValidityBond / 2) {
             validityBondTotal = validityBondTotal.add(_validityBond);
-            if (_market.isInvalid()) {
+            if (_market.isFinalizedAsInvalid()) {
                 invalidMarketsTotal = invalidMarketsTotal.add(_validityBond);
             }
         }
@@ -131,7 +131,7 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow, Ca
             return true;
         }
 
-        uint256 _cashBalance = cash.balanceOf(address(this));
+        uint256 _cashBalance = cashBalance(address(this));
 
         // Burn tokens and send back REP
         uint256 _supply = totalSupply;
