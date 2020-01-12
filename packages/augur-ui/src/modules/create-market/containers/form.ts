@@ -17,22 +17,13 @@ import { addDraft, updateDraft } from "modules/create-market/actions/update-draf
 import { updateModal } from "modules/modal/actions/update-modal";
 import { NodeStyleCallback } from "modules/types";
 import { marketCreationStarted, marketCreationSaved } from "services/analytics/helpers";
-import { AppState } from "store";
-import { createBigNumber } from "utils/create-big-number";
 
-const mapStateToProps = (state: AppState) => {
-  const { loginAccount } = state;
-  const hasBalance = createBigNumber(loginAccount.balances.rep).gt(ZERO) &&
-  createBigNumber(loginAccount.balances.dai).gt(ZERO)
-
-  return {
-    hasBalance,
-    newMarket: state.newMarket,
-    currentTimestamp: getValue(state, "blockchain.currentAugurTimestamp"),
-    drafts: state.drafts,
-    needsApproval: state.loginAccount.allowance.lte(ZERO),
-    }
-};
+const mapStateToProps = state => ({
+  newMarket: state.newMarket,
+  currentTimestamp: getValue(state, "blockchain.currentAugurTimestamp"),
+  drafts: state.drafts,
+  needsApproval: state.loginAccount.allowance.lte(ZERO),
+});
 
 const mapDispatchToProps = dispatch => ({
   updateNewMarket: data => dispatch(updateNewMarket(data)),
