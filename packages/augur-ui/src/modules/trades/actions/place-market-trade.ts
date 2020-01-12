@@ -38,7 +38,6 @@ export const placeMarketTrade = ({
   const expirationTime = tradeInProgress.expirationTime ? createBigNumber(tradeInProgress.expirationTime) : undefined;
 
   const fingerprint = undefined; // TODO: get this from state
-  const kycToken = undefined; // TODO: figure out how kyc tokens are going to be handled
 
   placeTrade(
     orderType,
@@ -46,7 +45,6 @@ export const placeMarketTrade = ({
     market.numOutcomes,
     parseInt(outcomeId, 10),
     fingerprint,
-    kycToken,
     doNotCreateOrders,
     market.numTicks,
     market.minPrice,

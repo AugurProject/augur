@@ -18,10 +18,15 @@ import moment, { Moment } from 'moment';
 // 1. To recalculate liquidity metrics. This can be stale so when the derived market DB is synced it should not wait for this to complete (it will already have recorded liquidity data from previous syncs)
 // 2. To cache market orderbooks so a complete pull isnt needed on every subsequent load.
 
-const EXPECTED_ASSET_DATA_LENGTH = 650;
+const EXPECTED_ASSET_DATA_LENGTH = 2122;
 
 const DEFAULT_TRADE_INTERVAL = new BigNumber(10**17);
 const TRADE_INTERVAL_VALUE = new BigNumber(10**19);
+
+const multiAssetDataAbi: ParamType[] = [
+  { name: 'amounts', type: 'uint256[]' },
+  { name: 'nestedAssetData', type: 'bytes[]' },
+];
 
 // Original ABI from Go
 // [
@@ -52,7 +57,6 @@ export interface OrderData {
   price: string;
   outcome: string;
   orderType: string;
-  kycToken: string;
 }
 
 export interface Document extends BaseDocument {
@@ -97,6 +101,9 @@ export class ZeroXOrders extends AbstractTable {
   protected stateDB: DB;
   private augur: Augur;
   readonly tradeTokenAddress: string;
+  readonly cashAssetData: string;
+  readonly shareAssetData: string;
+  readonly takerAssetData: string;
 
   constructor(
     db: DB,
@@ -108,6 +115,11 @@ export class ZeroXOrders extends AbstractTable {
     this.stateDB = db;
     this.augur = augur;
     this.tradeTokenAddress = this.augur.addresses.ZeroXTrade.substr(2).toLowerCase(); // normalize and remove the 0x
+    const cashTokenAddress = this.augur.addresses.Cash.substr(2).toLowerCase(); // normalize and remove the 0x
+    const shareTokenAddress = this.augur.addresses.ShareToken.substr(2).toLowerCase(); // normalize and remove the 0x
+    this.cashAssetData = `0xf47261b0000000000000000000000000${cashTokenAddress}`;
+    this.shareAssetData = `0xa7cb5fb7000000000000000000000000${shareTokenAddress}000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000`;
+    this.takerAssetData = `0xa7cb5fb7000000000000000000000000${this.tradeTokenAddress}000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000`;
   }
 
   static async create(db: DB, networkId: number, augur: Augur): Promise<ZeroXOrders> {
@@ -181,9 +193,9 @@ export class ZeroXOrders extends AbstractTable {
   }
 
   validateOrder(order: OrderInfo): boolean {
+    if (!order.signedOrder.makerAssetAmount.eq(order.signedOrder.takerAssetAmount)) return false;
     if (order.signedOrder.makerAssetData.length !== EXPECTED_ASSET_DATA_LENGTH) return false;
-    if (order.signedOrder.makerAssetData !== order.signedOrder.takerAssetData) return false;
-    if (order.signedOrder.makerAssetData.substr(34, 40) !== this.tradeTokenAddress) return false;
+    if (order.signedOrder.takerAssetData !== this.takerAssetData) return false;
     return true;
   }
 
@@ -203,6 +215,19 @@ export class ZeroXOrders extends AbstractTable {
       return false;
     }
 
+    const multiAssetData = defaultAbiCoder.decode(multiAssetDataAbi, `0x${storedOrder.signedOrder.makerAssetData.slice(10)}`);
+    const amounts = multiAssetData[0] as BigNumber[];
+    if (amounts.length != 3) return false;
+    if (!amounts[0].eq(1)) return false;
+    if (!amounts[1].eq(0)) return false;
+    if (!amounts[2].eq(0)) return false;
+    const nestedAssetData = multiAssetData[1] as string[];
+    const tradeTokenAssetData = nestedAssetData[0];
+    const cashAssetData = nestedAssetData[1];
+    const shareAssetData = nestedAssetData[2];
+    if (tradeTokenAssetData.substr(34, 40) !== this.tradeTokenAddress) return false;
+    if (cashAssetData != this.cashAssetData) return false;
+    if (shareAssetData != this.shareAssetData) return false;
     return true;
   }
 
@@ -216,7 +241,6 @@ export class ZeroXOrders extends AbstractTable {
       price: augurOrderData.price,
       outcome: augurOrderData.outcome,
       orderType: augurOrderData.orderType,
-      kycToken: augurOrderData.kycToken,
       orderHash: order.orderHash,
       amount: order.fillableTakerAssetAmount.toFixed(),
       numberAmount: order.fillableTakerAssetAmount,
@@ -241,6 +265,12 @@ export class ZeroXOrders extends AbstractTable {
   }
 
   static parseAssetData(assetData: string): OrderData {
+    const multiAssetData = defaultAbiCoder.decode(multiAssetDataAbi, `0x${assetData.slice(10)}`);
+    const nestedAssetData = multiAssetData[1] as string[];
+    return ZeroXOrders.parseTradeAssetData(nestedAssetData[0]);
+  }
+
+  static parseTradeAssetData(assetData: string): OrderData {
     // Remove the first 10 characters because assetData is prefixed in 0x, and then contains a selector.
     // Drop the selector and add back to 0x prefix so the AbiDecoder will treat it properly as hex.
     const decoded = defaultAbiCoder.decode(erc1155AssetDataAbi, `0x${assetData.slice(10)}`);
@@ -248,7 +278,6 @@ export class ZeroXOrders extends AbstractTable {
     const ids = decoded[1] as BigNumber[];
     const values = decoded[2] as BigNumber[];
     const callbackData = decoded[3] as string;
-    const kycToken = getAddress(`0x${assetData.substr(-40, assetData.length)}`);
 
     if (ids.length !== 1) {
       throw new Error('More than one ID passed into 0x order');
@@ -268,7 +297,6 @@ export class ZeroXOrders extends AbstractTable {
       price: `0x${tokenid.substr(40, 20)}`,
       outcome: `0x${tokenid.substr(60, 2)}`,
       orderType: `0x${tokenid.substr(62, 2)}`,
-      kycToken,
     };
   }
 }

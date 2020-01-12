@@ -141,18 +141,17 @@ def test_basic_trading(contractsFixture, cash, market, universe):
     salt = 5
 
     # First we'll create a signed order
-    rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(BID, fix(20), 60, market.address, YES, nullAddress, expirationTime, salt)
+    rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(BID, fix(20), 60, market.address, YES, expirationTime, salt)
     signature = signOrder(orderHash, contractsFixture.privateKeys[0])
 
     assert zeroXExchange.isValidSignature(rawZeroXOrderData, orderHash, signature)
 
     # Validate the signed order state
-    marketAddress, price, outcome, orderType, kycToken = ZeroXTrade.parseOrderData(rawZeroXOrderData)
+    marketAddress, price, outcome, orderType = ZeroXTrade.parseOrderData(rawZeroXOrderData)
     assert marketAddress == market.address
     assert price == 60
     assert outcome == YES
     assert orderType == BID
-    assert kycToken == nullAddress
 
     fillAmount = fix(10)
     fingerprint = longTo32Bytes(11)
@@ -197,7 +196,7 @@ def test_cancelation(contractsFixture, cash, market, universe):
     salt = 5
 
     # First we'll create a signed order
-    rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(BID, fix(2), 60, market.address, YES, nullAddress, expirationTime, salt)
+    rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(BID, fix(2), 60, market.address, YES, expirationTime, salt)
     signature = signOrder(orderHash, contractsFixture.privateKeys[0])
 
     # Now lets cancel it
@@ -218,8 +217,8 @@ def test_cancelation(contractsFixture, cash, market, universe):
 
     # Now lets make and cancel several
     # First we'll create a signed order
-    rawZeroXOrderData1, orderHash1 = ZeroXTrade.createZeroXOrder(BID, fix(2), 60, market.address, YES, nullAddress, expirationTime, salt+1)
-    rawZeroXOrderData2, orderHash2 = ZeroXTrade.createZeroXOrder(BID, fix(2), 60, market.address, YES, nullAddress, expirationTime, salt+2)
+    rawZeroXOrderData1, orderHash1 = ZeroXTrade.createZeroXOrder(BID, fix(2), 60, market.address, YES, expirationTime, salt+1)
+    rawZeroXOrderData2, orderHash2 = ZeroXTrade.createZeroXOrder(BID, fix(2), 60, market.address, YES, expirationTime, salt+2)
 
     # Now lets cancel it
     zeroXExchange.batchCancelOrders([rawZeroXOrderData1,rawZeroXOrderData2])
@@ -242,14 +241,14 @@ def test_one_bid_on_books_buy_full_order(withSelf, contractsFixture, cash, marke
     sender = contractsFixture.accounts[2] if withSelf else contractsFixture.accounts[1]
     senderPrivateKey = contractsFixture.privateKeys[2] if withSelf else contractsFixture.privateKeys[1]
     cash.faucet(fix('2', '60'), sender=sender)
-    rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(BID, fix(2), 60, market.address, YES, nullAddress, expirationTime, salt, sender=sender)
+    rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(BID, fix(2), 60, market.address, YES, expirationTime, salt, sender=sender)
     signature = signOrder(orderHash, senderPrivateKey)
 
     # fill signed order
     orderEventLog = {
 	    "eventType": 2,
         "orderId": orderHash,
-	    "addressData": [nullAddress, contractsFixture.accounts[2] if withSelf else contractsFixture.accounts[1] , contractsFixture.accounts[2]],
+	    "addressData": [contractsFixture.accounts[2] if withSelf else contractsFixture.accounts[1] , contractsFixture.accounts[2]],
 	    "uint256Data": [60, 0, YES, 0, 0, 0, fix(2),  contractsFixture.contracts['Time'].getTimestamp(), 0, 0],
     }
     orders = [rawZeroXOrderData]
@@ -276,14 +275,14 @@ def test_one_bid_on_books_buy_partial_order(contractsFixture, cash, market):
 
     # create signed order
     cash.faucet(fix('2', '60'), sender=contractsFixture.accounts[1])
-    rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(BID, fix(2), 60, market.address, YES, nullAddress, expirationTime, salt, sender=contractsFixture.accounts[1])
+    rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(BID, fix(2), 60, market.address, YES, expirationTime, salt, sender=contractsFixture.accounts[1])
     signature = signOrder(orderHash, contractsFixture.privateKeys[1])
 
     # fill signed order
     orderEventLog = {
 	    "eventType": 2,
         "orderId": orderHash,
-	    "addressData": [nullAddress, contractsFixture.accounts[1], contractsFixture.accounts[2]],
+	    "addressData": [contractsFixture.accounts[1], contractsFixture.accounts[2]],
 	    "uint256Data": [60, 0, YES, 0, 0, 0, fix(1),  contractsFixture.contracts['Time'].getTimestamp(), 0, 0],
     }
     orders = [rawZeroXOrderData]
@@ -308,12 +307,12 @@ def test_two_bids_on_books_buy_both(contractsFixture, cash, market):
 
     # create signed order 1
     cash.faucet(fix('4', '60'), sender=contractsFixture.accounts[1])
-    rawZeroXOrderData1, orderHash1 = ZeroXTrade.createZeroXOrder(BID, fix(4), 60, market.address, YES, nullAddress, expirationTime, salt, sender=contractsFixture.accounts[1])
+    rawZeroXOrderData1, orderHash1 = ZeroXTrade.createZeroXOrder(BID, fix(4), 60, market.address, YES, expirationTime, salt, sender=contractsFixture.accounts[1])
     signature1 = signOrder(orderHash1, contractsFixture.privateKeys[1])
 
     # create signed order 2
     cash.faucet(fix('1', '60'), sender=contractsFixture.accounts[3])
-    rawZeroXOrderData2, orderHash2 = ZeroXTrade.createZeroXOrder(BID, fix(1), 60, market.address, YES, nullAddress, expirationTime, salt, sender=contractsFixture.accounts[3])
+    rawZeroXOrderData2, orderHash2 = ZeroXTrade.createZeroXOrder(BID, fix(1), 60, market.address, YES, expirationTime, salt, sender=contractsFixture.accounts[3])
     signature2 = signOrder(orderHash2, contractsFixture.privateKeys[3])
 
     orders = [rawZeroXOrderData1, rawZeroXOrderData2]
@@ -340,12 +339,12 @@ def test_two_bids_on_books_buy_full_and_partial(contractsFixture, cash, market, 
 
     # create signed order 1
     cash.faucet(fix('1', '60'), sender=contractsFixture.accounts[1])
-    rawZeroXOrderData1, orderHash1 = ZeroXTrade.createZeroXOrder(BID, fix(1), 60, market.address, YES, nullAddress, expirationTime, salt, sender=contractsFixture.accounts[1])
+    rawZeroXOrderData1, orderHash1 = ZeroXTrade.createZeroXOrder(BID, fix(1), 60, market.address, YES, expirationTime, salt, sender=contractsFixture.accounts[1])
     signature1 = signOrder(orderHash1, contractsFixture.privateKeys[1])
 
     # create signed order 2
     cash.faucet(fix('4', '60'), sender=contractsFixture.accounts[3])
-    rawZeroXOrderData2, orderHash2 = ZeroXTrade.createZeroXOrder(BID, fix(4), 60, market.address, YES, nullAddress, expirationTime, salt, sender=contractsFixture.accounts[3])
+    rawZeroXOrderData2, orderHash2 = ZeroXTrade.createZeroXOrder(BID, fix(4), 60, market.address, YES, expirationTime, salt, sender=contractsFixture.accounts[3])
     signature2 = signOrder(orderHash2, contractsFixture.privateKeys[3])
 
     orders = [rawZeroXOrderData1, rawZeroXOrderData2]
@@ -374,13 +373,13 @@ def test_one_ask_on_books_buy_full_order(contractsFixture, cash, market, univers
     sender = contractsFixture.accounts[1]
     senderPrivateKey = contractsFixture.privateKeys[1]
     cash.faucet(fix('2', '40'), sender=sender)
-    rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(ASK, fix(2), 60, market.address, YES, nullAddress, expirationTime, salt, sender=sender)
+    rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(ASK, fix(2), 60, market.address, YES, expirationTime, salt, sender=sender)
     signature = signOrder(orderHash, senderPrivateKey)
 
     # fill signed order
     orderEventLog = {
         "eventType": 2,
-        "addressData": [nullAddress, contractsFixture.accounts[1] , contractsFixture.accounts[2]],
+        "addressData": [contractsFixture.accounts[1] , contractsFixture.accounts[2]],
         "uint256Data": [60, 0, YES, 0, 0, 0, fix(2),  contractsFixture.contracts['Time'].getTimestamp(), 0, 0],
     }
     orders = [rawZeroXOrderData]
@@ -406,13 +405,13 @@ def test_one_ask_on_books_buy_partial_order(contractsFixture, cash, market, univ
     sender = contractsFixture.accounts[1]
     senderPrivateKey = contractsFixture.privateKeys[1]
     cash.faucet(fix('4', '40'), sender=sender)
-    rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(ASK, fix(4), 60, market.address, YES, nullAddress, expirationTime, salt, sender=sender)
+    rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(ASK, fix(4), 60, market.address, YES, expirationTime, salt, sender=sender)
     signature = signOrder(orderHash, senderPrivateKey)
 
     # fill signed order
     orderEventLog = {
         "eventType": 2,
-        "addressData": [nullAddress, contractsFixture.accounts[1] , contractsFixture.accounts[2]],
+        "addressData": [contractsFixture.accounts[1] , contractsFixture.accounts[2]],
         "uint256Data": [60, 0, YES, 0, 0, 0, fix(2),  contractsFixture.contracts['Time'].getTimestamp(), 0, 0],
     }
     orders = [rawZeroXOrderData]
@@ -436,12 +435,12 @@ def test_two_asks_on_books_buy_both(contractsFixture, cash, market, universe):
 
     # create signed order 1
     cash.faucet(fix('4', '40'), sender=contractsFixture.accounts[1])
-    rawZeroXOrderData1, orderHash1 = ZeroXTrade.createZeroXOrder(ASK, fix(4), 60, market.address, YES, nullAddress, expirationTime, salt, sender=contractsFixture.accounts[1])
+    rawZeroXOrderData1, orderHash1 = ZeroXTrade.createZeroXOrder(ASK, fix(4), 60, market.address, YES, expirationTime, salt, sender=contractsFixture.accounts[1])
     signature1 = signOrder(orderHash1, contractsFixture.privateKeys[1])
 
     # create signed order 2
     cash.faucet(fix('1', '40'), sender=contractsFixture.accounts[3])
-    rawZeroXOrderData2, orderHash2 = ZeroXTrade.createZeroXOrder(ASK, fix(1), 60, market.address, YES, nullAddress, expirationTime, salt, sender=contractsFixture.accounts[3])
+    rawZeroXOrderData2, orderHash2 = ZeroXTrade.createZeroXOrder(ASK, fix(1), 60, market.address, YES, expirationTime, salt, sender=contractsFixture.accounts[3])
     signature2 = signOrder(orderHash2, contractsFixture.privateKeys[3])
 
     orders = [rawZeroXOrderData1, rawZeroXOrderData2]
@@ -468,12 +467,12 @@ def test_two_asks_on_books_buy_full_and_partial(contractsFixture, cash, market):
 
     # create signed order 1
     cash.faucet(fix('1', '40'), sender=contractsFixture.accounts[1])
-    rawZeroXOrderData1, orderHash1 = ZeroXTrade.createZeroXOrder(ASK, fix(1), 60, market.address, YES, nullAddress, expirationTime, salt, sender=contractsFixture.accounts[1])
+    rawZeroXOrderData1, orderHash1 = ZeroXTrade.createZeroXOrder(ASK, fix(1), 60, market.address, YES, expirationTime, salt, sender=contractsFixture.accounts[1])
     signature1 = signOrder(orderHash1, contractsFixture.privateKeys[1])
 
     # create signed order 2
     cash.faucet(fix('4', '40'), sender=contractsFixture.accounts[3])
-    rawZeroXOrderData2, orderHash2 = ZeroXTrade.createZeroXOrder(ASK, fix(4), 60, market.address, YES, nullAddress, expirationTime, salt, sender=contractsFixture.accounts[3])
+    rawZeroXOrderData2, orderHash2 = ZeroXTrade.createZeroXOrder(ASK, fix(4), 60, market.address, YES, expirationTime, salt, sender=contractsFixture.accounts[3])
     signature2 = signOrder(orderHash2, contractsFixture.privateKeys[3])
 
     orders = [rawZeroXOrderData1, rawZeroXOrderData2]
@@ -508,7 +507,7 @@ def test_take_order_with_shares_buy_with_cash(contractsFixture, cash, market, un
 
     # create signed order
     cash.faucet(fix('1', '40'), sender=account)
-    rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(ASK, fix(1), 60, market.address, YES, nullAddress, expirationTime, salt, sender=account)
+    rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(ASK, fix(1), 60, market.address, YES, expirationTime, salt, sender=account)
     signature = signOrder(orderHash, contractsFixture.privateKeys[1])
 
     # fill order with cash and see that the creator has shares taken
@@ -527,7 +526,6 @@ def test_take_best_order_with_shares_escrowed_buy_with_shares_categorical(contra
     ZeroXTrade = contractsFixture.contracts['ZeroXTrade']
     zeroXExchange = contractsFixture.contracts["ZeroXExchange"]
     shareToken = contractsFixture.contracts['ShareToken']
-    shareToken = contractsFixture.contracts["ShareToken"]
     expirationTime = contractsFixture.contracts['Time'].getTimestamp() + 10000
     salt = 5
     tradeGroupID = longTo32Bytes(42)
@@ -544,7 +542,7 @@ def test_take_best_order_with_shares_escrowed_buy_with_shares_categorical(contra
     assert shareToken.balanceOfMarketOutcome(market.address, 2, contractsFixture.accounts[1]) == shareToken.balanceOfMarketOutcome(market.address, 2, contractsFixture.accounts[2]) == fix(1)
 
     # create signed order
-    rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(ASK, fix(1), 60, market.address, 0, nullAddress, expirationTime, salt, sender=contractsFixture.accounts[1])
+    rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(ASK, fix(1), 60, market.address, 0, expirationTime, salt, sender=contractsFixture.accounts[1])
     signature = signOrder(orderHash, contractsFixture.privateKeys[1])
 
     # fill order with shares and see payouts occur
@@ -611,7 +609,7 @@ def test_fees_from_trades(finalized, invalid, contractsFixture, cash, market, un
     assert shareToken.balanceOfMarketOutcome(market.address, 1, contractsFixture.accounts[1]) == shareToken.balanceOfMarketOutcome(market.address, 1, contractsFixture.accounts[2]) == fix(1)
 
     # create order with shares
-    rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(ASK, fix(1), 60, market.address, 0, nullAddress, expirationTime, salt, sender=contractsFixture.accounts[1])
+    rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(ASK, fix(1), 60, market.address, 0, expirationTime, salt, sender=contractsFixture.accounts[1])
     signature = signOrder(orderHash, contractsFixture.privateKeys[1])
     orders = [rawZeroXOrderData]
     signatures = [signature]
@@ -675,44 +673,6 @@ def test_fees_from_trades(finalized, invalid, contractsFixture, cash, market, un
         with TokenDelta(cash, 0, contractsFixture.accounts[3], "Affiliate double received fees"):
             market.withdrawAffiliateFees(contractsFixture.accounts[3])
 
-def test_kyc_token(contractsFixture, cash, market, universe, reputationToken):
-    ZeroXTrade = contractsFixture.contracts['ZeroXTrade']
-    shareToken = contractsFixture.contracts['ShareToken']
-    expirationTime = contractsFixture.contracts['Time'].getTimestamp() + 10000
-    salt = 5
-    tradeGroupID = longTo32Bytes(42)
-
-    # Using the reputation token as "KYC"
-    reputationToken.transfer(contractsFixture.accounts[1], 1)
-
-    # create signed order
-    cash.faucet(fix('1', '40'), sender=contractsFixture.accounts[1])
-    rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(ASK, fix(1), 60, market.address, YES, reputationToken.address, expirationTime, salt, sender=contractsFixture.accounts[1])
-    signature = signOrder(orderHash, contractsFixture.privateKeys[1])
-    orders = [rawZeroXOrderData]
-    signatures = [signature]
-
-    # Confirm encoding and decoding functions for the kyc token
-    assetData = ZeroXTrade.encodeAssetData(market.address, 60, YES, ASK, reputationToken.address)
-    (proxyId, tokenAddress, tokenIds, tokenValues, callbackData, kycToken) = ZeroXTrade.decodeAssetData(assetData)
-    assert tokenAddress == ZeroXTrade.address
-    assert kycToken == reputationToken.address
-
-    # without the kyc token we cannot fill the order
-    cash.faucet(fix('1', '60'), sender=contractsFixture.accounts[2])
-    with raises(TransactionFailed):
-        ZeroXTrade.trade(fix(1), longTo32Bytes(11), tradeGroupID, orders, signatures, sender=contractsFixture.accounts[2], value=150000) == 0
-
-    reputationToken.transfer(contractsFixture.accounts[2], 1)
-
-    # fill order
-    with TokenDelta(cash, -fix(1, 40), contractsFixture.accounts[1], "Creator cash not received"):
-        with TokenDelta(cash, -fix(1, 60), contractsFixture.accounts[2], "Taker cash not taken"):
-            assert ZeroXTrade.trade(fix(1), longTo32Bytes(11), tradeGroupID, orders, signatures, sender=contractsFixture.accounts[2], value=150000) == 0
-
-    assert shareToken.balanceOfMarketOutcome(market.address, YES, contractsFixture.accounts[2]) == fix(1)
-    assert shareToken.balanceOfMarketOutcome(market.address, NO, contractsFixture.accounts[1]) == fix(1)
-
 def test_order_creator_lacks_funds(contractsFixture, cash, market, universe):
     ZeroXTrade = contractsFixture.contracts['ZeroXTrade']
     shareToken = contractsFixture.contracts['ShareToken']
@@ -722,7 +682,7 @@ def test_order_creator_lacks_funds(contractsFixture, cash, market, universe):
     tradeGroupID = longTo32Bytes(42)
 
     # create signed order
-    rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(ASK, fix(1), 60, market.address, YES, nullAddress, expirationTime, salt, sender=contractsFixture.accounts[1])
+    rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(ASK, fix(1), 60, market.address, YES, expirationTime, salt, sender=contractsFixture.accounts[1])
     signature = signOrder(orderHash, contractsFixture.privateKeys[1])
     orders = [rawZeroXOrderData]
     signatures = [signature]
@@ -748,7 +708,6 @@ def test_devutils_GetOrderRelevantStates(contractsFixture, cash, market, univers
         60,
         market.address,
         YES,
-        nullAddress,
         expirationTime,
         salt,
         sender=contractsFixture.accounts[1])
@@ -773,7 +732,7 @@ def test_order_non_valid_market(contractsFixture, cash, market, universe):
     # create signed order
     badMarket = cash.address
     with raises(TransactionFailed):
-        ZeroXTrade.createZeroXOrder(ASK, fix(1), 60, badMarket, YES, nullAddress, expirationTime, salt, sender=contractsFixture.accounts[1])
+        ZeroXTrade.createZeroXOrder(ASK, fix(1), 60, badMarket, YES, expirationTime, salt, sender=contractsFixture.accounts[1])
 
 def test_fill_nothing_failure(contractsFixture, cash, market, universe):
     ZeroXTrade = contractsFixture.contracts['ZeroXTrade']
@@ -803,7 +762,7 @@ def test_gnosis_safe_trade(contractsFixture, augur, cash, market, universe, gnos
     gnosisSafe = contractsFixture.applySignature("GnosisSafe", gnosisSafeAddress)
 
     # First we'll create a signed order
-    rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrderFor(gnosisSafeAddress, BID, fix(2), 60, market.address, YES, nullAddress, expirationTime, salt)
+    rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrderFor(gnosisSafeAddress, BID, fix(2), 60, market.address, YES, expirationTime, salt)
     
     EIP1271OrderWithHash = ZeroXTrade.encodeEIP1271OrderWithHash(rawZeroXOrderData, orderHash)
     messageHash = gnosisSafe.getMessageHash(EIP1271OrderWithHash)
@@ -820,7 +779,7 @@ def test_gnosis_safe_trade(contractsFixture, augur, cash, market, universe, gnos
     assert zeroXExchange.isValidSignature(rawZeroXOrderData, orderHash, signature)
 
     # Validate the signed order state
-    marketAddress, price, outcome, orderType, kycToken = ZeroXTrade.parseOrderData(rawZeroXOrderData)
+    marketAddress, price, outcome, orderType = ZeroXTrade.parseOrderData(rawZeroXOrderData)
     fillAmount = fix(1)
     fingerprint = longTo32Bytes(11)
     tradeGroupId = longTo32Bytes(42)

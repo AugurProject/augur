@@ -27,12 +27,11 @@ def test_simple_simulate(contractsFixture, cash, market, universe):
     amount = fix(1)
     price = 60
     ignoreShares = False
-    kycToken = nullAddress
     fillOnly = False
     fillerPrice = market.getNumTicks() - price
 
     # Create zeroX Signed Order
-    rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(direction, amount, price, market.address, outcome, kycToken, expirationTime, salt, sender=account1)
+    rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(direction, amount, price, market.address, outcome, expirationTime, salt, sender=account1)
     orders = [rawZeroXOrderData]
 
     (sharesFilled, tokensDepleted, sharesDepleted, settlementFees, numFills) = simulateTrade.simulateZeroXTrade(orders, amount, fillOnly, sender=account2)
@@ -60,13 +59,12 @@ def test_simple_trades_and_fees(contractsFixture, cash, market, universe):
     outcome = YES
     amount = fix(1)
     price = 40
-    kycToken = nullAddress
     fillOnly = False
     numTicks = market.getNumTicks()
     cost = amount * price
 
     cash.faucet(cost)
-    rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(direction, amount, price, market.address, outcome, kycToken, expirationTime, salt, sender=account0)
+    rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(direction, amount, price, market.address, outcome, expirationTime, salt, sender=account0)
     signature = signOrder(orderHash, senderPrivateKey0)
     orders = [rawZeroXOrderData]
     signatures = [signature]
@@ -84,7 +82,7 @@ def test_simple_trades_and_fees(contractsFixture, cash, market, universe):
     cash.faucet(cost, sender=account1)
     assert ZeroXTrade.trade(amount, fingerprint, tradeGroupID, orders, signatures, sender=account1, value=150000) == 0
 
-    rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(SHORT, amount, price, market.address, outcome, kycToken, expirationTime, salt, sender=account0)
+    rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(SHORT, amount, price, market.address, outcome, expirationTime, salt, sender=account0)
     signature = signOrder(orderHash, senderPrivateKey0)
     orders = [rawZeroXOrderData]
     signatures = [signature]
@@ -114,7 +112,6 @@ def test_partial_fill(contractsFixture, cash, market, universe):
     outcome = YES
     amount = fix(1)
     price = 40
-    kycToken = nullAddress
     salt = 5
     tradeGroupID = longTo32Bytes(42)
     fillOnly = False    
@@ -124,7 +121,7 @@ def test_partial_fill(contractsFixture, cash, market, universe):
     fillerAccount = contractsFixture.accounts[0]
 
     cash.faucet(amount*price, sender=makerAccount)
-    rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(direction, amount, price, market.address, outcome, kycToken, expirationTime, salt, sender=makerAccount)
+    rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(direction, amount, price, market.address, outcome, expirationTime, salt, sender=makerAccount)
     signature = signOrder(orderHash, makerPrivKey)
     orders = [rawZeroXOrderData]
     signatures = [signature]
@@ -141,7 +138,6 @@ def test_multiple_trades(contractsFixture, cash, market, universe):
     direction = LONG
     outcome = YES
     amount = fix(1)
-    kycToken = nullAddress
     salt = 5
     tradeGroupID = longTo32Bytes(42)
     fillOnly = False    
@@ -156,7 +152,7 @@ def test_multiple_trades(contractsFixture, cash, market, universe):
     for i in range(numOrders):
         price = i + 1
         cash.faucet(amount*price, sender=makerAccount)
-        rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(direction, amount, price, market.address, outcome, kycToken, expirationTime, salt, sender=makerAccount)
+        rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(direction, amount, price, market.address, outcome, expirationTime, salt, sender=makerAccount)
         signature = signOrder(orderHash, makerPrivKey)
         orders.append(rawZeroXOrderData)
         signatures.append(signature)
@@ -174,7 +170,6 @@ def test_kyc_token(contractsFixture, cash, market, universe):
     outcome = YES
     amount = fix(1)
     price = 40
-    kycToken = cash.address
     salt = 5
     tradeGroupID = longTo32Bytes(42)
     fillOnly = False    
@@ -184,7 +179,7 @@ def test_kyc_token(contractsFixture, cash, market, universe):
     fillerAccount = contractsFixture.accounts[0]
 
     cash.faucet(amount*price, sender=makerAccount)
-    rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(direction, amount, price, market.address, outcome, kycToken, expirationTime, salt, sender=makerAccount)
+    rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(direction, amount, price, market.address, outcome, expirationTime, salt, sender=makerAccount)
     signature = signOrder(orderHash, makerPrivKey)
     orders = [rawZeroXOrderData]
     signatures = [signature]
@@ -202,7 +197,6 @@ def test_self_trade(contractsFixture, cash, market, universe):
     outcome = YES
     amount = fix(1)
     price = 40
-    kycToken = nullAddress
     salt = 5
     tradeGroupID = longTo32Bytes(42)
     fillOnly = True    
@@ -212,7 +206,7 @@ def test_self_trade(contractsFixture, cash, market, universe):
     fillerAccount = contractsFixture.accounts[0]
 
     cash.faucet(amount*price, sender=makerAccount)
-    rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(direction, amount, price, market.address, outcome, kycToken, expirationTime, salt, sender=makerAccount)
+    rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(direction, amount, price, market.address, outcome, expirationTime, salt, sender=makerAccount)
     signature = signOrder(orderHash, makerPrivKey)
     orders = [rawZeroXOrderData]
     signatures = [signature]
@@ -230,7 +224,6 @@ def test_fill_only(contractsFixture, cash, market, universe):
     outcome = YES
     amount = fix(1)
     price = 40
-    kycToken = nullAddress
     salt = 5
     tradeGroupID = longTo32Bytes(42)
     fillOnly = True    
@@ -240,7 +233,7 @@ def test_fill_only(contractsFixture, cash, market, universe):
     fillerAccount = contractsFixture.accounts[0]
 
     cash.faucet(amount*price, sender=makerAccount)
-    rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(direction, amount, price, market.address, outcome, kycToken, expirationTime, salt, sender=makerAccount)
+    rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(direction, amount, price, market.address, outcome, expirationTime, salt, sender=makerAccount)
     signature = signOrder(orderHash, makerPrivKey)
     orders = [rawZeroXOrderData]
     signatures = [signature]
@@ -259,7 +252,6 @@ def test_fees(contractsFixture, cash, market, universe):
     outcome = YES
     amount = fix(1)
     price = 40
-    kycToken = nullAddress
     salt = 5
     tradeGroupID = longTo32Bytes(42)
     fillOnly = False    
@@ -281,7 +273,7 @@ def test_fees(contractsFixture, cash, market, universe):
     shareToken.safeTransferFrom(makerAccount, fillerAccount, shareToken.getTokenId(market.address, NO), amount, "", sender=makerAccount)
 
     # Make order
-    rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(direction, amount, price, market.address, outcome, kycToken, expirationTime, salt, sender=makerAccount)
+    rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(direction, amount, price, market.address, outcome, expirationTime, salt, sender=makerAccount)
     signature = signOrder(orderHash, makerPrivKey)
     orders = [rawZeroXOrderData]
     signatures = [signature]

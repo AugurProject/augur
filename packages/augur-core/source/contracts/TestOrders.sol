@@ -15,11 +15,11 @@ contract TestOrders is Orders {
         require(!FOUNDATION_REP_ADDRESS.exists(), "TestOrders: Deploying test contract to production");
     }
 
-    function testSaveOrder(uint256[] memory _uints, bytes32[] memory _bytes32s, Order.Types _type, IMarket _market, address _sender, IERC20 _kycToken) public returns (bytes32 _orderId) {
+    function testSaveOrder(uint256[] memory _uints, bytes32[] memory _bytes32s, Order.Types _type, IMarket _market, address _sender) public returns (bytes32 _orderId) {
         require(_uints.length == 5, "TestOrders: incorrect length for _uints array");
         require(_bytes32s.length == 4, "TestOrders: incorrect length for _bytes32s array");
-        _bytes32s[3] = getOrderId(_type, _market, _uints[0], _uints[1], _sender, block.number, _uints[2], _uints[3], _uints[4], _kycToken);
-        return this.saveOrder(_uints, _bytes32s, _type, _market, _sender, _kycToken);
+        _bytes32s[3] = getOrderId(_type, _market, _uints[0], _uints[1], _sender, block.number, _uints[2], _uints[3], _uints[4]);
+        return this.saveOrder(_uints, _bytes32s, _type, _market, _sender);
     }
 
     function testRemoveOrder(bytes32 _orderId) public returns (bool) {

@@ -49,7 +49,6 @@ export class MarketDB extends DerivedDB {
       'MarketFinalized',
       'MarketParticipantsDisavowed',
       'MarketMigrated',
-      'ProfitLossChanged'
     ], augur);
 
     this.docProcessMap = {
@@ -61,7 +60,6 @@ export class MarketDB extends DerivedDB {
       'MarketOIChanged': this.processMarketOIChanged,
       'MarketParticipantsDisavowed': this.processMarketParticipantsDisavowed,
       'MarketMigrated': this.processMarketMigrated,
-      'ProfitLossChanged': this.processProfitLossChanged,
     };
 
     this.augur.events.subscribe('DerivedDB:updated:CurrentOrders', this.syncOrderBooks);
@@ -287,6 +285,7 @@ export class MarketDB extends DerivedDB {
 
   private processMarketVolumeChanged(log: ParsedLog): ParsedLog {
     log['volume'] = padHex(log['volume']);
+    log['lastTradedTimestamp'] = new BigNumber(log['timestamp'], 16).toNumber();
     return log;
   }
 
@@ -302,11 +301,6 @@ export class MarketDB extends DerivedDB {
 
   private processMarketMigrated(log: ParsedLog): ParsedLog {
     log['universe'] = log['newUniverse'];
-    return log;
-  }
-
-  private processProfitLossChanged(log: ParsedLog): ParsedLog {
-    log['lastTradedTimestamp'] = new BigNumber(log['timestamp'], 16).toNumber();
     return log;
   }
 

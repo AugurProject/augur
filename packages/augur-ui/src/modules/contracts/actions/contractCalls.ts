@@ -742,7 +742,6 @@ export async function createLiquidityOrders(
   const Augur = augurSdk.get();
   const { id, numTicks, minPrice, maxPrice } = market;
   const marketId = id;
-  const kycToken = NULL_ADDRESS;
   const tradeGroupId = generateTradeGroupId();
   const outcomes = [];
   const types = [];
@@ -771,7 +770,6 @@ export async function createLiquidityOrders(
     prices,
     marketId,
     tradeGroupId,
-    kycToken
   );
 }
 
@@ -801,7 +799,6 @@ export async function placeTrade(
   numOutcomes: number,
   outcomeId: number,
   fingerprint: string = formatBytes32String('11'),
-  kycToken: string = NULL_ADDRESS,
   doNotCreateOrders: boolean,
   numTicks: BigNumber | string,
   minPrice: BigNumber | string,
@@ -821,7 +818,6 @@ export async function placeTrade(
     outcome: outcomeId as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7,
     tradeGroupId,
     fingerprint,
-    kycToken,
     doNotCreateOrders,
     displayMinPrice: createBigNumber(minPrice),
     displayMaxPrice: createBigNumber(maxPrice),
@@ -839,7 +835,6 @@ export async function simulateTrade(
   numOutcomes: number,
   outcomeId: number,
   fingerprint: string = formatBytes32String('11'),
-  kycToken: string = NULL_ADDRESS,
   doNotCreateOrders: boolean,
   numTicks: BigNumber | string,
   minPrice: BigNumber | string,
@@ -858,7 +853,6 @@ export async function simulateTrade(
     outcome: outcomeId as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7,
     tradeGroupId,
     fingerprint,
-    kycToken,
     doNotCreateOrders,
     displayMinPrice: createBigNumber(minPrice),
     displayMaxPrice: createBigNumber(maxPrice),
@@ -876,7 +870,6 @@ export async function simulateTradeGasLimit(
   numOutcomes: number,
   outcomeId: number,
   fingerprint: string = formatBytes32String('11'),
-  kycToken: string = NULL_ADDRESS,
   doNotCreateOrders: boolean,
   numTicks: BigNumber | string,
   minPrice: BigNumber | string,
@@ -895,7 +888,6 @@ export async function simulateTradeGasLimit(
     outcome: outcomeId as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7,
     tradeGroupId,
     fingerprint,
-    kycToken,
     doNotCreateOrders,
     displayMinPrice: createBigNumber(minPrice),
     displayMaxPrice: createBigNumber(maxPrice),

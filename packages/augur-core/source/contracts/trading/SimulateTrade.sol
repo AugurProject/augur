@@ -29,7 +29,6 @@ contract SimulateTrade is Initializable {
         Order.Types orderType;
         Order.TradeDirections direction;
         IMarket market;
-        IERC20 kycToken;
         uint256 outcome;
         uint256 amount;
         uint256 price;
@@ -64,15 +63,14 @@ contract SimulateTrade is Initializable {
         require(zeroXTrade != IZeroXTrade(0));
     }
 
-    function create(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, address _sender, IERC20 _kycToken) internal view returns (SimulationData memory) {
+    function create(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, address _sender) internal view returns (SimulationData memory) {
         Order.Types _type = Order.getOrderTradingTypeFromFillerDirection(_direction);
-        bytes32 _orderId = orders.getBestOrderId(_type, _market, _outcome, _kycToken);
+        bytes32 _orderId = orders.getBestOrderId(_type, _market, _outcome);
 
         return SimulationData({
             orderType: _type,
             direction: _direction,
             market: _market,
-            kycToken: _kycToken,
             outcome: _outcome,
             amount: _amount,
             price: _price,
@@ -98,7 +96,6 @@ contract SimulateTrade is Initializable {
             orderType: _type,
             direction: _direction,
             market: _market,
-            kycToken: IERC20(_augurOrderData.kycToken),
             outcome: _augurOrderData.outcome,
             amount: _amount,
             price: _augurOrderData.price,
@@ -121,12 +118,11 @@ contract SimulateTrade is Initializable {
      * @param _outcome The associated outcome of the market
      * @param _amount The number of attoShares desired
      * @param _price The price in attoCash. Must be within the market range (1 to numTicks-1)
-     * @param _kycToken KYC token address if applicable. Specifying this will use an orderbook that is only available to acounts which have a non-zero balance of the specified token
      * @param _fillOnly Boolean indicating whether to only fill existing orders or to also create an order if an amount remains
      * @return uint256_sharesFilled: The amount taken from existing orders, uint256 _tokensDepleted: The amount of Cash tokens used, uint256 _sharesDepleted: The amount of Share tokens used, uint256 _settlementFees: The totals fees taken from settlement that occurred, _numFills: The number of orders filled/partially filled
      */
-    function simulateTrade(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, IERC20 _kycToken, bool _fillOnly) public view returns (uint256 _sharesFilled, uint256 _tokensDepleted, uint256 _sharesDepleted, uint256 _settlementFees, uint256 _numFills) {
-        SimulationData memory _simulationData = create(_direction, _market, _outcome, _amount, _price, msg.sender, _kycToken);
+    function simulateTrade(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bool _fillOnly) public view returns (uint256 _sharesFilled, uint256 _tokensDepleted, uint256 _sharesDepleted, uint256 _settlementFees, uint256 _numFills) {
+        SimulationData memory _simulationData = create(_direction, _market, _outcome, _amount, _price, msg.sender);
         while (_simulationData.orderId != 0 && _simulationData.amount > 0 && gasleft() > GAS_BUFFER && isMatch(_simulationData)) {
             _simulationData.fillAmount = _simulationData.amount.min(_simulationData.orderAmount);
             _simulationData.sharesUsedInFill = _simulationData.fillAmount.min(_simulationData.availableShares);

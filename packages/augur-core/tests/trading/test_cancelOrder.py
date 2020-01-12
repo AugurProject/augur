@@ -38,7 +38,7 @@ def test_cancelBid(afterMkrShutdown, contractsFixture, cash, market, universe):
         "universe": universe.address,
         "market": market.address,
 	    "eventType": 1,
-	    "addressData": [nullAddress, contractsFixture.accounts[1], nullAddress],
+	    "addressData": [contractsFixture.accounts[1], nullAddress],
 	    "uint256Data": [0, 0, 0, fix('1', '60'), 0, 0, 0,  contractsFixture.contracts['Time'].getTimestamp(), 0, 0],
     }
     with AssertLog(contractsFixture, 'OrderEvent', orderEventLog):

@@ -253,7 +253,6 @@ export class ZeroX {
       params.price,
       params.market,
       new BigNumber(params.outcome),
-      params.kycToken,
       params.expirationTime,
       salt
     );
@@ -539,19 +538,11 @@ export class ZeroX {
     return amountRemaining;
   }
 
-  getTradeTransactionLimits(
+getTradeTransactionLimits(
     params: NativePlaceTradeChainParams
   ): TradeTransactionLimits {
     let loopLimit = new BigNumber(1);
-    const placeOrderGas = params.shares.gt(0)
-      ? constants.PLACE_ORDER_WITH_SHARES[params.numOutcomes]
-      : constants.PLACE_ORDER_NO_SHARES[params.numOutcomes];
-    const orderCreationCost = params.doNotCreateOrders
-      ? new BigNumber(0)
-      : placeOrderGas;
-    let gasLimit = orderCreationCost.plus(
-      constants.WORST_CASE_FILL[params.numOutcomes]
-    );
+    let gasLimit = constants.WORST_CASE_FILL[params.numOutcomes];
     while (
       gasLimit
         .plus(constants.WORST_CASE_FILL[params.numOutcomes])
@@ -567,6 +558,7 @@ export class ZeroX {
       gasLimit,
     };
   }
+
 
   async simulateTradeGasLimit(params: ZeroXPlaceTradeDisplayParams): Promise<BigNumber> {
     const onChainTradeParams = this.getOnChainTradeParams(params);

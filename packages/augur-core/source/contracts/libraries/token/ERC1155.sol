@@ -210,6 +210,9 @@ contract ERC1155 is ERC165, IERC1155 {
         internal
     {
         require(ids.length == values.length, "ERC1155: IDs and values must have same lengths");
+        if (ids.length == 0) {
+            return;
+        }
         require(to != address(0), "ERC1155: target address must be non-zero");
         require(
             from == msg.sender || isApprovedForAll(from, msg.sender) == true,

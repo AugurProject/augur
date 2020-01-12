@@ -79,7 +79,6 @@ describe('Augur API :: ZeroX :: ', () => {
       await (await johnDB).sync(john.augur, mock.constants.chunkSize, 0);
 
       // Place an order
-      const kycToken = DEADBEEF_ADDRESS;
       const expirationTime = new BigNumber(new Date().valueOf()).plus(10000);
       await john.placeZeroXOrder({
         direction: 0,
@@ -89,7 +88,6 @@ describe('Augur API :: ZeroX :: ', () => {
         outcome: 0,
         tradeGroupId: '42',
         fingerprint: formatBytes32String('11'),
-        kycToken,
         doNotCreateOrders: false,
         displayMinPrice: new BigNumber(0),
         displayMaxPrice: new BigNumber(1),
@@ -116,7 +114,6 @@ describe('Augur API :: ZeroX :: ', () => {
       await expect(order).not.toBeUndefined();
       await expect(order.price).toEqual('0.22');
       await expect(order.amount).toEqual('10');
-      await expect(order.kycToken.toLowerCase()).toEqual(kycToken.toLowerCase());
       await expect(order.expirationTimeSeconds.toFixed()).toEqual(expirationTime.toFixed());
     });
 
@@ -240,7 +237,6 @@ describe('Augur API :: ZeroX :: ', () => {
       await (await johnDB).sync(john.augur, mock.constants.chunkSize, 0);
 
       // Place an order
-      const kycToken = DEADBEEF_ADDRESS;
       const expirationTime = new BigNumber(new Date().valueOf()).plus(10000);
       const orderHash = await john.placeZeroXOrder({
         direction: 0,
@@ -250,7 +246,6 @@ describe('Augur API :: ZeroX :: ', () => {
         outcome: 0,
         tradeGroupId: '42',
         fingerprint: formatBytes32String('11'),
-        kycToken,
         doNotCreateOrders: false,
         displayMinPrice: new BigNumber(0),
         displayMaxPrice: new BigNumber(1),
@@ -298,7 +293,6 @@ describe('Augur API :: ZeroX :: ', () => {
         makerAddress: john.account.publicKey,
         feeRecipientAddress: NULL_ADDRESS,
         market: market.address,
-        kycToken: expect.stringMatching(new RegExp(DEADBEEF_ADDRESS, 'i')),
         price: '0x00000000000000000016',
         outcome: '0x00',
         orderType: '0x00',
@@ -314,7 +308,6 @@ describe('Augur API :: ZeroX :: ', () => {
         makerAddress: john.account.publicKey,
         feeRecipientAddress: NULL_ADDRESS,
         market: market.address,
-        kycToken: expect.stringMatching(new RegExp(DEADBEEF_ADDRESS, 'i')),
         price: '0x00000000000000000016',
         outcome: '0x00',
         orderType: '0x00',
@@ -330,7 +323,6 @@ describe('Augur API :: ZeroX :: ', () => {
         makerAddress: john.account.publicKey,
         feeRecipientAddress: NULL_ADDRESS,
         market: market.address,
-        kycToken: expect.stringMatching(new RegExp(DEADBEEF_ADDRESS, 'i')),
         price: '0x00000000000000000016',
         outcome: '0x00',
         orderType: '0x00',
@@ -366,7 +358,6 @@ describe('Augur API :: ZeroX :: ', () => {
       await (await johnDB).sync(john.augur, mock.constants.chunkSize, 0);
 
       // Place an order
-      const kycToken = DEADBEEF_ADDRESS;
       const expirationTime = new BigNumber(new Date().valueOf()).plus(10000);
       await john.placeZeroXOrder({
         direction: 0,
@@ -376,7 +367,6 @@ describe('Augur API :: ZeroX :: ', () => {
         outcome: 0,
         tradeGroupId: '42',
         fingerprint: formatBytes32String('11'),
-        kycToken,
         doNotCreateOrders: false,
         displayMinPrice: new BigNumber(0),
         displayMaxPrice: new BigNumber(1),
@@ -397,7 +387,6 @@ describe('Augur API :: ZeroX :: ', () => {
       await expect(order).not.toBeUndefined();
       await expect(order.price).toEqual('0.22');
       await expect(order.amount).toEqual('10');
-      await expect(order.kycToken.toLowerCase()).toEqual(kycToken.toLowerCase());
       await expect(order.expirationTimeSeconds.toFixed()).toEqual(expirationTime.toFixed());
     });
 

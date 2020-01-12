@@ -139,6 +139,10 @@ contract LibAssetData {
             uint256 length = nestedAssetData.length;
             for (uint256 i = 0; i != length; i++) {
                 // Query balance of individual assetData
+                if (assetAmounts[i] == 0) {
+                    continue;
+                }
+
                 uint256 totalBalance = getBalance(ownerAddress, nestedAssetData[i]);
 
                 // Scale total balance down by corresponding value in assetData
@@ -194,6 +198,10 @@ contract LibAssetData {
             uint256 length = nestedAssetData.length;
             for (uint256 i = 0; i != length; i++) {
                 // Query allowance of individual assetData
+                if (amounts[i] == 0) {
+                    continue;
+                }
+
                 uint256 totalAllowance = getAssetProxyAllowance(ownerAddress, nestedAssetData[i]);
 
                 // Scale total allowance down by corresponding value in assetData
