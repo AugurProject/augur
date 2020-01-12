@@ -457,7 +457,7 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
           }}
           isOutsideRange={day =>
             day.isBefore(minMarketEndTimeDay()) ||
-            day.isAfter(moment(isAfter * 1000))
+            day.isAfter(moment.unix(isAfter))
           }
           numberOfMonths={1}
           onFocusChange={({ focused }) => {
