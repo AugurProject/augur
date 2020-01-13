@@ -13,31 +13,39 @@ import { API } from './getter/API';
 
 export interface SDKConfiguration {
   networkId: NetworkId,
-  sdk?: {
-    ws: string,
-  },
   ethereum?: {
     http: string
   },
+  sdk?: {
+    ws: string,
+  },
   gnosis?: {
+    enabled?: boolean,
     http: string
-  }
+  },
   zeroX?: {
-    verbosity?: 0|1|2|3|4|5,
     rpc?: {
+      enabled?: boolean,
       ws: string
     },
     mesh?: {
+      verbosity?: 0|1|2|3|4|5,
+      enabled?: boolean,
       bootstrapList?: string[]
     }
   },
   syncing?: {
+    enabled?: boolean,
     blockstreamDelay?: number,
     chunkSize?: number
   }
 };
 
 export async function createClient(config: SDKConfiguration, connector: BaseConnector, account?: string, signer?: EthersSigner, provider?: JsonRpcProvider, enableFlexSearch: boolean = false) {
+  if (!config.gnosis || !config.gnosis.enabled) {
+    throw new Error(`Augur UI requires Gnosis be enabled using config.gnosis`);
+  }
+
   const ethersProvider = new EthersProvider( provider || new JsonRpcProvider(config.ethereum.http), 10, 0, 40);
   const addresses = getAddressesForNetwork(config.networkId);
   const contractDependencies = ContractDependenciesGnosis.create(
@@ -56,10 +64,11 @@ export async function createClient(config: SDKConfiguration, connector: BaseConn
   );
 }
 
-export async function createServer(config: SDKConfiguration, account?: string): Promise<{ api: API, controller: Controller }> {
+export async function createServer(config: SDKConfiguration, client?: Augur, account?: string): Promise<{ api: API, controller: Controller }> {
   // Validate the config -- check that the syncing key exits and use defaults if not
   config = {
     syncing: {
+      enabled: true,
       blockstreamDelay: 10,
       chunkSize: 100000
     },
@@ -70,9 +79,10 @@ export async function createServer(config: SDKConfiguration, account?: string): 
   // side code would only use the `contracts` interface and not the Augur
   // functionality since that was really originally designed for client connection
   // over a connector TO the server.
-
-  const connector = new EmptyConnector();
-  const client = await createClient(config, connector, account, undefined, undefined, true);
+  if (!client) {
+    const connector = new EmptyConnector();
+    client = await createClient(config, connector, account, undefined, undefined, true);
+  }
 
   const ethersProvider = new EthersProvider( new JsonRpcProvider(config.ethereum.http), 10, 0, 40)
   const contractEvents = new ContractEvents(ethersProvider, client.addresses.Augur, client.addresses.AugurTrading, client.addresses.ShareToken, client.addresses.Exchange);
@@ -95,8 +105,16 @@ export async function createServer(config: SDKConfiguration, account?: string): 
   return { api, controller };
 }
 
+export async function startServerFromClient(config: SDKConfiguration, client?: Augur ): Promise<API> {
+  const { api, controller } = await createServer(config, client);
+
+  await controller.run();
+
+  return api;
+}
+
 export async function startServer(config: SDKConfiguration, account?: string): Promise<API> {
-  const { api, controller } = await createServer(config, account);
+  const { api, controller } = await createServer(config, undefined, account);
 
   await controller.run();
 

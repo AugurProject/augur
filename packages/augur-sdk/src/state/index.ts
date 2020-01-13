@@ -3,9 +3,4 @@ import * as Logs from './logs/types';
 
 export { Getters, Logs };
 
-export {
-  SDKConfiguration,
-  createClient,
-  createServer,
-  startServer,
-} from './create-api';
+export * from './create-api';

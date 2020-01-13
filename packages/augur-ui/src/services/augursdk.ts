@@ -5,6 +5,8 @@ import {
   Connectors,
   Provider,
   ClientConfiguration,
+  BrowserMesh,
+  createBrowserMesh,
   createClient
 } from '@augurproject/sdk';
 import { EthersSigner } from 'contract-dependencies-ethers';
@@ -21,55 +23,64 @@ import { analytics } from './analytics';
 import { isLocalHost } from 'utils/is-localhost';
 import { WSClient } from '@0x/mesh-rpc-client';
 import { Mesh } from '@0x/mesh-browser';
-import { createBrowserMesh } from "./BrowserMesh";
 import { NETWORK_IDS } from 'modules/common/constants';
 import { WebWorkerConnector } from './ww-connector';
 
 export class SDK {
   sdk: Augur | null = null;
-  isWeb3Transport = false;
-  env: EnvObject = null;
   isSubscribed = false;
   networkId: string;
-  account: string;
   private signerNetworkId: string;
-
-  export async function createClient(env: EnvObject, connector: BaseConnector, signer?: EthersSigner, provider?: JsonRpcProvider) {
 
   async makeClient(
     provider: JsonRpcProvider,
     signer: EthersSigner,
-    env: EnvObject,
-    isWeb3 = false,
+    public env: EnvObject,
+    public account: String = null,
+    public isWeb3Transport = false,
     enableFlexSearch = false,
-    signerNetworkId?: string,
+    private signerNetworkId?: string,
     gnosisRelayEndpoint?: string
   ): Promise<Augur> {
-    this.networkId = await provider.getNetworkId();
-    this.isWeb3Transport = isWeb3;
-    this.env = env;
-    this.account = account;
-    this.signerNetworkId = signerNetworkId;
+    this.networkId = (await provider.getNetwork()).chainId.toString() as NetworkId;
 
-    const SDKConfiguration: SDKConfiguration = {
+    const config: SDKConfiguration = {
       networkId: this.networkId,
-      sdk: {
-        ws: env['sdkEndpoint']
-      },
       ethereum: {
         http: env['ethereum-node'].http
       },
       gnosis: {
+        enabled: true,
         http: gnosisRelayEndpoint
+      },
+      zeroX: {
+        rpc: {
+          enabled: true,
+        },
+        mesh: {
+          verbosity: 5,
+          enabled: true,
+        }
       },
       sycing: {
       }
     };
 
-    // TODO don't leave this here
-    const connector = await this.createConnector(clientConfiguration);
-
-    this.sdk = createClient(config, connector, signer, provider);
+    if (config.sdk && config.sdk.enabled) {
+      const connector = new Connectors.WebsocketConnector();
+      this.sdk = await createClient(config, connector, account, signer, provider, enableFlexSearch);
+      await connector.connect(config, account)
+    } else {
+      const connector = new Connectors.SingleThreadConnector();
+      if (config.zeroX && config.zeroX.mesh && config.zeroX.enabled) {
+        connector.mesh = createBrowserMesh(config, (err: Error, mesh: Mesh) => {
+          connector.mesh = mesh;
+        });
+      }
+      this.sdk = await createClient(config, connector, account, signer, provider, enableFlexSearch);
+      // This is messy -- that is neededing the connector to know about `sdk`
+      await connector.connectWithClient(config, this.sdk);
+    }
 
     if (!isEmpty(account)) {
       await this.getOrCreateGnosisSafe(account);
@@ -157,15 +168,6 @@ export class SDK {
   }
 
   async createConnector(config: SDKConfiguration) {
-    if (config.sdk.ws) {
-      return new Connectors.WebsocketConnector();
-    }
-
-    const connector = new Connectors.SingleThreadConnector();
-    connector.mesh = createBrowserMesh(config, (err: Error, mesh: Mesh) => {
-      connector.mesh = mesh;
-    });
-    return connector;
   }
 
   get(): Augur {

@@ -9,13 +9,13 @@ export const connect = async (
 ) => {
   const signer = undefined;
   const signerNetworkId = undefined;
-  const account = undefined;
+  const account = null;
   const enableFlexSearch = null;
   const sdk = await augurSdk.makeClient(
     new JsonRpcProvider(env['ethereum-node'].http),
-    account,
     signer,
     env,
+    account,
     false,
     enableFlexSearch,
     signerNetworkId,

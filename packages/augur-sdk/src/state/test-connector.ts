@@ -20,9 +20,11 @@ console.log("Starting web worker");
         http: settings.ethNodeURLs[4]
       },
       gnosis: {
+        enabled: true,
         http: "http://localhost:8000"
       },
       syncing: {
+        enabled: false
       }
     };
 
