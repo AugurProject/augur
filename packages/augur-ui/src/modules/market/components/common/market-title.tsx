@@ -2,8 +2,15 @@ import React from 'react';
 import MarketLink from 'modules/market/components/market-link/market-link';
 import { buildMarketDescription } from 'modules/create-market/get-template';
 import { convertUnixToFormattedDate } from 'utils/format-date';
-import { TemplateInput, TemplateInputType, ExtraInfoTemplate } from '@augurproject/artifacts';
+import {
+  TemplateInput,
+  TemplateInputType,
+  ExtraInfoTemplate,
+  getTemplatePlaceholderById,
+  hasTemplateTextInputs,
+} from '@augurproject/artifacts';
 import Styles from 'modules/market/components/common/market-common.styles.less';
+import classNames from 'classnames';
 
 interface MarketTitleProps {
   id: string;
@@ -45,17 +52,71 @@ const MarketTemplateTitle: React.FC<MarketTemplateTitleProps> = ({
 }) => {
   if (!template || !template.inputs) return null;
   const convertedInputs: TemplateInput[] = template.inputs.map(i => ({
-    userInput: (i.type === TemplateInputType.ESTDATETIME || i.type === TemplateInputType.DATETIME)
-      ? convertUnixToFormattedDate(Number(i.timestamp)).formattedLocalShortDateTimeNoTimezone
-      : i.value,
+    userInput:
+      i.type === TemplateInputType.ESTDATETIME ||
+      i.type === TemplateInputType.DATETIME
+        ? convertUnixToFormattedDate(Number(i.timestamp))
+            .formattedLocalShortDateTimeNoTimezone
+        : i.value,
     id: i.id,
     type: i.type as TemplateInputType,
     placeholder: '',
   }));
-  const question = buildMarketDescription(template.question, convertedInputs);
+  let question = buildMarketDescription(template.question, convertedInputs);
   const estDateTime = convertedInputs.find(
     i => i.type === TemplateInputType.ESTDATETIME
   );
+
+  const hasInputs = hasTemplateTextInputs(template.hash);
+  if (hasInputs) {
+    const originalQuestion = template.question.split(' ');
+    let prevWordUnique = false;
+    question = originalQuestion.map((word, index) => {
+      const bracketPos = word.indexOf('[');
+      const bracketPos2 = word.indexOf(']');
+
+      if (bracketPos === -1 || bracketPos === -1) {
+        let prevWordWasUnique = prevWordUnique;
+        prevWordUnique = false;
+        return (
+          <span className={Styles.IndividualWord} key={word + index}>{prevWordWasUnique && ' '}{word}&nbsp;</span>
+        );
+      } else {
+        prevWordUnique = true;
+        const id = word.substring(bracketPos + 1, bracketPos2);
+        const inputIndex = convertedInputs.findIndex(
+          findInput => findInput.id.toString() === id
+        );
+        let trailing = '';
+        let prePend = '';
+        if (bracketPos !== 0) {
+          prePend = word.substring(0, bracketPos);
+        }
+        if (bracketPos2 < word.length) {
+          trailing = word.substring(bracketPos2 + 1, word.length);
+        }
+        if (inputIndex > -1) {
+          const input = convertedInputs[inputIndex];
+          const placeholder = getTemplatePlaceholderById(
+            template.hash,
+            input.id
+          );
+          return (
+            <span
+              key={inputIndex}
+              className={classNames(Styles.IndividualWord, {
+                [Styles.TEXT]: placeholder,
+              })}
+            >
+              {prePend !== '' && <span>{prePend}</span>}
+              {input.userInput}
+              {trailing !== '' && <span>{trailing}</span>}
+            </span>
+          );
+        }
+      }
+    });
+  }
 
   return (
     <>
@@ -65,8 +126,7 @@ const MarketTemplateTitle: React.FC<MarketTemplateTitleProps> = ({
           <span>{question}</span>
           <span>Estimated sheduled start time: {estDateTime.userInput}</span>
         </>
-        )
-      }
+      )}
     </>
   );
 };
