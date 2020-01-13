@@ -11,7 +11,7 @@ import {
   OrderState,
 } from '@augurproject/sdk/build/state/getter/OnChainTrading';
 import { BigNumber } from 'bignumber.js';
-import { stringTo32ByteHex } from '../../../libs/Utils';
+import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
 import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
 
 const mock = makeDbMock();

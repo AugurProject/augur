@@ -10,9 +10,18 @@ const levelup = require('levelup');
 import * as path from 'path';
 import * as fs from 'async-file';
 
-export interface Seed {
+interface SeedCommon {
   addresses: ContractAddresses;
   contractsHash: string;
+}
+
+export interface SeedFile extends SeedCommon{
+  seeds: {
+    [seedName:string]: LevelDBRow[];
+  };
+}
+
+export interface Seed extends SeedCommon {
   data: LevelDBRow[];
 }
 
@@ -90,7 +99,7 @@ export function hashContracts(): string {
   return md5.digest('hex');
 }
 
-interface LevelDBRow {
+export interface LevelDBRow {
   key: string;
   value: string;
   type: 'put';
@@ -128,10 +137,16 @@ export async function createSeed(provider: EthersProvider, db: MemDown, addresse
   };
 }
 
-export async function writeSeedFile(seed: Seed, filePath: string): Promise<void> {
+export async function writeSeedFile(seed: SeedFile, filePath: string): Promise<void> {
   await fs.writeFile(path.resolve(filePath), JSON.stringify(seed));
 }
 
-export async function loadSeedFile(seedFilePath: string): Promise<Seed> {
-  return JSON.parse(await fs.readFile(seedFilePath));
+export async function loadSeedFile(seedFilePath: string, seedToLoad = 'base'): Promise<Seed> {
+  const {contractsHash, addresses, seeds}:SeedFile = JSON.parse(await fs.readFile(seedFilePath));
+
+  return {
+    contractsHash,
+    addresses,
+    data: seeds[seedToLoad]
+  }
 }

@@ -6,7 +6,7 @@ import { MockMeshServer, SERVER_PORT, stopServer } from '../../libs/MockMeshServ
 import { WSClient } from '@0x/mesh-rpc-client';
 import { Connectors } from '@augurproject/sdk';
 import { API } from '@augurproject/sdk/build/state/getter/API';
-import { NULL_ADDRESS, stringTo32ByteHex } from "../../libs/Utils";
+import { NULL_ADDRESS, stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
 import { ZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
 import { sleep } from '@augurproject/core/build/libraries/HelperFunctions';
 import { MockBrowserMesh } from '../../libs/MockBrowserMesh';

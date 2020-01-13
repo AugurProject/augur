@@ -12,8 +12,8 @@ import { ORDER_TYPES, SECONDS_IN_A_DAY } from '@augurproject/sdk';
 import { getAddress } from 'ethers/utils/address';
 import * as _ from 'lodash';
 import { makeDbMock} from '../../../../libs';
-import { TestEthersProvider } from '../../../../libs/TestEthersProvider';
-import { stringTo32ByteHex } from '../../../../libs/Utils';
+import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
+import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
 import {
   _beforeAll,
   _beforeEach,

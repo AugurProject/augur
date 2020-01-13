@@ -2,7 +2,7 @@ import { API } from '@augurproject/sdk/build/state/getter/API';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
 import { makeDbMock, makeProvider } from '../../../libs';
 import { ContractAPI, ACCOUNTS, loadSeedFile, defaultSeedPath } from '@augurproject/tools';
-import { stringTo32ByteHex } from '../../../libs/Utils';
+import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
 import { BigNumber } from 'bignumber.js';
 import { ContractInterfaces } from '@augurproject/core';
 import { PlatformActivityStatsResult } from '@augurproject/sdk/build/state/getter/Platform';

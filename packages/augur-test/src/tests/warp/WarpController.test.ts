@@ -11,11 +11,11 @@ import {
   makeDependencies,
   makeSigner,
 } from '@augurproject/tools';
-import { ContractAPI } from '@augurproject/tools/build';
+import { ContractAPI, defaultSeedPath } from '@augurproject/tools/build';
 import { ContractDependenciesEthers } from 'contract-dependencies-ethers';
 import * as IPFS from 'ipfs';
 import { makeDbMock, makeProvider } from '../../libs';
-import { TestEthersProvider } from '../../libs/TestEthersProvider';
+import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
 import { API } from '@augurproject/sdk/build/state/getter/API';
 
 const mock = makeDbMock();
@@ -37,7 +37,7 @@ describe('WarpController', () => {
     configureDexieForNode(true);
     ipfs = await IPFS.create();
 
-    const seed = await loadSeedFile('/tmp/newSeed.json');
+    const seed = await loadSeedFile(defaultSeedPath, 'WarpSync');
 
     provider = await makeProvider(seed, ACCOUNTS);
     networkId = await provider.getNetworkId();
@@ -174,9 +174,10 @@ describe('WarpController', () => {
             ipfs.ls(`${fileHash}/market/${marketId}`)
           ).resolves.toEqual(
             expect.arrayContaining([
-              {
+              expect.objectContaining({
                 type: 'file',
-              },
+                hash: marketId
+              }),
             ])
           );
         });

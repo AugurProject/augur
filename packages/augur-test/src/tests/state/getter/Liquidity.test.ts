@@ -3,7 +3,7 @@ import { ContractAPI, ACCOUNTS, loadSeedFile, defaultSeedPath } from "@augurproj
 import { DB } from '@augurproject/sdk/build/state/db/DB';
 import { API } from '@augurproject/sdk/build/state/getter/API';
 import { BigNumber } from 'bignumber.js';
-import { stringTo32ByteHex } from '../../../libs/Utils';
+import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
 import {
     MarketLiquidityRanking,
 } from '@augurproject/sdk/build/state/getter/Liquidity';

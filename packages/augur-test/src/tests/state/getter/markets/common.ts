@@ -1,11 +1,12 @@
 import { API } from '@augurproject/sdk/build/state/getter/API';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
+import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
+import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
 import { makeDbMock, makeProvider } from '../../../../libs';
 import { ACCOUNTS, ContractAPI, defaultSeedPath, loadSeedFile } from '@augurproject/tools';
-import { stringTo32ByteHex } from '../../../../libs/Utils';
+
 import { BigNumber } from 'bignumber.js';
 import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
-import { TestEthersProvider } from '../../../../libs/TestEthersProvider';
 
 export const CHUNK_SIZE = 100000;
 export const outcome0 = new BigNumber(0);

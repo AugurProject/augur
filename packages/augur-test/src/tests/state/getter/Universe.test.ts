@@ -7,8 +7,8 @@ import { fork } from '@augurproject/tools';
 import { formatBytes32String } from 'ethers/utils';
 import { UniverseDetails } from '@augurproject/sdk/build/state/getter/Universe';
 import { getPayoutNumerators, makeValidScalarOutcome } from '@augurproject/tools/build/flash/fork';
-import { NULL_ADDRESS } from '../../../libs/Utils';
-import { TestEthersProvider } from '../../../libs/TestEthersProvider';
+import { NULL_ADDRESS } from '@augurproject/tools/build/libs/Utils';
+import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
 
 const mock = makeDbMock();
 

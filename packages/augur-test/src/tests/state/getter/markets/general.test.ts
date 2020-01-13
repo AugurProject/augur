@@ -9,8 +9,8 @@ import { ACCOUNTS, ContractAPI } from '@augurproject/tools';
 import { BigNumber } from 'bignumber.js';
 import { ORDER_TYPES, SECONDS_IN_A_DAY } from '@augurproject/sdk';
 import * as _ from 'lodash';
-import { TestEthersProvider } from '../../../../libs/TestEthersProvider';
-import { NULL_ADDRESS, stringTo32ByteHex } from '../../../../libs/Utils';
+import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
+import { NULL_ADDRESS, stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
 import {
   _beforeAll,
   _beforeEach,

@@ -5,7 +5,7 @@ import { DB } from '@augurproject/sdk/build/state/db/DB';
 import { WSClient } from '@0x/mesh-rpc-client';
 import { Connectors } from '@augurproject/sdk';
 import { API } from '@augurproject/sdk/build/state/getter/API';
-import { stringTo32ByteHex } from '../../libs/Utils';
+import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
 import { ZeroXOrder, ZeroXOrders } from "@augurproject/sdk/build/state/getter/ZeroXOrdersGetters";
 import { sleep } from '@augurproject/core/build/libraries/HelperFunctions';
 import { formatBytes32String } from 'ethers/utils';

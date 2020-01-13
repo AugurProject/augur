@@ -7,7 +7,7 @@ import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from "ethers/utils";
 import { ContractAddresses } from '@augurproject/artifacts';
 import { TestNetReputationToken } from "@augurproject/core/build/libraries/ContractInterfaces";
-import { NULL_ADDRESS } from "../../libs/Utils";
+import { NULL_ADDRESS } from "@augurproject/tools/build/libs/Utils";
 
 
 interface MarketCreatedEvent {

@@ -18,8 +18,8 @@ import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from 'ethers/utils';
 import * as _ from 'lodash';
 import { makeDbMock, makeProvider } from '../../../libs';
-import { TestEthersProvider } from '../../../libs/TestEthersProvider';
-import { stringTo32ByteHex } from '../../../libs/Utils';
+import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
+import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
 
 const ZERO_BYTES = stringTo32ByteHex('');
 

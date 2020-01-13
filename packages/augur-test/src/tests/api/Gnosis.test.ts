@@ -11,7 +11,7 @@ import {
 } from '@augurproject/tools';
 import { BigNumber } from 'bignumber.js';
 import { makeProvider, MockGnosisRelayAPI } from '../../libs';
-import { TestEthersProvider } from '../../libs/TestEthersProvider';
+import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
 
 describe('Gnosis :: ', () => {
   let john: ContractAPI;

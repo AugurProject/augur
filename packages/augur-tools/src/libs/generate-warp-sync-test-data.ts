@@ -1,22 +1,17 @@
-import { ORDER_TYPES } from '@augurproject/sdk/build';
-import { createSeed } from '@augurproject/tools/build';
-import { writeSeedFile } from '@augurproject/tools/build/libs/ganache';
-import { BigNumber } from 'bignumber.js';
+import { ORDER_TYPES } from '@augurproject/sdk';
 
-import { makeProvider, makeProviderWithDB } from '../../libs';
-import {
-  ContractAPI,
-  loadSeedFile,
-  ACCOUNTS,
-  defaultSeedPath,
-} from '@augurproject/tools';
-import { stringTo32ByteHex } from '../../libs/Utils';
+import { ACCOUNTS } from '../constants';
+import { ContractAPI } from './contract-api';
+import { extractSeed } from './ganache';
+import { makeProviderWithDB } from './LocalAugur';
+
+import { BigNumber } from 'bignumber.js';
+import { stringTo32ByteHex } from './Utils';
 
 const outcome0 = new BigNumber(0);
 const outcome1 = new BigNumber(1);
 
-(async () => {
-  const seed = await loadSeedFile(defaultSeedPath);
+export async function generateWarpSyncTestData(seed) {
   const [db, provider] = await makeProviderWithDB(seed, ACCOUNTS);
 
   const john = await ContractAPI.userWrapper(
@@ -88,22 +83,22 @@ const outcome1 = new BigNumber(1);
   // Fill orders
   await john.faucet(new BigNumber(1e18)); // faucet enough cash for the various fill orders
   await mary.faucet(new BigNumber(1e18)); // faucet enough cash for the various fill orders
-  let yesNoOrderId0 = await john.getBestOrderId(
+  const yesNoOrderId0 = await john.getBestOrderId(
     ORDER_TYPES.BID,
     yesNoMarket.address,
     outcome0
   );
-  let yesNoOrderId1 = await john.getBestOrderId(
+  const yesNoOrderId1 = await john.getBestOrderId(
     ORDER_TYPES.BID,
     yesNoMarket.address,
     outcome1
   );
-  let categoricalOrderId0 = await john.getBestOrderId(
+  const categoricalOrderId0 = await john.getBestOrderId(
     ORDER_TYPES.BID,
     categoricalMarket.address,
     outcome0
   );
-  let categoricalOrderId1 = await john.getBestOrderId(
+  const categoricalOrderId1 = await john.getBestOrderId(
     ORDER_TYPES.BID,
     categoricalMarket.address,
     outcome1
@@ -129,7 +124,5 @@ const outcome1 = new BigNumber(1);
     '43'
   );
 
-
-  const newSeed = await createSeed(provider, db, seed.addresses);
-  await writeSeedFile(newSeed, '/tmp/newSeed.json');
-})().catch(e => console.error(e));
+  return extractSeed(db);
+}

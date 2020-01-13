@@ -4,7 +4,7 @@ import { makeDbMock } from '../../libs';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
 import { Connectors } from '@augurproject/sdk';
 import { API } from '@augurproject/sdk/build/state/getter/API';
-import { NULL_ADDRESS, stringTo32ByteHex } from '../../libs/Utils';
+import { NULL_ADDRESS, stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
 import { sleep } from '@augurproject/core/build/libraries/HelperFunctions';
 import * as _ from 'lodash';
 import { EthersProvider } from '@augurproject/ethersjs-provider';

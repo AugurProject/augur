@@ -7,7 +7,7 @@ import { BigNumber } from 'bignumber.js';
 import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
 
 import * as _ from 'lodash';
-import { TestEthersProvider } from '../../../libs/TestEthersProvider';
+import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
 
 const CHUNK_SIZE = 100000;
 

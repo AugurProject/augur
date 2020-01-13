@@ -1,6 +1,8 @@
 import { Augur, EmptyConnector } from "@augurproject/sdk";
-import { Account, makeGanacheProvider, makeSigner, makeGnosisDependencies, createDbFromSeed, Seed } from "@augurproject/tools";
-import { TestEthersProvider } from "./TestEthersProvider";
+import { makeGnosisDependencies, makeSigner } from './blockchain';
+import { createDbFromSeed, makeGanacheProvider, Seed } from './ganache';
+import { TestEthersProvider } from './TestEthersProvider';
+import { Account } from '../constants';
 
 export async function makeProviderWithDB(seed: Seed, accounts: Account[]): Promise<[any, TestEthersProvider]> {
   const db = await createDbFromSeed(seed);

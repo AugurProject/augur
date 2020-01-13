@@ -1,7 +1,7 @@
 import { API } from '@augurproject/sdk/build/state/getter/API';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
 import { ContractAPI, fork } from '@augurproject/tools';
-import { TestEthersProvider } from '../../../../libs/TestEthersProvider';
+import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
 import {
   _beforeAll,
   _beforeEach,
