@@ -144,6 +144,7 @@ export interface Universe extends Getters.Universe.UniverseDetails {
   forkingInfo?: ForkingInfo;
   forkEndTime?: string;
   timeframeData?: Getters.Platform.PlatformActivityStatsResult;
+  maxMarketEndTime?: number;
 }
 
 export interface UserReports {

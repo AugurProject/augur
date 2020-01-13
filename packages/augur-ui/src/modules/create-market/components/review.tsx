@@ -50,6 +50,7 @@ interface ReviewProps {
   estimateSubmitNewMarket: Function;
   Gnosis_ENABLED: boolean;
   ethToDaiRate: BigNumber;
+  setEnableCreate: Function;
 }
 
 interface ReviewState {
@@ -276,7 +277,7 @@ export default class Review extends React.Component<
     const noEth = s.insufficientFunds[ETH];
     const noRep = s.insufficientFunds[REP];
     const noDai = s.insufficientFunds[DAI];
-
+    this.props.setEnableCreate(noEth || noRep || noDai);
     const resolutionDetails = template ? buildResolutionDetails(detailsText, template.resolutionRules) : detailsText;
     return (
       <div className={classNames(Styles.Review, {[Styles.Scalar]: marketType === SCALAR, [Styles.Categorical]: marketType === CATEGORICAL})}>
