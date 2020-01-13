@@ -11,6 +11,8 @@ import {
 } from '@augurproject/artifacts';
 import Styles from 'modules/market/components/common/market-common.styles.less';
 import classNames from 'classnames';
+import TooltipStyles from 'modules/common/tooltip.styles.less';
+import ReactTooltip from 'react-tooltip';
 
 interface MarketTitleProps {
   id: string;
@@ -79,7 +81,10 @@ const MarketTemplateTitle: React.FC<MarketTemplateTitleProps> = ({
         let prevWordWasUnique = prevWordUnique;
         prevWordUnique = false;
         return (
-          <span className={Styles.IndividualWord} key={word + index}>{prevWordWasUnique && ' '}{word}&nbsp;</span>
+          <span className={Styles.IndividualWord} key={word + index}>
+            {prevWordWasUnique && ' '}
+            {word}&nbsp;
+          </span>
         );
       } else {
         prevWordUnique = true;
@@ -107,9 +112,20 @@ const MarketTemplateTitle: React.FC<MarketTemplateTitleProps> = ({
               className={classNames(Styles.IndividualWord, {
                 [Styles.TEXT]: placeholder,
               })}
+              data-tip data-for={input.id + input.userInput}
             >
               {prePend !== '' && <span>{prePend}</span>}
               {input.userInput}
+              {placeholder && (
+                <ReactTooltip
+                  id={input.id + input.userInput}
+                  className={TooltipStyles.Tooltip}
+                  effect="solid"
+                  place="top"
+                >
+                  {placeholder}
+                </ReactTooltip>
+              )}
               {trailing !== '' && <span>{trailing}</span>}
             </span>
           );
