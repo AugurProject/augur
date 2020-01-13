@@ -1,37 +1,58 @@
 @font-face {
-  font-family: 'roboto';
-  font-weight: 300;
-  src: url('../fonts/Roboto-Light.woff2') format('woff2');
-}
-
-@font-face {
-  font-family: 'roboto';
-  font-weight: 400;
-  src: url('../fonts/Roboto-Regular.woff2') format('woff2');
-}
-
-@font-face {
-  font-family: 'roboto';
-  font-weight: 500;
-  src: url('../fonts/Roboto-Medium.woff2') format('woff2');
-}
-
-@font-face {
-  font-family: 'roboto';
-  font-weight: 600;
-  src: url('../fonts/Roboto-Bold.woff2') format('woff2');
-}
-
-@font-face {
-  font-family: 'Roboto Mono';
+  font-family: 'Inter';
   font-style: normal;
   font-weight: 400;
-  src: url('../fonts/Roboto-Mono-Regular.woff2') format('woff2');
+  font-display: swap;
+  src: url('../fonts/Inter-Regular.woff2') format('woff2'),
+       url('../fonts/Inter-Regular.woff') format('woff2');
 }
 
+@font-face {
+  font-family: 'Inter';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/Inter-Italic.woff2') format('woff2'),
+       url('../fonts/Inter-Italic.woff') format('woff2');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('../fonts/Inter-Medium.woff2') format('woff2'),
+       url('../fonts/Inter-Medium.woff') format('woff2');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: italic;
+  font-weight: 500;
+  font-display: swap;
+  src: url('../fonts/Inter-MediumItalic.woff2') format('woff2'),
+       url('../fonts/Inter-MediumItalic.woff') format('woff2');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../fonts/Inter-Bold.woff2') format('woff2'),
+       url('../fonts/Inter-Bold.woff') format('woff2');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../fonts/Inter-BoldItalic.woff2') format('woff2'),
+       url('../fonts/Inter-BoldItalic.woff') format('woff2');
+}
 // font-families
-@roboto: 'roboto', sans-serif;
-@roboto-mono: 'roboto mono', sans-serif;
+@Inter: 'Inter', sans-serif;
 
 // sizes
 @size-1: 0.0625rem; // 1px
@@ -92,7 +113,7 @@
 
 // defaults
 .text-default {
-  font-family: @roboto;
+  font-family: @Inter;
   font-style: normal;
   font-weight: @weight-normal;
   line-height: @line-height-normal;
@@ -101,7 +122,8 @@
 .mono-default {
   .text-default;
 
-  font-family: @roboto-mono;
+  font-family: @Inter;
+  font-feature-settings: "tnum";
 }
 
 // text sizes

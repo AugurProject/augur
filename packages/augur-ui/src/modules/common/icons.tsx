@@ -1020,7 +1020,7 @@ export const Alerts = unseenCount => (
               stroke="#211A32"
             />
             <text
-              fontFamily="roboto-Bold, roboto"
+              fontFamily="Inter-Bold, Inter"
               fontSize="8"
               fontWeight="bold"
               fill="#FFFFFF"
