@@ -29,7 +29,7 @@ def test_market_hot_loading_basic(kitchenSinkFixture, augur, cash, market, categ
     assert marketData.universe == market.getUniverse()
     assert marketData.numTicks == market.getNumTicks()
     assert marketData.feeDivisor == market.getMarketCreatorSettlementFeeDivisor()
-    assert marketData.affiliateFeeDivisor == market.getAffiliateFeeDivisor()
+    assert marketData.affiliateFeeDivisor == market.affiliateFeeDivisor()
     assert marketData.endTime == market.getEndTime()
     assert marketData.numOutcomes == 3
     universeContract = kitchenSinkFixture.applySignature("Universe", marketData.universe)
