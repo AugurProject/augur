@@ -140,14 +140,14 @@ export interface DateInputDependencies {
   holidayClosures?: {
     [key: string]: {
       [year: number]: {
-        holiday: string,
-        date: number
-      }[]
-    }
+        holiday: string;
+        date: number;
+      }[];
+    };
   };
   inputTimeOffset: {
     [key: string]: TimeOffset;
-  }
+  };
 }
 export interface TemplateValidation {
   templateValidation: string;
@@ -199,17 +199,17 @@ export interface TemplateInput {
   };
   inputTimeOffset: {
     [key: string]: TimeOffset;
-  }
+  };
   setEndTime?: number;
   inputDateYearId?: number;
   holidayClosures?: {
     [key: string]: {
       [year: number]: {
-        holiday: string,
-        date: number
-      }[]
-    }
-  }
+        holiday: string;
+        date: number;
+      }[];
+    };
+  };
 }
 
 export interface RetiredTemplate {
@@ -225,11 +225,11 @@ export enum ValidationType {
 }
 
 export enum TEXT_PLACEHOLDERS {
-  SINGLE_PLAYER = 'Single Player\'s Name',
-  MULTIPLE_PLAYER = 'Two Player\'s Names',
-  SINGLE_CANDIDATE = 'Single Candidate\s Name',
-  SINGLE_PERSON_NAME = 'Single Person\'s Name',
-  SINGLE_HORSE = 'Single Horse\'s Name',
+  SINGLE_PLAYER = "Single Player's Name",
+  MULTIPLE_PLAYER = "Two Player's Names",
+  SINGLE_CANDIDATE = 'Single Candidates Name',
+  SINGLE_PERSON_NAME = "Single Person's Name",
+  SINGLE_HORSE = "Single Horse's Name",
   SINGLE_PERSON = 'Single Person',
   SINGLE_LOCATION = 'Single Location',
   SINGLE_PERSON_OR_GROUP_OR_MOVIE_TITLE = 'Single Person or Single Group or Movie Title',
@@ -291,10 +291,14 @@ export const ValidationTemplateInputType = {
 export let TEMPLATE_VALIDATIONS = {};
 export let RETIRED_TEMPLATES = [];
 
-export function getTemplatePlaceholderById (hash: string, id: number) {
-  const validation = TEMPLATE_VALIDATIONS[
-    hash
-  ] as TemplateValidation;
+export function hasTemplateTextInputs(hash: string) {
+  const validation = TEMPLATE_VALIDATIONS[hash] as TemplateValidation;
+  if (!validation.placeholderValues) return false;
+  return Object.keys(validation.placeholderValues).length > 0;
+}
+
+export function getTemplatePlaceholderById(hash: string, id: number) {
+  const validation = TEMPLATE_VALIDATIONS[hash] as TemplateValidation;
   if (!validation.placeholderValues) return null;
   return validation.placeholderValues[id];
 }
@@ -423,7 +427,7 @@ function dateStartAfterMarketEndTime(
 export function tellOnHoliday(
   inputs: ExtraInfoTemplateInput[],
   input: ExtraInfoTemplateInput,
-  closing: DateInputDependencies,
+  closing: DateInputDependencies
 ) {
   let holidayPresent = null;
   const exchange = inputs.find(i => i.id === closing.inputSourceId);
@@ -431,16 +435,30 @@ export function tellOnHoliday(
   if (exchange.value) {
     const holidayClosures = closing.holidayClosures[exchange.value];
     const inputYear = moment.unix(Number(input.timestamp)).year();
-    const holidayClosuresPerYear = holidayClosures && holidayClosures[inputYear];
+    const holidayClosuresPerYear =
+      holidayClosures && holidayClosures[inputYear];
     if (holidayClosuresPerYear) {
       const offset = closing.inputTimeOffset[exchange.value].offset;
       holidayClosuresPerYear.forEach(holiday => {
         const OneHourBuffer = 1;
         const utcHolidayDate = moment.unix(holiday.date).utc();
-        const convertedUtcHolidayDate = moment(utcHolidayDate).add(offset, 'hours');
-        const startHolidayDate = moment(convertedUtcHolidayDate).subtract(OneHourBuffer, 'hours');
-        const endHolidayDate = moment(startHolidayDate).add(24 + OneHourBuffer, 'hours');
-        if (moment(Number(input.timestamp)* 1000).unix() >= startHolidayDate.unix() && moment(Number(input.timestamp) * 1000).unix() <= endHolidayDate.unix()) {
+        const convertedUtcHolidayDate = moment(utcHolidayDate).add(
+          offset,
+          'hours'
+        );
+        const startHolidayDate = moment(convertedUtcHolidayDate).subtract(
+          OneHourBuffer,
+          'hours'
+        );
+        const endHolidayDate = moment(startHolidayDate).add(
+          24 + OneHourBuffer,
+          'hours'
+        );
+        if (
+          moment(Number(input.timestamp) * 1000).unix() >=
+            startHolidayDate.unix() &&
+          moment(Number(input.timestamp) * 1000).unix() <= endHolidayDate.unix()
+        ) {
           holidayPresent = holiday;
         }
       });
@@ -525,7 +543,7 @@ function closingDateDependencies(
     const dateYearSource = inputs.find(i => i.id === d.inputDateYearId);
     const exchangeValue = inputs.find(i => i.id === d.inputSourceId);
     if (!dateYearSource || !exchangeValue) return false;
-    const timeOffset = d.inputTimeOffset[exchangeValue.value]  as TimeOffset;
+    const timeOffset = d.inputTimeOffset[exchangeValue.value] as TimeOffset;
     if (timeOffset) {
       const closingDateTime = getTemplateExchangeClosingWithBuffer(
         Number(dateYearSource.timestamp),
@@ -618,7 +636,13 @@ export const isTemplateMarket = (
     }
 
     // check DATE isn't on weekend or holiday
-    if (!dateNoWeekendHoliday(template.inputs, validation.dateDependencies, validation.closingDateDependencies)) {
+    if (
+      !dateNoWeekendHoliday(
+        template.inputs,
+        validation.dateDependencies,
+        validation.closingDateDependencies
+      )
+    ) {
       errors.push('market question date can not be on weekend or on a holiday');
       return false;
     }
@@ -632,7 +656,11 @@ export const isTemplateMarket = (
     }
 
     if (
-      !closingDateDependencies(template.inputs, new BigNumber(endTime).toNumber(), validation.closingDateDependencies)
+      !closingDateDependencies(
+        template.inputs,
+        new BigNumber(endTime).toNumber(),
+        validation.closingDateDependencies
+      )
     ) {
       errors.push('event expiration can not be before exchange close time');
       return false;
