@@ -1,7 +1,9 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import MarketView from 'modules/market/components/market-view/market-view';
-import { loadFullMarket } from 'modules/markets/actions/load-full-market';
+import {
+  loadMarketsInfo
+} from "modules/markets/actions/load-markets-info";
 import {
   selectMarket,
   selectSortedMarketOutcomes,
@@ -34,7 +36,6 @@ import { addAlert, removeAlert } from 'modules/alerts/actions/alerts';
 import { hotloadMarket } from 'modules/markets/actions/load-markets';
 import {
   getMarketAgeInDays,
-  formatDate,
   convertUnixToFormattedDate,
 } from 'utils/format-date';
 
@@ -123,7 +124,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
   hotloadMarket: marketId => hotloadMarket(marketId),
-  loadFullMarket: marketId => dispatch(loadFullMarket(marketId)),
+  loadMarketsInfo: marketId => dispatch(loadMarketsInfo([marketId])),
   updateModal: modal => dispatch(updateModal(modal)),
   loadMarketTradingHistory: marketId =>
     dispatch(loadMarketTradingHistory(marketId)),

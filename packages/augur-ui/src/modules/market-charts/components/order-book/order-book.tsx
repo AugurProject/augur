@@ -17,6 +17,8 @@ import { OutcomeOrderBook } from 'modules/types';
 import { createBigNumber } from 'utils/create-big-number';
 import { formatShares } from 'utils/format-number';
 
+const ORDDER_BOOK_REFRESH = 3000;
+
 interface OrderBookSideProps {
   orderBook: OutcomeOrderBook;
   updateSelectedOrderProperties: Function;
@@ -41,11 +43,14 @@ interface OrderBookProps {
   pricePrecision: number;
   toggle: boolean;
   hide: boolean;
+  loadMarketOrderBook: Function;
+  marketId: string;
 }
 
 interface OrderBookState {
   hoveredOrderIndex?: number;
   hoveredSide?: string;
+  timer: NodeJS.Timeout;
 }
 
 class OrderBookSide extends Component<OrderBookSideProps, {}> {
@@ -182,6 +187,7 @@ export default class OrderBook extends Component<
   state: OrderBookState = {
     hoveredOrderIndex: null,
     hoveredSide: null,
+    timer: null,
   };
 
   setHovers = (hoveredOrderIndex: number, hoveredSide: string) => {
@@ -190,6 +196,18 @@ export default class OrderBook extends Component<
       hoveredSide,
     });
   };
+
+  componentDidMount() {
+    const { marketId, loadMarketOrderBook } = this.props;
+    loadMarketOrderBook(marketId);
+    const timer = setInterval(() => loadMarketOrderBook(marketId), ORDDER_BOOK_REFRESH);
+    this.setState({ timer })
+  }
+
+  compomentWillUnmount() {
+    const { timer } = this.state;
+    clearInterval(timer);
+  }
 
   render() {
     const { pricePrecision, hasOrders, toggle, hide, orderBook } = this.props;
