@@ -1,39 +1,36 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import classNames from 'classnames';
 import * as constants from 'modules/common/constants';
+import {
+  BOUGHT,
+  CATEGORICAL,
+  CLOSED,
+  DISCORD_LINK,
+  REPORTING_STATE,
+  SCALAR,
+  SELL,
+  SHORT,
+  SOLD,
+  YES_NO,
+  ZERO,
+} from 'modules/common/constants';
 import Styles from 'modules/common/labels.styles.less';
 import { ClipLoader } from 'react-spinners';
 import {
-  MarketIcon,
-  InfoIcon,
-  ScalarIcon,
   CheckCircleIcon,
   HintAlternate,
-  DoubleArrows,
-  QuestionIcon,
   LoadingEllipse,
+  MarketIcon,
+  QuestionIcon,
+  ScalarIcon,
   TemplateIcon,
 } from 'modules/common/icons';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import { createBigNumber } from 'utils/create-big-number';
-import {
-  SELL,
-  BOUGHT,
-  SOLD,
-  CLOSED,
-  SHORT,
-  ZERO,
-  YES_NO,
-  SCALAR,
-  CATEGORICAL,
-  REPORTING_STATE,
-  DISCORD_LINK,
-} from 'modules/common/constants';
 import { ViewTransactionDetailsButton } from 'modules/common/buttons';
 import { formatNumber } from 'utils/format-number';
-import { FormattedNumber, SizeTypes, DateFormattedObject } from 'modules/types';
+import { DateFormattedObject, FormattedNumber, SizeTypes } from 'modules/types';
 import { Getters, TXEventName } from '@augurproject/sdk';
 import {
   DISMISSABLE_NOTICE_BUTTON_TYPES,
@@ -41,8 +38,6 @@ import {
 } from 'modules/reporting/common';
 import { EventDetailsContent } from 'modules/create-market/constants';
 import { ExplainerBlock } from 'modules/create-market/components/common';
-import { updateModal } from 'modules/modal/actions/update-modal';
-import { MODAL_LOGIN } from 'modules/common/constants';
 
 export interface MarketTypeProps {
   marketType: string;

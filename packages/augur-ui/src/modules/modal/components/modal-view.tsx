@@ -1,4 +1,4 @@
-import React, { Component, useEffect } from 'react';
+import React, { Component } from 'react';
 import classNames from 'classnames';
 
 import ModalSignTransaction from 'modules/modal/containers/modal-sign-transaction';

@@ -1,33 +1,31 @@
-import React from "react";
+import React from 'react';
 
-import { DefaultButtonProps } from "modules/common/buttons";
+import { DefaultButtonProps } from 'modules/common/buttons';
 import {
-  Title,
-  DescriptionProps,
-  Description,
-  ButtonsRow,
-  AlertMessageProps,
   AlertMessage,
-  MarketTitle,
-  CallToAction,
+  AlertMessageProps,
   Breakdown,
-  ReadableAddress,
-  ReadableAddressProps,
-  DepositInfo,
-  DepositInfoProps,
-  MarketReview,
-  MarketReviewProps,
+  ButtonsRow,
+  CallToAction,
   CheckboxCTA,
   CheckboxCTAProps,
   Content,
   ContentProps,
+  DepositInfo,
+  DepositInfoProps,
+  Description,
+  DescriptionProps,
+  MarketReview,
+  MarketReviewProps,
+  MarketTitle,
+  ReadableAddress,
+  ReadableAddressProps,
   Subheader,
-} from "modules/modal/common";
-import {
-  LinearPropertyLabelProps, DiscordLink,
-} from "modules/common/labels";
+  Title,
+} from 'modules/modal/common';
+import { DiscordLink, LinearPropertyLabelProps } from 'modules/common/labels';
 
-import Styles from "modules/modal/modal.styles.less";
+import Styles from 'modules/modal/modal.styles.less';
 import { ExplainerBlock } from 'modules/create-market/components/common';
 import { EventDetailsContent } from 'modules/create-market/constants';
 

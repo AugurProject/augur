@@ -5,10 +5,9 @@ import MarketCard from 'modules/market-cards/market-card';
 import { toggleFavorite } from 'modules/markets/actions/update-favorites';
 import { hasStakeInMarket } from 'modules/account/selectors/has-stake-in-market';
 import {
-  MIGRATE_MARKET_GAS_ESTIMATE,
   MODAL_INVALID_MARKET_RULES,
   MODAL_MIGRATE_MARKET,
-  MODAL_REPORTING
+  MODAL_REPORTING,
 } from 'modules/common/constants';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { marketLinkCopied } from 'services/analytics/helpers';

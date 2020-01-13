@@ -1,11 +1,11 @@
-import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
-import { Message } from "modules/modal/message";
-import { closeModal } from "modules/modal/actions/close-modal";
-import { AppState } from "store";
-import { ThunkDispatch } from "redux-thunk";
-import { Action } from "redux";
+import { Message } from 'modules/modal/message';
+import { closeModal } from 'modules/modal/actions/close-modal';
+import { AppState } from 'store';
+import { ThunkDispatch } from 'redux-thunk';
+import { Action } from 'redux';
 
 const mapStateToProps = (state: AppState) => {
   return {
@@ -18,7 +18,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
-  title: "Invalid Outcome",
+  title: 'Invalid Outcome',
   invalidMarketRules: true,
   closeAction: () => {
     dP.closeModal();
@@ -28,7 +28,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   },
   buttons: [
     {
-      text: "Ok",
+      text: 'Ok',
       action: () => {
         dP.closeModal();
       },
@@ -40,6 +40,6 @@ export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps,
-    mergeProps,
-  )(Message),
+    mergeProps
+  )(Message)
 );
