@@ -74,7 +74,11 @@ import {
   isValidFee,
   checkForUserInputFilled,
 } from 'modules/common/validations';
-import { buildformattedDate, convertUnixToFormattedDate, getUnixDateTimeFromComponents } from 'utils/format-date';
+import {
+  buildformattedDate,
+  convertUnixToFormattedDate,
+  getUnixDateTimeFromComponents,
+} from 'utils/format-date';
 import TemplatePicker from 'modules/create-market/containers/template-picker';
 
 import Styles from 'modules/create-market/components/form.styles.less';
@@ -97,7 +101,12 @@ import { selectSortedMarketOutcomes } from 'modules/markets/selectors/market';
 import { createBigNumber } from 'utils/create-big-number';
 import makeQuery from 'modules/routes/helpers/make-query';
 import { CREATE_MARKET_FORM_PARAM_NAME } from 'modules/routes/constants/param-names';
-import { TemplateInputType, TimeOffset, getTemplateExchangeClosingWithBuffer } from '@augurproject/artifacts';
+import {
+  TemplateInputType,
+  TimeOffset,
+  getTemplateExchangeClosingWithBuffer,
+} from '@augurproject/artifacts';
+import { template } from './form-details.styles.less';
 
 interface FormProps {
   newMarket: NewMarket;
@@ -270,7 +279,10 @@ export default class Form extends React.Component<FormProps, FormState> {
                 hasNoTemplateCategoryChildren(newMarket.categories[0])
                   ? ''
                   : newMarket.categories[1],
-                hasNoTemplateCategoryTertiaryChildren(newMarket.categories[0], newMarket.categories[1])
+                hasNoTemplateCategoryTertiaryChildren(
+                  newMarket.categories[0],
+                  newMarket.categories[1]
+                )
                   ? ''
                   : newMarket.categories[2],
               ];
@@ -294,13 +306,27 @@ export default class Form extends React.Component<FormProps, FormState> {
     } else {
       const newStep =
         newMarket.currentStep <= 0 ? 0 : newMarket.currentStep - 1;
-      updateNewMarket({ currentStep: newStep });
+
+      const { contentPages } = this.state;
+      const { mainContent } = contentPages[newMarket.currentStep];
+
+      if (mainContent === TEMPLATE_PICKER && isTemplate) {
+        updateNewMarket({template: null});
+      }
+
+      updateNewMarket({currentStep: newStep});
+
       this.node && this.node.scrollIntoView();
     }
   };
 
   nextPage = () => {
-    const { newMarket, updateNewMarket, isTemplate, marketCreationStarted } = this.props;
+    const {
+      newMarket,
+      updateNewMarket,
+      isTemplate,
+      marketCreationStarted,
+    } = this.props;
     const { currentStep, marketType, template } = newMarket;
 
     const { contentPages } = this.state;
@@ -383,7 +409,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       drafts,
       updateDraft,
       isTemplate,
-      marketCreationSaved
+      marketCreationSaved,
     } = this.props;
 
     if (newMarket.description === EMPTY_STATE.description) {
@@ -425,7 +451,10 @@ export default class Form extends React.Component<FormProps, FormState> {
       });
     }
 
-    marketCreationSaved(newMarket.template && newMarket.template.name, isTemplate);
+    marketCreationSaved(
+      newMarket.template && newMarket.template.name,
+      isTemplate
+    );
   };
 
   evaluate = (validationsObj: Validations) => {
@@ -482,7 +511,9 @@ export default class Form extends React.Component<FormProps, FormState> {
       checkPositive ? isPositive(value) : '',
       checkDecimals ? moreThanDecimals(value, decimals) : '',
       checkForAddress ? checkAddress(value) : '',
-      checkUserInputFilled ? checkForUserInputFilled(value, newMarket.endTimeFormatted) : '',
+      checkUserInputFilled
+        ? checkForUserInputFilled(value, newMarket.endTimeFormatted)
+        : '',
     ];
 
     if (label === END_TIME) {
@@ -495,7 +526,11 @@ export default class Form extends React.Component<FormProps, FormState> {
         newMarket.offset
       );
       checkValidations.push(
-        dateGreater(endTimeFormatted.timestamp, currentTimestamp, checkDateGreaterMessage)
+        dateGreater(
+          endTimeFormatted.timestamp,
+          currentTimestamp,
+          checkDateGreaterMessage
+        )
       );
       if (
         newMarket &&
@@ -698,7 +733,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       history,
       needsApproval,
       isTemplate,
-      currentTimestamp
+      currentTimestamp,
     } = this.props;
     const { contentPages, categoryStats } = this.state;
 
@@ -714,7 +749,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       noDarkBackground,
       previewButton,
       disabledFunction,
-      useBullets
+      useBullets,
     } = contentPages[currentStep];
 
     let savedDraft = drafts[uniqueId];
@@ -762,14 +797,18 @@ export default class Form extends React.Component<FormProps, FormState> {
             <span>Your market preview</span>
             <PrimaryButton text="Close preview" action={this.preview} />
             <MarketView
-                sortedOutcomes={selectSortedMarketOutcomes(
-                  newMarket.marketType,
-                  newMarket.outcomesFormatted
-                )}
-                market={{
+              sortedOutcomes={selectSortedMarketOutcomes(
+                newMarket.marketType,
+                newMarket.outcomesFormatted
+              )}
+              market={{
                 ...newMarket,
-                creationTimeFormatted: convertUnixToFormattedDate(currentTimestamp),
-                endTimeFormatted: convertUnixToFormattedDate(newMarket.endTimeFormatted.timestamp),
+                creationTimeFormatted: convertUnixToFormattedDate(
+                  currentTimestamp
+                ),
+                endTimeFormatted: convertUnixToFormattedDate(
+                  newMarket.endTimeFormatted.timestamp
+                ),
                 maxPriceBigNumber: createBigNumber(newMarket.maxPrice),
                 minPriceBigNumber: createBigNumber(newMarket.minPrice),
                 details: isTemplate
