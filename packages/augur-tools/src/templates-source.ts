@@ -5052,7 +5052,7 @@ export const TEMPLATES = {
       },
       {
         marketType: YES_NO,
-        question: `Will [0] gross $[1] USD or more, in it's opening weekend in the US?`,
+        question: `Will the total gross for [0] be $[1] USD or more, on it's domestic opening weekend of [2] in the US, according to www.boxofficemojo.com/?`,
         example: `Will Avengers: Endgame gross $350 million USD or more in it's opening weekend in the US?`,
         inputs: [
           {
@@ -5065,6 +5065,12 @@ export const TEMPLATES = {
             type: TemplateInputType.TEXT,
             placeholder: `Amount`,
           },
+          {
+            id: 2,
+            type: TemplateInputType.DATEYEAR,
+            validationType: ValidationType.EXP_DATE_TUESDAY_AFTER_MOVIE,
+            placeholder: `opening day`,
+          },
         ],
         resolutionRules: {
           [REQUIRED]: [
@@ -5073,13 +5079,16 @@ export const TEMPLATES = {
             },
             {
               text: 'This market is intended to be about a Single Movie, if this is not the case, this market should settle as invalid.'
+            },
+            {
+              text: 'If www.boxofficemojo.com is down or not available use www.the-numbers.com to determine domestic US total gross of movie.'
             }
           ],
         },
       },
       {
         marketType: YES_NO,
-        question: `Head-to-Head: Will [0] gross more than [1] on it's opening weekend in the US?`,
+        question: `Head-to-Head: Will total gross for [0] be more than [1] on it's domestic opening weekend of [2] in the US, according to www.boxofficemojo.com/?`,
         example: `Head-to-Head: Will Avengers: Endgame gross more than Avengers: Age of Ultron on it's opening weekend in the US?`,
         inputs: [
           {
@@ -5092,6 +5101,11 @@ export const TEMPLATES = {
             type: TemplateInputType.TEXT,
             placeholder: TEXT_PLACEHOLDERS.INDIVIDUAL_MOVIE_TITLE,
           },
+          {
+            id: 2,
+            type: TemplateInputType.DATEYEAR,
+            placeholder: `opening day`,
+          },
         ],
         resolutionRules: {
           [REQUIRED]: [
@@ -5101,6 +5115,9 @@ export const TEMPLATES = {
             },
             {
               text: 'This market is intended to be about a Single Movie, if this is not the case, this market should settle as invalid.'
+            },
+            {
+              text: 'If www.boxofficemojo.com is down or not available use www.the-numbers.com to determine domestic US total gross of movies.'
             }
           ],
         },

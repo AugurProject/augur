@@ -1,10 +1,6 @@
 export const LIST_VALUES = {
   YEARS: [
     {
-      value: '2019',
-      label: '2019',
-    },
-    {
       value: '2020',
       label: '2020',
     },
@@ -45,16 +41,16 @@ export const LIST_VALUES = {
   ],
   YEAR_RANGE: [
     {
-      value: '2019-20',
-      label: '2019-20',
-    },
-    {
       value: '2020-21',
       label: '2020-21',
     },
     {
       value: '2021-22',
       label: '2021-22',
+    },
+    {
+      value: '2022-23',
+      label: '2022-23',
     },
   ],
   FOOTBALL_AWARDS: [
@@ -8363,7 +8359,7 @@ export const HOLIDAYS = {
   NATIONAL_DAY_6: 'National Day 6',
   NATIONAL_DAY_7: 'National Day 7',
   NATIONAL_DAY_8: 'National Day 8',
-} 
+}
 
 export const USA_HOLIDAYS = {
   [2020]: [
@@ -8441,7 +8437,7 @@ export const USA_HOLIDAYS = {
       holiday: HOLIDAYS.CHRISTMAS,
       date: 1640304000
     }
-  ], 
+  ],
   [2022]: [
     {
       holiday: HOLIDAYS.NEW_YEARS_DAY,
@@ -8522,7 +8518,7 @@ export const FRANCE_HOLIDAYS = {
       holiday: HOLIDAYS.CHRISTMAS,
       date: 1640304000
     }
-  ], 
+  ],
   [2022]: []
 };
 
@@ -8598,7 +8594,7 @@ export const ENGLAND_HOLIDAYS = {
       holiday: HOLIDAYS.BOXING_DAY,
       date: 1640649600
     },
-  ], 
+  ],
   [2022]: [
     {
       holiday: HOLIDAYS.NEW_YEARS_DAY,
@@ -8699,7 +8695,7 @@ export const GERMANY_HOLIDAYS = {
       holiday: HOLIDAYS.NEW_YEARS_EVE,
       date: 1640908800
     },
-  ], 
+  ],
   [2022]: [
     {
       holiday: HOLIDAYS.NEW_YEARS_DAY,
@@ -8832,7 +8828,7 @@ const HONG_KONG_HOLIDAYS = {
       holiday: HOLIDAYS.CHRISTMAS_HOLIDAY,
       date: 1640606400
     },
-  ], 
+  ],
   [2022]: [
     {
       holiday: HOLIDAYS.LUNAR_NEW_YEAR_1,
@@ -9025,7 +9021,7 @@ const CHINA_HOLIDAYS = {
       holiday: HOLIDAYS.NATIONAL_DAY_7,
       date: 1633608000
     },
-  ], 
+  ],
   [2022]: [
     {
       holiday: HOLIDAYS.NEW_YEARS_DAY,
