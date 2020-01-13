@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import ReactTooltip from 'react-tooltip';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
@@ -9,7 +9,7 @@ import ConnectAccount from 'modules/auth/containers/connect-account';
 import { LogoutIcon } from 'modules/common/icons';
 import { NavMenuItem } from 'modules/types';
 import Styles from 'modules/app/components/side-nav/side-nav.styles.less';
-import HelpResources from 'modules/app/containers/help-resources';
+import { HelpIcon, HelpMenuList } from 'modules/app/components/help-resources';
 import { SecondaryButton } from 'modules/common/buttons';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import { helpIcon, Chevron } from 'modules/common/icons';
@@ -25,6 +25,9 @@ interface SideNavProps {
   showGlobalChat: Function;
   migrateV1Rep: Function;
   showMigrateRepButton: boolean;
+  isHelpMenuOpen: boolean;
+  updateHelpMenuState: Function;
+  updateConnectionTray: Function;
 }
 
 const SideNav = ({
@@ -38,7 +41,16 @@ const SideNav = ({
   showGlobalChat,
   migrateV1Rep,
   showMigrateRepButton,
+  isHelpMenuOpen,
+  updateHelpMenuState,
+  updateConnectionTray,
 }: SideNavProps) => {
+  useEffect(() => {
+    if (isHelpMenuOpen) {
+      updateConnectionTray(false);
+    }
+  }, [isHelpMenuOpen]);
+
   const accessFilteredMenu = menuData.filter(
     item => !(item.requireLogin && !isLogged)
   );
@@ -50,10 +62,9 @@ const SideNav = ({
       })}
     >
       <div>
-        {isLogged && <HelpResources />}
+        {isLogged && (<HelpIcon isHelpMenuOpen={isHelpMenuOpen} updateHelpMenuState={updateHelpMenuState} />)}
         <ConnectAccount />
       </div>
-
       <div className={Styles.SideNav__container}>
         <div>
           {isConnectionTrayOpen && <ConnectDropdown />}
@@ -62,6 +73,7 @@ const SideNav = ({
               [Styles.accountDetailsOpen]: isConnectionTrayOpen,
             })}
           >
+            {isHelpMenuOpen && <HelpMenuList />}
             {accessFilteredMenu.map((item, idx) => (
               <li
                 key={idx}

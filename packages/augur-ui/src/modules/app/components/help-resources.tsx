@@ -45,6 +45,66 @@ const HELP_LINKS = [
   },
 ];
 
+export const HelpMenuList = () => {
+  return (
+    <span className={classNames(Styles.HelpMenuList)}>
+      <li>popular help resources</li>
+      {HELP_LINKS.map((helpLink, index) => (
+        <li key={'helpLink_' + index} className={helpLink.className}>
+          <ExternalLinkButton
+            light
+            URL={helpLink.link}
+            label={helpLink.label}
+            customLink={helpLink.customLink}
+          />
+        </li>
+      ))}
+    </span>
+  );
+};
+
+export const HelpMenu = () => {
+  return (
+    <div className={classNames(Styles.HelpMenu)}>
+      <span>popular help resources</span>
+      {HELP_LINKS.map((helpLink, index) => (
+        <span key={'helpLink_' + index} className={helpLink.className}>
+          <ExternalLinkButton
+            light
+            URL={helpLink.link}
+            label={helpLink.label}
+            customLink={helpLink.customLink}
+          />
+        </span>
+      ))}
+    </div>
+  );
+};
+
+
+interface HelpIconProps {
+  isHelpMenuOpen: boolean;
+  updateHelpMenuState: Function;
+}
+
+export const HelpIcon = ({
+  updateHelpMenuState,
+  isHelpMenuOpen
+}: HelpIconProps) => {
+  return (
+    <div
+      className={classNames(Styles.HelpIcon, {
+        [Styles.Open]: isHelpMenuOpen,
+      })}
+      onClick={event => event.stopPropagation()}
+    >
+      <span onClick={() => updateHelpMenuState(!isHelpMenuOpen)}>
+        {QuestionIcon}
+      </span>
+    </div>
+  );
+};
+
 export const HelpResources = ({
   isHelpMenuOpen,
   updateHelpMenuState,
@@ -63,24 +123,8 @@ export const HelpResources = ({
       })}
       onClick={event => event.stopPropagation()}
     >
-      <span onClick={() => updateHelpMenuState(!isHelpMenuOpen)}>
-        {QuestionIcon}
-      </span>
-      {isHelpMenuOpen && (
-        <div>
-          <span>popular help resources</span>
-          {HELP_LINKS.map((helpLink, index) => (
-            <span key={'helpLink_' + index} className={helpLink.className}>
-              <ExternalLinkButton
-                light
-                URL={helpLink.link}
-                label={helpLink.label}
-                customLink={helpLink.customLink}
-              />
-            </span>
-          ))}
-        </div>
-      )}
+      <HelpIcon updateHelpMenuState={updateHelpMenuState} isHelpMenuOpen={isHelpMenuOpen} />
+      {isHelpMenuOpen && (<HelpMenu />)}
     </div>
   );
 };
