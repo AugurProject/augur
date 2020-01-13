@@ -2,6 +2,21 @@
 
 import os
 
+methods = {
+    "transfer": {},
+    "balanceOf": {
+        "Market.sol": 1
+    },
+    "allowance": {},
+    "approve": {
+        "Market.sol": 1,
+        "GnosisSafeRegistry.sol": 3,
+        "Universe.sol": 2,
+        "AugurTrading.sol": 1,
+        "FillOrder.sol": 1,
+    }
+}
+
 def test_cashSender_usage():
     for root, dirs, files in os.walk('source/contracts'):
         for file in files:
@@ -11,8 +26,7 @@ def test_cashSender_usage():
                 continue
             with open(os.path.join(root, file), "r") as auto:
                 data = auto.read()
-                expectedOccurences = 0
-                if (file == "Market.sol"):
-                    expectedOccurences = 1
-                notFound = data.count("cash.transfer") == expectedOccurences
-                assert notFound, "Contract %s has an unexpected cash.transfer in it" % file
+                for method, fileExceptions in methods.items():
+                    expected = fileExceptions.get(file) or 0
+                    notFound = data.count("cash.%s" % method) <= expected
+                    assert notFound, "Contract %s has an unexpected cash.%s in it" % (file, method)

@@ -38,18 +38,14 @@ contract IMarket is IOwnable {
     function getInitialReporter() public view returns (IInitialReporter);
     function getDesignatedReportingEndTime() public view returns (uint256);
     function getValidityBondAttoCash() public view returns (uint256);
-    function getAffiliateFeeDivisor() public view returns (uint256);
+    function affiliateFeeDivisor() external view returns (uint256);
     function getNumParticipants() public view returns (uint256);
-    function getDesignatedReporter() public view returns (address);
     function getDisputePacingOn() public view returns (bool);
     function deriveMarketCreatorFeeAmount(uint256 _amount) public view returns (uint256);
     function recordMarketCreatorFees(uint256 _marketCreatorFees, address _sourceAccount, bytes32 _fingerprint) public returns (bool);
     function isContainerForReportingParticipant(IReportingParticipant _reportingParticipant) public view returns (bool);
-    function isInvalid() public view returns (bool);
+    function isFinalizedAsInvalid() public view returns (bool);
     function finalize() public returns (bool);
-    function initialReporterWasCorrect() public view returns (bool);
-    function designatedReporterShowed() public view returns (bool);
     function isFinalized() public view returns (bool);
-    function assertBalances() public view returns (bool);
     function getOpenInterest() public view returns (uint256);
 }

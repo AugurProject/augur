@@ -15,9 +15,10 @@ import 'ROOT/libraries/Initializable.sol';
 import "ROOT/IAugur.sol";
 import 'ROOT/libraries/token/IERC1155.sol';
 import 'ROOT/libraries/LibBytes.sol';
+import 'ROOT/CashSender.sol';
 
 
-contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
+contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155, CashSender {
     using SafeMathUint256 for uint256;
     using LibBytes for bytes;
 
@@ -97,6 +98,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         require(exchange != IExchange(0));
         fillOrder = IFillOrder(_augurTrading.lookup("FillOrder"));
         require(fillOrder != IFillOrder(0));
+        initializeCashSender(_augur.lookup("DaiVat"), address(cash));
 
         EIP712_DOMAIN_HASH = keccak256(
             abi.encodePacked(
@@ -167,7 +169,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
 
         uint256 _attoSharesOwned = shareToken.lowestBalanceOfMarketOutcomes(_market, _shortOutcomes, _owner);
 
-        uint256 _availableCash = cash.allowance(_owner, address(fillOrder)).min(cash.balanceOf(_owner));
+        uint256 _availableCash = cashAvailableForTransferFrom(_owner, address(fillOrder));
         uint256 _attoSharesPurchasable = _availableCash.div(_price);
 
         return _attoSharesOwned.add(_attoSharesPurchasable);
@@ -175,7 +177,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
 
     function askBalance(address _owner, IMarket _market, uint8 _outcome, uint256 _price) public view returns (uint256) {
         uint256 _attoSharesOwned = shareToken.balanceOfMarketOutcome(_market, _outcome, _owner);
-        uint256 _availableCash = cash.allowance(_owner, address(fillOrder)).min(cash.balanceOf(_owner));
+        uint256 _availableCash = cashAvailableForTransferFrom(_owner, address(fillOrder));
         uint256 _attoSharesPurchasable = _availableCash.div(_market.getNumTicks().sub(_price));
 
         return _attoSharesOwned.add(_attoSharesPurchasable);

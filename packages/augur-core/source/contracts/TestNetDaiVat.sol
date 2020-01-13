@@ -4,8 +4,6 @@ import 'ROOT/external/IDaiVat.sol';
 
 
 contract TestNetDaiVat is IDaiVat {
-    mapping(address => mapping (address => uint)) public can;
-
     function cage() external {
         live = 0;
     }

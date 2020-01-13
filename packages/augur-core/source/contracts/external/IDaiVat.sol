@@ -14,6 +14,7 @@ contract IDaiVat {
     uint256 public live = 1;  // Access Flag
 
     mapping (address => uint256) public dai;  // [rad]
+    mapping(address => mapping (address => uint)) public can;
     function hope(address usr) public;
     function move(address src, address dst, uint256 rad) public;
     function suck(address u, address v, uint rad) public;
