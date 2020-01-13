@@ -149,7 +149,7 @@ export class ZeroXOrdersGetters {
     orders = orders.filter((order) => order.zeroXOrder !== null);
     // Remove intentionally ignored orders.
     orders = orders.filter((order) => ignoredOrderIds.indexOf(order.zeroXOrder.orderId) === -1);
-    // Remove orders soon to bexpire.
+    // Remove orders soon to expire.
     const now = Math.floor(new Date().valueOf() / 1000);
     const expirationCutoffTimestamp = now + expirationCutoffSeconds;
     orders = orders.filter((order) => order.zeroXOrder.expirationTimeSeconds.toNumber() > expirationCutoffTimestamp);
