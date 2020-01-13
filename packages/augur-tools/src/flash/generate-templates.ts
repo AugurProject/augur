@@ -12,7 +12,8 @@ import {
   DropdownDependencies,
   DateDependencies,
   ValidationType,
-  DateInputDependencies
+  DateInputDependencies,
+  PlaceholderValues
 } from '../templates-template';
 import { TEMPLATES, TEMPLATES2 } from '../templates-source';
 import { retiredTemplates } from '../templates-retired';
@@ -75,6 +76,7 @@ const generateValidations = (
     marketQuestionDependencies: null,
     dateDependencies: null,
     closingDateDependencies: null,
+    placeholderValues: null,
   };
   let newTemplates = JSON.parse(JSON.stringify(templates));
   const topCategories = Object.keys(newTemplates);
@@ -114,6 +116,7 @@ const addTemplates = (
         marketQuestionDependencies: getMarketQuestionDependencies(t.inputs),
         dateDependencies: getDateDependencies(t.inputs),
         closingDateDependencies: getClosingDateDependencies(t.inputs),
+        placeholderValues: getPlaceholderValues(t.inputs),
       };
     });
   }
@@ -201,6 +204,16 @@ function getDependencies(
       return p;
     }, {}),
   };
+}
+
+function getPlaceholderValues(inputs: TemplateInput[]): PlaceholderValues {
+  return inputs.reduce(
+    (p, i) =>
+      i.type === TemplateInputType.TEXT && !i.validationType
+        ? { ...p, [i.id]: i.placeholder }
+        : p,
+    {}
+  );
 }
 
 function getSubstituteOutcomeDependencies(inputs: TemplateInput[]): string[] {

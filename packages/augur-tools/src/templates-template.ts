@@ -125,6 +125,10 @@ export interface DropdownDependencies {
   };
 }
 
+export interface PlaceholderValues {
+  [id: number]: string;
+}
+
 export interface DateDependencies {
   id: number;
   noWeekendHolidays?: boolean;
@@ -154,6 +158,7 @@ export interface TemplateValidation {
   marketQuestionDependencies: DropdownDependencies;
   dateDependencies: DateDependencies[];
   closingDateDependencies: DateInputDependencies[];
+  placeholderValues: PlaceholderValues;
 }
 
 export interface TemplateValidationHash {
