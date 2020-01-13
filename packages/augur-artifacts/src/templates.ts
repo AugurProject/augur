@@ -291,6 +291,13 @@ export const ValidationTemplateInputType = {
 export let TEMPLATE_VALIDATIONS = {};
 export let RETIRED_TEMPLATES = [];
 
+export function getTemplatePlaceholder (hash: string) {
+  const validation = TEMPLATE_VALIDATIONS[
+    hash
+  ] as TemplateValidation;
+  return validation.placeholderValues;
+}
+
 function hasSubstituteOutcomes(
   inputs: ExtraInfoTemplateInput[],
   substituteDependencies: string[],
