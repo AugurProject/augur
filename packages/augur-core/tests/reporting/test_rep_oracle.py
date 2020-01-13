@@ -15,9 +15,9 @@ def test_rep_oracle(contractsFixture, augur, market, universe):
 
     account = contractsFixture.accounts[0]
 
-    cpExchangeAddress = universe.repExchange()
-    assert cpExchangeAddress != nullAddress
-    uniswap = contractsFixture.applySignature('CPExchange', cpExchangeAddress)
+    SimpleDexAddress = universe.repExchange()
+    assert SimpleDexAddress != nullAddress
+    repExchange = contractsFixture.applySignature('RepExchange', SimpleDexAddress)
 
     # Initially the price will just be the initialization value
     initialPrice = repOracle.genesisInitialRepPriceinAttoCash()
@@ -26,7 +26,7 @@ def test_rep_oracle(contractsFixture, augur, market, universe):
     # Add liquidity to suggest the price is 1 REP = 20 Cash
     cashAmount = 20 * 10**18
     repAmount = 1 * 10**18
-    addLiquidity(uniswap, cash, reputationToken, cashAmount, repAmount, account)
+    addLiquidity(repExchange, cash, reputationToken, cashAmount, repAmount, account)
 
     # The reserves have been modified, however since this is our first use of actual exchange data we do not have an accurate way to get the correct _delta_ in price. So We use the initial value again.
     assert repOracle.pokeRepPriceInAttoCash(reputationToken.address) == initialPrice
@@ -45,8 +45,7 @@ def test_rep_oracle(contractsFixture, augur, market, universe):
 
     # Buy REP and manipulate blockNumber to affect cummulative amounts
     cashAmount = 10**18 # Trade 1 Dai for ~.05 REP
-    repAmount = 4.7 * 10**16
-    buyRep(uniswap, cash, cashAmount, repAmount, account)
+    buyRep(repExchange, cash, cashAmount, account)
     mineBlock(contractsFixture, period)
 
     expectedNewRepPrice = 22 * 10**18 # Cash reserves of ~ 21 Dai and REP reserves of ~.95 REP means a price of 22 Dai / REP
@@ -54,8 +53,7 @@ def test_rep_oracle(contractsFixture, augur, market, universe):
 
     # Now Sell REP
     repAmount = 1 * 10**17 # Trade .1 REP for 1.8 DAI
-    cashAmount = 1.8 * 10**18
-    sellRep(uniswap, reputationToken, repAmount, cashAmount, account)
+    sellRep(repExchange, reputationToken, repAmount, account)
     mineBlock(contractsFixture, period)
 
     expectedNewRepPrice = 18.3 * 10**18 # Cash reserves of ~ 19.2 Dai and REP reserves of ~1.05 REP means a price of ~18.3 Dai / REP
@@ -71,13 +69,13 @@ def addLiquidity(exchange, cash, reputationToken, cashAmount, repAmount, address
 
     exchange.publicMint(address)
 
-def buyRep(exchange, cash, cashAmount, repAmount, address):
+def buyRep(exchange, cash, cashAmount, address):
     cash.faucet(cashAmount)
     cash.transfer(exchange.address, cashAmount)
 
     exchange.buyToken(address)
 
-def sellRep(exchange, reputationToken, repAmount, cashAmount, address):
+def sellRep(exchange, reputationToken, repAmount, address):
     reputationToken.faucet(repAmount)
     reputationToken.transfer(exchange.address, repAmount)
 

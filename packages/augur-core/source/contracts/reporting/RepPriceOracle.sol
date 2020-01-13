@@ -2,7 +2,7 @@ pragma solidity 0.5.15;
 
 import 'ROOT/IAugur.sol';
 import 'ROOT/libraries/Initializable.sol';
-import 'ROOT/ICPExchange.sol';
+import 'ROOT/ISimpleDex.sol';
 import 'ROOT/reporting/IRepPriceOracle.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
 
@@ -15,7 +15,7 @@ contract RepPriceOracle is IRepPriceOracle, Initializable {
     uint256 constant public period = 3 days; // TODO: revisit if this is an appropriate period
 
     struct ExchangeData {
-        ICPExchange exchange;
+        ISimpleDex exchange;
         uint256 repPriceAccumulated;
         uint256 blockNumber;
         uint256 blockTimestamp;
@@ -35,7 +35,7 @@ contract RepPriceOracle is IRepPriceOracle, Initializable {
 
     // TODO: Consider when this should be called other than when the price is requested as part of new fee setting
     function pokeRepPriceInAttoCash(IV2ReputationToken _reputationToken) external returns (uint256) {
-        if (exchangeData[address(_reputationToken)].exchange == ICPExchange(0)) {
+        if (exchangeData[address(_reputationToken)].exchange == ISimpleDex(0)) {
             initializeUniverse(_reputationToken);
         }
         ExchangeData memory _newExchangeData = calculateNewExchangeData(_reputationToken);
@@ -51,7 +51,7 @@ contract RepPriceOracle is IRepPriceOracle, Initializable {
             return _exchangeData;
         }
 
-        ICPExchange _exchange = _exchangeData.exchange;
+        ISimpleDex _exchange = _exchangeData.exchange;
         if (_blockNumber != _exchange.blockNumberLast()) {
             _exchange.sync();
         }
@@ -89,7 +89,7 @@ contract RepPriceOracle is IRepPriceOracle, Initializable {
 
     function initializeUniverse(IV2ReputationToken _reputationToken) private {
         uint256 _blockNumber = block.number;
-        ICPExchange _exchange = _reputationToken.getUniverse().repExchange();
+        ISimpleDex _exchange = _reputationToken.getUniverse().repExchange();
         exchangeData[address(_reputationToken)].exchange = _exchange;
         if (_blockNumber != _exchange.blockNumberLast()) {
             _exchange.sync();

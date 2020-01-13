@@ -24,6 +24,7 @@ import {
   GnosisSafeRegistry,
   WarpSync,
   RepPriceOracle,
+  EthExchange,
   // 0x
   DevUtils,
   Exchange,
@@ -530,6 +531,10 @@ Deploying to: ${networkConfiguration.networkName}
         const RepPriceOracleContract = await this.getContractAddress('RepPriceOracle');
         const repPriceOracle = new RepPriceOracle(this.dependencies, RepPriceOracleContract);
         promises.push(repPriceOracle.initialize(this.augur!.address));
+
+        const EthExchangeContract = await this.getContractAddress('EthExchange');
+        const ethExchange = new EthExchange(this.dependencies, EthExchangeContract);
+        promises.push(ethExchange.initialize(this.augur!.address));
 
         if (!this.configuration.useNormalTime) {
             const timeContract = await this.getContractAddress('TimeControlled');

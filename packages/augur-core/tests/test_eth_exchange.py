@@ -1,0 +1,64 @@
+#!/usr/bin/env python
+
+from eth_tester.exceptions import TransactionFailed
+from pytest import raises, fixture as pytest_fixture
+from utils import stringToBytes, AssertLog
+
+
+def test_eth_exchange(localFixture, augur, cash, ethExchange):
+    account = localFixture.accounts[0]
+
+    # Add liquidity to suggest the price is 1 ETH = 100 Cash
+    cashAmount = 10 * 100 * 10**18
+    ethAmount = 10 * 10**18
+    addLiquidity(localFixture, ethExchange, cash, cashAmount, ethAmount, account)
+
+    # Now we can buy ETH
+    cashAmount = 10 * 10**18 # Trade 10 DAI for ~.1 ETH
+    initialETH = localFixture.ethBalance(account)
+    buyEth(ethExchange, cash, cashAmount, account)
+    assert roughlyEqual(initialETH + 10**17, localFixture.ethBalance(account))
+
+    # Buy Dai
+    ethAmount = 1 * 10**17 # Trade .1 ETH for ~10 DAI
+    initialCash = cash.balanceOf(account)
+    sellEth(localFixture, ethExchange, ethAmount, account)
+    assert roughlyEqual(initialCash + 10**19, cash.balanceOf(account), 10**17)
+
+
+def addLiquidity(fixture, exchange, cash, cashAmount, ethAmount, address):
+    cash.faucet(cashAmount)
+    cash.transfer(exchange.address, cashAmount)
+    fixture.sendEth(address, exchange.address, ethAmount)
+    assert exchange.getTokenBalance() == ethAmount
+    exchange.publicMint(address)
+
+def buyEth(exchange, cash, cashAmount, address):
+    cash.faucet(cashAmount)
+    cash.transfer(exchange.address, cashAmount)
+    exchange.buyToken(address)
+
+def sellEth(fixture, exchange, ethAmount, address):
+    fixture.sendEth(address, exchange.address, ethAmount)
+    exchange.sellToken(address)
+
+def roughlyEqual(amount1, amount2, tolerance=10**16):
+    return abs(amount1 - amount2) < tolerance
+
+@pytest_fixture(scope="session")
+def localSnapshot(fixture, augurInitializedSnapshot):
+    fixture.resetToSnapshot(augurInitializedSnapshot)
+    return augurInitializedSnapshot
+
+@pytest_fixture
+def localFixture(fixture, localSnapshot):
+    fixture.resetToSnapshot(localSnapshot)
+    return fixture
+
+@pytest_fixture
+def augur(localFixture, localSnapshot):
+    return localFixture.contracts["Augur"]
+
+@pytest_fixture
+def ethExchange(localFixture, localSnapshot):
+    return localFixture.contracts["EthExchange"]

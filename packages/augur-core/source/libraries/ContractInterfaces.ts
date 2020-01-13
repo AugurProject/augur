@@ -107,8 +107,6 @@ export class Trade extends c.Trade<BigNumber> {
 }
 export class ZeroXTrade extends c.ZeroXTrade<BigNumber> {
 }
-export class UniswapV2Factory extends c.UniswapV2Factory<BigNumber> {
-}
 export class BuyParticipationTokens extends c.BuyParticipationTokens<BigNumber> {
 }
 export class Formulas extends c.Formulas<BigNumber> {

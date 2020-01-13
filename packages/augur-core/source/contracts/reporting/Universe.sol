@@ -21,7 +21,7 @@ import 'ROOT/external/IDaiJoin.sol';
 import 'ROOT/utility/IFormulas.sol';
 import 'ROOT/IAugur.sol';
 import 'ROOT/CashSender.sol';
-import 'ROOT/ICPExchange.sol';
+import 'ROOT/ISimpleDex.sol';
 import 'ROOT/factories/IRepExchangeFactory.sol';
 
 
@@ -79,7 +79,7 @@ contract Universe is IUniverse, CashSender {
     IDaiPot public daiPot;
     IDaiJoin public daiJoin;
 
-    ICPExchange public repExchange;
+    ISimpleDex public repExchange;
 
     uint256 constant public RAY = 10 ** 27;
 

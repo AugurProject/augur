@@ -396,7 +396,6 @@ class ContractsFixture:
             if 'legacy_reputation' in directory: continue
             if 'external' in directory: continue
             if '0x' in directory: continue # uploaded separately
-            if 'uniswap' in directory: continue
             for filename in filenames:
                 name = path.splitext(filename)[0]
                 extension = path.splitext(filename)[1]
@@ -468,7 +467,7 @@ class ContractsFixture:
         return zeroXContracts
 
     def initializeAllContracts(self):
-        coreContractsToInitialize = ['Time','ShareToken','WarpSync','RepPriceOracle']
+        coreContractsToInitialize = ['Time','ShareToken','WarpSync','RepPriceOracle','EthExchange']
         for contractName in coreContractsToInitialize:
             if getattr(self.contracts[contractName], "initialize", None):
                 self.contracts[contractName].initialize(self.contracts['Augur'].address)
@@ -614,6 +613,10 @@ class ContractsFixture:
     def sendEth(self, sender, receiver, amount):
         tester = self.testerProvider.ethereum_tester
         tester.send_transaction({'from': sender, 'to': receiver, 'gas': 30000, 'gas_price': 1, 'value': amount, 'data': '0x'})
+
+    def ethBalance(self, account):
+        tester = self.testerProvider.ethereum_tester
+        return tester.get_balance(account)
 
 @pytest.fixture(scope="session")
 def fixture(request):
