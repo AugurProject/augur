@@ -26,12 +26,12 @@
       > svg {
         height: @size-12;
         width: @size-12;
-    
+
         > circle {
           fill: none;
           stroke: @color-secondary-text;
         }
-    
+
         > path {
           fill: @color-secondary-text;
         }
@@ -141,6 +141,25 @@
     }
   }
 
+  @media @breakpoint-max-tablet {
+    .DesktopInvalidLabel {
+      display: none;
+    }
+
+    .MobileInvalidLabel {
+      display: block;
+    }
+  }
+
+  @media @breakpoint-min-desktop-min {
+    .DesktopInvalidLabel {
+      display: block;
+    }
+
+    .MobileInvalidLabel {
+      display: none;
+    }
+  }
 }
 
 .HoverValueLabel {
@@ -188,12 +207,12 @@
       > svg {
         height: @size-12;
         width: @size-12;
-    
+
         > circle {
           fill: none;
           stroke: @color-secondary-text;
         }
-    
+
         > path {
           fill: @color-secondary-text;
         }

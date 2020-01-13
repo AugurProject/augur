@@ -57,6 +57,7 @@ interface MarketCardProps {
   dispute: Function;
   migrateMarketModal: Function;
   marketLinkCopied: Function;
+  openInvalidMarketRulesModal: Function;
 }
 
 interface MarketCardState {
@@ -98,6 +99,7 @@ export default class MarketCard extends React.Component<
       hasStaked,
       dispute,
       marketLinkCopied,
+      openInvalidMarketRulesModal,
     } = this.props;
 
     const s = this.state;
@@ -303,6 +305,7 @@ export default class MarketCard extends React.Component<
                 canDispute={canDispute}
                 canSupport={canSupport}
                 marketId={id}
+                openInvalidMarketRulesModal={openInvalidMarketRulesModal}
               />
               {expandedOptionShowing && (
                   <button onClick={this.expand}>

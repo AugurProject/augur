@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import classNames from 'classnames';
 import * as constants from 'modules/common/constants';
 import Styles from 'modules/common/labels.styles.less';
@@ -38,6 +39,10 @@ import {
   DISMISSABLE_NOTICE_BUTTON_TYPES,
   DismissableNotice,
 } from 'modules/reporting/common';
+import { EventDetailsContent } from 'modules/create-market/constants';
+import { ExplainerBlock } from 'modules/create-market/components/common';
+import { updateModal } from 'modules/modal/actions/update-modal';
+import { MODAL_LOGIN } from 'modules/common/constants';
 
 export interface MarketTypeProps {
   marketType: string;
@@ -149,6 +154,7 @@ interface HoverValueLabelState {
 export interface TextLabelProps {
   text: string;
   keyId?: string;
+  openInvalidMarketRulesModal?: Function;
 }
 
 export interface TextLabelState {
@@ -540,7 +546,14 @@ export class HoverValueLabel extends React.Component<
 }
 
 export const InvalidLabel = (props: TextLabelProps) => {
-  const { text, keyId } = props;
+  const { text, keyId, openInvalidMarketRulesModal } = props;
+  const {explainerBlockTitle, explainerBlockSubtexts, useBullets} = EventDetailsContent();
+
+  const openModal = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    openInvalidMarketRulesModal();
+  };
 
   return (
     <span className={Styles.InvalidLabel}>
@@ -548,21 +561,30 @@ export const InvalidLabel = (props: TextLabelProps) => {
       <label
         data-tip
         data-for={`${keyId}-${text ? text.replace(/\s+/g, '-') : ''}`}
+        className={Styles.DesktopInvalidLabel}
+      >
+        {QuestionIcon}
+      </label>
+      <label
+        onClick={(e) => openModal(e)}
+        className={Styles.MobileInvalidLabel}
       >
         {QuestionIcon}
       </label>
       <ReactTooltip
         id={`${keyId}-${text.replace(/\s+/g, '-')}`}
-        className={TooltipStyles.Tooltip}
+        className={classNames(TooltipStyles.Tooltip, TooltipStyles.TooltipInvalidRules)}
         effect="solid"
         place="top"
-        type="light"
+        type="dark"
         data-event="mouseover"
         data-event-off="blur scroll"
       >
-        A market may resolve as Invalid if its details or outcome are ambiguous,
-        subjective or unknown. Invalid is a resolvable outcome, traders may
-        buy/sell shares in it.
+        <ExplainerBlock
+          title={explainerBlockTitle}
+          subtexts={explainerBlockSubtexts}
+          useBullets={useBullets}
+        />
       </ReactTooltip>
     </span>
   );

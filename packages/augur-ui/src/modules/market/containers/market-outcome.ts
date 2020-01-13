@@ -2,11 +2,12 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { AppState } from "store";
 import getValue from "utils/get-value";
-import { COLUMN_TYPES, INVALID_OUTCOME_ID } from "modules/common/constants";
+import { COLUMN_TYPES, INVALID_OUTCOME_ID, MODAL_INVALID_MARKET_RULES } from "modules/common/constants";
 import { selectMarketOutcomeBestBidAsk } from "modules/markets/selectors/select-market-outcome-best-bid-ask";
 import Row from "modules/common/row";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
+import { updateModal } from 'modules/modal/actions/update-modal';
 
 const mapStateToProps = (state: AppState, ownProps) => {
   return {
@@ -14,7 +15,9 @@ const mapStateToProps = (state: AppState, ownProps) => {
   };
 };
 
-const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({});
+const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
+  openInvalidMarketRulesModal: () => dispatch(updateModal({type: MODAL_INVALID_MARKET_RULES})),
+});
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
   const outcome = oP.outcome;
@@ -37,6 +40,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       text: outcomeName,
       keyId: outcomeName,
       showExtraNumber: !oP.scalarDenomination,
+      openInvalidMarketRulesModal: outcome.id === INVALID_OUTCOME_ID ? dP.openInvalidMarketRulesModal : undefined,
     },
     {
       key: "topBidShares",

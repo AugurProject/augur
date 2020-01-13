@@ -28,6 +28,8 @@ import {
 } from "modules/common/labels";
 
 import Styles from "modules/modal/modal.styles.less";
+import { ExplainerBlock } from 'modules/create-market/components/common';
+import { EventDetailsContent } from 'modules/create-market/constants';
 
 interface MessageProps {
   closeAction: Function;
@@ -46,6 +48,7 @@ interface MessageProps {
   subheader?: string;
   subheader_2?: string;
   showDiscordLink?: boolean;
+  invalidMarketRules?: boolean;
 }
 
 export const Message = ({
@@ -65,6 +68,7 @@ export const Message = ({
   subheader,
   subheader_2,
   showDiscordLink,
+  invalidMarketRules,
 }: MessageProps) => (
   <div className={Styles.Message}>
     <Title title={title} closeAction={closeAction} />
@@ -82,6 +86,12 @@ export const Message = ({
       {depositInfo && <DepositInfo {...depositInfo} />}
       {marketReview && <MarketReview {...marketReview} />}
       {checkbox && <CheckboxCTA {...checkbox} />}
+      {invalidMarketRules && <ExplainerBlock
+          title={EventDetailsContent().explainerBlockTitle}
+          subtexts={EventDetailsContent().explainerBlockSubtexts}
+          useBullets={EventDetailsContent().useBullets}
+          isModal
+      />}
     </main>
     {buttons.length > 0 && <ButtonsRow buttons={buttons} />}
   </div>

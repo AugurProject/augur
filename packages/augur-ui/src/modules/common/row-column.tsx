@@ -34,6 +34,7 @@ export interface Properties {
   location?: string;
   showExtraNumber?: Boolean;
   status?: string;
+  openInvalidMarketRulesModal?: Function;
 }
 
 function selectColumn(columnType: string, properties: Properties) {
@@ -85,7 +86,7 @@ function selectColumn(columnType: string, properties: Properties) {
       );
     case COLUMN_TYPES.INVALID_LABEL:
       return (
-        <InvalidLabel text={properties.text} keyId={properties.keyId} />
+        <InvalidLabel text={properties.text} keyId={properties.keyId} openInvalidMarketRulesModal={properties.openInvalidMarketRulesModal} />
       );
     case COLUMN_TYPES.CANCEL_TEXT_BUTTON:
       return properties.pending ? (

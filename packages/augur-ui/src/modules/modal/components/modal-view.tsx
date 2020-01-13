@@ -48,7 +48,8 @@ import ModalWalletError from 'modules/modal/containers/modal-wallet-error';
 import ModalAugurUsesDai from 'modules/modal/containers/modal-augur-uses-dai';
 import ModalTutorialOutro from 'modules/modal/containers/modal-tutorial-outro';
 import ModalTutorialIntro from 'modules/modal/containers/modal-tutorial-intro';
-import ModalScalar from 'modules/modal/containers/modal-scalar'
+import ModalScalar from 'modules/modal/containers/modal-scalar';
+import ModalInvalidMarketRules from 'modules/modal/containers/modal-invalid-market-rules';
 
 import * as TYPES from 'modules/common/constants';
 
@@ -167,6 +168,8 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalWalletError />
     case TYPES.MODAL_SCALAR_MARKET:
       return <ModalScalar {...modal} />
+    case TYPES.MODAL_INVALID_MARKET_RULES:
+      return <ModalInvalidMarketRules />;
     default:
       return <div />;
   }
@@ -197,7 +200,7 @@ export default class ModalView extends Component<ModalViewProps> {
     window.addEventListener('keydown', this.handleKeyDown);
 
     trackModalViewed(modal.type, {
-      modal: modal.type, 
+      modal: modal.type,
       from: window.location.href
     })
   }
