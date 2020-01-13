@@ -293,13 +293,13 @@ export let RETIRED_TEMPLATES = [];
 
 export function hasTemplateTextInputs(hash: string) {
   const validation = TEMPLATE_VALIDATIONS[hash] as TemplateValidation;
-  if (!validation.placeholderValues) return false;
+  if (!validation || !validation.placeholderValues) return false;
   return Object.keys(validation.placeholderValues).length > 0;
 }
 
 export function getTemplatePlaceholderById(hash: string, id: number) {
   const validation = TEMPLATE_VALIDATIONS[hash] as TemplateValidation;
-  if (!validation.placeholderValues) return null;
+  if (!validation || !validation.placeholderValues) return null;
   return validation.placeholderValues[id];
 }
 
