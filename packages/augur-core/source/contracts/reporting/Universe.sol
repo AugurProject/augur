@@ -101,6 +101,7 @@ contract Universe is IUniverse, CashSender {
         daiVat.hope(address(daiPot));
         daiVat.hope(address(daiJoin));
         cash.approve(address(daiJoin), 2 ** 256 - 1);
+        daiVat.hope(address(augur));
 
         initializeCashSender(address(daiVat), address(cash));
     }
@@ -397,7 +398,6 @@ contract Universe is IUniverse, CashSender {
         withdraw(address(this), _cashBalance, msg.sender);
         openInterestInAttoCash = openInterestInAttoCash.sub(_marketOI);
         cash.approve(address(augur), _cashBalance);
-        vat.hope(address(augur));
         _destinationUniverse.migrateMarketIn(_market, _cashBalance, _marketOI);
         return true;
     }

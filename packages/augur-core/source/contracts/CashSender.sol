@@ -36,6 +36,13 @@ contract CashSender {
         return _available;
     }
 
+    function cashApprove(address _spender, uint256 _amount) internal {
+        cash.approve(_spender, _amount);
+        if (vat.live() == 0) {
+            vat.hope(_spender);
+        }
+    }
+
     function cashTransfer(address _to, uint256 _amount) internal {
         address _from = address(this);
         if (vat.live() == 0) {

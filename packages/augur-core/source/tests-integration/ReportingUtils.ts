@@ -116,7 +116,7 @@ export class ReportingUtils {
 
         const numParticipants = await market.getNumParticipants_();
         for (let i = 0; i < numParticipants.toNumber(); i++) {
-            const reportingParticipantAddress = await market.getReportingParticipant_(new BigNumber(i));
+            const reportingParticipantAddress = await market.participants_(new BigNumber(i));
             const reportingParticipant = await fixture.getReportingParticipant(reportingParticipantAddress);
             console.log(`Creating universe for participant: ${i}`);
             await universe.createChildUniverse(await reportingParticipant.getPayoutNumerators_());

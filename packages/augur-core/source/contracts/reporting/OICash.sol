@@ -26,12 +26,12 @@ contract OICash is VariableSupplyToken, Initializable, IOICash, CashSender {
         endInitialization();
         augur = _augur;
         cash = ICash(_augur.lookup("Cash"));
-        cash.approve(address(_augur), MAX_APPROVAL_AMOUNT);
         shareToken = IShareToken(_augur.lookup("ShareToken"));
         require(shareToken != IShareToken(0));
         universe = _universe;
 
         initializeCashSender(_augur.lookup("DaiVat"), _augur.lookup("Cash"));
+        cashApprove(address(_augur), MAX_APPROVAL_AMOUNT);
     }
 
     function deposit(uint256 _amount) external returns (bool) {
