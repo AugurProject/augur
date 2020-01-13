@@ -2,18 +2,6 @@
 
 .Tabs {
   cursor: default;
-
-  @media @breakpoint-mobile {
-    > div[class*="Content"] > div.Table {
-      > ul[class*="DataTableHeader"] > li:nth-of-type(3) {
-        justify-content: center;
-      }
-
-      > div > div[class*="ToggleRow"] > div[class*="GroupRow"] > div[class*="RowContainer"] > div[class*="RowContent"] > ul[class*="Row"] > li:nth-of-type(3) {
-        justify-content: center;
-      }
-    }
-  }
 }
 
 div.Table {
@@ -33,6 +21,12 @@ div.Table {
     > div:first-of-type {
       max-height: unset;
       min-height: unset;
+    }
+  }
+
+  @media @breakpoint-mobile {
+    > ul[class*="DataTableHeader"] > li:nth-of-type(3) {
+      justify-content: center;
     }
   }
 }
