@@ -1151,7 +1151,7 @@ export const RadioTwoLineBar = ({
     className={classNames(Styles.RadioTwoLineBar, {
       [Styles.RadioBarError]: error,
       [Styles.HideRadioButton]: hideRadioButton,
-      [Styles.Checked]: hideRadioButton && checked,
+      [Styles.Checked]: checked,
       [Styles.RenderMarkdown]: !!renderMarkdown,
     })}
     role="button"
