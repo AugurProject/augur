@@ -27,18 +27,19 @@
       margin-right: auto;
     }
 
-    > svg > path {
-      fill: none;
-      stroke: @color-inactive-text;
+    > svg {
+      height: @size-6;
+      margin: 0 @size-1 0 @size-13;
+      width: @size-10;
+
+      > path {
+        fill: @color-primary-text;
+      }
     }
 
     &:hover {
       background: fade(@color-secondary-action, 50%);
       outline: none;
-
-      > svg > path {
-        stroke: @color-primary-text;
-      }
     }
   }
 
@@ -107,16 +108,6 @@
     background: @color-dark-grey;
     padding: 0 @size-12;
 
-    > svg {
-      height: @size-6;
-      margin-left: @size-8;
-      width: @size-10;
-
-      > path {
-        fill: @color-primary-text;
-      }
-    }
-
     > span {
       padding: @size-10 0;
       border-right: 1px solid @color-secondary-action;
@@ -166,16 +157,6 @@
     line-height: @size-12;
     text-transform: uppercase;
     padding: 0 @size-8;
-
-    > svg {
-      height: @size-6;
-      margin-left: @size-8;
-      width: @size-10;
-
-      > path {
-        fill: @color-primary-text;
-      }
-    }
 
     > span {
       display: block;
@@ -233,10 +214,6 @@
 .isOpen {
   > button {
     background: @color-secondary-hover;
-
-    > svg > path {
-      stroke: @color-primary-text;
-    }
   }
 }
 
