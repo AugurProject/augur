@@ -236,6 +236,7 @@ export enum TEXT_PLACEHOLDERS {
   SINGLE_PERSON_OR_GROUP_OR_MOVIE_TITLE = 'Single Person or Single Group or Movie Title',
   INDIVIDUAL_MOVIE_TITLE = 'Individual Movie Title',
   STOCK_OR_ETF = 'Individual Stock or ETF Name',
+  INDIVIDUAL_STOCK_OR_ETF_NAME = 'Individual Stock or ETF Name',
   INDIVIDUAL_STOCK_OR_ETF_SYMBOL = 'Individual Stock or ETF Ticker Symbol',
 }
 
