@@ -33,6 +33,7 @@ import {
   TEMPLATE_INPUTS,
   TEMPLATE,
   ExchangeClosingMessage,
+  MovieWednesdayAfterOpeningMessage,
 } from 'modules/create-market/constants';
 import {
   CATEGORICAL,
@@ -105,6 +106,9 @@ import {
   TemplateInputType,
   TimeOffset,
   getTemplateExchangeClosingWithBuffer,
+  ValidationType,
+  TemplateInput,
+  getTemplateWednesdayAfterOpeningDay,
 } from '@augurproject/artifacts';
 import { template } from './form-details.styles.less';
 
@@ -542,6 +546,10 @@ export default class Form extends React.Component<FormProps, FormState> {
         const closing = inputs.find(
           i => i.type === TemplateInputType.DATEYEAR_CLOSING
         );
+        const afterTuesday: TemplateInput = inputs.find(
+          i => i.type === TemplateInputType.DATEYEAR &&
+          i.validationType === ValidationType.EXP_DATE_TUESDAY_AFTER_MOVIE
+        );
         if (closing) {
           const dateYearSource = inputs.find(
             i => i.id === closing.inputDateYearId
@@ -560,6 +568,14 @@ export default class Form extends React.Component<FormProps, FormState> {
               dateGreater(endTimeFormatted.timestamp, closingDateTime, message)
             );
           }
+        }
+        if (afterTuesday && afterTuesday.setEndTime) {
+          const wednesdayAfterOpening = getTemplateWednesdayAfterOpeningDay(afterTuesday.setEndTime);
+          const dateTime = convertUnixToFormattedDate(wednesdayAfterOpening);
+          const message = `${MovieWednesdayAfterOpeningMessage} ${dateTime.formattedLocalShortDateTimeWithTimezone}`;
+          checkValidations.push(
+            dateGreater(endTimeFormatted.timestamp, wednesdayAfterOpening, message)
+          );
         }
       }
     }

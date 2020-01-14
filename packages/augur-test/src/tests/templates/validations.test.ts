@@ -110,7 +110,7 @@ const templateValidations = [
     skip: false,
     title: 'Will the BSE Sensex 30 close on or above 33 on December 29, 2019?',
     templateInfo:
-      '{"hash":"0x7368365b7c637f91b56786842d3cdda72b0d83f7b4ca9ea70b75dc354d5fff9a","question":"Will the [0] close on or above [1] on [2]?","inputs":[{"id":0,"value":"BSE Sensex 30","type":"DROPDOWN","timestamp":null},{"id":1,"value":"33","type":"TEXT","timestamp":null},{"id":2,"value":"December 29, 2019","type":"DATEYEAR","timestamp":1577645591}]}',
+      '{"hash":"0x37f0cf523f502c2156a1c5a00be2246905259b2be655e4f6337c007268597678","question":"Will the [0] close on or above [1] on [2]?","inputs":[{"id":0,"value":"BSE Sensex 30","type":"DROPDOWN","timestamp":null},{"id":1,"value":"33","type":"TEXT","timestamp":null},{"id":2,"value":"December 29, 2019","type":"DATEYEAR","timestamp":1577645591}]}',
     endTime: '1578281600',
     resolutionRules:
       'Closing date is determined by the location of the exchange, where the underlying stocks for the index are traded\nIf trading day in market question is a weekend or holiday when exchange is not open this market should resolve as invalid',
@@ -120,7 +120,7 @@ const templateValidations = [
     skip: false,
     title: 'Will the BSE Sensex 30 close on or above 33 on December 29, 2019?',
     templateInfo:
-      '{"hash":"0x7368365b7c637f91b56786842d3cdda72b0d83f7b4ca9ea70b75dc354d5fff9a","question":"Will the [0] close on or above [1] on [2]?","inputs":[{"id":0,"value":"BSE Sensex 30","type":"DROPDOWN","timestamp":null},{"id":1,"value":"33","type":"TEXT","timestamp":null},{"id":2,"value":"December 29, 2019","type":"DATEYEAR","timestamp":1577645591}]}',
+      '{"hash":"0x37f0cf523f502c2156a1c5a00be2246905259b2be655e4f6337c007268597678","question":"Will the [0] close on or above [1] on [2]?","inputs":[{"id":0,"value":"BSE Sensex 30","type":"DROPDOWN","timestamp":null},{"id":1,"value":"33","type":"TEXT","timestamp":null},{"id":2,"value":"December 29, 2019","type":"DATEYEAR","timestamp":1577645591}]}',
     endTime: '1578281600',
     resolutionRules:
       'Closing date is determined by the location of the exchange, where the underlying stocks for the index are traded\nIf trading day in market question is a weekend or holiday when exchange is not open this market should resolve as invalid',
@@ -130,7 +130,7 @@ const templateValidations = [
     skip: false,
     title: 'Will the BSE Sensex 30 close on or above 33 on January 20, 2020?',
     templateInfo:
-      '{"hash":"0x7368365b7c637f91b56786842d3cdda72b0d83f7b4ca9ea70b75dc354d5fff9a","question":"Will the [0] close on or above [1] on [2]?","inputs":[{"id":0,"value":"BSE Sensex 30","type":"DROPDOWN","timestamp":null},{"id":1,"value":"33","type":"TEXT","timestamp":null},{"id":2,"value":"January 20, 2020","type":"DATEYEAR","timestamp":1579478400}]}',
+      '{"hash":"0x37f0cf523f502c2156a1c5a00be2246905259b2be655e4f6337c007268597678","question":"Will the [0] close on or above [1] on [2]?","inputs":[{"id":0,"value":"BSE Sensex 30","type":"DROPDOWN","timestamp":null},{"id":1,"value":"33","type":"TEXT","timestamp":null},{"id":2,"value":"January 20, 2020","type":"DATEYEAR","timestamp":1579478400}]}',
     endTime: '1580404439',
     resolutionRules:
       'Closing date is determined by the location of the exchange, where the underlying stocks for the index are traded\nIf trading day in market question is a weekend or holiday when exchange is not open this market should resolve as invalid',
@@ -141,7 +141,7 @@ const templateValidations = [
     title:
       'Will the BSE Sensex 30 close on or above 33.00.01 on December 31, 2019?',
     templateInfo:
-      '{"hash":"0x7368365b7c637f91b56786842d3cdda72b0d83f7b4ca9ea70b75dc354d5fff9a","question":"Will the [0] close on or above [1] on [2]?","inputs":[{"id":0,"value":"BSE Sensex 30","type":"DROPDOWN","timestamp":null},{"id":1,"value":"33.00.01","type":"TEXT","timestamp":null},{"id":2,"value":"December 31, 2019","type":"DATEYEAR","timestamp":1577772000}]}',
+      '{"hash":"0x37f0cf523f502c2156a1c5a00be2246905259b2be655e4f6337c007268597678","question":"Will the [0] close on or above [1] on [2]?","inputs":[{"id":0,"value":"BSE Sensex 30","type":"DROPDOWN","timestamp":null},{"id":1,"value":"33.00.01","type":"TEXT","timestamp":null},{"id":2,"value":"December 31, 2019","type":"DATEYEAR","timestamp":1577772000}]}',
     endTime: '1578581600',
     resolutionRules:
       'Closing date is determined by the location of the exchange, where the underlying stocks for the index are traded\nIf trading day in market question is a weekend or holiday when exchange is not open this market should resolve as invalid',
@@ -151,7 +151,7 @@ const templateValidations = [
     skip: false,
     title: 'Will the Russell 1000 close on or above 14 on January 2, 2020?',
     templateInfo:
-      '{"hash":"0x7368365b7c637f91b56786842d3cdda72b0d83f7b4ca9ea70b75dc354d5fff9a","question":"Will the [0] close on or above [1] on [2]?","inputs":[{"id":0,"value":"Russell 1000","type":"DROPDOWN","timestamp":null},{"id":1,"value":"14","type":"TEXT","timestamp":null},{"id":2,"value":"January 2, 2020","type":"DATEYEAR","timestamp":1577944800}]}',
+      '{"hash":"0x37f0cf523f502c2156a1c5a00be2246905259b2be655e4f6337c007268597678","question":"Will the [0] close on or above [1] on [2]?","inputs":[{"id":0,"value":"Russell 1000","type":"DROPDOWN","timestamp":null},{"id":1,"value":"14","type":"TEXT","timestamp":null},{"id":2,"value":"January 2, 2020","type":"DATEYEAR","timestamp":1577944800}]}',
     endTime: '1578198860',
     resolutionRules:
       "Closing date is determined by the location of the exchange, where the underlying stocks for the index are traded\nIf trading day in market question is a weekend or holiday when exchange is not open this market should resolve as 'Invalid'",
@@ -161,11 +161,27 @@ const templateValidations = [
     skip: false,
     title: 'Will the Russell 1000 close on or above 14 on January 2, 2020?',
     templateInfo:
-      '{"hash":"0x7368365b7c637f91b56786842d3cdda72b0d83f7b4ca9ea70b75dc354d5fff9a","question":"Will the [0] close on or above [1] on [2]?","inputs":[{"id":0,"value":"Russell 1000","type":"DROPDOWN","timestamp":null},{"id":1,"value":"14","type":"TEXT","timestamp":null},{"id":2,"value":"January 2, 2020","type":"DATEYEAR","timestamp":1577944800}]}',
+      '{"hash":"0x37f0cf523f502c2156a1c5a00be2246905259b2be655e4f6337c007268597678","question":"Will the [0] close on or above [1] on [2]?","inputs":[{"id":0,"value":"Russell 1000","type":"DROPDOWN","timestamp":null},{"id":1,"value":"14","type":"TEXT","timestamp":null},{"id":2,"value":"January 2, 2020","type":"DATEYEAR","timestamp":1577944800}]}',
     endTime: '1577988860',
     resolutionRules:
       "Closing date is determined by the location of the exchange, where the underlying stocks for the index are traded\nIf trading day in market question is a weekend or holiday when exchange is not open this market should resolve as 'Invalid'",
     result: 'error: event expiration can not be before exchange close time',
+  },
+  {
+    skip: false,
+    title: 'Will the total gross for bob be $333 USD or more, on domestic opening weekend of January 17, 2020 in the US, according to www.boxofficemojo.com/?',
+    templateInfo: '{"hash":"0xb73321f8c801632a143f77240aa90d211fa69313d3a3dc206a504aaa06464ec0","question":"Will the total gross for [0] be $[1] USD or more, on domestic opening weekend of [2] in the US, according to www.boxofficemojo.com/?","inputs":[{"id":0,"value":"bob","type":"TEXT","timestamp":null},{"id":1,"value":"333","type":"TEXT","timestamp":null},{"id":2,"value":"January 17, 2020","type":"DATEYEAR","timestamp":1579240800}]}',
+    endTime: '1579687200',
+    resolutionRules: 'Gross total should include the first Friday through Sunday of the movie release and does not include extra days due to holidays\nThis market is intended to be about a Single Movie, if this is not the case, this market should settle as invalid.\nIf www.boxofficemojo.com is down or not available use www.the-numbers.com to determine domestic US total gross of movie.',
+    result: 'success'
+  },
+  {
+    skip: false,
+    title: 'Will the total gross for bob be $333 USD or more, on domestic opening weekend of January 17, 2020 in the US, according to www.boxofficemojo.com/?',
+    templateInfo: '{"hash":"0xb73321f8c801632a143f77240aa90d211fa69313d3a3dc206a504aaa06464ec0","question":"Will the total gross for [0] be $[1] USD or more, on domestic opening weekend of [2] in the US, according to www.boxofficemojo.com/?","inputs":[{"id":0,"value":"bob","type":"TEXT","timestamp":null},{"id":1,"value":"333","type":"TEXT","timestamp":null},{"id":2,"value":"January 17, 2020","type":"DATEYEAR","timestamp":1579240800}]}',
+    endTime: '1583177200',
+    resolutionRules: 'Gross total should include the first Friday through Sunday of the movie release and does not include extra days due to holidays\nThis market is intended to be about a Single Movie, if this is not the case, this market should settle as invalid.\nIf www.boxofficemojo.com is down or not available use www.the-numbers.com to determine domestic US total gross of movie.',
+    result: 'error: event expiration can not be before Wednesday after movie opening weekend'
   },
 ];
 

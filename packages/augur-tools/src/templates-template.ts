@@ -159,6 +159,7 @@ export interface TemplateValidation {
   dateDependencies: DateDependencies[];
   closingDateDependencies: DateInputDependencies[];
   placeholderValues: PlaceholderValues;
+  afterTuesdayDate: number[];
 }
 
 export interface TemplateValidationHash {
@@ -424,6 +425,21 @@ function dateStartAfterMarketEndTime(
   return Number(input.timestamp) >= Number(endTime);
 }
 
+function wednesdayAfterOpening(
+  inputs: ExtraInfoTemplateInput[],
+  endTime: number,
+  ids: number[]
+) {
+  const afterTuesday: ExtraInfoTemplateInput = inputs.find(i =>
+    ids.includes(i.id)
+  );
+  if (!afterTuesday) return true;
+  const wednesdayDatetime = getTemplateWednesdayAfterOpeningDay(
+    Number(afterTuesday.timestamp)
+  );
+  return endTime > wednesdayDatetime;
+}
+
 export function tellOnHoliday(
   inputs: ExtraInfoTemplateInput[],
   input: ExtraInfoTemplateInput,
@@ -510,6 +526,19 @@ function dateComparisonDependencies(
     return p;
   }, true);
   return result;
+}
+
+export function getTemplateWednesdayAfterOpeningDay(
+  openingDay: number,
+) {
+  const wednesdayOfNextWeekOpeningDay = moment
+    .unix(openingDay)
+    .add(1, 'week')
+    .utc()
+    .day("Wednesday")
+    .startOf('day');
+
+  return wednesdayOfNextWeekOpeningDay.unix();
 }
 
 export function getTemplateExchangeClosingWithBuffer(
@@ -665,6 +694,18 @@ export const isTemplateMarket = (
       errors.push('event expiration can not be before exchange close time');
       return false;
     }
+
+    if (
+      !wednesdayAfterOpening(
+        template.inputs,
+        new BigNumber(endTime).toNumber(),
+        validation.afterTuesdayDate
+      )
+    ) {
+      errors.push('event expiration can not be before Wednesday after movie opening weekend');
+      return false;
+    }
+
     // check for input duplicates
     const values = template.inputs.map((i: ExtraInfoTemplateInput) => i.value);
     if (new Set(values).size !== values.length) {
