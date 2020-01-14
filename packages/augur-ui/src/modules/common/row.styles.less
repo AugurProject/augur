@@ -205,10 +205,10 @@ div.SingleRow3 {
       padding-left: 0;
 
       > span {
-        .text-11-bold;
+        .text-14-bold;
 
         > label {
-          .text-11-bold;
+          .text-14-bold;
         }
       }
 
@@ -216,6 +216,25 @@ div.SingleRow3 {
         color: @color-secondary-text;
         display: inline-block;
         margin-left: 0.5rem;
+      }
+    }
+
+    > span {
+      .mono-12-medium;
+
+      > label {
+        .mono-12-medium;
+      }
+    }
+
+    &:nth-of-type(3),
+    &:nth-of-type(4) {
+      > span {
+        .mono-14-black;
+
+        > label {
+          .mono-14-black;
+        }
       }
     }
   }
@@ -411,14 +430,20 @@ div.SingleRow3 {
         grid-column: unset;
         margin-bottom: 0;
 
-        > span > label {
-          white-space: normal;
-          max-height: @size-26;
-          text-overflow: ellipsis;
-          overflow: hidden;
-          display: -webkit-box;
-          -webkit-line-clamp: 2;
-          -webkit-box-orient: vertical;
+        > span {
+          .text-12-bold;
+
+          > label {
+            .text-12-bold;
+
+            white-space: normal;
+            max-height: @size-26;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+          }
         }
       }
 
@@ -427,6 +452,7 @@ div.SingleRow3 {
         justify-content: flex-end;
         text-align: right;
       }
+
       &:last-of-type {
         > span {
           display: flex;
