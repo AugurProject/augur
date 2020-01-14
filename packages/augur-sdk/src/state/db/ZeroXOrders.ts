@@ -269,9 +269,13 @@ export class ZeroXOrders extends AbstractTable {
   }
 
   static parseAssetData(assetData: string): OrderData {
-    const multiAssetData = defaultAbiCoder.decode(multiAssetDataAbi, `0x${assetData.slice(10)}`);
-    const nestedAssetData = multiAssetData[1] as string[];
-    return ZeroXOrders.parseTradeAssetData(nestedAssetData[0]);
+    try {
+      const multiAssetData = defaultAbiCoder.decode(multiAssetDataAbi, `0x${assetData.slice(10)}`);
+      const nestedAssetData = multiAssetData[1] as string[];
+      return ZeroXOrders.parseTradeAssetData(nestedAssetData[0]);
+    } catch(e) {
+      throw new Error("Cancel for order not in multi-asset format")
+    }
   }
 
   static parseTradeAssetData(assetData: string): OrderData {

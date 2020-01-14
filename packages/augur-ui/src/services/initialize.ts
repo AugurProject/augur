@@ -10,7 +10,7 @@ export const connect = async (
   const signer = undefined;
   const signerNetworkId = undefined;
   const account = null;
-  const enableFlexSearch = null;
+  const enableFlexSearch = true;
   const sdk = await augurSdk.makeClient(
     new JsonRpcProvider(env['ethereum-node'].http),
     signer,

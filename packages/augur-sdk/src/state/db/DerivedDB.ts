@@ -101,7 +101,7 @@ export class DerivedDB extends RollbackTable {
             documents[0]
           );
         });
-        const processedDocs = _.map(mostRecentTopics, this.processDoc.bind(this));
+        const processedDocs = _.compact(_.map(mostRecentTopics, this.processDoc.bind(this)));
         return _.assign({}, ...processedDocs);
       }) as any[];
 

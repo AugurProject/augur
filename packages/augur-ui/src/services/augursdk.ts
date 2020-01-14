@@ -38,7 +38,7 @@ export class SDK {
     public env: EnvObject,
     public account: String = null,
     public isWeb3Transport = false,
-    enableFlexSearch = false,
+    enableFlexSearch = true,
     private signerNetworkId?: string,
     gnosisRelayEndpoint?: string
   ): Promise<Augur> {
@@ -51,7 +51,7 @@ export class SDK {
       },
       gnosis: {
         enabled: true,
-        http: gnosisRelayEndpoint
+        http: env['gnosis-relay']
       },
       zeroX: {
         rpc: {
@@ -61,8 +61,6 @@ export class SDK {
           verbosity: 5,
           enabled: true,
         }
-      },
-      sycing: {
       }
     };
 

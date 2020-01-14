@@ -14,33 +14,39 @@ export class CancelledOrdersDB extends DerivedDB {
   }
 
   protected processDoc(log: ParsedLog): ParsedLog {
-    const cancelLog: CancelLog = log as unknown as CancelLog;
-    const {
-      makerAssetData,
-      orderHash,
-      senderAddress,
-      makerAddress,
-      feeRecipientAddress,
-      blockNumber,
-    } = cancelLog;
-    const {
-      market,
-      price,
-      outcome,
-      orderType
-    } = ZeroXOrders.parseAssetData(makerAssetData);
+    try {
+      const cancelLog: CancelLog = log as unknown as CancelLog;
+      const {
+        makerAssetData,
+        orderHash,
+        senderAddress,
+        makerAddress,
+        feeRecipientAddress,
+        blockNumber,
+      } = cancelLog;
+      const {
+        market,
+        price,
+        outcome,
+        orderType
+      } = ZeroXOrders.parseAssetData(makerAssetData);
 
-    const cancelledOrderLog: CancelledOrderLog = {
-      orderHash,
-      senderAddress,
-      makerAddress,
-      feeRecipientAddress,
-      market,
-      price,
-      outcome,
-      orderType,
-      blockNumber,
-    };
-    return cancelledOrderLog as unknown as ParsedLog;
+      const cancelledOrderLog: CancelledOrderLog = {
+        orderHash,
+        senderAddress,
+        makerAddress,
+        feeRecipientAddress,
+        market,
+        price,
+        outcome,
+        orderType,
+        blockNumber,
+      };
+      return cancelledOrderLog as unknown as ParsedLog;
+    } catch(e) {
+      if (e.message === "Cancel for order not in multi-asset format")
+        return null;
+      throw e;
+    }
   }
 }
