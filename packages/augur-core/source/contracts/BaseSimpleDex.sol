@@ -30,6 +30,17 @@ contract BaseSimpleDex is Initializable, ReentrancyGuard, VariableSupplyToken, C
     event Swap(address indexed sender, address indexed tokenIn, uint256 amountIn, uint256 amountOut, address indexed to);
     event Sync(uint256 tokenReserve, uint256 cashReserve);
 
+    function initializeInternal(address _augurAddress, address _token) internal {
+        endInitialization();
+        IAugur _augur = IAugur(_augurAddress);
+        augur = _augur;
+        cash = IERC20(_augur.lookup("Cash"));
+        require(cash != IERC20(0));
+        token = _token;
+
+        initializeCashSender(_augur.lookup("DaiVat"), address(cash));
+    }
+
     function transferToken(address _to, uint256 _value) private;
 
     function getTokenBalance() public returns (uint256);
@@ -40,17 +51,6 @@ contract BaseSimpleDex is Initializable, ReentrancyGuard, VariableSupplyToken, C
 
     function getCashBalance() public view returns (uint256) {
         return cash.balanceOf(address(this));
-    }
-
-    function initializeInternal(address _augurAddress, address _token) internal {
-        endInitialization();
-        IAugur _augur = IAugur(_augurAddress);
-        augur = _augur;
-        cash = IERC20(_augur.lookup("Cash"));
-        require(cash != IERC20(0));
-        token = _token;
-
-        initializeCashSender(_augur.lookup("DaiVat"), address(cash));
     }
 
     function update(uint256 _tokenBalance, uint256 _cashBalance) private {
@@ -73,12 +73,13 @@ contract BaseSimpleDex is Initializable, ReentrancyGuard, VariableSupplyToken, C
         uint256 _cashBalance = getCashBalance();
         uint256 _tokenReserve = tokenReserve;
         uint256 _cashReserve = cashReserve;
+        uint256 _totalSupply = totalSupply;
         uint256 _tokenAmount = _tokenBalance.sub(_tokenReserve);
         uint256 _cashAmount = _cashBalance.sub(_cashReserve);
 
-        _liquidity = totalSupply == 0 ?
+        _liquidity = _totalSupply == 0 ?
             _tokenAmount.mul(_cashAmount).sqrt() :
-            (_tokenAmount.mul(totalSupply) / _tokenReserve).min(_cashAmount.mul(totalSupply) / _cashReserve);
+            (_tokenAmount.mul(_totalSupply) / _tokenReserve).min(_cashAmount.mul(_totalSupply) / _cashReserve);
         require(_liquidity > 0, "Insufficient liquidity");
         mint(_to, _liquidity);
 
@@ -88,13 +89,15 @@ contract BaseSimpleDex is Initializable, ReentrancyGuard, VariableSupplyToken, C
 
     function publicBurn(address _to) external nonReentrant returns (uint256 _tokenAmount, uint256 _cashAmount) {
         uint256 _liquidity = balances[address(this)];
+        uint256 _totalSupply = totalSupply;
 
-        _tokenAmount = _liquidity.mul(tokenReserve) / totalSupply;
-        _cashAmount = _liquidity.mul(cashReserve) / totalSupply;
+        _tokenAmount = _liquidity.mul(tokenReserve) / _totalSupply;
+        _cashAmount = _liquidity.mul(cashReserve) / _totalSupply;
         require(_tokenAmount > 0 && _cashAmount > 0, "Insufficient liquidity");
+        burn(address(this), _liquidity);
         transferToken(_to, _tokenAmount);
         transferCash(_to, _cashAmount);
-        burn(address(this), _liquidity);
+
 
         update(getTokenBalance(), getCashBalance());
         emit Burn(msg.sender, _tokenAmount, _cashAmount, _to);
