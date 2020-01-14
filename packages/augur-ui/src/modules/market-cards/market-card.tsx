@@ -8,19 +8,19 @@ import {
   MarketTypeLabel,
 } from 'modules/common/labels';
 import {
-  OutcomeGroup,
-  LabelValue,
   HoverIcon,
+  LabelValue,
+  OutcomeGroup,
   ResolvedOutcomes,
 } from 'modules/market-cards/common';
 import toggleCategory from 'modules/routes/helpers/toggle-category';
 import { MARKETS } from 'modules/routes/constants/views';
 import makePath from 'modules/routes/helpers/make-path';
 import {
-  COPY_MARKET_ID,
   COPY_AUTHOR,
-  REPORTING_STATE,
+  COPY_MARKET_ID,
   MARKET_REPORTING,
+  REPORTING_STATE,
   SCALAR,
 } from 'modules/common/constants';
 import { FavoritesButton } from 'modules/common/buttons';
@@ -28,12 +28,12 @@ import Clipboard from 'clipboard';
 import { DotSelection } from 'modules/common/selection';
 import SocialMediaButtons from 'modules/market/containers/social-media-buttons';
 import {
-  PaperClip,
-  Person,
-  MarketCreator,
-  PositionIcon,
   DesignatedReporter,
   DisputeStake,
+  MarketCreator,
+  PaperClip,
+  Person,
+  PositionIcon,
 } from 'modules/common/icons';
 import { MarketProgress } from 'modules/common/progress';
 import ChevronFlip from 'modules/common/chevron-flip';

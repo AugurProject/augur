@@ -1,7 +1,10 @@
 import { createBigNumber } from 'utils/create-big-number';
 
 import { BUY, MAX_BULK_ORDER_COUNT, ZERO } from 'modules/common/constants';
-import { LiquidityOrder, CreateLiquidityOrders } from 'modules/types';
+import {
+  LiquidityOrder,
+  CreateLiquidityOrders,
+} from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { AppState } from 'store';
@@ -10,6 +13,7 @@ import {
   isTransactionConfirmed,
   createLiquidityOrders,
   approveToTrade,
+  placeTrade,
 } from 'modules/contracts/actions/contractCalls';
 import { Getters } from '@augurproject/sdk';
 export const UPDATE_LIQUIDITY_ORDER = 'UPDATE_LIQUIDITY_ORDER';
@@ -144,43 +148,43 @@ export const removeLiquidityOrder = ({
 });
 
 export const sendLiquidityOrder = (options: any) => async (
-  dispatch: ThunkDispatch<void, any, Action>
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
 ) => {
-  const {
-    marketId,
-    order,
-    minPrice,
-    maxPrice,
-    numTicks,
-    bnAllowance,
-    orderCB,
-    seriesCB,
-    chunkOrders,
-  } = options;
-  const orderType = order.type === BUY ? 0 : 1;
+  const { order, bnAllowance, marketId } = options;
+  const { appStatus, marketInfos } = getState();
+  const market = marketInfos[marketId];
+  const isZeroX = appStatus.zeroXEnabled;
   const { orderEstimate } = order;
-  const sendOrder = async () => {
-   try {
-      createLiquidityOrder({
-        ...order,
-        orderType,
-        minPrice,
-        maxPrice,
-        numTicks,
-        marketId,
-      });
-    } catch (e) {
-      console.error('could not create order', e);
-    }
-    orderCB();
-  };
 
   if (bnAllowance.lte(0) || bnAllowance.lte(createBigNumber(orderEstimate))) {
     await approveToTrade();
-    sendOrder();
+    isZeroX
+      ? createZeroXLiquidityOrders(market, [options.order], dispatch)
+      : sendOrder(options);
   } else {
-    sendOrder();
+    isZeroX
+      ? createZeroXLiquidityOrders(market, [options.order], dispatch)
+      : sendOrder(options);
   }
+};
+
+const sendOrder = async options => {
+  const { marketId, order, minPrice, maxPrice, numTicks, orderCB } = options;
+  const orderType = order.type === BUY ? 0 : 1;
+  try {
+    createLiquidityOrder({
+      ...order,
+      orderType,
+      minPrice,
+      maxPrice,
+      numTicks,
+      marketId,
+    });
+  } catch (e) {
+    console.error('could not create order', e);
+  }
+  orderCB();
 };
 
 export const startOrderSending = (options: CreateLiquidityOrders) => async (
@@ -200,11 +204,7 @@ export const startOrderSending = (options: CreateLiquidityOrders) => async (
   });
 
   if (!chunkOrders) {
-    try {
-      createLiquidityOrders(market, orders);
-    } catch (e) {
-      console.error(e);
-    }
+    createZeroXLiquidityOrders(market, orders, dispatch);
   } else {
     // MAX_BULK_ORDER_COUNT number of orders in each creation bulk group
     let i = 0;
@@ -217,5 +217,43 @@ export const startOrderSending = (options: CreateLiquidityOrders) => async (
     } catch (e) {
       console.error(e);
     }
+  }
+};
+
+const createZeroXLiquidityOrders = (
+  market: Getters.Markets.MarketInfo,
+  orders: LiquidityOrder[],
+  dispatch
+) => {
+  try {
+    const fingerprint = undefined; // TODO: get this from state
+    orders.map((o: LiquidityOrder) =>
+      placeTrade(
+        o.type === BUY ? 0 : 1,
+        market.id,
+        market.numOutcomes,
+        o.outcomeId,
+        fingerprint,
+        false,
+        market.numTicks,
+        market.minPrice,
+        market.maxPrice,
+        o.quantity,
+        o.price,
+        '0',
+        undefined
+      ).then(() => {
+        dispatch(
+          deleteSuccessfulLiquidityOrder({
+            txParamHash: market.transactionHash,
+            outcomeId: o.outcomeId,
+            type: o.type,
+            price: o.price,
+          })
+        );
+      })
+    );
+  } catch (e) {
+    console.error(e);
   }
 };

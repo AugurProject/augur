@@ -292,6 +292,7 @@
     color: @color-primary-text;
     margin-bottom: @size-8;
   }
+
   > ul {
     list-style-position: outside;
     list-style-type: disc;
@@ -317,6 +318,21 @@
     > p:not(:last-of-type),
     > li:not(:last-of-type) {
       margin-bottom: @size-8;
+    }
+  }
+
+  &.ModalStyling {
+    padding: 0;
+    margin-bottom: 0;
+    border: 0;
+
+    > h2 {
+      .text-14-bold;
+    }
+
+    > p,
+    > li {
+      .text-12;
     }
   }
 }

@@ -1,43 +1,43 @@
 import React from 'react';
 import classNames from 'classnames';
 import * as constants from 'modules/common/constants';
+import {
+  BOUGHT,
+  CATEGORICAL,
+  CLOSED,
+  DISCORD_LINK,
+  REPORTING_STATE,
+  SCALAR,
+  SELL,
+  SHORT,
+  SOLD,
+  YES_NO,
+  ZERO,
+} from 'modules/common/constants';
 import Styles from 'modules/common/labels.styles.less';
 import { ClipLoader } from 'react-spinners';
 import {
-  MarketIcon,
-  InfoIcon,
-  ScalarIcon,
   CheckCircleIcon,
   HintAlternate,
-  DoubleArrows,
-  QuestionIcon,
   LoadingEllipse,
+  MarketIcon,
+  QuestionIcon,
+  ScalarIcon,
   TemplateIcon,
 } from 'modules/common/icons';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import { createBigNumber } from 'utils/create-big-number';
-import {
-  SELL,
-  BOUGHT,
-  SOLD,
-  CLOSED,
-  SHORT,
-  ZERO,
-  YES_NO,
-  SCALAR,
-  CATEGORICAL,
-  REPORTING_STATE,
-  DISCORD_LINK,
-} from 'modules/common/constants';
 import { ViewTransactionDetailsButton } from 'modules/common/buttons';
 import { formatNumber } from 'utils/format-number';
-import { FormattedNumber, SizeTypes, DateFormattedObject } from 'modules/types';
+import { DateFormattedObject, FormattedNumber, SizeTypes } from 'modules/types';
 import { Getters, TXEventName } from '@augurproject/sdk';
 import {
   DISMISSABLE_NOTICE_BUTTON_TYPES,
   DismissableNotice,
 } from 'modules/reporting/common';
+import { EventDetailsContent } from 'modules/create-market/constants';
+import { ExplainerBlock } from 'modules/create-market/components/common';
 
 export interface MarketTypeProps {
   marketType: string;
@@ -149,6 +149,10 @@ interface HoverValueLabelState {
 export interface TextLabelProps {
   text: string;
   keyId?: string;
+}
+
+export interface InvalidLabelProps extends TextLabelProps {
+  openInvalidMarketRulesModal?: Function;
 }
 
 export interface TextLabelState {
@@ -539,8 +543,15 @@ export class HoverValueLabel extends React.Component<
   }
 }
 
-export const InvalidLabel = (props: TextLabelProps) => {
-  const { text, keyId } = props;
+export const InvalidLabel = (props: InvalidLabelProps) => {
+  const { text, keyId, openInvalidMarketRulesModal } = props;
+  const {explainerBlockTitle, explainerBlockSubtexts, useBullets} = EventDetailsContent();
+
+  const openModal = event => {
+    event.preventDefault();
+    event.stopPropagation();
+    openInvalidMarketRulesModal();
+  };
 
   return (
     <span className={Styles.InvalidLabel}>
@@ -548,21 +559,24 @@ export const InvalidLabel = (props: TextLabelProps) => {
       <label
         data-tip
         data-for={`${keyId}-${text ? text.replace(/\s+/g, '-') : ''}`}
+        onClick={(event) => openModal(event)}
       >
         {QuestionIcon}
       </label>
       <ReactTooltip
         id={`${keyId}-${text.replace(/\s+/g, '-')}`}
-        className={TooltipStyles.Tooltip}
+        className={classNames(TooltipStyles.Tooltip, TooltipStyles.TooltipInvalidRules)}
         effect="solid"
         place="top"
-        type="light"
+        type="dark"
         data-event="mouseover"
         data-event-off="blur scroll"
       >
-        A market may resolve as Invalid if its details or outcome are ambiguous,
-        subjective or unknown. Invalid is a resolvable outcome, traders may
-        buy/sell shares in it.
+        <ExplainerBlock
+          title={explainerBlockTitle}
+          subtexts={explainerBlockSubtexts}
+          useBullets={useBullets}
+        />
       </ReactTooltip>
     </span>
   );

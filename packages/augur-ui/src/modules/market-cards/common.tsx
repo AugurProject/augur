@@ -3,22 +3,20 @@ import classNames from 'classnames';
 
 import MarketLink from 'modules/market/components/market-link/market-link';
 import {
-  CATEGORICAL,
+  INVALID_OUTCOME_ID,
   SCALAR,
-  YES_NO,
-  REPORTING_STATE,
-  ZERO,
   SCALAR_UP_ID,
-  INVALID_OUTCOME_ID
+  YES_NO,
+  ZERO,
 } from 'modules/common/constants';
-import { createBigNumber, BigNumber } from 'utils/create-big-number';
+import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import { CheckCircleIcon } from 'modules/common/icons';
-import { OutcomeFormatted, FormattedNumber, MarketData } from 'modules/types';
-import { formatDai, formatAttoRep, formatNumber } from 'utils/format-number';
+import { FormattedNumber, MarketData, OutcomeFormatted } from 'modules/types';
+import { formatAttoRep, formatDai, formatNumber } from 'utils/format-number';
 import { Getters } from '@augurproject/sdk';
-import { InvalidLabel } from 'modules/common/labels';
+import InvalidLabel from 'modules/common/containers/labels';
 import { SecondaryButton } from 'modules/common/buttons';
 
 import Styles from 'modules/market-cards/common.styles.less';
@@ -61,7 +59,7 @@ export const Outcome = (props: OutcomeProps) => {
         })}
       >
         <div>
-          {props.invalid ? <InvalidLabel text={props.description} keyid={`${props.marketId}_${props.description}`} /> : <span>{props.description}</span>}
+          {props.invalid ? <InvalidLabel text={props.description} keyId={`${props.marketId}_${props.description}`} /> : <span>{props.description}</span>}
           <span className={classNames({[Styles.Zero]: percent === 0})}>
             {percent === 0
               ? `0.00${props.isScalar ? '' : '%'}`

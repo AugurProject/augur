@@ -63,7 +63,7 @@ interface MarketViewProps {
   marketReviewModal: Function;
   currentTimestamp: number;
   isConnected: boolean;
-  loadFullMarket: Function;
+  loadMarketsInfo: Function;
   loadMarketTradingHistory: Function;
   description: string;
   marketType: string;
@@ -159,7 +159,7 @@ export default class MarketView extends Component<
 
     const {
       isConnected,
-      loadFullMarket,
+      loadMarketsInfo,
       marketId,
       loadMarketTradingHistory,
       tradingTutorial,
@@ -168,7 +168,7 @@ export default class MarketView extends Component<
     this.tradingTutorialWidthCheck();
 
     if (isConnected && !!marketId && !tradingTutorial) {
-      loadFullMarket(marketId);
+      loadMarketsInfo(marketId);
       loadMarketTradingHistory(marketId);
     }
   }
@@ -220,7 +220,7 @@ export default class MarketView extends Component<
         !!this.props.marketId &&
         (this.props.marketId !== marketId || this.props.marketType === undefined))
     ) {
-      this.props.loadFullMarket(this.props.marketId);
+      this.props.loadMarketsInfo(this.props.marketId);
       this.props.loadMarketTradingHistory(marketId);
     }
     if (isMarketLoading !== this.props.isMarketLoading) {

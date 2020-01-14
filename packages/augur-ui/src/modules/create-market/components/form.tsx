@@ -133,7 +133,7 @@ interface FormState {
   contentPages: any[];
   templateFormStarts: number;
   categoryStats: Getters.Markets.CategoryStats;
-  enableCreate: boolean;
+  disableCreate: boolean;
 }
 
 interface Validations {
@@ -182,7 +182,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       : CUSTOM_CONTENT_PAGES,
     showPreview: false,
     categoryStats: null,
-    enableCreate: false,
+    disableCreate: false,
   };
 
   componentDidMount() {
@@ -721,8 +721,8 @@ export default class Form extends React.Component<FormProps, FormState> {
     });
   };
 
-  setEnableCreate = (enabled: boolean) => {
-    this.setState({ enableCreate: enabled });
+  setDisableCreate = (disable: boolean) => {
+    this.setState({ disableCreate: disable });
   }
   render() {
     const {
@@ -854,7 +854,7 @@ export default class Form extends React.Component<FormProps, FormState> {
                   onError={this.onError}
                 />
               )}
-              {mainContent === REVIEW && <Review setEnableCreate={this.setEnableCreate} />}
+              {mainContent === REVIEW && <Review setDisableCreate={this.setDisableCreate} />}
               {mainContent === TEMPLATE_PICKER && <TemplatePicker />}
               {mainContent === SUB_CATEGORIES && (
                 <SubCategories nextPage={this.nextPage} />
@@ -911,7 +911,7 @@ export default class Form extends React.Component<FormProps, FormState> {
                   {secondButton === CREATE && (
                     <PrimaryButton
                       text="Create"
-                      disabled={this.state.enableCreate}
+                      disabled={this.state.disableCreate}
                       action={() => {
                         openCreateMarketModal(() => {
                           this.setState({ blockShown: true }, () => {

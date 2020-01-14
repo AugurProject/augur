@@ -288,10 +288,13 @@ export interface ExplainerBlockProps {
   title: string;
   subtexts: string[];
   useBullets: boolean;
+  isModal?: boolean;
 }
 
 export const ExplainerBlock = (props: ExplainerBlockProps) => (
-  <div className={Styles.ExplainerBlock}>
+  <div className={classNames(Styles.ExplainerBlock, {
+    [Styles.ModalStyling]: props.isModal,
+  })}>
     <h2>{props.title}</h2>
     <ul
       className={classNames({
