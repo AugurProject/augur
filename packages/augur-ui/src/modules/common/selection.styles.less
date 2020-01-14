@@ -120,6 +120,10 @@
       flex: 1;
       display: flex;
     }
+
+    &:hover {
+      background: @color-secondary-hover;
+    }
   }
 
   > div {
@@ -221,7 +225,7 @@
 
 .isOpen {
   > button {
-    background: fade(@color-primary-action, 30%);
+    background: @color-secondary-hover;
 
     > svg > path {
       stroke: @color-primary-text;
