@@ -217,7 +217,7 @@ export class ContractAPI {
     if (cost) {
       await this.faucet(cost);
     }
-    await this.augur.contracts.fillOrder.publicFillOrder(orderId, numShares, formatBytes32String(tradeGroupId), formatBytes32String(""));
+    await this.augur.contracts.fillOrder.publicFillOrder(orderId, numShares, formatBytes32String(tradeGroupId), formatBytes32String(''));
   }
 
   async placeZeroXOrder(params: ZeroXPlaceTradeDisplayParams): Promise<string> {
@@ -253,12 +253,12 @@ export class ContractAPI {
   async takeBestOrder(marketAddress: string, type: BigNumber, numShares: BigNumber, price: BigNumber, outcome: BigNumber, tradeGroupID: string): Promise<void> {
     const cost = numShares.multipliedBy(price);
     await this.faucet(cost);
-    const bestPriceAmount = await this.augur.contracts.trade.publicFillBestOrder_(type, marketAddress, outcome, numShares, price, tradeGroupID, new BigNumber(3), formatBytes32String(""));
+    const bestPriceAmount = await this.augur.contracts.trade.publicFillBestOrder_(type, marketAddress, outcome, numShares, price, tradeGroupID, new BigNumber(3), formatBytes32String(''));
     if (bestPriceAmount === new BigNumber(0)) {
       throw new Error('Could not take best Order');
     }
 
-    await this.augur.contracts.trade.publicFillBestOrder(type, marketAddress, outcome, numShares, price, tradeGroupID, new BigNumber(3), formatBytes32String(""));
+    await this.augur.contracts.trade.publicFillBestOrder(type, marketAddress, outcome, numShares, price, tradeGroupID, new BigNumber(3), formatBytes32String(''));
   }
 
   async cancelOrder(orderID: string): Promise<void> {
@@ -662,11 +662,11 @@ export class ContractAPI {
   }
 
   async getHotLoadingMarketData(market: string): Promise<HotLoadMarketInfo> {
-    return await this.augur.hotLoading.getMarketDataParams({market});
+    return this.augur.hotLoading.getMarketDataParams({market});
   }
 
   async getHotLoadingDisputeWindowData(): Promise<DisputeWindow> {
-    return await this.augur.hotLoading.getCurrentDisputeWindowData({
+    return this.augur.hotLoading.getCurrentDisputeWindowData({
       augur: this.augur.contracts.augur.address,
       universe: this.augur.contracts.universe.address,
     });

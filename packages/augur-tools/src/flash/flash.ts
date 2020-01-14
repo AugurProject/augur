@@ -1,20 +1,19 @@
-import { EthersProvider } from "@augurproject/ethersjs-provider";
-import { ContractAddresses } from "@augurproject/artifacts";
-import { NetworkConfiguration } from "@augurproject/core";
+import { EthersProvider } from '@augurproject/ethersjs-provider';
+import { ContractAddresses } from '@augurproject/artifacts';
+import { NetworkConfiguration } from '@augurproject/core';
 import { WSClient } from '@0x/mesh-rpc-client';
-import { ContractAPI } from "../libs/contract-api";
-import { Account, NULL_ADDRESS } from "../constants";
-import { providers } from "ethers";
-import { Connectors, Events, SubscriptionEventName } from "@augurproject/sdk";
-import { API } from "@augurproject/sdk/build/state/getter/API";
-import { BlockAndLogStreamerListenerInterface } from "@augurproject/sdk/build/state/db/BlockAndLogStreamerListener";
-import { DB } from "@augurproject/sdk/build/state/db/DB";
-import { EmptyConnector } from "@augurproject/sdk";
-import { BaseConnector } from "@augurproject/sdk/build/connector";
-import { configureDexieForNode } from "@augurproject/sdk/build/state/utils/DexieIDBShim";
-import { formatBytes32String } from "ethers/utils";
+import { ContractAPI } from '../libs/contract-api';
+import { Account, NULL_ADDRESS } from '../constants';
+import { providers } from 'ethers';
+import { Connectors, Events, SubscriptionEventName } from '@augurproject/sdk';
+import { API } from '@augurproject/sdk/build/state/getter/API';
+import { BlockAndLogStreamerListenerInterface } from '@augurproject/sdk/build/state/db/BlockAndLogStreamerListener';
+import { DB } from '@augurproject/sdk/build/state/db/DB';
+import { EmptyConnector } from '@augurproject/sdk';
+import { BaseConnector } from '@augurproject/sdk/build/connector';
+import { configureDexieForNode } from '@augurproject/sdk/build/state/utils/DexieIDBShim';
 import { BigNumber } from 'bignumber.js';
-import { GnosisRelayAPI, GnosisSafeState } from '@augurproject/gnosis-relay-api';
+import { GnosisRelayAPI } from '@augurproject/gnosis-relay-api';
 
 configureDexieForNode(true);
 

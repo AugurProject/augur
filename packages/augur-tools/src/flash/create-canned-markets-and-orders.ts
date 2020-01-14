@@ -1,16 +1,16 @@
-import { BigNumber } from "bignumber.js";
-import { formatBytes32String } from "ethers/utils";
+import { BigNumber } from 'bignumber.js';
+import { formatBytes32String } from 'ethers/utils';
 
-import { GenericAugurInterfaces } from "@augurproject/core";
-import { numTicksToTickSize, convertDisplayAmountToOnChainAmount, convertDisplayPriceToOnChainPrice, QUINTILLION } from "@augurproject/sdk";
+import { GenericAugurInterfaces } from '@augurproject/core';
+import { numTicksToTickSize, convertDisplayAmountToOnChainAmount, convertDisplayPriceToOnChainPrice, QUINTILLION } from '@augurproject/sdk';
 
-import { ContractAPI } from "../libs/contract-api";
-import { cannedMarkets, CannedMarket } from "./data/canned-markets";
+import { ContractAPI } from '../libs/contract-api';
+import { cannedMarkets, CannedMarket } from './data/canned-markets';
 
 type Market = GenericAugurInterfaces.Market<BigNumber>;
 
 async function createCannedMarket(person: ContractAPI, can: CannedMarket): Promise<Market> {
-  console.log("CREATING CANNED MARKET: ", can.extraInfo.description);
+  console.log('CREATING CANNED MARKET: ', can.extraInfo.description);
 
   const { endTime, affiliateFeeDivisor } = can;
   const feePerEthInWei = new BigNumber(10).pow(16);
@@ -18,7 +18,7 @@ async function createCannedMarket(person: ContractAPI, can: CannedMarket): Promi
 
   let market: Market;
   switch (can.marketType) {
-    case "yesNo":
+    case 'yesNo':
       market = await person.createYesNoMarket({
         endTime: new BigNumber(endTime),
         feePerCashInAttoCash: feePerEthInWei,
@@ -27,9 +27,9 @@ async function createCannedMarket(person: ContractAPI, can: CannedMarket): Promi
         extraInfo: JSON.stringify(can.extraInfo),
       });
       break;
-    case "scalar":
+    case 'scalar':
       if (!can.minPrice || !can.maxPrice || !can.tickSize) {
-        throw Error(`Scalar market must have minPrice, maxPrice, and tickSize.`);
+        throw Error('Scalar market must have minPrice, maxPrice, and tickSize.');
       }
 
       const minDisplayPrice = new BigNumber(can.minPrice);
@@ -50,9 +50,9 @@ async function createCannedMarket(person: ContractAPI, can: CannedMarket): Promi
         extraInfo: JSON.stringify(can.extraInfo),
       });
       break;
-    case "categorical":
-      if (typeof can.outcomes === "undefined") {
-        throw Error(`CannedMarket.outcomes must not be undefined in a categorical market`);
+    case 'categorical':
+      if (typeof can.outcomes === 'undefined') {
+        throw Error('CannedMarket.outcomes must not be undefined in a categorical market');
       }
       market = await person.createCategoricalMarket({
         endTime: new BigNumber(endTime),
@@ -85,16 +85,16 @@ async function placeOrder(person: ContractAPI,
                           price: BigNumber): Promise<string> {
   const tickSize = can.tickSize
     ? new BigNumber(can.tickSize)
-    : numTicksToTickSize(new BigNumber("100"), new BigNumber("0"), new BigNumber("0x0de0b6b3a7640000"));
+    : numTicksToTickSize(new BigNumber('100'), new BigNumber('0'), new BigNumber('0x0de0b6b3a7640000'));
 
-  const minDisplayPrice = new BigNumber(can.minPrice || "0");
+  const minDisplayPrice = new BigNumber(can.minPrice || '0');
   const attoShares = convertDisplayAmountToOnChainAmount(shares, tickSize);
   const attoPrice = convertDisplayPriceToOnChainPrice(price, minDisplayPrice, tickSize);
-  const betterOrderId = formatBytes32String("");
-  const worseOrderId = formatBytes32String("");
+  const betterOrderId = formatBytes32String('');
+  const worseOrderId = formatBytes32String('');
 
-  console.log("Shares:", attoShares.toString());
-  console.log("Price:", attoPrice.toString());
+  console.log('Shares:', attoShares.toString());
+  console.log('Price:', attoPrice.toString());
 
   return person.placeOrder(
     market.address,

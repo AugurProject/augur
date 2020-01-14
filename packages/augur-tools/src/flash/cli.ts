@@ -1,42 +1,42 @@
-import { FlashSession } from "./flash";
-import Vorpal from "vorpal";
-import { addScripts } from "./scripts";
-import { addGanacheScripts } from "./ganache-scripts";
-import { Account, ACCOUNTS } from "../constants";
-import { ArgumentParser } from "argparse";
-import { NetworkConfiguration, NETWORKS } from "@augurproject/core";
-import { Addresses } from "@augurproject/artifacts";
-import { computeAddress } from "ethers/utils";
+import { FlashSession } from './flash';
+import Vorpal from 'vorpal';
+import { addScripts } from './scripts';
+import { addGanacheScripts } from './ganache-scripts';
+import { Account, ACCOUNTS } from '../constants';
+import { ArgumentParser } from 'argparse';
+import { NetworkConfiguration, NETWORKS } from '@augurproject/core';
+import { Addresses } from '@augurproject/artifacts';
+import { computeAddress } from 'ethers/utils';
 
 interface Args {
-  mode: "interactive"|"run";
+  mode: 'interactive'|'run';
   command?: string;
-  network?: NETWORKS | "none";
+  network?: NETWORKS | 'none';
   [commandArgument: string]: string;
 }
 
 function parse(flash: FlashSession): Args {
   const parser = new ArgumentParser({
-    version: "1.0.0",
-    description: "Interact with Augur contracts.",
+    version: '1.0.0',
+    description: 'Interact with Augur contracts.',
   });
 
   const mode = parser.addSubparsers({
-    dest: "mode",
+    dest: 'mode',
   });
 
-  mode.addParser("interactive");
+  mode.addParser('interactive');
 
-  const commandMeta = mode.addParser("run");
+  const commandMeta = mode.addParser('run');
   commandMeta.addArgument(
     [ '-n', '--network' ],
     {
       help: `Name of network to run on. Use "none" for commands that don't use a network.`,
-      defaultValue: "environment", // local node
+      defaultValue: 'environment', // local node
     }
   );
 
-  const commands = commandMeta.addSubparsers({ dest: "command" });
+  const commands = commandMeta.addSubparsers({ dest: 'command' });
 
   for (const name of Object.keys(flash.scripts) || []) {
     const script = flash.scripts[name];
@@ -47,9 +47,9 @@ function parse(flash: FlashSession): Args {
       command.addArgument(
         args,
         {
-          help: opt.description || "",
+          help: opt.description || '',
           required: opt.required || false,
-          action: opt.flag ? "storeTrue" : "store",
+          action: opt.flag ? 'storeTrue' : 'store',
         });
     }
 
@@ -63,7 +63,7 @@ function makeVorpalCLI(flash: FlashSession): Vorpal {
 
   for (const script of Object.values(flash.scripts)) {
     let v: Vorpal|Vorpal.Command = vorpal;
-    v = v.command(script.name, script.description || "");
+    v = v.command(script.name, script.description || '');
 
     const types = { string: [], boolean: [] };
     for (const option of script.options || []) {
@@ -72,8 +72,8 @@ function makeVorpalCLI(flash: FlashSession): Vorpal {
       //   boolean: --foo
       //   string: --foo <bar>
       const flag = option.flag || false;
-      const abbr = option.abbr ? `-${option.abbr},` : "";
-      const optionValue = `${abbr}--${option.name}${flag ? "" : ` <arg>`}`;
+      const abbr = option.abbr ? `-${option.abbr},` : '';
+      const optionValue = `${abbr}--${option.name}${flag ? '' : ' <arg>'}`;
       v = v.option(optionValue, option.description);
       if (flag) {
         types.boolean.push(option.name);
@@ -89,7 +89,7 @@ function makeVorpalCLI(flash: FlashSession): Vorpal {
     });
   }
 
-  vorpal.delimiter("augur$");
+  vorpal.delimiter('augur$');
 
   return vorpal;
 }
@@ -98,7 +98,7 @@ if (require.main === module) {
   let accounts: Account[];
   if (process.env.ETHEREUM_PRIVATE_KEY) {
     let key = process.env.ETHEREUM_PRIVATE_KEY;
-    if (key.slice(0, 2) !== "0x") {
+    if (key.slice(0, 2) !== '0x') {
       key = `0x${key}`;
     }
 
@@ -120,11 +120,11 @@ if (require.main === module) {
 
   const args = parse(flash);
 
-  if (args.mode === "interactive") {
+  if (args.mode === 'interactive') {
     const vorpal = makeVorpalCLI(flash);
     flash.setLogger(vorpal.log.bind(vorpal));
     vorpal.show();
-  } else if (args.network === "none") {
+  } else if (args.network === 'none') {
     flash.call(args.command, args).catch(console.error);
   } else {
     flash.network = NetworkConfiguration.create(args.network);
