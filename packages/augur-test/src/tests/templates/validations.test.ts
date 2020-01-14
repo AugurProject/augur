@@ -192,7 +192,9 @@ test('flash :: tempalte validation tests', async () => {
       return;
     }
     const result = await flash.call('validate-template', t);
-    console.log('index:', i, t.title, result, t.result);
+    console.log('index:', i, t.title);
+    console.log('expected', result);
+    console.log('result: ', t.result);
     await expect(result).toEqual(t.result);
   });
 });

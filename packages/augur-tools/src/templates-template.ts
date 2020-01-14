@@ -437,7 +437,7 @@ function wednesdayAfterOpening(
   const wednesdayDatetime = getTemplateWednesdayAfterOpeningDay(
     Number(afterTuesday.timestamp)
   );
-  return endTime > wednesdayDatetime;
+  return endTime < wednesdayDatetime;
 }
 
 export function tellOnHoliday(
