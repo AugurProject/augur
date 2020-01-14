@@ -4,9 +4,7 @@ import {
   loadAccountPositionsTotals,
   loadMarketAccountPositions,
 } from 'modules/positions/actions/load-account-positions';
-import { loadMarketOrderBook } from 'modules/orders/actions/load-market-order-book';
 import { removeMarket, updateMarketsData, } from 'modules/markets/actions/update-markets-data';
-import { isCurrentMarket } from 'modules/trades/helpers/is-current-market';
 import { loadMarketsInfo, } from 'modules/markets/actions/load-markets-info';
 import {
   loadMarketTradingHistory,
@@ -290,7 +288,6 @@ export const handleOrderCreatedLog = (log: Logs.ParsedOrderEventLog) => (
     dispatch(loadAccountOpenOrders({ marketId }));
     dispatch(loadAccountPositionsTotals());
   }
-  if (isCurrentMarket(marketId)) dispatch(loadMarketOrderBook(marketId));
 };
 
 export const handleOrderCanceledLog = (log: Logs.ParsedOrderEventLog) => (
@@ -318,7 +315,6 @@ export const handleOrderCanceledLog = (log: Logs.ParsedOrderEventLog) => (
     dispatch(loadAccountOpenOrders({ marketId }));
     dispatch(loadAccountPositionsTotals());
   }
-  if (isCurrentMarket(marketId)) dispatch(loadMarketOrderBook(marketId));
 };
 
 export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
@@ -337,7 +333,6 @@ export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
     dispatch(orderFilled(marketId, log, isSameAddress(log.orderCreator, address)));
   }
   dispatch(loadMarketTradingHistory(marketId));
-  if (isCurrentMarket(marketId)) dispatch(loadMarketOrderBook(marketId));
 };
 
 export const handleTradingProceedsClaimedLog = (
@@ -359,8 +354,6 @@ export const handleTradingProceedsClaimedLog = (
       })
     );
   }
-
-  if (isCurrentMarket(log.market)) dispatch(loadMarketOrderBook(log.market));
 };
 
 // ---- initial reporting ----- //
