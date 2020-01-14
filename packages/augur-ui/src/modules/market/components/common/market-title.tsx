@@ -81,7 +81,7 @@ const MarketTemplateTitle: React.FC<MarketTemplateTitleProps> = ({
         let prevWordWasUnique = prevWordUnique;
         prevWordUnique = false;
         return (
-          <span className={Styles.IndividualWord} key={word + index}>
+          <span key={word + index}>
             {prevWordWasUnique && ' '}
             {word}&nbsp;
           </span>
@@ -109,7 +109,7 @@ const MarketTemplateTitle: React.FC<MarketTemplateTitleProps> = ({
           return (
             <span
               key={inputIndex}
-              className={classNames(Styles.IndividualWord, {
+              className={classNames({
                 [Styles.TEXT]: placeholder,
               })}
               data-tip data-for={input.id + input.userInput}
@@ -122,6 +122,7 @@ const MarketTemplateTitle: React.FC<MarketTemplateTitleProps> = ({
                   className={TooltipStyles.Tooltip}
                   effect="solid"
                   place="top"
+                  type="light"
                 >
                   {placeholder}
                 </ReactTooltip>
