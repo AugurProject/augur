@@ -6,7 +6,6 @@ import Row from 'modules/common/row';
 import { Properties } from 'modules/common/row-column';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { SizeTypes } from 'modules/types';
 
 const { COLUMN_TYPES, SHORT, BUY, SELL } = constants;
 

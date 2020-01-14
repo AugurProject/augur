@@ -1,33 +1,33 @@
-import React from "react";
+import React from 'react';
 
-import { DefaultButtonProps } from "modules/common/buttons";
+import { DefaultButtonProps } from 'modules/common/buttons';
 import {
-  Title,
-  DescriptionProps,
-  Description,
-  ButtonsRow,
-  AlertMessageProps,
   AlertMessage,
-  MarketTitle,
-  CallToAction,
+  AlertMessageProps,
   Breakdown,
-  ReadableAddress,
-  ReadableAddressProps,
-  DepositInfo,
-  DepositInfoProps,
-  MarketReview,
-  MarketReviewProps,
+  ButtonsRow,
+  CallToAction,
   CheckboxCTA,
   CheckboxCTAProps,
   Content,
   ContentProps,
+  DepositInfo,
+  DepositInfoProps,
+  Description,
+  DescriptionProps,
+  MarketReview,
+  MarketReviewProps,
+  MarketTitle,
+  ReadableAddress,
+  ReadableAddressProps,
   Subheader,
-} from "modules/modal/common";
-import {
-  LinearPropertyLabelProps, DiscordLink,
-} from "modules/common/labels";
+  Title,
+} from 'modules/modal/common';
+import { DiscordLink, LinearPropertyLabelProps } from 'modules/common/labels';
 
-import Styles from "modules/modal/modal.styles.less";
+import Styles from 'modules/modal/modal.styles.less';
+import { ExplainerBlock } from 'modules/create-market/components/common';
+import { EventDetailsContent } from 'modules/create-market/constants';
 
 interface MessageProps {
   closeAction: Function;
@@ -46,6 +46,7 @@ interface MessageProps {
   subheader?: string;
   subheader_2?: string;
   showDiscordLink?: boolean;
+  invalidMarketRules?: boolean;
 }
 
 export const Message = ({
@@ -65,6 +66,7 @@ export const Message = ({
   subheader,
   subheader_2,
   showDiscordLink,
+  invalidMarketRules,
 }: MessageProps) => (
   <div className={Styles.Message}>
     <Title title={title} closeAction={closeAction} />
@@ -82,6 +84,12 @@ export const Message = ({
       {depositInfo && <DepositInfo {...depositInfo} />}
       {marketReview && <MarketReview {...marketReview} />}
       {checkbox && <CheckboxCTA {...checkbox} />}
+      {invalidMarketRules && <ExplainerBlock
+          title={EventDetailsContent().explainerBlockTitle}
+          subtexts={EventDetailsContent().explainerBlockSubtexts}
+          useBullets={EventDetailsContent().useBullets}
+          isModal
+      />}
     </main>
     {buttons.length > 0 && <ButtonsRow buttons={buttons} />}
   </div>

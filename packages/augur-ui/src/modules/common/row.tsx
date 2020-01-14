@@ -1,18 +1,16 @@
-import React from "react";
-import classNames from "classnames";
-import Media from "react-media";
+import React from 'react';
+import classNames from 'classnames';
+import Media from 'react-media';
 
-import ToggleRow from "modules/common/toggle-row";
-import { Order } from "modules/portfolio/types";
-import OpenOrderExpandedContent from "modules/portfolio/components/common/open-order-expanded-content";
-import FilledOrdersTable from "modules/portfolio/components/common/filled-orders-table";
-import { FilledOrderInterface } from "modules/portfolio/types";
-import PositionExpandedContent from "modules/portfolio/components/common/position-expanded-content";
-import RowColumn from "modules/common/row-column";
-import { Properties } from "modules/common/row-column";
-import { SMALL_MOBILE } from "modules/common/constants";
+import ToggleRow from 'modules/common/toggle-row';
+import { FilledOrderInterface, Order } from 'modules/portfolio/types';
+import OpenOrderExpandedContent from 'modules/portfolio/components/common/open-order-expanded-content';
+import FilledOrdersTable from 'modules/portfolio/components/common/filled-orders-table';
+import PositionExpandedContent from 'modules/portfolio/components/common/position-expanded-content';
+import RowColumn, { Properties } from 'modules/common/row-column';
+import { SMALL_MOBILE } from 'modules/common/constants';
 
-import Styles from "modules/common/row.styles";
+import Styles from 'modules/common/row.styles';
 
 export interface StyleOptions {
   position?: Boolean;
@@ -44,15 +42,15 @@ const RowContent = (props: RowProps) => {
     columnProperties,
     styleOptions,
   } = props;
-  const { 
-    position, 
-    openOrder, 
-    filledOrder, 
-    active, 
+  const {
+    position,
+    openOrder,
+    filledOrder,
+    active,
     isInvalid,
-    outcome, 
-    colorId, 
-    initialLiquidity 
+    outcome,
+    colorId,
+    initialLiquidity
   } = styleOptions;
 
   return (<ul
@@ -102,22 +100,22 @@ const Row = (props: RowProps) => {
     return null;
   }
 
-  const { 
-    position, 
-    openOrder, 
-    filledOrder, 
-    showExpandedToggleOnMobile, 
-    noToggle, 
-    isFirst, 
-    outcome, 
-    active, 
-    initialLiquidity 
+  const {
+    position,
+    openOrder,
+    filledOrder,
+    showExpandedToggleOnMobile,
+    noToggle,
+    isFirst,
+    outcome,
+    active,
+    initialLiquidity
   } = styleOptions;
 
   const rowContent = (
     <Media query={SMALL_MOBILE}>
       {matches => (matches && extendedViewNotOnMobile) ?
-        (<RowContent {...props} extendedView={extendedView} />) : 
+        (<RowContent {...props} extendedView={extendedView} />) :
         (<RowContent {...props} extendedView={extendedViewNotOnMobile || extendedView}/>)
       }
     </Media>
@@ -125,12 +123,12 @@ const Row = (props: RowProps) => {
 
   if (noToggle && !extendedViewNotOnMobile) {
     return (
-      <div 
-        onClick={rowOnClick} 
-        className={classNames(Styles.SingleRow, 
+      <div
+        onClick={rowOnClick}
+        className={classNames(Styles.SingleRow,
           {
-            [Styles.Row4Parent]: outcome, 
-            [Styles.DarkRow]: initialLiquidity, 
+            [Styles.Row4Parent]: outcome,
+            [Styles.DarkRow]: initialLiquidity,
             [Styles.BottomBorder]: !initialLiquidity
           }
         )}
@@ -161,7 +159,7 @@ const Row = (props: RowProps) => {
             <div className={classNames(Styles.SingleRow, Styles.BottomBorder)}>
               {rowContent}
             </div>
-          } 
+          }
           {!(noToggle && extendedViewNotOnMobile && !matches) &&
             <ToggleRow
               className={classNames({
