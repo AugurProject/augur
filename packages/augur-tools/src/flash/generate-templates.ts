@@ -77,6 +77,7 @@ const generateValidations = (
     dateDependencies: null,
     closingDateDependencies: null,
     placeholderValues: null,
+    afterTuesdayDate: null,
   };
   let newTemplates = JSON.parse(JSON.stringify(templates));
   const topCategories = Object.keys(newTemplates);
@@ -117,6 +118,7 @@ const addTemplates = (
         dateDependencies: getDateDependencies(t.inputs),
         closingDateDependencies: getClosingDateDependencies(t.inputs),
         placeholderValues: getPlaceholderValues(t.inputs),
+        afterTuesdayDate: getInputsAfterTuesdayDate(t.inputs),
       };
     });
   }
@@ -176,6 +178,16 @@ function getDateDependencies(inputs: TemplateInput[]): DateDependencies[] {
       id: i.id,
       noWeekendHolidays: i.validationType === ValidationType.NOWEEKEND_HOLIDAYS,
       dateAfterId: i.dateAfterId,
+    }));
+}
+
+function getInputsAfterTuesdayDate(inputs: TemplateInput[]): { id: number }[] {
+  return inputs
+    .filter(
+      i => i.type === TemplateInputType.DATEYEAR && i.validationType === ValidationType.EXP_DATE_TUESDAY_AFTER_MOVIE
+    )
+    .map(i => ({
+      id: i.id,
     }));
 }
 
@@ -262,6 +274,10 @@ const specialCharacters = [
   {
     find: /\//g,
     rep: `\\/`,
+  },
+  {
+    find: /\$/g,
+    rep: `\\$`,
   },
 ] as const;
 
