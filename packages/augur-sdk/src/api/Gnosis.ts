@@ -283,7 +283,7 @@ export class Gnosis {
 
     // Make transaction to proxy factory
     const nonce = AUGUR_GNOSIS_SAFE_NONCE;
-    const proxy = this.augur.contracts.proxyFactory.createProxyWithCallback_(
+    const proxy = await this.augur.contracts.proxyFactory.createProxyWithCallback_(
       this.augur.contracts.gnosisSafe.address,
       gnosisSafeData,
       new BigNumber(nonce),

@@ -8285,6 +8285,53 @@
 			"type": "function"
 		},
 		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_owner",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_sender",
+					"type": "address"
+				}
+			],
+			"name": "cashAvailableForTransferFrom",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "_available",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_account",
+					"type": "address"
+				}
+			],
+			"name": "cashBalance",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "_balance",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
 			"constant": false,
 			"inputs": [
 				{
@@ -11309,9 +11356,56 @@
 			"name": "cash",
 			"outputs": [
 				{
-					"internalType": "contract IERC20",
+					"internalType": "contract ICash",
 					"name": "",
 					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_owner",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_sender",
+					"type": "address"
+				}
+			],
+			"name": "cashAvailableForTransferFrom",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "_available",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_account",
+					"type": "address"
+				}
+			],
+			"name": "cashBalance",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "_balance",
+					"type": "uint256"
 				}
 			],
 			"payable": false,
@@ -14713,9 +14807,56 @@
 			"name": "cash",
 			"outputs": [
 				{
-					"internalType": "contract IERC20",
+					"internalType": "contract ICash",
 					"name": "",
 					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_owner",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_sender",
+					"type": "address"
+				}
+			],
+			"name": "cashAvailableForTransferFrom",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "_available",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_account",
+					"type": "address"
+				}
+			],
+			"name": "cashBalance",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "_balance",
+					"type": "uint256"
 				}
 			],
 			"payable": false,
@@ -14797,6 +14938,21 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "genesisInitialRepPriceinAttoCash",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -15039,12 +15195,72 @@
 		{
 			"constant": true,
 			"inputs": [],
+			"name": "lastUpdateTimestamp",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
 			"name": "name",
 			"outputs": [
 				{
 					"internalType": "string",
 					"name": "",
 					"type": "string"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "period",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [],
+			"name": "pokePrice",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "price",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
 				}
 			],
 			"payable": false,
@@ -17234,6 +17450,34 @@
 			"type": "function"
 		}
 	],
+	"RepExchangeFactory": [
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "contract IAugur",
+					"name": "_augur",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_repTokenAddress",
+					"type": "address"
+				}
+			],
+			"name": "createRepExchange",
+			"outputs": [
+				{
+					"internalType": "contract ISimpleDex",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		}
+	],
 	"ReputationTokenFactory": [
 		{
 			"constant": false,
@@ -18708,6 +18952,53 @@
 			"constant": true,
 			"inputs": [
 				{
+					"internalType": "address",
+					"name": "_owner",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_sender",
+					"type": "address"
+				}
+			],
+			"name": "cashAvailableForTransferFrom",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "_available",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_account",
+					"type": "address"
+				}
+			],
+			"name": "cashBalance",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "_balance",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
 					"internalType": "uint256",
 					"name": "_daiAmount",
 					"type": "uint256"
@@ -19709,21 +20000,6 @@
 		{
 			"constant": true,
 			"inputs": [],
-			"name": "assertBalances",
-			"outputs": [
-				{
-					"internalType": "bool",
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
 			"name": "augur",
 			"outputs": [
 				{
@@ -19745,6 +20021,53 @@
 					"internalType": "contract ICash",
 					"name": "",
 					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_owner",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_sender",
+					"type": "address"
+				}
+			],
+			"name": "cashAvailableForTransferFrom",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "_available",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_account",
+					"type": "address"
+				}
+			],
+			"name": "cashBalance",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "_balance",
+					"type": "uint256"
 				}
 			],
 			"payable": false,
@@ -19854,6 +20177,27 @@
 			"inputs": [
 				{
 					"internalType": "uint256",
+					"name": "_daiAmount",
+					"type": "uint256"
+				}
+			],
+			"name": "daiToVatDai",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "uint256",
 					"name": "_amount",
 					"type": "uint256"
 				}
@@ -19885,21 +20229,6 @@
 					"internalType": "bytes32",
 					"name": "",
 					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "designatedReporterShowed",
-			"outputs": [
-				{
-					"internalType": "bool",
-					"name": "",
-					"type": "bool"
 				}
 			],
 			"payable": false,
@@ -19969,21 +20298,6 @@
 		},
 		{
 			"constant": true,
-			"inputs": [],
-			"name": "getAffiliateFeeDivisor",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
 			"inputs": [
 				{
 					"internalType": "bytes32",
@@ -19995,21 +20309,6 @@
 			"outputs": [
 				{
 					"internalType": "contract IDisputeCrowdsourcer",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "getDesignatedReporter",
-			"outputs": [
-				{
-					"internalType": "address",
 					"name": "",
 					"type": "address"
 				}
@@ -20260,27 +20559,6 @@
 		},
 		{
 			"constant": true,
-			"inputs": [
-				{
-					"internalType": "uint256",
-					"name": "_index",
-					"type": "uint256"
-				}
-			],
-			"name": "getReportingParticipant",
-			"outputs": [
-				{
-					"internalType": "contract IReportingParticipant",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
 			"inputs": [],
 			"name": "getReputationToken",
 			"outputs": [
@@ -20421,42 +20699,6 @@
 			"constant": false,
 			"inputs": [
 				{
-					"internalType": "uint256",
-					"name": "_attoCash",
-					"type": "uint256"
-				}
-			],
-			"name": "increaseValidityBond",
-			"outputs": [
-				{
-					"internalType": "bool",
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "initialReporterWasCorrect",
-			"outputs": [
-				{
-					"internalType": "bool",
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
 					"internalType": "contract IAugur",
 					"name": "_augur",
 					"type": "address"
@@ -20552,7 +20794,7 @@
 		{
 			"constant": true,
 			"inputs": [],
-			"name": "isForkingMarket",
+			"name": "isFinalizedAsInvalid",
 			"outputs": [
 				{
 					"internalType": "bool",
@@ -20567,7 +20809,7 @@
 		{
 			"constant": true,
 			"inputs": [],
-			"name": "isInvalid",
+			"name": "isForkingMarket",
 			"outputs": [
 				{
 					"internalType": "bool",
@@ -20802,6 +21044,42 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "vat",
+			"outputs": [
+				{
+					"internalType": "contract IDaiVat",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "_vDaiAmount",
+					"type": "uint256"
+				}
+			],
+			"name": "vatDaiToDai",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
 			"type": "function"
 		},
 		{
@@ -21062,6 +21340,53 @@
 					"internalType": "contract IERC20",
 					"name": "",
 					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_owner",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_sender",
+					"type": "address"
+				}
+			],
+			"name": "cashAvailableForTransferFrom",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "_available",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_account",
+					"type": "address"
+				}
+			],
+			"name": "cashBalance",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "_balance",
+					"type": "uint256"
 				}
 			],
 			"payable": false,
@@ -21401,160 +21726,6 @@
 					"internalType": "bool",
 					"name": "",
 					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		}
-	],
-	"RepPriceOracle": [
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "augur",
-			"outputs": [
-				{
-					"internalType": "contract IAugur",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "cash",
-			"outputs": [
-				{
-					"internalType": "address",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"name": "exchangeData",
-			"outputs": [
-				{
-					"internalType": "contract ISimpleDex",
-					"name": "exchange",
-					"type": "address"
-				},
-				{
-					"internalType": "uint256",
-					"name": "repPriceAccumulated",
-					"type": "uint256"
-				},
-				{
-					"internalType": "uint256",
-					"name": "blockNumber",
-					"type": "uint256"
-				},
-				{
-					"internalType": "uint256",
-					"name": "blockTimestamp",
-					"type": "uint256"
-				},
-				{
-					"internalType": "uint256",
-					"name": "price",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "genesisInitialRepPriceinAttoCash",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "getInitialized",
-			"outputs": [
-				{
-					"internalType": "bool",
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"internalType": "contract IAugur",
-					"name": "_augur",
-					"type": "address"
-				}
-			],
-			"name": "initialize",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "period",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"internalType": "contract IV2ReputationToken",
-					"name": "_reputationToken",
-					"type": "address"
-				}
-			],
-			"name": "pokeRepPriceInAttoCash",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
 				}
 			],
 			"payable": false,
@@ -22529,6 +22700,21 @@
 		},
 		{
 			"constant": true,
+			"inputs": [
+				{
+					"internalType": "contract IMarket",
+					"name": "_market",
+					"type": "address"
+				}
+			],
+			"name": "assertBalances",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
 			"inputs": [],
 			"name": "augur",
 			"outputs": [
@@ -22789,6 +22975,53 @@
 					"internalType": "contract ICash",
 					"name": "",
 					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_owner",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_sender",
+					"type": "address"
+				}
+			],
+			"name": "cashAvailableForTransferFrom",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "_available",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_account",
+					"type": "address"
+				}
+			],
+			"name": "cashBalance",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "_balance",
+					"type": "uint256"
 				}
 			],
 			"payable": false,
@@ -23711,6 +23944,53 @@
 					"internalType": "contract ICash",
 					"name": "",
 					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_owner",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_sender",
+					"type": "address"
+				}
+			],
+			"name": "cashAvailableForTransferFrom",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "_available",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_account",
+					"type": "address"
+				}
+			],
+			"name": "cashBalance",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "_balance",
+					"type": "uint256"
 				}
 			],
 			"payable": false,
@@ -25118,22 +25398,7 @@
 			"name": "repExchange",
 			"outputs": [
 				{
-					"internalType": "contract ISimpleDex",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "repPriceOracle",
-			"outputs": [
-				{
-					"internalType": "contract IRepPriceOracle",
+					"internalType": "contract IRepExchange",
 					"name": "",
 					"type": "address"
 				}
@@ -26064,6 +26329,53 @@
 			"constant": true,
 			"inputs": [
 				{
+					"internalType": "address",
+					"name": "_owner",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_sender",
+					"type": "address"
+				}
+			],
+			"name": "cashAvailableForTransferFrom",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "_available",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_account",
+					"type": "address"
+				}
+			],
+			"name": "cashBalance",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "_balance",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
 					"internalType": "uint256",
 					"name": "_daiAmount",
 					"type": "uint256"
@@ -26238,6 +26550,53 @@
 					"internalType": "contract ICash",
 					"name": "",
 					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_owner",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_sender",
+					"type": "address"
+				}
+			],
+			"name": "cashAvailableForTransferFrom",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "_available",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_account",
+					"type": "address"
+				}
+			],
+			"name": "cashBalance",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "_balance",
+					"type": "uint256"
 				}
 			],
 			"payable": false,
@@ -29172,6 +29531,53 @@
 			"constant": true,
 			"inputs": [
 				{
+					"internalType": "address",
+					"name": "_owner",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_sender",
+					"type": "address"
+				}
+			],
+			"name": "cashAvailableForTransferFrom",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "_available",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_account",
+					"type": "address"
+				}
+			],
+			"name": "cashBalance",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "_balance",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
 					"internalType": "uint8",
 					"name": "_type",
 					"type": "uint8"
@@ -29525,6 +29931,27 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "_daiAmount",
+					"type": "uint256"
+				}
+			],
+			"name": "daiToVatDai",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
 			"type": "function"
 		},
 		{
@@ -30434,6 +30861,42 @@
 					"internalType": "uint8",
 					"name": "_type",
 					"type": "uint8"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "vat",
+			"outputs": [
+				{
+					"internalType": "contract IDaiVat",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "_vDaiAmount",
+					"type": "uint256"
+				}
+			],
+			"name": "vatDaiToDai",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
 				}
 			],
 			"payable": false,

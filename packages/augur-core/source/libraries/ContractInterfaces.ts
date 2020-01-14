@@ -65,6 +65,8 @@ export class MarketFactory extends c.MarketFactory<BigNumber> {
 }
 export class OICashFactory extends c.OICashFactory<BigNumber> {
 }
+export class RepExchangeFactory extends c.RepExchangeFactory<BigNumber> {
+}
 export class ReputationTokenFactory extends c.ReputationTokenFactory<BigNumber> {
 }
 export class TestNetReputationTokenFactory extends c.TestNetReputationTokenFactory<BigNumber> {
@@ -84,8 +86,6 @@ export class InitialReporter extends c.InitialReporter<BigNumber> {
 export class Market extends c.Market<BigNumber> {
 }
 export class OICash extends c.OICash<BigNumber> {
-}
-export class RepPriceOracle extends c.RepPriceOracle<BigNumber> {
 }
 export class ReputationToken extends c.ReputationToken<BigNumber> {
 }
