@@ -15,7 +15,7 @@ import {
 import {
   TXEventName
 } from '@augurproject/sdk';
-import { convertUnixToFormattedDate } from 'utils/format-date';
+import { convertUnixToFormattedDate, convertSaltToFormattedDate } from 'utils/format-date';
 import { formatNone, formatShares, formatDai } from 'utils/format-number';
 import { cancelOrder } from 'modules/orders/actions/cancel-order';
 import {
@@ -179,8 +179,8 @@ function getUserOpenOrders(
     .map(orderId => typeOrders[orderId])
     .filter(order => isOrderOfUser(order, userId))
     .sort((order1, order2) =>
-      createBigNumber(order2.price, 10).comparedTo(
-        createBigNumber(order1.price, 10)
+      createBigNumber(order2.salt, 10).comparedTo(
+        createBigNumber(order1.salt, 10)
       )
     )
     .map(order => ({
@@ -188,7 +188,7 @@ function getUserOpenOrders(
       type: orderType === BUY_INDEX ? BUY : SELL,
       marketId,
       outcomeId,
-      creationTime: convertUnixToFormattedDate(order.creationTime),
+      creationTime: convertSaltToFormattedDate(order.salt),
       expiry: convertUnixToFormattedDate(order.expirationTimeSeconds),
       pending: !!orderCancellation[order.orderId] && orderCancellation[order.orderId] !== TXEventName.Failure,
       status: order.orderState,

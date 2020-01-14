@@ -194,6 +194,10 @@ export function convertUnixToFormattedDate(integer: number = 0) {
   return formatDate(moment.unix(integer).toDate());
 }
 
+export function convertSaltToFormattedDate(integer: number = 0) {
+  return formatDate(moment(integer).toDate());
+}
+
 export function getBeginDate(
   currentAugurTimestampInMilliseconds: number,
   periodString: string
