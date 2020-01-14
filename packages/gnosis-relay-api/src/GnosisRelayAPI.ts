@@ -186,14 +186,13 @@ export class GnosisRelayAPI implements IGnosisRelayAPI {
       const result = await axios.post(url, relayTxEstimateData);
       const relayTxEstimate: RelayTxEstimateResponse = result.data;
 
-      /*
       if (this.gasEstimateIncreasePercentage) {
         relayTxEstimate.safeTxGas = relayTxEstimate.safeTxGas.plus(
           relayTxEstimate.safeTxGas.div(
             new BigNumber(100).div(this.gasEstimateIncreasePercentage))
         );
       }
-      */
+
       return relayTxEstimate;
     } catch (error) {
       throw new Error(JSON.stringify(error.response));
