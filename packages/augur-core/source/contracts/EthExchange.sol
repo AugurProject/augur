@@ -22,6 +22,11 @@ contract EthExchange is BaseSimpleDex {
         sellToken(_recipient);
     }
 
+    function publicMintAuto(address _to, uint256 _cashAmount) external payable returns (uint256 _liquidity) {
+        augur.trustedCashTransfer(msg.sender, address(this), _cashAmount);
+        publicMint(_to);
+    }
+
     function onUpdate(uint256 _blocksElapsed, uint256 _priceCumulativeIncrease) internal {}
 
     function () external payable {

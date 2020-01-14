@@ -70,7 +70,7 @@ contract BaseSimpleDex is Initializable, ReentrancyGuard, VariableSupplyToken, C
 
     function onUpdate(uint256 _blocksElapsed, uint256 _priceCumulativeIncrease) internal;
 
-    function publicMint(address _to) external nonReentrant returns (uint256 _liquidity) {
+    function publicMint(address _to) public nonReentrant returns (uint256 _liquidity) {
         uint256 _tokenBalance = getTokenBalance();
         uint256 _cashBalance = getCashBalance();
         uint256 _tokenReserve = tokenReserve;
@@ -89,7 +89,12 @@ contract BaseSimpleDex is Initializable, ReentrancyGuard, VariableSupplyToken, C
         emit Mint(msg.sender, _tokenAmount, _cashAmount);
     }
 
-    function publicBurn(address _to) external nonReentrant returns (uint256 _tokenAmount, uint256 _cashAmount) {
+    function publicBurnAuto(address _to, uint256 _amount) external returns (uint256 _tokenAmount, uint256 _cashAmount) {
+        transferFrom(msg.sender, address(this), _amount);
+        publicBurn(_to);
+    }
+
+    function publicBurn(address _to) public nonReentrant returns (uint256 _tokenAmount, uint256 _cashAmount) {
         uint256 _liquidity = balances[address(this)];
         uint256 _totalSupply = totalSupply;
 

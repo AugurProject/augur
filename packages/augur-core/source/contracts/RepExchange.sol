@@ -38,6 +38,18 @@ contract RepExchange is BaseSimpleDex {
         sellToken(_recipient);
     }
 
+    function publicMintAuto(address _to, uint256 _tokenAmount, uint256 _cashAmount) external returns (uint256 _liquidity) {
+        augur.trustedCashTransfer(msg.sender, address(this), _cashAmount);
+        IV2ReputationToken(token).trustedREPExchangeTransfer(msg.sender, address(this), _tokenAmount);
+        publicMint(_to);
+    }
+
+    function publicBurnAuto(address _to, uint256 _tokenAmount, uint256 _cashAmount) external returns (uint256 _liquidity) {
+        augur.trustedCashTransfer(msg.sender, address(this), _cashAmount);
+        IV2ReputationToken(token).trustedREPExchangeTransfer(msg.sender, address(this), _tokenAmount);
+        publicMint(_to);
+    }
+
     function pokePrice() public returns (uint256) {
         update(getTokenBalance(), getCashBalance());
         return price;
