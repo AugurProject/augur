@@ -17,7 +17,7 @@ import { OutcomeOrderBook } from 'modules/types';
 import { createBigNumber } from 'utils/create-big-number';
 import { formatShares } from 'utils/format-number';
 
-const ORDDER_BOOK_REFRESH = 3000;
+const ORDER_BOOK_REFRESH_MS = 3000;
 
 interface OrderBookSideProps {
   orderBook: OutcomeOrderBook;
@@ -200,7 +200,7 @@ export default class OrderBook extends Component<
   componentDidMount() {
     const { marketId, loadMarketOrderBook } = this.props;
     loadMarketOrderBook(marketId);
-    const timer = setInterval(() => loadMarketOrderBook(marketId), ORDDER_BOOK_REFRESH);
+    const timer = setInterval(() => loadMarketOrderBook(marketId), ORDER_BOOK_REFRESH_MS);
     this.setState({ timer })
   }
 
