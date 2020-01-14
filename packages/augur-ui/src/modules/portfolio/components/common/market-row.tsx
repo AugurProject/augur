@@ -55,7 +55,7 @@ const MarketRow = (props: MarketRowProps) => {
       >
         {props.showState && !props.market.pending && (
           <div>
-            {props.market.isTemplate && <TemplateShield marketId={props.market.id} />}
+            {props.market.isTemplate && <TemplateShield market={props.market} />}
             <MarketStatusLabel
               reportingState={props.market.reportingState}
               alternate

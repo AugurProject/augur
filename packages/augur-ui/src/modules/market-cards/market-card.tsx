@@ -263,7 +263,7 @@ export default class MarketCard extends React.Component<
                 disputeInfo={disputeInfo}
               />
             )}
-            {isTemplate && <TemplateShield marketId={id} />}
+            {isTemplate && <TemplateShield market={market} />}
             <CategoryTagTrail categories={categoriesWithClick} />
             <MarketProgress
               reportingState={reportingState}
