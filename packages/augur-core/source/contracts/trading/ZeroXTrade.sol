@@ -26,6 +26,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155, CashSender {
     bool transferFromAllowed = false;
 
     uint256 constant public TRADE_INTERVAL_VALUE = 10 ** 19; // Trade value of 10 DAI
+    uint256 constant public MIN_TRADE_INTERVAL = 10**14; // We ignore "dust" portions of the min interval and for huge scalars have a larger min value
 
     // ERC20Token(address)
     bytes4 constant private ERC20_PROXY_ID = 0xf47261b0;
@@ -215,6 +216,8 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155, CashSender {
      * @param  _requestedFillAmount  Share amount to fill
      * @param  _fingerprint          Fingerprint of the user to restrict affiliate fees
      * @param  _tradeGroupId         Random id to correlate these fills as one trade action
+     * @param  _maxProtocolFeeDai    The maximum amount of DAI to spend on covering the 0x protocol fee
+     * @param  _maxTrades            The maximum number of trades to actually take from the provided 0x orders
      * @param  _orders               Array of encoded Order struct data
      * @param  _signatures           Array of signature data
      * @return                       The amount the taker still wants
@@ -224,6 +227,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155, CashSender {
         bytes32 _fingerprint,
         bytes32 _tradeGroupId,
         uint256 _maxProtocolFeeDai,
+        uint256 _maxTrades,
         IExchange.Order[] memory _orders,
         bytes[] memory _signatures
     )
@@ -258,6 +262,10 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155, CashSender {
             uint256 _amountTraded = doTrade(_order, totalFillResults.takerAssetFilledAmount, _fingerprint, _tradeGroupId, msg.sender);
 
             _fillAmountRemaining = _fillAmountRemaining.sub(_amountTraded);
+            _maxTrades -= 1;
+            if (_maxTrades == 0) {
+                break;
+            }
         }
 
         transferFromAllowed = false;
@@ -291,7 +299,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155, CashSender {
         (IERC1155 _zeroXTradeTokenMaker, uint256 _tokenIdMaker) = getZeroXTradeTokenData(_order.makerAssetData);
         (address _market, uint256 _price, uint8 _outcome, uint8 _type) = unpackTokenId(_tokenIdMaker);
         uint256 _numTicks = IMarket(_market).getNumTicks();
-        uint256 _tradeInterval = TRADE_INTERVAL_VALUE / _numTicks;
+        uint256 _tradeInterval = MIN_TRADE_INTERVAL.min(TRADE_INTERVAL_VALUE.div(_numTicks).div(MIN_TRADE_INTERVAL).mul(MIN_TRADE_INTERVAL));
         require(_fillAmountRemaining.isMultipleOf(_tradeInterval), "Order must be a multiple of the market trade increment");
         require(_zeroXTradeTokenMaker == this);
     }

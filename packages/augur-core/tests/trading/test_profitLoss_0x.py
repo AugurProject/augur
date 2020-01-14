@@ -373,7 +373,7 @@ def process_trades(contractsFixture, trade_data, cash, market, zeroXTrade, profi
         skip = 0 if direction == BID else 1
         skip = skip if taker else (1 if direction == BID else 0)
         with AssertLog(contractsFixture, "ProfitLossChanged", profitLossChangedLog, skip = skip):
-            zeroXTrade.trade(quantity, fingerprint, tradeGroupId, 0, orders, signatures, sender=contractsFixture.accounts[2], value=150000)
+            zeroXTrade.trade(quantity, fingerprint, tradeGroupId, 0, 10, orders, signatures, sender=contractsFixture.accounts[2], value=150000)
 
         account = contractsFixture.accounts[2] if taker else contractsFixture.accounts[1]
         assert profitLoss.getNetPosition(market.address, account, trade['outcome']) == trade['position'] * 10**18
