@@ -29,7 +29,6 @@ export const loadAccountData = (
     windowApp.localStorage.setItem('loggedInAccountType', loginAccount.meta.accountType);
     windowApp.localStorage.setItem('loggedInAccount', address);
   }
-  dispatch(loadAccountDataFromLocalStorage(address));
   dispatch(loadAccountHistory());
   dispatch(checkAccountAllowance());
   dispatch(loadUniverseDetails(universe.id, address));

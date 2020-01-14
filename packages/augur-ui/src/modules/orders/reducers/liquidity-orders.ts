@@ -121,7 +121,7 @@ export default function(
         return pendingLiquidityOrders;
       const updatedOutcomeOrders = pendingLiquidityOrders[txParamHash][
         outcomeId
-      ].reduce((acc: Array<LiquidityOrder>, order) => {
+      ].reduce((acc: LiquidityOrder[], order) => {
         if (order.index === orderId) return acc;
         acc.push(order);
         return acc;
