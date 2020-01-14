@@ -328,6 +328,12 @@
     padding: @size-12;
     margin: @size-4 0;
 
+    &.Condensed {
+      > div.TopRow {
+        margin-bottom: @size-4;
+      }
+    }
+
     &.Nonexpanding {
       > div:nth-last-of-type(2) {
         grid-column: 1 / span 2;
