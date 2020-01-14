@@ -515,11 +515,11 @@ export const TemplateBannerText = {
   index:
     'Enter the full name of the index to ensure the market resolves as valid, i.e. S & P 500 Index',
   'stocks/etfs':
-    'Enter Stock/EFTs name and ticker symbol to ensure the market resolves as valid, i.e. Apple (AAPL)',
+    'Enter Stock/ETFs name and ticker symbol to ensure the market resolves as valid, i.e. Apple (AAPL)',
   stocks:
     'Enter Stock name and ticker symbol to ensure the market resolves as valid, i.e. Apple (AAPL)',
   etfs:
-    'Enter EFT name and ticker symbol to ensure the market resolves as valid, i.e. S & P 500 Index (SPY)',
+    'Enter ETF name and ticker symbol to ensure the market resolves as valid, i.e. S & P 500 Index (SPY)',
 
 };
 
