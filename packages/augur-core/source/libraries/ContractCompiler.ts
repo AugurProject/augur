@@ -191,6 +191,9 @@ export class ContractCompiler {
                 "OICash",
                 "Affiliates",
                 "AffiliateValidator",
+                "EthExchange",
+                "RepExchangeFactory",
+                "RepExchange",
                 // utility
                 "BuyParticipationTokens",
                 "Formulas",
@@ -220,11 +223,7 @@ export class ContractCompiler {
                 // Maker
                 "TestNetDaiJoin",
                 "TestNetDaiPot",
-                "TestNetDaiVat",
-                // Uniswap
-                "UniswapV2Factory",
-                // ENS
-                "ENSRegistry",
+                "TestNetDaiVat"
             ];
             const name = path.parse(file).base.replace('.sol', '');
             if (!allowedFilenames.includes(name)) return true;

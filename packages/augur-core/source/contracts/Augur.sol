@@ -113,7 +113,7 @@ contract Augur is IAugur, IAugurCreationDataGetter, CashSender {
         require(registry[_key] == address(0), "Augur.registerContract: key has already been used in registry");
         require(_address.exists());
         registry[_key] = _address;
-        if (_key == "ShareToken" || _key == "MarketFactory") {
+        if (_key == "ShareToken" || _key == "MarketFactory" || _key == "EthExchange") {
             trustedSender[_address] = true;
         } else if (_key == "Time") {
             time = ITime(_address);
@@ -161,6 +161,7 @@ contract Augur is IAugur, IAugurCreationDataGetter, CashSender {
         IUniverse _newUniverse = _universeFactory.createUniverse(_parentUniverse, _parentPayoutDistributionHash, _parentPayoutNumerators);
         universes[address(_newUniverse)] = true;
         trustedSender[address(_newUniverse)] = true;
+        trustedSender[address(_newUniverse.repExchange())] = true;
         emit UniverseCreated(address(_parentUniverse), address(_newUniverse), _parentPayoutNumerators, getTimestamp());
         return _newUniverse;
     }

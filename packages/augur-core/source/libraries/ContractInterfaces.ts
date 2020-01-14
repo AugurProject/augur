@@ -29,6 +29,8 @@ export class Cash extends c.Cash<BigNumber> {
 }
 export class CashFaucet extends c.CashFaucet<BigNumber> {
 }
+export class EthExchange extends c.EthExchange<BigNumber> {
+}
 export class GnosisSafe extends c.GnosisSafe<BigNumber> {
 }
 export class GnosisSafeRegistry extends c.GnosisSafeRegistry<BigNumber> {
@@ -36,6 +38,8 @@ export class GnosisSafeRegistry extends c.GnosisSafeRegistry<BigNumber> {
 export class LegacyReputationToken extends c.LegacyReputationToken<BigNumber> {
 }
 export class ProxyFactory extends c.ProxyFactory<BigNumber> {
+}
+export class RepExchange extends c.RepExchange<BigNumber> {
 }
 export class TestNetDaiJoin extends c.TestNetDaiJoin<BigNumber> {
 }

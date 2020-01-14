@@ -204,12 +204,14 @@ export class ZeroX {
     }
 
     const gasPrice = await this.augur.getGasPrice();
+    // TODO: We should be getting this by querying the exchnage contract directly via `protocolFeeMultiplier()`
     const protocolFee = gasPrice.multipliedBy(150000 * numOrders);
 
     const result: Event[] = await this.augur.contracts.ZeroXTrade.trade(
       params.amount,
       params.fingerprint,
       params.tradeGroupId,
+      new BigNumber(0), // TODO: This is the paramater indicating the maximum amount of DAI to spend to cover the 0x protocol fee
       orders,
       signatures,
       { attachedEth: protocolFee }

@@ -16,6 +16,7 @@ import "ROOT/IAugur.sol";
 import 'ROOT/libraries/token/IERC1155.sol';
 import 'ROOT/libraries/LibBytes.sol';
 import 'ROOT/CashSender.sol';
+import 'ROOT/ISimpleDex.sol';
 
 
 contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155, CashSender {
@@ -86,6 +87,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155, CashSender {
     ICash public cash;
     IShareToken public shareToken;
     IExchange public exchange;
+    ISimpleDex public ethExchange;
 
     function initialize(IAugur _augur, IAugurTrading _augurTrading) public beforeInitialized {
         endInitialization();
@@ -98,6 +100,9 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155, CashSender {
         require(exchange != IExchange(0));
         fillOrder = IFillOrder(_augurTrading.lookup("FillOrder"));
         require(fillOrder != IFillOrder(0));
+        ethExchange = ISimpleDex(_augur.lookup("EthExchange"));
+        require(ethExchange != ISimpleDex(0));
+
         initializeCashSender(_augur.lookup("DaiVat"), address(cash));
 
         EIP712_DOMAIN_HASH = keccak256(
@@ -218,6 +223,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155, CashSender {
         uint256 _requestedFillAmount,
         bytes32 _fingerprint,
         bytes32 _tradeGroupId,
+        uint256 _maxProtocolFeeDai,
         IExchange.Order[] memory _orders,
         bytes[] memory _signatures
     )
@@ -231,6 +237,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155, CashSender {
         transferFromAllowed = true;
 
         uint256 _protocolFee = exchange.protocolFeeMultiplier().mul(tx.gasprice);
+        coverProtocolFee(_protocolFee.mul(_orders.length), _maxProtocolFeeDai);
 
         // Do the actual asset exchanges
         for (uint256 i = 0; i < _orders.length && _fillAmountRemaining != 0; i++) {
@@ -260,6 +267,22 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155, CashSender {
         }
 
         return _fillAmountRemaining;
+    }
+
+    function coverProtocolFee(uint256 _amountEthRequired, uint256 _maxProtocolFeeDai) internal {
+        if (address(this).balance < _amountEthRequired) {
+            uint256 _ethDeficit = _amountEthRequired - address(this).balance;
+            uint256 _cost = ethExchange.getTokenPurchaseCost(_ethDeficit);
+            require(_cost <= _maxProtocolFeeDai, "Cost of purchasing ETH to cover protocol Fee on the exchange was too high");
+            cash.transferFrom(msg.sender, address(ethExchange), _cost);
+            ethExchange.buyToken(address(this));
+        }
+    }
+
+    function estimateProtocolFeeCostInCash(uint256 _numOrders, uint256 _gasPrice) public view returns (uint256) {
+        uint256 _protocolFee = exchange.protocolFeeMultiplier().mul(_gasPrice);
+        uint256 _amountEthRequired = _protocolFee.mul(_numOrders);
+        return ethExchange.getTokenPurchaseCost(_amountEthRequired);
     }
 
     function validateOrder(IExchange.Order memory _order, uint256 _fillAmountRemaining) internal view {

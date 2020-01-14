@@ -11,10 +11,11 @@ interface ISimpleDex {
     function blockNumberLast() external view returns (uint256);
     function tokenPriceCumulativeLast() external view returns (uint256);
 
+    function buyToken(address _recipient) external returns (uint256 _tokenAmount);
+    function getTokenPurchaseCost(uint256 _tokenAmount) external view returns (uint256);
+
     function publicMint(address to) external returns (uint256 liquidity);
     function publicBurn(address to) external returns (uint256 tokenAmount, uint256 cashAmount);
     function skim(address to) external;
     function sync() external;
-
-    function initialize(address) external;
 }

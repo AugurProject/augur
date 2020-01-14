@@ -163,24 +163,6 @@ Deploying to: ${networkConfiguration.networkName}
             await this.upload0xContracts();
         }
 
-        // Uniswap
-        if (this.configuration.isProduction || externalAddresses.UniswapV2Factory) {
-            if (!externalAddresses.UniswapV2Factory) throw new Error('Must provide UniswapV2Factory');
-            console.log(`Registering UniswapV2Factory Contract at ${externalAddresses.UniswapV2Factory}`);
-            await this.augur!.registerContract(stringTo32ByteHex('UniswapV2Factory'), externalAddresses.UniswapV2Factory);
-        } else {
-            await this.uploadUniswapContracts();
-        }
-
-        // ENS
-        if (this.configuration.isProduction || externalAddresses.ENSRegistry) {
-            if (!externalAddresses.ENSRegistry) throw new Error('Must provide ENSRegistry');
-            console.log(`Registering ENSRegistry Contract at ${externalAddresses.ENSRegistry}`);
-            await this.augur!.registerContract(stringTo32ByteHex('ENSRegistry'), externalAddresses.ENSRegistry);
-        } else {
-            await this.uploadENSContracts();
-        }
-
         await this.initializeAllContracts();
         await this.doTradingApprovals();
 
@@ -230,9 +212,6 @@ Deploying to: ${networkConfiguration.networkName}
             if (contract.contractName === 'TestNetReputationToken') continue;
             if (contract.contractName === 'TestNetReputationTokenFactory') continue;
             if (contract.contractName === 'CashFaucetProxy') continue;
-            if (contract.contractName === 'UniswapV2') continue;
-            if (contract.contractName === 'UniswapV2Factory') continue;
-            if (contract.contractName === 'ENSRegistry') continue;
             if (contract.contractName === 'Time') contract = this.configuration.useNormalTime ? contract : this.contracts.get('TimeControlled');
             if (contract.contractName === 'ReputationTokenFactory') contract = this.configuration.isProduction ? contract: this.contracts.get('TestNetReputationTokenFactory');
             if (contract.contractName === 'CashFaucet') {
@@ -331,18 +310,6 @@ Deploying to: ${networkConfiguration.networkName}
         gnosisSafeContract.address = await this.uploadAndAddToAugur(gnosisSafeContract, 'GnosisSafe', []);
     }
 
-    private async uploadUniswapContracts(): Promise<string> {
-        const uniswapV2FactoryContract = await this.contracts.get('UniswapV2Factory');
-        uniswapV2FactoryContract.address = await this.uploadAndAddToAugur(uniswapV2FactoryContract, 'UniswapV2Factory', []);
-        return uniswapV2FactoryContract.address;
-    }
-
-    private async uploadENSContracts(): Promise<string> {
-        const ensRegistryContract = await this.contracts.get('ENSRegistry');
-        ensRegistryContract.address = await this.uploadAndAddToAugur(ensRegistryContract, 'ENSRegistry', []);
-        return ensRegistryContract.address;
-    }
-
     async uploadLegacyRep(): Promise<string> {
         const contract = await this.contracts.get('LegacyReputationToken');
         contract.address = await this.uploadAndAddToAugur(contract, 'LegacyReputationToken');
@@ -428,9 +395,6 @@ Deploying to: ${networkConfiguration.networkName}
         if (contractName === 'AugurTrading') return;
         if (contractName === 'Universe') return;
         if (contractName === 'ReputationToken') return;
-        if (contractName === 'UniswapV2') return;
-        if (contractName === 'UniswapV2Factory') return;
-        if (contractName === 'ENSRegistry') return;
         if (contractName === 'TestNetReputationToken') return;
         if (contractName === 'ProxyFactory') return;
         if (contractName === 'Time') contract = this.configuration.useNormalTime ? contract : this.contracts.get('TimeControlled');

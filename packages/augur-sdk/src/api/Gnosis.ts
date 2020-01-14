@@ -370,6 +370,7 @@ export class Gnosis {
     const augurAddress = this.augur.contracts.augur.address;
     const createOrderAddress = this.augur.contracts.createOrder.address;
     const fillOrderAddress = this.augur.contracts.fillOrder.address;
+    const zeroXTradeAddress = this.augur.contracts.ZeroXTrade.address;
     const affiliates = this.augur.contracts.affiliates.address;
     // TODO
     const fingerprint = formatBytes32String('');
@@ -381,6 +382,7 @@ export class Gnosis {
         augurAddress,
         createOrderAddress,
         fillOrderAddress,
+        zeroXTradeAddress,
         cashAddress,
         shareTokenAddress,
         affiliates,

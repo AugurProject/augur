@@ -80,7 +80,7 @@ def test_simple_trades_and_fees(contractsFixture, cash, market, universe):
     assert numFills == 1
 
     cash.faucet(cost, sender=account1)
-    assert ZeroXTrade.trade(amount, fingerprint, tradeGroupID, orders, signatures, sender=account1, value=150000) == 0
+    assert ZeroXTrade.trade(amount, fingerprint, tradeGroupID, 0, orders, signatures, sender=account1, value=150000) == 0
 
     rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(SHORT, amount, price, market.address, outcome, expirationTime, salt, sender=account0)
     signature = signOrder(orderHash, senderPrivateKey0)
@@ -300,7 +300,7 @@ def simulate_then_trade(contractsFixture, market, outcome, orderDirection, order
     # Self trades will take the full order in terms of amount remaining
     makerAccount = orders[0][0]
     expectedAmountRemaining = expectedAmountRemaining if fillerAccount != makerAccount else 0
-    assert ZeroXTrade.trade(fillAmount, fingerprint, tradeGroupID, orders, signatures, sender=fillerAccount, value=150000*len(orders)) == expectedAmountRemaining 
+    assert ZeroXTrade.trade(fillAmount, fingerprint, tradeGroupID, 0, orders, signatures, sender=fillerAccount, value=150000*len(orders)) == expectedAmountRemaining 
 
     if (tokensDepleted > 0):
         assert tokensDepleted == initialCashBalance - cash.balanceOf(fillerAccount)

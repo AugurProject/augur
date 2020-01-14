@@ -7,8 +7,7 @@ import "ROOT/reporting/IV2ReputationToken.sol";
 contract RepExchange is BaseSimpleDex {
 
     function initialize(address _augurAddress, address _token) public beforeInitialized {
-        super.initialize(_augurAddress, _token);
-
+        initializeInternal(_augurAddress, _token);
         // There is no trust given to this contract except for a particular instance per universe which is validated furing transfer so this is just for saftey from programmer error
         require(_token != address(0));
     }

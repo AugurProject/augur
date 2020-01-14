@@ -312,15 +312,6 @@ export class TestFixture {
     }
 
     async pokeRepOracle(): Promise<BigNumber> {
-        const repOracleAddress = await this.contractDeployer.getContractAddress('RepPriceOracle');
-        const repOracle = new RepPriceOracle(this.dependencies, repOracleAddress);
-        console.log('GETTING UNISWAP FACTORY');
-        const uniswapFactoryAddress = await repOracle.uniswapFactory_();
-        console.log(`UNISWAP FACTORY: ${uniswapFactoryAddress}. Creating Exchange`);
-        const exchange = await repOracle.getOrCreateUniswapExchange(await this.contractDeployer.universe!.getReputationToken_());
-        console.log(`UNISWAP EXCHANGE: ${exchange}`);
-
-        console.log('POKING MCAP');
         return await this.contractDeployer.universe!.pokeRepMarketCapInAttoCash_();
     }
 }

@@ -6,7 +6,7 @@ import "ROOT/BaseSimpleDex.sol";
 contract EthExchange is BaseSimpleDex {
 
     function initialize(address _augurAddress) public beforeInitialized {
-        super.initialize(_augurAddress, address(0));
+        initializeInternal(_augurAddress, address(0));
     }
 
     function transferToken(address _to, uint256 _value) private {

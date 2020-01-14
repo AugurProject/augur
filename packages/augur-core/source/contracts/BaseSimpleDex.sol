@@ -1,6 +1,6 @@
 pragma solidity 0.5.15;
 
-import "ROOT/Augur.sol";
+import "ROOT/IAugur.sol";
 import "ROOT/ISimpleDex.sol";
 import "ROOT/CashSender.sol";
 import "ROOT/libraries/token/IERC20.sol";
@@ -38,11 +38,11 @@ contract BaseSimpleDex is Initializable, ReentrancyGuard, VariableSupplyToken, C
         cashTransfer(_to, _value);
     }
 
-    function getCashBalance() public returns (uint256) {
+    function getCashBalance() public view returns (uint256) {
         return cash.balanceOf(address(this));
     }
 
-    function initialize(address _augurAddress, address _token) public beforeInitialized {
+    function initializeInternal(address _augurAddress, address _token) internal {
         endInitialization();
         IAugur _augur = IAugur(_augurAddress);
         augur = _augur;
@@ -100,19 +100,34 @@ contract BaseSimpleDex is Initializable, ReentrancyGuard, VariableSupplyToken, C
         emit Burn(msg.sender, _tokenAmount, _cashAmount, _to);
     }
 
-    function getTokenPrice(uint256 _inputAmount) public view returns (uint256) {
-        return getInputPrice(_inputAmount, tokenReserve, cashReserve);
+    function getTokenSaleProceeds(uint256 _tokenAmount) public view returns (uint256) {
+        return getSaleProceeds(_tokenAmount, tokenReserve, cashReserve);
     }
 
-    function getCashPrice(uint256 _inputAmount) public view returns (uint256) {
-        return getInputPrice(_inputAmount, cashReserve, tokenReserve);
+    function getCashSaleProceeds(uint256 _cashAmount) public view returns (uint256) {
+        return getSaleProceeds(_cashAmount, cashReserve, tokenReserve);
     }
 
-    function getInputPrice(uint256 _inputAmount, uint256 _inputReserve, uint256 _outputReserve) public pure returns (uint256) {
+    function getSaleProceeds(uint256 _inputAmount, uint256 _inputReserve, uint256 _outputReserve) public pure returns (uint256) {
         require(_inputReserve > 0 && _outputReserve > 0, "inputReserve & outputReserve must be > 0");
         uint256 _amountInputWithFee = _inputAmount.mul(997);
         uint256 _numerator = _amountInputWithFee.mul(_outputReserve);
         uint256 _denominator = _inputReserve.mul(1000).add(_amountInputWithFee);
+        return _numerator / _denominator;
+    }
+
+    function getTokenPurchaseCost(uint256 _tokenAmount) public view returns (uint256) {
+        return getPurchaseCost(_tokenAmount, cashReserve, tokenReserve);
+    }
+
+    function getCashPurchaseCost(uint256 _cashAmount) public view returns (uint256) {
+        return getPurchaseCost(_cashAmount, tokenReserve, cashReserve);
+    }
+
+    function getPurchaseCost(uint256 _outputAmount, uint256 _inputReserve, uint256 _outputReserve) public pure returns (uint256) {
+        require(_inputReserve > 0 && _outputReserve > 0, "inputReserve & outputReserve must be > 0");
+        uint256 _numerator = _outputAmount.mul(_inputReserve).mul(1000);
+        uint256 _denominator = _outputReserve.sub(_outputAmount).mul(997);
         return _numerator / _denominator;
     }
 
@@ -122,7 +137,7 @@ contract BaseSimpleDex is Initializable, ReentrancyGuard, VariableSupplyToken, C
         uint256 _tokenBalance = getTokenBalance();
         uint256 _tokenAmount = _tokenBalance.sub(tokenReserve);
 
-        _cashAmount = getTokenPrice(_tokenAmount);
+        _cashAmount = getTokenSaleProceeds(_tokenAmount);
         require(_cashAmount > 0, "cashAmount must be > 0");
         transferCash(_recipient, _cashAmount);
 
@@ -139,7 +154,7 @@ contract BaseSimpleDex is Initializable, ReentrancyGuard, VariableSupplyToken, C
         uint256 _cashBalance = getCashBalance();
         uint256 _cashAmount = _cashBalance.sub(cashReserve);
 
-        _tokenAmount = getCashPrice(_cashAmount);
+        _tokenAmount = getCashSaleProceeds(_cashAmount);
         require(_tokenAmount > 0, "tokenAmount must be > 0");
         transferToken(_recipient, _tokenAmount);
 

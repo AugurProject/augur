@@ -481,7 +481,7 @@ class ContractsFixture:
     ####
 
     def approveCentralAuthority(self):
-        contractsNeedingApproval = ['Augur','FillOrder','CreateOrder']
+        contractsNeedingApproval = ['Augur','FillOrder','CreateOrder','ZeroXTrade']
         contractsToApprove = ['Cash']
         testersGivingApproval = [self.accounts[x] for x in range(0,8)]
         for testerKey in testersGivingApproval:

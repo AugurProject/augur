@@ -9,15 +9,17 @@ def test_eth_exchange(localFixture, augur, cash, ethExchange):
     account = localFixture.accounts[0]
 
     # Add liquidity to suggest the price is 1 ETH = 100 Cash
-    cashAmount = 10 * 100 * 10**18
+    cashAmount = 1000 * 10**18
     ethAmount = 10 * 10**18
     addLiquidity(localFixture, ethExchange, cash, cashAmount, ethAmount, account)
 
     # Now we can buy ETH
     cashAmount = 10 * 10**18 # Trade 10 DAI for ~.1 ETH
+    expectedEthAmount = 10**17
+    assert roughlyEqual(ethExchange.getTokenPurchaseCost(expectedEthAmount), cashAmount, 2 * 10**17)
     initialETH = localFixture.ethBalance(account)
     buyEth(ethExchange, cash, cashAmount, account)
-    assert roughlyEqual(initialETH + 10**17, localFixture.ethBalance(account))
+    assert roughlyEqual(initialETH + expectedEthAmount, localFixture.ethBalance(account))
 
     # Buy Dai
     ethAmount = 1 * 10**17 # Trade .1 ETH for ~10 DAI
