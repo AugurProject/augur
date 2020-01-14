@@ -7,6 +7,7 @@ import { selectMarket } from "modules/markets/selectors/market";
 import { selectCurrentTimestampInSeconds } from "store/select-state";
 import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
 import { ASKS, BIDS, ZERO } from "modules/common/constants";
+import { loadMarketOrderBook } from "modules/orders/actions/load-market-order-book";
 
 const mapStateToProps = (state, ownProps) => {
   const market = ownProps.market || selectMarket(ownProps.marketId);
@@ -43,7 +44,12 @@ const mapStateToProps = (state, ownProps) => {
     minPrice,
     maxPrice,
     marketType: market.marketType,
+    marketId: market.marketId,
   };
 };
 
-export default connect(mapStateToProps)(OrderBook);
+const mapDispatchToProps = (dispatch) => ({
+  loadMarketOrderBook: marketId => dispatch(loadMarketOrderBook(marketId)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(OrderBook);

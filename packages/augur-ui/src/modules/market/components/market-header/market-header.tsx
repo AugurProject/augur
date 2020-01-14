@@ -66,6 +66,7 @@ interface MarketHeaderState {
   showCopied: boolean;
   notExpandedHeight: boolean | number;
   showProperties: boolean;
+  clickHandler: EventListenerOrEventListenerObject;
 }
 
 export default class MarketHeader extends Component<
@@ -93,6 +94,7 @@ export default class MarketHeader extends Component<
       headerCollapsed: false,
       showCopied: false,
       notExpandedHeight: false,
+      clickHandler: null,
     };
 
     this.gotoFilter = this.gotoFilter.bind(this);
@@ -112,8 +114,7 @@ export default class MarketHeader extends Component<
     if (notExpandedHeight) {
       this.setState({ notExpandedHeight });
     }
-
-    window.addEventListener('click', e => {
+    const clickHandler = e => {
       const ClickedOnExpandedContent = e
         .composedPath()
         .find(
@@ -122,20 +123,14 @@ export default class MarketHeader extends Component<
             className.includes('market-header-styles_ExpandedContent')
         );
       if (!ClickedOnExpandedContent) this.toggleReadMore(true);
-    });
+
+    }
+    window.addEventListener('click', clickHandler);
+    this.setState({ clickHandler });
   }
 
   componentWillUnmount() {
-    window.removeEventListener('click', e => {
-        const ClickedOnExpandedContent = e
-        .composedPath()
-        .find(
-          ({ className }) =>
-            className === 'string' &&
-            className.includes('market-header-styles_ExpandedContent')
-        );
-      if (!ClickedOnExpandedContent) this.toggleReadMore(true);
-    });
+    window.removeEventListener('click', this.state.clickHandler);
   }
 
   componentDidUpdate(prevProps) {
