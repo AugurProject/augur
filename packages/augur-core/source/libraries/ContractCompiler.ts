@@ -185,7 +185,6 @@ export class ContractCompiler {
                 "CashFaucet",
                 "GnosisSafeRegistry",
                 "WarpSync",
-                "RepPriceOracle",
                 "UniswapV2Factory",
                 "ERC1820Registry",
                 "OICash",

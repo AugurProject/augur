@@ -104,19 +104,6 @@ contract Market is Initializable, Ownable, IMarket, CashSender {
     }
 
     /**
-     * @notice Increase the validity bond by sending more Cash to this contract
-     * @param _attoCash the amount of Cash to send and increase the validity bond by
-     * @return Bool True
-     */
-    function increaseValidityBond(uint256 _attoCash) public returns (bool) {
-        require(!isFinalized());
-        cashTransferFrom(msg.sender, address(this), _attoCash);
-        universe.deposit(address(this), _attoCash, address(this));
-        validityBondAttoCash = validityBondAttoCash.add(_attoCash);
-        return true;
-    }
-
-    /**
      * @notice Do the initial report for the market.
      * @param _payoutNumerators An array indicating the payout for each market outcome
      * @param _description Any additional information or justification for this report

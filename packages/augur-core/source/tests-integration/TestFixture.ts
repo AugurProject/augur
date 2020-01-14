@@ -9,7 +9,7 @@ import { ContractDependenciesEthers } from 'contract-dependencies-ethers';
 import {
   DisputeWindow, ShareToken, TimeControlled, Cash, Universe,
   Market, CreateOrder, Orders, Trade, CancelOrder, LegacyReputationToken, DisputeCrowdsourcer,
-  TestNetReputationToken, CashFaucet, RepPriceOracle } from '../libraries/ContractInterfaces';
+  TestNetReputationToken, CashFaucet } from '../libraries/ContractInterfaces';
 import { Dependencies } from '../libraries/GenericContractInterfaces';
 import { EthersFastSubmitWallet } from '../libraries/EthersFastSubmitWallet';
 import { formatBytes32String } from 'ethers/utils';

@@ -23,7 +23,6 @@ import {
   ZeroXTrade,
   GnosisSafeRegistry,
   WarpSync,
-  RepPriceOracle,
   EthExchange,
   // 0x
   DevUtils,
@@ -491,10 +490,6 @@ Deploying to: ${networkConfiguration.networkName}
         const WarpSyncContract = await this.getContractAddress('WarpSync');
         const warpSync = new WarpSync(this.dependencies, WarpSyncContract);
         promises.push(warpSync.initialize(this.augur!.address));
-
-        const RepPriceOracleContract = await this.getContractAddress('RepPriceOracle');
-        const repPriceOracle = new RepPriceOracle(this.dependencies, RepPriceOracleContract);
-        promises.push(repPriceOracle.initialize(this.augur!.address));
 
         const EthExchangeContract = await this.getContractAddress('EthExchange');
         const ethExchange = new EthExchange(this.dependencies, EthExchangeContract);

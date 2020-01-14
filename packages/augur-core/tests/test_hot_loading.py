@@ -176,17 +176,6 @@ def test_validity_bonds(kitchenSinkFixture, augur, cash, market, categoricalMark
 
     assert totalValidityBonds == expectedTotal
 
-    # Add to a markets total and see it reflected
-    additionalAmount = 100
-    cash.faucet(additionalAmount)
-    cash.approve(market.address, additionalAmount)
-    assert market.increaseValidityBond(additionalAmount)
-    
-    expectedTotal += additionalAmount
-
-    totalValidityBonds = hotLoading.getTotalValidityBonds([market.address, categoricalMarket.address, scalarMarket.address])
-    assert totalValidityBonds == expectedTotal
-
 
 class MarketData:
 

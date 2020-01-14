@@ -274,7 +274,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155, CashSender {
             uint256 _ethDeficit = _amountEthRequired - address(this).balance;
             uint256 _cost = ethExchange.getTokenPurchaseCost(_ethDeficit);
             require(_cost <= _maxProtocolFeeDai, "Cost of purchasing ETH to cover protocol Fee on the exchange was too high");
-            cash.transferFrom(msg.sender, address(ethExchange), _cost);
+            cashTransferFrom(msg.sender, address(ethExchange), _cost);
             ethExchange.buyToken(address(this));
         }
     }

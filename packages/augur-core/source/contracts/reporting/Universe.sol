@@ -10,7 +10,6 @@ import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/reporting/IV2ReputationToken.sol';
 import 'ROOT/reporting/IDisputeWindow.sol';
 import 'ROOT/reporting/Reporting.sol';
-import 'ROOT/reporting/IRepPriceOracle.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
 import 'ROOT/ICash.sol';
 import 'ROOT/reporting/IOICash.sol';
@@ -21,7 +20,7 @@ import 'ROOT/external/IDaiJoin.sol';
 import 'ROOT/utility/IFormulas.sol';
 import 'ROOT/IAugur.sol';
 import 'ROOT/CashSender.sol';
-import 'ROOT/ISimpleDex.sol';
+import 'ROOT/IRepExchange.sol';
 import 'ROOT/factories/IRepExchangeFactory.sol';
 
 
@@ -39,7 +38,6 @@ contract Universe is IUniverse, CashSender {
     IUniverse private parentUniverse;
     IFormulas public formulas;
     IShareToken public shareToken;
-    IRepPriceOracle public repPriceOracle;
     bytes32 private parentPayoutDistributionHash;
     uint256[] public payoutNumerators;
     IV2ReputationToken private reputationToken;
@@ -79,7 +77,7 @@ contract Universe is IUniverse, CashSender {
     IDaiPot public daiPot;
     IDaiJoin public daiJoin;
 
-    ISimpleDex public repExchange;
+    IRepExchange public repExchange;
 
     uint256 constant public RAY = 10 ** 27;
 
@@ -94,8 +92,7 @@ contract Universe is IUniverse, CashSender {
         disputeWindowFactory = IDisputeWindowFactory(augur.lookup("DisputeWindowFactory"));
         openInterestCash = IOICashFactory(augur.lookup("OICashFactory")).createOICash(augur);
         shareToken = IShareToken(augur.lookup("ShareToken"));
-        repPriceOracle = IRepPriceOracle(augur.lookup("RepPriceOracle"));
-        repExchange = IRepExchangeFactory(augur.lookup("RepExchangeFactory")).createRepExchange(augur, address(reputationToken));
+        repExchange = IRepExchange(address(IRepExchangeFactory(augur.lookup("RepExchangeFactory")).createRepExchange(augur, address(reputationToken))));
         updateForkValues();
         formulas = IFormulas(augur.lookup("Formulas"));
         cash = ICash(augur.lookup("Cash"));
@@ -115,7 +112,6 @@ contract Universe is IUniverse, CashSender {
         require(marketFactory != IMarketFactory(0));
         require(disputeWindowFactory != IDisputeWindowFactory(0));
         require(shareToken != IShareToken(0));
-        require(repPriceOracle != IRepPriceOracle(0));
         require(formulas != IFormulas(0));
         require(cash != ICash(0));
         require(daiVat != IDaiVat(0));
@@ -466,7 +462,7 @@ contract Universe is IUniverse, CashSender {
      * @return The Market Cap of this Universe's REP
      */
     function pokeRepMarketCapInAttoCash() public returns (uint256) {
-        uint256 _attoCashPerRep = repPriceOracle.pokeRepPriceInAttoCash(reputationToken);
+        uint256 _attoCashPerRep = repExchange.pokePrice();
         return getRepMarketCapInAttoCashInternal(_attoCashPerRep);
     }
 

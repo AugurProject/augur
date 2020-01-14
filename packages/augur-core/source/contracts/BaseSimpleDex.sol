@@ -18,7 +18,6 @@ contract BaseSimpleDex is Initializable, ReentrancyGuard, VariableSupplyToken, C
 
     IAugur public augur;
     address public token;
-    IERC20 public cash;
 
     uint256 public tokenReserve;
     uint256 public cashReserve;
@@ -34,11 +33,10 @@ contract BaseSimpleDex is Initializable, ReentrancyGuard, VariableSupplyToken, C
         endInitialization();
         IAugur _augur = IAugur(_augurAddress);
         augur = _augur;
-        cash = IERC20(_augur.lookup("Cash"));
-        require(cash != IERC20(0));
         token = _token;
 
-        initializeCashSender(_augur.lookup("DaiVat"), address(cash));
+        initializeCashSender(_augur.lookup("DaiVat"), _augur.lookup("Cash"));
+        require(cash != IERC20(0));
     }
 
     function transferToken(address _to, uint256 _value) private;
@@ -50,23 +48,27 @@ contract BaseSimpleDex is Initializable, ReentrancyGuard, VariableSupplyToken, C
     }
 
     function getCashBalance() public view returns (uint256) {
-        return cash.balanceOf(address(this));
+        return cashBalance(address(this));
     }
 
-    function update(uint256 _tokenBalance, uint256 _cashBalance) private {
+    function update(uint256 _tokenBalance, uint256 _cashBalance) internal {
         uint256 _blockNumber = block.number;
         uint256 _blocksElapsed = _blockNumber - blockNumberLast;
         uint256 _cashReserve = cashReserve;
         uint256 _tokenReserve = tokenReserve;
         if (_tokenReserve != 0 && _cashReserve != 0 && _blocksElapsed > 0) {
             // cannot reasonably overflow unless the supply of Cash, REP, or ETH became several OOM larger
-            tokenPriceCumulativeLast += _cashReserve.mul(10**18).mul(_blocksElapsed).div(_tokenReserve);
+            uint256 _priceCumulativeIncrease = _cashReserve.mul(10**18).mul(_blocksElapsed).div(_tokenReserve);
+            onUpdate(_blocksElapsed, _priceCumulativeIncrease);
+            tokenPriceCumulativeLast += _priceCumulativeIncrease;
         }
         tokenReserve = _tokenBalance;
         cashReserve = _cashBalance;
         blockNumberLast = _blockNumber;
         emit Sync(_tokenBalance, _cashBalance);
     }
+
+    function onUpdate(uint256 _blocksElapsed, uint256 _priceCumulativeIncrease) internal;
 
     function publicMint(address _to) external nonReentrant returns (uint256 _liquidity) {
         uint256 _tokenBalance = getTokenBalance();

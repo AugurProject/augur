@@ -22,6 +22,8 @@ contract EthExchange is BaseSimpleDex {
         sellToken(_recipient);
     }
 
+    function onUpdate(uint256 _blocksElapsed, uint256 _priceCumulativeIncrease) internal {}
+
     function () external payable {
     }
 }

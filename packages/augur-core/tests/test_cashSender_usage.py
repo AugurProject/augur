@@ -10,7 +10,7 @@ methods = {
     "allowance": {},
     "approve": {
         "Market.sol": 1,
-        "GnosisSafeRegistry.sol": 3,
+        "GnosisSafeRegistry.sol": 4,
         "Universe.sol": 2,
         "AugurTrading.sol": 1,
         "FillOrder.sol": 1,

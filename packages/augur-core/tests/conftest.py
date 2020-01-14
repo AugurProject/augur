@@ -467,9 +467,10 @@ class ContractsFixture:
         return zeroXContracts
 
     def initializeAllContracts(self):
-        coreContractsToInitialize = ['Time','ShareToken','WarpSync','RepPriceOracle','EthExchange']
+        coreContractsToInitialize = ['Time','ShareToken','WarpSync','EthExchange']
         for contractName in coreContractsToInitialize:
             if getattr(self.contracts[contractName], "initialize", None):
+                print("Initializing %s" % contractName)
                 self.contracts[contractName].initialize(self.contracts['Augur'].address)
             else:
                 raise "contract has no 'initialize' method on it."
