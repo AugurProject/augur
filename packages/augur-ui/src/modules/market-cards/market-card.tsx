@@ -251,7 +251,10 @@ export default class MarketCard extends React.Component<
               reportingWindowEndTime={disputeInfo.disputeWindow.endTime}
             />
           </div>
-          <div>
+          <div className={classNames(Styles.TopRow, {
+            [Styles.scalar]: isScalar,
+            [Styles.template]: isTemplate
+          })}>
             {marketStatus === MARKET_REPORTING && (
               <InReportingLabel
                 marketStatus={marketStatus}

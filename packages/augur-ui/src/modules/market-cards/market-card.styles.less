@@ -49,7 +49,7 @@
     }
   }
 
-  > div:nth-of-type(2) {
+  > div.TopRow {
     display: flex;
     align-items: center;
     grid-column: 2 / span 1;
@@ -323,8 +323,7 @@
   }
 
   @media @breakpoint-max-tablet {
-
-    grid-template-rows: repeat(4, auto);
+    grid-template-rows: auto;
     grid-template-columns: auto;
     padding: @size-12;
     margin: @size-4 0;
@@ -376,6 +375,8 @@
       -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
       overflow: hidden;
+      text-overflow: ellipsis;
+      word-break: break-word;
     }
 
     > div:first-of-type {
@@ -384,11 +385,57 @@
       display: none;
     }
 
-    > div:nth-of-type(2) {
+    > div.TopRow {
       display: grid;
-      grid-template-columns: minmax(32px, max-content) auto auto @size-16 @size-16;
+      grid-template-columns: auto @size-16 @size-16;
+      grid-template-rows: auto;
       grid-gap: @size-8;
       margin-top: 0;
+
+      div:nth-last-child(2) {
+        margin-right: 0;
+      }
+
+      > label {
+        grid-row: 1;
+        grid-column: 1;
+      }
+
+      > div[class*="CategoryTagTrail"] {
+        > div {
+          align-items: flex-end;
+          display: flex;
+          margin-right: @size-8;
+        }
+
+        grid-column: 1;
+        grid-row: 1;
+        display: flex;
+      }
+
+      > span[class*="MarketStatus"] {
+        grid-column: 1 / span 3;
+        order: 10;
+        width: fit-content;
+      }
+
+      &.template {
+        > div[class*="CategoryTagTrail"] {
+          margin-left: @size-24;
+        }
+      }
+
+      &.scalar {
+        > label {
+          margin-left: 128px;
+        }
+
+        > div[class*="CategoryTagTrail"] {
+          grid-column: 1;
+          grid-row: 2;
+          margin-left: 0;
+        }
+      }
 
       > div:first-of-type {
         margin-top: 0;
@@ -398,33 +445,13 @@
         }
       }
 
-      > div:nth-of-type(2) {
-        > div {
-          align-items: flex-end;
-          display: flex;
-          margin-right: @size-8;
-        }
-
-        grid-column: 4;
-        justify-content: flex-end;
-        display: flex;
-      }
-
-      > span:first-of-type {
-        display: none;
+      > span[class*="MarketTypeLabel"] {
         grid-row: 1;
-        grid-column: 1 / span 2;
+        grid-column: 1;
         width: fit-content;
       }
 
-      > span:nth-of-type(2) {
-        display: none;
-        grid-row: 2;
-        grid-column: 1;
-        margin: 0;
-      }
-
-      > span:nth-of-type(3) {
+      > span[class*="ProgressLabel"] {
         display: none;
       }
     }
