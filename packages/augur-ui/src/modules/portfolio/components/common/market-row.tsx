@@ -2,7 +2,8 @@ import React, { ReactNode } from 'react';
 import classNames from 'classnames';
 
 import ToggleRow from 'modules/common/toggle-row';
-import { MarketStatusLabel, TemplateShield } from 'modules/common/labels';
+import { MarketStatusLabel, TemplateShield, MarketTypeLabel } from 'modules/common/labels';
+import { SCALAR } from 'modules/common/constants';
 import MarketTitle from 'modules/market/containers/market-title';
 import { TXEventName } from '@augurproject/sdk';
 import { SubmitTextButton } from 'modules/common/buttons';
@@ -36,48 +37,59 @@ export interface MarketRowProps {
   noToggle?: boolean;
   showPending?: boolean;
   addedClass?: string | object;
+  unsignedOrdersModal?: Function;
 }
 
-const MarketRow = (props: MarketRowProps) => {
+const MarketRow = ({
+  market,
+  showState,
+  toggleContent,
+  rightContent,
+  noToggle,
+  showPending,
+  addedClass,
+  unsignedOrdersModal,
+}: MarketRowProps) => {
   const content = (
     <div
-      className={classNames(Styles.MarketRowContent, props.addedClass, {
-        [Styles.NoToggle]: props.noToggle,
+      className={classNames(Styles.MarketRowContent, addedClass, {
+        [Styles.NoToggle]: noToggle,
       })}
     >
       <div
         className={classNames({
-          [Styles.Show]: props.showState,
+          [Styles.Show]: showState,
           [Styles.Pending]:
-            props.market.pending ||
-            (props.showPending && props.market.hasPendingLiquidityOrders),
+            market.pending ||
+            (showPending && market.hasPendingLiquidityOrders),
         })}
       >
-        {props.showState && !props.market.pending && (
+        {showState && !market.pending && (
           <div>
-            {props.market.isTemplate && <TemplateShield marketId={props.market.id} />}
+            {market.marketType === SCALAR && <MarketTypeLabel marketType={market.marketType} />}
+            {market.isTemplate && <TemplateShield marketId={market.id} />}
             <MarketStatusLabel
-              reportingState={props.market.reportingState}
+              reportingState={market.reportingState}
               alternate
               mini
             />
           </div>
         )}
-        {!props.market.pending && <MarketTitle id={props.market.id} />}
-        {props.market.pending && <span>{props.market.description}</span>}
-        {props.market.pending &&
-          props.market.status === TXEventName.Pending && (
+        {!market.pending && <MarketTitle id={market.id} />}
+        {market.pending && <span>{market.description}</span>}
+        {market.pending &&
+          market.status === TXEventName.Pending && (
             <span>
               When the market is confirmed you can submit initial liquidity
             </span>
           )}
-        {!props.market.pending &&
-          props.showPending &&
-          props.market.hasPendingLiquidityOrders && (
+        {!market.pending &&
+          showPending &&
+          market.hasPendingLiquidityOrders && (
             <span>
               You have pending initial liquidity.
               <SubmitTextButton
-                action={() => props.unsignedOrdersModal(props.market.marketId)}
+                action={() => unsignedOrdersModal(market.marketId)}
                 text="View orders"
               />
             </span>
@@ -85,23 +97,23 @@ const MarketRow = (props: MarketRowProps) => {
       </div>
       <span
         className={classNames({
-          [Styles.MarketRow__timeShow]: props.showState,
+          [Styles.MarketRow__timeShow]: showState,
         })}
       >
-        {props.rightContent}
+        {rightContent}
       </span>
     </div>
   );
 
   return (
     <div className={Styles.MarketRow}>
-      {props.noToggle ? (
+      {noToggle ? (
         content
       ) : (
         <ToggleRow
           arrowClassName={Styles.Arrow}
           rowContent={content}
-          toggleContent={props.toggleContent}
+          toggleContent={toggleContent}
         />
       )}
     </div>
