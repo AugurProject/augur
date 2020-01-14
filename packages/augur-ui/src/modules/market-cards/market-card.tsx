@@ -5,6 +5,7 @@ import {
   CategoryTagTrail,
   InReportingLabel,
   TemplateShield,
+  MarketTypeLabel,
 } from 'modules/common/labels';
 import {
   HoverIcon,
@@ -39,10 +40,10 @@ import ChevronFlip from 'modules/common/chevron-flip';
 import { MarketData } from 'modules/types';
 import { formatAttoRep } from 'utils/format-number';
 import MigrateMarketNotice from 'modules/market-cards/containers/migrate-market-notice';
-import { FacebookButton, TwitterButton } from 'modules/common/icons';
 import Styles from 'modules/market-cards/market-card.styles.less';
 import MarketTitle from 'modules/market/containers/market-title';
 import { MARKET_LIST_CARD } from 'services/analytics/helpers';
+import { isSameAddress } from 'utils/isSameAddress';
 
 interface MarketCardProps {
   market: MarketData;
@@ -123,7 +124,7 @@ export default class MarketCard extends React.Component<
       disputeInfo,
       endTimeFormatted,
       designatedReporter,
-      isTemplate
+      isTemplate,
     } = market;
 
     if (loading) {
@@ -150,33 +151,32 @@ export default class MarketCard extends React.Component<
 
     const InfoIcons = (
       <>
-        {address && address.toUpperCase() === author.toUpperCase() && (
+        {address && isSameAddress(address, author) && (
           <HoverIcon
-            label='marketCreator'
+            label="marketCreator"
             icon={MarketCreator}
-            hoverText='Market Creator'
+            hoverText="Market Creator"
           />
         )}
-        {address &&
-          address.toUpperCase() === designatedReporter.toUpperCase() && (
-            <HoverIcon
-              label='reporter'
-              icon={DesignatedReporter}
-              hoverText='Designated Reporter'
-            />
-          )}
+        {address && isSameAddress(address, designatedReporter) && (
+          <HoverIcon
+            label="reporter"
+            icon={DesignatedReporter}
+            hoverText="Designated Reporter"
+          />
+        )}
         {hasPosition && (
           <HoverIcon
-            label='Position'
+            label="Position"
             icon={PositionIcon}
-            hoverText='Position'
+            hoverText="Position"
           />
         )}
         {hasStaked && (
           <HoverIcon
-            label='dispute'
+            label="dispute"
             icon={DisputeStake}
-            hoverText='Dispute Stake'
+            hoverText="Dispute Stake"
           />
         )}
       </>
@@ -200,13 +200,14 @@ export default class MarketCard extends React.Component<
       }));
 
     const marketResolved = reportingState === REPORTING_STATE.FINALIZED;
+    const isScalar = marketType === SCALAR;
     const inDispute =
       reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE ||
       reportingState === REPORTING_STATE.AWAITING_NEXT_WINDOW;
     let showOutcomeNumber = inDispute
       ? MARKET_CARD_FOLD_OUTCOME_COUNT
       : NON_DISPUTING_SHOW_NUM_OUTCOMES;
-    if (marketType === SCALAR && inDispute) {
+    if (isScalar && inDispute) {
       showOutcomeNumber = MARKET_CARD_FOLD_OUTCOME_COUNT - 1;
     }
     const canDispute =
@@ -215,16 +216,21 @@ export default class MarketCard extends React.Component<
       isLogged;
     const canSupport = !disputeInfo.disputePacingOn;
 
-    const expandedOptionShowing = outcomesFormatted &&
-    outcomesFormatted.length > showOutcomeNumber &&
-    !expandedView;
+    const expandedOptionShowing =
+      outcomesFormatted &&
+      outcomesFormatted.length > showOutcomeNumber &&
+      !expandedView;
 
     return (
       <div
-        className={classNames(Styles.MarketCard, { [Styles.Loading]: loading, [Styles.Nonexpanding]: !expandedOptionShowing, [Styles.Condensed]: condensed })}
+        className={classNames(Styles.MarketCard, {
+          [Styles.Loading]: loading,
+          [Styles.Nonexpanding]: !expandedOptionShowing,
+          [Styles.Condensed]: condensed,
+        })}
       >
         <>
-        <div>
+          <div>
             {reportingState === REPORTING_STATE.PRE_REPORTING && (
               <>
                 <LabelValue
@@ -234,7 +240,7 @@ export default class MarketCard extends React.Component<
                 />
                 {!condensed && (
                   <LabelValue
-                    label='Open Interest'
+                    label="Open Interest"
                     value={`$${openInterestFormatted.formatted}`}
                     condensed
                   />
@@ -244,10 +250,11 @@ export default class MarketCard extends React.Component<
             {reportingState !== REPORTING_STATE.PRE_REPORTING && (
               <LabelValue
                 condensed
-                label='Total Dispute Stake'
+                label="Total Dispute Stake"
                 value={formatAttoRep(disputeInfo.stakeCompletedTotal).formatted}
               />
             )}
+            <div className={Styles.hoverIconTray}>{InfoIcons}</div>
             <MarketProgress
               reportingState={reportingState}
               currentTime={currentAugurTimestamp}
@@ -255,7 +262,12 @@ export default class MarketCard extends React.Component<
               reportingWindowEndTime={disputeInfo.disputeWindow.endTime}
             />
           </div>
-          <div>
+          <div
+            className={classNames(Styles.TopRow, {
+              [Styles.scalar]: isScalar,
+              [Styles.template]: isTemplate,
+            })}
+          >
             {marketStatus === MARKET_REPORTING && (
               <InReportingLabel
                 marketStatus={marketStatus}
@@ -263,6 +275,7 @@ export default class MarketCard extends React.Component<
                 disputeInfo={disputeInfo}
               />
             )}
+            {isScalar && <MarketTypeLabel marketType={marketType} />}
             {isTemplate && <TemplateShield market={market} />}
             <CategoryTagTrail categories={categoriesWithClick} />
             <MarketProgress
@@ -271,25 +284,26 @@ export default class MarketCard extends React.Component<
               endTimeFormatted={endTimeFormatted}
               reportingWindowEndTime={disputeInfo.disputeWindow.endTime}
             />
-            <div>
-              <div>{InfoIcons}</div>
-              <FavoritesButton
-                action={this.addToFavorites}
-                isFavorite={isFavorite}
-                hideText
-                disabled={!isLogged}
-              />
-            </div>
+            <FavoritesButton
+              action={this.addToFavorites}
+              isFavorite={isFavorite}
+              hideText
+              disabled={!isLogged}
+            />
             <DotSelection>
               <SocialMediaButtons
                 listView={true}
                 marketDescription={market.description}
                 marketAddress={market.id}
               />
-              <div id='copy_marketId' data-clipboard-text={id} onClick={() => marketLinkCopied(market.id, MARKET_LIST_CARD)}>
+              <div
+                id="copy_marketId"
+                data-clipboard-text={id}
+                onClick={() => marketLinkCopied(market.id, MARKET_LIST_CARD)}
+              >
                 {PaperClip} {COPY_MARKET_ID}
               </div>
-              <div id='copy_author' data-clipboard-text={author}>
+              <div id="copy_author" data-clipboard-text={author}>
                 {Person} {COPY_AUTHOR}
               </div>
             </DotSelection>
@@ -315,17 +329,24 @@ export default class MarketCard extends React.Component<
                 marketId={id}
               />
               {expandedOptionShowing && (
-                  <button onClick={this.expand}>
-                    <ChevronFlip
-                      stroke='#fff'
-                      pointDown={s.expanded}
-                      quick
-                      filledInIcon
-                      hover
-                    />
-                    {s.expanded ? 'show less' : `${outcomesFormatted.length - showOutcomeNumber} more outcome${outcomesFormatted.length - showOutcomeNumber > 1 ? 's' : ''}`}
-                  </button>
-                )}
+                <button onClick={this.expand}>
+                  <ChevronFlip
+                    stroke="#fff"
+                    pointDown={s.expanded}
+                    quick
+                    filledInIcon
+                    hover
+                  />
+                  {s.expanded
+                    ? 'show less'
+                    : `${outcomesFormatted.length -
+                        showOutcomeNumber} more outcome${
+                        outcomesFormatted.length - showOutcomeNumber > 1
+                          ? 's'
+                          : ''
+                      }`}
+                </button>
+              )}
             </>
           ) : (
             <div style={{ display: 'none' }}></div>
@@ -339,7 +360,6 @@ export default class MarketCard extends React.Component<
           )}
         </>
         <div>{InfoIcons}</div>
-
       </div>
     );
   }
