@@ -11769,6 +11769,37 @@
 					"internalType": "address",
 					"name": "_to",
 					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_amount",
+					"type": "uint256"
+				}
+			],
+			"name": "publicBurnAuto",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "_tokenAmount",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_cashAmount",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_to",
+					"type": "address"
 				}
 			],
 			"name": "publicMint",
@@ -11781,6 +11812,32 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_to",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_cashAmount",
+					"type": "uint256"
+				}
+			],
+			"name": "publicMintAuto",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "_liquidity",
+					"type": "uint256"
+				}
+			],
+			"payable": true,
+			"stateMutability": "payable",
 			"type": "function"
 		},
 		{
@@ -15300,9 +15357,102 @@
 					"internalType": "address",
 					"name": "_to",
 					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_amount",
+					"type": "uint256"
+				}
+			],
+			"name": "publicBurnAuto",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "_tokenAmount",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_cashAmount",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_to",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_tokenAmount",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_cashAmount",
+					"type": "uint256"
+				}
+			],
+			"name": "publicBurnAuto",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "_liquidity",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_to",
+					"type": "address"
 				}
 			],
 			"name": "publicMint",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "_liquidity",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_to",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_tokenAmount",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_cashAmount",
+					"type": "uint256"
+				}
+			],
+			"name": "publicMintAuto",
 			"outputs": [
 				{
 					"internalType": "uint256",
@@ -29361,6 +29511,21 @@
 		{
 			"constant": true,
 			"inputs": [],
+			"name": "MIN_TRADE_INTERVAL",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
 			"name": "TRADE_INTERVAL_VALUE",
 			"outputs": [
 				{
@@ -30734,6 +30899,11 @@
 				{
 					"internalType": "uint256",
 					"name": "_maxProtocolFeeDai",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_maxTrades",
 					"type": "uint256"
 				},
 				{

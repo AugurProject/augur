@@ -205,7 +205,7 @@ export class ZeroXOrders extends AbstractTable {
     let tradeInterval = DEFAULT_TRADE_INTERVAL;
     const marketData = markets[storedOrder.market];
     if (marketData && marketData.marketType == MarketType.Scalar) {
-      tradeInterval = BigNumber.min(TRADE_INTERVAL_VALUE.dividedBy(marketData.numTicks).dividedBy(MIN_TRADE_INTERVAL).multipliedBy(MIN_TRADE_INTERVAL), MIN_TRADE_INTERVAL);
+      tradeInterval = BigNumber.max(TRADE_INTERVAL_VALUE.dividedBy(marketData.numTicks).dividedBy(MIN_TRADE_INTERVAL).multipliedBy(MIN_TRADE_INTERVAL), MIN_TRADE_INTERVAL);
     }
     if (!storedOrder['numberAmount'].mod(tradeInterval).isEqualTo(0)) return false;
 

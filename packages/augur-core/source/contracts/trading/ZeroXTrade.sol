@@ -299,7 +299,9 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155, CashSender {
         (IERC1155 _zeroXTradeTokenMaker, uint256 _tokenIdMaker) = getZeroXTradeTokenData(_order.makerAssetData);
         (address _market, uint256 _price, uint8 _outcome, uint8 _type) = unpackTokenId(_tokenIdMaker);
         uint256 _numTicks = IMarket(_market).getNumTicks();
-        uint256 _tradeInterval = MIN_TRADE_INTERVAL.min(TRADE_INTERVAL_VALUE.div(_numTicks).div(MIN_TRADE_INTERVAL).mul(MIN_TRADE_INTERVAL));
+        uint256 _tradeInterval = TRADE_INTERVAL_VALUE.div(_numTicks);
+        _tradeInterval = _tradeInterval.div(MIN_TRADE_INTERVAL).mul(MIN_TRADE_INTERVAL);
+        _tradeInterval = MIN_TRADE_INTERVAL.max(_tradeInterval);
         require(_fillAmountRemaining.isMultipleOf(_tradeInterval), "Order must be a multiple of the market trade increment");
         require(_zeroXTradeTokenMaker == this);
     }
