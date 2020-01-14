@@ -63,7 +63,7 @@ def proceedToFork(fixture, market, universe):
         proceedToNextRound(fixture, market)
 
     for i in range(market.getNumParticipants()):
-        reportingParticipant = fixture.applySignature("DisputeCrowdsourcer", market.getReportingParticipant(i))
+        reportingParticipant = fixture.applySignature("DisputeCrowdsourcer", market.participants(i))
         reportingParticipant.forkAndRedeem()
 
 def finalize(fixture, market, universe, finalizeByMigration = True):

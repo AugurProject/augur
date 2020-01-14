@@ -106,7 +106,8 @@ def test_initialReport_methods(localFixture, universe, market, constants):
     assert market.finalize()
 
     # We can see that the market reports the designated reporter did not show
-    assert not market.designatedReporterShowed()
+    initialReporter = localFixture.applySignature('InitialReporter', market.participants(0))
+    assert not initialReporter.designatedReporterShowed()
 
     # Let's get a reference to the Initial Reporter bond and transfer it to the original designated reporter account
     initialReporter = localFixture.applySignature("InitialReporter", market.getInitialReporter())
@@ -123,7 +124,8 @@ def test_initialReport_methods(localFixture, universe, market, constants):
     assert initialReporter.transferOwnership(initialReporter.getDesignatedReporter())
 
     # The market still correctly indicates the designated reporter did not show up
-    assert not market.designatedReporterShowed()
+    initialReporter = localFixture.applySignature('InitialReporter', market.participants(0))
+    assert not initialReporter.designatedReporterShowed()
 
     # confirm we cannot call protected methods on the initial reporter which only the market may use
     with raises(TransactionFailed):
@@ -240,7 +242,7 @@ def test_forking(finalizeByMigration, manuallyDisavow, localFixture, universe, m
     childUniverse = universe.createChildUniverse([0, numTicks/ 4, numTicks * 3 / 4])
 
     # confirm that before the fork is finalized we can redeem stake in other markets crowdsourcers, which are disavowable
-    categoricalDisputeCrowdsourcer = localFixture.applySignature("DisputeCrowdsourcer", categoricalMarket.getReportingParticipant(1))
+    categoricalDisputeCrowdsourcer = localFixture.applySignature("DisputeCrowdsourcer", categoricalMarket.participants(1))
 
     # confirm we cannot liquidate it
     with raises(TransactionFailed):
@@ -326,8 +328,8 @@ def test_forking(finalizeByMigration, manuallyDisavow, localFixture, universe, m
     assert newUniverse.getOpenInterestInAttoCash() == cost
 
     # The initial report is still present however
-    categoricalInitialReport = localFixture.applySignature("InitialReporter", categoricalMarket.getReportingParticipant(0))
-    assert categoricalMarket.getReportingParticipant(0) == categoricalInitialReport.address
+    categoricalInitialReport = localFixture.applySignature("InitialReporter", categoricalMarket.participants(0))
+    assert categoricalMarket.participants(0) == categoricalInitialReport.address
     assert not categoricalInitialReport.isDisavowed()
     assert not universe.isContainerForReportingParticipant(categoricalInitialReport.address)
     assert newUniverse.isContainerForReportingParticipant(categoricalInitialReport.address)

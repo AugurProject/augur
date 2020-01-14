@@ -109,8 +109,8 @@ def test_one_round_crowdsourcer(finalize, localFixture, universe, market, cash, 
     if finalize:
         assert market.finalize()
 
-    initialReporter = localFixture.applySignature('InitialReporter', market.getReportingParticipant(0))
-    marketDisputeCrowdsourcer = localFixture.applySignature('DisputeCrowdsourcer', market.getReportingParticipant(1))
+    initialReporter = localFixture.applySignature('InitialReporter', market.participants(0))
+    marketDisputeCrowdsourcer = localFixture.applySignature('DisputeCrowdsourcer', market.participants(1))
 
     # The initial reporter does not get their REP back
     with TokenDelta(reputationToken, 0, localFixture.accounts[0], "Redeeming didn't refund REP"):
@@ -143,13 +143,13 @@ def test_multiple_round_crowdsourcer(localFixture, universe, market, cash, reput
     proceedToNextRound(localFixture, market, localFixture.accounts[3], True)
 
     # Get all the winning Reporting Participants
-    initialReporter = localFixture.applySignature('InitialReporter', market.getReportingParticipant(0))
-    winningDisputeCrowdsourcer1 = localFixture.applySignature('DisputeCrowdsourcer', market.getReportingParticipant(2))
-    winningDisputeCrowdsourcer2 = localFixture.applySignature('DisputeCrowdsourcer', market.getReportingParticipant(4))
+    initialReporter = localFixture.applySignature('InitialReporter', market.participants(0))
+    winningDisputeCrowdsourcer1 = localFixture.applySignature('DisputeCrowdsourcer', market.participants(2))
+    winningDisputeCrowdsourcer2 = localFixture.applySignature('DisputeCrowdsourcer', market.participants(4))
 
     # Get losing Reporting Participants
-    losingDisputeCrowdsourcer1 = localFixture.applySignature('DisputeCrowdsourcer', market.getReportingParticipant(1))
-    losingDisputeCrowdsourcer2 = localFixture.applySignature('DisputeCrowdsourcer', market.getReportingParticipant(3))
+    losingDisputeCrowdsourcer1 = localFixture.applySignature('DisputeCrowdsourcer', market.participants(1))
+    losingDisputeCrowdsourcer2 = localFixture.applySignature('DisputeCrowdsourcer', market.participants(3))
 
     # We can't redeem yet as the market isn't finalized
     with raises(TransactionFailed):
@@ -206,7 +206,7 @@ def test_multiple_contributors_crowdsourcer(localFixture, universe, market, cash
     localFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
     assert market.finalize()
 
-    marketDisputeCrowdsourcer = localFixture.applySignature('DisputeCrowdsourcer', market.getReportingParticipant(1))
+    marketDisputeCrowdsourcer = localFixture.applySignature('DisputeCrowdsourcer', market.participants(1))
 
     expectedRep = amount + amount * 2 / 5
     with TokenDelta(reputationToken, expectedRep, localFixture.accounts[1], "Redeeming didn't refund REP"):
@@ -229,12 +229,12 @@ def test_forkAndRedeem(localFixture, universe, market, categoricalMarket, cash, 
 
     # Have the participants fork and create new child universes
     for i in range(market.getNumParticipants()):
-        reportingParticipant = localFixture.applySignature("DisputeCrowdsourcer", market.getReportingParticipant(i))
+        reportingParticipant = localFixture.applySignature("DisputeCrowdsourcer", market.participants(i))
 
     # Finalize the fork
     finalize(localFixture, market, universe)
 
-    categoricalDisputeCrowdsourcer = localFixture.applySignature("DisputeCrowdsourcer", categoricalMarket.getReportingParticipant(1))
+    categoricalDisputeCrowdsourcer = localFixture.applySignature("DisputeCrowdsourcer", categoricalMarket.participants(1))
 
     # Migrate the categorical market into the winning universe. This will disavow the dispute crowdsourcer on it, letting us redeem for original universe rep
     assert categoricalMarket.migrateThroughOneFork([0,0,0,categoricalMarket.getNumTicks()], "")
@@ -255,7 +255,7 @@ def test_forkAndRedeem(localFixture, universe, market, categoricalMarket, cash, 
     # Now we'll fork and redeem the reporting participants
     for i in range(market.getNumParticipants()):
         account = localFixture.accounts[i % 4]
-        reportingParticipant = localFixture.applySignature("DisputeCrowdsourcer", market.getReportingParticipant(i))
+        reportingParticipant = localFixture.applySignature("DisputeCrowdsourcer", market.participants(i))
         expectedRep = reputationToken.balanceOf(reportingParticipant.address) * 7 / 5 # * 1.4 to account for the minting reward of 40%
         repToken = noUniverseReputationToken if i % 2 == 0 else yesUniverseReputationToken
         with TokenDelta(repToken, expectedRep, account, "Redeeming didn't increase REP correctly for " + str(i)):

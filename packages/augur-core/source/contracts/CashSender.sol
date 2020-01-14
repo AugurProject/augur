@@ -18,6 +18,31 @@ contract CashSender {
         cash = ICash(_cash);
     }
 
+    function cashBalance(address _account) public view returns (uint256 _balance) {
+        _balance = cash.balanceOf(_account);
+        if (vat.live() == 0) {
+            _balance += vatDaiToDai(vat.dai(_account));
+        }
+        return _balance;
+    }
+
+    function cashAvailableForTransferFrom(address _owner, address _sender) public view returns (uint256 _available) {
+        uint256 _balance = cash.balanceOf(_owner);
+        uint256 _allowance = cash.allowance(_owner, _sender);
+        _available = _balance.min(_allowance);
+        if (vat.live() == 0 && (vat.can(_owner, _sender) == 1)) {
+            _available += vatDaiToDai(vat.dai(_owner));
+        }
+        return _available;
+    }
+
+    function cashApprove(address _spender, uint256 _amount) internal {
+        cash.approve(_spender, _amount);
+        if (vat.live() == 0) {
+            vat.hope(_spender);
+        }
+    }
+
     function cashTransfer(address _to, uint256 _amount) internal {
         address _from = address(this);
         if (vat.live() == 0) {

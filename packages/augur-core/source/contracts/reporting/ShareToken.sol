@@ -121,7 +121,7 @@ contract ShareToken is ITyped, Initializable, ERC1155, IShareToken, ReentrancyGu
 
         augur.logMarketOIChanged(_universe, _market);
 
-        _market.assertBalances();
+        assertBalances(_market);
         return true;
     }
 
@@ -170,7 +170,7 @@ contract ShareToken is ITyped, Initializable, ERC1155, IShareToken, ReentrancyGu
 
         augur.logMarketOIChanged(_universe, _market);
 
-        _market.assertBalances();
+        assertBalances(_market);
         return true;
     }
 
@@ -188,7 +188,7 @@ contract ShareToken is ITyped, Initializable, ERC1155, IShareToken, ReentrancyGu
         IUniverse _universe = _market.getUniverse();
         augur.logCompleteSetsSold(_universe, _market, msg.sender, _amount, _creatorFee.add(_reportingFee));
 
-        _market.assertBalances();
+        assertBalances(_market);
         return (_creatorFee, _reportingFee);
     }
 
@@ -208,7 +208,7 @@ contract ShareToken is ITyped, Initializable, ERC1155, IShareToken, ReentrancyGu
 
         cashTransfer(_recipient, _payout);
 
-        _market.assertBalances();
+        assertBalances(_market);
         return (_creatorFee, _reportingFee);
     }
 
@@ -233,11 +233,13 @@ contract ShareToken is ITyped, Initializable, ERC1155, IShareToken, ReentrancyGu
         // NOTE: burnCompleteSets will validate the market provided is legitimate
         (uint256 _payout, uint256 _creatorFee, uint256 _reportingFee) = burnCompleteSets(_market, _longParticipant, _amount, _sourceAccount, _fingerprint);
 
-        uint256 _longPayout = _payout.mul(_price) / _market.getNumTicks();
-        cashTransfer(_longRecipient, _longPayout);
-        cashTransfer(_shortRecipient, _payout.sub(_longPayout));
+        {
+            uint256 _longPayout = _payout.mul(_price) / _market.getNumTicks();
+            cashTransfer(_longRecipient, _longPayout);
+            cashTransfer(_shortRecipient, _payout.sub(_longPayout));
+        }
 
-        _market.assertBalances();
+        assertBalances(_market);
         return (_creatorFee, _reportingFee);
     }
 
@@ -326,7 +328,7 @@ contract ShareToken is ITyped, Initializable, ERC1155, IShareToken, ReentrancyGu
             }
         }
 
-        _market.assertBalances();
+        assertBalances(_market);
         return _outcomeFees;
     }
 
@@ -405,6 +407,22 @@ contract ShareToken is ITyped, Initializable, ERC1155, IShareToken, ReentrancyGu
             _lowest = balanceOf(_account, _tokenId).min(_lowest);
         }
         return _lowest;
+    }
+
+    function assertBalances(IMarket _market) public view {
+        uint256 _expectedBalance = 0;
+        uint256 _numTicks = _market.getNumTicks();
+        uint256 _numOutcomes = _market.getNumberOfOutcomes();
+        // Market Open Interest. If we're finalized we need actually calculate the value
+        if (_market.isFinalized()) {
+            for (uint8 i = 0; i < _numOutcomes; i++) {
+                _expectedBalance = _expectedBalance.add(totalSupplyForMarketOutcome(_market, i).mul(_market.getWinningPayoutNumerator(i)));
+            }
+        } else {
+            _expectedBalance = totalSupplyForMarketOutcome(_market, 0).mul(_numTicks);
+        }
+
+        assert(_market.getUniverse().marketBalance(address(_market)) >= _expectedBalance);
     }
 
     function getTokenId(IMarket _market, uint256 _outcome) public pure returns (uint256 _tokenId) {

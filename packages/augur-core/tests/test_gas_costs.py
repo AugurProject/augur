@@ -164,8 +164,8 @@ def test_redeem(localFixture, universe, cash, market):
     # Initial Winning
     proceedToNextRound(localFixture, market, doGenerateFees = True)
 
-    initialReporter = localFixture.applySignature('InitialReporter', market.getReportingParticipant(0))
-    winningDisputeCrowdsourcer1 = localFixture.applySignature('DisputeCrowdsourcer', market.getReportingParticipant(2))
+    initialReporter = localFixture.applySignature('InitialReporter', market.participants(0))
+    winningDisputeCrowdsourcer1 = localFixture.applySignature('DisputeCrowdsourcer', market.participants(2))
     disputeWindow = localFixture.applySignature('DisputeWindow', market.getDisputeWindow())
 
     assert disputeWindow.buy(100)

@@ -70,23 +70,25 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow, Ca
         uint256 _validityBond = _market.getValidityBondAttoCash();
         uint256 _repBond = _market.getInitialReporter().getSize();
 
+        IInitialReporter _initialReporter = _market.getInitialReporter();
+
         if (_validityBond >= _currentValidityBond / 2) {
             validityBondTotal = validityBondTotal.add(_validityBond);
-            if (_market.isInvalid()) {
+            if (_market.isFinalizedAsInvalid()) {
                 invalidMarketsTotal = invalidMarketsTotal.add(_validityBond);
             }
         }
 
         if (_repBond >= _currentInitialReportBond / 2) {
             initialReportBondTotal = initialReportBondTotal.add(_repBond);
-            if (!_market.initialReporterWasCorrect()) {
+            if (!_initialReporter.initialReporterWasCorrect()) {
                 incorrectDesignatedReportTotal = incorrectDesignatedReportTotal.add(_repBond);
             }
         }
 
         if (_repBond >= _currentNoShowBond / 2) {
             designatedReporterNoShowBondTotal = designatedReporterNoShowBondTotal.add(_repBond);
-            if (!_market.designatedReporterShowed()) {
+            if (!_initialReporter.designatedReporterShowed()) {
                 designatedReportNoShowsTotal = designatedReportNoShowsTotal.add(_repBond);
             }
         }
@@ -131,7 +133,7 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow, Ca
             return true;
         }
 
-        uint256 _cashBalance = cash.balanceOf(address(this));
+        uint256 _cashBalance = cashBalance(address(this));
 
         // Burn tokens and send back REP
         uint256 _supply = totalSupply;

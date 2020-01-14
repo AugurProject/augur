@@ -75,12 +75,13 @@ contract HotLoading {
         _marketData.validityBond = _market.getValidityBondAttoCash();
         _marketData.numOutcomes = _market.getNumberOfOutcomes();
         _marketData.endTime = _market.getEndTime();
-        _marketData.affiliateFeeDivisor = _market.getAffiliateFeeDivisor();
+        _marketData.affiliateFeeDivisor = _market.affiliateFeeDivisor();
         _marketData.feeDivisor = _market.getMarketCreatorSettlementFeeDivisor();
         _marketData.numTicks = _market.getNumTicks();
         _marketData.universe = address(_market.getUniverse());
         _marketData.disputeRound = _market.getNumParticipants() - 1;
-        _marketData.designatedReporter = _market.getDesignatedReporter();
+        IInitialReporter _initialReporter = _market.getInitialReporter();
+        _marketData.designatedReporter = _initialReporter.getDesignatedReporter();
         _marketData.openInterest = _market.getOpenInterest();
         _marketData.volume = _fillOrder.getMarketVolume(_market);
         _marketData.lastTradedPrices = getLastTradedPrices(_market, _marketData.numOutcomes, _orders);
