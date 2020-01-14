@@ -28,7 +28,7 @@
     padding-left: @size-12;
   }
 
-  > div:nth-of-type(1) {
+  > div:first-of-type {
     grid-row: 1 / span 3;
     padding: 0 @size-12;
     margin-top: @size-14;
@@ -41,6 +41,10 @@
       flex-direction: column;
       text-transform: uppercase;
       text-align: left;
+    }
+
+    > div.hoverIconTray {
+      display: none;
     }
 
     > div:nth-child(even) {
@@ -72,12 +76,8 @@
       }
     }
 
-    > div:nth-last-child(2) {
+    > button {
       margin-right: @size-10;
-
-      > div {
-        display: none;
-      }
     }
 
     > div[class*='DotSelection'] {
@@ -155,6 +155,7 @@
     padding-bottom: @size-16;
     padding-top: @size-4;
     height: 100%;
+    justify-content: center;
 
     > a {
       display: -webkit-box;
@@ -264,7 +265,7 @@
       grid-column: 2;
     }
 
-    > div:nth-of-type(1) {
+    > div:first-of-type {
       grid-row: 1 / span 2;
     }
   }
@@ -329,12 +330,6 @@
     padding: @size-12;
     margin: @size-4 0;
 
-    &.Condensed {
-      > div.TopRow {
-        margin-bottom: @size-4;
-      }
-    }
-
     &.Nonexpanding {
       > div:nth-last-of-type(2) {
         grid-column: 1 / span 2;
@@ -358,38 +353,47 @@
     > div:nth-last-of-type(2) {
       grid-column: 1 / span 2;
       margin-bottom: @size-10;
-    }
-
-    > div:nth-of-type(1) {
-      display: flex;
-      grid-column: 1 / span 2;
-      grid-row: 6;
-      justify-content: space-between;
-      padding: @size-12 0;
-
-      > div:nth-of-type(2) {
-        display: none;
-      }
-
-      > span {
-        display: flex;
-      }
+      column-gap: 0;
     }
 
     > span {
-      margin: @size-12 0;
+      margin: 0 0 @size-12;
       display: -webkit-box;
       -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
       overflow: hidden;
       text-overflow: ellipsis;
       word-break: break-word;
+      height: min-content;
     }
 
+    &.Nonexpanding > div:first-of-type,
     > div:first-of-type {
-      height: 0;
-      margin-top: 0;
-      display: none;
+      align-items: flex-end;
+      display: flex;
+      grid-column: 1 / span 2;
+      grid-row: unset;
+      justify-content: space-between;
+      margin-top: @size-12;
+      order: 10;
+      padding: 0;
+
+      > div.hoverIconTray {
+        display: flex;
+        flex-flow: row nowrap;
+      }
+
+      > div[class*="LabelValue"]:nth-of-type(2) {
+        display: none;
+      }
+
+      > span {
+        display: flex;
+
+        > span:last-of-type {
+          text-align: right;
+        }
+      }
     }
 
     > div.TopRow {
@@ -398,6 +402,7 @@
       grid-template-rows: auto;
       grid-gap: @size-8;
       margin-top: 0;
+      margin-bottom: @size-12;
 
       div:nth-last-child(2) {
         margin-right: 0;
@@ -406,6 +411,10 @@
       > label {
         grid-row: 1;
         grid-column: 1;
+      }
+
+      > button {
+        margin-right: 0;
       }
 
       > div[class*="CategoryTagTrail"] {
