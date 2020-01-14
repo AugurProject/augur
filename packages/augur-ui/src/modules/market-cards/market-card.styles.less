@@ -45,6 +45,22 @@
 
     > div.hoverIconTray {
       display: none;
+
+      > div:nth-of-type(3),
+      > div:nth-of-type(4) {
+        svg {
+          fill: none;
+
+          > circle {
+            fill: none;
+            stroke: @color-secondary-action-outline;
+          }
+  
+          > path {
+            fill: @color-primary-text;
+          }
+        }
+      }
     }
 
     > div:nth-child(even) {
@@ -143,6 +159,22 @@
 
     > div:not(:first-of-type) {
       margin-left: @size-4;
+    }
+
+    > div:nth-of-type(3),
+    > div:nth-of-type(4) {
+      svg {
+        fill: none;
+
+        > circle {
+          fill: none;
+          stroke: @color-secondary-action-outline;
+        }
+
+        > path {
+          fill: @color-primary-text;
+        }
+      }
     }
   }
 
@@ -381,6 +413,10 @@
       > div.hoverIconTray {
         display: flex;
         flex-flow: row nowrap;
+
+        > div:not(:last-of-type) {
+          margin-right: @size-8;
+        }
       }
 
       > div[class*="LabelValue"]:nth-of-type(2) {
