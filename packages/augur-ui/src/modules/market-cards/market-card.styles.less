@@ -74,6 +74,7 @@
 
     > div:nth-last-child(2) {
       margin-right: @size-10;
+
       > div {
         display: none;
       }
@@ -148,6 +149,7 @@
   > span {
     .text-16-bold;
 
+    align-self: center;
     color: @color-primary-text;
     grid-column: 2;
     padding-bottom: @size-16;
@@ -158,6 +160,8 @@
       -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
       overflow: hidden;
+      text-overflow: ellipsis;
+      word-break: break-word;
     }
 
     &:hover {
@@ -269,10 +273,12 @@
       align-self: flex-start;
       padding-top: 0;
       margin-top: 0;
-      padding-bottom: 0;
+      padding-bottom: @size-12;
 
       > a {
         .text-14-bold;
+
+        -webkit-line-clamp: 2;
       }
     }
 
