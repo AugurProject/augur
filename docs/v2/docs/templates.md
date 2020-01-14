@@ -10,7 +10,7 @@ In the below example, `inputs` describe values that populate the template market
 
 This template provides a market question (title) of;
 `NFL: Will the Arizona Cardinals win vs. the Atlanta Falcons?`
-`Estimated scheduled start time: Dec 31 1969 6:00 PM (CST)`
+`Estimated scheduled start time: Jan 31 2020 6:00 PM (CST)`
 
 In regards to the market creation template structure, it doesn't vary based on market type. Here are two market creation template objects, one YesNo and the other Categorical, they behave the same.
 
