@@ -74,7 +74,7 @@ const mergeProps = (sP, dP, oP) => {
   const needsApproval = bnAllowance.lte(ZERO);
   const submitAllTxCount = chunkOrders ? Math.ceil(
     numberOfTransactions / MAX_BULK_ORDER_COUNT
-  ) : 1;
+  ) : numberOfTransactions;
   const {
     marketType,
     scalarDenomination,

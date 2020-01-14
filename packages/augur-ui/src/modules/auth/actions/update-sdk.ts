@@ -39,6 +39,7 @@ export const updateSdk = (
         };
         dispatch(updateLoginAccount(newAccount));
         dispatch(updateAppStatus(GNOSIS_ENABLED, true));
+        dispatch(loadAccountDataFromLocalStorage(safeAddress));
       };
 
       await augurSdk.syncUserData(
@@ -50,6 +51,7 @@ export const updateSdk = (
       );
     } else {
       dispatch(updateLoginAccount(loginAccount));
+      dispatch(loadAccountDataFromLocalStorage(loginAccount.address));
       await augurSdk.syncUserData(
         loginAccount.mixedCaseAddress,
         loginAccount.meta.signer,
@@ -57,7 +59,7 @@ export const updateSdk = (
         false
       );
     }
-    dispatch(loadAccountDataFromLocalStorage(loginAccount.address));
+
     dispatch(updateAuthStatus(IS_LOGGED, true));
     dispatch(loadAccountData());
     dispatch(updateAssets());
