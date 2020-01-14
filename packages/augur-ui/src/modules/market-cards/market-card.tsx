@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import { CategoryTagTrail, InReportingLabel, TemplateShield } from 'modules/common/labels';
+import { CategoryTagTrail, InReportingLabel, TemplateShield, MarketTypeLabel } from 'modules/common/labels';
 import {
   OutcomeGroup,
   LabelValue,
@@ -35,7 +35,6 @@ import ChevronFlip from 'modules/common/chevron-flip';
 import { MarketData } from 'modules/types';
 import { formatAttoRep } from 'utils/format-number';
 import MigrateMarketNotice from 'modules/market-cards/containers/migrate-market-notice';
-import { FacebookButton, TwitterButton } from 'modules/common/icons';
 import Styles from 'modules/market-cards/market-card.styles.less';
 import MarketTitle from 'modules/market/containers/market-title';
 import { MARKET_LIST_CARD } from 'services/analytics/helpers';
@@ -196,13 +195,14 @@ export default class MarketCard extends React.Component<
       }));
 
     const marketResolved = reportingState === REPORTING_STATE.FINALIZED;
+    const isScalar = marketType === SCALAR;
     const inDispute =
       reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE ||
       reportingState === REPORTING_STATE.AWAITING_NEXT_WINDOW;
     let showOutcomeNumber = inDispute
       ? MARKET_CARD_FOLD_OUTCOME_COUNT
       : NON_DISPUTING_SHOW_NUM_OUTCOMES;
-    if (marketType === SCALAR && inDispute) {
+    if (isScalar && inDispute) {
       showOutcomeNumber = MARKET_CARD_FOLD_OUTCOME_COUNT - 1;
     }
     const canDispute =
@@ -259,6 +259,7 @@ export default class MarketCard extends React.Component<
                 disputeInfo={disputeInfo}
               />
             )}
+            {isScalar && <MarketTypeLabel marketType={marketType} />}
             {isTemplate && <TemplateShield marketId={id} />}
             <CategoryTagTrail categories={categoriesWithClick} />
             <MarketProgress
