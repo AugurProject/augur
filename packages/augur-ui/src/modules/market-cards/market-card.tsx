@@ -276,7 +276,7 @@ export default class MarketCard extends React.Component<
               />
             )}
             {isScalar && <MarketTypeLabel marketType={marketType} />}
-            {isTemplate && <TemplateShield marketId={id} />}
+            {isTemplate && <TemplateShield market={market} />}
             <CategoryTagTrail categories={categoriesWithClick} />
             <MarketProgress
               reportingState={reportingState}

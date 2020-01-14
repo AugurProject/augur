@@ -5052,7 +5052,7 @@ export const TEMPLATES = {
       },
       {
         marketType: YES_NO,
-        question: `Will the total gross for [0] be $[1] USD or more, on it's domestic opening weekend of [2] in the US, according to www.boxofficemojo.com/?`,
+        question: `Will the total gross for [0] be $[1] USD or more, on domestic opening weekend of [2] in the US, according to www.boxofficemojo.com/?`,
         example: `Will Avengers: Endgame gross $350 million USD or more in it's opening weekend in the US?`,
         inputs: [
           {
@@ -5063,13 +5063,13 @@ export const TEMPLATES = {
           {
             id: 1,
             type: TemplateInputType.TEXT,
-            placeholder: `Amount`,
+            placeholder: `Total Gross sales`,
           },
           {
             id: 2,
             type: TemplateInputType.DATEYEAR,
             validationType: ValidationType.EXP_DATE_TUESDAY_AFTER_MOVIE,
-            placeholder: `opening day`,
+            placeholder: `Opening day`,
           },
         ],
         resolutionRules: {
@@ -5088,7 +5088,7 @@ export const TEMPLATES = {
       },
       {
         marketType: YES_NO,
-        question: `Head-to-Head: Will total gross for [0] be more than [1] on it's domestic opening weekend of [2] in the US, according to www.boxofficemojo.com/?`,
+        question: `Head-to-Head: Will total gross for [0] be more than [1] on domestic opening weekend of [2] in the US, according to www.boxofficemojo.com/?`,
         example: `Head-to-Head: Will Avengers: Endgame gross more than Avengers: Age of Ultron on it's opening weekend in the US?`,
         inputs: [
           {
@@ -5104,7 +5104,8 @@ export const TEMPLATES = {
           {
             id: 2,
             type: TemplateInputType.DATEYEAR,
-            placeholder: `opening day`,
+            validationType: ValidationType.EXP_DATE_TUESDAY_AFTER_MOVIE,
+            placeholder: `Opening day`,
           },
         ],
         resolutionRules: {

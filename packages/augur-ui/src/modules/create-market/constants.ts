@@ -527,6 +527,7 @@ export const SelectEventNoticeText =
   'Choose an event in the market question in order to select outcomes.';
 
 export const ExchangeClosingMessage = 'Event expiration can not be before exchange closing, earliest allowed time, ';
+export const MovieWednesdayAfterOpeningMessage = 'Earliest this market can resolve is the Wednesday after opening weekend, '
 export enum MARKET_COPY_LIST {
   USE_A_TEMPLATE = 'USE_A_TEMPLATE',
   DONT_SEE_CAT = 'DONT_SEE_CAT',

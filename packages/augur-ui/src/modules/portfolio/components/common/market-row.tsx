@@ -67,7 +67,7 @@ const MarketRow = ({
         {showState && !market.pending && (
           <div>
             {market.marketType === SCALAR && <MarketTypeLabel marketType={market.marketType} />}
-            {market.isTemplate && <TemplateShield marketId={market.id} />}
+            {market.isTemplate && <TemplateShield market={market} />}
             <MarketStatusLabel
               reportingState={market.reportingState}
               alternate
