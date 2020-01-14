@@ -149,6 +149,9 @@ interface HoverValueLabelState {
 export interface TextLabelProps {
   text: string;
   keyId?: string;
+}
+
+export interface InvalidLabelProps extends TextLabelProps {
   openInvalidMarketRulesModal?: Function;
 }
 
@@ -540,7 +543,7 @@ export class HoverValueLabel extends React.Component<
   }
 }
 
-export const InvalidLabel = (props: TextLabelProps) => {
+export const InvalidLabel = (props: InvalidLabelProps) => {
   const { text, keyId, openInvalidMarketRulesModal } = props;
   const {explainerBlockTitle, explainerBlockSubtexts, useBullets} = EventDetailsContent();
 
@@ -556,13 +559,7 @@ export const InvalidLabel = (props: TextLabelProps) => {
       <label
         data-tip
         data-for={`${keyId}-${text ? text.replace(/\s+/g, '-') : ''}`}
-        className={Styles.DesktopInvalidLabel}
-      >
-        {QuestionIcon}
-      </label>
-      <label
         onClick={(e) => openModal(e)}
-        className={Styles.MobileInvalidLabel}
       >
         {QuestionIcon}
       </label>

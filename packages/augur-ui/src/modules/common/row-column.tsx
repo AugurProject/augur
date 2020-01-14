@@ -1,13 +1,13 @@
 import React from 'react';
 import * as constants from 'modules/common/constants';
 import {
-  InvalidLabel,
   MovementLabel,
   PendingLabel,
   PositionTypeLabel,
   TextLabel,
   ValueLabel,
 } from 'modules/common/labels';
+import InvalidLabel from 'modules/common/containers/labels';
 import { CancelTextButton } from 'modules/common/buttons';
 import MarketOutcomeTradingIndicator from 'modules/market/containers/market-outcome-trading-indicator';
 
@@ -33,7 +33,6 @@ export interface Properties {
   location?: string;
   showExtraNumber?: Boolean;
   status?: string;
-  openInvalidMarketRulesModal?: Function;
 }
 
 function selectColumn(columnType: string, properties: Properties) {
@@ -85,7 +84,7 @@ function selectColumn(columnType: string, properties: Properties) {
       );
     case COLUMN_TYPES.INVALID_LABEL:
       return (
-        <InvalidLabel text={properties.text} keyId={properties.keyId} openInvalidMarketRulesModal={properties.openInvalidMarketRulesModal} />
+        <InvalidLabel text={properties.text} keyId={properties.keyId} />
       );
     case COLUMN_TYPES.CANCEL_TEXT_BUTTON:
       return properties.pending ? (

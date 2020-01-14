@@ -16,7 +16,7 @@ import { CheckCircleIcon } from 'modules/common/icons';
 import { FormattedNumber, MarketData, OutcomeFormatted } from 'modules/types';
 import { formatAttoRep, formatDai, formatNumber } from 'utils/format-number';
 import { Getters } from '@augurproject/sdk';
-import { InvalidLabel } from 'modules/common/labels';
+import InvalidLabel from 'modules/common/containers/labels';
 import { SecondaryButton } from 'modules/common/buttons';
 
 import Styles from 'modules/market-cards/common.styles.less';
@@ -44,7 +44,6 @@ export interface OutcomeProps {
   isScalar: boolean;
   marketId: string;
   outcomeId: string;
-  openInvalidMarketRulesModal: Function;
 }
 
 export const Outcome = (props: OutcomeProps) => {
@@ -60,7 +59,7 @@ export const Outcome = (props: OutcomeProps) => {
         })}
       >
         <div>
-          {props.invalid ? <InvalidLabel text={props.description} keyId={`${props.marketId}_${props.description}`} openInvalidMarketRulesModal={props.openInvalidMarketRulesModal} /> : <span>{props.description}</span>}
+          {props.invalid ? <InvalidLabel text={props.description} keyId={`${props.marketId}_${props.description}`} /> : <span>{props.description}</span>}
           <span className={classNames({[Styles.Zero]: percent === 0})}>
             {percent === 0
               ? `0.00${props.isScalar ? '' : '%'}`
@@ -223,7 +222,6 @@ export interface OutcomeGroupProps {
   canDispute: boolean;
   canSupport: boolean;
   marketId: string;
-  openInvalidMarketRulesModal: Function;
 }
 
 export const OutcomeGroup = (props: OutcomeGroupProps) => {
@@ -287,7 +285,6 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
             isScalar={props.marketType === SCALAR}
             marketId={props.marketId}
             outcomeId={INVALID_OUTCOME_ID}
-            openInvalidMarketRulesModal={props.openInvalidMarketRulesModal}
           />
         </>
       )}
@@ -322,7 +319,6 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
                 isScalar={props.marketType === SCALAR}
                 marketId={props.marketId}
                 outcomeId={outcome.id}
-                openInvalidMarketRulesModal={props.openInvalidMarketRulesModal}
               />
             ))
         )}

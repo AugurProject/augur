@@ -5,7 +5,6 @@ import MarketCard from 'modules/market-cards/market-card';
 import { toggleFavorite } from 'modules/markets/actions/update-favorites';
 import { hasStakeInMarket } from 'modules/account/selectors/has-stake-in-market';
 import {
-  MODAL_INVALID_MARKET_RULES,
   MODAL_MIGRATE_MARKET,
   MODAL_REPORTING,
 } from 'modules/common/constants';
@@ -46,8 +45,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
         market: ownProps.market,
       })
     ),
-    marketLinkCopied: (marketId, location) => dispatch(marketLinkCopied(marketId, location)),
-  openInvalidMarketRulesModal: () => dispatch(updateModal({type: MODAL_INVALID_MARKET_RULES})),
+  marketLinkCopied: (marketId, location) => dispatch(marketLinkCopied(marketId, location)),
 });
 
 const MarketCardContainer = withRouter(
