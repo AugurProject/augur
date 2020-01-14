@@ -96,23 +96,37 @@
   pointer-events: none;
 }
 
-// Used in Trading Page Mobile - Outcome selector
+// Used in Trading Page - Outcome selector
 .Large {
   .Dropdown;
 
-  height: @size-40;
+  height: @size-32;
+
+  @media @breakpoint-mobile {
+    height: @size-40;
+  }
 
   > button {
-    .text-12-bold;
+    .text-12;
+
+    @media @breakpoint-mobile {
+      .text-12-bold;
+    }
 
     background: @color-dark-grey;
     padding: 0 @size-12;
 
+    // vertical line before arrow icon
     > span {
-      padding: @size-10 0;
-      border-right: 1px solid @color-secondary-action;
       flex: 1;
       display: flex;
+      border-right: 1px solid @color-secondary-action-outline;
+      padding: @size-6 0;
+
+      @media @breakpoint-mobile {
+        border-right: 1px solid @color-secondary-action;
+        padding: @size-10 0;
+      }
     }
 
     &:hover {
@@ -129,10 +143,15 @@
   }
 
   > div > button {
-    .text-12-bold;
+    .text-12;
 
-    height: @size-48;
     padding: 0 @size-12;
+    height: @size-32;
+
+    @media @breakpoint-mobile {
+      .text-12-bold;
+      height: @size-48;
+    }
 
     &::before {
       left: @size-12;
