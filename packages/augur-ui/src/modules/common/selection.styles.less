@@ -27,30 +27,34 @@
       margin-right: auto;
     }
 
-    > svg > path {
-      fill: none;
-      stroke: @color-inactive-text;
+    > svg {
+      height: @size-6;
+      margin: 0 @size-1 0 @size-13;
+      width: @size-10;
+
+      > path {
+        fill: @color-primary-text;
+      }
     }
 
     &:hover {
       background: fade(@color-secondary-action, 50%);
       outline: none;
-
-      > svg > path {
-        stroke: @color-primary-text;
-      }
     }
   }
 
   > div:first-of-type {
-    background-color: @color-primary-text;
+    background-color: @color-secondary-action;
+    border: 1px solid @color-secondary-action-outline;
     border-radius: @border-radius-default;
+    box-shadow: 0 @size-8 @size-8 @color-dark-grey;
     display: none;
     max-height: 256px;
     overflow-y: auto;
     position: absolute;
     top: 106%;
     z-index: @mask;
+    margin-top: @size-2;
 
     &.active {
       display: block;
@@ -92,34 +96,46 @@
   pointer-events: none;
 }
 
+// Used in Trading Page - Outcome selector
 .Large {
   .Dropdown;
 
-  border-color: @color-secondary-action-outline;
-  height: @size-40;
+  height: @size-32;
+
+  @media @breakpoint-mobile {
+    height: @size-40;
+  }
 
   > button {
-    .text-12-bold;
+    .text-12;
+
+    @media @breakpoint-mobile {
+      .text-12-bold;
+    }
 
     background: @color-dark-grey;
     padding: 0 @size-12;
 
-    > svg {
-      height: @size-6;
-      margin-left: @size-8;
-      width: @size-10;
+    // vertical line before arrow icon
+    > span {
+      flex: 1;
+      display: flex;
+      border-right: 1px solid @color-secondary-action-outline;
+      padding: @size-6 0;
 
-      > path {
-        fill: @color-primary-text;
+      @media @breakpoint-mobile {
+        border-right: 1px solid @color-secondary-action;
+        padding: @size-10 0;
       }
     }
 
-    > span {
-      padding: @size-10 0;
-      border-right: 1px solid @color-secondary-action;
-      flex: 1;
-      display: flex;
+    &:hover {
+      background: @color-secondary-hover;
     }
+  }
+
+  > div:first-of-type {
+    margin-top: @size-4;
   }
 
   > div {
@@ -127,10 +143,15 @@
   }
 
   > div > button {
-    .text-12-bold;
+    .text-12;
 
-    height: @size-48;
     padding: 0 @size-12;
+    height: @size-32;
+
+    @media @breakpoint-mobile {
+      .text-12-bold;
+      height: @size-48;
+    }
 
     &::before {
       left: @size-12;
@@ -155,16 +176,6 @@
     line-height: @size-12;
     text-transform: uppercase;
     padding: 0 @size-8;
-
-    > svg {
-      height: @size-6;
-      margin-left: @size-8;
-      width: @size-10;
-
-      > path {
-        fill: @color-primary-text;
-      }
-    }
 
     > span {
       display: block;
@@ -221,11 +232,7 @@
 
 .isOpen {
   > button {
-    background: fade(@color-primary-action, 30%);
-
-    > svg > path {
-      stroke: @color-primary-text;
-    }
+    background: @color-secondary-hover;
   }
 }
 
