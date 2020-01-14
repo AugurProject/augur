@@ -101,6 +101,7 @@ contract Universe is IUniverse, CashSender {
         daiVat.hope(address(daiPot));
         daiVat.hope(address(daiJoin));
         cash.approve(address(daiJoin), 2 ** 256 - 1);
+        daiVat.hope(address(augur));
 
         initializeCashSender(address(daiVat), address(cash));
     }
@@ -722,7 +723,7 @@ contract Universe is IUniverse, CashSender {
         uint256 _chi = daiPot.drip();
         withdrawSDaiFromDSR(daiPot.pie(address(this))); // Pull out all funds
         saveDaiInDSR(totalBalance); // Put the required funds back in savings
-        _extraCash = cash.balanceOf(address(this));
+        _extraCash = cashBalance(address(this));
         // The amount in the DSR pot and VAT must cover our totalBalance of Dai
         assert(daiPot.pie(address(this)).mul(_chi).add(daiVat.dai(address(this))) >= totalBalance.mul(RAY));
         cashTransfer(address(getOrCreateNextDisputeWindow(false)), _extraCash);

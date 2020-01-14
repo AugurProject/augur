@@ -1,13 +1,7 @@
 @import (reference) '~assets/styles/shared';
 
-.HelpResources {
-  color: @color-primary-text;
-  position: relative;
-  display: flex;
-  flex: 1;
-  max-width: 56px;
+.HelpIcon {
   z-index: @above-all-content-above;
-
   > span {
     padding: @size-18;
     display: flex;
@@ -20,12 +14,11 @@
       height: @size-20;
 
       > circle {
-        stroke: @color-primary-text;
-        fill: none;
+        fill: @color-primary-text;
       }
 
       > path {
-        fill: @color-primary-text;
+        fill: @color-dark-grey;
       }
     }
 
@@ -46,78 +39,145 @@
     }
   }
 
-  > div {
-    position: absolute;
-    top: 0;
-    background: @color-module-background;
-    border: 1px solid @color-secondary-action-outline;
-    border-radius: @border-radius-default;
-    width: 210px;
-    top: 100%;
-    right: -1px;
-    margin-top: -1px;
-    border-top-right-radius: 0;
-    border-top-left-radius: 0;
-    display: flex;
-    flex-direction: column;
-
-    > span:first-of-type {
-      .mono-11-bold;
-
-      text-transform: uppercase;
-      padding: @size-22 @size-16;
-      color: @color-primary-text;
-      background: @color-module-background;
-    }
-
-    > span:not(:first-of-type) {
-      padding: @size-13 @size-16;
-      background: @color-table-header;
-      border-top: 1px solid @color-dark-grey;
-
-      &.hideOnTablet {
-        @media @breakpoint-smallish-desktop {
-          display: none;
-        }
-      }
-    }
-
-    > span:last-of-type {
-      border-bottom-left-radius: @border-radius-default;
-      border-bottom-right-radius: @border-radius-default;
-    }
-
-    @media @breakpoint-mobile {
-      bottom: unset;
-      margin-bottom: -1px;
-      border-bottom-right-radius: 0;
-      border-bottom-left-radius: 0;
-      position: absolute;
-      right: 0px;
-      top: 65px;
-
-      > span:not(:first-of-type) {
-        border-bottom: 1px solid @color-dark-grey;
-      }
-
-      > span:last-of-type {
-        border-top-left-radius: @border-radius-default;
-        border-top-right-radius: @border-radius-default;
-      }
-    }
-  }
-
   &.Open {
     > span {
-      border: 1px solid @color-secondary-action-outline;
       border-bottom: 0;
       background: @color-module-background;
       z-index: @above-all-content;
 
       @media @breakpoint-mobile {
-        border: 1px solid @color-secondary-action-outline;
         border-top: 0;
       }
     }
   }
+}
+
+.HelpMenuList {
+  position: absolute;
+  background: @color-module-background;
+  border: 1px solid @color-secondary-action-outline;
+  border-radius: @border-radius-default;
+  width: 210px;
+  top: 100%;
+  right: -1px;
+  margin-top: -1px;
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
+  display: flex;
+  flex-direction: column;
+
+  > li:first-of-type {
+    .mono-11-bold;
+
+    text-transform: uppercase;
+    padding: @size-22 @size-16;
+    color: @color-primary-text;
+    background: @color-module-background;
+  }
+
+  > li:not(:first-of-type) {
+    padding: @size-13 @size-16;
+    background: @color-table-header;
+    border-top: 1px solid @color-dark-grey;
+
+    &.hideOnTablet {
+      @media @breakpoint-smallish-desktop {
+        display: none;
+      }
+    }
+  }
+
+  > li:last-of-type {
+    border-bottom-left-radius: @border-radius-default;
+    border-bottom-right-radius: @border-radius-default;
+  }
+
+  @media @breakpoint-mobile {
+    bottom: unset;
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+    position: absolute;
+    right: 0px;
+    top: 65px;
+    display: contents;
+
+    > li:not(:first-of-type) {
+      border-bottom: 1px solid @color-dark-grey;
+    }
+
+    > li:last-of-type {
+      border-top-left-radius: @border-radius-default;
+      border-top-right-radius: @border-radius-default;
+    }
+  }
+}
+
+.HelpMenu {
+  position: absolute;
+  background: @color-module-background;
+  border: 1px solid @color-secondary-action-outline;
+  border-radius: @border-radius-default;
+  width: 210px;
+  top: 100%;
+  right: -1px;
+  margin-top: -1px;
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
+  display: flex;
+  flex-direction: column;
+
+  > span:first-of-type {
+    .mono-11-bold;
+
+    text-transform: uppercase;
+    padding: @size-22 @size-16;
+    color: @color-primary-text;
+    background: @color-module-background;
+  }
+
+  > span:not(:first-of-type) {
+    padding: @size-13 @size-16;
+    background: @color-table-header;
+    border-top: 1px solid @color-dark-grey;
+
+    &.hideOnTablet {
+      @media @breakpoint-smallish-desktop {
+        display: none;
+      }
+    }
+  }
+
+  > span:last-of-type {
+    border-bottom-left-radius: @border-radius-default;
+    border-bottom-right-radius: @border-radius-default;
+  }
+
+  @media @breakpoint-mobile {
+    bottom: unset;
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+    position: absolute;
+    right: 0px;
+    top: 65px;
+
+    > span:not(:first-of-type) {
+      border-bottom: 1px solid @color-dark-grey;
+    }
+
+    > span:last-of-type {
+      border-top-left-radius: @border-radius-default;
+      border-top-right-radius: @border-radius-default;
+    }
+  }
+}
+
+.HelpResources {
+  color: @color-primary-text;
+  position: relative;
+  display: flex;
+  flex: 1;
+  max-width: 56px;
+  z-index: @above-all-content-above;
 }

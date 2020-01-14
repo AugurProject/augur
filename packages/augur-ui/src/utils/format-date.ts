@@ -2,6 +2,7 @@ import moment from 'moment';
 import { DateFormattedObject, TimezoneDateObject } from 'modules/types';
 import { createBigNumber } from './create-big-number';
 import { ZERO } from 'modules/common/constants';
+import { getMaxMarketEndTime } from 'modules/contracts/actions/contractCalls';
 
 const months = [
   'January',
@@ -209,6 +210,12 @@ export function getBeginDate(
     return null;
   }
   return beginDate.unix();
+}
+
+export function minMarketEndTimeDay() {
+  return moment()
+  .subtract(1, 'day')
+  .startOf('day');
 }
 
 export function dateHasPassed(

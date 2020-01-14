@@ -14,6 +14,7 @@ import 'ROOT/trading/Order.sol';
 import 'ROOT/libraries/Initializable.sol';
 import 'ROOT/trading/IAugurTrading.sol';
 import 'ROOT/libraries/TokenId.sol';
+import 'ROOT/external/IDaiVat.sol';
 
 
 library Trade {
@@ -466,6 +467,8 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
         zeroXTrade = _augurTrading.lookup("ZeroXTrade");
         require(zeroXTrade != address(0));
         _cash.approve(address(_augur), MAX_APPROVAL_AMOUNT);
+        IDaiVat _vat = IDaiVat(augur.lookup("DaiVat"));
+        _vat.hope(address(augur));
     }
 
     /**
@@ -480,7 +483,6 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
         address _filler = msg.sender;
         Trade.Data memory _tradeData = Trade.create(storedContracts, _orderId, _filler, _amountFillerWants, _fingerprint);
         (uint256 _amountRemaining, uint256 _fees) = fillOrderInternal(_filler, _tradeData, _amountFillerWants, _tradeGroupId);
-        _tradeData.contracts.market.assertBalances();
         return _amountRemaining;
     }
 

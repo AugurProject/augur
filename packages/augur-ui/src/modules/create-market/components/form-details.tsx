@@ -26,7 +26,7 @@ import {
   DESIGNATED_REPORTER_SELF,
   DESIGNATED_REPORTER_SPECIFIC,
 } from 'modules/common/constants';
-import { NewMarket } from 'modules/types';
+import { NewMarket, Universe } from 'modules/types';
 import {
   DESCRIPTION_PLACEHOLDERS,
   DESIGNATED_REPORTER_ADDRESS,
@@ -51,6 +51,7 @@ interface FormDetailsProps {
   onChange: Function;
   onError: Function;
   isTemplate?: boolean;
+  universe: Universe;
 }
 
 interface FormDetailsState {
@@ -170,6 +171,7 @@ export default class FormDetails extends React.Component<
               newMarket={newMarket}
               currentTimestamp={currentTimestamp}
               onChange={onChange}
+              isAfter={this.props.universe.maxMarketEndTime}
             />
           )}
           {!isTemplate && (
@@ -185,6 +187,7 @@ export default class FormDetails extends React.Component<
                 currentTimestamp={currentTimestamp}
                 endTimeFormatted={endTimeFormatted}
                 uniqueKey={'nonTemplateRes'}
+                isAfter={this.props.universe.maxMarketEndTime}
               />
 
               <InputHeading
@@ -353,6 +356,7 @@ export default class FormDetails extends React.Component<
               timezone={timezone}
               endTimeFormatted={endTimeFormatted}
               uniqueKey={'templateRes'}
+              isAfter={this.props.universe.maxMarketEndTime}
             />
           )}
 

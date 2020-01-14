@@ -1,14 +1,13 @@
 import React from 'react';
 import * as constants from 'modules/common/constants';
 import {
-  LinearPropertyLabel,
-  InvalidLabel,
+  MovementLabel,
   PendingLabel,
   PositionTypeLabel,
-  ValueLabel,
   TextLabel,
-  MovementLabel,
+  ValueLabel,
 } from 'modules/common/labels';
+import InvalidLabel from 'modules/common/containers/labels';
 import { CancelTextButton } from 'modules/common/buttons';
 import MarketOutcomeTradingIndicator from 'modules/market/containers/market-outcome-trading-indicator';
 

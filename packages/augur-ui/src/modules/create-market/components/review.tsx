@@ -50,6 +50,7 @@ interface ReviewProps {
   estimateSubmitNewMarket: Function;
   Gnosis_ENABLED: boolean;
   ethToDaiRate: BigNumber;
+  setDisableCreate: Function;
 }
 
 interface ReviewState {
@@ -141,7 +142,7 @@ export default class Review extends React.Component<
 
 
   getInsufficientFundsAmounts(testWithLiquidity = false): InsufficientFunds {
-    const { availableEthFormatted, availableRepFormatted, availableDaiFormatted } = this.props;
+    const { availableEthFormatted, availableRepFormatted, availableDaiFormatted, Gnosis_ENABLED } = this.props;
     const s = this.state;
     let insufficientFunds: InsufficientFunds = null;
 
@@ -169,7 +170,8 @@ export default class Review extends React.Component<
         createBigNumber(availableDaiFormatted.value || '0'),
         formattedInitialLiquidityGas || '0',
         formattedInitialLiquidityDai || '0',
-        testWithLiquidity
+        testWithLiquidity,
+        Gnosis_ENABLED
       );
     }
 
@@ -276,7 +278,7 @@ export default class Review extends React.Component<
     const noEth = s.insufficientFunds[ETH];
     const noRep = s.insufficientFunds[REP];
     const noDai = s.insufficientFunds[DAI];
-
+    this.props.setDisableCreate(noEth || noRep || noDai);
     const resolutionDetails = template ? buildResolutionDetails(detailsText, template.resolutionRules) : detailsText;
     return (
       <div className={classNames(Styles.Review, {[Styles.Scalar]: marketType === SCALAR, [Styles.Categorical]: marketType === CATEGORICAL})}>

@@ -18,13 +18,14 @@ import 'ROOT/reporting/Reporting.sol';
 import 'ROOT/reporting/IInitialReporter.sol';
 import 'ROOT/IWarpSync.sol';
 import 'ROOT/libraries/token/IERC1155.sol';
+import 'ROOT/CashSender.sol';
 
 
 /**
  * @title Market
  * @notice The contract which encapsulates event data and payout resolution for the event
  */
-contract Market is Initializable, Ownable, IMarket {
+contract Market is Initializable, Ownable, IMarket, CashSender {
     using SafeMathUint256 for uint256;
 
     // Constants
@@ -34,7 +35,6 @@ contract Market is Initializable, Ownable, IMarket {
     // Contract Refs
     IUniverse private universe;
     IDisputeWindow private disputeWindow;
-    ICash public cash;
     IAugur public augur;
     IWarpSync public warpSync;
     IShareToken public shareToken;
@@ -71,7 +71,6 @@ contract Market is Initializable, Ownable, IMarket {
         require(msg.sender == _augur.lookup("MarketFactory"));
         _numOutcomes += 1; // The INVALID outcome is always first
         universe = _universe;
-        cash = ICash(_augur.lookup("Cash"));
         warpSync = IWarpSync(_augur.lookup("WarpSync"));
         require(warpSync != IWarpSync(0));
         affiliateValidator = _affiliateValidator;
@@ -80,7 +79,8 @@ contract Market is Initializable, Ownable, IMarket {
         require(affiliateValidator == IAffiliateValidator(0) || affiliates.affiliateValidators(address(_affiliateValidator)));
         owner = _creator;
         repBondOwner = owner;
-        cash.approve(address(_augur), MAX_APPROVAL_AMOUNT);
+        initializeCashSender(_augur.lookup("DaiVat"), _augur.lookup("Cash"));
+        cashApprove(address(_augur), MAX_APPROVAL_AMOUNT);
         assessFees();
         endTime = _endTime;
         numOutcomes = _numOutcomes;
@@ -90,8 +90,6 @@ contract Market is Initializable, Ownable, IMarket {
         InitialReporterFactory _initialReporterFactory = InitialReporterFactory(_augur.lookup("InitialReporterFactory"));
         participants.push(_initialReporterFactory.createInitialReporter(_augur, _designatedReporterAddress));
         shareToken = IShareToken(_augur.lookup("ShareToken"));
-        IDaiVat _daiVat = IDaiVat(_augur.lookup("DaiVat"));
-        _daiVat.hope(address(_augur));
         require(shareToken != IShareToken(0));
     }
 
@@ -99,7 +97,7 @@ contract Market is Initializable, Ownable, IMarket {
         repBond = universe.getOrCacheMarketRepBond();
         require(getReputationToken().balanceOf(address(this)) >= repBond);
         if (owner != address(warpSync)) {
-            validityBondAttoCash = cash.balanceOf(address(this));
+            validityBondAttoCash = cashBalance(address(this));
             require(validityBondAttoCash >= universe.getOrCacheValidityBond());
             universe.deposit(address(this), validityBondAttoCash, address(this));
         }
@@ -112,8 +110,7 @@ contract Market is Initializable, Ownable, IMarket {
      */
     function increaseValidityBond(uint256 _attoCash) public returns (bool) {
         require(!isFinalized());
-        // NOTE: In the event of a MKR shutdown this may become impossible as the supply of DAI decreases.
-        cash.transferFrom(msg.sender, address(this), _attoCash);
+        cashTransferFrom(msg.sender, address(this), _attoCash);
         universe.deposit(address(this), _attoCash, address(this));
         validityBondAttoCash = validityBondAttoCash.add(_attoCash);
         return true;
@@ -138,7 +135,7 @@ contract Market is Initializable, Ownable, IMarket {
         require(!universe.isForking());
         IInitialReporter _initialReporter = getInitialReporter();
         uint256 _timestamp = augur.getTimestamp();
-        require(_timestamp > endTime, "Market.doInitialReportInternal: Market has not reached Reporting phase");
+        require(_timestamp > endTime);
         uint256 _initialReportStake = distributeInitialReportingRep(_reporter, _initialReporter);
         // The derive call will validate that an Invalid report is entirely paid out on the Invalid outcome
         bytes32 _payoutDistributionHash = derivePayoutDistributionHash(_payoutNumerators);
@@ -213,7 +210,7 @@ contract Market is Initializable, Ownable, IMarket {
             if (_amountRemainingToFill == 0) {
                 finishedCrowdsourcingDisputeBond(_crowdsourcer);
             } else {
-                require(_amountRemainingToFill >= getInitialReporter().getSize(), "Market.internalContribute: Must totally fill bond or leave initial report amount");
+                require(_amountRemainingToFill >= getInitialReporter().getSize());
             }
         }
     }
@@ -376,7 +373,7 @@ contract Market is Initializable, Ownable, IMarket {
     function distributeMarketCreatorAndAffiliateFees(address _affiliateAddress) private {
         uint256 _marketCreatorFeesAttoCash = marketCreatorFeesAttoCash;
         marketCreatorFeesAttoCash = 0;
-        if (!isInvalid()) {
+        if (!isFinalizedAsInvalid()) {
             universe.withdraw(owner, _marketCreatorFeesAttoCash, address(this));
             if (_affiliateAddress != NULL_ADDRESS) {
                 withdrawAffiliateFees(_affiliateAddress);
@@ -394,7 +391,7 @@ contract Market is Initializable, Ownable, IMarket {
      * @return Bool True
      */
     function withdrawAffiliateFees(address _affiliate) public returns (bool) {
-        require(!isInvalid());
+        require(!isFinalizedAsInvalid());
         uint256 _affiliateBalance = affiliateFeesAttoCash[_affiliate];
         if (_affiliateBalance == 0) {
             return true;
@@ -561,27 +558,6 @@ contract Market is Initializable, Ownable, IMarket {
     }
 
     /**
-     * @return The designated reporter
-     */
-    function getDesignatedReporter() public view returns (address) {
-        return getInitialReporter().getDesignatedReporter();
-    }
-
-    /**
-     * @return Bool indicating if the designated reporter showed
-     */
-    function designatedReporterShowed() public view returns (bool) {
-        return getInitialReporter().designatedReporterShowed();
-    }
-
-    /**
-     * @return Bool indicating if the initial reporter was correct
-     */
-    function initialReporterWasCorrect() public view returns (bool) {
-        return getInitialReporter().initialReporterWasCorrect();
-    }
-
-    /**
      * @return Time at which the event is considered ready to report on
      */
     function getEndTime() public view returns (uint256) {
@@ -591,7 +567,7 @@ contract Market is Initializable, Ownable, IMarket {
     /**
      * @return Bool indicating if the market resolved as anything other than Invalid
      */
-    function isInvalid() public view returns (bool) {
+    function isFinalizedAsInvalid() public view returns (bool) {
         require(isFinalized());
         if (isForkingMarket()) {
             return getWinningChildPayout(0) > 0;
@@ -604,14 +580,6 @@ contract Market is Initializable, Ownable, IMarket {
      */
     function getInitialReporter() public view returns (IInitialReporter) {
         return IInitialReporter(address(participants[0]));
-    }
-
-    /**
-     * @param _index The filled report or dispute at the given index
-     * @return The Initial Reporter or a Dispute Crowdsourcer contract
-     */
-    function getReportingParticipant(uint256 _index) public view returns (IReportingParticipant) {
-        return participants[_index];
     }
 
     /**
@@ -687,13 +655,6 @@ contract Market is Initializable, Ownable, IMarket {
     }
 
     /**
-     * @return The affiliate fee divisor which will be used to split fees from the market creator to an affiliate for trades specifying one
-     */
-    function getAffiliateFeeDivisor() public view returns (uint256) {
-        return affiliateFeeDivisor;
-    }
-
-    /**
      * @return The uint256 timestamp for when the designated reporting period is over and anyone may report
      */
     function getDesignatedReportingEndTime() public view returns (uint256) {
@@ -759,21 +720,6 @@ contract Market is Initializable, Ownable, IMarket {
         require(_newOwner != address(0));
         require(msg.sender == repBondOwner);
         repBondOwner = _newOwner;
-        return true;
-    }
-
-    function assertBalances() public view returns (bool) {
-        uint256 _expectedBalance = 0;
-        // Market Open Interest. If we're finalized we need actually calculate the value
-        if (isFinalized()) {
-            for (uint8 i = 0; i < numOutcomes; i++) {
-                _expectedBalance = _expectedBalance.add(shareToken.totalSupplyForMarketOutcome(this, i).mul(getWinningPayoutNumerator(i)));
-            }
-        } else {
-            _expectedBalance = shareToken.totalSupplyForMarketOutcome(this, 0).mul(numTicks);
-        }
-
-        assert(universe.marketBalance(address(this)) >= _expectedBalance);
         return true;
     }
 

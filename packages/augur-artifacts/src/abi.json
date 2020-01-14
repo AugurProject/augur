@@ -6201,6 +6201,29 @@
 			"type": "function"
 		},
 		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_owner",
+					"type": "address"
+				},
+				{
+					"name": "_sender",
+					"type": "address"
+				}
+			],
+			"name": "cashAvailableForTransferFrom",
+			"outputs": [
+				{
+					"name": "_available",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
 			"constant": false,
 			"inputs": [
 				{
@@ -6456,6 +6479,25 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_account",
+					"type": "address"
+				}
+			],
+			"name": "cashBalance",
+			"outputs": [
+				{
+					"name": "_balance",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -14475,6 +14517,29 @@
 		},
 		{
 			"constant": true,
+			"inputs": [
+				{
+					"name": "_owner",
+					"type": "address"
+				},
+				{
+					"name": "_sender",
+					"type": "address"
+				}
+			],
+			"name": "cashAvailableForTransferFrom",
+			"outputs": [
+				{
+					"name": "_available",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
 			"inputs": [],
 			"name": "isActive",
 			"outputs": [
@@ -14643,6 +14708,25 @@
 			],
 			"payable": false,
 			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_account",
+					"type": "address"
+				}
+			],
+			"name": "cashBalance",
+			"outputs": [
+				{
+					"name": "_balance",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -15532,20 +15616,6 @@
 		{
 			"constant": true,
 			"inputs": [],
-			"name": "isInvalid",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
 			"name": "getValidityBondAttoCash",
 			"outputs": [
 				{
@@ -15574,6 +15644,25 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_daiAmount",
+					"type": "uint256"
+				}
+			],
+			"name": "daiToVatDai",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
 			"type": "function"
 		},
 		{
@@ -15624,6 +15713,29 @@
 			"outputs": [
 				{
 					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_owner",
+					"type": "address"
+				},
+				{
+					"name": "_sender",
+					"type": "address"
+				}
+			],
+			"name": "cashAvailableForTransferFrom",
+			"outputs": [
+				{
+					"name": "_available",
 					"type": "uint256"
 				}
 			],
@@ -15741,6 +15853,20 @@
 		},
 		{
 			"constant": true,
+			"inputs": [],
+			"name": "vat",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
 			"inputs": [
 				{
 					"name": "",
@@ -15760,20 +15886,6 @@
 		},
 		{
 			"constant": true,
-			"inputs": [],
-			"name": "designatedReporterShowed",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
 			"inputs": [
 				{
 					"name": "_outcome",
@@ -15784,6 +15896,44 @@
 			"outputs": [
 				{
 					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_vDaiAmount",
+					"type": "uint256"
+				}
+			],
+			"name": "vatDaiToDai",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_account",
+					"type": "address"
+				}
+			],
+			"name": "cashBalance",
+			"outputs": [
+				{
+					"name": "_balance",
 					"type": "uint256"
 				}
 			],
@@ -15919,20 +16069,6 @@
 				{
 					"name": "",
 					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "getDesignatedReporter",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
 				}
 			],
 			"payable": false,
@@ -16164,6 +16300,20 @@
 			"type": "function"
 		},
 		{
+			"constant": true,
+			"inputs": [],
+			"name": "isFinalizedAsInvalid",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
 			"constant": false,
 			"inputs": [
 				{
@@ -16190,20 +16340,6 @@
 				{
 					"name": "",
 					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "assertBalances",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
 				}
 			],
 			"payable": false,
@@ -16284,25 +16420,6 @@
 			"constant": true,
 			"inputs": [
 				{
-					"name": "_index",
-					"type": "uint256"
-				}
-			],
-			"name": "getReportingParticipant",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
 					"name": "_payoutDistributionHash",
 					"type": "bytes32"
 				}
@@ -16312,20 +16429,6 @@
 				{
 					"name": "",
 					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "initialReporterWasCorrect",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
 				}
 			],
 			"payable": false,
@@ -16364,20 +16467,6 @@
 			"constant": true,
 			"inputs": [],
 			"name": "marketCreatorFeesAttoCash",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "getAffiliateFeeDivisor",
 			"outputs": [
 				{
 					"name": "",
@@ -16629,6 +16718,29 @@
 			"type": "function"
 		},
 		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_owner",
+					"type": "address"
+				},
+				{
+					"name": "_sender",
+					"type": "address"
+				}
+			],
+			"name": "cashAvailableForTransferFrom",
+			"outputs": [
+				{
+					"name": "_available",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
 			"constant": false,
 			"inputs": [
 				{
@@ -16803,6 +16915,25 @@
 			],
 			"payable": false,
 			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_account",
+					"type": "address"
+				}
+			],
+			"name": "cashBalance",
+			"outputs": [
+				{
+					"name": "_balance",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -18061,6 +18192,29 @@
 			"constant": true,
 			"inputs": [
 				{
+					"name": "_owner",
+					"type": "address"
+				},
+				{
+					"name": "_sender",
+					"type": "address"
+				}
+			],
+			"name": "cashAvailableForTransferFrom",
+			"outputs": [
+				{
+					"name": "_available",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
 					"name": "_tokenId",
 					"type": "uint256"
 				}
@@ -18215,6 +18369,25 @@
 			"type": "function"
 		},
 		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_account",
+					"type": "address"
+				}
+			],
+			"name": "cashBalance",
+			"outputs": [
+				{
+					"name": "_balance",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
 			"constant": false,
 			"inputs": [
 				{
@@ -18247,6 +18420,20 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_market",
+					"type": "address"
+				}
+			],
+			"name": "assertBalances",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -19299,6 +19486,29 @@
 		},
 		{
 			"constant": true,
+			"inputs": [
+				{
+					"name": "_owner",
+					"type": "address"
+				},
+				{
+					"name": "_sender",
+					"type": "address"
+				}
+			],
+			"name": "cashAvailableForTransferFrom",
+			"outputs": [
+				{
+					"name": "_available",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
 			"inputs": [],
 			"name": "repPriceOracle",
 			"outputs": [
@@ -19454,6 +19664,25 @@
 			"outputs": [
 				{
 					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_account",
+					"type": "address"
+				}
+			],
+			"name": "cashBalance",
+			"outputs": [
+				{
+					"name": "_balance",
 					"type": "uint256"
 				}
 			],
@@ -21260,6 +21489,29 @@
 			"type": "function"
 		},
 		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_owner",
+					"type": "address"
+				},
+				{
+					"name": "_sender",
+					"type": "address"
+				}
+			],
+			"name": "cashAvailableForTransferFrom",
+			"outputs": [
+				{
+					"name": "_available",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
 			"constant": false,
 			"inputs": [
 				{
@@ -21309,6 +21561,25 @@
 			],
 			"payable": false,
 			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_account",
+					"type": "address"
+				}
+			],
+			"name": "cashBalance",
+			"outputs": [
+				{
+					"name": "_balance",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -21455,6 +21726,29 @@
 		},
 		{
 			"constant": true,
+			"inputs": [
+				{
+					"name": "_owner",
+					"type": "address"
+				},
+				{
+					"name": "_sender",
+					"type": "address"
+				}
+			],
+			"name": "cashAvailableForTransferFrom",
+			"outputs": [
+				{
+					"name": "_available",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
 			"inputs": [],
 			"name": "trade",
 			"outputs": [
@@ -21545,6 +21839,25 @@
 			],
 			"payable": false,
 			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_account",
+					"type": "address"
+				}
+			],
+			"name": "cashBalance",
+			"outputs": [
+				{
+					"name": "_balance",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -23825,6 +24138,48 @@
 			"constant": true,
 			"inputs": [
 				{
+					"name": "_daiAmount",
+					"type": "uint256"
+				}
+			],
+			"name": "daiToVatDai",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_owner",
+					"type": "address"
+				},
+				{
+					"name": "_sender",
+					"type": "address"
+				}
+			],
+			"name": "cashAvailableForTransferFrom",
+			"outputs": [
+				{
+					"name": "_available",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
 					"name": "_market",
 					"type": "address"
 				},
@@ -23973,6 +24328,58 @@
 			"outputs": [],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "vat",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_vDaiAmount",
+					"type": "uint256"
+				}
+			],
+			"name": "vatDaiToDai",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_account",
+					"type": "address"
+				}
+			],
+			"name": "cashBalance",
+			"outputs": [
+				{
+					"name": "_balance",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{

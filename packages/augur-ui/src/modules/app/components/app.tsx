@@ -341,6 +341,9 @@ export default class AppView extends Component<AppProps> {
       migrateV1Rep,
       showMigrateRepButton,
       updateModal,
+      isHelpMenuOpen,
+      updateConnectionTray,
+      updateHelpMenuState,
     } = this.props;
 
     const currentPath = parsePath(location.pathname)[0];
@@ -412,6 +415,9 @@ export default class AppView extends Component<AppProps> {
                 menuData={this.sideNavMenuData}
                 currentBasePath={sidebarStatus.currentBasePath}
                 isConnectionTrayOpen={isConnectionTrayOpen}
+                isHelpMenuOpen={isHelpMenuOpen}
+                updateConnectionTray={updateConnectionTray}
+                updateHelpMenuState={updateHelpMenuState}
                 logout={() => this.props.logout()}
                 showGlobalChat={() => this.props.showGlobalChat()}
                 migrateV1Rep={migrateV1Rep}

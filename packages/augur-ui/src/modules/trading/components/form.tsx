@@ -277,19 +277,20 @@ class Form extends Component<FromProps, FormState> {
       );
     }
 
-    let tradeInterval = TRADE_INTERVAL_VALUE.dividedBy(market.numTicks);
+    let numTicks = market.numTicks;
+    if (!numTicks) {
+      numTicks = tickSizeToNumTickWithDisplayPrices(
+        createBigNumber(market.tickSize),
+        createBigNumber(market.minPrice),
+        createBigNumber(market.maxPrice)
+      );
+    }
+
+    let tradeInterval = TRADE_INTERVAL_VALUE.dividedBy(numTicks);
     // TODO replace with this when Alex's contract changes get in
     // let tradeInterval = BigNumber.minimum(TRADE_INTERVAL_VALUE.dividedBy(market.numTicks).dividedBy(10**14).multipliedBy(10**14), 10**14);
 
     if (!convertDisplayAmountToOnChainAmount(value, market.tickSize).mod(tradeInterval).isEqualTo(0)) {
-      let numTicks = market.numTicks;
-      if (!numTicks) {
-        numTicks = tickSizeToNumTickWithDisplayPrices(
-          createBigNumber(market.tickSize),
-          createBigNumber(market.minPrice),
-          createBigNumber(market.maxPrice)
-        );
-      }
       errorCount += 1;
       passedTest = false;
       errors[this.INPUT_TYPES.QUANTITY].push(

@@ -7,7 +7,7 @@
   overflow: auto;
 
   > .CategoriesGroup:first-of-type {
-    margin: 0 @size-32 @size-24;
+    margin: 0 @size-32 @size-26;
 
     @media @breakpoint-mobile {
       margin: @size-16;
@@ -34,10 +34,10 @@
 
 .CategoriesGroup {
   > span {
-    .text-11-bold;
+    .text-12-bold;
 
     display: block;
-    color: @color-secondary-text;
+    color: @color-primary-text;
     margin: 0 0 @size-13 0;
 
     @media @breakpoint-mobile {
@@ -46,7 +46,7 @@
   }
 
   > span:not(:first-of-type) {
-    .text-12;
+    .text-12-bold;
 
     color: @color-primary-text;
     text-transform: capitalize;
@@ -54,7 +54,7 @@
     align-items: center;
 
     > svg {
-      height: @size-9;
+      height: @size-12;
       margin-right: @size-6;
 
       > g > path {

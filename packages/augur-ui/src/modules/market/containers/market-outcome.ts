@@ -1,12 +1,12 @@
-import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
-import { AppState } from "store";
-import getValue from "utils/get-value";
-import { COLUMN_TYPES, INVALID_OUTCOME_ID } from "modules/common/constants";
-import { selectMarketOutcomeBestBidAsk } from "modules/markets/selectors/select-market-outcome-best-bid-ask";
-import Row from "modules/common/row";
-import { ThunkDispatch } from "redux-thunk";
-import { Action } from "redux";
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+import { AppState } from 'store';
+import getValue from 'utils/get-value';
+import { COLUMN_TYPES, INVALID_OUTCOME_ID } from 'modules/common/constants';
+import { selectMarketOutcomeBestBidAsk } from 'modules/markets/selectors/select-market-outcome-best-bid-ask';
+import Row from 'modules/common/row';
+import { ThunkDispatch } from 'redux-thunk';
+import { Action } from 'redux';
 
 const mapStateToProps = (state: AppState, ownProps) => {
   return {
