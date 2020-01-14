@@ -1,17 +1,17 @@
 @import (reference) '~assets/styles/shared';
 
 .ProgressLabel {
-  .mono-10-bold;
+  .mono-10-medium;
 
   align-items: baseline;
   color: @color-secondary-text;
   display: flex;
   flex-flow: column nowrap;
   white-space: nowrap;
+  text-transform: capitalize;
 
   > span:first-of-type {
     margin-right: @size-4;
-    text-transform: uppercase;
   }
 
   @media @breakpoint-mobile {
@@ -21,12 +21,11 @@
 
     > span:first-of-type {
       margin-right: 0;
-      text-transform: uppercase;
     }
   }
 
   > span:last-of-type {
-    .mono-11-medium;
+    .mono-12-medium;
 
     color: @color-primary-text;
     text-align: left;
