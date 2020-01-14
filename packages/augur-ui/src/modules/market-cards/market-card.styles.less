@@ -348,6 +348,10 @@
       }
     }
 
+    > div:nth-last-of-type(2) {
+      column-gap: 0;
+    }
+
     &.Condensed {
       > span {
         padding-bottom: 0;
@@ -385,7 +389,6 @@
     > div:nth-last-of-type(2) {
       grid-column: 1 / span 2;
       margin-bottom: @size-10;
-      column-gap: 0;
     }
 
     > span {
@@ -524,7 +527,7 @@
     }
 
     @media @breakpoint-max-tablet {
-      grid-row: 5;
+      grid-row: unset;
       margin-bottom: 0;
       margin-top: @size-8;
     }
