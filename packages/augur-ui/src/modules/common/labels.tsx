@@ -547,9 +547,9 @@ export const InvalidLabel = (props: InvalidLabelProps) => {
   const { text, keyId, openInvalidMarketRulesModal } = props;
   const {explainerBlockTitle, explainerBlockSubtexts, useBullets} = EventDetailsContent();
 
-  const openModal = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const openModal = event => {
+    event.preventDefault();
+    event.stopPropagation();
     openInvalidMarketRulesModal();
   };
 
@@ -559,7 +559,7 @@ export const InvalidLabel = (props: InvalidLabelProps) => {
       <label
         data-tip
         data-for={`${keyId}-${text ? text.replace(/\s+/g, '-') : ''}`}
-        onClick={(e) => openModal(e)}
+        onClick={(event) => openModal(event)}
       >
         {QuestionIcon}
       </label>
