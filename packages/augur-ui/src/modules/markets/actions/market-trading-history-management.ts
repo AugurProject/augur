@@ -10,9 +10,8 @@ import { FILLED, REPORTING_STATE } from 'modules/common/constants';
 import { Getters } from "@augurproject/sdk";
 
 export const UPDATE_USER_FILLED_ORDERS = 'UPDATE_USER_FILLED_ORDERS';
-export const UPDATE_USER_OPEN_ORDERS = 'UPDATE_USER_OPEN_ORDERS';
+export const REFRESH_USER_OPEN_ORDERS = 'REFRESH_USER_OPEN_ORDERS';
 export const BULK_MARKET_TRADING_HISTORY = 'BULK_MARKET_TRADING_HISTORY';
-export const UPDATE_USER_OPEN_ORDERS_MARKET = 'UPDATE_USER_OPEN_ORDERS_MARKET';
 
 export function bulkMarketTradingHistory(
   keyedMarketTradingHistory: Getters.Markets.MarketTradingHistory
@@ -38,24 +37,11 @@ export function updateUserFilledOrders(
   };
 }
 
-export function updateUserOpenOrdersInMarket(
-  marketId: string,
+export function refreshUserOpenOrders(
   openOrders: Getters.Markets.Orders
 ) {
   return {
-    type: UPDATE_USER_OPEN_ORDERS_MARKET,
-    data: {
-      marketId,
-      openOrders,
-    },
-  };
-}
-
-export function updateUserOpenOrders(
-  openOrders: Getters.Markets.Orders
-) {
-  return {
-    type: UPDATE_USER_OPEN_ORDERS,
+    type: REFRESH_USER_OPEN_ORDERS,
     data: {
       openOrders,
     },

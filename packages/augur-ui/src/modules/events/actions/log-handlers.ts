@@ -285,7 +285,7 @@ export const handleOrderCreatedLog = (log: Logs.ParsedOrderEventLog) => (
   if (isUserDataUpdate) {
     handleAlert(log, PUBLICTRADE, false, dispatch, getState);
 
-    dispatch(loadAccountOpenOrders({ marketId }));
+    dispatch(loadAccountOpenOrders());
     dispatch(loadAccountPositionsTotals());
   }
 };
@@ -312,7 +312,7 @@ export const handleOrderCanceledLog = (log: Logs.ParsedOrderEventLog) => (
         params: { ...log },
       })
     );
-    dispatch(loadAccountOpenOrders({ marketId }));
+    dispatch(loadAccountOpenOrders());
     dispatch(loadAccountPositionsTotals());
   }
 };
@@ -329,7 +329,7 @@ export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
   if (isUserDataUpdate) {
     handleAlert(log, PUBLICFILLORDER, true, dispatch, getState);
     dispatch(loadUserFilledOrders({ marketId }));
-    dispatch(loadAccountOpenOrders({ marketId }));
+    dispatch(loadAccountOpenOrders());
     dispatch(orderFilled(marketId, log, isSameAddress(log.orderCreator, address)));
   }
   dispatch(loadMarketTradingHistory(marketId));
