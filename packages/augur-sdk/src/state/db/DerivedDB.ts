@@ -73,11 +73,11 @@ export class DerivedDB extends RollbackTable {
   }
 
   // For a group of documents/logs for a particular event type get the latest per id and update the DB documents for the corresponding ids
-  handleMergeEvent = async (
+  async handleMergeEvent (
     blocknumber: number,
     logs: ParsedLog[],
     syncing = false
-  ): Promise<number> => {
+  ): Promise<number> {
     let success = true;
     let documentsByIdByTopic = null;
     if (logs.length > 0) {
@@ -101,7 +101,7 @@ export class DerivedDB extends RollbackTable {
             documents[0]
           );
         });
-        const processedDocs = _.compact(_.map(mostRecentTopics, this.processDoc.bind(this)));
+        const processedDocs = _.map(mostRecentTopics, this.processDoc.bind(this));
         return _.assign({}, ...processedDocs);
       }) as any[];
 
