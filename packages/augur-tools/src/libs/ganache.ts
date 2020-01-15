@@ -1,14 +1,14 @@
-import * as ganache from "ganache-core";
-import { ethers } from "ethers";
-import memdown from "memdown";
-import { MemDown } from "memdown";
-import { Contracts as compilerOutput, ContractAddresses } from "@augurproject/artifacts";
-import { Account } from "../constants";
-import crypto from "crypto";
-import { EthersProvider } from "@augurproject/ethersjs-provider";
-const levelup = require("levelup");
-import * as path from "path";
-import * as fs from "async-file";
+import * as ganache from 'ganache-core';
+import { ethers } from 'ethers';
+import memdown from 'memdown';
+import { MemDown } from 'memdown';
+import { Contracts as compilerOutput, ContractAddresses } from '@augurproject/artifacts';
+import { Account } from '../constants';
+import crypto from 'crypto';
+import { EthersProvider } from '@augurproject/ethersjs-provider';
+const levelup = require('levelup');
+import * as path from 'path';
+import * as fs from 'async-file';
 
 export interface Seed {
   addresses: ContractAddresses;
@@ -25,7 +25,7 @@ export async function makeGanacheServer(db: MemDown, accounts: Account[]): Promi
 }
 
 export function createDb(): MemDown {
-  return memdown("");
+  return memdown('');
 }
 
 export async function createDbFromSeed(seed: Seed): Promise<MemDown> {
@@ -55,15 +55,15 @@ function makeGanacheOpts(accounts: Account[], db: MemDown) {
 }
 
 export function hashContracts(): string {
-  const md5 = crypto.createHash("md5");
+  const md5 = crypto.createHash('md5');
   md5.update(JSON.stringify(compilerOutput));
-  return md5.digest("hex");
+  return md5.digest('hex');
 }
 
 interface LevelDBRow {
   key: string;
   value: string;
-  type: "put";
+  type: 'put';
 }
 
 export async function extractSeed(db: MemDown):Promise<LevelDBRow[]> {
@@ -72,18 +72,18 @@ export async function extractSeed(db: MemDown):Promise<LevelDBRow[]> {
     levelup(db).createReadStream({
       keyAsBuffer: false,
       valueAsBuffer: false,
-    }).on("data", (data: LevelDBRow) => {
+    }).on('data', (data: LevelDBRow) => {
       payload.push({
-        type: "put",
+        type: 'put',
         ...data,
       });
-    }).on("error", (err: Error) => {
-      console.log("Oh my!", err);
+    }).on('error', (err: Error) => {
+      console.log('Oh my!', err);
       reject(err);
-    }).on("close", () => {
-      console.log("Stream closed");
-    }).on("end", () => {
-      console.log("Stream ended");
+    }).on('close', () => {
+      console.log('Stream closed');
+    }).on('end', () => {
+      console.log('Stream ended');
       resolve(payload);
     });
   });

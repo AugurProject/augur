@@ -1,12 +1,11 @@
-import { Account, NULL_ADDRESS, _1_HUNDRED_ETH } from "../constants";
-import { ContractAPI } from "..";
-import { ParsedLog } from "@augurproject/types";
-import { BigNumber } from "bignumber.js";
-import { formatBytes32String } from "ethers/utils";
-import { ContractAddresses } from "@augurproject/artifacts";
-import { EthersProvider } from "@augurproject/ethersjs-provider";
-import { ethers } from "ethers";
-import { inOneMonths, today } from "./time";
+import { Account, NULL_ADDRESS, _1_HUNDRED_ETH } from '../constants';
+import { ContractAPI } from '..';
+import { ParsedLog } from '@augurproject/types';
+import { BigNumber } from 'bignumber.js';
+import { formatBytes32String } from 'ethers/utils';
+import { ContractAddresses } from '@augurproject/artifacts';
+import { EthersProvider } from '@augurproject/ethersjs-provider';
+import { ethers } from 'ethers';
 
 interface AddressMapping { [addr1: string]: string; }
 interface IdMapping { [id1: string]: string; }
@@ -72,9 +71,9 @@ export class LogReplayer {
 
   async ReplayLog(log: ParsedLog) {
     switch(log.name) {
-      case "UniverseCreated": return this.UniverseCreated(log);
-      case "MarketCreated": return this.MarketCreated(log);
-      case "OrderEvent": return this.OrderEvent(log);
+      case 'UniverseCreated': return this.UniverseCreated(log);
+      case 'MarketCreated': return this.MarketCreated(log);
+      case 'OrderEvent': return this.OrderEvent(log);
       default:
     }
   }
@@ -153,8 +152,8 @@ export class LogReplayer {
 
     console.log(`Replaying OrderEvent "${orderId}"`);
 
-    const betterOrderId = formatBytes32String("");
-    const worseOrderId = formatBytes32String("");
+    const betterOrderId = formatBytes32String('');
+    const worseOrderId = formatBytes32String('');
 
     const orderCreatorUser = await this.Account(orderCreator).then((account) => this.User(account));
 

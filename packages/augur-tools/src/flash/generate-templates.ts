@@ -35,8 +35,9 @@ export const generateTemplateValidations = async () => {
   const newTemplateValueObj = merge.all(
     templateValidations.map(tv => tv.template)
   );
-  if (!fs.existsSync(templateTemplateFile))
+  if (!fs.existsSync(templateTemplateFile)) {
     return console.error(templateTemplateFile, 'does not exist');
+  }
 
   const contents = fs.readFileSync(templateTemplateFile, 'utf8');
   const newTemplateValue = `export const TEMPLATES = ${JSON.stringify(
@@ -79,7 +80,7 @@ const generateValidations = (
     placeholderValues: null,
     afterTuesdayDate: null,
   };
-  let newTemplates = JSON.parse(JSON.stringify(templates));
+  const newTemplates = JSON.parse(JSON.stringify(templates));
   const topCategories = Object.keys(newTemplates);
   topCategories.map(c => addTemplates(newTemplates[c], validations));
   return { template: newTemplates, validations };
@@ -181,7 +182,7 @@ function getDateDependencies(inputs: TemplateInput[]): DateDependencies[] {
     }));
 }
 
-function getInputsAfterTuesdayDate(inputs: TemplateInput[]): { id: number }[] {
+function getInputsAfterTuesdayDate(inputs: TemplateInput[]): Array<{ id: number }> {
   return inputs
     .filter(
       i => i.type === TemplateInputType.DATEYEAR && i.validationType === ValidationType.EXP_DATE_TUESDAY_AFTER_MOVIE
@@ -261,23 +262,23 @@ function getValidationValues(input: TemplateInput) {
 const specialCharacters = [
   {
     find: /\(/g,
-    rep: `\\(`,
+    rep: '\\(',
   },
   {
     find: /\)/g,
-    rep: `\\)`,
+    rep: '\\)',
   },
   {
     find: /\?/g,
-    rep: `\\?`,
+    rep: '\\?',
   },
   {
     find: /\//g,
-    rep: `\\/`,
+    rep: '\\/',
   },
   {
     find: /\$/g,
-    rep: `\\$`,
+    rep: '\\$',
   },
 ] as const;
 

@@ -1,7 +1,7 @@
 import { deployContracts } from '../libs/blockchain';
 import { FlashSession, FlashArguments } from './flash';
 import { createCannedMarketsAndOrders } from './create-canned-markets-and-orders';
-import { _1_ETH, NULL_ADDRESS } from '../constants';
+import { _1_ETH } from '../constants';
 import {
   Contracts as compilerOutput,
   Addresses,
@@ -203,11 +203,11 @@ export function addScripts(flash: FlashSession) {
 
       switch(token) {
         case 'REP':
-          return await user.augur.contracts.getReputationToken().transfer(target, atto);
+          return user.augur.contracts.getReputationToken().transfer(target, atto);
         case 'ETH':
-          return await user.augur.sendETH(target, atto);
+          return user.augur.sendETH(target, atto);
         default:
-          return await user.augur.contracts.cash.transfer(target, atto);
+          return user.augur.contracts.cash.transfer(target, atto);
       }
     },
   });
@@ -312,15 +312,19 @@ export function addScripts(flash: FlashSession) {
       const yesno = args.yesno as boolean;
       const cat = args.categorical as boolean;
       const scalar = args.scalar as boolean;
-      if (yesno)
+      if (yesno) {
         await this.call('create-reasonable-yes-no-market', {});
-      if (cat)
-        await this.call('create-reasonable-categorical-market', {outcomes: "first,second,third,fourth,fifth"});
-      if (scalar)
+      }
+      if (cat) {
+        await this.call('create-reasonable-categorical-market', {outcomes: 'first,second,third,fourth,fifth'});
+      }
+      if (scalar) {
         await this.call('create-reasonable-scalar-market', {});
+      }
 
-      if (!yesno && !cat && !scalar)
+      if (!yesno && !cat && !scalar) {
         await this.call('create-reasonable-yes-no-market', {});
+      }
     }
   });
 
@@ -404,7 +408,7 @@ export function addScripts(flash: FlashSession) {
       const user = await this.ensureUser(this.network, true, true, null, meshEndpoint, true);
       await user.faucet(new BigNumber(10).pow(18).multipliedBy(1000000));
       await user.approve(new BigNumber(10).pow(18).multipliedBy(1000000));
-      const yesNoMarket = cannedMarkets.find(c => c.marketType === "yesNo");
+      const yesNoMarket = cannedMarkets.find(c => c.marketType === 'yesNo');
       const orderBook = yesNoMarket.orderBook;
       const timestamp = await this.call('get-timestamp', {});
       const tradeGroupId = String(Date.now());
@@ -624,14 +628,14 @@ export function addScripts(flash: FlashSession) {
       const orderBook = {
         2: {
           buy: [
-              { shares: "30", price: minPrice.plus(midPrice.times(0.7)).integerValue() },
-              { shares: "20", price: minPrice.plus(midPrice.times(0.6)).integerValue() },
-              { shares: "10", price: minPrice.plus(midPrice.times(0.5)).integerValue() },
+              { shares: '30', price: minPrice.plus(midPrice.times(0.7)).integerValue() },
+              { shares: '20', price: minPrice.plus(midPrice.times(0.6)).integerValue() },
+              { shares: '10', price: minPrice.plus(midPrice.times(0.5)).integerValue() },
           ],
           sell: [
-              { shares: "10", price: minPrice.plus(midPrice.times(0.4)).integerValue() },
-              { shares: "20", price: minPrice.plus(midPrice.times(0.3)).integerValue() },
-              { shares: "30", price: minPrice.plus(midPrice.times(0.2)).integerValue() },
+              { shares: '10', price: minPrice.plus(midPrice.times(0.4)).integerValue() },
+              { shares: '20', price: minPrice.plus(midPrice.times(0.3)).integerValue() },
+              { shares: '30', price: minPrice.plus(midPrice.times(0.2)).integerValue() },
           ],
         },
       };
@@ -682,7 +686,7 @@ export function addScripts(flash: FlashSession) {
             displayPrice: new BigNumber(price),
             displayShares: new BigNumber(0),
             expirationTime: new BigNumber(timestamp + oneHundredDays),
-          }
+          };
           console.log(JSON.stringify(order));
           await user.placeZeroXOrder(order);
         }
@@ -941,8 +945,9 @@ export function addScripts(flash: FlashSession) {
   flash.addScript({
     name: 'generate-templates',
     async call(this: FlashSession) {
-      generateTemplateValidations();
-      this.log('Generated Templates to augur-artifacts\n');
+      generateTemplateValidations().then(() => {
+        this.log('Generated Templates to augur-artifacts\n');
+      });
     },
   });
 
@@ -1005,7 +1010,7 @@ export function addScripts(flash: FlashSession) {
         const outcomesString = String(args.outcomes);
         const resolutionRules = String(args.resolutionRules);
         const endTime = Number(args.endTime);
-        result = validateMarketTemplate(title, templateInfo, outcomesString, resolutionRules, endTime)
+        result = validateMarketTemplate(title, templateInfo, outcomesString, resolutionRules, endTime);
         this.log(result);
       } catch (e) {
         this.log(e);
