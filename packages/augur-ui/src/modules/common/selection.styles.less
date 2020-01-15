@@ -27,6 +27,7 @@
       margin-right: auto;
     }
 
+    // arrow
     > svg {
       height: @size-6;
       margin: 0 @size-1 0 @size-13;
@@ -233,6 +234,11 @@
 .isOpen {
   > button {
     background: @color-secondary-hover;
+
+    // arrow
+    > svg {
+      transform: rotate(180deg);
+    }
   }
 }
 
