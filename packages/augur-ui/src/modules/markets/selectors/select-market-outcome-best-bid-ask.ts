@@ -1,4 +1,6 @@
 import { formatNone, formatShares, formatDai } from 'utils/format-number';
+import { INVALID_OUTCOME_ID, INVALID_BEST_BID_ALERT_VALUE } from 'modules/common/constants';
+import { createBigNumber } from 'utils/create-big-number';
 
 export const selectMarketOutcomeBestBidAsk = orderBook => {
   const none = { price: formatNone(), shares: formatNone() };
@@ -36,4 +38,17 @@ export const selectMarketOutcomeBestBidAsk = orderBook => {
     topAsk,
     topBid,
   };
+};
+
+
+export const selectBestBidAlert = (
+  outcomeId: number,
+  bestBidPrice: number,
+  minPrice: string,
+  maxPrice: string
+) => {
+  if (outcomeId !== INVALID_OUTCOME_ID) return false;
+  const range = createBigNumber(maxPrice).minus(createBigNumber(minPrice));
+  const percentage = (createBigNumber(bestBidPrice).minus(createBigNumber(minPrice))).dividedBy(range);
+  return percentage.gte(INVALID_BEST_BID_ALERT_VALUE);
 };

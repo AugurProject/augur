@@ -137,6 +137,7 @@ export interface ValueLabelProps {
   keyId?: string;
   showEmptyDash?: boolean;
   useFull?: boolean;
+  alert?: boolean;
 }
 
 interface SizableValueLabelProps extends ValueLabelProps {
@@ -381,6 +382,7 @@ export const ValueLabel = (props: ValueLabelProps) => {
     <span
       className={classNames(Styles.ValueLabel, {
         [Styles.DarkDash]: props.value.full === '-',
+        [Styles.Alert]: props.alert,
       })}
     >
       <label
