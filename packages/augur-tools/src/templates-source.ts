@@ -109,9 +109,6 @@ export const TEMPLATES = {
                       text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No'.`,
                     },
                     {
-                      text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as Invalid.`,
-                    },
-                    {
                       text:
                         'Includes regulation, any play-offs and sudden death',
                     },
@@ -153,11 +150,36 @@ export const TEMPLATES = {
                       text: `If a tournament or match is cancelled the market should resolve as 'No'. If the tournament is postponed and not be completed before the market's Event Expiration time, but the player named officially made the cut, noted by the tournament association, then the outcome should resolve as Yes.`,
                     },
                     {
-                      text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as Invalid`,
-                    },
-                    {
                       text: 'This market is intended to be about a Single Person, if this is not the case, this market should settle as invalid.'
                     }
+                  ],
+                },
+              },
+              {
+                marketType: YES_NO,
+                question: `PGA: Will the United States Team win the [1] Presidents Cup?`,
+                example: `PGA: Will the United States Team win the 2020 Presidents Cup?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.TEXT,
+                    placeholder: TEXT_PLACEHOLDERS.SINGLE_PLAYER,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If team fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as 'No'`,
+                    },
+                    {
+                      text: `If a tournament or match is cancelled the market should resolve as 'No'. If the tournament is postponed and not be completed before the market's Event Expiration time, but the player named officially made the cut, noted by the tournament association, then the outcome should resolve as Yes.`,
+                    },
                   ],
                 },
               },
@@ -195,14 +217,56 @@ export const TEMPLATES = {
                       text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No winner/Event Cancelled'.`,
                     },
                     {
-                      text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as invalid`,
-                    },
-                    {
                       text:
                         'Includes regulation, any play-offs and sudden death',
                     },
                     {
                       text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                    },
+                  ],
+                },
+              },
+              {
+                marketType: CATEGORICAL,
+                question: `PGA: Which team will win the [0] Presidents Cup?`,
+                example: `PGA: Which team will win the 2020 Presidents Cup?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `No winner/Event cancelled`,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `United States Team`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `International Team`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No winner/Event Cancelled'.`,
+                    },
+                    {
+                      text: `Only one team can be listed per outcome, if not then the market should resolve as 'Invalid'`,
+                    },
+                    {
+                      text: `This market is intended to have two teams, United States verse International, if not the case this market should resolve as 'Invalid'`,
+                    },
+                    {
+                      text:
+                        'Includes regulation, any play-offs and sudden death',
                     },
                   ],
                 },
@@ -241,9 +305,6 @@ export const TEMPLATES = {
                     },
                     {
                       text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No'.`,
-                    },
-                    {
-                      text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as Invalid.`,
                     },
                     {
                       text:
@@ -287,9 +348,6 @@ export const TEMPLATES = {
                       text: `If a tournament or match is cancelled the market should resolve as 'No'. If the tournament is postponed and not be completed before the market's Event Expiration time, but the player named officially made the cut, noted by the tournament association, then the outcome should resolve as Yes.`,
                     },
                     {
-                      text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as Invalid`,
-                    },
-                    {
                       text: 'This market is intended to be about a Single Person, if this is not the case, this market should settle as invalid.'
                     }
                   ],
@@ -329,14 +387,43 @@ export const TEMPLATES = {
                       text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No winner/Event Cancelled'.`,
                     },
                     {
-                      text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as invalid`,
-                    },
-                    {
                       text:
                         'Includes regulation, any play-offs and sudden death',
                     },
                     {
                       text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                    },
+                  ],
+                },
+              },
+              {
+                marketType: CATEGORICAL,
+                question: `Euro Tour: Which golf team will win the [0] Ryders Cup?`,
+                example: `Euro Tour: Which golf team will win the 2020 Ryders Cup?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `No winner/Event cancelled`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No winner/Event Cancelled'.`,
+                    },
+                    {
+                      text: `Only one team can be listed per outcome, if not then the market should resolve as 'Invalid'`,
+                    },
+                    {
+                      text:
+                        'Includes regulation, any play-offs and sudden death',
                     },
                   ],
                 },
@@ -375,9 +462,6 @@ export const TEMPLATES = {
                     },
                     {
                       text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No'.`,
-                    },
-                    {
-                      text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as Invalid.`,
                     },
                     {
                       text:
@@ -421,9 +505,6 @@ export const TEMPLATES = {
                       text: `If a tournament or match is cancelled the market should resolve as 'No'. If the tournament is postponed and not be completed before the market's Event Expiration time, but the player named officially made the cut, noted by the tournament association, then the outcome should resolve as Yes.`,
                     },
                     {
-                      text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as Invalid`,
-                    },
-                    {
                       text: 'This market is intended to be about a Single Person, if this is not the case, this market should settle as invalid.'
                     }
                   ],
@@ -461,9 +542,6 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     {
                       text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No winner/Event Cancelled'.`,
-                    },
-                    {
-                      text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as invalid`,
                     },
                     {
                       text:

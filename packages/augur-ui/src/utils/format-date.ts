@@ -216,6 +216,14 @@ export function getBeginDate(
   return beginDate.unix();
 }
 
+export function startOfTomorrow(unixTimestamp: number): number {
+  return moment
+    .unix(unixTimestamp)
+    .add(1, 'day')
+    .startOf('day')
+    .unix();
+}
+
 export function minMarketEndTimeDay() {
   return moment()
   .subtract(1, 'day')

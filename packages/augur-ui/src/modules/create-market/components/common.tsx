@@ -31,6 +31,7 @@ import {
   buildformattedDate,
   convertUnixToFormattedDate,
   minMarketEndTimeDay,
+  startOfTomorrow,
 } from 'utils/format-date';
 import MarkdownRenderer from 'modules/common/markdown-renderer';
 import {
@@ -835,7 +836,9 @@ export const InputFactory = (props: InputFactoryProps) => {
         currentTimestamp={currentTimestamp}
         placeholder={input.placeholder}
         setEndTime={input.setEndTime}
-        isBefore={input.type === TemplateInputType.DATESTART && currentTimestamp}
+        isBefore={
+          input.type === TemplateInputType.DATESTART && startOfTomorrow(currentTimestamp)
+        }
         isAfter={isAfter}
         errorMessage={validations.inputs && validations.inputs[inputIndex]}
       />
