@@ -1548,7 +1548,7 @@ export function addScripts(flash: FlashSession) {
         '-e', 'VERBOSITY=4', // 5=debug 6=trace
         '-e', 'RPC_ADDR=0x:60557', // need to use "0x" network
         // '0xorg/mesh:7.1.1-beta-0xv3',
-        '0xorg/mesh:0xV3',
+        'fabioberger123/mesh:augur-kovan-devutils-fix',
       ]);
 
       mesh.on('error', console.error);

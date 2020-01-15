@@ -143,7 +143,7 @@ export class ZeroXOrders extends AbstractTable {
 
     // Remove Canceled, Expired, and Invalid Orders and emit event
     const canceledOrders =
-      _.filter(orderEvents, (orderEvent => orderEvent.endState === 'CANCELLED' || orderEvent.endState === 'EXPIRED' || orderEvent.endState === 'INVALID'))
+      _.filter(filteredOrders, (orderEvent => orderEvent.endState === 'CANCELLED' || orderEvent.endState === 'EXPIRED' || orderEvent.endState === 'INVALID'))
       .map(order => order.orderHash);
 
     for (const d of documents) {
@@ -156,7 +156,7 @@ export class ZeroXOrders extends AbstractTable {
 
     // Deal with partial fills and emit event
     const filledOrders =
-      _.filter(orderEvents, (orderEvent => orderEvent.endState === 'FILLED'))
+      _.filter(filteredOrders, (orderEvent => orderEvent.endState === 'FILLED'))
       .map(order => order.orderHash);
 
     for (const d of documents) {
