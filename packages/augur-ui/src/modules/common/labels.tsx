@@ -157,6 +157,7 @@ export interface TextLabelProps {
 
 export interface InvalidLabelProps extends TextLabelProps {
   openInvalidMarketRulesModal?: Function;
+  tooltipPositioning?: string;
 }
 
 export interface TextLabelState {
@@ -569,7 +570,12 @@ export class HoverValueLabel extends React.Component<
 }
 
 export const InvalidLabel = (props: InvalidLabelProps) => {
-  const { text, keyId, openInvalidMarketRulesModal } = props;
+  const {
+    text,
+    keyId,
+    openInvalidMarketRulesModal,
+    tooltipPositioning,
+  } = props;
   const {
     explainerBlockTitle,
     explainerBlockSubtexts,
@@ -599,7 +605,7 @@ export const InvalidLabel = (props: InvalidLabelProps) => {
           TooltipStyles.TooltipInvalidRules
         )}
         effect="solid"
-        place="top"
+        place={tooltipPositioning || 'left'}
         type="dark"
         data-event="mouseover"
         data-event-off="blur scroll"
