@@ -41,6 +41,7 @@ import { EventDetailsContent } from 'modules/create-market/constants';
 import { ExplainerBlock } from 'modules/create-market/components/common';
 import { hasTemplateTextInputs } from '@augurproject/artifacts';
 import moment from 'moment';
+import { getDurationBetween } from 'utils/format-date';
 
 export interface MarketTypeProps {
   marketType: string;
@@ -222,10 +223,8 @@ interface CountdownLabelProps {
 }
 
 export const CountdownLabel = ({ expiry, currentTimestamp }: CountdownLabelProps) => {
-  const expiryMoment = moment(expiry.timestamp * 1000);
-  const currentTimeMoment = moment(currentTimestamp  * 1000);
-  var duration = moment.duration(expiryMoment.diff(currentTimeMoment));
-  var hours = duration.asHours(); 
+  const duration = getDurationBetween(expiry.timestamp, currentTimestamp);
+  const hours = duration.asHours(); 
   if (hours > 1) return null;
   return (
     <div className={Styles.CountdownLabel}>

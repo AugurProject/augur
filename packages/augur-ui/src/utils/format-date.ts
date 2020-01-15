@@ -342,3 +342,9 @@ export function getFullDaysBetween(
 
   return daysBetween;
 }
+
+export function getDurationBetween(timestamp1, timestamp2) {
+  const timestamp1Moment = moment.unix(timestamp1);
+  const timestamp2Moment = moment.unix(timestamp2);
+  return moment.duration(timestamp1Moment.diff(timestamp2Moment));
+}
