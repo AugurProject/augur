@@ -6,7 +6,6 @@
   flex: 1 100%;
   flex-direction: column;
   max-height: @charts-max-height;
-  // height: @charts-max-height;
   min-height: @charts-min-height;
   padding: @size-8 0 0;
   position: relative;
@@ -14,6 +13,7 @@
 
   @media @breakpoint-mobile {
     padding-bottom: 0;
+    min-height: @charts-max-height;
   }
 }
 

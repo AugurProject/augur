@@ -577,7 +577,7 @@ export default class MarketView extends Component<
                   fillWidth
                   noBorder
                   id="mobileView"
-                  scrollOver
+                  scrollOver={matches}
                   leftButton={
                     <button
                       className={Styles.MarketView__button}
@@ -624,26 +624,9 @@ export default class MarketView extends Component<
                     }}
                   >
                     <div
-                      className={classNames(
-                        Styles['MarketView__paneContainer--mobile'],
-                        Styles.TradesMobile
-                      )}
+                      className={Styles['MarketView__paneContainer--mobile']}
                     >
-                      <div className={Styles.OutcomeSelectionArea}>
-                        <h1>{description}</h1>
-                        <SquareDropdown
-                          defaultValue={defaultOutcome}
-                          onChange={value => this.updateSelectedOutcome(value)}
-                          options={sortedOutcomes
-                            .filter(outcome => outcome.isTradeable)
-                            .map(outcome => ({
-                              label: outcome.description,
-                              value: outcome.id,
-                            }))}
-                          large
-                          showColor
-                        />
-                      </div>
+                      <h1>{description}</h1>
                       <ModuleTabs selected={0} fillForMobile>
                         <ModulePane label="Order Book">
                           <div className={Styles.MarketView__orders}>

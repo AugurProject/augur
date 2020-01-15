@@ -708,7 +708,7 @@ class Form extends Component<FromProps, FormState> {
     }
     return (
       <div className={Styles.TradingForm}>
-        <div className={classNames(Styles.Outcome, Styles.HideOnMobile)}>
+        <div className={Styles.Outcome}>
           <SquareDropdown
             defaultValue={defaultOutcome}
             onChange={value => updateSelectedOutcome(value)}
