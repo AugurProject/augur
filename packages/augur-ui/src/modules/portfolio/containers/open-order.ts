@@ -10,13 +10,14 @@ import { Action } from "redux";
 
 const { COLUMN_TYPES } = constants;
 
-const mapStateToProps = (state: AppState) => ({});
+const mapStateToProps = (state: AppState) => ({
+  currentTimestamp: state.blockchain.currentAugurTimestamp,
+});
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({});
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
   const openOrder = oP.openOrder;
-
   const tokensEscrowed = getValue(openOrder, "tokensEscrowed");
   const sharesEscrowed = getValue(openOrder, "sharesEscrowed");
   const avgPrice = getValue(openOrder, "avgPrice");
@@ -34,6 +35,9 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       key: "orderType",
       columnType: COLUMN_TYPES.POSITION_TYPE,
       type: openOrder.type,
+      showCountdown: true,
+      expiry: openOrder.expiry,
+      currentTimestamp: sP.currentTimestamp,
     },
     {
       key: "unmatchedShares",
@@ -67,7 +71,10 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       key: "cancel",
       columnType: COLUMN_TYPES.CANCEL_TEXT_BUTTON,
       disabled: openOrder.pending,
-      text: "Cancel",
+      text: null,
+      showCountdown: true,
+      expiry: openOrder.expiry,
+      currentTimestamp: sP.currentTimestamp,
       pending: openOrder.pending || openOrder.pendingOrder,
       status: openOrder.status,
       action: async (e: Event) => {

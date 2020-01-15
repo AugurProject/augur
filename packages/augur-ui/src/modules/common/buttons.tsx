@@ -266,11 +266,11 @@ export const ToggleExtendButton = (props: ToggleExtendButtonProps) => (
 export const CancelTextButton = (props: DefaultButtonProps) => (
   <button
     onClick={e => props.action(e)}
-    className={Styles.CancelTextButton}
+    className={classNames(Styles.CancelTextButton, {[Styles.IconButton]: !props.text})}
     disabled={props.disabled}
     title={props.title}
   >
-    {props.text}
+    {props.text || XIcon}
   </button>
 );
 
