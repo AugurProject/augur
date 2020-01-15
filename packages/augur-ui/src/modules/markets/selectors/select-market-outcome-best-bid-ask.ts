@@ -1,15 +1,15 @@
-import { formatNone, formatShares, formatDai } from 'utils/format-number';
+import { formatNone, formatShares, formatBestPrice } from 'utils/format-number';
 import { INVALID_OUTCOME_ID, INVALID_BEST_BID_ALERT_VALUE } from 'modules/common/constants';
 import { createBigNumber } from 'utils/create-big-number';
 
-export const selectMarketOutcomeBestBidAsk = orderBook => {
+export const selectMarketOutcomeBestBidAsk = (orderBook, tickSize = 0) => {
   const none = { price: formatNone(), shares: formatNone() };
   let topAsk = none;
   let topBid = none;
 
   const formatData = item => {
     return {
-      price: formatDai(item.price),
+      price: formatBestPrice(item.price, tickSize),
       shares: formatShares(item.shares, {decimals: 2, decimalsRounded: 2}),
     };
   };
