@@ -29,6 +29,7 @@ export interface Properties {
   size?: string;
   showEmptyDash?: Boolean;
   addIndicator?: Boolean;
+  alert?: boolean;
   outcome?: string;
   location?: string;
   showExtraNumber?: Boolean;
@@ -68,6 +69,7 @@ function selectColumn(columnType: string, properties: Properties) {
                   keyId={properties.keyId}
                   showEmptyDash={properties.showEmptyDash}
                   useFull={properties.useFull}
+                  alert={properties.alert}
                 />
               </button>
             )}
