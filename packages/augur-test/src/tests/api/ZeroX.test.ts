@@ -53,7 +53,7 @@ describe('Augur API :: ZeroX :: ', () => {
       const johnConnector = new Connectors.DirectConnector();
       const johnGnosis = new MockGnosisRelayAPI();
       john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, addresses, johnConnector, johnGnosis, meshClient, meshBrowser);
-      expect(john).not.toBeUndefined();
+      expect(john).toBeDefined();
 
       johnGnosis.initialize(john);
       johnDB = mock.makeDB(john.augur, ACCOUNTS);
