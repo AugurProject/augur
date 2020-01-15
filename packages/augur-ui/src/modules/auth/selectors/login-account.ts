@@ -82,12 +82,7 @@ export const selectAccountFunds = createSelector(
 );
 
 export const totalTradingBalance = (loginAccount: LoginAccount): BigNumber => {
-  const totalAvailableTradingBalance = loginAccount.balances.dai
-    ? createBigNumber(loginAccount.balances.dai).minus(
-        createBigNumber(loginAccount.totalOpenOrdersFrozenFunds)
-      )
-    : 0;
   return createBigNumber(loginAccount.balances.dai).minus(
-    totalAvailableTradingBalance
+    loginAccount.totalOpenOrdersFrozenFunds
   );
 };
