@@ -5,8 +5,6 @@ import {
   Connectors,
   Provider,
   ClientConfiguration,
-  BrowserMesh,
-  createBrowserMesh,
   createClient
 } from '@augurproject/sdk';
 import { EthersSigner } from 'contract-dependencies-ethers';
@@ -25,6 +23,7 @@ import { WSClient } from '@0x/mesh-rpc-client';
 import { Mesh } from '@0x/mesh-browser';
 import { NETWORK_IDS } from 'modules/common/constants';
 import { WebWorkerConnector } from './ww-connector';
+import { BrowserMesh, createBrowserMesh } from './browser-mesh';
 
 export class SDK {
   sdk: Augur | null = null;

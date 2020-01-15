@@ -5,7 +5,7 @@ import {
   ContractAddresses as ZeroXContractAddresses,
 } from '@0x/mesh-browser';
 import { getAddressesForNetwork, NetworkId } from '@augurproject/artifacts';
-import { SDKConfiguration } from '../state/create-api';
+import { SDKConfiguration } from '@augurproject/sdk';
 
 type BrowserMeshErrorFunction = (err: Error, mesh: Mesh) => void;
 /**

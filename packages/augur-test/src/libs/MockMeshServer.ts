@@ -101,6 +101,9 @@ export class MockMeshServer {
 
         if (params[0] === "heartbeat") {
             subscription = heartbeatSub;
+            if (this._subInterval !== null) {
+              throw new Error("Attempting to subscribe twice to the mock relayer. Make sure tests unsubscribe.")
+            }
             this._subInterval = setInterval(() => {
                 connection.sendUTF(JSON.stringify({
                     jsonrpc: "2.0",
@@ -122,6 +125,7 @@ export class MockMeshServer {
 
     unsubscribe(id: number): string {
       clearInterval(this._subInterval);
+      this._subInterval = null;
 
       return JSON.stringify({
         id,
