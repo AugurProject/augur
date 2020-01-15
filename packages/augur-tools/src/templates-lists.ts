@@ -1293,10 +1293,6 @@ export const LIST_VALUES = {
       label: 'KLM Open',
     },
     {
-      value: 'Ryder Cup',
-      label: 'Ryder Cup',
-    },
-    {
       value: 'Alfred Dunhill Links Championsip',
       label: 'Alfred Dunhill Links Championsip',
     },
@@ -1383,10 +1379,6 @@ export const LIST_VALUES = {
       label: 'Hero World Challenge',
     },
     {
-      value: 'Presidents Cup',
-      label: 'Presidents Cup',
-    },
-    {
       value: 'QBE Shootout',
       label: 'QBE Shootout',
     },
@@ -1409,10 +1401,6 @@ export const LIST_VALUES = {
     {
       value: 'Waste Management Phoenix Open',
       label: 'Waste Management Phoenix Open',
-    },
-    {
-      value: 'AT&T Pebble Beach Pro-Am',
-      label: 'AT&T Pebble Beach Pro-Am',
     },
     {
       value: 'The Genesis Invitational',
