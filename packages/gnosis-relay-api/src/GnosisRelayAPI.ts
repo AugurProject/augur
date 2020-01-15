@@ -35,8 +35,8 @@ export interface RelayTxEstimateData {
 }
 
 export interface RelayTransaction extends RelayTxEstimateData {
-  safeTxGas: BigNumber | string;
-  dataGas: BigNumber;
+  safeTxGas: string;
+  dataGas: string;
   gasPrice: BigNumber;
   refundReceiver: string;
   nonce: number;
@@ -73,8 +73,8 @@ export interface CheckSafeResponse {
 }
 
 export interface RelayTxEstimateResponse {
-  safeTxGas: BigNumber;
-  baseGas: BigNumber;
+  safeTxGas: string;
+  baseGas: string;
 }
 
 export enum GnosisSafeState {
@@ -187,10 +187,13 @@ export class GnosisRelayAPI implements IGnosisRelayAPI {
       const relayTxEstimate: RelayTxEstimateResponse = result.data;
 
       if (this.gasEstimateIncreasePercentage) {
-        relayTxEstimate.safeTxGas = relayTxEstimate.safeTxGas.plus(
-          relayTxEstimate.safeTxGas.div(
-            new BigNumber(100).div(this.gasEstimateIncreasePercentage))
-        );
+        const safeTxGas = new BigNumber(relayTxEstimate.safeTxGas);
+        relayTxEstimate.safeTxGas = this.gasEstimateIncreasePercentage
+          .div(100)
+          .plus(1)
+          .times(safeTxGas)
+          .idiv(1)
+          .toFixed();
       }
 
       return relayTxEstimate;
