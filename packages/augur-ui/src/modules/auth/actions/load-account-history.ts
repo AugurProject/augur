@@ -1,5 +1,5 @@
 import { userPositionProcessing } from 'modules/positions/actions/load-account-positions';
-import { updateUserFilledOrders, bulkMarketTradingHistory, updateUserOpenOrders } from 'modules/markets/actions/market-trading-history-management';
+import { updateUserFilledOrders, bulkMarketTradingHistory, refreshUserOpenOrders } from 'modules/markets/actions/market-trading-history-management';
 import { clearTransactions } from 'modules/transactions/actions/update-transactions-data';
 import { ThunkDispatch, ThunkAction } from 'redux-thunk';
 import { Action } from 'redux';
@@ -37,7 +37,7 @@ async function loadTransactions(
   }), {});
 
   dispatch(updateMarketsData(marketsDataById));
-  if (userData.userOpenOrders) dispatch(updateUserOpenOrders(userData.userOpenOrders.orders));
+  if (userData.userOpenOrders) dispatch(refreshUserOpenOrders(userData.userOpenOrders.orders));
   dispatch(updateLoginAccount({ reporting: userData.userStakedRep }));
   if (userData.userPositions) userPositionProcessing(userData.userPositions, dispatch);
   if (userData.userPositionTotals) dispatch(updateLoginAccount(userData.userPositionTotals));
