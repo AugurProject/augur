@@ -73,7 +73,7 @@ services:
       - augur
 
   0x-mesh:
-    image: 0xorg/mesh:0xV3
+    image: fabioberger123/mesh:augur-kovan-devutils-fix
     restart: on-failure
     hostname: 0x
     ports:
