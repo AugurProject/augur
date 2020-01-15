@@ -40,7 +40,6 @@ import {
 import { EventDetailsContent } from 'modules/create-market/constants';
 import { ExplainerBlock } from 'modules/create-market/components/common';
 import { hasTemplateTextInputs } from '@augurproject/artifacts';
-import moment from 'moment';
 import { getDurationBetween } from 'utils/format-date';
 
 export interface MarketTypeProps {
