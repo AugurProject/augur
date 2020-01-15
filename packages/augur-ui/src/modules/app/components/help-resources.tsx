@@ -18,6 +18,16 @@ interface HelpResourcesProps {
 
 const HELP_LINKS = [
   {
+    label: 'trading tutorial',
+    showNonLink: true,
+    customLink: {
+      pathname: MARKET,
+      search: makeQuery({
+        [MARKET_ID_PARAM_NAME]: TRADING_TUTORIAL,
+      }),
+    },
+  },
+  {
     label: 'help center',
     link: 'https://docs.augur.net',
   },
@@ -33,16 +43,6 @@ const HELP_LINKS = [
     label: 'how to dispute',
     link: 'https://docs.augur.net',
   },
-  {
-    label: 'MAKE A TEST TRADE',
-    className: Styles.hideOnTablet,
-    customLink: {
-      pathname: MARKET,
-      search: makeQuery({
-        [MARKET_ID_PARAM_NAME]: TRADING_TUTORIAL,
-      }),
-    },
-  },
 ];
 
 export const HelpMenuList = () => {
@@ -56,6 +56,7 @@ export const HelpMenuList = () => {
             URL={helpLink.link}
             label={helpLink.label}
             customLink={helpLink.customLink}
+            showNonLink={helpLink.showNonLink}
           />
         </li>
       ))}
@@ -74,6 +75,7 @@ export const HelpMenu = () => {
             URL={helpLink.link}
             label={helpLink.label}
             customLink={helpLink.customLink}
+            showNonLink={helpLink.showNonLink}
           />
         </span>
       ))}
