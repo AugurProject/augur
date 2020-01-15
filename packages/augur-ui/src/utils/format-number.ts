@@ -100,7 +100,7 @@ export function formatDaiEstimate(
   return formatNumber(num, {
     decimals: 2,
     decimalsRounded: 2,
-    
+
     denomination: v => {
       const isNegative = Number(v) < 0;
       const val = isNegative ? createBigNumber(v).abs().toFixed(2) : v;
@@ -147,6 +147,35 @@ export function formatShares(
   });
 
   return formattedShares;
+}
+
+export function formatBestPrice(
+  num: NumStrBigNumber,
+  tickSize: number,
+  opts: FormattedNumberOptions = {}
+): FormattedNumber {
+  let decimals = 0;
+  if(String(tickSize).indexOf('.') >= 0) {
+    decimals = String(tickSize).split(".")[1].length;
+  }
+  return formatNumber(num, {
+    decimals,
+    decimalsRounded: decimals,
+    denomination: v => {
+      const isNegative = Number(v) < 0;
+      const val = isNegative
+        ? createBigNumber(v)
+            .abs()
+            .toFixed(2)
+        : v;
+      return `${isNegative ? '-' : ''}${val}`;
+    },
+    positiveSign: false,
+    zeroStyled: false,
+    blankZero: false,
+    bigUnitPostfix: false,
+    ...opts,
+  });
 }
 
 export function formatDai(
