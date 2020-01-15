@@ -1,11 +1,11 @@
 import { connect } from 'react-redux';
 import Form from 'modules/trading/components/form';
-import { createBigNumber } from 'utils/create-big-number';
 import { selectSortedMarketOutcomes } from 'modules/markets/selectors/market';
 import orderAndAssignCumulativeShares from 'modules/markets/helpers/order-and-assign-cumulative-shares';
 import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
 import { orderPriceEntered, orderAmountEntered } from 'services/analytics/helpers';
 import { AppState } from 'store';
+import { totalTradingBalance } from 'modules/auth/selectors/login-account';
 
 
 const mapStateToProps = (state: AppState, ownProps) => {
@@ -27,7 +27,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
   const cumulativeOrderBook = orderAndAssignCumulativeShares(outcomeOrderBook);
 
   return {
-    availableDai: createBigNumber(loginAccount.balances.dai),
+    availableDai: totalTradingBalance(loginAccount),
     currentTimestamp: blockchain.currentAugurTimestamp,
     orderBook: cumulativeOrderBook,
     sortedOutcomes: selectSortedMarketOutcomes(

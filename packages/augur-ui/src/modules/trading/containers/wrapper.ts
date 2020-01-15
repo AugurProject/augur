@@ -22,6 +22,7 @@ import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names';
 import { addPendingOrder } from 'modules/orders/actions/pending-orders-management';
 import { orderSubmitted } from 'services/analytics/helpers';
 import { AppState } from 'store';
+import { totalTradingBalance } from 'modules/auth/selectors/login-account';
 
 const getMarketPath = id => {
   return {
@@ -52,7 +53,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
     Gnosis_ENABLED,
     gnosisStatus,
     currentTimestamp: blockchain.currentAugurTimestamp,
-    availableDai: loginAccount.balances.dai,
+    availableDai: totalTradingBalance(loginAccount),
   };
 };
 
