@@ -2,14 +2,17 @@ import { connect } from 'react-redux';
 import Confirm from 'modules/trading/components/confirm';
 import { createBigNumber } from 'utils/create-big-number';
 import { getGasPrice } from 'modules/auth/selectors/get-gas-price';
+import { AppState } from 'store';
+import { totalTradingBalance } from 'modules/auth/selectors/login-account';
 
-const mapStateToProps = (state, ownProps) => {
-  const { authStatus, loginAccount, appStatus, blockchain } = state;
-  const { 
+const mapStateToProps = (state: AppState) => {
+  const { authStatus, loginAccount, appStatus } = state;
+  const {
     gnosisEnabled: Gnosis_ENABLED,
     ethToDaiRate,
     gnosisStatus,
   } = appStatus;
+
   const hasFunds = Gnosis_ENABLED
     ? !!loginAccount.balances.dai
     : !!loginAccount.balances.eth && !!loginAccount.balances.dai;
@@ -17,7 +20,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     gasPrice: getGasPrice(state),
     availableEth: createBigNumber(loginAccount.balances.eth),
-    availableDai: createBigNumber(loginAccount.balances.dai),
+    availableDai: totalTradingBalance(loginAccount),
     hasFunds,
     isLogged: authStatus.isLogged,
     allowanceBigNumber: loginAccount.allowance,
