@@ -159,7 +159,7 @@ export function formatBestPrice(
     decimals = String(tickSize).split(".")[1].length;
   }
   return formatNumber(num, {
-    decimals: decimals,
+    decimals,
     decimalsRounded: decimals,
     denomination: v => {
       const isNegative = Number(v) < 0;
