@@ -74,7 +74,7 @@
         background-color: @color-secondary-action-outline;
       }
 
-      &::before {
+      &:not(:last-of-type)::before {
         background: fade(@color-secondary-action-outline, 50%);
         bottom: 0;
         content: "";
