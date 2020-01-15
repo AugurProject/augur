@@ -6,10 +6,12 @@ import {
   PositionTypeLabel,
   TextLabel,
   ValueLabel,
+  CountdownLabel
 } from 'modules/common/labels';
 import InvalidLabel from 'modules/common/containers/labels';
 import { CancelTextButton } from 'modules/common/buttons';
 import MarketOutcomeTradingIndicator from 'modules/market/containers/market-outcome-trading-indicator';
+import { DateFormattedObject } from 'modules/types';
 
 const { COLUMN_TYPES } = constants;
 
@@ -34,6 +36,9 @@ export interface Properties {
   location?: string;
   showExtraNumber?: Boolean;
   status?: string;
+  showCountdown?: Boolean;
+  expiry?: DateFormattedObject;
+  currentTimestamp?: Number;
 }
 
 function selectColumn(columnType: string, properties: Properties) {
@@ -47,10 +52,15 @@ function selectColumn(columnType: string, properties: Properties) {
       );
     case COLUMN_TYPES.POSITION_TYPE:
       return (
-        <PositionTypeLabel
-          type={properties.type}
-          pastTense={properties.pastTense}
-        />
+        <>
+          {properties.showCountdown &&
+            <CountdownLabel currentTimestamp={properties.currentTimestamp} expiry={properties.expiry} />
+          }
+          <PositionTypeLabel
+            type={properties.type}
+            pastTense={properties.pastTense}
+          />
+        </>
       );
     case COLUMN_TYPES.VALUE:
       return (
@@ -96,11 +106,16 @@ function selectColumn(columnType: string, properties: Properties) {
           <PendingLabel status={properties.status}/>{' '}
         </span>
       ) : (
-        <CancelTextButton
-          disabled={properties.disabled}
-          text={properties.text}
-          action={properties.action}
-        />
+        <>
+          {properties.showCountdown &&
+            <CountdownLabel currentTimestamp={properties.currentTimestamp} expiry={properties.expiry} />
+          }
+          <CancelTextButton
+            disabled={properties.disabled}
+            text={properties.text}
+            action={properties.action}
+          />
+        </>
       );
     case COLUMN_TYPES.PLAIN:
       return properties.value;

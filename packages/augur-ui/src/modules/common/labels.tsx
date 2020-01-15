@@ -40,6 +40,7 @@ import {
 import { EventDetailsContent } from 'modules/create-market/constants';
 import { ExplainerBlock } from 'modules/create-market/components/common';
 import { hasTemplateTextInputs } from '@augurproject/artifacts';
+import moment from 'moment';
 
 export interface MarketTypeProps {
   marketType: string;
@@ -214,6 +215,24 @@ interface TimeLabelProps {
   showLocal?: boolean;
   hint?: React.ReactNode;
 }
+
+interface CountdownLabelProps {
+  expiry: DateFormattedObject;
+  currentTimestamp: Number;
+}
+
+export const CountdownLabel = ({ expiry, currentTimestamp }: CountdownLabelProps) => {
+  const expiryMoment = moment(expiry.timestamp * 1000);
+  const currentTimeMoment = moment(currentTimestamp  * 1000);
+  var duration = moment.duration(expiryMoment.diff(currentTimeMoment));
+  var hours = duration.asHours(); 
+  if (hours > 1) return null;
+  return (
+    <div className={Styles.CountdownLabel}>
+      {Math.round(duration.asMinutes())}m
+    </div>
+  );
+};
 
 interface TemplateShieldProps {
   market: Getters.Markets.MarketInfo;
