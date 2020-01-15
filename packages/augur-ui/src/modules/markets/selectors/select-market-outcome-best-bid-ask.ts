@@ -49,6 +49,6 @@ export const selectBestBidAlert = (
 ) => {
   if (outcomeId !== INVALID_OUTCOME_ID) return false;
   const range = createBigNumber(maxPrice).minus(createBigNumber(minPrice));
-  const percentage = createBigNumber(bestBidPrice).dividedBy(range);
+  const percentage = (createBigNumber(bestBidPrice).minus(createBigNumber(minPrice))).dividedBy(range);
   return percentage.gte(INVALID_BEST_BID_ALERT_VALUE);
 };
