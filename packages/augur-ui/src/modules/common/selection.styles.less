@@ -1,7 +1,7 @@
 @import (reference) "~assets/styles/shared";
 
 .Dropdown {
-  border: 1px solid @color-secondary-action-outline;
+  border: @size-1 solid @color-secondary-action-outline;
   border-radius: @border-radius-default;
   cursor: pointer;
   display: flex;
@@ -46,7 +46,7 @@
 
   > div:first-of-type {
     background-color: @color-secondary-action;
-    border: 1px solid @color-secondary-action-outline;
+    border: @size-1 solid @color-secondary-action-outline;
     border-radius: @border-radius-default;
     box-shadow: 0 @size-8 @size-8 @color-dark-grey;
     display: none;
@@ -78,7 +78,7 @@
         background: fade(@color-secondary-action-outline, 50%);
         bottom: 0;
         content: "";
-        height: 1px;
+        height: @size-1;
         position: absolute;
       }
     }
@@ -121,11 +121,11 @@
     > span {
       flex: 1;
       display: flex;
-      border-right: 1px solid @color-secondary-action-outline;
-      padding: @size-6 0;
+      border-right: @size-1 solid @color-secondary-action-outline;
+      padding: @size-5 @size-8 @size-5 0;
 
       @media @breakpoint-mobile {
-        border-right: 1px solid @color-secondary-action;
+        border-right: @size-1 solid @color-secondary-action;
         padding: @size-10 0;
       }
     }
@@ -161,49 +161,79 @@
   }
 }
 
+// Used in expiration date selection
 .Normal {
   .Dropdown;
 
   max-width: fit-content;
 
-  &:active,
-  &:hover {
-    outline: none;
+  height: @size-24;
+
+  @media @breakpoint-mobile {
+    height: @size-32;
   }
 
   > button {
-    .mono-9;
+    .text-10;
 
-    line-height: @size-12;
-    text-transform: uppercase;
+    @media @breakpoint-mobile {
+      .text-10-bold;
+    }
+
+    background: @color-secondary-action;
     padding: 0 @size-8;
+    text-transform: uppercase;
 
+    // vertical line before arrow icon
     > span {
-      display: block;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      padding: @size-6 @size-8 @size-6 0;
-      border-right: 1px solid @color-secondary-action-outline;
+
       flex: 1;
       display: flex;
+      border-right: @size-1 solid @color-secondary-action-outline;
+      padding: @size-6 0;
+      
+      @media @breakpoint-mobile {
+        border-right: @size-1 solid @color-secondary-action-outline;
+        padding: @size-10 0;
+      }
     }
 
-    @media @breakpoint-mobile-new {
-      line-height: @size-18;
+    // arrow
+    > svg {
+      margin: 0 0 0 @size-8;
     }
+
+    &:hover {
+      background: @color-secondary-action;
+    }
+  }
+
+  > div:first-of-type {
+    margin-top: @size-2;
+  }
+
+  > div {
+    width: 100%;
   }
 
   > div > button {
     .text-10;
 
-    height: @size-32;
-    line-height: @size-12;
-    padding: @size-10 @size-12;
+    padding: 0 @size-8;
+    height: @size-24;
+    text-transform: uppercase;
+
+    @media @breakpoint-mobile {
+      .text-10-bold;
+      height: @size-40;
+    }
 
     &::before {
-      left: @size-12;
-      right: @size-12;
+      left: @size-8;
+      right: @size-8;
     }
   }
 }
@@ -287,7 +317,7 @@
 
   > li {
     background: transparent;
-    border: 1px solid @color-secondary-action-outline;
+    border: @size-1 solid @color-secondary-action-outline;
     border-right: 0;
     box-sizing: border-box;
     display: flex;
@@ -299,7 +329,7 @@
     &.Selected,
     &:hover {
       background: fade(@color-secondary-action-outline, 30%);
-      border-right: 1px solid @color-secondary-action-outline;
+      border-right: @size-1 solid @color-secondary-action-outline;
 
       > button {
         color: @color-primary-text;
@@ -317,7 +347,7 @@
 
     &:last-of-type {
       border-bottom-right-radius: @border-radius-default;
-      border-right: 1px solid @color-secondary-action-outline;
+      border-right: @size-1 solid @color-secondary-action-outline;
       border-top-right-radius: @border-radius-default;
     }
 
@@ -387,7 +417,7 @@
 
   > div {
     align-items: center;
-    border-top: 1px solid fade(@color-secondary-action-outline, 10%);
+    border-top: @size-1 solid fade(@color-secondary-action-outline, 10%);
     display: flex;
     width: 100%;
   }
@@ -432,7 +462,7 @@
 
     &.selected {
       color: @color-primary-text;
-      border-bottom: 1px solid @color-primary-text;
+      border-bottom: @size-1 solid @color-primary-text;
     }
 
     @media @breakpoint-mobile {

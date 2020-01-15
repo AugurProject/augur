@@ -135,21 +135,24 @@
 
         > div[class*="TextInput"],
         > div[class*="Normal"] {
-          height: @size-24;
           max-width: 100%;
 
-          > button > span {
-            padding: 0 @size-8 0 0;
+          > button {
+            background: @color-secondary-action;
+
+            > span {
+              padding: @size-6 @size-8 @size-6 0;
+
+              @media @breakpoint-mobile {
+                padding: @size-5 @size-8 @size-5 0;
+              }
+            }
           }
         }
 
         > div:first-of-type {
           > button {
             .mono-10-bold;
-
-            > span {
-              padding: 0 @size-8 0 0;
-            }
           }
         }
 
