@@ -8,6 +8,7 @@ import * as _ from 'lodash';
 import { AsyncQueue, queue, retry } from 'async';
 import { isInstanceOfBigNumber, isInstanceOfArray } from './utils';
 import { JSONRPCRequestPayload } from 'ethereum-types';
+import { BigNumber } from "bignumber.js";
 
 interface ContractMapping {
   [contractName: string]: ethers.utils.Interface;
@@ -23,7 +24,7 @@ interface PerformQueueTask {
 export class EthersProvider extends ethers.providers.BaseProvider
   implements EProvider {
   gasLimit: ethers.utils.BigNumber | null = new ethers.utils.BigNumber(7500000);
-  gasEstimateIncreasePercentage: ethers.utils.BigNumber | null = new ethers.utils.BigNumber(34);
+  gasEstimateIncreasePercentage: BigNumber | null = new BigNumber(34);
   private contractMapping: ContractMapping = {};
   private performQueue: AsyncQueue<PerformQueueTask>;
   readonly provider: ethers.providers.JsonRpcProvider;
@@ -108,19 +109,20 @@ export class EthersProvider extends ethers.providers.BaseProvider
   async estimateGas(
     transaction: ethers.providers.TransactionRequest
   ): Promise<ethers.utils.BigNumber> {
-    let gasEstimate = await super.estimateGas(transaction);
+    let gasEstimate = new BigNumber((await super.estimateGas(transaction)).toString());
     if (this.gasEstimateIncreasePercentage) {
-      gasEstimate = gasEstimate.add(
-        gasEstimate.div(
-          new ethers.utils.BigNumber(100).div(this.gasEstimateIncreasePercentage))
-      );
+      gasEstimate = this.gasEstimateIncreasePercentage
+        .div(100)
+        .plus(1)
+        .times(gasEstimate)
+        .idiv(1);
     }
 
     if (this.gasLimit) {
-      gasEstimate = gasEstimate.gt(this.gasLimit) ? this.gasLimit : gasEstimate;
+      gasEstimate = gasEstimate.gt(this.gasLimit.toString()) ? new BigNumber(this.gasLimit.toString()) : gasEstimate;
     }
 
-    return gasEstimate;
+    return new ethers.utils.BigNumber(gasEstimate.toFixed());
   }
 
   storeAbiData(abi: Abi, contractName: string): void {

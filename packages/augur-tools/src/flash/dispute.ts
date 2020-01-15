@@ -4,7 +4,7 @@ import { MarketInfo } from '@augurproject/sdk/build/state/getter/Markets';
 import { calculatePayoutNumeratorsArray } from '@augurproject/sdk';
 import { MarketTypeName } from '@augurproject/sdk/build/state/logs/types';
 
-export async function dispute(user: ContractAPI, market: MarketInfo, slow: boolean, rounds: number = 0): Promise<void> {
+export async function dispute(user: ContractAPI, market: MarketInfo, slow: boolean, rounds = 0): Promise<void> {
   const SOME_REP = new BigNumber(1e18).times(6e7);
 
   const payoutNumerators = getPayoutNumerators(market, 'invalid');
@@ -33,7 +33,7 @@ export async function dispute(user: ContractAPI, market: MarketInfo, slow: boole
   if (rounds > 0) {
     let i = 0;
     for(i; i < rounds + 1; i++) {
-      console.log("round number", i);
+      console.log('round number', i);
       let numerators = payoutNumerators;
       if (i % 2) numerators = conflictNumerators;
       await user.contribute(marketContract, numerators, SOME_REP);
@@ -44,7 +44,7 @@ export async function dispute(user: ContractAPI, market: MarketInfo, slow: boole
 
 const delay = (ms: number) => {
   return new Promise(resolve => setTimeout(resolve, ms));
-}
+};
 
 export function getPayoutNumerators(market: MarketInfo, outcome: number|'invalid'): BigNumber[] {
   const isInvalid = outcome === 'invalid';

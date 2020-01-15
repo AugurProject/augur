@@ -45,6 +45,7 @@ interface OrderBookProps {
   hide: boolean;
   loadMarketOrderBook: Function;
   marketId: string;
+  initialLiquidity: boolean;
 }
 
 interface OrderBookState {
@@ -198,13 +199,15 @@ export default class OrderBook extends Component<
   };
 
   componentDidMount() {
-    const { marketId, loadMarketOrderBook } = this.props;
+    const { marketId, loadMarketOrderBook, initialLiquidity } = this.props;
     loadMarketOrderBook(marketId);
-    const timer = setInterval(() => loadMarketOrderBook(marketId), ORDER_BOOK_REFRESH_MS);
-    this.setState({ timer })
+    if (!initialLiquidity) {
+      const timer = setInterval(() => loadMarketOrderBook(marketId), ORDER_BOOK_REFRESH_MS);
+      this.setState({ timer })
+    }
   }
 
-  compomentWillUnmount() {
+  componentWillUnmount() {
     const { timer } = this.state;
     clearInterval(timer);
   }

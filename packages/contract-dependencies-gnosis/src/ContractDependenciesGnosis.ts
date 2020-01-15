@@ -23,7 +23,7 @@ import { getAddress } from 'ethers/utils/address';
 import * as _ from 'lodash';
 
 const DEFAULT_GAS_PRICE = new BigNumber(10 ** 9);
-const BASE_GAS_ESTIMATE = new BigNumber(75000);
+const BASE_GAS_ESTIMATE = '75000';
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 const GWEI_CONVERSION = 1000000000;
 
@@ -283,12 +283,12 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
   async estimateTransactionDirectly(
     tx: Transaction<ethers.utils.BigNumber>
   ): Promise<RelayTxEstimateResponse> {
-    const safeTxGas = await this.estimateGas(
+    const safeTxGas: BigNumber = await this.estimateGas(
       this.ethersTransactionToTransaction(tx)
     );
     return {
       baseGas: BASE_GAS_ESTIMATE,
-      safeTxGas,
+      safeTxGas: safeTxGas.toFixed(),
     };
   }
 

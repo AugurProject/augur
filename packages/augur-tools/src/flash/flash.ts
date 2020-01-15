@@ -1,20 +1,18 @@
-import { EthersProvider } from "@augurproject/ethersjs-provider";
-import { ContractAddresses } from "@augurproject/artifacts";
-import { NetworkConfiguration } from "@augurproject/core";
 import { WSClient } from '@0x/mesh-rpc-client';
-import { ContractAPI } from "../libs/contract-api";
-import { Account, NULL_ADDRESS } from "../constants";
-import { providers } from "ethers";
-import { Connectors, Events, SubscriptionEventName, SDKConfiguration } from "@augurproject/sdk";
-import { API } from "@augurproject/sdk/build/state/getter/API";
+import { ContractAddresses } from '@augurproject/artifacts';
+import { NetworkConfiguration } from '@augurproject/core';
+import { EthersProvider } from '@augurproject/ethersjs-provider';
+import { GnosisRelayAPI } from '@augurproject/gnosis-relay-api';
+import { Connectors, EmptyConnector, Events, SDKConfiguration, SubscriptionEventName } from "@augurproject/sdk";
+import { BaseConnector } from "@augurproject/sdk/build/connector";
 import { BlockAndLogStreamerListenerInterface } from "@augurproject/sdk/build/state/db/BlockAndLogStreamerListener";
 import { DB } from "@augurproject/sdk/build/state/db/DB";
-import { EmptyConnector } from "@augurproject/sdk";
-import { BaseConnector } from "@augurproject/sdk/build/connector";
+import { API } from "@augurproject/sdk/build/state/getter/API";
 import { configureDexieForNode } from "@augurproject/sdk/build/state/utils/DexieIDBShim";
-import { formatBytes32String } from "ethers/utils";
 import { BigNumber } from 'bignumber.js';
-import { GnosisRelayAPI, GnosisSafeState } from '@augurproject/gnosis-relay-api';
+import { providers } from "ethers";
+import { Account } from "../constants";
+import { ContractAPI } from "../libs/contract-api";
 
 configureDexieForNode(true);
 

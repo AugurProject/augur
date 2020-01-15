@@ -7,12 +7,11 @@
   margin: @size-4 0;
   display: grid;
   grid-template-columns: 102px auto;
-  grid-template-rows: auto auto auto;
+  grid-template-rows: @size-32 auto;
   padding-right: @size-12;
 
   > div:last-of-type,
   > div:nth-of-type(2) {
-    padding-top: @size-8;
     padding-left: @size-12;
 
     > label {
@@ -29,10 +28,10 @@
     padding-left: @size-12;
   }
 
-  > div:nth-of-type(1) {
+  > div:first-of-type {
     grid-row: 1 / span 3;
     padding: 0 @size-12;
-    margin-top: @size-14;
+    margin-top: @size-12;
 
     > span {
       display: none;
@@ -44,13 +43,33 @@
       text-align: left;
     }
 
+    > div.hoverIconTray {
+      display: none;
+
+      > div:nth-of-type(3),
+      > div:nth-of-type(4) {
+        svg {
+          fill: none;
+
+          > circle {
+            fill: none;
+            stroke: @color-secondary-action-outline;
+          }
+  
+          > path {
+            fill: @color-primary-text;
+          }
+        }
+      }
+    }
+
     > div:nth-child(even) {
       margin-top: @size-8;
       padding-bottom: 0;
     }
   }
 
-  > div:nth-of-type(2) {
+  > div.TopRow {
     display: flex;
     align-items: center;
     grid-column: 2 / span 1;
@@ -73,11 +92,8 @@
       }
     }
 
-    > div:nth-last-child(2) {
+    > button {
       margin-right: @size-10;
-      > div {
-        display: none;
-      }
     }
 
     > div[class*='DotSelection'] {
@@ -144,21 +160,42 @@
     > div:not(:first-of-type) {
       margin-left: @size-4;
     }
+
+    > div:nth-of-type(3),
+    > div:nth-of-type(4) {
+      svg {
+        fill: none;
+
+        > circle {
+          fill: none;
+          stroke: @color-secondary-action-outline;
+        }
+
+        > path {
+          fill: @color-primary-text;
+        }
+      }
+    }
   }
 
   > span {
     .text-16-bold;
 
+    align-self: center;
     color: @color-primary-text;
     grid-column: 2;
     padding-bottom: @size-16;
     padding-top: @size-4;
+    height: 100%;
+    justify-content: center;
 
     > a {
       display: -webkit-box;
       -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
       overflow: hidden;
+      text-overflow: ellipsis;
+      word-break: break-word;
     }
 
     &:hover {
@@ -260,19 +297,22 @@
       grid-column: 2;
     }
 
-    > div:nth-of-type(1) {
+    > div:first-of-type {
       grid-row: 1 / span 2;
     }
   }
 
   &.Condensed {
     > span {
+      align-self: flex-start;
       padding-top: 0;
-      margin-top: -@size-4;
+      margin-top: 0;
       padding-bottom: @size-12;
 
       > a {
         .text-14-bold;
+
+        -webkit-line-clamp: 2;
       }
     }
 
@@ -289,11 +329,6 @@
     > div:nth-of-type(1) {
       grid-row: 1 / span 1;
       margin-top: @size-10;
-    }
-
-    > div:nth-of-type(2) {
-      padding-top: @size-10;
-      align-items: flex-start;
     }
   }
 
@@ -313,6 +348,10 @@
       }
     }
 
+    > div:nth-last-of-type(2) {
+      column-gap: 0;
+    }
+
     &.Condensed {
       > span {
         padding-bottom: 0;
@@ -322,8 +361,7 @@
   }
 
   @media @breakpoint-max-tablet {
-
-    grid-template-rows: repeat(4, auto);
+    grid-template-rows: auto;
     grid-template-columns: auto;
     padding: @size-12;
     margin: @size-4 0;
@@ -353,41 +391,106 @@
       margin-bottom: @size-10;
     }
 
-    > div:nth-of-type(1) {
+    > span {
+      margin: 0 0 @size-12;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      word-break: break-word;
+      height: min-content;
+    }
+
+    &.Nonexpanding > div:first-of-type,
+    > div:first-of-type {
+      align-items: flex-end;
       display: flex;
       grid-column: 1 / span 2;
-      grid-row: 6;
+      grid-row: unset;
       justify-content: space-between;
-      padding: @size-12 0;
+      margin-top: @size-12;
+      order: 10;
+      padding: 0;
 
-      > div:nth-of-type(2) {
+      > div.hoverIconTray {
+        display: flex;
+        flex-flow: row nowrap;
+
+        > div:not(:last-of-type) {
+          margin-right: @size-8;
+        }
+      }
+
+      > div[class*="LabelValue"]:nth-of-type(2) {
         display: none;
       }
 
       > span {
         display: flex;
+
+        > span:last-of-type {
+          text-align: right;
+        }
       }
     }
 
-    > span {
-      margin: @size-12 0;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    > div:first-of-type {
-      height: 0;
-      margin-top: 0;
-      display: none;
-    }
-
-    > div:nth-of-type(2) {
+    > div.TopRow {
       display: grid;
-      grid-template-columns: minmax(32px, max-content) auto auto @size-16 @size-16;
+      grid-template-columns: auto @size-16 @size-16;
+      grid-template-rows: auto;
       grid-gap: @size-8;
       margin-top: 0;
+      margin-bottom: @size-12;
+
+      div:nth-last-child(2) {
+        margin-right: 0;
+      }
+
+      > label {
+        grid-row: 1;
+        grid-column: 1;
+      }
+
+      > button {
+        margin-right: 0;
+      }
+
+      > div[class*="CategoryTagTrail"] {
+        > div {
+          align-items: flex-end;
+          display: flex;
+          margin-right: @size-8;
+        }
+
+        grid-column: 1;
+        grid-row: 1;
+        display: flex;
+      }
+
+      > span[class*="MarketStatus"] {
+        grid-column: 1 / span 3;
+        order: 10;
+        width: fit-content;
+      }
+
+      &.template {
+        > div[class*="CategoryTagTrail"] {
+          margin-left: @size-24;
+        }
+      }
+
+      &.scalar {
+        > label {
+          margin-left: 128px;
+        }
+
+        > div[class*="CategoryTagTrail"] {
+          grid-column: 1;
+          grid-row: 2;
+          margin-left: 0;
+        }
+      }
 
       > div:first-of-type {
         margin-top: 0;
@@ -397,33 +500,13 @@
         }
       }
 
-      > div:nth-of-type(2) {
-        > div {
-          align-items: flex-end;
-          display: flex;
-          margin-right: @size-8;
-        }
-
-        grid-column: 4;
-        justify-content: flex-end;
-        display: flex;
-      }
-
-      > span:first-of-type {
-        display: none;
+      > span[class*="MarketTypeLabel"] {
         grid-row: 1;
-        grid-column: 1 / span 2;
+        grid-column: 1;
         width: fit-content;
       }
 
-      > span:nth-of-type(2) {
-        display: none;
-        grid-row: 2;
-        grid-column: 1;
-        margin: 0;
-      }
-
-      > span:nth-of-type(3) {
+      > span[class*="ProgressLabel"] {
         display: none;
       }
     }
@@ -444,7 +527,7 @@
     }
 
     @media @breakpoint-max-tablet {
-      grid-row: 5;
+      grid-row: unset;
       margin-bottom: 0;
       margin-top: @size-8;
     }

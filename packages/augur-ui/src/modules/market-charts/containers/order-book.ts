@@ -45,6 +45,7 @@ const mapStateToProps = (state, ownProps) => {
     maxPrice,
     marketType: market.marketType,
     marketId: market.marketId,
+    initialLiquidity: ownProps.initialLiquidity,
   };
 };
 

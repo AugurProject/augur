@@ -3,9 +3,9 @@ import { BigNumber } from 'bignumber.js';
 import { ethers } from 'ethers';
 import { GnosisRelayAPI, GnosisSafeState, RelayTransaction } from '@augurproject/gnosis-relay-api';
 import { NULL_ADDRESS } from '../../libs/Utils';
-import { Cash } from "@augurproject/core/build/libraries/ContractInterfaces";
-import { ACCOUNTS, makeDependencies, makeSigner } from "@augurproject/tools/build";
-import { EthersProvider } from "@augurproject/ethersjs-provider/build";
+import { Cash } from '@augurproject/core/build/libraries/ContractInterfaces';
+import { ACCOUNTS, makeDependencies, makeSigner } from '@augurproject/tools/build';
+import { EthersProvider } from '@augurproject/ethersjs-provider/build';
 
 type TestingEnv = 'local' | 'kovan';
 const ENV: TestingEnv = 'local' || process.env.TEST_ENV as TestingEnv;
@@ -116,8 +116,8 @@ describe('Gnosis Relay API', () => {
       const value = 1;
       const operation = 0;
       const gasToken = NULL_ADDRESS;
-      const safeTxGas = 100000;
-      const dataGas = 300000;
+      const safeTxGas = '100000';
+      const dataGas = '300000';
       const gasPrice = 5 * 10**9;
       const refundReceiver = NULL_ADDRESS;
       const nonce = (await gnosisSafe.nonce()).toNumber();
@@ -129,8 +129,8 @@ describe('Gnosis Relay API', () => {
         value: new BigNumber(value),
         operation,
         gasToken,
-        safeTxGas: new BigNumber(safeTxGas),
-        dataGas: new BigNumber(dataGas),
+        safeTxGas,
+        dataGas,
         gasPrice: new BigNumber(gasPrice),
         refundReceiver,
         nonce,
@@ -172,7 +172,7 @@ describe('Gnosis Relay API', () => {
 
     test('ERC20 (Cash)', async () => {
       const account = ACCOUNTS[0];
-      const ethersProvider = new EthersProvider(provider, 5, 0, 40)
+      const ethersProvider = new EthersProvider(provider, 5, 0, 40);
       const signer = await makeSigner(ACCOUNTS[0], ethersProvider);
       const addresses = Addresses[102];
       const cash = new Cash(
@@ -193,7 +193,6 @@ describe('Gnosis Relay API', () => {
       console.log('Getting Safe Creation Data');
       const safeResponse = await api.createSafe(gnosisSafeData);
       const safeAddress = safeResponse.safe;
-      const payment = safeResponse.payment;
       await expect(safeAddress).not.toEqual(NULL_ADDRESS);
       console.log(`Expected Safe Address: ${safeAddress}`);
 
@@ -241,8 +240,8 @@ describe('Gnosis Relay API', () => {
       const value = 1;
       const operation = 0;
       const gasToken = NULL_ADDRESS;
-      const safeTxGas = 100000;
-      const dataGas = 300000;
+      const safeTxGas = '100000';
+      const dataGas = '300000';
       const gasPrice = 5 * 10**9;
       const refundReceiver = NULL_ADDRESS;
       const nonce = (await gnosisSafe.nonce()).toNumber();
@@ -254,8 +253,8 @@ describe('Gnosis Relay API', () => {
         value: new BigNumber(value),
         operation,
         gasToken,
-        safeTxGas: new BigNumber(safeTxGas),
-        dataGas: new BigNumber(dataGas),
+        safeTxGas,
+        dataGas,
         gasPrice: new BigNumber(gasPrice),
         refundReceiver,
         nonce,

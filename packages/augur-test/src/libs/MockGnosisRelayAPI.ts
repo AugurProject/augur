@@ -170,8 +170,8 @@ export class MockGnosisRelayAPI implements IGnosisRelayAPI {
     relayTxEstimateData: RelayTxEstimateData
   ): Promise<RelayTxEstimateResponse> {
     return {
-      baseGas: new BigNumber(75000),
-      safeTxGas: new BigNumber(80000),
+      baseGas: '75000',
+      safeTxGas: '80000',
     };
   }
 }

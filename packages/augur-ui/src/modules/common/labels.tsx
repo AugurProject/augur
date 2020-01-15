@@ -24,6 +24,7 @@ import {
   QuestionIcon,
   ScalarIcon,
   TemplateIcon,
+  YellowTemplateIcon,
 } from 'modules/common/icons';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
@@ -38,6 +39,7 @@ import {
 } from 'modules/reporting/common';
 import { EventDetailsContent } from 'modules/create-market/constants';
 import { ExplainerBlock } from 'modules/create-market/components/common';
+import { hasTemplateTextInputs } from '@augurproject/artifacts';
 
 export interface MarketTypeProps {
   marketType: string;
@@ -213,30 +215,34 @@ interface TimeLabelProps {
 }
 
 interface TemplateShieldProps {
-  marketId: string;
+  market: Getters.Markets.MarketInfo;
 }
 
-export const TemplateShield = ({ marketId }: TemplateShieldProps) => (
-  <>
-    <label
-      className={TooltipStyles.TooltipHint}
-      data-tip
-      data-for={`tooltip-${marketId}-templateShield`}
-    >
-      {TemplateIcon}
-    </label>
-    <ReactTooltip
-      id={`tooltip-${marketId}-templateShield`}
-      className={TooltipStyles.Tooltip}
-      effect="solid"
-      place="right"
-      type="light"
-    >
-      Template Markets have pre-defined terms and a greater chance of validly
-      resolving than Custom Markets.
-    </ReactTooltip>
-  </>
-);
+export const TemplateShield = ({ market }: TemplateShieldProps) => {
+  const yellowShield = hasTemplateTextInputs(market.template.hash);
+  return (
+    <>
+      <label
+        className={TooltipStyles.TooltipHint}
+        data-tip
+        data-for={`tooltip-${market.id}-templateShield`}
+      >
+        {yellowShield ? YellowTemplateIcon : TemplateIcon}
+      </label>
+      <ReactTooltip
+        id={`tooltip-${market.id}-templateShield`}
+        className={TooltipStyles.Tooltip}
+        effect="solid"
+        place="right"
+        type="light"
+      >
+        {yellowShield
+          ? "Templated market question, contains market creator text. This text should match to highlighted section's tooltip"
+          : 'Template Markets have pre-defined terms and a greater chance of validly resolving than Custom Markets.'}
+      </ReactTooltip>
+    </>
+  );
+};
 
 export const TimeLabel = ({ label, time, showLocal, hint }: TimeLabelProps) => (
   <div className={Styles.TimeLabel}>
@@ -545,7 +551,11 @@ export class HoverValueLabel extends React.Component<
 
 export const InvalidLabel = (props: InvalidLabelProps) => {
   const { text, keyId, openInvalidMarketRulesModal } = props;
-  const {explainerBlockTitle, explainerBlockSubtexts, useBullets} = EventDetailsContent();
+  const {
+    explainerBlockTitle,
+    explainerBlockSubtexts,
+    useBullets,
+  } = EventDetailsContent();
 
   const openModal = event => {
     event.preventDefault();
@@ -559,13 +569,16 @@ export const InvalidLabel = (props: InvalidLabelProps) => {
       <label
         data-tip
         data-for={`${keyId}-${text ? text.replace(/\s+/g, '-') : ''}`}
-        onClick={(event) => openModal(event)}
+        onClick={event => openModal(event)}
       >
         {QuestionIcon}
       </label>
       <ReactTooltip
         id={`${keyId}-${text.replace(/\s+/g, '-')}`}
-        className={classNames(TooltipStyles.Tooltip, TooltipStyles.TooltipInvalidRules)}
+        className={classNames(
+          TooltipStyles.Tooltip,
+          TooltipStyles.TooltipInvalidRules
+        )}
         effect="solid"
         place="top"
         type="dark"
@@ -620,7 +633,7 @@ export const LinearPropertyLabel = ({
   showDenomination,
   accentValue,
   value,
-  useFull
+  useFull,
 }: LinearPropertyLabelProps) => (
   <div
     className={classNames(Styles.LinearPropertyLabel, {
@@ -632,7 +645,11 @@ export const LinearPropertyLabel = ({
     <span>{label}</span>
     <DashlineNormal />
     {useValueLabel ? (
-      <ValueLabel value={value} showDenomination={showDenomination} useFull={useFull} />
+      <ValueLabel
+        value={value}
+        showDenomination={showDenomination}
+        useFull={useFull}
+      />
     ) : (
       <span
         className={classNames({
@@ -645,7 +662,11 @@ export const LinearPropertyLabel = ({
       </span>
     )}
     {useValueLabel ? (
-      <ValueLabel value={value} showDenomination={showDenomination} useFull={useFull} />
+      <ValueLabel
+        value={value}
+        showDenomination={showDenomination}
+        useFull={useFull}
+      />
     ) : (
       <span
         className={classNames({
@@ -678,7 +699,7 @@ export const MarketTypeLabel = ({ marketType }: MarketTypeProps) => {
         [Styles.MarketScalarLabel]: isScalar,
       })}
     >
-      {text} {isScalar && (ScalarIcon)}
+      {text} {isScalar && ScalarIcon}
     </span>
   );
 };
@@ -836,7 +857,7 @@ export const MovementText = ({
   showBrackets,
   hideNegative,
   useFull,
-  numberValue
+  numberValue,
 }: MovementTextProps) => {
   const getTextSizeStyle: Function = (sz: SizeTypes): string =>
     classNames(Styles.MovementLabel_Text, {
@@ -865,7 +886,7 @@ export const MovementText = ({
       }
     }
     return label;
-  }
+  };
 
   const addBrackets: Function = (label: string): string => {
     if (showBrackets) {
@@ -874,12 +895,12 @@ export const MovementText = ({
     return label;
   };
 
-  const formattedString = addBrackets(handlePlusMinus(useFull ? value.full : value.formatted));
+  const formattedString = addBrackets(
+    handlePlusMinus(useFull ? value.full : value.formatted)
+  );
 
   return (
-    <div
-      className={`${textColorStyle} ${textSizeStyle}`}
-    >
+    <div className={`${textColorStyle} ${textSizeStyle}`}>
       {formattedString}
     </div>
   );
@@ -1171,6 +1192,9 @@ interface DiscordLinkProps {
 
 export const DiscordLink = (props: DiscordLinkProps) => (
   <div className={Styles.discordLink}>
-    {props.label}<a href={DISCORD_LINK} target='_blank'>Discord</a>
+    {props.label}
+    <a href={DISCORD_LINK} target="_blank">
+      Discord
+    </a>
   </div>
 );

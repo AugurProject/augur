@@ -5,13 +5,23 @@
   display: flex;
   flex-direction: column;
   font-weight: bold;
-}
 
-.IndividualWord {
- // margin-right: @size-4;
+  > a > span:nth-of-type(2),
+  > span:nth-of-type(2) {
+    display: inline-block;
+  }
 }
 
 .TEXT {
-  background: @color-highlight-template-text;
-  color: @color-dark-grey;
+  position: relative;
+
+  &:after {
+    position: absolute;
+    height: 2px;
+    background: @color-highlight-template-text;
+    content: ' ';
+    width: 100%;
+    left: 0;
+    bottom: 0;
+  }
 }

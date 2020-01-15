@@ -320,7 +320,7 @@ export default class ModalReporting extends Component<
             }
             <section>
               <MarketTypeLabel marketType={marketType} />
-              {isTemplate && <TemplateShield marketId={id} />}
+              {isTemplate && <TemplateShield market={market} />}
             </section>
             <span>{description}</span>
             <Subheaders

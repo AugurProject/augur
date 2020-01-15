@@ -159,6 +159,7 @@ export interface TemplateValidation {
   dateDependencies: DateDependencies[];
   closingDateDependencies: DateInputDependencies[];
   placeholderValues: PlaceholderValues;
+  afterTuesdayDate: number[];
 }
 
 export interface TemplateValidationHash {
@@ -235,6 +236,7 @@ export enum TEXT_PLACEHOLDERS {
   SINGLE_PERSON_OR_GROUP_OR_MOVIE_TITLE = 'Single Person or Single Group or Movie Title',
   INDIVIDUAL_MOVIE_TITLE = 'Individual Movie Title',
   STOCK_OR_ETF = 'Individual Stock or ETF Name',
+  INDIVIDUAL_STOCK_OR_ETF_NAME = 'Individual Stock or ETF Name',
   INDIVIDUAL_STOCK_OR_ETF_SYMBOL = 'Individual Stock or ETF Ticker Symbol',
 }
 
@@ -424,6 +426,21 @@ function dateStartAfterMarketEndTime(
   return Number(input.timestamp) >= Number(endTime);
 }
 
+function wednesdayAfterOpening(
+  inputs: ExtraInfoTemplateInput[],
+  endTime: number,
+  ids: number[]
+) {
+  const afterTuesday: ExtraInfoTemplateInput = inputs.find(i =>
+    ids.includes(i.id)
+  );
+  if (!afterTuesday) return true;
+  const wednesdayDatetime = getTemplateWednesdayAfterOpeningDay(
+    Number(afterTuesday.timestamp)
+  );
+  return endTime < wednesdayDatetime;
+}
+
 export function tellOnHoliday(
   inputs: ExtraInfoTemplateInput[],
   input: ExtraInfoTemplateInput,
@@ -510,6 +527,19 @@ function dateComparisonDependencies(
     return p;
   }, true);
   return result;
+}
+
+export function getTemplateWednesdayAfterOpeningDay(
+  openingDay: number,
+) {
+  const wednesdayOfNextWeekOpeningDay = moment
+    .unix(openingDay)
+    .add(1, 'week')
+    .utc()
+    .day("Wednesday")
+    .startOf('day');
+
+  return wednesdayOfNextWeekOpeningDay.unix();
 }
 
 export function getTemplateExchangeClosingWithBuffer(
@@ -665,6 +695,18 @@ export const isTemplateMarket = (
       errors.push('event expiration can not be before exchange close time');
       return false;
     }
+
+    if (
+      !wednesdayAfterOpening(
+        template.inputs,
+        new BigNumber(endTime).toNumber(),
+        validation.afterTuesdayDate
+      )
+    ) {
+      errors.push('event expiration can not be before Wednesday after movie opening weekend');
+      return false;
+    }
+
     // check for input duplicates
     const values = template.inputs.map((i: ExtraInfoTemplateInput) => i.value);
     if (new Set(values).size !== values.length) {

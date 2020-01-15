@@ -35,8 +35,9 @@ export const generateTemplateValidations = async () => {
   const newTemplateValueObj = merge.all(
     templateValidations.map(tv => tv.template)
   );
-  if (!fs.existsSync(templateTemplateFile))
+  if (!fs.existsSync(templateTemplateFile)) {
     return console.error(templateTemplateFile, 'does not exist');
+  }
 
   const contents = fs.readFileSync(templateTemplateFile, 'utf8');
   const newTemplateValue = `export const TEMPLATES = ${JSON.stringify(
@@ -77,8 +78,9 @@ const generateValidations = (
     dateDependencies: null,
     closingDateDependencies: null,
     placeholderValues: null,
+    afterTuesdayDate: null,
   };
-  let newTemplates = JSON.parse(JSON.stringify(templates));
+  const newTemplates = JSON.parse(JSON.stringify(templates));
   const topCategories = Object.keys(newTemplates);
   topCategories.map(c => addTemplates(newTemplates[c], validations));
   return { template: newTemplates, validations };
@@ -117,6 +119,7 @@ const addTemplates = (
         dateDependencies: getDateDependencies(t.inputs),
         closingDateDependencies: getClosingDateDependencies(t.inputs),
         placeholderValues: getPlaceholderValues(t.inputs),
+        afterTuesdayDate: getInputsAfterTuesdayDate(t.inputs),
       };
     });
   }
@@ -176,6 +179,16 @@ function getDateDependencies(inputs: TemplateInput[]): DateDependencies[] {
       id: i.id,
       noWeekendHolidays: i.validationType === ValidationType.NOWEEKEND_HOLIDAYS,
       dateAfterId: i.dateAfterId,
+    }));
+}
+
+function getInputsAfterTuesdayDate(inputs: TemplateInput[]): Array<{ id: number }> {
+  return inputs
+    .filter(
+      i => i.type === TemplateInputType.DATEYEAR && i.validationType === ValidationType.EXP_DATE_TUESDAY_AFTER_MOVIE
+    )
+    .map(i => ({
+      id: i.id,
     }));
 }
 
@@ -249,19 +262,23 @@ function getValidationValues(input: TemplateInput) {
 const specialCharacters = [
   {
     find: /\(/g,
-    rep: `\\(`,
+    rep: '\\(',
   },
   {
     find: /\)/g,
-    rep: `\\)`,
+    rep: '\\)',
   },
   {
     find: /\?/g,
-    rep: `\\?`,
+    rep: '\\?',
   },
   {
     find: /\//g,
-    rep: `\\/`,
+    rep: '\\/',
+  },
+  {
+    find: /\$/g,
+    rep: '\\$',
   },
 ] as const;
 

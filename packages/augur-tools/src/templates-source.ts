@@ -4696,34 +4696,39 @@ export const TEMPLATES = {
         templates: [
           {
             marketType: YES_NO,
-            question: `Will [0] close on or above [1] on the [2] on [3]?`,
-            example: `Will AAPL close on or above 200 on then Nasdaq (traded in USD) on September 1, 2020?`,
+            question: `Will [0] ([1]) close on or above [2] on the [3] on [4]?`,
+            example: `Will Apple (AAPL) close on or above 200 on then Nasdaq (traded in USD) on September 1, 2020?`,
             inputs: [
               {
                 id: 0,
                 type: TemplateInputType.TEXT,
-                placeholder: TEXT_PLACEHOLDERS.INDIVIDUAL_STOCK_OR_ETF_SYMBOL,
+                placeholder: TEXT_PLACEHOLDERS.INDIVIDUAL_STOCK_OR_ETF_NAME,
               },
               {
                 id: 1,
+                type: TemplateInputType.TEXT,
+                placeholder: TEXT_PLACEHOLDERS.INDIVIDUAL_STOCK_OR_ETF_SYMBOL,
+              },
+              {
+                id: 2,
                 type: TemplateInputType.TEXT,
                 placeholder: `Value #`,
                 validationType: ValidationType.NUMBER,
               },
               {
-                id: 2,
+                id: 3,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Exchange`,
                 values: LIST_VALUES.FIN_STOCK_EXCHANGES,
               },
               {
-                id: 3,
+                id: 4,
                 type: TemplateInputType.DATEYEAR,
                 placeholder: `Day of Year`,
                 validationType: ValidationType.NOWEEKEND_HOLIDAYS,
               },
               {
-                id: 4,
+                id: 5,
                 type: TemplateInputType.DATEYEAR_CLOSING,
                 placeholder: ``,
                 inputDateYearId: 3,
@@ -4744,7 +4749,7 @@ export const TEMPLATES = {
                   text: `If trading day in market question is a weekend or holiday when exchange is not open this market should resolve as 'Invalid'`,
                 },
                 {
-                  text: `If stock trading ticker symbol is not used in the market question, the market should resolve as 'Invalid'`
+                  text: `If stock trading name and ticker symbol is not used in the market question, the market should resolve as 'Invalid'`
                 },
                 {
                   text: 'This market is intended to be about a Individual Stock or ETF Ticker Symbol, if this is not the case, this market should settle as invalid.'
@@ -4754,41 +4759,46 @@ export const TEMPLATES = {
           },
           {
             marketType: YES_NO,
-            question: `Will [0] exceed [1] on the [2], anytime between the opening on [3] and the close on [4]?`,
-            example: `Will AAPL exceed 250 on the Nasdaq (traded in USD) anytime between the opening on June 1, 2020 and the close on September 1, 2020?`,
+            question: `Will [0] ([1]) exceed [2] on the [3], anytime between the opening on [4] and the close on [5]?`,
+            example: `Will Apple (AAPL) exceed 250 on the Nasdaq (traded in USD) anytime between the opening on June 1, 2020 and the close on September 1, 2020?`,
             inputs: [
               {
                 id: 0,
                 type: TemplateInputType.TEXT,
-                placeholder: TEXT_PLACEHOLDERS.INDIVIDUAL_STOCK_OR_ETF_SYMBOL,
+                placeholder: TEXT_PLACEHOLDERS.INDIVIDUAL_STOCK_OR_ETF_NAME,
               },
               {
                 id: 1,
+                type: TemplateInputType.TEXT,
+                placeholder: TEXT_PLACEHOLDERS.INDIVIDUAL_STOCK_OR_ETF_SYMBOL,
+              },
+              {
+                id: 2,
                 type: TemplateInputType.TEXT,
                 placeholder: `Value #`,
                 validationType: ValidationType.NUMBER,
               },
               {
-                id: 2,
+                id: 3,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Exchange`,
                 values: LIST_VALUES.FIN_STOCK_EXCHANGES,
               },
               {
-                id: 3,
+                id: 4,
                 type: TemplateInputType.DATEYEAR,
                 placeholder: `Start Day of Year`,
                 validationType: ValidationType.NOWEEKEND_HOLIDAYS,
               },
               {
-                id: 4,
+                id: 5,
                 dateAfterId: 3,
                 type: TemplateInputType.DATEYEAR,
                 placeholder: `End Day of Year`,
                 validationType: ValidationType.NOWEEKEND_HOLIDAYS,
               },
               {
-                id: 5,
+                id: 6,
                 type: TemplateInputType.DATEYEAR_CLOSING,
                 placeholder: ``,
                 inputDateYearId: 3,
@@ -4809,7 +4819,7 @@ export const TEMPLATES = {
                   text: `If trading day in market question is a weekend or holiday when exchange is not open this market should resolve as 'Invalid'`,
                 },
                 {
-                  text: `If stock trading ticker symbol is not used in the market question, the market should resolve as 'Invalid'`
+                  text: `If stock trading name and ticker symbol is not used in the market question, the market should resolve as 'Invalid'`
                 },
                 {
                   text: 'This market is intended to be about a Individual Stock or ETF Name, if this is not the case, this market should settle as invalid.'
@@ -4819,28 +4829,33 @@ export const TEMPLATES = {
           },
           {
             marketType: SCALAR,
-            question: `What will [0] close at on the [1] on [2]?`,
-            example: `What will AAPL close at on the Nasdaq (traded in USD) on December 31, 2019?`,
+            question: `What will [0] ([1]) close at on the [2] on [3]?`,
+            example: `What will Apple (AAPL) close at on the Nasdaq (traded in USD) on December 31, 2019?`,
             inputs: [
               {
                 id: 0,
                 type: TemplateInputType.TEXT,
-                placeholder: TEXT_PLACEHOLDERS.INDIVIDUAL_STOCK_OR_ETF_SYMBOL,
+                placeholder: TEXT_PLACEHOLDERS.INDIVIDUAL_STOCK_OR_ETF_NAME,
               },
               {
                 id: 1,
+                type: TemplateInputType.TEXT,
+                placeholder: TEXT_PLACEHOLDERS.INDIVIDUAL_STOCK_OR_ETF_SYMBOL,
+              },
+              {
+                id: 2,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Exchange`,
                 values: LIST_VALUES.FIN_STOCK_EXCHANGES,
               },
               {
-                id: 2,
+                id: 3,
                 type: TemplateInputType.DATEYEAR,
                 placeholder: `Day of Year`,
                 validationType: ValidationType.NOWEEKEND_HOLIDAYS,
               },
               {
-                id: 3,
+                id: 4,
                 type: TemplateInputType.DATEYEAR_CLOSING,
                 placeholder: ``,
                 inputDateYearId: 2,
@@ -4861,7 +4876,7 @@ export const TEMPLATES = {
                   text: `If trading day in market question is a weekend or holiday when exchange is not open this market should resolve as 'Invalid'`,
                 },
                 {
-                  text: `If stock trading ticker symbol is not used in the market question, the market should resolve as 'Invalid'`
+                  text: `If stock trading name and ticker symbol is not used in the market question, the market should resolve as 'Invalid'`
                 },
                 {
                   text: 'This market is intended to be about a Individual Stock or ETF Ticker Symbol, if this is not the case, this market should settle as invalid.'
@@ -5052,7 +5067,7 @@ export const TEMPLATES = {
       },
       {
         marketType: YES_NO,
-        question: `Will the total gross for [0] be $[1] USD or more, on it's domestic opening weekend of [2] in the US, according to www.boxofficemojo.com/?`,
+        question: `Will the total gross for [0] be $[1] USD or more, on domestic opening weekend of [2] in the US, according to www.boxofficemojo.com/?`,
         example: `Will Avengers: Endgame gross $350 million USD or more in it's opening weekend in the US?`,
         inputs: [
           {
@@ -5063,13 +5078,13 @@ export const TEMPLATES = {
           {
             id: 1,
             type: TemplateInputType.TEXT,
-            placeholder: `Amount`,
+            placeholder: `Total Gross sales`,
           },
           {
             id: 2,
             type: TemplateInputType.DATEYEAR,
             validationType: ValidationType.EXP_DATE_TUESDAY_AFTER_MOVIE,
-            placeholder: `opening day`,
+            placeholder: `Opening day`,
           },
         ],
         resolutionRules: {
@@ -5088,7 +5103,7 @@ export const TEMPLATES = {
       },
       {
         marketType: YES_NO,
-        question: `Head-to-Head: Will total gross for [0] be more than [1] on it's domestic opening weekend of [2] in the US, according to www.boxofficemojo.com/?`,
+        question: `Head-to-Head: Will total gross for [0] be more than [1] on domestic opening weekend of [2] in the US, according to www.boxofficemojo.com/?`,
         example: `Head-to-Head: Will Avengers: Endgame gross more than Avengers: Age of Ultron on it's opening weekend in the US?`,
         inputs: [
           {
@@ -5104,7 +5119,8 @@ export const TEMPLATES = {
           {
             id: 2,
             type: TemplateInputType.DATEYEAR,
-            placeholder: `opening day`,
+            validationType: ValidationType.EXP_DATE_TUESDAY_AFTER_MOVIE,
+            placeholder: `Opening day`,
           },
         ],
         resolutionRules: {
