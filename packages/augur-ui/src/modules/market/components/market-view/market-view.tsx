@@ -192,7 +192,6 @@ export default class MarketView extends Component<
       closeMarketLoadingModal,
       tradingTutorial,
       updateModal,
-      selectedOutcomeId
     } = prevProps;
 
     if (this.props.outcomeId !== prevProps.outcomeId && this.props.outcomeId !== null) {

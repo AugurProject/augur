@@ -207,7 +207,7 @@ export default class OrderBook extends Component<
     }
   }
 
-  compomentWillUnmount() {
+  componentWillUnmount() {
     const { timer } = this.state;
     clearInterval(timer);
   }

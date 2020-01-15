@@ -141,7 +141,7 @@ const MarketTemplateTitle: React.FC<MarketTemplateTitleProps> = ({
       {estDateTime && (
         <>
           <span>{question}</span>
-          <span>Estimated sheduled start time: {estDateTime.userInput}</span>
+          <span>Estimated scheduled start time: {estDateTime.userInput}</span>
         </>
       )}
     </>
