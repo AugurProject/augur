@@ -1,15 +1,13 @@
-import { getAddressesForNetwork } from '@augurproject/artifacts';
+import { NetworkId } from '@augurproject/artifacts';
 import {
   Augur,
   CalculateGnosisSafeAddressParams,
   Connectors,
-  Provider,
-  ClientConfiguration,
-  createClient
+  createClient,
+  SDKConfiguration
 } from '@augurproject/sdk';
 import { EthersSigner } from 'contract-dependencies-ethers';
 
-import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis';
 import { JsonRpcProvider } from 'ethers/providers';
 import {
   listenToUpdates,
@@ -19,23 +17,20 @@ import { EnvObject } from 'modules/types';
 import { isEmpty } from 'utils/is-empty';
 import { analytics } from './analytics';
 import { isLocalHost } from 'utils/is-localhost';
-import { WSClient } from '@0x/mesh-rpc-client';
 import { Mesh } from '@0x/mesh-browser';
-import { NETWORK_IDS } from 'modules/common/constants';
-import { WebWorkerConnector } from './ww-connector';
 import { BrowserMesh, createBrowserMesh } from './browser-mesh';
 
 export class SDK {
   sdk: Augur | null = null;
   isSubscribed = false;
-  networkId: string;
+  networkId: NetworkId;
   private signerNetworkId: string;
 
   async makeClient(
     provider: JsonRpcProvider,
     signer: EthersSigner,
     env: EnvObject,
-    account: String = null,
+    account: string = null,
     isWeb3Transport = false,
     enableFlexSearch = true,
     signerNetworkId?: string,
@@ -69,7 +64,7 @@ export class SDK {
       await connector.connect(config, account)
     } else {
       const connector = new Connectors.SingleThreadConnector();
-      if (config.zeroX && config.zeroX.mesh && config.zeroX.enabled) {
+      if (config.zeroX && config.zeroX.mesh && config.zeroX.mesh.enabled) {
         connector.mesh = createBrowserMesh(config, (err: Error, mesh: Mesh) => {
           connector.mesh = mesh;
         });
@@ -83,6 +78,8 @@ export class SDK {
       await this.getOrCreateGnosisSafe(account);
     }
 
+    // tslint:disable-next-line:ban-ts-ignore
+    // @ts-ignore
     window.AugurSDK = this.sdk;
     return this.sdk;
   }
@@ -160,11 +157,7 @@ export class SDK {
   async destroy() {
     unListenToEvents(this.sdk);
     this.isSubscribed = false;
-    if (this.sdk) this.sdk.disconnect();
     this.sdk = null;
-  }
-
-  async createConnector(config: SDKConfiguration) {
   }
 
   get(): Augur {

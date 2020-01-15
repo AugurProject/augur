@@ -1,5 +1,5 @@
-import { makeDbMock, makeProvider } from "../../libs";
-import { ContractAPI, loadSeedFile, ACCOUNTS, defaultSeedPath } from "@augurproject/tools";
+import { makeDbMock, makeProvider } from '../../libs';
+import { ContractAPI, loadSeedFile, ACCOUNTS, defaultSeedPath } from '@augurproject/tools';
 import { API } from '@augurproject/sdk/build/state/getter/API';
 import { BigNumber } from 'bignumber.js';
 import { ContractAddresses } from '@augurproject/artifacts';
@@ -13,8 +13,7 @@ import {
 import { SingleThreadConnector } from '@augurproject/sdk/build/connector';
 import { SubscriptionEventName } from '@augurproject/sdk/build/constants';
 import { SDKConfiguration } from '@augurproject/sdk/build/state';
-import { NewBlock } from '@augurproject/sdk/build/events';
-import { MarketCreated } from "@augurproject/sdk/build/events";
+import { MarketCreated } from '@augurproject/sdk/build/events';
 import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
 
 let connector: SingleThreadConnector;
@@ -28,7 +27,7 @@ const mock = makeDbMock();
 jest.mock('@augurproject/sdk/build/state/create-api', () => {
   return {
     __esModule: true,
-    startServer: () => {
+    startServerFromClient: () => {
       const blockAndLogStreamerListener = BlockAndLogStreamerListener.create(
         provider,
         john.augur.contractEvents.getEventTopics,
@@ -60,14 +59,14 @@ beforeAll(async () => {
   await john.approveCentralAuthority();
 
   connector = new SingleThreadConnector();
-  console.log("Connector connecting");
+  console.log('Connector connecting');
   const config: SDKConfiguration = {
     networkId: await provider.getNetworkId(),
     ethereum: {
       http: ''
     }
   };
-  await connector.connect(config);
+  await connector.connectWithClient(config, john.augur);
 });
 
 test('SingleThreadConnector :: Should route correctly and handle events, extraInfo', async done => {
@@ -80,7 +79,7 @@ test('SingleThreadConnector :: Should route correctly and handle events, extraIn
       '{"categories": ["yesNo category 1", "yesNo category 2"], "description": "yesNo description 1", "longDescription": "yesNo longDescription 1"}',
   });
 
-  connector.on(
+  await connector.on(
     SubscriptionEventName.MarketCreated,
     async (arg: MarketCreated): Promise<void> => {
       expect(arg).toHaveProperty(

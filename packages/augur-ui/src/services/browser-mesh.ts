@@ -1,7 +1,6 @@
 import {
   Mesh,
   Config,
-  ValidationResults,
   ContractAddresses as ZeroXContractAddresses,
 } from '@0x/mesh-browser';
 import { getAddressesForNetwork, NetworkId } from '@augurproject/artifacts';
@@ -16,11 +15,11 @@ type BrowserMeshErrorFunction = (err: Error, mesh: Mesh) => void;
 function createBrowserMeshConfig(
   ethereumRPCURL: string,
   ethereumChainID: number,
-  verbosity: number = 5,
+  verbosity = 5,
   bootstrapList: string[],
-  forceIgnoreCustomAddresses: boolean = false
+  forceIgnoreCustomAddresses = false
 ) {
-  let meshConfig: Config = {
+  const meshConfig: Config = {
     ethereumRPCURL,
     ethereumChainID,
     verbosity,

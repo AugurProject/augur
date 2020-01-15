@@ -1,11 +1,11 @@
 import { Augur } from '../Augur';
-import { SDKConfiguration, startServerFromClient } from '../state';
+import { SDKConfiguration, startServerFromClient } from '../state/create-api';
 import { API } from '../state/getter/API';
 import { BaseConnector } from './base-connector';
 import { SubscriptionEventName } from '../constants';
 import { Subscriptions } from '../subscriptions';
-import { Callback, EventNameEmitter } from '../events';
-import { BrowserMesh, ZeroX } from "../api/ZeroX";
+import { Callback } from '../events';
+import { BrowserMesh, ZeroX } from '../api/ZeroX';
 
 export class SingleThreadConnector extends BaseConnector {
   private _api: API;
@@ -14,16 +14,15 @@ export class SingleThreadConnector extends BaseConnector {
   private get events(): Subscriptions {
     return this._client.events;
   }
-  public get mesh(): BrowserMesh {
+  get mesh(): BrowserMesh {
     return this._zeroX.mesh;
   }
-  public set mesh(mesh: BrowserMesh) {
+  set mesh(mesh: BrowserMesh) {
     this._zeroX.mesh = mesh;
   }
 
-
   async connect(config: SDKConfiguration, account?: string): Promise<void> {
-    throw new Error("Must call connectWithClient for SingleThreadConnector")
+    throw new Error('Must call connectWithClient for SingleThreadConnector')
   }
 
   async connectWithClient(config: SDKConfiguration, client: Augur): Promise<void> {

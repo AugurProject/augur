@@ -3,7 +3,7 @@ import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { EthersSigner } from 'contract-dependencies-ethers';
 import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis';
 import { JsonRpcProvider } from 'ethers/providers';
-import { ContractEvents } from "../api/ContractEvents";
+import { ContractEvents } from '../api/ContractEvents';
 import { Augur } from '../Augur';
 import { BaseConnector, EmptyConnector } from '../connector';
 import { Controller } from './Controller';
@@ -17,7 +17,8 @@ export interface SDKConfiguration {
     http: string
   },
   sdk?: {
-    ws: string,
+    enabled?: boolean,
+    ws: string
   },
   gnosis?: {
     enabled?: boolean,
@@ -26,7 +27,7 @@ export interface SDKConfiguration {
   zeroX?: {
     rpc?: {
       enabled?: boolean,
-      ws: string
+      ws?: string
     },
     mesh?: {
       verbosity?: 0|1|2|3|4|5,
@@ -41,9 +42,17 @@ export interface SDKConfiguration {
   }
 };
 
-export async function createClient(config: SDKConfiguration, connector: BaseConnector, account?: string, signer?: EthersSigner, provider?: JsonRpcProvider, enableFlexSearch: boolean = false) {
+export async function createClient(
+  config: SDKConfiguration,
+  connector: BaseConnector,
+  account?: string,
+  signer?: EthersSigner,
+  provider?: JsonRpcProvider,
+  enableFlexSearch = false,
+  ): Promise<Augur> {
+
   if (!config.gnosis || !config.gnosis.enabled) {
-    throw new Error(`Augur UI requires Gnosis be enabled using config.gnosis`);
+    throw new Error('Augur UI requires Gnosis be enabled using config.gnosis');
   }
 
   const ethersProvider = new EthersProvider( provider || new JsonRpcProvider(config.ethereum.http), 10, 0, 40);
@@ -55,7 +64,7 @@ export async function createClient(config: SDKConfiguration, connector: BaseConn
     config.gnosis.http
   );
 
-  return await Augur.create(
+  return Augur.create(
     ethersProvider,
     contractDependencies,
     addresses,
@@ -84,8 +93,14 @@ export async function createServer(config: SDKConfiguration, client?: Augur, acc
     client = await createClient(config, connector, account, undefined, undefined, true);
   }
 
-  const ethersProvider = new EthersProvider( new JsonRpcProvider(config.ethereum.http), 10, 0, 40)
-  const contractEvents = new ContractEvents(ethersProvider, client.addresses.Augur, client.addresses.AugurTrading, client.addresses.ShareToken, client.addresses.Exchange);
+  const ethersProvider = new EthersProvider( new JsonRpcProvider(config.ethereum.http), 10, 0, 40);
+  const contractEvents = new ContractEvents(
+    ethersProvider,
+    client.addresses.Augur,
+    client.addresses.AugurTrading,
+    client.addresses.ShareToken,
+    client.addresses.Exchange
+  );
   const blockAndLogStreamerListener = BlockAndLogStreamerListener.create(
     ethersProvider,
     contractEvents.getEventTopics,
