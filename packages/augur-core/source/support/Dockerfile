@@ -2,7 +2,7 @@
 FROM augurproject/augur-build:latest as augur-build
 
 ARG SOLC_VERSION=v0.5.15
-ARG SOLC_MD5=be02011efd6c6afd27cda02871bd70b3
+ARG SOLC_MD5=884dbc8c8ed01cc34799a6ffab11bc3a
 ENV PATH="/augur/node_modules/.bin:${PATH}"
 ENV PATH="/usr/bin:${PATH}"
 ENV PATH="/augur/venv/bin:${PATH}"
