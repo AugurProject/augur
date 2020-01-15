@@ -189,7 +189,6 @@ describe('Gnosis :: ', () => {
             status: GnosisSafeState.AVAILABLE,
           });
 
-          console.log(11);
           // The registry returns addresses in all upper case.
           await expect(
             john.augur.contracts.gnosisSafeRegistry.getSafe_(
