@@ -34,11 +34,11 @@ export class SDK {
   async makeClient(
     provider: JsonRpcProvider,
     signer: EthersSigner,
-    public env: EnvObject,
-    public account: String = null,
-    public isWeb3Transport = false,
+    env: EnvObject,
+    account: String = null,
+    isWeb3Transport = false,
     enableFlexSearch = true,
-    private signerNetworkId?: string,
+    signerNetworkId?: string,
     gnosisRelayEndpoint?: string
   ): Promise<Augur> {
     this.networkId = (await provider.getNetwork()).chainId.toString() as NetworkId;
