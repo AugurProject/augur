@@ -75,7 +75,7 @@ export function createBrowserMesh(
   config: SDKConfiguration,
   onRestart?: BrowserMeshErrorFunction
 ): Mesh {
-  if (!config.zeroX || !config.zeroX.mesh || config.zeroX.mesh.enabled) {
+  if (!config.zeroX || !config.zeroX.mesh || !config.zeroX.mesh.enabled) {
     throw new Error(`Attempting to create browser mesh without it being enabled in config ${JSON.stringify(config)}`);
   }
 
