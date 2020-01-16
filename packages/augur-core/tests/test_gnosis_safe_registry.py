@@ -2,7 +2,7 @@
 
 from eth_tester.exceptions import TransactionFailed
 from pytest import raises, fixture as pytest_fixture
-from utils import nullAddress, longTo32Bytes
+from utils import nullAddress, longTo32Bytes, AssertLog
 
 
 def test_gnosis_safe_registry(contractsFixture, augur, universe, cash, gnosisSafeRegistry, gnosisSafeMaster, proxyFactory):
@@ -24,7 +24,12 @@ def test_gnosis_safe_registry(contractsFixture, augur, universe, cash, gnosisSaf
     gnosisSafeRegistryData = gnosisSafeRegistry.setupForAugur_encode(augur.address, createOrder.address, fillOrder.address, zeroXTrade.address, cash.address, shareToken.address, affiliates.address, longTo32Bytes(11), nullAddress)
 
     gnosisSafeData = gnosisSafeMaster.setup_encode([account], 1, gnosisSafeRegistry.address, gnosisSafeRegistryData, nullAddress, nullAddress, 0, nullAddress)
-    gnosisSafeAddress = proxyFactory.createProxyWithCallback(gnosisSafeMaster.address, gnosisSafeData, saltNonce, gnosisSafeRegistry.address)
+    
+    GnosisSafeRegisteredLog = {
+        "owner": account,
+    }
+    with AssertLog(contractsFixture, "GnosisSafeRegistered", GnosisSafeRegisteredLog):
+        gnosisSafeAddress = proxyFactory.createProxyWithCallback(gnosisSafeMaster.address, gnosisSafeData, saltNonce, gnosisSafeRegistry.address)
 
     gnosisSafe = contractsFixture.applySignature("GnosisSafe", gnosisSafeAddress)
     
