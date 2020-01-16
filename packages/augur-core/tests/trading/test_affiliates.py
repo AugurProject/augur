@@ -64,30 +64,30 @@ def test_affiliate_validator(kitchenSinkFixture, universe, cash):
 
     accountKey = longTo32Bytes(21)
     salt = 0
-    accountHash = affiliateValidator.getKeyHash(accountKey, salt)
+    accountHash = affiliateValidator.getKeyHash(accountKey, account, salt)
 
     # A bad signature will be rejected
     with raises(TransactionFailed):
-        affiliateValidator.addKey(accountKey, salt, longTo32Bytes(0), longTo32Bytes(0), 8, sender=account)
+        affiliateValidator.addKey(accountKey, account, salt, longTo32Bytes(0), longTo32Bytes(0), 8, sender=account)
 
     # This includes being signed by a non operator. So the same sig will fail initially but work once the signer is approved as an operator
     r, s, v = signHash(accountHash, affiliateValidatorOperatorPrivKey)
     with raises(TransactionFailed):
-        affiliateValidator.addKey(accountKey, salt, r, s, v, sender=account)
+        affiliateValidator.addKey(accountKey, account, salt, r, s, v, sender=account)
 
     # Succesfully add the key for the trader account
     affiliateValidator.addOperator(affiliateValidatorOperator)
-    affiliateValidator.addKey(accountKey, salt, r, s, v, sender=account)
+    affiliateValidator.addKey(accountKey, account, salt, r, s, v, sender=account)
 
     # Re-using a salt will not work
     with raises(TransactionFailed):
-        affiliateValidator.addKey(accountKey, salt, r, s, v, sender=account)
+        affiliateValidator.addKey(accountKey, account, salt, r, s, v, sender=account)
 
     affiliateKey = longTo32Bytes(22)
     salt += 1
-    affiliateHash = affiliateValidator.getKeyHash(affiliateKey, salt)
+    affiliateHash = affiliateValidator.getKeyHash(affiliateKey, affiliate, salt)
     r, s, v = signHash(affiliateHash, affiliateValidatorOperatorPrivKey)
-    affiliateValidator.addKey(affiliateKey, salt, r, s, v, sender=affiliate)
+    affiliateValidator.addKey(affiliateKey, affiliate, salt, r, s, v, sender=affiliate)
 
     # Confirm affiliate fees begin at 0 for the referrer
     assert market.affiliateFeesAttoCash(affiliate) == 0
@@ -107,9 +107,9 @@ def test_affiliate_validator(kitchenSinkFixture, universe, cash):
     dupeAccount = kitchenSinkFixture.accounts[2]
     affiliates.setReferrer(affiliate, sender=dupeAccount)
     salt += 1
-    affiliateHash = affiliateValidator.getKeyHash(affiliateKey, salt)
+    affiliateHash = affiliateValidator.getKeyHash(affiliateKey, dupeAccount, salt)
     r, s, v = signHash(affiliateHash, affiliateValidatorOperatorPrivKey)
-    affiliateValidator.addKey(affiliateKey, salt, r, s, v, sender=dupeAccount)
+    affiliateValidator.addKey(affiliateKey, dupeAccount, salt, r, s, v, sender=dupeAccount)
     
     cash.faucet(cost, sender=dupeAccount)
     shareToken.buyCompleteSets(market.address, dupeAccount, numSets, sender=dupeAccount)
