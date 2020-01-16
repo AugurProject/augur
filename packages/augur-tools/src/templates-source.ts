@@ -162,11 +162,6 @@ export const TEMPLATES = {
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.TEXT,
-                    placeholder: TEXT_PLACEHOLDERS.SINGLE_PLAYER,
-                  },
-                  {
-                    id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     values: LIST_VALUES.YEARS,
@@ -354,6 +349,29 @@ export const TEMPLATES = {
                 },
               },
               {
+                marketType: YES_NO,
+                question: `Euro Tour: Will the United States Team win the [1] Ryders Cup?`,
+                example: `Euro Tour: Will the United States Team win the 2020 Ryders Cup?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If team fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as 'No'`,
+                    },
+                    {
+                      text: `If a tournament or match is cancelled the market should resolve as 'No'. If the tournament is postponed and not be completed before the market's Event Expiration time, but the player named officially made the cut, noted by the tournament association, then the outcome should resolve as Yes.`,
+                    },
+                  ],
+                },
+              },
+              {
                 marketType: CATEGORICAL,
                 question: `Euro Tour: Which golfer will win the [0] [1]?`,
                 example: `Euro Tour: Which golfer will win the 2020 Omega Dubai Dessert Classic?`,
@@ -410,6 +428,16 @@ export const TEMPLATES = {
                   {
                     id: 1,
                     type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `United States Team`,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `European Team`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `No winner/Event cancelled`,
                   },
                 ],
@@ -420,6 +448,9 @@ export const TEMPLATES = {
                     },
                     {
                       text: `Only one team can be listed per outcome, if not then the market should resolve as 'Invalid'`,
+                    },
+                    {
+                      text: `This market is intended to have two teams, United States verse European, if not the case this market should resolve as 'Invalid'`,
                     },
                     {
                       text:
