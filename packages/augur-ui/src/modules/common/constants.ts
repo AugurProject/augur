@@ -217,6 +217,8 @@ export const invalidFilters = [
   { header: 'show', value: INVALID_SHOW },
 ];
 
+export const PROBABLE_INVALID_MARKET = 'This market has a high probability of resolving invalid';
+
 // # Sorting Options
 export const NEUTRAL = 'neutral';
 export const ASCENDING = 'ascending';
