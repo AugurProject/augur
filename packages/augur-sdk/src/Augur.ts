@@ -109,7 +109,7 @@ export class Augur<TProvider extends Provider = Provider> {
     enableFlexSearch = false
   ): Promise<Augur<Provider>> {
     const networkId = await provider.getNetworkId();
-    const augur = new Augur<TProvider>(
+    const client = new Augur<TProvider>(
       provider,
       dependencies,
       networkId,
@@ -117,9 +117,9 @@ export class Augur<TProvider extends Provider = Provider> {
       connector,
       enableFlexSearch
     );
-
-    await augur.contracts.setReputationToken(networkId);
-    return augur;
+    connector.client = client;
+    await client.contracts.setReputationToken(networkId);
+    return client;
   }
 
   async getTransaction(hash: string): Promise<TransactionResponse> {

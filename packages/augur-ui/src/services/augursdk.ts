@@ -53,6 +53,7 @@ export class SDK {
         },
         mesh: {
           verbosity: 5,
+          bootstrapList: (env['0x-mesh'] || {}).bootstrapList,
           enabled: true,
         }
       }
@@ -63,15 +64,20 @@ export class SDK {
       this.sdk = await createClient(config, connector, account, signer, provider, enableFlexSearch);
       await connector.connect(config, account)
     } else {
+      // I hate these next 3 lines that connects the SDK and Connector in this way
+      // these shouldn't need to be so coupled.
       const connector = new Connectors.SingleThreadConnector();
+      this.sdk = await createClient(config, connector, account, signer, provider, enableFlexSearch);
+      await connector.connect(config);
+
+      // Attach the mesh later so that we are doing it fully outside of the backend code
+      // since it will only work in a browser environment
       if (config.zeroX && config.zeroX.mesh && config.zeroX.mesh.enabled) {
         connector.mesh = createBrowserMesh(config, (err: Error, mesh: Mesh) => {
           connector.mesh = mesh;
         });
+        this.sdk.events.emit('ZeroX:Ready');
       }
-      this.sdk = await createClient(config, connector, account, signer, provider, enableFlexSearch);
-      // This is messy -- that is neededing the connector to know about `sdk`
-      await connector.connectWithClient(config, this.sdk);
     }
 
     if (!isEmpty(account)) {

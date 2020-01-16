@@ -64,13 +64,15 @@ export async function createClient(
     config.gnosis.http
   );
 
-  return Augur.create(
+  const client = await Augur.create(
     ethersProvider,
     contractDependencies,
     addresses,
     connector,
     enableFlexSearch
   );
+
+  return client;
 }
 
 export async function createServer(config: SDKConfiguration, client?: Augur, account?: string): Promise<{ api: API, controller: Controller }> {
@@ -112,7 +114,8 @@ export async function createServer(config: SDKConfiguration, client?: Augur, acc
     config.syncing.blockstreamDelay,
     getStartingBlockForNetwork(config.networkId),
     client,
-    blockAndLogStreamerListener
+    blockAndLogStreamerListener,
+    config.zeroX && config.zeroX.mesh && config.zeroX.mesh.enabled
   );
   const controller = new Controller(client, db, blockAndLogStreamerListener);
   const api = new API(client, db);

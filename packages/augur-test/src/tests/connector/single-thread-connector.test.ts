@@ -66,7 +66,8 @@ beforeAll(async () => {
       http: ''
     }
   };
-  await connector.connectWithClient(config, john.augur);
+  connector.client = john.augur;
+  await connector.connect(config);
 });
 
 test('SingleThreadConnector :: Should route correctly and handle events, extraInfo', async done => {

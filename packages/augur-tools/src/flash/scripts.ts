@@ -4,7 +4,8 @@ import { createCannedMarketsAndOrders } from './create-canned-markets-and-orders
 import { _1_ETH } from '../constants';
 import {
   Contracts as compilerOutput,
-  Addresses,
+  getAddressesForNetwork,
+  NetworkId
 } from '@augurproject/artifacts';
 import {
   NetworkConfiguration,
@@ -75,7 +76,7 @@ export function addScripts(flash: FlashSession) {
       this.network = NetworkConfiguration.create(network);
       flash.provider = this.makeProvider(this.network);
       const networkId = await this.getNetworkId(flash.provider);
-      flash.contractAddresses = Addresses[networkId];
+      flash.contractAddresses = getAddressesForNetwork(networkId as NetworkId);
       const mesh = args.meshEndpoint as string || undefined;
       const endpoint = 'ws://localhost:60557';
       const meshEndpoint = mesh ? mesh : endpoint;
@@ -1527,7 +1528,7 @@ export function addScripts(flash: FlashSession) {
       const networkId = await this.provider.getNetworkId();
       // const ethNode = this.network.http;
       const ethNode = 'http://geth:8545';
-      const addresses = Addresses[networkId];
+      const addresses = getAddressesForNetwork(networkId as NetworkId);
 
       console.log(`Starting 0x mesh. chainId=${networkId} ethnode=${ethNode}`);
 

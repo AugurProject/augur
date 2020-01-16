@@ -1,8 +1,17 @@
+import { Augur } from '../Augur';
 import { SDKConfiguration } from '../state';
 import { SubscriptionEventName } from "../constants";
 import { Callback, SubscriptionType } from "../events";
 
 export abstract class BaseConnector {
+  private _client: Augur;
+  get client(): Augur {
+    return this._client;
+  }
+  set client(client: Augur) {
+    this._client = client;
+  }
+
   subscriptions: { [event: string]: { id: string, callback: Callback } } = {};
 
   // Lifecyle of the connector

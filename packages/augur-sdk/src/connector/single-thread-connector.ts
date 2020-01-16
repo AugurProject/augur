@@ -10,9 +10,8 @@ import { BrowserMesh, ZeroX } from '../api/ZeroX';
 export class SingleThreadConnector extends BaseConnector {
   private _api: API;
   private _zeroX: ZeroX;
-  private _client: Augur;
   private get events(): Subscriptions {
-    return this._client.events;
+    return this.client.events;
   }
   get mesh(): BrowserMesh {
     return this._zeroX.mesh;
@@ -22,15 +21,10 @@ export class SingleThreadConnector extends BaseConnector {
   }
 
   async connect(config: SDKConfiguration, account?: string): Promise<void> {
-    throw new Error('Must call connectWithClient for SingleThreadConnector')
-  }
-
-  async connectWithClient(config: SDKConfiguration, client: Augur): Promise<void> {
-    this._client = client;
-    this._api = await startServerFromClient(config, client);
+    this._api = await startServerFromClient(config, this.client);
     if (config.zeroX) {
-      this._zeroX = new ZeroX(this._api.augur, config.zeroX ? config.zeroX.rpc.ws : undefined);
-      this._api.augur.zeroX = this._zeroX;
+      this._zeroX = new ZeroX(this._api.augur, config.zeroX.rpc ? config.zeroX.rpc.ws : undefined);
+      this._client.zeroX = this._zeroX;
     }
   }
 
