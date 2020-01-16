@@ -469,6 +469,7 @@ contract Market is Initializable, Ownable, IMarket, CashSender {
         delete participants;
         participants.push(_initialParticipant);
         clearCrowdsourcers();
+        preemptiveDisputeCrowdsourcer = IDisputeCrowdsourcer(0);
         // Send REP from the rep bond back to the address that placed it. If a report has been made tell the InitialReporter to return that REP and reset
         if (repBond > 0) {
             IV2ReputationToken _reputationToken = getReputationToken();
