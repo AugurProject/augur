@@ -224,7 +224,7 @@ interface CountdownLabelProps {
 
 export const CountdownLabel = ({ expiry, currentTimestamp }: CountdownLabelProps) => {
   const duration = getDurationBetween(expiry.timestamp, currentTimestamp);
-  const hours = duration.asHours(); 
+  const hours = duration.asHours();
   if (hours > 1) return null;
   return (
     <div className={Styles.CountdownLabel}>
@@ -569,13 +569,12 @@ export class HoverValueLabel extends React.Component<
   }
 }
 
-export const InvalidLabel = (props: InvalidLabelProps) => {
-  const {
-    text,
-    keyId,
-    openInvalidMarketRulesModal,
-    tooltipPositioning,
-  } = props;
+export const InvalidLabel = ({
+  text,
+  keyId,
+  openInvalidMarketRulesModal,
+  tooltipPositioning,
+}: InvalidLabelProps) => {
   const {
     explainerBlockTitle,
     explainerBlockSubtexts,
