@@ -322,6 +322,11 @@ export default class MarketHeader extends Component<
                 ) : (
                   <MarketTitle id={market.marketId} noLink />
                 )}
+                {market.mostLikelyInvalid ? (
+                  <div className={Styles.ResolvingInvalid}>
+                    <span>This market has high probability of resolving invalid</span>
+                  </div>
+                ) : null}
                 {details.length > 0 && (
                   <div className={Styles.Details}>
                     <h4>Resolution Details</h4>
