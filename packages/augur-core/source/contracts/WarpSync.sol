@@ -36,6 +36,7 @@ contract WarpSync is IWarpSync, Initializable {
         IMarket _market = IMarket(markets[address(_universe)]);
         _market.doInitialReport(_payoutNumerators, _description, _additionalStake);
         _market.getInitialReporter().transferOwnership(msg.sender);
+        return true;
     }
 
     function initializeUniverse(IUniverse _universe) public {
