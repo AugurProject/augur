@@ -95,8 +95,7 @@ jobs:
       USE_NORMAL_TIME: false
       PRODUCTION: false
       YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
-    pool:
-      vmImage: 'Ubuntu 16.04'
+    pool: 'Default'
     strategy:
       matrix:
         node_10_x:
