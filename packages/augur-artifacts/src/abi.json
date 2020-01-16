@@ -7753,6 +7753,37 @@
 					"type": "address"
 				},
 				{
+					"indexed": false,
+					"internalType": "address",
+					"name": "market",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"internalType": "address",
+					"name": "from",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"internalType": "address",
+					"name": "to",
+					"type": "address"
+				}
+			],
+			"name": "MarketRepBondTransferred",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "universe",
+					"type": "address"
+				},
+				{
 					"indexed": true,
 					"internalType": "address",
 					"name": "market",
@@ -8267,6 +8298,31 @@
 				}
 			],
 			"name": "ValidityBondChanged",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "universe",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "warpSyncHash",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "marketEndTime",
+					"type": "uint256"
+				}
+			],
+			"name": "WarpSyncDataUpdated",
 			"type": "event"
 		},
 		{
@@ -9447,6 +9503,37 @@
 			"constant": false,
 			"inputs": [
 				{
+					"internalType": "address",
+					"name": "_universe",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_from",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_to",
+					"type": "address"
+				}
+			],
+			"name": "logMarketRepBondTransferred",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
 					"internalType": "contract IUniverse",
 					"name": "_universe",
 					"type": "address"
@@ -9973,6 +10060,37 @@
 				}
 			],
 			"name": "logValidityBondChanged",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_universe",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_warpSyncHash",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_marketEndTime",
+					"type": "uint256"
+				}
+			],
+			"name": "logWarpSyncDataUpdated",
 			"outputs": [
 				{
 					"internalType": "bool",
@@ -13108,6 +13226,21 @@
 			"outputs": [
 				{
 					"internalType": "contract IAugur",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "augurTrading",
+			"outputs": [
+				{
+					"internalType": "contract IAugurTrading",
 					"name": "",
 					"type": "address"
 				}
@@ -25765,6 +25898,44 @@
 			"anonymous": false,
 			"inputs": [
 				{
+					"indexed": false,
+					"internalType": "address",
+					"name": "safe",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "owner",
+					"type": "address"
+				}
+			],
+			"name": "GnosisSafeDeRegistered",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": false,
+					"internalType": "address",
+					"name": "safe",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "owner",
+					"type": "address"
+				}
+			],
+			"name": "GnosisSafeRegistered",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
 					"indexed": true,
 					"internalType": "address",
 					"name": "universe",
@@ -26016,6 +26187,58 @@
 			"constant": false,
 			"inputs": [],
 			"name": "finishDeployment",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_safe",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_owner",
+					"type": "address"
+				}
+			],
+			"name": "logGnosisSafeDeRegistered",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_safe",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_owner",
+					"type": "address"
+				}
+			],
+			"name": "logGnosisSafeRegistered",
 			"outputs": [
 				{
 					"internalType": "bool",
