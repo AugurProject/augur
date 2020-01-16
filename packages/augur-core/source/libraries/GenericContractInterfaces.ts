@@ -86,6 +86,7 @@ export const eventDescriptions: { [signatureHash: string]: EventDescription } = 
 	'0xc3cf07f8fa0fafc25a9dd0bad2cd6b961c55dad41b42c8ef8f931bc40e41e08c': {"name":"MarketMigrated","signature":"MarketMigrated(address,address,address)","signatureHash":"0xc3cf07f8fa0fafc25a9dd0bad2cd6b961c55dad41b42c8ef8f931bc40e41e08c","parameters":[{"indexed":true,"internalType":"address","name":"market","type":"address"},{"indexed":true,"internalType":"address","name":"originalUniverse","type":"address"},{"indexed":true,"internalType":"address","name":"newUniverse","type":"address"}]},
 	'0x213a05b9ad8567c2f8fa868e7375e5bf30e69add0dbb5913ca8a3e58c815c268': {"name":"MarketOIChanged","signature":"MarketOIChanged(address,address,uint256)","signatureHash":"0x213a05b9ad8567c2f8fa868e7375e5bf30e69add0dbb5913ca8a3e58c815c268","parameters":[{"indexed":true,"internalType":"address","name":"universe","type":"address"},{"indexed":true,"internalType":"address","name":"market","type":"address"},{"indexed":false,"internalType":"uint256","name":"marketOI","type":"uint256"}]},
 	'0x3b4f3db017516414df2695e5b0052661779d7163a6cd4368fd74313be73fa0b8': {"name":"MarketParticipantsDisavowed","signature":"MarketParticipantsDisavowed(address,address)","signatureHash":"0x3b4f3db017516414df2695e5b0052661779d7163a6cd4368fd74313be73fa0b8","parameters":[{"indexed":true,"internalType":"address","name":"universe","type":"address"},{"indexed":true,"internalType":"address","name":"market","type":"address"}]},
+	'0x0519ee50d0e6120223e58d0b52824ca4985c524f045a3d6a529936e511d2ba8d': {"name":"MarketRepBondTransferred","signature":"MarketRepBondTransferred(address,address,address,address)","signatureHash":"0x0519ee50d0e6120223e58d0b52824ca4985c524f045a3d6a529936e511d2ba8d","parameters":[{"indexed":true,"internalType":"address","name":"universe","type":"address"},{"indexed":false,"internalType":"address","name":"market","type":"address"},{"indexed":false,"internalType":"address","name":"from","type":"address"},{"indexed":false,"internalType":"address","name":"to","type":"address"}]},
 	'0x55f2a7bfa32e835c3f3c3cff653a3d11c077ce1b00c5a41c6aaf09eedc1ac3b2': {"name":"MarketTransferred","signature":"MarketTransferred(address,address,address,address)","signatureHash":"0x55f2a7bfa32e835c3f3c3cff653a3d11c077ce1b00c5a41c6aaf09eedc1ac3b2","parameters":[{"indexed":true,"internalType":"address","name":"universe","type":"address"},{"indexed":true,"internalType":"address","name":"market","type":"address"},{"indexed":false,"internalType":"address","name":"from","type":"address"},{"indexed":false,"internalType":"address","name":"to","type":"address"}]},
 	'0xd1fc3f2cb1387e602db0e6f8f22649df65df5246eeff281cf6d1ef62feda4ece': {"name":"NoShowBondChanged","signature":"NoShowBondChanged(address,uint256)","signatureHash":"0xd1fc3f2cb1387e602db0e6f8f22649df65df5246eeff281cf6d1ef62feda4ece","parameters":[{"indexed":true,"internalType":"address","name":"universe","type":"address"},{"indexed":false,"internalType":"uint256","name":"noShowBond","type":"uint256"}]},
 	'0x18052b5e29020458e154999fa71891a5db3404a5b0b9c5ec60c90adca7d38d63': {"name":"ParticipationTokensRedeemed","signature":"ParticipationTokensRedeemed(address,address,address,uint256,uint256,uint256)","signatureHash":"0x18052b5e29020458e154999fa71891a5db3404a5b0b9c5ec60c90adca7d38d63","parameters":[{"indexed":true,"internalType":"address","name":"universe","type":"address"},{"indexed":true,"internalType":"address","name":"disputeWindow","type":"address"},{"indexed":true,"internalType":"address","name":"account","type":"address"},{"indexed":false,"internalType":"uint256","name":"attoParticipationTokens","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"feePayoutShare","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"timestamp","type":"uint256"}]},
@@ -102,6 +103,7 @@ export const eventDescriptions: { [signatureHash: string]: EventDescription } = 
 	'0xe36b09d83f9cfa88c37f071fc2cfb5ff30b764cbd98088e70d965573c9ce5bbd': {"name":"UniverseCreated","signature":"UniverseCreated(address,address,uint256[],uint256)","signatureHash":"0xe36b09d83f9cfa88c37f071fc2cfb5ff30b764cbd98088e70d965573c9ce5bbd","parameters":[{"indexed":true,"internalType":"address","name":"parentUniverse","type":"address"},{"indexed":true,"internalType":"address","name":"childUniverse","type":"address"},{"indexed":false,"internalType":"uint256[]","name":"payoutNumerators","type":"uint256[]"},{"indexed":false,"internalType":"uint256","name":"creationTimestamp","type":"uint256"}]},
 	'0xce5b6de2a0053ebc6c04e68bcbb9f0a1f2deeb7049c72881e198f95b5752db82': {"name":"UniverseForked","signature":"UniverseForked(address,address)","signatureHash":"0xce5b6de2a0053ebc6c04e68bcbb9f0a1f2deeb7049c72881e198f95b5752db82","parameters":[{"indexed":true,"internalType":"address","name":"universe","type":"address"},{"indexed":false,"internalType":"contract IMarket","name":"forkingMarket","type":"address"}]},
 	'0x69af68e366a0570364e3a086f3b5ac79f08ecc3f93eaccbfcf3864809b12b5d8': {"name":"ValidityBondChanged","signature":"ValidityBondChanged(address,uint256)","signatureHash":"0x69af68e366a0570364e3a086f3b5ac79f08ecc3f93eaccbfcf3864809b12b5d8","parameters":[{"indexed":true,"internalType":"address","name":"universe","type":"address"},{"indexed":false,"internalType":"uint256","name":"validityBond","type":"uint256"}]},
+	'0x7589653fe5a2ab3ccc12538316852339868efdd9d3bd0b84d055cf224cf96873': {"name":"WarpSyncDataUpdated","signature":"WarpSyncDataUpdated(address,uint256,uint256)","signatureHash":"0x7589653fe5a2ab3ccc12538316852339868efdd9d3bd0b84d055cf224cf96873","parameters":[{"indexed":true,"internalType":"address","name":"universe","type":"address"},{"indexed":false,"internalType":"uint256","name":"warpSyncHash","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"marketEndTime","type":"uint256"}]},
 	'0xcc16f5dbb4873280815c1ee09dbd06736cffcc184412cf7a71a0fdb75d397ca5': {"name":"Burn","signature":"Burn(address,uint256)","signatureHash":"0xcc16f5dbb4873280815c1ee09dbd06736cffcc184412cf7a71a0fdb75d397ca5","parameters":[{"indexed":true,"internalType":"address","name":"target","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}]},
 	'0x0f6798a560793a54c3bcfe86a93cde1e73087d944c0ea20544137d4121396885': {"name":"Mint","signature":"Mint(address,uint256)","signatureHash":"0x0f6798a560793a54c3bcfe86a93cde1e73087d944c0ea20544137d4121396885","parameters":[{"indexed":true,"internalType":"address","name":"target","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}]},
 	'0xdccd412f0b1252819cb1fd330b93224ca42612892bb3f4f789976e6d81936496': {"name":"Burn","signature":"Burn(address,uint256,uint256,address)","signatureHash":"0xdccd412f0b1252819cb1fd330b93224ca42612892bb3f4f789976e6d81936496","parameters":[{"indexed":true,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint256","name":"tokenAmount","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"cashAmount","type":"uint256"},{"indexed":true,"internalType":"address","name":"to","type":"address"}]},
@@ -125,6 +127,8 @@ export const eventDescriptions: { [signatureHash: string]: EventDescription } = 
 	'0x4a39dc06d4c0dbc64b70af90fd698a233a518aa5d07e595d983b8c0526c8f7fb': {"name":"TransferBatch","signature":"TransferBatch(address,address,address,uint256[],uint256[])","signatureHash":"0x4a39dc06d4c0dbc64b70af90fd698a233a518aa5d07e595d983b8c0526c8f7fb","parameters":[{"indexed":true,"internalType":"address","name":"operator","type":"address"},{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256[]","name":"ids","type":"uint256[]"},{"indexed":false,"internalType":"uint256[]","name":"values","type":"uint256[]"}]},
 	'0xc3d58168c5ae7397731d063d5bbf3d657854427343f4c083240f7aacaa2d0f62': {"name":"TransferSingle","signature":"TransferSingle(address,address,address,uint256,uint256)","signatureHash":"0xc3d58168c5ae7397731d063d5bbf3d657854427343f4c083240f7aacaa2d0f62","parameters":[{"indexed":true,"internalType":"address","name":"operator","type":"address"},{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"id","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}]},
 	'0x6bb7ff708619ba0610cba295a58592e0451dee2622938c8755667688daf3529b': {"name":"URI","signature":"URI(string,uint256)","signatureHash":"0x6bb7ff708619ba0610cba295a58592e0451dee2622938c8755667688daf3529b","parameters":[{"indexed":false,"internalType":"string","name":"value","type":"string"},{"indexed":true,"internalType":"uint256","name":"id","type":"uint256"}]},
+	'0x6faddefdb0dcadaa152d8342c44537343e87774abd7a92560af9d9a1ebbd6120': {"name":"GnosisSafeDeRegistered","signature":"GnosisSafeDeRegistered(address,address)","signatureHash":"0x6faddefdb0dcadaa152d8342c44537343e87774abd7a92560af9d9a1ebbd6120","parameters":[{"indexed":false,"internalType":"address","name":"safe","type":"address"},{"indexed":true,"internalType":"address","name":"owner","type":"address"}]},
+	'0xe8d7c97818be694451792b4b357622d1b234e63b93426400480df368d469479a': {"name":"GnosisSafeRegistered","signature":"GnosisSafeRegistered(address,address)","signatureHash":"0xe8d7c97818be694451792b4b357622d1b234e63b93426400480df368d469479a","parameters":[{"indexed":false,"internalType":"address","name":"safe","type":"address"},{"indexed":true,"internalType":"address","name":"owner","type":"address"}]},
 	'0xe9f0af820300e73bae76c8e76943abe7fbb4224b49cb133e2dadc6f71acf6370': {"name":"MarketVolumeChanged","signature":"MarketVolumeChanged(address,address,uint256,uint256[],uint256)","signatureHash":"0xe9f0af820300e73bae76c8e76943abe7fbb4224b49cb133e2dadc6f71acf6370","parameters":[{"indexed":true,"internalType":"address","name":"universe","type":"address"},{"indexed":true,"internalType":"address","name":"market","type":"address"},{"indexed":false,"internalType":"uint256","name":"volume","type":"uint256"},{"indexed":false,"internalType":"uint256[]","name":"outcomeVolumes","type":"uint256[]"},{"indexed":false,"internalType":"uint256","name":"timestamp","type":"uint256"}]},
 	'0x9bab1368a1ed530afaad9c630ba75e6a5c1efa9f6af0139d6cda2b6af6aa801e': {"name":"OrderEvent","signature":"OrderEvent(address,address,uint8,uint8,bytes32,bytes32,address[],uint256[])","signatureHash":"0x9bab1368a1ed530afaad9c630ba75e6a5c1efa9f6af0139d6cda2b6af6aa801e","parameters":[{"indexed":true,"internalType":"address","name":"universe","type":"address"},{"indexed":true,"internalType":"address","name":"market","type":"address"},{"indexed":true,"internalType":"enum AugurTrading.OrderEventType","name":"eventType","type":"uint8"},{"indexed":false,"internalType":"uint8","name":"orderType","type":"uint8"},{"indexed":false,"internalType":"bytes32","name":"orderId","type":"bytes32"},{"indexed":false,"internalType":"bytes32","name":"tradeGroupId","type":"bytes32"},{"indexed":false,"internalType":"address[]","name":"addressData","type":"address[]"},{"indexed":false,"internalType":"uint256[]","name":"uint256Data","type":"uint256[]"}]},
 	'0x59543b7f82735782aa5bdb97dff40ff288d4548a5865da513b40e4088e2ee77e': {"name":"ProfitLossChanged","signature":"ProfitLossChanged(address,address,address,uint256,int256,uint256,int256,int256,int256,uint256)","signatureHash":"0x59543b7f82735782aa5bdb97dff40ff288d4548a5865da513b40e4088e2ee77e","parameters":[{"indexed":true,"internalType":"address","name":"universe","type":"address"},{"indexed":true,"internalType":"address","name":"market","type":"address"},{"indexed":true,"internalType":"address","name":"account","type":"address"},{"indexed":false,"internalType":"uint256","name":"outcome","type":"uint256"},{"indexed":false,"internalType":"int256","name":"netPosition","type":"int256"},{"indexed":false,"internalType":"uint256","name":"avgPrice","type":"uint256"},{"indexed":false,"internalType":"int256","name":"realizedProfit","type":"int256"},{"indexed":false,"internalType":"int256","name":"frozenFunds","type":"int256"},{"indexed":false,"internalType":"int256","name":"realizedCost","type":"int256"},{"indexed":false,"internalType":"uint256","name":"timestamp","type":"uint256"}]}
@@ -2606,6 +2610,25 @@ export class Augur<TBigNumber> extends Contract<TBigNumber> {
 		return <boolean>result[0]
 	}
 
+	public logMarketRepBondTransferred = async (universe: string, from: string, to: string, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_universe","type":"address"},{"internalType":"address","name":"_from","type":"address"},{"internalType":"address","name":"_to","type":"address"}],"name":"logMarketRepBondTransferred","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [universe, from, to], 'logMarketRepBondTransferred', options.sender)
+	}
+	
+	public logMarketRepBondTransferred_estimateGas = async (universe: string, from: string, to: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_universe","type":"address"},{"internalType":"address","name":"_from","type":"address"},{"internalType":"address","name":"_to","type":"address"}],"name":"logMarketRepBondTransferred","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [universe, from, to], 'logMarketRepBondTransferred', options.sender)
+	}
+
+	public logMarketRepBondTransferred_ = async (universe: string, from: string, to: string, options?: { sender?: string }): Promise<boolean> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_universe","type":"address"},{"internalType":"address","name":"_from","type":"address"},{"internalType":"address","name":"_to","type":"address"}],"name":"logMarketRepBondTransferred","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const result = await this.localCall(abi, [universe, from, to], options.sender)
+		return <boolean>result[0]
+	}
+
 	public logMarketTransferred = async (universe: string, from: string, to: string, options?: { sender?: string }): Promise<Array<Event>> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IUniverse","name":"_universe","type":"address"},{"internalType":"address","name":"_from","type":"address"},{"internalType":"address","name":"_to","type":"address"}],"name":"logMarketTransferred","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
@@ -2907,6 +2930,25 @@ export class Augur<TBigNumber> extends Contract<TBigNumber> {
 		options = options || {}
 		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"_validityBond","type":"uint256"}],"name":"logValidityBondChanged","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		const result = await this.localCall(abi, [validityBond], options.sender)
+		return <boolean>result[0]
+	}
+
+	public logWarpSyncDataUpdated = async (universe: string, warpSyncHash: TBigNumber, marketEndTime: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_universe","type":"address"},{"internalType":"uint256","name":"_warpSyncHash","type":"uint256"},{"internalType":"uint256","name":"_marketEndTime","type":"uint256"}],"name":"logWarpSyncDataUpdated","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [universe, warpSyncHash, marketEndTime], 'logWarpSyncDataUpdated', options.sender)
+	}
+	
+	public logWarpSyncDataUpdated_estimateGas = async (universe: string, warpSyncHash: TBigNumber, marketEndTime: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_universe","type":"address"},{"internalType":"uint256","name":"_warpSyncHash","type":"uint256"},{"internalType":"uint256","name":"_marketEndTime","type":"uint256"}],"name":"logWarpSyncDataUpdated","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [universe, warpSyncHash, marketEndTime], 'logWarpSyncDataUpdated', options.sender)
+	}
+
+	public logWarpSyncDataUpdated_ = async (universe: string, warpSyncHash: TBigNumber, marketEndTime: TBigNumber, options?: { sender?: string }): Promise<boolean> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_universe","type":"address"},{"internalType":"uint256","name":"_warpSyncHash","type":"uint256"},{"internalType":"uint256","name":"_marketEndTime","type":"uint256"}],"name":"logWarpSyncDataUpdated","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const result = await this.localCall(abi, [universe, warpSyncHash, marketEndTime], options.sender)
 		return <boolean>result[0]
 	}
 
@@ -4352,6 +4394,13 @@ export class GnosisSafeRegistry<TBigNumber> extends Contract<TBigNumber> {
 	public augur_ = async (options?: { sender?: string }): Promise<string> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"augur","outputs":[{"internalType":"contract IAugur","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
+	public augurTrading_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"augurTrading","outputs":[{"internalType":"contract IAugurTrading","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [], options.sender)
 		return <string>result[0]
 	}
@@ -11150,6 +11199,44 @@ export class AugurTrading<TBigNumber> extends Contract<TBigNumber> {
 		options = options || {}
 		const abi: AbiFunction = {"constant":false,"inputs":[],"name":"finishDeployment","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		const result = await this.localCall(abi, [], options.sender)
+		return <boolean>result[0]
+	}
+
+	public logGnosisSafeDeRegistered = async (safe: string, owner: string, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_safe","type":"address"},{"internalType":"address","name":"_owner","type":"address"}],"name":"logGnosisSafeDeRegistered","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [safe, owner], 'logGnosisSafeDeRegistered', options.sender)
+	}
+	
+	public logGnosisSafeDeRegistered_estimateGas = async (safe: string, owner: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_safe","type":"address"},{"internalType":"address","name":"_owner","type":"address"}],"name":"logGnosisSafeDeRegistered","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [safe, owner], 'logGnosisSafeDeRegistered', options.sender)
+	}
+
+	public logGnosisSafeDeRegistered_ = async (safe: string, owner: string, options?: { sender?: string }): Promise<boolean> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_safe","type":"address"},{"internalType":"address","name":"_owner","type":"address"}],"name":"logGnosisSafeDeRegistered","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const result = await this.localCall(abi, [safe, owner], options.sender)
+		return <boolean>result[0]
+	}
+
+	public logGnosisSafeRegistered = async (safe: string, owner: string, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_safe","type":"address"},{"internalType":"address","name":"_owner","type":"address"}],"name":"logGnosisSafeRegistered","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [safe, owner], 'logGnosisSafeRegistered', options.sender)
+	}
+	
+	public logGnosisSafeRegistered_estimateGas = async (safe: string, owner: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_safe","type":"address"},{"internalType":"address","name":"_owner","type":"address"}],"name":"logGnosisSafeRegistered","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [safe, owner], 'logGnosisSafeRegistered', options.sender)
+	}
+
+	public logGnosisSafeRegistered_ = async (safe: string, owner: string, options?: { sender?: string }): Promise<boolean> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_safe","type":"address"},{"internalType":"address","name":"_owner","type":"address"}],"name":"logGnosisSafeRegistered","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const result = await this.localCall(abi, [safe, owner], options.sender)
 		return <boolean>result[0]
 	}
 
