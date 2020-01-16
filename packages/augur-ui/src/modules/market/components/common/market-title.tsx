@@ -87,6 +87,7 @@ const MarketTemplateTitle: React.FC<MarketTemplateTitleProps> = ({
           </span>
         );
       } else {
+        let uniquePrev = prevWordUnique;
         prevWordUnique = true;
         const id = word.substring(bracketPos + 1, bracketPos2);
         const inputIndex = convertedInputs.findIndex(
@@ -114,6 +115,7 @@ const MarketTemplateTitle: React.FC<MarketTemplateTitleProps> = ({
               })}
               data-tip data-for={input.id + input.userInput}
             >
+              {uniquePrev && ' '}
               {prePend !== '' && <span>{prePend}</span>}
               {input.userInput}
               {placeholder && (
@@ -141,7 +143,7 @@ const MarketTemplateTitle: React.FC<MarketTemplateTitleProps> = ({
       {estDateTime && (
         <>
           <span>{question}</span>
-          <span>Estimated scheduled start time: {estDateTime.userInput}</span>
+          <div>Estimated scheduled start time: {estDateTime.userInput}</div>
         </>
       )}
     </>
