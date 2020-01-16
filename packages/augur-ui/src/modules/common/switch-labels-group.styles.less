@@ -22,6 +22,16 @@
     display: flex;
     flex-flow: row nowrap;
 
+    @media @breakpoint-tablet {
+      .mono-10-medium;
+
+      margin-left: @size-14;
+
+      > div {
+        margin-right: @size-20;
+      }
+    }
+
     @media @breakpoint-mobile {
       display: none;
     }
