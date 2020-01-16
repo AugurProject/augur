@@ -426,6 +426,7 @@ contract Market is Initializable, Ownable, IMarket, CashSender {
         IMarket _forkingMarket = universe.getForkingMarket();
         require(_forkingMarket.isFinalized());
         require(!isFinalized());
+        require(this != warpSync.markets(address(universe)));
 
         disavowCrowdsourcers();
 
