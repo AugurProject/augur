@@ -157,7 +157,7 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `PGA: Will the United States Team win the [1] Presidents Cup?`,
+                question: `PGA: Will the United States Team win the [0] Presidents Cup?`,
                 example: `PGA: Will the United States Team win the 2020 Presidents Cup?`,
                 inputs: [
                   {
@@ -350,7 +350,7 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `Euro Tour: Will the United States Team win the [1] Ryders Cup?`,
+                question: `Euro Tour: Will the United States Team win the [0] Ryders Cup?`,
                 example: `Euro Tour: Will the United States Team win the 2020 Ryders Cup?`,
                 inputs: [
                   {
