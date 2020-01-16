@@ -54,7 +54,7 @@ contract Market is Initializable, Ownable, IMarket, CashSender {
     bool private disputePacingOn;
     address public repBondOwner;
     uint256 public marketCreatorFeesAttoCash;
-    uint256 public totalAffiliateFeesAttoCash;
+    uint256 public totalPreFinalizationAffiliateFeesAttoCash;
     IDisputeCrowdsourcer public preemptiveDisputeCrowdsourcer;
 
     // Collections
@@ -341,7 +341,7 @@ contract Market is Initializable, Ownable, IMarket, CashSender {
             universe.withdraw(_sourceAccount, _sourceCut, address(this));
             affiliateFeesAttoCash[_affiliateAddress] += _affiliateFees;
             _marketCreatorFees = _marketCreatorFees.sub(_totalAffiliateFees);
-            totalAffiliateFeesAttoCash = totalAffiliateFeesAttoCash.add(_affiliateFees);
+            totalPreFinalizationAffiliateFeesAttoCash = totalPreFinalizationAffiliateFeesAttoCash.add(_affiliateFees);
         }
 
         marketCreatorFeesAttoCash = marketCreatorFeesAttoCash.add(_marketCreatorFees);
@@ -366,8 +366,8 @@ contract Market is Initializable, Ownable, IMarket, CashSender {
                 withdrawAffiliateFees(_affiliateAddress);
             }
         } else {
-            universe.withdraw(address(universe.getOrCreateNextDisputeWindow(false)), _marketCreatorFeesAttoCash.add(totalAffiliateFeesAttoCash), address(this));
-            totalAffiliateFeesAttoCash = 0;
+            universe.withdraw(address(universe.getOrCreateNextDisputeWindow(false)), _marketCreatorFeesAttoCash.add(totalPreFinalizationAffiliateFeesAttoCash), address(this));
+            totalPreFinalizationAffiliateFeesAttoCash = 0;
         }
     }
 
