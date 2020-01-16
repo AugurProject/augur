@@ -125,10 +125,10 @@ export class MarketDB extends DerivedDB {
     const feeMultiplier = new BigNumber(1).minus(new BigNumber(1).div(reportingFeeDivisor)).minus(new BigNumber(1).div(feeDivisor));
     const orderBook = await this.getOrderBook(marketData, numOutcomes, estimatedTradeGasCostInAttoDai);
     const invalidFilter = await this.recalcInvalidFilter(orderBook, marketData, feeMultiplier, estimatedTradeGasCostInAttoDai, estimatedClaimGasCostInAttoDai);
-
     const marketOrderBookData = {
       _id: marketId,
       invalidFilter,
+      hasRecentlyDepletedLiquidity: false,
       liquidity: {},
     };
 
@@ -144,6 +144,8 @@ export class MarketDB extends DerivedDB {
       });
       marketOrderBookData.liquidity[spread] = liquidity.toFixed().padStart(30, '0');
     }
+
+    marketOrderBookData.hasRecentlyDepletedLiquidity = await this.hasRecentlyDepletedLiquidity(marketData, marketOrderBookData.liquidity);
 
     return marketOrderBookData;
   }
@@ -358,6 +360,66 @@ export class MarketDB extends DerivedDB {
 
     if (updateDocs.length > 0) {
       await this.bulkUpsertDocuments(updateDocs);
+    }
+  }
+
+  // A market's liquidity is considered recently depleted if it had liquidity under
+  // a 15% spread in the last 24 hours, but doesn't currently have liquidity
+  async hasRecentlyDepletedLiquidity(marketData: MarketData, currentLiquiditySpreads): Promise<boolean>  {
+    const currentTimestamp = (await this.augur.getTimestamp()).toNumber() * 1000;
+    const lastTradeTimestamp = marketData.lastTradedTimestamp * 1000;
+    const twentyFourHours = 24 * 60 * 60 * 1000;
+    const oneDayAgo = currentTimestamp - twentyFourHours;
+
+    const marketsLiquidityInfo = {
+      currentlyHasLiquidity: false,
+      hadLiquidityInLast24Hour: false,
+    };
+
+    if (lastTradeTimestamp === 0) {
+      // No Trades
+      marketsLiquidityInfo.hadLiquidityInLast24Hour = false;
+    }
+    else if (lastTradeTimestamp > oneDayAgo) {
+      // Traded within 24hours
+      marketsLiquidityInfo.hadLiquidityInLast24Hour = true;
+    }
+    else if (lastTradeTimestamp <= oneDayAgo) {
+      // Traded more than 24hours ago
+      marketsLiquidityInfo.hadLiquidityInLast24Hour = false;
+    }
+
+
+    const oldLiquidity15Percent = new BigNumber(marketData.liquidity['15']);
+    const oldLiquidity10Percent = new BigNumber(marketData.liquidity['10']);
+    const liquidity15Percent = new BigNumber(currentLiquiditySpreads[10]);
+    const liquidity10Percent = new BigNumber(currentLiquiditySpreads[15]);
+
+
+    // If traded in last 24 hours AND
+    // the market currently doesn't have any liquidity AND
+    // the market did have liquidity on last syncOrderBooks
+    if (
+      (oldLiquidity10Percent.gt(0) || oldLiquidity15Percent.gt(0)) &&
+      (liquidity10Percent.eq(0) && liquidity15Percent.eq(0)) &&
+      marketsLiquidityInfo.hadLiquidityInLast24Hour
+    ) {
+      return true;
+    }
+    // If traded in last 24 hours AND
+    // the market currently doesn't have any liquidity AND
+    // the market didn't have liquidity on last syncOrderBooks AND
+    // the market has hasRecentlyDepletedLiquidity set on marketData
+    else if (
+      oldLiquidity10Percent.eq(0) &&
+      oldLiquidity15Percent.eq(0) &&
+      (liquidity10Percent.eq(0) && liquidity15Percent.eq(0)) &&
+      marketsLiquidityInfo.hadLiquidityInLast24Hour &&
+      marketData.hasRecentlyDepletedLiquidity
+    ) {
+      return true;
+    } else {
+      return false;
     }
   }
 }
