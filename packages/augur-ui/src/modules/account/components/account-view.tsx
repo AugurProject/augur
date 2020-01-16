@@ -69,17 +69,17 @@ export default class AccountView extends React.Component<
                 >
                   <Notifications />
                 </ModulePane>
-                <ModulePane label="Watchlist">
-                  <Favorites />
-                </ModulePane>
                 <ModulePane label="My Active Markets">
                   <OpenMarkets />
                 </ModulePane>
-                <ModulePane label={AUGUR_STATUS_TITLE}>
-                  <AugurStatus />
+                <ModulePane label="Watchlist">
+                  <Favorites />
                 </ModulePane>
                 <ModulePane label="Transactions">
                   <Transactions />
+                </ModulePane>
+                <ModulePane label={AUGUR_STATUS_TITLE}>
+                  <AugurStatus />
                 </ModulePane>
               </ModuleTabs>
             ) : (
