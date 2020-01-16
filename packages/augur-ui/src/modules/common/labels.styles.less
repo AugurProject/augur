@@ -818,11 +818,11 @@ div.LinearPropertyViewTransaction {
   .mono-12-bold;
 
   align-items: center;
-  color: @color-inactive-text;
+  color: @color-secondary-text;
   cursor: pointer;
   display: flex;
   justify-content: flex-start;
-  padding-bottom: @size-12;
+  padding: @size-9 0 @size-9 0;
   text-transform: uppercase;
 
   > div:nth-child(even) {
@@ -834,20 +834,23 @@ div.LinearPropertyViewTransaction {
 
     > div:last-of-type {
       > span svg {
+        height: @size-10;
+        width: @size-10;
         animation: spin 2s linear infinite;
 
         path {
-          stroke: @color-inactive-text;
+          stroke: @color-secondary-text;
         }
       }
     }
   }
 
   &.selected {
-    .text-11-bold;
+    .text-12-bold;
 
     color: @color-primary-text;
-    border-bottom: 1px solid @color-primary-text;
+    padding: @size-9 0 @size-7 0;
+    border-bottom: @size-2 solid @color-primary-text;
 
     &.open {
       border-color: @color-open;
@@ -863,7 +866,7 @@ div.LinearPropertyViewTransaction {
 
     > div:nth-child(even) {
       font-weight: bold;
-      margin: 0 0 0 @size-8;
+      margin: 0 0 0 @size-4;
     }
 
     > div:last-of-type {
