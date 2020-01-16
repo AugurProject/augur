@@ -9,6 +9,7 @@ import {
   UPPER_FIXED_PRECISION_BOUND,
   BUY,
   SELL,
+  INVALID_OUTCOME_ID,
 } from 'modules/common/constants';
 import FormStyles from 'modules/common/form-styles.less';
 import Styles from 'modules/trading/components/form.styles.less';
@@ -18,13 +19,13 @@ import { TextInput } from 'modules/common/form';
 import getPrecision from 'utils/get-number-precision';
 import convertExponentialToDecimal from 'utils/convert-exponential';
 import { MarketData, OutcomeFormatted, OutcomeOrderBook } from 'modules/types';
-import { MarketType, MarketTypeName } from '@augurproject/sdk/src/state/logs/types';
 import { Getters } from '@augurproject/sdk';
 import { convertDisplayAmountToOnChainAmount, tickSizeToNumTickWithDisplayPrices } from '@augurproject/sdk';
 import { CancelTextButton, TextButtonFlip } from 'modules/common/buttons';
 import moment, { Moment } from 'moment';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { SimpleTimeSelector } from 'modules/create-market/components/common';
+import { formatBestPrice } from 'utils/format-number';
 
 const DEFAULT_TRADE_INTERVAL = new BigNumber(10**17);
 const TRADE_INTERVAL_VALUE = new BigNumber(10**19);
@@ -168,6 +169,7 @@ class Form extends Component<FromProps, FormState> {
     this.updateTestProperty = this.updateTestProperty.bind(this);
     this.clearOrderFormProperties = this.clearOrderFormProperties.bind(this);
     this.updateAndValidate = this.updateAndValidate.bind(this);
+    this.calcPercentagePrice = this.calcPercentagePrice.bind(this);
   }
 
   componentDidUpdate() {
@@ -663,6 +665,14 @@ class Form extends Component<FromProps, FormState> {
     );
   }
 
+  calcPercentagePrice(percentage: string, minPrice: string, maxPrice: string, tickSize: number) {
+    const range = createBigNumber(maxPrice).minus(createBigNumber(minPrice));
+    const decPer = createBigNumber(percentage).dividedBy(100);
+    const priceOfPer = range.times(decPer).plus(minPrice);
+    const correctDec = formatBestPrice(priceOfPer, tickSize);
+    return correctDec.value;
+  }
+
   render() {
     const {
       market,
@@ -699,13 +709,14 @@ class Form extends Component<FromProps, FormState> {
     const quantityValue = convertExponentialToDecimal(
       s[this.INPUT_TYPES.QUANTITY]
     );
-    const isScaler: boolean = marketType === SCALAR;
+    const isScalar: boolean = marketType === SCALAR;
     // TODO: figure out default outcome after we figure out ordering of the outcomes
     const defaultOutcome = selectedOutcome !== null ? selectedOutcome.id : 2;
     let advancedOptions = advancedDropdownOptions;
     if (!Ox_ENABLED) {
       advancedOptions = [advancedOptions[0], advancedOptions[2]];
     }
+    const showLimitPriceInput = (isScalar && selectedOutcome.id !== INVALID_OUTCOME_ID) || !isScalar;
     return (
       <div className={Styles.TradingForm}>
         <div className={Styles.Outcome}>
@@ -776,6 +787,7 @@ class Form extends Component<FromProps, FormState> {
               </span>
             </div>
           </li>
+          {showLimitPriceInput &&
           <li>
             <label htmlFor="limit-price">Limit Price</label>
             <div
@@ -813,16 +825,54 @@ class Form extends Component<FromProps, FormState> {
               <span
                 className={classNames({
                   [`${Styles.isScalar_largeText}`]:
-                    isScaler && (market.scalarDenomination || []).length <= 24,
+                    isScalar && (market.scalarDenomination || []).length <= 24,
                   [`${Styles.isScalar_smallText}`]:
-                    isScaler && (market.scalarDenomination || []).length > 24,
+                    isScalar && (market.scalarDenomination || []).length > 24,
                   [`${Styles.error}`]: s.errors[this.INPUT_TYPES.PRICE].length,
                 })}
               >
-                {isScaler ? market.scalarDenomination : '$'}
+                {isScalar ? market.scalarDenomination : '$'}
               </span>
             </div>
           </li>
+          }
+          { !showLimitPriceInput &&
+          <li>
+            <label htmlFor="limit-price">Percentage</label>
+            <div
+              className={classNames(Styles.TradingFormInputContainer)}
+            >
+              <input
+                className={classNames(
+                  FormStyles.Form__input,
+                  Styles.TradingFormInput
+                )}
+                id="percentage"
+                type="number"
+                step={.01}
+                max={100}
+                min={0}
+                placeholder="0"
+                tabIndex={tradingTutorial ? -1 : 2}
+                onTouchStart={e =>
+                  e.target.scrollIntoView({
+                    block: 'nearest',
+                    behavior: 'smooth',
+                  })
+                }
+                onChange={e => {
+                  const value = this.calcPercentagePrice(e.target.value, min, max, tickSize);
+                  console.log('value', value);
+                  this.updateAndValidate(this.INPUT_TYPES.PRICE, value)
+                  }
+                }
+              />
+              <span>
+                %
+              </span>
+            </div>
+          </li>
+          }
           <li>
             <label htmlFor="total-order-value">Total Order Value</label>
             <div
@@ -841,7 +891,7 @@ class Form extends Component<FromProps, FormState> {
                 )}
                 id="total-order-value"
                 type="number"
-                disabled={!!initialLiquidity}
+                disabled={!!initialLiquidity || !showLimitPriceInput}
                 step={MIN_QUANTITY.toFixed()}
                 min={MIN_QUANTITY.toFixed()}
                 placeholder="0.00"
