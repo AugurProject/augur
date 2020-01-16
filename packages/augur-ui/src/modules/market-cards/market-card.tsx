@@ -6,6 +6,7 @@ import {
   InReportingLabel,
   TemplateShield,
   MarketTypeLabel,
+  RedFlag,
 } from 'modules/common/labels';
 import {
   HoverIcon,
@@ -276,6 +277,7 @@ export default class MarketCard extends React.Component<
               />
             )}
             {isScalar && <MarketTypeLabel marketType={marketType} />}
+            <RedFlag market={market} />
             {isTemplate && <TemplateShield market={market} />}
             <CategoryTagTrail categories={categoriesWithClick} />
             <MarketProgress

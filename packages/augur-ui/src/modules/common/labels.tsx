@@ -6,6 +6,7 @@ import {
   CATEGORICAL,
   CLOSED,
   DISCORD_LINK,
+  PROBABLE_INVALID_MARKET,
   REPORTING_STATE,
   SCALAR,
   SELL,
@@ -22,6 +23,7 @@ import {
   LoadingEllipse,
   MarketIcon,
   QuestionIcon,
+  RedFlagIcon,
   ScalarIcon,
   TemplateIcon,
   YellowTemplateIcon,
@@ -231,6 +233,33 @@ export const CountdownLabel = ({ expiry, currentTimestamp }: CountdownLabelProps
       {Math.round(duration.asMinutes())}m
     </div>
   );
+};
+
+interface RedFlagProps {
+  market: Getters.Markets.MarketInfo;
+}
+
+export const RedFlag = ({ market }: RedFlagProps) => {
+  return market.mostLikelyInvalid ? (
+    <>
+      <label
+        className={TooltipStyles.TooltipHint}
+        data-tip
+        data-for={`tooltip-${market.id}-redFlag`}
+      >
+        {RedFlagIcon}
+      </label>
+      <ReactTooltip
+        id={`tooltip-${market.id}-redFlag`}
+        className={TooltipStyles.Tooltip}
+        effect="solid"
+        place="right"
+        type="light"
+      >
+        {PROBABLE_INVALID_MARKET}
+      </ReactTooltip>
+    </>
+  ) : null;
 };
 
 interface TemplateShieldProps {
