@@ -455,6 +455,7 @@ export interface MarketData extends Log {
   isTemplate: boolean;
   feePercent: number;
   finalized: boolean;
+  lastTradedTimestamp: number;
 }
 
 export interface DisputeDoc extends Log {

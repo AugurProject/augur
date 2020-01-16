@@ -560,8 +560,13 @@ export class Markets {
       if (params.includeInvalidMarkets !== true && market.invalidFilter) return false;
       // Liquidity filtering
       if (params.maxLiquiditySpread) {
-        // TODO hasRecentlyDepletedLiquidity == true on ZeroPercent spread
-        if (params.maxLiquiditySpread !== MaxLiquiditySpread.OneHundredPercent) {
+        if (params.maxLiquiditySpread === MaxLiquiditySpread.ZeroPercent) {
+          // return hasRecentlyDepletedLiquidity on ZeroPercent spread
+          if (!market.hasRecentlyDepletedLiquidity) {
+            return false;
+          }
+        }
+        else if (params.maxLiquiditySpread !== MaxLiquiditySpread.OneHundredPercent) {
           if (market.liquidity[params.maxLiquiditySpread] === "000000000000000000000000000000") return false;
         }
       }

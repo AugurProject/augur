@@ -10,6 +10,7 @@ import {
   SECONDS_IN_A_YEAR,
   WORST_CASE_FILL,
   DEFAULT_GAS_PRICE_IN_GWEI,
+  MAX_TRADE_GAS_PERCENTAGE_DIVISOR,
 } from '../../constants';
 import { MarketData, MarketType, OrderTypeHex, TimestampSetLog } from '../logs/types';
 import { BigNumber } from 'bignumber.js';
@@ -70,7 +71,7 @@ export class MarketDB extends DerivedDB {
   async doSync(highestAvailableBlockNumber: number): Promise<void> {
     this.syncing = true;
     await super.doSync(highestAvailableBlockNumber);
-    await this.syncOrderBooks(true);
+    await this.syncOrderBooks();
     const timestamp = (await this.augur.getTimestamp()).toNumber();
     await this.processTimestamp(timestamp, highestAvailableBlockNumber);
     await this.syncFTS();
@@ -85,7 +86,7 @@ export class MarketDB extends DerivedDB {
     }
   }
 
-  syncOrderBooks = async (syncing: boolean): Promise<void> => {
+  syncOrderBooks = async (): Promise<void> => {
     const highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(this.dbName);
     const documents = [];
 
@@ -95,10 +96,11 @@ export class MarketDB extends DerivedDB {
 
     const marketIds: string[] = _.uniq(_.map(currentZeroXOrders, 'market')) as string[];
     const marketsData = await this.stateDB.Markets.where("market").anyOf(marketIds).toArray();
-    const marketDataById = _.keyBy(marketsData, 'market');
     const reportingFeeDivisor = await this.augur.contracts.universe.getReportingFeeDivisor_();
     // TODO Get ETH -> DAI price via uniswap when we integrate that as an oracle
     const ETHInAttoDAI = new BigNumber(200).multipliedBy(10**18);
+
+    const marketDataById = _.keyBy(marketsData, 'market');
 
     for (const marketId of marketIds) {
       const doc = await this.getOrderBookData(this.augur, marketId, marketDataById[marketId], reportingFeeDivisor, ETHInAttoDAI);
@@ -160,7 +162,13 @@ export class MarketDB extends DerivedDB {
     }
 
     const outcomeBidAskOrders = Object.keys(currentOrdersByOutcome).map((outcomeOrders) => {
-      const groupedByOrderType = _.groupBy(currentOrdersByOutcome[outcomeOrders], 'orderType');
+      // Cut out orders where gas costs > 1% of the trade
+      const sufficientlyLargeOrders = _.filter(currentOrdersByOutcome[outcomeOrders], (order) => {
+        const maxGasCost = new BigNumber(order.amount).multipliedBy(marketData.numTicks).div(MAX_TRADE_GAS_PERCENTAGE_DIVISOR);
+        return maxGasCost.gte(estimatedTradeGasCostInAttoDai);
+      });
+
+      const groupedByOrderType = _.groupBy(sufficientlyLargeOrders, 'orderType');
       const bids = groupedByOrderType ? _.reverse(_.sortBy(groupedByOrderType[OrderTypeHex.Bid], 'price')) : [];
       const asks = groupedByOrderType ? _.sortBy(groupedByOrderType[OrderTypeHex.Ask], 'price') : [];
 
