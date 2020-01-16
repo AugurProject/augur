@@ -37,12 +37,10 @@ contract Ownable is IOwnable {
      * @param _newOwner The address to transfer ownership to.
      */
     function transferOwnership(address _newOwner) public onlyOwner returns (bool) {
-        if (_newOwner != address(0)) {
-            onTransferOwnership(owner, _newOwner);
-            owner = _newOwner;
-            return true;
-        }
-        return false;
+        require(_newOwner != address(0));
+        onTransferOwnership(owner, _newOwner);
+        owner = _newOwner;
+        return true;
     }
 
     // Subclasses of this token may want to send additional logs through the centralized Augur log emitter contract
