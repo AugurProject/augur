@@ -116,6 +116,7 @@ export async function setAddresses(networkId: NetworkId, addresses: ContractAddr
       contents = {}; // throw out unparseable addresses file
     }
   }
+  contents[networkId] = addresses;
   await writeFile(filepath, JSON.stringify(contents, null, 2), 'utf8');
 }
 
