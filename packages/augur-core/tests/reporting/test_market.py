@@ -78,7 +78,15 @@ def test_transfering_ownership(contractsFixture, universe, market):
     with AssertLog(contractsFixture, "MarketTransferred", transferLog):
         assert market.transferOwnership(account1)
 
-    assert market.transferRepBondOwnership(account1)
+    transferLog = {
+        "universe": universe.address,
+        "market": market.address,
+        "from": account0,
+        "to": account1,
+    }
+    with AssertLog(contractsFixture, "MarketRepBondTransferred", transferLog):
+        assert market.transferRepBondOwnership(account1)
+        
     assert market.repBondOwner() == account1
 
 @mark.parametrize('invalid', [
