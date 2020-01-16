@@ -1,4 +1,4 @@
-pragma solidity 0.5.10;
+pragma solidity 0.5.15;
 
 import 'ROOT/IAugur.sol';
 import 'ROOT/trading/IAugurTrading.sol';
@@ -26,6 +26,7 @@ contract GnosisSafeRegistry is Initializable {
     address public shareToken;
     address public createOrder;
     address public fillOrder;
+    address public zeroXTrade;
 
     uint256 private constant MAX_APPROVAL_AMOUNT = 2 ** 256 - 1;
 
@@ -43,11 +44,12 @@ contract GnosisSafeRegistry is Initializable {
 
         createOrder = _augurTrading.lookup("CreateOrder");
         fillOrder = _augurTrading.lookup("FillOrder");
+        zeroXTrade = _augurTrading.lookup("ZeroXTrade");
         return true;
     }
 
     // The misdirection here is because this is called through a delegatecall execution initially. We just direct that into making an actual call to the register method
-    function setupForAugur(address _augur, address _createOrder, address _fillOrder, IERC20 _cash, IERC1155 _shareToken, IAffiliates _affiliates, bytes32 _fingerprint, address _referralAddress) public {
+    function setupForAugur(address _augur, address _createOrder, address _fillOrder, address _zeroXTrade, IERC20 _cash, IERC1155 _shareToken, IAffiliates _affiliates, bytes32 _fingerprint, address _referralAddress) public {
         _cash.approve(_augur, MAX_APPROVAL_AMOUNT);
 
         _cash.approve(_createOrder, MAX_APPROVAL_AMOUNT);
@@ -55,6 +57,8 @@ contract GnosisSafeRegistry is Initializable {
 
         _cash.approve(_fillOrder, MAX_APPROVAL_AMOUNT);
         _shareToken.setApprovalForAll(_fillOrder, true);
+
+        _cash.approve(_zeroXTrade, MAX_APPROVAL_AMOUNT);
 
         _affiliates.setFingerprint(_fingerprint);
 
@@ -90,6 +94,7 @@ contract GnosisSafeRegistry is Initializable {
             address(augur),
             createOrder,
             fillOrder,
+            zeroXTrade,
             cash,
             shareToken,
             affiliates,

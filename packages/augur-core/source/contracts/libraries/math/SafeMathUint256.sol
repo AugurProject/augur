@@ -1,4 +1,4 @@
-pragma solidity 0.5.10;
+pragma solidity 0.5.15;
 
 
 /**
@@ -51,6 +51,19 @@ library SafeMathUint256 {
             return a;
         } else {
             return b;
+        }
+    }
+
+    function sqrt(uint256 y) internal pure returns (uint256 z) {
+        if (y > 3) {
+            uint256 x = (y + 1) / 2;
+            z = y;
+            while (x < z) {
+                z = x;
+                x = (y / x + x) / 2;
+            }
+        } else if (y != 0) {
+            z = 1;
         }
     }
 

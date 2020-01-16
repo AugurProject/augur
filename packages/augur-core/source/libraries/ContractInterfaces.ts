@@ -29,6 +29,8 @@ export class Cash extends c.Cash<BigNumber> {
 }
 export class CashFaucet extends c.CashFaucet<BigNumber> {
 }
+export class EthExchange extends c.EthExchange<BigNumber> {
+}
 export class GnosisSafe extends c.GnosisSafe<BigNumber> {
 }
 export class GnosisSafeRegistry extends c.GnosisSafeRegistry<BigNumber> {
@@ -36,6 +38,8 @@ export class GnosisSafeRegistry extends c.GnosisSafeRegistry<BigNumber> {
 export class LegacyReputationToken extends c.LegacyReputationToken<BigNumber> {
 }
 export class ProxyFactory extends c.ProxyFactory<BigNumber> {
+}
+export class RepExchange extends c.RepExchange<BigNumber> {
 }
 export class TestNetDaiJoin extends c.TestNetDaiJoin<BigNumber> {
 }
@@ -61,6 +65,8 @@ export class MarketFactory extends c.MarketFactory<BigNumber> {
 }
 export class OICashFactory extends c.OICashFactory<BigNumber> {
 }
+export class RepExchangeFactory extends c.RepExchangeFactory<BigNumber> {
+}
 export class ReputationTokenFactory extends c.ReputationTokenFactory<BigNumber> {
 }
 export class TestNetReputationTokenFactory extends c.TestNetReputationTokenFactory<BigNumber> {
@@ -80,8 +86,6 @@ export class InitialReporter extends c.InitialReporter<BigNumber> {
 export class Market extends c.Market<BigNumber> {
 }
 export class OICash extends c.OICash<BigNumber> {
-}
-export class RepPriceOracle extends c.RepPriceOracle<BigNumber> {
 }
 export class ReputationToken extends c.ReputationToken<BigNumber> {
 }
@@ -106,8 +110,6 @@ export class SimulateTrade extends c.SimulateTrade<BigNumber> {
 export class Trade extends c.Trade<BigNumber> {
 }
 export class ZeroXTrade extends c.ZeroXTrade<BigNumber> {
-}
-export class UniswapV2Factory extends c.UniswapV2Factory<BigNumber> {
 }
 export class BuyParticipationTokens extends c.BuyParticipationTokens<BigNumber> {
 }

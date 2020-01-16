@@ -1,5 +1,5 @@
 
-pragma solidity 0.5.10;
+pragma solidity 0.5.15;
 
 
 contract IWallet {

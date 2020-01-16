@@ -1,4 +1,4 @@
-pragma solidity 0.5.10;
+pragma solidity 0.5.15;
 
 import 'ROOT/reporting/IShareToken.sol';
 import 'ROOT/libraries/token/ERC1155.sol';

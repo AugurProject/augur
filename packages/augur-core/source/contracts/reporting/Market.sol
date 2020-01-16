@@ -1,4 +1,4 @@
-pragma solidity 0.5.10;
+pragma solidity 0.5.15;
 
 import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/libraries/Initializable.sol';
@@ -101,19 +101,6 @@ contract Market is Initializable, Ownable, IMarket, CashSender {
             require(validityBondAttoCash >= universe.getOrCacheValidityBond());
             universe.deposit(address(this), validityBondAttoCash, address(this));
         }
-    }
-
-    /**
-     * @notice Increase the validity bond by sending more Cash to this contract
-     * @param _attoCash the amount of Cash to send and increase the validity bond by
-     * @return Bool True
-     */
-    function increaseValidityBond(uint256 _attoCash) public returns (bool) {
-        require(!isFinalized());
-        cashTransferFrom(msg.sender, address(this), _attoCash);
-        universe.deposit(address(this), _attoCash, address(this));
-        validityBondAttoCash = validityBondAttoCash.add(_attoCash);
-        return true;
     }
 
     /**

@@ -1,4 +1,4 @@
-pragma solidity 0.5.10;
+pragma solidity 0.5.15;
 
 
 import 'ROOT/reporting/IUniverse.sol';
@@ -10,7 +10,6 @@ import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/reporting/IV2ReputationToken.sol';
 import 'ROOT/reporting/IDisputeWindow.sol';
 import 'ROOT/reporting/Reporting.sol';
-import 'ROOT/reporting/IRepPriceOracle.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
 import 'ROOT/ICash.sol';
 import 'ROOT/reporting/IOICash.sol';
@@ -21,6 +20,8 @@ import 'ROOT/external/IDaiJoin.sol';
 import 'ROOT/utility/IFormulas.sol';
 import 'ROOT/IAugur.sol';
 import 'ROOT/CashSender.sol';
+import 'ROOT/IRepExchange.sol';
+import 'ROOT/factories/IRepExchangeFactory.sol';
 
 
 /**
@@ -37,7 +38,6 @@ contract Universe is IUniverse, CashSender {
     IUniverse private parentUniverse;
     IFormulas public formulas;
     IShareToken public shareToken;
-    IRepPriceOracle public repPriceOracle;
     bytes32 private parentPayoutDistributionHash;
     uint256[] public payoutNumerators;
     IV2ReputationToken private reputationToken;
@@ -77,6 +77,8 @@ contract Universe is IUniverse, CashSender {
     IDaiPot public daiPot;
     IDaiJoin public daiJoin;
 
+    IRepExchange public repExchange;
+
     uint256 constant public RAY = 10 ** 27;
 
     constructor(IAugur _augur, IUniverse _parentUniverse, bytes32 _parentPayoutDistributionHash, uint256[] memory _payoutNumerators) public {
@@ -90,7 +92,7 @@ contract Universe is IUniverse, CashSender {
         disputeWindowFactory = IDisputeWindowFactory(augur.lookup("DisputeWindowFactory"));
         openInterestCash = IOICashFactory(augur.lookup("OICashFactory")).createOICash(augur);
         shareToken = IShareToken(augur.lookup("ShareToken"));
-        repPriceOracle = IRepPriceOracle(augur.lookup("RepPriceOracle"));
+        repExchange = IRepExchange(address(IRepExchangeFactory(augur.lookup("RepExchangeFactory")).createRepExchange(augur, address(reputationToken))));
         updateForkValues();
         formulas = IFormulas(augur.lookup("Formulas"));
         cash = ICash(augur.lookup("Cash"));
@@ -110,7 +112,6 @@ contract Universe is IUniverse, CashSender {
         require(marketFactory != IMarketFactory(0));
         require(disputeWindowFactory != IDisputeWindowFactory(0));
         require(shareToken != IShareToken(0));
-        require(repPriceOracle != IRepPriceOracle(0));
         require(formulas != IFormulas(0));
         require(cash != ICash(0));
         require(daiVat != IDaiVat(0));
@@ -460,13 +461,8 @@ contract Universe is IUniverse, CashSender {
     /**
      * @return The Market Cap of this Universe's REP
      */
-    function getRepMarketCapInAttoCash() public view returns (uint256) {
-        uint256 _attoCashPerRep = repPriceOracle.getRepPriceInAttoCash(reputationToken);
-        return getRepMarketCapInAttoCashInternal(_attoCashPerRep);
-    }
-
     function pokeRepMarketCapInAttoCash() public returns (uint256) {
-        uint256 _attoCashPerRep = repPriceOracle.pokeRepPriceInAttoCash(reputationToken);
+        uint256 _attoCashPerRep = repExchange.pokePrice();
         return getRepMarketCapInAttoCashInternal(_attoCashPerRep);
     }
 
@@ -562,7 +558,7 @@ contract Universe is IUniverse, CashSender {
             return _currentFeeDivisor;
         }
 
-        _currentFeeDivisor = pokeReportingFeeDivisor();
+        _currentFeeDivisor = calculateReportingFeeDivisorInternal();
 
         shareSettlementFeeDivisor[address(_disputeWindow)] = _currentFeeDivisor;
         previousReportingFeeDivisor = _currentFeeDivisor;
@@ -571,7 +567,7 @@ contract Universe is IUniverse, CashSender {
     }
 
     /**
-     * @dev this should be used for estimation purposes as it is a view and does not actually freeze the rate
+     * @dev this should be used for estimation purposes as it is a view and does not actually freeze or recalculate the rate
      * @return The reporting fee for this dispute window
      */
     function getReportingFeeDivisor() public view returns (uint256) {
@@ -581,21 +577,15 @@ contract Universe is IUniverse, CashSender {
             return _currentFeeDivisor;
         }
 
-        return calculateReportingFeeDivisor();
+        if (previousReportingFeeDivisor == 0) {
+            return Reporting.getDefaultReportingFeeDivisor();
+        }
+
+        return previousReportingFeeDivisor;
     }
 
-    function pokeReportingFeeDivisor() public returns (uint256) {
+    function calculateReportingFeeDivisorInternal() private returns (uint256) {
         uint256 _repMarketCapInAttoCash = pokeRepMarketCapInAttoCash();
-        return calculateReportingFeeDivisorInternal(_repMarketCapInAttoCash);
-    }
-
-    function calculateReportingFeeDivisor() public view returns (uint256) {
-        uint256 _repMarketCapInAttoCash = getRepMarketCapInAttoCash();
-        return calculateReportingFeeDivisorInternal(_repMarketCapInAttoCash);
-    }
-
-    function calculateReportingFeeDivisorInternal(uint256 _repMarketCapInAttoCash) private view returns (uint256) {
-        uint256 _repMarketCapInAttoCash = getRepMarketCapInAttoCash();
         uint256 _targetRepMarketCapInAttoCash = getTargetRepMarketCapInAttoCash();
         uint256 _reportingFeeDivisor = 0;
         if (previousReportingFeeDivisor == 0 || _targetRepMarketCapInAttoCash == 0) {

@@ -1,4 +1,4 @@
-pragma solidity 0.5.10;
+pragma solidity 0.5.15;
 pragma experimental ABIEncoderV2;
 
 import 'ROOT/IAugurCreationDataGetter.sol';
@@ -16,6 +16,7 @@ import "ROOT/IAugur.sol";
 import 'ROOT/libraries/token/IERC1155.sol';
 import 'ROOT/libraries/LibBytes.sol';
 import 'ROOT/CashSender.sol';
+import 'ROOT/ISimpleDex.sol';
 
 
 contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155, CashSender {
@@ -25,6 +26,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155, CashSender {
     bool transferFromAllowed = false;
 
     uint256 constant public TRADE_INTERVAL_VALUE = 10 ** 19; // Trade value of 10 DAI
+    uint256 constant public MIN_TRADE_INTERVAL = 10**14; // We ignore "dust" portions of the min interval and for huge scalars have a larger min value
 
     // ERC20Token(address)
     bytes4 constant private ERC20_PROXY_ID = 0xf47261b0;
@@ -86,6 +88,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155, CashSender {
     ICash public cash;
     IShareToken public shareToken;
     IExchange public exchange;
+    ISimpleDex public ethExchange;
 
     function initialize(IAugur _augur, IAugurTrading _augurTrading) public beforeInitialized {
         endInitialization();
@@ -98,6 +101,9 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155, CashSender {
         require(exchange != IExchange(0));
         fillOrder = IFillOrder(_augurTrading.lookup("FillOrder"));
         require(fillOrder != IFillOrder(0));
+        ethExchange = ISimpleDex(_augur.lookup("EthExchange"));
+        require(ethExchange != ISimpleDex(0));
+
         initializeCashSender(_augur.lookup("DaiVat"), address(cash));
 
         EIP712_DOMAIN_HASH = keccak256(
@@ -210,6 +216,8 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155, CashSender {
      * @param  _requestedFillAmount  Share amount to fill
      * @param  _fingerprint          Fingerprint of the user to restrict affiliate fees
      * @param  _tradeGroupId         Random id to correlate these fills as one trade action
+     * @param  _maxProtocolFeeDai    The maximum amount of DAI to spend on covering the 0x protocol fee
+     * @param  _maxTrades            The maximum number of trades to actually take from the provided 0x orders
      * @param  _orders               Array of encoded Order struct data
      * @param  _signatures           Array of signature data
      * @return                       The amount the taker still wants
@@ -218,6 +226,8 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155, CashSender {
         uint256 _requestedFillAmount,
         bytes32 _fingerprint,
         bytes32 _tradeGroupId,
+        uint256 _maxProtocolFeeDai,
+        uint256 _maxTrades,
         IExchange.Order[] memory _orders,
         bytes[] memory _signatures
     )
@@ -231,6 +241,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155, CashSender {
         transferFromAllowed = true;
 
         uint256 _protocolFee = exchange.protocolFeeMultiplier().mul(tx.gasprice);
+        coverProtocolFee(_protocolFee.mul(_orders.length), _maxProtocolFeeDai);
 
         // Do the actual asset exchanges
         for (uint256 i = 0; i < _orders.length && _fillAmountRemaining != 0; i++) {
@@ -251,6 +262,10 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155, CashSender {
             uint256 _amountTraded = doTrade(_order, totalFillResults.takerAssetFilledAmount, _fingerprint, _tradeGroupId, msg.sender);
 
             _fillAmountRemaining = _fillAmountRemaining.sub(_amountTraded);
+            _maxTrades -= 1;
+            if (_maxTrades == 0) {
+                break;
+            }
         }
 
         transferFromAllowed = false;
@@ -262,13 +277,31 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155, CashSender {
         return _fillAmountRemaining;
     }
 
+    function coverProtocolFee(uint256 _amountEthRequired, uint256 _maxProtocolFeeDai) internal {
+        if (address(this).balance < _amountEthRequired) {
+            uint256 _ethDeficit = _amountEthRequired - address(this).balance;
+            uint256 _cost = ethExchange.getTokenPurchaseCost(_ethDeficit);
+            require(_cost <= _maxProtocolFeeDai, "Cost of purchasing ETH to cover protocol Fee on the exchange was too high");
+            cashTransferFrom(msg.sender, address(ethExchange), _cost);
+            ethExchange.buyToken(address(this));
+        }
+    }
+
+    function estimateProtocolFeeCostInCash(uint256 _numOrders, uint256 _gasPrice) public view returns (uint256) {
+        uint256 _protocolFee = exchange.protocolFeeMultiplier().mul(_gasPrice);
+        uint256 _amountEthRequired = _protocolFee.mul(_numOrders);
+        return ethExchange.getTokenPurchaseCost(_amountEthRequired);
+    }
+
     function validateOrder(IExchange.Order memory _order, uint256 _fillAmountRemaining) internal view {
         require(_order.takerAssetData.equals(encodeTakerAssetData()));
         require(_order.takerAssetAmount == _order.makerAssetAmount);
         (IERC1155 _zeroXTradeTokenMaker, uint256 _tokenIdMaker) = getZeroXTradeTokenData(_order.makerAssetData);
         (address _market, uint256 _price, uint8 _outcome, uint8 _type) = unpackTokenId(_tokenIdMaker);
         uint256 _numTicks = IMarket(_market).getNumTicks();
-        uint256 _tradeInterval = TRADE_INTERVAL_VALUE / _numTicks;
+        uint256 _tradeInterval = TRADE_INTERVAL_VALUE.div(_numTicks);
+        _tradeInterval = _tradeInterval.div(MIN_TRADE_INTERVAL).mul(MIN_TRADE_INTERVAL);
+        _tradeInterval = MIN_TRADE_INTERVAL.max(_tradeInterval);
         require(_fillAmountRemaining.isMultipleOf(_tradeInterval), "Order must be a multiple of the market trade increment");
         require(_zeroXTradeTokenMaker == this);
     }

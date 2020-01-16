@@ -310,4 +310,8 @@ export class TestFixture {
         const rep = await this.getReputationToken();
         return rep.allowance_(owner, spender);
     }
+
+    async pokeRepOracle(): Promise<BigNumber> {
+        return await this.contractDeployer.universe!.pokeRepMarketCapInAttoCash_();
+    }
 }

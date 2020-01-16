@@ -50,6 +50,8 @@ function makeGanacheOpts(accounts: Account[], db: MemDown) {
     gasLimit: 75000000000,
     debug: false,
     network_id: 123456,
+    _chainId: 123456,
+    hardfork: "istanbul"
     // vmErrorsOnRPCResponse: false,
   };
 }

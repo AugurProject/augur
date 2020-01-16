@@ -96,15 +96,6 @@ def test_variable_validity_bond(invalid, contractsFixture, universe, cash):
     market = contractsFixture.createReasonableYesNoMarket(universe, validityBond=minimumValidityBond)
     assert market.getValidityBondAttoCash() == minimumValidityBond
 
-    # We'll also throw in some additional Cash to the validity bond
-    additionalAmount = 100
-    cash.faucet(additionalAmount)
-    cash.approve(market.address, additionalAmount)
-    assert market.increaseValidityBond(additionalAmount)
-    
-    validityBond = minimumValidityBond + additionalAmount
-    assert market.getValidityBondAttoCash() == validityBond
-
     # If we resolve the market the bond in it's entirety will go to the fee pool or to the market creator if the resolution was not invalid
     proceedToDesignatedReporting(contractsFixture, market)
 
@@ -118,10 +109,10 @@ def test_variable_validity_bond(invalid, contractsFixture, universe, cash):
     assert contractsFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
 
     if invalid:
-        with TokenDelta(cash, validityBond, universe.getOrCreateNextDisputeWindow(False), "Validity bond did not go to the dispute window"):
+        with TokenDelta(cash, minimumValidityBond, universe.getOrCreateNextDisputeWindow(False), "Validity bond did not go to the dispute window"):
             market.finalize()
     else:
-        with TokenDelta(cash, validityBond, market.getOwner(), "Validity bond did not go to the market creator"):
+        with TokenDelta(cash, minimumValidityBond, market.getOwner(), "Validity bond did not go to the market creator"):
             market.finalize()
 
 def test_non_dr_initial_reporter(contractsFixture, universe, reputationToken):
