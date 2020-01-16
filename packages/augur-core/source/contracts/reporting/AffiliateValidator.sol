@@ -25,7 +25,7 @@ contract AffiliateValidator is Ownable, IAffiliateValidator {
 
     /**
      * @notice Remove an existing operator
-     * @param _account The operator to remove from the authorized operators
+     * @param _operator The operator to remove from the authorized operators
      */
     function removeOperator(address _operator) external onlyOwner {
         operators[_operator] = false;

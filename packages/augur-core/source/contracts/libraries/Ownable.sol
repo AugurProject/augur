@@ -40,8 +40,9 @@ contract Ownable is IOwnable {
         if (_newOwner != address(0)) {
             onTransferOwnership(owner, _newOwner);
             owner = _newOwner;
+            return true;
         }
-        return true;
+        return false;
     }
 
     // Subclasses of this token may want to send additional logs through the centralized Augur log emitter contract
