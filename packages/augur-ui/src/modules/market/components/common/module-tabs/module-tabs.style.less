@@ -92,10 +92,22 @@
 }
 
 .ScrollOver {
-  display: grid;
-  grid-template-rows: @size-48 auto;
-  height: 100vh;
   overflow: hidden;
+  display: flex;
+  flex-flow: column nowrap;
+  padding-top: @size-48;
+
+  > div.Headers {
+    position: fixed;
+    top: @size-64;
+    z-index: @above-all-content;
+    width: 100%;
+    transition: top .15s ease-in-out;
+
+    &.scrolling {
+      top: 0;
+    }
+  }
 }
 
 .Content {

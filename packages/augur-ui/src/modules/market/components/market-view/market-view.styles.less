@@ -46,18 +46,6 @@
   flex: 1;
   padding: @size-8 @size-4;
 
-  > div:first-of-type {
-    margin-bottom: @size-8;
-  }
-
-  > div:nth-of-type(2) {
-    margin-bottom: @size-8;
-  }
-
-  > div:last-of-type {
-    margin-top: @size-8;
-  }
-
   > h1 {
     display: none;
   }
@@ -424,6 +412,10 @@ div.OutcomeNameDisplay {
   }
 
   .MarketView__paneContainer--mobile {
+    display: grid;
+    grid-gap: @size-8 0;
+    grid-template-rows: min-content;
+ 
     > h1 {
       .text-14-bold;
 
@@ -437,7 +429,8 @@ div.OutcomeNameDisplay {
     }
 
     > div:last-of-type {
-      margin-top: @size-4;
+      // margin-top: @size-4;
+      margin-top: 0;
       border: 1px solid @color-dark-grey;
       border-radius: 1px;
     }
@@ -445,6 +438,9 @@ div.OutcomeNameDisplay {
 
   .MarketView__orders {
     margin-bottom: 0;
+    border-bottom: 1px solid @color-dark-grey;
+    border-left: 1px solid @color-dark-grey;
+    border-right: 1px solid @color-dark-grey;
   }
 
   .MarketView__history {
@@ -468,7 +464,6 @@ div.OutcomeNameDisplay {
   .MarketView__priceHistoryChart > h3 {
     .mono-11-bold;
 
-    margin-top: @size-8;
     text-transform: uppercase;
     padding: @size-12 @size-16;
     background: @color-dark-grey;
