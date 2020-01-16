@@ -15,7 +15,7 @@ import CoreProperties from 'modules/market/components/core-properties/core-prope
 import {
   WordTrail,
   MarketTypeLabel,
-  TemplateShield,
+  TemplateShield, RedFlag,
 } from 'modules/common/labels';
 import makeQuery from 'modules/routes/helpers/make-query';
 import {
@@ -276,6 +276,7 @@ export default class MarketHeader extends Component<
                   {LeftChevron} Back
                 </button>
                 {isScalar && <MarketTypeLabel marketType={marketType} />}
+                <RedFlag market={market} />
                 {market.isTemplate && <TemplateShield market={market} />}
                 <WordTrail items={[...categoriesWithClick]} />
                 <SocialMediaButtons
