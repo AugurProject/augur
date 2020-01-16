@@ -24,7 +24,7 @@ export class SingleThreadConnector extends BaseConnector {
     this._api = await startServerFromClient(config, this.client);
     if (config.zeroX) {
       this._zeroX = new ZeroX(this._api.augur, config.zeroX.rpc ? config.zeroX.rpc.ws : undefined);
-      this._client.zeroX = this._zeroX;
+      this.client.zeroX = this._zeroX;
     }
   }
 
