@@ -8,6 +8,10 @@
   grid-gap: @size-2 0;
   padding: @size-12 @size-16;
 
+  @media @breakpoint-mobile {
+    padding: 0;
+  }
+
   > div {
     background: @color-table-header;
     border-radius: @border-radius-default;
@@ -17,6 +21,12 @@
     grid-gap: @size-12 0;
     padding: @size-24;
     justify-content: center;
+
+    @media @breakpoint-mobile {
+      padding: @size-16 @size-8;
+      grid-template-columns: 1fr;
+      grid-gap: @size-24;
+    }
 
     > h4 {
       .text-12-semi-bold;
@@ -34,14 +44,44 @@
       grid-template-columns: auto auto;
       grid-gap: @size-12;
 
+      @media @breakpoint-mobile {
+        grid-template-columns: 1fr;
+        grid-gap: @size-24;
+      }
+
       > h4 {
         grid-column: 1 / span 2;
+
+        @media @breakpoint-mobile {
+          grid-column: 1;
+        }
       }
     }
 
     &:nth-of-type(3) {
       grid-template-columns: auto auto;
       grid-gap: @size-12 @size-64;
+
+      @media @breakpoint-mobile {
+        grid-template-columns: 1fr;
+        grid-gap: @size-24;
+
+        h4:first-of-type {
+          order: 1;
+        }
+
+        button:first-of-type {
+          order: 2;
+        }
+
+        h4:last-of-type {
+          order: 3;
+        }
+
+        button:last-of-type {
+          order: 4;
+        }
+      }
     }
   }
 }
