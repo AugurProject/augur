@@ -19,7 +19,7 @@ import { TextInput } from 'modules/common/form';
 import getPrecision from 'utils/get-number-precision';
 import convertExponentialToDecimal from 'utils/convert-exponential';
 import { MarketData, OutcomeFormatted, OutcomeOrderBook } from 'modules/types';
-import { Getters } from '@augurproject/sdk';
+import { Getters, convertOnChainPriceToDisplayPrice } from '@augurproject/sdk';
 import { convertDisplayAmountToOnChainAmount, tickSizeToNumTickWithDisplayPrices } from '@augurproject/sdk';
 import { CancelTextButton, TextButtonFlip } from 'modules/common/buttons';
 import moment, { Moment } from 'moment';
@@ -665,11 +665,11 @@ class Form extends Component<FromProps, FormState> {
     );
   }
 
-  calcPercentagePrice(percentage: string, minPrice: string, maxPrice: string, tickSize: number) {
-    const range = createBigNumber(maxPrice).minus(createBigNumber(minPrice));
-    const decPer = createBigNumber(percentage).dividedBy(100);
-    const priceOfPer = range.times(decPer).plus(minPrice);
-    const correctDec = formatBestPrice(priceOfPer, tickSize);
+  calcPercentagePrice(percentage: string, minPrice: string, tickSize: number, numTicks: string) {
+    if (!percentage) return Number(minPrice);
+    const percentNumTicks = createBigNumber(numTicks).times((createBigNumber(percentage).dividedBy(100)));
+    const calcPrice = percentNumTicks.times(tickSize).plus(createBigNumber(minPrice));
+    const correctDec = formatBestPrice(calcPrice, tickSize);
     return correctDec.value;
   }
 
@@ -695,6 +695,7 @@ class Form extends Component<FromProps, FormState> {
     const s = this.state;
 
     const tickSize = parseFloat(market.tickSize);
+    const numTicks = market.numTicks;
     const max = maxPrice && maxPrice.toString();
     const min = minPrice && minPrice.toString();
     const errors = Array.from(
@@ -861,7 +862,7 @@ class Form extends Component<FromProps, FormState> {
                   })
                 }
                 onChange={e => {
-                  const value = this.calcPercentagePrice(e.target.value, min, max, tickSize);
+                  const value = this.calcPercentagePrice(e.target.value, min, tickSize, numTicks);
                   console.log('value', value);
                   this.updateAndValidate(this.INPUT_TYPES.PRICE, value)
                   }

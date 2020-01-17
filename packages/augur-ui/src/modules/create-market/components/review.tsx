@@ -368,7 +368,7 @@ export default class Review extends React.Component<
               value={totalGasInDai + " DAI"}
             />}
             {!Gnosis_ENABLED && <LinearPropertyLabel
-              label={"Total ETH"}
+              label={"Transaction Fee"}
               value={totalEth.formattedValue + " ETH"}
             />}
             <LinearPropertyLabel

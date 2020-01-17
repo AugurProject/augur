@@ -432,8 +432,10 @@ export class ZeroX {
     if (_.size(zeroXOrders) < 1) {
       return { orders: [], signatures: [], orderIds: [] };
     }
-
-    const ordersMap = zeroXOrders[params.market][outcome][orderType];
+    let ordersMap = []
+    if (zeroXOrders[params.market] && zeroXOrders[params.market][outcome] && zeroXOrders[params.market][outcome][orderType]) {
+      ordersMap = zeroXOrders[params.market][outcome][orderType];
+    }
     const sortedOrders = _.sortBy(_.values(ordersMap), order => {
       return order.price;
     });
