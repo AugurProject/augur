@@ -126,7 +126,7 @@ export class ZeroX {
     if (!this.meshClient) return;
 
     this.meshClient.subscribeToOrdersAsync((orderEvents: OrderEvent[]) => {
-      if (!browserMesh) {
+      if (!this.browserMesh) {
         this.augur.events.emit('ZeroX:RPC:OrderEvent', orderEvents);
       }
     });
