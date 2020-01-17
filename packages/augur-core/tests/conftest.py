@@ -86,31 +86,8 @@ custom_genesis_state = PyEVMBackend._generate_genesis_state(num_accounts=9)
 def new_is_valid_opcode(self, position: int) -> bool:
     return True
 
-def new_default_middlewares(self, web3):
-    return [
-        (request_parameter_normalizer, 'request_param_normalizer'),
-        (gas_price_strategy_middleware, 'gas_price_strategy'),
-        (name_to_address_middleware(web3), 'name_to_address'),
-        (attrdict_middleware, 'attrdict'),
-        (pythonic_middleware, 'pythonic'),
-        (normalize_errors_middleware, 'normalize_errors'),
-        (validation_middleware, 'validation'),
-        (abi_middleware, 'abi'),
-    ]
-
 def new_debug2(self, message: str, *args: Any, **kwargs: Any) -> None:
     pass
-
-def new_get_storage(self, address: Address, slot: int, from_journal: bool=True) -> int:
-        account = self._get_account(address, from_journal)
-        storage = HashTrie(HexaryTrie(self._journaldb, account.storage_root))
-
-        slot_as_key = pad32(int_to_big_endian(slot))
-
-        encoded_value = storage[slot_as_key]
-        if not encoded_value:
-            return 0
-        return rlp.decode(encoded_value, sedes=rlp.sedes.big_endian_int)
 
 def dumb_gas_search(*args) -> int:
     return 790000000
@@ -121,6 +98,9 @@ def dumb_get_buffered_gas_estimate(web3, transaction, gas_buffer=100000):
 def dumb_estimateGas(self, transaction, block_identifier=None):
     return 790000000
 
+def get_chainId(computation):
+    return 1
+
 def new_create_header_from_parent(self,
                                 parent_header: BlockHeader,
                                 **header_params: HeaderParams) -> BlockHeader:
@@ -130,52 +110,7 @@ def new_create_header_from_parent(self,
     header._gas_limit = 800000000
     return header
 
-def new_apply_create_message(self) -> BaseComputation:
-        snapshot = self.state.snapshot()
-
-        # EIP161 nonce incrementation
-        self.state.account_db.increment_nonce(self.msg.storage_address)
-
-        computation = self.apply_message()
-
-        if computation.is_error:
-            self.state.revert(snapshot)
-            return computation
-        else:
-            contract_code = computation.output
-
-            if contract_code:
-                contract_code_gas_cost = len(contract_code) * constants.GAS_CODEDEPOSIT
-                try:
-                    computation.consume_gas(
-                        contract_code_gas_cost,
-                        reason="Write contract code for CREATE",
-                    )
-                except OutOfGas as err:
-                    # Different from Frontier: reverts state on gas failure while
-                    # writing contract code.
-                    computation._error = err
-                    self.state.revert(snapshot)
-                else:
-                    if self.logger:
-                        self.logger.debug2(
-                            "SETTING CODE: %s -> length: %s | hash: %s",
-                            encode_hex(self.msg.storage_address),
-                            len(contract_code),
-                            encode_hex(keccak(contract_code))
-                        )
-
-                    self.state.account_db.set_code(self.msg.storage_address, contract_code)
-                    self.state.commit(snapshot)
-            else:
-                self.state.commit(snapshot)
-            return computation
-
 eth.vm.code_stream.CodeStream.is_valid_opcode = new_is_valid_opcode
-eth.vm.forks.spurious_dragon.computation.SpuriousDragonComputation.apply_create_message = new_apply_create_message
-eth.tools.logging.ExtendedDebugLogger.debug2 = new_debug2
-eth.db.account.AccountDB.get_storage = new_get_storage
-web3.manager.RequestManager.default_middlewares = new_default_middlewares
 web3._utils.transactions.get_buffered_gas_estimate = dumb_get_buffered_gas_estimate
 eth.chains.base.Chain.create_header_from_parent = new_create_header_from_parent
 old_estimateGas = web3.eth.Eth.estimateGas
@@ -461,7 +396,6 @@ class ContractsFixture:
             if 'legacy_reputation' in directory: continue
             if 'external' in directory: continue
             if '0x' in directory: continue # uploaded separately
-            if 'uniswap' in directory: continue
             for filename in filenames:
                 name = path.splitext(filename)[0]
                 extension = path.splitext(filename)[1]
@@ -532,15 +466,11 @@ class ContractsFixture:
         self.contracts['AugurTrading'].registerContract("ZeroXExchange".ljust(32, '\x00').encode('utf-8'), zeroXContracts["ZeroXExchange"])
         return zeroXContracts
 
-    def uploadUniswapContracts(self):
-        resolvedUniswapPath = resolveRelativePath("../source/contracts/uniswap/UniswapV2.sol")
-        self.signatures["UniswapV2"] = self.generateSignature(resolvedUniswapPath)
-        self.uploadAndAddToAugur("../source/contracts/uniswap/UniswapV2Factory.sol", constructorArgs=["", 1])
-
     def initializeAllContracts(self):
-        coreContractsToInitialize = ['Time','ShareToken','WarpSync','RepPriceOracle']
+        coreContractsToInitialize = ['Time','ShareToken','WarpSync','EthExchange']
         for contractName in coreContractsToInitialize:
             if getattr(self.contracts[contractName], "initialize", None):
+                print("Initializing %s" % contractName)
                 self.contracts[contractName].initialize(self.contracts['Augur'].address)
             else:
                 raise "contract has no 'initialize' method on it."
@@ -552,7 +482,7 @@ class ContractsFixture:
     ####
 
     def approveCentralAuthority(self):
-        contractsNeedingApproval = ['Augur','FillOrder','CreateOrder']
+        contractsNeedingApproval = ['Augur','FillOrder','CreateOrder','ZeroXTrade']
         contractsToApprove = ['Cash']
         testersGivingApproval = [self.accounts[x] for x in range(0,8)]
         for testerKey in testersGivingApproval:
@@ -685,6 +615,10 @@ class ContractsFixture:
         tester = self.testerProvider.ethereum_tester
         tester.send_transaction({'from': sender, 'to': receiver, 'gas': 30000, 'gas_price': 1, 'value': amount, 'data': '0x'})
 
+    def ethBalance(self, account):
+        tester = self.testerProvider.ethereum_tester
+        return tester.get_balance(account)
+
 @pytest.fixture(scope="session")
 def fixture(request):
     return ContractsFixture(request)
@@ -701,7 +635,6 @@ def augurInitializedSnapshot(fixture, baseSnapshot):
     fixture.uploadAllContracts()
     fixture.uploadTestDaiContracts()
     fixture.upload0xContracts()
-    fixture.uploadUniswapContracts()
     fixture.initializeAllContracts()
     fixture.doAugurTradingApprovals()
     fixture.approveCentralAuthority()

@@ -9,9 +9,9 @@
   padding-top: @size-16;
 
   > h4 {
-    .mono-12-bold;
+    .mono-12-semi-bold;
 
-    color: @color-secondary-text;
+    color: @color-primary-text;
     text-transform: uppercase;
   }
 
@@ -21,8 +21,13 @@
     max-width: 80%;
     margin: @size-24 auto @size-8;
 
+    @media @breakpoint-mobile-mid {
+      margin: @size-10 @size-28 0;
+      max-width: 100%;
+    }
+
     > span:first-of-type {
-      .mono-10-bold;
+      .text-10-medium;
 
       color: @color-secondary-text;
     }

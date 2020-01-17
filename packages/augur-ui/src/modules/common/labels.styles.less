@@ -69,6 +69,10 @@
     color: @color-secondary-text;
   }
 
+  &.Alert {
+    color: @color-error;
+  }
+
   > label {
     color: inherit;
     cursor: inherit;
@@ -127,6 +131,7 @@
     margin-bottom: 0;
 
     > svg {
+      cursor: pointer;
       height: @size-12;
       width: @size-12;
 
@@ -140,6 +145,13 @@
       }
     }
   }
+}
+
+.CountdownLabel {
+  .text-12-medium;
+
+  color: @color-secondary-text;
+  margin-right: @size-12;
 }
 
 .HoverValueLabel {
@@ -169,13 +181,13 @@
   flex-flow: column nowrap;
 
   > span:first-of-type {
-    .mono-9-bold;
+    .text-10-medium;
 
     align-items: end;
     color: @color-secondary-text;
     display: flex;
     flex-flow: row nowrap;
-    text-transform: uppercase;
+    text-transform: capitalize;
     line-height: 160%;
 
     > label {
@@ -201,7 +213,7 @@
   }
 
   > span:last-of-type {
-    .mono-11;
+    .mono-12-medium;
 
     color: @color-primary-text;
     line-height: 160%;
@@ -270,12 +282,12 @@
   }
 
   > span:first-of-type {
-    .mono-10;
+    .text-10-medium;
 
     align-items: center;
     color: @color-inactive-text;
     flex-flow: row nowrap;
-    text-transform: uppercase;
+    text-transform: capitalize;
 
     > label {
       margin: 0 0 0 @size-4;
@@ -629,7 +641,7 @@ div.LinearPropertyViewTransaction {
   }
 
   &_normal {
-    .mono-9;
+    .mono-12-medium;
   }
 
   &_large {
@@ -806,11 +818,11 @@ div.LinearPropertyViewTransaction {
   .mono-12-bold;
 
   align-items: center;
-  color: @color-inactive-text;
+  color: @color-secondary-text;
   cursor: pointer;
   display: flex;
   justify-content: flex-start;
-  padding-bottom: @size-12;
+  padding: @size-9 0 @size-9 0;
   text-transform: uppercase;
 
   > div:nth-child(even) {
@@ -822,20 +834,23 @@ div.LinearPropertyViewTransaction {
 
     > div:last-of-type {
       > span svg {
+        height: @size-10;
+        width: @size-10;
         animation: spin 2s linear infinite;
 
         path {
-          stroke: @color-inactive-text;
+          stroke: @color-secondary-text;
         }
       }
     }
   }
 
   &.selected {
-    .text-11-bold;
+    .text-12-bold;
 
     color: @color-primary-text;
-    border-bottom: 1px solid @color-primary-text;
+    padding: @size-9 0 @size-7 0;
+    border-bottom: @size-2 solid @color-primary-text;
 
     &.open {
       border-color: @color-open;
@@ -851,7 +866,7 @@ div.LinearPropertyViewTransaction {
 
     > div:nth-child(even) {
       font-weight: bold;
-      margin: 0 0 0 @size-8;
+      margin: 0 0 0 @size-4;
     }
 
     > div:last-of-type {

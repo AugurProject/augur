@@ -104,6 +104,7 @@ export class MockMeshServer {
             if (this._subInterval !== null) {
               throw new Error("Attempting to subscribe twice to the mock relayer. Make sure tests unsubscribe.")
             }
+          
             this._subInterval = setInterval(() => {
                 connection.sendUTF(JSON.stringify({
                     jsonrpc: "2.0",

@@ -435,9 +435,11 @@ export class Augur<TProvider extends Provider = Provider> {
   }
 
   async batchCancelOrders(orderHashes: string[]): Promise<void> {
-    const orders = orderHashes.map(async (orderHash) => {
-      return this.getOrder({ orderHash })
-    });
+    const orders = [];
+    for (let index = 0; index < orderHashes.length; index++) {
+      const order = await this.getOrder({ orderHash: orderHashes[index] });
+      orders.push(order);
+    }
     await this.zeroX.batchCancelOrders(orders);
   }
 

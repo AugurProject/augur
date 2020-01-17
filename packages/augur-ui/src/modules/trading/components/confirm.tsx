@@ -151,7 +151,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     if (
       Gnosis_ENABLED &&
       totalCost &&
-      createBigNumber(gasCostDai, 10).gte(createBigNumber(availableDai, 10))
+      createBigNumber(gasCostDai).gte(createBigNumber(availableDai))
     ) {
       messages = {
         header: 'Insufficient DAI',
@@ -164,7 +164,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     if (
       !Gnosis_ENABLED &&
       totalCost &&
-      createBigNumber(gasCost, 10).gte(createBigNumber(availableEth, 10))
+      createBigNumber(gasCost).gte(createBigNumber(availableEth))
     ) {
       messages = {
         header: 'Insufficient ETH',
@@ -175,8 +175,8 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
 
     if (
       totalCost &&
-      createBigNumber(potentialDaiLoss.fullPrecision, 10).gt(
-        createBigNumber(availableDai, 10)
+      createBigNumber(potentialDaiLoss.fullPrecision).gt(
+        createBigNumber(availableDai)
       ) && !tradingTutorial
     ) {
       messages = {

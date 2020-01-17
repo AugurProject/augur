@@ -1,4 +1,4 @@
-pragma solidity 0.5.10;
+pragma solidity 0.5.15;
 
 import 'ROOT/external/IDaiJoin.sol';
 import 'ROOT/external/IDaiVat.sol';

@@ -1,4 +1,4 @@
-pragma solidity 0.5.10;
+pragma solidity 0.5.15;
 
 import 'ROOT/IAugur.sol';
 import 'ROOT/ICashFaucet.sol';

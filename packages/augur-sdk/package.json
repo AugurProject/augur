@@ -36,7 +36,7 @@
   },
   "homepage": "https://github.com/AugurProject/augur#readme",
   "dependencies": {
-    "@0x/mesh-browser": "8.0.0-beta-0xv3",
+    "@0x/mesh-browser": "dev-utils-fix",
     "@0x/mesh-rpc-client": "8.0.0-beta-0xv3",
     "@0x/order-utils": "8.4.0",
     "@augurproject/artifacts": "2.0.0-alpha.2",
@@ -61,7 +61,7 @@
     "ethers": "4.0.37",
     "express": "4.17.1",
     "flexsearch": "0.6.30",
-    "ganache-core": "2.8.0",
+    "ganache-core": "2.9.1",
     "indexeddbshim": "5.0.0",
     "io-ts": "1.10.4",
     "isomorphic-ws": "4.0.1",

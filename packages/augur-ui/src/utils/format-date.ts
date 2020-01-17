@@ -216,6 +216,14 @@ export function getBeginDate(
   return beginDate.unix();
 }
 
+export function startOfTomorrow(unixTimestamp: number): number {
+  return moment
+    .unix(unixTimestamp)
+    .add(1, 'day')
+    .startOf('day')
+    .unix();
+}
+
 export function minMarketEndTimeDay() {
   return moment()
   .subtract(1, 'day')
@@ -341,4 +349,10 @@ export function getFullDaysBetween(
   }
 
   return daysBetween;
+}
+
+export function getDurationBetween(timestamp1, timestamp2) {
+  const timestamp1Moment = moment.unix(timestamp1);
+  const timestamp2Moment = moment.unix(timestamp2);
+  return moment.duration(timestamp1Moment.diff(timestamp2Moment));
 }

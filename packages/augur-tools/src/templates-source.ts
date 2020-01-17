@@ -109,9 +109,6 @@ export const TEMPLATES = {
                       text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No'.`,
                     },
                     {
-                      text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as Invalid.`,
-                    },
-                    {
                       text:
                         'Includes regulation, any play-offs and sudden death',
                     },
@@ -153,11 +150,31 @@ export const TEMPLATES = {
                       text: `If a tournament or match is cancelled the market should resolve as 'No'. If the tournament is postponed and not be completed before the market's Event Expiration time, but the player named officially made the cut, noted by the tournament association, then the outcome should resolve as Yes.`,
                     },
                     {
-                      text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as Invalid`,
-                    },
-                    {
                       text: 'This market is intended to be about a Single Person, if this is not the case, this market should settle as invalid.'
                     }
+                  ],
+                },
+              },
+              {
+                marketType: YES_NO,
+                question: `PGA: Will the United States Team win the [0] Presidents Cup?`,
+                example: `PGA: Will the United States Team win the 2020 Presidents Cup?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If team fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as 'No'`,
+                    },
+                    {
+                      text: `If a tournament or match is cancelled the market should resolve as 'No'. If the tournament is postponed and not be completed before the market's Event Expiration time, but the player named officially made the cut, noted by the tournament association, then the outcome should resolve as Yes.`,
+                    },
                   ],
                 },
               },
@@ -195,14 +212,56 @@ export const TEMPLATES = {
                       text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No winner/Event Cancelled'.`,
                     },
                     {
-                      text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as invalid`,
-                    },
-                    {
                       text:
                         'Includes regulation, any play-offs and sudden death',
                     },
                     {
                       text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                    },
+                  ],
+                },
+              },
+              {
+                marketType: CATEGORICAL,
+                question: `PGA: Which team will win the [0] Presidents Cup?`,
+                example: `PGA: Which team will win the 2020 Presidents Cup?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `No winner/Event cancelled`,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `United States Team`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `International Team`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No winner/Event Cancelled'.`,
+                    },
+                    {
+                      text: `Only one team can be listed per outcome, if not then the market should resolve as 'Invalid'`,
+                    },
+                    {
+                      text: `This market is intended to have two teams, United States verse International, if not the case this market should resolve as 'Invalid'`,
+                    },
+                    {
+                      text:
+                        'Includes regulation, any play-offs and sudden death',
                     },
                   ],
                 },
@@ -241,9 +300,6 @@ export const TEMPLATES = {
                     },
                     {
                       text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No'.`,
-                    },
-                    {
-                      text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as Invalid.`,
                     },
                     {
                       text:
@@ -287,11 +343,31 @@ export const TEMPLATES = {
                       text: `If a tournament or match is cancelled the market should resolve as 'No'. If the tournament is postponed and not be completed before the market's Event Expiration time, but the player named officially made the cut, noted by the tournament association, then the outcome should resolve as Yes.`,
                     },
                     {
-                      text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as Invalid`,
-                    },
-                    {
                       text: 'This market is intended to be about a Single Person, if this is not the case, this market should settle as invalid.'
                     }
+                  ],
+                },
+              },
+              {
+                marketType: YES_NO,
+                question: `Euro Tour: Will the United States Team win the [0] Ryders Cup?`,
+                example: `Euro Tour: Will the United States Team win the 2020 Ryders Cup?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If team fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as 'No'`,
+                    },
+                    {
+                      text: `If a tournament or match is cancelled the market should resolve as 'No'. If the tournament is postponed and not be completed before the market's Event Expiration time, but the player named officially made the cut, noted by the tournament association, then the outcome should resolve as Yes.`,
+                    },
                   ],
                 },
               },
@@ -329,14 +405,56 @@ export const TEMPLATES = {
                       text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No winner/Event Cancelled'.`,
                     },
                     {
-                      text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as invalid`,
-                    },
-                    {
                       text:
                         'Includes regulation, any play-offs and sudden death',
                     },
                     {
                       text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                    },
+                  ],
+                },
+              },
+              {
+                marketType: CATEGORICAL,
+                question: `Euro Tour: Which golf team will win the [0] Ryders Cup?`,
+                example: `Euro Tour: Which golf team will win the 2020 Ryders Cup?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `United States Team`,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `European Team`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `No winner/Event cancelled`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No winner/Event Cancelled'.`,
+                    },
+                    {
+                      text: `Only one team can be listed per outcome, if not then the market should resolve as 'Invalid'`,
+                    },
+                    {
+                      text: `This market is intended to have two teams, United States verse European, if not the case this market should resolve as 'Invalid'`,
+                    },
+                    {
+                      text:
+                        'Includes regulation, any play-offs and sudden death',
                     },
                   ],
                 },
@@ -375,9 +493,6 @@ export const TEMPLATES = {
                     },
                     {
                       text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No'.`,
-                    },
-                    {
-                      text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as Invalid.`,
                     },
                     {
                       text:
@@ -421,9 +536,6 @@ export const TEMPLATES = {
                       text: `If a tournament or match is cancelled the market should resolve as 'No'. If the tournament is postponed and not be completed before the market's Event Expiration time, but the player named officially made the cut, noted by the tournament association, then the outcome should resolve as Yes.`,
                     },
                     {
-                      text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as Invalid`,
-                    },
-                    {
                       text: 'This market is intended to be about a Single Person, if this is not the case, this market should settle as invalid.'
                     }
                   ],
@@ -461,9 +573,6 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     {
                       text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No winner/Event Cancelled'.`,
-                    },
-                    {
-                      text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as invalid`,
                     },
                     {
                       text:
@@ -5259,7 +5368,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Opening date and time is determined by the opening price of the market trading pair on tradingview.com.`,
+                  text: `Opening price is determined on daily chart on the date in the market question for the market trading pair on tradingview.com.`,
                 },
                 {
                   text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
@@ -5308,7 +5417,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Opening date and time is determined by the opening price of the market trading pair on tradingview.com.`,
+                  text: `Opening price is determined on daily chart on the date in the market question for the market trading pair on tradingview.com.`,
                 },
                 {
                   text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
@@ -5346,7 +5455,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Opening date and time is determined by the opening price of the market trading pair on tradingview.com.`,
+                  text: `Opening price is determined on daily chart on the date in the market question for the market trading pair on tradingview.com.`,
                 },
                 {
                   text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
@@ -5393,7 +5502,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Opening date and time is determined by the opening price of the market trading pair on tradingview.com.`,
+                  text: `Opening price is determined on daily chart on the date in the market question for the market trading pair on tradingview.com.`,
                 },
                 {
                   text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
@@ -5442,7 +5551,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Opening date and time is determined by the opening price of the market trading pair on tradingview.com.`,
+                  text: `Opening price is determined on daily chart on the date in the market question for the market trading pair on tradingview.com.`,
                 },
                 {
                   text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
@@ -5480,7 +5589,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Opening date and time is determined by the opening price of the market trading pair on tradingview.com.`,
+                  text: `Opening price is determined on daily chart on the date in the market question for the market trading pair on tradingview.com.`,
                 },
                 {
                   text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
@@ -5527,7 +5636,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Opening date and time is determined by the opening price of the market trading pair on tradingview.com.`,
+                  text: `Opening price is determined on daily chart on the date in the market question for the market trading pair on tradingview.com.`,
                 },
                 {
                   text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
@@ -5576,7 +5685,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Opening date and time is determined by the opening price of the market trading pair on tradingview.com.`,
+                  text: `Opening price is determined on daily chart on the date in the market question for the market trading pair on tradingview.com.`,
                 },
                 {
                   text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
@@ -5614,7 +5723,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Opening date and time is determined by the opening price of the market trading pair on tradingview.com.`,
+                  text: `Opening price is determined on daily chart on the date in the market question for the market trading pair on tradingview.com.`,
                 },
                 {
                   text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,

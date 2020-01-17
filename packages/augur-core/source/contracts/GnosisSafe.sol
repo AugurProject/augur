@@ -2,7 +2,7 @@
  *Submitted for verification at Etherscan.io on 2019-03-28
 */
 
-pragma solidity 0.5.10;
+pragma solidity 0.5.15;
 
 
 contract Enum {

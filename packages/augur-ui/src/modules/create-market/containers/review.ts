@@ -7,20 +7,24 @@ import { getGasPrice } from 'modules/auth/selectors/get-gas-price';
 import { estimateSubmitNewMarket } from 'modules/markets/actions/estimate-submit-new-market';
 import { formatDai, formatRep, formatEther } from 'utils/format-number';
 import { AppState } from 'store';
+import { totalTradingBalance } from 'modules/auth/selectors/login-account';
+
 
 const mapStateToProps = (state: AppState) => {
-  const { loginAccount, appStatus } = state;
+  const { loginAccount, appStatus, newMarket, blockchain } = state;
   return {
-    newMarket: state.newMarket,
-    currentTimestamp: state.blockchain.currentAugurTimestamp,
+    newMarket: newMarket,
+    currentTimestamp: blockchain.currentAugurTimestamp,
     address: loginAccount.address,
     gasPrice: getGasPrice(state),
-    availableEthFormatted: formatEther(state.loginAccount.balances.eth),
-    availableRepFormatted: formatRep(state.loginAccount.balances.rep),
-    availableDaiFormatted: formatDai(state.loginAccount.balances.dai),
+    availableEthFormatted: formatEther(loginAccount.balances.eth),
+    availableRepFormatted: formatRep(loginAccount.balances.rep),
+    availableDaiFormatted: formatDai(
+      totalTradingBalance(loginAccount)
+    ),
     Gnosis_ENABLED: appStatus.gnosisEnabled,
     ethToDaiRate: appStatus.ethToDaiRate,
-  }
+  };
 };
 
 const mapDispatchToProps = dispatch => ({

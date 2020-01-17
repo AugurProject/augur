@@ -81,6 +81,8 @@ export class ContractAPI {
     const createOrder = this.augur.addresses.CreateOrder;
     await this.augur.contracts.cash.approve(createOrder, new BigNumber(2).pow(256).minus(new BigNumber(1)));
     await this.augur.contracts.shareToken.setApprovalForAll(createOrder, true);
+
+    await this.augur.contracts.cash.approve(this.augur.addresses.ZeroXTrade, new BigNumber(2).pow(256).minus(new BigNumber(1)));
   }
 
   async createYesNoMarket(params: CreateYesNoMarketParams): Promise<ContractInterfaces.Market> {

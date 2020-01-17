@@ -37,6 +37,10 @@
     &:nth-of-type(2) {
       position: relative;
 
+      > div {
+        display: none;
+      }
+
       > span:nth-of-type(2) {
         display: none;
         left: 0;
@@ -308,6 +312,12 @@ div.SingleRow3 {
         position: static;
         text-align: left;
 
+        > div {
+          display: flex;
+          order: 2;
+          margin-left: @size-12;
+        }
+
         > span:nth-of-type(2) {
           display: block;
           left: unset;
@@ -318,7 +328,8 @@ div.SingleRow3 {
 
       &:last-of-type {
         > button,
-        > span {
+        > span,
+        > div {
           display: none;
         }
       }

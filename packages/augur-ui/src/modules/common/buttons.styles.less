@@ -378,14 +378,17 @@
   color: @color-primary-text;
   padding: @size-1 @size-4;
 
+  &.IconButton {
+    padding: @size-2;
+  }
+
   > svg {
     fill: none;
     height: 0.5rem;
-    margin-right: 0.25rem;
     width: 0.5rem;
 
     > path {
-      stroke: @color-inactive-text;
+      stroke: @color-secondary-text;
     }
   }
 

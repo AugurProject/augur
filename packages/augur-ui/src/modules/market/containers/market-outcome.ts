@@ -1,34 +1,41 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { AppState } from 'store';
-import getValue from 'utils/get-value';
 import { COLUMN_TYPES, INVALID_OUTCOME_ID } from 'modules/common/constants';
-import { selectMarketOutcomeBestBidAsk } from 'modules/markets/selectors/select-market-outcome-best-bid-ask';
+import { selectMarketOutcomeBestBidAsk, selectBestBidAlert } from 'modules/markets/selectors/select-market-outcome-best-bid-ask';
 import Row from 'modules/common/row';
-import { ThunkDispatch } from 'redux-thunk';
-import { Action } from 'redux';
 
 const mapStateToProps = (state: AppState, ownProps) => {
+  const { marketInfos, orderBooks } = state;
+  const market = marketInfos[ownProps.marketId];
+  // default values for create market preview
+  const minPrice = market ? market.minPrice : 0;
+  const maxPrice = market ? market.maxPrice : 1;
+  const tickSize = market ? market.tickSize : 100;
+
   return {
-    orderBook: state.orderBooks ? state.orderBooks[ownProps.marketId] : null,
+    orderBook: orderBooks ? orderBooks[ownProps.marketId] : null,
+    minPrice,
+    maxPrice,
+    tickSize
   };
 };
 
-const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({});
+const mapDispatchToProps = () => ({});
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
   const outcome = oP.outcome;
   const outcomeName = outcome.description;
   const orderBook = sP.orderBook && sP.orderBook[outcome.id];
-  const { topAsk, topBid } = selectMarketOutcomeBestBidAsk(orderBook);
-
+  const { topAsk, topBid } = selectMarketOutcomeBestBidAsk(orderBook, sP.tickSize);
+  const bestBidAlert = selectBestBidAlert(outcome.id, topBid.price.value, sP.minPrice, sP.maxPrice)
   const topBidShares = topBid.shares;
   const topAskShares = topAsk.shares;
 
   const topBidPrice = topBid.price;
   const topAskPrice = topAsk.price;
 
-  const lastPrice = getValue(outcome, "lastPrice");
+  const lastPrice = outcome.lastPrice;
 
   const columnProperties = [
     {
@@ -50,6 +57,8 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       value: topBidPrice,
       useFull: true,
       showEmptyDash: true,
+      alert: bestBidAlert,
+
     },
     {
       key: "topAskPrice",

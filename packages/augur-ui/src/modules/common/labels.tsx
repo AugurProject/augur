@@ -40,6 +40,7 @@ import {
 import { EventDetailsContent } from 'modules/create-market/constants';
 import { ExplainerBlock } from 'modules/create-market/components/common';
 import { hasTemplateTextInputs } from '@augurproject/artifacts';
+import { getDurationBetween } from 'utils/format-date';
 
 export interface MarketTypeProps {
   marketType: string;
@@ -137,6 +138,7 @@ export interface ValueLabelProps {
   keyId?: string;
   showEmptyDash?: boolean;
   useFull?: boolean;
+  alert?: boolean;
 }
 
 interface SizableValueLabelProps extends ValueLabelProps {
@@ -155,6 +157,7 @@ export interface TextLabelProps {
 
 export interface InvalidLabelProps extends TextLabelProps {
   openInvalidMarketRulesModal?: Function;
+  tooltipPositioning?: string;
 }
 
 export interface TextLabelState {
@@ -213,6 +216,22 @@ interface TimeLabelProps {
   showLocal?: boolean;
   hint?: React.ReactNode;
 }
+
+interface CountdownLabelProps {
+  expiry: DateFormattedObject;
+  currentTimestamp: Number;
+}
+
+export const CountdownLabel = ({ expiry, currentTimestamp }: CountdownLabelProps) => {
+  const duration = getDurationBetween(expiry.timestamp, currentTimestamp);
+  const hours = duration.asHours(); 
+  if (hours > 1) return null;
+  return (
+    <div className={Styles.CountdownLabel}>
+      {Math.round(duration.asMinutes())}m
+    </div>
+  );
+};
 
 interface TemplateShieldProps {
   market: Getters.Markets.MarketInfo;
@@ -381,6 +400,7 @@ export const ValueLabel = (props: ValueLabelProps) => {
     <span
       className={classNames(Styles.ValueLabel, {
         [Styles.DarkDash]: props.value.full === '-',
+        [Styles.Alert]: props.alert,
       })}
     >
       <label
@@ -550,7 +570,12 @@ export class HoverValueLabel extends React.Component<
 }
 
 export const InvalidLabel = (props: InvalidLabelProps) => {
-  const { text, keyId, openInvalidMarketRulesModal } = props;
+  const {
+    text,
+    keyId,
+    openInvalidMarketRulesModal,
+    tooltipPositioning,
+  } = props;
   const {
     explainerBlockTitle,
     explainerBlockSubtexts,
@@ -580,7 +605,7 @@ export const InvalidLabel = (props: InvalidLabelProps) => {
           TooltipStyles.TooltipInvalidRules
         )}
         effect="solid"
-        place="top"
+        place={tooltipPositioning || 'left'}
         type="dark"
         data-event="mouseover"
         data-event-off="blur scroll"

@@ -23,7 +23,7 @@ import {
   ZeroXTrade,
   GnosisSafeRegistry,
   WarpSync,
-  RepPriceOracle,
+  EthExchange,
   // 0x
   DevUtils,
   Exchange,
@@ -89,15 +89,6 @@ Deploying to: ${networkConfiguration.networkName}
             await this.augur!.registerContract(stringTo32ByteHex('LegacyReputationToken'), externalAddresses.LegacyReputationToken);
         } else {
             await this.uploadLegacyRep();
-        }
-
-        // REP price oracle
-        if (this.configuration.isProduction || externalAddresses.RepPriceOracle) {
-            if (!externalAddresses.RepPriceOracle) throw new Error('Must provide RepPriceOracle');
-            console.log(`Registering Rep Price Oracle Contract at ${externalAddresses.RepPriceOracle}`);
-            await this.augur!.registerContract(stringTo32ByteHex('RepPriceOracle'), externalAddresses.RepPriceOracle);
-        } else {
-            await this.uploadRepPriceOracle();
         }
 
         // Cash
@@ -171,15 +162,6 @@ Deploying to: ${networkConfiguration.networkName}
             await this.upload0xContracts();
         }
 
-        // Uniswap
-        if (this.configuration.isProduction || externalAddresses.UniswapV2Factory) {
-            if (!externalAddresses.UniswapV2Factory) throw new Error('Must provide UniswapV2Factory');
-            console.log(`Registering UniswapV2Factory Contract at ${externalAddresses.UniswapV2Factory}`);
-            await this.augur!.registerContract(stringTo32ByteHex('UniswapV2Factory'), externalAddresses.UniswapV2Factory);
-        } else {
-            await this.uploadUniswapContracts();
-        }
-
         await this.initializeAllContracts();
         await this.doTradingApprovals();
 
@@ -229,8 +211,6 @@ Deploying to: ${networkConfiguration.networkName}
             if (contract.contractName === 'TestNetReputationToken') continue;
             if (contract.contractName === 'TestNetReputationTokenFactory') continue;
             if (contract.contractName === 'CashFaucetProxy') continue;
-            if (contract.contractName === 'UniswapV2') continue;
-            if (contract.contractName === 'UniswapV2Factory') continue;
             if (contract.contractName === 'Time') contract = this.configuration.useNormalTime ? contract : this.contracts.get('TimeControlled');
             if (contract.contractName === 'ReputationTokenFactory') contract = this.configuration.isProduction ? contract: this.contracts.get('TestNetReputationTokenFactory');
             if (contract.contractName === 'CashFaucet') {
@@ -329,21 +309,9 @@ Deploying to: ${networkConfiguration.networkName}
         gnosisSafeContract.address = await this.uploadAndAddToAugur(gnosisSafeContract, 'GnosisSafe', []);
     }
 
-    private async uploadUniswapContracts(): Promise<string> {
-        const uniswapV2FactoryContract = await this.contracts.get('UniswapV2Factory');
-        uniswapV2FactoryContract.address = await this.uploadAndAddToAugur(uniswapV2FactoryContract, 'UniswapV2Factory', ["0x0", 0]);
-        return uniswapV2FactoryContract.address;
-    }
-
     async uploadLegacyRep(): Promise<string> {
         const contract = await this.contracts.get('LegacyReputationToken');
         contract.address = await this.uploadAndAddToAugur(contract, 'LegacyReputationToken');
-        return contract.address;
-    }
-
-    async uploadRepPriceOracle(): Promise<string> {
-        const contract = await this.contracts.get('RepPriceOracle');
-        contract.address = await this.uploadAndAddToAugur(contract, 'RepPriceOracle');
         return contract.address;
     }
 
@@ -426,8 +394,6 @@ Deploying to: ${networkConfiguration.networkName}
         if (contractName === 'AugurTrading') return;
         if (contractName === 'Universe') return;
         if (contractName === 'ReputationToken') return;
-        if (contractName === 'UniswapV2') return;
-        if (contractName === 'UniswapV2Factory') return;
         if (contractName === 'TestNetReputationToken') return;
         if (contractName === 'ProxyFactory') return;
         if (contractName === 'Time') contract = this.configuration.useNormalTime ? contract : this.contracts.get('TimeControlled');
@@ -435,7 +401,6 @@ Deploying to: ${networkConfiguration.networkName}
         if (contract.relativeFilePath.startsWith('legacy_reputation/')) return;
         if (contractName === 'LegacyReputationToken') return;
         if (contractName === 'Cash') return;
-        if (contractName === 'RepPriceOracle') return;
         if (contractName === 'CashFaucet') return;
         if (contractName === 'CashFaucetProxy') return;
         if (contractName === 'GnosisSafe') return;
@@ -526,9 +491,9 @@ Deploying to: ${networkConfiguration.networkName}
         const warpSync = new WarpSync(this.dependencies, WarpSyncContract);
         promises.push(warpSync.initialize(this.augur!.address));
 
-        const RepPriceOracleContract = await this.getContractAddress('RepPriceOracle');
-        const repPriceOracle = new RepPriceOracle(this.dependencies, RepPriceOracleContract);
-        promises.push(repPriceOracle.initialize(this.augur!.address));
+        const EthExchangeContract = await this.getContractAddress('EthExchange');
+        const ethExchange = new EthExchange(this.dependencies, EthExchangeContract);
+        promises.push(ethExchange.initialize(this.augur!.address));
 
         if (!this.configuration.useNormalTime) {
             const timeContract = await this.getContractAddress('TimeControlled');

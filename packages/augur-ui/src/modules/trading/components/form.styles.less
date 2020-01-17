@@ -133,22 +133,18 @@
           text-align: left;
         }
 
-        > div[class*="TextInput"],
-        > div[class*="Normal"] {
-          height: @size-24;
+        > div[class*="TextInput"] {
           max-width: 100%;
 
-          > button > span {
-            padding: 0 @size-8 0 0;
-          }
-        }
-
-        > div:first-of-type {
           > button {
-            .mono-10-bold;
+            background: @color-secondary-action;
 
             > span {
-              padding: 0 @size-8 0 0;
+              padding: @size-6 @size-8 @size-6 0;
+
+              @media @breakpoint-mobile {
+                padding: @size-5 @size-8 @size-5 0;
+              }
             }
           }
         }
@@ -319,14 +315,9 @@
 
 .Outcome {
   padding: @size-12 @size-12 0;
+
   > div > button {
     .text-12;
-  }
-}
-
-.HideOnMobile {
-  @media @breakpoint-mobile {
-    display: none;
   }
 }
 
@@ -420,9 +411,7 @@
 
 @media @breakpoint-mobile {
   .Outcome {
-    background: @color-dark-grey;
-    margin-bottom: @size-24;
-    margin-top: @size-16;
+    margin: @size-12 0;
     padding-bottom: 0;
     padding-top: 0;
   }

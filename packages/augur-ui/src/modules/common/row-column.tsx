@@ -6,10 +6,12 @@ import {
   PositionTypeLabel,
   TextLabel,
   ValueLabel,
+  CountdownLabel
 } from 'modules/common/labels';
 import InvalidLabel from 'modules/common/containers/labels';
 import { CancelTextButton } from 'modules/common/buttons';
 import MarketOutcomeTradingIndicator from 'modules/market/containers/market-outcome-trading-indicator';
+import { DateFormattedObject } from 'modules/types';
 
 const { COLUMN_TYPES } = constants;
 
@@ -29,10 +31,14 @@ export interface Properties {
   size?: string;
   showEmptyDash?: Boolean;
   addIndicator?: Boolean;
+  alert?: boolean;
   outcome?: string;
   location?: string;
   showExtraNumber?: Boolean;
   status?: string;
+  showCountdown?: Boolean;
+  expiry?: DateFormattedObject;
+  currentTimestamp?: Number;
 }
 
 function selectColumn(columnType: string, properties: Properties) {
@@ -46,10 +52,15 @@ function selectColumn(columnType: string, properties: Properties) {
       );
     case COLUMN_TYPES.POSITION_TYPE:
       return (
-        <PositionTypeLabel
-          type={properties.type}
-          pastTense={properties.pastTense}
-        />
+        <>
+          {properties.showCountdown &&
+            <CountdownLabel currentTimestamp={properties.currentTimestamp} expiry={properties.expiry} />
+          }
+          <PositionTypeLabel
+            type={properties.type}
+            pastTense={properties.pastTense}
+          />
+        </>
       );
     case COLUMN_TYPES.VALUE:
       return (
@@ -68,6 +79,7 @@ function selectColumn(columnType: string, properties: Properties) {
                   keyId={properties.keyId}
                   showEmptyDash={properties.showEmptyDash}
                   useFull={properties.useFull}
+                  alert={properties.alert}
                 />
               </button>
             )}
@@ -77,6 +89,7 @@ function selectColumn(columnType: string, properties: Properties) {
                 keyId={properties.keyId}
                 showEmptyDash={properties.showEmptyDash}
                 useFull={properties.useFull}
+                alert={properties.alert}
               />
             )}
           </>
@@ -84,7 +97,7 @@ function selectColumn(columnType: string, properties: Properties) {
       );
     case COLUMN_TYPES.INVALID_LABEL:
       return (
-        <InvalidLabel text={properties.text} keyId={properties.keyId} />
+        <InvalidLabel text={properties.text} keyId={properties.keyId} tooltipPositioning='right' />
       );
     case COLUMN_TYPES.CANCEL_TEXT_BUTTON:
       return properties.pending ? (
@@ -93,11 +106,16 @@ function selectColumn(columnType: string, properties: Properties) {
           <PendingLabel status={properties.status}/>{' '}
         </span>
       ) : (
-        <CancelTextButton
-          disabled={properties.disabled}
-          text={properties.text}
-          action={properties.action}
-        />
+        <>
+          {properties.showCountdown &&
+            <CountdownLabel currentTimestamp={properties.currentTimestamp} expiry={properties.expiry} />
+          }
+          <CancelTextButton
+            disabled={properties.disabled}
+            text={properties.text}
+            action={properties.action}
+          />
+        </>
       );
     case COLUMN_TYPES.PLAIN:
       return properties.value;

@@ -5,8 +5,10 @@ import generateDownloadAccountLink from "modules/auth/helpers/generate-download-
 import store from "store";
 
 import getValue from "utils/get-value";
-import { createBigNumber } from "utils/create-big-number";
+import { createBigNumber, BigNumber } from "utils/create-big-number";
 import { ZERO } from "modules/common/constants";
+import loginAccount from "../reducers/login-account";
+import { LoginAccount } from "modules/types";
 
 export default function() {
   return selectLoginAccount(store.getState());
@@ -78,3 +80,9 @@ export const selectAccountFunds = createSelector(
     };
   }
 );
+
+export const totalTradingBalance = (loginAccount: LoginAccount): BigNumber => {
+  return createBigNumber(loginAccount.balances.dai).minus(
+    loginAccount.totalOpenOrdersFrozenFunds
+  );
+};
