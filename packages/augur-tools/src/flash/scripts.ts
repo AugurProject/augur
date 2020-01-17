@@ -1,6 +1,6 @@
 import { deployContracts } from '../libs/blockchain';
 import { FlashSession, FlashArguments } from './flash';
-import { createCannedMarketsAndOrders } from './create-canned-markets-and-orders';
+import { createCannedMarkets } from './create-canned-markets-and-orders';
 import { _1_ETH } from '../constants';
 import {
   Contracts as compilerOutput,
@@ -376,13 +376,13 @@ export function addScripts(flash: FlashSession) {
   });
 
   flash.addScript({
-    name: 'create-canned-markets-and-orders',
+    name: 'create-canned-markets',
     async call(this: FlashSession) {
       const user = await this.ensureUser();
       await user.repFaucet(new BigNumber(10).pow(18).multipliedBy(1000000));
       await user.faucet(new BigNumber(10).pow(18).multipliedBy(1000000));
       await user.approve(new BigNumber(10).pow(18).multipliedBy(1000000));
-      return createCannedMarketsAndOrders(user);
+      return createCannedMarkets(user);
     },
   });
 
@@ -831,7 +831,7 @@ export function addScripts(flash: FlashSession) {
         write_artifacts: true,
         time_controlled: true,
       });
-      // await this.call('create-canned-markets-and-orders', {});
+      await this.call('create-canned-markets', {});
     },
   });
 
@@ -842,7 +842,7 @@ export function addScripts(flash: FlashSession) {
         write_artifacts: true,
         time_controlled: false,
       });
-      // await this.call('create-canned-markets-and-orders', {});
+      await this.call('create-canned-markets', {});
     },
   });
 
