@@ -1,21 +1,19 @@
-import { ContractAPI, ACCOUNTS, loadSeedFile, defaultSeedPath } from '@augurproject/tools';
-import { BigNumber } from 'bignumber.js';
-import { makeDbMock, makeProvider, MockGnosisRelayAPI } from '../../libs';
-import { DB } from '@augurproject/sdk/build/state/db/DB';
-import { MockMeshServer, stopServer } from '../../libs/MockMeshServer';
 import { WSClient } from '@0x/mesh-rpc-client';
-import { Connectors } from '@augurproject/sdk';
-import { API } from '@augurproject/sdk/build/state/getter/API';
-import { NULL_ADDRESS, stringTo32ByteHex } from "../../libs/Utils";
-import { ZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
-import { sleep } from '@augurproject/core/build/libraries/HelperFunctions';
-import { MockBrowserMesh } from '../../libs/MockBrowserMesh';
+import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from 'ethers/utils';
 import * as _ from 'lodash';
-import { DEADBEEF_ADDRESS } from '@augurproject/tools';
+import { ContractAPI, ACCOUNTS, loadSeedFile, defaultSeedPath } from '@augurproject/tools';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
-import { ContractAddresses } from '@augurproject/artifacts/build';
-import { BrowserMesh } from '@augurproject/sdk/build';
+import { ContractAddresses } from '@augurproject/artifacts';
+import { DB } from '@augurproject/sdk/build/state/db/DB';
+import { Connectors, BrowserMesh } from '@augurproject/sdk';
+import { API } from '@augurproject/sdk/build/state/getter/API';
+import { ZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
+import { sleep } from '@augurproject/core/build/libraries/HelperFunctions';
+import { MockMeshServer, stopServer } from '../../libs/MockMeshServer';
+import { NULL_ADDRESS, stringTo32ByteHex } from '../../libs/Utils';
+import { MockBrowserMesh } from '../../libs/MockBrowserMesh';
+import { makeDbMock, makeProvider, MockGnosisRelayAPI } from '../../libs';
 
 describe('Augur API :: ZeroX :: ', () => {
   let john: ContractAPI;
@@ -106,6 +104,11 @@ describe('Augur API :: ZeroX :: ', () => {
       const orders: ZeroXOrders = await johnAPI.route('getZeroXOrders', {
         marketId: market.address,
       });
+      expect(orders).toBeDefined();
+      expect(orders).toHaveProperty(market.address);
+      expect(orders[market.address]).toHaveProperty('0');
+      expect(orders[market.address]['0']).toHaveProperty('0');
+
       const thisOrder = _.values(orders[market.address][0]['0'])[0];
       // Get this order
       const order = await johnAPI.route('getZeroXOrder', {
@@ -264,6 +267,10 @@ describe('Augur API :: ZeroX :: ', () => {
       const orders: ZeroXOrders = await johnAPI.route('getZeroXOrders', {
         marketId: market.address,
       });
+      expect(orders).toBeDefined();
+      expect(orders).toHaveProperty(market.address);
+      expect(orders[market.address]).toHaveProperty('0');
+      expect(orders[market.address]['0']).toHaveProperty('0');
       const order = _.values(orders[market.address][0]['0'])[0];
 
       await john.cancelOrder(order.orderId);
@@ -385,6 +392,10 @@ describe('Augur API :: ZeroX :: ', () => {
       const orders: ZeroXOrders = await johnAPI.route('getZeroXOrders', {
         marketId: market.address,
       });
+      expect(orders).toBeDefined();
+      expect(orders).toHaveProperty(market.address);
+      expect(orders[market.address]).toHaveProperty('0');
+      expect(orders[market.address]['0']).toHaveProperty('0');
       const order = _.values(orders[market.address][0]['0'])[0];
       await expect(order).not.toBeUndefined();
       await expect(order.price).toEqual('0.22');
