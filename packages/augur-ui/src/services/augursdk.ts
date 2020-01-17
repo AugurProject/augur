@@ -55,7 +55,7 @@ export class SDK {
         mesh: {
           verbosity: 5,
           bootstrapList: (env['0x-mesh'] || {}).bootstrapList,
-          enabled: true,
+          enabled: false,
         }
       }
     };
@@ -77,8 +77,8 @@ export class SDK {
         connector.mesh = createBrowserMesh(config, (err: Error, mesh: Mesh) => {
           connector.mesh = mesh;
         });
-        this.sdk.events.emit('ZeroX:Ready');
       }
+      this.sdk.events.emit('ZeroX:Ready');
     }
 
     if (!isEmpty(account)) {
