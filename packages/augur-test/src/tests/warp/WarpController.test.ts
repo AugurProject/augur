@@ -20,7 +20,7 @@ import { API } from '@augurproject/sdk/build/state/getter/API';
 
 const mock = makeDbMock();
 
-describe('WarpController', () => {
+describe.skip('WarpController', () => {
   let addresses: ContractAddresses;
   let db: DB;
   let dependencies: ContractDependenciesEthers;
