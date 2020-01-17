@@ -55,7 +55,7 @@ export function makeDbMock(prefix:string = uuid.v4()) {
       );
 
       const db = DB.createAndInitializeDB(
-        constants.networkId,
+        iterator.next().value,
         logFilterAggregator,
         augur
       );

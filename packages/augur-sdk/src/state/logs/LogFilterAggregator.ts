@@ -6,7 +6,10 @@ import { toChecksumAddress } from 'ethereumjs-util';
 
 type EventTopics = string | string[];
 
-type GenericLogCallbackType<T, P> = (blockIdentifier: T, logs: P[]) => Promise<any>;
+type GenericLogCallbackType<T, P> = (
+  blockIdentifier: T,
+  logs: P[]
+) => Promise<any>;
 export type LogCallbackType = GenericLogCallbackType<number, ParsedLog>;
 
 export interface ExtendedFilter {
@@ -35,7 +38,7 @@ export interface LogFilterAggregatorInterface {
   notifyNewBlockAfterLogsProcessMetadata: LogCallbackType[];
   logCallbackMetaData: LogCallbackMetaData[];
   buildFilter: () => ExtendedFilter;
-  onLogsAdded: (blockNumber:number, logs: Log[]) => Promise<void>;
+  onLogsAdded: (blockNumber: number, logs: Log[]) => Promise<void>;
 
   notifyNewBlockAfterLogsProcess(onBlockAdded: LogCallbackType): void;
 
@@ -48,7 +51,7 @@ export interface LogFilterAggregatorInterface {
   listenForEvent(
     eventNames: string | string[],
     onLogsAdded: LogCallbackType,
-    onLogsRemoved?: LogCallbackType,
+    onLogsRemoved?: LogCallbackType
   ): void;
 }
 
@@ -67,7 +70,7 @@ export class LogFilterAggregator implements LogFilterAggregatorInterface {
     return new LogFilterAggregator({
       getEventTopics,
       parseLogs,
-      getEventContractAddress
+      getEventContractAddress,
     });
   }
 
@@ -95,12 +98,12 @@ export class LogFilterAggregator implements LogFilterAggregatorInterface {
       },
       fp.uniq,
       fp.flatten,
-      fp.map('topics'),
+      fp.map('topics')
     );
 
     const getAddresses = fp.compose(
       fp.uniq,
-      fp.map('contractAddress'),
+      fp.map('contractAddress')
     );
 
     return {
@@ -112,26 +115,30 @@ export class LogFilterAggregator implements LogFilterAggregatorInterface {
   onLogsAdded = async (blockNumber: number, logs: ParsedLog[]) => {
     if (blockNumber) {
       const logCallbackPromises = this.logCallbackMetaData.map(cb =>
-        cb.onLogsAdded(blockNumber, logs),
+        cb.onLogsAdded(blockNumber, logs)
       );
 
       // Assuming all db updates will be complete when these promises resolve.
       await Promise.all(logCallbackPromises);
 
-      const addressesWeCareAbout = this.logCallbackMetaData.map(item => item.contractAddress);
-      const logsWeCareAbout = logs.filter(item => addressesWeCareAbout.includes(item.address));
+      const addressesWeCareAbout = this.logCallbackMetaData.map(
+        item => item.contractAddress
+      );
+      const logsWeCareAbout = logs
+        .filter(item => addressesWeCareAbout.includes(item.address))
+        .sort((a, b) => b.logIndex - a.logIndex);
 
       // Fire this after all "filtered" log callbacks are processed.
       const allLogsCallbackMetaDataPromises = this.allLogsCallbackMetaData.map(
         cb => {
-          cb(blockNumber, logsWeCareAbout)
-        },
+          cb(blockNumber, logsWeCareAbout);
+        }
       );
       await Promise.all(allLogsCallbackMetaDataPromises);
 
       // let the controller know a new block was added so it can update the UI
       const notifyNewBlockAfterLogsProcessMetadataPromises = this.notifyNewBlockAfterLogsProcessMetadata.map(
-        cb => cb(blockNumber, logsWeCareAbout),
+        cb => cb(blockNumber, logsWeCareAbout)
       );
       await Promise.all(notifyNewBlockAfterLogsProcessMetadataPromises);
     }
@@ -140,14 +147,14 @@ export class LogFilterAggregator implements LogFilterAggregatorInterface {
   listenForEvent(
     eventNames: string | string[],
     onLogsAdded: LogCallbackType,
-    onLogsRemoved?: LogCallbackType,
+    onLogsRemoved?: LogCallbackType
   ): void {
     if (!Array.isArray(eventNames)) eventNames = [eventNames];
 
     // Group by contract address
     const eventNamesByContractAddress = _.groupBy(
       eventNames,
-      this.deps.getEventContractAddress,
+      this.deps.getEventContractAddress
     );
 
     // For each contract address update the logCallbackMetaData and update the respctive filter for that contract
@@ -168,25 +175,29 @@ export class LogFilterAggregator implements LogFilterAggregatorInterface {
           onLogsAdded: this.filterCallbackByContractAddressAndTopic(
             contractAddress,
             topics,
-            onLogsAdded,
+            onLogsAdded
           ),
         });
-      },
+      }
     );
   }
 
   private filterCallbackByContractAddressAndTopic(
     contractAddress: string,
     topics: EventTopics,
-    callback: LogCallbackType,
+    callback: LogCallbackType
   ): LogCallbackType {
     if (!Array.isArray(topics)) topics = [topics];
     return async (blockNumber: number, logs: ParsedLog[]) => {
-      const filteredLogs = logs.filter(log => toChecksumAddress(log.address) === toChecksumAddress(contractAddress))
+      const filteredLogs = logs
+        .filter(
+          log =>
+            toChecksumAddress(log.address) ===
+            toChecksumAddress(contractAddress)
+        )
         .filter(log => !_.isEmpty(_.intersection(log.topics, topics)));
 
       return callback(blockNumber, filteredLogs);
     };
   }
-
 }

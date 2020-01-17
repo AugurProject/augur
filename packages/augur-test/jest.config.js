@@ -6,6 +6,7 @@ module.exports = {
     "<rootDir>/src/tests/state",
     "<rootDir>/src/tests/templates",
     // "<rootDir>/src/tests/ui", // disabled because this has its own jest config
+    "<rootDir>/src/tests/warp",
   ],
   "transform": {
     "^.+\\.tsx?$": "ts-jest",

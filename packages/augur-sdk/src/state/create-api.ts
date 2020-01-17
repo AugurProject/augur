@@ -10,7 +10,9 @@ import { Addresses, UploadBlockNumbers } from '@augurproject/artifacts';
 import { API } from './getter/API';
 import { DB } from './db/DB';
 import { GnosisRelayAPI } from '@augurproject/gnosis-relay-api';
+import { WSClient } from '@0x/mesh-rpc-client';
 import { BulkSyncStrategy } from './sync/BulkSyncStrategy';
+import { WarpSyncStrategy } from './sync/WarpSyncStrategy';
 
 interface Settings {
   gnosisRelayURLs: {

@@ -464,46 +464,46 @@ export interface DisputeDoc extends Log {
 }
 
 export interface InitialReporterTransferredLog extends Log {
-  universe: string;
-  market: string;
-  from: string;
-  to: string;
+  universe: Address;
+  market: Address;
+  from: Address;
+  to: Address;
 }
 
 export interface MarketParticipantsDisavowedLog extends Log {
-  universe: string;
-  market: string;
+  universe: Address;
+  market: Address;
 }
 
 export interface MarketTransferredLog extends Log {
-  universe: string;
-  market: string;
-  from: string;
-  to: string;
+  universe: Address;
+  market: Address;
+  from: Address;
+  to: Address;
 }
 
 export interface TokensTransferredLog extends Log {
-  universe: string;
-  market: string;
-  token: string;
-  from: string;
-  to: string;
+  universe: Address;
+  market: Address;
+  token: Address;
+  from: Address;
+  to: Address;
   value: string;
   tokenType: number;
 }
 
 export interface TransferSingleLog extends Log {
   operator: string;
-  from: string;
-  to: string;
+  from: Address;
+  to: Address;
   id: string;
   value: string;
 }
 
 export interface TransferBatchLog extends Log {
   operator: string;
-  from: string;
-  to: string;
+  from: Address;
+  to: Address;
   ids: string[];
   values: string[];
 }
