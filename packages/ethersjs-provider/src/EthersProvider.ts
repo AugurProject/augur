@@ -118,8 +118,8 @@ export class EthersProvider extends ethers.providers.BaseProvider
         .idiv(1);
     }
 
-    if (this.gasLimit) {
-      gasEstimate = gasEstimate.gt(this.gasLimit.toString()) ? new BigNumber(this.gasLimit.toString()) : gasEstimate;
+    if (this.gasLimit && gasEstimate.gt(this.gasLimit.toString())) {
+      gasEstimate = new BigNumber(this.gasLimit.toString());
     }
 
     return new ethers.utils.BigNumber(gasEstimate.toFixed());
