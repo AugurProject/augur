@@ -2385,3 +2385,14 @@ export const ScalarMarketIcon = (
     />
   </svg>
 );
+
+export const SwapArrow = (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+    <path d="M8 0.75V15.25" strokeMiterlimit="10" />
+    <path
+      d="M12.5 10.75L8 15.25L3.5 10.75"
+      strokeMiterlimit="10"
+      strokeLinecap="square"
+    />
+  </svg>
+);

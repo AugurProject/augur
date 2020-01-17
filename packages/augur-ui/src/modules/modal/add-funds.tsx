@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-
 import {
   ExternalLinkButton,
   PrimaryButton,
@@ -20,14 +19,13 @@ import TooltipStyles from 'modules/common/tooltip.styles.less';
 import Styles from 'modules/modal/modal.styles.less';
 import { helpIcon } from 'modules/common/icons';
 import noop from 'utils/noop';
+import { Swap } from 'modules/swap/components';
 
 interface AddFundsProps {
   closeAction: Function;
-  address: string;
-  accountMeta: LoginAccount['meta'];
-  Gnosis_ENABLED: boolean;
   autoSelect?: boolean;
   fundType: string;
+  loginAccount: LoginAccount;
 }
 
 export const generateDaiTooltip = (
@@ -57,17 +55,26 @@ export const generateDaiTooltip = (
 
 export const AddFunds = ({
   closeAction,
-  accountMeta,
-  address,
-  Gnosis_ENABLED = false,
   autoSelect = false,
   fundType = DAI,
+  loginAccount,
 }: AddFundsProps) => {
+  const address = loginAccount.address
+  const accountMeta =loginAccount.meta;
   let autoSelection = '2'; // default Coinbase
 
   if (autoSelect) {
-    if ([ACCOUNT_TYPES.TORUS, ACCOUNT_TYPES.PORTIS].includes(accountMeta.accountType) && fundType !== REP) {
+    if (
+      [ACCOUNT_TYPES.TORUS, ACCOUNT_TYPES.PORTIS].includes(
+        accountMeta.accountType
+      ) &&
+      fundType !== REP
+    ) {
       autoSelection = '1'; // default Credit/Debit Card
+    } else if (
+      fundType === REP
+    ) {
+      autoSelection = '0'; // default Uniswap
     }
   }
 
@@ -75,9 +82,9 @@ export const AddFunds = ({
   const fundTypeLabel = fundType === DAI ? 'Dai ($)' : 'REP';
 
   const FUND_OTPIONS = [
-    // TODO build uniswap component
-    { header: 'Swap',
-      description: 'Swap funds in your account for REP',
+    {
+      header: 'Swap',
+      description: `Swap funds in your account for ${fundTypeLabel}`,
       value: '0',
     },
     {
@@ -99,8 +106,18 @@ export const AddFunds = ({
 
   const addFundsOptions = [FUND_OTPIONS[2], FUND_OTPIONS[3]];
 
-  if (fundType !== REP && (accountMeta.accountType === ACCOUNT_TYPES.TORUS || accountMeta.accountType === ACCOUNT_TYPES.PORTIS)) {
+  if (
+    fundType !== REP &&
+    (accountMeta.accountType === ACCOUNT_TYPES.TORUS ||
+      accountMeta.accountType === ACCOUNT_TYPES.PORTIS)
+  ) {
     addFundsOptions.unshift(FUND_OTPIONS[1]);
+  }
+
+  if (
+    fundType === REP
+  ) {
+    addFundsOptions.unshift(FUND_OTPIONS[0]);
   }
 
   return (
@@ -135,7 +152,25 @@ export const AddFunds = ({
           <BackButton action={() => setSelectedOption(() => null)} />
           <CloseButton action={() => closeAction()} />
         </div>
-        <div className={selectedOption === '3' ? Styles.AddFundsTransfer : Styles.AddFundsCreditDebitCoinbase}>
+        <div
+          className={
+            selectedOption === '3'
+              ? Styles.AddFundsTransfer
+              : Styles.AddFundsCreditDebitCoinbase
+          }
+        >
+          {selectedOption === '0' && (
+            <>
+              <h1>Swap</h1>
+              <h2>Swap a currency for {fundTypeLabel}</h2>
+
+              <Swap
+                balances={loginAccount.balances}
+                toToken={REP}
+                fromToken={DAI} />
+            </>
+          )}
+
           {selectedOption === '1' && (
             <>
               <h1>Credit/debit card</h1>
