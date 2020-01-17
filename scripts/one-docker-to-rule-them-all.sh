@@ -6,8 +6,6 @@ cleanup() {
   echo "stopping geth docker image"
   docker kill geth
   yarn workspace @augurproject/gnosis-relay-api kill-relay
-  docker volume prune --force
-  docker system prune --force
 }
 
 trap cleanup SIGINT SIGTERM
