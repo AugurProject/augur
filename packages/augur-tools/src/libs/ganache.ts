@@ -17,11 +17,11 @@ export interface Seed {
 }
 
 export async function makeGanacheProvider(db: MemDown, accounts: Account[]): Promise<ethers.providers.Web3Provider> {
-  return new ethers.providers.Web3Provider(ganache.provider(makeGanacheOpts(accounts, db)));
+  return new ethers.providers.Web3Provider(ganache.provider(await makeGanacheOpts(accounts, db)));
 }
 
 export async function makeGanacheServer(db: MemDown, accounts: Account[]): Promise<ganache.GanacheServer> {
-  return ganache.server(makeGanacheOpts(accounts, db));
+  return ganache.server(await makeGanacheOpts(accounts, db));
 }
 
 export function createDb(): MemDown {
@@ -41,7 +41,34 @@ export async function createDbFromSeed(seed: Seed): Promise<MemDown> {
   return db;
 }
 
-function makeGanacheOpts(accounts: Account[], db: MemDown) {
+async function makeGanacheOpts(accounts: Account[], db: MemDown) {
+  // Arbitrary date.
+  const defaultDate = new Date('2012-09-27');
+
+  // Determine the max timestamp of the previous seed.
+  const maxBlock = await new Promise<number | undefined>((resolve, reject) => {
+    levelup(db).get('!blockLogs!length', (err, value) => {
+      if(err) resolve(undefined);
+      resolve(value);
+    });
+  });
+
+  const maxBlockTimeStamp = maxBlock ? await new Promise<Date>((resolve, reject) => {
+    if(!maxBlock) resolve(defaultDate);
+    levelup(db).get(`!blocks!${maxBlock - 1}`, (err, value) => {
+      if(err) resolve(defaultDate);
+
+      const blockInfo = JSON.parse(value.toString());
+      const timestamp = blockInfo['header']['timestamp'];
+      resolve(new Date(Number(timestamp) * 1000));
+    });
+  }) : defaultDate;
+
+  // Need to do this to get a consistent timestamp for the the next block
+  while(Date.now() % 1000 > 100) {
+    true;
+  }
+
   return {
     accounts,
     // TODO: For some reason, our contracts here are too large even though production ones aren't. Is it from debugging or lack of flattening?
@@ -51,7 +78,8 @@ function makeGanacheOpts(accounts: Account[], db: MemDown) {
     debug: false,
     network_id: 123456,
     _chainId: 123456,
-    hardfork: "istanbul"
+    hardfork: "istanbul",
+    time: maxBlockTimeStamp
     // vmErrorsOnRPCResponse: false,
   };
 }
