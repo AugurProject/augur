@@ -12,6 +12,7 @@ cleanup() {
 
 trap cleanup SIGINT SIGTERM
 
+# true true will give you uploaded contracts and time controlled
 DEV="${1-false}"
 FAKE="${2-false}"
 
