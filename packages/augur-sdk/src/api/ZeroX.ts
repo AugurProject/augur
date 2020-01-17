@@ -126,7 +126,9 @@ export class ZeroX {
     if (!this.meshClient) return;
 
     this.meshClient.subscribeToOrdersAsync((orderEvents: OrderEvent[]) => {
-      this.augur.events.emit('ZeroX:RPC:OrderEvent', orderEvents);
+      if (!browserMesh) {
+        this.augur.events.emit('ZeroX:RPC:OrderEvent', orderEvents);
+      }
     });
   }
 
@@ -140,7 +142,9 @@ export class ZeroX {
     if (!this.browserMesh) return;
 
     this.browserMesh.onOrderEvents((orderEvents: OrderEvent[]) => {
-      this.augur.events.emit('ZeroX:Mesh:OrderEvent', orderEvents);
+      if (orderEvents.length > 0) {
+        this.augur.events.emit('ZeroX:Mesh:OrderEvent', orderEvents);
+      }
     });
   }
 
