@@ -69,7 +69,7 @@ export default class ModuleTabs extends Component<ModuleTabsProps> {
     }
   }
 
-  componentDidUnmount() {
+  componentWillUnmount() {
     window.onscroll = null;
   }
 
