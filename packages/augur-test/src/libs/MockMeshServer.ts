@@ -50,9 +50,10 @@ export async function setupServerAsync(): Promise<WebSocket.server> {
             resolve({port, wsServer});
         })
 
-        server.on('error', (e) => {
+        server.on('error', (e: any) => {
             if (e.code === 'EADDRINUSE') {
                 port = SERVER_PORT + Math.floor(Math.random() * 1000);
+                server.close();
                 server.listen(port);
             }
         });
