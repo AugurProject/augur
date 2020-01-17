@@ -21,16 +21,22 @@ FAKE="${2-false}"
 docker pull augurproject/safe-relay-service_web:latest
 docker pull 0xorg/mesh:0xV3
 
+echo "Deploy contracts: $DEV"
+echo "Use fake time: $FAKE"
 # run docker image, creating or updating local-addresses.json
 if [ "$DEV" == "true" ]; then
   yarn workspace @augurproject/tools docker:geth:detached
 
   if [ "$FAKE" == "true" ]; then
+    echo "using fake time deploy"
     yarn flash run deploy -w -t
   else
+    echo "using normal deploy"
     yarn flash run deploy -w
   fi
+
 else
+  echo "running normal pop"
   yarn docker:geth:pop
 fi
 
@@ -42,6 +48,6 @@ export ETHEREUM_CHAIN_ID=`yarn --silent flash run network-id | sed '1d'`
 export CUSTOM_CONTRACT_ADDRESSES=`yarn --silent flash run get-all-contract-addresses --ugly | sed '1d'`
 export GNOSIS_SAFE_CONTRACT_ADDRESS=`yarn --silent flash run get-contract-address -n GnosisSafe | sed '1d'`
 export PROXY_FACTORY_CONTRACT_ADDRESS=`yarn --silent flash run get-contract-address -n ProxyFactory | sed '1d'`
-#yarn docker:gnosis
+yarn docker:gnosis
 yarn workspace @augurproject/gnosis-relay-api run-relay
 
