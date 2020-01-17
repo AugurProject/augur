@@ -22,6 +22,8 @@ import {
   convertDisplayAmountToOnChainAmount,
   convertDisplayPriceToOnChainPrice,
   stringTo32ByteHex,
+  numTicksToTickSizeWithDisplayPrices,
+  convertOnChainPriceToDisplayPrice,
 } from '@augurproject/sdk';
 import { fork } from './fork';
 import { dispute } from './dispute';
@@ -619,28 +621,24 @@ export function addScripts(flash: FlashSession) {
       const numTicks = new BigNumber(String(args.numTicks));
       const maxPrice = new BigNumber(String(args.maxPrice));
       const minPrice = new BigNumber(String(args.minPrice));
+      const tickSize = numTicksToTickSizeWithDisplayPrices(numTicks, minPrice, maxPrice);
+      const midPrice = maxPrice.minus((numTicks.dividedBy(2)).times(tickSize));
 
-      const topPrice = maxPrice.integerValue();
-      const bottomPrice = minPrice.integerValue();
-      const midPrice = topPrice.minus(bottomPrice).dividedBy(2).integerValue();
-      console.log('midPrice', midPrice.toString());
-      console.log('minPrice.plus(midPrice.times(0.4)).integerValue()', minPrice.plus(midPrice.times(0.4)).integerValue().toString());
       const orderBook = {
         2: {
           buy: [
-              { shares: '30', price: minPrice.plus(midPrice.times(0.7)).integerValue() },
-              { shares: '20', price: minPrice.plus(midPrice.times(0.6)).integerValue() },
-              { shares: '10', price: minPrice.plus(midPrice.times(0.5)).integerValue() },
+              { shares: '30', price: midPrice.plus(tickSize.times(3)) },
+              { shares: '20', price: midPrice.plus(tickSize.times(2)) },
+              { shares: '10', price: midPrice.plus(tickSize) },
           ],
           sell: [
-              { shares: '10', price: minPrice.plus(midPrice.times(0.4)).integerValue() },
-              { shares: '20', price: minPrice.plus(midPrice.times(0.3)).integerValue() },
-              { shares: '30', price: minPrice.plus(midPrice.times(0.2)).integerValue() },
+              { shares: '10', price: midPrice.minus(tickSize) },
+              { shares: '20', price: midPrice.minus(tickSize.times(2)) },
+              { shares: '30', price: midPrice.minus(tickSize.times(3)) },
           ],
         },
       };
 
-      console.log(JSON.stringify(orderBook));
       for (let a = 0; a < Object.keys(orderBook).length; a++) {
         const outcome = Number(Object.keys(orderBook)[a]) as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
         const buySell = Object.values(orderBook)[a];
@@ -650,7 +648,7 @@ export function addScripts(flash: FlashSession) {
         for (const { shares, price } of buy) {
           this.log(`creating buy order, ${shares} @ ${price}`);
           const order = {
-            direction: 1 as 0 | 1,
+            direction: 0 as 0 | 1,
             market,
             numTicks,
             numOutcomes: 3 as 3 | 4 | 5 | 6 | 7,
