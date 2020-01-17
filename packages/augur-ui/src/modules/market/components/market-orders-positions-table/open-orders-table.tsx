@@ -1,15 +1,13 @@
 /* eslint react/no-array-index-key: 0 */
 
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState } from 'react';
 import classNames from 'classnames';
 
-import OpenOrder from "modules/portfolio/containers/open-order";
-import OpenOrdersHeader from "modules/portfolio/components/common/open-orders-header";
+import OpenOrder from 'modules/portfolio/containers/open-order';
+import OpenOrdersHeader from 'modules/portfolio/components/common/open-orders-header';
 import { UIOrder } from 'modules/types';
 
-import Styles from "modules/market/components/market-orders-positions-table/open-orders-table.styles";
-
-
+import Styles from 'modules/market/components/market-orders-positions-table/open-orders-table.styles';
 
 interface OpenOrdersTableProps {
   openOrders?: UIOrder[];
@@ -25,23 +23,30 @@ const OpenOrdersTable: React.FC<OpenOrdersTableProps> = ({ openOrders }) => {
     if (scrollable != test) {
       setScrollable(test);
     }
-  })
-  
+  });
+
   return (
-    <div className={classNames(Styles.Table, Styles.TableHeight, {
-      [Styles.scrollable]: scrollable
-    })}>
+    <div
+      className={classNames(Styles.Table, Styles.TableHeight, {
+        [Styles.scrollable]: scrollable,
+      })}
+    >
       <OpenOrdersHeader extendedView />
       <div ref={dataTable}>
-        {openOrders.length > 0 && openOrders.map((order, i) => (
-          <OpenOrder key={i} openOrder={order} extendedViewNotOnMobile />
-        ))}
+        {openOrders.length > 0 &&
+          openOrders.map((order, i) => (
+            <OpenOrder key={i} openOrder={order} extendedViewNotOnMobile />
+          ))}
+
+        {openOrders.length === 0 && (
+          <div className={Styles.Empty}>no orders to show</div>
+        )}
       </div>
     </div>
   );
 };
 OpenOrdersTable.defaultProps = {
-  openOrders: []
+  openOrders: [],
 };
 
 export default OpenOrdersTable;

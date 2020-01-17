@@ -9,7 +9,10 @@ import 'ROOT/external/IProxy.sol';
 import 'ROOT/libraries/token/IERC1155.sol';
 import 'ROOT/reporting/IAffiliates.sol';
 
-
+/**
+ * @title Gnosis Safe Registry
+ * @notice A contract that contains a mapping of user addresses to Gnosis Safes which have been set up for easier Augur use
+ */
 contract GnosisSafeRegistry is Initializable {
     // mapping of user to created safes. The first safe wins but we store additional safes in case a user somehow makes multiple. The current safe may be de-registered by itself and the current safe will simply become the next one in line
     mapping (address => IGnosisSafe[]) public accountSafes;
@@ -130,6 +133,9 @@ contract GnosisSafeRegistry is Initializable {
         )))));
     }
 
+    /**
+     * @notice De-register the current Gnosis Safe for the msg.sender
+     */
     function deRegister() external {
         IGnosisSafe _safe = IGnosisSafe(msg.sender);
         address[] memory _owners = _safe.getOwners();
@@ -138,6 +144,11 @@ contract GnosisSafeRegistry is Initializable {
         accountSafeIndexes[_owner] += 1;
     }
 
+    /**
+     * @notice Get the registered Gnosis Safe for the given account
+     * @param _account The account to look up
+     * @return IGnosisSafe for the account or 0x if none is registered
+     */
     function getSafe(address _account) public view returns (IGnosisSafe) {
         uint256 accountSafeIndex = accountSafeIndexes[_account];
         if (accountSafes[_account].length < accountSafeIndex + 1) {

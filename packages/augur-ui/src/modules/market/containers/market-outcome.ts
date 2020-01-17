@@ -6,11 +6,15 @@ import { selectMarketOutcomeBestBidAsk, selectBestBidAlert } from 'modules/marke
 import Row from 'modules/common/row';
 
 const mapStateToProps = (state: AppState, ownProps) => {
-  const { marketInfos } = state;
+  const { marketInfos, orderBooks } = state;
   const market = marketInfos[ownProps.marketId];
-  const { minPrice, maxPrice, tickSize } = market;
+  // default values for create market preview
+  const minPrice = market ? market.minPrice : 0;
+  const maxPrice = market ? market.maxPrice : 1;
+  const tickSize = market ? market.tickSize : 100;
+
   return {
-    orderBook: state.orderBooks ? state.orderBooks[ownProps.marketId] : null,
+    orderBook: orderBooks ? orderBooks[ownProps.marketId] : null,
     minPrice,
     maxPrice,
     tickSize
