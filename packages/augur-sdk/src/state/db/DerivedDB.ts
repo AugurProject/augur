@@ -39,7 +39,7 @@ export class DerivedDB extends RollbackTable {
     this.stateDB = db;
     this.name = name;
 
-    db.registerEventListener(mergeEventNames, this.handleMergeEvent);
+    db.registerEventListener(mergeEventNames, this.handleMergeEvent.bind(this));
   }
 
   async sync(highestAvailableBlockNumber: number): Promise<void> {
