@@ -606,6 +606,11 @@ export function addScripts(flash: FlashSession) {
         required: true,
         description: 'market numTicks',
       },
+      {
+        name: 'onInvalid',
+        flag: true,
+        description: 'create zeroX orders on invalid outcome',
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const endpoint = 'ws://localhost:60557';
@@ -618,6 +623,7 @@ export function addScripts(flash: FlashSession) {
       const timestamp = await this.call('get-timestamp', {});
       const tradeGroupId = String(Date.now());
       const oneHundredDays = 8640000;
+      const onInvalid = args.onInvalid as boolean;
       const numTicks = new BigNumber(String(args.numTicks));
       const maxPrice = new BigNumber(String(args.maxPrice));
       const minPrice = new BigNumber(String(args.minPrice));
@@ -640,7 +646,7 @@ export function addScripts(flash: FlashSession) {
       };
 
       for (let a = 0; a < Object.keys(orderBook).length; a++) {
-        const outcome = Number(Object.keys(orderBook)[a]) as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
+        const outcome = !onInvalid ? Number(Object.keys(orderBook)[a]) as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 : 0;
         const buySell = Object.values(orderBook)[a];
 
         const { buy, sell } = buySell;
