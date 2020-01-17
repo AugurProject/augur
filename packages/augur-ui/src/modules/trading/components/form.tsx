@@ -107,6 +107,7 @@ interface FormState {
   fastForwardDays: number;
   expirationDateOption: string;
   expirationDate?: Moment;
+  percentage: string;
 }
 
 class Form extends Component<FromProps, FormState> {
@@ -163,6 +164,7 @@ class Form extends Component<FromProps, FormState> {
       advancedOption: advancedDropdownOptions[0].value,
       fastForwardDays: DEFAULT_EXPIRATION_DAYS,
       expirationDateOption: EXPIRATION_DATE_OPTIONS.DAYS,
+      percentage: "",
     };
 
     this.changeOutcomeDropdown = this.changeOutcomeDropdown.bind(this);
@@ -646,6 +648,7 @@ class Form extends Component<FromProps, FormState> {
       {
         ...startState,
         isOrderValid: false,
+        percentage: "",
       },
       () => clearOrderForm()
     );
@@ -839,7 +842,7 @@ class Form extends Component<FromProps, FormState> {
           }
           { !showLimitPriceInput &&
           <li>
-            <label htmlFor="limit-price">Percentage</label>
+            <label htmlFor="percentage">Percentage</label>
             <div
               className={classNames(Styles.TradingFormInputContainer)}
             >
@@ -855,6 +858,7 @@ class Form extends Component<FromProps, FormState> {
                 min={0}
                 placeholder="0"
                 tabIndex={tradingTutorial ? -1 : 2}
+                value={this.state.percentage}
                 onTouchStart={e =>
                   e.target.scrollIntoView({
                     block: 'nearest',
@@ -862,9 +866,11 @@ class Form extends Component<FromProps, FormState> {
                   })
                 }
                 onChange={e => {
-                  const value = this.calcPercentagePrice(e.target.value, min, tickSize, numTicks);
-                  console.log('value', value);
-                  this.updateAndValidate(this.INPUT_TYPES.PRICE, value)
+                  const percentage = e.target.value;
+                  this.setState({ percentage }, () => {
+                    const value = this.calcPercentagePrice(percentage, min, tickSize, numTicks);
+                    this.updateAndValidate(this.INPUT_TYPES.PRICE, value)
+                    });
                   }
                 }
               />
