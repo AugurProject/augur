@@ -1,89 +1,43 @@
 @import (reference) '~assets/styles/shared';
 
 .Content {
-  align-items: center;
   background: @color-module-background;
-  justify-content: space-between;
-  padding: @size-24;
-  max-width: 580px;
-  margin: 0 auto;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: auto;
   grid-template-rows: auto;
-
-  > p {
-    grid-column: span 2;
-  }
-
-  > button:first-of-type {
-    grid-column: span 2;
-    margin: auto;
-  }
-
-  > button:nth-of-type(2) {
-    margin-left: auto;
-    margin-right: @size-8;
-    width: 8.125rem;
-  }
-
-  > button:nth-of-type(3) {
-    margin-right: auto;
-    width: 8.125rem;
-  }
-
-  > p {
-    .mono-11-bold;
-
-    color: @color-secondary-text;
-    margin: @size-24 auto @size-12;
-    text-align: center;
-    text-transform: uppercase;
-  }
-
-  > p:first-of-type {
-    margin: 0 auto @size-12;
-  }
+  grid-gap: @size-2 0;
+  padding: @size-12 @size-16;
 
   > div {
-    display: flex;
-    flex: 1 50%;
-    flex-flow: column nowrap;
+    background: @color-table-header;
+    border-radius: @border-radius-default;
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: auto;
+    grid-gap: @size-12 0;
+    padding: @size-24;
+    justify-content: center;
 
-    > p {
-      .mono-11-bold;
+    > h4 {
+      .text-12-semi-bold;
 
       color: @color-secondary-text;
-      flex: 1 100%;
-      margin: @size-24 auto @size-12;
       text-align: center;
       text-transform: uppercase;
     }
 
-    > button {
-      flex: 0 0 16.75rem;
-      margin: auto;
-    }
+    &:nth-of-type(2) {
+      grid-template-columns: auto auto;
+      grid-gap: @size-12;
 
-    &:first-of-type {
-      > p,
-      > button {
-        margin-right: @size-12;
+      > h4 {
+        grid-column: 1 / span 2;
       }
     }
-  }
 
-  @media @breakpoint-mobile-mid {
-    background: unset;
-    padding-top: 0;
-    margin-top: @size-14;
-
-    > div {
-      margin-top: 0;
-
-      > button {
-        flex: 1;
-        margin: unset;
-      }
+    &:nth-of-type(3) {
+      grid-template-columns: auto auto;
+      grid-gap: @size-12 @size-64;
     }
   }
 }
