@@ -19,7 +19,7 @@ import { TextInput } from 'modules/common/form';
 import getPrecision from 'utils/get-number-precision';
 import convertExponentialToDecimal from 'utils/convert-exponential';
 import { MarketData, OutcomeFormatted, OutcomeOrderBook } from 'modules/types';
-import { Getters, convertOnChainPriceToDisplayPrice } from '@augurproject/sdk';
+import { Getters } from '@augurproject/sdk';
 import { convertDisplayAmountToOnChainAmount, tickSizeToNumTickWithDisplayPrices } from '@augurproject/sdk';
 import { CancelTextButton, TextButtonFlip } from 'modules/common/buttons';
 import moment, { Moment } from 'moment';
@@ -174,7 +174,7 @@ class Form extends Component<FromProps, FormState> {
     this.calcPercentagePrice = this.calcPercentagePrice.bind(this);
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     this.updateTestProperty(this.INPUT_TYPES.QUANTITY, this.props);
     this.updateTestProperty(this.INPUT_TYPES.PRICE, this.props);
     this.updateTestProperty(this.INPUT_TYPES.EST_DAI, this.props);
@@ -189,6 +189,9 @@ class Form extends Component<FromProps, FormState> {
           this.INPUT_TYPES.DO_NOT_CREATE_ORDERS
         ],
       });
+    }
+    if (!!prevProps[this.INPUT_TYPES.PRICE] && !!!this.props[this.INPUT_TYPES.PRICE]){
+      this.setState({ percentage: '' })
     }
   }
 
@@ -251,7 +254,6 @@ class Form extends Component<FromProps, FormState> {
     const props = nextProps || this.props;
     const {
       market,
-      marketType,
     } = props;
     let errorCount = 0;
     let passedTest = !!isOrderValid;
@@ -297,8 +299,10 @@ class Form extends Component<FromProps, FormState> {
     if (!convertDisplayAmountToOnChainAmount(value, market.tickSize).mod(tradeInterval).isEqualTo(0)) {
       errorCount += 1;
       passedTest = false;
+      const decimals = market.tickSize.indexOf(".") !== -1 ? getPrecision(market.tickSize, 1) : Number(market.tickSize);
+      const multiplOf = tradeInterval.dividedBy(market.tickSize).dividedBy(10**18);
       errors[this.INPUT_TYPES.QUANTITY].push(
-          `Quantity must be a multiple of ${tradeInterval.dividedBy(market.tickSize).dividedBy(10**18)}`
+          `Quantity must be a multiple of ${multiplOf.toFixed(decimals)}`
         );
     }
     const minOrderLifespan = 70;
@@ -326,7 +330,10 @@ class Form extends Component<FromProps, FormState> {
       initialLiquidity,
       selectedNav,
       orderBook,
+      selectedOutcome,
     } = props;
+    const isScalar: boolean = market.marketType === SCALAR;
+    const isScalarInvalidOutcome = isScalar && selectedOutcome.id === INVALID_OUTCOME_ID;
     const tickSize = createBigNumber(market.tickSize);
     let errorCount = 0;
     let passedTest = !!isOrderValid;
@@ -338,9 +345,15 @@ class Form extends Component<FromProps, FormState> {
     if (value && (value.lte(minPrice) || value.gte(maxPrice))) {
       errorCount += 1;
       passedTest = false;
-      errors[this.INPUT_TYPES.PRICE].push(
-        `Price must be between ${minPrice} and ${maxPrice}`
-      );
+      if (isScalarInvalidOutcome) {
+        errors[this.INPUT_TYPES.PRICE].push(
+          `Enter a valid percentage`
+        );
+      } else {
+        errors[this.INPUT_TYPES.PRICE].push(
+          `Price must be between ${minPrice} and ${maxPrice}`
+        );
+      }
     }
     if (
       value &&
@@ -673,7 +686,7 @@ class Form extends Component<FromProps, FormState> {
     const percentNumTicks = createBigNumber(numTicks).times((createBigNumber(percentage).dividedBy(100)));
     const calcPrice = percentNumTicks.times(tickSize).plus(createBigNumber(minPrice));
     const correctDec = formatBestPrice(calcPrice, tickSize);
-    return correctDec.value;
+    return correctDec.full;
   }
 
   render() {
@@ -853,9 +866,9 @@ class Form extends Component<FromProps, FormState> {
                 )}
                 id="percentage"
                 type="number"
-                step={.01}
-                max={100}
-                min={0}
+                step={.1}
+                max={99}
+                min={1}
                 placeholder="0"
                 tabIndex={tradingTutorial ? -1 : 2}
                 value={this.state.percentage}
