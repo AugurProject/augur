@@ -1,17 +1,19 @@
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { ContractAddresses } from '@augurproject/artifacts';
 import { NetworkConfiguration } from '@augurproject/core';
+import { LogFilterAggregatorInterface } from '@augurproject/sdk/build/state/logs/LogFilterAggregator';
+import { Log, ParsedLog } from '@augurproject/types';
 import { WSClient } from '@0x/mesh-rpc-client';
-import { ContractAPI } from '../libs/contract-api';
-import { Account, NULL_ADDRESS } from '../constants';
-import { providers } from 'ethers';
-import { Connectors, Events, SubscriptionEventName } from '@augurproject/sdk';
-import { API } from '@augurproject/sdk/build/state/getter/API';
-import { BlockAndLogStreamerListenerInterface } from '@augurproject/sdk/build/state/db/BlockAndLogStreamerListener';
-import { DB } from '@augurproject/sdk/build/state/db/DB';
-import { EmptyConnector } from '@augurproject/sdk';
-import { BaseConnector } from '@augurproject/sdk/build/connector';
-import { configureDexieForNode } from '@augurproject/sdk/build/state/utils/DexieIDBShim';
+import { ContractAPI } from "../libs/contract-api";
+import { Account, NULL_ADDRESS } from "../constants";
+import { providers } from "ethers";
+import { Connectors, Events, SubscriptionEventName } from "@augurproject/sdk";
+import { API } from "@augurproject/sdk/build/state/getter/API";
+import { DB } from "@augurproject/sdk/build/state/db/DB";
+import { EmptyConnector } from "@augurproject/sdk";
+import { BaseConnector } from "@augurproject/sdk/build/connector";
+import { configureDexieForNode } from "@augurproject/sdk/build/state/utils/DexieIDBShim";
+import { formatBytes32String } from "ethers/utils";
 import { BigNumber } from 'bignumber.js';
 import { GnosisRelayAPI } from '@augurproject/gnosis-relay-api';
 
@@ -226,19 +228,16 @@ export class FlashSession {
 
 
   async makeDB(): Promise<DB> {
-    const listener = {
-      listenForBlockRemoved: () => {},
-      listenForBlockAdded: () => {},
-      listenForEvent: () => {},
-      startBlockStreamListener: () => {},
-    } as unknown as BlockAndLogStreamerListenerInterface;
+    const logFilterAggregator = {
+      getEventTopics: () => {},
+    parseLogs: () => {},
+    getEventContractAddress: () => {},
+    } as unknown as LogFilterAggregatorInterface;
 
     return DB.createAndInitializeDB(
       Number(this.user.augur.networkId),
-      0,
-      0,
+      logFilterAggregator,
       this.user.augur,
-      listener
     );
   }
 }

@@ -20,21 +20,16 @@ const api: Promise<API> = new Promise<API>((resolve) => {
     const messageData = message.data;
     if (messageData.method === 'start') {
       try {
-        const createResult = await Sync.createAPIAndController(messageData.params[0], messageData.params[1], true);
-        // Do not call Sync.create here, sinc we must initialize api before calling controller.run.
-        // This is to prevent a race condition where getMarkets is called before api is fully
-        // initialized during bulk sync, due to SDKReady being emitted before UserDataSynced.
-        if (!createResult.api) {
+        const api = await Sync.start(messageData.params[0], messageData.params[1], true, 'QmThtLf1Qho9JpnnFig71VMUBgPQLbxSdjRs7Hbh7xVJLu/index');
+        if (!api) {
           throw new Error('Unable to create API');
         }
-
-        createResult.controller.run();
 
         ctx.postMessage(
           MakeJsonRpcResponse(messageData.id, true)
         );
 
-        resolve(createResult.api);
+        resolve(api);
       } catch (err) {
         ctx.postMessage(
           MakeJsonRpcError(messageData.id, JsonRpcErrorCode.InvalidParams, err.message, false)

@@ -1,15 +1,24 @@
+import { SubscriptionEventName } from '../constants';
 import { API } from './getter/API';
 import { create } from './create-api';
-
-// @TODO This function is currently a hack. Need to come up with a better solution
-export async function createAPIAndController(ethNodeUrl: string, account?: string, enableFlexSearch = false) {
-  return create(ethNodeUrl, account, enableFlexSearch);
-}
+import { UploadBlockNumbers } from '@augurproject/artifacts';
 
 export async function start(ethNodeUrl: string, account?: string, enableFlexSearch = false): Promise<API> {
-  const { api, controller } = await create(ethNodeUrl, account, enableFlexSearch);
+  const { api, blockAndLogStreamerSyncStrategy, bulkSyncStrategy, logFilterAggregator} = await create(ethNodeUrl, account, enableFlexSearch);
 
-  await controller.run();
+  const networkId = await api.augur.provider.getNetworkId();
+  const uploadBlockNumber = UploadBlockNumbers[networkId];
+  const currentBlockNumber = await api.augur.provider.getBlockNumber();
+
+  const endBulkSyncBlock = await bulkSyncStrategy.start(uploadBlockNumber, currentBlockNumber);
+
+  console.log("Syncing Complete - SDK Ready");
+  api.augur.events.emit(SubscriptionEventName.SDKReady, {
+    eventName: SubscriptionEventName.SDKReady,
+  });
+
+  // Will not block execution.
+  await blockAndLogStreamerSyncStrategy.start(endBulkSyncBlock);
 
   return api;
 }

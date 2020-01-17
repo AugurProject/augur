@@ -4,45 +4,29 @@ import * as fp from 'lodash/fp';
 import { Augur } from '../Augur';
 import { SubscriptionEventName } from '../constants';
 import { Subscriptions } from '../subscriptions';
-import { BlockAndLogStreamerListenerInterface } from './db/BlockAndLogStreamerListener';
 import { DB } from './db/DB';
 import { Markets } from './getter/Markets';
-import { WarpController } from '../warp/WarpController';
+import { LogFilterAggregatorInterface } from './logs/LogFilterAggregator';
+import { AbstractSyncStrategy } from './sync/AbstractSyncStrategy';
 
 const settings = require('./settings.json');
 
 export class Controller {
   private static latestBlock: Block;
-  private static throttled: any;
 
   private readonly events;
 
   constructor(
     private augur: Augur,
     private db: Promise<DB>,
-    private blockAndLogStreamerListener: BlockAndLogStreamerListenerInterface
+    private logFilterAggregator: LogFilterAggregatorInterface,
   ) {
     this.events = new Subscriptions(augur.events);
-  }
-
-  async run(): Promise<void> {
-    try {
-      this.blockAndLogStreamerListener.listenForAllEvents(this.updateMarketsData);
-      this.blockAndLogStreamerListener.notifyNewBlockAfterLogsProcess(this.notifyNewBlockEvent.bind(this));
-
-      const db = await this.db;
-      await db.sync(this.augur, settings.chunkSize, settings.blockstreamDelay);
-
-      const warp = await WarpController.create(db);
-      warp.createAllCheckpoints();
-
-      this.blockAndLogStreamerListener.listenForBlockRemoved(
-        db.rollback.bind(db)
-      );
-      this.blockAndLogStreamerListener.startBlockStreamListener();
-    } catch (err) {
-      console.log(err);
-    }
+    this.logFilterAggregator.listenForAllEvents(this.updateMarketsData);
+    this.logFilterAggregator.notifyNewBlockAfterLogsProcess(this.notifyNewBlockEvent.bind(this));
+    // this.logFilterAggregator.listenForBlockRemoved(
+    //   db.rollback.bind(db)
+    // );
   }
 
   private updateMarketsData = async (blockNumber: number, allLogs: ParsedLog[]) => {

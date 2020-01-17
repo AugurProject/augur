@@ -1,20 +1,24 @@
-import { makeDbMock, makeProvider } from "../../libs";
-import { ContractAPI, loadSeedFile, ACCOUNTS, defaultSeedPath } from "@augurproject/tools";
-import { API } from '@augurproject/sdk/build/state/getter/API';
-import { BigNumber } from 'bignumber.js';
 import { ContractAddresses } from '@augurproject/artifacts';
-import { Controller } from '@augurproject/sdk/build/state/Controller';
-import { DB } from '@augurproject/sdk/build/state/db/DB';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
-import { BlockAndLogStreamerListener } from '@augurproject/sdk/build/state/db/BlockAndLogStreamerListener';
-import {
-  Markets,
-} from '@augurproject/sdk/build/state/getter/Markets';
+import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
 import { SingleThreadConnector } from '@augurproject/sdk/build/connector';
 import { SubscriptionEventName } from '@augurproject/sdk/build/constants';
-import { NewBlock } from '@augurproject/sdk/build/events';
-import { MarketCreated } from "@augurproject/sdk/build/events";
-import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
+import { MarketCreated } from '@augurproject/sdk/build/events';
+import { Controller } from '@augurproject/sdk/build/state/Controller';
+import { DB } from '@augurproject/sdk/build/state/db/DB';
+import { API } from '@augurproject/sdk/build/state/getter/API';
+import { Markets } from '@augurproject/sdk/build/state/getter/Markets';
+import { LogFilterAggregator } from '@augurproject/sdk/build/state/logs/LogFilterAggregator';
+import { BlockAndLogStreamerSyncStrategy } from '@augurproject/sdk/build/state/sync/BlockAndLogStreamerSyncStrategy';
+import { BulkSyncStrategy } from '@augurproject/sdk/build/state/sync/BulkSyncStrategy';
+import {
+  ACCOUNTS,
+  ContractAPI,
+  defaultSeedPath,
+  loadSeedFile,
+} from '@augurproject/tools';
+import { BigNumber } from 'bignumber.js';
+import { makeDbMock, makeProvider } from '../../libs';
 
 let connector: SingleThreadConnector;
 let provider: EthersProvider;
@@ -31,17 +35,29 @@ jest.mock('@augurproject/sdk/build/state/create-api', () => {
       return new API(john.augur, db);
     },
     create: () => {
-      const blockAndLogStreamerListener = BlockAndLogStreamerListener.create(
+      const logFilterAggregator = new LogFilterAggregator({
+        getEventTopics: john.augur.contractEvents.getEventTopics,
+        parseLogs: john.augur.contractEvents.parseLogs,
+        getEventContractAddress: john.augur.contractEvents.getEventContractAddress
+      });
+
+      const blockAndLogStreamerListener = BlockAndLogStreamerSyncStrategy.create(
         provider,
-        john.augur.contractEvents.getEventTopics,
-        john.augur.contractEvents.parseLogs,
-        john.augur.contractEvents.getEventContractAddress,
+        logFilterAggregator
       );
+
+      const bulkSyncStrategy = new BulkSyncStrategy(
+        john.augur.provider.getLogs,
+        logFilterAggregator.buildFilter,
+        logFilterAggregator.onLogsAdded,
+        john.augur.contractEvents.parseLogs
+      );
+
       const api = new API(john.augur, db);
       const controller = new Controller(
         john.augur,
         db,
-        blockAndLogStreamerListener
+        logFilterAggregator
       );
 
       return { api, controller };

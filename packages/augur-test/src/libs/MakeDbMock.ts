@@ -1,21 +1,22 @@
-import Dexie from 'dexie';
-import { DB } from "@augurproject/sdk/build/state/db/DB";
-import { Augur } from "@augurproject/sdk";
-import { Account } from "@augurproject/tools";
-import { BlockAndLogStreamerListenerInterface } from "@augurproject/sdk/build/state/db/BlockAndLogStreamerListener";
-import * as _ from "lodash";
-import * as fs from "fs";
-import uuid = require("uuid");
-import { configureDexieForNode } from "@augurproject/sdk/build/state/utils/DexieIDBShim";
+import { Augur } from '@augurproject/sdk';
+import { DB } from '@augurproject/sdk/build/state/db/DB';
+import { LogFilterAggregator } from '@augurproject/sdk/build/state/logs/LogFilterAggregator';
+import { BlockAndLogStreamerListenerInterface } from '@augurproject/sdk/build/state/sync/BlockAndLogStreamerSyncStrategy';
+import { configureDexieForNode } from '@augurproject/sdk/build/state/utils/DexieIDBShim';
+import { Account } from '@augurproject/tools';
+import uuid = require('uuid');
 
 configureDexieForNode(true);
 
-let MOCK_NET_ID = 0;
+function* infiniteSequence(): IterableIterator<number> {
+  let i = 0;
+  while (true) {
+    yield i++;
+  }
+}
+const iterator = infiniteSequence();
 
 export function makeDbMock(prefix:string = uuid.v4()) {
-
-  MOCK_NET_ID++;
-
   const mockState = {
     db: undefined as Promise<DB>,
   };
@@ -31,17 +32,15 @@ export function makeDbMock(prefix:string = uuid.v4()) {
     return {
       listenForBlockRemoved: jest.fn(),
       listenForBlockAdded: jest.fn(),
-      notifyNewBlockAfterLogsProcess: jest.fn(),
-      listenForEvent: jest.fn(),
-      listenForAllEvents: jest.fn(),
       startBlockStreamListener: jest.fn(),
     };
   }
 
+  const networkId = iterator.next();
   const constants = {
     chunkSize: 100000,
     blockstreamDelay: 10,
-    networkId: MOCK_NET_ID,
+    networkId: networkId.value,
     defaultStartSyncBlockNumber: 0,
   };
 
@@ -49,12 +48,16 @@ export function makeDbMock(prefix:string = uuid.v4()) {
     wipeDB,
     constants,
     makeDB: (augur: Augur, accounts: Account[]) => {
+      const logFilterAggregator = LogFilterAggregator.create(
+        augur.contractEvents.getEventTopics,
+        augur.contractEvents.parseLogs,
+        augur.contractEvents.getEventContractAddress
+      );
+
       const db = DB.createAndInitializeDB(
         constants.networkId,
-        constants.blockstreamDelay,
-        constants.defaultStartSyncBlockNumber,
-        augur,
-        makeBlockAndLogStreamerListener()
+        logFilterAggregator,
+        augur
       );
       mockState.db = db;
 

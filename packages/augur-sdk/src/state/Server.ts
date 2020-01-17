@@ -1,15 +1,16 @@
 import * as HTTPEndpoint from "./HTTPEndpoint";
 import * as Sync from "./Sync";
+import { configureDexieForNode } from './utils/DexieIDBShim';
 import * as WebsocketEndpoint from "./WebsocketEndpoint";
 import { EndpointSettings } from "./getter/types";
 import { EventEmitter } from "events";
-import { configureDexieForNode } from "@augurproject/sdk/build/state/utils/DexieIDBShim";
+
 configureDexieForNode(false);
 
 export async function run() {
   const settings = require("@augurproject/sdk/src/state/settings.json");
 
-  const api = await Sync.start(settings.ethNodeURLs[4], settings.testAccounts[0], false);
+  const api = await Sync.start(settings.ethNodeURLs[42], settings.testAccounts[0], false);
   const endpointSettings = {} as EndpointSettings;
 
   try {

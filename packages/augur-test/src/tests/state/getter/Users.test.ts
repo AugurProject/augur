@@ -1,19 +1,25 @@
-import { BigNumber } from 'bignumber.js';
-import * as _ from 'lodash';
 import { ContractInterfaces } from '@augurproject/core';
 import {
   convertDisplayAmountToOnChainAmount,
   convertDisplayPriceToOnChainPrice,
   numTicksToTickSize,
+  SECONDS_IN_A_DAY,
 } from '@augurproject/sdk';
-import { API } from '@augurproject/sdk/build/state/getter/API';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
-import { ContractAPI, loadSeedFile, ACCOUNTS, defaultSeedPath } from '@augurproject/tools';
-import { makeDbMock, makeProvider } from '../../../libs';
-import { stringTo32ByteHex } from '../../../libs/Utils';
-import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
-import { TestEthersProvider } from '../../../libs/TestEthersProvider';
+import { API } from '@augurproject/sdk/build/state/getter/API';
+import { BulkSyncStrategy } from '@augurproject/sdk/build/state/sync/BulkSyncStrategy';
+import {
+  ACCOUNTS,
+  ContractAPI,
+  defaultSeedPath,
+  loadSeedFile,
+} from '@augurproject/tools';
+import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from 'ethers/utils';
+import * as _ from 'lodash';
+import { makeDbMock, makeProvider } from '../../../libs';
+import { TestEthersProvider } from '../../../libs/TestEthersProvider';
+import { stringTo32ByteHex } from '../../../libs/Utils';
 
 const ZERO_BYTES = stringTo32ByteHex('');
 
@@ -66,6 +72,9 @@ describe('State API :: Users :: ', () => {
   let john: ContractAPI;
   let mary: ContractAPI;
   let baseProvider: TestEthersProvider;
+  let syncStrategy:BulkSyncStrategy;
+  let provider: TestEthersProvider;
+  let blockNumber: number;
 
   beforeAll(async () => {
     const seed = await loadSeedFile(defaultSeedPath);
@@ -79,12 +88,22 @@ describe('State API :: Users :: ', () => {
   });
 
   beforeEach(async () => {
-    const provider = await baseProvider.fork();
+    provider = await baseProvider.fork();
     const addresses = baseProvider.getContractAddresses();
     john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, addresses);
     mary = await ContractAPI.userWrapper(ACCOUNTS[1], provider, addresses);
     db = makeDbMock().makeDB(john.augur, ACCOUNTS);
     api = new API(john.augur, db);
+
+    syncStrategy = new BulkSyncStrategy(
+      provider.getLogs,
+      (await db).logFilters.buildFilter,
+      (await db).logFilters.onLogsAdded,
+      john.augur.contractEvents.parseLogs,
+      1,
+    );
+
+    blockNumber = 0;
   });
 
   test(':getAccountTimeRangedStats', async () => {
@@ -98,7 +117,7 @@ describe('State API :: Users :: ', () => {
     ]);
     const johnScalarMarket = await john.createReasonableScalarMarket();
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    blockNumber = await syncStrategy.start(blockNumber, (await provider.getBlockNumber()));
 
     // Place orders
     const bid = new BigNumber(0);
@@ -198,7 +217,7 @@ describe('State API :: Users :: ', () => {
       stringTo32ByteHex('42')
     );
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    blockNumber = await syncStrategy.start(blockNumber, (await provider.getBlockNumber()));
 
     // Fill orders
     await mary.faucet(new BigNumber(1e18)); // faucet enough cash for the various fill orders
@@ -243,21 +262,21 @@ describe('State API :: Users :: ', () => {
       '43'
     );
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    blockNumber = await syncStrategy.start(blockNumber, (await provider.getBlockNumber()));
 
     // Cancel an order
     await john.cancelNativeOrder(
       await john.getBestOrderId(bid, johnScalarMarket.address, outcome2)
     );
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    blockNumber = await syncStrategy.start(blockNumber, (await provider.getBlockNumber()));
 
     // Purchase & sell complete sets
     let numberOfCompleteSets = new BigNumber(1);
     await john.buyCompleteSets(johnYesNoMarket, numberOfCompleteSets);
     await john.sellCompleteSets(johnYesNoMarket, numberOfCompleteSets);
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    blockNumber = await syncStrategy.start(blockNumber, (await provider.getBlockNumber()));
 
     // Move time to open reporting
     let newTime = (await johnYesNoMarket.getEndTime_()).plus(
@@ -279,7 +298,7 @@ describe('State API :: Users :: ', () => {
     // implicitly creates dispute window
     await john.doInitialReport(johnYesNoMarket, noPayoutSet);
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    blockNumber = await syncStrategy.start(blockNumber, (await provider.getBlockNumber()));
 
     // Move time to dispute window start time
     let disputeWindowAddress = await johnYesNoMarket.getDisputeWindow_();
@@ -333,7 +352,7 @@ describe('State API :: Users :: ', () => {
       }
     }
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    blockNumber = await syncStrategy.start(blockNumber, (await provider.getBlockNumber()));
 
     // Move time forward by 2 weeks
     newTime = newTime.plus(SECONDS_IN_A_DAY.times(14));
@@ -366,10 +385,10 @@ describe('State API :: Users :: ', () => {
     await john.augur.contracts.shareToken.claimTradingProceeds(
       johnYesNoMarket.address,
       john.account.publicKey,
-      formatBytes32String("")
+      formatBytes32String('')
     );
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    blockNumber = await syncStrategy.start(blockNumber, (await provider.getBlockNumber()));
 
     // Test non-existent universe address
     const nonexistentAddress = '0x1111111111111111111111111111111111111111';
@@ -446,7 +465,7 @@ describe('State API :: Users :: ', () => {
     ]);
     const johnScalarMarket2 = await john.createReasonableScalarMarket();
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    blockNumber = await syncStrategy.start(blockNumber, (await provider.getBlockNumber()));
 
     // Place orders
     await john.placeOrder(
@@ -540,7 +559,7 @@ describe('State API :: Users :: ', () => {
       stringTo32ByteHex('42')
     );
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    blockNumber = await syncStrategy.start(blockNumber, (await provider.getBlockNumber()));
 
     // Fill orders
     await mary.fillOrder(
@@ -587,7 +606,7 @@ describe('State API :: Users :: ', () => {
       '43'
     );
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    blockNumber = await syncStrategy.start(blockNumber, (await provider.getBlockNumber()));
 
     // Re-test startTime and endTime with order filler account
     stats = await api.route('getAccountTimeRangedStats', {
@@ -626,14 +645,14 @@ describe('State API :: Users :: ', () => {
       await john.getBestOrderId(bid, johnScalarMarket2.address, outcome2)
     );
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    blockNumber = await syncStrategy.start(blockNumber, (await provider.getBlockNumber()));
 
     // Purchase & sell complete sets
     numberOfCompleteSets = new BigNumber(1);
     await john.buyCompleteSets(johnYesNoMarket2, numberOfCompleteSets);
     await john.sellCompleteSets(johnYesNoMarket2, numberOfCompleteSets);
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    blockNumber = await syncStrategy.start(blockNumber, (await provider.getBlockNumber()));
 
     // Move time to open reporting
     newTime = (await johnYesNoMarket2.getEndTime_()).plus(
@@ -643,7 +662,7 @@ describe('State API :: Users :: ', () => {
 
     await john.doInitialReport(johnYesNoMarket2, noPayoutSet);
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    blockNumber = await syncStrategy.start(blockNumber, (await provider.getBlockNumber()));
 
     // Move time to dispute window start time
     disputeWindowAddress = await johnYesNoMarket2.getDisputeWindow_();
@@ -693,7 +712,7 @@ describe('State API :: Users :: ', () => {
       }
     }
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    blockNumber = await syncStrategy.start(blockNumber, (await provider.getBlockNumber()));
 
     // Move time forward by 2 weeks
     newTime = newTime.plus(SECONDS_IN_A_DAY.times(14));
@@ -726,10 +745,10 @@ describe('State API :: Users :: ', () => {
     await john.augur.contracts.shareToken.claimTradingProceeds(
       johnYesNoMarket2.address,
       john.account.publicKey,
-      formatBytes32String("")
+      formatBytes32String('')
     );
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    blockNumber = await syncStrategy.start(blockNumber, (await provider.getBlockNumber()));
 
     stats = await api.route('getAccountTimeRangedStats', {
       universe: universe.address,
@@ -801,7 +820,7 @@ describe('State API :: Users :: ', () => {
       await doTrade(trade, trade.market);
     }
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    blockNumber = await syncStrategy.start(blockNumber, (await provider.getBlockNumber()));
 
     const profitLoss = await api.route('getProfitLoss', {
       universe: john.augur.contracts.universe.address,
@@ -1158,7 +1177,7 @@ describe('State API :: Users :: ', () => {
     for (const trade of tradeData) {
       await doTrade(trade, market, minPrice, maxPrice);
 
-      await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+      blockNumber = await syncStrategy.start(blockNumber, (await provider.getBlockNumber()));
 
       const { tradingPositions } = await api.route('getUserTradingPositions', {
         universe,

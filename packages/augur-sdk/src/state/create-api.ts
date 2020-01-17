@@ -1,5 +1,6 @@
 import { Augur } from '../Augur';
-import { BlockAndLogStreamerListener } from './db/BlockAndLogStreamerListener';
+import { LogFilterAggregator } from './logs/LogFilterAggregator';
+import { BlockAndLogStreamerSyncStrategy } from './sync/BlockAndLogStreamerSyncStrategy';
 import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis';
 import { Controller } from './Controller';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
@@ -9,7 +10,7 @@ import { Addresses, UploadBlockNumbers } from '@augurproject/artifacts';
 import { API } from './getter/API';
 import { DB } from './db/DB';
 import { GnosisRelayAPI } from '@augurproject/gnosis-relay-api';
-import { WSClient } from '@0x/mesh-rpc-client';
+import { BulkSyncStrategy } from './sync/BulkSyncStrategy';
 
 interface Settings {
   gnosisRelayURLs: {
@@ -56,6 +57,7 @@ async function buildDeps(ethNodeUrl: string, account?: string, enableFlexSearch 
   try {
     const ethersProvider = new EthersProvider(new JsonRpcProvider(ethNodeUrl), 10, 0, 40);
     const networkId = await ethersProvider.getNetworkId();
+    const uploadBlockNumber = UploadBlockNumbers[networkId];
 
     const gnosisRelayURL = settings.gnosisRelayURLs[networkId];
     if (typeof gnosisRelayURL === "undefined") {
@@ -69,33 +71,43 @@ async function buildDeps(ethNodeUrl: string, account?: string, enableFlexSearch 
     }
 
     const gnosisRelay = new GnosisRelayAPI(gnosisRelayURL);
-    const meshClient = new WSClient(meshClientURL);
+
     const contractDependencies = new ContractDependenciesGnosis(ethersProvider, gnosisRelay, undefined, undefined, undefined, undefined, account);
 
-    const augur = await Augur.create(ethersProvider, contractDependencies, Addresses[networkId], new EmptyConnector(), undefined, enableFlexSearch, meshClient);
-    const blockAndLogStreamerListener = BlockAndLogStreamerListener.create(ethersProvider, augur.contractEvents.getEventTopics, augur.contractEvents.parseLogs, augur.contractEvents.getEventContractAddress);
+    const augur = await Augur.create(ethersProvider, contractDependencies, Addresses[networkId], new EmptyConnector(), undefined, enableFlexSearch);
+    const logFilterAggregator = LogFilterAggregator.create(
+    augur.contractEvents.getEventTopics,
+    augur.contractEvents.parseLogs,
+    augur.contractEvents.getEventContractAddress
+  );
+
     const db = DB.createAndInitializeDB(
       Number(networkId),
-      settings.blockstreamDelay,
-      UploadBlockNumbers[networkId],
+      logFilterAggregator,
       augur,
-      blockAndLogStreamerListener
     );
 
-    return { augur, blockAndLogStreamerListener, db };
+    return { augur, ethersProvider, logFilterAggregator, db };
   }catch(e) {
     console.log('Error initializing api', e)
   }
   return null;
 }
 
-export async function create(ethNodeUrl: string, account?: string, enableFlexSearch = false): Promise<{ api: API, controller: Controller }> {
-  const { augur, blockAndLogStreamerListener, db } = await buildDeps(ethNodeUrl, account, enableFlexSearch);
+export async function create(ethNodeUrl: string, account?: string, enableFlexSearch = false): Promise<{ api: API, controller: Controller, blockAndLogStreamerSyncStrategy:BlockAndLogStreamerSyncStrategy, bulkSyncStrategy: BulkSyncStrategy, logFilterAggregator: LogFilterAggregator }> {
+  const { augur, ethersProvider, logFilterAggregator, db } = await buildDeps(ethNodeUrl, account, enableFlexSearch);
 
-  const controller = new Controller(augur, db, blockAndLogStreamerListener);
+  const bulkSyncStrategy = new BulkSyncStrategy(ethersProvider.getLogs, logFilterAggregator.buildFilter, logFilterAggregator.onLogsAdded, augur.contractEvents.parseLogs);
+
+  const blockAndLogStreamerSyncStrategy = BlockAndLogStreamerSyncStrategy.create(
+    ethersProvider,
+    logFilterAggregator
+  );
+
+  const controller = new Controller(augur, db, logFilterAggregator);
   const api = new API(augur, db);
 
-  return { api, controller };
+  return { api, controller, blockAndLogStreamerSyncStrategy, bulkSyncStrategy, logFilterAggregator};
 }
 
 export async function buildAPI(ethNodeUrl: string, account?: string, enableFlexSearch = false): Promise<API> {
