@@ -2,7 +2,7 @@ import { ContractAPI, ACCOUNTS, loadSeedFile, defaultSeedPath } from '@augurproj
 import { BigNumber } from 'bignumber.js';
 import { makeDbMock, makeProvider, MockGnosisRelayAPI } from '../../libs';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
-import { MockMeshServer, SERVER_PORT, stopServer } from '../../libs/MockMeshServer';
+import { MockMeshServer, stopServer } from '../../libs/MockMeshServer';
 import { WSClient } from '@0x/mesh-rpc-client';
 import { Connectors } from '@augurproject/sdk';
 import { API } from '@augurproject/sdk/build/state/getter/API';
@@ -34,8 +34,8 @@ describe('Augur API :: ZeroX :: ', () => {
   const mock = makeDbMock();
 
   beforeAll(async () => {
-    await MockMeshServer.create();
-    meshClient = new WSClient(`ws://localhost:${SERVER_PORT}`);
+    const { port } = await MockMeshServer.create();
+    meshClient = new WSClient(`ws://localhost:${port}`);
     meshBrowser = new MockBrowserMesh(meshClient);
 
     const seed = await loadSeedFile(defaultSeedPath);

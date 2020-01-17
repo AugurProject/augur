@@ -6,7 +6,7 @@ import * as _ from 'lodash';
 import { ZeroXOrder } from "@augurproject/sdk/build/state/getter/ZeroXOrdersGetters";
 
 const DEFAULT_STATUS_CODE = 404;
-export const SERVER_PORT = 44321;
+export const SERVER_PORT = 64321;
 // tslint:disable-next-line:custom-no-magic-numbers
 const sixtyFourMB = 64 * 1024 * 1024; // 64MiB
 
@@ -29,6 +29,7 @@ export interface StoredOrder {
  * @return A WS server
  */
 export async function setupServerAsync(): Promise<WebSocket.server> {
+    let port = SERVER_PORT + Math.floor(Math.random() * 1000);
     return new Promise<WebSocket.server>((resolve, reject) => {
         server = http.createServer((_request, response) => {
             response.writeHead(DEFAULT_STATUS_CODE);
@@ -36,7 +37,6 @@ export async function setupServerAsync(): Promise<WebSocket.server> {
         });
 
         wsServer = new WebSocket.server({
-            port: SERVER_PORT,
             httpServer: server,
             autoAcceptConnections: true,
             maxReceivedFrameSize: sixtyFourMB,
@@ -46,9 +46,19 @@ export async function setupServerAsync(): Promise<WebSocket.server> {
             disableNagleAlgorithm: false,
         });
 
-        server.listen(SERVER_PORT, () => {
-            resolve(wsServer);
+        server.on('listening', () => {
+            resolve({port, wsServer});
+        })
+
+        server.on('error', (e: any) => {
+            if (e.code === 'EADDRINUSE') {
+                port = SERVER_PORT + Math.floor(Math.random() * 1000);
+                server.close();
+                server.listen(port);
+            }
         });
+
+        server.listen(port);
     });
 }
 
@@ -74,10 +84,10 @@ export class MockMeshServer {
         this.initialize();
     }
 
-    static async create(): Promise<MockMeshServer> {
-        const wsServer = await setupServerAsync();
+    static async create(): Promise<{port: number, meshServer: MockMeshServer }> {
+        const { port, wsServer } = await setupServerAsync();
         const meshServer = new MockMeshServer(wsServer);
-        return meshServer;
+        return { port, meshServer };
     }
 
     initialize(): void {
