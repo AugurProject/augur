@@ -6,11 +6,14 @@ cleanup() {
   echo "stopping geth docker image"
   docker kill geth
   yarn workspace @augurproject/gnosis-relay-api kill-relay
+  docker volume prune --force
+  docker system prune --force
 }
 
 trap cleanup SIGINT SIGTERM
 
 DEV="${1-false}"
+FAKE="${2-false}"
 
 # make sure we have the latest images
 # (workaround until next version of docker supports the --pull flag)
@@ -20,7 +23,12 @@ docker pull 0xorg/mesh:0xV3
 # run docker image, creating or updating local-addresses.json
 if [ "$DEV" == "true" ]; then
   yarn workspace @augurproject/tools docker:geth:detached
-  yarn flash run deploy -w
+
+  if [ "$FAKE" == "true" ]; then
+    yarn flash run deploy -w -t
+  else
+    yarn flash run deploy -w
+  fi
 else
   yarn docker:geth:pop
 fi

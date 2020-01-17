@@ -831,7 +831,7 @@ export function addScripts(flash: FlashSession) {
         write_artifacts: true,
         time_controlled: true,
       });
-      await this.call('create-canned-markets-and-orders', {});
+      // await this.call('create-canned-markets-and-orders', {});
     },
   });
 
@@ -842,7 +842,7 @@ export function addScripts(flash: FlashSession) {
         write_artifacts: true,
         time_controlled: false,
       });
-      await this.call('create-canned-markets-and-orders', {});
+      // await this.call('create-canned-markets-and-orders', {});
     },
   });
 
