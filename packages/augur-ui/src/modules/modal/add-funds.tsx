@@ -13,7 +13,15 @@ import { RadioTwoLineBarGroup, TextInput } from 'modules/common/form';
 import classNames from 'classnames';
 import ReactTooltip from 'react-tooltip';
 import { toChecksumAddress } from 'ethereumjs-util';
-import { ACCOUNT_TYPES, DAI, REP } from 'modules/common/constants';
+import {
+  ACCOUNT_TYPES,
+  DAI,
+  REP,
+  ADD_FUNDS_SWAP,
+  ADD_FUNDS_COINBASE,
+  ADD_FUNDS_CREDIT_CARD,
+  ADD_FUNDS_TRANSFER,
+} from 'modules/common/constants';
 import { LoginAccount } from 'modules/types';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import Styles from 'modules/modal/modal.styles.less';
@@ -27,7 +35,7 @@ interface AddFundsProps {
   fundType: string;
   loginAccount: LoginAccount;
   ETH_RATE: number;
-  REP_Rate: number;
+  REP_RATE: number;
 }
 
 export const generateDaiTooltip = (
@@ -64,8 +72,8 @@ export const AddFunds = ({
   REP_RATE,
 }: AddFundsProps) => {
   const address = loginAccount.address
-  const accountMeta =loginAccount.meta;
-  let autoSelection = '2'; // default Coinbase
+  const accountMeta = loginAccount.meta;
+  let autoSelection = ADD_FUNDS_COINBASE;
 
   if (autoSelect) {
     if (
@@ -74,11 +82,11 @@ export const AddFunds = ({
       ) &&
       fundType !== REP
     ) {
-      autoSelection = '1'; // default Credit/Debit Card
+      autoSelection = ADD_FUNDS_CREDIT_CARD;
     } else if (
       fundType === REP
     ) {
-      autoSelection = '0'; // default Uniswap
+      autoSelection = ADD_FUNDS_SWAP;
     }
   }
 
@@ -89,22 +97,22 @@ export const AddFunds = ({
     {
       header: 'Swap',
       description: `Swap funds in your account for ${fundTypeLabel}`,
-      value: '0',
+      value: ADD_FUNDS_SWAP,
     },
     {
       header: 'Credit/debit card',
       description: 'Add Funds instantly using a credit/debit card',
-      value: '1',
+      value: ADD_FUNDS_CREDIT_CARD,
     },
     {
       header: 'Coinbase',
       description: 'Send funds from a Coinbase account',
-      value: '2',
+      value: ADD_FUNDS_COINBASE,
     },
     {
       header: 'Transfer',
       description: 'Send funds to your Augur account address',
-      value: '3',
+      value: ADD_FUNDS_TRANSFER,
     },
   ];
 
@@ -158,12 +166,12 @@ export const AddFunds = ({
         </div>
         <div
           className={
-            selectedOption === '3'
+            selectedOption === ADD_FUNDS_TRANSFER
               ? Styles.AddFundsTransfer
               : Styles.AddFundsCreditDebitCoinbase
           }
         >
-          {selectedOption === '0' && (
+          {selectedOption === ADD_FUNDS_SWAP && (
             <>
               <h1>Swap</h1>
               <h2>Swap a currency for {fundTypeLabel}</h2>
@@ -178,7 +186,7 @@ export const AddFunds = ({
             </>
           )}
 
-          {selectedOption === '1' && (
+          {selectedOption === ADD_FUNDS_CREDIT_CARD && (
             <>
               <h1>Credit/debit card</h1>
               {accountMeta.accountType === ACCOUNT_TYPES.PORTIS && (
@@ -216,7 +224,7 @@ export const AddFunds = ({
               </h4>
             </>
           )}
-          {selectedOption === '2' && (
+          {selectedOption === ADD_FUNDS_COINBASE && (
             <>
               <h1>Coinbase</h1>
               <h2>
@@ -238,7 +246,7 @@ export const AddFunds = ({
               <ExternalLinkButton URL='https://docs.augur.net/' label={'Learn about your address'} />
             </>
           )}
-          {selectedOption === '3' && (
+          {selectedOption === ADD_FUNDS_TRANSFER && (
             <>
               <h1>Transfer</h1>
               <h2>

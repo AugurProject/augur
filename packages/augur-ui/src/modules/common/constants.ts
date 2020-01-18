@@ -93,6 +93,12 @@ export const SIXTY_DAYS = 60 * SECONDS_PER_DAY;
 
 export const EDGE_WALLET_TYPE = 'wallet:ethereum';
 
+// Add Funds types
+export const ADD_FUNDS_SWAP = '0';
+export const ADD_FUNDS_CREDIT_CARD = '1';
+export const ADD_FUNDS_COINBASE = '2';
+export const ADD_FUNDS_TRANSFER = '3';
+
 // # Connect Constants
 export const ACCOUNT_TYPES = {
   EDGE: 'Edge',
