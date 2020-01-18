@@ -26,6 +26,8 @@ interface AddFundsProps {
   autoSelect?: boolean;
   fundType: string;
   loginAccount: LoginAccount;
+  ETH_RATE: number;
+  REP_Rate: number;
 }
 
 export const generateDaiTooltip = (
@@ -58,6 +60,8 @@ export const AddFunds = ({
   autoSelect = false,
   fundType = DAI,
   loginAccount,
+  ETH_RATE,
+  REP_RATE,
 }: AddFundsProps) => {
   const address = loginAccount.address
   const accountMeta =loginAccount.meta;
@@ -167,7 +171,10 @@ export const AddFunds = ({
               <Swap
                 balances={loginAccount.balances}
                 toToken={REP}
-                fromToken={DAI} />
+                fromToken={DAI}
+                ETH_RATE={ETH_RATE}
+                REP_RATE={REP_RATE}
+              />
             </>
           )}
 

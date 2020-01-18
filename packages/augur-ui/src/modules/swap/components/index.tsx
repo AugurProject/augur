@@ -9,6 +9,7 @@ import {
   DaiLogoIcon,
 } from 'modules/common/icons';
 import { formatEther, formatDai } from 'utils/format-number';
+import { BigNumber, createBigNumber } from 'utils/create-big-number';
 
 import Styles from 'modules/swap/components/index.styles.less';
 
@@ -16,32 +17,36 @@ interface SwapProps {
   balances: AccountBalances;
   toToken: string;
   fromToken: string;
+  ETH_RATE: number;
+  REP_RATE: number;
 }
 
-export const Swap = ({ balances, fromToken, toToken }: SwapProps) => {
-  // TODO placeholder rates until price feed is hooked up
-  const ETH_RATE = 160.63;
-  const REP_RATE = 15.87;
-
+export const Swap = ({
+  balances,
+  fromToken,
+  toToken,
+  ETH_RATE,
+  REP_RATE,
+}: SwapProps) => {
   const setFromToken = () => {
     const nextToken = selectedToken === ETH ? DAI : ETH;
-    setSelectedFromTokenAmount('');
+    setSelectedFromTokenAmount(createBigNumber(0));
     setSelectedToken(nextToken);
   };
 
-  const setTokenAmount = (amount, displayBalance) => {
-    if (amount < 0) {
-      setSelectedFromTokenAmount('');
-    } else if (amount > displayBalance) {
+  const setTokenAmount = (amount: BigNumber, displayBalance: BigNumber) => {
+    if (amount.lte(0)) {
+      setSelectedFromTokenAmount(createBigNumber(0));
+    } else if (amount.gt(displayBalance)) {
       setSelectedFromTokenAmount(displayBalance);
     } else {
       setSelectedFromTokenAmount(amount);
     }
   };
 
-  let displayBalance;
+  let displayBalance: FormattedNumber;
   const [selectedToken, setSelectedToken] = useState(fromToken);
-  const [selectedFromTokenAmount, setSelectedFromTokenAmount] = useState('');
+  const [selectedFromTokenAmount, setSelectedFromTokenAmount] = useState(createBigNumber(0));
 
   if (selectedToken === DAI) {
     displayBalance = formatDai(Number(balances.dai) || 0);
@@ -51,19 +56,19 @@ export const Swap = ({ balances, fromToken, toToken }: SwapProps) => {
     );
   }
 
-  let result = 0;
-  if (Number(selectedFromTokenAmount) > 0 && selectedToken === DAI) {
-    result = Number(selectedFromTokenAmount) / REP_RATE;
+  let result = formatEther(0);
+  if (selectedFromTokenAmount.gt(0) && selectedToken === DAI) {
+    result = formatEther(selectedFromTokenAmount.dividedBy(REP_RATE));
   }
 
   if (selectedToken === ETH) {
-    result = (Number(selectedFromTokenAmount) * ETH_RATE) / REP_RATE;
+    result = formatEther(selectedFromTokenAmount.multipliedBy(ETH_RATE).dividedBy(REP_RATE));
   }
 
   return (
     <div className={Styles.Swap}>
       <SwapRow
-        amount={selectedFromTokenAmount}
+        amount={formatEther(selectedFromTokenAmount)}
         token={selectedToken}
         label={'Input'}
         balance={displayBalance}
@@ -99,7 +104,7 @@ interface SwapBlockProps {
   token: string;
   label: string;
   balance: FormattedNumber;
-  amount: number | string;
+  amount: FormattedNumber;
   setTokenAmount?: Function;
   setFromToken?: Function;
   setAmount?: Function;
@@ -110,7 +115,7 @@ export const SwapRow = ({
   token,
   label,
   balance,
-  amount = 0,
+  amount,
   setAmount,
   setTokenAmount,
   setFromToken,
@@ -119,19 +124,19 @@ export const SwapRow = ({
   <div className={Styles.SwapRow}>
     <div>
       <div>{label}</div>
-      <div onClick={setAmount ? () => setAmount(balance.formattedValue) : null}>
+      <div onClick={setAmount ? () => setAmount(createBigNumber(balance.value)) : null}>
         Balance: {balance.formattedValue}
       </div>
     </div>
 
     <div>
-      {!setTokenAmount && <div>{Number(amount).toFixed(4)}</div>}
+      {!setTokenAmount && <div>{amount.formattedValue}</div>}
       {setTokenAmount && (
         <input
           placeholder='0'
           type='number'
-          value={amount}
-          onChange={e => setTokenAmount(e.target.value, balance.formattedValue)}
+          value={amount.formattedValue}
+          onChange={e => setTokenAmount(createBigNumber(e.target.value), createBigNumber(balance.value))}
         />
       )}
       <div>
