@@ -10,7 +10,7 @@ configureDexieForNode(false);
 export async function run() {
   const settings = require("@augurproject/sdk/src/state/settings.json");
 
-  const api = await Sync.start(settings.ethNodeURLs[42], settings.testAccounts[0], false);
+  const api = await Sync.start(settings.ethNodeURLs[42], settings.testAccounts[0], false); // Change this to not have a hardcoded network?
   const endpointSettings = {} as EndpointSettings;
 
   try {
