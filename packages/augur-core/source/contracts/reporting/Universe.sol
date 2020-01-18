@@ -559,8 +559,6 @@ contract Universe is IUniverse, CashSender {
         }
 
         _currentFeeDivisor = calculateReportingFeeDivisorInternal();
-        // In order to periodically sweep interest we do so here which will result in a sweep once a week roughly
-        sweepInterest();
 
         shareSettlementFeeDivisor[address(_disputeWindow)] = _currentFeeDivisor;
         previousReportingFeeDivisor = _currentFeeDivisor;
