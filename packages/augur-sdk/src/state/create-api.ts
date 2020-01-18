@@ -115,7 +115,7 @@ export async function createServer(config: SDKConfiguration, client?: Augur, acc
     getStartingBlockForNetwork(config.networkId),
     client,
     blockAndLogStreamerListener,
-    config.zeroX && config.zeroX.mesh && config.zeroX.mesh.enabled
+    config.zeroX && (config.zeroX.mesh && config.zeroX.mesh.enabled || config.zeroX.rpc && config.zeroX.rpc.enabled)
   );
   const controller = new Controller(client, db, blockAndLogStreamerListener);
   const api = new API(client, db);
