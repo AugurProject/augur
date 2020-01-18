@@ -81,12 +81,9 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     dP.errorModal();
   };
 
-  const redirect = () => {
+  const login = () => {
     setTimeout(() => {
       dP.closeModal();
-
-      const path = sP.modal.pathName ? sP.modal.pathName : makePath(MARKETS, null);
-      oP.history.push(path);
 
       const showOnboardingSeen = windowRef.localStorage.getItem(ONBOARDING_SEEN_KEY);
       if (LOGIN_OR_SIGNUP === 'Signup' &&!showOnboardingSeen) {
@@ -105,7 +102,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       hidden: false,
       primary: true,
       action: async () => {
-        dP.loadingModal(SIGNIN_LOADING_TEXT_PORTIS, () => redirect());
+        dP.loadingModal(SIGNIN_LOADING_TEXT_PORTIS, () => login());
         try {
           const forceRegisterPage = oP.isLogin ? false : true;
           await dP.connectPortis(forceRegisterPage);
@@ -121,7 +118,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       subText: `Powered by ${ACCOUNT_TYPES.TORUS}`,
       hidden: false,
       action: async () => {
-        dP.loadingModal(SIGNIN_LOADING_TEXT_TORUS, () => redirect());
+        dP.loadingModal(SIGNIN_LOADING_TEXT_TORUS, () => login());
         try {
           await dP.connectTorus();
         } catch (error) {
@@ -136,7 +133,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       subText: `Powered by ${ACCOUNT_TYPES.FORTMATIC}`,
       hidden: false,
       action: async () => {
-        dP.loadingModal(SIGNIN_LOADING_TEXT_FORTMATIC, () => redirect());
+        dP.loadingModal(SIGNIN_LOADING_TEXT_FORTMATIC, () => login());
         try {
           await dP.connectFortmatic();
         } catch (error) {
@@ -156,7 +153,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
           windowRef.ethereum && windowRef.ethereum.selectedAddress;
         const msg = accounts ? SIGNIN_LOADING_TEXT : SIGNIN_SIGN_WALLET;
         const showMetaMaskHelper = accounts ? false : true;
-        dP.loadingModal(msg, () => redirect(), showMetaMaskHelper);
+        dP.loadingModal(msg, () => login(), showMetaMaskHelper);
         try {
           await dP.connectMetaMask();
         } catch (error) {
