@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { MarketData, DisputeInputtedValues } from 'modules/types';
 import { Title } from 'modules/modal/common';
 import { SecondaryButton } from 'modules/common/buttons';
-import { MarketTypeLabel, RepBalance, TemplateShield } from 'modules/common/labels';
+import { MarketTypeLabel, RedFlag, RepBalance, TemplateShield } from 'modules/common/labels';
 import { Subheaders } from 'modules/reporting/common';
 import {
   ReportingRadioBarGroup,
@@ -320,6 +320,7 @@ export default class ModalReporting extends Component<
             }
             <section>
               <MarketTypeLabel marketType={marketType} />
+              <RedFlag market={market} />
               {isTemplate && <TemplateShield market={market} />}
             </section>
             <span>{description}</span>

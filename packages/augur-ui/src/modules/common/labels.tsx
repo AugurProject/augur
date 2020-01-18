@@ -6,6 +6,7 @@ import {
   CATEGORICAL,
   CLOSED,
   DISCORD_LINK,
+  PROBABLE_INVALID_MARKET,
   REPORTING_STATE,
   SCALAR,
   SELL,
@@ -22,6 +23,7 @@ import {
   LoadingEllipse,
   MarketIcon,
   QuestionIcon,
+  RedFlagIcon,
   ScalarIcon,
   TemplateIcon,
   YellowTemplateIcon,
@@ -224,13 +226,40 @@ interface CountdownLabelProps {
 
 export const CountdownLabel = ({ expiry, currentTimestamp }: CountdownLabelProps) => {
   const duration = getDurationBetween(expiry.timestamp, currentTimestamp);
-  const hours = duration.asHours(); 
+  const hours = duration.asHours();
   if (hours > 1) return null;
   return (
     <div className={Styles.CountdownLabel}>
       {Math.round(duration.asMinutes())}m
     </div>
   );
+};
+
+interface RedFlagProps {
+  market: Getters.Markets.MarketInfo;
+}
+
+export const RedFlag = ({ market }: RedFlagProps) => {
+  return market.mostLikelyInvalid ? (
+    <>
+      <label
+        className={TooltipStyles.TooltipHint}
+        data-tip
+        data-for={`tooltip-${market.id}-redFlag`}
+      >
+        {RedFlagIcon}
+      </label>
+      <ReactTooltip
+        id={`tooltip-${market.id}-redFlag`}
+        className={TooltipStyles.Tooltip}
+        effect="solid"
+        place="right"
+        type="light"
+      >
+        {PROBABLE_INVALID_MARKET}
+      </ReactTooltip>
+    </>
+  ) : null;
 };
 
 interface TemplateShieldProps {
@@ -569,13 +598,12 @@ export class HoverValueLabel extends React.Component<
   }
 }
 
-export const InvalidLabel = (props: InvalidLabelProps) => {
-  const {
-    text,
-    keyId,
-    openInvalidMarketRulesModal,
-    tooltipPositioning,
-  } = props;
+export const InvalidLabel = ({
+  text,
+  keyId,
+  openInvalidMarketRulesModal,
+  tooltipPositioning,
+}: InvalidLabelProps) => {
   const {
     explainerBlockTitle,
     explainerBlockSubtexts,

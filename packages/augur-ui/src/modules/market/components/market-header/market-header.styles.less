@@ -36,7 +36,7 @@
       height: 100%;
       min-height: 149px;
       width: 100%;
-      
+
       > div.HeadingBar {
         align-items: center;
         display: flex;
@@ -148,7 +148,7 @@
         }
 
         > div[class*="CopyButton"] > svg > path {
-          fill: @color-primary-text; 
+          fill: @color-primary-text;
         }
       }
 
@@ -159,7 +159,7 @@
         flex-direction: column;
         padding: 0 @size-12 0 @size-16;
         transition-property: box-shadow, z-index, position;
-        transition-duration: 0.15s; 
+        transition-duration: 0.15s;
         transition-timing-function: ease-out;
 
         @media @breakpoint-mobile {
@@ -189,7 +189,7 @@
             z-index: @mask-above;
             padding: @size-4;
           }
-  
+
           &:hover + div:first-of-type {
             margin-top: 67px;
           }
@@ -243,7 +243,7 @@ div.Toggle {
 
       > h1 {
         .text-12-bold;
-  
+
         color: @color-primary-text;
         flex: 1;
         padding: 0;
@@ -384,7 +384,7 @@ div.ExpandedContent {
   margin-top: @size-32;
   width: 100%;
   transition-property: box-shadow, z-index, position;
-  transition-duration: 0.15s; 
+  transition-duration: 0.15s;
   transition-timing-function: ease-in;
 
   @media @breakpoint-mobile {
@@ -392,6 +392,20 @@ div.ExpandedContent {
     position: inherit;
     box-shadow: none;
     z-index: unset;
+  }
+}
+
+.ResolvingInvalid {
+  > span {
+    .text-10-semi-bold;
+
+    color: @color-error;
+    display: inline-block;
+    text-transform: uppercase;
+    background-color: rgba(@color-error, 0.15);
+    padding: @size-3;
+    border-radius: @size-3;
+    margin-bottom: @size-8;
   }
 }
 
@@ -407,7 +421,7 @@ div.ExpandedContent {
     padding-right: @size-8;
     text-transform: uppercase;
   }
-  
+
   > p {
     .text-12;
 
@@ -542,7 +556,7 @@ div.ExpandedContent {
 
         > button {
           .text-12;
-    
+
           align-self: flex-end;
           color: @color-primary-text;
           cursor: pointer;
@@ -550,10 +564,10 @@ div.ExpandedContent {
           text-transform: uppercase;
           margin: 0 0 @size-8;
           width: 100%;
-    
+
           svg {
             height: @size-12;
-    
+
             polyline {
               stroke: @color-primary-text;
               stroke-width: 3;
