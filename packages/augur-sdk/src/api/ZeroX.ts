@@ -110,6 +110,7 @@ export interface MatchingOrders {
   orders: ZeroXTradeOrder[];
   signatures: string[];
   orderIds: string[];
+  loopLimit: BigNumber;
 }
 
 export class ZeroX {
@@ -203,7 +204,7 @@ export class ZeroX {
     const invalidReason = await this.checkIfTradeValid(params);
     if (invalidReason) throw new Error(invalidReason);
 
-    const { orders, signatures, orderIds } = await this.getMatchingOrders(
+    const { orders, signatures, orderIds, loopLimit } = await this.getMatchingOrders(
       params,
       ignoreOrders
     );
@@ -227,7 +228,7 @@ export class ZeroX {
       params.fingerprint,
       params.tradeGroupId,
       new BigNumber(0), // TODO: This is the paramater indicating the maximum amount of DAI to spend to cover the 0x protocol fee
-      new BigNumber(10), // TODO: This is the maximum numebr of trades to actually make. This lets us put in more orders than we could fill with the gasLimit but handle failures and still fill the desired amount
+      new BigNumber(loopLimit), // This is the maximum number of trades to actually make. This lets us put in more orders than we could fill with the gasLimit but handle failures and still fill the desired amount
       orders,
       signatures,
       { attachedEth: protocolFee }
@@ -242,10 +243,10 @@ export class ZeroX {
     console.log(amountRemaining.toString());
     if (amountRemaining.gt(0)) {
       params.amount = amountRemaining;
-      // On successive iterations we specify previously taken signed orders since its possible we do another loop before the mesh has updated our view on the orderbook
+      // On successive iterations we specify previously for certain taken signed orders since its possible we do another loop before the mesh has updated our view on the orderbook
       return this.placeOnChainTrade(
         params,
-        orderIds.concat(ignoreOrders || [])
+        orderIds.slice(0, loopLimit.toNumber()).concat(ignoreOrders || [])
       );
     }
   }
@@ -389,7 +390,7 @@ export class ZeroX {
     params: ZeroXPlaceTradeDisplayParams
   ): Promise<ZeroXSimulateTradeData> {
     const onChainTradeParams = this.getOnChainTradeParams(params);
-    const { orders, signatures, orderIds } = await this.getMatchingOrders(
+    const { orders, signatures, orderIds, loopLimit } = await this.getMatchingOrders(
       onChainTradeParams,
       []
     );
@@ -470,20 +471,28 @@ export class ZeroX {
     });
 
     if (_.size(zeroXOrders) < 1) {
-      return { orders: [], signatures: [], orderIds: [] };
+      return { orders: [], signatures: [], orderIds: [], loopLimit: new BigNumber(0)};
     }
 
     const ordersMap = zeroXOrders[params.market][outcome][orderType];
-    const sortedOrders = _.sortBy(_.values(ordersMap), order => {
-      return order.price;
+
+    const sortedOrders = _.values(ordersMap).sort(function(a,b) {
+      var price = 0;
+      if(params.direction === 0) {
+        var price = (a.price - b.price);
+      }
+      if(params.direction === 1) {
+        var price = (b.price - a.price);
+      }
+      return price === 0? b.amount - a.amount : price;
     });
 
     const { loopLimit, gasLimit } = this.getTradeTransactionLimits(params);
-
+    const numOrdersToPotentiallyFill = 10;
     const ordersData =
       params.direction === 0
-        ? _.take(sortedOrders, loopLimit.toNumber())
-        : _.takeRight(sortedOrders, loopLimit.toNumber());
+        ? _.take(sortedOrders, numOrdersToPotentiallyFill)
+        : _.takeRight(sortedOrders, numOrdersToPotentiallyFill);
 
     const orderIds = _.map(ordersData, orderData => {
       return orderData.orderId;
@@ -512,7 +521,7 @@ export class ZeroX {
       return orderData.signature;
     });
 
-    return { orders, signatures, orderIds };
+    return { orders, signatures, orderIds, loopLimit };
   }
 
   async checkIfTradeValid(

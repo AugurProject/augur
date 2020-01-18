@@ -136,7 +136,7 @@ export class ZeroXOrdersGetters {
       // default to standard
       expirationCutoff = 270;
     }
-    await augur.getGasStation()
+
     return ZeroXOrdersGetters.mapStoredToZeroXOrders(
       markets,
       storedOrders,
