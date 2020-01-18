@@ -15,7 +15,7 @@ DEV="${1-false}"
 # make sure we have the latest images
 # (workaround until next version of docker supports the --pull flag)
 docker pull augurproject/safe-relay-service_web:latest
-docker pull 0xorg/mesh:0xV3
+docker pull fabioberger123/mesh:augur-kovan-devutils-fix
 
 # run docker image, creating or updating local-addresses.json
 if [ "$DEV" == "true" ]; then
