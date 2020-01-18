@@ -130,11 +130,18 @@ export class ZeroXOrdersGetters {
       .reduce((ids, order) => Array.from(new Set([...ids, order.market])), []);
     const markets = await getMarkets(marketIds, db, false);
 
+    var gasConfirmTime = await augur.getGasConfirmEstimate();
+    var expirationCutoff = gasConfirmTime * 1.5;
+    if (!expirationCutoff) {
+      // default to standard
+      expirationCutoff = 270;
+    }
+    await augur.getGasStation()
     return ZeroXOrdersGetters.mapStoredToZeroXOrders(
       markets,
       storedOrders,
       params.ignoreOrders || [],
-      typeof params.expirationCutoffSeconds === 'number' ? params.expirationCutoffSeconds : 60, // default to one minute
+      typeof params.expirationCutoffSeconds === 'number' ? params.expirationCutoffSeconds : expirationCutoff, 
       );
   }
 

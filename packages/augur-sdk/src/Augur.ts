@@ -209,6 +209,27 @@ export class Augur<TProvider extends Provider = Provider> {
     });
   }
 
+  async getGasStation() {
+    return await this.gnosis.gasStation();
+  }
+
+  async getGasConfirmEstimate() {
+    var gasLevels = await this.getGasStation();
+    var recommended = (parseInt(gasLevels["standard"]) + 1000000000);
+    var fast = (parseInt(gasLevels["fast"]) + 1000000000);
+    var gasPrice = await this.getGasPrice();
+    var gasPriceNum = gasPrice.toNumber();
+    if (gasPriceNum >= fast) {
+      return 60;
+    }
+    if (gasPriceNum >= recommended) {
+      return 180;
+    }
+    else {
+      return 1800;
+    }
+  }
+
   getUniverse(address: string): ContractInterfaces.Universe {
     return this.contracts.universeFromAddress(address);
   }
