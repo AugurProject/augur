@@ -36,30 +36,30 @@ export const Transactions = ({
     title="Transactions"
     content={
       <div className={Styles.Content}>
-        <p>Your transactions history</p>
-        <ViewTransactionsButton action={transactions} />
-        <p>Your account</p>
-        <DepositButton action={addFunds} />
-        <WithdrawButton action={withdraw} />
+        <div>
+          <h4>Your transactions history</h4>
+          <ViewTransactionsButton action={transactions} />
+        </div>
+        <div>
+          <h4>Your funds</h4>
+          <DepositButton action={addFunds} />
+          <WithdrawButton action={withdraw} />
+        </div>
         {showFaucets && (
           <div>
-            <p>REP for test net</p>
+            <h4>REP for test net</h4>
+            <h4>DAI for test net</h4>
             <REPFaucetButton action={repFaucet} />
+            <DAIFaucetButton action={daiFaucet} />
           </div>
         )}
         {showFaucets && (
           <div>
-            <p>Legacy REP</p>
+            <h4>Legacy REP</h4>
             <REPFaucetButton
               title="Legacy REP Faucet"
               action={legacyRepFaucet}
             />
-          </div>
-        )}
-        {showFaucets &&  (
-          <div>
-            <p>DAI for test net</p>
-            <DAIFaucetButton action={daiFaucet} />
           </div>
         )}
       </div>
