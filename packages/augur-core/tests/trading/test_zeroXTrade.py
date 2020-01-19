@@ -657,7 +657,7 @@ def test_fees_from_trades(finalized, invalid, contractsFixture, cash, market, un
 
         disputeWindow = contractsFixture.applySignature('DisputeWindow', market.getDisputeWindow())
         contractsFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
-        totalCollectedFees = market.marketCreatorFeesAttoCash() + market.totalAffiliateFeesAttoCash() + market.validityBondAttoCash()
+        totalCollectedFees = market.marketCreatorFeesAttoCash() + market.totalPreFinalizationAffiliateFeesAttoCash() + market.validityBondAttoCash()
         nextDisputeWindowAddress = universe.getOrCreateNextDisputeWindow(False)
         nextDisputeWindowBalanceBeforeFinalization = cash.balanceOf(universe.getOrCreateNextDisputeWindow(False))
         assert market.finalize()
