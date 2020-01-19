@@ -1,6 +1,6 @@
 import { deployContracts } from '../libs/blockchain';
 import { FlashSession, FlashArguments } from './flash';
-import { createCannedMarkets } from './create-canned-markets-and-orders';
+import { createCannedMarkets, Market, CreatedCannedMarket } from './create-canned-markets-and-orders';
 import { _1_ETH } from '../constants';
 import {
   Contracts as compilerOutput,
@@ -389,12 +389,50 @@ export function addScripts(flash: FlashSession) {
   });
 
   flash.addScript({
-    name: 'create-YesNo-zeroX-orders',
+    name: 'create-canned-markets-with-orders',
+    async call(this: FlashSession) {
+      const user = await this.ensureUser();
+      await user.repFaucet(new BigNumber(10).pow(18).multipliedBy(10000));
+      await user.faucet(new BigNumber(10).pow(18).multipliedBy(10000000));
+      await user.approve(new BigNumber(10).pow(18).multipliedBy(10000000000));
+      const markets = await createCannedMarkets(user);
+      for(let i = 0; i < markets.length; i++) {
+        const createdMarket = markets[i];
+        const numTicks = await createdMarket.market.getNumTicks_();
+        const numOutcomes = await createdMarket.market.getNumberOfOutcomes_();
+        const marketId = createdMarket.market.address;
+        const skipFaucetOrApproval = true;
+        if(numOutcomes.gt(new BigNumber(3))) {
+          await this.call('create-cat-zerox-orders', {marketId, numOutcomes: numOutcomes.toString(), skipFaucetOrApproval});
+        } else {
+          if (numTicks.eq(new BigNumber(100))) {
+            await this.call('create-yesno-zerox-orders', {marketId, skipFaucetOrApproval});
+          } else {
+            try {
+              const maxPrice = createdMarket.canned.maxPrice;
+              const minPrice = createdMarket.canned.minPrice;
+              await this.call('create-scalar-zerox-orders', {marketId, maxPrice, minPrice, numTicks: numTicks.toString(), skipFaucetOrApproval});
+            } catch(e) {
+              console.log('could not create orders for scalar market', e)
+            }
+          }
+        }
+      }
+    },
+  });
+
+  flash.addScript({
+    name: 'create-yesno-zerox-orders',
     options: [
       {
         name: 'marketId',
         abbr: 'm',
         description: 'market to create zeroX orders on',
+      },
+      {
+        name: 'skipFaucetOrApproval',
+        flag: true,
+        description: 'do not faucet or approve, has already been done'
       },
       {
         name: 'meshEndpoint',
@@ -408,8 +446,11 @@ export function addScripts(flash: FlashSession) {
       const mesh = args.meshEndpoint as string || undefined;
       const meshEndpoint = mesh ? mesh : endpoint;
       const user = await this.ensureUser(this.network, true, true, null, meshEndpoint, true);
-      await user.faucet(new BigNumber(10).pow(18).multipliedBy(1000000));
-      await user.approve(new BigNumber(10).pow(18).multipliedBy(1000000));
+      const skipFaucetApproval = args.skipFaucetOrApproval as boolean;
+      if (!skipFaucetApproval) {
+        await user.faucet(new BigNumber(10).pow(18).multipliedBy(1000000));
+        await user.approve(new BigNumber(10).pow(18).multipliedBy(1000000));
+      }
       const yesNoMarket = cannedMarkets.find(c => c.marketType === 'yesNo');
       const orderBook = yesNoMarket.orderBook;
       const timestamp = await this.call('get-timestamp', {});
@@ -466,7 +507,7 @@ export function addScripts(flash: FlashSession) {
   });
 
   flash.addScript({
-    name: 'create-Cat-zeroX-orders',
+    name: 'create-cat-zerox-orders',
     options: [
       {
         name: 'marketId',
@@ -480,6 +521,11 @@ export function addScripts(flash: FlashSession) {
         required: true,
         description: 'number of outcomes the market has',
       },
+      {
+        name: 'skipFaucetOrApproval',
+        flag: true,
+        description: 'do not faucet or approve, has already been done'
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const endpoint = 'ws://localhost:60557';
@@ -488,8 +534,12 @@ export function addScripts(flash: FlashSession) {
       const mesh = args.meshEndpoint as string || undefined;
       const meshEndpoint = mesh ? mesh : endpoint;
       const user = await this.ensureUser(this.network, true, true, null, meshEndpoint, true);
-      await user.faucet(new BigNumber(10).pow(18).multipliedBy(1000000));
-      await user.approve(new BigNumber(10).pow(18).multipliedBy(1000000));
+      const skipFaucetApproval = args.skipFaucetOrApproval as boolean;
+      if (!skipFaucetApproval) {
+        await user.faucet(new BigNumber(10).pow(18).multipliedBy(1000000));
+        await user.approve(new BigNumber(10).pow(18).multipliedBy(1000000));
+      }
+
       const orderBook = {
         0: {
           buy: singleOutcomeBids,
@@ -580,7 +630,7 @@ export function addScripts(flash: FlashSession) {
 
 
   flash.addScript({
-    name: 'create-Scalar-zeroX-orders',
+    name: 'create-scalar-zerox-orders',
     options: [
       {
         name: 'marketId',
@@ -611,6 +661,11 @@ export function addScripts(flash: FlashSession) {
         flag: true,
         description: 'create zeroX orders on invalid outcome',
       },
+      {
+        name: 'skipFaucetOrApproval',
+        flag: true,
+        description: 'do not faucet or approve, has already been done'
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const endpoint = 'ws://localhost:60557';
@@ -618,8 +673,12 @@ export function addScripts(flash: FlashSession) {
       const mesh = args.meshEndpoint as string || undefined;
       const meshEndpoint = mesh ? mesh : endpoint;
       const user = await this.ensureUser(this.network, true, true, null, meshEndpoint, true);
-      await user.faucet(new BigNumber(10).pow(18).multipliedBy(1000000));
-      await user.approve(new BigNumber(10).pow(18).multipliedBy(1000000));
+      const skipFaucetApproval = args.skipFaucetOrApproval as boolean;
+      if (!skipFaucetApproval) {
+        await user.faucet(new BigNumber(10).pow(18).multipliedBy(1000000));
+        await user.approve(new BigNumber(10).pow(18).multipliedBy(1000000));
+      }
+
       const timestamp = await this.call('get-timestamp', {});
       const tradeGroupId = String(Date.now());
       const oneHundredDays = 8640000;
