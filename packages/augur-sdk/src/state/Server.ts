@@ -1,13 +1,23 @@
-import * as HTTPEndpoint from "./HTTPEndpoint";
-import * as Sync from "./Sync";
-import * as WebsocketEndpoint from "./WebsocketEndpoint";
-import { EndpointSettings } from "./getter/types";
+import { NetworkId } from "@augurproject/artifacts";
 import { EventEmitter } from "events";
+import { SDKConfiguration, startServer } from "./create-api";
+import { EndpointSettings } from "./getter/types";
+import * as HTTPEndpoint from "./HTTPEndpoint";
+import * as WebsocketEndpoint from "./WebsocketEndpoint";
 
 export async function run() {
   const settings = require("@augurproject/sdk/src/state/settings.json");
 
-  const api = await Sync.start(settings.ethNodeURLs[4], settings.testAccounts[0], false);
+  const config: SDKConfiguration = {
+    networkId: NetworkId.Kovan,
+    ethereum: {
+      http: settings.ethNodeURLs[4]
+    },
+    syncing: {
+    }
+  };
+
+  const api = await startServer(config);
   const endpointSettings = {} as EndpointSettings;
 
   try {

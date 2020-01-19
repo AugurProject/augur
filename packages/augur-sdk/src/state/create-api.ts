@@ -1,105 +1,142 @@
-import { Augur } from '../Augur';
-import { BlockAndLogStreamerListener } from './db/BlockAndLogStreamerListener';
-import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis';
-import { Controller } from './Controller';
+import { getAddressesForNetwork, getStartingBlockForNetwork, NetworkId } from '@augurproject/artifacts';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
+import { EthersSigner } from 'contract-dependencies-ethers';
+import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis';
 import { JsonRpcProvider } from 'ethers/providers';
-import { EmptyConnector } from '../connector/empty-connector';
-import { Addresses, UploadBlockNumbers } from '@augurproject/artifacts';
-import { API } from './getter/API';
+import { ContractEvents } from '../api/ContractEvents';
+import { Augur } from '../Augur';
+import { BaseConnector, EmptyConnector } from '../connector';
+import { Controller } from './Controller';
+import { BlockAndLogStreamerListener } from './db/BlockAndLogStreamerListener';
 import { DB } from './db/DB';
-import { GnosisRelayAPI } from '@augurproject/gnosis-relay-api';
-import { WSClient } from '@0x/mesh-rpc-client';
+import { API } from './getter/API';
 
-interface Settings {
-  gnosisRelayURLs: {
-    [network: number]: string
+export interface SDKConfiguration {
+  networkId: NetworkId,
+  ethereum?: {
+    http: string
   },
-
-  meshClientURLs: {
-    [network: number]: string
+  sdk?: {
+    enabled?: boolean,
+    ws: string
   },
-
-  ethNodeURLs: {
-    [network: number]: string
+  gnosis?: {
+    enabled?: boolean,
+    http: string
   },
-
-  testAccounts: string[],
-
-  blockstreamDelay: number,
-
-  endpointSettings: {
-    pingMs: number,
-    ws: {
-      port: number;
-    };
-    wss: {
-        startWSS: boolean;
-        port: number;
-    };
-    http: {
-        port: number;
-    };
-    https: {
-        startHTTPS: boolean;
-        port: number;
-    };
-    certificateInfo: {
-        certificateFile: string;
-        certificateKeyFile: string;
+  zeroX?: {
+    rpc?: {
+      enabled?: boolean,
+      ws?: string
+    },
+    mesh?: {
+      verbosity?: 0|1|2|3|4|5,
+      enabled?: boolean,
+      bootstrapList?: string[]
     }
+  },
+  syncing?: {
+    enabled?: boolean,
+    blockstreamDelay?: number,
+    chunkSize?: number
   }
 };
-const settings: Settings = require('./settings.json');
 
-async function buildDeps(ethNodeUrl: string, account?: string, enableFlexSearch = false) {
-  try {
-    const ethersProvider = new EthersProvider(new JsonRpcProvider(ethNodeUrl), 10, 0, 40);
-    const networkId = await ethersProvider.getNetworkId();
+export async function createClient(
+  config: SDKConfiguration,
+  connector: BaseConnector,
+  account?: string,
+  signer?: EthersSigner,
+  provider?: JsonRpcProvider,
+  enableFlexSearch = false,
+  ): Promise<Augur> {
 
-    const gnosisRelayURL = settings.gnosisRelayURLs[networkId];
-    if (typeof gnosisRelayURL === "undefined") {
-      console.log(`No gnosis relayer url defined for network: ${networkId}, check settings.json -- using defaults`);
-    }
-
-    let meshClientURL = settings.meshClientURLs[networkId];
-    if (typeof meshClientURL === "undefined") {
-     console.log(`No mesh client url defined for network: ${networkId}, check settings.json -- using defaults`);
-     meshClientURL = "ws://localhost:60557";
-    }
-
-    const gnosisRelay = new GnosisRelayAPI(gnosisRelayURL);
-    const meshClient = new WSClient(meshClientURL);
-    const contractDependencies = new ContractDependenciesGnosis(ethersProvider, gnosisRelay, undefined, undefined, undefined, undefined, account);
-
-    const augur = await Augur.create(ethersProvider, contractDependencies, Addresses[networkId], new EmptyConnector(), undefined, enableFlexSearch, meshClient);
-    const blockAndLogStreamerListener = BlockAndLogStreamerListener.create(ethersProvider, augur.contractEvents.getEventTopics, augur.contractEvents.parseLogs, augur.contractEvents.getEventContractAddress);
-    const db = DB.createAndInitializeDB(
-      Number(networkId),
-      settings.blockstreamDelay,
-      UploadBlockNumbers[networkId],
-      augur,
-      blockAndLogStreamerListener
-    );
-
-    return { augur, blockAndLogStreamerListener, db };
-  }catch(e) {
-    console.log('Error initializing api', e)
+  if (!config.gnosis || !config.gnosis.enabled) {
+    throw new Error('Augur UI requires Gnosis be enabled using config.gnosis');
   }
-  return null;
+
+  const ethersProvider = new EthersProvider( provider || new JsonRpcProvider(config.ethereum.http), 10, 0, 40);
+  const addresses = getAddressesForNetwork(config.networkId);
+  const contractDependencies = ContractDependenciesGnosis.create(
+    ethersProvider,
+    signer,
+    addresses.Cash,
+    config.gnosis.http
+  );
+
+  const client = await Augur.create(
+    ethersProvider,
+    contractDependencies,
+    addresses,
+    connector,
+    enableFlexSearch
+  );
+
+  return client;
 }
 
-export async function create(ethNodeUrl: string, account?: string, enableFlexSearch = false): Promise<{ api: API, controller: Controller }> {
-  const { augur, blockAndLogStreamerListener, db } = await buildDeps(ethNodeUrl, account, enableFlexSearch);
+export async function createServer(config: SDKConfiguration, client?: Augur, account?: string): Promise<{ api: API, controller: Controller }> {
+  // Validate the config -- check that the syncing key exits and use defaults if not
+  config = {
+    syncing: {
+      enabled: true,
+      blockstreamDelay: 10,
+      chunkSize: 100000
+    },
+    ...config
+  };
 
-  const controller = new Controller(augur, db, blockAndLogStreamerListener);
-  const api = new API(augur, db);
+  // On the server side there's no connector layer. Ideally all the server
+  // side code would only use the `contracts` interface and not the Augur
+  // functionality since that was really originally designed for client connection
+  // over a connector TO the server.
+  if (!client) {
+    const connector = new EmptyConnector();
+    client = await createClient(config, connector, account, undefined, undefined, true);
+  }
+
+  const ethersProvider = new EthersProvider( new JsonRpcProvider(config.ethereum.http), 10, 0, 40);
+  const contractEvents = new ContractEvents(
+    ethersProvider,
+    client.addresses.Augur,
+    client.addresses.AugurTrading,
+    client.addresses.ShareToken,
+    client.addresses.Exchange
+  );
+  const blockAndLogStreamerListener = BlockAndLogStreamerListener.create(
+    ethersProvider,
+    contractEvents.getEventTopics,
+    contractEvents.parseLogs,
+    contractEvents.getEventContractAddress
+  );
+  const db = DB.createAndInitializeDB(
+    Number(config.networkId),
+    config.syncing.blockstreamDelay,
+    getStartingBlockForNetwork(config.networkId),
+    client,
+    blockAndLogStreamerListener,
+    config.zeroX && (config.zeroX.mesh && config.zeroX.mesh.enabled || config.zeroX.rpc && config.zeroX.rpc.enabled)
+  );
+  const controller = new Controller(client, db, blockAndLogStreamerListener);
+  const api = new API(client, db);
 
   return { api, controller };
 }
 
-export async function buildAPI(ethNodeUrl: string, account?: string, enableFlexSearch = false): Promise<API> {
-  const { augur, db } = await buildDeps(ethNodeUrl, account, enableFlexSearch);
+export async function startServerFromClient(config: SDKConfiguration, client?: Augur ): Promise<API> {
+  const { api, controller } = await createServer(config, client);
 
-  return new API(augur, db);
+  await controller.run();
+
+  return api;
 }
+
+export async function startServer(config: SDKConfiguration, account?: string): Promise<API> {
+  const { api, controller } = await createServer(config, undefined, account);
+
+  await controller.run();
+
+  return api;
+}
+
+
