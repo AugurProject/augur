@@ -67,6 +67,7 @@ export async function setupServerAsync(): Promise<WebSocket.server> {
  */
 export function stopServer(): void {
     try {
+        server.close()
         wsServer.shutDown();
     } catch (e) {
         logUtils.log('stopServer threw', e);
@@ -114,7 +115,7 @@ export class MockMeshServer {
             if (this._subInterval !== null) {
               throw new Error("Attempting to subscribe twice to the mock relayer. Make sure tests unsubscribe.")
             }
-          
+
             this._subInterval = setInterval(() => {
                 connection.sendUTF(JSON.stringify({
                     jsonrpc: "2.0",
