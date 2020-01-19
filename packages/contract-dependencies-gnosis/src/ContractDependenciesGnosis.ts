@@ -22,7 +22,7 @@ import { JsonRpcProvider } from 'ethers/providers';
 import { getAddress } from 'ethers/utils/address';
 import * as _ from 'lodash';
 
-const DEFAULT_GAS_PRICE = new BigNumber(10 ** 9);
+const DEFAULT_GAS_PRICE = new BigNumber(10 ** 9 * 4); // Default: GasPrice: 4
 const BASE_GAS_ESTIMATE = '75000';
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 const GWEI_CONVERSION = 1000000000;
@@ -86,7 +86,7 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
         gasToken: '0x0',
         safeTxGas: '0x0',
         dataGas: new BigNumber(0),
-        gasPrice: new BigNumber(0),
+        gasPrice: DEFAULT_GAS_PRICE,
         refundReceiver: '0x0',
         nonce: nonce - 1,
         value: new BigNumber(0),
@@ -101,7 +101,7 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
           gasToken: '0x0',
           safeTxGas: '0x0',
           dataGas: new BigNumber(0),
-          gasPrice: new BigNumber(0),
+          gasPrice: DEFAULT_GAS_PRICE,
           refundReceiver: '0x0',
           nonce: -1,
           value: new BigNumber(0),
@@ -266,6 +266,7 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
       value: value ? new BigNumber(value.toString()) : new BigNumber(0),
       operation: Operation.Call,
       gasToken: this.gasToken,
+      gasPrice: new ethers.utils.BigNumber(Number(this.gasPrice).toFixed()),
     };
 
     const gasEstimates: RelayTxEstimateResponse = await this.estimateTransactionViaRelay(
@@ -356,6 +357,7 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
       value: new BigNumber(value.toString()),
       operation,
       gasToken: this.gasToken,
+      gasPrice: this.gasPrice,
     };
 
     let gasEstimates: RelayTxEstimateResponse;
