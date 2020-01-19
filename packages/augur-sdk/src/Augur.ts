@@ -1,48 +1,36 @@
-import { Accounts } from "./state/getter/Accounts";
+import { ContractAddresses, NetworkId } from '@augurproject/artifacts';
+import { ContractInterfaces } from '@augurproject/core';
+import { GnosisSafeState, GnosisSafeStateReponse } from '@augurproject/gnosis-relay-api';
 import { BigNumber } from 'bignumber.js';
-import { Callback, TXStatusCallback } from "./events";
-import { BaseConnector } from "./connector/baseConnector";
-import { ContractAddresses, NetworkId } from "@augurproject/artifacts";
-import { TransactionStatusCallback, TransactionStatus, EthersSigner } from "contract-dependencies-ethers";
-import { ContractDependenciesGnosis } from "contract-dependencies-gnosis";
-import { IGnosisRelayAPI, GnosisSafeState } from "@augurproject/gnosis-relay-api";
-import { ContractInterfaces } from "@augurproject/core";
-import { Contracts } from "./api/Contracts";
-import { CreateYesNoMarketParams, CreateCategoricalMarketParams, CreateScalarMarketParams, Market } from "./api/Market";
-import { Gnosis } from "./api/Gnosis";
-import { HotLoading, DisputeWindow, GetDisputeWindowParams } from "./api/HotLoading";
-import { EmptyConnector } from "./connector/empty-connector";
-import { ContractEvents } from "./api/ContractEvents";
-import { Markets } from "./state/getter/Markets";
-import { Universe } from "./state/getter/Universe";
-import { Platform } from "./state/getter/Platform";
-import { ZeroXOrder, ZeroXOrdersGetters } from "./state/getter/ZeroXOrdersGetters";
-import { Provider } from "./ethereum/Provider";
-import { Status } from "./state/getter/status";
-import { TXStatus } from "./event-handlers";
-import { OnChainTrade } from "./api/OnChainTrade";
-import { PlaceTradeDisplayParams, SimulateTradeData, Trade } from "./api/Trade";
-import { OnChainTrading } from "./state/getter/OnChainTrading";
-import { Users } from "./state/getter/Users";
-import { getAddress } from "ethers/utils/address";
-import { isSubscriptionEventName, SubscriptionEventName, TXEventName } from "./constants";
-import { Liquidity } from "./api/Liquidity";
-import { Liquidity as LiquidityGetter } from "./state/getter/Liquidity";
-import { TransactionResponse } from "ethers/providers";
-import { SyncableFlexSearch } from "./state/db/SyncableFlexSearch";
-import { WSClient } from '@0x/mesh-rpc-client';
-import {
-  GnosisSafeStateReponse,
-} from '@augurproject/gnosis-relay-api';
+import { EthersSigner, TransactionStatus, TransactionStatusCallback } from 'contract-dependencies-ethers';
+import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis';
+import { TransactionResponse } from 'ethers/providers';
 import { Arrayish } from 'ethers/utils';
-import { GnosisSafeStatusPayload } from './api/Gnosis';
-
-import { BrowserMesh, ZeroX } from './api/ZeroX';
-import { SingleThreadConnector } from './connector';
-import {
-  augurEmitter,
-  EventNameEmitter,
-} from './events';
+import { getAddress } from 'ethers/utils/address';
+import { ContractEvents } from './api/ContractEvents';
+import { Contracts } from './api/Contracts';
+import { Gnosis, GnosisSafeStatusPayload } from './api/Gnosis';
+import { HotLoading, DisputeWindow, GetDisputeWindowParams } from './api/HotLoading';
+import { Liquidity } from './api/Liquidity';
+import { CreateYesNoMarketParams, CreateCategoricalMarketParams, CreateScalarMarketParams, Market } from './api/Market';
+import { OnChainTrade } from './api/OnChainTrade';
+import { PlaceTradeDisplayParams, SimulateTradeData, Trade } from './api/Trade';
+import { ZeroX } from './api/ZeroX';
+import { BaseConnector, EmptyConnector, SingleThreadConnector } from './connector';
+import { isSubscriptionEventName, SubscriptionEventName, TXEventName } from './constants';
+import { Provider } from './ethereum/Provider';
+import { TXStatus } from './event-handlers';
+import { augurEmitter, Callback, TXStatusCallback } from './events';
+import { SyncableFlexSearch } from './state/db/SyncableFlexSearch';
+import { Accounts } from './state/getter/Accounts';
+import { Liquidity as LiquidityGetter } from './state/getter/Liquidity';
+import { Markets } from './state/getter/Markets';
+import { OnChainTrading } from './state/getter/OnChainTrading';
+import { Platform } from './state/getter/Platform';
+import { Status } from './state/getter/status';
+import { Universe } from './state/getter/Universe';
+import { Users } from './state/getter/Users';
+import { ZeroXOrdersGetters } from './state/getter/ZeroXOrdersGetters';
 import { Address } from './state/logs/types';
 import { Subscriptions } from './subscriptions';
 
@@ -55,7 +43,7 @@ export class Augur<TProvider extends Provider = Provider> {
   readonly addresses: ContractAddresses;
   readonly contracts: Contracts;
   readonly onChainTrade: OnChainTrade;
-  readonly zeroX: ZeroX;
+  zeroX: ZeroX;
   readonly trade: Trade;
   readonly market: Market;
   readonly gnosis: Gnosis;
@@ -79,10 +67,7 @@ export class Augur<TProvider extends Provider = Provider> {
     networkId: NetworkId,
     addresses: ContractAddresses,
     connector: BaseConnector = new EmptyConnector(),
-    gnosisRelay: IGnosisRelayAPI = undefined,
-    enableFlexSearch = false,
-    meshClient: WSClient = undefined,
-    browserMesh: BrowserMesh = undefined
+    enableFlexSearch = false
   ) {
     this.provider = provider;
     this.dependencies = dependencies;
@@ -106,13 +91,9 @@ export class Augur<TProvider extends Provider = Provider> {
       this.addresses.ShareToken,
       this.addresses.Exchange,
       );
-    this.gnosis = new Gnosis(this.provider, gnosisRelay, this, this.dependencies);
+    this.gnosis = new Gnosis(this.provider, this, this.dependencies);
     this.hotLoading = new HotLoading(this);
     this.onChainTrade = new OnChainTrade(this);
-    this.zeroX =
-      meshClient || browserMesh
-        ? new ZeroX(this, meshClient, browserMesh)
-        : undefined;
     this.trade = new Trade(this);
     if (enableFlexSearch && !this.syncableFlexSearch) {
       this.syncableFlexSearch = new SyncableFlexSearch();
@@ -125,26 +106,20 @@ export class Augur<TProvider extends Provider = Provider> {
     dependencies: ContractDependenciesGnosis,
     addresses: ContractAddresses,
     connector: BaseConnector = new SingleThreadConnector(),
-    gnosisRelay: IGnosisRelayAPI = undefined,
-    enableFlexSearch = false,
-    meshClient: WSClient = undefined,
-    meshBrowser: BrowserMesh = undefined
-  ): Promise<Augur> {
+    enableFlexSearch = false
+  ): Promise<Augur<Provider>> {
     const networkId = await provider.getNetworkId();
-    const augur = new Augur<TProvider>(
+    const client = new Augur<TProvider>(
       provider,
       dependencies,
       networkId,
       addresses,
       connector,
-      gnosisRelay,
-      enableFlexSearch,
-      meshClient,
-      meshBrowser
+      enableFlexSearch
     );
-
-    await augur.contracts.setReputationToken(networkId);
-    return augur;
+    connector.client = client;
+    await client.contracts.setReputationToken(networkId);
+    return client;
   }
 
   async getTransaction(hash: string): Promise<TransactionResponse> {
@@ -234,6 +209,32 @@ export class Augur<TProvider extends Provider = Provider> {
     });
   }
 
+  async getGasStation() {
+    return await this.gnosis.gasStation();
+  }
+
+  async getGasConfirmEstimate() {
+    if(!this.getUseGnosisSafe()) {
+      console.log("When not using gnosis safe, Augur doesn't properly estimate the amount of time a transaction should take.")
+      return 180;
+    }
+
+    var gasLevels = await this.getGasStation();
+    var recommended = (parseInt(gasLevels["standard"]) + 1000000000);
+    var fast = (parseInt(gasLevels["fast"]) + 1000000000);
+    var gasPrice = await this.getGasPrice();
+    var gasPriceNum = gasPrice.toNumber();
+    if (gasPriceNum >= fast) {
+      return 60;
+    }
+    if (gasPriceNum >= recommended) {
+      return 180;
+    }
+    else {
+      return 1800;
+    }
+  }
+
   getUniverse(address: string): ContractInterfaces.Universe {
     return this.contracts.universeFromAddress(address);
   }
@@ -264,14 +265,9 @@ export class Augur<TProvider extends Provider = Provider> {
     this.dependencies.deRegisterAllTransactionStatusCallbacks();
   }
 
-  async connect(ethNodeUrl: string, account?: string): Promise<any> {
-    return this.connector.connect(ethNodeUrl, account);
-  }
-
   async disconnect(): Promise<any> {
     return this.connector.disconnect();
   }
-
   bindTo<R, P>(
     f: (db: any, augur: any, params: P) => Promise<R>
   ): (params: P) => Promise<R> {

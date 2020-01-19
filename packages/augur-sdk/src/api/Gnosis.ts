@@ -44,7 +44,6 @@ export interface GnosisSafeStatusPayload
 export class Gnosis {
   constructor(
     private readonly provider: Provider,
-    private readonly gnosisRelay: IGnosisRelayAPI,
     private readonly augur: Augur,
     private readonly dependencies: ContractDependenciesGnosis
   ) {
@@ -61,6 +60,10 @@ export class Gnosis {
       abi.GnosisSafeRegistry as Abi,
       'GnosisSafeRegistry'
     );
+  }
+
+  get gnosisRelay(): IGnosisRelayAPI {
+    return this.dependencies.gnosisRelay;
   }
 
   private safesToCheck: GnosisSafeStatusPayload[] = [];

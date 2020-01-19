@@ -39,7 +39,7 @@ export class DerivedDB extends RollbackTable {
     this.stateDB = db;
     this.name = name;
 
-    db.registerEventListener(mergeEventNames, this.handleMergeEvent);
+    db.registerEventListener(mergeEventNames, this.handleMergeEvent.bind(this));
   }
 
   async sync(highestAvailableBlockNumber: number): Promise<void> {
@@ -73,11 +73,11 @@ export class DerivedDB extends RollbackTable {
   }
 
   // For a group of documents/logs for a particular event type get the latest per id and update the DB documents for the corresponding ids
-  handleMergeEvent = async (
+  async handleMergeEvent (
     blocknumber: number,
     logs: ParsedLog[],
     syncing = false
-  ): Promise<number> => {
+  ): Promise<number> {
     let success = true;
     let documentsByIdByTopic = null;
     if (logs.length > 0) {
