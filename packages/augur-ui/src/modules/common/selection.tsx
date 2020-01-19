@@ -156,12 +156,12 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
         onChange(selected.value);
       }
 
-      this.toggleList();
+      this.toggleList(false);
     }
   };
 
-  toggleList = () => {
-    this.setState({ showList: !this.state.showList });
+  toggleList = (isOpen) => {
+    this.setState({ showList: isOpen });
   };
 
   handleWindowOnClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -205,7 +205,14 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
         }}
         role="button"
         tabIndex={0}
-        onClick={this.toggleList}
+        onMouseEnter={() => {
+          console.log('mouse enter')
+          this.toggleList(true)
+        }}
+        onMouseLeave={() => {
+          console.log('mouse leave')
+          this.toggleList(true)
+        }}
         data-tip
         data-for={'dropdown-' + id + staticLabel}
       >
