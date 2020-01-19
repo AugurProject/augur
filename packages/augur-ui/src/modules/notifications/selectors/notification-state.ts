@@ -1,33 +1,31 @@
 import { createSelector } from 'reselect';
 import { selectMarkets } from 'modules/markets/selectors/markets-all';
 import {
+  selectAccountPositionsState,
   selectLoginAccountAddress,
+  selectMarketInfosState,
   selectPendingLiquidityOrders,
   selectReadNotificationState,
-  selectAccountPositionsState,
-  selectMarketInfosState,
 } from 'store/select-state';
 import { MarketReportingState } from '@augurproject/sdk';
 import {
-  NOTIFICATION_TYPES,
-  TYPE_DISPUTE,
-  TYPE_VIEW_ORDERS,
-  TYPE_VIEW_DETAILS,
-  RESOLVED_MARKETS_OPEN_ORDERS_TITLE,
-  REPORTING_ENDS_SOON_TITLE,
-  FINALIZE_MARKET_TITLE,
   CLAIM_REPORTING_FEES_TITLE,
-  UNSIGNED_ORDERS_TITLE,
+  FINALIZE_MARKET_TITLE,
+  MARKET_IS_MOST_LIKELY_INVALID, MARKET_IS_MOST_LIKELY_INVALID_TITLE,
+  NOTIFICATION_TYPES,
   PROCEEDS_TO_CLAIM_TITLE,
+  REPORTING_ENDS_SOON_TITLE,
   REPORTING_STATE,
+  RESOLVED_MARKETS_OPEN_ORDERS_TITLE,
+  TYPE_DISPUTE,
+  TYPE_VIEW_DETAILS,
+  TYPE_VIEW_ORDERS,
+  UNSIGNED_ORDERS_TITLE,
   ZERO,
 } from 'modules/common/constants';
 import userOpenOrders from 'modules/orders/selectors/user-open-orders';
 import store, { AppState } from 'store';
-import {
-  MarketClaimablePositions,
-  MarketReportClaimableContracts,
-} from 'modules/types';
+import { MarketClaimablePositions, MarketReportClaimableContracts, } from 'modules/types';
 import { selectLoginAccountClaimablePositions } from 'modules/positions/selectors/login-account-claimable-winnings';
 import { selectReportingWinningsByMarket } from 'modules/positions/selectors/select-reporting-winnings-by-market';
 import { selectMarket } from 'modules/markets/selectors/market';
@@ -44,6 +42,19 @@ export const selectResolvedMarketsOpenOrders = createSelector(
             market.reportingState === REPORTING_STATE.AWAITING_FINALIZATION ||
             market.reportingState === REPORTING_STATE.FINALIZED
         )
+        .filter(market => userOpenOrders(market.id).length > 0)
+        .map(getRequiredMarketData);
+    }
+    return [];
+  }
+);
+
+export const selectMostLikelyInvalidMarkets = createSelector(
+  selectMarkets,
+  markets => {
+    if (markets.length > 0) {
+      return markets
+        .filter(market => market.mostLikelyInvalid)
         .filter(market => userOpenOrders(market.id).length > 0)
         .map(getRequiredMarketData);
     }
@@ -168,6 +179,7 @@ export const selectNotifications = createSelector(
   selectMarketsInDispute,
   selectReportingWinningsByMarket,
   selectUnsignedOrders,
+  selectMostLikelyInvalidMarkets,
   selectReadNotificationState,
   (
     reportOnMarkets,
@@ -176,6 +188,7 @@ export const selectNotifications = createSelector(
     marketsInDispute,
     claimReportingFees,
     unsignedOrders,
+    mostLikelyInvalidMarkets,
     readNotifications
   ): Notification[] => {
     // Generate non-unquie notifications
@@ -199,6 +212,10 @@ export const selectNotifications = createSelector(
       unsignedOrders,
       NOTIFICATION_TYPES.unsignedOrders
     );
+    const mostLikelyInvalidMarketsNotifications = generateCards(
+      mostLikelyInvalidMarkets,
+      NOTIFICATION_TYPES.marketIsMostLikelyInvalid
+    );
 
     // Add non unquie notifications
     let notifications = [
@@ -207,6 +224,7 @@ export const selectNotifications = createSelector(
       ...finalizeMarketsNotifications,
       ...marketsInDisputeNotifications,
       ...unsignedOrdersNotifications,
+      ...mostLikelyInvalidMarketsNotifications,
     ];
 
     // Add unquie notifications
@@ -325,6 +343,14 @@ const generateCards = (markets, type) => {
       isImportant: false,
       isNew: true,
       title: PROCEEDS_TO_CLAIM_TITLE,
+      buttonLabel: TYPE_VIEW_DETAILS,
+    };
+  } else if (type === NOTIFICATION_TYPES.marketIsMostLikelyInvalid) {
+    defaults = {
+      type,
+      isImportant: false,
+      isNew: true,
+      title: MARKET_IS_MOST_LIKELY_INVALID_TITLE,
       buttonLabel: TYPE_VIEW_DETAILS,
     };
   }

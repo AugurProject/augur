@@ -9,7 +9,7 @@ import makeQuery from "modules/routes/helpers/make-query";
 
 import { NotificationCard } from "modules/account/components/notification-card";
 import { PillLabel } from "modules/common/labels";
-import { REPORTING, DISPUTING } from "modules/routes/constants/views";
+import { REPORTING, DISPUTING, MARKET } from "modules/routes/constants/views";
 import {
   MARKET_ID_PARAM_NAME,
   RETURN_PARAM_NAME,
@@ -21,7 +21,7 @@ import {
   DisputeTemplate,
   ClaimReportingFeesTemplate,
   UnsignedOrdersTemplate,
-  ProceedsToClaimTemplate,
+  ProceedsToClaimTemplate, MostLikelyInvalidMarketsTemplate,
 } from "modules/account/components/notifications-templates";
 
 import { Notification, DateFormattedObject, QueryEndpoints } from "modules/types";
@@ -143,6 +143,19 @@ class Notifications extends React.Component<
           this.props.claimMarketsProceeds(notification.markets, () =>
             this.disableNotification(notification.id, false)
           );
+        };
+        break;
+
+      case NOTIFICATION_TYPES.marketIsMostLikelyInvalid:
+        buttonAction = () => {
+          this.markAsRead(notification);
+          const queryLink: QueryEndpoints = {
+            [MARKET_ID_PARAM_NAME]: notification.market && notification.market.id,
+          };
+          history.push({
+            pathname: makePath(MARKET, null),
+            search: makeQuery(queryLink),
+          });
         };
         break;
 
@@ -269,6 +282,12 @@ class Notifications extends React.Component<
           ) as any : null}
           {type === NOTIFICATION_TYPES.proceedsToClaim ? (
             <ProceedsToClaimTemplate
+              isDisabled={isDisabled}
+              {...templateProps}
+            />
+          ) as any : null}
+          {type === NOTIFICATION_TYPES.marketIsMostLikelyInvalid ? (
+            <MostLikelyInvalidMarketsTemplate
               isDisabled={isDisabled}
               {...templateProps}
             />
