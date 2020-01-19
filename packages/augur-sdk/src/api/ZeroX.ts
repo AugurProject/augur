@@ -1,13 +1,9 @@
-import {
-  OrderEvent,
-  OrderInfo,
-  WSClient,
-} from '@0x/mesh-rpc-client';
-import { ValidationResults } from '@0x/mesh-browser';
-import { SignatureType, SignedOrder } from '@0x/types';
-import { ExchangeFillEvent } from '@0x/mesh-browser';
+import { ExchangeFillEvent, ValidationResults } from '@0x/mesh-browser';
+import { OrderEvent, OrderInfo, WSClient } from '@0x/mesh-rpc-client';
+import { SignedOrder } from '@0x/types';
 import { Event } from '@augurproject/core/build/libraries/ContractInterfaces';
 import { BigNumber } from 'bignumber.js';
+import { ethers } from 'ethers';
 import * as _ from 'lodash';
 import * as constants from '../constants';
 import { NULL_ADDRESS } from '../constants';
@@ -21,12 +17,10 @@ import {
 } from '../utils';
 import { Augur } from './../Augur';
 import {
-  NativePlaceTradeDisplayParams,
   NativePlaceTradeChainParams,
+  NativePlaceTradeDisplayParams,
   TradeTransactionLimits,
 } from './OnChainTrade';
-import { ethers } from 'ethers';
-
 
 export enum Verbosity {
   Panic = 0,
@@ -53,10 +47,14 @@ export interface BrowserMesh {
   startAsync(): Promise<void>;
   onError(handler: (err: Error) => void): void;
   onOrderEvents(handler: (events: OrderEvent[]) => void): void;
-  addOrdersAsync(orders: SignedOrder[], pinned?: boolean): Promise<ValidationResults>;
+  addOrdersAsync(
+    orders: SignedOrder[],
+    pinned?: boolean
+  ): Promise<ValidationResults>;
 }
 
-export interface ZeroXPlaceTradeDisplayParams extends NativePlaceTradeDisplayParams {
+export interface ZeroXPlaceTradeDisplayParams
+  extends NativePlaceTradeDisplayParams {
   expirationTime: BigNumber;
 }
 
@@ -112,39 +110,57 @@ export interface MatchingOrders {
   orders: ZeroXTradeOrder[];
   signatures: string[];
   orderIds: string[];
+  loopLimit: BigNumber;
 }
 
 export class ZeroX {
-  private readonly augur: Augur;
-  private readonly meshClient: WSClient;
-  public browserMesh: BrowserMesh;
+  private meshClient?: WSClient;
+  private browserMesh?: BrowserMesh;
 
-  constructor(augur: Augur, meshClient?: WSClient, browserMesh?: BrowserMesh) {
-    if (!(browserMesh || meshClient)) {
-      throw Error('ZeroX instance mush have browserMesh, meshClient, or both');
-    }
-
-    this.augur = augur;
-    this.meshClient = meshClient;
-    this.browserMesh = browserMesh;
+  get rpc(): WSClient {
+    return this.meshClient;
   }
 
-  subscribeToMeshEvents(
-    callback: (orderEvents: OrderEvent[]) => void
-  ) {
-    if (this.browserMesh) {
-      this.browserMesh.onOrderEvents(callback);
-    } else {
-      this.meshClient.subscribeToOrdersAsync(callback);
+  set rpc(client: WSClient) {
+    this.meshClient = client;
+
+    if (!this.meshClient) return;
+
+    this.meshClient.subscribeToOrdersAsync((orderEvents: OrderEvent[]) => {
+      if (!this.browserMesh) {
+        this.augur.events.emit('ZeroX:RPC:OrderEvent', orderEvents);
+      }
+    });
+  }
+
+  get mesh(): BrowserMesh {
+    return this.browserMesh;
+  }
+
+  set mesh(mesh: BrowserMesh) {
+    this.browserMesh = mesh;
+
+    if (!this.browserMesh) return;
+
+    this.browserMesh.onOrderEvents((orderEvents: OrderEvent[]) => {
+      if (orderEvents.length > 0) {
+        this.augur.events.emit('ZeroX:Mesh:OrderEvent', orderEvents);
+      }
+    });
+  }
+
+  constructor(private readonly augur: Augur, meshClientEndpoint?: string) {
+    if (typeof meshClientEndpoint !== 'undefined') {
+      this.rpc = new WSClient(meshClientEndpoint);
     }
   }
 
   async getOrders(): Promise<OrderInfo[]> {
     // TODO when browser mesh supports this back out to using it if meshClient not provided
-    if (!this.meshClient) {
+    if (!this.rpc) {
       throw Error('getOrders is not supported on browser mesh');
     }
-    const response = await this.meshClient.getOrdersAsync();
+    const response = await this.rpc.getOrdersAsync();
     return response.ordersInfos;
   }
 
@@ -188,7 +204,7 @@ export class ZeroX {
     const invalidReason = await this.checkIfTradeValid(params);
     if (invalidReason) throw new Error(invalidReason);
 
-    const { orders, signatures, orderIds } = await this.getMatchingOrders(
+    const { orders, signatures, orderIds, loopLimit } = await this.getMatchingOrders(
       params,
       ignoreOrders
     );
@@ -212,19 +228,26 @@ export class ZeroX {
       params.fingerprint,
       params.tradeGroupId,
       new BigNumber(0), // TODO: This is the paramater indicating the maximum amount of DAI to spend to cover the 0x protocol fee
-      new BigNumber(10), // TODO: This is the maximum numebr of trades to actually make. This lets us put in more orders than we could fill with the gasLimit but handle failures and still fill the desired amount
+      new BigNumber(loopLimit), // This is the maximum number of trades to actually make. This lets us put in more orders than we could fill with the gasLimit but handle failures and still fill the desired amount
       orders,
       signatures,
       { attachedEth: protocolFee }
     );
 
     const account = await this.augur.getAccount();
-    const amountRemaining = this.getTradeAmountRemaining(account, params.amount, result);
+    const amountRemaining = this.getTradeAmountRemaining(
+      account,
+      params.amount,
+      result
+    );
     console.log(amountRemaining.toString());
     if (amountRemaining.gt(0)) {
       params.amount = amountRemaining;
-      // On successive iterations we specify previously taken signed orders since its possible we do another loop before the mesh has updated our view on the orderbook
-      return this.placeOnChainTrade(params, orderIds.concat(ignoreOrders || []));
+      // On successive iterations we specify previously for certain taken signed orders since its possible we do another loop before the mesh has updated our view on the orderbook
+      return this.placeOnChainTrade(
+        params,
+        orderIds.slice(0, loopLimit.toNumber()).concat(ignoreOrders || [])
+      );
     }
   }
 
@@ -234,7 +257,7 @@ export class ZeroX {
   }
 
   async placeOnChainOrder(params: ZeroXPlaceTradeParams): Promise<string> {
-    const { order, hash }  = await this.createZeroXOrder(params);
+    const { order, hash } = await this.createZeroXOrder(params);
     const validation = await this.addOrder(order);
     if (validation.rejected.length > 0) {
       console.log(JSON.stringify(validation.rejected, null, 2));
@@ -262,7 +285,11 @@ export class ZeroX {
     const order = result[0];
     const hash = result[1];
     const makerAddress: string = order[0]; // signer or gnosis safe
-    const signature = await this.signOrder(order, hash, this.augur.getUseGnosisSafe());
+    const signature = await this.signOrder(
+      order,
+      hash,
+      this.augur.getUseGnosisSafe()
+    );
 
     return {
       order: {
@@ -289,29 +316,42 @@ export class ZeroX {
     };
   }
 
-  async signOrder(signedOrder: any, orderHash: string, gnosis=true): Promise<string> {
+  async signOrder(
+    signedOrder: any,
+    orderHash: string,
+    gnosis = true
+  ): Promise<string> {
     if (gnosis) {
       return this.signGnosisOrder(signedOrder, orderHash);
     } else {
-      return this.signSimpleOrder(orderHash)
+      return this.signSimpleOrder(orderHash);
     }
   }
 
   async signGnosisOrder(signedOrder: any, orderHash: string): Promise<string> {
     const gnosisSafeAddress: string = signedOrder[0];
 
-    const gnosisSafe = this.augur.contracts.gnosisSafeFromAddress(gnosisSafeAddress);
+    const gnosisSafe = this.augur.contracts.gnosisSafeFromAddress(
+      gnosisSafeAddress
+    );
 
-    const eip1271OrderWithHash = await this.augur.contracts.ZeroXTrade.encodeEIP1271OrderWithHash_(signedOrder, orderHash);
+    const eip1271OrderWithHash = await this.augur.contracts.ZeroXTrade.encodeEIP1271OrderWithHash_(
+      signedOrder,
+      orderHash
+    );
     const messageHash = await gnosisSafe.getMessageHash_(eip1271OrderWithHash);
 
     // In 0x v3, '07' is EIP1271Wallet
     // See https://github.com/0xProject/0x-mesh/blob/0xV3/zeroex/order.go#L51
     const signatureType = '07';
 
-    const signedMessage = await this.augur.signMessage(ethers.utils.arrayify(messageHash));
-    const {r, s, v} = ethers.utils.splitSignature(signedMessage);
-    const signature = `0x${r.slice(2)}${s.slice(2)}${(v+4).toString(16)}${signatureType}`;
+    const signedMessage = await this.augur.signMessage(
+      ethers.utils.arrayify(messageHash)
+    );
+    const { r, s, v } = ethers.utils.splitSignature(signedMessage);
+    const signature = `0x${r.slice(2)}${s.slice(2)}${(v + 4).toString(
+      16
+    )}${signatureType}`;
     return signature;
   }
 
@@ -319,9 +359,11 @@ export class ZeroX {
     // See https://github.com/0xProject/0x-mesh/blob/0xV3/zeroex/order.go#L51
     const signatureType = '03';
 
-    const signedMessage = await this.augur.signMessage(ethers.utils.arrayify(orderHash));
-    const {r, s, v} = ethers.utils.splitSignature(signedMessage);
-    return `0x${(v).toString(16)}${r.slice(2)}${s.slice(2)}${signatureType}`;
+    const signedMessage = await this.augur.signMessage(
+      ethers.utils.arrayify(orderHash)
+    );
+    const { r, s, v } = ethers.utils.splitSignature(signedMessage);
+    return `0x${v.toString(16)}${r.slice(2)}${s.slice(2)}${signatureType}`;
   }
 
   async addOrder(order) {
@@ -331,8 +373,7 @@ export class ZeroX {
       } else {
         return this.meshClient.addOrdersAsync([order]);
       }
-    }
-    catch(error) {
+    } catch (error) {
       return setTimeout(this.addOrder(order), 5000);
     }
   }
@@ -349,7 +390,7 @@ export class ZeroX {
     params: ZeroXPlaceTradeDisplayParams
   ): Promise<ZeroXSimulateTradeData> {
     const onChainTradeParams = this.getOnChainTradeParams(params);
-    const { orders, signatures, orderIds } = await this.getMatchingOrders(
+    const { orders, signatures, orderIds, loopLimit } = await this.getMatchingOrders(
       onChainTradeParams,
       []
     );
@@ -430,22 +471,32 @@ export class ZeroX {
     });
 
     if (_.size(zeroXOrders) < 1) {
-      return { orders: [], signatures: [], orderIds: [] };
+      return { orders: [], signatures: [], orderIds: [], loopLimit: new BigNumber(0)};
     }
+
     let ordersMap = []
     if (zeroXOrders[params.market] && zeroXOrders[params.market][outcome] && zeroXOrders[params.market][outcome][orderType]) {
       ordersMap = zeroXOrders[params.market][outcome][orderType];
     }
-    const sortedOrders = _.sortBy(_.values(ordersMap), order => {
-      return order.price;
+
+    const sortedOrders = _.values(ordersMap).sort(function(a,b) {
+      var price = 0;
+      if(params.direction === 0) {
+        var price = (a.price - b.price);
+      }
+      if(params.direction === 1) {
+        var price = (b.price - a.price);
+      }
+      return price === 0? b.amount - a.amount : price;
+
     });
 
     const { loopLimit, gasLimit } = this.getTradeTransactionLimits(params);
-
+    const numOrdersToPotentiallyFill = 10;
     const ordersData =
       params.direction === 0
-        ? _.take(sortedOrders, loopLimit.toNumber())
-        : _.takeRight(sortedOrders, loopLimit.toNumber());
+        ? _.take(sortedOrders, numOrdersToPotentiallyFill)
+        : _.takeRight(sortedOrders, numOrdersToPotentiallyFill);
 
     const orderIds = _.map(ordersData, orderData => {
       return orderData.orderId;
@@ -474,7 +525,7 @@ export class ZeroX {
       return orderData.signature;
     });
 
-    return { orders, signatures, orderIds };
+    return { orders, signatures, orderIds, loopLimit };
   }
 
   async checkIfTradeValid(
@@ -516,15 +567,19 @@ export class ZeroX {
     return null;
   }
 
-  private getTradeAmountRemaining(account,
+  private getTradeAmountRemaining(
+    account,
     tradeOnChainAmountRemaining: BigNumber,
     events: Event[]
   ): BigNumber {
     let amountRemaining = tradeOnChainAmountRemaining;
     for (const event of events) {
-      if(event.name === "Fill" && (event.parameters as ExchangeFillEvent).makerAddress == account) {
-        const onChainAmountFilled =
-            (event.parameters as ExchangeFillEvent).makerAssetFilledAmount;
+      if (
+        event.name === 'Fill' &&
+        (event.parameters as ExchangeFillEvent).makerAddress == account
+      ) {
+        const onChainAmountFilled = (event.parameters as ExchangeFillEvent)
+          .makerAssetFilledAmount;
         amountRemaining = amountRemaining.minus(onChainAmountFilled);
       }
       if (event.name === 'OrderEvent') {
@@ -543,7 +598,7 @@ export class ZeroX {
     return amountRemaining;
   }
 
-getTradeTransactionLimits(
+  getTradeTransactionLimits(
     params: NativePlaceTradeChainParams
   ): TradeTransactionLimits {
     let loopLimit = new BigNumber(1);
@@ -564,10 +619,13 @@ getTradeTransactionLimits(
     };
   }
 
-
-  async simulateTradeGasLimit(params: ZeroXPlaceTradeDisplayParams): Promise<BigNumber> {
+  async simulateTradeGasLimit(
+    params: ZeroXPlaceTradeDisplayParams
+  ): Promise<BigNumber> {
     const onChainTradeParams = this.getOnChainTradeParams(params);
-    const { gasLimit } = await this.getTradeTransactionLimits(onChainTradeParams);
+    const { gasLimit } = await this.getTradeTransactionLimits(
+      onChainTradeParams
+    );
     return gasLimit;
   }
 }

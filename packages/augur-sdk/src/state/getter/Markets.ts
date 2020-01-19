@@ -159,6 +159,7 @@ export interface MarketInfo {
   disavowed: boolean;
   template: ExtraInfoTemplate;
   isTemplate: boolean;
+  mostLikelyInvalid: number;
 }
 
 export interface DisputeInfo {
@@ -1135,7 +1136,8 @@ async function getMarketsInfo(
       disputeInfo,
       disavowed: marketData.disavowed,
       template,
-      isTemplate: marketData.isTemplate
+      isTemplate: marketData.isTemplate,
+      mostLikelyInvalid: Number(marketData.invalidFilter),
     };
   });
 }

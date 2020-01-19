@@ -26,7 +26,6 @@ export class Controller {
 
   async run(): Promise<void> {
     try {
-      this.blockAndLogStreamerListener.listenForAllEvents(this.updateMarketsData);
       this.blockAndLogStreamerListener.notifyNewBlockAfterLogsProcess(this.notifyNewBlockEvent.bind(this));
 
       const db = await this.db;
