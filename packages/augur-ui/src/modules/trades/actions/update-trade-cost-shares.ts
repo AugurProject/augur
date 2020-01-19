@@ -32,7 +32,8 @@ export function updateTradeCost({
       return callback('side or numShare or limitPrice is not provided');
     }
 
-    const { marketInfos, accountPositions } = getState();
+    const { marketInfos, accountPositions, loginAccount } = getState();
+    const userOrderTimeToLiveInSeconds = loginAccount.userOrderTimeToLiveInSecondsOrderFilterInSeconds;
 
     dispatch(checkAccountAllowance());
     const market = marketInfos[marketId];
@@ -51,6 +52,7 @@ export function updateTradeCost({
       marketId,
       outcomeId,
       accountPositions,
+      userOrderTimeToLiveInSeconds,
       callback
     );
   };
@@ -72,7 +74,8 @@ export function updateTradeShares({
       return callback('side or numShare or limitPrice is not provided');
     }
 
-    const { marketInfos, accountPositions } = getState();
+    const { marketInfos, accountPositions, loginAccount } = getState();
+    const userOrderTimeToLiveInSeconds = loginAccount.userOrderTimeToLiveInSecondsOrderFilterInSeconds;
 
     dispatch(checkAccountAllowance());
     const market = marketInfos[marketId];
@@ -126,6 +129,7 @@ export function updateTradeShares({
       marketId,
       outcomeId,
       accountPositions,
+      userOrderTimeToLiveInSeconds,
       callback
     );
   };
@@ -137,6 +141,7 @@ async function runSimulateTrade(
   marketId: string,
   outcomeId: number,
   accountPositions: AccountPosition,
+  userOrderTimeToLiveInSeconds: number,
   callback: NodeStyleCallback
 ) {
   let sharesFilledAvgPrice = '';
@@ -197,7 +202,8 @@ async function runSimulateTrade(
     market.maxPrice,
     newTradeDetails.numShares,
     newTradeDetails.limitPrice,
-    userShares
+    userShares,
+    createBigNumber(userOrderTimeToLiveInSeconds),
   );
 
   let gasLimit: BigNumber = createBigNumber(0);
@@ -231,7 +237,8 @@ async function runSimulateTrade(
       market.maxPrice,
       newTradeDetails.numShares,
       newTradeDetails.limitPrice,
-      userShares
+      userShares,
+      createBigNumber(userOrderTimeToLiveInSeconds),
     );
 
     // Plus ZeroX Fee (150k Gas)

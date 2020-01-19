@@ -848,7 +848,8 @@ export async function simulateTrade(
   maxPrice: BigNumber | string,
   displayAmount: BigNumber | string,
   displayPrice: BigNumber | string,
-  displayShares: BigNumber | string
+  displayShares: BigNumber | string,
+  expirationTime: BigNumber
 ): Promise<SimulateTradeData> {
   const Augur = augurSdk.get();
   const tradeGroupId = generateTradeGroupId();
@@ -866,6 +867,7 @@ export async function simulateTrade(
     displayAmount: createBigNumber(displayAmount),
     displayPrice: createBigNumber(displayPrice),
     displayShares: createBigNumber(displayShares),
+    expirationTime,
   };
 
   return Augur.simulateTrade(params);
@@ -883,7 +885,8 @@ export async function simulateTradeGasLimit(
   maxPrice: BigNumber | string,
   displayAmount: BigNumber | string,
   displayPrice: BigNumber | string,
-  displayShares: BigNumber | string
+  displayShares: BigNumber | string,
+  expirationTime: BigNumber,
 ): Promise<BigNumber> {
   const Augur = augurSdk.get();
   const tradeGroupId = generateTradeGroupId();
@@ -901,6 +904,7 @@ export async function simulateTradeGasLimit(
     displayAmount: createBigNumber(displayAmount),
     displayPrice: createBigNumber(displayPrice),
     displayShares: createBigNumber(displayShares),
+    expirationTime
   };
 
   return Augur.simulateTradeGasLimit(params);
