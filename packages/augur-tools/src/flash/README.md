@@ -7,7 +7,7 @@ In interactive mode (It will show `augur$` in the terminl):
 
     ganache
     deploy
-    create-canned-markets-and-orders
+    create-canned-markets
 
 The local ganache node is now running in your terminal. You can interact with it using flash commands.
 Type `help` for a list.
@@ -16,7 +16,7 @@ Type `help` for a list.
 
 Pro Tip: Interactive mode has tab-completion so instead of
 
-    create-canned-markets-and-orders
+    create-canned-markets
 
 you can type
 
