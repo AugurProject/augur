@@ -214,6 +214,11 @@ export class Augur<TProvider extends Provider = Provider> {
   }
 
   async getGasConfirmEstimate() {
+    if(!this.getUseGnosisSafe()) {
+      console.log("When not using gnosis safe, Augur doesn't properly estimate the amount of time a transaction should take.")
+      return 180;
+    }
+
     var gasLevels = await this.getGasStation();
     var recommended = (parseInt(gasLevels["standard"]) + 1000000000);
     var fast = (parseInt(gasLevels["fast"]) + 1000000000);
