@@ -201,6 +201,13 @@ export class ZeroXOrders extends AbstractTable {
     if (!order.signedOrder.makerAssetAmount.eq(order.signedOrder.takerAssetAmount)) return false;
     if (order.signedOrder.makerAssetData.length !== EXPECTED_ASSET_DATA_LENGTH) return false;
     if (order.signedOrder.takerAssetData !== this.takerAssetData) return false;
+    const assetData = order.signedOrder.makerAssetData;
+    const multiAssetData = defaultAbiCoder.decode(multiAssetDataAbi, `0x${assetData.slice(10)}`);
+    const nestedAssetData = multiAssetData[1] as string[];
+    const decoded = defaultAbiCoder.decode(erc1155AssetDataAbi, `0x${nestedAssetData[0].slice(10)}`);
+    const values = decoded[2] as BigNumber[];
+    if (values[0]["_hex"] != "0x01") return false;
+    if (values.length > 1) return false;
     return true;
   }
 
