@@ -14,7 +14,11 @@ export const loadMarketOrderBook = (marketId: string, callback: NodeStyleCallbac
   }
   const { loginAccount } = getState();
   const Augur = augurSdk.get();
-  const marketOrderBook = await Augur.getMarketOrderBook({ marketId, account: loginAccount.address });
+  const marketOrderBook = await Augur.getMarketOrderBook({
+    marketId,
+    account: loginAccount.address,
+    expirationCutoffSeconds: loginAccount.userTTLOrderFilterInSeconds,
+  });
   dispatch(updateOrderBook(marketId, marketOrderBook.orderBook));
   callback(null, marketOrderBook);
 };

@@ -57,6 +57,7 @@ export const OrdersParams = t.partial({
   orderType: t.string,
   account: t.string,
   orderState: t.string,
+  expirationCutoffSeconds: t.number,
 });
 
 export interface MarketTradingHistory {

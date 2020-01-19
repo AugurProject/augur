@@ -24,6 +24,7 @@ const DEFAULT_STATE: LoginAccount = {
     participationTokens: null,
   },
   allowance: ZERO,
+  userTTLOrderFilterInSeconds: 60,
   totalOpenOrdersFrozenFunds: "0",
   allowanceFormatted: formatAttoDai(ZERO),
   tradingPositionsTotal: {

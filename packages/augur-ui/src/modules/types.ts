@@ -629,6 +629,7 @@ export interface LoginAccount {
   tradingPositionsTotal?: UnrealizedRevenue;
   timeframeData?: TimeframeData;
   allowanceFormatted?: FormattedNumber;
+  userTTLOrderFilterInSeconds: number;
   allowance?: BigNumber;
   balances: AccountBalances;
   reporting: Getters.Accounts.AccountReportingHistory;
