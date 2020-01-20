@@ -42,7 +42,6 @@ interface ReportEndingSoonTemplateProps extends BaseProps {
   market: MarketData;
 }
 
-
 interface DisputeTemplateProps extends BaseProps {
   market: MarketData;
 }
@@ -56,6 +55,10 @@ interface ProceedsToClaimTemplateProps extends BaseProps {
   market: MarketData;
   markets: string[];
   totalProceeds: number | undefined;
+}
+
+interface MostLikelyInvalidMarketsTemplateProps extends BaseProps {
+  market: MarketData;
 }
 
 interface TemplateProps extends BaseProps {
@@ -246,6 +249,17 @@ export const ProceedsToClaimTemplate = (props: ProceedsToClaimTemplateProps) => 
   return (
     <Template
       message={messageText}
+      {...props}
+    />
+  );
+};
+
+export const MostLikelyInvalidMarketsTemplate = (props: MostLikelyInvalidMarketsTemplateProps) => {
+  const { description } = props.market;
+
+  return (
+    <Template
+      message={`A market you have a position in has a high chance of resolving invalid: "${description}"`}
       {...props}
     />
   );
