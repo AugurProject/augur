@@ -5059,7 +5059,13 @@ This can only be done for the Genesis Universe in V2. If a fork occurs and the w
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IWarpSync.notifyMarketFinalized()"><code class="function-signature">notifyMarketFinalized()</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IWarpSync.markets(address)"><code class="function-signature">markets(address _universe)</code></a></li><li><a href="#IWarpSync.notifyMarketFinalized()"><code class="function-signature">notifyMarketFinalized()</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IWarpSync.markets(address)"></a><code class="function-signature">markets(address _universe) <span class="return-arrow">→</span> <span class="return-type">contract IMarket</span></code><span class="function-visibility">external</span></h4>
+
+
 
 
 
@@ -5075,7 +5081,7 @@ This can only be done for the Genesis Universe in V2. If a fork occurs and the w
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#WarpSync.initialize(contract IAugur)"><code class="function-signature">initialize(contract IAugur _augur)</code></a></li><li><a href="#WarpSync.doInitialReport(contract IUniverse,uint256[],string,uint256)"><code class="function-signature">doInitialReport(contract IUniverse _universe, uint256[] _payoutNumerators, string _description, uint256 _additionalStake)</code></a></li><li><a href="#WarpSync.initializeUniverse(contract IUniverse)"><code class="function-signature">initializeUniverse(contract IUniverse _universe)</code></a></li><li><a href="#WarpSync.notifyMarketFinalized()"><code class="function-signature">notifyMarketFinalized()</code></a></li><li><a href="#WarpSync.getFinalizationReward(contract IMarket)"><code class="function-signature">getFinalizationReward(contract IMarket _market)</code></a></li><li><a href="#WarpSync.getCreationReward(contract IUniverse)"><code class="function-signature">getCreationReward(contract IUniverse _universe)</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#WarpSync.initialize(contract IAugur)"><code class="function-signature">initialize(contract IAugur _augur)</code></a></li><li><a href="#WarpSync.doInitialReport(contract IUniverse,uint256[],string,uint256)"><code class="function-signature">doInitialReport(contract IUniverse _universe, uint256[] _payoutNumerators, string _description, uint256 _additionalStake)</code></a></li><li><a href="#WarpSync.initializeUniverse(contract IUniverse)"><code class="function-signature">initializeUniverse(contract IUniverse _universe)</code></a></li><li><a href="#WarpSync.notifyMarketFinalized()"><code class="function-signature">notifyMarketFinalized()</code></a></li><li><a href="#WarpSync.getFinalizationReward(contract IMarket)"><code class="function-signature">getFinalizationReward(contract IMarket _market)</code></a></li><li><a href="#WarpSync.getCreationReward(contract IUniverse)"><code class="function-signature">getCreationReward(contract IUniverse _universe)</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li><li class="inherited"><a href="#IWarpSync.markets(address)"><code class="function-signature">markets(address _universe)</code></a></li></ul></div>
 
 
 
