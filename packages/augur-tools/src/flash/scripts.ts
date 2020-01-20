@@ -455,8 +455,8 @@ export function addScripts(flash: FlashSession) {
       const orderBook = yesNoMarket.orderBook;
       const timestamp = await this.call('get-timestamp', {});
       const tradeGroupId = String(Date.now());
-      const oneHundredDays = 8640000;
-
+      const oneHundredDays = new BigNumber(8640000);
+      const expirationTime = new BigNumber(timestamp).plus(oneHundredDays);
       for (let a = 0; a < Object.keys(orderBook).length; a++) {
         const outcome = Number(Object.keys(orderBook)[a]) as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
         const buySell = Object.values(orderBook)[a];
@@ -479,7 +479,7 @@ export function addScripts(flash: FlashSession) {
             displayAmount: new BigNumber(shares),
             displayPrice: new BigNumber(price),
             displayShares: new BigNumber(0),
-            expirationTime: new BigNumber(timestamp + oneHundredDays),
+            expirationTime,
           });
         }
 
@@ -499,7 +499,7 @@ export function addScripts(flash: FlashSession) {
             displayAmount: new BigNumber(shares),
             displayPrice: new BigNumber(price),
             displayShares: new BigNumber(0),
-            expirationTime: new BigNumber(timestamp + oneHundredDays),
+            expirationTime,
           });
         }
       }
@@ -577,8 +577,8 @@ export function addScripts(flash: FlashSession) {
 
       const timestamp = await this.call('get-timestamp', {});
       const tradeGroupId = String(Date.now());
-      const oneHundredDays = 8640000;
-
+      const oneHundredDays = new BigNumber(8640000);
+      const expirationTime = new BigNumber(timestamp).plus(oneHundredDays);
       for (let a = 0; a < numOutcomes; a++) {
         const outcome = Number(Object.keys(orderBook)[a]) as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
         const buySell = Object.values(orderBook)[a];
@@ -601,7 +601,7 @@ export function addScripts(flash: FlashSession) {
             displayAmount: new BigNumber(shares),
             displayPrice: new BigNumber(price),
             displayShares: new BigNumber(0),
-            expirationTime: new BigNumber(timestamp + oneHundredDays),
+            expirationTime,
           });
         }
 
@@ -621,7 +621,7 @@ export function addScripts(flash: FlashSession) {
             displayAmount: new BigNumber(shares),
             displayPrice: new BigNumber(price),
             displayShares: new BigNumber(0),
-            expirationTime: new BigNumber(timestamp + oneHundredDays),
+            expirationTime,
           });
         }
       }
@@ -681,7 +681,7 @@ export function addScripts(flash: FlashSession) {
 
       const timestamp = await this.call('get-timestamp', {});
       const tradeGroupId = String(Date.now());
-      const oneHundredDays = 8640000;
+      const oneHundredDays = new BigNumber(8640000);
       const onInvalid = args.onInvalid as boolean;
       const numTicks = new BigNumber(String(args.numTicks));
       const maxPrice = new BigNumber(String(args.maxPrice));
@@ -703,7 +703,7 @@ export function addScripts(flash: FlashSession) {
           ],
         },
       };
-
+      const expirationTime = new BigNumber(timestamp).plus(oneHundredDays);
       for (let a = 0; a < Object.keys(orderBook).length; a++) {
         const outcome = !onInvalid ? Number(Object.keys(orderBook)[a]) as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 : 0;
         const buySell = Object.values(orderBook)[a];
@@ -726,7 +726,7 @@ export function addScripts(flash: FlashSession) {
             displayAmount: new BigNumber(shares),
             displayPrice: new BigNumber(price),
             displayShares: new BigNumber(0),
-            expirationTime: new BigNumber(timestamp + oneHundredDays),
+            expirationTime,
           };
           console.log(JSON.stringify(order));
           await user.placeZeroXOrder(order);
@@ -748,7 +748,7 @@ export function addScripts(flash: FlashSession) {
             displayAmount: new BigNumber(shares),
             displayPrice: new BigNumber(price),
             displayShares: new BigNumber(0),
-            expirationTime: new BigNumber(timestamp + oneHundredDays),
+            expirationTime,
           };
           console.log(JSON.stringify(order));
           await user.placeZeroXOrder(order);
@@ -791,12 +791,39 @@ export function addScripts(flash: FlashSession) {
         abbr: 'p',
         description: 'price of the order',
       },
+      {
+        name: 'zerox',
+        abbr: 'z',
+        flag: true,
+        required: false,
+        description: 'create zeroX order'
+      },
+      {
+        name: 'skipFaucetOrApproval',
+        abbr: 'k',
+        flag: true,
+        description: 'do not faucet or approve, has already been done'
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
+      const endpoint = 'ws://localhost:60557';
       const address = args.userAccount as string;
-      const user = await this.ensureUser(null, null, true, address);
-      const type =
-        String(args.orderType).toLowerCase() === 'bid' || 'buy' ? 0 : 1;
+      const isZeroX = args.zerox as boolean;
+      let user = null;
+
+      if (isZeroX) {
+        user = await this.ensureUser(null, null, true, address, endpoint, true);
+      } else {
+        user = await this.ensureUser(null, null, true, address);
+      }
+      const skipFaucetOrApproval = args.skipFaucetOrApproval as boolean;
+      if (!skipFaucetOrApproval) {
+        this.log('create-market-order, skipping faucet and approval');
+        await user.faucet(new BigNumber(10).pow(18).multipliedBy(10000));
+        await user.approve(new BigNumber(10).pow(18).multipliedBy(100000));
+      }
+      const orderType = String(args.orderType).toLowerCase();
+      const type = orderType === 'bid' || orderType === 'buy' ? 0 : 1;
       const onChainShares = convertDisplayAmountToOnChainAmount(
         new BigNumber(String(args.amount)),
         new BigNumber(100)
@@ -807,19 +834,54 @@ export function addScripts(flash: FlashSession) {
         new BigNumber('0.01')
       );
       const nullOrderId = stringTo32ByteHex('');
-      const tradegroupId = stringTo32ByteHex('tradegroupId');
-      const result = await user.placeOrder(
-        String(args.marketId),
-        new BigNumber(type),
-        onChainShares,
-        onChainPrice,
-        new BigNumber(String(args.outcome)),
-        nullOrderId,
-        nullOrderId,
-        tradegroupId
-      );
-
+      const tradeGroupId = stringTo32ByteHex('tradegroupId');
+      let result = null;
+      if (isZeroX) {
+        const timestamp = await this.call('get-timestamp', {});
+        const oneHundredDays = new BigNumber(8640000);
+        const expirationTime = new BigNumber(timestamp).plus(oneHundredDays);
+        const onChainPrice = convertDisplayPriceToOnChainPrice(
+          new BigNumber(String(Number(args.price).toFixed(2))),
+          new BigNumber(0),
+          new BigNumber('0.01')
+        );
+        const price = convertOnChainPriceToDisplayPrice(
+          onChainPrice,
+          new BigNumber(0),
+          new BigNumber('0.01')
+        );
+        console.log('order', String(args.amount), '@', price);
+        result = await user.placeZeroXOrder({
+          direction: type as 0 | 1,
+          market : String(args.marketId),
+          numTicks: new BigNumber(100),
+          numOutcomes: 3,
+          outcome: Number(args.outcome) as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7,
+          tradeGroupId,
+          fingerprint: formatBytes32String('11'),
+          doNotCreateOrders: false,
+          displayMinPrice: new BigNumber(0),
+          displayMaxPrice: new BigNumber(1),
+          displayAmount: new BigNumber(String(args.amount)),
+          displayPrice: price,
+          displayShares: new BigNumber(0),
+          expirationTime,
+        });
+      } else {
+        result = await user.placeOrder(
+          String(args.marketId),
+          new BigNumber(type),
+          onChainShares,
+          onChainPrice,
+          new BigNumber(String(args.outcome)),
+          nullOrderId,
+          nullOrderId,
+          tradeGroupId
+        );
+      }
       this.log(`place order ${result}`);
+      // something is hanging. no missings await that I can see.
+      process.exit();
     },
   });
 
@@ -856,14 +918,40 @@ export function addScripts(flash: FlashSession) {
         abbr: 'p',
         description: 'price of the order',
       },
+      {
+        name: 'zerox',
+        abbr: 'z',
+        flag: true,
+        required: false,
+        description: 'create zeroX order'
+      },
+      {
+        name: 'skipFaucetOrApproval',
+        abbr: 'k',
+        flag: true,
+        description: 'do not faucet or approve, has already been done'
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
+      const endpoint = 'ws://localhost:60557';
       const address = args.userAccount as string;
-      const user = await this.ensureUser(null, null, true, address);
+      const isZeroX = args.zerox as boolean;
+      let user = null;
+
+      if (isZeroX) {
+        user = await this.ensureUser(null, null, true, address, endpoint, true);
+      } else {
+        user = await this.ensureUser(null, null, true, address);
+      }
+      const skipFaucetOrApproval = args.skipFaucetOrApproval as boolean;
+      if (!skipFaucetOrApproval) {
+        this.log('fill-market-orders, skipping faucet and approval');
+        await user.faucet(new BigNumber(10).pow(18).multipliedBy(10000));
+        await user.approve(new BigNumber(10).pow(18).multipliedBy(100000));
+      }
       const adjPrice = Number(args.price).toFixed(2);
-      // switch bid/ask order type to take the order
-      const type =
-        String(args.orderType).toLowerCase() === 'bid' || 'buy' ? 1 : 0;
+      const orderType = String(args.orderType).toLowerCase();
+      const type = orderType === 'bid' || orderType === 'buy' ? 0 : 1;
       const onChainShares = convertDisplayAmountToOnChainAmount(
         new BigNumber(String(args.amount)),
         new BigNumber(100)
@@ -874,38 +962,96 @@ export function addScripts(flash: FlashSession) {
         new BigNumber('0.01')
       );
       const tradegroupId = stringTo32ByteHex('tradegroupId');
-      await user.takeBestOrder(
-        String(args.marketId),
-        new BigNumber(type),
-        onChainShares,
-        onChainPrice,
-        new BigNumber(String(args.outcome)),
-        tradegroupId
-      );
+
+      if (isZeroX) {
+        const timestamp = await this.call('get-timestamp', {});
+        const oneHundredDays = new BigNumber(8640000);
+        const expirationTime = new BigNumber(timestamp).plus(oneHundredDays);
+        const onChainPrice = convertDisplayPriceToOnChainPrice(
+          new BigNumber(String(Number(args.price).toFixed(2))),
+          new BigNumber(0),
+          new BigNumber('0.01')
+        );
+        const price = convertOnChainPriceToDisplayPrice(
+          onChainPrice,
+          new BigNumber(0),
+          new BigNumber('0.01')
+        );
+        console.log('order', String(args.amount), '@', price);
+        const tradeGroupId = stringTo32ByteHex('tradegroupId');
+        await user.placeZeroXTrade({
+          direction: type as 0 | 1,
+          market : String(args.marketId),
+          numTicks: new BigNumber(100),
+          numOutcomes: 3,
+          outcome: Number(args.outcome) as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7,
+          tradeGroupId,
+          fingerprint: formatBytes32String('11'),
+          doNotCreateOrders: false,
+          displayMinPrice: new BigNumber(0),
+          displayMaxPrice: new BigNumber(1),
+          displayAmount: new BigNumber(String(args.amount)),
+          displayPrice: price,
+          displayShares: new BigNumber(0),
+          expirationTime,
+        });
+      } else {
+        await user.takeBestOrder(
+          String(args.marketId),
+          new BigNumber(type),
+          onChainShares,
+          onChainPrice,
+          new BigNumber(String(args.outcome)),
+          tradegroupId
+        );
+      }
 
       this.log(`take best order on outcome ${args.outcome} @ ${adjPrice}`);
+      process.exit();
     },
   });
 
   flash.addScript({
     name: 'fake-all',
-    async call(this: FlashSession) {
+    options: [
+      {
+        name: 'createMarkets',
+        abbr: 'c',
+        description:
+          'create canned markets',
+        flag: true,
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
       await this.call('deploy', {
         write_artifacts: true,
         time_controlled: true,
       });
-      await this.call('create-canned-markets', {});
+      const createMarkets = args.createMarkets as boolean;
+      if (createMarkets)
+        await this.call('create-canned-markets', {});
     },
   });
 
   flash.addScript({
     name: 'normal-all',
-    async call(this: FlashSession) {
+    options: [
+      {
+        name: 'createMarkets',
+        abbr: 'c',
+        description:
+          'create canned markets',
+        flag: true,
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
       await this.call('deploy', {
         write_artifacts: true,
         time_controlled: false,
       });
-      await this.call('create-canned-markets', {});
+      const createMarkets = args.createMarkets as boolean;
+      if (createMarkets)
+        await this.call('create-canned-markets', {});
     },
   });
 
