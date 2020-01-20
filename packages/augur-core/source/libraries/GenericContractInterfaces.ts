@@ -7014,22 +7014,22 @@ export class AffiliateValidator<TBigNumber> extends Contract<TBigNumber> {
 		super(dependencies, address)
 	}
 
-	public addKey = async (key: string, salt: TBigNumber, r: string, s: string, v: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
+	public addKey = async (key: string, account: string, salt: TBigNumber, r: string, s: string, v: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"bytes32","name":"_key","type":"bytes32"},{"internalType":"uint256","name":"_salt","type":"uint256"},{"internalType":"bytes32","name":"_r","type":"bytes32"},{"internalType":"bytes32","name":"_s","type":"bytes32"},{"internalType":"uint8","name":"_v","type":"uint8"}],"name":"addKey","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.remoteCall(abi, [key, salt, r, s, v], 'addKey', options.sender)
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"bytes32","name":"_key","type":"bytes32"},{"internalType":"address","name":"_account","type":"address"},{"internalType":"uint256","name":"_salt","type":"uint256"},{"internalType":"bytes32","name":"_r","type":"bytes32"},{"internalType":"bytes32","name":"_s","type":"bytes32"},{"internalType":"uint8","name":"_v","type":"uint8"}],"name":"addKey","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [key, account, salt, r, s, v], 'addKey', options.sender)
 	}
 	
-	public addKey_estimateGas = async (key: string, salt: TBigNumber, r: string, s: string, v: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
+	public addKey_estimateGas = async (key: string, account: string, salt: TBigNumber, r: string, s: string, v: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"bytes32","name":"_key","type":"bytes32"},{"internalType":"uint256","name":"_salt","type":"uint256"},{"internalType":"bytes32","name":"_r","type":"bytes32"},{"internalType":"bytes32","name":"_s","type":"bytes32"},{"internalType":"uint8","name":"_v","type":"uint8"}],"name":"addKey","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.estimateGas(abi, [key, salt, r, s, v], 'addKey', options.sender)
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"bytes32","name":"_key","type":"bytes32"},{"internalType":"address","name":"_account","type":"address"},{"internalType":"uint256","name":"_salt","type":"uint256"},{"internalType":"bytes32","name":"_r","type":"bytes32"},{"internalType":"bytes32","name":"_s","type":"bytes32"},{"internalType":"uint8","name":"_v","type":"uint8"}],"name":"addKey","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [key, account, salt, r, s, v], 'addKey', options.sender)
 	}
 
-	public addKey_ = async (key: string, salt: TBigNumber, r: string, s: string, v: TBigNumber, options?: { sender?: string }): Promise<void> => {
+	public addKey_ = async (key: string, account: string, salt: TBigNumber, r: string, s: string, v: TBigNumber, options?: { sender?: string }): Promise<void> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"bytes32","name":"_key","type":"bytes32"},{"internalType":"uint256","name":"_salt","type":"uint256"},{"internalType":"bytes32","name":"_r","type":"bytes32"},{"internalType":"bytes32","name":"_s","type":"bytes32"},{"internalType":"uint8","name":"_v","type":"uint8"}],"name":"addKey","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		await this.localCall(abi, [key, salt, r, s, v], options.sender)
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"bytes32","name":"_key","type":"bytes32"},{"internalType":"address","name":"_account","type":"address"},{"internalType":"uint256","name":"_salt","type":"uint256"},{"internalType":"bytes32","name":"_r","type":"bytes32"},{"internalType":"bytes32","name":"_s","type":"bytes32"},{"internalType":"uint8","name":"_v","type":"uint8"}],"name":"addKey","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		await this.localCall(abi, [key, account, salt, r, s, v], options.sender)
 	}
 
 	public addOperator = async (operator: string, options?: { sender?: string }): Promise<Array<Event>> => {
@@ -7050,10 +7050,10 @@ export class AffiliateValidator<TBigNumber> extends Contract<TBigNumber> {
 		await this.localCall(abi, [operator], options.sender)
 	}
 
-	public getKeyHash_ = async (key: string, salt: TBigNumber, options?: { sender?: string }): Promise<string> => {
+	public getKeyHash_ = async (key: string, account: string, salt: TBigNumber, options?: { sender?: string }): Promise<string> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"bytes32","name":"_key","type":"bytes32"},{"internalType":"uint256","name":"_salt","type":"uint256"}],"name":"getKeyHash","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"payable":false,"stateMutability":"pure","type":"function"}
-		const result = await this.localCall(abi, [key, salt], options.sender)
+		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"bytes32","name":"_key","type":"bytes32"},{"internalType":"address","name":"_account","type":"address"},{"internalType":"uint256","name":"_salt","type":"uint256"}],"name":"getKeyHash","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [key, account, salt], options.sender)
 		return <string>result[0]
 	}
 
@@ -8827,9 +8827,9 @@ export class Market<TBigNumber> extends Contract<TBigNumber> {
 		return <string>result[0]
 	}
 
-	public totalAffiliateFeesAttoCash_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
+	public totalPreFinalizationAffiliateFeesAttoCash_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"totalAffiliateFeesAttoCash","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"totalPreFinalizationAffiliateFeesAttoCash","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [], options.sender)
 		return <TBigNumber>result[0]
 	}

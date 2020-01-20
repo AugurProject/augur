@@ -42,7 +42,7 @@ contract AffiliateValidator is Ownable, IAffiliateValidator {
      */
     function addKey(bytes32 _key, uint256 _salt, bytes32 _r, bytes32 _s, uint8 _v) external {
         require(!usedSalts[_salt], "Salt already used");
-        bytes32 _hash = getKeyHash(_key, _salt);
+        bytes32 _hash = getKeyHash(_key, msg.sender, _salt);
         require(isValidSignature(_hash, _r, _s, _v), "Signature invalid");
         usedSalts[_salt] = true;
         keys[msg.sender] = _key;
@@ -51,11 +51,12 @@ contract AffiliateValidator is Ownable, IAffiliateValidator {
     /**
      * @notice Get the key hash for a given key
      * @param _key The key to get a hash for
+     * @param _account The account to get a hash for
      * @param _salt A salt to secure the key hash
      * @return bytes32
      */
-    function getKeyHash(bytes32 _key, uint256 _salt) public pure returns (bytes32) {
-        return keccak256(abi.encodePacked(_key, _salt));
+    function getKeyHash(bytes32 _key, address _account, uint256 _salt) public view returns (bytes32) {
+        return keccak256(abi.encodePacked(_key, _account, address(this), _salt));
     }
 
     function isValidSignature(bytes32 _hash, bytes32 _r, bytes32 _s, uint8 _v) public view returns (bool) {

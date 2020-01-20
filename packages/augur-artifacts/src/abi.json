@@ -17860,6 +17860,11 @@
 					"type": "bytes32"
 				},
 				{
+					"internalType": "address",
+					"name": "_account",
+					"type": "address"
+				},
+				{
 					"internalType": "uint256",
 					"name": "_salt",
 					"type": "uint256"
@@ -17910,6 +17915,11 @@
 					"type": "bytes32"
 				},
 				{
+					"internalType": "address",
+					"name": "_account",
+					"type": "address"
+				},
+				{
 					"internalType": "uint256",
 					"name": "_salt",
 					"type": "uint256"
@@ -17924,7 +17934,7 @@
 				}
 			],
 			"payable": false,
-			"stateMutability": "pure",
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -21260,7 +21270,7 @@
 		{
 			"constant": true,
 			"inputs": [],
-			"name": "totalAffiliateFeesAttoCash",
+			"name": "totalPreFinalizationAffiliateFeesAttoCash",
 			"outputs": [
 				{
 					"internalType": "uint256",

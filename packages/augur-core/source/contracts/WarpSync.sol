@@ -6,12 +6,14 @@ import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/reporting/IV2ReputationToken.sol';
 import 'ROOT/reporting/IAffiliateValidator.sol';
 import 'ROOT/libraries/Initializable.sol';
+import 'ROOT/libraries/math/SafeMathUint256.sol';
 
 /**
  * @title Warp Sync
  * @notice A contract that control the recurring creation of a market which exists to report on warp sync data for Augur
  */
 contract WarpSync is IWarpSync, Initializable {
+    using SafeMathUint256 for uint256;
 
     struct Data {
         uint256 warpSyncHash;
@@ -104,8 +106,9 @@ contract WarpSync is IWarpSync, Initializable {
 
     function getRepReward(uint256 _theoreticalTime) private view returns (uint256) {
         uint256 _currentTime = augur.getTimestamp();
-        uint256 _timeSinceTheoreticalCreationInSeconds = _currentTime - _theoreticalTime;
-        return (_timeSinceTheoreticalCreationInSeconds ** 3) * 1000;
+        uint256 _timeSinceTheoreticalCreationInSeconds = _currentTime.sub(_theoreticalTime);
+        // Cannot overflow in any reasonable timeline of the universe
+        return (_timeSinceTheoreticalCreationInSeconds ** 3).mul(1000);
     }
 
     function awardRep(IUniverse _universe, uint256 _amount) private returns (bool) {
@@ -120,7 +123,7 @@ contract WarpSync is IWarpSync, Initializable {
         IV2ReputationToken _reputationToken = _universe.getReputationToken();
         uint256 _repBond = _universe.getOrCacheMarketRepBond();
         _reputationToken.mintForWarpSync(_repBond, address(this));
-        uint256 _endTime = augur.getTimestamp() + MARKET_LENGTH;
+        uint256 _endTime = augur.getTimestamp().add(MARKET_LENGTH);
         IMarket _market = _universe.createScalarMarket(_endTime, 0, IAffiliateValidator(0), 0, address(this), PRICES, MAX_NUM_TICKS, EXTRA_INFO);
         markets[address(_universe)] = address(_market);
     }
