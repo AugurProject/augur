@@ -317,28 +317,36 @@ export class StaticLabelDropdown extends Dropdown {
         role="button"
         tabIndex={0}
         onClick={this.toggleList}
+        onMouseEnter={() => {
+          this.setState({ showList: true });
+        }}
+        onMouseLeave={() => {
+          this.setState({ showList: false });
+        }}
       >
         <button>
           {staticLabel}
           &nbsp;
           <b>{selected.label}</b> {Chevron}
         </button>
-        <div
-          className={classNames({
-            [`${Styles.active}`]: showList,
-          })}
-        >
-          {options.map(option => (
-            <button
-              key={`${option.value}${option.label}`}
-              value={option.value}
-              onClick={() => this.dropdownSelect(option)}
-            >
-              {staticMenuLabel}
-              &nbsp;
-              <b>{option.label}</b>
-            </button>
-          ))}
+        <div>
+          <div
+            className={classNames({
+              [`${Styles.active}`]: showList,
+            })}
+          >
+            {options.map(option => (
+              <button
+                key={`${option.value}${option.label}`}
+                value={option.value}
+                onClick={() => this.dropdownSelect(option)}
+              >
+                {staticMenuLabel}
+                &nbsp;
+                <b>{option.label}</b>
+              </button>
+            ))}
+          </div>
         </div>
         <select
           onChange={e => {
