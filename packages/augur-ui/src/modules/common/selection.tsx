@@ -162,7 +162,7 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
 
   toggleList = () => {
     this.setState({ showList: !this.state.showList });
-  }
+  };
 
   handleWindowOnClick = (event: React.MouseEvent<HTMLElement>) => {
     if (this.refDropdown && !this.refDropdown.contains(event.target)) {
