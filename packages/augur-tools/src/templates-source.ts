@@ -1219,10 +1219,10 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If either player fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as 'No'`,
+                      text: `If either pairing fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as 'No'`,
                     },
                     {
-                      text: 'This market is intended to be about a Single Person, if this is not the case, this market should settle as invalid.'
+                      text: `This market is intended to be about a two player team (pairing), if this is not the case, this market should settle as 'Invalid'.`
                     }
                   ],
                 },
@@ -1262,11 +1262,14 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If either player is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner`,
+                      text: `If either pairing is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner`,
                     },
                     {
                       text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
                     },
+                    {
+                      text: `This market each outcome is a two player team (pairing), if this is not the case, this market should settle as 'Invalid.'`
+                    }
                   ],
                 },
               },
@@ -1315,14 +1318,17 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If either player is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner.`,
+                      text: `If either pairing is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner.`,
                     },
                     {
-                      text: `If either player fails to start a tournament or a match, or the match was not able to start for any reason, the market should resolve as 'No Winner'.`,
+                      text: `If either pairing fails to start a tournament or a match, or the match was not able to start for any reason, the market should resolve as 'No Winner'.`,
                     },
                     {
                       text: `If the match is not played for any reason, or is terminated prematurely with both players willing and able to play, the market should resolve as 'No Winner'.`,
                     },
+                    {
+                      text: `This market each outcome is a two player team (pairing), if this is not the case, this market should settle as 'Invalid'.`
+                    }
                   ],
                 },
               },
@@ -3361,23 +3367,30 @@ export const TEMPLATES = {
             templates: [
               {
                 marketType: YES_NO,
-                question: `NFL: Will the [0] win vs. the [1]?`,
-                example: `NFL: Will the NY Giants win vs. the New England Patriots?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `NFL [0]: Will the [1] win vs. the [2]?`,
+                example: `NFL Week 1: Will the NY Giants win vs. the New England Patriots?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Week #`,
+                    noSort: true,
+                    values: LIST_VALUES.NFL_WEEK_NUM,
+                  },
+                  {
+                    id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
                     values: LIST_VALUES.NFL_TEAMS,
                   },
                   {
-                    id: 1,
+                    id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
                     values: LIST_VALUES.NFL_TEAMS,
                   },
                   {
-                    id: 2,
+                    id: 3,
                     type: TemplateInputType.ESTDATETIME,
                     placeholder: `Date time`,
                   },
@@ -3399,29 +3412,36 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `NFL: Will the [0] win vs. the [1] by [2] or more points?`,
-                example: `NFL: Will the NY Giants win vs. the New England Patriots by 3 or more points?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `NFL [0]: Will the [1] win vs. the [2] by [3] or more points?`,
+                example: `NFL Week 1: Will the NY Giants win vs. the New England Patriots by 3 or more points?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Week #`,
+                    noSort: true,
+                    values: LIST_VALUES.NFL_WEEK_NUM,
+                  },
+                  {
+                    id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
                     values: LIST_VALUES.NFL_TEAMS,
                   },
                   {
-                    id: 1,
+                    id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
                     values: LIST_VALUES.NFL_TEAMS,
                   },
                   {
-                    id: 2,
+                    id: 3,
                     type: TemplateInputType.TEXT,
                     validationType: ValidationType.WHOLE_NUMBER,
                     placeholder: `Whole #`,
                   },
                   {
-                    id: 3,
+                    id: 4,
                     type: TemplateInputType.ESTDATETIME,
                     placeholder: `Date time`,
                   },
@@ -3440,29 +3460,36 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `NFL: Will the [0] & [1] score [2] or more combined points?`,
-                example: `NFL: Will the NY Giants & the New England Patriots score 44 or more combined points?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `NFL [0]: Will the [1] & [2] score [3] or more combined points?`,
+                example: `NFL Week 1: Will the NY Giants & the New England Patriots score 44 or more combined points?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Week #`,
+                    noSort: true,
+                    values: LIST_VALUES.NFL_WEEK_NUM,
+                  },
+                  {
+                    id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
                     values: LIST_VALUES.NFL_TEAMS,
                   },
                   {
-                    id: 1,
+                    id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
                     values: LIST_VALUES.NFL_TEAMS,
                   },
                   {
-                    id: 2,
+                    id: 3,
                     type: TemplateInputType.TEXT,
                     validationType: ValidationType.WHOLE_NUMBER,
                     placeholder: `Whole #`,
                   },
                   {
-                    id: 3,
+                    id: 4,
                     type: TemplateInputType.ESTDATETIME,
                     placeholder: `Date time`,
                   },
@@ -3564,28 +3591,35 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `Which NFL Team will win: [0] vs. [1]?`,
-                example: `Which NFL Team will win: NY Giants vs. New England Patriots?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `[0]: Which NFL Team will win: [1] vs. [2]?`,
+                example: ` Week 1: Which NFL Team will win: NY Giants vs. New England Patriots?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Week #`,
+                    noSort: true,
+                    values: LIST_VALUES.NFL_WEEK_NUM,
+                  },
+                  {
+                    id: 1,
                     type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
                     placeholder: `Team A`,
                     values: LIST_VALUES.NFL_TEAMS,
                   },
                   {
-                    id: 1,
+                    id: 2,
                     type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
                     placeholder: `Team B`,
                     values: LIST_VALUES.NFL_TEAMS,
                   },
                   {
-                    id: 2,
+                    id: 3,
                     type: TemplateInputType.ESTDATETIME,
                     placeholder: `Date time`,
                   },
                   {
-                    id: 3,
+                    id: 4,
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `Tie/No Winner`,
                   },
@@ -3604,45 +3638,51 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `NFL (Point Spread): [0] to win by more than [1].5 points over [2]?`,
-                example: `NFL (Point Spread): Seattle Seahawks to win by more than 10.5 points over Dallas Cowboys?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-
+                question: `NFL (Point Spread) [0]: [1] to win by more than [2].5 points over [3]?`,
+                example: `NFL (Point Spread) Week 1: Seattle Seahawks to win by more than 10.5 points over Dallas Cowboys?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Week #`,
+                    noSort: true,
+                    values: LIST_VALUES.NFL_WEEK_NUM,
+                  },
+                  {
+                    id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
                     values: LIST_VALUES.NFL_TEAMS,
                   },
                   {
-                    id: 1,
+                    id: 2,
                     type: TemplateInputType.TEXT,
                     validationType: ValidationType.WHOLE_NUMBER,
                     placeholder: `Whole #`,
                   },
                   {
-                    id: 2,
+                    id: 3,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
                     values: LIST_VALUES.NFL_TEAMS,
                   },
                   {
-                    id: 3,
+                    id: 4,
                     type: TemplateInputType.ESTDATETIME,
                     placeholder: `Date time`,
                   },
                   {
-                    id: 4,
+                    id: 5,
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `No Winner`,
                   },
                   {
-                    id: 5,
+                    id: 6,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
                     placeholder: `[0] -[1].5`,
                   },
                   {
-                    id: 6,
+                    id: 7,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
                     placeholder: `[2] +[1].5`,
                   },
@@ -3661,44 +3701,51 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `NFL (O/U): [0] vs. [1]: Total points scored; Over/Under [2].5?`,
-                example: `NFL (O/U): NY Giants vs. Dallas Cowboys: Total points scored: Over/Under 56.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `NFL (O/U) [0]: [1] vs. [2]: Total points scored; Over/Under [3].5?`,
+                example: `NFL (O/U) Week 1: NY Giants vs. Dallas Cowboys: Total points scored: Over/Under 56.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Week #`,
+                    noSort: true,
+                    values: LIST_VALUES.NFL_WEEK_NUM,
+                  },
+                  {
+                    id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
                     values: LIST_VALUES.NFL_TEAMS,
                   },
                   {
-                    id: 1,
+                    id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
                     values: LIST_VALUES.NFL_TEAMS,
                   },
                   {
-                    id: 2,
+                    id: 3,
                     type: TemplateInputType.TEXT,
                     validationType: ValidationType.WHOLE_NUMBER,
                     placeholder: `Whole #`,
                   },
                   {
-                    id: 3,
+                    id: 4,
                     type: TemplateInputType.ESTDATETIME,
                     placeholder: `Date time`,
                   },
                   {
-                    id: 4,
+                    id: 5,
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `No Winner`,
                   },
                   {
-                    id: 5,
+                    id: 6,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
                     placeholder: `Over [2].5`,
                   },
                   {
-                    id: 6,
+                    id: 7,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
                     placeholder: `Under [2].5`,
                   },
@@ -3821,23 +3868,30 @@ export const TEMPLATES = {
             templates: [
               {
                 marketType: YES_NO,
-                question: `NCAA FB: Will [0] win vs. [1]?`,
-                example: `NCAA FB: Will Alabama Crimson Tide win vs. Florida Gators?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `NCAA FB [0]: Will [1] win vs. [2]?`,
+                example: `NCAA FB Week 1: Will Alabama Crimson Tide win vs. Florida Gators?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Week #`,
+                    noSort: true,
+                    values: LIST_VALUES.NCAA_WEEK_NUM,
+                  },
+                  {
+                    id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
                     values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
-                    id: 1,
+                    id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
                     values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
-                    id: 2,
+                    id: 3,
                     type: TemplateInputType.ESTDATETIME,
                     placeholder: `Date time`,
                   },
@@ -3856,29 +3910,36 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `NCAA FB: Will [0] win vs. [1] by [2] or more points?`,
-                example: `NCAA FB: Will Alabama Crimson Tide win vs. Florida Gators by 7 or more points?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `NCAA FB [0]: Will [1] win vs. [2] by [3] or more points?`,
+                example: `NCAA FB Week 1: Will Alabama Crimson Tide win vs. Florida Gators by 7 or more points?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Week #`,
+                    noSort: true,
+                    values: LIST_VALUES.NCAA_WEEK_NUM,
+                  },
+                  {
+                    id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
                     values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
-                    id: 1,
+                    id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
                     values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
-                    id: 2,
+                    id: 3,
                     type: TemplateInputType.TEXT,
                     validationType: ValidationType.WHOLE_NUMBER,
                     placeholder: `Whole #`,
                   },
                   {
-                    id: 3,
+                    id: 4,
                     type: TemplateInputType.ESTDATETIME,
                     placeholder: `Date time`,
                   },
@@ -3897,29 +3958,36 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `NCAA FB: Will [0] & [1] score [2] or more combined points?`,
-                example: `NCAA FB: Will USC & UCLA score 51 or more combined points?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `NCAA FB [0]: Will [1] & [2] score [3] or more combined points?`,
+                example: `NCAA FB Week 1: Will USC & UCLA score 51 or more combined points?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Week #`,
+                    noSort: true,
+                    values: LIST_VALUES.NCAA_WEEK_NUM,
+                  },
+                  {
+                    id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
                     values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
-                    id: 1,
+                    id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
                     values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
-                    id: 2,
+                    id: 3,
                     type: TemplateInputType.TEXT,
                     validationType: ValidationType.WHOLE_NUMBER,
                     placeholder: `Whole #`,
                   },
                   {
-                    id: 3,
+                    id: 4,
                     type: TemplateInputType.ESTDATETIME,
                     placeholder: `Date time`,
                   },
@@ -3938,28 +4006,35 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `Which College Football Team will win: [0] vs. [1]?`,
-                example: `Which College Football Team will win: Alabama vs. Michigan?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `[0]: Which College Football Team will win: [1] vs. [2]?`,
+                example: `Week 1: Which College Football Team will win: Alabama vs. Michigan?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Week #`,
+                    noSort: true,
+                    values: LIST_VALUES.NCAA_WEEK_NUM,
+                  },
+                  {
+                    id: 1,
                     type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
                     placeholder: `Team A`,
                     values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
-                    id: 1,
+                    id: 2,
                     type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
                     placeholder: `Team B`,
                     values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
-                    id: 2,
+                    id: 3,
                     type: TemplateInputType.ESTDATETIME,
                     placeholder: `Date time`,
                   },
                   {
-                    id: 3,
+                    id: 4,
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `No Winner`,
                   },
@@ -3978,44 +4053,51 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `NCAA (Point Spread) FB: [0] to win by more than [1].5 points over [2]?`,
-                example: `NCAA (Point Spread) FB: Alabama to win by more than 10.5 points over Michigan?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `NCAA FB (Point Spread) [0]: [1] to win by more than [2].5 points over [3]?`,
+                example: `NCAA FB (Point Spread) Week 1: Alabama to win by more than 10.5 points over Michigan?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Week #`,
+                    noSort: true,
+                    values: LIST_VALUES.NCAA_WEEK_NUM,
+                  },
+                  {
+                    id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
                     values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
-                    id: 1,
+                    id: 2,
                     type: TemplateInputType.TEXT,
                     validationType: ValidationType.WHOLE_NUMBER,
                     placeholder: `Whole #`,
                   },
                   {
-                    id: 2,
+                    id: 3,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
                     values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
-                    id: 3,
+                    id: 4,
                     type: TemplateInputType.ESTDATETIME,
                     placeholder: `Date time`,
                   },
                   {
-                    id: 4,
+                    id: 5,
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `No Winner`,
                   },
                   {
-                    id: 5,
+                    id: 6,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
                     placeholder: `[0] -[1].5`,
                   },
                   {
-                    id: 6,
+                    id: 7,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
                     placeholder: `[2] +[1].5`,
                   },
@@ -4034,44 +4116,51 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `NCAA FB (O/U): [0] vs. [1]: Total points scored; Over/Under [2].5?`,
-                example: `NCAA FB (O/U): Alabama vs. Michigan: Total points scored: Over/Under 56.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `NCAA FB (O/U) [0]: [1] vs. [2]: Total points scored; Over/Under [3].5?`,
+                example: `NCAA FB (O/U) Week 1: Alabama vs. Michigan: Total points scored: Over/Under 56.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Week #`,
+                    noSort: true,
+                    values: LIST_VALUES.NCAA_WEEK_NUM,
+                  },
+                  {
+                    id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
                     values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
-                    id: 1,
+                    id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
                     values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
-                    id: 2,
+                    id: 3,
                     type: TemplateInputType.TEXT,
                     validationType: ValidationType.WHOLE_NUMBER,
                     placeholder: `Whole #`,
                   },
                   {
-                    id: 3,
+                    id: 4,
                     type: TemplateInputType.ESTDATETIME,
                     placeholder: `Date time`,
                   },
                   {
-                    id: 4,
+                    id: 5,
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `No Winner`,
                   },
                   {
-                    id: 5,
+                    id: 6,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
                     placeholder: `Over [2].5`,
                   },
                   {
-                    id: 6,
+                    id: 7,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
                     placeholder: `Under [2].5`,
                   },
@@ -4349,17 +4438,11 @@ export const TEMPLATES = {
           },
           {
             marketType: YES_NO,
-            question: `Will a woman be elected [0] in the [1] Presidential election?`,
+            question: `Will a woman be elected U.S. President in the [1] Presidential election?`,
             example: `Will a woman be elected U.S. President in the 2020 Presidential election?`,
             inputs: [
               {
                 id: 0,
-                type: TemplateInputType.DROPDOWN,
-                placeholder: `Office`,
-                values: LIST_VALUES.PRES_OFFICES,
-              },
-              {
-                id: 1,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
                 values: LIST_VALUES.PRES_YEARS,
@@ -4371,11 +4454,8 @@ export const TEMPLATES = {
                   text: `The winning candidate will have at least 270 electoral votes to win the presidential election.`,
                 },
                 {
-                  text: `U.S. Vice President is elected with President as their running mate`,
-                },
-                {
                   text:
-                    'The candidate elected president/vice president shall be female.',
+                    'The candidate elected president shall be biologically female.',
                 },
               ],
             },
@@ -4634,6 +4714,54 @@ export const TEMPLATES = {
                 },
                 {
                   text: `The winner of the primary is the candidate recognized and/or announced by the state`,
+                },
+                {
+                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                },
+              ],
+            },
+          },
+          {
+            marketType: CATEGORICAL,
+            question: `Who will win the [0] [1] [2] caucus for U.S. Presidential election?`,
+            example: `Who will win the 2020 South Carolina Democratic caucus for U.S Presidential election?`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                values: LIST_VALUES.PRES_YEARS,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `State`,
+                values: LIST_VALUES.US_STATES,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Party`,
+                values: LIST_VALUES.POL_PARTY,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Other (Field)`,
+              },
+              {
+                id: 4,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `No winner/Event cancelled`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `If the caucus does not take place the market should resolve as "No winner/Event cancelled"`,
+                },
+                {
+                  text: `The winner of the caucus is the candidate recognized and/or announced by the political party`,
                 },
                 {
                   text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
@@ -5248,6 +5376,43 @@ export const TEMPLATES = {
         },
       },
       {
+        marketType: YES_NO,
+        question: `Twitter: Will @[0] have [1] [2] or more twitter followers on [3], according to www.trackalytics.com/?`,
+        example: `Twitter: Will @elonmusk have 50 million or more twitter followers on September 12, 2020, according to www.trackalytics.com/?`,
+        inputs: [
+          {
+            id: 0,
+            type: TemplateInputType.TEXT,
+            validationType: ValidationType.SOCIAL,
+            placeholder: TEXT_PLACEHOLDERS.INDIVIDUAL_SOCIAL_MEDIA_HANDLE,
+          },
+          {
+            id: 1,
+            type: TemplateInputType.TEXT,
+            validationType: ValidationType.WHOLE_NUMBER,
+            placeholder: `Whole Number`,
+          },
+          {
+            id: 2,
+            type: TemplateInputType.DROPDOWN,
+            values: LIST_VALUES.AMOUNT_UNITS,
+            placeholder: `Amount Unit`,
+          },
+          {
+            id: 3,
+            type: TemplateInputType.DATEYEAR,
+            placeholder: `Day of Year`,
+          },
+        ],
+        resolutionRules: {
+          [REQUIRED]: [
+            {
+              text: 'If www.trackalytics.com is down or not available use inspectsocial.com/ to determine total twitter followers for the social media account stated in market question.'
+            }
+          ],
+        },
+      },
+      {
         marketType: CATEGORICAL,
         question: `Who will host the [0] [1]?`,
         example: `Who wll host the 2020 Emmy Awards?`,
@@ -5335,8 +5500,8 @@ export const TEMPLATES = {
         templates: [
           {
             marketType: YES_NO,
-            question: `Will the price of [0] open on or above [1] on [2], according to TradingView.com "[3]"?`,
-            example: `Will the price of BTC/USD open on or above 8000 on December 31, 2019, according to TradingView.com "BTCUSD (crypto - Coinbase)"?`,
+            question: `Will the price of [0] open at or above [1] on [2], according to TradingView.com "[3]"?`,
+            example: `Will the price of BTC/USD open at or above 8000 on December 31, 2019, according to TradingView.com "BTCUSD (crypto - Coinbase)"?`,
             inputs: [
               {
                 id: 0,
@@ -5469,8 +5634,8 @@ export const TEMPLATES = {
         templates: [
           {
             marketType: YES_NO,
-            question: `Will the price of [0] open on or above [1] on [2], according to TradingView.com "[3]"?`,
-            example: `Will the price of BTC/USD open on or above 8000 on December 31, 2019, according to TradingView.com "BTCUSD (crypto - Coinbase)"?`,
+            question: `Will the price of [0] open at or above [1] on [2], according to TradingView.com "[3]"?`,
+            example: `Will the price of BTC/USD open at or above 8000 on December 31, 2019, according to TradingView.com "BTCUSD (crypto - Coinbase)"?`,
             inputs: [
               {
                 id: 0,
@@ -5603,8 +5768,8 @@ export const TEMPLATES = {
         templates: [
           {
             marketType: YES_NO,
-            question: `Will the price of [0] open on or above [1] on [2], according to TradingView.com "[3]"?`,
-            example: `Will the price of BTC/USD open on or above 8000 on December 31, 2019, according to TradingView.com "BTCUSD (crypto - Coinbase)"?`,
+            question: `Will the price of [0] open at or above [1] on [2], according to TradingView.com "[3]"?`,
+            example: `Will the price of BTC/USD open at or above 8000 on December 31, 2019, according to TradingView.com "BTCUSD (crypto - Coinbase)"?`,
             inputs: [
               {
                 id: 0,
