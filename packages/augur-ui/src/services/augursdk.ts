@@ -1,143 +1,94 @@
-
-import { Addresses } from '@augurproject/artifacts';
-
-import { EthersProvider } from '@augurproject/ethersjs-provider';
-import { GnosisRelayAPI } from '@augurproject/gnosis-relay-api';
-import { Augur, CalculateGnosisSafeAddressParams, Connectors, Provider, } from '@augurproject/sdk';
+import { NetworkId } from '@augurproject/artifacts';
+import {
+  Augur,
+  CalculateGnosisSafeAddressParams,
+  Connectors,
+  createClient,
+  SDKConfiguration
+} from '@augurproject/sdk';
 import { EthersSigner } from 'contract-dependencies-ethers';
 
-import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis';
 import { JsonRpcProvider } from 'ethers/providers';
-import { listenToUpdates, unListenToEvents, } from 'modules/events/actions/listen-to-updates';
+import {
+  listenToUpdates,
+  unListenToEvents,
+} from 'modules/events/actions/listen-to-updates';
 import { EnvObject } from 'modules/types';
 import { isEmpty } from 'utils/is-empty';
 import { analytics } from './analytics';
 import { isLocalHost } from 'utils/is-localhost';
-import { WSClient } from '@0x/mesh-rpc-client';
-import { Mesh, Config } from '@0x/mesh-browser';
-import { NETWORK_IDS } from 'modules/common/constants';
-import { WebWorkerConnector } from './ww-connector';
+import { Mesh } from '@0x/mesh-browser';
+import { BrowserMesh, createBrowserMesh } from './browser-mesh';
 
 export class SDK {
-  sdk: Augur<Provider> | null = null;
-  isWeb3Transport = false;
-  env: EnvObject = null;
+  sdk: Augur | null = null;
   isSubscribed = false;
-  networkId: string;
-  account: string;
+  networkId: NetworkId;
   private signerNetworkId: string;
-  private meshConfig: Config;
 
-  async makeApi(
+  async makeClient(
     provider: JsonRpcProvider,
-    account = '',
     signer: EthersSigner,
     env: EnvObject,
+    account: string = null,
+    isWeb3Transport = false,
+    enableFlexSearch = true,
     signerNetworkId?: string,
-    isWeb3 = false,
-    gnosisRelayEndpoint: string | undefined = undefined,
-  ): Promise<Augur<Provider>> {
-    this.isWeb3Transport = isWeb3;
-    this.env = env;
-    this.account = account;
-    this.signerNetworkId = signerNetworkId;
-    const ethersProvider = new EthersProvider(provider, 10, 0, 40);
-    this.networkId = await ethersProvider.getNetworkId();
+    gnosisRelayEndpoint?: string
+  ): Promise<Augur> {
+    this.networkId = (await provider.getNetwork()).chainId.toString() as NetworkId;
 
-
-    if (typeof Addresses[this.networkId] === "undefined") {
-      if (this.networkId !== "1") {
-        console.log(`Contract addresses aren't available for network ${this.networkId}. If you're running in development mode, be sure to have started a local ethereum node, and then have rebuilt using yarn build before starting the dev server`);
+    const config: SDKConfiguration = {
+      networkId: this.networkId,
+      ethereum: {
+        http: env['ethereum-node'].http
+      },
+      gnosis: {
+        enabled: true,
+        http: env['gnosis-relay']
+      },
+      zeroX: {
+        rpc: {
+          enabled: true,
+          ws: env['0x-endpoint']
+        },
+        mesh: {
+          verbosity: 5,
+          bootstrapList: (env['0x-mesh'] || {}).bootstrapList,
+          enabled: false,
+        }
       }
-      throw new Error(`Unable to read contract addresses for network: ${this.networkId}. Known addresses: ${JSON.stringify(Addresses)}`);
-    }
-
-    const gnosisRelay = gnosisRelayEndpoint ?
-      new GnosisRelayAPI(gnosisRelayEndpoint) :
-      undefined;
-    const contractDependencies = new ContractDependenciesGnosis(
-      ethersProvider,
-      gnosisRelay,
-      signer,
-      Addresses[this.networkId].Cash,
-    );
-
-    const ethereumRPCURL = env['ethereum-node'].http
-    ? env['ethereum-node'].http
-    : 'http://localhost:8545';
-
-    const enableFlexSearch = false; // TODO configurable
-    const meshClient = env['0x-endpoint'] ? new WSClient(env['0x-endpoint']) : undefined;
-    const meshBrowserConfig = {
-      ethereumRPCURL,
-      ethereumChainID: Number(this.networkId),
-      verbosity: 5,
-    }
-
-    let meshBrowserConfigExtra = {};
-
-    if (![NETWORK_IDS.Kovan, NETWORK_IDS.Mainnet].includes(this.networkId)) {
-      meshBrowserConfigExtra = {
-        ...meshBrowserConfig,
-        customContractAddresses: Addresses[this.networkId],
-        bootstrapList: env['0x-mesh'].bootstrapList,
-      }
-    }
-
-    this.meshConfig = {
-      ...meshBrowserConfig,
-      ...meshBrowserConfigExtra,
     };
 
-    const meshBrowser = this.createBrowserMesh(this.meshConfig);
+    if (config.sdk && config.sdk.enabled) {
+      const connector = new Connectors.WebsocketConnector();
+      this.sdk = await createClient(config, connector, account, signer, provider, enableFlexSearch);
+      await connector.connect(config, account)
+    } else {
+      // I hate these next 3 lines that connects the SDK and Connector in this way
+      // these shouldn't need to be so coupled.
+      const connector = new Connectors.SingleThreadConnector();
+      this.sdk = await createClient(config, connector, account, signer, provider, enableFlexSearch);
+      await connector.connect(config);
 
-    const connector = this.pickConnector(env['sdkEndpoint']);
-    await connector.connect(
-      ethereumRPCURL,
-      account,
-    );
-
-    this.sdk = await Augur.create<Provider>(
-      ethersProvider,
-      contractDependencies,
-      Addresses[this.networkId],
-      connector,
-      gnosisRelay,
-      enableFlexSearch,
-      meshClient,
-      meshBrowser
-    );
-
-    meshBrowser.startAsync();
+      // Attach the mesh later so that we are doing it fully outside of the backend code
+      // since it will only work in a browser environment
+      if (config.zeroX && config.zeroX.mesh && config.zeroX.mesh.enabled) {
+        connector.mesh = createBrowserMesh(config, (err: Error, mesh: Mesh) => {
+          connector.mesh = mesh;
+        });
+      }
+      this.sdk.events.emit('ZeroX:Ready');
+    }
 
     if (!isEmpty(account)) {
       await this.getOrCreateGnosisSafe(account);
     }
 
+    // tslint:disable-next-line:ban-ts-ignore
+    // @ts-ignore
     window.AugurSDK = this.sdk;
     return this.sdk;
-  }
-
-  createBrowserMesh(meshConfig: Config) {
-     const mesh = new Mesh(meshConfig);
-     mesh.onError((err) => {
-        console.log("Browser mesh error");
-        console.log(err.message);
-        console.log(err.stack);
-        if(err.message == "timed out waiting for first block to be processed by Mesh node. Check your backing Ethereum RPC endpoint") {
-            console.log("Restarting Mesh Sync");
-            // The relay code wont let you override addresses so we need to do this whacky thing
-            const meshConfig = {
-              ethereumRPCURL: this.meshConfig.ethereumRPCURL,
-              ethereumChainID:  this.meshConfig.ethereumChainID,
-              verbosity: 5,
-              bootstrapList: this.meshConfig.bootstrapList
-            };
-            this.sdk.zeroX.browserMesh = this.createBrowserMesh(meshConfig);
-            this.sdk.zeroX.browserMesh.startAsync();
-         }
-     });
-     return mesh;
   }
 
   /**
@@ -146,22 +97,31 @@ export class SDK {
    * @param {string} walletAddress - Wallet address
    * @returns {Promise<void>}
    */
-  async getOrCreateGnosisSafe(walletAddress: string):Promise<void | string> {
+  async getOrCreateGnosisSafe(walletAddress: string): Promise<void | string> {
     if (this.sdk) {
       const networkId = await this.sdk.provider.getNetworkId();
       const gnosisLocalstorageItemKey = `gnosis-relay-request-${networkId}-${walletAddress}`;
 
       // Up to UI side to check the localstorage wallet matches the wallet address.
-      const calculateGnosisSafeAddressParamsString = localStorage.getItem(gnosisLocalstorageItemKey);
+      const calculateGnosisSafeAddressParamsString = localStorage.getItem(
+        gnosisLocalstorageItemKey
+      );
       if (calculateGnosisSafeAddressParamsString) {
-        const calculateGnosisSafeAddressParams = JSON.parse(calculateGnosisSafeAddressParamsString) as CalculateGnosisSafeAddressParams;
-        const result = await this.sdk.gnosis.getOrCreateGnosisSafe({ ...calculateGnosisSafeAddressParams, owner: walletAddress });
+        const calculateGnosisSafeAddressParams = JSON.parse(
+          calculateGnosisSafeAddressParamsString
+        ) as CalculateGnosisSafeAddressParams;
+        const result = await this.sdk.gnosis.getOrCreateGnosisSafe({
+          ...calculateGnosisSafeAddressParams,
+          owner: walletAddress,
+        });
         if (typeof result === 'string') {
           return result;
         }
         return result.safe;
       } else {
-        const result = await this.sdk.gnosis.getOrCreateGnosisSafe(walletAddress);
+        const result = await this.sdk.gnosis.getOrCreateGnosisSafe(
+          walletAddress
+        );
 
         if (typeof result === 'string') {
           return result;
@@ -174,7 +134,13 @@ export class SDK {
     }
   }
 
-  async syncUserData(address: string, signer: EthersSigner, signerNetworkId: string, useGnosis: boolean, updateUser?: Function) {
+  async syncUserData(
+    address: string,
+    signer: EthersSigner,
+    signerNetworkId: string,
+    useGnosis: boolean,
+    updateUser?: Function
+  ) {
     if (this.sdk) {
       if (signer) this.sdk.signer = signer;
       this.signerNetworkId = signerNetworkId;
@@ -183,7 +149,9 @@ export class SDK {
       }
 
       if (useGnosis) {
-        const safeAddress = await this.getOrCreateGnosisSafe(address) as string;
+        const safeAddress = (await this.getOrCreateGnosisSafe(
+          address
+        )) as string;
 
         this.sdk.setUseGnosisSafe(true);
         this.sdk.setUseGnosisRelay(true);
@@ -196,19 +164,10 @@ export class SDK {
   async destroy() {
     unListenToEvents(this.sdk);
     this.isSubscribed = false;
-    if (this.sdk) this.sdk.disconnect();
     this.sdk = null;
   }
 
-  pickConnector(sdkEndpoint: string) {
-    if (sdkEndpoint) {
-      return new Connectors.WebsocketConnector(sdkEndpoint);
-    } else {
-      return new Connectors.SingleThreadConnector();
-    }
-  }
-
-  get(): Augur<Provider> {
+  get(): Augur {
     if (this.sdk) {
       return this.sdk;
     }

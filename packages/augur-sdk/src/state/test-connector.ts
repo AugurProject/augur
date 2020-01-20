@@ -1,15 +1,11 @@
 // An example how to use Augur to retrieve data
 //
 //
-import { Addresses } from "@augurproject/artifacts";
-import { Augur } from "../Augur";
-import { ContractDependenciesGnosis } from "contract-dependencies-gnosis";
-import { EthersProvider } from "@augurproject/ethersjs-provider";
-import { JsonRpcProvider } from "ethers/providers";
-import { MarketCreated, NewBlock } from "../events";
-import { SubscriptionEventName } from "../constants";
+import { NetworkId } from "@augurproject/artifacts";
 import { SingleThreadConnector } from "../connector";
-import { GnosisRelayAPI } from "@augurproject/gnosis-relay-api";
+import { SubscriptionEventName } from "../constants";
+import { MarketCreated, NewBlock } from "../events";
+import { SDKConfiguration, startServer } from "./create-api";
 
 
 const settings = require("@augurproject/sdk/src/state/settings.json");
@@ -18,12 +14,27 @@ console.log("Starting web worker");
 
 (async function() {
   try {
+    const config: SDKConfiguration = {
+      networkId: NetworkId.Kovan,
+      ethereum: {
+        http: settings.ethNodeURLs[4]
+      },
+      gnosis: {
+        enabled: true,
+        http: "http://localhost:8000"
+      },
+      syncing: {
+        enabled: false
+      }
+    };
+
+    const api = await startServer(config);
+
     const connector = new SingleThreadConnector();
-    const ethersProvider = new EthersProvider(new JsonRpcProvider(settings.ethNodeURLs[4]), 10, 0, 40);
-    const gnosisRelay = new GnosisRelayAPI("http://localhost:8000");
-    const contractDependencies = new ContractDependenciesGnosis(ethersProvider, gnosisRelay, undefined, undefined, undefined, undefined, settings.testAccounts[0]);
-    const augur = await Augur.create(ethersProvider, contractDependencies, Addresses[4], connector, undefined, true);
-    await augur.connect("");
+    await connector.connect(config);
+
+    const augur = api.augur;
+    augur.connector = connector;
 
     connector.on(
       SubscriptionEventName.MarketCreated,

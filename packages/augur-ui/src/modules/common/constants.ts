@@ -93,6 +93,12 @@ export const SIXTY_DAYS = 60 * SECONDS_PER_DAY;
 
 export const EDGE_WALLET_TYPE = 'wallet:ethereum';
 
+// Add Funds types
+export const ADD_FUNDS_SWAP = '0';
+export const ADD_FUNDS_CREDIT_CARD = '1';
+export const ADD_FUNDS_COINBASE = '2';
+export const ADD_FUNDS_TRANSFER = '3';
+
 // # Connect Constants
 export const ACCOUNT_TYPES = {
   EDGE: 'Edge',
@@ -113,11 +119,11 @@ export const WALLET_TYPE = {
 
 export const SIGNIN_LOADING_TEXT = 'Sit tight - loading your account.';
 export const SIGNIN_LOADING_TEXT_PORTIS =
-  'Follow instructions in the Portis window.';
+  'Connecting to our partners at Portis to create your secure account.';
 export const SIGNIN_LOADING_TEXT_FORTMATIC =
-  'Follow instructions in the Fortmatic window.';
+  'Connecting to our partners at Fortmatic to create your secure account.';
 export const SIGNIN_LOADING_TEXT_TORUS =
-  'Follow instructions in the Tor.us window.';
+  'Connecting to our partners at Tor.us to create your secure account.';
 export const SIGNIN_SIGN_WALLET =
   'Your wallet will ask you to digitally sign in to link it with Augur';
 

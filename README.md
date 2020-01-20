@@ -39,6 +39,7 @@ NOTE: Run `yarn` at the base of the repository to install dependencies before ru
 |  `yarn build:watch`   |  Build everything but the UI continuously. |
 |  `yarn build:clean`   |  Remove JUST typescript build artifacts |
 |  `yarn clean`         |  Remove everything that isn't currently being tracked by git (node_modules, build aretifacts, etc.) |
+|  `yarn docker:all`    |  Run all the needed dockers to run the UI in dev mode
 
 ## UI development
 

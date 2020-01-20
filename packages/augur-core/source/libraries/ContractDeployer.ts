@@ -229,6 +229,7 @@ Deploying to: ${networkConfiguration.networkName}
               'Exchange',
               'Coordinator',
               'CoordinatorRegistry',
+              'MultiAssetProxy',
               'DevUtils',
               'WETH9',
               'ZRXToken',

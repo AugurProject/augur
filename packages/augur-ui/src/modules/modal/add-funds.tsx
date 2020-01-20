@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-
 import {
   ExternalLinkButton,
   PrimaryButton,
@@ -14,20 +13,29 @@ import { RadioTwoLineBarGroup, TextInput } from 'modules/common/form';
 import classNames from 'classnames';
 import ReactTooltip from 'react-tooltip';
 import { toChecksumAddress } from 'ethereumjs-util';
-import { ACCOUNT_TYPES, DAI, REP } from 'modules/common/constants';
+import {
+  ACCOUNT_TYPES,
+  DAI,
+  REP,
+  ADD_FUNDS_SWAP,
+  ADD_FUNDS_COINBASE,
+  ADD_FUNDS_CREDIT_CARD,
+  ADD_FUNDS_TRANSFER,
+} from 'modules/common/constants';
 import { LoginAccount } from 'modules/types';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import Styles from 'modules/modal/modal.styles.less';
 import { helpIcon } from 'modules/common/icons';
 import noop from 'utils/noop';
+import { Swap } from 'modules/swap/components';
 
 interface AddFundsProps {
   closeAction: Function;
-  address: string;
-  accountMeta: LoginAccount['meta'];
-  Gnosis_ENABLED: boolean;
   autoSelect?: boolean;
   fundType: string;
+  loginAccount: LoginAccount;
+  ETH_RATE: number;
+  REP_RATE: number;
 }
 
 export const generateDaiTooltip = (
@@ -57,17 +65,28 @@ export const generateDaiTooltip = (
 
 export const AddFunds = ({
   closeAction,
-  accountMeta,
-  address,
-  Gnosis_ENABLED = false,
   autoSelect = false,
   fundType = DAI,
+  loginAccount,
+  ETH_RATE,
+  REP_RATE,
 }: AddFundsProps) => {
-  let autoSelection = '2'; // default Coinbase
+  const address = loginAccount.address
+  const accountMeta = loginAccount.meta;
+  let autoSelection = ADD_FUNDS_COINBASE;
 
   if (autoSelect) {
-    if ([ACCOUNT_TYPES.TORUS, ACCOUNT_TYPES.PORTIS].includes(accountMeta.accountType) && fundType !== REP) {
-      autoSelection = '1'; // default Credit/Debit Card
+    if (
+      [ACCOUNT_TYPES.TORUS, ACCOUNT_TYPES.PORTIS].includes(
+        accountMeta.accountType
+      ) &&
+      fundType !== REP
+    ) {
+      autoSelection = ADD_FUNDS_CREDIT_CARD;
+    } else if (
+      fundType === REP
+    ) {
+      autoSelection = ADD_FUNDS_SWAP;
     }
   }
 
@@ -75,32 +94,42 @@ export const AddFunds = ({
   const fundTypeLabel = fundType === DAI ? 'Dai ($)' : 'REP';
 
   const FUND_OTPIONS = [
-    // TODO build uniswap component
-    { header: 'Swap',
-      description: 'Swap funds in your account for REP',
-      value: '0',
+    {
+      header: 'Swap',
+      description: `Swap funds in your account for ${fundTypeLabel}`,
+      value: ADD_FUNDS_SWAP,
     },
     {
       header: 'Credit/debit card',
       description: 'Add Funds instantly using a credit/debit card',
-      value: '1',
+      value: ADD_FUNDS_CREDIT_CARD,
     },
     {
       header: 'Coinbase',
       description: 'Send funds from a Coinbase account',
-      value: '2',
+      value: ADD_FUNDS_COINBASE,
     },
     {
       header: 'Transfer',
       description: 'Send funds to your Augur account address',
-      value: '3',
+      value: ADD_FUNDS_TRANSFER,
     },
   ];
 
   const addFundsOptions = [FUND_OTPIONS[2], FUND_OTPIONS[3]];
 
-  if (fundType !== REP && (accountMeta.accountType === ACCOUNT_TYPES.TORUS || accountMeta.accountType === ACCOUNT_TYPES.PORTIS)) {
+  if (
+    fundType !== REP &&
+    (accountMeta.accountType === ACCOUNT_TYPES.TORUS ||
+      accountMeta.accountType === ACCOUNT_TYPES.PORTIS)
+  ) {
     addFundsOptions.unshift(FUND_OTPIONS[1]);
+  }
+
+  if (
+    fundType === REP
+  ) {
+    addFundsOptions.unshift(FUND_OTPIONS[0]);
   }
 
   return (
@@ -135,8 +164,29 @@ export const AddFunds = ({
           <BackButton action={() => setSelectedOption(() => null)} />
           <CloseButton action={() => closeAction()} />
         </div>
-        <div className={selectedOption === '3' ? Styles.AddFundsTransfer : Styles.AddFundsCreditDebitCoinbase}>
-          {selectedOption === '1' && (
+        <div
+          className={
+            selectedOption === ADD_FUNDS_TRANSFER
+              ? Styles.AddFundsTransfer
+              : Styles.AddFundsCreditDebitCoinbase
+          }
+        >
+          {selectedOption === ADD_FUNDS_SWAP && (
+            <>
+              <h1>Swap</h1>
+              <h2>Swap a currency for {fundTypeLabel}</h2>
+
+              <Swap
+                balances={loginAccount.balances}
+                toToken={REP}
+                fromToken={DAI}
+                ETH_RATE={ETH_RATE}
+                REP_RATE={REP_RATE}
+              />
+            </>
+          )}
+
+          {selectedOption === ADD_FUNDS_CREDIT_CARD && (
             <>
               <h1>Credit/debit card</h1>
               {accountMeta.accountType === ACCOUNT_TYPES.PORTIS && (
@@ -174,7 +224,7 @@ export const AddFunds = ({
               </h4>
             </>
           )}
-          {selectedOption === '2' && (
+          {selectedOption === ADD_FUNDS_COINBASE && (
             <>
               <h1>Coinbase</h1>
               <h2>
@@ -196,7 +246,7 @@ export const AddFunds = ({
               <ExternalLinkButton URL='https://docs.augur.net/' label={'Learn about your address'} />
             </>
           )}
-          {selectedOption === '3' && (
+          {selectedOption === ADD_FUNDS_TRANSFER && (
             <>
               <h1>Transfer</h1>
               <h2>

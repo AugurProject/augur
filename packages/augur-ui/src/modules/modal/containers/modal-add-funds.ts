@@ -8,12 +8,18 @@ import { Action } from 'redux';
 import getValue from 'utils/get-value';
 import { ADD_FUNDS, track } from 'services/analytics/helpers';
 
-const mapStateToProps = (state: AppState) => ({
-  modal: state.modal,
-  address: getValue(state, 'loginAccount.address'),
-  Gnosis_ENABLED: getValue(state, 'appStatus.gnosisEnabled'),
-  accountMeta: getValue(state, 'loginAccount.meta'),
-});
+const mapStateToProps = (state: AppState) => {
+  // TODO placeholder rates until price feed is hooked up
+  const ETH_RATE = 160.63;
+  const REP_RATE = 15.87;
+
+  return {
+    modal: state.modal,
+    loginAccount: state.loginAccount,
+    ETH_RATE,
+    REP_RATE
+  }
+};
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
