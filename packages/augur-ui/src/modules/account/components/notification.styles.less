@@ -10,6 +10,16 @@
   > section {
     padding: @size-12 0;
     border-bottom: 1px solid @color-dark-grey;
+
+    @media @breakpoint-mobile {
+      border-bottom: 0;
+    }
+  }
+
+  @media @breakpoint-mobile {
+    &:not(last-of-type) {
+      margin-bottom: @size-4;
+    }
   }
 }
 
@@ -101,6 +111,21 @@
 .BottomRow {
   align-items: flex-end;
   display: flex;
+
+  @media @breakpoint-mobile {
+    flex-flow: column-reverse nowrap;
+
+    > div {
+      margin: @size-8 auto 0 0;
+    }
+
+    > button {
+      justify-content: center;
+      margin-left: 0;
+      margin-top: @size-12;
+      width: 100%;
+    }
+  }
 }
 
 .noCounter {
@@ -108,8 +133,16 @@
     display: flex;
     flex-flow: row nowrap;
 
+    @media @breakpoint-mobile {
+      flex-flow: column nowrap;
+    }
+
     > div.BottomRow {
       margin-left: @size-12;
+
+      @media @breakpoint-mobile {
+        margin-left: 0;
+      }
     }
   }
 }
@@ -133,4 +166,12 @@
 
 .NewTopLabel {
   margin-right: auto;
+}
+
+div.DarkBackgroundMobile {
+  @media @breakpoint-mobile {
+    > div:last-of-type {
+      background: @color-dark-grey;
+    }
+  }
 }

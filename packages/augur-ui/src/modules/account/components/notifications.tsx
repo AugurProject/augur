@@ -318,6 +318,7 @@ class Notifications extends React.Component<
         title={NOTIFICATIONS_TITLE}
         rightContent={labelContent}
         toggle={toggle}
+        customClass={notificationCount !== 0 && Styles.DarkBackgroundMobile}
         content={
           notificationCount === 0 ? (
             <EmptyDisplay

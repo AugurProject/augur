@@ -2,9 +2,7 @@ import React, { ReactNode } from 'react';
 import classNames from 'classnames';
 
 import BoxHeader from 'modules/portfolio/components/common/box-header';
-import { NameValuePair } from 'modules/portfolio/types';
 import { SearchSort } from 'modules/common/search-sort';
-import { SquareDropdown } from 'modules/common/selection';
 
 import Styles from 'modules/portfolio/components/common/quad-box.styles.less';
 
@@ -30,6 +28,7 @@ export interface QuadBoxProps {
   hide?: boolean;
   extend?: boolean;
   hideHeader?: boolean;
+  customClass?: string;
 }
 
 const BoxHeaderElement = (props: QuadBoxProps) => (
@@ -68,7 +67,8 @@ const QuadBox = (props: QuadBoxProps) => (
       [Styles.NoBorders]: props.noBorders,
       [Styles.NormalOnMobile]: props.normalOnMobile,
       [Styles.HideToggle]: props.hide,
-      [Styles.Extend]: props.extend
+      [Styles.Extend]: props.extend,
+      [props.customClass]: props.customClass
     })}
   >
     {!props.hideHeader &&
