@@ -34,9 +34,6 @@
 // jest.mock("@augurproject/sdk/build/state/index", () => {
 //   return {
 //     __esModule: true,
-//     buildAPI: () => {
-//       // return new API(john.augur, db);
-//     },
 //   };
 // });
 
