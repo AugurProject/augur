@@ -44,42 +44,46 @@
     }
   }
 
-  > div:first-of-type {
-    background-color: @color-secondary-action;
-    border: @size-1 solid @color-secondary-action-outline;
-    border-radius: @border-radius-default;
-    box-shadow: 0 @size-8 @size-8 @color-dark-grey;
-    display: none;
+  // div wrapper for hover state when margin-top is not zero.
+  > div {
     max-height: 256px;
     overflow-y: auto;
     position: absolute;
     top: 106%;
     z-index: @mask;
-    margin-top: @size-2;
 
-    &.active {
-      display: block;
-    }
-
-    > button {
-      color: @color-primary-text;
+    > div:first-of-type {
       background-color: @color-secondary-action;
-      position: relative;
-      text-align: left;
-      transition: background-color 0.15s ease;
-      white-space: nowrap;
-      width: 100%;
-
-      &:hover {
-        background-color: @color-secondary-action-outline;
+      border: @size-1 solid @color-secondary-action-outline;
+      border-radius: @border-radius-default;
+      box-shadow: 0 @size-8 @size-8 @color-dark-grey;
+      display: none;
+      margin-top: @size-2;
+  
+      &.active {
+        display: block;
       }
-
-      &:not(:last-of-type)::before {
-        background: fade(@color-secondary-action-outline, 50%);
-        bottom: 0;
-        content: "";
-        height: @size-1;
-        position: absolute;
+  
+      > button {
+        color: @color-primary-text;
+        background-color: @color-secondary-action;
+        position: relative;
+        text-align: left;
+        transition: background-color 0.15s ease;
+        white-space: nowrap;
+        width: 100%;
+  
+        &:hover {
+          background-color: @color-secondary-action-outline;
+        }
+  
+        &:not(:last-of-type)::before {
+          background: fade(@color-secondary-action-outline, 50%);
+          bottom: 0;
+          content: "";
+          height: @size-1;
+          position: absolute;
+        }
       }
     }
   }
@@ -135,28 +139,30 @@
     }
   }
 
-  > div:first-of-type {
-    margin-top: @size-4;
-  }
-
   > div {
-    width: 100%;
-  }
-
-  > div > button {
-    .text-12;
-
-    padding: 0 @size-12;
-    height: @size-32;
-
-    @media @breakpoint-mobile {
-      .text-12-bold;
-      height: @size-48;
+    > div:first-of-type {
+      margin-top: @size-4;
     }
-
-    &::before {
-      left: @size-12;
-      right: @size-12;
+  
+    > div {
+      width: 100%;
+    }
+  
+    > div > button {
+      .text-12;
+  
+      padding: 0 @size-12;
+      height: @size-32;
+  
+      @media @breakpoint-mobile {
+        .text-12-bold;
+        height: @size-48;
+      }
+  
+      &::before {
+        left: @size-12;
+        right: @size-12;
+      }
     }
   }
 }
@@ -211,29 +217,31 @@
     }
   }
 
-  > div:first-of-type {
-    margin-top: @size-2;
-  }
-
   > div {
-    width: 100%;
-  }
-
-  > div > button {
-    .text-10;
-
-    padding: 0 @size-8;
-    height: @size-24;
-    text-transform: uppercase;
-
-    @media @breakpoint-mobile {
-      .text-10-bold;
-      height: @size-40;
+    > div:first-of-type {
+      margin-top: @size-2;
     }
-
-    &::before {
-      left: @size-8;
-      right: @size-8;
+  
+    > div {
+      width: 100%;
+    }
+  
+    > div > button {
+      .text-10;
+  
+      padding: 0 @size-8;
+      height: @size-24;
+      text-transform: uppercase;
+  
+      @media @breakpoint-mobile {
+        .text-10-bold;
+        height: @size-40;
+      }
+  
+      &::before {
+        left: @size-8;
+        right: @size-8;
+      }
     }
   }
 }
@@ -280,7 +288,7 @@
 }
 
 .openTop {
-  > div:first-of-type {
+  > div > div:first-of-type {
     bottom: 106%;
     top: unset;
   }

@@ -156,13 +156,13 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
         onChange(selected.value);
       }
 
-      this.toggleList(false);
+      this.toggleList();
     }
   };
 
-  toggleList = (isOpen) => {
-    this.setState({ showList: isOpen });
-  };
+  toggleList = () => {
+    this.setState({ showList: !this.state.showList });
+  }
 
   handleWindowOnClick = (event: React.MouseEvent<HTMLElement>) => {
     if (this.refDropdown && !this.refDropdown.contains(event.target)) {
@@ -205,13 +205,12 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
         }}
         role="button"
         tabIndex={0}
+        onClick={this.toggleList}
         onMouseEnter={() => {
-          console.log('mouse enter')
-          this.toggleList(true)
+          this.setState({ showList: true });
         }}
         onMouseLeave={() => {
-          console.log('mouse leave')
-          this.toggleList(true)
+          this.setState({ showList: false });
         }}
         data-tip
         data-for={'dropdown-' + id + staticLabel}
@@ -226,20 +225,22 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
           </span>
           {ThickChevron}
         </button>
-        <div
-          className={classNames(Styles.list, {
-            [`${Styles.active}`]: showList,
-          })}
-        >
-          {sortedList.map(option => (
-            <button
-              key={`${option.value}${option.label}`}
-              value={option.value}
-              onClick={() => this.dropdownSelect(option)}
-            >
-              {option.label}
-            </button>
-          ))}
+        <div>
+          <div
+            className={classNames(Styles.list, {
+              [`${Styles.active}`]: showList,
+            })}
+          >
+            {sortedList.map(option => (
+              <button
+                key={`${option.value}${option.label}`}
+                value={option.value}
+                onClick={() => this.dropdownSelect(option)}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
         </div>
         {selected && (
           <select
