@@ -17860,11 +17860,6 @@
 					"type": "bytes32"
 				},
 				{
-					"internalType": "address",
-					"name": "_account",
-					"type": "address"
-				},
-				{
 					"internalType": "uint256",
 					"name": "_salt",
 					"type": "uint256"
