@@ -129,12 +129,21 @@ async function createOrderBook(person: ContractAPI, market: Market, can: CannedM
   }
 }
 
-export async function createCannedMarketsAndOrders(person: ContractAPI): Promise<Market[]> {
+export async function createCannedMarkets(person: ContractAPI): Promise<Market[]> {
   const markets = [];
   for (const can of cannedMarkets) {
     const market = await createCannedMarket(person, can);
     markets.push(market);
-    // await createOrderBook(person, market, can);
+  }
+  return markets;
+}
+
+export async function createCannedMarketsAndOnChainOrders(person: ContractAPI): Promise<Market[]> {
+  const markets = [];
+  for (const can of cannedMarkets) {
+    const market = await createCannedMarket(person, can);
+    markets.push(market);
+    await createOrderBook(person, market, can);
   }
   return markets;
 }
