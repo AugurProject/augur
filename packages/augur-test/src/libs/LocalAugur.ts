@@ -12,5 +12,5 @@ export async function makeTestAugur(seed: Seed, accounts: Account[]): Promise<Au
   const signer = await makeSigner(accounts[0], provider);
   const dependencies = makeGnosisDependencies(provider, undefined, signer, undefined, undefined, undefined, accounts[0].publicKey);
 
-  return Augur.create(provider, dependencies, seed.addresses, new EmptyConnector(), undefined, true);
+  return Augur.create(provider, dependencies, seed.addresses, new EmptyConnector(), true);
 }

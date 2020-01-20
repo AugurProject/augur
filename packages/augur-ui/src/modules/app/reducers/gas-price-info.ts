@@ -6,7 +6,7 @@ import { BaseAction, GasPriceInfo } from 'modules/types';
 import { GWEI_CONVERSION } from 'modules/common/constants';
 
 const gasPriceSafeLow = 1000000000; // default value safeLow
-const gasPriceAverage = 2000000000; // default value average
+const gasPriceAverage = 4000000000; // default value average
 const gasPriceFast = 20000000000; // default value fast
 
 const inGwei = (gasPrice) => {
