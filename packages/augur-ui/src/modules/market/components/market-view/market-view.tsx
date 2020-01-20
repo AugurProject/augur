@@ -579,7 +579,7 @@ export default class MarketView extends Component<
                   fillWidth
                   noBorder
                   id="mobileView"
-                  scrollOver={matches}
+                  scrollOver={matches && !preview}
                   leftButton={
                     <button
                       className={Styles.MarketView__button}
