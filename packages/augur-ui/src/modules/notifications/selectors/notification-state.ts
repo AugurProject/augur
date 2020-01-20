@@ -281,17 +281,20 @@ export const selectNotifications = createSelector(
 );
 
 // Return only market data we require for notifications
-const getRequiredMarketData = market => ({
-  id: market.id,
-  description: market.description,
-  endTime: market.endTime,
-  reportingState: market.reportingState,
-  marketStatus: market.marketStatus,
-  disputeInfo: market.disputeInfo || {},
-  myPositionsSummary: market.myPositionsSummary || {},
-  outstandingReturns: market.outstandingReturns || null,
-  finalizationTime: market.finalizationTime,
-});
+const getRequiredMarketData = market => {
+  console.log(market, "vs", selectMarket(market.id));
+  return ({
+    id: market.id,
+    description: market.description,
+    endTime: market.endTime,
+    reportingState: market.reportingState,
+    marketStatus: market.marketStatus,
+    disputeInfo: market.disputeInfo || {},
+    myPositionsSummary: market.myPositionsSummary || {},
+    outstandingReturns: market.outstandingReturns || null,
+    finalizationTime: market.finalizationTime,
+  });
+}
 
 // Build notification objects and include market data
 const generateCards = (markets, type) => {

@@ -5,16 +5,16 @@
   border-radius: @border-radius-default;
   display: flex;
   flex-direction: column;
-  padding: @size-12 @size-16;
+  padding: 0 @size-16;
+
+  > section {
+    padding: @size-12 0;
+    border-bottom: 1px solid @color-dark-grey;
+  }
 }
 
 .NewNotificationCard {
-  background: @color-secondary-action;
-  border-bottom: 1px solid fade(@color-secondary-action-outline, 50%);
-
-  &:last-of-type {
-    border-bottom: 0;
-  }
+  background: @color-active-background;
 }
 
 .TitleBar {
@@ -32,7 +32,7 @@
   align-items: center;
   display: flex;
   justify-content: center;
-  margin: 0 @size-8 0 0;
+  margin: 0 @size-4 0 0;
 
   > svg {
     height: @size-12;
@@ -54,30 +54,19 @@
 }
 
 .Title {
-  .mono-11-bold;
+  .mono-12-semi-bold;
 
-  color: @color-inactive-text;
-  margin: 0 @size-9 0 0;
+  color: @color-secondary-text;
+  margin: 0 @size-4 0 0;
   text-transform: uppercase;
-
-  @media @breakpoint-mobile {
-    .mono-10-bold;
-  }
 }
 
 .Message {
-  .text-11;
+  .text-12;
 
-  color: @color-inactive-text;
-  line-height: 0.9375rem;
+  color: @color-secondary-text;
   display: flex;
   flex-direction: column;
-
-  @media @breakpoint-mobile {
-    .text-10;
-
-    line-height: @size-14;
-  }
 }
 
 .TitleNew {
@@ -90,6 +79,10 @@
   > span > span {
     font-weight: bold;
   }
+
+  > div.BottomRow > div.Countdown > span > span:first-of-type {
+    color: @color-primary-text;
+  }
 }
 
 .NotificationCard button {
@@ -101,26 +94,34 @@
   display: flex;
 }
 
+.noCounter {
+  > section > div.Message {
+    display: flex;
+    flex-flow: row nowrap;
+
+    > div.BottomRow {
+      margin-left: @size-12;
+    }
+  }
+}
+
 .Countdown {
   margin: @size-12 0 0;
 
   > span {
-    > span {
-      width: max-content !important;
-    }
-
     > span:first-of-type {
-      .mono-10;
+      .mono-10-medium;
 
-      color: @color-inactive-text;
-      line-height: normal;
-      text-transform: uppercase;
+      color: @color-secondary-text;
+      text-transform: capitalize;
     }
 
     > span:last-of-type {
-      .mono-12;
-
-      line-height: normal;
+      .mono-12-medium;
     }
   }
+}
+
+.NewTopLabel {
+  margin-right: auto;
 }
