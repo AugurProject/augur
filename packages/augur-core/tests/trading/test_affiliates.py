@@ -64,7 +64,7 @@ def test_affiliate_validator(kitchenSinkFixture, universe, cash):
 
     accountKey = longTo32Bytes(21)
     salt = 0
-    accountHash = affiliateValidator.getKeyHash(accountKey, salt)
+    accountHash = affiliateValidator.getKeyHash(accountKey, account, salt)
 
     # A bad signature will be rejected
     with raises(TransactionFailed):
@@ -85,7 +85,7 @@ def test_affiliate_validator(kitchenSinkFixture, universe, cash):
 
     affiliateKey = longTo32Bytes(22)
     salt += 1
-    affiliateHash = affiliateValidator.getKeyHash(affiliateKey, salt)
+    affiliateHash = affiliateValidator.getKeyHash(affiliateKey, affiliate, salt)
     r, s, v = signHash(affiliateHash, affiliateValidatorOperatorPrivKey)
     affiliateValidator.addKey(affiliateKey, salt, r, s, v, sender=affiliate)
 
@@ -107,7 +107,7 @@ def test_affiliate_validator(kitchenSinkFixture, universe, cash):
     dupeAccount = kitchenSinkFixture.accounts[2]
     affiliates.setReferrer(affiliate, sender=dupeAccount)
     salt += 1
-    affiliateHash = affiliateValidator.getKeyHash(affiliateKey, salt)
+    affiliateHash = affiliateValidator.getKeyHash(affiliateKey, dupeAccount, salt)
     r, s, v = signHash(affiliateHash, affiliateValidatorOperatorPrivKey)
     affiliateValidator.addKey(affiliateKey, salt, r, s, v, sender=dupeAccount)
     

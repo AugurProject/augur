@@ -26,6 +26,7 @@ import {
   MODAL_BUY_DAI,
   MODAL_TEST_BET,
   MODAL_TUTORIAL_INTRO,
+  SIGNIN_LOADING_TEXT,
 } from 'modules/common/constants';
 import { windowRef } from 'utils/window-ref';
 import { AppState } from 'store';
@@ -89,7 +90,7 @@ function pollForAccount(
                 setTimeout(() => {
                   dispatch(closeModal());
                 }),
-              message: `Connecting to our partners at ${accountType} to create your secure account.`,
+              message: accountType === ACCOUNT_TYPES.WEB3WALLET ? SIGNIN_LOADING_TEXT : `Connecting to our partners at ${accountType} to create your secure account.`,
               showLearnMore: true,
               showCloseAfterDelay: true,
             })

@@ -81,21 +81,6 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
     extraInfo: {
       categories: ['space'],
       description:
-        'Will SpaceX successfully complete a manned flight to the International Space Station by the end of ' +
-        thisYear +
-        ' according to http://www.spacex.com?',
-      tags: ['SpaceX', 'spaceflight'],
-      longDescription: '',
-    },
-    orderBook: yesNoOrderBook,
-  },
-  {
-    marketType: 'yesNo',
-    endTime: inOneMonths.getTime() / 1000,
-    affiliateFeeDivisor: 4,
-    extraInfo: {
-      categories: ['space'],
-      description:
         'Will SpaceX successfully complete a manned flight beyond Earth orbit by ' +
         inOneMonths.toDateString() +
         ' according to http://www.spacex.com?',
@@ -121,26 +106,10 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
   },
   {
     marketType: 'yesNo',
-    endTime: inTwoMonths.getTime() / 1000,
-    affiliateFeeDivisor: 4,
-    extraInfo: {
-      categories: ['politics'],
-      description:
-        'Will California secede from the United States before, ' +
-        inTwoMonths.toDateString() +
-        '?',
-      tags: ['California', 'Calexit'],
-      longDescription:
-        'In the Spring of 2019, Californians will go to the polls in a historic vote to decide by referendum if California should exit the Union, a #Calexit vote. http://www.yescalifornia.org',
-    },
-    orderBook: yesNoOrderBook,
-  },
-  {
-    marketType: 'yesNo',
     endTime: closingBellTomorrow.getTime() / 1000,
     affiliateFeeDivisor: 4,
     extraInfo: {
-      categories: ['finance', 'dow jones industrial average'],
+      categories: ['finance', 'indexes'],
       description:
         'Will the Dow Jones Industrial Average close at a higher price on ' +
         closingBellTomorrow.toDateString() +
@@ -168,21 +137,6 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
   },
   {
     marketType: 'yesNo',
-    endTime: inThreeMonths.getTime() / 1000,
-    affiliateFeeDivisor: 4,
-    extraInfo: {
-      categories: ['politics'],
-      description:
-        'Will Jair Messias Bolsonaro be elected the president of Brazil in ' +
-        inThreeMonths.toDateString() +
-        '?',
-      tags: ['elections', 'Brazil'],
-      longDescription: '',
-    },
-    orderBook: yesNoOrderBook,
-  },
-  {
-    marketType: 'yesNo',
     endTime: inFourMonths.getTime() / 1000,
     affiliateFeeDivisor: 4,
     extraInfo: {
@@ -201,43 +155,12 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
     endTime: inFourMonths.getTime() / 1000,
     affiliateFeeDivisor: 4,
     extraInfo: {
-      categories: ['climate'],
+      categories: ['weather'],
       description:
         'Will the Larsen B ice shelf collapse by ' +
         inFourMonths.toDateString() +
         '?',
       tags: ['Antarctica', 'warming'],
-    },
-    orderBook: yesNoOrderBook,
-  },
-  {
-    marketType: 'yesNo',
-    endTime: inFiveMonths.getTime() / 1000,
-    affiliateFeeDivisor: 4,
-    extraInfo: {
-      categories: ['sports', 'golden state warriors'],
-      description:
-        'Will the Golden State Warriors win the Championship on ' +
-        inFiveMonths.toDateString() +
-        ' according to ESPN.com?',
-      tags: ['basketball', 'Warriors'],
-      longDescription: '',
-    },
-    orderBook: yesNoOrderBook,
-  },
-  {
-    marketType: 'yesNo',
-    endTime: inFiveMonths.getTime() / 1000,
-    affiliateFeeDivisor: 4,
-    extraInfo: {
-      categories: ['agriculture'],
-      description:
-        'Will antibiotics be outlawed for agricultural use in China by ' +
-        inFiveMonths.toDateString() +
-        '?',
-      tags: ['antibiotics', 'China'],
-      longDescription:
-        'Will antibiotic pan-resistance lead to a massive resurgence of infectious diseases?',
     },
     orderBook: yesNoOrderBook,
   },
@@ -249,7 +172,7 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
     tickSize: '0.1',
     affiliateFeeDivisor: 4,
     extraInfo: {
-      categories: ['temperature'],
+      categories: ['weather', 'temperature'],
       description:
         `High temperature (in degrees Fahrenheit) on ${today.toDateString()} at the San Francisco International Airport, as reported by Weather Underground (https://www.wunderground.com/history/airport/KSFO/) `
          + [
@@ -522,58 +445,6 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
         sell: singleOutcomeAsks,
       },
       6: {
-        buy: singleOutcomeBids,
-        sell: singleOutcomeAsks,
-      },
-    },
-  },
-  {
-    marketType: 'categorical',
-    endTime: inOneMonths.getTime() / 1000,
-    outcomes: [
-      'London',
-      'New York',
-      'Los Angeles',
-      'San Francisco',
-      'Tokyo',
-      'Palo Alto',
-      'Hong Kong',
-    ],
-    affiliateFeeDivisor: 4,
-    extraInfo: {
-      categories: ['housing'],
-      description:
-        'Which city will have the lowest median single-family home price on ' +
-        inOneMonths.toDateString() +
-        ' according to http://www.demographia.com?',
-      tags: ['economy', 'bubble'],
-    },
-    orderBook: {
-      1: {
-        buy: singleOutcomeBids,
-        sell: singleOutcomeAsks,
-      },
-      2: {
-        buy: singleOutcomeBids,
-        sell: singleOutcomeAsks,
-      },
-      3: {
-        buy: singleOutcomeBids,
-        sell: singleOutcomeAsks,
-      },
-      4: {
-        buy: singleOutcomeBids,
-        sell: singleOutcomeAsks,
-      },
-      5: {
-        buy: singleOutcomeBids,
-        sell: singleOutcomeAsks,
-      },
-      6: {
-        buy: singleOutcomeBids,
-        sell: singleOutcomeAsks,
-      },
-      7: {
         buy: singleOutcomeBids,
         sell: singleOutcomeAsks,
       },

@@ -10,6 +10,7 @@ export * from "@augurproject/types";
 export { Provider } from "./ethereum/Provider";
 export * from "./utils";
 export * from "./constants";
+export * from "./state";
 export * from "./subscriptions";
 
 import * as Connectors from "./connector";
@@ -20,8 +21,6 @@ export {
   Events
 };
 
-export { buildAPI, Getters, Logs, Sync } from "./state";
-export * from "./state/create-api";
 export { IsJsonRpcRequest } from './state/IsJsonRpcRequest';
 export { JsonRpcRequest, JsonRpcResponse } from './state/getter/types';
 export { MakeJsonRpcResponse } from './state/MakeJsonRpcResponse';

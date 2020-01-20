@@ -1,10 +1,11 @@
 import { deployContracts } from '../libs/blockchain';
 import { FlashSession, FlashArguments } from './flash';
-import { createCannedMarketsAndOrders } from './create-canned-markets-and-orders';
+import { createCannedMarkets } from './create-canned-markets-and-orders';
 import { _1_ETH } from '../constants';
 import {
   Contracts as compilerOutput,
-  Addresses,
+  getAddressesForNetwork,
+  NetworkId
 } from '@augurproject/artifacts';
 import {
   NetworkConfiguration,
@@ -22,6 +23,8 @@ import {
   convertDisplayAmountToOnChainAmount,
   convertDisplayPriceToOnChainPrice,
   stringTo32ByteHex,
+  numTicksToTickSizeWithDisplayPrices,
+  convertOnChainPriceToDisplayPrice,
 } from '@augurproject/sdk';
 import { fork } from './fork';
 import { dispute } from './dispute';
@@ -75,7 +78,7 @@ export function addScripts(flash: FlashSession) {
       this.network = NetworkConfiguration.create(network);
       flash.provider = this.makeProvider(this.network);
       const networkId = await this.getNetworkId(flash.provider);
-      flash.contractAddresses = Addresses[networkId];
+      flash.contractAddresses = getAddressesForNetwork(networkId as NetworkId);
       const mesh = args.meshEndpoint as string || undefined;
       const endpoint = 'ws://localhost:60557';
       const meshEndpoint = mesh ? mesh : endpoint;
@@ -376,13 +379,13 @@ export function addScripts(flash: FlashSession) {
   });
 
   flash.addScript({
-    name: 'create-canned-markets-and-orders',
+    name: 'create-canned-markets',
     async call(this: FlashSession) {
       const user = await this.ensureUser();
       await user.repFaucet(new BigNumber(10).pow(18).multipliedBy(1000000));
       await user.faucet(new BigNumber(10).pow(18).multipliedBy(1000000));
       await user.approve(new BigNumber(10).pow(18).multipliedBy(1000000));
-      return createCannedMarketsAndOrders(user);
+      return createCannedMarkets(user);
     },
   });
 
@@ -604,6 +607,11 @@ export function addScripts(flash: FlashSession) {
         required: true,
         description: 'market numTicks',
       },
+      {
+        name: 'onInvalid',
+        flag: true,
+        description: 'create zeroX orders on invalid outcome',
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const endpoint = 'ws://localhost:60557';
@@ -616,33 +624,30 @@ export function addScripts(flash: FlashSession) {
       const timestamp = await this.call('get-timestamp', {});
       const tradeGroupId = String(Date.now());
       const oneHundredDays = 8640000;
+      const onInvalid = args.onInvalid as boolean;
       const numTicks = new BigNumber(String(args.numTicks));
       const maxPrice = new BigNumber(String(args.maxPrice));
       const minPrice = new BigNumber(String(args.minPrice));
+      const tickSize = numTicksToTickSizeWithDisplayPrices(numTicks, minPrice, maxPrice);
+      const midPrice = maxPrice.minus((numTicks.dividedBy(2)).times(tickSize));
 
-      const topPrice = maxPrice.integerValue();
-      const bottomPrice = minPrice.integerValue();
-      const midPrice = topPrice.minus(bottomPrice).dividedBy(2).integerValue();
-      console.log('midPrice', midPrice.toString());
-      console.log('minPrice.plus(midPrice.times(0.4)).integerValue()', minPrice.plus(midPrice.times(0.4)).integerValue().toString());
       const orderBook = {
         2: {
           buy: [
-              { shares: '30', price: minPrice.plus(midPrice.times(0.7)).integerValue() },
-              { shares: '20', price: minPrice.plus(midPrice.times(0.6)).integerValue() },
-              { shares: '10', price: minPrice.plus(midPrice.times(0.5)).integerValue() },
+              { shares: '30', price: midPrice.plus(tickSize.times(3)) },
+              { shares: '20', price: midPrice.plus(tickSize.times(2)) },
+              { shares: '10', price: midPrice.plus(tickSize) },
           ],
           sell: [
-              { shares: '10', price: minPrice.plus(midPrice.times(0.4)).integerValue() },
-              { shares: '20', price: minPrice.plus(midPrice.times(0.3)).integerValue() },
-              { shares: '30', price: minPrice.plus(midPrice.times(0.2)).integerValue() },
+              { shares: '10', price: midPrice.minus(tickSize) },
+              { shares: '20', price: midPrice.minus(tickSize.times(2)) },
+              { shares: '30', price: midPrice.minus(tickSize.times(3)) },
           ],
         },
       };
 
-      console.log(JSON.stringify(orderBook));
       for (let a = 0; a < Object.keys(orderBook).length; a++) {
-        const outcome = Number(Object.keys(orderBook)[a]) as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
+        const outcome = !onInvalid ? Number(Object.keys(orderBook)[a]) as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 : 0;
         const buySell = Object.values(orderBook)[a];
 
         const { buy, sell } = buySell;
@@ -650,7 +655,7 @@ export function addScripts(flash: FlashSession) {
         for (const { shares, price } of buy) {
           this.log(`creating buy order, ${shares} @ ${price}`);
           const order = {
-            direction: 1 as 0 | 1,
+            direction: 0 as 0 | 1,
             market,
             numTicks,
             numOutcomes: 3 as 3 | 4 | 5 | 6 | 7,
@@ -831,7 +836,7 @@ export function addScripts(flash: FlashSession) {
         write_artifacts: true,
         time_controlled: true,
       });
-      await this.call('create-canned-markets-and-orders', {});
+      await this.call('create-canned-markets', {});
     },
   });
 
@@ -842,7 +847,7 @@ export function addScripts(flash: FlashSession) {
         write_artifacts: true,
         time_controlled: false,
       });
-      await this.call('create-canned-markets-and-orders', {});
+      await this.call('create-canned-markets', {});
     },
   });
 
@@ -1527,7 +1532,7 @@ export function addScripts(flash: FlashSession) {
       const networkId = await this.provider.getNetworkId();
       // const ethNode = this.network.http;
       const ethNode = 'http://geth:8545';
-      const addresses = Addresses[networkId];
+      const addresses = getAddressesForNetwork(networkId as NetworkId);
 
       console.log(`Starting 0x mesh. chainId=${networkId} ethnode=${ethNode}`);
 

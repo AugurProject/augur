@@ -1,19 +1,18 @@
-import { EthersProvider } from '@augurproject/ethersjs-provider';
+import { WSClient } from '@0x/mesh-rpc-client';
 import { ContractAddresses } from '@augurproject/artifacts';
 import { NetworkConfiguration } from '@augurproject/core';
-import { WSClient } from '@0x/mesh-rpc-client';
-import { ContractAPI } from '../libs/contract-api';
-import { Account, NULL_ADDRESS } from '../constants';
-import { providers } from 'ethers';
-import { Connectors, Events, SubscriptionEventName } from '@augurproject/sdk';
-import { API } from '@augurproject/sdk/build/state/getter/API';
-import { BlockAndLogStreamerListenerInterface } from '@augurproject/sdk/build/state/db/BlockAndLogStreamerListener';
-import { DB } from '@augurproject/sdk/build/state/db/DB';
-import { EmptyConnector } from '@augurproject/sdk';
-import { BaseConnector } from '@augurproject/sdk/build/connector';
-import { configureDexieForNode } from '@augurproject/sdk/build/state/utils/DexieIDBShim';
-import { BigNumber } from 'bignumber.js';
+import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { GnosisRelayAPI } from '@augurproject/gnosis-relay-api';
+import { Connectors, EmptyConnector, Events, SDKConfiguration, SubscriptionEventName } from "@augurproject/sdk";
+import { BaseConnector } from "@augurproject/sdk/build/connector";
+import { BlockAndLogStreamerListenerInterface } from "@augurproject/sdk/build/state/db/BlockAndLogStreamerListener";
+import { DB } from "@augurproject/sdk/build/state/db/DB";
+import { API } from "@augurproject/sdk/build/state/getter/API";
+import { configureDexieForNode } from "@augurproject/sdk/build/state/utils/DexieIDBShim";
+import { BigNumber } from 'bignumber.js';
+import { providers } from "ethers";
+import { Account } from "../constants";
+import { ContractAPI } from "../libs/contract-api";
 
 configureDexieForNode(true);
 
@@ -40,13 +39,11 @@ type Logger = (s: string) => void;
 
 export class FlashSession {
   // Configuration
-  accounts: Account[];
   user?: ContractAPI;
   api?: API;
   db?: Promise<DB>;
   readonly scripts: { [name: string]: FlashScript } = {};
   log: Logger = console.log;
-  network?: NetworkConfiguration;
 
   // Node miscellanea
   provider?: EthersProvider;
@@ -56,16 +53,13 @@ export class FlashSession {
   // Other values to store. This exists because e.g. Ganache can't exist in all environments.
   [key: string]: any;
 
-  constructor(accounts: Account[]) {
-    this.accounts = accounts;
-  }
+  constructor(
+    public accounts: Account[],
+    public network?: NetworkConfiguration
+  ) {}
 
   addScript(script: FlashScript) {
     this.scripts[script.name] = script;
-  }
-
-  setLogger(logger: Logger) {
-    this.log = logger;
   }
 
   async call(name: string, args: FlashArguments): Promise<any> {
@@ -110,9 +104,7 @@ export class FlashSession {
 
   noAddresses() {
     if (typeof this.contractAddresses === 'undefined') {
-      this.log(
-        'ERROR: Must first load contract addresses.'
-      );
+      this.log('ERROR: Must first load contract addresses.');
       return true;
     }
 
@@ -127,7 +119,7 @@ export class FlashSession {
     approveCentralAuthority = true,
     accountAddress = null,
     meshEndpoint = null,
-    useGnosis = false,
+    useGnosis = false
   ): Promise<ContractAPI> {
     if (typeof this.contractAddresses === 'undefined') {
       throw Error('ERROR: Must load contract addresses first.');
@@ -137,10 +129,20 @@ export class FlashSession {
       return this.user;
     }
 
+    network = network || this.network;
+
     if (wireUpSdk) this.usingSdk = true;
 
-    const connector: BaseConnector = wireUpSdk ? new Connectors.DirectConnector() : new EmptyConnector();
-    const gnosisRelay = useGnosis ? new GnosisRelayAPI('http://localhost:8000/api/') : undefined;
+    const config: SDKConfiguration = {
+      networkId: await this.provider.getNetworkId(),
+    };
+
+    const connector: BaseConnector = wireUpSdk
+      ? new Connectors.DirectConnector()
+      : new EmptyConnector();
+    const gnosisRelay = useGnosis
+      ? new GnosisRelayAPI('http://localhost:8000/api/')
+      : undefined;
     const meshClient = !!meshEndpoint ? new WSClient(meshEndpoint) : undefined;
     this.user = await ContractAPI.userWrapper(
       this.getAccount(accountAddress),
@@ -162,10 +164,12 @@ export class FlashSession {
     }
 
     if (wireUpSdk) {
-      network = network || this.network;
       if (!network) throw Error('Cannot wire up sdk if network is not set.');
-      await this.user.augur.connect(network.http, this.getAccount().publicKey);
-      await this.user.augur.on(SubscriptionEventName.NewBlock, this.sdkNewBlock);
+      await connector.connect(config, this.getAccount().publicKey);
+      await this.user.augur.on(
+        SubscriptionEventName.NewBlock,
+        this.sdkNewBlock
+      );
       this.db = this.makeDB();
       this.api = new API(this.user.augur, this.db);
     }
@@ -188,7 +192,9 @@ export class FlashSession {
   getAccount(address: string = null): Account {
     let useAccount = this.accounts[0];
     if (address) {
-      const found = this.accounts.find(a => a.publicKey.toLowerCase() === address.toLowerCase());
+      const found = this.accounts.find(
+        a => a.publicKey.toLowerCase() === address.toLowerCase()
+      );
       if (found) useAccount = found;
     }
     if (this.account) {
@@ -224,14 +230,13 @@ export class FlashSession {
     return (await provider.getNetwork()).chainId.toString();
   }
 
-
   async makeDB(): Promise<DB> {
-    const listener = {
+    const listener = ({
       listenForBlockRemoved: () => {},
       listenForBlockAdded: () => {},
       listenForEvent: () => {},
       startBlockStreamListener: () => {},
-    } as unknown as BlockAndLogStreamerListenerInterface;
+    } as unknown) as BlockAndLogStreamerListenerInterface;
 
     return DB.createAndInitializeDB(
       Number(this.user.augur.networkId),

@@ -15,13 +15,14 @@ import CoreProperties from 'modules/market/components/core-properties/core-prope
 import {
   WordTrail,
   MarketTypeLabel,
-  TemplateShield,
+  TemplateShield, RedFlag,
 } from 'modules/common/labels';
 import makeQuery from 'modules/routes/helpers/make-query';
 import {
   CATEGORY_PARAM_NAME,
   TAGS_PARAM_NAME,
   SCALAR,
+  PROBABLE_INVALID_MARKET,
 } from 'modules/common/constants';
 import MarketHeaderReporting from 'modules/market/containers/market-header-reporting';
 import SocialMediaButtons from 'modules/market/containers/social-media-buttons';
@@ -275,6 +276,7 @@ export default class MarketHeader extends Component<
                   {LeftChevron} Back
                 </button>
                 {isScalar && <MarketTypeLabel marketType={marketType} />}
+                <RedFlag market={market} />
                 {market.isTemplate && <TemplateShield market={market} />}
                 <WordTrail items={[...categoriesWithClick]} />
                 <SocialMediaButtons
@@ -322,6 +324,11 @@ export default class MarketHeader extends Component<
                 ) : (
                   <MarketTitle id={market.marketId} noLink />
                 )}
+                {market.mostLikelyInvalid ? (
+                  <div className={Styles.ResolvingInvalid}>
+                    <span>{PROBABLE_INVALID_MARKET}</span>
+                  </div>
+                ) : null}
                 {details.length > 0 && (
                   <div className={Styles.Details}>
                     <h4>Resolution Details</h4>

@@ -93,6 +93,12 @@ export const SIXTY_DAYS = 60 * SECONDS_PER_DAY;
 
 export const EDGE_WALLET_TYPE = 'wallet:ethereum';
 
+// Add Funds types
+export const ADD_FUNDS_SWAP = '0';
+export const ADD_FUNDS_CREDIT_CARD = '1';
+export const ADD_FUNDS_COINBASE = '2';
+export const ADD_FUNDS_TRANSFER = '3';
+
 // # Connect Constants
 export const ACCOUNT_TYPES = {
   EDGE: 'Edge',
@@ -113,11 +119,11 @@ export const WALLET_TYPE = {
 
 export const SIGNIN_LOADING_TEXT = 'Sit tight - loading your account.';
 export const SIGNIN_LOADING_TEXT_PORTIS =
-  'Follow instructions in the Portis window.';
+  'Connecting to our partners at Portis to create your secure account.';
 export const SIGNIN_LOADING_TEXT_FORTMATIC =
-  'Follow instructions in the Fortmatic window.';
+  'Connecting to our partners at Fortmatic to create your secure account.';
 export const SIGNIN_LOADING_TEXT_TORUS =
-  'Follow instructions in the Tor.us window.';
+  'Connecting to our partners at Tor.us to create your secure account.';
 export const SIGNIN_SIGN_WALLET =
   'Your wallet will ask you to digitally sign in to link it with Augur';
 
@@ -216,6 +222,8 @@ export const invalidFilters = [
   { header: 'Hide', value: INVALID_HIDE },
   { header: 'show', value: INVALID_SHOW },
 ];
+
+export const PROBABLE_INVALID_MARKET = 'This market has a high probability of resolving invalid';
 
 // # Sorting Options
 export const NEUTRAL = 'neutral';
@@ -809,6 +817,7 @@ export const FINALIZE_MARKET_TITLE = 'Finalize Market';
 export const UNSIGNED_ORDERS_TITLE = 'Unsigned Orders';
 export const CLAIM_REPORTING_FEES_TITLE = 'Claim Stake and Fees';
 export const PROCEEDS_TO_CLAIM_TITLE = 'Claim Proceeds';
+export const MARKET_IS_MOST_LIKELY_INVALID_TITLE = 'Market is Failing Invalid Filter';
 export const OPEN_ORDERS_RESOLVED_MARKET = 'resolvedMarketsOpenOrders';
 export const REPORT_ON_MARKET = 'reportOnMarkets';
 export const FINALIZE_MARKET = 'finalizeMarkets';
@@ -816,6 +825,7 @@ export const MARKET_IN_DISPUTE = 'marketsInDispute';
 export const CLAIM_REPORTING_FEES = 'claimReportingFees';
 export const UNSIGNED_ORDERS = 'unsignedOrders';
 export const PROCEEDS_TO_CLAIM = 'proceedsToClaim';
+export const MARKET_IS_MOST_LIKELY_INVALID = 'marketIsMostLikelyInvalid';
 
 export const NOTIFICATION_TYPES = {
   [OPEN_ORDERS_RESOLVED_MARKET]: OPEN_ORDERS_RESOLVED_MARKET,
@@ -825,6 +835,7 @@ export const NOTIFICATION_TYPES = {
   [CLAIM_REPORTING_FEES]: CLAIM_REPORTING_FEES,
   [UNSIGNED_ORDERS]: UNSIGNED_ORDERS,
   [PROCEEDS_TO_CLAIM]: PROCEEDS_TO_CLAIM,
+  [MARKET_IS_MOST_LIKELY_INVALID]: MARKET_IS_MOST_LIKELY_INVALID,
 };
 
 // Account View - Timeframe selection options

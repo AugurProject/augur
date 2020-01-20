@@ -66,12 +66,13 @@
     }
   }
 
-  @media @breakpoint-mobile {
+  @media all and (max-width: @step-2-2) {
     height: 100%;
     padding: @size-24 @size-16;
 
     > img {
       height: 100%;
+      width: fit-content;
     }
 
     > div:first-of-type {
