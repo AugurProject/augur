@@ -34,13 +34,17 @@
       width: @size-10;
 
       > path {
-        fill: @color-primary-text;
+        fill: @color-secondary-text;
       }
     }
 
     &:hover {
       background: fade(@color-secondary-action, 50%);
       outline: none;
+
+      > svg > path {
+        fill: @color-primary-text;
+      }
     }
   }
 
@@ -268,6 +272,10 @@
     // arrow
     > svg {
       transform: rotate(180deg);
+
+      > path {
+        fill: @color-primary-text;
+      }
     }
   }
 }
