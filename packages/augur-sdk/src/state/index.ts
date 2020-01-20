@@ -1,14 +1,6 @@
 import * as Getters from './getter';
-import * as Sync from "./Sync";
-import * as Logs from "./logs/types";
+import * as Logs from './logs/types';
 
-export {
-  Getters,
-  Logs,
-  Sync,
-};
+export { Getters, Logs };
 
-export {
-  buildAPI,
-  create,
-} from "./create-api";
+export * from './create-api';

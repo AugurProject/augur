@@ -1,0 +1,105 @@
+@import (reference) '~assets/styles/shared';
+
+.Swap {
+  > div:nth-of-type(2) {
+    align-items: center;
+    background: @color-table-header;
+    display: flex;
+    height: @size-40;
+    justify-content: center;
+    margin: 0 @size-8;
+
+    > svg > path {
+      stroke: @color-primary-action;
+    }
+  }
+
+  > button {
+    .text-16-bold;
+
+    background: @color-primary-action;
+    border-radius: 58px;
+    height: 50px;
+    margin-top: @size-48;
+    width: 100%;
+  }
+}
+
+.SwapRow {
+  background: @color-dark-grey;
+  border-radius: @size-12;
+  display: flex;
+  flex-direction: column;
+  height: 87px;
+  justify-content: space-between;
+  padding: @size-12 @size-16;
+
+  > div {
+    display: flex;
+    justify-content: space-between;
+    user-select: none;
+    cursor: pointer;
+  }
+
+  > div:first-of-type {
+    > div {
+      .text-12;
+
+      color: @color-primary-text;
+    }
+  }
+
+  > div:last-of-type {
+    > div {
+      .text-24;
+
+      color: @color-secondary-text;
+    }
+
+    > div:last-of-type {
+      > div {
+        .text-16;
+
+        align-items: center;
+        background: @color-secondary-action;
+        border: @size-1 solid @color-secondary-action-outline;
+        border-radius: @size-16;
+        display: flex;
+        justify-content: space-evenly;
+        height: @size-32;
+        width: 98px;
+
+        svg {
+          fill: @color-outcome-seven;
+          transform: scale(1.25);
+          width: @size-16;
+        }
+      }
+    }
+  }
+}
+
+.SwapRow:first-of-type {
+  > div:last-of-type > input {
+    .text-24;
+
+    padding: 0;
+  }
+}
+
+.SwapRate {
+  align-items: center;
+  background: @color-table-header;
+  border-bottom-left-radius: @size-12;
+  border-bottom-right-radius: @size-12;
+  display: flex;
+  justify-content: space-between;
+  margin: 0 @size-8;
+  padding: @size-8;
+
+  > div {
+    .text-12;
+
+    color: @color-secondary-text;
+  }
+}

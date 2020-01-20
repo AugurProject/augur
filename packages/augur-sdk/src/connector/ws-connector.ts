@@ -1,18 +1,19 @@
-import { Callback, SubscriptionType } from '../events';
-import { BaseConnector } from './baseConnector';
-import { SubscriptionEventName } from '../constants';
 import WebSocket from 'isomorphic-ws';
 import WebSocketAsPromised from 'websocket-as-promised';
+import { SubscriptionEventName } from '../constants';
+import { Callback, SubscriptionType } from '../events';
+import { SDKConfiguration } from "../state";
+import { BaseConnector } from './base-connector';
 
 export class WebsocketConnector extends BaseConnector {
   private socket: WebSocketAsPromised;
 
-  constructor(readonly endpoint: string) {
+  constructor() {
     super();
   }
 
-  async connect(ethNodeUrl: string, account?: string): Promise<any> {
-    this.socket = new WebSocketAsPromised(this.endpoint, {
+  async connect(config: SDKConfiguration, account?: string): Promise<void> {
+    this.socket = new WebSocketAsPromised(config.sdk.ws, {
       packMessage: (data: any) => JSON.stringify(data),
       unpackMessage: (message: string) => JSON.parse(message),
       attachRequestId: (data: any, requestId: number) =>
@@ -35,7 +36,7 @@ export class WebsocketConnector extends BaseConnector {
       console.log(message);
     });
 
-    return this.socket.open();
+    this.socket.open();
   }
 
   messageReceived(message: any) {

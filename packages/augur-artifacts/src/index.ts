@@ -27,16 +27,17 @@ try {
   // if the local upload block numbers don't exist, do nothing
 }
 
-export type NetworkId =
-  '1'
-  | '3'
-  | '4'
-  | '19'
-  | '42'
-  | '101'
-  | '102'
-  | '103'
-  | '104';
+export enum NetworkId {
+  Mainnet = '1',
+  Ropsten = '3',
+  Rinkeby = '4',
+  Kovan = '42',
+  Private1 = '101',
+  Private2 = '102',
+  Private3 = '103',
+  Private4 = '104',
+  PrivateGanache = '123456',
+};
 
 export interface UploadBlockNumbers {
   [networkId: string]: number
@@ -115,9 +116,7 @@ export async function setAddresses(networkId: NetworkId, addresses: ContractAddr
       contents = {}; // throw out unparseable addresses file
     }
   }
-
   contents[networkId] = addresses;
-
   await writeFile(filepath, JSON.stringify(contents, null, 2), 'utf8');
 }
 
@@ -137,4 +136,41 @@ export async function setUploadBlockNumber(networkId: NetworkId, uploadBlock: nu
 
     await writeFile(filepath, JSON.stringify(contents, null, 2), 'utf8');
   }
+}
+
+
+export function getAddressesForNetwork(networkId: NetworkId): ContractAddresses {
+  const addresses = Addresses[networkId];
+  if (typeof addresses === 'undefined') {
+    if (networkId !== '1') {
+      console.log(
+        `Contract addresses aren't available for network ${networkId}. If you're running in development mode, be sure to have started a local ethereum node, and then have rebuilt using yarn build before starting the dev server`
+      );
+    }
+    throw new Error(
+      `Unable to read contract addresses for network: ${
+        networkId
+      }. Known addresses: ${JSON.stringify(Addresses)}`
+    );
+  }
+
+  return addresses;
+}
+
+export function getStartingBlockForNetwork(networkId: NetworkId): number {
+  const blockNumber = UploadBlockNumbers[networkId];
+  if (typeof blockNumber === 'undefined') {
+    if (networkId !== '1') {
+      console.log(
+        `Starting block number isn't available for network ${networkId}. If you're running in development mode, be sure to have started a local ethereum node, and then have rebuilt using yarn build before starting the dev server`
+      );
+    }
+    throw new Error(
+      `Unable to read starting block number for network: ${
+        networkId
+      }. Known starting block numbers: ${JSON.stringify(UploadBlockNumbers)}`
+    );
+  }
+
+  return blockNumber;
 }
