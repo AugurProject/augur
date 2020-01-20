@@ -315,10 +315,10 @@ export default class Form extends React.Component<FormProps, FormState> {
       const { mainContent } = contentPages[newMarket.currentStep];
 
       if (mainContent === TEMPLATE_PICKER && isTemplate) {
-        updateNewMarket({template: null});
+        updateNewMarket({ template: null });
       }
 
-      updateNewMarket({currentStep: newStep});
+      updateNewMarket({ currentStep: newStep });
 
       this.node && this.node.scrollIntoView();
     }
@@ -547,8 +547,9 @@ export default class Form extends React.Component<FormProps, FormState> {
           i => i.type === TemplateInputType.DATEYEAR_CLOSING
         );
         const afterTuesday: TemplateInput = inputs.find(
-          i => i.type === TemplateInputType.DATEYEAR &&
-          i.validationType === ValidationType.EXP_DATE_TUESDAY_AFTER_MOVIE
+          i =>
+            i.type === TemplateInputType.DATEYEAR &&
+            i.validationType === ValidationType.EXP_DATE_TUESDAY_AFTER_MOVIE
         );
         if (closing) {
           const dateYearSource = inputs.find(
@@ -570,11 +571,17 @@ export default class Form extends React.Component<FormProps, FormState> {
           }
         }
         if (afterTuesday && afterTuesday.setEndTime) {
-          const wednesdayAfterOpening = getTemplateWednesdayAfterOpeningDay(afterTuesday.setEndTime);
+          const wednesdayAfterOpening = getTemplateWednesdayAfterOpeningDay(
+            afterTuesday.setEndTime
+          );
           const dateTime = convertUnixToFormattedDate(wednesdayAfterOpening);
           const message = `${MovieWednesdayAfterOpeningMessage} ${dateTime.formattedLocalShortDateTimeWithTimezone}`;
           checkValidations.push(
-            dateGreater(endTimeFormatted.timestamp, wednesdayAfterOpening, message)
+            dateGreater(
+              endTimeFormatted.timestamp,
+              wednesdayAfterOpening,
+              message
+            )
           );
         }
       }
@@ -739,7 +746,7 @@ export default class Form extends React.Component<FormProps, FormState> {
 
   setDisableCreate = (disable: boolean) => {
     this.setState({ disableCreate: disable });
-  }
+  };
   render() {
     const {
       newMarket,
@@ -810,32 +817,33 @@ export default class Form extends React.Component<FormProps, FormState> {
       >
         {this.state.showPreview && (
           <div>
-            <span>Your market preview</span>
             <PrimaryButton text="Close preview" action={this.preview} />
-            <MarketView
-              sortedOutcomes={selectSortedMarketOutcomes(
-                newMarket.marketType,
-                newMarket.outcomesFormatted
-              )}
-              market={{
-                ...newMarket,
-                creationTimeFormatted: convertUnixToFormattedDate(
-                  currentTimestamp
-                ),
-                endTimeFormatted: convertUnixToFormattedDate(
-                  newMarket.endTimeFormatted.timestamp
-                ),
-                maxPriceBigNumber: createBigNumber(newMarket.maxPrice),
-                minPriceBigNumber: createBigNumber(newMarket.minPrice),
-                details: isTemplate
-                  ? buildResolutionDetails(
-                      newMarket.detailsText,
-                      newMarket.template.resolutionRules
-                    )
-                  : newMarket.detailsText,
-              }}
-              preview
-            />
+            <span>
+              <MarketView
+                sortedOutcomes={selectSortedMarketOutcomes(
+                  newMarket.marketType,
+                  newMarket.outcomesFormatted
+                )}
+                market={{
+                  ...newMarket,
+                  creationTimeFormatted: convertUnixToFormattedDate(
+                    currentTimestamp
+                  ),
+                  endTimeFormatted: convertUnixToFormattedDate(
+                    newMarket.endTimeFormatted.timestamp
+                  ),
+                  maxPriceBigNumber: createBigNumber(newMarket.maxPrice),
+                  minPriceBigNumber: createBigNumber(newMarket.minPrice),
+                  details: isTemplate
+                    ? buildResolutionDetails(
+                        newMarket.detailsText,
+                        newMarket.template.resolutionRules
+                      )
+                    : newMarket.detailsText,
+                }}
+                preview
+              />
+            </span>
             <PrimaryButton text="Close preview" action={this.preview} />
           </div>
         )}
@@ -870,7 +878,9 @@ export default class Form extends React.Component<FormProps, FormState> {
                   onError={this.onError}
                 />
               )}
-              {mainContent === REVIEW && <Review setDisableCreate={this.setDisableCreate} />}
+              {mainContent === REVIEW && (
+                <Review setDisableCreate={this.setDisableCreate} />
+              )}
               {mainContent === TEMPLATE_PICKER && <TemplatePicker />}
               {mainContent === SUB_CATEGORIES && (
                 <SubCategories nextPage={this.nextPage} />
