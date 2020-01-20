@@ -22,6 +22,7 @@ const EXPECTED_ASSET_DATA_LENGTH = 2122;
 
 const DEFAULT_TRADE_INTERVAL = new BigNumber(10**17);
 const TRADE_INTERVAL_VALUE = new BigNumber(10**19);
+const MIN_TRADE_INTERVAL = new BigNumber(10**14);
 
 const multiAssetDataAbi: ParamType[] = [
   { name: 'amounts', type: 'uint256[]' },
@@ -204,7 +205,7 @@ export class ZeroXOrders extends AbstractTable {
     let tradeInterval = DEFAULT_TRADE_INTERVAL;
     const marketData = markets[storedOrder.market];
     if (marketData && marketData.marketType == MarketType.Scalar) {
-      tradeInterval = TRADE_INTERVAL_VALUE.dividedBy(marketData.numTicks);
+      tradeInterval = BigNumber.max(TRADE_INTERVAL_VALUE.dividedBy(marketData.numTicks).dividedBy(MIN_TRADE_INTERVAL).multipliedBy(MIN_TRADE_INTERVAL), MIN_TRADE_INTERVAL);
     }
     if (!storedOrder['numberAmount'].mod(tradeInterval).isEqualTo(0)) return false;
 

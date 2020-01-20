@@ -20,5 +20,5 @@ setup_chain_template() {
 
 setup_chain_template
 
-geth  --networkid "$(cat "$ROOT/networkid")"  --datadir "${ROOT}/chain"  --keystore "${ROOT}/keys"  --password "${ROOT}/password.txt"  --unlock "${UNLOCK_ACCOUNT}"  --verbosity ${GETH_VERBOSITY:-3} --mine  --ws --wsapi eth,net,web3,personal,txpool --wsaddr 0.0.0.0 --wsport $WSPORT --wsorigins '*'  --rpc --rpcapi eth,net,web3,personal,miner,txpool --rpcaddr 0.0.0.0 --rpcport $RPCPORT --rpccorsdomain '*' --rpcvhosts '*'  --targetgaslimit 6500000  --nodiscover
+geth  --networkid "$(cat "$ROOT/networkid")"  --datadir "${ROOT}/chain"  --keystore "${ROOT}/keys"  --password "${ROOT}/password.txt"  --unlock "${UNLOCK_ACCOUNT}"  --verbosity ${GETH_VERBOSITY:-3} --mine  --ws --wsapi eth,net,web3,personal,txpool --wsaddr 0.0.0.0 --wsport $WSPORT --wsorigins '*'  --rpc --rpcapi eth,net,web3,personal,miner,txpool --rpcaddr 0.0.0.0 --rpcport $RPCPORT --rpccorsdomain '*' --rpcvhosts '*'  --targetgaslimit 6500000  --nodiscover --allow-insecure-unlock
 #geth

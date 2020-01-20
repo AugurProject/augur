@@ -266,11 +266,11 @@ export const ToggleExtendButton = (props: ToggleExtendButtonProps) => (
 export const CancelTextButton = (props: DefaultButtonProps) => (
   <button
     onClick={e => props.action(e)}
-    className={Styles.CancelTextButton}
+    className={classNames(Styles.CancelTextButton, {[Styles.IconButton]: !props.text})}
     disabled={props.disabled}
     title={props.title}
   >
-    {props.text}
+    {props.text || XIcon}
   </button>
 );
 
@@ -305,7 +305,7 @@ export const SubmitTextButton = (props: DefaultButtonProps) => (
 export const DepositButton = (props: DefaultActionButtonProps) => (
   <button
     onClick={e => props.action(e)}
-    className={Styles.CurrenyActionButton}
+    className={Styles.PrimaryButton}
     disabled={props.disabled}
     title={props.title || 'Deposit'}
   >
@@ -331,8 +331,8 @@ export const ViewTransactionsButton = (props: DefaultActionButtonProps) => (
     disabled={props.disabled}
     title={props.title || 'View Transactions'}
   >
-    {DoubleArrowIcon}
     View Transactions
+    {DoubleArrowIcon}
   </button>
 );
 
@@ -343,8 +343,8 @@ export const REPFaucetButton = (props: DefaultActionButtonProps) => (
     disabled={props.disabled}
     title={props.title || 'REP Faucet'}
   >
-    {RepLogoIcon}
     <span>{props.title ? props.title : "REP Faucet"}</span>
+    {RepLogoIcon}
   </button>
 );
 
@@ -355,8 +355,8 @@ export const DAIFaucetButton = (props: DefaultActionButtonProps) => (
     disabled={props.disabled}
     title={props.title || 'DAI Faucet'}
   >
-    {DaiLogoIcon}
     <span>DAI Faucet</span>
+    {DaiLogoIcon}
   </button>
 );
 

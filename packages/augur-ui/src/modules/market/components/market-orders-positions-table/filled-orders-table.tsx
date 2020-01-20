@@ -24,6 +24,9 @@ const FilledOrdersTable: React.FC<FilledOrdersTableProps> = ({ filledOrders, sca
         {filledOrders.length > 0 && filledOrders.map((order, i) => (
           <FilledOrder key={i} filledOrder={order} extendedViewNotOnMobile />
         ))}
+        {filledOrders.length === 0 && (
+          <div className={Styles.Empty}>no fills to show</div>
+        )}
       </div>
     </div>
   </>

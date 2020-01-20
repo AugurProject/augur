@@ -35,9 +35,11 @@ export default class ModuleTabs extends Component<ModuleTabsProps> {
     super(props);
 
     this.state = {
-      selected: props.selected
+      selected: props.selected,
+      scrolling: false
     };
 
+    this.prevOffset = 0;
     this.handleClick = this.handleClick.bind(this);
     this.renderTabs = this.renderTabs.bind(this);
     this.renderContent = this.renderContent.bind(this);
@@ -47,6 +49,28 @@ export default class ModuleTabs extends Component<ModuleTabsProps> {
     if (this.props.selected !== prevProps.selected) {
       this.setState({selected: this.props.selected});
     }
+  }
+
+  componentDidMount() {
+    // only apply on scrollOver:
+    if (this.props.scrollOver) {
+      window.onscroll = () => {
+        // sometimes offset is 1 on mount
+        const currOffset = (window.pageYOffset - 1);
+        const scrolling = false;
+        if (this.prevOffset < currOffset) {
+          scrolling = true;
+        } else {
+          scrolling = false;
+        }
+        this.prevOffset = currOffset;
+        if (scrolling != this.state.scrolling) this.setState({ scrolling });
+      };
+    }
+  }
+
+  componentWillUnmount() {
+    window.onscroll = null;
   }
 
   handleClick(e, index, onClickCallback) {
@@ -90,7 +114,7 @@ export default class ModuleTabs extends Component<ModuleTabsProps> {
     }
 
     return (
-      <div className={Styles.Headers}>
+      <div className={classNames(Styles.Headers, { [Styles.scrolling]: this.props.scrollOver && this.state.scrolling })}>
         {this.props.leftButton}
         <ul
           className={classNames({

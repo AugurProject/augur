@@ -42,7 +42,18 @@ div.TableHeight {
 }
 
 .Empty {
+  .text-10-medium;
+
   background-color: @color-module-background;
+  text-transform: capitalize;
+  min-height: 100px;
+  justify-content: center;
+  align-items: center;
+  display: none;
+  
+  @media @breakpoint-mobile-new {
+    display: flex;
+  }
 }
 
 .Footer {

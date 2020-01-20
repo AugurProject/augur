@@ -315,14 +315,9 @@
 
 .Outcome {
   padding: @size-12 @size-12 0;
-  > div > button {
-    .text-12;
-  }
-}
 
-.HideOnMobile {
-  @media @breakpoint-mobile {
-    display: none;
+  > div > button {
+    .text-12-medium;
   }
 }
 
@@ -416,9 +411,7 @@
 
 @media @breakpoint-mobile {
   .Outcome {
-    background: @color-dark-grey;
-    margin-bottom: @size-24;
-    margin-top: @size-16;
+    margin: @size-12 0;
     padding-bottom: 0;
     padding-top: 0;
   }

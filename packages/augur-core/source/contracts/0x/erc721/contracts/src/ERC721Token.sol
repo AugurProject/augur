@@ -16,7 +16,7 @@
 
 */
 
-pragma solidity 0.5.10;
+pragma solidity 0.5.15;
 
 import "./interfaces/IERC721Token.sol";
 import "./interfaces/IERC721Receiver.sol";

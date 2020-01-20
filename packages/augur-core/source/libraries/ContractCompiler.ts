@@ -56,7 +56,7 @@ export class ContractCompiler {
       /*
         Example output:
           solc, the solidity compiler commandline interface
-          Version: 0.5.10+commit.5a6ea5b1.Darwin.appleclang
+          Version: 0.5.15+commit.5a6ea5b1.Darwin.appleclang
      */
       const output = await this.getCommandOutputFromInput(childProcess, '');
       try {
@@ -134,13 +134,17 @@ export class ContractCompiler {
     async generateFlattenedSolidity(filePath: string): Promise<string> {
         const relativeFilePath = filePath.replace(this.configuration.contractSourceRoot, '').replace(/\\/g, '/');
 
-        const childProcess = exec(format(this.flattenerCommand, this.configuration.contractSourceRoot, relativeFilePath), {
+        const formattedCommand = format(this.flattenerCommand, this.configuration.contractSourceRoot, relativeFilePath);
+        const childProcess = exec(formattedCommand, {
             encoding: 'buffer',
             cwd: this.configuration.contractSourceRoot
         });
         // The flattener removes the pragma experimental line from output so we add it back here
         let result = await this.getCommandOutputFromInput(childProcess, '');
         const originalFileData = (await fs.readFile(filePath)).toString('utf8');
+        if (result == "") {
+            throw new Error(`Failed to flatten ${filePath}`);
+        }
         if (originalFileData.includes('pragma experimental ABIEncoderV2')) {
             result = 'pragma experimental ABIEncoderV2;\n' + result;
         }
@@ -181,12 +185,14 @@ export class ContractCompiler {
                 "CashFaucet",
                 "GnosisSafeRegistry",
                 "WarpSync",
-                "RepPriceOracle",
                 "UniswapV2Factory",
                 "ERC1820Registry",
                 "OICash",
                 "Affiliates",
                 "AffiliateValidator",
+                "EthExchange",
+                "RepExchangeFactory",
+                "RepExchange",
                 // utility
                 "BuyParticipationTokens",
                 "Formulas",

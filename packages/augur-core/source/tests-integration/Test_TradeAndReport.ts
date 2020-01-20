@@ -20,6 +20,9 @@ describe('TradeAndReport', () => {
         await fixture.repFaucet(new BigNumber(11000000).times(1e18));
         await fixture.approveCentralAuthority();
 
+        console.log("Poking REP MCAP");
+        const repPrice = await fixture.pokeRepOracle();
+
         // Create a market
         console.log("Create Market");
         const market = await fixture.createReasonableMarket(fixture.universe!, [stringTo32ByteHex(' '), stringTo32ByteHex(' ')]);

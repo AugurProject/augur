@@ -16,7 +16,7 @@
 
 */
 
-pragma solidity 0.5.10;
+pragma solidity 0.5.15;
 pragma experimental ABIEncoderV2;
 
 import "ROOT/0x/coordinator/contracts/src/libs/LibEIP712CoordinatorDomain.sol";
