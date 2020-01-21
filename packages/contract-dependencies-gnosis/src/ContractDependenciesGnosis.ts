@@ -196,6 +196,7 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
         txHash = await this.gnosisRelay.execTransaction(relayTransaction);
       } catch (error) {
         this.setUseRelay(false);
+        this.setStatus(GnosisSafeState.ERROR);
         throw TransactionStatus.RELAYER_DOWN;
       }
     } else {
