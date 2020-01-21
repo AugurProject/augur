@@ -243,7 +243,8 @@ export class FlashSession {
       0,
       0,
       this.user.augur,
-      listener
+      listener,
+      true
     );
   }
 }

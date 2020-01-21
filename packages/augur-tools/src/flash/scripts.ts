@@ -800,6 +800,13 @@ export function addScripts(flash: FlashSession) {
         description: 'create zeroX order'
       },
       {
+        name: 'fillOrder',
+        abbr: 'f',
+        flag: true,
+        required: false,
+        description: 'fill order'
+      },
+      {
         name: 'skipFaucetOrApproval',
         abbr: 'k',
         flag: true,
@@ -810,6 +817,7 @@ export function addScripts(flash: FlashSession) {
       const endpoint = 'ws://localhost:60557';
       const address = args.userAccount as string;
       const isZeroX = args.zerox as boolean;
+      const fillOrder = args.fillOrder as boolean;
       let user = null;
 
       if (isZeroX) {
@@ -819,7 +827,7 @@ export function addScripts(flash: FlashSession) {
       }
       const skipFaucetOrApproval = args.skipFaucetOrApproval as boolean;
       if (!skipFaucetOrApproval) {
-        this.log('create-market-order, skipping faucet and approval');
+        this.log('create-market-order, faucet and approval');
         await user.faucet(new BigNumber(10).pow(18).multipliedBy(10000));
         await user.approve(new BigNumber(10).pow(18).multipliedBy(100000));
       }
@@ -852,7 +860,7 @@ export function addScripts(flash: FlashSession) {
           new BigNumber('0.01')
         );
         console.log('order', String(args.amount), '@', price);
-        result = await user.placeZeroXOrder({
+        const params = {
           direction: type as 0 | 1,
           market : String(args.marketId),
           numTicks: new BigNumber(100),
@@ -867,9 +875,19 @@ export function addScripts(flash: FlashSession) {
           displayPrice: price,
           displayShares: new BigNumber(0),
           expirationTime,
-        });
+        };
+        fillOrder ? await user.augur.placeTrade(params) : await user.placeZeroXOrder(params)
       } else {
-        result = await user.placeOrder(
+        fillOrder ?
+        await user.takeBestOrder(
+          String(args.marketId),
+          new BigNumber(type),
+          onChainShares,
+          onChainPrice,
+          new BigNumber(String(args.outcome)),
+          tradeGroupId
+        ) :
+        await user.placeOrder(
           String(args.marketId),
           new BigNumber(type),
           onChainShares,
@@ -886,131 +904,6 @@ export function addScripts(flash: FlashSession) {
     },
   });
 
-  flash.addScript({
-    name: 'fill-market-orders',
-    options: [
-      {
-        name: 'userAccount',
-        abbr: 'u',
-        description: 'user account to create the order',
-      },
-      {
-        name: 'marketId',
-        abbr: 'm',
-        description: 'market id to place the order',
-      },
-      {
-        name: 'outcome',
-        abbr: 'o',
-        description: 'outcome to place the order',
-      },
-      {
-        name: 'orderType',
-        abbr: 't',
-        description: 'order type of the order [bid], [ask]',
-      },
-      {
-        name: 'amount',
-        abbr: 'a',
-        description: 'number of shares in the order',
-      },
-      {
-        name: 'price',
-        abbr: 'p',
-        description: 'price of the order',
-      },
-      {
-        name: 'zerox',
-        abbr: 'z',
-        flag: true,
-        required: false,
-        description: 'create zeroX order'
-      },
-      {
-        name: 'skipFaucetOrApproval',
-        abbr: 'k',
-        flag: true,
-        description: 'do not faucet or approve, has already been done'
-      },
-    ],
-    async call(this: FlashSession, args: FlashArguments) {
-      const endpoint = 'ws://localhost:60557';
-      const address = args.userAccount as string;
-      const isZeroX = args.zerox as boolean;
-      let user = null;
-
-      if (isZeroX) {
-        user = await this.ensureUser(null, null, true, address, endpoint, true);
-      } else {
-        user = await this.ensureUser(null, null, true, address);
-      }
-      const skipFaucetOrApproval = args.skipFaucetOrApproval as boolean;
-      if (!skipFaucetOrApproval) {
-        this.log('fill-market-orders, skipping faucet and approval');
-        await user.faucet(new BigNumber(10).pow(18).multipliedBy(10000));
-        await user.approve(new BigNumber(10).pow(18).multipliedBy(100000));
-      }
-      const adjPrice = Number(args.price).toFixed(2);
-      const orderType = String(args.orderType).toLowerCase();
-      const type = orderType === 'bid' || orderType === 'buy' ? 0 : 1;
-      const onChainShares = convertDisplayAmountToOnChainAmount(
-        new BigNumber(String(args.amount)),
-        new BigNumber(100)
-      );
-      const onChainPrice = convertDisplayPriceToOnChainPrice(
-        new BigNumber(String(adjPrice)),
-        new BigNumber(0),
-        new BigNumber('0.01')
-      );
-      const tradegroupId = stringTo32ByteHex('tradegroupId');
-
-      if (isZeroX) {
-        const timestamp = await this.call('get-timestamp', {});
-        const oneHundredDays = new BigNumber(8640000);
-        const expirationTime = new BigNumber(timestamp).plus(oneHundredDays);
-        const onChainPrice = convertDisplayPriceToOnChainPrice(
-          new BigNumber(String(Number(args.price).toFixed(2))),
-          new BigNumber(0),
-          new BigNumber('0.01')
-        );
-        const price = convertOnChainPriceToDisplayPrice(
-          onChainPrice,
-          new BigNumber(0),
-          new BigNumber('0.01')
-        );
-        console.log('order', String(args.amount), '@', price);
-        const tradeGroupId = stringTo32ByteHex('tradegroupId');
-        await user.placeZeroXTrade({
-          direction: type as 0 | 1,
-          market : String(args.marketId),
-          numTicks: new BigNumber(100),
-          numOutcomes: 3,
-          outcome: Number(args.outcome) as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7,
-          tradeGroupId,
-          fingerprint: formatBytes32String('11'),
-          doNotCreateOrders: false,
-          displayMinPrice: new BigNumber(0),
-          displayMaxPrice: new BigNumber(1),
-          displayAmount: new BigNumber(String(args.amount)),
-          displayPrice: price,
-          displayShares: new BigNumber(0),
-          expirationTime,
-        });
-      } else {
-        await user.takeBestOrder(
-          String(args.marketId),
-          new BigNumber(type),
-          onChainShares,
-          onChainPrice,
-          new BigNumber(String(args.outcome)),
-          tradegroupId
-        );
-      }
-
-      this.log(`take best order on outcome ${args.outcome} @ ${adjPrice}`);
-      process.exit();
-    },
-  });
 
   flash.addScript({
     name: 'fake-all',
