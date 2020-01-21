@@ -982,7 +982,7 @@ export const TEMPLATES = {
                   text: `If the horse named in the market is scratched and does NOT run, including the cancellation of the race, or is disqualified for any reason, the market should resolve as 'No'.`,
                 },
                 {
-                  text: 'This market is intended to be about a Single Person, if this is not the case, this market should settle as invalid.'
+                  text: 'This market is intended to be about a Single Horse, if this is not the case, this market should settle as invalid.'
                 }
               ],
             },
