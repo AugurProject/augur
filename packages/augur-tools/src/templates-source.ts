@@ -5377,8 +5377,8 @@ export const TEMPLATES = {
       },
       {
         marketType: YES_NO,
-        question: `Twitter: Will @[0] have [1] [2] or more twitter followers on [3], according to www.trackalytics.com/?`,
-        example: `Twitter: Will @elonmusk have 50 million or more twitter followers on September 12, 2020, according to www.trackalytics.com/?`,
+        question: `Twitter: Will @[0] have [1] [2] or more twitter followers on [3], according to www.trackalytics.com?`,
+        example: `Twitter: Will @elonmusk have 50 million or more twitter followers on September 12, 2020, according to www.trackalytics.com?`,
         inputs: [
           {
             id: 0,
