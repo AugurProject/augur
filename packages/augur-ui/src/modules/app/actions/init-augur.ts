@@ -1,5 +1,3 @@
-import { Augur, Provider } from '@augurproject/sdk';
-import { connect } from 'services/initialize';
 import {
   checkIsKnownUniverse,
   getNetworkId,
@@ -12,7 +10,7 @@ import { updateModal } from 'modules/modal/actions/update-modal';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import logError from 'utils/log-error';
 import networkConfig from 'config/network.json';
-import { Web3Provider } from 'ethers/providers';
+import { JsonRpcProvider, Web3Provider } from 'ethers/providers';
 import { isEmpty } from 'utils/is-empty';
 import {
   MODAL_NETWORK_MISMATCH,
@@ -170,7 +168,7 @@ export function connectAugur(
   isInitialConnection: boolean = false,
   callback: NodeStyleCallback = logError
 ) {
-  return (
+  return async (
     dispatch: ThunkDispatch<void, any, Action>,
     getState: () => AppState
   ) => {
@@ -218,58 +216,58 @@ export function connectAugur(
     if (loggedInAccountType === ACCOUNT_TYPES.TORUS) {
       preloadAccount(ACCOUNT_TYPES.TORUS);
     }
-    let provider = null;
+    let provider = new JsonRpcProvider(env['ethereum-node'].http);
     if (window.web3) {
       provider = new Web3Provider(window.web3.currentProvider);
     }
-    connect(
-      env,
+    const sdk = await augurSdk.makeClient(
       provider,
-      async (err: any, sdk: Augur<Provider>) => {
-        if (err) {
-          return callback(err, null);
-        }
-        const windowApp = windowRef as WindowApp;
-        let universeId = env.universe || sdk.contracts.universe.address;
-        if (
-          windowApp.localStorage &&
-          windowApp.localStorage.getItem &&
-          loginAccount.address
-        ) {
-          const loginAddress =
-            (windowApp.localStorage.getItem &&
-              windowApp.localStorage.getItem(loginAccount.address)) ||
-            '';
-          const storedUniverseId = JSON.parse(loginAddress).selectedUniverse[
-            getNetworkId().toString()
-          ];
-          universeId = !storedUniverseId ? universeId : storedUniverseId;
-        }
-        const known = await checkIsKnownUniverse(universeId);
-        const sameNetwork = augurSdk.sameNetwork();
-        if ((!sameNetwork && sameNetwork !== undefined) || !known) {
-          dispatch(
-            updateModal({
-              type: MODAL_NETWORK_MISMATCH,
-              expectedNetwork: NETWORK_NAMES[Number(augurSdk.networkId)],
-            })
-          );
-        } else {
-          dispatch(updateUniverse({ id: universeId }));
-          if (modal && modal.type === MODAL_NETWORK_DISCONNECTED) {
-            dispatch(closeModal());
-          }
-          if (isInitialConnection) {
-            pollForAccount(dispatch, getState);
-            pollForNetwork(dispatch, getState);
-          }
-          callback(null);
-        }
-        // wire up start up events for sdk
-        dispatch(listenForStartUpEvents(sdk));
-        dispatch(updateCanHotload(true));
+      env,
+    ).catch((err) => {
+      if (err) {
+        return callback(err, null);
       }
-    );
+    });
+    const windowApp = windowRef as WindowApp;
+    let universeId = env.universe || sdk.contracts.universe.address;
+    if (
+      windowApp.localStorage &&
+      windowApp.localStorage.getItem &&
+      loginAccount.address
+    ) {
+      const loginAddress =
+        (windowApp.localStorage.getItem &&
+          windowApp.localStorage.getItem(loginAccount.address)) ||
+        '';
+      const storedUniverseId = JSON.parse(loginAddress).selectedUniverse[
+        getNetworkId().toString()
+      ];
+      universeId = !storedUniverseId ? universeId : storedUniverseId;
+    }
+    const known = await checkIsKnownUniverse(universeId);
+    const sameNetwork = augurSdk.sameNetwork();
+    if ((!sameNetwork && sameNetwork !== undefined) || !known) {
+      dispatch(
+        updateModal({
+          type: MODAL_NETWORK_MISMATCH,
+          expectedNetwork: NETWORK_NAMES[Number(augurSdk.networkId)],
+        })
+      );
+    } else {
+      dispatch(updateUniverse({ id: universeId }));
+      if (modal && modal.type === MODAL_NETWORK_DISCONNECTED) {
+        dispatch(closeModal());
+      }
+      if (isInitialConnection) {
+        pollForAccount(dispatch, getState);
+        pollForNetwork(dispatch, getState);
+      }
+      callback(null);
+    }
+    // wire up start up events for sdk
+    dispatch(listenForStartUpEvents(sdk));
+    dispatch(updateCanHotload(true));
+
   };
 }
 
