@@ -113,7 +113,7 @@ export const TEMPLATES = {
                         'Includes regulation, any play-offs and sudden death',
                     },
                     {
-                      text: 'This market is intended to be about a Single Person, if this is not the case, this market should settle as invalid.'
+                      text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`
                     }
                   ],
                 },
@@ -150,7 +150,7 @@ export const TEMPLATES = {
                       text: `If a tournament or match is cancelled the market should resolve as 'No'. If the tournament is postponed and not be completed before the market's Event Expiration time, but the player named officially made the cut, noted by the tournament association, then the outcome should resolve as Yes.`,
                     },
                     {
-                      text: 'This market is intended to be about a Single Person, if this is not the case, this market should settle as invalid.'
+                      text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`
                     }
                   ],
                 },
@@ -306,7 +306,7 @@ export const TEMPLATES = {
                         'Includes regulation, any play-offs and sudden death',
                     },
                     {
-                      text: 'This market is intended to be about a Single Person, if this is not the case, this market should settle as invalid.'
+                      text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`
                     }
                   ],
                 },
@@ -343,7 +343,7 @@ export const TEMPLATES = {
                       text: `If a tournament or match is cancelled the market should resolve as 'No'. If the tournament is postponed and not be completed before the market's Event Expiration time, but the player named officially made the cut, noted by the tournament association, then the outcome should resolve as Yes.`,
                     },
                     {
-                      text: 'This market is intended to be about a Single Person, if this is not the case, this market should settle as invalid.'
+                      text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`
                     }
                   ],
                 },
@@ -499,7 +499,7 @@ export const TEMPLATES = {
                         'Includes regulation, any play-offs and sudden death',
                     },
                     {
-                      text: 'This market is intended to be about a Single Person, if this is not the case, this market should settle as invalid.'
+                      text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`
                     }
                   ],
                 },
@@ -536,7 +536,7 @@ export const TEMPLATES = {
                       text: `If a tournament or match is cancelled the market should resolve as 'No'. If the tournament is postponed and not be completed before the market's Event Expiration time, but the player named officially made the cut, noted by the tournament association, then the outcome should resolve as Yes.`,
                     },
                     {
-                      text: 'This market is intended to be about a Single Person, if this is not the case, this market should settle as invalid.'
+                      text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`
                     }
                   ],
                 },
@@ -982,7 +982,7 @@ export const TEMPLATES = {
                   text: `If the horse named in the market is scratched and does NOT run, including the cancellation of the race, or is disqualified for any reason, the market should resolve as 'No'.`,
                 },
                 {
-                  text: 'This market is intended to be about a Single Person, if this is not the case, this market should settle as invalid.'
+                  text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`
                 }
               ],
             },
@@ -1076,7 +1076,7 @@ export const TEMPLATES = {
                       text: `If a player fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as 'No'`,
                     },
                     {
-                      text: 'This market is intended to be about a Single Person, if this is not the case, this market should settle as invalid.'
+                      text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`
                     }
                   ],
                 },
@@ -1222,7 +1222,7 @@ export const TEMPLATES = {
                       text: `If either player fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as 'No'`,
                     },
                     {
-                      text: 'This market is intended to be about a Single Person, if this is not the case, this market should settle as invalid.'
+                      text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`
                     }
                   ],
                 },
@@ -1427,10 +1427,10 @@ export const TEMPLATES = {
                       text: `Includes Regulation and any added injury or stoppage time only. Does NOT include any Overtime or Penalty shoot-out.`,
                     },
                     {
-                      text: `'If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled".`,
+                      text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled".`,
                     },
                     {
-                      text: 'This market is intended to be about a Single Team verse Single Team, if this is not the case, this market should settle as invalid.'
+                      text: `This market is intended to be about a Single Team verse Single Team, if this is not the case, this market should settle as 'Invalid'.`
                     }
                   ],
                 },
@@ -1486,7 +1486,7 @@ export const TEMPLATES = {
                       text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled"`,
                     },
                     {
-                      text: 'This market is intended to be about a Single Team verse Single Team, if this is not the case, this market should settle as invalid.'
+                      text: `This market is intended to be about a Single Team verse Single Team, if this is not the case, this market should settle as 'Invalid'.`
                     }
                   ],
                 },
@@ -1538,7 +1538,7 @@ export const TEMPLATES = {
                       text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled".`,
                     },
                     {
-                      text: 'This market is intended to be about two sports teams, if this is not the case, this market should settle as invalid.'
+                      text: `This market is intended to be about two sports teams, if this is not the case, this market should settle as 'Invalid'.`
                     }
                   ],
                 },
@@ -1594,7 +1594,7 @@ export const TEMPLATES = {
                       text: `'If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled".`,
                     },
                     {
-                      text: 'This market is intended to be about a Single Team verse Single Team, if this is not the case, this market should settle as invalid.'
+                      text: `This market is intended to be about a Single Team verse Single Team, if this is not the case, this market should settle as 'Invalid'.`
                     }
                   ],
                 },
@@ -1826,7 +1826,7 @@ export const TEMPLATES = {
                       text: `In the event of an award given to more than 1 player. If the player mentioned in the market is one of the players who wins the award, the market should resolve as "Yes".`,
                     },
                     {
-                      text: 'This market is intended to be about a Single Person, if this is not the case, this market should settle as invalid.'
+                      text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`
                     }
                   ],
                 },
@@ -2299,7 +2299,7 @@ export const TEMPLATES = {
                       text: `In the event of an award given to more than 1 player. If the player mentioned in the market is one of the players who wins the award, the market should resolve as "Yes".`,
                     },
                     {
-                      text: 'This market is intended to be about a Single Person, if this is not the case, this market should settle as invalid.'
+                      text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`
                     }
                   ],
                 },
@@ -3557,7 +3557,7 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: 'This market is intended to be about a Single Person, if this is not the case, this market should settle as invalid.'
+                      text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`
                     }
                   ]
                 },
@@ -4135,7 +4135,7 @@ export const TEMPLATES = {
                       text: `If either of the teams listed are incorrect, market should resolve as Invalid`,
                     },
                     {
-                      text: 'This market is intended to be about a Bowl Game, if this is not the case, this market should settle as invalid.'
+                      text: `This market is intended to be about a Bowl Game, if this is not the case, this market should settle as 'Invalid'.`
                     }
                   ],
                 },
@@ -4270,7 +4270,7 @@ export const TEMPLATES = {
                   text: `The winning candidate will have at least 270 electoral votes to win the presidential election.`,
                 },
                 {
-                  text: 'This market is intended to be about a Single Candidate, if this is not the case, this market should settle as invalid.'
+                  text: `This market is intended to be about a Single Candidate, if this is not the case, this market should settle as 'Invalid'.`
                 }
               ],
             },
@@ -4304,7 +4304,7 @@ export const TEMPLATES = {
                   text: `The candidate who receives a majority of the party's delegates wins their party's nomination.`,
                 },
                 {
-                  text: 'This market is intended to be about a Single Candidate, if this is not the case, this market should settle as invalid.'
+                  text: `This market is intended to be about a Single Candidate, if this is not the case, this market should settle as 'Invalid'.`
                 }
               ],
             },
@@ -4342,7 +4342,7 @@ export const TEMPLATES = {
                   text: `Vice-President nomination is selected by the political party, replacement of nomination will not change market results, because person had been nominated. Declining nomination is not considered nominated`,
                 },
                 {
-                  text: 'This market is intended to be about a Single Candidate, if this is not the case, this market should settle as invalid.'
+                  text: `This market is intended to be about a Single Candidate, if this is not the case, this market should settle as 'Invalid'.`
                 }
               ],
             },
@@ -4680,7 +4680,7 @@ export const TEMPLATES = {
                   text: `If location/country does not have the stated position in market, market should resolve as 'No'`,
                 },
                 {
-                  text: 'This market is intended to be about a Single Person and a Single Location, if this is not the case, this market should settle as invalid.'
+                  text: `This market is intended to be about a Single Person and a Single Location, if this is not the case, this market should settle as 'Invalid'.`
                 }
               ],
             },
@@ -4710,7 +4710,7 @@ export const TEMPLATES = {
                     "Rules of impeachment is dictated by the person's location/country government",
                 },
                 {
-                  text: 'This market is intended to be about a Single Person, if this is not the case, this market should settle as invalid.'
+                  text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`
                 }
               ],
             },
@@ -4744,7 +4744,7 @@ export const TEMPLATES = {
                     'Announcement of future resignation does not count as leaving the office, until actual resignation takes effect',
                 },
                 {
-                  text: 'This market is intended to be about a Single Person, if this is not the case, this market should settle as invalid.'
+                  text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`
                 }
               ],
             },
@@ -4790,7 +4790,7 @@ export const TEMPLATES = {
                   text: `If the country named in the market question has multiple people with the same title, the market should resolve as 'Invalid'`,
                 },
                 {
-                  text: 'This market is intended to be about a Single Location, if this is not the case, this market should settle as invalid.'
+                  text: `This market is intended to be about a Single Location, if this is not the case, this market should settle as 'Invalid'.`
                 }
               ],
             },
@@ -4861,7 +4861,7 @@ export const TEMPLATES = {
                   text: `If stock trading name and ticker symbol is not used in the market question, the market should resolve as 'Invalid'`
                 },
                 {
-                  text: 'This market is intended to be about a Individual Stock or ETF Ticker Symbol, if this is not the case, this market should settle as invalid.'
+                  text: `This market is intended to be about a Individual Stock or ETF Ticker Symbol, if this is not the case, this market should settle as 'Invalid'.`
                 }
               ],
             },
@@ -4931,7 +4931,7 @@ export const TEMPLATES = {
                   text: `If stock trading name and ticker symbol is not used in the market question, the market should resolve as 'Invalid'`
                 },
                 {
-                  text: 'This market is intended to be about a Individual Stock or ETF Name, if this is not the case, this market should settle as invalid.'
+                  text: `This market is intended to be about a Individual Stock or ETF Name, if this is not the case, this market should settle as 'Invalid'.`
                 }
               ],
             },
@@ -4988,7 +4988,7 @@ export const TEMPLATES = {
                   text: `If stock trading name and ticker symbol is not used in the market question, the market should resolve as 'Invalid'`
                 },
                 {
-                  text: 'This market is intended to be about a Individual Stock or ETF Ticker Symbol, if this is not the case, this market should settle as invalid.'
+                  text: `This market is intended to be about a Individual Stock or ETF Ticker Symbol, if this is not the case, this market should settle as 'Invalid'.`
                 }
               ],
             },
@@ -5122,7 +5122,7 @@ export const TEMPLATES = {
               text: `If event does not occur the market should resolve as 'No'`,
             },
             {
-              text: 'This market is intended to be about a Single Person, if this is not the case, this market should settle as invalid.'
+              text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`
             }
           ],
         },
@@ -5169,7 +5169,7 @@ export const TEMPLATES = {
               text: `If event does not occur the market should resolve as 'No'`,
             },
             {
-              text: 'This market is intended to be about a Single Person, if this is not the case, this market should settle as invalid.'
+              text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`
             }
           ],
         },
@@ -5202,7 +5202,7 @@ export const TEMPLATES = {
               text: `Gross total should include the first Friday through Sunday of the movie release and does not include extra days due to holidays`,
             },
             {
-              text: 'This market is intended to be about a Single Movie, if this is not the case, this market should settle as invalid.'
+              text: `This market is intended to be about a Single Movie, if this is not the case, this market should settle as 'Invalid'.`
             },
             {
               text: 'If www.boxofficemojo.com is down or not available use www.the-numbers.com to determine domestic US total gross of movie.'
@@ -5239,7 +5239,7 @@ export const TEMPLATES = {
                 'Gross total should include the first Friday through Sunday of the movie release and does not include extra days due to holidays',
             },
             {
-              text: 'This market is intended to be about a Single Movie, if this is not the case, this market should settle as invalid.'
+              text: `This market is intended to be about a Single Movie, if this is not the case, this market should settle as 'Invalid'.`
             },
             {
               text: 'If www.boxofficemojo.com is down or not available use www.the-numbers.com to determine domestic US total gross of movies.'
