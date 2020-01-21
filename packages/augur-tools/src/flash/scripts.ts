@@ -876,7 +876,11 @@ export function addScripts(flash: FlashSession) {
           displayShares: new BigNumber(0),
           expirationTime,
         };
-        fillOrder ? await user.augur.placeTrade(params) : await user.placeZeroXOrder(params)
+        try {
+          fillOrder ? await user.augur.placeTrade(params) : await user.placeZeroXOrder(params)
+        } catch(e) {
+          this.log(e);
+        }
       } else {
         fillOrder ?
         await user.takeBestOrder(

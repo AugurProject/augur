@@ -170,6 +170,7 @@ export class FlashSession {
         SubscriptionEventName.NewBlock,
         this.sdkNewBlock
       );
+      this.user.augur.events.emit('ZeroX:Ready');
       this.db = this.makeDB();
       this.api = new API(this.user.augur, this.db);
     }
