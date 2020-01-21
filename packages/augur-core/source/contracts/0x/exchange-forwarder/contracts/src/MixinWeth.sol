@@ -18,9 +18,8 @@
 
 pragma solidity 0.5.15;
 
-import "ROOT/0x/utils/contracts/src/LibRichErrors.sol";
+
 import "ROOT/0x/utils/contracts/src/LibSafeMath.sol";
-import "ROOT/0x/utils/contracts/src/LibMath.sol";
 import "./libs/LibConstants.sol";
 import "./libs/LibForwarderRichErrors.sol";
 
@@ -37,90 +36,70 @@ contract MixinWeth is
     {
         if (msg.sender != address(ETHER_TOKEN)) {
             revert();
-            /*
-            LibRichErrors.rrevert(LibForwarderRichErrors.DefaultFunctionWethContractOnlyError(
-                msg.sender
-            ));
-            */
         }
     }
 
-    /// @dev Converts message call's ETH value into WETH.
-    function _convertEthToWeth()
-        internal
-    {
-        if (msg.value == 0) {
-            revert();
-            //LibRichErrors.rrevert(LibForwarderRichErrors.MsgValueCannotEqualZeroError());
-        }
-        ETHER_TOKEN.deposit.value(msg.value)();
-    }
-
-    /// @dev Transfers feePercentage of WETH spent on primary orders to feeRecipient.
-    ///      Refunds any excess ETH to msg.sender.
-    /// @param wethSpent Amount of WETH spent when filling orders.
-    /// @param feePercentage Percentage of WETH sold that will payed as fee to forwarding contract feeRecipient.
-    /// @param feeRecipient Address that will receive ETH when orders are filled.
-    /// @return ethFee Amount paid to feeRecipient as a percentage fee on the total WETH sold.
-    function _transferEthFeeAndRefund(
-        uint256 wethSpent,
-        uint256 feePercentage,
-        address payable feeRecipient
+    /// @dev Transfers ETH denominated fees to all feeRecipient addresses
+    /// @param ethFeeAmounts Amounts of ETH, denominated in Wei, that are paid to corresponding feeRecipients.
+    /// @param feeRecipients Addresses that will receive ETH when orders are filled.
+    /// @return ethRemaining msg.value minus the amount of ETH spent on affiliate fees.
+    function _transferEthFeesAndWrapRemaining(
+        uint256[] memory ethFeeAmounts,
+        address payable[] memory feeRecipients
     )
         internal
-        returns (uint256 ethFee)
+        returns (uint256 ethRemaining)
     {
-        // Ensure feePercentage is less than 5%.
-        if (feePercentage > MAX_FEE_PERCENTAGE) {
+        uint256 feesLen = ethFeeAmounts.length;
+        // ethFeeAmounts len must equal feeRecipients len
+        if (feesLen != feeRecipients.length) {
             revert();
-            /*
-            LibRichErrors.rrevert(LibForwarderRichErrors.FeePercentageTooLargeError(
-                feePercentage
-            ));
-            */
         }
 
+        // This function is always called before any other function, so we assume that
+        // the ETH remaining is the entire msg.value.
+        ethRemaining = msg.value;
+
+        for (uint256 i = 0; i != feesLen; i++) {
+            uint256 ethFeeAmount = ethFeeAmounts[i];
+            // Ensure there is enough ETH to pay the fee
+            if (ethRemaining < ethFeeAmount) {
+                revert();
+            }
+            // Decrease ethRemaining and transfer fee to corresponding feeRecipient
+            ethRemaining = ethRemaining.safeSub(ethFeeAmount);
+            feeRecipients[i].transfer(ethFeeAmount);
+        }
+
+        // Convert remaining ETH to WETH.
+        ETHER_TOKEN.deposit.value(ethRemaining)();
+
+        return ethRemaining;
+    }
+
+    /// @dev Refunds any excess ETH to msg.sender.
+    /// @param initialWethAmount Amount of WETH available after transferring affiliate fees.
+    /// @param wethSpent Amount of WETH spent when filling orders.
+    function _transferEthRefund(
+        uint256 initialWethAmount,
+        uint256 wethSpent
+    )
+        internal
+    {
         // Ensure that no extra WETH owned by this contract has been spent.
-        if (wethSpent > msg.value) {
+        if (wethSpent > initialWethAmount) {
             revert();
-            /*
-            LibRichErrors.rrevert(LibForwarderRichErrors.OverspentWethError(
-                wethSpent,
-                msg.value
-            ));
-            */
         }
 
         // Calculate amount of WETH that hasn't been spent.
-        uint256 wethRemaining = msg.value.safeSub(wethSpent);
-
-        // Calculate ETH fee to pay to feeRecipient.
-        ethFee = LibMath.getPartialAmountFloor(
-            feePercentage,
-            PERCENTAGE_DENOMINATOR,
-            wethSpent
-        );
-
-        // Ensure fee is less than amount of WETH remaining.
-        if (ethFee > wethRemaining) {
-            revert();
-        }
+        uint256 wethRemaining = initialWethAmount.safeSub(wethSpent);
 
         // Do nothing if no WETH remaining
         if (wethRemaining > 0) {
             // Convert remaining WETH to ETH
             ETHER_TOKEN.withdraw(wethRemaining);
-
-            // Pay ETH to feeRecipient
-            if (ethFee > 0) {
-                feeRecipient.transfer(ethFee);
-            }
-
-            // Refund remaining ETH to msg.sender.
-            uint256 ethRefund = wethRemaining.safeSub(ethFee);
-            if (ethRefund > 0) {
-                msg.sender.transfer(ethRefund);
-            }
+            // Transfer remaining ETH to sender
+            msg.sender.transfer(wethRemaining);
         }
     }
 }

@@ -51,7 +51,9 @@ export const NETWORK_IDS = {
   Private4: '104',
 };
 
-export const GAS_PRICE_API_ENDPOINT = 'https://ethgasstation.info/json/ethgasAPI.json';
+export const GAS_PRICE_BACKUP_API_ENDPOINT = {
+  [NETWORK_IDS.Mainnet]: 'https://api.etherscan.io/api?module=gastracker&action=gasoracle',
+}
 
 export const GAS_SPEED_LABELS = {
   STANDARD: 'Standard',
@@ -698,6 +700,10 @@ export const MAX_BULK_CLAIM_MARKETS_PROCEEDS_COUNT = Math.floor(
 );
 export const MAX_BULK_ORDER_COUNT = 5;
 export const ETHER = createBigNumber(10).pow(18);
+
+export const DEFAULT_FALLBACK_GAS_SAFELOW = 2000000000; // 2 Gwei
+export const DEFAULT_FALLBACK_GAS_AVERAGE = 5000000000; // 5 Gwei
+export const DEFAULT_FALLBACK_GAS_FAST = 21000000000; // 21 Gwei
 
 // # Positions
 export const LONG = 'long';

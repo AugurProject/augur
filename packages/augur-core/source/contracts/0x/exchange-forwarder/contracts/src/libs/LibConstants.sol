@@ -18,37 +18,49 @@
 
 pragma solidity 0.5.15;
 
-import "ROOT/0x/utils/contracts/src/LibBytes.sol";
 import "ROOT/0x/exchange/contracts/src/interfaces/IExchange.sol";
 import "ROOT/0x/erc20/contracts/src/interfaces/IEtherToken.sol";
+import "ROOT/0x/exchange/contracts/src/interfaces/IExchangeV2.sol";
 
 
 contract LibConstants {
 
-    using LibBytes for bytes;
+    uint256 constant internal MAX_UINT = uint256(-1);
 
-    bytes4 constant internal ERC20_DATA_ID = bytes4(keccak256("ERC20Token(address)"));
-    bytes4 constant internal ERC721_DATA_ID = bytes4(keccak256("ERC721Token(address,uint256)"));
-    uint256 constant internal MAX_UINT = 2**256 - 1;
-    uint256 constant internal PERCENTAGE_DENOMINATOR = 10**18;
-    uint256 constant internal MAX_FEE_PERCENTAGE = 5 * PERCENTAGE_DENOMINATOR / 100;         // 5%
+    // The v2 order id is the first 4 bytes of the ExchangeV2 order schema hash.
+    // bytes4(keccak256(abi.encodePacked(
+    //     "Order(",
+    //     "address makerAddress,",
+    //     "address takerAddress,",
+    //     "address feeRecipientAddress,",
+    //     "address senderAddress,",
+    //     "uint256 makerAssetAmount,",
+    //     "uint256 takerAssetAmount,",
+    //     "uint256 makerFee,",
+    //     "uint256 takerFee,",
+    //     "uint256 expirationTimeSeconds,",
+    //     "uint256 salt,",
+    //     "bytes makerAssetData,",
+    //     "bytes takerAssetData",
+    //     ")"
+    // )));
+    bytes4 constant public EXCHANGE_V2_ORDER_ID = 0x770501f8;
 
      // solhint-disable var-name-mixedcase
     IExchange internal EXCHANGE;
+    IExchangeV2 internal EXCHANGE_V2;
     IEtherToken internal ETHER_TOKEN;
-    bytes internal WETH_ASSET_DATA;
     // solhint-enable var-name-mixedcase
 
     constructor (
         address _exchange,
-        bytes memory _wethAssetData
+        address _exchangeV2,
+        address _weth
     )
         public
     {
         EXCHANGE = IExchange(_exchange);
-        WETH_ASSET_DATA = _wethAssetData;
-
-        address etherToken = _wethAssetData.readAddress(16);
-        ETHER_TOKEN = IEtherToken(etherToken);
+        EXCHANGE_V2 = IExchangeV2(_exchangeV2);
+        ETHER_TOKEN = IEtherToken(_weth);
     }
 }

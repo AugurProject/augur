@@ -19,8 +19,7 @@
 pragma solidity 0.5.15;
 
 import "ROOT/0x/utils/contracts/src/interfaces/IAuthorizable.sol";
-import "ROOT/0x/utils/contracts/src/LibAuthorizableRichErrors.sol";
-import "ROOT/0x/utils/contracts/src/LibRichErrors.sol";
+
 import "ROOT/0x/utils/contracts/src/Ownable.sol";
 
 
@@ -35,7 +34,13 @@ contract Authorizable is
         _;
     }
 
+    /// @dev Whether an adderss is authorized to call privileged functions.
+    /// @param 0 Address to query.
+    /// @return 0 Whether the address is authorized.
     mapping (address => bool) public authorized;
+    /// @dev Whether an adderss is authorized to call privileged functions.
+    /// @param 0 Index of authorized address.
+    /// @return 0 Authorized address.
     address[] public authorities;
 
     /// @dev Initializes the `owner` address.

@@ -38,7 +38,6 @@ div.TableHeight {
   right: 0;
   bottom: @size-32;
   position: absolute;
-  height: fit-content;
 }
 
 .Empty {
@@ -82,6 +81,12 @@ div.HideOutcomes {
   }
 
   div.Table {
+    > ul {
+      > li:nth-of-type(3) {
+        padding-right: @size-24;
+      }
+    }
+
     > div:first-of-type {
       max-height: calc(100vh - 300px);
       min-height: unset;
@@ -90,6 +95,12 @@ div.HideOutcomes {
     &.Outcomes {
       > div:first-of-type {
         max-height: unset;
+      }
+
+      > ul {
+        > li:nth-of-type(3) {
+          padding-right: 0;
+        }
       }
     }
   }

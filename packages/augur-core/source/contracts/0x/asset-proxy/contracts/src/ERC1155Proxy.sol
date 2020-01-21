@@ -24,6 +24,7 @@ import "ROOT/0x/erc1155/contracts/src/interfaces/IERC1155.sol";
 import "ROOT/0x/asset-proxy/contracts/archive/MixinAuthorizable.sol";
 import "ROOT/0x/asset-proxy/contracts/src/interfaces/IAssetProxy.sol";
 
+
 contract ERC1155Proxy is
     MixinAuthorizable,
     IAssetProxy
@@ -94,4 +95,3 @@ contract ERC1155Proxy is
         return PROXY_ID;
     }
 }
-

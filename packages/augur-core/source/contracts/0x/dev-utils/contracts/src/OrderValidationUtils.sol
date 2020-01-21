@@ -25,17 +25,25 @@ import "ROOT/0x/exchange-libs/contracts/src/LibMath.sol";
 import "ROOT/0x/utils/contracts/src/LibBytes.sol";
 import "ROOT/0x/utils/contracts/src/LibSafeMath.sol";
 import "ROOT/0x/dev-utils/contracts/src/LibAssetData.sol";
+import "ROOT/0x/dev-utils/contracts/src/OrderTransferSimulationUtils.sol";
 
 
 contract OrderValidationUtils is
-    LibAssetData
+    LibAssetData,
+    OrderTransferSimulationUtils
 {
     using LibBytes for bytes;
     using LibSafeMath for uint256;
 
-    constructor (address _exchange)
+    constructor (
+        address _exchange,
+        address _chaiBridge
+    )
         public
-        LibAssetData(_exchange)
+        LibAssetData(
+            _exchange,
+            _chaiBridge
+        )
     {}
 
     /// @dev Fetches all order-relevant information needed to validate if the supplied order is fillable.
@@ -50,7 +58,6 @@ contract OrderValidationUtils is
     /// amount of each asset that can be filled.
     function getOrderRelevantState(LibOrder.Order memory order, bytes memory signature)
         public
-        view
         returns (
             LibOrder.OrderInfo memory orderInfo,
             uint256 fillableTakerAssetAmount,
@@ -99,7 +106,6 @@ contract OrderValidationUtils is
             } else {
                 // Get the transferable amount of the `makerFeeAsset`
                 uint256 transferableMakerFeeAssetAmount = getTransferableAssetAmount(makerAddress, order.makerFeeAssetData);
-
                 uint256 transferableMakerToTakerAmount = LibMath.getPartialAmountFloor(
                     transferableMakerAssetAmount,
                     order.makerAssetAmount,
@@ -120,6 +126,15 @@ contract OrderValidationUtils is
             transferableTakerAssetAmount
         );
 
+        // Execute the maker transfers if a taker address is specified
+        if (order.takerAddress != address(0)) {
+            fillableTakerAssetAmount = getSimulatedOrderMakerTransferResults(
+                order,
+                order.takerAddress,
+                fillableTakerAssetAmount
+            ) == OrderTransferResults.TransfersSuccessful ? fillableTakerAssetAmount : 0;
+        }
+
         return (orderInfo, fillableTakerAssetAmount, isValidSignature);
     }
 
@@ -135,7 +150,6 @@ contract OrderValidationUtils is
     /// the `takerAssetData` to get the final amount of each asset that can be filled.
     function getOrderRelevantStates(LibOrder.Order[] memory orders, bytes[] memory signatures)
         public
-        view
         returns (
             LibOrder.OrderInfo[] memory ordersInfo,
             uint256[] memory fillableTakerAssetAmounts,
@@ -167,7 +181,6 @@ contract OrderValidationUtils is
     /// the individual asset amounts located within the `assetData`.
     function getTransferableAssetAmount(address ownerAddress, bytes memory assetData)
         public
-        view
         returns (uint256 transferableAssetAmount)
     {
         (uint256 balance, uint256 allowance) = getBalanceAndAssetProxyAllowance(ownerAddress, assetData);

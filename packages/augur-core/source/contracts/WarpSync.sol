@@ -24,6 +24,10 @@ contract WarpSync is IWarpSync, Initializable {
     mapping(address => address) public markets;
     mapping(address => Data) public data;
 
+    uint256 public lastSweepTime;
+
+    uint256 private constant MIN_TIME_BETWEEN_INTEREST_SWEEPS = 7 days;
+
     uint256 private constant MARKET_LENGTH = 1 days;
     uint256 private constant MAX_NUM_TICKS = 2 ** 256 - 2;
     int256 private INT256_MIN = int256(2**255);
@@ -34,6 +38,7 @@ contract WarpSync is IWarpSync, Initializable {
     function initialize(IAugur _augur) public beforeInitialized returns (bool) {
         endInitialization();
         augur = _augur;
+        lastSweepTime = block.timestamp;
         return true;
     }
 
@@ -70,6 +75,13 @@ contract WarpSync is IWarpSync, Initializable {
         // NOTE: This validates that the market is legitimate. A malicious market has no way of modifying this mapping to pass here.
         if (markets[address(_universe)] != address(_market)) {
             return;
+        }
+
+        // In order to periodically sweep interest we do so here which will result in a sweep at least on recurring basis where the sweeper is compensated.
+        uint256 _timestamp = block.timestamp;
+        if (lastSweepTime - _timestamp >= MIN_TIME_BETWEEN_INTEREST_SWEEPS) {
+            _universe.sweepInterest();
+            lastSweepTime = _timestamp;
         }
 
         recordMarketFinalized(_market, _universe);
