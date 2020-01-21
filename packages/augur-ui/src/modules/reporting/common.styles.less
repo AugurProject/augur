@@ -242,20 +242,24 @@ div.ReportingSubheaders {
 }
 
 .ReportingModalButton {
-  .text-14-bold;
+  .text-14;
 
   background-color: @color-secondary-action;
-  border: 1px solid @color-primary-text;
+  border: 1px solid @color-secondary-action-outline;
+  border-radius: @size-3;
   color: @color-primary-text;
   display: flex;
   justify-content: center;
-  line-height: @size-16;
-  padding: 0.5rem;
+  padding: @size-10 @size-16;
   width: 100%;
-  max-width: 480px;
 
-  @media @breakpoint-max-tablet {
-    max-width: unset;
+  > span {
+    .text-14-bold;
+
+    &:after {
+      content: ' ';
+      white-space: pre;
+    }
   }
 }
 
@@ -267,8 +271,8 @@ div.ReportingSubheaders {
   color: @color-secondary-text;
   display: flex;
   flex-direction: column;
-  max-width: 480px;
-  padding: @size-44;
+  max-width: 466px;
+  padding: @size-16;
   position: relative;
   text-transform: uppercase;
 
@@ -601,13 +605,13 @@ div.ReportingSubheaders {
 
 .ReportingCard {
   align-items: center;
-  background: @color-dark-grey;
+  background: @color-module-background;
   border-radius: @size-3;
-  border: 1px solid @color-secondary-action-outline;
-  display: flex;
+  border: @size-1 solid @color-dark-grey;
   display: grid;
   grid-template-columns: auto 80px;
   padding: @size-12 @size-24;
+  margin-bottom: @size-8;
 
   > span:first-of-type {
     width: fit-content;
@@ -615,7 +619,7 @@ div.ReportingSubheaders {
   }
 
   > span:nth-of-type(2) {
-    .text-16-medium;
+    .text-16-bold;
 
     color: @color-primary-text;
 
@@ -625,7 +629,7 @@ div.ReportingSubheaders {
   }
 
   > span:nth-of-type(3) {
-    margin-top: @size-12;
+    margin-top: @size-14;
   }
 
   > div {
@@ -655,6 +659,7 @@ div.ReportingSubheaders {
   @media @breakpoint-max-tablet {
     grid-template-columns: auto;
     grid-template-rows: auto auto auto;
+    padding: @size-12;
 
     > div {
       grid-column: 1;
@@ -669,31 +674,30 @@ div.ReportingSubheaders {
 }
 
 .ReportingList {
+  border: @size-1 solid @color-dark-grey;
+  background-color: @color-module-background;
+  margin-bottom: @size-16;
+
   > span {
-    .text-16-medium;
+    .text-12-medium;
 
     color: @color-primary-text;
     display: flex;
-    margin-bottom: @size-22;
+    padding: @size-12 @size-16;
+    text-transform: uppercase;
+    background-color: @color-dark-grey;
   }
 
   > div {
     display: flex;
     flex-direction: column;
-
-    > div {
-      margin-bottom: @size-4;
-    }
+    padding: @size-4;
 
     > span {
       .text-12;
 
       color: @color-inactive-text;
     }
-  }
-
-  &:not(:last-of-type) {
-    margin-bottom: 65px;
   }
 }
 
