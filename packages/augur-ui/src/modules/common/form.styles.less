@@ -566,8 +566,9 @@
     margin-right: @size-20;
   }
 
-  @media @breakpoint-mobile-mid {
+  @media @breakpoint-mobile-new {
     grid-template-columns: repeat(1, 1fr);
+    grid-row-gap: @size-8;
 
     > div:not(:last-of-type) {
       margin-right: 0;
@@ -581,8 +582,8 @@
   align-items: center;
   text-align: center;
 
-  @media @breakpoint-mobile-mid {
-    justify-content: flex-start;
+  @media @breakpoint-mobile-new {
+    justify-content: center;
   }
 }
 
