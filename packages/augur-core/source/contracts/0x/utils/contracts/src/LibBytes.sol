@@ -18,9 +18,6 @@
 
 pragma solidity 0.5.15;
 
-import "ROOT/0x/utils/contracts/src/LibBytesRichErrors.sol";
-import "ROOT/0x/utils/contracts/src/LibRichErrors.sol";
-
 
 library LibBytes {
 

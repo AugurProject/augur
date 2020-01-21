@@ -23,6 +23,7 @@ import "ROOT/0x/erc20/contracts/src/interfaces/IERC20Token.sol";
 import "ROOT/0x/erc20/contracts/src/interfaces/IEtherToken.sol";
 import "ROOT/0x/erc20/contracts/src/LibERC20Token.sol";
 import "ROOT/0x/exchange-libs/contracts/src/IWallet.sol";
+import "ROOT/0x/utils/contracts/src/DeploymentConstants.sol";
 import "ROOT/0x/asset-proxy/contracts/src/interfaces/IUniswapExchangeFactory.sol";
 import "ROOT/0x/asset-proxy/contracts/src/interfaces/IUniswapExchange.sol";
 import "ROOT/0x/asset-proxy/contracts/src/interfaces/IERC20Bridge.sol";
@@ -32,12 +33,9 @@ import "ROOT/0x/asset-proxy/contracts/src/interfaces/IERC20Bridge.sol";
 // solhint-disable not-rely-on-time
 contract UniswapBridge is
     IERC20Bridge,
-    IWallet
+    IWallet,
+    DeploymentConstants
 {
-    /* Mainnet addresses */
-    address constant private UNISWAP_EXCHANGE_FACTORY_ADDRESS = 0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95;
-    address constant private WETH_ADDRESS = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
-
     // Struct to hold `bridgeTransferFrom()` local variables in memory and to avoid
     // stack overflows.
     struct WithdrawToState {
@@ -90,7 +88,7 @@ contract UniswapBridge is
         // Get our balance of `fromTokenAddress` token.
         state.fromTokenBalance = IERC20Token(fromTokenAddress).balanceOf(address(this));
         // Get the weth contract.
-        state.weth = getWethContract();
+        state.weth = IEtherToken(_getWethAddress());
 
         // Convert from WETH to a token.
         if (fromTokenAddress == address(state.weth)) {
@@ -136,8 +134,8 @@ contract UniswapBridge is
                 state.fromTokenBalance,
                 // Minimum buy amount.
                 amount,
-                // No minimum intermediate ETH buy amount.
-                0,
+                // Must buy at least 1 intermediate ETH.
+                1,
                 // Expires after this block.
                 block.timestamp,
                 // Recipient is `to`.
@@ -161,26 +159,6 @@ contract UniswapBridge is
         returns (bytes4 magicValue)
     {
         return LEGACY_WALLET_MAGIC_VALUE;
-    }
-
-    /// @dev Overridable way to get the weth contract.
-    /// @return token The WETH contract.
-    function getWethContract()
-        public
-        view
-        returns (IEtherToken token)
-    {
-        return IEtherToken(WETH_ADDRESS);
-    }
-
-    /// @dev Overridable way to get the uniswap exchange factory contract.
-    /// @return factory The exchange factory contract.
-    function getUniswapExchangeFactoryContract()
-        public
-        view
-        returns (IUniswapExchangeFactory factory)
-    {
-        return IUniswapExchangeFactory(UNISWAP_EXCHANGE_FACTORY_ADDRESS);
     }
 
     /// @dev Grants an unlimited allowance to the exchange for its token
@@ -209,10 +187,13 @@ contract UniswapBridge is
     {
         address exchangeTokenAddress = fromTokenAddress;
         // Whichever isn't WETH is the exchange token.
-        if (fromTokenAddress == address(getWethContract())) {
+        if (fromTokenAddress == _getWethAddress()) {
             exchangeTokenAddress = toTokenAddress;
         }
-        exchange = getUniswapExchangeFactoryContract().getExchange(exchangeTokenAddress);
+        exchange = IUniswapExchange(
+            IUniswapExchangeFactory(_getUniswapExchangeFactoryAddress())
+            .getExchange(exchangeTokenAddress)
+        );
         require(address(exchange) != address(0), "NO_UNISWAP_EXCHANGE_FOR_TOKEN");
         return exchange;
     }

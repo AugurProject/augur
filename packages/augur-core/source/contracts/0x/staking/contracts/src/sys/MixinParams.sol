@@ -18,7 +18,7 @@
 
 pragma solidity 0.5.15;
 
-import "ROOT/0x/utils/contracts/src/LibRichErrors.sol";
+
 import "ROOT/0x/staking/contracts/src/immutable/MixinStorage.sol";
 import "ROOT/0x/staking/contracts/src/immutable/MixinConstants.sol";
 import "ROOT/0x/staking/contracts/src/interfaces/IStakingEvents.sol";

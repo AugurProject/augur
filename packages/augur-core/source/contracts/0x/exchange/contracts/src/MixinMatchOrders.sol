@@ -19,7 +19,6 @@ pragma solidity 0.5.15;
 pragma experimental ABIEncoderV2;
 
 import "ROOT/0x/utils/contracts/src/LibBytes.sol";
-import "ROOT/0x/utils/contracts/src/LibRichErrors.sol";
 import "ROOT/0x/exchange-libs/contracts/src/LibOrder.sol";
 import "ROOT/0x/exchange-libs/contracts/src/LibFillResults.sol";
 import "ROOT/0x/exchange-libs/contracts/src/LibExchangeRichErrors.sol";

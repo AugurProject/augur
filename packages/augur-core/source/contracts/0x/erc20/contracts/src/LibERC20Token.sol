@@ -18,12 +18,12 @@
 
 pragma solidity 0.5.15;
 
-import "ROOT/0x/utils/contracts/src/LibRichErrors.sol";
 import "ROOT/0x/utils/contracts/src/LibBytes.sol";
 import "ROOT/0x/erc20/contracts/src/interfaces/IERC20Token.sol";
 
 
 library LibERC20Token {
+    bytes constant private DECIMALS_CALL_DATA = hex"313ce567";
 
     /// @dev Calls `IERC20Token(token).approve()`.
     ///      Reverts if `false` is returned or if the return
@@ -91,6 +91,21 @@ library LibERC20Token {
         _callWithOptionalBooleanResult(token, callData);
     }
 
+    /// @dev Retrieves the number of decimals for a token.
+    ///      Returns `18` if the call reverts.
+    /// @return The number of decimals places for the token.
+    function decimals(address token)
+        internal
+        view
+        returns (uint8 tokenDecimals)
+    {
+        tokenDecimals = 18;
+        (bool didSucceed, bytes memory resultData) = token.staticcall(DECIMALS_CALL_DATA);
+        if (didSucceed && resultData.length == 32) {
+            tokenDecimals = uint8(LibBytes.readUint256(resultData, 0));
+        }
+    }
+
     /// @dev Executes a call on address `target` with calldata `callData`
     ///      and asserts that either nothing was returned or a single boolean
     ///      was returned equal to `true`.
@@ -115,6 +130,5 @@ library LibERC20Token {
             }
         }
         revert();
-        //LibRichErrors.rrevert(resultData);
     }
 }

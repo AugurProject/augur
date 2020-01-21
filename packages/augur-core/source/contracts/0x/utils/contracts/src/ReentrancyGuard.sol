@@ -19,7 +19,7 @@
 pragma solidity 0.5.15;
 
 import "ROOT/0x/utils/contracts/src/LibReentrancyGuardRichErrors.sol";
-import "ROOT/0x/utils/contracts/src/LibRichErrors.sol";
+
 
 
 contract ReentrancyGuard {
@@ -41,11 +41,6 @@ contract ReentrancyGuard {
         // Ensure mutex is unlocked.
         if (_locked) {
             revert();
-            /*
-            LibRichErrors.rrevert(
-                LibReentrancyGuardRichErrors.IllegalReentrancyError()
-            );
-            */
         }
         // Lock mutex.
         _locked = true;
