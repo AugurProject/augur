@@ -82,6 +82,7 @@ export interface ContractAddresses {
   ERC1155Proxy?: string;
   Exchange?: string; // ZeroXExchange
   Coordinator?: string; // ZeroXCoordinator
+  ChaiBridge?: string;
   DevUtils?: string;
   WETH9?: string;
   ZRXToken?: string;

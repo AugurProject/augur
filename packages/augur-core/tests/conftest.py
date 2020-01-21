@@ -442,7 +442,8 @@ class ContractsFixture:
             ("ZeroXExchange", "exchange/contracts/src/Exchange", [chainId]),
             ("ZeroXCoordinator", "coordinator/contracts/src/Coordinator", ["EXCHANGE", chainId]),
             ("CoordinatorRegistry", "coordinator/contracts/src/registry/CoordinatorRegistry", []),
-            ("DevUtils", "dev-utils/contracts/src/DevUtils", ["EXCHANGE"]),
+            ("ChaiBridge", "asset-proxy/contracts/src/bridges/ChaiBridge", []),
+            ("DevUtils", "dev-utils/contracts/src/DevUtils", ["EXCHANGE", "CHAI_BRIDGE"]),
             ("WETH9", "erc20/contracts/src/WETH9", []),
             ("ZRXToken", "erc20/contracts/src/ZRXToken", []),
         ]
@@ -450,6 +451,8 @@ class ContractsFixture:
         for alias, filename, constructorArgs in contractSetups:
             if constructorArgs and constructorArgs[0] == "EXCHANGE":
                 constructorArgs[0] = zeroXContracts["ZeroXExchange"]
+            if constructorArgs and len(constructorArgs) == 2 and constructorArgs[1] == "CHAI_BRIDGE":
+                constructorArgs[1] = zeroXContracts["ChaiBridge"]
             contract = self.upload("../source/contracts/0x/{}.sol".format(filename), constructorArgs=constructorArgs)
             zeroXContracts[alias] = contract.address
             self.contracts[alias] = contract
