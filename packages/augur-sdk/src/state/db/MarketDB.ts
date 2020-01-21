@@ -102,6 +102,18 @@ export class MarketDB extends DerivedDB {
 
     const marketDataById = _.keyBy(marketsData, 'market');
 
+    const now = Math.floor(Date.now() / 1000);
+
+    // only check market if it hasn't already been checked in the last 30s
+    const notRecentlyChecked = marketsData.filter((market) => {
+      const lastCheck = market.lastLiquidityCheck * 1000;
+      const thirtySeconds = 1000 * 3;
+      const thirtySecondsAgo = (now * 1000) - thirtySeconds;
+      return market.lastLiquidityCheck === 0 || !(lastCheck > thirtySecondsAgo);
+    });
+
+    if (notRecentlyChecked.length < 1) return;
+
     for (const marketId of marketIds) {
       const doc = await this.getOrderBookData(this.augur, marketId, marketDataById[marketId], reportingFeeDivisor, ETHInAttoDAI);
       // This is needed to make rollbacks work properly
@@ -129,6 +141,8 @@ export class MarketDB extends DerivedDB {
       _id: marketId,
       invalidFilter,
       hasRecentlyDepletedLiquidity: false,
+      lastPassingLiquidityCheck: 0,
+      lastLiquidityCheck: Math.floor(Date.now() / 1000),
       liquidity: {},
     };
 
@@ -145,20 +159,54 @@ export class MarketDB extends DerivedDB {
       marketOrderBookData.liquidity[spread] = liquidity.toFixed().padStart(30, '0');
     }
 
+    const spread10 = new BigNumber(marketOrderBookData.liquidity[10]);
+    const spread15 = new BigNumber(marketOrderBookData.liquidity[15]);
+
+    // Keep track when a market has under a 15% spread. Used for `hasRecentlyDepletedLiquidity`
+    if (spread10.gt(0) || spread15.gt(0)) {
+      marketOrderBookData.lastPassingLiquidityCheck = marketOrderBookData.lastLiquidityCheck;
+    }
+
     marketOrderBookData.hasRecentlyDepletedLiquidity = await this.hasRecentlyDepletedLiquidity(marketData, marketOrderBookData.liquidity);
 
     return marketOrderBookData;
   }
 
   async getOrderBook(marketData: MarketData, numOutcomes: number, estimatedTradeGasCostInAttoDai: BigNumber): Promise<OrderBook> {
+    const orderTypes = ['0x00', '0x01'];
+    let outcomes = ['0x00', '0x01', '0x02'];
+
+    if (marketData.outcomes && marketData.outcomes.length > 0) {
+      outcomes = [];
+      for (let i = 0; i <= marketData.outcomes.length; i++) {
+        outcomes = outcomes.concat('0x0' + i);
+      }
+    }
+
+    let allOutcomesAllOrderTypes = [];
+    let allOutcomesAllOrderTypes2 = [];
+
+    for (let i = 0; i < outcomes.length; i++) {
+      for (let ii = 0; ii < orderTypes.length; ii++) {
+       allOutcomesAllOrderTypes = allOutcomesAllOrderTypes.concat(
+         [[marketData.market, outcomes[i], orderTypes[ii]]]
+      );
+      }
+    }
+
+    for (const outcome of outcomes) {
+      for (const orderType of orderTypes) {
+        allOutcomesAllOrderTypes2 = allOutcomesAllOrderTypes2.concat([[marketData.market, outcome, orderType]]);
+      }
+    }
+
     const currentOrdersResponse = await this.stateDB.ZeroXOrders
+      .where('[market+outcome+orderType]')
+      .anyOf(allOutcomesAllOrderTypes)
+      .and((order) => order.amount > '0x00')
       .toArray();
 
-      const currentOrdersFiltered = currentOrdersResponse
-      .filter(m => m.market === marketData.market)
-      .filter(order => order.amount > '0x00');
-
-    const currentOrdersByOutcome = _.groupBy(currentOrdersFiltered, (order) => new BigNumber(order.outcome).toNumber());
+    const currentOrdersByOutcome = _.groupBy(currentOrdersResponse, (order) => new BigNumber(order.outcome).toNumber());
     for (let outcome = 0; outcome < numOutcomes; outcome++) {
       if (currentOrdersByOutcome[outcome] === undefined) currentOrdersByOutcome[outcome] = [];
     }
@@ -247,6 +295,8 @@ export class MarketDB extends DerivedDB {
       20: '000000000000000000000000000000',
       100: '000000000000000000000000000000'
     }
+    log['lastPassingLiquidityCheck'] = 0;
+    log['lastLiquidityCheck'] = 0;
     log['feeDivisor'] = new BigNumber(1).dividedBy(new BigNumber(log['feePerCashInAttoCash'], 16).dividedBy(QUINTILLION)).toNumber();
     log['feePercent'] = new BigNumber(log['feePerCashInAttoCash'], 16).div(QUINTILLION).toNumber();
     log['lastTradedTimestamp'] = 0;
@@ -366,57 +416,31 @@ export class MarketDB extends DerivedDB {
   // A market's liquidity is considered recently depleted if it had liquidity under
   // a 15% spread in the last 24 hours, but doesn't currently have liquidity
   async hasRecentlyDepletedLiquidity(marketData: MarketData, currentLiquiditySpreads): Promise<boolean>  {
-    const currentTimestamp = (await this.augur.getTimestamp()).toNumber() * 1000;
-    const lastTradeTimestamp = marketData.lastTradedTimestamp * 1000;
+    const currentTimestamp = Math.floor(Date.now() / 1000);
+    const lastPassingLiquidityCheck = marketData.lastPassingLiquidityCheck * 1000;
     const twentyFourHours = 24 * 60 * 60 * 1000;
     const oneDayAgo = currentTimestamp - twentyFourHours;
 
-    const marketsLiquidityInfo = {
-      currentlyHasLiquidity: false,
-      hadLiquidityInLast24Hour: false,
-    };
-
-    if (lastTradeTimestamp === 0) {
-      // No Trades
-      marketsLiquidityInfo.hadLiquidityInLast24Hour = false;
-    }
-    else if (lastTradeTimestamp > oneDayAgo) {
-      // Traded within 24hours
-      marketsLiquidityInfo.hadLiquidityInLast24Hour = true;
-    }
-    else if (lastTradeTimestamp <= oneDayAgo) {
-      // Traded more than 24hours ago
-      marketsLiquidityInfo.hadLiquidityInLast24Hour = false;
-    }
 
 
-    const oldLiquidity15Percent = new BigNumber(marketData.liquidity['15']);
-    const oldLiquidity10Percent = new BigNumber(marketData.liquidity['10']);
     const liquidity15Percent = new BigNumber(currentLiquiditySpreads[10]);
     const liquidity10Percent = new BigNumber(currentLiquiditySpreads[15]);
+    const currentlyHasLiquidity = liquidity10Percent.gt(0) || liquidity15Percent.gt(0)
+    let hadLiquidityInLast24Hour = false;
 
 
-    // If traded in last 24 hours AND
-    // the market currently doesn't have any liquidity AND
-    // the market did have liquidity on last syncOrderBooks
-    if (
-      (oldLiquidity10Percent.gt(0) || oldLiquidity15Percent.gt(0)) &&
-      (liquidity10Percent.eq(0) && liquidity15Percent.eq(0)) &&
-      marketsLiquidityInfo.hadLiquidityInLast24Hour
-    ) {
-      return true;
+    if (marketData.lastPassingLiquidityCheck === 0) {
+      hadLiquidityInLast24Hour = false;
     }
-    // If traded in last 24 hours AND
-    // the market currently doesn't have any liquidity AND
-    // the market didn't have liquidity on last syncOrderBooks AND
-    // the market has hasRecentlyDepletedLiquidity set on marketData
-    else if (
-      oldLiquidity10Percent.eq(0) &&
-      oldLiquidity15Percent.eq(0) &&
-      (liquidity10Percent.eq(0) && liquidity15Percent.eq(0)) &&
-      marketsLiquidityInfo.hadLiquidityInLast24Hour &&
-      marketData.hasRecentlyDepletedLiquidity
-    ) {
+    else if (lastPassingLiquidityCheck > oneDayAgo) {
+      hadLiquidityInLast24Hour = true;
+    }
+    else if (lastPassingLiquidityCheck <= oneDayAgo) {
+      hadLiquidityInLast24Hour = false;
+    }
+
+    // had liquidity under a 15% spread in the last 24 hours, but doesn't currently have liquidity
+    if (hadLiquidityInLast24Hour && !currentlyHasLiquidity) {
       return true;
     } else {
       return false;
