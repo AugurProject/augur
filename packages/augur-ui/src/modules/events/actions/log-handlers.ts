@@ -19,7 +19,7 @@ import { AppState } from 'store';
 import { updateBlockchain } from 'modules/app/actions/update-blockchain';
 import { isSameAddress } from 'utils/isSameAddress';
 import { Events, Logs, TXEventName, OrderEventType } from '@augurproject/sdk';
-import { addUpdateTransaction } from 'modules/events/actions/add-update-transaction';
+import { addUpdateTransaction, getRelayerDownErrorMessage } from 'modules/events/actions/add-update-transaction';
 import { augurSdk } from 'services/augursdk';
 import { updateConnectionStatus } from 'modules/app/actions/update-connection';
 import { checkAccountAllowance } from 'modules/auth/actions/approve-account';
@@ -169,11 +169,13 @@ export const handleNewBlockLog = (log: Events.NewBlock) => async (
       dispatch(updateAppStatus(GNOSIS_STATUS, status));
       if (appStatus.gnosisStatus !== GnosisSafeState.ERROR && status === GnosisSafeState.ERROR) {
         const hasEth = (await loginAccount.meta.signer.provider.getBalance(loginAccount.meta.signer._address)).gt(0);
-        const errorMessage = `We\'re currently experiencing a technical difficulty processing transaction fees in Dai.\n${hasEth ? `If you need to make the transaction now transaction costs will be paid in ETH from your ${loginAccount.meta.accountType} wallet.` : `If you need to make the transaction now please add ETH to your ${loginAccount.meta.accountType} wallet: ${loginAccount.meta.signer._address}.`}`;
+
         dispatch(updateModal({
           type: MODAL_WALLET_ERROR,
-          error: errorMessage,
+          error: getRelayerDownErrorMessage(loginAccount.meta.accountType, hasEth),
           showDiscordLink: false,
+          showAddFundsHelp: !hasEth,
+          walletType: loginAccount.meta.accountType,
           title: 'We\'re having trouble processing transactions',
         }));
       }
