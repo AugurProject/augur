@@ -9297,6 +9297,167 @@ const CHINA_HOLIDAYS = {
   ]
 };
 
+export const AUSTRALIA_HOLIDAYS = {
+  [2020]: [
+    {
+      holiday: HOLIDAYS.NEW_YEARS_DAY,
+      date: 1577836800
+    },
+    {
+      holiday: HOLIDAYS.AUSTRALIA_DAY,
+      date: 1580083200
+    },
+    {
+      holiday: HOLIDAYS.GOOD_FRIDAY,
+      date: 1586476800
+    },
+    {
+      holiday: HOLIDAYS.EASTER_MONDAY,
+      date: 1586736000
+    },
+    {
+      holiday: HOLIDAYS.QUEENS_BIRTHDAY,
+      date: 1591574400
+    },
+    {
+      holiday: HOLIDAYS.CHRISTMAS,
+      date: 1606262400
+    },
+    {
+      holiday: HOLIDAYS.BOXING_DAY,
+      date: 1606521600
+    },
+  ],
+  [2021]: [
+    {
+      holiday: HOLIDAYS.NEW_YEARS_DAY,
+      date: 1577836800
+    },
+    {
+      holiday: HOLIDAYS.AUSTRALIA_DAY,
+      date: 1611619200
+    },
+    {
+      holiday: HOLIDAYS.GOOD_FRIDAY,
+      date: 1617321600
+    },
+    {
+      holiday: HOLIDAYS.EASTER_MONDAY,
+      date: 1617580800
+    },
+    {
+      holiday: HOLIDAYS.QUEENS_BIRTHDAY,
+      date: 1623628800
+    },
+    {
+      holiday: HOLIDAYS.CHRISTMAS,
+      date: 1637971200
+    },
+    {
+      holiday: HOLIDAYS.BOXING_DAY,
+      date: 1638057600
+    },
+  ],
+  [2022]: [
+    {
+      holiday: HOLIDAYS.NEW_YEARS_DAY,
+      date: 1641168000
+    },
+    {
+      holiday: HOLIDAYS.AUSTRALIA_DAY,
+      date: 1643155200
+    },
+    {
+      holiday: HOLIDAYS.GOOD_FRIDAY,
+      date: 1649980800
+    },
+    {
+      holiday: HOLIDAYS.EASTER_MONDAY,
+      date: 1650240000
+    },
+    {
+      holiday: HOLIDAYS.ANZAC_DAY,
+      date: 1650844800
+    },
+    {
+      holiday: HOLIDAYS.QUEENS_BIRTHDAY,
+      date: 1655078400
+    },
+    {
+      holiday: HOLIDAYS.CHRISTMAS,
+      date: 1672012800
+    },
+    {
+      holiday: HOLIDAYS.BOXING_DAY,
+      date: 1672099200
+    },
+  ]
+};
+
+export const INDIA_HOLIDAYS = {
+  [2020]: [
+    {
+      holiday: HOLIDAYS.MANASHIVRATRI,
+      date: 1582243200
+    },
+    {
+      holiday: HOLIDAYS.HOLI,
+      date: 1583798400
+    },
+    {
+      holiday: HOLIDAYS.RAN_NAVM,
+      date: 1585785600
+    },
+    {
+      holiday: HOLIDAYS.MAHAVIR_JAYANTI,
+      date: 1586131200
+    },
+    {
+      holiday: HOLIDAYS.GOOD_FRIDAY,
+      date: 1586476800
+    },
+    {
+      holiday: HOLIDAYS.BABSAHEB,
+      date: 1586822400
+    },
+    {
+      holiday: HOLIDAYS.MAHARASHTRA,
+      date: 1588291200
+    },
+    {
+      holiday: HOLIDAYS.RAMZAN,
+      date: 1590364800
+    },
+    {
+      holiday: HOLIDAYS.EID_AL_ADHA,
+      date: 1593561600
+    },
+    {
+      holiday: HOLIDAYS.GANESH_CHATURTHI,
+      date: 1595203200
+    },
+    {
+      holiday: HOLIDAYS.ASHURA,
+      date: 1595894400
+    },
+    {
+      holiday: HOLIDAYS.MAHATMA,
+      date: 1601596800
+    },
+    {
+      holiday: HOLIDAYS.DIWALI,
+      date: 1605484800
+    },
+    {
+      holiday: HOLIDAYS.GURU_NANAK_JAYANTI,
+      date: 1606694400
+    },
+    {
+      holiday: HOLIDAYS.CHRISTMAS,
+      date: 1606521600
+    },
+  ]
+};
 
 export const FIN_EXCHANGES_HOLIDAY_CLOSURES = {
   'New York Stock Exchange (traded in USD)': USA_HOLIDAYS,
@@ -9320,5 +9481,7 @@ export const FIN_INDEXES_HOLIDAY_CLOSURES = {
   'FTSE 100': ENGLAND_HOLIDAYS,
   'DAX': GERMANY_HOLIDAYS,
   'Hang Seng': HONG_KONG_HOLIDAYS,
-  'Shanghai SE Composite': CHINA_HOLIDAYS
+  'Shanghai SE Composite': CHINA_HOLIDAYS,
+  'All Ordinaries': AUSTRALIA_HOLIDAYS,
+  'BSE Sensex 30': INDIA_HOLIDAYS,
 };

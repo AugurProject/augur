@@ -1868,18 +1868,19 @@ div.error > div > div > div > div > input {
 
     color: @color-secondary-text;
     background: @color-secondary-action;
-    border: 1px solid @color-secondary-action-outline;
+    border: @size-1 solid @color-secondary-action-outline;
     border-radius: @border-radius-default;
     display: flex;
     justify-content: center;
     align-items: center;
-    width: @size-21;
+    padding: 0px @size-3;
+    min-width: @size-21;
     height: @size-16;
 
     @media @breakpoint-mobile {
       .text-12-bold;
 
-      width: @size-23;
+      min-width: @size-23;
       height: @size-17;
     }
   }

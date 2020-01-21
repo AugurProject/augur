@@ -1,19 +1,25 @@
-import React from "react";
-
-import { CountdownProgress, formatTime, MarketProgress, } from "modules/common/progress";
-import { CancelTextButton } from "modules/common/buttons";
-import { DateFormattedObject, MarketData, MarketReportClaimableContracts } from "modules/types";
-import { formatDai } from "utils/format-number";
-import Styles from "modules/account/components/notification.styles.less";
-
+import React from 'react';
+import {
+  CountdownProgress,
+  formatTime,
+  MarketProgress,
+} from 'modules/common/progress';
+import { CancelTextButton } from 'modules/common/buttons';
+import {
+  DateFormattedObject,
+  MarketData,
+  MarketReportClaimableContracts,
+} from 'modules/types';
+import { formatDai } from 'utils/format-number';
+import Styles from 'modules/account/components/notification.styles.less';
 import {
   DISPUTE_ENDS,
   MARKET_IN_DISPUTE,
   MARKET_STATUS_MESSAGES,
   NOTIFICATION_TYPES,
   REPORTING_ENDS,
-} from "modules/common/constants";
-import MarketTitle from "modules/market/containers/market-title";
+} from 'modules/common/constants';
+import MarketTitle from 'modules/market/containers/market-title';
 import { MarketReportingState } from '@augurproject/sdk/build';
 
 interface BaseProps {
@@ -65,25 +71,40 @@ interface TemplateProps extends BaseProps {
   message: string;
 }
 
-const Template = (props: TemplateProps) => (
-  <>
-    <TemplateBody market={props.market} message={props.message} />
-    <div className={Styles.BottomRow}>
-      <Counter
-        type={props.type}
-        market={props.market}
-        disputingWindowEndTime={props.disputingWindowEndTime}
-        currentTime={props.currentTime}
-      />
+const notificationsWithCountdown = [
+  NOTIFICATION_TYPES.marketsInDispute,
+  NOTIFICATION_TYPES.reportOnMarkets,
+  NOTIFICATION_TYPES.proceedsToClaim,
+];
 
-      <CancelTextButton
-        text={props.buttonLabel}
-        action={() => props.buttonAction()}
-        disabled={props.isDisabled}
-      />
-    </div>
-  </>
-);
+const Template = ({
+  market,
+  type,
+  message,
+  buttonAction,
+  currentTime,
+  isDisabled,
+  buttonLabel,
+}: TemplateProps) => {
+  const showCounter = market && notificationsWithCountdown.includes(type);
+  return (
+    <>
+      <TemplateBody market={market} message={message} />
+      <div
+        className={Styles.BottomRow}
+      >
+        {showCounter && (
+          <Counter type={type} market={market} currentTime={currentTime} />
+        )}
+        <CancelTextButton
+          text={buttonLabel}
+          action={() => buttonAction()}
+          disabled={isDisabled}
+        />
+      </div>
+    </>
+  );
+};
 
 export interface TemplateBodyProps {
   market: MarketData;
@@ -96,7 +117,9 @@ const TemplateBody = (props: TemplateBodyProps) => {
   }
 
   const { description, id } = props.market;
-  const parts: Array<string> = props.message ? props.message.split(`"${description}"`) : [];
+  const parts: Array<string> = props.message
+    ? props.message.split(`"${description}"`)
+    : [];
 
   if (parts.length > 1) {
     return (
@@ -118,50 +141,50 @@ interface CounterProps {
   disputingWindowEndTime?: DateFormattedObject;
 }
 
-const Counter = (props: CounterProps) => {
+const Counter = ({ market, type, currentTime }: CounterProps) => {
   let counter: any = null;
-  const notificationsWithCountdown = [
-    NOTIFICATION_TYPES.marketsInDispute,
-    NOTIFICATION_TYPES.reportOnMarkets,
-    NOTIFICATION_TYPES.proceedsToClaim,
-  ];
-
-  if (props.market && notificationsWithCountdown.includes(props.type)) {
-    const { endTime, reportingState, finalizationTime } = props.market;
-    const endTimeFormatted = formatTime(endTime);
-    const finalizationTimeFormatted = formatTime(finalizationTime);
-
-    if (props.type === NOTIFICATION_TYPES.proceedsToClaim && finalizationTimeFormatted && props.currentTime) {
+  const { endTime, reportingState, finalizationTime, disputeInfo } = market;
+  const endTimeFormatted = formatTime(endTime);
+  const finalizationTimeFormatted = formatTime(finalizationTime);
+  if (
+    type === NOTIFICATION_TYPES.proceedsToClaim &&
+    finalizationTimeFormatted &&
+    currentTime
+  ) {
+    counter = (
+      <div className={Styles.Countdown}>
+        <CountdownProgress
+          label={MARKET_STATUS_MESSAGES.WAITING_PERIOD_ENDS}
+          time={finalizationTimeFormatted}
+          currentTime={formatTime(currentTime)}
+        />
+      </div>
+    );
+  } else {
+    // if (currentTime && disputeInfo.disputeWindow.endTime) {
+      const label =
+        type === NOTIFICATION_TYPES[MARKET_IN_DISPUTE]
+          ? DISPUTE_ENDS
+          : REPORTING_ENDS;
       counter = (
         <div className={Styles.Countdown}>
-          <CountdownProgress
-            label={MARKET_STATUS_MESSAGES.WAITING_PERIOD_ENDS}
-            time={finalizationTimeFormatted}
-            currentTime={formatTime(props.currentTime)}
+          <MarketProgress
+            reportingState={reportingState}
+            currentTime={currentTime}
+            endTimeFormatted={endTimeFormatted}
+            reportingWindowEndTime={disputeInfo.disputeWindow.endTime}
+            customLabel={label}
           />
         </div>
       );
-    } else {
-      if (props.currentTime && props.market.disputeInfo.disputeWindow.endTime) {
-        const label = props.type === NOTIFICATION_TYPES[MARKET_IN_DISPUTE] ? DISPUTE_ENDS : REPORTING_ENDS;
-        counter = (
-          <div className={Styles.Countdown}>
-            <MarketProgress
-              reportingState={reportingState}
-              currentTime={props.currentTime}
-              endTimeFormatted={endTimeFormatted}
-              reportingWindowEndTime={props.market.disputeInfo.disputeWindow.endTime}
-              customLabel={label}
-            />
-          </div>
-        );
-      }
-    }
+    // }
   }
   return counter;
 };
 
-export const OpenOrdersResolvedMarketsTemplate = (props: OpenOrdersResolvedMarketsTemplateProps) => {
+export const OpenOrdersResolvedMarketsTemplate = (
+  props: OpenOrdersResolvedMarketsTemplateProps
+) => {
   const { description } = props.market;
 
   return (
@@ -194,7 +217,9 @@ export const UnsignedOrdersTemplate = (props: UnsignedOrdersTemplateProps) => {
   );
 };
 
-export const ReportEndingSoonTemplate = (props: ReportEndingSoonTemplateProps) => {
+export const ReportEndingSoonTemplate = (
+  props: ReportEndingSoonTemplateProps
+) => {
   const { description } = props.market;
 
   return (
@@ -212,20 +237,21 @@ export const DisputeTemplate = (props: DisputeTemplateProps) => {
     return null;
   }
 
-  const disputeHasEnded = reportingState !== MarketReportingState.CrowdsourcingDispute;
+  const disputeHasEnded =
+    reportingState !== MarketReportingState.CrowdsourcingDispute;
 
   return (
     <Template
-      message={`Dispute round ${
-        disputeInfo.disputeWindow.disputeRound
-      } for the market: "${description}" is ending soon.`}
+      message={`Dispute round ${disputeInfo.disputeWindow.disputeRound} for the market: "${description}" is ending soon.`}
       {...props}
       isDisabled={props.isDisabled || disputeHasEnded}
     />
   );
 };
 
-export const ClaimReportingFeesTemplate = (props: ClaimReportingFeesTemplateTemplateProps) => {
+export const ClaimReportingFeesTemplate = (
+  props: ClaimReportingFeesTemplateTemplateProps
+) => {
   const { claimReportingFees } = props;
   const unclaimedREP = claimReportingFees.totalUnclaimedRepFormatted.formatted;
   const unclaimedDai = claimReportingFees.totalUnclaimedDaiFormatted.formatted;
@@ -238,7 +264,9 @@ export const ClaimReportingFeesTemplate = (props: ClaimReportingFeesTemplateTemp
   );
 };
 
-export const ProceedsToClaimTemplate = (props: ProceedsToClaimTemplateProps) => {
+export const ProceedsToClaimTemplate = (
+  props: ProceedsToClaimTemplateProps
+) => {
   const { markets, totalProceeds } = props;
   const formattedProceeds = formatDai(totalProceeds).formatted;
 
@@ -246,15 +274,12 @@ export const ProceedsToClaimTemplate = (props: ProceedsToClaimTemplateProps) => 
   if (markets.length > 1) {
     messageText = `You have $${formattedProceeds} available to be claimed from multiple markets.`;
   }
-  return (
-    <Template
-      message={messageText}
-      {...props}
-    />
-  );
+  return <Template message={messageText} {...props} />;
 };
 
-export const MostLikelyInvalidMarketsTemplate = (props: MostLikelyInvalidMarketsTemplateProps) => {
+export const MostLikelyInvalidMarketsTemplate = (
+  props: MostLikelyInvalidMarketsTemplateProps
+) => {
   const { description } = props.market;
 
   return (

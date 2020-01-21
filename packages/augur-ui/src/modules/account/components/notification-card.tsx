@@ -11,37 +11,39 @@ export interface NotificationProps {
   isImportant: boolean;
   isNew: boolean;
   title: string;
+  noCounter: boolean;
   children: React.StatelessComponent | Array<React.StatelessComponent>;
 }
 
-export const NotificationCard = (props: NotificationProps) => (
+export const NotificationCard = ({ isNew, isImportant, title, children, noCounter }: NotificationProps) => (
   <div
     className={classNames(Styles.NotificationCard, {
-      [Styles.NewNotificationCard]: props.isNew,
+      [Styles.NewNotificationCard]: isNew,
+      [Styles.noCounter]: noCounter
     })}
   >
     <section>
       <div className={Styles.TitleBar}>
-        {props.isImportant && (
+        {isImportant && (
           <span className={Styles.Importance}>
             {ImmediateImportance}
           </span>
         )}
         <span
           className={classNames(Styles.Title, {
-            [Styles.TitleNew]: props.isNew,
+            [Styles.TitleNew]: isNew,
           })}
         >
-          {props.title}
+          {title}
         </span>
-        {props.isNew && <PillLabel label={constants.NEW} />}
+        {isNew && <PillLabel label={constants.NEW} />}
       </div>
       <div
         className={classNames(Styles.Message, {
-          [Styles.MessageNew]: props.isNew,
+          [Styles.MessageNew]: isNew,
         })}
       >
-        {props.children}
+        {children}
       </div>
     </section>
   </div>
