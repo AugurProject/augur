@@ -12,6 +12,7 @@ import { updateModal } from 'modules/modal/actions/update-modal';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import logError from 'utils/log-error';
 import networkConfig from 'config/network.json';
+import { Web3Provider } from 'ethers/providers';
 import { isEmpty } from 'utils/is-empty';
 import {
   MODAL_NETWORK_MISMATCH,
@@ -217,9 +218,13 @@ export function connectAugur(
     if (loggedInAccountType === ACCOUNT_TYPES.TORUS) {
       preloadAccount(ACCOUNT_TYPES.TORUS);
     }
-
+    let provider = null;
+    if (window.web3) {
+      provider = new Web3Provider(window.web3.currentProvider);
+    }
     connect(
       env,
+      provider,
       async (err: any, sdk: Augur<Provider>) => {
         if (err) {
           return callback(err, null);
