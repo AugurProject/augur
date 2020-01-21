@@ -19,6 +19,9 @@ export class SingleThreadConnector extends BaseConnector {
   set mesh(mesh: BrowserMesh) {
     this._zeroX.mesh = mesh;
   }
+  get api() {
+    return this._api;
+  }
 
   async connect(config: SDKConfiguration, account?: string): Promise<void> {
     this._api = await startServerFromClient(config, this.client);

@@ -47,15 +47,11 @@ export async function createClient(
   connector: BaseConnector,
   account?: string,
   signer?: EthersSigner,
-  provider?: JsonRpcProvider,
+  provider?: EthersProvider,
   enableFlexSearch = false,
   ): Promise<Augur> {
 
-  if (!config.gnosis || !config.gnosis.enabled) {
-    throw new Error('Augur UI requires Gnosis be enabled using config.gnosis');
-  }
-
-  const ethersProvider = new EthersProvider( provider || new JsonRpcProvider(config.ethereum.http), 10, 0, 40);
+  const ethersProvider = provider || new EthersProvider( new JsonRpcProvider(config.ethereum.http), 10, 0, 40);
   const addresses = getAddressesForNetwork(config.networkId);
   const contractDependencies = ContractDependenciesGnosis.create(
     ethersProvider,

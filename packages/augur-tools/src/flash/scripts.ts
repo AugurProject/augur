@@ -759,6 +759,22 @@ export function addScripts(flash: FlashSession) {
   });
 
   flash.addScript({
+    name: 'get-market-order-book',
+    options: [
+      {
+        name: 'marketId',
+        abbr: 'm',
+        description: 'Show orders that have been placed on the book of this marketId'
+      }
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const result = await this.user.augur.getMarketOrderBook({ marketId: args.marketId as string});
+      this.log(JSON.stringify(result));
+      return result;
+    }
+  });
+
+  flash.addScript({
     name: 'create-market-order',
     options: [
       {
@@ -1567,7 +1583,7 @@ export function addScripts(flash: FlashSession) {
       if (this.noProvider()) return null;
       const user = await this.ensureUser(this.network, true);
 
-      await (await this.db).sync(user.augur, 100000, 0);
+      //await (await this.db).sync(user.augur, 100000, 0);
       const markets: MarketList = await this.api.route('getMarkets', {
         universe: user.augur.contracts.universe.address,
       });

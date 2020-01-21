@@ -60,15 +60,17 @@ export class SDK {
       }
     };
 
+    const ethersProvider = new EthersProvider(provider);
+
     if (config.sdk && config.sdk.enabled) {
       const connector = new Connectors.WebsocketConnector();
-      this.sdk = await createClient(config, connector, account, signer, provider, enableFlexSearch);
+      this.sdk = await createClient(config, connector, account, signer, ethersProvider, enableFlexSearch);
       await connector.connect(config, account)
     } else {
       // I hate these next 3 lines that connects the SDK and Connector in this way
       // these shouldn't need to be so coupled.
       const connector = new Connectors.SingleThreadConnector();
-      this.sdk = await createClient(config, connector, account, signer, provider, enableFlexSearch);
+      this.sdk = await createClient(config, connector, account, signer, ethersProvider, enableFlexSearch);
       await connector.connect(config);
 
       // Attach the mesh later so that we are doing it fully outside of the backend code
