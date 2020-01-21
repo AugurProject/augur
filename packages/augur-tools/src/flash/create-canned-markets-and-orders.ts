@@ -7,9 +7,13 @@ import { numTicksToTickSize, convertDisplayAmountToOnChainAmount, convertDisplay
 import { ContractAPI } from '../libs/contract-api';
 import { cannedMarkets, CannedMarket } from './data/canned-markets';
 
-type Market = GenericAugurInterfaces.Market<BigNumber>;
+export type Market = GenericAugurInterfaces.Market<BigNumber>;
+export interface CreatedCannedMarket {
+  market: Market;
+  canned: CannedMarket;
+}
 
-async function createCannedMarket(person: ContractAPI, can: CannedMarket): Promise<Market> {
+async function createCannedMarket(person: ContractAPI, can: CannedMarket): Promise<CreatedCannedMarket> {
   console.log('CREATING CANNED MARKET: ', can.extraInfo.description);
 
   const { endTime, affiliateFeeDivisor } = can;
@@ -68,7 +72,7 @@ async function createCannedMarket(person: ContractAPI, can: CannedMarket): Promi
   }
 
   console.log(`MARKET CREATED: ${market.address}`);
-  return market;
+  return { market, canned: can };
 }
 
 function generateRandom32ByteHex() {
@@ -129,7 +133,7 @@ async function createOrderBook(person: ContractAPI, market: Market, can: CannedM
   }
 }
 
-export async function createCannedMarkets(person: ContractAPI): Promise<Market[]> {
+export async function createCannedMarkets(person: ContractAPI): Promise<CreatedCannedMarket[]> {
   const markets = [];
   for (const can of cannedMarkets) {
     const market = await createCannedMarket(person, can);
@@ -138,12 +142,12 @@ export async function createCannedMarkets(person: ContractAPI): Promise<Market[]
   return markets;
 }
 
-export async function createCannedMarketsAndOnChainOrders(person: ContractAPI): Promise<Market[]> {
+export async function createCannedMarketsAndOnChainOrders(person: ContractAPI): Promise<CreatedCannedMarket[]> {
   const markets = [];
   for (const can of cannedMarkets) {
-    const market = await createCannedMarket(person, can);
-    markets.push(market);
-    await createOrderBook(person, market, can);
+    const createdMarket = await createCannedMarket(person, can);
+    markets.push(createdMarket.market);
+    await createOrderBook(person, createdMarket.market, can);
   }
   return markets;
 }
