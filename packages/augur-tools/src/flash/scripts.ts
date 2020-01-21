@@ -901,6 +901,8 @@ export function addScripts(flash: FlashSession) {
         );
       }
       this.log(`place order ${result}`);
+      // something hangs need to force exit.
+      process.exit;
     },
   });
 
