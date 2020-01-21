@@ -43,14 +43,6 @@ export default class AccountView extends React.Component<
 
   toggle = (extend: string, hide: string) => {
     this.setState({ [extend]: !this.state[extend], [hide]: false });
-    // if (!this.state[extend] && this.state[hide]) {
-    //   this.setState({ [extend]: false, [hide]: false });
-    // } else {
-    //   this.setState({
-    //     [extend]: !this.state[extend],
-    //     [hide]: false,
-    //   });
-    // }
   };
 
   render() {

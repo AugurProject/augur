@@ -10,9 +10,11 @@
   }
 
   > div:first-of-type {
-    flex: 1;
     min-height: 800px;
     height: calc(~'100vh - @{multi-top-bar-height}');
+    display: grid;
+    grid-gap: @size-8;
+    grid-template-columns: repeat(3, 33%);
   }
 
   > div {
@@ -22,7 +24,6 @@
       display: flex;
       flex: 1;
       flex-direction: column;
-      margin: @size-4;
       height: inherit;
 
       > div {
@@ -35,8 +36,6 @@
     }
 
     > div:nth-of-type(2) {
-      // max-width: 470px;
-
       > div {
         max-height: unset;
 
