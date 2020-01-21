@@ -4,7 +4,7 @@ import {
   encodeNumberAsJSNumber,
   unfix,
 } from '@augurproject/utils';
-import { ZERO, TEN, ETHER } from 'modules/common/constants';
+import { ZERO, TEN, ETHER, GWEI_CONVERSION } from 'modules/common/constants';
 import addCommas from 'utils/add-commas-to-number';
 import { FormattedNumber, FormattedNumberOptions } from 'modules/types';
 
@@ -363,6 +363,28 @@ export function formatGasCost(
   opts: FormattedNumberOptions
 ): FormattedNumber {
   return formatNumber(num, {
+    decimals: 0,
+    decimalsRounded: 0,
+    denomination: v => `${v} WEI`,
+    positiveSign: false,
+    zeroStyled: false,
+    blankZero: false,
+    bigUnitPostfix: false,
+    ...opts,
+  });
+}
+
+export function formatGasCostGwei(
+  num: NumStrBigNumber,
+  opts: FormattedNumberOptions
+): FormattedNumber {
+  const inGwei = (gasPrice) => {
+    return createBigNumber(gasPrice).dividedBy(
+      createBigNumber(GWEI_CONVERSION)
+    );
+  }
+
+  return formatNumber(inGwei(num), {
     decimals: 0,
     decimalsRounded: 0,
     denomination: v => `${v} GWEI`,
