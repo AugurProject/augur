@@ -74,6 +74,7 @@ export interface ContractAddresses {
   Affiliates?: string;
   AffiliateValidator?: string;
   ProfitLoss?: string;
+  WarpSync?: string;
 
   // 0x
   //   The 0x contract names must be what 0x mesh expects.

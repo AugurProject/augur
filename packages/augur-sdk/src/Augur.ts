@@ -16,6 +16,7 @@ import { CreateYesNoMarketParams, CreateCategoricalMarketParams, CreateScalarMar
 import { OnChainTrade } from './api/OnChainTrade';
 import { PlaceTradeDisplayParams, SimulateTradeData, Trade } from './api/Trade';
 import { ZeroX } from './api/ZeroX';
+import { WarpSync } from './api/WarpSync';
 import { BaseConnector, EmptyConnector, SingleThreadConnector } from './connector';
 import { isSubscriptionEventName, SubscriptionEventName, TXEventName } from './constants';
 import { Provider } from './ethereum/Provider';
@@ -47,6 +48,7 @@ export class Augur<TProvider extends Provider = Provider> {
   readonly trade: Trade;
   readonly market: Market;
   readonly gnosis: Gnosis;
+  readonly warpSync: WarpSync;
 
   readonly universe: Universe;
   syncableFlexSearch: SyncableFlexSearch;
@@ -92,6 +94,7 @@ export class Augur<TProvider extends Provider = Provider> {
       this.addresses.Exchange,
       );
     this.gnosis = new Gnosis(this.provider, this, this.dependencies);
+    this.warpSync = new WarpSync(this);
     this.hotLoading = new HotLoading(this);
     this.onChainTrade = new OnChainTrade(this);
     this.trade = new Trade(this);
