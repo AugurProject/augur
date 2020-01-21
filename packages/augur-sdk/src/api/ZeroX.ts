@@ -462,6 +462,7 @@ export class ZeroX {
   ): Promise<MatchingOrders> {
     const orderType = params.direction === 0 ? '1' : '0';
     const outcome = params.outcome.toString();
+    console.log('getZeroXOrders', JSON.stringify(params));
     const zeroXOrders = await this.augur.getZeroXOrders({
       marketId: params.market,
       outcome: params.outcome,
