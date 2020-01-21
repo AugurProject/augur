@@ -849,6 +849,7 @@ export function addScripts(flash: FlashSession) {
       }
       const orderType = String(args.orderType).toLowerCase();
       const type = orderType === 'bid' || orderType === 'buy' ? 0 : 1;
+
       const onChainShares = convertDisplayAmountToOnChainAmount(
         new BigNumber(String(args.amount)),
         new BigNumber(100)
@@ -870,12 +871,13 @@ export function addScripts(flash: FlashSession) {
           new BigNumber(0),
           new BigNumber('0.01')
         );
+        console.log('onChainPrice', onChainPrice.toString());
         const price = convertOnChainPriceToDisplayPrice(
           onChainPrice,
           new BigNumber(0),
           new BigNumber('0.01')
         );
-        console.log('order', String(args.amount), '@', price);
+        console.log('order', String(args.amount), '@', price.toString());
         const params = {
           direction: type as 0 | 1,
           market : String(args.marketId),
@@ -893,7 +895,7 @@ export function addScripts(flash: FlashSession) {
           expirationTime,
         };
         try {
-          fillOrder ? await user.augur.placeTrade(params) : await user.placeZeroXOrder(params)
+          result = fillOrder ? await user.augur.placeTrade(params) : await user.placeZeroXOrder(params)
         } catch(e) {
           this.log(e);
         }

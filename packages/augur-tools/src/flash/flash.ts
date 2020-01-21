@@ -196,6 +196,10 @@ export class FlashSession {
         SubscriptionEventName.NewBlock,
         this.sdkNewBlock
       );
+
+      if (config.zeroX && config.zeroX.rpc.enabled) {
+        this.user.augur.events.emit('ZeroX:Ready');
+      }
     }
 
     return this.user;
@@ -250,7 +254,7 @@ export class FlashSession {
     return (await provider.getNetwork()).chainId.toString();
   }
 
-  async makeDB(): Promise<DB> {
+  async makeDB() {
     const listener = ({
       listenForBlockRemoved: () => {},
       listenForBlockAdded: () => {},
@@ -258,7 +262,7 @@ export class FlashSession {
       startBlockStreamListener: () => {},
     } as unknown) as BlockAndLogStreamerListenerInterface;
 
-    return DB.createAndInitializeDB(
+    return await DB.createAndInitializeDB(
       Number(this.user.augur.networkId),
       0,
       0,
