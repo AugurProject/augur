@@ -35,7 +35,7 @@ import MarketTitle from 'modules/market/containers/market-title';
 import PreviewMarketTitle from 'modules/market/components/common/PreviewMarketTitle';
 import { MARKET_PAGE } from 'services/analytics/helpers';
 
-const OVERFLOW_DETAILS_LENGTH = 25; // in px, overflow limit to trigger MORE details
+const OVERFLOW_DETAILS_LENGTH = 48; // in px, overflow limit to trigger MORE details
 
 interface MarketHeaderProps {
   description: string;
@@ -234,6 +234,7 @@ export default class MarketHeader extends Component<
     const bigTitle =
       !!this.refTitle && this.refTitle.firstChild.scrollHeight > 64;
     const expandedDetails = detailsTooLong && showReadMore;
+    console.log(detailsTooLong, showReadMore);
     const containerStyle = notExpandedHeight
       ? {
           minHeight: `${notExpandedHeight}px`,
