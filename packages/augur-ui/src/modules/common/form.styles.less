@@ -599,12 +599,21 @@
   max-width: 210px;
   min-height: 154px;
   min-width: 210px;
+  border: 1px solid transparent;
+  box-shadow: 0 0 0 1px @color-secondary-action-outline;
+
+  &.hover,
+  &.active {
+    border: @size-4 solid transparent;
+    box-shadow: 0 0 0 1px @color-primary-action;
+  }
 
   @media @breakpoint-mobile-new {
     min-height: 75px;
     max-width: 100%;
     grid-template-columns: 65px auto;
     grid-template-rows: @size-20 @size-20 auto;
+    border: @size-4 solid transparent;
   }
 
   > div {
