@@ -26,36 +26,38 @@ export interface BoxHeaderProps {
 
 const BoxHeader = (props: BoxHeaderProps) => (
   <>
-    <div className={Styles.ShowOnMobile}>
-      <div>
-        <div className={Styles.RightContent}>{props.rightContent}</div>
-        {props.bottomRightBarContent && (
-          <div className={Styles.BottomRightContent}>
-            {props.bottomRightBarContent}
-          </div>
-        )}
+    {!props.normalOnMobile && 
+      <div className={Styles.ShowOnMobile}>
+        <div>
+          <div className={Styles.RightContent}>{props.rightContent}</div>
+          {props.bottomRightBarContent && (
+            <div className={Styles.BottomRightContent}>
+              {props.bottomRightBarContent}
+            </div>
+          )}
+        </div>
+        <div
+          className={classNames(Styles.Middle, {
+            [Styles.isSwitched]: props.switchHeaders,
+          })}
+        >
+          {props.bottomBarContent && (
+            <div
+              className={classNames(Styles.BottomContent, {
+                [Styles.noBackground]: props.noBackgroundBottom,
+              })}
+            >
+              {props.bottomBarContent}
+            </div>
+          )}
+          {props.mostRightContent && (
+            <div className={Styles.MostRightContent}>
+              {props.mostRightContent}
+            </div>
+          )}
+        </div>
       </div>
-      <div
-        className={classNames(Styles.Middle, {
-          [Styles.isSwitched]: props.switchHeaders,
-        })}
-      >
-        {props.bottomBarContent && (
-          <div
-            className={classNames(Styles.BottomContent, {
-              [Styles.noBackground]: props.noBackgroundBottom,
-            })}
-          >
-            {props.bottomBarContent}
-          </div>
-        )}
-        {props.mostRightContent && (
-          <div className={Styles.MostRightContent}>
-            {props.mostRightContent}
-          </div>
-        )}
-      </div>
-    </div>
+    }
     <div
       className={classNames(Styles.BoxHeader, {
         [Styles.HideOnMobile]: !props.normalOnMobile,

@@ -850,7 +850,7 @@ export default class Form extends React.Component<FormProps, FormState> {
         {!this.state.showPreview && (
           <>
             <LocationDisplay currentStep={currentStep} pages={contentPages} />
-            <LargeHeader text={largeHeader} />
+            {largeHeader && <LargeHeader text={largeHeader} />}
             {previewButton && (
               <PrimaryButton text="Preview your market" action={this.preview} />
             )}
