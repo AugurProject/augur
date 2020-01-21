@@ -202,16 +202,18 @@ export const Subheaders = (props: SubheadersProps) => (
 );
 
 export interface ReportingModalButtonProps {
+  highlightedText?: string;
   text: string;
   action: ButtonActionType;
 }
 
-export const ReportingModalButton = (props: ReportingModalButtonProps) => (
+export const ReportingModalButton = ({highlightedText, text, action}: ReportingModalButtonProps) => (
   <button
     className={Styles.ReportingModalButton}
-    onClick={e => props.action(e)}
+    onClick={e => action(e)}
   >
-    {props.text}
+    {highlightedText && <span>{highlightedText}</span>}
+    {text}
   </button>
 );
 

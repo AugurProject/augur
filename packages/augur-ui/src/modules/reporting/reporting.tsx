@@ -38,7 +38,8 @@ export default class Reporting extends React.Component<ReportingProps> {
                 <ModuleTabs selected={0} fillWidth noBorder>
                   <ModulePane label="designated reporting">
                     <ReportingModalButton
-                      text='Designated Reporting Quick Guide'
+                      highlightedText='Need Help?'
+                      text='View our Disputing Quick Guide'
                       action={openReportingModal}
                     />
                     <UserRepDisplay />
@@ -61,7 +62,7 @@ export default class Reporting extends React.Component<ReportingProps> {
                   </ModulePane>
                   <ModulePane label='Open reporting'>
                     <ReportingModalButton
-                      text='Designated Reporting Quick Guide'
+                      text='Need Help? View our Disputing Quick Guide'
                       action={openReportingModal}
                     />
                     <ReportingList
@@ -95,7 +96,7 @@ export default class Reporting extends React.Component<ReportingProps> {
                   </div>
                   <div>
                     <ReportingModalButton
-                      text='Designated Reporting Quick Guide'
+                      text='Need Help? View our Disputing Quick Guide'
                       action={this.props.openReportingModal}
                     />
                     <UserRepDisplay />
@@ -136,7 +137,7 @@ export default class Reporting extends React.Component<ReportingProps> {
                   </div>
                   <div>
                     <ReportingModalButton
-                      text='Designated Reporting Quick Guide'
+                      text='Need Help? View our Disputing Quick Guide'
                       action={this.props.openReportingModal}
                     />
                     <UserRepDisplay />
