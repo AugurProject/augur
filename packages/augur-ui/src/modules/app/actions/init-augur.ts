@@ -46,6 +46,7 @@ import {
 } from 'modules/auth/actions/auth-status';
 import { logout } from 'modules/auth/actions/logout';
 import { updateCanHotload } from 'modules/app/actions/update-connection';
+import { Augur, Provider } from '@augurproject/sdk';
 
 const ACCOUNTS_POLL_INTERVAL_DURATION = 10000;
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
@@ -220,14 +221,16 @@ export function connectAugur(
     if (window.web3) {
       provider = new Web3Provider(window.web3.currentProvider);
     }
-    const sdk = await augurSdk.makeClient(
-      provider,
-      env,
-    ).catch((err) => {
-      if (err) {
-        return callback(err, null);
-      }
-    });
+    let sdk: Augur<Provider> = null;
+    try {
+      sdk = await augurSdk.makeClient(
+        provider,
+        env,
+      );
+    } catch (e) {
+      console.error(e);
+      return callback('SDK could not be created', null);
+    }
     const windowApp = windowRef as WindowApp;
     let universeId = env.universe || sdk.contracts.universe.address;
     if (
