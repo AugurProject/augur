@@ -42,18 +42,24 @@ export default class AccountView extends React.Component<
   };
 
   toggle = (extend: string, hide: string) => {
-    if (!this.state[extend] && this.state[hide]) {
-      this.setState({ [extend]: false, [hide]: false });
-    } else {
-      this.setState({
-        [extend]: !this.state[extend],
-        [hide]: false,
-      });
-    }
+    this.setState({ [extend]: !this.state[extend], [hide]: false });
+    // if (!this.state[extend] && this.state[hide]) {
+    //   this.setState({ [extend]: false, [hide]: false });
+    // } else {
+    //   this.setState({
+    //     [extend]: !this.state[extend],
+    //     [hide]: false,
+    //   });
+    // }
   };
 
   render() {
-    const s = this.state;
+    const {
+      extendActiveMarkets,
+      extendWatchlist,
+      extendNotifications,
+    } = this.state;
+    const { isLogged, newNotifications } = this.props;
     return (
       <>
         <Media query={SMALL_MOBILE}>
@@ -63,10 +69,7 @@ export default class AccountView extends React.Component<
                 <ModulePane label={YOUR_OVERVIEW_TITLE}>
                   <Overview />
                 </ModulePane>
-                <ModulePane
-                  label="Notifications"
-                  isNew={this.props.newNotifications}
-                >
+                <ModulePane label="Notifications" isNew={newNotifications}>
                   <Notifications />
                 </ModulePane>
                 <ModulePane label="My Active Markets">
@@ -85,9 +88,9 @@ export default class AccountView extends React.Component<
             ) : (
               <div
                 className={classNames(Styles.AccountView, {
-                  [Styles.HideNotifications]: s.extendActiveMarkets,
-                  [Styles.HideTransactions]: s.extendWatchlist,
-                  [Styles.HideActiveMarkets]: s.extendNotifications,
+                  [Styles.HideNotifications]: extendActiveMarkets,
+                  [Styles.HideTransactions]: extendWatchlist,
+                  [Styles.HideActiveMarkets]: extendNotifications,
                 })}
               >
                 <div>
@@ -125,7 +128,7 @@ export default class AccountView extends React.Component<
                         this.toggle('extendWatchlist', 'extendTransactions')
                       }
                     />
-                    { this.props.isLogged && <Transactions /> }
+                    {isLogged && <Transactions />}
                   </div>
                 </div>
                 <TermsAndConditions />
