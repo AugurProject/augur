@@ -272,6 +272,25 @@ div.ReportingSubheaders {
   position: relative;
   text-transform: uppercase;
 
+  @media @breakpoint-tablet {
+    max-width: 100%;
+    width: 100%;
+
+    &.HideForMobile {
+      > div:nth-of-type(3) {
+        margin: 0;
+      }
+
+      > div:nth-of-type(4) > span:first-of-type {
+        margin-bottom: @size-3;
+      }
+
+      > div:last-of-type {
+        margin-bottom: @size-16;
+      }
+    }
+  }
+
   @media @breakpoint-mobile {
     width: unset;
   }
@@ -380,6 +399,7 @@ div.ReportingSubheaders {
 
       > div:nth-of-type(3) {
         align-self: center;
+        width: 100%;
       }
 
       > div:nth-of-type(4) {
@@ -390,7 +410,7 @@ div.ReportingSubheaders {
 }
 
 .AllTimeProfitLoss {
-  .mono-10;
+  .mono-10-medium;
 
   align-self: flex-end;
   display: flex;
@@ -402,7 +422,7 @@ div.ReportingSubheaders {
     padding: @size-4 0;
 
     > span {
-      .mono-11;
+      .mono-14-bold;
     }
   }
 }
@@ -629,6 +649,21 @@ div.ReportingSubheaders {
 
     > div:last-of-type {
       align-self: flex-end;
+    }
+  }
+
+  @media @breakpoint-max-tablet {
+    grid-template-columns: auto;
+    grid-template-rows: auto auto auto;
+
+    > div {
+      grid-column: 1;
+      grid-row: 4;
+      margin: @size-12 0 0;
+
+      > button {
+        width: 100%;
+      }
     }
   }
 }
