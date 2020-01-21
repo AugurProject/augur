@@ -19,7 +19,7 @@
 pragma solidity 0.5.15;
 pragma experimental ABIEncoderV2;
 
-import "ROOT/0x/utils/contracts/src/LibRichErrors.sol";
+
 import "ROOT/0x/utils/contracts/src/LibSafeMath.sol";
 import "ROOT/0x/staking/contracts/src/libs/LibCobbDouglas.sol";
 import "ROOT/0x/staking/contracts/src/libs/LibStakingRichErrors.sol";

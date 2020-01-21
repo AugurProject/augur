@@ -11,6 +11,8 @@ export class ERC721Proxy extends c.ERC721Proxy<BigNumber> {
 }
 export class MultiAssetProxy extends c.MultiAssetProxy<BigNumber> {
 }
+export class ChaiBridge extends c.ChaiBridge<BigNumber> {
+}
 export class Coordinator extends c.Coordinator<BigNumber> {
 }
 export class CoordinatorRegistry extends c.CoordinatorRegistry<BigNumber> {

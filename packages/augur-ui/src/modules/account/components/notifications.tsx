@@ -33,6 +33,8 @@ import {
   NEW,
 } from "modules/common/constants";
 
+import Styles from "modules/account/components/notification.styles.less";
+
 export interface NotificationsProps extends RouteComponentProps {
   notifications: Notification[];
   updateReadNotifications: Function;
@@ -51,6 +53,12 @@ export interface NotificationsProps extends RouteComponentProps {
 export interface NotificationsState {
   disabledNotifications: any;
 }
+
+const notificationsWithCountdown = [
+  NOTIFICATION_TYPES.marketsInDispute,
+  NOTIFICATION_TYPES.reportOnMarkets,
+  NOTIFICATION_TYPES.proceedsToClaim,
+];
 
 class Notifications extends React.Component<
   NotificationsProps,
@@ -244,10 +252,11 @@ class Notifications extends React.Component<
       const isDisabled: boolean =
         this.state.disabledNotifications[id] &&
         this.state.disabledNotifications[id] === true;
-
+      const hasCounter = market && notificationsWithCountdown.includes(type);
       return (
         <NotificationCard
           key={id}
+          noCounter={!hasCounter}
           {...notificationCardProps}
         >
           {type === NOTIFICATION_TYPES.resolvedMarketsOpenOrders ? (
@@ -297,7 +306,7 @@ class Notifications extends React.Component<
     });
 
     const labelContent = (
-      <div>
+      <div className={Styles.NewTopLabel}>
         {newNotificationCount > 0 && (
           <PillLabel label={`${newNotificationCount} ${NEW}`} hideOnMobile />
         )}
@@ -309,6 +318,7 @@ class Notifications extends React.Component<
         title={NOTIFICATIONS_TITLE}
         rightContent={labelContent}
         toggle={toggle}
+        customClass={notificationCount !== 0 && Styles.DarkBackgroundMobile}
         content={
           notificationCount === 0 ? (
             <EmptyDisplay

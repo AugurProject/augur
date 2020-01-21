@@ -24,7 +24,6 @@ import "ROOT/0x/exchange-libs/contracts/src/LibOrder.sol";
 import "ROOT/0x/exchange-libs/contracts/src/LibZeroExTransaction.sol";
 import "ROOT/0x/utils/contracts/src/LibAddressArray.sol";
 import "ROOT/0x/utils/contracts/src/LibBytes.sol";
-import "ROOT/0x/utils/contracts/src/LibRichErrors.sol";
 import "ROOT/0x/exchange/contracts/src/interfaces/IExchange.sol";
 import "ROOT/0x/coordinator/contracts/src/libs/LibCoordinatorApproval.sol";
 import "ROOT/0x/coordinator/contracts/src/libs/LibCoordinatorRichErrors.sol";
@@ -146,7 +145,6 @@ contract MixinCoordinatorApprovalVerifier is
         // Verify that Ethereum tx signer is the same as the approved txOrigin
         if (tx.origin != txOrigin) {
             revert();
-            //LibRichErrors.rrevert(LibCoordinatorRichErrors.InvalidOriginError(txOrigin));
         }
 
         // Hash 0x transaction
@@ -187,12 +185,6 @@ contract MixinCoordinatorApprovalVerifier is
             bool isOrderApproved = approvalSignerAddresses.contains(approverAddress);
             if (!isOrderApproved) {
                 revert();
-                /*
-                LibRichErrors.rrevert(LibCoordinatorRichErrors.InvalidApprovalSignatureError(
-                    transactionHash,
-                    approverAddress
-                ));
-                */
             }
         }
     }
