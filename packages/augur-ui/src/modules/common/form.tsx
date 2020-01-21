@@ -114,6 +114,7 @@ interface FormDropdownProps {
   id?: string;
   onChange: any;
   className?: string;
+  sort?: boolean;
   defaultValue?: string | number;
   options: NameValuePair[];
   staticLabel?: string;
