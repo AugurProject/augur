@@ -71,7 +71,6 @@ export class Trade implements TradeAPI {
   }
 
   private async placeOnChainTrade(params: PlaceTradeParams): Promise<void> {
-    console.log('this.useZeroX()', this.useZeroX());
     if (this.useZeroX()) {
       return this.zeroX().placeOnChainTrade({
         ...params,
