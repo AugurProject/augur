@@ -1,10 +1,11 @@
 import logError from 'utils/log-error';
 import { augurSdk } from 'services/augursdk';
-import { JsonRpcProvider } from 'ethers/providers';
+import { JsonRpcProvider, Web3Provider } from 'ethers/providers';
 import { EnvObject, NodeStyleCallback } from 'modules/types';
 
 export const connect = async (
   env: EnvObject,
+  provider: Web3Provider,
   callback: NodeStyleCallback = logError
 ) => {
   const signer = undefined;
@@ -12,7 +13,7 @@ export const connect = async (
   const account = null;
   const enableFlexSearch = true;
   const sdk = await augurSdk.makeClient(
-    new JsonRpcProvider(env['ethereum-node'].http),
+    provider ? provider : new JsonRpcProvider(env['ethereum-node'].http),
     signer,
     env,
     account,
