@@ -20,7 +20,6 @@ import Styles from 'modules/account/components/account-view.styles.less';
 import classNames from 'classnames';
 export interface AccountViewProps {
   newNotifications?: boolean;
-  isLogged: boolean;
 }
 
 interface AccountViewState {
@@ -51,7 +50,7 @@ export default class AccountView extends React.Component<
       extendWatchlist,
       extendNotifications,
     } = this.state;
-    const { isLogged, newNotifications } = this.props;
+    const { newNotifications } = this.props;
     return (
       <>
         <Media query={SMALL_MOBILE}>
@@ -120,7 +119,7 @@ export default class AccountView extends React.Component<
                         this.toggle('extendWatchlist', 'extendTransactions')
                       }
                     />
-                    {isLogged && <Transactions />}
+                    <Transactions />
                   </div>
                 </div>
                 <TermsAndConditions />
