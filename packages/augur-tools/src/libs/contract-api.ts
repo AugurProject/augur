@@ -23,7 +23,8 @@ import {
   EmptyConnector,
   HotLoadMarketInfo,
   DisputeWindow,
-  ZeroX
+  ZeroX,
+  WarpSyncData,
 } from '@augurproject/sdk';
 import { BigNumber } from 'bignumber.js';
 import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis/build';
@@ -748,5 +749,29 @@ export class ContractAPI {
     } else {
       throw Error(`Received erroneous response when deploying safe via relay: "${status}"`);
     }
+  }
+
+  async initializeUniverseForWarpSync(): Promise<void> {
+    return await this.augur.warpSync.initializeUniverse(this.augur.contracts.universe.address);
+  }
+
+  async getWarpSyncMarket(): Promise<ContractInterfaces.Market> {
+    return await this.augur.warpSync.getWarpSyncMarket(this.augur.contracts.universe.address);
+  }
+
+  async getLastWarpSyncData(): Promise<WarpSyncData> {
+    return await this.augur.warpSync.getLastWarpSyncData(this.augur.contracts.universe.address);
+  }
+
+  async getWarpSyncHashFromPayout(payout: BigNumber[]): Promise<string> {
+    return await this.augur.warpSync.getWarpSyncHashFromPayout(payout);
+  }
+
+  async getPayoutFromWarpSyncHash(hash: string): Promise<BigNumber[]> {
+    return await this.augur.warpSync.getPayoutFromWarpSyncHash(hash);
+  }
+
+  async getWarpSyncHashFromMarket(market: ContractInterfaces.Market): Promise<string> {
+    return await this.augur.warpSync.getWarpSyncHashFromMarket(market);
   }
 }
