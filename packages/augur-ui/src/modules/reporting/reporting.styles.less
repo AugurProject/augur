@@ -22,12 +22,8 @@
 			padding: 0 @size-10;
 
 			> div:first-of-type {
-				margin-top: @size-32;
+				margin: @size-32 0 @size-28;
 				max-width: unset;
-			}
-
-			> div:nth-of-type(2) {
-				margin-top: @size-28;
 			}
 
 			> button {
@@ -40,11 +36,22 @@
 		}
 	}
 
-  @media @breakpoint-max-desktop-min {
-    padding: 0;
+  @media @breakpoint-max-tablet {
+    padding: @size-16 @size-8;
 
+    > div > div:last-of-type > div:first-of-type {
+        margin: @size-16 0;
+    }
+  }
+
+  @media @breakpoint-tablet {
     > div:first-of-type {
-      margin-right: 0;
+      flex: 1;
+      margin-right: @size-8;
+    }
+
+    > div:last-of-type {
+      flex: 1;
     }
   }
 }
