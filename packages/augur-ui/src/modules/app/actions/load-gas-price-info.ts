@@ -46,11 +46,6 @@ async function getGasPriceRanges(networkId: string, callback: DataCallback) {
       average: ++formatGasCostGwei(relayerGasStation.standard, {}).value,
       fast: ++formatGasCostGwei(relayerGasStation.fast, {}).value,
     };
-
-    console.log(
-      'getGasPriceRanges::relayerGasStationResults::',
-      relayerGasStationResults
-    );
     callback(relayerGasStationResults);
   } catch (error) {
     console.error("Couldn't get gas: Using fallback", error);
