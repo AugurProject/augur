@@ -234,7 +234,6 @@ export default class MarketHeader extends Component<
     const bigTitle =
       !!this.refTitle && this.refTitle.firstChild.scrollHeight > 64;
     const expandedDetails = detailsTooLong && showReadMore;
-    console.log(detailsTooLong, showReadMore);
     const containerStyle = notExpandedHeight
       ? {
           minHeight: `${notExpandedHeight}px`,
