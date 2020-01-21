@@ -10,14 +10,18 @@
     > div:last-of-type {
     	> div:last-of-type {
 			margin-top: @size-40;
-	    	display: flex;
+            display: flex;
+            
+            @media @breakpoint-mobile-new {
+                margin-top: @size-18;
+            }
 
 	    	> div {
 	    		display: flex;
 			    flex: 1;
 			    justify-content: flex-end;
 
-			    > button:first-of-type {
+			    > button:nth-last-of-type(2) {
 			    	margin-right: @size-24
 			    }
 	    	}
@@ -69,7 +73,7 @@
     }
 
     @media @breakpoint-mobile-new {
-        padding: @size-24 @size-8 46px;
+        padding: @size-16 @size-8 46px;
         align-items: flex-start;
 
         > span {
