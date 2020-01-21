@@ -132,6 +132,9 @@ if (require.main === module) {
     flash.getNetworkId(flash.provider).then((networkId) => {
       flash.contractAddresses = Addresses[networkId];
       return flash.call(args.command, args);
-    }).catch(console.error);
+    }).catch(console.error)
+    .finally(() => {
+      process.exit;
+    });
   }
 }
