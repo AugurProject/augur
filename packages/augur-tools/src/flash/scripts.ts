@@ -833,7 +833,7 @@ export function addScripts(flash: FlashSession) {
       }
       const orderType = String(args.orderType).toLowerCase();
       const type = orderType === 'bid' || orderType === 'buy' ? 0 : 1;
-      console.log('String(args.amount)', String(args.amount));
+
       const onChainShares = convertDisplayAmountToOnChainAmount(
         new BigNumber(String(args.amount)),
         new BigNumber(100)

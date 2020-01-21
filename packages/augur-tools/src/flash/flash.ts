@@ -165,13 +165,15 @@ export class FlashSession {
 
     if (wireUpSdk) {
       if (!network) throw Error('Cannot wire up sdk if network is not set.');
+      (connector as Connectors.DirectConnector).initialize(this.user.augur, await this.db);
+      this.db = this.makeDB();
       await connector.connect(config, this.getAccount().publicKey);
       await this.user.augur.on(
         SubscriptionEventName.NewBlock,
         this.sdkNewBlock
       );
+      await (await this.db).sync(this.user.augur, 100000, 0);
       this.user.augur.events.emit('ZeroX:Ready');
-      this.db = this.makeDB();
       this.api = new API(this.user.augur, this.db);
     }
 
@@ -231,7 +233,7 @@ export class FlashSession {
     return (await provider.getNetwork()).chainId.toString();
   }
 
-  async makeDB(): Promise<DB> {
+  async makeDB() {
     const listener = ({
       listenForBlockRemoved: () => {},
       listenForBlockAdded: () => {},
@@ -239,7 +241,7 @@ export class FlashSession {
       startBlockStreamListener: () => {},
     } as unknown) as BlockAndLogStreamerListenerInterface;
 
-    return DB.createAndInitializeDB(
+    return await DB.createAndInitializeDB(
       Number(this.user.augur.networkId),
       0,
       0,
