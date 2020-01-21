@@ -68,7 +68,7 @@
     }
   }
 
-  @media @breakpoint-mobile-mid {
+  @media @breakpoint-mobile-new {
     > li {
       > div:nth-of-type(2) {
         margin-left: 0;
@@ -181,12 +181,13 @@
     }
   }
 
-  @media @breakpoint-mobile-mid {
+  @media @breakpoint-mobile-new {
     border: 0;
     padding: 0;
     overflow-x: auto;
     max-width: 100%;
     justify-content: flex-start;
+    margin-bottom: @size-18;
 
     > span:first-of-type {
       padding-left: @size-8;
@@ -365,7 +366,7 @@
     }
   }
 
-  @media @breakpoint-mobile-mid {
+  @media @breakpoint-mobile-new {
     > div {
       grid-column: 1 / span 3;
       margin-left: @size-16;
@@ -398,7 +399,7 @@
   grid-template-columns: 52px 1fr;
   margin-right: @size-10;
 
-  @media @breakpoint-mobile-mid {
+  @media @breakpoint-mobile-new {
     > svg {
       grid-row: 1 / span 4;
     }
@@ -414,7 +415,7 @@
     grid-row: 2;
     margin-top: @size-20;
 
-    @media @breakpoint-mobile-mid {
+    @media @breakpoint-mobile-new {
       .text-14;
     }
 
@@ -434,7 +435,7 @@
     padding: 0;
     line-height: 160%;
 
-    @media @breakpoint-mobile-mid {
+    @media @breakpoint-mobile-new {
       .text-12;
 
       max-height: 50px;
@@ -458,7 +459,7 @@
       margin-top: @size-16;
     }
 
-    @media @breakpoint-mobile-mid {
+    @media @breakpoint-mobile-new {
       width: unset;
     }
   }
@@ -599,32 +600,31 @@
   min-height: 154px;
   min-width: 210px;
 
-  @media @breakpoint-mobile-mid {
+  @media @breakpoint-mobile-new {
     min-height: 75px;
     max-width: 100%;
     grid-template-columns: 65px auto;
     grid-template-rows: @size-20 @size-20 auto;
-    padding-bottom: @size-16;
   }
 
   > div {
     border-radius: @border-radius-default;
     display: flex;
     bottom: 5%;
-    left: 91%;
+    left: calc(~'100% - @{size-18}');
     align-items: center;
     justify-content: center;
     position: relative;
     height: @size-20;
     width: @size-20;
-    background: @color-positive;
+    background: @color-primary-action;
     visibility: hidden;
     opacity: 0;
 
-    @media @breakpoint-mobile-mid {
+    @media @breakpoint-mobile-new {
       grid-column: 2;
       grid-row: 1;
-      left: 95%;
+      left: calc(~'100% - @{size-18}');
     }
 
     > svg {
@@ -632,7 +632,7 @@
       width: @size-16;
 
       > path {
-        stroke: @color-inactive-text;
+        stroke: @color-secondary-action;
       }
     }
   }
@@ -642,18 +642,18 @@
     width: @size-40;
     margin: @size-4 auto 0;
 
-    @media @breakpoint-mobile-mid {
+    @media @breakpoint-mobile-new {
       align-self: center;
       justify-self: center;
       grid-column: 1;
       grid-row: span 3;
-      height: @size-24;
-      margin: @size-24 @size-11;
+      margin: 0;
+      height: unset;
       width: @size-24;
     }
 
     > circle {
-      fill: @color-positive;
+      fill: @color-primary-action;
     }
   }
 
@@ -664,7 +664,7 @@
     text-align: center;
     text-transform: capitalize;
 
-    @media @breakpoint-mobile-mid {
+    @media @breakpoint-mobile-new {
       grid-column: 2;
       grid-row: 2;
       margin: 0;
@@ -680,10 +680,10 @@
     margin: @size-12 0 @size-24;
     text-align: center;
 
-    @media @breakpoint-mobile-mid {
+    @media @breakpoint-mobile-new {
       grid-column: 2;
       grid-row: 3;
-      margin: 0 @size-4 0 0;
+      margin: 0 @size-4 @size-16 0;
       text-align: left;
     }
   }
@@ -697,7 +697,7 @@
         stroke: @color-primary-text;
       }
 
-      @media @breakpoint-mobile-mid {
+      @media @breakpoint-mobile-new {
         margin: @size-13;
       }
     }
@@ -705,7 +705,7 @@
 }
 
 .RadioCardActive {
-  border: @size-4 solid @color-positive;
+  border: @size-4 solid @color-primary-action;
 
   > div {
     visibility: visible;
@@ -713,7 +713,7 @@
   }
 
   > svg {
-    @media @breakpoint-mobile-mid {
+    @media @breakpoint-mobile-new {
       align-self: center;
       justify-self: center;
       grid-column: 1;
@@ -726,7 +726,7 @@
 
   &:hover,
   &:focus {
-    border: @size-4 solid @color-positive;
+    border: @size-4 solid @color-primary-action;
   }
 }
 
@@ -793,7 +793,7 @@
   height: @size-16;
   width: @size-16;
 
-  @media @breakpoint-mobile-mid {
+  @media @breakpoint-mobile-new {
     height: @size-24;
     width: @size-24;
   }
@@ -1066,7 +1066,7 @@ div.FormDropdownActive {
       stroke: @color-inactive-text;
     }
 
-    @media @breakpoint-mobile-mid {
+    @media @breakpoint-mobile-new {
       max-height: @size-24;
       min-height: @size-24;
       min-width: @size-24;
