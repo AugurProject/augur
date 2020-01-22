@@ -55,6 +55,10 @@ export const GAS_PRICE_BACKUP_API_ENDPOINT = {
   [NETWORK_IDS.Mainnet]: 'https://api.etherscan.io/api?module=gastracker&action=gasoracle',
 }
 
+export const GAS_CONFIRM_ESTIMATE = {
+  [NETWORK_IDS.Mainnet]: 'https://api.etherscan.io/api?module=gastracker&action=gasestimate&gasprice=',
+}
+
 export const GAS_SPEED_LABELS = {
   STANDARD: 'Standard',
   FAST: 'Fast',
