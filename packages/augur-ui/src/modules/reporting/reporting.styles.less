@@ -6,7 +6,7 @@
 
 	> div:first-of-type {
 		flex: 1;
-		margin-right: @size-20;
+		margin-right: @size-8;
 	}
 
 	> div:last-of-type {
@@ -25,9 +25,16 @@
     }
   }
 
+  @media @breakpoint-min-desktop {
+    max-width: 1657px;
+    display: grid;
+    grid-template-columns: minmax(767px, 1fr) minmax(340px, 440px);
+    margin: auto;
+  }
+
   @media @breakpoint-min-desktop-min {
     > div:last-of-type {
-      max-width: 466px;
+      max-width: 440px;
       width: 100%;
 
       > div:first-of-type {

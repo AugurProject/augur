@@ -39,7 +39,7 @@ export default class Reporting extends React.Component<ReportingProps> {
                   <ModulePane label="designated reporting">
                     <ReportingModalButton
                       highlightedText='Need Help?'
-                      text='View our Disputing Quick Guide'
+                      text='View our Reporting Quick Guide'
                       action={openReportingModal}
                     />
                     <UserRepDisplay />
@@ -62,7 +62,8 @@ export default class Reporting extends React.Component<ReportingProps> {
                   </ModulePane>
                   <ModulePane label='Open reporting'>
                     <ReportingModalButton
-                      text='Need Help? View our Disputing Quick Guide'
+                      highlightedText='Need Help?'
+                      text='View our Reporting Quick Guide'
                       action={openReportingModal}
                     />
                     <ReportingList
@@ -96,8 +97,9 @@ export default class Reporting extends React.Component<ReportingProps> {
                   </div>
                   <div>
                     <ReportingModalButton
-                      text='Need Help? View our Disputing Quick Guide'
-                      action={this.props.openReportingModal}
+                      highlightedText='Need Help?'
+                      text='View our Reporting Quick Guide'
+                      action={openReportingModal}
                     />
                     <UserRepDisplay />
                     <ReportingList
@@ -137,8 +139,9 @@ export default class Reporting extends React.Component<ReportingProps> {
                   </div>
                   <div>
                     <ReportingModalButton
-                      text='Need Help? View our Disputing Quick Guide'
-                      action={this.props.openReportingModal}
+                      highlightedText='Need Help?'
+                      text='View our Reporting Quick Guide'
+                      action={openReportingModal}
                     />
                     <UserRepDisplay />
                   </div>

@@ -276,34 +276,6 @@ div.ReportingSubheaders {
   position: relative;
   text-transform: uppercase;
 
-  @media @breakpoint-tablet {
-    max-width: 100%;
-    width: 100%;
-
-    &.HideForMobile {
-      > div:nth-of-type(3) {
-        margin: 0;
-      }
-
-      > div:nth-of-type(4) > span:first-of-type {
-        margin-bottom: @size-3;
-      }
-
-      > div:last-of-type {
-        margin-bottom: @size-16;
-      }
-    }
-  }
-
-  @media @breakpoint-mobile {
-    width: unset;
-  }
-
-  @media @breakpoint-mobile-new {
-    width: 100%;
-    max-width: 100%;
-  }
-
   > p {
     .text-18;
 
@@ -346,7 +318,7 @@ div.ReportingSubheaders {
     &:nth-of-type(3) {
       border-bottom: 1px solid @color-dark-grey;
       left: 0;
-      width: @size-40;
+      width: 100%;
     }
 
     &:first-of-type {
@@ -356,7 +328,41 @@ div.ReportingSubheaders {
     }
   }
 
-  @media @breakpoint-smallish-desktop {
+  @media @breakpoint-min-desktop-min {
+    > div:nth-of-type(2) {
+      display: block;
+
+      > div:first-of-type {
+        margin-bottom: @size-16;
+      }
+    }
+  }
+
+  @media @breakpoint-tablet {
+    max-width: 100%;
+    width: 100%;
+
+    &.HideForMobile {
+      > div:nth-of-type(3) {
+        margin: 0;
+      }
+
+      > div:nth-of-type(4) > span:first-of-type {
+        margin-bottom: @size-3;
+      }
+
+      > div:last-of-type {
+        margin-bottom: @size-16;
+      }
+    }
+  }
+
+  @media @breakpoint-mobile-new {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  @media @breakpoint-max-tablet {
     padding: @size-16;
 
     > div:first-of-type {
@@ -696,7 +702,33 @@ div.ReportingSubheaders {
     > span {
       .text-12;
 
-      color: @color-inactive-text;
+      color: @color-secondary-text;
+
+      &:first-of-type {
+        padding: @size-12 @size-12 0;
+      }
+
+      &:last-of-type {
+        padding: 0 @size-12 @size-12;
+      }
+
+      &:only-of-type {
+        padding: @size-12;
+      }
+
+      @media @breakpoint-max-tablet {
+        &:first-of-type {
+          padding: @size-12 @size-24 0;
+        }
+
+        &:last-of-type {
+          padding: 0 @size-24 @size-12;
+        }
+
+        &:only-of-type {
+          padding: @size-12 @size-24;
+        }
+      }
     }
   }
 }
