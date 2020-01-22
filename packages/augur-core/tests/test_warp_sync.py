@@ -2,7 +2,7 @@
 
 from eth_tester.exceptions import TransactionFailed
 from pytest import raises, fixture as pytest_fixture
-from utils import nullAddress, TokenDelta, PrintGasUsed
+from utils import nullAddress, TokenDelta, PrintGasUsed, AssertLog
 from reporting_utils import proceedToDesignatedReporting, proceedToInitialReporting, proceedToFork, finalize
 
 
@@ -36,11 +36,17 @@ def test_warp_sync(contractsFixture, augur, universe, reputationToken, warpSync,
     # Finalizing the warp sync market will award the finalizer REP based on time since it became finalizable
     # This will also trigger a sweep of accumulated interest
     expectedFinalizationReward = warpSync.getFinalizationReward(market.address)
+    WarpSyncDataUpdatedLog = {
+        "universe": universe.address,
+        "warpSyncHash": numTicks,
+        "marketEndTime": market.getEndTime()
+    }
     nextDisputeWindow = universe.getOrCreateNextDisputeWindow(False)
     initialFeesBalance = cash.balanceOf(nextDisputeWindow)
-    with PrintGasUsed(contractsFixture, "WS Market Finalization Cost", 0):
-        with TokenDelta(reputationToken, expectedFinalizationReward, account, "REP reward not minted for finalizer"):
-            assert market.finalize()
+    with AssertLog(contractsFixture, "WarpSyncDataUpdated", WarpSyncDataUpdatedLog):
+        with PrintGasUsed(contractsFixture, "WS Market Finalization Cost", 0):
+            with TokenDelta(reputationToken, expectedFinalizationReward, account, "REP reward not minted for finalizer"):
+                assert market.finalize()
 
     assert cash.balanceOf(nextDisputeWindow) > initialFeesBalance
 

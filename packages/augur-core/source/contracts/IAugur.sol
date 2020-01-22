@@ -45,6 +45,8 @@ contract IAugur {
     function logParticipationTokensTransferred(IUniverse _universe, address _from, address _to, uint256 _value, uint256 _fromBalance, uint256 _toBalance) public returns (bool);
     function logParticipationTokensBurned(IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance) public returns (bool);
     function logParticipationTokensMinted(IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance) public returns (bool);
+    function logMarketRepBondTransferred(address _universe, address _from, address _to) public returns (bool);
+    function logWarpSyncDataUpdated(address _universe, uint256 _warpSyncHash, uint256 _marketEndTime) public returns (bool);
     function isKnownFeeSender(address _feeSender) public view returns (bool);
     function lookup(bytes32 _key) public view returns (address);
     function getTimestamp() public view returns (uint256);

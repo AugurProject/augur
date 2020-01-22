@@ -8273,20 +8273,20 @@ export const LIST_VALUES = {
   ],
   AMOUNT_UNITS: [
     {
-      value: 'Hundred(s)',
-      label: 'Hundred(s)',
+      value: 'Hundred',
+      label: 'Hundred',
     },
     {
-      value: 'Thousand(s)',
-      label: 'Thousand(s)',
+      value: 'Thousand',
+      label: 'Thousand',
     },
     {
-      value: 'Million(s)',
-      label: 'Million(s)',
+      value: 'Million',
+      label: 'Million',
     },
     {
-      value: 'Billion(s)',
-      label: 'Billion(s)',
+      value: 'Billion',
+      label: 'Billion',
     },
 
   ]
@@ -8581,7 +8581,8 @@ export const HOLIDAYS = {
   KOREAN_CHILDRENS_DAY: 'Childrens Day',
   LIBERATION_DAY: 'Liberation Day',
   CHUSEOK_FESTIVAL: 'Chuseok Festival',
-  HANGUL_DAY: 'Hangul Day'
+  HANGUL_DAY: 'Hangul Day',
+  VESAK_DAY: 'Vesak Day',
 }
 
 export const USA_HOLIDAYS = {
@@ -9459,6 +9460,512 @@ export const INDIA_HOLIDAYS = {
   ]
 };
 
+export const JAPAN_HOLIDAYS = {
+  [2020]: [
+    {
+      holiday: HOLIDAYS.NEW_YEARS_DAY,
+      date: 1577836800
+    },
+    {
+      holiday: HOLIDAYS.MARKET_HOLIDAY,
+      date: 1577923200
+    },
+    {
+      holiday: HOLIDAYS.MARKET_HOLIDAY,
+      date: 1578009600
+    },
+    {
+      holiday: HOLIDAYS.OLD_AGE_DAY,
+      date: 1578873600
+    },
+    {
+      holiday: HOLIDAYS.NATIONAL_DAY,
+      date: 1581379200
+    },
+    {
+      holiday: HOLIDAYS.EMPEROR_BDAY,
+      date: 1582502400
+    },
+    {
+      holiday: HOLIDAYS.VERNAL_EQUINOX,
+      date: 1584662400
+    },
+    {
+      holiday: HOLIDAYS.SHOWA_DAY,
+      date: 1588118400
+    },
+    {
+      holiday: HOLIDAYS.GREENERY_DAY,
+      date: 1588550400
+    },
+    {
+      holiday: HOLIDAYS.CHILDRENS_DAY,
+      date: 1588723200
+    },
+    {
+      holiday: HOLIDAYS.CONSTITUTION_DAY,
+      date: 1595203200
+    },
+    {
+      holiday: HOLIDAYS.MARINE_DAY,
+      date: 1592870400
+    },
+    {
+      holiday: HOLIDAYS.SPORTS_DAY,
+      date: 1592956800
+    },
+    {
+      holiday: HOLIDAYS.MOUNTAIN_DAY,
+      date: 1597017600
+    },
+    {
+      holiday: HOLIDAYS.OLD_AGE_DAY,
+      date: 1600646400
+    },
+    {
+      holiday: HOLIDAYS.AUTUMNAL_EQUINOX,
+      date: 1600732800
+    },
+    {
+      holiday: HOLIDAYS.CULTURE_DAY,
+      date: 1604361600
+    },
+    {
+      holiday: HOLIDAYS.WORKERS_DAY,
+      date: 1606089600
+    },
+    {
+      holiday: HOLIDAYS.MARKET_HOLIDAY,
+      date: 1609372800
+    },
+  ],
+  [2021]: [
+    {
+      holiday: HOLIDAYS.NEW_YEARS_DAY,
+      date: 1609459200
+    },
+    {
+      holiday: HOLIDAYS.OLD_AGE_DAY,
+      date: 1610323200
+    },
+    {
+      holiday: HOLIDAYS.NATIONAL_DAY,
+      date: 1613001600
+    },
+    {
+      holiday: HOLIDAYS.EMPEROR_BDAY,
+      date: 1614038400
+    },
+    {
+      holiday: HOLIDAYS.SHOWA_DAY,
+      date: 1619654400
+    },
+    {
+      holiday: HOLIDAYS.GREENERY_DAY,
+      date: 1620086400
+    },
+    {
+      holiday: HOLIDAYS.CHILDRENS_DAY,
+      date: 1620172800
+    },
+    {
+      holiday: HOLIDAYS.MARINE_DAY,
+      date: 1624060800
+    },
+    {
+      holiday: HOLIDAYS.SPORTS_DAY,
+      date: 1633910400
+    },
+    {
+      holiday: HOLIDAYS.MOUNTAIN_DAY,
+      date: 1628640000
+    },
+    {
+      holiday: HOLIDAYS.OLD_AGE_DAY,
+      date: 1632096000
+    },
+    {
+      holiday: HOLIDAYS.AUTUMNAL_EQUINOX,
+      date: 1632355200
+    },
+    {
+      holiday: HOLIDAYS.CULTURE_DAY,
+      date: 1635897600
+    },
+    {
+      holiday: HOLIDAYS.WORKERS_DAY,
+      date: 1637625600
+    },
+    {
+      holiday: HOLIDAYS.MARKET_HOLIDAY,
+      date: 1640908800
+    },
+  ],
+  [2022]: [
+    {
+      holiday: HOLIDAYS.NEW_YEARS_DAY,
+      date: 1641168000
+    },
+    {
+      holiday: HOLIDAYS.OLD_AGE_DAY,
+      date: 1641772800
+    },
+    {
+      holiday: HOLIDAYS.NATIONAL_DAY,
+      date: 1644537600
+    },
+    {
+      holiday: HOLIDAYS.EMPEROR_BDAY,
+      date: 1645574400
+    },
+    {
+      holiday: HOLIDAYS.VERNAL_EQUINOX,
+      date: 1647820800
+    },
+    {
+      holiday: HOLIDAYS.SHOWA_DAY,
+      date: 1651622400
+    },
+    {
+      holiday: HOLIDAYS.GREENERY_DAY,
+      date: 1590364800
+    },
+    {
+      holiday: HOLIDAYS.CHILDRENS_DAY,
+      date: 1651708800
+    },
+    {
+      holiday: HOLIDAYS.CONSTITUTION_DAY,
+      date: 1651536000
+    },
+    {
+      holiday: HOLIDAYS.MARINE_DAY,
+      date: 1654214400
+    },
+    {
+      holiday: HOLIDAYS.SPORTS_DAY,
+      date: 1601596800
+    },
+    {
+      holiday: HOLIDAYS.MOUNTAIN_DAY,
+      date: 1665360000
+    },
+    {
+      holiday: HOLIDAYS.OLD_AGE_DAY,
+      date: 1663545600
+    },
+    {
+      holiday: HOLIDAYS.AUTUMNAL_EQUINOX,
+      date: 1663891200
+    },
+    {
+      holiday: HOLIDAYS.CULTURE_DAY,
+      date: 1667433600
+    },
+    {
+      holiday: HOLIDAYS.WORKERS_DAY,
+      date: 1669161600
+    },
+  ]
+};
+
+export const CANADA_HOLIDAYS = {
+  [2020]: [
+    {
+      holiday: HOLIDAYS.NEW_YEARS_DAY,
+      date: 1577836800
+    },
+    {
+      holiday: HOLIDAYS.FAMILY_DAY,
+      date: 1581897600
+    },
+    {
+      holiday: HOLIDAYS.GOOD_FRIDAY,
+      date: 1586476800
+    },
+    {
+      holiday: HOLIDAYS.VICTORIA_DAY,
+      date: 1589760000
+    },
+    {
+      holiday: HOLIDAYS.CANADA_DAY,
+      date: 1590969600
+    },
+    {
+      holiday: HOLIDAYS.CIVIC_HOLIDAY,
+      date: 1596412800
+    },
+    {
+      holiday: HOLIDAYS.LABOUR_DAY,
+      date: 1599436800
+    },
+    {
+      holiday: HOLIDAYS.THANKSGIVING,
+      date: 1602460800
+    },
+    {
+      holiday: HOLIDAYS.CHRISTMAS,
+      date: 1608854400
+    },
+    {
+      holiday: HOLIDAYS.BOXING_DAY,
+      date: 1609113600
+    },
+  ],
+  [2021]: [
+    {
+      holiday: HOLIDAYS.NEW_YEARS_DAY,
+      date: 1609459200
+    },
+    {
+      holiday: HOLIDAYS.FAMILY_DAY,
+      date: 1613347200
+    },
+    {
+      holiday: HOLIDAYS.GOOD_FRIDAY,
+      date: 1617321600
+    },
+    {
+      holiday: HOLIDAYS.VICTORIA_DAY,
+      date: 1621814400
+    },
+    {
+      holiday: HOLIDAYS.CANADA_DAY,
+      date: 1622505600
+    },
+    {
+      holiday: HOLIDAYS.CIVIC_HOLIDAY,
+      date: 1627862400
+    },
+    {
+      holiday: HOLIDAYS.LABOUR_DAY,
+      date: 1630886400
+    },
+    {
+      holiday: HOLIDAYS.THANKSGIVING,
+      date: 1633910400
+    },
+    {
+      holiday: HOLIDAYS.CHRISTMAS,
+      date: 1640563200
+    },
+    {
+      holiday: HOLIDAYS.BOXING_DAY,
+      date: 1640649600
+    },
+  ],
+  [2022]: [
+    {
+      holiday: HOLIDAYS.NEW_YEARS_DAY,
+      date: 1641168000
+    },
+    {
+      holiday: HOLIDAYS.FAMILY_DAY,
+      date: 1645401600
+    },
+    {
+      holiday: HOLIDAYS.GOOD_FRIDAY,
+      date: 1649980800
+    },
+    {
+      holiday: HOLIDAYS.VICTORIA_DAY,
+      date: 1653264000
+    },
+    {
+      holiday: HOLIDAYS.CANADA_DAY,
+      date: 1654041600
+    },
+    {
+      holiday: HOLIDAYS.CIVIC_HOLIDAY,
+      date: 1659312000
+    },
+    {
+      holiday: HOLIDAYS.LABOUR_DAY,
+      date: 1662336000
+    },
+    {
+      holiday: HOLIDAYS.THANKSGIVING,
+      date: 1665360000
+    },
+    {
+      holiday: HOLIDAYS.CHRISTMAS,
+      date: 1672012800
+    },
+    {
+      holiday: HOLIDAYS.BOXING_DAY,
+      date: 1672099200
+    },
+  ]
+};
+
+
+export const SOUTH_KOREA_HOLIDAYS = {
+  [2020]: [
+    {
+      holiday: HOLIDAYS.NEW_YEARS_DAY,
+      date: 1577836800
+    },
+    {
+      holiday: HOLIDAYS.KOREAN_NEW_YEAR,
+      date: 1579824000
+    },
+    {
+      holiday: HOLIDAYS.MARKET_HOLIDAY,
+      date: 1580083200
+    },
+    {
+      holiday: HOLIDAYS.VESAK_DAY,
+      date: 1588204800
+    },
+    {
+      holiday: HOLIDAYS.LABOR_DAY,
+      date: 1588291200
+    },
+    {
+      holiday: HOLIDAYS.CHILDRENS_DAY,
+      date: 1588636800
+    },
+    {
+      holiday: HOLIDAYS.CHUSEOK_FESTIVAL,
+      date: 1601424000
+    },
+    {
+      holiday: HOLIDAYS.CHUSEOK_FESTIVAL,
+      date: 1601510400
+    },
+    {
+      holiday: HOLIDAYS.CHUSEOK_FESTIVAL,
+      date: 1601596800
+    },
+    {
+      holiday: HOLIDAYS.HANGUL_DAY,
+      date: 1602201600
+    },
+    {
+      holiday: HOLIDAYS.CHRISTMAS,
+      date: 1607731200
+    },
+    {
+      holiday: HOLIDAYS.NEW_YEARS_DAY,
+      date: 1609372800
+    },
+  ],
+  [2021]: [
+    {
+      holiday: HOLIDAYS.NEW_YEARS_DAY,
+      date: 1609459200
+    },
+    {
+      holiday: HOLIDAYS.KOREAN_NEW_YEAR,
+      date: 1613001600
+    },
+    {
+      holiday: HOLIDAYS.KOREAN_NEW_YEAR,
+      date: 1613088000
+    },
+    {
+      holiday: HOLIDAYS.INDEPENDENCE_DAY,
+      date: 1614556800
+    },
+    {
+      holiday: HOLIDAYS.LABOR_DAY,
+      date: 1619827200
+    },
+    {
+      holiday: HOLIDAYS.CHILDRENS_DAY,
+      date: 1620172800
+    },
+    {
+      holiday: HOLIDAYS.BUDDDHAS_BIRTHDAY,
+      date: 1621382400
+    },
+    {
+      holiday: HOLIDAYS.CHUSEOK_FESTIVAL,
+      date: 1632096000
+    },
+    {
+      holiday: HOLIDAYS.CHUSEOK_FESTIVAL,
+      date: 1632182400
+    },
+    {
+      holiday: HOLIDAYS.CHUSEOK_FESTIVAL,
+      date: 1632268800
+    },
+    {
+      holiday: HOLIDAYS.HANGUL_DAY,
+      date: 1633737600
+    },
+    {
+      holiday: HOLIDAYS.CHRISTMAS,
+      date: 1640390400
+    },
+  ],
+  [2022]: [
+    {
+      holiday: HOLIDAYS.NEW_YEARS_DAY,
+      date: 1577836800
+    },
+    {
+      holiday: HOLIDAYS.KOREAN_NEW_YEAR,
+      date: 1643587200
+    },
+    {
+      holiday: HOLIDAYS.KOREAN_NEW_YEAR,
+      date: 1643673600
+    },
+    {
+      holiday: HOLIDAYS.MARKET_HOLIDAY,
+      date: 1643760000
+    },
+    {
+      holiday: HOLIDAYS.INDEPENDENCE_DAY,
+      date: 1646092800
+    },
+    {
+      holiday: HOLIDAYS.LABOR_DAY,
+      date: 1651363200
+    },
+    {
+      holiday: HOLIDAYS.CHILDRENS_DAY,
+      date: 1651708800
+    },
+    {
+      holiday: HOLIDAYS.BUDDDHAS_BIRTHDAY,
+      date: 1651968000
+    },
+    {
+      holiday: HOLIDAYS.MEMORIAL_DAY,
+      date: 1654473600
+    },
+    {
+      holiday: HOLIDAYS.LIBERATION_DAY,
+      date: 1660521600
+    },
+    {
+      holiday: HOLIDAYS.CHUSEOK_FESTIVAL,
+      date: 1662681600
+    },
+    {
+      holiday: HOLIDAYS.CHUSEOK_FESTIVAL,
+      date: 1662768000
+    },
+    {
+      holiday: HOLIDAYS.CHUSEOK_FESTIVAL,
+      date: 1662854400
+    },
+    {
+      holiday: HOLIDAYS.HANGUL_DAY,
+      date: 1665273600
+    },
+    {
+      holiday: HOLIDAYS.CHRISTMAS,
+      date: 1671926400
+    },
+  ],
+};
+
+
+
 export const FIN_EXCHANGES_HOLIDAY_CLOSURES = {
   'New York Stock Exchange (traded in USD)': USA_HOLIDAYS,
   'Nasdaq (traded in USD)': USA_HOLIDAYS,
@@ -9467,7 +9974,9 @@ export const FIN_EXCHANGES_HOLIDAY_CLOSURES = {
   'London Stock Exchange (traded in GBP)': ENGLAND_HOLIDAYS,
   'Hong Kong Stock Exchange (traded in HKD)': HONG_KONG_HOLIDAYS,
   'Shanghai Stock Exchange (A shares traded in CNY)': CHINA_HOLIDAYS,
-  'Shanghai Stock Exchange (B shares traded in USD)': CHINA_HOLIDAYS
+  'Shanghai Stock Exchange (B shares traded in USD)': CHINA_HOLIDAYS,
+  'Tokyo Stock Exchange (traded in JPY)': JAPAN_HOLIDAYS,
+  'Toronto Stock Exchange (traded in CAD)': CANADA_HOLIDAYS
 };
 
 export const FIN_INDEXES_HOLIDAY_CLOSURES = {
@@ -9484,4 +9993,7 @@ export const FIN_INDEXES_HOLIDAY_CLOSURES = {
   'Shanghai SE Composite': CHINA_HOLIDAYS,
   'All Ordinaries': AUSTRALIA_HOLIDAYS,
   'BSE Sensex 30': INDIA_HOLIDAYS,
+  'Nikkei 225': JAPAN_HOLIDAYS,
+  'S&P/TSX Composite': CANADA_HOLIDAYS,
+  'KOSPI Index': SOUTH_KOREA_HOLIDAYS
 };
