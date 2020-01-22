@@ -116,7 +116,7 @@ class PrintGasUsed():
         else:
             print("GAS USED WITH %s : %i" % (self.action, gasUsed))
 
-TRADE_EVENTS = ['OrderEvent','ProfitLossChanged','MarketVolumeChanged']
+TRADE_EVENTS = ['OrderEvent','ProfitLossChanged','MarketVolumeChanged','GnosisSafeRegistered','GnosisSafeDeRegistered']
 
 class AssertLog():
 

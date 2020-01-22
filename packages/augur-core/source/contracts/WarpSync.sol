@@ -93,8 +93,11 @@ contract WarpSync is IWarpSync, Initializable {
 
     function recordMarketFinalized(IMarket _market, IUniverse _universe) private {
         awardRep(_universe, getFinalizationReward(_market));
-        data[address(_universe)].warpSyncHash = _market.getWinningPayoutNumerator(2);
-        data[address(_universe)].timestamp = _market.getEndTime();
+        uint256 _warpSyncHash = _market.getWinningPayoutNumerator(2);
+        uint256 _endTime = _market.getEndTime();
+        data[address(_universe)].warpSyncHash = _warpSyncHash;
+        data[address(_universe)].timestamp = _endTime;
+        augur.logWarpSyncDataUpdated(address(_universe), _warpSyncHash, _endTime);
     }
 
     /**
