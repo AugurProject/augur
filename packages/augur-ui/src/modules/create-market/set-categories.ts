@@ -1420,6 +1420,15 @@ export const setCategories: SortedGroup[] = [
           { value: CUSTOM, label: CUSTOM },
         ],
       },
+      {
+        value: 'Social',
+        label: 'Social',
+        autoCompleteList: [
+          { value: "Twitter", label: "Twitter" },
+          { value: "Instagram", label: "Instagram" },
+          { value: "Facebook", label: "Facebook" }
+        ],
+      },
       { value: CUSTOM, label: CUSTOM },
     ],
   },

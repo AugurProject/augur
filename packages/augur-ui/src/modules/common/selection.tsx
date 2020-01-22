@@ -102,7 +102,8 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
       });
     }
     if (
-      JSON.stringify(this.props.options) !== JSON.stringify(prevProps.options)
+      JSON.stringify(this.props.options) !== JSON.stringify(prevProps.options) ||
+      this.props.sort !== prevProps.sort
     ) {
       const sortedList =
         prevProps.sort && prevProps.options
@@ -184,7 +185,6 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
       disabled,
     } = this.props;
     const { selected, showList, isDisabled, sortedList } = this.state;
-
     return (
       <div
         style={sortByStyles}
@@ -206,6 +206,12 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
         role="button"
         tabIndex={0}
         onClick={this.toggleList}
+        onMouseEnter={() => {
+          this.setState({ showList: true });
+        }}
+        onMouseLeave={() => {
+          this.setState({ showList: false });
+        }}
         data-tip
         data-for={'dropdown-' + id + staticLabel}
       >
@@ -219,20 +225,22 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
           </span>
           {ThickChevron}
         </button>
-        <div
-          className={classNames(Styles.list, {
-            [`${Styles.active}`]: showList,
-          })}
-        >
-          {sortedList.map(option => (
-            <button
-              key={`${option.value}${option.label}`}
-              value={option.value}
-              onClick={() => this.dropdownSelect(option)}
-            >
-              {option.label}
-            </button>
-          ))}
+        <div>
+          <div
+            className={classNames(Styles.list, {
+              [`${Styles.active}`]: showList,
+            })}
+          >
+            {sortedList.map(option => (
+              <button
+                key={`${option.value}${option.label}`}
+                value={option.value}
+                onClick={() => this.dropdownSelect(option)}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
         </div>
         {selected && (
           <select
@@ -309,28 +317,36 @@ export class StaticLabelDropdown extends Dropdown {
         role="button"
         tabIndex={0}
         onClick={this.toggleList}
+        onMouseEnter={() => {
+          this.setState({ showList: true });
+        }}
+        onMouseLeave={() => {
+          this.setState({ showList: false });
+        }}
       >
         <button>
           {staticLabel}
           &nbsp;
           <b>{selected.label}</b> {Chevron}
         </button>
-        <div
-          className={classNames({
-            [`${Styles.active}`]: showList,
-          })}
-        >
-          {options.map(option => (
-            <button
-              key={`${option.value}${option.label}`}
-              value={option.value}
-              onClick={() => this.dropdownSelect(option)}
-            >
-              {staticMenuLabel}
-              &nbsp;
-              <b>{option.label}</b>
-            </button>
-          ))}
+        <div>
+          <div
+            className={classNames({
+              [`${Styles.active}`]: showList,
+            })}
+          >
+            {options.map(option => (
+              <button
+                key={`${option.value}${option.label}`}
+                value={option.value}
+                onClick={() => this.dropdownSelect(option)}
+              >
+                {staticMenuLabel}
+                &nbsp;
+                <b>{option.label}</b>
+              </button>
+            ))}
+          </div>
         </div>
         <select
           onChange={e => {

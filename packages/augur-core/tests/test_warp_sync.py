@@ -6,7 +6,7 @@ from utils import nullAddress, TokenDelta, PrintGasUsed
 from reporting_utils import proceedToDesignatedReporting, proceedToInitialReporting, proceedToFork, finalize
 
 
-def test_warp_sync(contractsFixture, augur, universe, reputationToken, warpSync):
+def test_warp_sync(contractsFixture, augur, universe, reputationToken, warpSync, cash):
     account = contractsFixture.accounts[0]
     time = contractsFixture.contracts["Time"]
 
@@ -34,10 +34,15 @@ def test_warp_sync(contractsFixture, augur, universe, reputationToken, warpSync)
     time.setTimestamp(disputeWindow.getEndTime())
 
     # Finalizing the warp sync market will award the finalizer REP based on time since it became finalizable
+    # This will also trigger a sweep of accumulated interest
     expectedFinalizationReward = warpSync.getFinalizationReward(market.address)
+    nextDisputeWindow = universe.getOrCreateNextDisputeWindow(False)
+    initialFeesBalance = cash.balanceOf(nextDisputeWindow)
     with PrintGasUsed(contractsFixture, "WS Market Finalization Cost", 0):
         with TokenDelta(reputationToken, expectedFinalizationReward, account, "REP reward not minted for finalizer"):
             assert market.finalize()
+
+    assert cash.balanceOf(nextDisputeWindow) > initialFeesBalance
 
     # Check Warp Sync contract for universe and see existing value
     assert warpSync.data(universe.address) == [numTicks, market.getEndTime()]

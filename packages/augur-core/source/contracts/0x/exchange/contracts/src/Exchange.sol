@@ -29,6 +29,7 @@ import "ROOT/0x/exchange/contracts/src/MixinTransferSimulator.sol";
 // MixinAssetProxyDispatcher, MixinExchangeCore, MixinSignatureValidator,
 // and MixinTransactions are all inherited via the other Mixins that are
 // used.
+/// @dev The 0x Exchange contract.
 contract Exchange is
     LibEIP712ExchangeDomain,
     MixinMatchOrders,
@@ -41,7 +42,7 @@ contract Exchange is
         public
         LibEIP712ExchangeDomain(chainId, address(0))
     {}
-
+    
     // For testing purposes
     function isValidSignature(LibOrder.Order memory order, bytes32 orderHash, bytes memory signature) public view returns (bool) {
         return _isValidOrderWithHashSignature(order, orderHash, signature);

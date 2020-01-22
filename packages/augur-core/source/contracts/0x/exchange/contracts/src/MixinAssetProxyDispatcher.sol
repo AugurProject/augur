@@ -20,7 +20,6 @@ pragma solidity 0.5.15;
 
 import "ROOT/0x/utils/contracts/src/Ownable.sol";
 import "ROOT/0x/utils/contracts/src/LibBytes.sol";
-import "ROOT/0x/utils/contracts/src/LibRichErrors.sol";
 import "ROOT/0x/exchange-libs/contracts/src/LibExchangeRichErrors.sol";
 import "ROOT/0x/exchange/contracts/src/interfaces/IAssetProxy.sol";
 import "ROOT/0x/exchange/contracts/src/interfaces/IAssetProxyDispatcher.sol";
@@ -47,12 +46,6 @@ contract MixinAssetProxyDispatcher is
         address currentAssetProxy = _assetProxies[assetProxyId];
         if (currentAssetProxy != address(0)) {
             revert();
-            /*
-            LibRichErrors.rrevert(LibExchangeRichErrors.AssetProxyExistsError(
-                assetProxyId,
-                currentAssetProxy
-            ));
-            */
         }
 
         // Add asset proxy and log registration.
@@ -65,11 +58,11 @@ contract MixinAssetProxyDispatcher is
 
     /// @dev Gets an asset proxy.
     /// @param assetProxyId Id of the asset proxy.
-    /// @return The asset proxy registered to assetProxyId. Returns 0x0 if no proxy is registered.
+    /// @return assetProxy The asset proxy address registered to assetProxyId. Returns 0x0 if no proxy is registered.
     function getAssetProxy(bytes4 assetProxyId)
         external
         view
-        returns (address)
+        returns (address assetProxy)
     {
         return _assetProxies[assetProxyId];
     }
@@ -95,13 +88,6 @@ contract MixinAssetProxyDispatcher is
             // Ensure assetData is padded to 32 bytes (excluding the id) and is at least 4 bytes long
             if (assetData.length % 32 != 4) {
                 revert("BAD ASSET DATA PADDING");
-                /*
-                LibRichErrors.rrevert(LibExchangeRichErrors.AssetProxyDispatchError(
-                    LibExchangeRichErrors.AssetProxyDispatchErrorCodes.INVALID_ASSET_DATA_LENGTH,
-                    orderHash,
-                    assetData
-                ));
-                */
             }
 
             // Lookup assetProxy.
@@ -111,13 +97,6 @@ contract MixinAssetProxyDispatcher is
             // Ensure that assetProxy exists
             if (assetProxy == address(0)) {
                 revert("INVALID ASSET PROXY ID");
-                /*
-                LibRichErrors.rrevert(LibExchangeRichErrors.AssetProxyDispatchError(
-                    LibExchangeRichErrors.AssetProxyDispatchErrorCodes.UNKNOWN_ASSET_PROXY,
-                    orderHash,
-                    assetData
-                ));
-                */
             }
 
             // Construct the calldata for the transferFrom call.
@@ -134,11 +113,7 @@ contract MixinAssetProxyDispatcher is
 
             // If the transaction did not succeed, revert with the returned data.
             if (!didSucceed) {
-                LibRichErrors.rrevert(LibExchangeRichErrors.AssetProxyTransferError(
-                    orderHash,
-                    assetData,
-                    returnData
-                ));
+                revert();
             }
         }
     }

@@ -19,7 +19,6 @@
 pragma solidity 0.5.15;
 
 import "ROOT/0x/utils/contracts/src/Ownable.sol";
-import "ROOT/0x/utils/contracts/src/LibRichErrors.sol";
 import "ROOT/0x/exchange-libs/contracts/src/LibExchangeRichErrors.sol";
 import "ROOT/0x/staking/contracts/src/interfaces/IStaking.sol";
 import "ROOT/0x/exchange/contracts/src/interfaces/IProtocolFees.sol";
@@ -29,10 +28,12 @@ contract MixinProtocolFees is
     IProtocolFees,
     Ownable
 {
-    // The protocol fee multiplier -- the owner can update this field.
+    /// @dev The protocol fee multiplier -- the owner can update this field.
+    /// @return 0 Gas multplier.
     uint256 public protocolFeeMultiplier;
 
-    // The address of the registered protocolFeeCollector contract -- the owner can update this field.
+    /// @dev The address of the registered protocolFeeCollector contract -- the owner can update this field.
+    /// @return 0 Contract to forward protocol fees to.
     address public protocolFeeCollector;
 
     /// @dev Allows the owner to update the protocol fee multiplier.

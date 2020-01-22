@@ -9,7 +9,7 @@ import makeQuery from "modules/routes/helpers/make-query";
 
 import { NotificationCard } from "modules/account/components/notification-card";
 import { PillLabel } from "modules/common/labels";
-import { REPORTING, DISPUTING } from "modules/routes/constants/views";
+import { REPORTING, DISPUTING, MARKET } from "modules/routes/constants/views";
 import {
   MARKET_ID_PARAM_NAME,
   RETURN_PARAM_NAME,
@@ -21,7 +21,7 @@ import {
   DisputeTemplate,
   ClaimReportingFeesTemplate,
   UnsignedOrdersTemplate,
-  ProceedsToClaimTemplate,
+  ProceedsToClaimTemplate, MostLikelyInvalidMarketsTemplate,
 } from "modules/account/components/notifications-templates";
 
 import { Notification, DateFormattedObject, QueryEndpoints } from "modules/types";
@@ -32,6 +32,8 @@ import {
   NOTIFICATIONS_LABEL,
   NEW,
 } from "modules/common/constants";
+
+import Styles from "modules/account/components/notification.styles.less";
 
 export interface NotificationsProps extends RouteComponentProps {
   notifications: Notification[];
@@ -51,6 +53,12 @@ export interface NotificationsProps extends RouteComponentProps {
 export interface NotificationsState {
   disabledNotifications: any;
 }
+
+const notificationsWithCountdown = [
+  NOTIFICATION_TYPES.marketsInDispute,
+  NOTIFICATION_TYPES.reportOnMarkets,
+  NOTIFICATION_TYPES.proceedsToClaim,
+];
 
 class Notifications extends React.Component<
   NotificationsProps,
@@ -146,6 +154,19 @@ class Notifications extends React.Component<
         };
         break;
 
+      case NOTIFICATION_TYPES.marketIsMostLikelyInvalid:
+        buttonAction = () => {
+          this.markAsRead(notification);
+          const queryLink: QueryEndpoints = {
+            [MARKET_ID_PARAM_NAME]: notification.market && notification.market.id,
+          };
+          history.push({
+            pathname: makePath(MARKET, null),
+            search: makeQuery(queryLink),
+          });
+        };
+        break;
+
       default:
         buttonAction = () => {
           this.markAsRead(notification);
@@ -231,10 +252,11 @@ class Notifications extends React.Component<
       const isDisabled: boolean =
         this.state.disabledNotifications[id] &&
         this.state.disabledNotifications[id] === true;
-
+      const hasCounter = market && notificationsWithCountdown.includes(type);
       return (
         <NotificationCard
           key={id}
+          noCounter={!hasCounter}
           {...notificationCardProps}
         >
           {type === NOTIFICATION_TYPES.resolvedMarketsOpenOrders ? (
@@ -273,12 +295,18 @@ class Notifications extends React.Component<
               {...templateProps}
             />
           ) as any : null}
+          {type === NOTIFICATION_TYPES.marketIsMostLikelyInvalid ? (
+            <MostLikelyInvalidMarketsTemplate
+              isDisabled={isDisabled}
+              {...templateProps}
+            />
+          ) as any : null}
         </NotificationCard>
       );
     });
 
     const labelContent = (
-      <div>
+      <div className={Styles.NewTopLabel}>
         {newNotificationCount > 0 && (
           <PillLabel label={`${newNotificationCount} ${NEW}`} hideOnMobile />
         )}
@@ -290,6 +318,7 @@ class Notifications extends React.Component<
         title={NOTIFICATIONS_TITLE}
         rightContent={labelContent}
         toggle={toggle}
+        customClass={notificationCount !== 0 && Styles.DarkBackgroundMobile}
         content={
           notificationCount === 0 ? (
             <EmptyDisplay

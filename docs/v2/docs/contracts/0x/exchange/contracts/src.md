@@ -1172,22 +1172,6 @@ Writes a new length to a byte array.
 
 
 
-### `LibBytesRichErrors`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#LibBytesRichErrors.InvalidByteOperationError(enum LibBytesRichErrors.InvalidByteOperationErrorCodes,uint256,uint256)"><code class="function-signature">InvalidByteOperationError(enum LibBytesRichErrors.InvalidByteOperationErrorCodes errorCode, uint256 offset, uint256 required)</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="LibBytesRichErrors.InvalidByteOperationError(enum LibBytesRichErrors.InvalidByteOperationErrorCodes,uint256,uint256)"></a><code class="function-signature">InvalidByteOperationError(enum LibBytesRichErrors.InvalidByteOperationErrorCodes errorCode, uint256 offset, uint256 required) <span class="return-arrow">→</span> <span class="return-type">bytes</span></code><span class="function-visibility">internal</span></h4>
-
-
-
-
-
-
-
 ### `LibEIP1271`
 
 
@@ -1690,33 +1674,6 @@ Calculates EIP712 hash of the order struct.
 
 
 
-### `LibRichErrors`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#LibRichErrors.StandardError(string)"><code class="function-signature">StandardError(string message)</code></a></li><li><a href="#LibRichErrors.rrevert(bytes)"><code class="function-signature">rrevert(bytes errorData)</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="LibRichErrors.StandardError(string)"></a><code class="function-signature">StandardError(string message) <span class="return-arrow">→</span> <span class="return-type">bytes</span></code><span class="function-visibility">internal</span></h4>
-
-ABI encode a standard, string revert error payload.
-      This is the same payload that would be included by a `revert(string)`
-      solidity statement. It has the function signature `Error(string)`.
- @param message The error string.
- @return The ABI encoded error.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="LibRichErrors.rrevert(bytes)"></a><code class="function-signature">rrevert(bytes errorData)</code><span class="function-visibility">internal</span></h4>
-
-Reverts an encoded rich revert reason `errorData`.
- @param errorData ABI encoded error data.
-
-
-
-
-
 ### `LibSafeMath`
 
 
@@ -1831,7 +1788,7 @@ Registers an asset proxy to its asset proxy id.
 
 Gets an asset proxy.
  @param assetProxyId Id of the asset proxy.
- @return The asset proxy registered to assetProxyId. Returns 0x0 if no proxy is registered.
+ @return assetProxy The asset proxy address registered to assetProxyId. Returns 0x0 if no proxy is registered.
 
 
 
@@ -1870,7 +1827,7 @@ Fills the input order.
  @param order Order struct containing order specifications.
  @param takerAssetFillAmount Desired amount of takerAsset to sell.
  @param signature Proof that order has been created by maker.
- @return Amounts filled and fees paid by maker and taker.
+ @return fillResults Amounts filled and fees paid by maker and taker.
 
 
 
@@ -1885,7 +1842,7 @@ After calling, the order can not be filled anymore.
 
 Gets information about an order: status, hash, and amount filled.
  @param order Order to gather information on.
- @return OrderInfo Information about the order and its state.
+ @return orderInfo Information about the order and its state.
          See LibOrder.OrderInfo for a complete description.
 
 
@@ -1896,7 +1853,7 @@ Fills the input order.
  @param order Order struct containing order specifications.
  @param takerAssetFillAmount Desired amount of takerAsset to sell.
  @param signature Proof that order has been created by maker.
- @return Amounts filled and fees paid by maker and taker.
+ @return fillResults Amounts filled and fees paid by maker and taker.
 
 
 
@@ -2262,7 +2219,7 @@ Executes an Exchange method call in the context of signer.
 Executes a batch of Exchange method calls in the context of signer(s).
  @param transactions Array of 0x transaction structures.
  @param signatures Array of proofs that transactions have been signed by signer(s).
- @return Array containing ABI encoded return data for each of the underlying Exchange function calls.
+ @return returnData Array containing ABI encoded return data for each of the underlying Exchange function calls.
 
 
 
@@ -2340,10 +2297,11 @@ This function may be used to simulate any amount of transfers
 
 <h4><a class="anchor" aria-hidden="true" id="MixinWrapperFunctions.fillOrKillOrder(struct LibOrder.Order,uint256,bytes)"></a><code class="function-signature">fillOrKillOrder(struct LibOrder.Order order, uint256 takerAssetFillAmount, bytes signature) <span class="return-arrow">→</span> <span class="return-type">struct LibFillResults.FillResults</span></code><span class="function-visibility">public</span></h4>
 
-Fills the input order. Reverts if exact takerAssetFillAmount not filled.
+Fills the input order. Reverts if exact `takerAssetFillAmount` not filled.
  @param order Order struct containing order specifications.
  @param takerAssetFillAmount Desired amount of takerAsset to sell.
  @param signature Proof that order has been created by maker.
+ @return fillResults Amounts filled and fees paid.
 
 
 
@@ -2353,7 +2311,7 @@ Executes multiple calls of fillOrder.
  @param orders Array of order specifications.
  @param takerAssetFillAmounts Array of desired amounts of takerAsset to sell in orders.
  @param signatures Proofs that orders have been created by makers.
- @return Array of amounts filled and fees paid by makers and taker.
+ @return fillResults Array of amounts filled and fees paid by makers and taker.
 
 
 
@@ -2363,7 +2321,7 @@ Executes multiple calls of fillOrKillOrder.
  @param orders Array of order specifications.
  @param takerAssetFillAmounts Array of desired amounts of takerAsset to sell in orders.
  @param signatures Proofs that orders have been created by makers.
- @return Array of amounts filled and fees paid by makers and taker.
+ @return fillResults Array of amounts filled and fees paid by makers and taker.
 
 
 
@@ -2373,7 +2331,7 @@ Executes multiple calls of fillOrder. If any fill reverts, the error is caught a
  @param orders Array of order specifications.
  @param takerAssetFillAmounts Array of desired amounts of takerAsset to sell in orders.
  @param signatures Proofs that orders have been created by makers.
- @return Array of amounts filled and fees paid by makers and taker.
+ @return fillResults Array of amounts filled and fees paid by makers and taker.
 
 
 
@@ -2385,7 +2343,7 @@ Executes multiple calls of fillOrder until total amount of takerAsset is sold by
  @param orders Array of order specifications.
  @param takerAssetFillAmount Desired amount of takerAsset to sell.
  @param signatures Proofs that orders have been signed by makers.
- @return Amounts filled and fees paid by makers and taker.
+ @return fillResults Amounts filled and fees paid by makers and taker.
 
 
 
@@ -2397,7 +2355,7 @@ Executes multiple calls of fillOrder until total amount of makerAsset is bought 
  @param orders Array of order specifications.
  @param makerAssetFillAmount Desired amount of makerAsset to buy.
  @param signatures Proofs that orders have been signed by makers.
- @return Amounts filled and fees paid by makers and taker.
+ @return fillResults Amounts filled and fees paid by makers and taker.
 
 
 
@@ -2408,7 +2366,7 @@ Calls marketSellOrdersNoThrow then reverts if &lt; takerAssetFillAmount has been
  @param orders Array of order specifications.
  @param takerAssetFillAmount Minimum amount of takerAsset to sell.
  @param signatures Proofs that orders have been signed by makers.
- @return Amounts filled and fees paid by makers and taker.
+ @return fillResults Amounts filled and fees paid by makers and taker.
 
 
 
@@ -2419,7 +2377,7 @@ Calls marketBuyOrdersNoThrow then reverts if &lt; makerAssetFillAmount has been 
  @param orders Array of order specifications.
  @param makerAssetFillAmount Minimum amount of makerAsset to buy.
  @param signatures Proofs that orders have been signed by makers.
- @return Amounts filled and fees paid by makers and taker.
+ @return fillResults Amounts filled and fees paid by makers and taker.
 
 
 
@@ -2435,7 +2393,7 @@ Executes multiple calls of cancelOrder.
 Fills the input order. Reverts if exact takerAssetFillAmount not filled.
  @param order Order struct containing order specifications.
  @param takerAssetFillAmount Desired amount of takerAsset to sell.
- @param signature Proof that order has been created by maker.
+ @param fillResults ignature Proof that order has been created by maker.
 
 
 
@@ -2446,7 +2404,7 @@ Fills the input order.
  @param order Order struct containing order specifications.
  @param takerAssetFillAmount Desired amount of takerAsset to sell.
  @param signature Proof that order has been created by maker.
- @return Amounts filled and fees paid by maker and taker.
+ @return fillResults Amounts filled and fees paid by maker and taker.
 
 
 
@@ -2468,7 +2426,8 @@ Fills the input order.
 
 <h4><a class="anchor" aria-hidden="true" id="Ownable.transferOwnership(address)"></a><code class="function-signature">transferOwnership(address newOwner)</code><span class="function-visibility">public</span></h4>
 
-
+Change the owner of this contract.
+ @param newOwner New owner address.
 
 
 

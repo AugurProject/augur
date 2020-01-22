@@ -22,7 +22,8 @@ import {
   BrowserMesh,
   EmptyConnector,
   HotLoadMarketInfo,
-  DisputeWindow
+  DisputeWindow,
+  ZeroX
 } from '@augurproject/sdk';
 import { BigNumber } from 'bignumber.js';
 import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis/build';
@@ -46,7 +47,12 @@ export class ContractAPI {
   ) {
     const signer = await makeSigner(account, provider);
     const dependencies = makeGnosisDependencies(provider, gnosisRelay, signer, addresses.Cash, new BigNumber(0), null, account.publicKey);
-    const augur = await Augur.create(provider, dependencies, addresses, connector, gnosisRelay, true, meshClient, meshBrowser);
+    const augur = await Augur.create(provider, dependencies, addresses, connector, true);
+    if (meshClient || meshBrowser) {
+      augur.zeroX = new ZeroX(augur);
+      augur.zeroX.rpc = meshClient;
+      augur.zeroX.mesh = meshBrowser;
+    }
     return new ContractAPI(augur, provider, dependencies, account);
   }
 

@@ -964,6 +964,49 @@
 			"type": "function"
 		}
 	],
+	"ChaiBridge": [
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "from",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "to",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "amount",
+					"type": "uint256"
+				},
+				{
+					"internalType": "bytes",
+					"name": "",
+					"type": "bytes"
+				}
+			],
+			"name": "bridgeTransferFrom",
+			"outputs": [
+				{
+					"internalType": "bytes4",
+					"name": "success",
+					"type": "bytes4"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		}
+	],
 	"Coordinator": [
 		{
 			"inputs": [
@@ -1404,11 +1447,31 @@
 					"internalType": "address",
 					"name": "_exchange",
 					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_chaiBridge",
+					"type": "address"
 				}
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
 			"type": "constructor"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "EIP712_EXCHANGE_DOMAIN_HASH",
+			"outputs": [
+				{
+					"internalType": "bytes32",
+					"name": "",
+					"type": "bytes32"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
 		},
 		{
 			"constant": true,
@@ -1461,6 +1524,27 @@
 					"internalType": "address",
 					"name": "assetProxyAddress",
 					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "bytes",
+					"name": "assetData",
+					"type": "bytes"
+				}
+			],
+			"name": "decodeAssetProxyId",
+			"outputs": [
+				{
+					"internalType": "bytes4",
+					"name": "assetProxyId",
+					"type": "bytes4"
 				}
 			],
 			"payable": false,
@@ -1595,6 +1679,42 @@
 					"internalType": "address",
 					"name": "tokenAddress",
 					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "bytes",
+					"name": "assetData",
+					"type": "bytes"
+				}
+			],
+			"name": "decodeERC20BridgeAssetData",
+			"outputs": [
+				{
+					"internalType": "bytes4",
+					"name": "assetProxyId",
+					"type": "bytes4"
+				},
+				{
+					"internalType": "address",
+					"name": "tokenAddress",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "bridgeAddress",
+					"type": "address"
+				},
+				{
+					"internalType": "bytes",
+					"name": "bridgeData",
+					"type": "bytes"
 				}
 			],
 			"payable": false,
@@ -1937,6 +2057,42 @@
 			"inputs": [
 				{
 					"internalType": "bytes",
+					"name": "assetData",
+					"type": "bytes"
+				}
+			],
+			"name": "decodeStaticCallAssetData",
+			"outputs": [
+				{
+					"internalType": "bytes4",
+					"name": "assetProxyId",
+					"type": "bytes4"
+				},
+				{
+					"internalType": "address",
+					"name": "staticCallTargetAddress",
+					"type": "address"
+				},
+				{
+					"internalType": "bytes",
+					"name": "staticCallData",
+					"type": "bytes"
+				},
+				{
+					"internalType": "bytes32",
+					"name": "expectedReturnDataHash",
+					"type": "bytes32"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "bytes",
 					"name": "encoded",
 					"type": "bytes"
 				}
@@ -2206,6 +2362,37 @@
 			"inputs": [
 				{
 					"internalType": "address",
+					"name": "staticCallTargetAddress",
+					"type": "address"
+				},
+				{
+					"internalType": "bytes",
+					"name": "staticCallData",
+					"type": "bytes"
+				},
+				{
+					"internalType": "bytes32",
+					"name": "expectedReturnDataHash",
+					"type": "bytes32"
+				}
+			],
+			"name": "encodeStaticCallAssetData",
+			"outputs": [
+				{
+					"internalType": "bytes",
+					"name": "assetData",
+					"type": "bytes"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
 					"name": "ownerAddress",
 					"type": "address"
 				},
@@ -2224,11 +2411,11 @@
 				}
 			],
 			"payable": false,
-			"stateMutability": "view",
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
-			"constant": true,
+			"constant": false,
 			"inputs": [
 				{
 					"internalType": "address",
@@ -2250,11 +2437,11 @@
 				}
 			],
 			"payable": false,
-			"stateMutability": "view",
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
-			"constant": true,
+			"constant": false,
 			"inputs": [
 				{
 					"internalType": "address",
@@ -2281,11 +2468,11 @@
 				}
 			],
 			"payable": false,
-			"stateMutability": "view",
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
-			"constant": true,
+			"constant": false,
 			"inputs": [
 				{
 					"internalType": "address",
@@ -2307,11 +2494,11 @@
 				}
 			],
 			"payable": false,
-			"stateMutability": "view",
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
-			"constant": true,
+			"constant": false,
 			"inputs": [
 				{
 					"internalType": "address",
@@ -2333,11 +2520,11 @@
 				}
 			],
 			"payable": false,
-			"stateMutability": "view",
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
-			"constant": true,
+			"constant": false,
 			"inputs": [
 				{
 					"internalType": "address",
@@ -2364,7 +2551,7 @@
 				}
 			],
 			"payable": false,
-			"stateMutability": "view",
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -2469,6 +2656,109 @@
 					"type": "tuple"
 				},
 				{
+					"internalType": "uint256",
+					"name": "chainId",
+					"type": "uint256"
+				},
+				{
+					"internalType": "address",
+					"name": "exchange",
+					"type": "address"
+				}
+			],
+			"name": "getOrderHash",
+			"outputs": [
+				{
+					"internalType": "bytes32",
+					"name": "orderHash",
+					"type": "bytes32"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"components": [
+						{
+							"internalType": "address",
+							"name": "makerAddress",
+							"type": "address"
+						},
+						{
+							"internalType": "address",
+							"name": "takerAddress",
+							"type": "address"
+						},
+						{
+							"internalType": "address",
+							"name": "feeRecipientAddress",
+							"type": "address"
+						},
+						{
+							"internalType": "address",
+							"name": "senderAddress",
+							"type": "address"
+						},
+						{
+							"internalType": "uint256",
+							"name": "makerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "takerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "makerFee",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "takerFee",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"internalType": "bytes",
+							"name": "makerAssetData",
+							"type": "bytes"
+						},
+						{
+							"internalType": "bytes",
+							"name": "takerAssetData",
+							"type": "bytes"
+						},
+						{
+							"internalType": "bytes",
+							"name": "makerFeeAssetData",
+							"type": "bytes"
+						},
+						{
+							"internalType": "bytes",
+							"name": "takerFeeAssetData",
+							"type": "bytes"
+						}
+					],
+					"internalType": "struct LibOrder.Order",
+					"name": "order",
+					"type": "tuple"
+				},
+				{
 					"internalType": "bytes",
 					"name": "signature",
 					"type": "bytes"
@@ -2479,7 +2769,7 @@
 				{
 					"components": [
 						{
-							"internalType": "uint8",
+							"internalType": "enum LibOrder.OrderStatus",
 							"name": "orderStatus",
 							"type": "uint8"
 						},
@@ -2510,11 +2800,11 @@
 				}
 			],
 			"payable": false,
-			"stateMutability": "view",
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
-			"constant": true,
+			"constant": false,
 			"inputs": [
 				{
 					"components": [
@@ -2604,7 +2894,7 @@
 				{
 					"components": [
 						{
-							"internalType": "uint8",
+							"internalType": "enum LibOrder.OrderStatus",
 							"name": "orderStatus",
 							"type": "uint8"
 						},
@@ -2635,7 +2925,110 @@
 				}
 			],
 			"payable": false,
-			"stateMutability": "view",
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"components": [
+						{
+							"internalType": "address",
+							"name": "makerAddress",
+							"type": "address"
+						},
+						{
+							"internalType": "address",
+							"name": "takerAddress",
+							"type": "address"
+						},
+						{
+							"internalType": "address",
+							"name": "feeRecipientAddress",
+							"type": "address"
+						},
+						{
+							"internalType": "address",
+							"name": "senderAddress",
+							"type": "address"
+						},
+						{
+							"internalType": "uint256",
+							"name": "makerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "takerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "makerFee",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "takerFee",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"internalType": "bytes",
+							"name": "makerAssetData",
+							"type": "bytes"
+						},
+						{
+							"internalType": "bytes",
+							"name": "takerAssetData",
+							"type": "bytes"
+						},
+						{
+							"internalType": "bytes",
+							"name": "makerFeeAssetData",
+							"type": "bytes"
+						},
+						{
+							"internalType": "bytes",
+							"name": "takerFeeAssetData",
+							"type": "bytes"
+						}
+					],
+					"internalType": "struct LibOrder.Order",
+					"name": "order",
+					"type": "tuple"
+				},
+				{
+					"internalType": "address",
+					"name": "takerAddress",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "takerAssetFillAmount",
+					"type": "uint256"
+				}
+			],
+			"name": "getSimulatedOrderMakerTransferResults",
+			"outputs": [
+				{
+					"internalType": "enum OrderTransferSimulationUtils.OrderTransferResults",
+					"name": "orderTransferResults",
+					"type": "uint8"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -2848,6 +3241,64 @@
 			"constant": true,
 			"inputs": [
 				{
+					"components": [
+						{
+							"internalType": "uint256",
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "gasPrice",
+							"type": "uint256"
+						},
+						{
+							"internalType": "address",
+							"name": "signerAddress",
+							"type": "address"
+						},
+						{
+							"internalType": "bytes",
+							"name": "data",
+							"type": "bytes"
+						}
+					],
+					"internalType": "struct LibZeroExTransaction.ZeroExTransaction",
+					"name": "transaction",
+					"type": "tuple"
+				},
+				{
+					"internalType": "uint256",
+					"name": "chainId",
+					"type": "uint256"
+				},
+				{
+					"internalType": "address",
+					"name": "exchange",
+					"type": "address"
+				}
+			],
+			"name": "getTransactionHash",
+			"outputs": [
+				{
+					"internalType": "bytes32",
+					"name": "transactionHash",
+					"type": "bytes32"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
 					"internalType": "address",
 					"name": "ownerAddress",
 					"type": "address"
@@ -2867,7 +3318,22 @@
 				}
 			],
 			"payable": false,
-			"stateMutability": "view",
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "bytes",
+					"name": "assetData",
+					"type": "bytes"
+				}
+			],
+			"name": "revertIfInvalidAssetData",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "pure",
 			"type": "function"
 		}
 	],
@@ -3343,21 +3809,6 @@
 		{
 			"constant": true,
 			"inputs": [],
-			"name": "supply",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
 			"name": "symbol",
 			"outputs": [
 				{
@@ -3377,7 +3828,7 @@
 			"outputs": [
 				{
 					"internalType": "uint256",
-					"name": "supply",
+					"name": "",
 					"type": "uint256"
 				}
 			],
@@ -3917,7 +4368,7 @@
 			"outputs": [
 				{
 					"internalType": "bytes[]",
-					"name": "",
+					"name": "returnData",
 					"type": "bytes[]"
 				}
 			],
@@ -5321,7 +5772,7 @@
 			"outputs": [
 				{
 					"internalType": "address",
-					"name": "",
+					"name": "assetProxy",
 					"type": "address"
 				}
 			],
@@ -5415,7 +5866,7 @@
 				{
 					"components": [
 						{
-							"internalType": "uint8",
+							"internalType": "enum LibOrder.OrderStatus",
 							"name": "orderStatus",
 							"type": "uint8"
 						},
@@ -17371,6 +17822,21 @@
 		},
 		{
 			"constant": true,
+			"inputs": [],
+			"name": "lastSweepTime",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
 			"inputs": [
 				{
 					"internalType": "address",
@@ -17777,6 +18243,11 @@
 					"type": "bytes32"
 				},
 				{
+					"internalType": "address",
+					"name": "_account",
+					"type": "address"
+				},
+				{
 					"internalType": "uint256",
 					"name": "_salt",
 					"type": "uint256"
@@ -17791,7 +18262,7 @@
 				}
 			],
 			"payable": false,
-			"stateMutability": "pure",
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -21127,7 +21598,7 @@
 		{
 			"constant": true,
 			"inputs": [],
-			"name": "totalAffiliateFeesAttoCash",
+			"name": "totalPreFinalizationAffiliateFeesAttoCash",
 			"outputs": [
 				{
 					"internalType": "uint256",

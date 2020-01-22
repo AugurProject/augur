@@ -6,7 +6,7 @@ import { selectMarket } from 'modules/markets/selectors/market';
 const mapStateToProps = (state, ownProps) => {
   const marketId = ownProps.id;
   const market = selectMarket(marketId);
-  if (!market) return null;
+  if (!market) return {};
 
   return {
     description: market.description || '',

@@ -25,6 +25,7 @@ import {
   WarpSync,
   EthExchange,
   // 0x
+  ChaiBridge,
   DevUtils,
   Exchange,
   ERC1155Proxy,
@@ -229,6 +230,8 @@ Deploying to: ${networkConfiguration.networkName}
               'Exchange',
               'Coordinator',
               'CoordinatorRegistry',
+              'MultiAssetProxy',
+              'ChaiBridge',
               'DevUtils',
               'WETH9',
               'ZRXToken',
@@ -339,8 +342,11 @@ Deploying to: ${networkConfiguration.networkName}
       const coordinatorRegistryContract = await this.contracts.get('CoordinatorRegistry');
       coordinatorRegistryContract.address = await this.uploadAndAddToAugur(coordinatorRegistryContract, 'CoordinatorRegistry');
 
+      const chaiBridgeContract = this.contracts.get('ChaiBridge');
+      chaiBridgeContract.address = await this.uploadAndAddToAugur(chaiBridgeContract, 'ChaiBridge', []);
+
       const devUtilsContract = this.contracts.get('DevUtils');
-      devUtilsContract.address = await this.uploadAndAddToAugur(devUtilsContract, 'DevUtils', [zeroXExchangeContract.address]);
+      devUtilsContract.address = await this.uploadAndAddToAugur(devUtilsContract, 'DevUtils', [zeroXExchangeContract.address, chaiBridgeContract.address]);
 
       const weth9Contract = this.contracts.get('WETH9');
       weth9Contract.address = await this.uploadAndAddToAugur(weth9Contract, 'WETH9');
@@ -413,6 +419,7 @@ Deploying to: ${networkConfiguration.networkName}
           'Exchange',
           'Coordinator',
           'CoordinatorRegistry',
+          'ChaiBridge',
           'DevUtils',
           'WETH9',
           'ZRXToken',
@@ -591,6 +598,7 @@ Deploying to: ${networkConfiguration.networkName}
         mapping['Exchange'] = this.contracts.get('Exchange').address!;
         mapping['Coordinator'] = this.contracts.get('Coordinator').address!;
         mapping['CoordinatorRegistry'] = this.contracts.get('CoordinatorRegistry').address!;
+        mapping['ChaiBridge'] = this.contracts.get('ChaiBridge').address!;
         mapping['DevUtils'] = this.contracts.get('DevUtils').address!;
         mapping['WETH9'] = this.contracts.get('WETH9').address!;
         mapping['ZRXToken'] = this.contracts.get('ZRXToken').address!;

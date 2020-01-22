@@ -7,38 +7,12 @@
 
   > div {
     min-width: 250px;
-    height: @size-36;
-    background: @color-secondary-action;
-    border-color: @color-secondary-action-outline;
 
     > button {
-      .text-9-bold;
-
-      color: @color-primary-text;
-      background: @color-secondary-action;
-
-      > span {
-        font-weight: bold;
-      }
-
       > span::before {
         content: 'Sort By:';
-        font-weight: normal;
         padding-right: @size-4;
       }
-
-      > svg {
-        height: @size-12;
-        width: @size-12;
-
-        > path {
-          stroke: @color-primary-text;
-        }
-      }
     }
-  }
-
-  > label {
-    margin: 0;
   }
 }
