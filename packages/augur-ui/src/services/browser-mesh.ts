@@ -4,7 +4,7 @@ import {
   ContractAddresses as ZeroXContractAddresses,
 } from '@0x/mesh-browser';
 import { getAddressesForNetwork, NetworkId } from '@augurproject/artifacts';
-import { SDKConfiguration } from '@augurproject/sdk';
+import { SDKConfiguration, ZeroX } from '@augurproject/sdk';
 
 type BrowserMeshErrorFunction = (err: Error, mesh: Mesh) => void;
 /**
@@ -44,7 +44,7 @@ function createBrowserMeshConfig(
 
 function createBrowserMeshRestartFunction(
   meshConfig: Config,
-  onRestart?: BrowserMeshErrorFunction
+  zeroX: ZeroX
 ) {
   return err => {
     console.log('Browser mesh error: ', err.message, err.stack);
@@ -65,17 +65,17 @@ function createBrowserMeshRestartFunction(
           true
         )
       );
-      mesh.onError(createBrowserMeshRestartFunction(meshConfig, onRestart));
+      mesh.onError(createBrowserMeshRestartFunction(meshConfig, zeroX));
       mesh.startAsync();
-      onRestart(err, mesh);
+      zeroX.mesh = mesh;
     }
   };
 }
 
 export function createBrowserMesh(
   config: SDKConfiguration,
-  onRestart?: BrowserMeshErrorFunction
-): Mesh {
+  zeroX: ZeroX
+) {
   if (!config.zeroX || !config.zeroX.mesh || !config.zeroX.mesh.enabled) {
     throw new Error(`Attempting to create browser mesh without it being enabled in config ${JSON.stringify(config)}`);
   }
@@ -88,7 +88,7 @@ export function createBrowserMesh(
   );
 
   const mesh = new Mesh(meshConfig);
-  mesh.onError(createBrowserMeshRestartFunction(meshConfig, onRestart));
+  mesh.onError(createBrowserMeshRestartFunction(meshConfig, zeroX));
   mesh.startAsync();
-  return mesh;
+  zeroX.mesh = mesh;
 }

@@ -4,6 +4,7 @@ import { EthersSigner } from 'contract-dependencies-ethers';
 import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis';
 import { JsonRpcProvider } from 'ethers/providers';
 import { ContractEvents } from '../api/ContractEvents';
+import { ZeroX } from '../api/ZeroX';
 import { Augur } from '../Augur';
 import { BaseConnector, EmptyConnector } from '../connector';
 import { Controller } from './Controller';
@@ -49,6 +50,7 @@ export async function createClient(
   signer?: EthersSigner,
   provider?: EthersProvider,
   enableFlexSearch = false,
+  createBrowserMesh?: (config: SDKConfiguration, zeroX: ZeroX) => void
   ): Promise<Augur> {
 
   const ethersProvider = provider || new EthersProvider( new JsonRpcProvider(config.ethereum.http), 10, 0, 40);
@@ -60,11 +62,30 @@ export async function createClient(
     config.gnosis.http
   );
 
+  let zeroX: ZeroX | null = null;
+  if (config.zeroX) {
+    const rpcEndpoint = (config.zeroX.rpc && config.zeroX.rpc.enabled) ? config.zeroX.rpc.ws : undefined;
+    zeroX = new ZeroX(rpcEndpoint)
+
+    if (config.zeroX.mesh && config.zeroX.mesh.enabled && createBrowserMesh) {
+      // This function is passed in and takes care of assigning it to the
+      // zeroX instance. This is largely due to the need to have special
+      // casing for if the mesh dies and we want to restart it. This is
+      // passed in as a function so all we need in this file is an
+      // interface instead of actually import @0x/mesh-browser -- since
+      // that would attempt to start the wasm client in nodejs and cause
+      // everything to die.
+      createBrowserMesh(config, zeroX);
+    }
+  }
+
+  console.log(`ZeroX Enabled [create-api]: ${!!zeroX}`);
   const client = await Augur.create(
     ethersProvider,
     contractDependencies,
     addresses,
     connector,
+    zeroX,
     enableFlexSearch
   );
 
@@ -72,6 +93,7 @@ export async function createClient(
 }
 
 export async function createServer(config: SDKConfiguration, client?: Augur, account?: string): Promise<{ api: API, controller: Controller }> {
+  console.log('Creating Server');
   // Validate the config -- check that the syncing key exits and use defaults if not
   config = {
     syncing: {
@@ -87,6 +109,7 @@ export async function createServer(config: SDKConfiguration, client?: Augur, acc
   // functionality since that was really originally designed for client connection
   // over a connector TO the server.
   if (!client) {
+    console.log('Creating a new client');
     const connector = new EmptyConnector();
     client = await createClient(config, connector, account, undefined, undefined, true);
   }

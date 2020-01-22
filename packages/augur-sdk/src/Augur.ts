@@ -35,21 +35,16 @@ import { Address } from './state/logs/types';
 import { Subscriptions } from './subscriptions';
 
 export class Augur<TProvider extends Provider = Provider> {
-  readonly provider: TProvider;
-  readonly dependencies: ContractDependenciesGnosis;
-  readonly networkId: NetworkId;
+  syncableFlexSearch: SyncableFlexSearch;
+
   readonly contractEvents: ContractEvents;
-  readonly addresses: ContractAddresses;
   readonly contracts: Contracts;
   readonly onChainTrade: OnChainTrade;
-  zeroX: ZeroX;
   readonly trade: Trade;
   readonly market: Market;
   readonly gnosis: Gnosis;
 
   readonly universe: Universe;
-  syncableFlexSearch: SyncableFlexSearch;
-  connector: BaseConnector;
   readonly liquidity: Liquidity;
   readonly hotLoading: HotLoading;
   readonly events: Subscriptions;
@@ -60,12 +55,25 @@ export class Augur<TProvider extends Provider = Provider> {
   private txFailureCallback: TXStatusCallback;
   private txRelayerDownCallback: TXStatusCallback;
 
+  get zeroX(): ZeroX {
+    return this._zeroX;
+  }
+
+  set zeroX(zeroX: ZeroX) {
+    if (this._zeroX) {
+      this._zeroX.disconnect();
+    }
+
+    this._zeroX = null;
+  }
+
   constructor(
-    provider: TProvider,
-    dependencies: ContractDependenciesGnosis,
-    networkId: NetworkId,
-    addresses: ContractAddresses,
-    connector: BaseConnector = new EmptyConnector(),
+    readonly provider: TProvider,
+    readonly dependencies: ContractDependenciesGnosis,
+    readonly networkId: NetworkId,
+    readonly addresses: ContractAddresses,
+    public connector: BaseConnector = new EmptyConnector(),
+    private _zeroX = null,
     enableFlexSearch = false
   ) {
     this.provider = provider;
@@ -105,6 +113,7 @@ export class Augur<TProvider extends Provider = Provider> {
     dependencies: ContractDependenciesGnosis,
     addresses: ContractAddresses,
     connector: BaseConnector = new SingleThreadConnector(),
+    zeroX: ZeroX = null,
     enableFlexSearch = false
   ): Promise<Augur<Provider>> {
     const networkId = await provider.getNetworkId();
@@ -114,9 +123,11 @@ export class Augur<TProvider extends Provider = Provider> {
       networkId,
       addresses,
       connector,
+      zeroX,
       enableFlexSearch
     );
     connector.client = client;
+    if(zeroX) zeroX.client = client;
     await client.contracts.setReputationToken(networkId);
     return client;
   }
@@ -265,6 +276,7 @@ export class Augur<TProvider extends Provider = Provider> {
   }
 
   async disconnect(): Promise<any> {
+    this.zeroX = null;
     this.provider.disconnect();
     this.connector.disconnect();
   }
