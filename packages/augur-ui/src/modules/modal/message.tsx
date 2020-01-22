@@ -23,22 +23,26 @@ import {
   Subheader,
   Title,
 } from 'modules/modal/common';
-import { DiscordLink, LinearPropertyLabelProps } from 'modules/common/labels';
-
-import Styles from 'modules/modal/modal.styles.less';
 import { ExplainerBlock } from 'modules/create-market/components/common';
 import { EventDetailsContent } from 'modules/create-market/constants';
+import {
+  LinearPropertyLabelProps,
+  DiscordLink,
+  AddFundsHelp,
+} from 'modules/common/labels';
+
+import Styles from 'modules/modal/modal.styles.less';
 
 interface MessageProps {
   closeAction: Function;
   title: string;
-  buttons: Array<DefaultButtonProps>;
+  buttons: DefaultButtonProps[];
   content?: ContentProps;
   alertMessage?: AlertMessageProps;
   marketTitle?: string;
   callToAction?: string;
   description?: DescriptionProps;
-  breakdown?: Array<LinearPropertyLabelProps>;
+  breakdown?: LinearPropertyLabelProps[];
   readableAddress?: ReadableAddressProps;
   depositInfo?: DepositInfoProps;
   marketReview?: MarketReviewProps;
@@ -47,6 +51,9 @@ interface MessageProps {
   subheader_2?: string;
   showDiscordLink?: boolean;
   invalidMarketRules?: boolean;
+  showAddFundsHelp?: boolean;
+  walletType?: string;
+  showAddFundsModal?: Function;
 }
 
 export const Message = ({
@@ -67,6 +74,9 @@ export const Message = ({
   subheader_2,
   showDiscordLink,
   invalidMarketRules,
+  showAddFundsHelp = false,
+  walletType,
+  showAddFundsModal,
 }: MessageProps) => (
   <div className={Styles.Message}>
     <Title title={title} closeAction={closeAction} />
@@ -76,6 +86,7 @@ export const Message = ({
       {callToAction && <CallToAction callToAction={callToAction} />}
       {content && <Content content={content} />}
       {description && <Description description={description} />}
+      {showAddFundsHelp && <AddFundsHelp showAddFundsModal={showAddFundsModal} walletType={walletType} />}
       {showDiscordLink && <DiscordLink label='Please try again. If the issue persists please report it on ' /> }
       {subheader && <Subheader subheaderContent={subheader} />}
       {subheader_2 && <Subheader subheaderContent={subheader_2} />}
