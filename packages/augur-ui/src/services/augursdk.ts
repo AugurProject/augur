@@ -19,6 +19,7 @@ import { analytics } from './analytics';
 import { isLocalHost } from 'utils/is-localhost';
 import { Mesh } from '@0x/mesh-browser';
 import { BrowserMesh, createBrowserMesh } from './browser-mesh';
+import { EthersProvider } from '@augurproject/ethersjs-provider';
 
 export class SDK {
   sdk: Augur | null = null;
@@ -60,7 +61,7 @@ export class SDK {
       }
     };
 
-    const ethersProvider = new EthersProvider(provider);
+    const ethersProvider = new EthersProvider(provider, 5, 0, 40);
 
     if (config.sdk && config.sdk.enabled) {
       const connector = new Connectors.WebsocketConnector();
