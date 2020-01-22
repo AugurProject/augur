@@ -216,6 +216,7 @@ export class ContractCompiler {
                 "Exchange",
                 "Coordinator",
                 "CoordinatorRegistry",
+                "ChaiBridge",
                 "DevUtils",
                 "WETH9",
                 "ZRXToken",

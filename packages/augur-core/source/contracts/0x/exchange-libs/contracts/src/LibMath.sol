@@ -19,7 +19,7 @@
 pragma solidity 0.5.15;
 
 import "ROOT/0x/utils/contracts/src/LibSafeMath.sol";
-import "ROOT/0x/utils/contracts/src/LibRichErrors.sol";
+
 import "ROOT/0x/exchange-libs/contracts/src/LibMathRichErrors.sol";
 
 
@@ -48,13 +48,6 @@ library LibMath {
                 target
         )) {
             revert();
-            /*
-            LibRichErrors.rrevert(LibMathRichErrors.RoundingError(
-                numerator,
-                denominator,
-                target
-            ));
-            */
         }
 
         partialAmount = numerator.safeMul(target).safeDiv(denominator);

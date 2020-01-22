@@ -1,6 +1,6 @@
 pragma solidity 0.5.15;
 
-import "ROOT/0x/utils/contracts/src/LibRichErrors.sol";
+
 import "ROOT/0x/utils/contracts/src/LibSafeMathRichErrors.sol";
 
 
@@ -40,13 +40,6 @@ library LibSafeMath {
     {
         if (b > a) {
             revert();
-            /*
-            LibRichErrors.rrevert(LibSafeMathRichErrors.Uint256BinOpError(
-                LibSafeMathRichErrors.BinOpErrorCodes.SUBTRACTION_UNDERFLOW,
-                a,
-                b
-            ));
-            */
         }
         return a - b;
     }
@@ -59,13 +52,6 @@ library LibSafeMath {
         uint256 c = a + b;
         if (c < a) {
             revert();
-            /*
-            LibRichErrors.rrevert(LibSafeMathRichErrors.Uint256BinOpError(
-                LibSafeMathRichErrors.BinOpErrorCodes.ADDITION_OVERFLOW,
-                a,
-                b
-            ));
-            */
         }
         return c;
     }

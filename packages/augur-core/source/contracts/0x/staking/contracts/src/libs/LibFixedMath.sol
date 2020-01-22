@@ -322,7 +322,7 @@ library LibFixedMath {
             return 0;
         }
         c = a * b;
-        if (c / a != b) {
+        if (c / a != b || c / b != a) {
             revert();
         }
     }

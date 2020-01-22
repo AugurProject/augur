@@ -861,6 +861,7 @@ export const InputFactory = (props: InputFactoryProps) => {
     return (
       <FormDropdown
         options={input.values}
+        sort={!input.noSort}
         defaultValue={input.userInput}
         disabled={input.values.length === 0}
         staticLabel={input.values.length === 0 ? input.defaultLabel : input.placeholder}
@@ -893,7 +894,6 @@ export const InputFactory = (props: InputFactoryProps) => {
           }
           updateData(value);
         }}
-        sort
       />
     );
   } else {

@@ -19,7 +19,7 @@
 pragma solidity 0.5.15;
 pragma experimental ABIEncoderV2;
 
-import "ROOT/0x/utils/contracts/src/LibRichErrors.sol";
+
 import "ROOT/0x/utils/contracts/src/LibSafeMath.sol";
 import "ROOT/0x/staking/contracts/src/libs/LibStakingRichErrors.sol";
 import "ROOT/0x/staking/contracts/src/interfaces/IStructs.sol";
@@ -155,8 +155,8 @@ contract MixinStakingPool is
         if (newOperatorShare > PPM_DENOMINATOR) {
             // operator share must be a valid fraction
             revert();
-        } else if (newOperatorShare >= currentOperatorShare) {
-            // new share must be less than the current share
+        } else if (newOperatorShare > currentOperatorShare) {
+            // new share must be less than or equal to the current share
             revert();
         }
     }

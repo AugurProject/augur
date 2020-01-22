@@ -22,7 +22,7 @@ pragma solidity 0.5.15;
 contract Token {
 
     /// @return total amount of tokens
-    function totalSupply() public view returns (uint supply) {}
+    function totalSupply() external view returns (uint supply);
 
     /// @param _owner The address from which the balance will be retrieved
     /// @return The balance
@@ -64,7 +64,7 @@ contract ERC20Token is Token {
         if (balances[msg.sender] >= _value && balances[_to] + _value >= balances[_to]) {
             balances[msg.sender] -= _value;
             balances[_to] += _value;
-          emit Transfer(msg.sender, _to, _value);
+            emit Transfer(msg.sender, _to, _value);
             return true;
         } else { return false; }
     }
@@ -74,7 +74,7 @@ contract ERC20Token is Token {
             balances[_to] += _value;
             balances[_from] -= _value;
             allowed[_from][msg.sender] -= _value;
-          emit Transfer(_from, _to, _value);
+            emit Transfer(_from, _to, _value);
             return true;
         } else { return false; }
     }
@@ -85,7 +85,7 @@ contract ERC20Token is Token {
 
     function approve(address _spender, uint _value) public returns (bool) {
         allowed[msg.sender][_spender] = _value;
-      emit Approval(msg.sender, _spender, _value);
+        emit Approval(msg.sender, _spender, _value);
         return true;
     }
 
@@ -95,7 +95,7 @@ contract ERC20Token is Token {
 
     mapping (address => uint) balances;
     mapping (address => mapping (address => uint)) allowed;
-    uint public supply;
+    uint256 public totalSupply;
 }
 
 
@@ -137,7 +137,7 @@ contract ZRXToken is
 
     // solhint-disable const-name-snakecase
     uint8 constant public decimals = 18;
-    uint256 public supply = 10**27; // 1 billion tokens, 18 decimal places
+    uint256 public totalSupply = 10**27; // 1 billion tokens, 18 decimal places
     string constant public name = "0x Protocol Token";
     string constant public symbol = "ZRX";
     // solhint-enableconst-name-snakecase
@@ -145,6 +145,6 @@ contract ZRXToken is
     constructor()
         public
     {
-        balances[msg.sender] = supply;
+        balances[msg.sender] = totalSupply;
     }
 }

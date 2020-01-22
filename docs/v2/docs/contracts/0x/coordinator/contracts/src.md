@@ -767,22 +767,6 @@ Writes a new length to a byte array.
 
 
 
-### `LibBytesRichErrors`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#LibBytesRichErrors.InvalidByteOperationError(enum LibBytesRichErrors.InvalidByteOperationErrorCodes,uint256,uint256)"><code class="function-signature">InvalidByteOperationError(enum LibBytesRichErrors.InvalidByteOperationErrorCodes errorCode, uint256 offset, uint256 required)</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="LibBytesRichErrors.InvalidByteOperationError(enum LibBytesRichErrors.InvalidByteOperationErrorCodes,uint256,uint256)"></a><code class="function-signature">InvalidByteOperationError(enum LibBytesRichErrors.InvalidByteOperationErrorCodes errorCode, uint256 offset, uint256 required) <span class="return-arrow">→</span> <span class="return-type">bytes</span></code><span class="function-visibility">internal</span></h4>
-
-
-
-
-
-
-
 ### `LibConstants`
 
 
@@ -1106,33 +1090,6 @@ Calculates EIP712 hash of the order struct.
 <h4><a class="anchor" aria-hidden="true" id="LibReentrancyGuardRichErrors.IllegalReentrancyError()"></a><code class="function-signature">IllegalReentrancyError() <span class="return-arrow">→</span> <span class="return-type">bytes</span></code><span class="function-visibility">internal</span></h4>
 
 
-
-
-
-
-
-### `LibRichErrors`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#LibRichErrors.StandardError(string)"><code class="function-signature">StandardError(string message)</code></a></li><li><a href="#LibRichErrors.rrevert(bytes)"><code class="function-signature">rrevert(bytes errorData)</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="LibRichErrors.StandardError(string)"></a><code class="function-signature">StandardError(string message) <span class="return-arrow">→</span> <span class="return-type">bytes</span></code><span class="function-visibility">internal</span></h4>
-
-ABI encode a standard, string revert error payload.
-      This is the same payload that would be included by a `revert(string)`
-      solidity statement. It has the function signature `Error(string)`.
- @param message The error string.
- @return The ABI encoded error.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="LibRichErrors.rrevert(bytes)"></a><code class="function-signature">rrevert(bytes errorData)</code><span class="function-visibility">internal</span></h4>
-
-Reverts an encoded rich revert reason `errorData`.
- @param errorData ABI encoded error data.
 
 
 
