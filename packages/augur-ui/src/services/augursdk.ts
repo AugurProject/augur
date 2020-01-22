@@ -22,10 +22,15 @@ import { BrowserMesh, createBrowserMesh } from './browser-mesh';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 
 export class SDK {
-  sdk: Augur | null = null;
+  client: Augur | null = null;
   isSubscribed = false;
   networkId: NetworkId;
   private signerNetworkId: string;
+
+  // Keeping this here for backward compatibility
+  get sdk() {
+    return this.client;
+  }
 
   async makeClient(
     provider: JsonRpcProvider,
@@ -63,25 +68,18 @@ export class SDK {
 
     const ethersProvider = new EthersProvider(provider, 5, 0, 40);
 
+    let connector = null;
     if (config.sdk && config.sdk.enabled) {
-      const connector = new Connectors.WebsocketConnector();
-      this.sdk = await createClient(config, connector, account, signer, ethersProvider, enableFlexSearch);
-      await connector.connect(config, account)
+      connector = new Connectors.WebsocketConnector();
     } else {
-      // I hate these next 3 lines that connects the SDK and Connector in this way
-      // these shouldn't need to be so coupled.
-      const connector = new Connectors.SingleThreadConnector();
-      this.sdk = await createClient(config, connector, account, signer, ethersProvider, enableFlexSearch);
-      await connector.connect(config);
+      connector = new Connectors.SingleThreadConnector();
+    }
 
-      // Attach the mesh later so that we are doing it fully outside of the backend code
-      // since it will only work in a browser environment
-      if (config.zeroX && config.zeroX.mesh && config.zeroX.mesh.enabled) {
-        connector.mesh = createBrowserMesh(config, (err: Error, mesh: Mesh) => {
-          connector.mesh = mesh;
-        });
-      }
-      this.sdk.events.emit('ZeroX:Ready');
+    this.client = await createClient(config, connector, account, signer, ethersProvider, enableFlexSearch, createBrowserMesh);
+    await connector.connect(config, account)
+
+    if (config.zeroX && (config.zeroX.rpc && config.zeroX.rpc.enabled || config.zeroX.mesh && config.zeroX.mesh.enable)) {
+      this.client.events.emit('ZeroX:Ready');
     }
 
     if (!isEmpty(account)) {
@@ -90,8 +88,8 @@ export class SDK {
 
     // tslint:disable-next-line:ban-ts-ignore
     // @ts-ignore
-    window.AugurSDK = this.sdk;
-    return this.sdk;
+    window.AugurSDK = this.client;
+    return this.client;
   }
 
   /**
@@ -101,8 +99,8 @@ export class SDK {
    * @returns {Promise<void>}
    */
   async getOrCreateGnosisSafe(walletAddress: string): Promise<void | string> {
-    if (this.sdk) {
-      const networkId = await this.sdk.provider.getNetworkId();
+    if (this.client) {
+      const networkId = await this.client.provider.getNetworkId();
       const gnosisLocalstorageItemKey = `gnosis-relay-request-${networkId}-${walletAddress}`;
 
       // Up to UI side to check the localstorage wallet matches the wallet address.
@@ -113,7 +111,7 @@ export class SDK {
         const calculateGnosisSafeAddressParams = JSON.parse(
           calculateGnosisSafeAddressParamsString
         ) as CalculateGnosisSafeAddressParams;
-        const result = await this.sdk.gnosis.getOrCreateGnosisSafe({
+        const result = await this.client.gnosis.getOrCreateGnosisSafe({
           ...calculateGnosisSafeAddressParams,
           owner: walletAddress,
         });
@@ -122,7 +120,7 @@ export class SDK {
         }
         return result.safe;
       } else {
-        const result = await this.sdk.gnosis.getOrCreateGnosisSafe(
+        const result = await this.client.gnosis.getOrCreateGnosisSafe(
           walletAddress
         );
 
@@ -144,8 +142,8 @@ export class SDK {
     useGnosis: boolean,
     updateUser?: Function
   ) {
-    if (this.sdk) {
-      if (signer) this.sdk.signer = signer;
+    if (this.client) {
+      if (signer) this.client.signer = signer;
       this.signerNetworkId = signerNetworkId;
       if (!isLocalHost()) {
         analytics.identify(address, { address, signerNetworkId });
@@ -156,23 +154,23 @@ export class SDK {
           address
         )) as string;
 
-        this.sdk.setUseGnosisSafe(true);
-        this.sdk.setUseGnosisRelay(true);
-        this.sdk.setGnosisSafeAddress(safeAddress);
+        this.client.setUseGnosisSafe(true);
+        this.client.setUseGnosisRelay(true);
+        this.client.setGnosisSafeAddress(safeAddress);
         updateUser(safeAddress);
       }
     }
   }
 
   async destroy() {
-    unListenToEvents(this.sdk);
+    unListenToEvents(this.client);
     this.isSubscribed = false;
-    this.sdk = null;
+    this.client = null;
   }
 
   get(): Augur {
-    if (this.sdk) {
-      return this.sdk;
+    if (this.client) {
+      return this.client;
     }
     throw new Error('API must be initialized before use.');
   }

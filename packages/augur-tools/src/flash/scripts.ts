@@ -448,7 +448,7 @@ export function addScripts(flash: FlashSession) {
       const market = String(args.marketId);
       const mesh = args.meshEndpoint as string || undefined;
       const meshEndpoint = mesh ? mesh : endpoint;
-      const user = await this.ensureUser(this.network, true, true, null, meshEndpoint, true);
+      const user = await this.ensureUser(this.network, false, true, null, meshEndpoint, true);
       const skipFaucetApproval = args.skipFaucetOrApproval as boolean;
       if (!skipFaucetApproval) {
         await user.faucet(new BigNumber(10).pow(18).multipliedBy(1000000));
@@ -536,7 +536,7 @@ export function addScripts(flash: FlashSession) {
       const numOutcomes = Number(args.numOutcomes);
       const mesh = args.meshEndpoint as string || undefined;
       const meshEndpoint = mesh ? mesh : endpoint;
-      const user = await this.ensureUser(this.network, true, true, null, meshEndpoint, true);
+      const user = await this.ensureUser(this.network, false, true, null, meshEndpoint, true);
       const skipFaucetApproval = args.skipFaucetOrApproval as boolean;
       if (!skipFaucetApproval) {
         await user.faucet(new BigNumber(10).pow(18).multipliedBy(1000000));
@@ -675,7 +675,7 @@ export function addScripts(flash: FlashSession) {
       const market = String(args.marketId);
       const mesh = args.meshEndpoint as string || undefined;
       const meshEndpoint = mesh ? mesh : endpoint;
-      const user = await this.ensureUser(this.network, true, true, null, meshEndpoint, true);
+      const user = await this.ensureUser(this.network, false, true, null, meshEndpoint, true);
       const skipFaucetApproval = args.skipFaucetOrApproval as boolean;
       if (!skipFaucetApproval) {
         await user.faucet(new BigNumber(10).pow(18).multipliedBy(1000000));
@@ -912,9 +912,9 @@ export function addScripts(flash: FlashSession) {
       let user = null;
 
       if (isZeroX) {
-        user = await this.ensureUser(null, true, true, address, endpoint, true);
+        user = await this.ensureUser(null, false, true, address, endpoint, true);
       } else {
-        user = await this.ensureUser(null, true, true, address);
+        user = await this.ensureUser(null, false, true, address);
       }
       const skipFaucetOrApproval = args.skipFaucetOrApproval as boolean;
       if (!skipFaucetOrApproval) {
@@ -970,6 +970,7 @@ export function addScripts(flash: FlashSession) {
           expirationTime,
         };
         try {
+          this.log('Placing or filling order')
           result = fillOrder ? await user.augur.placeTrade(params) : await user.placeZeroXOrder(params)
         } catch(e) {
           this.log(e);

@@ -15,16 +15,9 @@ export class DirectConnector extends BaseConnector {
   }
 
   async connect(config: SDKConfiguration, account?: string): Promise<void> {
-    if (config.zeroX) {
-      this.client.zeroX = new ZeroX(
-        this.client,
-        config.zeroX.rpc ? config.zeroX.rpc.ws : undefined
-      );
-    }
   }
 
-  async disconnect(): Promise<any> {
-    return true;
+  async disconnect(): Promise<void> {
   }
 
   // bind API calls
