@@ -36,6 +36,8 @@ interface MarketsListFiltersProps {
 const MarketsListFilters = (props: MarketsListFiltersProps) => {
   useEffect(() => {
     const filterOptionsFromQuery = parseQuery(props.location.search);
+    console.log('filterOptionsFromQuery', filterOptionsFromQuery);
+    console.log('props', props);
     if (
       filterOptionsFromQuery.maxFee &&
       filterOptionsFromQuery.maxFee !== props.maxFee
@@ -43,16 +45,22 @@ const MarketsListFilters = (props: MarketsListFiltersProps) => {
       props.updateMaxFee(filterOptionsFromQuery.maxFee);
     }
     if (
-      filterOptionsFromQuery.selectedFee &&
-      filterOptionsFromQuery.selectedFee !== props.maxLiquiditySpread
+      filterOptionsFromQuery.spread &&
+      filterOptionsFromQuery.spread !== props.maxLiquiditySpread
     ) {
-      props.updateMaxSpread(filterOptionsFromQuery.selectedSpread);
+      props.updateMaxSpread(filterOptionsFromQuery.spread);
     }
     if (
       filterOptionsFromQuery.templateFilter &&
       filterOptionsFromQuery.templateFilter !== props.allTemplateFilter
     ) {
       props.updateTemplateFilter(filterOptionsFromQuery.templateFilter);
+    }
+    if (
+      filterOptionsFromQuery.showInvalid &&
+      filterOptionsFromQuery.showInvalid !== props.includeInvalidMarkets
+    ) {
+      props.updateShowInvalid(filterOptionsFromQuery.showInvalid)
     }
   }, [props.location.search]);
 
