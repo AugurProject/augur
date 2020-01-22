@@ -708,7 +708,9 @@ contract Market is Initializable, Ownable, IMarket, CashSender {
     function transferRepBondOwnership(address _newOwner) public returns (bool) {
         require(_newOwner != address(0));
         require(msg.sender == repBondOwner);
+        address _oldOwner = repBondOwner;
         repBondOwner = _newOwner;
+        augur.logMarketRepBondTransferred(address(universe), _oldOwner, _newOwner);
         return true;
     }
 

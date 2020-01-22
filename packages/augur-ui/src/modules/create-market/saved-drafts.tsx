@@ -3,7 +3,6 @@ import React from "react";
 import { Drafts, Draft } from "modules/types";
 import { formatDate } from "utils/format-date";
 import QuadBox from "modules/portfolio/components/common/quad-box";
-import { PillLabel } from "modules/common/labels";
 import { SCRATCH, TEMPLATE } from "modules/create-market/constants";
 
 import Styles from "modules/create-market/saved-drafts.styles";

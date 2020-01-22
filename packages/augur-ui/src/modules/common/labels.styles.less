@@ -400,12 +400,12 @@ div.LinearPropertyViewTransaction {
   align-items: baseline;
   display: flex;
   flex-flow: row wrap;
-  max-width: 175px;
+  max-width: 300px;
   width: fit-content;
 
   &.Alternate {
     > span:first-of-type {
-      .mono-10;
+      .mono-12-semi-bold;
 
       color: @color-secondary-text;
     }
@@ -420,6 +420,8 @@ div.LinearPropertyViewTransaction {
       .mono-default;
 
       color: @color-secondary-text;
+      position: relative;
+      top: @size-3;
     }
   }
 
@@ -466,7 +468,7 @@ div.LinearPropertyViewTransaction {
 
   &.Larger {
     > span:nth-of-type(2) {
-      .mono-24;
+      .mono-22-bold;
     }
   }
 }
@@ -497,7 +499,7 @@ div.LinearPropertyViewTransaction {
       margin-left: @size-4;
       width: @size-20;
 
-      >rect {
+      > rect {
         fill: @color-scalar;
         height: 1.5px;
         width: @size-20;
@@ -708,14 +710,20 @@ div.LinearPropertyViewTransaction {
 }
 
 .PillLabel {
-  .mono-10;
+  .mono-10-medium;
 
   align-items: center;
-  background: @color-secondary-action-outline;
-  border-radius: 0.375rem;
+  background: transparent;
+  border: 1px solid @color-outline;
+  border-radius: @border-radius-default;
+  color: @color-outline;
   display: flex;
   justify-content: center;
-  padding: 0 0.375rem;
+  height: @size-18;
+  min-height: @size-18;
+  max-height: @size-18;
+  padding: @size-2 @size-3;
+  text-transform: capitalize;
 
   &.HideOnMobile {
     display: flex;

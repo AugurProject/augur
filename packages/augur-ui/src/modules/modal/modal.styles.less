@@ -707,13 +707,14 @@ div.ButtonsRow:last-of-type {
   .Container;
 
   > header > h1 {
-    .text-14;
+    .text-16;
     text-transform: capitalize;
 
     @media @breakpoint-mobile-new {
-      .text-12;
+      .text-14;
     }
   }
+
   > main > p {
     .text-14-paragraph;
 
@@ -722,7 +723,28 @@ div.ButtonsRow:last-of-type {
     }
 
     color: @color-primary-text;
+    line-height: 150%;
     margin: 0 0 @size-16 0;
+  }
+
+  > main > ol {
+    .text-14;
+
+    color: @color-primary-text;
+    line-height: 150%;
+
+    @media @breakpoint-mobile-new {
+      .text-12-paragraph;
+    }
+
+    > li > span {
+      color: @color-primary-action;
+      cursor: pointer;
+    }
+
+    > li:first-of-type {
+      margin-bottom: @size-16;
+    }
   }
 
   > div:last-of-type {
@@ -2473,13 +2495,14 @@ div.ButtonsRow:last-of-type {
   border: 1px solid @color-secondary-action-outline;
   color: @color-secondary-text;
   display: flex;
+  font-family: monospace;
   flex-flow: row nowrap;
   justify-content: space-between;
   line-height: @size-14;
   margin: @size-8 0 @size-18 0;
   padding: @size-12 @size-9;
   padding-right: 0;
-  width: 234px;
+  width: 237px;
   position: relative;
 
   > div {

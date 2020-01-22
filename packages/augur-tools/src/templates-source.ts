@@ -113,7 +113,7 @@ export const TEMPLATES = {
                         'Includes regulation, any play-offs and sudden death',
                     },
                     {
-                      text: 'This market is intended to be about a Single Person, if this is not the case, this market should settle as invalid.'
+                      text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`
                     }
                   ],
                 },
@@ -150,7 +150,7 @@ export const TEMPLATES = {
                       text: `If a tournament or match is cancelled the market should resolve as 'No'. If the tournament is postponed and not be completed before the market's Event Expiration time, but the player named officially made the cut, noted by the tournament association, then the outcome should resolve as Yes.`,
                     },
                     {
-                      text: 'This market is intended to be about a Single Person, if this is not the case, this market should settle as invalid.'
+                      text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`
                     }
                   ],
                 },
@@ -306,7 +306,7 @@ export const TEMPLATES = {
                         'Includes regulation, any play-offs and sudden death',
                     },
                     {
-                      text: 'This market is intended to be about a Single Person, if this is not the case, this market should settle as invalid.'
+                      text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`
                     }
                   ],
                 },
@@ -343,7 +343,7 @@ export const TEMPLATES = {
                       text: `If a tournament or match is cancelled the market should resolve as 'No'. If the tournament is postponed and not be completed before the market's Event Expiration time, but the player named officially made the cut, noted by the tournament association, then the outcome should resolve as Yes.`,
                     },
                     {
-                      text: 'This market is intended to be about a Single Person, if this is not the case, this market should settle as invalid.'
+                      text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`
                     }
                   ],
                 },
@@ -499,7 +499,7 @@ export const TEMPLATES = {
                         'Includes regulation, any play-offs and sudden death',
                     },
                     {
-                      text: 'This market is intended to be about a Single Person, if this is not the case, this market should settle as invalid.'
+                      text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`
                     }
                   ],
                 },
@@ -536,7 +536,7 @@ export const TEMPLATES = {
                       text: `If a tournament or match is cancelled the market should resolve as 'No'. If the tournament is postponed and not be completed before the market's Event Expiration time, but the player named officially made the cut, noted by the tournament association, then the outcome should resolve as Yes.`,
                     },
                     {
-                      text: 'This market is intended to be about a Single Person, if this is not the case, this market should settle as invalid.'
+                      text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`
                     }
                   ],
                 },
@@ -982,7 +982,7 @@ export const TEMPLATES = {
                   text: `If the horse named in the market is scratched and does NOT run, including the cancellation of the race, or is disqualified for any reason, the market should resolve as 'No'.`,
                 },
                 {
-                  text: 'This market is intended to be about a Single Person, if this is not the case, this market should settle as invalid.'
+                  text: `This market is intended to be about a Single Horse, if this is not the case, this market should settle as 'Invalid'.`
                 }
               ],
             },
@@ -1076,7 +1076,7 @@ export const TEMPLATES = {
                       text: `If a player fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as 'No'`,
                     },
                     {
-                      text: 'This market is intended to be about a Single Person, if this is not the case, this market should settle as invalid.'
+                      text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`
                     }
                   ],
                 },
@@ -1219,10 +1219,10 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If either player fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as 'No'`,
+                      text: `If either pairing fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as 'No'`,
                     },
                     {
-                      text: 'This market is intended to be about a Single Person, if this is not the case, this market should settle as invalid.'
+                      text: `This market is intended to be about a two player team (pairing), if this is not the case, this market should settle as 'Invalid'.`
                     }
                   ],
                 },
@@ -1262,11 +1262,14 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If either player is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner`,
+                      text: `If either pairing is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner`,
                     },
                     {
                       text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
                     },
+                    {
+                      text: `This market each outcome is a two player team (pairing), if this is not the case, this market should settle as 'Invalid.'`
+                    }
                   ],
                 },
               },
@@ -1315,14 +1318,17 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If either player is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner.`,
+                      text: `If either pairing is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner.`,
                     },
                     {
-                      text: `If either player fails to start a tournament or a match, or the match was not able to start for any reason, the market should resolve as 'No Winner'.`,
+                      text: `If either pairing fails to start a tournament or a match, or the match was not able to start for any reason, the market should resolve as 'No Winner'.`,
                     },
                     {
                       text: `If the match is not played for any reason, or is terminated prematurely with both players willing and able to play, the market should resolve as 'No Winner'.`,
                     },
+                    {
+                      text: `This market each outcome is a two player team (pairing), if this is not the case, this market should settle as 'Invalid'.`
+                    }
                   ],
                 },
               },
@@ -1427,10 +1433,10 @@ export const TEMPLATES = {
                       text: `Includes Regulation and any added injury or stoppage time only. Does NOT include any Overtime or Penalty shoot-out.`,
                     },
                     {
-                      text: `'If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled".`,
+                      text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled".`,
                     },
                     {
-                      text: 'This market is intended to be about a Single Team verse Single Team, if this is not the case, this market should settle as invalid.'
+                      text: `This market is intended to be about a Single Team verse Single Team, if this is not the case, this market should settle as 'Invalid'.`
                     }
                   ],
                 },
@@ -1486,7 +1492,7 @@ export const TEMPLATES = {
                       text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled"`,
                     },
                     {
-                      text: 'This market is intended to be about a Single Team verse Single Team, if this is not the case, this market should settle as invalid.'
+                      text: `This market is intended to be about a Single Team verse Single Team, if this is not the case, this market should settle as 'Invalid'.`
                     }
                   ],
                 },
@@ -1538,7 +1544,7 @@ export const TEMPLATES = {
                       text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled".`,
                     },
                     {
-                      text: 'This market is intended to be about two sports teams, if this is not the case, this market should settle as invalid.'
+                      text: `This market is intended to be about two sports teams, if this is not the case, this market should settle as 'Invalid'.`
                     }
                   ],
                 },
@@ -1594,7 +1600,7 @@ export const TEMPLATES = {
                       text: `'If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled".`,
                     },
                     {
-                      text: 'This market is intended to be about a Single Team verse Single Team, if this is not the case, this market should settle as invalid.'
+                      text: `This market is intended to be about a Single Team verse Single Team, if this is not the case, this market should settle as 'Invalid'.`
                     }
                   ],
                 },
@@ -1826,7 +1832,7 @@ export const TEMPLATES = {
                       text: `In the event of an award given to more than 1 player. If the player mentioned in the market is one of the players who wins the award, the market should resolve as "Yes".`,
                     },
                     {
-                      text: 'This market is intended to be about a Single Person, if this is not the case, this market should settle as invalid.'
+                      text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`
                     }
                   ],
                 },
@@ -2299,7 +2305,7 @@ export const TEMPLATES = {
                       text: `In the event of an award given to more than 1 player. If the player mentioned in the market is one of the players who wins the award, the market should resolve as "Yes".`,
                     },
                     {
-                      text: 'This market is intended to be about a Single Person, if this is not the case, this market should settle as invalid.'
+                      text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`
                     }
                   ],
                 },
@@ -3361,23 +3367,30 @@ export const TEMPLATES = {
             templates: [
               {
                 marketType: YES_NO,
-                question: `NFL: Will the [0] win vs. the [1]?`,
-                example: `NFL: Will the NY Giants win vs. the New England Patriots?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `NFL [0]: Will the [1] win vs. the [2]?`,
+                example: `NFL Week 1: Will the NY Giants win vs. the New England Patriots?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Week #`,
+                    noSort: true,
+                    values: LIST_VALUES.NFL_WEEK_NUM,
+                  },
+                  {
+                    id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
                     values: LIST_VALUES.NFL_TEAMS,
                   },
                   {
-                    id: 1,
+                    id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
                     values: LIST_VALUES.NFL_TEAMS,
                   },
                   {
-                    id: 2,
+                    id: 3,
                     type: TemplateInputType.ESTDATETIME,
                     placeholder: `Date time`,
                   },
@@ -3399,29 +3412,36 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `NFL: Will the [0] win vs. the [1] by [2] or more points?`,
-                example: `NFL: Will the NY Giants win vs. the New England Patriots by 3 or more points?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `NFL [0]: Will the [1] win vs. the [2] by [3] or more points?`,
+                example: `NFL Week 1: Will the NY Giants win vs. the New England Patriots by 3 or more points?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Week #`,
+                    noSort: true,
+                    values: LIST_VALUES.NFL_WEEK_NUM,
+                  },
+                  {
+                    id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
                     values: LIST_VALUES.NFL_TEAMS,
                   },
                   {
-                    id: 1,
+                    id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
                     values: LIST_VALUES.NFL_TEAMS,
                   },
                   {
-                    id: 2,
+                    id: 3,
                     type: TemplateInputType.TEXT,
                     validationType: ValidationType.WHOLE_NUMBER,
                     placeholder: `Whole #`,
                   },
                   {
-                    id: 3,
+                    id: 4,
                     type: TemplateInputType.ESTDATETIME,
                     placeholder: `Date time`,
                   },
@@ -3440,29 +3460,36 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `NFL: Will the [0] & [1] score [2] or more combined points?`,
-                example: `NFL: Will the NY Giants & the New England Patriots score 44 or more combined points?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `NFL [0]: Will the [1] & [2] score [3] or more combined points?`,
+                example: `NFL Week 1: Will the NY Giants & the New England Patriots score 44 or more combined points?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Week #`,
+                    noSort: true,
+                    values: LIST_VALUES.NFL_WEEK_NUM,
+                  },
+                  {
+                    id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
                     values: LIST_VALUES.NFL_TEAMS,
                   },
                   {
-                    id: 1,
+                    id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
                     values: LIST_VALUES.NFL_TEAMS,
                   },
                   {
-                    id: 2,
+                    id: 3,
                     type: TemplateInputType.TEXT,
                     validationType: ValidationType.WHOLE_NUMBER,
                     placeholder: `Whole #`,
                   },
                   {
-                    id: 3,
+                    id: 4,
                     type: TemplateInputType.ESTDATETIME,
                     placeholder: `Date time`,
                   },
@@ -3557,35 +3584,42 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: 'This market is intended to be about a Single Person, if this is not the case, this market should settle as invalid.'
+                      text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`
                     }
                   ]
                 },
               },
               {
                 marketType: CATEGORICAL,
-                question: `Which NFL Team will win: [0] vs. [1]?`,
-                example: `Which NFL Team will win: NY Giants vs. New England Patriots?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `[0]: Which NFL Team will win: [1] vs. [2]?`,
+                example: ` Week 1: Which NFL Team will win: NY Giants vs. New England Patriots?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Week #`,
+                    noSort: true,
+                    values: LIST_VALUES.NFL_WEEK_NUM,
+                  },
+                  {
+                    id: 1,
                     type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
                     placeholder: `Team A`,
                     values: LIST_VALUES.NFL_TEAMS,
                   },
                   {
-                    id: 1,
+                    id: 2,
                     type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
                     placeholder: `Team B`,
                     values: LIST_VALUES.NFL_TEAMS,
                   },
                   {
-                    id: 2,
+                    id: 3,
                     type: TemplateInputType.ESTDATETIME,
                     placeholder: `Date time`,
                   },
                   {
-                    id: 3,
+                    id: 4,
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `Tie/No Winner`,
                   },
@@ -3604,45 +3638,51 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `NFL (Point Spread): [0] to win by more than [1].5 points over [2]?`,
-                example: `NFL (Point Spread): Seattle Seahawks to win by more than 10.5 points over Dallas Cowboys?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-
+                question: `NFL (Point Spread) [0]: [1] to win by more than [2].5 points over [3]?`,
+                example: `NFL (Point Spread) Week 1: Seattle Seahawks to win by more than 10.5 points over Dallas Cowboys?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Week #`,
+                    noSort: true,
+                    values: LIST_VALUES.NFL_WEEK_NUM,
+                  },
+                  {
+                    id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
                     values: LIST_VALUES.NFL_TEAMS,
                   },
                   {
-                    id: 1,
+                    id: 2,
                     type: TemplateInputType.TEXT,
                     validationType: ValidationType.WHOLE_NUMBER,
                     placeholder: `Whole #`,
                   },
                   {
-                    id: 2,
+                    id: 3,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
                     values: LIST_VALUES.NFL_TEAMS,
                   },
                   {
-                    id: 3,
+                    id: 4,
                     type: TemplateInputType.ESTDATETIME,
                     placeholder: `Date time`,
                   },
                   {
-                    id: 4,
+                    id: 5,
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `No Winner`,
                   },
                   {
-                    id: 5,
+                    id: 6,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
                     placeholder: `[0] -[1].5`,
                   },
                   {
-                    id: 6,
+                    id: 7,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
                     placeholder: `[2] +[1].5`,
                   },
@@ -3661,44 +3701,51 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `NFL (O/U): [0] vs. [1]: Total points scored; Over/Under [2].5?`,
-                example: `NFL (O/U): NY Giants vs. Dallas Cowboys: Total points scored: Over/Under 56.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `NFL (O/U) [0]: [1] vs. [2]: Total points scored; Over/Under [3].5?`,
+                example: `NFL (O/U) Week 1: NY Giants vs. Dallas Cowboys: Total points scored: Over/Under 56.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Week #`,
+                    noSort: true,
+                    values: LIST_VALUES.NFL_WEEK_NUM,
+                  },
+                  {
+                    id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
                     values: LIST_VALUES.NFL_TEAMS,
                   },
                   {
-                    id: 1,
+                    id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
                     values: LIST_VALUES.NFL_TEAMS,
                   },
                   {
-                    id: 2,
+                    id: 3,
                     type: TemplateInputType.TEXT,
                     validationType: ValidationType.WHOLE_NUMBER,
                     placeholder: `Whole #`,
                   },
                   {
-                    id: 3,
+                    id: 4,
                     type: TemplateInputType.ESTDATETIME,
                     placeholder: `Date time`,
                   },
                   {
-                    id: 4,
+                    id: 5,
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `No Winner`,
                   },
                   {
-                    id: 5,
+                    id: 6,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
                     placeholder: `Over [2].5`,
                   },
                   {
-                    id: 6,
+                    id: 7,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
                     placeholder: `Under [2].5`,
                   },
@@ -3821,23 +3868,30 @@ export const TEMPLATES = {
             templates: [
               {
                 marketType: YES_NO,
-                question: `NCAA FB: Will [0] win vs. [1]?`,
-                example: `NCAA FB: Will Alabama Crimson Tide win vs. Florida Gators?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `NCAA FB [0]: Will [1] win vs. [2]?`,
+                example: `NCAA FB Week 1: Will Alabama Crimson Tide win vs. Florida Gators?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Week #`,
+                    noSort: true,
+                    values: LIST_VALUES.NCAA_WEEK_NUM,
+                  },
+                  {
+                    id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
                     values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
-                    id: 1,
+                    id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
                     values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
-                    id: 2,
+                    id: 3,
                     type: TemplateInputType.ESTDATETIME,
                     placeholder: `Date time`,
                   },
@@ -3856,29 +3910,36 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `NCAA FB: Will [0] win vs. [1] by [2] or more points?`,
-                example: `NCAA FB: Will Alabama Crimson Tide win vs. Florida Gators by 7 or more points?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `NCAA FB [0]: Will [1] win vs. [2] by [3] or more points?`,
+                example: `NCAA FB Week 1: Will Alabama Crimson Tide win vs. Florida Gators by 7 or more points?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Week #`,
+                    noSort: true,
+                    values: LIST_VALUES.NCAA_WEEK_NUM,
+                  },
+                  {
+                    id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
                     values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
-                    id: 1,
+                    id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
                     values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
-                    id: 2,
+                    id: 3,
                     type: TemplateInputType.TEXT,
                     validationType: ValidationType.WHOLE_NUMBER,
                     placeholder: `Whole #`,
                   },
                   {
-                    id: 3,
+                    id: 4,
                     type: TemplateInputType.ESTDATETIME,
                     placeholder: `Date time`,
                   },
@@ -3897,29 +3958,36 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `NCAA FB: Will [0] & [1] score [2] or more combined points?`,
-                example: `NCAA FB: Will USC & UCLA score 51 or more combined points?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `NCAA FB [0]: Will [1] & [2] score [3] or more combined points?`,
+                example: `NCAA FB Week 1: Will USC & UCLA score 51 or more combined points?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Week #`,
+                    noSort: true,
+                    values: LIST_VALUES.NCAA_WEEK_NUM,
+                  },
+                  {
+                    id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
                     values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
-                    id: 1,
+                    id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
                     values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
-                    id: 2,
+                    id: 3,
                     type: TemplateInputType.TEXT,
                     validationType: ValidationType.WHOLE_NUMBER,
                     placeholder: `Whole #`,
                   },
                   {
-                    id: 3,
+                    id: 4,
                     type: TemplateInputType.ESTDATETIME,
                     placeholder: `Date time`,
                   },
@@ -3938,28 +4006,35 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `Which College Football Team will win: [0] vs. [1]?`,
-                example: `Which College Football Team will win: Alabama vs. Michigan?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `[0]: Which College Football Team will win: [1] vs. [2]?`,
+                example: `Week 1: Which College Football Team will win: Alabama vs. Michigan?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Week #`,
+                    noSort: true,
+                    values: LIST_VALUES.NCAA_WEEK_NUM,
+                  },
+                  {
+                    id: 1,
                     type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
                     placeholder: `Team A`,
                     values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
-                    id: 1,
+                    id: 2,
                     type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
                     placeholder: `Team B`,
                     values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
-                    id: 2,
+                    id: 3,
                     type: TemplateInputType.ESTDATETIME,
                     placeholder: `Date time`,
                   },
                   {
-                    id: 3,
+                    id: 4,
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `No Winner`,
                   },
@@ -3978,44 +4053,51 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `NCAA (Point Spread) FB: [0] to win by more than [1].5 points over [2]?`,
-                example: `NCAA (Point Spread) FB: Alabama to win by more than 10.5 points over Michigan?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `NCAA FB (Point Spread) [0]: [1] to win by more than [2].5 points over [3]?`,
+                example: `NCAA FB (Point Spread) Week 1: Alabama to win by more than 10.5 points over Michigan?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Week #`,
+                    noSort: true,
+                    values: LIST_VALUES.NCAA_WEEK_NUM,
+                  },
+                  {
+                    id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
                     values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
-                    id: 1,
+                    id: 2,
                     type: TemplateInputType.TEXT,
                     validationType: ValidationType.WHOLE_NUMBER,
                     placeholder: `Whole #`,
                   },
                   {
-                    id: 2,
+                    id: 3,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
                     values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
-                    id: 3,
+                    id: 4,
                     type: TemplateInputType.ESTDATETIME,
                     placeholder: `Date time`,
                   },
                   {
-                    id: 4,
+                    id: 5,
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `No Winner`,
                   },
                   {
-                    id: 5,
+                    id: 6,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
                     placeholder: `[0] -[1].5`,
                   },
                   {
-                    id: 6,
+                    id: 7,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
                     placeholder: `[2] +[1].5`,
                   },
@@ -4034,44 +4116,51 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `NCAA FB (O/U): [0] vs. [1]: Total points scored; Over/Under [2].5?`,
-                example: `NCAA FB (O/U): Alabama vs. Michigan: Total points scored: Over/Under 56.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `NCAA FB (O/U) [0]: [1] vs. [2]: Total points scored; Over/Under [3].5?`,
+                example: `NCAA FB (O/U) Week 1: Alabama vs. Michigan: Total points scored: Over/Under 56.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Week #`,
+                    noSort: true,
+                    values: LIST_VALUES.NCAA_WEEK_NUM,
+                  },
+                  {
+                    id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
                     values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
-                    id: 1,
+                    id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
                     values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
-                    id: 2,
+                    id: 3,
                     type: TemplateInputType.TEXT,
                     validationType: ValidationType.WHOLE_NUMBER,
                     placeholder: `Whole #`,
                   },
                   {
-                    id: 3,
+                    id: 4,
                     type: TemplateInputType.ESTDATETIME,
                     placeholder: `Date time`,
                   },
                   {
-                    id: 4,
+                    id: 5,
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `No Winner`,
                   },
                   {
-                    id: 5,
+                    id: 6,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
                     placeholder: `Over [2].5`,
                   },
                   {
-                    id: 6,
+                    id: 7,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
                     placeholder: `Under [2].5`,
                   },
@@ -4135,7 +4224,7 @@ export const TEMPLATES = {
                       text: `If either of the teams listed are incorrect, market should resolve as Invalid`,
                     },
                     {
-                      text: 'This market is intended to be about a Bowl Game, if this is not the case, this market should settle as invalid.'
+                      text: `This market is intended to be about a Bowl Game, if this is not the case, this market should settle as 'Invalid'.`
                     }
                   ],
                 },
@@ -4270,7 +4359,7 @@ export const TEMPLATES = {
                   text: `The winning candidate will have at least 270 electoral votes to win the presidential election.`,
                 },
                 {
-                  text: 'This market is intended to be about a Single Candidate, if this is not the case, this market should settle as invalid.'
+                  text: `This market is intended to be about a Single Candidate, if this is not the case, this market should settle as 'Invalid'.`
                 }
               ],
             },
@@ -4304,7 +4393,7 @@ export const TEMPLATES = {
                   text: `The candidate who receives a majority of the party's delegates wins their party's nomination.`,
                 },
                 {
-                  text: 'This market is intended to be about a Single Candidate, if this is not the case, this market should settle as invalid.'
+                  text: `This market is intended to be about a Single Candidate, if this is not the case, this market should settle as 'Invalid'.`
                 }
               ],
             },
@@ -4342,24 +4431,18 @@ export const TEMPLATES = {
                   text: `Vice-President nomination is selected by the political party, replacement of nomination will not change market results, because person had been nominated. Declining nomination is not considered nominated`,
                 },
                 {
-                  text: 'This market is intended to be about a Single Candidate, if this is not the case, this market should settle as invalid.'
+                  text: `This market is intended to be about a Single Candidate, if this is not the case, this market should settle as 'Invalid'.`
                 }
               ],
             },
           },
           {
             marketType: YES_NO,
-            question: `Will a woman be elected [0] in the [1] Presidential election?`,
+            question: `Will a woman be elected U.S. President in the [1] Presidential election?`,
             example: `Will a woman be elected U.S. President in the 2020 Presidential election?`,
             inputs: [
               {
                 id: 0,
-                type: TemplateInputType.DROPDOWN,
-                placeholder: `Office`,
-                values: LIST_VALUES.PRES_OFFICES,
-              },
-              {
-                id: 1,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
                 values: LIST_VALUES.PRES_YEARS,
@@ -4371,11 +4454,8 @@ export const TEMPLATES = {
                   text: `The winning candidate will have at least 270 electoral votes to win the presidential election.`,
                 },
                 {
-                  text: `U.S. Vice President is elected with President as their running mate`,
-                },
-                {
                   text:
-                    'The candidate elected president/vice president shall be female.',
+                    'The candidate elected president shall be biologically female.',
                 },
               ],
             },
@@ -4641,6 +4721,54 @@ export const TEMPLATES = {
               ],
             },
           },
+          {
+            marketType: CATEGORICAL,
+            question: `Who will win the [0] [1] [2] caucus for U.S. Presidential election?`,
+            example: `Who will win the 2020 South Carolina Democratic caucus for U.S Presidential election?`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                values: LIST_VALUES.PRES_YEARS,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `State`,
+                values: LIST_VALUES.US_STATES,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Party`,
+                values: LIST_VALUES.POL_PARTY,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Other (Field)`,
+              },
+              {
+                id: 4,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `No winner/Event cancelled`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `If the caucus does not take place the market should resolve as "No winner/Event cancelled"`,
+                },
+                {
+                  text: `The winner of the caucus is the candidate recognized and/or announced by the political party`,
+                },
+                {
+                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                },
+              ],
+            },
+          },
         ],
       },
       [WORLD]: {
@@ -4680,7 +4808,7 @@ export const TEMPLATES = {
                   text: `If location/country does not have the stated position in market, market should resolve as 'No'`,
                 },
                 {
-                  text: 'This market is intended to be about a Single Person and a Single Location, if this is not the case, this market should settle as invalid.'
+                  text: `This market is intended to be about a Single Person and a Single Location, if this is not the case, this market should settle as 'Invalid'.`
                 }
               ],
             },
@@ -4710,7 +4838,7 @@ export const TEMPLATES = {
                     "Rules of impeachment is dictated by the person's location/country government",
                 },
                 {
-                  text: 'This market is intended to be about a Single Person, if this is not the case, this market should settle as invalid.'
+                  text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`
                 }
               ],
             },
@@ -4744,7 +4872,7 @@ export const TEMPLATES = {
                     'Announcement of future resignation does not count as leaving the office, until actual resignation takes effect',
                 },
                 {
-                  text: 'This market is intended to be about a Single Person, if this is not the case, this market should settle as invalid.'
+                  text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`
                 }
               ],
             },
@@ -4790,7 +4918,7 @@ export const TEMPLATES = {
                   text: `If the country named in the market question has multiple people with the same title, the market should resolve as 'Invalid'`,
                 },
                 {
-                  text: 'This market is intended to be about a Single Location, if this is not the case, this market should settle as invalid.'
+                  text: `This market is intended to be about a Single Location, if this is not the case, this market should settle as 'Invalid'.`
                 }
               ],
             },
@@ -4861,7 +4989,7 @@ export const TEMPLATES = {
                   text: `If stock trading name and ticker symbol is not used in the market question, the market should resolve as 'Invalid'`
                 },
                 {
-                  text: 'This market is intended to be about a Individual Stock or ETF Ticker Symbol, if this is not the case, this market should settle as invalid.'
+                  text: `This market is intended to be about a Individual Stock or ETF Ticker Symbol, if this is not the case, this market should settle as 'Invalid'.`
                 }
               ],
             },
@@ -4931,7 +5059,7 @@ export const TEMPLATES = {
                   text: `If stock trading name and ticker symbol is not used in the market question, the market should resolve as 'Invalid'`
                 },
                 {
-                  text: 'This market is intended to be about a Individual Stock or ETF Name, if this is not the case, this market should settle as invalid.'
+                  text: `This market is intended to be about a Individual Stock or ETF Name, if this is not the case, this market should settle as 'Invalid'.`
                 }
               ],
             },
@@ -4988,7 +5116,7 @@ export const TEMPLATES = {
                   text: `If stock trading name and ticker symbol is not used in the market question, the market should resolve as 'Invalid'`
                 },
                 {
-                  text: 'This market is intended to be about a Individual Stock or ETF Ticker Symbol, if this is not the case, this market should settle as invalid.'
+                  text: `This market is intended to be about a Individual Stock or ETF Ticker Symbol, if this is not the case, this market should settle as 'Invalid'.`
                 }
               ],
             },
@@ -5122,7 +5250,7 @@ export const TEMPLATES = {
               text: `If event does not occur the market should resolve as 'No'`,
             },
             {
-              text: 'This market is intended to be about a Single Person, if this is not the case, this market should settle as invalid.'
+              text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`
             }
           ],
         },
@@ -5169,15 +5297,15 @@ export const TEMPLATES = {
               text: `If event does not occur the market should resolve as 'No'`,
             },
             {
-              text: 'This market is intended to be about a Single Person, if this is not the case, this market should settle as invalid.'
+              text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`
             }
           ],
         },
       },
       {
         marketType: YES_NO,
-        question: `Will the total gross for [0] be $[1] USD or more, on domestic opening weekend of [2] in the US, according to www.boxofficemojo.com/?`,
-        example: `Will Avengers: Endgame gross $350 million USD or more in it's opening weekend in the US?`,
+        question: `Will the total gross for [0] be $[1] USD or more on domestic opening weekend of [2] in the US, according to www.boxofficemojo.com?`,
+        example: `Will the total gross for Avengers: Endgame gross 350 million USD or more on domestic opening weekend of April 22, 2019 in the US, according to www.boxofficemojo.com?`,
         inputs: [
           {
             id: 0,
@@ -5202,7 +5330,7 @@ export const TEMPLATES = {
               text: `Gross total should include the first Friday through Sunday of the movie release and does not include extra days due to holidays`,
             },
             {
-              text: 'This market is intended to be about a Single Movie, if this is not the case, this market should settle as invalid.'
+              text: `This market is intended to be about a Single Movie, if this is not the case, this market should settle as 'Invalid'.`
             },
             {
               text: 'If www.boxofficemojo.com is down or not available use www.the-numbers.com to determine domestic US total gross of movie.'
@@ -5212,8 +5340,8 @@ export const TEMPLATES = {
       },
       {
         marketType: YES_NO,
-        question: `Head-to-Head: Will total gross for [0] be more than [1] on domestic opening weekend of [2] in the US, according to www.boxofficemojo.com/?`,
-        example: `Head-to-Head: Will Avengers: Endgame gross more than Avengers: Age of Ultron on it's opening weekend in the US?`,
+        question: `Head-to-Head: Will [0] on domestic opening weekend of [1] in the US gross more than [2] on its opening weekend in US, according to www.boxofficemojo.com?`,
+        example: `Head-to-Head: Will Avengers: Endgame on domestic opening weekend of April 22, 2019 gross more than Avengers: Age of Ultron on its opening weekend in the US, according to www.boxofficemojo.com?`,
         inputs: [
           {
             id: 0,
@@ -5222,14 +5350,14 @@ export const TEMPLATES = {
           },
           {
             id: 1,
-            type: TemplateInputType.TEXT,
-            placeholder: TEXT_PLACEHOLDERS.INDIVIDUAL_MOVIE_TITLE,
-          },
-          {
-            id: 2,
             type: TemplateInputType.DATEYEAR,
             validationType: ValidationType.EXP_DATE_TUESDAY_AFTER_MOVIE,
             placeholder: `Opening day`,
+          },
+          {
+            id: 2,
+            type: TemplateInputType.TEXT,
+            placeholder: TEXT_PLACEHOLDERS.INDIVIDUAL_MOVIE_TITLE,
           },
         ],
         resolutionRules: {
@@ -5239,10 +5367,47 @@ export const TEMPLATES = {
                 'Gross total should include the first Friday through Sunday of the movie release and does not include extra days due to holidays',
             },
             {
-              text: 'This market is intended to be about a Single Movie, if this is not the case, this market should settle as invalid.'
+              text: `This market is intended to be about a Single Movie compared to another uniquely identifiable Single Movie, if this is not the case, this market should settle as 'Invalid'.`
             },
             {
               text: 'If www.boxofficemojo.com is down or not available use www.the-numbers.com to determine domestic US total gross of movies.'
+            }
+          ],
+        },
+      },
+      {
+        marketType: YES_NO,
+        question: `Twitter: Will @[0] have [1] [2] or more twitter followers on [3], according to www.trackalytics.com?`,
+        example: `Twitter: Will @elonmusk have 50 million or more twitter followers on September 12, 2020, according to www.trackalytics.com?`,
+        inputs: [
+          {
+            id: 0,
+            type: TemplateInputType.TEXT,
+            validationType: ValidationType.SOCIAL,
+            placeholder: TEXT_PLACEHOLDERS.INDIVIDUAL_SOCIAL_MEDIA_HANDLE,
+          },
+          {
+            id: 1,
+            type: TemplateInputType.TEXT,
+            validationType: ValidationType.NUMBER,
+            placeholder: `Number`,
+          },
+          {
+            id: 2,
+            type: TemplateInputType.DROPDOWN,
+            values: LIST_VALUES.AMOUNT_UNITS,
+            placeholder: `Amount Unit`,
+          },
+          {
+            id: 3,
+            type: TemplateInputType.DATEYEAR,
+            placeholder: `Day of Year`,
+          },
+        ],
+        resolutionRules: {
+          [REQUIRED]: [
+            {
+              text: 'If www.trackalytics.com is down or not available use inspectsocial.com/ to determine total twitter followers for the social media account stated in market question.'
             }
           ],
         },
@@ -5335,8 +5500,8 @@ export const TEMPLATES = {
         templates: [
           {
             marketType: YES_NO,
-            question: `Will the price of [0] open on or above [1] on [2], according to TradingView.com "[3]"?`,
-            example: `Will the price of BTC/USD open on or above 8000 on December 31, 2019, according to TradingView.com "BTCUSD (crypto - Coinbase)"?`,
+            question: `Will the price of [0] open at or above [1] on [2], according to TradingView.com "[3]"?`,
+            example: `Will the price of BTC/USD open at or above 8000 on December 31, 2019, according to TradingView.com "BTCUSD (crypto - Coinbase)"?`,
             inputs: [
               {
                 id: 0,
@@ -5369,6 +5534,9 @@ export const TEMPLATES = {
               [REQUIRED]: [
                 {
                   text: `Opening price is determined on daily chart on the date in the market question for the market trading pair on tradingview.com.`,
+                },
+                {
+                  text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
                 },
                 {
                   text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
@@ -5418,6 +5586,8 @@ export const TEMPLATES = {
               [REQUIRED]: [
                 {
                   text: `Opening price is determined on daily chart on the date in the market question for the market trading pair on tradingview.com.`,
+                },                {
+                  text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
                 },
                 {
                   text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
@@ -5456,6 +5626,9 @@ export const TEMPLATES = {
               [REQUIRED]: [
                 {
                   text: `Opening price is determined on daily chart on the date in the market question for the market trading pair on tradingview.com.`,
+                },
+                {
+                  text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
                 },
                 {
                   text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
@@ -5469,8 +5642,8 @@ export const TEMPLATES = {
         templates: [
           {
             marketType: YES_NO,
-            question: `Will the price of [0] open on or above [1] on [2], according to TradingView.com "[3]"?`,
-            example: `Will the price of BTC/USD open on or above 8000 on December 31, 2019, according to TradingView.com "BTCUSD (crypto - Coinbase)"?`,
+            question: `Will the price of [0] open at or above [1] on [2], according to TradingView.com "[3]"?`,
+            example: `Will the price of BTC/USD open at or above 8000 on December 31, 2019, according to TradingView.com "BTCUSD (crypto - Coinbase)"?`,
             inputs: [
               {
                 id: 0,
@@ -5503,6 +5676,9 @@ export const TEMPLATES = {
               [REQUIRED]: [
                 {
                   text: `Opening price is determined on daily chart on the date in the market question for the market trading pair on tradingview.com.`,
+                },
+                {
+                  text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
                 },
                 {
                   text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
@@ -5554,6 +5730,9 @@ export const TEMPLATES = {
                   text: `Opening price is determined on daily chart on the date in the market question for the market trading pair on tradingview.com.`,
                 },
                 {
+                  text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
+                },
+                {
                   text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
                 },
               ],
@@ -5590,6 +5769,9 @@ export const TEMPLATES = {
               [REQUIRED]: [
                 {
                   text: `Opening price is determined on daily chart on the date in the market question for the market trading pair on tradingview.com.`,
+                },
+                {
+                  text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
                 },
                 {
                   text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
@@ -5603,8 +5785,8 @@ export const TEMPLATES = {
         templates: [
           {
             marketType: YES_NO,
-            question: `Will the price of [0] open on or above [1] on [2], according to TradingView.com "[3]"?`,
-            example: `Will the price of BTC/USD open on or above 8000 on December 31, 2019, according to TradingView.com "BTCUSD (crypto - Coinbase)"?`,
+            question: `Will the price of [0] open at or above [1] on [2], according to TradingView.com "[3]"?`,
+            example: `Will the price of BTC/USD open at or above 8000 on December 31, 2019, according to TradingView.com "BTCUSD (crypto - Coinbase)"?`,
             inputs: [
               {
                 id: 0,
@@ -5637,6 +5819,9 @@ export const TEMPLATES = {
               [REQUIRED]: [
                 {
                   text: `Opening price is determined on daily chart on the date in the market question for the market trading pair on tradingview.com.`,
+                },
+                {
+                  text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
                 },
                 {
                   text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
@@ -5688,6 +5873,9 @@ export const TEMPLATES = {
                   text: `Opening price is determined on daily chart on the date in the market question for the market trading pair on tradingview.com.`,
                 },
                 {
+                  text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
+                },
+                {
                   text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
                 },
               ],
@@ -5724,6 +5912,9 @@ export const TEMPLATES = {
               [REQUIRED]: [
                 {
                   text: `Opening price is determined on daily chart on the date in the market question for the market trading pair on tradingview.com.`,
+                },
+                {
+                  text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
                 },
                 {
                   text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,

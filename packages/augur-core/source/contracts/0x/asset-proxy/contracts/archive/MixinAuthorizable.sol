@@ -22,7 +22,10 @@ import "ROOT/0x/asset-proxy/contracts/archive/Ownable.sol";
 import "ROOT/0x/asset-proxy/contracts/src/interfaces/IAuthorizable.sol";
 
 
-contract MixinAuthorizable is Ownable, IAuthorizable {
+contract MixinAuthorizable is
+    Ownable,
+    IAuthorizable
+{
     /// @dev Only authorized addresses can invoke functions with this modifier.
     modifier onlyAuthorized {
         require(

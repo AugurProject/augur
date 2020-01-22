@@ -35,6 +35,7 @@ import { showTemplateByHash, validateMarketTemplate } from './template-utils';
 import { cannedMarkets, singleOutcomeAsks, singleOutcomeBids } from './data/canned-markets';
 import { ContractAPI } from '../libs/contract-api';
 import { OrderBookShaper } from './orderbook-shaper';
+import { NumOutcomes } from '@augurproject/sdk/src/state/logs/types';
 
 export function addScripts(flash: FlashSession) {
   flash.addScript({
@@ -881,7 +882,7 @@ export function addScripts(flash: FlashSession) {
       const address = args.userAccount as string;
       const isZeroX = args.zerox as boolean;
       const fillOrder = args.fillOrder as boolean;
-      let user = null;
+      let user: ContractAPI = null;
 
       if (isZeroX) {
         user = await this.ensureUser(null, true, true, address, endpoint, true);
@@ -929,7 +930,7 @@ export function addScripts(flash: FlashSession) {
           direction: type as 0 | 1,
           market : String(args.marketId),
           numTicks: new BigNumber(100),
-          numOutcomes: 3,
+          numOutcomes: 3 as NumOutcomes,
           outcome: Number(args.outcome) as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7,
           tradeGroupId,
           fingerprint: formatBytes32String('11'),
@@ -941,6 +942,7 @@ export function addScripts(flash: FlashSession) {
           displayShares: new BigNumber(0),
           expirationTime,
         };
+
         try {
           result = fillOrder ? await user.augur.placeTrade(params) : await user.placeZeroXOrder(params)
         } catch(e) {
@@ -969,6 +971,7 @@ export function addScripts(flash: FlashSession) {
       }
       this.log(`place order ${result}`);
       // something is hanging. no missings await that I can see.
+      process.exit;
     },
   });
 

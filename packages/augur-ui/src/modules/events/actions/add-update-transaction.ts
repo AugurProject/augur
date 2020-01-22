@@ -24,6 +24,7 @@ import {
   PUBLICFILLORDER,
   BUYPARTICIPATIONTOKENS,
   MODAL_WALLET_ERROR,
+  ACCOUNT_TYPES,
 } from 'modules/common/constants';
 import { UIOrder, CreateMarketData } from 'modules/types';
 import { convertTransactionOrderToUIOrder } from 'modules/events/actions/transaction-conversions';
@@ -53,6 +54,18 @@ import { addAlert, updateAlert } from 'modules/alerts/actions/alerts';
 import { getDeconstructedMarketId } from 'modules/create-market/helpers/construct-market-params';
 import { orderCreated } from 'services/analytics/helpers';
 import { updateModal } from 'modules/modal/actions/update-modal';
+import { augurSdk } from 'services/augursdk';
+import { updateAppStatus, GNOSIS_STATUS } from 'modules/app/actions/update-app-status';
+import { GnosisSafeState } from '@augurproject/gnosis-relay-api/src/GnosisRelayAPI';
+
+export const getRelayerDownErrorMessage = (walletType, hasEth) => {
+  const errorMessage = 'We\'re currently experiencing a technical difficulty processing transaction fees in Dai. If possible please come back later to process this transaction';
+
+  if (hasEth) {
+    return errorMessage + `\nIf you need to make the transaction now transaction costs will be paid in ETH from your ${walletType} wallet.`;
+  }
+  return errorMessage + '\nIf you need to make the transaction now please follow these steps:';
+}
 
 export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
   dispatch: ThunkDispatch<void, any, Action>,
@@ -65,12 +78,16 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
 
     if (eventName === TXEventName.RelayerDown) {
       const hasEth = (await loginAccount.meta.signer.provider.getBalance(loginAccount.meta.signer._address)).gt(0);
-      const errorMessage = `We\'re currently experiencing a technical difficulty processing transaction fees in Dai.\n${hasEth ? `If you need to make the transaction now transaction costs will be paid in ETH from your ${loginAccount.meta.accountType} wallet.` : `If you need to make the transaction now please add ETH to your ${loginAccount.meta.accountType} wallet: ${loginAccount.meta.signer._address}.`}`;
+
+      dispatch(updateAppStatus(GNOSIS_STATUS, GnosisSafeState.ERROR));
+
       dispatch(updateModal({
         type: MODAL_WALLET_ERROR,
-        error: errorMessage,
+        error: getRelayerDownErrorMessage(loginAccount.meta.accountType, hasEth),
         showDiscordLink: false,
-        title: 'We\'re having trouble processing transactions!',
+        showAddFundsHelp: !hasEth,
+        walletType: loginAccount.meta.accountType,
+        title: 'We\'re having trouble processing transactions',
       }));
     }
 

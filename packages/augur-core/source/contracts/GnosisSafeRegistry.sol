@@ -19,6 +19,7 @@ contract GnosisSafeRegistry is Initializable {
     mapping (address => uint256) public accountSafeIndexes;
 
     IAugur public augur;
+    IAugurTrading public augurTrading;
     bytes32 public proxyCodeHash;
     bytes32 public deploymentData;
     address public gnosisSafeMasterCopy;
@@ -45,6 +46,7 @@ contract GnosisSafeRegistry is Initializable {
         affiliates = augur.lookup("Affiliates");
         shareToken = augur.lookup("ShareToken");
 
+        augurTrading = _augurTrading;
         createOrder = _augurTrading.lookup("CreateOrder");
         fillOrder = _augurTrading.lookup("FillOrder");
         zeroXTrade = _augurTrading.lookup("ZeroXTrade");
@@ -87,6 +89,7 @@ contract GnosisSafeRegistry is Initializable {
 
         address _owner = _owners[0];
         accountSafes[_owner].push(_safe);
+        augurTrading.logGnosisSafeRegistered(address(_safe), _owner);
     }
 
     function validateSafeCreation(address[] memory _owners, address _proxy, address _mastercopy, bytes memory _initializer, uint256 _saltNonce) internal {
@@ -142,6 +145,7 @@ contract GnosisSafeRegistry is Initializable {
         address _owner = _owners[0];
         require(_safe == getSafe(_owner), "Can only deRegister the current account safe");
         accountSafeIndexes[_owner] += 1;
+        augurTrading.logGnosisSafeDeRegistered(address(_safe), _owner);
     }
 
     /**

@@ -504,7 +504,10 @@ export class ZeroX {
       return { orders: [], signatures: [], orderIds: [], loopLimit: new BigNumber(0)};
     }
 
-    const ordersMap = zeroXOrders[params.market][outcome][orderType];
+    let ordersMap = []
+    if (zeroXOrders[params.market] && zeroXOrders[params.market][outcome] && zeroXOrders[params.market][outcome][orderType]) {
+      ordersMap = zeroXOrders[params.market][outcome][orderType];
+    }
 
     const sortedOrders = _.values(ordersMap).sort(function(a,b) {
       var price = 0;
@@ -515,6 +518,7 @@ export class ZeroX {
         var price = (b.price - a.price);
       }
       return price === 0? b.amount - a.amount : price;
+
     });
 
     const { loopLimit, gasLimit } = this.getTradeTransactionLimits(params);
