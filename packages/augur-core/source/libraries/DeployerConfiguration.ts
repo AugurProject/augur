@@ -33,11 +33,11 @@ type ExternalAddresses = {
   MCDCol?: string,
   MCDColJoin?: string,
   MCDFaucet?: string,
-  RepPriceOracle?: string;
   GnosisSafe?: string;
   ProxyFactory?: string;
   ZeroXExchange?: string;
   UniswapV2Factory?: string;
+  ENSRegistry?: string;
 }
 
 type NetworksToExternalAddresses = {

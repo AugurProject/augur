@@ -27,12 +27,11 @@ const Funds = ({
     <section className={Styles.Funds}>
       <h4>{TOTAL_ACCOUNT_VALUE_IN_DAI}</h4>
       <MovementLabel
-        size={SizeTypes.LARGE}
         showPlusMinus
         showIcon
         showBrackets
         value={realizedPLPercent}
-        usefull
+        useFull
       />
       <div>{totalAccountValue.full}</div>
       <LinearPropertyLabel

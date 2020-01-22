@@ -22,7 +22,8 @@ import {
   BrowserMesh,
   EmptyConnector,
   HotLoadMarketInfo,
-  DisputeWindow
+  DisputeWindow,
+  ZeroX
 } from '@augurproject/sdk';
 import { BigNumber } from 'bignumber.js';
 import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis/build';
@@ -46,7 +47,12 @@ export class ContractAPI {
   ) {
     const signer = await makeSigner(account, provider);
     const dependencies = makeGnosisDependencies(provider, gnosisRelay, signer, addresses.Cash, new BigNumber(0), null, account.publicKey);
-    const augur = await Augur.create(provider, dependencies, addresses, connector, gnosisRelay, true, meshClient, meshBrowser);
+    const augur = await Augur.create(provider, dependencies, addresses, connector, true);
+    if (meshClient || meshBrowser) {
+      augur.zeroX = new ZeroX(augur);
+      augur.zeroX.rpc = meshClient;
+      augur.zeroX.mesh = meshBrowser;
+    }
     return new ContractAPI(augur, provider, dependencies, account);
   }
 
@@ -75,6 +81,8 @@ export class ContractAPI {
     const createOrder = this.augur.addresses.CreateOrder;
     await this.augur.contracts.cash.approve(createOrder, new BigNumber(2).pow(256).minus(new BigNumber(1)));
     await this.augur.contracts.shareToken.setApprovalForAll(createOrder, true);
+
+    await this.augur.contracts.cash.approve(this.augur.addresses.ZeroXTrade, new BigNumber(2).pow(256).minus(new BigNumber(1)));
   }
 
   async createYesNoMarket(params: CreateYesNoMarketParams): Promise<ContractInterfaces.Market> {

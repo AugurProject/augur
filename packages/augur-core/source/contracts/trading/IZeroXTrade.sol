@@ -1,5 +1,5 @@
 
-pragma solidity 0.5.10;
+pragma solidity 0.5.15;
 pragma experimental ABIEncoderV2;
 
 import "ROOT/external/IExchange.sol";

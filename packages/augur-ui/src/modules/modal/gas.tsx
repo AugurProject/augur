@@ -77,9 +77,9 @@ export const Gas = (props: GasProps) => {
 
   const getEstTime = (amount: number) => {
     if (amount >= fast) {
-      return '< 2 min';
+      return '< 1 min';
     } else if (amount >= average) {
-      return '< 5 min';
+      return '< 3 min';
     }
     return '< 30 min';
   };
@@ -107,7 +107,7 @@ export const Gas = (props: GasProps) => {
   const gasButtonsData = [
     {
       speed: 'Fast',
-      avgTime: ' < 2 min',
+      avgTime: ' < 1 min',
       gwei: fast,
       action: () => {
         updateAmount(fast);
@@ -115,7 +115,7 @@ export const Gas = (props: GasProps) => {
     },
     {
       speed: 'Recommended',
-      avgTime: ' < 5 min',
+      avgTime: ' < 3 min',
       gwei: average,
       action: () => {
         updateAmount(average);

@@ -11,6 +11,11 @@
   > ul:first-of-type {
     grid-column: 1 / span 2;
     margin: 0 auto;
+
+    @media @breakpoint-mobile-mid {
+      grid-column: 1;
+      margin: @size-6 auto;
+    }
   }
 
   > div[class*="LinearPropertyLabel"] {
@@ -18,7 +23,7 @@
     margin: 0;
 
     > span:first-of-type {
-      .mono-10-bold;
+      .mono-10-medium;
 
       color: @color-secondary-text;
     }
@@ -32,6 +37,8 @@
 
   @media @breakpoint-mobile-mid {
     grid-template-columns: 1fr;
+    grid-gap: @size-10 0;
+    padding: @size-12 @size-28;
   }
 }
 

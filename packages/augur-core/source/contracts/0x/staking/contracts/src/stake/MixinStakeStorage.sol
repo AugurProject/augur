@@ -16,7 +16,7 @@
 
 */
 
-pragma solidity 0.5.10;
+pragma solidity 0.5.15;
 
 import "ROOT/0x/staking/contracts/src/libs/LibSafeDowncast.sol";
 import "ROOT/0x/utils/contracts/src/LibSafeMath.sol";

@@ -1,4 +1,4 @@
-pragma solidity 0.5.10;
+pragma solidity 0.5.15;
 
 import 'ROOT/reporting/IV2ReputationToken.sol';
 import 'ROOT/reporting/IDisputeWindow.sol';
@@ -6,11 +6,13 @@ import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/reporting/IDisputeWindow.sol';
 import 'ROOT/reporting/IReportingParticipant.sol';
 import 'ROOT/reporting/IShareToken.sol';
+import 'ROOT/ISimpleDex.sol';
 
 
 contract IUniverse {
     function creationTime() external view returns (uint256);
     function marketBalance(address) external view returns (uint256);
+    function repExchange() external view returns (ISimpleDex);
 
     function fork() public returns (bool);
     function updateForkValues() public returns (bool);
@@ -28,7 +30,6 @@ contract IUniverse {
     function getOrCreateNextDisputeWindow(bool _initial) public returns (IDisputeWindow);
     function getOrCreatePreviousDisputeWindow(bool _initial) public returns (IDisputeWindow);
     function getOpenInterestInAttoCash() public view returns (uint256);
-    function getRepMarketCapInAttoCash() public view returns (uint256);
     function getTargetRepMarketCapInAttoCash() public view returns (uint256);
     function getOrCacheValidityBond() public returns (uint256);
     function getOrCacheDesignatedReportStake() public returns (uint256);

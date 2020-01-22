@@ -23,6 +23,7 @@ node_start() {
     --ws --wsapi eth,net,web3,personal,txpool --wsaddr 0.0.0.0 --wsport $WSPORT --wsorigins '*' \
     --rpc --rpcapi eth,net,web3,personal,miner,txpool --rpcaddr 0.0.0.0 --rpcport $RPCPORT --rpccorsdomain '*' --rpcvhosts '*' \
     --nodiscover \
+    --allow-insecure-unlock \
     --targetgaslimit 7500000 < /dev/null > $ROOT/geth.log 2>&1 &
   NODE_PID=$!
 
@@ -38,7 +39,7 @@ setup_chain_template() {
     echo "Setting up Genesis with Period Time: $PERIOD_TIME"
     sed -i -r "s/NETWORK_ID/$NETWORK_ID/" ${ROOT}/genesis.json
     sed -i -r "s/PERIOD_TIME/$PERIOD_TIME/" ${ROOT}/genesis.json
-    geth --nodiscover --datadir "${ROOT}/chain-template" --keystore "${ROOT}/keys" init "${ROOT}/genesis.json"
+    geth --allow-insecure-unlock --nodiscover --datadir "${ROOT}/chain-template" --keystore "${ROOT}/keys" init "${ROOT}/genesis.json"
 
     echo $NETWORK_ID > "${ROOT}/networkid"
   fi

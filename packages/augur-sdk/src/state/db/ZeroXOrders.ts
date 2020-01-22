@@ -22,6 +22,7 @@ const EXPECTED_ASSET_DATA_LENGTH = 2122;
 
 const DEFAULT_TRADE_INTERVAL = new BigNumber(10**17);
 const TRADE_INTERVAL_VALUE = new BigNumber(10**19);
+const MIN_TRADE_INTERVAL = new BigNumber(10**14);
 
 const multiAssetDataAbi: ParamType[] = [
   { name: 'amounts', type: 'uint256[]' },
@@ -120,20 +121,24 @@ export class ZeroXOrders extends AbstractTable {
     this.cashAssetData = `0xf47261b0000000000000000000000000${cashTokenAddress}`;
     this.shareAssetData = `0xa7cb5fb7000000000000000000000000${shareTokenAddress}000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000`;
     this.takerAssetData = `0xa7cb5fb7000000000000000000000000${this.tradeTokenAddress}000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000`;
+
+    this.subscribeToOrderEvents();
   }
 
   static async create(db: DB, networkId: number, augur: Augur): Promise<ZeroXOrders> {
     const zeroXOrders = new ZeroXOrders(db, networkId, augur);
     await zeroXOrders.clearDB();
-    await zeroXOrders.subscribeToMeshEvents();
     return zeroXOrders;
   }
 
-  async subscribeToMeshEvents(): Promise<void> {
-    return this.augur.zeroX.subscribeToMeshEvents(this.handleMeshEvent.bind(this));
+  subscribeToOrderEvents() {
+    // This only works if `zeroX` has been set on the augur instance and
+    // it doesn't get over-written so... something.
+    this.augur.events.on('ZeroX:Mesh:OrderEvent', (orderEvents) => this.handleOrderEvent(orderEvents));
+    this.augur.events.on('ZeroX:RPC:OrderEvent', (orderEvents) => this.handleOrderEvent(orderEvents));
   }
 
-  async handleMeshEvent(orderEvents: OrderEvent[]): Promise<void> {
+  async handleOrderEvent(orderEvents: OrderEvent[]): Promise<void> {
     if (orderEvents.length < 1) return;
     console.log('Mesh events received');
     console.log(orderEvents);
@@ -166,7 +171,7 @@ export class ZeroXOrders extends AbstractTable {
         this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Fill, orderId: d.orderHash,...d});
       }
     }
-    
+
     documents = _.filter(documents, this.validateStoredOrder.bind(this));
     await this.bulkUpsertDocuments(documents);
     for (const d of documents) {
@@ -196,6 +201,13 @@ export class ZeroXOrders extends AbstractTable {
     if (!order.signedOrder.makerAssetAmount.eq(order.signedOrder.takerAssetAmount)) return false;
     if (order.signedOrder.makerAssetData.length !== EXPECTED_ASSET_DATA_LENGTH) return false;
     if (order.signedOrder.takerAssetData !== this.takerAssetData) return false;
+    const assetData = order.signedOrder.makerAssetData;
+    const multiAssetData = defaultAbiCoder.decode(multiAssetDataAbi, `0x${assetData.slice(10)}`);
+    const nestedAssetData = multiAssetData[1] as string[];
+    const decoded = defaultAbiCoder.decode(erc1155AssetDataAbi, `0x${nestedAssetData[0].slice(10)}`);
+    const values = decoded[2] as BigNumber[];
+    if (values[0]["_hex"] != "0x01") return false;
+    if (values.length > 1) return false;
     return true;
   }
 
@@ -204,7 +216,7 @@ export class ZeroXOrders extends AbstractTable {
     let tradeInterval = DEFAULT_TRADE_INTERVAL;
     const marketData = markets[storedOrder.market];
     if (marketData && marketData.marketType == MarketType.Scalar) {
-      tradeInterval = TRADE_INTERVAL_VALUE.dividedBy(marketData.numTicks);
+      tradeInterval = BigNumber.max(TRADE_INTERVAL_VALUE.dividedBy(marketData.numTicks).dividedBy(MIN_TRADE_INTERVAL).multipliedBy(MIN_TRADE_INTERVAL), MIN_TRADE_INTERVAL);
     }
     if (!storedOrder['numberAmount'].mod(tradeInterval).isEqualTo(0)) return false;
 
@@ -265,9 +277,13 @@ export class ZeroXOrders extends AbstractTable {
   }
 
   static parseAssetData(assetData: string): OrderData {
-    const multiAssetData = defaultAbiCoder.decode(multiAssetDataAbi, `0x${assetData.slice(10)}`);
-    const nestedAssetData = multiAssetData[1] as string[];
-    return ZeroXOrders.parseTradeAssetData(nestedAssetData[0]);
+    try {
+      const multiAssetData = defaultAbiCoder.decode(multiAssetDataAbi, `0x${assetData.slice(10)}`);
+      const nestedAssetData = multiAssetData[1] as string[];
+      return ZeroXOrders.parseTradeAssetData(nestedAssetData[0]);
+    } catch(e) {
+      throw new Error("Cancel for order not in multi-asset format")
+    }
   }
 
   static parseTradeAssetData(assetData: string): OrderData {

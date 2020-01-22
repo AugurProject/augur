@@ -1,4 +1,4 @@
-pragma solidity 0.5.10;
+pragma solidity 0.5.15;
 
 import 'ROOT/IWarpSync.sol';
 import 'ROOT/reporting/IUniverse.sol';
@@ -6,9 +6,14 @@ import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/reporting/IV2ReputationToken.sol';
 import 'ROOT/reporting/IAffiliateValidator.sol';
 import 'ROOT/libraries/Initializable.sol';
+import 'ROOT/libraries/math/SafeMathUint256.sol';
 
-
+/**
+ * @title Warp Sync
+ * @notice A contract that control the recurring creation of a market which exists to report on warp sync data for Augur
+ */
 contract WarpSync is IWarpSync, Initializable {
+    using SafeMathUint256 for uint256;
 
     struct Data {
         uint256 warpSyncHash;
@@ -32,12 +37,25 @@ contract WarpSync is IWarpSync, Initializable {
         return true;
     }
 
+    /**
+     * @notice Do the initial report for the warp sync market.
+     * @param _universe The universe whose warp sync market to report on
+     * @param _payoutNumerators An array indicating the payout for each market outcome
+     * @param _description Any additional information or justification for this report
+     * @param _additionalStake Additional optional REP to stake in anticipation of a dispute. This REP will be held in a bond that only activates if the report is disputed
+     * @return Bool True
+     */
     function doInitialReport(IUniverse _universe, uint256[] memory _payoutNumerators, string memory _description, uint256 _additionalStake) public returns (bool) {
         IMarket _market = IMarket(markets[address(_universe)]);
         _market.doInitialReport(_payoutNumerators, _description, _additionalStake);
         _market.getInitialReporter().transferOwnership(msg.sender);
+        return true;
     }
 
+    /**
+     * @notice Create the initial warp sync market. The creator will be rewarded with REP
+     * @param _universe The universe to create a warp sync market in
+     */
     function initializeUniverse(IUniverse _universe) public {
         require(augur.isKnownUniverse(_universe));
         require(markets[address(_universe)] == address(0));
@@ -67,18 +85,27 @@ contract WarpSync is IWarpSync, Initializable {
         data[address(_universe)].timestamp = _market.getEndTime();
     }
 
+    /**
+     * @notice Get the REP reward for finalizing the warp sync market
+     * @param _market The market to finalize. (Should be a warp sync market)
+     */
     function getFinalizationReward(IMarket _market) public view returns (uint256) {
         return getRepReward(_market.getDisputeWindow().getEndTime());
     }
 
+    /**
+     * @notice Get the REP reward for initializing a universe and creating the Warp Sync Market
+     * @param _universe the universe to initialize
+     */
     function getCreationReward(IUniverse _universe) public view returns (uint256) {
         return getRepReward(_universe.creationTime());
     }
 
     function getRepReward(uint256 _theoreticalTime) private view returns (uint256) {
         uint256 _currentTime = augur.getTimestamp();
-        uint256 _timeSinceTheoreticalCreationInSeconds = _currentTime - _theoreticalTime;
-        return (_timeSinceTheoreticalCreationInSeconds ** 3) * 1000;
+        uint256 _timeSinceTheoreticalCreationInSeconds = _currentTime.sub(_theoreticalTime);
+        // Cannot overflow in any reasonable timeline of the universe
+        return (_timeSinceTheoreticalCreationInSeconds ** 3).mul(1000);
     }
 
     function awardRep(IUniverse _universe, uint256 _amount) private returns (bool) {
@@ -93,7 +120,7 @@ contract WarpSync is IWarpSync, Initializable {
         IV2ReputationToken _reputationToken = _universe.getReputationToken();
         uint256 _repBond = _universe.getOrCacheMarketRepBond();
         _reputationToken.mintForWarpSync(_repBond, address(this));
-        uint256 _endTime = augur.getTimestamp() + MARKET_LENGTH;
+        uint256 _endTime = augur.getTimestamp().add(MARKET_LENGTH);
         IMarket _market = _universe.createScalarMarket(_endTime, 0, IAffiliateValidator(0), 0, address(this), PRICES, MAX_NUM_TICKS, EXTRA_INFO);
         markets[address(_universe)] = address(_market);
     }

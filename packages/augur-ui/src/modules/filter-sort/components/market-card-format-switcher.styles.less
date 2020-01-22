@@ -1,7 +1,7 @@
 @import (reference) "~assets/styles/shared";
 
 .MarketCardFormats {
-  .mono-10-bold;
+  .text-10-medium;
 
   color: @color-secondary-text;
   display: flex;
@@ -11,13 +11,17 @@
     margin: 0;
   }
 
+  > div:first-of-type {
+    margin: @size-2 0 0 0;
+  }
+
   > span {
     cursor: pointer;
     margin: 0 @size-4;
   }
 
   > span:first-of-type {
-    margin: 0 @size-4 0 @size-12;
+    margin: 0 @size-4 0 @size-8;
   }
 
   > span:nth-of-type(3) {
@@ -43,9 +47,16 @@
 
   > svg rect,
   > svg path {
-    fill: @color-secondary-text;
+    fill: @color-secondary-action-outline;
     @media @breakpoint-mobile {
       fill: @color-dark-text;
+    }
+  }
+
+  &:hover {
+    > svg rect,
+    > svg path {
+      fill: @color-primary-text;
     }
   }
 

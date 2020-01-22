@@ -1,5 +1,6 @@
 import { abi } from '@augurproject/artifacts';
 import {
+  GnosisRelayAPI,
   GnosisSafeState,
   IGnosisRelayAPI,
   Operation,
@@ -17,6 +18,7 @@ import {
   TransactionStatus,
 } from 'contract-dependencies-ethers';
 import { ethers } from 'ethers';
+import { JsonRpcProvider } from 'ethers/providers';
 import { getAddress } from 'ethers/utils/address';
 import * as _ from 'lodash';
 
@@ -36,7 +38,7 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
 
   constructor(
     provider: EthersProvider,
-    private readonly gnosisRelay: IGnosisRelayAPI,
+    public readonly gnosisRelay: IGnosisRelayAPI,
     signer: EthersSigner,
     private gasToken: string = NULL_ADDRESS,
     public gasPrice: BigNumber = DEFAULT_GAS_PRICE,
@@ -47,6 +49,14 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
     if (safeAddress) {
       this.setSafeAddress(safeAddress);
     }
+  }
+
+  static create(provider: EthersProvider, signer: EthersSigner, cashAddress: string, gnosisRelayEndpoint?: string): ContractDependenciesGnosis {
+    const gnosisRelay = gnosisRelayEndpoint
+      ? new GnosisRelayAPI(gnosisRelayEndpoint)
+      : undefined;
+
+    return new ContractDependenciesGnosis(provider, gnosisRelay, signer, cashAddress);
   }
 
   async getDefaultAddress(): Promise<string | undefined> {
@@ -147,7 +157,9 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
       // ethers has `status` on the receipt as optional, even though it isn't and never will be undefined if using a modern network (which this is designed for)
       return <TransactionReceipt>receipt;
     } catch (e) {
-      this._currentSignRequest = await this.initCurrentSignRequest();
+      if (this.gnosisSafe) {
+        this._currentSignRequest = await this.initCurrentSignRequest();
+      }
 
       if (e === TransactionStatus.RELAYER_DOWN) {
         this.onTransactionStatusChanged(txMetadata, TransactionStatus.RELAYER_DOWN, hash);

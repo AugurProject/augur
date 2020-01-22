@@ -193,7 +193,7 @@ const FilterBox: React.FC<FilterBoxProps> = props => {
                 <MarketRow
                   key={`position_${market.id}_${index}`}
                   market={dataObj[market.id]}
-                  showState={selectedTab === ALL_MARKETS}
+                  showState
                   noToggle={noToggle}
                   showPending={showPending}
                   toggleContent={

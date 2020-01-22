@@ -128,13 +128,13 @@ export class DB {
    * @param {BlockAndLogStreamerListenerInterface} blockAndLogStreamerListener Stream listener for blocks and logs
    * @returns {Promise<DB>} Promise to a DB controller object
    */
-  static createAndInitializeDB(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, augur: Augur, blockAndLogStreamerListener: BlockAndLogStreamerListenerInterface): Promise<DB> {
+  static createAndInitializeDB(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, augur: Augur, blockAndLogStreamerListener: BlockAndLogStreamerListenerInterface, enableZeroX: boolean=false): Promise<DB> {
     const dbName = `augur-${networkId}`;
     const dbController = new DB(new Dexie(dbName));
 
     dbController.augur = augur;
 
-    return dbController.initializeDB(networkId, blockstreamDelay, defaultStartSyncBlockNumber, blockAndLogStreamerListener);
+    return dbController.initializeDB(networkId, blockstreamDelay, defaultStartSyncBlockNumber, blockAndLogStreamerListener, enableZeroX);
   }
 
   /**
@@ -149,7 +149,7 @@ export class DB {
    * @param blockAndLogStreamerListener
    * @return {Promise<void>}
    */
-  async initializeDB(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, blockAndLogStreamerListener: BlockAndLogStreamerListenerInterface): Promise<DB> {
+  async initializeDB(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, blockAndLogStreamerListener: BlockAndLogStreamerListenerInterface, enableZeroX: boolean): Promise<DB> {
     this.networkId = networkId;
     this.blockstreamDelay = blockstreamDelay;
     this.blockAndLogStreamerListener = blockAndLogStreamerListener;
@@ -175,8 +175,12 @@ export class DB {
     this.marketDatabase = new MarketDB(this, networkId, this.augur);
     this.cancelledOrdersDatabase = new CancelledOrdersDB(this, networkId, this.augur);
 
-    // Zero X Orders. Only on if a mesh client has been provided
-    this.zeroXOrders = this.augur.zeroX ? await ZeroXOrders.create(this, networkId, this.augur): undefined;
+    if (enableZeroX) {
+      this.zeroXOrders = await ZeroXOrders.create(this, networkId, this.augur);
+      this.augur.events.on('ZeroX:Ready', () => {
+        this.zeroXOrders.sync();
+      });
+    }
 
     // Always start syncing from 10 blocks behind the lowest
     // last-synced block (in case of restarting after a crash)
@@ -248,9 +252,6 @@ export class DB {
 
     // Derived DBs are synced after generic log DBs complete
     console.log('Syncing derived DBs');
-
-    // If no meshCLient provided will not exists
-    if (this.zeroXOrders) await this.zeroXOrders.sync();
 
     await this.disputeDatabase.sync(highestAvailableBlockNumber);
     await this.currentOrdersDatabase.sync(highestAvailableBlockNumber);
