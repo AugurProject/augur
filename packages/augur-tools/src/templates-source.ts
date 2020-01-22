@@ -5389,8 +5389,8 @@ export const TEMPLATES = {
           {
             id: 1,
             type: TemplateInputType.TEXT,
-            validationType: ValidationType.WHOLE_NUMBER,
-            placeholder: `Whole Number`,
+            validationType: ValidationType.NUMBER,
+            placeholder: `Number`,
           },
           {
             id: 2,
