@@ -28,13 +28,13 @@ import {
 } from '@augurproject/sdk';
 import { fork } from './fork';
 import { dispute } from './dispute';
-import { MarketList } from '@augurproject/sdk/build/state/getter/Markets';
+import { MarketList, MarketOrderBook } from '@augurproject/sdk/build/state/getter/Markets';
 import { generateTemplateValidations } from './generate-templates';
 import { spawn } from 'child_process';
 import { showTemplateByHash, validateMarketTemplate } from './template-utils';
 import { cannedMarkets, singleOutcomeAsks, singleOutcomeBids } from './data/canned-markets';
 import { ContractAPI } from '../libs/contract-api';
-import { sleep } from '@augurproject/core/source/libraries/HelperFunctions';
+import { OrderBookShaper } from './orderbook-shaper';
 
 export function addScripts(flash: FlashSession) {
   flash.addScript({
@@ -448,7 +448,7 @@ export function addScripts(flash: FlashSession) {
       const market = String(args.marketId);
       const mesh = args.meshEndpoint as string || undefined;
       const meshEndpoint = mesh ? mesh : endpoint;
-      const user = await this.ensureUser(this.network, false, true, null, meshEndpoint, true);
+      const user = await this.ensureUser(this.network, true, true, null, meshEndpoint, true);
       const skipFaucetApproval = args.skipFaucetOrApproval as boolean;
       if (!skipFaucetApproval) {
         await user.faucet(new BigNumber(10).pow(18).multipliedBy(1000000));
@@ -536,7 +536,7 @@ export function addScripts(flash: FlashSession) {
       const numOutcomes = Number(args.numOutcomes);
       const mesh = args.meshEndpoint as string || undefined;
       const meshEndpoint = mesh ? mesh : endpoint;
-      const user = await this.ensureUser(this.network, false, true, null, meshEndpoint, true);
+      const user = await this.ensureUser(this.network, true, true, null, meshEndpoint, true);
       const skipFaucetApproval = args.skipFaucetOrApproval as boolean;
       if (!skipFaucetApproval) {
         await user.faucet(new BigNumber(10).pow(18).multipliedBy(1000000));
@@ -675,7 +675,7 @@ export function addScripts(flash: FlashSession) {
       const market = String(args.marketId);
       const mesh = args.meshEndpoint as string || undefined;
       const meshEndpoint = mesh ? mesh : endpoint;
-      const user = await this.ensureUser(this.network, false, true, null, meshEndpoint, true);
+      const user = await this.ensureUser(this.network, true, true, null, meshEndpoint, true);
       const skipFaucetApproval = args.skipFaucetOrApproval as boolean;
       if (!skipFaucetApproval) {
         await user.faucet(new BigNumber(10).pow(18).multipliedBy(1000000));
@@ -780,74 +780,47 @@ export function addScripts(flash: FlashSession) {
     name: 'simple-orderbook-shaper',
     options: [
       {
-        name: 'marketId',
+        name: 'marketIds',
         abbr: 'm',
-        description: 'Market to create orders and trade for user'
-      },
-    ],
-    async call(this: FlashSession, args: FlashArguments) {
-      const address = args.userAccount as string;
-      const endpoint = 'ws://localhost:60557';
-      const user: ContractAPI = await this.ensureUser(null, true, true, address, endpoint, true);
-      const config = {
-        bids: [
-          {
-            price: 0.45,
-            vol: 1000,
-          },
-        ],
-        asks: [
-          {
-            price: 0.55,
-            vol: 1000,
-          },
-        ],
-      };
-
-      while(true) {
-
-
-        await sleep(1000)
-      }
-
-    }
-  });
-  flash.addScript({
-    name: 'orderbook-taker',
-    options: [
-      {
-        name: 'marketId',
-        abbr: 'm',
-        description: 'Market to create orders and trade for user'
+        description: 'Market ids separated by commas for multiple to create orders and maintain order book, ie 0x122,0x333,0x4444'
       },
       {
         name: 'userAccount',
         abbr: 'u',
-        description: 'User account to create the make trades on'
+        description: 'User account to create orders, if not provider contract owner is used'
       },
       {
-        name: 'numTrades',
-        abbr: 't',
-        description: 'Number of trades the user will make'
-      },
-      {
-        name: 'takeSide',
-        abbr: 's',
-        description: 'Take bid(s) or ask(s) valid values are bid or ask'
+        name: 'meshEndpoint',
+        abbr: 'e',
+        required: false,
+        description: 'Mesh endpoint to connect'
       }
     ],
     async call(this: FlashSession, args: FlashArguments) {
-      const address = args.userAccount as string;
-      const endpoint = 'ws://localhost:60557';
-      const direction = String(args.takeSize) === 'bid' || String(args.takeSide) === 'buy' ? 'bids' : 'asks';
-      const user = await this.ensureUser(null, true, true, address, endpoint, true);
+      const marketIds = String(args.marketIds).split(',').map(id => id.trim());
+      const address = args.userAccount ? args.userAccount as string : null;
+      const endpoint = args.meshEndpoint ? String(args.meshEndpoint) : 'ws://localhost:60557';
+      const user: ContractAPI = await this.ensureUser(null, true, true, address, endpoint, true);
+      console.log('creating orderbook shaper instances');
+      const orderBooks = marketIds.map(m => new OrderBookShaper(m));
 
-      const result = await this.user.augur.getMarketOrderBook({ marketId: args.marketId as string});
-
-      return result;
+      while(true) {
+        const timestamp = await this.user.getTimestamp();
+        for(let i = 0; i < orderBooks.length; i++) {
+          const orderBook: OrderBookShaper = orderBooks[i];
+          const marketId = orderBook.marketId;
+          const marketBook: MarketOrderBook = await this.user.augur.getMarketOrderBook({ marketId });
+          console.log(JSON.stringify(marketBook));
+          const orders = await orderBook.nextRun(marketBook, timestamp);
+          console.log(`creating ${orders.length} orders for ${marketId}`);
+          if (orders.length > 0) {
+            orders.map(order => user.placeZeroXOrder(order));
+          }
+        }
+        await new Promise<void>(resolve => setTimeout(resolve, 1000));
+      }
     }
   });
-
 
   flash.addScript({
     name: 'create-market-order',
@@ -912,9 +885,9 @@ export function addScripts(flash: FlashSession) {
       let user = null;
 
       if (isZeroX) {
-        user = await this.ensureUser(null, false, true, address, endpoint, true);
+        user = await this.ensureUser(null, true, true, address, endpoint, true);
       } else {
-        user = await this.ensureUser(null, false, true, address);
+        user = await this.ensureUser(null, true, true, address);
       }
       const skipFaucetOrApproval = args.skipFaucetOrApproval as boolean;
       if (!skipFaucetOrApproval) {
@@ -970,7 +943,6 @@ export function addScripts(flash: FlashSession) {
           expirationTime,
         };
         try {
-          this.log('Placing or filling order')
           result = fillOrder ? await user.augur.placeTrade(params) : await user.placeZeroXOrder(params)
         } catch(e) {
           this.log(e);

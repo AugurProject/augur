@@ -18,7 +18,6 @@ export class SingleThreadConnector extends BaseConnector {
   }
 
   async connect(config: SDKConfiguration, account?: string): Promise<void> {
-    console.log(this.client);
     this._api = await startServerFromClient(config, this.client);
   }
 
