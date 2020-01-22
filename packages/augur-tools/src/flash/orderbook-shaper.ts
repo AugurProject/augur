@@ -47,20 +47,21 @@ interface SimpleOrder {
   quantity: number;
   direction: number;
 }
+
 const orderType = {
   'bids': 0,
   'asks': 1
 }
 
 export class OrderBookShaper {
-  marketId: string = "";
-  orderSize: number = 100;
+  readonly orderSize: number = 100;
+  readonly maxPrice: BigNumber = new BigNumber(1);
+  readonly minPrice: BigNumber = new BigNumber(0);
+  readonly numTicks: BigNumber = new BigNumber(100);
+  readonly numOutcomes: 3;
+  readonly fiveMinutesInSeconds = new BigNumber(18000);
   outcomes: number[] = [];
-  maxPrice: BigNumber = new BigNumber(1);
-  minPrice: BigNumber = new BigNumber(0);
-  numTicks: BigNumber = new BigNumber(100);
-  numOutcomes: 3;
-  fiveMinutesInSeconds = new BigNumber(18000);
+  marketId: string = "";
 
   constructor (marketId: string, outcomes: number[] = [1, 2]) {
     this.marketId = marketId;
@@ -69,19 +70,17 @@ export class OrderBookShaper {
 
   nextRun = (marketBook: MarketOrderBook, timestamp: BigNumber): ZeroXPlaceTradeDisplayParams[] => {
     const marketOutcomesBook: MarketOutcomesBook = this.outcomes.reduce((p, o) => ({...p, [o]: config}), {})
-    const currentConfig = JSON.parse(JSON.stringify(marketOutcomesBook));
     const orderBook = marketBook.orderBook;
     let orders: SimpleOrder[] = [];
-    this.outcomes.map(o => {
-      orders = [...orders, ...this.createMissingOrders(o, currentConfig[o], orderBook[o])];
+    this.outcomes.forEach((o: number) => {
+      orders = [...orders, ...this.createMissingOrders(o, marketOutcomesBook[o], orderBook[o])];
     })
-
     return this.createOrders(orders, timestamp);
   }
 
   createMissingOrders = (outcome: number, orderBookConfig: OrderBookConfig, bidsAsks: BidsAsks): SimpleOrder[] => {
     let orders: SimpleOrder[] = []
-    Object.keys(orderBookConfig).map(type => {
+    Object.keys(orderBookConfig).map((type: string) => {
       const direction = orderType[type];
       const priceVol: OrderPriceVol = orderBookConfig[type];
       const bookPriceVol: MarketOrderBookOrder[] = bidsAsks ? bidsAsks[type] : [];

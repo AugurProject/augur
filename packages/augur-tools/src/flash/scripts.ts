@@ -802,7 +802,6 @@ export function addScripts(flash: FlashSession) {
       const address = args.userAccount ? args.userAccount as string : null;
       const endpoint = args.meshEndpoint ? String(args.meshEndpoint) : 'ws://localhost:60557';
       const user: ContractAPI = await this.ensureUser(null, true, true, address, endpoint, true);
-      this.log('creating orderbook shaper instances');
       const orderBooks = marketIds.map(m => new OrderBookShaper(m));
 
       while(true) {
@@ -811,10 +810,13 @@ export function addScripts(flash: FlashSession) {
           const orderBook: OrderBookShaper = orderBooks[i];
           const marketId = orderBook.marketId;
           const marketBook: MarketOrderBook = await this.user.augur.getMarketOrderBook({ marketId });
-          const orders = await orderBook.nextRun(marketBook, timestamp);
-          this.log(`creating ${orders.length} orders for ${marketId}`);
+          const orders = orderBook.nextRun(marketBook, timestamp);
           if (orders.length > 0) {
-            orders.map(order => user.placeZeroXOrder(order));
+            this.log(`creating ${orders.length} orders for ${marketId}`);
+            for(let j = 0; j < orders.length; j++) {
+              const order = orders[j];
+              await user.placeZeroXOrder(order).catch(this.log)
+            }
           }
         }
         await new Promise<void>(resolve => setTimeout(resolve, 1000));
@@ -919,13 +921,11 @@ export function addScripts(flash: FlashSession) {
           new BigNumber(0),
           new BigNumber('0.01')
         );
-        console.log('onChainPrice', onChainPrice.toString());
         const price = convertOnChainPriceToDisplayPrice(
           onChainPrice,
           new BigNumber(0),
           new BigNumber('0.01')
         );
-        console.log('order', String(args.amount), '@', price.toString());
         const params = {
           direction: type as 0 | 1,
           market : String(args.marketId),
@@ -970,8 +970,7 @@ export function addScripts(flash: FlashSession) {
         );
       }
       this.log(`place order ${result}`);
-      // something is hanging. no missings await that I can see.
-      process.exit;
+
     },
   });
 
@@ -1143,6 +1142,7 @@ export function addScripts(flash: FlashSession) {
         this.log(JSON.stringify(template, null, ' '));
       } catch (e) {
         this.log(e);
+        throw e;
       }
     },
   });
@@ -1634,7 +1634,6 @@ export function addScripts(flash: FlashSession) {
       if (this.noProvider()) return null;
       const user = await this.ensureUser(this.network, true);
 
-      //await (await this.db).sync(user.augur, 100000, 0);
       const markets: MarketList = await this.api.route('getMarkets', {
         universe: user.augur.contracts.universe.address,
       });
