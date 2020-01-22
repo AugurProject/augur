@@ -8273,20 +8273,20 @@ export const LIST_VALUES = {
   ],
   AMOUNT_UNITS: [
     {
-      value: 'Hundred(s)',
-      label: 'Hundred(s)',
+      value: 'Hundred',
+      label: 'Hundred',
     },
     {
-      value: 'Thousand(s)',
-      label: 'Thousand(s)',
+      value: 'Thousand',
+      label: 'Thousand',
     },
     {
-      value: 'Million(s)',
-      label: 'Million(s)',
+      value: 'Million',
+      label: 'Million',
     },
     {
-      value: 'Billion(s)',
-      label: 'Billion(s)',
+      value: 'Billion',
+      label: 'Billion',
     },
 
   ]
