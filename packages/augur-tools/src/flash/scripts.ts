@@ -1,6 +1,6 @@
 import { deployContracts } from '../libs/blockchain';
 import { FlashSession, FlashArguments } from './flash';
-import { createCannedMarkets, Market, CreatedCannedMarket } from './create-canned-markets-and-orders';
+import { createCannedMarkets } from './create-canned-markets-and-orders';
 import { _1_ETH } from '../constants';
 import {
   Contracts as compilerOutput,
@@ -33,6 +33,8 @@ import { generateTemplateValidations } from './generate-templates';
 import { spawn } from 'child_process';
 import { showTemplateByHash, validateMarketTemplate } from './template-utils';
 import { cannedMarkets, singleOutcomeAsks, singleOutcomeBids } from './data/canned-markets';
+import { ContractAPI } from '../libs/contract-api';
+import { sleep } from '@augurproject/core/source/libraries/HelperFunctions';
 
 export function addScripts(flash: FlashSession) {
   flash.addScript({
@@ -773,6 +775,79 @@ export function addScripts(flash: FlashSession) {
       return result;
     }
   });
+
+  flash.addScript({
+    name: 'simple-orderbook-shaper',
+    options: [
+      {
+        name: 'marketId',
+        abbr: 'm',
+        description: 'Market to create orders and trade for user'
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const address = args.userAccount as string;
+      const endpoint = 'ws://localhost:60557';
+      const user: ContractAPI = await this.ensureUser(null, true, true, address, endpoint, true);
+      const config = {
+        bids: [
+          {
+            price: 0.45,
+            vol: 1000,
+          },
+        ],
+        asks: [
+          {
+            price: 0.55,
+            vol: 1000,
+          },
+        ],
+      };
+
+      while(true) {
+
+
+        await sleep(1000)
+      }
+
+    }
+  });
+  flash.addScript({
+    name: 'orderbook-taker',
+    options: [
+      {
+        name: 'marketId',
+        abbr: 'm',
+        description: 'Market to create orders and trade for user'
+      },
+      {
+        name: 'userAccount',
+        abbr: 'u',
+        description: 'User account to create the make trades on'
+      },
+      {
+        name: 'numTrades',
+        abbr: 't',
+        description: 'Number of trades the user will make'
+      },
+      {
+        name: 'takeSide',
+        abbr: 's',
+        description: 'Take bid(s) or ask(s) valid values are bid or ask'
+      }
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const address = args.userAccount as string;
+      const endpoint = 'ws://localhost:60557';
+      const direction = String(args.takeSize) === 'bid' || String(args.takeSide) === 'buy' ? 'bids' : 'asks';
+      const user = await this.ensureUser(null, true, true, address, endpoint, true);
+
+      const result = await this.user.augur.getMarketOrderBook({ marketId: args.marketId as string});
+
+      return result;
+    }
+  });
+
 
   flash.addScript({
     name: 'create-market-order',
