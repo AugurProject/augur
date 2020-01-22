@@ -9,15 +9,14 @@ import { BrowserMesh, ZeroX } from '../api/ZeroX';
 
 export class SingleThreadConnector extends BaseConnector {
   private _api: API;
-  private _zeroX: ZeroX;
   private get events(): Subscriptions {
     return this.client.events;
   }
   get mesh(): BrowserMesh {
-    return this._zeroX.mesh;
+    return this.client.zeroX.mesh;
   }
   set mesh(mesh: BrowserMesh) {
-    this._zeroX.mesh = mesh;
+    this.client.zeroX.mesh = mesh;
   }
   get api() {
     return this._api;
@@ -26,12 +25,14 @@ export class SingleThreadConnector extends BaseConnector {
   async connect(config: SDKConfiguration, account?: string): Promise<void> {
     this._api = await startServerFromClient(config, this.client);
     if (config.zeroX) {
-      this._zeroX = new ZeroX(this._api.augur, config.zeroX.rpc ? config.zeroX.rpc.ws : undefined);
-      this.client.zeroX = this._zeroX;
+      this.client.zeroX = new ZeroX(this._api.augur, config.zeroX.rpc ? config.zeroX.rpc.ws : undefined);
     }
   }
 
   async disconnect(): Promise<void> {
+    if(this.client.zeroX) {
+      this.client.zeroX.disconnect();
+    }
     this._api = null;
   }
 

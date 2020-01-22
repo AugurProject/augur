@@ -265,8 +265,10 @@ export class Augur<TProvider extends Provider = Provider> {
   }
 
   async disconnect(): Promise<any> {
-    return this.connector.disconnect();
+    this.provider.disconnect();
+    this.connector.disconnect();
   }
+
   bindTo<R, P>(
     f: (db: any, augur: any, params: P) => Promise<R>
   ): (params: P) => Promise<R> {

@@ -121,11 +121,14 @@ export class ZeroX {
     return this.meshClient;
   }
 
-  set rpc(client: WSClient) {
+  set rpc(client: WSClient|null) {
+    if(!client && this.meshClient) {
+      this.meshClient.destroy();
+      this.meshClient = null;
+      return;
+    }
+
     this.meshClient = client;
-
-    if (!this.meshClient) return;
-
     this.meshClient.subscribeToOrdersAsync((orderEvents: OrderEvent[]) => {
       if (!this.browserMesh) {
         this.augur.events.emit('ZeroX:RPC:OrderEvent', orderEvents);
@@ -137,7 +140,13 @@ export class ZeroX {
     return this.browserMesh;
   }
 
-  set mesh(mesh: BrowserMesh) {
+  set mesh(mesh: BrowserMesh|null) {
+    if(!mesh && this.browserMesh) {
+      console.log("Browser mesh is being cleared, but there is no way to stop a running instance. You may end up with multiple instances of browserMesh running.")
+      this.browserMesh = null;
+      return;
+    }
+
     this.browserMesh = mesh;
 
     if (!this.browserMesh) return;
@@ -147,6 +156,13 @@ export class ZeroX {
         this.augur.events.emit('ZeroX:Mesh:OrderEvent', orderEvents);
       }
     });
+  }
+
+
+  disconnect() {
+    console.log("Disconnecting from ZeroX");
+    this.mesh = null;
+    this.rpc = null;
   }
 
   constructor(private readonly augur: Augur, meshClientEndpoint?: string) {

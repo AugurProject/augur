@@ -95,43 +95,51 @@ function makeVorpalCLI(flash: FlashSession): Vorpal {
 }
 
 if (require.main === module) {
-  let accounts: Account[];
-  if (process.env.ETHEREUM_PRIVATE_KEY) {
-    let key = process.env.ETHEREUM_PRIVATE_KEY;
-    if (key.slice(0, 2) !== '0x') {
-      key = `0x${key}`;
+  (async function() {
+    let accounts: Account[];
+    if (process.env.ETHEREUM_PRIVATE_KEY) {
+      let key = process.env.ETHEREUM_PRIVATE_KEY;
+      if (key.slice(0, 2) !== '0x') {
+        key = `0x${key}`;
+      }
+
+      accounts = [
+        {
+          secretKey: key,
+          publicKey: computeAddress(key),
+          balance: 0,
+        },
+      ];
+    } else {
+      accounts = ACCOUNTS;
     }
 
-    accounts = [
-      {
-        secretKey: key,
-        publicKey: computeAddress(key),
-        balance: 0,
-      },
-    ];
-  } else {
-    accounts = ACCOUNTS;
-  }
+    const flash = new FlashSession(accounts);
 
-  const flash = new FlashSession(accounts);
+    addScripts(flash);
+    addGanacheScripts(flash);
 
-  addScripts(flash);
-  addGanacheScripts(flash);
+    const args = parse(flash);
 
-  const args = parse(flash);
-
-  if (args.mode === 'interactive') {
-    const vorpal = makeVorpalCLI(flash);
-    flash.log = vorpal.log.bind(vorpal);
-    vorpal.show();
-  } else if (args.network === 'none') {
-    flash.call(args.command, args).catch(console.error);
-  } else {
-    flash.network = NetworkConfiguration.create(args.network);
-    flash.provider = flash.makeProvider(flash.network);
-    flash.getNetworkId(flash.provider).then((networkId) => {
-      flash.contractAddresses = Addresses[networkId];
-      return flash.call(args.command, args);
-    }).catch(console.error);
-  }
+    if (args.mode === 'interactive') {
+      const vorpal = makeVorpalCLI(flash);
+      flash.log = vorpal.log.bind(vorpal);
+      vorpal.show();
+    } else if (args.network === 'none') {
+      flash.call(args.command, args).catch(console.error);
+    } else {
+      try {
+        flash.network = NetworkConfiguration.create(args.network as NETWORKS);
+        flash.provider = flash.makeProvider(flash.network);
+        const networkId = await flash.getNetworkId(flash.provider);
+        flash.contractAddresses = Addresses[networkId];
+        await flash.call(args.command, args);
+      } catch(e){
+        console.error(e);
+        process.exit(1);
+      } finally {
+        process.exit(0);
+      }
+    }
+  })();
 }

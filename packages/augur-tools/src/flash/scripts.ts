@@ -837,9 +837,9 @@ export function addScripts(flash: FlashSession) {
       let user = null;
 
       if (isZeroX) {
-        user = await this.ensureUser(null, null, true, address, endpoint, true);
+        user = await this.ensureUser(null, true, true, address, endpoint, true);
       } else {
-        user = await this.ensureUser(null, null, true, address);
+        user = await this.ensureUser(null, true, true, address);
       }
       const skipFaucetOrApproval = args.skipFaucetOrApproval as boolean;
       if (!skipFaucetOrApproval) {
@@ -922,7 +922,6 @@ export function addScripts(flash: FlashSession) {
       }
       this.log(`place order ${result}`);
       // something is hanging. no missings await that I can see.
-      process.exit();
     },
   });
 
