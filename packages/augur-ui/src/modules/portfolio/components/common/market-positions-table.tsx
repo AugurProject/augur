@@ -9,7 +9,7 @@ import Styles from 'modules/portfolio/components/common/market-positions-table.s
 import { Getters } from '@augurproject/sdk';
 
 export interface MarketPositionsTableProps {
-  positions: Getters.Usrs.TradingPosition[];
+  positions: Getters.Users.TradingPosition[];
   extendedView: boolean;
   marketId: string;
   updateSelectedOrderProperties: Function;
@@ -66,7 +66,9 @@ export class MarketPositionsTable extends React.Component<
           ))}
         </div>
         {extendedView && positions.length === 0 && (
-          <div className={SharedStyles.Empty} />
+          <div className={SharedStyles.Empty}>
+            no positions to show
+          </div>
         )}
       </div>
     );

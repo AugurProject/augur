@@ -8,6 +8,7 @@
     cursor: pointer;
     border: 1px solid @color-dark-grey;
     border-bottom: 0;
+    max-height: @size-56;
 
     > svg {
       width: @size-20;
@@ -192,10 +193,13 @@
 }
 
 .HelpResources {
+  border-left: 1px solid @color-module-background;
+  border-right: 1px solid @color-module-background;
   color: @color-primary-text;
-  position: relative;
   display: flex;
   flex: 1;
-  max-width: 56px;
+  max-height: @size-56;
+  max-width: @size-56;
+  position: relative;
   z-index: @above-all-content-above;
 }

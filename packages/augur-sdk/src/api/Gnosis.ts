@@ -44,7 +44,6 @@ export interface GnosisSafeStatusPayload
 export class Gnosis {
   constructor(
     private readonly provider: Provider,
-    private readonly gnosisRelay: IGnosisRelayAPI,
     private readonly augur: Augur,
     private readonly dependencies: ContractDependenciesGnosis
   ) {
@@ -61,6 +60,10 @@ export class Gnosis {
       abi.GnosisSafeRegistry as Abi,
       'GnosisSafeRegistry'
     );
+  }
+
+  get gnosisRelay(): IGnosisRelayAPI {
+    return this.dependencies.gnosisRelay;
   }
 
   private safesToCheck: GnosisSafeStatusPayload[] = [];
@@ -283,7 +286,7 @@ export class Gnosis {
 
     // Make transaction to proxy factory
     const nonce = AUGUR_GNOSIS_SAFE_NONCE;
-    const proxy = this.augur.contracts.proxyFactory.createProxyWithCallback_(
+    const proxy = await this.augur.contracts.proxyFactory.createProxyWithCallback_(
       this.augur.contracts.gnosisSafe.address,
       gnosisSafeData,
       new BigNumber(nonce),
@@ -370,6 +373,7 @@ export class Gnosis {
     const augurAddress = this.augur.contracts.augur.address;
     const createOrderAddress = this.augur.contracts.createOrder.address;
     const fillOrderAddress = this.augur.contracts.fillOrder.address;
+    const zeroXTradeAddress = this.augur.contracts.ZeroXTrade.address;
     const affiliates = this.augur.contracts.affiliates.address;
     // TODO
     const fingerprint = formatBytes32String('');
@@ -381,6 +385,7 @@ export class Gnosis {
         augurAddress,
         createOrderAddress,
         fillOrderAddress,
+        zeroXTradeAddress,
         cashAddress,
         shareTokenAddress,
         affiliates,

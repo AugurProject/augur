@@ -1,4 +1,4 @@
-pragma solidity 0.5.10;
+pragma solidity 0.5.15;
 
 import 'ROOT/reporting/IV2ReputationToken.sol';
 import 'ROOT/libraries/ITyped.sol';
@@ -112,6 +112,12 @@ contract ReputationToken is VariableSupplyToken, IV2ReputationToken {
 
     function trustedDisputeWindowTransfer(address _source, address _destination, uint256 _attotokens) public returns (bool) {
         require(universe.isContainerForDisputeWindow(IDisputeWindow(msg.sender)));
+        _transfer(_source, _destination, _attotokens);
+        return true;
+    }
+
+    function trustedREPExchangeTransfer(address _source, address _destination, uint256 _attotokens) public returns (bool) {
+        require(address(universe.repExchange()) == msg.sender);
         _transfer(_source, _destination, _attotokens);
         return true;
     }

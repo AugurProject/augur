@@ -3,9 +3,9 @@ variables:
     CORE_IMAGE_BUILD: augurproject/augur-core:$(DOCKER_CI_BUILD_TAG)
     CORE_IMAGE_LATEST: augurproject/augur-core:monorepo
     PRIMARY_NODE_VERSION: 10.16.x
-    GETH_VERSION: v1.8.27
-    SOLC_VERSION: v0.5.10
-    SOLC_MD5: be02011efd6c6afd27cda02871bd70b3
+    GETH_VERSION: v1.9.9
+    SOLC_VERSION: v0.5.15
+    SOLC_MD5: 884dbc8c8ed01cc34799a6ffab11bc3a
 
 trigger:
   batch: false
@@ -95,13 +95,12 @@ jobs:
       USE_NORMAL_TIME: false
       PRODUCTION: false
       YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
-    pool:
-      vmImage: 'Ubuntu 16.04'
+    pool: 'Default'
     strategy:
       matrix:
         node_10_x:
           node_version: $(PRIMARY_NODE_VERSION)
-    timeoutInMinutes: 90
+    timeoutInMinutes: 120
     steps:
       - checkout: self
       - task: NodeTool@0

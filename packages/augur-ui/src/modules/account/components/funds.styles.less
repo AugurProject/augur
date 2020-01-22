@@ -7,6 +7,10 @@
   text-transform: uppercase;
   text-align: center;
 
+  @media @breakpoint-mobile-mid {
+    padding: @size-16 @size-28;
+  }
+
   > h4 {
     .mono-12-bold;
 
@@ -36,9 +40,13 @@
     margin-left: auto;
     margin-right: auto;
 
-    > span:first-of-type {
-      .mono-10-bold;
+    @media @breakpoint-mobile-mid {
+      margin-left: 0;
+      margin-right: 0;
+      max-width: 100%;
+    }
 
+    > span:first-of-type {
       color: @color-secondary-text;
     }
 

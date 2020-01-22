@@ -37,10 +37,12 @@
 
     > li a {
       display: flex;
+      height: @size-35;
 
       > span {
         .text-12-bold;
 
+        align-self: center;
         color: @color-secondary-text;
         text-transform: uppercase;
       }
@@ -58,12 +60,16 @@
       }
     }
 
-    .CreateButton {
-      button {
-        .mono-10-bold;
+    li.CreateButton {
+      > a {
+        height: @size-22;
 
-        padding: @size-4 @size-6;
-        text-transform: uppercase;
+        > button {
+          .mono-10-bold;
+  
+          padding: @size-4 @size-6;
+          text-transform: uppercase;
+        }
       }
     }
 

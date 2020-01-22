@@ -8,6 +8,7 @@ from utils import nullAddress, longTo32Bytes
 def test_gnosis_safe_registry(contractsFixture, augur, universe, cash, gnosisSafeRegistry, gnosisSafeMaster, proxyFactory):
     createOrder = contractsFixture.contracts["CreateOrder"]
     fillOrder = contractsFixture.contracts["FillOrder"]
+    zeroXTrade = contractsFixture.contracts["ZeroXTrade"]
     shareToken = contractsFixture.contracts["ShareToken"]
     affiliates = contractsFixture.contracts["Affiliates"]
     account = contractsFixture.accounts[0]
@@ -20,7 +21,7 @@ def test_gnosis_safe_registry(contractsFixture, augur, universe, cash, gnosisSaf
 
     saltNonce = 42
 
-    gnosisSafeRegistryData = gnosisSafeRegistry.setupForAugur_encode(augur.address, createOrder.address, fillOrder.address, cash.address, shareToken.address, affiliates.address, longTo32Bytes(11), nullAddress)
+    gnosisSafeRegistryData = gnosisSafeRegistry.setupForAugur_encode(augur.address, createOrder.address, fillOrder.address, zeroXTrade.address, cash.address, shareToken.address, affiliates.address, longTo32Bytes(11), nullAddress)
 
     gnosisSafeData = gnosisSafeMaster.setup_encode([account], 1, gnosisSafeRegistry.address, gnosisSafeRegistryData, nullAddress, nullAddress, 0, nullAddress)
     gnosisSafeAddress = proxyFactory.createProxyWithCallback(gnosisSafeMaster.address, gnosisSafeData, saltNonce, gnosisSafeRegistry.address)

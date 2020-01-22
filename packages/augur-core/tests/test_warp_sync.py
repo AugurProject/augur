@@ -93,7 +93,7 @@ def test_warp_sync_finalization_reward(contractsFixture, augur, universe, reputa
     finalizationReward = warpSync.getFinalizationReward(market.address)
     assert finalizationReward == expectedFinalizationReward
 
-def test_warp_sync_fork(contractsFixture, augur, universe, reputationToken, warpSync):
+def test_warp_sync_gets_forked(contractsFixture, augur, universe, reputationToken, warpSync):
     account = contractsFixture.accounts[0]
     time = contractsFixture.contracts["Time"]
 
@@ -143,6 +143,32 @@ def test_warp_sync_fork(contractsFixture, augur, universe, reputationToken, warp
     # See new warp sync market
     newWarpSyncMarket = contractsFixture.applySignature("Market", warpSync.markets(shortUniverse.address))
     assert newWarpSyncMarket.address != shortUniverseMarket.address
+
+def test_warp_sync_in_fork(contractsFixture, augur, universe, reputationToken, warpSync, market):
+    account = contractsFixture.accounts[0]
+    time = contractsFixture.contracts["Time"]
+
+    # Get warp sync market
+    warpSync.initializeUniverse(universe.address)
+    warpMarket = contractsFixture.applySignature("Market", warpSync.markets(universe.address))
+
+    # Fork the standard market
+    proceedToFork(contractsFixture, market, universe)
+    finalize(contractsFixture, market, universe)
+
+    # See that we cannot migrate the warp sync market
+    numTicks = market.getNumTicks()
+    with raises(TransactionFailed):
+        assert warpMarket.migrateThroughOneFork([0, 0, numTicks], "")
+
+    # Instead we just create a new warp sync market as usual for the new universe
+    winningUniverse = universe.getChildUniverse(market.getWinningPayoutDistributionHash())
+    warpSync.initializeUniverse(winningUniverse)
+
+    # The market now exists
+    assert not warpSync.markets(winningUniverse) == nullAddress
+
+
 
 @pytest_fixture
 def warpSync(contractsFixture):

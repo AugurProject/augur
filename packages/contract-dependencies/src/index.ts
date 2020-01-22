@@ -3,6 +3,7 @@ export type Primitive = 'uint8' | 'uint64' | 'uint256' | 'bool' | 'string' | 'ad
 export interface AbiParameter {
 	name: string
 	type: Primitive
+	internalType: any
 	components?: Array<AbiParameter>
 }
 

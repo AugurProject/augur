@@ -1,4 +1,4 @@
-pragma solidity 0.5.10;
+pragma solidity 0.5.15;
 
 import 'ROOT/IAugur.sol';
 import 'ROOT/trading/IAugurTrading.sol';
@@ -9,7 +9,10 @@ import 'ROOT/external/IProxy.sol';
 import 'ROOT/libraries/token/IERC1155.sol';
 import 'ROOT/reporting/IAffiliates.sol';
 
-
+/**
+ * @title Gnosis Safe Registry
+ * @notice A contract that contains a mapping of user addresses to Gnosis Safes which have been set up for easier Augur use
+ */
 contract GnosisSafeRegistry is Initializable {
     // mapping of user to created safes. The first safe wins but we store additional safes in case a user somehow makes multiple. The current safe may be de-registered by itself and the current safe will simply become the next one in line
     mapping (address => IGnosisSafe[]) public accountSafes;
@@ -26,6 +29,7 @@ contract GnosisSafeRegistry is Initializable {
     address public shareToken;
     address public createOrder;
     address public fillOrder;
+    address public zeroXTrade;
 
     uint256 private constant MAX_APPROVAL_AMOUNT = 2 ** 256 - 1;
 
@@ -43,11 +47,12 @@ contract GnosisSafeRegistry is Initializable {
 
         createOrder = _augurTrading.lookup("CreateOrder");
         fillOrder = _augurTrading.lookup("FillOrder");
+        zeroXTrade = _augurTrading.lookup("ZeroXTrade");
         return true;
     }
 
     // The misdirection here is because this is called through a delegatecall execution initially. We just direct that into making an actual call to the register method
-    function setupForAugur(address _augur, address _createOrder, address _fillOrder, IERC20 _cash, IERC1155 _shareToken, IAffiliates _affiliates, bytes32 _fingerprint, address _referralAddress) public {
+    function setupForAugur(address _augur, address _createOrder, address _fillOrder, address _zeroXTrade, IERC20 _cash, IERC1155 _shareToken, IAffiliates _affiliates, bytes32 _fingerprint, address _referralAddress) public {
         _cash.approve(_augur, MAX_APPROVAL_AMOUNT);
 
         _cash.approve(_createOrder, MAX_APPROVAL_AMOUNT);
@@ -55,6 +60,8 @@ contract GnosisSafeRegistry is Initializable {
 
         _cash.approve(_fillOrder, MAX_APPROVAL_AMOUNT);
         _shareToken.setApprovalForAll(_fillOrder, true);
+
+        _cash.approve(_zeroXTrade, MAX_APPROVAL_AMOUNT);
 
         _affiliates.setFingerprint(_fingerprint);
 
@@ -90,6 +97,7 @@ contract GnosisSafeRegistry is Initializable {
             address(augur),
             createOrder,
             fillOrder,
+            zeroXTrade,
             cash,
             shareToken,
             affiliates,
@@ -125,6 +133,9 @@ contract GnosisSafeRegistry is Initializable {
         )))));
     }
 
+    /**
+     * @notice De-register the current Gnosis Safe for the msg.sender
+     */
     function deRegister() external {
         IGnosisSafe _safe = IGnosisSafe(msg.sender);
         address[] memory _owners = _safe.getOwners();
@@ -133,6 +144,11 @@ contract GnosisSafeRegistry is Initializable {
         accountSafeIndexes[_owner] += 1;
     }
 
+    /**
+     * @notice Get the registered Gnosis Safe for the given account
+     * @param _account The account to look up
+     * @return IGnosisSafe for the account or 0x if none is registered
+     */
     function getSafe(address _account) public view returns (IGnosisSafe) {
         uint256 accountSafeIndex = accountSafeIndexes[_account];
         if (accountSafes[_account].length < accountSafeIndex + 1) {

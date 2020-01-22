@@ -469,7 +469,8 @@
   .Button;
 
   align-content: center;
-  background: @color-secondary-action;
+  // background: @color-secondary-action;
+  background: transparent;
   border: 1px solid @color-secondary-action-outline;
   color: @color-primary-text;
   display: flex;
@@ -477,12 +478,12 @@
   justify-content: center;
   line-height: @size-16;
   max-height: @button-height-default;
-  padding: @size-12 @size-24;
+  padding: @size-12;
 
   > svg {
     fill: none;
     height: @size-16;
-    margin: auto @size-8 auto 0;
+    margin: auto 0 auto @size-8;
     width: @size-16;
 
     > path {
@@ -507,15 +508,15 @@
   }
 
   &:hover:enabled {
-    background: fade(@color-primary-action, 5%);
+    background: @color-secondary-hover;
   }
 
   &:focus:enabled {
-    background: fade(@color-primary-action, 10%);
+    background: @color-secondary-hover;
   }
 
   &:active:enabled {
-    background: fade(@color-primary-action, 15%);
+    background: @color-secondary-hover;
   }
 }
 
@@ -559,15 +560,11 @@
   .ViewTransactionsButton;
 
   height: 100%;
-  padding: 0 @size-24;
-
-  > span {
-    padding: @size-12 0;
-  }
+  padding: @size-12;
 
   > svg {
-    height: @size-22;
-    width: @size-20;
+    height: @size-16;
+    width: @size-16;
 
     > path {
       &:nth-child(odd) {
