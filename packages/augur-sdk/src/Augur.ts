@@ -64,7 +64,7 @@ export class Augur<TProvider extends Provider = Provider> {
       this._zeroX.disconnect();
     }
 
-    this._zeroX = null;
+    this._zeroX = zeroX;
   }
 
   constructor(
