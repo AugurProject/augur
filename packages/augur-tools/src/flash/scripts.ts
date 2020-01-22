@@ -801,7 +801,7 @@ export function addScripts(flash: FlashSession) {
       const address = args.userAccount ? args.userAccount as string : null;
       const endpoint = args.meshEndpoint ? String(args.meshEndpoint) : 'ws://localhost:60557';
       const user: ContractAPI = await this.ensureUser(null, true, true, address, endpoint, true);
-      console.log('creating orderbook shaper instances');
+      this.log('creating orderbook shaper instances');
       const orderBooks = marketIds.map(m => new OrderBookShaper(m));
 
       while(true) {
@@ -811,7 +811,7 @@ export function addScripts(flash: FlashSession) {
           const marketId = orderBook.marketId;
           const marketBook: MarketOrderBook = await this.user.augur.getMarketOrderBook({ marketId });
           const orders = await orderBook.nextRun(marketBook, timestamp);
-          console.log(`creating ${orders.length} orders for ${marketId}`);
+          this.log(`creating ${orders.length} orders for ${marketId}`);
           if (orders.length > 0) {
             orders.map(order => user.placeZeroXOrder(order));
           }
