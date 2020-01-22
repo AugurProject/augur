@@ -17,6 +17,7 @@ import {
   ACCOUNT_TYPES,
   DAI,
   REP,
+  ETH,
   ADD_FUNDS_SWAP,
   ADD_FUNDS_COINBASE,
   ADD_FUNDS_CREDIT_CARD,
@@ -32,6 +33,7 @@ import { Swap } from 'modules/swap/components';
 interface AddFundsProps {
   closeAction: Function;
   autoSelect?: boolean;
+  isRelayDown?: boolean;
   fundType: string;
   loginAccount: LoginAccount;
   ETH_RATE: number;
@@ -70,6 +72,7 @@ export const AddFunds = ({
   loginAccount,
   ETH_RATE,
   REP_RATE,
+  isRelayDown = false,
 }: AddFundsProps) => {
   const address = loginAccount.address
   const accountMeta = loginAccount.meta;
@@ -91,7 +94,12 @@ export const AddFunds = ({
   }
 
   const [selectedOption, setSelectedOption] = useState(autoSelect ? autoSelection : null);
-  const fundTypeLabel = fundType === DAI ? 'Dai ($)' : 'REP';
+  const accountLabel = isRelayDown && fundType === DAI ? `[${accountMeta.accountType}]` : 'Augur';
+  const fundTypeToUse = isRelayDown && fundType === DAI ? ETH : fundType;
+  const fundTypeLabel = fundTypeToUse === ETH ? 'ETH' : fundTypeToUse === DAI ? 'Dai ($)' : 'REP';
+
+  // When Adding ETH through Add Funds we use the signer address since we need that account to have ETH to cover gas during outages
+  const walletAddress = isRelayDown && fundType === DAI && accountMeta.signer ?  accountMeta.signer._address : address;
 
   const FUND_OTPIONS = [
     {
@@ -101,17 +109,17 @@ export const AddFunds = ({
     },
     {
       header: 'Credit/debit card',
-      description: 'Add Funds instantly using a credit/debit card',
+      description: `Add ${fundTypeToUse === ETH ? 'ETH' : 'Funds'} instantly using a credit/debit card`,
       value: ADD_FUNDS_CREDIT_CARD,
     },
     {
       header: 'Coinbase',
-      description: 'Send funds from a Coinbase account',
+      description: `Send ${fundTypeToUse === ETH ? 'ETH' : 'Funds'} from a Coinbase account`,
       value: ADD_FUNDS_COINBASE,
     },
     {
       header: 'Transfer',
-      description: 'Send funds to your Augur account address',
+      description: `Send ${fundTypeToUse === ETH ? 'ETH' : 'Funds'} to your ${accountLabel} account address`,
       value: ADD_FUNDS_TRANSFER,
     },
   ];
@@ -146,7 +154,7 @@ export const AddFunds = ({
           <CloseButton action={() => closeAction()} />
         </div>
         <div>
-          <h1>{fundType === REP ? 'Get REP' : 'Add Funds'}</h1>
+          <h1>{fundTypeToUse === REP ? 'Get REP' : 'Add Funds'}</h1>
           <h2>Choose a method</h2>
           <RadioTwoLineBarGroup
             radioButtons={addFundsOptions}
@@ -156,7 +164,7 @@ export const AddFunds = ({
               setSelectedOption(() => value && value.toString());
             }}
           />
-          <FundsHelp fundType={fundType} />
+          {fundTypeToUse !== ETH && <FundsHelp fundType={fundTypeToUse} />}
         </div>
       </div>
       <div>
@@ -189,20 +197,13 @@ export const AddFunds = ({
           {selectedOption === ADD_FUNDS_CREDIT_CARD && (
             <>
               <h1>Credit/debit card</h1>
-              {accountMeta.accountType === ACCOUNT_TYPES.PORTIS && (
-                <h2>
-                  Add up to $250 worth of {fundTypeLabel} {generateDaiTooltip()} instantly
-                </h2>
-              )}
-              {accountMeta.accountType === ACCOUNT_TYPES.TORUS && (
-                <h2>Add {fundTypeLabel} {generateDaiTooltip()} instantly</h2>
-              )}
+              <h2>Add {fundTypeLabel} {fundTypeToUse === DAI ? generateDaiTooltip() : null} instantly</h2>
 
               <h3>Amount</h3>
               <TextInput
                 placeholder='0'
                 onChange={noop}
-                innerLabel={'USD'}
+                innerLabel={fundTypeToUse === DAI ? 'USD' : fundTypeToUse}
               />
 
               {accountMeta.accountType === ACCOUNT_TYPES.PORTIS && (
@@ -220,7 +221,9 @@ export const AddFunds = ({
                 />
               )}
               <h4>
-                Buy Dai ($) with our secure payments partner, {accountMeta.accountType}. Funds will appear in your Augur account when payment finalizes.
+                {[ACCOUNT_TYPES.PORTIS, ACCOUNT_TYPES.TORUS, ACCOUNT_TYPES.FORTMATIC].includes(accountMeta.accountType) &&
+                  <div>Buy {fundTypeLabel} with our secure payments partner, {accountMeta.accountType}. Funds will appear in your Augur account when payment finalizes.</div>
+                }
               </h4>
             </>
           )}
@@ -228,8 +231,7 @@ export const AddFunds = ({
             <>
               <h1>Coinbase</h1>
               <h2>
-                Add up to $25,000 worth of {fundType === DAI ? <>{fundTypeLabel} {generateDaiTooltip()}</> : fundType} using
-                a Coinbase account
+                Add {fundTypeToUse === DAI ? <>{fundTypeLabel} {generateDaiTooltip()}</> : fundTypeLabel} using a Coinbase account
               </h2>
               <ol>
                 <li>
@@ -239,23 +241,23 @@ export const AddFunds = ({
                   </a>
                 </li>
                 <li>Buy the cryptocurrency {fundTypeLabel}</li>
-                <li>Send the {fundTypeLabel} to your augur account address</li>
+                <li>Send the {fundTypeLabel} to your {accountLabel} account address</li>
               </ol>
-              <h3>Augur account address</h3>
-              <AccountAddressDisplay copyable address={toChecksumAddress(address)} />
-              <ExternalLinkButton URL='https://docs.augur.net/' label={'Learn about your address'} />
+              <h3>{accountLabel} account address</h3>
+              <AccountAddressDisplay copyable address={toChecksumAddress(walletAddress)} />
+              {fundTypeToUse !== ETH && <ExternalLinkButton URL='https://docs.augur.net/' label={'Learn about your address'} />}
             </>
           )}
           {selectedOption === ADD_FUNDS_TRANSFER && (
             <>
               <h1>Transfer</h1>
               <h2>
-                Send funds to your Augur account address
+                Send {fundTypeToUse === ETH ? fundTypeLabel : 'funds'} to your {accountLabel} account address
               </h2>
               <ol>
                 <li>
                   Buy{' '}
-                  {fundType === DAI ? (
+                  {fundTypeToUse === DAI ? (
                     <>
                       {fundTypeLabel} {generateDaiTooltip()}
                     </>
@@ -264,15 +266,15 @@ export const AddFunds = ({
                   )}{' '}
                    using an app or exchange (see our list of <a target='blank' href='https://docs.augur.net/'>popular ways to buy {fundTypeLabel})</a>
                 </li>
-                <li>Transfer the {fundTypeLabel} to your Augur account address</li>
+                <li>Transfer the {fundTypeLabel} to your {accountLabel} account address</li>
               </ol>
-              <h3>Augur account address</h3>
-              <AccountAddressDisplay copyable address={toChecksumAddress(address)} />
-              <ExternalLinkButton URL='https://docs.augur.net/' label={'Learn about your address'} />
+              <h3>{accountLabel} account address</h3>
+              <AccountAddressDisplay copyable address={toChecksumAddress(walletAddress)} />
+              {fundTypeToUse !== ETH && <ExternalLinkButton URL='https://docs.augur.net/' label={'Learn about your address'} />}
             </>
           )}
         </div>
-        <FundsHelp fundType={fundType} />
+        {fundTypeToUse !== ETH && <FundsHelp fundType={fundTypeToUse} />}
         <div>
           <button onClick={() => closeAction()}>Done</button>
         </div>

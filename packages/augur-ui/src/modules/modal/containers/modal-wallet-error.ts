@@ -5,6 +5,8 @@ import { closeModal } from 'modules/modal/actions/close-modal';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { AppState } from 'store';
+import { updateModal } from '../actions/update-modal';
+import { MODAL_ADD_FUNDS, ETH } from 'modules/common/constants';
 
 const mapStateToProps = (state: AppState) => ({
   modal: state.modal,
@@ -12,6 +14,7 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
+  showAddFundsModal: () => dispatch(updateModal({ type: MODAL_ADD_FUNDS })),
 });
 
 const mergeProps = (sP, dP, oP) => {
@@ -20,7 +23,10 @@ const mergeProps = (sP, dP, oP) => {
     buttons: [{ text: 'Close', action: () => dP.closeModal() }],
     description: [sP.modal.error ? sP.modal.error : ''],
     showDiscordLink: sP.modal.showDiscordLink,
+    showAddFundsHelp: sP.modal.showAddFundsHelp,
+    walletType: sP.modal.walletType,
     closeAction: () => dP.closeModal(),
+    showAddFundsModal: () => dP.showAddFundsModal(),
   };
 };
 
