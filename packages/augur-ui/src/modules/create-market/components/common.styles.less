@@ -8,6 +8,8 @@
 
   @media @breakpoint-mobile-new {
     .text-18-bold;
+
+    margin-bottom: @size-22;
   }
 }
 
@@ -20,6 +22,9 @@
 
   @media @breakpoint-mobile-new {
     .text-18-bold;
+
+    margin-top: @size-6;
+    margin-bottom: @size-16;
   }
 }
 
@@ -70,6 +75,14 @@
   &:not(:first-of-type) {
     > h1 {
       margin-top: @size-32;
+    }
+  }
+
+  @media @breakpont-mobile-new {
+    &:not(:first-of-type) {
+      > h1 {
+        margin-top: @size-22;
+      }
     }
   }
 }
@@ -250,6 +263,18 @@
 
     margin-top: @size-4;
   }
+
+  @media @breakpoint-mobile-new {
+    > h1 {
+      .text-10-medium;
+    }
+
+    > span,
+    > div > span,
+    > label > p {
+      .text-14-bold;
+    }
+  }
 }
 
 .SmallSubheadersTooltip {
@@ -306,6 +331,24 @@
   margin-bottom: @size-24;
   display: flex;
   flex-direction: column;
+
+  @media @breakpoint-mobile-new {
+    margin-bottom: @size-8;
+    padding: @size-24;
+
+    > h2 {
+      .text-14-bold;
+
+      margin-bottom: @size-12;
+    }
+
+    > ul {
+      > p,
+      > li {
+        .text-12;
+      }
+    }
+  }
 
   > h2 {
     .text-18-bold;

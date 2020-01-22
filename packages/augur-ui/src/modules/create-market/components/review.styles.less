@@ -54,4 +54,26 @@
             }
         }
     }
+
+    @media @breakpoint-mobile-new {
+        > div:first-of-type {
+            grid-row-gap: @size-22;
+        }
+
+        > div:nth-of-type(3) {
+            > div:not(:last-of-type) {
+                margin-bottom: @size-22;
+            }
+        }
+
+        > div:last-of-type {
+            > span > div {
+                max-width: unset;
+
+                > span > div {
+                    max-width: unset;
+                }
+            }
+        }
+    }
 }
