@@ -196,6 +196,7 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
         txHash = await this.gnosisRelay.execTransaction(relayTransaction);
       } catch (error) {
         this.setUseRelay(false);
+        this.setStatus(GnosisSafeState.ERROR);
         throw TransactionStatus.RELAYER_DOWN;
       }
     } else {
@@ -318,7 +319,6 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
     const gasPrice = new ethers.utils.BigNumber(
       this.gasPrice.multipliedBy(GWEI_CONVERSION).toFixed()
     );
-
     const response = await this.gnosisSafe.execTransaction(
       relayTransaction.to,
       new ethers.utils.BigNumber(Number(relayTransaction.value).toFixed()),
@@ -350,6 +350,11 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
     const value = tx.value;
     const data = tx.data;
 
+    const gasPrice = new ethers.utils.BigNumber(
+      this.gasPrice.multipliedBy(GWEI_CONVERSION).toFixed()
+    ).toNumber();
+
+
     const relayEstimateRequest = {
       safe: this.safeAddress,
       to,
@@ -357,7 +362,7 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
       value: new BigNumber(value.toString()),
       operation,
       gasToken: this.gasToken,
-      gasPrice: this.gasPrice,
+      gasPrice,
     };
 
     let gasEstimates: RelayTxEstimateResponse;
@@ -374,7 +379,6 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
       Number(gasEstimates.safeTxGas)
     ).add(1000);
     const baseGas = gasEstimates.baseGas;
-    const gasPrice = this.gasPrice;
     const gasToken = this.gasToken;
     const refundReceiver = NULL_ADDRESS;
     const txHashBytes = await this.gnosisSafe.getTransactionHash(
@@ -408,7 +412,7 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
             {
               safeTxGas: safeTxGas.toString(),
               dataGas: baseGas,
-              gasPrice,
+              gasPrice: new BigNumber(gasPrice),
               refundReceiver,
               nonce,
               signatures,

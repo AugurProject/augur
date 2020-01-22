@@ -42,7 +42,8 @@ const Disputing: React.FC<DisputingProps> = ({
             <ModuleTabs selected={0} fillWidth noBorder>
               <ModulePane label="disputing overview">
                 <ReportingModalButton
-                  text="Need Help? Disputing Quick Guide"
+                  highlightedText='Need Help?'
+                  text="View our Disputing Quick Guide"
                   action={openDisputingModal}
                 />
                 <UserRepDisplay />
@@ -58,7 +59,8 @@ const Disputing: React.FC<DisputingProps> = ({
               <MarketsInDispute />
               <div>
                 <ReportingModalButton
-                  text="Need Help? Disputing Quick Guide"
+                  highlightedText='Need Help?'
+                  text="View our Disputing Quick Guide"
                   action={openDisputingModal}
                 />
                 <UserRepDisplay />

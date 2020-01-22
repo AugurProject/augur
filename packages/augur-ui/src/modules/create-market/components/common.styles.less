@@ -6,7 +6,7 @@
   color: @color-primary-text;
   margin-bottom: @size-24;
 
-  @media @breakpoint-mobile-mid {
+  @media @breakpoint-mobile-new {
     .text-18-bold;
   }
 }
@@ -17,6 +17,10 @@
   color: @color-primary-text;
   margin-top: @size-48;
   margin-bottom: @size-24;
+
+  @media @breakpoint-mobile-new {
+    .text-18-bold;
+  }
 }
 
 .MediumHeader {
@@ -26,6 +30,16 @@
 
   > span {
     .text-16-bold;
+  }
+
+  @media @breakpoint-mobile-new {
+    .text-14;
+
+    line-height: 140%;
+
+    > span {
+      .text-14;
+    }
   }
 }
 
@@ -81,6 +95,12 @@
       margin-top: @size-8;
     }
   }
+
+  @media @breakpoint-mobile-new {
+    > p {
+      margin-top: @size-6;
+    }
+  }
 }
 
 .XLargeSubheaders {
@@ -94,9 +114,10 @@
     margin-top: 0;
   }
 
-  @media @breakpoint-mobile-mid {
+  @media @breakpoint-mobile-new {
     align-items: flex-start;
     padding: 0 @size-8;
+    margin: @size-24 0 @size-8;
   }
 }
 
@@ -360,8 +381,8 @@
     padding: @size-24;
   }
 
-  @media @breakpoint-mobile-mid {
-    padding: @size-24 @size-16;
+  @media @breakpoint-mobile-new {
+    padding: @size-20 @size-16;
     width: 100%;
   }
 }

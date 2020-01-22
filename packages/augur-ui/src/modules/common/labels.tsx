@@ -1,20 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
 import * as constants from 'modules/common/constants';
-import {
-  BOUGHT,
-  CATEGORICAL,
-  CLOSED,
-  DISCORD_LINK,
-  PROBABLE_INVALID_MARKET,
-  REPORTING_STATE,
-  SCALAR,
-  SELL,
-  SHORT,
-  SOLD,
-  YES_NO,
-  ZERO,
-} from 'modules/common/constants';
 import Styles from 'modules/common/labels.styles.less';
 import { ClipLoader } from 'react-spinners';
 import {
@@ -31,6 +17,21 @@ import {
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import { createBigNumber } from 'utils/create-big-number';
+import {
+  SELL,
+  BOUGHT,
+  PROBABLE_INVALID_MARKET,
+  SOLD,
+  CLOSED,
+  SHORT,
+  ZERO,
+  YES_NO,
+  SCALAR,
+  CATEGORICAL,
+  REPORTING_STATE,
+  DISCORD_LINK,
+  ACCOUNT_TYPES,
+} from 'modules/common/constants';
 import { ViewTransactionDetailsButton } from 'modules/common/buttons';
 import { formatNumber } from 'utils/format-number';
 import { DateFormattedObject, FormattedNumber, SizeTypes } from 'modules/types';
@@ -1250,4 +1251,11 @@ export const DiscordLink = (props: DiscordLinkProps) => (
       Discord
     </a>
   </div>
+);
+
+export const AddFundsHelp = (props) => (
+  <ol>
+    <li>Add ETH to your {props.walletType} account address. {props.walletType === ACCOUNT_TYPES.WEB3WALLET ? '' : `${props.walletType} are our secure account and payment partners. ${props.walletType} will enable you to process the transaction fee without requiring Dai.`} {props.walletType === ACCOUNT_TYPES.WEB3WALLET ? null : <span onClick={() => props.showAddFundsModal()}>Add ETH to your {props.walletType} account address</span>}</li>
+    <li>After you have sent the ETH to your {props.walletType} account address you can then return and make the transaction.</li>
+  </ol>
 );

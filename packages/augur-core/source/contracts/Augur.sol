@@ -19,6 +19,7 @@ import 'ROOT/reporting/Reporting.sol';
 import 'ROOT/libraries/ContractExists.sol';
 import 'ROOT/ITime.sol';
 import 'ROOT/CashSender.sol';
+import 'ROOT/reporting/IAffiliates.sol';
 
 
 // Centralized approval authority and event emissions
@@ -68,6 +69,8 @@ contract Augur is IAugur, IAugurCreationDataGetter, CashSender {
     event NoShowBondChanged(address indexed universe, uint256 noShowBond);
     event ReportingFeeChanged(address indexed universe, uint256 reportingFee);
     event ShareTokenBalanceChanged(address indexed universe, address indexed account, address indexed market, uint256 outcome, uint256 balance);
+    event MarketRepBondTransferred(address indexed universe, address market, address from, address to);
+    event WarpSyncDataUpdated(address indexed universe, uint256 warpSyncHash, uint256 marketEndTime);
 
     event RegisterContract(address contractAddress, bytes32 key);
     event FinishDeployment();
@@ -548,6 +551,16 @@ contract Augur is IAugur, IAugurCreationDataGetter, CashSender {
         IUniverse _universe = getAndValidateUniverse(msg.sender);
         emit ReportingFeeChanged(address(_universe), _reportingFee);
         return true;
+    }
+
+    function logMarketRepBondTransferred(address _universe, address _from, address _to) public returns (bool) {
+        require(isKnownMarket(IMarket(msg.sender)));
+        emit MarketRepBondTransferred(_universe, msg.sender, _from, _to);
+    }
+
+    function logWarpSyncDataUpdated(address _universe, uint256 _warpSyncHash, uint256 _marketEndTime) public returns (bool) {
+        require(msg.sender == registry["WarpSync"]);
+        emit WarpSyncDataUpdated(_universe, _warpSyncHash, _marketEndTime);
     }
 
     function getAndValidateUniverse(address _untrustedUniverse) internal view returns (IUniverse) {
