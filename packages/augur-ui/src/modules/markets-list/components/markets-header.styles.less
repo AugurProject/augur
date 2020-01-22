@@ -93,12 +93,14 @@
     }
   }
 
+  // Apply on filter search
   > div > article {
     flex: 1;
-    height: 44px;
+    height: @size-44;
 
     @media @breakpoint-mobile {
       order: 0;
+      height: @size-32;
     }
   }
 }
