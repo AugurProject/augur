@@ -810,7 +810,6 @@ export function addScripts(flash: FlashSession) {
           const orderBook: OrderBookShaper = orderBooks[i];
           const marketId = orderBook.marketId;
           const marketBook: MarketOrderBook = await this.user.augur.getMarketOrderBook({ marketId });
-          console.log(JSON.stringify(marketBook));
           const orders = await orderBook.nextRun(marketBook, timestamp);
           console.log(`creating ${orders.length} orders for ${marketId}`);
           if (orders.length > 0) {
