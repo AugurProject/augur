@@ -287,7 +287,7 @@ export const TemplateShield = ({ market }: TemplateShieldProps) => {
       >
         {yellowShield
           ? "Templated market question, contains market creator text. This text should match to highlighted section's tooltip"
-          : 'Template Markets have pre-defined terms and a greater chance of validly resolving than Custom Markets.'}
+          : 'Template markets have predefined terms and have a smaller chance of resolving as invalid'}
       </ReactTooltip>
     </>
   );
