@@ -6,15 +6,100 @@ title: Src
 
 ## Contracts
 
+### `DeploymentConstants`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#DeploymentConstants._getKyberNetworkProxyAddress()"><code class="function-signature">_getKyberNetworkProxyAddress()</code></a></li><li><a href="#DeploymentConstants._getWethAddress()"><code class="function-signature">_getWethAddress()</code></a></li><li><a href="#DeploymentConstants._getUniswapExchangeFactoryAddress()"><code class="function-signature">_getUniswapExchangeFactoryAddress()</code></a></li><li><a href="#DeploymentConstants._getEth2DaiAddress()"><code class="function-signature">_getEth2DaiAddress()</code></a></li><li><a href="#DeploymentConstants._getERC20BridgeProxyAddress()"><code class="function-signature">_getERC20BridgeProxyAddress()</code></a></li><li><a href="#DeploymentConstants._getDaiAddress()"><code class="function-signature">_getDaiAddress()</code></a></li><li><a href="#DeploymentConstants._getChaiAddress()"><code class="function-signature">_getChaiAddress()</code></a></li><li><a href="#DeploymentConstants._getDevUtilsAddress()"><code class="function-signature">_getDevUtilsAddress()</code></a></li><li><a href="#DeploymentConstants._getDydxAddress()"><code class="function-signature">_getDydxAddress()</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="DeploymentConstants._getKyberNetworkProxyAddress()"></a><code class="function-signature">_getKyberNetworkProxyAddress() <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">internal</span></h4>
+
+Overridable way to get the `KyberNetworkProxy` address.
+ @return kyberAddress The `IKyberNetworkProxy` address.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="DeploymentConstants._getWethAddress()"></a><code class="function-signature">_getWethAddress() <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">internal</span></h4>
+
+Overridable way to get the WETH address.
+ @return wethAddress The WETH address.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="DeploymentConstants._getUniswapExchangeFactoryAddress()"></a><code class="function-signature">_getUniswapExchangeFactoryAddress() <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">internal</span></h4>
+
+Overridable way to get the `UniswapExchangeFactory` address.
+ @return uniswapAddress The `UniswapExchangeFactory` address.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="DeploymentConstants._getEth2DaiAddress()"></a><code class="function-signature">_getEth2DaiAddress() <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">internal</span></h4>
+
+An overridable way to retrieve the Eth2Dai `MatchingMarket` contract.
+ @return eth2daiAddress The Eth2Dai `MatchingMarket` contract.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="DeploymentConstants._getERC20BridgeProxyAddress()"></a><code class="function-signature">_getERC20BridgeProxyAddress() <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">internal</span></h4>
+
+An overridable way to retrieve the `ERC20BridgeProxy` contract.
+ @return erc20BridgeProxyAddress The `ERC20BridgeProxy` contract.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="DeploymentConstants._getDaiAddress()"></a><code class="function-signature">_getDaiAddress() <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">internal</span></h4>
+
+An overridable way to retrieve the `Dai` contract.
+ @return daiAddress The `Dai` contract.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="DeploymentConstants._getChaiAddress()"></a><code class="function-signature">_getChaiAddress() <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">internal</span></h4>
+
+An overridable way to retrieve the `Chai` contract.
+ @return chaiAddress The `Chai` contract.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="DeploymentConstants._getDevUtilsAddress()"></a><code class="function-signature">_getDevUtilsAddress() <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">internal</span></h4>
+
+An overridable way to retrieve the 0x [`DevUtils`](#devutils) contract address.
+ @return devUtils The 0x [`DevUtils`](#devutils) contract address.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="DeploymentConstants._getDydxAddress()"></a><code class="function-signature">_getDydxAddress() <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">internal</span></h4>
+
+Overridable way to get the DyDx contract.
+ @return exchange The DyDx exchange contract.
+
+
+
+
+
 ### `DevUtils`
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#DevUtils.constructor(address)"><code class="function-signature">constructor(address _exchange)</code></a></li><li class="inherited"><a href="src#OrderTransferSimulationUtils.getSimulatedOrderTransferResults(struct LibOrder.Order,address,uint256)"><code class="function-signature">getSimulatedOrderTransferResults(struct LibOrder.Order order, address takerAddress, uint256 takerAssetFillAmount)</code></a></li><li class="inherited"><a href="src#OrderTransferSimulationUtils.getSimulatedOrdersTransferResults(struct LibOrder.Order[],address[],uint256[])"><code class="function-signature">getSimulatedOrdersTransferResults(struct LibOrder.Order[] orders, address[] takerAddresses, uint256[] takerAssetFillAmounts)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeSignatureError(bytes)"><code class="function-signature">decodeSignatureError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeEIP1271SignatureError(bytes)"><code class="function-signature">decodeEIP1271SignatureError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeSignatureValidatorNotApprovedError(bytes)"><code class="function-signature">decodeSignatureValidatorNotApprovedError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeSignatureWalletError(bytes)"><code class="function-signature">decodeSignatureWalletError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeOrderStatusError(bytes)"><code class="function-signature">decodeOrderStatusError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeExchangeInvalidContextError(bytes)"><code class="function-signature">decodeExchangeInvalidContextError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeFillError(bytes)"><code class="function-signature">decodeFillError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeOrderEpochError(bytes)"><code class="function-signature">decodeOrderEpochError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeAssetProxyExistsError(bytes)"><code class="function-signature">decodeAssetProxyExistsError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeAssetProxyDispatchError(bytes)"><code class="function-signature">decodeAssetProxyDispatchError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeAssetProxyTransferError(bytes)"><code class="function-signature">decodeAssetProxyTransferError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeNegativeSpreadError(bytes)"><code class="function-signature">decodeNegativeSpreadError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeTransactionError(bytes)"><code class="function-signature">decodeTransactionError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeTransactionExecutionError(bytes)"><code class="function-signature">decodeTransactionExecutionError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeIncompleteFillError(bytes)"><code class="function-signature">decodeIncompleteFillError(bytes encoded)</code></a></li><li class="inherited"><a href="src#OrderValidationUtils.getOrderRelevantState(struct LibOrder.Order,bytes)"><code class="function-signature">getOrderRelevantState(struct LibOrder.Order order, bytes signature)</code></a></li><li class="inherited"><a href="src#OrderValidationUtils.getOrderRelevantStates(struct LibOrder.Order[],bytes[])"><code class="function-signature">getOrderRelevantStates(struct LibOrder.Order[] orders, bytes[] signatures)</code></a></li><li class="inherited"><a href="src#OrderValidationUtils.getTransferableAssetAmount(address,bytes)"><code class="function-signature">getTransferableAssetAmount(address ownerAddress, bytes assetData)</code></a></li><li class="inherited"><a href="src#LibAssetData.getBalance(address,bytes)"><code class="function-signature">getBalance(address ownerAddress, bytes assetData)</code></a></li><li class="inherited"><a href="src#LibAssetData.getBatchBalances(address,bytes[])"><code class="function-signature">getBatchBalances(address ownerAddress, bytes[] assetData)</code></a></li><li class="inherited"><a href="src#LibAssetData.getAssetProxyAllowance(address,bytes)"><code class="function-signature">getAssetProxyAllowance(address ownerAddress, bytes assetData)</code></a></li><li class="inherited"><a href="src#LibAssetData.getBatchAssetProxyAllowances(address,bytes[])"><code class="function-signature">getBatchAssetProxyAllowances(address ownerAddress, bytes[] assetData)</code></a></li><li class="inherited"><a href="src#LibAssetData.getBalanceAndAssetProxyAllowance(address,bytes)"><code class="function-signature">getBalanceAndAssetProxyAllowance(address ownerAddress, bytes assetData)</code></a></li><li class="inherited"><a href="src#LibAssetData.getBatchBalancesAndAssetProxyAllowances(address,bytes[])"><code class="function-signature">getBatchBalancesAndAssetProxyAllowances(address ownerAddress, bytes[] assetData)</code></a></li><li class="inherited"><a href="src#LibAssetData.encodeERC20AssetData(address)"><code class="function-signature">encodeERC20AssetData(address tokenAddress)</code></a></li><li class="inherited"><a href="src#LibAssetData.decodeERC20AssetData(bytes)"><code class="function-signature">decodeERC20AssetData(bytes assetData)</code></a></li><li class="inherited"><a href="src#LibAssetData.encodeERC721AssetData(address,uint256)"><code class="function-signature">encodeERC721AssetData(address tokenAddress, uint256 tokenId)</code></a></li><li class="inherited"><a href="src#LibAssetData.decodeERC721AssetData(bytes)"><code class="function-signature">decodeERC721AssetData(bytes assetData)</code></a></li><li class="inherited"><a href="src#LibAssetData.encodeERC1155AssetData(address,uint256[],uint256[],bytes)"><code class="function-signature">encodeERC1155AssetData(address tokenAddress, uint256[] tokenIds, uint256[] tokenValues, bytes callbackData)</code></a></li><li class="inherited"><a href="src#LibAssetData.decodeERC1155AssetData(bytes)"><code class="function-signature">decodeERC1155AssetData(bytes assetData)</code></a></li><li class="inherited"><a href="src#LibAssetData.encodeMultiAssetData(uint256[],bytes[])"><code class="function-signature">encodeMultiAssetData(uint256[] amounts, bytes[] nestedAssetData)</code></a></li><li class="inherited"><a href="src#LibAssetData.decodeMultiAssetData(bytes)"><code class="function-signature">decodeMultiAssetData(bytes assetData)</code></a></li><li class="inherited"><a href="src#LibTransactionDecoder.decodeZeroExTransactionData(bytes)"><code class="function-signature">decodeZeroExTransactionData(bytes transactionData)</code></a></li><li class="inherited"><a href="src#EthBalanceChecker.getEthBalances(address[])"><code class="function-signature">getEthBalances(address[] addresses)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#DevUtils.constructor(address,address)"><code class="function-signature">constructor(address _exchange, address _chaiBridge)</code></a></li><li><a href="#DevUtils.getOrderHash(struct LibOrder.Order,uint256,address)"><code class="function-signature">getOrderHash(struct LibOrder.Order order, uint256 chainId, address exchange)</code></a></li><li><a href="#DevUtils.getTransactionHash(struct LibZeroExTransaction.ZeroExTransaction,uint256,address)"><code class="function-signature">getTransactionHash(struct LibZeroExTransaction.ZeroExTransaction transaction, uint256 chainId, address exchange)</code></a></li><li class="inherited"><a href="src#EthBalanceChecker.getEthBalances(address[])"><code class="function-signature">getEthBalances(address[] addresses)</code></a></li><li class="inherited"><a href="src#LibEIP712ExchangeDomain.constructor(uint256,address)"><code class="function-signature">constructor(uint256 chainId, address verifyingContractAddressIfExists)</code></a></li><li class="inherited"><a href="src#LibTransactionDecoder.decodeZeroExTransactionData(bytes)"><code class="function-signature">decodeZeroExTransactionData(bytes transactionData)</code></a></li><li class="inherited"><a href="src#OrderValidationUtils.getOrderRelevantState(struct LibOrder.Order,bytes)"><code class="function-signature">getOrderRelevantState(struct LibOrder.Order order, bytes signature)</code></a></li><li class="inherited"><a href="src#OrderValidationUtils.getOrderRelevantStates(struct LibOrder.Order[],bytes[])"><code class="function-signature">getOrderRelevantStates(struct LibOrder.Order[] orders, bytes[] signatures)</code></a></li><li class="inherited"><a href="src#OrderValidationUtils.getTransferableAssetAmount(address,bytes)"><code class="function-signature">getTransferableAssetAmount(address ownerAddress, bytes assetData)</code></a></li><li class="inherited"><a href="src#OrderTransferSimulationUtils.constructor(address)"><code class="function-signature">constructor(address _exchange)</code></a></li><li class="inherited"><a href="src#OrderTransferSimulationUtils.getSimulatedOrderMakerTransferResults(struct LibOrder.Order,address,uint256)"><code class="function-signature">getSimulatedOrderMakerTransferResults(struct LibOrder.Order order, address takerAddress, uint256 takerAssetFillAmount)</code></a></li><li class="inherited"><a href="src#OrderTransferSimulationUtils.getSimulatedOrderTransferResults(struct LibOrder.Order,address,uint256)"><code class="function-signature">getSimulatedOrderTransferResults(struct LibOrder.Order order, address takerAddress, uint256 takerAssetFillAmount)</code></a></li><li class="inherited"><a href="src#OrderTransferSimulationUtils.getSimulatedOrdersTransferResults(struct LibOrder.Order[],address[],uint256[])"><code class="function-signature">getSimulatedOrdersTransferResults(struct LibOrder.Order[] orders, address[] takerAddresses, uint256[] takerAssetFillAmounts)</code></a></li><li class="inherited"><a href="src#OrderTransferSimulationUtils._simulateTransferFromCalls(bytes[],address[],address[],uint256[])"><code class="function-signature">_simulateTransferFromCalls(bytes[] assetData, address[] fromAddresses, address[] toAddresses, uint256[] amounts)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeSignatureError(bytes)"><code class="function-signature">decodeSignatureError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeEIP1271SignatureError(bytes)"><code class="function-signature">decodeEIP1271SignatureError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeSignatureValidatorNotApprovedError(bytes)"><code class="function-signature">decodeSignatureValidatorNotApprovedError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeSignatureWalletError(bytes)"><code class="function-signature">decodeSignatureWalletError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeOrderStatusError(bytes)"><code class="function-signature">decodeOrderStatusError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeExchangeInvalidContextError(bytes)"><code class="function-signature">decodeExchangeInvalidContextError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeFillError(bytes)"><code class="function-signature">decodeFillError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeOrderEpochError(bytes)"><code class="function-signature">decodeOrderEpochError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeAssetProxyExistsError(bytes)"><code class="function-signature">decodeAssetProxyExistsError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeAssetProxyDispatchError(bytes)"><code class="function-signature">decodeAssetProxyDispatchError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeAssetProxyTransferError(bytes)"><code class="function-signature">decodeAssetProxyTransferError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeNegativeSpreadError(bytes)"><code class="function-signature">decodeNegativeSpreadError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeTransactionError(bytes)"><code class="function-signature">decodeTransactionError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeTransactionExecutionError(bytes)"><code class="function-signature">decodeTransactionExecutionError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeIncompleteFillError(bytes)"><code class="function-signature">decodeIncompleteFillError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibAssetData.getBalance(address,bytes)"><code class="function-signature">getBalance(address ownerAddress, bytes assetData)</code></a></li><li class="inherited"><a href="src#LibAssetData.getBatchBalances(address,bytes[])"><code class="function-signature">getBatchBalances(address ownerAddress, bytes[] assetData)</code></a></li><li class="inherited"><a href="src#LibAssetData.getAssetProxyAllowance(address,bytes)"><code class="function-signature">getAssetProxyAllowance(address ownerAddress, bytes assetData)</code></a></li><li class="inherited"><a href="src#LibAssetData.getBatchAssetProxyAllowances(address,bytes[])"><code class="function-signature">getBatchAssetProxyAllowances(address ownerAddress, bytes[] assetData)</code></a></li><li class="inherited"><a href="src#LibAssetData.getBalanceAndAssetProxyAllowance(address,bytes)"><code class="function-signature">getBalanceAndAssetProxyAllowance(address ownerAddress, bytes assetData)</code></a></li><li class="inherited"><a href="src#LibAssetData.getBatchBalancesAndAssetProxyAllowances(address,bytes[])"><code class="function-signature">getBatchBalancesAndAssetProxyAllowances(address ownerAddress, bytes[] assetData)</code></a></li><li class="inherited"><a href="src#LibAssetData.decodeAssetProxyId(bytes)"><code class="function-signature">decodeAssetProxyId(bytes assetData)</code></a></li><li class="inherited"><a href="src#LibAssetData.encodeERC20AssetData(address)"><code class="function-signature">encodeERC20AssetData(address tokenAddress)</code></a></li><li class="inherited"><a href="src#LibAssetData.decodeERC20AssetData(bytes)"><code class="function-signature">decodeERC20AssetData(bytes assetData)</code></a></li><li class="inherited"><a href="src#LibAssetData.encodeERC721AssetData(address,uint256)"><code class="function-signature">encodeERC721AssetData(address tokenAddress, uint256 tokenId)</code></a></li><li class="inherited"><a href="src#LibAssetData.decodeERC721AssetData(bytes)"><code class="function-signature">decodeERC721AssetData(bytes assetData)</code></a></li><li class="inherited"><a href="src#LibAssetData.encodeERC1155AssetData(address,uint256[],uint256[],bytes)"><code class="function-signature">encodeERC1155AssetData(address tokenAddress, uint256[] tokenIds, uint256[] tokenValues, bytes callbackData)</code></a></li><li class="inherited"><a href="src#LibAssetData.decodeERC1155AssetData(bytes)"><code class="function-signature">decodeERC1155AssetData(bytes assetData)</code></a></li><li class="inherited"><a href="src#LibAssetData.encodeMultiAssetData(uint256[],bytes[])"><code class="function-signature">encodeMultiAssetData(uint256[] amounts, bytes[] nestedAssetData)</code></a></li><li class="inherited"><a href="src#LibAssetData.decodeMultiAssetData(bytes)"><code class="function-signature">decodeMultiAssetData(bytes assetData)</code></a></li><li class="inherited"><a href="src#LibAssetData.encodeStaticCallAssetData(address,bytes,bytes32)"><code class="function-signature">encodeStaticCallAssetData(address staticCallTargetAddress, bytes staticCallData, bytes32 expectedReturnDataHash)</code></a></li><li class="inherited"><a href="src#LibAssetData.decodeStaticCallAssetData(bytes)"><code class="function-signature">decodeStaticCallAssetData(bytes assetData)</code></a></li><li class="inherited"><a href="src#LibAssetData.decodeERC20BridgeAssetData(bytes)"><code class="function-signature">decodeERC20BridgeAssetData(bytes assetData)</code></a></li><li class="inherited"><a href="src#LibAssetData.revertIfInvalidAssetData(bytes)"><code class="function-signature">revertIfInvalidAssetData(bytes assetData)</code></a></li><li class="inherited"><a href="src#LibAssetData._erc20BalanceOf(address,address)"><code class="function-signature">_erc20BalanceOf(address tokenAddress, address ownerAddress)</code></a></li><li class="inherited"><a href="src#LibAssetData._convertChaiToDaiAmount(uint256)"><code class="function-signature">_convertChaiToDaiAmount(uint256 chaiAmount)</code></a></li><li class="inherited"><a href="src#DeploymentConstants._getKyberNetworkProxyAddress()"><code class="function-signature">_getKyberNetworkProxyAddress()</code></a></li><li class="inherited"><a href="src#DeploymentConstants._getWethAddress()"><code class="function-signature">_getWethAddress()</code></a></li><li class="inherited"><a href="src#DeploymentConstants._getUniswapExchangeFactoryAddress()"><code class="function-signature">_getUniswapExchangeFactoryAddress()</code></a></li><li class="inherited"><a href="src#DeploymentConstants._getEth2DaiAddress()"><code class="function-signature">_getEth2DaiAddress()</code></a></li><li class="inherited"><a href="src#DeploymentConstants._getERC20BridgeProxyAddress()"><code class="function-signature">_getERC20BridgeProxyAddress()</code></a></li><li class="inherited"><a href="src#DeploymentConstants._getDaiAddress()"><code class="function-signature">_getDaiAddress()</code></a></li><li class="inherited"><a href="src#DeploymentConstants._getChaiAddress()"><code class="function-signature">_getChaiAddress()</code></a></li><li class="inherited"><a href="src#DeploymentConstants._getDevUtilsAddress()"><code class="function-signature">_getDevUtilsAddress()</code></a></li><li class="inherited"><a href="src#DeploymentConstants._getDydxAddress()"><code class="function-signature">_getDydxAddress()</code></a></li></ul></div>
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="DevUtils.constructor(address)"></a><code class="function-signature">constructor(address _exchange)</code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="DevUtils.constructor(address,address)"></a><code class="function-signature">constructor(address _exchange, address _chaiBridge)</code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="DevUtils.getOrderHash(struct LibOrder.Order,uint256,address)"></a><code class="function-signature">getOrderHash(struct LibOrder.Order order, uint256 chainId, address exchange) <span class="return-arrow">→</span> <span class="return-type">bytes32</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="DevUtils.getTransactionHash(struct LibZeroExTransaction.ZeroExTransaction,uint256,address)"></a><code class="function-signature">getTransactionHash(struct LibZeroExTransaction.ZeroExTransaction transaction, uint256 chainId, address exchange) <span class="return-arrow">→</span> <span class="return-type">bytes32</span></code><span class="function-visibility">public</span></h4>
 
 
 
@@ -157,6 +242,46 @@ Gets an asset proxy.
 
 
 <h4><a class="anchor" aria-hidden="true" id="IAssetProxyDispatcher.AssetProxyRegistered(bytes4,address)"></a><code class="function-signature">AssetProxyRegistered(bytes4 id, address assetProxy)</code><span class="function-visibility"></span></h4>
+
+
+
+
+
+### `IChai`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IChai.draw(address,uint256)"><code class="function-signature">draw(address src, uint256 wad)</code></a></li><li><a href="#IChai.dai(address)"><code class="function-signature">dai(address usr)</code></a></li><li><a href="#IChai.pot()"><code class="function-signature">pot()</code></a></li><li><a href="#IChai.join(address,uint256)"><code class="function-signature">join(address dst, uint256 wad)</code></a></li><li class="inherited"><a href="src#IERC20Token.transfer(address,uint256)"><code class="function-signature">transfer(address _to, uint256 _value)</code></a></li><li class="inherited"><a href="src#IERC20Token.transferFrom(address,address,uint256)"><code class="function-signature">transferFrom(address _from, address _to, uint256 _value)</code></a></li><li class="inherited"><a href="src#IERC20Token.approve(address,uint256)"><code class="function-signature">approve(address _spender, uint256 _value)</code></a></li><li class="inherited"><a href="src#IERC20Token.totalSupply()"><code class="function-signature">totalSupply()</code></a></li><li class="inherited"><a href="src#IERC20Token.balanceOf(address)"><code class="function-signature">balanceOf(address _owner)</code></a></li><li class="inherited"><a href="src#IERC20Token.allowance(address,address)"><code class="function-signature">allowance(address _owner, address _spender)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="src#IERC20Token.Transfer(address,address,uint256)"><code class="function-signature">Transfer(address _from, address _to, uint256 _value)</code></a></li><li class="inherited"><a href="src#IERC20Token.Approval(address,address,uint256)"><code class="function-signature">Approval(address _owner, address _spender, uint256 _value)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IChai.draw(address,uint256)"></a><code class="function-signature">draw(address src, uint256 wad)</code><span class="function-visibility">external</span></h4>
+
+Withdraws Dai owned by `src`
+ @param src Address that owns Dai.
+ @param wad Amount of Dai to withdraw.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IChai.dai(address)"></a><code class="function-signature">dai(address usr) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+Queries Dai balance of Chai holder.
+ @param usr Address of Chai holder.
+ @return Dai balance.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IChai.pot()"></a><code class="function-signature">pot() <span class="return-arrow">→</span> <span class="return-type">contract PotLike</span></code><span class="function-visibility">external</span></h4>
+
+Queries the Pot contract used by the Chai contract.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IChai.join(address,uint256)"></a><code class="function-signature">join(address dst, uint256 wad)</code><span class="function-visibility">external</span></h4>
+
+Deposits Dai in exchange for Chai
+ @param dst Address to receive Chai.
+ @param wad Amount of Dai to deposit.
 
 
 
@@ -851,11 +976,11 @@ Executes multiple calls of cancelOrder.
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#LibAssetData.constructor(address)"><code class="function-signature">constructor(address _exchange)</code></a></li><li><a href="#LibAssetData.getBalance(address,bytes)"><code class="function-signature">getBalance(address ownerAddress, bytes assetData)</code></a></li><li><a href="#LibAssetData.getBatchBalances(address,bytes[])"><code class="function-signature">getBatchBalances(address ownerAddress, bytes[] assetData)</code></a></li><li><a href="#LibAssetData.getAssetProxyAllowance(address,bytes)"><code class="function-signature">getAssetProxyAllowance(address ownerAddress, bytes assetData)</code></a></li><li><a href="#LibAssetData.getBatchAssetProxyAllowances(address,bytes[])"><code class="function-signature">getBatchAssetProxyAllowances(address ownerAddress, bytes[] assetData)</code></a></li><li><a href="#LibAssetData.getBalanceAndAssetProxyAllowance(address,bytes)"><code class="function-signature">getBalanceAndAssetProxyAllowance(address ownerAddress, bytes assetData)</code></a></li><li><a href="#LibAssetData.getBatchBalancesAndAssetProxyAllowances(address,bytes[])"><code class="function-signature">getBatchBalancesAndAssetProxyAllowances(address ownerAddress, bytes[] assetData)</code></a></li><li><a href="#LibAssetData.encodeERC20AssetData(address)"><code class="function-signature">encodeERC20AssetData(address tokenAddress)</code></a></li><li><a href="#LibAssetData.decodeERC20AssetData(bytes)"><code class="function-signature">decodeERC20AssetData(bytes assetData)</code></a></li><li><a href="#LibAssetData.encodeERC721AssetData(address,uint256)"><code class="function-signature">encodeERC721AssetData(address tokenAddress, uint256 tokenId)</code></a></li><li><a href="#LibAssetData.decodeERC721AssetData(bytes)"><code class="function-signature">decodeERC721AssetData(bytes assetData)</code></a></li><li><a href="#LibAssetData.encodeERC1155AssetData(address,uint256[],uint256[],bytes)"><code class="function-signature">encodeERC1155AssetData(address tokenAddress, uint256[] tokenIds, uint256[] tokenValues, bytes callbackData)</code></a></li><li><a href="#LibAssetData.decodeERC1155AssetData(bytes)"><code class="function-signature">decodeERC1155AssetData(bytes assetData)</code></a></li><li><a href="#LibAssetData.encodeMultiAssetData(uint256[],bytes[])"><code class="function-signature">encodeMultiAssetData(uint256[] amounts, bytes[] nestedAssetData)</code></a></li><li><a href="#LibAssetData.decodeMultiAssetData(bytes)"><code class="function-signature">decodeMultiAssetData(bytes assetData)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#LibAssetData.constructor(address,address)"><code class="function-signature">constructor(address _exchange, address _chaiBridge)</code></a></li><li><a href="#LibAssetData.getBalance(address,bytes)"><code class="function-signature">getBalance(address ownerAddress, bytes assetData)</code></a></li><li><a href="#LibAssetData.getBatchBalances(address,bytes[])"><code class="function-signature">getBatchBalances(address ownerAddress, bytes[] assetData)</code></a></li><li><a href="#LibAssetData.getAssetProxyAllowance(address,bytes)"><code class="function-signature">getAssetProxyAllowance(address ownerAddress, bytes assetData)</code></a></li><li><a href="#LibAssetData.getBatchAssetProxyAllowances(address,bytes[])"><code class="function-signature">getBatchAssetProxyAllowances(address ownerAddress, bytes[] assetData)</code></a></li><li><a href="#LibAssetData.getBalanceAndAssetProxyAllowance(address,bytes)"><code class="function-signature">getBalanceAndAssetProxyAllowance(address ownerAddress, bytes assetData)</code></a></li><li><a href="#LibAssetData.getBatchBalancesAndAssetProxyAllowances(address,bytes[])"><code class="function-signature">getBatchBalancesAndAssetProxyAllowances(address ownerAddress, bytes[] assetData)</code></a></li><li><a href="#LibAssetData.decodeAssetProxyId(bytes)"><code class="function-signature">decodeAssetProxyId(bytes assetData)</code></a></li><li><a href="#LibAssetData.encodeERC20AssetData(address)"><code class="function-signature">encodeERC20AssetData(address tokenAddress)</code></a></li><li><a href="#LibAssetData.decodeERC20AssetData(bytes)"><code class="function-signature">decodeERC20AssetData(bytes assetData)</code></a></li><li><a href="#LibAssetData.encodeERC721AssetData(address,uint256)"><code class="function-signature">encodeERC721AssetData(address tokenAddress, uint256 tokenId)</code></a></li><li><a href="#LibAssetData.decodeERC721AssetData(bytes)"><code class="function-signature">decodeERC721AssetData(bytes assetData)</code></a></li><li><a href="#LibAssetData.encodeERC1155AssetData(address,uint256[],uint256[],bytes)"><code class="function-signature">encodeERC1155AssetData(address tokenAddress, uint256[] tokenIds, uint256[] tokenValues, bytes callbackData)</code></a></li><li><a href="#LibAssetData.decodeERC1155AssetData(bytes)"><code class="function-signature">decodeERC1155AssetData(bytes assetData)</code></a></li><li><a href="#LibAssetData.encodeMultiAssetData(uint256[],bytes[])"><code class="function-signature">encodeMultiAssetData(uint256[] amounts, bytes[] nestedAssetData)</code></a></li><li><a href="#LibAssetData.decodeMultiAssetData(bytes)"><code class="function-signature">decodeMultiAssetData(bytes assetData)</code></a></li><li><a href="#LibAssetData.encodeStaticCallAssetData(address,bytes,bytes32)"><code class="function-signature">encodeStaticCallAssetData(address staticCallTargetAddress, bytes staticCallData, bytes32 expectedReturnDataHash)</code></a></li><li><a href="#LibAssetData.decodeStaticCallAssetData(bytes)"><code class="function-signature">decodeStaticCallAssetData(bytes assetData)</code></a></li><li><a href="#LibAssetData.decodeERC20BridgeAssetData(bytes)"><code class="function-signature">decodeERC20BridgeAssetData(bytes assetData)</code></a></li><li><a href="#LibAssetData.revertIfInvalidAssetData(bytes)"><code class="function-signature">revertIfInvalidAssetData(bytes assetData)</code></a></li><li><a href="#LibAssetData._erc20BalanceOf(address,address)"><code class="function-signature">_erc20BalanceOf(address tokenAddress, address ownerAddress)</code></a></li><li><a href="#LibAssetData._convertChaiToDaiAmount(uint256)"><code class="function-signature">_convertChaiToDaiAmount(uint256 chaiAmount)</code></a></li><li class="inherited"><a href="src#DeploymentConstants._getKyberNetworkProxyAddress()"><code class="function-signature">_getKyberNetworkProxyAddress()</code></a></li><li class="inherited"><a href="src#DeploymentConstants._getWethAddress()"><code class="function-signature">_getWethAddress()</code></a></li><li class="inherited"><a href="src#DeploymentConstants._getUniswapExchangeFactoryAddress()"><code class="function-signature">_getUniswapExchangeFactoryAddress()</code></a></li><li class="inherited"><a href="src#DeploymentConstants._getEth2DaiAddress()"><code class="function-signature">_getEth2DaiAddress()</code></a></li><li class="inherited"><a href="src#DeploymentConstants._getERC20BridgeProxyAddress()"><code class="function-signature">_getERC20BridgeProxyAddress()</code></a></li><li class="inherited"><a href="src#DeploymentConstants._getDaiAddress()"><code class="function-signature">_getDaiAddress()</code></a></li><li class="inherited"><a href="src#DeploymentConstants._getChaiAddress()"><code class="function-signature">_getChaiAddress()</code></a></li><li class="inherited"><a href="src#DeploymentConstants._getDevUtilsAddress()"><code class="function-signature">_getDevUtilsAddress()</code></a></li><li class="inherited"><a href="src#DeploymentConstants._getDydxAddress()"><code class="function-signature">_getDydxAddress()</code></a></li></ul></div>
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="LibAssetData.constructor(address)"></a><code class="function-signature">constructor(address _exchange)</code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="LibAssetData.constructor(address,address)"></a><code class="function-signature">constructor(address _exchange, address _chaiBridge)</code><span class="function-visibility">public</span></h4>
 
 
 
@@ -927,6 +1052,14 @@ Calls getBatchBalances() and getBatchAllowances() for each element of assetData.
 
 
 
+<h4><a class="anchor" aria-hidden="true" id="LibAssetData.decodeAssetProxyId(bytes)"></a><code class="function-signature">decodeAssetProxyId(bytes assetData) <span class="return-arrow">→</span> <span class="return-type">bytes4</span></code><span class="function-visibility">public</span></h4>
+
+Decode AssetProxy identifier
+ @param assetData AssetProxy-compliant asset data describing an ERC-20, ERC-721, ERC1155, or MultiAsset asset.
+ @return The AssetProxy identifier
+
+
+
 <h4><a class="anchor" aria-hidden="true" id="LibAssetData.encodeERC20AssetData(address)"></a><code class="function-signature">encodeERC20AssetData(address tokenAddress) <span class="return-arrow">→</span> <span class="return-type">bytes</span></code><span class="function-visibility">public</span></h4>
 
 Encode ERC-20 asset data into the format described in the AssetProxy contract specification.
@@ -939,7 +1072,7 @@ Encode ERC-20 asset data into the format described in the AssetProxy contract sp
 
 Decode ERC-20 asset data from the format described in the AssetProxy contract specification.
  @param assetData AssetProxy-compliant asset data describing an ERC-20 asset.
- @return The ERC-20 AssetProxy identifier, and the address of the ERC-20 
+ @return The AssetProxy identifier, and the address of the ERC-20
  contract hosting this asset.
 
 
@@ -1005,6 +1138,58 @@ Decode multi-asset data from the format described in the AssetProxy contract spe
  of the assets to be traded, and an array of the
  AssetProxy-compliant data describing each asset to be traded.  Each
  element of the arrays corresponds to the same-indexed element of the other array.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="LibAssetData.encodeStaticCallAssetData(address,bytes,bytes32)"></a><code class="function-signature">encodeStaticCallAssetData(address staticCallTargetAddress, bytes staticCallData, bytes32 expectedReturnDataHash) <span class="return-arrow">→</span> <span class="return-type">bytes</span></code><span class="function-visibility">public</span></h4>
+
+Encode StaticCall asset data into the format described in the AssetProxy contract specification.
+ @param staticCallTargetAddress Target address of StaticCall.
+ @param staticCallData Data that will be passed to staticCallTargetAddress in the StaticCall.
+ @param expectedReturnDataHash Expected Keccak-256 hash of the StaticCall return data.
+ @return AssetProxy-compliant asset data describing the set of assets.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="LibAssetData.decodeStaticCallAssetData(bytes)"></a><code class="function-signature">decodeStaticCallAssetData(bytes assetData) <span class="return-arrow">→</span> <span class="return-type">bytes4,address,bytes,bytes32</span></code><span class="function-visibility">public</span></h4>
+
+Decode StaticCall asset data from the format described in the AssetProxy contract specification.
+ @param assetData AssetProxy-compliant asset data describing a StaticCall asset
+ @return The StaticCall AssetProxy identifier, the target address of the StaticCAll, the data to be
+ passed to the target address, and the expected Keccak-256 hash of the static call return data.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="LibAssetData.decodeERC20BridgeAssetData(bytes)"></a><code class="function-signature">decodeERC20BridgeAssetData(bytes assetData) <span class="return-arrow">→</span> <span class="return-type">bytes4,address,address,bytes</span></code><span class="function-visibility">public</span></h4>
+
+Decode ERC20Bridge asset data from the format described in the AssetProxy contract specification.
+ @param assetData AssetProxy-compliant asset data describing an ERC20Bridge asset
+ @return The ERC20BridgeProxy identifier, the address of the ERC20 token to transfer, the address
+ of the bridge contract, and extra data to be passed to the bridge contract.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="LibAssetData.revertIfInvalidAssetData(bytes)"></a><code class="function-signature">revertIfInvalidAssetData(bytes assetData)</code><span class="function-visibility">public</span></h4>
+
+Reverts if assetData is not of a valid format for its given proxy id.
+ @param assetData AssetProxy compliant asset data.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="LibAssetData._erc20BalanceOf(address,address)"></a><code class="function-signature">_erc20BalanceOf(address tokenAddress, address ownerAddress) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
+
+Queries balance of an ERC20 token. Returns 0 if call was unsuccessful.
+ @param tokenAddress Address of ERC20 token.
+ @param ownerAddress Address of owner of ERC20 token.
+ @return balance ERC20 token balance of owner.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="LibAssetData._convertChaiToDaiAmount(uint256)"></a><code class="function-signature">_convertChaiToDaiAmount(uint256 chaiAmount) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
+
+Converts an amount of Chai into its equivalent Dai amount.
+      Also accumulates Dai from DSR if called after the last time it was collected.
+ @param chaiAmount Amount of Chai to converts.
 
 
 
@@ -1158,22 +1343,6 @@ Writes a new length to a byte array.
 
 
 
-### `LibBytesRichErrors`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#LibBytesRichErrors.InvalidByteOperationError(enum LibBytesRichErrors.InvalidByteOperationErrorCodes,uint256,uint256)"><code class="function-signature">InvalidByteOperationError(enum LibBytesRichErrors.InvalidByteOperationErrorCodes errorCode, uint256 offset, uint256 required)</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="LibBytesRichErrors.InvalidByteOperationError(enum LibBytesRichErrors.InvalidByteOperationErrorCodes,uint256,uint256)"></a><code class="function-signature">InvalidByteOperationError(enum LibBytesRichErrors.InvalidByteOperationErrorCodes errorCode, uint256 offset, uint256 required) <span class="return-arrow">→</span> <span class="return-type">bytes</span></code><span class="function-visibility">internal</span></h4>
-
-
-
-
-
-
-
 ### `LibEIP712`
 
 
@@ -1199,6 +1368,22 @@ Calculates EIP712 encoding for a hash struct with a given domain hash.
                          with getDomainHash().
  @param hashStruct The EIP712 hash struct.
  @return EIP712 hash applied to the given EIP712 Domain.
+
+
+
+
+
+### `LibEIP712ExchangeDomain`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#LibEIP712ExchangeDomain.constructor(uint256,address)"><code class="function-signature">constructor(uint256 chainId, address verifyingContractAddressIfExists)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="LibEIP712ExchangeDomain.constructor(uint256,address)"></a><code class="function-signature">constructor(uint256 chainId, address verifyingContractAddressIfExists)</code><span class="function-visibility">public</span></h4>
+
+
 
 
 
@@ -1764,33 +1949,6 @@ Calculates EIP712 hash of the order struct.
 
 
 
-### `LibRichErrors`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#LibRichErrors.StandardError(string)"><code class="function-signature">StandardError(string message)</code></a></li><li><a href="#LibRichErrors.rrevert(bytes)"><code class="function-signature">rrevert(bytes errorData)</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="LibRichErrors.StandardError(string)"></a><code class="function-signature">StandardError(string message) <span class="return-arrow">→</span> <span class="return-type">bytes</span></code><span class="function-visibility">internal</span></h4>
-
-ABI encode a standard, string revert error payload.
-      This is the same payload that would be included by a `revert(string)`
-      solidity statement. It has the function signature `Error(string)`.
- @param message The error string.
- @return The ABI encoded error.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="LibRichErrors.rrevert(bytes)"></a><code class="function-signature">rrevert(bytes errorData)</code><span class="function-visibility">internal</span></h4>
-
-Reverts an encoded rich revert reason `errorData`.
- @param errorData ABI encoded error data.
-
-
-
-
-
 ### `LibSafeMath`
 
 
@@ -1910,13 +2068,23 @@ Calculates EIP712 hash of the 0x transaction struct.
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#OrderTransferSimulationUtils.constructor(address)"><code class="function-signature">constructor(address _exchange)</code></a></li><li><a href="#OrderTransferSimulationUtils.getSimulatedOrderTransferResults(struct LibOrder.Order,address,uint256)"><code class="function-signature">getSimulatedOrderTransferResults(struct LibOrder.Order order, address takerAddress, uint256 takerAssetFillAmount)</code></a></li><li><a href="#OrderTransferSimulationUtils.getSimulatedOrdersTransferResults(struct LibOrder.Order[],address[],uint256[])"><code class="function-signature">getSimulatedOrdersTransferResults(struct LibOrder.Order[] orders, address[] takerAddresses, uint256[] takerAssetFillAmounts)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeSignatureError(bytes)"><code class="function-signature">decodeSignatureError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeEIP1271SignatureError(bytes)"><code class="function-signature">decodeEIP1271SignatureError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeSignatureValidatorNotApprovedError(bytes)"><code class="function-signature">decodeSignatureValidatorNotApprovedError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeSignatureWalletError(bytes)"><code class="function-signature">decodeSignatureWalletError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeOrderStatusError(bytes)"><code class="function-signature">decodeOrderStatusError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeExchangeInvalidContextError(bytes)"><code class="function-signature">decodeExchangeInvalidContextError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeFillError(bytes)"><code class="function-signature">decodeFillError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeOrderEpochError(bytes)"><code class="function-signature">decodeOrderEpochError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeAssetProxyExistsError(bytes)"><code class="function-signature">decodeAssetProxyExistsError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeAssetProxyDispatchError(bytes)"><code class="function-signature">decodeAssetProxyDispatchError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeAssetProxyTransferError(bytes)"><code class="function-signature">decodeAssetProxyTransferError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeNegativeSpreadError(bytes)"><code class="function-signature">decodeNegativeSpreadError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeTransactionError(bytes)"><code class="function-signature">decodeTransactionError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeTransactionExecutionError(bytes)"><code class="function-signature">decodeTransactionExecutionError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeIncompleteFillError(bytes)"><code class="function-signature">decodeIncompleteFillError(bytes encoded)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#OrderTransferSimulationUtils.constructor(address)"><code class="function-signature">constructor(address _exchange)</code></a></li><li><a href="#OrderTransferSimulationUtils.getSimulatedOrderMakerTransferResults(struct LibOrder.Order,address,uint256)"><code class="function-signature">getSimulatedOrderMakerTransferResults(struct LibOrder.Order order, address takerAddress, uint256 takerAssetFillAmount)</code></a></li><li><a href="#OrderTransferSimulationUtils.getSimulatedOrderTransferResults(struct LibOrder.Order,address,uint256)"><code class="function-signature">getSimulatedOrderTransferResults(struct LibOrder.Order order, address takerAddress, uint256 takerAssetFillAmount)</code></a></li><li><a href="#OrderTransferSimulationUtils.getSimulatedOrdersTransferResults(struct LibOrder.Order[],address[],uint256[])"><code class="function-signature">getSimulatedOrdersTransferResults(struct LibOrder.Order[] orders, address[] takerAddresses, uint256[] takerAssetFillAmounts)</code></a></li><li><a href="#OrderTransferSimulationUtils._simulateTransferFromCalls(bytes[],address[],address[],uint256[])"><code class="function-signature">_simulateTransferFromCalls(bytes[] assetData, address[] fromAddresses, address[] toAddresses, uint256[] amounts)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeSignatureError(bytes)"><code class="function-signature">decodeSignatureError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeEIP1271SignatureError(bytes)"><code class="function-signature">decodeEIP1271SignatureError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeSignatureValidatorNotApprovedError(bytes)"><code class="function-signature">decodeSignatureValidatorNotApprovedError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeSignatureWalletError(bytes)"><code class="function-signature">decodeSignatureWalletError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeOrderStatusError(bytes)"><code class="function-signature">decodeOrderStatusError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeExchangeInvalidContextError(bytes)"><code class="function-signature">decodeExchangeInvalidContextError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeFillError(bytes)"><code class="function-signature">decodeFillError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeOrderEpochError(bytes)"><code class="function-signature">decodeOrderEpochError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeAssetProxyExistsError(bytes)"><code class="function-signature">decodeAssetProxyExistsError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeAssetProxyDispatchError(bytes)"><code class="function-signature">decodeAssetProxyDispatchError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeAssetProxyTransferError(bytes)"><code class="function-signature">decodeAssetProxyTransferError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeNegativeSpreadError(bytes)"><code class="function-signature">decodeNegativeSpreadError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeTransactionError(bytes)"><code class="function-signature">decodeTransactionError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeTransactionExecutionError(bytes)"><code class="function-signature">decodeTransactionExecutionError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeIncompleteFillError(bytes)"><code class="function-signature">decodeIncompleteFillError(bytes encoded)</code></a></li></ul></div>
 
 
 
 <h4><a class="anchor" aria-hidden="true" id="OrderTransferSimulationUtils.constructor(address)"></a><code class="function-signature">constructor(address _exchange)</code><span class="function-visibility">public</span></h4>
 
 
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="OrderTransferSimulationUtils.getSimulatedOrderMakerTransferResults(struct LibOrder.Order,address,uint256)"></a><code class="function-signature">getSimulatedOrderMakerTransferResults(struct LibOrder.Order order, address takerAddress, uint256 takerAssetFillAmount) <span class="return-arrow">→</span> <span class="return-type">enum OrderTransferSimulationUtils.OrderTransferResults</span></code><span class="function-visibility">public</span></h4>
+
+Simulates the maker transfers within an order and returns the index of the first failed transfer.
+ @param order The order to simulate transfers for.
+ @param takerAddress The address of the taker that will fill the order.
+ @param takerAssetFillAmount The amount of takerAsset that the taker wished to fill.
+ @return The index of the first failed transfer (or 4 if all transfers are successful).
 
 
 
@@ -1940,17 +2108,28 @@ Simulates all of the transfers for each given order and returns the indices of e
 
 
 
+<h4><a class="anchor" aria-hidden="true" id="OrderTransferSimulationUtils._simulateTransferFromCalls(bytes[],address[],address[],uint256[])"></a><code class="function-signature">_simulateTransferFromCalls(bytes[] assetData, address[] fromAddresses, address[] toAddresses, uint256[] amounts) <span class="return-arrow">→</span> <span class="return-type">enum OrderTransferSimulationUtils.OrderTransferResults</span></code><span class="function-visibility">internal</span></h4>
+
+Makes the simulation call with information about the transfers and processes
+      the returndata.
+ @param assetData The assetdata to use to make transfers.
+ @param fromAddresses The addresses to transfer funds.
+ @param toAddresses The addresses that will receive funds
+ @param amounts The amounts involved in the transfer.
+
+
+
 
 
 ### `OrderValidationUtils`
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#OrderValidationUtils.constructor(address)"><code class="function-signature">constructor(address _exchange)</code></a></li><li><a href="#OrderValidationUtils.getOrderRelevantState(struct LibOrder.Order,bytes)"><code class="function-signature">getOrderRelevantState(struct LibOrder.Order order, bytes signature)</code></a></li><li><a href="#OrderValidationUtils.getOrderRelevantStates(struct LibOrder.Order[],bytes[])"><code class="function-signature">getOrderRelevantStates(struct LibOrder.Order[] orders, bytes[] signatures)</code></a></li><li><a href="#OrderValidationUtils.getTransferableAssetAmount(address,bytes)"><code class="function-signature">getTransferableAssetAmount(address ownerAddress, bytes assetData)</code></a></li><li class="inherited"><a href="src#LibAssetData.getBalance(address,bytes)"><code class="function-signature">getBalance(address ownerAddress, bytes assetData)</code></a></li><li class="inherited"><a href="src#LibAssetData.getBatchBalances(address,bytes[])"><code class="function-signature">getBatchBalances(address ownerAddress, bytes[] assetData)</code></a></li><li class="inherited"><a href="src#LibAssetData.getAssetProxyAllowance(address,bytes)"><code class="function-signature">getAssetProxyAllowance(address ownerAddress, bytes assetData)</code></a></li><li class="inherited"><a href="src#LibAssetData.getBatchAssetProxyAllowances(address,bytes[])"><code class="function-signature">getBatchAssetProxyAllowances(address ownerAddress, bytes[] assetData)</code></a></li><li class="inherited"><a href="src#LibAssetData.getBalanceAndAssetProxyAllowance(address,bytes)"><code class="function-signature">getBalanceAndAssetProxyAllowance(address ownerAddress, bytes assetData)</code></a></li><li class="inherited"><a href="src#LibAssetData.getBatchBalancesAndAssetProxyAllowances(address,bytes[])"><code class="function-signature">getBatchBalancesAndAssetProxyAllowances(address ownerAddress, bytes[] assetData)</code></a></li><li class="inherited"><a href="src#LibAssetData.encodeERC20AssetData(address)"><code class="function-signature">encodeERC20AssetData(address tokenAddress)</code></a></li><li class="inherited"><a href="src#LibAssetData.decodeERC20AssetData(bytes)"><code class="function-signature">decodeERC20AssetData(bytes assetData)</code></a></li><li class="inherited"><a href="src#LibAssetData.encodeERC721AssetData(address,uint256)"><code class="function-signature">encodeERC721AssetData(address tokenAddress, uint256 tokenId)</code></a></li><li class="inherited"><a href="src#LibAssetData.decodeERC721AssetData(bytes)"><code class="function-signature">decodeERC721AssetData(bytes assetData)</code></a></li><li class="inherited"><a href="src#LibAssetData.encodeERC1155AssetData(address,uint256[],uint256[],bytes)"><code class="function-signature">encodeERC1155AssetData(address tokenAddress, uint256[] tokenIds, uint256[] tokenValues, bytes callbackData)</code></a></li><li class="inherited"><a href="src#LibAssetData.decodeERC1155AssetData(bytes)"><code class="function-signature">decodeERC1155AssetData(bytes assetData)</code></a></li><li class="inherited"><a href="src#LibAssetData.encodeMultiAssetData(uint256[],bytes[])"><code class="function-signature">encodeMultiAssetData(uint256[] amounts, bytes[] nestedAssetData)</code></a></li><li class="inherited"><a href="src#LibAssetData.decodeMultiAssetData(bytes)"><code class="function-signature">decodeMultiAssetData(bytes assetData)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#OrderValidationUtils.constructor(address,address)"><code class="function-signature">constructor(address _exchange, address _chaiBridge)</code></a></li><li><a href="#OrderValidationUtils.getOrderRelevantState(struct LibOrder.Order,bytes)"><code class="function-signature">getOrderRelevantState(struct LibOrder.Order order, bytes signature)</code></a></li><li><a href="#OrderValidationUtils.getOrderRelevantStates(struct LibOrder.Order[],bytes[])"><code class="function-signature">getOrderRelevantStates(struct LibOrder.Order[] orders, bytes[] signatures)</code></a></li><li><a href="#OrderValidationUtils.getTransferableAssetAmount(address,bytes)"><code class="function-signature">getTransferableAssetAmount(address ownerAddress, bytes assetData)</code></a></li><li class="inherited"><a href="src#OrderTransferSimulationUtils.constructor(address)"><code class="function-signature">constructor(address _exchange)</code></a></li><li class="inherited"><a href="src#OrderTransferSimulationUtils.getSimulatedOrderMakerTransferResults(struct LibOrder.Order,address,uint256)"><code class="function-signature">getSimulatedOrderMakerTransferResults(struct LibOrder.Order order, address takerAddress, uint256 takerAssetFillAmount)</code></a></li><li class="inherited"><a href="src#OrderTransferSimulationUtils.getSimulatedOrderTransferResults(struct LibOrder.Order,address,uint256)"><code class="function-signature">getSimulatedOrderTransferResults(struct LibOrder.Order order, address takerAddress, uint256 takerAssetFillAmount)</code></a></li><li class="inherited"><a href="src#OrderTransferSimulationUtils.getSimulatedOrdersTransferResults(struct LibOrder.Order[],address[],uint256[])"><code class="function-signature">getSimulatedOrdersTransferResults(struct LibOrder.Order[] orders, address[] takerAddresses, uint256[] takerAssetFillAmounts)</code></a></li><li class="inherited"><a href="src#OrderTransferSimulationUtils._simulateTransferFromCalls(bytes[],address[],address[],uint256[])"><code class="function-signature">_simulateTransferFromCalls(bytes[] assetData, address[] fromAddresses, address[] toAddresses, uint256[] amounts)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeSignatureError(bytes)"><code class="function-signature">decodeSignatureError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeEIP1271SignatureError(bytes)"><code class="function-signature">decodeEIP1271SignatureError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeSignatureValidatorNotApprovedError(bytes)"><code class="function-signature">decodeSignatureValidatorNotApprovedError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeSignatureWalletError(bytes)"><code class="function-signature">decodeSignatureWalletError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeOrderStatusError(bytes)"><code class="function-signature">decodeOrderStatusError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeExchangeInvalidContextError(bytes)"><code class="function-signature">decodeExchangeInvalidContextError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeFillError(bytes)"><code class="function-signature">decodeFillError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeOrderEpochError(bytes)"><code class="function-signature">decodeOrderEpochError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeAssetProxyExistsError(bytes)"><code class="function-signature">decodeAssetProxyExistsError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeAssetProxyDispatchError(bytes)"><code class="function-signature">decodeAssetProxyDispatchError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeAssetProxyTransferError(bytes)"><code class="function-signature">decodeAssetProxyTransferError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeNegativeSpreadError(bytes)"><code class="function-signature">decodeNegativeSpreadError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeTransactionError(bytes)"><code class="function-signature">decodeTransactionError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeTransactionExecutionError(bytes)"><code class="function-signature">decodeTransactionExecutionError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibExchangeRichErrorDecoder.decodeIncompleteFillError(bytes)"><code class="function-signature">decodeIncompleteFillError(bytes encoded)</code></a></li><li class="inherited"><a href="src#LibAssetData.getBalance(address,bytes)"><code class="function-signature">getBalance(address ownerAddress, bytes assetData)</code></a></li><li class="inherited"><a href="src#LibAssetData.getBatchBalances(address,bytes[])"><code class="function-signature">getBatchBalances(address ownerAddress, bytes[] assetData)</code></a></li><li class="inherited"><a href="src#LibAssetData.getAssetProxyAllowance(address,bytes)"><code class="function-signature">getAssetProxyAllowance(address ownerAddress, bytes assetData)</code></a></li><li class="inherited"><a href="src#LibAssetData.getBatchAssetProxyAllowances(address,bytes[])"><code class="function-signature">getBatchAssetProxyAllowances(address ownerAddress, bytes[] assetData)</code></a></li><li class="inherited"><a href="src#LibAssetData.getBalanceAndAssetProxyAllowance(address,bytes)"><code class="function-signature">getBalanceAndAssetProxyAllowance(address ownerAddress, bytes assetData)</code></a></li><li class="inherited"><a href="src#LibAssetData.getBatchBalancesAndAssetProxyAllowances(address,bytes[])"><code class="function-signature">getBatchBalancesAndAssetProxyAllowances(address ownerAddress, bytes[] assetData)</code></a></li><li class="inherited"><a href="src#LibAssetData.decodeAssetProxyId(bytes)"><code class="function-signature">decodeAssetProxyId(bytes assetData)</code></a></li><li class="inherited"><a href="src#LibAssetData.encodeERC20AssetData(address)"><code class="function-signature">encodeERC20AssetData(address tokenAddress)</code></a></li><li class="inherited"><a href="src#LibAssetData.decodeERC20AssetData(bytes)"><code class="function-signature">decodeERC20AssetData(bytes assetData)</code></a></li><li class="inherited"><a href="src#LibAssetData.encodeERC721AssetData(address,uint256)"><code class="function-signature">encodeERC721AssetData(address tokenAddress, uint256 tokenId)</code></a></li><li class="inherited"><a href="src#LibAssetData.decodeERC721AssetData(bytes)"><code class="function-signature">decodeERC721AssetData(bytes assetData)</code></a></li><li class="inherited"><a href="src#LibAssetData.encodeERC1155AssetData(address,uint256[],uint256[],bytes)"><code class="function-signature">encodeERC1155AssetData(address tokenAddress, uint256[] tokenIds, uint256[] tokenValues, bytes callbackData)</code></a></li><li class="inherited"><a href="src#LibAssetData.decodeERC1155AssetData(bytes)"><code class="function-signature">decodeERC1155AssetData(bytes assetData)</code></a></li><li class="inherited"><a href="src#LibAssetData.encodeMultiAssetData(uint256[],bytes[])"><code class="function-signature">encodeMultiAssetData(uint256[] amounts, bytes[] nestedAssetData)</code></a></li><li class="inherited"><a href="src#LibAssetData.decodeMultiAssetData(bytes)"><code class="function-signature">decodeMultiAssetData(bytes assetData)</code></a></li><li class="inherited"><a href="src#LibAssetData.encodeStaticCallAssetData(address,bytes,bytes32)"><code class="function-signature">encodeStaticCallAssetData(address staticCallTargetAddress, bytes staticCallData, bytes32 expectedReturnDataHash)</code></a></li><li class="inherited"><a href="src#LibAssetData.decodeStaticCallAssetData(bytes)"><code class="function-signature">decodeStaticCallAssetData(bytes assetData)</code></a></li><li class="inherited"><a href="src#LibAssetData.decodeERC20BridgeAssetData(bytes)"><code class="function-signature">decodeERC20BridgeAssetData(bytes assetData)</code></a></li><li class="inherited"><a href="src#LibAssetData.revertIfInvalidAssetData(bytes)"><code class="function-signature">revertIfInvalidAssetData(bytes assetData)</code></a></li><li class="inherited"><a href="src#LibAssetData._erc20BalanceOf(address,address)"><code class="function-signature">_erc20BalanceOf(address tokenAddress, address ownerAddress)</code></a></li><li class="inherited"><a href="src#LibAssetData._convertChaiToDaiAmount(uint256)"><code class="function-signature">_convertChaiToDaiAmount(uint256 chaiAmount)</code></a></li><li class="inherited"><a href="src#DeploymentConstants._getKyberNetworkProxyAddress()"><code class="function-signature">_getKyberNetworkProxyAddress()</code></a></li><li class="inherited"><a href="src#DeploymentConstants._getWethAddress()"><code class="function-signature">_getWethAddress()</code></a></li><li class="inherited"><a href="src#DeploymentConstants._getUniswapExchangeFactoryAddress()"><code class="function-signature">_getUniswapExchangeFactoryAddress()</code></a></li><li class="inherited"><a href="src#DeploymentConstants._getEth2DaiAddress()"><code class="function-signature">_getEth2DaiAddress()</code></a></li><li class="inherited"><a href="src#DeploymentConstants._getERC20BridgeProxyAddress()"><code class="function-signature">_getERC20BridgeProxyAddress()</code></a></li><li class="inherited"><a href="src#DeploymentConstants._getDaiAddress()"><code class="function-signature">_getDaiAddress()</code></a></li><li class="inherited"><a href="src#DeploymentConstants._getChaiAddress()"><code class="function-signature">_getChaiAddress()</code></a></li><li class="inherited"><a href="src#DeploymentConstants._getDevUtilsAddress()"><code class="function-signature">_getDevUtilsAddress()</code></a></li><li class="inherited"><a href="src#DeploymentConstants._getDydxAddress()"><code class="function-signature">_getDydxAddress()</code></a></li></ul></div>
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="OrderValidationUtils.constructor(address)"></a><code class="function-signature">constructor(address _exchange)</code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="OrderValidationUtils.constructor(address,address)"></a><code class="function-signature">constructor(address _exchange, address _chaiBridge)</code><span class="function-visibility">public</span></h4>
 
 
 
@@ -1996,6 +2175,46 @@ Gets the amount of an asset transferable by the owner.
  will represent the amount of times the entire `assetData` can be transferred. To calculate
  the total individual transferable amounts, this scaled `transferableAmount` must be multiplied by
  the individual asset amounts located within the `assetData`.
+
+
+
+
+
+### `PotLike`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#PotLike.chi()"><code class="function-signature">chi()</code></a></li><li><a href="#PotLike.rho()"><code class="function-signature">rho()</code></a></li><li><a href="#PotLike.drip()"><code class="function-signature">drip()</code></a></li><li><a href="#PotLike.join(uint256)"><code class="function-signature">join(uint256)</code></a></li><li><a href="#PotLike.exit(uint256)"><code class="function-signature">exit(uint256)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="PotLike.chi()"></a><code class="function-signature">chi() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="PotLike.rho()"></a><code class="function-signature">rho() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="PotLike.drip()"></a><code class="function-signature">drip() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="PotLike.join(uint256)"></a><code class="function-signature">join(uint256)</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="PotLike.exit(uint256)"></a><code class="function-signature">exit(uint256)</code><span class="function-visibility">external</span></h4>
+
+
 
 
 

@@ -19,22 +19,64 @@
 pragma solidity 0.5.15;
 pragma experimental ABIEncoderV2;
 
-import "ROOT/0x/dev-utils/contracts/src/EthBalanceChecker.sol";
-import "ROOT/0x/dev-utils/contracts/src/LibTransactionDecoder.sol";
+import "ROOT/0x/exchange-libs/contracts/src/LibEIP712ExchangeDomain.sol";
+import "ROOT/0x/exchange-libs/contracts/src/LibOrder.sol";
+import "ROOT/0x/exchange-libs/contracts/src/LibZeroExTransaction.sol";
+import "ROOT/0x/utils/contracts/src/LibEIP712.sol";
+import "ROOT/0x/utils/contracts/src/LibBytes.sol";
 import "ROOT/0x/dev-utils/contracts/src/OrderValidationUtils.sol";
 import "ROOT/0x/dev-utils/contracts/src/OrderTransferSimulationUtils.sol";
+import "ROOT/0x/dev-utils/contracts/src/LibTransactionDecoder.sol";
+import "ROOT/0x/dev-utils/contracts/src/EthBalanceChecker.sol";
 
 
 // solhint-disable no-empty-blocks
 contract DevUtils is
-    EthBalanceChecker,
-    LibTransactionDecoder,
     OrderValidationUtils,
-    OrderTransferSimulationUtils
+    LibTransactionDecoder,
+    LibEIP712ExchangeDomain,
+    EthBalanceChecker
 {
-    constructor (address _exchange)
+    constructor (
+        address _exchange,
+        address _chaiBridge
+    )
         public
-        OrderValidationUtils(_exchange)
+        OrderValidationUtils(
+            _exchange,
+            _chaiBridge
+        )
         OrderTransferSimulationUtils(_exchange)
+        LibEIP712ExchangeDomain(uint256(0), address(0)) // null args because because we only use constants
     {}
+
+    function getOrderHash(
+        LibOrder.Order memory order,
+        uint256 chainId,
+        address exchange
+    )
+        public
+        pure
+        returns (bytes32 orderHash)
+    {
+        return LibOrder.getTypedDataHash(
+            order,
+            LibEIP712.hashEIP712Domain(_EIP712_EXCHANGE_DOMAIN_NAME, _EIP712_EXCHANGE_DOMAIN_VERSION, chainId, exchange)
+        );
+    }
+
+    function getTransactionHash(
+        LibZeroExTransaction.ZeroExTransaction memory transaction,
+        uint256 chainId,
+        address exchange
+    )
+        public
+        pure
+        returns (bytes32 transactionHash)
+    {
+        return LibZeroExTransaction.getTypedDataHash(
+            transaction,
+            LibEIP712.hashEIP712Domain(_EIP712_EXCHANGE_DOMAIN_NAME, _EIP712_EXCHANGE_DOMAIN_VERSION, chainId, exchange)
+        );
+    }
 }

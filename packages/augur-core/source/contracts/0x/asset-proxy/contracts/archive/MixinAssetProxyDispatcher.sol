@@ -17,13 +17,15 @@
 */
 
 pragma solidity 0.5.15;
-
 import "ROOT/0x/asset-proxy/contracts/archive/Ownable.sol";
 import "ROOT/0x/asset-proxy/contracts/src/interfaces/IAssetProxy.sol";
 import "ROOT/0x/asset-proxy/contracts/src/interfaces/IAssetProxyDispatcher.sol";
 
 
-contract MixinAssetProxyDispatcher is Ownable, IAssetProxyDispatcher {
+contract MixinAssetProxyDispatcher is
+    Ownable,
+    IAssetProxyDispatcher
+{
     // Mapping from Asset Proxy Id's to their respective Asset Proxy
     mapping (bytes4 => address) public assetProxies;
 

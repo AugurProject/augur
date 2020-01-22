@@ -19,7 +19,7 @@
 pragma solidity 0.5.15;
 
 import "ROOT/0x/utils/contracts/src/Authorizable.sol";
-import "ROOT/0x/utils/contracts/src/LibRichErrors.sol";
+
 import "ROOT/0x/utils/contracts/src/LibSafeMath.sol";
 import "ROOT/0x/asset-proxy/contracts/src/interfaces/IAssetProxy.sol";
 import "ROOT/0x/asset-proxy/contracts/src/interfaces/IAssetData.sol";
@@ -234,7 +234,7 @@ contract ZrxVault is
         view
     {
         if (!isInCatastrophicFailure) {
-            revert();
+           revert();
         }
     }
 

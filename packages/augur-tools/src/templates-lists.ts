@@ -943,8 +943,28 @@ export const LIST_VALUES = {
       label: 'Triple Crown',
     },
     {
-      value: "Breeder's cup",
-      label: "Breeder's cup",
+      value: "Breeder's Cup Classic",
+      label: "Breeder's Cup Classic",
+    },
+    {
+      value: "Breeder's Cup Sprint",
+      label: "Breeder's Cup Sprint",
+    },
+    {
+      value: "Breeder's Cup Mile",
+      label: "Breeder's Cup Mile",
+    },
+    {
+      value: "Breeder's Cup Distaff",
+      label: "Breeder's Cup Distaff",
+    },
+    {
+      value: "Breeder's Cup Juvenile",
+      label: "Breeder's Cup Juvenile",
+    },
+    {
+      value: "Breeder's Cup Turf",
+      label: "Breeder's Cup Turf",
     },
     {
       value: 'Travers Stakes',
@@ -1915,6 +1935,162 @@ export const LIST_VALUES = {
     {
       label: 'Seattle Seahawks',
       value: 'Seattle Seahawks',
+    },
+  ],
+  NFL_WEEK_NUM: [
+    {
+      value: 'Week 1',
+      label: 'Week 1',
+    },
+    {
+      value: 'Week 2',
+      label: 'Week 2',
+    },
+    {
+      value: 'Week 3',
+      label: 'Week 3',
+    },
+    {
+      value: 'Week 4',
+      label: 'Week 4',
+    },
+    {
+      value: 'Week 5',
+      label: 'Week 5',
+    },
+    {
+      value: 'Week 6',
+      label: 'Week 6',
+    },
+    {
+      value: 'Week 7',
+      label: 'Week 7',
+    },
+    {
+      value: 'Week 8',
+      label: 'Week 8',
+    },
+    {
+      value: 'Week 9',
+      label: 'Week 9',
+    },
+    {
+      value: 'Week 10',
+      label: 'Week 10',
+    },
+    {
+      value: 'Week 11',
+      label: 'Week 11',
+    },
+    {
+      value: 'Week 12',
+      label: 'Week 12',
+    },
+    {
+      value: 'Week 13',
+      label: 'Week 13',
+    },
+    {
+      value: 'Week 14',
+      label: 'Week 14',
+    },
+    {
+      value: 'Week 15',
+      label: 'Week 15',
+    },
+    {
+      value: 'Week 16',
+      label: 'Week 16',
+    },
+    {
+      value: 'Week 17',
+      label: 'Week 17',
+    },
+    {
+      value: 'Wild Card',
+      label: 'Wild Card',
+    },
+    {
+      value: 'Divisional Round',
+      label: 'Divisional Round',
+    },
+    {
+      value: 'Conference Championship',
+      label: 'Conference Championship',
+    },
+    {
+      value: 'Super Bowl',
+      label: 'Super Bowl',
+    },
+  ],
+  NCAA_WEEK_NUM: [
+    {
+      value: 'Week 1',
+      label: 'Week 1',
+    },
+    {
+      value: 'Week 2',
+      label: 'Week 2',
+    },
+    {
+      value: 'Week 3',
+      label: 'Week 3',
+    },
+    {
+      value: 'Week 4',
+      label: 'Week 4',
+    },
+    {
+      value: 'Week 5',
+      label: 'Week 5',
+    },
+    {
+      value: 'Week 6',
+      label: 'Week 6',
+    },
+    {
+      value: 'Week 7',
+      label: 'Week 7',
+    },
+    {
+      value: 'Week 8',
+      label: 'Week 8',
+    },
+    {
+      value: 'Week 9',
+      label: 'Week 9',
+    },
+    {
+      value: 'Week 10',
+      label: 'Week 10',
+    },
+    {
+      value: 'Week 11',
+      label: 'Week 11',
+    },
+    {
+      value: 'Week 12',
+      label: 'Week 12',
+    },
+    {
+      value: 'Week 13',
+      label: 'Week 13',
+    },
+    {
+      value: 'Week 14',
+      label: 'Week 14',
+    },
+    {
+      value: 'Week 15',
+      label: 'Week 15',
+    },
+    {
+      value: 'Week 16',
+      label: 'Week 16',
+    },
+    {
+      value: 'Bowl',
+      label: 'Bowl',
     },
   ],
   NFL_TEAMS: [
@@ -8095,6 +8271,25 @@ export const LIST_VALUES = {
       label: 'LTC/EUR',
     },
   ],
+  AMOUNT_UNITS: [
+    {
+      value: 'Hundred(s)',
+      label: 'Hundred(s)',
+    },
+    {
+      value: 'Thousand(s)',
+      label: 'Thousand(s)',
+    },
+    {
+      value: 'Million(s)',
+      label: 'Million(s)',
+    },
+    {
+      value: 'Billion(s)',
+      label: 'Billion(s)',
+    },
+
+  ]
 };
 
 export const FIN_EXCHANGES_CLOSING_OFFSETS = {

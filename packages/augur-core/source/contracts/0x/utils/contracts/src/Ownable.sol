@@ -20,12 +20,14 @@ pragma solidity 0.5.15;
 
 import "ROOT/0x/utils/contracts/src/interfaces/IOwnable.sol";
 import "ROOT/0x/utils/contracts/src/LibOwnableRichErrors.sol";
-import "ROOT/0x/utils/contracts/src/LibRichErrors.sol";
+
 
 
 contract Ownable is
     IOwnable
 {
+    /// @dev The owner of this contract.
+    /// @return 0 The owner address.
     address public owner;
 
     constructor ()
@@ -39,13 +41,14 @@ contract Ownable is
         _;
     }
 
+    /// @dev Change the owner of this contract.
+    /// @param newOwner New owner address.
     function transferOwnership(address newOwner)
         public
         onlyOwner
     {
         if (newOwner == address(0)) {
-            revert("TransferOwnerToZeroError");
-            //LibRichErrors.rrevert(LibOwnableRichErrors.TransferOwnerToZeroError());
+            revert();
         } else {
             owner = newOwner;
             emit OwnershipTransferred(msg.sender, newOwner);
@@ -57,11 +60,7 @@ contract Ownable is
         view
     {
         if (msg.sender != owner) {
-            revert("OnlyOwnerError");
-            //LibRichErrors.rrevert(LibOwnableRichErrors.OnlyOwnerError(
-            //    msg.sender,
-            //    owner
-            //));
+            revert();
         }
     }
 }

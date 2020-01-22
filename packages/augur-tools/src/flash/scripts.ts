@@ -1,6 +1,6 @@
 import { deployContracts } from '../libs/blockchain';
 import { FlashSession, FlashArguments } from './flash';
-import { createCannedMarkets } from './create-canned-markets-and-orders';
+import { createCannedMarkets, Market, CreatedCannedMarket } from './create-canned-markets-and-orders';
 import { _1_ETH } from '../constants';
 import {
   Contracts as compilerOutput,
@@ -33,6 +33,8 @@ import { generateTemplateValidations } from './generate-templates';
 import { spawn } from 'child_process';
 import { showTemplateByHash, validateMarketTemplate } from './template-utils';
 import { cannedMarkets, singleOutcomeAsks, singleOutcomeBids } from './data/canned-markets';
+import { ContractAPI } from '../libs/contract-api';
+import { NumOutcomes } from '@augurproject/sdk/src/state/logs/types';
 
 export function addScripts(flash: FlashSession) {
   flash.addScript({
@@ -390,12 +392,50 @@ export function addScripts(flash: FlashSession) {
   });
 
   flash.addScript({
-    name: 'create-YesNo-zeroX-orders',
+    name: 'create-canned-markets-with-orders',
+    async call(this: FlashSession) {
+      const user = await this.ensureUser();
+      await user.repFaucet(new BigNumber(10).pow(18).multipliedBy(10000));
+      await user.faucet(new BigNumber(10).pow(18).multipliedBy(10000000));
+      await user.approve(new BigNumber(10).pow(18).multipliedBy(10000000000));
+      const markets = await createCannedMarkets(user);
+      for(let i = 0; i < markets.length; i++) {
+        const createdMarket = markets[i];
+        const numTicks = await createdMarket.market.getNumTicks_();
+        const numOutcomes = await createdMarket.market.getNumberOfOutcomes_();
+        const marketId = createdMarket.market.address;
+        const skipFaucetOrApproval = true;
+        if(numOutcomes.gt(new BigNumber(3))) {
+          await this.call('create-cat-zerox-orders', {marketId, numOutcomes: numOutcomes.toString(), skipFaucetOrApproval});
+        } else {
+          if (numTicks.eq(new BigNumber(100))) {
+            await this.call('create-yesno-zerox-orders', {marketId, skipFaucetOrApproval});
+          } else {
+            try {
+              const maxPrice = createdMarket.canned.maxPrice;
+              const minPrice = createdMarket.canned.minPrice;
+              await this.call('create-scalar-zerox-orders', {marketId, maxPrice, minPrice, numTicks: numTicks.toString(), skipFaucetOrApproval});
+            } catch(e) {
+              console.log('could not create orders for scalar market', e)
+            }
+          }
+        }
+      }
+    },
+  });
+
+  flash.addScript({
+    name: 'create-yesno-zerox-orders',
     options: [
       {
         name: 'marketId',
         abbr: 'm',
         description: 'market to create zeroX orders on',
+      },
+      {
+        name: 'skipFaucetOrApproval',
+        flag: true,
+        description: 'do not faucet or approve, has already been done'
       },
       {
         name: 'meshEndpoint',
@@ -409,14 +449,17 @@ export function addScripts(flash: FlashSession) {
       const mesh = args.meshEndpoint as string || undefined;
       const meshEndpoint = mesh ? mesh : endpoint;
       const user = await this.ensureUser(this.network, true, true, null, meshEndpoint, true);
-      await user.faucet(new BigNumber(10).pow(18).multipliedBy(1000000));
-      await user.approve(new BigNumber(10).pow(18).multipliedBy(1000000));
+      const skipFaucetApproval = args.skipFaucetOrApproval as boolean;
+      if (!skipFaucetApproval) {
+        await user.faucet(new BigNumber(10).pow(18).multipliedBy(1000000));
+        await user.approve(new BigNumber(10).pow(18).multipliedBy(1000000));
+      }
       const yesNoMarket = cannedMarkets.find(c => c.marketType === 'yesNo');
       const orderBook = yesNoMarket.orderBook;
       const timestamp = await this.call('get-timestamp', {});
       const tradeGroupId = String(Date.now());
-      const oneHundredDays = 8640000;
-
+      const oneHundredDays = new BigNumber(8640000);
+      const expirationTime = new BigNumber(timestamp).plus(oneHundredDays);
       for (let a = 0; a < Object.keys(orderBook).length; a++) {
         const outcome = Number(Object.keys(orderBook)[a]) as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
         const buySell = Object.values(orderBook)[a];
@@ -439,7 +482,7 @@ export function addScripts(flash: FlashSession) {
             displayAmount: new BigNumber(shares),
             displayPrice: new BigNumber(price),
             displayShares: new BigNumber(0),
-            expirationTime: new BigNumber(timestamp + oneHundredDays),
+            expirationTime,
           });
         }
 
@@ -459,7 +502,7 @@ export function addScripts(flash: FlashSession) {
             displayAmount: new BigNumber(shares),
             displayPrice: new BigNumber(price),
             displayShares: new BigNumber(0),
-            expirationTime: new BigNumber(timestamp + oneHundredDays),
+            expirationTime,
           });
         }
       }
@@ -467,7 +510,7 @@ export function addScripts(flash: FlashSession) {
   });
 
   flash.addScript({
-    name: 'create-Cat-zeroX-orders',
+    name: 'create-cat-zerox-orders',
     options: [
       {
         name: 'marketId',
@@ -481,6 +524,11 @@ export function addScripts(flash: FlashSession) {
         required: true,
         description: 'number of outcomes the market has',
       },
+      {
+        name: 'skipFaucetOrApproval',
+        flag: true,
+        description: 'do not faucet or approve, has already been done'
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const endpoint = 'ws://localhost:60557';
@@ -489,8 +537,12 @@ export function addScripts(flash: FlashSession) {
       const mesh = args.meshEndpoint as string || undefined;
       const meshEndpoint = mesh ? mesh : endpoint;
       const user = await this.ensureUser(this.network, true, true, null, meshEndpoint, true);
-      await user.faucet(new BigNumber(10).pow(18).multipliedBy(1000000));
-      await user.approve(new BigNumber(10).pow(18).multipliedBy(1000000));
+      const skipFaucetApproval = args.skipFaucetOrApproval as boolean;
+      if (!skipFaucetApproval) {
+        await user.faucet(new BigNumber(10).pow(18).multipliedBy(1000000));
+        await user.approve(new BigNumber(10).pow(18).multipliedBy(1000000));
+      }
+
       const orderBook = {
         0: {
           buy: singleOutcomeBids,
@@ -528,8 +580,8 @@ export function addScripts(flash: FlashSession) {
 
       const timestamp = await this.call('get-timestamp', {});
       const tradeGroupId = String(Date.now());
-      const oneHundredDays = 8640000;
-
+      const oneHundredDays = new BigNumber(8640000);
+      const expirationTime = new BigNumber(timestamp).plus(oneHundredDays);
       for (let a = 0; a < numOutcomes; a++) {
         const outcome = Number(Object.keys(orderBook)[a]) as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
         const buySell = Object.values(orderBook)[a];
@@ -552,7 +604,7 @@ export function addScripts(flash: FlashSession) {
             displayAmount: new BigNumber(shares),
             displayPrice: new BigNumber(price),
             displayShares: new BigNumber(0),
-            expirationTime: new BigNumber(timestamp + oneHundredDays),
+            expirationTime,
           });
         }
 
@@ -572,7 +624,7 @@ export function addScripts(flash: FlashSession) {
             displayAmount: new BigNumber(shares),
             displayPrice: new BigNumber(price),
             displayShares: new BigNumber(0),
-            expirationTime: new BigNumber(timestamp + oneHundredDays),
+            expirationTime,
           });
         }
       }
@@ -581,7 +633,7 @@ export function addScripts(flash: FlashSession) {
 
 
   flash.addScript({
-    name: 'create-Scalar-zeroX-orders',
+    name: 'create-scalar-zerox-orders',
     options: [
       {
         name: 'marketId',
@@ -612,6 +664,11 @@ export function addScripts(flash: FlashSession) {
         flag: true,
         description: 'create zeroX orders on invalid outcome',
       },
+      {
+        name: 'skipFaucetOrApproval',
+        flag: true,
+        description: 'do not faucet or approve, has already been done'
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const endpoint = 'ws://localhost:60557';
@@ -619,11 +676,15 @@ export function addScripts(flash: FlashSession) {
       const mesh = args.meshEndpoint as string || undefined;
       const meshEndpoint = mesh ? mesh : endpoint;
       const user = await this.ensureUser(this.network, true, true, null, meshEndpoint, true);
-      await user.faucet(new BigNumber(10).pow(18).multipliedBy(1000000));
-      await user.approve(new BigNumber(10).pow(18).multipliedBy(1000000));
+      const skipFaucetApproval = args.skipFaucetOrApproval as boolean;
+      if (!skipFaucetApproval) {
+        await user.faucet(new BigNumber(10).pow(18).multipliedBy(1000000));
+        await user.approve(new BigNumber(10).pow(18).multipliedBy(1000000));
+      }
+
       const timestamp = await this.call('get-timestamp', {});
       const tradeGroupId = String(Date.now());
-      const oneHundredDays = 8640000;
+      const oneHundredDays = new BigNumber(8640000);
       const onInvalid = args.onInvalid as boolean;
       const numTicks = new BigNumber(String(args.numTicks));
       const maxPrice = new BigNumber(String(args.maxPrice));
@@ -645,7 +706,7 @@ export function addScripts(flash: FlashSession) {
           ],
         },
       };
-
+      const expirationTime = new BigNumber(timestamp).plus(oneHundredDays);
       for (let a = 0; a < Object.keys(orderBook).length; a++) {
         const outcome = !onInvalid ? Number(Object.keys(orderBook)[a]) as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 : 0;
         const buySell = Object.values(orderBook)[a];
@@ -668,7 +729,7 @@ export function addScripts(flash: FlashSession) {
             displayAmount: new BigNumber(shares),
             displayPrice: new BigNumber(price),
             displayShares: new BigNumber(0),
-            expirationTime: new BigNumber(timestamp + oneHundredDays),
+            expirationTime,
           };
           console.log(JSON.stringify(order));
           await user.placeZeroXOrder(order);
@@ -690,7 +751,7 @@ export function addScripts(flash: FlashSession) {
             displayAmount: new BigNumber(shares),
             displayPrice: new BigNumber(price),
             displayShares: new BigNumber(0),
-            expirationTime: new BigNumber(timestamp + oneHundredDays),
+            expirationTime,
           };
           console.log(JSON.stringify(order));
           await user.placeZeroXOrder(order);
@@ -733,12 +794,47 @@ export function addScripts(flash: FlashSession) {
         abbr: 'p',
         description: 'price of the order',
       },
+      {
+        name: 'zerox',
+        abbr: 'z',
+        flag: true,
+        required: false,
+        description: 'create zeroX order'
+      },
+      {
+        name: 'fillOrder',
+        abbr: 'f',
+        flag: true,
+        required: false,
+        description: 'fill order'
+      },
+      {
+        name: 'skipFaucetOrApproval',
+        abbr: 'k',
+        flag: true,
+        description: 'do not faucet or approve, has already been done'
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
+      const endpoint = 'ws://localhost:60557';
       const address = args.userAccount as string;
-      const user = await this.ensureUser(null, null, true, address);
-      const type =
-        String(args.orderType).toLowerCase() === 'bid' || 'buy' ? 0 : 1;
+      const isZeroX = args.zerox as boolean;
+      const fillOrder = args.fillOrder as boolean;
+      let user: ContractAPI = null;
+
+      if (isZeroX) {
+        user = await this.ensureUser(null, null, true, address, endpoint, true);
+      } else {
+        user = await this.ensureUser(null, null, true, address);
+      }
+      const skipFaucetOrApproval = args.skipFaucetOrApproval as boolean;
+      if (!skipFaucetOrApproval) {
+        this.log('create-market-order, faucet and approval');
+        await user.faucet(new BigNumber(10).pow(18).multipliedBy(10000));
+        await user.approve(new BigNumber(10).pow(18).multipliedBy(100000));
+      }
+      const orderType = String(args.orderType).toLowerCase();
+      const type = orderType === 'bid' || orderType === 'buy' ? 0 : 1;
       const onChainShares = convertDisplayAmountToOnChainAmount(
         new BigNumber(String(args.amount)),
         new BigNumber(100)
@@ -749,105 +845,109 @@ export function addScripts(flash: FlashSession) {
         new BigNumber('0.01')
       );
       const nullOrderId = stringTo32ByteHex('');
-      const tradegroupId = stringTo32ByteHex('tradegroupId');
-      const result = await user.placeOrder(
-        String(args.marketId),
-        new BigNumber(type),
-        onChainShares,
-        onChainPrice,
-        new BigNumber(String(args.outcome)),
-        nullOrderId,
-        nullOrderId,
-        tradegroupId
-      );
-
+      const tradeGroupId = stringTo32ByteHex('tradegroupId');
+      let result = null;
+      if (isZeroX) {
+        const timestamp = await this.call('get-timestamp', {});
+        const oneHundredDays = new BigNumber(8640000);
+        const expirationTime = new BigNumber(timestamp).plus(oneHundredDays);
+        const onChainPrice = convertDisplayPriceToOnChainPrice(
+          new BigNumber(String(Number(args.price).toFixed(2))),
+          new BigNumber(0),
+          new BigNumber('0.01')
+        );
+        const price = convertOnChainPriceToDisplayPrice(
+          onChainPrice,
+          new BigNumber(0),
+          new BigNumber('0.01')
+        );
+        console.log('order', String(args.amount), '@', price);
+        const params = {
+          direction: type as 0 | 1,
+          market : String(args.marketId),
+          numTicks: new BigNumber(100),
+          numOutcomes: 3 as NumOutcomes,
+          outcome: Number(args.outcome) as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7,
+          tradeGroupId,
+          fingerprint: formatBytes32String('11'),
+          doNotCreateOrders: false,
+          displayMinPrice: new BigNumber(0),
+          displayMaxPrice: new BigNumber(1),
+          displayAmount: new BigNumber(String(args.amount)),
+          displayPrice: price,
+          displayShares: new BigNumber(0),
+          expirationTime,
+        };
+        result = fillOrder ? await user.augur.placeTrade(params) : await user.placeZeroXOrder(params)
+      } else {
+        fillOrder ?
+        await user.takeBestOrder(
+          String(args.marketId),
+          new BigNumber(type),
+          onChainShares,
+          onChainPrice,
+          new BigNumber(String(args.outcome)),
+          tradeGroupId
+        ) :
+        await user.placeOrder(
+          String(args.marketId),
+          new BigNumber(type),
+          onChainShares,
+          onChainPrice,
+          new BigNumber(String(args.outcome)),
+          nullOrderId,
+          nullOrderId,
+          tradeGroupId
+        );
+      }
       this.log(`place order ${result}`);
+      // something hangs need to force exit.
+      process.exit;
     },
   });
 
-  flash.addScript({
-    name: 'fill-market-orders',
-    options: [
-      {
-        name: 'userAccount',
-        abbr: 'u',
-        description: 'user account to create the order',
-      },
-      {
-        name: 'marketId',
-        abbr: 'm',
-        description: 'market id to place the order',
-      },
-      {
-        name: 'outcome',
-        abbr: 'o',
-        description: 'outcome to place the order',
-      },
-      {
-        name: 'orderType',
-        abbr: 't',
-        description: 'order type of the order [bid], [ask]',
-      },
-      {
-        name: 'amount',
-        abbr: 'a',
-        description: 'number of shares in the order',
-      },
-      {
-        name: 'price',
-        abbr: 'p',
-        description: 'price of the order',
-      },
-    ],
-    async call(this: FlashSession, args: FlashArguments) {
-      const address = args.userAccount as string;
-      const user = await this.ensureUser(null, null, true, address);
-      const adjPrice = Number(args.price).toFixed(2);
-      // switch bid/ask order type to take the order
-      const type =
-        String(args.orderType).toLowerCase() === 'bid' || 'buy' ? 1 : 0;
-      const onChainShares = convertDisplayAmountToOnChainAmount(
-        new BigNumber(String(args.amount)),
-        new BigNumber(100)
-      );
-      const onChainPrice = convertDisplayPriceToOnChainPrice(
-        new BigNumber(String(adjPrice)),
-        new BigNumber(0),
-        new BigNumber('0.01')
-      );
-      const tradegroupId = stringTo32ByteHex('tradegroupId');
-      await user.takeBestOrder(
-        String(args.marketId),
-        new BigNumber(type),
-        onChainShares,
-        onChainPrice,
-        new BigNumber(String(args.outcome)),
-        tradegroupId
-      );
-
-      this.log(`take best order on outcome ${args.outcome} @ ${adjPrice}`);
-    },
-  });
 
   flash.addScript({
     name: 'fake-all',
-    async call(this: FlashSession) {
+    options: [
+      {
+        name: 'createMarkets',
+        abbr: 'c',
+        description:
+          'create canned markets',
+        flag: true,
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
       await this.call('deploy', {
         write_artifacts: true,
         time_controlled: true,
       });
-      await this.call('create-canned-markets', {});
+      const createMarkets = args.createMarkets as boolean;
+      if (createMarkets)
+        await this.call('create-canned-markets', {});
     },
   });
 
   flash.addScript({
     name: 'normal-all',
-    async call(this: FlashSession) {
+    options: [
+      {
+        name: 'createMarkets',
+        abbr: 'c',
+        description:
+          'create canned markets',
+        flag: true,
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
       await this.call('deploy', {
         write_artifacts: true,
         time_controlled: false,
       });
-      await this.call('create-canned-markets', {});
+      const createMarkets = args.createMarkets as boolean;
+      if (createMarkets)
+        await this.call('create-canned-markets', {});
     },
   });
 

@@ -1105,7 +1105,9 @@ function addEscrowedAmountsDecrementShares(
   const ZERO = new BigNumber(0);
   let cost = ZERO;
   const maxPrice = new BigNumber(market.prices[1]);
+  const minPrice = new BigNumber(market.prices[0]);
   const displayMaxPrice = maxPrice.dividedBy(QUINTILLION);
+  const displayMinPrice = minPrice.dividedBy(QUINTILLION)
   let sharesUsed = ZERO;
 
   if (orderType === 0) { // bids
@@ -1125,7 +1127,7 @@ function addEscrowedAmountsDecrementShares(
     );
 
     const amt = new BigNumber(order.amount).minus(sharesUsed);
-    cost = amt.times(new BigNumber(order.price));
+    cost = amt.times(new BigNumber(order.price).minus(displayMinPrice));
 
     Object.keys(userSharesBalances).forEach(o => {
       if (outcome !== o) {

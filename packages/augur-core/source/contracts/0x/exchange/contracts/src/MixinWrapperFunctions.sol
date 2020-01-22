@@ -20,7 +20,7 @@ pragma solidity 0.5.15;
 pragma experimental ABIEncoderV2;
 
 import "ROOT/0x/utils/contracts/src/LibSafeMath.sol";
-import "ROOT/0x/utils/contracts/src/LibRichErrors.sol";
+
 import "ROOT/0x/exchange-libs/contracts/src/LibOrder.sol";
 import "ROOT/0x/exchange-libs/contracts/src/LibMath.sol";
 import "ROOT/0x/exchange-libs/contracts/src/LibFillResults.sol";
@@ -36,10 +36,11 @@ contract MixinWrapperFunctions is
 {
     using LibSafeMath for uint256;
 
-    /// @dev Fills the input order. Reverts if exact takerAssetFillAmount not filled.
+    /// @dev Fills the input order. Reverts if exact `takerAssetFillAmount` not filled.
     /// @param order Order struct containing order specifications.
     /// @param takerAssetFillAmount Desired amount of takerAsset to sell.
     /// @param signature Proof that order has been created by maker.
+    /// @return fillResults Amounts filled and fees paid.
     function fillOrKillOrder(
         LibOrder.Order memory order,
         uint256 takerAssetFillAmount,
@@ -62,7 +63,7 @@ contract MixinWrapperFunctions is
     /// @param orders Array of order specifications.
     /// @param takerAssetFillAmounts Array of desired amounts of takerAsset to sell in orders.
     /// @param signatures Proofs that orders have been created by makers.
-    /// @return Array of amounts filled and fees paid by makers and taker.
+    /// @return fillResults Array of amounts filled and fees paid by makers and taker.
     function batchFillOrders(
         LibOrder.Order[] memory orders,
         uint256[] memory takerAssetFillAmounts,
@@ -89,7 +90,7 @@ contract MixinWrapperFunctions is
     /// @param orders Array of order specifications.
     /// @param takerAssetFillAmounts Array of desired amounts of takerAsset to sell in orders.
     /// @param signatures Proofs that orders have been created by makers.
-    /// @return Array of amounts filled and fees paid by makers and taker.
+    /// @return fillResults Array of amounts filled and fees paid by makers and taker.
     function batchFillOrKillOrders(
         LibOrder.Order[] memory orders,
         uint256[] memory takerAssetFillAmounts,
@@ -116,7 +117,7 @@ contract MixinWrapperFunctions is
     /// @param orders Array of order specifications.
     /// @param takerAssetFillAmounts Array of desired amounts of takerAsset to sell in orders.
     /// @param signatures Proofs that orders have been created by makers.
-    /// @return Array of amounts filled and fees paid by makers and taker.
+    /// @return fillResults Array of amounts filled and fees paid by makers and taker.
     function batchFillOrdersNoThrow(
         LibOrder.Order[] memory orders,
         uint256[] memory takerAssetFillAmounts,
@@ -145,7 +146,7 @@ contract MixinWrapperFunctions is
     /// @param orders Array of order specifications.
     /// @param takerAssetFillAmount Desired amount of takerAsset to sell.
     /// @param signatures Proofs that orders have been signed by makers.
-    /// @return Amounts filled and fees paid by makers and taker.
+    /// @return fillResults Amounts filled and fees paid by makers and taker.
     function marketSellOrdersNoThrow(
         LibOrder.Order[] memory orders,
         uint256 takerAssetFillAmount,
@@ -186,7 +187,7 @@ contract MixinWrapperFunctions is
     /// @param orders Array of order specifications.
     /// @param makerAssetFillAmount Desired amount of makerAsset to buy.
     /// @param signatures Proofs that orders have been signed by makers.
-    /// @return Amounts filled and fees paid by makers and taker.
+    /// @return fillResults Amounts filled and fees paid by makers and taker.
     function marketBuyOrdersNoThrow(
         LibOrder.Order[] memory orders,
         uint256 makerAssetFillAmount,
@@ -205,7 +206,7 @@ contract MixinWrapperFunctions is
 
             // Convert the remaining amount of makerAsset to buy into remaining amount
             // of takerAsset to sell, assuming entire amount can be sold in the current order
-            uint256 remainingTakerAssetFillAmount = LibMath.getPartialAmountFloor(
+            uint256 remainingTakerAssetFillAmount = LibMath.getPartialAmountCeil(
                 orders[i].takerAssetAmount,
                 orders[i].makerAssetAmount,
                 remainingMakerAssetFillAmount
@@ -234,7 +235,7 @@ contract MixinWrapperFunctions is
     /// @param orders Array of order specifications.
     /// @param takerAssetFillAmount Minimum amount of takerAsset to sell.
     /// @param signatures Proofs that orders have been signed by makers.
-    /// @return Amounts filled and fees paid by makers and taker.
+    /// @return fillResults Amounts filled and fees paid by makers and taker.
     function marketSellOrdersFillOrKill(
         LibOrder.Order[] memory orders,
         uint256 takerAssetFillAmount,
@@ -255,7 +256,7 @@ contract MixinWrapperFunctions is
     /// @param orders Array of order specifications.
     /// @param makerAssetFillAmount Minimum amount of makerAsset to buy.
     /// @param signatures Proofs that orders have been signed by makers.
-    /// @return Amounts filled and fees paid by makers and taker.
+    /// @return fillResults Amounts filled and fees paid by makers and taker.
     function marketBuyOrdersFillOrKill(
         LibOrder.Order[] memory orders,
         uint256 makerAssetFillAmount,
@@ -287,7 +288,7 @@ contract MixinWrapperFunctions is
     /// @dev Fills the input order. Reverts if exact takerAssetFillAmount not filled.
     /// @param order Order struct containing order specifications.
     /// @param takerAssetFillAmount Desired amount of takerAsset to sell.
-    /// @param signature Proof that order has been created by maker.
+    /// @param fillResults ignature Proof that order has been created by maker.
     function _fillOrKillOrder(
         LibOrder.Order memory order,
         uint256 takerAssetFillAmount,
@@ -312,7 +313,7 @@ contract MixinWrapperFunctions is
     /// @param order Order struct containing order specifications.
     /// @param takerAssetFillAmount Desired amount of takerAsset to sell.
     /// @param signature Proof that order has been created by maker.
-    /// @return Amounts filled and fees paid by maker and taker.
+    /// @return fillResults Amounts filled and fees paid by maker and taker.
     function _fillOrderNoThrow(
         LibOrder.Order memory order,
         uint256 takerAssetFillAmount,

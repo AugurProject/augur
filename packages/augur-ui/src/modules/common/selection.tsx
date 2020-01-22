@@ -102,7 +102,8 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
       });
     }
     if (
-      JSON.stringify(this.props.options) !== JSON.stringify(prevProps.options)
+      JSON.stringify(this.props.options) !== JSON.stringify(prevProps.options) ||
+      this.props.sort !== prevProps.sort
     ) {
       const sortedList =
         prevProps.sort && prevProps.options
@@ -184,7 +185,6 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
       disabled,
     } = this.props;
     const { selected, showList, isDisabled, sortedList } = this.state;
-
     return (
       <div
         style={sortByStyles}
