@@ -8,6 +8,8 @@ import { estimateSubmitNewMarket } from 'modules/markets/actions/estimate-submit
 import { formatDai, formatRep, formatEther } from 'utils/format-number';
 import { AppState } from 'store';
 import { totalTradingBalance } from 'modules/auth/selectors/login-account';
+import { updateModal } from 'modules/modal/actions/update-modal';
+import { MODAL_ADD_FUNDS } from 'modules/common/constants';
 
 
 const mapStateToProps = (state: AppState) => {
@@ -28,6 +30,7 @@ const mapStateToProps = (state: AppState) => {
 };
 
 const mapDispatchToProps = dispatch => ({
+  showAddFundsModal: () => dispatch(updateModal({ type: MODAL_ADD_FUNDS })),
   updateNewMarket: data => dispatch(updateNewMarket(data)),
   submitNewMarket: (data, cb) => dispatch(submitNewMarket(data, cb)),
   estimateSubmitNewMarket: (data, callback) =>
