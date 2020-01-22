@@ -36,8 +36,6 @@ interface MarketsListFiltersProps {
 const MarketsListFilters = (props: MarketsListFiltersProps) => {
   useEffect(() => {
     const filterOptionsFromQuery = parseQuery(props.location.search);
-    console.log('filterOptionsFromQuery', filterOptionsFromQuery);
-    console.log('props', props);
     if (
       filterOptionsFromQuery.maxFee &&
       filterOptionsFromQuery.maxFee !== props.maxFee
