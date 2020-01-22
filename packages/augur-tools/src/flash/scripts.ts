@@ -815,11 +815,11 @@ export function addScripts(flash: FlashSession) {
             this.log(`creating ${orders.length} orders for ${marketId}`);
             for(let j = 0; j < orders.length; j++) {
               const order = orders[j];
-              await user.placeZeroXOrder(order).catch(this.log)
+              await user.placeZeroXOrder(order).catch(this.log);
             }
           }
         }
-        await new Promise<void>(resolve => setTimeout(resolve, 5000));
+        await new Promise<void>(resolve => setTimeout(resolve, 2000));
       }
     }
   });
