@@ -65,15 +65,23 @@
 }
 
 .ShowAll {
-  .mono-11;
+  .text-10-semi-bold;
 
   cursor: pointer;
-  color: @color-primary-action;
-  margin: @size-20 0 @size-10 0;
+  color: @color-primary-text;
+  background: @color-secondary-action;
+  border: 1px solid @color-secondary-action-outline;
+  border-radius: @border-radius-default;
+  display: inline-block;
+  justify-content: center;
+  align-items: center;
+  padding: @size-5 @size-6;
+  margin: @size-2 0 @size-8 0;
 
   @media @breakpoint-mobile {
-    .mono-14;
+    margin-top: -@size-4
   }
+
 }
 
 .AllCategories {

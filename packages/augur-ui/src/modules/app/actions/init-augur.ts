@@ -1,5 +1,3 @@
-import { Augur, Provider } from '@augurproject/sdk';
-import { connect } from 'services/initialize';
 import {
   checkIsKnownUniverse,
   getNetworkId,
@@ -12,6 +10,7 @@ import { updateModal } from 'modules/modal/actions/update-modal';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import logError from 'utils/log-error';
 import networkConfig from 'config/network.json';
+import { JsonRpcProvider, Web3Provider } from 'ethers/providers';
 import { isEmpty } from 'utils/is-empty';
 import {
   MODAL_NETWORK_MISMATCH,
@@ -26,6 +25,7 @@ import {
   MODAL_BUY_DAI,
   MODAL_TEST_BET,
   MODAL_TUTORIAL_INTRO,
+  SIGNIN_LOADING_TEXT,
 } from 'modules/common/constants';
 import { windowRef } from 'utils/window-ref';
 import { AppState } from 'store';
@@ -46,6 +46,7 @@ import {
 } from 'modules/auth/actions/auth-status';
 import { logout } from 'modules/auth/actions/logout';
 import { updateCanHotload } from 'modules/app/actions/update-connection';
+import { Augur, Provider } from '@augurproject/sdk';
 
 const ACCOUNTS_POLL_INTERVAL_DURATION = 10000;
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
@@ -89,7 +90,7 @@ function pollForAccount(
                 setTimeout(() => {
                   dispatch(closeModal());
                 }),
-              message: `Connecting to our partners at ${accountType} to create your secure account.`,
+              message: accountType === ACCOUNT_TYPES.WEB3WALLET ? SIGNIN_LOADING_TEXT : `Connecting to our partners at ${accountType} to create your secure account.`,
               showLearnMore: true,
               showCloseAfterDelay: true,
             })
@@ -168,7 +169,7 @@ export function connectAugur(
   isInitialConnection: boolean = false,
   callback: NodeStyleCallback = logError
 ) {
-  return (
+  return async (
     dispatch: ThunkDispatch<void, any, Action>,
     getState: () => AppState
   ) => {
@@ -216,54 +217,60 @@ export function connectAugur(
     if (loggedInAccountType === ACCOUNT_TYPES.TORUS) {
       preloadAccount(ACCOUNT_TYPES.TORUS);
     }
-
-    connect(
-      env,
-      async (err: any, sdk: Augur<Provider>) => {
-        if (err) {
-          return callback(err, null);
-        }
-        const windowApp = windowRef as WindowApp;
-        let universeId = env.universe || sdk.contracts.universe.address;
-        if (
-          windowApp.localStorage &&
-          windowApp.localStorage.getItem &&
-          loginAccount.address
-        ) {
-          const loginAddress =
-            (windowApp.localStorage.getItem &&
-              windowApp.localStorage.getItem(loginAccount.address)) ||
-            '';
-          const storedUniverseId = JSON.parse(loginAddress).selectedUniverse[
-            getNetworkId().toString()
-          ];
-          universeId = !storedUniverseId ? universeId : storedUniverseId;
-        }
-        const known = await checkIsKnownUniverse(universeId);
-        const sameNetwork = augurSdk.sameNetwork();
-        if ((!sameNetwork && sameNetwork !== undefined) || !known) {
-          dispatch(
-            updateModal({
-              type: MODAL_NETWORK_MISMATCH,
-              expectedNetwork: NETWORK_NAMES[Number(augurSdk.networkId)],
-            })
-          );
-        } else {
-          dispatch(updateUniverse({ id: universeId }));
-          if (modal && modal.type === MODAL_NETWORK_DISCONNECTED) {
-            dispatch(closeModal());
-          }
-          if (isInitialConnection) {
-            pollForAccount(dispatch, getState);
-            pollForNetwork(dispatch, getState);
-          }
-          callback(null);
-        }
-        // wire up start up events for sdk
-        dispatch(listenForStartUpEvents(sdk));
-        dispatch(updateCanHotload(true));
+    let provider = new JsonRpcProvider(env['ethereum-node'].http);
+    if (window.web3) {
+      provider = new Web3Provider(window.web3.currentProvider);
+    }
+    let sdk: Augur<Provider> = null;
+    try {
+      sdk = await augurSdk.makeClient(
+        provider,
+        env,
+      );
+    } catch (e) {
+      console.error(e);
+      return callback('SDK could not be created', null);
+    }
+    const windowApp = windowRef as WindowApp;
+    let universeId = env.universe || sdk.contracts.universe.address;
+    if (
+      windowApp.localStorage &&
+      windowApp.localStorage.getItem &&
+      loginAccount.address
+    ) {
+      const loginAddress =
+        (windowApp.localStorage.getItem &&
+          windowApp.localStorage.getItem(loginAccount.address)) ||
+        '';
+      const storedUniverseId = JSON.parse(loginAddress).selectedUniverse[
+        getNetworkId().toString()
+      ];
+      universeId = !storedUniverseId ? universeId : storedUniverseId;
+    }
+    const known = await checkIsKnownUniverse(universeId);
+    const sameNetwork = augurSdk.sameNetwork();
+    if ((!sameNetwork && sameNetwork !== undefined) || !known) {
+      dispatch(
+        updateModal({
+          type: MODAL_NETWORK_MISMATCH,
+          expectedNetwork: NETWORK_NAMES[Number(augurSdk.networkId)],
+        })
+      );
+    } else {
+      dispatch(updateUniverse({ id: universeId }));
+      if (modal && modal.type === MODAL_NETWORK_DISCONNECTED) {
+        dispatch(closeModal());
       }
-    );
+      if (isInitialConnection) {
+        pollForAccount(dispatch, getState);
+        pollForNetwork(dispatch, getState);
+      }
+      callback(null);
+    }
+    // wire up start up events for sdk
+    dispatch(listenForStartUpEvents(sdk));
+    dispatch(updateCanHotload(true));
+
   };
 }
 

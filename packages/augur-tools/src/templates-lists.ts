@@ -943,8 +943,28 @@ export const LIST_VALUES = {
       label: 'Triple Crown',
     },
     {
-      value: "Breeder's cup",
-      label: "Breeder's cup",
+      value: "Breeder's Cup Classic",
+      label: "Breeder's Cup Classic",
+    },
+    {
+      value: "Breeder's Cup Sprint",
+      label: "Breeder's Cup Sprint",
+    },
+    {
+      value: "Breeder's Cup Mile",
+      label: "Breeder's Cup Mile",
+    },
+    {
+      value: "Breeder's Cup Distaff",
+      label: "Breeder's Cup Distaff",
+    },
+    {
+      value: "Breeder's Cup Juvenile",
+      label: "Breeder's Cup Juvenile",
+    },
+    {
+      value: "Breeder's Cup Turf",
+      label: "Breeder's Cup Turf",
     },
     {
       value: 'Travers Stakes',
@@ -1915,6 +1935,162 @@ export const LIST_VALUES = {
     {
       label: 'Seattle Seahawks',
       value: 'Seattle Seahawks',
+    },
+  ],
+  NFL_WEEK_NUM: [
+    {
+      value: 'Week 1',
+      label: 'Week 1',
+    },
+    {
+      value: 'Week 2',
+      label: 'Week 2',
+    },
+    {
+      value: 'Week 3',
+      label: 'Week 3',
+    },
+    {
+      value: 'Week 4',
+      label: 'Week 4',
+    },
+    {
+      value: 'Week 5',
+      label: 'Week 5',
+    },
+    {
+      value: 'Week 6',
+      label: 'Week 6',
+    },
+    {
+      value: 'Week 7',
+      label: 'Week 7',
+    },
+    {
+      value: 'Week 8',
+      label: 'Week 8',
+    },
+    {
+      value: 'Week 9',
+      label: 'Week 9',
+    },
+    {
+      value: 'Week 10',
+      label: 'Week 10',
+    },
+    {
+      value: 'Week 11',
+      label: 'Week 11',
+    },
+    {
+      value: 'Week 12',
+      label: 'Week 12',
+    },
+    {
+      value: 'Week 13',
+      label: 'Week 13',
+    },
+    {
+      value: 'Week 14',
+      label: 'Week 14',
+    },
+    {
+      value: 'Week 15',
+      label: 'Week 15',
+    },
+    {
+      value: 'Week 16',
+      label: 'Week 16',
+    },
+    {
+      value: 'Week 17',
+      label: 'Week 17',
+    },
+    {
+      value: 'Wild Card',
+      label: 'Wild Card',
+    },
+    {
+      value: 'Divisional Round',
+      label: 'Divisional Round',
+    },
+    {
+      value: 'Conference Championship',
+      label: 'Conference Championship',
+    },
+    {
+      value: 'Super Bowl',
+      label: 'Super Bowl',
+    },
+  ],
+  NCAA_WEEK_NUM: [
+    {
+      value: 'Week 1',
+      label: 'Week 1',
+    },
+    {
+      value: 'Week 2',
+      label: 'Week 2',
+    },
+    {
+      value: 'Week 3',
+      label: 'Week 3',
+    },
+    {
+      value: 'Week 4',
+      label: 'Week 4',
+    },
+    {
+      value: 'Week 5',
+      label: 'Week 5',
+    },
+    {
+      value: 'Week 6',
+      label: 'Week 6',
+    },
+    {
+      value: 'Week 7',
+      label: 'Week 7',
+    },
+    {
+      value: 'Week 8',
+      label: 'Week 8',
+    },
+    {
+      value: 'Week 9',
+      label: 'Week 9',
+    },
+    {
+      value: 'Week 10',
+      label: 'Week 10',
+    },
+    {
+      value: 'Week 11',
+      label: 'Week 11',
+    },
+    {
+      value: 'Week 12',
+      label: 'Week 12',
+    },
+    {
+      value: 'Week 13',
+      label: 'Week 13',
+    },
+    {
+      value: 'Week 14',
+      label: 'Week 14',
+    },
+    {
+      value: 'Week 15',
+      label: 'Week 15',
+    },
+    {
+      value: 'Week 16',
+      label: 'Week 16',
+    },
+    {
+      value: 'Bowl',
+      label: 'Bowl',
     },
   ],
   NFL_TEAMS: [
@@ -8095,6 +8271,25 @@ export const LIST_VALUES = {
       label: 'LTC/EUR',
     },
   ],
+  AMOUNT_UNITS: [
+    {
+      value: 'Hundred(s)',
+      label: 'Hundred(s)',
+    },
+    {
+      value: 'Thousand(s)',
+      label: 'Thousand(s)',
+    },
+    {
+      value: 'Million(s)',
+      label: 'Million(s)',
+    },
+    {
+      value: 'Billion(s)',
+      label: 'Billion(s)',
+    },
+
+  ]
 };
 
 export const FIN_EXCHANGES_CLOSING_OFFSETS = {
@@ -9102,6 +9297,167 @@ const CHINA_HOLIDAYS = {
   ]
 };
 
+export const AUSTRALIA_HOLIDAYS = {
+  [2020]: [
+    {
+      holiday: HOLIDAYS.NEW_YEARS_DAY,
+      date: 1577836800
+    },
+    {
+      holiday: HOLIDAYS.AUSTRALIA_DAY,
+      date: 1580083200
+    },
+    {
+      holiday: HOLIDAYS.GOOD_FRIDAY,
+      date: 1586476800
+    },
+    {
+      holiday: HOLIDAYS.EASTER_MONDAY,
+      date: 1586736000
+    },
+    {
+      holiday: HOLIDAYS.QUEENS_BIRTHDAY,
+      date: 1591574400
+    },
+    {
+      holiday: HOLIDAYS.CHRISTMAS,
+      date: 1606262400
+    },
+    {
+      holiday: HOLIDAYS.BOXING_DAY,
+      date: 1606521600
+    },
+  ],
+  [2021]: [
+    {
+      holiday: HOLIDAYS.NEW_YEARS_DAY,
+      date: 1577836800
+    },
+    {
+      holiday: HOLIDAYS.AUSTRALIA_DAY,
+      date: 1611619200
+    },
+    {
+      holiday: HOLIDAYS.GOOD_FRIDAY,
+      date: 1617321600
+    },
+    {
+      holiday: HOLIDAYS.EASTER_MONDAY,
+      date: 1617580800
+    },
+    {
+      holiday: HOLIDAYS.QUEENS_BIRTHDAY,
+      date: 1623628800
+    },
+    {
+      holiday: HOLIDAYS.CHRISTMAS,
+      date: 1637971200
+    },
+    {
+      holiday: HOLIDAYS.BOXING_DAY,
+      date: 1638057600
+    },
+  ],
+  [2022]: [
+    {
+      holiday: HOLIDAYS.NEW_YEARS_DAY,
+      date: 1641168000
+    },
+    {
+      holiday: HOLIDAYS.AUSTRALIA_DAY,
+      date: 1643155200
+    },
+    {
+      holiday: HOLIDAYS.GOOD_FRIDAY,
+      date: 1649980800
+    },
+    {
+      holiday: HOLIDAYS.EASTER_MONDAY,
+      date: 1650240000
+    },
+    {
+      holiday: HOLIDAYS.ANZAC_DAY,
+      date: 1650844800
+    },
+    {
+      holiday: HOLIDAYS.QUEENS_BIRTHDAY,
+      date: 1655078400
+    },
+    {
+      holiday: HOLIDAYS.CHRISTMAS,
+      date: 1672012800
+    },
+    {
+      holiday: HOLIDAYS.BOXING_DAY,
+      date: 1672099200
+    },
+  ]
+};
+
+export const INDIA_HOLIDAYS = {
+  [2020]: [
+    {
+      holiday: HOLIDAYS.MANASHIVRATRI,
+      date: 1582243200
+    },
+    {
+      holiday: HOLIDAYS.HOLI,
+      date: 1583798400
+    },
+    {
+      holiday: HOLIDAYS.RAN_NAVM,
+      date: 1585785600
+    },
+    {
+      holiday: HOLIDAYS.MAHAVIR_JAYANTI,
+      date: 1586131200
+    },
+    {
+      holiday: HOLIDAYS.GOOD_FRIDAY,
+      date: 1586476800
+    },
+    {
+      holiday: HOLIDAYS.BABSAHEB,
+      date: 1586822400
+    },
+    {
+      holiday: HOLIDAYS.MAHARASHTRA,
+      date: 1588291200
+    },
+    {
+      holiday: HOLIDAYS.RAMZAN,
+      date: 1590364800
+    },
+    {
+      holiday: HOLIDAYS.EID_AL_ADHA,
+      date: 1593561600
+    },
+    {
+      holiday: HOLIDAYS.GANESH_CHATURTHI,
+      date: 1595203200
+    },
+    {
+      holiday: HOLIDAYS.ASHURA,
+      date: 1595894400
+    },
+    {
+      holiday: HOLIDAYS.MAHATMA,
+      date: 1601596800
+    },
+    {
+      holiday: HOLIDAYS.DIWALI,
+      date: 1605484800
+    },
+    {
+      holiday: HOLIDAYS.GURU_NANAK_JAYANTI,
+      date: 1606694400
+    },
+    {
+      holiday: HOLIDAYS.CHRISTMAS,
+      date: 1606521600
+    },
+  ]
+};
 
 export const FIN_EXCHANGES_HOLIDAY_CLOSURES = {
   'New York Stock Exchange (traded in USD)': USA_HOLIDAYS,
@@ -9125,5 +9481,7 @@ export const FIN_INDEXES_HOLIDAY_CLOSURES = {
   'FTSE 100': ENGLAND_HOLIDAYS,
   'DAX': GERMANY_HOLIDAYS,
   'Hang Seng': HONG_KONG_HOLIDAYS,
-  'Shanghai SE Composite': CHINA_HOLIDAYS
+  'Shanghai SE Composite': CHINA_HOLIDAYS,
+  'All Ordinaries': AUSTRALIA_HOLIDAYS,
+  'BSE Sensex 30': INDIA_HOLIDAYS,
 };

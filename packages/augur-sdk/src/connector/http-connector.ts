@@ -1,5 +1,5 @@
 import { Callback, SubscriptionType } from "../events";
-import { BaseConnector } from "./baseConnector";
+import { BaseConnector } from "./base-connector";
 import { SubscriptionEventName } from "../constants";
 import fetch from "cross-fetch";
 

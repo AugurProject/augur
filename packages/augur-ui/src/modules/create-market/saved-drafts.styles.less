@@ -39,12 +39,16 @@
     height: min-content;
   }
   
-  @media @breakpoint-mobile-mid {
-    padding: @size-16 @size-16;
-    
+  @media @breakpoint-mobile-new {
+    padding: @size-16 0;
+    margin: 0 @size-16;
+    border-bottom: 2px solid @color-dark-grey;
+
     > button:first-of-type {
-      > span:first-of-type {
-        display: none;
+      > span:last-of-type {
+        .text-10-medium;
+        
+        margin-top: @size-6;
       }
     }
   }

@@ -29,7 +29,7 @@ const mapStateToProps = (state: AppState) => {
   }
   if (hasForked  && hasStakedRep) show = true;
 
-  if (!show) return null;
+  if (!show) return {};
 
   return {
     show,

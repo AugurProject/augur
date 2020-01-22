@@ -22,6 +22,7 @@ pragma experimental ABIEncoderV2;
 import "ROOT/0x/erc20/contracts/src/interfaces/IERC20Token.sol";
 import "ROOT/0x/erc20/contracts/src/LibERC20Token.sol";
 import "ROOT/0x/exchange-libs/contracts/src/IWallet.sol";
+import "ROOT/0x/utils/contracts/src/DeploymentConstants.sol";
 import "ROOT/0x/asset-proxy/contracts/src/interfaces/IERC20Bridge.sol";
 import "ROOT/0x/asset-proxy/contracts/src/interfaces/IEth2Dai.sol";
 
@@ -29,11 +30,9 @@ import "ROOT/0x/asset-proxy/contracts/src/interfaces/IEth2Dai.sol";
 // solhint-disable space-after-comma
 contract Eth2DaiBridge is
     IERC20Bridge,
-    IWallet
+    IWallet,
+    DeploymentConstants
 {
-    /* Mainnet addresses */
-    address constant public ETH2DAI_ADDRESS = 0x39755357759cE0d7f32dC8dC45414CCa409AE24e;
-
     /// @dev Callback for `IERC20Bridge`. Tries to buy `amount` of
     ///      `toTokenAddress` tokens by selling the entirety of the opposing asset
     ///      (DAI or WETH) to the Eth2Dai contract, then transfers the bought
@@ -56,13 +55,13 @@ contract Eth2DaiBridge is
         // Decode the bridge data to get the `fromTokenAddress`.
         (address fromTokenAddress) = abi.decode(bridgeData, (address));
 
-        IEth2Dai exchange = _getEth2DaiContract();
+        IEth2Dai exchange = IEth2Dai(_getEth2DaiAddress());
         // Grant an allowance to the exchange to spend `fromTokenAddress` token.
         LibERC20Token.approve(fromTokenAddress, address(exchange), uint256(-1));
 
         // Try to sell all of this contract's `fromTokenAddress` token balance.
-        uint256 boughtAmount = _getEth2DaiContract().sellAllAmount(
-            address(fromTokenAddress),
+        uint256 boughtAmount = exchange.sellAllAmount(
+            fromTokenAddress,
             IERC20Token(fromTokenAddress).balanceOf(address(this)),
             toTokenAddress,
             amount
@@ -84,15 +83,5 @@ contract Eth2DaiBridge is
         returns (bytes4 magicValue)
     {
         return LEGACY_WALLET_MAGIC_VALUE;
-    }
-
-    /// @dev Overridable way to get the eth2dai contract.
-    /// @return exchange The Eth2Dai exchange contract.
-    function _getEth2DaiContract()
-        internal
-        view
-        returns (IEth2Dai exchange)
-    {
-        return IEth2Dai(ETH2DAI_ADDRESS);
     }
 }

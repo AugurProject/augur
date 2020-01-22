@@ -1,13 +1,14 @@
-import { Callback, SubscriptionType } from "../events";
-import { BaseConnector } from "./baseConnector";
 import { SubscriptionEventName } from "../constants";
+import { Callback } from "../events";
+import { SDKConfiguration } from "../state";
+import { BaseConnector } from "./base-connector";
 
 export class EmptyConnector extends BaseConnector {
-  async connect(ethNodeUrl: string, account?: string): Promise<any> {
+  async connect(config: SDKConfiguration, account?: string): Promise<void> {
     return;
   }
 
-  async disconnect(): Promise<any> {
+  async disconnect(): Promise<void> {
     return;
   }
 

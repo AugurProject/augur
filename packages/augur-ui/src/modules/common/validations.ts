@@ -14,6 +14,7 @@ import {
   TemplateInput,
   UserInputDateTime,
   tellOnHoliday,
+  ValidationTemplateInputType,
 } from '@augurproject/artifacts';
 import moment from 'moment';
 
@@ -276,8 +277,15 @@ export function checkForUserInputFilled(
               input.userInput.toUpperCase()) &&
           input.id !== possibleDupeInput.id
       );
+      let validText = true;
+      const regexRule = input.validationType && ValidationTemplateInputType[input.validationType];
+      if (regexRule) {
+        validText = !!input.userInput.match(`^${regexRule}$`);
+      }
       if (possibleDupes.length > 0) {
         return 'No repeats allowed';
+      } else if (!validText) {
+        return 'Input is not valid format';
       } else {
         return '';
       }

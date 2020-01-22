@@ -657,7 +657,7 @@ def test_fees_from_trades(finalized, invalid, contractsFixture, cash, market, un
 
         disputeWindow = contractsFixture.applySignature('DisputeWindow', market.getDisputeWindow())
         contractsFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
-        totalCollectedFees = market.marketCreatorFeesAttoCash() + market.totalAffiliateFeesAttoCash() + market.validityBondAttoCash()
+        totalCollectedFees = market.marketCreatorFeesAttoCash() + market.totalPreFinalizationAffiliateFeesAttoCash() + market.validityBondAttoCash()
         nextDisputeWindowAddress = universe.getOrCreateNextDisputeWindow(False)
         nextDisputeWindowBalanceBeforeFinalization = cash.balanceOf(universe.getOrCreateNextDisputeWindow(False))
         assert market.finalize()
@@ -697,12 +697,15 @@ def test_order_creator_lacks_funds(contractsFixture, cash, market, universe):
     assert shareToken.balanceOfMarketOutcome(market.address, YES, contractsFixture.accounts[2]) == 0
     assert shareToken.balanceOfMarketOutcome(market.address, NO, contractsFixture.accounts[1]) == 0
 
-def test_devutils_GetOrderRelevantStates(contractsFixture, cash, market, universe):
+def test_dev_utils(contractsFixture, cash, market, universe):
     ZeroXTrade = contractsFixture.contracts['ZeroXTrade']
     devUtils = contractsFixture.contracts['DevUtils']
 
     expirationTime = contractsFixture.contracts['Time'].getTimestamp() + 10000
     salt = 5
+
+    cash.faucet(fix(60), sender=contractsFixture.accounts[1])
+    cash.faucet(fix(60), sender=contractsFixture.accounts[2])
 
     signedOrder, orderHash = ZeroXTrade.createZeroXOrder(
         ASK,
@@ -721,6 +724,7 @@ def test_devutils_GetOrderRelevantStates(contractsFixture, cash, market, univers
     ordersInfo, fillableTakerAssetAmounts, isValidSignature = devUtils.getOrderRelevantStates(orders, signatures)
     orderStatus, orderHash, orderTakerAssetFilledAmount = ordersInfo[0]
 
+    assert fillableTakerAssetAmounts[0] == signedOrder[5] # takerAssetAmount
     assert orderStatus == 3, 'order status must be 3 (FILLABLE) not {}'.format(orderStatus)
     assert isValidSignature[0], 'signature must be valid'
 

@@ -211,6 +211,7 @@ export interface TemplateInput {
       }[];
     };
   };
+  noSort: boolean;
 }
 
 export interface RetiredTemplate {
@@ -223,6 +224,7 @@ export enum ValidationType {
   NUMBER = 'NUMBER',
   NOWEEKEND_HOLIDAYS = 'NOWEEKEND_HOLIDAYS',
   EXP_DATE_TUESDAY_AFTER_MOVIE = 'EXP_DATE_TUESDAY_AFTER_MOVIE',
+  SOCIAL = 'SOCIAL', // social media username/handle
 }
 
 export enum TEXT_PLACEHOLDERS {
@@ -238,6 +240,7 @@ export enum TEXT_PLACEHOLDERS {
   STOCK_OR_ETF = 'Individual Stock or ETF Name',
   INDIVIDUAL_STOCK_OR_ETF_NAME = 'Individual Stock or ETF Name',
   INDIVIDUAL_STOCK_OR_ETF_SYMBOL = 'Individual Stock or ETF Ticker Symbol',
+  INDIVIDUAL_SOCIAL_MEDIA_HANDLE = 'Social Media Handle',
 }
 
 export enum TemplateInputType {
@@ -280,6 +283,7 @@ export interface ExtraInfo {
 }
 
 export const ValidationTemplateInputType = {
+  [ValidationType.SOCIAL]: `[a-zA-Z0-9_]{1,15}`,
   [TemplateInputType.TEXT]: `(.*)`,
   [ValidationType.WHOLE_NUMBER]: `[0-9]+`,
   [ValidationType.NUMBER]: `[0-9]+(\\\.[0-9]+){0,1}`,

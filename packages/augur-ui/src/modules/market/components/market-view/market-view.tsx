@@ -174,8 +174,10 @@ export default class MarketView extends Component<
   }
 
   componentDidMount() {
-    this.node && this.node.scrollIntoView();
-    window.scrollTo(0, 1);
+    if (!this.props.preview) {
+      this.node && this.node.scrollIntoView();
+      window.scrollTo(0, 1);
+    }
 
     const { isMarketLoading, showMarketLoadingModal } = this.props;
 
@@ -577,7 +579,7 @@ export default class MarketView extends Component<
                   fillWidth
                   noBorder
                   id="mobileView"
-                  scrollOver={matches}
+                  scrollOver={matches && !preview}
                   leftButton={
                     <button
                       className={Styles.MarketView__button}

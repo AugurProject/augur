@@ -16,7 +16,7 @@
 
 */
 
-pragma solidity ^0.5.5;
+pragma solidity 0.5.15;
 pragma experimental ABIEncoderV2;
 
 import "ROOT/0x/exchange/contracts/src/interfaces/IExchange.sol";
@@ -74,9 +74,9 @@ contract LibTransactionDecoder {
             functionSelector == IExchange(address(0)).cancelOrdersUpTo.selector ||
             functionSelector == IExchange(address(0)).executeTransaction.selector
         ) {
-            revert("UNIMPLEMENTED");
+            revert();
         } else {
-            revert("UNKNOWN_FUNCTION_SELECTOR");
+            revert();
         }
 
         if (functionSelector == IExchange(address(0)).batchCancelOrders.selector) {
