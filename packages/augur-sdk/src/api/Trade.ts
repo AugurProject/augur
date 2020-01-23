@@ -37,14 +37,14 @@ export class Trade implements TradeAPI {
   }
 
   useZeroX(): boolean {
-    return typeof this.augur.zeroX !== 'undefined';
+    return !!this.augur.zeroX;
   }
 
-  private zeroX(): ZeroX {
+  private get zeroX(): ZeroX {
     return this.augur.zeroX;
   }
 
-  private onChain(): OnChainTrade {
+  private get onChain(): OnChainTrade {
     return this.augur.onChainTrade;
   }
 
@@ -72,37 +72,37 @@ export class Trade implements TradeAPI {
 
   private async placeOnChainTrade(params: PlaceTradeParams): Promise<void> {
     if (this.useZeroX()) {
-      return this.zeroX().placeOnChainTrade({
+      return this.zeroX.placeOnChainTrade({
         ...params,
         expirationTime: params.expirationTime || this.maxExpirationTime(),
       })
     } else {
       console.log("Not using 0x");
-      return this.onChain().placeOnChainTrade(params);
+      return this.onChain.placeOnChainTrade(params);
     }
   }
 
   async simulateTrade(params: PlaceTradeDisplayParams): Promise<SimulateTradeData> {
     if (this.useZeroX()) {
-      return this.zeroX().simulateTrade({
+      return this.zeroX.simulateTrade({
         ...params,
         expirationTime: params.expirationTime || this.maxExpirationTime(),
       });
     } else {
       console.log("Not using 0x");
-      return this.onChain().simulateTrade(params);
+      return this.onChain.simulateTrade(params);
     }
   }
 
   async simulateTradeGasLimit(params: PlaceTradeDisplayParams): Promise<BigNumber> {
     if (this.useZeroX()) {
-      return this.zeroX().simulateTradeGasLimit({
+      return this.zeroX.simulateTradeGasLimit({
         ...params,
         expirationTime: params.expirationTime || this.maxExpirationTime(),
       });
     } else {
       console.log("Not using 0x");
-      return this.onChain().simulateTradeGasLimit(params);
+      return this.onChain.simulateTradeGasLimit(params);
     }
   }
 }

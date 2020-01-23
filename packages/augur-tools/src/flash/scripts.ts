@@ -1,6 +1,6 @@
 import { deployContracts } from '../libs/blockchain';
 import { FlashSession, FlashArguments } from './flash';
-import { createCannedMarkets, Market, CreatedCannedMarket } from './create-canned-markets-and-orders';
+import { createCannedMarkets } from './create-canned-markets-and-orders';
 import { _1_ETH } from '../constants';
 import {
   Contracts as compilerOutput,
@@ -28,12 +28,13 @@ import {
 } from '@augurproject/sdk';
 import { fork } from './fork';
 import { dispute } from './dispute';
-import { MarketList } from '@augurproject/sdk/build/state/getter/Markets';
+import { MarketList, MarketOrderBook } from '@augurproject/sdk/build/state/getter/Markets';
 import { generateTemplateValidations } from './generate-templates';
 import { spawn } from 'child_process';
 import { showTemplateByHash, validateMarketTemplate } from './template-utils';
 import { cannedMarkets, singleOutcomeAsks, singleOutcomeBids } from './data/canned-markets';
 import { ContractAPI } from '../libs/contract-api';
+import { OrderBookShaper } from './orderbook-shaper';
 import { NumOutcomes } from '@augurproject/sdk/src/state/logs/types';
 
 export function addScripts(flash: FlashSession) {
@@ -312,34 +313,48 @@ export function addScripts(flash: FlashSession) {
         description: 'create scalar market',
         flag: true,
       },
+      {
+        name: 'title',
+        abbr: 'd',
+        description: 'market title',
+      }
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const yesno = args.yesno as boolean;
       const cat = args.categorical as boolean;
       const scalar = args.scalar as boolean;
+      const title = args.title ? String(args.title) : null;
       if (yesno) {
-        await this.call('create-reasonable-yes-no-market', {});
+        await this.call('create-reasonable-yes-no-market', {title});
       }
       if (cat) {
         await this.call('create-reasonable-categorical-market', {outcomes: 'first,second,third,fourth,fifth'});
       }
       if (scalar) {
-        await this.call('create-reasonable-scalar-market', {});
+        await this.call('create-reasonable-scalar-market', {title});
       }
 
       if (!yesno && !cat && !scalar) {
-        await this.call('create-reasonable-yes-no-market', {});
+        await this.call('create-reasonable-yes-no-market', {title});
       }
     }
   });
 
   flash.addScript({
     name: 'create-reasonable-yes-no-market',
-    async call(this: FlashSession) {
+    options: [
+      {
+        name: 'title',
+        abbr: 'd',
+        description: 'market title',
+      }
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const title = args.title ? String(args.title) : null;
       if (this.noProvider()) return;
       const user = await this.ensureUser();
 
-      this.market = await user.createReasonableYesNoMarket();
+      this.market = await user.createReasonableYesNoMarket(title);
       this.log(`Created YesNo market "${this.market.address}".`);
       return this.market;
     },
@@ -354,6 +369,11 @@ export function addScripts(flash: FlashSession) {
         description: 'Comma-separated.',
         required: true,
       },
+      {
+        name: 'title',
+        abbr: 'd',
+        description: 'market title',
+      }
     ],
     async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
@@ -361,8 +381,8 @@ export function addScripts(flash: FlashSession) {
       const outcomes: string[] = (args.outcomes as string)
         .split(',')
         .map(formatBytes32String);
-
-      this.market = await user.createReasonableMarket(outcomes);
+      const title = args.title ? String(args.title) : null;
+      this.market = await user.createReasonableMarket(outcomes, title);
       this.log(`Created Categorical market "${this.market.address}".`);
       return this.market;
     },
@@ -370,11 +390,18 @@ export function addScripts(flash: FlashSession) {
 
   flash.addScript({
     name: 'create-reasonable-scalar-market',
-    async call(this: FlashSession) {
+    options: [
+      {
+        name: 'title',
+        abbr: 'd',
+        description: 'market title',
+      }
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
       const user = await this.ensureUser();
-
-      this.market = await user.createReasonableScalarMarket();
+      const title = args.title ? String(args.title) : null;
+      this.market = await user.createReasonableScalarMarket(title);
       this.log(`Created Scalar market "${this.market.address}".`);
       return this.market;
     },
@@ -761,6 +788,106 @@ export function addScripts(flash: FlashSession) {
   });
 
   flash.addScript({
+    name: 'get-market-order-book',
+    options: [
+      {
+        name: 'marketId',
+        abbr: 'm',
+        description: 'Show orders that have been placed on the book of this marketId'
+      }
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const result = await this.user.augur.getMarketOrderBook({ marketId: String(args.marketId)});
+      this.log(JSON.stringify(result));
+      return result;
+    }
+  });
+
+  flash.addScript({
+    name: 'create-markets-orderbook-shaper',
+    options: [
+      {
+        name: 'numMarkets',
+        abbr: 'n',
+        description: 'number of markets to create and have orderbook maintain, default is 10'
+      },
+      {
+        name: 'userAccount',
+        abbr: 'u',
+        description: 'User account to create orders, if not provider contract owner is used'
+      },
+      {
+        name: 'meshEndpoint',
+        abbr: 'e',
+        required: false,
+        description: 'Mesh endpoint to connect'
+      }
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const numMarkets = args.numMarkets ? Number(args.numMarkets) : 10;
+      const userAccount = args.userAccount ? args.userAccount as string : null;
+      const meshEndpoint = args.meshEndpoint ? String(args.meshEndpoint) : 'ws://localhost:60557';
+      const user: ContractAPI = await this.ensureUser(null, true, true, userAccount, meshEndpoint, true);
+      const timestamp = await user.getTimestamp();
+      const ids: string[] = []
+      for(let i = 0; i < numMarkets; i++) {
+        const title = `YesNo market: ${timestamp} Number ${i} with orderbook mgr`
+        const market: ContractInterfaces.Market = await user.createReasonableYesNoMarket(title);
+        ids.push(market.address);
+      }
+      const marketIds = ids.join(',');
+      await this.call('simple-orderbook-shaper', {marketIds, userAccount, meshEndpoint});
+    }
+  });
+
+  flash.addScript({
+    name: 'simple-orderbook-shaper',
+    options: [
+      {
+        name: 'marketIds',
+        abbr: 'm',
+        description: 'Market ids separated by commas for multiple to create orders and maintain order book, ie 0x122,0x333,0x4444'
+      },
+      {
+        name: 'userAccount',
+        abbr: 'u',
+        description: 'User account to create orders, if not provider contract owner is used'
+      },
+      {
+        name: 'meshEndpoint',
+        abbr: 'e',
+        required: false,
+        description: 'Mesh endpoint to connect'
+      }
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const marketIds = String(args.marketIds).split(',').map(id => id.trim());
+      const address = args.userAccount ? args.userAccount as string : null;
+      const endpoint = args.meshEndpoint ? String(args.meshEndpoint) : 'ws://localhost:60557';
+      const user: ContractAPI = await this.ensureUser(null, true, true, address, endpoint, true);
+      const orderBooks = marketIds.map(m => new OrderBookShaper(m));
+
+      while(true) {
+        const timestamp = await this.user.getTimestamp();
+        for(let i = 0; i < orderBooks.length; i++) {
+          const orderBook: OrderBookShaper = orderBooks[i];
+          const marketId = orderBook.marketId;
+          const marketBook: MarketOrderBook = await this.user.augur.getMarketOrderBook({ marketId });
+          const orders = orderBook.nextRun(marketBook, timestamp);
+          if (orders.length > 0) {
+            this.log(`creating ${orders.length} orders for ${marketId}`);
+            for(let j = 0; j < orders.length; j++) {
+              const order = orders[j];
+              await user.placeZeroXOrder(order).catch(this.log);
+            }
+          }
+        }
+        await new Promise<void>(resolve => setTimeout(resolve, 5000));
+      }
+    }
+  });
+
+  flash.addScript({
     name: 'create-market-order',
     options: [
       {
@@ -823,9 +950,9 @@ export function addScripts(flash: FlashSession) {
       let user: ContractAPI = null;
 
       if (isZeroX) {
-        user = await this.ensureUser(null, null, true, address, endpoint, true);
+        user = await this.ensureUser(null, true, true, address, endpoint, true);
       } else {
-        user = await this.ensureUser(null, null, true, address);
+        user = await this.ensureUser(null, true, true, address);
       }
       const skipFaucetOrApproval = args.skipFaucetOrApproval as boolean;
       if (!skipFaucetOrApproval) {
@@ -835,6 +962,7 @@ export function addScripts(flash: FlashSession) {
       }
       const orderType = String(args.orderType).toLowerCase();
       const type = orderType === 'bid' || orderType === 'buy' ? 0 : 1;
+
       const onChainShares = convertDisplayAmountToOnChainAmount(
         new BigNumber(String(args.amount)),
         new BigNumber(100)
@@ -861,7 +989,6 @@ export function addScripts(flash: FlashSession) {
           new BigNumber(0),
           new BigNumber('0.01')
         );
-        console.log('order', String(args.amount), '@', price);
         const params = {
           direction: type as 0 | 1,
           market : String(args.marketId),
@@ -878,7 +1005,12 @@ export function addScripts(flash: FlashSession) {
           displayShares: new BigNumber(0),
           expirationTime,
         };
-        result = fillOrder ? await user.augur.placeTrade(params) : await user.placeZeroXOrder(params)
+
+        try {
+          result = fillOrder ? await user.augur.placeTrade(params) : await user.placeZeroXOrder(params)
+        } catch(e) {
+          this.log(e);
+        }
       } else {
         fillOrder ?
         await user.takeBestOrder(
@@ -901,8 +1033,7 @@ export function addScripts(flash: FlashSession) {
         );
       }
       this.log(`place order ${result}`);
-      // something hangs need to force exit.
-      process.exit;
+
     },
   });
 
@@ -1066,15 +1197,12 @@ export function addScripts(flash: FlashSession) {
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
-      try {
-        const hash = String(args.hash);
-        this.log(hash);
-        const template = showTemplateByHash(hash);
-        if (!template) this.log(`Template not found for hash ${hash}`);
-        this.log(JSON.stringify(template, null, ' '));
-      } catch (e) {
-        this.log(e);
-      }
+      const hash = String(args.hash);
+      this.log(hash);
+      const template = showTemplateByHash(hash);
+      if (!template) this.log(`Template not found for hash ${hash}`);
+      this.log(JSON.stringify(template, null, ' '));
+      return template;
     },
   });
 
@@ -1565,7 +1693,6 @@ export function addScripts(flash: FlashSession) {
       if (this.noProvider()) return null;
       const user = await this.ensureUser(this.network, true);
 
-      await (await this.db).sync(user.augur, 100000, 0);
       const markets: MarketList = await this.api.route('getMarkets', {
         universe: user.augur.contracts.universe.address,
       });

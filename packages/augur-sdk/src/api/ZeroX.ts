@@ -114,49 +114,73 @@ export interface MatchingOrders {
 }
 
 export class ZeroX {
-  private meshClient?: WSClient;
-  private browserMesh?: BrowserMesh;
 
+  private _rpc?: WSClient;
   get rpc(): WSClient {
-    return this.meshClient;
+    return this._rpc;
   }
 
-  set rpc(client: WSClient) {
-    this.meshClient = client;
+  set rpc(client: WSClient|null) {
+    if(!client && this._rpc) {
+      this._rpc.destroy();
+      this._rpc = null;
+      return;
+    }
 
-    if (!this.meshClient) return;
-
-    this.meshClient.subscribeToOrdersAsync((orderEvents: OrderEvent[]) => {
-      if (!this.browserMesh) {
-        this.augur.events.emit('ZeroX:RPC:OrderEvent', orderEvents);
+    this._rpc = client;
+    this._rpc.subscribeToOrdersAsync((orderEvents: OrderEvent[]) => {
+      if (!this._mesh && this.client) {
+        this.client.events.emit('ZeroX:RPC:OrderEvent', orderEvents);
       }
     });
   }
 
+  private _mesh?: BrowserMesh;
   get mesh(): BrowserMesh {
-    return this.browserMesh;
+    return this._mesh;
   }
 
-  set mesh(mesh: BrowserMesh) {
-    this.browserMesh = mesh;
+  set mesh(mesh: BrowserMesh|null) {
+    if(!mesh && this._mesh) {
+      console.log("Browser mesh is being cleared, but there is no way to stop a running instance. You may end up with multiple instances of _mesh running.")
+      this._mesh = null;
+      return;
+    }
 
-    if (!this.browserMesh) return;
+    this._mesh = mesh;
 
-    this.browserMesh.onOrderEvents((orderEvents: OrderEvent[]) => {
-      if (orderEvents.length > 0) {
-        this.augur.events.emit('ZeroX:Mesh:OrderEvent', orderEvents);
+    if (!this._mesh) return;
+
+    this._mesh.onOrderEvents((orderEvents: OrderEvent[]) => {
+      if (this.client && orderEvents.length > 0) {
+        this.client.events.emit('ZeroX:Mesh:OrderEvent', orderEvents);
       }
     });
   }
 
-  constructor(private readonly augur: Augur, meshClientEndpoint?: string) {
-    if (typeof meshClientEndpoint !== 'undefined') {
-      this.rpc = new WSClient(meshClientEndpoint);
+  private _client: Augur;
+  get client() {
+    return this._client;
+  }
+  set client(client: Augur) {
+    this._client = client;
+  }
+
+
+  disconnect() {
+    console.log("Disconnecting from ZeroX");
+    this.mesh = null;
+    this.rpc = null;
+  }
+
+  constructor(_rpcEndpoint?: string) {
+    if (typeof _rpcEndpoint !== 'undefined') {
+      this.rpc = new WSClient(_rpcEndpoint);
     }
   }
 
   async getOrders(): Promise<OrderInfo[]> {
-    // TODO when browser mesh supports this back out to using it if meshClient not provided
+    // TODO when browser mesh supports this back out to using it if _rpc not provided
     if (!this.rpc) {
       throw Error('getOrders is not supported on browser mesh');
     }
@@ -201,6 +225,8 @@ export class ZeroX {
     params: ZeroXPlaceTradeParams,
     ignoreOrders?: string[]
   ): Promise<void> {
+    if (!this.client) throw new Error('To place ZeroX trade, make sure Augur client instance was initialized with it enabled.')
+
     const invalidReason = await this.checkIfTradeValid(params);
     if (invalidReason) throw new Error(invalidReason);
 
@@ -219,11 +245,11 @@ export class ZeroX {
       return;
     }
 
-    const gasPrice = await this.augur.getGasPrice();
+    const gasPrice = await this.client.getGasPrice();
     // TODO: We should be getting this by querying the exchange contract directly via `protocolFeeMultiplier()`
     const protocolFee = gasPrice.multipliedBy(150000 * numOrders);
 
-    const result: Event[] = await this.augur.contracts.ZeroXTrade.trade(
+    const result: Event[] = await this.client.contracts.ZeroXTrade.trade(
       params.amount,
       params.fingerprint,
       params.tradeGroupId,
@@ -234,7 +260,7 @@ export class ZeroX {
       { attachedEth: protocolFee }
     );
 
-    const account = await this.augur.getAccount();
+    const account = await this.client.getAccount();
     const amountRemaining = this.getTradeAmountRemaining(
       account,
       params.amount,
@@ -272,8 +298,9 @@ export class ZeroX {
   }
 
   async createZeroXOrder(params: ZeroXPlaceTradeParams) {
+    if (!this.client) throw new Error('To place ZeroX order, make sure Augur client instance was initialized with it enabled.')
     const salt = new BigNumber(Date.now());
-    const result = await this.augur.contracts.ZeroXTrade.createZeroXOrder_(
+    const result = await this.client.contracts.ZeroXTrade.createZeroXOrder_(
       new BigNumber(params.direction),
       params.amount,
       params.price,
@@ -288,13 +315,13 @@ export class ZeroX {
     const signature = await this.signOrder(
       order,
       hash,
-      this.augur.getUseGnosisSafe()
+      this.client.getUseGnosisSafe()
     );
 
     return {
       order: {
-        chainId: Number(this.augur.networkId),
-        exchangeAddress: this.augur.addresses.Exchange,
+        chainId: Number(this.client.networkId),
+        exchangeAddress: this.client.addresses.Exchange,
         makerAddress,
         makerAssetData: order[10],
         makerFeeAssetData: order[12],
@@ -331,11 +358,11 @@ export class ZeroX {
   async signGnosisOrder(signedOrder: any, orderHash: string): Promise<string> {
     const gnosisSafeAddress: string = signedOrder[0];
 
-    const gnosisSafe = this.augur.contracts.gnosisSafeFromAddress(
+    const gnosisSafe = this.client.contracts.gnosisSafeFromAddress(
       gnosisSafeAddress
     );
 
-    const eip1271OrderWithHash = await this.augur.contracts.ZeroXTrade.encodeEIP1271OrderWithHash_(
+    const eip1271OrderWithHash = await this.client.contracts.ZeroXTrade.encodeEIP1271OrderWithHash_(
       signedOrder,
       orderHash
     );
@@ -345,7 +372,7 @@ export class ZeroX {
     // See https://github.com/0xProject/0x-mesh/blob/0xV3/zeroex/order.go#L51
     const signatureType = '07';
 
-    const signedMessage = await this.augur.signMessage(
+    const signedMessage = await this.client.signMessage(
       ethers.utils.arrayify(messageHash)
     );
     const { r, s, v } = ethers.utils.splitSignature(signedMessage);
@@ -359,7 +386,7 @@ export class ZeroX {
     // See https://github.com/0xProject/0x-mesh/blob/0xV3/zeroex/order.go#L51
     const signatureType = '03';
 
-    const signedMessage = await this.augur.signMessage(
+    const signedMessage = await this.client.signMessage(
       ethers.utils.arrayify(orderHash)
     );
     const { r, s, v } = ethers.utils.splitSignature(signedMessage);
@@ -368,10 +395,10 @@ export class ZeroX {
 
   async addOrder(order) {
     try {
-      if (this.browserMesh) {
-        return this.browserMesh.addOrdersAsync([order]);
+      if (this._mesh) {
+        return this._mesh.addOrdersAsync([order]);
       } else {
-        return this.meshClient.addOrdersAsync([order]);
+        return this._rpc.addOrdersAsync([order]);
       }
     } catch (error) {
       return setTimeout(this.addOrder(order), 5000);
@@ -379,16 +406,19 @@ export class ZeroX {
   }
 
   async cancelOrder(order) {
-    return this.augur.contracts.zeroXExchange.cancelOrder(order);
+    if (!this.client) throw new Error('To cancel ZeroX orders, make sure your Augur Client instance was initialized with it enabled.')
+    return this.client.contracts.zeroXExchange.cancelOrder(order);
   }
 
   async batchCancelOrders(orders) {
-    return this.augur.contracts.zeroXExchange.batchCancelOrders(orders);
+    if (!this.client) throw new Error('To cancel ZeroX orders, make sure your Augur Client instance was initialized with it enabled.')
+    return this.client.contracts.zeroXExchange.batchCancelOrders(orders);
   }
 
   async simulateTrade(
     params: ZeroXPlaceTradeDisplayParams
   ): Promise<ZeroXSimulateTradeData> {
+    if (!this.client) throw new Error('To place ZeroX trades, make sure your Augur Client instance was initialized with it enabled.')
     const onChainTradeParams = this.getOnChainTradeParams(params);
     const { orders, signatures, orderIds, loopLimit } = await this.getMatchingOrders(
       onChainTradeParams,
@@ -406,7 +436,7 @@ export class ZeroX {
         numFills: new BigNumber(0),
       };
     } else {
-      simulationData = ((await this.augur.contracts.simulateTrade.simulateZeroXTrade_(
+      simulationData = ((await this.client.contracts.simulateTrade.simulateZeroXTrade_(
         orders,
         onChainTradeParams.amount,
         params.doNotCreateOrders
@@ -462,7 +492,7 @@ export class ZeroX {
   ): Promise<MatchingOrders> {
     const orderType = params.direction === 0 ? '1' : '0';
     const outcome = params.outcome.toString();
-    const zeroXOrders = await this.augur.getZeroXOrders({
+    const zeroXOrders = await this.client.getZeroXOrders({
       marketId: params.market,
       outcome: params.outcome,
       orderType,
@@ -548,17 +578,17 @@ export class ZeroX {
             .multipliedBy(amountNotCoveredByShares);
 
     if (cost.gt(0)) {
-      const account = await this.augur.getAccount();
+      const account = await this.client.getAccount();
       if (!account) return null;
-      const cashAllowance = await this.augur.contracts.cash.allowance_(
+      const cashAllowance = await this.client.contracts.cash.allowance_(
         account,
-        this.augur.contracts.augur.address
+        this.client.contracts.augur.address
       );
       if (cashAllowance.lt(cost)) {
         return `Cash allowance: ${cashAllowance.toString()} will not cover trade cost: ${cost.toString()}`;
       }
 
-      const cashBalance = await this.augur.contracts.cash.balanceOf_(account);
+      const cashBalance = await this.client.contracts.cash.balanceOf_(account);
       if (cashBalance.lt(cost)) {
         return `Cash balance: ${cashBalance.toString()} will not cover trade cost: ${cost.toString()}`;
       }

@@ -15,6 +15,7 @@ function makeProviderMock(opts?: any): Provider {
   const block = opts.block || null;
 
   return {
+    disconnect: (()=>{}),
     getNetworkId: (): Promise<NetworkId> => Promise.resolve(networkId),
     getLogs: (filter: Filter): Promise<Log[]> => Promise.resolve(logs),
     getBlockNumber: (): Promise<number> => Promise.resolve(blockNumber),

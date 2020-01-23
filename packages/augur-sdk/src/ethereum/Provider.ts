@@ -6,6 +6,7 @@ import { ethers } from "ethers";
 import { JSONRPCRequestPayload } from "ethereum-types";
 
 export interface Provider {
+  disconnect(): void;
   getNetworkId(): Promise<NetworkId>;
   getLogs(filter: Filter): Promise<Log[]>;
   getBlockNumber(): Promise<number>;

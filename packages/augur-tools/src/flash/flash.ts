@@ -1,10 +1,7 @@
-import { WSClient } from '@0x/mesh-rpc-client';
-import { ContractAddresses } from '@augurproject/artifacts';
+import { ContractAddresses, NetworkId } from '@augurproject/artifacts';
 import { NetworkConfiguration } from '@augurproject/core';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
-import { GnosisRelayAPI } from '@augurproject/gnosis-relay-api';
-import { Connectors, EmptyConnector, Events, SDKConfiguration, SubscriptionEventName } from "@augurproject/sdk";
-import { BaseConnector } from "@augurproject/sdk/build/connector";
+import { Connectors, createClient, Events, SDKConfiguration, startServerFromClient, SubscriptionEventName } from "@augurproject/sdk";
 import { BlockAndLogStreamerListenerInterface } from "@augurproject/sdk/build/state/db/BlockAndLogStreamerListener";
 import { DB } from "@augurproject/sdk/build/state/db/DB";
 import { API } from "@augurproject/sdk/build/state/getter/API";
@@ -12,6 +9,7 @@ import { configureDexieForNode } from "@augurproject/sdk/build/state/utils/Dexie
 import { BigNumber } from 'bignumber.js';
 import { providers } from "ethers";
 import { Account } from "../constants";
+import { makeSigner } from "../libs/blockchain";
 import { ContractAPI } from "../libs/contract-api";
 
 configureDexieForNode(true);
@@ -111,7 +109,6 @@ export class FlashSession {
     return false;
   }
 
-  usingSdk = false;
   sdkReady = false;
   async ensureUser(
     network?: NetworkConfiguration,
@@ -125,57 +122,84 @@ export class FlashSession {
       throw Error('ERROR: Must load contract addresses first.');
     }
 
-    if (this.user && (wireUpSdk === null || wireUpSdk === this.usingSdk)) {
-      return this.user;
+    if (this.noProvider()) {
+      throw new Error('ERROR: No provider');
     }
 
     network = network || this.network;
 
-    if (wireUpSdk) this.usingSdk = true;
-
     const config: SDKConfiguration = {
-      networkId: await this.provider.getNetworkId(),
+      networkId: (await this.provider.getNetworkId()) as NetworkId,
+      ethereum: {
+        http: network ? network.http : undefined // NB(pg): Currently some tests don't pass in this config
+      },
+      gnosis: {
+        enabled: useGnosis,
+        http: 'http://localhost:8000/api/'
+      },
+      zeroX: {
+        rpc: {
+          enabled: !!meshEndpoint,
+          ws: meshEndpoint
+        },
+        mesh: {
+          enabled: false
+        }
+      },
+      syncing: {
+        enabled: wireUpSdk
+      }
     };
 
-    const connector: BaseConnector = wireUpSdk
-      ? new Connectors.DirectConnector()
-      : new EmptyConnector();
-    const gnosisRelay = useGnosis
-      ? new GnosisRelayAPI('http://localhost:8000/api/')
-      : undefined;
-    const meshClient = !!meshEndpoint ? new WSClient(meshEndpoint) : undefined;
-    this.user = await ContractAPI.userWrapper(
-      this.getAccount(accountAddress),
-      this.provider,
-      this.contractAddresses,
-      connector,
-      gnosisRelay,
-      meshClient
-    );
+    // Initialize the user if this is the first time we are being called. This will create the provider and all of that jazz.
+    if (!this.user) {
 
-    if (useGnosis) {
-      const safe = await this.user.fundSafe();
-      const safeStatus = await this.user.getSafeStatus(safe);
-      console.log(`Safe ${safe}: ${safeStatus}`);
-      await this.user.augur.setGasPrice(new BigNumber(90000));
-      this.user.setGnosisSafeAddress(safe);
-      this.user.setUseGnosisSafe(true);
-      this.user.setUseGnosisRelay(true);
+      // Get an actual account fo rthe provided public address. This also
+      // handles the case where none is passed in, in which case it will use
+      // the default account (0)
+      const account = this.getAccount(accountAddress);
+
+      // Within flash we want to use an account with a private key as the signer
+      // so we manually create our own signer here.
+      const signer = await makeSigner(account, this.provider);
+
+      // Run everything in one context, both syncing and this client code
+      const connector = new Connectors.SingleThreadConnector();
+      const client = await createClient(config, connector, account.publicKey, signer, this.provider);
+
+      // Create a ContractAPI for this user with this particular augur client. This provides
+      // a variety of nice wrapper functions which we should think about exporting
+      this.user = new ContractAPI(client, this.provider, client.dependencies, account);
+
+      // IF we want this flash client to use a safe associated with the past in
+      // account, configure it at this point.
+      if (config.gnosis.enabled) {
+        const safe = await this.user.fundSafe();
+        const safeStatus = await this.user.getSafeStatus(safe);
+        console.log(`Safe ${safe}: ${safeStatus}`);
+        this.user.augur.setGasPrice(new BigNumber(90000));
+        this.user.setGnosisSafeAddress(safe);
+        this.user.setUseGnosisSafe(true);
+        this.user.setUseGnosisRelay(true);
+      } else if (approveCentralAuthority) {
+        await this.user.approveCentralAuthority();
+      }
     }
 
-    if (wireUpSdk) {
-      if (!network) throw Error('Cannot wire up sdk if network is not set.');
-      await connector.connect(config, this.getAccount().publicKey);
+    if (config.syncing.enabled && !this.api) {
+      await this.user.augur.connector.connect(config);
+      this.api = (this.user.augur.connector as Connectors.SingleThreadConnector).api;
+
+      // NB(pg): Augur#on should *not* be asynchronous and needs to be refactored
+      // at another time.
       await this.user.augur.on(
         SubscriptionEventName.NewBlock,
         this.sdkNewBlock
       );
-      this.db = this.makeDB();
-      this.api = new API(this.user.augur, this.db);
-    }
 
-    if (approveCentralAuthority) {
-      await this.user.approveCentralAuthority();
+      if (config.zeroX && config.zeroX.rpc.enabled) {
+        this.user.augur.events.emit('ZeroX:Ready');
+      }
     }
 
     return this.user;
@@ -230,7 +254,7 @@ export class FlashSession {
     return (await provider.getNetwork()).chainId.toString();
   }
 
-  async makeDB(): Promise<DB> {
+  async makeDB() {
     const listener = ({
       listenForBlockRemoved: () => {},
       listenForBlockAdded: () => {},
@@ -238,7 +262,7 @@ export class FlashSession {
       startBlockStreamListener: () => {},
     } as unknown) as BlockAndLogStreamerListenerInterface;
 
-    return DB.createAndInitializeDB(
+    return await DB.createAndInitializeDB(
       Number(this.user.augur.networkId),
       0,
       0,

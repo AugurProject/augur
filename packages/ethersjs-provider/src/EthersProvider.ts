@@ -42,6 +42,11 @@ export class EthersProvider extends ethers.providers.BaseProvider
     }
   }
 
+  disconnect() {
+    this.polling = false;
+    this.performQueue.kill();
+  }
+
   private;
 
   constructor(

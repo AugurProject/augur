@@ -47,11 +47,15 @@ export class ContractAPI {
   ) {
     const signer = await makeSigner(account, provider);
     const dependencies = makeGnosisDependencies(provider, gnosisRelay, signer, addresses.Cash, new BigNumber(0), null, account.publicKey);
-    const augur = await Augur.create(provider, dependencies, addresses, connector, true);
+
+    let zeroX = null;
     if (meshClient || meshBrowser) {
-      augur.zeroX = new ZeroX(augur);
-      augur.zeroX.rpc = meshClient;
-      augur.zeroX.mesh = meshBrowser;
+      zeroX = new ZeroX();
+      zeroX.rpc = meshClient;
+    }
+    const augur = await Augur.create(provider, dependencies, addresses, connector, zeroX, true);
+    if (meshBrowser) {
+      zeroX.mesh = meshBrowser;
     }
     return new ContractAPI(augur, provider, dependencies, account);
   }
@@ -111,7 +115,7 @@ export class ContractAPI {
     await this.repFaucet(repBond.plus(10**18));
   }
 
-  async createReasonableYesNoMarket(): Promise<ContractInterfaces.Market> {
+  async createReasonableYesNoMarket(description: string = 'YesNo market description'): Promise<ContractInterfaces.Market> {
     const time = this.augur.contracts.getTime();
     const currentTimestamp = (await time.getTimestamp_()).toNumber();
 
@@ -122,12 +126,12 @@ export class ContractAPI {
       designatedReporter: this.account.publicKey,
       extraInfo: JSON.stringify({
         categories: ['flash', 'Reasonable', 'YesNo'],
-        description: 'YesNo market description',
+        description,
       }),
     });
   }
 
-  async createReasonableMarket(outcomes: string[]): Promise<ContractInterfaces.Market> {
+  async createReasonableMarket(outcomes: string[], description: string = 'Categorical market description'): Promise<ContractInterfaces.Market> {
     const time = this.augur.contracts.getTime();
     const currentTimestamp = (await time.getTimestamp_()).toNumber();
 
@@ -138,13 +142,13 @@ export class ContractAPI {
       designatedReporter: this.account.publicKey,
       extraInfo: JSON.stringify({
         categories: ['flash', 'Reasonable', 'Categorical'],
-        description: 'Categorical market description',
+        description,
       }),
       outcomes,
     });
   }
 
-  async createReasonableScalarMarket(): Promise<ContractInterfaces.Market> {
+  async createReasonableScalarMarket(description: string = 'Scalar market description'): Promise<ContractInterfaces.Market> {
     const time = this.augur.contracts.getTime();
     const currentTimestamp = (await time.getTimestamp_()).toNumber();
     const minPrice = new BigNumber(50).multipliedBy(new BigNumber(10).pow(18));
@@ -157,7 +161,7 @@ export class ContractAPI {
       designatedReporter: this.account.publicKey,
       extraInfo: JSON.stringify({
         categories: ['flash', 'Reasonable', 'Scalar'],
-        description: 'Scalar market description',
+        description,
         _scalarDenomination: 'scalar denom 1',
       }),
       numTicks: new BigNumber(20000),

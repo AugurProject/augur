@@ -4,7 +4,7 @@ export const _1_BILLION_ETH = _1_ETH * 1e9;
 
 export interface Account {
   secretKey: string;
-  publicKey: string;
+  publicKey: string; // NB: This should be called address not publicKey
   balance: number;
 }
 

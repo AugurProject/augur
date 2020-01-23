@@ -1,6 +1,6 @@
 import { Augur } from '../Augur';
-import { SDKConfiguration, startServerFromClient } from '../state/create-api';
 import { API } from '../state/getter/API';
+import { SDKConfiguration, startServerFromClient } from '../state/create-api';
 import { BaseConnector } from './base-connector';
 import { SubscriptionEventName } from '../constants';
 import { Subscriptions } from '../subscriptions';
@@ -8,24 +8,17 @@ import { Callback } from '../events';
 import { BrowserMesh, ZeroX } from '../api/ZeroX';
 
 export class SingleThreadConnector extends BaseConnector {
-  private _api: API;
-  private _zeroX: ZeroX;
   private get events(): Subscriptions {
     return this.client.events;
   }
-  get mesh(): BrowserMesh {
-    return this._zeroX.mesh;
-  }
-  set mesh(mesh: BrowserMesh) {
-    this._zeroX.mesh = mesh;
+
+  private _api: API;
+  get api() {
+    return this._api;
   }
 
   async connect(config: SDKConfiguration, account?: string): Promise<void> {
     this._api = await startServerFromClient(config, this.client);
-    if (config.zeroX) {
-      this._zeroX = new ZeroX(this._api.augur, config.zeroX.rpc ? config.zeroX.rpc.ws : undefined);
-      this.client.zeroX = this._zeroX;
-    }
   }
 
   async disconnect(): Promise<void> {

@@ -39,7 +39,7 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
   constructor(
     provider: EthersProvider,
     public readonly gnosisRelay: IGnosisRelayAPI,
-    signer: EthersSigner,
+    signer?: EthersSigner,
     private gasToken: string = NULL_ADDRESS,
     public gasPrice: BigNumber = DEFAULT_GAS_PRICE,
     public safeAddress?: string,
@@ -51,7 +51,7 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
     }
   }
 
-  static create(provider: EthersProvider, signer: EthersSigner, cashAddress: string, gnosisRelayEndpoint?: string): ContractDependenciesGnosis {
+  static create(provider: EthersProvider, signer: EthersSigner|undefined, cashAddress: string, gnosisRelayEndpoint?: string): ContractDependenciesGnosis {
     const gnosisRelay = gnosisRelayEndpoint
       ? new GnosisRelayAPI(gnosisRelayEndpoint)
       : undefined;
