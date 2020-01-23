@@ -6,11 +6,20 @@ import { formatOrderBook } from 'modules/create-market/helpers/format-order-book
 import { orderPriceEntered, orderAmountEntered } from 'services/analytics/helpers';
 import { AppState } from 'store';
 import { totalTradingBalance } from 'modules/auth/selectors/login-account';
+import { formatGasCost } from 'utils/format-number';
+import { createBigNumber } from 'utils/create-big-number';
+import { GWEI_CONVERSION } from 'modules/common/constants';
 
 
 const mapStateToProps = (state: AppState, ownProps) => {
   const { loginAccount, appStatus, blockchain } = state;
   const { zeroXEnabled: Ox_ENABLED } = appStatus;
+
+  const gasPriceInWei = formatGasCost(
+    createBigNumber(state.gasPriceInfo.userDefinedGasPrice || 0).times(
+      createBigNumber(GWEI_CONVERSION)
+    ), {}
+  ).value;
 
   const selectedOutcomeId =
     ownProps.selectedOutcome !== undefined &&
@@ -35,6 +44,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
       ownProps.market.outcomesFormatted
     ),
     Ox_ENABLED,
+    gasPrice: gasPriceInWei,
   };
 };
 
