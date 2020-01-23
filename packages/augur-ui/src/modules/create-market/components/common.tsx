@@ -450,7 +450,7 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
               ? subheader
               : 'Choose a date and time that is sufficiently after the end of the event. If event expiration before the event end time the market will likely be reported as invalid. Make sure to factor in potential delays that can impact the event end time. '
           }
-          link
+          link={!header}
         />
       )}
       <span>
