@@ -56,7 +56,6 @@
       align-items: center;
       flex-direction: row;
       margin-bottom: 0;
-      margin-top: @size-4;
     }
 
     > h1 {
@@ -69,7 +68,7 @@
       @media @breakpoint-mobile {
         .text-18-bold;
         order: 0;
-        margin-bottom: @size-16;
+        margin-bottom: @size-10;
       }
     }
 
@@ -88,17 +87,19 @@
 
       @media @breakpoint-mobile {
         display: flex;
-        margin-bottom: @size-16;
+        margin-bottom: @size-10;
       }
     }
   }
 
+  // Apply on filter search
   > div > article {
     flex: 1;
-    height: 44px;
+    height: @size-44;
 
     @media @breakpoint-mobile {
       order: 0;
+      height: @size-32;
     }
   }
 }

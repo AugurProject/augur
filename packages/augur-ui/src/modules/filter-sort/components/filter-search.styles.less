@@ -11,28 +11,30 @@
 
 .Search {
   .text-16;
-  height: @size-40;
+  height: @size-44;
 
   align-items: center;
   background: @color-dark-grey;
-  border: 1px solid @color-secondary-action;
+  border: @size-1 solid @color-secondary-action;
   box-sizing: border-box;
   border-radius: @border-radius-default;
   color: @color-secondary-text;
   display: flex;
-  padding: @size-16 0;
+  padding: 0;
   transition: min-width @animation-speed-normal @animation-default-type;
   width: 100%;
 
-  > button {
-    margin-right: @size-16;
+  @media @breakpoint-mobile {
+    .text-12;
+    height: @size-32;
+    padding: 0;
+    border: @size-1 solid @color-dark-grey;
   }
 
   > svg {
     fill: @color-primary-text;
-    height: @size-14;
     margin-left: @size-13;
-    min-width: @size-14;
+    height: @size-14;
     width: @size-14;
   }
 
@@ -42,17 +44,49 @@
     border: none;
     color: @color-primary-text;
     line-height: normal;
-    height: @size-36;
-    padding: 0 0 0 @size-13;
-    margin: @size-2 0;
+    padding: 0;
+    height: @size-20;
+    margin: @size-8 0 @size-10 @size-10;
     text-overflow: ellipsis;
 
-    &::placeholder {
-      color: @color-secondary-text;
+    @media @breakpoint-mobile {
+      .text-12;
+      height: @size-15;
+      margin: @size-6 0 @size-7 @size-10;
     }
 
-    &:focus {
-      border: none;
+    &::placeholder {
+      color: @color-dark-text;
+    }
+  }
+
+  // Override css in Input in common/form.styles.less
+  input:focus {
+    border: @size-1 solid @color-dark-grey;
+  }
+
+  &:focus-within {
+    border: @size-1 solid @color-secondary-action;
+    @media @breakpoint-mobile {
+      border: @size-1 solid @color-dark-grey;
+    }
+  }
+
+  // Close button
+  > button {
+    margin-right: @size-12;
+
+    @media @breakpoint-mobile {
+      margin-right: @size-6;
+    }
+
+    > svg {
+      height: @size-12;
+      width: @size-12;
+
+      @media @breakpoint-mobile {
+        margin-top: @size-2;
+      }
     }
   }
 }
