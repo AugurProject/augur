@@ -1348,19 +1348,19 @@ export const Sports = (
     <path
       d="M11.6666 11.4042C10.5875 10.2667 9.91663 8.72084 9.91663 7.00001C9.91663 5.27917 10.5875 3.76251 11.6666 2.59584"
       stroke="white"
-      stroke-miterlimit="10"
+      strokeMiterlimit="10"
     />
     <path
       d="M2.33337 11.4042C3.41254 10.2667 4.08337 8.72084 4.08337 7.00001C4.08337 5.27917 3.41254 3.76251 2.33337 2.59584"
       stroke="white"
-      stroke-miterlimit="10"
+      strokeMiterlimit="10"
     />
-    <path d="M7 13.4166V0.583293" stroke="white" stroke-miterlimit="10" />
-    <path d="M13.4167 7H0.583374" stroke="#2AE7A8" stroke-miterlimit="10" />
+    <path d="M7 13.4166V0.583293" stroke="white" strokeMiterlimit="10" />
+    <path d="M13.4167 7H0.583374" stroke="#2AE7A8" strokeMiterlimit="10" />
     <path
       d="M7.00004 0.583293C10.5439 0.583293 13.4167 3.45613 13.4167 6.99996C13.4167 10.5438 10.5439 13.4166 7.00004 13.4166C3.45621 13.4166 0.583374 10.5438 0.583374 6.99996C0.583374 3.45613 3.45621 0.583293 7.00004 0.583293Z"
       stroke="white"
-      stroke-miterlimit="10"
+      strokeMiterlimit="10"
       stroke-linecap="square"
     />
   </svg>
@@ -1422,29 +1422,29 @@ export const Crypto = (
     <path
       d="M3.1875 7H3.625C4.61725 7 5.73637 7.54556 6.25 8.3125H8C8.87806 8.3125 9.75 9.18444 9.75 10.0625H5.8125"
       stroke="white"
-      stroke-miterlimit="10"
+      strokeMiterlimit="10"
     />
     <path
       d="M9.47044 9.1875H12.375C13.9609 9.1875 14.125 10.0625 14.125 10.0625L7.86 12.607C7.36169 12.8065 6.80169 12.7833 6.32131 12.5431L3.1875 10.9515"
       stroke="white"
-      stroke-miterlimit="10"
+      strokeMiterlimit="10"
     />
     <path
       d="M11.5 7C12.4665 7 13.25 6.2165 13.25 5.25C13.25 4.2835 12.4665 3.5 11.5 3.5C10.5335 3.5 9.75 4.2835 9.75 5.25C9.75 6.2165 10.5335 7 11.5 7Z"
       stroke="#2AE7A8"
-      stroke-miterlimit="10"
+      strokeMiterlimit="10"
       stroke-linecap="square"
     />
     <path
       d="M3.1875 6.125H1.4375V11.8125H3.1875V6.125Z"
       stroke="white"
-      stroke-miterlimit="10"
+      strokeMiterlimit="10"
       stroke-linecap="square"
     />
     <path
       d="M6.25 4.375C7.2165 4.375 8 3.5915 8 2.625C8 1.6585 7.2165 0.875 6.25 0.875C5.2835 0.875 4.5 1.6585 4.5 2.625C4.5 3.5915 5.2835 4.375 6.25 4.375Z"
       stroke="#2AE7A8"
-      stroke-miterlimit="10"
+      strokeMiterlimit="10"
       stroke-linecap="square"
     />
   </svg>
@@ -2183,13 +2183,13 @@ export const RedFlagIcon = (
       <path
         d="M5.125 4.625H11.875L10.75 6.875L11.875 9.125H5.125"
         stroke="#FF2727"
-        stroke-miterlimit="10"
+        strokeMiterlimit="10"
         stroke-linecap="square"
       />
       <path
         d="M5.125 3.875V12.125"
         stroke="#FF2727"
-        stroke-miterlimit="10"
+        strokeMiterlimit="10"
         stroke-linecap="square"
       />
     </g>

@@ -91,10 +91,7 @@ export class OrderBookShaper {
         const createMoreOrders = !value || new BigNumber(value.shares).lt(new BigNumber(minVolume));
         const quantity = !value ? new BigNumber(minVolume) : new BigNumber(minVolume).minus(new BigNumber(value.shares))
         if (createMoreOrders) {
-          const numCreateOrders = quantity.dividedBy(this.orderSize).toNumber();
-          for(let i = 0; i < numCreateOrders; i++) {
-            orders.push({outcome, quantity: this.orderSize, price, direction})
-          }
+          orders.push({outcome, quantity: quantity.toNumber(), price, direction})
         }
       })
     })
