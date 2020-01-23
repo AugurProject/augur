@@ -808,7 +808,7 @@ export function addScripts(flash: FlashSession) {
     options: [
       {
         name: 'numMarkets',
-        abbr: 'm',
+        abbr: 'n',
         description: 'number of markets to create and have orderbook maintain, default is 10'
       },
       {
@@ -829,13 +829,14 @@ export function addScripts(flash: FlashSession) {
       const endpoint = args.meshEndpoint ? String(args.meshEndpoint) : 'ws://localhost:60557';
       const user: ContractAPI = await this.ensureUser(null, true, true, address, endpoint, true);
       const timestamp = await user.getTimestamp();
-      const marketIds = []
+      const ids = []
       for(let i = 0; i < numMarkets; i++) {
         const title = `YesNo market: ${timestamp} Number ${i} with orderbook mgr`
-        const marketId = await this.call('new-market', {yesno: true, title});
-        marketIds.push(marketId);
+        const marketId = await user.createReasonableYesNoMarket(title).catch(this.log);
+        ids.push(marketId);
       }
-      await this.call('simple-orderbook-shaper', {marketIds: marketIds.join(',')});
+      const marketIds = ids.join(',');
+      await this.call('simple-orderbook-shaper', {marketIds});
     }
   });
 
