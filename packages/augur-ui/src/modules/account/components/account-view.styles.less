@@ -1,99 +1,137 @@
 @import (reference) '~assets/styles/shared';
 
 .AccountView {
-  display: flex;
-  flex-direction: column;
-  margin: @size-4;
+  margin: @size-8 @size-12;
+  min-height: calc(~'100vh - @{multi-top-bar-height}');
+  display: grid;
+  grid-gap: @size-8 @size-12;
+  grid-template-columns: repeat(3, 33%);
+  grid-template-rows: @size-40 44vh 44vh @size-40 @size-40;
 
   @media @breakpoint-mobile {
     min-height: unset;
+    display: flex;
+    flex-direction: column;
   }
 
-  > div:first-of-type {
-    flex: 1;
-    min-height: 800px;
-    height: calc(~'100vh - @{multi-top-bar-height}');
+  @media @breakpoint-tablet {
+    grid-gap: @size-16;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: auto;
+    margin: @size-16 @size-24;
+
+    > div:first-of-type {
+      grid-column: 1;
+      order: 1;
+    }
+
+    > div:nth-of-type(2) {
+      grid-column: 2;
+      order: 2;
+    }
+
+    > div:nth-of-type(3) {
+      grid-column: 1 / span 2;
+      order: 4;
+    }
+    > div:nth-of-type(4) {
+      grid-column: 1 / span 2;
+      order: 3;
+    }
+    > div:nth-of-type(5) {
+      grid-column: 1 / span 2;
+      order: 5;
+    }
+
+    > footer {
+      order: 6;
+      grid-column: 1 / span 2;
+    }
   }
 
   > div {
     display: flex;
+    flex-flow: column nowrap;
 
-    > div {
-      display: flex;
-      flex: 1;
-      flex-direction: column;
-      margin: @size-4;
-      height: inherit;
-
-      > div {
-        display: flex;
-        flex: 1;
-        flex-direction: column;
-        margin-bottom: @size-8;
-        min-height: 6.25rem;
-      }
-    }
-
-    > div:nth-of-type(2) {
-      max-width: 470px;
-
-      > div {
-        max-height: unset;
-
-        > div[class*='Headers'] {
-          background: @color-dark-grey;
-          height: @size-40;
-        }
-      }
-    }
-
-    > div:last-of-type {
-      flex: 1;
-      flex-direction: column;
-
-      > div:last-of-type {
-        flex: 1;
-        margin-left: 0;
-        min-height: fit-content;
+    @media @breakpoint-tablet {
+      button[class*="ToggleExtendButton"] {
+        display: none;
       }
     }
   }
 
-  &.HideNotifications {
-    > div > div:first-of-type > div:last-of-type {
-      max-height: unset;
-      flex: 1;
+  > div:first-of-type,
+  > div:nth-of-type(3) {
+    grid-row: 1 / span 2;
+
+    @media @breakpoint-tablet {
+      grid-row: unset;
+    }
+  }
+
+  > div:nth-of-type(2) {
+    grid-row: 1 / span 4;
+
+    @media @breakpoint-tablet {
+      grid-row: unset;
     }
 
-    > div > div:first-of-type > div:first-of-type {
-      max-height: @size-32;
+    > div[class*='Headers'] {
+      background: @color-dark-grey;
+      min-height: @size-40;
+
+      > ul {
+        padding: 0 @size-8;
+      }
+    }
+  }
+
+  > div:nth-of-type(4),
+  > div:nth-of-type(5) {
+    grid-row: 3 / span 2;
+
+    @media @breakpoint-tablet {
+      grid-row: unset;
+    }
+  }
+
+  > footer {
+    grid-column: 1 / span 3;
+    grid-row: 5;
+  }
+
+  &.HideNotifications {
+    > div:first-of-type {
+      grid-row: 1 / span 3;
+    }
+
+    > div:nth-of-type(4) {
+      grid-row: 4;
+      max-height: @size-40;
       overflow-y: hidden;
-      min-height: unset;
     }
   }
 
   &.HideTransactions {
-    > div > div:last-of-type > div:first-of-type {
-      max-height: unset;
-      flex: 1;
+    > div:nth-of-type(3) {
+      grid-row: 1 / span 3;
     }
 
-    > div > div:last-of-type > div:last-of-type {
-      max-height: @size-32;
+    > div:nth-of-type(5) {
+      grid-row: 4;
+      max-height: @size-40;
       overflow-y: hidden;
-      min-height: unset;
     }
   }
 
   &.HideActiveMarkets {
-    > div > div:first-of-type > div:first-of-type {
-      max-height: unset;
-      flex: 1;
+    > div:nth-of-type(4) {
+      grid-row: 2 / span 3;
     }
 
-    > div > div:first-of-type > div:last-of-type {
-      max-height: @size-32;
-      min-height: unset;
+    > div:first-of-type {
+      grid-row: 1;
+      max-height: @size-40;
       overflow-y: hidden;
     }
   }

@@ -7,8 +7,8 @@
   flex-direction: column;
   padding: @size-16 0;
   border-radius: @border-radius-default;
-  max-width: 100%;
-  max-height: 100%;
+  overflow: hidden;
+  max-height: 350px;
 
   > h3 {
     .mono-12-semi-bold;
@@ -29,7 +29,7 @@
     .text-12;
 
     color: @color-inactive-text;
-    padding: 1rem 0 0.5rem;
+    padding: @size-16 0 @size-8;
   }
 
   @media @breakpoint-mobile-mid {
@@ -41,6 +41,9 @@
 .ProfitLossChart {
   margin: 0;
   pointer-events: none;
+  overflow: hidden;
+  width: 100%;
+  max-height: 250px;
 
   svg {
     :global {
