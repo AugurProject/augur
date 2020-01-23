@@ -256,4 +256,6 @@ export class EthersProvider extends ethers.providers.BaseProvider
       });
     });
   }
+
+  disconnect(): void {}
 }

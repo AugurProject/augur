@@ -759,15 +759,13 @@ export class ContractAPI {
     });
   }
 
-  async fundSafe(safe?: string) {
+  async fundSafe(safe?: string, minimum=new BigNumber(1e21)) {
     safe = safe || await this.getOrCreateSafe();
 
-    if ((await this.getCashBalance(safe)).lt(1e21)) {
-      await this.faucet(new BigNumber(1e21));
-      await this.transferCash(safe, new BigNumber(1e21));
+    if ((await this.getCashBalance(safe)).lt(minimum)) {
+      await this.faucet(minimum, safe);
+      await this.waitForSafeFunding(safe);
     }
-
-    await this.waitForSafeFunding(safe);
 
     return safe;
   }
