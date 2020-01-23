@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "ts-node": "7.0.1",
-    "typescript": "3.6.3"
+    "typescript": "3.7.5"
   },
   "buildDependencies": [
     "typescript"
