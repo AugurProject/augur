@@ -544,7 +544,7 @@ export class ContractAPI {
   async faucet(attoCash: BigNumber, account: string = null): Promise<void> {
     let balance = await this.getCashBalance(account);
     const desired = attoCash;
-    while (balance.lt(desired)) {
+    while (balance.lt(attoCash)) {
       console.log(`FAUCETING. BALANCE: ${balance}. DESIRED: ${desired}`);
       await this.augur.contracts.cashFaucet.faucet(attoCash);
       balance = await this.getCashBalance();
