@@ -1134,16 +1134,12 @@ export function addScripts(flash: FlashSession) {
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
-      try {
-        const hash = String(args.hash);
-        this.log(hash);
-        const template = showTemplateByHash(hash);
-        if (!template) this.log(`Template not found for hash ${hash}`);
-        this.log(JSON.stringify(template, null, ' '));
-      } catch (e) {
-        this.log(e);
-        throw e;
-      }
+      const hash = String(args.hash);
+      this.log(hash);
+      const template = showTemplateByHash(hash);
+      if (!template) this.log(`Template not found for hash ${hash}`);
+      this.log(JSON.stringify(template, null, ' '));
+      return template;
     },
   });
 
