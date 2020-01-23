@@ -313,34 +313,48 @@ export function addScripts(flash: FlashSession) {
         description: 'create scalar market',
         flag: true,
       },
+      {
+        name: 'title',
+        abbr: 'd',
+        description: 'market title',
+      }
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const yesno = args.yesno as boolean;
       const cat = args.categorical as boolean;
       const scalar = args.scalar as boolean;
+      const title = args.title ? String(args.title) : null;
       if (yesno) {
-        await this.call('create-reasonable-yes-no-market', {});
+        await this.call('create-reasonable-yes-no-market', {title});
       }
       if (cat) {
         await this.call('create-reasonable-categorical-market', {outcomes: 'first,second,third,fourth,fifth'});
       }
       if (scalar) {
-        await this.call('create-reasonable-scalar-market', {});
+        await this.call('create-reasonable-scalar-market', {title});
       }
 
       if (!yesno && !cat && !scalar) {
-        await this.call('create-reasonable-yes-no-market', {});
+        await this.call('create-reasonable-yes-no-market', {title});
       }
     }
   });
 
   flash.addScript({
     name: 'create-reasonable-yes-no-market',
-    async call(this: FlashSession) {
+    options: [
+      {
+        name: 'title',
+        abbr: 'd',
+        description: 'market title',
+      }
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const title = args.title ? String(args.title) : null;
       if (this.noProvider()) return;
       const user = await this.ensureUser();
 
-      this.market = await user.createReasonableYesNoMarket();
+      this.market = await user.createReasonableYesNoMarket(title);
       this.log(`Created YesNo market "${this.market.address}".`);
       return this.market;
     },
@@ -355,6 +369,11 @@ export function addScripts(flash: FlashSession) {
         description: 'Comma-separated.',
         required: true,
       },
+      {
+        name: 'title',
+        abbr: 'd',
+        description: 'market title',
+      }
     ],
     async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
@@ -362,8 +381,8 @@ export function addScripts(flash: FlashSession) {
       const outcomes: string[] = (args.outcomes as string)
         .split(',')
         .map(formatBytes32String);
-
-      this.market = await user.createReasonableMarket(outcomes);
+      const title = args.title ? String(args.title) : null;
+      this.market = await user.createReasonableMarket(outcomes, title);
       this.log(`Created Categorical market "${this.market.address}".`);
       return this.market;
     },
@@ -371,11 +390,18 @@ export function addScripts(flash: FlashSession) {
 
   flash.addScript({
     name: 'create-reasonable-scalar-market',
-    async call(this: FlashSession) {
+    options: [
+      {
+        name: 'title',
+        abbr: 'd',
+        description: 'market title',
+      }
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
       const user = await this.ensureUser();
-
-      this.market = await user.createReasonableScalarMarket();
+      const title = args.title ? String(args.title) : null;
+      this.market = await user.createReasonableScalarMarket(title);
       this.log(`Created Scalar market "${this.market.address}".`);
       return this.market;
     },
@@ -774,6 +800,42 @@ export function addScripts(flash: FlashSession) {
       const result = await this.user.augur.getMarketOrderBook({ marketId: args.marketId as string});
       this.log(JSON.stringify(result));
       return result;
+    }
+  });
+
+  flash.addScript({
+    name: 'create-markets-orderbook-shaper',
+    options: [
+      {
+        name: 'numMarkets',
+        abbr: 'm',
+        description: 'number of markets to create and have orderbook maintain, default is 10'
+      },
+      {
+        name: 'userAccount',
+        abbr: 'u',
+        description: 'User account to create orders, if not provider contract owner is used'
+      },
+      {
+        name: 'meshEndpoint',
+        abbr: 'e',
+        required: false,
+        description: 'Mesh endpoint to connect'
+      }
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const numMarkets = args.numMarkets ? Number(args.numMarkets) : 10;
+      const address = args.userAccount ? args.userAccount as string : null;
+      const endpoint = args.meshEndpoint ? String(args.meshEndpoint) : 'ws://localhost:60557';
+      const user: ContractAPI = await this.ensureUser(null, true, true, address, endpoint, true);
+      const timestamp = await user.getTimestamp();
+      const marketIds = []
+      for(let i = 0; i < numMarkets; i++) {
+        const title = `YesNo market: ${timestamp} with orderbook mgr`
+        const marketId = await this.call('new-market', {yesno: true, title});
+        marketIds.push(marketId);
+      }
+      await this.call('simple-orderbook-shaper', {marketIds: marketIds.join(',')});
     }
   });
 
