@@ -797,7 +797,6 @@ export function addScripts(flash: FlashSession) {
       }
     ],
     async call(this: FlashSession, args: FlashArguments) {
-      console.log('get getMarketOrderBook', args.marketId);
       const result = await this.user.augur.getMarketOrderBook({ marketId: String(args.marketId)});
       this.log(JSON.stringify(result));
       return result;
