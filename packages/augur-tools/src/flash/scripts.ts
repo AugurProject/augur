@@ -797,6 +797,7 @@ export function addScripts(flash: FlashSession) {
       }
     ],
     async call(this: FlashSession, args: FlashArguments) {
+      console.log('get getMarketOrderBook', args.marketId);
       const result = await this.user.augur.getMarketOrderBook({ marketId: String(args.marketId)});
       this.log(JSON.stringify(result));
       return result;
@@ -829,11 +830,11 @@ export function addScripts(flash: FlashSession) {
       const meshEndpoint = args.meshEndpoint ? String(args.meshEndpoint) : 'ws://localhost:60557';
       const user: ContractAPI = await this.ensureUser(null, true, true, userAccount, meshEndpoint, true);
       const timestamp = await user.getTimestamp();
-      const ids = []
+      const ids: string[] = []
       for(let i = 0; i < numMarkets; i++) {
         const title = `YesNo market: ${timestamp} Number ${i} with orderbook mgr`
-        const marketId = await user.createReasonableYesNoMarket(title).catch(this.log);
-        ids.push(marketId);
+        const market: ContractInterfaces.Market = await user.createReasonableYesNoMarket(title);
+        ids.push(market.address);
       }
       const marketIds = ids.join(',');
       await this.call('simple-orderbook-shaper', {marketIds, userAccount, meshEndpoint});
