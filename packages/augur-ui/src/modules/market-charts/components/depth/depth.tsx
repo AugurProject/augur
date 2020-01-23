@@ -45,9 +45,9 @@ const checkResize = memoize(
     MARGIN_OF_ERROR
 );
 function determineInitialZoom(props) {
-  const { orderBookKeys, marketMin, midPrice, marketMax } = props;
+  let { orderBookKeys, marketMin, midPrice, marketMax } = props;
 
-  const midPrice = orderBookKeys.mid;
+  midPrice = orderBookKeys.mid;
   const minDistance = midPrice.minus(marketMin);
   const maxDistance = marketMax.minus(midPrice);
   const maxDistanceGreater = maxDistance.gt(minDistance);

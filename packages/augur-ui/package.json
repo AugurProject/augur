@@ -175,7 +175,7 @@
     "terser-webpack-plugin": "^2.1.0",
     "ts-jest": "24.0.2",
     "ts-loader": "6.1.1",
-    "typescript": "3.6.3",
+    "typescript": "3.7.5",
     "typings-for-css-modules-loader": "1.7.0",
     "watchify": "3.11.1",
     "webpack": "4.40.2",
