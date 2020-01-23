@@ -145,20 +145,20 @@
     jsonschema "^1.2.0"
     lodash.values "^4.3.0"
 
-"@0x/mesh-browser@dev-utils-fix":
-  version "8.1.0-devutils-fix"
-  resolved "https://registry.yarnpkg.com/@0x/mesh-browser/-/mesh-browser-8.1.0-devutils-fix.tgz#9f8646bb575da9ac83e0260521222e2806cf032b"
-  integrity sha512-I4y41DoTaY+sT0DFXUlGFWyKe67w1rE9UZ+ziMefWxD5rmORuoRXdOPA0or9s1Y2Q/WfhM+jnTfeOTC6YRpBDg==
+"@0x/mesh-browser@8.1.2":
+  version "8.1.2"
+  resolved "https://registry.yarnpkg.com/@0x/mesh-browser/-/mesh-browser-8.1.2.tgz#126bbe2261b17045d9a9c7e946b758bbfc1e908f"
+  integrity sha512-aLgJQ2abUn7uF/BejDXrMM9u3Ni7lRaSVL0WGD2lVIPfh32my7Ko/bix5ufXXxuUVA7yqI9GcC5yGo/womYF9g==
   dependencies:
     "@0x/order-utils" "^10.0.1"
     "@0x/utils" "^5.1.2"
     base64-arraybuffer "^0.2.0"
     browserfs "^1.4.3"
 
-"@0x/mesh-rpc-client@8.0.0-beta-0xv3":
-  version "8.0.0-beta-0xv3"
-  resolved "https://registry.yarnpkg.com/@0x/mesh-rpc-client/-/mesh-rpc-client-8.0.0-beta-0xv3.tgz#c2d4adbead51dc3c544777b28ff821c3c3256af1"
-  integrity sha512-LcWqYlxUCdWZuw8NuJrSiQ4kZvERG9TxFA9uRo8eWjLUvRZxIXpnlLcGX1I5DKO36uQY1CrgTjwMBkopzcuAIw==
+"@0x/mesh-rpc-client@8.1.2":
+  version "8.1.2"
+  resolved "https://registry.yarnpkg.com/@0x/mesh-rpc-client/-/mesh-rpc-client-8.1.2.tgz#6feb243078cd8ce7e711b8a339bcd18f06e11224"
+  integrity sha512-EKp9x8bnwWjfbrvXMqGnbRVEM4z8Rd6ATI/jFIg+56O/ukeP5bOHCJECQC9IKCfzDVySv0hHrD/cCg09PZqHVQ==
   dependencies:
     "@0x/assert" "^3.0.2"
     "@0x/types" "^3.1.1"
