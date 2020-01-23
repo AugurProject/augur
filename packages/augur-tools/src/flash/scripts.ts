@@ -36,6 +36,8 @@ import { cannedMarkets, singleOutcomeAsks, singleOutcomeBids } from './data/cann
 import { ContractAPI } from '../libs/contract-api';
 import { OrderBookShaper } from './orderbook-shaper';
 import { NumOutcomes } from '@augurproject/sdk/src/state/logs/types';
+import { flattenZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
+import { sleep } from "@augurproject/sdk/build/state/utils/utils";
 
 export function addScripts(flash: FlashSession) {
   flash.addScript({
@@ -846,37 +848,46 @@ export function addScripts(flash: FlashSession) {
       {
         name: 'marketIds',
         abbr: 'm',
-        description: 'Market ids separated by commas for multiple to create orders and maintain order book, ie 0x122,0x333,0x4444'
+        description:
+          'Market ids separated by commas for multiple to create orders and maintain order book, ie 0x122,0x333,0x4444',
       },
       {
         name: 'userAccount',
         abbr: 'u',
-        description: 'User account to create orders, if not provider contract owner is used'
+        description:
+          'User account to create orders, if not provided then contract owner is used',
       },
       {
         name: 'meshEndpoint',
         abbr: 'e',
         required: false,
-        description: 'Mesh endpoint to connect'
-      }
+        description: 'Mesh endpoint to connect',
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
-      const marketIds = String(args.marketIds).split(',').map(id => id.trim());
-      const address = args.userAccount ? args.userAccount as string : null;
-      const endpoint = args.meshEndpoint ? String(args.meshEndpoint) : 'ws://localhost:60557';
+      const marketIds = String(args.marketIds)
+        .split(',')
+        .map(id => id.trim());
+      const address = args.userAccount ? (args.userAccount as string) : null;
+      const endpoint = args.meshEndpoint
+        ? String(args.meshEndpoint)
+        : 'ws://localhost:60557';
       const user: ContractAPI = await this.ensureUser(null, true, true, address, endpoint, true);
-      const orderBooks = marketIds.map(m => new OrderBookShaper(m));
+      await new Promise<void>(resolve => setTimeout(resolve, 90000));
 
-      while(true) {
+      const orderBooks = marketIds.map(m => new OrderBookShaper(m));
+      while (true) {
         const timestamp = await this.user.getTimestamp();
-        for(let i = 0; i < orderBooks.length; i++) {
+        for (let i = 0; i < orderBooks.length; i++) {
           const orderBook: OrderBookShaper = orderBooks[i];
           const marketId = orderBook.marketId;
-          const marketBook: MarketOrderBook = await this.user.augur.getMarketOrderBook({ marketId });
+          const marketBook: MarketOrderBook = await this.user.augur.getMarketOrderBook(
+            { marketId }
+          );
           const orders = orderBook.nextRun(marketBook, timestamp);
           if (orders.length > 0) {
             this.log(`creating ${orders.length} orders for ${marketId}`);
-            for(let j = 0; j < orders.length; j++) {
+            for (let j = 0; j < orders.length; j++) {
               const order = orders[j];
               await user.placeZeroXOrder(order).catch(this.log);
             }
@@ -884,7 +895,8 @@ export function addScripts(flash: FlashSession) {
         }
         await new Promise<void>(resolve => setTimeout(resolve, 5000));
       }
-    }
+
+    },
   });
 
   flash.addScript({
@@ -1037,6 +1049,58 @@ export function addScripts(flash: FlashSession) {
     },
   });
 
+  flash.addScript({
+    name: 'take-a-lot',
+    options: [
+      {
+        name: 'skipFaucet',
+        abbr: 's',
+        description: 'skip faucet&approve. use if re-running this script',
+        flag: true,
+      },
+      {
+        name: 'repeats',
+        abbr: 'r',
+        description: 'how many times to take. default=1',
+      },
+      {
+        name: 'max',
+        abbr: 'm',
+        description: 'how many orders to take at once. default=10',
+      },
+      {
+        name: 'wait',
+        abbr: 'w',
+        description: 'how many seconds to wait between takes. default=1',
+      },
+    ],
+    async call(this: FlashSession, args :FlashArguments) {
+      const skipFaucet = args.skipFaucet as boolean;
+      let repeats = Number(args.repeats as string) || 1;
+      const max = Number(args.max as string) || 10;
+      const wait = Number(args.wait as string) || 1;
+
+      const user = await this.ensureUser(null, true, true, null, 'ws://localhost:60557', true);
+      if (!skipFaucet) {
+        const funds = new BigNumber(1e18).multipliedBy(1000000);
+        await user.faucet(funds);
+        await user.approve(funds);
+      }
+
+      const markets = (await user.getMarkets()).markets;
+      const market = markets[0];
+
+      for (; repeats > 0; repeats--) {
+        let orders = flattenZeroXOrders(await user.getOrders(market.id));
+        if (orders.length > max) {
+          orders = orders.slice(0, max)
+        }
+        console.log('ORDERS TO TAKE', JSON.stringify(orders, null, 2));
+        await user.takeOrders(orders);
+        await sleep(wait * 1000);
+      }
+    },
+  });
 
   flash.addScript({
     name: 'fake-all',

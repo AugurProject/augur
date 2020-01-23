@@ -31,6 +31,7 @@ import { formatBytes32String } from 'ethers/utils';
 import { Account } from '../constants';
 import { makeGnosisDependencies, makeSigner } from './blockchain';
 import { sleep } from '@augurproject/core/build/libraries/HelperFunctions';
+import { ZeroXOrder } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
 
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 const ETERNAL_APPROVAL_VALUE = new BigNumber('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'); // 2^256 - 1
@@ -273,6 +274,43 @@ export class ContractAPI {
     await this.augur.contracts.trade.publicFillBestOrder(type, marketAddress, outcome, numShares, price, tradeGroupID, new BigNumber(3), formatBytes32String(''));
   }
 
+  async takeOrders(orders: ZeroXOrder[]) {
+    const zxOrders = [];
+    const signatures = [];
+    orders.forEach((order) => {
+      zxOrders.push({
+        makerAddress: order.makerAddress,
+        takerAddress: order.takerAddress,
+        feeRecipientAddress: order.feeRecipientAddress,
+        senderAddress: order.senderAddress,
+        makerAssetAmount: order.makerAssetAmount,
+        takerAssetAmount: order.takerAssetAmount,
+        makerFee: order.makerFee,
+        takerFee: order.takerFee,
+        expirationTimeSeconds: order.expirationTimeSeconds,
+        salt: order.salt,
+        makerAssetData: order.makerAssetData,
+        takerAssetData: order.takerAssetData,
+        makerFeeAssetData: order.makerFeeAssetData,
+        takerFeeAssetData: order.takerFeeAssetData,
+      });
+      signatures.push(order.signature);
+    });
+
+    const protocolFee = (await this.getGasPrice()).multipliedBy(150000 * orders.length);
+
+    await this.augur.contracts.ZeroXTrade.trade(
+      await this.getCashBalance(),
+      formatBytes32String('11'),
+      formatBytes32String('17'),
+      new BigNumber(0),
+      new BigNumber(10),
+      zxOrders,
+      signatures,
+      { attachedEth: protocolFee }
+    );
+  }
+
   async cancelOrder(orderID: string): Promise<void> {
     await this.augur.cancelOrder(orderID);
   }
@@ -373,6 +411,12 @@ export class ContractAPI {
       throw new Error('Unable to get order price');
     }
     return orderID;
+  }
+
+  async getOrders(marketId: string) {
+    return this.augur.getZeroXOrders({
+      marketId
+    })
   }
 
   async buyCompleteSets(market: ContractInterfaces.Market, amount: BigNumber): Promise<void> {
@@ -541,10 +585,10 @@ export class ContractAPI {
     await market.finalize();
   }
 
-  async faucet(attoCash: BigNumber): Promise<void> {
-    let balance = await this.getCashBalance();
-    const desired = balance.plus(attoCash);
-    while (balance.lt(desired)) {
+  async faucet(attoCash: BigNumber, account: string = null): Promise<void> {
+    let balance = await this.getCashBalance(account);
+    const desired = attoCash;
+    while (balance.lt(attoCash)) {
       console.log(`FAUCETING. BALANCE: ${balance}. DESIRED: ${desired}`);
       await this.augur.contracts.cashFaucet.faucet(attoCash);
       balance = await this.getCashBalance();
@@ -623,6 +667,10 @@ export class ContractAPI {
 
   setGasPrice(gasPrice: BigNumber): void {
     this.augur.setGasPrice(gasPrice);
+  }
+
+  getGasPrice(): Promise<BigNumber> {
+    return this.augur.getGasPrice()
   }
 
   setUseGnosisSafe(useSafe: boolean): void {
