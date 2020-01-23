@@ -207,10 +207,15 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
         tabIndex={0}
         onClick={this.toggleList}
         onMouseEnter={() => {
-          this.setState({ showList: true });
+          // Outcome selector in order ticket open on click, not hover.
+          if (showColor === false) {
+            this.setState({ showList: true });
+          }
         }}
         onMouseLeave={() => {
-          this.setState({ showList: false });
+          if (showColor === false) {
+            this.setState({ showList: false });
+          }
         }}
         data-tip
         data-for={'dropdown-' + id + staticLabel}
