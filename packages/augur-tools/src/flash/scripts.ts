@@ -831,7 +831,7 @@ export function addScripts(flash: FlashSession) {
       const timestamp = await user.getTimestamp();
       const marketIds = []
       for(let i = 0; i < numMarkets; i++) {
-        const title = `YesNo market: ${timestamp} with orderbook mgr`
+        const title = `YesNo market: ${timestamp} Number ${i} with orderbook mgr`
         const marketId = await this.call('new-market', {yesno: true, title});
         marketIds.push(marketId);
       }
