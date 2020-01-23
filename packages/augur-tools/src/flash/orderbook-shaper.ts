@@ -87,23 +87,10 @@ export class OrderBookShaper {
       const bookPriceVol: MarketOrderBookOrder[] = bidsAsks ? bidsAsks[type] : [];
       Object.keys(priceVol).map((price: string) => {
         const value = bookPriceVol.find(b => String(b.price) === String(price));
-        if (!value) {
-          console.log(`could not find price in book for ${price}`);
-          bookPriceVol && bookPriceVol.map(o => console.log(o.price, o.shares));
-        }
         const minVolume = priceVol[price];
         const createMoreOrders = !value || new BigNumber(value.shares).lt(new BigNumber(minVolume));
         const quantity = !value ? new BigNumber(minVolume) : new BigNumber(minVolume).minus(new BigNumber(value.shares))
         if (createMoreOrders) {
-          console.log(`creating orders ${price} ${quantity}`);
-          bookPriceVol && bookPriceVol.map(b => {
-            if (String(b.price) === String(price)) {
-              console.log(value);
-              console.log(priceVol, priceVol[price]);
-              console.log('value.shares < minVolume', new BigNumber(b.shares).lt(new BigNumber(minVolume)));
-              console.log(price, b.price, b.shares, minVolume, quantity);
-            }
-          });
           orders.push({outcome, quantity: quantity.toNumber(), price, direction})
         }
       })
