@@ -853,7 +853,7 @@ export function addScripts(flash: FlashSession) {
         name: 'userAccount',
         abbr: 'u',
         description:
-          'User account to create orders, if not provider contract owner is used',
+          'User account to create orders, if not provided then contract owner is used',
       },
       {
         name: 'meshEndpoint',
