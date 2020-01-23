@@ -166,7 +166,6 @@ export class ZeroX {
     this._client = client;
   }
 
-
   disconnect() {
     console.log("Disconnecting from ZeroX");
     this.mesh = null;

@@ -112,10 +112,10 @@ export class FlashSession {
   sdkReady = false;
   async ensureUser(
     network?: NetworkConfiguration,
-    wireUpSdk = null,
+    wireUpSdk: boolean|null = null,
     approveCentralAuthority = true,
-    accountAddress = null,
-    meshEndpoint = null,
+    accountAddress: string|null = null,
+    meshEndpoint: string|null = null,
     useGnosis = false
   ): Promise<ContractAPI> {
     if (typeof this.contractAddresses === 'undefined') {
@@ -154,7 +154,7 @@ export class FlashSession {
     // Initialize the user if this is the first time we are being called. This will create the provider and all of that jazz.
     if (!this.user) {
 
-      // Get an actual account fo rthe provided public address. This also
+      // Get an actual account for the provided public address. This also
       // handles the case where none is passed in, in which case it will use
       // the default account (0)
       const account = this.getAccount(accountAddress);
@@ -214,20 +214,28 @@ export class FlashSession {
   };
 
   getAccount(address: string = null): Account {
+    // Default to first account
     let useAccount = this.accounts[0];
+
+    // Find account from given address
     if (address) {
-      const found = this.accounts.find(
-        a => a.publicKey.toLowerCase() === address.toLowerCase()
-      );
+      const found = this._findAccount(address);
       if (found) useAccount = found;
     }
+
+    // If an account already exists then ignore everything and return that
     if (this.account) {
-      const findAccount = this.accounts.find(
-        a => a.publicKey.toLowerCase() === this.account.toLowerCase()
-      );
+      const findAccount = this._findAccount(this.account);
       if (findAccount) useAccount = findAccount;
     }
+
     return useAccount;
+  }
+
+  private _findAccount(address: string): Account|undefined {
+    return this.accounts.find(
+      a => a.publicKey.toLowerCase() === address.toLowerCase()
+    );
   }
 
   async contractOwner(): Promise<ContractAPI> {

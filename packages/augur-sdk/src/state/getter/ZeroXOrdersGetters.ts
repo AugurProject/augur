@@ -1,19 +1,19 @@
-import { DB } from "../db/DB";
-import * as _ from "lodash";
+import { DB } from '../db/DB';
+import * as _ from 'lodash';
 import {
   Augur,
   convertOnChainAmountToDisplayAmount,
   convertOnChainPriceToDisplayPrice,
   numTicksToTickSize
-} from "../../index";
-import { BigNumber } from "bignumber.js";
-import { Getter } from "./Router";
-import { getMarkets, Order, OrderState } from "./OnChainTrading";
-import { StoredOrder } from "../db/ZeroXOrders";
-import Dexie from "dexie";
-import * as t from "io-ts";
-import { getAddress } from "ethers/utils/address";
-import { MarketData } from "../logs/types";
+} from '../../index';
+import { BigNumber } from 'bignumber.js';
+import { Getter } from './Router';
+import { getMarkets, Order, OrderState } from './OnChainTrading';
+import { StoredOrder } from '../db/ZeroXOrders';
+import Dexie from 'dexie';
+import * as t from 'io-ts';
+import { getAddress } from 'ethers/utils/address';
+import { MarketData } from '../logs/types';
 
 export interface ZeroXOrder extends Order {
   expirationTimeSeconds: BigNumber;
@@ -130,8 +130,8 @@ export class ZeroXOrdersGetters {
       .reduce((ids, order) => Array.from(new Set([...ids, order.market])), []);
     const markets = await getMarkets(marketIds, db, false);
 
-    var gasConfirmTime = await augur.getGasConfirmEstimate();
-    var expirationCutoff = gasConfirmTime * 1.5;
+    const gasConfirmTime = await augur.getGasConfirmEstimate();
+    let expirationCutoff = gasConfirmTime * 1.5;
     if (!expirationCutoff) {
       // default to standard
       expirationCutoff = 270;
@@ -236,4 +236,19 @@ export class ZeroXOrdersGetters {
       takerFee: storedOrder.signedOrder.takerFee,
     } as ZeroXOrder ; // TODO this is hiding some missing properties
   }
+}
+
+
+export function flattenZeroXOrders(orders): ZeroXOrder[] {
+  const collapsed: ZeroXOrder[] = [];
+  _.forOwn(orders, (market) => {
+    _.forOwn(market, (outcome) => {
+      _.forOwn(outcome, (orderType) => {
+        _.forOwn(orderType, (order) => {
+          collapsed.push(order);
+        })
+      })
+    })
+  });
+  return collapsed;
 }
