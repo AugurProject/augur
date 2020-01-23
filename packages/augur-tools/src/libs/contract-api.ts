@@ -715,7 +715,6 @@ export class ContractAPI {
     safe = safe || await this.getOrCreateSafe();
 
     await this.faucet(new BigNumber(1e21), safe);
-    await this.transferCash(safe, new BigNumber(1e21));
 
     let status: string;
     for (let i = 0; i < 10; i++) {
