@@ -169,7 +169,7 @@ export default class AppView extends Component<AppProps> {
 
     this.changeMenu(currentPath);
   }
-
+  // test comment.
   componentDidMount() {
     this.handleComponentMount();
     window.addEventListener('resize', this.handleWindowResize);
