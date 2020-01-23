@@ -84,44 +84,30 @@ export default class AccountView extends React.Component<
                   [Styles.HideActiveMarkets]: extendNotifications,
                 })}
               >
-                <div>
-                  <div>
-                    <Notifications
-                      toggle={() =>
-                        this.toggle(
-                          'extendNotifications',
-                          'extendActiveMarkets'
-                        )
-                      }
-                    />
-                    <OpenMarkets
-                      toggle={() =>
-                        this.toggle(
-                          'extendActiveMarkets',
-                          'extendNotifications'
-                        )
-                      }
-                    />
-                  </div>
-                  <div>
-                    <ModuleTabs selected={0}>
-                      <ModulePane label={YOUR_OVERVIEW_TITLE}>
-                        <Overview />
-                      </ModulePane>
-                      <ModulePane label={AUGUR_STATUS_TITLE}>
-                        <AugurStatus />
-                      </ModulePane>
-                    </ModuleTabs>
-                  </div>
-                  <div>
-                    <Favorites
-                      toggle={() =>
-                        this.toggle('extendWatchlist', 'extendTransactions')
-                      }
-                    />
-                    <Transactions />
-                  </div>
-                </div>
+                <Notifications
+                  toggle={() =>
+                    this.toggle('extendNotifications', 'extendActiveMarkets')
+                  }
+                />
+                <ModuleTabs selected={0}>
+                  <ModulePane label={YOUR_OVERVIEW_TITLE}>
+                    <Overview />
+                  </ModulePane>
+                  <ModulePane label={AUGUR_STATUS_TITLE}>
+                    <AugurStatus />
+                  </ModulePane>
+                </ModuleTabs>
+                <Favorites
+                  toggle={() =>
+                    this.toggle('extendWatchlist', 'extendTransactions')
+                  }
+                />
+                <OpenMarkets
+                  toggle={() =>
+                    this.toggle('extendActiveMarkets', 'extendNotifications')
+                  }
+                />
+                <Transactions />
                 <TermsAndConditions />
               </div>
             )
