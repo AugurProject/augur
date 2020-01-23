@@ -65,9 +65,6 @@ export class EthersProvider extends ethers.providers.BaseProvider
     );
   }
 
-  async disconnect(): Promise<void> {
-  }
-
   async listAccounts(): Promise<string[]> {
     return this.provider.listAccounts();
   }
@@ -259,4 +256,6 @@ export class EthersProvider extends ethers.providers.BaseProvider
       });
     });
   }
+
+  disconnect(): void {}
 }

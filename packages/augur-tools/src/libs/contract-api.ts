@@ -759,11 +759,18 @@ export class ContractAPI {
     });
   }
 
-  async fundSafe(safe=undefined) {
+  async fundSafe(safe?: string, minimum=new BigNumber(1e21)) {
     safe = safe || await this.getOrCreateSafe();
 
-    await this.faucet(new BigNumber(1e21), safe);
+    if ((await this.getCashBalance(safe)).lt(minimum)) {
+      await this.faucet(minimum, safe);
+      await this.waitForSafeFunding(safe);
+    }
 
+    return safe;
+  }
+
+  async waitForSafeFunding(safe: string): Promise<void> {
     let status: string;
     for (let i = 0; i < 10; i++) {
       status = await this.getSafeStatus(safe);
@@ -773,9 +780,8 @@ export class ContractAPI {
       await sleep(2000);
     }
 
+    // TODO this sleep call can be reduced or eliminated
     await sleep(10000);
-
-    return safe;
   }
 
   async getOrCreateSafe(): Promise<string> {
