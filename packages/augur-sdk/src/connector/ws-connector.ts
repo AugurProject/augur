@@ -1,5 +1,5 @@
 import WebSocket from 'isomorphic-ws';
-import WebSocketAsPromised = require('websocket-as-promised');
+import WebSocketAsPromised from 'websocket-as-promised';
 import { SubscriptionEventName } from '../constants';
 import { Callback, SubscriptionType } from '../events';
 import { SDKConfiguration } from '../state';

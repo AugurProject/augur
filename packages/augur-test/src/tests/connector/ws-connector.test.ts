@@ -6,9 +6,8 @@ import { SDKConfiguration } from '@augurproject/sdk/build/state';
 import { NetworkId } from '@augurproject/artifacts';
 
 jest.mock('websocket-as-promised', () => {
-  return {
-    __esModule: true,
-    default: () => ({
+  return jest.fn().mockImplementation(() => {
+    return {
       open: () => true,
       close: () => true,
       onError: {
@@ -20,7 +19,7 @@ jest.mock('websocket-as-promised', () => {
       onClose: {
         addListener: () => { },
       },
-      sendRequest: (message: any): Promise<any> => {
+      async sendRequest (message: any): Promise<any> {
         return new Promise((resolve, reject) => {
           if (message.method === 'subscribe') {
             resolve({
@@ -35,8 +34,8 @@ jest.mock('websocket-as-promised', () => {
           }
         });
       },
-    }),
-  };
+    };
+  });
 });
 
 test('WebsocketConnector :: Should route correctly and handle events', async done => {
