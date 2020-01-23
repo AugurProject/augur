@@ -20,6 +20,7 @@ pragma solidity 0.5.15;
 
 import "ROOT/0x/utils/contracts/src/Ownable.sol";
 import "ROOT/0x/utils/contracts/src/LibBytes.sol";
+import "ROOT/0x/utils/contracts/src/LibRichErrors.sol";
 import "ROOT/0x/exchange-libs/contracts/src/LibExchangeRichErrors.sol";
 import "ROOT/0x/exchange/contracts/src/interfaces/IAssetProxy.sol";
 import "ROOT/0x/exchange/contracts/src/interfaces/IAssetProxyDispatcher.sol";
@@ -113,7 +114,11 @@ contract MixinAssetProxyDispatcher is
 
             // If the transaction did not succeed, revert with the returned data.
             if (!didSucceed) {
-                revert();
+                LibRichErrors.rrevert(LibExchangeRichErrors.AssetProxyTransferError(
+                    orderHash,
+                    assetData,
+                    returnData
+                ));
             }
         }
     }
