@@ -20,7 +20,6 @@ module.exports = {
   entry: {
     // 'assets/styles/styles': `${PATHS.APP}/styles`,
     augur: [
-      'regenerator-runtime/runtime',
       `${PATHS.APP}/web-workers-exit`,
       "react",
       "react-dom",
