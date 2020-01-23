@@ -2201,13 +2201,13 @@ export const RedFlagIcon = (
       <path
         d="M5.125 4.625H11.875L10.75 6.875L11.875 9.125H5.125"
         stroke="#FF2727"
-        stroke-miterlimit="10"
+        strokeMiterlimit="10"
         stroke-linecap="square"
       />
       <path
         d="M5.125 3.875V12.125"
         stroke="#FF2727"
-        stroke-miterlimit="10"
+        strokeMiterlimit="10"
         stroke-linecap="square"
       />
     </g>

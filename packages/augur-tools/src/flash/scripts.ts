@@ -848,37 +848,46 @@ export function addScripts(flash: FlashSession) {
       {
         name: 'marketIds',
         abbr: 'm',
-        description: 'Market ids separated by commas for multiple to create orders and maintain order book, ie 0x122,0x333,0x4444'
+        description:
+          'Market ids separated by commas for multiple to create orders and maintain order book, ie 0x122,0x333,0x4444',
       },
       {
         name: 'userAccount',
         abbr: 'u',
-        description: 'User account to create orders, if not provider contract owner is used'
+        description:
+          'User account to create orders, if not provided then contract owner is used',
       },
       {
         name: 'meshEndpoint',
         abbr: 'e',
         required: false,
-        description: 'Mesh endpoint to connect'
-      }
+        description: 'Mesh endpoint to connect',
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
-      const marketIds = String(args.marketIds).split(',').map(id => id.trim());
-      const address = args.userAccount ? args.userAccount as string : null;
-      const endpoint = args.meshEndpoint ? String(args.meshEndpoint) : 'ws://localhost:60557';
+      const marketIds = String(args.marketIds)
+        .split(',')
+        .map(id => id.trim());
+      const address = args.userAccount ? (args.userAccount as string) : null;
+      const endpoint = args.meshEndpoint
+        ? String(args.meshEndpoint)
+        : 'ws://localhost:60557';
       const user: ContractAPI = await this.ensureUser(null, true, true, address, endpoint, true);
-      const orderBooks = marketIds.map(m => new OrderBookShaper(m));
+      await new Promise<void>(resolve => setTimeout(resolve, 90000));
 
-      while(true) {
+      const orderBooks = marketIds.map(m => new OrderBookShaper(m));
+      while (true) {
         const timestamp = await this.user.getTimestamp();
-        for(let i = 0; i < orderBooks.length; i++) {
+        for (let i = 0; i < orderBooks.length; i++) {
           const orderBook: OrderBookShaper = orderBooks[i];
           const marketId = orderBook.marketId;
-          const marketBook: MarketOrderBook = await this.user.augur.getMarketOrderBook({ marketId });
+          const marketBook: MarketOrderBook = await this.user.augur.getMarketOrderBook(
+            { marketId }
+          );
           const orders = orderBook.nextRun(marketBook, timestamp);
           if (orders.length > 0) {
             this.log(`creating ${orders.length} orders for ${marketId}`);
-            for(let j = 0; j < orders.length; j++) {
+            for (let j = 0; j < orders.length; j++) {
               const order = orders[j];
               await user.placeZeroXOrder(order).catch(this.log);
             }
@@ -886,7 +895,8 @@ export function addScripts(flash: FlashSession) {
         }
         await new Promise<void>(resolve => setTimeout(resolve, 5000));
       }
-    }
+
+    },
   });
 
   flash.addScript({
