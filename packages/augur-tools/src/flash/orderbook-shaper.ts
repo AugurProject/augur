@@ -80,12 +80,13 @@ export class OrderBookShaper {
 
   createMissingOrders = (outcome: number, orderBookConfig: OrderBookConfig, bidsAsks: BidsAsks): SimpleOrder[] => {
     let orders: SimpleOrder[] = []
+    if (!bidsAsks) console.log(`no bids asks for ${this.marketId}`);
     Object.keys(orderBookConfig).map((type: string) => {
       const direction = orderType[type];
       const priceVol: OrderPriceVol = orderBookConfig[type];
       const bookPriceVol: MarketOrderBookOrder[] = bidsAsks ? bidsAsks[type] : [];
       Object.keys(priceVol).map((price: string) => {
-        const value = bookPriceVol.find(b => b.price === price);
+        const value = bookPriceVol.find(b => String(b.price) === String(price));
         const minVolume = priceVol[price];
         const createMoreOrders = !value || new BigNumber(value.shares).lt(new BigNumber(minVolume));
         const quantity = !value ? new BigNumber(minVolume) : new BigNumber(minVolume).minus(new BigNumber(value.shares))

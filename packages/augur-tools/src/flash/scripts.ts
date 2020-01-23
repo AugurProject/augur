@@ -819,7 +819,7 @@ export function addScripts(flash: FlashSession) {
             }
           }
         }
-        await new Promise<void>(resolve => setTimeout(resolve, 2000));
+        await new Promise<void>(resolve => setTimeout(resolve, 5000));
       }
     }
   });
