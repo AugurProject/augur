@@ -23,14 +23,32 @@ const mapStateToProps = (state: AppState) => {
   }
 };
 
+const addFundsPortis = async (amount) => {
+  // TODO
+}
+
+const addFundsFortmatic = async (amount) => {
+  // TODO
+}
+
+const addFundsTorus = async (amount) => {
+  await window.torus.initiateTopup('wyre', {
+    selectedCurrency: 'USD',
+    fiatValue: amount,
+    selectedCryptoCurrency: 'DAI'
+  });
+}
+
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
   track: (eventName, payload) => dispatch(track(eventName, payload)),
+  addFundsTorus: (amount) => addFundsTorus(amount),
 });
 
 const mergeProps = (sP, dP, oP) => {
   return {
     fundType: sP.modal.fundType,
+    addFundsTorus: dP.addFundsTorus,
     analyticsEvent: () => dP.track(ADD_FUNDS, {}),
     closeAction: () => {
       if (sP.modal.cb) {
