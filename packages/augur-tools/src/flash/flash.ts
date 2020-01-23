@@ -131,7 +131,7 @@ export class FlashSession {
     const config: SDKConfiguration = {
       networkId: (await this.provider.getNetworkId()) as NetworkId,
       ethereum: {
-        http: network.http
+        http: network ? network.http : undefined // NB(pg): Currently some tests don't pass in this config
       },
       gnosis: {
         enabled: useGnosis,
