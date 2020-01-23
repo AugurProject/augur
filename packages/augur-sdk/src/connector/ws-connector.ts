@@ -1,8 +1,8 @@
 import WebSocket from 'isomorphic-ws';
-import * as WebSocketAsPromised from 'websocket-as-promised';
+import WebSocketAsPromised = require('websocket-as-promised');
 import { SubscriptionEventName } from '../constants';
 import { Callback, SubscriptionType } from '../events';
-import { SDKConfiguration } from "../state";
+import { SDKConfiguration } from '../state';
 import { BaseConnector } from './base-connector';
 
 export class WebsocketConnector extends BaseConnector {
