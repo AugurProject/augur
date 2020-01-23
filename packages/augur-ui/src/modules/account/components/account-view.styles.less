@@ -77,9 +77,13 @@
     }
 
     > div[class*='Headers'] {
-        background: @color-dark-grey;
-        min-height: @size-40;
+      background: @color-dark-grey;
+      min-height: @size-40;
+
+      > ul {
+        padding: 0 @size-8;
       }
+    }
   }
 
   > div:nth-of-type(4),
