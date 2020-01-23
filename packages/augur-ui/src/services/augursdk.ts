@@ -58,7 +58,7 @@ export class SDK {
         mesh: {
           verbosity: 5,
           bootstrapList: (env['0x-mesh'] || {}).bootstrapList,
-          enabled: false,
+          enabled: true,
         }
       }
     };
@@ -75,7 +75,7 @@ export class SDK {
     this.client = await createClient(config, connector, account, signer, ethersProvider, enableFlexSearch, createBrowserMesh);
     await connector.connect(config, account)
 
-    if (config.zeroX && (config.zeroX.rpc && config.zeroX.rpc.enabled || config.zeroX.mesh && config.zeroX.mesh.enable)) {
+    if (config.zeroX && (config.zeroX.rpc && config.zeroX.rpc.enabled || config.zeroX.mesh && config.zeroX.mesh.enabled)) {
       this.client.events.emit('ZeroX:Ready');
     }
 

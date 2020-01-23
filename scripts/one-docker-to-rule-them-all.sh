@@ -17,7 +17,7 @@ FAKE="${2-false}"
 # make sure we have the latest images
 # (workaround until next version of docker supports the --pull flag)
 docker pull augurproject/safe-relay-service_web:latest
-docker pull fabioberger123/mesh:augur-kovan-devutils-fix
+docker pull 0xorg/mesh:latest
 
 echo "Deploy contracts: $DEV"
 echo "Use fake time: $FAKE"
