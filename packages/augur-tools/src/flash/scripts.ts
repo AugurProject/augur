@@ -36,7 +36,7 @@ import { cannedMarkets, singleOutcomeAsks, singleOutcomeBids } from './data/cann
 import { ContractAPI } from '../libs/contract-api';
 import { OrderBookShaper } from './orderbook-shaper';
 import { NumOutcomes } from '@augurproject/sdk/src/state/logs/types';
-import { collapseZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
+import { flattenZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
 import { sleep } from "@augurproject/sdk/build/state/utils/utils";
 
 export function addScripts(flash: FlashSession) {
@@ -1018,7 +1018,7 @@ export function addScripts(flash: FlashSession) {
       const market = markets[0];
 
       for (; repeats > 0; repeats--) {
-        let orders = collapseZeroXOrders(await user.getOrders(market.id));
+        let orders = flattenZeroXOrders(await user.getOrders(market.id));
         if (orders.length > max) {
           orders = orders.slice(0, max)
         }

@@ -239,7 +239,7 @@ export class ZeroXOrdersGetters {
 }
 
 
-export function collapseZeroXOrders(orders): ZeroXOrder[] {
+export function flattenZeroXOrders(orders): ZeroXOrder[] {
   const collapsed: ZeroXOrder[] = [];
   _.forOwn(orders, (market) => {
     _.forOwn(market, (outcome) => {
