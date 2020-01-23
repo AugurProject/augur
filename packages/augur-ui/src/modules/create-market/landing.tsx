@@ -82,7 +82,7 @@ export default class Landing extends React.Component<LandingProps> {
                     tertiary: '',
                   },
                   categoryStats
-                )}
+                ).sort((a, b) => (a.count > b.count ? -1 : 1))}
               >
                 <SmallHeaderLink copyType={MARKET_COPY_LIST.DONT_SEE_CAT} text="Don't see your category?" link ownLine />
               </RadioCardGroup>
