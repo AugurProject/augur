@@ -315,34 +315,48 @@ export function addScripts(flash: FlashSession) {
         description: 'create scalar market',
         flag: true,
       },
+      {
+        name: 'title',
+        abbr: 'd',
+        description: 'market title',
+      }
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const yesno = args.yesno as boolean;
       const cat = args.categorical as boolean;
       const scalar = args.scalar as boolean;
+      const title = args.title ? String(args.title) : null;
       if (yesno) {
-        await this.call('create-reasonable-yes-no-market', {});
+        await this.call('create-reasonable-yes-no-market', {title});
       }
       if (cat) {
         await this.call('create-reasonable-categorical-market', {outcomes: 'first,second,third,fourth,fifth'});
       }
       if (scalar) {
-        await this.call('create-reasonable-scalar-market', {});
+        await this.call('create-reasonable-scalar-market', {title});
       }
 
       if (!yesno && !cat && !scalar) {
-        await this.call('create-reasonable-yes-no-market', {});
+        await this.call('create-reasonable-yes-no-market', {title});
       }
     }
   });
 
   flash.addScript({
     name: 'create-reasonable-yes-no-market',
-    async call(this: FlashSession) {
+    options: [
+      {
+        name: 'title',
+        abbr: 'd',
+        description: 'market title',
+      }
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const title = args.title ? String(args.title) : null;
       if (this.noProvider()) return;
       const user = await this.ensureUser();
 
-      this.market = await user.createReasonableYesNoMarket();
+      this.market = await user.createReasonableYesNoMarket(title);
       this.log(`Created YesNo market "${this.market.address}".`);
       return this.market;
     },
@@ -357,6 +371,11 @@ export function addScripts(flash: FlashSession) {
         description: 'Comma-separated.',
         required: true,
       },
+      {
+        name: 'title',
+        abbr: 'd',
+        description: 'market title',
+      }
     ],
     async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
@@ -364,8 +383,8 @@ export function addScripts(flash: FlashSession) {
       const outcomes: string[] = (args.outcomes as string)
         .split(',')
         .map(formatBytes32String);
-
-      this.market = await user.createReasonableMarket(outcomes);
+      const title = args.title ? String(args.title) : null;
+      this.market = await user.createReasonableMarket(outcomes, title);
       this.log(`Created Categorical market "${this.market.address}".`);
       return this.market;
     },
@@ -373,11 +392,18 @@ export function addScripts(flash: FlashSession) {
 
   flash.addScript({
     name: 'create-reasonable-scalar-market',
-    async call(this: FlashSession) {
+    options: [
+      {
+        name: 'title',
+        abbr: 'd',
+        description: 'market title',
+      }
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
       const user = await this.ensureUser();
-
-      this.market = await user.createReasonableScalarMarket();
+      const title = args.title ? String(args.title) : null;
+      this.market = await user.createReasonableScalarMarket(title);
       this.log(`Created Scalar market "${this.market.address}".`);
       return this.market;
     },
@@ -773,9 +799,46 @@ export function addScripts(flash: FlashSession) {
       }
     ],
     async call(this: FlashSession, args: FlashArguments) {
-      const result = await this.user.augur.getMarketOrderBook({ marketId: args.marketId as string});
+      const result = await this.user.augur.getMarketOrderBook({ marketId: String(args.marketId)});
       this.log(JSON.stringify(result));
       return result;
+    }
+  });
+
+  flash.addScript({
+    name: 'create-markets-orderbook-shaper',
+    options: [
+      {
+        name: 'numMarkets',
+        abbr: 'n',
+        description: 'number of markets to create and have orderbook maintain, default is 10'
+      },
+      {
+        name: 'userAccount',
+        abbr: 'u',
+        description: 'User account to create orders, if not provider contract owner is used'
+      },
+      {
+        name: 'meshEndpoint',
+        abbr: 'e',
+        required: false,
+        description: 'Mesh endpoint to connect'
+      }
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const numMarkets = args.numMarkets ? Number(args.numMarkets) : 10;
+      const userAccount = args.userAccount ? args.userAccount as string : null;
+      const meshEndpoint = args.meshEndpoint ? String(args.meshEndpoint) : 'ws://localhost:60557';
+      const user: ContractAPI = await this.ensureUser(null, true, true, userAccount, meshEndpoint, true);
+      const timestamp = await user.getTimestamp();
+      const ids: string[] = []
+      for(let i = 0; i < numMarkets; i++) {
+        const title = `YesNo market: ${timestamp} Number ${i} with orderbook mgr`
+        const market: ContractInterfaces.Market = await user.createReasonableYesNoMarket(title);
+        ids.push(market.address);
+      }
+      const marketIds = ids.join(',');
+      await this.call('simple-orderbook-shaper', {marketIds, userAccount, meshEndpoint});
     }
   });
 
@@ -821,7 +884,7 @@ export function addScripts(flash: FlashSession) {
             }
           }
         }
-        await new Promise<void>(resolve => setTimeout(resolve, 2000));
+        await new Promise<void>(resolve => setTimeout(resolve, 5000));
       }
     }
   });
@@ -1188,16 +1251,12 @@ export function addScripts(flash: FlashSession) {
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
-      try {
-        const hash = String(args.hash);
-        this.log(hash);
-        const template = showTemplateByHash(hash);
-        if (!template) this.log(`Template not found for hash ${hash}`);
-        this.log(JSON.stringify(template, null, ' '));
-      } catch (e) {
-        this.log(e);
-        throw e;
-      }
+      const hash = String(args.hash);
+      this.log(hash);
+      const template = showTemplateByHash(hash);
+      if (!template) this.log(`Template not found for hash ${hash}`);
+      this.log(JSON.stringify(template, null, ' '));
+      return template;
     },
   });
 

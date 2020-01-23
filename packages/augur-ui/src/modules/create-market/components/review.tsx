@@ -51,6 +51,7 @@ interface ReviewProps {
   Gnosis_ENABLED: boolean;
   ethToDaiRate: BigNumber;
   setDisableCreate: Function;
+  showAddFundsModal; Function;
 }
 
 interface ReviewState {
@@ -241,6 +242,7 @@ export default class Review extends React.Component<
       availableRepFormatted,
       Gnosis_ENABLED,
       ethToDaiRate,
+      showAddFundsModal,
     } = this.props;
     const s = this.state;
 
@@ -379,6 +381,7 @@ export default class Review extends React.Component<
           </span>
           <NoFundsErrors
             noEth={noEth}
+            showAddFundsModal={showAddFundsModal}
             noRep={noRep}
             noDai={noDai}
             availableDaiFormatted={availableDaiFormatted}

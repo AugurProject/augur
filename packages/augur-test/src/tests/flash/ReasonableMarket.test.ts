@@ -12,7 +12,7 @@ beforeAll(async () => {
   addGanacheScripts(flash);
 });
 
-test("flash :: create reasonable market", async () => {
+test.skip("flash :: create reasonable market", async () => {
   await flash.call("ganache", { "internal": true });
   await flash.call("load-seed-file", { "use": true });
   const market = await flash.call("create-reasonable-categorical-market", { "outcomes": "music,dance,poetry,oration,drama"}) as unknown as Market;

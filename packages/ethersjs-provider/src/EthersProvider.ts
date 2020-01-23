@@ -17,8 +17,6 @@ interface ContractMapping {
 interface PerformQueueTask {
   message: any;
   params: any;
-  resolve: (res: any) => void;
-  reject: (err?: Error | null) => void;
 }
 
 export class EthersProvider extends ethers.providers.BaseProvider
@@ -42,11 +40,6 @@ export class EthersProvider extends ethers.providers.BaseProvider
     }
   }
 
-  disconnect() {
-    this.polling = false;
-    this.performQueue.kill();
-  }
-
   private;
 
   constructor(
@@ -58,31 +51,21 @@ export class EthersProvider extends ethers.providers.BaseProvider
     super(provider.getNetwork());
     this.provider = provider;
     this.performQueue = queue(
-      (item: PerformQueueTask, callback: () => void) => {
+      (item: PerformQueueTask, callback: (err: Error, results: any) => void) => {
         const _this = this;
         retry(
           { times, interval },
-          async callback => {
-            let results: any;
-            try {
-              results = await _this.provider.perform(item.message, item.params);
-            } catch (err) {
-              return callback(err);
-            }
-            callback(null, results);
+          async () => {
+            return await _this.provider.perform(item.message, item.params);
           },
-          function(err: Error, results: any) {
-            if (err) {
-              item.reject(err);
-              return callback();
-            }
-            item.resolve(results);
-            return callback();
-          }
+          callback
         );
       },
       concurrency
     );
+  }
+
+  async disconnect(): Promise<void> {
   }
 
   async listAccounts(): Promise<string[]> {
@@ -268,7 +251,12 @@ export class EthersProvider extends ethers.providers.BaseProvider
 
   async perform(message: any, params: any): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.performQueue.push({ message, params, resolve, reject });
+      this.performQueue.push({ message, params }, (err, results) => {
+        if (err) {
+          reject(err);
+        }
+          resolve(results);
+      });
     });
   }
 }

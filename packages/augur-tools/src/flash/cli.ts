@@ -139,6 +139,7 @@ if (require.main === module) {
         process.exit(1); // Needed to prevent hanging
       } finally {
         process.exit(0); // Needed to prevent hanging
+
       }
     }
   })();

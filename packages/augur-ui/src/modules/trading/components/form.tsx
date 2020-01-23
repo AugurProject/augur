@@ -10,6 +10,8 @@ import {
   BUY,
   SELL,
   INVALID_OUTCOME_ID,
+  NETWORK_IDS,
+  GAS_CONFIRM_ESTIMATE,
 } from 'modules/common/constants';
 import FormStyles from 'modules/common/form-styles.less';
 import Styles from 'modules/trading/components/form.styles.less';
@@ -26,6 +28,7 @@ import moment, { Moment } from 'moment';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { SimpleTimeSelector } from 'modules/create-market/components/common';
 import { formatBestPrice } from 'utils/format-number';
+import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 
 const DEFAULT_TRADE_INTERVAL = new BigNumber(10**17);
 const TRADE_INTERVAL_VALUE = new BigNumber(10**19);
@@ -88,6 +91,7 @@ interface FromProps {
   gasCostEst: string;
   orderPriceEntered: Function;
   orderAmountEntered: Function;
+  gasPrice: number;
 }
 
 interface TestResults {
@@ -108,6 +112,7 @@ interface FormState {
   expirationDateOption: string;
   expirationDate?: Moment;
   percentage: string;
+  confirmationTimeEstimation: number;
 }
 
 class Form extends Component<FromProps, FormState> {
@@ -165,6 +170,7 @@ class Form extends Component<FromProps, FormState> {
       fastForwardDays: DEFAULT_EXPIRATION_DAYS,
       expirationDateOption: EXPIRATION_DATE_OPTIONS.DAYS,
       percentage: "",
+      confirmationTimeEstimation: 0,
     };
 
     this.changeOutcomeDropdown = this.changeOutcomeDropdown.bind(this);
@@ -174,7 +180,15 @@ class Form extends Component<FromProps, FormState> {
     this.calcPercentagePrice = this.calcPercentagePrice.bind(this);
   }
 
-  componentDidUpdate(prevProps) {
+  async componentDidUpdate(prevProps) {
+    const networkId = getNetworkId();
+    const endPoint = GAS_CONFIRM_ESTIMATE[networkId];
+    if (endPoint && this.props.gasPrice !== prevProps.gasPrice && this.props.gasPrice) {
+      const gasConfirmEstimateResponse = await fetch(`${endPoint}${this.props.gasPrice}`);
+      const gasConfirmEstimate = await gasConfirmEstimateResponse.json();
+      this.setState({ confirmationTimeEstimation: gasConfirmEstimate.result });
+    }
+
     this.updateTestProperty(this.INPUT_TYPES.QUANTITY, this.props);
     this.updateTestProperty(this.INPUT_TYPES.PRICE, this.props);
     this.updateTestProperty(this.INPUT_TYPES.EST_DAI, this.props);
@@ -303,14 +317,19 @@ class Form extends Component<FromProps, FormState> {
           `Quantity must be a multiple of ${multiplOf.toFixed(decimals)}`
         );
     }
+
+    // Check to ensure orders don't expiry within 70s
+    // Also consider getGasConfirmEstimate * 1.5 seconds
     const minOrderLifespan = 70;
-    if(expiration && expiration - moment().unix() < minOrderLifespan) {
-        errorCount += 1;
-        passedTest = false;
-        errors[this.INPUT_TYPES.EXPIRATION_DATE].push(
-          `Order expires less than 70 seconds into the future`
-          );
-     }
+    const gasConfirmEstimate = this.state.confirmationTimeEstimation * 1.5; // In Seconds
+    const expiryTime = expiration - gasConfirmEstimate - moment().unix();
+    if(expiration && expiryTime < minOrderLifespan) {
+      errorCount += 1;
+      passedTest = false;
+      errors[this.INPUT_TYPES.EXPIRATION_DATE].push(
+        'Order expires less than 70 seconds into the future (after est confirmation time)'
+        );
+    }
     return { isOrderValid: passedTest, errors, errorCount };
   }
 

@@ -42,12 +42,17 @@
     color: @color-positive;
 
     > button {
-      border-bottom: 1px solid @color-positive;
+      border-bottom: @size-1 solid @color-positive;
     }
 
     &:hover {
       color: @color-positive;
     }
+  }
+
+  // color for hover state in Sell Shares button
+  &:hover {
+    color: @color-negative;
   }
 }
 
@@ -56,12 +61,17 @@
     color: @color-negative;
 
     > button {
-      border-bottom: 1px solid @color-negative;
+      border-bottom: @size-1 solid @color-negative;
     }
 
     &:hover {
       color: @color-negative;
     }
+  }
+
+  // color for hover state in Buy Shares button
+  &:hover {
+    color: @color-positive;
   }
 }
 
@@ -77,12 +87,8 @@
     color: @color-secondary-text;
     text-align: center;
 
-    &:hover {
-      color: @color-primary-text;
-    }
-
     > button {
-      .mono-12-bold;
+      .text-12-semi-bold;
 
       align-items: center;
       display: flex;
@@ -95,18 +101,11 @@
 
     &:first-of-type {
       margin-left: @size-16;
-      margin-right: @size-18;
+      margin-right: @size-32;
     }
   }
 }
 
 .Scalar {
   margin-bottom: @size-8;
-}
-
-@media @breakpoint-mobile-mid {
-  .Buy,
-  .Sell {
-    justify-content: center;
-  }
 }

@@ -12,7 +12,7 @@ import { Link } from 'react-router-dom';
 import makePath from 'modules/routes/helpers/make-path';
 import Logo from 'modules/app/components/logo';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
-import { LANDING_PAGE } from 'modules/routes/constants/views';
+import { MARKETS } from 'modules/routes/constants/views';
 import HelpResources from 'modules/app/containers/help-resources';
 
 interface TopBarProps {
@@ -43,7 +43,7 @@ const TopBar: React.FC<TopBarProps> = ({
   return (
     <header className={Styles.TopBar}>
       <div className={Styles.Logo}>
-        <Link to={makePath(LANDING_PAGE)}>
+        <Link to={makePath(MARKETS)}>
           <Logo />
         </Link>
       </div>

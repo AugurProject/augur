@@ -31,6 +31,9 @@ const getHeaderTitleFromProps = (
   selectedCategory: string[]
 ) => {
   if (search) {
+    if (search.endsWith('*')) {
+      search = search.slice(0, -1)
+    }
     return `Search: "${search}"`;
   }
 

@@ -5533,7 +5533,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Opening price is determined on daily chart on the date in the market question for the market trading pair on tradingview.com.`,
+                  text: `Use ticker symbol search for token pair (ie BTCUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
                 },
                 {
                   text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
@@ -5585,7 +5585,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Opening price is determined on daily chart on the date in the market question for the market trading pair on tradingview.com.`,
+                  text: `Use ticker symbol search for token pair (ie BTCUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
                 },                {
                   text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
                 },
@@ -5625,7 +5625,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Opening price is determined on daily chart on the date in the market question for the market trading pair on tradingview.com.`,
+                  text: `Use ticker symbol search for token pair (ie BTCUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
                 },
                 {
                   text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
@@ -5643,7 +5643,7 @@ export const TEMPLATES = {
           {
             marketType: YES_NO,
             question: `Will the price of [0] open at or above [1] on [2], according to TradingView.com "[3]"?`,
-            example: `Will the price of BTC/USD open at or above 8000 on December 31, 2019, according to TradingView.com "BTCUSD (crypto - Coinbase)"?`,
+            example: `Will the price of ETH/USD open at or above 800 on December 31, 2020, according to TradingView.com "ETHUSD (crypto - Coinbase)"?`,
             inputs: [
               {
                 id: 0,
@@ -5675,7 +5675,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Opening price is determined on daily chart on the date in the market question for the market trading pair on tradingview.com.`,
+                  text: `Use ticker symbol search for token pair (ie ETHUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
                 },
                 {
                   text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
@@ -5689,7 +5689,7 @@ export const TEMPLATES = {
           {
             marketType: YES_NO,
             question: `Will the price of [0], exceed [1] anytime between the open of [2] and close of [3], according to TradingView.com "[4]"?`,
-            example: `Will the price of BTC/USD exceed 8000 anytime between the open of September 1, 2019 and close of December 31, 2019, according to TradingView.com "BTCUSD (crypto - Coinbase)"?`,
+            example: `Will the price of ETH/USD exceed 800 anytime between the open of September 1, 2020 and close of December 31, 2020, according to TradingView.com "ETHUSD (crypto - Coinbase)"?`,
             inputs: [
               {
                 id: 0,
@@ -5727,7 +5727,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Opening price is determined on daily chart on the date in the market question for the market trading pair on tradingview.com.`,
+                  text: `Use ticker symbol search for token pair (ie ETHUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
                 },
                 {
                   text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
@@ -5741,7 +5741,7 @@ export const TEMPLATES = {
           {
             marketType: SCALAR,
             question: `What price will [0] open at on [1], according to TradingView.com "[2]"?`,
-            example: `What price will BTC/USD open at on December 31, 2019, according to TradingView.com for "BTCUSD (crypto - Coinbase)"?`,
+            example: `What price will ETH/USD open at on December 31, 2020, according to TradingView.com for "ETHUSD (crypto - Coinbase)"?`,
             denomination: 'Price',
             inputs: [
               {
@@ -5768,7 +5768,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Opening price is determined on daily chart on the date in the market question for the market trading pair on tradingview.com.`,
+                  text: `Use ticker symbol search for token pair (ie ETHUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
                 },
                 {
                   text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
@@ -5786,7 +5786,7 @@ export const TEMPLATES = {
           {
             marketType: YES_NO,
             question: `Will the price of [0] open at or above [1] on [2], according to TradingView.com "[3]"?`,
-            example: `Will the price of BTC/USD open at or above 8000 on December 31, 2019, according to TradingView.com "BTCUSD (crypto - Coinbase)"?`,
+            example: `Will the price of LTC/USD open at or above 8000 on December 31, 2020, according to TradingView.com "LTCUSD (crypto - Coinbase)"?`,
             inputs: [
               {
                 id: 0,
@@ -5818,7 +5818,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Opening price is determined on daily chart on the date in the market question for the market trading pair on tradingview.com.`,
+                  text: `Use ticker symbol search for token pair (ie LTCUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
                 },
                 {
                   text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
@@ -5832,7 +5832,7 @@ export const TEMPLATES = {
           {
             marketType: YES_NO,
             question: `Will the price of [0], exceed [1] anytime between the open of [2] and close of [3], according to TradingView.com "[4]"?`,
-            example: `Will the price of BTC/USD exceed 8000 anytime between the open of September 1, 2019 and close of December 31, 2019, according to TradingView.com "BTCUSD (crypto - Coinbase)"?`,
+            example: `Will the price of LTC/USD exceed 8000 anytime between the open of September 1, 2020 and close of December 31, 2020, according to TradingView.com "LTCUSD (crypto - Coinbase)"?`,
             inputs: [
               {
                 id: 0,
@@ -5870,7 +5870,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Opening price is determined on daily chart on the date in the market question for the market trading pair on tradingview.com.`,
+                  text: `Use ticker symbol search for token pair (ie LTCUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
                 },
                 {
                   text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
@@ -5884,7 +5884,7 @@ export const TEMPLATES = {
           {
             marketType: SCALAR,
             question: `What price will [0] open at on [1], according to TradingView.com "[2]"?`,
-            example: `What price will BTC/USD open at on December 31, 2019, according to TradingView.com for "BTCUSD (crypto - Coinbase)"?`,
+            example: `What price will LTC/USD open at on December 31, 2020, according to TradingView.com for "LTCUSD (crypto - Coinbase)"?`,
             denomination: 'Price',
             inputs: [
               {
@@ -5911,7 +5911,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Opening price is determined on daily chart on the date in the market question for the market trading pair on tradingview.com.`,
+                  text: `Use ticker symbol search for token pair (ie LTCUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
                 },
                 {
                   text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,

@@ -342,7 +342,6 @@ export default class AppView extends Component<AppProps> {
       showMigrateRepButton,
       updateModal,
       isHelpMenuOpen,
-      updateConnectionTray,
       updateHelpMenuState,
     } = this.props;
 

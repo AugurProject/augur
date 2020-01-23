@@ -1,16 +1,16 @@
 import { ContractAddresses, NetworkId } from '@augurproject/artifacts';
 import { NetworkConfiguration } from '@augurproject/core';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
-import { Connectors, createClient, Events, SDKConfiguration, startServerFromClient, SubscriptionEventName } from '@augurproject/sdk';
-import { BlockAndLogStreamerListenerInterface } from '@augurproject/sdk/build/state/db/BlockAndLogStreamerListener';
-import { DB } from '@augurproject/sdk/build/state/db/DB';
-import { API } from '@augurproject/sdk/build/state/getter/API';
-import { configureDexieForNode } from '@augurproject/sdk/build/state/utils/DexieIDBShim';
+import { Connectors, createClient, Events, SDKConfiguration, startServerFromClient, SubscriptionEventName } from "@augurproject/sdk";
+import { BlockAndLogStreamerListenerInterface } from "@augurproject/sdk/build/state/db/BlockAndLogStreamerListener";
+import { DB } from "@augurproject/sdk/build/state/db/DB";
+import { API } from "@augurproject/sdk/build/state/getter/API";
+import { configureDexieForNode } from "@augurproject/sdk/build/state/utils/DexieIDBShim";
 import { BigNumber } from 'bignumber.js';
-import { providers } from 'ethers';
-import { Account } from '../constants';
-import { makeSigner } from '../libs/blockchain';
-import { ContractAPI } from '../libs/contract-api';
+import { providers } from "ethers";
+import { Account } from "../constants";
+import { makeSigner } from "../libs/blockchain";
+import { ContractAPI } from "../libs/contract-api";
 
 configureDexieForNode(true);
 
@@ -131,7 +131,7 @@ export class FlashSession {
     const config: SDKConfiguration = {
       networkId: (await this.provider.getNetworkId()) as NetworkId,
       ethereum: {
-        http: network.http
+        http: network ? network.http : undefined // NB(pg): Currently some tests don't pass in this config
       },
       gnosis: {
         enabled: useGnosis,
@@ -270,7 +270,7 @@ export class FlashSession {
       startBlockStreamListener: () => {},
     } as unknown) as BlockAndLogStreamerListenerInterface;
 
-    return DB.createAndInitializeDB(
+    return await DB.createAndInitializeDB(
       Number(this.user.augur.networkId),
       0,
       0,

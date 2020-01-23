@@ -174,7 +174,7 @@ export function connectAugur(
     getState: () => AppState
   ) => {
     const { modal, loginAccount } = getState();
-    const windowApp = windowRef as WindowApp;
+    let windowApp = windowRef as WindowApp;
 
     const loggedInAccount = windowApp.localStorage.getItem('loggedInAccount');
     const loggedInAccountType = windowApp.localStorage.getItem(
@@ -231,7 +231,7 @@ export function connectAugur(
       console.error(e);
       return callback('SDK could not be created', null);
     }
-    const windowApp = windowRef as WindowApp;
+    windowApp = windowRef as WindowApp;
     let universeId = env.universe || sdk.contracts.universe.address;
     if (
       windowApp.localStorage &&

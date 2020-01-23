@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect, useRef } from 'react';
 import Highcharts from 'highcharts/highstock';
 import Styles from 'modules/account/components/overview-chart.styles.less';
 import { formatDai } from 'utils/format-number';
@@ -9,10 +9,6 @@ const HIGHLIGHTED_LINE_WIDTH = 1;
 interface ChartProps {
   data: number[][];
   width: number;
-}
-
-interface ChartState {
-  options: Highcharts.Options | {};
 }
 
 const getPointRangeInfo = data => {
@@ -32,155 +28,91 @@ const getGradientColor = data => {
   return [[0, positiveColor], [1, 'transparent']];
 };
 
-export default class ProfitLossChart extends Component<ChartProps, ChartState> {
-  state: ChartState = {
-    options: {},
-  };
-
-  public container = null;
-  public chart: Highcharts.Chart = null;
-
-  componentDidMount() {
-    const { data } = this.props;
-    this.buidOptions(data);
-  }
-
-  componentDidUpdate(prevProps: ChartProps) {
-    if (JSON.stringify(this.props.data) !== JSON.stringify(prevProps.data)) {
-      this.buidOptions(this.props.data);
-    }
-  }
-
-  componentWillUnmount() {
-    if (this.chart && this.chart) {
-      this.chart.destroy();
-      this.chart = null;
-    }
-  }
-
-  getDefaultOptions(data) {
-    const defaultOptions = {
-      title: {
-        text: '',
+const getOptions = data => ({
+  title: {
+    text: '',
+  },
+  chart: {
+    type: 'areaspline',
+    spacing: [10, 14, 0, 14],
+    height: 245,
+    width: null,
+  },
+  credits: {
+    enabled: false,
+  },
+  plotOptions: {
+    areaspline: {
+      threshold: null,
+      dataGrouping: {
+        units: [['hour', [1]], ['day', [1]]],
       },
-      chart: {
-        type: 'areaspline',
-        height: '33%',
-        spacing: [10, 14, 0, 14],
-      },
-      credits: {
-        enabled: false,
-      },
-      plotOptions: {
-        areaspline: {
-          threshold: null,
-          dataGrouping: {
-            units: [['hour', [1]], ['day', [1]]],
-          },
-          marker: false,
-          fillColor: {
-            linearGradient: {
-              x1: 0,
-              y1: 0,
-              x2: 0,
-              y2: 1,
-            },
-            stops: getGradientColor(data),
-          },
+      marker: false,
+      fillColor: {
+        linearGradient: {
+          x1: 0,
+          y1: 0,
+          x2: 0,
+          y2: 1,
         },
+        stops: getGradientColor(data),
       },
-      scrollbar: { enabled: false },
-      navigator: { enabled: false },
-      xAxis: {
-        showFirstLabel: true,
-        showLastLabel: true,
-        endOnTick: false,
-        startOnTick: false,
-        tickLength: 4,
-        labels: {
-          style: null,
-          format: '{value:%b %d}',
-          formatter() {
-            if (this.isLast) return 'Today';
-            if (this.isFirst) {
-              return Highcharts.dateFormat('%d %b %Y', this.value);
-            }
-          },
-        },
-        crosshair: false,
+    },
+  },
+  scrollbar: { enabled: false },
+  navigator: { enabled: false },
+  xAxis: {
+    showFirstLabel: true,
+    showLastLabel: true,
+    endOnTick: false,
+    startOnTick: false,
+    tickLength: 4,
+    labels: {
+      style: null,
+      format: '{value:%b %d}',
+      formatter() {
+        if (this.isLast) return 'Today';
+        if (this.isFirst) {
+          return Highcharts.dateFormat('%d %b %Y', this.value);
+        }
       },
-      yAxis: {
-        opposite: false,
-        showFirstLabel: true,
-        showLastLabel: true,
-        startOnTick: false,
-        endOnTick: false,
-        labels: {
-          style: null,
-          format: '${value:.2f}',
-          formatter() {
-            return formatDai(this.value, { removeComma: true }).full;
-          },
-          align: 'left',
-          x: 0,
-          y: -2,
-        },
-        resize: {
-          enabled: false,
-        },
-        crosshair: false,
+    },
+    crosshair: false,
+  },
+  yAxis: {
+    opposite: false,
+    showFirstLabel: true,
+    showLastLabel: true,
+    startOnTick: false,
+    endOnTick: false,
+    labels: {
+      style: null,
+      format: '${value:.2f}',
+      formatter() {
+        return formatDai(this.value, { removeComma: true }).full;
       },
-      rangeSelector: {
-        enabled: false,
-      },
-    };
+      align: 'left',
+      x: 0,
+      y: -2,
+    },
+    resize: {
+      enabled: true,
+    },
+    crosshair: false,
+  },
+  rangeSelector: {
+    enabled: false,
+  },
+});
 
-    return defaultOptions;
-  }
-
-  calculateTickInterval = (data: number[][]) => {
-    const values = data.map(d => d[1]);
-
-    const bnMin = createBigNumber(
-      values.reduce(
-        (a, b) => (createBigNumber(a).lte(createBigNumber(b)) ? a : b),
-        0
-      )
-    );
-    const bnMax = createBigNumber(
-      values.reduce(
-        (a, b) => (createBigNumber(a).gte(createBigNumber(b)) ? a : b),
-        0
-      )
-    );
-
-    const max = formatDai(bnMax.gt(0) ? bnMax.times(1.05) : bnMax)
-      .formattedValue;
-    const min = formatDai(bnMin.lt(0) ? bnMin.times(1.05) : bnMin)
-      .formattedValue;
-    const intervalDivision = bnMin.eq(0) || bnMax.eq(0) ? 1.99 : 3;
-    const tickInterval = formatDai(
-      bnMax
-        .abs()
-        .plus(bnMin.abs())
-        .div(intervalDivision)
-    ).formattedValue;
-
-    return {
-      tickInterval,
-      max,
-      min,
-    };
-  };
-
-  buidOptions(data: number[][]) {
-    const { width } = this.props;
-    const options = this.getDefaultOptions(data);
-    const intervalInfo = this.calculateTickInterval(data);
+const ProfitLossChart = ({ width, data }: ChartProps) => {
+  const container = useRef(null);
+  useEffect(() => {
+    const options = getOptions(data);
+    const intervalInfo = calculateTickInterval(data);
     const tickPositions = [data[0][0], data[data.length - 1][0]];
     options.chart = {
       ...options.chart,
-      width,
     };
 
     if (Array.isArray(options.xAxis)) {
@@ -221,20 +153,45 @@ export default class ProfitLossChart extends Component<ChartProps, ChartState> {
     const newOptions: Highcharts.Options = Object.assign(options, {
       series,
     }) as Highcharts.Options;
+    Highcharts.stockChart(container.current, newOptions);
+  }, [data]);
 
-    this.setState({ options: newOptions });
-    // initial load
-    this.chart = Highcharts.stockChart(this.container, newOptions);
-  }
+  const calculateTickInterval = (data: number[][]) => {
+    const values = data.map(d => d[1]);
 
-  render() {
-    return (
-      <div
-        className={Styles.ProfitLossChart}
-        ref={container => {
-          this.container = container;
-        }}
-      />
+    const bnMin = createBigNumber(
+      values.reduce(
+        (a, b) => (createBigNumber(a).lte(createBigNumber(b)) ? a : b),
+        0
+      )
     );
-  }
-}
+    const bnMax = createBigNumber(
+      values.reduce(
+        (a, b) => (createBigNumber(a).gte(createBigNumber(b)) ? a : b),
+        0
+      )
+    );
+
+    const max = formatDai(bnMax.gt(0) ? bnMax.times(1.05) : bnMax)
+      .formattedValue;
+    const min = formatDai(bnMin.lt(0) ? bnMin.times(1.05) : bnMin)
+      .formattedValue;
+    const intervalDivision = bnMin.eq(0) || bnMax.eq(0) ? 1.99 : 3;
+    const tickInterval = formatDai(
+      bnMax
+        .abs()
+        .plus(bnMin.abs())
+        .div(intervalDivision)
+    ).formattedValue;
+
+    return {
+      tickInterval,
+      max,
+      min,
+    };
+  };
+
+  return <div className={Styles.ProfitLossChart} ref={container} />;
+};
+
+export default ProfitLossChart;
