@@ -1843,8 +1843,7 @@ export function addScripts(flash: FlashSession) {
         '-e', `CUSTOM_CONTRACT_ADDRESSES=${JSON.stringify(addresses)}`,
         '-e', 'VERBOSITY=4', // 5=debug 6=trace
         '-e', 'RPC_ADDR=0x:60557', // need to use "0x" network
-        // '0xorg/mesh:7.1.1-beta-0xv3',
-        'fabioberger123/mesh:augur-kovan-devutils-fix',
+        '0xorg/mesh:8.1.2',
       ]);
 
       mesh.on('error', console.error);
