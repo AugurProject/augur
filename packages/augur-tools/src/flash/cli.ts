@@ -95,7 +95,7 @@ function makeVorpalCLI(flash: FlashSession): Vorpal {
 }
 
 if (require.main === module) {
-  (async function() {
+  (async () => {
     let accounts: Account[];
     if (process.env.ETHEREUM_PRIVATE_KEY) {
       let key = process.env.ETHEREUM_PRIVATE_KEY;
@@ -136,9 +136,9 @@ if (require.main === module) {
         await flash.call(args.command, args);
       } catch(e){
         console.error(e);
-        process.exit(1);
+        process.exit(1); // Needed to prevent hanging
       } finally {
-        process.exit(0);
+        process.exit(0); // Needed to prevent hanging
       }
     }
   })();
