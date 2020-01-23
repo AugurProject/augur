@@ -541,9 +541,9 @@ export class ContractAPI {
     await market.finalize();
   }
 
-  async faucet(attoCash: BigNumber): Promise<void> {
-    let balance = await this.getCashBalance();
-    const desired = balance.plus(attoCash);
+  async faucet(attoCash: BigNumber, account: string = null): Promise<void> {
+    let balance = await this.getCashBalance(account);
+    const desired = attoCash;
     while (balance.lt(desired)) {
       console.log(`FAUCETING. BALANCE: ${balance}. DESIRED: ${desired}`);
       await this.augur.contracts.cashFaucet.faucet(attoCash);
@@ -714,7 +714,7 @@ export class ContractAPI {
   async fundSafe(safe=undefined) {
     safe = safe || await this.getOrCreateSafe();
 
-    await this.faucet(new BigNumber(1e21));
+    await this.faucet(new BigNumber(1e21), safe);
     await this.transferCash(safe, new BigNumber(1e21));
 
     let status: string;
