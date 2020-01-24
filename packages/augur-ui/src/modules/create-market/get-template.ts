@@ -108,6 +108,7 @@ export const addCategoryStats = (
     const vol = formatDai(stats.volume || '0').formatted;
     const mkrLabel = stats.numberOfMarkets === 1 ? 'Market' : 'Markets';
     card.description = `${stats.numberOfMarkets} ${mkrLabel} | $${vol}`;
+    card.count = stats.numberOfMarkets;
   }
   return card;
 };

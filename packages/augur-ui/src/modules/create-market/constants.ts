@@ -196,6 +196,7 @@ export interface MarketCardTemplate {
   header: string;
   description: string;
   icon: JSX.Element;
+  count: number;
 }
 
 export const MARKET_TEMPLATES = [
