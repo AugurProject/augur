@@ -2093,6 +2093,44 @@ export const LIST_VALUES = {
       label: 'Bowl',
     },
   ],
+  OLYMPIC_LIST: [
+    {
+      value: 'World',
+      label: 'World'
+    },
+    {
+      value: 'Olympic',
+      label: 'Olympic'
+    }
+  ],
+  OLYMPIC_LIST_MEDAL: [
+    {
+      value: 'Any',
+      label: 'Any'
+    },
+    {
+      value: 'A gold',
+      label: 'A gold'
+    }
+  ],
+  OLYMPIC_MEDALS: [
+    {
+      value: 'Total',
+      label: 'Total',
+    },
+    {
+      value: 'Gold',
+      label: 'Gold',
+    },
+    {
+      value: 'Silver',
+      label: 'Silver',
+    },
+    {
+      value: 'Bronze',
+      label: 'Bronze',
+    },
+  ],
   OLYMPIC_COUNTRIES: [
     {
       value: 'USA',
@@ -8590,9 +8628,9 @@ export const FIN_INDEXES_CLOSING_OFFSETS = {
 };
 
 export const OLYMPIC_SUMMER_SPORT_EVENTS = {
-  'TENNIS': LIST_VALUES.TENNIS_EVENTS,
-  'DIVING': LIST_VALUES.DIVING_EVENTS,
-  'WATER POLO': LIST_VALUES.WATER_POLO_EVENTS,
+  'Tennis': LIST_VALUES.TENNIS_EVENTS,
+  'Dining': LIST_VALUES.DIVING_EVENTS,
+  'Water Polo': LIST_VALUES.WATER_POLO_EVENTS,
 };
 
 export const CRYPTO_BTC_CURRENCY_MARKETS = {
