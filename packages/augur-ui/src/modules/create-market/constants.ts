@@ -20,7 +20,10 @@ import {
   CRYPTO,
   SOCCER,
   AMERICAN_FOOTBALL,
+  OLYMPICS,
   BASEBALL,
+  SUMMER,
+  WINTER,
   GOLF,
   BASKETBALL,
   TENNIS,
@@ -281,6 +284,26 @@ export const MARKET_SUB_TEMPLATES = {
       header: HORSE_RACING,
       description: defaultDescription,
       icon: icons.HorseRacing,
+    },
+    {
+      value: OLYMPICS,
+      header: OLYMPICS,
+      description: defaultDescription,
+      icon: icons.Olympics,
+    },
+  ],
+  [OLYMPICS]: [
+    {
+      value: SUMMER,
+      header: SUMMER,
+      description: defaultDescription,
+      icon: icons.Olympics,
+    },
+    {
+      value: WINTER,
+      header: WINTER,
+      description: defaultDescription,
+      icon: icons.Olympics,
     },
   ],
   [AMERICAN_FOOTBALL]: [

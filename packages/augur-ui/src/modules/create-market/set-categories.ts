@@ -954,6 +954,14 @@ export const setCategories: SortedGroup[] = [
         ],
       },
       {
+        value: 'Olympics',
+        label: 'Olympics',
+        subGroup: [
+          { value: 'SUMMER', label: 'SUMMER' },
+          { value: 'WINTER', label: 'WINTER' },
+        ],
+      },
+      {
         value: 'Tennis',
         label: 'Tennis',
         subGroup: [
