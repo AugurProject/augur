@@ -224,10 +224,8 @@ export function startOfTomorrow(unixTimestamp: number): number {
     .unix();
 }
 
-export function minMarketEndTimeDay() {
-  return moment()
-  .subtract(1, 'day')
-  .startOf('day');
+export function minMarketEndTimeDay(currentTimestamp) {
+  return moment(currentTimestamp * 1000 - 86000);
 }
 
 export function dateHasPassed(
