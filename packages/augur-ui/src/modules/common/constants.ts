@@ -822,7 +822,7 @@ export const NOTIFICATIONS_LABEL = 'notifications';
 export const NEW = 'New';
 export const RESOLVED_MARKETS_OPEN_ORDERS_TITLE =
   'Open Orders in Resolved Market';
-export const REPORTING_ENDS_SOON_TITLE = 'Reporting Ends Soon';
+export const REPORTING_ENDS_SOON_TITLE = 'You need to report';
 export const FINALIZE_MARKET_TITLE = 'Finalize Market';
 export const UNSIGNED_ORDERS_TITLE = 'Unsigned Orders';
 export const CLAIM_REPORTING_FEES_TITLE = 'Claim Stake and Fees';

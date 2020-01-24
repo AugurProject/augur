@@ -228,6 +228,7 @@ export interface Notification {
   id: string;
   type: string;
   isImportant: boolean;
+  redIcon?: boolean;
   isNew: boolean;
   title: string;
   buttonLabel: string;

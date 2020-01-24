@@ -71,6 +71,14 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
         cb,
       })
     ),
+  showReportingModal: (marketId: string) => {
+    const market = selectMarket(marketId);
+    dispatch(
+      updateModal({
+        type: MODAL_REPORTING,
+        market
+      }),
+    )},
 });
 
 const NotificationsContainer = withRouter(
