@@ -442,14 +442,10 @@ div.SingleRow3 {
 
           > label {
             .text-12-bold;
+            .limit-lines(2);
 
             white-space: normal;
             max-height: @size-26;
-            text-overflow: ellipsis;
-            overflow: hidden;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
           }
         }
       }
