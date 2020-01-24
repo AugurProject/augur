@@ -397,7 +397,7 @@ export const DatePickerSelector = (props: DatePickerSelectorProps) => {
       }}
       isOutsideRange={day =>
         day.isAfter(moment.unix(isAfter)) ||
-        day.isBefore(isBefore ? moment.unix(isBefore) : minMarketEndTimeDay())
+        day.isBefore(isBefore ? moment.unix(isBefore) : minMarketEndTimeDay(currentTimestamp))
       }
       numberOfMonths={1}
       onFocusChange={({ focused }) => {
@@ -464,7 +464,7 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
             onChange('setEndTime', date.startOf('day').unix());
           }}
           isOutsideRange={day =>
-            day.isBefore(minMarketEndTimeDay()) ||
+            day.isBefore(minMarketEndTimeDay(currentTimestamp)) ||
             day.isAfter(moment.unix(isAfter))
           }
           numberOfMonths={1}
