@@ -9,13 +9,14 @@ import Styles from "modules/account/components/notification.styles.less";
 
 export interface NotificationProps {
   isImportant: boolean;
+  redIcon?: boolean;
   isNew: boolean;
   title: string;
   noCounter: boolean;
   children: React.StatelessComponent | Array<React.StatelessComponent>;
 }
 
-export const NotificationCard = ({ isNew, isImportant, title, children, noCounter }: NotificationProps) => (
+export const NotificationCard = ({ isNew, isImportant, redIcon, title, children, noCounter }: NotificationProps) => (
   <div
     className={classNames(Styles.NotificationCard, {
       [Styles.NewNotificationCard]: isNew,
@@ -25,7 +26,10 @@ export const NotificationCard = ({ isNew, isImportant, title, children, noCounte
     <section>
       <div className={Styles.TitleBar}>
         {isImportant && (
-          <span className={Styles.Importance}>
+          <span className={classNames(Styles.Importance, {
+            [Styles.ImportantRed]: redIcon,
+          })}
+          >
             {ImmediateImportance}
           </span>
         )}

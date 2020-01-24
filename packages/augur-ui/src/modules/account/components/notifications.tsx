@@ -43,6 +43,7 @@ export interface NotificationsProps extends RouteComponentProps {
   disputingWindowEndTime: DateFormattedObject;
   finalizeMarketModal: Function;
   dispute: Function;
+  showReportingModal: Function;
   claimMarketsProceeds: Function;
   claimReportingFees: Function;
   unsignedOrdersModal: Function;
@@ -88,14 +89,7 @@ class Notifications extends React.Component<
       case NOTIFICATION_TYPES.reportOnMarkets:
         buttonAction = () => {
           this.markAsRead(notification);
-          const queryLink: QueryEndpoints = {
-            [MARKET_ID_PARAM_NAME]: notification.market && notification.market.id,
-            [RETURN_PARAM_NAME]: location.hash,
-          };
-          history.push({
-            pathname: makePath(REPORTING, null),
-            search: makeQuery(queryLink),
-          });
+          this.props.showReportingModal(notification.market.id);
         };
         break;
 
@@ -216,6 +210,7 @@ class Notifications extends React.Component<
       const {
         id,
         isImportant,
+        redIcon,
         isNew,
         title,
         buttonLabel,
@@ -243,6 +238,7 @@ class Notifications extends React.Component<
         id,
         type,
         isImportant,
+        redIcon,
         isNew,
         title,
         buttonLabel,
