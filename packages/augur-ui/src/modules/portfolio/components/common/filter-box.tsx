@@ -147,14 +147,6 @@ const FilterBox: React.FC<FilterBoxProps> = props => {
     dataRef.current = data;
   }, [data]);
 
-  // memos
-  const selectedLabel = React.useMemo(() => {
-    const tab = tabs.find(tab => tab.key === selectedTab);
-    const label = (tab && tab.label) || '';
-
-    return label !== ALL_MARKETS ? selectedLabel + ' ' : '';
-  }, [tabs, selectedTab]);
-
   return (
     <QuadBox
       title={title}

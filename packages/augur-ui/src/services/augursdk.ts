@@ -17,8 +17,7 @@ import { EnvObject } from 'modules/types';
 import { isEmpty } from 'utils/is-empty';
 import { analytics } from './analytics';
 import { isLocalHost } from 'utils/is-localhost';
-import { Mesh } from '@0x/mesh-browser';
-import { BrowserMesh, createBrowserMesh } from './browser-mesh';
+import { createBrowserMesh } from './browser-mesh';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 
 export class SDK {

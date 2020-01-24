@@ -54,18 +54,20 @@ const orderType = {
 }
 
 export class OrderBookShaper {
-  readonly orderSize: number = 100;
   readonly maxPrice: BigNumber = new BigNumber(1);
   readonly minPrice: BigNumber = new BigNumber(0);
   readonly numTicks: BigNumber = new BigNumber(100);
+  readonly minAllowedSize: BigNumber = new BigNumber(100);
   readonly numOutcomes: 3;
   readonly fiveMinutesInSeconds = new BigNumber(18000);
   outcomes: number[] = [];
   marketId: string = "";
+  orderSize: number = null;
 
-  constructor (marketId: string, outcomes: number[] = [1, 2]) {
+  constructor (marketId: string, orderSize: number = null, outcomes: number[] = [1, 2]) {
     this.marketId = marketId;
     this.outcomes = outcomes;
+    this.orderSize = orderSize;
   }
 
   nextRun = (marketBook: MarketOrderBook, timestamp: BigNumber): ZeroXPlaceTradeDisplayParams[] => {
@@ -88,10 +90,18 @@ export class OrderBookShaper {
       Object.keys(priceVol).map((price: string) => {
         const value = bookPriceVol.find(b => String(b.price) === String(price));
         const minVolume = priceVol[price];
-        const createMoreOrders = !value || new BigNumber(value.shares).lt(new BigNumber(minVolume));
+        const createMoreOrders = !value || new BigNumber(value.shares).lt(new BigNumber(this.minAllowedSize));
         const quantity = !value ? new BigNumber(minVolume) : new BigNumber(minVolume).minus(new BigNumber(value.shares))
         if (createMoreOrders) {
-          orders.push({outcome, quantity: quantity.toNumber(), price, direction})
+          const numCreateOrders = this.orderSize ? quantity.dividedBy(this.orderSize).toNumber() : 1;
+          for(let i = 0; i < numCreateOrders; i++) {
+            orders.push({
+              outcome,
+              quantity: this.orderSize ? this.orderSize : quantity.toNumber(),
+              price,
+              direction,
+            });
+          }
         }
       })
     })
