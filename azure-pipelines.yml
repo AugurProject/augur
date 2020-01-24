@@ -98,8 +98,18 @@ jobs:
     pool: 'Default'
     strategy:
       matrix:
-        node_10_x:
+        non_specific_tests:
           node_version: $(PRIMARY_NODE_VERSION)
+          TEST_ARGS: --testPathIgnorePatterns="(Universe.test.ts|(getter/(markets|users)/))"
+        market_getters_tests:
+          node_version: $(PRIMARY_NODE_VERSION)
+          TEST_ARGS: --testPathPattern 'getter/markets/'
+        user_getter_tests:
+          node_version: $(PRIMARY_NODE_VERSION)
+          TEST_ARGS: --testPathPattern 'getter/users/'
+        universe_tests:
+          node_version: $(PRIMARY_NODE_VERSION)
+          TEST_ARGS: --testPathPattern 'Universe.test.ts'
     timeoutInMinutes: 120
     steps:
       - checkout: self
@@ -140,7 +150,7 @@ jobs:
       - bash: |
           set -euo pipefail
           free -m
-          yarn test --verbose --ci --reporters=default --reporters=jest-junit
+          yarn test $(TEST_ARGS) --verbose --ci --reporters=default --reporters=jest-junit
         displayName: yarn test
         condition:  eq(variables['JOB_TRIGGER_TEST'], 'true')
         env:
