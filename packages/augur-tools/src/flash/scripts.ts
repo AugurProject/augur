@@ -863,19 +863,34 @@ export function addScripts(flash: FlashSession) {
         required: false,
         description: 'Mesh endpoint to connect',
       },
+      {
+        name: 'refreshInterval',
+        abbr: 'r',
+        required: false,
+        description: 'refresh interval in seconds, time to wait before checking market orderbook. default 15 seconds',
+      },
+      {
+        name: 'orderSize',
+        abbr: 's',
+        required: false,
+        description: 'quantity used when orders need to be created. default is one large chunk, possible values are 10, 100, ...',
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const marketIds = String(args.marketIds)
         .split(',')
         .map(id => id.trim());
       const address = args.userAccount ? (args.userAccount as string) : null;
+      const interval = args.refreshInterval ? Number(args.refreshInterval) * 1000 : 15000;
       const endpoint = args.meshEndpoint
         ? String(args.meshEndpoint)
         : 'ws://localhost:60557';
+      const orderSize = args.orderSize ? Number(args.orderSize) : null;
       const user: ContractAPI = await this.ensureUser(null, true, true, address, endpoint, true);
+      console.log('waiting many seconds on purpose for client to sync');
       await new Promise<void>(resolve => setTimeout(resolve, 90000));
 
-      const orderBooks = marketIds.map(m => new OrderBookShaper(m));
+      const orderBooks = marketIds.map(m => new OrderBookShaper(m, orderSize));
       while (true) {
         const timestamp = await this.user.getTimestamp();
         for (let i = 0; i < orderBooks.length; i++) {
@@ -889,11 +904,12 @@ export function addScripts(flash: FlashSession) {
             this.log(`creating ${orders.length} orders for ${marketId}`);
             for (let j = 0; j < orders.length; j++) {
               const order = orders[j];
+              console.log(`Creating ${order.displayAmount} at ${order.displayPrice}`)
               await user.placeZeroXOrder(order).catch(this.log);
             }
           }
         }
-        await new Promise<void>(resolve => setTimeout(resolve, 5000));
+        await new Promise<void>(resolve => setTimeout(resolve, interval));
       }
 
     },
