@@ -38,6 +38,7 @@ interface AddFundsProps {
   loginAccount: LoginAccount;
   ETH_RATE: number;
   REP_RATE: number;
+  addFundsTorus: Function;
 }
 
 export const generateDaiTooltip = (
@@ -73,10 +74,18 @@ export const AddFunds = ({
   ETH_RATE,
   REP_RATE,
   isRelayDown = false,
+  addFundsTorus,
 }: AddFundsProps) => {
   const address = loginAccount.address
   const accountMeta = loginAccount.meta;
   let autoSelection = ADD_FUNDS_COINBASE;
+  let BUY_MIN = 0;
+  let BUY_MAX = 0;
+
+  if (accountMeta.accountType === ACCOUNT_TYPES.TORUS) {
+    BUY_MIN = 20;
+    BUY_MAX = 250
+  }
 
   if (autoSelect) {
     if (
@@ -90,6 +99,23 @@ export const AddFunds = ({
       fundType === REP
     ) {
       autoSelection = ADD_FUNDS_SWAP;
+    }
+  }
+
+  const [amountToBuy, setAmountToBuy] = useState(0);
+  const [isAmountValid, setIsAmountValid] = useState(false);
+
+  const validateAndSet = (amount) => {
+    if (accountMeta.accountType === ACCOUNT_TYPES.TORUS) {
+      // Tor.us
+      // minOrderValue $20
+      // maxOrderValue $250
+      if (amount >= 20 && amount <= 250) {
+        setIsAmountValid(true);
+      } else {
+        setIsAmountValid(false);
+      }
+      setAmountToBuy(amount);
     }
   }
 
@@ -202,9 +228,14 @@ export const AddFunds = ({
               <h3>Amount</h3>
               <TextInput
                 placeholder='0'
-                onChange={noop}
+                onChange={(value) => validateAndSet(Number(value))}
+                value={String(amountToBuy)}
                 innerLabel={fundTypeToUse === DAI ? 'USD' : fundTypeToUse}
               />
+              {amountToBuy > 0 && !isAmountValid &&
+                <div className={Styles.AddFundsError}>Sorry, amount must be between ${BUY_MIN} and ${BUY_MAX}.</div>
+              }
+
 
               {accountMeta.accountType === ACCOUNT_TYPES.PORTIS && (
                 <a href='https://wallet.portis.io/buy/' target='_blank'>
@@ -216,7 +247,8 @@ export const AddFunds = ({
               )}
               {accountMeta.accountType === ACCOUNT_TYPES.TORUS && (
                 <PrimaryButton
-                  action={() => accountMeta.openWallet('topup')}
+                  disabled={!isAmountValid}
+                  action={() => addFundsTorus(amountToBuy)}
                   text={`Buy with ${accountMeta.accountType}`}
                 />
               )}

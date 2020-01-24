@@ -50,7 +50,7 @@
     "@ledgerhq/hw-app-eth": "5.7.0",
     "@ledgerhq/hw-transport-u2f": "5.7.0",
     "@portis/web3": "2.0.0-beta.54",
-    "@toruslabs/torus-embed": "0.2.11",
+    "@toruslabs/torus-embed": "0.2.12",
     "analytics": "0.3.0",
     "async-es": "2.6.3",
     "bignumber.js": "8.0.2",
