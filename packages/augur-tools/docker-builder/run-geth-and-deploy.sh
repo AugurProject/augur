@@ -14,11 +14,12 @@ sleep 10s
 cd /augur
 
 # couldn't get dp deploy to work had to split it up, contract addresses were reloaded
-yarn workspace @augurproject/tools flash run deploy --write-artifacts
-yarn workspace @augurproject/tools build
-yarn workspace @augurproject/tools flash run faucet --amount 10000000000000000000
-yarn workspace @augurproject/tools flash run rep-faucet --amount 100000
-yarn workspace @augurproject/tools flash run create-canned-markets
+yarn flash run deploy --write-artifacts
+yarn tools build
+yarn flash run faucet --amount 10000000000000000000
+yarn flash run rep-faucet --amount 100000
+yarn flash run create-canned-markets
+yarn flash run faucet -t 0x9d4c6d4b84cd046381923c9bc136d6ff1fe292d9 -a 1000000
 
 # debug info
 geth version | tee /augur/geth-version.txt
