@@ -16,7 +16,10 @@ export const EUR = 'EUR';
 
 // Market Subtemplates
 export const SOCCER = 'Football (Soccer)';
+export const SUMMER = 'SUMMER';
+export const WINTER = 'WINTER';
 export const AMERICAN_FOOTBALL = 'American Football';
+export const OLYMPICS = 'Olympics';
 export const BASEBALL = 'Baseball';
 export const GOLF = 'Golf';
 export const BASKETBALL = 'Basketball';
