@@ -51,9 +51,7 @@ export const SubCategories = ({
             updateNewMarket(updatedNewMarket);
           }}
           radioButtons={cats}
-        >
-          <SmallHeaderLink copyType={MARKET_COPY_LIST.DONT_SEE_CAT} text="Don't see your category?" link ownLine />
-        </RadioCardGroup>
+        />
       </section>
     </section>
   );
