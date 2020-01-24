@@ -13,7 +13,10 @@ import {
   NCAA,
   BASEBALL,
   AMERICAN_FOOTBALL,
+  OLYMPICS,
   NFL,
+  SUMMER,
+  WINTER,
   POLITICS,
   US_POLITICS,
   WORLD,
@@ -48,6 +51,7 @@ import {
   CRYPTO_BTC_CURRENCY_MARKETS,
   CRYPTO_ETH_CURRENCY_MARKETS,
   CRYPTO_LTC_CURRENCY_MARKETS,
+  OLYMPIC_SUMMER_SPORT_EVENTS,
   FIN_EXCHANGES_CLOSING_OFFSETS,
   FIN_INDEXES_CLOSING_OFFSETS,
   FIN_INDEXES_HOLIDAY_CLOSURES,
@@ -3360,6 +3364,100 @@ export const TEMPLATES = {
             },
           },
         ],
+      },
+      [OLYMPICS]: {
+        children: {
+          [SUMMER]: {
+            templates: [
+              {
+                marketType: YES_NO,
+                question: `Olympics [0]: Will [1] win a gold medal in [2] at the [3] Summer Olympics?`,
+                example: `Olympics Swimming: Will Norway win a gold medal in 50m Freestyle (Men/Women) at the 2020 Summer Olympics?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN_QUESTION_DEP,
+                    placeholder: `Sport`,
+                    inputDestId: 2,
+                    values: LIST_VALUES.OLYMPIC_SUMMER_SPORTS,
+                    inputDestValues: OLYMPIC_SUMMER_SPORT_EVENTS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Country`,
+                    values: LIST_VALUES.OLYMPIC_COUNTRIES,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DROPDOWN,
+                    defaultLabel: `Select Sport First`,
+                    values: [],
+                    placeholder: `Event`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If the event is not played market should resolve as 'No'`,
+                    },
+                  ],
+                },
+              },
+            ],
+          },
+          [WINTER]: {
+            templates: [
+              {
+                marketType: YES_NO,
+                question: `Olympics [0]: Will [1] win a gold medal in [2] at the [3] Winter Olympics?`,
+                example: `Olympics Swimming: Will Norway win a gold medal in 50m Freestyle (Men/Women) at the 2020 Winter Olympics?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN_QUESTION_DEP,
+                    placeholder: `Sport`,
+                    inputDestId: 2,
+                    values: LIST_VALUES.OLYMPIC_SUMMER_SPORTS,
+                    inputDestValues: OLYMPIC_SUMMER_SPORT_EVENTS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Country`,
+                    values: LIST_VALUES.OLYMPIC_COUNTRIES,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DROPDOWN,
+                    defaultLabel: `Select Sport First`,
+                    values: [],
+                    placeholder: `Event`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If the event is not played market should resolve as 'No'`,
+                    },
+                  ],
+                },
+              },
+            ],
+          },
+        },
       },
       [AMERICAN_FOOTBALL]: {
         children: {
