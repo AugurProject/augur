@@ -174,7 +174,7 @@ describe('Gnosis Relay API', () => {
       const account = ACCOUNTS[0];
       const ethersProvider = new EthersProvider(provider, 5, 0, 40);
       const signer = await makeSigner(ACCOUNTS[0], ethersProvider);
-      const addresses = Addresses[102];
+      const addresses = Addresses[103];
       const cash = new Cash(
         makeDependencies(account, ethersProvider, signer),
         addresses.Cash);
