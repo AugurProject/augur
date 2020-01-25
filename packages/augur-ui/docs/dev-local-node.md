@@ -1,3 +1,5 @@
+# NB: This is from V1 and is no longer relevant, see the README.md
+
 # Augur | Local Node Configuration
 
 This is for developers already familiar with the code repositories and who want to run a private local node and do end-to-end testing.

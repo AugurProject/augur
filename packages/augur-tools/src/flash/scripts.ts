@@ -120,14 +120,12 @@ export function addScripts(flash: FlashSession) {
       const useSdk = args.useSdk as boolean;
       if (this.noProvider()) return;
 
+      console.log('Deploying: ', args);
+
       const config = {
         writeArtifacts: args.write_artifacts as boolean,
-        useNormalTime: true,
+        useNormalTime: (args.time_controlled as boolean),
       };
-
-      if (args.time_controlled) {
-        config['useNormalTime'] = false;
-      }
 
       const { addresses } = await deployContracts(
         this.provider,

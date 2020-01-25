@@ -92,7 +92,7 @@ jobs:
       JOB_TRIGGER_SDK: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_SDK']]
       JOB_TRIGGER_CORE: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE']]
       JOB_TRIGGER_TEST: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_TEST']]
-      USE_NORMAL_TIME: false
+      FAKE_TIME: false
       PRODUCTION: false
       YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
     pool: 'Default'
@@ -396,15 +396,11 @@ jobs:
         dev-pop-geth-v2:
           IMAGE_NAME: dev-pop-geth-v2
           NETWORK_ID: 102
-          NORMAL_TIME: false
+          FAKE_TIME: true
         dev-pop-normtime-geth-v2:
           IMAGE_NAME: dev-pop-normtime-geth-v2
           NETWORK_ID: 103
-          NORMAL_TIME: true
-        dev-pop-geth-15-v2:
-          IMAGE_NAME: dev-pop-geth-15-v2
-          NETWORK_ID: 104
-          NORMAL_TIME: false
+          FAKE_TIME: false
     variables:
       YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
     steps:
@@ -429,7 +425,7 @@ jobs:
       - script: |
           set -exuo pipefail
           export DOCKER_BUILDKIT=1
-          docker build --progress=plain --no-cache=true -f packages/augur-tools/docker-builder/Dockerfile --build-arg normal_time=$(NORMAL_TIME) --build-arg network_id=$(NETWORK_ID) -t $(IMAGE_NAME) .
+          docker build --progress=plain --no-cache=true -f packages/augur-tools/docker-builder/Dockerfile --build-arg fake_time=$(FAKE_TIME) --build-arg network_id=$(NETWORK_ID) -t $(IMAGE_NAME) .
         displayName: 'build $(IMAGE_NAME) image'
       - task: Docker@1
         displayName: docker login
