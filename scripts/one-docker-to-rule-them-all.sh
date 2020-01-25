@@ -65,5 +65,10 @@ export CUSTOM_CONTRACT_ADDRESSES=`yarn --silent flash get-all-contract-addresses
 export GNOSIS_SAFE_CONTRACT_ADDRESS=`yarn --silent flash get-contract-address -n GnosisSafe | sed '1d'`
 export PROXY_FACTORY_CONTRACT_ADDRESS=`yarn --silent flash get-contract-address -n ProxyFactory | sed '1d'`
 #yarn docker:gnosis
-yarn workspace @augurproject/gnosis-relay-api run-relay
+
+if [[ "${DETACH-false}" == "true" ]]; then
+  yarn workspace @augurproject/gnosis-relay-api run-relay -d
+else
+  yarn workspace @augurproject/gnosis-relay-api run-relay
+fi
 

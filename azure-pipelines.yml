@@ -447,6 +447,66 @@ jobs:
           containerRegistryType: Container Registry
           dockerRegistryEndpoint: dockerhub-augurproject
 
+  - job: test_3rd_party_integrations
+    dependsOn:
+    - Docker_populated_geth_images
+    - PreFlightCheck
+    - TestAugurCore
+    - TestAndLint
+    - ContractSanityCheck
+    condition: |
+      and
+      (
+        eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_POP_GETH'], 'true'),
+        in(dependencies.PreFlightCheck.result, 'Succeeded'),
+        in(dependencies.TestAugurCore.result, 'Succeeded', 'Skipped'),
+        in(dependencies.TestAndLint.result, 'Succeeded', 'Skipped'),
+        in(dependencies.ContractSanityCheck.result, 'Succeeded', 'Skipped'),
+        in(dependencies.Docker_populated_geth_images.result, 'Succeeded', 'Skipped'),
+        not(eq(variables['Build.sourceBranch'], 'refs/heads/master')),
+        not(eq(variables['Build.sourceBranch'], 'refs/heads/demo')),
+        not(eq(variables['Build.sourceBranch'], 'refs/tags'))
+      )
+    pool:
+      vmImage: 'Ubuntu 16.04'
+    variables:
+      YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
+    steps:
+      - checkout: self
+      - task: NodeTool@0
+        inputs:
+          versionSpec: $(PRIMARY_NODE_VERSION)
+      - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
+        inputs:
+          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
+          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
+          vstsFeed: npmPackages
+      - script: |
+          yarn install --frozen-lockfile
+          yarn build
+        displayName: Install Dependencies
+      - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
+        inputs:
+          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
+          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
+          vstsFeed: npmPackages
+      - bash: |
+          set -exuo pipefail
+          DETACH="true" yarn docker:all false false
+          sleep 30
+        displayName: Run 3rd Party Dockers
+      - bash: |
+          set -exuo pipefail
+          free -m
+          yarn test --config=packages/augur-test/src/tests/3rd-party/jest.config.js --verbose --ci --reporters=default --reporters=jest-junit
+        displayName: Test 3rd party integratios
+      - bash: |
+          set -exuo pipefail
+          docker kill geth
+          yarn workspace @augurproject/gnosis-relay-api kill-relay
+        displayName: Stop 3rd Party Dockers
+
+
   - job: publish_augur_ui_docker_image
     condition: |
       and
