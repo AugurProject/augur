@@ -41,6 +41,11 @@ fi
 # pick up the creation of / changes to local-addresses.json
 yarn build
 
+# In dev mode, also create canned markets
+if [ "$DEV" == "true" ]; then
+  yarn flash run create-canned-markets
+fi
+
 # run docker ecosystem with variables derived from geth node
 export ETHEREUM_CHAIN_ID=`yarn --silent flash run network-id | sed '1d'`
 export CUSTOM_CONTRACT_ADDRESSES=`yarn --silent flash run get-all-contract-addresses --ugly | sed '1d'`
