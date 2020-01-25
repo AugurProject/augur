@@ -142,7 +142,7 @@ export class ZeroXOrders extends AbstractTable {
     if (orderEvents.length < 1) return;
 
     const filteredOrders = _.filter(orderEvents, this.validateOrder.bind(this));
-    let documents = _.map(filteredOrders, this.processOrder.bind(this));
+    let documents: StoredOrder[] = _.map(filteredOrders, this.processOrder.bind(this));
 
     // Remove Canceled, Expired, and Invalid Orders and emit event
     const canceledOrders =
@@ -162,18 +162,12 @@ export class ZeroXOrders extends AbstractTable {
       _.filter(filteredOrders, (orderEvent => orderEvent.endState === 'FILLED'))
       .map(order => order.orderHash);
 
-    for (const d of documents) {
-      if (filledOrders.includes(d.orderHash)) {
-        documents = _.filter(documents, (orderEvent => orderEvent.orderHash !== d.orderHash));
-        await this.bulkUpsertDocuments([...d]);
-        this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Fill, orderId: d.orderHash,...d});
-      }
-    }
-
     documents = _.filter(documents, this.validateStoredOrder.bind(this));
     await this.bulkUpsertDocuments(documents);
     for (const d of documents) {
-      this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Create, orderId: d.orderHash,...d});
+      let eventType = OrderEventType.Create;
+      if (filledOrders.includes(d.orderHash)) eventType = OrderEventType.Fill;
+      this.augur.events.emit('OrderEvent', {eventType, orderId: d.orderHash,...d});
     }
   }
 
