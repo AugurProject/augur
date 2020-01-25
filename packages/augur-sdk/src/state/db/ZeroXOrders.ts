@@ -145,12 +145,13 @@ export class ZeroXOrders extends AbstractTable {
     let documents: StoredOrder[] = _.map(filteredOrders, this.processOrder.bind(this));
 
     // Remove Canceled, Expired, and Invalid Orders and emit event
-    const canceledOrders =
-      _.filter(filteredOrders, (orderEvent => orderEvent.endState === 'CANCELLED' || orderEvent.endState === 'EXPIRED' || orderEvent.endState === 'INVALID'))
-      .map(order => order.orderHash);
+    const canceledOrders = _.keyBy(
+      _.filter(filteredOrders, (orderEvent => orderEvent.endState === 'CANCELLED' || orderEvent.endState === 'EXPIRED' || orderEvent.endState === 'INVALID')),
+      "orderHash"
+    );
 
     for (const d of documents) {
-      if (canceledOrders.includes(d.orderHash)) {
+      if (canceledOrders[d.orderHash]) {
         documents = _.filter(documents, (orderEvent => orderEvent.orderHash !== d.orderHash));
         this.table.where('orderHash').equals(d.orderHash).delete();
         this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Cancel, orderId: d.orderHash,...d});
@@ -158,15 +159,15 @@ export class ZeroXOrders extends AbstractTable {
     }
 
     // Deal with partial fills and emit event
-    const filledOrders =
-      _.filter(filteredOrders, (orderEvent => orderEvent.endState === 'FILLED'))
-      .map(order => order.orderHash);
+    const filledOrders = _.keyBy(
+      _.filter(filteredOrders, (orderEvent => orderEvent.endState === 'FILLED')),
+      "orderHash"
+    );
 
     documents = _.filter(documents, this.validateStoredOrder.bind(this));
     await this.bulkUpsertDocuments(documents);
     for (const d of documents) {
-      let eventType = OrderEventType.Create;
-      if (filledOrders.includes(d.orderHash)) eventType = OrderEventType.Fill;
+      const eventType = filledOrders[d.orderHash] ? OrderEventType.Fill : OrderEventType.Create;
       this.augur.events.emit('OrderEvent', {eventType, orderId: d.orderHash,...d});
     }
   }

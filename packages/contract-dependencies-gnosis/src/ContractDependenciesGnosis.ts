@@ -21,7 +21,7 @@ import { ethers } from 'ethers';
 import { getAddress } from 'ethers/utils/address';
 import * as _ from 'lodash';
 
-const DEFAULT_GAS_PRICE = new BigNumber(4 * 10**9); // Default: GasPrice: 4
+const DEFAULT_GAS_PRICE = new BigNumber(4e9); // Default: GasPrice: 4
 const BASE_GAS_ESTIMATE = '75000';
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 
