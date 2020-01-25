@@ -27,10 +27,10 @@ if [ "$DEV" == "true" ]; then
 
   if [ "$FAKE" == "true" ]; then
     echo "using fake time deploy"
-    yarn flash run fake-all -c
+    yarn flash run fake-all
   else
     echo "using normal deploy"
-    yarn flash run normal-all -c
+    yarn flash run normal-all
   fi
 
 else
