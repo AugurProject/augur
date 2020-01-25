@@ -44,11 +44,11 @@ docker stop dev-node-geth
 find geth
 rm -f geth/chain/geth.ipc
 docker run -v `pwd`/geth:/geth-deploy --init --rm --env ROOT=/geth-deploy --env NETWORK_ID="${NETWORK_ID}" --env NORMAL_TIME="${NORMAL_TIME}" --env PERIOD_TIME=5 -p 8545:8545 -p 8546:8546 --name pop-geth-deploy --detach augurproject/dev-node-geth:latest
-yarn workspace @augurproject/tools flash run deploy --write-artifacts
+yarn workspace @augurproject/tools flash deploy --write-artifacts
 yarn workspace @augurproject/tools build
-yarn workspace @augurproject/tools flash run faucet --amount 10000000000000000000
-yarn workspace @augurproject/tools flash run rep-faucet --amount 100000
-yarn workspace @augurproject/tools flash run create-canned-markets
+yarn workspace @augurproject/tools flash faucet --amount 10000000000000000000
+yarn workspace @augurproject/tools flash rep-faucet --amount 100000
+yarn workspace @augurproject/tools flash create-canned-markets
 docker stop -t 120 pop-geth-deploy
 rm -f geth/chain/geth.ipc
 

@@ -27,10 +27,10 @@ if [ "$DEV" == "true" ]; then
 
   if [ "$FAKE" == "true" ]; then
     echo "using fake time deploy"
-    yarn flash run fake-all
+    yarn flash fake-all
   else
     echo "using normal deploy"
-    yarn flash run normal-all
+    yarn flash normal-all
   fi
 
 else
@@ -43,14 +43,14 @@ yarn build
 
 # In dev mode, also create canned markets
 if [ "$DEV" == "true" ]; then
-  yarn flash run create-canned-markets
+  yarn flash create-canned-markets
 fi
 
 # run docker ecosystem with variables derived from geth node
-export ETHEREUM_CHAIN_ID=`yarn --silent flash run network-id | sed '1d'`
-export CUSTOM_CONTRACT_ADDRESSES=`yarn --silent flash run get-all-contract-addresses --ugly | sed '1d'`
-export GNOSIS_SAFE_CONTRACT_ADDRESS=`yarn --silent flash run get-contract-address -n GnosisSafe | sed '1d'`
-export PROXY_FACTORY_CONTRACT_ADDRESS=`yarn --silent flash run get-contract-address -n ProxyFactory | sed '1d'`
+export ETHEREUM_CHAIN_ID=`yarn --silent flash network-id | sed '1d'`
+export CUSTOM_CONTRACT_ADDRESSES=`yarn --silent flash get-all-contract-addresses --ugly | sed '1d'`
+export GNOSIS_SAFE_CONTRACT_ADDRESS=`yarn --silent flash get-contract-address -n GnosisSafe | sed '1d'`
+export PROXY_FACTORY_CONTRACT_ADDRESS=`yarn --silent flash get-contract-address -n ProxyFactory | sed '1d'`
 #yarn docker:gnosis
 yarn workspace @augurproject/gnosis-relay-api run-relay
 
