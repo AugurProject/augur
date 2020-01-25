@@ -2093,6 +2093,234 @@ export const LIST_VALUES = {
       label: 'Bowl',
     },
   ],
+  OLYMPIC_LIST: [
+    {
+      value: 'World',
+      label: 'World'
+    },
+    {
+      value: 'Olympic',
+      label: 'Olympic'
+    }
+  ],
+  OLYMPIC_LIST_MEDAL: [
+    {
+      value: 'Any',
+      label: 'Any'
+    },
+    {
+      value: 'A gold',
+      label: 'A gold'
+    }
+  ],
+  OLYMPIC_MEDALS: [
+    {
+      value: 'Total',
+      label: 'Total',
+    },
+    {
+      value: 'Gold',
+      label: 'Gold',
+    },
+    {
+      value: 'Silver',
+      label: 'Silver',
+    },
+    {
+      value: 'Bronze',
+      label: 'Bronze',
+    },
+  ],
+  OLYMPIC_COUNTRIES: [
+    {
+      value: 'USA',
+      label: 'USA',
+    },
+    {
+      value: 'Afghanistan',
+      label: 'Afghanistan',
+    },
+    {
+      value: 'American Samoa',
+      label: 'American Samoa',
+    },
+    {
+      value: 'Algeria',
+      label: 'Algeria',
+    },
+    {
+      value: 'Albania',
+      label: 'Albania',
+    }
+  ],
+  OLYMPIC_SUMMER_SPORTS: [
+    {
+      value: 'Swimming',
+      label: 'Swimming',
+    },
+    {
+      value: 'Heptathlon',
+      label: 'Heptathlon',
+    },
+    {
+      value: 'Decathlon',
+      label: 'Decathlon',
+    }, {
+      value: 'Field',
+      label: 'Field',
+    }, {
+      value: 'Track',
+      label: 'Track',
+    }, 
+    {
+      value: 'Archery',
+      label: 'Archery',
+    }, 
+    {
+      value: 'Marathon swimming',
+      label: 'Marathon swimming',
+    }, 
+    {
+      value: 'Artistic Swimming',
+      label: 'Artistic Swimming',
+    }, 
+    {
+      value: 'Water Polo',
+      label: 'Water Polo',
+    }, 
+    {
+      value: 'Diving',
+      label: 'Diving',
+    },
+    {
+      value: 'Canoe',
+      label: 'Canoe',
+    },
+    {
+      value: 'Boxing',
+      label: 'Boxing',
+    },
+    {
+      value: 'Basketball',
+      label: 'Basketball',
+    },
+    {
+      value: 'Softball',
+      label: 'Softball',
+    },
+    {
+      value: 'Baseball',
+      label: 'Baseball',
+    },
+    {
+      value: 'Badminton',
+      label: 'Badminton',
+    },
+    {
+      value: 'Golf',
+      label: 'Golf',
+    },
+    {
+      value: 'Football(Soccer)',
+      label: 'Football(Soccer)',
+    },
+    {
+      value: 'Fencing',
+      label: 'Fencing',
+    },
+    {
+      value: 'Equestrian',
+      label: 'Equestrian',
+    },
+    {
+      value: 'Cycling',
+      label: 'Cycling',
+    },
+    {
+      value: 'Table Tennis',
+      label: 'Table Tennis',
+    },
+    {
+      value: 'Taekwondo',
+      label: 'Taekwondo',
+    },
+    {
+      value: 'Tennis',
+      label: 'Tennis',
+    },
+    {
+      value: 'Triathlon',
+      label: 'Triathlon',
+    },
+    {
+      value: 'Volleyball',
+      label: 'Volleyball',
+    },
+    {
+      value: 'Weightlifting',
+      label: 'Weightlifting',
+    },
+    {
+      value: 'Wrestling',
+      label: 'Wrestling',
+    },
+    {
+      value: 'Surfing',
+      label: 'Surfing',
+    },
+    {
+      value: 'Sport Climbing',
+      label: 'Sport Climbing',
+    },
+    {
+      value: 'Skateboarding',
+      label: 'Skateboarding',
+    },
+    {
+      value: 'Shooting',
+      label: 'Shooting',
+    },
+    {
+      value: 'Sailing',
+      label: 'Sailing',
+    },
+    {
+      value: 'Rugby',
+      label: 'Rugby',
+    },
+    {
+      value: 'Rowing',
+      label: 'Rowing',
+    },
+    {
+      value: 'Modern Pentathlon',
+      label: 'Modern Pentathlon',
+    },
+    {
+      value: 'Karate',
+      label: 'Karate',
+    },
+    {
+      value: 'Judo',
+      label: 'Judo',
+    },
+    {
+      value: 'Hockey',
+      label: 'Hockey',
+    },
+    {
+      value: 'Handball',
+      label: 'Handball',
+    },
+    {
+      value: 'Gymnastics Trampoline',
+      label: 'Gymnastics Trampoline',
+    },
+    {
+      value: 'Gymastics Rythmic',
+      label: 'Gymastics Rythmic',
+    },
+  ],
   NFL_TEAMS: [
     {
       value: 'Arizona Cardinals',
@@ -8115,6 +8343,24 @@ export const LIST_VALUES = {
       value: 'Euronext NV (traded in EUR)',
     },
   ],
+  TENNIS_EVENTS: [
+    {
+      value: 'Singles (Men/Women)',
+      label: 'Singles (Men/Women)'
+    }
+  ],
+  DIVING_EVENTS: [
+    {
+      value: '3m Springboard (Men/Women)',
+      label: '3m Springboard (Men/Women)'
+    }
+  ],
+  WATER_POLO_EVENTS: [
+    {
+      value: '12-team tournament (Men)',
+      label: 'Singles (Men/Women)'
+    }
+  ],
   BTC_USD_TRADING_VIEW_EXCHANGES: [
     {
       value: 'BTCUSD (crypto - Coinbase)',
@@ -8379,6 +8625,12 @@ export const FIN_INDEXES_CLOSING_OFFSETS = {
     minutes: 0,
   },
   VIX: { offset: -5, hour: 15, minutes: 15 },
+};
+
+export const OLYMPIC_SUMMER_SPORT_EVENTS = {
+  'Tennis': LIST_VALUES.TENNIS_EVENTS,
+  'Dining': LIST_VALUES.DIVING_EVENTS,
+  'Water Polo': LIST_VALUES.WATER_POLO_EVENTS,
 };
 
 export const CRYPTO_BTC_CURRENCY_MARKETS = {

@@ -168,15 +168,11 @@
 
         > span {
           .text-18-bold;
+          .limit-lines(3);
 
           color: @color-primary-text;
           margin-bottom: @size-8;
           flex: 0 auto;
-          display: -webkit-box;
-          -webkit-line-clamp: 3;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
-          text-overflow: ellipsis;
         }
 
         &.BigTitle > span {
@@ -245,17 +241,13 @@ div.Toggle {
 
       > h1 {
         .text-12-bold;
+        .limit-lines(1);
 
         color: @color-primary-text;
         flex: 1;
         padding: 0;
         margin: 0;
-        display: -webkit-box;
-        -webkit-line-clamp: 1;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
         text-align: left;
-        text-overflow: ellipsis;
       }
 
       > section {
@@ -282,16 +274,12 @@ div.Toggle {
 
 .AdditionalDetails,
 .AdditionalDetails:disabled {
+  .limit-lines(4);
+
   margin: 0;
   max-height: @size-64;
   transition: max-height 0.15s ease-out;
-  display: -webkit-box;
-  -webkit-line-clamp: 4;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
   width: 100%;
-  word-break: break-word;
 
   @media @breakpoint-mobile {
     -webkit-line-clamp: 3;
