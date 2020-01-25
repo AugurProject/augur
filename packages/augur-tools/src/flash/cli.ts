@@ -21,14 +21,7 @@ function parse(flash: FlashSession): Args {
     description: 'Interact with Augur contracts.',
   });
 
-  const mode = parser.addSubparsers({
-    dest: 'mode',
-  });
-
-  mode.addParser('interactive');
-
-  const commandMeta = mode.addParser('run');
-  commandMeta.addArgument(
+  parser.addArgument(
     [ '-n', '--network' ],
     {
       help: `Name of network to run on. Use "none" for commands that don't use a network.`,
@@ -36,7 +29,21 @@ function parse(flash: FlashSession): Args {
     }
   );
 
-  const commands = commandMeta.addSubparsers({ dest: 'command' });
+  const commands = parser.addSubparsers({ dest: 'command' });
+
+  const interactive = commands.addParser(
+    'interactive',
+    {
+      description: 'Run flash interactively',
+    },
+  );
+  // interactive.addArgument(
+  //   ['-c', '--connect'],
+  //   {
+  //     help: 'Auto-connect to the network specified with --network (defaults to local node)',
+  //     action: 'storeTrue',
+  //   }
+  // );
 
   for (const name of Object.keys(flash.scripts) || []) {
     const script = flash.scripts[name];
@@ -121,12 +128,12 @@ if (require.main === module) {
 
     const args = parse(flash);
 
-    if (args.mode === 'interactive') {
+    if (args.command === 'interactive') {
       const vorpal = makeVorpalCLI(flash);
       flash.log = vorpal.log.bind(vorpal);
       vorpal.show();
     } else if (args.network === 'none') {
-      flash.call(args.command, args).catch(console.error);
+      await flash.call(args.command, args).catch(console.error);
     } else {
       try {
         flash.network = NetworkConfiguration.create(args.network as NETWORKS);

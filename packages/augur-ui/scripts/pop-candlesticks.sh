@@ -39,14 +39,14 @@ do
     fi
 
     echo "Sell trade $i";
-    yarn flash run create-market-order -u "0xbd355a7e5a7adb23b51f54027e624bfe0e238df6" $SKIP_FAUCET -z -m $MARKET_ID -o $OUTCOME -t $TRANS_ONE_TYPE -a 100 -p "${dataArray[$i]}"
+    yarn flash create-market-order -u "0xbd355a7e5a7adb23b51f54027e624bfe0e238df6" $SKIP_FAUCET -z -m $MARKET_ID -o $OUTCOME -t $TRANS_ONE_TYPE -a 100 -p "${dataArray[$i]}"
 
     echo "Filling trade $i";
-    yarn flash run create-market-order -f -u "0xe4ec477bc4abd2b18225bb8cba14bf57867f082b" $SKIP_FAUCET -z -m $MARKET_ID -o $OUTCOME -t $TRANS_TWO_TYPE -a 100 -p "${dataArray[$i]}"
+    yarn flash create-market-order -f -u "0xe4ec477bc4abd2b18225bb8cba14bf57867f082b" $SKIP_FAUCET -z -m $MARKET_ID -o $OUTCOME -t $TRANS_TWO_TYPE -a 100 -p "${dataArray[$i]}"
 
     SKIP_FAUCET='-k'
     if [ "$PUSH_TIME" = true ] ; then
-      yarn flash run push-timestamp -c 1h;
+      yarn flash push-timestamp -c 1h;
     fi
 
     sleep 10
@@ -54,7 +54,7 @@ do
 
   if [ "$PUSH_TIME" = true ] ; then
     echo "Push time";
-    yarn flash run push-timestamp -c 2h;
+    yarn flash push-timestamp -c 2h;
   fi
   sleep 10
 done

@@ -16,7 +16,7 @@ const exec = util.promisify(require('child_process').exec);
 type ContractNames = keyof ContractAddresses;
 async function getContractAddress(contractName: ContractNames) {
   const address = await exec(
-    `/usr/bin/env yarn --silent workspace @augurproject/tools flash run get-contract-address -n ${contractName}`
+    `/usr/bin/env yarn --silent workspace @augurproject/tools flash get-contract-address -n ${contractName}`
   );
   return address.stdout.split('\n')[1];
 }
