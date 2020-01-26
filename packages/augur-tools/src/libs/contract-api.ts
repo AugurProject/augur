@@ -608,6 +608,12 @@ export class ContractAPI {
     await this.augur.contracts.cash.transfer(to, attoCash);
   }
 
+  async addEthExchangeLiquidity(attoCash: BigNumber, attoEth: BigNumber): Promise<void> {
+    await this.faucet(attoCash);
+    const owner = await this.augur.getAccount();
+    await this.augur.contracts.ethExchange.publicMintAuto(owner, attoCash, {attachedEth: attoEth});
+  }
+
   async approve(wei: BigNumber): Promise<void> {
     await this.augur.contracts.cash.approve(this.augur.addresses.Augur, wei);
 

@@ -1894,7 +1894,7 @@ export function addScripts(flash: FlashSession) {
     },
   });
 
-    flash.addScript({
+  flash.addScript({
     name: 'get-all-contract-addresses',
     options: [
       {
@@ -1913,6 +1913,32 @@ export function addScripts(flash: FlashSession) {
       } else {
         console.log(JSON.stringify(this.contractAddresses, null, 2))
       }
+    },
+  });
+
+  flash.addScript({
+    name: 'add-eth-exchange-liquidity',
+    options: [
+      {
+        name: 'ethAmount',
+        abbr: 'e',
+        description: 'amount of ETH to provide to the exchange',
+        required: true,
+      },
+      {
+        name: 'cashAmount',
+        abbr: 'c',
+        description: 'amount of DAI to provide to the exchange',
+        required: true,
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const attoEth = new BigNumber(Number(args.ethAmount)).times(_1_ETH);
+      const attoCash = new BigNumber(Number(args.cashAmount)).times(_1_ETH);
+
+      const user = await this.ensureUser();
+
+      await user.addEthExchangeLiquidity(attoCash, attoEth);
     },
   });
 }
