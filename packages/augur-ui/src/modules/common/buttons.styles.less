@@ -208,11 +208,11 @@
 
 .BuyOrderButton {
   .Button;
-  .mono-12-bold;
+  .mono-12-semi-bold;
 
   background: fade(@color-positive, 10%);
   border-color: @color-positive;
-  border-width: 2px;
+  border-width: @size-2;
   color: @color-positive;
   height: @button-height-default;
   max-height: @button-height-default;
@@ -226,7 +226,7 @@
   }
 
   &:hover:enabled {
-    background: fade(@color-positive, 60%);
+    background: fade(@color-positive, 20%);
   }
 }
 
@@ -260,11 +260,11 @@
 
 .SellOrderButton {
   .Button;
-  .mono-12-bold;
+  .mono-12-semi-bold;
 
   background: fade(@color-negative, 10%);
   border-color: @color-negative;
-  border-width: 2px;
+  border-width: @size-2;
   color: @color-negative;
   height: @button-height-default;
   max-height: @button-height-default;
@@ -278,7 +278,7 @@
   }
 
   &:hover:enabled {
-    background: fade(@color-negative, 60%);
+    background: fade(@color-negative, 20%);
   }
 }
 
