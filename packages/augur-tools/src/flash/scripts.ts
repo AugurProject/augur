@@ -413,7 +413,7 @@ export function addScripts(flash: FlashSession) {
       const user = await this.ensureUser();
       await user.repFaucet(QUINTILLION.multipliedBy(1000000));
       await user.faucet(QUINTILLION.multipliedBy(2000000));
-      await user.approve(QUINTILLION.multipliedBy(1000000));
+      await user.approve(QUINTILLION.multipliedBy(10000000000));
       await this.call('add-eth-exchange-liquidity', {
         ethAmount: QUINTILLION.multipliedBy(100).toFixed(),
         cashAmount: QUINTILLION.multipliedBy(1000000).toFixed()
@@ -426,10 +426,7 @@ export function addScripts(flash: FlashSession) {
     name: 'create-canned-markets-with-orders',
     async call(this: FlashSession) {
       const user = await this.ensureUser();
-      await user.repFaucet(QUINTILLION.multipliedBy(10000));
-      await user.faucet(QUINTILLION.multipliedBy(10000000));
-      await user.approve(QUINTILLION.multipliedBy(10000000000));
-      const markets = await createCannedMarkets(user);
+      const markets = await this.call('create-canned-markets', {});
       for(let i = 0; i < markets.length; i++) {
         const createdMarket = markets[i];
         const numTicks = await createdMarket.market.getNumTicks_();
