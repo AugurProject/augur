@@ -13,13 +13,28 @@ sleep 10s
 # XXX - defensive
 cd /augur
 
-# couldn't get dp deploy to work had to split it up, contract addresses were reloaded
-yarn flash deploy --write-artifacts
-yarn tools build
-yarn flash faucet --amount 10000000000000000000
-yarn flash rep-faucet --amount 100000
+###############################################################################
+# PG: This section is idenntical to one-docker-to-rule-them-all.sh some time we
+# should move it all into flash and fix the Addresses so that they can be
+# reloaded.
+# Until then -- Make sure changes work in BOTH scripts
+
+if [ "$FAKE_TIME" == "true" ]; then
+  yarn flash fake-all
+else
+  yarn flash normal-all
+fi
+
+# Still need to double-check builds after deploy
+yarn build
+
+# Create-canned-markets will rep/cash faucet
 yarn flash create-canned-markets
+
+# Make sure relayer is fauceted with Cash
 yarn flash faucet -t 0x9d4c6d4b84cd046381923c9bc136d6ff1fe292d9 -a 1000000
+
+###############################################################################
 
 # debug info
 geth version | tee /augur/geth-version.txt
