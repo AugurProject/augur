@@ -411,9 +411,10 @@ export function addScripts(flash: FlashSession) {
     name: 'create-canned-markets',
     async call(this: FlashSession) {
       const user = await this.ensureUser();
-      await user.repFaucet(new BigNumber(10).pow(18).multipliedBy(1000000));
-      await user.faucet(new BigNumber(10).pow(18).multipliedBy(1000000));
-      await user.approve(new BigNumber(10).pow(18).multipliedBy(1000000));
+      await user.repFaucet(QUINTILLION.multipliedBy(1000000));
+      await user.faucet(QUINTILLION.multipliedBy(1000000));
+      await user.approve(QUINTILLION.multipliedBy(1000000));
+      await this.call('add-eth-exchange-liquidity'. {ethAmount: QUINTILLION.multipliedBy(10000), cashAmount: QUINTILLION.multipliedBy(10000)});
       return createCannedMarkets(user);
     },
   });
@@ -422,9 +423,9 @@ export function addScripts(flash: FlashSession) {
     name: 'create-canned-markets-with-orders',
     async call(this: FlashSession) {
       const user = await this.ensureUser();
-      await user.repFaucet(new BigNumber(10).pow(18).multipliedBy(10000));
-      await user.faucet(new BigNumber(10).pow(18).multipliedBy(10000000));
-      await user.approve(new BigNumber(10).pow(18).multipliedBy(10000000000));
+      await user.repFaucet(QUINTILLION.multipliedBy(10000));
+      await user.faucet(QUINTILLION.multipliedBy(10000000));
+      await user.approve(QUINTILLION.multipliedBy(10000000000));
       const markets = await createCannedMarkets(user);
       for(let i = 0; i < markets.length; i++) {
         const createdMarket = markets[i];
@@ -478,8 +479,8 @@ export function addScripts(flash: FlashSession) {
       const user = await this.ensureUser(this.network, true, true, null, meshEndpoint, true);
       const skipFaucetApproval = args.skipFaucetOrApproval as boolean;
       if (!skipFaucetApproval) {
-        await user.faucet(new BigNumber(10).pow(18).multipliedBy(1000000));
-        await user.approve(new BigNumber(10).pow(18).multipliedBy(1000000));
+        await user.faucet(QUINTILLION.multipliedBy(1000000));
+        await user.approve(QUINTILLION.multipliedBy(1000000));
       }
       const yesNoMarket = cannedMarkets.find(c => c.marketType === 'yesNo');
       const orderBook = yesNoMarket.orderBook;
@@ -566,8 +567,8 @@ export function addScripts(flash: FlashSession) {
       const user = await this.ensureUser(this.network, true, true, null, meshEndpoint, true);
       const skipFaucetApproval = args.skipFaucetOrApproval as boolean;
       if (!skipFaucetApproval) {
-        await user.faucet(new BigNumber(10).pow(18).multipliedBy(1000000));
-        await user.approve(new BigNumber(10).pow(18).multipliedBy(1000000));
+        await user.faucet(QUINTILLION.multipliedBy(1000000));
+        await user.approve(QUINTILLION.multipliedBy(1000000));
       }
 
       const orderBook = {
@@ -705,8 +706,8 @@ export function addScripts(flash: FlashSession) {
       const user = await this.ensureUser(this.network, true, true, null, meshEndpoint, true);
       const skipFaucetApproval = args.skipFaucetOrApproval as boolean;
       if (!skipFaucetApproval) {
-        await user.faucet(new BigNumber(10).pow(18).multipliedBy(1000000));
-        await user.approve(new BigNumber(10).pow(18).multipliedBy(1000000));
+        await user.faucet(QUINTILLION.multipliedBy(1000000));
+        await user.approve(QUINTILLION.multipliedBy(1000000));
       }
 
       const timestamp = await this.call('get-timestamp', {});
@@ -983,8 +984,8 @@ export function addScripts(flash: FlashSession) {
       const skipFaucetOrApproval = args.skipFaucetOrApproval as boolean;
       if (!skipFaucetOrApproval) {
         this.log('create-market-order, faucet and approval');
-        await user.faucet(new BigNumber(10).pow(18).multipliedBy(10000));
-        await user.approve(new BigNumber(10).pow(18).multipliedBy(100000));
+        await user.faucet(QUINTILLION.multipliedBy(10000));
+        await user.approve(QUINTILLION.multipliedBy(100000));
       }
       const orderType = String(args.orderType).toLowerCase();
       const type = orderType === 'bid' || orderType === 'buy' ? 0 : 1;
