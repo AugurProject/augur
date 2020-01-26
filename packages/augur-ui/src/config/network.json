@@ -7,7 +7,7 @@
       "blockRetention": 100,
       "connectionTimeout": 60000
     },
-    "gnosis-relay": "http://localhost:8000/api/",
+    "gnosis-relay": "http://localhost:8888/api/",
     "0x-endpoint": "ws://localhost:60557",
     "0x-mesh": {
       "bootstrapList": [

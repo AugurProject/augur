@@ -21,7 +21,8 @@ import { ethers } from 'ethers';
 import { getAddress } from 'ethers/utils/address';
 import * as _ from 'lodash';
 
-const DEFAULT_GAS_PRICE = new BigNumber(4e9); // Default: GasPrice: 4
+const MIN_GAS_PRICE = new BigNumber(1e9) // Min: 1 Gwei
+const DEFAULT_GAS_PRICE = new BigNumber(4e9); // Default: GasPrice: 4 Gwei
 const BASE_GAS_ESTIMATE = '75000';
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 
@@ -137,6 +138,7 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
   }
 
   setGasPrice(gasPrice: BigNumber): void {
+    if (gasPrice.lt(MIN_GAS_PRICE)) gasPrice = MIN_GAS_PRICE;
     this.gasPrice = gasPrice;
   }
 
@@ -324,7 +326,7 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
       relayTransaction.operation,
       new ethers.utils.BigNumber(Number(relayTransaction.safeTxGas).toFixed()),
       new ethers.utils.BigNumber(Number(relayTransaction.dataGas).toFixed()),
-      new ethers.utils.BigNumber(Number(gasPrice).toFixed()),
+      gasPrice,
       relayTransaction.gasToken,
       relayTransaction.refundReceiver,
       signatures,

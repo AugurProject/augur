@@ -589,7 +589,7 @@ export class ContractAPI {
     let balance = await this.getCashBalance(account);
     const desired = attoCash;
     while (balance.lt(attoCash)) {
-      console.log(`FAUCETING. BALANCE: ${balance}. DESIRED: ${desired}`);
+      console.log(`CASH FAUCETING. BALANCE: ${balance}. DESIRED: ${desired}`);
       await this.augur.contracts.cashFaucet.faucet(attoCash);
       balance = await this.getCashBalance();
     }
@@ -606,6 +606,12 @@ export class ContractAPI {
 
   async transferCash(to: string, attoCash: BigNumber): Promise<void> {
     await this.augur.contracts.cash.transfer(to, attoCash);
+  }
+
+  async addEthExchangeLiquidity(attoCash: BigNumber, attoEth: BigNumber): Promise<void> {
+    await this.faucet(attoCash);
+    const owner = await this.augur.getAccount();
+    await this.augur.contracts.ethExchange.publicMintAuto(owner, attoCash, {attachedEth: attoEth});
   }
 
   async approve(wei: BigNumber): Promise<void> {
