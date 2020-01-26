@@ -324,7 +324,7 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
       relayTransaction.operation,
       new ethers.utils.BigNumber(Number(relayTransaction.safeTxGas).toFixed()),
       new ethers.utils.BigNumber(Number(relayTransaction.dataGas).toFixed()),
-      new ethers.utils.BigNumber(Number(gasPrice).toFixed()),
+      gasPrice,
       relayTransaction.gasToken,
       relayTransaction.refundReceiver,
       signatures,
