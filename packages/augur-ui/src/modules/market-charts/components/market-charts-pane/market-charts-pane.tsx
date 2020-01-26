@@ -9,7 +9,7 @@ import { TEMP_TABLET } from 'modules/common/constants';
 import { Candlestick } from 'modules/market-charts/components/candlestick/candlestick';
 import DepthChart from 'modules/market-charts/containers/depth';
 import { BigNumber } from 'bignumber.js';
-import { MarketData } from 'modules/types';
+import { MarketData, OutcomeOrderBook } from 'modules/types';
 
 interface MarketChartsPaneProps {
   currentTimestamp?: number | undefined;
@@ -23,11 +23,12 @@ interface MarketChartsPaneProps {
   market?: MarketData;
   toggle: Function;
   tradingTutorial?: boolean;
+  orderBook: OutcomeOrderBook;
 }
 
 interface MarketChartsPaneState {
   hoveredPrice: null | BigNumber;
-  hoveredDepth: Array<any>;
+  hoveredDepth: any[];
 }
 
 export default class MarketChartsPane extends Component<
@@ -74,7 +75,7 @@ export default class MarketChartsPane extends Component<
       preview,
       market,
       toggle,
-      tradingTutorial
+      orderBook,
     } = this.props;
     const { hoveredPrice, hoveredDepth } = this.state;
     const shared = { marketId, selectedOutcomeId };
@@ -105,6 +106,7 @@ export default class MarketChartsPane extends Component<
                   updateHoveredPrice={this.updateHoveredPrice}
                   market={preview && market}
                   initialLiquidity={preview}
+                  orderBook={orderBook}
                 />
               </ModulePane>
             </ModuleTabs>
@@ -139,6 +141,7 @@ export default class MarketChartsPane extends Component<
                   updateHoveredPrice={this.updateHoveredPrice}
                   market={preview && market}
                   initialLiquidity={preview}
+                  orderBook={orderBook}
                 />
               </ModulePane>
             </ModuleTabs>
