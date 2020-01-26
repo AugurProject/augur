@@ -412,9 +412,12 @@ export function addScripts(flash: FlashSession) {
     async call(this: FlashSession) {
       const user = await this.ensureUser();
       await user.repFaucet(QUINTILLION.multipliedBy(1000000));
-      await user.faucet(QUINTILLION.multipliedBy(1000000));
+      await user.faucet(QUINTILLION.multipliedBy(2000000));
       await user.approve(QUINTILLION.multipliedBy(1000000));
-      await this.call('add-eth-exchange-liquidity'. {ethAmount: QUINTILLION.multipliedBy(10000), cashAmount: QUINTILLION.multipliedBy(10000)});
+      await this.call('add-eth-exchange-liquidity', {
+        ethAmount: QUINTILLION.multipliedBy(100).toFixed(),
+        cashAmount: QUINTILLION.multipliedBy(1000000).toFixed()
+      });
       return createCannedMarkets(user);
     },
   });
