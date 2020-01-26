@@ -124,7 +124,7 @@
   .Button;
 
   background: transparent;
-  border: 1px solid @color-secondary-action-outline;
+  border: @size-1 solid @color-secondary-action-outline;
   color: @color-primary-text;
   padding: @size-12 @size-24;
 
@@ -178,7 +178,7 @@
   .Button;
 
   background: transparent;
-  border: 1px solid @color-secondary-action-outline;
+  border: @size-1 solid @color-secondary-action-outline;
   color: @color-primary-text;
   max-height: @button-height-default;
   padding: @size-8 @size-12;
@@ -373,7 +373,7 @@
   flex-flow: row nowrap;
   text-transform: uppercase;
   background: @color-secondary-action;
-  border: 1px solid @color-secondary-action-outline;
+  border: @size-1 solid @color-secondary-action-outline;
   border-radius: @size-3;
   color: @color-primary-text;
   padding: @size-4 @size-6;
@@ -472,7 +472,7 @@
   align-content: center;
   // background: @color-secondary-action;
   background: transparent;
-  border: 1px solid @color-secondary-action-outline;
+  border: @size-1 solid @color-secondary-action-outline;
   color: @color-primary-text;
   display: flex;
   flex-flow: row nowrap;
@@ -595,7 +595,7 @@
   .mono-9-bold;
 
   background: @color-secondary-action;
-  border: 1px solid @color-secondary-action-outline;
+  border: @size-1 solid @color-secondary-action-outline;
   border-radius: @border-radius-default;
   align-items: center;
   color: @color-primary-text;
@@ -798,7 +798,7 @@
     fill: none;
     height: @size-14;
     width: @size-10;
-    margin: 0 1px 0 @size-8;
+    margin: 0 @size-1 0 @size-8;
 
     > path {
       stroke: @color-primary-text;
@@ -870,8 +870,8 @@
 
 .CategoryButtons {
   display: grid;
-  grid-template-columns: repeat(5, 168px);
-  grid-column-gap: 17px;
+  grid-template-columns: repeat(5, @size-168);
+  grid-column-gap: @size-17;
   justify-content: center;
 
   @media @breakpoint-mobile {
@@ -888,17 +888,17 @@
 
     align-items: center;
     background: @color-secondary-action;
-    border: 1px solid @color-secondary-action-outline;
+    border: @size-1 solid @color-secondary-action-outline;
     border-radius: @size-3;
     color: @color-primary-text;
     cursor: pointer;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    max-height: 178px;
-    max-width: 168px;
-    min-height: 178px;
-    min-width: 168px;
+    max-height: @size-178;
+    max-width: @size-168;
+    min-height: @size-178;
+    min-width: @size-168;
 
     > div:first-of-type {
       > svg {
@@ -925,7 +925,7 @@
         animation-direction: alternate-reverse;
         background-color: @color-secondary-action-outline;
         height: @size-16;
-        width: 80px;
+        width: @size-80;
       }
     }
   }
