@@ -50,6 +50,7 @@
         margin-bottom: @size-8;
       }
 
+      // 25%, 50%, 75%, 100%, Clear button
       &:nth-of-type(4) {
         align-items: center;
         border: none;
@@ -63,12 +64,17 @@
           
           min-height: @size-22;
           padding: @size-3 @size-6;
+
+          &:hover {
+            background: @color-secondary-hover;
+          }
         }
 
         > button:not(:first-of-type) {
           margin-left: @size-4;
         }
 
+        // Clear button
         > button:last-of-type {
           margin-left: auto;
         }
@@ -99,6 +105,7 @@
         }
       }
 
+      // Advanced order dropdown
       &:nth-of-type(6) {
         margin: @size-12 0;
         width: fit-content;
@@ -108,6 +115,14 @@
 
           min-height: @size-22;
           padding: @size-3 @size-6;
+
+          &:hover {
+            background: @color-secondary-hover;
+
+            > svg > path {
+              stroke: @color-primary-text;
+            }
+          }
         }
       }
 
