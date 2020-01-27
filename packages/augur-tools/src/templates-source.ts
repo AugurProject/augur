@@ -5611,6 +5611,7 @@ export const TEMPLATES = {
             placeholder: `Opening day`,
           },
         ],
+        onlyAllowFriday: true,
         resolutionRules: {
           [REQUIRED]: [
             {
@@ -5629,6 +5630,7 @@ export const TEMPLATES = {
         marketType: YES_NO,
         question: `Head-to-Head: Will [0] on domestic opening weekend of [1] in the US gross more than [2] on its opening weekend in US, according to www.boxofficemojo.com?`,
         example: `Head-to-Head: Will Avengers: Endgame on domestic opening weekend of April 22, 2019 gross more than Avengers: Age of Ultron on its opening weekend in the US, according to www.boxofficemojo.com?`,
+        onlyAllowFriday: true,
         inputs: [
           {
             id: 0,

@@ -346,6 +346,7 @@ export default class FormDetails extends React.Component<
 
           {isTemplate && (
             <DateTimeSelector
+            onlyAllowFriday={template.onlyAllowFriday}
               setEndTime={setEndTime}
               onChange={onChange}
               currentTimestamp={currentTimestamp}

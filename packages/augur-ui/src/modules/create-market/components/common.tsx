@@ -51,6 +51,7 @@ import {
   TemplateBannerText,
   SelectEventNoticeText,
   MARKET_COPY_LIST,
+  FRIDAY_DAY_OF_WEEK,
 } from 'modules/create-market/constants';
 import {
   DismissableNotice,
@@ -351,6 +352,7 @@ interface DateTimeSelectorProps {
   uniqueKey?: string;
   condensedStyle?: boolean;
   isAfter: number;
+  onlyAllowFriday?: boolean;
 }
 
 interface TimeSelectorParams {
@@ -429,6 +431,7 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
     uniqueKey,
     condensedStyle,
     isAfter,
+    onlyAllowFriday
   } = props;
 
   const [dateFocused, setDateFocused] = useState(false);
@@ -455,7 +458,7 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
       )}
       <span>
         <DatePicker
-          date={setEndTime ? moment(setEndTime * 1000) : null}
+          date={null}
           placeholder="Date"
           displayFormat="MMM D, YYYY"
           id="input-date"
@@ -464,7 +467,7 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
             onChange('setEndTime', date.startOf('day').unix());
           }}
           isOutsideRange={day =>
-            day.isBefore(minMarketEndTimeDay(currentTimestamp)) ||
+            (onlyAllowFriday && day.weekday() !== FRIDAY_DAY_OF_WEEK) || day.isBefore(minMarketEndTimeDay(currentTimestamp)) ||
             day.isAfter(moment.unix(isAfter))
           }
           numberOfMonths={1}

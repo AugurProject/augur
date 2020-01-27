@@ -180,6 +180,7 @@ export interface Template {
   tickSize?: number;
   minPrice?: number;
   maxPrice?: number;
+  onlyAllowFriday?: boolean;
 }
 
 export interface TemplateInput {
