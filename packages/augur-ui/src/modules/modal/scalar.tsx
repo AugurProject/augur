@@ -12,6 +12,7 @@ interface ScalarProps {
   cb?: Function;
 }
 
+// Used n Betting UI
 export const Scalar = ({ closeAction, cb = () => {} }: ScalarProps) => {
   const [checked, setChecked] = useState(false);
   const handleclose = e => {

@@ -11,7 +11,6 @@ import { MagnifyingGlass } from 'modules/common/icons';
 import PaginationStyles from 'modules/common/pagination.styles.less';
 import Styles from 'modules/markets-list/components/markets-list-styles.less';
 
-
 interface MarketsListProps {
   testid?: string;
   history: History;
