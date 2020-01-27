@@ -1943,4 +1943,13 @@ export function addScripts(flash: FlashSession) {
       await user.addEthExchangeLiquidity(attoCash, attoEth);
     },
   });
+
+  flash.addScript({
+    name: 'init-warp-sync',
+    async call(this: FlashSession, args: FlashArguments) {
+      const user = await this.ensureUser();
+
+      await user.initWarpSync(user.augur.contracts.universe.address);
+    },
+  });
 }
