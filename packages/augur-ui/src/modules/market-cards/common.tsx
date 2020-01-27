@@ -8,12 +8,13 @@ import {
   SCALAR_UP_ID,
   YES_NO,
   ZERO,
+  INVALID_OUTCOME_NAME,
 } from 'modules/common/constants';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import { CheckCircleIcon } from 'modules/common/icons';
-import { FormattedNumber, MarketData, OutcomeFormatted } from 'modules/types';
+import { FormattedNumber, MarketData, OutcomeFormatted, ConsensusFormatted } from 'modules/types';
 import { formatAttoRep, formatDai, formatNumber } from 'utils/format-number';
 import { Getters } from '@augurproject/sdk';
 import InvalidLabel from 'modules/common/containers/labels';
@@ -381,19 +382,18 @@ export const HoverIcon = (props: HoverIconProps) => (
 );
 
 export interface ResolvedOutcomesProps {
-  outcomes: Array<OutcomeFormatted>;
+  consensusFormatted: ConsensusFormatted;
+  outcomes: OutcomeFormatted[];
   expanded?: Boolean;
 }
 
 export const ResolvedOutcomes = (props: ResolvedOutcomesProps) => {
-  const winnerIndex = props.outcomes.findIndex(outcome => outcome.winner);
-  const outcomes = props.outcomes;
-  const winner = outcomes.splice(winnerIndex, 1)[0];
+  const outcomes = props.outcomes.filter(outcome => String(outcome.id) !== props.consensusFormatted.outcome);
 
   return (
     <div className={Styles.ResolvedOutcomes}>
       <span>Winning Outcome {CheckCircleIcon} </span>
-      <span>{winner && winner.description}</span>
+      <span>{props.consensusFormatted.invalid ? INVALID_OUTCOME_NAME : props.consensusFormatted.outcomeName}</span>
       {props.expanded && (
         <div>
           <span>other outcomes</span>
