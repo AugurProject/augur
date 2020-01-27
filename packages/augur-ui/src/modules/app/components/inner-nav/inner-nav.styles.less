@@ -129,11 +129,14 @@
       width: 100%;
       padding-bottom: @size-40;
 
+      // the header area
       > div:first-of-type {
+        .text-16-bold;
+
         align-items: center;
-        background: @color-module-background;
+        background: @color-dark-grey;
         border-bottom: 1px solid @color-dark-grey;
-        color: white;
+        color: @color-primary-text;
         display: flex;
         flex-flow: row nowrap;
         height: 50px;
@@ -143,12 +146,14 @@
         position: fixed;
 
         > span {
+          padding-left: @size-25;
           margin: auto;
         }
 
+        // close button
         > button {
           height: @size-16;
-          margin-right: @size-16;
+          margin-right: @size-9;
           width: @size-16;
         }
 
@@ -157,8 +162,10 @@
         }
       }
 
+      // Apply button
       > div:nth-of-type(2) {
-        padding: 0 @size-10 @size-10;
+        background: @color-table-header;
+        padding: @size-9 @size-24;
         position: fixed;
         left: 0;
         right: 0;
