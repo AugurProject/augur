@@ -23,6 +23,7 @@ import { addPendingOrder } from 'modules/orders/actions/pending-orders-managemen
 import { orderSubmitted } from 'services/analytics/helpers';
 import { AppState } from 'store';
 import { totalTradingBalance } from 'modules/auth/selectors/login-account';
+import { isGnosisUnavailable } from 'modules/app/selectors/gnosis';
 
 const getMarketPath = id => {
   return {
@@ -39,7 +40,6 @@ const mapStateToProps = (state: AppState, ownProps) => {
   const hasHistory = !!accountPositions[marketId] || !!userOpenOrders[marketId];
   const {
     gnosisEnabled: Gnosis_ENABLED,
-    gnosisStatus,
   } = appStatus;
   const hasFunds = Gnosis_ENABLED
     ? !!loginAccount.balances.dai
@@ -51,9 +51,9 @@ const mapStateToProps = (state: AppState, ownProps) => {
     hasFunds,
     isLogged: authStatus.isLogged,
     Gnosis_ENABLED,
-    gnosisStatus,
     currentTimestamp: blockchain.currentAugurTimestamp,
     availableDai: totalTradingBalance(loginAccount),
+    GnosisUnavailable: isGnosisUnavailable(state),
   };
 };
 

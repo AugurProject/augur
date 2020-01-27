@@ -33,7 +33,6 @@ export interface SelectedOrderProperties {
 }
 
 interface WrapperProps {
-  gnosisStatus: GnosisSafeState;
   market: MarketData;
   selectedOutcome: OutcomeFormatted;
   selectedOrderProperties: SelectedOrderProperties;
@@ -60,6 +59,7 @@ interface WrapperProps {
   tradingTutorial?: boolean;
   currentTimestamp: number;
   availableDai: number;
+  GnosisUnavailable: boolean;
 }
 
 interface WrapperState {
@@ -398,9 +398,9 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       isLogged,
       loginModal,
       addFundsModal,
-      gnosisStatus,
       hasHistory,
-      availableDai
+      availableDai,
+      GnosisUnavailable,
     } = this.props;
     let {
       marketType,
@@ -430,11 +430,6 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       trade &&
       trade.totalCost &&
       createBigNumber(trade.totalCost.value).gte(createBigNumber(availableDai));
-    const GnosisUnavailable =
-      Gnosis_ENABLED &&
-      isLogged &&
-      hasFunds &&
-      gnosisStatus !== GnosisSafeState.AVAILABLE;
     let actionButton: any = (
       <OrderButton
         type={selectedNav}
