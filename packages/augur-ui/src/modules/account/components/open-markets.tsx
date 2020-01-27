@@ -76,22 +76,21 @@ export default class OpenMarkets extends Component<OpenMarketsProps> {
         title="My Active Markets"
         showFilterSearch
         data={markets}
+        customClass={Styles.OpenMarkets}
         filterComp={filterComp}
         noBackgroundBottom
         toggle={toggle}
         bottomBarContent={
           <div className={Styles.BottomBar}>
-            <div>
-              <span>24hr</span>
-              <MovementLabel
-                showIcon
-                showBrackets
-                showPlusMinus
-                value={totalPercentage}
-                useFull
-                size={SizeTypes.SMALL}
-              />
-            </div>
+            <span>24hr</span>
+            <MovementLabel
+              showIcon
+              showBrackets
+              showPlusMinus
+              value={totalPercentage}
+              useFull
+              size={SizeTypes.SMALL}
+            />
           </div>
         }
         noSwitch

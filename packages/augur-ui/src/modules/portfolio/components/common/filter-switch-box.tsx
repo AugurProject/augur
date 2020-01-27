@@ -25,6 +25,7 @@ export interface FilterBoxProps {
   toggle?: Function;
   extend?: boolean;
   hide?:boolean;
+  customClass?: string;
 }
 
 interface FilterBoxState {
@@ -48,7 +49,7 @@ export default class FilterSwitchBox extends React.Component<
     prevState: FilterBoxState
   ) {
     const { data } = prevProps;
-    const { search, view } = prevState;
+    const { view } = prevState;
     if (
       JSON.stringify(data) !== JSON.stringify(this.props.data) ||
       this.state.view !== view
@@ -102,6 +103,7 @@ export default class FilterSwitchBox extends React.Component<
       toggle,
       extend,
       hide,
+      customClass,
     } = this.props;
 
     const { search, filteredData } = this.state;
@@ -111,6 +113,7 @@ export default class FilterSwitchBox extends React.Component<
         title={title}
         showFilterSearch={showFilterSearch}
         search={search}
+        customClass={customClass}
         onSearchChange={this.onSearchChange}
         sortByOptions={sortByOptions}
         sortByStyles={sortByStyles}
