@@ -41,10 +41,10 @@ import {
   MarketData,
   OutcomeFormatted,
   DefaultOrderProperties,
+  OutcomeOrderBook,
 } from 'modules/types';
 import { getDefaultOutcomeSelected } from 'utils/convert-marketInfo-marketData';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
-import { SquareDropdown } from 'modules/common/selection';
 import { TutorialPopUp } from '../common/tutorial-pop-up';
 import { formatShares, formatDai } from 'utils/format-number';
 import { convertUnixToFormattedDate } from 'utils/format-date';
@@ -52,6 +52,9 @@ import { createBigNumber } from 'utils/create-big-number';
 import { TXEventName } from '@augurproject/sdk/src';
 import makePath from 'modules/routes/helpers/make-path';
 import { MARKETS } from 'modules/routes/constants/views';
+import { augurSdk } from 'services/augursdk';
+import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
+import { OutcomeOrderBook } from '@augurproject/sdk/src/api/Liquidity';
 
 interface MarketViewProps {
   isMarketLoading: boolean;
@@ -79,6 +82,8 @@ interface MarketViewProps {
   canHotload: boolean;
   removeAlert: Function;
   outcomeId?: number;
+  account: string;
+  orderBook?: OutcomeOrderBook;
 }
 
 interface DefaultOrderPropertiesMap {
@@ -98,7 +103,11 @@ interface MarketViewState {
   introShowing: boolean;
   tutorialError: string;
   hasShownScalarModal: boolean;
+  timer: NodeJS.Timeout;
+  orderBook: OutcomeOrderBook;
 }
+
+const ORDER_BOOK_REFRESH_MS = 3000;
 
 export default class MarketView extends Component<
   MarketViewProps,
@@ -142,6 +151,12 @@ export default class MarketView extends Component<
           ...this.DEFAULT_ORDER_PROPERTIES,
         },
       },
+      timer: null,
+      orderBook: this.props.preview ? this.props.orderBook : {
+        spread: null,
+        bids: [],
+        asks: []
+      },
     };
 
     this.updateSelectedOutcome = this.updateSelectedOutcome.bind(this);
@@ -179,10 +194,22 @@ export default class MarketView extends Component<
       window.scrollTo(0, 1);
     }
 
-    const { isMarketLoading, showMarketLoadingModal } = this.props;
+    const { isMarketLoading, showMarketLoadingModal, preview } = this.props;
 
     if (isMarketLoading) {
       showMarketLoadingModal();
+    }
+    if (!isMarketLoading && !preview) {
+      this.startOrderBookTimer();
+    }
+  }
+
+  startOrderBookTimer  = () => {
+    const { timer } = this.state;
+    if (!timer) {
+      this.getOrderBook()
+      const timer = setInterval(() => this.getOrderBook(), ORDER_BOOK_REFRESH_MS);
+      this.setState({ timer })
     }
   }
 
@@ -230,6 +257,28 @@ export default class MarketView extends Component<
     if (!tradingTutorial && !this.props.scalarModalSeen && this.props.marketType === SCALAR && !this.state.hasShownScalarModal) {
       this.props.updateModal({ type: MODAL_SCALAR_MARKET, cb: () => this.setState({ hasShownScalarModal: true }) });
     }
+  }
+
+  componentWillUnmount() {
+    const { timer } = this.state;
+    timer && clearInterval(timer);
+  }
+
+  getOrderBook = () => {
+    const { marketId, account } = this.props;
+    const { selectedOutcomeId } = this.state;
+    const Augur = augurSdk.get();
+    Augur.getMarketOrderBook({ marketId, account })
+    .then((marketOrderBook) => {
+      if (!marketOrderBook) {
+        return console.error(`Could not get order book for ${marketId}`);
+      }
+      let orderBook = marketOrderBook.orderBook;
+      if (orderBook[selectedOutcomeId]){
+        orderBook = orderBook[selectedOutcomeId] as OutcomeOrderBook;
+      }
+      this.setState({ orderBook });
+    });
   }
 
   tradingTutorialWidthCheck() {
@@ -417,11 +466,9 @@ export default class MarketView extends Component<
       currentTimestamp,
       description,
       marketId,
-      outcomes,
       market,
       history,
       preview,
-      sortedOutcomes,
       tradingTutorial,
       hotloadMarket,
       canHotload,
@@ -436,6 +483,7 @@ export default class MarketView extends Component<
       tutorialStep,
       tutorialError,
       pane,
+      orderBook
     } = this.state;
     if (isMarketLoading) {
       if (canHotload && !tradingTutorial) hotloadMarket(marketId);
@@ -448,24 +496,22 @@ export default class MarketView extends Component<
         />
       );
     }
-
+    let marketOrderBook = orderBook;
     let outcomeId =
       selectedOutcomeId === null || selectedOutcomeId === undefined
         ? market.defaultSelectedOutcomeId
         : selectedOutcomeId;
     if (preview && !tradingTutorial) {
       outcomeId = getDefaultOutcomeSelected(market.marketType);
+      marketOrderBook = formatOrderBook(orderBook[outcomeId]);
     }
-    const outcome = outcomes.find(
-      outcomeValue => outcomeValue.id === outcomeId
-    );
 
     const networkId = getNetworkId();
-
     const cat5 = this.findType();
-    const defaultOutcome = outcome ? outcome.id : 2;
-
     let orders = null;
+    if (tradingTutorial) {
+      marketOrderBook = formatOrderBook(orderBook[outcomeId]);
+    }
     if (
       tradingTutorial &&
       tutorialStep === TRADING_TUTORIAL_STEPS.OPEN_ORDERS
@@ -544,15 +590,9 @@ export default class MarketView extends Component<
 
     const totalSteps = Object.keys(TRADING_TUTORIAL_STEPS).length / 2 - 2;
 
-    let orderBookMarket = market;
-
     if (tradingTutorial && (tutorialStep === TRADING_TUTORIAL_STEPS.POSITIONS || tutorialStep === TRADING_TUTORIAL_STEPS.MY_FILLS)) {
-      let orderBook = market.orderBook;
-      orderBook[outcomeId] = orderBook[selectedOutcomeId].filter(order => !order.disappear);
-      orderBookMarket = {
-        ...market,
-        orderBook
-      }
+      const newOrderBook = market.orderBook[selectedOutcomeId].filter(order => !order.disappear);
+      marketOrderBook = formatOrderBook(newOrderBook);
     }
 
     return (
@@ -643,6 +683,7 @@ export default class MarketView extends Component<
                               hide={extendTradeHistory}
                               market={market}
                               initialLiquidity={preview}
+                              orderBook={marketOrderBook}
                             />
                           </div>
                         </ModulePane>
@@ -687,6 +728,7 @@ export default class MarketView extends Component<
                           this.updateSelectedOrderProperties
                         }
                         preview={preview}
+                        orderBook={marketOrderBook}
                       />
                     </div>
                   </ModulePane>
@@ -872,6 +914,7 @@ export default class MarketView extends Component<
                               }
                               market={preview && market}
                               preview={preview}
+                              orderBook={marketOrderBook}
                             />
                           </div>
                           <div
@@ -956,8 +999,9 @@ export default class MarketView extends Component<
                         toggle={this.toggleOrderBook}
                         extend={extendOrderBook}
                         hide={extendTradeHistory}
-                        market={orderBookMarket}
+                        market={market}
                         initialLiquidity={preview}
+                        orderBook={marketOrderBook}
                       />
                       {tradingTutorial &&
                         tutorialStep === TRADING_TUTORIAL_STEPS.ORDER_BOOK && (

@@ -226,6 +226,7 @@ interface CountdownLabelProps {
 }
 
 export const CountdownLabel = ({ expiry, currentTimestamp }: CountdownLabelProps) => {
+  if (!expiry) return null;
   const duration = getDurationBetween(expiry.timestamp, currentTimestamp);
   const hours = duration.asHours();
   if (hours > 1) return null;
