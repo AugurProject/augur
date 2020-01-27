@@ -13,6 +13,7 @@ interface OpenOrdersTableProps {
   openOrders?: UIOrder[];
 }
 
+// Some component can be used in Betting UI
 const OpenOrdersTable: React.FC<OpenOrdersTableProps> = ({ openOrders }) => {
   const dataTable = useRef(null);
   const [scrollable, setScrollable] = useState(false);
