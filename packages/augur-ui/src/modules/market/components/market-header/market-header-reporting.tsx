@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 import Styles from 'modules/market/components/market-header/market-header-reporting.styles.less';
-import { REPORTING_STATE, SCALAR } from 'modules/common/constants';
+import { REPORTING_STATE, SCALAR, INVALID_OUTCOME_NAME } from 'modules/common/constants';
 import { PrimaryButton } from 'modules/common/buttons';
 import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
 import { MarketData } from 'modules/types';
@@ -26,20 +26,20 @@ export const MarketHeaderReporting = ({
   canClaimProceeds,
   showReportingModal
 }: MarketHeaderReportingProps) => {
-  const { reportingState, id, consensusFormatted: consensus } = market;
+  const { reportingState, id, consensusFormatted } = market;
   let content = null;
   const slowDisputing =
     market.disputeInfo && market.disputeInfo.disputePacingOn;
 
-  if (consensus && (consensus.winningOutcome || consensus.isInvalid)) {
+  if (consensusFormatted && (consensusFormatted.winningOutcome || consensusFormatted.invalid)) {
     content = (
       <div className={classNames(Styles.Content, Styles.Set)}>
         <div>
           <span>Winning Outcome</span>
           <span>
-            {consensus.isInvalid
-              ? 'Invalid'
-              : consensus.outcomeName || consensus.winningOutcome}
+            {consensusFormatted.invalid
+              ? INVALID_OUTCOME_NAME
+              : consensusFormatted.outcomeName}
           </span>
         </div>
         {canClaimProceeds && (

@@ -93,7 +93,7 @@ export interface MarketInfos {
 export interface Outcomes extends Getters.Markets.MarketInfoOutcome {
   name?: string;
 }
-export interface Consensus extends PayoutNumeratorValue {
+export interface ConsensusFormatted extends PayoutNumeratorValue {
   winningOutcome: string | null;
   outcomeName: string | null;
 }
@@ -126,7 +126,7 @@ export interface MarketData extends Getters.Markets.MarketInfo {
   finalizationTimeFormatted: DateFormattedObject | null;
   // TODO: add this to getter Getters.Markets.MarketInfo
   // disputeInfo: object; this needs to get filled in on getter
-  consensusFormatted: Consensus | null;
+  consensusFormatted: ConsensusFormatted | null;
   outcomesFormatted: OutcomeFormatted[];
   isTemplate: boolean;
 }
