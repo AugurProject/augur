@@ -243,7 +243,7 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
         break;
       }
       case CANCELORDER: {
-        const orderId = transaction.params[TX_ORDER_ID];
+        const orderId = transaction.params && transaction.params.order['orderId'];
         dispatch(addCanceledOrder(orderId, eventName));
         if (eventName === TXEventName.Success) {
           dispatch(removeCanceledOrder(orderId));
@@ -251,7 +251,7 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
         break;
       }
       case CANCELORDERS: {
-        const orderIds = transaction.params[TX_ORDER_IDS];
+        const orderIds = transaction.params && transaction.params.order['orderIds'];
         orderIds.map(id => dispatch(addCanceledOrder(id, eventName)));
         if (eventName === TXEventName.Success) {
           orderIds.map(id => dispatch(removeCanceledOrder(id)));

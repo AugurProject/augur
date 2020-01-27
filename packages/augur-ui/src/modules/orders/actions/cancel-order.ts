@@ -6,6 +6,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { CANCELORDER } from 'modules/common/constants';
 import { addAlert } from 'modules/alerts/actions/alerts';
 import { Action } from 'redux';
+import { removeCanceledOrder } from 'modules/orders/actions/update-order-status';
 
 const BATCH_CANCEL_MAX = 25;
 
@@ -24,6 +25,9 @@ export const cancelAllOpenOrders = orders => async (
     });
     await cancelZeroXOpenBatchOrders(orderHashes);
   } catch (error) {
+    orders.forEach(order => {
+      dispatch(removeCanceledOrder(order.id));
+    });
     console.error('Error canceling batch orders', error);
     throw error;
   }
