@@ -415,6 +415,7 @@ export function addScripts(flash: FlashSession) {
       await user.faucet(QUINTILLION.multipliedBy(1000000));
       await user.approve(QUINTILLION.multipliedBy(3000000));
 
+      await this.call('init-warp-sync', {});
       await this.call('add-eth-exchange-liquidity', {
         ethAmount: "10",
         cashAmount: "1000"
