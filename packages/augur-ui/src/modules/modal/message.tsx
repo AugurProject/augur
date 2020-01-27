@@ -69,7 +69,7 @@ export const Message = ({
   marketReview,
   checkbox,
   content,
-  buttons,
+  buttons = [],
   subheader,
   subheader_2,
   showDiscordLink,
