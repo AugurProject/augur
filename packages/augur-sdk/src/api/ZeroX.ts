@@ -1,4 +1,4 @@
-import { ExchangeFillEvent, ValidationResults } from '@0x/mesh-browser';
+import { ExchangeFillEvent, ValidationResults, GetOrdersResponse } from '@0x/mesh-browser';
 import { OrderEvent, OrderInfo, WSClient } from '@0x/mesh-rpc-client';
 import { SignedOrder } from '@0x/types';
 import { Event } from '@augurproject/core/build/libraries/ContractInterfaces';
@@ -51,6 +51,7 @@ export interface BrowserMesh {
     orders: SignedOrder[],
     pinned?: boolean
   ): Promise<ValidationResults>;
+  getOrdersAsync(): Promise<GetOrdersResponse>;
 }
 
 export interface ZeroXPlaceTradeDisplayParams
@@ -179,12 +180,27 @@ export class ZeroX {
   }
 
   async getOrders(): Promise<OrderInfo[]> {
-    // TODO when browser mesh supports this back out to using it if _rpc not provided
-    if (!this.rpc) {
-      throw Error('getOrders is not supported on browser mesh');
+    var response;
+    if (this.rpc) {
+      response = await this.rpc.getOrdersAsync();
     }
-    const response = await this.rpc.getOrdersAsync();
+    else {
+      response = await this.mesh.getOrdersAsync();
+    }
     return response.ordersInfos;
+  }
+
+  async getOrdersRetry(numRetries: number = 10): Promise<OrderInfo[]> {
+    var response;
+    try {
+      response = this.getOrders();
+    }
+    catch {
+      if(numRetries > 0) {
+        setTimeout(() => this.getOrdersRetry(numRetries - 1), 3000);
+      }
+    }
+    return response;
   }
 
   async placeTrade(params: ZeroXPlaceTradeDisplayParams): Promise<void> {
