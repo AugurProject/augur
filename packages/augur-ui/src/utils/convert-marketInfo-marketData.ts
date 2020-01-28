@@ -81,12 +81,14 @@ export function getDefaultOutcomeSelected(marketType: string) {
   if (marketType === CATEGORICAL) return 1;
   return 2;
 }
+
 function getMarketStatus(reportingState: string) {
   let marketStatus = MARKET_OPEN;
   switch (reportingState) {
     case REPORTING_STATE.PRE_REPORTING:
       marketStatus = MARKET_OPEN;
       break;
+    case REPORTING_STATE.AWAITING_FINALIZATION:
     case REPORTING_STATE.FINALIZED:
       marketStatus = MARKET_CLOSED;
       break;

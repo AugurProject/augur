@@ -15,13 +15,11 @@ import { Getters } from '@augurproject/sdk';
 export const loadAllAccountPositions = (
   options: any = {},
   callback: NodeStyleCallback = logError,
-  marketIdAggregator: Function | undefined
 ) => (dispatch: ThunkDispatch<void, any, Action>) => {
   dispatch(
     loadAccountPositionsInternal(
       options,
-      (err: any, { marketIds = [], positions = {} }: any) => {
-        if (marketIdAggregator) marketIdAggregator(marketIds);
+      (err: any, { positions = {} }: any) => {
         if (!err) userPositionProcessing(positions, dispatch, callback);
       }
     )
@@ -43,9 +41,7 @@ export const loadMarketAccountPositions = (
   );
 };
 
-export const loadAccountPositionsTotals = (
-  callback: NodeStyleCallback = logError
-) => async (
+export const loadAccountPositionsTotals = () => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {

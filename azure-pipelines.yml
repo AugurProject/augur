@@ -148,6 +148,7 @@ jobs:
         displayName: feature peek
         condition:  and(eq(variables['JOB_TRIGGER_UI'], 'true'), eq(variables['Build.Reason'], 'PullRequest'))
       - bash: |
+          rm /tmp/seed.json
           set -euo pipefail
           free -m
           yarn test $(TEST_ARGS) --verbose --ci --reporters=default --reporters=jest-junit
