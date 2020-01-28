@@ -244,22 +244,23 @@ export class ZeroX {
       return;
     }
 
+    const account = await this.client.getAccount();
     const gasPrice = await this.client.getGasPrice();
     // TODO: We should be getting this by querying the exchange contract directly via `protocolFeeMultiplier()`
-    const protocolFee = gasPrice.multipliedBy(150000 * numOrders);
+    const protocolFee = gasPrice.multipliedBy(150000).multipliedBy(new BigNumber(loopLimit));
+    const walletEthBalance = await this.client.getEthBalance(account);
 
     const result: Event[] = await this.client.contracts.ZeroXTrade.trade(
       params.amount,
       params.fingerprint,
       params.tradeGroupId,
-      new BigNumber(1), // TODO: This is the param indicating the maximum amount of DAI to spend to cover the 0x protocol fee. Should be calculated and likely far lower
+      new BigNumber(1).multipliedBy(new BigNumber(loopLimit)), // TODO: This is the param indicating the maximum amount of DAI to spend to cover the 0x protocol fee. Should be calculated and likely far lower
       new BigNumber(loopLimit), // This is the maximum number of trades to actually make. This lets us put in more orders than we could fill with the gasLimit but handle failures and still fill the desired amount
       orders,
       signatures,
-      { attachedEth: protocolFee } // TODO: This should only be provided when the safe has sufficient ETH to pay. We should rely on the ETH exchange and paying DAI to get the protocol fee
+      { attachedEth: BigNumber.min(protocolFee, walletEthBalance) } // TODO: This should only be provided when the safe has sufficient ETH to pay. We should rely on the ETH exchange and paying DAI to get the protocol fee
     );
-
-    const account = await this.client.getAccount();
+    
     const amountRemaining = this.getTradeAmountRemaining(
       account,
       params.amount,
