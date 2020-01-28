@@ -3,6 +3,7 @@ import { updateAlert } from 'modules/alerts/actions/alerts';
 import {
   loadAccountPositionsTotals,
   loadMarketAccountPositions,
+  loadAllAccountPositions,
 } from 'modules/positions/actions/load-account-positions';
 import { removeMarket, updateMarketsData, } from 'modules/markets/actions/update-markets-data';
 import { loadMarketsInfo, } from 'modules/markets/actions/load-markets-info';
@@ -73,7 +74,6 @@ const loadUserPositionsAndBalances = (marketId: string) => (
   dispatch: ThunkDispatch<void, any, Action>
 ) => {
   dispatch(loadMarketAccountPositions(marketId));
-  // dispatch(getWinningBalance([marketId]));
 };
 
 export const handleTxAwaitingSigning = (txStatus: Events.TXStatus) => (
@@ -201,6 +201,7 @@ export const handleMarketsUpdatedLog = (
 
   dispatch(updateMarketsData(marketsDataById));
   if (isOnDisputingPage()) dispatch(reloadDisputingPage());
+
 };
 
 export const handleMarketCreatedLog = (log: any) => (
@@ -345,7 +346,7 @@ export const handleTradingProceedsClaimedLog = (
     getState().loginAccount.address
   );
   if (isUserDataUpdate) {
-    // handleAlert(log, CLAIMTRADINGPROCEEDS, dispatch, getState);
+    dispatch(loadAllAccountPositions());
     const { blockchain } = getState();
     dispatch(
       updateAlert(log.market, {
@@ -486,10 +487,18 @@ export const handleMarketFinalizedLog = (log: Logs.MarketFinalizedLog) => (
   const { universe } = getState();
   if (universe.forkingInfo) {
     if (log.market === universe.forkingInfo.forkingMarket) {
-      dispatch(loadUniverseForkingInfo())
+      dispatch(loadUniverseForkingInfo());
     }
   }
-}
+  const { accountPositions } = getState();
+  const positionMarketids = Object.keys(accountPositions);
+  const updatePositions =
+    positionMarketids.length > 0 &&
+    Object.keys(positionMarketids).includes(log.market);
+  if (updatePositions) {
+    dispatch(loadAllAccountPositions());
+  }
+};
 
 // ---- disputing ----- //
 export const handleDisputeCrowdsourcerCreatedLog = (

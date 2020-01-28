@@ -5,9 +5,7 @@ import { AppState } from 'store';
 import { updateLoginAccount } from 'modules/account/actions/login-account';
 import { NodeStyleCallback } from 'modules/types';
 
-export const loadAccountReportingHistory = (
-  marketIdAggregator?: Function
-) => async (
+export const loadAccountReportingHistory = () => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
@@ -24,8 +22,6 @@ export const loadAccountReportingHistory = (
     reporting.reporting.contracts.map(c => [...marketIds, c.marketId]);
   if (reporting.disputing && reporting.disputing.contracts.length > 0)
     reporting.disputing.contracts.map(c => [...marketIds, c.marketId]);
-
-  if (marketIdAggregator) marketIdAggregator(marketIds);
 
   dispatch(updateLoginAccount({ reporting }));
 };

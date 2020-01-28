@@ -3,16 +3,17 @@ import React, { Component } from "react";
 import FilterSwitchBox from "modules/portfolio/components/common/filter-switch-box";
 import MarketRow from "modules/portfolio/containers/market-row";
 import { MovementLabel } from "modules/common/labels";
-import { SizeTypes, FormattedNumber } from "modules/types";
+import { SizeTypes, FormattedNumber, MarketData } from "modules/types";
 
 import Styles from "modules/account/components/open-markets.styles.less";
+import { formatNumber } from "utils/format-number";
 
 function filterComp(input: any, market: any) {
   return market && market.description ? market.description.toLowerCase().indexOf(input.toLowerCase()) >= 0 : true;
 }
 
 interface OpenMarketsProps {
-  markets: Array<any>;
+  markets: MarketData[];
   marketsObj: object;
   totalPercentage: FormattedNumber;
   toggle: Function;
@@ -25,12 +26,15 @@ export default class OpenMarkets extends Component<OpenMarketsProps> {
     this.renderRows = this.renderRows.bind(this);
   }
 
-  renderRows(market: any) {
+  renderRows(market: Partial<MarketData>) {
     const { marketsObj } = this.props;
-
+    const positionValueChange =
+      marketsObj[market.id] &&
+      marketsObj[market.id].myPositionsSummary &&
+      marketsObj[market.id].myPositionsSummary.valueChange  || formatNumber(0);
     return (
       <MarketRow
-        key={"position_" + market.id}
+        key={'position_' + market.id}
         market={marketsObj[market.id]}
         showState={false}
         addedClass={Styles.OpenMarketsRow}
@@ -40,27 +44,26 @@ export default class OpenMarkets extends Component<OpenMarketsProps> {
             useFull
             showIcon
             showPlusMinus
-            value={
-              marketsObj[market.id].myPositionsSummary.valueChange
-            }
+            value={positionValueChange}
             size={SizeTypes.LARGE}
           />
         }
         toggleContent={
           <div className={Styles.ExpandedContent}>
-            {marketsObj[market.id].userPositions.map((position: any) => (
-              <div key={position.outcomeId}>
-                <span>{position.outcomeName}</span>
-                <MovementLabel
-                  showBrackets
-                  useFull
-                  showIcon
-                  showPlusMinus
-                  value={position.unrealizedPercent}
-                  size={SizeTypes.SMALL}
-                />
-              </div>
-            ))}
+            {marketsObj[market.id].userPositions &&
+              marketsObj[market.id].userPositions.map((position: any) => (
+                <div key={position.outcomeId}>
+                  <span>{position.outcomeName}</span>
+                  <MovementLabel
+                    showBrackets
+                    useFull
+                    showIcon
+                    showPlusMinus
+                    value={position.unrealizedPercent}
+                    size={SizeTypes.SMALL}
+                  />
+                </div>
+              ))}
           </div>
         }
       />

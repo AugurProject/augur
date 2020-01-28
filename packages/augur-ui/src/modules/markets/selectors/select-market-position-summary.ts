@@ -18,7 +18,12 @@ export const selectMarketPositionsSummary = createSelector(
       !marketAccountPositions ||
       !marketAccountPositions.tradingPositionsPerMarket
     ) {
-      return null;
+      return {
+        currentValue: formatDai(0),
+        totalPercent: formatPercent(0),
+        totalReturns: formatDai(0),
+        valueChange: formatPercent(0),
+      };
     }
     const marketPositions = marketAccountPositions.tradingPositionsPerMarket;
 
