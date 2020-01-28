@@ -11,7 +11,10 @@ export async function run() {
   const config: SDKConfiguration = {
     networkId: NetworkId.Kovan,
     ethereum: {
-      http: settings.ethNodeURLs[4]
+      http: settings.ethNodeURLs[4],
+      rpcRetryCount: 5,
+      rpcRetryInternval: 0,
+      rpcConcurrency: 40
     },
     syncing: {
     }
