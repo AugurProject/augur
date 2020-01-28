@@ -100,11 +100,6 @@ export type UserInputtedType =
   | UserInputUserOutcome
   | TimeOffset;
 
-export interface ValueLabelPair {
-  label: string;
-  value: string;
-}
-
 export interface ResolutionRule {
   text: string;
   isSelected?: boolean;
@@ -191,7 +186,7 @@ export interface TemplateInput {
   userInput?: string;
   userInputObject?: UserInputtedType;
   validationType?: ValidationType;
-  values?: ValueLabelPair[];
+  values?: string[];
   sublabel?: string;
   dateAfterId?: number;
   inputSourceId?: number; // input id as source of text to get list values
@@ -199,7 +194,7 @@ export interface TemplateInput {
   inputDestId?: number; // target input to set list values
   inputDestValues: {
     // dropdown source data structure to use to set target input list values
-    [key: string]: ValueLabelPair[];
+    [key: string]: string[];
   };
   inputTimeOffset: {
     [key: string]: TimeOffset;
