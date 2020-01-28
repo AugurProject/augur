@@ -184,7 +184,7 @@ export class ZeroX {
     if (this.rpc) {
       response = await this.rpc.getOrdersAsync();
     }
-    else {
+    else if (this.mesh) {
       response = await this.getMeshOrders();
     }
     return response.ordersInfos;
