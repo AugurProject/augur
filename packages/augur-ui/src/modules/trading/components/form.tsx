@@ -20,9 +20,8 @@ import { SquareDropdown } from 'modules/common/selection';
 import { TextInput } from 'modules/common/form';
 import getPrecision from 'utils/get-number-precision';
 import convertExponentialToDecimal from 'utils/convert-exponential';
-import { MarketData, OutcomeFormatted, OutcomeOrderBook } from 'modules/types';
-import { Getters } from '@augurproject/sdk';
-import { convertDisplayAmountToOnChainAmount, tickSizeToNumTickWithDisplayPrices } from '@augurproject/sdk';
+import { MarketData, OutcomeFormatted } from 'modules/types';
+import { convertDisplayAmountToOnChainAmount, tickSizeToNumTickWithDisplayPrices, Getters } from '@augurproject/sdk';
 import { CancelTextButton, TextButtonFlip } from 'modules/common/buttons';
 import moment, { Moment } from 'moment';
 import { convertUnixToFormattedDate } from 'utils/format-date';
@@ -83,7 +82,7 @@ interface FromProps {
   updateTradeNumShares: Function;
   clearOrderConfirmation: Function;
   initialLiquidity?: Boolean;
-  orderBook: OutcomeOrderBook;
+  orderBook: Getters.Markets.OutcomeOrderBook;
   availableDai: BigNumber;
   currentTimestamp: number;
   Ox_ENABLED: boolean;
@@ -306,7 +305,10 @@ class Form extends Component<FromProps, FormState> {
       );
     }
 
-    let tradeInterval = BigNumber.minimum(TRADE_INTERVAL_VALUE.dividedBy(numTicks).dividedBy(10**14).multipliedBy(10**14), 10**14);
+    let tradeInterval = DEFAULT_TRADE_INTERVAL;
+    if (market.marketType == SCALAR) {
+      tradeInterval = BigNumber.minimum(TRADE_INTERVAL_VALUE.dividedBy(numTicks).dividedBy(10**14).multipliedBy(10**14), 10**14);
+    }
 
     if (!convertDisplayAmountToOnChainAmount(value, market.tickSize).mod(tradeInterval).isEqualTo(0)) {
       errorCount += 1;

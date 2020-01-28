@@ -89,7 +89,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
         const marketTxCount = redeemStakeBatches(redeemStakeOptions);
         let notice = undefined;
         let action = () => dP.redeemStake(redeemStakeOptions);
-        let buttonText = 'Claim Proceeds';
+        let buttonText = 'Claim';
 
         if (isForking) {
           if (!market.disavowed) {
@@ -121,7 +121,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
           marketTxCount,
           properties: [
             {
-              label: 'reporting stake',
+              label: 'Reporting stake',
               value: `${marketRep.formatted || 0} REP`,
               addExtraSpace: true,
             },
@@ -230,7 +230,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     },
     buttons:
       isForking || participationTokensOnly
-        ? []
+        ? null
         : [
             {
               text: 'Claim All',

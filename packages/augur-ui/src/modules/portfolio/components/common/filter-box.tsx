@@ -7,6 +7,7 @@ import { NameValuePair, Market, Tab } from 'modules/portfolio/types';
 import MarketRow from 'modules/portfolio/containers/market-row';
 import EmptyDisplay from 'modules/portfolio/components/common/empty-display';
 import { createTabsInfo } from 'modules/portfolio/helpers/create-tabs-info';
+import Styles from 'modules/portfolio/components/common/quad-box.styles.less';
 
 export interface MarketsByReportingState {
   [type: string]: Array<Market>;
@@ -181,26 +182,27 @@ const FilterBox: React.FC<FilterBoxProps> = props => {
               search={search}
             />
           )}
-          {/* Not found id prop in Market interface */}
-          {filteredData.length > 0 &&
-            filteredData.map((market: any, index: number) =>
-              dataObj[market.id] ? (
-                <MarketRow
-                  key={`position_${market.id}_${index}`}
-                  market={dataObj[market.id]}
-                  showState
-                  noToggle={noToggle}
-                  showPending={showPending}
-                  toggleContent={
-                    renderToggleContent &&
-                    renderToggleContent(dataObj[market.id])
-                  }
-                  rightContent={
-                    renderRightContent && renderRightContent(dataObj[market.id])
-                  }
-                />
-              ) : null
-            )}
+          <div className={Styles.MarketBox}>
+            {filteredData.length > 0 &&
+              filteredData.map((market: any, index: number) =>
+                dataObj[market.id] ? (
+                  <MarketRow
+                    key={`position_${market.id}_${index}`}
+                    market={dataObj[market.id]}
+                    showState
+                    noToggle={noToggle}
+                    showPending={showPending}
+                    toggleContent={
+                      renderToggleContent &&
+                      renderToggleContent(dataObj[market.id])
+                    }
+                    rightContent={
+                      renderRightContent && renderRightContent(dataObj[market.id])
+                    }
+                  />
+                ) : null
+              )}
+            </div>
         </>
       }
       search={search}

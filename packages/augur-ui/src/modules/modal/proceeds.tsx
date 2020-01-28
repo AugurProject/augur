@@ -27,20 +27,32 @@ interface ProceedsProps {
   descriptionMessage?: DescriptionMessageProps;
 }
 
-export const Proceeds = (props: ProceedsProps) => (
+export const Proceeds = ({
+  closeAction,
+  title,
+  buttons,
+  rows,
+  submitAllTxCount,
+  breakdown,
+  descriptionMessage,
+}: ProceedsProps) => (
   <div className={Styles.Proceeds}>
-    <Title title={props.title} closeAction={props.closeAction} />
+    <Title title={title} closeAction={closeAction} />
     <main>
-      {props.descriptionMessage && (
+      {descriptionMessage && (
         // @ts-ignore
-        <DescriptionMessage messages={props.descriptionMessage} />
+        <DescriptionMessage messages={descriptionMessage} />
       )}
       {/*
         // @ts-ignore */}
-      {props.rows && <ActionRows rows={props.rows} />}
-      {props.breakdown && <Breakdown short rows={props.breakdown} />}
+      {rows && <ActionRows rows={rows} />}
+      {breakdown && <Breakdown short rows={breakdown} />}
     </main>
-    <BulkTxLabel buttonName={'Claim All'} count={props.submitAllTxCount} needsApproval={false} />
-    <ButtonsRow buttons={props.buttons} />
+    <BulkTxLabel
+      buttonName={'Claim All'}
+      count={submitAllTxCount}
+      needsApproval={false}
+    />
+    {buttons && <ButtonsRow buttons={buttons} />}
   </div>
 );

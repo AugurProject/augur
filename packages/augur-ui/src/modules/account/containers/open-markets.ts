@@ -8,11 +8,15 @@ import getSelectLoginAccountTotals from "modules/positions/selectors/login-accou
 import memoize from "memoizee";
 import getMarketsPositionsRecentlyTraded from "modules/portfolio/selectors/select-markets-positions-recently-traded";
 import { formatPercent } from 'utils/format-number';
+import { DateFormattedObject } from "modules/types";
 
+interface MarketTimestamps {
+  [marketId: string]: DateFormattedObject;
+}
 const mapStateToProps = (state: AppState) => {
   const positions = getLoginAccountPositions();
   const totalPercentage = getSelectLoginAccountTotals();
-  const timestamps = getMarketsPositionsRecentlyTraded();
+  const timestamps: MarketTimestamps = getMarketsPositionsRecentlyTraded();
 
   const markets = getPositionsMarkets(timestamps, positions).sort(
     (a: any, b: any) => b.recentlyTraded.timestamp - a.recentlyTraded.timestamp
@@ -43,7 +47,7 @@ const mapStateToProps = (state: AppState) => {
 const OpenMarketsContainer = withRouter(connect(mapStateToProps)(OpenMarkets));
 
 const getPositionsMarkets = memoize(
-  (marketsPositionsRecentlyTraded: any, positions: any) =>
+  (marketsPositionsRecentlyTraded: MarketTimestamps, positions: any) =>
     positions.markets.reduce((p, m) => {
       if (m.marketStatus === MARKET_CLOSED) return p;
       const pos = m.userPositions.filter(

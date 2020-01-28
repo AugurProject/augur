@@ -1,6 +1,8 @@
 import memoize from 'memoizee';
 import { createBigNumber } from 'utils/create-big-number';
 import { BIDS, ASKS } from 'modules/common/constants';
+import { Getters } from '@augurproject/sdk';
+import { QuantityOutcomeOrderBook } from 'modules/types';
 
 function calculateQuantityScale(outOfBN, sharesBN) {
   return createBigNumber(100).minus(
@@ -16,7 +18,7 @@ function calculateMaxValues(mostShares) {
     )
   );
 }
-const orderAndAssignCumulativeShares = memoize(orderBook => {
+const orderAndAssignCumulativeShares = memoize((orderBook: Getters.Markets.OutcomeOrderBook): QuantityOutcomeOrderBook => {
   if (!orderBook) {
     return { spread: null, bids: [], asks: [] };
   }

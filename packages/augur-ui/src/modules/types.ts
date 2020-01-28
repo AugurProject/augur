@@ -207,14 +207,13 @@ export interface PendingOrders {
   [marketId: string]: UIOrder[];
 }
 
-export interface OrderBooks {
-  [marketId: string]: Getters.Markets.OutcomeOrderBook;
+export interface QuantityOrderBookOrder extends Getters.Markets.MarketOrderBookOrder {
+  quantityScale: number;
 }
-
-export interface OutcomeOrderBook {
+export interface QuantityOutcomeOrderBook {
   spread: string | BigNumber | null;
-  bids: Getters.Markets.MarketOrderBookOrder[];
-  asks: Getters.Markets.MarketOrderBookOrder[];
+  bids: QuantityOrderBookOrder[];
+  asks: QuantityOrderBookOrder[];
 }
 
 export interface MyPositionsSummary {
@@ -309,14 +308,14 @@ export interface NewMarketPropertiesValidations {
   meridiem?: string;
   outcomes?: string | string[];
   settlementFee?: string;
-  affiliateFee?: number;
+  affiliateFee?: string;
   inputs?: NewMarketPropertiesValidations[];
 }
 
 export interface NewMarketPropertyValidations {
   settlementFee?: string;
   scalarDenomination?: string;
-  affiliateFee?: number;
+  affiliateFee?: string;
   inputs?: NewMarketPropertiesValidations[];
   outcomes?: string | string[];
 }

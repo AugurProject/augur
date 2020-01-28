@@ -103,14 +103,28 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
   const markets = sP.claimableMarkets;
-  const claimableMarkets = markets.map(m => ({
-    ...m,
-    action: () => dP.startClaimingMarketsProceeds([m.marketId], () => {}),
-  }));
-
+  const showBreakdown = markets.length > 1;
   const totalGas = formatEther(
-    createBigNumber(sP.gasCost).times(claimableMarkets.length)
+    createBigNumber(sP.gasCost).times(markets.length)
   );
+  const claimableMarkets = showBreakdown
+    ? markets.map(m => ({
+        ...m,
+        action: () => dP.startClaimingMarketsProceeds([m.marketId], () => {}),
+      }))
+    : markets.map(m => ({
+        ...m,
+        action: () => dP.startClaimingMarketsProceeds([m.marketId], () => {}),
+        properties: [
+          ...m.properties,
+          {
+            label: 'Transaction Fee',
+            value: sP.Gnosis_ENABLED
+              ? displayGasInDai(totalGas.value, sP.ethToDaiRate)
+              : totalGas.formattedValue,
+          },
+        ],
+      }));
 
   const multiMarket = claimableMarkets.length > 1 ? 's' : '';
   const totalUnclaimedProceedsFormatted = formatDai(sP.totalUnclaimedProceeds);
@@ -130,7 +144,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     ],
     rows: claimableMarkets,
     submitAllTxCount,
-    breakdown: [
+    breakdown: showBreakdown ? [
       {
         label: 'Total Proceeds',
         value: totalUnclaimedProceedsFormatted.formatted,
@@ -143,7 +157,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
         label: 'Transaction Fee',
         value: sP.Gnosis_ENABLED ? displayGasInDai(totalGas.value, sP.ethToDaiRate) : totalGas.formattedValue,
       },
-    ],
+    ] : null,
     closeAction: () => {
       dP.closeModal();
       if (sP.modal.cb) {
