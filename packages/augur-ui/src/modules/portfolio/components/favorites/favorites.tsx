@@ -6,6 +6,7 @@ import { FavoritesButton } from "modules/common/buttons";
 import { END_TIME } from "modules/common/constants";
 
 import Styles from "modules/portfolio/components/common/quad.styles.less";
+import favoriteStyles from 'modules/portfolio/components/favorites/favorites.styles.less'
 import { MarketData } from "modules/types";
 
 const sortByOptions = [
@@ -90,6 +91,7 @@ export default class Favorites extends Component<FavoritesProps> {
     return (
       <FilterBox
         title="Watchlist"
+        customClass={favoriteStyles.Watchlist}
         sortByOptions={sortByOptions}
         sortByStyles={{ minWidth: "10.625rem" }}
         markets={markets}
