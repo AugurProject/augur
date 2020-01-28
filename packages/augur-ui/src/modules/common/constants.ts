@@ -541,7 +541,6 @@ export const MODAL_TUTORIAL_INTRO = 'MODAL_TUTORIAL_INTRO';
 export const MODAL_SCALAR_MARKET = 'MODAL_SCALAR_MARKET';
 export const MODAL_INVALID_MARKET_RULES = 'MODAL_INVALID_MARKET_RULES';
 
-// export const MODAL_CLAIM_TRADING_PROCEEDS = 'MODAL_CLAIM_TRADING_PROCEEDS';
 export const MODAL_CLAIM_MARKETS_PROCEEDS = 'MODAL_CLAIM_MARKETS_PROCEEDS';
 export const MODAL_TRADING_OVERLAY = 'MODAL_TRADING_OVERLAY';
 export const MODAL_FINALIZE_MARKET = 'MODAL_FINALIZE_MARKET';
@@ -561,8 +560,8 @@ export const MODAL_ACCOUNT_CREATED = 'MODAL_ACCOUNT_CREATED';
 export const MODAL_WALLET_ERROR = 'MODAL_WALLET_ERROR';
 
 // transactions parameter names
-export const TX_ORDER_ID = '_orderId';
-export const TX_ORDER_IDS = '_orderIds';
+export const TX_ORDER_ID = 'orderId';
+export const TX_ORDER_IDS = 'orderIds';
 export const TX_TRADE_GROUP_ID = '_tradeGroupId';
 export const TX_MARKET_ID = '_market';
 export const TX_AMOUNT = '_amount';

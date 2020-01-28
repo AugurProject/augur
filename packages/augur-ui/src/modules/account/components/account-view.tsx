@@ -51,6 +51,7 @@ export default class AccountView extends React.Component<
       extendNotifications,
     } = this.state;
     const { newNotifications } = this.props;
+    console.log(newNotifications);
     return (
       <>
         <Media query={SMALL_MOBILE}>
