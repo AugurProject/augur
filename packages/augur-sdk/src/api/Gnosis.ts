@@ -88,28 +88,29 @@ export class Gnosis {
 
       // Can only register Contract if the current signer is the safe owner.
       // Be sure the safe creation transaction has been mined.
-      if (status.status === GnosisSafeState.CREATED) {
-        const tx = await this.augur.getTransaction(status.txHash);
-        // @todo Is this sufficient to consider it mined?
-        if (tx.blockNumber) {
-          const data = await this.buildGnosisSetupData(s.owner);
+      // Disabled for now TODO
+//       if (status.status === GnosisSafeState.CREATED) {
+//         const tx = await this.augur.getTransaction(status.txHash);
+//         // @todo Is this sufficient to consider it mined?
+//         if (tx.blockNumber) {
+//           const data = await this.buildGnosisSetupData(s.owner);
 
-          // Trigger delegate call.
-          const resp = await this.dependencies.sendDelegateTransaction(
-            {
-              to: s.safe,
-              data,
-              value: new ethers.utils.BigNumber(0),
-            },
-            {
-              name: 'safe-delegate-call',
-              params: {},
-            }
-          );
+//           // Trigger delegate call.
+//           const resp = await this.dependencies.sendDelegateTransaction(
+//             {
+//               to: s.safe,
+//               data,
+//               value: new ethers.utils.BigNumber(0),
+//             },
+//             {
+//               name: 'safe-delegate-call',
+//               params: {},
+//             }
+//           );
 
-          s.txHash = resp.transactionHash;
-        }
-      }
+//           s.txHash = resp.transactionHash;
+//         }
+//       }
 
       this.augur
         .events
