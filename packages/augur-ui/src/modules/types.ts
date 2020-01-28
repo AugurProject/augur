@@ -93,7 +93,7 @@ export interface MarketInfos {
 export interface Outcomes extends Getters.Markets.MarketInfoOutcome {
   name?: string;
 }
-export interface Consensus extends PayoutNumeratorValue {
+export interface ConsensusFormatted extends PayoutNumeratorValue {
   winningOutcome: string | null;
   outcomeName: string | null;
 }
@@ -126,7 +126,7 @@ export interface MarketData extends Getters.Markets.MarketInfo {
   finalizationTimeFormatted: DateFormattedObject | null;
   // TODO: add this to getter Getters.Markets.MarketInfo
   // disputeInfo: object; this needs to get filled in on getter
-  consensusFormatted: Consensus | null;
+  consensusFormatted: ConsensusFormatted | null;
   outcomesFormatted: OutcomeFormatted[];
   isTemplate: boolean;
 }
@@ -207,14 +207,13 @@ export interface PendingOrders {
   [marketId: string]: UIOrder[];
 }
 
-export interface OrderBooks {
-  [marketId: string]: Getters.Markets.OutcomeOrderBook;
+export interface QuantityOrderBookOrder extends Getters.Markets.MarketOrderBookOrder {
+  quantityScale: number;
 }
-
-export interface OutcomeOrderBook {
+export interface QuantityOutcomeOrderBook {
   spread: string | BigNumber | null;
-  bids: Getters.Markets.MarketOrderBookOrder[];
-  asks: Getters.Markets.MarketOrderBookOrder[];
+  bids: QuantityOrderBookOrder[];
+  asks: QuantityOrderBookOrder[];
 }
 
 export interface MyPositionsSummary {
@@ -228,6 +227,7 @@ export interface Notification {
   id: string;
   type: string;
   isImportant: boolean;
+  redIcon?: boolean;
   isNew: boolean;
   title: string;
   buttonLabel: string;
@@ -308,14 +308,14 @@ export interface NewMarketPropertiesValidations {
   meridiem?: string;
   outcomes?: string | string[];
   settlementFee?: string;
-  affiliateFee?: number;
+  affiliateFee?: string;
   inputs?: NewMarketPropertiesValidations[];
 }
 
 export interface NewMarketPropertyValidations {
   settlementFee?: string;
   scalarDenomination?: string;
-  affiliateFee?: number;
+  affiliateFee?: string;
   inputs?: NewMarketPropertiesValidations[];
   outcomes?: string | string[];
 }

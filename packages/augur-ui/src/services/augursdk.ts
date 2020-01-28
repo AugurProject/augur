@@ -17,8 +17,7 @@ import { EnvObject } from 'modules/types';
 import { isEmpty } from 'utils/is-empty';
 import { analytics } from './analytics';
 import { isLocalHost } from 'utils/is-localhost';
-import { Mesh } from '@0x/mesh-browser';
-import { BrowserMesh, createBrowserMesh } from './browser-mesh';
+import { createBrowserMesh } from './browser-mesh';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 
 export class SDK {
@@ -75,7 +74,7 @@ export class SDK {
     this.client = await createClient(config, connector, account, signer, ethersProvider, enableFlexSearch, createBrowserMesh);
     await connector.connect(config, account)
 
-    if (config.zeroX && (config.zeroX.rpc && config.zeroX.rpc.enabled || config.zeroX.mesh && config.zeroX.mesh.enable)) {
+    if (config.zeroX && (config.zeroX.rpc && config.zeroX.rpc.enabled || config.zeroX.mesh && config.zeroX.mesh.enabled)) {
       this.client.events.emit('ZeroX:Ready');
     }
 

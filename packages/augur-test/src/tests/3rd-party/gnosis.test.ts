@@ -65,7 +65,7 @@ describe('3rd Party :: Gnosis :: ', () => {
   let providerJohn: EthersProvider;
   let networkId: NetworkId;
   let addresses: ContractAddresses;
-  let db: DB;
+  let dbPromise: Promise<DB>;
   let api: API;
   const mock = makeDbMock();
 
@@ -75,20 +75,24 @@ describe('3rd Party :: Gnosis :: ', () => {
     addresses = Addresses[networkId];
 
     const connectorJohn = new Connectors.DirectConnector();
-    john = await ContractAPI.userWrapper(ACCOUNTS[0], providerJohn, addresses, connectorJohn, new GnosisRelayAPI('http://localhost:8000/api/'), undefined, undefined);
-    const dbPromise = mock.makeDB(john.augur, ACCOUNTS);
-    db = await dbPromise;
-    connectorJohn.initialize(john.augur, db);
+    john = await ContractAPI.userWrapper(ACCOUNTS[0], providerJohn, addresses, connectorJohn, new GnosisRelayAPI('http://localhost:8888/api/'), undefined, undefined);
+    dbPromise = mock.makeDB(john.augur, ACCOUNTS);
+    connectorJohn.initialize(john.augur, await dbPromise);
     api = new API(john.augur, dbPromise);
     await john.approveCentralAuthority();
 
+    const funderCash = (new BigNumber(10)).pow(26);
+    await john.faucet(funderCash)
+    await john.transferCash(ACCOUNTS[7].publicKey, funderCash);
+
     // setup gnosis
+    await john.faucet(funderCash)
     const safe = await fundSafe(john);
     const safeStatus = await getSafeStatus(john, safe);
     console.log(`Safe ${safe}: ${safeStatus}`);
     expect(safeStatus).toBe(GnosisSafeState.AVAILABLE);
 
-    await john.augur.setGasPrice(new BigNumber(90000));
+    await john.augur.setGasPrice(new BigNumber(9));
     john.setGnosisSafeAddress(safe);
     john.setUseGnosisSafe(true);
     john.setUseGnosisRelay(true);
@@ -100,9 +104,10 @@ describe('3rd Party :: Gnosis :: ', () => {
       stringTo32ByteHex('A'),
       stringTo32ByteHex('B')
     ]);
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    await (await dbPromise).sync(john.augur, mock.constants.chunkSize, 0);
 
     // Give John enough cash to pay for the 0x order.
+
     await john.faucet(new BigNumber(1e22));
 
     // Place an order
@@ -121,9 +126,11 @@ describe('3rd Party :: Gnosis :: ', () => {
       stringTo32ByteHex('42')
     );
 
+    // Sync
+    await (await dbPromise).sync(john.augur, mock.constants.chunkSize, 0);
+
     // Get orders for the market
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
-    const orders: AllOrders = await api.route('getOrders', {
+    const orders: AllOrders = await api.route('getOpenOnChainOrders', {
       marketId: market.address
     });
     console.log('orders:', JSON.stringify(orders, null, 2));

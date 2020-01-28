@@ -120,14 +120,12 @@ export function addScripts(flash: FlashSession) {
       const useSdk = args.useSdk as boolean;
       if (this.noProvider()) return;
 
+      console.log('Deploying: ', args);
+
       const config = {
         writeArtifacts: args.write_artifacts as boolean,
-        useNormalTime: true,
+        useNormalTime: !(args.time_controlled as boolean),
       };
-
-      if (args.time_controlled) {
-        config['useNormalTime'] = false;
-      }
 
       const { addresses } = await deployContracts(
         this.provider,
@@ -413,9 +411,14 @@ export function addScripts(flash: FlashSession) {
     name: 'create-canned-markets',
     async call(this: FlashSession) {
       const user = await this.ensureUser();
-      await user.repFaucet(new BigNumber(10).pow(18).multipliedBy(1000000));
-      await user.faucet(new BigNumber(10).pow(18).multipliedBy(1000000));
-      await user.approve(new BigNumber(10).pow(18).multipliedBy(1000000));
+      await user.repFaucet(QUINTILLION.multipliedBy(1000000));
+      await user.faucet(QUINTILLION.multipliedBy(1000000));
+      await user.approve(QUINTILLION.multipliedBy(3000000));
+
+      await this.call('add-eth-exchange-liquidity', {
+        ethAmount: "10",
+        cashAmount: "1000"
+      });
       return createCannedMarkets(user);
     },
   });
@@ -424,10 +427,7 @@ export function addScripts(flash: FlashSession) {
     name: 'create-canned-markets-with-orders',
     async call(this: FlashSession) {
       const user = await this.ensureUser();
-      await user.repFaucet(new BigNumber(10).pow(18).multipliedBy(10000));
-      await user.faucet(new BigNumber(10).pow(18).multipliedBy(10000000));
-      await user.approve(new BigNumber(10).pow(18).multipliedBy(10000000000));
-      const markets = await createCannedMarkets(user);
+      const markets = await this.call('create-canned-markets', {});
       for(let i = 0; i < markets.length; i++) {
         const createdMarket = markets[i];
         const numTicks = await createdMarket.market.getNumTicks_();
@@ -480,8 +480,8 @@ export function addScripts(flash: FlashSession) {
       const user = await this.ensureUser(this.network, true, true, null, meshEndpoint, true);
       const skipFaucetApproval = args.skipFaucetOrApproval as boolean;
       if (!skipFaucetApproval) {
-        await user.faucet(new BigNumber(10).pow(18).multipliedBy(1000000));
-        await user.approve(new BigNumber(10).pow(18).multipliedBy(1000000));
+        await user.faucet(QUINTILLION.multipliedBy(1000000));
+        await user.approve(QUINTILLION.multipliedBy(1000000));
       }
       const yesNoMarket = cannedMarkets.find(c => c.marketType === 'yesNo');
       const orderBook = yesNoMarket.orderBook;
@@ -568,8 +568,8 @@ export function addScripts(flash: FlashSession) {
       const user = await this.ensureUser(this.network, true, true, null, meshEndpoint, true);
       const skipFaucetApproval = args.skipFaucetOrApproval as boolean;
       if (!skipFaucetApproval) {
-        await user.faucet(new BigNumber(10).pow(18).multipliedBy(1000000));
-        await user.approve(new BigNumber(10).pow(18).multipliedBy(1000000));
+        await user.faucet(QUINTILLION.multipliedBy(1000000));
+        await user.approve(QUINTILLION.multipliedBy(1000000));
       }
 
       const orderBook = {
@@ -707,8 +707,8 @@ export function addScripts(flash: FlashSession) {
       const user = await this.ensureUser(this.network, true, true, null, meshEndpoint, true);
       const skipFaucetApproval = args.skipFaucetOrApproval as boolean;
       if (!skipFaucetApproval) {
-        await user.faucet(new BigNumber(10).pow(18).multipliedBy(1000000));
-        await user.approve(new BigNumber(10).pow(18).multipliedBy(1000000));
+        await user.faucet(QUINTILLION.multipliedBy(1000000));
+        await user.approve(QUINTILLION.multipliedBy(1000000));
       }
 
       const timestamp = await this.call('get-timestamp', {});
@@ -863,19 +863,34 @@ export function addScripts(flash: FlashSession) {
         required: false,
         description: 'Mesh endpoint to connect',
       },
+      {
+        name: 'refreshInterval',
+        abbr: 'r',
+        required: false,
+        description: 'refresh interval in seconds, time to wait before checking market orderbook. default 15 seconds',
+      },
+      {
+        name: 'orderSize',
+        abbr: 's',
+        required: false,
+        description: 'quantity used when orders need to be created. default is one large chunk, possible values are 10, 100, ...',
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const marketIds = String(args.marketIds)
         .split(',')
         .map(id => id.trim());
       const address = args.userAccount ? (args.userAccount as string) : null;
+      const interval = args.refreshInterval ? Number(args.refreshInterval) * 1000 : 15000;
       const endpoint = args.meshEndpoint
         ? String(args.meshEndpoint)
         : 'ws://localhost:60557';
+      const orderSize = args.orderSize ? Number(args.orderSize) : null;
       const user: ContractAPI = await this.ensureUser(null, true, true, address, endpoint, true);
+      console.log('waiting many seconds on purpose for client to sync');
       await new Promise<void>(resolve => setTimeout(resolve, 90000));
 
-      const orderBooks = marketIds.map(m => new OrderBookShaper(m));
+      const orderBooks = marketIds.map(m => new OrderBookShaper(m, orderSize));
       while (true) {
         const timestamp = await this.user.getTimestamp();
         for (let i = 0; i < orderBooks.length; i++) {
@@ -889,11 +904,12 @@ export function addScripts(flash: FlashSession) {
             this.log(`creating ${orders.length} orders for ${marketId}`);
             for (let j = 0; j < orders.length; j++) {
               const order = orders[j];
+              console.log(`Creating ${order.displayAmount} at ${order.displayPrice}`)
               await user.placeZeroXOrder(order).catch(this.log);
             }
           }
         }
-        await new Promise<void>(resolve => setTimeout(resolve, 5000));
+        await new Promise<void>(resolve => setTimeout(resolve, interval));
       }
 
     },
@@ -969,8 +985,8 @@ export function addScripts(flash: FlashSession) {
       const skipFaucetOrApproval = args.skipFaucetOrApproval as boolean;
       if (!skipFaucetOrApproval) {
         this.log('create-market-order, faucet and approval');
-        await user.faucet(new BigNumber(10).pow(18).multipliedBy(10000));
-        await user.approve(new BigNumber(10).pow(18).multipliedBy(100000));
+        await user.faucet(QUINTILLION.multipliedBy(10000));
+        await user.approve(QUINTILLION.multipliedBy(100000));
       }
       const orderType = String(args.orderType).toLowerCase();
       const type = orderType === 'bid' || orderType === 'buy' ? 0 : 1;
@@ -1843,8 +1859,7 @@ export function addScripts(flash: FlashSession) {
         '-e', `CUSTOM_CONTRACT_ADDRESSES=${JSON.stringify(addresses)}`,
         '-e', 'VERBOSITY=4', // 5=debug 6=trace
         '-e', 'RPC_ADDR=0x:60557', // need to use "0x" network
-        // '0xorg/mesh:7.1.1-beta-0xv3',
-        'fabioberger123/mesh:augur-kovan-devutils-fix',
+        '0xorg/mesh:8.1.2',
       ]);
 
       mesh.on('error', console.error);
@@ -1881,7 +1896,7 @@ export function addScripts(flash: FlashSession) {
     },
   });
 
-    flash.addScript({
+  flash.addScript({
     name: 'get-all-contract-addresses',
     options: [
       {
@@ -1900,6 +1915,32 @@ export function addScripts(flash: FlashSession) {
       } else {
         console.log(JSON.stringify(this.contractAddresses, null, 2))
       }
+    },
+  });
+
+  flash.addScript({
+    name: 'add-eth-exchange-liquidity',
+    options: [
+      {
+        name: 'ethAmount',
+        abbr: 'e',
+        description: 'amount of ETH to provide to the exchange',
+        required: true,
+      },
+      {
+        name: 'cashAmount',
+        abbr: 'c',
+        description: 'amount of DAI to provide to the exchange',
+        required: true,
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const attoEth = new BigNumber(Number(args.ethAmount)).times(_1_ETH);
+      const attoCash = new BigNumber(Number(args.cashAmount)).times(_1_ETH);
+
+      const user = await this.ensureUser();
+
+      await user.addEthExchangeLiquidity(attoCash, attoEth);
     },
   });
 }

@@ -18,6 +18,7 @@ import {
   REPORTING_STATE,
   RESOLVED_MARKETS_OPEN_ORDERS_TITLE,
   TYPE_DISPUTE,
+  TYPE_REPORT,
   TYPE_VIEW_DETAILS,
   TYPE_VIEW_ORDERS,
   UNSIGNED_ORDERS_TITLE,
@@ -309,9 +310,10 @@ const generateCards = (markets, type) => {
     defaults = {
       type,
       isImportant: true,
+      redIcon: true,
       isNew: true,
       title: REPORTING_ENDS_SOON_TITLE,
-      buttonLabel: TYPE_VIEW_DETAILS,
+      buttonLabel: TYPE_REPORT,
     };
   } else if (type === NOTIFICATION_TYPES.finalizeMarkets) {
     defaults = {

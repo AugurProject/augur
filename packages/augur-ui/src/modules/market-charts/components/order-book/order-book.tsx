@@ -13,14 +13,12 @@ import {
 } from 'modules/common/constants';
 
 import Styles from 'modules/market-charts/components/order-book/order-book.styles.less';
-import { OutcomeOrderBook } from 'modules/types';
+import { OutcomeFormatted, QuantityOutcomeOrderBook, QuantityOrderBookOrder } from 'modules/types';
 import { createBigNumber } from 'utils/create-big-number';
 import { formatShares } from 'utils/format-number';
 
-const ORDER_BOOK_REFRESH_MS = 3000;
-
 interface OrderBookSideProps {
-  orderBook: OutcomeOrderBook;
+  orderBook: QuantityOutcomeOrderBook;
   updateSelectedOrderProperties: Function;
   hasOrders: boolean;
   orderBookKeys: object;
@@ -35,7 +33,7 @@ interface OrderBookSideProps {
 }
 
 interface OrderBookProps {
-  orderBook: OutcomeOrderBook;
+  orderBook: QuantityOutcomeOrderBook;
   updateSelectedOrderProperties: Function;
   hasOrders: boolean;
   orderBookKeys: object;
@@ -43,18 +41,24 @@ interface OrderBookProps {
   pricePrecision: number;
   toggle: boolean;
   hide: boolean;
-  loadMarketOrderBook: Function;
   marketId: string;
   initialLiquidity: boolean;
+  marketType: string;
+  account: string;
+  selectedOutcome: OutcomeFormatted;
 }
 
 interface OrderBookState {
   hoveredOrderIndex?: number;
   hoveredSide?: string;
-  timer: NodeJS.Timeout;
 }
 
 class OrderBookSide extends Component<OrderBookSideProps, {}> {
+  side: {
+    scrollTop: number;
+    scrollHeight: number;
+    clientHeight: number;
+  };
   static defaultProps = {
     fixedPrecision: 4,
     pricePrecision: 4,
@@ -113,7 +117,7 @@ class OrderBookSide extends Component<OrderBookSideProps, {}> {
             {isAsks ? `Add Offer` : `Add Bid`}
           </div>
         )}
-        {orderBookOrders.map((order, i) => {
+        {orderBookOrders.map((order: QuantityOrderBookOrder, i) => {
           const hasSize = order.mySize !== '0';
           const shouldEncompass =
             (hoveredOrderIndex !== null &&
@@ -188,7 +192,6 @@ export default class OrderBook extends Component<
   state: OrderBookState = {
     hoveredOrderIndex: null,
     hoveredSide: null,
-    timer: null,
   };
 
   setHovers = (hoveredOrderIndex: number, hoveredSide: string) => {
@@ -198,23 +201,9 @@ export default class OrderBook extends Component<
     });
   };
 
-  componentDidMount() {
-    const { marketId, loadMarketOrderBook, initialLiquidity } = this.props;
-    loadMarketOrderBook(marketId);
-    if (!initialLiquidity) {
-      const timer = setInterval(() => loadMarketOrderBook(marketId), ORDER_BOOK_REFRESH_MS);
-      this.setState({ timer })
-    }
-  }
-
-  componentWillUnmount() {
-    const { timer } = this.state;
-    clearInterval(timer);
-  }
-
   render() {
-    const { pricePrecision, hasOrders, toggle, hide, orderBook } = this.props;
-    const s = this.state;
+    const { pricePrecision, toggle, hide, marketType, hasOrders, orderBook } = this.props;
+    const {hoveredSide, hoveredOrderIndex} = this.state;
 
     return (
       <section className={Styles.OrderBook}>
@@ -226,9 +215,10 @@ export default class OrderBook extends Component<
         />
         <OrderBookSide
           {...this.props}
+          marketType={marketType}
           setHovers={this.setHovers}
-          hoveredSide={s.hoveredSide}
-          hoveredOrderIndex={s.hoveredOrderIndex}
+          hoveredSide={hoveredSide}
+          hoveredOrderIndex={hoveredOrderIndex}
           type={ASKS}
           scrollToTop
         />
@@ -244,9 +234,10 @@ export default class OrderBook extends Component<
         )}
         <OrderBookSide
           {...this.props}
+          marketType={marketType}
           setHovers={this.setHovers}
-          hoveredSide={s.hoveredSide}
-          hoveredOrderIndex={s.hoveredOrderIndex}
+          hoveredSide={hoveredSide}
+          hoveredOrderIndex={hoveredOrderIndex}
           type={BIDS}
         />
       </section>

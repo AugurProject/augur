@@ -190,12 +190,7 @@
     justify-content: center;
 
     > a {
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      word-break: break-word;
+      .limit-lines(3);
     }
 
     &:hover {
@@ -209,7 +204,7 @@
   }
 
   > button:last-of-type {
-    .mono-10;
+    .mono-10-medium;
 
     align-self: flex-start;
     color: @color-primary-text;
@@ -319,7 +314,7 @@
     > div:last-of-type {
       grid-row: 2 / span 1;
       padding-bottom: @size-12;
-      padding-top: @size-4;
+      padding-top: @size-8;
 
       > div {
         display: flex;
@@ -392,13 +387,9 @@
     }
 
     > span {
+      .limit-lines(3);
+
       margin: 0 0 @size-12;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      word-break: break-word;
       height: min-content;
     }
 

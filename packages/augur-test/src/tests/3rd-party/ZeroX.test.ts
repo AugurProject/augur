@@ -68,14 +68,16 @@ describe('3rd Party :: ZeroX :: ', () => {
       maryAPI = new API(mary.augur, maryDB);
       await mary.approveCentralAuthority();
       const marySafe = await mary.fundSafe().catch((e) => console.error(`Safe funding failed: ${JSON.stringify(e)}`));
-      const marySafeStatus = await mary.getSafeStatus(marySafe);
-      console.log(`Safe ${marySafe}: ${marySafeStatus}`);
-      expect(marySafeStatus).toBe(GnosisSafeState.AVAILABLE);
-      await john.sendEther(marySafe, new BigNumber(10**15));
-      await mary.augur.setGasPrice(new BigNumber(90000));
-      mary.setGnosisSafeAddress(marySafe);
-      mary.setUseGnosisSafe(true);
-      mary.setUseGnosisRelay(true);
+      if (marySafe) {
+        const marySafeStatus = await mary.getSafeStatus(marySafe);
+        console.log(`Safe ${marySafe}: ${marySafeStatus}`);
+        expect(marySafeStatus).toBe(GnosisSafeState.AVAILABLE);
+        await john.sendEther(marySafe, new BigNumber(10 ** 15));
+        await mary.augur.setGasPrice(new BigNumber(90000));
+        mary.setGnosisSafeAddress(marySafe);
+        mary.setUseGnosisSafe(true);
+        mary.setUseGnosisRelay(true);
+      }
     }, 240000);
 
     test('State API :: ZeroX :: placeThenGetOrders', async () => {

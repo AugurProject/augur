@@ -14,6 +14,7 @@ RUN apk add --no-cache \
         make \
         musl-dev \
         openssl-dev \
+        rust \
         python-dev \
         python3-dev
 

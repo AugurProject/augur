@@ -589,7 +589,7 @@ export class ContractAPI {
     let balance = await this.getCashBalance(account);
     const desired = attoCash;
     while (balance.lt(attoCash)) {
-      console.log(`FAUCETING. BALANCE: ${balance}. DESIRED: ${desired}`);
+      console.log(`CASH FAUCETING. BALANCE: ${balance}. DESIRED: ${desired}`);
       await this.augur.contracts.cashFaucet.faucet(attoCash);
       balance = await this.getCashBalance();
     }
@@ -606,6 +606,12 @@ export class ContractAPI {
 
   async transferCash(to: string, attoCash: BigNumber): Promise<void> {
     await this.augur.contracts.cash.transfer(to, attoCash);
+  }
+
+  async addEthExchangeLiquidity(attoCash: BigNumber, attoEth: BigNumber): Promise<void> {
+    await this.faucet(attoCash);
+    const owner = await this.augur.getAccount();
+    await this.augur.contracts.ethExchange.publicMintAuto(owner, attoCash, {attachedEth: attoEth});
   }
 
   async approve(wei: BigNumber): Promise<void> {
@@ -759,11 +765,18 @@ export class ContractAPI {
     });
   }
 
-  async fundSafe(safe=undefined) {
+  async fundSafe(safe?: string, minimum=new BigNumber(1e21)) {
     safe = safe || await this.getOrCreateSafe();
 
-    await this.faucet(new BigNumber(1e21), safe);
+    if ((await this.getCashBalance(safe)).lt(minimum)) {
+      await this.faucet(minimum, safe);
+      await this.waitForSafeFunding(safe);
+    }
 
+    return safe;
+  }
+
+  async waitForSafeFunding(safe: string): Promise<void> {
     let status: string;
     for (let i = 0; i < 10; i++) {
       status = await this.getSafeStatus(safe);
@@ -773,9 +786,8 @@ export class ContractAPI {
       await sleep(2000);
     }
 
+    // TODO this sleep call can be reduced or eliminated
     await sleep(10000);
-
-    return safe;
   }
 
   async getOrCreateSafe(): Promise<string> {

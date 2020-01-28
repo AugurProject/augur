@@ -2,17 +2,16 @@ import React, { Component } from 'react';
 import { SelectedOrderProperties } from 'modules/trading/components/wrapper';
 import Wrapper from 'modules/trading/containers/wrapper';
 import Styles from 'modules/trading/components/trading-form.styles.less';
-import { MarketData, OutcomeOrderBook, OutcomeFormatted } from 'modules/types';
+import { MarketData, OutcomeOrderBook, OutcomeFormatted, NewMarket } from 'modules/types';
 
 interface TradingFormProps {
-  market: MarketData;
+  market: MarketData | NewMarket;
   selectedOrderProperties: SelectedOrderProperties;
   selectedOutcomeId: number;
   updateSelectedOrderProperties: Function;
   updateSelectedOutcome: Function;
   updateLiquidity?: Function;
   initialLiquidity?: boolean;
-  orderBook: OutcomeOrderBook;
   tradingTutorial?: boolean;
   tutorialNext?: Function;
 }

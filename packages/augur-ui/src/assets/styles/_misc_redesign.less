@@ -82,3 +82,12 @@
 
   stroke-dasharray: @dash-long;
 }
+
+.limit-lines(@amount) {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: @amount;
+  -webkit-box-orient: vertical;
+  word-break: break-word;
+}

@@ -12,10 +12,13 @@ body {
   // See Issue #3504
   top: 0px !important;
   position: initial !important;
-  overflow-y: auto;
 
   @media @breakpoint-mobile {
     --is-mobile: true;
+  }
+
+  @media @breakpoint-mobile-new {
+    overflow-y: auto;
   }
 
   @media @breakpoint-mobile-small {

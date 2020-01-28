@@ -92,14 +92,24 @@ jobs:
       JOB_TRIGGER_SDK: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_SDK']]
       JOB_TRIGGER_CORE: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE']]
       JOB_TRIGGER_TEST: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_TEST']]
-      USE_NORMAL_TIME: false
+      FAKE_TIME: false
       PRODUCTION: false
       YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
     pool: 'Default'
     strategy:
       matrix:
-        node_10_x:
+        non_specific_tests:
           node_version: $(PRIMARY_NODE_VERSION)
+          TEST_ARGS: --testPathIgnorePatterns="(Universe.test.ts|(getter/(markets|users)/))"
+        market_getters_tests:
+          node_version: $(PRIMARY_NODE_VERSION)
+          TEST_ARGS: --testPathPattern 'getter/markets/'
+        user_getter_tests:
+          node_version: $(PRIMARY_NODE_VERSION)
+          TEST_ARGS: --testPathPattern 'getter/users/'
+        universe_tests:
+          node_version: $(PRIMARY_NODE_VERSION)
+          TEST_ARGS: --testPathPattern 'Universe.test.ts'
     timeoutInMinutes: 120
     steps:
       - checkout: self
@@ -138,9 +148,10 @@ jobs:
         displayName: feature peek
         condition:  and(eq(variables['JOB_TRIGGER_UI'], 'true'), eq(variables['Build.Reason'], 'PullRequest'))
       - bash: |
+          rm /tmp/seed.json
           set -euo pipefail
           free -m
-          yarn test --verbose --ci --reporters=default --reporters=jest-junit
+          yarn test $(TEST_ARGS) --verbose --ci --reporters=default --reporters=jest-junit
         displayName: yarn test
         condition:  eq(variables['JOB_TRIGGER_TEST'], 'true')
         env:
@@ -386,15 +397,11 @@ jobs:
         dev-pop-geth-v2:
           IMAGE_NAME: dev-pop-geth-v2
           NETWORK_ID: 102
-          NORMAL_TIME: false
+          FAKE_TIME: true
         dev-pop-normtime-geth-v2:
           IMAGE_NAME: dev-pop-normtime-geth-v2
           NETWORK_ID: 103
-          NORMAL_TIME: true
-        dev-pop-geth-15-v2:
-          IMAGE_NAME: dev-pop-geth-15-v2
-          NETWORK_ID: 104
-          NORMAL_TIME: false
+          FAKE_TIME: false
     variables:
       YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
     steps:
@@ -419,7 +426,7 @@ jobs:
       - script: |
           set -exuo pipefail
           export DOCKER_BUILDKIT=1
-          docker build --progress=plain --no-cache=true -f packages/augur-tools/docker-builder/Dockerfile --build-arg normal_time=$(NORMAL_TIME) --build-arg network_id=$(NETWORK_ID) -t $(IMAGE_NAME) .
+          docker build --progress=plain --no-cache=true -f packages/augur-tools/docker-builder/Dockerfile --build-arg fake_time=$(FAKE_TIME) --build-arg network_id=$(NETWORK_ID) -t $(IMAGE_NAME) .
         displayName: 'build $(IMAGE_NAME) image'
       - task: Docker@1
         displayName: docker login
@@ -440,6 +447,66 @@ jobs:
           command: logout
           containerRegistryType: Container Registry
           dockerRegistryEndpoint: dockerhub-augurproject
+
+  - job: test_3rd_party_integrations
+    dependsOn:
+    - Docker_populated_geth_images
+    - PreFlightCheck
+    - TestAugurCore
+    - TestAndLint
+    - ContractSanityCheck
+    condition: |
+      and
+      (
+        eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_POP_GETH'], 'true'),
+        in(dependencies.PreFlightCheck.result, 'Succeeded'),
+        in(dependencies.TestAugurCore.result, 'Succeeded', 'Skipped'),
+        in(dependencies.TestAndLint.result, 'Succeeded', 'Skipped'),
+        in(dependencies.ContractSanityCheck.result, 'Succeeded', 'Skipped'),
+        in(dependencies.Docker_populated_geth_images.result, 'Succeeded', 'Skipped'),
+        not(eq(variables['Build.sourceBranch'], 'refs/heads/master')),
+        not(eq(variables['Build.sourceBranch'], 'refs/heads/demo')),
+        not(eq(variables['Build.sourceBranch'], 'refs/tags'))
+      )
+    pool:
+      vmImage: 'Ubuntu 16.04'
+    variables:
+      YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
+    steps:
+      - checkout: self
+      - task: NodeTool@0
+        inputs:
+          versionSpec: $(PRIMARY_NODE_VERSION)
+      - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
+        inputs:
+          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
+          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
+          vstsFeed: npmPackages
+      - script: |
+          yarn install --frozen-lockfile
+          yarn build
+        displayName: Install Dependencies
+      - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
+        inputs:
+          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
+          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
+          vstsFeed: npmPackages
+      - bash: |
+          set -exuo pipefail
+          DETACH="true" yarn docker:all false false
+          sleep 30
+        displayName: Run 3rd Party Dockers
+      - bash: |
+          set -exuo pipefail
+          free -m
+          yarn test --config=packages/augur-test/src/tests/3rd-party/jest.config.js --verbose --ci --reporters=default --reporters=jest-junit
+        displayName: Test 3rd party integratios
+      - bash: |
+          set -exuo pipefail
+          docker kill geth
+          yarn workspace @augurproject/gnosis-relay-api kill-relay
+        displayName: Stop 3rd Party Dockers
+
 
   - job: publish_augur_ui_docker_image
     condition: |

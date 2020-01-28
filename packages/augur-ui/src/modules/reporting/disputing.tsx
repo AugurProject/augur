@@ -43,7 +43,7 @@ const Disputing: React.FC<DisputingProps> = ({
               <ModulePane label="disputing overview">
                 <ReportingModalButton
                   highlightedText='Need Help?'
-                  text="View our Disputing Quick Guide"
+                  text="Disputing Quick Guide"
                   action={openDisputingModal}
                 />
                 <UserRepDisplay />
@@ -60,7 +60,7 @@ const Disputing: React.FC<DisputingProps> = ({
               <div>
                 <ReportingModalButton
                   highlightedText='Need Help?'
-                  text="View our Disputing Quick Guide"
+                  text="Disputing Quick Guide"
                   action={openDisputingModal}
                 />
                 <UserRepDisplay />

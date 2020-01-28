@@ -18,14 +18,13 @@ import {
   TransactionStatus,
 } from 'contract-dependencies-ethers';
 import { ethers } from 'ethers';
-import { JsonRpcProvider } from 'ethers/providers';
 import { getAddress } from 'ethers/utils/address';
 import * as _ from 'lodash';
 
-const DEFAULT_GAS_PRICE = new BigNumber(10 ** 9 * 4); // Default: GasPrice: 4
+const MIN_GAS_PRICE = new BigNumber(1e9) // Min: 1 Gwei
+const DEFAULT_GAS_PRICE = new BigNumber(4e9); // Default: GasPrice: 4 Gwei
 const BASE_GAS_ESTIMATE = '75000';
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
-const GWEI_CONVERSION = 1000000000;
 
 export class ContractDependenciesGnosis extends ContractDependenciesEthers {
   useRelay = true;
@@ -139,6 +138,7 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
   }
 
   setGasPrice(gasPrice: BigNumber): void {
+    if (gasPrice.lt(MIN_GAS_PRICE)) gasPrice = MIN_GAS_PRICE;
     this.gasPrice = gasPrice;
   }
 
@@ -197,6 +197,8 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
       } catch (error) {
         this.setUseRelay(false);
         this.setStatus(GnosisSafeState.ERROR);
+        console.log(`RELAY ERROR: ${JSON.stringify(error)}`);
+        // TODO this makes every possible error look like relayer is down. Should do some parsing and send other errors
         throw TransactionStatus.RELAYER_DOWN;
       }
     } else {
@@ -316,9 +318,7 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
     ).add(
       new ethers.utils.BigNumber(Number(relayTransaction.dataGas).toFixed())
     );
-    const gasPrice = new ethers.utils.BigNumber(
-      this.gasPrice.multipliedBy(GWEI_CONVERSION).toFixed()
-    );
+    const gasPrice = new ethers.utils.BigNumber(this.gasPrice.toFixed());
     const response = await this.gnosisSafe.execTransaction(
       relayTransaction.to,
       new ethers.utils.BigNumber(Number(relayTransaction.value).toFixed()),
@@ -326,7 +326,7 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
       relayTransaction.operation,
       new ethers.utils.BigNumber(Number(relayTransaction.safeTxGas).toFixed()),
       new ethers.utils.BigNumber(Number(relayTransaction.dataGas).toFixed()),
-      new ethers.utils.BigNumber(Number(relayTransaction.gasPrice).toFixed()),
+      gasPrice,
       relayTransaction.gasToken,
       relayTransaction.refundReceiver,
       signatures,
@@ -350,10 +350,7 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
     const value = tx.value;
     const data = tx.data;
 
-    const gasPrice = new ethers.utils.BigNumber(
-      this.gasPrice.multipliedBy(GWEI_CONVERSION).toFixed()
-    ).toNumber();
-
+    const gasPrice = new ethers.utils.BigNumber(this.gasPrice.toFixed()).toNumber();
 
     const relayEstimateRequest = {
       safe: this.safeAddress,

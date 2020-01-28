@@ -31,7 +31,6 @@ export const selectReadNotificationState = (state: AppState) =>
   state.readNotifications;
 export const selectPendingOrdersState = (state: AppState) =>
   state.pendingOrders;
-export const selectOrderBooksState = (state: AppState) => state.orderBooks;
 export const selectOrderCancellationState = (state: AppState) =>
   state.orderCancellation;
 export const selectMarketTradingHistoryState = (state: AppState) =>

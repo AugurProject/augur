@@ -63,6 +63,22 @@
   }
 }
 
+.ImportantRed {
+  > svg {
+    > circle {
+      stroke: @color-outcome-five;
+    }
+
+    > rect {
+      fill: @color-outcome-five;
+    }
+
+    > path {
+      fill: @color-outcome-five;
+    }
+  }
+}
+
 .Title {
   .mono-12-semi-bold;
 
@@ -79,12 +95,7 @@
   flex-direction: column;
 
   > span {
-    text-overflow: ellipsis;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    word-break: break-word;
+    .limit-lines(2);
   }
 }
 

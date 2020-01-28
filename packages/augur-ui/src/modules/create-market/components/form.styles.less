@@ -35,18 +35,15 @@
     &.Preview {
         flex: 1;
         max-width: unset;
-        padding-top: 0;
         bottom: 0;
         left: 0;
         position: absolute;
         right: 0;
         top: 0;
-        z-index: @mask-modal;
-        padding-bottom: 0;
+        z-index: @mask-toast;
+        padding: 0;
 
     	> div {
-            border-left: @size-10 solid @color-dark-grey;
-            border-right: @size-10 solid @color-dark-grey;
             background: @color-table-header;
             display: flex;
             flex-direction: column;
