@@ -10,7 +10,7 @@ const mapStateToProps = (state) => selectMarketsFillOrders();
 const mapDispatchToProps = (dispatch) => ({
   claimTradingProceeds: (marketId) =>
     dispatch(
-      updateModal({ type: constants.MODAL_CLAIM_TRADING_PROCEEDS, marketId }),
+      updateModal({ type: constants.MODAL_CLAIM_MARKETS_PROCEEDS, marketId }),
     ),
 });
 

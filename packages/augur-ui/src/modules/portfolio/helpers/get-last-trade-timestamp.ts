@@ -1,8 +1,9 @@
 import { convertUnixToFormattedDate } from "utils/format-date";
 import { ZERO } from "modules/common/constants";
 import { createBigNumber } from "utils/create-big-number";
+import { DateFormattedObject } from "modules/types";
 
-export const getLastTradeTimestamp = (marketTradeHistory) =>
+export const getLastTradeTimestamp = (marketTradeHistory): DateFormattedObject =>
   convertUnixToFormattedDate(
     (marketTradeHistory || []).reduce(
       (p, t) =>
