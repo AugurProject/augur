@@ -775,6 +775,7 @@ export interface NavMenuItem {
   title: string;
   requireLogin?: boolean;
   disabled?: boolean;
+  showAlert?: boolean;
 }
 
 export interface SortedGroup {
