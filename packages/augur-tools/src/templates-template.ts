@@ -518,17 +518,15 @@ function dateComparisonDependencies(
   dateDependencies: DateDependencies[]
 ) {
   if (!dateDependencies) return true;
-  const deps = dateDependencies.filter(d => d.dateAfterId);
-  const result = deps.reduce((p, d) => {
-    const dep = inputs.find(i => i.id === d.dateAfterId);
-    const source = inputs.find(i => i.id === d.id);
-    if (!dep || !source) return false;
-    if (dep.timestamp <= source.timestamp) {
-      return false;
-    }
-    return p;
-  }, true);
-  return result;
+  const depBefore = dateDependencies.find(d => d.dateAfterId);
+  if (!depBefore) return true;
+  const mustBeforeDate = inputs.find(i => i.id === depBefore.dateAfterId);
+  const source = inputs.find(i => i.id === depBefore.id);
+  if (!source || !mustBeforeDate) return false;
+  if (source.timestamp <= mustBeforeDate.timestamp) {
+    return false;
+  }
+  return true;
 }
 
 export function getTemplateWednesdayAfterOpeningDay(
