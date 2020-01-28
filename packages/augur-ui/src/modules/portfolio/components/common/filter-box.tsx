@@ -31,6 +31,7 @@ export interface FilterBoxProps {
   toggle: Function;
   hide: boolean;
   extend: boolean;
+  customClass?: string;
 }
 
 interface FilterBoxState {
@@ -59,6 +60,7 @@ const FilterBox: React.FC<FilterBoxProps> = props => {
     hide,
     extend,
     data,
+    customClass,
   } = props;
 
   // states
@@ -150,6 +152,7 @@ const FilterBox: React.FC<FilterBoxProps> = props => {
   return (
     <QuadBox
       title={title}
+      customClass={customClass}
       switchHeaders={true}
       showFilterSearch={true}
       onSearchChange={(search) => setSearch(search)}
