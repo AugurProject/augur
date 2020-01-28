@@ -195,11 +195,18 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
       try {
         txHash = await this.gnosisRelay.execTransaction(relayTransaction);
       } catch (error) {
-        this.setUseRelay(false);
-        this.setStatus(GnosisSafeState.ERROR);
-        console.log(`RELAY ERROR: ${JSON.stringify(error)}`);
-        // TODO this makes every possible error look like relayer is down. Should do some parsing and send other errors
-        throw TransactionStatus.RELAYER_DOWN;
+        const response = error.response;
+        const exception = (response.data || {}).exception;
+        const status = response.status;
+        const isServerError = status >= 500;
+        console.error(`Gnosis Relay ${status} Error: ${exception}`);
+        if (isServerError || exception.includes("funds")) {
+          // In the event of a 5XX error or when the relayer has no funds we should consider the relay down
+          this.setUseRelay(false);
+          this.setStatus(GnosisSafeState.ERROR);
+          throw TransactionStatus.RELAYER_DOWN;
+        }
+        throw TransactionStatus.FAILURE;
       }
     } else {
       txHash = await this.execTransactionDirectly(relayTransaction);
