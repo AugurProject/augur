@@ -54,6 +54,7 @@ export class DeploymentVerifier {
         if (error) return error;
 
         error = await this.verifyInitializations();
+if (error) return error;
 
         error = await this.verifyAugurTradingInitialization();
         
