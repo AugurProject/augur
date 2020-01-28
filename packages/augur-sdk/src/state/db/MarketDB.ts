@@ -20,6 +20,7 @@ import { MarketReportingState, SECONDS_IN_A_DAY } from '../../constants';
 import { QUINTILLION, padHex } from '../../utils';
 import { Block } from 'ethereumjs-blockstream';
 import { isTemplateMarket } from '@augurproject/artifacts';
+import { OrderEvent } from '@0x/mesh-rpc-client';
 
 
 interface MarketOrderBookData {
@@ -62,8 +63,8 @@ export class MarketDB extends DerivedDB {
       'MarketMigrated': this.processMarketMigrated,
     };
 
-    this.augur.events.subscribe('DerivedDB:updated:CurrentOrders', this.syncOrderBooks);
-    this.augur.events.subscribe('DerivedDB:updated:ZeroXOrders', this.syncOrderBooks);
+    this.augur.events.subscribe('DB:updated:ZeroXOrders', (orderEvents) => this.syncOrderBooks([orderEvents.market]));
+    this.augur.events.subscribe('DB:get:ZeroXOrders', (markets) => this.syncOrderBooks(markets));
     this.augur.events.subscribe('controller:new:block', this.processNewBlock);
     this.augur.events.subscribe('TimestampSet', this.processTimestampSet);
   }
@@ -71,7 +72,6 @@ export class MarketDB extends DerivedDB {
   async doSync(highestAvailableBlockNumber: number): Promise<void> {
     this.syncing = true;
     await super.doSync(highestAvailableBlockNumber);
-    await this.syncOrderBooks();
     const timestamp = (await this.augur.getTimestamp()).toNumber();
     await this.processTimestamp(timestamp, highestAvailableBlockNumber);
     await this.syncFTS();
@@ -86,33 +86,16 @@ export class MarketDB extends DerivedDB {
     }
   }
 
-  syncOrderBooks = async (): Promise<void> => {
+  syncOrderBooks = async (marketIds: string[]): Promise<void> => {;
     const highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(this.dbName);
     const documents = [];
 
-    const currentZeroXOrders = await this.stateDB.ZeroXOrders.toArray();
-
-    if (currentZeroXOrders.length < 1) return;
-
-    const marketIds: string[] = _.uniq(_.map(currentZeroXOrders, 'market')) as string[];
-    const marketsData = await this.stateDB.Markets.where("market").anyOf(marketIds).toArray();
+    const marketsData = await this.stateDB.Markets.where('market').anyOf(marketIds).toArray();
     const reportingFeeDivisor = await this.augur.contracts.universe.getReportingFeeDivisor_();
     // TODO Get ETH -> DAI price via uniswap when we integrate that as an oracle
     const ETHInAttoDAI = new BigNumber(200).multipliedBy(10**18);
 
     const marketDataById = _.keyBy(marketsData, 'market');
-
-    const now = Math.floor(Date.now() / 1000);
-
-    // only check market if it hasn't already been checked in the last 30s
-    const notRecentlyChecked = marketsData.filter((market) => {
-      const lastCheck = market.lastLiquidityCheck * 1000;
-      const thirtySeconds = 1000 * 3;
-      const thirtySecondsAgo = (now * 1000) - thirtySeconds;
-      return market.lastLiquidityCheck === 0 || !(lastCheck > thirtySecondsAgo);
-    });
-
-    if (notRecentlyChecked.length < 1) return;
 
     for (const marketId of marketIds) {
       const doc = await this.getOrderBookData(this.augur, marketId, marketDataById[marketId], reportingFeeDivisor, ETHInAttoDAI);
@@ -126,8 +109,8 @@ export class MarketDB extends DerivedDB {
   }
 
   async getOrderBookData(augur: Augur, marketId: string, marketData: MarketData, reportingFeeDivisor: BigNumber, ETHInAttoDAI: BigNumber): Promise<MarketOrderBookData> {
-    const numOutcomes = marketData.marketType === MarketType.Categorical ? marketData.outcomes.length + 1 : 3;
-    const estimatedTradeGasCost = WORST_CASE_FILL[numOutcomes];
+    const numOutcomes = marketData.outcomes && marketData.outcomes.length > 0 ? marketData.outcomes.length + 1 : 3;
+    const estimatedTradeGasCost = WORST_CASE_FILL[numOutcomes - 1];
     const estimatedGasCost = ETHInAttoDAI.multipliedBy(DEFAULT_GAS_PRICE_IN_GWEI).div(10**9);
     const estimatedTradeGasCostInAttoDai = estimatedGasCost.multipliedBy(estimatedTradeGasCost);
     const estimatedClaimGasCostInAttoDai = estimatedGasCost.multipliedBy(CLAIM_GAS_COST);
@@ -137,12 +120,11 @@ export class MarketDB extends DerivedDB {
     const feeMultiplier = new BigNumber(1).minus(new BigNumber(1).div(reportingFeeDivisor)).minus(new BigNumber(1).div(feeDivisor));
     const orderBook = await this.getOrderBook(marketData, numOutcomes, estimatedTradeGasCostInAttoDai);
     const invalidFilter = await this.recalcInvalidFilter(orderBook, marketData, feeMultiplier, estimatedTradeGasCostInAttoDai, estimatedClaimGasCostInAttoDai);
-    const marketOrderBookData = {
+    let marketOrderBookData = {
       _id: marketId,
       invalidFilter,
       hasRecentlyDepletedLiquidity: false,
       lastPassingLiquidityCheck: 0,
-      lastLiquidityCheck: Math.floor(Date.now() / 1000),
       liquidity: {},
     };
 
@@ -161,10 +143,17 @@ export class MarketDB extends DerivedDB {
 
     const spread10 = new BigNumber(marketOrderBookData.liquidity[10]);
     const spread15 = new BigNumber(marketOrderBookData.liquidity[15]);
+    const lastSpread10 = new BigNumber(marketData.liquidity[10]);
+    const lastSpread15 = new BigNumber(marketData.liquidity[15]);
 
     // Keep track when a market has under a 15% spread. Used for `hasRecentlyDepletedLiquidity`
-    if (spread10.gt(0) || spread15.gt(0)) {
-      marketOrderBookData.lastPassingLiquidityCheck = marketOrderBookData.lastLiquidityCheck;
+    if ((spread10.gt(0) || spread15.gt(0))) {
+      const now = Math.floor(Date.now() / 1000);
+      marketOrderBookData.lastPassingLiquidityCheck = now;
+    } else if (lastSpread10.gt(0) || lastSpread15.gt(0)) {
+      marketOrderBookData.lastPassingLiquidityCheck = marketData.lastPassingLiquidityCheck;
+    } else if (marketData.hasRecentlyDepletedLiquidity) {
+      marketOrderBookData.lastPassingLiquidityCheck = marketData.lastPassingLiquidityCheck;
     }
 
     marketOrderBookData.hasRecentlyDepletedLiquidity = await this.hasRecentlyDepletedLiquidity(marketData, marketOrderBookData.liquidity);
@@ -184,22 +173,12 @@ export class MarketDB extends DerivedDB {
     }
 
     let allOutcomesAllOrderTypes = [];
-    let allOutcomesAllOrderTypes2 = [];
-
-    for (let i = 0; i < outcomes.length; i++) {
-      for (let ii = 0; ii < orderTypes.length; ii++) {
-       allOutcomesAllOrderTypes = allOutcomesAllOrderTypes.concat(
-         [[marketData.market, outcomes[i], orderTypes[ii]]]
-      );
-      }
-    }
 
     for (const outcome of outcomes) {
       for (const orderType of orderTypes) {
-        allOutcomesAllOrderTypes2 = allOutcomesAllOrderTypes2.concat([[marketData.market, outcome, orderType]]);
+        allOutcomesAllOrderTypes = allOutcomesAllOrderTypes.concat([[marketData.market, outcome, orderType]]);
       }
     }
-
     const currentOrdersResponse = await this.stateDB.ZeroXOrders
       .where('[market+outcome+orderType]')
       .anyOf(allOutcomesAllOrderTypes)
@@ -221,14 +200,13 @@ export class MarketDB extends DerivedDB {
       const groupedByOrderType = _.groupBy(sufficientlyLargeOrders, 'orderType');
       const bids = groupedByOrderType ? _.reverse(_.sortBy(groupedByOrderType[OrderTypeHex.Bid], 'price')) : [];
       const asks = groupedByOrderType ? _.sortBy(groupedByOrderType[OrderTypeHex.Ask], 'price') : [];
-
       return {
         bids,
         asks,
       };
     });
 
-    return outcomeBidAskOrders.map(order => {
+    const data = outcomeBidAskOrders.map(order => {
       if (order.bids === undefined) {
         order.bids = [];
       }
@@ -239,6 +217,8 @@ export class MarketDB extends DerivedDB {
 
       return order;
     });
+
+    return data;
   }
 
   // A Market is marked as True in the invalidFilter if the best bid for Invalid on the book would not be profitable to take were the market Valid
@@ -296,7 +276,6 @@ export class MarketDB extends DerivedDB {
       100: '000000000000000000000000000000'
     }
     log['lastPassingLiquidityCheck'] = 0;
-    log['lastLiquidityCheck'] = 0;
     log['feeDivisor'] = new BigNumber(1).dividedBy(new BigNumber(log['feePerCashInAttoCash'], 16).dividedBy(QUINTILLION)).toNumber();
     log['feePercent'] = new BigNumber(log['feePerCashInAttoCash'], 16).div(QUINTILLION).toNumber();
     log['lastTradedTimestamp'] = 0;
@@ -416,12 +395,12 @@ export class MarketDB extends DerivedDB {
   // A market's liquidity is considered recently depleted if it had liquidity under
   // a 15% spread in the last 24 hours, but doesn't currently have liquidity
   async hasRecentlyDepletedLiquidity(marketData: MarketData, currentLiquiditySpreads): Promise<boolean>  {
-    const currentTimestamp = Math.floor(Date.now() / 1000);
+    const moreThantwentyFourHoursAgo = (date) => {
+      const twentyFourHours = Date.now() - (60 * 60 * 24 * 1000);
+      return twentyFourHours > date;
+    }
+
     const lastPassingLiquidityCheck = marketData.lastPassingLiquidityCheck * 1000;
-    const twentyFourHours = 24 * 60 * 60 * 1000;
-    const oneDayAgo = currentTimestamp - twentyFourHours;
-
-
 
     const liquidity15Percent = new BigNumber(currentLiquiditySpreads[10]);
     const liquidity10Percent = new BigNumber(currentLiquiditySpreads[15]);
@@ -432,11 +411,11 @@ export class MarketDB extends DerivedDB {
     if (marketData.lastPassingLiquidityCheck === 0) {
       hadLiquidityInLast24Hour = false;
     }
-    else if (lastPassingLiquidityCheck > oneDayAgo) {
-      hadLiquidityInLast24Hour = true;
-    }
-    else if (lastPassingLiquidityCheck <= oneDayAgo) {
+    else if (moreThantwentyFourHoursAgo(lastPassingLiquidityCheck)) {
       hadLiquidityInLast24Hour = false;
+    }
+    else if (!moreThantwentyFourHoursAgo(lastPassingLiquidityCheck)) {
+      hadLiquidityInLast24Hour = true;
     }
 
     // had liquidity under a 15% spread in the last 24 hours, but doesn't currently have liquidity
