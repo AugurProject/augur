@@ -190,17 +190,22 @@ export class ZeroX {
     return response.ordersInfos;
   }
 
-  async getMeshOrders(): Promise<OrderInfo[]> {
+  async getMeshOrders(tries: number = 10): Promise<OrderInfo[]> {
     var response;
-      try {
-        response = await this.mesh.getOrdersAsync();  
-      }
-      catch(error) {
+    try {
+      response = await this.mesh.getOrdersAsync();  
+    }
+    catch(error) {
+      if(tries > 0) {
         console.log("Mesh retrying to fetch orders");
         await new Promise(r => setTimeout(r, 3000));
-        response = await this.getMeshOrders();
+        response = await this.getMeshOrders(tries - 1);
       }
-      return response;
+      else {
+        response = undefined;
+      }
+    }
+    return response;
   }
 
   async placeTrade(params: ZeroXPlaceTradeDisplayParams): Promise<void> {
