@@ -330,11 +330,13 @@ export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
     isSameAddress(log.orderCreator, address) ||
     isSameAddress(log.orderFiller, address);
   if (isUserDataUpdate && authStatus.isLogged) {
-      dispatch(orderFilled(marketId, log, isSameAddress(log.orderCreator, address)));
-      dispatch(loadUserFilledOrders({ marketId }));
-      dispatch(loadAccountOpenOrders());
-      handleAlert(log, PUBLICFILLORDER, true, dispatch, getState);
-    }
+    dispatch(
+      orderFilled(marketId, log, isSameAddress(log.orderCreator, address))
+    );
+    dispatch(loadUserFilledOrders({ marketId }));
+    dispatch(loadAccountOpenOrders());
+    handleAlert(log, PUBLICFILLORDER, true, dispatch, getState);
+  }
   dispatch(loadMarketTradingHistory(marketId));
 };
 
