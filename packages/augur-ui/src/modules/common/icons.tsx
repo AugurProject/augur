@@ -560,6 +560,12 @@ export const CheckMark = (
   </svg>
 );
 
+export const Dot = (
+  <svg viewBox="0 0 4 4">
+    <circle cx="2" cy="2" r="2" />
+  </svg>
+);
+
 export const DotDotDot = (
   <svg viewBox="0 0 10 16">
     <circle cx="8" cy="1.5" r="1.5" />

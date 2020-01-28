@@ -253,6 +253,7 @@ export default class MarketView extends Component<
     }
     if (isMarketLoading !== this.props.isMarketLoading) {
       closeMarketLoadingModal();
+      this.startOrderBookTimer();
     }
     if (!tradingTutorial && !this.props.scalarModalSeen && this.props.marketType === SCALAR && !this.state.hasShownScalarModal) {
       this.props.updateModal({ type: MODAL_SCALAR_MARKET, cb: () => this.setState({ hasShownScalarModal: true }) });

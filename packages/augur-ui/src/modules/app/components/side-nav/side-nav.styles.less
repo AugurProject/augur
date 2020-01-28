@@ -118,12 +118,17 @@
           color: @color-primary-text;
           width: fit-content;
         }
+
+        svg {
+          margin-bottom: @size-12;
+        }
       }
 
       a,
       button {
         display: flex;
         padding: @size-21 @size-24;
+        align-items: center;
 
         > span {
           .text-11-bold;
@@ -133,6 +138,18 @@
           display: flex;
           margin-left: @size-8;
           text-transform: uppercase;
+        }
+
+        > svg {
+          height: @size-4;
+          width: @size-4;
+          fill: none;
+          margin-left: @size-4;
+          margin-bottom: @size-4;
+  
+          > circle {
+            fill: @color-outcome-five;
+          }
         }
       }
     }

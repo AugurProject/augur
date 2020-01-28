@@ -10,7 +10,7 @@ import {
   FormDropdown,
   RadioBarGroup,
 } from 'modules/common/form';
-import { XIcon, AddIcon, HintAlternate } from 'modules/common/icons';
+import { XIcon, AddIcon, helpIcon } from 'modules/common/icons';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import Link from 'modules/create-market/containers/link';
@@ -226,7 +226,7 @@ export const SmallSubheadersTooltip = (props: SubheadersTooltipProps) => (
             data-tip
             data-for={`tooltip-${props.header}`}
           >
-            {HintAlternate}
+            {helpIcon}
           </label>
           <ReactTooltip
             id={`tooltip-${props.header}`}
@@ -251,7 +251,7 @@ export const SmallSubheadersTooltip = (props: SubheadersTooltipProps) => (
             data-tip
             data-for={`tooltip-${props.header}`}
           >
-            {HintAlternate}
+            {helpIcon}
           </label>
           <ReactTooltip
             id={`tooltip-${props.header}`}
