@@ -185,6 +185,8 @@ export class ZeroX {
       response = await this.rpc.getOrdersAsync();
     }
     else {
+      // TODO fix with a real retry if mesh isn't available / ready yet
+      await new Promise(r => setTimeout(r, 10000));
       response = await this.mesh.getOrdersAsync();
     }
     return response.ordersInfos;
