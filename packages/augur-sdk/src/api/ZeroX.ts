@@ -185,11 +185,22 @@ export class ZeroX {
       response = await this.rpc.getOrdersAsync();
     }
     else {
-      // TODO fix with a real retry if mesh isn't available / ready yet
-      await new Promise(r => setTimeout(r, 10000));
-      response = await this.mesh.getOrdersAsync();
+      response = await this.getMeshOrders();
     }
     return response.ordersInfos;
+  }
+
+  async getMeshOrders(): Promise<OrderInfo[]> {
+    var response;
+      try {
+        response = await this.mesh.getOrdersAsync();  
+      }
+      catch(error) {
+        console.log("Mesh retrying to fetch orders");
+        await new Promise(r => setTimeout(r, 3000));
+        response = await this.getMeshOrders();
+      }
+      return response;
   }
 
   async placeTrade(params: ZeroXPlaceTradeDisplayParams): Promise<void> {
