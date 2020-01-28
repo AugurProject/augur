@@ -50,7 +50,7 @@ export default class OpenMarkets extends Component<OpenMarketsProps> {
         }
         toggleContent={
           <div className={Styles.ExpandedContent}>
-            {marketsObj[market.id].userPositions &&
+            {marketsObj[market.id] && marketsObj[market.id].userPositions &&
               marketsObj[market.id].userPositions.map((position: any) => (
                 <div key={position.outcomeId}>
                   <span>{position.outcomeName}</span>
