@@ -174,7 +174,7 @@ export class ZeroXOrders extends AbstractTable {
 
   async sync(): Promise<void> {
     var orders: OrderInfo[];
-    orders = await this.augur.zeroX.getOrdersRetry(10);
+    orders = await this.augur.zeroX.getOrders();
     let documents;
     if (orders && orders.length > 0) {
       documents = _.filter(orders, this.validateOrder.bind(this));

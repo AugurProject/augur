@@ -190,19 +190,6 @@ export class ZeroX {
     return response.ordersInfos;
   }
 
-  async getOrdersRetry(numRetries: number = 10): Promise<OrderInfo[]> {
-    var response;
-    try {
-      response = this.getOrders();
-    }
-    catch {
-      if(numRetries > 0) {
-        setTimeout(() => this.getOrdersRetry(numRetries - 1), 3000);
-      }
-    }
-    return response;
-  }
-
   async placeTrade(params: ZeroXPlaceTradeDisplayParams): Promise<void> {
     const onChainTradeParams = this.getOnChainTradeParams(params);
     return this.placeOnChainTrade(onChainTradeParams);
