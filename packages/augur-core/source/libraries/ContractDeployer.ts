@@ -36,8 +36,7 @@ import { NetworkConfiguration } from './NetworkConfiguration';
 import { Contracts, ContractData } from './Contracts';
 import { Dependencies } from '../libraries/GenericContractInterfaces';
 import { ContractAddresses, NetworkId, setAddresses, setUploadBlockNumber } from '@augurproject/artifacts';
-
-export const TRADING_CONTRACTS = ['CreateOrder','FillOrder','CancelOrder','Trade','Orders','ZeroXTrade','ProfitLoss','SimulateTrade','ZeroXExchange','GnosisSafeRegistry']
+import { TRADING_CONTRACTS } from './constants';
 
 export class ContractDeployer {
     private readonly configuration: DeployerConfiguration;
@@ -186,6 +185,9 @@ Deploying to: ${networkConfiguration.networkName}
           await this.generateUploadBlockNumberMapping(blockNumber);
           await this.generateAddressMappingFile();
         }
+
+        await this.augur.finishDeployment();
+        await this.augurTrading.finishDeployment();
 
         return this.generateCompleteAddressMapping();
     }
@@ -587,6 +589,7 @@ Deploying to: ${networkConfiguration.networkName}
         mapping['WarpSync'] = this.contracts.get('WarpSync').address!;
         mapping['ShareToken'] = this.contracts.get('ShareToken').address!;
         mapping['HotLoading'] = this.contracts.get('HotLoading').address!;
+        mapping['EthExchange'] = this.contracts.get('EthExchange').address!;
         mapping['Affiliates'] = this.contracts.get('Affiliates').address!;
         mapping['AffiliateValidator'] = this.contracts.get('AffiliateValidator').address!;
 

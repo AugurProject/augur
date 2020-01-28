@@ -83,6 +83,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155, CashSender {
     // solhint-disable-next-line var-name-mixedcase
     bytes32 public EIP712_DOMAIN_HASH;
 
+    IAugur public augur;
     IAugurTrading public augurTrading;
     IFillOrder public fillOrder;
     ICash public cash;
@@ -92,6 +93,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155, CashSender {
 
     function initialize(IAugur _augur, IAugurTrading _augurTrading) public beforeInitialized {
         endInitialization();
+        augur = _augur;
         augurTrading = _augurTrading;
         cash = ICash(_augur.lookup("Cash"));
         require(cash != ICash(0));
