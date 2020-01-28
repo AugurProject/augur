@@ -54,7 +54,7 @@ export class Platform {
   ): Promise<PlatformActivityStatsResult> {
     const { universe } = params;
     const startTime = params.startTime || 0;
-    const endTime = params.endTime || (await augur.contracts.augur.getTimestamp_()).toNumber();
+    const endTime = params.endTime || (await db.getTimestamp()).toNumber();
 
     if (Number(startTime) > Number(endTime)) {
       throw new Error('startTime must be less than or equal to endTime');

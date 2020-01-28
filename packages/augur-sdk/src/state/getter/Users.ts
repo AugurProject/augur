@@ -8,12 +8,10 @@ import {
   ParsedOrderEventLog,
   LogTimestamp,
   MarketData,
-  OrderState,
   Log,
 } from '../logs/types';
 import {
   DisputeCrowdsourcerRedeemed,
-  MarketFinalized,
   OrderEvent,
   ProfitLossChanged,
 } from '../../event-handlers';
@@ -25,7 +23,6 @@ import {
 } from '../../index';
 import { sortOptions } from './types';
 import { MarketReportingState, OrderEventType } from '../../constants';
-import { formatBytes32String } from 'ethers/utils';
 
 import * as _ from 'lodash';
 import * as t from 'io-ts';
@@ -33,21 +30,11 @@ import { QUINTILLION } from '../../utils';
 import {
   OnChainTrading,
   MarketTradingHistory,
-  Orders,
   getMarkets,
   Order,
 } from './OnChainTrading';
 import { MarketInfo, Markets } from './Markets';
 import { Accounts, AccountReportingHistory } from './Accounts';
-import { PlaceTradeDisplayParams } from '../../api/Trade';
-import * as uuid from 'uuid';
-import { ethers } from 'ethers';
-import {
-  convertDisplayAmountToOnChainAmount,
-  convertDisplayPriceToOnChainPrice,
-  numTicksToTickSizeWithDisplayPrices,
-} from '../../utils';
-import { StoredOrder } from '../db/ZeroXOrders';
 import { ZeroXOrders } from './ZeroXOrdersGetters';
 
 const DEFAULT_NUMBER_OF_BUCKETS = 30;
@@ -264,16 +251,18 @@ export class Users {
     });
 
     const stakedRepMarketIds = [];
-    if (userStakedRep.reporting && userStakedRep.reporting.contracts.length > 0)
+    if (userStakedRep.reporting && userStakedRep.reporting.contracts.length > 0) {
       userStakedRep.reporting.contracts.map(c => [
         ...stakedRepMarketIds,
         c.marketId,
       ]);
-    if (userStakedRep.disputing && userStakedRep.disputing.contracts.length > 0)
+    }
+    if (userStakedRep.disputing && userStakedRep.disputing.contracts.length > 0) {
       userStakedRep.disputing.contracts.map(c => [
         ...stakedRepMarketIds,
         c.marketId,
       ]);
+    }
 
     const positions = await Users.getProfitLossSummary(augur, db, {
       account: params.account,
@@ -307,7 +296,7 @@ export class Users {
         .concat(userPositionsMarketIds)
     );
 
-    var marketIds: string[] = Array.from(set);
+    const marketIds: string[] = Array.from(set);
 
     marketsInfo = await Markets.getMarketsInfo(augur, db, { marketIds });
 
@@ -338,8 +327,9 @@ export class Users {
       universe: params.universe,
     });
 
-    if (!orders || Object.keys(orders).length === 0)
+    if (!orders || Object.keys(orders).length === 0) {
       return { orders: {}, totalOpenOrdersFrozenFunds: '0' };
+    }
 
     const userPositions = await Users.getUserTradingPositions(augur, db, {
       account: params.account,
@@ -355,7 +345,7 @@ export class Users {
     Object.keys(orders).forEach(marketId => {
       const market = markets[marketId];
       const marketPositions = positions[marketId];
-      let userSharesBalances = marketPositions
+      const userSharesBalances = marketPositions
         ? marketPositions.userSharesBalances
         : {};
       const outcomes = Object.keys(orders[marketId]);
@@ -397,7 +387,7 @@ export class Users {
     const startTime = params.startTime ? params.startTime : 0;
     const endTime = params.endTime
       ? params.endTime
-      : await augur.contracts.augur.getTimestamp_();
+      : await db.getTimestamp();
 
     if (params.startTime > params.endTime) {
       throw new Error('startTime must be less than or equal to endTime');
@@ -560,10 +550,12 @@ export class Users {
     let profitLossCollection = await db.ProfitLossChanged.where(
       'account'
     ).equals(params.account);
-    if (params.limit)
+    if (params.limit) {
       profitLossCollection = profitLossCollection.limit(params.limit);
-    if (params.offset)
+    }
+    if (params.offset) {
       profitLossCollection = profitLossCollection.offset(params.offset);
+    }
     const profitLossRecords = await profitLossCollection
       .and(log => {
         if (params.universe && log.universe !== params.universe) return false;
@@ -853,7 +845,7 @@ export class Users {
         "'getProfitLoss' requires a 'startTime' param be provided"
       );
     }
-    const now = await augur.contracts.augur.getTimestamp_();
+    const now = await db.getTimestamp();
     const startTime = params.startTime!;
     const endTime = params.endTime || now.toNumber();
     const periodInterval =
@@ -926,7 +918,7 @@ export class Users {
               const latestOutcomePLValue = getLastDocBeforeTimestamp<
                 ProfitLossChangedLog
               >(outcomePLValues, bucketTimestamp);
-              let hasOutcomeValues = !!(
+              const hasOutcomeValues = !!(
                 ordersFilledResultsByMarketAndOutcome[marketId] &&
                 ordersFilledResultsByMarketAndOutcome[marketId][outcome]
               );
@@ -992,7 +984,7 @@ export class Users {
     params: t.TypeOf<typeof Users.getProfitLossSummaryParams>
   ): Promise<NumericDictionary<MarketTradingPosition>> {
     const result: NumericDictionary<MarketTradingPosition> = {};
-    const now = await augur.contracts.augur.getTimestamp_();
+    const now = await db.getTimestamp();
     const endTime = params.endTime || now.toNumber();
 
     for (const days of [1, 30]) {

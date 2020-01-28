@@ -72,7 +72,7 @@ export class Controller {
     const blocksBehindCurrent = block.number - lowestBlock;
     const percentSynced = ((lowestBlock / block.number) * 100).toFixed(4);
 
-    const timestamp = await this.augur.getTimestamp();
+    const timestamp = await (await this.db).getTimestamp();
     this.augur.events.emit(SubscriptionEventName.NewBlock, {
       eventName: SubscriptionEventName.NewBlock,
       highestAvailableBlockNumber: block.number,

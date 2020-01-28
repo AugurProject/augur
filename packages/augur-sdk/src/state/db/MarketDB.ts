@@ -14,14 +14,13 @@ import {
   MAX_TRADE_GAS_PERCENTAGE_DIVISOR,
   MarketReportingState,
 } from '../../constants';
-import { NewBlock } from "../../events";
-import { MarketData, MarketType, OrderTypeHex, TimestampSetLog, UnixTimestamp } from '../logs/types';
+import { NewBlock } from '../../events';
+import { MarketData, OrderTypeHex, TimestampSetLog, UnixTimestamp } from '../logs/types';
 import { BigNumber } from 'bignumber.js';
 import { OrderBook } from '../../api/Liquidity';
 import { ParsedLog } from '@augurproject/types';
 import { QUINTILLION, padHex } from '../../utils';
 import { SubscriptionEventName } from '../../constants';
-import { Block } from 'ethereumjs-blockstream';
 import { isTemplateMarket } from '@augurproject/artifacts';
 
 interface MarketOrderBookData {
@@ -74,7 +73,7 @@ export class MarketDB extends DerivedDB {
     this.syncing = true;
     await super.doSync(highestAvailableBlockNumber);
     await this.syncOrderBooks([]);
-    const timestamp = (await this.augur.getTimestamp()).toNumber();
+    const timestamp = (await this.stateDB.getTimestamp()).toNumber();
     await this.processTimestamp(timestamp, highestAvailableBlockNumber);
     await this.syncFTS();
     this.syncing = false;
@@ -86,7 +85,7 @@ export class MarketDB extends DerivedDB {
       marketDocs = marketDocs.slice(0, marketDocs.length);
       await this.augur.syncableFlexSearch.addMarketCreatedDocs(marketDocs);
     }
-  }
+  };
 
   syncOrderBooks = async (marketIds: string[]): Promise<void> => {;
     let ids = marketIds;
@@ -100,6 +99,10 @@ export class MarketDB extends DerivedDB {
     } else {
       marketsData = await this.stateDB.Markets.where('market').anyOf(marketIds).toArray();
     }
+    const currentOrderLogs = await this.stateDB.CurrentOrders.where('blockNumber').aboveOrEqual(highestSyncedBlockNumber).toArray();
+
+    if (currentOrderLogs.length < 1) return;
+
 
     const reportingFeeDivisor = await this.augur.contracts.universe.getReportingFeeDivisor_();
     // TODO Get ETH -> DAI price via uniswap when we integrate that as an oracle
@@ -117,7 +120,12 @@ export class MarketDB extends DerivedDB {
     }
 
     await this.bulkUpsertDocuments(documents);
-  }
+
+    if (!this.syncing) {
+      const highestBlockNumber: number = _.max(_.map(currentOrderLogs, 'blockNumber')) as number;
+      await this.syncStatus.setHighestSyncBlock(this.dbName, highestBlockNumber, false);
+    }
+  };
 
   async getOrderBookData(augur: Augur, marketId: string, marketData: MarketData, reportingFeeDivisor: BigNumber, ETHInAttoDAI: BigNumber): Promise<MarketOrderBookData> {
     const numOutcomes = marketData.outcomes && marketData.outcomes.length > 0 ? marketData.outcomes.length + 1 : 3;
@@ -132,7 +140,7 @@ export class MarketDB extends DerivedDB {
     const orderBook = await this.getOrderBook(marketData, numOutcomes, estimatedTradeGasCostInAttoDai);
     const invalidFilter = await this.recalcInvalidFilter(orderBook, marketData, feeMultiplier, estimatedTradeGasCostInAttoDai, estimatedClaimGasCostInAttoDai);
 
-    let marketOrderBookData = {
+    const marketOrderBookData = {
       _id: marketId,
       invalidFilter,
       hasRecentlyDepletedLiquidity: false,
@@ -286,7 +294,7 @@ export class MarketDB extends DerivedDB {
       15: '000000000000000000000000000000',
       20: '000000000000000000000000000000',
       100: '000000000000000000000000000000'
-    }
+    };
     log['lastPassingLiquidityCheck'] = 0;
     log['feeDivisor'] = new BigNumber(1).dividedBy(new BigNumber(log['feePerCashInAttoCash'], 16).dividedBy(QUINTILLION)).toNumber();
     log['feePercent'] = new BigNumber(log['feePerCashInAttoCash'], 16).div(QUINTILLION).toNumber();
@@ -304,15 +312,16 @@ export class MarketDB extends DerivedDB {
       log['extraInfo'] = {};
     }
     if (this.augur.syncableFlexSearch) {
+      // NOTE: unhandled promise
       this.augur.syncableFlexSearch.addMarketCreatedDocs([log as unknown as MarketData]);
     }
     return log;
-  }
+  };
 
   private processInitialReportSubmitted(log: ParsedLog): ParsedLog {
     log['reportingState'] = MarketReportingState.CrowdsourcingDispute;
     log['totalRepStakedInMarket'] = padHex(log['amountStaked']);
-    log['tentativeWinningPayoutNumerators'] = log['payoutNumerators']
+    log['tentativeWinningPayoutNumerators'] = log['payoutNumerators'];
     log['disputeRound'] = '0x01';
     return log;
   }
@@ -366,7 +375,7 @@ export class MarketDB extends DerivedDB {
   private async processTimestamp(timestamp: UnixTimestamp, blockNumber: number): Promise<void> {
     await this.waitOnLock(this.HANDLE_MERGE_EVENT_LOCK, 2000, 50);
 
-    const eligibleMarketDocs = await this.table.where("reportingState").anyOfIgnoreCase([
+    const eligibleMarketDocs = await this.table.where('reportingState').anyOfIgnoreCase([
       MarketReportingState.PreReporting,
       MarketReportingState.DesignatedReporting,
       MarketReportingState.CrowdsourcingDispute,
@@ -390,7 +399,7 @@ export class MarketDB extends DerivedDB {
           reportingState = MarketReportingState.DesignatedReporting;
       }
 
-      if (reportingState && reportingState != marketData.reportingState) {
+      if (reportingState && reportingState !== marketData.reportingState) {
         updateDocs.push({
           market: marketData.market,
           blockNumber,
@@ -411,12 +420,12 @@ export class MarketDB extends DerivedDB {
     const moreThantwentyFourHoursAgo = (date) => {
       const twentyFourHours = Date.now() - (60 * 60 * 24 * 1000);
       return twentyFourHours > date;
-    }
+    };
 
     const lastPassingLiquidityCheck = currentLastPassingLiquidityCheck * 1000;
     const liquidity15Percent = new BigNumber(currentLiquiditySpreads[10]);
     const liquidity10Percent = new BigNumber(currentLiquiditySpreads[15]);
-    const currentlyHasLiquidity = liquidity10Percent.gt(0) || liquidity15Percent.gt(0)
+    const currentlyHasLiquidity = liquidity10Percent.gt(0) || liquidity15Percent.gt(0);
     let hadLiquidityInLast24Hour = false;
 
     if (marketData.lastPassingLiquidityCheck === 0) {
