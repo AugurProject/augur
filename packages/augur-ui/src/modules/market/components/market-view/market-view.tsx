@@ -36,7 +36,7 @@ import ModulePane from 'modules/market/components/common/module-tabs/module-pane
 import PriceHistory from 'modules/market-charts/containers/price-history';
 import Styles from 'modules/market/components/market-view/market-view.styles.less';
 import { LeftChevron } from 'modules/common/icons';
-import { TEMP_TABLET } from 'modules/common/constants';
+import { SMALL_MOBILE } from 'modules/common/constants';
 import {
   MarketData,
   OutcomeFormatted,
@@ -608,7 +608,7 @@ export default class MarketView extends Component<
         <Helmet>
           <title>{parseMarketTitle(description)}</title>
         </Helmet>
-        <Media query={TEMP_TABLET} onChange={matches => {
+        <Media query={SMALL_MOBILE} onChange={matches => {
           if (matches && pane !== 'Market Info') this.setState({ pane: 'Market Info' });
         }}>
           {matches =>
