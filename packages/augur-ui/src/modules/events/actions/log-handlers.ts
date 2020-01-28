@@ -484,13 +484,12 @@ export const handleMarketFinalizedLog = (log: Logs.MarketFinalizedLog) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { universe } = getState();
+  const { universe, accountPositions } = getState();
   if (universe.forkingInfo) {
     if (log.market === universe.forkingInfo.forkingMarket) {
       dispatch(loadUniverseForkingInfo());
     }
   }
-  const { accountPositions } = getState();
   const positionMarketids = Object.keys(accountPositions);
   const updatePositions =
     positionMarketids.length > 0 &&
