@@ -206,17 +206,6 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
         role="button"
         tabIndex={0}
         onClick={this.toggleList}
-        onMouseEnter={() => {
-          // Outcome selector in order ticket open on click, not hover.
-          if (showColor !== true) {
-            this.setState({ showList: true });
-          }
-        }}
-        onMouseLeave={() => {
-          if (showColor !== true) {
-            this.setState({ showList: false });
-          }
-        }}
         data-tip
         data-for={'dropdown-' + id + staticLabel}
       >
@@ -322,12 +311,6 @@ export class StaticLabelDropdown extends Dropdown {
         role="button"
         tabIndex={0}
         onClick={this.toggleList}
-        onMouseEnter={() => {
-          this.setState({ showList: true });
-        }}
-        onMouseLeave={() => {
-          this.setState({ showList: false });
-        }}
       >
         <button>
           {staticLabel}
