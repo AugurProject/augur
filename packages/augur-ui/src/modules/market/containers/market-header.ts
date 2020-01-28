@@ -41,6 +41,7 @@ const mapStateToProps = (state, ownProps) => {
     isFavorite: !!state.favorites[ownProps.marketId],
     currentAugurTimestamp: state.blockchain.currentAugurTimestamp,
     reportingBarShowing,
+    preview: ownProps.preview,
   };
 };
 

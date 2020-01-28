@@ -1,5 +1,6 @@
 @import (reference) '~assets/styles/shared';
 
+// Many labels can be used in Betting UI
 .TimeLabel {
   display: flex;
   flex-flow: row wrap;
@@ -176,6 +177,7 @@
   }
 }
 
+// Used in market-header in market detail page.
 .PropertyLabel {
   display: flex;
   flex-flow: column nowrap;
@@ -285,9 +287,9 @@
     .text-10-medium;
 
     align-items: center;
-    color: @color-inactive-text;
+    color: @color-secondary-text;
     flex-flow: row nowrap;
-    text-transform: capitalize;
+    text-transform: uppercase;
 
     > label {
       margin: 0 0 0 @size-4;
@@ -308,7 +310,7 @@
 
   > span:nth-of-type(2),
   > span:last-of-type {
-    .mono-10-medium;
+    .mono-12-medium;
 
     color: @color-primary-text;
     padding-left: @size-8;

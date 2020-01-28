@@ -126,6 +126,7 @@ export default class MarketCard extends React.Component<
       endTimeFormatted,
       designatedReporter,
       isTemplate,
+      consensusFormatted
     } = market;
 
     if (loading) {
@@ -356,6 +357,7 @@ export default class MarketCard extends React.Component<
           <MigrateMarketNotice marketId={id} />
           {marketResolved && (
             <ResolvedOutcomes
+              consensusFormatted={consensusFormatted}
               outcomes={outcomesFormatted}
               expanded={expandedView}
             />

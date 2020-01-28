@@ -18,6 +18,7 @@ import Visibility from "modules/create-market/containers/visibility";
 import Styles from "modules/create-market/fees-liquidity.styles.less";
 import { OutcomeFormatted, NewMarket } from "modules/types";
 import { MARKET_COPY_LIST } from "modules/create-market/constants";
+import { formatOrderBook } from "modules/create-market/helpers/format-order-book";
 
 interface FeesLiquidityProps {
   newMarket: NewMarket;
@@ -132,7 +133,7 @@ export default class FeesLiquidity extends React.Component<
             subheader="You have the option of setting a fee on your market. It is a percentage amount you get whenever shares are redeemed for DAI. Fees are typically set below 2%."
           />
           <TextInput
-            value={settlementFee}
+            value={String(settlementFee)}
             type="number"
             placeholder="0"
             innerLabel="%"
@@ -153,7 +154,7 @@ export default class FeesLiquidity extends React.Component<
             placeholder="0"
             type="number"
             onChange={(value: string) => onChange("affiliateFee", value)}
-            value={affiliateFee}
+            value={String(affiliateFee)}
             innerLabel="%"
             trailingLabel="of market creator fees"
             errorMessage={validations.affiliateFee}
@@ -183,6 +184,7 @@ export default class FeesLiquidity extends React.Component<
               this.updateSelectedOrderProperties
             }
             market={newMarket}
+            orderBook={formatOrderBook(orderBook[s.selectedOutcome] || [])}
             selectedOutcomeId={s.selectedOutcome}
             initialLiquidity
           />
@@ -203,6 +205,7 @@ export default class FeesLiquidity extends React.Component<
           content={
             <DepthChart
               market={newMarket}
+              orderBook={formatOrderBook(orderBook[s.selectedOutcome] || [])}
               initialLiquidity
               selectedOutcomeId={s.selectedOutcome}
               updateSelectedOrderProperties={this.updateSelectedOrderProperties}

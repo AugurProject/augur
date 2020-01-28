@@ -124,7 +124,7 @@ export function addScripts(flash: FlashSession) {
 
       const config = {
         writeArtifacts: args.write_artifacts as boolean,
-        useNormalTime: (args.time_controlled as boolean),
+        useNormalTime: !(args.time_controlled as boolean),
       };
 
       const { addresses } = await deployContracts(

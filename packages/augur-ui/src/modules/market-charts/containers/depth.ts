@@ -3,13 +3,11 @@ import { isEmpty } from 'utils/is-empty';
 
 import { createBigNumber } from 'utils/create-big-number';
 import DepthChart from 'modules/market-charts/components/depth/depth';
-import orderAndAssignCumulativeShares from 'modules/markets/helpers/order-and-assign-cumulative-shares';
 import orderForMarketDepth from 'modules/markets/helpers/order-for-market-depth';
 import getOrderBookKeys from 'modules/markets/helpers/get-orderbook-keys';
 import getPrecision from 'utils/get-number-precision';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { selectCurrentTimestampInSeconds } from 'store/select-state';
-import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
 import { ASKS, BIDS, ZERO } from "modules/common/constants";
 
 const mapStateToProps = (state, ownProps) => {
@@ -19,7 +17,7 @@ const mapStateToProps = (state, ownProps) => {
       isLoading: true,
     };
   }
-
+  const cumulativeOrderBook = ownProps.orderBook;
   const minPrice = createBigNumber(market.minPriceBigNumber) || ZERO;
   const maxPrice = createBigNumber(market.maxPriceBigNumber) || ZERO;
   const marketOutcome =
@@ -27,15 +25,6 @@ const mapStateToProps = (state, ownProps) => {
       outcome => outcome.id === ownProps.selectedOutcomeId
     );
 
-  let outcomeOrderBook =
-    ownProps.initialLiquidity ? market.orderBook[ownProps.selectedOutcomeId] : state.orderBooks[market.marketId] &&
-    state.orderBooks[market.marketId][ownProps.selectedOutcomeId];
-
-  if (ownProps.initialLiquidity) {
-    outcomeOrderBook = formatOrderBook(outcomeOrderBook);
-  }
-
-  const cumulativeOrderBook = orderAndAssignCumulativeShares(outcomeOrderBook);
   const marketDepth = orderForMarketDepth(cumulativeOrderBook);
   const orderBookKeys = getOrderBookKeys(marketDepth, minPrice, maxPrice);
   const pricePrecision = market && getPrecision(market.tickSize, 4);
