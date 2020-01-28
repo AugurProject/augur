@@ -6,6 +6,8 @@ import { selectMarket } from 'modules/markets/selectors/market';
 import { cancelAllOpenOrders } from 'modules/orders/actions/cancel-order';
 import { selectUserFilledOrders } from 'modules/orders/selectors/filled-orders';
 import getUserOpenOrders from 'modules/orders/selectors/user-open-orders';
+import { addCanceledOrder } from 'modules/orders/actions/update-order-status';
+import { TXEventName } from '@augurproject/sdk/src/constants';
 
 const mapStateToProps = (state, ownProps) => {
   const market = ownProps.market || selectMarket(ownProps.marketId);
@@ -42,8 +44,12 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  cancelAllOpenOrders: (orders) =>
-    dispatch(cancelAllOpenOrders(orders)),
+  cancelAllOpenOrders: (orders) => {
+    dispatch(cancelAllOpenOrders(orders));
+    orders.forEach(order => {
+      dispatch(addCanceledOrder(order.id, TXEventName.Pending));
+    });
+  },
 });
 
 const MarketOrdersPositionsTableContainer = withRouter(
