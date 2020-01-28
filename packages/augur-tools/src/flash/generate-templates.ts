@@ -78,7 +78,7 @@ const generateValidations = (
     dateDependencies: null,
     closingDateDependencies: null,
     placeholderValues: null,
-    afterTuesdayDate: null,
+    afterTuesdayDateNoFriday: null,
   };
   const newTemplates = JSON.parse(JSON.stringify(templates));
   const topCategories = Object.keys(newTemplates);
@@ -119,7 +119,7 @@ const addTemplates = (
         dateDependencies: getDateDependencies(t.inputs),
         closingDateDependencies: getClosingDateDependencies(t.inputs),
         placeholderValues: getPlaceholderValues(t.inputs),
-        afterTuesdayDate: getInputsAfterTuesdayDate(t.inputs),
+        afterTuesdayDatenoFriday: getInputsAfterTuesdayDateNoFriday(t.inputs),
       };
     });
   }
@@ -182,10 +182,10 @@ function getDateDependencies(inputs: TemplateInput[]): DateDependencies[] {
     }));
 }
 
-function getInputsAfterTuesdayDate(inputs: TemplateInput[]): Array<{ id: number }> {
+function getInputsAfterTuesdayDateNoFriday(inputs: TemplateInput[]): Array<{ id: number }> {
   return inputs
     .filter(
-      i => i.type === TemplateInputType.DATEYEAR && i.validationType === ValidationType.EXP_DATE_TUESDAY_AFTER_MOVIE
+      i => i.type === TemplateInputType.DATEYEAR && i.validationType === ValidationType.EXP_DATE_TUESDAY_AFTER_MOVIE_NO_FRIDAY
     )
     .map(i => ({
       id: i.id,
