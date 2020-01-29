@@ -2,6 +2,7 @@
 # yarn lockfile v1
 
 
+
 "@0x/abi-gen-wrappers@^5.3.2":
   version "5.3.2"
   resolved "https://registry.yarnpkg.com/@0x/abi-gen-wrappers/-/abi-gen-wrappers-5.3.2.tgz#bf7d1942f56916b7d13fae627f6455f309c5c8b5"
