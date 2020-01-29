@@ -41,7 +41,6 @@ import {
   MarketData,
   OutcomeFormatted,
   DefaultOrderProperties,
-  OutcomeOrderBook,
 } from 'modules/types';
 import { getDefaultOutcomeSelected } from 'utils/convert-marketInfo-marketData';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
@@ -54,7 +53,7 @@ import makePath from 'modules/routes/helpers/make-path';
 import { MARKETS } from 'modules/routes/constants/views';
 import { augurSdk } from 'services/augursdk';
 import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
-import { OutcomeOrderBook } from '@augurproject/sdk/src/api/Liquidity';
+import { Getters } from '@augurproject/sdk';
 
 interface MarketViewProps {
   isMarketLoading: boolean;
@@ -83,7 +82,7 @@ interface MarketViewProps {
   removeAlert: Function;
   outcomeId?: number;
   account: string;
-  orderBook?: OutcomeOrderBook;
+  orderBook?: Getters.Markets.OutcomeOrderBook;
 }
 
 interface DefaultOrderPropertiesMap {
@@ -104,7 +103,7 @@ interface MarketViewState {
   tutorialError: string;
   hasShownScalarModal: boolean;
   timer: NodeJS.Timeout;
-  orderBook: OutcomeOrderBook;
+  orderBook: Getters.Markets.OutcomeOrderBook;
 }
 
 const ORDER_BOOK_REFRESH_MS = 3000;
@@ -194,12 +193,12 @@ export default class MarketView extends Component<
       window.scrollTo(0, 1);
     }
 
-    const { isMarketLoading, showMarketLoadingModal, preview } = this.props;
+    const { isMarketLoading, showMarketLoadingModal, preview, tradingTutorial } = this.props;
 
     if (isMarketLoading) {
       showMarketLoadingModal();
     }
-    if (!isMarketLoading && !preview) {
+    if (!isMarketLoading && !preview && !tradingTutorial) {
       this.startOrderBookTimer();
     }
   }
@@ -251,6 +250,7 @@ export default class MarketView extends Component<
       this.props.loadMarketsInfo(this.props.marketId);
       this.props.loadMarketTradingHistory(marketId);
     }
+
     if (isMarketLoading !== this.props.isMarketLoading) {
       closeMarketLoadingModal();
       this.startOrderBookTimer();
@@ -266,7 +266,7 @@ export default class MarketView extends Component<
   }
 
   getOrderBook = () => {
-    const { marketId, account } = this.props;
+    const { marketId, account, market } = this.props;
     const { selectedOutcomeId } = this.state;
     const Augur = augurSdk.get();
     Augur.getMarketOrderBook({ marketId, account })
@@ -274,9 +274,10 @@ export default class MarketView extends Component<
       if (!marketOrderBook) {
         return console.error(`Could not get order book for ${marketId}`);
       }
+      const outcomeId = selectedOutcomeId ? selectedOutcomeId : market.defaultSelectedOutcomeId;
       let orderBook = marketOrderBook.orderBook;
-      if (orderBook[selectedOutcomeId]){
-        orderBook = orderBook[selectedOutcomeId] as OutcomeOrderBook;
+      if (orderBook[outcomeId]){
+        orderBook = orderBook[outcomeId] as Getters.Markets.OutcomeOrderBook;
       }
       this.setState({ orderBook });
     });

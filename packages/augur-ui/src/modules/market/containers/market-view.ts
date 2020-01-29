@@ -103,6 +103,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
 
   return {
     daysPassed,
+    isMarketLoading: false,
     preview: tradingTutorial || ownProps.preview,
     tradingTutorial,
     currentTimestamp: selectCurrentTimestampInSeconds(state),
