@@ -51,7 +51,7 @@ export class SDK {
       },
       zeroX: {
         rpc: {
-          enabled: false,
+          enabled: true,
           ws: env['0x-endpoint']
         },
         mesh: {
