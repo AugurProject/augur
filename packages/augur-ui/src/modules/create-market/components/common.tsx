@@ -46,11 +46,13 @@ import {
   UserInputDateTime,
   CHOICE,
   REQUIRED,
+  ValidationType
 } from '@augurproject/artifacts';
 import {
   TemplateBannerText,
   SelectEventNoticeText,
   MARKET_COPY_LIST,
+  FRIDAY_DAY_OF_WEEK,
 } from 'modules/create-market/constants';
 import {
   DismissableNotice,
@@ -369,6 +371,7 @@ interface DatePickerSelectorProps {
   condensedStyle?: boolean;
   isAfter: number;
   isBefore?: number;
+  onlyAllowFriday?: boolean;
 }
 
 export const DatePickerSelector = (props: DatePickerSelectorProps) => {
@@ -381,6 +384,7 @@ export const DatePickerSelector = (props: DatePickerSelectorProps) => {
     condensedStyle,
     isAfter,
     isBefore,
+    onlyAllowFriday
   } = props;
 
   const [dateFocused, setDateFocused] = useState(false);
@@ -396,6 +400,7 @@ export const DatePickerSelector = (props: DatePickerSelectorProps) => {
         onChange(date.startOf('day').unix());
       }}
       isOutsideRange={day =>
+        (onlyAllowFriday && day.weekday() !== FRIDAY_DAY_OF_WEEK) ||
         day.isAfter(moment.unix(isAfter)) ||
         day.isBefore(isBefore ? moment.unix(isBefore) : minMarketEndTimeDay(currentTimestamp))
       }
@@ -455,7 +460,7 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
       )}
       <span>
         <DatePicker
-          date={setEndTime ? moment(setEndTime * 1000) : null}
+          date={null}
           placeholder="Date"
           displayFormat="MMM D, YYYY"
           id="input-date"
@@ -863,6 +868,7 @@ export const InputFactory = (props: InputFactoryProps) => {
           startOfTomorrow(currentTimestamp)
         }
         isAfter={isAfter}
+        onlyAllowFriday={input.validationType === ValidationType.EXP_DATE_TUESDAY_AFTER_MOVIE_NO_FRIDAY}
         errorMessage={validations.inputs && validations.inputs[inputIndex]}
       />
     );

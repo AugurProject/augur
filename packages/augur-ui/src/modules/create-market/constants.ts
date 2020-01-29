@@ -441,6 +441,7 @@ export const CATEGORIES = 'categories';
 export const HOUR = 'hour';
 export const DESIGNATED_REPORTER_ADDRESS = 'designatedReporterAddress';
 export const SATURDAY_DAY_OF_WEEK = 6;
+export const FRIDAY_DAY_OF_WEEK = 5;
 export const SUNDAY_DAY_OF_WEEK = 0;
 export const OUTCOMES = 'outcomes';
 

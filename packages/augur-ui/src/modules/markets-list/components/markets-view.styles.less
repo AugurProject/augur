@@ -53,6 +53,7 @@
     > div:first-of-type {
       display: grid;
       grid-template-columns: 1fr 1fr;
+      margin-top: 0;
 
       > div:first-of-type {
         margin-top: @size-8;
@@ -69,9 +70,7 @@
       }
 
       > div:last-of-type {
-        order: -1;
-        grid-column: 2 / span 1;
-        justify-content: flex-end;
+        display: none;
       }
     }
   }
