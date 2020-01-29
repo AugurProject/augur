@@ -151,7 +151,7 @@ jobs:
           rm /tmp/seed.json
           set -euo pipefail
           free -m
-          yarn test $(TEST_ARGS) --debug --verbose --ci --reporters=default --reporters=jest-junit
+          yarn test $(TEST_ARGS) --debug --config=jest.config.js --verbose --ci --reporters=default --reporters=jest-junit
         displayName: yarn test
         condition:  eq(variables['JOB_TRIGGER_TEST'], 'true')
         env:
