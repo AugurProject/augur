@@ -2381,14 +2381,14 @@ export const CategoricalMarketIcon = (
       d="M9.3855 4.79028H29.3855"
       stroke="#E9E5F2"
       stroke-width="2"
-      stroke-miterlimit="10"
+      strokeMiterlimit="10"
       stroke-linecap="square"
     />
     <path
       d="M9.3855 15.457H29.3855"
       stroke="#E9E5F2"
       stroke-width="2"
-      stroke-miterlimit="10"
+      strokeMiterlimit="10"
       stroke-linecap="square"
     />
     <path
