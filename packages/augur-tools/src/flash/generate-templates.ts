@@ -78,7 +78,7 @@ const generateValidations = (
     dateDependencies: null,
     closingDateDependencies: null,
     placeholderValues: null,
-    afterTuesdayDate: null,
+    afterTuesdayDateNoFriday: null,
   };
   const newTemplates = JSON.parse(JSON.stringify(templates));
   const topCategories = Object.keys(newTemplates);
@@ -119,7 +119,7 @@ const addTemplates = (
         dateDependencies: getDateDependencies(t.inputs),
         closingDateDependencies: getClosingDateDependencies(t.inputs),
         placeholderValues: getPlaceholderValues(t.inputs),
-        afterTuesdayDate: getInputsAfterTuesdayDate(t.inputs),
+        afterTuesdayDatenoFriday: getInputsAfterTuesdayDateNoFriday(t.inputs),
       };
     });
   }
@@ -140,8 +140,8 @@ function getRequiredOutcomes(inputs: TemplateInput[]) {
     .map(i => i.placeholder);
 }
 
-function listToRegEx(values: object[], property: string) {
-  return `(${values.map(v => escapeSpecialCharacters(v[property])).join('|')}){1}`;
+function listToRegEx(values: string[]) {
+  return `(${values.map(v => escapeSpecialCharacters(v)).join('|')}){1}`;
 }
 
 function getDropdownDependencies(
@@ -182,10 +182,10 @@ function getDateDependencies(inputs: TemplateInput[]): DateDependencies[] {
     }));
 }
 
-function getInputsAfterTuesdayDate(inputs: TemplateInput[]): Array<{ id: number }> {
+function getInputsAfterTuesdayDateNoFriday(inputs: TemplateInput[]): Array<{ id: number }> {
   return inputs
     .filter(
-      i => i.type === TemplateInputType.DATEYEAR && i.validationType === ValidationType.EXP_DATE_TUESDAY_AFTER_MOVIE
+      i => i.type === TemplateInputType.DATEYEAR && i.validationType === ValidationType.EXP_DATE_TUESDAY_AFTER_MOVIE_NO_FRIDAY
     )
     .map(i => ({
       id: i.id,
@@ -213,7 +213,7 @@ function getDependencies(
     inputSourceId: input.inputSourceId || input.id,
     inputDestId: input.inputDestId,
     values: Object.keys(sourceValues).reduce((p, key) => {
-      p[key] = sourceValues[key].map(i => i.value);
+      p[key] = sourceValues[key];
       return p;
     }, {}),
   };
@@ -248,7 +248,7 @@ function getValidationValues(input: TemplateInput) {
     case TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME:
     case TemplateInputType.DROPDOWN_QUESTION_DEP:
     case TemplateInputType.DROPDOWN:
-      let validations = listToRegEx(input.values, 'label');
+      let validations = listToRegEx(input.values);
       if (input.defaultLabel) {
         // list of values is unknown at this point, treat as text
         validations = ValidationTemplateInputType[TemplateInputType.TEXT];

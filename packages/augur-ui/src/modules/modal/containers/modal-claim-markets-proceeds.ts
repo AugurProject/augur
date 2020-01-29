@@ -134,6 +134,14 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     claimableMarkets.length / MAX_BULK_CLAIM_MARKETS_PROCEEDS_COUNT
   );
 
+  if (markets.length === 0) {
+    if (sP.modal.cb) {
+      sP.modal.cb();
+    }
+    dP.closeModal();
+    return {};
+  }
+
   return {
     title: 'Claim Proceeds',
     descriptionMessage: [
@@ -159,21 +167,21 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       },
     ] : null,
     closeAction: () => {
-      dP.closeModal();
       if (sP.modal.cb) {
         sP.modal.cb();
       }
+      dP.closeModal();
     },
     buttons: [
       {
         text: `${multiMarket ? 'Claim All' : 'Claim Proceeds'}`,
         disabled: claimableMarkets.find(market => market.status === 'pending'),
         action: () => {
-          dP.closeModal();
           dP.startClaimingMarketsProceeds(
             claimableMarkets.map(m => m.marketId),
             sP.modal.cb
           );
+          dP.closeModal();
         },
       },
     ],

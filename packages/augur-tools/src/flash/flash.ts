@@ -196,10 +196,6 @@ export class FlashSession {
         SubscriptionEventName.NewBlock,
         this.sdkNewBlock
       );
-
-      if (config.zeroX && config.zeroX.rpc.enabled) {
-        this.user.augur.events.emit('ZeroX:Ready');
-      }
     }
 
     return this.user;
