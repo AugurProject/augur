@@ -4,14 +4,14 @@
 .CategoryFilters {
   display: flex;
   flex-direction: column;
-  margin: @size-32 0 0 0;
+  margin: @size-32 0 0;
   overflow: auto;
 
   > .CategoriesGroup:first-of-type {
     margin: 0 @size-32 @size-26;
 
     @media @breakpoint-mobile {
-      margin: @size-16;
+      margin: @size-10 @size-24 @size-16;
     }
 
     > div {
@@ -24,7 +24,7 @@
     margin: 0 @size-32;
 
     @media @breakpoint-mobile {
-      margin: @size-16 @size-16 0;
+      margin: @size-16 @size-24 0;
     }
   }
 
@@ -39,10 +39,10 @@
 
     display: block;
     color: @color-primary-text;
-    margin: 0 0 @size-13 0;
+    margin: 0 0 @size-13;
 
     @media @breakpoint-mobile {
-      .text-14-bold;
+      .mono-14-bold;
     }
   }
 
@@ -77,7 +77,7 @@
   justify-content: center;
   align-items: center;
   padding: @size-4 @size-6;
-  margin: @size-2 0 @size-8 0;
+  margin: @size-2 0 @size-8;
 
   @media @breakpoint-mobile {
     margin-top: -@size-4
@@ -89,15 +89,20 @@
   user-select: none;
   cursor: pointer;
 
+  @media @breakpoint-mobile {
+    margin: @size-10 @size-24 0;
+  }
+
   > span {
     .mono-12-bold;
 
     display: block;
     color: @color-primary-text;
-    margin: 0 0 @size-13 0;
+    margin: 0 0 @size-13;
 
     @media @breakpoint-mobile {
-      .text-14-bold;
+      .mono-14-bold;
+      margin: 0 0 @size-22;
     }
   }
 
@@ -109,8 +114,16 @@
 
     > svg {
       fill: @color-secondary-text;
+      width: @size-10;
       height: @size-10;
       margin-right: @size-14;
+
+      @media @breakpoint-mobile {
+        width: @size-16;
+        height: @size-16;
+        margin-right: @size-13;
+        transform: translateY(@size-3);
+      }
     }
   
     @media @breakpoint-mobile {
@@ -149,7 +162,7 @@
     margin: @size-8 @size-40 0 @size-72;
 
     @media @breakpoint-mobile {
-      margin: @size-8 @size-24 0 @size-36;
+      margin: @size-8 @size-24 0 @size-66;
     }
   }
 
@@ -174,13 +187,22 @@
   color: @color-secondary-text;
 
   @media @breakpoint-mobile {
-    margin: @size-8 @size-16;
+    .text-14-bold;
+    margin: @size-21 @size-24;
   }
 
   > svg {
     fill: @color-secondary-text;
+    width: @size-10;
     height: @size-10;
     margin-right: @size-14;
+
+    @media @breakpoint-mobile {
+      width: @size-16;
+      height: @size-16;
+      margin-right: @size-13;
+      transform: translateY(@size-3);
+    }
   }
 
   &:hover {
@@ -202,7 +224,7 @@
   @media @breakpoint-mobile {
     .text-14-bold;
 
-    margin: @size-8 @size-24 @size-8 @size-52;
+    margin: @size-8 @size-24 @size-8 @size-56;
   }
 
 }

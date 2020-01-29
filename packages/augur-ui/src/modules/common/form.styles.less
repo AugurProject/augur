@@ -1835,7 +1835,7 @@ div.error > div > div > div > div > input {
       }
 
       > div {
-        width: 120px;
+        width: @size-120;
         left: 0;
       }
     }
@@ -1854,7 +1854,7 @@ div.error > div > div > div > div > input {
   cursor: pointer;
 
   @media @breakpoint-mobile {
-    margin: @size-21 0;
+    margin: @size-24 0;
   }
 
   > span:first-of-type {
@@ -1874,7 +1874,10 @@ div.error > div > div > div > div > input {
       line-height: 100%;
 
       > svg {
+        width: @size-16;
+        height: @size-16;
         margin-right: @size-16;
+        transform: translateY(-@size-2);
       }
     }
   }
