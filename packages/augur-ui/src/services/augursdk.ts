@@ -80,6 +80,8 @@ export class SDK {
     }
 
     this.client = await createClient(config, connector, account, signer, ethersProvider, enableFlexSearch, createBrowserMesh);
+    await connector.connect(config, account)
+
     if (!isEmpty(account)) {
       this.syncUserData(account, signer, this.networkId, config.gnosis && config.gnosis.enabled).catch((error) => {
         console.log("Gnosis safe create error during create: ", error);
