@@ -10,11 +10,10 @@ import {
   FormDropdown,
   RadioBarGroup,
 } from 'modules/common/form';
-import { XIcon, AddIcon, HintAlternate } from 'modules/common/icons';
+import { XIcon, AddIcon, helpIcon } from 'modules/common/icons';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import Link from 'modules/create-market/containers/link';
-import { Error } from 'modules/common/form';
 import Styles from 'modules/create-market/components/common.styles.less';
 import {
   FormattedNumber,
@@ -38,6 +37,7 @@ import {
   buildMarketDescription,
   createTemplateOutcomes,
   substituteUserOutcome,
+  createTemplateValueList,
 } from 'modules/create-market/get-template';
 import {
   TemplateInput,
@@ -228,7 +228,7 @@ export const SmallSubheadersTooltip = (props: SubheadersTooltipProps) => (
             data-tip
             data-for={`tooltip-${props.header}`}
           >
-            {HintAlternate}
+            {helpIcon}
           </label>
           <ReactTooltip
             id={`tooltip-${props.header}`}
@@ -253,7 +253,7 @@ export const SmallSubheadersTooltip = (props: SubheadersTooltipProps) => (
             data-tip
             data-for={`tooltip-${props.header}`}
           >
-            {HintAlternate}
+            {helpIcon}
           </label>
           <ReactTooltip
             id={`tooltip-${props.header}`}
@@ -889,7 +889,7 @@ export const InputFactory = (props: InputFactoryProps) => {
   ) {
     return (
       <FormDropdown
-        options={input.values}
+        options={createTemplateValueList(input.values)}
         sort={!input.noSort}
         defaultValue={input.userInput}
         disabled={input.values.length === 0}
@@ -1579,8 +1579,8 @@ export const CategoricalTemplateDropdowns = (
       setSourceUserInput(source && source.userInput);
       setdropdownList(
         isDepDropdown
-          ? depDropdownInput.values[source.userInput]
-          : depDropdownInput.values
+          ? createTemplateValueList(depDropdownInput.values[source.userInput])
+          : createTemplateValueList(depDropdownInput.values)
       );
     } else {
       if (outcomeList.length == 0 && defaultOutcomeItems.length > 0) {
@@ -1593,8 +1593,8 @@ export const CategoricalTemplateDropdowns = (
         dispatch({ type: ACTIONS.REMOVE_ALL, data: null });
         setdropdownList(
           isDepDropdown
-            ? depDropdownInput.values[source.userInput]
-            : depDropdownInput.values
+            ? createTemplateValueList(depDropdownInput.values[source.userInput])
+            : createTemplateValueList(depDropdownInput.values)
         );
         setSourceUserInput(source && source.userInput);
       }

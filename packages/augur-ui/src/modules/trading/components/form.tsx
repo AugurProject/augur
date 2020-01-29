@@ -305,7 +305,10 @@ class Form extends Component<FromProps, FormState> {
       );
     }
 
-    let tradeInterval = BigNumber.minimum(TRADE_INTERVAL_VALUE.dividedBy(numTicks).dividedBy(10**14).multipliedBy(10**14), 10**14);
+    let tradeInterval = DEFAULT_TRADE_INTERVAL;
+    if (market.marketType == SCALAR) {
+      tradeInterval = BigNumber.minimum(TRADE_INTERVAL_VALUE.dividedBy(numTicks).dividedBy(10**14).multipliedBy(10**14), 10**14);
+    }
 
     if (!convertDisplayAmountToOnChainAmount(value, market.tickSize).mod(tradeInterval).isEqualTo(0)) {
       errorCount += 1;

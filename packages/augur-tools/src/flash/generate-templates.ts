@@ -140,8 +140,8 @@ function getRequiredOutcomes(inputs: TemplateInput[]) {
     .map(i => i.placeholder);
 }
 
-function listToRegEx(values: object[], property: string) {
-  return `(${values.map(v => escapeSpecialCharacters(v[property])).join('|')}){1}`;
+function listToRegEx(values: string[]) {
+  return `(${values.map(v => escapeSpecialCharacters(v)).join('|')}){1}`;
 }
 
 function getDropdownDependencies(
@@ -213,7 +213,7 @@ function getDependencies(
     inputSourceId: input.inputSourceId || input.id,
     inputDestId: input.inputDestId,
     values: Object.keys(sourceValues).reduce((p, key) => {
-      p[key] = sourceValues[key].map(i => i.value);
+      p[key] = sourceValues[key];
       return p;
     }, {}),
   };
@@ -248,7 +248,7 @@ function getValidationValues(input: TemplateInput) {
     case TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME:
     case TemplateInputType.DROPDOWN_QUESTION_DEP:
     case TemplateInputType.DROPDOWN:
-      let validations = listToRegEx(input.values, 'label');
+      let validations = listToRegEx(input.values);
       if (input.defaultLabel) {
         // list of values is unknown at this point, treat as text
         validations = ValidationTemplateInputType[TemplateInputType.TEXT];

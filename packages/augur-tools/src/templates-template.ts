@@ -101,11 +101,6 @@ export type UserInputtedType =
   | UserInputUserOutcome
   | TimeOffset;
 
-export interface ValueLabelPair {
-  label: string;
-  value: string;
-}
-
 export interface ResolutionRule {
   text: string;
   isSelected?: boolean;
@@ -192,7 +187,7 @@ export interface TemplateInput {
   userInput?: string;
   userInputObject?: UserInputtedType;
   validationType?: ValidationType;
-  values?: ValueLabelPair[];
+  values?: string[];
   sublabel?: string;
   dateAfterId?: number;
   inputSourceId?: number; // input id as source of text to get list values
@@ -200,7 +195,7 @@ export interface TemplateInput {
   inputDestId?: number; // target input to set list values
   inputDestValues: {
     // dropdown source data structure to use to set target input list values
-    [key: string]: ValueLabelPair[];
+    [key: string]: string[];
   };
   inputTimeOffset: {
     [key: string]: TimeOffset;
@@ -529,17 +524,15 @@ function dateComparisonDependencies(
   dateDependencies: DateDependencies[]
 ) {
   if (!dateDependencies) return true;
-  const deps = dateDependencies.filter(d => d.dateAfterId);
-  const result = deps.reduce((p, d) => {
-    const dep = inputs.find(i => i.id === d.dateAfterId);
-    const source = inputs.find(i => i.id === d.id);
-    if (!dep || !source) return false;
-    if (dep.timestamp <= source.timestamp) {
-      return false;
-    }
-    return p;
-  }, true);
-  return result;
+  const depBefore = dateDependencies.find(d => d.dateAfterId);
+  if (!depBefore) return true;
+  const mustBeforeDate = inputs.find(i => i.id === depBefore.dateAfterId);
+  const source = inputs.find(i => i.id === depBefore.id);
+  if (!source || !mustBeforeDate) return false;
+  if (source.timestamp <= mustBeforeDate.timestamp) {
+    return false;
+  }
+  return true;
 }
 
 export function getTemplateWednesdayAfterOpeningDay(

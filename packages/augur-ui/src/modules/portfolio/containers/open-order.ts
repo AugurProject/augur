@@ -1,38 +1,46 @@
-import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
-import getValue from "utils/get-value";
-import { AppState } from "store";
-import * as constants from "modules/common/constants";
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+import getValue from 'utils/get-value';
+import { AppState } from 'store';
+import * as constants from 'modules/common/constants';
 
-import Row from "modules/common/row";
-import { ThunkDispatch } from "redux-thunk";
-import { Action } from "redux";
+import Row from 'modules/common/row';
+import { ThunkDispatch } from 'redux-thunk';
+import { Action } from 'redux';
+import { TXEventName } from '@augurproject/sdk/src/constants';
+import { removeCanceledOrder } from 'modules/orders/actions/update-order-status';
 
 const { COLUMN_TYPES } = constants;
 
 const mapStateToProps = (state: AppState) => ({
   currentTimestamp: state.blockchain.currentAugurTimestamp,
+  orderCancellation: state.orderCancellation,
 });
 
-const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({});
+const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
+  removeCanceledOrder: id => dispatch(removeCanceledOrder(id)),
+});
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
   const openOrder = oP.openOrder;
-  const tokensEscrowed = getValue(openOrder, "tokensEscrowed");
-  const sharesEscrowed = getValue(openOrder, "sharesEscrowed");
-  const avgPrice = getValue(openOrder, "avgPrice");
-  const unmatchedShares = getValue(openOrder, "unmatchedShares");
+  const tokensEscrowed = getValue(openOrder, 'tokensEscrowed');
+  const sharesEscrowed = getValue(openOrder, 'sharesEscrowed');
+  const avgPrice = getValue(openOrder, 'avgPrice');
+  const unmatchedShares = getValue(openOrder, 'unmatchedShares');
+  const isCanceling =
+    sP.orderCancellation && sP.orderCancellation[openOrder.id];
+
   const orderLabel =
     openOrder.description || openOrder.name || openOrder.outcomeName;
   const columnProperties = [
     {
-      key: "orderName",
+      key: 'orderName',
       columnType: COLUMN_TYPES.TEXT,
       text: orderLabel,
       keyId: openOrder.id,
     },
     {
-      key: "orderType",
+      key: 'orderType',
       columnType: COLUMN_TYPES.POSITION_TYPE,
       type: openOrder.type,
       showCountdown: true,
@@ -40,46 +48,50 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       currentTimestamp: sP.currentTimestamp,
     },
     {
-      key: "unmatchedShares",
+      key: 'unmatchedShares',
       columnType: COLUMN_TYPES.VALUE,
       value: openOrder.unmatchedShares && unmatchedShares,
-      keyId: "openOrder-unmatchedShares-" + openOrder.id,
+      keyId: 'openOrder-unmatchedShares-' + openOrder.id,
     },
     {
-      key: "avgPrice",
+      key: 'avgPrice',
       columnType: COLUMN_TYPES.VALUE,
       value: openOrder.avgPrice && avgPrice,
       useFull: true,
-      keyId: "openOrder-price-" + openOrder.id,
+      keyId: 'openOrder-price-' + openOrder.id,
     },
     {
-      key: "tokensEscrowed",
+      key: 'tokensEscrowed',
       columnType: COLUMN_TYPES.VALUE,
       value: tokensEscrowed,
       useFull: true,
       showEmptyDash: true,
-      keyId: "openOrder-tokensEscrowed-" + openOrder.id,
+      keyId: 'openOrder-tokensEscrowed-' + openOrder.id,
     },
     {
-      key: "sharesEscrowed",
+      key: 'sharesEscrowed',
       columnType: COLUMN_TYPES.VALUE,
       value: sharesEscrowed,
       showEmptyDash: true,
-      keyId: "openOrder-sharesEscrowed-" + openOrder.id,
+      keyId: 'openOrder-sharesEscrowed-' + openOrder.id,
     },
     {
-      key: "cancel",
+      key: 'cancel',
       columnType: COLUMN_TYPES.CANCEL_TEXT_BUTTON,
-      disabled: openOrder.pending,
+      disabled: isCanceling,
       text: null,
       showCountdown: true,
       expiry: openOrder.expiry,
       currentTimestamp: sP.currentTimestamp,
-      pending: openOrder.pending || openOrder.pendingOrder,
-      status: openOrder.status,
+      pending: isCanceling,
+      status: isCanceling ? TXEventName.Pending : openOrder.status,
       action: async (e: Event) => {
         e.stopPropagation();
-        await openOrder.cancelOrder(openOrder);
+        try {
+          await openOrder.cancelOrder(openOrder);
+        } catch (error) {
+          dP.removeCanceledOrder(openOrder.id);
+        }
       },
     },
   ];
@@ -100,6 +112,6 @@ export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps,
-    mergeProps,
-  )(Row),
+    mergeProps
+  )(Row)
 );

@@ -52,6 +52,7 @@ import {
   CRYPTO_ETH_CURRENCY_MARKETS,
   CRYPTO_LTC_CURRENCY_MARKETS,
   OLYMPIC_SUMMER_SPORT_EVENTS,
+  OLYMPIC_WINTER_SPORT_EVENTS,
   FIN_EXCHANGES_CLOSING_OFFSETS,
   FIN_INDEXES_CLOSING_OFFSETS,
   FIN_INDEXES_HOLIDAY_CLOSURES,
@@ -3644,7 +3645,280 @@ export const TEMPLATES = {
             ],
           },
           [WINTER]: {
-            templates: [],
+            templates: [
+              {
+                marketType: YES_NO,
+                question: `Olympics [0]: Will [1] win a gold medal in [2] at the [3] Winter Olympics?`,
+                example: `Olympics Snowboarding: Will Norway win a gold medal in 50m Freestyle (Men/Women) at the 2020 Winter Olympics?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN_QUESTION_DEP,
+                    placeholder: `Sport`,
+                    inputDestId: 2,
+                    values: LIST_VALUES.OLYMPIC_WINTER_SPORTS,
+                    inputDestValues: OLYMPIC_WINTER_SPORT_EVENTS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Country`,
+                    values: LIST_VALUES.OLYMPIC_COUNTRIES,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DROPDOWN,
+                    defaultLabel: `Select Sport First`,
+                    values: [],
+                    placeholder: `Event`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If the event is not played market should resolve as 'No'`,
+                    },
+                  ],
+                },
+              },
+              {
+                marketType: YES_NO,
+                question: `Olympics [0]: Will [1] win more [2] medals than [3] at the [4] Summer Olympics?`,
+                example: `Olympics Snowboarding: Will Netherlands win more gold medals than Belgium at the 2020 Summer Olympics`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Sport`,
+                    values: LIST_VALUES.OLYMPIC_WINTER_SPORTS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Country`,
+                    values: LIST_VALUES.OLYMPIC_COUNTRIES,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DROPDOWN,
+                    values: LIST_VALUES.OLYMPIC_MEDALS,
+                    placeholder: `Medal type`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Country`,
+                    values: LIST_VALUES.OLYMPIC_COUNTRIES,
+                  },
+                  {
+                    id: 4,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If the event is not played market should resolve as 'No'`,
+                    },
+                  ],
+                },
+              },
+              {
+                marketType: YES_NO,
+                question: `Olympics [0]: Will [1] break the [2] Record in [3] at the [4] Winter Olympics?`,
+                example: `Olympics Snowboarding: Will Shaun White break the world Record in 100m Freestyle (Men/Women)	at the 2020 Winter Olympics`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN_QUESTION_DEP,
+                    placeholder: `Sport`,
+                    inputDestId: 3,
+                    values: LIST_VALUES.OLYMPIC_WINTER_SPORTS,
+                    inputDestValues: OLYMPIC_WINTER_SPORT_EVENTS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Single person's name`,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DROPDOWN,
+                    values: LIST_VALUES.OLYMPIC_LIST,
+                    placeholder: `World/Olympic`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.DROPDOWN,
+                    defaultLabel: `Select Sport First`,
+                    values: [],
+                    placeholder: `Event`,
+                  },
+                  {
+                    id: 4,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If the event is not played market should resolve as 'No'`,
+                    },
+                  ],
+                },
+              },
+              {
+                marketType: YES_NO,
+                question: `Olympics [0]: Will [1] win [2] medal in [3] at the [4] Winter Olympics?`,
+                example: `Olympics Snowboarding: Will Shaun Whitee win a gold medial in Big Air (Mens/Womens) at the 2020 Winter Olympics`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN_QUESTION_DEP,
+                    placeholder: `Sport`,
+                    inputDestId: 3,
+                    values: LIST_VALUES.OLYMPIC_WINTER_SPORTS,
+                    inputDestValues: OLYMPIC_WINTER_SPORT_EVENTS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Single person's name`,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DROPDOWN,
+                    values: LIST_VALUES.OLYMPIC_LIST_MEDAL,
+                    placeholder: `Any/a Gold`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.DROPDOWN,
+                    defaultLabel: `Select Sport First`,
+                    values: [],
+                    placeholder: `Event`,
+                  },
+                  {
+                    id: 4,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If the event is not played market should resolve as 'No'`,
+                    },
+                  ],
+                },
+              },
+              {
+                marketType: CATEGORICAL,
+                question: `Olympics: Which country will win the most [0] medals at the [1] Winter Olympics?`,
+                example: `Olympics: Which country will win the most Gold medals at the 2020 Winter Olympics`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    values: LIST_VALUES.OLYMPIC_MEDALS,
+                    placeholder: `Medal type`,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DROPDOWN,
+                    values: LIST_VALUES.OLYMPIC_LIST_MEDAL,
+                    placeholder: `Any/a Gold`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Field (Any other team)`,
+                  },
+                ],
+                resolutionRules: {},
+              },
+              {
+                marketType: CATEGORICAL,
+                question: `Olympics [0]: Which country will win the Gold medal in [1] at the [2] Winter Olympics?`,
+                example: `Olympics Curling: Which country will win the Gold medal in mens at the 2020 Winter Olympics`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN_QUESTION_DEP,
+                    placeholder: `Sport`,
+                    inputDestId: 1,
+                    values: LIST_VALUES.OLYMPIC_WINTER_SPORTS,
+                    inputDestValues: OLYMPIC_WINTER_SPORT_EVENTS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    defaultLabel: `Select Sport First`,
+                    values: [],
+                    placeholder: `Event`,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Field (Any other team)`,
+                  },
+                ],
+                resolutionRules: {},
+              },
+              {
+                marketType: SCALAR,
+                question: `How many [0] medals will [1] finish with in the [2] Winter Olympics?`,
+                example: `How many Gold medals will Norway finish with in the 2020 Winter Olympics?`,
+                denomination: 'medals',
+                tickSize: 1,
+                minPrice: 0,
+                maxPrice: 500,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    values: LIST_VALUES.OLYMPIC_MEDALS,
+                    placeholder: `Medal type`,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Country`,
+                    values: LIST_VALUES.OLYMPIC_COUNTRIES,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                ],
+                resolutionRules: {},
+              },
+            ],
           },
         },
       },

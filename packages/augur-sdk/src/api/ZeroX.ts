@@ -1,4 +1,4 @@
-import { ExchangeFillEvent, ValidationResults } from '@0x/mesh-browser';
+import { ExchangeFillEvent, ValidationResults, GetOrdersResponse } from '@0x/mesh-browser';
 import { OrderEvent, OrderInfo, WSClient } from '@0x/mesh-rpc-client';
 import { SignedOrder } from '@0x/types';
 import { Event } from '@augurproject/core/build/libraries/ContractInterfaces';
@@ -51,6 +51,7 @@ export interface BrowserMesh {
     orders: SignedOrder[],
     pinned?: boolean
   ): Promise<ValidationResults>;
+  getOrdersAsync(): Promise<GetOrdersResponse>;
 }
 
 export interface ZeroXPlaceTradeDisplayParams
@@ -179,12 +180,32 @@ export class ZeroX {
   }
 
   async getOrders(): Promise<OrderInfo[]> {
-    // TODO when browser mesh supports this back out to using it if _rpc not provided
-    if (!this.rpc) {
-      throw Error('getOrders is not supported on browser mesh');
+    var response;
+    if (this.rpc) {
+      response = await this.rpc.getOrdersAsync();
     }
-    const response = await this.rpc.getOrdersAsync();
+    else if (this.mesh) {
+      response = await this.getMeshOrders();
+    }
     return response.ordersInfos;
+  }
+
+  async getMeshOrders(tries: number = 10): Promise<OrderInfo[]> {
+    var response;
+    try {
+      response = await this.mesh.getOrdersAsync();  
+    }
+    catch(error) {
+      if(tries > 0) {
+        console.log("Mesh retrying to fetch orders");
+        await new Promise(r => setTimeout(r, 3000));
+        response = await this.getMeshOrders(tries - 1);
+      }
+      else {
+        response = undefined;
+      }
+    }
+    return response;
   }
 
   async placeTrade(params: ZeroXPlaceTradeDisplayParams): Promise<void> {
@@ -244,22 +265,23 @@ export class ZeroX {
       return;
     }
 
+    const account = await this.client.getAccount();
     const gasPrice = await this.client.getGasPrice();
     // TODO: We should be getting this by querying the exchange contract directly via `protocolFeeMultiplier()`
-    const protocolFee = gasPrice.multipliedBy(150000 * numOrders);
+    const protocolFee = gasPrice.multipliedBy(150000).multipliedBy(new BigNumber(loopLimit));
+    const walletEthBalance = await this.client.getEthBalance(account);
 
     const result: Event[] = await this.client.contracts.ZeroXTrade.trade(
       params.amount,
       params.fingerprint,
       params.tradeGroupId,
-      new BigNumber(1), // TODO: This is the param indicating the maximum amount of DAI to spend to cover the 0x protocol fee. Should be calculated and likely far lower
+      new BigNumber(1).multipliedBy(new BigNumber(loopLimit)), // TODO: This is the param indicating the maximum amount of DAI to spend to cover the 0x protocol fee. Should be calculated and likely far lower
       new BigNumber(loopLimit), // This is the maximum number of trades to actually make. This lets us put in more orders than we could fill with the gasLimit but handle failures and still fill the desired amount
       orders,
       signatures,
-      { attachedEth: protocolFee } // TODO: This should only be provided when the safe has sufficient ETH to pay. We should rely on the ETH exchange and paying DAI to get the protocol fee
+      { attachedEth: BigNumber.min(protocolFee, walletEthBalance) } // TODO: This should only be provided when the safe has sufficient ETH to pay. We should rely on the ETH exchange and paying DAI to get the protocol fee
     );
-
-    const account = await this.client.getAccount();
+    
     const amountRemaining = this.getTradeAmountRemaining(
       account,
       params.amount,
