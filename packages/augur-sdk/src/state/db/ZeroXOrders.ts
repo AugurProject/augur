@@ -12,6 +12,7 @@ import { defaultAbiCoder, ParamType } from 'ethers/utils';
 import { SignedOrder } from '@0x/types';
 import { BigNumber as BN} from 'ethers/utils';
 import moment, { Moment } from 'moment';
+import Dexie from 'dexie';
 
 // This database clears its contents on every sync.
 // The primary purposes for even storing this data are:
@@ -105,6 +106,7 @@ export class ZeroXOrders extends AbstractTable {
   readonly cashAssetData: string;
   readonly shareAssetData: string;
   readonly takerAssetData: string;
+  private pastOrders: _.Dictionary<StoredOrder>;
 
   constructor(
     db: DB,
@@ -127,8 +129,14 @@ export class ZeroXOrders extends AbstractTable {
 
   static async create(db: DB, networkId: number, augur: Augur): Promise<ZeroXOrders> {
     const zeroXOrders = new ZeroXOrders(db, networkId, augur);
-    await zeroXOrders.clearDB();
+    zeroXOrders.clearDBAndCacheOrders();
     return zeroXOrders;
+  }
+
+  async clearDBAndCacheOrders(): Promise<void> {
+    // Note: This does mean if a user reloads before syncing the old orders could be lost if they previous to that had not broadcast their orders completely somehow
+    this.pastOrders = _.keyBy(await this.table.toArray(), "orderHash");
+    await this.clearDB();
   }
 
   subscribeToOrderEvents() {
@@ -173,8 +181,7 @@ export class ZeroXOrders extends AbstractTable {
   }
 
   async sync(): Promise<void> {
-    var orders: OrderInfo[];
-    orders = await this.augur.zeroX.getOrders();
+    var orders: OrderInfo[] = await this.augur.zeroX.getOrders();
     let documents;
     if (orders && orders.length > 0) {
       documents = _.filter(orders, this.validateOrder.bind(this));
@@ -184,6 +191,8 @@ export class ZeroXOrders extends AbstractTable {
       documents = _.filter(documents, (document) => {
         return this.validateStoredOrder(document, markets);
       });
+      _.each(documents, (doc) => { delete this.pastOrders[doc.orderHash] });
+      documents = documents.concat(_.values(this.pastOrders));
       await this.bulkUpsertDocuments(documents);
       for (const d of documents) {
         this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Create, ...d});
