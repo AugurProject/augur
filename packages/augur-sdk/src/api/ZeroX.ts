@@ -180,20 +180,19 @@ export class ZeroX {
   }
 
   async getOrders(): Promise<OrderInfo[]> {
-    var response;
+    let response;
     if (this.rpc) {
       response = await this.rpc.getOrdersAsync();
-    }
-    else if (this.mesh) {
+    } else if (this.mesh) {
       response = await this.getMeshOrders();
     }
-    return response.ordersInfos;
+    return response ? response.ordersInfos : [];
   }
 
   async getMeshOrders(tries: number = 10): Promise<OrderInfo[]> {
     var response;
     try {
-      response = await this.mesh.getOrdersAsync();  
+      response = await this.mesh.getOrdersAsync();
     }
     catch(error) {
       if(tries > 0) {
@@ -281,7 +280,7 @@ export class ZeroX {
       signatures,
       { attachedEth: BigNumber.min(protocolFee, walletEthBalance) } // TODO: This should only be provided when the safe has sufficient ETH to pay. We should rely on the ETH exchange and paying DAI to get the protocol fee
     );
-    
+
     const amountRemaining = this.getTradeAmountRemaining(
       account,
       params.amount,
