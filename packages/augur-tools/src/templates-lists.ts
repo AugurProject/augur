@@ -2706,8 +2706,6 @@ export const LIST_VALUES = {
     "Women's Laser Radial - One Person Dinghy",
     "Women's 470 - Two Person Dinghy",
     "Women's 49er FX - Skiff",
-    "Women's 470 - Two Person Dinghy",
-    "Women's 49er FX - Skiff",
   ],
   OLYMPIC_SHOOTING_EVENTS: [
     "Men's 50m Rifle 3 Positions",
