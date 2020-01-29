@@ -47,6 +47,7 @@ export const MENS = 'Mens';
 export const WOMENS = 'Womens';
 export const SINGLES = 'Singles';
 export const DOUBLES = 'Doubles';
+const FRIDAY_DAY_OF_WEEK = 5;
 const SATURDAY_DAY_OF_WEEK = 6;
 const SUNDAY_DAY_OF_WEEK = 0;
 
@@ -157,7 +158,7 @@ export interface TemplateValidation {
   dateDependencies: DateDependencies[];
   closingDateDependencies: DateInputDependencies[];
   placeholderValues: PlaceholderValues;
-  afterTuesdayDate: number[];
+  afterTuesdayDateNoFriday: number[];
 }
 
 export interface TemplateValidationHash {
@@ -221,7 +222,7 @@ export enum ValidationType {
   WHOLE_NUMBER = 'WHOLE_NUMBER',
   NUMBER = 'NUMBER',
   NOWEEKEND_HOLIDAYS = 'NOWEEKEND_HOLIDAYS',
-  EXP_DATE_TUESDAY_AFTER_MOVIE = 'EXP_DATE_TUESDAY_AFTER_MOVIE',
+  EXP_DATE_TUESDAY_AFTER_MOVIE_NO_FRIDAY = 'EXP_DATE_TUESDAY_AFTER_MOVIE_NO_FRIDAY',
   SOCIAL = 'SOCIAL', // social media username/handle
 }
 
@@ -428,19 +429,24 @@ function dateStartAfterMarketEndTime(
   return Number(input.timestamp) >= Number(endTime);
 }
 
-function wednesdayAfterOpening(
+function wednesdayAfterOpeningNoFriday(
   inputs: ExtraInfoTemplateInput[],
   endTime: number,
   ids: number[]
 ) {
   const afterTuesday: ExtraInfoTemplateInput = inputs.find(i =>
-    ids.includes(i.id)
+    ids && ids.includes(i.id)
   );
-  if (!afterTuesday) return true;
-  const wednesdayDatetime = getTemplateWednesdayAfterOpeningDay(
-    Number(afterTuesday.timestamp)
-  );
-  return endTime < wednesdayDatetime;
+  const noFriday = inputs.find(i => i.type === TemplateInputType.DATEYEAR);
+  if (!afterTuesday && !noFriday) return true;
+  if (noFriday && moment.unix(Number(noFriday.timestamp)).weekday() !== FRIDAY_DAY_OF_WEEK) {
+    return false;
+  } else {
+    const wednesdayDatetime = getTemplateWednesdayAfterOpeningDay(
+      Number(afterTuesday.timestamp)
+    );
+    return endTime < wednesdayDatetime;
+  }
 }
 
 export function tellOnHoliday(
@@ -697,13 +703,13 @@ export const isTemplateMarket = (
     }
 
     if (
-      !wednesdayAfterOpening(
+      !wednesdayAfterOpeningNoFriday(
         template.inputs,
         new BigNumber(endTime).toNumber(),
-        validation.afterTuesdayDate
+        validation.afterTuesdayDateNoFriday
       )
     ) {
-      errors.push('event expiration can not be before Wednesday after movie opening weekend');
+      errors.push('event expiration can not be before Wednesday after movie opening weekend and/or opening day must be a friday');
       return false;
     }
 
