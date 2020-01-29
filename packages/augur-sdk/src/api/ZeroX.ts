@@ -181,22 +181,21 @@ export class ZeroX {
   }
 
   async getOrders(): Promise<OrderInfo[]> {
-    var response;
+    let response;
     if (this.rpc) {
       response = await this.rpc.getOrdersAsync();
-    }
-    else if (this.mesh) {
+    } else if (this.mesh) {
       response = await this.getMeshOrders();
     } else {
       throw new Error("Attempting to get orders with no connection to 0x");
     }
-    return response.ordersInfos;
+    return response ? response.ordersInfos : [];
   }
 
   async getMeshOrders(tries: number = 10): Promise<OrderInfo[]> {
     var response;
     try {
-      response = await this.mesh.getOrdersAsync();  
+      response = await this.mesh.getOrdersAsync();
     }
     catch(error) {
       if(tries > 0) {
@@ -282,9 +281,9 @@ export class ZeroX {
       new BigNumber(loopLimit), // This is the maximum number of trades to actually make. This lets us put in more orders than we could fill with the gasLimit but handle failures and still fill the desired amount
       orders,
       signatures,
-      { attachedEth: BigNumber.min(protocolFee, walletEthBalance) } // TODO: This should only be provided when the safe has sufficient ETH to pay. We should rely on the ETH exchange and paying DAI to get the protocol fee
+      { attachedEth: BigNumber.min(protocolFee, walletEthBalance) }
     );
-    
+
     const amountRemaining = this.getTradeAmountRemaining(
       account,
       params.amount,
