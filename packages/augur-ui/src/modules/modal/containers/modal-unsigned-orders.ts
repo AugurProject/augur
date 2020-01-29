@@ -130,13 +130,14 @@ const mergeProps = (sP, dP, oP) => {
         text: 'Submit All',
         action: () => dP.startOrderSending({ marketId, chunkOrders }),
       },
-      {
-        text: 'Cancel All',
-        action: () => {
-          dP.clearMarketLiquidityOrders(sP.market.transactionHash);
-          dP.closeModal();
-        },
-      },
+      // Temporarily removed because there is no confirmation, the button just cancels everything on a single click
+      // {
+      //   text: 'Cancel All',
+      //   action: () => {
+      //     dP.clearMarketLiquidityOrders(sP.market.transactionHash);
+      //     dP.closeModal();
+      //   },
+      // },
     ],
     closeAction: () => {
       dP.closeModal();
