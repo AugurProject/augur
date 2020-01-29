@@ -483,6 +483,7 @@ jobs:
           targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
           vstsFeed: npmPackages
       - script: |
+          yarn clean
           yarn install --frozen-lockfile
           yarn build
         displayName: Install Dependencies
