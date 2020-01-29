@@ -36,6 +36,7 @@
     }
 
     > li a {
+      align-items: center;
       display: flex;
       height: @size-35;
 
@@ -45,6 +46,18 @@
         align-self: center;
         color: @color-secondary-text;
         text-transform: uppercase;
+      }
+
+      > svg {
+        height: @size-4;
+        width: @size-4;
+        fill: none;
+        margin-left: @size-4;
+        margin-bottom: @size-4;
+
+        > circle {
+          fill: @color-outcome-five;
+        }
       }
     }
 

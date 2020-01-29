@@ -1,0 +1,60 @@
+@import (reference) '~assets/styles/shared';
+
+.Watchlist {
+  > div:last-of-type {
+    @media @breakpoint-mobile {
+      > div:nth-of-type(2):not([class*="EmptyDisplay"]) {
+        border-top: 1px solid @color-dark-grey;
+      }
+
+      > div[class*="MarketRow"] {
+        &:last-of-type {
+          border-radius: 0;
+        }
+
+        > div {
+          border-left: 1px solid @color-dark-grey;
+          border-right: 1px solid @color-dark-grey;
+        }
+      }
+
+      div[class*="box-header-styles_ShowOnMobile"] {
+        > div:first-of-type {
+          height: @size-32;
+          min-height: @size-32;
+          max-height: @size-32;
+          margin-top: @size-8;
+          margin-bottom: @size-16;
+        }
+
+        > div[class*="Middle"] > div[class*="BottomContent"] {
+          margin-top: @size-8;
+          border-radius: @border-radius-default;
+
+          > div {
+            align-items: center;
+            padding: 0;
+            min-height: @size-40;
+            height: @size-40;
+            max-height: @size-40;
+            justify-content: space-around;
+
+            > button {
+              margin: 0;
+              padding: 0;
+              min-height: @size-40;
+              height: @size-40;
+              max-height: @size-40;         
+
+              > span {
+                .mono-10-medium;
+
+                text-transform: capitalize;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
