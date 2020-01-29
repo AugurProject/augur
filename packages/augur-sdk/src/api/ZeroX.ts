@@ -21,6 +21,7 @@ import {
   NativePlaceTradeDisplayParams,
   TradeTransactionLimits,
 } from './OnChainTrade';
+import { sleep } from '../state/utils/utils';
 
 export enum Verbosity {
   Panic = 0,
@@ -186,6 +187,8 @@ export class ZeroX {
     }
     else if (this.mesh) {
       response = await this.getMeshOrders();
+    } else {
+      throw new Error("Attempting to get orders with no connection to 0x");
     }
     return response.ordersInfos;
   }
@@ -198,7 +201,7 @@ export class ZeroX {
     catch(error) {
       if(tries > 0) {
         console.log("Mesh retrying to fetch orders");
-        await new Promise(r => setTimeout(r, 3000));
+        await sleep(3000);
         response = await this.getMeshOrders(tries - 1);
       }
       else {
