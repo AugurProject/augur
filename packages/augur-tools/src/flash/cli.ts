@@ -4,7 +4,6 @@ import program from "commander";
 import { addScripts } from './scripts';
 import { addGanacheScripts } from './ganache-scripts';
 import { Account, ACCOUNTS } from '../constants';
-import { ArgumentParser, RawDescriptionHelpFormatter} from 'argparse';
 import { NetworkConfiguration, NETWORKS } from '@augurproject/core';
 import { Addresses } from '@augurproject/artifacts';
 import { computeAddress } from 'ethers/utils';
@@ -56,7 +55,7 @@ async function run() {
     for (const opt of script.options || []) {
       const args = [ `--${opt.name}`];
       if (opt.abbr) args.unshift(`-${opt.abbr}`);
-      const option = opt.required === false ? subcommand.option(args.join(', ')) : subcommand.requiredOption(args.join(', '))
+      const option = opt.required === true ? subcommand.requiredOption(args.join(', ')) : subcommand.option(args.join(', '))
         .description(opt.description || '')
     }
     subcommand.action(async (args) => {
