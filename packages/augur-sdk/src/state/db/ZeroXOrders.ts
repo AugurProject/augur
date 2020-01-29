@@ -173,8 +173,8 @@ export class ZeroXOrders extends AbstractTable {
   }
 
   async sync(): Promise<void> {
-    var orders: OrderInfo[];
-    orders = await this.augur.zeroX.getOrders();
+    console.log("Syncing ZeroX Orders");
+    const orders: OrderInfo[] = await this.augur.zeroX.getOrders();
     let documents;
     if (orders && orders.length > 0) {
       documents = _.filter(orders, this.validateOrder.bind(this));
@@ -189,6 +189,7 @@ export class ZeroXOrders extends AbstractTable {
         this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Create, ...d});
       }
     }
+    console.log(`Synced ${orders.length } ZeroX Orders`);
   }
 
   validateOrder(order: OrderInfo): boolean {
