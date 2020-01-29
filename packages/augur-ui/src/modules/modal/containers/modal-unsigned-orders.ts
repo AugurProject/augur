@@ -4,22 +4,22 @@ import { UnsignedOrders } from 'modules/modal/unsigned-orders';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import {
-  startOrderSending,
   clearMarketLiquidityOrders,
   removeLiquidityOrder,
   sendLiquidityOrder,
+  startOrderSending,
 } from 'modules/orders/actions/liquidity-management';
 import { getGasPrice } from 'modules/auth/selectors/get-gas-price';
 import {
-  NEW_ORDER_GAS_ESTIMATE,
   MAX_BULK_ORDER_COUNT,
+  NEW_ORDER_GAS_ESTIMATE,
   ZERO,
 } from 'modules/common/constants';
 import { createBigNumber } from 'utils/create-big-number';
 import {
-  formatGasCostToEther,
-  formatEther,
   formatDai,
+  formatEther,
+  formatGasCostToEther,
 } from 'utils/format-number';
 import { AppState } from 'store';
 import { ThunkDispatch } from 'redux-thunk';
@@ -86,7 +86,12 @@ const mergeProps = (sP, dP, oP) => {
     transactionHash,
   } = sP.market;
   // all orders have been created or removed.
-  if (numberOfTransactions === 0) dP.closeModal();
+  if (numberOfTransactions === 0) {
+    if (sP.modal.cb) {
+      sP.modal.cb();
+    }
+    dP.closeModal();
+  }
   return {
     title: 'Unsigned Orders',
     description: [
@@ -133,18 +138,16 @@ const mergeProps = (sP, dP, oP) => {
         text: 'Submit All',
         action: () => dP.startOrderSending({ marketId, chunkOrders }),
       },
-      {
-        text: 'Cancel All',
-        action: () => {
-          dP.clearMarketLiquidityOrders(sP.market.transactionHash);
-          dP.closeModal();
-        },
-      },
+      // Temporarily removed because there is no confirmation, the button just cancels everything on a single click
+      // {
+      //   text: 'Cancel All',
+      //   action: () => {
+      //     dP.clearMarketLiquidityOrders(sP.market.transactionHash);
+      //     dP.closeModal();
+      //   },
+      // },
     ],
     closeAction: () => {
-      if (sP.modal.cb) {
-        sP.modal.cb();
-      }
       dP.closeModal();
     },
   };
