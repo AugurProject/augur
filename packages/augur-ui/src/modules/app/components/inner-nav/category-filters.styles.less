@@ -35,7 +35,7 @@
 
 .CategoriesGroup {
   > span {
-    .text-12-bold;
+    .mono-12-bold;
 
     display: block;
     color: @color-primary-text;
@@ -90,7 +90,7 @@
   cursor: pointer;
 
   > span {
-    .text-12-bold;
+    .mono-12-bold;
 
     display: block;
     color: @color-primary-text;
@@ -102,7 +102,7 @@
   }
 
   > div {
-    .text-12-medium;
+    .text-12-bold;
 
     text-transform: capitalize;
     color: @color-secondary-text;
@@ -110,7 +110,7 @@
     > svg {
       fill: @color-secondary-text;
       height: @size-10;
-      margin-right: @size-8;
+      margin-right: @size-14;
     }
   
     @media @breakpoint-mobile {
@@ -146,7 +146,7 @@
   }
 
   > div:not(.SelectedCategory):not(.backToCategory) {
-    margin: @size-8 @size-40 0 4.25rem;
+    margin: @size-8 @size-40 0 @size-72;
 
     @media @breakpoint-mobile {
       margin: @size-8 @size-24 0 @size-36;
@@ -168,7 +168,7 @@
 }
 
 .SelectedCategories > .backToCategory {
-  .text-12-medium;
+  .text-12-bold;
 
   margin: @size-13 @size-32;
   color: @color-secondary-text;
@@ -180,7 +180,7 @@
   > svg {
     fill: @color-secondary-text;
     height: @size-10;
-    margin-right: @size-8;
+    margin-right: @size-14;
   }
 
   &:hover {
@@ -197,7 +197,7 @@
 
   color: @color-primary-text;
 
-  margin: @size-8 @size-40 @size-8 @size-52;
+  margin: @size-8 @size-40 @size-8 @size-56;
 
   @media @breakpoint-mobile {
     .text-14-bold;
@@ -205,7 +205,6 @@
     margin: @size-8 @size-24 @size-8 @size-52;
   }
 
-  
 }
 
 .disabled {
