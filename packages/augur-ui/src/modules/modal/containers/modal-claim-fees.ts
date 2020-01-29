@@ -183,6 +183,9 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
   }
 
   if (modalRows.length === 0) {
+    if (sP.modal.cb) {
+      sP.modal.cb();
+    }
     dP.closeModal();
     return {};
   }
