@@ -6,7 +6,7 @@ import { selectMarketOutcomeBestBidAsk, selectBestBidAlert } from 'modules/marke
 import Row from 'modules/common/row';
 
 const mapStateToProps = (state: AppState, ownProps) => {
-  const { marketInfos, orderBooks } = state;
+  const { marketInfos } = state;
   const market = marketInfos[ownProps.marketId];
   // default values for create market preview
   const minPrice = market ? market.minPrice : 0;
@@ -14,7 +14,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
   const tickSize = market ? market.tickSize : 100;
 
   return {
-    orderBook: orderBooks ? orderBooks[ownProps.marketId] : null,
+    orderBook: ownProps.orderBook,
     minPrice,
     maxPrice,
     tickSize
@@ -26,7 +26,7 @@ const mapDispatchToProps = () => ({});
 const mergeProps = (sP: any, dP: any, oP: any) => {
   const outcome = oP.outcome;
   const outcomeName = outcome.description;
-  const orderBook = sP.orderBook && sP.orderBook[outcome.id];
+  const orderBook = sP.orderBook;
   const { topAsk, topBid } = selectMarketOutcomeBestBidAsk(orderBook, sP.tickSize);
   const bestBidAlert = selectBestBidAlert(outcome.id, topBid.price.value, sP.minPrice, sP.maxPrice)
   const topBidShares = topBid.shares;

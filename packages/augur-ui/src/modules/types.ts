@@ -13,7 +13,7 @@ import {
 } from './routes/constants/param-names';
 import { AnyAction } from 'redux';
 import { EthersSigner } from 'contract-dependencies-ethers/build/ContractDependenciesEthers';
-import { Getters, PayoutNumeratorValue } from '@augurproject/sdk';
+import { Getters, PayoutNumeratorValue, DisputeWindow } from '@augurproject/sdk';
 import { TransactionMetadataParams } from 'contract-dependencies-ethers/build';
 import { BigNumber } from 'utils/create-big-number';
 import { GnosisSafeState } from '@augurproject/gnosis-relay-api/build/GnosisRelayAPI';
@@ -140,7 +140,7 @@ export interface ForkingInfo {
   winningChildUniverseId?: string;
 }
 export interface Universe extends Getters.Universe.UniverseDetails {
-  disputeWindow: Getters.Universe.DisputeWindow;
+  disputeWindow: DisputeWindow;
   forkingInfo?: ForkingInfo;
   forkEndTime?: string;
   timeframeData?: Getters.Platform.PlatformActivityStatsResult;

@@ -11,6 +11,7 @@ import HeaderStyles from 'modules/portfolio/components/common/data-table-header.
 import { OutcomeFormatted } from 'modules/types';
 import { ToggleExtendButton } from 'modules/common/buttons';
 import { SMALL_MOBILE } from 'modules/common/constants';
+import { Getters } from '@augurproject/sdk';
 
 interface MarketOutcomesListProps {
   outcomesFormatted: OutcomeFormatted[];
@@ -22,6 +23,7 @@ interface MarketOutcomesListProps {
   popUp: boolean;
   toggle: Function;
   hideOutcomes?: boolean;
+  orderBook: Getters.Markets.OutcomeOrderBook
 }
 
 export default class MarketOutcomesList extends Component<
@@ -33,6 +35,7 @@ export default class MarketOutcomesList extends Component<
     marketType: null,
     outcomesFormatted: [],
     popUp: false,
+    orderBook: null,
   };
 
   render() {
@@ -46,6 +49,7 @@ export default class MarketOutcomesList extends Component<
       marketId,
       toggle,
       hideOutcomes,
+      orderBook,
     } = this.props;
 
     return (
@@ -117,6 +121,7 @@ export default class MarketOutcomesList extends Component<
               .map(outcome => (
                 <MarketOutcomesListOutcome
                   key={outcome.id}
+                  orderBook={orderBook}
                   marketId={marketId}
                   outcome={outcome}
                   selectedOutcomeId={selectedOutcomeId}
