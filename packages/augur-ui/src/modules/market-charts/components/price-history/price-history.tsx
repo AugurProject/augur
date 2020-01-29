@@ -4,8 +4,6 @@ import Highcharts from 'highcharts/highstock';
 import NoDataToDisplay from 'highcharts/modules/no-data-to-display';
 import Styles from 'modules/market-charts/components/price-history/price-history.styles.less';
 
-NoDataToDisplay(Highcharts);
-
 const HIGHLIGHTED_LINE_WIDTH = 2;
 const NORMAL_LINE_WIDTH = 1;
 
@@ -18,6 +16,8 @@ interface PriceHistoryProps {
   selectedOutcomeId: number;
   pricePrecision: number;
   isTradingTutorial?: boolean;
+  isMarketLoading?: boolean;
+  canHotload?: boolean;
 }
 
 interface PriceHistoryState {
@@ -119,13 +119,16 @@ const PriceHistory = ({
   scalarDenomination = '',
   selectedOutcomeId,
   pricePrecision,
+  isMarketLoading = false,
+  canHotload = false
 }) => {
   const container = useRef(null);
   const options = getOptions({ maxPrice, minPrice, isScalar, pricePrecision });
+  const { priceTimeSeries } = bucketedPriceTimeSeries;
 
   useEffect(() => {
-    console.log("useEffectTriggered");
-    const { priceTimeSeries } = bucketedPriceTimeSeries;
+    if (isMarketLoading || canHotload) return NoDataToDisplay(Highcharts);
+    
     const hasData =
       priceTimeSeries &&
       Object.keys(priceTimeSeries) &&
@@ -186,10 +189,15 @@ const PriceHistory = ({
     };
 
     const newOptions = Object.assign(options, { series });
-
     Highcharts.stockChart(container.current, newOptions);
-  }, [bucketedPriceTimeSeries, selectedOutcomeId]);
-  console.log("render");
+  }, [selectedOutcomeId, isMarketLoading]);
+
+  useEffect(() => {
+    Highcharts.charts.forEach(chart => {
+      chart && chart.redraw();
+    });
+  }, [priceTimeSeries]);
+
   return <div className={Styles.PriceHistory} ref={container} />;
 };
 
