@@ -10,9 +10,17 @@ import {
   startOrderSending,
 } from 'modules/orders/actions/liquidity-management';
 import { getGasPrice } from 'modules/auth/selectors/get-gas-price';
-import { MAX_BULK_ORDER_COUNT, NEW_ORDER_GAS_ESTIMATE, ZERO, } from 'modules/common/constants';
+import {
+  MAX_BULK_ORDER_COUNT,
+  NEW_ORDER_GAS_ESTIMATE,
+  ZERO,
+} from 'modules/common/constants';
 import { createBigNumber } from 'utils/create-big-number';
-import { formatDai, formatEther, formatGasCostToEther, } from 'utils/format-number';
+import {
+  formatDai,
+  formatEther,
+  formatGasCostToEther,
+} from 'utils/format-number';
 import { AppState } from 'store';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
