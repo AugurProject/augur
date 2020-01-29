@@ -278,7 +278,7 @@ export class ZeroX {
       new BigNumber(loopLimit), // This is the maximum number of trades to actually make. This lets us put in more orders than we could fill with the gasLimit but handle failures and still fill the desired amount
       orders,
       signatures,
-      { attachedEth: BigNumber.min(protocolFee, walletEthBalance) } // TODO: This should only be provided when the safe has sufficient ETH to pay. We should rely on the ETH exchange and paying DAI to get the protocol fee
+      { attachedEth: BigNumber.min(protocolFee, walletEthBalance) }
     );
 
     const amountRemaining = this.getTradeAmountRemaining(
