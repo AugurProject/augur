@@ -274,7 +274,7 @@ export default class MarketView extends Component<
       if (!marketOrderBook) {
         return console.error(`Could not get order book for ${marketId}`);
       }
-      const outcomeId = selectedOutcomeId ? selectedOutcomeId : market.defaultSelectedOutcomeId;
+      const outcomeId = selectedOutcomeId !== undefined ? selectedOutcomeId : market.defaultSelectedOutcomeId;
       let orderBook = marketOrderBook.orderBook;
       if (orderBook[outcomeId]){
         orderBook = orderBook[outcomeId] as Getters.Markets.OutcomeOrderBook;
