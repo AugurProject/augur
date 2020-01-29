@@ -4,14 +4,14 @@
 .CategoryFilters {
   display: flex;
   flex-direction: column;
-  margin: @size-32 0 0 0;
+  margin: @size-32 0 0;
   overflow: auto;
 
   > .CategoriesGroup:first-of-type {
     margin: 0 @size-32 @size-26;
 
     @media @breakpoint-mobile {
-      margin: @size-16;
+      margin: @size-10 @size-24 @size-16;
     }
 
     > div {
@@ -24,7 +24,7 @@
     margin: 0 @size-32;
 
     @media @breakpoint-mobile {
-      margin: @size-16 @size-16 0;
+      margin: @size-16 @size-24 0;
     }
   }
 
@@ -35,14 +35,14 @@
 
 .CategoriesGroup {
   > span {
-    .text-12-bold;
+    .mono-12-bold;
 
     display: block;
     color: @color-primary-text;
-    margin: 0 0 @size-13 0;
+    margin: 0 0 @size-13;
 
     @media @breakpoint-mobile {
-      .text-14-bold;
+      .mono-14-bold;
     }
   }
 
@@ -77,7 +77,7 @@
   justify-content: center;
   align-items: center;
   padding: @size-4 @size-6;
-  margin: @size-2 0 @size-8 0;
+  margin: @size-2 0 @size-8;
 
   @media @breakpoint-mobile {
     margin-top: -@size-4
@@ -85,29 +85,63 @@
 }
 
 .AllCategories {
-  .text-11;
-
-  color: @color-primary-text;
-  text-transform: capitalize;
   margin: 0 @size-32;
   user-select: none;
   cursor: pointer;
 
-  > svg {
-    fill: @color-primary-text;
-    height: @size-10;
-    margin-right: @size-8;
+  @media @breakpoint-mobile {
+    margin: @size-10 @size-24 0;
   }
 
-  @media @breakpoint-mobile {
-    .text-14;
+  > span {
+    .mono-12-bold;
 
-    margin: 0 @size-16;
+    display: block;
+    color: @color-primary-text;
+    margin: 0 0 @size-13;
+
+    @media @breakpoint-mobile {
+      .mono-14-bold;
+      margin: 0 0 @size-22;
+    }
+  }
+
+  > div {
+    .text-12-bold;
+
+    text-transform: capitalize;
+    color: @color-secondary-text;
+
+    > svg {
+      fill: @color-secondary-text;
+      width: @size-10;
+      height: @size-10;
+      margin-right: @size-14;
+
+      @media @breakpoint-mobile {
+        width: @size-16;
+        height: @size-16;
+        margin-right: @size-13;
+        transform: translateY(@size-3);
+      }
+    }
+  
+    @media @breakpoint-mobile {
+      .text-14-bold;  
+    }
+
+    &:hover {
+      color: @color-primary-text;
+
+      > svg {
+        fill: @color-primary-text;
+      }
+    }
   }
 }
 
 .SelectedCategories {
-  .text-11;
+  .text-12-bold;
 
   color: @color-primary-text;
   text-transform: capitalize;
@@ -125,38 +159,61 @@
   }
 
   > div:not(.SelectedCategory):not(.backToCategory) {
-    margin: @size-8 @size-40 0 4.25rem;
+    margin: @size-8 @size-40 0 @size-72;
 
     @media @breakpoint-mobile {
-      margin: @size-8 @size-24 0 @size-36;
+      margin: @size-8 @size-24 0 @size-66;
     }
   }
 }
 
 .SelectedCategories > .backToCategory {
-  margin: @size-8 @size-32;
+  .text-12-bold;
+
+  margin: @size-13 @size-32;
+  color: @color-secondary-text;
 
   @media @breakpoint-mobile {
-    margin: @size-8 @size-16;
+    .text-14-bold;
+    margin: @size-21 @size-24;
   }
 
   > svg {
-    fill: @color-primary-text;
+    fill: @color-secondary-text;
+    width: @size-10;
     height: @size-10;
-    margin-right: @size-8;
+    margin-right: @size-14;
+
+    @media @breakpoint-mobile {
+      width: @size-16;
+      height: @size-16;
+      margin-right: @size-13;
+      transform: translateY(@size-3);
+    }
+  }
+
+  &:hover {
+    color: @color-primary-text;
+
+    > svg {
+      fill: @color-primary-text;
+    }
   }
 }
 
 .SelectedCategory {
-  .text-11-bold;
+  .text-12-bold;
 
-  margin: @size-8 @size-40 @size-8 3.25rem;
+  color: @color-primary-text;
+
+  margin: @size-8 @size-40 @size-8 @size-60;
 
   @media @breakpoint-mobile {
     .text-14-bold;
 
-    margin: @size-8 @size-24;
+    margin: @size-8 @size-24 @size-8 @size-56;
   }
+
 }
 
 .disabled {

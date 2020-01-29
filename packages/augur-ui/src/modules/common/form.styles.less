@@ -1835,13 +1835,14 @@ div.error > div > div > div > div > input {
       }
 
       > div {
-        width: 120px;
+        width: @size-120;
         left: 0;
       }
     }
   }
 }
 
+// Used in category-filters.styles.less
 .CategoryRow {
   display: flex;
   flex-direction: row;
@@ -1853,7 +1854,7 @@ div.error > div > div > div > div > input {
   cursor: pointer;
 
   @media @breakpoint-mobile {
-    margin: @size-21 0;
+    margin: @size-24 0;
   }
 
   > span:first-of-type {
@@ -1864,7 +1865,10 @@ div.error > div > div > div > div > input {
     line-height: 100%;
 
     > svg {
+      width: @size-12;
+      height: @size-12;
       margin-right: @size-10;
+      transform: translateY(-@size-1);
     }
 
     @media @breakpoint-mobile {
@@ -1873,7 +1877,10 @@ div.error > div > div > div > div > input {
       line-height: 100%;
 
       > svg {
+        width: @size-16;
+        height: @size-16;
         margin-right: @size-16;
+        transform: translateY(-@size-2);
       }
     }
   }
@@ -1900,23 +1907,28 @@ div.error > div > div > div > div > input {
     }
   }
 
-  &.active span:first-of-type {
-    .text-11-bold;
-
-    @media @breakpoint-mobile {
-      .text-14;
-    }
-  }
-
-  &.active span:last-of-type {
-    .text-10-bold;
-  }
-
   &.loading {
     > span:last-of-type {
       background: none;
       animation: spin 2s linear infinite;
       border: none;
+    }
+  }
+
+  // When a category is selected
+  &.active {
+    > span:first-of-type {
+      .text-12-bold;
+  
+      color: @color-primary-text;
+
+      @media @breakpoint-mobile {
+        .text-14-bold;
+      }
+    }
+
+    > span:last-of-type {
+      color: @color-primary-text;
     }
   }
 
