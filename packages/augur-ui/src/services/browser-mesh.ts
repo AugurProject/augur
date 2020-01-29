@@ -66,8 +66,9 @@ function createBrowserMeshRestartFunction(
         )
       );
       mesh.onError(createBrowserMeshRestartFunction(meshConfig, zeroX));
-      mesh.startAsync();
-      zeroX.mesh = mesh;
+      mesh.startAsync().then(() => {
+        zeroX.mesh = mesh;
+      })
     }
   };
 }
@@ -89,6 +90,7 @@ export function createBrowserMesh(
 
   const mesh = new Mesh(meshConfig);
   mesh.onError(createBrowserMeshRestartFunction(meshConfig, zeroX));
-  mesh.startAsync();
-  zeroX.mesh = mesh;
+  mesh.startAsync().then(() => {
+    zeroX.mesh = mesh;
+  })
 }
