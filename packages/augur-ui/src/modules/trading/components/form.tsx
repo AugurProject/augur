@@ -313,7 +313,7 @@ class Form extends Component<FromProps, FormState> {
     if (!convertDisplayAmountToOnChainAmount(value, market.tickSize).mod(tradeInterval).isEqualTo(0)) {
       errorCount += 1;
       passedTest = false;
-      const decimals = market.tickSize.indexOf(".") !== -1 ? getPrecision(market.tickSize, 1) : Number(market.tickSize);
+      const decimals = market.tickSize.toString().indexOf(".") !== -1 ? getPrecision(market.tickSize, 1) : Number(market.tickSize);
       const multiplOf = tradeInterval.dividedBy(market.tickSize).dividedBy(10**18);
       errors[this.INPUT_TYPES.QUANTITY].push(
           `Quantity must be a multiple of ${multiplOf.toFixed(decimals)}`
