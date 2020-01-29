@@ -2215,13 +2215,13 @@ export const RedFlagIcon = (
         d="M5.125 4.625H11.875L10.75 6.875L11.875 9.125H5.125"
         stroke="#FF2727"
         strokeMiterlimit="10"
-        stroke-linecap="square"
+        strokeLinecap="square"
       />
       <path
         d="M5.125 3.875V12.125"
         stroke="#FF2727"
         strokeMiterlimit="10"
-        stroke-linecap="square"
+        strokeLinecap="square"
       />
     </g>
     <defs>
@@ -2380,16 +2380,16 @@ export const CategoricalMarketIcon = (
     <path
       d="M9.3855 4.79028H29.3855"
       stroke="#E9E5F2"
-      stroke-width="2"
+      strokeWidth="2"
       strokeMiterlimit="10"
-      stroke-linecap="square"
+      strokeLinecap="square"
     />
     <path
       d="M9.3855 15.457H29.3855"
       stroke="#E9E5F2"
-      stroke-width="2"
+      strokeWidth="2"
       strokeMiterlimit="10"
-      stroke-linecap="square"
+      strokeLinecap="square"
     />
     <path
       d="M9.3855 26.1235H29.3855"
