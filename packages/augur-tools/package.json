@@ -22,7 +22,7 @@
     "docker:geth:pop-normal-time": "docker-builder/run.sh augurproject/dev-pop-normtime-geth-v2",
     "docker:geth:attach": "docker run --rm --net host -it ethereum/client-go attach rpc:http://127.0.0.1:8545",
     "docker:0x": "yarn flash 0x-docker",
-    "deploy": "ts-node ./src/flash/cli run deploy",
+    "deploy": "ts-node ./src/flash/cli deploy",
     "deploy:merge": "scripts/deploy-merge-addresses.py",
     "flash": "ts-node ./src/flash/cli",
     "blockstream-console": "ts-node ./src/blockstream-console.ts"
