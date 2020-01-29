@@ -1842,6 +1842,7 @@ div.error > div > div > div > div > input {
   }
 }
 
+// Used in category-filters.styles.less
 .CategoryRow {
   display: flex;
   flex-direction: row;
@@ -1900,18 +1901,6 @@ div.error > div > div > div > div > input {
     }
   }
 
-  &.active span:first-of-type {
-    .text-11-bold;
-
-    @media @breakpoint-mobile {
-      .text-14;
-    }
-  }
-
-  &.active span:last-of-type {
-    .text-10-bold;
-  }
-
   &.loading {
     > span:last-of-type {
       background: none;
@@ -1920,8 +1909,28 @@ div.error > div > div > div > div > input {
     }
   }
 
-  &.disabled {
-    cursor: default;
+  // When a category is selected
+  &.active {
+    > span:first-of-type {
+      .text-12-bold;
+  
+      color: @color-primary-text;
+
+      @media @breakpoint-mobile {
+        .text-14-bold;
+      }
+    }
+
+    > span:last-of-type {
+      color: @color-primary-text;
+    }
+  }
+
+  &.disabled span:first-of-type {
+    .text-12-bold;
+
+    color: @color-secondary-text;
+    pointer-events: none;
   }
 }
 

@@ -181,7 +181,6 @@ export default class CategoryFilters extends React.Component<
             handleClick={() => null}
             active={true}
             loading={this.props.isSearching}
-
           />
         </div>
         {this.state.selectedCategory &&
