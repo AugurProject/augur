@@ -480,7 +480,11 @@
     @media @breakpoint-mobile-new {
       flex-direction: column;
       min-width: unset;
-      padding: 0;
+      padding: @size-16;
+
+      > div {
+        margin-top: @size-10;
+      }
     }
 
     > div {
