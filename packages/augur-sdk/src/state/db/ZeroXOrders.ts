@@ -12,7 +12,6 @@ import { defaultAbiCoder, ParamType } from 'ethers/utils';
 import { SignedOrder } from '@0x/types';
 import { BigNumber as BN} from 'ethers/utils';
 import moment, { Moment } from 'moment';
-import Dexie from 'dexie';
 
 // This database clears its contents on every sync.
 // The primary purposes for even storing this data are:
