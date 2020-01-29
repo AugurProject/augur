@@ -55,7 +55,7 @@ export class ContractAPI {
       zeroX.rpc = meshClient;
     }
     const augur = await Augur.create(provider, dependencies, addresses, connector, zeroX, true);
-    if (meshBrowser) {
+    if (zeroX && meshBrowser) {
       zeroX.mesh = meshBrowser;
     }
     return new ContractAPI(augur, provider, dependencies, account);

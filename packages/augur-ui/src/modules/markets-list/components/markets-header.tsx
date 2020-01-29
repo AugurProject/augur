@@ -11,6 +11,7 @@ import {
 import MarketCardFormatSwitcher from 'modules/filter-sort/components/market-card-format-switcher';
 import Styles from 'modules/markets-list/components/markets-header.styles.less';
 import { FilterButton } from 'modules/common/buttons';
+import FilterDropDowns from 'modules/filter-sort/containers/filter-dropdowns';
 
 interface MarketsHeaderProps {
   location: Location;
@@ -96,6 +97,7 @@ const MarketsHeader: React.FC<MarketsHeaderProps> = props => {
           marketCardFormat={marketCardFormat}
           updateMarketsListCardFormat={updateMarketsListCardFormat}
         />
+        <FilterDropDowns />
       </div>
     </article>
   );
