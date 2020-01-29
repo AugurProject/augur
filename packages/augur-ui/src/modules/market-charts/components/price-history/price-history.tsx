@@ -7,10 +7,32 @@ import Styles from 'modules/market-charts/components/price-history/price-history
 const HIGHLIGHTED_LINE_WIDTH = 2;
 const NORMAL_LINE_WIDTH = 1;
 
+interface PriceTimeDataPoint {
+  price: string;
+  amount: string;
+  timestamp: number;
+  logIndex: number;
+}
+
+interface PriceTimeSeriesObject {
+  0?: Array<PriceTimeDataPoint>;
+  1?: Array<PriceTimeDataPoint>;
+  2?: Array<PriceTimeDataPoint>;
+  3?: Array<PriceTimeDataPoint>;
+  4?: Array<PriceTimeDataPoint>;
+  5?: Array<PriceTimeDataPoint>;
+  6?: Array<PriceTimeDataPoint>;
+  7?: Array<PriceTimeDataPoint>;
+}
+
+interface BucketedPriceTimeSeries {
+  priceTimeSeries?: PriceTimeSeriesObject;
+}
+
 interface PriceHistoryProps {
   maxPrice: number;
   minPrice: number;
-  bucketedPriceTimeSeries: object;
+  bucketedPriceTimeSeries: BucketedPriceTimeSeries;
   isScalar: boolean;
   scalarDenomination: string;
   selectedOutcomeId: number;
@@ -20,10 +42,67 @@ interface PriceHistoryProps {
   canHotload?: boolean;
 }
 
-interface PriceHistoryState {
-  options: any;
-}
+const PriceHistory = ({
+  maxPrice,
+  minPrice,
+  bucketedPriceTimeSeries,
+  isScalar = false,
+  scalarDenomination = '',
+  selectedOutcomeId,
+  pricePrecision,
+  isMarketLoading = false,
+  canHotload = false,
+}: PriceHistoryProps) => {
+  const container = useRef(null);
+  const options = getOptions({ maxPrice, minPrice, isScalar, pricePrecision });
+  const { priceTimeSeries } = bucketedPriceTimeSeries;
 
+  useEffect(() => {
+    if (isMarketLoading || canHotload) return NoDataToDisplay(Highcharts);
+
+    const hasData =
+      priceTimeSeries &&
+      Object.keys(priceTimeSeries) &&
+      Object.keys(priceTimeSeries).filter(
+        key => priceTimeSeries[key].length > 0
+      ).length;
+
+    const series = handleSeries(priceTimeSeries, selectedOutcomeId, 0);
+
+    if (isScalar && hasData) {
+      options.title.text = scalarDenomination;
+    }
+    options.plotOptions.line.dataGrouping = {
+      ...options.plotOptions.line.dataGrouping,
+      forced: true,
+      units: [['minute', [1]]],
+    };
+
+    const newOptions = Object.assign(options, { series });
+    Highcharts.stockChart(container.current, newOptions);
+  }, [selectedOutcomeId, isMarketLoading]);
+
+  useEffect(() => {
+    Highcharts.charts.forEach(chart => {
+      if (chart) {
+        const seriesUpdated = handleSeries(
+          priceTimeSeries,
+          selectedOutcomeId,
+          0
+        );
+        seriesUpdated.forEach(({ data }, index) => {
+          chart.series[index].setData(data, false, false);
+        });
+        chart.redraw();
+      }
+    });
+  }, [priceTimeSeries]);
+
+  return <div className={Styles.PriceHistory} ref={container} />;
+};
+
+export default PriceHistory;
+// helper functions:
 const getOptions = ({ maxPrice, pricePrecision, minPrice, isScalar }) => ({
   lang: {
     noData: 'No Completed Trades',
@@ -111,94 +190,50 @@ const getOptions = ({ maxPrice, pricePrecision, minPrice, isScalar }) => ({
   },
 });
 
-const PriceHistory = ({
-  maxPrice,
-  minPrice,
-  bucketedPriceTimeSeries,
-  isScalar = false,
-  scalarDenomination = '',
+const handleSeries = (
+  priceTimeSeries,
   selectedOutcomeId,
-  pricePrecision,
-  isMarketLoading = false,
-  canHotload = false
-}) => {
-  const container = useRef(null);
-  const options = getOptions({ maxPrice, minPrice, isScalar, pricePrecision });
-  const { priceTimeSeries } = bucketedPriceTimeSeries;
-
-  useEffect(() => {
-    if (isMarketLoading || canHotload) return NoDataToDisplay(Highcharts);
-    
-    const hasData =
-      priceTimeSeries &&
-      Object.keys(priceTimeSeries) &&
-      Object.keys(priceTimeSeries).filter(
-        key => priceTimeSeries[key].length > 0
-      ).length;
-
-    const series = [];
-
-    let mostRecentTradetime = 0;
-    Object.keys(priceTimeSeries).forEach(id => {
-      const isSelected = selectedOutcomeId && selectedOutcomeId == id;
-      const length = priceTimeSeries[id].length;
-      if (
-        length > 0 &&
-        priceTimeSeries[id][length - 1].timestamp > mostRecentTradetime
-      ) {
-        mostRecentTradetime = priceTimeSeries[id][length - 1].timestamp;
-      }
-      const data = priceTimeSeries[id].map(pts => [
-        pts.timestamp,
-        createBigNumber(pts.price).toNumber(),
-      ]);
-      const baseSeriesOptions = {
-        type: isSelected ? 'area' : 'line',
-        lineWidth: isSelected ? HIGHLIGHTED_LINE_WIDTH : NORMAL_LINE_WIDTH,
-        marker: {
-          symbol: 'cicle',
-        },
-        // @ts-ignore
-        data,
-      };
-
-      series.push({
-        ...baseSeriesOptions,
-      });
-    });
-    series.forEach(seriesObject => {
-      const seriesData = seriesObject.data;
-      // make sure we have a trade to fill chart
-      if (
-        seriesData.length > 0 &&
-        seriesData[seriesData.length - 1][0] != mostRecentTradetime
-      ) {
-        const mostRecentTrade = seriesData[seriesData.length - 1];
-        seriesObject.data.push([mostRecentTradetime, mostRecentTrade[1]]);
-      }
-      seriesObject.data.sort((a, b) => a[0] - b[0]);
-    });
-
-    if (isScalar && hasData) {
-      options.title.text = scalarDenomination;
+  mostRecentTradetime = 0
+) => {
+  const series = [];
+  Object.keys(priceTimeSeries).forEach(id => {
+    const isSelected = selectedOutcomeId && selectedOutcomeId == id;
+    const length = priceTimeSeries[id].length;
+    if (
+      length > 0 &&
+      priceTimeSeries[id][length - 1].timestamp > mostRecentTradetime
+    ) {
+      mostRecentTradetime = priceTimeSeries[id][length - 1].timestamp;
     }
-    options.plotOptions.line.dataGrouping = {
-      ...options.plotOptions.line.dataGrouping,
-      forced: true,
-      units: [['minute', [1]]],
+    const data = priceTimeSeries[id].map(pts => [
+      pts.timestamp,
+      createBigNumber(pts.price).toNumber(),
+    ]);
+    const baseSeriesOptions = {
+      type: isSelected ? 'area' : 'line',
+      lineWidth: isSelected ? HIGHLIGHTED_LINE_WIDTH : NORMAL_LINE_WIDTH,
+      marker: {
+        symbol: 'cicle',
+      },
+      // @ts-ignore
+      data,
     };
 
-    const newOptions = Object.assign(options, { series });
-    Highcharts.stockChart(container.current, newOptions);
-  }, [selectedOutcomeId, isMarketLoading]);
-
-  useEffect(() => {
-    Highcharts.charts.forEach(chart => {
-      chart && chart.redraw();
+    series.push({
+      ...baseSeriesOptions,
     });
-  }, [priceTimeSeries]);
-
-  return <div className={Styles.PriceHistory} ref={container} />;
+  });
+  series.forEach(seriesObject => {
+    const seriesData = seriesObject.data;
+    // make sure we have a trade to fill chart
+    if (
+      seriesData.length > 0 &&
+      seriesData[seriesData.length - 1][0] != mostRecentTradetime
+    ) {
+      const mostRecentTrade = seriesData[seriesData.length - 1];
+      seriesObject.data.push([mostRecentTradetime, mostRecentTrade[1]]);
+    }
+    seriesObject.data.sort((a, b) => a[0] - b[0]);
+  });
+  return series;
 };
-
-export default PriceHistory;
