@@ -54,13 +54,13 @@ export class SDK {
       },
       zeroX: {
         rpc: {
-          enabled: true,
+          enabled: false,
           ws: env['0x-endpoint']
         },
         mesh: {
           verbosity: 5,
           bootstrapList: (env['0x-mesh'] || {}).bootstrapList,
-          enabled: false,
+          enabled: true,
         }
       }
     };

@@ -6,6 +6,7 @@ import { withRouter } from "react-router-dom";
 import App from "modules/app/components/app";
 import { sendFinalizeMarket } from "modules/markets/actions/finalize-market";
 import { selectInfoAlertsAndSeenCount } from "modules/alerts/selectors/alerts";
+import { selectNotifications } from "modules/notifications/selectors/notification-state";
 import {
   IS_MOBILE,
   IS_MOBILE_SMALL,
@@ -31,11 +32,12 @@ import { MODAL_GLOBAL_CHAT, MODAL_MIGRATE_REP } from 'modules/common/constants';
 
 const mapStateToProps = state => {
   const { alerts } = selectInfoAlertsAndSeenCount(state);
-
+  const notifications = selectNotifications(state);
   const v1RepBalance = state.loginAccount.balances;
   const showMigrateRepButton = v1RepBalance.legacyAttoRep > 0;
 
   return {
+    notifications,
     blockchain: state.blockchain,
     categories: state.categories,
     connection: state.connection,

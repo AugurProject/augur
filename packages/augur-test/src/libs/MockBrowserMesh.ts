@@ -1,5 +1,5 @@
 import { OrderInfo, WSClient, OrderEvent, AcceptedOrderInfo, SignedOrder } from '@0x/mesh-rpc-client';
-import { ValidationResults } from '@0x/mesh-browser';
+import { ValidationResults, GetOrdersResponse } from '@0x/mesh-browser';
 import { orderHashUtils } from '@0x/order-utils';
 
 export class MockBrowserMesh {
@@ -7,6 +7,10 @@ export class MockBrowserMesh {
     readonly orders: {[orderHash: string]: OrderInfo};
     private errorCallback: (err: Error) => void = console.log;
     private orderEventsCallback: (events: OrderEvent[]) => void;
+    async getOrdersAsync(): Promise<GetOrdersResponse> {
+        var x: GetOrdersResponse;
+        return x;
+    }
 
     constructor(meshClient: WSClient) {
         this.meshClient = meshClient;

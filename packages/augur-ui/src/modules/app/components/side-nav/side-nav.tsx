@@ -12,7 +12,7 @@ import Styles from 'modules/app/components/side-nav/side-nav.styles.less';
 import { HelpIcon, HelpMenuList } from 'modules/app/components/help-resources';
 import { SecondaryButton } from 'modules/common/buttons';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
-import { helpIcon, Chevron } from 'modules/common/icons';
+import { helpIcon, Chevron, Dot } from 'modules/common/icons';
 
 interface SideNavProps {
   defaultMobileClick: Function;
@@ -54,7 +54,6 @@ const SideNav = ({
   const accessFilteredMenu = menuData.filter(
     item => !(item.requireLogin && !isLogged)
   );
-
   return (
     <aside
       className={classNames(Styles.SideNav, {
@@ -87,6 +86,7 @@ const SideNav = ({
                   onClick={() => defaultMobileClick()}
                 >
                   <span>{item.title}</span>
+                  {item.showAlert && Dot}
                 </Link>
               </li>
             ))}

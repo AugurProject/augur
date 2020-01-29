@@ -176,7 +176,7 @@ export class ZeroXOrders extends AbstractTable {
     console.log("Syncing ZeroX Orders");
     const orders: OrderInfo[] = await this.augur.zeroX.getOrders();
     let documents;
-    if (orders.length > 0) {
+    if (orders && orders.length > 0) {
       documents = _.filter(orders, this.validateOrder.bind(this));
       documents = _.map(documents, this.processOrder.bind(this));
       const marketIds: string[] = _.uniq(_.map(documents, 'market'));

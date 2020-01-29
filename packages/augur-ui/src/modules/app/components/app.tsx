@@ -35,7 +35,13 @@ import {
 
 import Styles from 'modules/app/components/app.styles.less';
 import MarketsInnerNavContainer from 'modules/app/containers/markets-inner-nav';
-import { Universe, Blockchain, LoginAccount, EnvObject } from 'modules/types';
+import {
+  Universe,
+  Blockchain,
+  LoginAccount,
+  EnvObject,
+  Notification,
+} from 'modules/types';
 import ForkingBanner from 'modules/reporting/containers/forking-banner';
 import parseQuery from 'modules/routes/helpers/parse-query';
 import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names';
@@ -43,6 +49,7 @@ import makePath from 'modules/routes/helpers/make-path';
 import { ExternalLinkText } from 'modules/common/buttons';
 
 interface AppProps {
+  notifications: Notification[];
   blockchain: Blockchain;
   env: EnvObject;
   history: History;
@@ -101,6 +108,7 @@ export default class AppView extends Component<AppProps> {
       title: 'Account Summary',
       route: ACCOUNT_SUMMARY,
       requireLogin: true,
+      showAlert: this.props.notifications.filter(item => item.isNew).length > 0,
     },
     {
       title: 'Portfolio',
@@ -168,7 +176,7 @@ export default class AppView extends Component<AppProps> {
     updateCurrentBasePath(currentPath);
 
     this.changeMenu(currentPath);
-  }
+  };
 
   componentDidMount() {
     this.handleComponentMount();
@@ -343,8 +351,10 @@ export default class AppView extends Component<AppProps> {
       updateModal,
       isHelpMenuOpen,
       updateHelpMenuState,
+      notifications,
     } = this.props;
-
+    this.sideNavMenuData[1].showAlert =
+      notifications.filter(item => item.isNew).length > 0;
     const currentPath = parsePath(location.pathname)[0];
 
     const onTradingTutorial =
@@ -357,7 +367,12 @@ export default class AppView extends Component<AppProps> {
           titleTemplate="%s | Augur"
         />
         {Object.keys(modal).length !== 0 && <Modal />}
-        {toasts.length > 0 && <ToastsContainer toasts={toasts} onTradingTutorial={onTradingTutorial}/>}
+        {toasts.length > 0 && (
+          <ToastsContainer
+            toasts={toasts}
+            onTradingTutorial={onTradingTutorial}
+          />
+        )}
         <div
           className={classNames({
             [Styles['App--blur']]: Object.keys(modal).length !== 0,
@@ -472,8 +487,7 @@ export default class AppView extends Component<AppProps> {
                 role="presentation"
                 id={'mainContent'}
               >
-
-                {!isLogged &&
+                {!isLogged && (
                   <div className={Styles.BettingUI}>
                     <ExternalLinkText
                       title={'Betting Exchange App'}
@@ -481,7 +495,7 @@ export default class AppView extends Component<AppProps> {
                       URL={'https://augur.net'}
                     />
                   </div>
-                }
+                )}
 
                 <ForkingBanner />
 
