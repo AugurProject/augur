@@ -5881,7 +5881,7 @@ export const TEMPLATES = {
           {
             id: 2,
             type: TemplateInputType.DATEYEAR,
-            validationType: ValidationType.EXP_DATE_TUESDAY_AFTER_MOVIE,
+            validationType: ValidationType.EXP_DATE_TUESDAY_AFTER_MOVIE_NO_FRIDAY,
             placeholder: `Opening day`,
           },
         ],
@@ -5912,7 +5912,7 @@ export const TEMPLATES = {
           {
             id: 1,
             type: TemplateInputType.DATEYEAR,
-            validationType: ValidationType.EXP_DATE_TUESDAY_AFTER_MOVIE,
+            validationType: ValidationType.EXP_DATE_TUESDAY_AFTER_MOVIE_NO_FRIDAY,
             placeholder: `Opening day`,
           },
           {

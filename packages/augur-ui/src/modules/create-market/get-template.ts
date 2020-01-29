@@ -7,7 +7,6 @@ import {
 import deepClone from 'utils/deep-clone';
 import { Getters } from '@augurproject/sdk';
 import { formatDai } from 'utils/format-number';
-import { NameValuePair } from 'modules/portfolio/types';
 import {
   TEMPLATES,
   TEMPLATE_VALIDATIONS,
@@ -23,6 +22,7 @@ import {
 } from '@augurproject/artifacts';
 import { YesNoMarketIcon, CategoricalMarketIcon, ScalarMarketIcon } from 'modules/common/icons';
 import { YES_NO, CATEGORICAL, SCALAR } from 'modules/common/constants';
+import { NameValuePair } from 'modules/common/selection';
 
 const MarketTypeIcons = {
   [YES_NO]: YesNoMarketIcon,
@@ -330,3 +330,7 @@ export const isValidTemplateMarket = (hash: string, marketTitle: string) => {
   if (!validation || !validation.templateValidation) return false;
   return !!marketTitle.match(validation.templateValidation);
 };
+
+export function createTemplateValueList(values: string[]): NameValuePair[] {
+  return values.map(v => ({ value: v, label: v }));
+}

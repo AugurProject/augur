@@ -55,7 +55,7 @@ export function makeDbMock(prefix:string = uuid.v4()) {
         constants.defaultStartSyncBlockNumber,
         augur,
         makeBlockAndLogStreamerListener(),
-        true,
+        !!augur.zeroX,
       );
       mockState.db = db;
 

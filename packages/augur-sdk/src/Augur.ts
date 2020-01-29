@@ -86,6 +86,9 @@ export class Augur<TProvider extends Provider = Provider> {
     this.events = new Subscriptions(augurEmitter);
     this.events.on(SubscriptionEventName.GnosisSafeStatus, this.updateGnosisSafe.bind(this));
 
+    this.connector.client = this;
+    if(this.zeroX) this.zeroX.client = this;
+
     // API
     this.addresses = addresses;
     this.contracts = new Contracts(this.addresses, this.dependencies);
@@ -126,8 +129,6 @@ export class Augur<TProvider extends Provider = Provider> {
       zeroX,
       enableFlexSearch
     );
-    connector.client = client;
-    if(zeroX) zeroX.client = client;
     await client.contracts.setReputationToken(networkId);
     return client;
   }

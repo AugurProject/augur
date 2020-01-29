@@ -119,11 +119,16 @@ class Notifications extends React.Component<
       case NOTIFICATION_TYPES.unsignedOrders:
         buttonAction = () => {
           this.markAsRead(notification);
-          this.disableNotification(notification.id, true);
           if (notification.market) {
-            this.props.unsignedOrdersModal(notification.market.id, () =>
-              this.disableNotification(notification.id, false)
-            );
+            this.props.unsignedOrdersModal(notification.market.id, () => {
+              const queryLink: QueryEndpoints = {
+                [MARKET_ID_PARAM_NAME]: notification.market && notification.market.id,
+              };
+              history.push({
+                pathname: makePath(MARKET, null),
+                search: makeQuery(queryLink),
+              });
+            });
           }
         };
         break;

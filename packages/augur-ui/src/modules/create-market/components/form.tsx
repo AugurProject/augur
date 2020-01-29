@@ -547,7 +547,7 @@ export default class Form extends React.Component<FormProps, FormState> {
         const afterTuesday: TemplateInput = inputs.find(
           i =>
             i.type === TemplateInputType.DATEYEAR &&
-            i.validationType === ValidationType.EXP_DATE_TUESDAY_AFTER_MOVIE
+            i.validationType === ValidationType.EXP_DATE_TUESDAY_AFTER_MOVIE_NO_FRIDAY
         );
         if (closing) {
           const dateYearSource = inputs.find(

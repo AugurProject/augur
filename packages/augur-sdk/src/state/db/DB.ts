@@ -177,9 +177,7 @@ export class DB {
 
     if (enableZeroX) {
       this.zeroXOrders = await ZeroXOrders.create(this, networkId, this.augur);
-      this.augur.events.on('ZeroX:Ready', () => {
-        this.zeroXOrders.sync();
-      });
+      await this.zeroXOrders.sync();
     }
 
     // Always start syncing from 10 blocks behind the lowest
