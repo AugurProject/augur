@@ -32,6 +32,7 @@ export class Contracts {
   affiliateValidator: ContractInterfaces.AffiliateValidator;
   profitLoss: ContractInterfaces.ProfitLoss;
   ethExchange: ContractInterfaces.EthExchange;
+  warpSync: ContractInterfaces.WarpSync;
 
   reputationToken: SomeRepToken | null = null;
   private readonly dependencies: ContractDependenciesEthers;
@@ -64,6 +65,7 @@ export class Contracts {
     this.affiliateValidator = new ContractInterfaces.AffiliateValidator(dependencies, addresses.AffiliateValidator);
     this.profitLoss= new ContractInterfaces.ProfitLoss(dependencies, addresses.ProfitLoss);
     this.ethExchange = new ContractInterfaces.EthExchange(dependencies, addresses.EthExchange);
+    this.warpSync = new ContractInterfaces.WarpSync(dependencies, addresses.WarpSync);
 
     if (typeof addresses.Time !== "undefined") {
       this.time = new ContractInterfaces.Time(dependencies, addresses.Time);
