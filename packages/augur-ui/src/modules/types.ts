@@ -216,6 +216,11 @@ export interface QuantityOutcomeOrderBook {
   asks: QuantityOrderBookOrder[];
 }
 
+export interface IndividualOutcomeOrderBook {
+  spread: string | BigNumber | null;
+  bids: Getters.Markets.MarketOrderBookOrder[];
+  asks: Getters.Markets.MarketOrderBookOrder[];
+}
 export interface MyPositionsSummary {
   currentValue: FormattedNumber;
   totalPercent: FormattedNumber;
