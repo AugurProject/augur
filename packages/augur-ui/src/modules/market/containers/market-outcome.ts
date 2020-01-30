@@ -27,7 +27,11 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
   const outcome = oP.outcome;
   const outcomeName = outcome.description;
   const orderBook = sP.orderBook;
-  const { topAsk, topBid } = selectMarketOutcomeBestBidAsk(orderBook, sP.tickSize);
+  let outcomeOrderBook = orderBook;
+  if (outcome && orderBook && orderBook[outcome.id]) {
+    outcomeOrderBook = orderBook[outcome.id]
+  }
+  const { topAsk, topBid } = selectMarketOutcomeBestBidAsk(outcomeOrderBook, sP.tickSize);
   const bestBidAlert = selectBestBidAlert(outcome.id, topBid.price.value, sP.minPrice, sP.maxPrice)
   const topBidShares = topBid.shares;
   const topAskShares = topAsk.shares;
