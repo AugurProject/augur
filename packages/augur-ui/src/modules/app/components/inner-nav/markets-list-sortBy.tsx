@@ -5,6 +5,7 @@ import {
   SORT_OPTIONS,
 } from 'modules/common/constants';
 import Styles from 'modules/app/components/inner-nav/markets-list-sortBy.styles.less';
+import { SortByIcon } from 'modules/common/icons';
 import { RadioBarGroup } from 'modules/common/form';
 
 interface MarketsListFiltersProps {
@@ -20,7 +21,10 @@ const MarketsListFilters = (props: MarketsListFiltersProps) => (
         [Styles.Searching]: props.isSearching,
       })}
     >
-      <div>Sort By</div>
+      <div>
+        {SortByIcon}
+        Sort By
+      </div>
       <RadioBarGroup
         radioButtons={SORT_OPTIONS}
         defaultSelected={props.marketSort}
