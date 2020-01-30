@@ -16,6 +16,7 @@ contract ProfitLoss is Initializable {
     using SafeMathUint256 for uint256;
     using SafeMathInt256 for int256;
 
+    IAugur public augur;
     IAugurTrading public augurTrading;
     IOrders public orders;
     address public shareToken;
@@ -39,6 +40,7 @@ contract ProfitLoss is Initializable {
         shareToken = _augur.lookup("ShareToken");
         require(shareToken != address(0));
 
+        augur = _augur;
         augurTrading = _augurTrading;
         createOrder = _augurTrading.lookup("CreateOrder");
         cancelOrder = _augurTrading.lookup("CancelOrder");

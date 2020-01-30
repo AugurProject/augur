@@ -13,6 +13,10 @@
     display: none;
   }
 
+  @media @breakpoint-tablet {
+    padding-top: @size-16;
+  }
+
   @media @breakpoint-mobile {
     padding: @size-12 0 0 0;
 
@@ -51,6 +55,27 @@
     display: flex;
     justify-content: space-between;
     margin-bottom: @size-24;
+
+    > div:last-of-type {
+      display: none;
+    }
+
+    @media @breakpoint-tablet {
+      display: grid;
+      
+      > div:last-of-type {
+        display: flex;
+        justify-content: flex-end;
+      }
+
+      > article {
+        order: -1;
+        grid-column: 1 / span 2;
+        width: 100%;
+        max-width: unset;
+        margin-bottom: @size-16;
+      }
+    }
 
     @media @breakpoint-mobile {
       align-items: center;

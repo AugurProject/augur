@@ -36,6 +36,7 @@ contract Trade is Initializable, ReentrancyGuard {
     }
 
     IAugur public augur;
+    IAugurTrading public augurTrading;
     ICreateOrder public createOrder;
     IFillOrder public fillOrder;
     IOrders public orders;
@@ -49,6 +50,7 @@ contract Trade is Initializable, ReentrancyGuard {
         cash = ICash(augur.lookup("Cash"));
         require(cash != ICash(0));
 
+        augurTrading = _augurTrading;
         createOrder = ICreateOrder(_augurTrading.lookup("CreateOrder"));
         fillOrder = IFillOrder(_augurTrading.lookup("FillOrder"));
         orders = IOrders(_augurTrading.lookup("Orders"));

@@ -46,6 +46,7 @@ import { GnosisSafeState } from '@augurproject/gnosis-relay-api/build/GnosisRela
 import { loadAnalytics } from 'modules/app/actions/analytics-management';
 import { marketCreationCreated, orderFilled } from 'services/analytics/helpers';
 import { updateModal } from 'modules/modal/actions/update-modal';
+import * as _ from 'lodash';
 
 const handleAlert = (
   log: any,
@@ -218,9 +219,18 @@ export const handleMarketCreatedLog = (log: any) => (
   if (isUserDataUpdate) {
     handleAlert(log, CREATEMARKET, false, dispatch, getState);
     dispatch(marketCreationCreated(log.market, log.extraInfo));
-    dispatch(loadMarketsInfo([log.market]));
   }
 };
+
+export const handleDBMarketCreatedEvent = (event: any) => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  if (event.data) {
+    const marketIds = _.map(event.data, "market");
+    dispatch(loadMarketsInfo(marketIds));
+  }
+}
 
 export const handleMarketMigratedLog = (log: any) => (
   dispatch: ThunkDispatch<void, any, Action>,
