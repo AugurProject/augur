@@ -23,7 +23,7 @@ services:
     networks:
       - augur
   web:
-    image: augurproject/safe-relay-service_web:latest
+    image: augurproject/safe-relay-service_web:ac9f646508184096ac69362f89a89adbbcba958ad306d22c3e23f1cfd7ef42a6
     env_file:
       - .env
     environment:

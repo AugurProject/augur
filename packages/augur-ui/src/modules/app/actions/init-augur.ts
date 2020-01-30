@@ -217,20 +217,22 @@ export function connectAugur(
     if (loggedInAccountType === ACCOUNT_TYPES.TORUS) {
       preloadAccount(ACCOUNT_TYPES.TORUS);
     }
-    let provider = new JsonRpcProvider(env['ethereum-node'].http);
+
+    let provider;
     if (window.web3) {
       provider = new Web3Provider(window.web3.currentProvider);
+    } else {
+      provider = new JsonRpcProvider(env['ethereum-node'].http);
     }
+
     let sdk: Augur<Provider> = null;
     try {
-      sdk = await augurSdk.makeClient(
-        provider,
-        env,
-      );
+      sdk = await augurSdk.makeClient(provider, env);
     } catch (e) {
       console.error(e);
       return callback('SDK could not be created', null);
     }
+
     windowApp = windowRef as WindowApp;
     let universeId = env.universe || sdk.contracts.universe.address;
     if (
@@ -248,29 +250,24 @@ export function connectAugur(
       universeId = !storedUniverseId ? universeId : storedUniverseId;
     }
     const known = await checkIsKnownUniverse(universeId);
-    const sameNetwork = augurSdk.sameNetwork();
-    if ((!sameNetwork && sameNetwork !== undefined) || !known) {
-      dispatch(
-        updateModal({
-          type: MODAL_NETWORK_MISMATCH,
-          expectedNetwork: NETWORK_NAMES[Number(augurSdk.networkId)],
-        })
-      );
-    } else {
-      dispatch(updateUniverse({ id: universeId }));
-      if (modal && modal.type === MODAL_NETWORK_DISCONNECTED) {
-        dispatch(closeModal());
-      }
-      if (isInitialConnection) {
-        pollForAccount(dispatch, getState);
-        pollForNetwork(dispatch, getState);
-      }
-      callback(null);
+    dispatch(updateUniverse({ id: universeId }));
+
+    // If the network disconnected modal is being shown, but we are now
+    // connected -- hide it.
+    if (modal && modal.type === MODAL_NETWORK_DISCONNECTED) {
+      dispatch(closeModal());
     }
+
+    if (isInitialConnection) {
+      pollForAccount(dispatch, getState);
+      pollForNetwork(dispatch, getState);
+    }
+
     // wire up start up events for sdk
     dispatch(listenForStartUpEvents(sdk));
     dispatch(updateCanHotload(true));
 
+    callback(null);
   };
 }
 

@@ -15,11 +15,14 @@ import { API } from './getter/API';
 export interface SDKConfiguration {
   networkId: NetworkId,
   ethereum?: {
-    http: string
+    http: string,
+    rpcRetryCount: number,
+    rpcRetryInternval: number,
+    rpcConcurrency: number
   },
   sdk?: {
     enabled?: boolean,
-    ws: string
+    ws: string,
   },
   gnosis?: {
     enabled?: boolean,
@@ -79,7 +82,6 @@ export async function createClient(
     }
   }
 
-  console.log(`ZeroX Enabled [create-api]: ${!!zeroX}`);
   const client = await Augur.create(
     ethersProvider,
     contractDependencies,
