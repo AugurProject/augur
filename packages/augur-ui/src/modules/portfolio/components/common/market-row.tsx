@@ -66,13 +66,13 @@ const MarketRow = ({
       >
         {showState && !market.pending && (
           <div>
-            {market.marketType === SCALAR && <MarketTypeLabel marketType={market.marketType} />}
             {market.isTemplate && <TemplateShield market={market} />}
             <MarketStatusLabel
               reportingState={market.reportingState}
               alternate
               mini
             />
+            {market.marketType === SCALAR && <MarketTypeLabel marketType={market.marketType} />}
           </div>
         )}
         {!market.pending && <MarketTitle id={market.id} />}
