@@ -1,5 +1,6 @@
 @import (reference) '~assets/styles/shared';
 
+// Used in Betting UI
 .TopBar {
   align-items: center;
   background: @color-dark-grey;
@@ -61,13 +62,14 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    padding: @size-6 @size-20;
     width: min-content;
+    padding: @size-6 @size-20;
+
+    @media @breakpoint-mobile {
+      padding: @size-3 @size-20 @size-12;
+    }
 
     > div:first-of-type {
-      > span:last-of-type {
-        .text-10-bold;
-      }
     }
 
     > div {
@@ -75,12 +77,8 @@
       justify-content: space-between;
       margin-bottom: 0;
 
-      @media @breakpoint-mobile {
-        margin-bottom: @size-2;
-      }
-
       > span {
-        .mono-9-bold;
+        .mono-10-medium;
 
         color: @color-secondary-text;
       }
@@ -91,7 +89,7 @@
 
       > span:nth-of-type(2),
       > span:last-of-type {
-          .text-10;
+          .mono-11-medium;
 
           color: @color-primary-text;
       }
@@ -108,8 +106,8 @@
 
   // P/I
   > div:last-of-type {
-    align-items: center;
-    border: 1px solid @color-dark-grey;
+    align-items: left;
+    border: @size-1 solid @color-dark-grey;
     border-bottom: 0;
     border-top: 0;
     display: flex;
@@ -119,7 +117,7 @@
     padding: 0 @size-20;
 
     > span {
-      .mono-9-bold;
+      .mono-10-medium;
 
       color: @color-secondary-text;
       margin-bottom: 2px;
@@ -129,6 +127,11 @@
 
     > div {
       justify-content: flex-start;
+
+      > div {
+        .mono-11-medium;
+        color: @color-positive;
+      }
     }
 
     @media @breakpoint-mobile {
