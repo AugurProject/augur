@@ -35,14 +35,14 @@
   }
 }
 
-.MarketView__orders,
-.MarketView__history {
+.Orders,
+.History {
   @media @breakpoint-mobile-mid {
     height: 50vh;
   }
 }
 
-.MarketView__paneContainer--mobile {
+.PaneContainer {
   flex: 1;
   padding: @size-8 @size-4;
 
@@ -226,13 +226,6 @@
   max-height: fit-content;
 }
 
-.MarketView__component__history {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  max-height: 100%;
-}
-
 .MarketView__firstRow {
   display: flex;
   flex-direction: row;
@@ -287,7 +280,7 @@
   width: 25rem;
 }
 
-.MarketView__orders {
+.Orders {
   display: flex;
   flex-direction: column;
   margin-bottom: @size-4;
@@ -302,13 +295,13 @@
   max-height: 100% !important;
 }
 
-.MarketView__history,
-.MarketView__orders {
+.History,
+.Orders {
   max-height: 50%;
   transition: max-height 0.2s ease;
 }
 
-.MarketView__priceHistoryChart {
+.PriceHistory {
   background-color: @color-module-background;
   border: 1px solid @color-dark-grey;
   border-radius: 1px;
@@ -411,7 +404,7 @@ div.OutcomeNameDisplay {
     width: auto;
   }
 
-  .MarketView__paneContainer--mobile {
+  .PaneContainer {
     display: grid;
     grid-gap: @size-8 0;
     grid-template-rows: min-content;
@@ -436,14 +429,14 @@ div.OutcomeNameDisplay {
     }
   }
 
-  .MarketView__orders {
+  .Orders {
     margin-bottom: 0;
     border-bottom: 1px solid @color-dark-grey;
     border-left: 1px solid @color-dark-grey;
     border-right: 1px solid @color-dark-grey;
   }
 
-  .MarketView__history {
+  .History {
     background: @color-module-background;
     margin-bottom: 0;
     max-height: unset;
@@ -461,7 +454,7 @@ div.OutcomeNameDisplay {
     }
   }
 
-  .MarketView__priceHistoryChart > h3 {
+  .PriceHistory > h3 {
     .mono-11-bold;
 
     text-transform: uppercase;
