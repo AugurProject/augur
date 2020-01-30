@@ -44,6 +44,7 @@ contract SimulateTrade is Initializable {
     }
 
     IAugur public augur;
+    IAugurTrading public augurTrading;
     IOrders public orders;
     IZeroXTrade public zeroXTrade;
     IShareToken public shareToken;
@@ -57,6 +58,7 @@ contract SimulateTrade is Initializable {
         shareToken = IShareToken(augur.lookup("ShareToken"));
         require(shareToken != IShareToken(0));
 
+        augurTrading = _augurTrading;
         orders = IOrders(_augurTrading.lookup("Orders"));
         zeroXTrade = IZeroXTrade(_augurTrading.lookup("ZeroXTrade"));
         require(orders != IOrders(0));

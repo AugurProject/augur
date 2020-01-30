@@ -9,6 +9,10 @@
   > div:nth-of-type(2) {
     > div:last-of-type > div > input {
       max-width: 210px;
+
+      @media @breakpoint-mobile-new {
+        min-width: 210px;
+      }
     }
 
     > div:first-of-type {
