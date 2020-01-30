@@ -568,6 +568,12 @@ export const CheckMark = (
   </svg>
 );
 
+export const Dot = (
+  <svg viewBox="0 0 4 4">
+    <circle cx="2" cy="2" r="2" />
+  </svg>
+);
+
 export const DotDotDot = (
   <svg viewBox="0 0 10 16">
     <circle cx="8" cy="1.5" r="1.5" />
@@ -2217,13 +2223,13 @@ export const RedFlagIcon = (
         d="M5.125 4.625H11.875L10.75 6.875L11.875 9.125H5.125"
         stroke="#FF2727"
         strokeMiterlimit="10"
-        stroke-linecap="square"
+        strokeLinecap="square"
       />
       <path
         d="M5.125 3.875V12.125"
         stroke="#FF2727"
         strokeMiterlimit="10"
-        stroke-linecap="square"
+        strokeLinecap="square"
       />
     </g>
     <defs>
@@ -2382,16 +2388,16 @@ export const CategoricalMarketIcon = (
     <path
       d="M9.3855 4.79028H29.3855"
       stroke="#E9E5F2"
-      stroke-width="2"
-      stroke-miterlimit="10"
-      stroke-linecap="square"
+      strokeWidth="2"
+      strokeMiterlimit="10"
+      strokeLinecap="square"
     />
     <path
       d="M9.3855 15.457H29.3855"
       stroke="#E9E5F2"
-      stroke-width="2"
-      stroke-miterlimit="10"
-      stroke-linecap="square"
+      strokeWidth="2"
+      strokeMiterlimit="10"
+      strokeLinecap="square"
     />
     <path
       d="M9.3855 26.1235H29.3855"

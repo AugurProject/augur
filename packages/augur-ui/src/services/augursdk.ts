@@ -43,7 +43,10 @@ export class SDK {
     const config: SDKConfiguration = {
       networkId: this.networkId,
       ethereum: {
-        http: env['ethereum-node'].http
+        http: env['ethereum-node'].http,
+        rpcRetryCount: 5,
+        rpcRetryInternval: 0,
+        rpcConcurrency: 40
       },
       gnosis: {
         enabled: true,
@@ -57,12 +60,17 @@ export class SDK {
         mesh: {
           verbosity: 5,
           bootstrapList: (env['0x-mesh'] || {}).bootstrapList,
-          enabled: false,
+          enabled: true,
         }
       }
     };
 
-    const ethersProvider = new EthersProvider(provider, 5, 0, 40);
+    const ethersProvider = new EthersProvider(
+      provider,
+      config.rpcRetryCount,
+      config.rpcRetryInterval,
+      config.rpcConcurrency
+    );
 
     let connector = null;
     if (config.sdk && config.sdk.enabled) {
@@ -74,13 +82,14 @@ export class SDK {
     this.client = await createClient(config, connector, account, signer, ethersProvider, enableFlexSearch, createBrowserMesh);
     await connector.connect(config, account)
 
-    if (config.zeroX && (config.zeroX.rpc && config.zeroX.rpc.enabled || config.zeroX.mesh && config.zeroX.mesh.enabled)) {
-      this.client.events.emit('ZeroX:Ready');
+    if (!isEmpty(account)) {
+      this.syncUserData(account, signer, this.networkId, config.gnosis && config.gnosis.enabled).catch((error) => {
+        console.log("Gnosis safe create error during create: ", error);
+      });
     }
 
-    if (!isEmpty(account)) {
-      await this.getOrCreateGnosisSafe(account);
-    }
+    // This actually isny' async because we start this with a client
+    await connector.connect(config, account)
 
     // tslint:disable-next-line:ban-ts-ignore
     // @ts-ignore
@@ -94,67 +103,81 @@ export class SDK {
    * @param {string} walletAddress - Wallet address
    * @returns {Promise<void>}
    */
-  async getOrCreateGnosisSafe(walletAddress: string): Promise<void | string> {
-    if (this.client) {
-      const networkId = await this.client.provider.getNetworkId();
-      const gnosisLocalstorageItemKey = `gnosis-relay-request-${networkId}-${walletAddress}`;
+  async getOrCreateGnosisSafe(walletAddress: string, networkId: NetworkId): Promise<void | string> {
+    if (!this.client) {
+      console.log("Trying to init gnosis safe before Augur is initalized");
+      return;
+    }
 
-      // Up to UI side to check the localstorage wallet matches the wallet address.
-      const calculateGnosisSafeAddressParamsString = localStorage.getItem(
-        gnosisLocalstorageItemKey
-      );
-      if (calculateGnosisSafeAddressParamsString) {
-        const calculateGnosisSafeAddressParams = JSON.parse(
-          calculateGnosisSafeAddressParamsString
-        ) as CalculateGnosisSafeAddressParams;
-        const result = await this.client.gnosis.getOrCreateGnosisSafe({
-          ...calculateGnosisSafeAddressParams,
-          owner: walletAddress,
-        });
-        if (typeof result === 'string') {
-          return result;
-        }
-        return result.safe;
-      } else {
-        const result = await this.client.gnosis.getOrCreateGnosisSafe(
-          walletAddress
-        );
+    const gnosisLocalstorageItemKey = `gnosis-relay-request-${networkId}-${walletAddress}`;
 
-        if (typeof result === 'string') {
-          return result;
-        }
-
-        // Write response to localstorage.
-        localStorage.setItem(gnosisLocalstorageItemKey, JSON.stringify(result));
-        return result.safe;
+    // Up to UI side to check the localstorage wallet matches the wallet address.
+    const calculateGnosisSafeAddressParamsString = localStorage.getItem(
+      gnosisLocalstorageItemKey
+    );
+    if (calculateGnosisSafeAddressParamsString) {
+      const calculateGnosisSafeAddressParams = JSON.parse(
+        calculateGnosisSafeAddressParamsString
+      ) as CalculateGnosisSafeAddressParams;
+      const result = await this.client.gnosis.getOrCreateGnosisSafe({
+        ...calculateGnosisSafeAddressParams,
+        owner: walletAddress,
+      });
+      if (typeof result === 'string') {
+        return result;
       }
+      return result.safe;
+    } else {
+      const result = await this.client.gnosis.getOrCreateGnosisSafe(
+        walletAddress
+      );
+
+      if (typeof result === 'string') {
+        return result;
+      }
+
+      // Write response to localstorage.
+      localStorage.setItem(gnosisLocalstorageItemKey, JSON.stringify(result));
+      return result.safe;
     }
   }
 
   async syncUserData(
-    address: string,
+    account: string,
     signer: EthersSigner,
-    signerNetworkId: string,
+    expectedNetworkId: NetworkId,
     useGnosis: boolean,
     updateUser?: Function
   ) {
-    if (this.client) {
-      if (signer) this.client.signer = signer;
-      this.signerNetworkId = signerNetworkId;
-      if (!isLocalHost()) {
-        analytics.identify(address, { address, signerNetworkId });
-      }
+    if (!this.client) {
+      throw new Error("Trying to sync user data before Augur is initialized");
+    }
 
-      if (useGnosis) {
-        const safeAddress = (await this.getOrCreateGnosisSafe(
-          address
-        )) as string;
+    if (this.networkId !== expectedNetworkId) {
+      throw new Error(`Setting the current user is expecting to be on network ${expectedNetworkId} but Augur was already connected to ${this.networkId}`);
+    }
 
-        this.client.setUseGnosisSafe(true);
-        this.client.setUseGnosisRelay(true);
-        this.client.setGnosisSafeAddress(safeAddress);
-        updateUser(safeAddress);
+    if (!signer) {
+      throw new Error("Attempting to set logged in user without specifying a signer");
+    }
+
+    this.client.signer = signer;
+
+    if (useGnosis) {
+      account = (await this.getOrCreateGnosisSafe(
+        account
+      )) as string;
+
+      this.client.setUseGnosisSafe(true);
+      this.client.setUseGnosisRelay(true);
+      this.client.setGnosisSafeAddress(account);
+      if (!!updateUser) {
+        updateUser(account);
       }
+    }
+
+    if (!isLocalHost()) {
+      analytics.identify(account, { networkId: this.networkId, useGnosis });
     }
   }
 
@@ -180,14 +203,6 @@ export class SDK {
     } catch (e) {
       this.isSubscribed = false;
     }
-  }
-
-  sameNetwork(): boolean {
-    const localNetwork = this.networkId;
-    const signerNetworkId = this.signerNetworkId;
-
-    if (!localNetwork || !signerNetworkId) return undefined;
-    return localNetwork.toString() === signerNetworkId.toString();
   }
 }
 

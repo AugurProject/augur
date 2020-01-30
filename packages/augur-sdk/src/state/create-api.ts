@@ -15,11 +15,14 @@ import { API } from './getter/API';
 export interface SDKConfiguration {
   networkId: NetworkId,
   ethereum?: {
-    http: string
+    http: string,
+    rpcRetryCount: number,
+    rpcRetryInternval: number,
+    rpcConcurrency: number
   },
   sdk?: {
     enabled?: boolean,
-    ws: string
+    ws: string,
   },
   gnosis?: {
     enabled?: boolean,
@@ -75,11 +78,10 @@ export async function createClient(
       // interface instead of actually import @0x/mesh-browser -- since
       // that would attempt to start the wasm client in nodejs and cause
       // everything to die.
-      createBrowserMesh(config, zeroX);
+      await createBrowserMesh(config, zeroX);
     }
   }
 
-  console.log(`ZeroX Enabled [create-api]: ${!!zeroX}`);
   const client = await Augur.create(
     ethersProvider,
     contractDependencies,

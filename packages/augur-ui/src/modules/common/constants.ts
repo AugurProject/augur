@@ -560,8 +560,8 @@ export const MODAL_ACCOUNT_CREATED = 'MODAL_ACCOUNT_CREATED';
 export const MODAL_WALLET_ERROR = 'MODAL_WALLET_ERROR';
 
 // transactions parameter names
-export const TX_ORDER_ID = '_orderId';
-export const TX_ORDER_IDS = '_orderIds';
+export const TX_ORDER_ID = 'orderId';
+export const TX_ORDER_IDS = 'orderIds';
 export const TX_TRADE_GROUP_ID = '_tradeGroupId';
 export const TX_MARKET_ID = '_market';
 export const TX_AMOUNT = '_amount';

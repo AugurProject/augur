@@ -46,6 +46,7 @@ import { GnosisSafeState } from '@augurproject/gnosis-relay-api/build/GnosisRela
 import { loadAnalytics } from 'modules/app/actions/analytics-management';
 import { marketCreationCreated, orderFilled } from 'services/analytics/helpers';
 import { updateModal } from 'modules/modal/actions/update-modal';
+import * as _ from 'lodash';
 
 const handleAlert = (
   log: any,
@@ -218,9 +219,18 @@ export const handleMarketCreatedLog = (log: any) => (
   if (isUserDataUpdate) {
     handleAlert(log, CREATEMARKET, false, dispatch, getState);
     dispatch(marketCreationCreated(log.market, log.extraInfo));
-    dispatch(loadMarketsInfo([log.market]));
   }
 };
+
+export const handleDBMarketCreatedEvent = (event: any) => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  if (event.data) {
+    const marketIds = _.map(event.data, "market");
+    dispatch(loadMarketsInfo(marketIds));
+  }
+}
 
 export const handleMarketMigratedLog = (log: any) => (
   dispatch: ThunkDispatch<void, any, Action>,
@@ -260,7 +270,6 @@ export const handleTokenBalanceChangedLog = (
 };
 
 export const handleOrderLog = (log: any) => {
-  console.log('Order Event: ', log);
   const type = log.eventType;
   switch (type) {
     case OrderEventType.Create:
@@ -280,16 +289,14 @@ export const handleOrderCreatedLog = (log: Logs.ParsedOrderEventLog) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const marketId = log.market;
+  const { loginAccount, authStatus } = getState();
   const isUserDataUpdate = isSameAddress(
     log.orderCreator,
-    getState().loginAccount.mixedCaseAddress
+    loginAccount.mixedCaseAddress
   );
-  if (isUserDataUpdate) {
+  if (isUserDataUpdate && authStatus.isLogged) {
     handleAlert(log, PUBLICTRADE, false, dispatch, getState);
-
     dispatch(loadAccountOpenOrders());
-    dispatch(loadAccountPositionsTotals());
   }
 };
 
@@ -297,26 +304,28 @@ export const handleOrderCanceledLog = (log: Logs.ParsedOrderEventLog) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const marketId = log.market;
+  const { loginAccount, authStatus } = getState();
   const isUserDataUpdate = isSameAddress(
     log.orderCreator,
-    getState().loginAccount.mixedCaseAddress
+    loginAccount.mixedCaseAddress
   );
   if (isUserDataUpdate) {
     // TODO: do we need to remove stuff based on events?
     // if (!log.removed) dispatch(removeCanceledOrder(log.orderId));
     //handleAlert(log, CANCELORDER, dispatch, getState);
     const { blockchain } = getState();
-    dispatch(
-      updateAlert(log.orderId, {
-        name: CANCELORDER,
-        timestamp: blockchain.currentAugurTimestamp * 1000,
-        status: TXEventName.Success,
-        params: { ...log },
-      })
-    );
-    dispatch(loadAccountOpenOrders());
-    dispatch(loadAccountPositionsTotals());
+    if (authStatus.isLogged) {
+      dispatch(
+        updateAlert(log.orderId, {
+          name: CANCELORDER,
+          timestamp: blockchain.currentAugurTimestamp * 1000,
+          status: TXEventName.Success,
+          params: { ...log },
+        })
+      );
+      dispatch(loadAccountOpenOrders());
+      dispatch(loadAccountPositionsTotals());
+    }
   }
 };
 
@@ -324,16 +333,19 @@ export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
+  const { loginAccount, authStatus } = getState();
   const marketId = log.market;
-  const { address } = getState().loginAccount;
+  const { address } = loginAccount;
   const isUserDataUpdate =
     isSameAddress(log.orderCreator, address) ||
     isSameAddress(log.orderFiller, address);
-  if (isUserDataUpdate) {
-    handleAlert(log, PUBLICFILLORDER, true, dispatch, getState);
+  if (isUserDataUpdate && authStatus.isLogged) {
+    dispatch(
+      orderFilled(marketId, log, isSameAddress(log.orderCreator, address))
+    );
     dispatch(loadUserFilledOrders({ marketId }));
     dispatch(loadAccountOpenOrders());
-    dispatch(orderFilled(marketId, log, isSameAddress(log.orderCreator, address)));
+    handleAlert(log, PUBLICFILLORDER, true, dispatch, getState);
   }
   dispatch(loadMarketTradingHistory(marketId));
 };

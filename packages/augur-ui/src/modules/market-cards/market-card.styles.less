@@ -355,7 +355,7 @@
     }
   }
 
-  @media @breakpoint-max-tablet {
+  @media @breakpoint-mobile-tablet {
     grid-template-rows: auto;
     grid-template-columns: auto;
     padding: @size-12;
@@ -441,6 +441,7 @@
       > label {
         grid-row: 1;
         grid-column: 1;
+        max-width: fit-content;
       }
 
       > button {
@@ -517,7 +518,7 @@
       margin-bottom: 0;
     }
 
-    @media @breakpoint-max-tablet {
+    @media @breakpoint-mobile-tablet {
       grid-row: unset;
       margin-bottom: 0;
       margin-top: @size-8;

@@ -131,7 +131,10 @@ export class FlashSession {
     const config: SDKConfiguration = {
       networkId: (await this.provider.getNetworkId()) as NetworkId,
       ethereum: {
-        http: network ? network.http : undefined // NB(pg): Currently some tests don't pass in this config
+        http: network ? network.http : undefined, // NB(pg): Currently some tests don't pass in this config
+        rpcRetryCount: 5,
+        rpcRetryInternval: 0,
+        rpcConcurrency: 40
       },
       gnosis: {
         enabled: useGnosis,
@@ -196,10 +199,6 @@ export class FlashSession {
         SubscriptionEventName.NewBlock,
         this.sdkNewBlock
       );
-
-      if (config.zeroX && config.zeroX.rpc.enabled) {
-        this.user.augur.events.emit('ZeroX:Ready');
-      }
     }
 
     return this.user;

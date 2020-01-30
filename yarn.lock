@@ -2,6 +2,7 @@
 # yarn lockfile v1
 
 
+
 "@0x/abi-gen-wrappers@^5.3.2":
   version "5.3.2"
   resolved "https://registry.yarnpkg.com/@0x/abi-gen-wrappers/-/abi-gen-wrappers-5.3.2.tgz#bf7d1942f56916b7d13fae627f6455f309c5c8b5"
@@ -145,10 +146,10 @@
     jsonschema "^1.2.0"
     lodash.values "^4.3.0"
 
-"@0x/mesh-browser@8.1.2":
-  version "8.1.2"
-  resolved "https://registry.yarnpkg.com/@0x/mesh-browser/-/mesh-browser-8.1.2.tgz#126bbe2261b17045d9a9c7e946b758bbfc1e908f"
-  integrity sha512-aLgJQ2abUn7uF/BejDXrMM9u3Ni7lRaSVL0WGD2lVIPfh32my7Ko/bix5ufXXxuUVA7yqI9GcC5yGo/womYF9g==
+"@0x/mesh-browser@8.2.0":
+  version "8.2.0"
+  resolved "https://registry.yarnpkg.com/@0x/mesh-browser/-/mesh-browser-8.2.0.tgz#33a7ddd6a6fbdef3f8f61f79f7fa962050077bba"
+  integrity sha512-/SUSYF0EhPKKqKzHyItcpbogmJRCbj4dAPlvs5vkwhk3UxcuKzi2vItmxnKSGH5JEExlyimaQd5ItLmrQay46A==
   dependencies:
     "@0x/order-utils" "^10.0.1"
     "@0x/utils" "^5.1.2"

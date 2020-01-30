@@ -226,7 +226,7 @@ error: `market question end date can not be after start date`
 error: `event expiration can not be before exchange close time`
 
 9. For movie total gross for opening weekend, the market event expiration needs to have a buffer. The earilest market event expiration time is the Wednesday after opening weekend.
-error: `event expiration can not be before Wednesday after movie opening weekend`
+error: `event expiration can not be before Wednesday after movie opening weekend and/or opening day must be a friday`
 
 10. For some templates they use DATESTART input type, which is a timestamp for the day the event is scheduled to start. that timestamp can not be before the market's expiration time (endTime)
 error: `start date is after market event expiration endTime`

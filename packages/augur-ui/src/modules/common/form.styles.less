@@ -826,15 +826,16 @@
     > textarea {
       .text-14;
 
-      background-color: @color-secondary-action;
+      background-color: @color-dark-grey;
       border-radius: @border-radius-default;
-      border: 1px solid @color-secondary-action-outline;
+      border: 1px solid @color-secondary-action;
       color: @color-primary-text;
       height: 44px;
       min-width: 150px;
 
       &::placeholder {
         color: @color-secondary-text;
+        opacity: 0.75;
       }
 
       &:hover {
@@ -915,6 +916,12 @@
       white-space: nowrap;
     }
 
+    @media @breakpoint-mobile-new {
+      .Hide {
+        display: none;
+      }
+    }
+
     > .Inner {
       position: absolute;
       margin-right: @size-10;
@@ -937,6 +944,12 @@
 
     > input {
       min-width: 210px;
+    }
+  }
+
+  @media @breakpoint-mobile-new {
+    > div > input {
+      min-width: unset;
     }
   }
 }
@@ -971,14 +984,17 @@
       .text-14;
 
       background-color: transparent;
-      color: @color-primary-action;
+
+      > span {
+        color: @color-secondary-text;
+        text-transform: capitalize;
+      }
 
       > svg {
-        min-height: @size-12;
-        min-width: @size-12;
+        min-width: @size-10;
 
         > path {
-          stroke: @color-primary-text;
+          stroke: @color-secondary-text;
         }
       }
 
@@ -989,6 +1005,10 @@
 
     > button[class*='SelectedLabel'] {
       color: @color-primary-text;
+
+      > span {
+        color: @color-primary-text;
+      }
     }
 
     > div {
@@ -1283,7 +1303,7 @@ button.MaxDark {
 
       background-color: @color-dark-grey;
       color: @color-primary-text;
-      border: 1px solid @color-secondary-action-outline;
+      border: 1px solid @color-secondary-action;
     }
 
     .DateInput_1 {
@@ -1572,7 +1592,7 @@ button.MaxDark {
     align-items: center;
     background-color: @color-dark-grey;
     border-radius: @border-radius-default;
-    border: 1px solid @color-secondary-action-outline;
+    border: 1px solid @color-secondary-action;
     color: @color-primary-text;
     display: flex;
     height: 44px;
@@ -1664,6 +1684,12 @@ button.MaxDark {
       > svg {
         display: none;
       }
+    }
+  }
+
+  &.Default {
+    > button {
+      color: @color-secondary-text;
     }
   }
 }

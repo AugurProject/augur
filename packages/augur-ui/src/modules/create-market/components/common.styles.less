@@ -23,7 +23,6 @@
     .text-18-bold;
 
     margin-top: @size-6;
-    margin-bottom: @size-16;
   }
 }
 
@@ -173,6 +172,7 @@
     > button {
       display: flex;
       margin-left: @size-44;
+      align-items: center;
 
       > svg {
         height: @size-10;
@@ -194,6 +194,14 @@
         > svg > path {
           fill: @color-inactive-text;
         }
+      }
+    }
+  }
+
+  @media @breakpoint-mobile-new {
+    > li:last-of-type {  
+      > button {
+        margin-left: @size-30;
       }
     }
   }
@@ -234,6 +242,13 @@
 
     color: @color-error;
     margin-top: @size-4;
+  }
+
+  @media @breakpoint-mobile-new {
+    > span {
+      padding: @size-10;
+      padding-left: 0;
+    }
   }
 }
 
@@ -294,8 +309,7 @@
     margin-left: @size-5;
 
     > svg {
-      width: @size-16;
-      height: @size-16;
+      width: @size-12;
     }
   }
 
@@ -303,10 +317,6 @@
   > span {
     align-items: center;
     display: flex;
-
-    > label > svg > path {
-      fill: @color-primary-action;
-    }
   }
 }
 
@@ -324,30 +334,13 @@
 }
 
 .ExplainerBlock {
-  border: 1px solid @color-secondary-action-outline;
+  border: 1px solid @color-dark-grey;
+  background: @color-module-background;
   border-radius: @border-radius-extra-rounded;
   padding: @size-16;
   margin-bottom: @size-24;
   display: flex;
   flex-direction: column;
-
-  @media @breakpoint-mobile-new {
-    margin-bottom: @size-8;
-    padding: @size-24;
-
-    > h2 {
-      .text-14-bold;
-
-      margin-bottom: @size-12;
-    }
-
-    > ul {
-      > p,
-      > li {
-        .text-12;
-      }
-    }
-  }
 
   > h2 {
     .text-18-bold;
@@ -396,6 +389,24 @@
     > p,
     > li {
       .text-12;
+    }
+  }
+
+  @media @breakpoint-mobile-new {
+    margin-bottom: @size-8;
+    padding: @size-24;
+
+    > h2 {
+      .text-14-bold;
+
+      margin-bottom: @size-12;
+    }
+
+    > ul {
+      > p,
+      > li {
+        .text-12;
+      }
     }
   }
 }
@@ -448,7 +459,7 @@
     display: flex;
     justify-content: space-between;
 
-    @media @breakpoint-mobile-mid {
+    @media @breakpoint-mobile-new {
       display: grid;
       grid-template-columns: repeat(1, 1fr);
       grid-gap: @size-12;
@@ -466,10 +477,14 @@
     padding: @size-20;
     margin-top: @size-24;
 
-    @media @breakpoint-mobile-mid {
+    @media @breakpoint-mobile-new {
       flex-direction: column;
       min-width: unset;
-      padding: 0;
+      padding: @size-16;
+
+      > div {
+        margin-top: @size-10;
+      }
     }
 
     > div {
@@ -519,8 +534,8 @@
     .text-14-medium;
 
     color: @color-primary-text;
-    background: @color-dark-grey;
-    border: 1px solid @color-secondary-action-outline;
+    background: @color-module-background;
+    border: 1px solid @color-dark-grey;
     border-radius: @border-radius-default;
     line-height: @size-18;
     display: flex;

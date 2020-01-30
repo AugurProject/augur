@@ -10,7 +10,7 @@ import { GlobalChat } from 'modules/global-chat/components/global-chat';
 
 import Styles from 'modules/app/components/top-nav/top-nav.styles.less';
 import { NavMenuItem } from 'modules/types';
-import { helpIcon, PlusCircleIcon } from 'modules/common/icons';
+import { helpIcon, PlusCircleIcon, Dot } from 'modules/common/icons';
 import { MODAL_ADD_FUNDS } from 'modules/common/constants';
 
 interface TopNavProps {
@@ -68,6 +68,7 @@ const TopNav = ({
             >
               <Link to={item.route ? makePath(item.route) : null}>
                 <span>{item.title}</span>
+                {item.showAlert && Dot}
               </Link>
             </li>
           );
@@ -105,15 +106,15 @@ const TopNav = ({
           </span>
         )}
 
-        {!isLogged &&
+        {!isLogged && (
           <div className={Styles.BettingUI}>
             <ExternalLinkText
               title={'Betting Exchange App'}
               label={' - Coming Soon!'}
               URL={'https://augur.net'}
             />
-        </div>
-        }
+          </div>
+        )}
 
         {isLogged && (
           <button
