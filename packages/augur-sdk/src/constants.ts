@@ -48,7 +48,8 @@ export enum SubscriptionEventName {
   UniverseCreated = "UniverseCreated",
   UniverseForked = "UniverseForked",
   UserDataSynced = "UserDataSynced",
-  MarketsUpdated = "updated:Markets"
+  MarketsUpdated = "updated:Markets",
+  DBMarketCreatedEvent = "DerivedDB:updated:Markets",
 }
 
 export enum TXEventName {

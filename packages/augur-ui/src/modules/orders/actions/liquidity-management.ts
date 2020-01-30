@@ -213,7 +213,7 @@ export const startOrderSending = (options: CreateLiquidityOrders) => async (
       groups.push(orders.slice(i, i + MAX_BULK_ORDER_COUNT));
     }
     try {
-      groups.map(group => createLiquidityOrders(market, group));
+      groups.map(group => createZeroXLiquidityOrders(market, group, dispatch));
     } catch (e) {
       console.error(e);
     }
