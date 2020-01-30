@@ -12,6 +12,7 @@ const mapStateToProps = (state, ownProps) => {
     marketType: market.marketType,
     marketId: market.id,
     orderBook: ownProps.orderBook,
+    preview: ownProps.preview,
   };
 };
 

@@ -4,6 +4,7 @@ import { AppState } from 'store';
 import { COLUMN_TYPES, INVALID_OUTCOME_ID } from 'modules/common/constants';
 import { selectMarketOutcomeBestBidAsk, selectBestBidAlert } from 'modules/markets/selectors/select-market-outcome-best-bid-ask';
 import Row from 'modules/common/row';
+import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
 
 const mapStateToProps = (state: AppState, ownProps) => {
   const { marketInfos } = state;
@@ -17,7 +18,8 @@ const mapStateToProps = (state: AppState, ownProps) => {
     orderBook: ownProps.orderBook,
     minPrice,
     maxPrice,
-    tickSize
+    tickSize,
+    preview: ownProps.preview,
   };
 };
 
@@ -30,6 +32,9 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
   let outcomeOrderBook = orderBook;
   if (outcome && orderBook && orderBook[outcome.id]) {
     outcomeOrderBook = orderBook[outcome.id]
+    if (sP.preview) {
+      outcomeOrderBook = formatOrderBook(outcomeOrderBook);
+    }
   }
   const { topAsk, topBid } = selectMarketOutcomeBestBidAsk(outcomeOrderBook, sP.tickSize);
   const bestBidAlert = selectBestBidAlert(outcome.id, topBid.price.value, sP.minPrice, sP.maxPrice)

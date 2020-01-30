@@ -24,6 +24,7 @@ interface MarketOutcomesListProps {
   toggle: Function;
   hideOutcomes?: boolean;
   orderBook: Getters.Markets.OutcomeOrderBook
+  preview: boolean;
 }
 
 export default class MarketOutcomesList extends Component<
@@ -50,6 +51,7 @@ export default class MarketOutcomesList extends Component<
       toggle,
       hideOutcomes,
       orderBook,
+      preview,
     } = this.props;
 
     return (
@@ -127,6 +129,7 @@ export default class MarketOutcomesList extends Component<
                   selectedOutcomeId={selectedOutcomeId}
                   updateSelectedOutcome={updateSelectedOutcome}
                   marketType={marketType}
+                  preview={preview}
                   scalarDenomination={
                     marketType === SCALAR && scalarDenomination
                   }

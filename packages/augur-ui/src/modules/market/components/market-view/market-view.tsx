@@ -240,7 +240,7 @@ export default class MarketView extends Component<
     ) {
       this.setState({ selectedOutcomeId: this.props.outcomeId });
     }
-    // closeMarketLoadingModal();
+
     if (tradingTutorial) {
       if (
         !isMarketLoading &&
@@ -267,7 +267,7 @@ export default class MarketView extends Component<
       this.props.loadMarketTradingHistory(marketId);
     }
 
-    if (isMarketLoading !== this.props.isMarketLoading && !this.props.modalShowing && this.props.canHotload === undefined) {
+    if (!isMarketLoading && this.props.modalShowing) {
       closeMarketLoadingModal();
       this.startOrderBookTimer();
     }
@@ -542,7 +542,7 @@ export default class MarketView extends Component<
     const cat5 = this.findType();
     let orders = null;
     if (tradingTutorial) {
-      outcomeOrderBook = formatOrderBook(orderBook[outcomeId]);
+      outcomeOrderBook = formatOrderBook(market.orderBook[outcomeId]);
     }
     if (
       tradingTutorial &&
