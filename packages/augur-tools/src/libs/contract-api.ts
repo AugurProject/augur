@@ -614,6 +614,10 @@ export class ContractAPI {
     await this.augur.contracts.ethExchange.publicMintAuto(owner, attoCash, {attachedEth: attoEth});
   }
 
+  async initWarpSync(universe: string): Promise<void> {
+    await this.augur.contracts.warpSync.initializeUniverse(universe);
+  }
+
   async approve(wei: BigNumber): Promise<void> {
     await this.augur.contracts.cash.approve(this.augur.addresses.Augur, wei);
 
