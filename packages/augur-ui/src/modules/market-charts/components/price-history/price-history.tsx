@@ -91,7 +91,7 @@ const PriceHistory = ({
           0
         );
         seriesUpdated.forEach(({ data }, index) => {
-          chart.series[index].setData(data, false, false);
+          chart.series[index] && chart.series[index].setData(data, false, false);
         });
         chart.redraw();
       }
