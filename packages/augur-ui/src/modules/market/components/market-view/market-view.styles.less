@@ -23,7 +23,7 @@
   }
 }
 
-.MarketView__button {
+.BackButton {
   > svg {
     height: 0.5rem;
     margin-left: 1rem;
@@ -51,7 +51,7 @@
   }
 }
 
-.MarketView__parent {
+.parent {
   display: flex;
   margin: @size-4 0;
   min-height: calc(~'100vh - @{multi-top-bar-height}');
@@ -65,7 +65,7 @@
   }
 }
 
-.MarketView__body {
+.body {
   color: @color-primary-text;
   display: flex;
   flex-direction: column;
@@ -201,13 +201,13 @@
   }
 }
 
-.MarketView__firstColumn {
+.firstColumn {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
 }
 
-.MarketView__secondColumn {
+.secondColumn {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
@@ -216,7 +216,7 @@
   min-width: 20.3125rem;
 }
 
-.MarketView__component {
+.component {
   background-color: @color-module-background;
   display: flex;
   flex: 1 auto;
@@ -226,7 +226,7 @@
   max-height: fit-content;
 }
 
-.MarketView__firstRow {
+.firstRow {
   display: flex;
   flex-direction: row;
   flex-grow: 1;
@@ -241,7 +241,7 @@
   }
 }
 
-.MarketView__innerSecondColumn {
+.innerSecondColumn {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
@@ -262,36 +262,18 @@
   }
 }
 
-.Market__graphs {
-  height: 400px;
-}
-
-.Market__details {
-  background-color: @color-primary-text;
-  display: flex;
-  justify-content: space-between;
-}
-
-.Market__details-outcomes {
-  width: calc(100% - 25rem);
-}
-
-.Market__details-trading {
-  width: 25rem;
-}
-
 .Orders {
   display: flex;
   flex-direction: column;
   margin-bottom: @size-4;
 }
 
-.MarketView__hide {
+.hide {
   height: 2rem !important;
   max-height: 2rem !important;
 }
 
-.MarketView__show {
+.show {
   max-height: 100% !important;
 }
 
@@ -386,24 +368,6 @@ div.OutcomeNameDisplay {
     }
   }
 
-  .Market__upper {
-    padding: 0 1rem;
-  }
-
-  .Market__details {
-    background-color: transparent;
-    display: block;
-    padding-bottom: 3rem;
-  }
-
-  .Market__details-outcomes {
-    width: 100%;
-  }
-
-  .Market__details-trading {
-    width: auto;
-  }
-
   .PaneContainer {
     display: grid;
     grid-gap: @size-8 0;
@@ -446,7 +410,7 @@ div.OutcomeNameDisplay {
     height: unset;
   }
 
-  .MarketView__button {
+  .BackButton {
     > svg {
       height: 0.75rem;
       margin-left: @size-14;

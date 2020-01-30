@@ -673,7 +673,7 @@ export default class MarketView extends Component<
                   scrollOver={matches && !preview}
                   leftButton={
                     <button
-                      className={Styles.MarketView__button}
+                      className={Styles.BackButton}
                       onClick={() => history.goBack()}
                     >
                       {LeftChevron}
@@ -813,11 +813,11 @@ export default class MarketView extends Component<
             ) : (
               <>
                 <div
-                  className={classNames(Styles.MarketView__parent, {
+                  className={classNames(Styles.parent, {
                     [Styles.Tutorial]: tradingTutorial,
                   })}
                 >
-                  <section className={Styles.MarketView__body}>
+                  <section className={Styles.body}>
                     <div
                       className={classNames({
                         [Styles.HeaderTutorial]:
@@ -856,10 +856,10 @@ export default class MarketView extends Component<
                         )}
                     </div>
 
-                    <div className={Styles.MarketView__firstColumn}>
-                      <div className={Styles.MarketView__firstRow}>
+                    <div className={Styles.firstColumn}>
+                      <div className={Styles.firstRow}>
                         <div
-                          className={classNames(Styles.MarketView__component, {
+                          className={classNames(Styles.component, {
                             [Styles.TradingFormTutorial]:
                               tradingTutorial &&
                               ((tutorialStep >=
@@ -942,8 +942,8 @@ export default class MarketView extends Component<
                               />
                             )}
                         </div>
-                        <div className={Styles.MarketView__innerSecondColumn}>
-                          <div className={Styles.MarketView__component}>
+                        <div className={Styles.innerSecondColumn}>
+                          <div className={Styles.component}>
                             <MarketOutcomesList
                               marketId={marketId}
                               market={market}
@@ -955,7 +955,7 @@ export default class MarketView extends Component<
                           </div>
                           <div
                             className={classNames(
-                              Styles.MarketView__component,
+                              Styles.component,
                               {
                                 [Styles.Hide]: cat5
                                   ? extendOutcomesList
@@ -987,7 +987,7 @@ export default class MarketView extends Component<
                           </div>
                           <div
                             className={classNames(
-                              Styles.MarketView__component,
+                              Styles.component,
                               {
                                 [Styles.OpenOrdersTutorial]:
                                   tradingTutorial &&
@@ -1044,14 +1044,14 @@ export default class MarketView extends Component<
                     </div>
                   </section>
 
-                  <div className={Styles.MarketView__secondColumn}>
+                  <div className={Styles.secondColumn}>
                     <div
                       className={classNames(
-                        Styles.MarketView__component,
+                        Styles.component,
                         Styles.Orders,
                         {
-                          [Styles.MarketView__hide]: extendTradeHistory,
-                          [Styles.MarketView__show]: extendOrderBook,
+                          [Styles.hide]: extendTradeHistory,
+                          [Styles.show]: extendOrderBook,
                           [Styles.OrderBookTutorial]:
                             tradingTutorial &&
                             tutorialStep === TRADING_TUTORIAL_STEPS.ORDER_BOOK,
@@ -1084,11 +1084,11 @@ export default class MarketView extends Component<
                     </div>
                     <div
                       className={classNames(
-                        Styles.MarketView__component,
+                        Styles.component,
                         Styles.History,
                         {
-                          [Styles.MarketView__hide]: extendOrderBook,
-                          [Styles.MarketView__show]: extendTradeHistory,
+                          [Styles.hide]: extendOrderBook,
+                          [Styles.show]: extendTradeHistory,
                         }
                       )}
                   >
