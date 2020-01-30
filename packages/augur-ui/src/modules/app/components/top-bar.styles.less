@@ -19,7 +19,7 @@
 
     @media @breakpoint-mobile {
       flex: 0;
-      padding: @size-8 0;
+      padding: @size-4 0;
     }
 
     > button {
@@ -87,11 +87,19 @@
         display: none;
       }
 
+      > span:first-of-type {
+        margin-right: @size-30;
+
+        @media @breakpoint-mobile {
+          margin-right: @size-23;
+        }
+      }
+
       > span:nth-of-type(2),
       > span:last-of-type {
-          .mono-11-medium;
+        .mono-11-medium;
 
-          color: @color-primary-text;
+        color: @color-primary-text;
       }
     }
 
@@ -100,13 +108,18 @@
 
       @media @breakpoint-mobile {
         display: flex;
+
+        > span:nth-of-type(2),
+        > span:last-of-type {
+          color: @color-positive;
+        }
       }
     }
   }
 
   // P/I
   > div:last-of-type {
-    align-items: left;
+    align-items: flex-start;
     border: @size-1 solid @color-dark-grey;
     border-bottom: 0;
     border-top: 0;
