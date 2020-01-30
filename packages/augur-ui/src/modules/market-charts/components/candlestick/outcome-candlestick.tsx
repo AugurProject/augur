@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import { PERIODS, VOLUME_DAI_SHARES, DAI } from 'modules/common/constants';
 import { SquareDropdown, StaticLabelDropdown } from 'modules/common/selection';
 import Styles from 'modules/market-charts/components/candlestick/outcome-candlestick.styles.less';
 import CandlestickHighchart from 'modules/market-charts/containers/candlestick-highchart';
 import { CandlestickOchl } from 'modules/market-charts/components/candlestick/candlestick-ochl';
+import { BigNumber } from 'bignumber.js';
 
 interface OutcomeCandlestickProps {
   fixedPrecision: number;
@@ -20,94 +21,65 @@ interface OutcomeCandlestickState {
   volumeType: string;
   defaultCandlePeriod: any;
 }
-class OutcomeCandlestick extends React.PureComponent<
-  OutcomeCandlestickProps,
-  OutcomeCandlestickState
-> {
-  drawContainer: any;
 
-  constructor(props) {
-    super(props);
+const OutcomeCandlestick = ({
+  fixedPrecision,
+  marketMax,
+  marketMin,
+  priceTimeSeries,
+  selectedPeriod,
+  updateSelectedPeriod,
+  pricePrecision,
+}: OutcomeCandlestickProps) => {
+  const [volumeType, setVolumeType] = useState(DAI);
+  const [hoveredPeriod, setHoverPeriod] = useState({
+    open: '',
+    close: '',
+    high: '',
+    low: '',
+    volume: '',
+  });
+  const [defaultCandlePeriod] = useState(selectedPeriod);
+  const drawContainer = useRef(null);
+  const staticMenuLabel = 'Show Volume in';
+  const staticLabel = typeof hoveredPeriod.volume === 'object'
+    ? `V: ${hoveredPeriod.volume.toFixed(fixedPrecision).toString()}`
+    : staticMenuLabel;
 
-    this.state = {
-      hoveredPeriod: {},
-      volumeType: DAI,
-      defaultCandlePeriod: props.selectedPeriod,
-    };
-
-    this.updateHoveredPeriod = this.updateHoveredPeriod.bind(this);
-    this.updateVolumeType = this.updateVolumeType.bind(this);
-  }
-
-  updateVolumeType(value) {
-    this.setState({
-      volumeType: value,
-    });
-  }
-
-  updateHoveredPeriod(hoveredPeriod) {
-    this.setState({
-      hoveredPeriod,
-    });
-  }
-
-  render() {
-    const {
-      fixedPrecision,
-      pricePrecision,
-      priceTimeSeries,
-      selectedPeriod,
-      updateSelectedPeriod,
-      marketMin,
-      marketMax,
-    } = this.props;
-
-    const { hoveredPeriod, volumeType, defaultCandlePeriod } = this.state;
-    const staticMenuLabel = 'Show Volume in';
-    const staticLabel = hoveredPeriod.volume
-      ? `V: ${hoveredPeriod.volume.toFixed(fixedPrecision).toString()}`
-      : staticMenuLabel;
-
-    return (
-      <section className={Styles.OutcomeCandlestick}>
-        <div className={Styles.TopSection}>
-          <SquareDropdown
-            defaultValue={defaultCandlePeriod}
-            options={PERIODS}
-            onChange={updateSelectedPeriod}
-          />
-          <CandlestickOchl
-            hoveredPeriod={hoveredPeriod}
-            pricePrecision={pricePrecision}
-          />
-          <StaticLabelDropdown
-            defaultValue={DAI}
-            options={VOLUME_DAI_SHARES}
-            staticLabel={staticLabel}
-            staticMenuLabel={staticMenuLabel}
-            onChange={this.updateVolumeType}
-            highlight={!!hoveredPeriod.volume}
-          />
-        </div>
-        <div
-          ref={drawContainer => {
-            this.drawContainer = drawContainer;
-          }}
-          className={Styles.ChartContainer}
-        >
-          <CandlestickHighchart
-            priceTimeSeries={priceTimeSeries}
-            selectedPeriod={selectedPeriod}
-            pricePrecision={pricePrecision}
-            updateHoveredPeriod={this.updateHoveredPeriod}
-            marketMin={marketMin}
-            marketMax={marketMax}
-            volumeType={volumeType}
-          />
-        </div>
-      </section>
-    );
-  }
-}
+  return (
+    <section className={Styles.OutcomeCandlestick}>
+      <div className={Styles.TopSection}>
+        <SquareDropdown
+          defaultValue={defaultCandlePeriod}
+          options={PERIODS}
+          onChange={updateSelectedPeriod}
+        />
+        <CandlestickOchl
+          hoveredPeriod={hoveredPeriod}
+          pricePrecision={pricePrecision}
+        />
+        <StaticLabelDropdown
+          defaultValue={DAI}
+          options={VOLUME_DAI_SHARES}
+          staticLabel={staticLabel}
+          staticMenuLabel={staticMenuLabel}
+          onChange={v => setVolumeType(v)}
+          highlight={!!hoveredPeriod.volume}
+        />
+      </div>
+      <div ref={drawContainer} className={Styles.ChartContainer}>
+        <CandlestickHighchart
+          priceTimeSeries={priceTimeSeries}
+          selectedPeriod={selectedPeriod}
+          pricePrecision={pricePrecision}
+          updateHoveredPeriod={v => setHoverPeriod(v)}
+          marketMin={marketMin}
+          marketMax={marketMax}
+          volumeType={volumeType}
+        />
+      </div>
+    </section>
+  );
+};
 
 export default OutcomeCandlestick;

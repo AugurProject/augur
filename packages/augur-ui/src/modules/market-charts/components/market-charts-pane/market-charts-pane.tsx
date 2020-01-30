@@ -23,6 +23,8 @@ interface MarketChartsPaneProps {
   market?: MarketData;
   toggle: Function;
   tradingTutorial?: boolean;
+  isMarketLoading?: boolean;
+  canHotload?: boolean;
   orderBook: OutcomeOrderBook;
 }
 
@@ -76,6 +78,8 @@ export default class MarketChartsPane extends Component<
       market,
       toggle,
       orderBook,
+      isMarketLoading = false,
+      canHotload = false,
     } = this.props;
     const { hoveredPrice, hoveredDepth } = this.state;
     const shared = { marketId, selectedOutcomeId };
@@ -117,6 +121,8 @@ export default class MarketChartsPane extends Component<
                   <PriceHistory
                     {...shared}
                     daysPassed={daysPassed}
+                    isMarketLoading={isMarketLoading}
+                    canHotload={canHotload}
                   />
                 )}
               </ModulePane>
