@@ -93,11 +93,13 @@ export default class CategoryFilters extends React.Component<
     const hasSelectedCategoriesCount = this.props.selectedCategories && this.props.selectedCategories.length;
 
     const showAllCategoriesButton = (
-      <div
-        className={Styles.AllCategories}
-        onClick={() => this.gotoAllCategories()}
-      >
-        {MenuChevron} All categories
+      <div className={Styles.AllCategories}>
+        <span>Categories</span>
+        <div
+          onClick={() => this.gotoAllCategories()}
+        >
+          {MenuChevron} All categories
+        </div>
       </div>
     );
 
@@ -179,7 +181,6 @@ export default class CategoryFilters extends React.Component<
             handleClick={() => null}
             active={true}
             loading={this.props.isSearching}
-
           />
         </div>
         {this.state.selectedCategory &&
