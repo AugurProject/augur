@@ -295,12 +295,13 @@
   .SmallSubheaders;
 
   > h1 > label {
-    margin-bottom: @size-2;
+    margin-bottom: 0;
     margin-left: @size-4;
 
     > svg {
       width: @size-12;
       height: @size-12;
+      display: flex;
     }
   }
 
@@ -430,7 +431,7 @@
   }
 
   &.Dark {
-    background: @color-dark-grey;
+    background: @color-module-background;
     padding: @size-24;
   }
 

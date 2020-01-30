@@ -29,12 +29,14 @@ export interface QuadBoxProps {
   extend?: boolean;
   hideHeader?: boolean;
   customClass?: string;
+  showHeaderOnMobile?: boolean;
 }
 
 const BoxHeaderElement = (props: QuadBoxProps) => (
   <BoxHeader
     extraTitlePadding={props.extraTitlePadding}
     title={props.title}
+    showHeaderOnMobile={props.showHeaderOnMobile}
     normalOnMobile={props.normalOnMobile}
     switchHeaders={props.switchHeaders}
     noBorders={props.noBorders}
