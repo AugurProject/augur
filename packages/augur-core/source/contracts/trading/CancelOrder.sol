@@ -25,6 +25,7 @@ import 'ROOT/libraries/TokenId.sol';
  */
 contract CancelOrder is Initializable, ReentrancyGuard, ICancelOrder, CashSender {
 
+    IAugur public augur;
     IAugurTrading public augurTrading;
     IOrders public orders;
     ICash public cash;
@@ -33,6 +34,7 @@ contract CancelOrder is Initializable, ReentrancyGuard, ICancelOrder, CashSender
 
     function initialize(IAugur _augur, IAugurTrading _augurTrading) public beforeInitialized {
         endInitialization();
+        augur = _augur;
         cash = ICash(_augur.lookup("Cash"));
         shareToken = IShareToken(_augur.lookup("ShareToken"));
         require(shareToken != IShareToken(0));

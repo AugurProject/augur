@@ -31,6 +31,7 @@
     "deploy:kovan": "npm run deploy:net -- kovan",
     "deploy:foundation": "npm run deploy:net -- foundation",
     "deploy": "npm run deploy:net -- aura clique rinkeby",
+    "verifyDeployment": "node -r ts-node/register source/deployment/verifyDeployment.ts",
     "docker:build": "docker build --cache-from augurproject/augur-core:monorepo --tag augurproject/augur-core:monorepo -f ./source/support/Dockerfile ./../..",
     "docker:push": "docker push augurproject/augur-core:monorepo",
     "docker:run:npm": "docker run --rm augurproject/augur-core:monorepo",

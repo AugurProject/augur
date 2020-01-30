@@ -63,7 +63,10 @@ beforeAll(async () => {
   const config: SDKConfiguration = {
     networkId: await provider.getNetworkId(),
     ethereum: {
-      http: ''
+      http: '',
+      rpcRetryCount: 5,
+      rpcRetryInternval: 0,
+      rpcConcurrency: 40
     }
   };
   connector.client = john.augur;

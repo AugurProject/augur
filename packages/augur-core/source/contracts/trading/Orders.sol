@@ -30,6 +30,7 @@ contract Orders is IOrders, Initializable {
     mapping(bytes32 => bytes32) private bestOrder;
     mapping(bytes32 => bytes32) private worstOrder;
 
+    IAugur public augur;
     IAugurTrading public augurTrading;
     ICash public cash;
     address public trade;
@@ -42,6 +43,7 @@ contract Orders is IOrders, Initializable {
         endInitialization();
         cash = ICash(_augur.lookup("Cash"));
 
+        augur = _augur;
         augurTrading = _augurTrading;
         createOrder = _augurTrading.lookup("CreateOrder");
         fillOrder = _augurTrading.lookup("FillOrder");
