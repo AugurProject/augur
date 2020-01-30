@@ -42,7 +42,10 @@ test('WebsocketConnector :: Should route correctly and handle events', async don
   const config: SDKConfiguration = {
     networkId: NetworkId.PrivateGanache,
     ethereum: {
-      http: ''
+      http: '',
+      rpcRetryCount: 5,
+      rpcRetryInternval: 0,
+      rpcConcurrency: 40
     },
     sdk: {
       ws: 'ws://localhost:9001'

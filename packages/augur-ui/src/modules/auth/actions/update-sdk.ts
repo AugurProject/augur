@@ -19,16 +19,11 @@ export const updateSdk = (
   if (!augurSdk.sdk) return;
 
   try {
-    const zeroXEnabled = augurSdk.sdk.zeroX;
+    dispatch(updateAppStatus(Ox_ENABLED, augurSdk.sdk.zeroX));
 
-    if (zeroXEnabled === undefined) {
-      dispatch(updateAppStatus(Ox_ENABLED, false))
-    } else {
-      dispatch(updateAppStatus(Ox_ENABLED, true))
-    }
-
+    // TODO: useGnosis should always be true or fetchable from
+    // the SDK -- maybe augurSdk.sdk.getUseGnosisSafe() ??
     const useGnosis = window.localStorage.getItem('isGnosis');
-
     if (useGnosis) {
       const updateUserAccount = safeAddress => {
         const newAccount = {
