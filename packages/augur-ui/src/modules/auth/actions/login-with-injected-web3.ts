@@ -43,10 +43,8 @@ export const loginWithInjectedWeb3 = () => (dispatch: ThunkDispatch<void, any, A
   };
 
   if (windowRef.ethereum && windowRef.ethereum.on) {
-    windowRef.ethereum.on('accountsChanged', function(accounts) {
-      console.log('refershing account to', accounts[0]);
+    windowRef.ethereum.on('accountsChanged', () => {
       dispatch(logout());
-      success(accounts[0], true);
     });
   }
 

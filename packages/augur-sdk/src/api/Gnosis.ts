@@ -17,7 +17,6 @@ import { Augur } from '../Augur';
 import { Address } from '../state/logs/types';
 
 export const AUGUR_GNOSIS_SAFE_NONCE = 872838000000;
-let intervalId = null;
 
 export interface CreateGnosisSafeViaRelayParams {
   owner: string;
@@ -48,7 +47,6 @@ export class Gnosis {
     private readonly dependencies: ContractDependenciesGnosis
   ) {
 
-    // TODO this currently doesn't work - using setInterval as workaround - see #4809
     // Check safe status on new block. Possible to wait for a transfer event to show up in the DB if this is problematic.
     augur
       .events
@@ -80,9 +78,6 @@ export class Gnosis {
         if (signerAddress === s.owner) {
           this.augur.setGnosisSafeAddress(ethUtil.toChecksumAddress(s.safe));
           this.augur.setUseGnosisSafe(true);
-          if (intervalId) {
-            clearInterval(intervalId);
-          }
         }
       }
 
@@ -182,9 +177,7 @@ export class Gnosis {
             safe: ethUtil.toChecksumAddress(safe),
           });
 
-          intervalId = setInterval(() => {
-            this.onNewBlock();
-          }, 2500);
+          this.onNewBlock();
         }
 
         return params;
@@ -220,9 +213,7 @@ export class Gnosis {
           safe: ethUtil.toChecksumAddress(restoredAddress),
         });
 
-        intervalId = setInterval(() => {
-          this.onNewBlock();
-        }, 2500);
+        this.onNewBlock();
 
         return restoredAddress
       }
@@ -339,10 +330,7 @@ export class Gnosis {
     });
 
     this.augur.setGnosisStatus(GnosisSafeState.WAITING_FOR_FUNDS);
-
-    intervalId = setInterval(() => {
-      this.onNewBlock();
-    }, 2500);
+    this.onNewBlock();
 
     return response;
   }
