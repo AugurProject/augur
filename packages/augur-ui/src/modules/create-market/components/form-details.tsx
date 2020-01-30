@@ -290,6 +290,7 @@ export default class FormDetails extends React.Component<
                       ? scalarDenomination
                       : 'Denomination'
                   }
+                  hideTrailingOnMobile
                   value={maxPrice}
                   errorMessage={validations.maxPrice}
                 />

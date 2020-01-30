@@ -26992,6 +26992,21 @@
 		{
 			"constant": true,
 			"inputs": [],
+			"name": "augur",
+			"outputs": [
+				{
+					"internalType": "contract IAugur",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
 			"name": "augurTrading",
 			"outputs": [
 				{
@@ -28050,6 +28065,21 @@
 		{
 			"constant": true,
 			"inputs": [],
+			"name": "augur",
+			"outputs": [
+				{
+					"internalType": "contract IAugur",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
 			"name": "augurTrading",
 			"outputs": [
 				{
@@ -28963,6 +28993,21 @@
 		{
 			"constant": true,
 			"inputs": [],
+			"name": "augur",
+			"outputs": [
+				{
+					"internalType": "contract IAugur",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
 			"name": "augurTrading",
 			"outputs": [
 				{
@@ -29403,6 +29448,21 @@
 		{
 			"constant": true,
 			"inputs": [],
+			"name": "augurTrading",
+			"outputs": [
+				{
+					"internalType": "contract IAugurTrading",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
 			"name": "getInitialized",
 			"outputs": [
 				{
@@ -29714,6 +29774,21 @@
 			"outputs": [
 				{
 					"internalType": "contract IAugur",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "augurTrading",
+			"outputs": [
+				{
+					"internalType": "contract IAugurTrading",
 					"name": "",
 					"type": "address"
 				}
@@ -30154,6 +30229,21 @@
 					"internalType": "uint256",
 					"name": "",
 					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "augur",
+			"outputs": [
+				{
+					"internalType": "contract IAugur",
+					"name": "",
+					"type": "address"
 				}
 			],
 			"payable": false,

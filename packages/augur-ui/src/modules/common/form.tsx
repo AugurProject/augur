@@ -86,6 +86,7 @@ interface TextInputProps {
   innerLabel?: string;
   autoCompleteList?: SortedGroup[];
   onAutoCompleteListSelected?: Function;
+  hideTrailingOnMobile?: boolean;
 }
 
 interface TextInputState {
@@ -1312,6 +1313,7 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
       trailingLabel,
       innerLabel,
       maxLength,
+      hideTrailingOnMobile
     } = this.props;
     const { autoCompleteList = [] } = this.props;
     const { showList } = this.state;
@@ -1369,7 +1371,7 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
             />
           )}
           {trailingLabel && (
-            <span className={Styles.Trailing}>{trailingLabel}</span>
+            <span className={classNames(Styles.Trailing, {[Styles.Hide]: hideTrailingOnMobile})}>{trailingLabel}</span>
           )}
         </div>
         {error && <span className={Styles.ErrorText}>{errorMessage}</span>}
@@ -1442,7 +1444,7 @@ export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
     return (
       <div
         key={`timeSelector${uniqueKey}`}
-        className={classNames(Styles.TimeSelector, {[Styles.Condensed]: condensedStyle})}
+        className={classNames(Styles.TimeSelector, {[Styles.Condensed]: condensedStyle, [Styles.Default]: !hour || !minute || !meridiem})}
         ref={timeSelector => {
           this.timeSelector = timeSelector;
         }}

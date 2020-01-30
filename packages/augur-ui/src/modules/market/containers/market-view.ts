@@ -100,8 +100,9 @@ const mapStateToProps = (state: AppState, ownProps) => {
       market.creationTime,
       selectCurrentTimestampInSeconds(state)
     );
-
+  
   return {
+    modalShowing: !!modal.type,
     daysPassed,
     isMarketLoading: false,
     preview: tradingTutorial || ownProps.preview,

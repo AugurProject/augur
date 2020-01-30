@@ -6,6 +6,7 @@ import { Abi } from 'ethereum';
 import { ChildProcess, exec, spawn } from 'child_process';
 import { format } from 'util';
 import { CompilerConfiguration } from './CompilerConfiguration';
+import { INTERNAL_CONTRACTS, EXTERNAL_CONTRACTS, TEST_CONTRACTS } from './constants';
 
 interface AbiOutput {
     [contract: string]: Abi;
@@ -153,78 +154,7 @@ export class ContractCompiler {
 
     async generateCompilerInput(): Promise<CompilerInput> {
         const ignoreFile = (file: string, stats: fs.Stats): boolean => {
-            const allowedFilenames = [
-                "OldLegacyReputationToken",
-                "Universe",
-                "Augur",
-                "AugurTrading",
-                "LegacyReputationToken",
-                "CancelOrder",
-                "Cash",
-                "ShareToken",
-                "InitialReporter",
-                "DisputeCrowdsourcer",
-                "DisputeWindow",
-                "Market",
-                "ReputationToken",
-                "CreateOrder",
-                "FillOrder",
-                "Orders",
-                "Trade",
-                "SimulateTrade",
-                "Controller",
-                "OrdersFinder",
-                "OrdersFetcher",
-                "ProfitLoss",
-                "TestNetReputationToken",
-                "Time",
-                "TimeControlled",
-                "GnosisSafe",
-                "ProxyFactory",
-                "ZeroXTrade",
-                "CashFaucet",
-                "GnosisSafeRegistry",
-                "WarpSync",
-                "UniswapV2Factory",
-                "ERC1820Registry",
-                "OICash",
-                "Affiliates",
-                "AffiliateValidator",
-                "EthExchange",
-                "RepExchangeFactory",
-                "RepExchange",
-                // utility
-                "BuyParticipationTokens",
-                "Formulas",
-                "HotLoading",
-                "RedeemStake",
-                "RepSymbol",
-                // factories
-                "DisputeCrowdsourcerFactory",
-                "DisputeWindowFactory",
-                "InitialReporterFactory",
-                "MarketFactory",
-                "OICashFactory",
-                "ReputationTokenFactory",
-                "TestNetReputationTokenFactory",
-                "UniverseFactory",
-                // 0x contracts
-                "ERC20Proxy",
-                "ERC721Proxy",
-                "ERC1155Proxy",
-                "MultiAssetProxy",
-                "Exchange",
-                "Coordinator",
-                "CoordinatorRegistry",
-                "ChaiBridge",
-                "DevUtils",
-                "WETH9",
-                "ZRXToken",
-                // Maker
-                "TestNetDaiJoin",
-                "TestNetDaiPot",
-                "TestNetDaiVat"
-            ];
+            const allowedFilenames = INTERNAL_CONTRACTS.concat(EXTERNAL_CONTRACTS).concat(TEST_CONTRACTS);
             const name = path.parse(file).base.replace('.sol', '');
             if (!allowedFilenames.includes(name)) return true;
             return stats.isFile() && path.extname(file) !== '.sol';

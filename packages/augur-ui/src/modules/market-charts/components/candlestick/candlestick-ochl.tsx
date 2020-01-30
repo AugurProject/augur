@@ -1,12 +1,13 @@
 import React from "react";
 import Styles from "modules/market-charts/components/candlestick/outcome-candlestick.styles.less";
+import { BigNumber } from 'bignumber.js';
 
 interface CandlestickOchlProps {
   hoveredPeriod?: {
-    open?: number;
-    close?: number;
-    high?: number;
-    low?: number;
+    open?: BigNumber | string;
+    close?: BigNumber | string;
+    high?: BigNumber | string;
+    low?: BigNumber | string;
   };
   pricePrecision: number;
 }
