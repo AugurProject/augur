@@ -109,6 +109,9 @@ export const addCategoryStats = (
     const mkrLabel = stats.numberOfMarkets === 1 ? 'Market' : 'Markets';
     card.description = `${stats.numberOfMarkets} ${mkrLabel} | $${vol}`;
     card.count = stats.numberOfMarkets;
+  } else {
+    card.description = `0 Markets | $0.00`;
+    card.count = 0;
   }
   return card;
 };
