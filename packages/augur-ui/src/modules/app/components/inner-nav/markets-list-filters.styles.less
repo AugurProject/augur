@@ -2,20 +2,21 @@
 
 .Filters {
   display: flex;
-  border-top: 1px solid @color-active-background;
+  border-top: @size-1 solid @color-active-background;
   flex-direction: column;
   margin: @size-16 0 0 0;
   overflow: auto;
   min-height: 100%;
 
   @media @breakpoint-mobile {
+    border-top: none;
     margin: 0;
   }
 }
 
 .FiltersGroup {
   > div {
-    margin: @size-13 @size-32 0 @size-32;
+    margin: @size-13 @size-32 0;
 
     > div {
       grid-template-columns: @size-32 auto @size-16;
@@ -26,28 +27,25 @@
       background: @color-module-background;
 
       @media @breakpoint-mobile {
-        grid-template-columns: 34px auto @size-16;
+        grid-template-columns: @size-34 auto @size-16;
         height: @size-32;
       }
 
       > h5 {
-        .text-12;
+        .text-12-medium;
 
         color: @color-secondary-text;
         text-transform: capitalize;
 
         @media @breakpoint-mobile {
-          .text-14;
+          .text-14-medium;
         }
       }
 
+      // radio icon
       > svg {
         margin: 0;
         height: @size-20;
-
-        @media @breakpoint-mobile {
-          height: 1.25rem;
-        }
       }
 
       &:hover {
@@ -60,8 +58,7 @@
     }
 
     @media @breakpoint-mobile {
-      margin-right: @size-16;
-      margin-left: @size-16;
+      margin: @size-13 @size-24 0;
     }
   }
 
@@ -75,13 +72,15 @@
     align-items: center;
 
     > svg {
-      margin-right: @size-12;
+      margin: 0 @size-15 0 @size-3;
+      width: @size-16;
+      height: @size-16;
     }
 
     @media @breakpoint-mobile {
       .text-14-bold;
 
-      margin: @size-24 @size-16 0 @size-16;
+      margin: @size-24 @size-24 0;
     }
   }
 }
@@ -104,6 +103,8 @@
   > span:last-of-type {
     > label {
       margin: 0;
+      width: @size-16;
+      height: @size-16;
     }
   }
 }
@@ -115,8 +116,7 @@
     fill: @color-secondary-text;
 
     @media @breakpoint-mobile {
-      height: @size-16;
-      width: @size-16;
+      margin-bottom: @size-1;
     }
   }
 }

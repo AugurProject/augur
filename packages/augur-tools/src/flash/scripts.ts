@@ -415,6 +415,7 @@ export function addScripts(flash: FlashSession) {
       await user.faucet(QUINTILLION.multipliedBy(1000000));
       await user.approve(QUINTILLION.multipliedBy(3000000));
 
+      await this.call('init-warp-sync', {});
       await this.call('add-eth-exchange-liquidity', {
         ethAmount: "10",
         cashAmount: "1000"
@@ -1941,6 +1942,15 @@ export function addScripts(flash: FlashSession) {
       const user = await this.ensureUser();
 
       await user.addEthExchangeLiquidity(attoCash, attoEth);
+    },
+  });
+
+  flash.addScript({
+    name: 'init-warp-sync',
+    async call(this: FlashSession, args: FlashArguments) {
+      const user = await this.ensureUser();
+
+      await user.initWarpSync(user.augur.contracts.universe.address);
     },
   });
 }
