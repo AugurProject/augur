@@ -20,8 +20,6 @@ import { MarketReportingState, SECONDS_IN_A_DAY } from '../../constants';
 import { QUINTILLION, padHex } from '../../utils';
 import { Block } from 'ethereumjs-blockstream';
 import { isTemplateMarket } from '@augurproject/artifacts';
-import { OrderEvent } from '@0x/mesh-rpc-client';
-
 
 interface MarketOrderBookData {
   _id: string;
@@ -72,6 +70,7 @@ export class MarketDB extends DerivedDB {
   async doSync(highestAvailableBlockNumber: number): Promise<void> {
     this.syncing = true;
     await super.doSync(highestAvailableBlockNumber);
+    await this.syncOrderBooks([]);
     const timestamp = (await this.augur.getTimestamp()).toNumber();
     await this.processTimestamp(timestamp, highestAvailableBlockNumber);
     await this.syncFTS();
@@ -87,17 +86,24 @@ export class MarketDB extends DerivedDB {
   }
 
   syncOrderBooks = async (marketIds: string[]): Promise<void> => {;
+    let ids = marketIds;
     const highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(this.dbName);
     const documents = [];
 
-    const marketsData = await this.stateDB.Markets.where('market').anyOf(marketIds).toArray();
+    let marketsData;
+    if (marketIds.length === 0) {
+      marketsData = await this.stateDB.Markets.toArray();
+      ids = marketsData.map(data => data.market);
+    } else {
+      marketsData = await this.stateDB.Markets.where('market').anyOf(marketIds).toArray();
+    }
+
     const reportingFeeDivisor = await this.augur.contracts.universe.getReportingFeeDivisor_();
     // TODO Get ETH -> DAI price via uniswap when we integrate that as an oracle
     const ETHInAttoDAI = new BigNumber(200).multipliedBy(10**18);
 
     const marketDataById = _.keyBy(marketsData, 'market');
-
-    for (const marketId of marketIds) {
+    for (const marketId of ids) {
       const doc = await this.getOrderBookData(this.augur, marketId, marketDataById[marketId], reportingFeeDivisor, ETHInAttoDAI);
       // This is needed to make rollbacks work properly
       doc['blockNumber'] = highestSyncedBlockNumber;
@@ -120,6 +126,7 @@ export class MarketDB extends DerivedDB {
     const feeMultiplier = new BigNumber(1).minus(new BigNumber(1).div(reportingFeeDivisor)).minus(new BigNumber(1).div(feeDivisor));
     const orderBook = await this.getOrderBook(marketData, numOutcomes, estimatedTradeGasCostInAttoDai);
     const invalidFilter = await this.recalcInvalidFilter(orderBook, marketData, feeMultiplier, estimatedTradeGasCostInAttoDai, estimatedClaimGasCostInAttoDai);
+
     let marketOrderBookData = {
       _id: marketId,
       invalidFilter,
@@ -156,8 +163,7 @@ export class MarketDB extends DerivedDB {
       marketOrderBookData.lastPassingLiquidityCheck = marketData.lastPassingLiquidityCheck;
     }
 
-    marketOrderBookData.hasRecentlyDepletedLiquidity = await this.hasRecentlyDepletedLiquidity(marketData, marketOrderBookData.liquidity);
-
+    marketOrderBookData.hasRecentlyDepletedLiquidity = await this.hasRecentlyDepletedLiquidity(marketData, marketOrderBookData.liquidity, marketOrderBookData.lastPassingLiquidityCheck);
     return marketOrderBookData;
   }
 
@@ -179,6 +185,7 @@ export class MarketDB extends DerivedDB {
         allOutcomesAllOrderTypes = allOutcomesAllOrderTypes.concat([[marketData.market, outcome, orderType]]);
       }
     }
+
     const currentOrdersResponse = await this.stateDB.ZeroXOrders
       .where('[market+outcome+orderType]')
       .anyOf(allOutcomesAllOrderTypes)
@@ -217,7 +224,6 @@ export class MarketDB extends DerivedDB {
 
       return order;
     });
-
     return data;
   }
 
@@ -394,19 +400,17 @@ export class MarketDB extends DerivedDB {
 
   // A market's liquidity is considered recently depleted if it had liquidity under
   // a 15% spread in the last 24 hours, but doesn't currently have liquidity
-  async hasRecentlyDepletedLiquidity(marketData: MarketData, currentLiquiditySpreads): Promise<boolean>  {
+  async hasRecentlyDepletedLiquidity(marketData: MarketData, currentLiquiditySpreads, currentLastPassingLiquidityCheck): Promise<boolean>  {
     const moreThantwentyFourHoursAgo = (date) => {
       const twentyFourHours = Date.now() - (60 * 60 * 24 * 1000);
       return twentyFourHours > date;
     }
 
-    const lastPassingLiquidityCheck = marketData.lastPassingLiquidityCheck * 1000;
-
+    const lastPassingLiquidityCheck = currentLastPassingLiquidityCheck * 1000;
     const liquidity15Percent = new BigNumber(currentLiquiditySpreads[10]);
     const liquidity10Percent = new BigNumber(currentLiquiditySpreads[15]);
     const currentlyHasLiquidity = liquidity10Percent.gt(0) || liquidity15Percent.gt(0)
     let hadLiquidityInLast24Hour = false;
-
 
     if (marketData.lastPassingLiquidityCheck === 0) {
       hadLiquidityInLast24Hour = false;
