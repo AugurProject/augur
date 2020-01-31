@@ -424,6 +424,7 @@ export class ZeroX {
         return this._rpc.addOrdersAsync([order]);
       }
     } catch (error) {
+      console.log(error);
       return setTimeout(this.addOrder(order), 5000);
     }
   }
