@@ -69,13 +69,12 @@ export default function(marketInfos: MarketInfos = DEFAULT_STATE, { type, data }
     case SET_MARKET_ORDERBOOK_DIRTY: {
       const { marketId } = data;
       if (!marketId) return marketInfos;
-      let orderBookDirtyCounter = marketInfos[marketId].orderBookDirtyCounter || 0;
-      orderBookDirtyCounter += 1;
+      if (!marketInfos[marketId]) return marketInfos;
       return {
         ...marketInfos,
         [marketId]: {
           ...marketInfos[marketId],
-          orderBookDirtyCounter,
+          orderBookDirtyCounter: (marketInfos[marketId].orderBookDirtyCounter || 0) + 1,
         }
       };
     }

@@ -60,7 +60,7 @@ export class SDK {
         mesh: {
           verbosity: 5,
           bootstrapList: (env['0x-mesh'] || {}).bootstrapList,
-          enabled: true,
+          enabled: false,
         }
       }
     };
