@@ -146,7 +146,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
         type: MODAL_MARKET_LOADING,
       })
     ),
-  closeMarketLoadingModal: () => dispatch(closeModal()),
+  closeMarketLoadingModal: (type: string) => type === MODAL_MARKET_LOADING && dispatch(closeModal()),
   addAlert: alert => dispatch(addAlert(alert)),
   removeAlert: (id: string, name: string) => dispatch(removeAlert(id, name)),
 });

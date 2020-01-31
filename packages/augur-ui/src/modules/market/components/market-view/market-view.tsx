@@ -30,7 +30,6 @@ import {
   TUTORIAL_QUANTITY,
   TUTORIAL_PRICE,
   TRADING_TUTORIAL_OUTCOMES,
-  MODAL_MARKET_LOADING,
 } from 'modules/common/constants';
 import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs';
 import ModulePane from 'modules/market/components/common/module-tabs/module-pane';
@@ -268,8 +267,8 @@ export default class MarketView extends Component<
       this.props.loadMarketTradingHistory(marketId);
     }
 
-    if (isMarketLoading !== this.props.isMarketLoading && this.props.modalShowing === MODAL_MARKET_LOADING) {
-      closeMarketLoadingModal();
+    if (isMarketLoading !== this.props.isMarketLoading) {
+      closeMarketLoadingModal(this.props.modalShowing);
       this.startOrderBookTimer();
     }
 
