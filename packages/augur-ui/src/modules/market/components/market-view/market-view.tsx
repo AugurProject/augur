@@ -80,7 +80,7 @@ interface MarketViewProps {
   addAlert: Function;
   hotloadMarket: Function;
   canHotload: boolean;
-  modalShowing?: boolean;
+  modalShowing?: string;
   removeAlert: Function;
   outcomeId?: number;
   account: string;
@@ -267,10 +267,11 @@ export default class MarketView extends Component<
       this.props.loadMarketTradingHistory(marketId);
     }
 
-    if (isMarketLoading !== this.props.isMarketLoading && !this.props.modalShowing && this.props.canHotload === undefined) {
-      closeMarketLoadingModal();
+    if (isMarketLoading !== this.props.isMarketLoading) {
+      closeMarketLoadingModal(this.props.modalShowing);
       this.startOrderBookTimer();
     }
+
     if (
       !tradingTutorial &&
       !this.props.scalarModalSeen &&
@@ -700,7 +701,7 @@ export default class MarketView extends Component<
                             marketId={marketId}
                             market={preview && market}
                             selectedOutcomeId={outcomeId}
-                            isMarketLoading={isMarketLoading || modalShowing}
+                            isMarketLoading={isMarketLoading || !!modalShowing}
                             canHotload={canHotload}
                           />
                         )}
@@ -986,7 +987,7 @@ export default class MarketView extends Component<
                               market={preview && market}
                               preview={preview}
                               orderBook={outcomeOrderBook}
-                              isMarketLoading={isMarketLoading || modalShowing}
+                              isMarketLoading={isMarketLoading || !!modalShowing}
                               canHotload={canHotload}
                             />
                           </div>
