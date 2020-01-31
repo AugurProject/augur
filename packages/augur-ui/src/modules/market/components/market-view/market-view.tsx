@@ -30,6 +30,7 @@ import {
   TUTORIAL_QUANTITY,
   TUTORIAL_PRICE,
   TRADING_TUTORIAL_OUTCOMES,
+  MODAL_MARKET_LOADING,
 } from 'modules/common/constants';
 import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs';
 import ModulePane from 'modules/market/components/common/module-tabs/module-pane';
@@ -218,7 +219,12 @@ export default class MarketView extends Component<
     if (!timer) {
       this.getOrderBook();
       const timer = setInterval(
-        () => this.getOrderBook(),
+        () => {
+          this.getOrderBook();
+          if (this.props.modalShowing === MODAL_MARKET_LOADING) {
+            this.props.closeMarketLoadingModal(this.props.modalShowing);
+          }
+        },
         ORDER_BOOK_REFRESH_MS
       );
       this.setState({ timer });
@@ -230,7 +236,6 @@ export default class MarketView extends Component<
       isConnected,
       marketId,
       isMarketLoading,
-      closeMarketLoadingModal,
       tradingTutorial,
       updateModal,
     } = prevProps;
@@ -266,9 +271,7 @@ export default class MarketView extends Component<
       this.props.loadMarketsInfo(this.props.marketId);
       this.props.loadMarketTradingHistory(marketId);
     }
-
     if (isMarketLoading !== this.props.isMarketLoading) {
-      closeMarketLoadingModal(this.props.modalShowing);
       this.startOrderBookTimer();
     }
 
@@ -525,6 +528,7 @@ export default class MarketView extends Component<
         />
       );
     }
+
     let outcomeOrderBook = this.EmptyOrderBook;
     let outcomeId =
       selectedOutcomeId === null || selectedOutcomeId === undefined
@@ -700,7 +704,6 @@ export default class MarketView extends Component<
                             market={preview && market}
                             selectedOutcomeId={outcomeId}
                             isMarketLoading={isMarketLoading || !!modalShowing}
-                            canHotload={canHotload}
                           />
                         )}
                       </div>
