@@ -216,9 +216,7 @@ export default class MarketView extends Component<
 
   startOrderBookTimer = () => {
     const { timer } = this.state;
-    console.log('does time exist', !!timer);
     if (!timer) {
-      console.log('calling to get order book')
       this.getOrderBook();
       const timer = setInterval(
         () => this.getOrderBook(),
