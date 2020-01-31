@@ -635,22 +635,6 @@ class Form extends Component<FromProps, FormState> {
             updateTradeTotalCost(order);
           }
         }
-        if (
-          property === this.INPUT_TYPES.PRICE &&
-          validationResults.errors[this.INPUT_TYPES.PRICE].length === 0
-        ) {
-          if (
-            this.state.lastInputModified === this.INPUT_TYPES.QUANTITY &&
-            validationResults.errors[this.INPUT_TYPES.QUANTITY].length === 0
-          ) {
-            updateTradeTotalCost(order);
-          } else if (
-            this.state.lastInputModified === this.INPUT_TYPES.EST_DAI &&
-            validationResults.errors[this.INPUT_TYPES.EST_DAI].length === 0
-          ) {
-            updateTradeNumShares(order);
-          }
-        }
         if (property !== this.INPUT_TYPES.PRICE) {
           this.setState({
             lastInputModified: property,
