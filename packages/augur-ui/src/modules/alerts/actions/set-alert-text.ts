@@ -20,6 +20,7 @@ import {
   MALFORMED_OUTCOME,
   convertDisplayValuetoAttoValue,
   numTicksToTickSize,
+  convertAttoValueToDisplayValue,
 } from '@augurproject/sdk';
 import {
   BUY,
@@ -28,6 +29,7 @@ import {
   CANCELORDER,
   CLAIMTRADINGPROCEEDS,
   BUYPARTICIPATIONTOKENS,
+  REDEEMSTAKE,
   PUBLICFILLBESTORDER,
   PUBLICFILLBESTORDERWITHLIMIT,
   PUBLICFILLORDER,
@@ -43,6 +45,7 @@ import {
   BUY_INDEX,
   SELL_INDEX,
   ZERO,
+  ONE,
 } from 'modules/common/constants';
 import { AppState } from 'store';
 import { Action } from 'redux';
@@ -184,6 +187,20 @@ export default function setAlertText(alert: any, callback: Function) {
             ).formatted
           } Participation Token${
             createBigNumber(alert.params._attotokens).eq(TEN_TO_THE_EIGHTEENTH_POWER) ? '' : 's'
+          }`;
+        }
+        break;
+
+      case REDEEMSTAKE:
+        alert.title = 'Redeem participation tokens';
+        if (!alert.description && alert.params) {
+          const tokens = formatRep(
+            convertAttoValueToDisplayValue(createBigNumber(alert.params.attoParticipationTokens)).toString()
+          );
+          alert.description = `Redeemed ${
+            tokens.formatted
+          } Participation Token${
+            createBigNumber(tokens.value).eq(ONE) ? '' : 's'
           }`;
         }
         break;
