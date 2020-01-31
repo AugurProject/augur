@@ -97,6 +97,10 @@ section[class*="OutcomesList"] {
   grid-column: 2;
   grid-row: 2;
 
+  @media @breakpoint-mobile {
+    grid-column: 1;
+  }
+
   > h3 {
     color: @color-primary-text;
   }
@@ -384,6 +388,7 @@ div.OutcomeNameDisplay {
   }
 
   .Orders {
+    max-height: 50vh;
     margin-bottom: 0;
     border-bottom: 1px solid @color-dark-grey;
     border-left: 1px solid @color-dark-grey;
