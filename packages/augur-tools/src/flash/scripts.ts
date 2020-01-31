@@ -876,6 +876,12 @@ export function addScripts(flash: FlashSession) {
         required: false,
         description: 'quantity used when orders need to be created. default is one large chunk, possible values are 10, 100, ...',
       },
+      {
+        name: 'expiration',
+        abbr: 'x',
+        required: false,
+        description: 'number of seconds the order will live, default is five minutes',
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const marketIds = String(args.marketIds)
@@ -1106,14 +1112,106 @@ export function addScripts(flash: FlashSession) {
 
       const markets = (await user.getMarkets()).markets;
       const market = markets[0];
+      console.log('market id ', market.id);
 
       for (; repeats > 0; repeats--) {
         let orders = flattenZeroXOrders(await user.getOrders(market.id));
         if (orders.length > max) {
           orders = orders.slice(0, max)
         }
-        console.log('ORDERS TO TAKE', JSON.stringify(orders, null, 2));
+        orders.map(o => console.log('take order', o.amount, '@', o.price));
         await user.takeOrders(orders);
+        await sleep(wait * 1000);
+      }
+    },
+  });
+
+  flash.addScript({
+    name: 'take-orderbook-side',
+    options: [
+      {
+        name: 'skipFaucet',
+        abbr: 's',
+        description: 'skip faucet&approve. use if re-running this script',
+        flag: true,
+      },
+      {
+        name: 'userAccount',
+        abbr: 'u',
+        description: 'user account to create the order',
+      },
+      {
+        name: 'outcome',
+        abbr: 'o',
+        description: 'orderbook outcome to take, default is 2'
+      },
+      {
+        name: 'market',
+        abbr: 'm',
+        description: 'market to trade, default is a random market',
+      },
+      {
+        name: 'limit',
+        abbr: 'l',
+        description: 'limit of orders to take, 1...N orders can be take, default is keep taking forever',
+      },
+      {
+        name: 'wait',
+        abbr: 'w',
+        description: 'how many seconds to wait between takes. default=1',
+      },
+      {
+        name: 'direction',
+        abbr: 'd',
+        description: 'side of orderbook to take, bid or ask, ask is default',
+      },
+      {
+        name: 'meshEndpoint',
+        abbr: 'e',
+        required: false,
+        description: 'Mesh endpoint to connect',
+      },
+    ],
+    async call(this: FlashSession, args :FlashArguments) {
+      const skipFaucet = args.skipFaucet as boolean;
+      const address = args.userAccount ? String(args.userAccount) : null;
+      let market = args.market ? String(args.market) : null;
+      let limit = args.limit ? Number(args.limit) : 86400000; // go for a really long time
+      const direction = args.direction ? String(args.direction) : 'bid'
+      const outcome = args.outcome ? Number(args.outcome) : 2;
+      const wait = Number(String(args.wait)) || 1;
+
+      const endpoint = args.meshEndpoint
+        ? String(args.meshEndpoint)
+        : 'ws://localhost:60557';
+
+      const user: ContractAPI = await this.ensureUser(null, true, true, address, endpoint, true);
+
+      if (!skipFaucet) {
+        const funds = new BigNumber(1e18).multipliedBy(1000000);
+        await user.faucet(funds);
+        await user.approve(funds);
+      }
+
+      if (!market) {
+        const markets = (await user.getMarkets()).markets;
+        market = markets[0].id;
+      }
+      const orderType = direction === 'bid' || direction === 'buy' ? '0' : '1';
+      let loop = true;
+      while (loop) {
+        let orders = await user.getOrders(market);
+        if (orders[market] && orders[market][outcome] && orders[market][outcome][orderType]) {
+          const orderIds = orders[market][outcome][orderType];
+          console.log('orderIds', JSON.stringify(orderIds));
+          Object.keys(orderIds).forEach(async id => {
+            const order = orderIds[id];
+            console.log('Take Order', order.amount, '@', order.price);
+            await user.takeOrders([order]);
+          })
+        }
+        limit--;
+        if (limit === 0) loop = false;
         await sleep(wait * 1000);
       }
     },
