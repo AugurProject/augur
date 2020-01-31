@@ -1027,7 +1027,7 @@ export default class MarketView extends Component<
                   </div>
                   <div
                     className={classNames(
-                      Styles.Orders,
+                      Styles.OrderBook,
                       {
                         [Styles.hide]: extendTradeHistory,
                         [Styles.show]: extendOrderBook,

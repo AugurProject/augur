@@ -1,5 +1,10 @@
 @import (reference) '~assets/styles/shared';
 
+.MarketViewBorders {
+  border: @size-1 solid @color-dark-grey;
+  border-radius: @size-1;
+}
+
 .MarketView {
   display: flex;
   flex-direction: column;
@@ -49,8 +54,7 @@
   margin: @size-4 @size-6;
   min-height: calc(~'100vh - @{multi-top-bar-height}');
   grid-gap: @size-2 @size-4;
-  // grid-template-columns: minmax(250px, 325px) 1fr minmax(250px, 325px);
-  grid-template-columns: 0fr 1fr 0fr;
+  grid-template-columns: minmax(250px, 325px) 1fr minmax(250px, 325px);
   grid-template-rows: 0fr 0fr 0fr 0fr 1fr;
 
   div[class*="module-tabs-style_Headers"] {
@@ -78,14 +82,16 @@
 }
 
 .TradingForm {
+  .MarketViewBorders;
+
   grid-column: 1;
   grid-row-start: 2;
   grid-row-end: -1;
 }
 
 section[class*="OutcomesList"] {
-  border: @size-1 solid @color-dark-grey;
-  border-radius: 1px;
+  .MarketViewBorders;
+
   grid-column: 2;
   grid-row: 2;
 
@@ -95,15 +101,15 @@ section[class*="OutcomesList"] {
 }
 
 .ChartsPane {
-  border: 1px solid @color-dark-grey;
-  border-radius: 1px;
+  .MarketViewBorders;
+
   grid-column: 2;
   grid-row: 3;
 }
 
 .OrdersPane {
-  border: 1px solid @color-dark-grey;
-  border-radius: 1px;
+  .MarketViewBorders;
+
   grid-column: 2;
   grid-row-start: 4;
   grid-row-end: -1;
@@ -113,14 +119,18 @@ section[class*="OutcomesList"] {
   }
 }
 
-.Orders {
+.OrderBook {
   grid-column: 3;
   grid-row: 1 / span 3;
+
+  > section {
+    .MarketViewBorders;
+  }
 }
 
 .History {
-  border: 1px solid @color-dark-grey;
-  border-radius: 1px;
+  .MarketViewBorders;
+
   grid-column: 3;
   grid-row-start: 4;
   grid-row-end: -1;
