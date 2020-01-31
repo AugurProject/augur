@@ -209,7 +209,7 @@ export class ZeroX {
     }
     if (response.ordersInfos.length < 1) {
       console.log("Mesh retrying to fetch orders");
-      await sleep(tries < 12 ? 1000 : 250);
+      await sleep(tries < 12 ? 2000 : 250);
       response = await this.getMeshOrders(tries - 1);
     }
     return response;
