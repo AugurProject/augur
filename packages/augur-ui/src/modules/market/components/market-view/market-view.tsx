@@ -1,7 +1,6 @@
 /* eslint-disable jsx-a11y/no-static-element-interaction */
 
 import React, { Component } from 'react';
-import { Helmet } from 'react-helmet';
 import classNames from 'classnames';
 import Media from 'react-media';
 
@@ -54,6 +53,8 @@ import { MARKETS } from 'modules/routes/constants/views';
 import { augurSdk } from 'services/augursdk';
 import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
 import { Getters } from '@augurproject/sdk';
+import { HelmetTag } from 'modules/seo/helmet-tag';
+import { MARKET_VIEW_HEAD_TAGS } from 'modules/seo/helmet-configs';
 
 interface MarketViewProps {
   isMarketLoading: boolean;
@@ -607,9 +608,7 @@ export default class MarketView extends Component<
         })}
       >
         {tradingTutorial && <span />}
-        <Helmet>
-          <title>{parseMarketTitle(description)}</title>
-        </Helmet>
+        <HelmetTag {...MARKET_VIEW_HEAD_TAGS} title={parseMarketTitle(description)} />
         <Media query={TEMP_TABLET} onChange={matches => {
           if (matches && pane !== 'Market Info') this.setState({ pane: 'Market Info' });
         }}>

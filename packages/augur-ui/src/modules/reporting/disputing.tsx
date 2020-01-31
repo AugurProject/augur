@@ -1,5 +1,4 @@
 import React from 'react';
-import { Helmet } from 'react-helmet';
 import Media from 'react-media';
 
 import MarketsInDispute from 'modules/reporting/containers/markets-in-dispute';
@@ -13,6 +12,8 @@ import ModulePane from 'modules/market/components/common/module-tabs/module-pane
 
 import Styles from 'modules/reporting/disputing.styles.less';
 import { ButtonActionType } from 'modules/types';
+import { DISPUTING_HEAD_TAGS } from 'modules/seo/helmet-configs';
+import { HelmetTag } from 'modules/seo/helmet-tag';
 
 interface DisputingProps {
   isConnected: boolean;
@@ -33,9 +34,7 @@ const Disputing: React.FC<DisputingProps> = ({
 
   return (
     <section className={Styles.Disputing}>
-      <Helmet>
-        <title>Disputing</title>
-      </Helmet>
+      <HelmetTag {...DISPUTING_HEAD_TAGS} />
       <Media query={SMALL_MOBILE}>
         {matches =>
           matches ? (

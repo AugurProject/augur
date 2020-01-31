@@ -2,7 +2,6 @@
 //         all logic related to sidebar(s) need to be housed w/in a separate component
 
 import React, { Component } from 'react';
-import { Helmet } from 'react-helmet';
 import classNames from 'classnames';
 import isWindows from 'utils/is-windows';
 import Modal from 'modules/modal/containers/modal-view';
@@ -47,6 +46,8 @@ import parseQuery from 'modules/routes/helpers/parse-query';
 import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names';
 import makePath from 'modules/routes/helpers/make-path';
 import { ExternalLinkText } from 'modules/common/buttons';
+import { HelmetTag } from 'modules/seo/helmet-tag';
+import { APP_HEAD_TAGS } from 'modules/seo/helmet-configs';
 
 interface AppProps {
   notifications: Notification[];
@@ -362,10 +363,7 @@ export default class AppView extends Component<AppProps> {
 
     return (
       <main>
-        <Helmet
-          defaultTitle="Decentralized Prediction Markets | Augur"
-          titleTemplate="%s | Augur"
-        />
+        <HelmetTag {...APP_HEAD_TAGS} />
         {Object.keys(modal).length !== 0 && <Modal />}
         {toasts.length > 0 && (
           <ToastsContainer
