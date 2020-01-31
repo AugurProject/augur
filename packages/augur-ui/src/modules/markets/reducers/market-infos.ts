@@ -6,7 +6,8 @@ import {
   UPDATE_MARKET_REP_BALANCE,
   UPDATE_MARKET_FROZEN_SHARES_VALUE,
   REMOVE_MARKET,
-  UPDATE_MARKET_ETH_BALANCE
+  UPDATE_MARKET_ETH_BALANCE,
+  SET_MARKET_ORDERBOOK_DIRTY
 } from "modules/markets/actions/update-markets-data";
 
 import { RESET_STATE, SWITCH_UNIVERSE } from "modules/app/actions/reset-state";
@@ -62,6 +63,19 @@ export default function(marketInfos: MarketInfos = DEFAULT_STATE, { type, data }
         [marketId]: {
           ...marketInfos[marketId],
           frozenSharesValue
+        }
+      };
+    }
+    case SET_MARKET_ORDERBOOK_DIRTY: {
+      const { marketId } = data;
+      if (!marketId) return marketInfos;
+      let orderBookDirtyCounter = marketInfos[marketId].orderBookDirtyCounter || 0;
+      orderBookDirtyCounter += 1;
+      return {
+        ...marketInfos,
+        [marketId]: {
+          ...marketInfos[marketId],
+          orderBookDirtyCounter,
         }
       };
     }

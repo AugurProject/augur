@@ -192,6 +192,12 @@ export class ZeroX {
     return response ? response.ordersInfos : [];
   }
 
+  isReady(): boolean {
+    if (this.rpc) return true;
+    if (this.mesh) return true;
+    return false;
+  }
+
   async getMeshOrders(tries: number = 10): Promise<OrderInfo[]> {
     var response;
     try {

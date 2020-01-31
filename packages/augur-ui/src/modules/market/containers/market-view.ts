@@ -65,6 +65,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
       outcomesFormatted: TRADING_TUTORIAL_OUTCOMES,
       groupedTradeHistory: TUTORIAL_TRADING_HISTORY,
       orderBook: TUTORIAL_ORDER_BOOK,
+      orderBookDirtyCounter: 0,
     };
   } else {
     market = ownProps.market || selectMarket(marketId);
@@ -90,6 +91,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
       canHotload: connection.canHotload,
       marketId,
       marketReviewSeen,
+      orderBookDirtyCounter: 0,
     };
   }
 
@@ -124,6 +126,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
     ),
     account: loginAccount.address,
     orderBook: tradingTutorial && TUTORIAL_ORDER_BOOK || ownProps.orderBook,
+    orderBookDirtyCounter: market.orderBookDirtyCounter
   };
 };
 
