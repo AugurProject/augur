@@ -104,11 +104,13 @@ export class MarketDB extends DerivedDB {
 
     const marketDataById = _.keyBy(marketsData, 'market');
     for (const marketId of ids) {
-      const doc = await this.getOrderBookData(this.augur, marketId, marketDataById[marketId], reportingFeeDivisor, ETHInAttoDAI);
-      // This is needed to make rollbacks work properly
-      doc['blockNumber'] = highestSyncedBlockNumber;
-      doc['market'] = marketId;
-      documents.push(doc);
+      if (Object.keys(marketDataById).includes(marketId)) {
+        const doc = await this.getOrderBookData(this.augur, marketId, marketDataById[marketId], reportingFeeDivisor, ETHInAttoDAI);
+        // This is needed to make rollbacks work properly
+        doc['blockNumber'] = highestSyncedBlockNumber;
+        doc['market'] = marketId;
+        documents.push(doc);
+      }
     }
 
     await this.bulkUpsertDocuments(documents);
@@ -198,9 +200,10 @@ export class MarketDB extends DerivedDB {
     }
 
     const outcomeBidAskOrders = Object.keys(currentOrdersByOutcome).map((outcomeOrders) => {
-      // Cut out orders where gas costs > 1% of the trade
+      // Cut out orders where gas costs > 2% of the trade
       const sufficientlyLargeOrders = _.filter(currentOrdersByOutcome[outcomeOrders], (order) => {
-        const maxGasCost = new BigNumber(order.amount).multipliedBy(marketData.numTicks).div(MAX_TRADE_GAS_PERCENTAGE_DIVISOR);
+        const gasCost = new BigNumber(order.amount).multipliedBy(marketData.numTicks).div(MAX_TRADE_GAS_PERCENTAGE_DIVISOR);
+        const maxGasCost = gasCost.multipliedBy(2); // 2%
         return maxGasCost.gte(estimatedTradeGasCostInAttoDai);
       });
 
