@@ -1116,7 +1116,7 @@ export function addScripts(flash: FlashSession) {
       console.log('market id ', market.id);
 
       for (; repeats > 0; repeats--) {
-        let orders = flattenZeroXOrders(await user.getOrders(market.id));
+        let orders = flattenZeroXOrders(await user.getOrders(market.id, '0', 2));
         if (orders.length > max) {
           orders = orders.slice(0, max)
         }
@@ -1201,15 +1201,20 @@ export function addScripts(flash: FlashSession) {
       const orderType = direction === 'bid' || direction === 'buy' ? '0' : '1';
       let loop = true;
       while (loop) {
-        let orders = await user.getOrders(market);
-        if (orders[market] && orders[market][outcome] && orders[market][outcome][orderType]) {
-          const orderIds = orders[market][outcome][orderType];
-          console.log('orderIds', JSON.stringify(orderIds));
-          Object.keys(orderIds).forEach(async id => {
-            const order = orderIds[id];
-            console.log('Take Order', order.amount, '@', order.price);
-            await user.takeOrders([order]);
-          })
+        const orders = flattenZeroXOrders(await user.getOrders(market, orderType, outcome));
+        if (orders.length > 0) {
+          const sortedOrders =
+            orderType === '0'
+              ? orders.sort((a, b) =>
+                  new BigNumber(b.price).minus(new BigNumber(a.price)).toNumber()
+                )
+              : orders.sort((a, b) =>
+                  new BigNumber(a.price).minus(new BigNumber(b.price)).toNumber()
+                );
+
+          const order = sortedOrders[0];
+          console.log('Take Order', order.amount, '@', order.price);
+          await user.takeOrders([order]);
         }
         limit--;
         if (limit === 0) loop = false;

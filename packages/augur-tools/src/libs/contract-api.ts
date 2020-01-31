@@ -413,9 +413,11 @@ export class ContractAPI {
     return orderID;
   }
 
-  async getOrders(marketId: string) {
+  async getOrders(marketId: string, orderType: string, outcome: number) {
     return this.augur.getZeroXOrders({
-      marketId
+      marketId,
+      orderType,
+      outcome
     })
   }
 
