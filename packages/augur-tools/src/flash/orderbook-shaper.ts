@@ -59,15 +59,16 @@ export class OrderBookShaper {
   readonly numTicks: BigNumber = new BigNumber(100);
   readonly minAllowedSize: BigNumber = new BigNumber(100);
   readonly numOutcomes: 3;
-  readonly fiveMinutesInSeconds = new BigNumber(18000);
+  expiration = new BigNumber(18000);
   outcomes: number[] = [];
   marketId: string = "";
   orderSize: number = null;
 
-  constructor (marketId: string, orderSize: number = null, outcomes: number[] = [1, 2]) {
+  constructor (marketId: string, orderSize: number = null, expiration: BigNumber = new BigNumber(18000), outcomes: number[] = [1, 2]) {
     this.marketId = marketId;
     this.outcomes = outcomes;
     this.orderSize = orderSize;
+    this.expiration = expiration
   }
 
   nextRun = (marketBook: MarketOrderBook, timestamp: BigNumber): ZeroXPlaceTradeDisplayParams[] => {
@@ -113,7 +114,7 @@ export class OrderBookShaper {
     const zOrders = orders.map(order => {
       const tradeGroupId = String(Date.now());
 
-      const expirationTime = timestamp.plus(this.fiveMinutesInSeconds);
+      const expirationTime = timestamp.plus(this.expiration);
       return {
         direction: order.direction as 0 | 1,
         market: this.marketId,

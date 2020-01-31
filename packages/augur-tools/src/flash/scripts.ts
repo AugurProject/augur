@@ -880,7 +880,7 @@ export function addScripts(flash: FlashSession) {
         name: 'expiration',
         abbr: 'x',
         required: false,
-        description: 'number of seconds the order will live, default is five minutes',
+        description: 'number of added seconds to order will live, default is five minutes',
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
@@ -893,11 +893,12 @@ export function addScripts(flash: FlashSession) {
         ? String(args.meshEndpoint)
         : 'ws://localhost:60557';
       const orderSize = args.orderSize ? Number(args.orderSize) : null;
+      const expiration = args.expiration ? new BigNumber(String(args.expiration)) : new BigNumber(18000); // five minutes
       const user: ContractAPI = await this.ensureUser(null, true, true, address, endpoint, true);
       console.log('waiting many seconds on purpose for client to sync');
       await new Promise<void>(resolve => setTimeout(resolve, 90000));
 
-      const orderBooks = marketIds.map(m => new OrderBookShaper(m, orderSize));
+      const orderBooks = marketIds.map(m => new OrderBookShaper(m, orderSize, expiration));
       while (true) {
         const timestamp = await this.user.getTimestamp();
         for (let i = 0; i < orderBooks.length; i++) {
