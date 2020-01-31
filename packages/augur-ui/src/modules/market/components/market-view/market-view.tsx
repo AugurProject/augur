@@ -267,7 +267,7 @@ export default class MarketView extends Component<
       this.props.loadMarketTradingHistory(marketId);
     }
 
-    if (!isMarketLoading && this.props.modalShowing) {
+    if (isMarketLoading !== this.props.isMarketLoading && !this.props.modalShowing && this.props.canHotload === undefined) {
       closeMarketLoadingModal();
       this.startOrderBookTimer();
     }
