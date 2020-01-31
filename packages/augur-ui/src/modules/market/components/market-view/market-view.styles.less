@@ -82,11 +82,13 @@
 }
 
 .TradingForm {
-  .MarketViewBorders;
-
   grid-column: 1;
   grid-row-start: 2;
   grid-row-end: -1;
+
+  > section {
+    .MarketViewBorders;
+  }
 }
 
 section[class*="OutcomesList"] {
