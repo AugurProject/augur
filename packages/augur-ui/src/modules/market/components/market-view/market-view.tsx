@@ -41,6 +41,7 @@ import {
   MarketData,
   OutcomeFormatted,
   DefaultOrderProperties,
+  IndividualOutcomeOrderBook,
 } from 'modules/types';
 import { getDefaultOutcomeSelected } from 'utils/convert-marketInfo-marketData';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
@@ -79,7 +80,7 @@ interface MarketViewProps {
   addAlert: Function;
   hotloadMarket: Function;
   canHotload: boolean;
-  modalShowing?: boolean;
+  modalShowing?: string;
   removeAlert: Function;
   outcomeId?: number;
   account: string;
@@ -125,7 +126,11 @@ export default class MarketView extends Component<
     selectedNav: BUY,
   };
   node: any;
-
+  EmptyOrderBook: IndividualOutcomeOrderBook = {
+    spread: null,
+    bids: [],
+    asks: [],
+  }
   constructor(props: MarketViewProps) {
     super(props);
 
@@ -155,13 +160,7 @@ export default class MarketView extends Component<
         },
       },
       timer: null,
-      orderBook: this.props.preview
-        ? this.props.orderBook
-        : {
-            spread: null,
-            bids: [],
-            asks: [],
-          },
+      orderBook: this.props.preview && this.props.orderBook,
     };
 
     this.updateSelectedOutcome = this.updateSelectedOutcome.bind(this);
@@ -241,7 +240,7 @@ export default class MarketView extends Component<
     ) {
       this.setState({ selectedOutcomeId: this.props.outcomeId });
     }
-    // closeMarketLoadingModal();
+
     if (tradingTutorial) {
       if (
         !isMarketLoading &&
@@ -268,14 +267,11 @@ export default class MarketView extends Component<
       this.props.loadMarketTradingHistory(marketId);
     }
 
-    if (
-      isMarketLoading !== this.props.isMarketLoading &&
-      !this.props.modalShowing &&
-      this.props.canHotload === undefined
-    ) {
-      closeMarketLoadingModal();
+    if (isMarketLoading !== this.props.isMarketLoading) {
+      closeMarketLoadingModal(this.props.modalShowing);
       this.startOrderBookTimer();
     }
+
     if (
       !tradingTutorial &&
       !this.props.scalarModalSeen &&
@@ -295,21 +291,13 @@ export default class MarketView extends Component<
   }
 
   getOrderBook = () => {
-    const { marketId, account, market } = this.props;
-    const { selectedOutcomeId } = this.state;
+    const { marketId, account } = this.props;
     const Augur = augurSdk.get();
     Augur.getMarketOrderBook({ marketId, account }).then(marketOrderBook => {
       if (!marketOrderBook) {
         return console.error(`Could not get order book for ${marketId}`);
       }
-      const outcomeId =
-        selectedOutcomeId !== undefined
-          ? selectedOutcomeId
-          : market.defaultSelectedOutcomeId;
-      let orderBook = marketOrderBook.orderBook;
-      if (orderBook[outcomeId]) {
-        orderBook = orderBook[outcomeId] as Getters.Markets.OutcomeOrderBook;
-      }
+      const orderBook = marketOrderBook.orderBook;
       this.setState({ orderBook });
     });
   };
@@ -537,21 +525,25 @@ export default class MarketView extends Component<
         />
       );
     }
-    let marketOrderBook = orderBook;
+    let outcomeOrderBook = this.EmptyOrderBook;
     let outcomeId =
       selectedOutcomeId === null || selectedOutcomeId === undefined
         ? market.defaultSelectedOutcomeId
         : selectedOutcomeId;
+    if (orderBook && orderBook[outcomeId]) {
+      outcomeOrderBook = orderBook[outcomeId];
+    }
+
     if (preview && !tradingTutorial) {
       outcomeId = getDefaultOutcomeSelected(market.marketType);
-      marketOrderBook = formatOrderBook(orderBook[outcomeId]);
+      outcomeOrderBook = formatOrderBook(orderBook[outcomeId]);
     }
 
     const networkId = getNetworkId();
     const cat5 = this.findType();
     let orders = null;
     if (tradingTutorial) {
-      marketOrderBook = formatOrderBook(orderBook[outcomeId]);
+      outcomeOrderBook = formatOrderBook(market.orderBook[outcomeId]);
     }
     if (
       tradingTutorial &&
@@ -639,7 +631,7 @@ export default class MarketView extends Component<
       const newOrderBook = market.orderBook[selectedOutcomeId].filter(
         order => !order.disappear
       );
-      marketOrderBook = formatOrderBook(newOrderBook);
+      outcomeOrderBook = formatOrderBook(newOrderBook);
     }
 
     return (
@@ -698,6 +690,7 @@ export default class MarketView extends Component<
                         preview={preview}
                         selectedOutcomeId={outcomeId}
                         updateSelectedOutcome={this.updateSelectedOutcomeSwitch}
+                        orderBook={orderBook}
                       />
                       <div className={Styles.PriceHistory}>
                         <h3>Price History</h3>
@@ -706,7 +699,7 @@ export default class MarketView extends Component<
                             marketId={marketId}
                             market={preview && market}
                             selectedOutcomeId={outcomeId}
-                            isMarketLoading={isMarketLoading || modalShowing}
+                            isMarketLoading={isMarketLoading || !!modalShowing}
                             canHotload={canHotload}
                           />
                         )}
@@ -739,7 +732,7 @@ export default class MarketView extends Component<
                               hide={extendTradeHistory}
                               market={market}
                               initialLiquidity={preview}
-                              orderBook={marketOrderBook}
+                              orderBook={outcomeOrderBook}
                             />
                           </div>
                         </ModulePane>
@@ -780,7 +773,7 @@ export default class MarketView extends Component<
                           this.updateSelectedOrderProperties
                         }
                         preview={preview}
-                        orderBook={marketOrderBook}
+                        orderBook={outcomeOrderBook}
                       />
                     </div>
                   </ModulePane>
@@ -973,7 +966,7 @@ export default class MarketView extends Component<
                       }
                       market={preview && market}
                       preview={preview}
-                      orderBook={marketOrderBook}
+                      orderBook={outcomeOrderBook}
                       isMarketLoading={isMarketLoading || modalShowing}
                       canHotload={canHotload}
                     />
@@ -1034,7 +1027,6 @@ export default class MarketView extends Component<
                   </div>
                   <div
                     className={classNames(
-                      Styles.component,
                       Styles.Orders,
                       {
                         [Styles.hide]: extendTradeHistory,
@@ -1056,7 +1048,7 @@ export default class MarketView extends Component<
                       hide={extendTradeHistory}
                       market={market}
                       initialLiquidity={preview}
-                      orderBook={marketOrderBook}
+                      orderBook={outcomeOrderBook}
                     />
                     {tradingTutorial &&
                       tutorialStep === TRADING_TUTORIAL_STEPS.ORDER_BOOK && (
@@ -1071,7 +1063,6 @@ export default class MarketView extends Component<
                   </div>
                   <div
                     className={classNames(
-                      Styles.component,
                       Styles.History,
                       {
                         [Styles.hide]: extendOrderBook,

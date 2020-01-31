@@ -8,22 +8,29 @@ import { addAlert } from 'modules/alerts/actions/alerts';
 import { Action } from 'redux';
 import { removeCanceledOrder } from 'modules/orders/actions/update-order-status';
 
-const BATCH_CANCEL_MAX = 25;
+const BATCH_CANCEL_MAX = 4;
 
 export const cancelAllOpenOrders = orders => async (
   dispatch: ThunkDispatch<void, any, Action>
 ) => {
   let orderHashes = orders.map(order => order.id);
 
-  if (orderHashes > BATCH_CANCEL_MAX) {
-    orderHashes = orderHashes.slice(0, BATCH_CANCEL_MAX);
-  }
-
   try {
     orders.forEach(order => {
       sendCancelAlert(order, dispatch);
     });
-    await cancelZeroXOpenBatchOrders(orderHashes);
+    if (orderHashes.length > BATCH_CANCEL_MAX) {
+      var i = 0;
+      while(i < orderHashes.length) {
+        var orderHashesToCancel = orderHashes.slice(i, Math.min(i + BATCH_CANCEL_MAX, orderHashes.length));
+        await cancelZeroXOpenBatchOrders(orderHashesToCancel);  
+        i += BATCH_CANCEL_MAX;
+      }
+    }
+    else {
+      await cancelZeroXOpenBatchOrders(orderHashes);  
+    }
+    
   } catch (error) {
     orders.forEach(order => {
       dispatch(removeCanceledOrder(order.id));
