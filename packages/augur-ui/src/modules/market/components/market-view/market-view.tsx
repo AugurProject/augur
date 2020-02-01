@@ -608,7 +608,7 @@ export default class MarketView extends Component<
         })}
       >
         {tradingTutorial && <span />}
-        <HelmetTag {...MARKET_VIEW_HEAD_TAGS} title={parseMarketTitle(description)} />
+        <HelmetTag {...MARKET_VIEW_HEAD_TAGS} title={parseMarketTitle(description)} ogTitle={parseMarketTitle(description)} twitterTitle={parseMarketTitle(description)} />
         <Media query={TEMP_TABLET} onChange={matches => {
           if (matches && pane !== 'Market Info') this.setState({ pane: 'Market Info' });
         }}>
