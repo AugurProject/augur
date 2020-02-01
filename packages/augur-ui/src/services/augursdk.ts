@@ -153,7 +153,7 @@ export class SDK {
       throw new Error("Trying to sync user data before Augur is initialized");
     }
 
-    if (this.networkId !== expectedNetworkId) {
+    if (expectedNetworkId && this.networkId !== expectedNetworkId) {
       throw new Error(`Setting the current user is expecting to be on network ${expectedNetworkId} but Augur was already connected to ${this.networkId}`);
     }
 
@@ -165,7 +165,8 @@ export class SDK {
 
     if (useGnosis) {
       account = (await this.getOrCreateGnosisSafe(
-        account
+        account,
+        this.networkId
       )) as string;
 
       this.client.setUseGnosisSafe(true);
