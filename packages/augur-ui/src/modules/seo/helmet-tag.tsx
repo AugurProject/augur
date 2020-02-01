@@ -7,10 +7,27 @@ interface HelmetConfig {
   canonicalUrl?: string;
   ogTitle?: string;
   ogDescription?: string;
+  ogSiteName?: string;
   ogUrl?: string;
   ogImage?: string;
-  ogSiteName?: string;
+  ogLocale?: string;
   ogType?: string;
+  articleTag?: string[];
+  articlePublishedTime?: string;
+  articleModifiedTime?: string;
+  ogUpdatedTime?: string;
+  articlePublisher?: string;
+  articleSection?: string;
+  ogImageWidth?: string;
+  ogImageHeight?: string;
+  ogImageAlt?: string;
+  twitterCardType?: string;
+  twitterTitle?: string;
+  twitterDescription?: string;
+  twitterImage?: string;
+  twitterImageAlt?: string;
+  twitterSite?: string;
+  twitterCreator?: string;
 }
 
 export const HelmetTag = ({
@@ -19,10 +36,27 @@ export const HelmetTag = ({
   canonicalUrl,
   ogTitle,
   ogDescription,
+  ogSiteName,
   ogUrl,
   ogImage,
-  ogSiteName,
+  ogLocale,
   ogType,
+  articleTag,
+  articlePublishedTime,
+  articleModifiedTime,
+  ogUpdatedTime,
+  articlePublisher,
+  articleSection,
+  ogImageWidth,
+  ogImageHeight,
+  ogImageAlt,
+  twitterCardType,
+  twitterTitle,
+  twitterDescription,
+  twitterImage,
+  twitterImageAlt,
+  twitterSite,
+  twitterCreator,
 }: HelmetConfig) => {
   return (
     <Helmet
@@ -30,21 +64,189 @@ export const HelmetTag = ({
       titleTemplate="%s | Augur"
     >
       {title && <title>{title}</title>}
-      {description && <meta
-        name="description"
-        content={description}
-      />}
-      {canonicalUrl && <link rel="canonical" href="http://v2.augur.net/" />}
-
-      {(ogTitle || title) && <meta property="og:title" content={ogTitle || title} />}
-      {(ogDescription || description) && <meta
-        property="og:description"
-        content={ogDescription || description}
-      />}
+      {description && <meta name="description" content={description} />}
+      {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
+      {ogTitle && <meta property="og:title" content={ogTitle} />}
+      {ogDescription && (
+        <meta property="og:description" content={ogDescription} />
+      )}
+      {ogSiteName && <meta property="og:site_name" content={ogSiteName} />}
       {ogUrl && <meta property="og:url" content={ogUrl} />}
       {ogImage && <meta property="og:image" content={ogImage} />}
-      <meta property="og:site_name" content={ogSiteName || "Augur"} />
-      <meta property="og:type" content={ogType || "article"} />
+      {ogLocale && <meta property="og:locale" content={ogLocale} />}
+      {ogImageWidth && (
+        <meta property="og:image:width" content={ogImageWidth} />
+      )}
+      {ogImageHeight && (
+        <meta property="og:image:height" content={ogImageHeight} />
+      )}
+      {ogImageAlt && <meta property="og:image:alt" content={ogImageAlt} />}
+      {ogType && <meta property="og:type" content={ogType} />}
+      {articleTag &&
+        articleTag.length > 0 &&
+        articleTag.map(tag => <meta property="article:tag" content={tag} key={tag} />)}
+      {articlePublishedTime && (
+        <meta
+          property="article:published_time"
+          content={articlePublishedTime}
+        />
+      )}
+      {articleModifiedTime && (
+        <meta property="article:modified_time" content={articleModifiedTime} />
+      )}
+      {ogUpdatedTime && (
+        <meta property="og:updated_time" content={ogUpdatedTime} />
+      )}
+      {articlePublisher && (
+        <meta property="article:publisher" content={articlePublisher} />
+      )}
+      {articleSection && (
+        <meta property="article:section" content={articleSection} />
+      )}
+      {twitterCardType && (
+        <meta name="twitter:card" content={twitterCardType} />
+      )}
+      {twitterTitle && <meta name="twitter:title" content={twitterTitle} />}
+      {twitterDescription && (
+        <meta name="twitter:description" content={twitterDescription} />
+      )}
+      {twitterImage && <meta name="twitter:image" content={twitterImage} />}
+      {twitterImageAlt && (
+        <meta name="twitter:image:alt" content={twitterImageAlt} />
+      )}
+      {twitterSite && <meta name="twitter:site" content={twitterSite} />}
+      {twitterCreator && (
+        <meta name="twitter:creator" content={twitterCreator} />
+      )}
     </Helmet>
+  );
+};
+
+interface OpenGraphConfig {
+  ogTitle?: string;
+  ogDescription?: string;
+  ogSiteName?: string;
+  ogUrl?: string;
+  ogImage?: string;
+  ogLocale?: string;
+  ogType?: string;
+  articleTag?: string[];
+  articlePublishedTime?: string;
+  articleModifiedTime?: string;
+  ogUpdatedTime?: string;
+  articlePublisher?: string;
+  articleSection?: string;
+  ogImageWidth?: string;
+  ogImageHeight?: string;
+  ogImageAlt?: string;
+}
+
+const OpenGraphTags = ({
+  ogTitle,
+  ogDescription,
+  ogSiteName,
+  ogUrl,
+  ogImage,
+  ogLocale,
+  ogType,
+  articleTag,
+  articlePublishedTime,
+  articleModifiedTime,
+  ogUpdatedTime,
+  articlePublisher,
+  articleSection,
+  ogImageWidth,
+  ogImageHeight,
+  ogImageAlt,
+}: OpenGraphConfig) => {
+  return (
+    <>
+      {ogTitle && <meta property="og:title" content={ogTitle} />}
+      {ogDescription && (
+        <meta property="og:description" content={ogDescription} />
+      )}
+      {ogSiteName && <meta property="og:site_name" content={ogSiteName} />}
+      {ogUrl && <meta property="og:url" content={ogUrl} />}
+      {ogImage && <meta property="og:image" content={ogImage} />}
+      {ogLocale && <meta property="og:locale" content={ogLocale} />}
+      {ogImageWidth && (
+        <meta property="og:image:width" content={ogImageWidth} />
+      )}
+      {ogImageHeight && (
+        <meta property="og:image:height" content={ogImageHeight} />
+      )}
+      {ogImageAlt && <meta property="og:image:alt" content={ogImageAlt} />}
+      {ogType && <meta property="og:type" content={ogType} />}
+      {ogType === 'article' ? (
+        <>
+          {articleTag &&
+            articleTag.length > 0 &&
+            articleTag.map(tag => (
+              <meta property="article:tag" content={tag} />
+            ))}
+          {articlePublishedTime && (
+            <meta
+              property="article:published_time"
+              content={articlePublishedTime}
+            />
+          )}
+          {articleModifiedTime && (
+            <meta
+              property="article:modified_time"
+              content={articleModifiedTime}
+            />
+          )}
+          {ogUpdatedTime && (
+            <meta property="og:updated_time" content={ogUpdatedTime} />
+          )}
+          {articlePublisher && (
+            <meta property="article:publisher" content={articlePublisher} />
+          )}
+          {articleSection && (
+            <meta property="article:section" content={articleSection} />
+          )}
+        </>
+      ) : null}
+    </>
+  );
+};
+
+interface TwitterCardConfig {
+  twitterCardType?: string;
+  twitterTitle?: string;
+  twitterDescription?: string;
+  twitterImage?: string;
+  twitterImageAlt?: string;
+  twitterSite?: string;
+  twitterCreator?: string;
+}
+
+const TwitterCardTags = ({
+  twitterCardType,
+  twitterTitle,
+  twitterDescription,
+  twitterImage,
+  twitterImageAlt,
+  twitterSite,
+  twitterCreator,
+}: TwitterCardConfig) => {
+  return (
+    <>
+      {twitterCardType && (
+        <meta name="twitter:card" content={twitterCardType} />
+      )}
+      {twitterTitle && <meta name="twitter:title" content={twitterTitle} />}
+      {twitterDescription && (
+        <meta name="twitter:description" content={twitterDescription} />
+      )}
+      {twitterImage && <meta name="twitter:image" content={twitterImage} />}
+      {twitterImageAlt && (
+        <meta name="twitter:image:alt" content={twitterImageAlt} />
+      )}
+      {twitterSite && <meta name="twitter:site" content={twitterSite} />}
+      {twitterCreator && (
+        <meta name="twitter:creator" content={twitterCreator} />
+      )}
+    </>
   );
 };
