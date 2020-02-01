@@ -30,6 +30,7 @@ import {
   TUTORIAL_QUANTITY,
   TUTORIAL_PRICE,
   TRADING_TUTORIAL_OUTCOMES,
+  MODAL_MARKET_LOADING,
 } from 'modules/common/constants';
 import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs';
 import ModulePane from 'modules/market/components/common/module-tabs/module-pane';
@@ -80,7 +81,7 @@ interface MarketViewProps {
   addAlert: Function;
   hotloadMarket: Function;
   canHotload: boolean;
-  modalShowing?: boolean;
+  modalShowing?: string;
   removeAlert: Function;
   outcomeId?: number;
   account: string;
@@ -219,7 +220,6 @@ export default class MarketView extends Component<
       isConnected,
       marketId,
       isMarketLoading,
-      closeMarketLoadingModal,
       tradingTutorial,
       updateModal,
       orderBookDirtyCounter,
@@ -256,6 +256,7 @@ export default class MarketView extends Component<
       this.props.loadMarketsInfo(this.props.marketId);
       this.props.loadMarketTradingHistory(marketId);
     }
+
     const doneLoading = isMarketLoading !== this.props.isMarketLoading;
     if (doneLoading) {
       closeMarketLoadingModal();
@@ -519,6 +520,7 @@ export default class MarketView extends Component<
         />
       );
     }
+
     let outcomeOrderBook = this.EmptyOrderBook;
     let outcomeId =
       selectedOutcomeId === null || selectedOutcomeId === undefined
@@ -695,8 +697,7 @@ export default class MarketView extends Component<
                             marketId={marketId}
                             market={preview && market}
                             selectedOutcomeId={outcomeId}
-                            isMarketLoading={isMarketLoading || modalShowing}
-                            canHotload={canHotload}
+                            isMarketLoading={isMarketLoading || !!modalShowing}
                           />
                         )}
                       </div>
@@ -981,8 +982,7 @@ export default class MarketView extends Component<
                               market={preview && market}
                               preview={preview}
                               orderBook={outcomeOrderBook}
-                              isMarketLoading={isMarketLoading || modalShowing}
-                              canHotload={canHotload}
+                              isMarketLoading={isMarketLoading || !!modalShowing}
                             />
                           </div>
                           <div

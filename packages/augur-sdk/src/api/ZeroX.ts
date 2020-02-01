@@ -198,7 +198,8 @@ export class ZeroX {
     return false;
   }
 
-  async getMeshOrders(tries: number = 10): Promise<OrderInfo[]> {
+  async getMeshOrders(tries: number = 15): Promise<OrderInfo[]> {
+
     var response;
     try {
       response = await this.mesh.getOrdersAsync();
@@ -212,6 +213,11 @@ export class ZeroX {
       else {
         response = undefined;
       }
+    }
+    if (response.ordersInfos.length < 1) {
+      console.log("Mesh retrying to fetch orders");
+      await sleep(tries < 12 ? 2000 : 250);
+      response = await this.getMeshOrders(tries - 1);
     }
     return response;
   }
