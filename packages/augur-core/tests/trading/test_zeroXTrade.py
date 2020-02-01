@@ -929,6 +929,20 @@ def test_max_trades(contractsFixture, cash, market):
     assert shareToken.balanceOfMarketOutcome(market.address, YES, contractsFixture.accounts[3]) == 0
     assert shareToken.balanceOfMarketOutcome(market.address, NO, contractsFixture.accounts[2]) == fix(4)
 
+def test_scalar_order_creation(contractsFixture, universe, cash):
+    ZeroXTrade = contractsFixture.contracts['ZeroXTrade']
+    scalarMarket = contractsFixture.createReasonableScalarMarket(universe, 120  * 10**18, -10  * 10**18, 1300)
+    expirationTime = contractsFixture.contracts['Time'].getTimestamp() + 10000
+    salt = 5
+    tradeGroupID = longTo32Bytes(42)
+
+    amount = 7600000000000000
+    price = 200
+    cash.faucet(amount*price, sender=contractsFixture.accounts[1])
+    rawZeroXOrderData1, orderHash1 = ZeroXTrade.createZeroXOrder(BID, amount, price, scalarMarket.address, YES, expirationTime, salt, sender=contractsFixture.accounts[1])
+
+    assert orderHash1 is not None
+
 @pytest_fixture
 def gnosisSafeRegistry(contractsFixture):
     return contractsFixture.contracts["GnosisSafeRegistry"]
