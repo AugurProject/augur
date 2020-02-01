@@ -4240,12 +4240,12 @@ export const TEMPLATES = {
                   {
                     id: 6,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                    placeholder: `[0] -[1].5`,
+                    placeholder: `[0] -[2].5`,
                   },
                   {
                     id: 7,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                    placeholder: `[2] +[1].5`,
+                    placeholder: `[2] +[2].5`,
                   },
                 ],
                 resolutionRules: {
@@ -4655,12 +4655,12 @@ export const TEMPLATES = {
                   {
                     id: 6,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                    placeholder: `[0] -[1].5`,
+                    placeholder: `[0] -[2].5`,
                   },
                   {
                     id: 7,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                    placeholder: `[2] +[1].5`,
+                    placeholder: `[2] +[2].5`,
                   },
                 ],
                 resolutionRules: {
@@ -4718,12 +4718,12 @@ export const TEMPLATES = {
                   {
                     id: 6,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                    placeholder: `Over [2].5`,
+                    placeholder: `Over [3].5`,
                   },
                   {
                     id: 7,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                    placeholder: `Under [2].5`,
+                    placeholder: `Under [3].5`,
                   },
                 ],
                 resolutionRules: {

@@ -10,7 +10,9 @@ const mapStateToProps = (state, ownProps) => {
     scalarDenomination: market.scalarDenomination,
     outcomesFormatted: selectSortedMarketOutcomes(market.marketType, market.outcomesFormatted),
     marketType: market.marketType,
-    marketId: market.id
+    marketId: market.id,
+    orderBook: ownProps.orderBook,
+    preview: ownProps.preview,
   };
 };
 

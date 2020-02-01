@@ -460,7 +460,7 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
       )}
       <span>
         <DatePicker
-          date={null}
+          date={setEndTime ? moment(setEndTime * 1000) : null}
           placeholder="Date"
           displayFormat="MMM D, YYYY"
           id="input-date"

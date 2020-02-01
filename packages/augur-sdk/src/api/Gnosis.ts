@@ -184,7 +184,7 @@ export class Gnosis {
 
           intervalId = setInterval(() => {
             this.onNewBlock();
-          }, 1000);
+          }, 2500);
         }
 
         return params;
@@ -222,7 +222,7 @@ export class Gnosis {
 
         intervalId = setInterval(() => {
           this.onNewBlock();
-        }, 1000);
+        }, 2500);
 
         return restoredAddress
       }
@@ -342,7 +342,7 @@ export class Gnosis {
 
     intervalId = setInterval(() => {
       this.onNewBlock();
-    }, 1000);
+    }, 2500);
 
     return response;
   }
