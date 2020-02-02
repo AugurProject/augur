@@ -73,7 +73,7 @@ const handleAlert = (
   }
 };
 const ORDER_BOOK_REFRESH_MS = 1000;
-const loadOrderBook = _.debounce((dispatch, marketId) => setTimeout(() => dispatch(loadMarketOrderBook(marketId)), ORDER_BOOK_REFRESH_MS), ORDER_BOOK_REFRESH_MS, { leading: true });
+const loadOrderBook = _.debounce((dispatch, marketId) => setTimeout(() => dispatch(loadMarketOrderBook(marketId)), ORDER_BOOK_REFRESH_MS), ORDER_BOOK_REFRESH_MS, { leading: true, maxWait: ORDER_BOOK_REFRESH_MS });
 const asyncActionDebounced = (marketId) => dispatch => loadOrderBook(dispatch, marketId);
 
 const updateMarketOrderBook = (marketId: string) => (
