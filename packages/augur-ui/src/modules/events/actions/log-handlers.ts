@@ -72,8 +72,8 @@ const handleAlert = (
     console.error('alert could not be created', e);
   }
 };
-
-const loadOrderBook = _.debounce((dispatch, marketId) => setTimeout(() => dispatch(loadMarketOrderBook(marketId)), 1000), 1000);
+const ORDER_BOOK_REFRESH_MS = 1000;
+const loadOrderBook = _.debounce((dispatch, marketId) => setTimeout(() => dispatch(loadMarketOrderBook(marketId)), ORDER_BOOK_REFRESH_MS), ORDER_BOOK_REFRESH_MS, { leading: true });
 const asyncActionDebounced = (marketId) => dispatch => loadOrderBook(dispatch, marketId);
 
 const updateMarketOrderBook = (marketId: string) => (
