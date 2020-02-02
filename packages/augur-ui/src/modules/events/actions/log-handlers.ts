@@ -73,14 +73,14 @@ const handleAlert = (
   }
 };
 const ORDER_BOOK_REFRESH_MS = 1000;
-const loadOrderBook = _.debounce((dispatch, marketId) => setTimeout(() => dispatch(loadMarketOrderBook(marketId)), ORDER_BOOK_REFRESH_MS), ORDER_BOOK_REFRESH_MS, { leading: true, maxWait: ORDER_BOOK_REFRESH_MS });
-const asyncActionDebounced = (marketId) => dispatch => loadOrderBook(dispatch, marketId);
+const loadOrderBook = _.throttle((dispatch, marketId) => dispatch(loadMarketOrderBook(marketId)), ORDER_BOOK_REFRESH_MS, { leading: true });
+const asyncActionThrottle = (marketId) => dispatch => loadOrderBook(dispatch, marketId);
 
 const updateMarketOrderBook = (marketId: string) => (
   dispatch: ThunkDispatch<void, any, Action>
 ) => {
   if (isCurrentMarket(marketId)) {
-    dispatch(asyncActionDebounced(marketId));
+    dispatch(asyncActionThrottle(marketId));
   }
 }
 const loadUserPositionsAndBalances = (marketId: string) => (
