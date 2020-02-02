@@ -268,6 +268,7 @@ class Form extends Component<FromProps, FormState> {
     const {
       market,
     } = props;
+    const isScalar: boolean = market.marketType === SCALAR;
     let errorCount = 0;
     let passedTest = !!isOrderValid;
     const precision = getPrecision(value, 0);
@@ -288,7 +289,7 @@ class Form extends Component<FromProps, FormState> {
         'Quantity must be greater than 0.000000001'
       );
     }
-    if (value && precision > UPPER_FIXED_PRECISION_BOUND && !fromExternal) {
+    if (!isScalar && value && precision > UPPER_FIXED_PRECISION_BOUND && !fromExternal) {
       errorCount += 1;
       passedTest = false;
       errors[this.INPUT_TYPES.QUANTITY].push(
@@ -307,16 +308,16 @@ class Form extends Component<FromProps, FormState> {
 
     let tradeInterval = DEFAULT_TRADE_INTERVAL;
     if (market.marketType == SCALAR) {
-      tradeInterval = BigNumber.minimum(TRADE_INTERVAL_VALUE.dividedBy(numTicks).dividedBy(10**14).multipliedBy(10**14), 10**14);
+      tradeInterval = BigNumber.max(TRADE_INTERVAL_VALUE.dividedBy(numTicks).dividedToIntegerBy(10**14).multipliedBy(10**14), 10**14);
     }
 
     if (!convertDisplayAmountToOnChainAmount(value, market.tickSize).mod(tradeInterval).isEqualTo(0)) {
       errorCount += 1;
       passedTest = false;
-      const decimals = String(market.tickSize).indexOf(".") !== -1 ? getPrecision(market.tickSize, 1) : Number(market.tickSize);
       const multiplOf = tradeInterval.dividedBy(market.tickSize).dividedBy(10**18);
+      const nearValue = createBigNumber(value).times(multiplOf);
       errors[this.INPUT_TYPES.QUANTITY].push(
-          `Quantity must be a multiple of ${multiplOf.toFixed(decimals)}`
+          `Quantity must be a multiple of ${multiplOf}, try ${nearValue}`
         );
     }
 

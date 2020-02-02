@@ -12,6 +12,7 @@ import { defaultAbiCoder, ParamType } from 'ethers/utils';
 import { SignedOrder } from '@0x/types';
 import { BigNumber as BN} from 'ethers/utils';
 import moment, { Moment } from 'moment';
+import { sleep } from '../utils/utils';
 
 // This database clears its contents on every sync.
 // The primary purposes for even storing this data are:
@@ -23,6 +24,8 @@ const EXPECTED_ASSET_DATA_LENGTH = 2122;
 const DEFAULT_TRADE_INTERVAL = new BigNumber(10**17);
 const TRADE_INTERVAL_VALUE = new BigNumber(10**19);
 const MIN_TRADE_INTERVAL = new BigNumber(10**14);
+
+const MAX_STARTUP_TIME = 10000; // 10 seconds for some sort of 0x connection to be established
 
 const multiAssetDataAbi: ParamType[] = [
   { name: 'amounts', type: 'uint256[]' },
@@ -126,7 +129,7 @@ export class ZeroXOrders extends AbstractTable {
     this.subscribeToOrderEvents();
   }
 
-  static async create(db: DB, networkId: number, augur: Augur): Promise<ZeroXOrders> {
+  static create(db: DB, networkId: number, augur: Augur): ZeroXOrders {
     const zeroXOrders = new ZeroXOrders(db, networkId, augur);
     zeroXOrders.clearDBAndCacheOrders();
     return zeroXOrders;
@@ -181,6 +184,11 @@ export class ZeroXOrders extends AbstractTable {
 
   async sync(): Promise<void> {
     console.log("Syncing ZeroX Orders");
+    let timeWaited = 0;
+    while(!this.augur.zeroX.isReady() && timeWaited < MAX_STARTUP_TIME) {
+      await sleep(100);
+      timeWaited += 100;
+    }
     const orders: OrderInfo[] = await this.augur.zeroX.getOrders();
     let documents;
     if (orders && orders.length > 0) {

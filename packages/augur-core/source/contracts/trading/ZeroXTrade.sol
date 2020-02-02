@@ -301,11 +301,15 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155, CashSender {
         (IERC1155 _zeroXTradeTokenMaker, uint256 _tokenIdMaker) = getZeroXTradeTokenData(_order.makerAssetData);
         (address _market, uint256 _price, uint8 _outcome, uint8 _type) = unpackTokenId(_tokenIdMaker);
         uint256 _numTicks = IMarket(_market).getNumTicks();
+        require(isOrderAmountValid(_numTicks, _fillAmountRemaining), "Order must be a multiple of the market trade increment");
+        require(_zeroXTradeTokenMaker == this);
+    }
+
+    function isOrderAmountValid(uint256 _numTicks, uint256 _orderAmount) public pure returns (bool) {
         uint256 _tradeInterval = TRADE_INTERVAL_VALUE.div(_numTicks);
         _tradeInterval = _tradeInterval.div(MIN_TRADE_INTERVAL).mul(MIN_TRADE_INTERVAL);
         _tradeInterval = MIN_TRADE_INTERVAL.max(_tradeInterval);
-        require(_fillAmountRemaining.isMultipleOf(_tradeInterval), "Order must be a multiple of the market trade increment");
-        require(_zeroXTradeTokenMaker == this);
+        return _orderAmount.isMultipleOf(_tradeInterval);
     }
 
     function doTrade(IExchange.Order memory _order, uint256 _amount, bytes32 _fingerprint, bytes32 _tradeGroupId, address _taker) private returns (uint256 _amountFilled) {
@@ -618,8 +622,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155, CashSender {
     function createZeroXOrderFor(address _maker, uint8 _type, uint256 _attoshares, uint256 _price, address _market, uint8 _outcome, uint256 _expirationTimeSeconds, uint256 _salt) public view returns (IExchange.Order memory _zeroXOrder, bytes32 _orderHash) {
         bytes memory _assetData = encodeAssetData(IMarket(_market), _price, _outcome, _type);
         uint256 _numTicks = IMarket(_market).getNumTicks();
-        uint256 _tradeInterval = TRADE_INTERVAL_VALUE / _numTicks;
-        require(_attoshares.isMultipleOf(_tradeInterval), "Order must be a multiple of the market trade increment");
+        require(isOrderAmountValid(_numTicks, _attoshares), "Order must be a multiple of the market trade increment");
         _zeroXOrder.makerAddress = _maker;
         _zeroXOrder.makerAssetAmount = _attoshares;
         _zeroXOrder.takerAssetAmount = _attoshares;

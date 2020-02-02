@@ -60,7 +60,7 @@ export class SDK {
         mesh: {
           verbosity: 5,
           bootstrapList: (env['0x-mesh'] || {}).bootstrapList,
-          enabled: true,
+          enabled:  !!(env['0x-mesh'] || {}).enabled,
         }
       }
     };
@@ -80,7 +80,6 @@ export class SDK {
     }
 
     this.client = await createClient(config, connector, account, signer, ethersProvider, enableFlexSearch, createBrowserMesh);
-    await connector.connect(config, account)
 
     if (!isEmpty(account)) {
       this.syncUserData(account, signer, this.networkId, config.gnosis && config.gnosis.enabled).catch((error) => {
@@ -153,7 +152,7 @@ export class SDK {
       throw new Error("Trying to sync user data before Augur is initialized");
     }
 
-    if (this.networkId !== expectedNetworkId) {
+    if (expectedNetworkId && this.networkId !== expectedNetworkId) {
       throw new Error(`Setting the current user is expecting to be on network ${expectedNetworkId} but Augur was already connected to ${this.networkId}`);
     }
 
@@ -165,7 +164,8 @@ export class SDK {
 
     if (useGnosis) {
       account = (await this.getOrCreateGnosisSafe(
-        account
+        account,
+        this.networkId
       )) as string;
 
       this.client.setUseGnosisSafe(true);
@@ -192,6 +192,11 @@ export class SDK {
       return this.client;
     }
     throw new Error('API must be initialized before use.');
+  }
+
+  ready(): boolean {
+    if (this.client) return true;
+    return false;
   }
 
   subscribe(dispatch): void {
