@@ -223,6 +223,7 @@ export default class MarketView extends Component<
       tradingTutorial,
       updateModal,
       orderBookDirtyCounter,
+      closeMarketLoadingModal
     } = prevProps;
     if (
       this.props.outcomeId !== prevProps.outcomeId &&
@@ -259,7 +260,7 @@ export default class MarketView extends Component<
 
     const doneLoading = isMarketLoading !== this.props.isMarketLoading;
     if (doneLoading) {
-      closeMarketLoadingModal();
+      closeMarketLoadingModal(MODAL_MARKET_LOADING);
     }
 
     if (
