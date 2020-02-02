@@ -30,7 +30,7 @@ import {
   TUTORIAL_QUANTITY,
   TUTORIAL_PRICE,
   TRADING_TUTORIAL_OUTCOMES,
-  MODAL_MARKET_LOADING,
+  TUTORIAL_OUTCOME,
 } from 'modules/common/constants';
 import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs';
 import ModulePane from 'modules/market/components/common/module-tabs/module-pane';
@@ -43,6 +43,8 @@ import {
   OutcomeFormatted,
   DefaultOrderProperties,
   IndividualOutcomeOrderBook,
+  TestTradingOrder,
+  OutcomeTestTradingOrder,
 } from 'modules/types';
 import { getDefaultOutcomeSelected } from 'utils/convert-marketInfo-marketData';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
@@ -53,7 +55,6 @@ import { createBigNumber } from 'utils/create-big-number';
 import { TXEventName } from '@augurproject/sdk/src';
 import makePath from 'modules/routes/helpers/make-path';
 import { MARKETS } from 'modules/routes/constants/views';
-import { augurSdk } from 'services/augursdk';
 import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
 import { Getters } from '@augurproject/sdk';
 
@@ -85,8 +86,8 @@ interface MarketViewProps {
   removeAlert: Function;
   outcomeId?: number;
   account: string;
-  orderBook?: Getters.Markets.OutcomeOrderBook;
-  orderBookDirtyCounter: number;
+  orderBook?: Getters.Markets.OutcomeOrderBook | OutcomeTestTradingOrder;
+  loadMarketOrderBook: Function;
 }
 
 interface DefaultOrderPropertiesMap {
@@ -106,11 +107,8 @@ interface MarketViewState {
   introShowing: boolean;
   tutorialError: string;
   hasShownScalarModal: boolean;
-  orderBook: Getters.Markets.OutcomeOrderBook;
   orderBookDirty: boolean;
 }
-
-const ORDER_BOOK_REFRESH_MS = 1000;
 
 export default class MarketView extends Component<
   MarketViewProps,
@@ -161,7 +159,6 @@ export default class MarketView extends Component<
           ...this.DEFAULT_ORDER_PROPERTIES,
         },
       },
-      orderBook: this.props.preview && this.props.orderBook,
       orderBookDirty: true,
     };
 
@@ -184,12 +181,15 @@ export default class MarketView extends Component<
       marketId,
       loadMarketTradingHistory,
       tradingTutorial,
+      loadMarketOrderBook,
+      preview,
     } = this.props;
 
     this.tradingTutorialWidthCheck();
 
-    if (isConnected && !!marketId && !tradingTutorial) {
+    if (isConnected && !!marketId && !tradingTutorial && !preview) {
       loadMarketsInfo(marketId);
+      loadMarketOrderBook(marketId);
       loadMarketTradingHistory(marketId);
     }
   }
@@ -203,15 +203,10 @@ export default class MarketView extends Component<
     const {
       isMarketLoading,
       showMarketLoadingModal,
-      preview,
-      tradingTutorial,
     } = this.props;
 
     if (isMarketLoading) {
       showMarketLoadingModal();
-    }
-    if (!preview && !tradingTutorial) {
-      this.getOrderBook();
     }
   }
 
@@ -222,8 +217,8 @@ export default class MarketView extends Component<
       isMarketLoading,
       tradingTutorial,
       updateModal,
-      orderBookDirtyCounter,
-      closeMarketLoadingModal
+      closeMarketLoadingModal,
+      modalShowing
     } = prevProps;
     if (
       this.props.outcomeId !== prevProps.outcomeId &&
@@ -254,13 +249,13 @@ export default class MarketView extends Component<
         (this.props.marketId !== marketId ||
           this.props.marketType === undefined))
     ) {
+      this.props.loadMarketOrderBook(marketId);
       this.props.loadMarketsInfo(this.props.marketId);
       this.props.loadMarketTradingHistory(marketId);
     }
 
-    const doneLoading = isMarketLoading !== this.props.isMarketLoading;
-    if (doneLoading) {
-      closeMarketLoadingModal(MODAL_MARKET_LOADING);
+    if (isMarketLoading !== this.props.isMarketLoading) {
+      closeMarketLoadingModal(modalShowing);
     }
 
     if (
@@ -274,29 +269,7 @@ export default class MarketView extends Component<
         cb: () => this.setState({ hasShownScalarModal: true }),
       });
     }
-
-    if (orderBookDirtyCounter !== this.props.orderBookDirtyCounter) {
-      this.setState({ orderBookDirty: true });
-    }
   }
-
-  getOrderBook = () => {
-    const { marketId, account } = this.props;
-    const { orderBookDirty } = this.state;
-    if (!augurSdk.ready() || !orderBookDirty) {
-      setTimeout(() => this.getOrderBook(), ORDER_BOOK_REFRESH_MS);
-      return;
-    }
-    const Augur = augurSdk.get();
-    Augur.getMarketOrderBook({ marketId, account }).then(marketOrderBook => {
-      setTimeout(() => this.getOrderBook(), ORDER_BOOK_REFRESH_MS);
-      if (!marketOrderBook) {
-        return console.error(`Could not get order book for ${marketId}`);
-      }
-      const orderBook = marketOrderBook.orderBook;
-      this.setState({ orderBook, orderBookDirty: false });
-    });
-  };
 
   tradingTutorialWidthCheck() {
     if (this.props.tradingTutorial && window.innerWidth <= 1280) {
@@ -497,6 +470,7 @@ export default class MarketView extends Component<
       hotloadMarket,
       canHotload,
       modalShowing,
+      orderBook
     } = this.props;
     const {
       selectedOutcomeId,
@@ -508,7 +482,6 @@ export default class MarketView extends Component<
       tutorialStep,
       tutorialError,
       pane,
-      orderBook,
     } = this.state;
     if (isMarketLoading) {
       if (canHotload && !tradingTutorial) hotloadMarket(marketId);
@@ -540,7 +513,7 @@ export default class MarketView extends Component<
     const cat5 = this.findType();
     let orders = null;
     if (tradingTutorial) {
-      outcomeOrderBook = formatOrderBook(market.orderBook[outcomeId]);
+      outcomeOrderBook = formatOrderBook(orderBook[outcomeId]);
     }
     if (
       tradingTutorial &&
@@ -625,7 +598,8 @@ export default class MarketView extends Component<
       (tutorialStep === TRADING_TUTORIAL_STEPS.POSITIONS ||
         tutorialStep === TRADING_TUTORIAL_STEPS.MY_FILLS)
     ) {
-      const newOrderBook = market.orderBook[selectedOutcomeId].filter(
+      const orders = orderBook[TUTORIAL_OUTCOME] as TestTradingOrder[];
+      const newOrderBook = orders.filter(
         order => !order.disappear
       );
       outcomeOrderBook = formatOrderBook(newOrderBook);

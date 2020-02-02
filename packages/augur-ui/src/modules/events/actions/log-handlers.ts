@@ -5,7 +5,7 @@ import {
   loadMarketAccountPositions,
   loadAllAccountPositions,
 } from 'modules/positions/actions/load-account-positions';
-import { removeMarket, updateMarketsData, setMarketOrderBookDirty } from 'modules/markets/actions/update-markets-data';
+import { removeMarket, updateMarketsData } from 'modules/markets/actions/update-markets-data';
 import { loadMarketsInfo, } from 'modules/markets/actions/load-markets-info';
 import {
   loadMarketTradingHistory,
@@ -47,6 +47,9 @@ import { loadAnalytics } from 'modules/app/actions/analytics-management';
 import { marketCreationCreated, orderFilled } from 'services/analytics/helpers';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import * as _ from 'lodash';
+import { loadMarketOrderBook } from 'modules/orders/actions/load-market-orderbook';
+import { isCurrentMarket } from 'modules/trades/helpers/is-current-market';
+import debounce from 'utils/debounce';
 
 const handleAlert = (
   log: any,
@@ -71,6 +74,13 @@ const handleAlert = (
   }
 };
 
+const updateMarketOrderBook = (marketId: string) => (
+  dispatch: ThunkDispatch<void, any, Action>
+) => {
+  if (isCurrentMarket(marketId)) {
+    _.debounce(() => dispatch(loadMarketOrderBook(marketId)), 1000);
+  }
+}
 const loadUserPositionsAndBalances = (marketId: string) => (
   dispatch: ThunkDispatch<void, any, Action>
 ) => {
@@ -298,7 +308,7 @@ export const handleOrderCreatedLog = (log: Logs.ParsedOrderEventLog) => (
     handleAlert(log, PUBLICTRADE, false, dispatch, getState);
     dispatch(loadAccountOpenOrders());
   }
-  dispatch(setMarketOrderBookDirty(log.market));
+  dispatch(updateMarketOrderBook(log.market));
 };
 
 export const handleOrderCanceledLog = (log: Logs.ParsedOrderEventLog) => (
@@ -328,7 +338,7 @@ export const handleOrderCanceledLog = (log: Logs.ParsedOrderEventLog) => (
       dispatch(loadAccountPositionsTotals());
     }
   }
-  dispatch(setMarketOrderBookDirty(log.market));
+  dispatch(updateMarketOrderBook(log.market));
 };
 
 export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
@@ -350,7 +360,7 @@ export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
     handleAlert(log, PUBLICFILLORDER, true, dispatch, getState);
   }
   dispatch(loadMarketTradingHistory(marketId));
-  dispatch(setMarketOrderBookDirty(log.market));
+  dispatch(updateMarketOrderBook(log.market));
 };
 
 export const handleTradingProceedsClaimedLog = (

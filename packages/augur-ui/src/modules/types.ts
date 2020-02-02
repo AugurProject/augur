@@ -129,7 +129,6 @@ export interface MarketData extends Getters.Markets.MarketInfo {
   consensusFormatted: ConsensusFormatted | null;
   outcomesFormatted: OutcomeFormatted[];
   isTemplate: boolean;
-  orderBookDirtyCounter: number;
 }
 
 export interface ForkingInfo {
@@ -217,6 +216,29 @@ export interface QuantityOutcomeOrderBook {
   asks: QuantityOrderBookOrder[];
 }
 
+export interface OutcomeTestTradingOrder {
+  [outcomeId: number]: TestTradingOrder[];
+}
+export interface TestTradingOrder {
+  disappear: boolean;
+  avgPrice: FormattedNumber;
+  cumulativeShares: string;
+  id: string;
+  mySize: string;
+  orderEstimate: BigNumber;
+  outcomeId: string;
+  outcomeName: string;
+  price: string;
+  quantity: string;
+  shares: string;
+  sharesEscrowed: FormattedNumber;
+  tokensEscrowed: FormattedNumber;
+  type: string;
+  unmatchedShares: FormattedNumber;
+}
+export interface OrderBooks {
+  [marketId: string]: Getters.Markets.OutcomeOrderBook;
+}
 export interface IndividualOutcomeOrderBook {
   spread: string | BigNumber | null;
   bids: Getters.Markets.MarketOrderBookOrder[];

@@ -72,7 +72,6 @@ export function convertMarketInfoToMarketData(
       marketInfo.disputeInfo,
       marketInfo.outcomes
     ),
-    orderBookDirtyCounter: marketInfo.orderBookDirtyCounter,
   };
 
   return marketData;
