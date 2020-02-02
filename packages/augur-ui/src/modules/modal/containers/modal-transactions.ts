@@ -7,6 +7,7 @@ import { ThunkDispatch } from "redux-thunk";
 import { NodeStyleCallback } from "modules/types";
 import { augurSdk } from "services/augursdk";
 import { Getters } from "@augurproject/sdk";
+import { Action } from "redux";
 
 const mapStateToProps = (state: AppState) => ({
   modal: state.modal,
@@ -15,7 +16,7 @@ const mapStateToProps = (state: AppState) => ({
   universe: state.universe.id,
 });
 
-const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Getters.Accounts.Action>) => ({
+const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
 });
 
