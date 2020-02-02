@@ -49,7 +49,6 @@ import { updateModal } from 'modules/modal/actions/update-modal';
 import * as _ from 'lodash';
 import { loadMarketOrderBook } from 'modules/orders/actions/load-market-orderbook';
 import { isCurrentMarket } from 'modules/trades/helpers/is-current-market';
-import debounce from 'utils/debounce';
 
 const handleAlert = (
   log: any,
