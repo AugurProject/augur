@@ -5,7 +5,7 @@ import {
   loadMarketAccountPositions,
   loadAllAccountPositions,
 } from 'modules/positions/actions/load-account-positions';
-import { removeMarket, updateMarketsData, } from 'modules/markets/actions/update-markets-data';
+import { removeMarket, updateMarketsData, setMarketOrderBookDirty } from 'modules/markets/actions/update-markets-data';
 import { loadMarketsInfo, } from 'modules/markets/actions/load-markets-info';
 import {
   loadMarketTradingHistory,
@@ -298,6 +298,7 @@ export const handleOrderCreatedLog = (log: Logs.ParsedOrderEventLog) => (
     handleAlert(log, PUBLICTRADE, false, dispatch, getState);
     dispatch(loadAccountOpenOrders());
   }
+  dispatch(setMarketOrderBookDirty(log.market));
 };
 
 export const handleOrderCanceledLog = (log: Logs.ParsedOrderEventLog) => (
@@ -327,6 +328,7 @@ export const handleOrderCanceledLog = (log: Logs.ParsedOrderEventLog) => (
       dispatch(loadAccountPositionsTotals());
     }
   }
+  dispatch(setMarketOrderBookDirty(log.market));
 };
 
 export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
@@ -348,6 +350,7 @@ export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
     handleAlert(log, PUBLICFILLORDER, true, dispatch, getState);
   }
   dispatch(loadMarketTradingHistory(marketId));
+  dispatch(setMarketOrderBookDirty(log.market));
 };
 
 export const handleTradingProceedsClaimedLog = (

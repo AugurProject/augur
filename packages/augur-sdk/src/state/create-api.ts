@@ -78,7 +78,7 @@ export async function createClient(
       // interface instead of actually import @0x/mesh-browser -- since
       // that would attempt to start the wasm client in nodejs and cause
       // everything to die.
-      await createBrowserMesh(config, zeroX);
+      createBrowserMesh(config, zeroX);
     }
   }
 
@@ -147,7 +147,10 @@ export async function createServer(config: SDKConfiguration, client?: Augur, acc
 export async function startServerFromClient(config: SDKConfiguration, client?: Augur ): Promise<API> {
   const { api, controller } = await createServer(config, client);
 
-  await controller.run();
+  controller.run().catch((err) => {
+    // TODO: PG needs to handle what happens if the server side of the connector dies
+    console.log("Error starting up Augur syncing services");
+  });
 
   return api;
 }

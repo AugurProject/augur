@@ -160,6 +160,7 @@ export interface MarketInfo {
   template: ExtraInfoTemplate;
   isTemplate: boolean;
   mostLikelyInvalid: boolean;
+  orderBookDirtyCounter?: number;
 }
 
 export interface DisputeInfo {
