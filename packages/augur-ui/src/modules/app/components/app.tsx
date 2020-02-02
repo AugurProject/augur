@@ -149,10 +149,12 @@ export default class AppView extends Component<AppProps> {
       updateHelpMenuState,
     } = this.props;
 
+    /* TODO Having this run on every click is destroying performance. Figure out a better way to do whatever this is trying to do
     window.addEventListener('click', e => {
       updateConnectionTray(false);
       updateHelpMenuState(false);
     });
+    */
 
     initAugur(
       history,

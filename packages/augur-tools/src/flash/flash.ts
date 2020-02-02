@@ -138,7 +138,7 @@ export class FlashSession {
       },
       gnosis: {
         enabled: useGnosis,
-        http: 'http://localhost:8000/api/'
+        http: 'http://localhost:8888/api/'
       },
       zeroX: {
         rpc: {

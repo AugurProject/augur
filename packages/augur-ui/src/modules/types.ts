@@ -129,6 +129,7 @@ export interface MarketData extends Getters.Markets.MarketInfo {
   consensusFormatted: ConsensusFormatted | null;
   outcomesFormatted: OutcomeFormatted[];
   isTemplate: boolean;
+  orderBookDirtyCounter: number;
 }
 
 export interface ForkingInfo {
