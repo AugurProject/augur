@@ -60,7 +60,7 @@ import { Getters } from '@augurproject/sdk';
 
 interface MarketViewProps {
   isMarketLoading: boolean;
-  closeMarketLoadingModal: Function;
+  closeMarketLoadingModalOnly: Function;
   market: MarketData;
   marketId: string;
   marketReviewSeen: boolean;
@@ -217,7 +217,7 @@ export default class MarketView extends Component<
       isMarketLoading,
       tradingTutorial,
       updateModal,
-      closeMarketLoadingModal,
+      closeMarketLoadingModalOnly,
       modalShowing
     } = prevProps;
     if (
@@ -254,8 +254,8 @@ export default class MarketView extends Component<
       this.props.loadMarketTradingHistory(marketId);
     }
 
-    if (isMarketLoading !== this.props.isMarketLoading) {
-      closeMarketLoadingModal(modalShowing);
+    if (!isMarketLoading) {
+      closeMarketLoadingModalOnly(modalShowing);
     }
 
     if (

@@ -73,11 +73,14 @@ const handleAlert = (
   }
 };
 
+const loadOrderBook = _.debounce((dispatch, marketId) => setTimeout(() => dispatch(loadMarketOrderBook(marketId)), 1000), 1000);
+const asyncActionDebounced = (marketId) => dispatch => loadOrderBook(dispatch, marketId);
+
 const updateMarketOrderBook = (marketId: string) => (
   dispatch: ThunkDispatch<void, any, Action>
 ) => {
   if (isCurrentMarket(marketId)) {
-    _.debounce(() => dispatch(loadMarketOrderBook(marketId)), 1000);
+    dispatch(asyncActionDebounced(marketId));
   }
 }
 const loadUserPositionsAndBalances = (marketId: string) => (
