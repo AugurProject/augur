@@ -1136,6 +1136,7 @@ export function addScripts(flash: FlashSession) {
       const user: ContractAPI = await this.ensureUser(null, true, true, address, endpoint, true);
 
       if (!skipFaucet) {
+        console.log('fauceting ...');
         const funds = new BigNumber(1e18).multipliedBy(1000000);
         await user.faucet(funds);
         await user.approve(funds);
@@ -1162,7 +1163,7 @@ export function addScripts(flash: FlashSession) {
           console.log('Take Order', order.amount, '@', order.price);
           const params: NativePlaceTradeDisplayParams = {
             market: market.id,
-            direction: Number(orderType) as 0 | 1,
+            direction: Number(direction) as 0 | 1,
             outcome: Number(outcome) as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7,
             numTicks: new BigNumber(market.numTicks),
             numOutcomes: market.numOutcomes,
