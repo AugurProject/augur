@@ -8,6 +8,9 @@ import {
   ACCOUNT_TYPES,
   MODAL_NETWORK_MISMATCH,
   NETWORK_NAMES,
+  SIGNIN_LOADING_TEXT,
+  SIGNIN_SIGN_WALLET,
+  MODAL_LOADING,
 } from 'modules/common/constants';
 import { IS_LOGGED, updateAuthStatus } from 'modules/auth/actions/auth-status';
 import { augurSdk } from 'services/augursdk';
@@ -26,6 +29,7 @@ export const loginWithInjectedWeb3 = () => (dispatch: ThunkDispatch<void, any, A
     if (refresh) dispatch(updateAuthStatus(IS_LOGGED, false));
 
     dispatch(login(account));
+
     const web3 = windowRef.web3;
     if (web3.currentProvider.publicConfigStore && web3.currentProvider.publicConfigStore.on) {
       web3.currentProvider.publicConfigStore.on('update', config => {
@@ -40,14 +44,30 @@ export const loginWithInjectedWeb3 = () => (dispatch: ThunkDispatch<void, any, A
         }
       });
     }
+
+    // Listen for MetaMask account switch
+    if (windowRef.ethereum && windowRef.ethereum.on) {
+      windowRef.ethereum.on('accountsChanged', async (accounts) => {
+        const initWeb3 = async(account) => {
+          const message = account ? SIGNIN_LOADING_TEXT : SIGNIN_SIGN_WALLET;
+          const showMetaMaskHelper = account ? false : true;
+          dispatch(updateModal({
+            type: MODAL_LOADING,
+            message,
+            showMetaMaskHelper,
+            callback: () => dispatch(closeModal()),
+          }));
+
+          await dispatch(loginWithInjectedWeb3());
+        }
+
+        console.log('refershing account to', accounts[0]);
+        await dispatch(logout());
+
+        initWeb3(accounts[0])
+      });
+    }
   };
-
-  if (windowRef.ethereum && windowRef.ethereum.on) {
-    windowRef.ethereum.on('accountsChanged', () => {
-      dispatch(logout());
-    });
-  }
-
 
   return windowRef.ethereum
     .enable()
