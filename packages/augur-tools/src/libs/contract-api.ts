@@ -276,12 +276,6 @@ export class ContractAPI {
     await this.augur.contracts.trade.publicFillBestOrder(type, marketAddress, outcome, numShares, price, tradeGroupID, new BigNumber(3), formatBytes32String(''));
   }
 
-  async takeOrders(orders: NativePlaceTradeDisplayParams[]) {
-    orders.forEach((order) => {
-      this.augur.placeTrade(order);
-    });
-  }
-
   async cancelOrder(orderID: string): Promise<void> {
     await this.augur.cancelOrder(orderID);
   }
