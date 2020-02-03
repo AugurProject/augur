@@ -25,6 +25,7 @@ import {
   stringTo32ByteHex,
   numTicksToTickSizeWithDisplayPrices,
   convertOnChainPriceToDisplayPrice,
+  NativePlaceTradeDisplayParams,
 } from '@augurproject/sdk';
 import { fork } from './fork';
 import { dispute } from './dispute';
@@ -35,7 +36,7 @@ import { showTemplateByHash, validateMarketTemplate } from './template-utils';
 import { cannedMarkets, singleOutcomeAsks, singleOutcomeBids } from './data/canned-markets';
 import { ContractAPI } from '../libs/contract-api';
 import { OrderBookShaper } from './orderbook-shaper';
-import { NumOutcomes } from '@augurproject/sdk/src/state/logs/types';
+import { NumOutcomes, TradeDirection } from '@augurproject/sdk/src/state/logs/types';
 import { flattenZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
 import { sleep } from "@augurproject/sdk/build/state/utils/utils";
 
@@ -1074,60 +1075,6 @@ export function addScripts(flash: FlashSession) {
   });
 
   flash.addScript({
-    name: 'take-a-lot',
-    options: [
-      {
-        name: 'skipFaucet',
-        abbr: 's',
-        description: 'skip faucet&approve. use if re-running this script',
-        flag: true,
-      },
-      {
-        name: 'repeats',
-        abbr: 'r',
-        description: 'how many times to take. default=1',
-      },
-      {
-        name: 'max',
-        abbr: 'm',
-        description: 'how many orders to take at once. default=10',
-      },
-      {
-        name: 'wait',
-        abbr: 'w',
-        description: 'how many seconds to wait between takes. default=1',
-      },
-    ],
-    async call(this: FlashSession, args :FlashArguments) {
-      const skipFaucet = args.skipFaucet as boolean;
-      let repeats = Number(args.repeats as string) || 1;
-      const max = Number(args.max as string) || 10;
-      const wait = Number(args.wait as string) || 1;
-
-      const user = await this.ensureUser(null, true, true, null, 'ws://localhost:60557', true);
-      if (!skipFaucet) {
-        const funds = new BigNumber(1e18).multipliedBy(1000000);
-        await user.faucet(funds);
-        await user.approve(funds);
-      }
-
-      const markets = (await user.getMarkets()).markets;
-      const market = markets[0];
-      console.log('market id ', market.id);
-
-      for (; repeats > 0; repeats--) {
-        let orders = flattenZeroXOrders(await user.getOrders(market.id, '0', 2));
-        if (orders.length > max) {
-          orders = orders.slice(0, max)
-        }
-        orders.map(o => console.log('take order', o.amount, '@', o.price));
-        await user.takeOrders(orders);
-        await sleep(wait * 1000);
-      }
-    },
-  });
-
-  flash.addScript({
     name: 'take-orderbook-side',
     options: [
       {
@@ -1176,7 +1123,7 @@ export function addScripts(flash: FlashSession) {
     async call(this: FlashSession, args :FlashArguments) {
       const skipFaucet = args.skipFaucet as boolean;
       const address = args.userAccount ? String(args.userAccount) : null;
-      let market = args.market ? String(args.market) : null;
+      let marketId = args.market ? String(args.market) : null;
       let limit = args.limit ? Number(args.limit) : 86400000; // go for a really long time
       const direction = args.direction ? String(args.direction) : 'bid'
       const outcome = args.outcome ? Number(args.outcome) : 2;
@@ -1194,14 +1141,14 @@ export function addScripts(flash: FlashSession) {
         await user.approve(funds);
       }
 
-      if (!market) {
-        const markets = (await user.getMarkets()).markets;
-        market = markets[0].id;
-      }
+      const markets = (await user.getMarkets()).markets;
+      const market = marketId ? markets.find(m => m.id === marketId) : markets[0];
+
+      console.log('market props')
       const orderType = direction === 'bid' || direction === 'buy' ? '0' : '1';
       let loop = true;
       while (loop) {
-        const orders = flattenZeroXOrders(await user.getOrders(market, orderType, outcome));
+        const orders = flattenZeroXOrders(await user.getOrders(market.id, orderType, outcome));
         if (orders.length > 0) {
           const sortedOrders =
             orderType === '0'
@@ -1214,7 +1161,22 @@ export function addScripts(flash: FlashSession) {
 
           const order = sortedOrders[0];
           console.log('Take Order', order.amount, '@', order.price);
-          await user.takeOrders([order]);
+          const params: NativePlaceTradeDisplayParams = {
+            market: market.id,
+            direction: Number(direction) as 0 | 1,
+            outcome: Number(outcome) as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7,
+            numTicks: new BigNumber(market.numTicks),
+            numOutcomes: market.numOutcomes,
+            tradeGroupId: stringTo32ByteHex('tradegroupId'),
+            fingerprint: stringTo32ByteHex('fingerprint'),
+            doNotCreateOrders: true,
+            displayAmount: new BigNumber(order.amount),
+            displayPrice: new BigNumber(order.price),
+            displayMaxPrice: new BigNumber(market.maxPrice),
+            displayMinPrice: new BigNumber(market.minPrice),
+            displayShares: new BigNumber(0),
+          }
+          await user.takeOrders([params]);
         }
         limit--;
         if (limit === 0) loop = false;
