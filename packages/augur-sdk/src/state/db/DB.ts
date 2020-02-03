@@ -171,8 +171,8 @@ export class DB {
     this.cancelledOrdersDatabase = new CancelledOrdersDB(this, networkId, this.augur);
 
     if (enableZeroX) {
-      this.zeroXOrders = await ZeroXOrders.create(this, networkId, this.augur);
-      await this.zeroXOrders.sync();
+      this.zeroXOrders = ZeroXOrders.create(this, networkId, this.augur);
+      this.zeroXOrders.sync();
     }
 
     // Always start syncing from 10 blocks behind the lowest
@@ -180,7 +180,7 @@ export class DB {
     const startSyncBlockNumber = await this.getSyncStartingBlock();
     if (startSyncBlockNumber > this.syncStatus.defaultStartSyncBlockNumber) {
       console.log('Performing rollback of block ' + startSyncBlockNumber + ' onward');
-      await this.rollback(startSyncBlockNumber);
+      this.rollback(startSyncBlockNumber);
     }
 
     return this;

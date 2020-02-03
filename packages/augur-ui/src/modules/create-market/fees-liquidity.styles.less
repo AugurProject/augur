@@ -10,7 +10,7 @@
     > div:last-of-type > div > input {
       max-width: 210px;
 
-      @media @breakpoint-mobile-new {
+      @media @breakpoint-mobile {
         min-width: 210px;
       }
     }
@@ -40,7 +40,25 @@
     }
   }
 
-  @media @breakpoint-mobile-mid {
+  @media @breakpoint-mobile {
+    > div {
+      margin-bottom: @size-24;
+      padding: 0 @size-8;
+    }
+
+    > div:nth-of-type(4), 
+    > div:nth-of-type(6), 
+    > div:nth-of-type(7) {
+      padding: 0;
+      margin-bottom: @size-8;
+    }
+
+    > div:nth-of-type(5) {
+      margin-bottom: 0;
+      padding: @size-24 @size-16;
+    }
+
+
     > div:nth-of-type(4) {
       flex-direction: column;
       height: auto;
@@ -48,10 +66,13 @@
       > section:first-of-type {
         margin-right: 0;
         overflow-y: visible;
+        margin-bottom: @size-8;
       }
+
       > section:nth-of-type(2) {
         height: auto;
         min-height: 200px;
+        border: 1px solid @color-dark-grey;
       }
     }
 
@@ -63,6 +84,7 @@
       > div {
         max-height: unset;
         min-height: unset;
+        padding: 0;
       }
     }
   }

@@ -97,6 +97,7 @@ export interface ExternalLinkButtonProps {
   URL?: string;
   light?: boolean;
   customLink?: any;
+  callback?: Function;
 }
 
 export interface ExternalLinkTextProps {
@@ -434,7 +435,10 @@ export const ExternalLinkButton = (props: ExternalLinkButtonProps) => (
     className={classNames(Styles.ExternalLinkButton, {
       [Styles.LightAlternate]: props.light,
     })}
-    onClick={e => props.action && props.action(e)}
+    onClick={e => {
+      props.action && props.action(e)
+      props.callback && props.callback();
+    }}
   >
     {props.customLink ? (
       <Link to={props.customLink}>{props.label}</Link>

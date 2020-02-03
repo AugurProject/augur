@@ -15,7 +15,6 @@ import {
   REP,
   DAI,
 } from 'modules/common/constants';
-import { convertAttoValueToDisplayValue } from '@augurproject/sdk';
 import { Pagination } from 'modules/common/pagination';
 import { ValueLabel, TextLabel } from 'modules/common/labels';
 import { DatePicker, FormDropdown } from 'modules/common/form';
