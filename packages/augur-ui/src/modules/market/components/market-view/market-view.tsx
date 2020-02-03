@@ -635,7 +635,7 @@ export default class MarketView extends Component<
                   scrollOver={matches && !preview}
                   leftButton={
                     <button
-                      className={Styles.MarketView__button}
+                      className={Styles.BackButton}
                       onClick={() => history.goBack()}
                     >
                       {LeftChevron}
@@ -648,9 +648,7 @@ export default class MarketView extends Component<
                       this.setState({ pane: 'Market Info' })
                     }
                   >
-                    <div
-                      className={Styles['MarketView__paneContainer--mobile']}
-                    >
+                    <div className={Styles.PaneContainer}>
                       <MarketHeader
                         marketId={marketId}
                         market={preview && market}
@@ -664,7 +662,7 @@ export default class MarketView extends Component<
                         updateSelectedOutcome={this.updateSelectedOutcomeSwitch}
                         orderBook={orderBook}
                       />
-                      <div className={Styles.MarketView__priceHistoryChart}>
+                      <div className={Styles.PriceHistory}>
                         <h3>Price History</h3>
                         {!preview && (
                           <PriceHistory
@@ -687,13 +685,11 @@ export default class MarketView extends Component<
                       });
                     }}
                   >
-                    <div
-                      className={Styles['MarketView__paneContainer--mobile']}
-                    >
+                    <div className={Styles.PaneContainer}>
                       <h1>{description}</h1>
                       <ModuleTabs selected={0} fillForMobile>
                         <ModulePane label="Order Book">
-                          <div className={Styles.MarketView__orders}>
+                          <div className={Styles.Orders}>
                             <OrderBook
                               updateSelectedOrderProperties={
                                 this.updateSelectedOrderProperties
@@ -710,21 +706,17 @@ export default class MarketView extends Component<
                           </div>
                         </ModulePane>
                         <ModulePane label="Trade History">
-                          <div className={Styles.MarketView__history}>
-                            <div
-                              className={Styles.MarketView__component__history}
-                            >
-                              {(marketId || preview) && (
-                                <MarketTradeHistory
-                                  marketId={marketId}
-                                  outcome={outcomeId}
-                                  toggle={this.toggleTradeHistory}
-                                  extend={extendTradeHistory}
-                                  hide={extendOrderBook}
-                                  marketType={market.marketType}
-                                />
-                              )}
-                            </div>
+                          <div className={Styles.History}>
+                            {(marketId || preview) && (
+                              <MarketTradeHistory
+                                marketId={marketId}
+                                outcome={outcomeId}
+                                toggle={this.toggleTradeHistory}
+                                extend={extendTradeHistory}
+                                hide={extendOrderBook}
+                                marketType={market.marketType}
+                              />
+                            )}
                           </div>
                         </ModulePane>
                       </ModuleTabs>
@@ -760,11 +752,7 @@ export default class MarketView extends Component<
                       this.setState({ pane: 'Orders/Position' })
                     }
                   >
-                    <div
-                      className={classNames(
-                        Styles['MarketView__paneContainer--mobile']
-                      )}
-                    >
+                    <div className={Styles.PaneContainer}>
                       <h1>{description}</h1>
                       <MarketOrdersPositionsTable
                         updateSelectedOrderProperties={
@@ -787,245 +775,232 @@ export default class MarketView extends Component<
             ) : (
               <>
                 <div
-                  className={classNames(Styles.MarketView__parent, {
+                  className={classNames(Styles.container, {
                     [Styles.Tutorial]: tradingTutorial,
                   })}
                 >
-                  <section className={Styles.MarketView__body}>
-                    <div
-                      className={classNames({
-                        [Styles.HeaderTutorial]:
+                  <div
+                    className={classNames(Styles.Header, {
+                      [Styles.HeaderTutorial]:
+                        tradingTutorial &&
+                        tutorialStep ===
+                          TRADING_TUTORIAL_STEPS.MARKET_DETAILS,
+                    })}
+                  >
+                    <MarketHeader
+                      marketId={marketId}
+                      market={preview && market}
+                      preview={preview}
+                      next={this.next}
+                      showTutorialData={
+                        tradingTutorial &&
+                        tutorialStep === TRADING_TUTORIAL_STEPS.MARKET_DATA
+                      }
+                      step={tutorialStep}
+                      totalSteps={totalSteps}
+                      text={TRADING_TUTORIAL_COPY[tutorialStep]}
+                      showTutorialDetails={
+                        tradingTutorial &&
+                        tutorialStep === TRADING_TUTORIAL_STEPS.MARKET_DETAILS
+                      }
+                    />
+                    {tradingTutorial &&
+                      tutorialStep ===
+                        TRADING_TUTORIAL_STEPS.MARKET_DETAILS && (
+                        <TutorialPopUp
+                          top
+                          step={tutorialStep}
+                          totalSteps={totalSteps}
+                          text={TRADING_TUTORIAL_COPY[tutorialStep]}
+                          next={this.next}
+                        />
+                      )}
+                  </div>
+                  <div
+                    className={classNames(Styles.TradingForm, {
+                      [Styles.TradingFormTutorial]:
+                        tradingTutorial &&
+                        ((tutorialStep >=
+                          TRADING_TUTORIAL_STEPS.BUYING_SHARES &&
+                          tutorialStep <=
+                            TRADING_TUTORIAL_STEPS.ORDER_VALUE) ||
+                          tutorialStep ===
+                            TRADING_TUTORIAL_STEPS.PLACE_ORDER),
+                      [Styles.PlaceOrderTutorial]:
+                        tradingTutorial &&
+                        tutorialStep ===
+                          TRADING_TUTORIAL_STEPS.PLACE_ORDER,
+                      [Styles.SelectOutcomeTutorial]:
+                        tradingTutorial &&
+                        tutorialStep ===
+                          TRADING_TUTORIAL_STEPS.SELECT_OUTCOME,
+                      [Styles.BuyingSharesTutorial]:
+                        tradingTutorial &&
+                        tutorialStep ===
+                          TRADING_TUTORIAL_STEPS.BUYING_SHARES,
+                      [Styles.QuantityTutorial]:
+                        tradingTutorial &&
+                        tutorialStep === TRADING_TUTORIAL_STEPS.QUANTITY,
+                      [Styles.LimitPriceTutorial]:
+                        tradingTutorial &&
+                        tutorialStep ===
+                          TRADING_TUTORIAL_STEPS.LIMIT_PRICE,
+                      [Styles.OrderValueTutorial]:
+                        tradingTutorial &&
+                        tutorialStep ===
+                          TRADING_TUTORIAL_STEPS.ORDER_VALUE,
+                    })}
+                  >
+                    <TradingForm
+                      market={market}
+                      initialLiquidity={preview && !tradingTutorial}
+                      tradingTutorial={tradingTutorial}
+                      selectedOrderProperties={selectedOrderProperties}
+                      selectedOutcomeId={outcomeId}
+                      updateSelectedOutcome={this.updateSelectedOutcome}
+                      updateSelectedOrderProperties={
+                        this.updateSelectedOrderProperties
+                      }
+                      tutorialNext={this.next}
+                    />
+                    {tradingTutorial &&
+                      ((tutorialStep >=
+                        TRADING_TUTORIAL_STEPS.BUYING_SHARES &&
+                        tutorialStep <=
+                          TRADING_TUTORIAL_STEPS.ORDER_VALUE) ||
+                        tutorialStep ===
+                          TRADING_TUTORIAL_STEPS.PLACE_ORDER) && (
+                        <TutorialPopUp
+                          left={
+                            tutorialStep !==
+                            TRADING_TUTORIAL_STEPS.PLACE_ORDER
+                          }
+                          leftBottom={
+                            tutorialStep ===
+                            TRADING_TUTORIAL_STEPS.PLACE_ORDER
+                          }
+                          next={() => {
+                            if (
+                              tutorialStep ===
+                              TRADING_TUTORIAL_STEPS.PLACE_ORDER
+                            ) {
+                              this.updateSelectedOrderProperties({
+                                orderQuantity: '',
+                                orderPrice: '',
+                              });
+                            }
+                            this.next();
+                          }}
+                          step={tutorialStep}
+                          totalSteps={totalSteps}
+                          text={TRADING_TUTORIAL_COPY[tutorialStep]}
+                          error={
+                            tutorialError !== '' ? tutorialError : null
+                          }
+                        />
+                      )}
+                  </div>
+                  <MarketOutcomesList
+                    marketId={marketId}
+                    market={market}
+                    preview={preview}
+                    selectedOutcomeId={outcomeId}
+                    updateSelectedOutcome={this.updateSelectedOutcome}
+                    hideOutcomes={cat5 ? !extendOutcomesList : false}
+                  />
+                  <div
+                    className={classNames(
+                      Styles.ChartsPane,
+                      {
+                        [Styles.Hide]: cat5
+                          ? extendOutcomesList
+                          : extendOrders,
+                      }
+                    )}
+                  >
+                    <MarketChartsPane
+                      marketId={!tradingTutorial && marketId}
+                      selectedOutcomeId={outcomeId}
+                      updateSelectedOrderProperties={
+                        this.updateSelectedOrderProperties
+                      }
+                      tradingTutorial={tradingTutorial}
+                      toggle={
+                        cat5
+                          ? () =>
+                              this.toggleMiddleColumn(
+                                'extendOutcomesList'
+                              )
+                          : null
+                      }
+                      market={preview && market}
+                      preview={preview}
+                      orderBook={outcomeOrderBook}
+                      isMarketLoading={isMarketLoading || modalShowing}
+                      canHotload={canHotload}
+                    />
+                  </div>
+                  <div
+                    className={classNames(
+                      Styles.OrdersPane,
+                      {
+                        [Styles.OpenOrdersTutorial]:
                           tradingTutorial &&
                           tutorialStep ===
-                            TRADING_TUTORIAL_STEPS.MARKET_DETAILS,
-                      })}
-                    >
-                      <MarketHeader
-                        marketId={marketId}
-                        market={preview && market}
-                        preview={preview}
-                        next={this.next}
-                        showTutorialData={
+                            TRADING_TUTORIAL_STEPS.OPEN_ORDERS,
+                        [Styles.FillsTutorial]:
                           tradingTutorial &&
-                          tutorialStep === TRADING_TUTORIAL_STEPS.MARKET_DATA
-                        }
-                        step={tutorialStep}
-                        totalSteps={totalSteps}
-                        text={TRADING_TUTORIAL_COPY[tutorialStep]}
-                        showTutorialDetails={
+                          tutorialStep ===
+                            TRADING_TUTORIAL_STEPS.MY_FILLS,
+                        [Styles.PositionsTutorial]:
                           tradingTutorial &&
-                          tutorialStep === TRADING_TUTORIAL_STEPS.MARKET_DETAILS
-                        }
-                      />
-                      {tradingTutorial &&
+                          tutorialStep ===
+                            TRADING_TUTORIAL_STEPS.POSITIONS,
+                      }
+                    )}
+                  >
+                    <MarketOrdersPositionsTable
+                      updateSelectedOrderProperties={
+                        this.updateSelectedOrderProperties
+                      }
+                      marketId={marketId}
+                      toggle={
+                        cat5
+                          ? null
+                          : () =>
+                              this.toggleMiddleColumn('extendOrders')
+                      }
+                      market={preview && market}
+                      preview={preview}
+                      tradingTutorial={tradingTutorial}
+                      orders={orders}
+                      fills={fills}
+                      positions={positions}
+                      selected={selected}
+                    />
+                    {tradingTutorial &&
+                      (tutorialStep ===
+                        TRADING_TUTORIAL_STEPS.OPEN_ORDERS ||
                         tutorialStep ===
-                          TRADING_TUTORIAL_STEPS.MARKET_DETAILS && (
-                          <TutorialPopUp
-                            top
-                            step={tutorialStep}
-                            totalSteps={totalSteps}
-                            text={TRADING_TUTORIAL_COPY[tutorialStep]}
-                            next={this.next}
-                          />
-                        )}
-                    </div>
-
-                    <div className={Styles.MarketView__firstColumn}>
-                      <div className={Styles.MarketView__firstRow}>
-                        <div
-                          className={classNames(Styles.MarketView__component, {
-                            [Styles.TradingFormTutorial]:
-                              tradingTutorial &&
-                              ((tutorialStep >=
-                                TRADING_TUTORIAL_STEPS.BUYING_SHARES &&
-                                tutorialStep <=
-                                  TRADING_TUTORIAL_STEPS.ORDER_VALUE) ||
-                                tutorialStep ===
-                                  TRADING_TUTORIAL_STEPS.PLACE_ORDER),
-                            [Styles.PlaceOrderTutorial]:
-                              tradingTutorial &&
-                              tutorialStep ===
-                                TRADING_TUTORIAL_STEPS.PLACE_ORDER,
-                            [Styles.SelectOutcomeTutorial]:
-                              tradingTutorial &&
-                              tutorialStep ===
-                                TRADING_TUTORIAL_STEPS.SELECT_OUTCOME,
-                            [Styles.BuyingSharesTutorial]:
-                              tradingTutorial &&
-                              tutorialStep ===
-                                TRADING_TUTORIAL_STEPS.BUYING_SHARES,
-                            [Styles.QuantityTutorial]:
-                              tradingTutorial &&
-                              tutorialStep === TRADING_TUTORIAL_STEPS.QUANTITY,
-                            [Styles.LimitPriceTutorial]:
-                              tradingTutorial &&
-                              tutorialStep ===
-                                TRADING_TUTORIAL_STEPS.LIMIT_PRICE,
-                            [Styles.OrderValueTutorial]:
-                              tradingTutorial &&
-                              tutorialStep ===
-                                TRADING_TUTORIAL_STEPS.ORDER_VALUE,
-                          })}
-                        >
-                          <TradingForm
-                            market={market}
-                            initialLiquidity={preview && !tradingTutorial}
-                            tradingTutorial={tradingTutorial}
-                            selectedOrderProperties={selectedOrderProperties}
-                            selectedOutcomeId={outcomeId}
-                            updateSelectedOutcome={this.updateSelectedOutcome}
-                            updateSelectedOrderProperties={
-                              this.updateSelectedOrderProperties
-                            }
-                            tutorialNext={this.next}
-                          />
-                          {tradingTutorial &&
-                            ((tutorialStep >=
-                              TRADING_TUTORIAL_STEPS.BUYING_SHARES &&
-                              tutorialStep <=
-                                TRADING_TUTORIAL_STEPS.ORDER_VALUE) ||
-                              tutorialStep ===
-                                TRADING_TUTORIAL_STEPS.PLACE_ORDER) && (
-                              <TutorialPopUp
-                                left={
-                                  tutorialStep !==
-                                  TRADING_TUTORIAL_STEPS.PLACE_ORDER
-                                }
-                                leftBottom={
-                                  tutorialStep ===
-                                  TRADING_TUTORIAL_STEPS.PLACE_ORDER
-                                }
-                                next={() => {
-                                  if (
-                                    tutorialStep ===
-                                    TRADING_TUTORIAL_STEPS.PLACE_ORDER
-                                  ) {
-                                    this.updateSelectedOrderProperties({
-                                      orderQuantity: '',
-                                      orderPrice: '',
-                                    });
-                                  }
-                                  this.next();
-                                }}
-                                step={tutorialStep}
-                                totalSteps={totalSteps}
-                                text={TRADING_TUTORIAL_COPY[tutorialStep]}
-                                error={
-                                  tutorialError !== '' ? tutorialError : null
-                                }
-                              />
-                            )}
-                        </div>
-                        <div className={Styles.MarketView__innerSecondColumn}>
-                          <div className={Styles.MarketView__component}>
-                            <MarketOutcomesList
-                              marketId={marketId}
-                              market={market}
-                              preview={preview}
-                              selectedOutcomeId={outcomeId}
-                              updateSelectedOutcome={this.updateSelectedOutcome}
-                              hideOutcomes={cat5 ? !extendOutcomesList : false}
-                              orderBook={orderBook}
-                            />
-                          </div>
-                          <div
-                            className={classNames(
-                              Styles.MarketView__component,
-                              {
-                                [Styles.Hide]: cat5
-                                  ? extendOutcomesList
-                                  : extendOrders,
-                              }
-                            )}
-                          >
-                            <MarketChartsPane
-                              marketId={!tradingTutorial && marketId}
-                              selectedOutcomeId={outcomeId}
-                              updateSelectedOrderProperties={
-                                this.updateSelectedOrderProperties
-                              }
-                              tradingTutorial={tradingTutorial}
-                              toggle={
-                                cat5
-                                  ? () =>
-                                      this.toggleMiddleColumn(
-                                        'extendOutcomesList'
-                                      )
-                                  : null
-                              }
-                              market={preview && market}
-                              preview={preview}
-                              orderBook={outcomeOrderBook}
-                              isMarketLoading={isMarketLoading || !!modalShowing}
-                            />
-                          </div>
-                          <div
-                            className={classNames(
-                              Styles.MarketView__component,
-                              {
-                                [Styles.OpenOrdersTutorial]:
-                                  tradingTutorial &&
-                                  tutorialStep ===
-                                    TRADING_TUTORIAL_STEPS.OPEN_ORDERS,
-                                [Styles.FillsTutorial]:
-                                  tradingTutorial &&
-                                  tutorialStep ===
-                                    TRADING_TUTORIAL_STEPS.MY_FILLS,
-                                [Styles.PositionsTutorial]:
-                                  tradingTutorial &&
-                                  tutorialStep ===
-                                    TRADING_TUTORIAL_STEPS.POSITIONS,
-                              }
-                            )}
-                          >
-                            <MarketOrdersPositionsTable
-                              updateSelectedOrderProperties={
-                                this.updateSelectedOrderProperties
-                              }
-                              marketId={marketId}
-                              toggle={
-                                cat5
-                                  ? null
-                                  : () =>
-                                      this.toggleMiddleColumn('extendOrders')
-                              }
-                              market={preview && market}
-                              preview={preview}
-                              tradingTutorial={tradingTutorial}
-                              orders={orders}
-                              fills={fills}
-                              positions={positions}
-                              selected={selected}
-                            />
-                            {tradingTutorial &&
-                              (tutorialStep ===
-                                TRADING_TUTORIAL_STEPS.OPEN_ORDERS ||
-                                tutorialStep ===
-                                  TRADING_TUTORIAL_STEPS.MY_FILLS ||
-                                tutorialStep ===
-                                  TRADING_TUTORIAL_STEPS.POSITIONS) && (
-                                <TutorialPopUp
-                                  bottom
-                                  next={this.next}
-                                  step={tutorialStep}
-                                  totalSteps={totalSteps}
-                                  text={TRADING_TUTORIAL_COPY[tutorialStep]}
-                                />
-                              )}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </section>
-
-                  <div className={Styles.MarketView__secondColumn}>
+                          TRADING_TUTORIAL_STEPS.MY_FILLS ||
+                        tutorialStep ===
+                          TRADING_TUTORIAL_STEPS.POSITIONS) && (
+                        <TutorialPopUp
+                          bottom
+                          next={this.next}
+                          step={tutorialStep}
+                          totalSteps={totalSteps}
+                          text={TRADING_TUTORIAL_COPY[tutorialStep]}
+                        />
+                      )}
+                  </div>
+                  <div className={Styles.OrderBookAndHistory}>
                     <div
                       className={classNames(
-                        Styles.MarketView__component,
-                        Styles.MarketView__orders,
+                        Styles.OrderBook,
                         {
-                          [Styles.MarketView__hide]: extendTradeHistory,
-                          [Styles.MarketView__show]: extendOrderBook,
+                          [Styles.hide]: extendTradeHistory,
+                          [Styles.show]: extendOrderBook,
                           [Styles.OrderBookTutorial]:
                             tradingTutorial &&
                             tutorialStep === TRADING_TUTORIAL_STEPS.ORDER_BOOK,
@@ -1058,30 +1033,27 @@ export default class MarketView extends Component<
                     </div>
                     <div
                       className={classNames(
-                        Styles.MarketView__component,
-                        Styles.MarketView__history,
+                        Styles.History,
                         {
-                          [Styles.MarketView__hide]: extendOrderBook,
-                          [Styles.MarketView__show]: extendTradeHistory,
+                          [Styles.hide]: extendOrderBook,
+                          [Styles.show]: extendTradeHistory,
                         }
                       )}
-                    >
-                      <div className={Styles.MarketView__component__history}>
-                        {(marketId || preview) && (
-                          <MarketTradeHistory
-                            marketId={marketId}
-                            outcome={outcomeId}
-                            toggle={this.toggleTradeHistory}
-                            extend={extendTradeHistory}
-                            marketType={market.marketType}
-                            hide={extendOrderBook}
-                            tradingTutorial={tradingTutorial}
-                            groupedTradeHistory={market.groupedTradeHistory}
-                          />
-                        )}
-                      </div>
-                    </div>
+                  >
+                    {(marketId || preview) && (
+                      <MarketTradeHistory
+                        marketId={marketId}
+                        outcome={outcomeId}
+                        toggle={this.toggleTradeHistory}
+                        extend={extendTradeHistory}
+                        marketType={market.marketType}
+                        hide={extendOrderBook}
+                        tradingTutorial={tradingTutorial}
+                        groupedTradeHistory={market.groupedTradeHistory}
+                      />
+                    )}
                   </div>
+                </div>
                 </div>
                 {!tradingTutorial && (
                   <MarketComments marketId={marketId} networkId={networkId} />
