@@ -25,6 +25,7 @@ import {
   stringTo32ByteHex,
   numTicksToTickSizeWithDisplayPrices,
   convertOnChainPriceToDisplayPrice,
+  NativePlaceTradeDisplayParams,
 } from '@augurproject/sdk';
 import { fork } from './fork';
 import { dispute } from './dispute';
@@ -35,7 +36,7 @@ import { showTemplateByHash, validateMarketTemplate } from './template-utils';
 import { cannedMarkets, singleOutcomeAsks, singleOutcomeBids } from './data/canned-markets';
 import { ContractAPI } from '../libs/contract-api';
 import { OrderBookShaper } from './orderbook-shaper';
-import { NumOutcomes } from '@augurproject/sdk/src/state/logs/types';
+import { NumOutcomes, TradeDirection } from '@augurproject/sdk/src/state/logs/types';
 import { flattenZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
 import { sleep } from "@augurproject/sdk/build/state/utils/utils";
 
@@ -876,6 +877,12 @@ export function addScripts(flash: FlashSession) {
         required: false,
         description: 'quantity used when orders need to be created. default is one large chunk, possible values are 10, 100, ...',
       },
+      {
+        name: 'expiration',
+        abbr: 'x',
+        required: false,
+        description: 'number of added seconds to order will live, default is five minutes',
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const marketIds = String(args.marketIds)
@@ -887,11 +894,12 @@ export function addScripts(flash: FlashSession) {
         ? String(args.meshEndpoint)
         : 'ws://localhost:60557';
       const orderSize = args.orderSize ? Number(args.orderSize) : null;
+      const expiration = args.expiration ? new BigNumber(String(args.expiration)) : new BigNumber(18000); // five minutes
       const user: ContractAPI = await this.ensureUser(null, true, true, address, endpoint, true);
       console.log('waiting many seconds on purpose for client to sync');
       await new Promise<void>(resolve => setTimeout(resolve, 90000));
 
-      const orderBooks = marketIds.map(m => new OrderBookShaper(m, orderSize));
+      const orderBooks = marketIds.map(m => new OrderBookShaper(m, orderSize, expiration));
       while (true) {
         const timestamp = await this.user.getTimestamp();
         for (let i = 0; i < orderBooks.length; i++) {
@@ -1067,7 +1075,7 @@ export function addScripts(flash: FlashSession) {
   });
 
   flash.addScript({
-    name: 'take-a-lot',
+    name: 'take-orderbook-side',
     options: [
       {
         name: 'skipFaucet',
@@ -1076,44 +1084,100 @@ export function addScripts(flash: FlashSession) {
         flag: true,
       },
       {
-        name: 'repeats',
-        abbr: 'r',
-        description: 'how many times to take. default=1',
+        name: 'userAccount',
+        abbr: 'u',
+        description: 'user account to create the order',
       },
       {
-        name: 'max',
+        name: 'outcome',
+        abbr: 'o',
+        description: 'orderbook outcome to take, default is 2'
+      },
+      {
+        name: 'market',
         abbr: 'm',
-        description: 'how many orders to take at once. default=10',
+        description: 'market to trade, default is a random market',
+      },
+      {
+        name: 'limit',
+        abbr: 'l',
+        description: 'limit of orders to take, 1...N orders can be take, default is keep taking forever',
       },
       {
         name: 'wait',
         abbr: 'w',
         description: 'how many seconds to wait between takes. default=1',
       },
+      {
+        name: 'orderType',
+        abbr: 't',
+        description: 'side of orderbook to take, bid or ask, bid is default',
+      },
+      {
+        name: 'meshEndpoint',
+        abbr: 'e',
+        required: false,
+        description: 'Mesh endpoint to connect',
+      },
     ],
     async call(this: FlashSession, args :FlashArguments) {
       const skipFaucet = args.skipFaucet as boolean;
-      let repeats = Number(args.repeats as string) || 1;
-      const max = Number(args.max as string) || 10;
-      const wait = Number(args.wait as string) || 1;
+      const address = args.userAccount ? String(args.userAccount) : null;
+      let marketId = args.market ? String(args.market) : null;
+      let limit = args.limit ? Number(args.limit) : 86400000; // go for a really long time
+      const orderType = args.orderType ? String(args.orderType) : 'bid'
+      const outcome = args.outcome ? Number(args.outcome) : 2;
+      const wait = Number(String(args.wait)) || 1;
 
-      const user = await this.ensureUser(null, true, true, null, 'ws://localhost:60557', true);
+      const endpoint = args.meshEndpoint
+        ? String(args.meshEndpoint)
+        : 'ws://localhost:60557';
+
+      const user: ContractAPI = await this.ensureUser(null, true, true, address, endpoint, true);
+
       if (!skipFaucet) {
+        console.log('fauceting ...');
         const funds = new BigNumber(1e18).multipliedBy(1000000);
         await user.faucet(funds);
         await user.approve(funds);
       }
 
       const markets = (await user.getMarkets()).markets;
-      const market = markets[0];
+      const market = marketId ? markets.find(m => m.id === marketId) : markets[0];
 
-      for (; repeats > 0; repeats--) {
-        let orders = flattenZeroXOrders(await user.getOrders(market.id));
-        if (orders.length > max) {
-          orders = orders.slice(0, max)
+      const direction = orderType === 'bid' || orderType === 'buy' ? '0' : '1';
+      let i = 0;
+      for(i; i < limit; i++) {
+        const orders = flattenZeroXOrders(await user.getOrders(market.id, direction, outcome));
+        if (orders.length > 0) {
+          const sortedOrders =
+            direction === '0'
+              ? orders.sort((a, b) =>
+                  new BigNumber(b.price).minus(new BigNumber(a.price)).toNumber()
+                )
+              : orders.sort((a, b) =>
+                  new BigNumber(a.price).minus(new BigNumber(b.price)).toNumber()
+                );
+
+          const order = sortedOrders[0];
+          console.log('Take Order', order.amount, '@', order.price);
+          const params: NativePlaceTradeDisplayParams = {
+            market: market.id,
+            direction: Number(direction) as 0 | 1,
+            outcome: Number(outcome) as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7,
+            numTicks: new BigNumber(market.numTicks),
+            numOutcomes: market.numOutcomes,
+            tradeGroupId: stringTo32ByteHex('tradegroupId'),
+            fingerprint: stringTo32ByteHex('fingerprint'),
+            doNotCreateOrders: true,
+            displayAmount: new BigNumber(order.amount),
+            displayPrice: new BigNumber(order.price),
+            displayMaxPrice: new BigNumber(market.maxPrice),
+            displayMinPrice: new BigNumber(market.minPrice),
+            displayShares: new BigNumber(0),
+          }
+          await user.augur.placeTrade(params).catch(e => console.error(e));
         }
-        console.log('ORDERS TO TAKE', JSON.stringify(orders, null, 2));
-        await user.takeOrders(orders);
         await sleep(wait * 1000);
       }
     },

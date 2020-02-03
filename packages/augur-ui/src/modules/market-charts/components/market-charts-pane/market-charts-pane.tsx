@@ -4,7 +4,7 @@ import Media from 'react-media';
 import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs';
 import ModulePane from 'modules/market/components/common/module-tabs/module-pane';
 import PriceHistory from 'modules/market-charts/containers/price-history';
-import { TEMP_TABLET } from 'modules/common/constants';
+import { SMALL_MOBILE } from 'modules/common/constants';
 
 import { Candlestick } from 'modules/market-charts/components/candlestick/candlestick';
 import DepthChart from 'modules/market-charts/containers/depth';
@@ -83,7 +83,7 @@ export default class MarketChartsPane extends Component<
     const shared = { marketId, selectedOutcomeId };
 
     return (
-      <Media query={TEMP_TABLET}>
+      <Media query={SMALL_MOBILE}>
         {matches =>
           matches ? (
             <ModuleTabs selected={preview ? 2 : 0} fillForMobile>

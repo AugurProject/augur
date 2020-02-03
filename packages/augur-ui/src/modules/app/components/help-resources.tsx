@@ -64,7 +64,13 @@ export const HelpMenuList = () => {
   );
 };
 
-export const HelpMenu = () => {
+interface HelpMenuProps {
+  closeHelpMenu: Function;
+}
+
+export const HelpMenu = ({
+  closeHelpMenu
+}: HelpMenuProps) => {
   return (
     <div className={classNames(Styles.HelpMenu)}>
       <span>popular help resources</span>
@@ -76,6 +82,7 @@ export const HelpMenu = () => {
             label={helpLink.label}
             customLink={helpLink.customLink}
             showNonLink={helpLink.showNonLink}
+            callback={closeHelpMenu}
           />
         </span>
       ))}
@@ -126,7 +133,7 @@ export const HelpResources = ({
       onClick={event => event.stopPropagation()}
     >
       <HelpIcon updateHelpMenuState={updateHelpMenuState} isHelpMenuOpen={isHelpMenuOpen} />
-      {isHelpMenuOpen && (<HelpMenu />)}
+      {isHelpMenuOpen && (<HelpMenu closeHelpMenu={() => updateHelpMenuState(false)}/>)}
     </div>
   );
 };
