@@ -8671,6 +8671,51 @@
 		{
 			"constant": true,
 			"inputs": [],
+			"name": "DEFAULT_RECOMMENDED_TRADE_INTERVAL",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "MIN_TRADE_INTERVAL",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "TRADE_INTERVAL_VALUE",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
 			"name": "cash",
 			"outputs": [
 				{
@@ -8951,6 +8996,11 @@
 							"internalType": "enum IMarket.MarketType",
 							"name": "marketType",
 							"type": "uint8"
+						},
+						{
+							"internalType": "uint256",
+							"name": "recommendedTradeInterval",
+							"type": "uint256"
 						}
 					],
 					"internalType": "struct IAugurCreationDataGetter.MarketCreationData",
@@ -8977,6 +9027,27 @@
 					"internalType": "bytes32[]",
 					"name": "_outcomes",
 					"type": "bytes32[]"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "contract IMarket",
+					"name": "_market",
+					"type": "address"
+				}
+			],
+			"name": "getMarketRecommendedTradeInterval",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
 				}
 			],
 			"payable": false,
@@ -9032,6 +9103,32 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "_displayRange",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_numTicks",
+					"type": "uint256"
+				}
+			],
+			"name": "getTradeInterval",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
 			"type": "function"
 		},
 		{
@@ -30171,36 +30268,6 @@
 		},
 		{
 			"constant": true,
-			"inputs": [],
-			"name": "MIN_TRADE_INTERVAL",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "TRADE_INTERVAL_VALUE",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
 			"inputs": [
 				{
 					"internalType": "address",
@@ -31317,9 +31384,9 @@
 			"constant": true,
 			"inputs": [
 				{
-					"internalType": "uint256",
-					"name": "_numTicks",
-					"type": "uint256"
+					"internalType": "contract IMarket",
+					"name": "_market",
+					"type": "address"
 				},
 				{
 					"internalType": "uint256",
@@ -31336,7 +31403,7 @@
 				}
 			],
 			"payable": false,
-			"stateMutability": "pure",
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
