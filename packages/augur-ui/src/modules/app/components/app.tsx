@@ -207,6 +207,7 @@ export default class AppView extends Component<AppProps> {
       universe,
       updateCurrentBasePath,
       updateMobileMenuState,
+      sidebarStatus
     } = this.props;
     if (isMobile !== prevProps.isMobile) {
       updateMobileMenuState(MOBILE_MENU_STATES.CLOSED);
@@ -223,6 +224,12 @@ export default class AppView extends Component<AppProps> {
         updateCurrentBasePath(nextBasePath);
         this.changeMenu(nextBasePath);
       }
+    }
+
+    if (sidebarStatus.mobileMenuState === MOBILE_MENU_STATES.FIRSTMENU_OPEN) {
+      document.body.classList.add('App--noScroll');
+    } else {
+      document.body.classList.remove('App--noScroll');
     }
   }
 
@@ -362,7 +369,7 @@ export default class AppView extends Component<AppProps> {
 
     const onTradingTutorial =
       parseQuery(location.search)[MARKET_ID_PARAM_NAME] === TRADING_TUTORIAL;
-
+    
     return (
       <main>
         <HelmetTag {...APP_HEAD_TAGS} />
