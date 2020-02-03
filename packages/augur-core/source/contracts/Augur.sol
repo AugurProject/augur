@@ -95,8 +95,11 @@ contract Augur is IAugur, IAugurCreationDataGetter, CashSender {
 
     int256 private constant DEFAULT_MIN_PRICE = 0;
     int256 private constant DEFAULT_MAX_PRICE = 1 ether;
-    uint256 private constant RECOMMENDED_TRADE_INTERVAL = 10;
-    uint256 private constant DEFAULT_RECOMMENDED_TRADE_INTERVAL = 10 ** 17;
+
+    uint256 constant public TRADE_INTERVAL_VALUE = 10 ** 19; // Trade value of 10 DAI
+    uint256 constant public MIN_TRADE_INTERVAL = 10**14; // We ignore "dust" portions of the min interval and for huge scalars have a larger min value
+    uint256 constant public DEFAULT_RECOMMENDED_TRADE_INTERVAL = 10**17;
+    uint256 private constant MAX_NUM_TICKS = 2 ** 256 - 2;
 
     modifier onlyUploader() {
         require(msg.sender == uploader);
@@ -263,6 +266,10 @@ contract Augur is IAugur, IAugurCreationDataGetter, CashSender {
         return marketCreationData[address(_market)].outcomes;
     }
 
+    function getMarketRecommendedTradeInterval(IMarket _market) public view returns (uint256) {
+        return marketCreationData[address(_market)].recommendedTradeInterval;
+    }
+
     //
     // Logging
     //
@@ -277,6 +284,7 @@ contract Augur is IAugur, IAugurCreationDataGetter, CashSender {
         marketCreationData[address(_market)].marketCreator = _marketCreator;
         marketCreationData[address(_market)].outcomes = _outcomes;
         marketCreationData[address(_market)].marketType = IMarket.MarketType.CATEGORICAL;
+        marketCreationData[address(_market)].recommendedTradeInterval = DEFAULT_RECOMMENDED_TRADE_INTERVAL;
         emit MarketCreated(_universe, _endTime, _extraInfo, _market, _marketCreator, _designatedReporter, _feePerCashInAttoCash, _prices, IMarket.MarketType.CATEGORICAL, 100, _outcomes, _universe.getOrCacheMarketRepBond(), getTimestamp());
         return true;
     }
@@ -290,6 +298,7 @@ contract Augur is IAugur, IAugurCreationDataGetter, CashSender {
         marketCreationData[address(_market)].extraInfo = _extraInfo;
         marketCreationData[address(_market)].marketCreator = _marketCreator;
         marketCreationData[address(_market)].marketType = IMarket.MarketType.YES_NO;
+        marketCreationData[address(_market)].recommendedTradeInterval = DEFAULT_RECOMMENDED_TRADE_INTERVAL;
         emit MarketCreated(_universe, _endTime, _extraInfo, _market, _marketCreator, _designatedReporter, _feePerCashInAttoCash, _prices, IMarket.MarketType.YES_NO, 100, new bytes32[](0), _universe.getOrCacheMarketRepBond(), getTimestamp());
         return true;
     }
@@ -305,8 +314,23 @@ contract Augur is IAugur, IAugurCreationDataGetter, CashSender {
         marketCreationData[address(_market)].marketCreator = _marketCreator;
         marketCreationData[address(_market)].displayPrices = _prices;
         marketCreationData[address(_market)].marketType = IMarket.MarketType.SCALAR;
+        marketCreationData[address(_market)].recommendedTradeInterval = getTradeInterval(_priceRange, _numTicks);
         emit MarketCreated(_universe, _endTime, _extraInfo, _market, _marketCreator, _designatedReporter, _feePerCashInAttoCash, _prices, IMarket.MarketType.SCALAR, _numTicks, new bytes32[](0), _universe.getOrCacheMarketRepBond(), getTimestamp());
         return true;
+    }
+
+    function getTradeInterval(uint256 _displayRange, uint256 _numTicks) public pure returns (uint256) {
+        // Handle Warp Sync Market
+        if (_numTicks == MAX_NUM_TICKS) {
+            return MIN_TRADE_INTERVAL;
+        }
+        uint256 _displayAmount = TRADE_INTERVAL_VALUE.mul(10**18).div(_displayRange);
+        uint256 _displayInterval = MIN_TRADE_INTERVAL;
+        while (_displayInterval < _displayAmount) {
+            _displayInterval = _displayInterval.mul(10);
+        }
+        _displayAmount = _displayInterval;
+        return _displayInterval.mul(_displayRange).div(_numTicks).div(10**18);
     }
 
     function logInitialReportSubmitted(IUniverse _universe, address _reporter, address _market, address _initialReporter, uint256 _amountStaked, bool _isDesignatedReporter, uint256[] memory _payoutNumerators, string memory _description, uint256 _nextWindowStartTime, uint256 _nextWindowEndTime) public returns (bool) {

@@ -66,18 +66,6 @@ export default function(marketInfos: MarketInfos = DEFAULT_STATE, { type, data }
         }
       };
     }
-    case SET_MARKET_ORDERBOOK_DIRTY: {
-      const { marketId } = data;
-      if (!marketId) return marketInfos;
-      if (!marketInfos[marketId]) return marketInfos;
-      return {
-        ...marketInfos,
-        [marketId]: {
-          ...marketInfos[marketId],
-          orderBookDirtyCounter: (marketInfos[marketId].orderBookDirtyCounter || 0) + 1,
-        }
-      };
-    }
     case REMOVE_MARKET:
       return immutableDelete(marketInfos, data.marketId);
     case SWITCH_UNIVERSE:
