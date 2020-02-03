@@ -260,7 +260,7 @@ export default class Visibility extends Component<
           <SmallSubheadersTooltip
             header="default Spread filter check"
             subheader={isValid ? 'Pass' : 'Fail'}
-            text="Info text"
+            text="Displays markets based on how much liquidity there is available under a 15% spread"
           />
 
           {!isValid && (
@@ -278,7 +278,7 @@ export default class Visibility extends Component<
                 <span className={Styles.Positive}>{rankingString}</span>
               </span>
             }
-            text="Info text"
+            text="Shows how your market will compare to all other markets"
           />
 
           <SmallSubheaders

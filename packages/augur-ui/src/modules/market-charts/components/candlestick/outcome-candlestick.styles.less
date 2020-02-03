@@ -6,7 +6,8 @@
   flex: 1 100%;
   flex-direction: column;
   max-height: @charts-max-height;
-  min-height: @charts-min-height;
+  height: @charts-max-height;
+  min-height: @charts-max-height;
   padding: @size-8 0 0;
   position: relative;
   overflow: visible;
@@ -14,6 +15,8 @@
   @media @breakpoint-mobile {
     padding-bottom: 0;
     min-height: @charts-max-height;
+    max-height: unset;
+    overflow: hidden;
   }
 }
 
@@ -35,9 +38,17 @@
     max-width: 130px;
     min-width: 92px;
     width: 100%;
+    grid-column: 1;
 
     @media @breakpoint-mobile {
       order: 1;
+    }
+  }
+
+  @media all and (max-width: 510px) {
+    > div:nth-of-type(2) {
+      grid-row: 2;
+      grid-column: span 3;
     }
   }
 
@@ -45,6 +56,7 @@
     max-width: 155px;
     min-width: 130px;
     width: 100%;
+    grid-column: 3;
 
     @media @breakpoint-mobile {
       margin-left: auto;
@@ -80,7 +92,7 @@
   min-width: min-content;
 
   @media @breakpoint-mobile {
-    grid-column: span 2;
+    grid-column: span 3;
     margin: 0;
     min-height: 0;
     order: 3;
