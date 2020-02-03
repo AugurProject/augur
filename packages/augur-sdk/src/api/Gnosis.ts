@@ -66,12 +66,23 @@ export class Gnosis {
 
   private safesToCheck: GnosisSafeStatusPayload[] = [];
 
+
+  updateSafesToCheckList = (safe, owner, status) => {
+    this.safesToCheck = this.safesToCheck.filter(r => safe !== r.safe);
+    this.safesToCheck.push({
+      status,
+      owner,
+      safe: ethUtil.toChecksumAddress(safe),
+    });
+  }
+
   // Check for safe creations on new block
   // At this point we will emit status per safe wallet per block. If this is
   // too noisy for consumers of the event we can be more clever about it.
   private onNewBlock = async () => {
     for (const s of this.safesToCheck) {
       const status = await this.getGnosisSafeDeploymentStatusViaRelay(s);
+      this.updateSafesToCheckList(s.safe, s.owner, status.status);
       this.augur.setGnosisStatus(status.status);
       if (status.status === GnosisSafeState.AVAILABLE) {
         const signerAddress = await this.dependencies.signer.getAddress();
@@ -141,12 +152,7 @@ export class Gnosis {
           owner,
         });
 
-      this.safesToCheck.push({
-        status: GnosisSafeState.AVAILABLE,
-        owner,
-        safe: ethUtil.toChecksumAddress(safe),
-      });
-
+      this.updateSafesToCheckList(safe, owner, GnosisSafeState.AVAILABLE);
       await this.onNewBlock();
 
       this.augur.setGnosisStatus(GnosisSafeState.AVAILABLE);
@@ -159,7 +165,6 @@ export class Gnosis {
       const status = await this.getGnosisSafeDeploymentStatusViaRelay(params);
       this.augur.setGnosisStatus(status.status);
 
-
       // Normalize addresses
       if (ethUtil.toChecksumAddress(safe) !== ethUtil.toChecksumAddress(params.safe)) {
         // TODO handle this in the UI
@@ -170,25 +175,14 @@ export class Gnosis {
         );
       } else if (status.status === GnosisSafeState.WAITING_FOR_FUNDS) {
         // Still pending, add to watchlist.
-        if (!this.safesToCheck.find(safes => safes.owner === owner)) {
-          this.safesToCheck.push({
-            status: status.status,
-            owner,
-            safe: ethUtil.toChecksumAddress(safe),
-          });
-
-          this.onNewBlock();
-        }
+        this.updateSafesToCheckList(safe, owner, GnosisSafeState.WAITING_FOR_FUNDS);
+        await this.onNewBlock();
 
         return params;
       } else if (status.status === GnosisSafeState.CREATED) {
-        this.augur
-          .events
-          .emit(SubscriptionEventName.GnosisSafeStatus, {
-            status: GnosisSafeState.CREATED,
-            safe: params.safe,
-            owner,
-          });
+        this.updateSafesToCheckList(params.safe, owner, GnosisSafeState.CREATED);
+        await this.onNewBlock();
+
         return params;
       }
     }
@@ -212,15 +206,8 @@ export class Gnosis {
           safe: ethUtil.toChecksumAddress(restoredAddress)
         });
 
-        this.safesToCheck = this.safesToCheck.filter(r => restoredAddress !== r.safe);
-        this.safesToCheck.push({
-          status: status.status,
-          owner,
-          safe: ethUtil.toChecksumAddress(restoredAddress),
-        });
-        this.augur.setGnosisStatus(status.status);
-
-        this.onNewBlock();
+        this.updateSafesToCheckList(restoredAddress, owner, status.status);
+        await this.onNewBlock();
 
         return restoredAddress
       }
@@ -330,14 +317,8 @@ export class Gnosis {
       throw new Error(`Potential malicious relay. Returned ${response.safe}. Expected ${calculatedSafeAddress}`);
     }
 
-    this.safesToCheck.push({
-      safe: ethUtil.toChecksumAddress(response.safe),
-      owner: params.owner,
-      status: GnosisSafeState.WAITING_FOR_FUNDS,
-    });
-
-    this.augur.setGnosisStatus(GnosisSafeState.WAITING_FOR_FUNDS);
-    this.onNewBlock();
+    this.updateSafesToCheckList(response.safe, params.owner, GnosisSafeState.WAITING_FOR_FUNDS)
+    await this.onNewBlock();
 
     return response;
   }
