@@ -207,11 +207,18 @@ export class Gnosis {
       if (error.exception && error.exception.indexOf('SafeAlreadyExistsException') === 0) {
         const restoredAddress = error.exception.match(/0x[a-fA-F0-9]{40}/)[0];
 
+        const status = await this.getGnosisSafeDeploymentStatusViaRelay({
+          owner,
+          safe: ethUtil.toChecksumAddress(restoredAddress)
+        });
+
+        this.safesToCheck = this.safesToCheck.filter(r => restoredAddress !== r.safe);
         this.safesToCheck.push({
-          status: GnosisSafeState.WAITING_FOR_FUNDS,
+          status: status.status,
           owner,
           safe: ethUtil.toChecksumAddress(restoredAddress),
         });
+        this.augur.setGnosisStatus(status.status);
 
         this.onNewBlock();
 
