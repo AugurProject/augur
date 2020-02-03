@@ -2,6 +2,7 @@ pragma solidity 0.5.15;
 pragma experimental ABIEncoderV2;
 
 import 'ROOT/IAugurCreationDataGetter.sol';
+import 'ROOT/IAugurMarketDataGetter.sol';
 import "ROOT/libraries/math/SafeMathUint256.sol";
 import "ROOT/libraries/ContractExists.sol";
 import "ROOT/libraries/token/IERC20.sol";
@@ -24,9 +25,6 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155, CashSender {
     using LibBytes for bytes;
 
     bool transferFromAllowed = false;
-
-    uint256 constant public TRADE_INTERVAL_VALUE = 10 ** 19; // Trade value of 10 DAI
-    uint256 constant public MIN_TRADE_INTERVAL = 10**14; // We ignore "dust" portions of the min interval and for huge scalars have a larger min value
 
     // ERC20Token(address)
     bytes4 constant private ERC20_PROXY_ID = 0xf47261b0;
@@ -301,11 +299,13 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155, CashSender {
         (IERC1155 _zeroXTradeTokenMaker, uint256 _tokenIdMaker) = getZeroXTradeTokenData(_order.makerAssetData);
         (address _market, uint256 _price, uint8 _outcome, uint8 _type) = unpackTokenId(_tokenIdMaker);
         uint256 _numTicks = IMarket(_market).getNumTicks();
-        uint256 _tradeInterval = TRADE_INTERVAL_VALUE.div(_numTicks);
-        _tradeInterval = _tradeInterval.div(MIN_TRADE_INTERVAL).mul(MIN_TRADE_INTERVAL);
-        _tradeInterval = MIN_TRADE_INTERVAL.max(_tradeInterval);
-        require(_fillAmountRemaining.isMultipleOf(_tradeInterval), "Order must be a multiple of the market trade increment");
+        require(isOrderAmountValid(IMarket(_market), _fillAmountRemaining), "Order must be a multiple of the market trade increment");
         require(_zeroXTradeTokenMaker == this);
+    }
+
+    function isOrderAmountValid(IMarket _market, uint256 _orderAmount) public view returns (bool) {
+        uint256 _tradeInterval = IAugurMarketDataGetter(address(augur)).getMarketRecommendedTradeInterval(_market);
+        return _orderAmount.isMultipleOf(_tradeInterval);
     }
 
     function doTrade(IExchange.Order memory _order, uint256 _amount, bytes32 _fingerprint, bytes32 _tradeGroupId, address _taker) private returns (uint256 _amountFilled) {
@@ -617,9 +617,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155, CashSender {
 
     function createZeroXOrderFor(address _maker, uint8 _type, uint256 _attoshares, uint256 _price, address _market, uint8 _outcome, uint256 _expirationTimeSeconds, uint256 _salt) public view returns (IExchange.Order memory _zeroXOrder, bytes32 _orderHash) {
         bytes memory _assetData = encodeAssetData(IMarket(_market), _price, _outcome, _type);
-        uint256 _numTicks = IMarket(_market).getNumTicks();
-        uint256 _tradeInterval = TRADE_INTERVAL_VALUE / _numTicks;
-        require(_attoshares.isMultipleOf(_tradeInterval), "Order must be a multiple of the market trade increment");
+        require(isOrderAmountValid(IMarket(_market), _attoshares), "Order must be a multiple of the market trade increment");
         _zeroXOrder.makerAddress = _maker;
         _zeroXOrder.makerAssetAmount = _attoshares;
         _zeroXOrder.takerAssetAmount = _attoshares;
