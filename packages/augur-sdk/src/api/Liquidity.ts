@@ -47,6 +47,26 @@ export interface GetLiquidityParams {
   spread?: number;
 }
 
+// Helpers
+const sortBids = (collection) => {
+  return collection.sort((a, b) => {
+    return (
+      new BigNumber(a.price).minus(new BigNumber(b.price)).toNumber() ||
+      new BigNumber(a.amount).minus(new BigNumber(b.amount)).toNumber()
+    );
+  })
+  .reverse();
+}
+
+const sortAsks = (collection) => {
+  return collection.sort((a, b) => {
+    return (
+      new BigNumber(a.price).minus(new BigNumber(b.price)).toNumber() ||
+      new BigNumber(b.amount).minus(new BigNumber(a.amount)).toNumber()
+    );
+  });
+}
+
 export class Liquidity {
   private readonly augur: Augur;
 
@@ -94,11 +114,41 @@ export class Liquidity {
 
       let bid_quantities = new BigNumber(0);
       let ask_quantities = new BigNumber(0);
-      const bidOrders = _.takeWhile(orderBook[outcome].bids, function(order) { return bid_price.lte(order.price); });
-      const askOrders = _.takeWhile(orderBook[outcome].asks, function(order) { return ask_price.gte(order.price); });
+      const bidOrders = _.takeWhile(orderBook[outcome].bids, (order) => bid_price.lte(order.price));
+      const askOrders = _.takeWhile(orderBook[outcome].asks, (order) => ask_price.gte(order.price));
+
+
+      // Sort bids by Price, Amount and group by orderCreator
+      const sortedBidOrders = _.groupBy(
+        sortBids(bidOrders),
+        'orderCreator'
+      );
+
+      // Sort asks by Price, Amount and group by orderCreator
+      const sortedAskOrders = _.groupBy(
+        sortAsks(askOrders),
+        'orderCreator'
+      );
+
+      let bidOrdersTopThree = [];
+      let askOrdersTopThree = [];
+
+      // Only count for the liquidity sorts/filters up to 3 orders per side of the book per outcome per user per market
+      Object.keys(sortedBidOrders).forEach(ordersByUser => {
+        bidOrdersTopThree = bidOrdersTopThree.concat(
+          sortedBidOrders[ordersByUser].slice(0, 3)
+        );
+      });
+
+      Object.keys(sortedAskOrders).forEach(ordersByUser => {
+        askOrdersTopThree = askOrdersTopThree.concat(
+          sortedAskOrders[ordersByUser].slice(0, 3)
+        );
+      });
+
       // for bids we get orders from the midpoint down to and inclusive of the bid price. For asks we get the orders from the midpoint *up to* inclusive of the ask price.
-      for (const order of bidOrders) bid_quantities = bid_quantities.plus(order.amount);
-      for (const order of askOrders) ask_quantities = ask_quantities.plus(order.amount);
+      for (const order of bidOrdersTopThree) bid_quantities = bid_quantities.plus(order.amount);
+      for (const order of askOrdersTopThree) ask_quantities = ask_quantities.plus(order.amount);
       const num_shares = BigNumber.max(bid_quantities, ask_quantities);
 
       let raw_bid_value = new BigNumber(0);
@@ -107,14 +157,14 @@ export class Liquidity {
       let bid_quantity_gotten = new BigNumber(0);
       let ask_quantity_gotten = new BigNumber(0);
       if (num_shares.gt(0)) {
-        for (const order of bidOrders) {
+        for (const order of bidOrdersTopThree) {
           let quantityToTake = new BigNumber(order.amount);
           if (bid_quantity_gotten.plus(quantityToTake).gt(num_shares)) quantityToTake = num_shares.minus(bid_quantity_gotten);
           if (bid_quantity_gotten.gte(num_shares)) break;
           raw_bid_value = raw_bid_value.plus(quantityToTake.multipliedBy(order.price));
           bid_quantity_gotten = bid_quantity_gotten.plus(quantityToTake);
         }
-        for (const order of askOrders) {
+        for (const order of askOrdersTopThree) {
           let quantityToTake = new BigNumber(order.amount);
           if (ask_quantity_gotten.plus(quantityToTake).gt(num_shares)) quantityToTake = num_shares.minus(ask_quantity_gotten);
           if (ask_quantity_gotten.gte(num_shares)) break;
@@ -144,7 +194,8 @@ export class Liquidity {
     let bid_sum = new BigNumber(0);
     let ask_sum = new BigNumber(0);
 
-    if (marketType == MarketType.Categorical) {
+
+    if ([MarketType.YesNo, MarketType.Categorical].includes(marketType)) {
       for (let outcome = 1; outcome < numOutcomes; outcome++) {
         vertical_liquidity[outcome] = {
           left: new BigNumber(0),
@@ -152,13 +203,42 @@ export class Liquidity {
         };
       }
 
+      const orderBookByCreator =  {};
+      const orderBookSliced: OrderBook = {};
+
+      // Sort bids/asks by Price, Amount and group by orderCreator
+      Object.keys(orderBook).forEach(outcome => {
+        orderBookByCreator[outcome] = {
+          bids: _.groupBy(sortBids(orderBook[outcome].bids), 'orderCreator'),
+          asks: _.groupBy(sortAsks(orderBook[outcome].asks), 'orderCreator'),
+        }
+      });
+
+      // Only count for the liquidity sorts/filters up to 3 orders per side of the book per outcome per user per market
+      Object.keys(orderBookByCreator).forEach(outcome => {
+        orderBookSliced[outcome] = { bids: [], asks: []};
+        const bids = orderBookByCreator[outcome].bids;
+        const bidsByUser = Object.keys(bids);
+        bidsByUser.forEach(bid => {
+           const slicedBids = bids[bid].slice(0,3);
+           orderBookSliced[outcome].bids = orderBookSliced[outcome].bids.concat(slicedBids);
+        });
+
+        const asks = orderBookByCreator[outcome].asks;
+        const asksByUser = Object.keys(asks);
+        asksByUser.forEach(ask => {
+          const slicedAsks = asks[ask].slice(0, 3);
+         orderBookSliced[outcome].asks = orderBookSliced[outcome].asks.concat(slicedAsks);
+        });
+     })
+
       // BIDS (`outcome` starts at 1 because the Invalid outcome is 0 and is not included in liquidity calculations)
       for (let outcome = 1; outcome < numOutcomes; outcome++) {
-        if (!orderBook[outcome] || orderBook[outcome].bids.length < 1) {
+        if (!orderBookSliced[outcome] || orderBookSliced[outcome].bids.length < 1) {
           bid_sum = new BigNumber(0);
           break;
         }
-        const best_bid = orderBook[outcome].bids[0];
+        const best_bid = orderBookSliced[outcome].bids[0];
         bid_prices[outcome] = feeMultiplier.multipliedBy(best_bid.price);
         bid_sum = bid_sum.plus(bid_prices[outcome]);
       }
@@ -168,7 +248,7 @@ export class Liquidity {
       if (excess_spread.gt(0) && !bid_sum.isZero()) {
         for (let outcome = 1; outcome < numOutcomes; outcome++) {
           bid_prices[outcome] = bid_prices[outcome].minus(excess_spread.div(numOutcomes - 1));
-          const bidOrders = _.takeWhile(orderBook[outcome].bids, (order) => bid_prices[outcome].lte(order.price));
+          const bidOrders = _.takeWhile(orderBookSliced[outcome].bids, (order) => bid_prices[outcome].lte(order.price));
           if (bid_quantities[outcome] === undefined) bid_quantities[outcome] = new BigNumber(0);
           for (const order of bidOrders) bid_quantities[outcome] = bid_quantities[outcome].plus(order.amount);
         }
@@ -176,7 +256,7 @@ export class Liquidity {
         for (let outcome = 1; outcome < numOutcomes; outcome++) {
           let raw_bid_value = new BigNumber(0);
           let bid_quantity_gotten = new BigNumber(0);
-          const bidOrders = _.takeWhile(orderBook[outcome].bids, (order) => bid_prices[outcome].lte(order.price));
+          const bidOrders = _.takeWhile(orderBookSliced[outcome].bids, (order) => bid_prices[outcome].lte(order.price));
           for (const order of bidOrders) {
             let quantityToTake = new BigNumber(order.amount);
             if (bid_quantity_gotten.plus(quantityToTake).gt(num_shares)) quantityToTake = num_shares.minus(bid_quantity_gotten);
@@ -191,11 +271,11 @@ export class Liquidity {
 
       // ASKS (`outcome` starts at 1 because the Invalid outcome is 0 and is not included in liquidity calculations)
       for (let outcome = 1; outcome < numOutcomes; outcome++) {
-        if (!orderBook[outcome] || orderBook[outcome].asks.length < 1) {
+        if (!orderBookSliced[outcome] || orderBookSliced[outcome].asks.length < 1) {
           ask_sum = new BigNumber(0);
           break;
         }
-        const best_ask = orderBook[outcome].asks[0];
+        const best_ask = orderBookSliced[outcome].asks[0];
         ask_prices[outcome] = new BigNumber(best_ask.price).div(feeMultiplier);
         ask_sum = ask_sum.plus(ask_prices[outcome]);
       }
@@ -205,7 +285,7 @@ export class Liquidity {
       if (excess_spread.gt(0) && !ask_sum.isZero()) {
         for (let outcome = 1; outcome < numOutcomes; outcome++) {
           ask_prices[outcome] = ask_prices[outcome].plus(excess_spread.div(numOutcomes - 1));
-          const askOrders = _.takeWhile(orderBook[outcome].asks, (order) => ask_prices[outcome].gte(order.price));
+          const askOrders = _.takeWhile(orderBookSliced[outcome].asks, (order) => ask_prices[outcome].gte(order.price));
           if (ask_quantities[outcome] === undefined) ask_quantities[outcome] = new BigNumber(0);
           for (const order of askOrders) ask_quantities[outcome] = ask_quantities[outcome].plus(order.amount);
         }
@@ -213,7 +293,7 @@ export class Liquidity {
         for (let outcome = 1; outcome < numOutcomes; outcome++) {
           let raw_ask_value = new BigNumber(0);
           let ask_quantity_gotten = new BigNumber(0);
-          const askOrders = _.takeWhile(orderBook[outcome].asks, (order) => ask_prices[outcome].gte(order.price));
+          const askOrders = _.takeWhile(orderBookSliced[outcome].asks, (order) => ask_prices[outcome].gte(order.price));
           for (const order of askOrders) {
             let quantityToTake = new BigNumber(order.amount);
             if (ask_quantity_gotten.plus(quantityToTake).gt(num_shares)) quantityToTake = num_shares.minus(ask_quantity_gotten);
@@ -226,7 +306,6 @@ export class Liquidity {
         }
       }
     }
-
     return vertical_liquidity;
   }
 }
