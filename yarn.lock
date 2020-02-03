@@ -145,20 +145,21 @@
     jsonschema "^1.2.0"
     lodash.values "^4.3.0"
 
-"@0x/mesh-browser@8.2.0":
-  version "8.2.0"
-  resolved "https://registry.yarnpkg.com/@0x/mesh-browser/-/mesh-browser-8.2.0.tgz#33a7ddd6a6fbdef3f8f61f79f7fa962050077bba"
-  integrity sha512-/SUSYF0EhPKKqKzHyItcpbogmJRCbj4dAPlvs5vkwhk3UxcuKzi2vItmxnKSGH5JEExlyimaQd5ItLmrQay46A==
+"@0x/mesh-browser@9.0.0-wss-support":
+  version "9.0.0-wss-support"
+  resolved "https://registry.yarnpkg.com/@0x/mesh-browser/-/mesh-browser-9.0.0-wss-support.tgz#c7a6eb643bcfd6e9038a2bb808a318492cd78d84"
+  integrity sha512-0S+jzvM7FIZI9WKgtak18UCxKufx86rE2qc4kTXg6m7e2r8SssauWaaziX7Gmvf4yfJhxxArfximRCpFXKNNmQ==
   dependencies:
     "@0x/order-utils" "^10.0.1"
     "@0x/utils" "^5.1.2"
     base64-arraybuffer "^0.2.0"
     browserfs "^1.4.3"
+    ethereum-types "^3.0.0"
 
-"@0x/mesh-rpc-client@8.1.2":
-  version "8.1.2"
-  resolved "https://registry.yarnpkg.com/@0x/mesh-rpc-client/-/mesh-rpc-client-8.1.2.tgz#6feb243078cd8ce7e711b8a339bcd18f06e11224"
-  integrity sha512-EKp9x8bnwWjfbrvXMqGnbRVEM4z8Rd6ATI/jFIg+56O/ukeP5bOHCJECQC9IKCfzDVySv0hHrD/cCg09PZqHVQ==
+"@0x/mesh-rpc-client@9.0.0-wss-support":
+  version "9.0.0-wss-support"
+  resolved "https://registry.yarnpkg.com/@0x/mesh-rpc-client/-/mesh-rpc-client-9.0.0-wss-support.tgz#7ea51eed8bd6279ee7ef4bc1149c7758a630bc73"
+  integrity sha512-UNMBO+6jajp+SAXI+kPetnnCR7KBpcEDr0kf4P6Ad4ABssj3NkYZzpiAoB5g8BdOSzQI/XuzBmDA4wfLMOGqjg==
   dependencies:
     "@0x/assert" "^3.0.2"
     "@0x/types" "^3.1.1"

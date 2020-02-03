@@ -73,7 +73,7 @@ services:
       - augur
 
   0x-mesh:
-    image: 0xorg/mesh:8.2.0
+    image: 0xorg/mesh:pre-release-9.0.0-wss-support
     restart: on-failure
     hostname: 0x
     ports:
