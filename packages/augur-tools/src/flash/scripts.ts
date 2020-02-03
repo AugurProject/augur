@@ -1175,7 +1175,7 @@ export function addScripts(flash: FlashSession) {
             displayMinPrice: new BigNumber(market.minPrice),
             displayShares: new BigNumber(0),
           }
-          await user.augur.placeTrade(params);
+          await user.augur.placeTrade(params).catch(e => console.error(e));
         }
         await sleep(wait * 1000);
       }
