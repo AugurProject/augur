@@ -17,13 +17,14 @@
       > div.TradingFormInputContainer {
         max-height: @size-32;
         min-height: @size-32;
+        background-color: @color-dark-grey;
 
         > span {
-          .mono-10-bold;
+          .mono-10-semi-bold;
 
           max-height: @size-32;
           min-height: @size-32;
-          padding: @size-10 @size-16 @size-10 0;
+          padding: @size-10 @size-10 @size-10 0;
         }
 
         > input {
@@ -31,7 +32,8 @@
 
           max-height: @size-30;
           min-height: @size-30;
-          padding: 0 @size-16;
+          padding: 0 @size-12;
+          background-color: @color-dark-grey;
         }
       }
 
@@ -39,10 +41,9 @@
         margin-bottom: @size-12;
 
         > label {
-          .mono-10-bold;
+          .mono-10-medium;
 
           color: @color-secondary-text;
-          text-transform: uppercase;
         }
       }
 
@@ -111,7 +112,7 @@
         width: fit-content;
 
         > button {
-          .mono-10-bold;
+          .mono-10-semi-bold;
 
           min-height: @size-22;
           padding: @size-3 @size-6;
@@ -142,9 +143,9 @@
         }
 
         > span.tipText {
-          .text-12;
+          .mono-10-medium;
 
-          color: @color-dark-text;
+          color: @color-secondary-text;
           text-align: left;
         }
 
@@ -226,7 +227,7 @@
         width: 100%;
 
         &.smallLabel {
-          .mono-10-bold;
+          .mono-10-medium;
 
           color: @color-primary-text;
           padding-top: @size-12;
