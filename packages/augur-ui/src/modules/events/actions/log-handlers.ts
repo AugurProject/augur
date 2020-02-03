@@ -5,8 +5,11 @@ import {
   loadMarketAccountPositions,
   loadAllAccountPositions,
 } from 'modules/positions/actions/load-account-positions';
-import { removeMarket, updateMarketsData } from 'modules/markets/actions/update-markets-data';
-import { loadMarketsInfo, } from 'modules/markets/actions/load-markets-info';
+import {
+  removeMarket,
+  updateMarketsData,
+} from 'modules/markets/actions/update-markets-data';
+import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info';
 import {
   loadMarketTradingHistory,
   loadUserFilledOrders,
@@ -20,7 +23,10 @@ import { AppState } from 'store';
 import { updateBlockchain } from 'modules/app/actions/update-blockchain';
 import { isSameAddress } from 'utils/isSameAddress';
 import { Events, Logs, TXEventName, OrderEventType } from '@augurproject/sdk';
-import { addUpdateTransaction, getRelayerDownErrorMessage } from 'modules/events/actions/add-update-transaction';
+import {
+  addUpdateTransaction,
+  getRelayerDownErrorMessage,
+} from 'modules/events/actions/add-update-transaction';
 import { augurSdk } from 'services/augursdk';
 import { updateConnectionStatus } from 'modules/app/actions/update-connection';
 import { checkAccountAllowance } from 'modules/auth/actions/approve-account';
@@ -33,15 +39,25 @@ import {
   PUBLICFILLORDER,
   PUBLICTRADE,
   MODAL_WALLET_ERROR,
+  REDEEMSTAKE,
 } from 'modules/common/constants';
 import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
-import { isOnDisputingPage, isOnReportingPage, } from 'modules/trades/helpers/is-on-page';
-import { reloadDisputingPage, reloadReportingPage, } from 'modules/reporting/actions/update-reporting-list';
+import {
+  isOnDisputingPage,
+  isOnReportingPage,
+} from 'modules/trades/helpers/is-on-page';
+import {
+  reloadDisputingPage,
+  reloadReportingPage,
+} from 'modules/reporting/actions/update-reporting-list';
 import { loadUniverseForkingInfo } from 'modules/universe/actions/load-forking-info';
 import { loadUniverseDetails } from 'modules/universe/actions/load-universe-details';
 import { getCategoryStats } from 'modules/create-market/actions/get-category-stats';
-import { GNOSIS_STATUS, updateAppStatus, } from 'modules/app/actions/update-app-status';
+import {
+  GNOSIS_STATUS,
+  updateAppStatus,
+} from 'modules/app/actions/update-app-status';
 import { GnosisSafeState } from '@augurproject/gnosis-relay-api/build/GnosisRelayAPI';
 import { loadAnalytics } from 'modules/app/actions/analytics-management';
 import { marketCreationCreated, orderFilled } from 'services/analytics/helpers';
@@ -130,8 +146,7 @@ export const handleTxRelayerDown = (txStatus: Events.TXStatus) => (
   dispatch(addUpdateTransaction(txStatus));
 };
 
-
-export const handleGnosisStateUpdate = (response) => (
+export const handleGnosisStateUpdate = response => (
   dispatch: ThunkDispatch<void, any, Action>
 ) => {
   // TODO This isn't getting hit
@@ -148,7 +163,7 @@ export const handleSDKReadyEvent = () => (
   // app is connected when subscribed to sdk
   dispatch(updateConnectionStatus(true));
   dispatch(loadUniverseForkingInfo());
-  dispatch(getCategoryStats())
+  dispatch(getCategoryStats());
 };
 
 export const handleNewBlockLog = (log: Events.NewBlock) => async (
@@ -169,7 +184,9 @@ export const handleNewBlockLog = (log: Events.NewBlock) => async (
   if (getState().authStatus.isLogged) {
     dispatch(updateAssets());
     dispatch(checkAccountAllowance());
-    dispatch(loadAnalytics(getState().analytics, blockchain.currentAugurTimestamp));
+    dispatch(
+      loadAnalytics(getState().analytics, blockchain.currentAugurTimestamp)
+    );
   }
 
   if (
@@ -180,33 +197,51 @@ export const handleNewBlockLog = (log: Events.NewBlock) => async (
 
     if (status) {
       dispatch(updateAppStatus(GNOSIS_STATUS, status));
-      if (appStatus.gnosisStatus !== GnosisSafeState.ERROR && status === GnosisSafeState.ERROR) {
-        const hasEth = (await loginAccount.meta.signer.provider.getBalance(loginAccount.meta.signer._address)).gt(0);
+      if (
+        appStatus.gnosisStatus !== GnosisSafeState.ERROR &&
+        status === GnosisSafeState.ERROR
+      ) {
+        const hasEth = (await loginAccount.meta.signer.provider.getBalance(
+          loginAccount.meta.signer._address
+        )).gt(0);
 
-        dispatch(updateModal({
-          type: MODAL_WALLET_ERROR,
-          error: getRelayerDownErrorMessage(loginAccount.meta.accountType, hasEth),
-          showDiscordLink: false,
-          showAddFundsHelp: !hasEth,
-          walletType: loginAccount.meta.accountType,
-          title: 'We\'re having trouble processing transactions',
-        }));
+        dispatch(
+          updateModal({
+            type: MODAL_WALLET_ERROR,
+            error: getRelayerDownErrorMessage(
+              loginAccount.meta.accountType,
+              hasEth
+            ),
+            showDiscordLink: false,
+            showAddFundsHelp: !hasEth,
+            walletType: loginAccount.meta.accountType,
+            title: "We're having trouble processing transactions",
+          })
+        );
       }
     }
   }
 };
 
-export const handleMarketsUpdatedLog = (
-    {marketsInfo = []}: {marketsInfo:Getters.Markets.MarketInfo[] | Getters.Markets.MarketInfo}
-  ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
+export const handleMarketsUpdatedLog = ({
+  marketsInfo = [],
+}: {
+  marketsInfo: Getters.Markets.MarketInfo[] | Getters.Markets.MarketInfo;
+}) => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
   console.log('handleMarketsUpdatedChangedLog');
 
-  let marketsDataById = {}
+  let marketsDataById = {};
   if (Array.isArray(marketsInfo)) {
-    marketsDataById = marketsInfo.reduce((acc, marketData) => ({
-      [marketData.id]: marketData,
-      ...acc,
-    }), {} as MarketInfos);
+    marketsDataById = marketsInfo.reduce(
+      (acc, marketData) => ({
+        [marketData.id]: marketData,
+        ...acc,
+      }),
+      {} as MarketInfos
+    );
   } else {
     const market = marketsInfo as Getters.Markets.MarketInfo;
     marketsDataById[market.id] = market;
@@ -214,7 +249,6 @@ export const handleMarketsUpdatedLog = (
 
   dispatch(updateMarketsData(marketsDataById));
   if (isOnDisputingPage()) dispatch(reloadDisputingPage());
-
 };
 
 export const handleMarketCreatedLog = (log: any) => (
@@ -239,10 +273,10 @@ export const handleDBMarketCreatedEvent = (event: any) => (
   getState: () => AppState
 ) => {
   if (event.data) {
-    const marketIds = _.map(event.data, "market");
+    const marketIds = _.map(event.data, 'market');
     dispatch(loadMarketsInfo(marketIds));
   }
-}
+};
 
 export const handleMarketMigratedLog = (log: any) => (
   dispatch: ThunkDispatch<void, any, Action>,
@@ -292,7 +326,7 @@ export const handleOrderLog = (log: any) => {
     case OrderEventType.Fill:
       return handleOrderFilledLog(log);
     default:
-      console.log(`Unknown order event type "${log.eventType }" for log`, log);
+      console.log(`Unknown order event type "${log.eventType}" for log`, log);
   }
   return null;
 };
@@ -452,6 +486,13 @@ export const handleParticipationTokensRedeemedLog = (
   );
   if (isUserDataUpdate) {
     dispatch(loadAccountReportingHistory());
+    handleAlert(
+      { ...log, marketId: 1 },
+      REDEEMSTAKE,
+      false,
+      dispatch,
+      getState
+    );
   }
 };
 
@@ -575,28 +616,23 @@ export const handleDisputeWindowCreatedLog = (
   if (isOnDisputingPage()) dispatch(reloadDisputingPage());
 };
 
-export const handleTokensMintedLog = (
-  log: Logs.TokensMinted
-) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
+export const handleTokensMintedLog = (log: Logs.TokensMinted) => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
   const userAddress = getState().loginAccount.address;
   const isForking = !!getState().universe.forkingInfo;
-  if(log.tokenType === Logs.TokenType.ParticipationToken) {
-    const isUserDataUpdate = isSameAddress(
-      log.target,
-      userAddress
-    );
+  if (log.tokenType === Logs.TokenType.ParticipationToken) {
+    const isUserDataUpdate = isSameAddress(log.target, userAddress);
     if (isUserDataUpdate) {
       dispatch(loadAccountReportingHistory());
     }
     dispatch(loadDisputeWindow());
   }
   if (log.tokenType === Logs.TokenType.ReputationToken && isForking) {
-    const isUserDataUpdate = isSameAddress(
-      log.target,
-      userAddress
-    );
+    const isUserDataUpdate = isSameAddress(log.target, userAddress);
     if (isUserDataUpdate) {
-      dispatch(loadUniverseDetails(log.universe, userAddress))
+      dispatch(loadUniverseDetails(log.universe, userAddress));
     }
   }
 };
