@@ -84,8 +84,9 @@ interface AppProps {
   toasts: any[];
   updateConnectionTray: Function;
   isConnectionTrayOpen: boolean;
-  showGlobalChat: Function;
   updateHelpMenuState: Function;
+  isHelpMenuOpen: boolean;
+  showGlobalChat: Function;
   migrateV1Rep: Function;
   showMigrateRepButton: boolean;
 }
@@ -146,16 +147,7 @@ export default class AppView extends Component<AppProps> {
       updateModal,
       useWeb3Transport,
       updateCurrentBasePath,
-      updateConnectionTray,
-      updateHelpMenuState,
     } = this.props;
-
-    /* TODO Having this run on every click is destroying performance. Figure out a better way to do whatever this is trying to do
-    window.addEventListener('click', e => {
-      updateConnectionTray(false);
-      updateHelpMenuState(false);
-    });
-    */
 
     initAugur(
       history,
@@ -193,10 +185,6 @@ export default class AppView extends Component<AppProps> {
   }
 
   compomentWillUnmount() {
-    window.addEventListener('click', e => {
-      updateConnectionTray(false);
-      updateHelpMenuState(false);
-    });
     window.removeEventListener('resize', this.handleWindowResize);
   }
 
@@ -235,7 +223,7 @@ export default class AppView extends Component<AppProps> {
 
   mainSectionClickHandler = (e: any, testSideNav = true) => {
     const stateUpdate: any = {};
-    const { isMobile, sidebarStatus, updateSidebarStatus } = this.props;
+    const { isMobile, sidebarStatus, updateSidebarStatus, isConnectionTrayOpen, isHelpMenuOpen, updateConnectionTray, updateHelpMenuState } = this.props;
     let updateState = false;
 
     if (
@@ -254,6 +242,14 @@ export default class AppView extends Component<AppProps> {
 
     if (updateState) {
       updateSidebarStatus(stateUpdate);
+    }
+
+    if (isHelpMenuOpen) {
+      updateHelpMenuState(false);
+    }
+
+    if (isConnectionTrayOpen) {
+      updateConnectionTray(false);
     }
   };
 
