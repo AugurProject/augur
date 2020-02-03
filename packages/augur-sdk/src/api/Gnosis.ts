@@ -144,14 +144,6 @@ export class Gnosis {
     const owner = typeof params === 'string' ? params : params.owner;
     const safe = await this.getGnosisSafeAddress(owner);
     if (ethersUtils.getAddress(safe) !== ethersUtils.getAddress(NULL_ADDRESS)) {
-      this.augur
-        .events
-        .emit(SubscriptionEventName.GnosisSafeStatus, {
-          status: GnosisSafeState.AVAILABLE,
-          safe,
-          owner,
-        });
-
       this.updateSafesToCheckList(safe, owner, GnosisSafeState.AVAILABLE);
       await this.onNewBlock();
 
