@@ -11,13 +11,14 @@
 
   @media @breakpoint-mobile {
     display: flex;
-    height: 100%;
+    height: @size-72;
+    max-height: @size-72;
   }
 
   &.selected {
     > div:first-of-type {
       background-color: @color-module-background;
-      border: 1px solid @color-secondary-action-outline;
+      border: @size-1 solid @color-secondary-action-outline;
       border-bottom: 0;
 
       @media @breakpoint-mobile {
@@ -34,16 +35,17 @@
     }
 
     background: @color-dark-grey;
-    border: 1px solid @color-dark-grey;
+    border: @size-1 solid @color-dark-grey;
     border-bottom: 0;
     display: flex;
     padding: @size-12;
     max-height: @size-56;
 
     @media @breakpoint-mobile {
-      background: @color-module-background;
-      padding: @size-16 @size-12;
       border: none;
+      background: @color-module-background;
+      padding: @size-24 @size-12;
+      max-height: @size-72;
     }
 
     &:focus {
@@ -91,7 +93,7 @@
 .ConnectDropdown {
   position: absolute;
   right: 0px;
-  top: 56px;
+  top: @size-56;
 
   @media @breakpoint-mobile {
     display: none;

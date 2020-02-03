@@ -550,7 +550,7 @@
   }
 
   > div {
-    width: 210px;
+    width: @size-210;
 
     &:last-of-type {
       margin-bottom: @size-20;
@@ -601,9 +601,9 @@
   grid-template-rows: @size-20 auto auto auto;
   grid-template-columns: 100%;
   max-height: 230px;
-  max-width: 210px;
+  max-width: @size-210;
   min-height: 154px;
-  min-width: 210px;
+  min-width: @size-210;
   border: 1px solid transparent;
   box-shadow: 0 0 0 1px @color-secondary-action-outline;
 
@@ -943,7 +943,7 @@
     }
 
     > input {
-      min-width: 210px;
+      min-width: @size-210;
     }
   }
 
@@ -971,7 +971,7 @@
     background-color: @color-dark-grey;
     border-radius: @border-radius-default;
     border: 1px solid @color-module-background;
-    min-width: 210px;
+    min-width: @size-210;
     min-height: 44px;
     max-width: unset;
 
@@ -1230,7 +1230,7 @@ button.MaxDark {
       border-radius: @border-radius-default;
       border: 1px solid @color-secondary-action-outline;
       min-height: 44px;
-      min-width: 210px;
+      min-width: @size-210;
 
       @media @breakpoint-mobile {
         min-width: 155px;
@@ -1584,7 +1584,7 @@ button.MaxDark {
 .TimeSelector {
   position: relative;
   max-height: 44px;
-  min-width: 210px;
+  min-width: @size-210;
 
   > button {
     .text-14;

@@ -8,10 +8,10 @@
   > div:first-of-type,
   > div:nth-of-type(2) {
     > div:last-of-type > div > input {
-      max-width: 210px;
+      max-width: @size-210;
 
       @media @breakpoint-mobile-new {
-        min-width: 210px;
+        min-width: @size-210;
       }
     }
 
@@ -20,7 +20,7 @@
     }
 
     > div:nth-of-type(2) > div {
-      width: 210px;
+      width: @size-210;
     }
   }
 
