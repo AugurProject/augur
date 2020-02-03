@@ -27,6 +27,7 @@ import userOpenOrders from "modules/orders/reducers/open-orders";
 import drafts from "modules/create-market/reducers/drafts";
 import marketsList from "modules/markets-list/reducers/markets-list";
 import reportingListState from "modules/reporting/reducers/reporting-list-state";
+import orderBooks from "modules/orders/reducers/order-books"
 import {
   LoginAccount,
   AccountPosition,
@@ -52,7 +53,8 @@ import {
   Drafts,
   MarketsList,
   ReportingListState,
-  Analytics
+  Analytics,
+  OrderBooks
 } from "modules/types";
 import { Getters } from "@augurproject/sdk";
 
@@ -86,7 +88,8 @@ export function createReducer() {
     drafts,
     marketsList,
     reportingListState,
-    analytics
+    analytics,
+    orderBooks
   };
 }
 
@@ -122,4 +125,5 @@ export interface AppStateInterface {
   marketsList: MarketsList;
   reportingListState: ReportingListState;
   analytics: Analytics;
+  orderBooks: OrderBooks;
 }

@@ -18,6 +18,8 @@ import {
 
 import Styles from 'modules/account/components/account-view.styles.less';
 import classNames from 'classnames';
+import { ACCOUNT_VIEW_HEAD_TAGS } from 'modules/seo/helmet-configs';
+import { HelmetTag } from 'modules/seo/helmet-tag';
 export interface AccountViewProps {
   newNotifications?: boolean;
 }
@@ -53,6 +55,7 @@ export default class AccountView extends React.Component<
     const { newNotifications } = this.props;
     return (
       <>
+        <HelmetTag {...ACCOUNT_VIEW_HEAD_TAGS} />
         <Media query={SMALL_MOBILE}>
           {matches =>
             matches ? (
