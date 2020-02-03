@@ -7,7 +7,7 @@
     padding: @size-18;
     display: flex;
     cursor: pointer;
-    border: 1px solid @color-dark-grey;
+    border: @size-1 solid @color-dark-grey;
     border-bottom: 0;
     max-height: @size-56;
 
@@ -25,14 +25,15 @@
     }
 
     &:hover {
-      border: 1px solid @color-module-background;
+      border: @size-1 solid @color-module-background;
       border-bottom: 0;
       background: @color-module-background;
     }
 
-
     @media @breakpoint-mobile {
       border: none;
+      padding: @size-26;
+      max-height: @size-72;
 
       &:hover {
         border: none;
@@ -57,12 +58,12 @@
 .HelpMenuList {
   position: absolute;
   background: @color-module-background;
-  border: 1px solid @color-secondary-action-outline;
+  border: @size-1 solid @color-secondary-action-outline;
   border-radius: @border-radius-default;
-  width: 210px;
+  width: @size-210;
   top: 100%;
-  right: -1px;
-  margin-top: -1px;
+  right: -@size-1;
+  margin-top: -@size-1;
   border-top-right-radius: 0;
   border-top-left-radius: 0;
   display: flex;
@@ -89,7 +90,7 @@
   > li:not(:first-of-type) {
     padding: @size-13 @size-16;
     background: @color-table-header;
-    border-top: 1px solid @color-dark-grey;
+    border-top: @size-1 solid @color-dark-grey;
 
     &.hideOnTablet {
       @media @breakpoint-smallish-desktop {
@@ -105,16 +106,16 @@
 
   @media @breakpoint-mobile {
     bottom: unset;
-    margin-bottom: -1px;
+    margin-bottom: -@size-1;
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 0;
     position: absolute;
     right: 0px;
-    top: 65px;
+    top: @size-72;
     display: contents;
 
     > li:not(:first-of-type) {
-      border-bottom: 1px solid @color-dark-grey;
+      border-bottom: @size-1 solid @color-dark-grey;
     }
 
     > li:last-of-type {
@@ -127,12 +128,12 @@
 .HelpMenu {
   position: absolute;
   background: @color-module-background;
-  border: 1px solid @color-secondary-action-outline;
+  border: @size-1 solid @color-secondary-action-outline;
   border-radius: @border-radius-default;
-  width: 210px;
+  width: @size-210;
   top: 100%;
-  right: -1px;
-  margin-top: -1px;
+  right: -@size-2;
+  margin-top: -@size-1;
   border-top-right-radius: 0;
   border-top-left-radius: 0;
   display: flex;
@@ -159,7 +160,7 @@
   > span:not(:first-of-type) {
     padding: @size-13 @size-16;
     background: @color-table-header;
-    border-top: 1px solid @color-dark-grey;
+    border-top: @size-1 solid @color-dark-grey;
 
     &.hideOnTablet {
       @media @breakpoint-smallish-desktop {
@@ -175,15 +176,15 @@
 
   @media @breakpoint-mobile {
     bottom: unset;
-    margin-bottom: -1px;
+    margin-bottom: -@size-1;
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 0;
     position: absolute;
-    right: 0px;
-    top: 65px;
+    right: -@size-2;
+    top: @size-72;
 
     > span:not(:first-of-type) {
-      border-bottom: 1px solid @color-dark-grey;
+      border-bottom: @size-1 solid @color-dark-grey;
     }
 
     > span:last-of-type {
@@ -194,8 +195,8 @@
 }
 
 .HelpResources {
-  border-left: 1px solid @color-module-background;
-  border-right: 1px solid @color-module-background;
+  border-left: @size-1 solid @color-module-background;
+  border-right: @size-1 solid @color-module-background;
   color: @color-primary-text;
   display: flex;
   flex: 1;
@@ -203,4 +204,9 @@
   max-width: @size-56;
   position: relative;
   z-index: @above-all-content-above;
+
+  @media @breakpoint-mobile {
+    max-height: @size-72;
+    max-width: @size-72;
+  }
 }
