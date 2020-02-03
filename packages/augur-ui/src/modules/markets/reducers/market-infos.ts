@@ -6,7 +6,8 @@ import {
   UPDATE_MARKET_REP_BALANCE,
   UPDATE_MARKET_FROZEN_SHARES_VALUE,
   REMOVE_MARKET,
-  UPDATE_MARKET_ETH_BALANCE
+  UPDATE_MARKET_ETH_BALANCE,
+  SET_MARKET_ORDERBOOK_DIRTY
 } from "modules/markets/actions/update-markets-data";
 
 import { RESET_STATE, SWITCH_UNIVERSE } from "modules/app/actions/reset-state";

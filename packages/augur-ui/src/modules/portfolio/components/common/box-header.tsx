@@ -22,6 +22,7 @@ export interface BoxHeaderProps {
   toggle?: Function;
   hide?: boolean;
   extend?: boolean;
+  showHeaderOnMobile?: boolean;
 }
 
 const BoxHeader = (props: BoxHeaderProps) => (
@@ -29,7 +30,8 @@ const BoxHeader = (props: BoxHeaderProps) => (
     {!props.normalOnMobile && 
       <div className={Styles.ShowOnMobile}>
         <div>
-          <div className={Styles.RightContent}>{props.rightContent}</div>
+          {props.rightContent && <div className={Styles.RightContent}>{props.rightContent}</div>}
+          {props.showHeaderOnMobile && <div className={Styles.Title}>{props.title}</div>}
           {props.bottomRightBarContent && (
             <div className={Styles.BottomRightContent}>
               {props.bottomRightBarContent}
@@ -45,6 +47,7 @@ const BoxHeader = (props: BoxHeaderProps) => (
             <div
               className={classNames(Styles.BottomContent, {
                 [Styles.noBackground]: props.noBackgroundBottom,
+                [Styles.NoTopMargin]: props.title
               })}
             >
               {props.bottomBarContent}

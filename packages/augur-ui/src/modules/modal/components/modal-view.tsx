@@ -28,7 +28,6 @@ import ModalNetworkConnect from 'modules/modal/containers/modal-network-connect'
 import ModalDisclaimer from 'modules/modal/containers/modal-disclaimer';
 import ModalGasPrice from 'modules/modal/containers/modal-gas-price';
 import ModalClaimMarketsProceeds from 'modules/modal/containers/modal-claim-markets-proceeds';
-import ModalTradingOverlay from 'modules/modal/components/modal-trading-overlay';
 import ModalOpenOrders from 'modules/modal/containers/modal-open-orders';
 import ModalMarketLoading from 'modules/modal/containers/modal-market-loading';
 import ModalContent from 'modules/modal/containers/modal-content';
@@ -134,8 +133,6 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalClaimFees {...modal} />;
     case TYPES.MODAL_DISCLAIMER:
       return <ModalDisclaimer {...modal} />;
-    case TYPES.MODAL_TRADING_OVERLAY:
-      return <ModalTradingOverlay {...modal} closeModal={closeModal} />;
     case TYPES.MODAL_MARKET_LOADING:
       return <ModalMarketLoading />;
     case TYPES.MODAL_DR_QUICK_GUIDE:
@@ -230,9 +227,7 @@ export default class ModalView extends Component<ModalViewProps> {
         <div
           className={classNames({
             [`${Styles['ModalView__content--taller']}`]:
-              modal.type === TYPES.MODAL_DISCLAIMER,
-            [`${Styles['ModalView__content--full']}`]:
-              modal.type === TYPES.MODAL_TRADING_OVERLAY,
+              modal.type === TYPES.MODAL_DISCLAIMER
           })}
         >
           {Modal}

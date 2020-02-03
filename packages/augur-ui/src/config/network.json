@@ -10,9 +10,12 @@
     "gnosis-relay": "http://localhost:8888/api/",
     "0x-endpoint": "ws://localhost:60557",
     "0x-mesh": {
+      "enabled": true,
       "bootstrapList": [
         "/ip4/127.0.0.1/tcp/60558/ipfs/16Uiu2HAmRMgvPQV2UYKXuuCnNaFLpc36PhLp2UKVcL1ePseVcz4y",
-        "/ip4/127.0.0.1/tcp/60559/ws/ipfs/16Uiu2HAmRMgvPQV2UYKXuuCnNaFLpc36PhLp2UKVcL1ePseVcz4y"
+        "/ip4/127.0.0.1/tcp/60559/ws/ipfs/16Uiu2HAmRMgvPQV2UYKXuuCnNaFLpc36PhLp2UKVcL1ePseVcz4y",
+        "/ip4/127.0.0.1/tcp/60558/ipfs/16Uiu2HAkvYHt2tTgdYHq88UySR1wGPX3xZJNyBpFUD3JCY683Up5",
+        "/ip4/127.0.0.1/tcp/60559/ws/ipfs/16Uiu2HAkvYHt2tTgdYHq88UySR1wGPX3xZJNyBpFUD3JCY683Up5"
       ]
     },
     "universe": null,

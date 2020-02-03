@@ -7,6 +7,7 @@ interface OpenOrdersHeaderProps {
   extendedView?: Boolean;
   showTotalCost?: Boolean;
   noRightMargin?: Boolean;
+  initialLiquidity?: Boolean;
 }
 
 const OpenOrdersHeader = (props: OpenOrdersHeaderProps) => (
@@ -14,7 +15,8 @@ const OpenOrdersHeader = (props: OpenOrdersHeaderProps) => (
     className={classNames(Styles.DataTableHeader, {
       [Styles.DataTableHeader__extended]: props.extendedView,
       [Styles.Extended]: props.showTotalCost,
-      [Styles.NoRightMargin]: props.noRightMargin
+      [Styles.NoRightMargin]: props.noRightMargin,
+      [Styles.InitialLiquidity]: props.initialLiquidity
     })}
   >
     <li>Outcome</li>
