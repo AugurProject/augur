@@ -11,6 +11,7 @@ export const UPDATE_MARKET_FROZEN_SHARES_VALUE =
   'UPDATE_MARKET_FROZEN_SHARES_VALUE';
 export const UPDATE_MARKET_ETH_BALANCE = 'UPDATE_MARKET_ETH_BALANCE';
 export const REMOVE_MARKET = 'REMOVE_MARKET';
+export const SET_MARKET_ORDERBOOK_DIRTY = 'SET_MARKET_ORDERBOOK_DIRTY';
 
 export interface UpdateMarketsAction {
   type: typeof UPDATE_MARKETS_DATA;
@@ -72,7 +73,13 @@ export const updateMarketEthBalance = (
     ethBalance,
   },
 });
+
 export const removeMarket = (marketId: string) => ({
   type: REMOVE_MARKET,
+  data: { marketId },
+});
+
+export const setMarketOrderBookDirty = (marketId: string) => ({
+  type: SET_MARKET_ORDERBOOK_DIRTY,
   data: { marketId },
 });

@@ -77,7 +77,6 @@ const mapDispatchToProps = dispatch => ({
   updateConnectionTray: value =>
   dispatch(updateAuthStatus(IS_CONNECTION_TRAY_OPEN, value)),
   showGlobalChat: () => dispatch(updateModal({type: MODAL_GLOBAL_CHAT})),
-  updateHelpMenuState: (isHelpMenuOpen) => dispatch(updateAppStatus(IS_HELP_MENU_OPEN, isHelpMenuOpen)),
   migrateV1Rep: () => dispatch(updateModal({ type: MODAL_MIGRATE_REP })),
 });
 

@@ -134,7 +134,7 @@ export default function setAlertText(alert: any, callback: Function) {
               marketInfo
             );
             const quantity = alert.params.unmatchedShares
-              ? alert.params.unmatchedShares
+              ? alert.params.unmatchedShares.value
               : convertOnChainAmountToDisplayAmount(
                   alert.params.amount,
                   createBigNumber(marketInfo.tickSize)

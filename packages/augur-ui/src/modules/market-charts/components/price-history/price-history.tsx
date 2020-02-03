@@ -39,7 +39,6 @@ interface PriceHistoryProps {
   pricePrecision: number;
   isTradingTutorial?: boolean;
   isMarketLoading?: boolean;
-  canHotload?: boolean;
 }
 
 const PriceHistory = ({
@@ -51,22 +50,19 @@ const PriceHistory = ({
   selectedOutcomeId,
   pricePrecision,
   isMarketLoading = false,
-  canHotload = false,
 }: PriceHistoryProps) => {
   const container = useRef(null);
   const options = getOptions({ maxPrice, minPrice, isScalar, pricePrecision });
   const { priceTimeSeries } = bucketedPriceTimeSeries;
 
   useEffect(() => {
-    if (isMarketLoading || canHotload) return NoDataToDisplay(Highcharts);
-
+    if (isMarketLoading) return NoDataToDisplay(Highcharts);
     const hasData =
       priceTimeSeries &&
       Object.keys(priceTimeSeries) &&
       Object.keys(priceTimeSeries).filter(
         key => priceTimeSeries[key].length > 0
       ).length;
-
     const series = handleSeries(priceTimeSeries, selectedOutcomeId, 0);
 
     if (isScalar && hasData) {
