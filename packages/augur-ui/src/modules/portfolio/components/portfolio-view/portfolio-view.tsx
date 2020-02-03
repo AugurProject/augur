@@ -9,6 +9,8 @@ import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs
 import ModulePane from 'modules/market/components/common/module-tabs/module-pane';
 import { SMALL_MOBILE } from 'modules/common/constants';
 import Styles from 'modules/portfolio/components/portfolio-view/portfolio-view.styles.less';
+import { PORTFOLIO_VIEW_HEAD_TAGS } from 'modules/seo/helmet-configs';
+import { HelmetTag } from 'modules/seo/helmet-tag';
 
 interface PortfolioViewProps {}
 
@@ -46,6 +48,7 @@ export default class PortfolioView extends React.Component<
 
     return (
       <div className={Styles.PortfolioView}>
+        <HelmetTag {...PORTFOLIO_VIEW_HEAD_TAGS} />
         <Media query={SMALL_MOBILE}>
           {matches =>
             matches ? (

@@ -1,7 +1,6 @@
 /* eslint-disable jsx-a11y/no-static-element-interaction */
 
 import React, { Component } from 'react';
-import { Helmet } from 'react-helmet';
 import classNames from 'classnames';
 import Media from 'react-media';
 
@@ -57,6 +56,8 @@ import makePath from 'modules/routes/helpers/make-path';
 import { MARKETS } from 'modules/routes/constants/views';
 import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
 import { Getters } from '@augurproject/sdk';
+import { HelmetTag } from 'modules/seo/helmet-tag';
+import { MARKET_VIEW_HEAD_TAGS } from 'modules/seo/helmet-configs';
 
 interface MarketViewProps {
   isMarketLoading: boolean;
@@ -615,9 +616,7 @@ export default class MarketView extends Component<
         })}
       >
         {tradingTutorial && <span />}
-        <Helmet>
-          <title>{parseMarketTitle(description)}</title>
-        </Helmet>
+        <HelmetTag {...MARKET_VIEW_HEAD_TAGS} title={parseMarketTitle(description)} ogTitle={parseMarketTitle(description)} twitterTitle={parseMarketTitle(description)} />
         <Media
           query={SMALL_MOBILE}
           onChange={matches => {
