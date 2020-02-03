@@ -195,6 +195,11 @@ export class MarketDB extends DerivedDB {
       .where('[market+outcome+orderType]')
       .anyOf(allOutcomesAllOrderTypes)
       .and((order) => order.amount > '0x00')
+      .and((order) => {
+        const expirationTimeSeconds = Number(order.signedOrder.expirationTimeSeconds);
+        const nowInSeconds = Math.round(+new Date() / 1000);
+        return expirationTimeSeconds - nowInSeconds > 70;
+      })
       .toArray();
 
     const currentOrdersByOutcome = _.groupBy(currentOrdersResponse, (order) => new BigNumber(order.outcome).toNumber());
