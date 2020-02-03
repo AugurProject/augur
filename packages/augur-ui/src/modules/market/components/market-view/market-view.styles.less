@@ -159,31 +159,42 @@ section[class*="OutcomesList"] {
   }
 }
 
-.OrderBook {
+.OrderBookAndHistory {
   grid-column: 3;
-  grid-row: 1 / span 3;
+  grid-row-start: 1;
+  grid-row-end: -1;
+  display: flex;
+  flex-flow: column nowrap;
 
   @media @breakpoint-tablet {
-    grid-column: 2 / span 1;
+    grid-column: 2 / span 2;
     grid-row: 4;
     overflow: auto;
+    flex-flow: row nowrap;
   }
 
-  > section {
+  > div {
+    flex: 1;
+  }
+
+  > div:first-of-type {
+    margin-bottom: @size-2;
+
+    > section {
+      .MarketViewBorders;
+    }
+
+    @media @breakpoint-tablet {
+      margin-bottom: 0;
+    }
+  }
+
+  > div:last-of-type {
     .MarketViewBorders;
-  }
-}
 
-.History {
-  .MarketViewBorders;
-
-  grid-column: 3;
-  grid-row-start: 4;
-  grid-row-end: -1;
-
-  @media @breakpoint-tablet {
-    grid-row-end: 4;
-    overflow: auto;
+    @media @breakpoint-tablet {
+      margin-left: @size-4;
+    }
   }
 }
 

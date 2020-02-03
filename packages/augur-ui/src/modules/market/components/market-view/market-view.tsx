@@ -995,63 +995,65 @@ export default class MarketView extends Component<
                         />
                       )}
                   </div>
-                  <div
-                    className={classNames(
-                      Styles.OrderBook,
-                      {
-                        [Styles.hide]: extendTradeHistory,
-                        [Styles.show]: extendOrderBook,
-                        [Styles.OrderBookTutorial]:
-                          tradingTutorial &&
-                          tutorialStep === TRADING_TUTORIAL_STEPS.ORDER_BOOK,
-                      }
-                    )}
-                  >
-                    <OrderBook
-                      updateSelectedOrderProperties={
-                        this.updateSelectedOrderProperties
-                      }
-                      marketId={marketId}
-                      selectedOutcomeId={outcomeId}
-                      toggle={this.toggleOrderBook}
-                      extend={extendOrderBook}
-                      hide={extendTradeHistory}
-                      market={market}
-                      initialLiquidity={preview}
-                      orderBook={outcomeOrderBook}
-                    />
-                    {tradingTutorial &&
-                      tutorialStep === TRADING_TUTORIAL_STEPS.ORDER_BOOK && (
-                        <TutorialPopUp
-                          right
-                          next={this.next}
-                          step={tutorialStep}
-                          totalSteps={totalSteps}
-                          text={TRADING_TUTORIAL_COPY[tutorialStep]}
-                        />
+                  <div className={Styles.OrderBookAndHistory}>
+                    <div
+                      className={classNames(
+                        Styles.OrderBook,
+                        {
+                          [Styles.hide]: extendTradeHistory,
+                          [Styles.show]: extendOrderBook,
+                          [Styles.OrderBookTutorial]:
+                            tradingTutorial &&
+                            tutorialStep === TRADING_TUTORIAL_STEPS.ORDER_BOOK,
+                        }
                       )}
-                  </div>
-                  <div
-                    className={classNames(
-                      Styles.History,
-                      {
-                        [Styles.hide]: extendOrderBook,
-                        [Styles.show]: extendTradeHistory,
-                      }
+                    >
+                      <OrderBook
+                        updateSelectedOrderProperties={
+                          this.updateSelectedOrderProperties
+                        }
+                        marketId={marketId}
+                        selectedOutcomeId={outcomeId}
+                        toggle={this.toggleOrderBook}
+                        extend={extendOrderBook}
+                        hide={extendTradeHistory}
+                        market={market}
+                        initialLiquidity={preview}
+                        orderBook={outcomeOrderBook}
+                      />
+                      {tradingTutorial &&
+                        tutorialStep === TRADING_TUTORIAL_STEPS.ORDER_BOOK && (
+                          <TutorialPopUp
+                            right
+                            next={this.next}
+                            step={tutorialStep}
+                            totalSteps={totalSteps}
+                            text={TRADING_TUTORIAL_COPY[tutorialStep]}
+                          />
+                        )}
+                    </div>
+                    <div
+                      className={classNames(
+                        Styles.History,
+                        {
+                          [Styles.hide]: extendOrderBook,
+                          [Styles.show]: extendTradeHistory,
+                        }
+                      )}
+                  >
+                    {(marketId || preview) && (
+                      <MarketTradeHistory
+                        marketId={marketId}
+                        outcome={outcomeId}
+                        toggle={this.toggleTradeHistory}
+                        extend={extendTradeHistory}
+                        marketType={market.marketType}
+                        hide={extendOrderBook}
+                        tradingTutorial={tradingTutorial}
+                        groupedTradeHistory={market.groupedTradeHistory}
+                      />
                     )}
-                >
-                  {(marketId || preview) && (
-                    <MarketTradeHistory
-                      marketId={marketId}
-                      outcome={outcomeId}
-                      toggle={this.toggleTradeHistory}
-                      extend={extendTradeHistory}
-                      marketType={market.marketType}
-                      hide={extendOrderBook}
-                      tradingTutorial={tradingTutorial}
-                      groupedTradeHistory={market.groupedTradeHistory}
-                    />
-                  )}
+                  </div>
                 </div>
                 </div>
                 {!tradingTutorial && (
