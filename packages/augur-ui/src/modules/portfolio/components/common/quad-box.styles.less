@@ -9,7 +9,7 @@
   flex: 1;
   min-height: 50%;
 
-  @media @breakpoint-mobile-new {
+  @media @breakpoint-mobile {
     background: unset;
     border: 0;
     padding-bottom: 0;
@@ -23,7 +23,7 @@
     display: flex;
     flex-direction: column;
 
-    @media @breakpoint-mobile-new {
+    @media @breakpoint-mobile {
       background: unset;
       max-height: calc(~"100vh - @{multi-top-bar-height-mobile}");
       min-height: calc(~"100vh - @{multi-top-bar-height-mobile}");
@@ -56,7 +56,7 @@
   display: none;
 }
 
-@media @breakpoint-mobile-new {
+@media @breakpoint-mobile {
   .NormalOnMobile {
     background: @color-module-background;
     border: 1px solid @color-dark-grey;
@@ -76,7 +76,7 @@
 }
 
 .MarketBox {
-  @media @breakpoint-mobile-new {
+  @media @breakpoint-mobile {
     border: 1px solid @color-dark-grey;
     margin-top: @size-8;
   }
