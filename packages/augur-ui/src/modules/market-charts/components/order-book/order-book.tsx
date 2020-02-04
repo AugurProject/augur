@@ -204,7 +204,7 @@ export default class OrderBook extends Component<
   render() {
     const { pricePrecision, toggle, hide, marketType, hasOrders, orderBook } = this.props;
     const {hoveredSide, hoveredOrderIndex} = this.state;
-    console.log(orderBook.spread);
+
     return (
       <section className={Styles.OrderBook}>
         <OrderHeader
