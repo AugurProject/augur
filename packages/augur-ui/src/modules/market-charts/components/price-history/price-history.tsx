@@ -63,7 +63,7 @@ const PriceHistory = ({
       Object.keys(priceTimeSeries).filter(
         key => priceTimeSeries[key].length > 0
       ).length;
-    const series = handleSeries(priceTimeSeries, selectedOutcomeId, 0);
+    const series = hasData && handleSeries(priceTimeSeries, selectedOutcomeId, 0);
 
     if (isScalar && hasData) {
       options.title.text = scalarDenomination;
@@ -80,7 +80,7 @@ const PriceHistory = ({
 
   useEffect(() => {
     Highcharts.charts.forEach(chart => {
-      if (chart) {
+      if (chart && priceTimeSeries) {
         const seriesUpdated = handleSeries(
           priceTimeSeries,
           selectedOutcomeId,
