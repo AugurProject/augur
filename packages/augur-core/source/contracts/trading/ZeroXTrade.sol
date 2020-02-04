@@ -271,7 +271,8 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155, CashSender {
         transferFromAllowed = false;
 
         if (address(this).balance > 0) {
-            msg.sender.call.value(address(this).balance);
+            (bool _success,) = msg.sender.call.value(address(this).balance)("");
+            require(_success);
         }
 
         return _fillAmountRemaining;
