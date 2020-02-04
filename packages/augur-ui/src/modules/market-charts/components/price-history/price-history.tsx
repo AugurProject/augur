@@ -38,7 +38,6 @@ interface PriceHistoryProps {
   selectedOutcomeId: number;
   pricePrecision: number;
   isTradingTutorial?: boolean;
-  isMarketLoading?: boolean;
 }
 
 const PriceHistory = ({
@@ -49,14 +48,13 @@ const PriceHistory = ({
   scalarDenomination = '',
   selectedOutcomeId,
   pricePrecision,
-  isMarketLoading = false,
 }: PriceHistoryProps) => {
   const container = useRef(null);
   const options = getOptions({ maxPrice, minPrice, isScalar, pricePrecision });
   const { priceTimeSeries } = bucketedPriceTimeSeries;
-
+  const hasPriceTimeSeries = !!priceTimeSeries && !!Object.keys(priceTimeSeries);
   useEffect(() => {
-    if (isMarketLoading) return NoDataToDisplay(Highcharts);
+    if (!hasPriceTimeSeries) return NoDataToDisplay(Highcharts);
     const hasData =
       priceTimeSeries &&
       Object.keys(priceTimeSeries) &&
@@ -76,7 +74,7 @@ const PriceHistory = ({
 
     const newOptions = Object.assign(options, { series });
     Highcharts.stockChart(container.current, newOptions);
-  }, [selectedOutcomeId, isMarketLoading]);
+  }, [selectedOutcomeId, hasPriceTimeSeries]);
 
   useEffect(() => {
     Highcharts.charts.forEach(chart => {
