@@ -43,9 +43,8 @@ ctx.addEventListener(
               },
             },
           };
+          
           ipfs = await IPFS.create(ipfsOptions);
-
-          trackNumberOfPeers();
           ctx.postMessage({ method: 'IPFS:started' });
           break;
         }

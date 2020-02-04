@@ -1037,37 +1037,39 @@ class Form extends Component<FromProps, FormState> {
               />
               {s.advancedOption === '1' && (
                 <>
-                  {s.expirationDateOption === EXPIRATION_DATE_OPTIONS.DAYS && (
-                    <TextInput
-                      value={s.fastForwardDays.toString()}
-                      placeholder={'0'}
+                  <div>
+                    {s.expirationDateOption === EXPIRATION_DATE_OPTIONS.DAYS && (
+                      <TextInput
+                        value={s.fastForwardDays.toString()}
+                        placeholder={'0'}
+                        onChange={value => {
+                          const days =
+                            value === '' || isNaN(value) ? 0 : parseInt(value);
+                          this.updateAndValidate(
+                            this.INPUT_TYPES.EXPIRATION_DATE,
+                            moment.unix(currentTimestamp).add(days, 'days')
+                          );
+                          this.setState({ fastForwardDays: days });
+                        }}
+                      />
+                    )}
+                    <SquareDropdown
+                      defaultValue={EXPIRATION_DATE_OPTIONS.DAYS}
+                      options={[
+                        {
+                          label: 'Days',
+                          value: EXPIRATION_DATE_OPTIONS.DAYS,
+                        },
+                        {
+                          label: 'Custom',
+                          value: EXPIRATION_DATE_OPTIONS.CUSTOM,
+                        },
+                      ]}
                       onChange={value => {
-                        const days =
-                          value === '' || isNaN(value) ? 0 : parseInt(value);
-                        this.updateAndValidate(
-                          this.INPUT_TYPES.EXPIRATION_DATE,
-                          moment.unix(currentTimestamp).add(days, 'days')
-                        );
-                        this.setState({ fastForwardDays: days });
+                        this.setState({ expirationDateOption: value });
                       }}
                     />
-                  )}
-                  <SquareDropdown
-                    defaultValue={EXPIRATION_DATE_OPTIONS.DAYS}
-                    options={[
-                      {
-                        label: 'Days',
-                        value: EXPIRATION_DATE_OPTIONS.DAYS,
-                      },
-                      {
-                        label: 'Custom',
-                        value: EXPIRATION_DATE_OPTIONS.CUSTOM,
-                      },
-                    ]}
-                    onChange={value => {
-                      this.setState({ expirationDateOption: value });
-                    }}
-                  />
+                  </div>
                   {s.expirationDateOption === EXPIRATION_DATE_OPTIONS.DAYS && (
                     <span>
                       {

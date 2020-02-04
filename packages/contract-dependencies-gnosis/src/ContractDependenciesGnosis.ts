@@ -212,7 +212,6 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
       txHash = await this.execTransactionDirectly(relayTransaction);
     }
 
-    let response = await this.provider.getTransaction(txHash);
 
     this.onTransactionStatusChanged(
       txMetadata,
@@ -220,7 +219,7 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
       txHash
     );
 
-    return response.wait();
+    return this.provider.waitForTransaction(txHash);
   }
 
   async sendDelegateTransaction(
@@ -249,8 +248,7 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
       TransactionStatus.PENDING,
       txHash
     );
-    const response = await this.provider.getTransaction(txHash);
-    return response.wait();
+    return this.provider.waitForTransaction(txHash);
   }
 
   async estimateGas(transaction: Transaction<BigNumber>): Promise<BigNumber> {
