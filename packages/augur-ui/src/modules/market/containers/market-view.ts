@@ -39,9 +39,10 @@ import {
   convertUnixToFormattedDate,
 } from 'utils/format-date';
 import { AppState } from 'store';
+import { loadMarketOrderBook } from 'modules/orders/actions/load-market-orderbook';
 
 const mapStateToProps = (state: AppState, ownProps) => {
-  const { connection, universe, modal, loginAccount } = state;
+  const { connection, universe, modal, loginAccount, orderBooks } = state;
   const marketId = parseQuery(ownProps.location.search)[MARKET_ID_PARAM_NAME];
   const queryOutcomeId = parseQuery(ownProps.location.search)[
     OUTCOME_ID_PARAM_NAME
@@ -93,6 +94,15 @@ const mapStateToProps = (state: AppState, ownProps) => {
     };
   }
 
+  let orderBook = null;
+  if (market && !tradingTutorial && !ownProps.preview) {
+    orderBook = orderBooks[marketId]
+  }
+
+  if (market && (tradingTutorial || ownProps.preview)) {
+    orderBook = market.orderBook;
+  }
+
   const daysPassed =
     market &&
     market.creationTime &&
@@ -100,9 +110,10 @@ const mapStateToProps = (state: AppState, ownProps) => {
       market.creationTime,
       selectCurrentTimestampInSeconds(state)
     );
-  
+
   return {
-    modalShowing: !!modal.type,
+    modalShowing: modal.type,
+    orderBook,
     daysPassed,
     isMarketLoading: false,
     preview: tradingTutorial || ownProps.preview,
@@ -123,13 +134,13 @@ const mapStateToProps = (state: AppState, ownProps) => {
       market.outcomesFormatted
     ),
     account: loginAccount.address,
-    orderBook: tradingTutorial && TUTORIAL_ORDER_BOOK || ownProps.orderBook,
   };
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
   hotloadMarket: marketId => hotloadMarket(marketId),
   loadMarketsInfo: marketId => dispatch(loadMarketsInfo([marketId])),
+  loadMarketOrderBook: marketId => dispatch(loadMarketOrderBook(marketId)),
   updateModal: modal => dispatch(updateModal(modal)),
   loadMarketTradingHistory: marketId =>
     dispatch(loadMarketTradingHistory(marketId)),
@@ -146,7 +157,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
         type: MODAL_MARKET_LOADING,
       })
     ),
-  closeMarketLoadingModal: () => dispatch(closeModal()),
+  closeMarketLoadingModalOnly: (type: string) => type === MODAL_MARKET_LOADING && dispatch(closeModal()),
   addAlert: alert => dispatch(addAlert(alert)),
   removeAlert: (id: string, name: string) => dispatch(removeAlert(id, name)),
 });

@@ -434,6 +434,7 @@ function wednesdayAfterOpeningNoFriday(
   endTime: number,
   ids: number[]
 ) {
+  if (!ids || ids.length === 0) return true;
   const afterTuesday: ExtraInfoTemplateInput = inputs.find(i =>
     ids && ids.includes(i.id)
   );

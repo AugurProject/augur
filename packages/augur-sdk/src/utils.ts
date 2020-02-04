@@ -385,3 +385,17 @@ export function marketNameToType(marketTypeName: MarketTypeName): MarketType {
       throw Error(`Invalid market type "${marketTypeName}"`);
   }
 }
+
+const TRADE_INTERVAL_VALUE = new BigNumber(10**19);
+const MIN_TRADE_INTERVAL = new BigNumber(10**14);
+
+export function getTradeInterval(minPrice: BigNumber, maxPrice: BigNumber, numTicks: BigNumber): BigNumber {
+  const displayRange = new BigNumber(maxPrice).minus(minPrice);
+  let displayAmount = TRADE_INTERVAL_VALUE.multipliedBy(10**18).div(displayRange);
+  let displayInterval = MIN_TRADE_INTERVAL;
+  while (displayInterval.lt(displayAmount)) {
+      displayInterval = displayInterval.multipliedBy(10);
+  }
+  displayAmount = displayInterval;
+  return displayInterval.multipliedBy(displayRange).div(numTicks).div(10**18);
+}

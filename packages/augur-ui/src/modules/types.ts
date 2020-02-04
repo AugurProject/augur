@@ -17,6 +17,7 @@ import { Getters, PayoutNumeratorValue } from '@augurproject/sdk';
 import { TransactionMetadataParams } from 'contract-dependencies-ethers/build';
 import { BigNumber } from 'utils/create-big-number';
 import { GnosisSafeState } from '@augurproject/gnosis-relay-api/build/GnosisRelayAPI';
+import { Template } from '@augurproject/artifacts';
 
 export enum SizeTypes {
   SMALL = 'small',
@@ -216,6 +217,34 @@ export interface QuantityOutcomeOrderBook {
   asks: QuantityOrderBookOrder[];
 }
 
+export interface OutcomeTestTradingOrder {
+  [outcomeId: number]: TestTradingOrder[];
+}
+export interface TestTradingOrder {
+  disappear: boolean;
+  avgPrice: FormattedNumber;
+  cumulativeShares: string;
+  id: string;
+  mySize: string;
+  orderEstimate: BigNumber;
+  outcomeId: string;
+  outcomeName: string;
+  price: string;
+  quantity: string;
+  shares: string;
+  sharesEscrowed: FormattedNumber;
+  tokensEscrowed: FormattedNumber;
+  type: string;
+  unmatchedShares: FormattedNumber;
+}
+export interface OrderBooks {
+  [marketId: string]: Getters.Markets.OutcomeOrderBook;
+}
+export interface IndividualOutcomeOrderBook {
+  spread: string | BigNumber | null;
+  bids: Getters.Markets.MarketOrderBookOrder[];
+  asks: Getters.Markets.MarketOrderBookOrder[];
+}
 export interface MyPositionsSummary {
   currentValue: FormattedNumber;
   totalPercent: FormattedNumber;
@@ -328,6 +357,7 @@ export interface NewMarket {
   currentStep: number;
   type: string;
   outcomes: string[];
+  outcomesFormatted: OutcomeFormatted[];
   scalarSmallNum: string;
   scalarBigNum: string;
   scalarDenomination: string;

@@ -138,7 +138,7 @@ export class FlashSession {
       },
       gnosis: {
         enabled: useGnosis,
-        http: 'http://localhost:8000/api/'
+        http: 'http://localhost:8888/api/'
       },
       zeroX: {
         rpc: {
@@ -173,6 +173,7 @@ export class FlashSession {
       // Create a ContractAPI for this user with this particular augur client. This provides
       // a variety of nice wrapper functions which we should think about exporting
       this.user = new ContractAPI(client, this.provider, client.dependencies, account);
+      this.user.augur.setGasPrice(new BigNumber(this.network.gasPrice.toString()));
 
       // IF we want this flash client to use a safe associated with the past in
       // account, configure it at this point.

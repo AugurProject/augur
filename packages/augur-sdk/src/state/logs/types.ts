@@ -269,6 +269,11 @@ export enum OrderType {
   Ask = 1,
 }
 
+export enum OrderTypeHex {
+  Bid = '0x00',
+  Ask = '0x01',
+}
+
 export enum OrderEventType {
   Create = 0,
   Cancel = 1,
@@ -435,6 +440,7 @@ export interface MarketData extends Log {
   liquidity: LiquidityData;
   feeDivisor: number;
   hasRecentlyDepletedLiquidity: boolean;
+  lastPassingLiquidityCheck: number;
   finalizationBlockNumber: string;
   finalizationTime: string;
   winningPayoutNumerators: string[];
@@ -450,6 +456,7 @@ export interface MarketData extends Log {
   isTemplate: boolean;
   feePercent: number;
   finalized: boolean;
+  lastTradedTimestamp: number;
 }
 
 export interface DisputeDoc extends Log {

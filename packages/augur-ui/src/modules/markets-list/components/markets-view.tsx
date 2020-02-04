@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Helmet } from 'react-helmet';
 import MarketsHeader from 'modules/markets-list/components/markets-header';
 import MarketsList from 'modules/markets-list/components/markets-list';
 import Styles from 'modules/markets-list/components/markets-view.styles.less';
@@ -18,6 +17,8 @@ import { MarketData } from 'modules/types';
 import { Getters } from '@augurproject/sdk';
 import classNames from 'classnames';
 import LandingHero from 'modules/markets-list/containers/landing-hero';
+import { HelmetTag } from 'modules/seo/helmet-tag';
+import { MARKETS_VIEW_HEAD_TAGS } from 'modules/seo/helmet-configs';
 
 const PAGINATION_COUNT = 10;
 
@@ -285,9 +286,7 @@ export default class MarketsView extends Component<
           this.componentWrapper = componentWrapper;
         }}
       >
-        <Helmet>
-          <title>Markets</title>
-        </Helmet>
+        <HelmetTag {...MARKETS_VIEW_HEAD_TAGS} />
         {!isLogged && !restoredAccount && <LandingHero />}
         <MarketsHeader
           location={location}

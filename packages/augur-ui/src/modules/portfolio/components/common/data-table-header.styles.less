@@ -81,7 +81,7 @@
   padding: 0 @size-24 0 @size-16;
 }
 
-@media @breakpoint-mobile-mid {
+@media @breakpoint-mobile {
   .DataTableHeader {
     grid-template-columns: repeat(3, 1fr);
     padding: @size-4 @size-32 @size-4 @size-12;
@@ -97,6 +97,11 @@
       &:nth-of-type(2) {
         justify-content: flex-start;
       }
+    }
+
+    &.InitialLiquidity {
+      grid-template-columns: repeat(5, 1fr);
+      padding-right: 1rem;
     }
   }
 
@@ -188,14 +193,3 @@
   }
 }
 
-@media @breakpoint-mobile-small {
-  .OutcomesHeader {
-    > li {
-      min-width: unset;
-
-      &:first-child {
-        min-width: 50px;
-      }
-    }
-  }
-}

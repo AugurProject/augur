@@ -192,7 +192,14 @@ export class ZeroX {
     return response ? response.ordersInfos : [];
   }
 
-  async getMeshOrders(tries: number = 10): Promise<OrderInfo[]> {
+  isReady(): boolean {
+    if (this.rpc) return true;
+    if (this.mesh) return true;
+    return false;
+  }
+
+  async getMeshOrders(tries: number = 15): Promise<OrderInfo[]> {
+
     var response;
     try {
       response = await this.mesh.getOrdersAsync();
@@ -206,6 +213,11 @@ export class ZeroX {
       else {
         response = undefined;
       }
+    }
+    if (response.ordersInfos.length < 1) {
+      console.log("Mesh retrying to fetch orders");
+      await sleep(tries < 12 ? 2000 : 250);
+      response = await this.getMeshOrders(tries - 1);
     }
     return response;
   }
@@ -424,6 +436,7 @@ export class ZeroX {
         return this._rpc.addOrdersAsync([order]);
       }
     } catch (error) {
+      console.log(error);
       return setTimeout(this.addOrder(order), 5000);
     }
   }

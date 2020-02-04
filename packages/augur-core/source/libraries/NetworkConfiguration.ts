@@ -49,7 +49,7 @@ const networks: NetworksToOptions = {
     isProduction: false,
     http:
       'https://eth-ropsten.alchemyapi.io/jsonrpc/Kd37_uEmJGwU6pYq6jrXaJXXi8u9IoOM',
-    privateKey: process.env.ROPSTEN_PRIVATE_KEY,
+    privateKey: process.env.ETHEREUM_PRIVATE_KEY,
     gasPrice: new ethers.utils.BigNumber(20 * 1000000000),
     gasLimit:
       typeof process.env.ETHEREUM_GAS_LIMIT === 'undefined'
@@ -60,8 +60,11 @@ const networks: NetworksToOptions = {
     isProduction: false,
     http:
       'https://eth-kovan.alchemyapi.io/jsonrpc/1FomA6seLdWDvpIRvL9J5NhwPHLIGbWA',
-    privateKey: process.env.KOVAN_PRIVATE_KEY,
-    gasPrice: new ethers.utils.BigNumber(1),
+    privateKey: process.env.ETHEREUM_PRIVATE_KEY,
+    gasPrice: (typeof process.env.ETHEREUM_GAS_PRICE_IN_NANOETH === 'undefined'
+      ? new ethers.utils.BigNumber(20)
+      : new ethers.utils.BigNumber(process.env.ETHEREUM_GAS_PRICE_IN_NANOETH!)
+    ).mul(new ethers.utils.BigNumber(1e9)),
     gasLimit:
       typeof process.env.ETHEREUM_GAS_LIMIT === 'undefined'
         ? new ethers.utils.BigNumber(7500000)
@@ -72,8 +75,11 @@ const networks: NetworksToOptions = {
     http:
       'https://eth-rinkeby.alchemyapi.io/jsonrpc/Kd37_uEmJGwU6pYq6jrXaJXXi8u9IoOM',
     ws: 'wss://rinkeby.augur.net/ethereum-ws',
-    privateKey: process.env.RINKEBY_PRIVATE_KEY,
-    gasPrice: new ethers.utils.BigNumber(31 * 1000000000),
+    privateKey: process.env.ETHEREUM_PRIVATE_KEY,
+    gasPrice: (typeof process.env.ETHEREUM_GAS_PRICE_IN_NANOETH === 'undefined'
+      ? new ethers.utils.BigNumber(20)
+      : new ethers.utils.BigNumber(process.env.ETHEREUM_GAS_PRICE_IN_NANOETH!)
+    ).mul(new ethers.utils.BigNumber(1e9)),
     gasLimit:
       typeof process.env.ETHEREUM_GAS_LIMIT === 'undefined'
         ? new ethers.utils.BigNumber(6900000)
@@ -83,7 +89,7 @@ const networks: NetworksToOptions = {
     isProduction: false,
     http: 'http://clique.ethereum.nodes.augur.net',
     privateKey:
-      process.env.CLIQUE_PRIVATE_KEY ||
+      process.env.ETHEREUM_PRIVATE_KEY ||
       'fae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a',
     gasPrice: new ethers.utils.BigNumber(1),
     gasLimit:
@@ -164,9 +170,7 @@ export class NetworkConfiguration {
       (network.privateKey === undefined || network.privateKey === null)
     ) {
       throw new Error(
-        `Network configuration for ${networkName} has no private key available. Check that this key is in the environment ${
-          networkName == 'environment' ? 'ETHEREUM' : networkName.toUpperCase()
-        }_PRIVATE_KEY`
+        `Network configuration for ${networkName} has no private key available. Check that this key is in the environment ETHEREUM_PRIVATE_KEY`
       );
     }
 

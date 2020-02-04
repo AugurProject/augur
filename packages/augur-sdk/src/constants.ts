@@ -91,11 +91,11 @@ export enum ControlMessageType {
 
 export const ETHER = new ethersUtils.BigNumber(10).pow(18);
 
-export const TRADE_GAS_BUFFER = new BigNumber("375000", 10);
+export const TRADE_GAS_BUFFER = new BigNumber("600000", 10);
 
 export const MAX_FILLS_PER_TX = new BigNumber("5", 10);
 
-export const MAX_GAS_LIMIT_FOR_TRADE = new BigNumber("4875000", 10);
+export const MAX_GAS_LIMIT_FOR_TRADE = new BigNumber("4000000", 10);
 
 export const PLACE_ORDER_NO_SHARES = {
   2: new BigNumber("547694", 10),
@@ -138,7 +138,7 @@ export const MALFORMED_OUTCOME = 'malformed outcome';
 
 export const INVALID_OUTCOME = 0;
 
-export const MAX_TRADE_GAS_PERCENTAGE_DIVISOR = 100; // gas cost must be less than 1% of trade's value
+export const MAX_TRADE_GAS_PERCENTAGE_DIVISOR = 100;
 
 export const DEFAULT_GAS_PRICE_IN_GWEI = 4;
 

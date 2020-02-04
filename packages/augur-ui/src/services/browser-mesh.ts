@@ -47,7 +47,7 @@ function createBrowserMeshRestartFunction(
   zeroX: ZeroX
 ) {
   return err => {
-    console.log('Browser mesh error: ', err.message, err.stack);
+    console.error('Browser mesh error: ', err.message, err.stack);
     if (
       err.message ===
       'timed out waiting for first block to be processed by Mesh node. Check your backing Ethereum RPC endpoint'

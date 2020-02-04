@@ -21,9 +21,9 @@
     > span {
       .mono-10-medium;
 
-      &:first-of-type {
-        .mono-10-bold;
+      text-transform: none;
 
+      &:first-of-type {
         color: @color-secondary-text;
       }
     }
@@ -57,9 +57,8 @@
 .AggregatePosition {
   .text-12-medium;
 
+  text-transform: capitalize;
   color: @color-primary-text;
-  padding-bottom: @size-4;
-  text-transform: uppercase;
   margin: @size-8 0 @size-10;
 
   &.short {
@@ -205,8 +204,8 @@
 
   .TooltipHint {
     > svg {
-      height: @size-16;
-      width: @size-16;
+      height: @size-12;
+      width: @size-12;
     }
   }
 }

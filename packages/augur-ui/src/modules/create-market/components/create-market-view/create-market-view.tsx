@@ -1,5 +1,4 @@
 import React from "react";
-import { Helmet } from "react-helmet";
 import { RouteComponentProps } from "react-router-dom";
 
 import { LANDING, SCRATCH, TEMPLATE } from "modules/create-market/constants";
@@ -14,6 +13,8 @@ import { CREATE_MARKET_FORM_PARAM_NAME } from "modules/routes/constants/param-na
 import makeQuery from "modules/routes/helpers/make-query";
 import makePath from "modules/routes/helpers/make-path";
 import { CREATE_MARKET } from "modules/routes/constants/views";
+import { CREATE_MARKET_VIEW_HEAD_TAGS } from 'modules/seo/helmet-configs';
+import { HelmetTag } from 'modules/seo/helmet-tag';
 
 interface CreateMarketViewProps extends RouteComponentProps<{}> {
   categoryStats: Getters.Markets.CategoryStats;
@@ -74,9 +75,7 @@ export default class CreateMarketView extends React.Component<
     const { categoryStats } = this.props;
     return (
       <section className={Styles.CreateMarketView}>
-        <Helmet>
-          <title>Create Market</title>
-        </Helmet>
+        <HelmetTag {...CREATE_MARKET_VIEW_HEAD_TAGS} />
         {page === LANDING &&
           <Landing categoryStats={categoryStats} updatePage={this.updatePage} />
         }
