@@ -393,10 +393,10 @@
 
   align-items: center;
   background-color: @color-secondary-action;
-  border: 1px solid @color-secondary-action-outline;
+  border: @size-1 solid @color-secondary-action;
   display: flex;
   flex-direction: row;
-  border-radius: @size-3;
+  border-radius: @border-radius-default;
 
   > input[type="number"] {
     background-color: @color-secondary-action;
@@ -409,11 +409,11 @@
   }
 
   &.error {
-    border: 1px solid fade(@color-error, 50%);
+    border: @size-1 solid fade(@color-error, 50%);
 
     &:focus-within,
     &:focus {
-      border: 1px solid fade(@color-error, 50%);
+      border: @size-1 solid fade(@color-error, 50%);
     }
   }
 
@@ -442,8 +442,12 @@
     font-size: @size-12;
   }
 
+  &:hover {
+    border: @size-1 solid @color-secondary-action-outline;
+  }
+
   &:focus-within {
-    border: 1px solid @color-secondary-action-outline;
+    border: @size-1 solid @color-secondary-action-outline;
 
     > input {
       border: 0;
