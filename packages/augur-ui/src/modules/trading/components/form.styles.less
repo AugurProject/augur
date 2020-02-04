@@ -365,6 +365,37 @@
   }
 }
 
+.ErrorClickable {
+  .Error;
+
+  > span:nth-of-type(2) {
+    .text-11;
+
+    color: @color-primary-text;
+    grid-column: 2;
+    text-transform: none;
+  }
+
+  > div {
+    grid-column: 2;
+    display: flex;
+    flex: 1;
+
+    > button {
+      width: 100%;
+      border: 1px solid @color-primary-text;
+
+      &:hover {
+        background: fade(@color-primary-text, .15);
+      }
+
+      &:first-of-type {
+        margin-right: @size-8;
+      }
+    }
+  }
+}
+
 .Outcome {
   padding: @size-12 @size-12 0;
 
