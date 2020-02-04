@@ -9,6 +9,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { TXEventName } from '@augurproject/sdk/src/constants';
 import { removeCanceledOrder } from 'modules/orders/actions/update-order-status';
+import { OPEN } from 'modules/common/constants';
 
 const { COLUMN_TYPES } = constants;
 
@@ -83,7 +84,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       showCountdown: true,
       expiry: openOrder.expiry,
       currentTimestamp: sP.currentTimestamp,
-      pending: isCanceling || openOrder.status,
+      pending: isCanceling || openOrder.status !== OPEN,
       status: isCanceling ? TXEventName.Pending : openOrder.status,
       action: async (e: Event) => {
         e.stopPropagation();
