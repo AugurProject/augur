@@ -453,7 +453,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
             }
           }
         }}
-        disabled={!trade || !trade.limitPrice || GnosisUnavailable || insufficientFunds}
+        disabled={!trade || !trade.limitPrice || GnosisUnavailable || (insufficientFunds && !initialLiquidity)}
       />
     );
     switch (true) {

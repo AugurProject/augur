@@ -238,7 +238,12 @@ export default class MarketView extends Component<
           type: MODAL_TUTORIAL_INTRO,
           next: this.next,
         });
-        this.setState({ introShowing: true });
+        this.setState({ 
+          introShowing: true,
+          selectedOrderProperties: {
+            ...tradingTutorial !== prevProps.tradingTutorial ? this.DEFAULT_ORDER_PROPERTIES : this.state.selectedOrderProperties,
+          }
+        });
       }
       return;
     }
