@@ -107,7 +107,7 @@
     grid-row-end: 4;
   }
 
-  > section {
+  > section:first-of-type {
     .MarketViewBorders;
   }
 }
@@ -183,7 +183,7 @@ section[class*="OutcomesList"] {
   > div:first-of-type {
     margin-bottom: @size-2;
 
-    > section {
+    > section:first-of-type {
       .MarketViewBorders;
     }
 
@@ -227,7 +227,7 @@ section[class*="OutcomesList"] {
 
   &.PlaceOrderTutorial {
     > section:last-of-type {
-      top: unset;
+      top: 320px;
     }
 
     > section:first-of-type > section > div:nth-of-type(2) {
@@ -257,7 +257,7 @@ section[class*="OutcomesList"] {
     }
 
     > section:last-of-type {
-      margin-top: 85px;
+      margin-top: 95px;
     }
   }
 
