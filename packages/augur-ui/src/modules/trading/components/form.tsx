@@ -122,7 +122,6 @@ interface FormState {
   expirationDate?: Moment;
   percentage: string;
   confirmationTimeEstimation: number;
-  multipleError: boolean;
 }
 
 class Form extends Component<FromProps, FormState> {
