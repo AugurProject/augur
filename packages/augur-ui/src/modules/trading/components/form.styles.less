@@ -166,9 +166,8 @@
         }
 
         // Order expiration dropdown
-        .div[class*="Normal"] {
+        > div[class*="Normal"] {
           height: @size-24;
-          justify-self: end;
 
           > button > span {
             padding: @size-5 @size-8 @size-5 0;
@@ -194,6 +193,13 @@
             }
           }
 
+          > div[class*="Normal"] {
+            height: @size-24;
+  
+            > button > span {
+              padding: @size-5 @size-8 @size-5 0;
+            }
+          }
         }
 
         > div[class*="DateTimeSelector"] {
