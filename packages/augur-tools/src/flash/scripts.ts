@@ -1146,6 +1146,7 @@ export function addScripts(flash: FlashSession) {
       const market = marketId ? markets.find(m => m.id === marketId) : markets[0];
 
       const direction = orderType === 'bid' || orderType === 'buy' ? '0' : '1';
+      const takeDirection = direction === '0' ? 1 : 0;
       let i = 0;
       for(i; i < limit; i++) {
         const orders = flattenZeroXOrders(await user.getOrders(market.id, direction, outcome));
@@ -1163,7 +1164,7 @@ export function addScripts(flash: FlashSession) {
           console.log('Take Order', order.amount, '@', order.price);
           const params: NativePlaceTradeDisplayParams = {
             market: market.id,
-            direction: Number(direction) as 0 | 1,
+            direction: takeDirection as 0 | 1,
             outcome: Number(outcome) as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7,
             numTicks: new BigNumber(market.numTicks),
             numOutcomes: market.numOutcomes,
