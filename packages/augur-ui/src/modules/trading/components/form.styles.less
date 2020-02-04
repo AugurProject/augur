@@ -165,28 +165,51 @@
           }
         }
 
-        > div[class*="TextInput"] > div > input {
-          .mono-12;
-
-          min-width: @size-36;
-          width: @size-36;
-          padding: 0 @size-8;
-          height: @size-24;
-        }
-
         // Order expiration dropdown
         > div[class*="Normal"] {
           height: @size-24;
-          justify-self: end;
 
           > button > span {
             padding: @size-5 @size-8 @size-5 0;
           }
         }
 
-        > div[class*="Normal"]:nth-of-type(2) {
+        // Order expiration date options
+        > div:nth-of-type(2):not([class*="Normal"]) {
+          display: inline-flex;
           grid-column: 3;
           justify-self: end;
+
+          // Day input
+          > div[class*="TextInput"] {
+          
+            > div > input {
+              .mono-12;
+    
+              min-width: @size-36;
+              width: @size-36;
+              height: @size-24;
+              margin-right: @size-4;
+              padding: 0 @size-8;
+              border: @size-1 solid @color-secondary-action;
+
+              &:hover {
+                border: @size-1 solid @color-secondary-action-outline;
+              }
+
+              &:focus-within {
+                border: @size-1 solid @color-secondary-action-outline;
+              }
+            }
+          }
+
+          > div[class*="Normal"] {
+            height: @size-24;
+  
+            > button > span {
+              padding: @size-5 @size-8 @size-5 0;
+            }
+          }
         }
 
         > div[class*="DateTimeSelector"] {
@@ -380,10 +403,10 @@
 
   align-items: center;
   background-color: @color-secondary-action;
-  border: 1px solid @color-secondary-action-outline;
+  border: @size-1 solid @color-secondary-action;
   display: flex;
   flex-direction: row;
-  border-radius: @size-3;
+  border-radius: @border-radius-default;
 
   > input[type="number"] {
     background-color: @color-secondary-action;
@@ -396,11 +419,11 @@
   }
 
   &.error {
-    border: 1px solid fade(@color-error, 50%);
+    border: @size-1 solid fade(@color-error, 50%);
 
     &:focus-within,
     &:focus {
-      border: 1px solid fade(@color-error, 50%);
+      border: @size-1 solid fade(@color-error, 50%);
     }
   }
 
@@ -429,8 +452,12 @@
     font-size: @size-12;
   }
 
+  &:hover {
+    border: @size-1 solid @color-secondary-action-outline;
+  }
+
   &:focus-within {
-    border: 1px solid @color-secondary-action-outline;
+    border: @size-1 solid @color-secondary-action-outline;
 
     > input {
       border: 0;
