@@ -85,14 +85,13 @@ export default function(
       return { ...pendingLiquidityOrders };
     }
     case UPDATE_LIQUIDITY_ORDER_STATUS: {
-      const { txParamHash, outcomeId, type, price, eventName, hash } = data;
+      const { txParamHash, outcomeId, type, price, eventName } = data;
       if (!pendingLiquidityOrders[txParamHash]) return pendingLiquidityOrders;
       if (!pendingLiquidityOrders[txParamHash][outcomeId])
         return pendingLiquidityOrders;
 
       pendingLiquidityOrders[txParamHash][outcomeId].map(order => {
-        if (order.type === type && order.price === price) {
-          order.hash = hash;
+        if (order.type === type && parseFloat(order.price) === parseFloat(price)) {
           order.status = eventName;
         }
       });
