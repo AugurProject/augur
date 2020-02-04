@@ -165,17 +165,8 @@
           }
         }
 
-        > div[class*="TextInput"] > div > input {
-          .mono-12;
-
-          min-width: @size-36;
-          width: @size-36;
-          padding: 0 @size-8;
-          height: @size-24;
-        }
-
         // Order expiration dropdown
-        > div[class*="Normal"] {
+        .div[class*="Normal"] {
           height: @size-24;
           justify-self: end;
 
@@ -184,9 +175,25 @@
           }
         }
 
-        > div[class*="Normal"]:nth-of-type(2) {
+        // Order expiration date options
+        > div:nth-of-type(2):not([class*="Normal"]) {
+          display: inline-flex;
           grid-column: 3;
           justify-self: end;
+
+          > div[class*="TextInput"] {
+          
+            > div > input {
+              .mono-12;
+    
+              min-width: @size-36;
+              width: @size-36;
+              height: @size-24;
+              margin-right: @size-4;
+              padding: 0 @size-8;
+            }
+          }
+
         }
 
         > div[class*="DateTimeSelector"] {
