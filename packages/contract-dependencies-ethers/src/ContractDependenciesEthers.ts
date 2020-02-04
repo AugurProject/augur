@@ -19,6 +19,7 @@ export interface EthersProvider {
   getBalance(address: string): Promise<ethers.utils.BigNumber>;
   getGasPrice(): Promise<ethers.utils.BigNumber>;
   getTransaction(hash: string): Promise<TransactionResponse>;
+  waitForTransaction(hash: string, confirmations?: number): Promise<ethers.providers.TransactionReceipt>;
   //sendAsync(payload: JSONRPCRequestPayload): Promise<any>;
 }
 
