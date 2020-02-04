@@ -936,7 +936,7 @@ export default class MarketView extends Component<
                       market={preview && market}
                       preview={preview}
                       orderBook={outcomeOrderBook}
-                      isMarketLoading={isMarketLoading || modalShowing}
+                      isMarketLoading={isMarketLoading || !!modalShowing}
                       canHotload={canHotload}
                     />
                   </div>
