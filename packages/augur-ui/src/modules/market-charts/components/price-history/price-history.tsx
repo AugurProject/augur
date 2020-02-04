@@ -63,7 +63,7 @@ const PriceHistory = ({
       Object.keys(priceTimeSeries).filter(
         key => priceTimeSeries[key].length > 0
       ).length;
-    const series = handleSeries(priceTimeSeries, selectedOutcomeId, 0);
+    const series = hasData && handleSeries(priceTimeSeries, selectedOutcomeId, 0);
 
     if (isScalar && hasData) {
       options.title.text = scalarDenomination;

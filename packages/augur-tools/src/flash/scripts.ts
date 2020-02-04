@@ -1851,6 +1851,7 @@ export function addScripts(flash: FlashSession) {
     name: 'network-id',
     async call(this: FlashSession): Promise<string> {
       if (this.noProvider()) return null;
+
       const networkId = await this.provider.getNetworkId();
       console.log(networkId);
       return networkId;
