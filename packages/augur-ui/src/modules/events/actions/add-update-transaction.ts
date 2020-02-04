@@ -19,12 +19,9 @@ import {
   CATEGORICAL,
   SCALAR,
   YES_NO,
-  PUBLICCREATEORDER,
-  PUBLICCREATEORDERS,
   PUBLICFILLORDER,
   BUYPARTICIPATIONTOKENS,
   MODAL_WALLET_ERROR,
-  ACCOUNT_TYPES,
 } from 'modules/common/constants';
 import { UIOrder, CreateMarketData } from 'modules/types';
 import { convertTransactionOrderToUIOrder } from 'modules/events/actions/transaction-conversions';
@@ -44,17 +41,10 @@ import { convertUnixToFormattedDate } from 'utils/format-date';
 import { TransactionMetadataParams } from 'contract-dependencies-ethers/build';
 import { generateTxParameterId } from 'utils/generate-tx-parameter-id';
 import { updateLiqTransactionParamHash } from 'modules/orders/actions/liquidity-management';
-import {
-  setLiquidityMultipleOrdersStatus,
-  deleteMultipleLiquidityOrders,
-  setLiquidityOrderStatus,
-  deleteLiquidityOrder,
-} from 'modules/events/actions/liquidity-transactions';
 import { addAlert, updateAlert } from 'modules/alerts/actions/alerts';
 import { getDeconstructedMarketId } from 'modules/create-market/helpers/construct-market-params';
 import { orderCreated } from 'services/analytics/helpers';
 import { updateModal } from 'modules/modal/actions/update-modal';
-import { augurSdk } from 'services/augursdk';
 import { updateAppStatus, GNOSIS_STATUS } from 'modules/app/actions/update-app-status';
 import { GnosisSafeState } from '@augurproject/gnosis-relay-api/src/GnosisRelayAPI';
 
@@ -164,28 +154,6 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
           );
         }
 
-        break;
-      }
-      case PUBLICCREATEORDERS: {
-        const { marketInfos } = getState();
-        const marketId = transaction.params[TX_MARKET_ID];
-        const market = marketInfos[marketId];
-        setLiquidityMultipleOrdersStatus(txStatus, market, dispatch);
-
-        if (eventName === TXEventName.Success) {
-          deleteMultipleLiquidityOrders(txStatus, market, dispatch);
-        }
-        break;
-      }
-      case PUBLICCREATEORDER: {
-        const { marketInfos } = getState();
-        const marketId = transaction.params[TX_MARKET_ID];
-        const market = marketInfos[marketId];
-        setLiquidityOrderStatus(txStatus, market, dispatch);
-
-        if (eventName === TXEventName.Success) {
-          deleteLiquidityOrder(txStatus, market, dispatch);
-        }
         break;
       }
       case PUBLICTRADE: {
