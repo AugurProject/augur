@@ -38,7 +38,7 @@ import { ContractAPI } from '../libs/contract-api';
 import { OrderBookShaper } from './orderbook-shaper';
 import { NumOutcomes, TradeDirection } from '@augurproject/sdk/src/state/logs/types';
 import { flattenZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
-import { sleep } from "@augurproject/sdk/build/state/utils/utils";
+import { sleep } from '@augurproject/sdk/build/state/utils/utils';
 
 export function addScripts(flash: FlashSession) {
   flash.addScript({
@@ -418,8 +418,8 @@ export function addScripts(flash: FlashSession) {
 
       await this.call('init-warp-sync', {});
       await this.call('add-eth-exchange-liquidity', {
-        ethAmount: "10",
-        cashAmount: "1000"
+        ethAmount: '1000',
+        cashAmount: '150000'
       });
       return createCannedMarkets(user);
     },
@@ -428,7 +428,7 @@ export function addScripts(flash: FlashSession) {
   flash.addScript({
     name: 'create-canned-markets-with-orders',
     async call(this: FlashSession) {
-      const user = await this.ensureUser();
+      await this.ensureUser();
       const markets = await this.call('create-canned-markets', {});
       for(let i = 0; i < markets.length; i++) {
         const createdMarket = markets[i];
@@ -833,9 +833,9 @@ export function addScripts(flash: FlashSession) {
       const meshEndpoint = args.meshEndpoint ? String(args.meshEndpoint) : 'ws://localhost:60557';
       const user: ContractAPI = await this.ensureUser(null, true, true, userAccount, meshEndpoint, true);
       const timestamp = await user.getTimestamp();
-      const ids: string[] = []
+      const ids: string[] = [];
       for(let i = 0; i < numMarkets; i++) {
-        const title = `YesNo market: ${timestamp} Number ${i} with orderbook mgr`
+        const title = `YesNo market: ${timestamp} Number ${i} with orderbook mgr`;
         const market: ContractInterfaces.Market = await user.createReasonableYesNoMarket(title);
         ids.push(market.address);
       }
@@ -913,7 +913,7 @@ export function addScripts(flash: FlashSession) {
             this.log(`creating ${orders.length} orders for ${marketId}`);
             for (let j = 0; j < orders.length; j++) {
               const order = orders[j];
-              console.log(`Creating ${order.displayAmount} at ${order.displayPrice}`)
+              console.log(`Creating ${order.displayAmount} at ${order.displayPrice}`);
               await user.placeZeroXOrder(order).catch(this.log);
             }
           }
@@ -1123,9 +1123,9 @@ export function addScripts(flash: FlashSession) {
     async call(this: FlashSession, args :FlashArguments) {
       const skipFaucet = args.skipFaucet as boolean;
       const address = args.userAccount ? String(args.userAccount) : null;
-      let marketId = args.market ? String(args.market) : null;
-      let limit = args.limit ? Number(args.limit) : 86400000; // go for a really long time
-      const orderType = args.orderType ? String(args.orderType) : 'bid'
+      const marketId = args.market ? String(args.market) : null;
+      const limit = args.limit ? Number(args.limit) : 86400000; // go for a really long time
+      const orderType = args.orderType ? String(args.orderType) : 'bid';
       const outcome = args.outcome ? Number(args.outcome) : 2;
       const wait = Number(String(args.wait)) || 1;
 
@@ -1176,7 +1176,7 @@ export function addScripts(flash: FlashSession) {
             displayMaxPrice: new BigNumber(market.maxPrice),
             displayMinPrice: new BigNumber(market.minPrice),
             displayShares: new BigNumber(0),
-          }
+          };
           await user.augur.placeTrade(params).catch(e => console.error(e));
         }
         await sleep(wait * 1000);
@@ -1201,8 +1201,9 @@ export function addScripts(flash: FlashSession) {
         time_controlled: true,
       });
       const createMarkets = args.createMarkets as boolean;
-      if (createMarkets)
+      if (createMarkets) {
         await this.call('create-canned-markets', {});
+      }
     },
   });
 
@@ -1223,8 +1224,9 @@ export function addScripts(flash: FlashSession) {
         time_controlled: false,
       });
       const createMarkets = args.createMarkets as boolean;
-      if (createMarkets)
+      if (createMarkets) {
         await this.call('create-canned-markets', {});
+      }
     },
   });
 
