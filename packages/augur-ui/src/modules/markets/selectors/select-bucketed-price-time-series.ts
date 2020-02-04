@@ -30,7 +30,7 @@ export const bucketedPriceTimeSeries = createCachedSelector(
   selectMarketsDataStateMarket,
   selectMarketTradingHistoryStateMarket,
   (currentTimestamp, marketData, marketTradeHistory) => {
-    if (marketData === null) return [];
+    if (marketData === null || !marketData.creationTime) return {};
 
     const creationTime = convertUnixToFormattedDate(
       marketData.creationTime
