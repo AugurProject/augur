@@ -138,7 +138,7 @@ export const MALFORMED_OUTCOME = 'malformed outcome';
 
 export const INVALID_OUTCOME = 0;
 
-export const MAX_TRADE_GAS_PERCENTAGE_DIVISOR = 100; // gas cost must be less than 1% of trade's value
+export const MAX_TRADE_GAS_PERCENTAGE_DIVISOR = 100;
 
 export const DEFAULT_GAS_PRICE_IN_GWEI = 4;
 

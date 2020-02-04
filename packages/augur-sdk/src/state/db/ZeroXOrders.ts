@@ -6,6 +6,7 @@ import { Augur } from '../../Augur';
 import { DB } from './DB';
 import { MarketData, MarketType } from '../logs/types';
 import { OrderEventType } from '../../constants';
+import { getTradeInterval } from '../../utils';
 import { OrderInfo, OrderEvent, BigNumber } from '@0x/mesh-rpc-client';
 import { getAddress } from 'ethers/utils/address';
 import { defaultAbiCoder, ParamType } from 'ethers/utils';
@@ -22,8 +23,6 @@ import { sleep } from '../utils/utils';
 const EXPECTED_ASSET_DATA_LENGTH = 2122;
 
 const DEFAULT_TRADE_INTERVAL = new BigNumber(10**17);
-const TRADE_INTERVAL_VALUE = new BigNumber(10**19);
-const MIN_TRADE_INTERVAL = new BigNumber(10**14);
 
 const MAX_STARTUP_TIME = 10000; // 10 seconds for some sort of 0x connection to be established
 
@@ -165,6 +164,7 @@ export class ZeroXOrders extends AbstractTable {
         documents = _.filter(documents, (orderEvent => orderEvent.orderHash !== d.orderHash));
         this.table.where('orderHash').equals(d.orderHash).delete();
         this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Cancel, orderId: d.orderHash,...d});
+        this.augur.events.emit('DB:updated:ZeroXOrders', {eventType: OrderEventType.Cancel, orderId: d.orderHash,...d});
       }
     }
 
@@ -178,6 +178,18 @@ export class ZeroXOrders extends AbstractTable {
     await this.bulkUpsertDocuments(documents);
     for (const d of documents) {
       const eventType = filledOrders[d.orderHash] ? OrderEventType.Fill : OrderEventType.Create;
+      if (eventType === OrderEventType.Create) {
+        const orders: OrderInfo[] = await this.augur.zeroX.getOrders();
+        const orderExists = Boolean(orders.find(order => order.orderHash === d.orderHash));
+
+        // on Create, if we already have the orderHash in the zeroXOrders table don't emit updated event
+        if (!orderExists) {
+          // New Orders
+          this.augur.events.emit('DB:updated:ZeroXOrders', {eventType, orderId: d.orderHash,...d});
+        }
+      } else {
+        this.augur.events.emit('DB:updated:ZeroXOrders', {eventType, orderId: d.orderHash,...d});
+      }
       this.augur.events.emit('OrderEvent', {eventType, orderId: d.orderHash,...d});
     }
   }
@@ -202,6 +214,7 @@ export class ZeroXOrders extends AbstractTable {
       _.each(documents, (doc) => { delete this.pastOrders[doc.orderHash] });
       documents = documents.concat(_.values(this.pastOrders));
       await this.bulkUpsertDocuments(documents);
+      this.augur.events.emit('DB:get:ZeroXOrders', marketIds);
       for (const d of documents) {
         this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Create, ...d});
       }
@@ -228,7 +241,8 @@ export class ZeroXOrders extends AbstractTable {
     let tradeInterval = DEFAULT_TRADE_INTERVAL;
     const marketData = markets[storedOrder.market];
     if (marketData && marketData.marketType == MarketType.Scalar) {
-      tradeInterval = BigNumber.max(TRADE_INTERVAL_VALUE.dividedBy(marketData.numTicks).dividedBy(MIN_TRADE_INTERVAL).multipliedBy(MIN_TRADE_INTERVAL), MIN_TRADE_INTERVAL);
+      // NOTE: If this ends up causing order validation to be too slow we could calc and store this on market creation
+      tradeInterval = getTradeInterval(new BigNumber(marketData.prices[0]), new BigNumber(marketData.prices[1]), new BigNumber(marketData.numTicks));
     }
     if (!storedOrder['numberAmount'].mod(tradeInterval).isEqualTo(0)) return false;
 
@@ -236,6 +250,7 @@ export class ZeroXOrders extends AbstractTable {
       console.log('Deleting filled order');
       this.table.where('orderHash').equals(storedOrder.orderHash).delete();
       this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Fill, orderId: storedOrder.orderHash,...storedOrder});
+      this.augur.events.emit('DB:updated:ZeroXOrders', {eventType: OrderEventType.Fill, orderId: storedOrder.orderHash,...storedOrder});
       return false;
     }
 

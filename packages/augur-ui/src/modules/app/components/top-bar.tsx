@@ -66,7 +66,7 @@ const TopBar: React.FC<TopBarProps> = ({
         </div>
       )}
       <div>
-        {(!isLogged) && <HelpResources />}
+        {(!isLogged && !restoredAccount) && <HelpResources />}
         {!isLogged && !restoredAccount && (
           <SecondaryButton action={() => loginModal()} text={'Login'} />
         )}

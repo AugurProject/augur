@@ -170,6 +170,8 @@ describe('Augur API :: ZeroX :: ', () => {
       const amount = new BigNumber(100);
       const zero = new BigNumber(0);
 
+      await (await johnDB).sync(john.augur, mock.constants.chunkSize, 0);
+
       // No orders and a do not create orders param means nothing happens
       let simulationData = await john.simulateBasicZeroXYesNoTrade(
         0,
@@ -454,6 +456,8 @@ describe('Augur API :: ZeroX :: ', () => {
       const price = new BigNumber(0.4);
       const amount = new BigNumber(100);
       const zero = new BigNumber(0);
+
+      await (await johnDB).sync(john.augur, mock.constants.chunkSize, 0);
 
       // No orders and a do not create orders param means nothing happens
       let simulationData = await john.simulateBasicZeroXYesNoTrade(

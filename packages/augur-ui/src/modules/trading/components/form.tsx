@@ -21,7 +21,7 @@ import { TextInput } from 'modules/common/form';
 import getPrecision from 'utils/get-number-precision';
 import convertExponentialToDecimal from 'utils/convert-exponential';
 import { MarketData, OutcomeFormatted } from 'modules/types';
-import { convertDisplayAmountToOnChainAmount, tickSizeToNumTickWithDisplayPrices, Getters } from '@augurproject/sdk';
+import { convertDisplayAmountToOnChainAmount, tickSizeToNumTickWithDisplayPrices, getTradeInterval, QUINTILLION, Getters } from '@augurproject/sdk';
 import { CancelTextButton, TextButtonFlip } from 'modules/common/buttons';
 import moment, { Moment } from 'moment';
 import { convertUnixToFormattedDate } from 'utils/format-date';
@@ -308,16 +308,19 @@ class Form extends Component<FromProps, FormState> {
 
     let tradeInterval = DEFAULT_TRADE_INTERVAL;
     if (market.marketType == SCALAR) {
-      tradeInterval = BigNumber.max(TRADE_INTERVAL_VALUE.dividedBy(numTicks).dividedToIntegerBy(10**14).multipliedBy(10**14), 10**14);
+      tradeInterval = getTradeInterval(
+        createBigNumber(market.minPrice).times(QUINTILLION),
+        createBigNumber(market.maxPrice).times(QUINTILLION),
+        numTicks);
     }
 
     if (!convertDisplayAmountToOnChainAmount(value, market.tickSize).mod(tradeInterval).isEqualTo(0)) {
       errorCount += 1;
       passedTest = false;
-      const multiplOf = tradeInterval.dividedBy(market.tickSize).dividedBy(10**18);
-      const nearValue = createBigNumber(value).times(multiplOf);
+      const multipleOf = tradeInterval.dividedBy(market.tickSize).dividedBy(10**18);
+      const nearValue = BigNumber.maximum(createBigNumber(value).dividedToIntegerBy(multipleOf).times(multipleOf), multipleOf);
       errors[this.INPUT_TYPES.QUANTITY].push(
-          `Quantity must be a multiple of ${multiplOf}, try ${nearValue}`
+          `Quantity must be a multiple of ${multipleOf}, try ${nearValue}`
         );
     }
 

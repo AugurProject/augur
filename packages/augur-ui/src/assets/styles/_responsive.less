@@ -31,8 +31,6 @@
 // Helper Breakpoints
 // Smallish desktop (up to step 2-0)
 @breakpoint-smallish-desktop: ~"all and (max-width: @{step-2-0})";
-//	Mobile (up to step-2-2)
-@breakpoint-mobile: ~"all and (max-width: @{step-2-25})";
 // Mobile (up to step-2-25)
 @breakpoint-mobile-mid: ~"all and (max-width: @{step-2-25})"; // 900 TODO: THIS IS THE 768 one that design has in their mock, using it for now
 // Mobile (up to step-1)
@@ -59,7 +57,7 @@
 @desktop-max: 1680px;
 @desktop-large: 2000px;
 
-@breakpoint-mobile-new: ~"all and (max-width: @{mobile})";
+@breakpoint-mobile: ~"all and (max-width: @{mobile})";
 @breakpoint-tablet: ~"all and (min-width: @{tablet-min}) and (max-width: @{tablet-max})";
 @breakpoint-mobile-tablet: ~"all and (max-width: @{tablet-max})";
 @breakpoint-desktop: ~"all and (min-width: @{desktop-min}) and (max-width: @{desktop-max})";

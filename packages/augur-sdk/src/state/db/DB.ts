@@ -3,7 +3,6 @@ import { SubscriptionEventName } from '../../constants';
 import Dexie from 'dexie';
 import { SyncableDB } from './SyncableDB';
 import { SyncStatus } from './SyncStatus';
-//import { LiquidityDB, LiquidityLastUpdated, MarketHourlyLiquidity } from './LiquidityDB';
 import { DisputeDatabase } from './DisputeDB';
 import { CurrentOrdersDatabase } from './CurrentOrdersDB';
 import { MarketDB } from './MarketDB';
@@ -64,7 +63,6 @@ export class DB {
   private networkId: number;
   private blockstreamDelay: number;
   private syncableDatabases: { [dbName: string]: SyncableDB } = {};
-  //private liquidityDatabase: LiquidityDB;
   private disputeDatabase: DisputeDatabase;
   private currentOrdersDatabase: CurrentOrdersDatabase;
   private marketDatabase: MarketDB;
@@ -166,9 +164,6 @@ export class DB {
     for (const genericEventDBDescription of this.genericEventDBDescriptions) {
       new SyncableDB(this.augur, this, networkId, genericEventDBDescription.EventName, genericEventDBDescription.EventName, genericEventDBDescription.indexes);
     }
-
-    // TODO this.liquidityDatabase = new LiquidityDB(this.augur, this, networkId, 'Liquidity');
-
     // Custom Derived DBs here
     this.disputeDatabase = new DisputeDatabase(this, networkId, 'Dispute', ['InitialReportSubmitted', 'DisputeCrowdsourcerCreated', 'DisputeCrowdsourcerContribution', 'DisputeCrowdsourcerCompleted'], this.augur);
     this.currentOrdersDatabase = new CurrentOrdersDatabase(this, networkId, 'CurrentOrders', ['OrderEvent'], this.augur);
@@ -257,11 +252,6 @@ export class DB {
 
     // The Market DB syncs after the derived DBs, as it depends on a derived DB
     await this.marketDatabase.sync(highestAvailableBlockNumber);
-
-    // Update LiquidityDatabase and set it to update whenever there's a new block
-    //await this.liquidityDatabase.updateLiquidity(augur, this, (await augur.getTimestamp()).toNumber());
-
-    //this.augur.events.on(SubscriptionEventName.NewBlock, (args) => this.liquidityDatabase.updateLiquidity(this.augur, this, args.timestamp));
     console.log('Syncing Complete - SDK Ready');
     this.augur.events.emit(SubscriptionEventName.SDKReady, {
       eventName: SubscriptionEventName.SDKReady,
@@ -395,53 +385,4 @@ export class DB {
   get Dispute() { return this.dexieDB['Dispute'] as Dexie.Table<DisputeDoc, any>; }
   get CurrentOrders() { return this.dexieDB['CurrentOrders'] as Dexie.Table<CurrentOrder, any>; }
   get ZeroXOrders() { return this.dexieDB['ZeroXOrders'] as Dexie.Table<StoredOrder, any>; }
-
-  /**
-   * Queries the Liquidity DB for hourly liquidity of markets
-   *
-   * @param {number} currentTimestamp Timestamp of the latest block
-   * @param {string?} marketIds Array of market IDs to filter by
-   * @returns {Promise<MarketHourlyLiquidity[]>}
-   */
-  /*
-  async findRecentMarketsLiquidityDocs(currentTimestamp: number, marketIds?: string[]): Promise<MarketHourlyLiquidity[]> {
-    const secondsPerHour = SECONDS_IN_AN_HOUR.toNumber();
-    const mostRecentOnTheHourTimestamp = currentTimestamp - (currentTimestamp % secondsPerHour);
-    const selectorConditions: any[] = [
-      { _id: { $ne: 'lastUpdated' } },
-      { timestamp: { $gte: mostRecentOnTheHourTimestamp - (SECONDS_IN_A_DAY).toNumber() } },
-    ];
-    if (marketIds) {
-      selectorConditions.push(
-        { market: { $in: marketIds } }
-      );
-    }
-    const marketsLiquidity = await this.liquidityDatabase.find({
-      selector: {
-        $and: selectorConditions,
-      },
-    });
-
-    return marketsLiquidity.docs as unknown as MarketHourlyLiquidity[];
-  }
-  */
-  /**
-   * Queries the Liquidity DB for hourly liquidity of all markets
-   *
-   * @returns {Promise<number|undefined>}
-   */
-  /*
-  async findLiquidityLastUpdatedTimestamp(): Promise<number|undefined> {
-    const lastUpdatedResults = await this.liquidityDatabase.find({
-      selector: {
-        _id: { $eq: 'lastUpdated' },
-      },
-    });
-    const lastUpdatedDocs = lastUpdatedResults.docs as unknown as LiquidityLastUpdated[];
-    if (lastUpdatedDocs.length > 0) {
-      return lastUpdatedDocs[0].timestamp;
-    }
-    return undefined;
-  }
-  */
 }
