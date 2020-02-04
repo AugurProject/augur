@@ -80,7 +80,7 @@ const PriceHistory = ({
 
   useEffect(() => {
     Highcharts.charts.forEach(chart => {
-      if (chart && priceTimeSeries) {
+      if (chart) {
         const seriesUpdated = handleSeries(
           priceTimeSeries,
           selectedOutcomeId,
