@@ -7,11 +7,13 @@ import { ArgumentParser } from 'argparse';
 import { NetworkConfiguration, NETWORKS } from '@augurproject/core';
 import { Addresses } from '@augurproject/artifacts';
 import { computeAddress } from 'ethers/utils';
+import * as fs from 'fs';
 
 interface Args {
-  mode: 'interactive'|'run';
   command?: string;
   network?: NETWORKS | 'none';
+  key?: string;
+  keyfile?: string;
   [commandArgument: string]: string;
 }
 
@@ -26,6 +28,18 @@ function parse(flash: FlashSession): Args {
     {
       help: `Name of network to run on. Use "none" for commands that don't use a network.`,
       defaultValue: 'environment', // local node
+    }
+  );
+  parser.addArgument(
+    [ '-k', '--key' ],
+    {
+      help: 'Private key to use. Overrides envvar, if set.',
+    }
+  );
+  parser.addArgument(
+    [ '--keyfile' ],
+    {
+      help: 'File containing private key to use. Overrides envvar, if set.',
     }
   );
 
@@ -101,32 +115,48 @@ function makeVorpalCLI(flash: FlashSession): Vorpal {
   return vorpal;
 }
 
+function accountFromPrivateKey(key: string): Account {
+  key = cleanKey(key);
+  return {
+    secretKey: key,
+    publicKey: computeAddress(key),
+    balance: 0, // not used here; only for ganache premining
+  }
+}
+
+function cleanKey(key: string): string {
+  if (key.slice(0, 2) !== '0x') {
+    key = `0x${key}`;
+  }
+  if (key[key.length - 1] === '\n') {
+    key = key.slice(0, key.length - 1)
+  }
+  return key;
+}
+
 if (require.main === module) {
   (async () => {
-    let accounts: Account[];
-    if (process.env.ETHEREUM_PRIVATE_KEY) {
-      let key = process.env.ETHEREUM_PRIVATE_KEY;
-      if (key.slice(0, 2) !== '0x') {
-        key = `0x${key}`;
-      }
-
-      accounts = [
-        {
-          secretKey: key,
-          publicKey: computeAddress(key),
-          balance: 0,
-        },
-      ];
-    } else {
-      accounts = ACCOUNTS;
-    }
-
-    const flash = new FlashSession(accounts);
+    const flash = new FlashSession([]);
 
     addScripts(flash);
     addGanacheScripts(flash);
 
     const args = parse(flash);
+
+    // Figure out which private key to use.
+    if (args.key && args.keyfile) {
+      console.error('ERROR: Cannot specify both --key and --keyfile');
+      process.exit(1);
+    } else if (args.key) {
+      flash.accounts = [ accountFromPrivateKey(args.key) ];
+    } else if (args.keyfile) {
+      const key = await fs.readFileSync(args.keyfile).toString();
+      flash.accounts = [ accountFromPrivateKey(key) ];
+    } else if (process.env.ETHEREUM_PRIVATE_KEY) {
+      flash.accounts = [ accountFromPrivateKey(process.env.ETHEREUM_PRIVATE_KEY) ];
+    } else {
+      flash.accounts = ACCOUNTS;
+    }
 
     if (args.command === 'interactive') {
       const vorpal = makeVorpalCLI(flash);
