@@ -84,7 +84,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       showCountdown: true,
       expiry: openOrder.expiry,
       currentTimestamp: sP.currentTimestamp,
-      pending: isCanceling || openOrder.status !== OPEN,
+      pending: isCanceling || (openOrder.status && openOrder.status !== OPEN),
       status: isCanceling ? TXEventName.Pending : openOrder.status,
       action: async (e: Event) => {
         e.stopPropagation();
