@@ -418,8 +418,8 @@ export function addScripts(flash: FlashSession) {
 
       await this.call('init-warp-sync', {});
       await this.call('add-eth-exchange-liquidity', {
-        ethAmount: '1000',
-        cashAmount: '150000'
+        ethAmount: '4',
+        cashAmount: '600'
       });
       return createCannedMarkets(user);
     },
