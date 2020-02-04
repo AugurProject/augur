@@ -27,8 +27,12 @@ const addFundsPortis = async (amount) => {
   // TODO
 }
 
-const addFundsFortmatic = async (amount) => {
-  // TODO
+const addFundsFortmatic = async (amount, crypto, address) => {
+  await fm.user.deposit({
+    amount,
+    crypto,
+    address,
+  });
 }
 
 const addFundsTorus = async (amount) => {
@@ -43,12 +47,14 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
   track: (eventName, payload) => dispatch(track(eventName, payload)),
   addFundsTorus: (amount) => addFundsTorus(amount),
+  addFundsFortmatic: (amount, crypto, address) => addFundsFortmatic(amount, crypto, address),
 });
 
 const mergeProps = (sP, dP, oP) => {
   return {
     fundType: sP.modal.fundType,
     addFundsTorus: dP.addFundsTorus,
+    addFundsFortmatic: dP.addFundsFortmatic,
     analyticsEvent: () => dP.track(ADD_FUNDS, {}),
     closeAction: () => {
       if (sP.modal.cb) {
