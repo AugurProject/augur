@@ -9,7 +9,6 @@
 
 .Side {
   justify-content: flex-start;
-  // min-width: 325px;
   width: 100%;
   max-height: 45%;
   min-height: 150px;
@@ -84,13 +83,14 @@
       &:first-of-type {
         grid-column: 1 / span 1;
         color: @color-primary-text;
-        margin-left: auto;
+        margin-left: @size-40;
       }
 
       &:nth-of-type(2) {
         grid-column: 2 / span 1;
-        padding-right: @size-16;
+        // padding-right: @size-16;
         color: @color-positive;
+        text-align: center;
       }
 
       &:last-of-type {
@@ -143,13 +143,13 @@ div.NoOrders {
 }
 
 .Midmarket {
-  .mono-10-bold;
+  .mono-10-medium;
 
   border-bottom: 1px solid @color-dark-grey;
   border-top: 1px solid @color-dark-grey;
   background: @color-table-header;
   color: @color-secondary-text;
-  text-transform: uppercase;
+  text-transform: capitalize;
   height: @size-24;
   max-height: @size-24;
   min-height: @size-24;
