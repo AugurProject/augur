@@ -619,8 +619,8 @@ export class ContractAPI {
   }
 
   // TODO: Determine why ETH balance doesn't change when buying complete sets or redeeming reporting participants
-  async getEthBalance(): Promise<BigNumber> {
-    const balance = await this.provider.getBalance(this.account.publicKey);
+  async getEthBalance(owner?: string): Promise<BigNumber> {
+    const balance = await this.provider.getBalance(owner || this.account.publicKey);
     return new BigNumber(balance.toString());
   }
 
