@@ -180,6 +180,7 @@
           grid-column: 3;
           justify-self: end;
 
+          // Day input
           > div[class*="TextInput"] {
           
             > div > input {
@@ -190,6 +191,15 @@
               height: @size-24;
               margin-right: @size-4;
               padding: 0 @size-8;
+              border: @size-1 solid @color-secondary-action;
+
+              &:hover {
+                border: @size-1 solid @color-secondary-action-outline;
+              }
+
+              &:focus-within {
+                border: @size-1 solid @color-secondary-action-outline;
+              }
             }
           }
 
