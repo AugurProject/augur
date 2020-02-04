@@ -69,10 +69,18 @@ function pollForAccount(
     if (!attemptedLogin && connection.isConnected) {
       attemptedLogin = true;
 
-      const loggedInAccount = windowApp.localStorage.getItem('loggedInAccount');
-      const loggedInAccountType = windowApp.localStorage.getItem(
-        'loggedInAccountType'
-      );
+      let loggedInAccount = null;
+      let loggedInAccountType = null
+
+      try {
+        const loggedInUser =  JSON.parse(windowApp.localStorage.getItem('loggedInUser'));
+        loggedInAccount = loggedInUser && loggedInUser.address;
+        loggedInAccountType = loggedInUser && loggedInUser.accountType
+      } catch (error) {
+        // swallow
+        loggedInAccount = null;
+        loggedInAccountType = null;
+      }
 
       const showModal = accountType => {
         const onboardingShown = [

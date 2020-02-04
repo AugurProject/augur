@@ -26,8 +26,12 @@ export const loadAccountData = (
     loginAccount &&
     loginAccount.meta
   ) {
-    windowApp.localStorage.setItem('loggedInAccountType', loginAccount.meta.accountType);
-    windowApp.localStorage.setItem('loggedInAccount', address);
+    const loggedInUser = {
+      accountType: loginAccount.meta.accountType,
+      address
+    }
+    windowApp.localStorage.setItem('loggedInUser', JSON.stringify(loggedInUser));
+
   }
   dispatch(loadAccountHistory());
   dispatch(checkAccountAllowance());

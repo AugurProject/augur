@@ -20,10 +20,9 @@ export const updateSdk = (
 
   try {
     dispatch(updateAppStatus(Ox_ENABLED, augurSdk.sdk.zeroX));
-
-    // TODO: useGnosis should always be true or fetchable from
     // the SDK -- maybe augurSdk.sdk.getUseGnosisSafe() ??
-    const useGnosis = window.localStorage.getItem('isGnosis');
+    // Overwrite to disable gnosis
+    const useGnosis = true;
     if (useGnosis) {
       const updateUserAccount = safeAddress => {
         const newAccount = {
