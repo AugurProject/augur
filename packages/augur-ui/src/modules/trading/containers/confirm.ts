@@ -5,8 +5,8 @@ import { getGasPrice } from 'modules/auth/selectors/get-gas-price';
 import { AppState } from 'store';
 import { totalTradingBalance } from 'modules/auth/selectors/login-account';
 
-const mapStateToProps = (state: AppState) => {
-  const { authStatus, loginAccount, appStatus } = state;
+const mapStateToProps = (state: AppState, ownProps) => {
+  const { authStatus, loginAccount, appStatus, newMarket } = state;
   const {
     gnosisEnabled: Gnosis_ENABLED,
     ethToDaiRate,
@@ -17,10 +17,14 @@ const mapStateToProps = (state: AppState) => {
     ? !!loginAccount.balances.dai
     : !!loginAccount.balances.eth && !!loginAccount.balances.dai;
 
+  let availableDai = totalTradingBalance(loginAccount)
+  if (ownProps.initialLiquidity) {
+    availableDai = availableDai.minus(newMarket.initialLiquidityDai);
+  }
   return {
     gasPrice: getGasPrice(state),
     availableEth: createBigNumber(loginAccount.balances.eth),
-    availableDai: totalTradingBalance(loginAccount),
+    availableDai,
     hasFunds,
     isLogged: authStatus.isLogged,
     allowanceBigNumber: loginAccount.allowance,
