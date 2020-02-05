@@ -4999,7 +4999,7 @@ export const TEMPLATES = {
           },
           {
             marketType: YES_NO,
-            question: `Will a woman be elected U.S. President in the [1] Presidential election?`,
+            question: `Will a woman be elected U.S. President in the [0] Presidential election?`,
             example: `Will a woman be elected U.S. President in the 2020 Presidential election?`,
             inputs: [
               {
