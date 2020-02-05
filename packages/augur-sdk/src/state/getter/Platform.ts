@@ -13,7 +13,7 @@ import {
   MarketCreatedLog,
   ParsedOrderEventLog,
   ParticipationTokensRedeemedLog,
-  Timestamped,
+  TimestampedLog,
   TradingProceedsClaimedLog
 } from "../logs/types";
 import { NULL_ADDRESS } from "./types";
@@ -202,7 +202,7 @@ function formatTimestamp(timestamp: number): string {
 }
 
 function makeGetField(universe: Address, startTime: number, endTime: number) {
-  return async <L extends Log & Timestamped>(field: keyof L & string, table: Dexie.Table<any, any>) => {
+  return async <L extends TimestampedLog>(field: keyof L & string, table: Dexie.Table<any, any>) => {
     const logs = await table.where("timestamp").between(formatTimestamp(startTime), formatTimestamp(endTime), true, true).and((doc) => doc.universe === universe).toArray();
     return logs.map((log) => String(log[field]));
   };
