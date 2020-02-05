@@ -1275,7 +1275,7 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
     }
   };
 
-  toggleList = (event) => {
+  toggleList = () => {
     let value = this.state.value;
     const showList = this.props.autoCompleteList && !this.state.showList;
     if (showList) {
