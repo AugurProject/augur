@@ -5,7 +5,7 @@
   "description": "Augur Top-Level Monorepo",
   "author": "The Augur Developers <team@augur.net>",
   "engines": {
-    "node": ">=8",
+    "node": ">=10",
     "yarn": ">=1.6.0"
   },
   "scripts": {
@@ -93,7 +93,8 @@
   "resolutions": {
     "**/sha3": "2.0.1",
     "**/leveldown": "5.4.1",
-    "**/bignumber.js": "9.0.0"
+    "**/bignumber.js": "9.0.0",
+    "**/scrypt": "https://github.com/AugurProject/blackhole.git"
   },
   "dependencies": {
     "docusaurus-init": "1.12.0"

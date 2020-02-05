@@ -192,7 +192,7 @@ const handleSeries = (
   mostRecentTradetime = 0
 ) => {
   const series = [];
-  Object.keys(priceTimeSeries).forEach(id => {
+  priceTimeSeries && Object.keys(priceTimeSeries).forEach(id => {
     const isSelected = selectedOutcomeId && selectedOutcomeId == id;
     const length = priceTimeSeries[id].length;
     if (
