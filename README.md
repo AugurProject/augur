@@ -43,6 +43,26 @@ NOTE: Run `yarn` at the base of the repository to install dependencies before ru
 
 ## UI development
 
+#### Simple startup steps:
+
+1. Install yarn
+2. Install docker (docker desktop is a simple way)
+3. Install node >= 10.14.2, supports node 11 and 12 too
+4. Run these in console, then open localhost:8080 in your browser
+
+```
+docker kill $(docker ps -a -q);
+docker system prune -af
+yarn clean
+yarn
+yarn build
+yarn docker:all
+yarn build -w
+yarn workspace @augurproject/ui dev
+```
+
+#### More advanced startup steps
+
 Run the following command:
 
 * `yarn build:watch`
