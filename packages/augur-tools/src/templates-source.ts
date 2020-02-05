@@ -5966,7 +5966,7 @@ export const TEMPLATES = {
           },
           {
             id: 3,
-            type: TemplateInputType.DATEYEAR,
+            type: TemplateInputType.DATESTART,
             placeholder: `Day of Year`,
           },
         ],
