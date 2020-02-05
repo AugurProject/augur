@@ -522,16 +522,22 @@ div.ExpandedContent {
         border: 0;
         border-top: 1px solid @color-dark-grey;
 
-        &.HideProperties > div[class*="CoreProperties"] > div {
-          > div:first-of-type {
-            display: none;
+        &.HideProperties > div[class*="CoreProperties"] {
+          > div[class*="ScalarBox"] {
+            border-top: 0;
           }
 
-          > div:last-of-type {
-            border-top: 0;
-
+          > div {
             > div:first-of-type {
               display: none;
+            }
+
+            > div:last-of-type {
+              border-top: 0;
+
+              > div:first-of-type {
+                display: none;
+              }
             }
           }
         }

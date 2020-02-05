@@ -10,7 +10,6 @@ import {
   TX_ORDER_ID,
   TX_ORDER_IDS,
   TX_MARKET_ID,
-  TX_TRADE_GROUP_ID,
   CREATEMARKET,
   CREATECATEGORICALMARKET,
   CREATESCALARMARKET,
@@ -23,13 +22,7 @@ import {
   BUYPARTICIPATIONTOKENS,
   MODAL_WALLET_ERROR,
 } from 'modules/common/constants';
-import { UIOrder, CreateMarketData } from 'modules/types';
-import { convertTransactionOrderToUIOrder } from 'modules/events/actions/transaction-conversions';
-import {
-  addPendingOrder,
-  updatePendingOrderStatus,
-  removePendingOrder,
-} from 'modules/orders/actions/pending-orders-management';
+import { CreateMarketData } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { Events, Getters, TXEventName } from '@augurproject/sdk';
@@ -43,7 +36,6 @@ import { generateTxParameterId } from 'utils/generate-tx-parameter-id';
 import { updateLiqTransactionParamHash } from 'modules/orders/actions/liquidity-management';
 import { addAlert, updateAlert } from 'modules/alerts/actions/alerts';
 import { getDeconstructedMarketId } from 'modules/create-market/helpers/construct-market-params';
-import { orderCreated } from 'services/analytics/helpers';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { updateAppStatus, GNOSIS_STATUS } from 'modules/app/actions/update-app-status';
 import { GnosisSafeState } from '@augurproject/gnosis-relay-api/src/GnosisRelayAPI';
@@ -156,6 +148,28 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
 
         break;
       }
+      case PUBLICCREATEORDERS: {
+        const { marketInfos } = getState();
+        const marketId = transaction.params[TX_MARKET_ID];
+        const market = marketInfos[marketId];
+        setLiquidityMultipleOrdersStatus(txStatus, market, dispatch);
+
+        if (eventName === TXEventName.Success) {
+          deleteMultipleLiquidityOrders(txStatus, market, dispatch);
+        }
+        break;
+      }
+      case PUBLICCREATEORDER: {
+        const { marketInfos } = getState();
+        const marketId = transaction.params[TX_MARKET_ID];
+        const market = marketInfos[marketId];
+        setLiquidityOrderStatus(txStatus, market, dispatch);
+
+        if (eventName === TXEventName.Success) {
+          deleteLiquidityOrder(txStatus, market, dispatch);
+        }
+        break;
+      }
       case PUBLICTRADE: {
         const tradeGroupId = transaction.params[TX_TRADE_GROUP_ID];
         const marketId = transaction.params[TX_MARKET_ID];
@@ -258,37 +272,4 @@ function createMarketData(
     data.marketType = SCALAR;
   }
   return data;
-}
-
-function addOrder(
-  tx: Events.TXStatus,
-  market: Getters.Markets.MarketInfo,
-  dispatch
-) {
-  if (!market)
-    return console.log(`Could not find ${market.id} to process transaction`);
-  const order: UIOrder = convertTransactionOrderToUIOrder(
-    tx.hash,
-    tx.transaction.params,
-    tx.eventName,
-    market
-  );
-  if (!order)
-    return console.log(
-      `Could not process order to add pending order for market ${market.id}`
-    );
-
-  const { blockchain } = store.getState() as AppState;
-
-  dispatch(
-    addPendingOrder(
-      {
-        ...order,
-        creationTime: convertUnixToFormattedDate(
-          blockchain.currentAugurTimestamp
-        ),
-      },
-      market.id
-    )
-  );
 }
