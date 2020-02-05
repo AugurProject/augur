@@ -112,7 +112,7 @@ export const AddFunds = ({
 
   const validateAndSet = (amount) => {
     if (accountMeta.accountType === ACCOUNT_TYPES.TORUS) {
-      // Tor.us
+      // Torus
       // minOrderValue $20
       // maxOrderValue $250
       if (amount >= 20 && amount <= 250) {
@@ -170,7 +170,7 @@ export const AddFunds = ({
   // Always show Coinbase/Transfer for all types of Add Fund flows
   const addFundsOptions = [FUND_OTPIONS[2], FUND_OTPIONS[3]];
 
-  // Add CreditCard for DAI flow for all wallet providers (Portis, Fortmatic, and Tor.us)
+  // Add CreditCard for DAI flow for all wallet providers (Portis, Fortmatic, and Torus)
   if (
     fundType !== REP &&
     (accountMeta.accountType === ACCOUNT_TYPES.TORUS ||
