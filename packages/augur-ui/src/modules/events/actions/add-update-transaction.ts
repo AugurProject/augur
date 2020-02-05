@@ -18,12 +18,9 @@ import {
   CATEGORICAL,
   SCALAR,
   YES_NO,
-  PUBLICCREATEORDER,
-  PUBLICCREATEORDERS,
   PUBLICFILLORDER,
   BUYPARTICIPATIONTOKENS,
   MODAL_WALLET_ERROR,
-  ACCOUNT_TYPES,
 } from 'modules/common/constants';
 import { CreateMarketData } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
@@ -37,12 +34,6 @@ import { convertUnixToFormattedDate } from 'utils/format-date';
 import { TransactionMetadataParams } from 'contract-dependencies-ethers/build';
 import { generateTxParameterId } from 'utils/generate-tx-parameter-id';
 import { updateLiqTransactionParamHash } from 'modules/orders/actions/liquidity-management';
-import {
-  setLiquidityMultipleOrdersStatus,
-  deleteMultipleLiquidityOrders,
-  setLiquidityOrderStatus,
-  deleteLiquidityOrder,
-} from 'modules/events/actions/liquidity-transactions';
 import { addAlert, updateAlert } from 'modules/alerts/actions/alerts';
 import { getDeconstructedMarketId } from 'modules/create-market/helpers/construct-market-params';
 import { updateModal } from 'modules/modal/actions/update-modal';
@@ -176,6 +167,32 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
 
         if (eventName === TXEventName.Success) {
           deleteLiquidityOrder(txStatus, market, dispatch);
+        }
+        break;
+      }
+      case PUBLICTRADE: {
+        const tradeGroupId = transaction.params[TX_TRADE_GROUP_ID];
+        const marketId = transaction.params[TX_MARKET_ID];
+        const { marketInfos } = getState();
+        const market = marketInfos[marketId];
+        if (!hash && eventName === TXEventName.AwaitingSigning) {
+          return addOrder(txStatus, market, dispatch);
+        }
+        dispatch(
+          updatePendingOrderStatus(tradeGroupId, marketId, eventName, hash)
+        );
+        if (eventName === TXEventName.Success) {
+          const order: UIOrder = convertTransactionOrderToUIOrder(
+            txStatus.hash,
+            txStatus.transaction.params,
+            txStatus.eventName,
+            market
+          );
+          dispatch(orderCreated(marketId, order));
+          dispatch(removePendingOrder(tradeGroupId, marketId));
+        }
+        if (eventName === TXEventName.Failure || eventName === TXEventName.RelayerDown) {
+          dispatch(removePendingOrder(tradeGroupId, marketId));
         }
         break;
       }
