@@ -1288,7 +1288,6 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
       },
       () => showList && this.props.onAutoCompleteListSelected(value)
     );
-    event.target.select();
   };
 
   onChange = (e: any) => {
@@ -1340,7 +1339,7 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
                 className={classNames({ [Styles.error]: error })}
                 value={this.state.value}
                 onChange={this.onChange}
-                onFocus={(event) => this.toggleList(event)}
+                onFocus={() => this.toggleList()}
                 placeholder={placeholder}
                 disabled={disabled}
                 maxLength={maxLength}
