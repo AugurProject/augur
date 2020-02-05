@@ -298,7 +298,7 @@ export function checkForUserInputFilled(
         input.setEndTime &&
         input.setEndTime >= endTimeFormatted.timestamp
       ) {
-        return 'Date must be before event expiration time';
+        return 'Date must be before event expiration';
       }
       return '';
     } else if (

@@ -61,6 +61,10 @@ yarn build -w
 yarn workspace @augurproject/ui dev
 ```
 
+Connect MetaMask to localhost:8545 and go to http://localhost:8080 in your browser.  Click on "login", select MetaMask/web3, and check the Gnosis Safe checkbox.  This will create a contract wallet for you which will automatically receive testnet DAI.
+
+#### [Startup steps for Ubuntu 18.04](https://github.com/AugurProject/augur/blob/master/docs/v2/docs/getting-started.md)
+
 #### More advanced startup steps
 
 Run the following command:
