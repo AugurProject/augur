@@ -275,6 +275,7 @@ export const CancelTextButton = (props: DefaultButtonProps) => (
   </button>
 );
 
+// Only used in ADVANCED button in trade-form
 export const TextButtonFlip = (props: DefaultButtonProps) => (
   <button
     onClick={e => props.action(e)}
@@ -287,7 +288,7 @@ export const TextButtonFlip = (props: DefaultButtonProps) => (
       pointDown={props.pointDown}
       stroke="#BFB8CE"
       filledInIcon
-      quick
+      instant
     />
   </button>
 );

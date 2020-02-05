@@ -473,7 +473,6 @@ export default class MarketView extends Component<
       tradingTutorial,
       hotloadMarket,
       canHotload,
-      modalShowing,
       orderBook,
     } = this.props;
     const {
@@ -675,7 +674,6 @@ export default class MarketView extends Component<
                             marketId={marketId}
                             market={preview && market}
                             selectedOutcomeId={outcomeId}
-                            isMarketLoading={isMarketLoading || !!modalShowing}
                           />
                         )}
                       </div>
@@ -921,7 +919,6 @@ export default class MarketView extends Component<
                       market={preview && market}
                       preview={preview}
                       orderBook={outcomeOrderBook}
-                      isMarketLoading={isMarketLoading || !!modalShowing}
                       canHotload={canHotload}
                     />
                   </div>

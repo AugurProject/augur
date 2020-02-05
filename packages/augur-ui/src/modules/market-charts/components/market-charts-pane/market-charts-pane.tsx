@@ -9,7 +9,7 @@ import { SMALL_MOBILE } from 'modules/common/constants';
 import { Candlestick } from 'modules/market-charts/components/candlestick/candlestick';
 import DepthChart from 'modules/market-charts/containers/depth';
 import { BigNumber } from 'bignumber.js';
-import { MarketData, OutcomeOrderBook } from 'modules/types';
+import { MarketData, IndividualOutcomeOrderBook } from 'modules/types';
 
 interface MarketChartsPaneProps {
   currentTimestamp?: number | undefined;
@@ -23,8 +23,7 @@ interface MarketChartsPaneProps {
   market?: MarketData;
   toggle: Function;
   tradingTutorial?: boolean;
-  isMarketLoading?: boolean;
-  orderBook: OutcomeOrderBook;
+  orderBook: IndividualOutcomeOrderBook;
 }
 
 interface MarketChartsPaneState {
@@ -77,7 +76,6 @@ export default class MarketChartsPane extends Component<
       market,
       toggle,
       orderBook,
-      isMarketLoading = false,
     } = this.props;
     const { hoveredPrice, hoveredDepth } = this.state;
     const shared = { marketId, selectedOutcomeId };
@@ -119,7 +117,6 @@ export default class MarketChartsPane extends Component<
                   <PriceHistory
                     {...shared}
                     daysPassed={daysPassed}
-                    isMarketLoading={isMarketLoading}
                   />
                 )}
               </ModulePane>
