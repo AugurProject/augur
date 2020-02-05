@@ -1170,6 +1170,11 @@ export const TEMPLATES = {
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `No Winner`,
                   },
+                  {
+                    id: 6,
+                    type: TemplateInputType.ESTDATETIME,
+                    placeholder: `Date time`,
+                  },
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
