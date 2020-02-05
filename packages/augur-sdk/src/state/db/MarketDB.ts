@@ -19,6 +19,7 @@ import { BigNumber } from 'bignumber.js';
 import { OrderBook } from '../../api/Liquidity';
 import { ParsedLog } from '@augurproject/types';
 import { QUINTILLION, padHex } from '../../utils';
+import { SubscriptionEventName } from '../../constants';
 import { Block } from 'ethereumjs-blockstream';
 import { isTemplateMarket } from '@augurproject/artifacts';
 
@@ -64,8 +65,8 @@ export class MarketDB extends DerivedDB {
 
     this.augur.events.subscribe('DB:updated:ZeroXOrders', (orderEvents) => this.syncOrderBooks([orderEvents.market]));
     this.augur.events.subscribe('DB:get:ZeroXOrders', (markets) => this.syncOrderBooks(markets));
-    this.augur.events.subscribe('controller:new:block', this.processNewBlock);
-    this.augur.events.subscribe('TimestampSet', this.processTimestampSet);
+    this.augur.events.subscribe(SubscriptionEventName.NewBlock, this.processNewBlock);
+    this.augur.events.subscribe(SubscriptionEventName.TimestampSet, this.processTimestampSet);
   }
 
   async doSync(highestAvailableBlockNumber: number): Promise<void> {
