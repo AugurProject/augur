@@ -40,8 +40,10 @@ export function logout() {
     }
 
     // Gnosis cleanup
-    augurSdk.sdk.setUseGnosisSafe(false);
-    augurSdk.sdk.gnosis.augur.setGnosisStatus(null);
+    if (augurSdk && augurSdk.sdk) {
+      augurSdk.sdk.setUseGnosisSafe(false);
+      augurSdk.sdk.gnosis.augur.setGnosisStatus(null);
+    }
     dispatch(updateAppStatus(GNOSIS_ENABLED, false));
     dispatch(updateAppStatus(GNOSIS_STATUS, null));
 

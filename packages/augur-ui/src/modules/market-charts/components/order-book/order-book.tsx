@@ -227,9 +227,9 @@ export default class OrderBook extends Component<
             {hasOrders &&
               `spread: ${
                 orderBook.spread
-                  ? createBigNumber(orderBook.spread).toFixed(pricePrecision)
+                  ? `$${createBigNumber(orderBook.spread).toFixed(pricePrecision)}`
                   : '—'
-              } ${orderBook.spread ? 'DAI($)' : ''}`}
+              }`}
           </div>
         )}
         <OrderBookSide
