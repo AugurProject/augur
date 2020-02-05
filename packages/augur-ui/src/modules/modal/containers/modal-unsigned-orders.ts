@@ -27,9 +27,11 @@ import { Action } from 'redux';
 import { CreateLiquidityOrders } from 'modules/types';
 import { Getters } from '@augurproject/sdk';
 import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
+import { totalTradingBalance } from 'modules/auth/selectors/login-account';
 
 const mapStateToProps = (state: AppState) => {
   const market = selectMarket(state.modal.marketId);
+  let availableDai = totalTradingBalance(state.loginAccount);
   return {
     modal: state.modal,
     market,
@@ -39,6 +41,7 @@ const mapStateToProps = (state: AppState) => {
     chunkOrders: !state.appStatus.zeroXEnabled,
     Gnosis_ENABLED: state.appStatus.gnosisEnabled,
     ethToDaiRate: state.appStatus.ethToDaiRate,
+    availableDai
   };
 };
 
@@ -75,6 +78,7 @@ const mergeProps = (sP, dP, oP) => {
   const submitAllTxCount = chunkOrders ? Math.ceil(
     numberOfTransactions / MAX_BULK_ORDER_COUNT
   ) : numberOfTransactions;
+  const insufficientFunds = sP.availableDai.lt(totalCost);
   const {
     marketType,
     scalarDenomination,
@@ -106,6 +110,7 @@ const mergeProps = (sP, dP, oP) => {
     minPrice,
     transactionHash,
     needsApproval,
+    insufficientFunds,
     submitAllTxCount,
     breakdown: [
       {
@@ -135,6 +140,7 @@ const mergeProps = (sP, dP, oP) => {
     bnAllowance,
     buttons: [
       {
+        disabled: insufficientFunds,
         text: 'Submit All',
         action: () => dP.startOrderSending({ marketId, chunkOrders }),
       },
