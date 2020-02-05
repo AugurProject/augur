@@ -1858,9 +1858,10 @@ export function addScripts(flash: FlashSession) {
         '-e', 'BLOCK_POLLING_INTERVAL=1s',
         '-e', 'ETHEREUM_RPC_MAX_REQUESTS_PER_24_HR_UTC=169120', // needed when polling interval is 1s
         '-e', `CUSTOM_CONTRACT_ADDRESSES=${JSON.stringify(addresses)}`,
+        '-e', `CUSTOM_ORDER_FILTER={"properties":{"makerAssetData":{"pattern":".*${addresses.ZeroXTrade.slice(2).toLowerCase()}.*"}}}`,
         '-e', 'VERBOSITY=4', // 5=debug 6=trace
         '-e', 'RPC_ADDR=0x:60557', // need to use "0x" network
-        '0xorg/mesh:8.1.2',
+        '0xorg/mesh:9.0.0',
       ]);
 
       mesh.on('error', console.error);
@@ -1885,13 +1886,33 @@ export function addScripts(flash: FlashSession) {
         description: 'Name of contract',
         required: true,
       },
+      {
+        name: 'removePrefix',
+        abbr: 'r',
+        description: 'If specified will remove the 0x prefix',
+        flag: true,
+      },
+      {
+        name: 'lower',
+        abbr: 'l',
+        description: 'If specified will toLowerCase the result',
+        flag: true,
+      },
     ],
     async call(
       this: FlashSession,
       args: FlashArguments
     ): Promise<string> {
       const name = args.name as string;
-      const address = this.contractAddresses[name];
+      const removePrefix = args.removePrefix as boolean;
+      const lower = args.lower as boolean;
+      let address = this.contractAddresses[name];
+      if (removePrefix) {
+        address = address.slice(2);
+      }
+      if (lower) {
+        address = address.toLowerCase();
+      }
       console.log(address);
       return address;
     },

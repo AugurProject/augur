@@ -26,6 +26,10 @@ function createBrowserMeshConfig(
     bootstrapList,
   };
 
+  const contractAddresses = getAddressesForNetwork(
+    ethereumChainID.toString() as NetworkId
+  );
+
   if (
     ![NetworkId.Kovan, NetworkId.Mainnet].includes(
       ethereumChainID.toString() as NetworkId
@@ -34,9 +38,15 @@ function createBrowserMeshConfig(
   ) {
     // Our contract addresses have a different type than `customContractAddresses` but the 0x code
     // normalizes them so it still works. Thus, we just cast it here.
-    meshConfig.customContractAddresses = (getAddressesForNetwork(
-      ethereumChainID.toString() as NetworkId
-    ) as unknown) as ZeroXContractAddresses;
+    meshConfig.customContractAddresses = (contractAddresses as unknown) as ZeroXContractAddresses;
+  }
+
+  meshConfig.customOrderFilter = {
+    properties: {
+      makerAssetData: {
+          pattern: `.*${contractAddresses.ZeroXTrade.slice(2).toLowerCase()}.*`
+      }
+    }
   }
 
   return meshConfig;
