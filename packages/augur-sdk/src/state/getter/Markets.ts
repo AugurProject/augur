@@ -527,7 +527,6 @@ export class Markets {
     }
 
     // Prepare filter values before loop
-    const formattedEndTime = params.maxEndTime ? `0x${params.maxEndTime.toString(16)}` : '';
     let feePercent = 0;
 
     if (params.maxFee) {
@@ -546,7 +545,7 @@ export class Markets {
         if (params.creator !== market.marketCreator) return false;
       }
       // Apply max end time
-      if (params.maxEndTime && market.endTime >= formattedEndTime) return false;
+      if (params.maxEndTime && market.endTime >= params.maxEndTime) return false;
       // Apply template filter
       if (params.templateFilter) {
         if (params.templateFilter === TemplateFilters.templateOnly && !market.isTemplate) return false;
@@ -1050,7 +1049,7 @@ async function getMarketsInfo(
         payouts[i] = new BigNumber(marketData.winningPayoutNumerators[i]).toString(10);
       }
       finalizationBlockNumber =  marketData.finalizationBlockNumber;
-      finalizationTime = new BigNumber(marketData.finalizationTime).toString(10);
+      finalizationTime = marketData.finalizationTime.toString();
       consensus = calculatePayoutNumeratorsValue(String(displayMaxPrice), String(displayMinPrice), String(numTicks), marketType, payouts);
     }
 
@@ -1117,7 +1116,7 @@ async function getMarketsInfo(
       author: marketData.marketCreator,
       designatedReporter: marketData.designatedReporter,
       creationBlock: marketData.blockNumber,
-      creationTime: Number(marketData.timestamp),
+      creationTime: marketData.creationTime,
       categories,
       volume: new BigNumber(marketData.volume || 0).dividedBy(QUINTILLION).toString(),
       openInterest: new BigNumber(marketData.marketOI || 0).dividedBy(QUINTILLION).toString(),

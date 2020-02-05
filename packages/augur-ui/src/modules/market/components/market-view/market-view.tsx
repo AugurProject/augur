@@ -260,7 +260,7 @@ export default class MarketView extends Component<
     }
 
     if (!isMarketLoading) {
-      closeMarketLoadingModalOnly(modalShowing);
+      closeMarketLoadingModalOnly && closeMarketLoadingModalOnly(modalShowing);
     }
 
     if (
@@ -478,7 +478,6 @@ export default class MarketView extends Component<
       tradingTutorial,
       hotloadMarket,
       canHotload,
-      modalShowing,
       orderBook,
     } = this.props;
     const {
@@ -671,7 +670,7 @@ export default class MarketView extends Component<
                         preview={preview}
                         selectedOutcomeId={outcomeId}
                         updateSelectedOutcome={this.updateSelectedOutcomeSwitch}
-                        orderBook={orderBook}
+                        orderBook={outcomeOrderBook}
                       />
                       <div className={Styles.PriceHistory}>
                         <h3>Price History</h3>
@@ -680,7 +679,6 @@ export default class MarketView extends Component<
                             marketId={marketId}
                             market={preview && market}
                             selectedOutcomeId={outcomeId}
-                            isMarketLoading={isMarketLoading || !!modalShowing}
                           />
                         )}
                       </div>
@@ -904,6 +902,7 @@ export default class MarketView extends Component<
                     selectedOutcomeId={outcomeId}
                     updateSelectedOutcome={this.updateSelectedOutcome}
                     hideOutcomes={cat5 ? !extendOutcomesList : false}
+                    orderBook={outcomeOrderBook}
                   />
                   <div
                     className={classNames(Styles.ChartsPane, {
@@ -925,7 +924,6 @@ export default class MarketView extends Component<
                       market={preview && market}
                       preview={preview}
                       orderBook={outcomeOrderBook}
-                      isMarketLoading={isMarketLoading || !!modalShowing}
                       canHotload={canHotload}
                     />
                   </div>

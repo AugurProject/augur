@@ -11,6 +11,7 @@ import {
   WARNING,
   ERROR,
   UPPER_FIXED_PRECISION_BOUND,
+  ZERO,
 } from 'modules/common/constants';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
@@ -44,6 +45,7 @@ interface ConfirmProps {
   ethToDaiRate: BigNumber;
   Gnosis_ENABLED: boolean;
   GnosisUnavailable: boolean;
+  initialLiquidity: boolean;
 }
 
 interface ConfirmState {
@@ -104,11 +106,11 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     let needsApproval = false;
     let messages: Message | null = null;
 
-    const gasCost = formatGasCostToEther(
+    const gasCost = gasLimit ? formatGasCostToEther(
       gasLimit,
       { decimalsRounded: 4 },
       gasPrice
-    );
+    ) : ZERO;
 
     let gasCostDai = null;
 
@@ -175,7 +177,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
 
     if (
       totalCost &&
-      createBigNumber(potentialDaiLoss.fullPrecision).gt(
+      createBigNumber(totalCost.fullPrecision).gt(
         createBigNumber(availableDai)
       ) && !tradingTutorial
     ) {
@@ -212,7 +214,8 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       ethToDaiRate,
       gasLimit,
       gasPrice,
-      Gnosis_ENABLED
+      Gnosis_ENABLED,
+      initialLiquidity
     } = this.props;
 
     const {
@@ -279,7 +282,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
 
     return (
       <section className={Styles.TradingConfirm}>
-        {shareCost && shareCost.value !== 0 && (
+        {!initialLiquidity && shareCost && shareCost.value !== 0 && (
           <div className={Styles.details}>
             <div className={Styles.properties}>
               CLOSING POSITION
@@ -314,7 +317,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
             />
           </div>
         )}
-        {newOrderAmount !== "0" && (
+        {!initialLiquidity && newOrderAmount !== "0" && (
           <div className={Styles.details}>
              <div
               className={classNames(
