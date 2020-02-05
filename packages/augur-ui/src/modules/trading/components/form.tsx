@@ -1130,7 +1130,7 @@ class Form extends Component<FromProps, FormState> {
                     value === ADVANCED_OPTIONS.EXPIRATION
                       ? moment
                           .unix(currentTimestamp)
-                          .add(DEFAULT_EXPIRATION_DAYS, 'days')
+                          .add(DEFAULT_EXPIRATION_DAYS, EXPIRATION_DATE_OPTIONS.DAYS)
                       : '';
                   this.updateAndValidate(
                     this.INPUT_TYPES.EXPIRATION_DATE,
@@ -1186,7 +1186,12 @@ class Form extends Component<FromProps, FormState> {
                         },
                       ]}
                       onChange={value => {
-                        this.setState({ expirationDateOption: value });
+                        const date = moment.unix(currentTimestamp);
+                        this.updateAndValidate(
+                          this.INPUT_TYPES.EXPIRATION_DATE,
+                          date
+                        );
+                        this.setState({ expirationDateOption: value, fastForwardTime: 0 });
                       }}
                     />
                   </div>
