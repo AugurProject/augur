@@ -232,6 +232,13 @@
                 > input[class*="DateInput_input"] {
                   height: @size-22;
                   width: 100%;
+                  cursor: pointer;
+                  &:hover {
+                    border: @size-1 solid @color-secondary-action-outline;
+                  }
+                  &:focus {
+                    border: @size-1 solid @color-secondary-action-outline;
+                  }
                 }
               } 
             }
@@ -241,6 +248,13 @@
 
               > button {
                 height: @size-22;
+
+                &:hover {
+                  border: @size-1 solid @color-secondary-action-outline;
+                }
+                &:focus {
+                  border: @size-1 solid @color-secondary-action-outline;
+                }
               }
             }
 
@@ -250,6 +264,13 @@
               > div[class*="TextInput"] > div > input {
                 height: @size-22;
                 width: 100%;
+
+                &:hover {
+                  border: @size-1 solid @color-secondary-action-outline;
+                }
+                &:focus {
+                  border: @size-1 solid @color-secondary-action-outline;
+                }
               }
             }
           }
