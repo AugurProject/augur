@@ -4,16 +4,13 @@ import { ExtraInfoTemplate } from '@augurproject/artifacts';
 export type Address = string;
 export type Bytes32 = string;
 export type PayoutNumerators = string[];
-export type Timestamp = string;
+export type LogTimestamp = string;
+export type UnixTimestamp = number;
 
 export interface GenericEventDBDescription {
   EventName: string;
   indexes: string[];
   primaryKey?: string;
-}
-
-export interface Timestamped {
-  timestamp: Timestamp;
 }
 
 export interface Log {
@@ -24,11 +21,16 @@ export interface Log {
   logIndex: number;
 }
 
+export interface TimestampedLog extends Log {
+  timestamp: LogTimestamp;
+}
+
+
 export interface MarketsUpdatedLog {
   data: MarketData[]
 }
 
-export interface CompleteSetsPurchasedLog extends Log, Timestamped {
+export interface CompleteSetsPurchasedLog extends TimestampedLog {
   universe: Address;
   market: Address;
   account: Address;
@@ -36,7 +38,7 @@ export interface CompleteSetsPurchasedLog extends Log, Timestamped {
   marketOI: string;
 }
 
-export interface CompleteSetsSoldLog extends Log, Timestamped {
+export interface CompleteSetsSoldLog extends TimestampedLog {
   universe: Address;
   market: Address;
   account: Address;
@@ -51,15 +53,14 @@ export interface DisputeCrowdsourcerCompletedLog extends Log {
   market: Address;
   disputeCrowdsourcer: Address;
   size: string;
-  nextWindowStartTime: Timestamp;
-  nextWindowEndTime: Timestamp;
+  nextWindowStartTime: LogTimestamp;
+  nextWindowEndTime: LogTimestamp;
   pacingOn: boolean;
   payoutNumerators: PayoutNumerators;
 }
 
 export interface DisputeCrowdsourcerContributionLog
-  extends Log,
-    Timestamped {
+  extends TimestampedLog {
   universe: Address;
   reporter: Address;
   market: Address;
@@ -79,7 +80,7 @@ export interface DisputeCrowdsourcerCreatedLog extends Log {
   disputeRound: string;
 }
 
-export interface DisputeCrowdsourcerRedeemedLog extends Log, Timestamped {
+export interface DisputeCrowdsourcerRedeemedLog extends TimestampedLog {
   universe: Address;
   reporter: Address;
   market: Address;
@@ -92,13 +93,13 @@ export interface DisputeCrowdsourcerRedeemedLog extends Log, Timestamped {
 export interface DisputeWindowCreatedLog extends Log {
   universe: Address;
   disputeWindow: Address;
-  startTime: Timestamp;
-  endTime: Timestamp;
+  startTime: LogTimestamp;
+  endTime: LogTimestamp;
   id: number;
   initial: boolean;
 }
 
-export interface InitialReporterRedeemedLog extends Log, Timestamped {
+export interface InitialReporterRedeemedLog extends TimestampedLog {
   universe: Address;
   reporter: Address;
   market: Address;
@@ -108,7 +109,7 @@ export interface InitialReporterRedeemedLog extends Log, Timestamped {
   payoutNumerators: PayoutNumerators;
 }
 
-export interface InitialReportSubmittedLog extends Log, Timestamped {
+export interface InitialReportSubmittedLog extends TimestampedLog {
   universe: Address;
   reporter: Address;
   market: Address;
@@ -127,9 +128,9 @@ export interface MarketCreatedLogExtraInfo {
   tags?: string[];
 }
 
-export interface MarketCreatedLog extends Log, Timestamped {
+export interface MarketCreatedLog extends TimestampedLog {
   universe: Address;
-  endTime: Timestamp;
+  endTime: LogTimestamp;
   extraInfo: string;
   market: Address;
   marketCreator: Address;
@@ -142,7 +143,7 @@ export interface MarketCreatedLog extends Log, Timestamped {
   timestamp: string;
 }
 
-export interface MarketFinalizedLog extends Log, Timestamped {
+export interface MarketFinalizedLog extends TimestampedLog {
   universe: Address;
   market: Address;
   winningPayoutNumerators: string[];
@@ -206,7 +207,7 @@ export interface MarketOIChangedLog extends Log {
 //  5:  fees (Fill)
 //  6:  amountFilled (Fill)
 //  7:  timestamp
-export interface OrderEventLog extends Log, Timestamped {
+export interface OrderEventLog extends TimestampedLog {
   universe: Address;
   market: Address;
   eventType: OrderEventType;
@@ -217,7 +218,7 @@ export interface OrderEventLog extends Log, Timestamped {
   uint256Data: string[];
 }
 
-export interface ParsedOrderEventLog extends Log, Timestamped {
+export interface ParsedOrderEventLog extends TimestampedLog {
   universe: Address;
   market: Address;
   eventType: OrderEventType;
@@ -318,7 +319,7 @@ export const ORDER_EVENT_TIMESTAMP = 'uint256Data.7';
 export const ORDER_EVENT_SHARES_ESCROWED = 'uint256Data.8';
 export const ORDER_EVENT_TOKENS_ESCROWED = 'uint256Data.9';
 
-export interface ParticipationTokensRedeemedLog extends Log, Timestamped {
+export interface ParticipationTokensRedeemedLog extends TimestampedLog {
   universe: Address;
   disputeWindow: Address;
   account: Address;
@@ -326,13 +327,13 @@ export interface ParticipationTokensRedeemedLog extends Log, Timestamped {
   feePayoutShare: string;
 }
 
-export interface ReportingParticipantDisavowedLog extends Log, Timestamped {
+export interface ReportingParticipantDisavowedLog extends TimestampedLog {
   universe: Address;
   market: Address;
   reportingParticipant: Address;
 }
 
-export interface ProfitLossChangedLog extends Log, Timestamped {
+export interface ProfitLossChangedLog extends TimestampedLog {
   universe: Address;
   market: Address;
   account: Address;
@@ -345,7 +346,7 @@ export interface ProfitLossChangedLog extends Log, Timestamped {
 }
 
 export interface TimestampSetLog extends Log {
-  newTimestamp: Timestamp;
+  newTimestamp: LogTimestamp;
 }
 
 export enum TokenType {
@@ -385,7 +386,7 @@ export interface ShareTokenBalanceChangedLog extends Log {
   balance: string;
 }
 
-export interface TradingProceedsClaimedLog extends Log, Timestamped {
+export interface TradingProceedsClaimedLog extends TimestampedLog {
   universe: Address;
   shareToken: Address;
   sender: Address;
@@ -405,7 +406,7 @@ export interface UniverseCreatedLog extends Log {
   parentUniverse: Address;
   childUniverse: Address;
   payoutNumerators: string[];
-  creationTimestamp: string;
+  creationTimestamp: LogTimestamp;
 }
 
 export interface LiquidityData {
@@ -420,9 +421,13 @@ export interface ExtraInfo {
   template?: ExtraInfoTemplate;
 }
 
+/*
+ * MarketData is a derived, amalgam, type of pre-processed data. Unlike
+ * contract logs, timestamps are stored as numbers, and other tidbits.
+ */
 export interface MarketData extends Log {
   universe: Address;
-  endTime: Timestamp;
+  endTime: UnixTimestamp;
   extraInfo: ExtraInfo;
   market: Address;
   marketCreator: Address;
@@ -432,7 +437,8 @@ export interface MarketData extends Log {
   marketType: MarketType;
   numTicks: string;
   outcomes: string[];
-  timestamp: string;
+  timestamp: UnixTimestamp; // DerivedDB pre-processes this to be a number
+  creationTime: UnixTimestamp;
   volume: string;
   outcomeVolumes: string[];
   marketOI: string;
@@ -442,21 +448,21 @@ export interface MarketData extends Log {
   hasRecentlyDepletedLiquidity: boolean;
   lastPassingLiquidityCheck: number;
   finalizationBlockNumber: string;
-  finalizationTime: string;
+  finalizationTime: UnixTimestamp;
   winningPayoutNumerators: string[];
   reportingState: MarketReportingState;
   tentativeWinningPayoutNumerators: string[];
   totalRepStakedInMarket: string;
   disputeRound: string;
-  nextWindowStartTime: string;
-  nextWindowEndTime: string;
+  nextWindowStartTime: UnixTimestamp;
+  nextWindowEndTime: UnixTimestamp;
   pacingOn: boolean;
   noShowBond: string;
   disavowed: boolean;
   isTemplate: boolean;
   feePercent: number;
   finalized: boolean;
-  lastTradedTimestamp: number;
+  lastTradedTimestamp: UnixTimestamp;
 }
 
 export interface DisputeDoc extends Log {

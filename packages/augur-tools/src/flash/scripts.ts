@@ -908,7 +908,7 @@ export function addScripts(flash: FlashSession) {
           const marketBook: MarketOrderBook = await this.user.augur.getMarketOrderBook(
             { marketId }
           );
-          const orders = orderBook.nextRun(marketBook, timestamp);
+          const orders = orderBook.nextRun(marketBook, new BigNumber(timestamp));
           if (orders.length > 0) {
             this.log(`creating ${orders.length} orders for ${marketId}`);
             for (let j = 0; j < orders.length; j++) {
@@ -1851,6 +1851,7 @@ export function addScripts(flash: FlashSession) {
     name: 'network-id',
     async call(this: FlashSession): Promise<string> {
       if (this.noProvider()) return null;
+
       const networkId = await this.provider.getNetworkId();
       console.log(networkId);
       return networkId;
