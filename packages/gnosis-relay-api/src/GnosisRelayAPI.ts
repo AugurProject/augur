@@ -130,7 +130,7 @@ export class GnosisRelayAPI implements IGnosisRelayAPI {
         return result.data;
     }
     catch(error) {
-      throw error;
+      throw error.response && error.response.data ? error.response.data : error;
     }
   }
 

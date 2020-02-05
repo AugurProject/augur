@@ -10,7 +10,6 @@ import {
   TX_ORDER_ID,
   TX_ORDER_IDS,
   TX_MARKET_ID,
-  TX_TRADE_GROUP_ID,
   CREATEMARKET,
   CREATECATEGORICALMARKET,
   CREATESCALARMARKET,
@@ -19,20 +18,11 @@ import {
   CATEGORICAL,
   SCALAR,
   YES_NO,
-  PUBLICCREATEORDER,
-  PUBLICCREATEORDERS,
   PUBLICFILLORDER,
   BUYPARTICIPATIONTOKENS,
   MODAL_WALLET_ERROR,
-  ACCOUNT_TYPES,
 } from 'modules/common/constants';
-import { UIOrder, CreateMarketData } from 'modules/types';
-import { convertTransactionOrderToUIOrder } from 'modules/events/actions/transaction-conversions';
-import {
-  addPendingOrder,
-  updatePendingOrderStatus,
-  removePendingOrder,
-} from 'modules/orders/actions/pending-orders-management';
+import { CreateMarketData } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { Events, Getters, TXEventName } from '@augurproject/sdk';
@@ -44,17 +34,9 @@ import { convertUnixToFormattedDate } from 'utils/format-date';
 import { TransactionMetadataParams } from 'contract-dependencies-ethers/build';
 import { generateTxParameterId } from 'utils/generate-tx-parameter-id';
 import { updateLiqTransactionParamHash } from 'modules/orders/actions/liquidity-management';
-import {
-  setLiquidityMultipleOrdersStatus,
-  deleteMultipleLiquidityOrders,
-  setLiquidityOrderStatus,
-  deleteLiquidityOrder,
-} from 'modules/events/actions/liquidity-transactions';
 import { addAlert, updateAlert } from 'modules/alerts/actions/alerts';
 import { getDeconstructedMarketId } from 'modules/create-market/helpers/construct-market-params';
-import { orderCreated } from 'services/analytics/helpers';
 import { updateModal } from 'modules/modal/actions/update-modal';
-import { augurSdk } from 'services/augursdk';
 import { updateAppStatus, GNOSIS_STATUS } from 'modules/app/actions/update-app-status';
 import { GnosisSafeState } from '@augurproject/gnosis-relay-api/src/GnosisRelayAPI';
 
@@ -290,37 +272,4 @@ function createMarketData(
     data.marketType = SCALAR;
   }
   return data;
-}
-
-function addOrder(
-  tx: Events.TXStatus,
-  market: Getters.Markets.MarketInfo,
-  dispatch
-) {
-  if (!market)
-    return console.log(`Could not find ${market.id} to process transaction`);
-  const order: UIOrder = convertTransactionOrderToUIOrder(
-    tx.hash,
-    tx.transaction.params,
-    tx.eventName,
-    market
-  );
-  if (!order)
-    return console.log(
-      `Could not process order to add pending order for market ${market.id}`
-    );
-
-  const { blockchain } = store.getState() as AppState;
-
-  dispatch(
-    addPendingOrder(
-      {
-        ...order,
-        creationTime: convertUnixToFormattedDate(
-          blockchain.currentAugurTimestamp
-        ),
-      },
-      market.id
-    )
-  );
 }
