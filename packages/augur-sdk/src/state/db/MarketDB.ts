@@ -14,6 +14,7 @@ import {
   MAX_TRADE_GAS_PERCENTAGE_DIVISOR,
   MarketReportingState,
 } from '../../constants';
+import { NewBlock } from "../../events";
 import { MarketData, MarketType, OrderTypeHex, TimestampSetLog, UnixTimestamp } from '../logs/types';
 import { BigNumber } from 'bignumber.js';
 import { OrderBook } from '../../api/Liquidity';
@@ -353,9 +354,8 @@ export class MarketDB extends DerivedDB {
     return log;
   }
 
-  processNewBlock = async (block: Block): Promise<void> => {
-    const timestamp = (await this.augur.getTimestamp()).toNumber();
-    await this.processTimestamp(timestamp, Number(block.number))
+  processNewBlock = async (block: NewBlock): Promise<void> => {
+    await this.processTimestamp(block.timestamp, block.highestAvailableBlockNumber);
   };
 
   processTimestampSet = async (log: TimestampSetLog): Promise<void> => {
