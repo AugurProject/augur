@@ -33,6 +33,7 @@ export enum SubscriptionEventName {
   MarketVolumeChanged = "MarketVolumeChanged",
   MarketOIChanged = "MarketOIChanged",
   NewBlock = "NewBlock",
+  ControllerNewBlock = "controller:new:block",
   OrderEvent = "OrderEvent",
   ParticipationTokensRedeemed = "ParticipationTokensRedeemed",
   ProfitLossChanged = "ProfitLossChanged",

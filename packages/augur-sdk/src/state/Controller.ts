@@ -81,6 +81,8 @@ export class Controller {
       percentSynced,
       timestamp: timestamp.toNumber(),
     });
+
+    this.augur.events.emit(SubscriptionEventName.ControllerNewBlock, block);
   };
 
   private async getLatestBlock(): Promise<Block> {
