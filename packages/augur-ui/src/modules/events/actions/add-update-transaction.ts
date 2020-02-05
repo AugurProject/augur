@@ -148,54 +148,6 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
 
         break;
       }
-      case PUBLICCREATEORDERS: {
-        const { marketInfos } = getState();
-        const marketId = transaction.params[TX_MARKET_ID];
-        const market = marketInfos[marketId];
-        setLiquidityMultipleOrdersStatus(txStatus, market, dispatch);
-
-        if (eventName === TXEventName.Success) {
-          deleteMultipleLiquidityOrders(txStatus, market, dispatch);
-        }
-        break;
-      }
-      case PUBLICCREATEORDER: {
-        const { marketInfos } = getState();
-        const marketId = transaction.params[TX_MARKET_ID];
-        const market = marketInfos[marketId];
-        setLiquidityOrderStatus(txStatus, market, dispatch);
-
-        if (eventName === TXEventName.Success) {
-          deleteLiquidityOrder(txStatus, market, dispatch);
-        }
-        break;
-      }
-      case PUBLICTRADE: {
-        const tradeGroupId = transaction.params[TX_TRADE_GROUP_ID];
-        const marketId = transaction.params[TX_MARKET_ID];
-        const { marketInfos } = getState();
-        const market = marketInfos[marketId];
-        if (!hash && eventName === TXEventName.AwaitingSigning) {
-          return addOrder(txStatus, market, dispatch);
-        }
-        dispatch(
-          updatePendingOrderStatus(tradeGroupId, marketId, eventName, hash)
-        );
-        if (eventName === TXEventName.Success) {
-          const order: UIOrder = convertTransactionOrderToUIOrder(
-            txStatus.hash,
-            txStatus.transaction.params,
-            txStatus.eventName,
-            market
-          );
-          dispatch(orderCreated(marketId, order));
-          dispatch(removePendingOrder(tradeGroupId, marketId));
-        }
-        if (eventName === TXEventName.Failure || eventName === TXEventName.RelayerDown) {
-          dispatch(removePendingOrder(tradeGroupId, marketId));
-        }
-        break;
-      }
       case CREATEMARKET:
       case CREATECATEGORICALMARKET:
       case CREATESCALARMARKET:
