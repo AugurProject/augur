@@ -7,7 +7,7 @@
   > li {
     margin-top: @size-12;
     display: grid;
-    grid-row: 44px;
+    grid-row: @size-44;
 
     > div:nth-of-type(2) {
       margin-left: @size-12;
@@ -117,7 +117,7 @@
 
 .RadioStyleSelection {
   background: @color-secondary-action;
-  border: 1px solid @color-secondary-action-outline;
+  border: @size-1 solid @color-secondary-action-outline;
   border-radius: @border-radius-default;
 
   > h5 {
@@ -134,11 +134,11 @@
 
   &:hover,
   &:focus {
-    border: 1px solid @color-primary-action;
+    border: @size-1 solid @color-primary-action;
   }
 
   &:disabled {
-    border: 1px solid @color-inactive-text;
+    border: @size-1 solid @color-inactive-text;
 
     > svg > circle {
       stroke: @color-inactive-text;
@@ -154,7 +154,7 @@
 .LocationDisplay {
   align-items: center;
   border-radius: @border-radius-default;
-  border: 1px solid @color-secondary-action-outline;
+  border: @size-1 solid @color-secondary-action-outline;
   display: flex;
   justify-content: center;
   padding: @size-16 @size-12;
@@ -322,7 +322,7 @@
   height: auto;
 
   &.Checked {
-    border: 1px solid @color-negative;
+    border: @size-1 solid @color-negative;
 
     > svg {
       > circle:last-of-type {
@@ -470,7 +470,7 @@
   }
 
   &.Checked {
-    border: 2px solid @color-primary-action;
+    border: @size-2 solid @color-primary-action;
   }
 }
 
@@ -512,13 +512,13 @@
   }
 
   > section {
-    border-bottom: 1px solid @color-secondary-action-outline;
+    border-bottom: @size-1 solid @color-secondary-action-outline;
     margin-bottom: @size-32;
     padding-bottom: @size-32;
   }
 
   > section:nth-of-type(2) {
-    border-bottom: 1px solid @color-error;
+    border-bottom: @size-1 solid @color-error;
     padding-bottom: @size-16;
 
     > svg {
@@ -560,7 +560,7 @@
 
 .RadioBarError {
   background: @color-dark-grey;
-  border: 1px solid @color-error;
+  border: @size-1 solid @color-error;
 }
 
 .RadioCardGroup {
@@ -604,13 +604,13 @@
   max-width: @size-210;
   min-height: 154px;
   min-width: @size-210;
-  border: 1px solid transparent;
-  box-shadow: 0 0 0 1px @color-secondary-action-outline;
+  border: @size-1 solid transparent;
+  box-shadow: 0 0 0 @size-1 @color-secondary-action-outline;
 
   &.hover,
   &.active {
     border: @size-4 solid transparent;
-    box-shadow: 0 0 0 1px @color-primary-action;
+    box-shadow: 0 0 0 @size-1 @color-primary-action;
   }
 
   @media @breakpoint-mobile {
@@ -759,7 +759,7 @@
 
   > span {
     background-color: transparent;
-    border: 1px solid @color-primary-text;
+    border: @size-1 solid @color-primary-text;
     border-radius: @border-radius-default;
     height: @size-16;
     left: 0;
@@ -792,7 +792,7 @@
 
 .Checkbox input:checked ~ span {
   background: transparent;
-  border: 1px solid @color-primary-text;
+  border: @size-1 solid @color-primary-text;
 
   > svg {
     display: block;
@@ -828,10 +828,10 @@
 
       background-color: @color-dark-grey;
       border-radius: @border-radius-default;
-      border: 1px solid @color-secondary-action;
+      border: @size-1 solid @color-secondary-action;
       color: @color-primary-text;
-      height: 44px;
-      min-width: 150px;
+      height: @size-44;
+      min-width: @size-150;
 
       &::placeholder {
         color: @color-secondary-text;
@@ -839,17 +839,17 @@
       }
 
       &:hover {
-        border: 1px solid @color-primary-text;
+        border: @size-1 solid @color-secondary-action-outline;
         cursor: pointer;
       }
 
       &:focus {
-        border: 1px solid @color-primary-text;
+        border: @size-1 solid @color-secondary-action-outline;
       }
 
       &:disabled {
         background-color: @color-dark-grey;
-        border: 1px solid @color-inactive-text;
+        border: @size-1 solid @color-inactive-text;
         color: @color-inactive-text;
 
         &::placeholder {
@@ -870,7 +870,7 @@
 
       &.active {
         display: block;
-        max-height: 400px;
+        max-height: @size-400;
         overflow-x: hidden;
         overflow-y: auto;
       }
@@ -879,7 +879,7 @@
         .text-10;
 
         color: @color-dark-grey;
-        height: 2rem;
+        height: @size-32;
         line-height: @size-12;
         padding: @size-10 @size-12;
         position: relative;
@@ -896,7 +896,7 @@
           background-color: fade(@color-primary-action, 10%);
           bottom: 0;
           content: '';
-          height: 1px;
+          height: @size-1;
           left: @size-12;
           position: absolute;
           right: @size-12;
@@ -939,7 +939,7 @@
     }
 
     > textarea {
-      min-height: 88px;
+      min-height: @size-88;
     }
 
     > input {
@@ -970,9 +970,9 @@
 
     background-color: @color-dark-grey;
     border-radius: @border-radius-default;
-    border: 1px solid @color-module-background;
+    border: @size-1 solid @color-module-background;
     min-width: @size-210;
-    min-height: 44px;
+    min-height: @size-44;
     max-width: unset;
 
     > div {
@@ -1017,19 +1017,19 @@
 
     &:hover {
       background-color: @color-dark-grey;
-      border: 1px solid @color-primary-action;
+      border: @size-1 solid @color-primary-action;
       cursor: pointer;
     }
 
     &.disabled {
       background-color: @color-dark-grey;
-      border: 1px solid @color-inactive-text;
+      border: @size-1 solid @color-inactive-text;
       color: @color-inactive-text;
       opacity: 0.5;
     }
 
     &.error {
-      border: 1px solid fade(@color-error, 50%);
+      border: @size-1 solid fade(@color-error, 50%);
     }
   }
 }
@@ -1228,12 +1228,12 @@ button.MaxDark {
     .DateInput_input__focused,
     .DateInput_input__focused_2 {
       border-radius: @border-radius-default;
-      border: 1px solid @color-secondary-action-outline;
-      min-height: 44px;
+      border: @size-1 solid @color-secondary-action-outline;
+      min-height: @size-44;
       min-width: @size-210;
 
       @media @breakpoint-mobile {
-        min-width: 155px;
+        min-width: @size-155;
       }
     }
 
@@ -1277,7 +1277,7 @@ button.MaxDark {
     .DayPicker__horizontal_2 {
       background-color: @color-primary-text;
       border-radius: 0;
-      box-shadow: 0 2px @size-4 rgba(0, 0, 0, 0.5);
+      box-shadow: 0 @size-2 @size-4 rgba(0, 0, 0, 0.5);
       font-size: @size-12;
       line-height: @size-12;
       text-transform: uppercase;
@@ -1293,7 +1293,7 @@ button.MaxDark {
       .mono-12;
 
       background-color: @color-dark-grey;
-      border: 1px solid @color-secondary-action-outline;
+      border: @size-1 solid @color-secondary-action-outline;
       border-radius: @border-radius-default;
       color: @color-primary-text;
     }
@@ -1303,7 +1303,7 @@ button.MaxDark {
 
       background-color: @color-dark-grey;
       color: @color-primary-text;
-      border: 1px solid @color-secondary-action;
+      border: @size-1 solid @color-secondary-action;
     }
 
     .DateInput_1 {
@@ -1420,7 +1420,7 @@ button.MaxDark {
       .mono-default;
 
       background: none;
-      border: 1px solid @color-primary-text;
+      border: @size-1 solid @color-primary-text;
       color: @color-inactive-text;
 
       &.CalendarDay__selected_2:hover {
@@ -1433,7 +1433,7 @@ button.MaxDark {
 
         &:hover {
           background: @color-primary-action;
-          border: 1px solid @color-primary-text;
+          border: @size-1 solid @color-primary-text;
           color: @color-primary-text;
         }
       }
@@ -1441,13 +1441,13 @@ button.MaxDark {
       &.CalendarDay__blocked_out_of_range_2.CalendarDay__blocked_out_of_range_2,
       &:hover {
         background: fade(@color-primary-action, 10%);
-        border: 1px solid @color-primary-text;
+        border: @size-1 solid @color-primary-text;
         color: @color-inactive-text;
       }
 
       &.CalendarDay__blocked_out_of_range_2.CalendarDay__blocked_out_of_range_2:hover {
         background: fade(@color-primary-action, 10%);
-        border: 1px solid @color-primary-text;
+        border: @size-1 solid @color-primary-text;
       }
 
       &:hover {
@@ -1515,7 +1515,7 @@ button.MaxDark {
     .text-18;
 
     background-color: @color-secondary-action;
-    box-shadow: 0 2px @size-4 rgba(0, 0, 0, 0.5);
+    box-shadow: 0 @size-2 @size-4 rgba(0, 0, 0, 0.5);
     color: @color-primary-text;
     display: none;
     line-height: @size-24;
@@ -1583,7 +1583,7 @@ button.MaxDark {
 
 .TimeSelector {
   position: relative;
-  max-height: 44px;
+  max-height: @size-44;
   min-width: @size-210;
 
   > button {
@@ -1592,10 +1592,10 @@ button.MaxDark {
     align-items: center;
     background-color: @color-dark-grey;
     border-radius: @border-radius-default;
-    border: 1px solid @color-secondary-action;
+    border: @size-1 solid @color-secondary-action;
     color: @color-primary-text;
     display: flex;
-    height: 44px;
+    height: @size-44;
     padding: @size-12;
     text-align: left;
     width: 100%;
@@ -1616,7 +1616,7 @@ button.MaxDark {
 
   > div {
     background: @color-primary-text;
-    border: 1px solid @color-secondary-action-outline;
+    border: @size-1 solid @color-secondary-action-outline;
     color: @color-primary-text;
     display: flex;
     left: 0;
@@ -1710,7 +1710,7 @@ button.MaxDark {
     .mono-14;
 
     background-color: @color-primary-text;
-    border: 1px solid @color-inactive-text;
+    border: @size-1 solid @color-inactive-text;
     color: @color-inactive-text;
     height: @size-40;
     margin: @size-14 0;
@@ -1719,16 +1719,16 @@ button.MaxDark {
     width: @size-40;
 
     &:hover {
-      border: 1px solid @color-secondary-text;
+      border: @size-1 solid @color-secondary-text;
     }
 
     &:focus {
-      border: 1px solid @color-dark-grey;
+      border: @size-1 solid @color-dark-grey;
     }
 
     &:disabled {
       background-color: @color-inactive-text;
-      border: 1px solid @color-inactive-text;
+      border: @size-1 solid @color-inactive-text;
       color: @color-secondary-text;
     }
   }
@@ -1764,7 +1764,7 @@ button.MaxDark {
 .ErrorLabel {
   background: fade(@color-error, 20%);
   border-radius: @border-radius-default;
-  border: 1px solid @color-error;
+  border: @size-1 solid @color-error;
   border-left-width: @size-4;
   display: flex;
   padding: @size-12;
@@ -1813,7 +1813,7 @@ button.MaxDark {
     background: transparent;
     padding: @size-20 @size-20 @size-24;
     border-radius: @size-8;
-    border: 1px solid @color-primary-action;
+    border: @size-1 solid @color-primary-action;
 
     > div {
       > span:first-of-type {
@@ -1835,11 +1835,11 @@ button.MaxDark {
 textarea.error,
 input.error,
 button.error {
-  border: 1px solid fade(@color-error, 50%);
+  border: @size-1 solid fade(@color-error, 50%);
 }
 
 div.error > div > div > div > div > input {
-  border: 1px solid fade(@color-error, 50%);
+  border: @size-1 solid fade(@color-error, 50%);
 }
 
 .Timezones {
@@ -1979,7 +1979,7 @@ div.error > div > div > div > div > input {
 .MigrateRepInfo {
   .text-14;
 
-  border: 1px solid @color-secondary-action-outline;
+  border: @size-1 solid @color-secondary-action-outline;
   box-sizing: border-box;
   border-radius: @size-8;
   color: @color-secondary-text;
