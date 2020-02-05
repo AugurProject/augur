@@ -17,8 +17,7 @@ const mapStateToProps = (state, ownProps) => {
   } = ownProps.marketId && !isTradingTutorial ? selectMarket(ownProps.marketId) : ownProps.market;
   const isScalar = marketType === SCALAR;
 
-
-  const bucketedPriceTimeSeries = !isTradingTutorial ? selectBucketedPriceTimeSeries(ownProps.marketId) : [];
+  const bucketedPriceTimeSeries = !isTradingTutorial ? selectBucketedPriceTimeSeries(ownProps.marketId) : {};
 
   return {
     maxPrice: !isTradingTutorial ? maxPriceBigNumber.toNumber() : 0,
