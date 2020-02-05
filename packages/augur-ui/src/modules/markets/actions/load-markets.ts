@@ -7,6 +7,7 @@ import {
   MAX_SPREAD_ALL_SPREADS,
   REPORTING_STATE,
 } from 'modules/common/constants';
+import * as _ from 'lodash';
 import { ThunkAction } from 'redux-thunk';
 import { AppState } from 'store';
 import { Getters, MarketReportingState } from '@augurproject/sdk';
@@ -273,8 +274,12 @@ const loadReportingMarkets = (
   if (cb) cb(null, marketList);
 };
 
-export const hotloadMarket = (marketId) => {
-  console.log('Hot Loading Market', marketId);
+const hotLoadMarket = _.throttle(marketId => {
   const augur = augurSdk.get();
   augur.hotloadMarket(marketId);
+  console.log('Hot Loading Market', marketId);
+}, 1000, { leading: true });
+
+export const hotloadMarket = (marketId) => {
+  hotLoadMarket(marketId);
 }

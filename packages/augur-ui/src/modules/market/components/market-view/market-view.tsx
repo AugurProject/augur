@@ -217,6 +217,7 @@ export default class MarketView extends Component<
       updateModal,
       closeMarketLoadingModalOnly,
       modalShowing,
+      preview
     } = prevProps;
     if (
       this.props.outcomeId !== prevProps.outcomeId &&
@@ -247,13 +248,7 @@ export default class MarketView extends Component<
       return;
     }
 
-    if (
-      isConnected !== this.props.isConnected &&
-      (this.props.isConnected &&
-        !!this.props.marketId &&
-        (this.props.marketId !== marketId ||
-          this.props.marketType === undefined))
-    ) {
+    if ((isConnected !== this.props.isConnected) && !!marketId && !tradingTutorial && !preview) {
       this.props.loadMarketOrderBook(marketId);
       this.props.loadMarketsInfo(this.props.marketId);
       this.props.loadMarketTradingHistory(marketId);
