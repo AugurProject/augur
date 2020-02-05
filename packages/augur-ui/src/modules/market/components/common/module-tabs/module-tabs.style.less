@@ -23,7 +23,7 @@
         @media @breakpoint-mobile {
           border-bottom: @size-2 solid @color-primary-action;
         }
-      
+
         .IsNew::before {
           background: @color-outcome-five;
           border-radius: @border-radius-default;
@@ -48,6 +48,12 @@
         position: relative;
         white-space: nowrap;
         text-transform: uppercase;
+
+        > h1 {
+          .mono-12-bold;
+
+          margin-bottom: 0;
+        }
       }
     }
   }
@@ -60,6 +66,12 @@
       > li {
         > button {
           .text-12-bold;
+
+          > h1 {
+            .text-12-bold;
+
+            margin-bottom: 0;
+          }
         }
       }
     }
@@ -148,6 +160,12 @@
 
   > li > button {
     .text-14;
+
+    > h1 {
+      .text-14;
+
+      margin-bottom: 0;
+    }
   }
 }
 
@@ -170,6 +188,12 @@
 
       padding: @size-24 @size-8;
       text-transform: uppercase;
+
+      > h1 {
+        .text-12;
+
+        margin-bottom: 0;
+      }
     }
   }
 }

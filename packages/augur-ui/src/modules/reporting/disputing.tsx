@@ -49,7 +49,7 @@ const Disputing: React.FC<DisputingProps> = ({
                 <ParticipationTokensView />
                 <DisputeWindowProgress />
               </ModulePane>
-              <ModulePane label="markets in dispute">
+              <ModulePane label="markets in dispute" h1Label={true}>
                 <MarketsInDispute />
               </ModulePane>
             </ModuleTabs>

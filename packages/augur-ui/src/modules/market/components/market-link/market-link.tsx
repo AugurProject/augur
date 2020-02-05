@@ -26,9 +26,12 @@ interface MarketLinkProps {
   linkType?: string;
   className?: string;
   outcomeId?: string;
+  h1Link?: boolean;
+  h2Link?: boolean;
+  h3Link?: boolean;
 }
 
-const MarketLink: React.FC<MarketLinkProps> = ({ linkType, className, id, outcomeId, children }) => {
+const MarketLink: React.FC<MarketLinkProps> = ({ linkType, className, id, outcomeId, children, h1Link, h2Link, h3Link }) => {
   let path;
 
   switch (linkType) {
@@ -57,21 +60,35 @@ const MarketLink: React.FC<MarketLinkProps> = ({ linkType, className, id, outcom
     queryLink[RETURN_PARAM_NAME] = location.hash;
   }
 
-  return (
+  const linkOrNot = id ? (
+    <Link
+      data-testid={'link-' + id}
+      to={{
+        pathname: path,
+        search: makeQuery(queryLink),
+      }}
+    >
+      {children}
+    </Link>
+  ) : (
+    children
+  );
+
+  return h1Link ? (
+    <h1 className={className}>
+      {linkOrNot}
+    </h1>
+  ) : h2Link ? (
+    <h2 className={className}>
+      {linkOrNot}
+    </h2>
+  ) : h3Link ? (
+    <h3 className={className}>
+      {linkOrNot}
+    </h3>
+  ) : (
     <span className={className}>
-      {id ? (
-        <Link
-          data-testid={"link-" + id}
-          to={{
-            pathname: path,
-            search: makeQuery(queryLink)
-          }}
-        >
-          {children}
-        </Link>
-      ) : (
-          children
-        )}
+      {linkOrNot}
     </span>
   );
 };

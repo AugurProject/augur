@@ -302,7 +302,7 @@ export const ExplainerBlock = (props: ExplainerBlockProps) => (
       [Styles.ModalStyling]: props.isModal,
     })}
   >
-    <h2>{props.title}</h2>
+    <span>{props.title}</span>
     <ul
       className={classNames({
         [Styles.NotBulleted]: !props.useBullets,
@@ -743,7 +743,7 @@ export const NoFundsErrors = (props: NoFundsErrorsProps) => {
           show={true}
           buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON}
           buttonText='Add Funds'
-          buttonAction={() => props.showAddFundsModal()} 
+          buttonAction={() => props.showAddFundsModal()}
 
         />
       )}
@@ -753,7 +753,7 @@ export const NoFundsErrors = (props: NoFundsErrorsProps) => {
           description={`You have ${availableRepFormatted.formatted} V2 REP of ${totalRep.formatted} required to create this market.`}
           show={true}
           buttonText='Add Funds'
-          buttonAction={() => props.showAddFundsModal()} 
+          buttonAction={() => props.showAddFundsModal()}
           buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON}
         />
       )}
@@ -763,7 +763,7 @@ export const NoFundsErrors = (props: NoFundsErrorsProps) => {
           title="Not enough $ (DAI) in your wallet"
           show={true}
           buttonText='Add Funds'
-          buttonAction={() => props.showAddFundsModal()} 
+          buttonAction={() => props.showAddFundsModal()}
           buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON}
           description={`You have $${availableDaiFormatted.formatted} (DAI) of $${totalDai.formatted} (DAI) required to create this market`}
         />

@@ -1,6 +1,7 @@
 interface ModulePane {
   label?: string;
-  onClickCallback?: Function
+  onClickCallback?: Function;
+  h1Label?: boolean;
 }
 
 const ModulePane: React.FC<ModulePane> = ({ children }) => {

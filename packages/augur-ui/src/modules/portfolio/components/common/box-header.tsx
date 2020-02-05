@@ -23,11 +23,12 @@ export interface BoxHeaderProps {
   hide?: boolean;
   extend?: boolean;
   showHeaderOnMobile?: boolean;
+  h1Title?: boolean;
 }
 
 const BoxHeader = (props: BoxHeaderProps) => (
   <>
-    {!props.normalOnMobile && 
+    {!props.normalOnMobile &&
       <div className={Styles.ShowOnMobile}>
         <div>
           {props.rightContent && <div className={Styles.RightContent}>{props.rightContent}</div>}
@@ -70,7 +71,11 @@ const BoxHeader = (props: BoxHeaderProps) => (
       })}
     >
       <div>
-        <div>{props.title}</div>
+        <div>
+          {props.h1Title
+            ? <h1>{props.title}</h1>
+            : props.title}
+        </div>
         <div>
           {props.rightContent}
           {props.mostRightContent}

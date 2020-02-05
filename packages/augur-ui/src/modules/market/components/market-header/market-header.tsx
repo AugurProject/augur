@@ -322,7 +322,7 @@ export default class MarketHeader extends Component<
                 {preview ? (
                   <PreviewMarketTitle market={market} />
                 ) : (
-                  <MarketTitle id={market.marketId} noLink />
+                  <MarketTitle id={market.marketId} noLink h1Link={true} />
                 )}
                 {market.mostLikelyInvalid ? (
                   <div className={Styles.ResolvingInvalid}>

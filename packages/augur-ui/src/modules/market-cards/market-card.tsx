@@ -15,7 +15,10 @@ import {
   ResolvedOutcomes,
 } from 'modules/market-cards/common';
 import toggleCategory from 'modules/routes/helpers/toggle-category';
-import { MARKETS } from 'modules/routes/constants/views';
+import {
+  DISPUTING,
+  MARKETS
+} from 'modules/routes/constants/views';
 import makePath from 'modules/routes/helpers/make-path';
 import {
   COPY_AUTHOR,
@@ -312,7 +315,10 @@ export default class MarketCard extends React.Component<
             </DotSelection>
           </div>
 
-          <MarketTitle id={id} />
+          <MarketTitle
+            id={id}
+            h2Link={location.pathname === makePath(DISPUTING)}
+            h3Link={location.pathname === makePath(MARKETS)} />
           {!condensed && !marketResolved ? (
             <>
               <OutcomeGroup

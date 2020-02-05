@@ -625,7 +625,8 @@ div.ReportingSubheaders {
     margin-bottom: @size-16;
   }
 
-  > span:nth-of-type(2) {
+  > span:nth-of-type(2):not(:last-of-type),
+  > h2 {
     .text-16-bold;
 
     color: @color-primary-text;
@@ -635,7 +636,7 @@ div.ReportingSubheaders {
     }
   }
 
-  > span:nth-of-type(3) {
+  > span:last-of-type {
     margin-top: @size-14;
   }
 
@@ -654,7 +655,7 @@ div.ReportingSubheaders {
       margin-bottom: @size-10;
     }
 
-    > span:nth-of-type(2) {
+    > span:nth-of-type(2):not(:last-of-type) {
       margin-top: 0;
     }
 
@@ -685,7 +686,8 @@ div.ReportingSubheaders {
   background-color: @color-module-background;
   margin-bottom: @size-16;
 
-  > span {
+  > span,
+  > h1 {
     .text-12-medium;
 
     color: @color-primary-text;
@@ -693,6 +695,7 @@ div.ReportingSubheaders {
     padding: @size-12 @size-16;
     text-transform: uppercase;
     background-color: @color-dark-grey;
+    margin-bottom: 0;
   }
 
   > div {

@@ -103,17 +103,30 @@ export default class ModuleTabs extends Component<ModuleTabsProps, ModuleTabsSta
               that.handleClick(e, index, child.props.onClickCallback);
             }}
           >
-            <span
-              className={classNames({
-                [Styles.ActiveSpanFill]:
+            {child.props && child.props.h1Label
+              ? <h1
+                className={classNames({
+                  [Styles.ActiveSpanFill]:
                   that.state.selected === index && that.props.fillWidth,
-                [Styles.ActiveNoBorder]:
+                  [Styles.ActiveNoBorder]:
                   that.state.selected === index && that.props.noBorder,
-                [Styles.IsNew]: child.props && child.props.isNew,
-              })}
-            >
+                  [Styles.IsNew]: child.props && child.props.isNew,
+                })}
+              >
+                {child.props && child.props.label || ""}
+              </h1>
+              : <span
+                className={classNames({
+                  [Styles.ActiveSpanFill]:
+                  that.state.selected === index && that.props.fillWidth,
+                  [Styles.ActiveNoBorder]:
+                  that.state.selected === index && that.props.noBorder,
+                  [Styles.IsNew]: child.props && child.props.isNew,
+                })}
+              >
               {child.props && child.props.label || ""}
             </span>
+            }
           </button>
         </li>
       );
