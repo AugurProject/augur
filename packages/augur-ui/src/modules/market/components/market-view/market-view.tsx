@@ -260,7 +260,7 @@ export default class MarketView extends Component<
     }
 
     if (!isMarketLoading) {
-      closeMarketLoadingModalOnly(modalShowing);
+      closeMarketLoadingModalOnly && closeMarketLoadingModalOnly(modalShowing);
     }
 
     if (
