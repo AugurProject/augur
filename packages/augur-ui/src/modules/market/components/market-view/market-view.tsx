@@ -711,6 +711,7 @@ export default class MarketView extends Component<
                               market={market}
                               initialLiquidity={preview}
                               orderBook={outcomeOrderBook}
+                              showButtons
                             />
                           </div>
                         </ModulePane>

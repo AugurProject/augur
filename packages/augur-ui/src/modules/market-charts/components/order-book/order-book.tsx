@@ -11,9 +11,13 @@ import {
   SCALAR,
   BINARY_CATEGORICAL_FORMAT_OPTIONS,
 } from 'modules/common/constants';
-
+import { CancelTextButton } from 'modules/common/buttons';
 import Styles from 'modules/market-charts/components/order-book/order-book.styles.less';
-import { OutcomeFormatted, QuantityOutcomeOrderBook, QuantityOrderBookOrder } from 'modules/types';
+import {
+  OutcomeFormatted,
+  QuantityOutcomeOrderBook,
+  QuantityOrderBookOrder,
+} from 'modules/types';
 import { createBigNumber } from 'utils/create-big-number';
 import { formatShares } from 'utils/format-number';
 
@@ -30,6 +34,7 @@ interface OrderBookSideProps {
   scrollToTop: boolean;
   hoveredSide?: string;
   hoveredOrderIndex?: number;
+  showButtons: boolean;
 }
 
 interface OrderBookProps {
@@ -46,6 +51,7 @@ interface OrderBookProps {
   marketType: string;
   account: string;
   selectedOutcome: OutcomeFormatted;
+  showButtons: boolean;
 }
 
 interface OrderBookState {
@@ -90,6 +96,7 @@ class OrderBookSide extends Component<OrderBookSideProps, {}> {
       setHovers,
       type,
       marketType,
+      showButtons,
     } = this.props;
     const isAsks = type === ASKS;
     const opts =
@@ -102,6 +109,7 @@ class OrderBookSide extends Component<OrderBookSideProps, {}> {
 
     const isScrollable =
       this.side && orderBookOrders.length * 20 >= this.side.clientHeight;
+    
     return (
       <div
         className={classNames(Styles.Side, {
@@ -114,7 +122,30 @@ class OrderBookSide extends Component<OrderBookSideProps, {}> {
       >
         {orderBookOrders.length === 0 && (
           <div className={Styles.NoOrders}>
-            {isAsks ? `Add Offer` : `Add Bid`}
+            {!showButtons && (isAsks ? `Add Offer` : `Add Bid`)}
+            {showButtons && (isAsks ? (
+              <CancelTextButton
+                text="Add Offer"
+                title="Add Offer"
+                action={() => updateSelectedOrderProperties({
+                  orderPrice: '0',
+                  orderQuantity: '0',
+                  selectedNav: SELL,
+                  selfTrade: false,
+                })}
+              />
+            ) : (
+              <CancelTextButton
+                text="Add Bid"
+                title="Add Bid"
+                action={() => updateSelectedOrderProperties({
+                  orderPrice: '0',
+                  orderQuantity: '0',
+                  selectedNav: BUY,
+                  selfTrade: false,
+                })}
+              />
+            ))}
           </div>
         )}
         {orderBookOrders.map((order: QuantityOrderBookOrder, i) => {
@@ -202,8 +233,16 @@ export default class OrderBook extends Component<
   };
 
   render() {
-    const { pricePrecision, toggle, hide, marketType, hasOrders, orderBook } = this.props;
-    const {hoveredSide, hoveredOrderIndex} = this.state;
+    const {
+      pricePrecision,
+      toggle,
+      hide,
+      marketType,
+      hasOrders,
+      orderBook,
+      showButtons,
+    } = this.props;
+    const { hoveredSide, hoveredOrderIndex } = this.state;
 
     return (
       <section className={Styles.OrderBook}>
@@ -221,13 +260,16 @@ export default class OrderBook extends Component<
           hoveredOrderIndex={hoveredOrderIndex}
           type={ASKS}
           scrollToTop
+          showButtons={showButtons}
         />
         {!hide && (
           <div className={Styles.Midmarket}>
             {hasOrders &&
               `spread: ${
                 orderBook.spread
-                  ? `$${createBigNumber(orderBook.spread).toFixed(pricePrecision)}`
+                  ? `$${createBigNumber(orderBook.spread).toFixed(
+                      pricePrecision
+                    )}`
                   : '—'
               }`}
           </div>
@@ -239,6 +281,7 @@ export default class OrderBook extends Component<
           hoveredSide={hoveredSide}
           hoveredOrderIndex={hoveredOrderIndex}
           type={BIDS}
+          showButtons={showButtons}
         />
       </section>
     );
