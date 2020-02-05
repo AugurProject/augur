@@ -106,9 +106,9 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
       this.props.sort !== prevProps.sort
     ) {
       const sortedList =
-        prevProps.sort && prevProps.options
+        this.props.sort && this.props.options
           ? this.props.options.sort((a, b) => (a.label > b.label ? 1 : -1))
-          : prevProps.options;
+          : this.props.options;
       this.setState({
         sortedList,
       });
