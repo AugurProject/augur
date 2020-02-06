@@ -484,6 +484,13 @@
         }
       }
 
+      &.invalid {
+        grid-template-columns: @size-16 auto @size-16 @size-16;
+        > div[class*='CategoryTagTrail'] {
+          grid-column: 2;
+        }
+      }
+
       > div:first-of-type {
         margin-top: 0;
 
