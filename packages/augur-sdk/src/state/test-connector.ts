@@ -19,7 +19,7 @@ console.log("Starting web worker");
       ethereum: {
         http: settings.ethNodeURLs[4],
         rpcRetryCount: 5,
-        rpcRetryInternval: 0,
+        rpcRetryInterval: 0,
         rpcConcurrency: 40
       },
       gnosis: {

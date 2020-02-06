@@ -11,10 +11,10 @@
 
     > div:first-of-type {
       display: grid;
-      grid-gap: @size-8 0;
+      grid-gap: @size-8;
       grid-template-columns: auto auto;
-      grid-template-rows: @size-34 @size-34;
-      margin: @size-12 @size-16;
+      grid-template-rows: 0fr 0fr;
+      margin: @size-12;
       flex: 1;
 
       > div[class*="PropertyLabel"] > {
@@ -133,8 +133,7 @@
   background: @color-module-background;
   border-left: 1px solid @color-dark-grey;
   max-width: 240px;
-  min-width: 240px;
-  padding: @size-12 @size-16;
+  padding: @size-12;
 
   @media @breakpoint-mobile {
     min-width: unset;

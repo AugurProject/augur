@@ -7,6 +7,7 @@ import { AppState } from 'store';
 import { Getters } from '@augurproject/sdk';
 
 export const UPDATE_ORDER_BOOK = 'UPDATE_ORDER_BOOK';
+export const CLEAR_ORDER_BOOK = 'CLEAR_ORDER_BOOK';
 
 export const updateOrderBook = (
   marketId: string,
@@ -17,6 +18,10 @@ export const updateOrderBook = (
     marketId,
     orderBook,
   },
+});
+
+export const clearOrderBook = () => ({
+  type: CLEAR_ORDER_BOOK,
 });
 
 export const loadMarketOrderBook = (

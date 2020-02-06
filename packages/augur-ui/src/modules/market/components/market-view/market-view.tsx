@@ -89,6 +89,7 @@ interface MarketViewProps {
   account: string;
   orderBook?: Getters.Markets.OutcomeOrderBook | OutcomeTestTradingOrder;
   loadMarketOrderBook: Function;
+  clearOrderBook: Function;
 }
 
 interface DefaultOrderPropertiesMap {
@@ -217,6 +218,7 @@ export default class MarketView extends Component<
       updateModal,
       closeMarketLoadingModalOnly,
       modalShowing,
+      preview
     } = prevProps;
     if (
       this.props.outcomeId !== prevProps.outcomeId &&
@@ -247,13 +249,7 @@ export default class MarketView extends Component<
       return;
     }
 
-    if (
-      isConnected !== this.props.isConnected &&
-      (this.props.isConnected &&
-        !!this.props.marketId &&
-        (this.props.marketId !== marketId ||
-          this.props.marketType === undefined))
-    ) {
+    if ((isConnected !== this.props.isConnected) && !!marketId && !tradingTutorial && !preview) {
       this.props.loadMarketOrderBook(marketId);
       this.props.loadMarketsInfo(this.props.marketId);
       this.props.loadMarketTradingHistory(marketId);
@@ -274,6 +270,10 @@ export default class MarketView extends Component<
         cb: () => this.setState({ hasShownScalarModal: true }),
       });
     }
+  }
+
+  componentWillUnmount() {
+    this.props.clearOrderBook();
   }
 
   tradingTutorialWidthCheck() {
@@ -670,7 +670,7 @@ export default class MarketView extends Component<
                         preview={preview}
                         selectedOutcomeId={outcomeId}
                         updateSelectedOutcome={this.updateSelectedOutcomeSwitch}
-                        orderBook={outcomeOrderBook}
+                        orderBook={orderBook}
                       />
                       <div className={Styles.PriceHistory}>
                         <h3>Price History</h3>
@@ -902,7 +902,7 @@ export default class MarketView extends Component<
                     selectedOutcomeId={outcomeId}
                     updateSelectedOutcome={this.updateSelectedOutcome}
                     hideOutcomes={cat5 ? !extendOutcomesList : false}
-                    orderBook={outcomeOrderBook}
+                    orderBook={orderBook}
                   />
                   <div
                     className={classNames(Styles.ChartsPane, {
