@@ -7,7 +7,8 @@ import makeQuery from "modules/routes/helpers/make-query";
 import {
   TYPE_REPORT,
   TYPE_DISPUTE,
-  TYPE_MIGRATE_REP, HEADER_TYPE
+  TYPE_MIGRATE_REP,
+  HEADER_TYPE
 } from "modules/common/constants";
 import {
   MARKET,

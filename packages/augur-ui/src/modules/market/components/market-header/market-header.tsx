@@ -22,7 +22,8 @@ import {
   CATEGORY_PARAM_NAME,
   TAGS_PARAM_NAME,
   SCALAR,
-  PROBABLE_INVALID_MARKET, HEADER_TYPE,
+  PROBABLE_INVALID_MARKET,
+  HEADER_TYPE,
 } from 'modules/common/constants';
 import MarketHeaderReporting from 'modules/market/containers/market-header-reporting';
 import SocialMediaButtons from 'modules/market/containers/social-media-buttons';

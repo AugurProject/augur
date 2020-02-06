@@ -8,7 +8,8 @@ import {
   REPORTING_STATE,
   SCALAR,
   DISPUTE_GAS_COST,
-  INITAL_REPORT_GAS_COST, HEADER_TYPE,
+  INITAL_REPORT_GAS_COST,
+  HEADER_TYPE,
 } from 'modules/common/constants';
 import {
   FormattedNumber,
@@ -31,7 +32,11 @@ import {
   InReportingLabel,
 } from 'modules/common/labels';
 import { ButtonActionType } from 'modules/types';
-import { formatRep, formatAttoRep, formatGasCostToEther } from 'utils/format-number';
+import {
+  formatRep,
+  formatAttoRep,
+  formatGasCostToEther,
+} from 'utils/format-number';
 import { MarketProgress } from 'modules/common/progress';
 import { ExclamationCircle, InfoIcon, XIcon } from 'modules/common/icons';
 import ChevronFlip from 'modules/common/chevron-flip';

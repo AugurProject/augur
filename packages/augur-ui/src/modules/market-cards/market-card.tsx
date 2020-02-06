@@ -1,8 +1,19 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import { CategoryTagTrail, InReportingLabel, MarketTypeLabel, RedFlag, TemplateShield, } from 'modules/common/labels';
-import { HoverIcon, LabelValue, OutcomeGroup, ResolvedOutcomes, } from 'modules/market-cards/common';
+import {
+  CategoryTagTrail,
+  InReportingLabel,
+  MarketTypeLabel,
+  RedFlag,
+  TemplateShield,
+} from 'modules/common/labels';
+import {
+  HoverIcon,
+  LabelValue,
+  OutcomeGroup,
+  ResolvedOutcomes,
+} from 'modules/market-cards/common';
 import toggleCategory from 'modules/routes/helpers/toggle-category';
 import { DISPUTING, MARKETS } from 'modules/routes/constants/views';
 import makePath from 'modules/routes/helpers/make-path';
