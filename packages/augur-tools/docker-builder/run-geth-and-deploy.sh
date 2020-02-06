@@ -28,11 +28,9 @@ fi
 # Still need to double-check builds after deploy
 yarn build
 
+# TODO when yarn build isn't needed, this can be folded into {fake,normal}-all
 # Create-canned-markets will rep/cash faucet
 yarn flash create-canned-markets
-
-# Make sure relayer is fauceted with Cash
-yarn flash faucet -t 0x9d4c6d4b84cd046381923c9bc136d6ff1fe292d9 -a 1000000
 
 ###############################################################################
 

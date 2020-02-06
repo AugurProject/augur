@@ -1,4 +1,4 @@
-import { NetworkId } from '@augurproject/artifacts';
+import { NetworkId, getAddressesForNetwork } from '@augurproject/artifacts';
 import {
   Augur,
   CalculateGnosisSafeAddressParams,
@@ -39,13 +39,14 @@ export class SDK {
     enableFlexSearch = true,
   ): Promise<Augur> {
     this.networkId = (await provider.getNetwork()).chainId.toString() as NetworkId;
+    const addresses = getAddressesForNetwork(this.networkId);
 
     const config: SDKConfiguration = {
       networkId: this.networkId,
       ethereum: {
         http: env['ethereum-node'].http,
         rpcRetryCount: 5,
-        rpcRetryInternval: 0,
+        rpcRetryInterval: 0,
         rpcConcurrency: 40
       },
       gnosis: {
@@ -60,16 +61,17 @@ export class SDK {
         mesh: {
           verbosity: 5,
           bootstrapList: (env['0x-mesh'] || {}).bootstrapList,
-          enabled:  !!(env['0x-mesh'] || {}).enabled,
+          enabled: !!(env['0x-mesh'] || {}).enabled,
         }
-      }
+      },
+      addresses,
     };
 
     const ethersProvider = new EthersProvider(
       provider,
-      config.rpcRetryCount,
-      config.rpcRetryInterval,
-      config.rpcConcurrency
+      config.ethereum.rpcRetryCount,
+      config.ethereum.rpcRetryInterval,
+      config.ethereum.rpcConcurrency
     );
 
     let connector = null;
@@ -83,7 +85,7 @@ export class SDK {
 
     if (!isEmpty(account)) {
       this.syncUserData(account, signer, this.networkId, config.gnosis && config.gnosis.enabled).catch((error) => {
-        console.log("Gnosis safe create error during create: ", error);
+        console.log('Gnosis safe create error during create: ', error);
       });
     }
 
@@ -104,7 +106,7 @@ export class SDK {
    */
   async getOrCreateGnosisSafe(walletAddress: string, networkId: NetworkId): Promise<void | string> {
     if (!this.client) {
-      console.log("Trying to init gnosis safe before Augur is initalized");
+      console.log('Trying to init gnosis safe before Augur is initalized');
       return;
     }
 
@@ -149,7 +151,7 @@ export class SDK {
     updateUser?: Function
   ) {
     if (!this.client) {
-      throw new Error("Trying to sync user data before Augur is initialized");
+      throw new Error('Trying to sync user data before Augur is initialized');
     }
 
     if (expectedNetworkId && this.networkId !== expectedNetworkId) {
@@ -157,7 +159,7 @@ export class SDK {
     }
 
     if (!signer) {
-      throw new Error("Attempting to set logged in user without specifying a signer");
+      throw new Error('Attempting to set logged in user without specifying a signer');
     }
 
     this.client.signer = signer;

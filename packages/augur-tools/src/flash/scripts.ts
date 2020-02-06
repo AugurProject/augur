@@ -116,6 +116,11 @@ export function addScripts(flash: FlashSession) {
         description: 'a few scripts need sdk, -u to wire up sdk',
         flag: true,
       },
+      {
+        name: 'relayer-address',
+        abbr: 'r',
+        description: 'gnosis relayer address'
+      }
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const useSdk = args.useSdk as boolean;
@@ -139,6 +144,16 @@ export function addScripts(flash: FlashSession) {
       if (useSdk) {
         await flash.ensureUser(this.network, useSdk);
       }
+
+      const relayerAddressArg = args.relayer_address as string;
+      const relayerAddressConfig = this.network && this.network.gnosisRelayerAddress;
+      const relayerAddress = relayerAddressArg || relayerAddressConfig;
+      if (relayerAddress) {
+        await this.call('faucet', {
+          amount: '1000000',
+          target: relayerAddress,
+        })
+      }
     },
   });
 
@@ -160,6 +175,7 @@ export function addScripts(flash: FlashSession) {
       }
     ],
     async call(this: FlashSession, args: FlashArguments) {
+      const target = args.target as string;
       if (this.noProvider()) return;
       const user = await this.ensureUser();
 
@@ -168,9 +184,13 @@ export function addScripts(flash: FlashSession) {
 
       await user.faucet(atto);
 
-      // if we have a target we transfer from current account to target.
-      if(args.target) {
-        await user.augur.contracts.cash.transfer(String(args.target), atto);
+      // If we have a target we transfer from current account to target.
+      // Cannot directly faucet to target because:
+      // 1) it might not have ETH, and
+      // 2) specifying sender for contract calls only works if signer is available,
+      //    which is typically only true of main account and its gnosis safe
+      if (target) {
+        await user.augur.contracts.cash.transfer(target, atto);
       }
     },
   });
@@ -1194,11 +1214,17 @@ export function addScripts(flash: FlashSession) {
           'create canned markets',
         flag: true,
       },
+      {
+        name: 'relayer-address',
+        abbr: 'r',
+        description: 'gnosis relayer address'
+      }
     ],
     async call(this: FlashSession, args: FlashArguments) {
       await this.call('deploy', {
         write_artifacts: true,
         time_controlled: true,
+        relayer_address: args.relayer_address as string,
       });
       const createMarkets = args.createMarkets as boolean;
       if (createMarkets)
@@ -1216,11 +1242,17 @@ export function addScripts(flash: FlashSession) {
           'create canned markets',
         flag: true,
       },
+      {
+        name: 'relayer-address',
+        abbr: 'r',
+        description: 'gnosis relayer address'
+      }
     ],
     async call(this: FlashSession, args: FlashArguments) {
       await this.call('deploy', {
         write_artifacts: true,
         time_controlled: false,
+        relayer_address: args.relayer_address as string,
       });
       const createMarkets = args.createMarkets as boolean;
       if (createMarkets)
@@ -1924,9 +1956,10 @@ export function addScripts(flash: FlashSession) {
         '-e', 'BLOCK_POLLING_INTERVAL=1s',
         '-e', 'ETHEREUM_RPC_MAX_REQUESTS_PER_24_HR_UTC=169120', // needed when polling interval is 1s
         '-e', `CUSTOM_CONTRACT_ADDRESSES=${JSON.stringify(addresses)}`,
+        '-e', `CUSTOM_ORDER_FILTER={"properties":{"makerAssetData":{"pattern":".*${addresses.ZeroXTrade.slice(2).toLowerCase()}.*"}}}`,
         '-e', 'VERBOSITY=4', // 5=debug 6=trace
         '-e', 'RPC_ADDR=0x:60557', // need to use "0x" network
-        '0xorg/mesh:8.1.2',
+        '0xorg/mesh:9.0.0',
       ]);
 
       mesh.on('error', console.error);
@@ -1951,13 +1984,33 @@ export function addScripts(flash: FlashSession) {
         description: 'Name of contract',
         required: true,
       },
+      {
+        name: 'removePrefix',
+        abbr: 'r',
+        description: 'If specified will remove the 0x prefix',
+        flag: true,
+      },
+      {
+        name: 'lower',
+        abbr: 'l',
+        description: 'If specified will toLowerCase the result',
+        flag: true,
+      },
     ],
     async call(
       this: FlashSession,
       args: FlashArguments
     ): Promise<string> {
       const name = args.name as string;
-      const address = this.contractAddresses[name];
+      const removePrefix = args.removePrefix as boolean;
+      const lower = args.lower as boolean;
+      let address = this.contractAddresses[name];
+      if (removePrefix) {
+        address = address.slice(2);
+      }
+      if (lower) {
+        address = address.toLowerCase();
+      }
       console.log(address);
       return address;
     },
@@ -2017,6 +2070,60 @@ export function addScripts(flash: FlashSession) {
       const user = await this.ensureUser();
 
       await user.initWarpSync(user.augur.contracts.universe.address);
+    },
+  });
+
+  flash.addScript({
+    name: 'eth-balance',
+    options: [
+      {
+        name: 'target',
+        abbr: 't',
+        description: 'which account to check. defaults to current account',
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments): Promise<BigNumber> {
+      const target = args.target as string;
+      const user = await this.ensureUser();
+      const balance = await user.getEthBalance(target || this.account);
+      this.log(balance.toFixed());
+      return balance;
+    },
+  });
+
+  flash.addScript({
+    name: 'cash-balance',
+    options: [
+      {
+        name: 'target',
+        abbr: 't',
+        description: 'which account to check. defaults to current account',
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments): Promise<BigNumber> {
+      const target = args.target as string;
+      const user = await this.ensureUser();
+      const balance = await user.getCashBalance(target || this.account);
+      this.log(balance.toFixed());
+      return balance;
+    },
+  });
+
+  flash.addScript({
+    name: 'rep-balance',
+    options: [
+      {
+        name: 'target',
+        abbr: 't',
+        description: 'which account to check. defaults to current account',
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments): Promise<BigNumber> {
+      const target = args.target as string;
+      const user = await this.ensureUser();
+      const balance = await user.getRepBalance(target || this.account);
+      this.log(balance.toFixed());
+      return balance;
     },
   });
 }
