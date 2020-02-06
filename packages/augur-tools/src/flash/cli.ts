@@ -9,7 +9,7 @@ import { Addresses } from '@augurproject/artifacts';
 import { computeAddress } from 'ethers/utils';
 import * as fs from 'fs';
 
-function processAccounts(flash: FlashSession, args: any) {
+async function processAccounts(flash: FlashSession, args: any) {
     // Figure out which private key to use.
     if (args.key && args.keyfile) {
       console.error('ERROR: Cannot specify both --key and --keyfile');
@@ -34,15 +34,15 @@ async function run() {
 
   program
     .name('flash')
-    .option('-k, --key', 'Private key to use, Overrides ETHEREUM_PRIVATE_KEY environment variable, if set.')
-    .option('--keyfile', 'File containing private key to use. Overrides ETHEREUM_PRIVATE_KEY environment variable, if set.')
-    .option('-n, --network', `Name of network to run on. Use "none" for commands that don't use a network.)`, 'environment');
+    .option('-k, --key <key>', 'Private key to use, Overrides ETHEREUM_PRIVATE_KEY environment variable, if set.')
+    .option('--keyfile <keyfile>', 'File containing private key to use. Overrides ETHEREUM_PRIVATE_KEY environment variable, if set.')
+    .option('-n, --network <network>', `Name of network to run on. Use "none" for commands that don't use a network.)`, 'environment');
 
   program
     .command('interactive')
     .description('Run flash interactively, where you can connect once and run multiple flash scripts in the same session.')
-    .action((args) => {
-      processAccounts(flash, args);
+    .action(async (args) => {
+      await processAccounts(flash, args);
       const vorpal = makeVorpalCLI(flash);
       flash.log = vorpal.log.bind(vorpal);
       vorpal.show();
@@ -53,14 +53,14 @@ async function run() {
     const subcommand = program.command(script.name).description(script.description);
 
     for (const opt of script.options || []) {
-      const args = [ `--${opt.name}`];
+      const args = [ `--${opt.name} ${opt.flag ? '' : `<${opt.name}>`}`];
       if (opt.abbr) args.unshift(`-${opt.abbr}`);
       const option = opt.required === true ? subcommand.requiredOption(args.join(', ')) : subcommand.option(args.join(', '))
         .description(opt.description || '')
     }
     subcommand.action(async (args) => {
       try {
-        processAccounts(flash, args);
+        await processAccounts(flash, args);
         if (args.network !== 'none') {
           flash.network = NetworkConfiguration.create(args.network as NETWORKS);
           flash.provider = flash.makeProvider(flash.network);
