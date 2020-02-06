@@ -401,6 +401,7 @@ export class MarketDB extends DerivedDB {
 
     if (updateDocs.length > 0) {
       await this.bulkUpsertDocuments(updateDocs);
+      this.augur.events.emit(SubscriptionEventName.ReportingStateChanged, { data: updateDocs });
     }
   }
 
