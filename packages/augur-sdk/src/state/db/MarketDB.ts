@@ -292,7 +292,7 @@ export class MarketDB extends DerivedDB {
     log['feePercent'] = new BigNumber(log['feePerCashInAttoCash'], 16).div(QUINTILLION).toNumber();
     log['lastTradedTimestamp'] = 0;
     log['timestamp'] = new BigNumber(log['timestamp'], 16).toNumber();
-    log['creationTime'] = new BigNumber(log['timestamp'], 16).toNumber();
+    log['creationTime'] = log['timestamp'];
     log['endTime'] = new BigNumber(log['endTime'], 16).toNumber();
     try {
       log['extraInfo'] = JSON.parse(log['extraInfo']);
