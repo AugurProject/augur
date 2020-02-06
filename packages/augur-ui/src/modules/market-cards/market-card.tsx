@@ -1,28 +1,15 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import {
-  CategoryTagTrail,
-  InReportingLabel,
-  TemplateShield,
-  MarketTypeLabel,
-  RedFlag,
-} from 'modules/common/labels';
-import {
-  HoverIcon,
-  LabelValue,
-  OutcomeGroup,
-  ResolvedOutcomes,
-} from 'modules/market-cards/common';
+import { CategoryTagTrail, InReportingLabel, MarketTypeLabel, RedFlag, TemplateShield, } from 'modules/common/labels';
+import { HoverIcon, LabelValue, OutcomeGroup, ResolvedOutcomes, } from 'modules/market-cards/common';
 import toggleCategory from 'modules/routes/helpers/toggle-category';
-import {
-  DISPUTING,
-  MARKETS
-} from 'modules/routes/constants/views';
+import { DISPUTING, MARKETS } from 'modules/routes/constants/views';
 import makePath from 'modules/routes/helpers/make-path';
 import {
   COPY_AUTHOR,
   COPY_MARKET_ID,
+  HEADER_TYPE,
   MARKET_REPORTING,
   REPORTING_STATE,
   SCALAR,
@@ -226,6 +213,13 @@ export default class MarketCard extends React.Component<
       outcomesFormatted.length > showOutcomeNumber &&
       !expandedView;
 
+    const headerType =
+      location.pathname === makePath(DISPUTING)
+        ? HEADER_TYPE.H2
+        : location.pathname === makePath(MARKETS)
+        ? HEADER_TYPE.H3
+        : undefined;
+
     return (
       <div
         className={classNames(Styles.MarketCard, {
@@ -317,8 +311,7 @@ export default class MarketCard extends React.Component<
 
           <MarketTitle
             id={id}
-            h2Link={location.pathname === makePath(DISPUTING)}
-            h3Link={location.pathname === makePath(MARKETS)} />
+            headerType={headerType} />
           {!condensed && !marketResolved ? (
             <>
               <OutcomeGroup

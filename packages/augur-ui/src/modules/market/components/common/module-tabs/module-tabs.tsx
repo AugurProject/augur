@@ -4,6 +4,7 @@ import classNames from "classnames";
 import ModulePane from "modules/market/components/common/module-tabs/module-pane";
 import Styles from "modules/market/components/common/module-tabs/module-tabs.style.less";
 import { ToggleExtendButton } from "modules/common/buttons";
+import { HEADER_TYPE } from 'modules/common/constants';
 
 interface ModuleTabsProps {
   className?: string;
@@ -95,7 +96,7 @@ export default class ModuleTabs extends Component<ModuleTabsProps, ModuleTabsSta
           className={classNames({
             [Styles.ActiveTab]: that.state.selected === index,
             [Styles.ActiveTabFill]:
-            that.state.selected === index && that.props.fillWidth
+              that.state.selected === index && that.props.fillWidth,
           })}
         >
           <button
@@ -103,30 +104,31 @@ export default class ModuleTabs extends Component<ModuleTabsProps, ModuleTabsSta
               that.handleClick(e, index, child.props.onClickCallback);
             }}
           >
-            {child.props && child.props.h1Label
-              ? <h1
+            {child.props && child.props.headerType === HEADER_TYPE.H1 ? (
+              <h1
                 className={classNames({
                   [Styles.ActiveSpanFill]:
-                  that.state.selected === index && that.props.fillWidth,
+                    that.state.selected === index && that.props.fillWidth,
                   [Styles.ActiveNoBorder]:
-                  that.state.selected === index && that.props.noBorder,
+                    that.state.selected === index && that.props.noBorder,
                   [Styles.IsNew]: child.props && child.props.isNew,
                 })}
               >
-                {child.props && child.props.label || ""}
+                {(child.props && child.props.label) || ''}
               </h1>
-              : <span
+            ) : (
+              <span
                 className={classNames({
                   [Styles.ActiveSpanFill]:
-                  that.state.selected === index && that.props.fillWidth,
+                    that.state.selected === index && that.props.fillWidth,
                   [Styles.ActiveNoBorder]:
-                  that.state.selected === index && that.props.noBorder,
+                    that.state.selected === index && that.props.noBorder,
                   [Styles.IsNew]: child.props && child.props.isNew,
                 })}
               >
-              {child.props && child.props.label || ""}
-            </span>
-            }
+                {(child.props && child.props.label) || ''}
+              </span>
+            )}
           </button>
         </li>
       );

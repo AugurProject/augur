@@ -22,7 +22,7 @@ import {
   CATEGORY_PARAM_NAME,
   TAGS_PARAM_NAME,
   SCALAR,
-  PROBABLE_INVALID_MARKET,
+  PROBABLE_INVALID_MARKET, HEADER_TYPE,
 } from 'modules/common/constants';
 import MarketHeaderReporting from 'modules/market/containers/market-header-reporting';
 import SocialMediaButtons from 'modules/market/containers/social-media-buttons';
@@ -322,7 +322,7 @@ export default class MarketHeader extends Component<
                 {preview ? (
                   <PreviewMarketTitle market={market} />
                 ) : (
-                  <MarketTitle id={market.marketId} noLink h1Link={true} />
+                  <MarketTitle id={market.marketId} noLink headerType={HEADER_TYPE.H1} />
                 )}
                 {market.mostLikelyInvalid ? (
                   <div className={Styles.ResolvingInvalid}>

@@ -302,7 +302,7 @@ export const ExplainerBlock = (props: ExplainerBlockProps) => (
       [Styles.ModalStyling]: props.isModal,
     })}
   >
-    <span>{props.title}</span>
+    <h5>{props.title}</h5>
     <ul
       className={classNames({
         [Styles.NotBulleted]: !props.useBullets,

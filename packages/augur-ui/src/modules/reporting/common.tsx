@@ -8,7 +8,7 @@ import {
   REPORTING_STATE,
   SCALAR,
   DISPUTE_GAS_COST,
-  INITAL_REPORT_GAS_COST,
+  INITAL_REPORT_GAS_COST, HEADER_TYPE,
 } from 'modules/common/constants';
 import {
   FormattedNumber,
@@ -881,6 +881,7 @@ export const ReportingCard = (props: ReportingCardProps) => {
   const { id, reportingState, disputeInfo, endTimeFormatted } = market;
 
   const preReporting = reportingState === REPORTING_STATE.PRE_REPORTING;
+  const headerType = reportingState === REPORTING_STATE.OPEN_REPORTING && HEADER_TYPE.H2;
 
   return (
     <div className={Styles.ReportingCard}>
@@ -890,7 +891,7 @@ export const ReportingCard = (props: ReportingCardProps) => {
         endTimeFormatted={endTimeFormatted}
         currentAugurTimestamp={currentAugurTimestamp}
       />
-      <MarketTitle id={id} h2Link={reportingState === REPORTING_STATE.OPEN_REPORTING} />
+      <MarketTitle id={id} headerType={headerType} />
       {reportingState !== REPORTING_STATE.OPEN_REPORTING && (
         <MarketProgress
           reportingState={reportingState}
