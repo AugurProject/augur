@@ -1,5 +1,10 @@
 @import (reference) '~assets/styles/shared';
 
+.MarketViewBorders {
+  border: @size-1 solid @color-dark-grey;
+  border-radius: @size-1;
+}
+
 .MarketView {
   display: flex;
   flex-direction: column;
@@ -23,11 +28,11 @@
   }
 }
 
-.MarketView__button {
+.BackButton {
   > svg {
-    height: 0.5rem;
-    margin-left: 1rem;
-    width: 0.25rem;
+    height: @size-8;
+    margin-left: @size-16;
+    width: @size-4;
 
     > path {
       stroke: @color-primary-text;
@@ -35,14 +40,7 @@
   }
 }
 
-.MarketView__orders,
-.MarketView__history {
-  @media @breakpoint-mobile-mid {
-    height: 50vh;
-  }
-}
-
-.MarketView__paneContainer--mobile {
+.PaneContainer {
   flex: 1;
   padding: @size-8 @size-4;
 
@@ -51,13 +49,36 @@
   }
 }
 
-.MarketView__parent {
-  display: flex;
-  margin: @size-4 0;
+.container {
+  display: grid;
+  margin: @size-4 @size-6;
   min-height: calc(~'100vh - @{multi-top-bar-height}');
+  grid-gap: @size-2 @size-4;
+  grid-template-columns: minmax(250px, 325px) minmax(0%, 1fr) minmax(250px, 325px);
+  grid-template-rows: 0fr 0fr 0fr 0fr 1fr;
+
+  div[class*="module-tabs-style_Headers"] {
+    background: @color-dark-grey;
+
+    > button[class*="buttons-styles_ToggleExtendButton"] {
+      margin-left: 0;
+      min-width: @size-30;
+      justify-content: center;
+    }
+  }
 
   @media all and (max-height: 700px) {
     min-height: 700px;
+  }
+
+  @media @breakpoint-tablet {
+    grid-gap: @size-4;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 0fr 0fr 0fr 0fr 0.5fr;
+    //  hide the toggle buttons because the layout doesn't allow them to do anything useful.
+    button[class*="buttons-styles_ToggleExtendButton"] {
+      display: none;
+    }
   }
 
   &.Tutorial {
@@ -65,20 +86,128 @@
   }
 }
 
-.MarketView__body {
-  color: @color-primary-text;
+.Header {
+  grid-column: 1 / span 2;
+  grid-row: 1;
+
+  @media @breakpoint-tablet {
+    grid-column: 1 / span 3;
+  }
+}
+
+.TradingForm {
+  grid-column: 1;
+  grid-row-start: 2;
+  grid-row-end: -1;
   display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  margin: 0 @size-4;
+  flex-flow: column nowrap;
 
-  > div:first-of-type > section:first-of-type {
-    flex: unset;
-    margin: 0 0 @size-4;
-    min-height: fit-content;
+  @media @breakpoint-tablet {
+    grid-row-start: 4;
+    grid-row-end: 4;
+  }
 
-    @media @breakpoint-mobile {
-      padding: 0;
+  > section:first-of-type {
+    .MarketViewBorders;
+  }
+}
+
+section[class*="OutcomesList"] {
+  .MarketViewBorders;
+
+  grid-column: 2;
+  grid-row: 2;
+
+  @media @breakpoint-tablet {
+    grid-column: 1 / span 3;
+  }
+
+  @media @breakpoint-mobile {
+    grid-column-start: 1;
+    grid-column-end: -1;
+  }
+
+  > h3 {
+    color: @color-primary-text;
+  }
+}
+
+.ChartsPane {
+  .MarketViewBorders;
+
+  grid-column: 2;
+  grid-row: 3;
+
+  @media @breakpoint-tablet {
+    grid-column: 1 / span 3;
+  }
+}
+
+.OrdersPane {
+  .MarketViewBorders;
+
+  grid-column: 2;
+  grid-row-start: 4;
+  grid-row-end: -1;
+
+  @media @breakpoint-tablet {
+    grid-column: 1 / span 3;
+    grid-row-start: 5;
+    grid-row-end: 5;
+  }
+
+
+  > div {
+    height: 100%;
+  }
+}
+
+.OrderBookAndHistory {
+  grid-column: 3;
+  grid-row-start: 1;
+  grid-row-end: -1;
+  display: flex;
+  flex-flow: column nowrap;
+  height: 100%;
+
+  @media @breakpoint-tablet {
+    grid-column: 2 / span 2;
+    grid-row: 4;
+    overflow: auto;
+    flex-flow: row nowrap;
+  }
+
+  > div {
+    display: flex;
+    flex-flow: column nowrap;
+    flex: 1;
+    
+    &:not(.hide) {
+      max-height: 50%;
+    }
+  }
+
+  > div:first-of-type {
+    margin-bottom: @size-2;
+
+    &:not(.hide) {
+      max-height: 53%;
+    }
+
+    > section:first-of-type {
+      .MarketViewBorders;
+    }
+
+    @media @breakpoint-tablet {
+      margin-bottom: 0;
+    }
+  }
+
+  > div:last-of-type {
+    .MarketViewBorders;
+
+    @media @breakpoint-tablet {
+      margin-left: @size-4;
     }
   }
 }
@@ -109,7 +238,7 @@
 
   &.PlaceOrderTutorial {
     > section:last-of-type {
-      top: unset;
+      top: 320px;
     }
 
     > section:first-of-type > section > div:nth-of-type(2) {
@@ -139,7 +268,7 @@
     }
 
     > section:last-of-type {
-      margin-top: 85px;
+      margin-top: 95px;
     }
   }
 
@@ -201,118 +330,30 @@
   }
 }
 
-.MarketView__firstColumn {
+.Orders {
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
 }
 
-.MarketView__secondColumn {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  margin-right: @size-4;
-  max-width: 20.3125rem;
-  min-width: 20.3125rem;
-}
-
-.MarketView__component {
-  background-color: @color-module-background;
-  display: flex;
-  flex: 1 auto;
-  flex-flow: column nowrap;
-  border: 1px solid @color-dark-grey;
-  border-radius: @size-2;
-  max-height: fit-content;
-}
-
-.MarketView__component__history {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  max-height: 100%;
-}
-
-.MarketView__firstRow {
-  display: flex;
-  flex-direction: row;
-  flex-grow: 1;
-
-  > div:first-of-type {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    margin-right: @size-4;
-    max-width: 325px;
-    min-width: 325px;
-  }
-}
-
-.MarketView__innerSecondColumn {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-
-  > div:first-of-type {
-    flex-grow: unset;
-    margin-bottom: @size-4;
-  }
-
-  > div:nth-of-type(2) {
-    margin-bottom: @size-4;
-  }
-
-  > div:last-of-type {
-    min-height: 200px;
-    height: 100%;
-    max-height: unset;
-  }
-}
-
-.Market__graphs {
-  height: 400px;
-}
-
-.Market__details {
-  background-color: @color-primary-text;
-  display: flex;
-  justify-content: space-between;
-}
-
-.Market__details-outcomes {
-  width: calc(100% - 25rem);
-}
-
-.Market__details-trading {
-  width: 25rem;
-}
-
-.MarketView__orders {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: @size-4;
-}
-
-.MarketView__hide {
+.hide {
   height: 2rem !important;
   max-height: 2rem !important;
+  overflow: hidden;
 }
 
-.MarketView__show {
+.show {
   max-height: 100% !important;
 }
 
-.MarketView__history,
-.MarketView__orders {
-  max-height: 50%;
+.History,
+.Orders {
   transition: max-height 0.2s ease;
 }
 
-.MarketView__priceHistoryChart {
+.PriceHistory {
   background-color: @color-module-background;
   border: 1px solid @color-dark-grey;
   border-radius: 1px;
-  margin-top: @size-16;
 
   > h3 {
     .text-16;
@@ -393,25 +434,7 @@ div.OutcomeNameDisplay {
     }
   }
 
-  .Market__upper {
-    padding: 0 1rem;
-  }
-
-  .Market__details {
-    background-color: transparent;
-    display: block;
-    padding-bottom: 3rem;
-  }
-
-  .Market__details-outcomes {
-    width: 100%;
-  }
-
-  .Market__details-trading {
-    width: auto;
-  }
-
-  .MarketView__paneContainer--mobile {
+  .PaneContainer {
     display: grid;
     grid-gap: @size-8 0;
     grid-template-rows: min-content;
@@ -429,21 +452,21 @@ div.OutcomeNameDisplay {
     }
 
     > div:last-of-type {
-      // margin-top: @size-4;
       margin-top: 0;
       border: 1px solid @color-dark-grey;
       border-radius: 1px;
     }
   }
 
-  .MarketView__orders {
+  .Orders {
+    max-height: 50vh;
     margin-bottom: 0;
     border-bottom: 1px solid @color-dark-grey;
     border-left: 1px solid @color-dark-grey;
     border-right: 1px solid @color-dark-grey;
   }
 
-  .MarketView__history {
+  .History {
     background: @color-module-background;
     margin-bottom: 0;
     max-height: unset;
@@ -453,7 +476,7 @@ div.OutcomeNameDisplay {
     height: unset;
   }
 
-  .MarketView__button {
+  .BackButton {
     > svg {
       height: 0.75rem;
       margin-left: @size-14;
@@ -461,7 +484,7 @@ div.OutcomeNameDisplay {
     }
   }
 
-  .MarketView__priceHistoryChart > h3 {
+  .PriceHistory > h3 {
     .mono-11-bold;
 
     text-transform: uppercase;

@@ -6,7 +6,7 @@ import Dexie from 'dexie';
 import {
   ProfitLossChangedLog,
   ParsedOrderEventLog,
-  Timestamped,
+  LogTimestamp,
   MarketData,
   OrderState,
   Log,
@@ -1218,7 +1218,7 @@ function reduceMarketAndOutcomeDocsToOnlyLatest<TDoc extends Log>(
   });
 }
 
-function getLastDocBeforeTimestamp<TDoc extends Timestamped>(
+function getLastDocBeforeTimestamp<TDoc extends {timestamp: LogTimestamp}>(
   docs: TDoc[],
   timestamp: BigNumber
 ): TDoc | undefined {

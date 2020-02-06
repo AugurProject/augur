@@ -23,7 +23,8 @@ import {
   EmptyConnector,
   HotLoadMarketInfo,
   DisputeWindow,
-  ZeroX
+  ZeroX,
+  NativePlaceTradeDisplayParams,
 } from '@augurproject/sdk';
 import { BigNumber } from 'bignumber.js';
 import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis/build';
@@ -32,6 +33,7 @@ import { Account } from '../constants';
 import { makeGnosisDependencies, makeSigner } from './blockchain';
 import { sleep } from '@augurproject/core/build/libraries/HelperFunctions';
 import { ZeroXOrder } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
+import { NumOutcomes, OutcomeNumber, UnixTimestamp } from '@augurproject/sdk/src/state/logs/types';
 
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 const ETERNAL_APPROVAL_VALUE = new BigNumber('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'); // 2^256 - 1
@@ -118,7 +120,7 @@ export class ContractAPI {
 
   async createReasonableYesNoMarket(description: string = 'YesNo market description'): Promise<ContractInterfaces.Market> {
     const time = this.augur.contracts.getTime();
-    const currentTimestamp = (await time.getTimestamp_()).toNumber();
+    const currentTimestamp = (await this.getTimestamp()).toNumber();
 
     return this.createYesNoMarket({
       endTime: new BigNumber(currentTimestamp + 30 * 24 * 60 * 60),
@@ -134,7 +136,7 @@ export class ContractAPI {
 
   async createReasonableMarket(outcomes: string[], description: string = 'Categorical market description'): Promise<ContractInterfaces.Market> {
     const time = this.augur.contracts.getTime();
-    const currentTimestamp = (await time.getTimestamp_()).toNumber();
+    const currentTimestamp = (await this.getTimestamp()).toNumber();
 
     return this.createCategoricalMarket({
       endTime: new BigNumber(currentTimestamp + 30 * 24 * 60 * 60),
@@ -151,7 +153,7 @@ export class ContractAPI {
 
   async createReasonableScalarMarket(description: string = 'Scalar market description'): Promise<ContractInterfaces.Market> {
     const time = this.augur.contracts.getTime();
-    const currentTimestamp = (await time.getTimestamp_()).toNumber();
+    const currentTimestamp = (await this.getTimestamp()).toNumber();
     const minPrice = new BigNumber(50).multipliedBy(new BigNumber(10).pow(18));
     const maxPrice = new BigNumber(250).multipliedBy(new BigNumber(10).pow(18));
 
@@ -274,43 +276,6 @@ export class ContractAPI {
     await this.augur.contracts.trade.publicFillBestOrder(type, marketAddress, outcome, numShares, price, tradeGroupID, new BigNumber(3), formatBytes32String(''));
   }
 
-  async takeOrders(orders: ZeroXOrder[]) {
-    const zxOrders = [];
-    const signatures = [];
-    orders.forEach((order) => {
-      zxOrders.push({
-        makerAddress: order.makerAddress,
-        takerAddress: order.takerAddress,
-        feeRecipientAddress: order.feeRecipientAddress,
-        senderAddress: order.senderAddress,
-        makerAssetAmount: order.makerAssetAmount,
-        takerAssetAmount: order.takerAssetAmount,
-        makerFee: order.makerFee,
-        takerFee: order.takerFee,
-        expirationTimeSeconds: order.expirationTimeSeconds,
-        salt: order.salt,
-        makerAssetData: order.makerAssetData,
-        takerAssetData: order.takerAssetData,
-        makerFeeAssetData: order.makerFeeAssetData,
-        takerFeeAssetData: order.takerFeeAssetData,
-      });
-      signatures.push(order.signature);
-    });
-
-    const protocolFee = (await this.getGasPrice()).multipliedBy(150000 * orders.length);
-
-    await this.augur.contracts.ZeroXTrade.trade(
-      await this.getCashBalance(),
-      formatBytes32String('11'),
-      formatBytes32String('17'),
-      new BigNumber(0),
-      new BigNumber(10),
-      zxOrders,
-      signatures,
-      { attachedEth: protocolFee }
-    );
-  }
-
   async cancelOrder(orderID: string): Promise<void> {
     await this.augur.cancelOrder(orderID);
   }
@@ -413,9 +378,11 @@ export class ContractAPI {
     return orderID;
   }
 
-  async getOrders(marketId: string) {
+  async getOrders(marketId: string, orderType: string, outcome: number) {
     return this.augur.getZeroXOrders({
-      marketId
+      marketId,
+      orderType,
+      outcome
     })
   }
 
@@ -548,7 +515,7 @@ export class ContractAPI {
   }
 
   async getTimestamp(): Promise<BigNumber> {
-    return this.augur.contracts.augur.getTimestamp_();
+    return (await this.augur.contracts.augur.getTimestamp_());
   }
 
   async doInitialReport(market: ContractInterfaces.Market, payoutNumerators: BigNumber[], description = '', extraStake = '0'): Promise<void> {

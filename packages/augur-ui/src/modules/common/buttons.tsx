@@ -97,6 +97,7 @@ export interface ExternalLinkButtonProps {
   URL?: string;
   light?: boolean;
   customLink?: any;
+  callback?: Function;
 }
 
 export interface ExternalLinkTextProps {
@@ -274,6 +275,7 @@ export const CancelTextButton = (props: DefaultButtonProps) => (
   </button>
 );
 
+// Only used in ADVANCED button in trade-form
 export const TextButtonFlip = (props: DefaultButtonProps) => (
   <button
     onClick={e => props.action(e)}
@@ -286,7 +288,7 @@ export const TextButtonFlip = (props: DefaultButtonProps) => (
       pointDown={props.pointDown}
       stroke="#BFB8CE"
       filledInIcon
-      quick
+      instant
     />
   </button>
 );
@@ -434,7 +436,10 @@ export const ExternalLinkButton = (props: ExternalLinkButtonProps) => (
     className={classNames(Styles.ExternalLinkButton, {
       [Styles.LightAlternate]: props.light,
     })}
-    onClick={e => props.action && props.action(e)}
+    onClick={e => {
+      props.action && props.action(e)
+      props.callback && props.callback();
+    }}
   >
     {props.customLink ? (
       <Link to={props.customLink}>{props.label}</Link>

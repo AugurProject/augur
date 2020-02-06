@@ -3,7 +3,6 @@
 .OrderHeader {
   display: flex;
   flex-direction: column;
-  min-width: 325px;
   width: 100%;
 
   > span {
@@ -37,16 +36,21 @@
     grid-gap: 0 @size-16;
 
     > li {
-      .mono-10-bold;
+      .mono-10-medium;
 
       color: @color-secondary-text;
-      text-transform: uppercase;
+      text-transform: capitalize;
       white-space: nowrap;
       text-align: right;
     }
+
+    > li:first-of-type {
+      margin-left: @size-40;
+      text-align: left;
+    }
     
     > li:nth-of-type(2) {
-      padding-right: @size-16;
+      text-align: center;
     }
 
     > li:last-of-type {

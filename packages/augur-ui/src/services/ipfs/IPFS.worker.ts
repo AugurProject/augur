@@ -39,13 +39,13 @@ ctx.addEventListener(
               Addresses: {
                 Swarm: [
                   '/dns4/ws-star.discovery.libp2p.io/tcp/443/wss/p2p-websocket-star',
+                  '/dns4/p2p.3box.io/tcp/9090/wss/p2p-websocket-star/'
                 ],
               },
             },
           };
+          
           ipfs = await IPFS.create(ipfsOptions);
-
-          trackNumberOfPeers();
           ctx.postMessage({ method: 'IPFS:started' });
           break;
         }

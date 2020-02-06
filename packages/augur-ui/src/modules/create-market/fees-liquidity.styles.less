@@ -5,13 +5,28 @@
     margin-bottom: @size-32;
   }
 
+  > div:nth-of-type(2) {
+    > div:last-of-type > div {
+      @media @breakpoint-mobile {
+        > span:first-of-type {
+          right: unset;
+          left: @size-60;
+        }
+
+        > span:last-of-type {
+          margin-left: @size-16;
+        }
+      }
+    }
+  }
+
   > div:first-of-type,
   > div:nth-of-type(2) {
     > div:last-of-type > div > input {
-      max-width: 210px;
+      max-width: @size-210;
 
-      @media @breakpoint-mobile-new {
-        min-width: 210px;
+      @media @breakpoint-mobile {
+        min-width: @size-80;
       }
     }
 
@@ -20,7 +35,7 @@
     }
 
     > div:nth-of-type(2) > div {
-      width: 210px;
+      width: @size-210;
     }
   }
 
@@ -40,7 +55,7 @@
     }
   }
 
-  @media @breakpoint-mobile-new {
+  @media @breakpoint-mobile {
     > div {
       margin-bottom: @size-24;
       padding: 0 @size-8;

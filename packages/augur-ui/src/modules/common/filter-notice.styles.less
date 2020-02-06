@@ -3,7 +3,7 @@
 .filterNotice {
   margin: @size-24 0;
 
-  @media @breakpoint-mobile-new {
+  @media @breakpoint-mobile {
     margin: @size-16 0;
   }
 
@@ -38,8 +38,13 @@
       width: @size-10;
       margin-left: auto;
 
-      > svg > path {
-        stroke: @color-secondary-text;
+      > svg {
+        height: @size-10;
+        width: @size-10;
+
+        > path {
+          stroke: @color-secondary-action-outline
+        }
       }
     }
   }

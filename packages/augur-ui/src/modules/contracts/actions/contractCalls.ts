@@ -814,16 +814,16 @@ export async function placeTrade(
   displayPrice: BigNumber | string,
   displayShares: BigNumber | string,
   expirationTime?: BigNumber,
+  tradeGroupId?: Number,
 ): Promise<void> {
   const Augur = augurSdk.get();
-  const tradeGroupId = generateTradeGroupId();
   const params: PlaceTradeDisplayParams = {
     direction: direction as 0 | 1,
     market: marketId,
     numTicks: createBigNumber(numTicks),
     numOutcomes: numOutcomes as 3 | 4 | 5 | 6 | 7 | 8,
     outcome: outcomeId as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7,
-    tradeGroupId,
+    tradeGroupId: tradeGroupId ? tradeGroupId : generateTradeGroupId(),
     fingerprint,
     doNotCreateOrders,
     displayMinPrice: createBigNumber(minPrice),

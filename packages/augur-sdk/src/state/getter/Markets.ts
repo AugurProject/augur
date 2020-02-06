@@ -527,7 +527,6 @@ export class Markets {
     }
 
     // Prepare filter values before loop
-    const formattedEndTime = params.maxEndTime ? `0x${params.maxEndTime.toString(16)}` : '';
     let feePercent = 0;
 
     if (params.maxFee) {
@@ -546,7 +545,7 @@ export class Markets {
         if (params.creator !== market.marketCreator) return false;
       }
       // Apply max end time
-      if (params.maxEndTime && market.endTime >= formattedEndTime) return false;
+      if (params.maxEndTime && market.endTime >= params.maxEndTime) return false;
       // Apply template filter
       if (params.templateFilter) {
         if (params.templateFilter === TemplateFilters.templateOnly && !market.isTemplate) return false;
@@ -560,8 +559,13 @@ export class Markets {
       if (params.includeInvalidMarkets !== true && market.invalidFilter) return false;
       // Liquidity filtering
       if (params.maxLiquiditySpread) {
-        // TODO hasRecentlyDepletedLiquidity == true on ZeroPercent spread
-        if (params.maxLiquiditySpread !== MaxLiquiditySpread.OneHundredPercent) {
+        if (params.maxLiquiditySpread === MaxLiquiditySpread.ZeroPercent) {
+          // return hasRecentlyDepletedLiquidity on ZeroPercent spread
+          if (!market.hasRecentlyDepletedLiquidity) {
+            return false;
+          }
+        }
+        else if (params.maxLiquiditySpread !== MaxLiquiditySpread.OneHundredPercent) {
           if (market.liquidity[params.maxLiquiditySpread] === "000000000000000000000000000000") return false;
         }
       }
@@ -1045,7 +1049,7 @@ async function getMarketsInfo(
         payouts[i] = new BigNumber(marketData.winningPayoutNumerators[i]).toString(10);
       }
       finalizationBlockNumber =  marketData.finalizationBlockNumber;
-      finalizationTime = new BigNumber(marketData.finalizationTime).toString(10);
+      finalizationTime = marketData.finalizationTime.toString();
       consensus = calculatePayoutNumeratorsValue(String(displayMaxPrice), String(displayMinPrice), String(numTicks), marketType, payouts);
     }
 
@@ -1112,7 +1116,7 @@ async function getMarketsInfo(
       author: marketData.marketCreator,
       designatedReporter: marketData.designatedReporter,
       creationBlock: marketData.blockNumber,
-      creationTime: Number(marketData.timestamp),
+      creationTime: marketData.creationTime,
       categories,
       volume: new BigNumber(marketData.volume || 0).dividedBy(QUINTILLION).toString(),
       openInterest: new BigNumber(marketData.marketOI || 0).dividedBy(QUINTILLION).toString(),
@@ -1236,80 +1240,6 @@ async function getMarketsSearchResults(
   }
   return augur.syncableFlexSearch.where(whereObj);
 }
-
-/**
- * Sets the `hasRecentlyDepletedLiquidity` property for all markets in `marketsResults`.
- *
- * @param {DB} db Database object to use for setting `hasRecentlyDepletedLiquidity`
- * @param {Augur} augur Augur object to use for setting `hasRecentlyDepletedLiquidity`
- * @param {Array<Object>} marketsResults Array of market objects to add `hasRecentlyDepletedLiquidity` to
- */
-/*
-async function setHasRecentlyDepletedLiquidity(db: DB, augur: Augur, marketsResults: any[]): Promise<Array<{}>>  {
-  // Create market ID => marketsResults index mapping
-  const keyedMarkets = {};
-  for (let i = 0; i < marketsResults.length; i++) {
-    keyedMarkets[marketsResults[i].market] = i;
-  }
-  const marketIds = Object.keys(keyedMarkets);
-
-  const currentTimestamp = (await augur.getTimestamp()).toNumber();
-  const lastUpdatedTimestamp = await db.findLiquidityLastUpdatedTimestamp();
-
-  // Save liquidity info for each market to an object
-  const marketsLiquidityDocs = await db.findRecentMarketsLiquidityDocs(currentTimestamp, marketIds);
-  const marketsLiquidityInfo = {};
-  for (let i = 0; i < marketsLiquidityDocs.length; i++) {
-    const marketLiquidityDoc = marketsLiquidityDocs[i];
-    if (!marketsLiquidityInfo[marketLiquidityDoc.market]) {
-      marketsLiquidityInfo[marketLiquidityDoc.market] = {
-        hasLiquidityInLastHour: false,
-        hasLiquidityUnderFifteenPercentSpread: false,
-      };
-    }
-
-    if (marketLiquidityDoc.timestamp === lastUpdatedTimestamp) {
-      marketsLiquidityInfo[marketLiquidityDoc.market].hasLiquidityInLastHour = true;
-    }
-    if (marketLiquidityDoc.spread.toString() === MaxLiquiditySpread.FifteenPercent) {
-      marketsLiquidityInfo[marketLiquidityDoc.market].hasLiquidityUnderFifteenPercentSpread = true;
-    }
-
-    if (!marketsLiquidityInfo[marketLiquidityDoc.market][marketLiquidityDoc.spread]) {
-      marketsLiquidityInfo[marketLiquidityDoc.market][marketLiquidityDoc.spread] = {
-        hourlyLiquiditySum: new BigNumber(marketLiquidityDoc.liquidity),
-        hoursWithLiquidity: 1,
-      };
-    } else {
-      marketsLiquidityInfo[marketLiquidityDoc.market][marketLiquidityDoc.spread].hourlyLiquiditySum.plus(marketLiquidityDoc.liquidity);
-      marketsLiquidityInfo[marketLiquidityDoc.market][marketLiquidityDoc.spread].hoursWithLiquidity++;
-    }
-  }
-
-  const liquidityDB = await db.getLiquidityDatabase();
-  const marketsLiquidityParams = await liquidityDB.getMarketsLiquidityParams(db, augur);
-
-  // Set `hasRecentlyDepletedLiquidity` property for each market
-  for (let i = 0; i < marketsResults.length; i++) {
-    const marketResult = marketsResults[i];
-
-    // A market's liquidity is considered recently depleted if it had liquidity under
-    // a 15% spread in the last 24 hours, but doesn't currently have liquidity
-    if (
-      marketsLiquidityInfo[marketResult.market] &&
-      marketsLiquidityInfo[marketResult.market].hasLiquidityUnderFifteenPercentSpread &&
-      !marketsLiquidityInfo[marketResult.market].hasLiquidityInLastHour &&
-      !marketsLiquidityParams[marketResult.market]
-    ) {
-      marketResult.hasRecentlyDepletedLiquidity = true;
-    } else {
-      marketResult.hasRecentlyDepletedLiquidity = false;
-    }
-  }
-
-  return marketsResults;
-}
-*/
 
 /**
  * Gets a MarketOrderBook for a market and converts it to an OrderBook object.

@@ -17,6 +17,7 @@ import { Getters, PayoutNumeratorValue } from '@augurproject/sdk';
 import { TransactionMetadataParams } from 'contract-dependencies-ethers/build';
 import { BigNumber } from 'utils/create-big-number';
 import { GnosisSafeState } from '@augurproject/gnosis-relay-api/build/GnosisRelayAPI';
+import { Template } from '@augurproject/artifacts';
 
 export enum SizeTypes {
   SMALL = 'small',
@@ -356,6 +357,7 @@ export interface NewMarket {
   currentStep: number;
   type: string;
   outcomes: string[];
+  outcomesFormatted: OutcomeFormatted[];
   scalarSmallNum: string;
   scalarBigNum: string;
   scalarDenomination: string;

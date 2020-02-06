@@ -4,23 +4,23 @@ import { DerivedDB } from './DerivedDB';
 import { DB } from './DB';
 import {
   CLAIM_GAS_COST,
-  DEFAULT_GAS_PRICE_IN_GWEI,
   EULERS_NUMBER,
   INVALID_OUTCOME,
-  MAX_TRADE_GAS_PERCENTAGE_DIVISOR,
   MINIMUM_INVALID_ORDER_VALUE_IN_ATTO_DAI,
+  SECONDS_IN_A_DAY,
   SECONDS_IN_A_YEAR,
   WORST_CASE_FILL,
+  DEFAULT_GAS_PRICE_IN_GWEI,
+  MAX_TRADE_GAS_PERCENTAGE_DIVISOR,
+  MarketReportingState,
 } from '../../constants';
-import { MarketData, MarketType, OrderType, TimestampSetLog } from '../logs/types';
+import { MarketData, MarketType, OrderTypeHex, TimestampSetLog, UnixTimestamp } from '../logs/types';
 import { BigNumber } from 'bignumber.js';
 import { OrderBook } from '../../api/Liquidity';
 import { ParsedLog } from '@augurproject/types';
-import { MarketReportingState, SECONDS_IN_A_DAY } from '../../constants';
 import { QUINTILLION, padHex } from '../../utils';
 import { Block } from 'ethereumjs-blockstream';
 import { isTemplateMarket } from '@augurproject/artifacts';
-
 
 interface MarketOrderBookData {
   _id: string;
@@ -62,7 +62,8 @@ export class MarketDB extends DerivedDB {
       'MarketMigrated': this.processMarketMigrated,
     };
 
-    this.augur.events.subscribe('DerivedDB:updated:CurrentOrders', this.syncOrderBooks);
+    this.augur.events.subscribe('DB:updated:ZeroXOrders', (orderEvents) => this.syncOrderBooks([orderEvents.market]));
+    this.augur.events.subscribe('DB:get:ZeroXOrders', (markets) => this.syncOrderBooks(markets));
     this.augur.events.subscribe('controller:new:block', this.processNewBlock);
     this.augur.events.subscribe('TimestampSet', this.processTimestampSet);
   }
@@ -70,7 +71,7 @@ export class MarketDB extends DerivedDB {
   async doSync(highestAvailableBlockNumber: number): Promise<void> {
     this.syncing = true;
     await super.doSync(highestAvailableBlockNumber);
-    await this.syncOrderBooks(true);
+    await this.syncOrderBooks([]);
     const timestamp = (await this.augur.getTimestamp()).toNumber();
     await this.processTimestamp(timestamp, highestAvailableBlockNumber);
     await this.syncFTS();
@@ -85,57 +86,55 @@ export class MarketDB extends DerivedDB {
     }
   }
 
-  syncOrderBooks = async (syncing: boolean): Promise<void> => {
+  syncOrderBooks = async (marketIds: string[]): Promise<void> => {;
+    let ids = marketIds;
     const highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(this.dbName);
     const documents = [];
 
-    const currentOrderLogs = await this.stateDB.CurrentOrders.where("blockNumber").aboveOrEqual(highestSyncedBlockNumber).toArray();
-
-    if (currentOrderLogs.length < 1) return;
-
-    const marketIds: string[] = _.uniq(_.map(currentOrderLogs, 'market')) as string[];
-    const highestBlockNumber: number = _.max(_.map(currentOrderLogs, 'blockNumber')) as number;
-    const marketsData = await this.stateDB.Markets.where("market").anyOf(marketIds).toArray();
-
-    const marketDataById = _.keyBy(marketsData, 'market');
+    let marketsData;
+    if (marketIds.length === 0) {
+      marketsData = await this.stateDB.Markets.toArray();
+      ids = marketsData.map(data => data.market);
+    } else {
+      marketsData = await this.stateDB.Markets.where('market').anyOf(marketIds).toArray();
+    }
 
     const reportingFeeDivisor = await this.augur.contracts.universe.getReportingFeeDivisor_();
     // TODO Get ETH -> DAI price via uniswap when we integrate that as an oracle
     const ETHInAttoDAI = new BigNumber(200).multipliedBy(10**18);
 
-    for (const marketId of marketIds) {
-      const doc = await this.getOrderBookData(this.augur, marketId, marketDataById[marketId], reportingFeeDivisor, ETHInAttoDAI);
-      // This is needed to make rollbacks work properly
-      doc['blockNumber'] = highestBlockNumber;
-      doc['market'] = marketId;
-      documents.push(doc);
+    const marketDataById = _.keyBy(marketsData, 'market');
+    for (const marketId of ids) {
+      if (Object.keys(marketDataById).includes(marketId)) {
+        const doc = await this.getOrderBookData(this.augur, marketId, marketDataById[marketId], reportingFeeDivisor, ETHInAttoDAI);
+        // This is needed to make rollbacks work properly
+        doc['blockNumber'] = highestSyncedBlockNumber;
+        doc['market'] = marketId;
+        documents.push(doc);
+      }
     }
 
     await this.bulkUpsertDocuments(documents);
-
-    if (!syncing) {
-      await this.syncStatus.setHighestSyncBlock(this.dbName, highestBlockNumber, false);
-    }
   }
 
   async getOrderBookData(augur: Augur, marketId: string, marketData: MarketData, reportingFeeDivisor: BigNumber, ETHInAttoDAI: BigNumber): Promise<MarketOrderBookData> {
-    const numOutcomes = marketData.marketType === MarketType.Categorical ? marketData.outcomes.length + 1 : 3;
-    const estimatedTradeGasCost = WORST_CASE_FILL[numOutcomes];
+    const numOutcomes = marketData.outcomes && marketData.outcomes.length > 0 ? marketData.outcomes.length + 1 : 3;
+    const estimatedTradeGasCost = WORST_CASE_FILL[numOutcomes - 1];
     const estimatedGasCost = ETHInAttoDAI.multipliedBy(DEFAULT_GAS_PRICE_IN_GWEI).div(10**9);
     const estimatedTradeGasCostInAttoDai = estimatedGasCost.multipliedBy(estimatedTradeGasCost);
     const estimatedClaimGasCostInAttoDai = estimatedGasCost.multipliedBy(CLAIM_GAS_COST);
     const feePerCashInAttoCash = new BigNumber(marketData.feePerCashInAttoCash);
     const feeDivisor = new BigNumber(marketData.feeDivisor);
     const numTicks = new BigNumber(marketData.numTicks);
-
     const feeMultiplier = new BigNumber(1).minus(new BigNumber(1).div(reportingFeeDivisor)).minus(new BigNumber(1).div(feeDivisor));
-
     const orderBook = await this.getOrderBook(marketData, numOutcomes, estimatedTradeGasCostInAttoDai);
     const invalidFilter = await this.recalcInvalidFilter(orderBook, marketData, feeMultiplier, estimatedTradeGasCostInAttoDai, estimatedClaimGasCostInAttoDai);
 
-    const marketOrderBookData = {
+    let marketOrderBookData = {
       _id: marketId,
       invalidFilter,
+      hasRecentlyDepletedLiquidity: false,
+      lastPassingLiquidityCheck: 0,
       liquidity: {},
     };
 
@@ -152,37 +151,84 @@ export class MarketDB extends DerivedDB {
       marketOrderBookData.liquidity[spread] = liquidity.toFixed().padStart(30, '0');
     }
 
+    const spread10 = new BigNumber(marketOrderBookData.liquidity[10]);
+    const spread15 = new BigNumber(marketOrderBookData.liquidity[15]);
+    const lastSpread10 = new BigNumber(marketData.liquidity[10]);
+    const lastSpread15 = new BigNumber(marketData.liquidity[15]);
+
+    // Keep track when a market has under a 15% spread. Used for `hasRecentlyDepletedLiquidity`
+    if ((spread10.gt(0) || spread15.gt(0))) {
+      const now = Math.floor(Date.now() / 1000);
+      marketOrderBookData.lastPassingLiquidityCheck = now;
+    } else if (lastSpread10.gt(0) || lastSpread15.gt(0)) {
+      marketOrderBookData.lastPassingLiquidityCheck = marketData.lastPassingLiquidityCheck;
+    } else if (marketData.hasRecentlyDepletedLiquidity) {
+      marketOrderBookData.lastPassingLiquidityCheck = marketData.lastPassingLiquidityCheck;
+    }
+
+    marketOrderBookData.hasRecentlyDepletedLiquidity = await this.hasRecentlyDepletedLiquidity(marketData, marketOrderBookData.liquidity, marketOrderBookData.lastPassingLiquidityCheck);
     return marketOrderBookData;
   }
 
   async getOrderBook(marketData: MarketData, numOutcomes: number, estimatedTradeGasCostInAttoDai: BigNumber): Promise<OrderBook> {
-    const currentOrdersResponse = await this.stateDB.CurrentOrders.where("[market+open]").equals([marketData.market, 1]).and((order) => {
-      return order.amount > '0x00';
-    }).toArray();
+    const orderTypes = ['0x00', '0x01'];
+    let outcomes = ['0x00', '0x01', '0x02'];
+
+    if (marketData.outcomes && marketData.outcomes.length > 0) {
+      outcomes = [];
+      for (let i = 0; i <= marketData.outcomes.length; i++) {
+        outcomes = outcomes.concat('0x0' + i);
+      }
+    }
+
+    let allOutcomesAllOrderTypes = [];
+
+    for (const outcome of outcomes) {
+      for (const orderType of orderTypes) {
+        allOutcomesAllOrderTypes = allOutcomesAllOrderTypes.concat([[marketData.market, outcome, orderType]]);
+      }
+    }
+
+    const currentOrdersResponse = await this.stateDB.ZeroXOrders
+      .where('[market+outcome+orderType]')
+      .anyOf(allOutcomesAllOrderTypes)
+      .and((order) => order.amount > '0x00')
+      .toArray();
 
     const currentOrdersByOutcome = _.groupBy(currentOrdersResponse, (order) => new BigNumber(order.outcome).toNumber());
     for (let outcome = 0; outcome < numOutcomes; outcome++) {
       if (currentOrdersByOutcome[outcome] === undefined) currentOrdersByOutcome[outcome] = [];
     }
 
-    const outcomeBidAskOrders = _.map(currentOrdersByOutcome, (outcomeOrders) => {
-      // Cut out orders where gas costs > 1% of the trade
-      const sufficientlyLargeOrders = _.filter(outcomeOrders, (order) => {
-        const maxGasCost = new BigNumber(order.amount).multipliedBy(marketData.numTicks).div(MAX_TRADE_GAS_PERCENTAGE_DIVISOR);
+    const outcomeBidAskOrders = Object.keys(currentOrdersByOutcome).map((outcomeOrders) => {
+      // Cut out orders where gas costs > 2% of the trade
+      const sufficientlyLargeOrders = _.filter(currentOrdersByOutcome[outcomeOrders], (order) => {
+        const gasCost = new BigNumber(order.amount).multipliedBy(marketData.numTicks).div(MAX_TRADE_GAS_PERCENTAGE_DIVISOR);
+        const maxGasCost = gasCost.multipliedBy(2); // 2%
         return maxGasCost.gte(estimatedTradeGasCostInAttoDai);
       });
 
       const groupedByOrderType = _.groupBy(sufficientlyLargeOrders, 'orderType');
-
-      const bids = _.reverse(_.sortBy(groupedByOrderType[OrderType.Bid], 'price'));
-      const asks = _.sortBy(groupedByOrderType[OrderType.Ask], 'price');
-
+      const bids = groupedByOrderType ? _.reverse(_.sortBy(groupedByOrderType[OrderTypeHex.Bid], 'price')) : [];
+      const asks = groupedByOrderType ? _.sortBy(groupedByOrderType[OrderTypeHex.Ask], 'price') : [];
       return {
         bids,
         asks,
       };
     });
-    return outcomeBidAskOrders;
+
+    const data = outcomeBidAskOrders.map(order => {
+      if (order.bids === undefined) {
+        order.bids = [];
+      }
+
+      if (order.asks === undefined) {
+        order.asks = [];
+      }
+
+      return order;
+    });
+    return data;
   }
 
   // A Market is marked as True in the invalidFilter if the best bid for Invalid on the book would not be profitable to take were the market Valid
@@ -239,10 +285,12 @@ export class MarketDB extends DerivedDB {
       20: '000000000000000000000000000000',
       100: '000000000000000000000000000000'
     }
+    log['lastPassingLiquidityCheck'] = 0;
     log['feeDivisor'] = new BigNumber(1).dividedBy(new BigNumber(log['feePerCashInAttoCash'], 16).dividedBy(QUINTILLION)).toNumber();
     log['feePercent'] = new BigNumber(log['feePerCashInAttoCash'], 16).div(QUINTILLION).toNumber();
     log['lastTradedTimestamp'] = 0;
     log['timestamp'] = new BigNumber(log['timestamp'], 16).toNumber();
+    log['creationTime'] = new BigNumber(log['timestamp'], 16).toNumber();
     log['endTime'] = new BigNumber(log['endTime'], 16).toNumber();
     try {
       log['extraInfo'] = JSON.parse(log['extraInfo']);
@@ -278,7 +326,7 @@ export class MarketDB extends DerivedDB {
   private processMarketFinalized(log: ParsedLog): ParsedLog {
     log['reportingState'] = MarketReportingState.Finalized;
     log['finalizationBlockNumber'] = log['blockNumber'];
-    log['finalizationTime'] = log['timestamp'];
+    log['finalizationTime'] = new BigNumber(log['timestamp'], 16).toNumber();
     log['finalized'] = 1;
     return log;
   }
@@ -314,7 +362,7 @@ export class MarketDB extends DerivedDB {
     await this.processTimestamp(timestamp, log.blockNumber)
   };
 
-  private async processTimestamp(timestamp: number, blockNumber: number): Promise<void> {
+  private async processTimestamp(timestamp: UnixTimestamp, blockNumber: number): Promise<void> {
     await this.waitOnLock(this.HANDLE_MERGE_EVENT_LOCK, 2000, 50);
 
     const eligibleMarketDocs = await this.table.where("reportingState").anyOfIgnoreCase([
@@ -328,16 +376,16 @@ export class MarketDB extends DerivedDB {
 
     for (const marketData of eligibleMarketsData) {
       let reportingState: MarketReportingState = null;
-      const marketEnd = new BigNumber(marketData.endTime);
-      const openReportingStart = marketEnd.plus(SECONDS_IN_A_DAY).plus(1);
+      const marketEnd = marketData.endTime;
+      const openReportingStart = marketEnd + SECONDS_IN_A_DAY.toNumber() + 1;
 
-      if (marketData.nextWindowEndTime && timestamp >= new BigNumber(marketData.nextWindowEndTime, 16).toNumber()) {
+      if (marketData.nextWindowEndTime && timestamp >= marketData.nextWindowEndTime) {
         reportingState = MarketReportingState.AwaitingFinalization;
-      } else if (marketData.nextWindowStartTime && timestamp >= new BigNumber(marketData.nextWindowStartTime, 16).toNumber()) {
+      } else if (marketData.nextWindowStartTime && timestamp >= marketData.nextWindowStartTime) {
         reportingState = MarketReportingState.CrowdsourcingDispute;
-      } else if ((marketData.reportingState === MarketReportingState.PreReporting || marketData.reportingState === MarketReportingState.DesignatedReporting) && timestamp >= openReportingStart.toNumber()) {
+      } else if ((marketData.reportingState === MarketReportingState.PreReporting || marketData.reportingState === MarketReportingState.DesignatedReporting) && timestamp >= openReportingStart) {
           reportingState = MarketReportingState.OpenReporting;
-      } else if (marketData.reportingState === MarketReportingState.PreReporting && timestamp >= marketEnd.toNumber() && timestamp < openReportingStart.toNumber()) {
+      } else if (marketData.reportingState === MarketReportingState.PreReporting && timestamp >= marketEnd && timestamp < openReportingStart) {
           reportingState = MarketReportingState.DesignatedReporting;
       }
 
@@ -352,6 +400,38 @@ export class MarketDB extends DerivedDB {
 
     if (updateDocs.length > 0) {
       await this.bulkUpsertDocuments(updateDocs);
+    }
+  }
+
+  // A market's liquidity is considered recently depleted if it had liquidity under
+  // a 15% spread in the last 24 hours, but doesn't currently have liquidity
+  async hasRecentlyDepletedLiquidity(marketData: MarketData, currentLiquiditySpreads, currentLastPassingLiquidityCheck): Promise<boolean>  {
+    const moreThantwentyFourHoursAgo = (date) => {
+      const twentyFourHours = Date.now() - (60 * 60 * 24 * 1000);
+      return twentyFourHours > date;
+    }
+
+    const lastPassingLiquidityCheck = currentLastPassingLiquidityCheck * 1000;
+    const liquidity15Percent = new BigNumber(currentLiquiditySpreads[10]);
+    const liquidity10Percent = new BigNumber(currentLiquiditySpreads[15]);
+    const currentlyHasLiquidity = liquidity10Percent.gt(0) || liquidity15Percent.gt(0)
+    let hadLiquidityInLast24Hour = false;
+
+    if (marketData.lastPassingLiquidityCheck === 0) {
+      hadLiquidityInLast24Hour = false;
+    }
+    else if (moreThantwentyFourHoursAgo(lastPassingLiquidityCheck)) {
+      hadLiquidityInLast24Hour = false;
+    }
+    else if (!moreThantwentyFourHoursAgo(lastPassingLiquidityCheck)) {
+      hadLiquidityInLast24Hour = true;
+    }
+
+    // had liquidity under a 15% spread in the last 24 hours, but doesn't currently have liquidity
+    if (hadLiquidityInLast24Hour && !currentlyHasLiquidity) {
+      return true;
+    } else {
+      return false;
     }
   }
 }

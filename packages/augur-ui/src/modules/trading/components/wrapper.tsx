@@ -552,11 +552,11 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
             />
           )}
         </div>
-        {(!initialLiquidity || tradingTutorial) &&
-          trade &&
+        {trade &&
           ((trade.shareCost && trade.shareCost.value !== 0) ||
             (trade.totalCost && trade.totalCost.value !== 0)) && (
             <Confirm
+              initialLiquidity={initialLiquidity}
               numOutcomes={market.numOutcomes}
               marketType={marketType}
               maxPrice={maxPriceBigNumber}

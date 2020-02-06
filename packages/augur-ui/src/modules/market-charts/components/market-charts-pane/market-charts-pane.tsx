@@ -4,12 +4,12 @@ import Media from 'react-media';
 import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs';
 import ModulePane from 'modules/market/components/common/module-tabs/module-pane';
 import PriceHistory from 'modules/market-charts/containers/price-history';
-import { TEMP_TABLET } from 'modules/common/constants';
+import { SMALL_MOBILE } from 'modules/common/constants';
 
 import { Candlestick } from 'modules/market-charts/components/candlestick/candlestick';
 import DepthChart from 'modules/market-charts/containers/depth';
 import { BigNumber } from 'bignumber.js';
-import { MarketData, OutcomeOrderBook } from 'modules/types';
+import { MarketData, IndividualOutcomeOrderBook } from 'modules/types';
 
 interface MarketChartsPaneProps {
   currentTimestamp?: number | undefined;
@@ -23,8 +23,7 @@ interface MarketChartsPaneProps {
   market?: MarketData;
   toggle: Function;
   tradingTutorial?: boolean;
-  isMarketLoading?: boolean;
-  orderBook: OutcomeOrderBook;
+  orderBook: IndividualOutcomeOrderBook;
 }
 
 interface MarketChartsPaneState {
@@ -77,13 +76,12 @@ export default class MarketChartsPane extends Component<
       market,
       toggle,
       orderBook,
-      isMarketLoading = false,
     } = this.props;
     const { hoveredPrice, hoveredDepth } = this.state;
     const shared = { marketId, selectedOutcomeId };
 
     return (
-      <Media query={TEMP_TABLET}>
+      <Media query={SMALL_MOBILE}>
         {matches =>
           matches ? (
             <ModuleTabs selected={preview ? 2 : 0} fillForMobile>
@@ -119,7 +117,6 @@ export default class MarketChartsPane extends Component<
                   <PriceHistory
                     {...shared}
                     daysPassed={daysPassed}
-                    isMarketLoading={isMarketLoading}
                   />
                 )}
               </ModulePane>

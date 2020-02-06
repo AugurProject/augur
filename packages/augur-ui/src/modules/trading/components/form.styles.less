@@ -17,13 +17,14 @@
       > div.TradingFormInputContainer {
         max-height: @size-32;
         min-height: @size-32;
+        background-color: @color-dark-grey;
 
         > span {
-          .mono-10-bold;
+          .mono-10-semi-bold;
 
           max-height: @size-32;
           min-height: @size-32;
-          padding: @size-10 @size-16 @size-10 0;
+          padding: @size-10 @size-10 @size-10 0;
         }
 
         > input {
@@ -31,7 +32,8 @@
 
           max-height: @size-30;
           min-height: @size-30;
-          padding: 0 @size-16;
+          padding: 0 @size-12;
+          background-color: @color-dark-grey;
         }
       }
 
@@ -39,10 +41,9 @@
         margin-bottom: @size-12;
 
         > label {
-          .mono-10-bold;
+          .mono-10-medium;
 
           color: @color-secondary-text;
-          text-transform: uppercase;
         }
       }
 
@@ -111,7 +112,7 @@
         width: fit-content;
 
         > button {
-          .mono-10-bold;
+          .mono-10-semi-bold;
 
           min-height: @size-22;
           padding: @size-3 @size-6;
@@ -142,9 +143,9 @@
         }
 
         > span.tipText {
-          .text-12;
+          .mono-10-medium;
 
-          color: @color-dark-text;
+          color: @color-secondary-text;
           text-align: left;
         }
 
@@ -164,15 +165,51 @@
           }
         }
 
-        > div[class*="TextInput"] > div > input {
-          min-width: @size-36;
-          width: @size-36;
-          padding: 0 @size-8;
+        // Order expiration dropdown
+        > div[class*="Normal"] {
           height: @size-24;
+
+          > button > span {
+            padding: @size-5 @size-8 @size-5 0;
+          }
         }
 
-        > div[class*="Normal"]:nth-of-type(2) {
+        // Order expiration date options
+        > div:nth-of-type(2):not([class*="Normal"]) {
+          display: inline-flex;
           grid-column: 3;
+          justify-self: end;
+
+          // Day input
+          > div[class*="TextInput"] {
+          
+            > div > input {
+              .mono-12;
+    
+              min-width: @size-36;
+              width: @size-36;
+              height: @size-24;
+              margin-right: @size-4;
+              padding: 0 @size-8;
+              border: @size-1 solid @color-secondary-action;
+
+              &:hover {
+                border: @size-1 solid @color-secondary-action-outline;
+              }
+
+              &:focus-within {
+                border: @size-1 solid @color-secondary-action-outline;
+              }
+            }
+          }
+
+          > div[class*="Normal"] {
+            height: @size-24;
+  
+            > button > span {
+              padding: @size-5 @size-8 @size-5 0;
+            }
+          }
         }
 
         > div[class*="DateTimeSelector"] {
@@ -195,6 +232,13 @@
                 > input[class*="DateInput_input"] {
                   height: @size-22;
                   width: 100%;
+                  cursor: pointer;
+                  &:hover {
+                    border: @size-1 solid @color-secondary-action-outline;
+                  }
+                  &:focus {
+                    border: @size-1 solid @color-secondary-action-outline;
+                  }
                 }
               } 
             }
@@ -204,6 +248,13 @@
 
               > button {
                 height: @size-22;
+
+                &:hover {
+                  border: @size-1 solid @color-secondary-action-outline;
+                }
+                &:focus {
+                  border: @size-1 solid @color-secondary-action-outline;
+                }
               }
             }
 
@@ -213,6 +264,13 @@
               > div[class*="TextInput"] > div > input {
                 height: @size-22;
                 width: 100%;
+
+                &:hover {
+                  border: @size-1 solid @color-secondary-action-outline;
+                }
+                &:focus {
+                  border: @size-1 solid @color-secondary-action-outline;
+                }
               }
             }
           }
@@ -226,7 +284,7 @@
         width: 100%;
 
         &.smallLabel {
-          .mono-10-bold;
+          .mono-10-medium;
 
           color: @color-primary-text;
           padding-top: @size-12;
@@ -328,6 +386,37 @@
   }
 }
 
+.ErrorClickable {
+  .Error;
+
+  > span:nth-of-type(2) {
+    .text-11;
+
+    color: @color-primary-text;
+    grid-column: 2;
+    text-transform: none;
+  }
+
+  > div {
+    grid-column: 2;
+    display: flex;
+    flex: 1;
+
+    > button {
+      width: 100%;
+      border: 1px solid @color-primary-text;
+
+      &:hover {
+        background: fade(@color-primary-text, .15);
+      }
+
+      &:first-of-type {
+        margin-right: @size-8;
+      }
+    }
+  }
+}
+
 .Outcome {
   padding: @size-12 @size-12 0;
 
@@ -366,10 +455,10 @@
 
   align-items: center;
   background-color: @color-secondary-action;
-  border: 1px solid @color-secondary-action-outline;
+  border: @size-1 solid @color-secondary-action;
   display: flex;
   flex-direction: row;
-  border-radius: @size-3;
+  border-radius: @border-radius-default;
 
   > input[type="number"] {
     background-color: @color-secondary-action;
@@ -382,11 +471,11 @@
   }
 
   &.error {
-    border: 1px solid fade(@color-error, 50%);
+    border: @size-1 solid fade(@color-error, 50%);
 
     &:focus-within,
     &:focus {
-      border: 1px solid fade(@color-error, 50%);
+      border: @size-1 solid fade(@color-error, 50%);
     }
   }
 
@@ -415,8 +504,12 @@
     font-size: @size-12;
   }
 
+  &:hover {
+    border: @size-1 solid @color-secondary-action-outline;
+  }
+
   &:focus-within {
-    border: 1px solid @color-secondary-action-outline;
+    border: @size-1 solid @color-secondary-action-outline;
 
     > input {
       border: 0;
