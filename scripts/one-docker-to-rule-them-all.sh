@@ -62,6 +62,7 @@ export ETHEREUM_CHAIN_ID=`yarn --silent flash network-id | sed '1d'`
 export CUSTOM_CONTRACT_ADDRESSES=`yarn --silent flash get-all-contract-addresses --ugly | sed '1d'`
 export GNOSIS_SAFE_CONTRACT_ADDRESS=`yarn --silent flash get-contract-address -n GnosisSafe | sed '1d'`
 export PROXY_FACTORY_CONTRACT_ADDRESS=`yarn --silent flash get-contract-address -n ProxyFactory | sed '1d'`
+export ZEROX_CONTRACT_ADDRESS=`yarn --silent flash get-contract-address -n ZeroXTrade -r -l | sed '1d'`
 #yarn docker:gnosis
 
 if [[ "${DETACH-false}" == "true" ]]; then
