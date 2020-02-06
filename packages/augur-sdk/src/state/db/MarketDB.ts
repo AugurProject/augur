@@ -14,11 +14,13 @@ import {
   MAX_TRADE_GAS_PERCENTAGE_DIVISOR,
   MarketReportingState,
 } from '../../constants';
+import { NewBlock } from "../../events";
 import { MarketData, MarketType, OrderTypeHex, TimestampSetLog, UnixTimestamp } from '../logs/types';
 import { BigNumber } from 'bignumber.js';
 import { OrderBook } from '../../api/Liquidity';
 import { ParsedLog } from '@augurproject/types';
 import { QUINTILLION, padHex } from '../../utils';
+import { SubscriptionEventName } from '../../constants';
 import { Block } from 'ethereumjs-blockstream';
 import { isTemplateMarket } from '@augurproject/artifacts';
 
@@ -64,8 +66,8 @@ export class MarketDB extends DerivedDB {
 
     this.augur.events.subscribe('DB:updated:ZeroXOrders', (orderEvents) => this.syncOrderBooks([orderEvents.market]));
     this.augur.events.subscribe('DB:get:ZeroXOrders', (markets) => this.syncOrderBooks(markets));
-    this.augur.events.subscribe('controller:new:block', this.processNewBlock);
-    this.augur.events.subscribe('TimestampSet', this.processTimestampSet);
+    this.augur.events.subscribe(SubscriptionEventName.NewBlock, this.processNewBlock);
+    this.augur.events.subscribe(SubscriptionEventName.TimestampSet, this.processTimestampSet);
   }
 
   async doSync(highestAvailableBlockNumber: number): Promise<void> {
@@ -352,9 +354,8 @@ export class MarketDB extends DerivedDB {
     return log;
   }
 
-  processNewBlock = async (block: Block): Promise<void> => {
-    const timestamp = (await this.augur.getTimestamp()).toNumber();
-    await this.processTimestamp(timestamp, Number(block.number))
+  processNewBlock = async (block: NewBlock): Promise<void> => {
+    await this.processTimestamp(block.timestamp, block.highestAvailableBlockNumber);
   };
 
   processTimestampSet = async (log: TimestampSetLog): Promise<void> => {
@@ -400,6 +401,7 @@ export class MarketDB extends DerivedDB {
 
     if (updateDocs.length > 0) {
       await this.bulkUpsertDocuments(updateDocs);
+      this.augur.events.emit(SubscriptionEventName.ReportingStateChanged, { data: updateDocs });
     }
   }
 
