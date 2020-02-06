@@ -665,7 +665,7 @@ export default class MarketView extends Component<
                         preview={preview}
                         selectedOutcomeId={outcomeId}
                         updateSelectedOutcome={this.updateSelectedOutcomeSwitch}
-                        orderBook={outcomeOrderBook}
+                        orderBook={orderBook}
                       />
                       <div className={Styles.PriceHistory}>
                         <h3>Price History</h3>
@@ -897,7 +897,7 @@ export default class MarketView extends Component<
                     selectedOutcomeId={outcomeId}
                     updateSelectedOutcome={this.updateSelectedOutcome}
                     hideOutcomes={cat5 ? !extendOutcomesList : false}
-                    orderBook={outcomeOrderBook}
+                    orderBook={orderBook}
                   />
                   <div
                     className={classNames(Styles.ChartsPane, {
