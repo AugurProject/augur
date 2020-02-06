@@ -20,9 +20,9 @@ cd /augur
 # Until then -- Make sure changes work in BOTH scripts
 
 if [ "$FAKE_TIME" == "true" ]; then
-  yarn flash fake-all --relayer-address 0x9d4c6d4b84cd046381923c9bc136d6ff1fe292d9
+  yarn flash fake-all
 else
-  yarn flash normal-all --relayer-address 0x9d4c6d4b84cd046381923c9bc136d6ff1fe292d9
+  yarn flash normal-all
 fi
 
 # Still need to double-check builds after deploy

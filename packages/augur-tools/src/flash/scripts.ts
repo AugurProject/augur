@@ -118,13 +118,12 @@ export function addScripts(flash: FlashSession) {
       },
       {
         name: 'relayer-address',
-        abbr: 'f',
+        abbr: 'r',
         description: 'gnosis relayer address'
       }
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const useSdk = args.useSdk as boolean;
-      const relayerAddress = args.relayer_address as string;
       if (this.noProvider()) return;
 
       console.log('Deploying: ', args);
@@ -146,6 +145,9 @@ export function addScripts(flash: FlashSession) {
         await flash.ensureUser(this.network, useSdk);
       }
 
+      const relayerAddressArg = args.relayer_address as string;
+      const relayerAddressConfig = this.network.gnosisRelayerAddress;
+      const relayerAddress = relayerAddressArg || relayerAddressConfig;
       if (relayerAddress) {
         await this.call('faucet', {
           amount: '1000000',
@@ -180,10 +182,15 @@ export function addScripts(flash: FlashSession) {
       const amount = Number(args.amount);
       const atto = new BigNumber(amount).times(_1_ETH);
 
+      await user.faucet(atto);
+
+      // If we have a target we transfer from current account to target.
+      // Cannot directly faucet to target because:
+      // 1) it might not have ETH, and
+      // 2) specifying sender for contract calls only works if signer is available,
+      //    which is typically only true of main account and its gnosis safe
       if (target) {
-        await user.faucet(atto, target);
-      } else {
-        await user.faucet(atto);
+        await user.augur.contracts.cash.transfer(target, atto);
       }
     },
   });
@@ -1209,7 +1216,7 @@ export function addScripts(flash: FlashSession) {
       },
       {
         name: 'relayer-address',
-        abbr: 'f',
+        abbr: 'r',
         description: 'gnosis relayer address'
       }
     ],
@@ -1237,7 +1244,7 @@ export function addScripts(flash: FlashSession) {
       },
       {
         name: 'relayer-address',
-        abbr: 'f',
+        abbr: 'r',
         description: 'gnosis relayer address'
       }
     ],
