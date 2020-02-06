@@ -617,6 +617,12 @@ div.LinearPropertyViewTransaction {
   }
 }
 
+span.PendingLabel {
+  > div {
+    max-width: unset;
+  }
+}
+
 .ConfirmedLabel {
   .PendingLabel;
 
@@ -818,7 +824,7 @@ div.LinearPropertyViewTransaction {
   margin-right: @size-5;
 }
 
-.BulkTxLabel {
+.ModalMessageLabel {
   margin: 0 @size-24 @size-24;
 
   @media @breakpoint-mobile {

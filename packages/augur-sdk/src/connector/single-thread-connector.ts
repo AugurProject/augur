@@ -36,14 +36,7 @@ export class SingleThreadConnector extends BaseConnector {
     const id: string = this.events.subscribe(eventName, wrappedCallack);
     this.subscriptions[eventName] = { id, callback: wrappedCallack };
 
-    // NB: This is a hack and I wanna remove it
-    // controller.run() is called before the SEOConnector is subscribed to SDKReady, so SDKReady is never triggered,
-    // that's why we need to re-emit it here.
-    if (eventName === SubscriptionEventName.SDKReady) {
-      await this.events.emit(SubscriptionEventName.SDKReady, {
-        eventName: SubscriptionEventName.SDKReady,
-      });
-    }
+
   }
 
   async off(eventName: SubscriptionEventName | string): Promise<void> {
