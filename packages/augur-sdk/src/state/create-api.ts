@@ -1,4 +1,4 @@
-import { getAddressesForNetwork, getStartingBlockForNetwork, NetworkId } from '@augurproject/artifacts';
+import { ContractAddresses, getStartingBlockForNetwork, NetworkId, getAddressesForNetwork } from '@augurproject/artifacts';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { EthersSigner } from 'contract-dependencies-ethers';
 import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis';
@@ -17,7 +17,7 @@ export interface SDKConfiguration {
   ethereum?: {
     http: string,
     rpcRetryCount: number,
-    rpcRetryInternval: number,
+    rpcRetryInterval: number,
     rpcConcurrency: number
   },
   sdk?: {
@@ -43,7 +43,8 @@ export interface SDKConfiguration {
     enabled?: boolean,
     blockstreamDelay?: number,
     chunkSize?: number
-  }
+  },
+  addresses?: ContractAddresses
 };
 
 export async function createClient(
@@ -57,7 +58,7 @@ export async function createClient(
   ): Promise<Augur> {
 
   const ethersProvider = provider || new EthersProvider( new JsonRpcProvider(config.ethereum.http), 10, 0, 40);
-  const addresses = getAddressesForNetwork(config.networkId);
+  const addresses = config.addresses || getAddressesForNetwork(config.networkId);
   const contractDependencies = ContractDependenciesGnosis.create(
     ethersProvider,
     signer,
@@ -149,7 +150,7 @@ export async function startServerFromClient(config: SDKConfiguration, client?: A
 
   controller.run().catch((err) => {
     // TODO: PG needs to handle what happens if the server side of the connector dies
-    console.log("Error starting up Augur syncing services");
+    console.log('Error starting up Augur syncing services');
   });
 
   return api;

@@ -65,7 +65,7 @@ beforeAll(async () => {
     ethereum: {
       http: '',
       rpcRetryCount: 5,
-      rpcRetryInternval: 0,
+      rpcRetryInterval: 0,
       rpcConcurrency: 40
     }
   };

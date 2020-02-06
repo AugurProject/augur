@@ -133,7 +133,7 @@ export class FlashSession {
       ethereum: {
         http: network ? network.http : undefined, // NB(pg): Currently some tests don't pass in this config
         rpcRetryCount: 5,
-        rpcRetryInternval: 0,
+        rpcRetryInterval: 0,
         rpcConcurrency: 40
       },
       gnosis: {
@@ -151,7 +151,8 @@ export class FlashSession {
       },
       syncing: {
         enabled: wireUpSdk
-      }
+      },
+      addresses: this.contractAddresses,
     };
 
     // Initialize the user if this is the first time we are being called. This will create the provider and all of that jazz.
