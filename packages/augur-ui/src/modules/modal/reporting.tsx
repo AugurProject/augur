@@ -33,6 +33,7 @@ import { loadAccountCurrentDisputeHistory } from 'modules/auth/actions/load-acco
 import ReleasableRepNotice from 'modules/reporting/containers/releasable-rep-notice';
 import { ExplainerBlock } from 'modules/create-market/components/common';
 import { EventDetailsContent } from 'modules/create-market/constants';
+import CoreProperties from 'modules/market/components/core-properties/core-properties';
 
 interface ModalReportingProps {
   closeAction: Function;
@@ -324,24 +325,11 @@ export default class ModalReporting extends Component<
               {isTemplate && <TemplateShield market={market} />}
             </section>
             <span>{description}</span>
-            <Subheaders
-              small
-              header="Resolution Details"
-              subheader={details === null ? 'N/A' : details}
+            <CoreProperties
+              market={market}
+              reportingBarShowing={false}
             />
-            <div>
-              <Subheaders
-                small
-                header="Date Created"
-                subheader={creationTimeFormatted.formattedUtc}
-              />
-              <Subheaders
-                small
-                header="Event Expiration"
-                subheader={endTimeFormatted.formattedUtc}
-              />
             </div>
-          </div>
           {isDisputing && (
             <div>
               <RepBalance alternate rep={rep} />
