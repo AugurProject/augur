@@ -613,7 +613,7 @@ export class ReportingBondsView extends Component<
 > {
   state: ReportingBondsViewState = {
     showInput: false,
-    disabled: this.props.market.marketType === SCALAR ? true : false,
+    disabled: false,
     scalarError: '',
     stakeError: '',
     isScalar: this.props.market.marketType === SCALAR,
