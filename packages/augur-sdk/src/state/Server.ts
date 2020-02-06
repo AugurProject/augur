@@ -13,7 +13,7 @@ export async function run() {
     ethereum: {
       http: settings.ethNodeURLs[4],
       rpcRetryCount: 5,
-      rpcRetryInternval: 0,
+      rpcRetryInterval: 0,
       rpcConcurrency: 40
     },
     syncing: {
