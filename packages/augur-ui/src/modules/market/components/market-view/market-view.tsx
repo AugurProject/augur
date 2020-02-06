@@ -89,6 +89,7 @@ interface MarketViewProps {
   account: string;
   orderBook?: Getters.Markets.OutcomeOrderBook | OutcomeTestTradingOrder;
   loadMarketOrderBook: Function;
+  clearOrderBook: Function;
 }
 
 interface DefaultOrderPropertiesMap {
@@ -269,6 +270,10 @@ export default class MarketView extends Component<
         cb: () => this.setState({ hasShownScalarModal: true }),
       });
     }
+  }
+
+  componentWillUnmount() {
+    this.props.clearOrderBook();
   }
 
   tradingTutorialWidthCheck() {
