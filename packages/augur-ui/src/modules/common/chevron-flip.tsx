@@ -43,12 +43,13 @@ const ChevronFlipFilledIcon = (className = "", fillColor = "#FFF") => (
 );
 
 interface ChevronFlipProps {
-  className?: strin;
+  className?: string;
   pointDown?: boolean;
   stroke?: string;
   big?: boolean;
   filledInIcon?: boolean;
   quick?: boolean;
+  instant?: boolean;
   hover?: boolean;
   containerClassName?: string;
 }
@@ -59,6 +60,7 @@ const ChevronFlip: React.FC<ChevronFlipProps> = ({
   pointDown,
   big,
   quick,
+  instant,
   stroke,
   hover,
   containerClassName,
@@ -70,6 +72,7 @@ const ChevronFlip: React.FC<ChevronFlipProps> = ({
             [Styles.pointDown]: pointDown,
             [Styles.big]: big,
             [Styles.quick]: quick,
+            [Styles.instant]: instant,
             [Styles.hover]: hover
           }),
           stroke
@@ -79,6 +82,7 @@ const ChevronFlip: React.FC<ChevronFlipProps> = ({
             [Styles.pointDown]: pointDown,
             [Styles.big]: big,
             [Styles.quick]: quick,
+            [Styles.instant]: instant,
             [Styles.hover]: hover
           }),
           stroke
@@ -93,6 +97,7 @@ ChevronFlip.defaultProps = {
   big: undefined,
   filledInIcon: undefined,
   quick: false,
+  instant: false,
   hover: false,
   containerClassName: undefined
 };

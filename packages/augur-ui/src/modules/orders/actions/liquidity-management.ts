@@ -1,10 +1,7 @@
 import { createBigNumber } from 'utils/create-big-number';
 
 import { BUY, MAX_BULK_ORDER_COUNT, ZERO } from 'modules/common/constants';
-import {
-  LiquidityOrder,
-  CreateLiquidityOrders,
-} from 'modules/types';
+import { LiquidityOrder, CreateLiquidityOrders } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { AppState } from 'store';
@@ -15,7 +12,8 @@ import {
   approveToTrade,
   placeTrade,
 } from 'modules/contracts/actions/contractCalls';
-import { Getters } from '@augurproject/sdk';
+import { Getters, TXEventName } from '@augurproject/sdk';
+import { setLiquidityOrderStatus } from 'modules/events/actions/liquidity-transactions';
 export const UPDATE_LIQUIDITY_ORDER = 'UPDATE_LIQUIDITY_ORDER';
 export const ADD_MARKET_LIQUIDITY_ORDERS = 'ADD_MARKET_LIQUIDITY_ORDERS';
 export const REMOVE_LIQUIDITY_ORDER = 'REMOVE_LIQUIDITY_ORDER';
@@ -95,7 +93,6 @@ export const updateLiquidityOrderStatus = ({
   type,
   price,
   eventName,
-  hash,
 }) => ({
   type: UPDATE_LIQUIDITY_ORDER_STATUS,
   data: {
@@ -104,7 +101,6 @@ export const updateLiquidityOrderStatus = ({
     type,
     price,
     eventName,
-    hash,
   },
 });
 
@@ -156,6 +152,19 @@ export const sendLiquidityOrder = (options: any) => async (
   const market = marketInfos[marketId];
   const isZeroX = appStatus.zeroXEnabled;
   const { orderEstimate } = order;
+
+  dispatch(
+    setLiquidityOrderStatus(
+      {
+        outcomeId: order.outcomeId,
+        orderPrice: order.price,
+        orderType: order.type,
+        eventName: TXEventName.Pending
+      },
+      market,
+      dispatch
+    )
+  );
 
   if (bnAllowance.lte(0) || bnAllowance.lte(createBigNumber(orderEstimate))) {
     await approveToTrade();
@@ -251,7 +260,19 @@ const createZeroXLiquidityOrders = (
             price: o.price,
           })
         );
-      })
+      }).catch((err) => {
+        dispatch(
+          setLiquidityOrderStatus(
+            {
+              outcomeId: o.outcomeId,
+              orderPrice: createBigNumber(o.price).toString(),
+              orderType: o.type,
+              eventName: TXEventName.Failure
+            },
+            market,
+            dispatch
+          )
+      )})
     );
   } catch (e) {
     console.error(e);

@@ -60,9 +60,15 @@ export function processMultipleLiquidityOrders(
   }
   return payloads;
 }
+interface Tx {
+  outcomeId: number,
+  eventName: string,
+  orderType: string,
+  orderPrice: string
+}
 
 export function setLiquidityOrderStatus(
-  tx: Events.TXStatus,
+  tx: Tx,
   market: Getters.Markets.MarketInfo,
   dispatch
 ) {
@@ -72,28 +78,20 @@ export function setLiquidityOrderStatus(
       txParamHash: properties.transactionHash,
       ...properties,
       eventName: tx.eventName,
-      hash: tx.hash,
     })
   );
 }
 
 export function processLiquidityOrder(
-  tx: Events.TXStatus,
+  tx: Tx,
   market: Getters.Markets.MarketInfo
 ) {
-  const { transaction } = tx;
-  const { transactionHash, tickSize, minPrice } = market;
-  const outcomeId = transaction.params[TX_OUTCOME_ID];
-  const orderType = transaction.params[TX_ORDER_TYPE];
-  const onChainPrice = transaction.params[TX_PRICE];
+  const { outcomeId, orderType, orderPrice } = tx;
+  const { transactionHash } = market;
   return {
-    ...processOnChainPriceOrderType(
-      onChainPrice,
-      minPrice,
-      tickSize,
-      orderType
-    ),
     outcomeId,
+    type: orderType,
+    price: orderPrice,
     transactionHash,
   };
 }

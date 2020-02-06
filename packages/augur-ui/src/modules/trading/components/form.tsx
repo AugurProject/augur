@@ -1,4 +1,3 @@
-
 /* eslint jsx-a11y/label-has-for: 0 */
 import React, { Component } from 'react';
 import classNames from 'classnames';
@@ -10,8 +9,8 @@ import {
   BUY,
   SELL,
   INVALID_OUTCOME_ID,
-  NETWORK_IDS,
   GAS_CONFIRM_ESTIMATE,
+  ONE,
 } from 'modules/common/constants';
 import FormStyles from 'modules/common/form-styles.less';
 import Styles from 'modules/trading/components/form.styles.less';
@@ -21,8 +20,18 @@ import { TextInput } from 'modules/common/form';
 import getPrecision from 'utils/get-number-precision';
 import convertExponentialToDecimal from 'utils/convert-exponential';
 import { MarketData, OutcomeFormatted } from 'modules/types';
-import { convertDisplayAmountToOnChainAmount, tickSizeToNumTickWithDisplayPrices, getTradeInterval, QUINTILLION, Getters } from '@augurproject/sdk';
-import { CancelTextButton, TextButtonFlip } from 'modules/common/buttons';
+import {
+  convertDisplayAmountToOnChainAmount,
+  tickSizeToNumTickWithDisplayPrices,
+  getTradeInterval,
+  QUINTILLION,
+  Getters,
+} from '@augurproject/sdk';
+import {
+  CancelTextButton,
+  TextButtonFlip,
+  SecondaryButton,
+} from 'modules/common/buttons';
 import moment, { Moment } from 'moment';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { SimpleTimeSelector } from 'modules/create-market/components/common';
@@ -30,9 +39,7 @@ import { formatBestPrice } from 'utils/format-number';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 
 const DEFAULT_TRADE_INTERVAL = new BigNumber(10**17);
-const TRADE_INTERVAL_VALUE = new BigNumber(10**19);
-
-const DEFAULT_EXPIRATION_DAYS = 30;
+const DEFAULT_EXPIRATION_DAYS = 0;
 
 enum ADVANCED_OPTIONS {
   GOOD_TILL = '0',
@@ -41,8 +48,10 @@ enum ADVANCED_OPTIONS {
 }
 
 enum EXPIRATION_DATE_OPTIONS {
-  DAYS = '0',
+  DAYS = 'day',
   CUSTOM = '1',
+  HOURS = 'hours',
+  MINUTES = 'minutes',
 }
 
 const advancedDropdownOptions = [
@@ -107,7 +116,7 @@ interface FormState {
   errorCount: number;
   showAdvanced: boolean;
   advancedOption: string;
-  fastForwardDays: number;
+  fastForwardTime: number;
   expirationDateOption: string;
   expirationDate?: Moment;
   percentage: string;
@@ -116,6 +125,7 @@ interface FormState {
 
 class Form extends Component<FromProps, FormState> {
   INPUT_TYPES: {
+    MULTIPLE_QUANTITY: string;
     QUANTITY: string;
     PRICE: string;
     DO_NOT_CREATE_ORDERS: string;
@@ -130,6 +140,7 @@ class Form extends Component<FromProps, FormState> {
     super(props);
 
     this.INPUT_TYPES = {
+      MULTIPLE_QUANTITY: 'multipleOrderQuantity',
       QUANTITY: 'orderQuantity',
       PRICE: 'orderPrice',
       DO_NOT_CREATE_ORDERS: 'doNotCreateOrders',
@@ -152,6 +163,7 @@ class Form extends Component<FromProps, FormState> {
       [this.INPUT_TYPES.SELECTED_NAV]: props.selectedNav,
       [this.INPUT_TYPES.EST_DAI]: props.orderDaiEstimate,
       errors: {
+        [this.INPUT_TYPES.MULTIPLE_QUANTITY]: [],
         [this.INPUT_TYPES.QUANTITY]: [],
         [this.INPUT_TYPES.PRICE]: [],
         [this.INPUT_TYPES.EST_DAI]: [],
@@ -166,9 +178,9 @@ class Form extends Component<FromProps, FormState> {
       errorCount: 0,
       showAdvanced: false,
       advancedOption: advancedDropdownOptions[0].value,
-      fastForwardDays: DEFAULT_EXPIRATION_DAYS,
+      fastForwardTime: DEFAULT_EXPIRATION_DAYS,
       expirationDateOption: EXPIRATION_DATE_OPTIONS.DAYS,
-      percentage: "",
+      percentage: '',
       confirmationTimeEstimation: 0,
     };
 
@@ -182,8 +194,14 @@ class Form extends Component<FromProps, FormState> {
   async componentDidUpdate(prevProps) {
     const networkId = getNetworkId();
     const endPoint = GAS_CONFIRM_ESTIMATE[networkId];
-    if (endPoint && this.props.gasPrice !== prevProps.gasPrice && this.props.gasPrice) {
-      const gasConfirmEstimateResponse = await fetch(`${endPoint}${this.props.gasPrice}`);
+    if (
+      endPoint &&
+      this.props.gasPrice !== prevProps.gasPrice &&
+      this.props.gasPrice
+    ) {
+      const gasConfirmEstimateResponse = await fetch(
+        `${endPoint}${this.props.gasPrice}`
+      );
       const gasConfirmEstimate = await gasConfirmEstimateResponse.json();
       this.setState({ confirmationTimeEstimation: gasConfirmEstimate.result });
     }
@@ -203,8 +221,11 @@ class Form extends Component<FromProps, FormState> {
         ],
       });
     }
-    if (!!prevProps[this.INPUT_TYPES.PRICE] && !!!this.props[this.INPUT_TYPES.PRICE]){
-      this.setState({ percentage: '' })
+    if (
+      !!prevProps[this.INPUT_TYPES.PRICE] &&
+      !!!this.props[this.INPUT_TYPES.PRICE]
+    ) {
+      this.setState({ percentage: '' });
     }
   }
 
@@ -256,6 +277,44 @@ class Form extends Component<FromProps, FormState> {
     return { isOrderValid: passedTest, errors, errorCount };
   }
 
+  findNearestValues = value => {
+    const { market } = this.props;
+    let tradeInterval = DEFAULT_TRADE_INTERVAL;
+    let numTicks = market.numTicks;
+
+    if (!numTicks) {
+      numTicks = tickSizeToNumTickWithDisplayPrices(
+        createBigNumber(market.tickSize),
+        createBigNumber(market.minPrice),
+        createBigNumber(market.maxPrice)
+      );
+    }
+
+    if (market.marketType == SCALAR) {
+      tradeInterval = getTradeInterval(
+        createBigNumber(market.minPrice).times(QUINTILLION),
+        createBigNumber(market.maxPrice).times(QUINTILLION),
+        numTicks
+      );
+    }
+
+    const valueBn = createBigNumber(value);
+    const multipleOf = tradeInterval
+      .dividedBy(market.tickSize)
+      .dividedBy(10 ** 18);
+    let firstValue = valueBn.minus(valueBn.mod(multipleOf));
+    let secondValue = valueBn.plus(multipleOf).minus(valueBn.mod(multipleOf));
+    if (firstValue.lt(ONE)) {
+      firstValue = secondValue;
+      secondValue = valueBn
+        .plus(multipleOf)
+        .plus(multipleOf)
+        .minus(valueBn.mod(multipleOf));
+    }
+
+    return [firstValue, secondValue];
+  };
+
   testQuantityAndExpiry(
     value,
     errors: object,
@@ -265,9 +324,7 @@ class Form extends Component<FromProps, FormState> {
     expiration?
   ): TestResults {
     const props = nextProps || this.props;
-    const {
-      market,
-    } = props;
+    const { market } = props;
     const isScalar: boolean = market.marketType === SCALAR;
     let errorCount = 0;
     let passedTest = !!isOrderValid;
@@ -289,7 +346,12 @@ class Form extends Component<FromProps, FormState> {
         'Quantity must be greater than 0.000000001'
       );
     }
-    if (!isScalar && value && precision > UPPER_FIXED_PRECISION_BOUND && !fromExternal) {
+    if (
+      !isScalar &&
+      value &&
+      precision > UPPER_FIXED_PRECISION_BOUND &&
+      !fromExternal
+    ) {
       errorCount += 1;
       passedTest = false;
       errors[this.INPUT_TYPES.QUANTITY].push(
@@ -311,17 +373,32 @@ class Form extends Component<FromProps, FormState> {
       tradeInterval = getTradeInterval(
         createBigNumber(market.minPrice).times(QUINTILLION),
         createBigNumber(market.maxPrice).times(QUINTILLION),
-        numTicks);
+        numTicks
+      );
     }
 
-    if (!convertDisplayAmountToOnChainAmount(value, market.tickSize).mod(tradeInterval).isEqualTo(0)) {
+    if (
+      !convertDisplayAmountToOnChainAmount(value, market.tickSize)
+        .mod(tradeInterval)
+        .isEqualTo(0)
+    ) {
       errorCount += 1;
       passedTest = false;
-      const multipleOf = tradeInterval.dividedBy(market.tickSize).dividedBy(10**18);
-      const nearValue = BigNumber.maximum(createBigNumber(value).dividedToIntegerBy(multipleOf).times(multipleOf), multipleOf);
-      errors[this.INPUT_TYPES.QUANTITY].push(
-          `Quantity must be a multiple of ${multipleOf}, try ${nearValue}`
-        );
+      const multipleOf = tradeInterval
+        .dividedBy(market.tickSize)
+        .dividedBy(10 ** 18);
+      let firstValue = value.minus(value.mod(multipleOf));
+      let secondValue = value.plus(multipleOf).minus(value.mod(multipleOf));
+      if (firstValue.lt(ONE)) {
+        firstValue = secondValue;
+        secondValue = value
+          .plus(multipleOf)
+          .plus(multipleOf)
+          .minus(value.mod(multipleOf));
+      }
+      errors[this.INPUT_TYPES.MULTIPLE_QUANTITY].push(
+        `Quantity needs to be a multiple of ${multipleOf}`
+      );
     }
 
     // Check to ensure orders don't expiry within 70s
@@ -329,12 +406,12 @@ class Form extends Component<FromProps, FormState> {
     const minOrderLifespan = 70;
     const gasConfirmEstimate = this.state.confirmationTimeEstimation * 1.5; // In Seconds
     const expiryTime = expiration - gasConfirmEstimate - moment().unix();
-    if(expiration && expiryTime < minOrderLifespan) {
+    if (expiration && expiryTime < minOrderLifespan) {
       errorCount += 1;
       passedTest = false;
       errors[this.INPUT_TYPES.EXPIRATION_DATE].push(
         'Order expires less than 70 seconds into the future (after est confirmation time)'
-        );
+      );
     }
     return { isOrderValid: passedTest, errors, errorCount };
   }
@@ -356,7 +433,8 @@ class Form extends Component<FromProps, FormState> {
       selectedOutcome,
     } = props;
     const isScalar: boolean = market.marketType === SCALAR;
-    const isScalarInvalidOutcome = isScalar && selectedOutcome.id === INVALID_OUTCOME_ID;
+    const isScalarInvalidOutcome =
+      isScalar && selectedOutcome.id === INVALID_OUTCOME_ID;
     const tickSize = createBigNumber(market.tickSize);
     let errorCount = 0;
     let passedTest = !!isOrderValid;
@@ -369,9 +447,7 @@ class Form extends Component<FromProps, FormState> {
       errorCount += 1;
       passedTest = false;
       if (isScalarInvalidOutcome) {
-        errors[this.INPUT_TYPES.PRICE].push(
-          `Enter a valid percentage`
-        );
+        errors[this.INPUT_TYPES.PRICE].push(`Enter a valid percentage`);
       } else {
         errors[this.INPUT_TYPES.PRICE].push(
           `Price must be between ${minPrice} and ${maxPrice}`
@@ -460,6 +536,7 @@ class Form extends Component<FromProps, FormState> {
     fromExternal = false
   ): TestResults {
     let errors = {
+      [this.INPUT_TYPES.MULTIPLE_QUANTITY]: [],
       [this.INPUT_TYPES.QUANTITY]: [],
       [this.INPUT_TYPES.PRICE]: [],
       [this.INPUT_TYPES.EST_DAI]: [],
@@ -481,7 +558,7 @@ class Form extends Component<FromProps, FormState> {
       createBigNumber(order[this.INPUT_TYPES.EST_DAI]);
 
     let expiration = null;
-    if(order[this.INPUT_TYPES.EXPIRATION_DATE]) {
+    if (order[this.INPUT_TYPES.EXPIRATION_DATE]) {
       expiration = moment(order[this.INPUT_TYPES.EXPIRATION_DATE]).unix();
     }
 
@@ -501,7 +578,14 @@ class Form extends Component<FromProps, FormState> {
         isOrderValid: isThisOrderValid,
         errors: quantityErrors,
         errorCount: quantityErrorCount,
-      } = this.testQuantityAndExpiry(quantity, errors, isOrderValid, fromExternal, nextProps, expiration);
+      } = this.testQuantityAndExpiry(
+        quantity,
+        errors,
+        isOrderValid,
+        fromExternal,
+        nextProps,
+        expiration
+      );
 
       quantityValid = isThisOrderValid;
       errorCount += quantityErrorCount;
@@ -552,7 +636,10 @@ class Form extends Component<FromProps, FormState> {
       clearOrderForm,
     } = this.props;
 
-    const value = property != 'expirationDate' ? convertExponentialToDecimal(rawValue) : rawValue;
+    const value =
+      property != 'expirationDate'
+        ? convertExponentialToDecimal(rawValue)
+        : rawValue;
     const updatedState = {
       ...this.state,
       [property]: value,
@@ -631,11 +718,14 @@ class Form extends Component<FromProps, FormState> {
           ) {
             updateTradeNumShares(order);
           }
-          if (order[this.INPUT_TYPES.QUANTITY] &&
-            order[this.INPUT_TYPES.PRICE] && order[this.INPUT_TYPES.EST_DAI] &&
-            order[this.INPUT_TYPES.EST_DAI] != 0 && order[this.INPUT_TYPES.QUANTITY] != 0 &&
+          if (
+            order[this.INPUT_TYPES.QUANTITY] &&
+            order[this.INPUT_TYPES.PRICE] &&
+            order[this.INPUT_TYPES.EST_DAI] &&
+            order[this.INPUT_TYPES.EST_DAI] != 0 &&
+            order[this.INPUT_TYPES.QUANTITY] != 0 &&
             property === this.INPUT_TYPES.EXPIRATION_DATE
-            ) {
+          ) {
             updateTradeTotalCost(order);
           }
         }
@@ -658,6 +748,7 @@ class Form extends Component<FromProps, FormState> {
       [this.INPUT_TYPES.SELECTED_NAV]: selectedNav,
       [this.INPUT_TYPES.EST_DAI]: '',
       errors: {
+        [this.INPUT_TYPES.MULTIPLE_QUANTITY]: [],
         [this.INPUT_TYPES.QUANTITY]: [],
         [this.INPUT_TYPES.PRICE]: [],
         [this.INPUT_TYPES.EST_DAI]: [],
@@ -668,7 +759,7 @@ class Form extends Component<FromProps, FormState> {
       {
         ...startState,
         isOrderValid: false,
-        percentage: "",
+        percentage: '',
       },
       () => clearOrderForm()
     );
@@ -682,16 +773,27 @@ class Form extends Component<FromProps, FormState> {
   updateTotalValue(percent: Number) {
     const { availableDai } = this.props;
 
-    const value = availableDai.times(createBigNumber(percent)).integerValue(BigNumber.ROUND_DOWN);
+    const value = availableDai
+      .times(createBigNumber(percent))
+      .integerValue(BigNumber.ROUND_DOWN);
     this.setState({ [this.INPUT_TYPES.EST_DAI]: value.toString() }, () =>
       this.validateForm(this.INPUT_TYPES.EST_DAI, value.toString())
     );
   }
 
-  calcPercentagePrice(percentage: string, minPrice: string, tickSize: number, numTicks: string) {
+  calcPercentagePrice(
+    percentage: string,
+    minPrice: string,
+    tickSize: number,
+    numTicks: string
+  ) {
     if (!percentage) return Number(minPrice);
-    const percentNumTicks = createBigNumber(numTicks).times((createBigNumber(percentage).dividedBy(100)));
-    const calcPrice = percentNumTicks.times(tickSize).plus(createBigNumber(minPrice));
+    const percentNumTicks = createBigNumber(numTicks).times(
+      createBigNumber(percentage).dividedBy(100)
+    );
+    const calcPrice = percentNumTicks
+      .times(tickSize)
+      .plus(createBigNumber(minPrice));
     const correctDec = formatBestPrice(calcPrice, tickSize);
     return correctDec.full;
   }
@@ -740,7 +842,10 @@ class Form extends Component<FromProps, FormState> {
     if (!Ox_ENABLED) {
       advancedOptions = [advancedOptions[0], advancedOptions[2]];
     }
-    const showLimitPriceInput = (isScalar && selectedOutcome.id !== INVALID_OUTCOME_ID) || !isScalar;
+    const showLimitPriceInput =
+      (isScalar && selectedOutcome.id !== INVALID_OUTCOME_ID) || !isScalar;
+
+    const nearestValues = this.findNearestValues(quantityValue);
     return (
       <div className={Styles.TradingForm}>
         <div className={Styles.Outcome}>
@@ -811,95 +916,100 @@ class Form extends Component<FromProps, FormState> {
               </span>
             </div>
           </li>
-          {showLimitPriceInput &&
-          <li>
-            <label htmlFor="limit-price">Limit Price</label>
-            <div
-              className={classNames(Styles.TradingFormInputContainer, {
-                [Styles.error]: s.errors[this.INPUT_TYPES.PRICE].length,
-              })}
-            >
-              <input
-                className={classNames(
-                  FormStyles.Form__input,
-                  Styles.TradingFormInput
-                )}
-                id="limit-price"
-                type="number"
-                step={tickSize}
-                max={max}
-                min={min}
-                placeholder="0.00"
-                tabIndex={tradingTutorial ? -1 : 2}
-                value={s[this.INPUT_TYPES.PRICE]}
-                onTouchStart={e =>
-                  e.target.scrollIntoView({
-                    block: 'nearest',
-                    behavior: 'smooth',
-                  })
-                }
-                onChange={e =>
-                  this.updateAndValidate(this.INPUT_TYPES.PRICE, e.target.value)
-                }
-                onBlur={e => {
-                  if (!initialLiquidity && !tradingTutorial)
-                    orderPriceEntered(selectedNav, market.id);
-                }}
-              />
-              <span
-                className={classNames({
-                  [`${Styles.isScalar_largeText}`]:
-                    isScalar && (market.scalarDenomination || []).length <= 24,
-                  [`${Styles.isScalar_smallText}`]:
-                    isScalar && (market.scalarDenomination || []).length > 24,
-                  [`${Styles.error}`]: s.errors[this.INPUT_TYPES.PRICE].length,
+          {showLimitPriceInput && (
+            <li>
+              <label htmlFor="limit-price">Limit Price</label>
+              <div
+                className={classNames(Styles.TradingFormInputContainer, {
+                  [Styles.error]: s.errors[this.INPUT_TYPES.PRICE].length,
                 })}
               >
-                {isScalar ? market.scalarDenomination : '$'}
-              </span>
-            </div>
-          </li>
-          }
-          { !showLimitPriceInput &&
-          <li>
-            <label htmlFor="percentage">Percentage</label>
-            <div
-              className={classNames(Styles.TradingFormInputContainer)}
-            >
-              <input
-                className={classNames(
-                  FormStyles.Form__input,
-                  Styles.TradingFormInput
-                )}
-                id="percentage"
-                type="number"
-                step={.1}
-                max={99}
-                min={1}
-                placeholder="0"
-                tabIndex={tradingTutorial ? -1 : 2}
-                value={this.state.percentage}
-                onTouchStart={e =>
-                  e.target.scrollIntoView({
-                    block: 'nearest',
-                    behavior: 'smooth',
-                  })
-                }
-                onChange={e => {
-                  const percentage = e.target.value;
-                  this.setState({ percentage }, () => {
-                    const value = this.calcPercentagePrice(percentage, min, tickSize, numTicks);
-                    this.updateAndValidate(this.INPUT_TYPES.PRICE, value)
-                    });
+                <input
+                  className={classNames(
+                    FormStyles.Form__input,
+                    Styles.TradingFormInput
+                  )}
+                  id="limit-price"
+                  type="number"
+                  step={tickSize}
+                  max={max}
+                  min={min}
+                  placeholder="0.00"
+                  tabIndex={tradingTutorial ? -1 : 2}
+                  value={s[this.INPUT_TYPES.PRICE]}
+                  onTouchStart={e =>
+                    e.target.scrollIntoView({
+                      block: 'nearest',
+                      behavior: 'smooth',
+                    })
                   }
-                }
-              />
-              <span>
-                %
-              </span>
-            </div>
-          </li>
-          }
+                  onChange={e =>
+                    this.updateAndValidate(
+                      this.INPUT_TYPES.PRICE,
+                      e.target.value
+                    )
+                  }
+                  onBlur={e => {
+                    if (!initialLiquidity && !tradingTutorial)
+                      orderPriceEntered(selectedNav, market.id);
+                  }}
+                />
+                <span
+                  className={classNames({
+                    [`${Styles.isScalar_largeText}`]:
+                      isScalar &&
+                      (market.scalarDenomination || []).length <= 24,
+                    [`${Styles.isScalar_smallText}`]:
+                      isScalar && (market.scalarDenomination || []).length > 24,
+                    [`${Styles.error}`]: s.errors[this.INPUT_TYPES.PRICE]
+                      .length,
+                  })}
+                >
+                  {isScalar ? market.scalarDenomination : '$'}
+                </span>
+              </div>
+            </li>
+          )}
+          {!showLimitPriceInput && (
+            <li>
+              <label htmlFor="percentage">Percentage</label>
+              <div className={classNames(Styles.TradingFormInputContainer)}>
+                <input
+                  className={classNames(
+                    FormStyles.Form__input,
+                    Styles.TradingFormInput
+                  )}
+                  id="percentage"
+                  type="number"
+                  step={0.1}
+                  max={99}
+                  min={1}
+                  placeholder="0"
+                  tabIndex={tradingTutorial ? -1 : 2}
+                  value={this.state.percentage}
+                  onTouchStart={e =>
+                    e.target.scrollIntoView({
+                      block: 'nearest',
+                      behavior: 'smooth',
+                    })
+                  }
+                  onChange={e => {
+                    const percentage = e.target.value;
+                    this.setState({ percentage }, () => {
+                      const value = this.calcPercentagePrice(
+                        percentage,
+                        min,
+                        tickSize,
+                        numTicks
+                      );
+                      this.updateAndValidate(this.INPUT_TYPES.PRICE, value);
+                    });
+                  }}
+                />
+                <span>%</span>
+              </div>
+            </li>
+          )}
           <li>
             <label htmlFor="total-order-value">Total Order Value</label>
             <div
@@ -995,9 +1105,9 @@ class Form extends Component<FromProps, FormState> {
                 text="Advanced"
                 action={() => {
                   this.setState({
-                    advancedOption: '0',
-                    fastForwardDays: DEFAULT_EXPIRATION_DAYS,
-                    expirationDateOption: '0',
+                    advancedOption: ADVANCED_OPTIONS.GOOD_TILL,
+                    fastForwardTime: DEFAULT_EXPIRATION_DAYS,
+                    expirationDateOption: EXPIRATION_DATE_OPTIONS.DAYS,
                     showAdvanced: !s.showAdvanced,
                   });
                 }}
@@ -1006,8 +1116,10 @@ class Form extends Component<FromProps, FormState> {
             </li>
           )}
           {s.showAdvanced && (
-            <li className={classNames(Styles.AdvancedShown, {
-                [`${Styles.error}`]: s.errors[this.INPUT_TYPES.EXPIRATION_DATE].length,
+            <li
+              className={classNames(Styles.AdvancedShown, {
+                [`${Styles.error}`]: s.errors[this.INPUT_TYPES.EXPIRATION_DATE]
+                  .length,
               })}
             >
               <SquareDropdown
@@ -1018,7 +1130,7 @@ class Form extends Component<FromProps, FormState> {
                     value === ADVANCED_OPTIONS.EXPIRATION
                       ? moment
                           .unix(currentTimestamp)
-                          .add(DEFAULT_EXPIRATION_DAYS, 'days')
+                          .add(DEFAULT_EXPIRATION_DAYS, EXPIRATION_DATE_OPTIONS.DAYS)
                       : '';
                   this.updateAndValidate(
                     this.INPUT_TYPES.EXPIRATION_DATE,
@@ -1030,45 +1142,60 @@ class Form extends Component<FromProps, FormState> {
                   });
                   this.setState({
                     advancedOption: value,
-                    fastForwardDays: DEFAULT_EXPIRATION_DAYS,
-                    expirationDateOption: '0',
+                    fastForwardTime: DEFAULT_EXPIRATION_DAYS,
+                    expirationDateOption: EXPIRATION_DATE_OPTIONS.DAYS,
                   });
                 }}
               />
               {s.advancedOption === '1' && (
                 <>
-                  {s.expirationDateOption === EXPIRATION_DATE_OPTIONS.DAYS && (
-                    <TextInput
-                      value={s.fastForwardDays.toString()}
-                      placeholder={'0'}
+                  <div>
+                    {s.expirationDateOption !== EXPIRATION_DATE_OPTIONS.CUSTOM && (
+                      <TextInput
+                        value={s.fastForwardTime.toString()}
+                        placeholder={'0'}
+                        onChange={value => {
+                          const addedValue =
+                            value === '' || isNaN(value) ? 0 : parseInt(value);
+                          this.updateAndValidate(
+                            this.INPUT_TYPES.EXPIRATION_DATE,
+                            moment.unix(currentTimestamp).add(addedValue, s.expirationDateOption)
+                          );
+                          this.setState({ fastForwardTime: addedValue });
+                        }}
+                      />
+                    )}
+                    <SquareDropdown
+                      defaultValue={EXPIRATION_DATE_OPTIONS.DAYS}
+                      options={[
+                        {
+                          label: 'Days',
+                          value: EXPIRATION_DATE_OPTIONS.DAYS,
+                        },
+                        {
+                          label: 'Hours',
+                          value: EXPIRATION_DATE_OPTIONS.HOURS,
+                        },
+                        {
+                          label: 'Minutes',
+                          value: EXPIRATION_DATE_OPTIONS.MINUTES,
+                        },
+                        {
+                          label: 'Custom',
+                          value: EXPIRATION_DATE_OPTIONS.CUSTOM,
+                        },
+                      ]}
                       onChange={value => {
-                        const days =
-                          value === '' || isNaN(value) ? 0 : parseInt(value);
+                        const date = moment.unix(currentTimestamp);
                         this.updateAndValidate(
                           this.INPUT_TYPES.EXPIRATION_DATE,
-                          moment.unix(currentTimestamp).add(days, 'days')
+                          date
                         );
-                        this.setState({ fastForwardDays: days });
+                        this.setState({ expirationDateOption: value, fastForwardTime: 0 });
                       }}
                     />
-                  )}
-                  <SquareDropdown
-                    defaultValue={EXPIRATION_DATE_OPTIONS.DAYS}
-                    options={[
-                      {
-                        label: 'Days',
-                        value: EXPIRATION_DATE_OPTIONS.DAYS,
-                      },
-                      {
-                        label: 'Custom',
-                        value: EXPIRATION_DATE_OPTIONS.CUSTOM,
-                      },
-                    ]}
-                    onChange={value => {
-                      this.setState({ expirationDateOption: value });
-                    }}
-                  />
-                  {s.expirationDateOption === EXPIRATION_DATE_OPTIONS.DAYS && (
+                  </div>
+                  {s.expirationDateOption !== EXPIRATION_DATE_OPTIONS.CUSTOM && (
                     <span>
                       {
                         convertUnixToFormattedDate(
@@ -1100,14 +1227,44 @@ class Form extends Component<FromProps, FormState> {
               )}
               <span
                 className={classNames({
-                  [`${Styles.error}`]: s.errors[this.INPUT_TYPES.EXPIRATION_DATE]
-                    .length,
+                  [`${Styles.error}`]: s.errors[
+                    this.INPUT_TYPES.EXPIRATION_DATE
+                  ].length,
                 })}
-              >
-              </span>
+              ></span>
             </li>
           )}
         </ul>
+        {s.errors[this.INPUT_TYPES.MULTIPLE_QUANTITY].length > 0 && (
+          <div className={Styles.ErrorContainer}>
+            {s.errors[this.INPUT_TYPES.MULTIPLE_QUANTITY].map((error, key) => (
+              <div key={error} className={Styles.ErrorClickable}>
+                {ExclamationCircle} <span>{error}</span>
+                <span>Please select from the closest quantities</span>
+                <div>
+                  <SecondaryButton
+                    action={() =>
+                      this.updateAndValidate(
+                        this.INPUT_TYPES.QUANTITY,
+                        nearestValues[0].toString()
+                      )
+                    }
+                    text={nearestValues[0].toString()}
+                  />
+                  <SecondaryButton
+                    action={() =>
+                      this.updateAndValidate(
+                        this.INPUT_TYPES.QUANTITY,
+                        nearestValues[1].toString()
+                      )
+                    }
+                    text={nearestValues[1].toString()}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
         {errors.length > 0 && (
           <div className={Styles.ErrorContainer}>
             {errors.map(error => (

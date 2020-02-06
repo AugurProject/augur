@@ -24,7 +24,7 @@ import {
   HotLoadMarketInfo,
   DisputeWindow,
   ZeroX,
-  NativePlaceTradeDisplayParams
+  NativePlaceTradeDisplayParams,
 } from '@augurproject/sdk';
 import { BigNumber } from 'bignumber.js';
 import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis/build';
@@ -33,7 +33,7 @@ import { Account } from '../constants';
 import { makeGnosisDependencies, makeSigner } from './blockchain';
 import { sleep } from '@augurproject/core/build/libraries/HelperFunctions';
 import { ZeroXOrder } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
-import { NumOutcomes, OutcomeNumber } from '@augurproject/sdk/src/state/logs/types';
+import { NumOutcomes, OutcomeNumber, UnixTimestamp } from '@augurproject/sdk/src/state/logs/types';
 
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 const ETERNAL_APPROVAL_VALUE = new BigNumber('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'); // 2^256 - 1
@@ -120,7 +120,7 @@ export class ContractAPI {
 
   async createReasonableYesNoMarket(description: string = 'YesNo market description'): Promise<ContractInterfaces.Market> {
     const time = this.augur.contracts.getTime();
-    const currentTimestamp = (await time.getTimestamp_()).toNumber();
+    const currentTimestamp = (await this.getTimestamp()).toNumber();
 
     return this.createYesNoMarket({
       endTime: new BigNumber(currentTimestamp + 30 * 24 * 60 * 60),
@@ -136,7 +136,7 @@ export class ContractAPI {
 
   async createReasonableMarket(outcomes: string[], description: string = 'Categorical market description'): Promise<ContractInterfaces.Market> {
     const time = this.augur.contracts.getTime();
-    const currentTimestamp = (await time.getTimestamp_()).toNumber();
+    const currentTimestamp = (await this.getTimestamp()).toNumber();
 
     return this.createCategoricalMarket({
       endTime: new BigNumber(currentTimestamp + 30 * 24 * 60 * 60),
@@ -153,7 +153,7 @@ export class ContractAPI {
 
   async createReasonableScalarMarket(description: string = 'Scalar market description'): Promise<ContractInterfaces.Market> {
     const time = this.augur.contracts.getTime();
-    const currentTimestamp = (await time.getTimestamp_()).toNumber();
+    const currentTimestamp = (await this.getTimestamp()).toNumber();
     const minPrice = new BigNumber(50).multipliedBy(new BigNumber(10).pow(18));
     const maxPrice = new BigNumber(250).multipliedBy(new BigNumber(10).pow(18));
 
@@ -515,7 +515,7 @@ export class ContractAPI {
   }
 
   async getTimestamp(): Promise<BigNumber> {
-    return this.augur.contracts.augur.getTimestamp_();
+    return (await this.augur.contracts.augur.getTimestamp_());
   }
 
   async doInitialReport(market: ContractInterfaces.Market, payoutNumerators: BigNumber[], description = '', extraStake = '0'): Promise<void> {
@@ -552,13 +552,15 @@ export class ContractAPI {
     await market.finalize();
   }
 
-  async faucet(attoCash: BigNumber, account: string = null): Promise<void> {
+  async faucet(attoCash: BigNumber, account?: string): Promise<void> {
+    // NOTE: Specifying account only works if its signer is available. So, only useful for gnosis.
+    account = account ||  await this.augur.getAccount();
     let balance = await this.getCashBalance(account);
     const desired = attoCash;
     while (balance.lt(attoCash)) {
       console.log(`CASH FAUCETING. BALANCE: ${balance}. DESIRED: ${desired}`);
-      await this.augur.contracts.cashFaucet.faucet(attoCash);
-      balance = await this.getCashBalance();
+      await this.augur.contracts.cashFaucet.faucet(attoCash, { sender: account });
+      balance = await this.getCashBalance(account);
     }
   }
 
@@ -619,8 +621,8 @@ export class ContractAPI {
   }
 
   // TODO: Determine why ETH balance doesn't change when buying complete sets or redeeming reporting participants
-  async getEthBalance(): Promise<BigNumber> {
-    const balance = await this.provider.getBalance(this.account.publicKey);
+  async getEthBalance(owner?: string): Promise<BigNumber> {
+    const balance = await this.provider.getBalance(owner || this.account.publicKey);
     return new BigNumber(balance.toString());
   }
 
