@@ -264,6 +264,16 @@ export const handleDBMarketCreatedEvent = (event: any) => (
   }
 };
 
+export const handleReportingStateChanged = (event: any) => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  if (event.data) {
+    const marketIds = _.map(event.data, 'market');
+    dispatch(loadMarketsInfo(marketIds));
+  }
+};
+
 export const handleMarketMigratedLog = (log: any) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
