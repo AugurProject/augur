@@ -134,7 +134,6 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
   componentDidUpdate(prevProps) {
     const { selectedOrderProperties } = this.props;
     const { orderPrice, orderQuantity, selectedNav } = this.state;
-
     if (
       JSON.stringify(selectedOrderProperties) !==
       JSON.stringify(prevProps.selectedOrderProperties)
