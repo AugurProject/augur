@@ -79,11 +79,10 @@
   padding: @size-20;
   flex-direction: column;
 
-  > span:first-of-type {
-    .text-14-medium;
+  >span:first-of-type {
+    .text-14;
 
-    color: @color-negative;
-    text-transform: capitalize;
+    color: @color-primary-text;
   }
 
   > span:nth-of-type(2) {
@@ -119,7 +118,7 @@
 
   > div:nth-of-type(2) {
     display: flex;
-    justify-content: flex-end;
+    justify-content: flex-start;
   }
 }
 
@@ -539,31 +538,39 @@ div.ReportingSubheaders {
   &.InitialReport {
     > div:last-of-type {
       display: flex;
+      flex-direction: row;
+
+      > span:last-of-type {
+        .text-12-medium;
+
+        color: @color-primary-text;
+        margin-top: @size-16;
+        margin-bottom: @size-12;
+      }
+    }
+
+    .ShowTotals {
+      .text-10-medium;
+
+      color: @color-primary-text;
+      display: flex;
       flex-direction: column;
 
       > span:first-of-type {
         .text-14-medium;
 
         color: @color-primary-text;
-        margin-bottom: @size-8;
         margin-top: @size-16;
+        margin-bottom: @size-16;
       }
 
-      > span:last-of-type {
+      > span:nth-of-type(2) {
         .text-12;
 
         color: @color-secondary-text;
         margin-bottom: @size-12;
       }
     }
-  }
-
-  > div:nth-of-type(3) {
-    margin-top: @size-16;
-  }
-
-  > button {
-    margin-top: @size-16;
   }
 
   &.Scalar {
