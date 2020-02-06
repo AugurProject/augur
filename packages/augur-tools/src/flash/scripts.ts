@@ -146,7 +146,7 @@ export function addScripts(flash: FlashSession) {
       }
 
       const relayerAddressArg = args.relayer_address as string;
-      const relayerAddressConfig = this.network.gnosisRelayerAddress;
+      const relayerAddressConfig = this.network && this.network.gnosisRelayerAddress;
       const relayerAddress = relayerAddressArg || relayerAddressConfig;
       if (relayerAddress) {
         await this.call('faucet', {
