@@ -126,7 +126,8 @@ export default class MarketCard extends React.Component<
       endTimeFormatted,
       designatedReporter,
       isTemplate,
-      consensusFormatted
+      consensusFormatted,
+      mostLikelyInvalid
     } = market;
 
     if (loading) {
@@ -268,6 +269,7 @@ export default class MarketCard extends React.Component<
             className={classNames(Styles.TopRow, {
               [Styles.scalar]: isScalar,
               [Styles.template]: isTemplate,
+              [Styles.invalid]: mostLikelyInvalid
             })}
           >
             {marketStatus === MARKET_REPORTING && (
