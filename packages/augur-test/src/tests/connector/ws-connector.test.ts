@@ -44,7 +44,7 @@ test('WebsocketConnector :: Should route correctly and handle events', async don
     ethereum: {
       http: '',
       rpcRetryCount: 5,
-      rpcRetryInternval: 0,
+      rpcRetryInterval: 0,
       rpcConcurrency: 40
     },
     sdk: {
@@ -53,7 +53,7 @@ test('WebsocketConnector :: Should route correctly and handle events', async don
     syncing: {
 
     }
-  }
+  };
   const connector = new WebsocketConnector();
   await connector.connect(config);
 
