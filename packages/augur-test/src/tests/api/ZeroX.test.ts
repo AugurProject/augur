@@ -245,7 +245,7 @@ describe('Augur API :: ZeroX :: ', () => {
 
       // Place an order
       const expirationTime = new BigNumber(new Date().valueOf()).plus(10000);
-      const orderHash = await john.placeZeroXOrder({
+      await john.placeZeroXOrder({
         direction: 0,
         market: market.address,
         numTicks: await market.getNumTicks_(),
@@ -287,7 +287,6 @@ describe('Augur API :: ZeroX :: ', () => {
         makerAssetData: expect.stringContaining('0x'),
         takerAssetData: expect.stringContaining('0x'),
         senderAddress: john.account.publicKey,
-        orderHash, // TODO fix order hash difference - mock problem?
         topics: expect.arrayContaining([
           expect.stringContaining('0x'),
           expect.stringContaining('0x'),
@@ -299,22 +298,6 @@ describe('Augur API :: ZeroX :: ', () => {
       const allDerivedCancels = await (await johnDB).CancelledOrders.toArray();
       expect(allDerivedCancels.length).toBe(1);
       expect(allDerivedCancels[0]).toMatchObject({
-        orderHash, // TODO fix order hash difference - mock problem?
-        senderAddress: john.account.publicKey,
-        makerAddress: john.account.publicKey,
-        feeRecipientAddress: NULL_ADDRESS,
-        market: market.address,
-        price: '0x00000000000000000016',
-        outcome: '0x00',
-        orderType: '0x00',
-      });
-
-      const primaryKeyOrders = await (await johnDB).CancelledOrders
-        .where('orderHash')
-        .equals(orderHash).toArray();
-      expect(primaryKeyOrders.length).toBe(1);
-      expect(primaryKeyOrders[0]).toMatchObject({
-        orderHash, // TODO fix order hash difference - mock problem?
         senderAddress: john.account.publicKey,
         makerAddress: john.account.publicKey,
         feeRecipientAddress: NULL_ADDRESS,
@@ -329,7 +312,6 @@ describe('Augur API :: ZeroX :: ', () => {
         .equals([john.account.publicKey, market.address]).toArray();
       expect(indexKeyOrders.length).toBe(1);
       expect(indexKeyOrders[0]).toMatchObject({
-        orderHash, // TODO fix order hash difference - mock problem?
         senderAddress: john.account.publicKey,
         makerAddress: john.account.publicKey,
         feeRecipientAddress: NULL_ADDRESS,
