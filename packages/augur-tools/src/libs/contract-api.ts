@@ -235,8 +235,8 @@ export class ContractAPI {
     await this.augur.contracts.fillOrder.publicFillOrder(orderId, numShares, formatBytes32String(tradeGroupId), formatBytes32String(''));
   }
 
-  async placeZeroXOrder(params: ZeroXPlaceTradeDisplayParams): Promise<string> {
-    return this.augur.zeroX.placeOrder(params);
+  async placeZeroXOrder(params: ZeroXPlaceTradeDisplayParams): Promise<void> {
+    await this.augur.zeroX.placeOrder(params);
   }
 
   async placeZeroXTrade(params: ZeroXPlaceTradeDisplayParams): Promise<void> {
