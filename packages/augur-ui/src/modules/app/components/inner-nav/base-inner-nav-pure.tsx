@@ -76,7 +76,7 @@ const BaseInnerNavPure = ({
     >
       {showMainMenu && (
         <div>
-          <span>Filters</span>
+          <span>Categories & Filters</span>
           <button
             onClick={() => {
               if (showMainMenu) {
