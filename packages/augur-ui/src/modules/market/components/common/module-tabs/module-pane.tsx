@@ -1,6 +1,7 @@
 interface ModulePane {
   label?: string;
-  onClickCallback?: Function
+  onClickCallback?: Function;
+  headerType?: string;
 }
 
 const ModulePane: React.FC<ModulePane> = ({ children }) => {
