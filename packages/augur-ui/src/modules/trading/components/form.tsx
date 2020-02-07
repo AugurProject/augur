@@ -9,7 +9,6 @@ import {
   BUY,
   SELL,
   INVALID_OUTCOME_ID,
-  NETWORK_IDS,
   GAS_CONFIRM_ESTIMATE,
   ONE,
 } from 'modules/common/constants';
@@ -39,10 +38,8 @@ import { SimpleTimeSelector } from 'modules/create-market/components/common';
 import { formatBestPrice } from 'utils/format-number';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 
-const DEFAULT_TRADE_INTERVAL = new BigNumber(10 ** 17);
-const TRADE_INTERVAL_VALUE = new BigNumber(10 ** 19);
-
-const DEFAULT_EXPIRATION_DAYS = 30;
+const DEFAULT_TRADE_INTERVAL = new BigNumber(10**17);
+const DEFAULT_EXPIRATION_DAYS = 0;
 
 enum ADVANCED_OPTIONS {
   GOOD_TILL = '0',
@@ -51,8 +48,10 @@ enum ADVANCED_OPTIONS {
 }
 
 enum EXPIRATION_DATE_OPTIONS {
-  DAYS = '0',
+  DAYS = 'day',
   CUSTOM = '1',
+  HOURS = 'hours',
+  MINUTES = 'minutes',
 }
 
 const advancedDropdownOptions = [
@@ -117,7 +116,7 @@ interface FormState {
   errorCount: number;
   showAdvanced: boolean;
   advancedOption: string;
-  fastForwardDays: number;
+  fastForwardTime: number;
   expirationDateOption: string;
   expirationDate?: Moment;
   percentage: string;
@@ -179,7 +178,7 @@ class Form extends Component<FromProps, FormState> {
       errorCount: 0,
       showAdvanced: false,
       advancedOption: advancedDropdownOptions[0].value,
-      fastForwardDays: DEFAULT_EXPIRATION_DAYS,
+      fastForwardTime: DEFAULT_EXPIRATION_DAYS,
       expirationDateOption: EXPIRATION_DATE_OPTIONS.DAYS,
       percentage: '',
       confirmationTimeEstimation: 0,
@@ -1106,9 +1105,9 @@ class Form extends Component<FromProps, FormState> {
                 text="Advanced"
                 action={() => {
                   this.setState({
-                    advancedOption: '0',
-                    fastForwardDays: DEFAULT_EXPIRATION_DAYS,
-                    expirationDateOption: '0',
+                    advancedOption: ADVANCED_OPTIONS.GOOD_TILL,
+                    fastForwardTime: DEFAULT_EXPIRATION_DAYS,
+                    expirationDateOption: EXPIRATION_DATE_OPTIONS.DAYS,
                     showAdvanced: !s.showAdvanced,
                   });
                 }}
@@ -1131,7 +1130,7 @@ class Form extends Component<FromProps, FormState> {
                     value === ADVANCED_OPTIONS.EXPIRATION
                       ? moment
                           .unix(currentTimestamp)
-                          .add(DEFAULT_EXPIRATION_DAYS, 'days')
+                          .add(DEFAULT_EXPIRATION_DAYS, EXPIRATION_DATE_OPTIONS.DAYS)
                       : '';
                   this.updateAndValidate(
                     this.INPUT_TYPES.EXPIRATION_DATE,
@@ -1143,26 +1142,26 @@ class Form extends Component<FromProps, FormState> {
                   });
                   this.setState({
                     advancedOption: value,
-                    fastForwardDays: DEFAULT_EXPIRATION_DAYS,
-                    expirationDateOption: '0',
+                    fastForwardTime: DEFAULT_EXPIRATION_DAYS,
+                    expirationDateOption: EXPIRATION_DATE_OPTIONS.DAYS,
                   });
                 }}
               />
               {s.advancedOption === '1' && (
                 <>
                   <div>
-                    {s.expirationDateOption === EXPIRATION_DATE_OPTIONS.DAYS && (
+                    {s.expirationDateOption !== EXPIRATION_DATE_OPTIONS.CUSTOM && (
                       <TextInput
-                        value={s.fastForwardDays.toString()}
+                        value={s.fastForwardTime.toString()}
                         placeholder={'0'}
                         onChange={value => {
-                          const days =
+                          const addedValue =
                             value === '' || isNaN(value) ? 0 : parseInt(value);
                           this.updateAndValidate(
                             this.INPUT_TYPES.EXPIRATION_DATE,
-                            moment.unix(currentTimestamp).add(days, 'days')
+                            moment.unix(currentTimestamp).add(addedValue, s.expirationDateOption)
                           );
-                          this.setState({ fastForwardDays: days });
+                          this.setState({ fastForwardTime: addedValue });
                         }}
                       />
                     )}
@@ -1174,16 +1173,29 @@ class Form extends Component<FromProps, FormState> {
                           value: EXPIRATION_DATE_OPTIONS.DAYS,
                         },
                         {
+                          label: 'Hours',
+                          value: EXPIRATION_DATE_OPTIONS.HOURS,
+                        },
+                        {
+                          label: 'Minutes',
+                          value: EXPIRATION_DATE_OPTIONS.MINUTES,
+                        },
+                        {
                           label: 'Custom',
                           value: EXPIRATION_DATE_OPTIONS.CUSTOM,
                         },
                       ]}
                       onChange={value => {
-                        this.setState({ expirationDateOption: value });
+                        const date = moment.unix(currentTimestamp);
+                        this.updateAndValidate(
+                          this.INPUT_TYPES.EXPIRATION_DATE,
+                          date
+                        );
+                        this.setState({ expirationDateOption: value, fastForwardTime: 0 });
                       }}
                     />
                   </div>
-                  {s.expirationDateOption === EXPIRATION_DATE_OPTIONS.DAYS && (
+                  {s.expirationDateOption !== EXPIRATION_DATE_OPTIONS.CUSTOM && (
                     <span>
                       {
                         convertUnixToFormattedDate(

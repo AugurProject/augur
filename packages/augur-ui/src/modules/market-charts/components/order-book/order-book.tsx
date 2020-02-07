@@ -71,11 +71,13 @@ class OrderBookSide extends Component<OrderBookSideProps, {}> {
 
   componentDidUpdate(prevProps: OrderBookSideProps) {
     const { orderBook, scrollToTop } = this.props;
+    // console.log("comp did update", this.props.type, this.side.scrollTop, this.side.scrollHeight);
     if (
       scrollToTop &&
       JSON.stringify(prevProps.orderBook.asks) !==
         JSON.stringify(orderBook.asks)
     ) {
+      // console.log("scroll stuff", this.side.scrollTop, this.side.scrollHeight);
       this.side.scrollTop = this.side.scrollHeight;
     }
   }

@@ -15,7 +15,7 @@ import {
   Breakdown,
 } from "modules/modal/common";
 import {
-  LinearPropertyLabelProps, PendingLabel, BulkTxLabel,
+  LinearPropertyLabelProps, PendingLabel, BulkTxLabel, InsufficientModalLabel,
 } from "modules/common/labels";
 import { BUY } from "modules/common/constants";
 import { formatShares, formatDai } from "utils/format-number";
@@ -23,6 +23,7 @@ import Styles from "modules/modal/modal.styles.less";
 import OpenOrdersTable from "modules/market/components/market-orders-positions-table/open-orders-table";
 import { LiquidityOrder } from "modules/types";
 import { TXEventName } from "@augurproject/sdk";
+import { DISMISSABLE_NOTICE_BUTTON_TYPES, DismissableNotice } from "modules/reporting/common";
 
 interface UnsignedOrdersProps {
   closeAction: Function;
@@ -48,6 +49,7 @@ interface UnsignedOrdersProps {
   scalarDenomination: string;
   submitAllTxCount: number;
   openOrders: boolean;
+  insufficientFunds: boolean;
 }
 
 const orderRow = (order: LiquidityOrder, props: UnsignedOrdersProps) => {
@@ -146,6 +148,11 @@ export const UnsignedOrders = (props: UnsignedOrdersProps) => (
       {props.breakdown && <Breakdown rows={props.breakdown} short />}
     </main>
     <BulkTxLabel buttonName={"Submit All"} count={props.submitAllTxCount} needsApproval={props.needsApproval}/>
+    {props.insufficientFunds && <InsufficientModalLabel
+      show
+      buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
+      title={`You do not have enough DAI to place ${props.submitAllTxCount > 1 ? 'these orders' : 'this order'}`}
+    />}
     <ButtonsRow buttons={props.buttons} />
   </div>
 );
