@@ -94,6 +94,9 @@
       "connect": true,
       "broadcast": false
     },
+    "0x-mesh": {
+      "enabled": true,
+    },
     "0x-endpoint": "wss://v2.augur.net/0x-ws"
   },
   "srt": {
