@@ -34,6 +34,8 @@ async function run() {
 
   program
     .name('flash')
+    .storeOptionsAsProperties(false)
+    .passCommandToAction(false)
     .option('-k, --key <key>', 'Private key to use, Overrides ETHEREUM_PRIVATE_KEY environment variable, if set.')
     .option('--keyfile <keyfile>', 'File containing private key to use. Overrides ETHEREUM_PRIVATE_KEY environment variable, if set.')
     .option('-n, --network <network>', `Name of network to run on. Use "none" for commands that don't use a network.)`, 'environment');
@@ -42,7 +44,8 @@ async function run() {
     .command('interactive')
     .description('Run flash interactively, where you can connect once and run multiple flash scripts in the same session.')
     .action(async (args) => {
-      await processAccounts(flash, args);
+      const opts = Object.assign({}, program.opts(), args);
+      await processAccounts(flash, opts);
       const vorpal = makeVorpalCLI(flash);
       flash.log = vorpal.log.bind(vorpal);
       vorpal.show();
@@ -60,14 +63,15 @@ async function run() {
     }
     subcommand.action(async (args) => {
       try {
-        await processAccounts(flash, args);
-        if (args.network !== 'none') {
-          flash.network = NetworkConfiguration.create(args.network as NETWORKS);
+        const opts = Object.assign({}, program.opts(), args);
+        await processAccounts(flash, opts);
+        if (script.ignoreNetwork !== true && opts.network !== 'none') {
+          flash.network = NetworkConfiguration.create(opts.network as NETWORKS);
           flash.provider = flash.makeProvider(flash.network);
           const networkId = await flash.getNetworkId(flash.provider);
           flash.contractAddresses = Addresses[networkId];
         }
-        await flash.call(script.name, args);
+        await flash.call(script.name, opts);
       } catch(e){
         console.error(e);
         process.exit(1); // Needed to prevent hanging
