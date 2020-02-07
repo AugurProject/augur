@@ -169,7 +169,7 @@ export function addGanacheScripts(flash: FlashSession) {
       this.seeds[name] = await loadSeedFile(seedFilePath);
 
       if (args.use as boolean) {
-        await this.call('use-seed', { seed: name, write_artifacts:  args.writeArtifacts as boolean });
+        await this.call('use-seed', { seed: name, writeArtifacts:  args.writeArtifacts as boolean });
       }
     },
   });
@@ -263,7 +263,7 @@ export function addGanacheScripts(flash: FlashSession) {
 
       console.log('Creating seed file.');
       await this.call('ganache', { internal: true });
-      await this.call('deploy', { write_artifacts: writeArtifacts, time_controlled: 'true' });
+      await this.call('deploy', { writeArtifacts: writeArtifacts, timeControlled: true });
       await this.call('make-seed', { name, filepath, save: true });
     },
   });
@@ -297,7 +297,7 @@ export function addGanacheScripts(flash: FlashSession) {
 
       // Build a local environment to replay to.
       await this.call('ganache', { internal: true });
-      await this.call('deploy', { write_artifacts: false, time_controlled: 'true' });
+      await this.call('deploy', { writeArtifacts: false, timeControlled: true });
 
       // Replay the logs.
       const replayer = v1
