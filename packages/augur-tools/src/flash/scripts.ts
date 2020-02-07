@@ -1031,10 +1031,9 @@ export function addScripts(flash: FlashSession) {
               let j = 0;
               for (j; j < orders.length; j++) {
                 if (totalOrdersCreated < numOrderLimit) {
-                  const order = orders[j];
-                  console.log(`${order.market} Creating ${order.displayAmount} at ${order.displayPrice} on outcome ${order.outcome}`);
-                  user.placeZeroXOrder(order).catch(this.log);
-                  totalOrdersCreated++;
+                  orders.map(order => console.log(`${order.market} Creating ${order.displayAmount} at ${order.displayPrice} on outcome ${order.outcome}`));
+                  user.placeZeroXOrders(orders).catch(this.log);
+                  totalOrdersCreated = totalOrdersCreated + orders.length;
                 }
               }
             }
