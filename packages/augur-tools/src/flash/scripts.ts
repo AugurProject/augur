@@ -1082,12 +1082,6 @@ export function addScripts(flash: FlashSession) {
         description: 'price of the order',
       },
       {
-        name: 'network',
-        abbr: 'n',
-        description:
-          'Which network to connect to. Defaults to "environment" aka local node.',
-      },
-      {
         name: 'fillOrder',
         abbr: 'f',
         flag: true,
@@ -1233,12 +1227,6 @@ export function addScripts(flash: FlashSession) {
         name: 'orderType',
         abbr: 't',
         description: 'side of orderbook to take, bid or ask, bid is default',
-      },
-      {
-        name: 'network',
-        abbr: 'n',
-        description:
-          'Which network to connect to. Defaults to "environment" aka local node.',
       },
     ],
     async call(this: FlashSession, args :FlashArguments) {
