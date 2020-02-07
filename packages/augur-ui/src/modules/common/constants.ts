@@ -110,7 +110,7 @@ export const ACCOUNT_TYPES = {
   EDGE: 'Edge',
   PORTIS: 'Portis',
   FORTMATIC: 'Fortmatic',
-  TORUS: 'Tor.us',
+  TORUS: 'Torus',
   LEDGER: 'Ledger',
   METAMASK: 'MetaMask',
   TREZOR: 'Trezor',
@@ -129,7 +129,7 @@ export const SIGNIN_LOADING_TEXT_PORTIS =
 export const SIGNIN_LOADING_TEXT_FORTMATIC =
   'Connecting to our partners at Fortmatic to create your secure account.';
 export const SIGNIN_LOADING_TEXT_TORUS =
-  'Connecting to our partners at Tor.us to create your secure account.';
+  'Connecting to our partners at Torus to create your secure account.';
 export const SIGNIN_SIGN_WALLET =
   'Your wallet will ask you to digitally sign in to link it with Augur';
 

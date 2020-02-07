@@ -246,12 +246,12 @@ export class PreFilledStake extends Component<PreFilledStakeProps, {}> {
 
     return (
       <div className={Styles.PreFilledStake}>
-        <span>add pre-filled stake?</span>
+        <span>Add Pre-Filled Stake?</span>
         <span>
-          Pre-fund future dispute rounds to accelerate market resolution. Any
+          `Pre-fund future dispute rounds to accelerate market resolution. Any
           contributed REP will automatically go toward disputing in favor of
-          [insert outcome user is staking on], if it is no longer the tentative
-          winning outcome in future rounds
+          this outcome, if it is no longer the tentative
+          winning outcome in future rounds`
         </span>
         {!this.props.showInput && (
           <SecondaryButton
@@ -618,7 +618,7 @@ export class ReportingBondsView extends Component<
 > {
   state: ReportingBondsViewState = {
     showInput: false,
-    disabled: this.props.market.marketType === SCALAR ? true : false,
+    disabled: this.props.market.marketType === SCALAR && this.props.migrateRep ? true : false,
     scalarError: '',
     stakeError: '',
     isScalar: this.props.market.marketType === SCALAR,
@@ -751,19 +751,23 @@ export class ReportingBondsView extends Component<
       : formatAttoRep(market.noShowBondAmount).formatted;
     let repLabel = migrateRep
       ? 'REP to migrate'
-      : 'open reporter winning Stake';
+      : 'Initial Reporter Stake';
+
     if (owesRep) {
       repLabel = 'REP needed';
     }
+    const reviewLabel = migrateRep
+    ? 'Review REP to migrate'
+    : 'Review Initial Reporting Stake';
     const totalRep = owesRep
       ? formatAttoRep(
-          createBigNumber(inputtedReportingStake.inputToAttoRep).plus(
+          createBigNumber(inputtedReportingStake.inputToAttoRep || ZERO).plus(
             market.noShowBondAmount
           )
         ).formatted
-      : formatAttoRep(createBigNumber(inputtedReportingStake.inputToAttoRep))
+      : formatAttoRep(createBigNumber(inputtedReportingStake.inputToAttoRep || ZERO))
           .formatted;
-    // id === "null" means blank scalar, user can input new scalar value to dispute
+
     return (
       <div
         className={classNames(Styles.ReportingBondsView, {
@@ -789,16 +793,11 @@ export class ReportingBondsView extends Component<
             maxLabel="MAX"
           />
         )}
-        <span>Review</span>
+        <span>{reviewLabel}</span>
         <LinearPropertyLabel
           key="initial"
           label={repLabel}
           value={`${repAmount} REP`}
-        />
-        <LinearPropertyLabel
-          key="totalEstimatedGasFee"
-          label={Gnosis_ENABLED ? "Transaction Fee" : "Gas Fee"}
-          value={Gnosis_ENABLED ? displayGasInDai(gasEstimate, ethToDaiRate) : gasEstimate}
         />
         {initialReport && (
           <PreFilledStake
@@ -811,16 +810,21 @@ export class ReportingBondsView extends Component<
           />
         )}
         {showInput && (
-          <div>
+          <div className={Styles.ShowTotals}>
             <span>Totals</span>
-            <span>Sum total of Pre-Filled Stake</span>
+            <span>Sum total of Initial Reporter Stake and Pre-Filled Stake</span>
             <LinearPropertyLabel
               key="totalRep"
-              label="Total rep"
+              label="Total REP"
               value={totalRep}
             />
           </div>
         )}
+        <LinearPropertyLabel
+          key="totalEstimatedGasFee"
+          label={Gnosis_ENABLED ? "Transaction Fee" : "Gas Fee"}
+          value={Gnosis_ENABLED ? displayGasInDai(gasEstimate, ethToDaiRate) : `${gasEstimate} ETH`}
+        />
         {migrateRep &&
           createBigNumber(inputtedReportingStake.inputStakeValue).lt(
             userAttoRep

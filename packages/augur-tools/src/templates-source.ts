@@ -1170,6 +1170,11 @@ export const TEMPLATES = {
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `No Winner`,
                   },
+                  {
+                    id: 6,
+                    type: TemplateInputType.ESTDATETIME,
+                    placeholder: `Date time`,
+                  },
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
@@ -4240,12 +4245,12 @@ export const TEMPLATES = {
                   {
                     id: 6,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                    placeholder: `[0] -[2].5`,
+                    placeholder: `[1] -[2].5`,
                   },
                   {
                     id: 7,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                    placeholder: `[2] +[2].5`,
+                    placeholder: `[3] +[2].5`,
                   },
                 ],
                 resolutionRules: {
@@ -4655,12 +4660,12 @@ export const TEMPLATES = {
                   {
                     id: 6,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                    placeholder: `[0] -[2].5`,
+                    placeholder: `[1] -[2].5`,
                   },
                   {
                     id: 7,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                    placeholder: `[2] +[2].5`,
+                    placeholder: `[3] +[2].5`,
                   },
                 ],
                 resolutionRules: {
@@ -4999,7 +5004,7 @@ export const TEMPLATES = {
           },
           {
             marketType: YES_NO,
-            question: `Will a woman be elected U.S. President in the [1] Presidential election?`,
+            question: `Will a woman be elected U.S. President in the [0] Presidential election?`,
             example: `Will a woman be elected U.S. President in the 2020 Presidential election?`,
             inputs: [
               {
@@ -5961,7 +5966,7 @@ export const TEMPLATES = {
           },
           {
             id: 3,
-            type: TemplateInputType.DATEYEAR,
+            type: TemplateInputType.DATESTART,
             placeholder: `Day of Year`,
           },
         ],

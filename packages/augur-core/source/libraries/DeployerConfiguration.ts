@@ -24,7 +24,7 @@ export interface DeployerConfiguration {
   externalAddresses: ExternalAddresses;
 }
 
-type ExternalAddresses = {
+interface ExternalAddresses {
   LegacyReputationToken?: string;
   Cash?: string;
   DaiVat?: string;
@@ -35,7 +35,7 @@ type ExternalAddresses = {
   MCDFaucet?: string,
   GnosisSafe?: string;
   ProxyFactory?: string;
-  ZeroXExchange?: string;
+  Exchange?: string;
   UniswapV2Factory?: string;
   ENSRegistry?: string;
 }
@@ -49,7 +49,7 @@ const EXTERNAL_ADDRESSES: NetworksToExternalAddresses = {
   ropsten: {},
   kovan: {
     // from: https://github.com/0xProject/0x-mesh/blob/dee8353e2e51862920745f5006e5fd38ab162b4b/ethereum/contract_addresses.go#L102
-    ZeroXExchange: "0x4eacd0af335451709e1e7b570b8ea68edec8bc97",
+    Exchange: '0x4eacd0af335451709e1e7b570b8ea68edec8bc97',
     /*
     MCDCol: "0xc7aa227823789e363f29679f23f7e8f6d9904a9b",
     MCDColJoin: "0xebbd300bb527f1d50abd937f8ca11d7fd0e5b68b",
@@ -66,10 +66,10 @@ const EXTERNAL_ADDRESSES: NetworksToExternalAddresses = {
   environment: {},
   testrpc: {},
   mainnet: {
-    LegacyReputationToken: "0x1985365e9f78359a9B6AD760e32412f4a445E862",
-    GnosisSafe: "0xb6029EA3B2c51D09a50B53CA8012FeEB05bDa35A",
-    ProxyFactory: "0x12302fE9c02ff50939BaAaaf415fc226C078613C",
-    ZeroXExchange: "0x61935cbdd02287b511119ddb11aeb42f1593b7ef",
+    LegacyReputationToken: '0x1985365e9f78359a9B6AD760e32412f4a445E862',
+    GnosisSafe: '0xb6029EA3B2c51D09a50B53CA8012FeEB05bDa35A',
+    ProxyFactory: '0x12302fE9c02ff50939BaAaaf415fc226C078613C',
+    Exchange: '0x61935cbdd02287b511119ddb11aeb42f1593b7ef',
   },
 };
 
@@ -78,7 +78,7 @@ export type DeployerConfigurationOverwrite = Partial<DeployerConfiguration>;
 function envOrDefault(envName: string, default_: boolean): boolean {
   const value = process.env[envName];
 
-  if (typeof value !== "undefined") {
+  if (typeof value !== 'undefined') {
     return value === 'true';
   } else {
     return default_;

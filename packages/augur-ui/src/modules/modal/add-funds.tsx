@@ -39,6 +39,7 @@ interface AddFundsProps {
   ETH_RATE: number;
   REP_RATE: number;
   addFundsTorus: Function;
+  addFundsFortmatic: Function;
 }
 
 export const generateDaiTooltip = (
@@ -75,6 +76,7 @@ export const AddFunds = ({
   REP_RATE,
   isRelayDown = false,
   addFundsTorus,
+  addFundsFortmatic,
 }: AddFundsProps) => {
   const address = loginAccount.address
   const accountMeta = loginAccount.meta;
@@ -85,11 +87,14 @@ export const AddFunds = ({
   if (accountMeta.accountType === ACCOUNT_TYPES.TORUS) {
     BUY_MIN = 20;
     BUY_MAX = 250
+  } else if (accountMeta.accountType === ACCOUNT_TYPES.FORTMATIC) {
+    BUY_MIN = 50;
+    BUY_MAX = 250
   }
 
   if (autoSelect) {
     if (
-      [ACCOUNT_TYPES.TORUS, ACCOUNT_TYPES.PORTIS].includes(
+      [ACCOUNT_TYPES.TORUS, ACCOUNT_TYPES.FORTMATIC, ACCOUNT_TYPES.PORTIS].includes(
         accountMeta.accountType
       ) &&
       fundType !== REP
@@ -107,10 +112,21 @@ export const AddFunds = ({
 
   const validateAndSet = (amount) => {
     if (accountMeta.accountType === ACCOUNT_TYPES.TORUS) {
-      // Tor.us
+      // Torus
       // minOrderValue $20
       // maxOrderValue $250
       if (amount >= 20 && amount <= 250) {
+        setIsAmountValid(true);
+      } else {
+        setIsAmountValid(false);
+      }
+      setAmountToBuy(amount);
+    }
+    else if (accountMeta.accountType === ACCOUNT_TYPES.FORTMATIC) {
+      // Fortmatic
+      // minOrderValue $50
+      // maxOrderValue $250
+      if (amount >= 50 && amount <= 250) {
         setIsAmountValid(true);
       } else {
         setIsAmountValid(false);
@@ -150,16 +166,29 @@ export const AddFunds = ({
     },
   ];
 
+
+  // Always show Coinbase/Transfer for all types of Add Fund flows
   const addFundsOptions = [FUND_OTPIONS[2], FUND_OTPIONS[3]];
 
+  // Add CreditCard for DAI flow for all wallet providers (Portis, Fortmatic, and Torus)
   if (
     fundType !== REP &&
     (accountMeta.accountType === ACCOUNT_TYPES.TORUS ||
-      accountMeta.accountType === ACCOUNT_TYPES.PORTIS)
+      accountMeta.accountType === ACCOUNT_TYPES.PORTIS ||
+      accountMeta.accountType === ACCOUNT_TYPES.FORTMATIC)
   ) {
     addFundsOptions.unshift(FUND_OTPIONS[1]);
   }
 
+  // Add CreditCard for REP flow + Fortmatic
+  if (
+    fundType === REP &&
+    (accountMeta.accountType === ACCOUNT_TYPES.FORTMATIC)
+  ) {
+    addFundsOptions.unshift(FUND_OTPIONS[1]);
+  }
+
+  // Add Uniswap for REP flow
   if (
     fundType === REP
   ) {
@@ -249,6 +278,13 @@ export const AddFunds = ({
                 <PrimaryButton
                   disabled={!isAmountValid}
                   action={() => addFundsTorus(amountToBuy)}
+                  text={`Buy with ${accountMeta.accountType}`}
+                />
+              )}
+              {accountMeta.accountType === ACCOUNT_TYPES.FORTMATIC && (
+                <PrimaryButton
+                  disabled={!isAmountValid}
+                  action={() => addFundsFortmatic(amountToBuy, fundTypeToUse, toChecksumAddress(walletAddress))}
                   text={`Buy with ${accountMeta.accountType}`}
                 />
               )}

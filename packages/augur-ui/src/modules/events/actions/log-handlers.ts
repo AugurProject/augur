@@ -146,11 +146,30 @@ export const handleTxRelayerDown = (txStatus: Events.TXStatus) => (
   dispatch(addUpdateTransaction(txStatus));
 };
 
-export const handleGnosisStateUpdate = response => (
-  dispatch: ThunkDispatch<void, any, Action>
+
+export const handleGnosisStateUpdate = (response) => async(
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
 ) => {
-  // TODO This isn't getting hit
   console.log('handleGnosisStateUpdate', response);
+  const status = response.status;
+  if (response && status) {
+    dispatch(updateAppStatus(GNOSIS_STATUS, status));
+
+    if (status === GnosisSafeState.ERROR) {
+      const loginAccount = getState().loginAccount;
+      const hasEth = (await loginAccount.meta.signer.provider.getBalance(loginAccount.meta.signer._address)).gt(0);
+
+      dispatch(updateModal({
+        type: MODAL_WALLET_ERROR,
+        error: getRelayerDownErrorMessage(loginAccount.meta.accountType, hasEth),
+        showDiscordLink: false,
+        showAddFundsHelp: !hasEth,
+        walletType: loginAccount.meta.accountType,
+        title: 'We\'re having trouble processing transactions',
+      }));
+    }
+  }
 };
 
 export const handleSDKReadyEvent = () => (
@@ -187,39 +206,6 @@ export const handleNewBlockLog = (log: Events.NewBlock) => async (
     dispatch(
       loadAnalytics(getState().analytics, blockchain.currentAugurTimestamp)
     );
-  }
-
-  if (
-    getState().appStatus.gnosisEnabled &&
-    getState().appStatus.gnosisStatus !== GnosisSafeState.AVAILABLE
-  ) {
-    const status = augurSdk.sdk.gnosis.augur.getGnosisStatus();
-
-    if (status) {
-      dispatch(updateAppStatus(GNOSIS_STATUS, status));
-      if (
-        appStatus.gnosisStatus !== GnosisSafeState.ERROR &&
-        status === GnosisSafeState.ERROR
-      ) {
-        const hasEth = (await loginAccount.meta.signer.provider.getBalance(
-          loginAccount.meta.signer._address
-        )).gt(0);
-
-        dispatch(
-          updateModal({
-            type: MODAL_WALLET_ERROR,
-            error: getRelayerDownErrorMessage(
-              loginAccount.meta.accountType,
-              hasEth
-            ),
-            showDiscordLink: false,
-            showAddFundsHelp: !hasEth,
-            walletType: loginAccount.meta.accountType,
-            title: "We're having trouble processing transactions",
-          })
-        );
-      }
-    }
   }
 };
 
@@ -269,6 +255,16 @@ export const handleMarketCreatedLog = (log: any) => (
 };
 
 export const handleDBMarketCreatedEvent = (event: any) => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  if (event.data) {
+    const marketIds = _.map(event.data, 'market');
+    dispatch(loadMarketsInfo(marketIds));
+  }
+};
+
+export const handleReportingStateChanged = (event: any) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {

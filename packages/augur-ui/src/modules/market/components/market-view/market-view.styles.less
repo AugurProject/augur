@@ -168,6 +168,7 @@ section[class*="OutcomesList"] {
   grid-row-end: -1;
   display: flex;
   flex-flow: column nowrap;
+  height: 100%;
 
   @media @breakpoint-tablet {
     grid-column: 2 / span 2;
@@ -177,11 +178,29 @@ section[class*="OutcomesList"] {
   }
 
   > div {
+    display: flex;
+    flex-flow: column nowrap;
     flex: 1;
+    
+    &:not(.hide) {
+      max-height: 50%;
+
+      @media @breakpoint-tablet {
+        max-height: unset;
+      }
+    }
   }
 
   > div:first-of-type {
     margin-bottom: @size-2;
+
+    &:not(.hide) {
+      max-height: 53%;
+
+      @media @breakpoint-tablet {
+        max-height: unset;
+      }
+    }
 
     > section:first-of-type {
       .MarketViewBorders;
@@ -327,6 +346,7 @@ section[class*="OutcomesList"] {
 .hide {
   height: 2rem !important;
   max-height: 2rem !important;
+  overflow: hidden;
 }
 
 .show {

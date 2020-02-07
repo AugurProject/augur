@@ -134,7 +134,6 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
   componentDidUpdate(prevProps) {
     const { selectedOrderProperties } = this.props;
     const { orderPrice, orderQuantity, selectedNav } = this.state;
-
     if (
       JSON.stringify(selectedOrderProperties) !==
       JSON.stringify(prevProps.selectedOrderProperties)
@@ -453,7 +452,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
             }
           }
         }}
-        disabled={!trade || !trade.limitPrice || GnosisUnavailable || (insufficientFunds && !initialLiquidity)}
+        disabled={!trade || !trade.limitPrice || GnosisUnavailable || insufficientFunds}
       />
     );
     switch (true) {
@@ -552,11 +551,11 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
             />
           )}
         </div>
-        {(!initialLiquidity || tradingTutorial) &&
-          trade &&
+        {trade &&
           ((trade.shareCost && trade.shareCost.value !== 0) ||
             (trade.totalCost && trade.totalCost.value !== 0)) && (
             <Confirm
+              initialLiquidity={initialLiquidity}
               numOutcomes={market.numOutcomes}
               marketType={marketType}
               maxPrice={maxPriceBigNumber}

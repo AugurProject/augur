@@ -178,8 +178,14 @@ def test_basic_trading(contractsFixture, cash, market, universe):
     # Another user can fill the rest. We'll also ask to fill more than is available and see that we get back the remaining amount desired
     assert cash.faucet(fix(10, 60))
     assert cash.faucet(fix(10, 40), sender=contractsFixture.accounts[2])
-    amountRemaining = ZeroXTrade.trade(fillAmount + 10**17, fingerprint, tradeGroupId, 0, 10, orders, signatures, sender=contractsFixture.accounts[2], value=150000)
+    # We get refunded excess ETH sent
+    initialETHBalance = contractsFixture.ethBalance(contractsFixture.accounts[2])
+    protocolFee = 150000
+    sent = 10 * 10**7
+    amountRemaining = ZeroXTrade.trade(fillAmount + 10**17, fingerprint, tradeGroupId, 0, 10, orders, signatures, sender=contractsFixture.accounts[2], value=sent)
     assert amountRemaining == 10**17
+    newEthBalance = contractsFixture.ethBalance(contractsFixture.accounts[2])
+    assert initialETHBalance - newEthBalance < 10**7
 
     # The order is completely filled so further attempts to take it will result in failure
     assert cash.faucet(fix(10, 60))

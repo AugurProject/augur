@@ -79,11 +79,11 @@ export default class Alert extends Component<AlertProps, {}> {
                   }
                 </span>
                 <span className={Styles.EtherLink}>
-                  <ViewTransactionDetailsButton
+                  {id && <ViewTransactionDetailsButton
                     light
                     transactionHash={id}
                     label="view etherscan"
-                  />
+                  />}
                 </span>
               </>
             )}

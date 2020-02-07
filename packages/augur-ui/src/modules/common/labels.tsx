@@ -39,6 +39,7 @@ import { Getters, TXEventName } from '@augurproject/sdk';
 import {
   DISMISSABLE_NOTICE_BUTTON_TYPES,
   DismissableNotice,
+  DismissableNoticeProps,
 } from 'modules/reporting/common';
 import { EventDetailsContent } from 'modules/create-market/constants';
 import { ExplainerBlock } from 'modules/create-market/components/common';
@@ -819,9 +820,9 @@ export const InReportingLabel = (props: InReportingLabelProps) => {
     customLabel = constants.REPORTING_ENDS;
   } else if (reportingState === REPORTING_STATE.OPEN_REPORTING) {
     reportingExtraText = constants.OPEN_REPORTING;
-  } else if (disputeInfo.disputePacingOn) {
+  } else if (disputeInfo && disputeInfo.disputePacingOn) {
     reportingExtraText = constants.SLOW_DISPUTE;
-  } else if (!disputeInfo.disputePacingOn) {
+  } else if (disputeInfo && !disputeInfo.disputePacingOn) {
     reportingExtraText = constants.FAST_DISPUTE;
     customLabel = constants.DISPUTE_ENDS;
   } else {
@@ -1154,7 +1155,7 @@ export const BulkTxLabel = ({
   className,
 }: BulkTxLabelProps) =>
   count > 1 || needsApproval ? (
-    <div className={classNames(Styles.BulkTxLabel, className)}>
+    <div className={classNames(Styles.ModalMessageLabel, className)}>
       <DismissableNotice
         show={true}
         description=""
@@ -1165,6 +1166,12 @@ export const BulkTxLabel = ({
       />
     </div>
   ) : null;
+
+export const InsufficientModalLabel = (props: DismissableNoticeProps) => (
+  <div className={classNames(Styles.ModalMessageLabel)}>
+    <DismissableNotice {...props} />
+  </div>
+);
 
 export const ValueDenomination: React.FC<ValueDenominationProps> = ({
   className,

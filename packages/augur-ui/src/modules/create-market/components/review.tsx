@@ -142,7 +142,7 @@ export default class Review extends React.Component<
   }
 
 
-  getInsufficientFundsAmounts(testWithLiquidity = false): InsufficientFunds {
+  getInsufficientFundsAmounts(): InsufficientFunds {
     const { availableEthFormatted, availableRepFormatted, availableDaiFormatted, Gnosis_ENABLED } = this.props;
     const s = this.state;
     let insufficientFunds: InsufficientFunds = null;
@@ -171,7 +171,6 @@ export default class Review extends React.Component<
         createBigNumber(availableDaiFormatted.value || '0'),
         formattedInitialLiquidityGas || '0',
         formattedInitialLiquidityDai || '0',
-        testWithLiquidity,
         Gnosis_ENABLED
       );
     }
@@ -225,7 +224,7 @@ export default class Review extends React.Component<
                 gasCost,
               },
               () => {
-                this.updateFunds(this.getInsufficientFundsAmounts(true));
+                this.updateFunds(this.getInsufficientFundsAmounts());
               }
             );
           }

@@ -264,17 +264,23 @@ export const ToggleExtendButton = (props: ToggleExtendButtonProps) => (
   </button>
 );
 
-export const CancelTextButton = (props: DefaultButtonProps) => (
+export const CancelTextButton = ({
+  text,
+  action,
+  title,
+  disabled,
+}: DefaultButtonProps) => (
   <button
-    onClick={e => props.action(e)}
-    className={classNames(Styles.CancelTextButton, {[Styles.IconButton]: !props.text})}
-    disabled={props.disabled}
-    title={props.title}
+    onClick={e => action(e)}
+    className={classNames(Styles.CancelTextButton, {[Styles.IconButton]: !text})}
+    disabled={disabled}
+    title={title}
   >
-    {props.text || XIcon}
+    {text || XIcon}
   </button>
 );
 
+// Only used in ADVANCED button in trade-form
 export const TextButtonFlip = (props: DefaultButtonProps) => (
   <button
     onClick={e => props.action(e)}
@@ -287,7 +293,7 @@ export const TextButtonFlip = (props: DefaultButtonProps) => (
       pointDown={props.pointDown}
       stroke="#BFB8CE"
       filledInIcon
-      quick
+      instant
     />
   </button>
 );

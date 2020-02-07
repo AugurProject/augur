@@ -7,17 +7,20 @@ import {
   EULERS_NUMBER,
   INVALID_OUTCOME,
   MINIMUM_INVALID_ORDER_VALUE_IN_ATTO_DAI,
+  SECONDS_IN_A_DAY,
   SECONDS_IN_A_YEAR,
   WORST_CASE_FILL,
   DEFAULT_GAS_PRICE_IN_GWEI,
   MAX_TRADE_GAS_PERCENTAGE_DIVISOR,
+  MarketReportingState,
 } from '../../constants';
-import { MarketData, MarketType, OrderTypeHex, TimestampSetLog } from '../logs/types';
+import { NewBlock } from "../../events";
+import { MarketData, MarketType, OrderTypeHex, TimestampSetLog, UnixTimestamp } from '../logs/types';
 import { BigNumber } from 'bignumber.js';
 import { OrderBook } from '../../api/Liquidity';
 import { ParsedLog } from '@augurproject/types';
-import { MarketReportingState, SECONDS_IN_A_DAY } from '../../constants';
 import { QUINTILLION, padHex } from '../../utils';
+import { SubscriptionEventName } from '../../constants';
 import { Block } from 'ethereumjs-blockstream';
 import { isTemplateMarket } from '@augurproject/artifacts';
 
@@ -63,8 +66,8 @@ export class MarketDB extends DerivedDB {
 
     this.augur.events.subscribe('DB:updated:ZeroXOrders', (orderEvents) => this.syncOrderBooks([orderEvents.market]));
     this.augur.events.subscribe('DB:get:ZeroXOrders', (markets) => this.syncOrderBooks(markets));
-    this.augur.events.subscribe('controller:new:block', this.processNewBlock);
-    this.augur.events.subscribe('TimestampSet', this.processTimestampSet);
+    this.augur.events.subscribe(SubscriptionEventName.NewBlock, this.processNewBlock);
+    this.augur.events.subscribe(SubscriptionEventName.TimestampSet, this.processTimestampSet);
   }
 
   async doSync(highestAvailableBlockNumber: number): Promise<void> {
@@ -289,6 +292,7 @@ export class MarketDB extends DerivedDB {
     log['feePercent'] = new BigNumber(log['feePerCashInAttoCash'], 16).div(QUINTILLION).toNumber();
     log['lastTradedTimestamp'] = 0;
     log['timestamp'] = new BigNumber(log['timestamp'], 16).toNumber();
+    log['creationTime'] = log['timestamp'];
     log['endTime'] = new BigNumber(log['endTime'], 16).toNumber();
     try {
       log['extraInfo'] = JSON.parse(log['extraInfo']);
@@ -324,7 +328,7 @@ export class MarketDB extends DerivedDB {
   private processMarketFinalized(log: ParsedLog): ParsedLog {
     log['reportingState'] = MarketReportingState.Finalized;
     log['finalizationBlockNumber'] = log['blockNumber'];
-    log['finalizationTime'] = log['timestamp'];
+    log['finalizationTime'] = new BigNumber(log['timestamp'], 16).toNumber();
     log['finalized'] = 1;
     return log;
   }
@@ -350,9 +354,8 @@ export class MarketDB extends DerivedDB {
     return log;
   }
 
-  processNewBlock = async (block: Block): Promise<void> => {
-    const timestamp = (await this.augur.getTimestamp()).toNumber();
-    await this.processTimestamp(timestamp, Number(block.number))
+  processNewBlock = async (block: NewBlock): Promise<void> => {
+    await this.processTimestamp(block.timestamp, block.highestAvailableBlockNumber);
   };
 
   processTimestampSet = async (log: TimestampSetLog): Promise<void> => {
@@ -360,7 +363,7 @@ export class MarketDB extends DerivedDB {
     await this.processTimestamp(timestamp, log.blockNumber)
   };
 
-  private async processTimestamp(timestamp: number, blockNumber: number): Promise<void> {
+  private async processTimestamp(timestamp: UnixTimestamp, blockNumber: number): Promise<void> {
     await this.waitOnLock(this.HANDLE_MERGE_EVENT_LOCK, 2000, 50);
 
     const eligibleMarketDocs = await this.table.where("reportingState").anyOfIgnoreCase([
@@ -374,16 +377,16 @@ export class MarketDB extends DerivedDB {
 
     for (const marketData of eligibleMarketsData) {
       let reportingState: MarketReportingState = null;
-      const marketEnd = new BigNumber(marketData.endTime);
-      const openReportingStart = marketEnd.plus(SECONDS_IN_A_DAY).plus(1);
+      const marketEnd = marketData.endTime;
+      const openReportingStart = marketEnd + SECONDS_IN_A_DAY.toNumber() + 1;
 
-      if (marketData.nextWindowEndTime && timestamp >= new BigNumber(marketData.nextWindowEndTime, 16).toNumber()) {
+      if (marketData.nextWindowEndTime && timestamp >= marketData.nextWindowEndTime) {
         reportingState = MarketReportingState.AwaitingFinalization;
-      } else if (marketData.nextWindowStartTime && timestamp >= new BigNumber(marketData.nextWindowStartTime, 16).toNumber()) {
+      } else if (marketData.nextWindowStartTime && timestamp >= marketData.nextWindowStartTime) {
         reportingState = MarketReportingState.CrowdsourcingDispute;
-      } else if ((marketData.reportingState === MarketReportingState.PreReporting || marketData.reportingState === MarketReportingState.DesignatedReporting) && timestamp >= openReportingStart.toNumber()) {
+      } else if ((marketData.reportingState === MarketReportingState.PreReporting || marketData.reportingState === MarketReportingState.DesignatedReporting) && timestamp >= openReportingStart) {
           reportingState = MarketReportingState.OpenReporting;
-      } else if (marketData.reportingState === MarketReportingState.PreReporting && timestamp >= marketEnd.toNumber() && timestamp < openReportingStart.toNumber()) {
+      } else if (marketData.reportingState === MarketReportingState.PreReporting && timestamp >= marketEnd && timestamp < openReportingStart) {
           reportingState = MarketReportingState.DesignatedReporting;
       }
 
@@ -398,6 +401,7 @@ export class MarketDB extends DerivedDB {
 
     if (updateDocs.length > 0) {
       await this.bulkUpsertDocuments(updateDocs);
+      this.augur.events.emit(SubscriptionEventName.ReportingStateChanged, { data: updateDocs });
     }
   }
 

@@ -35,7 +35,7 @@ const getMarketPath = id => {
 };
 
 const mapStateToProps = (state: AppState, ownProps) => {
-  const { authStatus, loginAccount, appStatus, accountPositions, userOpenOrders, blockchain } = state;
+  const { authStatus, loginAccount, appStatus, accountPositions, userOpenOrders, blockchain, newMarket } = state;
   const marketId = ownProps.market.id;
   const hasHistory = !!accountPositions[marketId] || !!userOpenOrders[marketId];
   const {
@@ -45,6 +45,10 @@ const mapStateToProps = (state: AppState, ownProps) => {
     ? !!loginAccount.balances.dai
     : !!loginAccount.balances.eth && !!loginAccount.balances.dai;
 
+  let availableDai = totalTradingBalance(loginAccount)
+  if (ownProps.initialLiquidity) {
+    availableDai = availableDai.minus(newMarket.initialLiquidityDai);
+  }
   return {
     hasHistory,
     gasPrice: getGasPrice(state),
@@ -52,7 +56,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
     isLogged: authStatus.isLogged,
     Gnosis_ENABLED,
     currentTimestamp: blockchain.currentAugurTimestamp,
-    availableDai: totalTradingBalance(loginAccount),
+    availableDai,
     GnosisUnavailable: isGnosisUnavailable(state),
   };
 };

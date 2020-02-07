@@ -20,19 +20,13 @@ cd /augur
 # Until then -- Make sure changes work in BOTH scripts
 
 if [ "$FAKE_TIME" == "true" ]; then
-  yarn flash fake-all
+  yarn flash fake-all --createMarkets
 else
-  yarn flash normal-all
+  yarn flash normal-all --createMarkets
 fi
 
 # Still need to double-check builds after deploy
 yarn build
-
-# Create-canned-markets will rep/cash faucet
-yarn flash create-canned-markets
-
-# Make sure relayer is fauceted with Cash
-yarn flash faucet -t 0x9d4c6d4b84cd046381923c9bc136d6ff1fe292d9 -a 1000000
 
 ###############################################################################
 

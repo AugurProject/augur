@@ -69,7 +69,7 @@ export default class Reporting extends React.Component<ReportingProps> {
                       reportingType={REPORTING_STATE.OPEN_REPORTING}
                       title={'Open Reporting'}
                       emptyHeader='There are currently no markets in Open Reporting.'
-                      emptySubheader=' Markets appear here once if a Designated Reporter fails to show up.'
+                      emptySubheader='Markets appear here if a Designated Reporter fails to show up.'
                     />
                   </ModulePane>
                 </ModuleTabs>
