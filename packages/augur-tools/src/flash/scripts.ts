@@ -488,10 +488,8 @@ export function addScripts(flash: FlashSession) {
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
-      const networkName = (args.network as NETWORKS) || 'environment';
-      const network = NetworkConfiguration.create(networkName);
       const market = String(args.marketId);
-      const user = await this.ensureUser(network, true, true, null, true, true);
+      const user = await this.ensureUser(this.network, true, true, null, true, true);
       const skipFaucetApproval = args.skipFaucetOrApproval as boolean;
       if (!skipFaucetApproval) {
         await user.faucet(QUINTILLION.multipliedBy(1000000));
@@ -580,11 +578,9 @@ export function addScripts(flash: FlashSession) {
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
-      const networkName = (args.network as NETWORKS) || 'environment';
-      const network = NetworkConfiguration.create(networkName);
       const market = String(args.marketId);
       const numOutcomes = Number(args.numOutcomes);
-      const user = await this.ensureUser(network, true, true, null, true, true);
+      const user = await this.ensureUser(this.network, true, true, null, true, true);
       const skipFaucetApproval = args.skipFaucetOrApproval as boolean;
       if (!skipFaucetApproval) {
         await user.faucet(QUINTILLION.multipliedBy(1000000));
@@ -726,9 +722,7 @@ export function addScripts(flash: FlashSession) {
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const market = String(args.marketId);
-      const networkName = (args.network as NETWORKS) || 'environment';
-      const network = NetworkConfiguration.create(networkName);
-      const user = await this.ensureUser(network, true, true, null, true, true);
+      const user = await this.ensureUser(this.network, true, true, null, true, true);
       const skipFaucetApproval = args.skipFaucetOrApproval as boolean;
       if (!skipFaucetApproval) {
         await user.faucet(QUINTILLION.multipliedBy(1000000));
@@ -852,9 +846,7 @@ export function addScripts(flash: FlashSession) {
     async call(this: FlashSession, args: FlashArguments) {
       const numMarkets = args.numMarkets ? Number(args.numMarkets) : 10;
       const userAccount = args.userAccount ? args.userAccount as string : null;
-      const networkName = (args.network as NETWORKS) || 'environment';
-      const network = NetworkConfiguration.create(networkName);
-      const user: ContractAPI = await this.ensureUser(network, true, true, userAccount, true, true);
+      const user: ContractAPI = await this.ensureUser(this.network, true, true, userAccount, true, true);
       const timestamp = await user.getTimestamp();
       const ids: string[] = [];
       for(let i = 0; i < numMarkets; i++) {
@@ -863,7 +855,7 @@ export function addScripts(flash: FlashSession) {
         ids.push(market.address);
       }
       const marketIds = ids.join(',');
-      await this.call('simple-orderbook-shaper', {marketIds, userAccount, networkName});
+      await this.call('simple-orderbook-shaper', {marketIds, userAccount});
     }
   });
 
@@ -913,11 +905,9 @@ export function addScripts(flash: FlashSession) {
         .map(id => id.trim());
       const address = args.userAccount ? (args.userAccount as string) : null;
       const interval = args.refreshInterval ? Number(args.refreshInterval) * 1000 : 15000;
-      const networkName = (args.network as NETWORKS) || 'environment';
-      const network = NetworkConfiguration.create(networkName);
       const orderSize = args.orderSize ? Number(args.orderSize) : null;
       const expiration = args.expiration ? new BigNumber(String(args.expiration)) : new BigNumber(18000); // five minutes
-      const user: ContractAPI = await this.ensureUser(network, true, true, address, true, true);
+      const user: ContractAPI = await this.ensureUser(this.network, true, true, address, true, true);
       console.log('waiting many seconds on purpose for client to sync');
       await new Promise<void>(resolve => setTimeout(resolve, 90000));
 
@@ -1014,13 +1004,11 @@ export function addScripts(flash: FlashSession) {
         .map(id => Number(id.trim()));
       const address = args.userAccount ? (args.userAccount as string) : null;
       const interval = args.delayBetweenBursts ? Number(args.delayBetweenBursts) * 1000 : 1000;
-      const networkName = (args.network as NETWORKS) || 'environment';
-      const network = NetworkConfiguration.create(networkName);
       const numOrderLimit = args.numOrderLimit ? Number(args.numOrderLimit) : 100;
       const burstRounds = args.burstRounds ? Number(args.burstRounds) : 10;
       const orderSize = args.orderSize ? Number(args.orderSize) : 10;
       const expiration = args.expiration ? new BigNumber(String(args.expiration)) : new BigNumber(18000); // five minutes
-      const user: ContractAPI = await this.ensureUser(network, true, true, address, true, true);
+      const user: ContractAPI = await this.ensureUser(this.network, true, true, address, true, true);
       console.log('waiting few seconds on purpose for client to sync');
       await new Promise<void>(resolve => setTimeout(resolve, 10000));
       // create tight orderbook config
@@ -1045,13 +1033,14 @@ export function addScripts(flash: FlashSession) {
                 if (totalOrdersCreated < numOrderLimit) {
                   const order = orders[j];
                   console.log(`${order.market} Creating ${order.displayAmount} at ${order.displayPrice} on outcome ${order.outcome}`);
-                  await user.placeZeroXOrder(order).catch(this.log);
+                  user.placeZeroXOrder(order).catch(this.log);
                   totalOrdersCreated++;
                 }
               }
             }
           }
         }
+        console.log(`pausing before next burst of ${numOrderLimit} orders`);
         await new Promise<void>(resolve => setTimeout(resolve, interval));
       }
 
@@ -1113,15 +1102,13 @@ export function addScripts(flash: FlashSession) {
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
-      const networkName = (args.network as NETWORKS) || 'environment';
-      const network = NetworkConfiguration.create(networkName);
       const address = args.userAccount as string;
       const isZeroX = args.zerox as boolean;
       const fillOrder = args.fillOrder as boolean;
       let user: ContractAPI = null;
 
       if (isZeroX) {
-        user = await this.ensureUser(network, true, true, address, true, true);
+        user = await this.ensureUser(this.network, true, true, address, true, true);
       } else {
         user = await this.ensureUser(null, true, true, address);
       }
@@ -1262,10 +1249,8 @@ export function addScripts(flash: FlashSession) {
       const orderType = args.orderType ? String(args.orderType) : 'bid';
       const outcome = args.outcome ? Number(args.outcome) : 2;
       const wait = Number(String(args.wait)) || 1;
-      const networkName = (args.network as NETWORKS) || 'environment';
-      const network = NetworkConfiguration.create(networkName);
 
-      const user: ContractAPI = await this.ensureUser(network, true, true, address, true, true);
+      const user: ContractAPI = await this.ensureUser(this.network, true, true, address, true, true);
 
       if (!skipFaucet) {
         console.log('fauceting ...');
