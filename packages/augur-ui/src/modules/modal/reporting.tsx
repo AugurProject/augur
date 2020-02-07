@@ -68,7 +68,7 @@ export default class ModalReporting extends Component<
     checked: this.props.selectedOutcome
       ? this.props.selectedOutcome.toString()
       : null,
-    inputtedReportingStake: { inputStakeValue: '', inputToAttoRep: '' },
+    inputtedReportingStake: { inputStakeValue: '0', inputToAttoRep: '0' },
     inputScalarOutcome: '',
     isReporting:
       this.props.market.reportingState === REPORTING_STATE.OPEN_REPORTING ||
@@ -101,7 +101,7 @@ export default class ModalReporting extends Component<
 
   updateChecked = (selected: string, isInvalid: boolean = false) => {
     const { radioButtons } = this.state;
-    this.updateInputtedStake({ inputStakeValue: '', inputToAttoRep: '' });
+    this.updateInputtedStake({ inputStakeValue: '0', inputToAttoRep: '0' });
     radioButtons.map(r =>
       r.id === selected && r.isInvalid === isInvalid
         ? (r.checked = true)
