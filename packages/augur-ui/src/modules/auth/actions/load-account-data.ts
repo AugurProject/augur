@@ -29,7 +29,7 @@ export const loadAccountData = (
     const loggedInUser = {
       accountType: loginAccount.meta.accountType,
       address
-    }
+    };
     windowApp.localStorage.setItem('loggedInUser', JSON.stringify(loggedInUser));
 
   }

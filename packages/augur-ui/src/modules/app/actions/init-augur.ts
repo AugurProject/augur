@@ -13,11 +13,9 @@ import networkConfig from 'config/network.json';
 import { JsonRpcProvider, Web3Provider } from 'ethers/providers';
 import { isEmpty } from 'utils/is-empty';
 import {
-  MODAL_NETWORK_MISMATCH,
   MODAL_NETWORK_DISCONNECTED,
   MODAL_NETWORK_DISABLED,
   ACCOUNT_TYPES,
-  NETWORK_NAMES,
   MODAL_LOADING,
   MODAL_WALLET_ERROR,
   MODAL_ACCOUNT_CREATED,
@@ -31,7 +29,7 @@ import { windowRef } from 'utils/window-ref';
 import { AppState } from 'store';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { EnvObject, NodeStyleCallback, WindowApp } from "modules/types";
+import { EnvObject, NodeStyleCallback, WindowApp } from 'modules/types';
 import { augurSdk } from 'services/augursdk';
 import { listenForStartUpEvents } from 'modules/events/actions/listen-to-updates';
 import { loginWithInjectedWeb3 } from 'modules/auth/actions/login-with-injected-web3';
@@ -47,6 +45,7 @@ import {
 import { logout } from 'modules/auth/actions/logout';
 import { updateCanHotload } from 'modules/app/actions/update-connection';
 import { Augur, Provider } from '@augurproject/sdk';
+import { getLoggedInUserFromLocalStorage } from 'services/storage/localStorage';
 
 const ACCOUNTS_POLL_INTERVAL_DURATION = 10000;
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
@@ -55,8 +54,6 @@ function pollForAccount(
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) {
-  const windowApp = windowRef as WindowApp;
-
   let attemptedLogin = false;
   let intervalId = null;
 
@@ -69,18 +66,9 @@ function pollForAccount(
     if (!attemptedLogin && connection.isConnected) {
       attemptedLogin = true;
 
-      let loggedInAccount = null;
-      let loggedInAccountType = null
-
-      try {
-        const loggedInUser =  JSON.parse(windowApp.localStorage.getItem('loggedInUser'));
-        loggedInAccount = loggedInUser && loggedInUser.address;
-        loggedInAccountType = loggedInUser && loggedInUser.accountType
-      } catch (error) {
-        // swallow
-        loggedInAccount = null;
-        loggedInAccountType = null;
-      }
+      const loggedInUser = getLoggedInUserFromLocalStorage();
+      const loggedInAccount = loggedInUser && loggedInUser.address || null;
+      const loggedInAccountType = loggedInUser && loggedInUser.type || null;
 
       const showModal = accountType => {
         const onboardingShown = [
@@ -184,10 +172,9 @@ export function connectAugur(
     const { modal, loginAccount } = getState();
     let windowApp = windowRef as WindowApp;
 
-    const loggedInAccount = windowApp.localStorage.getItem('loggedInAccount');
-    const loggedInAccountType = windowApp.localStorage.getItem(
-      'loggedInAccountType'
-    );
+    const loggedInUser = getLoggedInUserFromLocalStorage();
+    const loggedInAccount = loggedInUser && loggedInUser.address || null;
+    const loggedInAccountType = loggedInUser && loggedInUser.type || null;
 
     // Preload Account
     const preloadAccount = accountType => {
@@ -227,8 +214,8 @@ export function connectAugur(
     }
 
     let provider;
-    if (window.web3) {
-      provider = new Web3Provider(window.web3.currentProvider);
+    if (windowApp.web3) {
+      provider = new Web3Provider(windowApp.web3.currentProvider);
     } else {
       provider = new JsonRpcProvider(env['ethereum-node'].http);
     }
@@ -241,7 +228,6 @@ export function connectAugur(
       return callback('SDK could not be created', null);
     }
 
-    windowApp = windowRef as WindowApp;
     let universeId = env.universe || sdk.contracts.universe.address;
     if (
       windowApp.localStorage &&

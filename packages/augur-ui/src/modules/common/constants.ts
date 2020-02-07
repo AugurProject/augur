@@ -1302,3 +1302,5 @@ export enum HEADER_TYPE {
   H2 = 'h2',
   H3 = 'h3',
 }
+
+export const LOGGED_IN_USER_LOCAL_STORAGE_KEY = 'loggedInUser';
