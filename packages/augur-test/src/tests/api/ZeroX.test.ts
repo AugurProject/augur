@@ -307,20 +307,6 @@ describe('Augur API :: ZeroX :: ', () => {
         orderType: '0x00',
       });
 
-      const primaryKeyOrders = await (await johnDB).CancelledOrders
-        .where('makerAddress')
-        .equals(john.account.publicKey).toArray();
-      expect(primaryKeyOrders.length).toBe(1);
-      expect(primaryKeyOrders[0]).toMatchObject({
-        senderAddress: john.account.publicKey,
-        makerAddress: john.account.publicKey,
-        feeRecipientAddress: NULL_ADDRESS,
-        market: market.address,
-        price: '0x00000000000000000016',
-        outcome: '0x00',
-        orderType: '0x00',
-      });
-
       const indexKeyOrders = await (await johnDB).CancelledOrders
         .where('[makerAddress+market]')
         .equals([john.account.publicKey, market.address]).toArray();
