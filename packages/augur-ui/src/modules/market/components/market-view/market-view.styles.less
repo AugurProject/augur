@@ -184,6 +184,10 @@ section[class*="OutcomesList"] {
     
     &:not(.hide) {
       max-height: 50%;
+
+      @media @breakpoint-tablet {
+        max-height: unset;
+      }
     }
   }
 
@@ -192,6 +196,10 @@ section[class*="OutcomesList"] {
 
     &:not(.hide) {
       max-height: 53%;
+
+      @media @breakpoint-tablet {
+        max-height: unset;
+      }
     }
 
     > section:first-of-type {
