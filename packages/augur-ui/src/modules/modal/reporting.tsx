@@ -33,6 +33,7 @@ import { loadAccountCurrentDisputeHistory } from 'modules/auth/actions/load-acco
 import ReleasableRepNotice from 'modules/reporting/containers/releasable-rep-notice';
 import { ExplainerBlock } from 'modules/create-market/components/common';
 import { EventDetailsContent } from 'modules/create-market/constants';
+import CoreProperties from 'modules/market/components/core-properties/core-properties';
 
 interface ModalReportingProps {
   closeAction: Function;
@@ -67,7 +68,7 @@ export default class ModalReporting extends Component<
     checked: this.props.selectedOutcome
       ? this.props.selectedOutcome.toString()
       : null,
-    inputtedReportingStake: { inputStakeValue: '', inputToAttoRep: '' },
+    inputtedReportingStake: { inputStakeValue: '0', inputToAttoRep: '0' },
     inputScalarOutcome: '',
     isReporting:
       this.props.market.reportingState === REPORTING_STATE.OPEN_REPORTING ||
@@ -100,7 +101,7 @@ export default class ModalReporting extends Component<
 
   updateChecked = (selected: string, isInvalid: boolean = false) => {
     const { radioButtons } = this.state;
-    this.updateInputtedStake({ inputStakeValue: '', inputToAttoRep: '' });
+    this.updateInputtedStake({ inputStakeValue: '0', inputToAttoRep: '0' });
     radioButtons.map(r =>
       r.id === selected && r.isInvalid === isInvalid
         ? (r.checked = true)
@@ -108,7 +109,7 @@ export default class ModalReporting extends Component<
     );
     const radioValue = radioButtons.find(r => r.checked);
     this.updateScalarOutcome(
-      String(radioValue.value) ? String(radioValue.value) : ''
+      radioValue && radioValue.value && String(radioValue.value) ? String(radioValue.value) : ''
     );
     this.setState({ radioButtons, checked: selected });
   };
@@ -324,24 +325,11 @@ export default class ModalReporting extends Component<
               {isTemplate && <TemplateShield market={market} />}
             </section>
             <span>{description}</span>
-            <Subheaders
-              small
-              header="Resolution Details"
-              subheader={details === null ? 'N/A' : details}
+            <CoreProperties
+              market={market}
+              reportingBarShowing={false}
             />
-            <div>
-              <Subheaders
-                small
-                header="Date Created"
-                subheader={creationTimeFormatted.formattedUtc}
-              />
-              <Subheaders
-                small
-                header="Event Expiration"
-                subheader={endTimeFormatted.formattedUtc}
-              />
             </div>
-          </div>
           {isDisputing && (
             <div>
               <RepBalance alternate rep={rep} />

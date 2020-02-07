@@ -39,7 +39,7 @@ import {
   convertUnixToFormattedDate,
 } from 'utils/format-date';
 import { AppState } from 'store';
-import { loadMarketOrderBook } from 'modules/orders/actions/load-market-orderbook';
+import { loadMarketOrderBook, clearOrderBook } from 'modules/orders/actions/load-market-orderbook';
 
 const mapStateToProps = (state: AppState, ownProps) => {
   const { connection, universe, modal, loginAccount, orderBooks } = state;
@@ -141,6 +141,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   hotloadMarket: marketId => hotloadMarket(marketId),
   loadMarketsInfo: marketId => dispatch(loadMarketsInfo([marketId])),
   loadMarketOrderBook: marketId => dispatch(loadMarketOrderBook(marketId)),
+  clearOrderBook: () => dispatch(clearOrderBook()),
   updateModal: modal => dispatch(updateModal(modal)),
   loadMarketTradingHistory: marketId =>
     dispatch(loadMarketTradingHistory(marketId)),

@@ -23,7 +23,9 @@
 
   > div:nth-of-type(2),
   > div:nth-last-of-type(2),
-  > span {
+  > span,
+  > h2,
+  > h3 {
     border-left: 1px solid @color-dark-grey;
     padding-left: @size-12;
   }
@@ -55,7 +57,7 @@
             fill: none;
             stroke: @color-secondary-action-outline;
           }
-  
+
           > path {
             fill: @color-primary-text;
           }
@@ -101,7 +103,7 @@
       > div > div:first-of-type > svg {
         stroke: none;
         height: @size-16;
-        margin-right: @size-16;
+        margin-right: @size-8;
         width: @size-16;
 
         > path:first-of-type {
@@ -116,7 +118,7 @@
       > div > div:nth-of-type(2) > svg {
         stroke: none;
         height: @size-16;
-        margin-right: @size-16;
+        margin-right: @size-8;
         width: @size-16;
 
         > path:first-of-type {
@@ -131,11 +133,11 @@
 
       > div > div:nth-of-type(3), > div > div:nth-of-type(4) {
         & > svg {
-          fill: @color-inactive-text;
+          fill: @color-primary-text;
           stroke-width: 0.5;
-          stroke: @color-inactive-text;
+          stroke: @color-primary-text;
           height: @size-16;
-          margin-right: @size-16;
+          margin-right: @size-8;
           width: @size-16;
         }
       }
@@ -178,7 +180,9 @@
     }
   }
 
-  > span {
+  > span,
+  > h2,
+  > h3 {
     .text-16-bold;
 
     align-self: center;
@@ -298,7 +302,9 @@
   }
 
   &.Condensed {
-    > span {
+    > span,
+    > h2,
+    > h3 {
       align-self: flex-start;
       padding-top: 0;
       margin-top: 0;
@@ -348,7 +354,9 @@
     }
 
     &.Condensed {
-      > span {
+      > span,
+      > h2,
+      > h3 {
         padding-bottom: 0;
         margin: 0;
       }
@@ -375,6 +383,8 @@
     > div:nth-of-type(2),
     > div:nth-last-of-type(2),
     > span,
+    > h2,
+    > h3,
     > button:last-of-type {
       border: 0;
       padding: 0;
@@ -386,7 +396,9 @@
       margin-bottom: @size-10;
     }
 
-    > span {
+    > span,
+    > h2,
+    > h3 {
       .limit-lines(3);
 
       margin: 0 0 @size-12;
@@ -481,6 +493,13 @@
           grid-column: 1;
           grid-row: 2;
           margin-left: 0;
+        }
+      }
+
+      &.invalid {
+        grid-template-columns: @size-16 auto @size-16 @size-16;
+        > div[class*='CategoryTagTrail'] {
+          grid-column: 2;
         }
       }
 

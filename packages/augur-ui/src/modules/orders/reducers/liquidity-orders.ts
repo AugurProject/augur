@@ -68,7 +68,9 @@ export default function(
       if (Object.keys(pendingLiquidityOrders[txParamHash]).length == 0) {
         delete pendingLiquidityOrders[txParamHash];
       }
-      return pendingLiquidityOrders;
+      return {
+        ...pendingLiquidityOrders
+      };
     }
     case UPDATE_TX_PARAM_HASH_TX_HASH: {
       const { txParamHash, txHash } = data;
@@ -95,7 +97,9 @@ export default function(
           order.status = eventName;
         }
       });
-      return pendingLiquidityOrders;
+      return {
+        ...pendingLiquidityOrders
+      };
     }
     case UPDATE_LIQUIDITY_ORDER: {
       const { order, updates, txParamHash, outcomeId } = data;

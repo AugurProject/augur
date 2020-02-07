@@ -30,6 +30,7 @@ export interface QuadBoxProps {
   hideHeader?: boolean;
   customClass?: string;
   showHeaderOnMobile?: boolean;
+  h1Title?: boolean;
 }
 
 const BoxHeaderElement = (props: QuadBoxProps) => (
@@ -60,6 +61,7 @@ const BoxHeaderElement = (props: QuadBoxProps) => (
     bottomRightBarContent={props.bottomRightBarContent}
     bottomBarContent={props.bottomBarContent}
     noBackgroundBottom={props.noBackgroundBottom}
+    h1Title={props.h1Title}
   />
 );
 

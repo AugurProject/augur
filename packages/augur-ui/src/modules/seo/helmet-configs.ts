@@ -49,7 +49,7 @@ export const COMMON_HEAD_TAGS = {
 
 export const APP_HEAD_TAGS = {
   ...COMMON_HEAD_TAGS,
-  canonicalUrl: 'http://v2.augur.net/',
+  canonicalUrl: 'http://v2.augur.net/#!/markets?maxFee=1&spread=100',
 };
 
 export const CREATE_MARKET_VIEW_HEAD_TAGS = {
@@ -60,6 +60,7 @@ export const CREATE_MARKET_VIEW_HEAD_TAGS = {
 export const MARKETS_VIEW_HEAD_TAGS = {
   ...COMMON_HEAD_TAGS,
   title: 'Markets',
+  canonicalUrl: 'http://v2.augur.net/#!/markets?maxFee=1&spread=100',
 };
 
 export const MARKET_VIEW_HEAD_TAGS = {

@@ -264,14 +264,19 @@ export const ToggleExtendButton = (props: ToggleExtendButtonProps) => (
   </button>
 );
 
-export const CancelTextButton = (props: DefaultButtonProps) => (
+export const CancelTextButton = ({
+  text,
+  action,
+  title,
+  disabled,
+}: DefaultButtonProps) => (
   <button
-    onClick={e => props.action(e)}
-    className={classNames(Styles.CancelTextButton, {[Styles.IconButton]: !props.text})}
-    disabled={props.disabled}
-    title={props.title}
+    onClick={e => action(e)}
+    className={classNames(Styles.CancelTextButton, {[Styles.IconButton]: !text})}
+    disabled={disabled}
+    title={title}
   >
-    {props.text || XIcon}
+    {text || XIcon}
   </button>
 );
 
@@ -504,7 +509,7 @@ export const FilterButton = (props: DefaultActionButtonProps) => (
     className={Styles.FilterButton}
     disabled={props.disabled}
   >
-    Filters
+    Categories & Filters
     {Filter}
   </button>
 );

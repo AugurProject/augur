@@ -7,7 +7,6 @@ import store from "store";
 import getValue from "utils/get-value";
 import { createBigNumber, BigNumber } from "utils/create-big-number";
 import { ZERO } from "modules/common/constants";
-import loginAccount from "../reducers/login-account";
 import { LoginAccount } from "modules/types";
 
 export default function() {

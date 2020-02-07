@@ -23,6 +23,7 @@ import {
   TAGS_PARAM_NAME,
   SCALAR,
   PROBABLE_INVALID_MARKET,
+  HEADER_TYPE,
 } from 'modules/common/constants';
 import MarketHeaderReporting from 'modules/market/containers/market-header-reporting';
 import SocialMediaButtons from 'modules/market/containers/social-media-buttons';
@@ -292,7 +293,7 @@ export default class MarketHeader extends Component<
                     this.setState({ showCopied: true }, () => {
                       setTimeout(
                         () => this.setState({ showCopied: false }),
-                        2000
+                        4000
                       );
                     });
                   }}
@@ -322,7 +323,7 @@ export default class MarketHeader extends Component<
                 {preview ? (
                   <PreviewMarketTitle market={market} />
                 ) : (
-                  <MarketTitle id={market.marketId} noLink />
+                  <MarketTitle id={market.marketId} noLink headerType={HEADER_TYPE.H1} />
                 )}
                 {market.mostLikelyInvalid ? (
                   <div className={Styles.ResolvingInvalid}>
@@ -331,7 +332,7 @@ export default class MarketHeader extends Component<
                 ) : null}
                 {details.length > 0 && (
                   <div className={Styles.Details}>
-                    <h4>Resolution Details</h4>
+                    <h2>Resolution Details</h2>
                     <div>
                       <label
                         ref={detailsContainer => {

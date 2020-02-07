@@ -1296,3 +1296,9 @@ export const TUTORIAL_TRADING_HISTORY = {
 };
 
 export const DISCORD_LINK = 'https://discord.gg/wWMumZr';
+
+export enum HEADER_TYPE {
+  H1 = 'h1',
+  H2 = 'h2',
+  H3 = 'h3',
+}

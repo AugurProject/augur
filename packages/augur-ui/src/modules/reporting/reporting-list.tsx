@@ -7,6 +7,7 @@ import { Getters } from '@augurproject/sdk';
 import { Pagination } from 'modules/common/pagination';
 import PaginationStyles from 'modules/common/pagination.styles.less';
 import { LoadingMarketCard } from 'modules/market-cards/common';
+import { MarketReportingState } from '@augurproject/sdk/build';
 
 const ITEMS_PER_SECTION = 5;
 const NUM_LOADING_CARDS = 2;
@@ -44,7 +45,9 @@ export const ReportingList = (props: ReportingListProps) => {
 
   return (
     <div className={Styles.ReportingList}>
-      <span>{props.title}</span>
+      {props.reportingType === MarketReportingState.OpenReporting
+        ? <h1>{props.title}</h1>
+        : <span>{props.title}</span>}
       <div key={props.reportingType}>
         {props.isLoadingMarkets &&
           new Array(NUM_LOADING_CARDS)

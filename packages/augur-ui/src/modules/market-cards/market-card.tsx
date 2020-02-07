@@ -4,9 +4,9 @@ import classNames from 'classnames';
 import {
   CategoryTagTrail,
   InReportingLabel,
-  TemplateShield,
   MarketTypeLabel,
   RedFlag,
+  TemplateShield,
 } from 'modules/common/labels';
 import {
   HoverIcon,
@@ -15,11 +15,12 @@ import {
   ResolvedOutcomes,
 } from 'modules/market-cards/common';
 import toggleCategory from 'modules/routes/helpers/toggle-category';
-import { MARKETS } from 'modules/routes/constants/views';
+import { DISPUTING, MARKETS } from 'modules/routes/constants/views';
 import makePath from 'modules/routes/helpers/make-path';
 import {
   COPY_AUTHOR,
   COPY_MARKET_ID,
+  HEADER_TYPE,
   MARKET_REPORTING,
   REPORTING_STATE,
   SCALAR,
@@ -32,7 +33,7 @@ import {
   DesignatedReporter,
   DisputeStake,
   MarketCreator,
-  PaperClip,
+  CopyAlternateIcon,
   Person,
   PositionIcon,
 } from 'modules/common/icons';
@@ -126,7 +127,8 @@ export default class MarketCard extends React.Component<
       endTimeFormatted,
       designatedReporter,
       isTemplate,
-      consensusFormatted
+      consensusFormatted,
+      mostLikelyInvalid
     } = market;
 
     if (loading) {
@@ -223,6 +225,13 @@ export default class MarketCard extends React.Component<
       outcomesFormatted.length > showOutcomeNumber &&
       !expandedView;
 
+    const headerType =
+      location.pathname === makePath(DISPUTING)
+        ? HEADER_TYPE.H2
+        : location.pathname === makePath(MARKETS)
+        ? HEADER_TYPE.H3
+        : undefined;
+
     return (
       <div
         className={classNames(Styles.MarketCard, {
@@ -268,6 +277,7 @@ export default class MarketCard extends React.Component<
             className={classNames(Styles.TopRow, {
               [Styles.scalar]: isScalar,
               [Styles.template]: isTemplate,
+              [Styles.invalid]: mostLikelyInvalid
             })}
           >
             {marketStatus === MARKET_REPORTING && (
@@ -304,7 +314,7 @@ export default class MarketCard extends React.Component<
                 data-clipboard-text={id}
                 onClick={() => marketLinkCopied(market.id, MARKET_LIST_CARD)}
               >
-                {PaperClip} {COPY_MARKET_ID}
+                {CopyAlternateIcon} {COPY_MARKET_ID}
               </div>
               <div id="copy_author" data-clipboard-text={author}>
                 {Person} {COPY_AUTHOR}
@@ -312,7 +322,9 @@ export default class MarketCard extends React.Component<
             </DotSelection>
           </div>
 
-          <MarketTitle id={id} />
+          <MarketTitle
+            id={id}
+            headerType={headerType} />
           {!condensed && !marketResolved ? (
             <>
               <OutcomeGroup

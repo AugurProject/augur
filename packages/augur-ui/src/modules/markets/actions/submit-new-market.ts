@@ -69,10 +69,16 @@ export function submitNewMarket(
                   value: i.userInput,
                   type: i.type,
                   timestamp:
-                    i.type === TemplateInputType.DATETIME && !!i.userInputObject
+                    (i.type === TemplateInputType.DATETIME &&
+                      !!i.userInputObject) ||
+                    (i.type === TemplateInputType.ESTDATETIME &&
+                      !!i.userInputObject)
                       ? (i.userInputObject as UserInputDateTime)
                           .endTimeFormatted.timestamp
-                      : ((i.type === TemplateInputType.DATESTART || i.type === TemplateInputType.DATEYEAR )&& i.setEndTime || null),
+                      : ((i.type === TemplateInputType.DATESTART ||
+                          i.type === TemplateInputType.DATEYEAR) &&
+                          i.setEndTime) ||
+                        null,
                 },
               ]
             : p,

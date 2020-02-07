@@ -7,7 +7,8 @@ import makeQuery from "modules/routes/helpers/make-query";
 import {
   TYPE_REPORT,
   TYPE_DISPUTE,
-  TYPE_MIGRATE_REP
+  TYPE_MIGRATE_REP,
+  HEADER_TYPE
 } from "modules/common/constants";
 import {
   MARKET,
@@ -26,9 +27,10 @@ interface MarketLinkProps {
   linkType?: string;
   className?: string;
   outcomeId?: string;
+  headerType?: string;
 }
 
-const MarketLink: React.FC<MarketLinkProps> = ({ linkType, className, id, outcomeId, children }) => {
+const MarketLink: React.FC<MarketLinkProps> = ({ linkType, className, id, outcomeId, children, headerType }) => {
   let path;
 
   switch (linkType) {
@@ -57,23 +59,46 @@ const MarketLink: React.FC<MarketLinkProps> = ({ linkType, className, id, outcom
     queryLink[RETURN_PARAM_NAME] = location.hash;
   }
 
-  return (
-    <span className={className}>
-      {id ? (
-        <Link
-          data-testid={"link-" + id}
-          to={{
-            pathname: path,
-            search: makeQuery(queryLink)
-          }}
-        >
-          {children}
-        </Link>
-      ) : (
-          children
-        )}
-    </span>
+  const linkOrNot = id ? (
+    <Link
+      data-testid={'link-' + id}
+      to={{
+        pathname: path,
+        search: makeQuery(queryLink),
+      }}
+    >
+      {children}
+    </Link>
+  ) : (
+    children
   );
+
+  switch (headerType) {
+    case HEADER_TYPE.H1:
+      return (
+        <h1 className={className}>
+          {linkOrNot}
+        </h1>
+      );
+    case HEADER_TYPE.H2:
+      return (
+        <h2 className={className}>
+          {linkOrNot}
+        </h2>
+      );
+    case HEADER_TYPE.H3:
+      return (
+        <h3 className={className}>
+          {linkOrNot}
+        </h3>
+      );
+    default:
+      return (
+        <span className={className}>
+          {linkOrNot}
+        </span>
+      );
+  }
 };
 
 MarketLink.defaultProps = {
