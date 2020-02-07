@@ -9,6 +9,7 @@ import {
   SCALAR,
   DISPUTE_GAS_COST,
   INITAL_REPORT_GAS_COST,
+  HEADER_TYPE,
 } from 'modules/common/constants';
 import {
   FormattedNumber,
@@ -31,7 +32,11 @@ import {
   InReportingLabel,
 } from 'modules/common/labels';
 import { ButtonActionType } from 'modules/types';
-import { formatRep, formatAttoRep, formatGasCostToEther } from 'utils/format-number';
+import {
+  formatRep,
+  formatAttoRep,
+  formatGasCostToEther,
+} from 'utils/format-number';
 import { MarketProgress } from 'modules/common/progress';
 import { ExclamationCircle, InfoIcon, XIcon } from 'modules/common/icons';
 import ChevronFlip from 'modules/common/chevron-flip';
@@ -885,6 +890,7 @@ export const ReportingCard = (props: ReportingCardProps) => {
   const { id, reportingState, disputeInfo, endTimeFormatted } = market;
 
   const preReporting = reportingState === REPORTING_STATE.PRE_REPORTING;
+  const headerType = reportingState === REPORTING_STATE.OPEN_REPORTING && HEADER_TYPE.H2;
 
   return (
     <div className={Styles.ReportingCard}>
@@ -894,7 +900,7 @@ export const ReportingCard = (props: ReportingCardProps) => {
         endTimeFormatted={endTimeFormatted}
         currentAugurTimestamp={currentAugurTimestamp}
       />
-      <MarketTitle id={id} />
+      <MarketTitle id={id} headerType={headerType} />
       {reportingState !== REPORTING_STATE.OPEN_REPORTING && (
         <MarketProgress
           reportingState={reportingState}
@@ -1105,7 +1111,7 @@ export const ParticipationTokensView = (
 
   return (
     <div className={Styles.ParticipationTokensView}>
-      <h1>Participation Tokens</h1>
+      <h4>Participation Tokens</h4>
       <span>
         <span>Don’t see any reports that need disputing? </span>
         You can earn a proportional share of the profits from this dispute
@@ -1144,7 +1150,7 @@ export const ParticipationTokensView = (
 
       <section />
 
-      <h1>Redeem Past Participation Tokens</h1>
+      <h4>Redeem Past Participation Tokens</h4>
       <span>
         Redeem your past Participation Tokens and any returns from your share of
         the Reporting Fees. All tokens and fees that are ready to be claimed are

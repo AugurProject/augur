@@ -200,13 +200,13 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
         <div className={Styles.GasEdit}>
           <div>
             <div>
-              Transaction Fee
-              {renderToolTip('tooltip--gasEdit', 'The fee for processing your transactions.')}
-              <span>Average (${getGasCostInDai(ethToDaiRate, createBigNumber(averageGasPrice).toNumber())})</span>
-            </div>
-            <div>
-              <div><span>{gasPriceSpeed}</span><span> {gasPriceTime}</span></div>
-              <div><span>${getGasCostInDai(ethToDaiRate, createBigNumber(userDefinedGasPrice).toNumber())}</span><span> / Trade</span></div>
+              <div>
+                Transaction fee
+                {renderToolTip('tooltip--gasEdit', 'The fee for processing your transactions.')}
+              </div>
+              <div>
+                ${getGasCostInDai(ethToDaiRate, createBigNumber(userDefinedGasPrice).toNumber())} / Trade  ({gasPriceSpeed} {gasPriceTime})
+              </div>
             </div>
           </div>
           <SecondaryButton

@@ -6,7 +6,7 @@ import DisputeWindowProgress from 'modules/reporting/containers/disputing-window
 import UserRepDisplay from 'modules/reporting/containers/user-rep-display';
 import { ReportingModalButton } from 'modules/reporting/common';
 import ParticipationTokensView from 'modules/reporting/containers/participation-tokens-view';
-import { SMALL_MOBILE } from 'modules/common/constants';
+import { HEADER_TYPE, SMALL_MOBILE } from 'modules/common/constants';
 import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs';
 import ModulePane from 'modules/market/components/common/module-tabs/module-pane';
 
@@ -49,7 +49,7 @@ const Disputing: React.FC<DisputingProps> = ({
                 <ParticipationTokensView />
                 <DisputeWindowProgress />
               </ModulePane>
-              <ModulePane label="markets in dispute">
+              <ModulePane label="markets in dispute" headerType={HEADER_TYPE.H1}>
                 <MarketsInDispute />
               </ModulePane>
             </ModuleTabs>

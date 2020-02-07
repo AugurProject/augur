@@ -167,7 +167,8 @@
           padding: 0 @size-12;
         }
 
-        > span {
+        > span,
+        > h1 {
           .text-18-bold;
           .limit-lines(3);
 
@@ -176,7 +177,8 @@
           flex: 0 auto;
         }
 
-        &.BigTitle > span {
+        &.BigTitle > span,
+        &.BigTitle > h1 {
           &:hover {
             position: absolute;
             display: block;
@@ -405,7 +407,7 @@ div.ExpandedContent {
 .Details {
   padding: 0;
 
-  h4 {
+  h2 {
     .mono-10-bold;
 
     color: @color-secondary-text;
