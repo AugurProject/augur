@@ -166,7 +166,8 @@ if (require.main === module) {
       await flash.call(args.command, args).catch(console.error);
     } else {
       try {
-        flash.network = NetworkConfiguration.create(args.network as NETWORKS);
+        const network = args.network as NETWORKS;
+        flash.network = NetworkConfiguration.create(network, true, flash.accounts[0].secretKey);
         flash.provider = flash.makeProvider(flash.network);
         const networkId = await flash.getNetworkId(flash.provider);
         flash.contractAddresses = Addresses[networkId];
