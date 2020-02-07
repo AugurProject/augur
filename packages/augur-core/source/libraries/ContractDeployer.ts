@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 import { BigNumber } from 'bignumber.js';
-import { exists, readFile, writeFile } from 'async-file';
+import { readFile } from 'async-file';
 import { stringTo32ByteHex, resolveAll } from './HelperFunctions';
 import { CompilerOutput } from 'solc';
 import { DeployerConfiguration } from './DeployerConfiguration';
@@ -41,13 +41,12 @@ import { TRADING_CONTRACTS } from './constants';
 export class ContractDeployer {
     private readonly configuration: DeployerConfiguration;
     private readonly contracts: Contracts;
-    private readonly dependencies: Dependencies<BigNumber>
+    private readonly dependencies: Dependencies<BigNumber>;
     private readonly provider: ethers.providers.JsonRpcProvider;
     private readonly signer: ethers.Signer;
-    public augur: Augur|null = null;
-    public augurTrading: AugurTrading|null = null;
-    public universe: Universe|null = null;
-    public externalContractAddresses = {};
+    augur: Augur|null = null;
+    augurTrading: AugurTrading|null = null;
+    universe: Universe|null = null;
 
     static deployToNetwork = async (networkConfiguration: NetworkConfiguration, dependencies: Dependencies<BigNumber>, provider: ethers.providers.JsonRpcProvider,signer: ethers.Signer, deployerConfiguration: DeployerConfiguration) => {
         const compilerOutput = JSON.parse(await readFile(deployerConfiguration.contractInputPath, 'utf8'));
@@ -60,7 +59,7 @@ Deploying to: ${networkConfiguration.networkName}
     upload blocks #s: ${deployerConfiguration.uploadBlockNumbersOutputPath}
 `);
         await contractDeployer.deploy();
-    }
+    };
 
     constructor(configuration: DeployerConfiguration, dependencies: Dependencies<BigNumber>, provider: ethers.providers.JsonRpcProvider, signer: ethers.Signer, compilerOutput: CompilerOutput) {
         this.configuration = configuration;
@@ -154,10 +153,10 @@ Deploying to: ${networkConfiguration.networkName}
         }
 
         // 0x Exchange
-        if (this.configuration.isProduction || externalAddresses.ZeroXExchange) {
-            if (!externalAddresses.ZeroXExchange) throw new Error('Must provide ZeroXExchange');
-            console.log(`Registering 0x Exchange Contract at ${externalAddresses.ZeroXExchange}`);
-            await this.augurTrading!.registerContract(stringTo32ByteHex('ZeroXExchange'), externalAddresses.ZeroXExchange);
+        if (this.configuration.isProduction || externalAddresses.Exchange) {
+            if (!externalAddresses.Exchange) throw new Error('Must provide Exchange (ZeroXExchange)');
+            console.log(`Registering 0x Exchange Contract at ${externalAddresses.Exchange}`);
+            await this.augurTrading!.registerContract(stringTo32ByteHex('ZeroXExchange'), externalAddresses.Exchange);
         } else {
             await this.upload0xContracts();
         }
@@ -226,7 +225,7 @@ Deploying to: ${networkConfiguration.networkName}
             if (contract.relativeFilePath.startsWith('external/')) continue;
 
             // 0x
-            if (this.configuration.externalAddresses.ZeroXExchange && [
+            if (this.configuration.externalAddresses.Exchange && [
               'ERC20Proxy',
               'ERC721Proxy',
               'ERC1155Proxy',
@@ -245,9 +244,10 @@ Deploying to: ${networkConfiguration.networkName}
             if (['Cash', 'TestNetDaiVat', 'TestNetDaiPot', 'TestNetDaiJoin'].includes(contract.contractName)) continue;
             if (['IAugur', 'IDisputeCrowdsourcer', 'IDisputeWindow', 'IUniverse', 'IMarket', 'IReportingParticipant', 'IReputationToken', 'IOrders', 'IShareToken', 'Order', 'IV2ReputationToken', 'IInitialReporter'].includes(contract.contractName)) continue;
             if (contract.address === undefined) throw new Error(`${contract.contractName} not uploaded.`);
-            // @ts-ignore
+
             mapping[contract.contractName] = contract.address;
         }
+
         return mapping;
     }
 
@@ -258,11 +258,11 @@ Deploying to: ${networkConfiguration.networkName}
         const contract = this.contracts.get(contractName);
         if (contract.address === undefined) throw new Error(`Contract name ${contractName} has not yet been uploaded.`);
         return contract.address;
-    }
+    };
 
     private async uploadAugur(): Promise<Augur> {
         console.log('Uploading augur...');
-        const contract = await this.contracts.get("Augur");
+        const contract = await this.contracts.get('Augur');
         const address = await this.construct(contract, []);
         const augur = new Augur(this.dependencies, address);
         const ownerAddress = await augur.uploader_();
@@ -276,13 +276,13 @@ Deploying to: ${networkConfiguration.networkName}
 
     private async uploadAugurTrading(): Promise<AugurTrading> {
         console.log('Uploading Augur Trading...');
-        const contract = await this.contracts.get("AugurTrading");
+        const contract = await this.contracts.get('AugurTrading');
         const address = await this.construct(contract, [this.augur!.address]);
         const augurTrading = new AugurTrading(this.dependencies, address);
         const ownerAddress = await augurTrading.uploader_();
         contract.address = address;
         if (ownerAddress.toLowerCase() !== (await this.signer.getAddress()).toLowerCase()) {
-            throw new Error("Augur Trading owner does not equal from address");
+            throw new Error('Augur Trading owner does not equal from address');
         }
         console.log(`Augur Trading address: ${augurTrading.address}`);
         return augurTrading;
@@ -395,7 +395,7 @@ Deploying to: ${networkConfiguration.networkName}
     }
 
     private async upload(contract: ContractData): Promise<void> {
-        const contractName = contract.contractName
+        const contractName = contract.contractName;
         if (contractName === 'Augur') return;
         if (contractName === 'Delegator') return;
         if (contractName === 'TimeControlled') return;
@@ -457,7 +457,7 @@ Deploying to: ${networkConfiguration.networkName}
         console.log('Initializing contracts...');
         const promises: Array<Promise<any>> = [];
 
-        const shareTokenContract = await this.getContractAddress("ShareToken");
+        const shareTokenContract = await this.getContractAddress('ShareToken');
         const shareToken = new ShareToken(this.dependencies, shareTokenContract);
         promises.push(shareToken.initialize(this.augur!.address));
 
@@ -489,20 +489,20 @@ Deploying to: ${networkConfiguration.networkName}
         const simulateTrade = new SimulateTrade(this.dependencies, simulateTradeContract);
         promises.push(simulateTrade.initialize(this.augur!.address, this.augurTrading!.address));
 
-        const ZeroXTradeContract = await this.getContractAddress('ZeroXTrade');
-        const zeroXTrade = new ZeroXTrade(this.dependencies, ZeroXTradeContract);
+        const zeroXTradeContract = await this.getContractAddress('ZeroXTrade');
+        const zeroXTrade = new ZeroXTrade(this.dependencies, zeroXTradeContract);
         promises.push(zeroXTrade.initialize(this.augur!.address, this.augurTrading!.address));
 
-        const GnosisSafeRegistryContract = await this.getContractAddress('GnosisSafeRegistry');
-        const gnosisSafeRegistry = new GnosisSafeRegistry(this.dependencies, GnosisSafeRegistryContract);
+        const gnosisSafeRegistryContract = await this.getContractAddress('GnosisSafeRegistry');
+        const gnosisSafeRegistry = new GnosisSafeRegistry(this.dependencies, gnosisSafeRegistryContract);
         promises.push(gnosisSafeRegistry.initialize(this.augur!.address, this.augurTrading!.address));
 
-        const WarpSyncContract = await this.getContractAddress('WarpSync');
-        const warpSync = new WarpSync(this.dependencies, WarpSyncContract);
+        const warpSyncContract = await this.getContractAddress('WarpSync');
+        const warpSync = new WarpSync(this.dependencies, warpSyncContract);
         promises.push(warpSync.initialize(this.augur!.address));
 
-        const EthExchangeContract = await this.getContractAddress('EthExchange');
-        const ethExchange = new EthExchange(this.dependencies, EthExchangeContract);
+        const ethExchangeContract = await this.getContractAddress('EthExchange');
+        const ethExchange = new EthExchange(this.dependencies, ethExchangeContract);
         promises.push(ethExchange.initialize(this.augur!.address));
 
         if (!this.configuration.useNormalTime) {
@@ -515,12 +515,12 @@ Deploying to: ${networkConfiguration.networkName}
     }
 
     private async doTradingApprovals(): Promise<void> {
-        const augurTradingContract = await this.getContractAddress("AugurTrading");
+        const augurTradingContract = await this.getContractAddress('AugurTrading');
         const augurTrading = new AugurTrading(this.dependencies, augurTradingContract);
         await augurTrading.doApprovals();
     }
 
-    public async initializeLegacyRep(): Promise<void> {
+    async initializeLegacyRep(): Promise<void> {
         const legacyReputationToken = new LegacyReputationToken(this.dependencies, this.getContractAddress('LegacyReputationToken'));
         await legacyReputationToken.faucet(new BigNumber(11000000).multipliedBy(10**18));
         const defaultAddress = await this.signer.getAddress();
@@ -619,6 +619,13 @@ Deploying to: ${networkConfiguration.networkName}
             if (contract.contractName === 'ZeroXTradeToken') continue;
             if (contract.address === undefined) throw new Error(`${contract.contractName} not uploaded.`);
             mapping[contract.contractName] = contract.address;
+        }
+
+        if (this.configuration.externalAddresses) {
+            Object.keys(this.configuration.externalAddresses).forEach((name) => {
+                const address = this.configuration[name];
+                mapping[name] = address;
+            })
         }
 
         const networkId = (await this.provider.getNetwork()).chainId;

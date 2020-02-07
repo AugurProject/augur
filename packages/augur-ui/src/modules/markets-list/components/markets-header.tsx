@@ -91,7 +91,7 @@ const MarketsHeader: React.FC<MarketsHeaderProps> = props => {
         />
       </div>
       <div>
-        <h1>{headerTitle}</h1>
+        <h2>{headerTitle}</h2>
         <FilterSearch isSearchingMarkets={isSearchingMarkets} />
         <MarketCardFormatSwitcher
           marketCardFormat={marketCardFormat}
