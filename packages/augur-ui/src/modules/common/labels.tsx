@@ -820,9 +820,9 @@ export const InReportingLabel = (props: InReportingLabelProps) => {
     customLabel = constants.REPORTING_ENDS;
   } else if (reportingState === REPORTING_STATE.OPEN_REPORTING) {
     reportingExtraText = constants.OPEN_REPORTING;
-  } else if (disputeInfo.disputePacingOn) {
+  } else if (disputeInfo && disputeInfo.disputePacingOn) {
     reportingExtraText = constants.SLOW_DISPUTE;
-  } else if (!disputeInfo.disputePacingOn) {
+  } else if (disputeInfo && !disputeInfo.disputePacingOn) {
     reportingExtraText = constants.FAST_DISPUTE;
     customLabel = constants.DISPUTE_ENDS;
   } else {
