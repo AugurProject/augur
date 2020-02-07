@@ -1028,14 +1028,12 @@ export function addScripts(flash: FlashSession) {
           if (orders.length > 0) {
             let totalOrdersCreated = 0;
             while(totalOrdersCreated < numOrderLimit) {
-              let j = 0;
-              for (j; j < orders.length; j++) {
-                if (totalOrdersCreated < numOrderLimit) {
-                  orders.map(order => console.log(`${order.market} Creating ${order.displayAmount} at ${order.displayPrice} on outcome ${order.outcome}`));
-                  user.placeZeroXOrders(orders).catch(this.log);
-                  totalOrdersCreated = totalOrdersCreated + orders.length;
-                }
-              }
+              const ordersLeft = numOrderLimit - totalOrdersCreated;
+              const grabAmount = Math.min(ordersLeft, orders.length);
+              const createOrders = orders.splice(0, grabAmount);
+              createOrders.map(order => console.log(`${order.market} Creating ${order.displayAmount} at ${order.displayPrice} on outcome ${order.outcome}`));
+              user.placeZeroXOrders(createOrders).catch(this.log);
+              totalOrdersCreated = totalOrdersCreated + createOrders.length;
             }
           }
         }
