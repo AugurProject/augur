@@ -277,7 +277,7 @@ class Form extends Component<FromProps, FormState> {
     return { isOrderValid: passedTest, errors, errorCount };
   }
 
-  findNearestValues = value => {
+  findMultipleOf = () => {
     const { market } = this.props;
     let tradeInterval = DEFAULT_TRADE_INTERVAL;
     let numTicks = market.numTicks;
@@ -298,10 +298,15 @@ class Form extends Component<FromProps, FormState> {
       );
     }
 
-    const valueBn = createBigNumber(value);
-    const multipleOf = tradeInterval
+    return tradeInterval
       .dividedBy(market.tickSize)
       .dividedBy(10 ** 18);
+  }
+
+  findNearestValues = value => {
+    const valueBn = createBigNumber(value);
+    const multipleOf = this.findMultipleOf();
+
     let firstValue = valueBn.minus(valueBn.mod(multipleOf));
     let secondValue = valueBn.plus(multipleOf).minus(valueBn.mod(multipleOf));
     if (firstValue.lt(ONE)) {
@@ -384,9 +389,7 @@ class Form extends Component<FromProps, FormState> {
     ) {
       errorCount += 1;
       passedTest = false;
-      const multipleOf = tradeInterval
-        .dividedBy(market.tickSize)
-        .dividedBy(10 ** 18);
+      const multipleOf = this.findMultipleOf();
       let firstValue = value.minus(value.mod(multipleOf));
       let secondValue = value.plus(multipleOf).minus(value.mod(multipleOf));
       if (firstValue.lt(ONE)) {
@@ -865,6 +868,9 @@ class Form extends Component<FromProps, FormState> {
         <ul>
           <li>
             <label htmlFor="quantity">Quantity</label>
+            {!isScalar &&
+              <label>(must be a mutiple of {this.findMultipleOf().toString()})</label>
+            }
             <div
               className={classNames(Styles.TradingFormInputContainer, {
                 [Styles.error]: s.errors[this.INPUT_TYPES.QUANTITY].length,

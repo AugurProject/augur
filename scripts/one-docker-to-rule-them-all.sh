@@ -31,17 +31,13 @@ if [ "$DEV" == "true" ]; then
   # Until then -- Make sure changes work in BOTH scripts
 
   if [ "$FAKE_TIME" == "true" ]; then
-    yarn flash fake-all
+    yarn flash fake-all --createMarkets
   else
-    yarn flash normal-all
+    yarn flash normal-all --createMarkets
   fi
 
   # pick up the creation of / changes to local-addresses.json
   yarn build
-
-  # TODO when yarn build isn't needed, this can be folded into {fake,normal}-all
-  # Create-canned-markets will rep/cash faucet
-  yarn flash create-canned-markets
 
   ###############################################################################
 else

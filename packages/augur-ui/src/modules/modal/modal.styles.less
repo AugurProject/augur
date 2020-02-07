@@ -2944,17 +2944,13 @@ div.ButtonsRow:last-of-type {
         margin-bottom: @size-16;
       }
 
-      > div:nth-of-type(2),
-      > div:nth-of-type(3) {
-        margin-bottom: @size-16;
+      > div:first-of-type > div:first-of-type >
+      div:first-of-type {
+        margin: 0.75rem 0;
       }
-
-      > div:nth-of-type(4) {
-        display: flex;
-        margin-bottom: @size-32;
-
-        > div:first-of-type {
-          width: 250px;
+      @media @breakpoint-mobile {
+        div:nth-of-type(2) {
+          padding: 0.75rem 0;
         }
       }
     }
