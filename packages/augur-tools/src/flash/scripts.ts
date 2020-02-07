@@ -35,7 +35,7 @@ import { spawn } from 'child_process';
 import { showTemplateByHash, validateMarketTemplate } from './template-utils';
 import { cannedMarkets, singleOutcomeAsks, singleOutcomeBids } from './data/canned-markets';
 import { ContractAPI } from '../libs/contract-api';
-import { OrderBookShaper } from './orderbook-shaper';
+import { OrderBookShaper, OrderBookConfig } from './orderbook-shaper';
 import { NumOutcomes } from '@augurproject/sdk/src/state/logs/types';
 import { flattenZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
 import { sleep } from '@augurproject/sdk/build/state/utils/utils';
@@ -937,6 +937,118 @@ export function addScripts(flash: FlashSession) {
               const order = orders[j];
               console.log(`Creating ${order.displayAmount} at ${order.displayPrice}`);
               await user.placeZeroXOrder(order).catch(this.log);
+            }
+          }
+        }
+        await new Promise<void>(resolve => setTimeout(resolve, interval));
+      }
+
+    },
+  });
+
+
+  flash.addScript({
+    name: 'order-firehose',
+    options: [
+      {
+        name: 'marketIds',
+        abbr: 'm',
+        description:
+          'Market ids separated by commas for multiple to create orders and maintain order book, ie 0x122,0x333,0x4444',
+      },
+      {
+        name: 'userAccount',
+        abbr: 'u',
+        description:
+          'User account to create orders, if not provided then contract owner is used',
+      },
+      {
+        name: 'network',
+        abbr: 'n',
+        description:
+          'Which network to connect to. Defaults to "environment" aka local node.',
+      },
+      {
+        name: 'numOrderLimit',
+        abbr: 'l',
+        required: false,
+        description: 'number of orders to create at a time, default is 100',
+      },
+      {
+        name: 'delayBetweenBursts',
+        abbr: 'd',
+        required: false,
+        description: 'seconds to wait between each order burst, default is 1 second',
+      },
+      {
+        name: 'burstRounds',
+        abbr: 'r',
+        required: false,
+        description: 'number of order burst rounds, default is 10',
+      },
+      {
+        name: 'expiration',
+        abbr: 'x',
+        required: false,
+        description: 'number of added seconds to order will live, default is five minutes',
+      },
+      {
+        name: 'orderSize',
+        abbr: 's',
+        required: false,
+        description: 'quantity used on created order, default is 10',
+      },
+      {
+        name: 'outcomes',
+        abbr: 'o',
+        required: false,
+        description: 'outcomes to put orders on, default is 1,2',
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const marketIds = String(args.marketIds)
+        .split(',')
+        .map(id => id.trim());
+      const orderOutcomes: number[] = (args.outcomes ? String(args.outcomes) : "1,2")
+        .split(',')
+        .map(id => Number(id.trim()));
+      const address = args.userAccount ? (args.userAccount as string) : null;
+      const interval = args.delayBetweenBursts ? Number(args.delayBetweenBursts) * 1000 : 1000;
+      const networkName = (args.network as NETWORKS) || 'environment';
+      const network = NetworkConfiguration.create(networkName);
+      const numOrderLimit = args.numOrderLimit ? Number(args.numOrderLimit) : 100;
+      const burstRounds = args.burstRounds ? Number(args.burstRounds) : 10;
+      const orderSize = args.orderSize ? Number(args.orderSize) : 10;
+      const expiration = args.expiration ? new BigNumber(String(args.expiration)) : new BigNumber(18000); // five minutes
+      const user: ContractAPI = await this.ensureUser(network, true, true, address, true, true);
+      console.log('waiting few seconds on purpose for client to sync');
+      await new Promise<void>(resolve => setTimeout(resolve, 10000));
+      // create tight orderbook config
+      let bids = {};
+      let asks = {};
+      for(let i = 1; i < 49; i++) { bids[((0.01 * i).toString().slice(0, 4))] = orderSize }
+      for(let i = 50; i < 99; i++) { asks[((0.01 * i).toString().slice(0, 4))] = orderSize }
+      let config: OrderBookConfig = {bids, asks};
+      const shapers = marketIds.map(m => new OrderBookShaper(m, null, expiration, orderOutcomes, config));
+      let i = 0;
+      for(i; i < burstRounds; i++) {
+        const timestamp = await this.user.getTimestamp();
+        for (let i = 0; i < shapers.length; i++) {
+          const shaper: OrderBookShaper = shapers[i];
+          const marketId = shaper.marketId;
+          const orders = shaper.nextRun({ marketId, orderBook: {} }, new BigNumber(timestamp));
+          if (orders.length > 0) {
+            let totalOrdersCreated = 0;
+            while(totalOrdersCreated < numOrderLimit) {
+              let j = 0;
+              for (j; j < orders.length; j++) {
+                if (totalOrdersCreated < numOrderLimit) {
+                  const order = orders[j];
+                  console.log(`${order.market} Creating ${order.displayAmount} at ${order.displayPrice} on outcome ${order.outcome}`);
+                  await user.placeZeroXOrder(order).catch(this.log);
+                  totalOrdersCreated++;
+                }
+              }
             }
           }
         }
