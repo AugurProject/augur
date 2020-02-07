@@ -1107,7 +1107,7 @@ export const ParticipationTokensView = (
 
   return (
     <div className={Styles.ParticipationTokensView}>
-      <h1>Participation Tokens</h1>
+      <h4>Participation Tokens</h4>
       <span>
         <span>Don’t see any reports that need disputing? </span>
         You can earn a proportional share of the profits from this dispute
@@ -1146,7 +1146,7 @@ export const ParticipationTokensView = (
 
       <section />
 
-      <h1>Redeem Past Participation Tokens</h1>
+      <h4>Redeem Past Participation Tokens</h4>
       <span>
         Redeem your past Participation Tokens and any returns from your share of
         the Reporting Fees. All tokens and fees that are ready to be claimed are

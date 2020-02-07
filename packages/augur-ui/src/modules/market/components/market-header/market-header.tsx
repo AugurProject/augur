@@ -332,7 +332,7 @@ export default class MarketHeader extends Component<
                 ) : null}
                 {details.length > 0 && (
                   <div className={Styles.Details}>
-                    <h4>Resolution Details</h4>
+                    <h2>Resolution Details</h2>
                     <div>
                       <label
                         ref={detailsContainer => {
