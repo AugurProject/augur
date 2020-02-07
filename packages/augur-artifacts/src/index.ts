@@ -39,6 +39,15 @@ export enum NetworkId {
   PrivateGanache = '123456',
 };
 
+function isDevNetworkId(id: NetworkId): boolean {
+  return [
+    NetworkId.Mainnet,
+    NetworkId.Ropsten,
+    NetworkId.Rinkeby,
+    NetworkId.Kovan,
+  ].indexOf(id) === -1;
+}
+
 export interface UploadBlockNumbers {
   [networkId: string]: number
 }
@@ -108,7 +117,10 @@ export interface NetworkContractAddresses {
 }
 
 export async function setAddresses(networkId: NetworkId, addresses: ContractAddresses): Promise<void> {
-  const filepath = path.join(__dirname, '../src/local-addresses.json'); // be sure to be in src dir, not build
+  const isDev = isDevNetworkId(networkId);
+  // be sure to be in src dir, not build
+  const filename = isDev ? '../src/local-addresses.json' : '../src/addresses.json';
+  const filepath = path.join(__dirname, filename);
 
   let contents: AllContractAddresses = {};
   if (await exists(filepath)) {
@@ -124,7 +136,10 @@ export async function setAddresses(networkId: NetworkId, addresses: ContractAddr
 }
 
 export async function setUploadBlockNumber(networkId: NetworkId, uploadBlock: number): Promise<void> {
-  const filepath = path.join(__dirname, '../src/local-upload-block-numbers.json'); // be sure to be in src dir, not build
+  const isDev = isDevNetworkId(networkId);
+  // be sure to be in src dir, not build
+  const filename = isDev ? '../src/local-upload-block-numbers.json' : '../src/upload-block-numbers.json';
+  const filepath = path.join(__dirname, filename);
 
   let contents: UploadBlockNumbers = {};
   if (await exists(filepath)) {
@@ -140,7 +155,6 @@ export async function setUploadBlockNumber(networkId: NetworkId, uploadBlock: nu
     await writeFile(filepath, JSON.stringify(contents, null, 2), 'utf8');
   }
 }
-
 
 export function getAddressesForNetwork(networkId: NetworkId): ContractAddresses {
   const addresses = Addresses[networkId];

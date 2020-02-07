@@ -56,7 +56,7 @@ export const Outcome = (props: OutcomeProps) => {
       <div
         className={classNames(Styles.Outcome, {
           [Styles.invalid]: props.invalid,
-          [Styles[`Outcome-${props.index}`]]: !props.invalid,
+          [Styles[`Outcome-${props.index + 1}`]]: !props.invalid,
         })}
       >
         <div>

@@ -278,6 +278,7 @@ export default class MarketsInDispute extends Component<
         onSearchChange={this.onSearchChange}
         sortByOptions={sortByOptions}
         updateDropdown={this.updateDropdown}
+        h1Title={true}
         bottomBarContent={
           <SwitchLabelsGroup
             tabs={tabs}

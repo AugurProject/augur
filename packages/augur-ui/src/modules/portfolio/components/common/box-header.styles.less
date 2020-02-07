@@ -20,6 +20,12 @@
       text-transform: uppercase;
     }
 
+    > div:first-of-type > h1 {
+      .mono-11-bold;
+
+      margin-bottom: 0;
+    }
+
     > div:last-of-type {
       align-items: center;
       display: flex;
@@ -55,7 +61,8 @@
         min-height: @size-32;
         max-height: @size-32;
 
-        > div {
+        > div,
+        > h1 {
           .text-12-medium;
         }
       }

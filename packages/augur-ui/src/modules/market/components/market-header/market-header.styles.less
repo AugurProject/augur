@@ -30,7 +30,7 @@
 
     > div:first-of-type {
       display: flex;
-      flex: 1 100%;
+      flex: 1;
       flex-flow: column nowrap;
       position: relative;
       height: 100%;
@@ -167,7 +167,8 @@
           padding: 0 @size-12;
         }
 
-        > span {
+        > span,
+        > h1 {
           .text-18-bold;
           .limit-lines(3);
 
@@ -176,7 +177,8 @@
           flex: 0 auto;
         }
 
-        &.BigTitle > span {
+        &.BigTitle > span,
+        &.BigTitle > h1 {
           &:hover {
             position: absolute;
             display: block;
@@ -200,6 +202,8 @@
       align-self: stretch;
       display: flex;
       min-height: 149px;
+      flex: 1;
+      max-width: 537px;
 
       @media @breakpoint-mobile {
         min-height: unset;
@@ -403,7 +407,7 @@ div.ExpandedContent {
 .Details {
   padding: 0;
 
-  h4 {
+  h2 {
     .mono-10-bold;
 
     color: @color-secondary-text;
@@ -493,7 +497,7 @@ div.ExpandedContent {
   display: flex;
   flex: 1;
   flex-direction: column;
-  min-width: 537px;
+  // min-width: 537px;
   background: @color-module-background;
 
   > button {

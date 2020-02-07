@@ -4245,12 +4245,12 @@ export const TEMPLATES = {
                   {
                     id: 6,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                    placeholder: `[0] -[2].5`,
+                    placeholder: `[1] -[2].5`,
                   },
                   {
                     id: 7,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                    placeholder: `[2] +[2].5`,
+                    placeholder: `[3] +[2].5`,
                   },
                 ],
                 resolutionRules: {
@@ -4660,12 +4660,12 @@ export const TEMPLATES = {
                   {
                     id: 6,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                    placeholder: `[0] -[2].5`,
+                    placeholder: `[1] -[2].5`,
                   },
                   {
                     id: 7,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                    placeholder: `[2] +[2].5`,
+                    placeholder: `[3] +[2].5`,
                   },
                 ],
                 resolutionRules: {

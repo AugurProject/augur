@@ -12,7 +12,7 @@ export const LandingHero = (props: LandingHeroProps) => {
     <section className={Styles.LandingHero}>
       <img src="images/BGImages.png" />
       <div>
-        <span>The world’s most accessible, no-limit betting platform</span>
+        <h1>The world’s most accessible, no-limit betting platform</h1>
         <span>
           Bet how much you want, from anywhere in the world, on sports,
           politics, finance and more.

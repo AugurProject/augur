@@ -31,19 +31,13 @@ if [ "$DEV" == "true" ]; then
   # Until then -- Make sure changes work in BOTH scripts
 
   if [ "$FAKE_TIME" == "true" ]; then
-    yarn flash fake-all
+    yarn flash fake-all --createMarkets
   else
-    yarn flash normal-all
+    yarn flash normal-all --createMarkets
   fi
 
   # pick up the creation of / changes to local-addresses.json
   yarn build
-
-  # Create-canned-markets will rep/cash faucet
-  yarn flash create-canned-markets
-
-  # Make sure relayer is fauceted with Cash
-  yarn flash faucet -t 0x9d4c6d4b84cd046381923c9bc136d6ff1fe292d9 -a 1000000
 
   ###############################################################################
 else
@@ -64,6 +58,7 @@ export ETHEREUM_CHAIN_ID=`yarn --silent flash network-id | sed '1d'`
 export CUSTOM_CONTRACT_ADDRESSES=`yarn --silent flash get-all-contract-addresses --ugly | sed '1d'`
 export GNOSIS_SAFE_CONTRACT_ADDRESS=`yarn --silent flash get-contract-address -n GnosisSafe | sed '1d'`
 export PROXY_FACTORY_CONTRACT_ADDRESS=`yarn --silent flash get-contract-address -n ProxyFactory | sed '1d'`
+export ZEROX_CONTRACT_ADDRESS=`yarn --silent flash get-contract-address -n ZeroXTrade -r -l | sed '1d'`
 #yarn docker:gnosis
 
 if [[ "${DETACH-false}" == "true" ]]; then
