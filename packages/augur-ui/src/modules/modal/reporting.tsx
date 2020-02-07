@@ -109,7 +109,7 @@ export default class ModalReporting extends Component<
     );
     const radioValue = radioButtons.find(r => r.checked);
     this.updateScalarOutcome(
-      String(radioValue.value) ? String(radioValue.value) : ''
+      radioValue && radioValue.value && String(radioValue.value) ? String(radioValue.value) : ''
     );
     this.setState({ radioButtons, checked: selected });
   };
