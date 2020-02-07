@@ -36,7 +36,7 @@ import { showTemplateByHash, validateMarketTemplate } from './template-utils';
 import { cannedMarkets, singleOutcomeAsks, singleOutcomeBids } from './data/canned-markets';
 import { ContractAPI } from '../libs/contract-api';
 import { OrderBookShaper } from './orderbook-shaper';
-import { NumOutcomes, TradeDirection } from '@augurproject/sdk/src/state/logs/types';
+import { NumOutcomes } from '@augurproject/sdk/src/state/logs/types';
 import { flattenZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
 import { sleep } from '@augurproject/sdk/build/state/utils/utils';
 
@@ -69,11 +69,6 @@ export function addScripts(flash: FlashSession) {
         description: 'use zeroX mesh client endpoint',
         flag: true,
       },
-      {
-        name: 'meshEndpoint',
-        abbr: 'x',
-        description: 'use zeroX mesh client endpoint',
-      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const network = (args.network as NETWORKS) || 'environment';
@@ -85,10 +80,7 @@ export function addScripts(flash: FlashSession) {
       flash.provider = this.makeProvider(this.network);
       const networkId = await this.getNetworkId(flash.provider);
       flash.contractAddresses = getAddressesForNetwork(networkId as NetworkId);
-      const mesh = args.meshEndpoint as string || undefined;
-      const endpoint = 'ws://localhost:60557';
-      const meshEndpoint = mesh ? mesh : endpoint;
-      await flash.ensureUser(this.network, useSdk, true, null, useZeroX ? meshEndpoint : undefined, useZeroX ? true : false);
+      await flash.ensureUser(this.network, useSdk, true, null, useZeroX, useZeroX);
     },
   });
 
@@ -489,17 +481,17 @@ export function addScripts(flash: FlashSession) {
         description: 'do not faucet or approve, has already been done'
       },
       {
-        name: 'meshEndpoint',
-        abbr: 'z',
-        description: 'zeroX mesh endpoint, if not provided ws://localhost:60557 is used',
+        name: 'network',
+        abbr: 'n',
+        description:
+          'Which network to connect to. Defaults to "environment" aka local node.',
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
-      const endpoint = 'ws://localhost:60557';
+      const networkName = (args.network as NETWORKS) || 'environment';
+      const network = NetworkConfiguration.create(networkName);
       const market = String(args.marketId);
-      const mesh = args.meshEndpoint as string || undefined;
-      const meshEndpoint = mesh ? mesh : endpoint;
-      const user = await this.ensureUser(this.network, true, true, null, meshEndpoint, true);
+      const user = await this.ensureUser(network, true, true, null, true, true);
       const skipFaucetApproval = args.skipFaucetOrApproval as boolean;
       if (!skipFaucetApproval) {
         await user.faucet(QUINTILLION.multipliedBy(1000000));
@@ -580,14 +572,19 @@ export function addScripts(flash: FlashSession) {
         flag: true,
         description: 'do not faucet or approve, has already been done'
       },
+      {
+        name: 'network',
+        abbr: 'n',
+        description:
+          'Which network to connect to. Defaults to "environment" aka local node.',
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
-      const endpoint = 'ws://localhost:60557';
+      const networkName = (args.network as NETWORKS) || 'environment';
+      const network = NetworkConfiguration.create(networkName);
       const market = String(args.marketId);
       const numOutcomes = Number(args.numOutcomes);
-      const mesh = args.meshEndpoint as string || undefined;
-      const meshEndpoint = mesh ? mesh : endpoint;
-      const user = await this.ensureUser(this.network, true, true, null, meshEndpoint, true);
+      const user = await this.ensureUser(network, true, true, null, true, true);
       const skipFaucetApproval = args.skipFaucetOrApproval as boolean;
       if (!skipFaucetApproval) {
         await user.faucet(QUINTILLION.multipliedBy(1000000));
@@ -700,7 +697,7 @@ export function addScripts(flash: FlashSession) {
       },
       {
         name: 'minPrice',
-        abbr: 'n',
+        abbr: 'p',
         required: true,
         description: 'min price',
       },
@@ -720,13 +717,18 @@ export function addScripts(flash: FlashSession) {
         flag: true,
         description: 'do not faucet or approve, has already been done'
       },
+      {
+        name: 'network',
+        abbr: 'n',
+        description:
+          'Which network to connect to. Defaults to "environment" aka local node.',
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
-      const endpoint = 'ws://localhost:60557';
       const market = String(args.marketId);
-      const mesh = args.meshEndpoint as string || undefined;
-      const meshEndpoint = mesh ? mesh : endpoint;
-      const user = await this.ensureUser(this.network, true, true, null, meshEndpoint, true);
+      const networkName = (args.network as NETWORKS) || 'environment';
+      const network = NetworkConfiguration.create(networkName);
+      const user = await this.ensureUser(network, true, true, null, true, true);
       const skipFaucetApproval = args.skipFaucetOrApproval as boolean;
       if (!skipFaucetApproval) {
         await user.faucet(QUINTILLION.multipliedBy(1000000));
@@ -832,7 +834,7 @@ export function addScripts(flash: FlashSession) {
     options: [
       {
         name: 'numMarkets',
-        abbr: 'n',
+        abbr: 'm',
         description: 'number of markets to create and have orderbook maintain, default is 10'
       },
       {
@@ -841,17 +843,18 @@ export function addScripts(flash: FlashSession) {
         description: 'User account to create orders, if not provider contract owner is used'
       },
       {
-        name: 'meshEndpoint',
-        abbr: 'e',
-        required: false,
-        description: 'Mesh endpoint to connect'
-      }
+        name: 'network',
+        abbr: 'n',
+        description:
+          'Which network to connect to. Defaults to "environment" aka local node.',
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const numMarkets = args.numMarkets ? Number(args.numMarkets) : 10;
       const userAccount = args.userAccount ? args.userAccount as string : null;
-      const meshEndpoint = args.meshEndpoint ? String(args.meshEndpoint) : 'ws://localhost:60557';
-      const user: ContractAPI = await this.ensureUser(null, true, true, userAccount, meshEndpoint, true);
+      const networkName = (args.network as NETWORKS) || 'environment';
+      const network = NetworkConfiguration.create(networkName);
+      const user: ContractAPI = await this.ensureUser(network, true, true, userAccount, true, true);
       const timestamp = await user.getTimestamp();
       const ids: string[] = [];
       for(let i = 0; i < numMarkets; i++) {
@@ -860,7 +863,7 @@ export function addScripts(flash: FlashSession) {
         ids.push(market.address);
       }
       const marketIds = ids.join(',');
-      await this.call('simple-orderbook-shaper', {marketIds, userAccount, meshEndpoint});
+      await this.call('simple-orderbook-shaper', {marketIds, userAccount, networkName});
     }
   });
 
@@ -880,10 +883,10 @@ export function addScripts(flash: FlashSession) {
           'User account to create orders, if not provided then contract owner is used',
       },
       {
-        name: 'meshEndpoint',
-        abbr: 'e',
-        required: false,
-        description: 'Mesh endpoint to connect',
+        name: 'network',
+        abbr: 'n',
+        description:
+          'Which network to connect to. Defaults to "environment" aka local node.',
       },
       {
         name: 'refreshInterval',
@@ -910,12 +913,11 @@ export function addScripts(flash: FlashSession) {
         .map(id => id.trim());
       const address = args.userAccount ? (args.userAccount as string) : null;
       const interval = args.refreshInterval ? Number(args.refreshInterval) * 1000 : 15000;
-      const endpoint = args.meshEndpoint
-        ? String(args.meshEndpoint)
-        : 'ws://localhost:60557';
+      const networkName = (args.network as NETWORKS) || 'environment';
+      const network = NetworkConfiguration.create(networkName);
       const orderSize = args.orderSize ? Number(args.orderSize) : null;
       const expiration = args.expiration ? new BigNumber(String(args.expiration)) : new BigNumber(18000); // five minutes
-      const user: ContractAPI = await this.ensureUser(null, true, true, address, endpoint, true);
+      const user: ContractAPI = await this.ensureUser(network, true, true, address, true, true);
       console.log('waiting many seconds on purpose for client to sync');
       await new Promise<void>(resolve => setTimeout(resolve, 90000));
 
@@ -979,11 +981,10 @@ export function addScripts(flash: FlashSession) {
         description: 'price of the order',
       },
       {
-        name: 'zerox',
-        abbr: 'z',
-        flag: true,
-        required: false,
-        description: 'create zeroX order'
+        name: 'network',
+        abbr: 'n',
+        description:
+          'Which network to connect to. Defaults to "environment" aka local node.',
       },
       {
         name: 'fillOrder',
@@ -1000,14 +1001,15 @@ export function addScripts(flash: FlashSession) {
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
-      const endpoint = 'ws://localhost:60557';
+      const networkName = (args.network as NETWORKS) || 'environment';
+      const network = NetworkConfiguration.create(networkName);
       const address = args.userAccount as string;
       const isZeroX = args.zerox as boolean;
       const fillOrder = args.fillOrder as boolean;
       let user: ContractAPI = null;
 
       if (isZeroX) {
-        user = await this.ensureUser(null, true, true, address, endpoint, true);
+        user = await this.ensureUser(network, true, true, address, true, true);
       } else {
         user = await this.ensureUser(null, true, true, address);
       }
@@ -1134,10 +1136,10 @@ export function addScripts(flash: FlashSession) {
         description: 'side of orderbook to take, bid or ask, bid is default',
       },
       {
-        name: 'meshEndpoint',
-        abbr: 'e',
-        required: false,
-        description: 'Mesh endpoint to connect',
+        name: 'network',
+        abbr: 'n',
+        description:
+          'Which network to connect to. Defaults to "environment" aka local node.',
       },
     ],
     async call(this: FlashSession, args :FlashArguments) {
@@ -1148,12 +1150,10 @@ export function addScripts(flash: FlashSession) {
       const orderType = args.orderType ? String(args.orderType) : 'bid';
       const outcome = args.outcome ? Number(args.outcome) : 2;
       const wait = Number(String(args.wait)) || 1;
+      const networkName = (args.network as NETWORKS) || 'environment';
+      const network = NetworkConfiguration.create(networkName);
 
-      const endpoint = args.meshEndpoint
-        ? String(args.meshEndpoint)
-        : 'ws://localhost:60557';
-
-      const user: ContractAPI = await this.ensureUser(null, true, true, address, endpoint, true);
+      const user: ContractAPI = await this.ensureUser(network, true, true, address, true, true);
 
       if (!skipFaucet) {
         console.log('fauceting ...');
