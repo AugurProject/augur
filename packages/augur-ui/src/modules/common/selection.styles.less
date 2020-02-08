@@ -416,55 +416,48 @@
 }
 
 .MenuItems {
-  .text-12-bold;
+  .text-12-medium;
 
   align-items: flex-start;
-  background: @color-primary-text;
+  background: @color-secondary-action;
   border-radius: @border-radius-default;
-  color: @color-dark-grey;
+  border: 1px solid @color-secondary-action-outline;
+  color: @color-primary-text;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: @size-8 @size-16;
   position: absolute;
   right: 0;
   top: 36px;
   user-select: none;
   width: 189px;
   z-index: @above-all-content;
-
-  @media @breakpoint-mobile {
-    padding: @size-16;
-  }
+  outline: none;
 
   > div {
     align-items: center;
-    border-top: @size-1 solid fade(@color-secondary-action-outline, 10%);
     display: flex;
+    justify-content: flex-start;
+    flex-flow: row wrap;
     width: 100%;
+    height: @size-32;
+    padding: @size-8 @size-12;
+    outline: none;
+    
+    &:not(:last-of-type) {
+      &::after {
+        content: "";
+        height: 1px;
+        background: @color-secondary-action-outline;
+        width: 100%;
+        position: relative;
+        top: 7px;
+      }
+    }
   }
 
   > div:hover {
-    color: @color-inactive-text;
-    opacity: 0.75;
-  }
-
-  > div {
-    border-top: 0;
-    padding-bottom: @size-8;
-
-    @media @breakpoint-mobile {
-      padding-bottom: @size-16;
-    }
-  }
-
-  > div:last-of-type {
-    padding-bottom: 0;
-    padding-top: @size-8;
-
-    @media @breakpoint-mobile {
-      padding-top: @size-16;
-    }
+    background: @color-secondary-hover;
   }
 }
 
