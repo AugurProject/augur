@@ -1,8 +1,4 @@
-import {
-  Mesh,
-  Config,
-  ContractAddresses as ZeroXContractAddresses,
-} from '@0x/mesh-browser';
+import { Config, ContractAddresses as ZeroXContractAddresses, Mesh } from '@0x/mesh-browser';
 import { getAddressesForNetwork, NetworkId } from '@augurproject/artifacts';
 import { SDKConfiguration, ZeroX } from '@augurproject/sdk';
 
@@ -13,14 +9,14 @@ type BrowserMeshErrorFunction = (err: Error, mesh: Mesh) => void;
  * are specified multiple times.
  */
 function createBrowserMeshConfig(
-  ethereumRPCURL: string,
+  web3Provider: SupportedProvider,
   ethereumChainID: number,
   verbosity = 5,
   bootstrapList: string[],
-  forceIgnoreCustomAddresses = false
+  forceIgnoreCustomAddresses = false,
 ) {
   const meshConfig: Config = {
-    ethereumRPCURL,
+    web3Provider,
     ethereumChainID,
     verbosity,
     bootstrapList,
@@ -54,6 +50,7 @@ function createBrowserMeshConfig(
 
 function createBrowserMeshRestartFunction(
   meshConfig: Config,
+  web3Provider: SupportedProvider,
   zeroX: ZeroX
 ) {
   return err => {
@@ -67,14 +64,14 @@ function createBrowserMeshRestartFunction(
       // Passing `true` as the last parameter to make sure the config doesn't include custom addresses on retry
       const mesh = new Mesh(
         createBrowserMeshConfig(
-          meshConfig.ethereumRPCURL,
+          web3Provider,
           meshConfig.ethereumChainID,
           meshConfig.verbosity,
           meshConfig.bootstrapList,
           true
         )
       );
-      mesh.onError(createBrowserMeshRestartFunction(meshConfig, zeroX));
+      mesh.onError(createBrowserMeshRestartFunction(meshConfig, web3Provider, zeroX));
       mesh.startAsync().then(() => {
         zeroX.mesh = mesh;
       })
@@ -84,6 +81,7 @@ function createBrowserMeshRestartFunction(
 
 export async function createBrowserMesh(
   config: SDKConfiguration,
+  web3Provider: SupportedProvider,
   zeroX: ZeroX
 ) {
   if (!config.zeroX || !config.zeroX.mesh || !config.zeroX.mesh.enabled) {
@@ -91,14 +89,14 @@ export async function createBrowserMesh(
   }
 
   const meshConfig = createBrowserMeshConfig(
-    config.ethereum.http,
+    web3Provider,
     Number(config.networkId),
     config.zeroX.mesh.verbosity || 5,
     config.zeroX.mesh.bootstrapList
   );
 
   const mesh = new Mesh(meshConfig);
-  mesh.onError(createBrowserMeshRestartFunction(meshConfig, zeroX));
+  mesh.onError(createBrowserMeshRestartFunction(meshConfig, web3Provider, zeroX));
   await mesh.startAsync();
   zeroX.mesh = mesh;
 }

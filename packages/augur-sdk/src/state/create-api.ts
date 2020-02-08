@@ -1,8 +1,8 @@
-import { ContractAddresses, getStartingBlockForNetwork, NetworkId, getAddressesForNetwork } from '@augurproject/artifacts';
-import { UploadBlockNumbers } from '@augurproject/artifacts/build';
+import { ContractAddresses, getAddressesForNetwork, getStartingBlockForNetwork, NetworkId } from '@augurproject/artifacts';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { EthersSigner } from 'contract-dependencies-ethers';
 import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis';
+import { SupportedProvider } from "ethereum-types";
 import { JsonRpcProvider } from 'ethers/providers';
 import { ContractEvents } from '../api/ContractEvents';
 import { ZeroX } from '../api/ZeroX';
@@ -56,7 +56,7 @@ export interface SDKConfiguration {
 export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: EthersProvider, logFilterAggregator: LogFilterAggregator) {
   return async () => {
     const networkId = await provider.getNetworkId();
-    const uploadBlockNumber = UploadBlockNumbers[networkId];
+    const uploadBlockNumber = getStartingBlockForNetwork(networkId);
     const uploadBlockHeaders = await provider.getBlock(uploadBlockNumber);
     const currentBlockNumber = await provider.getBlockNumber();
 
@@ -96,8 +96,8 @@ export async function createClient(
   signer?: EthersSigner,
   provider?: EthersProvider,
   enableFlexSearch = false,
-  createBrowserMesh?: (config: SDKConfiguration, zeroX: ZeroX) => void
-): Promise<Augur> {
+  createBrowserMesh?: (config: SDKConfiguration, web3Provider: SupportedProvider, zeroX: ZeroX) => void
+  ): Promise<Augur> {
 
   const ethersProvider = provider || new EthersProvider( new JsonRpcProvider(config.ethereum.http), 10, 0, 40);
   const addresses = config.addresses || getAddressesForNetwork(config.networkId);
@@ -121,7 +121,7 @@ export async function createClient(
       // interface instead of actually import @0x/mesh-browser -- since
       // that would attempt to start the wasm client in nodejs and cause
       // everything to die.
-      createBrowserMesh(config, zeroX);
+      createBrowserMesh(config, ethersProvider.provider, zeroX);
     }
   }
 
@@ -192,6 +192,12 @@ export async function startServerFromClient(config: SDKConfiguration, client?: A
   const { api, sync } = await createServer(config, client);
 
   sync();
+  /*
+  controller.run().catch((err) => {
+    // TODO: PG needs to handle what happens if the server side of the connector dies
+    console.log('Error starting up Augur syncing services');
+  });
+  */
 
   return api;
 }
