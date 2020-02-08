@@ -121,8 +121,8 @@ export function addScripts(flash: FlashSession) {
       console.log('Deploying: ', args);
 
       const config = {
-        writeArtifacts: args.write_artifacts as boolean,
-        useNormalTime: !(args.time_controlled as boolean),
+        writeArtifacts: args.writeArtifacts as boolean,
+        useNormalTime: !(args.timeControlled as boolean),
       };
 
       const { addresses } = await deployContracts(
@@ -137,7 +137,7 @@ export function addScripts(flash: FlashSession) {
         await flash.ensureUser(this.network, useSdk);
       }
 
-      const relayerAddressArg = args.relayer_address as string;
+      const relayerAddressArg = args.relayerAddress as string;
       const relayerAddressConfig = this.network && this.network.gnosisRelayerAddress;
       const relayerAddress = relayerAddressArg || relayerAddressConfig;
       if (relayerAddress) {
@@ -1304,9 +1304,9 @@ export function addScripts(flash: FlashSession) {
     ],
     async call(this: FlashSession, args: FlashArguments) {
       await this.call('deploy', {
-        write_artifacts: true,
-        time_controlled: true,
-        relayer_address: args.relayer_address as string,
+        writeArtifacts: true,
+        timeControlled: true,
+        relayer_address: args.relayerAddress as string,
       });
       const createMarkets = args.createMarkets as boolean;
       if (createMarkets) {
@@ -1333,9 +1333,9 @@ export function addScripts(flash: FlashSession) {
     ],
     async call(this: FlashSession, args: FlashArguments) {
       await this.call('deploy', {
-        write_artifacts: true,
-        time_controlled: false,
-        relayer_address: args.relayer_address as string,
+        writeArtifacts: true,
+        timeControlled: false,
+        relayer_address: args.relayerAddress as string,
       });
       const createMarkets = args.createMarkets as boolean;
       if (createMarkets) {

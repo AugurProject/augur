@@ -68,6 +68,15 @@ describe('State API :: Market Sorts', () => {
     });
 
     test(':horizontal/vertical liquidity', async () => {
+      const outcomeA = 1;
+      const outcomeB = 2;
+      const outcomeC = 3;
+      const outcomeInvalid = 0;
+      const bid = 0;
+      const ask = 1;
+      const expirationTimeInSeconds = new BigNumber(Math.round(+new Date() / 1000).valueOf()).plus(10000);
+      const nowPlus50Seconds = new BigNumber(Math.round(+new Date() / 1000).valueOf()).plus(50);
+
       // Test horizontal liquidity
 
       // Create a market
@@ -87,11 +96,6 @@ describe('State API :: Market Sorts', () => {
       });
 
       // Place a Bid on A and an Ask on A
-      const outcomeA = 1;
-      const bid = 0;
-      const ask = 1;
-      const expirationTime = new BigNumber(new Date().valueOf()).plus(10000);
-
       await john.placeZeroXOrder({
         direction: ask,
         market: market.address,
@@ -106,7 +110,7 @@ describe('State API :: Market Sorts', () => {
         displayAmount: new BigNumber(500),
         displayPrice: new BigNumber(0.81),
         displayShares: new BigNumber(100000),
-        expirationTime,
+        expirationTime: expirationTimeInSeconds,
       });
 
       await john.placeZeroXOrder({
@@ -123,7 +127,7 @@ describe('State API :: Market Sorts', () => {
         displayAmount: new BigNumber(500),
         displayPrice: new BigNumber(0.78),
         displayShares: new BigNumber(100000),
-        expirationTime,
+        expirationTime: expirationTimeInSeconds,
       });
       await (await johnDB).sync(john.augur, mock.constants.chunkSize, 0);
       marketData = await (await johnDB).Markets.get(market.address);
@@ -143,9 +147,6 @@ describe('State API :: Market Sorts', () => {
 
       await (await johnDB).sync(john.augur, mock.constants.chunkSize, 0);
 
-      const outcomeB = 2;
-      const outcomeC = 3;
-
       // Place a an Ask on A. This won't rank for liquidity
       await john.placeZeroXOrder({
         direction: ask,
@@ -161,7 +162,7 @@ describe('State API :: Market Sorts', () => {
         displayAmount: new BigNumber(500),
         displayPrice: new BigNumber(0.51),
         displayShares: new BigNumber(100000),
-        expirationTime,
+        expirationTime: expirationTimeInSeconds,
       });
 
       // await john.simplePlaceOrder(market.address, ask, numShares, askPrice, outcomeA);
@@ -186,7 +187,7 @@ describe('State API :: Market Sorts', () => {
         displayAmount: new BigNumber(500),
         displayPrice: new BigNumber(0.51),
         displayShares: new BigNumber(100000),
-        expirationTime,
+        expirationTime: expirationTimeInSeconds,
       });
 
       await john.placeZeroXOrder({
@@ -203,7 +204,7 @@ describe('State API :: Market Sorts', () => {
         displayAmount: new BigNumber(500),
         displayPrice: new BigNumber(0.51),
         displayShares: new BigNumber(100000),
-        expirationTime,
+        expirationTime: expirationTimeInSeconds,
       });
 
       await sleep(300);
@@ -216,10 +217,7 @@ describe('State API :: Market Sorts', () => {
 
       // Test Invalid Filter
       // Create a market
-      const market3 = await john.createReasonableMarket([
-        stringTo32ByteHex('A'),
-        stringTo32ByteHex('B'),
-      ]);
+      const market3 = await john.createReasonableYesNoMarket();
 
       // With no orders on the book the invalidFilter will be false
       await (await johnDB).sync(john.augur, mock.constants.chunkSize, 0);
@@ -227,21 +225,20 @@ describe('State API :: Market Sorts', () => {
       await expect(marketData.invalidFilter).toEqual(0);
 
       // Place a bid order on Invalid
-      const outcomeInvalid = 0;
       await john.placeBasicYesNoZeroXTrade(
         bid,
         market3.address,
         outcomeInvalid,
-        new BigNumber(10),
-        new BigNumber(0.2),
+        new BigNumber(20),
+        new BigNumber(0.79),
         new BigNumber(0),
-        new BigNumber(100000)
+        expirationTimeInSeconds
       );
 
-      await (await johnDB).sync(john.augur, mock.constants.chunkSize, 0);
-      marketData = await (await johnDB).Markets.get(market3.address);
 
       // The Invalid filter is still not hit because the bid would be unprofitable to take if the market were valid, so no one would take it even if the market was Valid
+      await (await johnDB).sync(john.augur, mock.constants.chunkSize, 0);
+      marketData = await (await johnDB).Markets.get(market3.address);
       await expect(marketData.invalidFilter).toEqual(0);
 
       // Bid something better
@@ -250,16 +247,104 @@ describe('State API :: Market Sorts', () => {
         market3.address,
         outcomeInvalid,
         new BigNumber(2000),
-        new BigNumber(0.78),
+        new BigNumber(0.79),
         new BigNumber(0),
-        new BigNumber(100000)
+        expirationTimeInSeconds
       );
 
+      // The Invalid filter is now hit because this Bid would be profitable for a filler assuming the market were actually Valid
       await (await johnDB).sync(john.augur, mock.constants.chunkSize, 0);
       marketData = await (await johnDB).Markets.get(market3.address);
-
-      // The Invalid filter is now hit because this Bid would be profitable for a filler assuming the market were actually Valid
       await expect(marketData.invalidFilter).toEqual(1);
+
+      // Don't include orders in liquidity calculations that expiry within 70 seconds
+      const market4 = await john.createReasonableMarket([
+        stringTo32ByteHex('A'),
+        stringTo32ByteHex('B'),
+      ]);
+
+      // Add ask
+      await john.placeBasicYesNoZeroXTrade(
+        ask,
+        market4.address,
+        outcomeA,
+        new BigNumber(500),
+        new BigNumber(0.83),
+        new BigNumber(0),
+        expirationTimeInSeconds
+      );
+
+      // Add bid and Iinclude an expiry that will fall outside the 70seconds limit for liquidity calculations
+      await john.placeBasicYesNoZeroXTrade(
+        bid,
+        market4.address,
+        outcomeA,
+        new BigNumber(500),
+        new BigNumber(0.82),
+        new BigNumber(0),
+        nowPlus50Seconds,
+      );
+
+      // Should ignore above bid and calculate zero liquidity
+      await (await johnDB).sync(john.augur, mock.constants.chunkSize, 0);
+      marketData = await (await johnDB).Markets.get(market4.address);
+      await expect(marketData.liquidity).toEqual({
+        '10': '000000000000000000000000000000',
+        '100': '000000000000000000000000000000',
+        '15': '000000000000000000000000000000',
+        '20': '000000000000000000000000000000',
+      });
+
+
+      // Test Recently Depleted Liquidity + Invalid
+      await john.placeBasicYesNoZeroXTrade(
+        ask,
+        market4.address,
+        outcomeB,
+        new BigNumber(500),
+        new BigNumber(0.83),
+        new BigNumber(0),
+        expirationTimeInSeconds
+      );
+
+      await john.placeBasicYesNoZeroXTrade(
+        bid,
+        market4.address,
+        outcomeB,
+        new BigNumber(500),
+        new BigNumber(0.82),
+        new BigNumber(0),
+        expirationTimeInSeconds
+      );
+
+      // Should pass spread check and not be invalid
+      await (await johnDB).sync(john.augur, mock.constants.chunkSize, 0);
+      marketData = await (await johnDB).Markets.get(market4.address);
+      await expect(marketData.liquidity).toEqual({
+        '10': '000000000580000000000000000000',
+        '100': '000000000580000000000000000000',
+        '15': '000000000580000000000000000000',
+        '20': '000000000580000000000000000000',
+      });
+      await expect(marketData.invalidFilter).toEqual(0);
+
+
+      // Add an invalid bid to throw the market into an Invalid state
+      await john.placeBasicYesNoZeroXTrade(
+        bid,
+        market4.address,
+        outcomeInvalid,
+        new BigNumber(2000),
+        new BigNumber(0.78),
+        new BigNumber(0),
+        expirationTimeInSeconds
+      );
+
+      // Invalid that had spread should be set as hasRecentlyDepletedLiquidity
+      await (await johnDB).sync(john.augur, mock.constants.chunkSize, 0);
+      marketData = await (await johnDB).Markets.get(market4.address);
+      await expect(marketData.invalidFilter).toEqual(1);
+      await expect(marketData.hasRecentlyDepletedLiquidity).toEqual(true);
     });
   });
 });

@@ -153,6 +153,7 @@ test('rollback derived database', async () => {
     stringTo32ByteHex('A'),
     stringTo32ByteHex('B'),
   ]);
+  const expirationTimeInSeconds = new BigNumber(Math.round(+new Date() / 1000).valueOf()).plus(10000);
 
   await (await johnDB).sync(john.augur, mock.constants.chunkSize, 0);
 
@@ -164,7 +165,7 @@ test('rollback derived database', async () => {
     new BigNumber(2000),
     new BigNumber(0.78),
     new BigNumber(0),
-    new BigNumber(100000)
+    expirationTimeInSeconds
   );
 
   await (await johnDB).sync(john.augur, mock.constants.chunkSize, 0);
@@ -179,7 +180,7 @@ test('rollback derived database', async () => {
     new BigNumber(2000),
     new BigNumber(0.78),
     new BigNumber(0),
-    new BigNumber(100000)
+    expirationTimeInSeconds
   );
 
   await (await johnDB).sync(john.augur, mock.constants.chunkSize, 0);
