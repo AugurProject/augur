@@ -141,7 +141,11 @@ export const selectMarketsInDispute = createSelector(
           const market = selectMarket(id);
           if (!market) return p;
           if (
-            market.reportingState !== MarketReportingState.CrowdsourcingDispute
+            market.reportingState !==
+              MarketReportingState.CrowdsourcingDispute ||
+            !market.disputeInfo ||
+            !market.disputeInfo.disputeWindow ||
+            market.disputeInfo.disputeWindow.disputeRound === '1'
           )
             return p;
           return [...p, market];
