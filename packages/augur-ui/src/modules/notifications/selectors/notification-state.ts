@@ -108,8 +108,8 @@ export const selectMarketsInDispute = createSelector(
   (markets, positions, address) => {
     const state = store.getState() as AppState;
     let marketIds = Object.keys(positions);
-    const { reporting, disputing } = state.loginAccount;
-    if (disputing && disputing.contracts) {
+    const { reporting } = state.loginAccount;
+    if (reporting.disputing && reporting.disputing.contracts) {
       marketIds = Array.from(
         new Set([
           ...marketIds,
