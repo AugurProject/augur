@@ -185,3 +185,5 @@ export enum OrderEventType {
   Fill   = LogOrderEventType.Fill,
   Expire = 3
 }
+
+export const orderTypes = ['0x00', '0x01'];

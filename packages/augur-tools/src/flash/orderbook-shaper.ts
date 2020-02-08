@@ -31,7 +31,7 @@ interface MarketOutcomesBook {
 interface OrderPriceVol {
   [price: number]: number;
 }
-interface OrderBookConfig {
+export interface OrderBookConfig {
   bids: OrderPriceVol;
   asks: OrderPriceVol;
 }
@@ -63,16 +63,18 @@ export class OrderBookShaper {
   outcomes: number[] = [];
   marketId: string = "";
   orderSize: number = null;
+  orderBookConfig: OrderBookConfig = config;
 
-  constructor (marketId: string, orderSize: number = null, expiration: BigNumber = new BigNumber(18000), outcomes: number[] = [1, 2]) {
+  constructor (marketId: string, orderSize: number = null, expiration: BigNumber = new BigNumber(18000), outcomes: number[] = [1, 2], orderBookConfig: OrderBookConfig = config) {
     this.marketId = marketId;
     this.outcomes = outcomes;
     this.orderSize = orderSize;
-    this.expiration = expiration
+    this.expiration = expiration;
+    this.orderBookConfig = orderBookConfig;
   }
 
   nextRun = (marketBook: MarketOrderBook, timestamp: BigNumber): ZeroXPlaceTradeDisplayParams[] => {
-    const marketOutcomesBook: MarketOutcomesBook = this.outcomes.reduce((p, o) => ({...p, [o]: config}), {})
+    const marketOutcomesBook: MarketOutcomesBook = this.outcomes.reduce((p, o) => ({...p, [o]: this.orderBookConfig}), {})
     const orderBook = marketBook.orderBook;
     let orders: SimpleOrder[] = [];
     this.outcomes.forEach((o: number) => {
@@ -108,7 +110,6 @@ export class OrderBookShaper {
     })
     return orders;
   }
-
 
   createOrders = (orders: SimpleOrder[], timestamp: BigNumber): ZeroXPlaceTradeDisplayParams[] => {
     const zOrders = orders.map(order => {
