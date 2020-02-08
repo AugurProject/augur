@@ -2214,7 +2214,7 @@ export const RedFlagIcon = (
     xmlns="http://www.w3.org/2000/svg"
   >
     <circle cx="8" cy="8" r="7.5" fill="#252429" stroke="#3C3B43" />
-    <g clip-path="url(#clip0)">
+    <g clipPath="url(#clip0)">
       <path
         d="M5.125 4.625H11.875L10.75 6.875L11.875 9.125H5.125"
         fill="#FF2727"
