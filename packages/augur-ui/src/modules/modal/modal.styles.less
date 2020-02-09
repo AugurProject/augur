@@ -374,6 +374,8 @@ div.ButtonsRow:last-of-type {
 
     > button {
       justify-content: flex-start;
+      margin: @size-16 0;
+      width: fit-content;
     }
   }
 }
@@ -506,11 +508,6 @@ div.ButtonsRow:last-of-type {
         margin-top: @size-12;
       }
 
-      > div,
-      > span {
-        margin-bottom: @size-6;
-      }
-
       > ol {
         margin: 0 0 @size-24;
         padding: 0;
@@ -640,11 +637,15 @@ div.ButtonsRow:last-of-type {
 
 .AddFundsCreditDebitCoinbase {
   > h2 {
-    margin: 0 0 @size-24;
+    margin: @size-4 0 @size-24 0;
 
     svg {
       transform: translateY(@size-4);
     }
+  }
+
+  > button:last-of-type {
+    margin: @size-16 0 0 0;
   }
 }
 
@@ -2534,12 +2535,13 @@ div.ButtonsRow:last-of-type {
   margin: @size-8 0 @size-18 0;
   padding: @size-12 @size-9;
   padding-right: 0;
-  width: 237px;
+  width: fit-content;
   position: relative;
 
   > div {
     margin-right: @size-12;
     word-break: break-all;
+    max-width: 125px;
   }
 
   > button {
@@ -3132,5 +3134,37 @@ div.ButtonsRow:last-of-type {
         margin-right: @size-24;
       }
     }
+  }
+}
+
+.AddFundsSwap {
+  margin: @size-24 0 @size-16 0;
+
+  > ul {
+    height: @size-32;
+    > li {
+      background: @color-secondary-action;
+      width: 50%;
+
+      >  button {
+        .text-12;
+
+        color: @color-primary-text;
+        text-transform: capitalize;
+      }
+    }
+  }
+
+  > ul > li[class*='Selected'] {
+    background: @color-dark-grey;
+  }
+
+  > ul > li:first-of-type {
+    border-bottom-left-radius: @size-24;
+    border-top-left-radius: @size-24;
+  }
+  > ul > li:last-of-type {
+    border-bottom-right-radius: @size-24;
+    border-top-right-radius: @size-24;
   }
 }

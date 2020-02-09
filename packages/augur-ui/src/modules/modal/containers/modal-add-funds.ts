@@ -8,11 +8,12 @@ import { Action } from 'redux';
 import getValue from 'utils/get-value';
 import { ADD_FUNDS, track } from 'services/analytics/helpers';
 import { GnosisSafeState } from '@augurproject/gnosis-relay-api';
+import { createBigNumber } from 'utils/create-big-number';
 
 const mapStateToProps = (state: AppState) => {
   // TODO placeholder rates until price feed is hooked up
-  const ETH_RATE = 160.63;
-  const REP_RATE = 15.87;
+  const ETH_RATE = createBigNumber(212.63);
+  const REP_RATE = createBigNumber(15.87);
 
   return {
     modal: state.modal,

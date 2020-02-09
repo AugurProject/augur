@@ -1,18 +1,16 @@
 import React, { useState } from 'react';
 import {
-  ExternalLinkButton,
-  PrimaryButton,
   CloseButton,
   BackButton,
 } from 'modules/common/buttons';
 import {
-  AccountAddressDisplay,
   FundsHelp,
+  CreditCard,
+  Coinbase,
+  Transfer,
 } from 'modules/modal/common';
-import { RadioTwoLineBarGroup, TextInput } from 'modules/common/form';
+import { RadioTwoLineBarGroup } from 'modules/common/form';
 import classNames from 'classnames';
-import ReactTooltip from 'react-tooltip';
-import { toChecksumAddress } from 'ethereumjs-util';
 import {
   ACCOUNT_TYPES,
   DAI,
@@ -24,11 +22,11 @@ import {
   ADD_FUNDS_TRANSFER,
 } from 'modules/common/constants';
 import { LoginAccount } from 'modules/types';
-import TooltipStyles from 'modules/common/tooltip.styles.less';
 import Styles from 'modules/modal/modal.styles.less';
-import { helpIcon } from 'modules/common/icons';
-import noop from 'utils/noop';
-import { Swap } from 'modules/swap/components';
+import { Swap } from 'modules/swap/components/swap';
+import { Pool } from 'modules/swap/components/pool';
+import { PillSelection } from 'modules/common/selection';
+import { BigNumber, createBigNumber } from 'utils/create-big-number';
 
 interface AddFundsProps {
   closeAction: Function;
@@ -36,36 +34,11 @@ interface AddFundsProps {
   isRelayDown?: boolean;
   fundType: string;
   loginAccount: LoginAccount;
-  ETH_RATE: number;
-  REP_RATE: number;
+  ETH_RATE: BigNumber;
+  REP_RATE: BigNumber;
   addFundsTorus: Function;
   addFundsFortmatic: Function;
 }
-
-export const generateDaiTooltip = (
-  tipText = 'Augur requires deposits in DAI ($), a currency pegged 1 to 1 to the US Dollar.'
-) => {
-  return (
-    <span className={Styles.AddFundsToolTip}>
-      <label
-        className={classNames(TooltipStyles.TooltipHint)}
-        data-tip
-        data-for='tooltip--confirm'
-      >
-        {helpIcon}
-      </label>
-      <ReactTooltip
-        id='tooltip--confirm'
-        className={TooltipStyles.Tooltip}
-        effect='solid'
-        place='top'
-        type='light'
-      >
-        <p>{tipText}</p>
-      </ReactTooltip>
-    </span>
-  );
-};
 
 export const AddFunds = ({
   closeAction,
@@ -80,9 +53,14 @@ export const AddFunds = ({
 }: AddFundsProps) => {
   const address = loginAccount.address
   const accountMeta = loginAccount.meta;
-  let autoSelection = ADD_FUNDS_COINBASE;
   let BUY_MIN = 0;
   let BUY_MAX = 0;
+
+
+  const usingOnRampSupportedWallet = accountMeta.accountType === ACCOUNT_TYPES.TORUS
+    || accountMeta.accountType === ACCOUNT_TYPES.PORTIS
+    || accountMeta.accountType === ACCOUNT_TYPES.FORTMATIC;
+
 
   if (accountMeta.accountType === ACCOUNT_TYPES.TORUS) {
     BUY_MIN = 20;
@@ -92,63 +70,52 @@ export const AddFunds = ({
     BUY_MAX = 250
   }
 
-  if (autoSelect) {
-    if (
-      [ACCOUNT_TYPES.TORUS, ACCOUNT_TYPES.FORTMATIC, ACCOUNT_TYPES.PORTIS].includes(
-        accountMeta.accountType
-      ) &&
-      fundType !== REP
-    ) {
-      autoSelection = ADD_FUNDS_CREDIT_CARD;
-    } else if (
-      fundType === REP
-    ) {
-      autoSelection = ADD_FUNDS_SWAP;
-    }
-  }
-
-  const [amountToBuy, setAmountToBuy] = useState(0);
+  const [amountToBuy, setAmountToBuy] = useState(createBigNumber(0));
   const [isAmountValid, setIsAmountValid] = useState(false);
 
   const validateAndSet = (amount) => {
-    if (accountMeta.accountType === ACCOUNT_TYPES.TORUS) {
-      // Torus
-      // minOrderValue $20
-      // maxOrderValue $250
-      if (amount >= 20 && amount <= 250) {
-        setIsAmountValid(true);
-      } else {
-        setIsAmountValid(false);
-      }
-      setAmountToBuy(amount);
+    const amountToBuy = createBigNumber(amount);
+    if (amountToBuy.gte(BUY_MIN) && amountToBuy.lte(BUY_MAX)) {
+      setIsAmountValid(true);
+    } else {
+      setIsAmountValid(false);
     }
-    else if (accountMeta.accountType === ACCOUNT_TYPES.FORTMATIC) {
-      // Fortmatic
-      // minOrderValue $50
-      // maxOrderValue $250
-      if (amount >= 50 && amount <= 250) {
-        setIsAmountValid(true);
-      } else {
-        setIsAmountValid(false);
-      }
-      setAmountToBuy(amount);
+    setAmountToBuy(amountToBuy);
+  }
+  const [poolSelected, setPoolSelected] = useState(false);
+
+  const toggleSwapPool = (selection) => {
+    if (selection === 0) {
+      setSwapSelected(true);
+      setPoolSelected(false);
+    } else if (selection === 1) {
+      setSwapSelected(false);
+      setPoolSelected(true);
     }
   }
 
-  const [selectedOption, setSelectedOption] = useState(autoSelect ? autoSelection : null);
   const accountLabel = isRelayDown && fundType === DAI ? `[${accountMeta.accountType}]` : 'Augur';
   const fundTypeToUse = isRelayDown && fundType === DAI ? ETH : fundType;
   const fundTypeLabel = fundTypeToUse === ETH ? 'ETH' : fundTypeToUse === DAI ? 'Dai ($)' : 'REP';
+
+
+  let autoSelectValue = ADD_FUNDS_COINBASE;  // Coinbase default selected
+  if (fundTypeToUse === REP) {
+    // IF Add Funds REP flow, show swap as default selected
+    autoSelectValue = ADD_FUNDS_SWAP
+  } else if (usingOnRampSupportedWallet && fundTypeToUse === DAI) {
+    // IF Add Funds DAI flow and using a onramp supported wallet show CreditCard as default selected
+    autoSelectValue = ADD_FUNDS_CREDIT_CARD
+  }
+
+  const [selectedOption, setSelectedOption] = useState(autoSelect ? autoSelectValue : null);
+  const [swapSelected, setSwapSelected] = useState(true);
+
 
   // When Adding ETH through Add Funds we use the signer address since we need that account to have ETH to cover gas during outages
   const walletAddress = isRelayDown && fundType === DAI && accountMeta.signer ?  accountMeta.signer._address : address;
 
   const FUND_OTPIONS = [
-    {
-      header: 'Swap',
-      description: `Swap funds in your account for ${fundTypeLabel}`,
-      value: ADD_FUNDS_SWAP,
-    },
     {
       header: 'Credit/debit card',
       description: `Add ${fundTypeToUse === ETH ? 'ETH' : 'Funds'} instantly using a credit/debit card`,
@@ -164,36 +131,33 @@ export const AddFunds = ({
       description: `Send ${fundTypeToUse === ETH ? 'ETH' : 'Funds'} to your ${accountLabel} account address`,
       value: ADD_FUNDS_TRANSFER,
     },
+    {
+      header: 'Swap',
+      description: fundTypeToUse === DAI ? 'Swap ETH or REP for DAI and vice versa' : 'Swap ETH or DAI for REP and vice versa',
+      value: ADD_FUNDS_SWAP,
+    },
   ];
 
 
-  // Always show Coinbase/Transfer for all types of Add Fund flows
-  const addFundsOptions = [FUND_OTPIONS[2], FUND_OTPIONS[3]];
+  let addFundsOptions = [...FUND_OTPIONS];
 
-  // Add CreditCard for DAI flow for all wallet providers (Portis, Fortmatic, and Torus)
-  if (
-    fundType !== REP &&
-    (accountMeta.accountType === ACCOUNT_TYPES.TORUS ||
-      accountMeta.accountType === ACCOUNT_TYPES.PORTIS ||
-      accountMeta.accountType === ACCOUNT_TYPES.FORTMATIC)
-  ) {
-    addFundsOptions.unshift(FUND_OTPIONS[1]);
+  // Only show CreditCard option for onRamp wallets using the Add DAI flow
+  if (fundTypeToUse !== DAI || !usingOnRampSupportedWallet) {
+    addFundsOptions = addFundsOptions.slice(1, addFundsOptions.length);
   }
 
-  // Add CreditCard for REP flow + Fortmatic
-  if (
-    fundType === REP &&
-    (accountMeta.accountType === ACCOUNT_TYPES.FORTMATIC)
-  ) {
-    addFundsOptions.unshift(FUND_OTPIONS[1]);
+  // If Add REP flow show SWAP at the top
+  if (fundTypeToUse === REP) {
+    addFundsOptions = addFundsOptions.filter(option => option.value !== ADD_FUNDS_SWAP);
+    addFundsOptions.unshift(FUND_OTPIONS.find(option => option.value === ADD_FUNDS_SWAP));
   }
 
-  // Add Uniswap for REP flow
-  if (
-    fundType === REP
-  ) {
-    addFundsOptions.unshift(FUND_OTPIONS[0]);
-  }
+  const SWAP_ID = 0;
+  const POOL_ID = 1;
+  const pillOptions = [
+    { label: 'Swap', id: SWAP_ID },
+    { label: 'Pool', subLabel: '(Advanced)', id: POOL_ID },
+  ];
 
   return (
     <div
@@ -228,8 +192,7 @@ export const AddFunds = ({
           <CloseButton action={() => closeAction()} />
         </div>
         <div
-          className={
-            selectedOption === ADD_FUNDS_TRANSFER
+          className={selectedOption === ADD_FUNDS_TRANSFER
               ? Styles.AddFundsTransfer
               : Styles.AddFundsCreditDebitCoinbase
           }
@@ -237,109 +200,66 @@ export const AddFunds = ({
           {selectedOption === ADD_FUNDS_SWAP && (
             <>
               <h1>Swap</h1>
-              <h2>Swap a currency for {fundTypeLabel}</h2>
+              <h2>{`Swap a currency for ${fundTypeToUse} or add to the ${fundTypeToUse} pool `}</h2>
 
-              <Swap
-                balances={loginAccount.balances}
-                toToken={REP}
-                fromToken={DAI}
-                ETH_RATE={ETH_RATE}
-                REP_RATE={REP_RATE}
-              />
+              <div className={Styles.AddFundsSwap}>
+                <PillSelection
+                  options={pillOptions}
+                  onChange={selection => toggleSwapPool(selection)}
+                  defaultSelection={SWAP_ID}
+                />
+              </div>
+
+              {poolSelected && (
+                <Pool
+                  balances={loginAccount.balances}
+                  ETH_RATE={ETH_RATE}
+                  REP_RATE={REP_RATE}
+                />
+              )}
+
+              {swapSelected && (
+                <Swap
+                  balances={loginAccount.balances}
+                  toToken={fundTypeToUse === REP ? REP : DAI}
+                  fromToken={fundTypeToUse === REP ? DAI : ETH}
+                  ETH_RATE={ETH_RATE}
+                  REP_RATE={REP_RATE}
+                />
+              )}
             </>
           )}
 
           {selectedOption === ADD_FUNDS_CREDIT_CARD && (
-            <>
-              <h1>Credit/debit card</h1>
-              <h2>Add {fundTypeLabel} {fundTypeToUse === DAI ? generateDaiTooltip() : null} instantly</h2>
-
-              <h3>Amount</h3>
-              <TextInput
-                placeholder='0'
-                onChange={(value) => validateAndSet(Number(value))}
-                value={String(amountToBuy)}
-                innerLabel={fundTypeToUse === DAI ? 'USD' : fundTypeToUse}
-              />
-              {amountToBuy > 0 && !isAmountValid &&
-                <div className={Styles.AddFundsError}>Sorry, amount must be between ${BUY_MIN} and ${BUY_MAX}.</div>
-              }
-
-
-              {accountMeta.accountType === ACCOUNT_TYPES.PORTIS && (
-                <a href='https://wallet.portis.io/buy/' target='_blank'>
-                  <PrimaryButton
-                    action={() => null}
-                    text={`Buy with ${accountMeta.accountType}`}
-                  />
-                </a>
-              )}
-              {accountMeta.accountType === ACCOUNT_TYPES.TORUS && (
-                <PrimaryButton
-                  disabled={!isAmountValid}
-                  action={() => addFundsTorus(amountToBuy)}
-                  text={`Buy with ${accountMeta.accountType}`}
-                />
-              )}
-              {accountMeta.accountType === ACCOUNT_TYPES.FORTMATIC && (
-                <PrimaryButton
-                  disabled={!isAmountValid}
-                  action={() => addFundsFortmatic(amountToBuy, fundTypeToUse, toChecksumAddress(walletAddress))}
-                  text={`Buy with ${accountMeta.accountType}`}
-                />
-              )}
-              <h4>
-                {[ACCOUNT_TYPES.PORTIS, ACCOUNT_TYPES.TORUS, ACCOUNT_TYPES.FORTMATIC].includes(accountMeta.accountType) &&
-                  <div>Buy {fundTypeLabel} with our secure payments partner, {accountMeta.accountType}. Funds will appear in your Augur account when payment finalizes.</div>
-                }
-              </h4>
-            </>
+            <CreditCard
+              accountMeta={accountMeta}
+              walletAddress={walletAddress}
+              addFundsTorus={addFundsTorus}
+              addFundsFortmatic={addFundsFortmatic}
+              fundTypeLabel={fundTypeLabel}
+              fundTypeToUse={fundTypeToUse}
+              validateAndSet={validateAndSet}
+              BUY_MIN={BUY_MIN}
+              BUY_MAX={BUY_MAX}
+              amountToBuy={amountToBuy}
+              isAmountValid={isAmountValid}
+            />
           )}
           {selectedOption === ADD_FUNDS_COINBASE && (
-            <>
-              <h1>Coinbase</h1>
-              <h2>
-                Add {fundTypeToUse === DAI ? <>{fundTypeLabel} {generateDaiTooltip()}</> : fundTypeLabel} using a Coinbase account
-              </h2>
-              <ol>
-                <li>
-                  Login to your account at{' '}
-                  <a href='https://www.coinbase.com' target='blank'>
-                    www.coinbase.com
-                  </a>
-                </li>
-                <li>Buy the cryptocurrency {fundTypeLabel}</li>
-                <li>Send the {fundTypeLabel} to your {accountLabel} account address</li>
-              </ol>
-              <h3>{accountLabel} account address</h3>
-              <AccountAddressDisplay copyable address={toChecksumAddress(walletAddress)} />
-              {fundTypeToUse !== ETH && <ExternalLinkButton URL='https://docs.augur.net/' label={'Learn about your address'} />}
-            </>
+            <Coinbase
+              fundTypeToUse={fundTypeToUse}
+              fundTypeLabel={fundTypeLabel}
+              walletAddress={walletAddress}
+              accountLabel={accountLabel}
+            />
           )}
           {selectedOption === ADD_FUNDS_TRANSFER && (
-            <>
-              <h1>Transfer</h1>
-              <h2>
-                Send {fundTypeToUse === ETH ? fundTypeLabel : 'funds'} to your {accountLabel} account address
-              </h2>
-              <ol>
-                <li>
-                  Buy{' '}
-                  {fundTypeToUse === DAI ? (
-                    <>
-                      {fundTypeLabel} {generateDaiTooltip()}
-                    </>
-                  ) : (
-                    fundTypeLabel
-                  )}{' '}
-                   using an app or exchange (see our list of <a target='blank' href='https://docs.augur.net/'>popular ways to buy {fundTypeLabel})</a>
-                </li>
-                <li>Transfer the {fundTypeLabel} to your {accountLabel} account address</li>
-              </ol>
-              <h3>{accountLabel} account address</h3>
-              <AccountAddressDisplay copyable address={toChecksumAddress(walletAddress)} />
-              {fundTypeToUse !== ETH && <ExternalLinkButton URL='https://docs.augur.net/' label={'Learn about your address'} />}
-            </>
+            <Transfer
+              fundTypeToUse={fundTypeToUse}
+              fundTypeLabel={fundTypeLabel}
+              walletAddress={walletAddress}
+              accountLabel={accountLabel}
+            />
           )}
         </div>
         {fundTypeToUse !== ETH && <FundsHelp fundType={fundTypeToUse} />}
