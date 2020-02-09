@@ -52,15 +52,7 @@ else
   yarn build
 fi
 
-
-# run docker ecosystem with variables derived from geth node
-export ETHEREUM_CHAIN_ID=`yarn --silent flash network-id | sed '1d'`
-export CUSTOM_CONTRACT_ADDRESSES=`yarn --silent flash get-all-contract-addresses --ugly | sed '1d'`
-export GNOSIS_SAFE_CONTRACT_ADDRESS=`yarn --silent flash get-contract-address --name GnosisSafe | sed '1d'`
-export PROXY_FACTORY_CONTRACT_ADDRESS=`yarn --silent flash get-contract-address --name ProxyFactory | sed '1d'`
-export ZEROX_CONTRACT_ADDRESS=`yarn --silent flash get-contract-address --name ZeroXTrade -r -l | sed '1d'`
-#yarn docker:gnosis
-
+source ./scripts/env.sh
 if [[ "${DETACH-false}" == "true" ]]; then
   yarn workspace @augurproject/gnosis-relay-api run-relay -d
 else
