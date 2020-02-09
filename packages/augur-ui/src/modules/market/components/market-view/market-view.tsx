@@ -502,6 +502,7 @@ export default class MarketView extends Component<
     }
 
     let outcomeOrderBook = this.EmptyOrderBook;
+    const orderbookLoading = !!!orderBook;
     let outcomeId =
       selectedOutcomeId === null || selectedOutcomeId === undefined
         ? market.defaultSelectedOutcomeId
@@ -710,6 +711,7 @@ export default class MarketView extends Component<
                               initialLiquidity={preview}
                               orderBook={outcomeOrderBook}
                               showButtons
+                              orderbookLoading={orderbookLoading}
                             />
                           </div>
                         </ModulePane>
@@ -992,6 +994,7 @@ export default class MarketView extends Component<
                         market={market}
                         initialLiquidity={preview}
                         orderBook={outcomeOrderBook}
+                        orderbookLoading={orderbookLoading}
                       />
                       {tradingTutorial &&
                         tutorialStep === TRADING_TUTORIAL_STEPS.ORDER_BOOK && (

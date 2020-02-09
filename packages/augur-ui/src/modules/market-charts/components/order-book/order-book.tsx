@@ -35,6 +35,7 @@ interface OrderBookSideProps {
   hoveredSide?: string;
   hoveredOrderIndex?: number;
   showButtons: boolean;
+  orderbookLoading: boolean;
 }
 
 interface OrderBookProps {
@@ -52,6 +53,7 @@ interface OrderBookProps {
   account: string;
   selectedOutcome: OutcomeFormatted;
   showButtons: boolean;
+  orderbookLoading: boolean;
 }
 
 interface OrderBookState {
@@ -99,6 +101,7 @@ class OrderBookSide extends Component<OrderBookSideProps, {}> {
       type,
       marketType,
       showButtons,
+      orderbookLoading
     } = this.props;
     const isAsks = type === ASKS;
     const opts =
@@ -111,7 +114,7 @@ class OrderBookSide extends Component<OrderBookSideProps, {}> {
 
     const isScrollable =
       this.side && orderBookOrders.length * 20 >= this.side.clientHeight;
-    
+
     return (
       <div
         className={classNames(Styles.Side, {
@@ -124,8 +127,9 @@ class OrderBookSide extends Component<OrderBookSideProps, {}> {
       >
         {orderBookOrders.length === 0 && (
           <div className={Styles.NoOrders}>
-            {!showButtons && (isAsks ? `Add Offer` : `Add Bid`)}
-            {showButtons && (isAsks ? (
+            {orderbookLoading && `Loading ...`}
+            {!orderbookLoading && !showButtons && (isAsks ? `Add Offer` : `Add Bid`)}
+            {!orderbookLoading && showButtons && (isAsks ? (
               <CancelTextButton
                 text="Add Offer"
                 title="Add Offer"
@@ -243,6 +247,7 @@ export default class OrderBook extends Component<
       hasOrders,
       orderBook,
       showButtons,
+      orderbookLoading
     } = this.props;
     const { hoveredSide, hoveredOrderIndex } = this.state;
 
@@ -263,6 +268,7 @@ export default class OrderBook extends Component<
           type={ASKS}
           scrollToTop
           showButtons={showButtons}
+          orderbookLoading={orderbookLoading}
         />
         {!hide && (
           <div className={Styles.Midmarket}>
@@ -284,6 +290,7 @@ export default class OrderBook extends Component<
           hoveredOrderIndex={hoveredOrderIndex}
           type={BIDS}
           showButtons={showButtons}
+          orderbookLoading={orderbookLoading}
         />
       </section>
     );
