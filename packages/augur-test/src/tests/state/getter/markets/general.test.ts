@@ -236,7 +236,7 @@ describe('State API :: General', () => {
       const yesNoMarket3 = await john.createReasonableYesNoMarket();
       await (await johnDB).sync(john.augur, mock.constants.chunkSize, 0);
 
-      const expirationTime = new BigNumber(new Date().valueOf()).plus(10000);
+      const expirationTimeInSeconds = new BigNumber(Math.round(+new Date() / 1000).valueOf()).plus(10000);
 
       await john.placeZeroXOrder({
         direction: ask,
@@ -252,7 +252,7 @@ describe('State API :: General', () => {
         displayAmount: new BigNumber(500),
         displayPrice: new BigNumber(0.75),
         displayShares: new BigNumber(100000),
-        expirationTime,
+        expirationTime: expirationTimeInSeconds,
       });
 
       await john.placeZeroXOrder({
@@ -269,7 +269,7 @@ describe('State API :: General', () => {
         displayAmount: new BigNumber(500),
         displayPrice: new BigNumber(0.55),
         displayShares: new BigNumber(100000),
-        expirationTime,
+        expirationTime: expirationTimeInSeconds,
       });
 
       await john.placeZeroXOrder({
@@ -286,7 +286,7 @@ describe('State API :: General', () => {
         displayAmount: new BigNumber(500),
         displayPrice: new BigNumber(0.75),
         displayShares: new BigNumber(100000),
-        expirationTime,
+        expirationTime: expirationTimeInSeconds,
       });
 
       await john.placeZeroXOrder({
@@ -303,7 +303,7 @@ describe('State API :: General', () => {
         displayAmount: new BigNumber(500),
         displayPrice: new BigNumber(0.6),
         displayShares: new BigNumber(100000),
-        expirationTime,
+        expirationTime: expirationTimeInSeconds,
       });
 
       await john.placeZeroXOrder({
@@ -320,7 +320,7 @@ describe('State API :: General', () => {
         displayAmount: new BigNumber(500),
         displayPrice: new BigNumber(0.75),
         displayShares: new BigNumber(100000),
-        expirationTime,
+        expirationTime: expirationTimeInSeconds,
       });
 
       await john.placeZeroXOrder({
@@ -337,7 +337,7 @@ describe('State API :: General', () => {
         displayAmount: new BigNumber(500),
         displayPrice: new BigNumber(0.65),
         displayShares: new BigNumber(100000),
-        expirationTime,
+        expirationTime: expirationTimeInSeconds,
       });
 
       // Terrible, but not clear how else to wait on the mesh event propagating to the callback and it finishing updating the DB...
@@ -379,14 +379,16 @@ describe('State API :: General', () => {
       expect(marketList.meta.filteredOutCount).toEqual(1);
 
       // Test includeInvalidMarkets
+      const outcomeInvalid = 0;
+
       await john.placeBasicYesNoZeroXTrade(
-        0,
+        bid,
         yesNoMarket1.address,
-        0,
+        outcomeInvalid,
         new BigNumber(2000),
         new BigNumber(0.78),
         new BigNumber(0),
-        new BigNumber(100000)
+        expirationTimeInSeconds,
       );
 
       await (await johnDB).sync(john.augur, mock.constants.chunkSize, 0);
@@ -446,6 +448,22 @@ describe('State API :: General', () => {
 
       marketList = await johnAPI.route('getMarkets', {
         universe: addresses.Universe,
+        sortBy: GetMarketsSortBy.disputeRound,
+      });
+
+      expect(marketList.markets.length).toEqual(4);
+      expect(marketList.markets[0].id).toEqual(yesNoMarket3.address);
+
+      marketList = await johnAPI.route('getMarkets', {
+        universe: addresses.Universe,
+        sortBy: GetMarketsSortBy.totalRepStakedInMarket,
+      });
+
+      expect(marketList.markets.length).toEqual(4);
+      expect(marketList.markets[0].id).toEqual(yesNoMarket3.address);
+
+      marketList = await johnAPI.route('getMarkets', {
+        universe: addresses.Universe,
         sortBy: GetMarketsSortBy.marketOI,
       });
 
@@ -460,20 +478,39 @@ describe('State API :: General', () => {
       expect(marketList.markets.length).toEqual(4);
       expect(marketList.markets[0].id).toEqual(yesNoMarket2.address);
 
+
+      // Test Recently Depleted Liquidity + Invalid
       marketList = await johnAPI.route('getMarkets', {
         universe: addresses.Universe,
-        sortBy: GetMarketsSortBy.disputeRound,
+        maxLiquiditySpread: '10',
       });
 
-      expect(marketList.markets.length).toEqual(4);
-      expect(marketList.markets[0].id).toEqual(yesNoMarket3.address);
+      expect(marketList.markets.length).toEqual(1);
+      marketIds = _.map(marketList.markets, 'id');
+      expect(marketIds).toContain(yesNoMarket3.address);
+      expect(marketList.meta.filteredOutCount).toEqual(3);
+
+      // Make market invalid.
+      await john.placeBasicYesNoZeroXTrade(
+        bid,
+        yesNoMarket3.address,
+        outcomeInvalid,
+        new BigNumber(5000),
+        new BigNumber(0.45),
+        new BigNumber(0),
+        expirationTimeInSeconds
+      );
+
+      // Invalid markets that pass the spread filter should appear as Recently Depleted Liquidity
+      await (await johnDB).sync(john.augur, mock.constants.chunkSize, 0);
 
       marketList = await johnAPI.route('getMarkets', {
         universe: addresses.Universe,
-        sortBy: GetMarketsSortBy.totalRepStakedInMarket,
+        maxLiquiditySpread: '0',
+        includeInvalidMarkets: true,
       });
 
-      expect(marketList.markets.length).toEqual(4);
+      expect(marketList.markets.length).toEqual(1);
       expect(marketList.markets[0].id).toEqual(yesNoMarket3.address);
     });
   });

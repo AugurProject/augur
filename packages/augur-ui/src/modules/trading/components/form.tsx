@@ -869,7 +869,7 @@ class Form extends Component<FromProps, FormState> {
           <li>
             <label htmlFor="quantity">Quantity</label>
             {!isScalar &&
-              <label>(must be a mutiple of {this.findMultipleOf().toString()})</label>
+              <label>(must be a multiple of {this.findMultipleOf().toString()})</label>
             }
             <div
               className={classNames(Styles.TradingFormInputContainer, {

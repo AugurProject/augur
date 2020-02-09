@@ -1,82 +1,91 @@
 import { FlashSession } from './flash';
 import Vorpal from 'vorpal';
+import program from "commander";
 import { addScripts } from './scripts';
 import { addGanacheScripts } from './ganache-scripts';
 import { Account, ACCOUNTS } from '../constants';
-import { ArgumentParser } from 'argparse';
 import { NetworkConfiguration, NETWORKS } from '@augurproject/core';
 import { Addresses } from '@augurproject/artifacts';
 import { computeAddress } from 'ethers/utils';
 import * as fs from 'fs';
 
-interface Args {
-  command?: string;
-  network?: NETWORKS | 'none';
-  key?: string;
-  keyfile?: string;
-  [commandArgument: string]: string;
+async function processAccounts(flash: FlashSession, args: any) {
+    // Figure out which private key to use.
+    if (args.key && args.keyfile) {
+      console.error('ERROR: Cannot specify both --key and --keyfile');
+      process.exit(1);
+    } else if (args.key) {
+      flash.accounts = [ accountFromPrivateKey(args.key) ];
+    } else if (args.keyfile) {
+      const key = await fs.readFileSync(args.keyfile).toString();
+      flash.accounts = [ accountFromPrivateKey(key) ];
+    } else if (process.env.ETHEREUM_PRIVATE_KEY) {
+      flash.accounts = [ accountFromPrivateKey(process.env.ETHEREUM_PRIVATE_KEY) ];
+    } else {
+      flash.accounts = ACCOUNTS;
+    }
+
 }
+async function run() {
+  const flash = new FlashSession([]);
 
-function parse(flash: FlashSession): Args {
-  const parser = new ArgumentParser({
-    version: '1.0.0',
-    description: 'Interact with Augur contracts.',
-  });
+  addScripts(flash);
+  addGanacheScripts(flash);
 
-  parser.addArgument(
-    [ '-n', '--network' ],
-    {
-      help: `Name of network to run on. Use "none" for commands that don't use a network.`,
-      defaultValue: 'environment', // local node
-    }
-  );
-  parser.addArgument(
-    [ '-k', '--key' ],
-    {
-      help: 'Private key to use. Overrides envvar, if set.',
-    }
-  );
-  parser.addArgument(
-    [ '--keyfile' ],
-    {
-      help: 'File containing private key to use. Overrides envvar, if set.',
-    }
-  );
+  program
+    .name('flash')
+    .storeOptionsAsProperties(false)
+    .passCommandToAction(false)
+    .option('-k, --key <key>', 'Private key to use, Overrides ETHEREUM_PRIVATE_KEY environment variable, if set.')
+    .option('--keyfile <keyfile>', 'File containing private key to use. Overrides ETHEREUM_PRIVATE_KEY environment variable, if set.')
+    .option('-n, --network <network>', `Name of network to run on. Use "none" for commands that don't use a network.)`, 'environment');
 
-  const commands = parser.addSubparsers({ dest: 'command' });
-
-  const interactive = commands.addParser(
-    'interactive',
-    {
-      description: 'Run flash interactively',
-    },
-  );
-  // interactive.addArgument(
-  //   ['-c', '--connect'],
-  //   {
-  //     help: 'Auto-connect to the network specified with --network (defaults to local node)',
-  //     action: 'storeTrue',
-  //   }
-  // );
+  program
+    .command('interactive')
+    .description('Run flash interactively, where you can connect once and run multiple flash scripts in the same session.')
+    .action(async (args) => {
+      const opts = Object.assign({}, program.opts(), args);
+      await processAccounts(flash, opts);
+      const vorpal = makeVorpalCLI(flash);
+      flash.log = vorpal.log.bind(vorpal);
+      vorpal.show();
+    })
 
   for (const name of Object.keys(flash.scripts) || []) {
     const script = flash.scripts[name];
-    const command = commands.addParser(script.name, { description: script.description });
-    for (const opt of script.options || []) {
-      const args = [ `--${opt.name}`];
-      if (opt.abbr) args.push(`-${opt.abbr}`);
-      command.addArgument(
-        args,
-        {
-          help: opt.description || '',
-          required: opt.required || false,
-          action: opt.flag ? 'storeTrue' : 'store',
-        });
-    }
+    const subcommand = program.command(script.name).description(script.description);
 
+    for (const opt of script.options || []) {
+      const args = [ `--${opt.name} ${opt.flag ? '' : `<${opt.name}>`}`];
+      if (opt.abbr) args.unshift(`-${opt.abbr}`);
+      const option = opt.required === true ? subcommand.requiredOption(args.join(', ')) : subcommand.option(args.join(', '))
+        .description(opt.description || '')
+    }
+    subcommand.action(async (args) => {
+      try {
+        const opts = Object.assign({}, program.opts(), args);
+        await processAccounts(flash, opts);
+        if (script.ignoreNetwork !== true && opts.network !== 'none') {
+          flash.network = NetworkConfiguration.create(opts.network as NETWORKS);
+          flash.provider = flash.makeProvider(flash.network);
+          const networkId = await flash.getNetworkId(flash.provider);
+          flash.contractAddresses = Addresses[networkId];
+        }
+        await flash.call(script.name, opts);
+      } catch(e){
+        console.error(e);
+        process.exit(1); // Needed to prevent hanging
+      } finally {
+        process.exit(0); // Needed to prevent hanging
+      }
+    });
   }
 
-  return parser.parseArgs();
+  if (process.argv.length === 2) {
+    program.help();
+  } else {
+    await program.parseAsync(process.argv);
+  }
 }
 
 function makeVorpalCLI(flash: FlashSession): Vorpal {
@@ -135,49 +144,5 @@ function cleanKey(key: string): string {
 }
 
 if (require.main === module) {
-  (async () => {
-    const flash = new FlashSession([]);
-
-    addScripts(flash);
-    addGanacheScripts(flash);
-
-    const args = parse(flash);
-
-    // Figure out which private key to use.
-    if (args.key && args.keyfile) {
-      console.error('ERROR: Cannot specify both --key and --keyfile');
-      process.exit(1);
-    } else if (args.key) {
-      flash.accounts = [ accountFromPrivateKey(args.key) ];
-    } else if (args.keyfile) {
-      const key = await fs.readFileSync(args.keyfile).toString();
-      flash.accounts = [ accountFromPrivateKey(key) ];
-    } else if (process.env.ETHEREUM_PRIVATE_KEY) {
-      flash.accounts = [ accountFromPrivateKey(process.env.ETHEREUM_PRIVATE_KEY) ];
-    } else {
-      flash.accounts = ACCOUNTS;
-    }
-
-    if (args.command === 'interactive') {
-      const vorpal = makeVorpalCLI(flash);
-      flash.log = vorpal.log.bind(vorpal);
-      vorpal.show();
-    } else if (args.network === 'none') {
-      await flash.call(args.command, args).catch(console.error);
-    } else {
-      try {
-        flash.network = NetworkConfiguration.create(args.network as NETWORKS);
-        flash.provider = flash.makeProvider(flash.network);
-        const networkId = await flash.getNetworkId(flash.provider);
-        flash.contractAddresses = Addresses[networkId];
-        await flash.call(args.command, args);
-      } catch(e){
-        console.error(e);
-        process.exit(1); // Needed to prevent hanging
-      } finally {
-        process.exit(0); // Needed to prevent hanging
-
-      }
-    }
-  })();
+  run().catch(console.log);
 }

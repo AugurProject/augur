@@ -33,7 +33,7 @@ import {
   DesignatedReporter,
   DisputeStake,
   MarketCreator,
-  PaperClip,
+  CopyAlternateIcon,
   Person,
   PositionIcon,
 } from 'modules/common/icons';
@@ -314,7 +314,7 @@ export default class MarketCard extends React.Component<
                 data-clipboard-text={id}
                 onClick={() => marketLinkCopied(market.id, MARKET_LIST_CARD)}
               >
-                {PaperClip} {COPY_MARKET_ID}
+                {CopyAlternateIcon} {COPY_MARKET_ID}
               </div>
               <div id="copy_author" data-clipboard-text={author}>
                 {Person} {COPY_AUTHOR}

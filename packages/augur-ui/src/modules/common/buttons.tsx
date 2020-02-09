@@ -509,7 +509,7 @@ export const FilterButton = (props: DefaultActionButtonProps) => (
     className={Styles.FilterButton}
     disabled={props.disabled}
   >
-    Filters
+    Categories & Filters
     {Filter}
   </button>
 );

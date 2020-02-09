@@ -567,6 +567,7 @@ export class Markets {
         }
         else if (params.maxLiquiditySpread !== MaxLiquiditySpread.OneHundredPercent) {
           if (market.liquidity[params.maxLiquiditySpread] === "000000000000000000000000000000") return false;
+          if (market.invalidFilter && market.hasRecentlyDepletedLiquidity) return false;
         }
       }
       return true;
@@ -582,6 +583,12 @@ export class Markets {
     if (params.sortBy) {
       let sortBy = params.sortBy;
       marketData = _.orderBy(marketData, (item) => sortBy === "liquidity" ? item[sortBy][params.maxLiquiditySpread] : item[sortBy], params.isSortDescending ? "desc" : "asc");
+    }
+
+    // If returning Recently Depleted Liquidity (spread===0)
+    if (params.maxLiquiditySpread === MaxLiquiditySpread.ZeroPercent) {
+      // Have invalid markets appear at the bottom
+      marketData =_.sortBy(marketData, 'invalidFilter')
     }
 
     marketData = marketData.slice(params.offset, params.offset + params.limit);
