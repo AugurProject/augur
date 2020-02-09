@@ -60,7 +60,6 @@ export GNOSIS_SAFE_CONTRACT_ADDRESS=`yarn --silent flash get-contract-address --
 export PROXY_FACTORY_CONTRACT_ADDRESS=`yarn --silent flash get-contract-address --name ProxyFactory`
 export ZEROX_CONTRACT_ADDRESS=`yarn --silent flash get-contract-address --name ZeroXTrade -r -l`
 
-env
 #yarn docker:gnosis
 
 if [[ "${DETACH-false}" == "true" ]]; then
@@ -68,4 +67,3 @@ if [[ "${DETACH-false}" == "true" ]]; then
 else
   yarn workspace @augurproject/gnosis-relay-api run-relay
 fi
-
