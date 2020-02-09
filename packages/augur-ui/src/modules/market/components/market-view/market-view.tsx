@@ -109,7 +109,6 @@ interface MarketViewState {
   introShowing: boolean;
   tutorialError: string;
   hasShownScalarModal: boolean;
-  orderBookDirty: boolean;
 }
 
 export default class MarketView extends Component<
@@ -161,7 +160,6 @@ export default class MarketView extends Component<
           ...this.DEFAULT_ORDER_PROPERTIES,
         },
       },
-      orderBookDirty: true,
     };
 
     this.updateSelectedOutcome = this.updateSelectedOutcome.bind(this);
