@@ -217,7 +217,6 @@ export default class MarketView extends Component<
       tradingTutorial,
       updateModal,
       closeMarketLoadingModalOnly,
-      modalShowing,
       preview
     } = prevProps;
     if (
@@ -229,7 +228,6 @@ export default class MarketView extends Component<
 
     if (tradingTutorial) {
       if (
-        !isMarketLoading &&
         !this.state.introShowing &&
         this.state.tutorialStep === TRADING_TUTORIAL_STEPS.INTRO_MODAL
       ) {
@@ -254,9 +252,8 @@ export default class MarketView extends Component<
       this.props.loadMarketsInfo(this.props.marketId);
       this.props.loadMarketTradingHistory(marketId);
     }
-
-    if (!isMarketLoading) {
-      closeMarketLoadingModalOnly && closeMarketLoadingModalOnly(modalShowing);
+    if (!this.props.isMarketLoading) {
+      closeMarketLoadingModalOnly(this.props.modalShowing);
     }
 
     if (
