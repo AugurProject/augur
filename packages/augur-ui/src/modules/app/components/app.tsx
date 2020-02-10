@@ -89,6 +89,8 @@ interface AppProps {
   showGlobalChat: Function;
   migrateV1Rep: Function;
   showMigrateRepButton: boolean;
+  theme: string;
+  setTheme: Function;
 }
 
 export default class AppView extends Component<AppProps> {
@@ -147,8 +149,10 @@ export default class AppView extends Component<AppProps> {
       updateModal,
       useWeb3Transport,
       updateCurrentBasePath,
+      setTheme,
+      theme
     } = this.props;
-
+    setTheme(theme);
     initAugur(
       history,
       {
@@ -169,7 +173,6 @@ export default class AppView extends Component<AppProps> {
     );
     const currentPath = parsePath(location.pathname)[0];
     updateCurrentBasePath(currentPath);
-
     this.changeMenu(currentPath);
   };
 

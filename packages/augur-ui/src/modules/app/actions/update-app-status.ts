@@ -8,6 +8,7 @@ export const ETH_TO_DAI_RATE = 'ethToDaiRate';
 export const GNOSIS_ENABLED = 'gnosisEnabled';
 export const Ox_ENABLED = 'zeroXEnabled';
 export const GNOSIS_STATUS = 'gnosisStatus';
+export const THEME = 'theme';
 
 export function updateAppStatus(statusKey: string, value: boolean | BigNumber | string) {
   return {
@@ -16,5 +17,20 @@ export function updateAppStatus(statusKey: string, value: boolean | BigNumber | 
       statusKey,
       value,
     },
+  };
+}
+
+export function setTheme(theme: string) {
+  const html = document.documentElement;
+  const currentTheme = html.getAttribute(THEME);
+  if (theme !== currentTheme) {
+    html.setAttribute(THEME, theme);
+  }
+  return {
+    type: UPDATE_APP_STATUS,
+    data: {
+      statusKey: THEME,
+      value: theme
+    }
   };
 }

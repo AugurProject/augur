@@ -7,10 +7,13 @@ import {
   GNOSIS_ENABLED,
   Ox_ENABLED,
   GNOSIS_STATUS,
+  THEME,
 } from 'modules/app/actions/update-app-status';
 import { RESET_STATE } from 'modules/app/actions/reset-state';
 import { AppStatus, BaseAction } from 'modules/types';
+import { THEMES } from 'modules/common/constants';
 
+const currentTheme = document.documentElement.getAttribute('theme') || THEMES.TRADING;
 const DEFAULT_STATE = {
   [IS_MOBILE]: false,
   [IS_MOBILE_SMALL]: false,
@@ -19,6 +22,7 @@ const DEFAULT_STATE = {
   [GNOSIS_ENABLED]: false,
   [GNOSIS_STATUS]: null,
   [Ox_ENABLED]: false,
+  [THEME]: currentTheme,
 };
 
 const KEYS = Object.keys(DEFAULT_STATE);

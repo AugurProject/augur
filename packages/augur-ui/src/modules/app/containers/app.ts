@@ -10,8 +10,9 @@ import { selectNotifications } from "modules/notifications/selectors/notificatio
 import {
   IS_MOBILE,
   IS_MOBILE_SMALL,
+  IS_HELP_MENU_OPEN,
+  setTheme,
   updateAppStatus,
-  IS_HELP_MENU_OPEN
 } from "modules/app/actions/update-app-status";
 import { initAugur } from "modules/app/actions/init-augur";
 import { updateModal } from "modules/modal/actions/update-modal";
@@ -44,6 +45,7 @@ const mapStateToProps = state => {
     env: state.env,
     isLogged: state.authStatus.isLogged,
     restoredAccount: state.authStatus.restoredAccount,
+    theme: state.appStatus.theme,
     isMobile: state.appStatus.isMobile,
     isMobileSmall: state.appStatus.isMobileSmall,
     isHelpMenuOpen: state.appStatus.isHelpMenuOpen,
@@ -78,6 +80,7 @@ const mapDispatchToProps = dispatch => ({
   dispatch(updateAuthStatus(IS_CONNECTION_TRAY_OPEN, value)),
   showGlobalChat: () => dispatch(updateModal({type: MODAL_GLOBAL_CHAT})),
   migrateV1Rep: () => dispatch(updateModal({ type: MODAL_MIGRATE_REP })),
+  setTheme: (theme) => dispatch(setTheme(theme)),
 });
 
 const AppContainer = compose(
