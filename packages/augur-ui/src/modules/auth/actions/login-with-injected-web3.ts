@@ -17,11 +17,12 @@ import { augurSdk } from 'services/augursdk';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import { logout } from 'modules/auth/actions/logout';
+import { AppState } from 'store';
 
 // MetaMask, dapper, Mobile wallets
 export const loginWithInjectedWeb3 = () => (
   dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
+  getState: () => AppState,
 ) => {
   const failure = error => {
     dispatch(closeModal());
@@ -89,10 +90,12 @@ export const loginWithInjectedWeb3 = () => (
 };
 
 const login = (account: string) => (
-  dispatch: ThunkDispatch<void, any, Action>
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState,
 ) => {
-  const provider = new Web3Provider(window.web3.currentProvider);
-  const networkId = window.web3.currentProvider.networkVersion;
+  const useGnosis = getState().env['gnosis-enabled'];
+  const provider = new Web3Provider(windowRef.web3.currentProvider);
+  const networkId = windowRef.web3.currentProvider.networkVersion;
   const address = toChecksumAddress(account);
   const accountObject = {
     address,
@@ -107,5 +110,5 @@ const login = (account: string) => (
       isWeb3: true,
     },
   };
-  dispatch(updateSdk(accountObject, networkId));
+  dispatch(updateSdk(accountObject, networkId, useGnosis));
 };

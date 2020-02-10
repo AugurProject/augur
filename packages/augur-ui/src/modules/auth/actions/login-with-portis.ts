@@ -14,6 +14,7 @@ import {
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { windowRef } from 'utils/window-ref';
 import { updateModal } from 'modules/modal/actions/update-modal';
+import { AppState } from 'store';
 
 const getPortisNetwork = (networkId): false | string | INetwork => {
   const myPrivateEthereumNode = {
@@ -30,8 +31,10 @@ const getPortisNetwork = (networkId): false | string | INetwork => {
 };
 
 export const loginWithPortis = (forceRegisterPage = false) => async (
-  dispatch: ThunkDispatch<void, any, Action>
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState,
 ) => {
+  const useGnosis = getState().env['gnosis-enabled'];
   const networkId = getNetworkId();
   const portisNetwork = getPortisNetwork(networkId);
 
@@ -65,7 +68,7 @@ export const loginWithPortis = (forceRegisterPage = false) => async (
           },
         };
 
-        dispatch(updateSdk(accountObject, undefined));
+        dispatch(updateSdk(accountObject, undefined, useGnosis));
       };
 
       portis.onLogin((account, email) => {
