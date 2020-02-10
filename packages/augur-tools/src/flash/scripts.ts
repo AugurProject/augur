@@ -39,6 +39,7 @@ import { OrderBookShaper, OrderBookConfig } from './orderbook-shaper';
 import { NumOutcomes } from '@augurproject/sdk/src/state/logs/types';
 import { flattenZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
 import { sleep } from '@augurproject/sdk/build/state/utils/utils';
+import { promiseSpawn } from "./util";
 
 export function addScripts(flash: FlashSession) {
   flash.addScript({
@@ -2025,6 +2026,71 @@ export function addScripts(flash: FlashSession) {
 
       console.log((await gnosisSafe.nonce_()).toString());
   }});
+
+  flash.addScript({
+    name: 'docker-all',
+    options: [
+      {
+        name: 'dev',
+        abbr: 'd',
+        description: 'Deploy to node instead of using pop-docker image',
+        flag: true,
+      },
+      {
+        name: 'fake',
+        abbr: 'f',
+        description: 'Use fake time (TimeControlled) instead of real time',
+        flag: true,
+      },
+      {
+        name: 'attached-gnosis',
+        abbr: 'a',
+        description: 'Keep flash script running by not detaching gnosis relay',
+        flag: true,
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const dev = args.dev as boolean;
+      const fake = args.dev as boolean;
+      const attachedGnosis = args.attachedGnosis as boolean;
+
+      await promiseSpawn('docker', 'pull', 'augurproject/safe-relay-service_web:latest');
+      await promiseSpawn('docker', 'pull', '0xorg/mesh:latest');
+
+      this.log(`Deploy contracts: ${dev}`);
+      this.log(`Use fake time: ${fake}`);
+
+      let geth;
+      if (dev) {
+        // TODO figure out how must handle geth here. can it be promiseSpawn? any thing to await on?
+        //      update: process spawns another process, which is unkillable. use non-detached version?
+        geth = spawn('yarn', [
+          'workspace',
+          '@augurproject/tools',
+          'docker:geth'
+        ]);
+        geth.on('error', (err) => {
+          throw err;
+        });
+
+        const deployMethod = fake ? 'fake-all' : 'normal-all';
+        this.route(deployMethod, { createMarkets: true });
+
+      } else {
+        const gethDocker = fake ? 'docker:geth:pop' : 'docker:geth:pop-normal-time';
+        geth = spawn('yarn', [gethDocker]);
+      }
+
+      // TODO is this necessary?
+      await promiseSpawn('yarn', 'build');
+
+      const gnosisRelayArgs = [
+        'workspace', '@augurproject/gnosis-relay-api', 'run-relay'
+      ];
+      if (!attachedGnosis) gnosisRelayArgs.push('-d');
+      const gnosisRelay = spawn('yarn', gnosisRelayArgs);
+    }
+  });
 
   flash.addScript({
     name: '0x-docker',
