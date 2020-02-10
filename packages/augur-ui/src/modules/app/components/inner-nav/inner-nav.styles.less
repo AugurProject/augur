@@ -5,7 +5,7 @@
   height: calc(~"100vh - @{multi-top-bar-height}");
   overflow: auto;
   position: relative;
-  background: @color-module-background;
+  background: var(--color-module-background);
 }
 
 .InnerNav__menu {
@@ -72,7 +72,7 @@
 }
 
 .InnerNav__menu-item--seperator {
-  border-top: 1px solid @color-module-background;
+  border-top: 1px solid var(--color-module-background);
   display: flex;
   height: 0;
   margin: @size-12 @size-11 0;
@@ -84,15 +84,15 @@
 }
 
 .InnerNav__menu--main {
-  background: @color-module-background;
-  border-right: 1px solid @color-module-background;
+  background: var(--color-module-background);
+  border-right: 1px solid var(--color-module-background);
   position: relative;
   z-index: @mask;
 }
 
 .InnerNav__menu--submenu {
-  background: @color-module-background;
-  border-left: 0.0625rem solid @color-module-background;
+  background: var(--color-module-background);
+  border-left: 0.0625rem solid var(--color-module-background);
   left: 0;
   position: absolute;
   top: 0;

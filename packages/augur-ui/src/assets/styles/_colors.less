@@ -2,6 +2,7 @@
 // TRADING is default theme, hence root by itself.
 :root[theme="TRADING"],
 :root {
+  // texts
   --color-primary-text: #D7DDE0;
   --color-primary-text-15: fade(#D7DDE0, 15%);
   --color-primary-text-20: fade(#D7DDE0, 20%);
@@ -14,9 +15,25 @@
   --color-secondary-text-50: fade(#9599A5, 50%);
   --color-secondary-text-75: fade(#9599A5, 75%);
   --color-secondary-text-80: fade(#9599A5, 80%);
+
+  // UI
+  --color-module-background: #1B1A1E;
+  --color-module-background-action-focus: #27262B;
+  --color-page-background: #201E22;
+  --color-page-background-80: fade(#201E22, 80%);
+
+  // market Status:
+  --color-open: #7DFFA8;
+  --color-open-15: fade(#7DFFA8, 15%);
+  --color-open-40: fade(#7DFFA8, 40%);
+  --color-reporting: #F1E700;
+  --color-reporting-15: fade(#F1E700, 15%);
+  --color-resolved: #F12B00;
+  --color-resolved-15: fade(#F12B00, 15%);
 }
 
 :root[theme="BETTING"] {
+  // texts
   --color-primary-text: #0E0E21;
   --color-primary-text-15: fade(#0E0E21, 15%);
   --color-primary-text-20: fade(#0E0E21, 20%);
@@ -29,6 +46,21 @@
   --color-secondary-text-50: fade(#555577, 50%);
   --color-secondary-text-75: fade(#555577, 75%);
   --color-secondary-text-80: fade(#555577, 80%);
+
+  // UI
+  --color-module-background: #FFFFFF;
+  --color-module-background-action-focus: #FFFFFF; // no equivalent
+  --color-page-background: #F5F5F8;
+  --color-page-background-80: fade(#F5F5F8, 80%);
+
+  // market Status:
+  --color-open: #0CCE8D;
+  --color-open-15: fade(#0CCE8D, 15%);
+  --color-open-40: fade(#0CCE8D, 40%);
+  --color-reporting: #F59300;
+  --color-reporting-15: fade(#F59300, 15%);
+  --color-resolved: #FF4E27;
+  --color-resolved-15: fade(#FF4E27, 15%);
 }
 // Text
 // @color-primary-text: #D7DDE0;
@@ -40,18 +72,18 @@
 @color-brand: #2AE7A8; // augur brand color
 @color-dark-grey: #0E0E0F; // (TBD Name) - 53 files
 @color-table-header: #161518; // 7 files
-@color-module-background: #1B1A1E; // 51 files
-@color-module-background-action-focus: #27262B; // 1 file
+// @color-module-background: #1B1A1E; // 51 files
+// @color-module-background-action-focus: #27262B; // 1 file
 @color-active-background: #222126;
-@color-page-background: #201E22; // 3 files
+// @color-page-background: #201E22; // 3 files
 @color-dismissable-notice-background: #DFF1FE;
 @color-outline: #7EC9FF;
 @color-highlight-template-text: #F9FFD7;
 
 // Market status
-@color-open: #7DFFA8; // 5 files
-@color-reporting: #F1E700; // 8 files
-@color-resolved: #F12B00; // 6 files
+// @color-open: #7DFFA8; // 5 files
+// @color-reporting: #F1E700; // 8 files
+// @color-resolved: #F12B00; // 6 files
 @color-scalar: #FFB47E; // temporary name... used in more things than scalar
 // Trades
 @color-positive: #00F1C4; // 13 files

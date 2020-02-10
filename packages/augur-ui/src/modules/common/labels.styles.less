@@ -529,18 +529,18 @@ div.LinearPropertyViewTransaction {
 }
 
 .MarketStatus_open {
-  background: fade(@color-open, 15%);
-  color: @color-open;
+  background: var(--color-open-15);
+  color: var(--color-open);
 }
 
 .MarketStatus_reporting {
-  background: fade(@color-reporting, 15%);
-  color: @color-reporting;
+  background: var(--color-reporting-15);
+  color: var(--color-reporting);
 }
 
 .MarketStatus_resolved {
-  background: fade(@color-resolved, 15%);
-  color: @color-resolved;
+  background: var(--color-resolved-15);
+  color: var(--color-resolved);
 }
 
 .InReporting_reportingDetails {
@@ -550,7 +550,7 @@ div.LinearPropertyViewTransaction {
     margin: 0 @size-4;
 
     > path {
-      fill: @color-reporting;
+      fill: var(--color-reporting);
     }
   }
 }
@@ -626,7 +626,7 @@ span.PendingLabel {
 .ConfirmedLabel {
   .PendingLabel;
 
-  background: fade(@color-open, 40%);
+  background: var(--color-open-40);
 
   > svg {
     fill: var(--color-primary-text);
@@ -879,15 +879,15 @@ span.PendingLabel {
     border-bottom: @size-2 solid var(--color-primary-text);
 
     &.open {
-      border-color: @color-open;
+      border-color: var(--color-open);
     }
 
     &.inReporting {
-      border-color: @color-reporting;
+      border-color: var(--color-reporting);
     }
 
     &.resolved {
-      border-color: @color-resolved;
+      border-color: var(--color-resolved);
     }
 
     > div:nth-child(even) {

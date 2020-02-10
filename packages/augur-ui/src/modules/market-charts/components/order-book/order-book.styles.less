@@ -1,7 +1,7 @@
 @import (reference) '~assets/styles/shared';
 
 .OrderBook {
-  background-color: @color-module-background;
+  background-color: var(--color-module-background);
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -65,7 +65,7 @@
     }
 
     &.Hover {
-      background-color: @color-module-background-action-focus;
+      background-color: var(--color-module-background-action-focus);
 
       &::before {
         width: @size-6;
@@ -134,7 +134,7 @@ div.NoOrders {
 }
 
 .EncompassedHover {
-  background-color: @color-module-background-action-focus;
+  background-color: var(--color-module-background-action-focus);
 }
 
 .NoSize {

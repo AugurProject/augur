@@ -11,7 +11,7 @@
   svg {
     :global {
       .highcharts-background {
-        fill: @color-module-background;
+        fill: var(--color-module-background);
       }
 
       g.highcharts-yaxis-labels {
@@ -34,7 +34,7 @@
       }
 
       .highcharts-label-box {
-        fill: @color-module-background;
+        fill: var(--color-module-background);
         font-weight: bold;
 
         > text > tspan:last-child {
@@ -78,7 +78,7 @@
       }
 
       .highcharts-crosshair-label {
-        background-color: @color-module-background;
+        background-color: var(--color-module-background);
         border-radius: 5px;
         color: var(--color-primary-text);
         font-size: @size-10;

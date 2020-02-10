@@ -25,9 +25,9 @@
     }
 
     &:hover {
-      border: @size-1 solid @color-module-background;
+      border: @size-1 solid var(--color-module-background);
       border-bottom: 0;
-      background: @color-module-background;
+      background: var(--color-module-background);
     }
 
     @media @breakpoint-mobile {
@@ -37,7 +37,7 @@
 
       &:hover {
         border: none;
-        background: @color-page-background;
+        background: var(--color-page-background);
       }
     }
   }
@@ -45,7 +45,7 @@
   &.Open {
     > span {
       border-bottom: 0;
-      background: @color-module-background;
+      background: var(--color-module-background);
       z-index: @above-all-content;
 
       @media @breakpoint-mobile {
@@ -57,7 +57,7 @@
 
 .HelpMenuList {
   position: absolute;
-  background: @color-module-background;
+  background: var(--color-module-background);
   border: @size-1 solid @color-secondary-action-outline;
   border-radius: @border-radius-default;
   width: @size-210;
@@ -84,7 +84,7 @@
     text-transform: uppercase;
     padding: @size-22 @size-16;
     color: var(--color-primary-text);
-    background: @color-module-background;
+    background: var(--color-module-background);
   }
 
   > li:not(:first-of-type) {
@@ -127,7 +127,7 @@
 
 .HelpMenu {
   position: absolute;
-  background: @color-module-background;
+  background: var(--color-module-background);
   border: @size-1 solid @color-secondary-action-outline;
   border-radius: @border-radius-default;
   width: @size-210;
@@ -154,7 +154,7 @@
     text-transform: uppercase;
     padding: @size-22 @size-16;
     color: var(--color-primary-text);
-    background: @color-module-background;
+    background: var(--color-module-background);
   }
 
   > span:not(:first-of-type) {
@@ -195,8 +195,8 @@
 }
 
 .HelpResources {
-  border-left: @size-1 solid @color-module-background;
-  border-right: @size-1 solid @color-module-background;
+  border-left: @size-1 solid var(--color-module-background);
+  border-right: @size-1 solid var(--color-module-background);
   color: var(--color-primary-text);
   display: flex;
   flex: 1;

@@ -2,7 +2,7 @@
 @import (reference) '~modules/market/components/market-view/market-view.styles';
 
 .MarketHeader {
-  background: @color-module-background;
+  background: var(--color-module-background);
   border: 1px solid @color-dark-grey;
   color: var(--color-secondary-text);
   display: flex;
@@ -184,7 +184,7 @@
             display: block;
             box-shadow: 0 0 @size-16 @color-dark-grey;
             -webkit-line-clamp: unset;
-            background: @color-module-background;
+            background: var(--color-module-background);
             z-index: @mask-above;
             padding: @size-4;
             margin-top: -@size-4;
@@ -373,7 +373,7 @@ div.ExpandedHeading {
 
 div.ExpandedContent {
   position: absolute;
-  background: @color-module-background;
+  background: var(--color-module-background);
   z-index: @mask-above;
   box-shadow: 0 @size-8 @size-8 @color-dark-grey;
   margin-top: @size-32;
@@ -498,7 +498,7 @@ div.ExpandedContent {
   flex: 1;
   flex-direction: column;
   // min-width: 537px;
-  background: @color-module-background;
+  background: var(--color-module-background);
 
   > button {
     display: none;

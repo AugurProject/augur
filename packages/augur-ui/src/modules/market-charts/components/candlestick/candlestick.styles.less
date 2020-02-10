@@ -16,7 +16,7 @@
       }
 
       .highcharts-background {
-        fill: @color-module-background;
+        fill: var(--color-module-background);
       }
 
       g.highcharts-axis-labels > text > tspan {
@@ -38,7 +38,7 @@
       }
 
       .highcharts-label-box {
-        fill: @color-module-background;
+        fill: var(--color-module-background);
         font-weight: bold;
 
         > text > tspan:last-child {
@@ -86,7 +86,7 @@
       .highcharts-crosshair-label {
         .mono-10;
 
-        background-color: @color-module-background;
+        background-color: var(--color-module-background);
         padding: @size-8;
         z-index: @above-all-content;
       }

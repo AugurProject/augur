@@ -7,7 +7,7 @@ html,
 }
 
 body {
-  background: @color-page-background;
+  background: var(--color-page-background);
 
   // See Issue #3504
   top: 0px !important;
@@ -162,7 +162,7 @@ h6 {
 }
 
 .SideBar {
-  background: @color-module-background;
+  background: var(--color-module-background);
   border-right: 0.0625rem solid @color-dark-grey;
 
   @media @breakpoint-mobile {
@@ -182,7 +182,7 @@ h6 {
 .SideBar__mobile-bars {
   top: 0;
   left: 0;
-  border-bottom: 1px solid @color-module-background;
+  border-bottom: 1px solid var(--color-module-background);
   display: none;
   height: @top-bar-height-mobile;
   outline: none;

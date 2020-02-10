@@ -11,7 +11,7 @@
 }
 
 .ModalView {
-  background-color: fade(@color-page-background, 80%);
+  background-color: var(--color-page-background-80);
   height: 100vh;
   position: fixed;
   width: 100vw;
@@ -42,7 +42,7 @@
 .ModalContainer {
   .DefaultModalBorder;
 
-  background: @color-module-background;
+  background: var(--color-module-background);
   color: var(--color-primary-text);
   max-width: 35rem;
   padding: @size-24 0;
@@ -64,7 +64,7 @@
 }
 
 .ModalForm {
-  background: @color-module-background;
+  background: var(--color-module-background);
   color: var(--color-primary-text);
   max-width: 35rem;
   text-align: left;
@@ -122,7 +122,7 @@
 }
 
 .TightModalContainer {
-  background: @color-module-background;
+  background: var(--color-module-background);
   border: @size-1 solid @color-dark-grey;
   border-radius: @size-5;
   color: var(--color-primary-text);
@@ -376,7 +376,7 @@ div.ErrorField:focus {
 }
 
 .ModalDisclaimer {
-  background: @color-module-background;
+  background: var(--color-module-background);
   border: @size-3 solid @color-secondary-action-outline;
   border-radius: @size-8;
   flex-flow: row nowrap;
@@ -517,7 +517,7 @@ div.ErrorField:focus {
 }
 
 .ModalView__content--full {
-  background-color: @color-page-background;
+  background-color: var(--color-page-background);
   justify-content: normal;
   padding: 0;
 }
