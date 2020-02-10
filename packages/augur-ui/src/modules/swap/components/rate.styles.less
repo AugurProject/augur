@@ -1,0 +1,33 @@
+@import (reference) '~assets/styles/shared';
+
+.Rate {
+  align-items: center;
+  background: @color-table-header;
+  border-bottom-left-radius: @size-12;
+  border-bottom-right-radius: @size-12;
+  display: flex;
+  justify-content: space-between;
+  margin: 0 @size-8;
+  padding: @size-8;
+
+  > div {
+    .text-10;
+
+    color: @color-secondary-text;
+  }
+}
+
+.RatePool {
+  background: @color-table-header;
+  border-radius: 0 0 @size-5 @size-5;
+  margin: 0 @size-8;
+  padding: @size-16;
+
+  > div {
+    color: @color-secondary-text;
+    display: flex;
+    font-size: @size-4;
+    justify-content: space-between;
+    margin-bottom: @size-4;
+  }
+}

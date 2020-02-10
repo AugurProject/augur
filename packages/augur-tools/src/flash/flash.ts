@@ -28,6 +28,7 @@ export interface FlashArguments {
 
 export interface FlashScript {
   name: string;
+  ignoreNetwork?: boolean;
   description?: string;
   options?: FlashOption[];
   call(this: FlashSession, args: FlashArguments): Promise<any>;
