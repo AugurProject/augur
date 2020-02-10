@@ -415,7 +415,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
     const insufficientFunds =
       trade &&
       trade.totalCost &&
-      createBigNumber(trade.totalCost.value).gte(createBigNumber(availableDai));
+      createBigNumber(trade.costInDai.value).gte(createBigNumber(availableDai));
     let actionButton: any = (
       <OrderButton
         type={selectedNav}
