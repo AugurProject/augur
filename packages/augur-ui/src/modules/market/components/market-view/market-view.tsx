@@ -502,7 +502,7 @@ export default class MarketView extends Component<
     }
 
     let outcomeOrderBook = this.EmptyOrderBook;
-    const orderbookLoading = !!!orderBook;
+    const orderbookLoading = !orderBook;
     let outcomeId =
       selectedOutcomeId === null || selectedOutcomeId === undefined
         ? market.defaultSelectedOutcomeId
