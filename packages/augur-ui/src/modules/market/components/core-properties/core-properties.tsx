@@ -130,6 +130,22 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({
                   </>
                 }
               />
+              {isScalar && reportingBarShowing &&
+                <>
+                  <PropertyLabel
+                    label="Denomination"
+                    value={market.scalarDenomination}
+                  />
+                  <PropertyLabel
+                    label="Min"
+                    value={market.minPrice}
+                  />
+                  <PropertyLabel
+                    label="Max"
+                    value={market.maxPrice}
+                  />
+                </>
+              }
             </>
           )}
         </div>
