@@ -1,5 +1,6 @@
 @import (reference) '~assets/styles/shared';
 
+// Close icon is not part of SideNav
 .SideNav {
   display: none;
 
@@ -8,6 +9,7 @@
     flex-flow: column nowrap;
     height: 100vh;
     left: -100%;
+    top: 0;
     overflow: auto;
     position: fixed;
     transition: left 0.2s ease-in-out;
@@ -15,7 +17,8 @@
     z-index: @mask-modal;
 
     > div {
-      background: @color-module-background;
+      // Background for close icon and help icon when AccountFunds is closed.
+      background: @color-dark-grey;
       display: flex;
       justify-content: flex-end;
 
@@ -23,9 +26,9 @@
         position: unset;
         display: flex;
 
-        // Close icon
         > div:first-of-type {
-          background: @color-page-background;
+          // Background for close icon and help icon when AccountFunds is opened.
+          background: @color-dark-grey;
           border-bottom: @size-1 solid @color-dark-grey;
           display: flex;
           justify-content: flex-end;
@@ -33,10 +36,11 @@
         }
       }
 
+      // ConnectAccount
       > div:nth-of-type(2) {
 
         > div:first-of-type {
-          background: @color-page-background;
+          background: @color-module-background;
           display: flex;
           justify-content: flex-end;
           width: 100%;
@@ -46,6 +50,7 @@
 
     &.showNav {
       left: 0;
+      
     }
   }
 }
@@ -95,7 +100,7 @@
   }
 
   > div > ul {
-    background: @color-page-background;
+    background: @color-module-background;
     height: calc(100vh - @top-bar-height-mobile);
     margin-top: @top-bar-height-mobile;
     padding-bottom: @top-bar-height-mobile;

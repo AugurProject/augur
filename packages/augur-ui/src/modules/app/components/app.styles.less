@@ -233,7 +233,13 @@ svg.SideBar__mobile-bars-unseen {
     z-index: @mask-modal;
 
     &.SideNavOpen {
-      opacity: 0.1;
+      background: @color-dark-grey;
+      opacity: 0.9;
+      > header {
+        > div:last-of-type {
+          opacity: 0.1;
+        }
+      }
     }
   }
 }
