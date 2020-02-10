@@ -17,6 +17,7 @@ import {
   ValidationTemplateInputType,
 } from '@augurproject/artifacts';
 import moment from 'moment';
+import { datesOnSameDay } from 'utils/format-date';
 
 export function isFilledString(value, readable, message) {
   if (value && value.trim().length > 0 && value !== '') return '';
@@ -296,9 +297,10 @@ export function checkForUserInputFilled(
         endTimeFormatted &&
         endTimeFormatted.timestamp &&
         input.setEndTime &&
-        input.setEndTime >= endTimeFormatted.timestamp
+        input.setEndTime >= endTimeFormatted.timestamp ||
+        datesOnSameDay(input.setEndTime, endTimeFormatted.timestamp)
       ) {
-        return 'Date must be before event expiration';
+        return 'Date must be before event expiration and not same day';
       }
       return '';
     } else if (
