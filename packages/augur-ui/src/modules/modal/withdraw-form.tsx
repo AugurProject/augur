@@ -27,7 +27,12 @@ interface WithdrawFormProps {
     rep: FormattedNumber;
     dai: FormattedNumber;
   };
-  loginAccount: LoginAccount;
+  balances: {
+    eth: number;
+    rep: number;
+    dai: number;
+  };
+  account: string;
   Gnosis_ENABLED: boolean;
   ethToDaiRate: BigNumber;
   gasPrice: number;
@@ -87,9 +92,9 @@ export class WithdrawForm extends Component<
   };
 
   handleMax = () => {
-    const { loginAccount, fallBackGasCosts, Gnosis_ENABLED, gasPrice } = this.props;
+    const { balances, fallBackGasCosts, Gnosis_ENABLED, gasPrice } = this.props;
     const { currency, relayerGasCosts } = this.state;
-  
+
     const gasEstimate = Gnosis_ENABLED
     ? formatGasCostToEther(
         relayerGasCosts,
@@ -99,16 +104,16 @@ export class WithdrawForm extends Component<
     : fallBackGasCosts[currency.toLowerCase()];
 
     const fullAmount = createBigNumber(
-      loginAccount.balances[currency.toLowerCase()]
+      balances[currency.toLowerCase()]
     );
-    const valueMinusGas = fullAmount.minus(createBigNumber(gasEstimate.fullPrecision));
+    const valueMinusGas = fullAmount.minus(createBigNumber(gasEstimate));
     const resolvedValue = valueMinusGas.lt(ZERO) ? ZERO : valueMinusGas;
-    this.amountChange(resolvedValue.toFixed());
+    this.amountChange(resolvedValue.toFixed(), true);
   };
 
-  amountChange = (amount: string) => {
+  amountChange = (amount: string, dontCheckMinusGas: boolean = false) => {
     const {
-      loginAccount,
+      balances,
       fallBackGasCosts,
       Gnosis_ENABLED,
       ethToDaiRate,
@@ -119,8 +124,8 @@ export class WithdrawForm extends Component<
     const bnNewAmount = createBigNumber(newAmount || '0');
     const { errors: updatedErrors, currency } = this.state;
     updatedErrors.amount = '';
-    const availableEth = createBigNumber(loginAccount.balances.eth);
-    const availableDai = createBigNumber(loginAccount.balances.dai);
+    const availableEth = createBigNumber(balances.eth);
+    const availableDai = createBigNumber(balances.dai);
     let amountMinusGas = ZERO;
 
     if (Gnosis_ENABLED) {
@@ -132,9 +137,14 @@ export class WithdrawForm extends Component<
       const relayerGasCostsDAI = ethToDai(relayerGasCostsETH, ethToDaiRate);
 
       if (currency === DAI) {
-        amountMinusGas = availableDai
+        if (dontCheckMinusGas) {
+          amountMinusGas = availableDai
+          .minus(bnNewAmount)
+        } else {
+          amountMinusGas = availableDai
           .minus(bnNewAmount)
           .minus(createBigNumber(relayerGasCostsDAI.value));
+        }
       } else {
         amountMinusGas = availableDai.minus(
           createBigNumber(relayerGasCostsDAI.value)
@@ -168,7 +178,7 @@ export class WithdrawForm extends Component<
 
     if (
       bnNewAmount.gt(
-        createBigNumber(loginAccount.balances[currency.toLowerCase()])
+        createBigNumber(balances[currency.toLowerCase()])
       )
     ) {
       updatedErrors.amount = 'Quantity is greater than available funds.';
@@ -201,7 +211,7 @@ export class WithdrawForm extends Component<
         this.state.currency,
         this.state.address
           ? this.state.address
-          : this.props.loginAccount.address
+          : this.props.account
       );
       this.setState({
         relayerGasCosts,
@@ -226,7 +236,7 @@ export class WithdrawForm extends Component<
     const {
       fallBackGasCosts,
       transferFunds,
-      loginAccount,
+      balances,
       closeAction,
       Gnosis_ENABLED,
       ethToDaiRate,
@@ -306,7 +316,7 @@ export class WithdrawForm extends Component<
               <div>
                 <label htmlFor='currency'>Currency</label>
                 <span>
-                  Available: {loginAccount.balances[currency.toLowerCase()]}
+                  Available: {balances[currency.toLowerCase()]}
                 </span>
               </div>
               <FormDropdown
