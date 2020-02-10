@@ -65,7 +65,7 @@ export class OrderBookShaper {
   orderSize: number = null;
   orderBookConfig: OrderBookConfig = config;
 
-  constructor (marketId: string, orderSize: number = null, expiration: BigNumber = new BigNumber(18000), outcomes: number[] = [1, 2], orderBookConfig: OrderBookConfig = config) {
+  constructor (marketId: string, orderSize: number = null, expiration: BigNumber = new BigNumber(18000), outcomes: number[] = [2, 1], orderBookConfig: OrderBookConfig = config) {
     this.marketId = marketId;
     this.outcomes = outcomes;
     this.orderSize = orderSize;

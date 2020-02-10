@@ -590,10 +590,6 @@ export function addScripts(flash: FlashSession) {
       }
 
       const orderBook = {
-        0: {
-          buy: singleOutcomeBids,
-          sell: singleOutcomeAsks,
-        },
         1: {
           buy: singleOutcomeBids,
           sell: singleOutcomeAsks,
@@ -823,7 +819,9 @@ export function addScripts(flash: FlashSession) {
       }
     ],
     async call(this: FlashSession, args: FlashArguments) {
-      const result = await this.user.augur.getMarketOrderBook({ marketId: String(args.marketId)});
+      const user: ContractAPI = await this.ensureUser(this.network, true, true, null, true, true);
+      await new Promise<void>(resolve => setTimeout(resolve, 90000));
+      const result = await user.augur.getMarketOrderBook({ marketId: String(args.marketId)});
       this.log(JSON.stringify(result));
       return result;
     }
@@ -995,7 +993,7 @@ export function addScripts(flash: FlashSession) {
         name: 'outcomes',
         abbr: 'o',
         required: false,
-        description: 'outcomes to put orders on, default is 1,2',
+        description: 'outcomes to put orders on, default is 2,1',
       },
       {
         name: 'skipFaucetOrApproval',
@@ -1007,7 +1005,7 @@ export function addScripts(flash: FlashSession) {
       const marketIds = String(args.marketIds)
         .split(',')
         .map(id => id.trim());
-      const orderOutcomes: number[] = (args.outcomes ? String(args.outcomes) : "1,2")
+      const orderOutcomes: number[] = (args.outcomes ? String(args.outcomes) : "2,1")
         .split(',')
         .map(id => Number(id.trim()));
       const address = args.userAccount ? (args.userAccount as string) : null;
@@ -1046,7 +1044,7 @@ export function addScripts(flash: FlashSession) {
               const grabAmount = Math.min(ordersLeft, orders.length);
               const createOrders = orders.splice(0, grabAmount);
               createOrders.map(order => console.log(`${order.market} Creating ${order.displayAmount} at ${order.displayPrice} on outcome ${order.outcome}`));
-              user.placeZeroXOrders(createOrders).catch(this.log);
+              await user.placeZeroXOrders(createOrders).catch(this.log);
               totalOrdersCreated = totalOrdersCreated + createOrders.length;
             }
           }
