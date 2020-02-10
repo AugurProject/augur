@@ -174,7 +174,7 @@ export function addScripts(flash: FlashSession) {
       const amount = Number(args.amount);
       const atto = new BigNumber(amount).times(_1_ETH);
 
-      await user.faucet(atto);
+      await user.faucetOnce(atto);
 
       // If we have a target we transfer from current account to target.
       // Cannot directly faucet to target because:
@@ -425,7 +425,7 @@ export function addScripts(flash: FlashSession) {
     async call(this: FlashSession) {
       const user = await this.ensureUser();
       await user.repFaucet(QUINTILLION.multipliedBy(1000000));
-      await user.faucet(QUINTILLION.multipliedBy(1000000));
+      await user.faucetOnce(QUINTILLION.multipliedBy(1000000));
       await user.approve(QUINTILLION.multipliedBy(3000000));
 
       await this.call('init-warp-sync', {});
@@ -492,7 +492,7 @@ export function addScripts(flash: FlashSession) {
       const user = await this.ensureUser(this.network, true, true, null, true, true);
       const skipFaucetApproval = args.skipFaucetOrApproval as boolean;
       if (!skipFaucetApproval) {
-        await user.faucet(QUINTILLION.multipliedBy(1000000));
+        await user.faucetOnce(QUINTILLION.multipliedBy(1000000));
         await user.approve(QUINTILLION.multipliedBy(1000000));
       }
       const yesNoMarket = cannedMarkets.find(c => c.marketType === 'yesNo');
@@ -501,6 +501,7 @@ export function addScripts(flash: FlashSession) {
       const tradeGroupId = String(Date.now());
       const oneHundredDays = new BigNumber(8640000);
       const expirationTime = new BigNumber(timestamp).plus(oneHundredDays);
+      const orders = [];
       for (let a = 0; a < Object.keys(orderBook).length; a++) {
         const outcome = Number(Object.keys(orderBook)[a]) as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
         const buySell = Object.values(orderBook)[a];
@@ -509,7 +510,7 @@ export function addScripts(flash: FlashSession) {
 
         for (const { shares, price } of buy) {
           this.log(`creating buy order, ${shares} @ ${price}`);
-          await user.placeZeroXOrder({
+          orders.push({
             direction: 0,
             market,
             numTicks: new BigNumber(100),
@@ -529,7 +530,7 @@ export function addScripts(flash: FlashSession) {
 
         for (const { shares, price } of sell) {
           this.log(`creating sell order, ${shares} @ ${price}`);
-          await user.placeZeroXOrder({
+          orders.push({
             direction: 1,
             market,
             numTicks: new BigNumber(100),
@@ -547,6 +548,7 @@ export function addScripts(flash: FlashSession) {
           });
         }
       }
+      await user.placeZeroXOrders(orders).catch(e => console.log(e));
     },
   });
 
@@ -583,7 +585,7 @@ export function addScripts(flash: FlashSession) {
       const user = await this.ensureUser(this.network, true, true, null, true, true);
       const skipFaucetApproval = args.skipFaucetOrApproval as boolean;
       if (!skipFaucetApproval) {
-        await user.faucet(QUINTILLION.multipliedBy(1000000));
+        await user.faucetOnce(QUINTILLION.multipliedBy(1000000));
         await user.approve(QUINTILLION.multipliedBy(1000000));
       }
 
@@ -626,6 +628,7 @@ export function addScripts(flash: FlashSession) {
       const tradeGroupId = String(Date.now());
       const oneHundredDays = new BigNumber(8640000);
       const expirationTime = new BigNumber(timestamp).plus(oneHundredDays);
+      const orders = []
       for (let a = 0; a < numOutcomes; a++) {
         const outcome = Number(Object.keys(orderBook)[a]) as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
         const buySell = Object.values(orderBook)[a];
@@ -634,7 +637,7 @@ export function addScripts(flash: FlashSession) {
 
         for (const { shares, price } of buy) {
           this.log(`creating buy order, ${shares} @ ${price}`);
-          await user.placeZeroXOrder({
+          orders.push({
             direction: 0,
             market,
             numTicks: new BigNumber(100),
@@ -654,7 +657,7 @@ export function addScripts(flash: FlashSession) {
 
         for (const { shares, price } of sell) {
           this.log(`creating sell order, ${shares} @ ${price}`);
-          await user.placeZeroXOrder({
+          orders.push({
             direction: 1,
             market,
             numTicks: new BigNumber(100),
@@ -672,6 +675,7 @@ export function addScripts(flash: FlashSession) {
           });
         }
       }
+      await user.placeZeroXOrders(orders).catch(e => console.log(e));
     },
   });
 
@@ -725,7 +729,7 @@ export function addScripts(flash: FlashSession) {
       const user = await this.ensureUser(this.network, true, true, null, true, true);
       const skipFaucetApproval = args.skipFaucetOrApproval as boolean;
       if (!skipFaucetApproval) {
-        await user.faucet(QUINTILLION.multipliedBy(1000000));
+        await user.faucetOnce(QUINTILLION.multipliedBy(1000000));
         await user.approve(QUINTILLION.multipliedBy(1000000));
       }
 
@@ -754,6 +758,7 @@ export function addScripts(flash: FlashSession) {
         },
       };
       const expirationTime = new BigNumber(timestamp).plus(oneHundredDays);
+      const orders = [];
       for (let a = 0; a < Object.keys(orderBook).length; a++) {
         const outcome = !onInvalid ? Number(Object.keys(orderBook)[a]) as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 : 0;
         const buySell = Object.values(orderBook)[a];
@@ -779,7 +784,7 @@ export function addScripts(flash: FlashSession) {
             expirationTime,
           };
           console.log(JSON.stringify(order));
-          await user.placeZeroXOrder(order);
+          orders.push(order);
         }
 
         for (const { shares, price } of sell) {
@@ -801,9 +806,10 @@ export function addScripts(flash: FlashSession) {
             expirationTime,
           };
           console.log(JSON.stringify(order));
-          await user.placeZeroXOrder(order);
+          orders.push(order);
         }
       }
+      await user.placeZeroXOrders(orders);
     },
   });
 
@@ -923,11 +929,8 @@ export function addScripts(flash: FlashSession) {
           const orders = orderBook.nextRun(marketBook, new BigNumber(timestamp));
           if (orders.length > 0) {
             this.log(`creating ${orders.length} orders for ${marketId}`);
-            for (let j = 0; j < orders.length; j++) {
-              const order = orders[j];
-              console.log(`Creating ${order.displayAmount} at ${order.displayPrice}`);
-              await user.placeZeroXOrder(order).catch(this.log);
-            }
+            orders.map(order => console.log(`Creating ${order.displayAmount} at ${order.displayPrice} on outcome ${order.outcome}`));
+            await user.placeZeroXOrders(orders).catch(this.log);
           }
         }
         await new Promise<void>(resolve => setTimeout(resolve, interval));
@@ -994,6 +997,11 @@ export function addScripts(flash: FlashSession) {
         required: false,
         description: 'outcomes to put orders on, default is 1,2',
       },
+      {
+        name: 'skipFaucetOrApproval',
+        flag: true,
+        description: 'do not faucet or approve, has already been done'
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const marketIds = String(args.marketIds)
@@ -1010,7 +1018,13 @@ export function addScripts(flash: FlashSession) {
       const expiration = args.expiration ? new BigNumber(String(args.expiration)) : new BigNumber(18000); // five minutes
       const user: ContractAPI = await this.ensureUser(this.network, true, true, address, true, true);
       console.log('waiting few seconds on purpose for client to sync');
-      await new Promise<void>(resolve => setTimeout(resolve, 10000));
+      await new Promise<void>(resolve => setTimeout(resolve, 15000));
+      const skipFaucetOrApproval = args.skipFaucetOrApproval as boolean;
+      if (!skipFaucetOrApproval) {
+        this.log('order-firehose, faucet and approval');
+        await user.faucetOnce(QUINTILLION.multipliedBy(10000));
+        await user.approve(QUINTILLION.multipliedBy(100000));
+      }
       // create tight orderbook config
       let bids = {};
       let asks = {};
@@ -1037,7 +1051,7 @@ export function addScripts(flash: FlashSession) {
             }
           }
         }
-        console.log(`pausing before next burst of ${numOrderLimit} orders`);
+        console.log(`pausing before next burst of ${numOrderLimit} orders, waiting ${interval} ms`);
         await new Promise<void>(resolve => setTimeout(resolve, interval));
       }
 
@@ -1106,7 +1120,7 @@ export function addScripts(flash: FlashSession) {
       const skipFaucetOrApproval = args.skipFaucetOrApproval as boolean;
       if (!skipFaucetOrApproval) {
         this.log('create-market-order, faucet and approval');
-        await user.faucet(QUINTILLION.multipliedBy(10000));
+        await user.faucetOnce(QUINTILLION.multipliedBy(10000));
         await user.approve(QUINTILLION.multipliedBy(100000));
       }
       const orderType = String(args.orderType).toLowerCase();
@@ -1240,7 +1254,7 @@ export function addScripts(flash: FlashSession) {
       if (!skipFaucet) {
         console.log('fauceting ...');
         const funds = new BigNumber(1e18).multipliedBy(1000000);
-        await user.faucet(funds);
+        await user.faucetOnce(funds);
         await user.approve(funds);
       }
 

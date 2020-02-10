@@ -224,6 +224,12 @@ export function startOfTomorrow(unixTimestamp: number): number {
     .unix();
 }
 
+export function datesOnSameDay(firstUnixTimestamp, utcUnixTimestamp) {
+  const startDate = moment.unix(firstUnixTimestamp).utc().startOf('day').unix();
+  const endDate = moment.unix(utcUnixTimestamp).utc().startOf('day').unix();
+  return  startDate === endDate;
+}
+
 export function minMarketEndTimeDay(currentTimestamp) {
   return moment.unix(currentTimestamp).startOf('day');
 }
