@@ -72,7 +72,7 @@
     }
 
     > path {
-      fill: @color-primary-text;
+      fill: var(--color-primary-text);
     }
   }
 }
@@ -115,7 +115,7 @@
 
           border-bottom: 2px solid @color-primary-action;
           padding-bottom: @size-5;
-          color: @color-primary-text;
+          color: var(--color-primary-text);
           width: fit-content;
         }
 
@@ -174,7 +174,7 @@
       .mono-10;
 
       display: flex;
-      color: @color-primary-text;
+      color: var(--color-primary-text);
       cursor: pointer;
       text-transform: uppercase;
       order: 1;
@@ -196,13 +196,13 @@
 
         align-items: center;
         background: @color-module-background;
-        color: @color-primary-text;
+        color: var(--color-primary-text);
         display: flex;
         flex-direction: row-reverse;
         text-transform: uppercase;
 
         > svg {
-          fill: @color-primary-text;
+          fill: var(--color-primary-text);
           height: @size-12;
           margin-left: @size-8;
           transform: rotate(180deg);

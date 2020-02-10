@@ -4,7 +4,7 @@
 .AlertsView {
   background-color: transparent;
   border-top: 0;
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   display: flex;
   flex-direction: column;
   max-height: 470px;
@@ -78,7 +78,7 @@
   .text-16;
 
   align-self: center;
-  color: @color-secondary-text;
+  color: var(--color-secondary-text);
   margin-top: @size-8;
   padding: @size-30;
   text-align: center;
@@ -89,7 +89,7 @@
 .dismissContainer {
   align-items: flex-end;
 
-  background: @color-primary-text;
+  background: var(--color-primary-text);
   border-radius: @size-3;
   display: flex;
   justify-content: flex-end;
@@ -103,7 +103,7 @@
     background: @color-secondary-action;
     border: 1px solid @color-secondary-action-outline;
     border-radius: @size-3;
-    color: @color-secondary-text;
+    color: var(--color-secondary-text);
     cursor: pointer;
     display: flex;
     justify-content: center;
@@ -111,7 +111,7 @@
     text-transform: uppercase;
 
     &:hover {
-      color: @color-primary-text;
+      color: var(--color-primary-text);
     }
 
     &:focus {

@@ -19,7 +19,7 @@
   border: @size-1 solid @color-secondary-action;
   box-sizing: border-box;
   border-radius: @border-radius-default;
-  color: @color-secondary-text;
+  color: var(--color-secondary-text);
   display: flex;
   padding: 0;
   transition: min-width @animation-speed-normal @animation-default-type;
@@ -33,7 +33,7 @@
   }
 
   > svg {
-    fill: @color-primary-text;
+    fill: var(--color-primary-text);
     margin-left: @size-13;
     height: @size-14;
     width: @size-14;
@@ -43,7 +43,7 @@
     .text-14;
 
     border: none;
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     line-height: normal;
     padding: 0;
     height: @size-20;

@@ -4,14 +4,14 @@
 .MarketHeader {
   background: @color-module-background;
   border: 1px solid @color-dark-grey;
-  color: @color-secondary-text;
+  color: var(--color-secondary-text);
   display: flex;
   flex: 1;
   flex-direction: column;
   overflow: visible;
 
   &.Collapsed {
-    color: @color-secondary-text;
+    color: var(--color-secondary-text);
     display: flex;
     flex: 1;
     flex-direction: column;
@@ -149,7 +149,7 @@
         }
 
         > div[class*="CopyButton"] > svg > path {
-          fill: @color-primary-text;
+          fill: var(--color-primary-text);
         }
       }
 
@@ -172,7 +172,7 @@
           .text-18-bold;
           .limit-lines(3);
 
-          color: @color-primary-text;
+          color: var(--color-primary-text);
           margin-bottom: @size-8;
           flex: 0 auto;
         }
@@ -229,7 +229,7 @@ div.Toggle {
       margin-right: @size-10;
 
       > path {
-        fill: @color-secondary-text;
+        fill: var(--color-secondary-text);
       }
     }
   }
@@ -248,7 +248,7 @@ div.Toggle {
         .text-12-bold;
         .limit-lines(1);
 
-        color: @color-primary-text;
+        color: var(--color-primary-text);
         flex: 1;
         padding: 0;
         margin: 0;
@@ -307,13 +307,13 @@ div.Toggle {
   .mono-10;
 
   align-items: center;
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   display: flex;
   text-transform: uppercase;
   margin-right: @size-10;
 
   span {
-    color: @color-primary-text;
+    color: var(--color-primary-text);
   }
 
   svg {
@@ -321,7 +321,7 @@ div.Toggle {
     width: @size-10;
 
     path {
-      stroke: @color-primary-text;
+      stroke: var(--color-primary-text);
     }
   }
 }
@@ -334,7 +334,7 @@ div.Toggle {
 
     background: @color-secondary-action;
     border: @size-1 solid @color-secondary-action-outline;
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     border-radius: @border-radius-default;
     padding: @size-4;
     position: absolute;
@@ -410,7 +410,7 @@ div.ExpandedContent {
   h2 {
     .mono-10-bold;
 
-    color: @color-secondary-text;
+    color: var(--color-secondary-text);
     display: block;
     padding-bottom: 2px;
     padding-right: @size-8;
@@ -420,7 +420,7 @@ div.ExpandedContent {
   > p {
     .text-12;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     height: @size-18;
     margin: @size-2 0 @size-4;
   }
@@ -434,7 +434,7 @@ div.ExpandedContent {
       .text-12;
 
       align-self: flex-end;
-      color: @color-primary-text;
+      color: var(--color-primary-text);
       cursor: pointer;
       margin-left: @size-5;
       text-transform: uppercase;
@@ -443,7 +443,7 @@ div.ExpandedContent {
         height: @size-12;
 
         polyline {
-          stroke: @color-primary-text;
+          stroke: var(--color-primary-text);
           stroke-width: 3;
         }
       }
@@ -465,7 +465,7 @@ div.ExpandedContent {
     > label {
       .text-12;
 
-      color: @color-primary-text;
+      color: var(--color-primary-text);
       flex: 1;
 
       @media @breakpoint-mobile-small {
@@ -559,7 +559,7 @@ div.ExpandedContent {
           .text-12;
 
           align-self: flex-end;
-          color: @color-primary-text;
+          color: var(--color-primary-text);
           cursor: pointer;
           display: block;
           text-transform: uppercase;
@@ -570,7 +570,7 @@ div.ExpandedContent {
             height: @size-12;
 
             polyline {
-              stroke: @color-primary-text;
+              stroke: var(--color-primary-text);
               stroke-width: 3;
             }
           }

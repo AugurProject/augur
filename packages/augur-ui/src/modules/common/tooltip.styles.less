@@ -3,7 +3,7 @@
 div.Tooltip {
   .text-10;
 
-  background-color: @color-primary-text;
+  background-color: var(--color-primary-text);
   border: 1px solid transparent;
   border-radius: @border-radius-default;
   box-shadow: 0 -2px @size-4 0 rgba(0, 0, 0, 0.5);
@@ -55,11 +55,11 @@ div.TooltipInvalidRules {
 
     > circle {
       fill: none;
-      stroke: @color-secondary-text;
+      stroke: var(--color-secondary-text);
     }
 
     > path {
-      fill: @color-secondary-text;
+      fill: var(--color-secondary-text);
       stroke: none;
     }
   }
@@ -67,11 +67,11 @@ div.TooltipInvalidRules {
   &:hover {
     > svg {
       > circle {
-        stroke: @color-primary-text;
+        stroke: var(--color-primary-text);
       }
 
       > path {
-        fill: @color-primary-text;
+        fill: var(--color-primary-text);
       }
     }
   }

@@ -30,7 +30,7 @@
     > li:hover {
       &:not(.CreatetButton) {
         span {
-          color: @color-primary-text;
+          color: var(--color-primary-text);
         }
       }
     }
@@ -44,7 +44,7 @@
         .text-12-bold;
 
         align-self: center;
-        color: @color-secondary-text;
+        color: var(--color-secondary-text);
         text-transform: uppercase;
       }
 
@@ -69,7 +69,7 @@
       }
 
       > a > span {
-        color: @color-primary-text;
+        color: var(--color-primary-text);
       }
     }
 
@@ -116,7 +116,7 @@ button.AddFunds {
   background: fade(@color-brand, 20%);
   border: @size-1 solid @color-brand;
   border-radius: @border-radius-default;
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   display: flex;
   justify-content: center;
   min-height: @size-22;

@@ -32,7 +32,7 @@
 
     & > section {
       align-items: center;
-      color: @color-primary-text;
+      color: var(--color-primary-text);
       display: flex;
       flex-direction: column;
     }
@@ -43,7 +43,7 @@
   .DefaultModalBorder;
 
   background: @color-module-background;
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   max-width: 35rem;
   padding: @size-24 0;
   position: relative;
@@ -65,18 +65,18 @@
 
 .ModalForm {
   background: @color-module-background;
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   max-width: 35rem;
   text-align: left;
   width: 100%;
 
   > * {
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     width: 100%;
   }
 
   h1 {
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     font-size: @size-22;
     font-weight: 500;
     line-height: 1.75rem;
@@ -89,7 +89,7 @@
   }
 
   label {
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     font-size: @size-14;
     font-weight: 600;
     line-height: @size-18;
@@ -112,7 +112,7 @@
     }
 
     > input::placeholder {
-      color: @color-primary-text;
+      color: var(--color-primary-text);
     }
   }
 
@@ -125,7 +125,7 @@
   background: @color-module-background;
   border: @size-1 solid @color-dark-grey;
   border-radius: @size-5;
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   max-width: 20rem;
   padding: @size-24 0;
   position: relative;
@@ -137,7 +137,7 @@
   }
 
   h1 {
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     font-size: @size-22;
     font-weight: 500;
     line-height: 1.75rem;
@@ -146,7 +146,7 @@
   }
 
   h2 {
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     font-size: @size-16;
     font-weight: 500;
     line-height: @size-18;
@@ -156,7 +156,7 @@
   }
 
   h3 {
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     font-size: @size-12;
     font-weight: 400;
     line-height: @size-18;
@@ -195,7 +195,7 @@ div.ErrorField:focus {
 }
 
 .Warning {
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   font-size: @size-14;
   line-height: @size-16;
   margin: 0 0 @size-24;
@@ -223,7 +223,7 @@ div.ErrorField:focus {
 
 .Receipt {
   background-color: @color-dark-grey;
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   list-style: none;
   margin: 0 @size-32 @size-24;
   padding: @size-16 0;
@@ -237,7 +237,7 @@ div.ErrorField:focus {
     padding: @size-8 0;
 
     > label {
-      color: @color-primary-text;
+      color: var(--color-primary-text);
       flex: 1;
       font-weight: 600;
       margin: 0 @size-16 0 auto;
@@ -245,7 +245,7 @@ div.ErrorField:focus {
     }
 
     > span:first-of-type {
-      color: @color-primary-text;
+      color: var(--color-primary-text);
       flex: 3;
       margin: 0 auto 0 0;
       text-align: left;
@@ -259,7 +259,7 @@ div.ErrorField:focus {
 }
 
 .Description {
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   font-size: @size-12;
   line-height: @size-18;
   margin: 0 0 @size-24;
@@ -269,7 +269,7 @@ div.ErrorField:focus {
 .ModalTable {
   border-left: 1px solid @color-dark-grey;
   border-top: 1px solid @color-dark-grey;
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   display: flex;
   flex-flow: column;
   margin: 0 0 @size-24;
@@ -291,7 +291,7 @@ div.ErrorField:focus {
   line-height: @size-16;
 
   &:hover {
-    color: @color-primary-text;
+    color: var(--color-primary-text);
   }
 }
 
@@ -341,7 +341,7 @@ div.ErrorField:focus {
 
   background-color: transparent;
   border: 0;
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   font-size: @size-14;
   font-weight: 400;
   letter-spacing: 0.3px;
@@ -394,7 +394,7 @@ div.ErrorField:focus {
   > h1 {
     .text-24-bold;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     margin: @size-32 0;
 
     @media @breakpoint-mobile {
@@ -421,7 +421,7 @@ div.ErrorField:focus {
     > p {
       .text-14;
 
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
       font-size: @size-14;
       margin: 0 0 @size-24;
       line-height: 140%;
@@ -441,7 +441,7 @@ div.ErrorField:focus {
 
       > label {
         align-items: center;
-        color: @color-primary-text;
+        color: var(--color-primary-text);
         display: flex;
         font-size: @size-14;
         margin: 0;
@@ -526,7 +526,7 @@ div.ErrorField:focus {
   background: transparent;
   border: 0;
   border-radius: 0;
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   max-height: 100vh;
   max-width: unset;
   -webkit-overflow-scrolling: touch;
@@ -640,7 +640,7 @@ div.ErrorField:focus {
 
     align-items: center;
     display: flex;
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     justify-content: center;
     line-height: @size-18;
     margin: 0 @size-24;
@@ -653,7 +653,7 @@ div.ErrorField:focus {
     margin-right: @size-24;
 
     > svg {
-      fill: @color-primary-text;
+      fill: var(--color-primary-text);
       height: @size-36;
       transform: rotate(-90deg);
     }

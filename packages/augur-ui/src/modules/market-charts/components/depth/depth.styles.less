@@ -21,12 +21,12 @@
 }
 
 .MarketOutcomeDepth__depth-hover-title {
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   margin-right: @size-5;
 }
 
 .MarketOutcomeDepth__depth-hover-value {
-  color: @color-secondary-text;
+  color: var(--color-secondary-text);
   width: 5em;
 }
 
@@ -75,7 +75,7 @@
       height: @size-12;
 
       > rect {
-        fill: @color-secondary-text;
+        fill: var(--color-secondary-text);
       }
     }
   }
@@ -84,7 +84,7 @@
     .mono-9-bold;
 
     flex: 1 100%;
-    color: @color-secondary-text;
+    color: var(--color-secondary-text);
     text-align: center;
     text-transform: uppercase;
     grid-column: 3;
@@ -95,7 +95,7 @@
     .mono-12;
 
     flex: 1 100%;
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     text-align: center;
     grid-column: 3;
     grid-row: 2;
@@ -111,10 +111,10 @@
   :global {
     .hovered_tooltip_div {
       background-color: @color-module-background;
-      border: 1px solid @color-primary-text;
+      border: 1px solid var(--color-primary-text);
       border-radius: @border-radius-default 0 0 @border-radius-default;
       border-right-width: 2px;
-      color: @color-primary-text;
+      color: var(--color-primary-text);
       display: flex;
       flex: 1 113px;
       flex-flow: row nowrap;
@@ -182,7 +182,7 @@
       > div {
         .mono-9;
 
-        color: @color-primary-text;
+        color: var(--color-primary-text);
         flex: 1;
         font-weight: bold;
         line-height: @size-12;
@@ -220,7 +220,7 @@
       stroke: @color-secondary-action-outline;
     }
     .tick-line--midpoint {
-      stroke: @color-primary-text;
+      stroke: var(--color-primary-text);
     }
 
     .bounding-line:first-of-type {
@@ -249,7 +249,7 @@
     }
 
     .tick-value {
-      fill: @color-primary-text;
+      fill: var(--color-primary-text);
       font-size: @size-12;
       font-weight: 400;
       letter-spacing: 0.3px;
@@ -258,7 +258,7 @@
     }
 
     .tick > text {
-      fill: @color-primary-text;
+      fill: var(--color-primary-text);
     }
 
     .depth-line-bids {
@@ -304,13 +304,13 @@
     }
 
     .line .crosshairDot {
-      fill: @color-primary-text;
-      stroke: @color-primary-text;
+      fill: var(--color-primary-text);
+      stroke: var(--color-primary-text);
     }
 
     .line .crosshairDotOutline {
       fill: none;
-      stroke: @color-primary-text;
+      stroke: var(--color-primary-text);
     }
 
     .line .crosshair-bids {
@@ -337,7 +337,7 @@
       }
 
       text {
-        fill: @color-primary-text;
+        fill: var(--color-primary-text);
       }
     }
 

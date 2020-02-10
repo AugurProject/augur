@@ -30,7 +30,7 @@
   > span {
     .mono-10-bold;
 
-    color: fade(@color-secondary-text, 75%);
+    color: --color-secondary-text-75;
     height: 100%;
     max-height: @size-20;
     min-height: @size-20;
@@ -63,7 +63,7 @@
     }
 
     > li:first-of-type {
-      color: @color-primary-text;
+      color: var(--color-primary-text);
       margin-left: auto;
       text-align: right;
     }
@@ -74,7 +74,7 @@
     }
 
     > li:last-of-type {
-      color: fade(@color-secondary-text, 80%);
+      color: --color-secondary-text-80;
       text-align: right;
       padding-right: @size-16;
     }
@@ -90,13 +90,13 @@
 }
 
 .Up {
-  border-bottom-color: fade(@color-secondary-text, 50%);
+  border-bottom-color: --color-secondary-text-50;
   border-width: 0 @size-4 @size-5;
   top: -@size-8;
 }
 
 .Down {
-  border-top-color: fade(@color-secondary-text, 50%);
+  border-top-color: --color-secondary-text-50;
   border-width: @size-5 @size-4 0;
   top: @size-9
 }

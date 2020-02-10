@@ -5,7 +5,7 @@
   .mono-10-medium;
 
   align-items: baseline;
-  color: @color-secondary-text;
+  color: var(--color-secondary-text);
   display: flex;
   flex-flow: column nowrap;
   white-space: nowrap;
@@ -24,7 +24,7 @@
   > span:last-of-type {
     .mono-12-medium;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     text-align: left;
     width: 100%;
     margin-top: @size-3;
@@ -46,7 +46,7 @@
 
   &.Finished {
     > span:last-of-type {
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
     }
   }
 
@@ -62,7 +62,7 @@
 }
 
 .TimeLabel {
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   display: flex;
   flex-flow: column nowrap;
   height: 2.875rem;
@@ -192,13 +192,13 @@
   > h4 {
     .mono-10;
 
-    color: @color-secondary-text;
+    color: var(--color-secondary-text);
     text-align: center;
     margin: auto;
     text-transform: uppercase;
 
     &:first-of-type {
-      color: @color-primary-text;
+      color: var(--color-primary-text);
       text-align: left;
 
       @media @breakpoint-max-desktop-min {
@@ -216,7 +216,7 @@
     &:first-of-type {
       .text-12;
 
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
       text-align: left;
     }
 
@@ -250,7 +250,7 @@
     > li {
       .mono-9;
 
-      color: @color-primary-text;
+      color: var(--color-primary-text);
       text-align: center;
       width: fit-content;
 

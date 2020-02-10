@@ -17,7 +17,7 @@
       g.highcharts-yaxis-labels {
         .mono-10-bold;
 
-        fill: @color-primary-text;
+        fill: var(--color-primary-text);
       }
 
       g.highcharts-xaxis-labels,
@@ -26,7 +26,7 @@
       g.highcharts-xaxis-labels > text > title {
         .mono-9;
 
-        fill: @color-primary-text;
+        fill: var(--color-primary-text);
       }
 
       .highcharts-no-data {
@@ -74,13 +74,13 @@
       }
 
       .highcharts-crosshair-label.highcharts-crosshair-label > .highcharts-label-box {
-        stroke: @color-primary-text;
+        stroke: var(--color-primary-text);
       }
 
       .highcharts-crosshair-label {
         background-color: @color-module-background;
         border-radius: 5px;
-        color: @color-primary-text;
+        color: var(--color-primary-text);
         font-size: @size-10;
         z-index: @above-all-content;
       }
@@ -92,7 +92,7 @@
       g.highcharts-yaxis-labels > g.highcharts-crosshair-label > text {
         .mono-10;
 
-        fill: @color-primary-text;
+        fill: var(--color-primary-text);
         transform: translateX(38px);
       }
 
@@ -103,7 +103,7 @@
       g.highcharts-xaxis-labels > g.highcharts-crosshair-label > text {
         .mono-9;
 
-        fill: @color-primary-text;
+        fill: var(--color-primary-text);
         transform: translateY(4px);
       }
 
@@ -114,8 +114,8 @@
       .highcharts-halo,
       path.highcharts-point,
       .highcharts-tracker > path {
-        fill: @color-primary-text;
-        stroke: @color-primary-text;
+        fill: var(--color-primary-text);
+        stroke: var(--color-primary-text);
       }
 
       // --- mulitple line styling
@@ -251,8 +251,8 @@
       text.highcharts-title > tspan {
         .text-10;
 
-        color: @color-primary-text;
-        fill: @color-primary-text;
+        color: var(--color-primary-text);
+        fill: var(--color-primary-text);
         text-transform: capitalize;
       }
     }

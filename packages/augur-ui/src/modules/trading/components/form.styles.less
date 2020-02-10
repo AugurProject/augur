@@ -5,7 +5,7 @@
   padding: @size-12 @size-12 0;
 
     > li {
-      color: @color-primary-text;
+      color: var(--color-primary-text);
       display: flex;
       flex-flow: column nowrap;
       width: 100%;
@@ -43,7 +43,7 @@
         > label {
           .mono-10-medium;
 
-          color: @color-secondary-text;
+          color: var(--color-secondary-text);
         }
       }
 
@@ -97,7 +97,7 @@
         > label {
           .mono-10-bold;
 
-          color: @color-primary-text;
+          color: var(--color-primary-text);
           margin-bottom: 0;
           padding: 0;
           margin-left: @size-22;
@@ -135,7 +135,7 @@
             background: @color-secondary-hover;
 
             > svg > path {
-              stroke: @color-primary-text;
+              stroke: var(--color-primary-text);
             }
           }
         }
@@ -150,7 +150,7 @@
         > span {
           .mono-10-medium;
 
-          color: @color-primary-text;
+          color: var(--color-primary-text);
           grid-row: 2;
           grid-column: 1 / span 3;
           text-align: right;
@@ -159,7 +159,7 @@
         > span.tipText {
           .mono-10-medium;
 
-          color: @color-secondary-text;
+          color: var(--color-secondary-text);
           text-align: left;
         }
 
@@ -300,7 +300,7 @@
         &.smallLabel {
           .mono-10-medium;
 
-          color: @color-primary-text;
+          color: var(--color-primary-text);
           padding-top: @size-12;
           text-transform: none;
 
@@ -310,16 +310,16 @@
 
             > circle {
               opacity: 1;
-              stroke: @color-primary-text;
+              stroke: var(--color-primary-text);
               fill: none;
             }
 
             > rect {
-              fill: @color-primary-text;
+              fill: var(--color-primary-text);
             }
 
             > path {
-              fill: @color-primary-text;
+              fill: var(--color-primary-text);
             }
           }
         }
@@ -333,16 +333,16 @@
 
             > circle {
               opacity: 1;
-              stroke: @color-primary-text;
+              stroke: var(--color-primary-text);
               fill: none;
             }
 
             > rect {
-              fill: @color-primary-text;
+              fill: var(--color-primary-text);
             }
 
             > path {
-              fill: @color-primary-text;
+              fill: var(--color-primary-text);
             }
           }
         }
@@ -367,7 +367,7 @@
   .mono-10-bold;
 
   align-items: center;
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   margin-bottom: @size-4;
   text-transform: uppercase;
   display: grid;
@@ -406,7 +406,7 @@
   > span:nth-of-type(2) {
     .text-11;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     grid-column: 2;
     text-transform: none;
   }
@@ -418,10 +418,10 @@
 
     > button {
       width: 100%;
-      border: 1px solid @color-primary-text;
+      border: 1px solid var(--color-primary-text);
 
       &:hover {
-        background: fade(@color-primary-text, .15);
+        background: var(--color-primary-text-15);
       }
 
       &:first-of-type {
@@ -477,10 +477,10 @@
   > input[type="number"] {
     background-color: @color-secondary-action;
     border-width: 0;
-    color: @color-primary-text;
+    color: var(--color-primary-text);
 
     &::placeholder {
-      color: fade(@color-primary-text, 20%);
+      color: var(--color-primary-text-20);
     }
   }
 
@@ -496,7 +496,7 @@
   > span {
     .mono-10;
 
-    color: @color-secondary-text;
+    color: var(--color-secondary-text);
     overflow: hidden;
     padding: @size-10 @size-12;
     text-align: right;

@@ -17,16 +17,16 @@
 		> span:first-of-type {
 			.text-12-bold;
 
-			color: @color-primary-text;
+			color: var(--color-primary-text);
 		}
 
 		> span:last-of-type {
 			.mono-12-medium;
 
-			color: @color-primary-text;
+			color: var(--color-primary-text);
 
 			&.Zero {
-				color: @color-secondary-text;
+				color: var(--color-secondary-text);
 			}
 		}
 	}
@@ -70,7 +70,7 @@
 	> span:first-of-type {
 		.text-12-bold;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
 	}
 
 	> span:nth-of-type(2) {
@@ -96,7 +96,7 @@
 			> span:first-of-type {
 				.mono-10;
 
-				color: @color-secondary-text;
+				color: var(--color-secondary-text);
 				margin-bottom: @size-2;
 				text-transform: uppercase;
 			}
@@ -104,10 +104,10 @@
 			> span:nth-of-type(2) {
 				.mono-10;
 
-				color: @color-primary-text;
+				color: var(--color-primary-text);
 
 				> span {
-					color: @color-secondary-text;
+					color: var(--color-secondary-text);
 					margin-left: @size-5;
 				}
 			}
@@ -227,7 +227,7 @@
 	> div:last-of-type {
 		.mono-10-medium;
 
-		color: @color-secondary-text;
+		color: var(--color-secondary-text);
 		display: flex;
     	justify-content: space-between;
 
@@ -287,7 +287,7 @@
 	> span:first-of-type {
 		.mono-10-medium;
 
-		color: @color-secondary-text;
+		color: var(--color-secondary-text);
 		display: flex;
 		flex: 1;
 		text-transform: capitalize;
@@ -296,7 +296,7 @@
 	> span:last-of-type {
 		.mono-12-medium;
 
-		color: @color-primary-text;
+		color: var(--color-primary-text);
 	}
 
 	@media @breakpoint-mobile-mid{
@@ -326,7 +326,7 @@
 		height: @size-16;
 
 		> mask {
-			fill: @color-primary-text;
+			fill: var(--color-primary-text);
 		}
 
     > circle {
@@ -335,11 +335,11 @@
     }
 
     > path {
-      fill: @color-primary-text;
+      fill: var(--color-primary-text);
     }
 
     > rect {
-			stroke: @color-primary-text;
+			stroke: var(--color-primary-text);
 		}
 	}
 
@@ -373,7 +373,7 @@
 	> span:last-of-type {
 		.text-18-bold;
 
-		color: @color-primary-text;
+		color: var(--color-primary-text);
 	}
 
 	> div {
@@ -385,7 +385,7 @@
 			.mono-10;
 
 			margin-bottom: @size-4;
-			color: @color-secondary-text;
+			color: var(--color-secondary-text);
 			text-transform: uppercase;
 		}
 
@@ -395,12 +395,12 @@
 			> span {
 				.text-12-bold;
 
-				color: @color-primary-text;
+				color: var(--color-primary-text);
 
 				> span {
 					.text-12;
 
-					color: @color-secondary-text;
+					color: var(--color-secondary-text);
 					margin: 0 @size-3;
 				}
 			}

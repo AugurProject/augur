@@ -13,12 +13,12 @@
     width: @size-40;
 
     > li {
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
       margin: 0 @size-8;
       border-bottom: @size-2 solid transparent;
 
       &.ActiveTab {
-        color: @color-primary-text;
+        color: var(--color-primary-text);
 
         @media @breakpoint-mobile {
           border-bottom: @size-2 solid @color-primary-action;
@@ -37,7 +37,7 @@
       }
 
       &:hover {
-        color: @color-primary-text;
+        color: var(--color-primary-text);
       }
 
       > button {
@@ -174,7 +174,7 @@
 }
 
 .ActiveSpanFill {
-  border-bottom: 1px solid @color-primary-text;
+  border-bottom: 1px solid var(--color-primary-text);
 }
 
 .NoBorder {

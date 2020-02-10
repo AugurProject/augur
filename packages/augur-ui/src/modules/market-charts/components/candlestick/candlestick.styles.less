@@ -7,11 +7,11 @@
       g.highcharts-button {
         > rect.highcharts-button-box {
           fill: transparent;
-          stroke: @color-primary-text;
+          stroke: var(--color-primary-text);
         }
         > text > tspan,
         > text {
-          fill: @color-primary-text;
+          fill: var(--color-primary-text);
         }
       }
 
@@ -22,15 +22,15 @@
       g.highcharts-axis-labels > text > tspan {
         .mono-9;
 
-        color: @color-primary-text;
-        fill: @color-primary-text;
+        color: var(--color-primary-text);
+        fill: var(--color-primary-text);
       }
 
       .highcharts-yaxis-labels,
       .highcharts-label {
         .mono-10-bold;
 
-        fill: @color-primary-text;
+        fill: var(--color-primary-text);
       }
 
       .highcharts-no-data {
@@ -68,7 +68,7 @@
         .dashline-long;
 
         .highcharts-grid-line {
-          stroke: fade(@color-primary-text, 40%);
+          stroke: var(--color-primary-text-40);
           transform: scaleX(1.15);
         }
       }
@@ -80,7 +80,7 @@
       .highcharts-crosshair-label.highcharts-crosshair-label > .highcharts-label-box {
         .mono-9;
 
-        stroke: @color-primary-text;
+        stroke: var(--color-primary-text);
       }
 
       .highcharts-crosshair-label {
@@ -98,7 +98,7 @@
       g.highcharts-yaxis-labels > g.highcharts-crosshair-label > text {
         .mono-10;
 
-        fill: @color-primary-text;
+        fill: var(--color-primary-text);
         transform: translateX(38px);
       }
 
@@ -109,7 +109,7 @@
       g.highcharts-xaxis-labels > g.highcharts-crosshair-label > text {
         .mono-9;
 
-        fill: @color-primary-text;
+        fill: var(--color-primary-text);
         transform: translateY(4px);
       }
 

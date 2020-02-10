@@ -37,7 +37,7 @@
     .mono-12-bold;
 
     display: block;
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     margin: 0 0 @size-13;
 
     @media @breakpoint-mobile {
@@ -48,7 +48,7 @@
   > span:not(:first-of-type) {
     .text-12-bold;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     text-transform: capitalize;
     display: flex;
     align-items: center;
@@ -58,7 +58,7 @@
       margin-right: @size-6;
 
       > g > path {
-        fill: @color-primary-text;
+        fill: var(--color-primary-text);
       }
     }
   }
@@ -68,7 +68,7 @@
   .text-10-semi-bold;
 
   cursor: pointer;
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   background: @color-secondary-action;
   border: 1px solid @color-secondary-action-outline;
   border-radius: @border-radius-default;
@@ -96,7 +96,7 @@
     .mono-12-bold;
 
     display: block;
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     margin: 0 0 @size-13;
 
     @media @breakpoint-mobile {
@@ -109,10 +109,10 @@
     .text-12-bold;
 
     text-transform: capitalize;
-    color: @color-secondary-text;
+    color: var(--color-secondary-text);
 
     > svg {
-      fill: @color-secondary-text;
+      fill: var(--color-secondary-text);
       width: @size-10;
       height: @size-10;
       margin-right: @size-14;
@@ -130,10 +130,10 @@
     }
 
     &:hover {
-      color: @color-primary-text;
+      color: var(--color-primary-text);
 
       > svg {
-        fill: @color-primary-text;
+        fill: var(--color-primary-text);
       }
     }
   }
@@ -142,7 +142,7 @@
 .SelectedCategories {
   .text-12-bold;
 
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   text-transform: capitalize;
   user-select: none;
   cursor: pointer;
@@ -152,7 +152,7 @@
   }
 
   > svg {
-    fill: @color-primary-text;
+    fill: var(--color-primary-text);
     height: @size-10;
     margin-right: @size-8;
   }
@@ -170,7 +170,7 @@
   .text-12-bold;
 
   margin: @size-13 @size-32;
-  color: @color-secondary-text;
+  color: var(--color-secondary-text);
 
   @media @breakpoint-mobile {
     .text-14-bold;
@@ -178,7 +178,7 @@
   }
 
   > svg {
-    fill: @color-secondary-text;
+    fill: var(--color-secondary-text);
     width: @size-10;
     height: @size-10;
     margin-right: @size-14;
@@ -192,10 +192,10 @@
   }
 
   &:hover {
-    color: @color-primary-text;
+    color: var(--color-primary-text);
 
     > svg {
-      fill: @color-primary-text;
+      fill: var(--color-primary-text);
     }
   }
 }
@@ -203,7 +203,7 @@
 .SelectedCategory {
   .text-12-bold;
 
-  color: @color-primary-text;
+  color: var(--color-primary-text);
 
   margin: @size-8 @size-40 @size-8 @size-60;
 

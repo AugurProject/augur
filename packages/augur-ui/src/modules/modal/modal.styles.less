@@ -29,7 +29,7 @@
   > main > h1 {
     .text-12;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     font-weight: @weight-medium;
     line-height: @size-16;
     margin-bottom: @size-16;
@@ -40,7 +40,7 @@
   > main > h2 {
     .text-16;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     font-weight: @weight-medium;
     margin: @size-8 0 @size-24;
   }
@@ -48,7 +48,7 @@
   > main > h3 {
     .text-12-bold;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     line-height: @size-16;
     margin: 0 0 @size-14;
   }
@@ -66,7 +66,7 @@
 .LargeSubheader {
   .text-22-bold;
 
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   justify-content: center;
   display: flex;
 
@@ -78,7 +78,7 @@
 .SmallSubheader {
   .text-14;
 
-  color: @color-secondary-text;
+  color: var(--color-secondary-text);
   justify-content: center;
   line-height: 150%;
   margin-top: @size-4;
@@ -88,7 +88,7 @@
 .MediumSubheader {
   .text-16-bold;
 
-  color: @color-primary-text;
+  color: var(--color-primary-text);
 }
 
 .DaiGraphic {
@@ -103,7 +103,7 @@
     > span {
       .text-18-bold;
 
-      color: @color-primary-text;
+      color: var(--color-primary-text);
       margin-top: @size-14;
       text-transform: uppercase;
     }
@@ -115,7 +115,7 @@
       width: @size-64;
 
       > path {
-        fill: @color-secondary-text;
+        fill: var(--color-secondary-text);
       }
     }
   }
@@ -126,7 +126,7 @@
       width: 52px;
 
       > path {
-        fill: @color-secondary-text;
+        fill: var(--color-secondary-text);
       }
     }
   }
@@ -134,7 +134,7 @@
   > span {
     .text-28-bold;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     margin: 0 @size-32;
   }
 }
@@ -143,7 +143,7 @@
   .text-14;
 
   margin: @size-8 0 @size-28;
-  color: @color-secondary-text;
+  color: var(--color-secondary-text);
   line-height: 150%;
   text-align: center;
 
@@ -266,7 +266,7 @@ div.Onboarding {
     width: @size-8;
 
     &.Current {
-      background: @color-primary-text;
+      background: var(--color-primary-text);
     }
   }
 
@@ -304,7 +304,7 @@ div.Onboarding {
   > h1 {
     .text-12;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     font-weight: @weight-medium;
     line-height: @size-16;
     margin-bottom: 0;
@@ -315,7 +315,7 @@ div.Onboarding {
   > h2 {
     .text-12;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     margin-top: @size-16;
     grid-row: 2;
   }
@@ -328,7 +328,7 @@ div.Onboarding {
       width: @size-12;
 
       > path {
-        stroke: @color-primary-text;
+        stroke: var(--color-primary-text);
       }
     }
   }
@@ -350,14 +350,14 @@ div.ButtonsRow:last-of-type {
   > span:first-of-type {
     .text-12-bold;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     margin: 50px 0 @size-8;
   }
 
   > span:nth-of-type(2) {
     .text-10;
 
-    color: @color-secondary-text;
+    color: var(--color-secondary-text);
     line-height: 140%;
 
     > span {
@@ -420,7 +420,7 @@ div.ButtonsRow:last-of-type {
       > h1 {
         .text-24-bold;
 
-        color: @color-primary-text;
+        color: var(--color-primary-text);
         margin: 0;
       }
 
@@ -428,7 +428,7 @@ div.ButtonsRow:last-of-type {
         .text-14;
 
         margin: @size-4 0 @size-24;
-        color: @color-secondary-text;
+        color: var(--color-secondary-text);
       }
 
       > div:first-of-type {
@@ -466,7 +466,7 @@ div.ButtonsRow:last-of-type {
         align-items: center;
         border: 1px solid @color-secondary-action-outline;
         border-radius: @border-radius-default;
-        color: @color-secondary-text;
+        color: var(--color-secondary-text);
         display: flex;
         padding: @size-9 @size-12;
       }
@@ -477,20 +477,20 @@ div.ButtonsRow:last-of-type {
       > h1 {
         .text-16-bold;
 
-        color: @color-primary-text;
+        color: var(--color-primary-text);
         margin: 0;
       }
 
       > h2 {
         .text-12;
 
-        color: @color-secondary-text;
+        color: var(--color-secondary-text);
       }
 
       > h3 {
         .mono-11-bold;
 
-        color: @color-primary-text;
+        color: var(--color-primary-text);
         text-transform: uppercase;
         margin-bottom: @size-8;
       }
@@ -518,7 +518,7 @@ div.ButtonsRow:last-of-type {
           .text-14;
 
           line-height: 140%;
-          color: @color-secondary-text;
+          color: var(--color-secondary-text);
           counter-increment: custom-counter;
 
           &:not(:first-of-type) {
@@ -532,7 +532,7 @@ div.ButtonsRow:last-of-type {
           &::before {
             .text-14-bold;
 
-            color: @color-primary-text;
+            color: var(--color-primary-text);
             content: counter(custom-counter) '. ';
           }
         }
@@ -631,7 +631,7 @@ div.ButtonsRow:last-of-type {
   }
 
   svg > path {
-    fill: @color-secondary-text;
+    fill: var(--color-secondary-text);
   }
 }
 
@@ -676,7 +676,7 @@ div.ButtonsRow:last-of-type {
     border: 2px solid @color-secondary-action-outline;
     border-radius: @border-radius-rounded;
     cursor: pointer;
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     display: flex;
     height: 48px;
     justify-content: center;
@@ -690,7 +690,7 @@ div.ButtonsRow:last-of-type {
     > svg {
       height: @size-28;
       width: @size-28;
-      fill: @color-primary-text;
+      fill: var(--color-primary-text);
     }
   }
 
@@ -729,7 +729,7 @@ div.ButtonsRow:last-of-type {
       .text-12-paragraph;
     }
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     line-height: 150%;
     margin: 0 0 @size-16 0;
   }
@@ -737,7 +737,7 @@ div.ButtonsRow:last-of-type {
   > main > ol {
     .text-14;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     line-height: 150%;
 
     @media @breakpoint-mobile {
@@ -791,7 +791,7 @@ div.ButtonsRow:last-of-type {
   }
 
   > svg {
-    fill: @color-primary-text;
+    fill: var(--color-primary-text);
   }
 }
 
@@ -806,7 +806,7 @@ div.ButtonsRow:last-of-type {
     .CloseButton;
 
     > svg {
-      fill: @color-secondary-text;
+      fill: var(--color-secondary-text);
     }
   }
 
@@ -824,7 +824,7 @@ div.ButtonsRow:last-of-type {
     > div:first-of-type {
       .text-24-bold;
 
-      color: @color-primary-text;
+      color: var(--color-primary-text);
 
       @media @breakpoint-mobile {
         margin-bottom: @size-4;
@@ -834,7 +834,7 @@ div.ButtonsRow:last-of-type {
     > div:last-of-type {
       .text-12;
 
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
       margin-bottom: @size-5;
 
       > span {
@@ -852,7 +852,7 @@ div.ButtonsRow:last-of-type {
     > div:first-of-type {
       .text-12;
 
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
 
       > span {
         color: @color-primary-action;
@@ -863,7 +863,7 @@ div.ButtonsRow:last-of-type {
     > div:last-of-type {
       .text-12;
 
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
       cursor: pointer;
       text-align: center;
       width: 45px;
@@ -874,7 +874,7 @@ div.ButtonsRow:last-of-type {
     .text-12;
 
     align-items: center;
-    color: @color-secondary-text;
+    color: var(--color-secondary-text);
     display: flex;
     justify-content: center;
     margin: @size-32 0;
@@ -926,14 +926,14 @@ div.ButtonsRow:last-of-type {
   > div:first-of-type {
     .mono-12;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     cursor: pointer;
     position: absolute;
     top: 23px;
 
     > svg {
       height: @size-7;
-      fill: @color-primary-text;
+      fill: var(--color-primary-text);
     }
   }
 
@@ -943,7 +943,7 @@ div.ButtonsRow:last-of-type {
     display: block;
 
     > svg {
-      fill: @color-secondary-text;
+      fill: var(--color-secondary-text);
     }
   }
 
@@ -953,14 +953,14 @@ div.ButtonsRow:last-of-type {
     > div:first-of-type {
       .text-24-bold;
 
-      color: @color-primary-text;
+      color: var(--color-primary-text);
       margin-bottom: @size-8;
     }
 
     > div:last-of-type {
       .text-14;
 
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
       line-height: @size-20;
 
       @media @breakpoint-mobile {
@@ -972,7 +972,7 @@ div.ButtonsRow:last-of-type {
   > button {
     .text-14-bold;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     margin: 0 0 @size-8 0;
     min-height: 52px;
     text-align: left;
@@ -1008,7 +1008,7 @@ div.ButtonsRow:last-of-type {
   > div {
     .text-14;
 
-    color: @color-secondary-text;
+    color: var(--color-secondary-text);
     text-align: center;
     margin-top: @size-28;
   }
@@ -1069,20 +1069,20 @@ div.ButtonsRow:last-of-type {
     > span:first-of-type {
       .text-14;
 
-      color: @color-primary-text;
+      color: var(--color-primary-text);
     }
 
     > span:last-of-type > svg > g > g > polyline {
-      color: @color-primary-text;
+      color: var(--color-primary-text);
     }
 
     > select,
     > select[class$='selected'] {
-      color: @color-primary-text;
+      color: var(--color-primary-text);
     }
 
     > span[class$='selected']:first-of-type {
-      color: @color-primary-text;
+      color: var(--color-primary-text);
     }
   }
 
@@ -1095,7 +1095,7 @@ div.ButtonsRow:last-of-type {
   > h5 {
     .text-16-medium;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     margin-bottom: @size-4;
   }
 
@@ -1116,7 +1116,7 @@ div.ButtonsRow:last-of-type {
     > h6 {
       .text-14-medium;
 
-      color: @color-primary-text;
+      color: var(--color-primary-text);
       margin-bottom: @size-4;
       overflow-x: hidden;
       text-overflow: ellipsis;
@@ -1133,7 +1133,7 @@ div.ButtonsRow:last-of-type {
     > p {
       .text-14;
 
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
       margin: 0;
       overflow-x: hidden;
       text-overflow: ellipsis;
@@ -1216,7 +1216,7 @@ div.ButtonsRow:last-of-type {
 
     > section {
       border-bottom: 1px solid @color-dark-grey;
-      color: @color-primary-text;
+      color: var(--color-primary-text);
       margin-bottom: @size-24;
       max-height: 450px;
       overflow-y: auto;
@@ -1225,7 +1225,7 @@ div.ButtonsRow:last-of-type {
         align-items: center;
         background: @color-module-background;
         border-top: 1px solid @color-dark-grey;
-        color: @color-primary-text;
+        color: var(--color-primary-text);
         display: flex;
         flex-flow: row nowrap;
         height: @size-32;
@@ -1326,7 +1326,7 @@ div.ButtonsRow:last-of-type {
   > span:first-of-type {
     .text-16-medium;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
   }
 
   > ol {
@@ -1338,7 +1338,7 @@ div.ButtonsRow:last-of-type {
   > ol > li {
     .text-14;
 
-    color: @color-secondary-text;
+    color: var(--color-secondary-text);
     line-height: @size-18;
     margin-top: @size-4;
   }
@@ -1357,14 +1357,14 @@ div.ButtonsRow:last-of-type {
   > h5 {
     .text-16-medium;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     line-height: @size-19;
   }
 
   > p {
     .text-14-paragraph;
 
-    color: @color-secondary-text;
+    color: var(--color-secondary-text);
   }
 }
 
@@ -1380,7 +1380,7 @@ div.ButtonsRow:last-of-type {
     > h1 {
       .text-16-medium;
 
-      color: @color-primary-text;
+      color: var(--color-primary-text);
       text-transform: unset;
       margin: 0;
     }
@@ -1388,7 +1388,7 @@ div.ButtonsRow:last-of-type {
     > h2 {
       .text-14;
 
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
       margin: @size-6 0 0;
 
       > button {
@@ -1415,7 +1415,7 @@ div.ButtonsRow:last-of-type {
         > span:first-of-type {
           .text-14;
 
-          color: @color-secondary-text;
+          color: var(--color-secondary-text);
           margin-bottom: @size-4;
           line-height: @size-16;
         }
@@ -1423,7 +1423,7 @@ div.ButtonsRow:last-of-type {
         > span:nth-of-type(2) {
           .mono-24-bold;
 
-          color: @color-primary-text;
+          color: var(--color-primary-text);
           margin-bottom: @size-4;
           line-height: @size-28;
         }
@@ -1431,7 +1431,7 @@ div.ButtonsRow:last-of-type {
         > span:last-of-type {
           .mono-14;
 
-          color: @color-secondary-text;
+          color: var(--color-secondary-text);
           line-height: @size-16;
         }
 
@@ -1453,7 +1453,7 @@ div.ButtonsRow:last-of-type {
       > label {
         .mono-10;
 
-        color:@color-secondary-text;
+        color:var(--color-secondary-text);
       }
 
       > button {
@@ -1476,7 +1476,7 @@ div.ButtonsRow:last-of-type {
     > div:last-of-type {
       .text-11;
 
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
       margin-top: @size-24;
       display: flex;
       align-items: center;
@@ -1493,11 +1493,11 @@ div.ButtonsRow:last-of-type {
         margin-right: @size-3;
 
         > path {
-          fill: @color-secondary-text;
+          fill: var(--color-secondary-text);
         }
 
         > circle {
-          stroke: @color-secondary-text;
+          stroke: var(--color-secondary-text);
         }
       }
     }
@@ -1538,7 +1538,7 @@ div.ButtonsRow:last-of-type {
       > h1 {
         .text-24-bold;
 
-        color: @color-primary-text;
+        color: var(--color-primary-text);
         text-transform: none;
         margin: 0;
       }
@@ -1546,7 +1546,7 @@ div.ButtonsRow:last-of-type {
       > h2 {
         .text-14;
 
-        color: @color-secondary-text;
+        color: var(--color-secondary-text);
         margin-top: @size-4;
       }
     }
@@ -1566,7 +1566,7 @@ div.ButtonsRow:last-of-type {
       > div > label {
         .mono-11-bold;
 
-        color: @color-primary-text;
+        color: var(--color-primary-text);
         text-transform: uppercase;
       }
 
@@ -1640,7 +1640,7 @@ div.ButtonsRow:last-of-type {
     > button {
       .mono-12;
 
-      color: @color-primary-text;
+      color: var(--color-primary-text);
     }
 
     > input {
@@ -1649,7 +1649,7 @@ div.ButtonsRow:last-of-type {
       background: @color-secondary-action;
       border: 1px solid @color-secondary-action-outline;
       border-radius: @border-radius-default;
-      color: @color-primary-text;
+      color: var(--color-primary-text);
       height: @size-40;
       line-height: 1rem;
 
@@ -1685,7 +1685,7 @@ div.ButtonsRow:last-of-type {
         .mono-11-bold;
 
         text-transform: uppercase;
-        color: @color-primary-text;
+        color: var(--color-primary-text);
         margin-bottom: 0;
       }
 
@@ -1744,14 +1744,14 @@ div.ButtonsRow:last-of-type {
     > h2 {
       .text-12;
 
-      color: @color-primary-text;
+      color: var(--color-primary-text);
       margin-top: @size-16;
     }
 
     > p:first-of-type {
       .text-12;
 
-      color: @color-primary-text;
+      color: var(--color-primary-text);
       margin: 0 0 @size-24;
 
       @media @breakpoint-mobile-mid {
@@ -1775,7 +1775,7 @@ div.ButtonsRow:last-of-type {
 
       background: transparent;
       border: 1px solid @color-secondary-action-outline;
-      color: @color-primary-text;
+      color: var(--color-primary-text);
       max-height: @button-height-default;
       padding: @size-8 @size-12;
 
@@ -1799,7 +1799,7 @@ div.ButtonsRow:last-of-type {
 
       align-items: center;
       background: @color-secondary-action;
-      color: @color-primary-text;
+      color: var(--color-primary-text);
       display: flex;
       text-transform: uppercase;
       margin-left: auto;
@@ -1812,7 +1812,7 @@ div.ButtonsRow:last-of-type {
           margin-left: @size-4;
 
           path {
-            stroke: @color-secondary-text;
+            stroke: var(--color-secondary-text);
           }
         }
       }
@@ -1833,7 +1833,7 @@ div.ButtonsRow:last-of-type {
         background-color: @color-secondary-action;
         cursor: pointer;
         padding: 4px 8px;
-        color: @color-primary-text;
+        color: var(--color-primary-text);
         border-radius: @size-3;
         border: @size-1 solid @color-secondary-action-outline;
         width: 100%;
@@ -1842,7 +1842,7 @@ div.ButtonsRow:last-of-type {
           font-weight: @weight-bold;
 
           > span:first-of-type {
-            color: @color-secondary-text;
+            color: var(--color-secondary-text);
             font-family: @Inter;
             font-size: @size-11;
             text-transform: uppercase;
@@ -1860,7 +1860,7 @@ div.ButtonsRow:last-of-type {
           font-size: @size-10;
 
           > span:first-of-type {
-            color: @color-secondary-text;
+            color: var(--color-secondary-text);
             font-family: @Inter;
           }
 
@@ -1881,12 +1881,12 @@ div.ButtonsRow:last-of-type {
 
       div.GasCheckedButton {
         background-color: @color-secondary-action;
-        color: @color-primary-text;
+        color: var(--color-primary-text);
         border: @size-1 solid @color-primary-action;
 
         > div:first-of-type {
           > span:first-of-type {
-            color: @color-primary-text;
+            color: var(--color-primary-text);
             font-family: @Inter;
             font-size: @size-11;
             text-transform: uppercase;
@@ -1915,7 +1915,7 @@ div.ButtonsRow:last-of-type {
         label {
           .mono-9-bold;
 
-          color: @color-secondary-text;
+          color: var(--color-secondary-text);
           text-transform: uppercase;
         }
 
@@ -1923,7 +1923,7 @@ div.ButtonsRow:last-of-type {
           .mono-11;
 
           border: @size-1 solid @color-secondary-action-outline;
-          color: @color-primary-text;
+          color: var(--color-primary-text);
           padding: @size-6 @size-16;
           -moz-appearance:textfield;
         }
@@ -1943,7 +1943,7 @@ div.ButtonsRow:last-of-type {
           > span:first-of-type {
             .mono-10-bold;
 
-            color: @color-primary-text;
+            color: var(--color-primary-text);
           }
 
           > span:last-of-type {
@@ -1963,7 +1963,7 @@ div.ButtonsRow:last-of-type {
       > div:nth-of-type(3) {
         .text-14-bold;
 
-        color: @color-primary-text;
+        color: var(--color-primary-text);
         padding: 0 0 @size-10 @size-5;
       }
 
@@ -2066,7 +2066,7 @@ div.ButtonsRow:last-of-type {
 .DescriptionMessage {
   .text-12;
 
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   line-height: 20px;
   margin: 0;
 }
@@ -2238,8 +2238,8 @@ div.ButtonsRow:last-of-type {
             width: @size-10;
 
             > path {
-              fill: @color-secondary-text;
-              stroke: @color-secondary-text;
+              fill: var(--color-secondary-text);
+              stroke: var(--color-secondary-text);
             }
           }
         }
@@ -2304,7 +2304,7 @@ div.ButtonsRow:last-of-type {
 
     background: @color-table-header;
     border-bottom: 0;
-    color: @color-secondary-text;
+    color: var(--color-secondary-text);
     margin: @size-24 0 0;
     min-height: @size-32;
     text-transform: uppercase;
@@ -2341,7 +2341,7 @@ div.ButtonsRow:last-of-type {
     .TransactionsTable;
 
     border-top: 0;
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     max-height: 650px;
     overflow: overlay;
     margin-bottom: @size-32;
@@ -2399,7 +2399,7 @@ div.ButtonsRow:last-of-type {
       padding: @size-12 @size-24 @size-10 0;
 
       &:hover {
-        color: @color-primary-text;
+        color: var(--color-primary-text);
       }
     }
   }
@@ -2453,8 +2453,8 @@ div.ButtonsRow:last-of-type {
             width: @size-10;
 
             > path {
-              fill: @color-secondary-text;
-              stroke: @color-secondary-text;
+              fill: var(--color-secondary-text);
+              stroke: var(--color-secondary-text);
             }
           }
         }
@@ -2474,7 +2474,7 @@ div.ButtonsRow:last-of-type {
   > h4 {
     .mono-10;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     margin-top: @size-24;
     margin-bottom: @size-24;
     text-transform: uppercase;
@@ -2516,7 +2516,7 @@ div.ButtonsRow:last-of-type {
   }
 
   > canvas {
-    border: @size-4 solid @color-primary-text;
+    border: @size-4 solid var(--color-primary-text);
   }
 }
 
@@ -2526,7 +2526,7 @@ div.ButtonsRow:last-of-type {
   align-items: center;
   background: @color-page-background;
   border: 1px solid @color-secondary-action-outline;
-  color: @color-secondary-text;
+  color: var(--color-secondary-text);
   display: flex;
   font-family: monospace;
   flex-flow: row nowrap;
@@ -2554,7 +2554,7 @@ div.ButtonsRow:last-of-type {
     margin-right: @size-12;
     padding: @size-6;
     text-transform: uppercase;
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     background: @color-secondary-action;
     border: 1px solid @color-secondary-action-outline;
     border-radius: @border-radius-default;
@@ -2573,7 +2573,7 @@ div.ButtonsRow:last-of-type {
 .ShowConfirmaiton:after {
   content: '';
 
-  border-top: solid @size-12 @color-primary-text;
+  border-top: solid @size-12 var(--color-primary-text);
   border-left: solid @size-12 transparent;
   border-right: solid @size-12 transparent;
   position: absolute;
@@ -2587,7 +2587,7 @@ div.ButtonsRow:last-of-type {
   color: @color-inactive-text;
   position: absolute;
   bottom: 100%;
-  background: @color-primary-text;
+  background: var(--color-primary-text);
   padding: @size-8 @size-12;
   border-radius: @border-radius-default;
   display: flex;
@@ -2634,7 +2634,7 @@ div.ButtonsRow:last-of-type {
     > h2 {
       .text-12;
 
-      color: @color-primary-text;
+      color: var(--color-primary-text);
       flex: 1 auto;
       font-weight: @weight-medium;
       line-height: 15px;
@@ -2679,7 +2679,7 @@ div.ButtonsRow:last-of-type {
   > button {
     border: 1px solid @color-dark-grey;
     border-top: 0;
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     display: flex;
     flex: 1;
     flex-flow: row nowrap;
@@ -2708,7 +2708,7 @@ div.ButtonsRow:last-of-type {
       border-top: 1px solid @color-dark-grey;
 
       &:hover {
-        color: @color-primary-text;
+        color: var(--color-primary-text);
         cursor: auto;
       }
     }
@@ -2717,7 +2717,7 @@ div.ButtonsRow:last-of-type {
 
 .DepositInfo {
   border-top: 1px solid @color-dark-grey;
-  color: @color-primary-text;
+  color: var(--color-primary-text);
 
   > h3 {
     .text-12-bold;
@@ -2728,7 +2728,7 @@ div.ButtonsRow:last-of-type {
   > ul {
     .text-12;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     list-style-type: decimal;
     margin-left: @size-12;
 
@@ -2746,7 +2746,7 @@ div.ButtonsRow:last-of-type {
   > div {
     .text-12;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     line-height: normal;
     margin: 0 0 @size-16;
     word-break: break-all;
@@ -2781,7 +2781,7 @@ div.ButtonsRow:last-of-type {
     .text-14-bold;
 
     align-items: center;
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     display: flex;
     font-weight: 500;
     text-transform: none;
@@ -2817,7 +2817,7 @@ div.ButtonsRow:last-of-type {
       > p {
         .text-12;
 
-        color: @color-secondary-text;
+        color: var(--color-secondary-text);
         margin: 0 0 @size-32;
         padding: 0;
       }
@@ -2825,7 +2825,7 @@ div.ButtonsRow:last-of-type {
       > h2 {
         .text-12-bold;
 
-        color: @color-primary-text;
+        color: var(--color-primary-text);
         margin: 0 @size-16 @size-24;
       }
 
@@ -2863,7 +2863,7 @@ div.ButtonsRow:last-of-type {
     padding: @size-24;
 
     > h1 {
-      color: @color-primary-text;
+      color: var(--color-primary-text);
       margin-bottom: 0;
     }
   }
@@ -2871,7 +2871,7 @@ div.ButtonsRow:last-of-type {
   > p {
     .text-12;
 
-    color: @color-secondary-text;
+    color: var(--color-secondary-text);
     padding: 0 @size-24;
   }
 
@@ -2941,7 +2941,7 @@ div.ButtonsRow:last-of-type {
       > span:nth-of-type(1) {
         .text-24-bold;
 
-        color: @color-primary-text;
+        color: var(--color-primary-text);
         margin-top: @size-14;
         margin-bottom: @size-16;
       }
@@ -3011,13 +3011,13 @@ div.ButtonsRow:last-of-type {
 
     align-items: center;
     background: @color-module-background;
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     display: flex;
     flex-direction: row-reverse;
     text-transform: uppercase;
 
     > svg {
-      fill: @color-primary-text;
+      fill: var(--color-primary-text);
       height: @size-12;
       margin-left: @size-8;
       transform: rotate(180deg);
@@ -3045,7 +3045,7 @@ div.ButtonsRow:last-of-type {
       padding: @size-14 @size-16;
 
       > span {
-        color: @color-primary-text;
+        color: var(--color-primary-text);
         text-transform: uppercase;
       }
 
@@ -3067,7 +3067,7 @@ div.ButtonsRow:last-of-type {
 
         > svg {
           height: @size-12;
-          fill: @color-primary-text;
+          fill: var(--color-primary-text);
           margin: 0;
           width: @size-12;
         }
@@ -3093,7 +3093,7 @@ div.ButtonsRow:last-of-type {
     .text-14;
     border-top: 1px solid @color-secondary-action-outline;
     border-bottom: 1px solid @color-secondary-action-outline;
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: 1fr;
@@ -3124,7 +3124,7 @@ div.ButtonsRow:last-of-type {
     padding: @size-16 @size-24;
 
     > label {
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
       display: flex;
       flex-flow: row nowrap;
       flex: 1;
@@ -3149,7 +3149,7 @@ div.ButtonsRow:last-of-type {
       >  button {
         .text-12;
 
-        color: @color-primary-text;
+        color: var(--color-primary-text);
         text-transform: capitalize;
       }
     }

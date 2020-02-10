@@ -8,7 +8,7 @@
   > span {
     .mono-9-bold;
 
-    color: @color-secondary-text;
+    color: var(--color-secondary-text);
     line-height: @size-14;
     text-transform: uppercase;
     line-height: 160%;
@@ -30,11 +30,11 @@
 
         > circle {
           fill: none;
-          stroke: @color-secondary-text;
+          stroke: var(--color-secondary-text);
         }
 
         > path {
-          fill: @color-secondary-text;
+          fill: var(--color-secondary-text);
         }
       }
     }
@@ -43,7 +43,7 @@
   > span:nth-of-type(2) {
     .mono-11;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     line-height: 160%;
   }
 
@@ -67,7 +67,7 @@
   z-index: @default-z-index;
 
   &.DarkDash {
-    color: @color-secondary-text;
+    color: var(--color-secondary-text);
   }
 
   &.Alert {
@@ -80,7 +80,7 @@
     margin: 0;
 
     > span {
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
     }
   }
 }
@@ -95,7 +95,7 @@
   }
 
   &.Highlight {
-    color: @color-primary-text;
+    color: var(--color-primary-text);
   }
 }
 
@@ -137,12 +137,12 @@
       width: @size-12;
 
       > circle {
-        stroke: @color-secondary-text;
+        stroke: var(--color-secondary-text);
         fill: none;
       }
 
       > path {
-        fill: @color-secondary-text;
+        fill: var(--color-secondary-text);
       }
     }
   }
@@ -151,7 +151,7 @@
 .CountdownLabel {
   .text-12-medium;
 
-  color: @color-secondary-text;
+  color: var(--color-secondary-text);
   margin-right: @size-12;
 }
 
@@ -186,7 +186,7 @@
     .text-10-medium;
 
     align-items: end;
-    color: @color-secondary-text;
+    color: var(--color-secondary-text);
     display: flex;
     flex-flow: row nowrap;
     text-transform: capitalize;
@@ -204,11 +204,11 @@
 
         > circle {
           fill: none;
-          stroke: @color-secondary-text;
+          stroke: var(--color-secondary-text);
         }
 
         > path {
-          fill: @color-secondary-text;
+          fill: var(--color-secondary-text);
         }
       }
     }
@@ -217,7 +217,7 @@
   > span:last-of-type {
     .mono-12-medium;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     line-height: 160%;
   }
 }
@@ -287,7 +287,7 @@
     .text-10-medium;
 
     align-items: center;
-    color: @color-secondary-text;
+    color: var(--color-secondary-text);
     flex-flow: row nowrap;
     text-transform: uppercase;
 
@@ -304,7 +304,7 @@
     min-width: 0.625rem;
 
     > line {
-      stroke: fade(@color-primary-text, 40%);
+      stroke: var(--color-primary-text-40);
     }
   }
 
@@ -312,7 +312,7 @@
   > span:last-of-type {
     .mono-12-medium;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     padding-left: @size-8;
 
     &.isAccented {
@@ -331,7 +331,7 @@
     > span:first-of-type {
       .mono-10-bold;
 
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
     }
   }
 
@@ -339,7 +339,7 @@
     > span:first-of-type {
       .mono-10;
 
-      color: @color-primary-text;
+      color: var(--color-primary-text);
     }
 
     > span:nth-of-type(2),
@@ -348,7 +348,7 @@
     > span:last-of-type > label {
       .mono-12-bold;
 
-      color: @color-primary-text;
+      color: var(--color-primary-text);
     }
   }
 
@@ -367,21 +367,21 @@
       > span:last-of-type {
         .mono-10;
 
-        color: @color-primary-text;
+        color: var(--color-primary-text);
       }
     }
 
     > span:first-of-type {
       .mono-10-medium;
 
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
     }
 
     > span:nth-of-type(2),
     > span:last-of-type {
       .mono-12-medium;
 
-      color: @color-primary-text;
+      color: var(--color-primary-text);
     }
 
     > span:nth-of-type(2) {
@@ -411,19 +411,19 @@ div.LinearPropertyViewTransaction {
     > span:first-of-type {
       .mono-12-semi-bold;
 
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
     }
 
     > span:nth-of-type(2) {
       .mono-default;
 
-      color: @color-primary-text;
+      color: var(--color-primary-text);
     }
 
     > span:last-of-type {
       .mono-default;
 
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
       position: relative;
       top: @size-3;
     }
@@ -436,7 +436,7 @@ div.LinearPropertyViewTransaction {
   > span {
     .mono-14-medium;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     flex: 0 auto;
     text-transform: uppercase;
 
@@ -480,10 +480,10 @@ div.LinearPropertyViewTransaction {
 .MarketTypeLabel {
   .mono-10-medium;
 
-  background: fade(@color-secondary-text, 30%);
+  background: --color-secondary-text-30;
   border-radius: @border-radius-default;
   border: 1px solid transparent;
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   line-height: @size-11;
   max-width: fit-content;
   padding: 0 @size-4;
@@ -520,7 +520,7 @@ div.LinearPropertyViewTransaction {
   .mono-9-bold;
 
   border: @size-1 solid transparent;
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   line-height: @size-11;
   padding: 0 @size-2;
   position: relative;
@@ -569,7 +569,7 @@ div.LinearPropertyViewTransaction {
     > span:last-of-type {
       .mono-12;
 
-      color: @color-primary-text;
+      color: var(--color-primary-text);
       line-height: normal;
     }
   }
@@ -594,7 +594,7 @@ div.LinearPropertyViewTransaction {
     align-items: center;
     background: @color-secondary-action-outline;
     border-radius: @border-radius-rounded;
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     display: flex;
     flex-flow: row nowrap;
     height: @size-16;
@@ -629,20 +629,20 @@ span.PendingLabel {
   background: fade(@color-open, 40%);
 
   > svg {
-    fill: @color-primary-text;
+    fill: var(--color-primary-text);
     height: @size-10;
     margin-left: 0.3125rem;
     width: @size-10;
 
     > path {
-      fill: @color-primary-text;
+      fill: var(--color-primary-text);
     }
   }
 }
 
 .MovementLabel {
   align-items: center;
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   display: flex;
   justify-content: flex-end;
 }
@@ -669,7 +669,7 @@ span.PendingLabel {
   }
 
   &_neutral {
-    color: @color-secondary-text;
+    color: var(--color-secondary-text);
   }
 }
 
@@ -791,7 +791,7 @@ span.PendingLabel {
 .WordTrailButton {
   .mono-9-bold;
 
-  color: @color-secondary-text;
+  color: var(--color-secondary-text);
   text-transform: uppercase;
   white-space: nowrap;
 
@@ -836,7 +836,7 @@ span.PendingLabel {
   .text-12-semi-bold;
 
   align-items: center;
-  color: @color-secondary-text;
+  color: var(--color-secondary-text);
   cursor: pointer;
   display: flex;
   justify-content: flex-start;
@@ -852,7 +852,7 @@ span.PendingLabel {
   }
 
   &:hover {
-    color: @color-primary-text;
+    color: var(--color-primary-text);
   }
 
   &.loading {
@@ -865,7 +865,7 @@ span.PendingLabel {
         animation: spin 2s linear infinite;
 
         path {
-          stroke: @color-secondary-text;
+          stroke: var(--color-secondary-text);
         }
       }
     }
@@ -874,9 +874,9 @@ span.PendingLabel {
   &.selected {
     .text-12-semi-bold;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     padding: @size-9 0 @size-7 0;
-    border-bottom: @size-2 solid @color-primary-text;
+    border-bottom: @size-2 solid var(--color-primary-text);
 
     &.open {
       border-color: @color-open;
@@ -897,7 +897,7 @@ span.PendingLabel {
 
     > div:last-of-type {
       > span svg path {
-        stroke: @color-primary-text;
+        stroke: var(--color-primary-text);
       }
     }
   }
@@ -912,7 +912,7 @@ span.PendingLabel {
 .discordLink {
   .text-14-paragraph;
 
-  color: @color-primary-text;
+  color: var(--color-primary-text);
 
   @media @breakpoint-mobile {
     .text-12-paragraph;

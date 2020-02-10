@@ -3,7 +3,7 @@
 .Header {
   .text-22-bold;
 
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   margin-bottom: @size-24;
 
   @media @breakpoint-mobile {
@@ -16,7 +16,7 @@
 .LargeHeader {
   .text-24-bold;
 
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   margin-bottom: @size-24;
 
   @media @breakpoint-mobile {
@@ -29,7 +29,7 @@
 .MediumHeader {
   .text-default;
 
-  color: @color-secondary-text;
+  color: var(--color-secondary-text);
 
   > span {
     .text-16-bold;
@@ -53,14 +53,14 @@
   > h1 {
     .text-16-medium;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     margin-bottom: @size-8;
   }
 
   > p {
     .text-12;
 
-    color: @color-secondary-text;
+    color: var(--color-secondary-text);
     line-height: @size-20;
     margin: 0;
     margin-bottom: @size-8;
@@ -139,7 +139,7 @@
   }
 
   > span {
-    color: @color-secondary-text;
+    color: var(--color-secondary-text);
   }
 
   &.XSmall {
@@ -149,7 +149,7 @@
     }
 
     > span {
-      color: @color-primary-text;
+      color: var(--color-primary-text);
     }
   }
 
@@ -180,13 +180,13 @@
         margin-right: @size-8;
 
         > path {
-          fill: @color-primary-text;
+          fill: var(--color-primary-text);
         }
       }
 
       &:hover:enabled {
         > svg > path {
-          fill: @color-primary-text;
+          fill: var(--color-primary-text);
         }
       }
 
@@ -215,7 +215,7 @@
   > span {
     .text-14;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     flex: 0 0 auto;
     padding: @size-16;
   }
@@ -232,7 +232,7 @@
       width: @size-10;
 
       > path {
-        stroke: @color-primary-text;
+        stroke: var(--color-primary-text);
       }
     }
   }
@@ -259,7 +259,7 @@
   > h1 {
     .mono-10;
 
-    color: @color-secondary-text;
+    color: var(--color-secondary-text);
     margin-bottom: @size-4;
     text-transform: uppercase;
   }
@@ -269,7 +269,7 @@
   > label > p {
     .text-16-medium;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
   }
 
   > span:nth-of-type(2) {
@@ -346,7 +346,7 @@
   > h5 {
     .text-18-bold;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     margin-bottom: @size-8;
   }
 
@@ -363,12 +363,12 @@
     > li {
       .text-14;
 
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
       line-height: 140%;
       margin: 0;
 
       > span {
-        color: @color-primary-text;
+        color: var(--color-primary-text);
       }
     }
 
@@ -497,7 +497,7 @@
       > span:first-of-type {
         .text-14-medium;
 
-        color: @color-secondary-text;
+        color: var(--color-secondary-text);
       }
 
       > span:nth-of-type(2) {
@@ -512,7 +512,7 @@
     > span {
       .text-12;
 
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
       line-height: 140%;
     }
   }
@@ -534,7 +534,7 @@
   > div:nth-of-type(2) {
     .text-14-medium;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     background: @color-module-background;
     border: 1px solid @color-dark-grey;
     border-radius: @border-radius-default;
@@ -574,7 +574,7 @@
   > span {
     .text-12;
 
-    color: @color-secondary-text;
+    color: var(--color-secondary-text);
     line-height: @size-20;
     display: flex;
     margin: @size-8 0;
@@ -592,14 +592,14 @@
   > h1 {
     .text-16-medium;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     margin-bottom: @size-32 0 @size-8;
   }
 
   > span {
     .text-12;
 
-    color: @color-secondary-text;
+    color: var(--color-secondary-text);
     padding-right: @size-8;
 
     > button {
@@ -615,7 +615,7 @@
     > li {
       .text-12;
 
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
       margin-top: @size-4;
 
       &:last-of-type {
@@ -650,7 +650,7 @@
     > span {
       .text-14;
 
-      color: @color-primary-text;
+      color: var(--color-primary-text);
       flex: 0 0 auto;
       padding: @size-16;
     }
@@ -673,7 +673,7 @@
       margin-right: @size-8;
 
       > path {
-        fill: @color-primary-text;
+        fill: var(--color-primary-text);
       }
     }
   }

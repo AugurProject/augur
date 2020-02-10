@@ -3,7 +3,7 @@
 .MarketCardFormats {
   .text-10-medium;
 
-  color: @color-secondary-text;
+  color: var(--color-secondary-text);
   display: flex;
 
   @media @breakpoint-mobile {
@@ -64,14 +64,14 @@
   &:hover {
     > svg rect,
     > svg path {
-      fill: @color-primary-text;
+      fill: var(--color-primary-text);
     }
   }
 
   &.selected {
     > svg rect,
     > svg path {
-      fill: @color-primary-text;
+      fill: var(--color-primary-text);
     }
   }
 }

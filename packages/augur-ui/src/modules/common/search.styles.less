@@ -10,13 +10,13 @@
   display: flex;
   flex-flow: row nowrap;
   padding-left: @size-16;
-  color: @color-secondary-text;
+  color: var(--color-secondary-text);
   width: auto;
 
   > span {
     .text-10;
 
-    color: @color-secondary-text;
+    color: var(--color-secondary-text);
     margin-right: 0.25rem;
     white-space: nowrap;
   }
@@ -26,14 +26,14 @@
     width: 1rem;
 
     > g {
-      fill: @color-primary-text;
+      fill: var(--color-primary-text);
     }
   }
 
   > input {
     background: transparent;
     border: 0;
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     display: none;
     line-height: 1rem;
     padding: 0;
@@ -43,7 +43,7 @@
     }
 
     &::placeholder {
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
     }
   }
 
@@ -110,7 +110,7 @@
       > div {
         .mono-12;
 
-        color: @color-secondary-text;
+        color: var(--color-secondary-text);
         display: flex;
         margin-right: 0.5rem;
       }

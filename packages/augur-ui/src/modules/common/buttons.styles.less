@@ -48,7 +48,7 @@
     width: @size-16;
 
     > path {
-      stroke: @color-secondary-text;
+      stroke: var(--color-secondary-text);
     }
   }
 }
@@ -58,7 +58,7 @@
 
   text-transform: uppercase;
   display: flex;
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   display: flex;
   align-items: center;
 
@@ -68,7 +68,7 @@
     margin-right: @size-5;
 
     > path {
-      fill: @color-primary-text;
+      fill: var(--color-primary-text);
     }
   }
 }
@@ -92,14 +92,14 @@
     > div:first-of-type {
       .text-14-bold;
 
-      color: @color-primary-text;
+      color: var(--color-primary-text);
       margin-bottom: @size-4;
     }
 
     > div:last-of-type {
       .text-10;
 
-      color: @color-primary-text;
+      color: var(--color-primary-text);
     }
   }
 
@@ -125,7 +125,7 @@
 
   background: transparent;
   border: @size-1 solid @color-secondary-action-outline;
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   padding: @size-12 @size-24;
 
   > div:first-of-type {
@@ -140,14 +140,14 @@
     > div:first-of-type {
       .text-14-bold;
 
-      color: @color-primary-text;
+      color: var(--color-primary-text);
       margin-bottom: @size-4;
     }
 
     > div:last-of-type {
       .text-10;
 
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
     }
   }
 
@@ -179,7 +179,7 @@
 
   background: transparent;
   border: @size-1 solid @color-secondary-action-outline;
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   max-height: @button-height-default;
   padding: @size-8 @size-12;
 
@@ -239,7 +239,7 @@
     height: @size-12;
 
     > path {
-      stroke: @color-secondary-text;
+      stroke: var(--color-secondary-text);
     }
   }
 
@@ -248,7 +248,7 @@
 
     > svg {
       > path {
-        stroke: @color-primary-text;
+        stroke: var(--color-primary-text);
       }
     }
   }
@@ -287,7 +287,7 @@
   .text-12;
 
   align-items: center;
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   cursor: @button-cursor;
   display: flex;
   flex-flow: row nowrap;
@@ -298,18 +298,18 @@
   }
 
   > svg > path {
-    fill: @color-secondary-text;
+    fill: var(--color-secondary-text);
     fill-opacity: 0.1;
-    stroke: @color-secondary-text;
+    stroke: var(--color-secondary-text);
   }
 
   &:disabled {
-    color: fade(@color-primary-text, 20%);
+    color: var(--color-primary-text-20);
     cursor: @button-cursor-disabled;
 
     > svg > path {
       fill-opacity: 0.1;
-      stroke: fade(@color-primary-text, 20%);
+      stroke: var(--color-primary-text-20);
       stroke-opacity: 0.3;
     }
   }
@@ -356,7 +356,7 @@
   background: @color-secondary-action;
   border-color: @color-secondary-action-outline;
   border-radius: @size-3;
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   line-height: @size-10;
   padding: @size-2 @size-4;
   text-transform: uppercase;
@@ -376,7 +376,7 @@
   background: @color-secondary-action;
   border: @size-1 solid @color-secondary-action-outline;
   border-radius: @size-3;
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   padding: @size-4 @size-6;
   white-space: nowrap;
 
@@ -390,7 +390,7 @@
     width: @size-8;
 
     > path {
-      stroke: @color-secondary-text;
+      stroke: var(--color-secondary-text);
     }
   }
 
@@ -399,10 +399,10 @@
   }
 
   &:hover {
-    color: @color-primary-text;
+    color: var(--color-primary-text);
 
     > svg > path {
-      stroke: @color-primary-text;
+      stroke: var(--color-primary-text);
     }
   }
 
@@ -437,10 +437,10 @@
   }
 
   &:disabled {
-    color: fade(@color-primary-text, 20%);
+    color: var(--color-primary-text-20);
 
     &:hover {
-      color: fade(@color-primary-text, 20%);
+      color: var(--color-primary-text-20);
     }
   }
 }
@@ -462,7 +462,7 @@
 
   &:hover {
     > svg > path {
-      fill: @color-primary-text;
+      fill: var(--color-primary-text);
     }
   }
 }
@@ -474,7 +474,7 @@
   // background: @color-secondary-action;
   background: transparent;
   border: @size-1 solid @color-secondary-action-outline;
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   display: flex;
   flex-flow: row nowrap;
   justify-content: center;
@@ -489,7 +489,7 @@
     width: @size-16;
 
     > path {
-      fill: @color-primary-text;
+      fill: var(--color-primary-text);
     }
   }
 
@@ -531,13 +531,13 @@
 
     > path {
       &:nth-child(even) {
-        fill: @color-primary-text;
+        fill: var(--color-primary-text);
         stroke: none;
       }
 
       &:nth-child(odd) {
         fill: none;
-        stroke: @color-primary-text;
+        stroke: var(--color-primary-text);
       }
     }
   }
@@ -570,7 +570,7 @@
 
     > path {
       &:nth-child(odd) {
-        fill: @color-primary-text;
+        fill: var(--color-primary-text);
         stroke: none;
       }
     }
@@ -588,7 +588,7 @@
 
 .DAIFaucetButton {
   > svg > path {
-    fill: @color-primary-text;
+    fill: var(--color-primary-text);
   }
 }
 
@@ -599,7 +599,7 @@
   border: @size-1 solid @color-secondary-action-outline;
   border-radius: @border-radius-default;
   align-items: center;
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   cursor: pointer;
   display: flex;
   justify-content: center;
@@ -613,32 +613,32 @@
     width: @size-10;
 
     > path:nth-child(odd) {
-      fill: @color-secondary-text;
+      fill: var(--color-secondary-text);
     }
 
     > path:nth-child(even) {
-      stroke: @color-secondary-text;
+      stroke: var(--color-secondary-text);
     }
   }
 
   > span > a {
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     white-space: nowrap;
   }
 
   &:hover {
     > svg {
       > path:nth-child(odd) {
-        fill: @color-primary-text;
+        fill: var(--color-primary-text);
       }
 
       > path:nth-child(even) {
-        stroke: @color-primary-text;
+        stroke: var(--color-primary-text);
       }
     }
 
     > span > a {
-      color: @color-primary-text;
+      color: var(--color-primary-text);
     }
   }
 
@@ -649,17 +649,17 @@
 
     > span > span,
     > span > a {
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
       text-decoration: none;
     }
 
     > svg {
       > path {
         &:nth-child(even) {
-          stroke: @color-secondary-text;
+          stroke: var(--color-secondary-text);
         }
         &:nth-child(odd) {
-          fill: @color-secondary-text;
+          fill: var(--color-secondary-text);
         }
       }
     }
@@ -673,11 +673,11 @@
     .text-12;
   }
 
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   display: inline-flex;
 
   > a {
-    color: @color-primary-text;
+    color: var(--color-primary-text);
   }
 
   > svg {
@@ -687,12 +687,12 @@
 
     > path {
       &:nth-child(odd) {
-        fill: @color-secondary-text;
+        fill: var(--color-secondary-text);
         stroke: none;
       }
 
       &:nth-child(even) {
-        stroke: @color-secondary-text;
+        stroke: var(--color-secondary-text);
       }
     }
   }
@@ -709,10 +709,10 @@
   }
 
   &:hover {
-    color: @color-primary-text;
+    color: var(--color-primary-text);
 
     > a {
-      color: @color-primary-text;
+      color: var(--color-primary-text);
     }
   }
 
@@ -774,7 +774,7 @@
 
   &:hover {
     > svg > path {
-      stroke: @color-primary-text;
+      stroke: var(--color-primary-text);
     }
   }
 }
@@ -802,11 +802,11 @@
     margin: 0 @size-1 0 @size-8;
 
     > path {
-      stroke: @color-primary-text;
+      stroke: var(--color-primary-text);
     }
 
     > rect {
-      fill: @color-primary-text;
+      fill: var(--color-primary-text);
     }
   }
 }
@@ -823,10 +823,10 @@
     width: @size-8;
 
     > path {
-      fill: @color-secondary-text;
+      fill: var(--color-secondary-text);
 
       &:hover {
-        fill: @color-primary-text;
+        fill: var(--color-primary-text);
       }
     }
   }
@@ -834,13 +834,13 @@
 
 .Descending {
   > svg > path:first-of-type {
-    fill: @color-primary-text;
+    fill: var(--color-primary-text);
   }
 }
 
 .Ascending {
   > svg > path:last-of-type {
-    fill: @color-primary-text;
+    fill: var(--color-primary-text);
   }
 }
 
@@ -851,7 +851,7 @@
   align-items: center;
   border: @size-1 solid @color-secondary-action-outline;
   border-radius: @border-radius-default;
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   display: flex;
   flex-flow: row nowrap;
   justify-content: center;
@@ -864,7 +864,7 @@
     margin-left: @size-9;
 
     > path {
-      fill: @color-primary-text;
+      fill: var(--color-primary-text);
     }
   }
 }
@@ -891,7 +891,7 @@
     background: @color-secondary-action;
     border: @size-1 solid @color-secondary-action-outline;
     border-radius: @size-3;
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     cursor: pointer;
     display: flex;
     flex-direction: column;
@@ -907,7 +907,7 @@
         width: @size-42;
 
         > path {
-          stroke: @color-primary-text;
+          stroke: var(--color-primary-text);
         }
       }
     }
@@ -919,7 +919,7 @@
     > div:nth-of-type(3) {
       .text-14;
 
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
 
       &.loading {
         animation: colorchange 0.5s infinite;

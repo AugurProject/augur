@@ -28,14 +28,14 @@
     > h1 {
       .text-14-medium;
 
-      color: @color-primary-text;
+      color: var(--color-primary-text);
       margin-bottom: @size-8;
     }
 
     > span {
       .text-12;
 
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
       line-height: 140%;
       margin-bottom: @size-16;
 
@@ -57,11 +57,11 @@
       > span {
         .mono-9-bold;
 
-        color: @color-secondary-text;
+        color: var(--color-secondary-text);
         line-height: @size-12;
 
         > span {
-          color: @color-primary-text;
+          color: var(--color-primary-text);
           margin-right: @size-4;
         }
       }
@@ -177,5 +177,5 @@
 }
 
 .Lighten {
-  color: @color-primary-text !important;
+  color: var(--color-primary-text) !important;
 }

@@ -26,7 +26,7 @@ body {
 }
 
 label {
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   display: block;
   margin-bottom: @size-10;
 
@@ -39,7 +39,7 @@ input,
 textarea {
   background-color: @color-dark-grey;
   border: @size-1 solid transparent;
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   display: block;
   font-family: @Inter;
   padding: @size-12 @size-16;
@@ -55,7 +55,7 @@ textarea {
   }
 
   &::placeholder {
-    color: @color-secondary-text;
+    color: var(--color-secondary-text);
     font-family: @Inter;
   }
 }

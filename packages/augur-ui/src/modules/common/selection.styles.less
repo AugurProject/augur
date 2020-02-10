@@ -16,7 +16,7 @@
     align-items: center;
     background: @color-secondary-action;
     border-radius: @border-radius-default;
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     display: flex;
     flex-flow: row nowrap;
     justify-content: space-between;
@@ -34,7 +34,7 @@
       width: @size-10;
 
       > path {
-        fill: @color-secondary-text;
+        fill: var(--color-secondary-text);
       }
     }
 
@@ -43,7 +43,7 @@
       outline: none;
 
       > svg > path {
-        fill: @color-primary-text;
+        fill: var(--color-primary-text);
       }
     }
   }
@@ -70,7 +70,7 @@
       }
 
       > button {
-        color: @color-primary-text;
+        color: var(--color-primary-text);
         background-color: @color-secondary-action;
         position: relative;
         text-align: left;
@@ -99,7 +99,7 @@
 }
 
 .SelectedLabel {
-  color: @color-primary-text;
+  color: var(--color-primary-text);
 }
 
 .Disabled {
@@ -285,7 +285,7 @@
       transform: rotate(180deg);
 
       > path {
-        fill: @color-primary-text;
+        fill: var(--color-primary-text);
       }
     }
   }
@@ -352,12 +352,12 @@
       border-right: @size-1 solid @color-secondary-action-outline;
 
       > button {
-        color: @color-primary-text;
+        color: var(--color-primary-text);
 
         > span {
           .text-9;
 
-          color: @color-secondary-text;
+          color: var(--color-secondary-text);
         }
       }
 
@@ -381,7 +381,7 @@
       .mono-9-semi-bold;
 
       background: transparent;
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
       height: 100%;
       padding: @size-4 @size-16;
       text-transform: uppercase;
@@ -397,7 +397,7 @@
   > button {
     display: flex;
     > svg {
-      fill: @color-secondary-text;
+      fill: var(--color-secondary-text);
       height: @size-16;
       width: @size-16;
 
@@ -410,14 +410,14 @@
   > button:hover,
   > button:active {
     > svg {
-      fill: @color-primary-text;
+      fill: var(--color-primary-text);
     }
   }
 }
 
 .MenuOpen {
   > button > svg {
-    fill: @color-primary-text;
+    fill: var(--color-primary-text);
   }
 }
 
@@ -428,7 +428,7 @@
   background: @color-secondary-action;
   border-radius: @border-radius-default;
   border: 1px solid @color-secondary-action-outline;
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -482,8 +482,8 @@
 
 
     &.selected {
-      color: @color-primary-text;
-      border-bottom: @size-1 solid @color-primary-text;
+      color: var(--color-primary-text);
+      border-bottom: @size-1 solid var(--color-primary-text);
     }
 
     @media @breakpoint-mobile {

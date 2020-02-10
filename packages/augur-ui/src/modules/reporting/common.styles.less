@@ -82,13 +82,13 @@
   >span:first-of-type {
     .text-14;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
   }
 
   > span:nth-of-type(2) {
     .text-12;
 
-    color: @color-secondary-text;
+    color: var(--color-secondary-text);
     margin-bottom: @size-12;
     margin-top: @size-8;
   }
@@ -96,7 +96,7 @@
   > span:nth-of-type(3) {
     .text-14-medium;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     margin-bottom: @size-10;
     margin-top: @size-16;
   }
@@ -184,7 +184,7 @@ div.ReportingSubheaders {
   > span {
     .mono-10;
 
-    color: @color-secondary-text;
+    color: var(--color-secondary-text);
     display: flex;
     margin-bottom: @size-4;
     text-transform: uppercase;
@@ -212,12 +212,12 @@ div.ReportingSubheaders {
   > p {
     .mono-14;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     line-height: @size-16;
     margin: 0;
 
     > span > span {
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
       margin-left: @size-4;
     }
   }
@@ -247,7 +247,7 @@ div.ReportingSubheaders {
   background-color: @color-secondary-action;
   border: 1px solid @color-secondary-action-outline;
   border-radius: @size-3;
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   display: flex;
   justify-content: center;
   padding: @size-10 @size-16;
@@ -268,7 +268,7 @@ div.ReportingSubheaders {
 
   background-color: @color-module-background;
   border: 1px solid @color-dark-grey;
-  color: @color-secondary-text;
+  color: var(--color-secondary-text);
   display: flex;
   flex-direction: column;
   max-width: 466px;
@@ -281,7 +281,7 @@ div.ReportingSubheaders {
 
     background: fade(@color-dark-grey, 80%);
     bottom: 0;
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     left: 0;
     margin: @size-4;
     position: absolute;
@@ -446,7 +446,7 @@ div.ReportingSubheaders {
     > span:first-of-type {
       .mono-10;
 
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
       line-height: @size-12;
       text-transform: uppercase;
     }
@@ -454,11 +454,11 @@ div.ReportingSubheaders {
     > span:nth-of-type(2) {
       .mono-12;
 
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
       line-height: @size-14;
 
       > span:first-of-type {
-        color: @color-primary-text;
+        color: var(--color-primary-text);
         margin-left: @size-4;
       }
     }
@@ -469,7 +469,7 @@ div.ReportingSubheaders {
   > h2 {
     .mono-11;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     margin-top: @size-8;
   }
   > div:first-of-type {
@@ -482,7 +482,7 @@ div.ReportingSubheaders {
   > span:first-of-type {
     .text-14-medium;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     display: flex;
     margin-bottom: @size-12;
     margin-top: @size-16;
@@ -494,7 +494,7 @@ div.ReportingSubheaders {
   }
 
   > section {
-    color: fade(@color-secondary-text, 30);
+    color: --color-secondary-text-30;
     display: flex;
     margin-top: @size-8;
 
@@ -530,7 +530,7 @@ div.ReportingSubheaders {
   > span {
     .text-14-medium;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     margin-bottom: @size-12;
     display: flex;
   }
@@ -543,7 +543,7 @@ div.ReportingSubheaders {
       > span:last-of-type {
         .text-12-medium;
 
-        color: @color-primary-text;
+        color: var(--color-primary-text);
         margin-top: @size-16;
         margin-bottom: @size-12;
       }
@@ -552,14 +552,14 @@ div.ReportingSubheaders {
     .ShowTotals {
       .text-10-medium;
 
-      color: @color-primary-text;
+      color: var(--color-primary-text);
       display: flex;
       flex-direction: column;
 
       > span:first-of-type {
         .text-14-medium;
 
-        color: @color-primary-text;
+        color: var(--color-primary-text);
         margin-top: @size-16;
         margin-bottom: @size-16;
       }
@@ -567,7 +567,7 @@ div.ReportingSubheaders {
       > span:nth-of-type(2) {
         .text-12;
 
-        color: @color-secondary-text;
+        color: var(--color-secondary-text);
         margin-bottom: @size-12;
       }
     }
@@ -636,7 +636,7 @@ div.ReportingSubheaders {
   > h2 {
     .text-16-bold;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
 
     > a {
       word-break: break-word;
@@ -697,7 +697,7 @@ div.ReportingSubheaders {
   > h1 {
     .text-12-medium;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     display: flex;
     padding: @size-12 @size-16;
     text-transform: uppercase;
@@ -713,7 +713,7 @@ div.ReportingSubheaders {
     > span {
       .text-12;
 
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
 
       &:first-of-type {
         padding: @size-12 @size-24 0;
@@ -759,7 +759,7 @@ div.ReportingSubheaders {
   > h4 {
     .mono-10;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     margin-bottom: @size-12;
     text-transform: uppercase;
   }
@@ -774,7 +774,7 @@ div.ReportingSubheaders {
   > span {
     .text-12;
 
-    color: @color-secondary-text;
+    color: var(--color-secondary-text);
     display: block;
     line-height: 140%;
     margin-bottom: @size-20;

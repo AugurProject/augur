@@ -40,7 +40,7 @@
           width: @size-10;
 
           > path {
-            stroke: @color-primary-text;
+            stroke: var(--color-primary-text);
           }
         }
       }
@@ -52,7 +52,7 @@
       width: @size-10;
 
       > line {
-        stroke: @color-secondary-text;
+        stroke: var(--color-secondary-text);
       }
     }
 
@@ -123,7 +123,7 @@
   > h5 {
     .text-14;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
   }
 
   > h5,
@@ -169,7 +169,7 @@
     white-space: nowrap;
 
     &.Selected {
-      color: @color-primary-text;
+      color: var(--color-primary-text);
     }
   }
 
@@ -218,7 +218,7 @@
     }
 
     > path {
-      stroke: @color-primary-text;
+      stroke: var(--color-primary-text);
     }
   }
 
@@ -285,14 +285,14 @@
       }
   
       > circle {
-        fill: @color-primary-text;
+        fill: var(--color-primary-text);
       }
     }
 
     &:hover {
       > svg {
         > circle:not(:first-of-type) {
-          fill: @color-primary-text;
+          fill: var(--color-primary-text);
         }
       }
     }
@@ -354,7 +354,7 @@
     > span:first-of-type {
       .text-14-medium;
 
-      color: @color-primary-text;
+      color: var(--color-primary-text);
       display: flex;
       margin-bottom: @size-12;
       margin-top: @size-16;
@@ -432,7 +432,7 @@
   > p {
     .text-14;
 
-    color: @color-secondary-text;
+    color: var(--color-secondary-text);
     grid-column: 2;
     grid-row: 4;
     margin: @size-4 0 @size-20;
@@ -494,7 +494,7 @@
   > span:first-of-type {
     .text-14-medium;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     margin-bottom: @size-8;
   }
 
@@ -503,7 +503,7 @@
   > section > span:nth-of-type(2) {
     .text-12;
 
-    color: @color-secondary-text;
+    color: var(--color-secondary-text);
     margin-bottom: @size-12;
   }
 
@@ -544,7 +544,7 @@
     margin-top: @size-20;
 
     &:nth-of-type(2) {
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
       margin-top: @size-16;
     }
   }
@@ -689,7 +689,7 @@
   > p {
     .text-14;
 
-    color: @color-secondary-text;
+    color: var(--color-secondary-text);
     line-height: @size-18;
     margin: @size-12 0 @size-24;
     text-align: center;
@@ -708,7 +708,7 @@
       height: @size-40;
 
       > path {
-        stroke: @color-primary-text;
+        stroke: var(--color-primary-text);
       }
 
       @media @breakpoint-mobile {
@@ -759,7 +759,7 @@
 
   > span {
     background-color: transparent;
-    border: @size-1 solid @color-primary-text;
+    border: @size-1 solid var(--color-primary-text);
     border-radius: @border-radius-default;
     height: @size-16;
     left: 0;
@@ -780,7 +780,7 @@
       width: @size-11;
 
       > path {
-        stroke: @color-primary-text;
+        stroke: var(--color-primary-text);
       }
     }
   }
@@ -792,7 +792,7 @@
 
 .Checkbox input:checked ~ span {
   background: transparent;
-  border: @size-1 solid @color-primary-text;
+  border: @size-1 solid var(--color-primary-text);
 
   > svg {
     display: block;
@@ -829,12 +829,12 @@
       background-color: @color-dark-grey;
       border-radius: @border-radius-default;
       border: @size-1 solid @color-secondary-action;
-      color: @color-primary-text;
+      color: var(--color-primary-text);
       height: @size-44;
       min-width: @size-150;
 
       &::placeholder {
-        color: @color-secondary-text;
+        color: var(--color-secondary-text);
         opacity: 0.75;
       }
 
@@ -859,7 +859,7 @@
     }
 
     > div.AutoCompleteList {
-      background-color: @color-primary-text;
+      background-color: var(--color-primary-text);
       border-radius: @border-radius-default;
       display: none;
       position: absolute;
@@ -908,7 +908,7 @@
     > .Inner {
       .text-14;
 
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
     }
 
     @media @breakpoint-mobile {
@@ -986,7 +986,7 @@
       background-color: transparent;
 
       > span {
-        color: @color-secondary-text;
+        color: var(--color-secondary-text);
         text-transform: capitalize;
       }
 
@@ -994,7 +994,7 @@
         min-width: @size-10;
 
         > path {
-          stroke: @color-secondary-text;
+          stroke: var(--color-secondary-text);
         }
       }
 
@@ -1004,10 +1004,10 @@
     }
 
     > button[class*='SelectedLabel'] {
-      color: @color-primary-text;
+      color: var(--color-primary-text);
 
       > span {
-        color: @color-primary-text;
+        color: var(--color-primary-text);
       }
     }
 
@@ -1037,7 +1037,7 @@
 div.FormDropdownActive {
   > button {
     background-color: transparent;
-    color: @color-primary-text;
+    color: var(--color-primary-text);
 
     &:hover {
       background-color: transparent;
@@ -1046,19 +1046,19 @@ div.FormDropdownActive {
 
   &:hover {
     background-color: @color-dark-grey;
-    border: @size-1 solid @color-primary-text;
-    color: @color-primary-text;
+    border: @size-1 solid var(--color-primary-text);
+    color: var(--color-primary-text);
   }
 }
 
 .Input {
-  background-color: @color-primary-text;
-  border: @size-1 solid @color-primary-text;
+  background-color: var(--color-primary-text);
+  border: @size-1 solid var(--color-primary-text);
   display: flex;
 
   button,
   .input-value-comparison {
-    background-color: @color-primary-text;
+    background-color: var(--color-primary-text);
     font-weight: @weight-medium;
   }
 
@@ -1069,7 +1069,7 @@ div.FormDropdownActive {
   }
 
   input::placeholder {
-    color: @color-primary-text;
+    color: var(--color-primary-text);
   }
 
   input:focus {
@@ -1077,7 +1077,7 @@ div.FormDropdownActive {
   }
 
   &:focus-within {
-    border: @size-1 solid @color-primary-text;
+    border: @size-1 solid var(--color-primary-text);
   }
 
   .box {
@@ -1123,11 +1123,11 @@ div.FormDropdownActive {
 }
 
 button.MaxDark {
-  background-color: @color-primary-text;
+  background-color: var(--color-primary-text);
 }
 
 .Incremental {
-  background-color: @color-primary-text;
+  background-color: var(--color-primary-text);
   border: @size-1 solid transparent;
   display: flex;
 
@@ -1143,7 +1143,7 @@ button.MaxDark {
 
   button,
   .ValueComparison {
-    background-color: @color-primary-text;
+    background-color: var(--color-primary-text);
   }
 
   input {
@@ -1153,7 +1153,7 @@ button.MaxDark {
   }
 
   input::placeholder {
-    color: @color-primary-text;
+    color: var(--color-primary-text);
   }
 
   input:focus {
@@ -1191,14 +1191,14 @@ button.MaxDark {
 }
 
 .FocusBorder {
-  border: @size-2 solid @color-primary-text;
+  border: @size-2 solid var(--color-primary-text);
 }
 
 .LightBorder {
-  border: @size-1 solid @color-secondary-text;
+  border: @size-1 solid var(--color-secondary-text);
 
   &:focus-within {
-    border: @size-1 solid @color-secondary-text;
+    border: @size-1 solid var(--color-secondary-text);
   }
 }
 
@@ -1275,7 +1275,7 @@ button.MaxDark {
     }
 
     .DayPicker__horizontal_2 {
-      background-color: @color-primary-text;
+      background-color: var(--color-primary-text);
       border-radius: 0;
       box-shadow: 0 @size-2 @size-4 rgba(0, 0, 0, 0.5);
       font-size: @size-12;
@@ -1295,14 +1295,14 @@ button.MaxDark {
       background-color: @color-dark-grey;
       border: @size-1 solid @color-secondary-action-outline;
       border-radius: @border-radius-default;
-      color: @color-primary-text;
+      color: var(--color-primary-text);
     }
 
     .DateInput_input.DateInput_input_1 {
       .text-14;
 
       background-color: @color-dark-grey;
-      color: @color-primary-text;
+      color: var(--color-primary-text);
       border: @size-1 solid @color-secondary-action;
     }
 
@@ -1320,7 +1320,7 @@ button.MaxDark {
       .text-14;
 
       background: none;
-      color: @color-primary-text;
+      color: var(--color-primary-text);
 
       &.DateInput_displayText__hasInput {
         color: inherit;
@@ -1404,7 +1404,7 @@ button.MaxDark {
         width: @size-20;
 
         > path {
-          fill: @color-secondary-text;
+          fill: var(--color-secondary-text);
         }
       }
     }
@@ -1420,34 +1420,34 @@ button.MaxDark {
       .mono-default;
 
       background: none;
-      border: @size-1 solid @color-primary-text;
+      border: @size-1 solid var(--color-primary-text);
       color: @color-inactive-text;
 
       &.CalendarDay__selected_2:hover {
-        background: @color-primary-text;
+        background: var(--color-primary-text);
       }
 
       &.CalendarDay__selected {
         background: @color-primary-action;
-        color: @color-primary-text;
+        color: var(--color-primary-text);
 
         &:hover {
           background: @color-primary-action;
-          border: @size-1 solid @color-primary-text;
-          color: @color-primary-text;
+          border: @size-1 solid var(--color-primary-text);
+          color: var(--color-primary-text);
         }
       }
 
       &.CalendarDay__blocked_out_of_range_2.CalendarDay__blocked_out_of_range_2,
       &:hover {
         background: fade(@color-primary-action, 10%);
-        border: @size-1 solid @color-primary-text;
+        border: @size-1 solid var(--color-primary-text);
         color: @color-inactive-text;
       }
 
       &.CalendarDay__blocked_out_of_range_2.CalendarDay__blocked_out_of_range_2:hover {
         background: fade(@color-primary-action, 10%);
-        border: @size-1 solid @color-primary-text;
+        border: @size-1 solid var(--color-primary-text);
       }
 
       &:hover {
@@ -1473,7 +1473,7 @@ button.MaxDark {
       .DateInput_input.DateInput_input_1 {
         .mono-9;
 
-        color: @color-primary-text;
+        color: var(--color-primary-text);
         text-transform: uppercase;
         min-width: unset;
         padding: @size-2 @size-4;
@@ -1485,8 +1485,8 @@ button.MaxDark {
 }
 
 .InputDropdown {
-  background-color: @color-primary-text;
-  color: @color-secondary-text;
+  background-color: var(--color-primary-text);
+  color: var(--color-secondary-text);
   cursor: pointer;
   display: flex;
   padding: @size-8 @size-16;
@@ -1507,7 +1507,7 @@ button.MaxDark {
     width: 100%;
 
     &.selected {
-      color: @color-primary-text;
+      color: var(--color-primary-text);
     }
   }
 
@@ -1516,7 +1516,7 @@ button.MaxDark {
 
     background-color: @color-secondary-action;
     box-shadow: 0 @size-2 @size-4 rgba(0, 0, 0, 0.5);
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     display: none;
     line-height: @size-24;
     max-height: 10rem;
@@ -1542,7 +1542,7 @@ button.MaxDark {
 
       &:hover,
       &.active {
-        background-color: @color-primary-text;
+        background-color: var(--color-primary-text);
       }
     }
   }
@@ -1552,7 +1552,7 @@ button.MaxDark {
     width: 100%;
 
     &.selected {
-      color: @color-primary-text;
+      color: var(--color-primary-text);
     }
   }
 
@@ -1563,7 +1563,7 @@ button.MaxDark {
       height: @size-16;
 
       polyline {
-        stroke: @color-secondary-text;
+        stroke: var(--color-secondary-text);
       }
     }
   }
@@ -1593,7 +1593,7 @@ button.MaxDark {
     background-color: @color-dark-grey;
     border-radius: @border-radius-default;
     border: @size-1 solid @color-secondary-action;
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     display: flex;
     height: @size-44;
     padding: @size-12;
@@ -1609,15 +1609,15 @@ button.MaxDark {
       width: @size-20;
 
       > path {
-        fill: @color-secondary-text;
+        fill: var(--color-secondary-text);
       }
     }
   }
 
   > div {
-    background: @color-primary-text;
+    background: var(--color-primary-text);
     border: @size-1 solid @color-secondary-action-outline;
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     display: flex;
     left: 0;
     margin-top: @size-24;
@@ -1657,11 +1657,11 @@ button.MaxDark {
     z-index: @above-all-content-above;
 
     > path:first-of-type {
-      fill: @color-primary-text;
+      fill: var(--color-primary-text);
     }
 
     > path:last-of-type {
-      stroke: @color-primary-text;
+      stroke: var(--color-primary-text);
       fill: transparent;
     }
   }
@@ -1678,7 +1678,7 @@ button.MaxDark {
         .mono-9;
 
         text-transform: uppercase;
-        color: @color-primary-text;
+        color: var(--color-primary-text);
       }
 
       > svg {
@@ -1689,7 +1689,7 @@ button.MaxDark {
 
   &.Default {
     > button {
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
     }
   }
 }
@@ -1709,7 +1709,7 @@ button.MaxDark {
   > input {
     .mono-14;
 
-    background-color: @color-primary-text;
+    background-color: var(--color-primary-text);
     border: @size-1 solid @color-inactive-text;
     color: @color-inactive-text;
     height: @size-40;
@@ -1719,7 +1719,7 @@ button.MaxDark {
     width: @size-40;
 
     &:hover {
-      border: @size-1 solid @color-secondary-text;
+      border: @size-1 solid var(--color-secondary-text);
     }
 
     &:focus {
@@ -1729,7 +1729,7 @@ button.MaxDark {
     &:disabled {
       background-color: @color-inactive-text;
       border: @size-1 solid @color-inactive-text;
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
     }
   }
 
@@ -1797,7 +1797,7 @@ button.MaxDark {
     > span:first-of-type {
       .mono-10-bold;
 
-      color: @color-primary-text;
+      color: var(--color-primary-text);
       text-transform: uppercase;
       margin-bottom: @size-9;
     }
@@ -1805,7 +1805,7 @@ button.MaxDark {
     > span:last-of-type {
       .text-11;
 
-      color: @color-primary-text;
+      color: var(--color-primary-text);
     }
   }
 
@@ -1826,7 +1826,7 @@ button.MaxDark {
       > span:last-of-type {
         .text-12;
 
-        color: @color-secondary-text;
+        color: var(--color-secondary-text);
       }
     }
   }
@@ -1852,7 +1852,7 @@ div.error > div > div > div > div > input {
       > input {
         .mono-9;
 
-        color: @color-primary-text;
+        color: var(--color-primary-text);
         text-transform: uppercase;
         padding: @size-2 @size-4;
         min-width: unset;
@@ -1885,7 +1885,7 @@ div.error > div > div > div > div > input {
   > span:first-of-type {
     .text-12-bold;
 
-    color: @color-secondary-text;
+    color: var(--color-secondary-text);
     display: flex;
     line-height: 100%;
 
@@ -1913,7 +1913,7 @@ div.error > div > div > div > div > input {
   > span:last-of-type {
     .text-10-bold;
 
-    color: @color-secondary-text;
+    color: var(--color-secondary-text);
     background: @color-secondary-action;
     border: @size-1 solid @color-secondary-action-outline;
     border-radius: @border-radius-default;
@@ -1945,7 +1945,7 @@ div.error > div > div > div > div > input {
     > span:first-of-type {
       .text-12-bold;
   
-      color: @color-primary-text;
+      color: var(--color-primary-text);
 
       @media @breakpoint-mobile {
         .text-14-bold;
@@ -1953,7 +1953,7 @@ div.error > div > div > div > div > input {
     }
 
     > span:last-of-type {
-      color: @color-primary-text;
+      color: var(--color-primary-text);
     }
   }
 
@@ -1963,11 +1963,11 @@ div.error > div > div > div > div > input {
 }
 
 .CategoryRow:hover span:first-of-type {
-  color: @color-primary-text;
+  color: var(--color-primary-text);
 }
 
 .CategoryRow:hover span:last-of-type {
-  color: @color-primary-text;
+  color: var(--color-primary-text);
 }
 
 @keyframes spin {
@@ -1982,7 +1982,7 @@ div.error > div > div > div > div > input {
   border: @size-1 solid @color-secondary-action-outline;
   box-sizing: border-box;
   border-radius: @size-8;
-  color: @color-secondary-text;
+  color: var(--color-secondary-text);
   display: flex;
   flex-direction: column;
   margin-bottom: @size-16;
@@ -1991,7 +1991,7 @@ div.error > div > div > div > div > input {
   > span {
     .text-18-bold;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     margin: 0 @size-8;
   }
 }
