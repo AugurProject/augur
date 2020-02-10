@@ -196,7 +196,7 @@ export default class Form extends React.Component<FormProps, FormState> {
   }
 
   unblock = (cb?: Function) => {
-    const { drafts, newMarket, discardModal, isTemplate } = this.props;
+    const { drafts, newMarket, discardModal, isTemplate, clearNewMarket } = this.props;
 
     const savedDraft = drafts[newMarket.uniqueId];
 
@@ -254,6 +254,7 @@ export default class Form extends React.Component<FormProps, FormState> {
         }
       });
     } else {
+      clearNewMarket();
       cb && cb(true);
     }
   };
