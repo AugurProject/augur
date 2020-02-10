@@ -134,7 +134,7 @@
 
   &:hover,
   &:focus {
-    border: @size-1 solid @color-primary-action;
+    border: @size-1 solid var(--color-primary-action);
   }
 
   &:disabled {
@@ -163,7 +163,7 @@
   > span {
     .text-12-bold;
 
-    color: @color-primary-action;
+    color: var(--color-primary-action);
     cursor: default;
     padding: 0 @size-12;
     white-space: nowrap;
@@ -178,7 +178,7 @@
     height: @size-16;
 
     > path {
-      fill: @color-primary-action;
+      fill: var(--color-primary-action);
     }
   }
 
@@ -470,7 +470,7 @@
   }
 
   &.Checked {
-    border: @size-2 solid @color-primary-action;
+    border: @size-2 solid var(--color-primary-action);
   }
 }
 
@@ -610,7 +610,7 @@
   &.hover,
   &.active {
     border: @size-4 solid transparent;
-    box-shadow: 0 0 0 @size-1 @color-primary-action;
+    box-shadow: 0 0 0 @size-1 var(--color-primary-action);
   }
 
   @media @breakpoint-mobile {
@@ -631,7 +631,7 @@
     position: relative;
     height: @size-20;
     width: @size-20;
-    background: @color-primary-action;
+    background: var(--color-primary-action);
     visibility: hidden;
     opacity: 0;
 
@@ -667,7 +667,7 @@
     }
 
     > circle {
-      fill: @color-primary-action;
+      fill: var(--color-primary-action);
     }
   }
 
@@ -719,7 +719,7 @@
 }
 
 .RadioCardActive {
-  border: @size-4 solid @color-primary-action;
+  border: @size-4 solid var(--color-primary-action);
 
   > div {
     visibility: visible;
@@ -740,7 +740,7 @@
 
   &:hover,
   &:focus {
-    border: @size-4 solid @color-primary-action;
+    border: @size-4 solid var(--color-primary-action);
   }
 }
 
@@ -889,11 +889,11 @@
         width: 100%;
 
         &:hover {
-          background-color: fade(@color-primary-action, 20%);
+          background-color: var(--color-primary-action-20);
         }
 
         &::before {
-          background-color: fade(@color-primary-action, 10%);
+          background-color: var(--color-primary-action-10);
           bottom: 0;
           content: '';
           height: @size-1;
@@ -1017,7 +1017,7 @@
 
     &:hover {
       background-color: @color-dark-grey;
-      border: @size-1 solid @color-primary-action;
+      border: @size-1 solid var(--color-primary-action);
       cursor: pointer;
     }
 
@@ -1428,11 +1428,11 @@ button.MaxDark {
       }
 
       &.CalendarDay__selected {
-        background: @color-primary-action;
+        background: var(--color-primary-action);
         color: var(--color-primary-text);
 
         &:hover {
-          background: @color-primary-action;
+          background: var(--color-primary-action);
           border: @size-1 solid var(--color-primary-text);
           color: var(--color-primary-text);
         }
@@ -1440,13 +1440,13 @@ button.MaxDark {
 
       &.CalendarDay__blocked_out_of_range_2.CalendarDay__blocked_out_of_range_2,
       &:hover {
-        background: fade(@color-primary-action, 10%);
+        background: var(--color-primary-action-10);
         border: @size-1 solid var(--color-primary-text);
         color: @color-inactive-text;
       }
 
       &.CalendarDay__blocked_out_of_range_2.CalendarDay__blocked_out_of_range_2:hover {
-        background: fade(@color-primary-action, 10%);
+        background: var(--color-primary-action-10);
         border: @size-1 solid var(--color-primary-text);
       }
 
@@ -1813,7 +1813,7 @@ button.MaxDark {
     background: transparent;
     padding: @size-20 @size-20 @size-24;
     border-radius: @size-8;
-    border: @size-1 solid @color-primary-action;
+    border: @size-1 solid var(--color-primary-action);
 
     > div {
       > span:first-of-type {

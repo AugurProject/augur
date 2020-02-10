@@ -151,7 +151,7 @@
     margin-top: @size-4;
 
     > a {
-      color: @color-primary-action;
+      color: var(--color-primary-action);
 
       > button {
         .text-12;
@@ -526,7 +526,7 @@ div.ButtonsRow:last-of-type {
           }
 
           > a {
-            color: @color-primary-action;
+            color: var(--color-primary-action);
           }
 
           &::before {
@@ -684,7 +684,7 @@ div.ButtonsRow:last-of-type {
     width: 87px;
 
     &.selected {
-      border: 2px solid @color-primary-action;
+      border: 2px solid var(--color-primary-action);
     }
 
     > svg {
@@ -745,7 +745,7 @@ div.ButtonsRow:last-of-type {
     }
 
     > li > span {
-      color: @color-primary-action;
+      color: var(--color-primary-action);
       cursor: pointer;
     }
 
@@ -838,7 +838,7 @@ div.ButtonsRow:last-of-type {
       margin-bottom: @size-5;
 
       > span {
-        color: @color-primary-action;
+        color: var(--color-primary-action);
         cursor: pointer;
       }
     }
@@ -855,7 +855,7 @@ div.ButtonsRow:last-of-type {
       color: var(--color-secondary-text);
 
       > span {
-        color: @color-primary-action;
+        color: var(--color-primary-action);
         cursor: pointer;
       }
     }
@@ -905,11 +905,11 @@ div.ButtonsRow:last-of-type {
 
   > button:first-of-type {
     margin: 0;
-    background: darken(@color-primary-action, 15%);
+    background: darken(var(--color-primary-action), 15%);
   }
 
   > button:first-of-type:hover {
-    background: darken(@color-primary-action, 5%);
+    background: darken(var(--color-primary-action), 5%);
   }
 
   > button:last-of-type {
@@ -1784,15 +1784,15 @@ div.ButtonsRow:last-of-type {
       }
 
       &:hover:enabled {
-        background: fade(@color-primary-action, 5%);
+        background: var(--color-primary-action-5);
       }
 
       &:focus:enabled {
-        background: fade(@color-primary-action, 10%);
+        background: var(--color-primary-action-10);
       }
 
       &:active:enabled {
-        background: fade(@color-primary-action, 15%);
+        background: var(--color-primary-action-15);
       }
 
       .mono-10-bold;
@@ -1882,7 +1882,7 @@ div.ButtonsRow:last-of-type {
       div.GasCheckedButton {
         background-color: @color-secondary-action;
         color: var(--color-primary-text);
-        border: @size-1 solid @color-primary-action;
+        border: @size-1 solid var(--color-primary-action);
 
         > div:first-of-type {
           > span:first-of-type {
@@ -2754,7 +2754,7 @@ div.ButtonsRow:last-of-type {
     > div > button {
       .text-12;
 
-      color: @color-primary-action;
+      color: var(--color-primary-action);
       cursor: pointer;
     }
 

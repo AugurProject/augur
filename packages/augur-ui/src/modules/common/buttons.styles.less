@@ -16,25 +16,25 @@
 .PrimaryButton {
   .Button;
 
-  background: @color-primary-action;
+  background: var(--color-primary-action);
   color: @color-dark-grey;
   max-height: @button-height-default;
   padding: @size-8 @size-12;
 
   &:not(:disabled):hover {
-    background: fade(@color-primary-action, 90%);
+    backgrovar(--color-primary-action-90);
   }
 
   &:not(:disabled):focus {
-    background: fade(@color-primary-action, 80%);
+    background: var(--color-primary-action-80);
   }
 
   &:not(:disabled):active {
-    background: fade(@color-primary-action, 70%);
+    background: var(--color-primary-action-70);
   }
 
   &:disabled {
-    background: fade(@color-primary-action, 40%);
+    background: var(--color-primary-action-40);
   }
 }
 
@@ -76,7 +76,7 @@
 .PrimarySignInButton {
   .Button;
 
-  background: @color-primary-action;
+  background: var(--color-primary-action);
   color: @color-dark-grey;
   padding: @size-12 @size-24;
 
@@ -104,19 +104,19 @@
   }
 
   &:not(:disabled):hover {
-    background: fade(@color-primary-action, 90%);
+    background: var(--color-primary-action-90);
   }
 
   &:not(:disabled):focus {
-    background: fade(@color-primary-action, 80%);
+    background: var(--color-primary-action-80);
   }
 
   &:not(:disabled):active {
-    background: fade(@color-primary-action, 70%);
+    background: var(--color-primary-action-70);
   }
 
   &:disabled {
-    background: fade(@color-primary-action, 40%);
+    background: var(--color-primary-action-40);
   }
 }
 
@@ -156,15 +156,15 @@
   }
 
   &:hover:enabled {
-    background: fade(@color-primary-action, 5%);
+    background: var(--color-primary-action-5);
   }
 
   &:focus:enabled {
-    background: fade(@color-primary-action, 10%);
+    background: var(--color-primary-action-10);
   }
 
   &:active:enabled {
-    background: fade(@color-primary-action, 15%);
+    background: var(--color-primary-action-15);
   }
 
   &.Small {
@@ -188,15 +188,15 @@
   }
 
   &:hover:enabled {
-    background: fade(@color-primary-action, 5%);
+    background: var(--color-primary-action-5);
   }
 
   &:focus:enabled {
-    background: fade(@color-primary-action, 10%);
+    background: var(--color-primary-action-10);
   }
 
   &:active:enabled {
-    background: fade(@color-primary-action, 15%);
+    background: var(--color-primary-action-15);
   }
 
   &.Small {
@@ -316,9 +316,9 @@
 
   &:hover:enabled {
     > svg > path {
-      fill: @color-primary-action;
+      fill: var(--color-primary-action);
       fill-opacity: 0.1;
-      stroke: @color-primary-action;
+      stroke: var(--color-primary-action);
     }
   }
 }
@@ -327,16 +327,16 @@
   .FavoriteButton;
 
   > svg > path {
-    fill: @color-primary-action;
+    fill: var(--color-primary-action);
     fill-opacity: 1;
-    stroke: @color-primary-action;
+    stroke: var(--color-primary-action);
   }
 
   &:hover:enabled {
     > svg > path {
-      fill: @color-primary-action;
+      fill: var(--color-primary-action);
       fill-opacity: 0.5;
-      stroke: @color-primary-action;
+      stroke: var(--color-primary-action);
     }
   }
 }
@@ -422,7 +422,7 @@
   .mono-10;
 
   align-items: center;
-  color: @color-primary-action;
+  color: var(--color-primary-action);
   display: flex;
   flex-flow: row nowrap;
   line-height: @size-10;
@@ -701,11 +701,11 @@
 .ExternalLinkButton {
   .ViewTransactionDetailsButton;
 
-  color: @color-primary-action;
+  color: var(--color-primary-action);
   display: inline-flex;
 
   > a {
-    color: @color-primary-action;
+    color: var(--color-primary-action);
   }
 
   &:hover {
@@ -720,12 +720,12 @@
     margin-left: @size-4;
     > path {
       &:nth-child(odd) {
-        fill: @color-primary-action;
+        fill: var(--color-primary-action);
         stroke: none;
       }
 
       &:nth-child(even) {
-        stroke: @color-primary-action;
+        stroke: var(--color-primary-action);
       }
     }
   }
