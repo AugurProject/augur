@@ -13,6 +13,13 @@ import { MarketData } from 'modules/types';
 
 const sortByOptions = [
   {
+    label: 'Creation Time',
+    value: 'creationTime',
+    comp(marketA, marketB) {
+      return marketB.creationTime - marketA.creationTime;
+    },
+  },
+  {
     label: 'Expiring Soonest',
     value: END_TIME,
     comp(marketA, marketB) {
@@ -28,13 +35,6 @@ const sortByOptions = [
       return (
         marketB.recentlyTraded.timestamp - marketA.recentlyTraded.timestamp
       );
-    },
-  },
-  {
-    label: 'Creation Time',
-    value: 'creationTime',
-    comp(marketA, marketB) {
-      return marketB.creationTime - marketA.creationTime;
     },
   },
 ];
