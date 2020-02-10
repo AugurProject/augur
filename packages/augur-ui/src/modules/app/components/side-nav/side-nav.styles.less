@@ -11,7 +11,7 @@
     overflow: auto;
     position: fixed;
     transition: left 0.2s ease-in-out;
-    width: calc(100% - 52px);
+    width: calc(100% - @size-52);
     z-index: @mask-modal;
 
     > div {
@@ -23,9 +23,10 @@
         position: unset;
         display: flex;
 
+        // Close icon
         > div:first-of-type {
           background: @color-page-background;
-          border-bottom: 1px solid @color-dark-grey;
+          border-bottom: @size-1 solid @color-dark-grey;
           display: flex;
           justify-content: flex-end;
           width: 100%;
