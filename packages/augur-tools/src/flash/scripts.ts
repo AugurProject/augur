@@ -997,6 +997,11 @@ export function addScripts(flash: FlashSession) {
         required: false,
         description: 'outcomes to put orders on, default is 1,2',
       },
+      {
+        name: 'skipFaucetOrApproval',
+        flag: true,
+        description: 'do not faucet or approve, has already been done'
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const marketIds = String(args.marketIds)
@@ -1014,6 +1019,12 @@ export function addScripts(flash: FlashSession) {
       const user: ContractAPI = await this.ensureUser(this.network, true, true, address, true, true);
       console.log('waiting few seconds on purpose for client to sync');
       await new Promise<void>(resolve => setTimeout(resolve, 15000));
+      const skipFaucetOrApproval = args.skipFaucetOrApproval as boolean;
+      if (!skipFaucetOrApproval) {
+        this.log('order-firehose, faucet and approval');
+        await user.faucetOnce(QUINTILLION.multipliedBy(10000));
+        await user.approve(QUINTILLION.multipliedBy(100000));
+      }
       // create tight orderbook config
       let bids = {};
       let asks = {};
