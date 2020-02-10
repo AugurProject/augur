@@ -451,7 +451,7 @@ export class DisputingBondsView extends Component<
       inputStakeValue === '0.'
     ) {
       this.setState({ stakeError: 'Enter a valid number', disabled: true });
-      return updateInputtedStake({ inputStakeValue, inputToAttoRep });
+      return updateInputtedStake({ inputStakeValue, ZERO });
     } else if (
       createBigNumber(userAvailableRep).lt(createBigNumber(inputStakeValue))
     ) {
