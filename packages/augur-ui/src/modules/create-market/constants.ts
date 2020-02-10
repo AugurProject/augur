@@ -40,7 +40,7 @@ import {
   LITECOIN,
 } from '@augurproject/artifacts';
 
-export const INVALID_OUTCOME = 'Market is Invalid';
+export const INVALID_OUTCOME = 'Invalid';
 
 // Button Types
 export const BACK = 'back';
