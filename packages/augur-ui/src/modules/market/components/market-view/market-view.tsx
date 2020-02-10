@@ -109,7 +109,6 @@ interface MarketViewState {
   introShowing: boolean;
   tutorialError: string;
   hasShownScalarModal: boolean;
-  orderBookDirty: boolean;
 }
 
 export default class MarketView extends Component<
@@ -161,7 +160,6 @@ export default class MarketView extends Component<
           ...this.DEFAULT_ORDER_PROPERTIES,
         },
       },
-      orderBookDirty: true,
     };
 
     this.updateSelectedOutcome = this.updateSelectedOutcome.bind(this);
@@ -217,7 +215,6 @@ export default class MarketView extends Component<
       tradingTutorial,
       updateModal,
       closeMarketLoadingModalOnly,
-      modalShowing,
       preview
     } = prevProps;
     if (
@@ -229,7 +226,6 @@ export default class MarketView extends Component<
 
     if (tradingTutorial) {
       if (
-        !isMarketLoading &&
         !this.state.introShowing &&
         this.state.tutorialStep === TRADING_TUTORIAL_STEPS.INTRO_MODAL
       ) {
@@ -254,9 +250,8 @@ export default class MarketView extends Component<
       this.props.loadMarketsInfo(this.props.marketId);
       this.props.loadMarketTradingHistory(marketId);
     }
-
-    if (!isMarketLoading) {
-      closeMarketLoadingModalOnly && closeMarketLoadingModalOnly(modalShowing);
+    if (!this.props.isMarketLoading) {
+      closeMarketLoadingModalOnly(this.props.modalShowing);
     }
 
     if (
@@ -504,6 +499,7 @@ export default class MarketView extends Component<
     }
 
     let outcomeOrderBook = this.EmptyOrderBook;
+    const orderbookLoading = !orderBook;
     let outcomeId =
       selectedOutcomeId === null || selectedOutcomeId === undefined
         ? market.defaultSelectedOutcomeId
@@ -712,6 +708,7 @@ export default class MarketView extends Component<
                               initialLiquidity={preview}
                               orderBook={outcomeOrderBook}
                               showButtons
+                              orderbookLoading={orderbookLoading}
                             />
                           </div>
                         </ModulePane>
@@ -994,6 +991,7 @@ export default class MarketView extends Component<
                         market={market}
                         initialLiquidity={preview}
                         orderBook={outcomeOrderBook}
+                        orderbookLoading={orderbookLoading}
                       />
                       {tradingTutorial &&
                         tutorialStep === TRADING_TUTORIAL_STEPS.ORDER_BOOK && (

@@ -25,6 +25,7 @@ import moment, { Moment } from 'moment';
 import {
   CATEGORICAL,
   CATEGORICAL_OUTCOMES_MIN_NUM,
+  REP,
 } from 'modules/common/constants';
 import {
   buildformattedDate,
@@ -753,7 +754,7 @@ export const NoFundsErrors = (props: NoFundsErrorsProps) => {
           description={`You have ${availableRepFormatted.formatted} V2 REP of ${totalRep.formatted} required to create this market.`}
           show={true}
           buttonText='Add Funds'
-          buttonAction={() => props.showAddFundsModal()}
+          buttonAction={() => props.showAddFundsModal(REP)}
           buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON}
         />
       )}

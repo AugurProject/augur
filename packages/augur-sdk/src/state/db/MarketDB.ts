@@ -12,6 +12,7 @@ import {
   WORST_CASE_FILL,
   DEFAULT_GAS_PRICE_IN_GWEI,
   MAX_TRADE_GAS_PERCENTAGE_DIVISOR,
+  orderTypes,
   MarketReportingState,
 } from '../../constants';
 import { NewBlock } from "../../events";
@@ -158,8 +159,9 @@ export class MarketDB extends DerivedDB {
     const lastSpread10 = new BigNumber(marketData.liquidity[10]);
     const lastSpread15 = new BigNumber(marketData.liquidity[15]);
 
+    const passesSpreadCheck = (spread10.gt(0) || spread15.gt(0));
     // Keep track when a market has under a 15% spread. Used for `hasRecentlyDepletedLiquidity`
-    if ((spread10.gt(0) || spread15.gt(0))) {
+    if (passesSpreadCheck) {
       const now = Math.floor(Date.now() / 1000);
       marketOrderBookData.lastPassingLiquidityCheck = now;
     } else if (lastSpread10.gt(0) || lastSpread15.gt(0)) {
@@ -168,12 +170,26 @@ export class MarketDB extends DerivedDB {
       marketOrderBookData.lastPassingLiquidityCheck = marketData.lastPassingLiquidityCheck;
     }
 
-    marketOrderBookData.hasRecentlyDepletedLiquidity = await this.hasRecentlyDepletedLiquidity(marketData, marketOrderBookData.liquidity, marketOrderBookData.lastPassingLiquidityCheck);
+    const prevInvalidFilter = marketData.invalidFilter;
+    const prevHasRecentlyDepletedLiquidity = marketData.hasRecentlyDepletedLiquidity;
+    const currentIvalidFilter = marketOrderBookData.invalidFilter;
+
+    // Add markets that recently became invalid to Recently Depleted Liquidity
+    if (passesSpreadCheck) {
+      if (!prevInvalidFilter && currentIvalidFilter ||
+          (prevInvalidFilter && currentIvalidFilter && prevHasRecentlyDepletedLiquidity)) {
+        marketOrderBookData.hasRecentlyDepletedLiquidity = true;
+      } else {
+        marketOrderBookData.hasRecentlyDepletedLiquidity = await this.hasRecentlyDepletedLiquidity(marketData, marketOrderBookData.liquidity, marketOrderBookData.lastPassingLiquidityCheck);
+      }
+    } else {
+      marketOrderBookData.hasRecentlyDepletedLiquidity = await this.hasRecentlyDepletedLiquidity(marketData, marketOrderBookData.liquidity, marketOrderBookData.lastPassingLiquidityCheck);
+    }
+
     return marketOrderBookData;
   }
 
   async getOrderBook(marketData: MarketData, numOutcomes: number, estimatedTradeGasCostInAttoDai: BigNumber): Promise<OrderBook> {
-    const orderTypes = ['0x00', '0x01'];
     let outcomes = ['0x00', '0x01', '0x02'];
 
     if (marketData.outcomes && marketData.outcomes.length > 0) {
@@ -195,6 +211,11 @@ export class MarketDB extends DerivedDB {
       .where('[market+outcome+orderType]')
       .anyOf(allOutcomesAllOrderTypes)
       .and((order) => order.amount > '0x00')
+      .and((order) => {
+        const expirationTimeSeconds = Number(order.signedOrder.expirationTimeSeconds);
+        const nowInSeconds = Math.round(+new Date() / 1000);
+        return expirationTimeSeconds - nowInSeconds > 70;
+      })
       .toArray();
 
     const currentOrdersByOutcome = _.groupBy(currentOrdersResponse, (order) => new BigNumber(order.outcome).toNumber());

@@ -169,7 +169,7 @@ export function addGanacheScripts(flash: FlashSession) {
       this.seeds[name] = await loadSeedFile(seedFilePath);
 
       if (args.use as boolean) {
-        await this.call('use-seed', { seed: name, write_artifacts:  args.writeArtifacts as boolean });
+        await this.call('use-seed', { seed: name, writeArtifacts:  args.writeArtifacts as boolean });
       }
     },
   });
@@ -190,7 +190,7 @@ export function addGanacheScripts(flash: FlashSession) {
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const seedName = args.seed as string || 'default';
-      const writeArtifacts = args.write_artifacts as boolean;
+      const writeArtifacts = args.writeArtifacts as boolean;
 
       const seed = this.seeds[seedName] as Seed;
 
@@ -232,6 +232,7 @@ export function addGanacheScripts(flash: FlashSession) {
   flash.addScript({
     name: 'create-basic-seed',
     description: 'Creates a seed file of the ganache state after deploying Augur. Does not overwrite it if it exists.',
+    ignoreNetwork: true,
     options: [
       {
         name: 'name',
@@ -250,7 +251,7 @@ export function addGanacheScripts(flash: FlashSession) {
     async call(this: FlashSession, args: FlashArguments) {
       const name = args.name as string || 'default';
       const filepath = args.filepath as string || defaultSeedPath;
-      const writeArtifacts = args.write_artifacts as boolean;
+      const writeArtifacts = args.writeArtifacts as boolean;
 
       if (await fs.exists(filepath)) {
         const seed: Seed = await loadSeedFile(filepath);
@@ -262,13 +263,14 @@ export function addGanacheScripts(flash: FlashSession) {
 
       console.log('Creating seed file.');
       await this.call('ganache', { internal: true });
-      await this.call('deploy', { write_artifacts: writeArtifacts, time_controlled: 'true' });
+      await this.call('deploy', { writeArtifacts: writeArtifacts, timeControlled: true });
       await this.call('make-seed', { name, filepath, save: true });
     },
   });
 
   flash.addScript({
     name: 'create-seed-from-logs',
+    ignoreNetwork: true,
     options: [
       {
         name: 'logs',
@@ -295,7 +297,7 @@ export function addGanacheScripts(flash: FlashSession) {
 
       // Build a local environment to replay to.
       await this.call('ganache', { internal: true });
-      await this.call('deploy', { write_artifacts: false, time_controlled: 'true' });
+      await this.call('deploy', { writeArtifacts: false, timeControlled: true });
 
       // Replay the logs.
       const replayer = v1

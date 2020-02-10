@@ -623,7 +623,7 @@ Deploying to: ${networkConfiguration.networkName}
 
         if (this.configuration.externalAddresses) {
             Object.keys(this.configuration.externalAddresses).forEach((name) => {
-                const address = this.configuration[name];
+                const address = this.configuration.externalAddresses[name];
                 mapping[name] = address;
             })
         }
