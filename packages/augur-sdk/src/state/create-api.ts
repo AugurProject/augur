@@ -188,17 +188,17 @@ export async function createServer(config: SDKConfiguration, client?: Augur, acc
 }
 
 export async function startServerFromClient(config: SDKConfiguration, client?: Augur ): Promise<API> {
-  const { api, controller, sync } = await createServer(config, client);
+  const { api, sync } = await createServer(config, client);
 
-  await sync();
+  sync();
 
   return api;
 }
 
 export async function startServer(config: SDKConfiguration, account?: string): Promise<API> {
-  const { api, controller, sync } = await createServer(config, undefined, account);
+  const { api, sync } = await createServer(config, undefined, account);
 
-  await sync();
+  sync();
 
   return api;
 }
