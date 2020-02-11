@@ -681,22 +681,23 @@ export class ReportingBondsView extends Component<
   updateInputtedStake = (inputStakeValue: string) => {
     const { updateInputtedStake, inputScalarOutcome, userAttoRep } = this.props;
     const { isScalar, threshold } = this.state;
-
+    let disabled = false;
     if (isNaN(Number(inputStakeValue))) {
-      this.setState({ stakeError: 'Enter a valid number', disabled: true });
+      disabled = true;
+      this.setState({ stakeError: 'Enter a valid number' });
     } else if (
       createBigNumber(userAttoRep).lt(createBigNumber(inputStakeValue))
     ) {
+      disabled = true;
       this.setState({
         stakeError: 'Value is bigger than user REP balance',
-        disabled: true,
       });
     } else if (
       createBigNumber(threshold).lt(createBigNumber(inputStakeValue))
     ) {
+      disabled = true;
       this.setState({
         stakeError: `Value is bigger than the REP threshold: ${threshold}`,
-        disabled: true,
       });
     } else {
       this.setState({ stakeError: '' });
@@ -704,7 +705,7 @@ export class ReportingBondsView extends Component<
         this.state.scalarError === '' &&
         ((isScalar && inputScalarOutcome !== '') || !isScalar)
       ) {
-        this.setState({ disabled: false });
+        disabled = true;
       }
     }
     let inputToAttoRep = '0';
@@ -714,6 +715,7 @@ export class ReportingBondsView extends Component<
       );
     }
     updateInputtedStake({ inputToAttoRep, inputStakeValue });
+    this.setState({ disabled });
   };
 
   checkCheckbox = (readAndAgreedCheckbox: boolean) => {
