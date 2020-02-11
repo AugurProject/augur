@@ -1204,11 +1204,12 @@ class Form extends Component<FromProps, FormState> {
                         },
                       ]}
                       onChange={value => {
+                        const fastForwardTime = this.state.fastForwardTime ? this.state.fastForwardTime : 0;
                         this.updateAndValidate(
                           this.INPUT_TYPES.EXPIRATION_DATE,
-                          currentTimestamp
+                          moment.unix(currentTimestamp).add(fastForwardTime, value).unix()
                         );
-                        this.setState({ expirationDateOption: value, fastForwardTime: 0 });
+                        this.setState({ expirationDateOption: value });
                       }}
                     />
                   </div>
