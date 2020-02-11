@@ -140,13 +140,13 @@
     }
 
     .hovered_tooltip_div.asks {
-      border-color: fade(@color-negative, 30%);
-      border-right-color: @color-negative;
+      border-color: var(--color-negative-30);
+      border-right-color: var(--color-negative);
     }
 
     .hovered_tooltip_div.asks.flip {
-      border-left-color: @color-negative;
-      border-right-color: fade(@color-negative, 30%);
+      border-left-color: var(--color-negative);
+      border-right-color:var(--color-negative-30);
     }
 
     .hovered_tooltip_labels {
@@ -200,8 +200,8 @@
     }
 
     .asks {
-      color: @color-negative;
-      stroke: @color-negative;
+      color: var(--color-negative);
+      stroke: var(--color-negative);
     }
 
     .bids {
@@ -269,7 +269,7 @@
 
     .depth-line-asks {
       fill: none;
-      stroke: @color-negative;
+      stroke: var(--color-negative);
       stroke-width: @size-2;
     }
 
@@ -282,7 +282,7 @@
     }
 
     .stop-bottom-ask {
-      stop-color: @color-negative;
+      stop-color: var(--color-negative);
     }
 
     .stop-bottom-bid {
@@ -322,7 +322,7 @@
     .line .crosshair-asks {
       .dashline-normal;
 
-      stroke: @color-negative;
+      stroke: var(--color-negative);
     }
 
     .overlay {

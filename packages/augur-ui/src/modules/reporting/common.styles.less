@@ -133,20 +133,20 @@
     height: @size-10;
 
     &:first-of-type {
-      background: fade(@color-negative, 50);
+      background: var(--color-negative-50);
       border-top-left-radius: 100px;
       border-bottom-left-radius: 100px;
     }
 
     &:nth-of-type(2) {
-      background: @color-negative;
+      background: var(--color-negative);
     }
 
     &:nth-of-type(3) {
       background: repeating-linear-gradient(
         -45deg,
-        @color-negative,
-        @color-negative @size-1,
+        var(--color-negative),
+        var(--color-negative) @size-1,
         @color-dark-grey @size-2,
         @color-dark-grey @size-4
       );

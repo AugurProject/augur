@@ -322,11 +322,11 @@
   height: auto;
 
   &.Checked {
-    border: @size-1 solid @color-negative;
+    border: @size-1 solid var(--color-negative);
 
     > svg {
       > circle:last-of-type {
-        fill: @color-negative;
+        fill: var(--color-negative);
       }
     }
   }
@@ -1819,7 +1819,7 @@ button.MaxDark {
       > span:first-of-type {
         .text-14-medium;
 
-        color: @color-negative;
+        color: var(--color-negative);
         text-transform: none;
       }
 

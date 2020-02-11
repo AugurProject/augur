@@ -262,23 +262,23 @@
   .Button;
   .mono-12-semi-bold;
 
-  background: fade(@color-negative, 10%);
-  border-color: @color-negative;
+  background: var(--color-negative-10);
+  border-color: var(--color-negative);
   border-width: @size-2;
-  color: @color-negative;
+  color: var(--color-negative);
   height: @button-height-default;
   max-height: @button-height-default;
   text-transform: uppercase;
   width: 100%;
 
   &:disabled {
-    background: fade(@color-negative, 5%);
-    border-color: fade(@color-negative, 10%);
-    color: fade(@color-negative, 20%);
+    background: var(--color-negative-5);
+    border-color: var(--color-negative-10);
+    color: var(--color-negative-20);
   }
 
   &:hover:enabled {
-    background: fade(@color-negative, 20%);
+    background: var(--color-negative-20);
   }
 }
 

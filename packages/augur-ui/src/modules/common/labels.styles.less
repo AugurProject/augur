@@ -665,7 +665,7 @@ span.PendingLabel {
   }
 
   &_negative {
-    color: @color-negative;
+    color: var(--color-negative);
   }
 
   &_neutral {
@@ -710,11 +710,11 @@ span.PendingLabel {
     }
 
     > svg > path:nth-child(1) {
-      fill: @color-negative;
+      fill: var(--color-negative);
     }
 
     > svg > path:nth-child(2) {
-      stroke: @color-negative;
+      stroke: var(--color-negative);
     }
   }
 }
@@ -752,7 +752,7 @@ span.PendingLabel {
   text-transform: uppercase;
 
   &.Sell {
-    color: @color-negative;
+    color: var(--color-negative);
   }
 
   &.Closed {

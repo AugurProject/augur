@@ -31,7 +31,7 @@
     > span {
       .text-12-bold;
 
-      color: @color-negative;
+      color: var(--color-negative);
     }
 
   }
@@ -52,20 +52,20 @@
 
   // color for hover state in Sell Shares button
   &:hover {
-    color: @color-negative;
+    color: var(--color-negative);
   }
 }
 
 .Sell > li {
   &.active {
-    color: @color-negative;
+    color: var(--color-negative);
 
     > button {
-      border-bottom: @size-1 solid @color-negative;
+      border-bottom: @size-1 solid var(--color-negative);
     }
 
     &:hover {
-      color: @color-negative;
+      color: var(--color-negative);
     }
   }
 
