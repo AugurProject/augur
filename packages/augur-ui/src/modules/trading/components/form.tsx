@@ -457,8 +457,7 @@ class Form extends Component<FromProps, FormState> {
         );
       }
     }
-    if (!isScalarInvalidOutcome &&
-      value &&
+    if (value &&
       value
         .minus(minPrice)
         .mod(tickSize)
@@ -787,20 +786,26 @@ class Form extends Component<FromProps, FormState> {
   calcPercentagePrice(
     percentage: string,
     minPrice: string,
+    maxPrice: string,
     tickSize: number,
     numTicks: string
   ) {
     if (percentage === undefined || percentage === null) return Number(0);
+    const bnMinPrice = createBigNumber(minPrice);
+    const bnMaxPrice = createBigNumber(maxPrice);
     const percentNumTicks = createBigNumber(numTicks).times(
       createBigNumber(percentage).dividedBy(100)
     );
+    if (percentNumTicks.lt(tickSize)) {
+      return bnMinPrice.plus(tickSize);
+    }
     const calcPrice = percentNumTicks
       .times(tickSize)
-      .plus(createBigNumber(minPrice));
+      .plus(bnMinPrice);
+      if (calcPrice.eq(maxPrice)){
+        return bnMaxPrice.minus(tickSize);
+      }
     const correctDec = formatBestPrice(calcPrice, tickSize);
-    if (createBigNumber(correctDec.fullPrecision).lt(createBigNumber(minPrice))) {
-      return minPrice;
-    }
     return correctDec.fullPrecision;
   }
 
@@ -1008,6 +1013,7 @@ class Form extends Component<FromProps, FormState> {
                       const value = this.calcPercentagePrice(
                         percentage,
                         min,
+                        max,
                         tickSize,
                         numTicks
                       );
