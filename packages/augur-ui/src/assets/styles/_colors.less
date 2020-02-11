@@ -58,6 +58,8 @@
 
   // Interactives
   --color-primary-action: #09CFE1;
+  --color-primary-action-5-dark:#08b9c9;
+  --color-primary-action-15-dark: #068c98;
   --color-prmary-action-5: fade(#09CFE1, 5%);
   --color-prmary-action-10: fade(#09CFE1, 10%);
   --color-prmary-action-15: fade(#09CFE1, 15%);
@@ -68,6 +70,7 @@
   --color-prmary-action-90: fade(#09CFE1, 90%);
 
   --color-secondary-action: #252429;
+  --color-secondary-action-5-light: #313036;
   --color-secondary-action-50: fade(#252429, 50%);
   --color-secondary-action-outline: #3C3B43;
   --color-secondary-action-outline-25: fade(#3C3B43, 25%);
@@ -78,7 +81,10 @@
   --color-secondary-hover: #302F36;
 
   // outcomes:
-  --color-tenative-winner: #AEFFF0; 
+  --color-tenative-winner: #AEFFF0;
+  --color-outcome-invalid: #FF7E9D;
+  --color-outcome-invalid-40: fade(#FF7E9D, 40%);
+  --color-outcome-invalid-50: fade(#FF7E9D, 50%);
 }
 
 :root[theme="BETTING"] {
@@ -131,6 +137,8 @@
 
   // Interactives
   --color-primary-action: #0CCE8D;
+  --color-primary-action-5-dark: #0bb77e;
+  --color-primary-action-15-dark: #08875d;
   --color-prmary-action-5: fade(#0CCE8D, 5%);
   --color-prmary-action-10: fade(#0CCE8D, 10%);
   --color-prmary-action-15: fade(#0CCE8D, 15%);
@@ -141,6 +149,7 @@
   --color-prmary-action-90: fade(#0CCE8D, 90%);
 
   --color-secondary-action: #0E0E21;
+  --color-secondary-action-5-light: #151532;
   --color-secondary-action-50: fade(#0E0E21, 50%);
   --color-secondary-action-outline: #0E0E21;
   --color-secondary-action-outline-25: fade(#0E0E21, 25%);
@@ -152,6 +161,9 @@
 
   //outcomes:
   --color-tenative-winner: #0CCE8D;
+  --color-outcome-invalid: #FF4E27;
+  --color-outcome-invalid-40: fade(#FF4E27, 40%);
+  --color-outcome-invalid-50: fade(#FF4E27, 50%);
 }
 // Text
 // @color-primary-text: #D7DDE0;
@@ -192,6 +204,8 @@
 // @color-facebook: #3B5998;
 // Outcomes:
 // @color-tenative-winner: #AEFFF0; // 2 files
+
+// these are left in as a work around for the below mix in.
 @color-outcome-invalid: #FF7E9D; // 6 files
 @color-outcome-one: #F3A2FA; // 2 files
 @color-outcome-two: #09CFE1; // 2 files
@@ -203,8 +217,26 @@
 //  Chart / Outcome color helpers
 @color-outcome-list: @color-outcome-invalid @color-outcome-one @color-outcome-two @color-outcome-three @color-outcome-four @color-outcome-five @color-outcome-six @color-outcome-seven;
 
-.generate-indexed-color-outcome-classes(@rules) {
+.generate-trading-indexed-color-outcome-classes(@rules) {
   each(@color-outcome-list, {
+    @newIndex: @index;
+    @rules();
+  });
+} // 2 files
+
+@color-outcome-invalid-betting: #FF7E9D; // 6 files
+@color-outcome-one-betting: #FCBD43; // 2 files
+@color-outcome-two-betting: #F55800; // 2 files
+@color-outcome-three-betting: #FF56B1; // 2 files
+@color-outcome-four-betting: #FF8DED; // 5 files
+@color-outcome-five-betting: #1B91FF; // 2 files
+@color-outcome-six-betting: #09CFE1; // 2 files
+@color-outcome-seven-betting: #2AE7A8; // 4 files
+//  Chart / Outcome color helpers
+@color-outcome-list-betting: @color-outcome-invalid-betting @color-outcome-one-betting @color-outcome-two-betting @color-outcome-three-betting @color-outcome-four-betting @color-outcome-five-betting @color-outcome-six-betting @color-outcome-seven-betting;
+
+.generate-betting-indexed-color-outcome-classes(@rules) {
+  each(@color-outcome-list-betting, {
     @newIndex: @index;
     @rules();
   });

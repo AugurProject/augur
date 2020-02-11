@@ -33,11 +33,11 @@
 
 	&.invalid {
 		> div:first-of-type > span:first-of-type {
-			color: @color-outcome-invalid;
+			color: var(--color-outcome-invalid);
 		}
 
 		> div:last-of-type > span {
-    		background: @color-outcome-invalid;
+    		background: var(--color-outcome-invalid);
     	}
 	}
 
@@ -52,7 +52,7 @@
 	});
 
 	&:hover {
-		background: @color-secondary-hover;
+		background: var(--color-secondary-hover);
 
 		> div:first-of-type > span:first-of-type {
 			text-decoration: underline
@@ -135,7 +135,7 @@
 
 	&.invalid {
 		> span:first-of-type {
-			color: @color-outcome-invalid;
+			color: var(--color-outcome-invalid);
 		}
 	}
 
@@ -183,7 +183,7 @@
 	}
 
 	&.invalid {
-		background-color: fade(@color-outcome-invalid, 50);
+		background-color: var(--color-outcome-invalid-50);
 	}
 }
 
@@ -202,7 +202,7 @@
 		border-radius: @size-4;
 		height: @size-4;
 		margin-bottom: @size-3;
-		color: @color-outcome-invalid;
+		color: var(--color-outcome-invalid);
 		position: relative;
 
 		> span {
@@ -210,7 +210,7 @@
 			bottom: @size-5;
 
 			&::before {
-				background-color: @color-outcome-invalid;
+				background-color: var(--color-outcome-invalid);
 				border-radius: 50%;
 				content: "";
 				height: @size-6;
