@@ -29,6 +29,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
     Gnosis_ENABLED: state.appStatus.gnosisEnabled,
     ethToDaiRate: state.appStatus.ethToDaiRate,
     gasPrice: getGasPrice(state),
+    openReporting
   };
 };
 
