@@ -568,6 +568,11 @@ export class ContractAPI {
     }
   }
 
+  async faucetOnce(attoCash: BigNumber, account?: string): Promise<void> {
+    account = account ||  await this.augur.getAccount();
+    await this.augur.contracts.cashFaucet.faucet(attoCash, { sender: account });
+  }
+
   async repFaucet(attoRep: BigNumber): Promise<void> {
     const reputationToken = this.augur.contracts.getReputationToken();
     if (typeof reputationToken['faucet'] === 'function') {

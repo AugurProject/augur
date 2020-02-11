@@ -591,13 +591,13 @@ export class Markets {
       marketData =_.sortBy(marketData, 'invalidFilter')
     }
 
+    // Get category meta data before slicing for pagination
+    const categories = getMarketsCategoriesMeta(marketData);
+
     marketData = marketData.slice(params.offset, params.offset + params.limit);
 
     // Get markets info to return
-    let marketsInfo: MarketInfo[] = await getMarketsInfo(db, marketData, reportingFeeDivisor);
-
-    // Get categories meta data
-    const categories = getMarketsCategoriesMeta(marketsInfo);
+    const marketsInfo: MarketInfo[] = await getMarketsInfo(db, marketData, reportingFeeDivisor);
 
     return {
       markets: marketsInfo,
@@ -1190,20 +1190,32 @@ function formatStakeDetails(db: DB, market: MarketData, stakeDetails: DisputeDoc
 }
 
 function getMarketsCategoriesMeta(
-  marketsResults: MarketInfo[],
+  marketsResults: MarketData[]
 ): MarketListMetaCategories {
+  const markets = _.map(marketsResults, marketData => {
+    let categories: string[] = [];
+    if (marketData.extraInfo) {
+      const extraInfo = marketData.extraInfo;
+      categories = extraInfo.categories ? extraInfo.categories : [];
+    }
+    return {
+      id: marketData.market,
+      categories,
+    };
+  });
+
   const categories = {};
-  for (let i = 0; i < marketsResults.length; i++) {
-    const marketsResult = marketsResults[i];
-    const category1 = marketsResult.categories[0];
-    const category2 = marketsResult.categories[1] || null;
-    const category3 = marketsResult.categories[2] || null;
+  for (let i = 0; i < markets.length; i++) {
+    const market = markets[i];
+    const category1 = market.categories[0];
+    const category2 = market.categories[1] || null;
+    const category3 = market.categories[2] || null;
 
     let children1 = categories[category1];
     if (!children1) {
       children1 = categories[category1] = {
-        'count': 0,
-        'children': {},
+        count: 0,
+        children: {},
       };
     }
     children1['count']++;
@@ -1220,9 +1232,12 @@ function getMarketsCategoriesMeta(
     }
 
     if (category3) {
-      let children3 = categories[category1].children[category2].children[category3];
+      let children3 =
+        categories[category1].children[category2].children[category3];
       if (!children3) {
-        children3 = categories[category1].children[category2].children[category3] = {
+        children3 = categories[category1].children[category2].children[
+          category3
+        ] = {
           count: 0,
         };
       }

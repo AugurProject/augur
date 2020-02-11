@@ -5,7 +5,7 @@ import { formatDate } from "utils/format-date";
 import QuadBox from "modules/portfolio/components/common/quad-box";
 import { SCRATCH, TEMPLATE } from "modules/create-market/constants";
 
-import Styles from "modules/create-market/saved-drafts.styles";
+import Styles from "modules/create-market/saved-drafts.styles.less";
 import { CancelTextButton } from "modules/common/buttons";
 
 interface SavedDraftsProps {

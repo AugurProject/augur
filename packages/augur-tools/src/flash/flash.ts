@@ -167,7 +167,7 @@ export class FlashSession {
       // handles the case where none is passed in, in which case it will use
       // the default account (0)
       const account = this.getAccount(accountAddress);
-
+      console.log(`using account ${account.publicKey}`);
       // Within flash we want to use an account with a private key as the signer
       // so we manually create our own signer here.
       const signer = await makeSigner(account, this.provider);
@@ -184,7 +184,8 @@ export class FlashSession {
       // IF we want this flash client to use a safe associated with the past in
       // account, configure it at this point.
       if (config.gnosis.enabled) {
-        const safe = await this.user.fundSafe();
+        const safe = await this.user.getOrCreateSafe();
+        await this.user.faucetOnce(new BigNumber(1e21), safe);
         const safeStatus = await this.user.getSafeStatus(safe);
         console.log(`Safe ${safe}: ${safeStatus}`);
         this.user.augur.setGasPrice(new BigNumber(90000));

@@ -326,21 +326,8 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       market.id,
       selectedOutcome.id,
       trade,
-      s.doNotCreateOrders,
-      (err, result) => {
-        // onSent/onFailed CB
-        if(err) {
-          console.log(err);
-          console.log(JSON.stringify(err));
-        }
-        if (!err) {
-          this.clearOrderForm();
-        }
-      },
-      res => {
-        // onComplete CB
-      }
-    );
+      s.doNotCreateOrders)
+    this.clearOrderForm();
   }
 
   updateTradeNumShares(order) {
@@ -427,8 +414,8 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
     } = this.state;
     const insufficientFunds =
       trade &&
-      trade.totalCost &&
-      createBigNumber(trade.totalCost.value).gte(createBigNumber(availableDai));
+      trade.costInDai &&
+      createBigNumber(trade.costInDai.value).gte(createBigNumber(availableDai));
     let actionButton: any = (
       <OrderButton
         type={selectedNav}
