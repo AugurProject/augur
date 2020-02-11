@@ -171,7 +171,37 @@ describe('3rd Party :: ZeroX :: ', () => {
         0,
         market1.address,
         outcome,
-        new BigNumber(100),
+        new BigNumber(10),
+        new BigNumber(0.4),
+        new BigNumber(0),
+        new BigNumber(1000000000000000)
+      );
+
+      await john.placeBasicYesNoZeroXTrade(
+        0,
+        market1.address,
+        outcome,
+        new BigNumber(10),
+        new BigNumber(0.4),
+        new BigNumber(0),
+        new BigNumber(1000000000000000)
+      );
+
+      await john.placeBasicYesNoZeroXTrade(
+        0,
+        market1.address,
+        outcome,
+        new BigNumber(10),
+        new BigNumber(0.4),
+        new BigNumber(0),
+        new BigNumber(1000000000000000)
+      );
+
+      await john.placeBasicYesNoZeroXTrade(
+        0,
+        market1.address,
+        outcome,
+        new BigNumber(70),
         new BigNumber(0.4),
         new BigNumber(0),
         new BigNumber(1000000000000000)
@@ -184,7 +214,7 @@ describe('3rd Party :: ZeroX :: ', () => {
         1,
         market1.address,
         outcome,
-        new BigNumber(50),
+        new BigNumber(100),
         new BigNumber(0.4),
         new BigNumber(0),
         new BigNumber(1000000000000000)
@@ -196,8 +226,8 @@ describe('3rd Party :: ZeroX :: ', () => {
       const johnShares = await john.getNumSharesInMarket(market1, new BigNumber(outcome));
       const maryShares = await mary.getNumSharesInMarket(market1, new BigNumber(0));
 
-      await expect(johnShares.toNumber()).toEqual(10 ** 17 * 5);
-      await expect(maryShares.toNumber()).toEqual(10 ** 17 * 5);
+      await expect(johnShares.toNumber()).toEqual(10 ** 18);
+      await expect(maryShares.toNumber()).toEqual(10 ** 18);
     }, 240000);
 
     test('Trade :: simulateTrade', async () => {
