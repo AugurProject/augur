@@ -41,11 +41,11 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
   private _currentNonce: number = -1;
   private _signingQueue: AsyncQueue<SigningQueueTask> = queue(async (task: SigningQueueTask ) => {
     if (this._currentNonce === -1) {
-      this._currentNonce = Number(await this.gnosisSafe.nonce()) - 1;
+      this._currentNonce = Number(await this.gnosisSafe.nonce());
     }
-    const nonce = this._currentNonce + 1;
-    const result = await this.ethersTransactionToRelayTransaction(nonce, task.tx, task.operation);
-    this._currentNonce = nonce;
+    
+    const result = await this.ethersTransactionToRelayTransaction(this._currentNonce, task.tx, task.operation);
+    this._currentNonce++;
     return result;
   });
 
