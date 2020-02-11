@@ -35,7 +35,7 @@
 .Timestamp {
   .text-9;
 
-  color:@color-inactive-text;
+  color:var(--color-inactive-text);
 }
 
 .Seen {
@@ -44,7 +44,7 @@
   > div {
     > div:first-of-type > div,
     > div:nth-of-type(2) > span {
-      color: @color-inactive-text;
+      color: var(--color-inactive-text);
     }
   }
 }
@@ -131,7 +131,7 @@
     width: @size-8;
     height: size-8;
     > path {
-      fill: @color-inactive-text;
+      fill: var(--color-inactive-text);
     }
   }
 }
@@ -139,7 +139,7 @@
 .Description {
   .text-9;
 
-  color: @color-inactive-text;
+  color: var(--color-inactive-text);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

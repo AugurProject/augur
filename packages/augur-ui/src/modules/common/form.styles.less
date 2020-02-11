@@ -138,15 +138,15 @@
   }
 
   &:disabled {
-    border: @size-1 solid @color-inactive-text;
+    border: @size-1 solid var(--color-inactive-text);
 
     > svg > circle {
-      stroke: @color-inactive-text;
+      stroke: var(--color-inactive-text);
     }
 
     > h5,
     > p {
-      color: @color-inactive-text;
+      color: var(--color-inactive-text);
     }
   }
 }
@@ -849,11 +849,11 @@
 
       &:disabled {
         background-color: @color-dark-grey;
-        border: @size-1 solid @color-inactive-text;
-        color: @color-inactive-text;
+        border: @size-1 solid var(--color-inactive-text);
+        color: var(--color-inactive-text);
 
         &::placeholder {
-          color: @color-inactive-text;
+          color: var(--color-inactive-text);
         }
       }
     }
@@ -1023,8 +1023,8 @@
 
     &.disabled {
       background-color: @color-dark-grey;
-      border: @size-1 solid @color-inactive-text;
-      color: @color-inactive-text;
+      border: @size-1 solid var(--color-inactive-text);
+      color: var(--color-inactive-text);
       opacity: 0.5;
     }
 
@@ -1097,7 +1097,7 @@ div.FormDropdownActive {
     width: @size-16;
 
     > svg > path {
-      stroke: @color-inactive-text;
+      stroke: var(--color-inactive-text);
     }
 
     @media @breakpoint-mobile {
@@ -1117,7 +1117,7 @@ div.FormDropdownActive {
 .Max {
   .text-10-medium;
 
-  color: @color-inactive-text;
+  color: var(--color-inactive-text);
   padding: 0 @size-16;
   text-transform: capitalize;
 }
@@ -1185,7 +1185,7 @@ button.MaxDark {
     padding: 0 @size-4;
 
     &:active {
-      background-color: @color-inactive-text;
+      background-color: var(--color-inactive-text);
     }
   }
 }
@@ -1362,13 +1362,13 @@ button.MaxDark {
 
         > rect,
         > path {
-          stroke: @color-inactive-text;
+          stroke: var(--color-inactive-text);
         }
 
         &:hover {
           > rect,
           > path {
-            stroke: @color-inactive-text;
+            stroke: var(--color-inactive-text);
           }
         }
       }
@@ -1382,13 +1382,13 @@ button.MaxDark {
 
         > rect,
         > path {
-          stroke: @color-inactive-text;
+          stroke: var(--color-inactive-text);
         }
 
         &:hover {
           > rect,
           > path {
-            stroke: @color-inactive-text;
+            stroke: var(--color-inactive-text);
           }
         }
       }
@@ -1412,7 +1412,7 @@ button.MaxDark {
     .DayPicker_weekHeader_li_1 {
       .mono-11;
 
-      color: @color-inactive-text;
+      color: var(--color-inactive-text);
       text-transform: capitalize;
     }
 
@@ -1421,7 +1421,7 @@ button.MaxDark {
 
       background: none;
       border: @size-1 solid var(--color-primary-text);
-      color: @color-inactive-text;
+      color: var(--color-inactive-text);
 
       &.CalendarDay__selected_2:hover {
         background: var(--color-primary-text);
@@ -1442,7 +1442,7 @@ button.MaxDark {
       &:hover {
         background: var(--color-primary-action-10);
         border: @size-1 solid var(--color-primary-text);
-        color: @color-inactive-text;
+        color: var(--color-inactive-text);
       }
 
       &.CalendarDay__blocked_out_of_range_2.CalendarDay__blocked_out_of_range_2:hover {
@@ -1451,7 +1451,7 @@ button.MaxDark {
       }
 
       &:hover {
-        color: @color-inactive-text;
+        color: var(--color-inactive-text);
       }
     }
 
@@ -1702,7 +1702,7 @@ button.MaxDark {
   > span {
     .text-11;
 
-    color: @color-inactive-text;
+    color: var(--color-inactive-text);
     margin-bottom: @size-14;
   }
 
@@ -1710,8 +1710,8 @@ button.MaxDark {
     .mono-14;
 
     background-color: var(--color-primary-text);
-    border: @size-1 solid @color-inactive-text;
-    color: @color-inactive-text;
+    border: @size-1 solid var(--color-inactive-text);
+    color: var(--color-inactive-text);
     height: @size-40;
     margin: @size-14 0;
     padding: @size-4;
@@ -1727,8 +1727,8 @@ button.MaxDark {
     }
 
     &:disabled {
-      background-color: @color-inactive-text;
-      border: @size-1 solid @color-inactive-text;
+      background-color: var(--color-inactive-text);
+      border: @size-1 solid var(--color-inactive-text);
       color: var(--color-secondary-text);
     }
   }
@@ -1745,7 +1745,7 @@ button.MaxDark {
       width: @size-16;
 
       > path {
-        fill: @color-inactive-text;
+        fill: var(--color-inactive-text);
       }
     }
 

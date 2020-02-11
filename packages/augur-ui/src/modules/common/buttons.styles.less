@@ -152,7 +152,7 @@
   }
 
   &:disabled {
-    background: @color-inactive-text;
+    background: var(--color-inactive-text);
   }
 
   &:hover:enabled {
@@ -184,7 +184,7 @@
   padding: @size-8 @size-12;
 
   &:disabled {
-    background: @color-inactive-text;
+    background: var(--color-inactive-text);
   }
 
   &:hover:enabled {
@@ -408,11 +408,11 @@
 
   @media @breakpoint-mobile {
     &:disabled {
-      color: @color-inactive-text;
+      color: var(--color-inactive-text);
       opacity: 0.5;
 
       > svg > path {
-        stroke: @color-inactive-text;
+        stroke: var(--color-inactive-text);
       }
     }
   }
@@ -456,7 +456,7 @@
     width: @size-10;
 
     > path {
-      fill: @color-inactive-text;
+      fill: var(--color-inactive-text);
     }
   }
 
@@ -494,17 +494,17 @@
   }
 
   &:disabled {
-    background: @color-inactive-text;
-    border-color: @color-inactive-text;
-    color: @color-inactive-text;
+    background: var(--color-inactive-text);
+    border-color: var(--color-inactive-text);
+    color: var(--color-inactive-text);
 
     > svg {
       > path {
-        stroke: @color-inactive-text;
+        stroke: var(--color-inactive-text);
       }
 
       > rect {
-        fill: @color-inactive-text;
+        fill: var(--color-inactive-text);
       }
     }
   }
@@ -546,11 +546,11 @@
     > svg {
       > path {
         &:nth-child(even) {
-          fill: @color-inactive-text;
+          fill: var(--color-inactive-text);
         }
 
         &:nth-child(odd) {
-          stroke: @color-inactive-text;
+          stroke: var(--color-inactive-text);
         }
       }
     }
@@ -579,7 +579,7 @@
   &:disabled {
     > svg > path {
       &:nth-child(odd) {
-        fill: @color-inactive-text;
+        fill: var(--color-inactive-text);
         stroke: none;
       }
     }
@@ -767,7 +767,7 @@
     width: @size-16;
 
     > path {
-      stroke: @color-inactive-text;
+      stroke: var(--color-inactive-text);
       fill: none;
     }
   }
