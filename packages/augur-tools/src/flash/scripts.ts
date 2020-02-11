@@ -1015,7 +1015,7 @@ export function addScripts(flash: FlashSession) {
       const orderSize = args.orderSize ? Number(args.orderSize) : 10;
       const expiration = args.expiration ? new BigNumber(String(args.expiration)) : new BigNumber(300); // five minutes
       const user: ContractAPI = await this.ensureUser(this.network, true, true, address, true, true);
-      console.log('waiting few seconds on purpose for client to sync');
+      console.log('waiting many seconds on purpose for client to sync');
       await new Promise<void>(resolve => setTimeout(resolve, 90000));
       const skipFaucetOrApproval = args.skipFaucetOrApproval as boolean;
       if (!skipFaucetOrApproval) {
