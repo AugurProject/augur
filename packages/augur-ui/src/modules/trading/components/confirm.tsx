@@ -120,7 +120,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
 
     if (
       allowanceBigNumber &&
-      createBigNumber(totalCost.value).gt(allowanceBigNumber) &&
+      createBigNumber(potentialDaiLoss.value).gt(allowanceBigNumber) &&
       !tradingTutorial
     ) {
       needsApproval = true;
@@ -177,7 +177,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
 
     if (
       totalCost &&
-      createBigNumber(totalCost.fullPrecision).gt(
+      createBigNumber(potentialDaiLoss.fullPrecision).gt(
         createBigNumber(availableDai)
       ) && !tradingTutorial
     ) {
@@ -276,7 +276,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
 
     const notProfitable =
       (orderShareProfit && createBigNumber(orderShareProfit.value).lte(0)) ||
-      (totalCost.value > 0 &&
+      (potentialDaiLoss.value > 0 &&
         potentialDaiProfit &&
         potentialDaiProfit.value <= 0);
 
