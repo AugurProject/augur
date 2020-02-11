@@ -212,13 +212,23 @@ export class ZeroXOrders extends AbstractTable {
         return this.validateStoredOrder(document, markets);
       });
       _.each(documents, (doc) => { delete this.pastOrders[doc.orderHash] });
-      documents = documents.concat(_.values(this.pastOrders));
       await this.bulkUpsertDocuments(documents);
       this.augur.events.emit('DB:get:ZeroXOrders', marketIds);
       for (const d of documents) {
         this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Create, ...d});
       }
     }
+    const chainId = Number(this.augur.networkId);
+    const ordersToAdd = _.map(_.values(this.pastOrders), (order) => {
+      const signedOrder = order.signedOrder;
+      return Object.assign({
+        chainId,
+        makerFeeAssetData: "0x",
+        takerFeeAssetData: "0x",
+      }, signedOrder);
+    });
+
+    if (ordersToAdd.length > 0) this.augur.zeroX.addOrders(ordersToAdd);
     console.log(`Synced ${orders.length } ZeroX Orders`);
   }
 
