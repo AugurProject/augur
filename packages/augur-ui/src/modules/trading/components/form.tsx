@@ -457,7 +457,7 @@ class Form extends Component<FromProps, FormState> {
         );
       }
     }
-    if (
+    if (!isScalarInvalidOutcome &&
       value &&
       value
         .minus(minPrice)
@@ -790,7 +790,7 @@ class Form extends Component<FromProps, FormState> {
     tickSize: number,
     numTicks: string
   ) {
-    if (!percentage) return Number(minPrice);
+    if (percentage === undefined || percentage === null) return Number(0);
     const percentNumTicks = createBigNumber(numTicks).times(
       createBigNumber(percentage).dividedBy(100)
     );
@@ -798,7 +798,10 @@ class Form extends Component<FromProps, FormState> {
       .times(tickSize)
       .plus(createBigNumber(minPrice));
     const correctDec = formatBestPrice(calcPrice, tickSize);
-    return correctDec.full;
+    if (createBigNumber(correctDec.fullPrecision).lt(createBigNumber(minPrice))) {
+      return minPrice;
+    }
+    return correctDec.fullPrecision;
   }
 
   render() {
