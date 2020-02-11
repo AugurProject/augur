@@ -166,9 +166,8 @@ export class FlashSession {
       // Get an actual account for the provided public address. This also
       // handles the case where none is passed in, in which case it will use
       // the default account (0)
-      console.log(`using account ${accountAddress}`);
       const account = this.getAccount(accountAddress);
-
+      console.log(`using account ${account.publicKey}`);
       // Within flash we want to use an account with a private key as the signer
       // so we manually create our own signer here.
       const signer = await makeSigner(account, this.provider);
