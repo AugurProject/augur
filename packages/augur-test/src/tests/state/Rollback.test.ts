@@ -200,7 +200,6 @@ test('rollback derived database', async () => {
   await bulkSyncStrategy.start(0, await john.provider.getBlockNumber());
   marketData = await (await johnDB).Markets.get(market.address);
 
-  console.log('marketData.blockNumber--3', marketData.blockNumber);
   // Confirm the invalidFilter has been set due to this order on the market data
   await expect(marketData.invalidFilter).toEqual(1);
 

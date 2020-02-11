@@ -35,6 +35,8 @@ interface LiquidityResults {
   [liquidity: number]: number;
 }
 
+let liquidityCheckInterval = null;
+
 /**
  * Market specific derived DB intended for filtering purposes
  */
@@ -65,10 +67,27 @@ export class MarketDB extends DerivedDB {
       'MarketMigrated': this.processMarketMigrated,
     };
 
-    this.augur.events.subscribe('DB:updated:ZeroXOrders', (orderEvents) => this.syncOrderBooks([orderEvents.market]));
-    this.augur.events.subscribe('DB:get:ZeroXOrders', (markets) => this.syncOrderBooks(markets));
+    this.augur.events.subscribe('DB:updated:ZeroXOrders', (orderEvents) => this.markMarketLiquidityAsDirty(orderEvents.market));
     this.augur.events.subscribe(SubscriptionEventName.NewBlock, this.processNewBlock);
     this.augur.events.subscribe(SubscriptionEventName.TimestampSet, this.processTimestampSet);
+
+    // Don't call this interval during tests
+    if (process.env.NODE_ENV !== 'test') {
+      if (!liquidityCheckInterval) {
+        // call recalc liquidity every 3mins
+        const THREE_MINS_IN_MS = 180000;
+        liquidityCheckInterval = setInterval(async () => {
+          const marketsToCheck = await this.stateDB.Markets
+          .filter((order) => order.liquidityDirty)
+          .toArray();
+
+          const marketIdsToCheck = marketsToCheck.map(m => m.market);
+          if (marketIdsToCheck.length > 0) {
+            this.syncOrderBooks(marketIdsToCheck);
+          }
+        },THREE_MINS_IN_MS);
+      }
+    }
   }
 
   syncFTS = async (): Promise<void> => {
@@ -117,11 +136,24 @@ export class MarketDB extends DerivedDB {
         // This is needed to make rollbacks work properly
         doc['blockNumber'] = highestSyncedBlockNumber;
         doc['market'] = marketId;
+        doc['liquidityDirty'] = false;
         documents.push(doc);
       }
     }
 
     await this.bulkUpsertDocuments(documents);
+  }
+
+  async markMarketLiquidityAsDirty(marketId: string) {
+    const document = await this.stateDB.Markets
+      .filter((m) => m.market === marketId)
+      .toArray();
+
+    if (document.length > 0) {
+      document[0].liquidityDirty = true;
+
+      await this.bulkUpsertDocuments(document);
+    }
   }
 
   async getOrderBookData(augur: Augur, marketId: string, marketData: MarketData, reportingFeeDivisor: BigNumber, ETHInAttoDAI: BigNumber): Promise<MarketOrderBookData> {
@@ -160,8 +192,8 @@ export class MarketDB extends DerivedDB {
 
     const spread10 = new BigNumber(marketOrderBookData.liquidity[10]);
     const spread15 = new BigNumber(marketOrderBookData.liquidity[15]);
-    const lastSpread10 = new BigNumber(marketData.liquidity[10]);
-    const lastSpread15 = new BigNumber(marketData.liquidity[15]);
+    const lastSpread10 = marketData.liquidity ? new BigNumber(marketData.liquidity[10]) : new BigNumber(0);
+    const lastSpread15 = marketData.liquidity ? new BigNumber(marketData.liquidity[15]) : new BigNumber(0);
 
     const passesSpreadCheck = (spread10.gt(0) || spread15.gt(0));
     // Keep track when a market has under a 15% spread. Used for `hasRecentlyDepletedLiquidity`
@@ -305,6 +337,7 @@ export class MarketDB extends DerivedDB {
     log['disputeRound'] = '0x00';
     log['totalRepStakedInMarket'] = '0x00';
     log['hasRecentlyDepletedLiquidity'] = 0;
+    log['liquidityDirty'] = false
     log['liquidity'] = {
       0: '000000000000000000000000000000',
       10: '000000000000000000000000000000',

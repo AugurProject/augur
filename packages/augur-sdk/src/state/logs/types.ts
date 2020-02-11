@@ -447,6 +447,7 @@ export interface MarketData extends Log {
   feeDivisor: number;
   hasRecentlyDepletedLiquidity: boolean;
   lastPassingLiquidityCheck: number;
+  liquidityDirty: boolean;
   finalizationBlockNumber: string;
   finalizationTime: UnixTimestamp;
   winningPayoutNumerators: string[];
