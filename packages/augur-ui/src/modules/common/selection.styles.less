@@ -83,7 +83,7 @@
         }
 
         &:not(:last-of-type)::before {
-          background: fade(var(--color-secondary-action-outline), 50%);
+          background: var(--color-secondary-action-outline-50);
           bottom: 0;
           content: "";
           height: @size-1;
@@ -348,7 +348,7 @@
 
     &.Selected,
     &:hover {
-      background: fade(var(--color-secondary-action-outline), 30%);
+      background: var(--color-secondary-action-outline-30);
       border-right: @size-1 solid var(--color-secondary-action-outline);
 
       > button {
