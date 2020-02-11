@@ -109,21 +109,21 @@
   padding: @size-5;
 
   &.Error {
-    background: fade(@color-error, 20%);
-    border-bottom: @size-2 solid @color-error;
-    border-left: @size-4 solid @color-error;
-    border-right: @size-2 solid @color-error;
-    border-top: @size-2 solid @color-error;
+    background: var(--color-error-20);
+    border-bottom: @size-2 solid var(--color-error);
+    border-left: @size-4 solid var(--color-error);
+    border-right: @size-2 solid var(--color-error);
+    border-top: @size-2 solid var(--color-error);
    
 
     > svg {
       > circle {
-        stroke: @color-error;
+        stroke: var(--color-error);
       }
 
       > rect,
       > path {
-        fill: @color-error;
+        fill: var(--color-error);
       }
     }
 

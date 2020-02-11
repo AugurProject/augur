@@ -71,7 +71,7 @@
   }
 
   &.Alert {
-    color: @color-error;
+    color: var(--color-error);
   }
 
   > label {
@@ -316,7 +316,7 @@
     padding-left: @size-8;
 
     &.isAccented {
-      color: @color-error;
+      color: var(--color-error);
     }
   }
 
@@ -494,8 +494,8 @@ div.LinearPropertyViewTransaction {
   align-items: center;
 
   &.MarketScalarLabel {
-    background: fade(@color-scalar, 20%);
-    color: @color-scalar;
+    background: var(--color-scalar-20);
+    color: var(--color-scalar);
 
     > svg {
       fill: none;
@@ -504,13 +504,13 @@ div.LinearPropertyViewTransaction {
       width: @size-20;
 
       > rect {
-        fill: @color-scalar;
+        fill: var(--color-scalar);
         height: 1.5px;
         width: @size-20;
       }
 
       > path {
-        fill: @color-scalar;
+        fill: var(--color-scalar);
       }
     }
   }
@@ -612,7 +612,7 @@ div.LinearPropertyViewTransaction {
     > span {
       .mono-10-medium;
 
-      background: @color-error;
+      background: var(--color-error);
     }
   }
 }

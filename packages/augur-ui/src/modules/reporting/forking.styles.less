@@ -1,9 +1,9 @@
 @import (reference) '~assets/styles/shared';
 
 .ForkingLabel {
-  background: fade(@color-error, 20%);
+  background: var(--color-error-20);
   border-radius: @border-radius-default;
-  border: 1px solid @color-error;
+  border: 1px solid var(--color-error);
   border-left-width: @size-4;
   display: grid;
   grid-template-columns: auto auto auto;
@@ -21,17 +21,17 @@
     width: @size-16;
 
     > circle {
-      fill: fade(@color-error, 20%);
+      fill: var(--color-error-20);
       opacity: 1;
-      stroke: @color-error;
+      stroke: var(--color-error);
     }
 
     > rect {
-      fill: @color-error;
+      fill: var(--color-error);
     }
 
     > path {
-      fill: @color-error;
+      fill: var(--color-error);
     }
   }
 
@@ -64,7 +64,7 @@
 
   > div:last-of-type {
     align-items: center;
-    border: 1px solid @color-error;
+    border: 1px solid var(--color-error);
     display: flex;
     margin: @size-16;
     padding: @size-16;
@@ -80,7 +80,7 @@
       > span:nth-of-type(2) {
         .text-14;
 
-        color: @color-error;
+        color: var(--color-error);
         line-height: @size-19;
       }
     }
