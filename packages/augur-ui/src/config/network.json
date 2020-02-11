@@ -7,6 +7,7 @@
       "blockRetention": 100,
       "connectionTimeout": 60000
     },
+    "gnosis-enabled": true,
     "gnosis-relay": "http://localhost:8888/api/",
     "0x-endpoint": "ws://localhost:60557",
     "0x-mesh": {
@@ -87,6 +88,7 @@
       "blockRetention": 100,
       "connectionTimeout": 60000
     },
+    "gnosis-enabled": true,
     "gnosis-relay": "https://gnosis.kovan.augur.net/api/",
     "0x-eth-node": "https://eth-kovan.alchemyapi.io/jsonrpc/wk8iQPITIJU1L28NfAyVETjeiCwjBvNB",
     "universe": null,
@@ -149,6 +151,7 @@
       "blockRetention": 100,
       "connectionTimeout": 60000
     },
+    "gnosis-enabled": true,
     "gnosis-relay": "https://safe-relay.gnosis.pm/",
     "universe": null,
     "debug": {

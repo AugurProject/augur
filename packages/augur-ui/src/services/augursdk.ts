@@ -50,7 +50,7 @@ export class SDK {
         rpcConcurrency: 40
       },
       gnosis: {
-        enabled: true,
+        enabled: env['gnosis-enabled'],
         http: env['gnosis-relay']
       },
       zeroX: {
