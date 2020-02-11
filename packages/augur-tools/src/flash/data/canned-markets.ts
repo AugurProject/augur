@@ -31,10 +31,6 @@ export const singleOutcomeBids: AskBid[] = [
   { shares: '300.00', price: '0.19' },
 ];
 const yesNoOrderBook: OrderBook = {
-  0: {
-    buy: singleOutcomeBids,
-    sell: singleOutcomeAsks,
-  },
   1: {
     buy: singleOutcomeBids,
     sell: singleOutcomeAsks,

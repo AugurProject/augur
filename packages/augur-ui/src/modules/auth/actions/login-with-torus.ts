@@ -9,6 +9,7 @@ import { ACCOUNT_TYPES, NETWORK_IDS } from 'modules/common/constants';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { windowRef } from 'utils/window-ref';
 import { LoginAccount } from 'modules/types';
+import { AppState } from 'store';
 
 const getTorusNetwork = (networkId): string => {
   if (networkId === NETWORK_IDS.Mainnet) {
@@ -21,8 +22,10 @@ const getTorusNetwork = (networkId): string => {
 };
 
 export const loginWithTorus = () => async (
-  dispatch: ThunkDispatch<void, any, Action>
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState,
 ) => {
+  const useGnosis = getState().env['gnosis-enabled'];
   const networkId = getNetworkId();
   const torusNetwork = getTorusNetwork(networkId);
   let accountObject: Partial<LoginAccount> = {};
@@ -78,10 +81,10 @@ export const loginWithTorus = () => async (
       );
       accountObject.meta.email = userInfo.email;
       accountObject.meta.profileImage = userInfo.profileImage;
-      dispatch(updateSdk(accountObject, undefined));
+      dispatch(updateSdk(accountObject, undefined, useGnosis));
     } catch (error) {
       // User denied request
-      dispatch(updateSdk(accountObject, undefined));
+      dispatch(updateSdk(accountObject, undefined, useGnosis));
     }
   } else {
     throw Error('Network currently not supported with Torus');

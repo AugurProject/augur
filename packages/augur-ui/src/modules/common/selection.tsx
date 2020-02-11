@@ -47,6 +47,7 @@ interface DropdownState {
 interface SelectionOption {
   label: string;
   id: number;
+  subLabel?: string;
 }
 
 interface PillSelectionProps {
@@ -356,8 +357,8 @@ export class StaticLabelDropdown extends Dropdown {
 export const PillSelection = ({
   options,
   onChange,
-  defaultSelection = 0
-}:PillSelectionProps) => {
+  defaultSelection = 0,
+}: PillSelectionProps) => {
   const [selected, setSelected] = useState(defaultSelection);
   const buttonSelect = (option: SelectionOption) => {
     if (option.id !== selected) {
@@ -373,7 +374,9 @@ export const PillSelection = ({
       })}
       key={option.label}
     >
-      <button onClick={() => buttonSelect(option)}>{option.label}</button>
+      <button onClick={() => buttonSelect(option)}>
+        {option.label} {option.subLabel && <span>{option.subLabel}</span>}
+      </button>
     </li>
   );
 

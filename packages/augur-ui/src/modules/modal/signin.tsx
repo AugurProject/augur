@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import {
   PrimarySignInButton,
   SecondarySignInButton,
@@ -38,18 +38,6 @@ export const SignIn = (props: LoginProps) => {
   } = props;
 
   const LOGIN_OR_SIGNUP = isLogin ? 'Login' : 'Signup';
-
-  const [isGnosis, setIsGnosis] = useState(
-    Boolean(window.localStorage.getItem('isGnosis'))
-  );
-
-  useEffect(() => {
-    if (isGnosis) {
-      window.localStorage.setItem('isGnosis', 'true');
-    } else {
-      window.localStorage.removeItem('isGnosis');
-    }
-  }, [isGnosis]);
 
   const parimaryButtonsToShow = connectMethods
     .filter(method => !method.hidden)
@@ -106,14 +94,6 @@ export const SignIn = (props: LoginProps) => {
           <span onClick={() => connectModal(isLogin ? 'login' : 'signup')}>
             Connect
           </span>
-        </div>
-
-        <div
-          title='Gnosis safe is under development'
-          onClick={() => setIsGnosis(!isGnosis)}
-        >
-          Use Gnosis Safe ⚠️
-          <input type='checkbox' readOnly checked={isGnosis ? true : false} />
         </div>
       </footer>
     </div>

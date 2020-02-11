@@ -3,7 +3,6 @@ import {
   BUY, INVALID_OUTCOME_ID,
 } from "modules/common/constants";
 import logError from "utils/log-error";
-import noop from "utils/noop";
 import { AppState } from "store";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
@@ -20,7 +19,6 @@ export const placeMarketTrade = ({
   tradeInProgress,
   doNotCreateOrders,
   callback = logError,
-  onComplete = noop,
 }: any) => async (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   if (!marketId) return null;
   const { marketInfos, loginAccount, blockchain } = getState();
@@ -81,7 +79,7 @@ export const placeMarketTrade = ({
     .catch((err) => {
       console.log(err);
       dispatch(
-        updatePendingOrderStatus(tradeGroupId, marketId, TXEventName.Failure, '0')
+        updatePendingOrderStatus(tradeGroupId, marketId, TXEventName.Failure, null)
       );
       callback(err, null)
     });

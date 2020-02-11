@@ -14,12 +14,19 @@ import {
 } from 'modules/auth/actions/transfer-funds';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
+import { totalTradingBalance } from 'modules/auth/selectors/login-account';
 
-const mapStateToProps = (state: AppState) => ({
-  modal: state.modal,
-  loginAccount: state.loginAccount,
-  Gnosis_ENABLED: state.appStatus.gnosisEnabled,
-  ethToDaiRate: state.appStatus.ethToDaiRate,
+const mapStateToProps = (state: AppState) => {
+  const { loginAccount, appStatus, modal } = state;
+  const balances = loginAccount.balances;
+  balances.dai = totalTradingBalance(loginAccount).toNumber();
+
+  return {
+  account: loginAccount.address,
+  modal,
+  balances,
+  Gnosis_ENABLED: appStatus.gnosisEnabled,
+  ethToDaiRate: appStatus.ethToDaiRate,
   gasPrice: getGasPrice(state),
   fallBackGasCosts: {
     eth: formatEtherEstimate(
@@ -44,7 +51,8 @@ const mapStateToProps = (state: AppState) => ({
       )
     ),
   },
-});
+}
+};
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
@@ -60,7 +68,8 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   fallBackGasCosts: sP.fallBackGasCosts,
   Gnosis_ENABLED: sP.Gnosis_ENABLED,
   ethToDaiRate: sP.ethToDaiRate,
-  loginAccount: sP.loginAccount,
+  balances: sP.balances,
+  account: sP.account,
   gasPrice: sP.gasPrice,
   closeAction: () => dP.closeModal(),
   transferFundsGasEstimate: (amount: string, asset: string, to: string) => dP.transferFundsGasEstimate(amount, asset, to),

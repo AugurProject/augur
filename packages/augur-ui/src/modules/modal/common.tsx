@@ -11,6 +11,7 @@ import {
   DaiLogoIcon,
   EthIcon,
   ViewIcon,
+  helpIcon,
 } from 'modules/common/icons';
 import {
   DefaultButtonProps,
@@ -26,10 +27,13 @@ import {
   ConfirmedLabel,
 } from 'modules/common/labels';
 import Styles from 'modules/modal/modal.styles.less';
-import { PENDING, SUCCESS, DAI, FAILURE } from 'modules/common/constants';
-import { LinkContent } from 'modules/types';
-import { generateDaiTooltip } from 'modules/modal/add-funds';
+import { PENDING, SUCCESS, DAI, FAILURE, ACCOUNT_TYPES, ETH } from 'modules/common/constants';
+import { LinkContent, LoginAccount } from 'modules/types';
 import { DismissableNotice, DISMISSABLE_NOTICE_BUTTON_TYPES } from 'modules/reporting/common';
+import { toChecksumAddress } from 'ethereumjs-util';
+import TooltipStyles from 'modules/common/tooltip.styles.less';
+import ReactTooltip from 'react-tooltip';
+import { BigNumber } from 'utils/create-big-number';
 
 export interface TitleProps {
   title: string;
@@ -682,3 +686,226 @@ export class CheckboxCTA extends Component<CheckboxCTAProps, CheckboxCTAState> {
     );
   }
 }
+
+
+interface CreditCardProps {
+  accountMeta: LoginAccount['meta'];
+  walletAddress: string;
+  addFundsTorus: Function,
+  addFundsFortmatic: Function,
+  fundTypeLabel: string;
+  fundTypeToUse: string;
+  validateAndSet: Function;
+  BUY_MIN: number;
+  BUY_MAX: number;
+  amountToBuy: BigNumber;
+  isAmountValid: boolean;
+}
+
+
+export const CreditCard = ({
+  accountMeta,
+  walletAddress,
+  addFundsTorus,
+  addFundsFortmatic,
+  fundTypeLabel,
+  fundTypeToUse,
+  validateAndSet,
+  BUY_MIN,
+  BUY_MAX,
+  amountToBuy,
+  isAmountValid,
+}: CreditCardProps) => (
+  <>
+    <h1>Credit/debit card</h1>
+    <h2>
+      Add {fundTypeLabel} {fundTypeToUse === DAI ? generateDaiTooltip() : null}{' '}
+      instantly
+    </h2>
+
+    <h3>Amount</h3>
+    <TextInput
+      placeholder='0'
+      onChange={value => validateAndSet(Number(value))}
+      value={String(amountToBuy)}
+      innerLabel={fundTypeToUse === DAI ? 'USD' : fundTypeToUse}
+    />
+    {amountToBuy.gt(0) && !isAmountValid && (
+      <div className={Styles.AddFundsError}>
+        Sorry, amount must be between ${BUY_MIN} and ${BUY_MAX}.
+      </div>
+    )}
+
+    {accountMeta.accountType === ACCOUNT_TYPES.PORTIS && (
+      <a href='https://wallet.portis.io/buy/' target='_blank'>
+        <PrimaryButton
+          action={() => null}
+          text={`Buy with ${accountMeta.accountType}`}
+        />
+      </a>
+    )}
+    {accountMeta.accountType === ACCOUNT_TYPES.TORUS && (
+      <PrimaryButton
+        disabled={!isAmountValid}
+        action={() => addFundsTorus(amountToBuy)}
+        text={`Buy with ${accountMeta.accountType}`}
+      />
+    )}
+    {accountMeta.accountType === ACCOUNT_TYPES.FORTMATIC && (
+      <PrimaryButton
+        disabled={!isAmountValid}
+        action={() =>
+          addFundsFortmatic(
+            amountToBuy,
+            fundTypeToUse,
+            toChecksumAddress(walletAddress)
+          )
+        }
+        text={`Buy with ${accountMeta.accountType}`}
+      />
+    )}
+    <h4>
+      {[
+        ACCOUNT_TYPES.PORTIS,
+        ACCOUNT_TYPES.TORUS,
+        ACCOUNT_TYPES.FORTMATIC,
+      ].includes(accountMeta.accountType) && (
+        <div>
+          Buy {fundTypeLabel} with our secure payments partner,{' '}
+          {accountMeta.accountType}. Funds will appear in your Augur account
+          when payment finalizes.
+        </div>
+      )}
+    </h4>
+  </>
+);
+
+interface CoinbaseProps {
+  walletAddress: string;
+  fundTypeLabel: string;
+  fundTypeToUse: string;
+  accountLabel: string;
+}
+
+
+export const Coinbase = ({
+  fundTypeToUse,
+  fundTypeLabel,
+  walletAddress,
+  accountLabel,
+}: CoinbaseProps) => (
+  <>
+    <h1>Coinbase</h1>
+    <h2>
+      Add{' '}
+      {fundTypeToUse === DAI ? (
+        <>
+          {fundTypeLabel} {generateDaiTooltip()}
+        </>
+      ) : (
+        fundTypeLabel
+      )}{' '}
+      using a Coinbase account
+    </h2>
+    <ol>
+      <li>
+        Login to your account at{' '}
+        <a href='https://www.coinbase.com' target='blank'>
+          www.coinbase.com
+        </a>
+      </li>
+      <li>Buy the cryptocurrency {fundTypeLabel}</li>
+      <li>
+        Send the {fundTypeLabel} to your {accountLabel} account address
+      </li>
+    </ol>
+    <h3>{accountLabel} account address</h3>
+    <AccountAddressDisplay
+      copyable
+      address={toChecksumAddress(walletAddress)}
+    />
+    {fundTypeToUse !== ETH && (
+      <ExternalLinkButton
+        URL='https://docs.augur.net/'
+        label={'Learn about your address'}
+      />
+    )}
+  </>
+);
+
+interface TransferProps {
+  walletAddress: string;
+  fundTypeLabel: string;
+  fundTypeToUse: string;
+  accountLabel: string;
+}
+
+export const Transfer = ({
+  fundTypeToUse,
+  fundTypeLabel,
+  walletAddress,
+  accountLabel,
+}: TransferProps) => (
+  <>
+    <h1>Transfer</h1>
+    <h2>
+      Send {fundTypeToUse === ETH ? fundTypeLabel : 'funds'} to your{' '}
+      {accountLabel} account address
+    </h2>
+    <ol>
+      <li>
+        Buy{' '}
+        {fundTypeToUse === DAI ? (
+          <>
+            {fundTypeLabel} {generateDaiTooltip()}
+          </>
+        ) : (
+          fundTypeLabel
+        )}{' '}
+        using an app or exchange (see our list of{' '}
+        <a target='blank' href='https://docs.augur.net/'>
+          popular ways to buy {fundTypeLabel})
+        </a>
+      </li>
+      <li>
+        Transfer the {fundTypeLabel} to your {accountLabel} account address
+      </li>
+    </ol>
+    <h3>{accountLabel} account address</h3>
+    <AccountAddressDisplay
+      copyable
+      address={toChecksumAddress(walletAddress)}
+    />
+    {fundTypeToUse !== ETH && (
+      <ExternalLinkButton
+        URL='https://docs.augur.net/'
+        label={'Learn about your address'}
+      />
+    )}
+  </>
+);
+
+export const generateDaiTooltip = (
+  tipText = 'Augur requires deposits in DAI ($), a currency pegged 1 to 1 to the US Dollar.'
+) => {
+  return (
+    <span className={Styles.AddFundsToolTip}>
+      <label
+        className={classNames(TooltipStyles.TooltipHint)}
+        data-tip
+        data-for='tooltip--confirm'
+      >
+        {helpIcon}
+      </label>
+      <ReactTooltip
+        id='tooltip--confirm'
+        className={TooltipStyles.Tooltip}
+        effect='solid'
+        place='top'
+        type='light'
+      >
+        <p>{tipText}</p>
+      </ReactTooltip>
+    </span>
+  );
+};

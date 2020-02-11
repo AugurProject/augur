@@ -214,7 +214,7 @@ export class ZeroX {
         response = undefined;
       }
     }
-    if (response.ordersInfos.length < 1) {
+    if (response.ordersInfos.length < 1 && tries > 0) {
       console.log("Mesh retrying to fetch orders");
       await sleep(tries < 12 ? 2000 : 250);
       response = await this.getMeshOrders(tries - 1);
@@ -275,7 +275,7 @@ export class ZeroX {
 
     // No orders available to take. Maybe make some new ones
     if (numOrders === 0 && !params.doNotCreateOrders) {
-      await this.placeOnChainOrder(params);
+      await this.placeOnChainOrders([params]);
       return;
     }
 
@@ -312,14 +312,25 @@ export class ZeroX {
     }
   }
 
-  async placeOrder(params: ZeroXPlaceTradeDisplayParams): Promise<string> {
-    const onChainTradeParams = this.getOnChainTradeParams(params);
-    return this.placeOnChainOrder(onChainTradeParams);
+  async placeOrder(params: ZeroXPlaceTradeDisplayParams): Promise<void> {
+    await this.placeOrders([params]);
   }
 
-  async placeOnChainOrder(params: ZeroXPlaceTradeParams): Promise<string> {
-    const { order, hash } = await this.createZeroXOrder(params);
-    const validation = await this.addOrder(order);
+  async placeOrders(orders: ZeroXPlaceTradeDisplayParams[]): Promise<void> {
+    const onChainOrders = [];
+    for (let params of orders) {
+      onChainOrders.push(this.getOnChainTradeParams(params));
+    }
+    await this.placeOnChainOrders(onChainOrders);
+  }
+
+  async placeOnChainOrders(orders: ZeroXPlaceTradeParams[]): Promise<void> {
+    const zeroXOrders = [];
+    for (let params of orders) {
+      const result = await this.createZeroXOrder(params);
+      zeroXOrders.push(result.order);
+    }
+    const validation = await this.addOrders(zeroXOrders);
     if (validation.rejected.length > 0) {
       console.log(JSON.stringify(validation.rejected, null, 2));
       throw Error(
@@ -328,8 +339,6 @@ export class ZeroX {
         )}`
       );
     }
-
-    return hash;
   }
 
   async createZeroXOrder(params: ZeroXPlaceTradeParams) {
@@ -428,16 +437,16 @@ export class ZeroX {
     return `0x${v.toString(16)}${r.slice(2)}${s.slice(2)}${signatureType}`;
   }
 
-  async addOrder(order) {
+  async addOrders(orders) {
     try {
       if (this._mesh) {
-        return this._mesh.addOrdersAsync([order]);
+        return this._mesh.addOrdersAsync(orders);
       } else {
-        return this._rpc.addOrdersAsync([order]);
+        return this._rpc.addOrdersAsync(orders);
       }
     } catch (error) {
       console.log(error);
-      return setTimeout(this.addOrder(order), 5000);
+      return setTimeout(this.addOrders(orders), 5000);
     }
   }
 

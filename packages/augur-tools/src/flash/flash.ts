@@ -28,6 +28,7 @@ export interface FlashArguments {
 
 export interface FlashScript {
   name: string;
+  ignoreNetwork?: boolean;
   description?: string;
   options?: FlashOption[];
   call(this: FlashSession, args: FlashArguments): Promise<any>;
@@ -115,7 +116,7 @@ export class FlashSession {
     wireUpSdk: boolean|null = null,
     approveCentralAuthority = true,
     accountAddress: string|null = null,
-    meshEndpoint: string|null = null,
+    useZerox = false,
     useGnosis = false
   ): Promise<ContractAPI> {
     if (typeof this.contractAddresses === 'undefined') {
@@ -125,8 +126,6 @@ export class FlashSession {
     if (this.noProvider()) {
       throw new Error('ERROR: No provider');
     }
-
-    network = network || this.network;
 
     const config: SDKConfiguration = {
       networkId: (await this.provider.getNetworkId()) as NetworkId,
@@ -138,12 +137,12 @@ export class FlashSession {
       },
       gnosis: {
         enabled: useGnosis,
-        http: 'http://localhost:8888/api/'
+        http: useGnosis ? network.gnosisRelayerUrl : undefined
       },
       zeroX: {
         rpc: {
-          enabled: !!meshEndpoint,
-          ws: meshEndpoint
+          enabled: useZerox,
+          ws: useZerox ? network.zeroxEndpoint : undefined
         },
         mesh: {
           enabled: false
@@ -154,13 +153,20 @@ export class FlashSession {
       },
       addresses: this.contractAddresses,
     };
-
+    console.log('using network', config.networkId);
+    if (config.zeroX && config.zeroX.rpc) {
+      console.log('zeroX', config.zeroX.rpc.enabled, config.zeroX.rpc.ws);
+    }
+    if (config.gnosis && config.gnosis) {
+      console.log('gnosis', config.gnosis.enabled, config.gnosis.http);
+    }
     // Initialize the user if this is the first time we are being called. This will create the provider and all of that jazz.
     if (!this.user) {
 
       // Get an actual account for the provided public address. This also
       // handles the case where none is passed in, in which case it will use
       // the default account (0)
+      console.log(`using account ${accountAddress}`);
       const account = this.getAccount(accountAddress);
 
       // Within flash we want to use an account with a private key as the signer
@@ -179,7 +185,8 @@ export class FlashSession {
       // IF we want this flash client to use a safe associated with the past in
       // account, configure it at this point.
       if (config.gnosis.enabled) {
-        const safe = await this.user.fundSafe();
+        const safe = await this.user.getOrCreateSafe();
+        await this.user.faucetOnce(new BigNumber(1e21), safe);
         const safeStatus = await this.user.getSafeStatus(safe);
         console.log(`Safe ${safe}: ${safeStatus}`);
         this.user.augur.setGasPrice(new BigNumber(90000));

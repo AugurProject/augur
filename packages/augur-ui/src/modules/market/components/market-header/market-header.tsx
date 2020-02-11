@@ -293,7 +293,7 @@ export default class MarketHeader extends Component<
                     this.setState({ showCopied: true }, () => {
                       setTimeout(
                         () => this.setState({ showCopied: false }),
-                        2000
+                        4000
                       );
                     });
                   }}

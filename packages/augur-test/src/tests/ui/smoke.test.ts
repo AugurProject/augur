@@ -53,7 +53,7 @@ describe.skip('Browser testing', () => {
     addScripts(flash);
     addGanacheScripts(flash);
     await flash.call("ganache", { "internal": false, "port": "8545" });
-    await flash.call("load-seed-file", { "use": true, "write_artifacts": true });
+    await flash.call("load-seed-file", { use: true, writeArtifacts: true });
     await flash.call(
       "create-reasonable-categorical-market",
       { "outcomes": "music,dance,poetry,oration,drama" });

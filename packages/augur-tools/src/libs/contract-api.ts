@@ -235,8 +235,12 @@ export class ContractAPI {
     await this.augur.contracts.fillOrder.publicFillOrder(orderId, numShares, formatBytes32String(tradeGroupId), formatBytes32String(''));
   }
 
-  async placeZeroXOrder(params: ZeroXPlaceTradeDisplayParams): Promise<string> {
-    return this.augur.zeroX.placeOrder(params);
+  async placeZeroXOrder(params: ZeroXPlaceTradeDisplayParams): Promise<void> {
+    await this.augur.zeroX.placeOrder(params);
+  }
+
+  async placeZeroXOrders(params: ZeroXPlaceTradeDisplayParams[]): Promise<void> {
+    await this.augur.zeroX.placeOrders(params);
   }
 
   async placeZeroXTrade(params: ZeroXPlaceTradeDisplayParams): Promise<void> {
@@ -562,6 +566,11 @@ export class ContractAPI {
       await this.augur.contracts.cashFaucet.faucet(attoCash, { sender: account });
       balance = await this.getCashBalance(account);
     }
+  }
+
+  async faucetOnce(attoCash: BigNumber, account?: string): Promise<void> {
+    account = account ||  await this.augur.getAccount();
+    await this.augur.contracts.cashFaucet.faucet(attoCash, { sender: account });
   }
 
   async repFaucet(attoRep: BigNumber): Promise<void> {
