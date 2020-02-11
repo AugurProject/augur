@@ -2,7 +2,7 @@
 
 // Used in Betting UI
 .AccountInfo {
-  border: 1px solid @color-secondary-action-outline;
+  border: @size-1 solid @color-secondary-action-outline;
   box-sizing: border-box;
   border-radius: @size-3;
   min-width: @account-details-menu-width;
@@ -22,7 +22,7 @@
 .AccountFunds  {
   align-items: center;
   background: @color-module-background;
-  border-bottom: 1px solid @color-dark-grey;
+  border-bottom: @size-1 solid @color-dark-grey;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -61,6 +61,10 @@
 .AccountFunds {
   background: @color-table-header;
 
+  @media @breakpoint-mobile {
+    background: @color-module-background;
+  }
+
   > div:first-of-type {
     .mono-11-bold;
 
@@ -68,6 +72,10 @@
     color: @color-primary-text;
     display: flex;
     text-transform: uppercase;
+
+    @media @breakpoint-mobile {
+      .mono-12-bold;
+    }
 
     > svg {
       fill: @color-primary-text;
@@ -81,6 +89,10 @@
     .mono-11-bold;
 
     color: @color-primary-text;
+
+    @media @breakpoint-mobile {
+      .mono-12-medium;
+    }
   }
 }
 
@@ -184,15 +196,15 @@
 
   @media @breakpoint-mobile {
     background: @color-module-background;
-    border-bottom: 1px solid @color-dark-grey;
+    border-bottom: @size-1 solid @color-dark-grey;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     flex-direction: row;
     padding: @size-16 @size-12;
     width: 100%;
 
     > button {
-      width: 100%;
+      width: @size-85;
     }
   }
 }

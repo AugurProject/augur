@@ -40,7 +40,7 @@ h6 {
 }
 
 .App--blur {
-  filter: blur(2px);
+  filter: blur(@size-2);
 }
 
 .Main {
@@ -71,7 +71,7 @@ h6 {
   display: flex;
   justify-content: center;
   align-items: center;
-  border-bottom: 1px solid @color-secondary-action-outline;
+  border-bottom: @size-1 solid @color-secondary-action-outline;
 
   > span {
     .text-12-bold;
@@ -109,7 +109,7 @@ h6 {
 }
 
 .Main__wrapMarkets {
-  grid-template-columns: minmax(auto, 250px) auto;
+  grid-template-columns: minmax(auto, @size-250) auto;
 
   @media @breakpoint-mobile {
     grid-template-columns: none;
@@ -163,7 +163,7 @@ h6 {
 
 .SideBar {
   background: @color-module-background;
-  border-right: 0.0625rem solid @color-dark-grey;
+  border-right: @size-1 solid @color-dark-grey;
 
   @media @breakpoint-mobile {
     padding-top: 0;
@@ -182,13 +182,13 @@ h6 {
 .SideBar__mobile-bars {
   top: 0;
   left: 0;
-  border-bottom: 1px solid @color-module-background;
+  border-bottom: @size-1 solid @color-module-background;
   display: none;
   height: @top-bar-height-mobile;
   outline: none;
-  padding: 1rem;
+  padding: @size-16;
   position: fixed;
-  width: 3.125rem;
+  width: @size-50;
   z-index: @mask-modal;
 
   svg {
@@ -233,7 +233,13 @@ svg.SideBar__mobile-bars-unseen {
     z-index: @mask-modal;
 
     &.SideNavOpen {
-      opacity: 0.1;
+      background: @color-dark-grey;
+      opacity: 0.9;
+      > header {
+        > div:last-of-type {
+          opacity: 0.1;
+        }
+      }
     }
   }
 }
