@@ -34,6 +34,7 @@ import ReleasableRepNotice from 'modules/reporting/containers/releasable-rep-not
 import { ExplainerBlock } from 'modules/create-market/components/common';
 import { EventDetailsContent } from 'modules/create-market/constants';
 import CoreProperties from 'modules/market/components/core-properties/core-properties';
+import MarkdownRenderer from 'modules/common/markdown-renderer';
 
 interface ModalReportingProps {
   closeAction: Function;
@@ -293,10 +294,7 @@ export default class ModalReporting extends Component<
       description,
       marketType,
       details,
-      creationTimeFormatted,
-      endTimeFormatted,
       isTemplate,
-      id
     } = market;
     const {
       explainerBlockTitle,
@@ -325,6 +323,12 @@ export default class ModalReporting extends Component<
               {isTemplate && <TemplateShield market={market} />}
             </section>
             <span>{description}</span>
+            {details && details.length > 0 && (
+              <div className={Styles.Details}>
+                <h2>Resolution Details</h2>
+                <MarkdownRenderer text={details} hideLabel />
+              </div>
+            )}
             <CoreProperties
               market={market}
               reportingBarShowing={false}
