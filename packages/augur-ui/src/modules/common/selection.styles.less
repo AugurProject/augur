@@ -320,13 +320,25 @@
     border-bottom-left-radius: @size-3;
   }
 
-  .generate-indexed-color-outcome-classes({
+  .generate-trading-indexed-color-outcome-classes({
     &.showColor-@{newIndex} {
       &::before {
         background-color: @value;
       };
     }
   });
+}
+
+:root[theme="BETTING"] {
+  .showColor {
+    .generate-betting-indexed-color-outcome-classes({
+      &.showColor-@{newIndex} {
+        &::before {
+          background-color: @value;
+        };
+      }
+    });
+  }
 }
 
 .PillSelection {

@@ -41,7 +41,7 @@
     	}
 	}
 
-	.generate-indexed-color-outcome-classes({
+	.generate-trading-indexed-color-outcome-classes({
 	    &.Outcome-@{newIndex} {
 	    	> div:last-of-type {
 	    		> span {
@@ -64,6 +64,17 @@
 	}
 }
 
+:root[theme="BETTING"] {
+  .Outcome {
+    .generate-betting-indexed-color-outcome-classes({
+      &.showColor-@{newIndex} {
+        &::before {
+          background-color: @value;
+        };
+      }
+    });
+  }
+}
 .DisputeOutcome {
 	.Outcome;
 
