@@ -130,13 +130,13 @@
     }
 
     .hovered_tooltip_div.bids {
-      border-color: fade(@color-positive, 30%);
-      border-right-color: @color-positive;
+      border-color: var(--color-positive-30);
+      border-right-color: var(--color-positive);
     }
 
     .hovered_tooltip_div.bids.flip {
-      border-left-color: @color-positive;
-      border-right-color: fade(@color-positive, 30%);
+      border-left-color: var(--color-positive);
+      border-right-color: var(--color-positive-30);
     }
 
     .hovered_tooltip_div.asks {
@@ -205,8 +205,8 @@
     }
 
     .bids {
-      color: @color-positive;
-      stroke: @color-positive;
+      color: var(--color-positive);
+      stroke: var(--color-positive);
     }
 
     #depth_range_bounds {
@@ -263,7 +263,7 @@
 
     .depth-line-bids {
       fill: none;
-      stroke: @color-positive;
+      stroke: var(--color-positive);
       stroke-width: @size-2;
     }
 
@@ -286,7 +286,7 @@
     }
 
     .stop-bottom-bid {
-      stop-color: @color-positive;
+      stop-color: var(--color-positive);
     }
 
     .filled-subtle-asks {
@@ -316,7 +316,7 @@
     .line .crosshair-bids {
       .dashline-normal;
 
-      stroke: @color-positive;
+      stroke: var(--color-positive);
     }
 
     .line .crosshair-asks {

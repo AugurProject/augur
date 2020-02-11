@@ -210,23 +210,23 @@
   .Button;
   .mono-12-semi-bold;
 
-  background: fade(@color-positive, 10%);
-  border-color: @color-positive;
+  background: var(--color-positive-10);
+  border-color: var(--color-positive);
   border-width: @size-2;
-  color: @color-positive;
+  color: var(--color-positive);
   height: @button-height-default;
   max-height: @button-height-default;
   text-transform: uppercase;
   width: 100%;
 
   &:disabled {
-    background: fade(@color-positive, 5%);
-    border-color: fade(@color-positive, 10%);
-    color: fade(@color-positive, 20%);
+    background: var(--color-positive-5);
+    border-color: var(--color-positive-10);
+    color: var(--color-positive-20);
   }
 
   &:hover:enabled {
-    background: fade(@color-positive, 20%);
+    background: var(--color-positive-20);
   }
 }
 

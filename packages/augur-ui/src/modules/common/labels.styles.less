@@ -661,7 +661,7 @@ span.PendingLabel {
   }
 
   &_positive {
-    color: @color-positive;
+    color: var(--color-positive);
   }
 
   &_negative {
@@ -696,11 +696,11 @@ span.PendingLabel {
 
   &_positive {
     > svg > path:nth-child(1) {
-      fill: @color-positive;
+      fill: var(--color-positive);
     }
 
     > svg > path:nth-child(2) {
-      stroke: @color-positive;
+      stroke: var(--color-positive);
     }
   }
 
@@ -747,7 +747,7 @@ span.PendingLabel {
 .PositionTypeLabel {
   .mono-9-bold;
 
-  color: @color-positive;
+  color: var(--color-positive);
   font-weight: bold;
   text-transform: uppercase;
 
