@@ -24,7 +24,7 @@
     .mono-9-bold;
 
     align-items: center;
-    background: @color-module-background;
+    background: var(--color-module-background);
     color: var(--color-primary-text);
     display: flex;
     flex-direction: row-reverse;
@@ -41,7 +41,7 @@
 
   // Open global chat window
   > div {
-    background-color: @color-module-background;
+    background-color: var(--color-module-background);
 
     // Header section
     > div:first-of-type {
@@ -68,9 +68,9 @@
       > span:nth-of-type(2) {
         .mono-9;
 
-        background: fade(@color-open, 15%);
+        background: var(--color-open-15);
         border-radius: 0.1875rem;
-        color: @color-open;
+        color: var(--color-open);
         padding: 0 1px;
       }
 

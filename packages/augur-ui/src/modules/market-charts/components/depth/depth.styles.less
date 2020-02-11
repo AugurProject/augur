@@ -31,7 +31,7 @@
 }
 
 .MarketOutcomeDepth__container {
-  background: @color-module-background;
+  background: var(--color-module-background);
   cursor: cell;
   flex: 1;
   max-height: @charts-max-height;
@@ -110,7 +110,7 @@
 
   :global {
     .hovered_tooltip_div {
-      background-color: @color-module-background;
+      background-color: var(--color-module-background);
       border: 1px solid var(--color-primary-text);
       border-radius: @border-radius-default 0 0 @border-radius-default;
       border-right-width: 2px;
@@ -130,23 +130,23 @@
     }
 
     .hovered_tooltip_div.bids {
-      border-color: fade(@color-positive, 30%);
-      border-right-color: @color-positive;
+      border-color: var(--color-positive-30);
+      border-right-color: var(--color-positive);
     }
 
     .hovered_tooltip_div.bids.flip {
-      border-left-color: @color-positive;
-      border-right-color: fade(@color-positive, 30%);
+      border-left-color: var(--color-positive);
+      border-right-color: var(--color-positive-30);
     }
 
     .hovered_tooltip_div.asks {
-      border-color: fade(@color-negative, 30%);
-      border-right-color: @color-negative;
+      border-color: var(--color-negative-30);
+      border-right-color: var(--color-negative);
     }
 
     .hovered_tooltip_div.asks.flip {
-      border-left-color: @color-negative;
-      border-right-color: fade(@color-negative, 30%);
+      border-left-color: var(--color-negative);
+      border-right-color:var(--color-negative-30);
     }
 
     .hovered_tooltip_labels {
@@ -200,13 +200,13 @@
     }
 
     .asks {
-      color: @color-negative;
-      stroke: @color-negative;
+      color: var(--color-negative);
+      stroke: var(--color-negative);
     }
 
     .bids {
-      color: @color-positive;
-      stroke: @color-positive;
+      color: var(--color-positive);
+      stroke: var(--color-positive);
     }
 
     #depth_range_bounds {
@@ -263,13 +263,13 @@
 
     .depth-line-bids {
       fill: none;
-      stroke: @color-positive;
+      stroke: var(--color-positive);
       stroke-width: @size-2;
     }
 
     .depth-line-asks {
       fill: none;
-      stroke: @color-negative;
+      stroke: var(--color-negative);
       stroke-width: @size-2;
     }
 
@@ -282,11 +282,11 @@
     }
 
     .stop-bottom-ask {
-      stop-color: @color-negative;
+      stop-color: var(--color-negative);
     }
 
     .stop-bottom-bid {
-      stop-color: @color-positive;
+      stop-color: var(--color-positive);
     }
 
     .filled-subtle-asks {
@@ -316,13 +316,13 @@
     .line .crosshair-bids {
       .dashline-normal;
 
-      stroke: @color-positive;
+      stroke: var(--color-positive);
     }
 
     .line .crosshair-asks {
       .dashline-normal;
 
-      stroke: @color-negative;
+      stroke: var(--color-negative);
     }
 
     .overlay {

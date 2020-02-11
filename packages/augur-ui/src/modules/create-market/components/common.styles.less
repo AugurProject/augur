@@ -336,7 +336,7 @@
 
 .ExplainerBlock {
   border: 1px solid @color-dark-grey;
-  background: @color-module-background;
+  background: var(--color-module-background);
   border-radius: @border-radius-extra-rounded;
   padding: @size-16;
   margin-bottom: @size-24;
@@ -415,7 +415,7 @@
 .ContentBlock {
   flex-direction: column;
   display: flex;
-  background: @color-module-background;
+  background: var(--color-module-background);
   border-radius: @border-radius-extra-rounded;
   padding: @size-40;
   border: 1px solid @color-dark-grey;
@@ -431,7 +431,7 @@
   }
 
   &.Dark {
-    background: @color-module-background;
+    background: var(--color-module-background);
     padding: @size-24;
   }
 
@@ -503,7 +503,7 @@
       > span:nth-of-type(2) {
         .text-16-medium;
 
-        color: @color-positive;
+        color: var(--color-positive);
         margin-top: @size-4;
 
       }
@@ -535,7 +535,7 @@
     .text-14-medium;
 
     color: var(--color-primary-text);
-    background: @color-module-background;
+    background: var(--color-module-background);
     border: 1px solid @color-dark-grey;
     border-radius: @border-radius-default;
     line-height: @size-18;

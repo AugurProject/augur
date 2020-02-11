@@ -13,7 +13,7 @@
 .Container {
   .DefaultModalBorder;
 
-  background: @color-module-background;
+  background: var(--color-module-background);
   display: flex;
   flex-flow: column nowrap;
   max-height: 90vh;
@@ -151,7 +151,7 @@
     margin-top: @size-4;
 
     > a {
-      color: @color-primary-action;
+      color: var(--color-primary-action);
 
       > button {
         .text-12;
@@ -287,7 +287,7 @@ div.Onboarding {
 
   &.Bright {
     > h1 {
-      color: @color-reporting;
+      color: var(--color-reporting);
     }
   }
 
@@ -407,7 +407,7 @@ div.ButtonsRow:last-of-type {
   }
 
   > div:first-of-type {
-    background: @color-module-background;
+    background: var(--color-module-background);
     padding: @size-32;
 
     > div:first-of-type {
@@ -438,7 +438,7 @@ div.ButtonsRow:last-of-type {
   }
 
   > div:last-of-type {
-    background: @color-page-background;
+    background: var(--color-page-background);
     padding: @size-16 @size-16 @size-32 @size-32;
     flex-direction: column;
     justify-content: space-between;
@@ -526,7 +526,7 @@ div.ButtonsRow:last-of-type {
           }
 
           > a {
-            color: @color-primary-action;
+            color: var(--color-primary-action);
           }
 
           &::before {
@@ -684,7 +684,7 @@ div.ButtonsRow:last-of-type {
     width: 87px;
 
     &.selected {
-      border: 2px solid @color-primary-action;
+      border: 2px solid var(--color-primary-action);
     }
 
     > svg {
@@ -745,7 +745,7 @@ div.ButtonsRow:last-of-type {
     }
 
     > li > span {
-      color: @color-primary-action;
+      color: var(--color-primary-action);
       cursor: pointer;
     }
 
@@ -764,7 +764,7 @@ div.ButtonsRow:last-of-type {
 .Loading {
   .Container;
 
-  background: @color-module-background;
+  background: var(--color-module-background);
   box-shadow: 0px @size-4 @size-4 rgba(0, 0, 0, 0.25);
   max-width: @login-signup-modal-width;
   padding: 48px 56px;
@@ -838,7 +838,7 @@ div.ButtonsRow:last-of-type {
       margin-bottom: @size-5;
 
       > span {
-        color: @color-primary-action;
+        color: var(--color-primary-action);
         cursor: pointer;
       }
     }
@@ -855,7 +855,7 @@ div.ButtonsRow:last-of-type {
       color: var(--color-secondary-text);
 
       > span {
-        color: @color-primary-action;
+        color: var(--color-primary-action);
         cursor: pointer;
       }
     }
@@ -905,11 +905,11 @@ div.ButtonsRow:last-of-type {
 
   > button:first-of-type {
     margin: 0;
-    background: darken(@color-primary-action, 15%);
+    background: darken(var(--color-primary-action), 15%);
   }
 
   > button:first-of-type:hover {
-    background: darken(@color-primary-action, 5%);
+    background: darken(var(--color-primary-action), 5%);
   }
 
   > button:last-of-type {
@@ -1061,7 +1061,7 @@ div.ButtonsRow:last-of-type {
 
   > div {
     align-items: center;
-    background: @color-module-background;
+    background: var(--color-module-background);
     border: 1px solid @color-dark-grey;
     border-radius: @border-radius-default;
     height: 44px;
@@ -1100,7 +1100,7 @@ div.ButtonsRow:last-of-type {
   }
 
   > div {
-    background: @color-module-background;
+    background: var(--color-module-background);
     border: 1px solid @color-dark-grey;
     border-radius: @border-radius-default;
     height: 82px;
@@ -1151,11 +1151,11 @@ div.ButtonsRow:last-of-type {
 }
 
 .bid {
-  color: @color-positive;
+  color: var(--color-positive);
 }
 
 .ask {
-  color: @color-negative;
+  color: var(--color-negative);
 }
 
 .Orders {
@@ -1171,7 +1171,7 @@ div.ButtonsRow:last-of-type {
   > main {
     > .Orders__header {
       align-items: center;
-      background: @color-module-background;
+      background: var(--color-module-background);
       border-top: 1px solid @color-dark-grey;
       display: flex;
       flex-flow: row nowrap;
@@ -1223,7 +1223,7 @@ div.ButtonsRow:last-of-type {
 
       > div {
         align-items: center;
-        background: @color-module-background;
+        background: var(--color-module-background);
         border-top: 1px solid @color-dark-grey;
         color: var(--color-primary-text);
         display: flex;
@@ -1303,7 +1303,7 @@ div.ButtonsRow:last-of-type {
     }
 
     > div:first-of-type > div > div {
-      background: @color-module-background;
+      background: var(--color-module-background);
       min-height: unset;
     }
 
@@ -1507,7 +1507,7 @@ div.ButtonsRow:last-of-type {
 .WithdrawForm {
   .Message;
 
-  background: @color-module-background;
+  background: var(--color-module-background);
   border-radius: @border-radius-extra-rounded;
   max-width: 432px;
 
@@ -1784,15 +1784,15 @@ div.ButtonsRow:last-of-type {
       }
 
       &:hover:enabled {
-        background: fade(@color-primary-action, 5%);
+        background: var(--color-primary-action-5);
       }
 
       &:focus:enabled {
-        background: fade(@color-primary-action, 10%);
+        background: var(--color-primary-action-10);
       }
 
       &:active:enabled {
-        background: fade(@color-primary-action, 15%);
+        background: var(--color-primary-action-15);
       }
 
       .mono-10-bold;
@@ -1882,7 +1882,7 @@ div.ButtonsRow:last-of-type {
       div.GasCheckedButton {
         background-color: @color-secondary-action;
         color: var(--color-primary-text);
-        border: @size-1 solid @color-primary-action;
+        border: @size-1 solid var(--color-primary-action);
 
         > div:first-of-type {
           > span:first-of-type {
@@ -2006,7 +2006,7 @@ div.ButtonsRow:last-of-type {
 .Proceeds {
   .Container;
 
-  background-color: @color-module-background;
+  background-color: var(--color-module-background);
   max-height: 80vh;
   max-width: 842px;
 
@@ -2466,7 +2466,7 @@ div.ButtonsRow:last-of-type {
 .AlertMessage {
   .text-12;
 
-  color: @color-resolved;
+  color: var(--color-resolved);
   margin: 0 0 @size-8;
 }
 
@@ -2524,7 +2524,7 @@ div.ButtonsRow:last-of-type {
   .mono-12;
 
   align-items: center;
-  background: @color-page-background;
+  background: var(--color-page-background);
   border: 1px solid @color-secondary-action-outline;
   color: var(--color-secondary-text);
   display: flex;
@@ -2599,7 +2599,7 @@ div.ButtonsRow:last-of-type {
 
 .ActionRow {
   align-items: center;
-  background: @color-module-background;
+  background: var(--color-module-background);
   border-bottom: 1px solid @color-dark-grey;
   display: flex;
   flex-flow: column nowrap;
@@ -2739,7 +2739,7 @@ div.ButtonsRow:last-of-type {
 }
 
 .ModalMarketReview {
-  background-color: @color-module-background;
+  background-color: var(--color-module-background);
   margin: 0 0 @size-24;
   padding: @size-32 0 0;
 
@@ -2754,7 +2754,7 @@ div.ButtonsRow:last-of-type {
     > div > button {
       .text-12;
 
-      color: @color-primary-action;
+      color: var(--color-primary-action);
       cursor: pointer;
     }
 
@@ -3010,7 +3010,7 @@ div.ButtonsRow:last-of-type {
     .mono-9-bold;
 
     align-items: center;
-    background: @color-module-background;
+    background: var(--color-module-background);
     color: var(--color-primary-text);
     display: flex;
     flex-direction: row-reverse;
@@ -3027,7 +3027,7 @@ div.ButtonsRow:last-of-type {
 
   // Open global chat window
   > div {
-    background-color: @color-module-background;
+    background-color: var(--color-module-background);
     border: 1px solid @color-dark-grey;
     height: 100%;
     left: 0;
@@ -3056,9 +3056,9 @@ div.ButtonsRow:last-of-type {
       > span:nth-of-type(2) {
         .mono-9;
 
-        background: fade(@color-open, 15%);
+        background: var(--color-open-15);
         border-radius: 0.1875rem;
-        color: @color-open;
+        color: var(--color-open);
         padding: 0 1px;
       }
 

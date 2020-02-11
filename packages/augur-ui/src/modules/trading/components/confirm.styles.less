@@ -62,11 +62,11 @@
   margin: @size-8 0 @size-10;
 
   &.short {
-    color: @color-negative;
+    color: var(--color-negative);
   }
 
   &.long {
-    color: @color-positive;
+    color: var(--color-positive);
   }
 }
 
@@ -96,11 +96,11 @@
 
 .MessageContainer {
   background: @color-dismissable-notice-background;
-  border-bottom: @size-2 solid @color-primary-action;
-  border-left: @size-4 solid @color-primary-action;
+  border-bottom: @size-2 solid var(--color-primary-action);
+  border-left: @size-4 solid var(--color-primary-action);
   border-radius: @border-radius-default;
-  border-right: @size-2 solid @color-primary-action;
-  border-top: @size-2 solid @color-primary-action;
+  border-right: @size-2 solid var(--color-primary-action);
+  border-top: @size-2 solid var(--color-primary-action);
   display: grid;
   grid-template-columns: @size-16 1fr min-content;
   grid-template-rows: auto;
@@ -145,7 +145,7 @@
     width: @size-12;
 
     > path {
-      fill: @color-primary-action;
+      fill: var(--color-primary-action);
     }
   }
 

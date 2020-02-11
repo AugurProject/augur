@@ -15,7 +15,7 @@
     z-index: @mask-modal;
 
     > div {
-      background: @color-module-background;
+      background: var(--color-module-background);
       display: flex;
       justify-content: flex-end;
 
@@ -24,7 +24,7 @@
         display: flex;
 
         > div:first-of-type {
-          background: @color-page-background;
+          background: var(--color-page-background);
           border-bottom: 1px solid @color-dark-grey;
           display: flex;
           justify-content: flex-end;
@@ -35,7 +35,7 @@
       > div:nth-of-type(2) {
 
         > div:first-of-type {
-          background: @color-page-background;
+          background: var(--color-page-background);
           display: flex;
           justify-content: flex-end;
           width: 100%;
@@ -78,7 +78,7 @@
 }
 
 .SideNav__container {
-  background: @color-module-background;
+  background: var(--color-module-background);
   position: absolute;
   left: 0;
   width: 100%;
@@ -94,7 +94,7 @@
   }
 
   > div > ul {
-    background: @color-page-background;
+    background: var(--color-page-background);
     height: calc(100vh - @top-bar-height-mobile);
     margin-top: @top-bar-height-mobile;
     padding-bottom: @top-bar-height-mobile;
@@ -113,7 +113,7 @@
         span {
           .text-11-bold;
 
-          border-bottom: 2px solid @color-primary-action;
+          border-bottom: 2px solid var(--color-primary-action);
           padding-bottom: @size-5;
           color: var(--color-primary-text);
           width: fit-content;
@@ -161,7 +161,7 @@
 
   > div > footer {
     align-items: center;
-    background: @color-module-background;
+    background: var(--color-module-background);
     bottom: 0px;
     display: flex;
     height: @top-bar-height-mobile;
@@ -195,7 +195,7 @@
         .mono-9-bold;
 
         align-items: center;
-        background: @color-module-background;
+        background: var(--color-module-background);
         color: var(--color-primary-text);
         display: flex;
         flex-direction: row-reverse;

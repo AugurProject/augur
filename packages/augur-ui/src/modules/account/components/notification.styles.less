@@ -1,7 +1,7 @@
 @import (reference) '~assets/styles/shared';
 
 .NotificationCard {
-  background: @color-module-background;
+  background: var(--color-module-background);
   border-radius: @border-radius-default;
   display: flex;
   flex-direction: column;
@@ -50,15 +50,15 @@
 
     > circle {
       fill: none;
-      stroke: @color-reporting;
+      stroke: var(--color-reporting);
     }
 
     > rect {
-      fill: @color-reporting;
+      fill: var(--color-reporting);
     }
 
     > path {
-      fill: @color-reporting;
+      fill: var(--color-reporting);
     }
   }
 }

@@ -34,13 +34,13 @@
 
   &.FirstBreakpoint {
     > span:last-of-type {
-      color: @color-reporting;
+      color: var(--color-reporting);
     }
   }
 
   &.SecondBreakpoint {
     > span:last-of-type {
-      color: @color-resolved;
+      color: var(--color-resolved);
     }
   }
 
@@ -99,7 +99,7 @@
   width: 100%;
 
   > span:first-of-type {
-    background: @color-primary-action;
+    background: var(--color-primary-action);
     height: 1px;
     position: relative;
     top: 0;
@@ -133,7 +133,7 @@
 }
 
 .WindowProgress {
-  background: @color-module-background;
+  background: var(--color-module-background);
   border: 1px solid @color-dark-grey;
   border-radius: @border-radius-default;
   height: 214px;
@@ -155,7 +155,7 @@
     height: @size-12;
 
     > span:first-of-type {
-      background: @color-reporting;
+      background: var(--color-reporting);
       height: @size-10;
       position: relative;
       top: 0;
@@ -210,7 +210,7 @@
   > p {
     .mono-10;
 
-    color: @color-reporting;
+    color: var(--color-reporting);
     text-align: center;
 
     &:first-of-type {
@@ -327,7 +327,7 @@
 }
 
 .reported {
-  color: @color-primary-action;
+  color: var(--color-primary-action);
 
   > div:first-of-type {
     color: @color-inactive-text;

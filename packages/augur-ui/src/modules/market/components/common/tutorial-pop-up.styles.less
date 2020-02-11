@@ -9,7 +9,7 @@
   bottom: 0;
   z-index: 102;
   pointer-events: all;
-  background: @color-page-background;
+  background: var(--color-page-background);
   border-radius: @border-radius-default;
   display: flex;
   flex-direction: column;
@@ -41,7 +41,7 @@
 
       > a {
         margin-left: @size-3;
-        color: @color-primary-action;
+        color: var(--color-primary-action);
       }
     }
 
@@ -97,7 +97,7 @@
       }
 
       &::after {
-        border-color: transparent transparent @color-page-background transparent;
+        border-color: transparent transparent var(--color-page-background) transparent;
         border-width: @size-6;
         bottom: 100%;
         margin-left: 1px;
@@ -114,7 +114,7 @@
       }
 
       &::after {
-        border-color: @color-page-background transparent transparent transparent;
+        border-color: var(--color-page-background) transparent transparent transparent;
         border-width: @size-6;
         top: 100%;
         margin-left: 1px;
@@ -131,7 +131,7 @@
       }
 
       &::after {
-        border-color: transparent @color-page-background transparent transparent;
+        border-color: transparent var(--color-page-background) transparent transparent;
         border-width: @size-6;
         right: 100%;
         margin-top: 1px;
@@ -149,7 +149,7 @@
       }
 
       &::after {
-        border-color: transparent @color-page-background transparent transparent;
+        border-color: transparent var(--color-page-background) transparent transparent;
         border-width: @size-6;
         right: 100%;
         margin-bottom: 1px;
@@ -167,7 +167,7 @@
       }
 
       &::after {
-        border-color: transparent transparent transparent @color-page-background;
+        border-color: transparent transparent transparent var(--color-page-background);
         border-width: @size-6;
         left: 100%;
         margin-top: 1px;

@@ -1,7 +1,7 @@
 @import (reference) '~assets/styles/shared';
 
 .AugurStatusContent {
-  background: @color-module-background;
+  background: var(--color-module-background);
   display: grid;
   grid-gap: @size-4;
   margin: @size-12 @size-16;
@@ -54,10 +54,10 @@
 
   &.synced {
     > span {
-      color: @color-open;
+      color: var(--color-open);
 
       > span {
-        background: @color-open;
+        background: var(--color-open);
         border-radius: 50%;
         height: @size-12;
         width: @size-12;
@@ -65,22 +65,22 @@
     }
 
     > div:not([class*="BlockStatus"]) {
-      color: @color-open;
+      color: var(--color-open);
       padding: 0 @size-12;
     }
   }
 
   &.syncing {
     > span {
-      color: @color-reporting;
+      color: var(--color-reporting);
       
       > span > svg > path {
-        fill: @color-reporting;
+        fill: var(--color-reporting);
       }
     }
 
     > div:not([class*="BlockStatus"]) {
-      color: @color-reporting;
+      color: var(--color-reporting);
       padding: 0 @size-12;
     }
   }
@@ -97,7 +97,7 @@
     .mono-12-semi-bold;
 
     align-items: center;
-    color: @color-resolved;
+    color: var(--color-resolved);
     display: flex;
     flex-flow: row nowrap;
     margin-bottom: @size-2;
@@ -113,7 +113,7 @@
         width: @size-12;
 
         > path {
-          fill: @color-resolved;
+          fill: var(--color-resolved);
         }
       }
     }
@@ -131,7 +131,7 @@
     align-items: center;
     background: @color-dark-grey;
     border-radius: @border-radius-default;
-    color: @color-resolved;
+    color: var(--color-resolved);
     display: flex;
     flex-flow: row nowrap;
     height: @size-40;

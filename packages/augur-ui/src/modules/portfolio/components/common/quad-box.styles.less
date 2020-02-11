@@ -2,7 +2,7 @@
 
 .Quad {
   // background: @color-table-header;
-  background: @color-module-background;
+  background: var(--color-module-background);
   border: 1px solid @color-dark-grey;
   border-radius: @border-radius-default;
   color: var(--color-primary-text);
@@ -16,7 +16,7 @@
   }
 
   > div:last-of-type {
-    background: @color-module-background;
+    background: var(--color-module-background);
     flex: 1;
     overflow: auto;
     overflow-y: overlay;
@@ -58,7 +58,7 @@
 
 @media @breakpoint-mobile {
   .NormalOnMobile {
-    background: @color-module-background;
+    background: var(--color-module-background);
     border: 1px solid @color-dark-grey;
   }
   

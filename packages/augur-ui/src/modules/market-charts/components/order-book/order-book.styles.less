@@ -1,7 +1,7 @@
 @import (reference) '~assets/styles/shared';
 
 .OrderBook {
-  background-color: @color-module-background;
+  background-color: var(--color-module-background);
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -25,7 +25,7 @@
     justify-content: flex-end;
 
     > div:not(.NoOrders) > span:nth-of-type(2) {
-      color: @color-negative;
+      color: var(--color-negative);
     }
   }
 
@@ -43,7 +43,7 @@
     }
 
     &:not(.NoOrders)::before {
-      background-color: @color-positive;
+      background-color: var(--color-positive);
       content: '';
       grid-column: 1 / span 1;
       grid-row: 1 / span 1;
@@ -60,12 +60,12 @@
       margin-top: 0;
 
       &::before {
-        background-color: @color-negative;
+        background-color: var(--color-negative);
       }
     }
 
     &.Hover {
-      background-color: @color-module-background-action-focus;
+      background-color: var(--color-module-background-action-focus);
 
       &::before {
         width: @size-6;
@@ -88,7 +88,7 @@
 
       &:nth-of-type(2) {
         grid-column: 2 / span 1;
-        color: @color-positive;
+        color: var(--color-positive);
         text-align: center;
       }
 
@@ -105,14 +105,14 @@
       max-width: @size-38;
 
       > div {
-        background-color: fade(@color-positive, 50%);
+        background-color: var(--color-positive-50);
         cursor: pointer;
         pointer-events: none;
         z-index: @default-z-index;
         height: 100%;
 
         &.Neg {
-          background-color: fade(@color-negative, 50%);
+          background-color: var(--color-negative-50);
         }
       }
     }
@@ -134,7 +134,7 @@ div.NoOrders {
 }
 
 .EncompassedHover {
-  background-color: @color-module-background-action-focus;
+  background-color: var(--color-module-background-action-focus);
 }
 
 .NoSize {
