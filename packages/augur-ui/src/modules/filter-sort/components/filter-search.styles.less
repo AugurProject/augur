@@ -15,7 +15,7 @@
   height: @size-44;
 
   align-items: center;
-  background: @color-dark-grey;
+  background: var(--color-dark-grey);
   border: @size-1 solid var(--color-secondary-action);
   box-sizing: border-box;
   border-radius: @border-radius-default;
@@ -29,7 +29,7 @@
     .text-12;
     height: @size-32;
     padding: 0;
-    border: @size-1 solid @color-dark-grey;
+    border: @size-1 solid var(--color-dark-grey);
   }
 
   > svg {
@@ -63,13 +63,13 @@
 
   // Override css in Input in common/form.styles.less
   input:focus {
-    border: @size-1 solid @color-dark-grey;
+    border: @size-1 solid var(--color-dark-grey);
   }
 
   &:focus-within {
     border: @size-1 solid var(--color-secondary-action);
     @media @breakpoint-mobile {
-      border: @size-1 solid @color-dark-grey;
+      border: @size-1 solid var(--color-dark-grey);
     }
   }
 

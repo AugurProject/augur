@@ -95,7 +95,7 @@
 }
 
 .MessageContainer {
-  background: @color-dismissable-notice-background;
+  background: var(--color-dismissable-notice-background);
   border-bottom: @size-2 solid var(--color-primary-action);
   border-left: @size-4 solid var(--color-primary-action);
   border-radius: @border-radius-default;
@@ -152,7 +152,7 @@
   > span {
     .mono-10-bold;
 
-    color: @color-table-header;
+    color: var(--color-table-header);
     grid-column: 2;
     grid-row: 1;
   }
@@ -160,7 +160,7 @@
   > div {
     .text-10-medium;
 
-    color: @color-table-header;
+    color: var(--color-table-header);
     grid-column: 2;
     grid-row: 2;
   }
@@ -173,7 +173,7 @@
       width: @size-10;
 
       > path {
-        stroke: @color-table-header;
+        stroke: var(--color-table-header);
       }
     }
   }

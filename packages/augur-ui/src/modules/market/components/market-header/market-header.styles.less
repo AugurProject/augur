@@ -3,7 +3,7 @@
 
 .MarketHeader {
   background: var(--color-module-background);
-  border: 1px solid @color-dark-grey;
+  border: 1px solid var(--color-dark-grey);
   color: var(--color-secondary-text);
   display: flex;
   flex: 1;
@@ -182,7 +182,7 @@
           &:hover {
             position: absolute;
             display: block;
-            box-shadow: 0 0 @size-16 @color-dark-grey;
+            box-shadow: 0 0 @size-16 var(--color-dark-grey);
             -webkit-line-clamp: unset;
             background: var(--color-module-background);
             z-index: @mask-above;
@@ -218,7 +218,7 @@ div.Toggle {
   height: @size-32;
 
   > button {
-    background: @color-dark-grey;
+    background: var(--color-dark-grey);
     display: flex;
     width: 100%;
 
@@ -236,7 +236,7 @@ div.Toggle {
 
   &.CollapsedToggle {
     align-items: unset;
-    background: @color-dark-grey;
+    background: var(--color-dark-grey);
     align-items: center;
 
     > button {
@@ -375,7 +375,7 @@ div.ExpandedContent {
   position: absolute;
   background: var(--color-module-background);
   z-index: @mask-above;
-  box-shadow: 0 @size-8 @size-8 @color-dark-grey;
+  box-shadow: 0 @size-8 @size-8 var(--color-dark-grey);
   margin-top: @size-32;
   width: 100%;
   transition-property: box-shadow, z-index, position;
@@ -493,7 +493,7 @@ div.ExpandedContent {
 }
 
 .Properties {
-  border-left: 1px solid @color-dark-grey;
+  border-left: 1px solid var(--color-dark-grey);
   display: flex;
   flex: 1;
   flex-direction: column;
@@ -524,7 +524,7 @@ div.ExpandedContent {
       div.Properties {
         min-width: unset;
         border: 0;
-        border-top: 1px solid @color-dark-grey;
+        border-top: 1px solid var(--color-dark-grey);
 
         &.HideProperties > div[class*="CoreProperties"] {
           > div[class*="ScalarBox"] {

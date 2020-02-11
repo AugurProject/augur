@@ -123,7 +123,7 @@
 
 .TightModalContainer {
   background: var(--color-module-background);
-  border: @size-1 solid @color-dark-grey;
+  border: @size-1 solid var(--color-dark-grey);
   border-radius: @size-5;
   color: var(--color-primary-text);
   max-width: 20rem;
@@ -222,7 +222,7 @@ div.ErrorField:focus {
 }
 
 .Receipt {
-  background-color: @color-dark-grey;
+  background-color: var(--color-dark-grey);
   color: var(--color-primary-text);
   list-style: none;
   margin: 0 @size-32 @size-24;
@@ -267,8 +267,8 @@ div.ErrorField:focus {
 }
 
 .ModalTable {
-  border-left: 1px solid @color-dark-grey;
-  border-top: 1px solid @color-dark-grey;
+  border-left: 1px solid var(--color-dark-grey);
+  border-top: 1px solid var(--color-dark-grey);
   color: var(--color-primary-text);
   display: flex;
   flex-flow: column;
@@ -276,7 +276,7 @@ div.ErrorField:focus {
 }
 
 .ModalTableRow {
-  border-bottom: 1px solid @color-dark-grey;
+  border-bottom: 1px solid var(--color-dark-grey);
   display: flex;
   flex: 1;
   flex-flow: row;
@@ -296,7 +296,7 @@ div.ErrorField:focus {
 }
 
 .ModalTableColumn {
-  border-right: 1px solid @color-dark-grey;
+  border-right: 1px solid var(--color-dark-grey);
   flex: 1;
   font-size: @size-12;
   line-height: @size-14;
@@ -403,7 +403,7 @@ div.ErrorField:focus {
   }
 
   > div:first-of-type {
-    background-color: @color-dark-grey;
+    background-color: var(--color-dark-grey);
     margin: 0 @size-20 @size-48;
     max-height: 25rem;
     max-width: 35rem;
@@ -477,7 +477,7 @@ div.ErrorField:focus {
         .text-12-bold;
 
         background: var(--color-primary-action);
-        color: @color-dark-grey;
+        color: var(--color-dark-grey);
         margin: 0;
       }
     }
@@ -507,7 +507,7 @@ div.ErrorField:focus {
       }
 
       > svg {
-        fill: @color-dark-grey;
+        fill: var(--color-dark-grey);
         height: @size-24;
         transform: translateY(@size-8);
         width: @size-24;

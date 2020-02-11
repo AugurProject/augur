@@ -4,7 +4,7 @@
   display: flex;
   flex: 1;
   flex-direction: column;
-  border-top: 1px solid @color-dark-grey;
+  border-top: 1px solid var(--color-dark-grey);
 
   > div:first-of-type {
     display: flex;
@@ -45,10 +45,10 @@
 
       &.ShowExtraDetails {
         background: var(--color-module-background);
-        border-bottom: 1px solid @color-dark-grey;
-        border-left: 1px solid @color-dark-grey;
-        border-right: 1px solid @color-dark-grey;
-        box-shadow: 0 @size-8 @size-8 @color-dark-grey;
+        border-bottom: 1px solid var(--color-dark-grey);
+        border-left: 1px solid var(--color-dark-grey);
+        border-right: 1px solid var(--color-dark-grey);
+        box-shadow: 0 @size-8 @size-8 var(--color-dark-grey);
         position: absolute;
         z-index: @mask-above;
       }
@@ -88,7 +88,7 @@
   @media @breakpoint-mobile {
     > div:first-of-type {
       flex-flow: column nowrap;
-      border-top: 1px solid @color-dark-grey;
+      border-top: 1px solid var(--color-dark-grey);
       
       > div:first-of-type {
         grid-template-rows: auto auto;
@@ -131,14 +131,14 @@
 
 .TimeSection {
   background: var(--color-module-background);
-  border-left: 1px solid @color-dark-grey;
+  border-left: 1px solid var(--color-dark-grey);
   max-width: 240px;
   padding: @size-12;
 
   @media @breakpoint-mobile {
     min-width: unset;
     border-left: 0;
-    border-top: 1px solid @color-dark-grey;
+    border-top: 1px solid var(--color-dark-grey);
     width: 100%;
     max-width: unset;
     display: flex;
@@ -177,5 +177,5 @@
 }
 
 .ScalarBox {
-  border-top: 1px solid @color-dark-grey;
+  border-top: 1px solid var(--color-dark-grey);
 }

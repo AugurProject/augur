@@ -1062,7 +1062,7 @@ div.ButtonsRow:last-of-type {
   > div {
     align-items: center;
     background: var(--color-module-background);
-    border: 1px solid @color-dark-grey;
+    border: 1px solid var(--color-dark-grey);
     border-radius: @border-radius-default;
     height: 44px;
 
@@ -1101,7 +1101,7 @@ div.ButtonsRow:last-of-type {
 
   > div {
     background: var(--color-module-background);
-    border: 1px solid @color-dark-grey;
+    border: 1px solid var(--color-dark-grey);
     border-radius: @border-radius-default;
     height: 82px;
     margin-top: @size-8;
@@ -1161,7 +1161,7 @@ div.ButtonsRow:last-of-type {
 .Orders {
   .Message;
 
-  background: @color-dark-grey;
+  background: var(--color-dark-grey);
   min-width: 842px;
 
   @media @breakpoint-mobile {
@@ -1172,7 +1172,7 @@ div.ButtonsRow:last-of-type {
     > .Orders__header {
       align-items: center;
       background: var(--color-module-background);
-      border-top: 1px solid @color-dark-grey;
+      border-top: 1px solid var(--color-dark-grey);
       display: flex;
       flex-flow: row nowrap;
       height: @size-40;
@@ -1196,7 +1196,7 @@ div.ButtonsRow:last-of-type {
       }
 
       @media @breakpoint-mobile {
-        border-bottom: 1px solid @color-dark-grey;
+        border-bottom: 1px solid var(--color-dark-grey);
         height: @size-32;
         margin: 0 -@size-16 @size-4;
         padding: @size-10 @size-16;
@@ -1215,7 +1215,7 @@ div.ButtonsRow:last-of-type {
     }
 
     > section {
-      border-bottom: 1px solid @color-dark-grey;
+      border-bottom: 1px solid var(--color-dark-grey);
       color: var(--color-primary-text);
       margin-bottom: @size-24;
       max-height: 450px;
@@ -1224,7 +1224,7 @@ div.ButtonsRow:last-of-type {
       > div {
         align-items: center;
         background: var(--color-module-background);
-        border-top: 1px solid @color-dark-grey;
+        border-top: 1px solid var(--color-dark-grey);
         color: var(--color-primary-text);
         display: flex;
         flex-flow: row nowrap;
@@ -1571,7 +1571,7 @@ div.ButtonsRow:last-of-type {
       }
 
       > div > div > div > input {
-        background: @color-dark-grey;
+        background: var(--color-dark-grey);
         border: 1px solid var(--color-secondary-action);
       }
     }
@@ -1592,7 +1592,7 @@ div.ButtonsRow:last-of-type {
 }
 
 .GroupedForm {
-  border-bottom: 1px solid @color-dark-grey;
+  border-bottom: 1px solid var(--color-dark-grey);
   display: flex;
   flex-flow: column nowrap;
   justify-content: space-between;
@@ -1902,7 +1902,7 @@ div.ButtonsRow:last-of-type {
       grid-gap: @size-16;
       align-items: flex-end;
       justify-content: space-between;
-      background-color: @color-table-header;
+      background-color: var(--color-table-header);
       border-radius: @size-3;
       padding: @size-12;
       margin-top: @size-12;
@@ -2014,7 +2014,7 @@ div.ButtonsRow:last-of-type {
     border-bottom: @size-1 solid var(--color-secondary-action-outline);
 
     > section {
-      background-color: @color-active-background;
+      background-color: var(--color-active-background);
     }
 
     > section:not(:first-of-type) {
@@ -2073,7 +2073,7 @@ div.ButtonsRow:last-of-type {
 
 .TransactionsTable {
   align-items: center;
-  border: 1px solid @color-dark-grey;
+  border: 1px solid var(--color-dark-grey);
   display: grid;
   grid-template-columns:
     200px minmax(320px, 2fr) minmax(125px, 1fr) minmax(125px, 150px)
@@ -2302,7 +2302,7 @@ div.ButtonsRow:last-of-type {
     .TransactionsTable;
     .text-12;
 
-    background: @color-table-header;
+    background: var(--color-table-header);
     border-bottom: 0;
     color: var(--color-secondary-text);
     margin: @size-24 0 0;
@@ -2354,7 +2354,7 @@ div.ButtonsRow:last-of-type {
     > span {
       .mono-11;
 
-      border-top: 1px solid @color-dark-grey;
+      border-top: 1px solid var(--color-dark-grey);
       height: @size-32;
       line-height: @size-13;
       overflow: hidden;
@@ -2392,7 +2392,7 @@ div.ButtonsRow:last-of-type {
       background: none;
       border: 0;
       border-radius: 0;
-      border-top: 1px solid @color-dark-grey;
+      border-top: 1px solid var(--color-dark-grey);
       display: flex;
       height: @size-32;
       justify-content: flex-end;
@@ -2600,7 +2600,7 @@ div.ButtonsRow:last-of-type {
 .ActionRow {
   align-items: center;
   background: var(--color-module-background);
-  border-bottom: 1px solid @color-dark-grey;
+  border-bottom: 1px solid var(--color-dark-grey);
   display: flex;
   flex-flow: column nowrap;
   padding: @size-16;
@@ -2677,7 +2677,7 @@ div.ButtonsRow:last-of-type {
   justify-content: stretch;
 
   > button {
-    border: 1px solid @color-dark-grey;
+    border: 1px solid var(--color-dark-grey);
     border-top: 0;
     color: var(--color-primary-text);
     display: flex;
@@ -2688,7 +2688,7 @@ div.ButtonsRow:last-of-type {
     > span {
       .mono-10;
 
-      border-right: 1px solid @color-dark-grey;
+      border-right: 1px solid var(--color-dark-grey);
       flex: 1;
       padding: @size-4 @size-8;
       text-align: left;
@@ -2705,7 +2705,7 @@ div.ButtonsRow:last-of-type {
     }
 
     &:first-of-type {
-      border-top: 1px solid @color-dark-grey;
+      border-top: 1px solid var(--color-dark-grey);
 
       &:hover {
         color: var(--color-primary-text);
@@ -2716,7 +2716,7 @@ div.ButtonsRow:last-of-type {
 }
 
 .DepositInfo {
-  border-top: 1px solid @color-dark-grey;
+  border-top: 1px solid var(--color-dark-grey);
   color: var(--color-primary-text);
 
   > h3 {
@@ -2809,7 +2809,7 @@ div.ButtonsRow:last-of-type {
     padding: 0;
 
     > div:first-of-type {
-      border-bottom: 1px solid @color-dark-grey;
+      border-bottom: 1px solid var(--color-dark-grey);
       display: flex;
       flex-direction: column;
       padding: @size-24;
@@ -2910,12 +2910,12 @@ div.ButtonsRow:last-of-type {
       margin: @size-8 @size-16 @size-24;
       padding: @size-24;
       border: none;
-      background-color: @color-table-header;
+      background-color: var(--color-table-header);
     }
 
     > div:nth-of-type(2) {
-      border-bottom: 1px solid @color-dark-grey;
-      border-top: 1px solid @color-dark-grey;
+      border-bottom: 1px solid var(--color-dark-grey);
+      border-top: 1px solid var(--color-dark-grey);
       display: flex;
       flex-direction: column;
       padding: @size-24 @size-40 0;
@@ -2958,7 +2958,7 @@ div.ButtonsRow:last-of-type {
     }
 
     > div:nth-of-type(3) {
-      border-bottom: 1px solid @color-dark-grey;
+      border-bottom: 1px solid var(--color-dark-grey);
       display: flex;
       padding: @size-16 @size-40;
 
@@ -2999,7 +2999,7 @@ div.ButtonsRow:last-of-type {
 }
 
 .ModalGlobalChat {
-  background: @color-dark-grey;
+  background: var(--color-dark-grey);
   bottom: @size-4;
   position: fixed;
   right: @size-22;
@@ -3028,7 +3028,7 @@ div.ButtonsRow:last-of-type {
   // Open global chat window
   > div {
     background-color: var(--color-module-background);
-    border: 1px solid @color-dark-grey;
+    border: 1px solid var(--color-dark-grey);
     height: 100%;
     left: 0;
     position: fixed;
@@ -3038,8 +3038,8 @@ div.ButtonsRow:last-of-type {
     // Header section
     > div:first-of-type {
       align-items: center;
-      background-color: @color-dark-grey;
-      border-bottom: 1px solid @color-dark-grey;
+      background-color: var(--color-dark-grey);
+      border-bottom: 1px solid var(--color-dark-grey);
       display: flex;
       flex-direction: row;
       padding: @size-14 @size-16;
@@ -3156,7 +3156,7 @@ div.ButtonsRow:last-of-type {
   }
 
   > ul > li[class*='Selected'] {
-    background: @color-dark-grey;
+    background: var(--color-dark-grey);
   }
 
   > ul > li:first-of-type {

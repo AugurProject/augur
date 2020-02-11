@@ -1,7 +1,7 @@
 @import (reference) '~assets/styles/shared';
 
 .MarketViewBorders {
-  border: @size-1 solid @color-dark-grey;
+  border: @size-1 solid var(--color-dark-grey);
   border-radius: @size-1;
 }
 
@@ -17,7 +17,7 @@
   }
 
   > span:first-of-type {
-    background: @color-dark-grey;
+    background: var(--color-dark-grey);
     opacity: 0.5;
     top: 0;
     bottom: 0;
@@ -58,7 +58,7 @@
   grid-template-rows: 0fr 0fr 0fr 0fr 1fr;
 
   div[class*="module-tabs-style_Headers"] {
-    background: @color-dark-grey;
+    background: var(--color-dark-grey);
 
     > button[class*="buttons-styles_ToggleExtendButton"] {
       margin-left: 0;
@@ -360,14 +360,14 @@ section[class*="OutcomesList"] {
 
 .PriceHistory {
   background-color: var(--color-module-background);
-  border: 1px solid @color-dark-grey;
+  border: 1px solid var(--color-dark-grey);
   border-radius: 1px;
 
   > h3 {
     .text-16;
 
     background-color: var(--color-module-background);
-    border-bottom: 1px solid @color-dark-grey;
+    border-bottom: 1px solid var(--color-dark-grey);
     color: var(--color-primary-text);
     padding: 1.125rem 1rem;
   }
@@ -403,7 +403,7 @@ div.OutcomeNameDisplay {
   .text-12;
 
   align-items: center;
-  background: @color-dark-grey;
+  background: var(--color-dark-grey);
   border: 1px solid var(--color-secondary-action-outline);
   border-radius: @border-radius-default;
   color: var(--color-primary-text);
@@ -437,7 +437,7 @@ div.OutcomeNameDisplay {
 
     > div,
     > section {
-      border: 1px solid @color-dark-grey;
+      border: 1px solid var(--color-dark-grey);
       border-radius: 1px;
     }
   }
@@ -455,13 +455,13 @@ div.OutcomeNameDisplay {
       margin: 0;
       padding: @size-12;
       background: var(--color-module-background);
-      border: 1px solid @color-dark-grey;
+      border: 1px solid var(--color-dark-grey);
       border-radius: 1px;
     }
 
     > div:last-of-type {
       margin-top: 0;
-      border: 1px solid @color-dark-grey;
+      border: 1px solid var(--color-dark-grey);
       border-radius: 1px;
     }
   }
@@ -469,9 +469,9 @@ div.OutcomeNameDisplay {
   .Orders {
     max-height: 50vh;
     margin-bottom: 0;
-    border-bottom: 1px solid @color-dark-grey;
-    border-left: 1px solid @color-dark-grey;
-    border-right: 1px solid @color-dark-grey;
+    border-bottom: 1px solid var(--color-dark-grey);
+    border-left: 1px solid var(--color-dark-grey);
+    border-right: 1px solid var(--color-dark-grey);
   }
 
   .History {
@@ -497,7 +497,7 @@ div.OutcomeNameDisplay {
 
     text-transform: uppercase;
     padding: @size-12 @size-16;
-    background: @color-dark-grey;
+    background: var(--color-dark-grey);
   }
 
   .Comments {
@@ -505,7 +505,7 @@ div.OutcomeNameDisplay {
     width: 100%;
 
     > span {
-      background: @color-dark-grey;
+      background: var(--color-dark-grey);
       display: block;
       height: @size-2;
       margin: 0 @size-12 @size-8;
