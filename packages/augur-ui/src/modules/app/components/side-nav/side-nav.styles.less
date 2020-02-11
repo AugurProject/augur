@@ -116,10 +116,14 @@
       }
 
       &.selected {
-        span {
-          .text-11-bold;
+        a {
+          padding: @size-21 @size-16 @size-14;
+        }
 
-          border-bottom: 2px solid @color-primary-action;
+        span {
+          .text-12-semi-bold;
+
+          border-bottom: @size-2 solid @color-primary-action;
           padding-bottom: @size-5;
           color: @color-primary-text;
           width: fit-content;
@@ -133,16 +137,15 @@
       a,
       button {
         display: flex;
-        padding: @size-21 @size-24;
+        padding: @size-21 @size-16;
         align-items: center;
 
         > span {
-          .text-11-bold;
+          .text-12-semi-bold;
 
           align-items: center;
-          color: @color-inactive-text;
+          color: @color-secondary-text;
           display: flex;
-          margin-left: @size-8;
           text-transform: uppercase;
         }
 
@@ -172,22 +175,28 @@
     display: flex;
     height: @top-bar-height-mobile;
     justify-content: flex-start;
-    padding: 0 @size-22;
+    padding: 0 @size-16;
     position: fixed;
-    width: calc(100% - 52px);
+    width: calc(100% - @size-52);
 
     > div:nth-of-type(2) {
-      .mono-10;
+      .mono-10-semi-bold;
 
       display: flex;
       color: @color-primary-text;
+      background: @color-secondary-action;
       cursor: pointer;
       text-transform: uppercase;
       order: 1;
+      border: @size-1 solid @color-secondary-action-outline;
+      border-radius: @border-radius-default;
+      padding: @size-4;
 
       > svg {
-        width: @size-9;
-        height: @size-13;
+        width: @size-10;
+        height: @size-10;
+        fill: @color-primary-text;
+        margin-left: 0px !important;
       }
     }
 
@@ -198,21 +207,27 @@
 
       // Closed global chat window
       > button {
-        .mono-9-bold;
+        .mono-10-semi-bold;
 
+        padding: @size-4;
         align-items: center;
-        background: @color-module-background;
         color: @color-primary-text;
+        background: @color-secondary-action;
         display: flex;
         flex-direction: row-reverse;
         text-transform: uppercase;
 
         > svg {
           fill: @color-primary-text;
-          height: @size-12;
-          margin-left: @size-8;
+          margin-left: @size-4;
+          margin-bottom: @size-2;
           transform: rotate(180deg);
-          width: @size-12;
+          width: @size-10;
+          height: @size-10;
+
+          path {
+            fill: @color-primary-text;
+          }
         }
       }
     }
