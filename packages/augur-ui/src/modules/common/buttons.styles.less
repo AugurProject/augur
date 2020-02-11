@@ -124,7 +124,7 @@
   .Button;
 
   background: transparent;
-  border: @size-1 solid @color-secondary-action-outline;
+  border: @size-1 solid var(--color-secondary-action-outline);
   color: var(--color-primary-text);
   padding: @size-12 @size-24;
 
@@ -178,7 +178,7 @@
   .Button;
 
   background: transparent;
-  border: @size-1 solid @color-secondary-action-outline;
+  border: @size-1 solid var(--color-secondary-action-outline);
   color: var(--color-primary-text);
   max-height: @button-height-default;
   padding: @size-8 @size-12;
@@ -353,8 +353,8 @@
   .mono-9-bold;
 
   border: @border-default;
-  background: @color-secondary-action;
-  border-color: @color-secondary-action-outline;
+  background: var(--color-secondary-action);
+  border-color: var(--color-secondary-action-outline);
   border-radius: @size-3;
   color: var(--color-primary-text);
   line-height: @size-10;
@@ -373,8 +373,8 @@
   display: flex;
   flex-flow: row nowrap;
   text-transform: uppercase;
-  background: @color-secondary-action;
-  border: @size-1 solid @color-secondary-action-outline;
+  background: var(--color-secondary-action);
+  border: @size-1 solid var(--color-secondary-action-outline);
   border-radius: @size-3;
   color: var(--color-primary-text);
   padding: @size-4 @size-6;
@@ -471,9 +471,9 @@
   .Button;
 
   align-content: center;
-  // background: @color-secondary-action;
+  // background: var(--color-secondary-action);
   background: transparent;
-  border: @size-1 solid @color-secondary-action-outline;
+  border: @size-1 solid var(--color-secondary-action-outline);
   color: var(--color-primary-text);
   display: flex;
   flex-flow: row nowrap;
@@ -595,8 +595,8 @@
 .ViewTransactionDetailsButton {
   .mono-9-bold;
 
-  background: @color-secondary-action;
-  border: @size-1 solid @color-secondary-action-outline;
+  background: var(--color-secondary-action);
+  border: @size-1 solid var(--color-secondary-action-outline);
   border-radius: @border-radius-default;
   align-items: center;
   color: var(--color-primary-text);
@@ -754,8 +754,8 @@
   .Button;
 
   align-items: center;
-  background: @color-secondary-action;
-  border-color: @color-secondary-action-outline;
+  background: var(--color-secondary-action);
+  border-color: var(--color-secondary-action-outline);
   display: flex;
   height: @size-32;
   padding: @size-8;
@@ -849,7 +849,7 @@
   .text-12-bold;
 
   align-items: center;
-  border: @size-1 solid @color-secondary-action-outline;
+  border: @size-1 solid var(--color-secondary-action-outline);
   border-radius: @border-radius-default;
   color: var(--color-primary-text);
   display: flex;
@@ -888,8 +888,8 @@
     .text-16-bold;
 
     align-items: center;
-    background: @color-secondary-action;
-    border: @size-1 solid @color-secondary-action-outline;
+    background: var(--color-secondary-action);
+    border: @size-1 solid var(--color-secondary-action-outline);
     border-radius: @size-3;
     color: var(--color-primary-text);
     cursor: pointer;
@@ -924,7 +924,7 @@
       &.loading {
         animation: colorchange 0.5s infinite;
         animation-direction: alternate-reverse;
-        background-color: @color-secondary-action-outline;
+        background-color: var(--color-secondary-action-outline);
         height: @size-16;
         width: @size-80;
       }
@@ -934,10 +934,10 @@
 
 @keyframes colorchange {
   0% {
-    background-color: fade(@color-secondary-action-outline, 70);
+    background-color: fade(var(--color-secondary-action-outline), 70);
   }
 
   100% {
-    background-color: fade(@color-secondary-action-outline, 100);
+    background-color: fade(var(--color-secondary-action-outline), 100);
   }
 }

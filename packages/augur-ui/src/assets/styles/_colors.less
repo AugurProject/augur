@@ -2,6 +2,7 @@
 // TRADING is default theme, hence root by itself.
 :root[theme="TRADING"],
 :root {
+  --color-brand: #2AE7A8;
   // texts
   --color-primary-text: #D7DDE0;
   --color-primary-text-15: fade(#D7DDE0, 15%);
@@ -60,9 +61,14 @@
   --color-prmary-action-70: fade(#09CFE1, 70%);
   --color-prmary-action-80: fade(#09CFE1, 80%);
   --color-prmary-action-90: fade(#09CFE1, 90%);
+
+  --color-secondary-action: #0E0E21;
+  --color-secondary-action-outline: #3C3B43;
+  --color-secondary-hover: #302F36;
 }
 
 :root[theme="BETTING"] {
+  --color-brand: #2AE7A8;
   // texts
   --color-primary-text: #0E0E21;
   --color-primary-text-15: fade(#0E0E21, 15%);
@@ -78,7 +84,7 @@
   --color-secondary-text-80: fade(#555577, 80%);
 
   --color-inactive-text: #555577;
-  --color-dark-text: 9C9CB4;
+  --color-dark-text: #9C9CB4;
   // UI
   --color-module-background: #FFFFFF;
   --color-module-background-action-focus: #FFFFFF; // no equivalent
@@ -120,6 +126,10 @@
   --color-prmary-action-70: fade(#0CCE8D, 70%);
   --color-prmary-action-80: fade(#0CCE8D, 80%);
   --color-prmary-action-90: fade(#0CCE8D, 90%);
+
+  --color-secondary-action: #0E0E21;
+  --color-secondary-action-outline: #0E0E21;
+  --color-secondary-hover: #0E0E21;
 }
 // Text
 // @color-primary-text: #D7DDE0;
@@ -128,7 +138,7 @@
 // @color-dark-text: #848294;
 
 // UI
-@color-brand: #2AE7A8; // augur brand color
+// @color-brand: #2AE7A8; // augur brand color
 @color-dark-grey: #0E0E0F; // (TBD Name) - 53 files
 @color-table-header: #161518; // 7 files
 // @color-module-background: #1B1A1E; // 51 files
@@ -145,13 +155,13 @@
 // @color-resolved: #F12B00; // 6 files
 @color-scalar: #FFB47E; // temporary name... used in more things than scalar
 // Trades
-@color-positive: #00F1C4; // 13 files
-var(--color-negative): #FF7D5E; // 15 files
+// @color-positive: #00F1C4; // 13 files
+// @color-negative: #FF7D5E; // 15 files
 // Interactions:
 // @color-primary-action: #09CFE1; // 19 files
-@color-secondary-action: #252429; // 26 files
-@color-secondary-action-outline: #3C3B43; // 25 files
-@color-secondary-hover: #302F36;
+// @color-secondary-action: #252429; // 26 files
+// @color-secondary-action-outline: #3C3B43; // 25 files
+// @color-secondary-hover: #302F36;
 // Other
 @color-error: #FF2727; // 9 files
 @color-alternate-error: #F3E7E7;

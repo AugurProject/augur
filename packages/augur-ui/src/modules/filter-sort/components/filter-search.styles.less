@@ -16,7 +16,7 @@
 
   align-items: center;
   background: @color-dark-grey;
-  border: @size-1 solid @color-secondary-action;
+  border: @size-1 solid var(--color-secondary-action);
   box-sizing: border-box;
   border-radius: @border-radius-default;
   color: var(--color-secondary-text);
@@ -67,7 +67,7 @@
   }
 
   &:focus-within {
-    border: @size-1 solid @color-secondary-action;
+    border: @size-1 solid var(--color-secondary-action);
     @media @breakpoint-mobile {
       border: @size-1 solid @color-dark-grey;
     }

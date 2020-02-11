@@ -55,7 +55,7 @@
 
           > circle {
             fill: none;
-            stroke: @color-secondary-action-outline;
+            stroke: var(--color-secondary-action-outline);
           }
 
           > path {
@@ -170,7 +170,7 @@
 
         > circle {
           fill: none;
-          stroke: @color-secondary-action-outline;
+          stroke: var(--color-secondary-action-outline);
         }
 
         > path {
@@ -228,11 +228,11 @@
 
   @keyframes colorchange {
     0% {
-      background-color: fade(@color-secondary-action-outline, 70);
+      background-color: fade(var(--color-secondary-action-outline), 70);
     }
 
     100% {
-      background-color: fade(@color-secondary-action-outline, 100);
+      background-color: fade(var(--color-secondary-action-outline), 100);
     }
   }
 
@@ -247,7 +247,7 @@
       animation: colorchange 0.5s infinite;
       animation-direction: alternate-reverse;
 
-      background: @color-secondary-action-outline;
+      background: var(--color-secondary-action-outline);
       height: @size-12;
     }
 

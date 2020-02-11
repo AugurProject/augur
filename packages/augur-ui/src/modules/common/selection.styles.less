@@ -1,7 +1,7 @@
 @import (reference) "~assets/styles/shared";
 
 .Dropdown {
-  border: @size-1 solid @color-secondary-action-outline;
+  border: @size-1 solid var(--color-secondary-action-outline);
   border-radius: @border-radius-default;
   cursor: pointer;
   display: flex;
@@ -14,7 +14,7 @@
 
   > button {
     align-items: center;
-    background: @color-secondary-action;
+    background: var(--color-secondary-action);
     border-radius: @border-radius-default;
     color: var(--color-primary-text);
     display: flex;
@@ -39,7 +39,7 @@
     }
 
     &:hover {
-      background: fade(@color-secondary-action, 50%);
+      background: fade(var(--color-secondary-action), 50%);
       outline: none;
 
       > svg > path {
@@ -58,8 +58,8 @@
     z-index: @mask;
 
     > div:first-of-type {
-      background-color: @color-secondary-action;
-      border: @size-1 solid @color-secondary-action-outline;
+      background-color: var(--color-secondary-action);
+      border: @size-1 solid var(--color-secondary-action-outline);
       border-radius: @border-radius-default;
       box-shadow: 0 @size-8 @size-8 @color-dark-grey;
       display: none;
@@ -71,7 +71,7 @@
 
       > button {
         color: var(--color-primary-text);
-        background-color: @color-secondary-action;
+        background-color: var(--color-secondary-action);
         position: relative;
         text-align: left;
         transition: background-color 0.15s ease;
@@ -79,11 +79,11 @@
         width: 100%;
 
         &:hover {
-          background-color: @color-secondary-action-outline;
+          background-color: var(--color-secondary-action-outline);
         }
 
         &:not(:last-of-type)::before {
-          background: fade(@color-secondary-action-outline, 50%);
+          background: fade(var(--color-secondary-action-outline), 50%);
           bottom: 0;
           content: "";
           height: @size-1;
@@ -130,11 +130,11 @@
     > span {
       flex: 1;
       display: flex;
-      border-right: @size-1 solid @color-secondary-action-outline;
+      border-right: @size-1 solid var(--color-secondary-action-outline);
       padding: @size-5 @size-8 @size-5 0;
 
       @media @breakpoint-mobile {
-        border-right: @size-1 solid @color-secondary-action;
+        border-right: @size-1 solid var(--color-secondary-action);
         padding: @size-10 0;
       }
     }
@@ -191,7 +191,7 @@
       .text-10-bold;
     }
 
-    background: @color-secondary-action;
+    background: var(--color-secondary-action);
     padding: 0 @size-8;
     text-transform: uppercase;
 
@@ -203,11 +203,11 @@
 
       flex: 1;
       display: flex;
-      border-right: @size-1 solid @color-secondary-action-outline;
+      border-right: @size-1 solid var(--color-secondary-action-outline);
       padding: @size-5 @size-8 @size-5 0;
 
       @media @breakpoint-mobile {
-        border-right: @size-1 solid @color-secondary-action-outline;
+        border-right: @size-1 solid var(--color-secondary-action-outline);
         padding: @size-9 @size-8 @size-9 0;
       }
     }
@@ -218,7 +218,7 @@
     }
 
     &:hover {
-      background: @color-secondary-action;
+      background: var(--color-secondary-action);
     }
   }
 
@@ -337,7 +337,7 @@
 
   > li {
     background: transparent;
-    border: @size-1 solid @color-secondary-action-outline;
+    border: @size-1 solid var(--color-secondary-action-outline);
     border-right: 0;
     box-sizing: border-box;
     display: flex;
@@ -348,8 +348,8 @@
 
     &.Selected,
     &:hover {
-      background: fade(@color-secondary-action-outline, 30%);
-      border-right: @size-1 solid @color-secondary-action-outline;
+      background: fade(var(--color-secondary-action-outline), 30%);
+      border-right: @size-1 solid var(--color-secondary-action-outline);
 
       > button {
         color: var(--color-primary-text);
@@ -373,7 +373,7 @@
 
     &:last-of-type {
       border-bottom-right-radius: @border-radius-default;
-      border-right: @size-1 solid @color-secondary-action-outline;
+      border-right: @size-1 solid var(--color-secondary-action-outline);
       border-top-right-radius: @border-radius-default;
     }
 
@@ -425,9 +425,9 @@
   .text-12-medium;
 
   align-items: flex-start;
-  background: @color-secondary-action;
+  background: var(--color-secondary-action);
   border-radius: @border-radius-default;
-  border: 1px solid @color-secondary-action-outline;
+  border: 1px solid var(--color-secondary-action-outline);
   color: var(--color-primary-text);
   display: flex;
   flex-direction: column;
@@ -454,7 +454,7 @@
       &::after {
         content: "";
         height: 1px;
-        background: @color-secondary-action-outline;
+        background: var(--color-secondary-action-outline);
         width: 100%;
         position: relative;
         top: 7px;

@@ -1,11 +1,11 @@
 @import (reference) '~assets/styles/shared';
 
 .DefaultModalBorder {
-  border: @size-3 solid @color-secondary-action-outline;
+  border: @size-3 solid var(--color-secondary-action-outline);
   border-radius: @border-radius-extra-rounded;
 
   @media @breakpoint-mobile {
-    border: @size-2 solid @color-secondary-action-outline;
+    border: @size-2 solid var(--color-secondary-action-outline);
     border-radius: @border-radius-default;
   }
 }
@@ -164,7 +164,7 @@ div.Onboarding {
   .Message;
 
   align-items: center;
-  border: 3px solid @color-secondary-action-outline;
+  border: 3px solid var(--color-secondary-action-outline);
   min-height: 487px;
   justify-content: center;
   padding: @size-32 @size-40 @size-32;
@@ -172,7 +172,7 @@ div.Onboarding {
 
   @media @breakpoint-mobile {
     align-items: center;
-    border: 2px solid @color-secondary-action-outline;
+    border: 2px solid var(--color-secondary-action-outline);
     height: 100%;
     justify-content: center;
     margin: @size-32 @size-8;
@@ -277,7 +277,7 @@ div.Onboarding {
 
 .TitleHeader {
   align-items: center;
-  border-bottom: 1px solid @color-secondary-action-outline;
+  border-bottom: 1px solid var(--color-secondary-action-outline);
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
@@ -464,7 +464,7 @@ div.ButtonsRow:last-of-type {
         .text-12-bold;
 
         align-items: center;
-        border: 1px solid @color-secondary-action-outline;
+        border: 1px solid var(--color-secondary-action-outline);
         border-radius: @border-radius-default;
         color: var(--color-secondary-text);
         display: flex;
@@ -672,8 +672,8 @@ div.ButtonsRow:last-of-type {
     .text-16-bold;
 
     align-items: center;
-    background: @color-secondary-action;
-    border: 2px solid @color-secondary-action-outline;
+    background: var(--color-secondary-action);
+    border: 2px solid var(--color-secondary-action-outline);
     border-radius: @border-radius-rounded;
     cursor: pointer;
     color: var(--color-primary-text);
@@ -883,7 +883,7 @@ div.ButtonsRow:last-of-type {
     &:after {
       content: '';
 
-      border: 1px solid @color-secondary-action-outline;
+      border: 1px solid var(--color-secondary-action-outline);
       width: 100%;
     }
 
@@ -1405,7 +1405,7 @@ div.ButtonsRow:last-of-type {
 
       > div {
         padding: @size-12 0;
-        background: @color-secondary-action;
+        background: var(--color-secondary-action);
         border-radius: @size-6;
         display: flex;
         flex-direction: column;
@@ -1572,7 +1572,7 @@ div.ButtonsRow:last-of-type {
 
       > div > div > div > input {
         background: @color-dark-grey;
-        border: 1px solid @color-secondary-action;
+        border: 1px solid var(--color-secondary-action);
       }
     }
 
@@ -1646,8 +1646,8 @@ div.ButtonsRow:last-of-type {
     > input {
       .text-14;
 
-      background: @color-secondary-action;
-      border: 1px solid @color-secondary-action-outline;
+      background: var(--color-secondary-action);
+      border: 1px solid var(--color-secondary-action-outline);
       border-radius: @border-radius-default;
       color: var(--color-primary-text);
       height: @size-40;
@@ -1774,7 +1774,7 @@ div.ButtonsRow:last-of-type {
       .button;
 
       background: transparent;
-      border: 1px solid @color-secondary-action-outline;
+      border: 1px solid var(--color-secondary-action-outline);
       color: var(--color-primary-text);
       max-height: @button-height-default;
       padding: @size-8 @size-12;
@@ -1798,7 +1798,7 @@ div.ButtonsRow:last-of-type {
       .mono-10-bold;
 
       align-items: center;
-      background: @color-secondary-action;
+      background: var(--color-secondary-action);
       color: var(--color-primary-text);
       display: flex;
       text-transform: uppercase;
@@ -1830,12 +1830,12 @@ div.ButtonsRow:last-of-type {
       }
 
       > div {
-        background-color: @color-secondary-action;
+        background-color: var(--color-secondary-action);
         cursor: pointer;
         padding: 4px 8px;
         color: var(--color-primary-text);
         border-radius: @size-3;
-        border: @size-1 solid @color-secondary-action-outline;
+        border: @size-1 solid var(--color-secondary-action-outline);
         width: 100%;
 
         > div:first-of-type {
@@ -1880,7 +1880,7 @@ div.ButtonsRow:last-of-type {
       }
 
       div.GasCheckedButton {
-        background-color: @color-secondary-action;
+        background-color: var(--color-secondary-action);
         color: var(--color-primary-text);
         border: @size-1 solid var(--color-primary-action);
 
@@ -1922,7 +1922,7 @@ div.ButtonsRow:last-of-type {
         input[type='number'] {
           .mono-11;
 
-          border: @size-1 solid @color-secondary-action-outline;
+          border: @size-1 solid var(--color-secondary-action-outline);
           color: var(--color-primary-text);
           padding: @size-6 @size-16;
           -moz-appearance:textfield;
@@ -1936,7 +1936,7 @@ div.ButtonsRow:last-of-type {
 
       > div:nth-of-type(2) {
         margin: 0 @size-5;
-        border-right: @size-1 solid @color-secondary-action-outline;
+        border-right: @size-1 solid var(--color-secondary-action-outline);
         padding-left: @size-12;
 
         > div {
@@ -2011,7 +2011,7 @@ div.ButtonsRow:last-of-type {
   max-width: 842px;
 
   > main {
-    border-bottom: @size-1 solid @color-secondary-action-outline;
+    border-bottom: @size-1 solid var(--color-secondary-action-outline);
 
     > section {
       background-color: @color-active-background;
@@ -2095,7 +2095,7 @@ div.ButtonsRow:last-of-type {
   padding: 0 @size-20 @size-20;
 
   > header {
-    border-bottom: 1px solid @color-secondary-action-outline;
+    border-bottom: 1px solid var(--color-secondary-action-outline);
     margin: 0 -@size-24 @size-24;
 
     @media @breakpoint-mobile {
@@ -2212,7 +2212,7 @@ div.ButtonsRow:last-of-type {
 
     > div[class*='FormDropdown'] {
       > div {
-        border: 1px solid @color-secondary-action-outline;
+        border: 1px solid var(--color-secondary-action-outline);
         max-height: @size-32;
         min-height: @size-32;
         min-width: 0;
@@ -2435,7 +2435,7 @@ div.ButtonsRow:last-of-type {
       }
 
       > div {
-        border: 1px solid @color-secondary-action-outline;
+        border: 1px solid var(--color-secondary-action-outline);
         min-height: @size-24;
         max-height: @size-24;
         min-width: 0;
@@ -2525,7 +2525,7 @@ div.ButtonsRow:last-of-type {
 
   align-items: center;
   background: var(--color-page-background);
-  border: 1px solid @color-secondary-action-outline;
+  border: 1px solid var(--color-secondary-action-outline);
   color: var(--color-secondary-text);
   display: flex;
   font-family: monospace;
@@ -2555,8 +2555,8 @@ div.ButtonsRow:last-of-type {
     padding: @size-6;
     text-transform: uppercase;
     color: var(--color-primary-text);
-    background: @color-secondary-action;
-    border: 1px solid @color-secondary-action-outline;
+    background: var(--color-secondary-action);
+    border: 1px solid var(--color-secondary-action-outline);
     border-radius: @border-radius-default;
 
     @media @breakpoint-mobile {
@@ -2566,7 +2566,7 @@ div.ButtonsRow:last-of-type {
   }
 
   > button:hover {
-    background: lighten(@color-secondary-action, 5%);
+    background: lighten(var(--color-secondary-action), 5%);
   }
 }
 
@@ -3091,8 +3091,8 @@ div.ButtonsRow:last-of-type {
 
   > main {
     .text-14;
-    border-top: 1px solid @color-secondary-action-outline;
-    border-bottom: 1px solid @color-secondary-action-outline;
+    border-top: 1px solid var(--color-secondary-action-outline);
+    border-bottom: 1px solid var(--color-secondary-action-outline);
     color: var(--color-primary-text);
     display: grid;
     grid-template-columns: 1fr;
@@ -3143,7 +3143,7 @@ div.ButtonsRow:last-of-type {
   > ul {
     height: @size-32;
     > li {
-      background: @color-secondary-action;
+      background: var(--color-secondary-action);
       width: 50%;
 
       >  button {

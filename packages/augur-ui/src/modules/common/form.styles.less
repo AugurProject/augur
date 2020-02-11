@@ -116,8 +116,8 @@
 }
 
 .RadioStyleSelection {
-  background: @color-secondary-action;
-  border: @size-1 solid @color-secondary-action-outline;
+  background: var(--color-secondary-action);
+  border: @size-1 solid var(--color-secondary-action-outline);
   border-radius: @border-radius-default;
 
   > h5 {
@@ -154,7 +154,7 @@
 .LocationDisplay {
   align-items: center;
   border-radius: @border-radius-default;
-  border: @size-1 solid @color-secondary-action-outline;
+  border: @size-1 solid var(--color-secondary-action-outline);
   display: flex;
   justify-content: center;
   padding: @size-16 @size-12;
@@ -214,7 +214,7 @@
     width: @size-20;
 
     > rect {
-      stroke: @color-secondary-action-outline;
+      stroke: var(--color-secondary-action-outline);
     }
 
     > path {
@@ -231,7 +231,7 @@
 
 .CheckboxBarChecked {
   > svg > rect {
-    fill: @color-secondary-action;
+    fill: var(--color-secondary-action);
     fill-opacity: 0.3;
   }
 }
@@ -254,7 +254,7 @@
 
     // EmptyRadio
     > circle:first-of-type {
-      stroke: @color-secondary-action-outline;
+      stroke: var(--color-secondary-action-outline);
       fill: none;
     }
 
@@ -266,7 +266,7 @@
   &:hover {
     > svg {
       > circle:not(:first-of-type) {
-        fill: @color-secondary-action-outline;
+        fill: var(--color-secondary-action-outline);
       }
     }
   }
@@ -280,7 +280,7 @@
   &.Checked {
     > svg {
       > circle:first-of-type {
-        stroke: @color-secondary-action-outline;
+        stroke: var(--color-secondary-action-outline);
         fill: none;
       }
   
@@ -512,7 +512,7 @@
   }
 
   > section {
-    border-bottom: @size-1 solid @color-secondary-action-outline;
+    border-bottom: @size-1 solid var(--color-secondary-action-outline);
     margin-bottom: @size-32;
     padding-bottom: @size-32;
   }
@@ -605,7 +605,7 @@
   min-height: 154px;
   min-width: @size-210;
   border: @size-1 solid transparent;
-  box-shadow: 0 0 0 @size-1 @color-secondary-action-outline;
+  box-shadow: 0 0 0 @size-1 var(--color-secondary-action-outline);
 
   &.hover,
   &.active {
@@ -646,7 +646,7 @@
       width: @size-16;
 
       > path {
-        stroke: @color-secondary-action;
+        stroke: var(--color-secondary-action);
       }
     }
   }
@@ -828,7 +828,7 @@
 
       background-color: @color-dark-grey;
       border-radius: @border-radius-default;
-      border: @size-1 solid @color-secondary-action;
+      border: @size-1 solid var(--color-secondary-action);
       color: var(--color-primary-text);
       height: @size-44;
       min-width: @size-150;
@@ -839,12 +839,12 @@
       }
 
       &:hover {
-        border: @size-1 solid @color-secondary-action-outline;
+        border: @size-1 solid var(--color-secondary-action-outline);
         cursor: pointer;
       }
 
       &:focus {
-        border: @size-1 solid @color-secondary-action-outline;
+        border: @size-1 solid var(--color-secondary-action-outline);
       }
 
       &:disabled {
@@ -1161,7 +1161,7 @@ button.MaxDark {
   }
 
   &:focus-within {
-    border: @size-1 solid @color-secondary-action-outline;
+    border: @size-1 solid var(--color-secondary-action-outline);
   }
 
   input[type='number'] {
@@ -1228,7 +1228,7 @@ button.MaxDark {
     .DateInput_input__focused,
     .DateInput_input__focused_2 {
       border-radius: @border-radius-default;
-      border: @size-1 solid @color-secondary-action-outline;
+      border: @size-1 solid var(--color-secondary-action-outline);
       min-height: @size-44;
       min-width: @size-210;
 
@@ -1293,7 +1293,7 @@ button.MaxDark {
       .mono-12;
 
       background-color: @color-dark-grey;
-      border: @size-1 solid @color-secondary-action-outline;
+      border: @size-1 solid var(--color-secondary-action-outline);
       border-radius: @border-radius-default;
       color: var(--color-primary-text);
     }
@@ -1303,7 +1303,7 @@ button.MaxDark {
 
       background-color: @color-dark-grey;
       color: var(--color-primary-text);
-      border: @size-1 solid @color-secondary-action;
+      border: @size-1 solid var(--color-secondary-action);
     }
 
     .DateInput_1 {
@@ -1514,7 +1514,7 @@ button.MaxDark {
   > div {
     .text-18;
 
-    background-color: @color-secondary-action;
+    background-color: var(--color-secondary-action);
     box-shadow: 0 @size-2 @size-4 rgba(0, 0, 0, 0.5);
     color: var(--color-primary-text);
     display: none;
@@ -1592,7 +1592,7 @@ button.MaxDark {
     align-items: center;
     background-color: @color-dark-grey;
     border-radius: @border-radius-default;
-    border: @size-1 solid @color-secondary-action;
+    border: @size-1 solid var(--color-secondary-action);
     color: var(--color-primary-text);
     display: flex;
     height: @size-44;
@@ -1616,7 +1616,7 @@ button.MaxDark {
 
   > div {
     background: var(--color-primary-text);
-    border: @size-1 solid @color-secondary-action-outline;
+    border: @size-1 solid var(--color-secondary-action-outline);
     color: var(--color-primary-text);
     display: flex;
     left: 0;
@@ -1642,7 +1642,7 @@ button.MaxDark {
       .text-16-medium;
 
       align-items: center;
-      color: @color-secondary-action;
+      color: var(--color-secondary-action);
       display: flex;
       margin-top: @size-24;
     }
@@ -1914,8 +1914,8 @@ div.error > div > div > div > div > input {
     .text-10-bold;
 
     color: var(--color-secondary-text);
-    background: @color-secondary-action;
-    border: @size-1 solid @color-secondary-action-outline;
+    background: var(--color-secondary-action);
+    border: @size-1 solid var(--color-secondary-action-outline);
     border-radius: @border-radius-default;
     display: flex;
     justify-content: center;
@@ -1979,7 +1979,7 @@ div.error > div > div > div > div > input {
 .MigrateRepInfo {
   .text-14;
 
-  border: @size-1 solid @color-secondary-action-outline;
+  border: @size-1 solid var(--color-secondary-action-outline);
   box-sizing: border-box;
   border-radius: @size-8;
   color: var(--color-secondary-text);

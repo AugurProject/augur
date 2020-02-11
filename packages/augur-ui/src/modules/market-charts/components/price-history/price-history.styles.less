@@ -43,11 +43,11 @@
       }
 
       .highcharts-tick {
-        stroke: @color-secondary-action-outline;
+        stroke: var(--color-secondary-action-outline);
       }
 
       .highcharts-axis-line {
-        stroke: @color-secondary-action-outline;
+        stroke: var(--color-secondary-action-outline);
         transform: scaleX(1.15);
       }
 
@@ -57,14 +57,14 @@
       }
 
       .highcharts-xaxis-grid > .highcharts-grid-line {
-        stroke: fade(@color-secondary-action-outline, 25);
+        stroke: fade(var(--color-secondary-action-outline), 25);
       }
 
       .highcharts-yaxis-grid {
         .dashline-long;
 
         .highcharts-grid-line {
-          stroke: @color-secondary-action-outline;
+          stroke: var(--color-secondary-action-outline);
           transform: scaleX(1.15);
         }
       }

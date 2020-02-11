@@ -113,8 +113,8 @@ button.AddFunds {
   .mono-10-bold;
 
   align-items: center;
-  background: fade(@color-brand, 20%);
-  border: @size-1 solid @color-brand;
+  background: fade(var(--color-brand), 20%);
+  border: @size-1 solid var(--color-brand);
   border-radius: @border-radius-default;
   color: var(--color-primary-text);
   display: flex;
@@ -136,11 +136,11 @@ button.AddFunds {
     margin-left: @size-4;
 
     > circle {
-      fill: @color-brand;
+      fill: var(--color-brand);
     }
 
     > rect {
-      fill: @color-brand;
+      fill: var(--color-brand);
       height: 1px;
       width: @size-8;
     }
