@@ -599,6 +599,7 @@ export interface ReportingBondsViewProps {
   migrateRep: boolean;
   userAttoRep: BigNumber;
   owesRep: boolean;
+  openReporting: boolean;
 }
 
 interface ReportingBondsViewState {
@@ -735,6 +736,7 @@ export class ReportingBondsView extends Component<
       owesRep,
       Gnosis_ENABLED,
       ethToDaiRate,
+      openReporting
     } = this.props;
 
     const {
@@ -755,6 +757,7 @@ export class ReportingBondsView extends Component<
       ? 'REP to migrate'
       : 'Initial Reporter Stake';
 
+    repLabel = openReporting ? 'Open Reporting winning Stake' : repLabel;
     if (owesRep) {
       repLabel = 'REP needed';
     }
