@@ -184,19 +184,8 @@ export class ZeroXOrders extends AbstractTable {
     await this.bulkUpsertDocuments(documents);
     for (const d of documents) {
       const eventType = filledOrders[d.orderHash] ? OrderEventType.Fill : OrderEventType.Create;
-      if (eventType === OrderEventType.Create) {
-        const orders: OrderInfo[] = await this.augur.zeroX.getOrders();
-        const orderExists = Boolean(orders.find(order => order.orderHash === d.orderHash));
-
-        // on Create, if we already have the orderHash in the zeroXOrders table don't emit updated event
-        if (!orderExists) {
-          // New Orders
-          this.augur.events.emit('DB:updated:ZeroXOrders', {eventType, orderId: d.orderHash,...d});
-        }
-      } else {
-        this.augur.events.emit('DB:updated:ZeroXOrders', {eventType, orderId: d.orderHash,...d});
-      }
       this.augur.events.emit('OrderEvent', {eventType, orderId: d.orderHash,...d});
+      this.augur.events.emit('DB:updated:ZeroXOrders', {eventType, orderId: d.orderHash,...d});
     }
   }
 
@@ -214,7 +203,6 @@ export class ZeroXOrders extends AbstractTable {
       });
       _.each(documents, (doc) => { delete this.pastOrders[doc.orderHash] });
       await this.bulkUpsertDocuments(documents);
-      this.augur.events.emit('DB:get:ZeroXOrders', marketIds);
       for (const d of documents) {
         this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Create, ...d});
       }
