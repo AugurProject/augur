@@ -64,6 +64,7 @@ export class BlockAndLogStreamerSyncStrategy extends AbstractSyncStrategy
     private listenForNewBlocks: (
       callback: (block: Block) => Promise<void>
     ) => void,
+    protected parseLogs:(logs: Log[]) => ParsedLog[],
     private blockWindowWidth = 5
   ) {
     super(getLogs, buildFilter, onLogsAdded);
@@ -72,7 +73,8 @@ export class BlockAndLogStreamerSyncStrategy extends AbstractSyncStrategy
 
   static create(
     provider: EthersProvider,
-    logFilterAggregator: LogFilterAggregatorInterface
+    logFilterAggregator: LogFilterAggregatorInterface,
+    parseLogs:(logs: Log[]) => ParsedLog[],
   ) {
     const {
       getLogs,
@@ -92,7 +94,8 @@ export class BlockAndLogStreamerSyncStrategy extends AbstractSyncStrategy
       logFilterAggregator.buildFilter,
       logFilterAggregator.onLogsAdded,
       blockAndLogStreamer,
-      startPollingForBlocks
+      startPollingForBlocks,
+      parseLogs,
     );
   }
 
@@ -171,7 +174,7 @@ export class BlockAndLogStreamerSyncStrategy extends AbstractSyncStrategy
         log => parseInt(currentBlock.number, 16) === log.blockNumber
       );
       const currentBlockNumber = parseInt(currentBlock.number, 16);
-      await this.onLogsAdded(currentBlockNumber, logsToEmit);
+      await this.onLogsAdded(currentBlockNumber, this.parseLogs(logsToEmit));
     }
   };
 

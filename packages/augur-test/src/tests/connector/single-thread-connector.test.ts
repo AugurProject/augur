@@ -42,7 +42,8 @@ jest.mock('@augurproject/sdk/build/state/create-api', () => {
 
       const blockAndLogStreamerListener = BlockAndLogStreamerSyncStrategy.create(
         provider,
-        logFilterAggregator
+        logFilterAggregator,
+        john.augur.contractEvents.parseLogs
       );
 
       const bulkSyncStrategy = new BulkSyncStrategy(
