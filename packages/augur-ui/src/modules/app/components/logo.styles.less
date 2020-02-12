@@ -178,3 +178,32 @@
   }
 }
 
+:root[theme="BETTING"] {
+  .Logo {
+    > span {
+      color: var(--color-module-background);
+    }
+  }
+
+  .LoadingLogo {
+    svg {
+      :global {
+        .outer-lines {
+          stroke: var(--color-module-background);
+        }
+
+        .inner-lines {
+          stroke: var(--color-module-background);
+        }
+
+        .inner-bottom-line {
+          stroke: var(--color-module-background);
+        }
+
+        .mask {
+          fill: var(--color-primary-text);
+        }
+      }
+    }
+  }
+}
