@@ -151,6 +151,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
 
     // GAS error in DAI [Gnosis]
     if (
+      !tradingTutorial &&
       Gnosis_ENABLED &&
       totalCost &&
       createBigNumber(gasCostDai).gte(createBigNumber(availableDai))
@@ -164,6 +165,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
 
     // GAS error in ETH
     if (
+      !tradingTutorial &&
       !Gnosis_ENABLED &&
       totalCost &&
       createBigNumber(gasCost).gte(createBigNumber(availableEth))
@@ -176,6 +178,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     }
 
     if (
+      !tradingTutorial &&
       totalCost &&
       createBigNumber(potentialDaiLoss.fullPrecision).gt(
         createBigNumber(availableDai)
@@ -188,7 +191,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       };
     }
 
-    if (GnosisUnavailable) {
+    if (GnosisUnavailable && !tradingTutorial) {
       messages = {
         header: 'Waiting For Gnosis Safe',
         type: WARNING,
