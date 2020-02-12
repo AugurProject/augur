@@ -2043,16 +2043,24 @@ export function addScripts(flash: FlashSession) {
         description: 'Use fake time (TimeControlled) instead of real time',
         flag: true,
       },
+      {
+        name: 'detach',
+        abbr: 'D',
+        description: 'Do not stop dockers after running command and do not wait for user input before exiting',
+        flag: true,
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const dev = Boolean(args.dev);
       const fake = Boolean(args.fake);
+      const detach = Boolean(args.detach);
 
       spawnSync('docker', ['pull', 'augurproject/safe-relay-service_web:latest']);
       spawnSync('docker', ['pull', '0xorg/mesh:latest']);
 
       this.log(`Deploy contracts: ${dev}`);
       this.log(`Use fake time: ${fake}`);
+      this.log(`Detach: ${detach}`);
 
       try {
         if (dev) {
@@ -2088,11 +2096,16 @@ export function addScripts(flash: FlashSession) {
           }
         });
 
-        await awaitUserInput('Running dockers. Press ENTER to quit:');
+        if (!detach) {
+          await awaitUserInput('Running dockers. Press ENTER to quit:');
+        }
+
       } finally {
-        this.log('Stopping dockers');
-        await spawnSync('docker', ['kill', 'geth']);
-        await spawnSync('yarn', ['workspace', '@augurproject/gnosis-relay-api', 'kill-relay']);
+        if (!detach) {
+          this.log('Stopping dockers');
+          await spawnSync('docker', ['kill', 'geth']);
+          await spawnSync('yarn', ['workspace', '@augurproject/gnosis-relay-api', 'kill-relay']);
+        }
       }
     }
   });

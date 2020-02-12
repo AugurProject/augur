@@ -497,7 +497,7 @@ jobs:
           vstsFeed: npmPackages
       - bash: |
           set -exuo pipefail
-          DETACH="true" yarn docker:all false false
+          yarn docker:all --detach
           sleep 30
         displayName: Run 3rd Party Dockers
       - bash: |
