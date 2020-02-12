@@ -713,7 +713,7 @@ export const LinearPropertyLabel = ({
         })}
       >
         {value && value.formatted
-          ? `${showDenomination || useFull ? value.full : value.formatted}`
+          ? `${showDenomination || useFull ? value.full : value.roundedFormatted}`
           : value}
       </span>
     )}
@@ -730,7 +730,7 @@ export const LinearPropertyLabel = ({
         })}
       >
         {value && value.formatted
-          ? `${showDenomination || useFull ? value.full : value.formatted}`
+          ? `${showDenomination || useFull ? value.full : value.roundedFormatted}`
           : value}
       </span>
     )}
