@@ -67,6 +67,7 @@ export class BlockAndLogStreamerSyncStrategy extends AbstractSyncStrategy
     private blockWindowWidth = 5
   ) {
     super(getLogs, buildFilter, onLogsAdded);
+    this.listenForBlockAdded(this.onBlockAdded);
   }
 
   static create(
