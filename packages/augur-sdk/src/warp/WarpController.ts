@@ -84,6 +84,7 @@ export const databasesToSync: RollupDescription = [
 ];
 
 export class WarpController {
+  private checkpointCreationInProgress = false;
   private static DEFAULT_NODE_TYPE = { format: 'dag-pb', hashAlg: 'sha2-256' };
   checkpoints: Checkpoints;
 
@@ -127,8 +128,12 @@ export class WarpController {
   }
 
   async createAllCheckpoints(highestBlock: Block) {
+    // Skip this warpSyncFile run. Will get em' next time.
+    if(this.checkpointCreationInProgress) return;
+    this.checkpointCreationInProgress = true;
     await this.createInitialCheckpoint();
     await this.createCheckpoints(highestBlock);
+    this.checkpointCreationInProgress = false;
 
     // For reproducibility we need hash consistent block number ranges for each warp sync.
     const [
