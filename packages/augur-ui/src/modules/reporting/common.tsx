@@ -703,8 +703,9 @@ export class ReportingBondsView extends Component<
     } else {
       this.setState({ stakeError: '' });
       if (
+        isScalar &&
         this.state.scalarError === '' &&
-        ((isScalar && inputScalarOutcome !== '') || !isScalar)
+        inputScalarOutcome !== ''
       ) {
         disabled = true;
       }
