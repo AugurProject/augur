@@ -51,22 +51,21 @@ export class Controller {
     });
   };
 
-  private notifyNewBlockEvent = async (): Promise<void> => {
+  private notifyNewBlockEvent = async (blockNumber: number): Promise<void> => {
     let lowestBlock = await (await this
       .db).syncStatus.getLowestSyncingBlockForAllDBs();
-    const block = await this.getLatestBlock();
 
     if (lowestBlock === -1) {
-      lowestBlock = block.number;
+      lowestBlock = blockNumber;
     }
 
-    const blocksBehindCurrent = block.number - lowestBlock;
-    const percentSynced = ((lowestBlock / block.number) * 100).toFixed(4);
+    const blocksBehindCurrent = blockNumber - lowestBlock;
+    const percentSynced = ((lowestBlock / blockNumber) * 100).toFixed(4);
 
     const timestamp = await this.augur.getTimestamp();
     this.augur.events.emit(SubscriptionEventName.NewBlock, {
       eventName: SubscriptionEventName.NewBlock,
-      highestAvailableBlockNumber: block.number,
+      highestAvailableBlockNumber: blockNumber,
       lastSyncedBlockNumber: lowestBlock,
       blocksBehindCurrent,
       percentSynced,
