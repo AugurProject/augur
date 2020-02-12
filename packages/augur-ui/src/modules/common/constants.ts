@@ -556,7 +556,7 @@ export const MODAL_SIGNUP = 'MODAL_SIGNUP';
 export const MODAL_CONNECT = 'MODAL_CONNECT';
 export const MODAL_LOADING = 'MODAL_LOADING';
 export const MODAL_ACCOUNT_CREATED = 'MODAL_ACCOUNT_CREATED';
-export const MODAL_WALLET_ERROR = 'MODAL_WALLET_ERROR';
+export const MODAL_ERROR = 'MODAL_ERROR';
 
 // transactions parameter names
 export const TX_ORDER_ID = 'orderId';

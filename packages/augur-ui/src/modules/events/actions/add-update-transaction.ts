@@ -20,7 +20,7 @@ import {
   YES_NO,
   PUBLICFILLORDER,
   BUYPARTICIPATIONTOKENS,
-  MODAL_WALLET_ERROR,
+  MODAL_ERROR,
 } from 'modules/common/constants';
 import { CreateMarketData } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
@@ -64,7 +64,7 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
       dispatch(updateAppStatus(GNOSIS_STATUS, GnosisSafeState.ERROR));
 
       dispatch(updateModal({
-        type: MODAL_WALLET_ERROR,
+        type: MODAL_ERROR,
         error: getRelayerDownErrorMessage(loginAccount.meta.accountType, hasEth),
         showDiscordLink: false,
         showAddFundsHelp: !hasEth,

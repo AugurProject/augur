@@ -38,7 +38,7 @@ import {
   DOINITIALREPORT,
   PUBLICFILLORDER,
   PUBLICTRADE,
-  MODAL_WALLET_ERROR,
+  MODAL_ERROR,
   REDEEMSTAKE,
 } from 'modules/common/constants';
 import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
@@ -164,7 +164,7 @@ export const handleGnosisStateUpdate = (response) => async(
       const hasEth = (await loginAccount.meta.signer.provider.getBalance(loginAccount.meta.signer._address)).gt(0);
 
       dispatch(updateModal({
-        type: MODAL_WALLET_ERROR,
+        type: MODAL_ERROR,
         error: getRelayerDownErrorMessage(loginAccount.meta.accountType, hasEth),
         showDiscordLink: false,
         showAddFundsHelp: !hasEth,
