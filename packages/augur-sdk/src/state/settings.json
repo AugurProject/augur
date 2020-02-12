@@ -2,10 +2,12 @@
     "blockstreamDelay": 10,
     "chunkSize": 100000,
     "gnosisRelayURLs": {
-        "4": "https://safe-relay.rinkeby.gnosis.pm/api/"
+        "4": "https://safe-relay.rinkeby.gnosis.pm/api/",
+        "42": "https://gnosis.kovan.augur.net/api/"
     },
     "ethNodeURLs": {
-        "4": "https://eth-rinkeby.alchemyapi.io/jsonrpc/Kd37_uEmJGwU6pYq6jrXaJXXi8u9IoOM"
+        "4": "https://eth-rinkeby.alchemyapi.io/jsonrpc/Kd37_uEmJGwU6pYq6jrXaJXXi8u9IoOM",
+        "42": "https://eth-kovan.alchemyapi.io/jsonrpc/1FomA6seLdWDvpIRvL9J5NhwPHLIGbWA"
     },
     "meshClientURLs": {
         "12346": "ws://localhost:60557",

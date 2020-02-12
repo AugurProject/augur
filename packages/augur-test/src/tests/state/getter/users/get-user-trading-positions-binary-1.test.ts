@@ -1,10 +1,18 @@
-import { API } from '@augurproject/sdk/build/state/getter/API';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
-import { ContractAPI} from '@augurproject/tools';
-import { makeDbMock} from '../../../../libs';
-import { TestEthersProvider } from '../../../../libs/TestEthersProvider';
-import { _beforeAll, _beforeEach, processTrades, SHORT } from './common';
-import { UTPTradeData, LONG, YES } from './common';
+import { API } from '@augurproject/sdk/build/state/getter/API';
+import { ContractAPI } from '@augurproject/tools';
+import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
+import { makeDbMock } from '../../../../libs';
+
+import {
+  _beforeAll,
+  _beforeEach,
+  LONG,
+  processTrades,
+  SHORT,
+  UTPTradeData,
+  YES,
+} from './common';
 
 const mock = makeDbMock();
 

@@ -1,4 +1,5 @@
 import { ContractAddresses, getStartingBlockForNetwork, NetworkId, getAddressesForNetwork } from '@augurproject/artifacts';
+import { UploadBlockNumbers } from '@augurproject/artifacts/build';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { EthersSigner } from 'contract-dependencies-ethers';
 import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis';
@@ -7,10 +8,15 @@ import { ContractEvents } from '../api/ContractEvents';
 import { ZeroX } from '../api/ZeroX';
 import { Augur } from '../Augur';
 import { BaseConnector, EmptyConnector } from '../connector';
+import { SubscriptionEventName } from '../constants';
+import { WarpController } from '../warp/WarpController';
 import { Controller } from './Controller';
-import { BlockAndLogStreamerListener } from './db/BlockAndLogStreamerListener';
 import { DB } from './db/DB';
 import { API } from './getter/API';
+import { LogFilterAggregator } from './logs/LogFilterAggregator';
+import { BlockAndLogStreamerSyncStrategy } from './sync/BlockAndLogStreamerSyncStrategy';
+import { BulkSyncStrategy } from './sync/BulkSyncStrategy';
+import { WarpSyncStrategy } from './sync/WarpSyncStrategy';
 
 export interface SDKConfiguration {
   networkId: NetworkId,
@@ -47,6 +53,42 @@ export interface SDKConfiguration {
   addresses?: ContractAddresses
 };
 
+export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: EthersProvider, logFilterAggregator: LogFilterAggregator) {
+  return async () => {
+    const networkId = await provider.getNetworkId();
+    const uploadBlockNumber = UploadBlockNumbers[networkId];
+    const uploadBlockHeaders = await provider.getBlock(uploadBlockNumber);
+    const currentBlockNumber = await provider.getBlockNumber();
+
+    const bulkSyncStrategy = new BulkSyncStrategy(provider.getLogs, logFilterAggregator.buildFilter, logFilterAggregator.onLogsAdded, client.contractEvents.parseLogs);
+    const blockAndLogStreamerSyncStrategy = BlockAndLogStreamerSyncStrategy.create(
+      provider,
+      logFilterAggregator,
+      client.contractEvents.parseLogs,
+    );
+
+    const warpController = await WarpController.create((await db), provider, uploadBlockHeaders);
+    const warpSyncStrategy = new WarpSyncStrategy(warpController, logFilterAggregator.onLogsAdded);
+
+    const endWarpSyncBlockNumber = await warpSyncStrategy.start();
+    const endBulkSyncBlockNumber = await bulkSyncStrategy.start(endWarpSyncBlockNumber || uploadBlockNumber, currentBlockNumber);
+
+    console.log('Syncing Complete - SDK Ready');
+    client.events.emit(SubscriptionEventName.SDKReady, {
+      eventName: SubscriptionEventName.SDKReady,
+    });
+
+    const endBulkSyncBlockNumberHeader = await provider.getBlock(endBulkSyncBlockNumber);
+    warpController.createAllCheckpoints(endBulkSyncBlockNumberHeader);
+
+    blockAndLogStreamerSyncStrategy.listenForBlockRemoved(logFilterAggregator.onBlockRemoved);
+
+    // Check on each new block to see if we need to generate a checkpoint.
+    client.events.on(SubscriptionEventName.NewBlock, warpController.onNewBlock);
+    blockAndLogStreamerSyncStrategy.start(endBulkSyncBlockNumber);
+  };
+}
+
 export async function createClient(
   config: SDKConfiguration,
   connector: BaseConnector,
@@ -55,7 +97,7 @@ export async function createClient(
   provider?: EthersProvider,
   enableFlexSearch = false,
   createBrowserMesh?: (config: SDKConfiguration, zeroX: ZeroX) => void
-  ): Promise<Augur> {
+): Promise<Augur> {
 
   const ethersProvider = provider || new EthersProvider( new JsonRpcProvider(config.ethereum.http), 10, 0, 40);
   const addresses = config.addresses || getAddressesForNetwork(config.networkId);
@@ -95,7 +137,7 @@ export async function createClient(
   return client;
 }
 
-export async function createServer(config: SDKConfiguration, client?: Augur, account?: string): Promise<{ api: API, controller: Controller }> {
+export async function createServer(config: SDKConfiguration, client?: Augur, account?: string): Promise<{ api: API, controller: Controller, sync: () => Promise<void> }> {
   console.log('Creating Server');
   // Validate the config -- check that the syncing key exits and use defaults if not
   config = {
@@ -125,43 +167,39 @@ export async function createServer(config: SDKConfiguration, client?: Augur, acc
     client.addresses.ShareToken,
     client.addresses.Exchange
   );
-  const blockAndLogStreamerListener = BlockAndLogStreamerListener.create(
-    ethersProvider,
+
+  const logFilterAggregator = LogFilterAggregator.create(
     contractEvents.getEventTopics,
     contractEvents.parseLogs,
     contractEvents.getEventContractAddress
   );
   const db = DB.createAndInitializeDB(
     Number(config.networkId),
-    config.syncing.blockstreamDelay,
-    getStartingBlockForNetwork(config.networkId),
+    logFilterAggregator,
     client,
-    blockAndLogStreamerListener,
     config.zeroX && (config.zeroX.mesh && config.zeroX.mesh.enabled || config.zeroX.rpc && config.zeroX.rpc.enabled)
   );
-  const controller = new Controller(client, db, blockAndLogStreamerListener);
+
+  const sync = buildSyncStrategies(client, db, ethersProvider, logFilterAggregator)
+
+  const controller = new Controller(client, db, logFilterAggregator);
   const api = new API(client, db);
 
-  return { api, controller };
+  return { api, controller, sync };
 }
 
 export async function startServerFromClient(config: SDKConfiguration, client?: Augur ): Promise<API> {
-  const { api, controller } = await createServer(config, client);
+  const { api, sync } = await createServer(config, client);
 
-  controller.run().catch((err) => {
-    // TODO: PG needs to handle what happens if the server side of the connector dies
-    console.log('Error starting up Augur syncing services');
-  });
+  sync();
 
   return api;
 }
 
 export async function startServer(config: SDKConfiguration, account?: string): Promise<API> {
-  const { api, controller } = await createServer(config, undefined, account);
+  const { api, sync } = await createServer(config, undefined, account);
 
-  await controller.run();
+  sync();
 
   return api;
 }
-
-

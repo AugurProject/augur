@@ -1,4 +1,4 @@
-import { ACCOUNTS, FlashSession, addScripts } from '@augurproject/tools';
+import { ACCOUNTS, addScripts, FlashSession } from '@augurproject/tools';
 
 let flash: FlashSession;
 

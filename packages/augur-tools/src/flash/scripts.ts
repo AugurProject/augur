@@ -1906,7 +1906,7 @@ export function addScripts(flash: FlashSession) {
         this.log(`Created market ${marketId}`);
       }
 
-      await (await this.db).sync(user.augur, 100000, 0);
+      await sleep(2000);
       const marketInfo = (await this.api.route('getMarketsInfo', {
         marketIds: [marketId],
       }))[0];
@@ -1952,7 +1952,7 @@ export function addScripts(flash: FlashSession) {
         this.log(`Created market ${marketId}`);
       }
 
-      await (await this.db).sync(user.augur, 100000, 0);
+      await sleep(2000);
       const marketInfo = (await this.api.route('getMarketsInfo', {
         marketIds: [marketId],
       }))[0];

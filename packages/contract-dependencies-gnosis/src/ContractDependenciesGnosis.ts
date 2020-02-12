@@ -43,7 +43,7 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
     if (this._currentNonce === -1) {
       this._currentNonce = Number(await this.gnosisSafe.nonce());
     }
-    
+
     const result = await this.ethersTransactionToRelayTransaction(this._currentNonce, task.tx, task.operation);
     this._currentNonce++;
     return result;
@@ -185,15 +185,13 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
       txHash = await this.execTransactionDirectly(relayTransaction);
     }
 
-    let response = await this.provider.getTransaction(txHash);
-
     this.onTransactionStatusChanged(
       txMetadata,
       TransactionStatus.PENDING,
       txHash
     );
 
-    return response.wait();
+    return await this.provider.waitForTransaction(txHash);
   }
 
   async sendDelegateTransaction(
@@ -218,8 +216,7 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
       TransactionStatus.PENDING,
       txHash
     );
-    const response = await this.provider.getTransaction(txHash);
-    return response.wait();
+    return await this.provider.waitForTransaction(txHash);
   }
 
   async estimateGas(transaction: Transaction<BigNumber>): Promise<BigNumber> {
