@@ -128,7 +128,9 @@ describe('BlockstreamListener', () => {
       deps.buildFilter,
       deps.onLogsAdded,
       deps.blockAndLogStreamer,
-      deps.listenForNewBlocks
+      deps.listenForNewBlocks,
+      parseLogs
+
     );
   });
 

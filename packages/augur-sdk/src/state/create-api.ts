@@ -63,7 +63,8 @@ export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: Ethe
     const bulkSyncStrategy = new BulkSyncStrategy(provider.getLogs, logFilterAggregator.buildFilter, logFilterAggregator.onLogsAdded, client.contractEvents.parseLogs);
     const blockAndLogStreamerSyncStrategy = BlockAndLogStreamerSyncStrategy.create(
       provider,
-      logFilterAggregator
+      logFilterAggregator,
+      client.contractEvents.parseLogs,
     );
 
     const warpController = await WarpController.create((await db), provider, uploadBlockHeaders);
