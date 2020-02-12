@@ -340,30 +340,28 @@ export class WarpController {
   }
 
   async createCheckpoints(end: Block) {
-    const mostRecentCheckpoint = await this.db.warpCheckpoints.getMostRecentCheckpoint();
-    const [
-      newBeginBlock,
-      newEndBlock,
-    ] = await this.checkpoints.calculateBoundary(
-      mostRecentCheckpoint.begin,
-      end,
-    );
+    let endBlock = (await this.db.warpCheckpoints.getMostRecentCheckpoint()).begin;
+    while(!this.checkpoints.isSameDay(endBlock, end)) {
+      const mostRecentCheckpoint = await this.db.warpCheckpoints.getMostRecentCheckpoint();
+      const [
+        newBeginBlock,
+        newEndBlock,
+      ] = await this.checkpoints.calculateBoundary(
+        mostRecentCheckpoint.begin,
+        end,
+      );
 
-    // This is where we actually create the checkpoint.
-    const checkPointIPFSObject = await this.createCheckpoint(
-      mostRecentCheckpoint.begin,
-      newBeginBlock,
-    );
-    await this.db.warpCheckpoints.createCheckpoint(
-      newBeginBlock,
-      newEndBlock,
-      checkPointIPFSObject,
-    );
-
-    if (this.checkpoints.isSameDay(newEndBlock, end)) {
-      return;
-    } else {
-      return this.createCheckpoints(end);
+      // This is where we actually create the checkpoint.
+      const checkPointIPFSObject = await this.createCheckpoint(
+        mostRecentCheckpoint.begin,
+        newBeginBlock,
+      );
+      await this.db.warpCheckpoints.createCheckpoint(
+        newBeginBlock,
+        newEndBlock,
+        checkPointIPFSObject,
+      );
+      endBlock = newEndBlock;
     }
   }
 
