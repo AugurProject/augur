@@ -141,6 +141,7 @@
         }
       }
 
+      // Used in TradingForm
       &.AdvancedShown {
         display: grid;
         grid-gap: @size-8 @size-4;
@@ -243,10 +244,13 @@
               > div > div > div > div[class*="DateInput_1"] {
                 width: 100%;
 
+                // Select Date
                 > input[class*="DateInput_input"] {
                   height: @size-22;
                   width: 100%;
                   cursor: pointer;
+                  background: @color-secondary-action;
+
                   &:hover {
                     border: @size-1 solid @color-secondary-action-outline;
                   }
@@ -257,11 +261,13 @@
               } 
             }
 
+            // Select Time
             > div[class*="TimeSelector"] {
               margin-right: 0;
 
               > button {
                 height: @size-22;
+                background: @color-secondary-action;
 
                 &:hover {
                   border: @size-1 solid @color-secondary-action-outline;
@@ -272,12 +278,14 @@
               }
             }
 
+            // Select Timezones
             > section[class*="Timezones"] {
               grid-column: 1 / span 2;
 
               > div[class*="TextInput"] > div > input {
                 height: @size-22;
                 width: 100%;
+                background: @color-secondary-action;
 
                 &:hover {
                   border: @size-1 solid @color-secondary-action-outline;
