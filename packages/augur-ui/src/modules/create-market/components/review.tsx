@@ -51,7 +51,7 @@ interface ReviewProps {
   Gnosis_ENABLED: boolean;
   ethToDaiRate: BigNumber;
   setDisableCreate: Function;
-  showAddFundsModal; Function;
+  showAddFundsModal: Function;
 }
 
 interface ReviewState {

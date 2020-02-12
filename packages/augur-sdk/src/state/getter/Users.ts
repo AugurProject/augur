@@ -481,7 +481,7 @@ export class Users {
     const redeemedPositions =
       initialReporterReedeemedLogs.length + successfulDisputes;
 
-    const orderFilledLogs = await db.OrderEvent.where(
+    const orderFilledLogs = await db.ParsedOrderEvent.where(
       '[universe+eventType+timestamp]'
     )
       .between(
@@ -581,11 +581,11 @@ export class Users {
 
     let allOrders: ParsedOrderEventLog[];
     if (params.marketId) {
-      allOrders = await db.OrderEvent.where('[market+eventType]')
+      allOrders = await db.ParsedOrderEvent.where('[market+eventType]')
         .equals([params.marketId, OrderEventType.Fill])
         .toArray();
     } else {
-      allOrders = await db.OrderEvent.where('eventType')
+      allOrders = await db.ParsedOrderEvent.where('eventType')
         .equals(OrderEventType.Fill)
         .toArray();
     }
@@ -615,7 +615,7 @@ export class Users {
       .toArray();
     const marketFinalizedByMarket = _.keyBy(marketFinalizedResults, 'market');
 
-    const shareTokenBalances = await db.ShareTokenBalanceChanged.where(
+    const shareTokenBalances = await db.ShareTokenBalanceChangedRollup.where(
       '[universe+account]'
     )
       .equals([params.universe, params.account])
@@ -686,7 +686,7 @@ export class Users {
       }
     );
     // Create mapping for market/outcome balances
-    const tokenBalanceChangedLogs = await db.ShareTokenBalanceChanged.where(
+    const tokenBalanceChangedLogs = await db.ShareTokenBalanceChangedRollup.where(
       '[account+market+outcome]'
     )
       .between(
@@ -715,7 +715,7 @@ export class Users {
       marketTradingPositions[marketData.market].unclaimedProfit = '0';
       if (
         marketData.reportingState === MarketReportingState.Finalized ||
-        MarketReportingState.AwaitingFinalization
+        marketData.reportingState === MarketReportingState.AwaitingFinalization
       ) {
         if (marketData.tentativeWinningPayoutNumerators) {
           for (const tentativeWinningPayoutNumerator in marketData.tentativeWinningPayoutNumerators) {
@@ -877,7 +877,7 @@ export class Users {
       profitLossOrders
     );
 
-    const orders = await db.OrderEvent.where('[universe+eventType+timestamp]')
+    const orders = await db.ParsedOrderEvent.where('[universe+eventType+timestamp]')
       .between(
         [params.universe, OrderEventType.Fill, `0x${startTime.toString(16)}`],
         [params.universe, OrderEventType.Fill, `0x${endTime.toString(16)}`],

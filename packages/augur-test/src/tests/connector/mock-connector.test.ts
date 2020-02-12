@@ -1,5 +1,5 @@
-import { makeConnectorMock } from "../../libs";
-import { Getters } from "@augurproject/sdk";
+import { Getters } from '@augurproject/sdk';
+import { makeConnectorMock } from '../../libs';
 
 const connector = makeConnectorMock([]);
 

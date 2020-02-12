@@ -64,11 +64,11 @@
       box-shadow: 0 @size-8 @size-8 @color-dark-grey;
       display: none;
       margin-top: @size-2;
-  
+
       &.active {
         display: block;
       }
-  
+
       > button {
         color: @color-primary-text;
         background-color: @color-secondary-action;
@@ -77,11 +77,11 @@
         transition: background-color 0.15s ease;
         white-space: nowrap;
         width: 100%;
-  
+
         &:hover {
           background-color: @color-secondary-action-outline;
         }
-  
+
         &:not(:last-of-type)::before {
           background: fade(@color-secondary-action-outline, 50%);
           bottom: 0;
@@ -148,22 +148,22 @@
     > div:first-of-type {
       margin-top: @size-4;
     }
-  
+
     > div {
       width: 100%;
     }
-  
+
     > div > button {
       .text-12-medium;
-  
+
       padding: 0 @size-12;
       height: @size-32;
-  
+
       @media @breakpoint-mobile {
         .text-12-bold;
         height: @size-48;
       }
-  
+
       &::before {
         left: @size-12;
         right: @size-12;
@@ -205,7 +205,7 @@
       display: flex;
       border-right: @size-1 solid @color-secondary-action-outline;
       padding: @size-5 @size-8 @size-5 0;
-      
+
       @media @breakpoint-mobile {
         border-right: @size-1 solid @color-secondary-action-outline;
         padding: @size-9 @size-8 @size-9 0;
@@ -228,23 +228,23 @@
     > div:first-of-type {
       margin-top: @size-2;
     }
-  
+
     > div {
       width: 100%;
     }
-  
+
     > div > button {
       .text-10-semi-bold;
-  
+
       padding: 0 @size-8;
       height: @size-24;
       text-transform: uppercase;
-  
+
       @media @breakpoint-mobile {
         .text-10-bold;
         height: @size-40;
       }
-  
+
       &::before {
         left: @size-8;
         right: @size-8;
@@ -353,6 +353,12 @@
 
       > button {
         color: @color-primary-text;
+
+        > span {
+          .text-9;
+
+          color: @color-secondary-text;
+        }
       }
 
       & + li {
@@ -379,6 +385,12 @@
       height: 100%;
       padding: @size-4 @size-16;
       text-transform: uppercase;
+
+      > span {
+        .text-9;
+
+        color: @color-secondary-text;
+      }
     }
   }
 }

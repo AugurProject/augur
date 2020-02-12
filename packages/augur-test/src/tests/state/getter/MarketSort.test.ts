@@ -1,28 +1,29 @@
-import { makeDbMock, makeProvider, MockGnosisRelayAPI } from '../../../libs';
-import {
-  ContractAPI,
-  ACCOUNTS,
-  loadSeedFile,
-  defaultSeedPath,
-} from '@augurproject/tools';
-import { DB } from '@augurproject/sdk/build/state/db/DB';
-import { BigNumber } from 'bignumber.js';
-import { stringTo32ByteHex } from '../../../libs/Utils';
 import { WSClient } from '@0x/mesh-rpc-client';
-import * as _ from 'lodash';
-import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { ContractAddresses } from '@augurproject/artifacts';
-import { Connectors, BrowserMesh } from '@augurproject/sdk';
-import { MockMeshServer, stopServer } from '../../../libs/MockMeshServer';
-import { MockBrowserMesh } from '../../../libs/MockBrowserMesh';
-import { API } from '@augurproject/sdk/build/state/getter/API';
-import { formatBytes32String } from 'ethers/utils';
 import { sleep } from '@augurproject/core/build/libraries/HelperFunctions';
+import { EthersProvider } from '@augurproject/ethersjs-provider';
+import { BrowserMesh, Connectors } from '@augurproject/sdk';
+import { DB } from '@augurproject/sdk/build/state/db/DB';
+import { API } from '@augurproject/sdk/build/state/getter/API';
+import { BulkSyncStrategy } from '@augurproject/sdk/build/state/sync/BulkSyncStrategy';
+import {
+  ACCOUNTS,
+  ContractAPI,
+  defaultSeedPath,
+  loadSeedFile,
+} from '@augurproject/tools';
+import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
+import { BigNumber } from 'bignumber.js';
+import { formatBytes32String } from 'ethers/utils';
+import { makeDbMock, makeProvider, MockGnosisRelayAPI } from '../../../libs';
+import { MockBrowserMesh } from '../../../libs/MockBrowserMesh';
+import { MockMeshServer, stopServer } from '../../../libs/MockMeshServer';
 
 describe('State API :: Market Sorts', () => {
   let john: ContractAPI;
   let johnDB: Promise<DB>;
   let johnAPI: API;
+  let bulkSyncStrategy: BulkSyncStrategy;
 
   let provider: EthersProvider;
   let addresses: ContractAddresses;
@@ -64,6 +65,14 @@ describe('State API :: Market Sorts', () => {
       johnDB = mock.makeDB(john.augur, ACCOUNTS);
       johnConnector.initialize(john.augur, await johnDB);
       johnAPI = new API(john.augur, johnDB);
+
+      bulkSyncStrategy = new BulkSyncStrategy(
+        provider.getLogs,
+        (await johnDB).logFilters.buildFilter,
+        (await johnDB).logFilters.onLogsAdded,
+        john.augur.contractEvents.parseLogs
+      );
+
       await john.approveCentralAuthority();
     });
 
@@ -86,7 +95,7 @@ describe('State API :: Market Sorts', () => {
       ]);
 
       // With no orders on the book the liquidity scores won't exist
-      await (await johnDB).sync(john.augur, mock.constants.chunkSize, 0);
+      await bulkSyncStrategy.start(0, await john.provider.getBlockNumber());
       let marketData = await (await johnDB).Markets.get(market.address);
       await expect(marketData.liquidity).toEqual({
         '10': '000000000000000000000000000000',
@@ -129,7 +138,7 @@ describe('State API :: Market Sorts', () => {
         displayShares: new BigNumber(100000),
         expirationTime: expirationTimeInSeconds,
       });
-      await (await johnDB).sync(john.augur, mock.constants.chunkSize, 0);
+      await bulkSyncStrategy.start(0, await john.provider.getBlockNumber());
       marketData = await (await johnDB).Markets.get(market.address);
 
       await expect(marketData.liquidity[10]).toEqual(
@@ -145,7 +154,7 @@ describe('State API :: Market Sorts', () => {
         stringTo32ByteHex('C'),
       ]);
 
-      await (await johnDB).sync(john.augur, mock.constants.chunkSize, 0);
+      await bulkSyncStrategy.start(0, await john.provider.getBlockNumber());
 
       // Place a an Ask on A. This won't rank for liquidity
       await john.placeZeroXOrder({
@@ -166,7 +175,7 @@ describe('State API :: Market Sorts', () => {
       });
 
       // await john.simplePlaceOrder(market.address, ask, numShares, askPrice, outcomeA);
-      await (await johnDB).sync(john.augur, mock.constants.chunkSize, 0);
+      await bulkSyncStrategy.start(0, await john.provider.getBlockNumber());
       marketData = await (await johnDB).Markets.get(market2.address);
       await expect(marketData.liquidity[10]).toEqual(
         '000000000000000000000000000000'
@@ -209,7 +218,7 @@ describe('State API :: Market Sorts', () => {
 
       await sleep(300);
 
-      await (await johnDB).sync(john.augur, mock.constants.chunkSize, 0);
+      await bulkSyncStrategy.start(0, await john.provider.getBlockNumber());
       marketData = await (await johnDB).Markets.get(market2.address);
       await expect(marketData.liquidity[10]).toEqual(
         '000000000735000000000000000000'
@@ -220,7 +229,7 @@ describe('State API :: Market Sorts', () => {
       const market3 = await john.createReasonableYesNoMarket();
 
       // With no orders on the book the invalidFilter will be false
-      await (await johnDB).sync(john.augur, mock.constants.chunkSize, 0);
+      await bulkSyncStrategy.start(0, await john.provider.getBlockNumber());
       marketData = await (await johnDB).Markets.get(market3.address);
       await expect(marketData.invalidFilter).toEqual(0);
 
@@ -237,7 +246,7 @@ describe('State API :: Market Sorts', () => {
 
 
       // The Invalid filter is still not hit because the bid would be unprofitable to take if the market were valid, so no one would take it even if the market was Valid
-      await (await johnDB).sync(john.augur, mock.constants.chunkSize, 0);
+      await bulkSyncStrategy.start(0, await john.provider.getBlockNumber());
       marketData = await (await johnDB).Markets.get(market3.address);
       await expect(marketData.invalidFilter).toEqual(0);
 
@@ -253,7 +262,7 @@ describe('State API :: Market Sorts', () => {
       );
 
       // The Invalid filter is now hit because this Bid would be profitable for a filler assuming the market were actually Valid
-      await (await johnDB).sync(john.augur, mock.constants.chunkSize, 0);
+      await bulkSyncStrategy.start(0, await john.provider.getBlockNumber());
       marketData = await (await johnDB).Markets.get(market3.address);
       await expect(marketData.invalidFilter).toEqual(1);
 
@@ -286,7 +295,7 @@ describe('State API :: Market Sorts', () => {
       );
 
       // Should ignore above bid and calculate zero liquidity
-      await (await johnDB).sync(john.augur, mock.constants.chunkSize, 0);
+      await bulkSyncStrategy.start(0, await john.provider.getBlockNumber());
       marketData = await (await johnDB).Markets.get(market4.address);
       await expect(marketData.liquidity).toEqual({
         '10': '000000000000000000000000000000',
@@ -318,7 +327,7 @@ describe('State API :: Market Sorts', () => {
       );
 
       // Should pass spread check and not be invalid
-      await (await johnDB).sync(john.augur, mock.constants.chunkSize, 0);
+      await bulkSyncStrategy.start(0, await john.provider.getBlockNumber());
       marketData = await (await johnDB).Markets.get(market4.address);
       await expect(marketData.liquidity).toEqual({
         '10': '000000000580000000000000000000',
@@ -341,7 +350,7 @@ describe('State API :: Market Sorts', () => {
       );
 
       // Invalid that had spread should be set as hasRecentlyDepletedLiquidity
-      await (await johnDB).sync(john.augur, mock.constants.chunkSize, 0);
+      await bulkSyncStrategy.start(0, await john.provider.getBlockNumber());
       marketData = await (await johnDB).Markets.get(market4.address);
       await expect(marketData.invalidFilter).toEqual(1);
       await expect(marketData.hasRecentlyDepletedLiquidity).toEqual(true);

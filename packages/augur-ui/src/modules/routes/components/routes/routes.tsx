@@ -24,7 +24,13 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 const getLoggedInAccountFromLocalStorage = () => {
   let loggedInAccount = null;
   if (window.localStorage && window.localStorage.getItem) {
-    loggedInAccount = window.localStorage.getItem('loggedInAccount');
+    try {
+      const loggedInUser = JSON.parse(window.localStorage.getItem('loggedInUser'));
+      loggedInAccount = loggedInUser && loggedInUser.address;
+    } catch(error) {
+      // swallow
+      loggedInAccount = null;
+    }
   }
   return loggedInAccount;
 };

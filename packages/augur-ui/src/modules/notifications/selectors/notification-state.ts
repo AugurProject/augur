@@ -108,8 +108,8 @@ export const selectMarketsInDispute = createSelector(
   (markets, positions, address) => {
     const state = store.getState() as AppState;
     let marketIds = Object.keys(positions);
-    const { reporting, disputing } = state.loginAccount;
-    if (disputing && disputing.contracts) {
+    const { reporting } = state.loginAccount;
+    if (reporting.disputing && reporting.disputing.contracts) {
       marketIds = Array.from(
         new Set([
           ...marketIds,
@@ -141,7 +141,11 @@ export const selectMarketsInDispute = createSelector(
           const market = selectMarket(id);
           if (!market) return p;
           if (
-            market.reportingState !== MarketReportingState.CrowdsourcingDispute
+            market.reportingState !==
+              MarketReportingState.CrowdsourcingDispute ||
+            !market.disputeInfo ||
+            !market.disputeInfo.disputeWindow ||
+            market.disputeInfo.disputeWindow.disputeRound === '1'
           )
             return p;
           return [...p, market];

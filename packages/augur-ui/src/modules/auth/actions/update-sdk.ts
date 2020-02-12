@@ -13,17 +13,14 @@ import { updateAssets } from 'modules/auth/actions/update-assets';
 
 export const updateSdk = (
   loginAccount: Partial<LoginAccount>,
-  networkId: string
+  networkId: string,
+  useGnosis: boolean
 ) => async (dispatch: ThunkDispatch<void, any, Action>) => {
   if (!loginAccount || !loginAccount.address || !loginAccount.meta) return;
   if (!augurSdk.sdk) return;
 
   try {
     dispatch(updateAppStatus(Ox_ENABLED, augurSdk.sdk.zeroX));
-
-    // TODO: useGnosis should always be true or fetchable from
-    // the SDK -- maybe augurSdk.sdk.getUseGnosisSafe() ??
-    const useGnosis = window.localStorage.getItem('isGnosis');
     if (useGnosis) {
       const updateUserAccount = safeAddress => {
         const newAccount = {

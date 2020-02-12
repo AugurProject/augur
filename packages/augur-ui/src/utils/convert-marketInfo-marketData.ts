@@ -209,6 +209,7 @@ function processConsensus(
   }
 
   if (market.reportingState === REPORTING_STATE.AWAITING_FINALIZATION) {
+    if (!market.disputeInfo) return null;
     const winning = market.disputeInfo.stakes.find(s => s.tentativeWinning);
     return {
       ...winning,
