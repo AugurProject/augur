@@ -69,9 +69,6 @@
       padding: @size-3 @size-20 @size-12;
     }
 
-    > div:first-of-type {
-    }
-
     > div {
       display: flex;
       justify-content: space-between;
@@ -199,5 +196,19 @@
 
   .Logo {
     border-right: @size-1 solid var(--color-secondary-text);
+  }
+
+  .statsContainer {
+    > div:first-of-type {
+      >div {
+        > span:nth-of-type(2),
+        > span:last-of-type {
+          color: var(--color-module-background);
+        }
+      }
+    }
+    > div:last-of-type {
+      border: @size-1 solid var(--color-secondary-text);
+    }
   }
 }
