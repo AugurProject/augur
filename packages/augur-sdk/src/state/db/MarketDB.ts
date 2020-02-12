@@ -36,6 +36,7 @@ interface LiquidityResults {
 }
 
 let liquidityCheckInterval = null;
+const liquidityDirty = new Set();
 
 /**
  * Market specific derived DB intended for filtering purposes
@@ -77,13 +78,10 @@ export class MarketDB extends DerivedDB {
         // call recalc liquidity every 3mins
         const THREE_MINS_IN_MS = 180000;
         liquidityCheckInterval = setInterval(async () => {
-          const marketsToCheck = await this.stateDB.Markets
-          .filter((order) => order.liquidityDirty)
-          .toArray();
-
-          const marketIdsToCheck = marketsToCheck.map(m => m.market);
-          if (marketIdsToCheck.length > 0) {
-            this.syncOrderBooks(marketIdsToCheck);
+          if (liquidityDirty.size > 0) {
+            const marketIdsToCheck = Array.from(liquidityDirty) as string[];
+            await this.syncOrderBooks(marketIdsToCheck);
+            liquidityDirty.clear();
           }
         },THREE_MINS_IN_MS);
       }
@@ -136,7 +134,6 @@ export class MarketDB extends DerivedDB {
         // This is needed to make rollbacks work properly
         doc['blockNumber'] = highestSyncedBlockNumber;
         doc['market'] = marketId;
-        doc['liquidityDirty'] = false;
         documents.push(doc);
       }
     }
@@ -144,16 +141,8 @@ export class MarketDB extends DerivedDB {
     await this.bulkUpsertDocuments(documents);
   }
 
-  async markMarketLiquidityAsDirty(marketId: string) {
-    const document = await this.stateDB.Markets
-      .filter((m) => m.market === marketId)
-      .toArray();
-
-    if (document.length > 0) {
-      document[0].liquidityDirty = true;
-
-      await this.bulkUpsertDocuments(document);
-    }
+  markMarketLiquidityAsDirty(marketId: string) {
+    liquidityDirty.add(marketId);
   }
 
   async getOrderBookData(augur: Augur, marketId: string, marketData: MarketData, reportingFeeDivisor: BigNumber, ETHInAttoDAI: BigNumber): Promise<MarketOrderBookData> {
@@ -337,7 +326,6 @@ export class MarketDB extends DerivedDB {
     log['disputeRound'] = '0x00';
     log['totalRepStakedInMarket'] = '0x00';
     log['hasRecentlyDepletedLiquidity'] = 0;
-    log['liquidityDirty'] = false
     log['liquidity'] = {
       0: '000000000000000000000000000000',
       10: '000000000000000000000000000000',
