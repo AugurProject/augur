@@ -63,7 +63,7 @@ export abstract class AbstractTable {
 
     const id = [];
     for (let idField of this.idFields) {
-      id.push(`${document[idField]}`);
+      id.push(document[idField]);
     }
     return id;
   }
