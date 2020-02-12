@@ -85,7 +85,11 @@ export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: Ethe
     blockAndLogStreamerSyncStrategy.listenForBlockRemoved(logFilterAggregator.onBlockRemoved);
 
     // Check on each new block to see if we need to generate a checkpoint.
-    client.events.on(SubscriptionEventName.NewBlock, warpController.onNewBlock);
+    client.events.on(SubscriptionEventName.NewBlock, async (newBlock) => {
+      const block = await provider.getBlock(newBlock.lastSyncedBlockNumber)
+      warpController.onNewBlock(block);
+    });
+
     blockAndLogStreamerSyncStrategy.start(endBulkSyncBlockNumber);
   };
 }
