@@ -39,6 +39,7 @@ import { OrderBookShaper, OrderBookConfig } from './orderbook-shaper';
 import { NumOutcomes } from '@augurproject/sdk/src/state/logs/types';
 import { flattenZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
 import { awaitUserInput, formatAddress, sleep } from './util';
+import { updateAddresses } from "@augurproject/artifacts/build";
 
 export function addScripts(flash: FlashSession) {
   flash.addScript({
@@ -2057,6 +2058,8 @@ export function addScripts(flash: FlashSession) {
         if (dev) {
           spawnSync('yarn', ['workspace', '@augurproject/tools', 'docker:geth:detached']);
 
+          await sleep(10000); // give geth some time to start
+
           this.network = NetworkConfiguration.create();
           this.provider = flash.makeProvider(flash.network);
 
@@ -2067,6 +2070,8 @@ export function addScripts(flash: FlashSession) {
           const gethDocker = fake ? 'docker:geth:pop' : 'docker:geth:pop-normal-time';
           spawnSync('yarn', [gethDocker]);
 
+          await updateAddresses();
+
           await sleep(10000); // give geth some time to start
 
           this.network = NetworkConfiguration.create();
@@ -2075,6 +2080,9 @@ export function addScripts(flash: FlashSession) {
           const networkId = await this.getNetworkId(this.provider);
           this.contractAddresses = Addresses[networkId];
         }
+
+        // So UI and other flash calls will have the correct addresses.
+        await spawnSync('yarn', ['build']);
 
         spawnSync('yarn', ['workspace', '@augurproject/gnosis-relay-api', 'run-relay', '-d'], {
           env: {
