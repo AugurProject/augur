@@ -226,8 +226,8 @@ export class DB {
     for (const genericEventDBDescription of this.genericEventDBDescriptions) {
       highestSyncBlocks.push(await this.syncStatus.getHighestSyncBlock(genericEventDBDescription.EventName));
     }
-    const lowestLastSyncBlock = Math.min.apply(null, highestSyncBlocks);
-    return Math.max.apply(null, [lowestLastSyncBlock - this.blockstreamDelay, this.syncStatus.defaultStartSyncBlockNumber]);
+
+    return Math.min(...highestSyncBlocks);
   }
 
   /**

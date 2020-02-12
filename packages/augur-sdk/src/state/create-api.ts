@@ -71,7 +71,8 @@ export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: Ethe
     const warpSyncStrategy = new WarpSyncStrategy(warpController, logFilterAggregator.onLogsAdded);
 
     const endWarpSyncBlockNumber = await warpSyncStrategy.start();
-    const endBulkSyncBlockNumber = await bulkSyncStrategy.start(endWarpSyncBlockNumber || uploadBlockNumber, currentBlockNumber);
+    const staringSyncBlock = Math.max(await (await db).getSyncStartingBlock(), endWarpSyncBlockNumber || uploadBlockNumber);
+    const endBulkSyncBlockNumber = await bulkSyncStrategy.start(staringSyncBlock, currentBlockNumber);
 
     console.log('Syncing Complete - SDK Ready');
     client.events.emit(SubscriptionEventName.SDKReady, {
