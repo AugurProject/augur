@@ -5,7 +5,6 @@ import { BaseConnector } from './base-connector';
 import { SubscriptionEventName } from '../constants';
 import { Subscriptions } from '../subscriptions';
 import { Callback } from '../events';
-import { BrowserMesh, ZeroX } from '../api/ZeroX';
 
 export class SingleThreadConnector extends BaseConnector {
   private get events(): Subscriptions {

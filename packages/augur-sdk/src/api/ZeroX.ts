@@ -22,6 +22,8 @@ import {
   TradeTransactionLimits,
 } from './OnChainTrade';
 import { sleep } from '../state/utils/utils';
+import { SubscriptionEventName } from '../constants';
+
 
 export enum Verbosity {
   Panic = 0,
@@ -135,6 +137,8 @@ export class ZeroX {
         this.client.events.emit('ZeroX:RPC:OrderEvent', orderEvents);
       }
     });
+
+    if (this.client) this.client.events.emit(SubscriptionEventName.ZeroXReady);
   }
 
   private _mesh?: BrowserMesh;
@@ -158,6 +162,8 @@ export class ZeroX {
         this.client.events.emit('ZeroX:Mesh:OrderEvent', orderEvents);
       }
     });
+
+    if (this.client) this.client.events.emit(SubscriptionEventName.ZeroXReady);
   }
 
   private _client: Augur;
@@ -197,7 +203,6 @@ export class ZeroX {
     if (this.mesh) return true;
     return false;
   }
-
   async getMeshOrders(tries: number = 15): Promise<OrderInfo[]> {
 
     var response;

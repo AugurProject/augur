@@ -32,8 +32,6 @@ import { formatBytes32String } from 'ethers/utils';
 import { Account } from '../constants';
 import { makeGnosisDependencies, makeSigner } from './blockchain';
 import { sleep } from '@augurproject/core/build/libraries/HelperFunctions';
-import { ZeroXOrder } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
-import { NumOutcomes, OutcomeNumber, UnixTimestamp } from '@augurproject/sdk/src/state/logs/types';
 
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 const ETERNAL_APPROVAL_VALUE = new BigNumber('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'); // 2^256 - 1

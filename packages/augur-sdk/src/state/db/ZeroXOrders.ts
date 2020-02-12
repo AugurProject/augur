@@ -5,7 +5,7 @@ import { SyncStatus } from './SyncStatus';
 import { Augur } from '../../Augur';
 import { DB } from './DB';
 import { MarketData, MarketType } from '../logs/types';
-import { OrderEventType } from '../../constants';
+import { OrderEventType, SubscriptionEventName } from '../../constants';
 import { getTradeInterval } from '../../utils';
 import { OrderInfo, OrderEvent, BigNumber } from '@0x/mesh-rpc-client';
 import { getAddress } from 'ethers/utils/address';
@@ -14,6 +14,7 @@ import { SignedOrder } from '@0x/types';
 import { BigNumber as BN} from 'ethers/utils';
 import moment, { Moment } from 'moment';
 import { sleep } from '../utils/utils';
+import { syncBuiltinESMExports } from 'module';
 
 // This database clears its contents on every sync.
 // The primary purposes for even storing this data are:
@@ -23,8 +24,6 @@ import { sleep } from '../utils/utils';
 const EXPECTED_ASSET_DATA_LENGTH = 2122;
 
 const DEFAULT_TRADE_INTERVAL = new BigNumber(10**17);
-
-const MAX_STARTUP_TIME = 10000; // 10 seconds for some sort of 0x connection to be established
 
 const multiAssetDataAbi: ParamType[] = [
   { name: 'amounts', type: 'uint256[]' },
@@ -126,11 +125,18 @@ export class ZeroXOrders extends AbstractTable {
     this.takerAssetData = `0xa7cb5fb7000000000000000000000000${this.tradeTokenAddress}000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000`;
 
     this.subscribeToOrderEvents();
+
+    this.clearDBAndCacheOrders().then(() => {
+      if (augur.zeroX.isReady()) {
+        this.sync();
+      } else {
+        this.augur.events.subscribe(SubscriptionEventName.ZeroXReady, this.sync.bind(this));
+      }
+    })
   }
 
   static create(db: DB, networkId: number, augur: Augur): ZeroXOrders {
     const zeroXOrders = new ZeroXOrders(db, networkId, augur);
-    zeroXOrders.clearDBAndCacheOrders();
     return zeroXOrders;
   }
 
@@ -196,11 +202,6 @@ export class ZeroXOrders extends AbstractTable {
 
   async sync(): Promise<void> {
     console.log("Syncing ZeroX Orders");
-    let timeWaited = 0;
-    while(!this.augur.zeroX.isReady() && timeWaited < MAX_STARTUP_TIME) {
-      await sleep(100);
-      timeWaited += 100;
-    }
     const orders: OrderInfo[] = await this.augur.zeroX.getOrders();
     let documents;
     if (orders && orders.length > 0) {

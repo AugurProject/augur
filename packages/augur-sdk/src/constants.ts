@@ -50,7 +50,8 @@ export enum SubscriptionEventName {
   UserDataSynced = "UserDataSynced",
   MarketsUpdated = "updated:Markets",
   DBMarketCreatedEvent = "DerivedDB:updated:Markets",
-  ReportingStateChanged = "ReportingStateChanged"
+  ReportingStateChanged = "ReportingStateChanged",
+  ZeroXReady = "ZeroXReady",
 }
 
 export enum TXEventName {
