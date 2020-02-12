@@ -556,14 +556,17 @@ export class ContractAPI {
   }
 
   async faucet(attoCash: BigNumber, account?: string): Promise<void> {
-    // NOTE: Specifying account only works if its signer is available. So, only useful for gnosis.
-    account = account ||  await this.augur.getAccount();
-    let balance = await this.getCashBalance(account);
+    const realAccount = await this.augur.getAccount();
+    account = account || realAccount;
+    let balance = await this.getCashBalance(realAccount);
     const desired = attoCash;
     while (balance.lt(attoCash)) {
-      console.log(`CASH FAUCETING. BALANCE: ${balance}. DESIRED: ${desired}`);
-      await this.augur.contracts.cashFaucet.faucet(attoCash, { sender: account });
-      balance = await this.getCashBalance(account);
+      console.log(`CASH FAUCETING FOR ${realAccount}. BALANCE: ${balance}. DESIRED: ${desired}`);
+      await this.augur.contracts.cashFaucet.faucet(attoCash);
+      balance = await this.getCashBalance(realAccount);
+    }
+    if (account !== realAccount) {
+      await this.augur.contracts.cash.transfer(account, attoCash);
     }
   }
 
