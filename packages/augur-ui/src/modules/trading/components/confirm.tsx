@@ -288,7 +288,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
         {!initialLiquidity && shareCost && shareCost.value !== 0 && (
           <div className={Styles.details}>
             <div className={Styles.properties}>
-              CLOSING POSITION
+              Closing Position
             </div>
             <div
               className={classNames(Styles.AggregatePosition, {
@@ -303,17 +303,17 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
               }
             </div>
             <LinearPropertyLabel
-              label='SETTLEMENT FEE'
+              label='Settlement Fee'
               value={orderShareTradingFee}
               showDenomination={true}
             />
             { gasCostDai && gasCostDai.roundedValue.gt(0) > 0 && <LinearPropertyLabel
-              label='EST. TX FEE'
+              label='Est. TX Fee'
               value={gasCostDai}
               showDenomination={true}
             />}
             <LinearPropertyLabel
-              label='PROFIT LESS FEES'
+              label='Profit Less Fees'
               value={orderShareProfit}
               accentValue={notProfitable}
               showDenomination={true}
@@ -328,7 +328,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
                 Styles.TooltipContainer
               )}
             >
-              NEW POSITION
+              New Position
               <span className={Styles.Tooltip}>
                 <label
                   className={classNames(
@@ -374,7 +374,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
               showDenomination={true}
             />
             {gasCostDai && gasCostDai.roundedValue.gt(0) > 0 && <LinearPropertyLabel
-              label='EST. TX FEE'
+              label='Est. TX Fee'
               value={gasCostDai}
               showDenomination={true}
             />}
