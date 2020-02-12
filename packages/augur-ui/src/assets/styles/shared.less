@@ -17,7 +17,7 @@ html {
 }
 
 body {
-  color: @color-dark-grey;
+  color: var(--color-dark-grey);
   font-family: @Inter;
   font-size: @size-16;
   font-style: normal;
@@ -37,7 +37,7 @@ label {
 
 input,
 textarea {
-  background-color: @color-dark-grey;
+  background-color: var(--color-dark-grey);
   border: @size-1 solid transparent;
   color: var(--color-primary-text);
   display: block;
@@ -46,11 +46,11 @@ textarea {
   width: 100%;
 
   &:focus {
-    border: @size-1 solid @color-secondary-action-outline;
+    border: @size-1 solid var(--color-secondary-action-outline);
   }
 
   &:disabled {
-    background-color: @color-inactive-text;
+    background-color: var(--color-inactive-text);
     cursor: default;
   }
 
@@ -66,7 +66,7 @@ textarea {
   }
 
   ::-webkit-scrollbar-thumb {
-    background: @color-secondary-action-outline;
+    background: var(--color-secondary-action-outline);
     border-radius: @border-radius-full-round;
   }
 }

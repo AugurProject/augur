@@ -116,8 +116,8 @@
 }
 
 .RadioStyleSelection {
-  background: @color-secondary-action;
-  border: @size-1 solid @color-secondary-action-outline;
+  background: var(--color-secondary-action);
+  border: @size-1 solid var(--color-secondary-action-outline);
   border-radius: @border-radius-default;
 
   > h5 {
@@ -138,15 +138,15 @@
   }
 
   &:disabled {
-    border: @size-1 solid @color-inactive-text;
+    border: @size-1 solid var(--color-inactive-text);
 
     > svg > circle {
-      stroke: @color-inactive-text;
+      stroke: var(--color-inactive-text);
     }
 
     > h5,
     > p {
-      color: @color-inactive-text;
+      color: var(--color-inactive-text);
     }
   }
 }
@@ -154,7 +154,7 @@
 .LocationDisplay {
   align-items: center;
   border-radius: @border-radius-default;
-  border: @size-1 solid @color-secondary-action-outline;
+  border: @size-1 solid var(--color-secondary-action-outline);
   display: flex;
   justify-content: center;
   padding: @size-16 @size-12;
@@ -214,7 +214,7 @@
     width: @size-20;
 
     > rect {
-      stroke: @color-secondary-action-outline;
+      stroke: var(--color-secondary-action-outline);
     }
 
     > path {
@@ -231,7 +231,7 @@
 
 .CheckboxBarChecked {
   > svg > rect {
-    fill: @color-secondary-action;
+    fill: var(--color-secondary-action);
     fill-opacity: 0.3;
   }
 }
@@ -254,7 +254,7 @@
 
     // EmptyRadio
     > circle:first-of-type {
-      stroke: @color-secondary-action-outline;
+      stroke: var(--color-secondary-action-outline);
       fill: none;
     }
 
@@ -266,7 +266,7 @@
   &:hover {
     > svg {
       > circle:not(:first-of-type) {
-        fill: @color-secondary-action-outline;
+        fill: var(--color-secondary-action-outline);
       }
     }
   }
@@ -280,7 +280,7 @@
   &.Checked {
     > svg {
       > circle:first-of-type {
-        stroke: @color-secondary-action-outline;
+        stroke: var(--color-secondary-action-outline);
         fill: none;
       }
   
@@ -363,7 +363,7 @@
 
   &.Invalid {
     > h5 {
-      color: @color-outcome-invalid;
+      color: var(--color-outcome-invalid);
     }
   }
 
@@ -512,13 +512,13 @@
   }
 
   > section {
-    border-bottom: @size-1 solid @color-secondary-action-outline;
+    border-bottom: @size-1 solid var(--color-secondary-action-outline);
     margin-bottom: @size-32;
     padding-bottom: @size-32;
   }
 
   > section:nth-of-type(2) {
-    border-bottom: @size-1 solid @color-error;
+    border-bottom: @size-1 solid var(--color-error);
     padding-bottom: @size-16;
 
     > svg {
@@ -559,8 +559,8 @@
 }
 
 .RadioBarError {
-  background: @color-dark-grey;
-  border: @size-1 solid @color-error;
+  background: var(--color-dark-grey);
+  border: @size-1 solid var(--color-error);
 }
 
 .RadioCardGroup {
@@ -605,7 +605,7 @@
   min-height: 154px;
   min-width: @size-210;
   border: @size-1 solid transparent;
-  box-shadow: 0 0 0 @size-1 @color-secondary-action-outline;
+  box-shadow: 0 0 0 @size-1 var(--color-secondary-action-outline);
 
   &.hover,
   &.active {
@@ -646,7 +646,7 @@
       width: @size-16;
 
       > path {
-        stroke: @color-secondary-action;
+        stroke: var(--color-secondary-action);
       }
     }
   }
@@ -826,9 +826,9 @@
     > textarea {
       .text-14;
 
-      background-color: @color-dark-grey;
+      background-color: var(--color-dark-grey);
       border-radius: @border-radius-default;
-      border: @size-1 solid @color-secondary-action;
+      border: @size-1 solid var(--color-secondary-action);
       color: var(--color-primary-text);
       height: @size-44;
       min-width: @size-150;
@@ -839,21 +839,21 @@
       }
 
       &:hover {
-        border: @size-1 solid @color-secondary-action-outline;
+        border: @size-1 solid var(--color-secondary-action-outline);
         cursor: pointer;
       }
 
       &:focus {
-        border: @size-1 solid @color-secondary-action-outline;
+        border: @size-1 solid var(--color-secondary-action-outline);
       }
 
       &:disabled {
-        background-color: @color-dark-grey;
-        border: @size-1 solid @color-inactive-text;
-        color: @color-inactive-text;
+        background-color: var(--color-dark-grey);
+        border: @size-1 solid var(--color-inactive-text);
+        color: var(--color-inactive-text);
 
         &::placeholder {
-          color: @color-inactive-text;
+          color: var(--color-inactive-text);
         }
       }
     }
@@ -878,7 +878,7 @@
       > button {
         .text-10;
 
-        color: @color-dark-grey;
+        color: var(--color-dark-grey);
         height: @size-32;
         line-height: @size-12;
         padding: @size-10 @size-12;
@@ -957,7 +957,7 @@
 .ErrorText {
   .text-12;
 
-  color: @color-error;
+  color: var(--color-error);
   margin-top: @size-4;
 }
 
@@ -968,7 +968,7 @@
   > div {
     .text-14;
 
-    background-color: @color-dark-grey;
+    background-color: var(--color-dark-grey);
     border-radius: @border-radius-default;
     border: @size-1 solid var(--color-module-background);
     min-width: @size-210;
@@ -1016,20 +1016,20 @@
     }
 
     &:hover {
-      background-color: @color-dark-grey;
+      background-color: var(--color-dark-grey);
       border: @size-1 solid var(--color-primary-action);
       cursor: pointer;
     }
 
     &.disabled {
-      background-color: @color-dark-grey;
-      border: @size-1 solid @color-inactive-text;
-      color: @color-inactive-text;
+      background-color: var(--color-dark-grey);
+      border: @size-1 solid var(--color-inactive-text);
+      color: var(--color-inactive-text);
       opacity: 0.5;
     }
 
     &.error {
-      border: @size-1 solid fade(@color-error, 50%);
+      border: @size-1 solid var(--color-error-50);
     }
   }
 }
@@ -1045,7 +1045,7 @@ div.FormDropdownActive {
   }
 
   &:hover {
-    background-color: @color-dark-grey;
+    background-color: var(--color-dark-grey);
     border: @size-1 solid var(--color-primary-text);
     color: var(--color-primary-text);
   }
@@ -1097,7 +1097,7 @@ div.FormDropdownActive {
     width: @size-16;
 
     > svg > path {
-      stroke: @color-inactive-text;
+      stroke: var(--color-inactive-text);
     }
 
     @media @breakpoint-mobile {
@@ -1117,7 +1117,7 @@ div.FormDropdownActive {
 .Max {
   .text-10-medium;
 
-  color: @color-inactive-text;
+  color: var(--color-inactive-text);
   padding: 0 @size-16;
   text-transform: capitalize;
 }
@@ -1161,7 +1161,7 @@ button.MaxDark {
   }
 
   &:focus-within {
-    border: @size-1 solid @color-secondary-action-outline;
+    border: @size-1 solid var(--color-secondary-action-outline);
   }
 
   input[type='number'] {
@@ -1185,7 +1185,7 @@ button.MaxDark {
     padding: 0 @size-4;
 
     &:active {
-      background-color: @color-inactive-text;
+      background-color: var(--color-inactive-text);
     }
   }
 }
@@ -1228,7 +1228,7 @@ button.MaxDark {
     .DateInput_input__focused,
     .DateInput_input__focused_2 {
       border-radius: @border-radius-default;
-      border: @size-1 solid @color-secondary-action-outline;
+      border: @size-1 solid var(--color-secondary-action-outline);
       min-height: @size-44;
       min-width: @size-210;
 
@@ -1292,8 +1292,8 @@ button.MaxDark {
     .SingleDatePickerInput_1 {
       .mono-12;
 
-      background-color: @color-dark-grey;
-      border: @size-1 solid @color-secondary-action-outline;
+      background-color: var(--color-dark-grey);
+      border: @size-1 solid var(--color-secondary-action-outline);
       border-radius: @border-radius-default;
       color: var(--color-primary-text);
     }
@@ -1301,9 +1301,9 @@ button.MaxDark {
     .DateInput_input.DateInput_input_1 {
       .text-14;
 
-      background-color: @color-dark-grey;
+      background-color: var(--color-dark-grey);
       color: var(--color-primary-text);
-      border: @size-1 solid @color-secondary-action;
+      border: @size-1 solid var(--color-secondary-action);
     }
 
     .DateInput_1 {
@@ -1340,7 +1340,7 @@ button.MaxDark {
     .CalendarMonth_caption_1 {
       .text-14-medium;
 
-      color: @color-dark-grey;
+      color: var(--color-dark-grey);
       padding-bottom: @size-40;
       padding-top: 33px;
       text-transform: capitalize;
@@ -1362,13 +1362,13 @@ button.MaxDark {
 
         > rect,
         > path {
-          stroke: @color-inactive-text;
+          stroke: var(--color-inactive-text);
         }
 
         &:hover {
           > rect,
           > path {
-            stroke: @color-inactive-text;
+            stroke: var(--color-inactive-text);
           }
         }
       }
@@ -1382,13 +1382,13 @@ button.MaxDark {
 
         > rect,
         > path {
-          stroke: @color-inactive-text;
+          stroke: var(--color-inactive-text);
         }
 
         &:hover {
           > rect,
           > path {
-            stroke: @color-inactive-text;
+            stroke: var(--color-inactive-text);
           }
         }
       }
@@ -1412,7 +1412,7 @@ button.MaxDark {
     .DayPicker_weekHeader_li_1 {
       .mono-11;
 
-      color: @color-inactive-text;
+      color: var(--color-inactive-text);
       text-transform: capitalize;
     }
 
@@ -1421,7 +1421,7 @@ button.MaxDark {
 
       background: none;
       border: @size-1 solid var(--color-primary-text);
-      color: @color-inactive-text;
+      color: var(--color-inactive-text);
 
       &.CalendarDay__selected_2:hover {
         background: var(--color-primary-text);
@@ -1442,7 +1442,7 @@ button.MaxDark {
       &:hover {
         background: var(--color-primary-action-10);
         border: @size-1 solid var(--color-primary-text);
-        color: @color-inactive-text;
+        color: var(--color-inactive-text);
       }
 
       &.CalendarDay__blocked_out_of_range_2.CalendarDay__blocked_out_of_range_2:hover {
@@ -1451,7 +1451,7 @@ button.MaxDark {
       }
 
       &:hover {
-        color: @color-inactive-text;
+        color: var(--color-inactive-text);
       }
     }
 
@@ -1514,7 +1514,7 @@ button.MaxDark {
   > div {
     .text-18;
 
-    background-color: @color-secondary-action;
+    background-color: var(--color-secondary-action);
     box-shadow: 0 @size-2 @size-4 rgba(0, 0, 0, 0.5);
     color: var(--color-primary-text);
     display: none;
@@ -1590,9 +1590,9 @@ button.MaxDark {
     .text-14;
 
     align-items: center;
-    background-color: @color-dark-grey;
+    background-color: var(--color-dark-grey);
     border-radius: @border-radius-default;
-    border: @size-1 solid @color-secondary-action;
+    border: @size-1 solid var(--color-secondary-action);
     color: var(--color-primary-text);
     display: flex;
     height: @size-44;
@@ -1616,7 +1616,7 @@ button.MaxDark {
 
   > div {
     background: var(--color-primary-text);
-    border: @size-1 solid @color-secondary-action-outline;
+    border: @size-1 solid var(--color-secondary-action-outline);
     color: var(--color-primary-text);
     display: flex;
     left: 0;
@@ -1642,7 +1642,7 @@ button.MaxDark {
       .text-16-medium;
 
       align-items: center;
-      color: @color-secondary-action;
+      color: var(--color-secondary-action);
       display: flex;
       margin-top: @size-24;
     }
@@ -1702,7 +1702,7 @@ button.MaxDark {
   > span {
     .text-11;
 
-    color: @color-inactive-text;
+    color: var(--color-inactive-text);
     margin-bottom: @size-14;
   }
 
@@ -1710,8 +1710,8 @@ button.MaxDark {
     .mono-14;
 
     background-color: var(--color-primary-text);
-    border: @size-1 solid @color-inactive-text;
-    color: @color-inactive-text;
+    border: @size-1 solid var(--color-inactive-text);
+    color: var(--color-inactive-text);
     height: @size-40;
     margin: @size-14 0;
     padding: @size-4;
@@ -1723,12 +1723,12 @@ button.MaxDark {
     }
 
     &:focus {
-      border: @size-1 solid @color-dark-grey;
+      border: @size-1 solid var(--color-dark-grey);
     }
 
     &:disabled {
-      background-color: @color-inactive-text;
-      border: @size-1 solid @color-inactive-text;
+      background-color: var(--color-inactive-text);
+      border: @size-1 solid var(--color-inactive-text);
       color: var(--color-secondary-text);
     }
   }
@@ -1745,13 +1745,13 @@ button.MaxDark {
       width: @size-16;
 
       > path {
-        fill: @color-inactive-text;
+        fill: var(--color-inactive-text);
       }
     }
 
     &:hover {
       > svg > path {
-        fill: @color-dark-grey;
+        fill: var(--color-dark-grey);
       }
     }
   }
@@ -1762,9 +1762,9 @@ button.MaxDark {
 }
 
 .ErrorLabel {
-  background: fade(@color-error, 20%);
+  background: var(--color-error-20);
   border-radius: @border-radius-default;
-  border: @size-1 solid @color-error;
+  border: @size-1 solid var(--color-error);
   border-left-width: @size-4;
   display: flex;
   padding: @size-12;
@@ -1776,17 +1776,17 @@ button.MaxDark {
     height: @size-12;
 
     > circle {
-      fill: fade(@color-error, 20%);
+      fill: var(--color-error-20);
       opacity: 1;
-      stroke: @color-error;
+      stroke: var(--color-error);
     }
 
     > rect {
-      fill: @color-error;
+      fill: var(--color-error);
     }
 
     > path {
-      fill: @color-error;
+      fill: var(--color-error);
     }
   }
 
@@ -1835,11 +1835,11 @@ button.MaxDark {
 textarea.error,
 input.error,
 button.error {
-  border: @size-1 solid fade(@color-error, 50%);
+  border: @size-1 solid var(--color-error-50);
 }
 
 div.error > div > div > div > div > input {
-  border: @size-1 solid fade(@color-error, 50%);
+  border: @size-1 solid var(--color-error-50);
 }
 
 .Timezones {
@@ -1914,8 +1914,8 @@ div.error > div > div > div > div > input {
     .text-10-bold;
 
     color: var(--color-secondary-text);
-    background: @color-secondary-action;
-    border: @size-1 solid @color-secondary-action-outline;
+    background: var(--color-secondary-action);
+    border: @size-1 solid var(--color-secondary-action-outline);
     border-radius: @border-radius-default;
     display: flex;
     justify-content: center;
@@ -1979,7 +1979,7 @@ div.error > div > div > div > div > input {
 .MigrateRepInfo {
   .text-14;
 
-  border: @size-1 solid @color-secondary-action-outline;
+  border: @size-1 solid var(--color-secondary-action-outline);
   box-sizing: border-box;
   border-radius: @size-8;
   color: var(--color-secondary-text);

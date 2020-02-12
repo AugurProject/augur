@@ -1,9 +1,9 @@
 @import (reference) '~assets/styles/shared';
 
 .Quad {
-  // background: @color-table-header;
+  // background: var(--color-table-header);
   background: var(--color-module-background);
-  border: 1px solid @color-dark-grey;
+  border: 1px solid var(--color-dark-grey);
   border-radius: @border-radius-default;
   color: var(--color-primary-text);
   flex: 1;
@@ -59,7 +59,7 @@
 @media @breakpoint-mobile {
   .NormalOnMobile {
     background: var(--color-module-background);
-    border: 1px solid @color-dark-grey;
+    border: 1px solid var(--color-dark-grey);
   }
   
   .ShowOnMobile {
@@ -77,7 +77,7 @@
 
 .MarketBox {
   @media @breakpoint-mobile {
-    border: 1px solid @color-dark-grey;
+    border: 1px solid var(--color-dark-grey);
     margin-top: @size-8;
   }
 }

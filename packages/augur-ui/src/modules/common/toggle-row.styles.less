@@ -23,7 +23,7 @@
 }
 
 div.RowActive {
-  background-color: @color-active-background;
+  background-color: var(--color-active-background);
   border-bottom: 0;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
@@ -58,7 +58,7 @@ div.RowActive {
   }
 
   &:hover {
-    background-color: @color-table-header;
+    background-color: var(--color-table-header);
   }
 }
 
@@ -66,7 +66,7 @@ div.RowActive {
   .Row .Arrow {
     > svg {
       > path {
-        stroke: @color-inactive-text;
+        stroke: var(--color-inactive-text);
       }
     }
   }

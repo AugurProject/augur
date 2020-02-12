@@ -1,8 +1,8 @@
 @import (reference) '~assets/styles/shared';
 
 .Outcome {
-	background: @color-secondary-action;
-	border: 1px solid @color-secondary-action-outline;
+	background: var(--color-secondary-action);
+	border: 1px solid var(--color-secondary-action-outline);
 	border-radius: @border-radius-default;
 	display: flex;
 	flex-direction: column;
@@ -33,15 +33,15 @@
 
 	&.invalid {
 		> div:first-of-type > span:first-of-type {
-			color: @color-outcome-invalid;
+			color: var(--color-outcome-invalid);
 		}
 
 		> div:last-of-type > span {
-    		background: @color-outcome-invalid;
+    		background: var(--color-outcome-invalid);
     	}
 	}
 
-	.generate-indexed-color-outcome-classes({
+	.generate-trading-indexed-color-outcome-classes({
 	    &.Outcome-@{newIndex} {
 	    	> div:last-of-type {
 	    		> span {
@@ -52,7 +52,7 @@
 	});
 
 	&:hover {
-		background: @color-secondary-hover;
+		background: var(--color-secondary-hover);
 
 		> div:first-of-type > span:first-of-type {
 			text-decoration: underline
@@ -64,6 +64,17 @@
 	}
 }
 
+:root[theme="BETTING"] {
+  .Outcome {
+    .generate-betting-indexed-color-outcome-classes({
+      &.showColor-@{newIndex} {
+        &::before {
+          background-color: @value;
+        };
+      }
+    });
+  }
+}
 .DisputeOutcome {
 	.Outcome;
 
@@ -76,7 +87,7 @@
 	> span:nth-of-type(2) {
 		.mono-10;
 
-		color: @color-tenative-winner;
+		color: var(--color-tenative-winner);
 		margin-bottom: @size-6;
 		margin-top: @size-4;
 		text-transform: uppercase;
@@ -135,7 +146,7 @@
 
 	&.invalid {
 		> span:first-of-type {
-			color: @color-outcome-invalid;
+			color: var(--color-outcome-invalid);
 		}
 	}
 
@@ -183,13 +194,13 @@
 	}
 
 	&.invalid {
-		background-color: fade(@color-outcome-invalid, 50);
+		background-color: var(--color-outcome-invalid-50);
 	}
 }
 
 .ScalarOutcome {
-	background: @color-secondary-action;
-	border: 1px solid @color-secondary-action-outline;
+	background: var(--color-secondary-action);
+	border: 1px solid var(--color-secondary-action-outline);
 	border-radius: @border-radius-default;
 	display: flex;
 	flex-direction: column;
@@ -198,11 +209,11 @@
 	> div:first-of-type {
 		.mono-11-bold;
 
-		background: @color-dark-grey;
+		background: var(--color-dark-grey);
 		border-radius: @size-4;
 		height: @size-4;
 		margin-bottom: @size-3;
-		color: @color-outcome-invalid;
+		color: var(--color-outcome-invalid);
 		position: relative;
 
 		> span {
@@ -210,7 +221,7 @@
 			bottom: @size-5;
 
 			&::before {
-				background-color: @color-outcome-invalid;
+				background-color: var(--color-outcome-invalid);
 				border-radius: 50%;
 				content: "";
 				height: @size-6;
@@ -241,7 +252,7 @@
   display: grid;
 	grid-gap: @size-6;
 	padding-left: @size-12;
-	border-left: 1px solid @color-dark-grey;
+	border-left: 1px solid var(--color-dark-grey);
 
 	grid-template-columns: repeat(3, 1fr);
 
@@ -330,8 +341,8 @@
 		}
 
     > circle {
-      fill: @color-secondary-action;
-      stroke: @color-secondary-action-outline;
+      fill: var(--color-secondary-action);
+      stroke: var(--color-secondary-action-outline);
     }
 
     > path {

@@ -3,7 +3,7 @@
 .MarketCard {
   background: var(--color-module-background);
   border-radius: @border-radius-default;
-  border: 1px solid @color-dark-grey;
+  border: 1px solid var(--color-dark-grey);
   margin: @size-4 0;
   display: grid;
   grid-template-columns: 102px auto;
@@ -26,7 +26,7 @@
   > span,
   > h2,
   > h3 {
-    border-left: 1px solid @color-dark-grey;
+    border-left: 1px solid var(--color-dark-grey);
     padding-left: @size-12;
   }
 
@@ -55,7 +55,7 @@
 
           > circle {
             fill: none;
-            stroke: @color-secondary-action-outline;
+            stroke: var(--color-secondary-action-outline);
           }
 
           > path {
@@ -107,11 +107,11 @@
         width: @size-16;
 
         > path:first-of-type {
-          fill: @color-facebook;
+          fill: var(--color-facebook);
         }
 
         > path:last-of-type {
-          fill: @color-outcome-seven;
+          fill: var(--color-outcome-seven);
         }
       }
 
@@ -122,11 +122,11 @@
         width: @size-16;
 
         > path:first-of-type {
-          fill: @color-twitter;
+          fill: var(--color-twitter);
         }
 
         > path:last-of-type {
-          fill: @color-outcome-seven;
+          fill: var(--color-outcome-seven);
         }
 
       }
@@ -156,7 +156,7 @@
     grid-row: 4 / span 1;
     grid-column: 1;
     padding-bottom: @size-8;
-    border-right: 1px solid @color-dark-grey;
+    border-right: 1px solid var(--color-dark-grey);
     margin-right: -1px;
 
     > div:not(:first-of-type) {
@@ -170,7 +170,7 @@
 
         > circle {
           fill: none;
-          stroke: @color-secondary-action-outline;
+          stroke: var(--color-secondary-action-outline);
         }
 
         > path {
@@ -228,11 +228,11 @@
 
   @keyframes colorchange {
     0% {
-      background-color: fade(@color-secondary-action-outline, 70);
+      background-color: var(--color-secondary-action-outline-70);
     }
 
     100% {
-      background-color: fade(@color-secondary-action-outline, 100);
+      background-color: var(--color-secondary-action-outline);
     }
   }
 
@@ -247,7 +247,7 @@
       animation: colorchange 0.5s infinite;
       animation-direction: alternate-reverse;
 
-      background: @color-secondary-action-outline;
+      background: var(--color-secondary-action-outline);
       height: @size-12;
     }
 

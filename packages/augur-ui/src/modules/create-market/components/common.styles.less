@@ -192,7 +192,7 @@
 
       &:disabled {
         > svg > path {
-          fill: @color-inactive-text;
+          fill: var(--color-inactive-text);
         }
       }
     }
@@ -240,7 +240,7 @@
   > span:nth-of-type(2) {
     .text-12;
 
-    color: @color-error;
+    color: var(--color-error);
     margin-top: @size-4;
   }
 
@@ -335,7 +335,7 @@
 }
 
 .ExplainerBlock {
-  border: 1px solid @color-dark-grey;
+  border: 1px solid var(--color-dark-grey);
   background: var(--color-module-background);
   border-radius: @border-radius-extra-rounded;
   padding: @size-16;
@@ -418,7 +418,7 @@
   background: var(--color-module-background);
   border-radius: @border-radius-extra-rounded;
   padding: @size-40;
-  border: 1px solid @color-dark-grey;
+  border: 1px solid var(--color-dark-grey);
 
   > button {
     max-width: 200px;
@@ -442,7 +442,7 @@
 }
 
 .LineBreak {
-  border-bottom: 1px solid @color-dark-grey;
+  border-bottom: 1px solid var(--color-dark-grey);
   margin-bottom: @size-24;
   padding-bottom: @size-24;
 }
@@ -472,7 +472,7 @@
   }
 
   > span:nth-of-type(2) {
-    border: 1px solid @color-dark-grey;
+    border: 1px solid var(--color-dark-grey);
     border-radius: @size-8;
     display: flex;
     padding: @size-20;
@@ -536,7 +536,7 @@
 
     color: var(--color-primary-text);
     background: var(--color-module-background);
-    border: 1px solid @color-dark-grey;
+    border: 1px solid var(--color-dark-grey);
     border-radius: @border-radius-default;
     line-height: @size-18;
     display: flex;
@@ -634,8 +634,8 @@
     .text-14;
 
     align-items: center;
-    background: @color-secondary-action;
-    border: 1px solid @color-secondary-action-outline;
+    background: var(--color-secondary-action);
+    border: 1px solid var(--color-secondary-action-outline);
     border-radius: @border-radius-default;
     margin-bottom: @size-8;
     padding: @size-16;

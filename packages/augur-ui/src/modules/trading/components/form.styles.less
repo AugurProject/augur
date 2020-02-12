@@ -17,7 +17,7 @@
       > div.TradingFormInputContainer {
         max-height: @size-32;
         min-height: @size-32;
-        background-color: @color-dark-grey;
+        background-color: var(--color-dark-grey);
 
         > span {
           .mono-10-semi-bold;
@@ -33,7 +33,7 @@
           max-height: @size-30;
           min-height: @size-30;
           padding: 0 @size-12;
-          background-color: @color-dark-grey;
+          background-color: var(--color-dark-grey);
         }
       }
 
@@ -81,7 +81,7 @@
           padding: @size-3 @size-6;
 
           &:hover {
-            background: @color-secondary-hover;
+            background: var(--color-secondary-hover);
           }
         }
 
@@ -132,7 +132,7 @@
           padding: @size-3 @size-6;
 
           &:hover {
-            background: @color-secondary-hover;
+            background: var(--color-secondary-hover);
 
             > svg > path {
               stroke: var(--color-primary-text);
@@ -167,7 +167,7 @@
           max-width: 100%;
 
           > button {
-            background: @color-secondary-action;
+            background: var(--color-secondary-action);
 
             > span {
               padding: @size-6 @size-8 @size-6 0;
@@ -205,14 +205,14 @@
               height: @size-24;
               margin-right: @size-4;
               padding: 0 @size-8;
-              border: @size-1 solid @color-secondary-action;
+              border: @size-1 solid var(--color-secondary-action);
 
               &:hover {
-                border: @size-1 solid @color-secondary-action-outline;
+                border: @size-1 solid var(--color-secondary-action-outline);
               }
 
               &:focus-within {
-                border: @size-1 solid @color-secondary-action-outline;
+                border: @size-1 solid var(--color-secondary-action-outline);
               }
             }
           }
@@ -248,10 +248,10 @@
                   width: 100%;
                   cursor: pointer;
                   &:hover {
-                    border: @size-1 solid @color-secondary-action-outline;
+                    border: @size-1 solid var(--color-secondary-action-outline);
                   }
                   &:focus {
-                    border: @size-1 solid @color-secondary-action-outline;
+                    border: @size-1 solid var(--color-secondary-action-outline);
                   }
                 }
               } 
@@ -264,10 +264,10 @@
                 height: @size-22;
 
                 &:hover {
-                  border: @size-1 solid @color-secondary-action-outline;
+                  border: @size-1 solid var(--color-secondary-action-outline);
                 }
                 &:focus {
-                  border: @size-1 solid @color-secondary-action-outline;
+                  border: @size-1 solid var(--color-secondary-action-outline);
                 }
               }
             }
@@ -280,10 +280,10 @@
                 width: 100%;
 
                 &:hover {
-                  border: @size-1 solid @color-secondary-action-outline;
+                  border: @size-1 solid var(--color-secondary-action-outline);
                 }
                 &:focus {
-                  border: @size-1 solid @color-secondary-action-outline;
+                  border: @size-1 solid var(--color-secondary-action-outline);
                 }
               }
             }
@@ -292,7 +292,7 @@
       }
 
       > label {
-        color: @color-inactive-text;
+        color: var(--color-inactive-text);
         margin-bottom: 0;
         padding-bottom: @size-4;
         width: 100%;
@@ -352,8 +352,8 @@
 }
 
 .ErrorContainer {
-  background: fade(@color-error, 20%);
-  border: 1px solid @color-error;
+  background: var(--color-error-20);
+  border: 1px solid var(--color-error);
   border-radius: 3px;
   box-sizing: border-box;
   display: block;
@@ -385,17 +385,17 @@
     width: @size-12;
 
     > circle {
-      fill: fade(@color-error, 20%);
+      fill: var(--color-error-20);
       opacity: 0.5;
-      stroke: @color-error;
+      stroke: var(--color-error);
     }
 
     > rect {
-      fill: @color-error;
+      fill: var(--color-error);
     }
 
     > path {
-      fill: @color-error;
+      fill: var(--color-error);
     }
   }
 }
@@ -442,15 +442,15 @@
 .Yes {
   .text-14-medium;
 
-  background-color: @color-secondary-action;
-  border: 1px solid @color-secondary-action-outline;
+  background-color: var(--color-secondary-action);
+  border: 1px solid var(--color-secondary-action-outline);
   border-radius: @border-radius-default;
   padding: @size-10 @size-10 @size-10 @size-16;
 
   > span {
     .mono-11;
 
-    color: @color-inactive-text;
+    color: var(--color-inactive-text);
     text-transform: uppercase;
   }
 }
@@ -468,14 +468,14 @@
   .mono-11;
 
   align-items: center;
-  background-color: @color-secondary-action;
-  border: @size-1 solid @color-secondary-action;
+  background-color: var(--color-secondary-action);
+  border: @size-1 solid var(--color-secondary-action);
   display: flex;
   flex-direction: row;
   border-radius: @border-radius-default;
 
   > input[type="number"] {
-    background-color: @color-secondary-action;
+    background-color: var(--color-secondary-action);
     border-width: 0;
     color: var(--color-primary-text);
 
@@ -485,11 +485,11 @@
   }
 
   &.error {
-    border: @size-1 solid fade(@color-error, 50%);
+    border: @size-1 solid var(--color-error-50);
 
     &:focus-within,
     &:focus {
-      border: @size-1 solid fade(@color-error, 50%);
+      border: @size-1 solid var(--color-error-50);
     }
   }
 
@@ -514,16 +514,16 @@
   }
 
   > label {
-    color: @color-inactive-text;
+    color: var(--color-inactive-text);
     font-size: @size-12;
   }
 
   &:hover {
-    border: @size-1 solid @color-secondary-action-outline;
+    border: @size-1 solid var(--color-secondary-action-outline);
   }
 
   &:focus-within {
-    border: @size-1 solid @color-secondary-action-outline;
+    border: @size-1 solid var(--color-secondary-action-outline);
 
     > input {
       border: 0;
@@ -559,8 +559,8 @@
       width: @size-16;
 
       > circle {
-        stroke: @color-secondary-action-outline;
-        fill: @color-secondary-action;
+        stroke: var(--color-secondary-action-outline);
+        fill: var(--color-secondary-action);
       }
     }
   }

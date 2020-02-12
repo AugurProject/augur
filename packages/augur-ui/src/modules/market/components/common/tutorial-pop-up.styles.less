@@ -15,7 +15,7 @@
   flex-direction: column;
   max-width: 300px;
   height: fit-content;
-  border: 1px solid fade(@color-outline, 50%);
+  border: 1px solid var(--color-outline-50);
   animation: fadeinout 0.5s linear forwards;
   opacity: 0;
 
@@ -91,7 +91,7 @@
   &.Top {
     > div {
       &::before {
-        border-color: transparent transparent @color-outline transparent;
+        border-color: transparent transparent var(--color-outline) transparent;
         border-width: @size-7;
         bottom: 100%;
       }
@@ -108,7 +108,7 @@
   &.Bottom {
     > div {
       &::before {
-        border-color: @color-outline transparent transparent transparent;
+        border-color: var(--color-outline) transparent transparent transparent;
         border-width: @size-7;
         top: 100%;
       }
@@ -125,7 +125,7 @@
   &.Left {
     > div {
       &::before {
-        border-color: transparent @color-outline transparent transparent;
+        border-color: transparent var(--color-outline) transparent transparent;
         border-width: @size-7;
         right: 100%;
       }
@@ -142,7 +142,7 @@
   &.LeftBottom {
     > div {
       &::before {
-        border-color: transparent @color-outline transparent transparent;
+        border-color: transparent var(--color-outline) transparent transparent;
         border-width: @size-7;
         right: 100%;
         bottom: @size-10;
@@ -161,7 +161,7 @@
   &.Right {
     > div {
       &::before {
-        border-color: transparent transparent transparent @color-outline;
+        border-color: transparent transparent transparent var(--color-outline);
         border-width: @size-7;
         left: 100%;
       }

@@ -1,7 +1,7 @@
 @import (reference) '~assets/styles/shared';
 
 .TopNav {
-  background: @color-table-header;
+  background: var(--color-table-header);
   display: flex;
   flex-flow: column nowrap;
 
@@ -12,7 +12,7 @@
   > ul {
     display: flex;
     align-items: center;
-    border-bottom: 1px solid @color-dark-grey;
+    border-bottom: 1px solid var(--color-dark-grey);
     max-height: 37px;
     min-height: 37px;
 
@@ -56,7 +56,7 @@
         margin-bottom: @size-4;
 
         > circle {
-          fill: @color-outcome-five;
+          fill: var(--color-outcome-five);
         }
       }
     }
@@ -113,8 +113,8 @@ button.AddFunds {
   .mono-10-bold;
 
   align-items: center;
-  background: fade(@color-brand, 20%);
-  border: @size-1 solid @color-brand;
+  background: var(--color-brand-20);
+  border: @size-1 solid var(--color-brand);
   border-radius: @border-radius-default;
   color: var(--color-primary-text);
   display: flex;
@@ -136,11 +136,11 @@ button.AddFunds {
     margin-left: @size-4;
 
     > circle {
-      fill: @color-brand;
+      fill: var(--color-brand);
     }
 
     > rect {
-      fill: @color-brand;
+      fill: var(--color-brand);
       height: 1px;
       width: @size-8;
     }

@@ -25,7 +25,7 @@
 
         > div:first-of-type {
           background: var(--color-page-background);
-          border-bottom: 1px solid @color-dark-grey;
+          border-bottom: 1px solid var(--color-dark-grey);
           display: flex;
           justify-content: flex-end;
           width: 100%;
@@ -67,8 +67,8 @@
     max-width: @size-16;
 
     > circle {
-      fill: @color-secondary-action;
-      stroke: @color-secondary-action-outline;
+      fill: var(--color-secondary-action);
+      stroke: var(--color-secondary-action-outline);
     }
 
     > path {
@@ -134,7 +134,7 @@
           .text-11-bold;
 
           align-items: center;
-          color: @color-inactive-text;
+          color: var(--color-inactive-text);
           display: flex;
           margin-left: @size-8;
           text-transform: uppercase;
@@ -148,7 +148,7 @@
           margin-bottom: @size-4;
   
           > circle {
-            fill: @color-outcome-five;
+            fill: var(--color-outcome-five);
           }
         }
       }
@@ -186,7 +186,7 @@
     }
 
     > .GlobalChat {
-      background: @color-dark-grey;
+      background: var(--color-dark-grey);
       margin-left: auto;
       order: 2;
 

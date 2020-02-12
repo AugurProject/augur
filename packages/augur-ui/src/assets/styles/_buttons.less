@@ -16,13 +16,13 @@
 
   &:disabled,
   &.button--disabled {
-    background-color: @color-inactive-text;
-    color: @color-inactive-text;
+    background-color: var(--color-inactive-text);
+    color: var(--color-inactive-text);
     cursor: default;
   }
 
   &.imperative {
-    background-color: @color-error;
+    background-color: var(--color-error);
   }
 
   &.navigational {
@@ -45,7 +45,7 @@
   .button;
 
   background-color: var(--color-primary-text);
-  color: @color-dark-grey;
+  color: var(--color-dark-grey);
   font-size: @size-14;
   text-transform: capitalize;
 
@@ -66,8 +66,8 @@
   .button;
 
   background-color: transparent;
-  border: 2px solid @color-inactive-text;
-  color: @color-inactive-text;
+  border: 2px solid var(--color-inactive-text);
+  color: var(--color-inactive-text);
 
   &:hover {
     background-color: var(--color-secondary-text);
@@ -85,9 +85,9 @@
 }
 
 .button--bright {
-  background: @color-outcome-seven;
+  background: var(--color-outcome-seven);
   border-radius: 3px;
-  color: @color-dark-grey;
+  color: var(--color-dark-grey);
   font-family: @Inter;
   font-size: @size-14;
   font-weight: 700;
@@ -96,17 +96,17 @@
   &:hover {
     background: var(--color-primary-action-90);
     border: 0;
-    color: @color-dark-grey;
+    color: var(--color-dark-grey);
   }
 
   &:disabled {
-    background: @color-outcome-seven;
+    background: var(--color-outcome-seven);
     border: 0;
     cursor: default;
     opacity: 0.3;
 
     &:hover {
-      background: @color-outcome-seven;
+      background: var(--color-outcome-seven);
       border: 0;
     }
   }

@@ -71,7 +71,7 @@
   }
 
   &.Alert {
-    color: @color-error;
+    color: var(--color-error);
   }
 
   > label {
@@ -124,7 +124,7 @@
 }
 
 .InvalidLabel {
-  color: @color-outcome-invalid;
+  color: var(--color-outcome-invalid);
   display: flex;
 
   > label {
@@ -316,7 +316,7 @@
     padding-left: @size-8;
 
     &.isAccented {
-      color: @color-error;
+      color: var(--color-error);
     }
   }
 
@@ -448,7 +448,7 @@ div.LinearPropertyViewTransaction {
   > span:first-of-type {
     .text-12;
 
-    color: @color-inactive-text;
+    color: var(--color-inactive-text);
     flex: 1 100%;
     font-weight: @weight-medium;
     margin-bottom: @size-4;
@@ -494,8 +494,8 @@ div.LinearPropertyViewTransaction {
   align-items: center;
 
   &.MarketScalarLabel {
-    background: fade(@color-scalar, 20%);
-    color: @color-scalar;
+    background: var(--color-scalar-20);
+    color: var(--color-scalar);
 
     > svg {
       fill: none;
@@ -504,13 +504,13 @@ div.LinearPropertyViewTransaction {
       width: @size-20;
 
       > rect {
-        fill: @color-scalar;
+        fill: var(--color-scalar);
         height: 1.5px;
         width: @size-20;
       }
 
       > path {
-        fill: @color-scalar;
+        fill: var(--color-scalar);
       }
     }
   }
@@ -560,7 +560,7 @@ div.LinearPropertyViewTransaction {
     > span:first-of-type {
       .mono-10;
 
-      color: @color-inactive-text;
+      color: var(--color-inactive-text);
       line-height: normal;
       text-align: center;
       text-transform: uppercase;
@@ -592,7 +592,7 @@ div.LinearPropertyViewTransaction {
     .mono-9;
 
     align-items: center;
-    background: @color-secondary-action-outline;
+    background: var(--color-secondary-action-outline);
     border-radius: @border-radius-rounded;
     color: var(--color-primary-text);
     display: flex;
@@ -612,7 +612,7 @@ div.LinearPropertyViewTransaction {
     > span {
       .mono-10-medium;
 
-      background: @color-error;
+      background: var(--color-error);
     }
   }
 }
@@ -724,9 +724,9 @@ span.PendingLabel {
 
   align-items: center;
   background: transparent;
-  border: 1px solid @color-outline;
+  border: 1px solid var(--color-outline);
   border-radius: @border-radius-default;
-  color: @color-outline;
+  color: var(--color-outline);
   display: flex;
   justify-content: center;
   height: @size-18;

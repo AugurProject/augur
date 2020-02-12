@@ -71,7 +71,7 @@
   > span:first-of-type {
     .mono-12;
 
-    color: @color-inactive-text;
+    color: var(--color-inactive-text);
     text-transform: capitalize;
   }
 
@@ -107,7 +107,7 @@
   }
 
   > span:last-of-type {
-    background: @color-inactive-text;
+    background: var(--color-inactive-text);
     height: 1px;
     position: relative;
     top: 0;
@@ -134,7 +134,7 @@
 
 .WindowProgress {
   background: var(--color-module-background);
-  border: 1px solid @color-dark-grey;
+  border: 1px solid var(--color-dark-grey);
   border-radius: @border-radius-default;
   height: 214px;
   padding: @size-24;
@@ -151,7 +151,7 @@
   }
 
   > span {
-    border: 1px solid @color-dark-grey;
+    border: 1px solid var(--color-dark-grey);
     height: @size-12;
 
     > span:first-of-type {
@@ -163,7 +163,7 @@
     }
 
     > span:last-of-type {
-      background: @color-dark-grey;
+      background: var(--color-dark-grey);
       height: @size-10;
       position: relative;
       top: 0;
@@ -256,7 +256,7 @@
 
       &:before {
         content: '';
-        border-left: 1px solid @color-dark-grey;
+        border-left: 1px solid var(--color-dark-grey);
         height: @size-8;
         position: relative;
         bottom: @size-12;
@@ -286,7 +286,7 @@
           content: '';
           position: relative;
           height: @size-8;
-          border-right: 1px solid @color-dark-grey;
+          border-right: 1px solid var(--color-dark-grey);
           bottom: 102%;
         }
       }
@@ -318,18 +318,18 @@
 .reported {
   .mono-10;
 
-  color: @color-inactive-text;
+  color: var(--color-inactive-text);
   text-transform: uppercase;
 }
 
 .open {
-  color: @color-inactive-text;
+  color: var(--color-inactive-text);
 }
 
 .reported {
   color: var(--color-primary-action);
 
   > div:first-of-type {
-    color: @color-inactive-text;
+    color: var(--color-inactive-text);
   }
 }

@@ -1,7 +1,7 @@
 @import (reference) '~assets/styles/shared';
 
 .GlobalChat {
-  background: @color-dark-grey;
+  background: var(--color-dark-grey);
   bottom: @size-4;
   position: fixed;
   right: @size-22;
@@ -14,7 +14,7 @@
   > div.ShowGlobalChat {
     display: block;
     line-height: 0; // This removes the iframe's extra padding
-    border: @size-1 solid @color-secondary-action-outline;
+    border: @size-1 solid var(--color-secondary-action-outline);
     border-radius: @size-3;
     overflow: hidden;
   }
@@ -46,8 +46,8 @@
     // Header section
     > div:first-of-type {
       align-items: center;
-      background-color: @color-dark-grey;
-      border-bottom: 1px solid @color-dark-grey;
+      background-color: var(--color-dark-grey);
+      border-bottom: 1px solid var(--color-dark-grey);
       display: flex;
       flex-direction: row;
       padding: @size-7 @size-8;

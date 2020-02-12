@@ -48,8 +48,8 @@
     justify-content: center;
     width: @size-24;
     height: @size-24;
-    background: @color-secondary-action;
-    border: 1px solid @color-secondary-action-outline;
+    background: var(--color-secondary-action);
+    border: 1px solid var(--color-secondary-action-outline);
     border-radius: @border-radius-default;
     grid-row: span 2;
 
@@ -63,10 +63,10 @@
 
     &:disabled {
       cursor: not-allowed;
-      border: 1px solid @color-inactive-text;
+      border: 1px solid var(--color-inactive-text);
 
       > svg > rect {
-        fill: @color-inactive-text;
+        fill: var(--color-inactive-text);
       }
     }
 
@@ -211,13 +211,13 @@
 
     #depth_range_bounds {
       .bounding-box {
-        fill: @color-secondary-action-outline;
+        fill: var(--color-secondary-action-outline);
       }
     }
 
     .bounding-line,
     .tick-line {
-      stroke: @color-secondary-action-outline;
+      stroke: var(--color-secondary-action-outline);
     }
     .tick-line--midpoint {
       stroke: var(--color-primary-text);
@@ -229,14 +229,14 @@
 
     .vertical-lines {
       fill: none;
-      stroke: fade(@color-secondary-action-outline, 40%);
+      stroke: var(--color-secondary-action-outline-40);
     }
 
     .horizontal-lines {
       .dashline-normal;
 
       fill: none;
-      stroke: fade(@color-secondary-action-outline, 40%);
+      stroke: var(--color-secondary-action-outline-40);
     }
 
     .tick-line--midpoint {
@@ -244,7 +244,7 @@
     }
 
     .tick-line {
-      color: @color-secondary-action-outline;
+      color: var(--color-secondary-action-outline);
       stroke-width: 1px;
     }
 
@@ -343,7 +343,7 @@
 
     #depth-x-axis {
       line {
-        stroke: @color-secondary-action-outline;
+        stroke: var(--color-secondary-action-outline);
         transform: translateX(-0.03125rem);
       }
 

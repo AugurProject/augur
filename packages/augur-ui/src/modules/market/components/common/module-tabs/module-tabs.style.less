@@ -1,8 +1,8 @@
 @import (reference) '~assets/styles/shared';
 
 .Headers {
-  background: @color-table-header;
-  border-bottom: 1px solid @color-dark-grey;
+  background: var(--color-table-header);
+  border-bottom: 1px solid var(--color-dark-grey);
   display: flex;
   overflow-x: auto;
   min-height: @size-32;
@@ -25,7 +25,7 @@
         }
 
         .IsNew::before {
-          background: @color-outcome-five;
+          background: var(--color-outcome-five);
           border-radius: @border-radius-default;
           content: ' ';
           height: @size-4;
@@ -83,7 +83,7 @@
 }
 
 .IsNew::before {
-  background: @color-outcome-five;
+  background: var(--color-outcome-five);
   border-radius: @border-radius-default;
   content: ' ';
   height: @size-4;
@@ -134,7 +134,7 @@
 }
 
 .FillWidth {
-  background-color: @color-dark-grey;
+  background-color: var(--color-dark-grey);
 
   > li {
     .text-14;

@@ -2,8 +2,8 @@
 
 .Finalization,
 .ClaimHold {
-  background: @color-secondary-action;
-  border: 1px solid fade(@color-secondary-action-outline, 50%);
+  background: var(--color-secondary-action);
+  border: 1px solid var(--color-secondary-action-outline-50);
   border-radius: @border-radius-default;
   margin-bottom: @size-16;
   padding: @size-16;
@@ -57,7 +57,7 @@
     > span > span:first-of-type {
       .mono-10;
 
-      color: @color-inactive-text;
+      color: var(--color-inactive-text);
       text-align: right;
       text-transform: uppercase;
     }
@@ -92,7 +92,7 @@
   display: flex;
   padding: @size-12 @size-16;
   justify-content: space-between;
-  border-top: 1px solid @color-dark-grey;
+  border-top: 1px solid var(--color-dark-grey);
 
   > button {
     margin-left: auto;
@@ -148,7 +148,7 @@
       > span:first-of-type {
         .mono-12-bold;
 
-        color: @color-tenative-winner;
+        color: var(--color-tenative-winner);
         text-transform: uppercase;
       }
     }

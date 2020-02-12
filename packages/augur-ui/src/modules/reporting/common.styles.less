@@ -3,8 +3,8 @@
 .DismissableNotice {
   padding: @size-16 0 0;
   align-items: center;
-  background: @color-dismissable-notice-background;
-  border: 1px solid @color-outcome-two;
+  background: var(--color-dismissable-notice-background);
+  border: 1px solid var(--color-outcome-two);
   border-left-width: @size-4;
   border-radius: @border-radius-rounded;
   display: flex;
@@ -16,7 +16,7 @@
   > div > div:first-of-type {
     .mono-10-bold;
 
-    color: @color-secondary-action;
+    color: var(--color-secondary-action);
     display: flex;
     line-height: @size-12;
     text-transform: uppercase;
@@ -27,7 +27,7 @@
 
     display: flex;
     line-height: @size-13;
-    color: @color-secondary-action;
+    color: var(--color-secondary-action);
   }
 
   > span:first-of-type {
@@ -42,8 +42,8 @@
     }
 
     circle {
-      fill: @color-dismissable-notice-background;
-      stroke: @color-outcome-two;
+      fill: var(--color-dismissable-notice-background);
+      stroke: var(--color-outcome-two);
     }
   }
 
@@ -74,7 +74,7 @@
 .PreFilledStake {
   background: var(--color-module-background);
   border-radius: @size-8;
-  border: 1px solid @color-dark-grey;
+  border: 1px solid var(--color-dark-grey);
   display: flex;
   padding: @size-20;
   flex-direction: column;
@@ -123,7 +123,7 @@
 }
 
 .ReportingPercent {
-  background: @color-dark-grey;
+  background: var(--color-dark-grey);
   height: @size-12;
   border: @size-1 solid var(--color-module-background);
   border-radius: 100px;
@@ -147,8 +147,8 @@
         -45deg,
         var(--color-negative),
         var(--color-negative) @size-1,
-        @color-dark-grey @size-2,
-        @color-dark-grey @size-4
+        var(--color-dark-grey) @size-2,
+        var(--color-dark-grey) @size-4
       );
     }
 
@@ -159,7 +159,7 @@
   }
 
   &.invalid {
-    background-color: fade(@color-outcome-invalid, 50);
+    background-color: var(--color-outcome-invalid-50);
   }
 
   &.Round {
@@ -197,13 +197,13 @@ div.ReportingSubheaders {
         width: @size-12;
 
         > circle {
-          fill: @color-secondary-action;
-          stroke: @color-secondary-action-outline;
+          fill: var(--color-secondary-action);
+          stroke: var(--color-secondary-action-outline);
           stroke-width: 1.5;
         }
 
         > path {
-          fill: @color-inactive-text;
+          fill: var(--color-inactive-text);
         }
       }
     }
@@ -244,8 +244,8 @@ div.ReportingSubheaders {
 .ReportingModalButton {
   .text-14;
 
-  background-color: @color-secondary-action;
-  border: 1px solid @color-secondary-action-outline;
+  background-color: var(--color-secondary-action);
+  border: 1px solid var(--color-secondary-action-outline);
   border-radius: @size-3;
   color: var(--color-primary-text);
   display: flex;
@@ -267,7 +267,7 @@ div.ReportingSubheaders {
   .mono-10;
 
   background-color: var(--color-module-background);
-  border: 1px solid @color-dark-grey;
+  border: 1px solid var(--color-dark-grey);
   color: var(--color-secondary-text);
   display: flex;
   flex-direction: column;
@@ -279,7 +279,7 @@ div.ReportingSubheaders {
   > p {
     .text-18;
 
-    background: fade(@color-dark-grey, 80%);
+    background: var(--color-dark-grey-80);
     bottom: 0;
     color: var(--color-primary-text);
     left: 0;
@@ -316,7 +316,7 @@ div.ReportingSubheaders {
     }
 
     &:nth-of-type(3) {
-      border-bottom: 1px solid @color-dark-grey;
+      border-bottom: 1px solid var(--color-dark-grey);
       left: 0;
       width: 100%;
     }
@@ -603,8 +603,8 @@ div.ReportingSubheaders {
 }
 
 .ReportingBondsViewCheckbox {
-  background-color: @color-table-header;
-  border: 1px solid @color-secondary-action-outline;
+  background-color: var(--color-table-header);
+  border: 1px solid var(--color-secondary-action-outline);
   padding: @size-16;
   margin-top: @size-16;
 
@@ -621,7 +621,7 @@ div.ReportingSubheaders {
   align-items: center;
   background: var(--color-module-background);
   border-radius: @size-3;
-  border: @size-1 solid @color-dark-grey;
+  border: @size-1 solid var(--color-dark-grey);
   display: grid;
   grid-template-columns: auto 80px;
   padding: @size-12 @size-24;
@@ -689,7 +689,7 @@ div.ReportingSubheaders {
 }
 
 .ReportingList {
-  border: @size-1 solid @color-dark-grey;
+  border: @size-1 solid var(--color-dark-grey);
   background-color: var(--color-module-background);
   margin-bottom: @size-16;
 
@@ -701,7 +701,7 @@ div.ReportingSubheaders {
     display: flex;
     padding: @size-12 @size-16;
     text-transform: uppercase;
-    background-color: @color-dark-grey;
+    background-color: var(--color-dark-grey);
     margin-bottom: 0;
   }
 
@@ -746,7 +746,7 @@ div.ReportingSubheaders {
 
 .ParticipationTokensView {
   background: var(--color-module-background);
-  border: 1px solid @color-dark-grey;
+  border: 1px solid var(--color-dark-grey);
   border-radius: @size-3;
   max-width: 482px;
   padding: @size-32 @size-24;
@@ -765,7 +765,7 @@ div.ReportingSubheaders {
   }
 
   > section {
-    background-color: @color-dark-grey;
+    background-color: var(--color-dark-grey);
     height: 1px;
     margin: @size-24 0;
     width: @size-40;

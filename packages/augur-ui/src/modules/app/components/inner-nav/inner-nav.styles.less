@@ -23,7 +23,7 @@
   transition: opacity 0.3s ease-in-out, height 0.3s ease-in-out;
 
   *:hover {
-    background: @color-secondary-action-outline;
+    background: var(--color-secondary-action-outline);
   }
 
   a,
@@ -68,7 +68,7 @@
 }
 
 .InnerNav__menu-item--selected {
-  background: @color-secondary-action-outline;
+  background: var(--color-secondary-action-outline);
 }
 
 .InnerNav__menu-item--seperator {
@@ -101,12 +101,12 @@
 
   > .InnerNav__menu-item {
     *:hover {
-      background: @color-secondary-action-outline;
+      background: var(--color-secondary-action-outline);
     }
   }
 
   > .InnerNav__menu-item--selected {
-    background: @color-secondary-action-outline;
+    background: var(--color-secondary-action-outline);
   }
 }
 
@@ -135,8 +135,8 @@
         .text-16-bold;
 
         align-items: center;
-        background: @color-dark-grey;
-        border-bottom: 1px solid @color-dark-grey;
+        background: var(--color-dark-grey);
+        border-bottom: 1px solid var(--color-dark-grey);
         color: var(--color-primary-text);
         display: flex;
         flex-flow: row nowrap;
@@ -165,7 +165,7 @@
 
       // Apply button
       > div:nth-of-type(2) {
-        background: @color-table-header;
+        background: var(--color-table-header);
         padding: @size-9 @size-24;
         position: fixed;
         left: 0;
@@ -206,7 +206,7 @@
   .InnerNav__menu-item--selected:hover {
     a,
     button {
-      background: @color-secondary-action-outline;
+      background: var(--color-secondary-action-outline);
     }
   }
 

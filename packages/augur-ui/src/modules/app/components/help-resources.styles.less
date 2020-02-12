@@ -7,7 +7,7 @@
     padding: @size-18;
     display: flex;
     cursor: pointer;
-    border: @size-1 solid @color-dark-grey;
+    border: @size-1 solid var(--color-dark-grey);
     border-bottom: 0;
     max-height: @size-56;
 
@@ -20,7 +20,7 @@
       }
 
       > path {
-        fill: @color-dark-grey;
+        fill: var(--color-dark-grey);
       }
     }
 
@@ -58,7 +58,7 @@
 .HelpMenuList {
   position: absolute;
   background: var(--color-module-background);
-  border: @size-1 solid @color-secondary-action-outline;
+  border: @size-1 solid var(--color-secondary-action-outline);
   border-radius: @border-radius-default;
   width: @size-210;
   top: 100%;
@@ -89,8 +89,8 @@
 
   > li:not(:first-of-type) {
     padding: @size-13 @size-16;
-    background: @color-table-header;
-    border-top: @size-1 solid @color-dark-grey;
+    background: var(--color-table-header);
+    border-top: @size-1 solid var(--color-dark-grey);
 
     &.hideOnTablet {
       @media @breakpoint-smallish-desktop {
@@ -115,7 +115,7 @@
     display: contents;
 
     > li:not(:first-of-type) {
-      border-bottom: @size-1 solid @color-dark-grey;
+      border-bottom: @size-1 solid var(--color-dark-grey);
     }
 
     > li:last-of-type {
@@ -128,7 +128,7 @@
 .HelpMenu {
   position: absolute;
   background: var(--color-module-background);
-  border: @size-1 solid @color-secondary-action-outline;
+  border: @size-1 solid var(--color-secondary-action-outline);
   border-radius: @border-radius-default;
   width: @size-210;
   top: 100%;
@@ -159,8 +159,8 @@
 
   > span:not(:first-of-type) {
     padding: @size-13 @size-16;
-    background: @color-table-header;
-    border-top: @size-1 solid @color-dark-grey;
+    background: var(--color-table-header);
+    border-top: @size-1 solid var(--color-dark-grey);
 
     &.hideOnTablet {
       @media @breakpoint-smallish-desktop {
@@ -184,7 +184,7 @@
     top: @size-72;
 
     > span:not(:first-of-type) {
-      border-bottom: @size-1 solid @color-dark-grey;
+      border-bottom: @size-1 solid var(--color-dark-grey);
     }
 
     > span:last-of-type {

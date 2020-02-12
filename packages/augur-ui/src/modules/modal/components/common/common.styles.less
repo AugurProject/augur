@@ -1,11 +1,11 @@
 @import (reference) "~assets/styles/shared";
 
 .DefaultModalBorder {
-  border: @size-3 solid @color-secondary-action-outline;
+  border: @size-3 solid var(--color-secondary-action-outline);
   border-radius: @border-radius-extra-rounded;
 
   @media @breakpoint-mobile {
-    border: @size-2 solid @color-secondary-action-outline;
+    border: @size-2 solid var(--color-secondary-action-outline);
     border-radius: @border-radius-default;
   }
 }
@@ -123,7 +123,7 @@
 
 .TightModalContainer {
   background: var(--color-module-background);
-  border: @size-1 solid @color-dark-grey;
+  border: @size-1 solid var(--color-dark-grey);
   border-radius: @size-5;
   color: var(--color-primary-text);
   max-width: 20rem;
@@ -175,7 +175,7 @@
 }
 
 .Error {
-  color: @color-error;
+  color: var(--color-error);
   display: flex;
   padding: 0;
 
@@ -190,7 +190,7 @@
 div.ErrorField,
 div.ErrorField:focus-within,
 div.ErrorField:focus {
-  border: @size-1 solid @color-error;
+  border: @size-1 solid var(--color-error);
   margin-bottom: @size-8;
 }
 
@@ -222,7 +222,7 @@ div.ErrorField:focus {
 }
 
 .Receipt {
-  background-color: @color-dark-grey;
+  background-color: var(--color-dark-grey);
   color: var(--color-primary-text);
   list-style: none;
   margin: 0 @size-32 @size-24;
@@ -267,8 +267,8 @@ div.ErrorField:focus {
 }
 
 .ModalTable {
-  border-left: 1px solid @color-dark-grey;
-  border-top: 1px solid @color-dark-grey;
+  border-left: 1px solid var(--color-dark-grey);
+  border-top: 1px solid var(--color-dark-grey);
   color: var(--color-primary-text);
   display: flex;
   flex-flow: column;
@@ -276,13 +276,13 @@ div.ErrorField:focus {
 }
 
 .ModalTableRow {
-  border-bottom: 1px solid @color-dark-grey;
+  border-bottom: 1px solid var(--color-dark-grey);
   display: flex;
   flex: 1;
   flex-flow: row;
 
   &:hover {
-    color: @color-inactive-text;
+    color: var(--color-inactive-text);
   }
 }
 
@@ -296,7 +296,7 @@ div.ErrorField:focus {
 }
 
 .ModalTableColumn {
-  border-right: 1px solid @color-dark-grey;
+  border-right: 1px solid var(--color-dark-grey);
   flex: 1;
   font-size: @size-12;
   line-height: @size-14;
@@ -351,13 +351,13 @@ div.ErrorField:focus {
   &.disabled {
     background-color: transparent;
     border: 0;
-    color: @color-inactive-text;
+    color: var(--color-inactive-text);
   }
 
   &:hover {
     background-color: transparent;
     border: 0;
-    color: @color-inactive-text;
+    color: var(--color-inactive-text);
   }
 }
 
@@ -377,7 +377,7 @@ div.ErrorField:focus {
 
 .ModalDisclaimer {
   background: var(--color-module-background);
-  border: @size-3 solid @color-secondary-action-outline;
+  border: @size-3 solid var(--color-secondary-action-outline);
   border-radius: @size-8;
   flex-flow: row nowrap;
   max-width: 35rem;
@@ -388,7 +388,7 @@ div.ErrorField:focus {
   width: 100%;
 
   @media @breakpoint-mobile {
-    border: @size-2 solid @color-secondary-action-outline;
+    border: @size-2 solid var(--color-secondary-action-outline);
   }
 
   > h1 {
@@ -403,7 +403,7 @@ div.ErrorField:focus {
   }
 
   > div:first-of-type {
-    background-color: @color-dark-grey;
+    background-color: var(--color-dark-grey);
     margin: 0 @size-20 @size-48;
     max-height: 25rem;
     max-width: 35rem;
@@ -432,7 +432,7 @@ div.ErrorField:focus {
     }
 
     > div:first-of-type {
-      border: 1px solid @color-secondary-action-outline;
+      border: 1px solid var(--color-secondary-action-outline);
       border-left: 0;
       border-right: 0;
       display: flex;
@@ -454,8 +454,8 @@ div.ErrorField:focus {
           margin-right: @size-24;
 
           > span {
-            background: @color-secondary-action;
-            border: @size-2 solid @color-secondary-action-outline;
+            background: var(--color-secondary-action);
+            border: @size-2 solid var(--color-secondary-action-outline);
 
             > svg  {
               height: @size-6;
@@ -477,7 +477,7 @@ div.ErrorField:focus {
         .text-12-bold;
 
         background: var(--color-primary-action);
-        color: @color-dark-grey;
+        color: var(--color-dark-grey);
         margin: 0;
       }
     }
@@ -507,7 +507,7 @@ div.ErrorField:focus {
       }
 
       > svg {
-        fill: @color-dark-grey;
+        fill: var(--color-dark-grey);
         height: @size-24;
         transform: translateY(@size-8);
         width: @size-24;
@@ -612,7 +612,7 @@ div.ErrorField:focus {
     display: none;
   }
 
-  background: @color-secondary-action-outline;
+  background: var(--color-secondary-action-outline);
   border-top-left-radius: 38px;
   border-bottom-left-radius: 38px;
   cursor: pointer;
@@ -623,7 +623,7 @@ div.ErrorField:focus {
 
 
   > div:first-of-type {
-    border: 3px solid @color-secondary-action-outline;
+    border: 3px solid var(--color-secondary-action-outline);
     border-radius: 50%;
     height: 80px;
     overflow: hidden;

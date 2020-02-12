@@ -47,11 +47,11 @@
       }
 
       .highcharts-tick {
-        stroke: @color-inactive-text;
+        stroke: var(--color-inactive-text);
       }
 
       .highcharts-axis-line {
-        stroke: @color-inactive-text;
+        stroke: var(--color-inactive-text);
         transform: scaleX(1.15);
       }
 
@@ -61,7 +61,7 @@
       }
 
       .highcharts-xaxis-grid > .highcharts-grid-line {
-        stroke: fade(@color-secondary-action-outline, 25);
+        stroke: var(--color-secondary-action-outline-25);
       }
 
       .highcharts-yaxis-grid {
@@ -118,7 +118,7 @@
       }
 
       .highcharts-plot-band {
-        fill: @color-inactive-text;
+        fill: var(--color-inactive-text);
         z-index: @default-behind;
       }
 
@@ -136,9 +136,9 @@
 
       .highcharts-color-3.highcharts-point-up,
       .highcharts-color-3.highcharts-point-down {
-        color: @color-secondary-action-outline;
-        fill: @color-secondary-action-outline;
-        stroke: @color-secondary-action-outline;
+        color: var(--color-secondary-action-outline);
+        fill: var(--color-secondary-action-outline);
+        stroke: var(--color-secondary-action-outline);
       }
 
       path.highcharts-crosshair-thin:nth-of-type(2) {
