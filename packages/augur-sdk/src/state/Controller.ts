@@ -77,6 +77,9 @@ export class Controller {
   private async getLatestBlock(): Promise<Block> {
     const blockNumber: number = await this.augur.provider.getBlockNumber();
     Controller.latestBlock = await this.augur.provider.getBlock(blockNumber);
+    if (!Controller.latestBlock) {
+      throw new Error(`Could not get latest block: ${blockNumber}`);
+    }
 
     return Controller.latestBlock;
   }

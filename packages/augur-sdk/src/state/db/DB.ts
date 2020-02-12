@@ -175,7 +175,7 @@ export class DB {
     const startSyncBlockNumber = await this.getSyncStartingBlock();
     if (startSyncBlockNumber > this.syncStatus.defaultStartSyncBlockNumber) {
       console.log('Performing rollback of block ' + startSyncBlockNumber + ' onward');
-      this.rollback(startSyncBlockNumber);
+      await this.rollback(startSyncBlockNumber);
     }
 
     return this;
