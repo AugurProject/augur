@@ -25,7 +25,7 @@ import {
 import { CreateMarketData } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { Events, Getters, TXEventName } from '@augurproject/sdk';
+import { Events, TXEventName } from '@augurproject/sdk';
 import {
   addPendingData,
 } from 'modules/pending-queue/actions/pending-queue-management';
@@ -38,7 +38,6 @@ import { getDeconstructedMarketId } from 'modules/create-market/helpers/construc
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { updateAppStatus, GNOSIS_STATUS } from 'modules/app/actions/update-app-status';
 import { GnosisSafeState } from '@augurproject/gnosis-relay-api/src/GnosisRelayAPI';
-import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info';
 
 export const getRelayerDownErrorMessage = (walletType, hasEth) => {
   const errorMessage = 'We\'re currently experiencing a technical difficulty processing transaction fees in Dai. If possible please come back later to process this transaction';
@@ -161,7 +160,7 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
           methodCall
         );
         // pending queue will be updated when created market event comes in.
-        if (hash && eventName !== TXEventName.Success)
+        if (eventName !== TXEventName.Success)
           dispatch(addPendingData(id, CREATE_MARKET, eventName, hash, data));
         if (hash)
           dispatch(

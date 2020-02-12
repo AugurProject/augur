@@ -253,7 +253,7 @@ const createZeroXLiquidityOrders = async (
         )
       );
     }
-    for (i; i < orders.length; i++) {
+    for (i = 0; i < orders.length; i++) {
       const o: LiquidityOrder = orders[i];
       await placeTrade(
         o.type === BUY ? 0 : 1,
