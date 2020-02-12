@@ -75,7 +75,7 @@ export const loginWithInjectedWeb3 = () => (
             await dispatch(loginWithInjectedWeb3());
           };
 
-          console.log('refershing account to', accounts[0]);
+          console.log('refreshing account to', accounts[0]);
           await dispatch(logout());
 
           initWeb3(accounts[0]);
