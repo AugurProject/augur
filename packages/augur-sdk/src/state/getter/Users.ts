@@ -715,7 +715,7 @@ export class Users {
       marketTradingPositions[marketData.market].unclaimedProfit = '0';
       if (
         marketData.reportingState === MarketReportingState.Finalized ||
-        MarketReportingState.AwaitingFinalization
+        marketData.reportingState === MarketReportingState.AwaitingFinalization
       ) {
         if (marketData.tentativeWinningPayoutNumerators) {
           for (const tentativeWinningPayoutNumerator in marketData.tentativeWinningPayoutNumerators) {
