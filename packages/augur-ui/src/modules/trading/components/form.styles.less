@@ -246,16 +246,20 @@
 
                 // Select Date
                 > input[class*="DateInput_input"] {
+                  .mono-10-bold;
+
                   height: @size-22;
                   width: 100%;
                   cursor: pointer;
+                  color: @color-primary-text;
                   background: @color-secondary-action;
+                  border: @size-1 solid @color-secondary-action-outline;
 
                   &:hover {
-                    border: @size-1 solid @color-secondary-action-outline;
+                    background: @color-secondary-hover;
                   }
                   &:focus {
-                    border: @size-1 solid @color-secondary-action-outline;
+                    background: @color-secondary-hover;
                   }
                 }
               } 
@@ -266,14 +270,18 @@
               margin-right: 0;
 
               > button {
+                .mono-10-bold;
+
                 height: @size-22;
+                color: @color-primary-text;
                 background: @color-secondary-action;
+                border: @size-1 solid @color-secondary-action-outline;
 
                 &:hover {
-                  border: @size-1 solid @color-secondary-action-outline;
+                  background: @color-secondary-hover;
                 }
                 &:focus {
-                  border: @size-1 solid @color-secondary-action-outline;
+                  background: @color-secondary-hover;
                 }
               }
             }
@@ -283,15 +291,19 @@
               grid-column: 1 / span 2;
 
               > div[class*="TextInput"] > div > input {
+                .mono-10-bold;
+
                 height: @size-22;
                 width: 100%;
+                color: @color-primary-text;
                 background: @color-secondary-action;
+                border: @size-1 solid @color-secondary-action-outline;
 
                 &:hover {
-                  border: @size-1 solid @color-secondary-action-outline;
+                  background: @color-secondary-hover;
                 }
                 &:focus {
-                  border: @size-1 solid @color-secondary-action-outline;
+                  background: @color-secondary-hover;
                 }
               }
             }
