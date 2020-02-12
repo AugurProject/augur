@@ -1,11 +1,19 @@
 import { abi, Addresses } from '@augurproject/artifacts';
+import { Cash } from '@augurproject/core/build/libraries/ContractInterfaces';
+import { EthersProvider } from '@augurproject/ethersjs-provider/build';
+import {
+  GnosisRelayAPI,
+  GnosisSafeState,
+  RelayTransaction,
+} from '@augurproject/gnosis-relay-api';
+import {
+  ACCOUNTS,
+  makeDependencies,
+  makeSigner,
+} from '@augurproject/tools/build';
+import { NULL_ADDRESS } from '@augurproject/tools/build/libs/Utils';
 import { BigNumber } from 'bignumber.js';
 import { ethers } from 'ethers';
-import { GnosisRelayAPI, GnosisSafeState, RelayTransaction } from '@augurproject/gnosis-relay-api';
-import { NULL_ADDRESS } from '../../libs/Utils';
-import { Cash } from '@augurproject/core/build/libraries/ContractInterfaces';
-import { ACCOUNTS, makeDependencies, makeSigner } from '@augurproject/tools/build';
-import { EthersProvider } from '@augurproject/ethersjs-provider/build';
 
 type TestingEnv = 'local' | 'kovan';
 const ENV: TestingEnv = 'local' || process.env.TEST_ENV as TestingEnv;

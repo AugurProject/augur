@@ -163,9 +163,9 @@ export class OnChainTrading {
 
     let orderFilledCollection: Dexie.Collection<ParsedOrderEventLog, any>;
     if (params.marketIds) {
-      orderFilledCollection = db.OrderEvent.where("market").anyOf(params.marketIds);
+      orderFilledCollection = db.ParsedOrderEvent.where("market").anyOf(params.marketIds);
     } else {
-      orderFilledCollection = db.OrderEvent.where("orderCreator").equals(params.account).or("orderFiller").equals(params.account);
+      orderFilledCollection = db.ParsedOrderEvent.where("orderCreator").equals(params.account).or("orderFiller").equals(params.account);
     }
 
     const formattedOutcome = params.outcome ? `0x${params.outcome.toString(16)}` : "";
@@ -181,7 +181,7 @@ export class OnChainTrading {
     const orderFilledResponse = await orderFilledCollection.toArray();
 
     const orderIds = _.map(orderFilledResponse, 'orderId');
-    const ordersResponse = await db.OrderEvent.where("orderId").anyOf(orderIds).toArray();
+    const ordersResponse = await db.ParsedOrderEvent.where("orderId").anyOf(orderIds).toArray();
     const orders = _.keyBy(ordersResponse, 'orderId');
 
     const marketIds = _.map(orderFilledResponse, 'market');
@@ -302,7 +302,7 @@ export class OnChainTrading {
     }
 
     const orderIds = _.map(currentOrdersResponse, 'orderId');
-    const originalOrdersResponse = await db.OrderEvent.where("orderId").anyOf(orderIds).and((log) => log.eventType === OrderEventType.Create).toArray();
+    const originalOrdersResponse = await db.ParsedOrderEvent.where("orderId").anyOf(orderIds).and((log) => log.eventType === OrderEventType.Create).toArray();
     const originalOrders = _.keyBy(originalOrdersResponse, 'orderId');
 
     const marketIds = _.map(currentOrdersResponse, 'market');

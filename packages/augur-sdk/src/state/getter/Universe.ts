@@ -187,7 +187,7 @@ async function getMigrationOutcomes(
 }
 
 async function getUserRep(db: DB, universe: ContractInterfaces.Universe, account: string): Promise<BigNumber> {
-  const tokenChangedLogs = await db.TokenBalanceChanged.where('[universe+owner+tokenType]').equals([
+  const tokenChangedLogs = await db.TokenBalanceChangedRollup.where('[universe+owner+tokenType]').equals([
     universe.address,
     account,
     TokenType.ReputationToken

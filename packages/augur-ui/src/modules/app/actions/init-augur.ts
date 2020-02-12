@@ -261,6 +261,8 @@ export function connectAugur(
     dispatch(listenForStartUpEvents(sdk));
     dispatch(updateCanHotload(true));
 
+    await augurSdk.connect();
+
     callback(null);
   };
 }

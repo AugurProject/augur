@@ -1,28 +1,31 @@
-import { makeDbMock, makeProvider, MockGnosisRelayAPI } from '../../../libs';
-import {
-  ContractAPI,
-  ACCOUNTS,
-  loadSeedFile,
-  defaultSeedPath,
-} from '@augurproject/tools';
+import { WSClient } from '@0x/mesh-rpc-client';
+import { ContractAddresses } from '@augurproject/artifacts';
+import { EthersProvider } from '@augurproject/ethersjs-provider';
+import { BrowserMesh, Connectors } from '@augurproject/sdk';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
 import { API } from '@augurproject/sdk/build/state/getter/API';
-import { BigNumber } from 'bignumber.js';
-import { stringTo32ByteHex } from '../../../libs/Utils';
 import { MarketLiquidityRanking } from '@augurproject/sdk/build/state/getter/Liquidity';
+import { BulkSyncStrategy } from '@augurproject/sdk/build/state/sync/BulkSyncStrategy';
+import {
+  ACCOUNTS,
+  ContractAPI,
+  defaultSeedPath,
+  loadSeedFile,
+} from '@augurproject/tools';
+import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
+import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from 'ethers/utils';
-import { WSClient } from '@0x/mesh-rpc-client';
-import * as _ from 'lodash';
-import { EthersProvider } from '@augurproject/ethersjs-provider';
-import { ContractAddresses } from '@augurproject/artifacts';
-import { Connectors, BrowserMesh } from '@augurproject/sdk';
-import { MockMeshServer, stopServer } from '../../../libs/MockMeshServer';
+import { makeDbMock, makeProvider, MockGnosisRelayAPI } from '../../../libs';
 import { MockBrowserMesh } from '../../../libs/MockBrowserMesh';
+import { MockMeshServer, stopServer } from '../../../libs/MockMeshServer';
+
+const mock = makeDbMock();
 
 describe('State API :: Liquidity', () => {
   let john: ContractAPI;
   let johnDB: Promise<DB>;
   let johnAPI: API;
+  let bulkSyncStrategy: BulkSyncStrategy;
 
   let provider: EthersProvider;
   let addresses: ContractAddresses;
@@ -64,6 +67,15 @@ describe('State API :: Liquidity', () => {
       johnDB = mock.makeDB(john.augur, ACCOUNTS);
       johnConnector.initialize(john.augur, await johnDB);
       johnAPI = new API(john.augur, johnDB);
+
+      bulkSyncStrategy = new BulkSyncStrategy(
+        provider.getLogs,
+        (await johnDB).logFilters.buildFilter,
+        (await johnDB).logFilters.onLogsAdded,
+        john.augur.contractEvents.parseLogs,
+      );
+
+
       await john.approveCentralAuthority();
     });
     test(': Liquidity Ranking', async () => {
@@ -98,7 +110,7 @@ describe('State API :: Liquidity', () => {
       ]);
 
       // With no orders on the book the liquidity scores won't exist
-      await (await johnDB).sync(john.augur, mock.constants.chunkSize, 0);
+      await bulkSyncStrategy.start(0, await john.provider.getBlockNumber());
       let marketData = await (await johnDB).Markets.get(market.address);
 
       await expect(marketData.liquidity).toEqual({
@@ -148,7 +160,7 @@ describe('State API :: Liquidity', () => {
         expirationTime,
       });
 
-      await (await johnDB).sync(john.augur, mock.constants.chunkSize, 0);
+      await bulkSyncStrategy.start(0, await john.provider.getBlockNumber());;
       marketData = await (await johnDB).Markets.get(market.address);
 
       await expect(marketData.liquidity[10]).toEqual(

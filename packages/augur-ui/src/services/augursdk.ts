@@ -25,10 +25,17 @@ export class SDK {
   isSubscribed = false;
   networkId: NetworkId;
   private signerNetworkId: string;
+  private connector:Connectors.BaseConnector;
+  private config: SDKConfiguration;
+
 
   // Keeping this here for backward compatibility
   get sdk() {
     return this.client;
+  }
+
+  connect(account: string = null):Promise<void> {
+    return this.connector.connect(this.config, account);
   }
 
   async makeClient(
@@ -41,7 +48,7 @@ export class SDK {
     this.networkId = (await provider.getNetwork()).chainId.toString() as NetworkId;
     const addresses = getAddressesForNetwork(this.networkId);
 
-    const config: SDKConfiguration = {
+    this.config = {
       networkId: this.networkId,
       ethereum: {
         http: env['ethereum-node'].http,
@@ -69,28 +76,24 @@ export class SDK {
 
     const ethersProvider = new EthersProvider(
       provider,
-      config.ethereum.rpcRetryCount,
-      config.ethereum.rpcRetryInterval,
-      config.ethereum.rpcConcurrency
+      this.config.ethereum.rpcRetryCount,
+      this.config.ethereum.rpcRetryInterval,
+      this.config.ethereum.rpcConcurrency
     );
 
-    let connector = null;
-    if (config.sdk && config.sdk.enabled) {
-      connector = new Connectors.WebsocketConnector();
+    if (this.config.sdk && this.config.sdk.enabled) {
+      this.connector = new Connectors.WebsocketConnector();
     } else {
-      connector = new Connectors.SingleThreadConnector();
+      this.connector = new Connectors.SingleThreadConnector();
     }
 
-    this.client = await createClient(config, connector, account, signer, ethersProvider, enableFlexSearch, createBrowserMesh);
+    this.client = await createClient(this.config, this.connector, account, signer, ethersProvider, enableFlexSearch, createBrowserMesh);
 
     if (!isEmpty(account)) {
-      this.syncUserData(account, signer, this.networkId, config.gnosis && config.gnosis.enabled).catch((error) => {
+      this.syncUserData(account, signer, this.networkId, this.config.gnosis && this.config.gnosis.enabled).catch((error) => {
         console.log('Gnosis safe create error during create: ', error);
       });
     }
-
-    // This actually isny' async because we start this with a client
-    await connector.connect(config, account)
 
     // tslint:disable-next-line:ban-ts-ignore
     // @ts-ignore

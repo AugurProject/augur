@@ -22,7 +22,7 @@ export class RollbackTable extends AbstractTable {
 
     protected constructor(networkId: number, augur: Augur, dbName: string, db: DB) {
         super(networkId, dbName, db.dexieDB);
-        this.isStandardRollback = this.idFields === STANDARD_PRIMARY_KEY;
+        this.isStandardRollback = _.isEqual(this.idFields, STANDARD_PRIMARY_KEY);
         this.rollbackTable = db.dexieDB['Rollback'];
         this.syncing = false;
         this.syncStatus = db.syncStatus;

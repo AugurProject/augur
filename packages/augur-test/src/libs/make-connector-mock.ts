@@ -1,6 +1,4 @@
-import { Connectors } from "@augurproject/sdk";
-import { SubscriptionEventName } from "@augurproject/sdk";
-import { Events } from "@augurproject/sdk";
+import { Connectors, Events, SubscriptionEventName } from '@augurproject/sdk';
 
 export function makeConnectorMock(json: object): Connectors.BaseConnector {
   class MockConnector extends Connectors.BaseConnector {

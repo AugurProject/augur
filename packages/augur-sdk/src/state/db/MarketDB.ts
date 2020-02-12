@@ -71,22 +71,26 @@ export class MarketDB extends DerivedDB {
     this.augur.events.subscribe(SubscriptionEventName.TimestampSet, this.processTimestampSet);
   }
 
-  async doSync(highestAvailableBlockNumber: number): Promise<void> {
-    this.syncing = true;
-    await super.doSync(highestAvailableBlockNumber);
-    await this.syncOrderBooks([]);
-    const timestamp = (await this.augur.getTimestamp()).toNumber();
-    await this.processTimestamp(timestamp, highestAvailableBlockNumber);
-    await this.syncFTS();
-    this.syncing = false;
-  }
-
   syncFTS = async (): Promise<void> => {
     if (this.augur.syncableFlexSearch) {
       let marketDocs = await this.allDocs();
       marketDocs = marketDocs.slice(0, marketDocs.length);
       await this.augur.syncableFlexSearch.addMarketCreatedDocs(marketDocs);
     }
+  }
+
+  async handleMergeEvent(
+    blocknumber: number, logs: ParsedLog[],
+    syncing = false): Promise<number> {
+
+    const result = await super.handleMergeEvent(blocknumber, logs, syncing);
+
+    await this.syncOrderBooks([]);
+
+    const timestamp = (await this.augur.getTimestamp()).toNumber();
+    await this.processTimestamp(timestamp, result);
+    await this.syncFTS();
+    return result;
   }
 
   syncOrderBooks = async (marketIds: string[]): Promise<void> => {;
@@ -96,10 +100,10 @@ export class MarketDB extends DerivedDB {
 
     let marketsData;
     if (marketIds.length === 0) {
-      marketsData = await this.stateDB.Markets.toArray();
+      marketsData = await this.table.toArray();
       ids = marketsData.map(data => data.market);
     } else {
-      marketsData = await this.stateDB.Markets.where('market').anyOf(marketIds).toArray();
+      marketsData = await this.table.where('market').anyOf(marketIds).toArray();
     }
 
     const reportingFeeDivisor = await this.augur.contracts.universe.getReportingFeeDivisor_();

@@ -1,7 +1,12 @@
-import { API } from "@augurproject/sdk/build/state/getter/API";
-import { DB } from "@augurproject/sdk/build/state/db/DB";
-import { makeDbMock, makeProvider } from "../../../libs";
-import { ContractAPI, loadSeedFile, ACCOUNTS, defaultSeedPath } from "@augurproject/tools";
+import { DB } from '@augurproject/sdk/build/state/db/DB';
+import { API } from '@augurproject/sdk/build/state/getter/API';
+import {
+  ACCOUNTS,
+  ContractAPI,
+  defaultSeedPath,
+  loadSeedFile,
+} from '@augurproject/tools';
+import { makeDbMock, makeProvider } from '../../../libs';
 
 const mock = makeDbMock();
 

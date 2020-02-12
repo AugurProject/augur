@@ -1,6 +1,11 @@
-import { ContractAPI, ACCOUNTS, loadSeedFile, defaultSeedPath } from "@augurproject/tools";
+import {
+  ACCOUNTS,
+  ContractAPI,
+  defaultSeedPath,
+  loadSeedFile,
+} from '@augurproject/tools';
 import { BigNumber } from 'bignumber.js';
-import { makeProvider } from "../../libs";
+import { makeProvider } from '../../libs';
 
 let john: ContractAPI;
 let mary: ContractAPI;

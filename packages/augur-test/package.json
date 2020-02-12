@@ -17,7 +17,8 @@
     "clean": "echo delete database",
     "rebuild": "yarn clean && yarn build",
     "prepush": "yarn lint",
-    "test": "jest"
+    "test": "jest",
+    "generate:data": "node -r ts-node/register src/tests/fixtures/generate-mock-data.ts"
   },
   "repository": {
     "type": "git",

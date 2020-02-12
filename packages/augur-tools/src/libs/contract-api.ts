@@ -23,6 +23,7 @@ import {
   EmptyConnector,
   HotLoadMarketInfo,
   DisputeWindow,
+  WarpSyncData,
   ZeroX,
   NativePlaceTradeDisplayParams,
 } from '@augurproject/sdk';
@@ -32,8 +33,6 @@ import { formatBytes32String } from 'ethers/utils';
 import { Account } from '../constants';
 import { makeGnosisDependencies, makeSigner } from './blockchain';
 import { sleep } from '@augurproject/core/build/libraries/HelperFunctions';
-import { ZeroXOrder } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
-import { NumOutcomes, OutcomeNumber, UnixTimestamp } from '@augurproject/sdk/src/state/logs/types';
 
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 const ETERNAL_APPROVAL_VALUE = new BigNumber('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'); // 2^256 - 1
@@ -793,5 +792,29 @@ export class ContractAPI {
     } else {
       throw Error(`Received erroneous response when deploying safe via relay: "${status}"`);
     }
+  }
+
+  async initializeUniverseForWarpSync(): Promise<void> {
+    return await this.augur.warpSync.initializeUniverse(this.augur.contracts.universe.address);
+  }
+
+  async getWarpSyncMarket(): Promise<ContractInterfaces.Market> {
+    return await this.augur.warpSync.getWarpSyncMarket(this.augur.contracts.universe.address);
+  }
+
+  async getLastWarpSyncData(): Promise<WarpSyncData> {
+    return await this.augur.warpSync.getLastWarpSyncData(this.augur.contracts.universe.address);
+  }
+
+  async getWarpSyncHashFromPayout(payout: BigNumber[]): Promise<string> {
+    return await this.augur.warpSync.getWarpSyncHashFromPayout(payout);
+  }
+
+  async getPayoutFromWarpSyncHash(hash: string): Promise<BigNumber[]> {
+    return await this.augur.warpSync.getPayoutFromWarpSyncHash(hash);
+  }
+
+  async getWarpSyncHashFromMarket(market: ContractInterfaces.Market): Promise<string> {
+    return await this.augur.warpSync.getWarpSyncHashFromMarket(market);
   }
 }
