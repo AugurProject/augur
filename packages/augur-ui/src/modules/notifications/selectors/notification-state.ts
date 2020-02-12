@@ -11,7 +11,7 @@ import { MarketReportingState } from '@augurproject/sdk';
 import {
   CLAIM_REPORTING_FEES_TITLE,
   FINALIZE_MARKET_TITLE,
-  MARKET_IS_MOST_LIKELY_INVALID, MARKET_IS_MOST_LIKELY_INVALID_TITLE,
+  MARKET_IS_MOST_LIKELY_INVALID_TITLE,
   NOTIFICATION_TYPES,
   PROCEEDS_TO_CLAIM_TITLE,
   REPORTING_ENDS_SOON_TITLE,
@@ -21,7 +21,7 @@ import {
   TYPE_REPORT,
   TYPE_VIEW_DETAILS,
   TYPE_VIEW_ORDERS,
-  UNSIGNED_ORDERS_TITLE,
+  SIGN_SEND_ORDERS,
   ZERO,
 } from 'modules/common/constants';
 import userOpenOrders from 'modules/orders/selectors/user-open-orders';
@@ -90,7 +90,7 @@ export const selectFinalizeMarkets = createSelector(
     const marketId = Object.keys(marketInfos).filter(
       id =>
         (isSameAddress(marketInfos[id].author, address) ||
-          isSameAddress(marketInfos[id].DesignatedReporter, address)) &&
+          isSameAddress(marketInfos[id].designatedReporter, address)) &&
         marketInfos[id].reportingState === REPORTING_STATE.AWAITING_FINALIZATION
     );
     if (marketId.length > 0) {
@@ -340,7 +340,7 @@ const generateCards = (markets, type) => {
       type,
       isImportant: false,
       isNew: true,
-      title: UNSIGNED_ORDERS_TITLE,
+      title: SIGN_SEND_ORDERS,
       buttonLabel: TYPE_VIEW_ORDERS,
     };
   } else if (type === NOTIFICATION_TYPES.proceedsToClaim) {

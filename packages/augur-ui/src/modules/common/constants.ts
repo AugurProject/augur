@@ -822,7 +822,7 @@ export const RESOLVED_MARKETS_OPEN_ORDERS_TITLE =
   'Open Orders in Resolved Market';
 export const REPORTING_ENDS_SOON_TITLE = 'You need to report';
 export const FINALIZE_MARKET_TITLE = 'Finalize Market';
-export const UNSIGNED_ORDERS_TITLE = 'Unsigned Orders';
+export const SIGN_SEND_ORDERS = 'Sign to approve your orders';
 export const CLAIM_REPORTING_FEES_TITLE = 'Claim Stake and Fees';
 export const PROCEEDS_TO_CLAIM_TITLE = 'Claim Proceeds';
 export const MARKET_IS_MOST_LIKELY_INVALID_TITLE = 'Market is Failing Invalid Filter';
