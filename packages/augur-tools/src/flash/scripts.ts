@@ -2057,37 +2057,30 @@ export function addScripts(flash: FlashSession) {
       try {
         if (dev) {
           spawnSync('yarn', ['workspace', '@augurproject/tools', 'docker:geth:detached']);
-
-          await sleep(10000); // give geth some time to start
-
-          this.network = NetworkConfiguration.create();
-          this.provider = flash.makeProvider(flash.network);
-
-          const deployMethod = fake ? 'fake-all' : 'normal-all';
-          await this.call(deployMethod, { createMarkets: true });
-
         } else {
           const gethDocker = fake ? 'docker:geth:pop' : 'docker:geth:pop-normal-time';
           spawnSync('yarn', [gethDocker]);
-
-          await updateAddresses();
-
-          await sleep(10000); // give geth some time to start
-
-          this.network = NetworkConfiguration.create();
-          this.provider = flash.makeProvider(flash.network);
-
-          const networkId = await this.getNetworkId(this.provider);
-          this.contractAddresses = Addresses[networkId];
+          await updateAddresses(); // add pop-geth addresses to global Addresses
         }
 
-        // So UI and other flash calls will have the correct addresses.
-        await spawnSync('yarn', ['build']);
+        await sleep(10000); // give geth some time to start
+
+        this.network = NetworkConfiguration.create();
+        this.provider = flash.makeProvider(flash.network);
+        const networkId = await this.getNetworkId(this.provider);
+
+        if (dev) {
+          const deployMethod = fake ? 'fake-all' : 'normal-all';
+          await this.call(deployMethod, { createMarkets: true });
+        }
+
+        this.contractAddresses = Addresses[networkId];
+        await spawnSync('yarn', ['build']); // so UI etc will have the correct addresses
 
         spawnSync('yarn', ['workspace', '@augurproject/gnosis-relay-api', 'run-relay', '-d'], {
           env: {
             ...process.env,
-            ETHEREUM_CHAIN_ID: await this.getNetworkId(this.provider),
+            ETHEREUM_CHAIN_ID: networkId,
             CUSTOM_CONTRACT_ADDRESSES: JSON.stringify(this.contractAddresses),
             GNOSIS_SAFE_CONTRACT_ADDRESS: formatAddress(this.contractAddresses.GnosisSafe, { prefix: true }),
             PROXY_FACTORY_CONTRACT_ADDRESS: formatAddress(this.contractAddresses.ProxyFactory, { prefix: true }),
