@@ -996,7 +996,7 @@ export const TRADING_TUTORIAL_COPY = {
         text:
           "First, lets start by looking over the market details. Be sure to check that the question isn't subjective or ambiguous, and that the Resolution Source abides by the",
         linkText: 'community guidelines.',
-        link: 'https://www.docs.augur.net',
+        link: 'https://docs.augur.net',
       },
     ],
   },
@@ -1019,7 +1019,7 @@ export const TRADING_TUTORIAL_COPY = {
       {
         text: "To learn more about selling shares, or going 'short,' see our",
         linkText: 'guide.',
-        link: 'https://www.docs.augur.net',
+        link: 'https://docs.augur.net',
       },
     ],
   },
@@ -1032,7 +1032,7 @@ export const TRADING_TUTORIAL_COPY = {
       {
         text: "To learn why invalid is an outcome, see our",
         linkText: "guide.",
-        link: 'https://www.docs.augur.net'
+        link: 'https://docs.augur.net'
       },
     ],
   },[TRADING_TUTORIAL_STEPS.QUANTITY]: {
