@@ -33,7 +33,7 @@
 }
 
 .Logo {
-  border-right: 1px solid var(--color-module-background);
+  border-right: @size-1 solid var(--color-module-background);
   padding: 0 @size-20 0 @size-16;
 
   div {
@@ -48,7 +48,7 @@
     border: 0;
     display: flex;
     flex: 2;
-    margin-left: 2.875rem;
+    margin-left: @size-46;
     padding: 0;
   }
 }
@@ -190,4 +190,14 @@
 
 .alertsDark {
   background-color: var(--color-module-background);
+}
+
+:root[theme="BETTING"] {
+  .TopBar {
+    background: var(--color-primary-text);
+  }
+
+  .Logo {
+    border-right: @size-1 solid var(--color-secondary-text);
+  }
 }

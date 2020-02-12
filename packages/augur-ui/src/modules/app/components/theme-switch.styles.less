@@ -1,0 +1,44 @@
+@import (reference) '~assets/styles/shared';
+
+// default is trading ui styling/shared styling
+.ThemeSwitch {
+  list-style-type: none;
+  display: flex;
+  flex-flow: row nowrap;
+  height: 100%;
+
+  @media @breakpoint-mobile {
+    display: none;
+  }
+
+  > li {
+    border-right: @size-1 solid var(--color-module-background);
+    height: 100%;
+
+    > button {
+      color: var(--color-secondary-text);
+      padding: @size-12;
+      height: 100%;
+
+      &.Active {
+        color: var(--color-primary-text);
+      }
+    }
+  }
+}
+
+:root[theme="BETTING"] {
+  .ThemeSwitch {
+    > li {
+      border-right: @size-1 solid var(--color-secondary-text);
+
+      > button {
+        color: var(--color-dark-text);
+      
+        &.Active {
+          color: var(--color-module-background);
+        }
+      }
+    }
+  }
+}
