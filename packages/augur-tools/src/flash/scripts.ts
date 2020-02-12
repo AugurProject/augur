@@ -16,7 +16,7 @@ import moment from 'moment';
 import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from 'ethers/utils';
 import { ethers } from 'ethers';
-import { abiV1 } from '@augurproject/artifacts';
+import { abiV1, Addresses } from '@augurproject/artifacts';
 import {
   calculatePayoutNumeratorsArray,
   QUINTILLION,
@@ -31,15 +31,14 @@ import { fork } from './fork';
 import { dispute } from './dispute';
 import { MarketList, MarketOrderBook } from '@augurproject/sdk/build/state/getter/Markets';
 import { generateTemplateValidations } from './generate-templates';
-import { spawn } from 'child_process';
+import { spawn, spawnSync } from 'child_process';
 import { showTemplateByHash, validateMarketTemplate } from './template-utils';
 import { cannedMarkets, singleOutcomeAsks, singleOutcomeBids } from './data/canned-markets';
 import { ContractAPI } from '../libs/contract-api';
 import { OrderBookShaper, OrderBookConfig } from './orderbook-shaper';
 import { NumOutcomes } from '@augurproject/sdk/src/state/logs/types';
 import { flattenZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
-import { sleep } from '@augurproject/sdk/build/state/utils/utils';
-import { promiseSpawn } from "./util";
+import { awaitUserInput, formatAddress, sleep } from './util';
 
 export function addScripts(flash: FlashSession) {
   flash.addScript({
@@ -1006,7 +1005,7 @@ export function addScripts(flash: FlashSession) {
       const marketIds = String(args.marketIds)
         .split(',')
         .map(id => id.trim());
-      const orderOutcomes: number[] = (args.outcomes ? String(args.outcomes) : "2,1")
+      const orderOutcomes: number[] = (args.outcomes ? String(args.outcomes) : '2,1')
         .split(',')
         .map(id => Number(id.trim()));
       const address = args.userAccount ? (args.userAccount as string) : null;
@@ -1025,11 +1024,11 @@ export function addScripts(flash: FlashSession) {
         await user.approve(QUINTILLION.multipliedBy(100000));
       }
       // create tight orderbook config
-      let bids = {};
-      let asks = {};
+      const bids = {};
+      const asks = {};
       for(let i = 1; i < 49; i++) { bids[((0.01 * i).toString().slice(0, 4))] = orderSize }
       for(let i = 50; i < 99; i++) { asks[((0.01 * i).toString().slice(0, 4))] = orderSize }
-      let config: OrderBookConfig = {bids, asks};
+      const config: OrderBookConfig = {bids, asks};
       const shapers = marketIds.map(m => new OrderBookShaper(m, null, expiration, orderOutcomes, config));
       let i = 0;
       for(i; i < burstRounds; i++) {
@@ -2029,6 +2028,7 @@ export function addScripts(flash: FlashSession) {
 
   flash.addScript({
     name: 'docker-all',
+    ignoreNetwork: true,
     options: [
       {
         name: 'dev',
@@ -2042,53 +2042,57 @@ export function addScripts(flash: FlashSession) {
         description: 'Use fake time (TimeControlled) instead of real time',
         flag: true,
       },
-      {
-        name: 'attached-gnosis',
-        abbr: 'a',
-        description: 'Keep flash script running by not detaching gnosis relay',
-        flag: true,
-      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
-      const dev = args.dev as boolean;
-      const fake = args.dev as boolean;
-      const attachedGnosis = args.attachedGnosis as boolean;
+      const dev = Boolean(args.dev);
+      const fake = Boolean(args.fake);
 
-      await promiseSpawn('docker', 'pull', 'augurproject/safe-relay-service_web:latest');
-      await promiseSpawn('docker', 'pull', '0xorg/mesh:latest');
+      spawnSync('docker', ['pull', 'augurproject/safe-relay-service_web:latest']);
+      spawnSync('docker', ['pull', '0xorg/mesh:latest']);
 
       this.log(`Deploy contracts: ${dev}`);
       this.log(`Use fake time: ${fake}`);
 
-      let geth;
-      if (dev) {
-        // TODO figure out how must handle geth here. can it be promiseSpawn? any thing to await on?
-        //      update: process spawns another process, which is unkillable. use non-detached version?
-        geth = spawn('yarn', [
-          'workspace',
-          '@augurproject/tools',
-          'docker:geth'
-        ]);
-        geth.on('error', (err) => {
-          throw err;
+      try {
+        if (dev) {
+          spawnSync('yarn', ['workspace', '@augurproject/tools', 'docker:geth:detached']);
+
+          this.network = NetworkConfiguration.create();
+          this.provider = flash.makeProvider(flash.network);
+
+          const deployMethod = fake ? 'fake-all' : 'normal-all';
+          await this.call(deployMethod, { createMarkets: true });
+
+        } else {
+          const gethDocker = fake ? 'docker:geth:pop' : 'docker:geth:pop-normal-time';
+          spawnSync('yarn', [gethDocker]);
+
+          await sleep(10000); // give geth some time to start
+
+          this.network = NetworkConfiguration.create();
+          this.provider = flash.makeProvider(flash.network);
+
+          const networkId = await this.getNetworkId(this.provider);
+          this.contractAddresses = Addresses[networkId];
+        }
+
+        spawnSync('yarn', ['workspace', '@augurproject/gnosis-relay-api', 'run-relay', '-d'], {
+          env: {
+            ...process.env,
+            ETHEREUM_CHAIN_ID: await this.getNetworkId(this.provider),
+            CUSTOM_CONTRACT_ADDRESSES: JSON.stringify(this.contractAddresses),
+            GNOSIS_SAFE_CONTRACT_ADDRESS: formatAddress(this.contractAddresses.GnosisSafe, { prefix: true }),
+            PROXY_FACTORY_CONTRACT_ADDRESS: formatAddress(this.contractAddresses.ProxyFactory, { prefix: true }),
+            ZEROX_CONTRACT_ADDRESS: formatAddress(this.contractAddresses.ZeroXTrade, { lower: true, prefix: false }),
+          }
         });
 
-        const deployMethod = fake ? 'fake-all' : 'normal-all';
-        this.route(deployMethod, { createMarkets: true });
-
-      } else {
-        const gethDocker = fake ? 'docker:geth:pop' : 'docker:geth:pop-normal-time';
-        geth = spawn('yarn', [gethDocker]);
+        await awaitUserInput('Running dockers. Press ENTER to quit:');
+      } finally {
+        this.log('Stopping dockers');
+        await spawnSync('docker', ['kill', 'geth']);
+        await spawnSync('yarn', ['workspace', '@augurproject/gnosis-relay-api', 'kill-relay']);
       }
-
-      // TODO is this necessary?
-      await promiseSpawn('yarn', 'build');
-
-      const gnosisRelayArgs = [
-        'workspace', '@augurproject/gnosis-relay-api', 'run-relay'
-      ];
-      if (!attachedGnosis) gnosisRelayArgs.push('-d');
-      const gnosisRelay = spawn('yarn', gnosisRelayArgs);
     }
   });
 
@@ -2167,13 +2171,8 @@ export function addScripts(flash: FlashSession) {
       const removePrefix = args.removePrefix as boolean;
       const lower = args.lower as boolean;
       let address = this.contractAddresses[name];
-      if (removePrefix) {
-        address = address.slice(2);
-      }
-      if (lower) {
-        address = address.toLowerCase();
-      }
-      console.log(address);
+      address = formatAddress(address, { lower, prefix: !removePrefix});
+      this.log(address);
       return address;
     },
   });
@@ -2286,6 +2285,14 @@ export function addScripts(flash: FlashSession) {
       const balance = await user.getRepBalance(target || this.account);
       this.log(balance.toFixed());
       return balance;
+    },
+  });
+
+  flash.addScript({
+    name: 'ping',
+    ignoreNetwork: true,
+    async call(this: FlashSession) {
+      this.log('pong');
     },
   });
 }
