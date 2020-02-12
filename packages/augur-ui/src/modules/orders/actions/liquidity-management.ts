@@ -237,6 +237,7 @@ const createZeroXLiquidityOrders = async (
   try {
     const fingerprint = undefined; // TODO: get this from state
     let i = 0;
+    // set all orders to pending before processing them.
     for (i; i < orders.length; i++) {
       const o: LiquidityOrder = orders[i];
       dispatch(
@@ -251,6 +252,9 @@ const createZeroXLiquidityOrders = async (
           dispatch
         )
       );
+    }
+    for (i = 0; i < orders.length; i++) {
+      const o: LiquidityOrder = orders[i];
       await placeTrade(
         o.type === BUY ? 0 : 1,
         market.id,
