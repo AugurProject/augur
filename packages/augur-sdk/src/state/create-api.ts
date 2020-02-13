@@ -76,6 +76,10 @@ export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: Ethe
     const endBulkSyncBlockNumber = await bulkSyncStrategy.start(staringSyncBlock, currentBlockNumber);
 
     console.log('Syncing Complete - SDK Ready');
+    client.events.emit(SubscriptionEventName.BulkSyncComplete, {
+      eventName: SubscriptionEventName.BulkSyncComplete,
+      highestAvailableBlockNumber: endBulkSyncBlockNumber,
+    });
     client.events.emit(SubscriptionEventName.SDKReady, {
       eventName: SubscriptionEventName.SDKReady,
     });

@@ -1,10 +1,11 @@
 import { ParsedLog } from '@augurproject/types/build';
 import { Augur } from '../../Augur';
 import { DB } from './DB';
+import { DelayedSyncableDB } from './DelayedSyncableDB';
 import { SyncableDB } from './SyncableDB';
 import _ from 'lodash';
 
-export class ParsedOrderEventDB extends SyncableDB {
+export class ParsedOrderEventDB extends DelayedSyncableDB {
   constructor(db: DB, networkId: number, augur: Augur) {
     super(augur, db, networkId, 'OrderEvent', 'ParsedOrderEvents');
   }

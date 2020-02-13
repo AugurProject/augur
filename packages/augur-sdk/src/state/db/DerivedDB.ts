@@ -1,5 +1,6 @@
 import * as _ from 'lodash';
 import { Augur } from '../../Augur';
+import { SubscriptionEventName } from '../../constants';
 import { BaseDocument } from './AbstractTable';
 import { Log, ParsedLog } from '@augurproject/types';
 import { DB } from './DB';
@@ -39,7 +40,44 @@ export class DerivedDB extends RollbackTable {
     this.stateDB = db;
     this.name = name;
 
-    db.registerEventListener(mergeEventNames, this.handleMergeEvent.bind(this));
+    augur.events.once(SubscriptionEventName.BulkSyncComplete, this.onBulkSyncComplete.bind(this));
+  }
+
+  async onBulkSyncComplete({highestAvailableBlockNumber}) {
+    console.log('onBulkSyncComplete-checkpoint-1');
+
+    await this.sync(highestAvailableBlockNumber);
+    this.stateDB.registerEventListener(this.mergeEventNames, this.handleMergeEvent.bind(this));
+  }
+
+  async sync(highestAvailableBlockNumber: number): Promise<void> {
+    this.syncing = true;
+    await this.doSync(highestAvailableBlockNumber);
+    await this.syncStatus.setHighestSyncBlock(
+      this.dbName,
+      highestAvailableBlockNumber,
+      true
+    );
+    this.syncing = false;
+  }
+
+  // For all mergable event types get any new documents we haven't pulled in and pull them in
+  async doSync(highestAvailableBlockNumber: number): Promise<void> {
+    const highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(
+      this.dbName
+    );
+    for (const eventName of this.mergeEventNames) {
+      const result = await this.stateDB.dexieDB[eventName].where("blockNumber").aboveOrEqual(highestSyncedBlockNumber).toArray();
+      if (result.length > 0) {
+        await this.handleMergeEvent(
+          highestAvailableBlockNumber,
+          (result as unknown[]) as ParsedLog[],
+          true
+        );
+      }
+    }
+
+    await this.syncStatus.updateSyncingToFalse(this.dbName);
   }
 
   // For a group of documents/logs for a particular event type get the latest per id and update the DB documents for the corresponding ids

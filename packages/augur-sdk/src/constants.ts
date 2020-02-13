@@ -15,6 +15,7 @@ export enum ACCOUNT_TYPES {
 }
 
 export enum SubscriptionEventName {
+  BulkSyncComplete = "BulkSyncComplete",
   CompleteSetsPurchased = "CompleteSetsPurchased",
   CompleteSetsSold = "CompleteSetsSold",
   DisputeCrowdsourcerCompleted = "DisputeCrowdsourcerCompleted",

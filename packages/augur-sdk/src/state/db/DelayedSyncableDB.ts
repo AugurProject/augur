@@ -15,9 +15,7 @@ export interface Document extends BaseDocument {
 /**
  * Stores event logs for non-user-specific events.
  */
-export class SyncableDB extends BaseSyncableDB {
-  protected eventName: string;
-
+export class DelayedSyncableDB extends BaseSyncableDB {
   constructor(
     augur: Augur,
     db: DB,
@@ -27,6 +25,26 @@ export class SyncableDB extends BaseSyncableDB {
     indexes: string[] = []
   ) {
     super(augur, db, networkId, eventName, dbName);
-    db.registerEventListener(this.eventName, this.addNewBlock.bind(this));
+
+    augur.events.once(SubscriptionEventName.BulkSyncComplete, this.onBulkSyncComplete.bind(this));
   }
+
+
+  async onBulkSyncComplete({highestAvailableBlockNumber}) {
+    console.log('onBulkSyncComplete-checkpoint-1');
+
+    await this.sync(highestAvailableBlockNumber);
+    this.db.registerEventListener(this.eventName, this.addNewBlock.bind(this));
+  }
+
+  async sync(highestAvailableBlockNumber: number): Promise<void> {
+    this.syncing = true;
+
+    const result = await this.table.toArray();
+    this.bulkUpsertDocuments(result);
+
+    this.syncing = false;
+  }
+
+
 }

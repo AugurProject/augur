@@ -47,7 +47,10 @@ export class BulkSyncStrategy extends AbstractSyncStrategy implements SyncStrate
 
       const sortedLogs = _.orderBy(logsWeCareAbout, ['blockNumber', 'logIndex'], ['asc', 'asc']);
 
+      const label = `${highestSyncedBlockNumber}-${endBlockNumber}`
+      console.time(label);
       await this.onLogsAdded(highestSyncedBlockNumber, this.parseLogs(sortedLogs));
+      console.timeEnd(label);
     }
 
     return highestSyncedBlockNumber;

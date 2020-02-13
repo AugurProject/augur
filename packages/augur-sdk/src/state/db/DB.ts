@@ -44,8 +44,10 @@ import {
   UniverseCreatedLog,
   UniverseForkedLog,
 } from '../logs/types';
+import { BaseSyncableDB } from './BaseSyncableDB';
 import { CancelledOrdersDB } from './CancelledOrdersDB';
 import { CurrentOrdersDatabase } from './CurrentOrdersDB';
+import { DelayedSyncableDB } from './DelayedSyncableDB';
 import { DisputeDatabase } from './DisputeDB';
 import { MarketDB } from './MarketDB';
 import { ParsedOrderEventDB } from './ParsedOrderEventDB';
@@ -66,7 +68,7 @@ export interface DerivedDBConfiguration {
 
 export class DB {
   private blockstreamDelay: number;
-  private syncableDatabases: { [dbName: string]: SyncableDB } = {};
+  private syncableDatabases: { [dbName: string]: BaseSyncableDB } = {};
   private disputeDatabase: DisputeDatabase;
   private currentOrdersDatabase: CurrentOrdersDatabase;
   private marketDatabase: MarketDB;
@@ -155,7 +157,7 @@ export class DB {
       new SyncableDB(this.augur, this, networkId, genericEventDBDescription.EventName, genericEventDBDescription.EventName, genericEventDBDescription.indexes);
 
       if(genericEventDBDescription.primaryKey) {
-        new SyncableDB(this.augur, this, networkId, genericEventDBDescription.EventName, `${genericEventDBDescription.EventName}Rollup`, genericEventDBDescription.indexes);
+        new DelayedSyncableDB(this.augur, this, networkId, genericEventDBDescription.EventName, `${genericEventDBDescription.EventName}Rollup`, genericEventDBDescription.indexes);
       }
     }
     // Custom Derived DBs here
@@ -207,7 +209,7 @@ export class DB {
    *
    * @param {SyncableDB} db dbController that utilizes the SyncableDB
    */
-  notifySyncableDBAdded(db: SyncableDB): void {
+  notifySyncableDBAdded(db: BaseSyncableDB): void {
     this.syncableDatabases[db.dbName] = db;
   }
 
@@ -228,15 +230,6 @@ export class DB {
     }
 
     return Math.min(...highestSyncBlocks);
-  }
-
-  /**
-   * Gets a syncable database based upon the name
-   *
-   * @param {string} dbName The name of the database
-   */
-  getSyncableDatabase(dbName: string): SyncableDB {
-    return this.syncableDatabases[dbName];
   }
 
   /**
