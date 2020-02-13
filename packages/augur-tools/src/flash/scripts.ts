@@ -2085,19 +2085,23 @@ export function addScripts(flash: FlashSession) {
         this.contractAddresses = Addresses[networkId];
         await spawnSync('yarn', ['build']); // so UI etc will have the correct addresses
 
-        spawnSync('yarn', ['workspace', '@augurproject/gnosis-relay-api', 'run-relay', '-d'], {
-          env: {
-            ...process.env,
-            ETHEREUM_CHAIN_ID: networkId,
-            CUSTOM_CONTRACT_ADDRESSES: JSON.stringify(this.contractAddresses),
-            GNOSIS_SAFE_CONTRACT_ADDRESS: formatAddress(this.contractAddresses.GnosisSafe, { prefix: true }),
-            PROXY_FACTORY_CONTRACT_ADDRESS: formatAddress(this.contractAddresses.ProxyFactory, { prefix: true }),
-            ZEROX_CONTRACT_ADDRESS: formatAddress(this.contractAddresses.ZeroXTrade, { lower: true, prefix: false }),
-          }
-        });
+        const env = {
+          ...process.env,
+          ETHEREUM_CHAIN_ID: networkId,
+          CUSTOM_CONTRACT_ADDRESSES: JSON.stringify(this.contractAddresses),
+          GNOSIS_SAFE_CONTRACT_ADDRESS: formatAddress(this.contractAddresses.GnosisSafe, { prefix: true }),
+          PROXY_FACTORY_CONTRACT_ADDRESS: formatAddress(this.contractAddresses.ProxyFactory, { prefix: true }),
+          ZEROX_CONTRACT_ADDRESS: formatAddress(this.contractAddresses.ZeroXTrade, { lower: true, prefix: false }),
+        };
 
-        if (!detach) {
-          await awaitUserInput('Running dockers. Press ENTER to quit:');
+        if (detach) {
+          spawnSync('yarn', ['workspace', '@augurproject/gnosis-relay-api', 'run-relay', '-d'], { env });
+        } else {
+          spawn('yarn', ['workspace', '@augurproject/gnosis-relay-api', 'run-relay'], {
+            env,
+            stdio: 'inherit',
+          });
+          await awaitUserInput('Running dockers. Press ENTER to quit:\n');
         }
 
       } finally {
