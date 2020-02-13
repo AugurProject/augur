@@ -63,6 +63,8 @@
   height: @top-bar-height;
   justify-content: center;
   position: relative;
+  height: 100%;
+  align-items: center;
   z-index: @mask-above;
 
   > * {
@@ -204,6 +206,33 @@
           fill: var(--color-primary-text);
         }
       }
+    }
+  }
+}
+
+.v2Logo {
+  width: 72px;
+  height: 24px;
+
+  @media @breakpoint-mobile {
+    width: 22px;
+  }
+
+  > svg:first-of-type {
+    display: none;
+
+    path:last-of-type {
+      fill: white;
+    }
+
+    @media @breakpoint-mobile {
+      display: block;
+    }
+  }
+
+  > svg:last-of-type {
+    @media @breakpoint-mobile {
+      display: none;
     }
   }
 }

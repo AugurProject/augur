@@ -10,7 +10,7 @@ import { CoreStats } from 'modules/types';
 import Styles from 'modules/app/components/top-bar.styles.less';
 import { Link } from 'react-router-dom';
 import makePath from 'modules/routes/helpers/make-path';
-import Logo from 'modules/app/components/logo';
+import { NewLogo } from 'modules/app/components/logo';
 import ThemeSwitch from 'modules/app/containers/theme-switch';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import { MARKETS } from 'modules/routes/constants/views';
@@ -45,7 +45,7 @@ const TopBar: React.FC<TopBarProps> = ({
     <header className={Styles.TopBar}>
       <div className={Styles.Logo}>
         <Link to={makePath(MARKETS)}>
-          <Logo />
+          <NewLogo />
         </Link>
       </div>
       <ThemeSwitch />
