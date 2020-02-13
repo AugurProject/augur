@@ -2097,8 +2097,10 @@ export function addScripts(flash: FlashSession) {
         if (detach) {
           spawnSync('yarn', ['workspace', '@augurproject/gnosis-relay-api', 'run-relay', '-d'], { env });
         } else {
-          const dockers = spawn('yarn', ['workspace', '@augurproject/gnosis-relay-api', 'run-relay'], { env });
-          dockers.stdout.on('data', (data) => this.log(data.toString()));
+          spawn('yarn', ['workspace', '@augurproject/gnosis-relay-api', 'run-relay'], {
+            env,
+            stdio: 'inherit',
+          });
           await awaitUserInput('Running dockers. Press ENTER to quit:\n');
         }
 
