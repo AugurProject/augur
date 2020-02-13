@@ -46,7 +46,7 @@ export function makeDbMock(prefix:string = uuid.v4()) {
   return {
     wipeDB,
     constants,
-    makeDB: (augur: Augur, accounts: Account[]) => {
+    makeDB: (augur: Augur, todoremove?) => {
       const logFilterAggregator = LogFilterAggregator.create(
         augur.contractEvents.getEventTopics,
         augur.contractEvents.parseLogs,
