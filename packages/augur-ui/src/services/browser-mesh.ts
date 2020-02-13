@@ -9,6 +9,7 @@ type BrowserMeshErrorFunction = (err: Error, mesh: Mesh) => void;
  * are specified multiple times.
  */
 function createBrowserMeshConfig(
+  ethereumRPCURL: string,
   web3Provider: SupportedProvider,
   ethereumChainID: number,
   verbosity = 5,
@@ -16,11 +17,18 @@ function createBrowserMeshConfig(
   forceIgnoreCustomAddresses = false,
 ) {
   const meshConfig: Config = {
-    web3Provider,
     ethereumChainID,
     verbosity,
     bootstrapList,
   };
+
+  if (web3Provider) {
+    meshConfig.web3Provider = web3Provider;
+  } else if (ethereumRPCURL) {
+    meshConfig.ethereumRPCURL = ethereumRPCURL;
+  } else {
+    throw new Error("No Web3 provider or RPC URL provided to Browser Mesh");
+  }
 
   const contractAddresses = getAddressesForNetwork(
     ethereumChainID.toString() as NetworkId
@@ -64,6 +72,7 @@ function createBrowserMeshRestartFunction(
       // Passing `true` as the last parameter to make sure the config doesn't include custom addresses on retry
       const mesh = new Mesh(
         createBrowserMeshConfig(
+          meshConfig.ethereumRPCURL,
           web3Provider,
           meshConfig.ethereumChainID,
           meshConfig.verbosity,
@@ -89,6 +98,7 @@ export async function createBrowserMesh(
   }
 
   const meshConfig = createBrowserMeshConfig(
+    config.ethereum.http,
     web3Provider,
     Number(config.networkId),
     config.zeroX.mesh.verbosity || 5,

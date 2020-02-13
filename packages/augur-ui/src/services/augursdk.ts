@@ -68,7 +68,7 @@ export class SDK {
         mesh: {
           verbosity: 5,
           bootstrapList: (env['0x-mesh'] || {}).bootstrapList,
-          enabled: false, //!!(env['0x-mesh'] || {}).enabled,
+          enabled: !!(env['0x-mesh'] || {}).enabled,
         }
       },
       addresses,

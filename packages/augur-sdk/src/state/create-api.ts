@@ -121,7 +121,7 @@ export async function createClient(
       // interface instead of actually import @0x/mesh-browser -- since
       // that would attempt to start the wasm client in nodejs and cause
       // everything to die.
-      createBrowserMesh(config, ethersProvider.provider, zeroX);
+      createBrowserMesh(config, ethersProvider.provider["_web3Provider"], zeroX);
     }
   }
 
