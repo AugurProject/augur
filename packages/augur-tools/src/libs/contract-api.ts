@@ -338,7 +338,15 @@ export class ContractAPI {
     });
   }
 
-  async simulateBasicZeroXYesNoTrade(direction: 0 | 1, market: ContractInterfaces.Market, outcome: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7, displayAmount: BigNumber, displayPrice: BigNumber, displayShares: BigNumber, doNotCreateOrders = false): Promise<ZeroXSimulateTradeData> {
+  async simulateBasicZeroXYesNoTrade(
+    direction: 0 | 1,
+    market: ContractInterfaces.Market,
+    outcome: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7,
+    displayAmount: BigNumber,
+    displayPrice: BigNumber,
+    displayShares: BigNumber,
+    doNotCreateOrders = false,
+  ): Promise<ZeroXSimulateTradeData> {
     return this.simulateZeroXTrade({
       direction,
       market: market.address,
