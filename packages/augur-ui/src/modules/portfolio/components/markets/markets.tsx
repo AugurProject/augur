@@ -47,7 +47,7 @@ function filterComp(input, market) {
 }
 
 interface MyMarketsProps {
-  myMarkets: Array<MarketData>;
+  myMarkets: MarketData[];
   currentAugurTimestamp: number;
   disputingWindowEndTime: number;
   removePendingMarket: Function;
