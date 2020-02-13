@@ -17,16 +17,8 @@ export class WarpSyncStrategy {
     // No hash, nothing to do!
     if (!ipfsRootHash) return undefined;
 
-    // Check if we have previous state. If so, just load the next checkpoint.
-    if(await this.warpSyncController.hasMostRecentCheckpoint()) {
-      return this.loadCheckpoints(ipfsRootHash);
-    } else {
-      const allLogs = await this.warpSyncController.getFile(
-        `${ipfsRootHash}/index`
-      );
-
-      return this.processFile(allLogs);
-    }
+    await this.warpSyncController.createInitialCheckpoint();
+    return this.loadCheckpoints(ipfsRootHash);
   }
 
   async loadCheckpoints(ipfsRootHash: string): Promise<number | undefined> {
@@ -44,17 +36,7 @@ export class WarpSyncStrategy {
   }
 
   async processFile(buffer: string): Promise<number | undefined> {
-    const splitLogs = buffer
-      .toString()
-      .split('\n')
-      .filter(log => log)
-      .map(log => {
-        try {
-          return JSON.parse(log);
-        } catch (e) {
-          console.error(e, log);
-        }
-      });
+    const splitLogs = JSON.parse(buffer);
 
     const maxBlockNumber = _.maxBy<number>(_.map(splitLogs, 'blockNumber'), item =>
       Number(item));

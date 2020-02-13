@@ -167,17 +167,12 @@ describe('WarpController', () => {
         await provider.getBlock(targetBeginNumber),
         await provider.getBlock(targetEndNumber)
       );
-      const result = (await ipfs.cat(`${hash.Hash}`))
-        .toString()
-        .split('\n')
-        .filter(log => log)
-        .map(log => {
-          try {
-            return JSON.parse(log);
-          } catch (e) {
-            console.error(e, log);
-          }
-        })
+
+      console.log('await ipfs.cat(`${hash.Hash}`)',
+        (await ipfs.cat(`${hash.Hash}`)).toString());
+
+      const result = JSON.parse((await ipfs.cat(`${hash.Hash}`))
+        .toString())
         .map(item => item.blockNumber);
 
       expect(Math.min(...result)).toEqual(targetBeginNumber);
@@ -387,7 +382,7 @@ describe('WarpController', () => {
       );
     });
 
-    describe('full sync', () => {
+    describe.skip('full sync', () => {
       beforeEach(async () => {
         const blockNumber = await warpSyncStrategy.start(
           secondCheckpointFileHash
