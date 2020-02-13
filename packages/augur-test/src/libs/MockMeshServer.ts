@@ -1,9 +1,8 @@
-import { logUtils } from '@0x/utils';
 import { SignedOrder } from '@0x/types';
+import { logUtils } from '@0x/utils';
 import * as http from 'http';
-import * as WebSocket from 'websocket';
 import * as _ from 'lodash';
-import { ZeroXOrder } from "@augurproject/sdk/build/state/getter/ZeroXOrdersGetters";
+import * as WebSocket from 'websocket';
 
 const DEFAULT_STATUS_CODE = 404;
 export const SERVER_PORT = 64321;

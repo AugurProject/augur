@@ -42,7 +42,6 @@ function filterComp(input, market) {
 interface FavoritesProps {
   markets: Array<MarketData>;
   currentAugurTimestamp: number;
-  disputingWindowEndTime: number;
   toggleFavorite: Function;
   toggle: Function;
 }
@@ -50,7 +49,6 @@ interface FavoritesProps {
 export default class Favorites extends Component<FavoritesProps> {
   static defaultProps = {
     currentAugurTimestamp: 0,
-    disputingWindowEndTime: 0,
   };
 
   constructor(props) {
@@ -62,17 +60,15 @@ export default class Favorites extends Component<FavoritesProps> {
   renderRightContent(market) {
     const {
       currentAugurTimestamp,
-      disputingWindowEndTime,
       toggleFavorite,
     } = this.props;
-
     return (
       <div className={Styles.MultiColumn}>
         <MarketProgress
           reportingState={market.reportingState}
           currentTime={currentAugurTimestamp}
           endTimeFormatted={market.endTimeFormatted}
-          reportingWindowEndTime={disputingWindowEndTime}
+          reportingWindowEndTime={market.disputeInfo && market.disputeInfo.disputeWindow && market.disputeInfo.disputeWindow.endTime || 0}
           alignRight
         />
         <FavoritesButton

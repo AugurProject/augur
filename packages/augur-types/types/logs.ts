@@ -18,6 +18,7 @@ export interface LogValues {
 
 export interface ParsedLog {
   name: string;
+  address: string;
   blockNumber: number;
   blockHash: string;
   transactionIndex: number;

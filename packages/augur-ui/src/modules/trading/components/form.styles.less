@@ -141,6 +141,7 @@
         }
       }
 
+      // Used in TradingForm
       &.AdvancedShown {
         display: grid;
         grid-gap: @size-8 @size-4;
@@ -243,47 +244,71 @@
               > div > div > div > div[class*="DateInput_1"] {
                 width: 100%;
 
+                // Select Date
                 > input[class*="DateInput_input"] {
+                  .mono-10-bold;
+
                   height: @size-22;
                   width: 100%;
                   cursor: pointer;
+                  color: var(--color-primary-text);
+                  background: var(--color-secondary-action);
+                  border: @size-1 solid var(--color-secondary-action-outline);
+
                   &:hover {
-                    border: @size-1 solid var(--color-secondary-action-outline);
+                    background: var(--color-secondary-hover);
                   }
                   &:focus {
-                    border: @size-1 solid var(--color-secondary-action-outline);
+                    background: var(--color-secondary-hover);
                   }
                 }
               } 
             }
 
+            // Select Time
             > div[class*="TimeSelector"] {
               margin-right: 0;
 
               > button {
+                .mono-10-bold;
+
                 height: @size-22;
+                color: var(--color-primary-text);
+                background: var(--color-secondary-action);
+                border: @size-1 solid var(--color-secondary-action-outline);
 
                 &:hover {
-                  border: @size-1 solid var(--color-secondary-action-outline);
+                  background: var(--color-secondary-hover);
                 }
                 &:focus {
-                  border: @size-1 solid var(--color-secondary-action-outline);
+                  background: var(--color-secondary-hover);
+                }
+
+                > span {
+                  .mono-10-bold;
+                  color: var(--color-primary-text);
                 }
               }
             }
 
+            // Select Timezones
             > section[class*="Timezones"] {
               grid-column: 1 / span 2;
 
               > div[class*="TextInput"] > div > input {
+                .mono-10-bold;
+
                 height: @size-22;
                 width: 100%;
+                color: var(--color-primary-text);
+                background: var(--color-secondary-action);
+                border: @size-1 solid var(--color-secondary-action-outline);
 
                 &:hover {
-                  border: @size-1 solid var(--color-secondary-action-outline);
+                  background: var(--color-secondary-hover);
                 }
                 &:focus {
-                  border: @size-1 solid var(--color-secondary-action-outline);
+                  background: var(--color-secondary-hover);
                 }
               }
             }

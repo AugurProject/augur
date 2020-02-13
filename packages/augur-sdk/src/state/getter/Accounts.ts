@@ -164,7 +164,7 @@ export class Accounts<TBigNumber> {
     const unredeemedReports = _.filter(initialReportSubmittedLogs, (initialReport) => !redeemedReports[initialReport.market]);
 
     // get token balance of crowdsourcers
-    const disputeCrowdsourcerTokens = await db.TokenBalanceChanged.where('[universe+owner+tokenType]').equals([params.universe, params.account, 1]).and((log) => {
+    const disputeCrowdsourcerTokens = await db.TokenBalanceChangedRollup.where('[universe+owner+tokenType]').equals([params.universe, params.account, 1]).and((log) => {
       return log.balance > '0x00';
     }).toArray();
     const crowdsourcers = _.uniq(_.map(disputeCrowdsourcerTokens, 'token'));
@@ -233,7 +233,7 @@ export class Accounts<TBigNumber> {
     };
 
     // Get token balances of type ParticipationToken
-    const participationTokens = await db.TokenBalanceChanged.where('[universe+owner+tokenType]').equals([params.universe, params.account, 2]).and((log) => {
+    const participationTokens = await db.TokenBalanceChangedRollup.where('[universe+owner+tokenType]').equals([params.universe, params.account, 2]).and((log) => {
       return log.balance > '0x00';
     }).toArray();
 
@@ -304,7 +304,7 @@ export class Accounts<TBigNumber> {
         params.action === Action.ALL) &&
       (params.coin === Coin.DAI || params.coin === Coin.ALL)
     ) {
-      const orderLogs = await db.OrderEvent.where('timestamp').between(formattedStartTime, formattedEndTime, true, true).and((log) => {
+      const orderLogs = await db.ParsedOrderEvent.where('timestamp').between(formattedStartTime, formattedEndTime, true, true).and((log) => {
         if (log.universe !== params.universe) return false;
         return log.orderCreator === params.account || log.orderFiller === params.account;
       }).toArray();

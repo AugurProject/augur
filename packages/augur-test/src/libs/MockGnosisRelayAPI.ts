@@ -1,8 +1,6 @@
-import { Abi } from 'ethereum';
-import { abi } from '@augurproject/artifacts';
-import * as ethUtil from 'ethereumjs-util';
 import {
   CreateSafeData,
+  GasStationResponse,
   GnosisSafeState,
   GnosisSafeStateReponse,
   IGnosisRelayAPI,
@@ -10,16 +8,15 @@ import {
   RelayTxEstimateData,
   RelayTxEstimateResponse,
   SafeResponse,
-  GasStationResponse,
 } from '@augurproject/gnosis-relay-api';
 import { NULL_ADDRESS } from '@augurproject/sdk';
-
 // tslint:disable-next-line:import-blacklist
 import { AUGUR_GNOSIS_SAFE_NONCE } from '@augurproject/sdk/build/api/Gnosis';
 
 import { ContractAPI } from '@augurproject/tools';
 import { prefixHex } from '@augurproject/utils';
 import { BigNumber } from 'bignumber.js';
+import * as ethUtil from 'ethereumjs-util';
 import { ethers } from 'ethers';
 
 export class MockGnosisRelayAPI implements IGnosisRelayAPI {

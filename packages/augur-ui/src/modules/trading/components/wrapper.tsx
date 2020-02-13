@@ -319,7 +319,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
     if (this.state.expirationDate) {
       trade = {
         ...trade,
-        expirationTime: (this.state.expirationDate.unix())
+        expirationTime: (this.state.expirationDate)
       }
     }
     this.props.onSubmitPlaceTrade(
@@ -414,7 +414,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
     } = this.state;
     const insufficientFunds =
       trade &&
-      trade.totalCost &&
+      trade.costInDai &&
       createBigNumber(trade.costInDai.value).gte(createBigNumber(availableDai));
     let actionButton: any = (
       <OrderButton

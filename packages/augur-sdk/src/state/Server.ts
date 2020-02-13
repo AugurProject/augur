@@ -1,20 +1,27 @@
-import { NetworkId } from "@augurproject/artifacts";
-import { EventEmitter } from "events";
-import { SDKConfiguration, startServer } from "./create-api";
-import { EndpointSettings } from "./getter/types";
-import * as HTTPEndpoint from "./HTTPEndpoint";
-import * as WebsocketEndpoint from "./WebsocketEndpoint";
+import { NetworkId } from '@augurproject/artifacts';
+
+import { configureDexieForNode } from './utils/DexieIDBShim';
+import { EventEmitter } from 'events';
+import { SDKConfiguration, startServer } from './create-api';
+import { EndpointSettings } from './getter/types';
+import * as HTTPEndpoint from './HTTPEndpoint';
+import * as WebsocketEndpoint from './WebsocketEndpoint';
+
+configureDexieForNode(false);
 
 export async function run() {
-  const settings = require("@augurproject/sdk/src/state/settings.json");
+  const settings = require("./settings.json");
 
   const config: SDKConfiguration = {
     networkId: NetworkId.Kovan,
     ethereum: {
-      http: settings.ethNodeURLs[4],
+      http: settings.ethNodeURLs[42],
       rpcRetryCount: 5,
       rpcRetryInterval: 0,
       rpcConcurrency: 40
+    },
+    gnosis: {
+      http: settings.gnosisRelayURLs[42]
     },
     syncing: {
     }
@@ -36,6 +43,7 @@ export async function run() {
   } catch {
     endpointSettings.startHTTPS = false;
   }
+
 
   try {
     endpointSettings.httpsPort = Number(process.env.HTTPS_PORT) ||

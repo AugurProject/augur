@@ -1,5 +1,6 @@
 @import (reference) '~assets/styles/shared';
 
+// Close icon is not part of SideNav
 .SideNav {
   display: none;
 
@@ -8,10 +9,11 @@
     flex-flow: column nowrap;
     height: 100vh;
     left: -100%;
+    top: 0;
     overflow: auto;
     position: fixed;
     transition: left 0.2s ease-in-out;
-    width: calc(100% - 52px);
+    width: calc(100% - @size-52);
     z-index: @mask-modal;
 
     > div {
@@ -32,6 +34,7 @@
         }
       }
 
+      // ConnectAccount
       > div:nth-of-type(2) {
 
         > div:first-of-type {
@@ -45,6 +48,7 @@
 
     &.showNav {
       left: 0;
+      
     }
   }
 }
@@ -110,8 +114,12 @@
       }
 
       &.selected {
+        a {
+          padding: @size-21 @size-16 @size-14;
+        }
+
         span {
-          .text-11-bold;
+          .text-12-semi-bold;
 
           border-bottom: 2px solid var(--color-primary-action);
           padding-bottom: @size-5;
@@ -127,16 +135,15 @@
       a,
       button {
         display: flex;
-        padding: @size-21 @size-24;
+        padding: @size-21 @size-16;
         align-items: center;
 
         > span {
-          .text-11-bold;
+          .text-12-semi-bold;
 
           align-items: center;
           color: var(--color-inactive-text);
           display: flex;
-          margin-left: @size-8;
           text-transform: uppercase;
         }
 
@@ -166,22 +173,28 @@
     display: flex;
     height: @top-bar-height-mobile;
     justify-content: flex-start;
-    padding: 0 @size-22;
+    padding: 0 @size-16;
     position: fixed;
-    width: calc(100% - 52px);
+    width: calc(100% - @size-52);
 
     > div:nth-of-type(2) {
-      .mono-10;
+      .mono-10-semi-bold;
 
       display: flex;
       color: var(--color-primary-text);
+      background: var(--color-secondary-action);
       cursor: pointer;
       text-transform: uppercase;
       order: 1;
+      border: @size-1 solid var(--color-secondary-action-outline);
+      border-radius: @border-radius-default;
+      padding: @size-4;
 
       > svg {
-        width: @size-9;
-        height: @size-13;
+        width: @size-10;
+        height: @size-10;
+        fill: var(--color-primary-text);
+        margin-left: 0px !important;
       }
     }
 
@@ -192,10 +205,11 @@
 
       // Closed global chat window
       > button {
-        .mono-9-bold;
+        .mono-10-semi-bold;
 
+        padding: @size-4;
         align-items: center;
-        background: var(--color-module-background);
+        background: var(--color-seconday-action);
         color: var(--color-primary-text);
         display: flex;
         flex-direction: row-reverse;
@@ -203,10 +217,15 @@
 
         > svg {
           fill: var(--color-primary-text);
-          height: @size-12;
-          margin-left: @size-8;
+          height: @size-4;
+          margin-left: @size-2;
           transform: rotate(180deg);
-          width: @size-12;
+          width: @size-10;
+          height: @size-10;
+
+          path {
+            fill: var(--color-primary-text);
+          }
         }
       }
     }

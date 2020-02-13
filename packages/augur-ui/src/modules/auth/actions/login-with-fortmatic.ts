@@ -8,6 +8,7 @@ import Web3 from 'web3';
 import { ACCOUNT_TYPES, FORTMATIC_API_KEY, FORTMATIC_API_TEST_KEY, NETWORK_IDS } from 'modules/common/constants';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { windowRef } from 'utils/window-ref';
+import { AppState } from 'store';
 
 const getFormaticNetwork = (networkId: string): false | string   => {
   if (networkId === NETWORK_IDS.Mainnet) {
@@ -20,9 +21,10 @@ const getFormaticNetwork = (networkId: string): false | string   => {
 };
 
 export const loginWithFortmatic = () => async (
-  dispatch: ThunkDispatch<void, any, Action>
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState,
 ) => {
-
+  const useGnosis = getState().env['gnosis']?.enabled;
   const networkId: string = getNetworkId();
   const supportedNetworks = getFormaticNetwork(networkId);
 
@@ -51,7 +53,7 @@ export const loginWithFortmatic = () => async (
         },
       };
 
-      dispatch(updateSdk(accountObject, undefined));
+      dispatch(updateSdk(accountObject, undefined, useGnosis));
     }
     catch (error) {
       throw error;

@@ -300,7 +300,7 @@ export class Markets {
       );
     }
 
-    const orderFilledLogs = await db.OrderEvent.where("[market+eventType]").equals([params.marketId, OrderEventType.Fill]).toArray();
+    const orderFilledLogs = await db.ParsedOrderEvent.where("[market+eventType]").equals([params.marketId, OrderEventType.Fill]).toArray();
     const filteredOrderFilledLogs = filterOrderFilledLogs(
       orderFilledLogs,
       params
@@ -427,7 +427,7 @@ export class Markets {
     db: DB,
     params: t.TypeOf<typeof Markets.getMarketPriceHistoryParams>
   ): Promise<MarketPriceHistory> {
-    const orderFilledLogs = await db.OrderEvent.where("[market+eventType]").equals([params.marketId, OrderEventType.Fill]).toArray();
+    const orderFilledLogs = await db.ParsedOrderEvent.where("[market+eventType]").equals([params.marketId, OrderEventType.Fill]).toArray();
     orderFilledLogs.sort((a: ParsedOrderEventLog, b: ParsedOrderEventLog) => {
       return new BigNumber(a.timestamp).minus(b.timestamp).toNumber();
     });

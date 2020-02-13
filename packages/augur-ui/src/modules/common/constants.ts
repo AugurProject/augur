@@ -828,7 +828,7 @@ export const RESOLVED_MARKETS_OPEN_ORDERS_TITLE =
   'Open Orders in Resolved Market';
 export const REPORTING_ENDS_SOON_TITLE = 'You need to report';
 export const FINALIZE_MARKET_TITLE = 'Finalize Market';
-export const UNSIGNED_ORDERS_TITLE = 'Unsigned Orders';
+export const SIGN_SEND_ORDERS = 'Sign to approve your orders';
 export const CLAIM_REPORTING_FEES_TITLE = 'Claim Stake and Fees';
 export const PROCEEDS_TO_CLAIM_TITLE = 'Claim Proceeds';
 export const MARKET_IS_MOST_LIKELY_INVALID_TITLE = 'Market is Failing Invalid Filter';
@@ -1002,7 +1002,7 @@ export const TRADING_TUTORIAL_COPY = {
         text:
           "First, lets start by looking over the market details. Be sure to check that the question isn't subjective or ambiguous, and that the Resolution Source abides by the",
         linkText: 'community guidelines.',
-        link: 'https://www.docs.augur.net',
+        link: 'https://docs.augur.net',
       },
     ],
   },
@@ -1025,7 +1025,7 @@ export const TRADING_TUTORIAL_COPY = {
       {
         text: "To learn more about selling shares, or going 'short,' see our",
         linkText: 'guide.',
-        link: 'https://www.docs.augur.net',
+        link: 'https://docs.augur.net',
       },
     ],
   },
@@ -1038,7 +1038,7 @@ export const TRADING_TUTORIAL_COPY = {
       {
         text: "To learn why invalid is an outcome, see our",
         linkText: "guide.",
-        link: 'https://www.docs.augur.net'
+        link: 'https://docs.augur.net'
       },
     ],
   },[TRADING_TUTORIAL_STEPS.QUANTITY]: {
@@ -1308,3 +1308,5 @@ export enum HEADER_TYPE {
   H2 = 'h2',
   H3 = 'h3',
 }
+
+export const LOGGED_IN_USER_LOCAL_STORAGE_KEY = 'loggedInUser';

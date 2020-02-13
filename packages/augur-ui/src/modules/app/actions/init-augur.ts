@@ -13,11 +13,9 @@ import networkConfig from 'config/network.json';
 import { JsonRpcProvider, Web3Provider } from 'ethers/providers';
 import { isEmpty } from 'utils/is-empty';
 import {
-  MODAL_NETWORK_MISMATCH,
   MODAL_NETWORK_DISCONNECTED,
   MODAL_NETWORK_DISABLED,
   ACCOUNT_TYPES,
-  NETWORK_NAMES,
   MODAL_LOADING,
   MODAL_WALLET_ERROR,
   MODAL_ACCOUNT_CREATED,
@@ -31,7 +29,7 @@ import { windowRef } from 'utils/window-ref';
 import { AppState } from 'store';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { EnvObject, NodeStyleCallback, WindowApp } from "modules/types";
+import { EnvObject, NodeStyleCallback, WindowApp } from 'modules/types';
 import { augurSdk } from 'services/augursdk';
 import { listenForStartUpEvents } from 'modules/events/actions/listen-to-updates';
 import { loginWithInjectedWeb3 } from 'modules/auth/actions/login-with-injected-web3';
@@ -47,6 +45,7 @@ import {
 import { logout } from 'modules/auth/actions/logout';
 import { updateCanHotload } from 'modules/app/actions/update-connection';
 import { Augur, Provider } from '@augurproject/sdk';
+import { getLoggedInUserFromLocalStorage } from 'services/storage/localStorage';
 
 const ACCOUNTS_POLL_INTERVAL_DURATION = 10000;
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
@@ -55,8 +54,6 @@ function pollForAccount(
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) {
-  const windowApp = windowRef as WindowApp;
-
   let attemptedLogin = false;
   let intervalId = null;
 
@@ -69,10 +66,9 @@ function pollForAccount(
     if (!attemptedLogin && connection.isConnected) {
       attemptedLogin = true;
 
-      const loggedInAccount = windowApp.localStorage.getItem('loggedInAccount');
-      const loggedInAccountType = windowApp.localStorage.getItem(
-        'loggedInAccountType'
-      );
+      const loggedInUser = getLoggedInUserFromLocalStorage();
+      const loggedInAccount = loggedInUser && loggedInUser.address || null;
+      const loggedInAccountType = loggedInUser && loggedInUser.type || null;
 
       const showModal = accountType => {
         const onboardingShown = [
@@ -176,10 +172,9 @@ export function connectAugur(
     const { modal, loginAccount } = getState();
     let windowApp = windowRef as WindowApp;
 
-    const loggedInAccount = windowApp.localStorage.getItem('loggedInAccount');
-    const loggedInAccountType = windowApp.localStorage.getItem(
-      'loggedInAccountType'
-    );
+    const loggedInUser = getLoggedInUserFromLocalStorage();
+    const loggedInAccount = loggedInUser && loggedInUser.address || null;
+    const loggedInAccountType = loggedInUser && loggedInUser.type || null;
 
     // Preload Account
     const preloadAccount = accountType => {
@@ -219,10 +214,10 @@ export function connectAugur(
     }
 
     let provider;
-    if (window.web3) {
-      provider = new Web3Provider(window.web3.currentProvider);
+    if (windowApp.web3) {
+      provider = new Web3Provider(windowApp.web3.currentProvider);
     } else {
-      provider = new JsonRpcProvider(env['ethereum-node'].http);
+      provider = new JsonRpcProvider(env['ethereum'].http);
     }
 
     let sdk: Augur<Provider> = null;
@@ -233,7 +228,6 @@ export function connectAugur(
       return callback('SDK could not be created', null);
     }
 
-    windowApp = windowRef as WindowApp;
     let universeId = env.universe || sdk.contracts.universe.address;
     if (
       windowApp.localStorage &&
@@ -267,6 +261,8 @@ export function connectAugur(
     dispatch(listenForStartUpEvents(sdk));
     dispatch(updateCanHotload(true));
 
+    await augurSdk.connect();
+
     callback(null);
   };
 }
@@ -282,7 +278,7 @@ export function initAugur(
   history: History,
   {
     ethereumNodeHttp,
-    ethereumNodeWs,
+    ethereumNodeWs, /* unused */
     sdkEndpoint,
     useWeb3Transport,
   }: initAugurParams,
@@ -293,16 +289,25 @@ export function initAugur(
     getState: () => AppState
   ) => {
     const env: EnvObject = networkConfig[`${process.env.ETHEREUM_NETWORK}`];
-    console.log(env);
-    env.useWeb3Transport = useWeb3Transport;
-    env['ethereum-node'].http = ethereumNodeHttp
-      ? ethereumNodeHttp
-      : env['ethereum-node'].http;
-    const defaultWS = isEmpty(ethereumNodeHttp) ? env['ethereum-node'].ws : '';
-    // If only the http param is provided we need to prevent this "default from taking precedence.
-    env['ethereum-node'].ws = ethereumNodeWs ? ethereumNodeWs : defaultWS;
-    env['sdkEndpoint'] = sdkEndpoint;
 
+    // TODO: Make this flag a part of the `ethereum` key
+    env.useWeb3Transport = useWeb3Transport;
+
+    if (ethereumNodeHttp) {
+      env['ethereum'].http = ethereumNodeHttp;
+    }
+
+    if (sdkEndpoint) {
+      env['sdk'] = {
+        http: sdkEndpoint
+      };
+    }
+
+    console.log(
+      "******** CONFIGURATION ***********\n" +
+      JSON.stringify(env, null, 2) +
+      "\n**********************************"
+    );
     dispatch(updateEnv(env));
     connectAugur(history, env, true, callback)(dispatch, getState);
   };

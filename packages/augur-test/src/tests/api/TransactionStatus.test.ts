@@ -1,10 +1,15 @@
-import { BigNumber } from "bignumber.js";
-import { ContractAPI, loadSeedFile, ACCOUNTS, defaultSeedPath, Account, blockchain } from "@augurproject/tools";
-import { TransactionStatus, TransactionMetadata } from "contract-dependencies-ethers";
-import { makeProvider } from "../../libs";
-import { Getters, TXEventName } from "@augurproject/sdk";
-import { EthersProvider } from "@augurproject/ethersjs-provider";
-import { EthersFastSubmitWallet } from "@augurproject/core";
+import {
+  ACCOUNTS,
+  ContractAPI,
+  defaultSeedPath,
+  loadSeedFile,
+} from '@augurproject/tools';
+import { BigNumber } from 'bignumber.js';
+import {
+  TransactionMetadata,
+  TransactionStatus,
+} from 'contract-dependencies-ethers';
+import { makeProvider } from '../../libs';
 
 let john: ContractAPI;
 

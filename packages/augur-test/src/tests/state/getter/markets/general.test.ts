@@ -1,43 +1,46 @@
 import { WSClient } from '@0x/mesh-rpc-client';
+import { ContractAddresses } from '@augurproject/artifacts';
+import { sleep } from '@augurproject/core/build/libraries/HelperFunctions';
+import { EthersProvider } from '@augurproject/ethersjs-provider';
+import {
+  BrowserMesh,
+  Connectors,
+  MarketReportingState,
+} from '@augurproject/sdk';
+import { DB } from '@augurproject/sdk/build/state/db/DB';
+import { API } from '@augurproject/sdk/build/state/getter/API';
+import {
+  GetMarketsSortBy,
+  MarketList,
+} from '@augurproject/sdk/build/state/getter/Markets';
+import { BulkSyncStrategy } from '@augurproject/sdk/build/state/sync/BulkSyncStrategy';
+import {
+  ACCOUNTS,
+  ContractAPI,
+  defaultSeedPath,
+  loadSeedFile,
+} from '@augurproject/tools';
+import {
+  NULL_ADDRESS,
+  stringTo32ByteHex,
+} from '@augurproject/tools/build/libs/Utils';
 import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from 'ethers/utils';
 import * as _ from 'lodash';
-import {
-  ContractAPI,
-  ACCOUNTS,
-  loadSeedFile,
-  defaultSeedPath,
-} from '@augurproject/tools';
-import { EthersProvider } from '@augurproject/ethersjs-provider';
-import { ContractAddresses } from '@augurproject/artifacts';
-import { DB } from '@augurproject/sdk/build/state/db/DB';
-import {
-  Connectors,
-  BrowserMesh,
-  MarketReportingState,
-} from '@augurproject/sdk';
-import { API } from '@augurproject/sdk/build/state/getter/API';
-import {
-  sleep,
-  stringTo32ByteHex,
-} from '@augurproject/core/build/libraries/HelperFunctions';
-import { MockMeshServer, stopServer } from '../../../../libs/MockMeshServer';
-import { MockBrowserMesh } from '../../../../libs/MockBrowserMesh';
 import { makeDbMock, makeProvider, MockGnosisRelayAPI } from '../../../../libs';
-import {
-  MarketList,
-  GetMarketsSortBy,
-} from '@augurproject/sdk/build/state/getter/Markets';
-import { NULL_ADDRESS } from '../../../../libs/Utils';
+import { MockBrowserMesh } from '../../../../libs/MockBrowserMesh';
+import { MockMeshServer, stopServer } from '../../../../libs/MockMeshServer';
 
 describe('State API :: General', () => {
   let john: ContractAPI;
   let johnDB: Promise<DB>;
   let johnAPI: API;
+  let johnBulkSyncStrategy: BulkSyncStrategy;
 
   let mary: ContractAPI;
   let maryDB: Promise<DB>;
   let maryAPI: API;
+  let maryBulkSyncStrategy: BulkSyncStrategy
 
   let provider: EthersProvider;
   let addresses: ContractAddresses;
@@ -65,6 +68,7 @@ describe('State API :: General', () => {
     beforeAll(async () => {
       const johnConnector = new Connectors.DirectConnector();
       const johnGnosis = new MockGnosisRelayAPI();
+      const johnBrowserMesh = new MockBrowserMesh(meshClient);
       john = await ContractAPI.userWrapper(
         ACCOUNTS[0],
         provider,
@@ -72,7 +76,7 @@ describe('State API :: General', () => {
         johnConnector,
         johnGnosis,
         meshClient,
-        meshBrowser
+        johnBrowserMesh
       );
       expect(john).toBeDefined();
 
@@ -80,10 +84,19 @@ describe('State API :: General', () => {
       johnDB = mock.makeDB(john.augur, ACCOUNTS);
       johnConnector.initialize(john.augur, await johnDB);
       johnAPI = new API(john.augur, johnDB);
+      johnBulkSyncStrategy = new BulkSyncStrategy(
+        provider.getLogs,
+        (await johnDB).logFilters.buildFilter,
+        (await johnDB).logFilters.onLogsAdded,
+        john.augur.contractEvents.parseLogs,
+      );
+
+
       await john.approveCentralAuthority();
 
       const maryConnector = new Connectors.DirectConnector();
       const maryGnosis = new MockGnosisRelayAPI();
+      const maryBrowserMesh = new MockBrowserMesh(meshClient);
       mary = await ContractAPI.userWrapper(
         ACCOUNTS[1],
         provider,
@@ -91,13 +104,24 @@ describe('State API :: General', () => {
         maryConnector,
         maryGnosis,
         meshClient,
-        meshBrowser
+        maryBrowserMesh
       );
       maryGnosis.initialize(mary);
       maryDB = mock.makeDB(mary.augur, ACCOUNTS);
       maryConnector.initialize(mary.augur, await maryDB);
       maryAPI = new API(mary.augur, maryDB);
+
+      maryBulkSyncStrategy = new BulkSyncStrategy(
+        provider.getLogs,
+        (await maryDB).logFilters.buildFilter,
+        (await maryDB).logFilters.onLogsAdded,
+        mary.augur.contractEvents.parseLogs,
+      );
+
       await mary.approveCentralAuthority();
+
+      maryBrowserMesh.addOtherBrowserMeshToMockNetwork(johnBrowserMesh);
+      johnBrowserMesh.addOtherBrowserMeshToMockNetwork(maryBrowserMesh);
     });
     test('State API :: Market :: getMarkets', async () => {
       let marketList: MarketList;
@@ -112,8 +136,8 @@ describe('State API :: General', () => {
         stringTo32ByteHex('B'),
       ]);
 
-      await (await johnDB).sync(john.augur, mock.constants.chunkSize, 0);
-      await (await maryDB).sync(mary.augur, mock.constants.chunkSize, 0);
+      await johnBulkSyncStrategy.start(0, await john.provider.getBlockNumber());
+      await maryBulkSyncStrategy.start(0, await mary.provider.getBlockNumber());
 
       // Test invalid universe address
       let errorMessage = '';
@@ -234,7 +258,7 @@ describe('State API :: General', () => {
       // Test maxLiquiditySpread
       const yesNoMarket2 = await john.createReasonableYesNoMarket();
       const yesNoMarket3 = await john.createReasonableYesNoMarket();
-      await (await johnDB).sync(john.augur, mock.constants.chunkSize, 0);
+      await johnBulkSyncStrategy.start(0, await john.provider.getBlockNumber());
 
       const expirationTimeInSeconds = new BigNumber(Math.round(+new Date() / 1000).valueOf()).plus(10000);
 
@@ -343,7 +367,7 @@ describe('State API :: General', () => {
       // Terrible, but not clear how else to wait on the mesh event propagating to the callback and it finishing updating the DB...
       await sleep(300);
 
-      await (await johnDB).sync(john.augur, mock.constants.chunkSize, 0);
+      await johnBulkSyncStrategy.start(0, await john.provider.getBlockNumber());
 
       marketList = await johnAPI.route('getMarkets', {
         universe: addresses.Universe,
@@ -391,7 +415,7 @@ describe('State API :: General', () => {
         expirationTimeInSeconds,
       );
 
-      await (await johnDB).sync(john.augur, mock.constants.chunkSize, 0);
+      await johnBulkSyncStrategy.start(0, await john.provider.getBlockNumber());
 
       marketList = await johnAPI.route('getMarkets', {
         universe: addresses.Universe,
@@ -409,7 +433,7 @@ describe('State API :: General', () => {
       // Move timestamp to designated reporting phase
       const endTime = await yesNoMarket1.getEndTime_();
       await john.setTimestamp(endTime.plus(1));
-      await (await johnDB).sync(john.augur, mock.constants.chunkSize, 0);
+      await johnBulkSyncStrategy.start(0, await john.provider.getBlockNumber());
 
       // Test reportingStates
       marketList = await johnAPI.route('getMarkets', {
@@ -435,7 +459,7 @@ describe('State API :: General', () => {
 
       await john.doInitialReport(yesNoMarket3, noPayoutSet);
 
-      await (await johnDB).sync(john.augur, mock.constants.chunkSize, 0);
+      await johnBulkSyncStrategy.start(0, await john.provider.getBlockNumber());;
 
       // Test sortBy
       marketList = await johnAPI.route('getMarkets', {
@@ -502,7 +526,7 @@ describe('State API :: General', () => {
       );
 
       // Invalid markets that pass the spread filter should appear as Recently Depleted Liquidity
-      await (await johnDB).sync(john.augur, mock.constants.chunkSize, 0);
+      await johnBulkSyncStrategy.start(0, await john.provider.getBlockNumber());
 
       marketList = await johnAPI.route('getMarkets', {
         universe: addresses.Universe,

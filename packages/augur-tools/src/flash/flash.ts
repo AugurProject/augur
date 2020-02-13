@@ -1,16 +1,22 @@
 import { ContractAddresses, NetworkId } from '@augurproject/artifacts';
 import { NetworkConfiguration } from '@augurproject/core';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
-import { Connectors, createClient, Events, SDKConfiguration, startServerFromClient, SubscriptionEventName } from "@augurproject/sdk";
-import { BlockAndLogStreamerListenerInterface } from "@augurproject/sdk/build/state/db/BlockAndLogStreamerListener";
-import { DB } from "@augurproject/sdk/build/state/db/DB";
-import { API } from "@augurproject/sdk/build/state/getter/API";
-import { configureDexieForNode } from "@augurproject/sdk/build/state/utils/DexieIDBShim";
+import {
+  Connectors,
+  createClient,
+  Events,
+  SDKConfiguration,
+  SubscriptionEventName,
+} from '@augurproject/sdk';
+import { DB } from '@augurproject/sdk/build/state/db/DB';
+import { API } from '@augurproject/sdk/build/state/getter/API';
+import { LogFilterAggregatorInterface } from '@augurproject/sdk/build/state/logs/LogFilterAggregator';
+import { configureDexieForNode } from '@augurproject/sdk/build/state/utils/DexieIDBShim';
 import { BigNumber } from 'bignumber.js';
-import { providers } from "ethers";
-import { Account } from "../constants";
-import { makeSigner } from "../libs/blockchain";
-import { ContractAPI } from "../libs/contract-api";
+import { providers } from 'ethers';
+import { Account } from '../constants';
+import { makeSigner } from '../libs/blockchain';
+import { ContractAPI } from '../libs/contract-api';
 
 configureDexieForNode(true);
 
@@ -25,6 +31,7 @@ export interface FlashOption {
 export interface FlashArguments {
   [name: string]: string | boolean;
 }
+
 
 export interface FlashScript {
   name: string;
@@ -166,9 +173,8 @@ export class FlashSession {
       // Get an actual account for the provided public address. This also
       // handles the case where none is passed in, in which case it will use
       // the default account (0)
-      console.log(`using account ${accountAddress}`);
       const account = this.getAccount(accountAddress);
-
+      console.log(`using account ${account.publicKey}`);
       // Within flash we want to use an account with a private key as the signer
       // so we manually create our own signer here.
       const signer = await makeSigner(account, this.provider);
@@ -271,19 +277,16 @@ export class FlashSession {
   }
 
   async makeDB() {
-    const listener = ({
-      listenForBlockRemoved: () => {},
-      listenForBlockAdded: () => {},
-      listenForEvent: () => {},
-      startBlockStreamListener: () => {},
-    } as unknown) as BlockAndLogStreamerListenerInterface;
+    const logFilterAggregator = ({
+      getEventTopics: () => {},
+    parseLogs: () => {},
+    getEventContractAddress: () => {},
+    } as unknown) as LogFilterAggregatorInterface;
 
-    return await DB.createAndInitializeDB(
+    return DB.createAndInitializeDB(
       Number(this.user.augur.networkId),
-      0,
-      0,
+      logFilterAggregator,
       this.user.augur,
-      listener,
       true
     );
   }
