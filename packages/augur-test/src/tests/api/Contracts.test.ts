@@ -1,14 +1,19 @@
-import { makeProvider } from "../../libs";
-import { Contracts } from '@augurproject/sdk';
-import { ACCOUNTS, loadSeedFile, makeSigner, makeDependencies, defaultSeedPath } from '@augurproject/tools';
-import { GenericAugurInterfaces } from '@augurproject/core';
-import { ContractDependenciesEthers } from 'contract-dependencies-ethers';
-import { BigNumber } from 'bignumber.js';
-import { formatBytes32String } from "ethers/utils";
 import { ContractAddresses } from '@augurproject/artifacts';
-import { TestNetReputationToken } from "@augurproject/core/build/libraries/ContractInterfaces";
-import { NULL_ADDRESS } from "../../libs/Utils";
-
+import { GenericAugurInterfaces } from '@augurproject/core';
+import { TestNetReputationToken } from '@augurproject/core/build/libraries/ContractInterfaces';
+import { Contracts } from '@augurproject/sdk';
+import {
+  ACCOUNTS,
+  defaultSeedPath,
+  loadSeedFile,
+  makeDependencies,
+  makeSigner,
+} from '@augurproject/tools';
+import { NULL_ADDRESS } from '@augurproject/tools/build/libs/Utils';
+import { BigNumber } from 'bignumber.js';
+import { ContractDependenciesEthers } from 'contract-dependencies-ethers';
+import { formatBytes32String } from 'ethers/utils';
+import { makeProvider } from '../../libs';
 
 interface MarketCreatedEvent {
   name: 'MarketCreated';

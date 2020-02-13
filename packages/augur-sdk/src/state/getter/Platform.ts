@@ -84,8 +84,8 @@ async function getActiveUsers(
     ...await getField<DisputeCrowdsourcerRedeemedLog>('reporter', db.DisputeCrowdsourcerRedeemed),
     ...await getField<MarketCreatedLog>('marketCreator', db.MarketCreated),
     // TODO should just get both fields at once
-    ...await getField<ParsedOrderEventLog>('orderCreator', db.OrderEvent),
-    ...await getField<ParsedOrderEventLog>('orderFiller', db.OrderEvent),
+    ...await getField<ParsedOrderEventLog>('orderCreator', db.ParsedOrderEvent),
+    ...await getField<ParsedOrderEventLog>('orderFiller', db.ParsedOrderEvent),
     ...await getField<ParticipationTokensRedeemedLog>('account', db.ParticipationTokensRedeemed),
     ...await getField<TradingProceedsClaimedLog>('sender', db.TradingProceedsClaimed),
   ];
@@ -100,7 +100,7 @@ async function getTradeCount(
   endTime: number,
   db: DB
 ): Promise<number> {
-  const orderFilledLogs = await db.OrderEvent.where('timestamp').between(formatTimestamp(startTime), formatTimestamp(endTime), true, true).and((log) => {
+  const orderFilledLogs = await db.ParsedOrderEvent.where('timestamp').between(formatTimestamp(startTime), formatTimestamp(endTime), true, true).and((log) => {
     // @ts-ignore // TODO fix typescipte error here
     return log.eventType === OrderEventType.Fill && log.universe === universe;
   }).toArray();

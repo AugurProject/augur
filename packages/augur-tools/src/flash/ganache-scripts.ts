@@ -6,9 +6,10 @@ import {
   writeSeedFile,
   Seed,
   createDb, createDbFromSeed,
-  hashContracts,
+  hashContracts
 } from '../libs/ganache';
-import { FlashArguments, FlashSession } from './flash';
+import { generateWarpSyncTestData } from '../libs/generate-warp-sync-test-data';
+import { FlashArguments, FlashSession } from "./flash";
 
 import { ethers } from 'ethers';
 import * as ganache from 'ganache-core';
@@ -107,13 +108,20 @@ export function addGanacheScripts(flash: FlashSession) {
       if (this.noGanache()) return;
 
       const name = args.name as string || 'default';
-      const seed = await this.createSeed();
+      const seed = await this.createSeed() as Seed;
 
-      this.seeds[name] = seed;
+      const WarpSync = await generateWarpSyncTestData(seed);
 
       if (args.save as boolean) {
         const filepath = args.filepath as string || defaultSeedPath;
-        await writeSeedFile(seed, filepath);
+        await writeSeedFile({
+          addresses: seed.addresses,
+          contractsHash: seed.contractsHash,
+          seeds: {
+            'default': seed.data,
+            WarpSync
+          }
+        }, filepath);
       }
     },
   });
@@ -166,7 +174,7 @@ export function addGanacheScripts(flash: FlashSession) {
       const name = args.name as string || 'default';
       const seedFilePath = args.filepath as string || defaultSeedPath;
 
-      this.seeds[name] = await loadSeedFile(seedFilePath);
+      this.seeds[name] = await loadSeedFile(seedFilePath, name);
 
       if (args.use as boolean) {
         await this.call('use-seed', { seed: name, writeArtifacts:  args.writeArtifacts as boolean });

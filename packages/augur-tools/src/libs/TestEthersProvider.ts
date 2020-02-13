@@ -1,9 +1,10 @@
 import { ContractAddresses } from '@augurproject/artifacts';
-import { Account, createSeed } from '@augurproject/tools';
 import { MemDown } from 'memdown';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { ethers } from 'ethers';
+import { createSeed } from './ganache';
 import { makeProvider } from './LocalAugur';
+import { Account } from '../constants';
 
 export class TestEthersProvider extends EthersProvider {
   constructor(provider: ethers.providers.JsonRpcProvider, private db:MemDown, private accounts:Account[], private contractAddresses:ContractAddresses) {

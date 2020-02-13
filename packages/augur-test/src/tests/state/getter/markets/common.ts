@@ -1,11 +1,18 @@
-import { API } from '@augurproject/sdk/build/state/getter/API';
-import { DB } from '@augurproject/sdk/build/state/db/DB';
-import { makeDbMock, makeProvider } from '../../../../libs';
-import { ACCOUNTS, ContractAPI, defaultSeedPath, loadSeedFile } from '@augurproject/tools';
-import { stringTo32ByteHex } from '../../../../libs/Utils';
-import { BigNumber } from 'bignumber.js';
 import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
-import { TestEthersProvider } from '../../../../libs/TestEthersProvider';
+import { DB } from '@augurproject/sdk/build/state/db/DB';
+import { API } from '@augurproject/sdk/build/state/getter/API';
+import { BulkSyncStrategy } from '@augurproject/sdk/build/state/sync/BulkSyncStrategy';
+import {
+  ACCOUNTS,
+  ContractAPI,
+  defaultSeedPath,
+  loadSeedFile,
+} from '@augurproject/tools';
+import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
+import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
+
+import { BigNumber } from 'bignumber.js';
+import { makeDbMock, makeProvider } from '../../../../libs';
 
 export const CHUNK_SIZE = 100000;
 export const outcome0 = new BigNumber(0);
@@ -23,6 +30,9 @@ export interface SomeState {
   john: ContractAPI;
   mary: ContractAPI;
   bob: ContractAPI;
+
+  johnBulkSyncStrategy: BulkSyncStrategy;
+  maryBulkSyncStrategy: BulkSyncStrategy;
 }
 
 export async function _beforeAll(): Promise<AllState> {
@@ -107,7 +117,21 @@ export async function _beforeEach(allState: AllState): Promise<SomeState> {
   const db = makeDbMock().makeDB(john.augur, ACCOUNTS);
   const api = new API(john.augur, db);
 
+  const johnBulkSyncStrategy = new BulkSyncStrategy(
+    john.provider.getLogs,
+    (await db).logFilters.buildFilter,
+    (await db).logFilters.onLogsAdded,
+    john.augur.contractEvents.parseLogs,
+  );
+
+  const maryBulkSyncStrategy = new BulkSyncStrategy(
+    john.provider.getLogs,
+    (await db).logFilters.buildFilter,
+    (await db).logFilters.onLogsAdded,
+    john.augur.contractEvents.parseLogs,
+  );
+
   return {
-    db, api, john, mary, bob
+    johnBulkSyncStrategy, maryBulkSyncStrategy, db, api, john, mary, bob
   }
 }

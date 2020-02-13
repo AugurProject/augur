@@ -1,17 +1,23 @@
-import { API } from '@augurproject/sdk/build/state/getter/API';
-import { DB } from '@augurproject/sdk/build/state/db/DB';
-import { makeDbMock, makeProvider } from '../../../../libs';
-import { ACCOUNTS, ContractAPI, defaultSeedPath, loadSeedFile } from '@augurproject/tools';
-import { stringTo32ByteHex } from '../../../../libs/Utils';
-import { BigNumber } from 'bignumber.js';
-import { TestEthersProvider } from '../../../../libs/TestEthersProvider';
-import * as _ from 'lodash';
+import { ContractInterfaces } from '@augurproject/core';
 import {
   convertDisplayAmountToOnChainAmount,
   convertDisplayPriceToOnChainPrice,
   numTicksToTickSize,
 } from '@augurproject/sdk';
-import { ContractInterfaces } from '@augurproject/core';
+import { DB } from '@augurproject/sdk/build/state/db/DB';
+import { API } from '@augurproject/sdk/build/state/getter/API';
+import { BulkSyncStrategy } from '@augurproject/sdk/build/state/sync/BulkSyncStrategy';
+import {
+  ACCOUNTS,
+  ContractAPI,
+  defaultSeedPath,
+  loadSeedFile,
+} from '@augurproject/tools';
+import { BigNumber } from 'bignumber.js';
+import * as _ from 'lodash';
+import { makeDbMock, makeProvider } from '../../../../libs';
+import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
+import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
 
 export interface TradeData {
   direction: number;
@@ -114,7 +120,15 @@ export async function processTrades(
   for (const trade of tradeData) {
     await doTrade(user0, user1, trade, market, minPrice, maxPrice);
 
-    await (await db).sync(user0.augur, CHUNK_SIZE, 0);
+    const bulkSyncStrategy = new BulkSyncStrategy(
+      user0.provider.getLogs,
+      (await db).logFilters.buildFilter,
+      (await db).logFilters.onLogsAdded,
+      user0.augur.contractEvents.parseLogs,
+    );
+
+
+    await bulkSyncStrategy.start(0, await user0.provider.getBlockNumber());
 
     const { tradingPositions } = await api.route('getUserTradingPositions', {
       universe,

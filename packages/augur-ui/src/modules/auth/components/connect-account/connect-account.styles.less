@@ -117,17 +117,22 @@
     margin-left: @size-8;
 
     > div:first-of-type {
-      .mono-9-bold;
+      .mono-10-medium;
 
       color: var(--color-secondary-text);
-      text-transform: uppercase;
     }
 
     > div:last-of-type {
-      .text-12;
+      .text-12-medium;
 
       color: var(--color-primary-text);
       margin-top: @size-2;
+
+      @media @breakpoint-mobile {
+        .text-10-bold;
+
+        margin-top: 0px;
+      }
     }
   }
 }

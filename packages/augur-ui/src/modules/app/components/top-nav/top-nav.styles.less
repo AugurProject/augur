@@ -79,7 +79,7 @@
 
         > button {
           .mono-10-bold;
-  
+
           padding: @size-4 @size-6;
           text-transform: uppercase;
         }
@@ -98,6 +98,10 @@
     > .BettingUI {
       position: absolute;
       right: @size-32;
+
+      @media @breakpoint-mobile {
+        display: none;
+      }
     }
 
     > span {

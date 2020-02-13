@@ -361,6 +361,12 @@
         margin: 0;
       }
     }
+
+    &.invalid {
+      > label:first-of-type {
+        grid-column: 2;
+      }
+    }
   }
 
   @media @breakpoint-mobile-tablet {
@@ -499,6 +505,10 @@
       &.invalid {
         grid-template-columns: @size-16 auto @size-16 @size-16;
         > div[class*='CategoryTagTrail'] {
+          grid-column: 2;
+        }
+
+        > label:first-of-type {
           grid-column: 2;
         }
       }

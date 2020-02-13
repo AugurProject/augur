@@ -1,19 +1,19 @@
-import { API } from '@augurproject/sdk/build/state/getter/API';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
-import { ContractAPI} from '@augurproject/tools';
-import { TestEthersProvider } from '../../../../libs/TestEthersProvider';
+import { API } from '@augurproject/sdk/build/state/getter/API';
+import { ContractAPI } from '@augurproject/tools';
+import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
+import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
 import {
   _beforeAll,
   _beforeEach,
   A,
   B,
+  C,
+  LONG,
   processTrades,
   SHORT,
   UTPTradeData,
-  LONG,
-  C
 } from './common';
-import { stringTo32ByteHex } from '../../../../libs/Utils';
 
 describe('State API :: Users :: ', () => {
   let db: Promise<DB>;

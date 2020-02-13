@@ -13,6 +13,13 @@ import { MarketData } from 'modules/types';
 
 const sortByOptions = [
   {
+    label: 'Creation Time',
+    value: 'creationTime',
+    comp(marketA, marketB) {
+      return marketB.creationTime - marketA.creationTime;
+    },
+  },
+  {
     label: 'Expiring Soonest',
     value: END_TIME,
     comp(marketA, marketB) {
@@ -30,13 +37,6 @@ const sortByOptions = [
       );
     },
   },
-  {
-    label: 'Creation Time',
-    value: 'creationTime',
-    comp(marketA, marketB) {
-      return marketB.creationTime - marketA.creationTime;
-    },
-  },
 ];
 
 function filterComp(input, market) {
@@ -47,7 +47,7 @@ function filterComp(input, market) {
 }
 
 interface MyMarketsProps {
-  myMarkets: Array<MarketData>;
+  myMarkets: MarketData[];
   currentAugurTimestamp: number;
   disputingWindowEndTime: number;
   removePendingMarket: Function;

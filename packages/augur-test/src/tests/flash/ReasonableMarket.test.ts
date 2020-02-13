@@ -1,6 +1,11 @@
-import { ACCOUNTS, FlashSession, addScripts, addGanacheScripts } from "@augurproject/tools";
-import { GenericAugurInterfaces } from "@augurproject/core";
-import { BigNumber } from "bignumber.js";
+import { GenericAugurInterfaces } from '@augurproject/core';
+import {
+  ACCOUNTS,
+  addGanacheScripts,
+  addScripts,
+  FlashSession,
+} from '@augurproject/tools';
+import { BigNumber } from 'bignumber.js';
 
 type Market = GenericAugurInterfaces.Market<BigNumber>;
 

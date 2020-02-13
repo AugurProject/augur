@@ -40,6 +40,7 @@ import {
   PUBLICTRADE,
   MODAL_WALLET_ERROR,
   REDEEMSTAKE,
+  CREATE_MARKET,
 } from 'modules/common/constants';
 import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
@@ -65,6 +66,7 @@ import { updateModal } from 'modules/modal/actions/update-modal';
 import * as _ from 'lodash';
 import { loadMarketOrderBook } from 'modules/orders/actions/load-market-orderbook';
 import { isCurrentMarket } from 'modules/trades/helpers/is-current-market';
+import { removePendingDataByHash } from 'modules/pending-queue/actions/pending-queue-management';
 
 const handleAlert = (
   log: any,
@@ -89,14 +91,17 @@ const handleAlert = (
   }
 };
 const ORDER_BOOK_REFRESH_MS = 1000;
+const OPEN_ORDERS_REFRESH_MS = 2000;
 const loadOrderBook = _.throttle((dispatch, marketId) => dispatch(loadMarketOrderBook(marketId)), ORDER_BOOK_REFRESH_MS, { leading: true });
-const asyncActionThrottle = (marketId) => dispatch => loadOrderBook(dispatch, marketId);
+const loadUserOpenOrders = _.throttle(dispatch => dispatch(loadAccountOpenOrders()), OPEN_ORDERS_REFRESH_MS, { leading: true });
+const throttleLoadMarketOrders = (marketId) => dispatch => loadOrderBook(dispatch, marketId);
+const throttleLoadUserOpenOrders = () => dispatch => loadUserOpenOrders(dispatch);
 
 const updateMarketOrderBook = (marketId: string) => (
   dispatch: ThunkDispatch<void, any, Action>
 ) => {
   if (isCurrentMarket(marketId)) {
-    dispatch(asyncActionThrottle(marketId));
+    dispatch(throttleLoadMarketOrders(marketId));
   }
 }
 const loadUserPositionsAndBalances = (marketId: string) => (
@@ -189,7 +194,7 @@ export const handleNewBlockLog = (log: Events.NewBlock) => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { blockchain, loginAccount, appStatus } = getState();
+  const { blockchain } = getState();
   dispatch(
     updateBlockchain({
       currentBlockNumber: log.highestAvailableBlockNumber,
@@ -260,7 +265,16 @@ export const handleDBMarketCreatedEvent = (event: any) => (
 ) => {
   if (event.data) {
     const marketIds = _.map(event.data, 'market');
-    dispatch(loadMarketsInfo(marketIds));
+    dispatch(
+      loadMarketsInfo(marketIds, (err, marketInfos) =>
+        Object.keys(marketInfos).map(id => {
+          const market = marketInfos[id]
+          if (market) {
+            dispatch(removePendingDataByHash(market.transactionHash, CREATE_MARKET))
+          }
+        })
+      )
+    );
   }
 };
 
@@ -338,7 +352,7 @@ export const handleOrderCreatedLog = (log: Logs.ParsedOrderEventLog) => (
   );
   if (isUserDataUpdate && authStatus.isLogged) {
     handleAlert(log, PUBLICTRADE, false, dispatch, getState);
-    dispatch(loadAccountOpenOrders());
+    dispatch(throttleLoadUserOpenOrders());
   }
   dispatch(updateMarketOrderBook(log.market));
 };
@@ -366,7 +380,7 @@ export const handleOrderCanceledLog = (log: Logs.ParsedOrderEventLog) => (
           params: { ...log },
         })
       );
-      dispatch(loadAccountOpenOrders());
+      dispatch(throttleLoadUserOpenOrders());
       dispatch(loadAccountPositionsTotals());
     }
   }
@@ -388,7 +402,7 @@ export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
       orderFilled(marketId, log, isSameAddress(log.orderCreator, address))
     );
     dispatch(loadUserFilledOrders({ marketId }));
-    dispatch(loadAccountOpenOrders());
+    dispatch(throttleLoadUserOpenOrders());
     handleAlert(log, PUBLICFILLORDER, true, dispatch, getState);
   }
   dispatch(loadMarketTradingHistory(marketId));
