@@ -901,7 +901,7 @@ export function addScripts(flash: FlashSession) {
         name: 'expiration',
         abbr: 'x',
         required: false,
-        description: 'number of added seconds to order will live, default is five minutes',
+        description: 'number of added seconds to order will live, default is ten minutes',
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
@@ -911,7 +911,7 @@ export function addScripts(flash: FlashSession) {
       const address = args.userAccount ? (args.userAccount as string) : null;
       const interval = args.refreshInterval ? Number(args.refreshInterval) * 1000 : 15000;
       const orderSize = args.orderSize ? Number(args.orderSize) : null;
-      const expiration = args.expiration ? new BigNumber(String(args.expiration)) : new BigNumber(300); // five minutes
+      const expiration = args.expiration ? new BigNumber(String(args.expiration)) : new BigNumber(600);
       const user: ContractAPI = await this.ensureUser(this.network, true, true, address, true, true);
       console.log('waiting many seconds on purpose for client to sync');
       await new Promise<void>(resolve => setTimeout(resolve, 90000));
@@ -982,7 +982,7 @@ export function addScripts(flash: FlashSession) {
         name: 'expiration',
         abbr: 'x',
         required: false,
-        description: 'number of added seconds to order will live, default is five minutes',
+        description: 'number of added seconds to order will live, default is ten minutes',
       },
       {
         name: 'orderSize',
@@ -1014,10 +1014,9 @@ export function addScripts(flash: FlashSession) {
       const numOrderLimit = args.numOrderLimit ? Number(args.numOrderLimit) : 100;
       const burstRounds = args.burstRounds ? Number(args.burstRounds) : 10;
       const orderSize = args.orderSize ? Number(args.orderSize) : 10;
-      const expiration = args.expiration ? new BigNumber(String(args.expiration)) : new BigNumber(300); // five minutes
-      const user: ContractAPI = await this.ensureUser(this.network, true, true, address, true, true);
-      console.log('waiting many seconds on purpose for client to sync');
-      await new Promise<void>(resolve => setTimeout(resolve, 90000));
+      const expiration = args.expiration ? new BigNumber(String(args.expiration)) : new BigNumber(600); // ten minutes
+      const user: ContractAPI = await this.ensureUser(this.network, false, true, address, true, true);
+
       const skipFaucetOrApproval = args.skipFaucetOrApproval as boolean;
       if (!skipFaucetOrApproval) {
         this.log('order-firehose, faucet and approval');
