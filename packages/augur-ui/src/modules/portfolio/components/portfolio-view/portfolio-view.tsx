@@ -11,14 +11,19 @@ import { SMALL_MOBILE } from 'modules/common/constants';
 import Styles from 'modules/portfolio/components/portfolio-view/portfolio-view.styles.less';
 import { PORTFOLIO_VIEW_HEAD_TAGS } from 'modules/seo/helmet-configs';
 import { HelmetTag } from 'modules/seo/helmet-tag';
+import parseQuery from 'modules/routes/helpers/parse-query';
+import { CREATE_MARKET_PORTFOLIO } from 'modules/routes/constants/param-names';
 
-interface PortfolioViewProps {}
+interface PortfolioViewProps {
+  location: Location;
+}
 
 interface PortfolioViewState {
   extendPositions: boolean;
   extendMarkets: boolean;
   extendOpenOrders: boolean;
   extendFilledOrders: boolean;
+  initialPage: string;
 }
 
 export default class PortfolioView extends React.Component<
@@ -30,6 +35,7 @@ export default class PortfolioView extends React.Component<
     extendMarkets: false,
     extendOpenOrders: false,
     extendFilledOrders: false,
+    initialPage: parseQuery(this.props.location.search)[CREATE_MARKET_PORTFOLIO] || 0,
   };
 
   toggle = (extend: string, hide: string) => {
@@ -53,7 +59,7 @@ export default class PortfolioView extends React.Component<
           {matches =>
             matches ? (
               <>
-              <ModuleTabs selected={0} fillWidth noBorder>
+              <ModuleTabs selected={s.initialPage} fillWidth noBorder>
                 <ModulePane label="Positions">
                   <MyPositions />
                 </ModulePane>
