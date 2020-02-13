@@ -12,12 +12,12 @@
   > ul {
     display: flex;
     align-items: center;
-    border-bottom: 1px solid var(--color-dark-grey);
+    border-bottom: @size-1 solid var(--color-dark-grey);
     max-height: 37px;
     min-height: 37px;
 
     > li {
-      border-bottom: 2px solid transparent;
+      border-bottom: @size-2 solid transparent;
       height: 100%;
       max-height: 37px;
       min-height: 37px;
@@ -62,7 +62,7 @@
     }
 
     .Selected {
-      border-bottom: 2px solid var(--color-primary-action);
+      border-bottom: @size-2 solid var(--color-primary-action);
 
       > a {
         text-decoration: none;
@@ -143,6 +143,49 @@ button.AddFunds {
       fill: var(--color-brand);
       height: 1px;
       width: @size-8;
+    }
+  }
+}
+
+:root[theme="BETTING"] {
+  .TopNav {
+    background: var(--color-primary-text);
+
+    > ul {
+      border-bottom: @size-1 solid var(--color-primary-text);
+      border-top: @size-1 solid var(--color-secondary-text);
+
+      > li:hover {
+        &:not(.CreatetButton) {
+          span {
+            color: var(--color-module-background);
+          }
+        }
+      }
+
+      > li a {
+        > span {
+          color: var(--color-dark-text);
+        }
+  
+        > svg > circle {
+          fill: var(--color-outcome-five);
+        }
+      }
+
+      .Selected {
+        border-bottom: @size-2 solid var(--color-primary-action);
+
+        > a > span {
+          color: var(--color-module-background);
+        }
+      }
+
+      > .BettingUI {
+        > button > a {
+          color: var(--color-module-background);
+        }
+      }
     }
   }
 }

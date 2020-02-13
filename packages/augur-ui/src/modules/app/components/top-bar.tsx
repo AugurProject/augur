@@ -11,6 +11,7 @@ import Styles from 'modules/app/components/top-bar.styles.less';
 import { Link } from 'react-router-dom';
 import makePath from 'modules/routes/helpers/make-path';
 import Logo from 'modules/app/components/logo';
+import ThemeSwitch from 'modules/app/containers/theme-switch';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import { MARKETS } from 'modules/routes/constants/views';
 import HelpResources from 'modules/app/containers/help-resources';
@@ -47,7 +48,7 @@ const TopBar: React.FC<TopBarProps> = ({
           <Logo />
         </Link>
       </div>
-
+      <ThemeSwitch />
       {(isLogged || restoredAccount) && (
         <div className={Styles.statsContainer}>
           <div>
