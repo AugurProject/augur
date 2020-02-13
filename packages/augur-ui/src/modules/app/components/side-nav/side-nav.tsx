@@ -3,6 +3,7 @@ import ReactTooltip from 'react-tooltip';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 
+import ThemeSwitch from 'modules/app/containers/theme-switch';
 import makePath from 'modules/routes/helpers/make-path';
 import ConnectDropdown from 'modules/auth/containers/connect-dropdown';
 import ConnectAccount from 'modules/auth/containers/connect-account';
@@ -64,15 +65,16 @@ const SideNav = ({
         {isLogged && (<HelpIcon isHelpMenuOpen={isHelpMenuOpen} updateHelpMenuState={updateHelpMenuState} />)}
         <ConnectAccount />
       </div>
-      <div className={Styles.SideNav__container}>
+      <div className={Styles.Container}>
         <div>
           {isConnectionTrayOpen && <ConnectDropdown />}
+          {isHelpMenuOpen && <HelpMenuList />}
+          <ThemeSwitch />
           <ul
             className={classNames({
               [Styles.accountDetailsOpen]: isConnectionTrayOpen,
             })}
           >
-            {isHelpMenuOpen && <HelpMenuList />}
             {accessFilteredMenu.map((item, idx) => (
               <li
                 key={idx}
