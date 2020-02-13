@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { AppState } from 'store';
-import { COLUMN_TYPES, INVALID_OUTCOME_ID } from 'modules/common/constants';
+import { COLUMN_TYPES, INVALID_OUTCOME_ID, BUY, SELL } from 'modules/common/constants';
 import { selectMarketOutcomeBestBidAsk, selectBestBidAlert } from 'modules/markets/selectors/select-market-outcome-best-bid-ask';
 import Row from 'modules/common/row';
 import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
@@ -67,7 +67,15 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       useFull: true,
       showEmptyDash: true,
       alert: bestBidAlert,
-
+      action: (e) => {
+        oP.updateSelectedOrderProperties({
+          orderPrice: topBidPrice && topBidPrice.value,
+          orderQuantity: topBidShares && topBidShares.value,
+          selectedNav: SELL
+        });
+        oP.updateSelectedOutcome(outcome.id, true);
+        e.stopPropagation();
+      }
     },
     {
       key: "topAskPrice",
@@ -75,6 +83,15 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       value: topAskPrice,
       useFull: true,
       showEmptyDash: true,
+      action: (e) => {
+          oP.updateSelectedOrderProperties({
+          orderPrice: topAskPrice && topAskPrice.value,
+          orderQuantity: topAskShares && topAskShares.value,
+          selectedNav: BUY
+        });
+        oP.updateSelectedOutcome(outcome.id, true);
+        e.stopPropagation();
+      }
     },
     {
       key: "topAskShares",
