@@ -29,21 +29,18 @@
 
   > span:first-of-type {
     margin: 0 @size-4 0 @size-8;
-    @media @breakpoint-mobile {
-      display: none;
-    }
   }
 
   > span:nth-of-type(2) {
     @media @breakpoint-mobile {
-      margin: 0 @size-6 0 @size-12;
+      margin: 0 @size-6 0 @size-4;
     }
   }
 
   > span:last-of-type {
     margin: 0 0 0 @size-4;
     @media @breakpoint-mobile {
-      margin: 0 0 0 @size-6;
+      display: none;
     }
   }
 }
