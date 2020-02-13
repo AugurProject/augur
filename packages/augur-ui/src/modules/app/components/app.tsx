@@ -128,9 +128,10 @@ export default class AppView extends Component<AppProps> {
       requireLogin: false,
     },
     {
-      title: 'Create',
+      title: 'Create Market',
       route: CREATE_MARKET,
       requireLogin: true,
+      button: true,
       disabled: !!this.props.universe.forkingInfo,
     },
   ];
@@ -439,6 +440,7 @@ export default class AppView extends Component<AppProps> {
                 showGlobalChat={() => this.props.showGlobalChat()}
                 migrateV1Rep={migrateV1Rep}
                 showMigrateRepButton={showMigrateRepButton}
+                updateModal={updateModal}
               />
 
               {/* HIDDEN ON MOBILE */}
