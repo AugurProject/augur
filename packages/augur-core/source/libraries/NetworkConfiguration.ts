@@ -159,9 +159,15 @@ export class NetworkConfiguration {
         networkName: NETWORKS = typeof process.env.TESTRPC === 'undefined'
             ? 'environment'
             : 'testrpc',
-        validatePrivateKey = true
+        validatePrivateKey = true,
+        privateKey?: string,
     ): NetworkConfiguration {
         const network = networks[networkName];
+
+        if (privateKey) {
+            network.privateKey = privateKey;
+        }
+
         if (
             networkName === 'environment' &&
             (process.env.ETHEREUM_HTTP ||
