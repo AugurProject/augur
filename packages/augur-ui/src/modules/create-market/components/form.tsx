@@ -100,7 +100,7 @@ import {
 import { selectSortedMarketOutcomes } from 'modules/markets/selectors/market';
 import { createBigNumber } from 'utils/create-big-number';
 import makeQuery from 'modules/routes/helpers/make-query';
-import { CREATE_MARKET_FORM_PARAM_NAME } from 'modules/routes/constants/param-names';
+import { CREATE_MARKET_FORM_PARAM_NAME, CREATE_MARKET_PORTFOLIO } from 'modules/routes/constants/param-names';
 import {
   TemplateInputType,
   TimeOffset,
@@ -943,6 +943,9 @@ export default class Form extends React.Component<FormProps, FormState> {
                           this.setState({ blockShown: true }, () => {
                             history.push({
                               pathname: makePath(MY_POSITIONS, null),
+                              search:  makeQuery({
+                                [CREATE_MARKET_PORTFOLIO]: 3,
+                              }),
                             });
                           });
                         });

@@ -105,6 +105,14 @@
     margin-top: @top-bar-height-mobile;
     padding-bottom: @top-bar-height-mobile;
 
+    > button {
+      display: flex;
+      margin-top: @size-10;
+      margin-right: @size-16;
+      align-items: center;
+      margin-left: auto;
+    }
+
     &.accountDetailsOpen {
       margin-top: 0;
     }
@@ -160,6 +168,10 @@
             fill: @color-outcome-five;
           }
         }
+      }
+
+      button {
+        padding: @size-8 @size-12;
       }
     }
 
