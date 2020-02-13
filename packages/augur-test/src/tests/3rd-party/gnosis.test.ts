@@ -1,77 +1,20 @@
-import {
-  Addresses,
-  ContractAddresses,
-  NetworkId,
-} from '@augurproject/artifacts';
-import { sleep } from '@augurproject/core/build/libraries/HelperFunctions';
-import { EthersProvider } from '@augurproject/ethersjs-provider';
-import {
-  GnosisRelayAPI,
-  GnosisSafeState,
-} from '@augurproject/gnosis-relay-api';
-import { Connectors } from '@augurproject/sdk';
-import { DB } from '@augurproject/sdk/build/state/db/DB';
-import { API } from '@augurproject/sdk/build/state/getter/API';
-import {
-  AllOrders,
-  Order,
-} from '@augurproject/sdk/build/state/getter/OnChainTrading';
-import { BulkSyncStrategy } from '@augurproject/sdk/build/state/sync/BulkSyncStrategy';
-import { ACCOUNTS, ContractAPI } from '@augurproject/tools';
-import {
-  NULL_ADDRESS,
-  stringTo32ByteHex,
-} from '@augurproject/tools/build/libs/Utils';
 import { BigNumber } from 'bignumber.js';
 import { JsonRpcProvider } from 'ethers/providers';
 import * as _ from 'lodash';
+import { Addresses, ContractAddresses, NetworkId } from '@augurproject/artifacts';
+import { EthersProvider } from '@augurproject/ethersjs-provider';
+import { GnosisRelayAPI, GnosisSafeState, } from '@augurproject/gnosis-relay-api';
+import { Connectors } from '@augurproject/sdk';
+import { ACCOUNTS, ContractAPI } from '@augurproject/tools';
+import { DB } from '@augurproject/sdk/build/state/db/DB';
+import { API } from '@augurproject/sdk/build/state/getter/API';
+import { AllOrders, Order, } from '@augurproject/sdk/build/state/getter/OnChainTrading';
+import { BulkSyncStrategy } from '@augurproject/sdk/build/state/sync/BulkSyncStrategy';
+import { stringTo32ByteHex, } from '@augurproject/tools/build/libs/Utils';
 import { makeDbMock } from '../../libs';
 
 async function getSafe(person: ContractAPI): Promise<string> {
   return person.augur.contracts.gnosisSafeRegistry.getSafe_(person.account.publicKey);
-}
-
-async function getOrCreateSafe(person: ContractAPI, initialPayment=new BigNumber(1e21)): Promise<string> {
-  const safeFromRegistry = await getSafe(person);
-  if(safeFromRegistry !== NULL_ADDRESS) {
-    console.log(`Found safe: ${safeFromRegistry}`);
-    return safeFromRegistry;
-  }
-
-  console.log('Attempting to create safe via relay');
-  const safeResponse = await person.createGnosisSafeViaRelay(person.augur.addresses.Cash);
-  return safeResponse.safe
-}
-
-async function getSafeStatus(person: ContractAPI, safe: string) {
-  const status = await person.augur.checkSafe(person.account.publicKey, safe);
-  if (typeof status === 'string') {
-    return status;
-  } else if (typeof status === 'object' && typeof status.status === 'string') {
-    return status.status
-  } else {
-    throw Error(`Received erroneous response when deploying safe via relay: "${status}"`);
-  }
-}
-
-async function fundSafe(person: ContractAPI, safe=undefined, amount=new BigNumber(1e21)) {
-  safe = safe || await getOrCreateSafe(person, amount);
-
-  await person.faucet(new BigNumber(1e21));
-  await person.transferCash(safe, new BigNumber(1e21));
-
-  let status: string;
-  for (let i = 0; i < 10; i++) {
-    status = await getSafeStatus(person, safe);
-    if (status !== GnosisSafeState.WAITING_FOR_FUNDS) {
-      break;
-    }
-    await sleep(2000);
-  }
-
-  await sleep(10000);
-
-  return safe;
 }
 
 describe('3rd Party :: Gnosis :: ', () => {
@@ -100,19 +43,18 @@ describe('3rd Party :: Gnosis :: ', () => {
       john.augur.contractEvents.parseLogs,
     );
 
-
     connectorJohn.initialize(john.augur, await db);
     api = new API(john.augur, db);
     await john.approveCentralAuthority();
 
     const funderCash = (new BigNumber(10)).pow(26);
-    await john.faucet(funderCash)
+    await john.faucet(funderCash);
     await john.transferCash(ACCOUNTS[7].publicKey, funderCash);
 
     // setup gnosis
-    await john.faucet(funderCash)
-    const safe = await fundSafe(john);
-    const safeStatus = await getSafeStatus(john, safe);
+    await john.faucet(funderCash);
+    const safe = await john.fundSafe();
+    const safeStatus = await john.getSafeStatus(safe);
     console.log(`Safe ${safe}: ${safeStatus}`);
     expect(safeStatus).toBe(GnosisSafeState.AVAILABLE);
 
