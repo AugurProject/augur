@@ -16,7 +16,7 @@ import moment from 'moment';
 import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from 'ethers/utils';
 import { ethers } from 'ethers';
-import { abiV1 } from '@augurproject/artifacts';
+import { abiV1, Addresses } from '@augurproject/artifacts';
 import {
   calculatePayoutNumeratorsArray,
   QUINTILLION,
@@ -31,14 +31,15 @@ import { fork } from './fork';
 import { dispute } from './dispute';
 import { MarketList, MarketOrderBook } from '@augurproject/sdk/build/state/getter/Markets';
 import { generateTemplateValidations } from './generate-templates';
-import { spawn } from 'child_process';
+import { spawn, spawnSync } from 'child_process';
 import { showTemplateByHash, validateMarketTemplate } from './template-utils';
 import { cannedMarkets, singleOutcomeAsks, singleOutcomeBids } from './data/canned-markets';
 import { ContractAPI } from '../libs/contract-api';
 import { OrderBookShaper, OrderBookConfig } from './orderbook-shaper';
 import { NumOutcomes } from '@augurproject/sdk/src/state/logs/types';
 import { flattenZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
-import { sleep } from '@augurproject/sdk/build/state/utils/utils';
+import { awaitUserInput, formatAddress, sleep } from './util';
+import { updateAddresses } from "@augurproject/artifacts/build";
 
 export function addScripts(flash: FlashSession) {
   flash.addScript({
@@ -1005,7 +1006,7 @@ export function addScripts(flash: FlashSession) {
       const marketIds = String(args.marketIds)
         .split(',')
         .map(id => id.trim());
-      const orderOutcomes: number[] = (args.outcomes ? String(args.outcomes) : "2,1")
+      const orderOutcomes: number[] = (args.outcomes ? String(args.outcomes) : '2,1')
         .split(',')
         .map(id => Number(id.trim()));
       const address = args.userAccount ? (args.userAccount as string) : null;
@@ -1024,11 +1025,11 @@ export function addScripts(flash: FlashSession) {
         await user.approve(QUINTILLION.multipliedBy(100000));
       }
       // create tight orderbook config
-      let bids = {};
-      let asks = {};
+      const bids = {};
+      const asks = {};
       for(let i = 1; i < 49; i++) { bids[((0.01 * i).toString().slice(0, 4))] = orderSize }
       for(let i = 50; i < 99; i++) { asks[((0.01 * i).toString().slice(0, 4))] = orderSize }
-      let config: OrderBookConfig = {bids, asks};
+      const config: OrderBookConfig = {bids, asks};
       const shapers = marketIds.map(m => new OrderBookShaper(m, null, expiration, orderOutcomes, config));
       let i = 0;
       for(i; i < burstRounds; i++) {
@@ -2027,6 +2028,89 @@ export function addScripts(flash: FlashSession) {
   }});
 
   flash.addScript({
+    name: 'docker-all',
+    ignoreNetwork: true,
+    options: [
+      {
+        name: 'dev',
+        abbr: 'd',
+        description: 'Deploy to node instead of using pop-docker image',
+        flag: true,
+      },
+      {
+        name: 'fake',
+        abbr: 'f',
+        description: 'Use fake time (TimeControlled) instead of real time',
+        flag: true,
+      },
+      {
+        name: 'detach',
+        abbr: 'D',
+        description: 'Do not stop dockers after running command and do not wait for user input before exiting',
+        flag: true,
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const dev = Boolean(args.dev);
+      const fake = Boolean(args.fake);
+      const detach = Boolean(args.detach);
+
+      spawnSync('docker', ['pull', 'augurproject/safe-relay-service_web:latest']);
+      spawnSync('docker', ['pull', '0xorg/mesh:latest']);
+
+      this.log(`Deploy contracts: ${dev}`);
+      this.log(`Use fake time: ${fake}`);
+      this.log(`Detach: ${detach}`);
+
+      try {
+        if (dev) {
+          spawnSync('yarn', ['workspace', '@augurproject/tools', 'docker:geth:detached']);
+        } else {
+          const gethDocker = fake ? 'docker:geth:pop' : 'docker:geth:pop-normal-time';
+          spawnSync('yarn', [gethDocker]);
+          await updateAddresses(); // add pop-geth addresses to global Addresses
+        }
+
+        await sleep(10000); // give geth some time to start
+
+        this.network = NetworkConfiguration.create();
+        this.provider = flash.makeProvider(flash.network);
+        const networkId = await this.getNetworkId(this.provider);
+
+        if (dev) {
+          const deployMethod = fake ? 'fake-all' : 'normal-all';
+          await this.call(deployMethod, { createMarkets: true });
+        }
+
+        this.contractAddresses = Addresses[networkId];
+        await spawnSync('yarn', ['build']); // so UI etc will have the correct addresses
+
+        spawnSync('yarn', ['workspace', '@augurproject/gnosis-relay-api', 'run-relay', '-d'], {
+          env: {
+            ...process.env,
+            ETHEREUM_CHAIN_ID: networkId,
+            CUSTOM_CONTRACT_ADDRESSES: JSON.stringify(this.contractAddresses),
+            GNOSIS_SAFE_CONTRACT_ADDRESS: formatAddress(this.contractAddresses.GnosisSafe, { prefix: true }),
+            PROXY_FACTORY_CONTRACT_ADDRESS: formatAddress(this.contractAddresses.ProxyFactory, { prefix: true }),
+            ZEROX_CONTRACT_ADDRESS: formatAddress(this.contractAddresses.ZeroXTrade, { lower: true, prefix: false }),
+          }
+        });
+
+        if (!detach) {
+          await awaitUserInput('Running dockers. Press ENTER to quit:');
+        }
+
+      } finally {
+        if (!detach) {
+          this.log('Stopping dockers');
+          await spawnSync('docker', ['kill', 'geth']);
+          await spawnSync('yarn', ['workspace', '@augurproject/gnosis-relay-api', 'kill-relay']);
+        }
+      }
+    }
+  });
+
+  flash.addScript({
     name: '0x-docker',
     async call(this: FlashSession) {
       if (this.noProvider()) return null;
@@ -2101,13 +2185,8 @@ export function addScripts(flash: FlashSession) {
       const removePrefix = args.removePrefix as boolean;
       const lower = args.lower as boolean;
       let address = this.contractAddresses[name];
-      if (removePrefix) {
-        address = address.slice(2);
-      }
-      if (lower) {
-        address = address.toLowerCase();
-      }
-      console.log(address);
+      address = formatAddress(address, { lower, prefix: !removePrefix});
+      this.log(address);
       return address;
     },
   });
@@ -2220,6 +2299,14 @@ export function addScripts(flash: FlashSession) {
       const balance = await user.getRepBalance(target || this.account);
       this.log(balance.toFixed());
       return balance;
+    },
+  });
+
+  flash.addScript({
+    name: 'ping',
+    ignoreNetwork: true,
+    async call(this: FlashSession) {
+      this.log('pong');
     },
   });
 }

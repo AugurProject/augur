@@ -93,7 +93,7 @@ const login = (account: string) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState,
 ) => {
-  const useGnosis = getState().env['gnosis-enabled'];
+  const useGnosis = getState().env['gnosis']?.enabled;
   const provider = new Web3Provider(windowRef.web3.currentProvider);
   const networkId = windowRef.web3.currentProvider.networkVersion;
   const address = toChecksumAddress(account);
