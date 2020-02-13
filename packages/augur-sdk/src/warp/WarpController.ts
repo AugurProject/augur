@@ -93,7 +93,9 @@ export class WarpController {
   }
 
   static async create(db: DB, provider: Provider, uploadBlockNumber: Block) {
-    const ipfs = await IPFS.create();
+    const ipfs = await IPFS.create({
+      repo: './data',
+    });
     return new WarpController(db, ipfs, provider, uploadBlockNumber);
   }
 
@@ -186,10 +188,7 @@ export class WarpController {
       file.addBlockSize(indexFileLinks[i].Size);
     }
 
-    const indexFile = new DAGNode(file.marshal());
-    for (let i = 0; i < indexFileLinks.length; i++) {
-      indexFile.addLink(indexFileLinks[i]);
-    }
+    const indexFile = new DAGNode(file.marshal(), indexFileLinks);
 
     const indexFileResponse = await this.ipfs.dag.put(
       indexFile,
@@ -220,13 +219,8 @@ export class WarpController {
     for (let i = 0; i < results.length; i++) {
       file.addBlockSize(results[i].Size);
     }
-    const links = [];
-    const indexFile = new DAGNode(file.marshal());
-    for (let i = 0; i < results.length; i++) {
-      const link = results[i];
-      links.push(link);
-      indexFile.addLink(link);
-    }
+    const links = results;
+    const indexFile = new DAGNode(file.marshal(), results);
 
     const indexFileResponse = await this.ipfs.dag.put(
       indexFile,
@@ -520,7 +514,7 @@ export class WarpController {
   }
 
   getFile(ipfsPath: string) {
-    return this.ipfs.cat(ipfsPath);
+    return this.ipfs.cat(ipfsPath).then((item) => item.toString());
   }
 
   async getAvailableCheckpointsByHash(ipfsRootHash: string): Promise<number[]> {

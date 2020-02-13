@@ -43,7 +43,7 @@ export class WarpSyncStrategy {
     return maxBlockNumber;
   }
 
-  async processFile(buffer: Buffer): Promise<number | undefined> {
+  async processFile(buffer: string): Promise<number | undefined> {
     const splitLogs = buffer
       .toString()
       .split('\n')
