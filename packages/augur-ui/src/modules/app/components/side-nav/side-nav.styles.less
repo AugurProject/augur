@@ -99,7 +99,7 @@
   }
 
   > div > ul {
-    background: @color-module-background;
+    background: @color-active-background;
     height: calc(100vh - @top-bar-height-mobile);
     margin-top: @top-bar-height-mobile;
     padding-bottom: @top-bar-height-mobile;
@@ -169,7 +169,7 @@
 
   > div > footer {
     align-items: center;
-    background: @color-module-background;
+    background: @color-active-background;
     bottom: 0px;
     display: flex;
     height: @top-bar-height-mobile;
@@ -177,6 +177,7 @@
     padding: 0 @size-16;
     position: fixed;
     width: calc(100% - @size-52);
+    border-top: @size-1 solid @color-dark-grey;
 
     > div:nth-of-type(2) {
       .mono-10-semi-bold;
