@@ -3405,7 +3405,7 @@ export const TEMPLATES = {
                     id: 3,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
-                    values: LIST_VALUES.YEARS,
+                    values: LIST_VALUES.SUMMER_OLYMPIC_YEARS,
                   },
                 ],
                 resolutionRules: {
@@ -3449,15 +3449,10 @@ export const TEMPLATES = {
                     id: 4,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
-                    values: LIST_VALUES.YEARS,
+                    values: LIST_VALUES.SUMMER_OLYMPIC_YEARS,
                   },
                 ],
                 resolutionRules: {
-                  [REQUIRED]: [
-                    {
-                      text: `If the event is not played market should resolve as 'No'`,
-                    },
-                  ],
                 },
               },
               {
@@ -3495,13 +3490,22 @@ export const TEMPLATES = {
                     id: 4,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
-                    values: LIST_VALUES.YEARS,
+                    values: LIST_VALUES.SUMMER_OLYMPIC_YEARS,
                   },
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
                     {
                       text: `If the event is not played market should resolve as 'No'`,
+                    },
+                    {
+                      text: `If the person does not compete the market should resolve as 'No'`,
+                    },
+                    {
+                      text: `If the person breaks the record and is disqualified before event expiration the market should resolve as 'No'`,
+                    },
+                    {
+                      text: `If the person breaks the record and is disqualified after event expiration the market should resolve as 'Yes'`,
                     },
                   ],
                 },
@@ -3541,13 +3545,22 @@ export const TEMPLATES = {
                     id: 4,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
-                    values: LIST_VALUES.YEARS,
+                    values: LIST_VALUES.SUMMER_OLYMPIC_YEARS,
                   },
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
                     {
                       text: `If the event is not played market should resolve as 'No'`,
+                    },
+                    {
+                      text: `If the person does not compete the market should resolve as 'No'`,
+                    },
+                    {
+                      text: `If the person wins and is disqualified before event expiration the market should resolve as 'No'`,
+                    },
+                    {
+                      text: `If the person wins and is disqualified after event expiration the market should resolve as 'Yes'`,
                     },
                   ],
                 },
@@ -3567,7 +3580,7 @@ export const TEMPLATES = {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
-                    values: LIST_VALUES.YEARS,
+                    values: LIST_VALUES.SUMMER_OLYMPIC_YEARS,
                   },
                   {
                     id: 2,
@@ -3581,7 +3594,13 @@ export const TEMPLATES = {
                     placeholder: `Field (Any other team)`,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Metal count is determined at event expiration, if event expiration is before the completion of the games this market should resolve as 'Invalid'`,
+                    },
+                  ],
+                },
               },
               {
                 marketType: CATEGORICAL,
@@ -3607,7 +3626,7 @@ export const TEMPLATES = {
                     id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
-                    values: LIST_VALUES.YEARS,
+                    values: LIST_VALUES.SUMMER_OLYMPIC_YEARS,
                   },
                   {
                     id: 3,
@@ -3615,7 +3634,16 @@ export const TEMPLATES = {
                     placeholder: `Field (Any other team)`,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If the event does not take place this market should resolve as 'Invalid'`,
+                    },
+                    {
+                      text: `If the country wins and is disqualified after event expiration the original result should stand`,
+                    },
+                  ],
+                },
               },
               {
                 marketType: SCALAR,
@@ -3642,10 +3670,16 @@ export const TEMPLATES = {
                     id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
-                    values: LIST_VALUES.YEARS,
+                    values: LIST_VALUES.SUMMER_OLYMPIC_YEARS,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Metal count is determined at event expiration, if event expiration is before the completion of the games this market should resolve as 'Invalid'`,
+                    },
+                  ],
+                },
               },
             ],
           },
@@ -3681,7 +3715,7 @@ export const TEMPLATES = {
                     id: 3,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
-                    values: LIST_VALUES.YEARS,
+                    values: LIST_VALUES.WINTER_OLYMPIC_YEARS,
                   },
                 ],
                 resolutionRules: {
@@ -3725,7 +3759,7 @@ export const TEMPLATES = {
                     id: 4,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
-                    values: LIST_VALUES.YEARS,
+                    values: LIST_VALUES.WINTER_OLYMPIC_YEARS,
                   },
                 ],
                 resolutionRules: {
@@ -3771,13 +3805,22 @@ export const TEMPLATES = {
                     id: 4,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
-                    values: LIST_VALUES.YEARS,
+                    values: LIST_VALUES.WINTER_OLYMPIC_YEARS,
                   },
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
                     {
                       text: `If the event is not played market should resolve as 'No'`,
+                    },
+                    {
+                      text: `If the person does not compete the market should resolve as 'No'`,
+                    },
+                    {
+                      text: `If the person breaks the record and is disqualified before event expiration the market should resolve as 'No'`,
+                    },
+                    {
+                      text: `If the person breaks the record and is disqualified after event expiration the market should resolve as 'Yes'`,
                     },
                   ],
                 },
@@ -3817,13 +3860,22 @@ export const TEMPLATES = {
                     id: 4,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
-                    values: LIST_VALUES.YEARS,
+                    values: LIST_VALUES.WINTER_OLYMPIC_YEARS,
                   },
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
                     {
                       text: `If the event is not played market should resolve as 'No'`,
+                    },
+                    {
+                      text: `If the person does not compete the market should resolve as 'No'`,
+                    },
+                    {
+                      text: `If the person wins and is disqualified before event expiration the market should resolve as 'No'`,
+                    },
+                    {
+                      text: `If the person wins and is disqualified after event expiration the market should resolve as 'Yes'`,
                     },
                   ],
                 },
@@ -3843,7 +3895,7 @@ export const TEMPLATES = {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
-                    values: LIST_VALUES.YEARS,
+                    values: LIST_VALUES.WINTER_OLYMPIC_YEARS,
                   },
                   {
                     id: 2,
@@ -3857,7 +3909,13 @@ export const TEMPLATES = {
                     placeholder: `Field (Any other team)`,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Metal count is determined at event expiration, if event expiration is before the completion of the games this market should resolve as 'Invalid'`,
+                    },
+                  ],
+                },
               },
               {
                 marketType: CATEGORICAL,
@@ -3883,7 +3941,7 @@ export const TEMPLATES = {
                     id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
-                    values: LIST_VALUES.YEARS,
+                    values: LIST_VALUES.WINTER_OLYMPIC_YEARS,
                   },
                   {
                     id: 3,
@@ -3891,7 +3949,16 @@ export const TEMPLATES = {
                     placeholder: `Field (Any other team)`,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If the event does not take place this market should resolve as 'Invalid'`,
+                    },
+                    {
+                      text: `If the country wins and is disqualified after event expiration the original result should stand`,
+                    },
+                  ],
+                },
               },
               {
                 marketType: SCALAR,
@@ -3918,10 +3985,16 @@ export const TEMPLATES = {
                     id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
-                    values: LIST_VALUES.YEARS,
+                    values: LIST_VALUES.WINTER_OLYMPIC_YEARS,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Metal count is determined at event expiration, if event expiration is before the completion of the games this market should resolve as 'Invalid'`,
+                    },
+                  ],
+                },
               },
             ],
           },
