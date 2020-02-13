@@ -191,3 +191,23 @@ export function getStartingBlockForNetwork(networkId: NetworkId): number {
 
   return blockNumber;
 }
+
+export async function updateAddresses(): Promise<void> {
+  // be sure to be in src dir, not build
+  await Promise.all(['../src/local-addresses.json', '../src/addresses.json'].map(async (filename) => {
+    const filepath = path.join(__dirname, filename);
+
+    if (await exists(filepath)) {
+      const blob = await readFile(filepath, 'utf8');
+      try {
+        const addresses = JSON.parse(blob);
+        Object.keys(addresses).forEach((networkId) => {
+          Addresses[networkId] = addresses[networkId];
+        });
+
+      } catch {
+        throw Error(`Cannot parse addresses file ${filepath}`)
+      }
+    }
+  }));
+}
