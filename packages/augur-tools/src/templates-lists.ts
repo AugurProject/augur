@@ -2016,11 +2016,11 @@ export const LIST_VALUES = {
     'Grand Canyon',
     'UT-Pan American',
   ],
-  TENNIS_MENS_SETS: [
+  TENNIS_MATCH_SETS: [
     '1', '2', '3', '4', '5',
   ],
-  TENNIS_WOMENS_SETS: [
-    '1', '2', '3',
+  TENNIS_GAMES_SETS: [
+    'games', 'sets',
   ],
   TENNIS_MENS_SINGLES_TOURNAMENTS: [
     'Qatar Exxon Mobil Open',
@@ -3165,11 +3165,6 @@ export const ENTERTAINMENT_EVENT_DEP_TEAMS = {
   'MTV Video Music Awards': LIST_VALUES.ENT_MTV_AWARDS,
   'American Music Awards': LIST_VALUES.ENT_AMER_MUSIC,
   'Brit Awards': LIST_VALUES.ENT_BRIT_AWARDS,
-};
-
-export const TENNIS_MATCH_SETS = {
-  "Men's": LIST_VALUES.TENNIS_MENS_SETS,
-  "Women's": LIST_VALUES.TENNIS_WOMENS_SETS,
 };
 
 export const TENNIS_SINGLES_EVENTS = {
