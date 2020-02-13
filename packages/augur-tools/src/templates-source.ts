@@ -1221,13 +1221,13 @@ export const TEMPLATES = {
                   },
                   {
                     id: 3,
-                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                    type: TemplateInputType.TEXT,
                     placeholder: `Player A`,
                     values: LIST_VALUES.YEARS,
                   },
                   {
                     id: 4,
-                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                    type: TemplateInputType.TEXT,
                     placeholder: `Player B`,
                     values: LIST_VALUES.YEARS,
                   },
@@ -1495,6 +1495,91 @@ export const TEMPLATES = {
                     },
                     {
                       text: `If a team is disqualified or withdraws during the set named in the market question, the team moving forward to the next round should be declared the winner`,
+                    },
+                  ],
+                },
+              },
+              {
+                marketType: CATEGORICAL,
+                question: `[0] Doubles Tennis [1] [2] (O/U), [3] vs. [4]: Total [5] played in a match; Over/Under [6].5?`,
+                example: `Men's Doubles Tennis 2020 French Open (O/U), Kevin Krawietz/Andreas Mies vs. Bob Bryan/Mike Bryan: Total games played in a match; Over/Under 15.5?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN_QUESTION_DEP,
+                    placeholder: `Men's/Women's`,
+                    inputDestId: 2,
+                    values: LIST_VALUES.MENS_WOMENS,
+                    inputDestValues: TENNIS_DOUBLES_EVENTS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DROPDOWN,
+                    defaultLabel: `Select Men's/Women's First`,
+                    placeholder: `Event`,
+                    values: [],
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Player/Player A`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 4,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Player/Player B`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 5,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `games/sets`,
+                    values: LIST_VALUES.TENNIS_GAMES_SETS,
+                  },
+                  {
+                    id: 6,
+                    type: TemplateInputType.TEXT,
+                    validationType: ValidationType.WHOLE_NUMBER,
+                    placeholder: `Whole #`,
+                  },
+                  {
+                    id: 7,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `No Winner/Not Played`,
+                  },
+                  {
+                    id: 8,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `Over [6].5`,
+                  },
+                  {
+                    id: 9,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `Under [6].5`,
+                  },
+                  {
+                    id: 10,
+                    type: TemplateInputType.ESTDATETIME,
+                    placeholder: `Date time`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If the match is not played for any reason the market should resolve as 'No Winner/Not Played"`,
+                    },
+                    {
+                      text: `If a match is started and is postponed for any reason and will not be completed before the Event Expiration begins the market should resolve as 'No Winner/Not Played'`,
+                    },
+                    {
+                      text: `If the match is started and a player is disqualified or withdraws for any reason, and a player/team moves forward or is declared the winner, the final results should be based off of when the match was stopped.`,
                     },
                   ],
                 },
