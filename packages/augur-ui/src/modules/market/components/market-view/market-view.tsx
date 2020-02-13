@@ -251,7 +251,7 @@ export default class MarketView extends Component<
       this.props.loadMarketTradingHistory(marketId);
     }
     if (!this.props.isMarketLoading) {
-      closeMarketLoadingModalOnly(this.props.modalShowing);
+      if (closeMarketLoadingModalOnly) closeMarketLoadingModalOnly(this.props.modalShowing);
     }
 
     if (
@@ -268,7 +268,8 @@ export default class MarketView extends Component<
   }
 
   componentWillUnmount() {
-    this.props.clearOrderBook();
+    const { clearOrderBook } = this.props;
+    if (clearOrderBook) this.props.clearOrderBook();
   }
 
   tradingTutorialWidthCheck() {

@@ -31,6 +31,7 @@ import { Status } from './state/getter/status';
 import { Universe } from './state/getter/Universe';
 import { Users } from './state/getter/Users';
 import { ZeroXOrdersGetters } from './state/getter/ZeroXOrdersGetters';
+import { WarpSync } from './api/WarpSync';
 import { Address } from './state/logs/types';
 import { Subscriptions } from './subscriptions';
 
@@ -43,6 +44,7 @@ export class Augur<TProvider extends Provider = Provider> {
   readonly trade: Trade;
   readonly market: Market;
   readonly gnosis: Gnosis;
+  readonly warpSync: WarpSync;
 
   readonly universe: Universe;
   readonly liquidity: Liquidity;
@@ -102,6 +104,7 @@ export class Augur<TProvider extends Provider = Provider> {
       this.addresses.Exchange,
       );
     this.gnosis = new Gnosis(this.provider, this, this.dependencies);
+    this.warpSync = new WarpSync(this);
     this.hotLoading = new HotLoading(this);
     this.onChainTrade = new OnChainTrade(this);
     this.trade = new Trade(this);
@@ -129,7 +132,7 @@ export class Augur<TProvider extends Provider = Provider> {
       zeroX,
       enableFlexSearch
     );
-    await client.contracts.setReputationToken(networkId);
+    await client.contracts.setReputationToken(networkId)
     return client;
   }
 

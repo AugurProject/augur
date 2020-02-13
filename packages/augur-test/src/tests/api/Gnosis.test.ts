@@ -9,9 +9,9 @@ import {
   loadSeedFile,
   Seed,
 } from '@augurproject/tools';
+import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
 import { BigNumber } from 'bignumber.js';
 import { makeProvider, MockGnosisRelayAPI } from '../../libs';
-import { TestEthersProvider } from '../../libs/TestEthersProvider';
 
 describe('Gnosis :: ', () => {
   let john: ContractAPI;

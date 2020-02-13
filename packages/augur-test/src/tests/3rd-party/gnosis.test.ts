@@ -1,17 +1,31 @@
-import { ContractAPI, ACCOUNTS } from '@augurproject/tools';
-import { BigNumber } from 'bignumber.js';
-import { makeDbMock } from '../../libs';
-import { DB } from '@augurproject/sdk/build/state/db/DB';
-import { Connectors } from '@augurproject/sdk';
-import { API } from '@augurproject/sdk/build/state/getter/API';
-import { NULL_ADDRESS, stringTo32ByteHex } from '../../libs/Utils';
+import {
+  Addresses,
+  ContractAddresses,
+  NetworkId,
+} from '@augurproject/artifacts';
 import { sleep } from '@augurproject/core/build/libraries/HelperFunctions';
-import * as _ from 'lodash';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
+import {
+  GnosisRelayAPI,
+  GnosisSafeState,
+} from '@augurproject/gnosis-relay-api';
+import { Connectors } from '@augurproject/sdk';
+import { DB } from '@augurproject/sdk/build/state/db/DB';
+import { API } from '@augurproject/sdk/build/state/getter/API';
+import {
+  AllOrders,
+  Order,
+} from '@augurproject/sdk/build/state/getter/OnChainTrading';
+import { BulkSyncStrategy } from '@augurproject/sdk/build/state/sync/BulkSyncStrategy';
+import { ACCOUNTS, ContractAPI } from '@augurproject/tools';
+import {
+  NULL_ADDRESS,
+  stringTo32ByteHex,
+} from '@augurproject/tools/build/libs/Utils';
+import { BigNumber } from 'bignumber.js';
 import { JsonRpcProvider } from 'ethers/providers';
-import { Addresses, ContractAddresses, NetworkId } from '@augurproject/artifacts';
-import { GnosisRelayAPI, GnosisSafeState } from '@augurproject/gnosis-relay-api';
-import { AllOrders, Order } from '@augurproject/sdk/build/state/getter/OnChainTrading';
+import * as _ from 'lodash';
+import { makeDbMock } from '../../libs';
 
 async function getSafe(person: ContractAPI): Promise<string> {
   return person.augur.contracts.gnosisSafeRegistry.getSafe_(person.account.publicKey);
@@ -65,8 +79,9 @@ describe('3rd Party :: Gnosis :: ', () => {
   let providerJohn: EthersProvider;
   let networkId: NetworkId;
   let addresses: ContractAddresses;
-  let dbPromise: Promise<DB>;
+  let db: Promise<DB>;
   let api: API;
+  let bulkSyncStrategy: BulkSyncStrategy;
   const mock = makeDbMock();
 
   beforeAll(async () => {
@@ -76,9 +91,18 @@ describe('3rd Party :: Gnosis :: ', () => {
 
     const connectorJohn = new Connectors.DirectConnector();
     john = await ContractAPI.userWrapper(ACCOUNTS[0], providerJohn, addresses, connectorJohn, new GnosisRelayAPI('http://localhost:8888/api/'), undefined, undefined);
-    dbPromise = mock.makeDB(john.augur, ACCOUNTS);
-    connectorJohn.initialize(john.augur, await dbPromise);
-    api = new API(john.augur, dbPromise);
+    db = mock.makeDB(john.augur, ACCOUNTS);
+
+    bulkSyncStrategy = new BulkSyncStrategy(
+      john.provider.getLogs,
+      (await db).logFilters.buildFilter,
+      (await db).logFilters.onLogsAdded,
+      john.augur.contractEvents.parseLogs,
+    );
+
+
+    connectorJohn.initialize(john.augur, await db);
+    api = new API(john.augur, db);
     await john.approveCentralAuthority();
 
     const funderCash = (new BigNumber(10)).pow(26);
@@ -104,7 +128,7 @@ describe('3rd Party :: Gnosis :: ', () => {
       stringTo32ByteHex('A'),
       stringTo32ByteHex('B')
     ]);
-    await (await dbPromise).sync(john.augur, mock.constants.chunkSize, 0);
+    await bulkSyncStrategy.start(0, await john.provider.getBlockNumber());;
 
     // Give John enough cash to pay for the 0x order.
 
@@ -126,8 +150,7 @@ describe('3rd Party :: Gnosis :: ', () => {
       stringTo32ByteHex('42')
     );
 
-    // Sync
-    await (await dbPromise).sync(john.augur, mock.constants.chunkSize, 0);
+    await bulkSyncStrategy.start(0, await john.provider.getBlockNumber());
 
     // Get orders for the market
     const orders: AllOrders = await api.route('getOpenOnChainOrders', {

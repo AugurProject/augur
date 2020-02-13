@@ -217,7 +217,7 @@ export function connectAugur(
     if (windowApp.web3) {
       provider = new Web3Provider(windowApp.web3.currentProvider);
     } else {
-      provider = new JsonRpcProvider(env['ethereum-node'].http);
+      provider = new JsonRpcProvider(env['ethereum'].http);
     }
 
     let sdk: Augur<Provider> = null;
@@ -261,6 +261,8 @@ export function connectAugur(
     dispatch(listenForStartUpEvents(sdk));
     dispatch(updateCanHotload(true));
 
+    await augurSdk.connect();
+
     callback(null);
   };
 }
@@ -276,7 +278,7 @@ export function initAugur(
   history: History,
   {
     ethereumNodeHttp,
-    ethereumNodeWs,
+    ethereumNodeWs, /* unused */
     sdkEndpoint,
     useWeb3Transport,
   }: initAugurParams,
@@ -287,16 +289,25 @@ export function initAugur(
     getState: () => AppState
   ) => {
     const env: EnvObject = networkConfig[`${process.env.ETHEREUM_NETWORK}`];
-    console.log(env);
-    env.useWeb3Transport = useWeb3Transport;
-    env['ethereum-node'].http = ethereumNodeHttp
-      ? ethereumNodeHttp
-      : env['ethereum-node'].http;
-    const defaultWS = isEmpty(ethereumNodeHttp) ? env['ethereum-node'].ws : '';
-    // If only the http param is provided we need to prevent this "default from taking precedence.
-    env['ethereum-node'].ws = ethereumNodeWs ? ethereumNodeWs : defaultWS;
-    env['sdkEndpoint'] = sdkEndpoint;
 
+    // TODO: Make this flag a part of the `ethereum` key
+    env.useWeb3Transport = useWeb3Transport;
+
+    if (ethereumNodeHttp) {
+      env['ethereum'].http = ethereumNodeHttp;
+    }
+
+    if (sdkEndpoint) {
+      env['sdk'] = {
+        http: sdkEndpoint
+      };
+    }
+
+    console.log(
+      "******** CONFIGURATION ***********\n" +
+      JSON.stringify(env, null, 2) +
+      "\n**********************************"
+    );
     dispatch(updateEnv(env));
     connectAugur(history, env, true, callback)(dispatch, getState);
   };

@@ -75,7 +75,7 @@ export const loginWithInjectedWeb3 = () => (
             await dispatch(loginWithInjectedWeb3());
           };
 
-          console.log('refershing account to', accounts[0]);
+          console.log('refreshing account to', accounts[0]);
           await dispatch(logout());
 
           initWeb3(accounts[0]);
@@ -93,7 +93,7 @@ const login = (account: string) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState,
 ) => {
-  const useGnosis = getState().env['gnosis-enabled'];
+  const useGnosis = getState().env['gnosis']?.enabled;
   const provider = new Web3Provider(windowRef.web3.currentProvider);
   const networkId = windowRef.web3.currentProvider.networkVersion;
   const address = toChecksumAddress(account);

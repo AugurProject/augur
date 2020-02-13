@@ -1,6 +1,11 @@
-import { ContractAPI, ACCOUNTS, loadSeedFile, defaultSeedPath } from "@augurproject/tools";
-import { makeProvider } from "../../libs";
-import { stringTo32ByteHex } from '../../libs/Utils';
+import {
+  ACCOUNTS,
+  ContractAPI,
+  defaultSeedPath,
+  loadSeedFile,
+} from '@augurproject/tools';
+import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
+import { makeProvider } from '../../libs';
 
 let john: ContractAPI;
 

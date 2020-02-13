@@ -4,7 +4,6 @@ import { SubscriptionEventName } from '../constants';
 import { Callback } from '../events';
 import { BaseConnector } from './base-connector';
 import { DB } from '../state/db/DB';
-import { ZeroX } from '../api/ZeroX';
 
 export class DirectConnector extends BaseConnector {
   db: DB;

@@ -28,8 +28,9 @@
 
     &.Pending {
       > span > button {
+        .text-14;
+
         margin-left: @size-4;
-        text-transform: capitalize;
       }
     }
 
@@ -68,7 +69,7 @@
     }
 
     > span:nth-of-type(2) {
-      .text-10;
+      .text-14;
 
       color: @color-secondary-text;
       margin-top: @size-4;
@@ -96,7 +97,7 @@
   margin-right: @size-18;
 }
 
-@media @breakpoint-mobile-mid {
+@media @breakpoint-mobile {
   .MarketRow {
     > div {
       &.Show {

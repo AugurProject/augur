@@ -5,7 +5,7 @@ import { SyncStatus } from './SyncStatus';
 import { Augur } from '../../Augur';
 import { DB } from './DB';
 import { MarketData, MarketType } from '../logs/types';
-import { OrderEventType } from '../../constants';
+import { OrderEventType, SubscriptionEventName } from '../../constants';
 import { getTradeInterval } from '../../utils';
 import { OrderInfo, OrderEvent, BigNumber } from '@0x/mesh-rpc-client';
 import { getAddress } from 'ethers/utils/address';
@@ -14,6 +14,7 @@ import { SignedOrder } from '@0x/types';
 import { BigNumber as BN} from 'ethers/utils';
 import moment, { Moment } from 'moment';
 import { sleep } from '../utils/utils';
+import { syncBuiltinESMExports } from 'module';
 
 // This database clears its contents on every sync.
 // The primary purposes for even storing this data are:
@@ -23,8 +24,6 @@ import { sleep } from '../utils/utils';
 const EXPECTED_ASSET_DATA_LENGTH = 2122;
 
 const DEFAULT_TRADE_INTERVAL = new BigNumber(10**17);
-
-const MAX_STARTUP_TIME = 10000; // 10 seconds for some sort of 0x connection to be established
 
 const multiAssetDataAbi: ParamType[] = [
   { name: 'amounts', type: 'uint256[]' },
@@ -126,11 +125,18 @@ export class ZeroXOrders extends AbstractTable {
     this.takerAssetData = `0xa7cb5fb7000000000000000000000000${this.tradeTokenAddress}000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000`;
 
     this.subscribeToOrderEvents();
+
+    this.clearDBAndCacheOrders().then(() => {
+      if (augur.zeroX.isReady()) {
+        this.sync();
+      } else {
+        this.augur.events.once(SubscriptionEventName.ZeroXReady, this.sync.bind(this));
+      }
+    })
   }
 
   static create(db: DB, networkId: number, augur: Augur): ZeroXOrders {
     const zeroXOrders = new ZeroXOrders(db, networkId, augur);
-    zeroXOrders.clearDBAndCacheOrders();
     return zeroXOrders;
   }
 
@@ -178,29 +184,13 @@ export class ZeroXOrders extends AbstractTable {
     await this.bulkUpsertDocuments(documents);
     for (const d of documents) {
       const eventType = filledOrders[d.orderHash] ? OrderEventType.Fill : OrderEventType.Create;
-      if (eventType === OrderEventType.Create) {
-        const orders: OrderInfo[] = await this.augur.zeroX.getOrders();
-        const orderExists = Boolean(orders.find(order => order.orderHash === d.orderHash));
-
-        // on Create, if we already have the orderHash in the zeroXOrders table don't emit updated event
-        if (!orderExists) {
-          // New Orders
-          this.augur.events.emit('DB:updated:ZeroXOrders', {eventType, orderId: d.orderHash,...d});
-        }
-      } else {
-        this.augur.events.emit('DB:updated:ZeroXOrders', {eventType, orderId: d.orderHash,...d});
-      }
       this.augur.events.emit('OrderEvent', {eventType, orderId: d.orderHash,...d});
+      this.augur.events.emit('DB:updated:ZeroXOrders', {eventType, orderId: d.orderHash,...d});
     }
   }
 
   async sync(): Promise<void> {
     console.log("Syncing ZeroX Orders");
-    let timeWaited = 0;
-    while(!this.augur.zeroX.isReady() && timeWaited < MAX_STARTUP_TIME) {
-      await sleep(100);
-      timeWaited += 100;
-    }
     const orders: OrderInfo[] = await this.augur.zeroX.getOrders();
     let documents;
     if (orders && orders.length > 0) {
@@ -212,13 +202,22 @@ export class ZeroXOrders extends AbstractTable {
         return this.validateStoredOrder(document, markets);
       });
       _.each(documents, (doc) => { delete this.pastOrders[doc.orderHash] });
-      documents = documents.concat(_.values(this.pastOrders));
       await this.bulkUpsertDocuments(documents);
-      this.augur.events.emit('DB:get:ZeroXOrders', marketIds);
       for (const d of documents) {
         this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Create, ...d});
       }
     }
+    const chainId = Number(this.augur.networkId);
+    const ordersToAdd = _.map(_.values(this.pastOrders), (order) => {
+      const signedOrder = order.signedOrder;
+      return Object.assign({
+        chainId,
+        makerFeeAssetData: "0x",
+        takerFeeAssetData: "0x",
+      }, signedOrder);
+    });
+
+    if (ordersToAdd.length > 0) this.augur.zeroX.addOrders(ordersToAdd);
     console.log(`Synced ${orders.length } ZeroX Orders`);
   }
 

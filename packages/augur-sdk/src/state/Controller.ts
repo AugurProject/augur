@@ -4,40 +4,31 @@ import * as fp from 'lodash/fp';
 import { Augur } from '../Augur';
 import { SubscriptionEventName } from '../constants';
 import { Subscriptions } from '../subscriptions';
-import { BlockAndLogStreamerListenerInterface } from './db/BlockAndLogStreamerListener';
 import { DB } from './db/DB';
 import { Markets } from './getter/Markets';
+import { LogFilterAggregatorInterface } from './logs/LogFilterAggregator';
 
 const settings = require('./settings.json');
 
 export class Controller {
   private static latestBlock: Block;
-  private static throttled: any;
 
   private readonly events;
 
   constructor(
     private augur: Augur,
     private db: Promise<DB>,
-    private blockAndLogStreamerListener: BlockAndLogStreamerListenerInterface
+    private logFilterAggregator: LogFilterAggregatorInterface,
   ) {
     this.events = new Subscriptions(augur.events);
-  }
+    this.logFilterAggregator.listenForAllEvents(this.updateMarketsData);
+    this.logFilterAggregator.notifyNewBlockAfterLogsProcess(this.notifyNewBlockEvent.bind(this));
 
-  async run(): Promise<void> {
-    try {
-      this.blockAndLogStreamerListener.notifyNewBlockAfterLogsProcess(this.notifyNewBlockEvent.bind(this));
-
-      const db = await this.db;
-      await db.sync(this.augur, settings.chunkSize, settings.blockstreamDelay);
-
-      this.blockAndLogStreamerListener.listenForBlockRemoved(
-        db.rollback.bind(db)
+    db.then((dbObject) => {
+      logFilterAggregator.listenForBlockRemoved(
+        dbObject.rollback.bind(db)
       );
-      this.blockAndLogStreamerListener.startBlockStreamListener();
-    } catch (err) {
-      console.log(err);
-    }
+    });
   }
 
   private updateMarketsData = async (blockNumber: number, allLogs: ParsedLog[]) => {
@@ -60,22 +51,21 @@ export class Controller {
     });
   };
 
-  private notifyNewBlockEvent = async (): Promise<void> => {
+  private notifyNewBlockEvent = async (blockNumber: number): Promise<void> => {
     let lowestBlock = await (await this
       .db).syncStatus.getLowestSyncingBlockForAllDBs();
-    const block = await this.getLatestBlock();
 
     if (lowestBlock === -1) {
-      lowestBlock = block.number;
+      lowestBlock = blockNumber;
     }
 
-    const blocksBehindCurrent = block.number - lowestBlock;
-    const percentSynced = ((lowestBlock / block.number) * 100).toFixed(4);
+    const blocksBehindCurrent = blockNumber - lowestBlock;
+    const percentSynced = ((lowestBlock / blockNumber) * 100).toFixed(4);
 
     const timestamp = await this.augur.getTimestamp();
     this.augur.events.emit(SubscriptionEventName.NewBlock, {
       eventName: SubscriptionEventName.NewBlock,
-      highestAvailableBlockNumber: block.number,
+      highestAvailableBlockNumber: blockNumber,
       lastSyncedBlockNumber: lowestBlock,
       blocksBehindCurrent,
       percentSynced,
@@ -86,6 +76,9 @@ export class Controller {
   private async getLatestBlock(): Promise<Block> {
     const blockNumber: number = await this.augur.provider.getBlockNumber();
     Controller.latestBlock = await this.augur.provider.getBlock(blockNumber);
+    if (!Controller.latestBlock) {
+      throw new Error(`Could not get latest block: ${blockNumber}`);
+    }
 
     return Controller.latestBlock;
   }

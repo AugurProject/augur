@@ -159,7 +159,7 @@ export const sendLiquidityOrder = (options: any) => async (
         outcomeId: order.outcomeId,
         orderPrice: order.price,
         orderType: order.type,
-        eventName: TXEventName.Pending
+        eventName: TXEventName.Pending,
       },
       market,
       dispatch
@@ -229,15 +229,33 @@ export const startOrderSending = (options: CreateLiquidityOrders) => async (
   }
 };
 
-const createZeroXLiquidityOrders = (
+const createZeroXLiquidityOrders = async (
   market: Getters.Markets.MarketInfo,
   orders: LiquidityOrder[],
   dispatch
 ) => {
   try {
     const fingerprint = undefined; // TODO: get this from state
-    orders.map((o: LiquidityOrder) =>
-      placeTrade(
+    let i = 0;
+    // set all orders to pending before processing them.
+    for (i; i < orders.length; i++) {
+      const o: LiquidityOrder = orders[i];
+      dispatch(
+        setLiquidityOrderStatus(
+          {
+            outcomeId: o.outcomeId,
+            orderPrice: createBigNumber(o.price).toString(),
+            orderType: o.type,
+            eventName: TXEventName.Pending,
+          },
+          market,
+          dispatch
+        )
+      );
+    }
+    for (i = 0; i < orders.length; i++) {
+      const o: LiquidityOrder = orders[i];
+      await placeTrade(
         o.type === BUY ? 0 : 1,
         market.id,
         market.numOutcomes,
@@ -251,29 +269,32 @@ const createZeroXLiquidityOrders = (
         o.price,
         '0',
         undefined
-      ).then(() => {
-        dispatch(
-          deleteSuccessfulLiquidityOrder({
-            txParamHash: market.transactionHash,
-            outcomeId: o.outcomeId,
-            type: o.type,
-            price: o.price,
-          })
-        );
-      }).catch((err) => {
-        dispatch(
-          setLiquidityOrderStatus(
-            {
+      )
+        .then(() => {
+          dispatch(
+            deleteSuccessfulLiquidityOrder({
+              txParamHash: market.transactionHash,
               outcomeId: o.outcomeId,
-              orderPrice: createBigNumber(o.price).toString(),
-              orderType: o.type,
-              eventName: TXEventName.Failure
-            },
-            market,
-            dispatch
-          )
-      )})
-    );
+              type: o.type,
+              price: o.price,
+            })
+          );
+        })
+        .catch(err => {
+          dispatch(
+            setLiquidityOrderStatus(
+              {
+                outcomeId: o.outcomeId,
+                orderPrice: createBigNumber(o.price).toString(),
+                orderType: o.type,
+                eventName: TXEventName.Failure,
+              },
+              market,
+              dispatch
+            )
+          );
+        });
+    }
   } catch (e) {
     console.error(e);
   }
