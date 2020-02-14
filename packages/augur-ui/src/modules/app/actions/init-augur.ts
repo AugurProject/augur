@@ -46,6 +46,7 @@ import { logout } from 'modules/auth/actions/logout';
 import { updateCanHotload } from 'modules/app/actions/update-connection';
 import { Augur, Provider } from '@augurproject/sdk';
 import { getLoggedInUserFromLocalStorage } from 'services/storage/localStorage';
+import { tryToPersistStorage } from 'utils/storage-manager';
 
 const ACCOUNTS_POLL_INTERVAL_DURATION = 10000;
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
@@ -309,6 +310,7 @@ export function initAugur(
       "\n**********************************"
     );
     dispatch(updateEnv(env));
+    tryToPersistStorage();
     connectAugur(history, env, true, callback)(dispatch, getState);
   };
 }
