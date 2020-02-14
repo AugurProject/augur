@@ -69,11 +69,7 @@ const SCALAR = 'Scalar';
   Update generate-templates.ts to include new template structures so that can be added.
   After new template structure is released create a TEMPLATE(X) where X is next number 3, 4, 5, ...
 */
-export const TEMPLATES2 = {
-
-};
-
-
+export const TEMPLATES2 = {};
 
 export const TEMPLATES = {
   [SPORTS]: {
@@ -118,8 +114,8 @@ export const TEMPLATES = {
                         'Includes regulation, any play-offs and sudden death',
                     },
                     {
-                      text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`
-                    }
+                      text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`,
+                    },
                   ],
                 },
               },
@@ -155,8 +151,8 @@ export const TEMPLATES = {
                       text: `If a tournament or match is cancelled the market should resolve as 'No'. If the tournament is postponed and not be completed before the market's Event Expiration time, but the player named officially made the cut, noted by the tournament association, then the outcome should resolve as Yes.`,
                     },
                     {
-                      text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`
-                    }
+                      text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`,
+                    },
                   ],
                 },
               },
@@ -311,8 +307,8 @@ export const TEMPLATES = {
                         'Includes regulation, any play-offs and sudden death',
                     },
                     {
-                      text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`
-                    }
+                      text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`,
+                    },
                   ],
                 },
               },
@@ -348,8 +344,8 @@ export const TEMPLATES = {
                       text: `If a tournament or match is cancelled the market should resolve as 'No'. If the tournament is postponed and not be completed before the market's Event Expiration time, but the player named officially made the cut, noted by the tournament association, then the outcome should resolve as Yes.`,
                     },
                     {
-                      text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`
-                    }
+                      text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`,
+                    },
                   ],
                 },
               },
@@ -504,8 +500,8 @@ export const TEMPLATES = {
                         'Includes regulation, any play-offs and sudden death',
                     },
                     {
-                      text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`
-                    }
+                      text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`,
+                    },
                   ],
                 },
               },
@@ -541,8 +537,8 @@ export const TEMPLATES = {
                       text: `If a tournament or match is cancelled the market should resolve as 'No'. If the tournament is postponed and not be completed before the market's Event Expiration time, but the player named officially made the cut, noted by the tournament association, then the outcome should resolve as Yes.`,
                     },
                     {
-                      text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`
-                    }
+                      text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`,
+                    },
                   ],
                 },
               },
@@ -790,8 +786,7 @@ export const TEMPLATES = {
                   text: `Include Regulation, overtime and any shoot-outs`,
                 },
                 {
-                  text:
-                    `The game must go 55 minutes or more to be considered official if not, market should resolve as 'No winner'`,
+                  text: `The game must go 55 minutes or more to be considered official if not, market should resolve as 'No winner'`,
                 },
               ],
             },
@@ -849,8 +844,7 @@ export const TEMPLATES = {
                   text: `Include Regulation, overtime and any shoot-outs`,
                 },
                 {
-                  text:
-                    `The game must go 55 minutes or more to be considered official if not, market should resolve as 'No winner'`,
+                  text: `The game must go 55 minutes or more to be considered official if not, market should resolve as 'No winner'`,
                 },
               ],
             },
@@ -987,8 +981,8 @@ export const TEMPLATES = {
                   text: `If the horse named in the market is scratched and does NOT run, including the cancellation of the race, or is disqualified for any reason, the market should resolve as 'No'.`,
                 },
                 {
-                  text: `This market is intended to be about a Single Horse, if this is not the case, this market should settle as 'Invalid'.`
-                }
+                  text: `This market is intended to be about a Single Horse, if this is not the case, this market should settle as 'Invalid'.`,
+                },
               ],
             },
           },
@@ -1081,8 +1075,8 @@ export const TEMPLATES = {
                       text: `If a player fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as 'No'`,
                     },
                     {
-                      text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`
-                    }
+                      text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`,
+                    },
                   ],
                 },
               },
@@ -1125,6 +1119,161 @@ export const TEMPLATES = {
                     },
                     {
                       text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                    },
+                  ],
+                },
+              },
+              {
+                marketType: CATEGORICAL,
+                question: `[0] Singles Tennis [1] [2]: Who will win Set number [3], [4] vs. [5]?`,
+                example: `Men's Singles Tennis 2020 French Open: Who will win Set number 3, Novak Djokovic vs. Rafael Nadal?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN_QUESTION_DEP,
+                    placeholder: `Men's/Women's`,
+                    inputDestId: 2,
+                    values: LIST_VALUES.MENS_WOMENS,
+                    inputDestValues: TENNIS_SINGLES_EVENTS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DROPDOWN,
+                    defaultLabel: `Select Men's/Women's First`,
+                    placeholder: `Event`,
+                    values: [],
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Set Number`,
+                    values: LIST_VALUES.TENNIS_MATCH_SETS,
+                  },
+                  {
+                    id: 4,
+                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                    placeholder: `Player A`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 5,
+                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                    placeholder: `Player B`,
+                    values: LIST_VALUES.YEARS,
+                  },
+
+                  {
+                    id: 6,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `No Winner/Not Played`,
+                  },
+                  {
+                    id: 7,
+                    type: TemplateInputType.ESTDATETIME,
+                    placeholder: `Date time`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If the set named in the market question is not played for any reason, the market should resolve as 'No Winner/Not Played'`,
+                    },
+                    {
+                      text: `If a match is started and is postponed for any reason and will not be completed before the Event Expiration begins the market should resolve as 'No Winner/Not Played'`,
+                    },
+                    {
+                      text: `If a player is disqualified or withdraws during the set named in the market question, the player moving forward to the next round should be declared the winner`,
+                    },
+                  ],
+                },
+              },
+              {
+                marketType: CATEGORICAL,
+                question: `[0] Singles Tennis [1] [2] (O/U), [3] vs. [4]: Total [5] played in a match; Over/Under [6].5?`,
+                example: `Men's Singles Tennis 2020 French Open (O/U), Novak Djokovic vs. Rafael Nadal: Total games played in a match; Over/Under 15.5?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN_QUESTION_DEP,
+                    placeholder: `Men's/Women's`,
+                    inputDestId: 2,
+                    values: LIST_VALUES.MENS_WOMENS,
+                    inputDestValues: TENNIS_SINGLES_EVENTS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DROPDOWN,
+                    defaultLabel: `Select Men's/Women's First`,
+                    placeholder: `Event`,
+                    values: [],
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Player A`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 4,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Player B`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 5,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `games/sets`,
+                    values: LIST_VALUES.TENNIS_GAMES_SETS,
+                  },
+                  {
+                    id: 6,
+                    type: TemplateInputType.TEXT,
+                    validationType: ValidationType.WHOLE_NUMBER,
+                    placeholder: `Whole #`,
+                  },
+                  {
+                    id: 7,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `No Winner/Not Played`,
+                  },
+                  {
+                    id: 8,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `Over [6].5`,
+                  },
+                  {
+                    id: 9,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `Under [6].5`,
+                  },
+                  {
+                    id: 10,
+                    type: TemplateInputType.ESTDATETIME,
+                    placeholder: `Date time`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If the match is not played for any reason the market should resolve as 'No Winner/Not Played"`,
+                    },
+                    {
+                      text: `If a match is started and is postponed for any reason and will not be completed before the Event Expiration begins the market should resolve as 'No Winner/Not Played'`,
+                    },
+                    {
+                      text: `If the match is started and a player is disqualified or withdraws for any reason, and a player/team moves forward or is declared the winner, the final results should be based off of when the match was stopped.`,
                     },
                   ],
                 },
@@ -1232,8 +1381,8 @@ export const TEMPLATES = {
                       text: `If either pairing fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as 'No'`,
                     },
                     {
-                      text: `This market is intended to be about a two player team (pairing), if this is not the case, this market should settle as 'Invalid'.`
-                    }
+                      text: `This market is intended to be about a two player team (pairing), if this is not the case, this market should settle as 'Invalid'.`,
+                    },
                   ],
                 },
               },
@@ -1278,8 +1427,160 @@ export const TEMPLATES = {
                       text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
                     },
                     {
-                      text: `This market each outcome is a two player team (pairing), if this is not the case, this market should settle as 'Invalid.'`
-                    }
+                      text: `This market each outcome is a two player team (pairing), if this is not the case, this market should settle as 'Invalid.'`,
+                    },
+                  ],
+                },
+              },
+              {
+                marketType: CATEGORICAL,
+                question: `[0] Doubles Tennis [1] [2]: Who will win Set number [3], [4] vs. [5]?`,
+                example: `Men's Doubles Tennis 2020 French Open: Who will win Set number 3, Kevin Krawietz/Andreas Mies vs. Bob Bryan/Mike Bryan?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN_QUESTION_DEP,
+                    placeholder: `Men's/Women's/Mixed`,
+                    inputDestId: 2,
+                    values: LIST_VALUES.TENNIS_MENS_WOMENS,
+                    inputDestValues: TENNIS_DOUBLES_EVENTS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DROPDOWN,
+                    defaultLabel: `Select Men's/Women's First`,
+                    placeholder: `Event`,
+                    values: [],
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Set Number`,
+                    values: LIST_VALUES.TENNIS_MATCH_SETS,
+                  },
+                  {
+                    id: 4,
+                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                    placeholder: `Player/Player A`,
+                  },
+                  {
+                    id: 5,
+                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                    placeholder: `Player/Player B`,
+                  },
+                  {
+                    id: 6,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `No Winner/Not Played`,
+                  },
+                  {
+                    id: 7,
+                    type: TemplateInputType.ESTDATETIME,
+                    placeholder: `Date time`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If the set named in the market question is not played for any reason, the market should resolve as 'No Winner/Not Played'`,
+                    },
+                    {
+                      text: `If a match is started and is postponed for any reason and will not be completed before the Event Expiration begins the market should resolve as 'No Winner/Not Played'`,
+                    },
+                    {
+                      text: `If a team is disqualified or withdraws during the set named in the market question, the team moving forward to the next round should be declared the winner`,
+                    },
+                  ],
+                },
+              },
+              {
+                marketType: CATEGORICAL,
+                question: `[0] Doubles Tennis [1] [2] (O/U), [3] vs. [4]: Total [5] played in a match; Over/Under [6].5?`,
+                example: `Men's Doubles Tennis 2020 French Open (O/U), Kevin Krawietz/Andreas Mies vs. Bob Bryan/Mike Bryan: Total games played in a match; Over/Under 15.5?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN_QUESTION_DEP,
+                    placeholder: `Men's/Women's`,
+                    inputDestId: 2,
+                    values: LIST_VALUES.MENS_WOMENS,
+                    inputDestValues: TENNIS_DOUBLES_EVENTS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DROPDOWN,
+                    defaultLabel: `Select Men's/Women's First`,
+                    placeholder: `Event`,
+                    values: [],
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Player/Player A`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 4,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Player/Player B`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 5,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `games/sets`,
+                    values: LIST_VALUES.TENNIS_GAMES_SETS,
+                  },
+                  {
+                    id: 6,
+                    type: TemplateInputType.TEXT,
+                    validationType: ValidationType.WHOLE_NUMBER,
+                    placeholder: `Whole #`,
+                  },
+                  {
+                    id: 7,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `No Winner/Not Played`,
+                  },
+                  {
+                    id: 8,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `Over [6].5`,
+                  },
+                  {
+                    id: 9,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `Under [6].5`,
+                  },
+                  {
+                    id: 10,
+                    type: TemplateInputType.ESTDATETIME,
+                    placeholder: `Date time`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If the match is not played for any reason the market should resolve as 'No Winner/Not Played"`,
+                    },
+                    {
+                      text: `If a match is started and is postponed for any reason and will not be completed before the Event Expiration begins the market should resolve as 'No Winner/Not Played'`,
+                    },
+                    {
+                      text: `If the match is started and a player is disqualified or withdraws for any reason, and a player/team moves forward or is declared the winner, the final results should be based off of when the match was stopped.`,
+                    },
                   ],
                 },
               },
@@ -1337,8 +1638,8 @@ export const TEMPLATES = {
                       text: `If the match is not played for any reason, or is terminated prematurely with both players willing and able to play, the market should resolve as 'No Winner'.`,
                     },
                     {
-                      text: `This market each outcome is a two player team (pairing), if this is not the case, this market should settle as 'Invalid'.`
-                    }
+                      text: `This market each outcome is a two player team (pairing), if this is not the case, this market should settle as 'Invalid'.`,
+                    },
                   ],
                 },
               },
@@ -1391,7 +1692,7 @@ export const TEMPLATES = {
                     },
                     {
                       text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled".`,
-                    }
+                    },
                   ],
                 },
               },
@@ -1446,8 +1747,8 @@ export const TEMPLATES = {
                       text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled".`,
                     },
                     {
-                      text: `This market is intended to be about a Single Team verse Single Team, if this is not the case, this market should settle as 'Invalid'.`
-                    }
+                      text: `This market is intended to be about a Single Team verse Single Team, if this is not the case, this market should settle as 'Invalid'.`,
+                    },
                   ],
                 },
               },
@@ -1502,8 +1803,8 @@ export const TEMPLATES = {
                       text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled"`,
                     },
                     {
-                      text: `This market is intended to be about a Single Team verse Single Team, if this is not the case, this market should settle as 'Invalid'.`
-                    }
+                      text: `This market is intended to be about a Single Team verse Single Team, if this is not the case, this market should settle as 'Invalid'.`,
+                    },
                   ],
                 },
               },
@@ -1554,8 +1855,8 @@ export const TEMPLATES = {
                       text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled".`,
                     },
                     {
-                      text: `This market is intended to be about two sports teams, if this is not the case, this market should settle as 'Invalid'.`
-                    }
+                      text: `This market is intended to be about two sports teams, if this is not the case, this market should settle as 'Invalid'.`,
+                    },
                   ],
                 },
               },
@@ -1610,8 +1911,8 @@ export const TEMPLATES = {
                       text: `'If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled".`,
                     },
                     {
-                      text: `This market is intended to be about a Single Team verse Single Team, if this is not the case, this market should settle as 'Invalid'.`
-                    }
+                      text: `This market is intended to be about a Single Team verse Single Team, if this is not the case, this market should settle as 'Invalid'.`,
+                    },
                   ],
                 },
               },
@@ -1842,8 +2143,8 @@ export const TEMPLATES = {
                       text: `In the event of an award given to more than 1 player. If the player mentioned in the market is one of the players who wins the award, the market should resolve as "Yes".`,
                     },
                     {
-                      text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`
-                    }
+                      text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`,
+                    },
                   ],
                 },
               },
@@ -2315,8 +2616,8 @@ export const TEMPLATES = {
                       text: `In the event of an award given to more than 1 player. If the player mentioned in the market is one of the players who wins the award, the market should resolve as "Yes".`,
                     },
                     {
-                      text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`
-                    }
+                      text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`,
+                    },
                   ],
                 },
               },
@@ -3405,7 +3706,7 @@ export const TEMPLATES = {
                     id: 3,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
-                    values: LIST_VALUES.YEARS,
+                    values: LIST_VALUES.SUMMER_OLYMPIC_YEARS,
                   },
                 ],
                 resolutionRules: {
@@ -3449,16 +3750,10 @@ export const TEMPLATES = {
                     id: 4,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
-                    values: LIST_VALUES.YEARS,
+                    values: LIST_VALUES.SUMMER_OLYMPIC_YEARS,
                   },
                 ],
-                resolutionRules: {
-                  [REQUIRED]: [
-                    {
-                      text: `If the event is not played market should resolve as 'No'`,
-                    },
-                  ],
-                },
+                resolutionRules: {},
               },
               {
                 marketType: YES_NO,
@@ -3495,13 +3790,22 @@ export const TEMPLATES = {
                     id: 4,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
-                    values: LIST_VALUES.YEARS,
+                    values: LIST_VALUES.SUMMER_OLYMPIC_YEARS,
                   },
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
                     {
                       text: `If the event is not played market should resolve as 'No'`,
+                    },
+                    {
+                      text: `If the person does not compete the market should resolve as 'No'`,
+                    },
+                    {
+                      text: `If the person breaks the record and is disqualified before event expiration the market should resolve as 'No'`,
+                    },
+                    {
+                      text: `If the person breaks the record and is disqualified after event expiration the market should resolve as 'Yes'`,
                     },
                   ],
                 },
@@ -3541,13 +3845,22 @@ export const TEMPLATES = {
                     id: 4,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
-                    values: LIST_VALUES.YEARS,
+                    values: LIST_VALUES.SUMMER_OLYMPIC_YEARS,
                   },
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
                     {
                       text: `If the event is not played market should resolve as 'No'`,
+                    },
+                    {
+                      text: `If the person does not compete the market should resolve as 'No'`,
+                    },
+                    {
+                      text: `If the person wins and is disqualified before event expiration the market should resolve as 'No'`,
+                    },
+                    {
+                      text: `If the person wins and is disqualified after event expiration the market should resolve as 'Yes'`,
                     },
                   ],
                 },
@@ -3567,7 +3880,7 @@ export const TEMPLATES = {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
-                    values: LIST_VALUES.YEARS,
+                    values: LIST_VALUES.SUMMER_OLYMPIC_YEARS,
                   },
                   {
                     id: 2,
@@ -3581,7 +3894,13 @@ export const TEMPLATES = {
                     placeholder: `Field (Any other team)`,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Metal count is determined at event expiration, if event expiration is before the completion of the games this market should resolve as 'Invalid'`,
+                    },
+                  ],
+                },
               },
               {
                 marketType: CATEGORICAL,
@@ -3607,7 +3926,7 @@ export const TEMPLATES = {
                     id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
-                    values: LIST_VALUES.YEARS,
+                    values: LIST_VALUES.SUMMER_OLYMPIC_YEARS,
                   },
                   {
                     id: 3,
@@ -3615,7 +3934,16 @@ export const TEMPLATES = {
                     placeholder: `Field (Any other team)`,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If the event does not take place this market should resolve as 'Invalid'`,
+                    },
+                    {
+                      text: `If the country wins and is disqualified after event expiration the original result should stand`,
+                    },
+                  ],
+                },
               },
               {
                 marketType: SCALAR,
@@ -3642,10 +3970,16 @@ export const TEMPLATES = {
                     id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
-                    values: LIST_VALUES.YEARS,
+                    values: LIST_VALUES.SUMMER_OLYMPIC_YEARS,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Metal count is determined at event expiration, if event expiration is before the completion of the games this market should resolve as 'Invalid'`,
+                    },
+                  ],
+                },
               },
             ],
           },
@@ -3681,7 +4015,7 @@ export const TEMPLATES = {
                     id: 3,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
-                    values: LIST_VALUES.YEARS,
+                    values: LIST_VALUES.WINTER_OLYMPIC_YEARS,
                   },
                 ],
                 resolutionRules: {
@@ -3725,7 +4059,7 @@ export const TEMPLATES = {
                     id: 4,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
-                    values: LIST_VALUES.YEARS,
+                    values: LIST_VALUES.WINTER_OLYMPIC_YEARS,
                   },
                 ],
                 resolutionRules: {
@@ -3771,13 +4105,22 @@ export const TEMPLATES = {
                     id: 4,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
-                    values: LIST_VALUES.YEARS,
+                    values: LIST_VALUES.WINTER_OLYMPIC_YEARS,
                   },
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
                     {
                       text: `If the event is not played market should resolve as 'No'`,
+                    },
+                    {
+                      text: `If the person does not compete the market should resolve as 'No'`,
+                    },
+                    {
+                      text: `If the person breaks the record and is disqualified before event expiration the market should resolve as 'No'`,
+                    },
+                    {
+                      text: `If the person breaks the record and is disqualified after event expiration the market should resolve as 'Yes'`,
                     },
                   ],
                 },
@@ -3817,13 +4160,22 @@ export const TEMPLATES = {
                     id: 4,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
-                    values: LIST_VALUES.YEARS,
+                    values: LIST_VALUES.WINTER_OLYMPIC_YEARS,
                   },
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
                     {
                       text: `If the event is not played market should resolve as 'No'`,
+                    },
+                    {
+                      text: `If the person does not compete the market should resolve as 'No'`,
+                    },
+                    {
+                      text: `If the person wins and is disqualified before event expiration the market should resolve as 'No'`,
+                    },
+                    {
+                      text: `If the person wins and is disqualified after event expiration the market should resolve as 'Yes'`,
                     },
                   ],
                 },
@@ -3843,7 +4195,7 @@ export const TEMPLATES = {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
-                    values: LIST_VALUES.YEARS,
+                    values: LIST_VALUES.WINTER_OLYMPIC_YEARS,
                   },
                   {
                     id: 2,
@@ -3857,7 +4209,13 @@ export const TEMPLATES = {
                     placeholder: `Field (Any other team)`,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Metal count is determined at event expiration, if event expiration is before the completion of the games this market should resolve as 'Invalid'`,
+                    },
+                  ],
+                },
               },
               {
                 marketType: CATEGORICAL,
@@ -3883,7 +4241,7 @@ export const TEMPLATES = {
                     id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
-                    values: LIST_VALUES.YEARS,
+                    values: LIST_VALUES.WINTER_OLYMPIC_YEARS,
                   },
                   {
                     id: 3,
@@ -3891,7 +4249,16 @@ export const TEMPLATES = {
                     placeholder: `Field (Any other team)`,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If the event does not take place this market should resolve as 'Invalid'`,
+                    },
+                    {
+                      text: `If the country wins and is disqualified after event expiration the original result should stand`,
+                    },
+                  ],
+                },
               },
               {
                 marketType: SCALAR,
@@ -3918,10 +4285,16 @@ export const TEMPLATES = {
                     id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
-                    values: LIST_VALUES.YEARS,
+                    values: LIST_VALUES.WINTER_OLYMPIC_YEARS,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Metal count is determined at event expiration, if event expiration is before the completion of the games this market should resolve as 'Invalid'`,
+                    },
+                  ],
+                },
               },
             ],
           },
@@ -4150,9 +4523,9 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`
-                    }
-                  ]
+                      text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`,
+                    },
+                  ],
                 },
               },
               {
@@ -4790,8 +5163,8 @@ export const TEMPLATES = {
                       text: `If either of the teams listed are incorrect, market should resolve as Invalid`,
                     },
                     {
-                      text: `This market is intended to be about a Bowl Game, if this is not the case, this market should settle as 'Invalid'.`
-                    }
+                      text: `This market is intended to be about a Bowl Game, if this is not the case, this market should settle as 'Invalid'.`,
+                    },
                   ],
                 },
               },
@@ -4925,8 +5298,8 @@ export const TEMPLATES = {
                   text: `The winning candidate will have at least 270 electoral votes to win the presidential election.`,
                 },
                 {
-                  text: `This market is intended to be about a Single Candidate, if this is not the case, this market should settle as 'Invalid'.`
-                }
+                  text: `This market is intended to be about a Single Candidate, if this is not the case, this market should settle as 'Invalid'.`,
+                },
               ],
             },
           },
@@ -4959,8 +5332,8 @@ export const TEMPLATES = {
                   text: `The candidate who receives a majority of the party's delegates wins their party's nomination.`,
                 },
                 {
-                  text: `This market is intended to be about a Single Candidate, if this is not the case, this market should settle as 'Invalid'.`
-                }
+                  text: `This market is intended to be about a Single Candidate, if this is not the case, this market should settle as 'Invalid'.`,
+                },
               ],
             },
           },
@@ -4997,8 +5370,8 @@ export const TEMPLATES = {
                   text: `Vice-President nomination is selected by the political party, replacement of nomination will not change market results, because person had been nominated. Declining nomination is not considered nominated`,
                 },
                 {
-                  text: `This market is intended to be about a Single Candidate, if this is not the case, this market should settle as 'Invalid'.`
-                }
+                  text: `This market is intended to be about a Single Candidate, if this is not the case, this market should settle as 'Invalid'.`,
+                },
               ],
             },
           },
@@ -5374,8 +5747,8 @@ export const TEMPLATES = {
                   text: `If location/country does not have the stated position in market, market should resolve as 'No'`,
                 },
                 {
-                  text: `This market is intended to be about a Single Person and a Single Location, if this is not the case, this market should settle as 'Invalid'.`
-                }
+                  text: `This market is intended to be about a Single Person and a Single Location, if this is not the case, this market should settle as 'Invalid'.`,
+                },
               ],
             },
           },
@@ -5404,8 +5777,8 @@ export const TEMPLATES = {
                     "Rules of impeachment is dictated by the person's location/country government",
                 },
                 {
-                  text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`
-                }
+                  text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`,
+                },
               ],
             },
           },
@@ -5438,8 +5811,8 @@ export const TEMPLATES = {
                     'Announcement of future resignation does not count as leaving the office, until actual resignation takes effect',
                 },
                 {
-                  text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`
-                }
+                  text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`,
+                },
               ],
             },
           },
@@ -5484,8 +5857,8 @@ export const TEMPLATES = {
                   text: `If the country named in the market question has multiple people with the same title, the market should resolve as 'Invalid'`,
                 },
                 {
-                  text: `This market is intended to be about a Single Location, if this is not the case, this market should settle as 'Invalid'.`
-                }
+                  text: `This market is intended to be about a Single Location, if this is not the case, this market should settle as 'Invalid'.`,
+                },
               ],
             },
           },
@@ -5537,8 +5910,8 @@ export const TEMPLATES = {
                 inputDateYearId: 3,
                 inputSourceId: 2,
                 inputTimeOffset: FIN_EXCHANGES_CLOSING_OFFSETS,
-                holidayClosures: FIN_EXCHANGES_HOLIDAY_CLOSURES
-              }
+                holidayClosures: FIN_EXCHANGES_HOLIDAY_CLOSURES,
+              },
             ],
             resolutionRules: {
               [REQUIRED]: [
@@ -5552,11 +5925,11 @@ export const TEMPLATES = {
                   text: `If trading day in market question is a weekend or holiday when exchange is not open this market should resolve as 'Invalid'`,
                 },
                 {
-                  text: `If stock trading name and ticker symbol is not used in the market question, the market should resolve as 'Invalid'`
+                  text: `If stock trading name and ticker symbol is not used in the market question, the market should resolve as 'Invalid'`,
                 },
                 {
-                  text: `This market is intended to be about a Individual Stock or ETF Ticker Symbol, if this is not the case, this market should settle as 'Invalid'.`
-                }
+                  text: `This market is intended to be about a Individual Stock or ETF Ticker Symbol, if this is not the case, this market should settle as 'Invalid'.`,
+                },
               ],
             },
           },
@@ -5607,8 +5980,8 @@ export const TEMPLATES = {
                 inputDateYearId: 3,
                 inputSourceId: 2,
                 inputTimeOffset: FIN_EXCHANGES_CLOSING_OFFSETS,
-                holidayClosures: FIN_EXCHANGES_HOLIDAY_CLOSURES
-              }
+                holidayClosures: FIN_EXCHANGES_HOLIDAY_CLOSURES,
+              },
             ],
             resolutionRules: {
               [REQUIRED]: [
@@ -5622,11 +5995,11 @@ export const TEMPLATES = {
                   text: `If trading day in market question is a weekend or holiday when exchange is not open this market should resolve as 'Invalid'`,
                 },
                 {
-                  text: `If stock trading name and ticker symbol is not used in the market question, the market should resolve as 'Invalid'`
+                  text: `If stock trading name and ticker symbol is not used in the market question, the market should resolve as 'Invalid'`,
                 },
                 {
-                  text: `This market is intended to be about a Individual Stock or ETF Name, if this is not the case, this market should settle as 'Invalid'.`
-                }
+                  text: `This market is intended to be about a Individual Stock or ETF Name, if this is not the case, this market should settle as 'Invalid'.`,
+                },
               ],
             },
           },
@@ -5664,8 +6037,8 @@ export const TEMPLATES = {
                 inputDateYearId: 2,
                 inputSourceId: 1,
                 inputTimeOffset: FIN_EXCHANGES_CLOSING_OFFSETS,
-                holidayClosures: FIN_EXCHANGES_HOLIDAY_CLOSURES
-              }
+                holidayClosures: FIN_EXCHANGES_HOLIDAY_CLOSURES,
+              },
             ],
             resolutionRules: {
               [REQUIRED]: [
@@ -5679,11 +6052,11 @@ export const TEMPLATES = {
                   text: `If trading day in market question is a weekend or holiday when exchange is not open this market should resolve as 'Invalid'`,
                 },
                 {
-                  text: `If stock trading name and ticker symbol is not used in the market question, the market should resolve as 'Invalid'`
+                  text: `If stock trading name and ticker symbol is not used in the market question, the market should resolve as 'Invalid'`,
                 },
                 {
-                  text: `This market is intended to be about a Individual Stock or ETF Ticker Symbol, if this is not the case, this market should settle as 'Invalid'.`
-                }
+                  text: `This market is intended to be about a Individual Stock or ETF Ticker Symbol, if this is not the case, this market should settle as 'Invalid'.`,
+                },
               ],
             },
           },
@@ -5722,7 +6095,7 @@ export const TEMPLATES = {
                 inputSourceId: 0,
                 inputTimeOffset: FIN_INDEXES_CLOSING_OFFSETS,
                 holidayClosures: FIN_INDEXES_HOLIDAY_CLOSURES,
-              }
+              },
             ],
             resolutionRules: {
               [REQUIRED]: [
@@ -5816,8 +6189,8 @@ export const TEMPLATES = {
               text: `If event does not occur the market should resolve as 'No'`,
             },
             {
-              text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`
-            }
+              text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`,
+            },
           ],
         },
       },
@@ -5829,7 +6202,8 @@ export const TEMPLATES = {
           {
             id: 0,
             type: TemplateInputType.TEXT,
-            placeholder: TEXT_PLACEHOLDERS.SINGLE_PERSON_OR_GROUP_OR_MOVIE_TITLE,
+            placeholder:
+              TEXT_PLACEHOLDERS.SINGLE_PERSON_OR_GROUP_OR_MOVIE_TITLE,
           },
           {
             id: 1,
@@ -5863,8 +6237,8 @@ export const TEMPLATES = {
               text: `If event does not occur the market should resolve as 'No'`,
             },
             {
-              text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`
-            }
+              text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`,
+            },
           ],
         },
       },
@@ -5886,7 +6260,8 @@ export const TEMPLATES = {
           {
             id: 2,
             type: TemplateInputType.DATEYEAR,
-            validationType: ValidationType.EXP_DATE_TUESDAY_AFTER_MOVIE_NO_FRIDAY,
+            validationType:
+              ValidationType.EXP_DATE_TUESDAY_AFTER_MOVIE_NO_FRIDAY,
             placeholder: `Opening day`,
           },
         ],
@@ -5896,11 +6271,12 @@ export const TEMPLATES = {
               text: `Gross total should include the first Friday through Sunday of the movie release and does not include extra days due to holidays`,
             },
             {
-              text: `This market is intended to be about a Single Movie, if this is not the case, this market should settle as 'Invalid'.`
+              text: `This market is intended to be about a Single Movie, if this is not the case, this market should settle as 'Invalid'.`,
             },
             {
-              text: 'If www.boxofficemojo.com is down or not available use www.the-numbers.com to determine domestic US total gross of movie.'
-            }
+              text:
+                'If www.boxofficemojo.com is down or not available use www.the-numbers.com to determine domestic US total gross of movie.',
+            },
           ],
         },
       },
@@ -5917,7 +6293,8 @@ export const TEMPLATES = {
           {
             id: 1,
             type: TemplateInputType.DATEYEAR,
-            validationType: ValidationType.EXP_DATE_TUESDAY_AFTER_MOVIE_NO_FRIDAY,
+            validationType:
+              ValidationType.EXP_DATE_TUESDAY_AFTER_MOVIE_NO_FRIDAY,
             placeholder: `Opening day`,
           },
           {
@@ -5933,11 +6310,12 @@ export const TEMPLATES = {
                 'Gross total should include the first Friday through Sunday of the movie release and does not include extra days due to holidays',
             },
             {
-              text: `This market is intended to be about a Single Movie compared to another uniquely identifiable Single Movie, if this is not the case, this market should settle as 'Invalid'.`
+              text: `This market is intended to be about a Single Movie compared to another uniquely identifiable Single Movie, if this is not the case, this market should settle as 'Invalid'.`,
             },
             {
-              text: 'If www.boxofficemojo.com is down or not available use www.the-numbers.com to determine domestic US total gross of movies.'
-            }
+              text:
+                'If www.boxofficemojo.com is down or not available use www.the-numbers.com to determine domestic US total gross of movies.',
+            },
           ],
         },
       },
@@ -5973,8 +6351,9 @@ export const TEMPLATES = {
         resolutionRules: {
           [REQUIRED]: [
             {
-              text: 'If www.trackalytics.com is down or not available use inspectsocial.com/ to determine total twitter followers for the social media account stated in market question.'
-            }
+              text:
+                'If www.trackalytics.com is down or not available use inspectsocial.com/ to determine total twitter followers for the social media account stated in market question.',
+            },
           ],
         },
       },
@@ -6132,13 +6511,13 @@ export const TEMPLATES = {
               {
                 id: 2,
                 type: TemplateInputType.DATESTART,
-                placeholder: `Open, Day of Year`,
+                placeholder: `Day of Year`,
               },
               {
                 id: 3,
                 dateAfterId: 2,
                 type: TemplateInputType.DATEYEAR,
-                placeholder: `Close, Day of Year`,
+                placeholder: `Day of Year`,
               },
               {
                 id: 4,
@@ -6152,7 +6531,8 @@ export const TEMPLATES = {
               [REQUIRED]: [
                 {
                   text: `Use ticker symbol search for token pair (ie BTCUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
-                },                {
+                },
+                {
                   text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
                 },
                 {
@@ -6274,13 +6654,13 @@ export const TEMPLATES = {
               {
                 id: 2,
                 type: TemplateInputType.DATESTART,
-                placeholder: `Open, Day of Year`,
+                placeholder: `Day of Year`,
               },
               {
                 id: 3,
                 dateAfterId: 2,
                 type: TemplateInputType.DATEYEAR,
-                placeholder: `Close, Day of Year`,
+                placeholder: `Day of Year`,
               },
               {
                 id: 4,
@@ -6417,13 +6797,13 @@ export const TEMPLATES = {
               {
                 id: 2,
                 type: TemplateInputType.DATESTART,
-                placeholder: `Open, Day of Year`,
+                placeholder: `Day of Year`,
               },
               {
                 id: 3,
                 dateAfterId: 2,
                 type: TemplateInputType.DATEYEAR,
-                placeholder: `Close, Day of Year`,
+                placeholder: `Day of Year`,
               },
               {
                 id: 4,
