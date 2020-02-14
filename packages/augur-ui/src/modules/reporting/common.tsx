@@ -819,18 +819,17 @@ export class ReportingBondsView extends Component<
             threshold={threshold}
           />
         )}
-        {showTotal && (
-          <div className={Styles.ShowTotals}>
-            <span>Totals</span>
-            <span>Sum total of Initial Reporter Stake and Pre-Filled Stake</span>
-            <LinearPropertyLabel
-              key="totalRep"
-              label="Total REP"
-              value={totalRep}
-            />
-            {insufficientRep && <span className={FormStyles.ErrorText}>{insufficientRep}</span>}
-          </div>
-        )}
+        <div className={Styles.ShowTotals}>
+          <span>Totals</span>
+          <span>Sum total of Initial Reporter Stake and Pre-Filled Stake</span>
+          <LinearPropertyLabel
+            key="totalRep"
+            label="Total REP Needed"
+            value={totalRep}
+          />
+          {insufficientRep && <span className={FormStyles.ErrorText}>{insufficientRep}</span>}
+        </div>
+
         <LinearPropertyLabel
           key="totalEstimatedGasFee"
           label={Gnosis_ENABLED ? "Transaction Fee" : "Gas Fee"}
