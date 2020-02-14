@@ -40,7 +40,7 @@ import {
 import { MarketProgress } from 'modules/common/progress';
 import { ExclamationCircle, InfoIcon, XIcon } from 'modules/common/icons';
 import ChevronFlip from 'modules/common/chevron-flip';
-
+import FormStyles from 'modules/common/form.styles.less';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import ButtonStyles from 'modules/common/buttons.styles.less';
 import Styles from 'modules/reporting/common.styles.less';
@@ -600,6 +600,7 @@ export interface ReportingBondsViewProps {
   userAttoRep: BigNumber;
   owesRep: boolean;
   openReporting: boolean;
+  enoughRepBalance: boolean;
 }
 
 interface ReportingBondsViewState {
@@ -638,16 +639,14 @@ export class ReportingBondsView extends Component<
       this.setState({
         threshold: String(convertAttoValueToDisplayValue(threshold)),
       });
-
       if (this.props.Gnosis_ENABLED) {
-        const gasLimit = await this.props.reportAction(true);
+        const gasLimit = await this.props.reportAction(true).catch(e => console.error(e));
         this.setState({
           gasEstimate: formatGasCostToEther(
-            gasLimit,
+            gasLimit || INITAL_REPORT_GAS_COST,
             { decimalsRounded: 4 },
             this.props.gasPrice,
           )
-
         });
       }
     }
@@ -680,8 +679,8 @@ export class ReportingBondsView extends Component<
   };
 
   updateInputtedStake = (inputStakeValue: string) => {
-    const { updateInputtedStake, inputScalarOutcome, userAttoRep } = this.props;
-    const { isScalar, threshold } = this.state;
+    const { updateInputtedStake, userAttoRep } = this.props;
+    const { threshold } = this.state;
     let disabled = false;
     if (isNaN(Number(inputStakeValue))) {
       disabled = true;
@@ -730,7 +729,8 @@ export class ReportingBondsView extends Component<
       owesRep,
       Gnosis_ENABLED,
       ethToDaiRate,
-      openReporting
+      openReporting,
+      enoughRepBalance
     } = this.props;
 
     const {
@@ -752,8 +752,10 @@ export class ReportingBondsView extends Component<
       : 'Initial Reporter Stake';
 
     repLabel = openReporting ? 'Open Reporting winning Stake' : repLabel;
+    let showTotal = showInput;
     if (owesRep) {
       repLabel = 'REP needed';
+      showTotal = true;
     }
     const reviewLabel = migrateRep
     ? 'Review REP to migrate'
@@ -771,7 +773,11 @@ export class ReportingBondsView extends Component<
     if (isScalar && inputScalarOutcome === '') {
       buttonDisabled = true;
     }
-
+    let insufficientRep = '';
+    if (!enoughRepBalance) {
+      insufficientRep = 'Not enough REP to report',
+      buttonDisabled = true;
+    }
     return (
       <div
         className={classNames(Styles.ReportingBondsView, {
@@ -813,17 +819,17 @@ export class ReportingBondsView extends Component<
             threshold={threshold}
           />
         )}
-        {showInput && (
-          <div className={Styles.ShowTotals}>
-            <span>Totals</span>
-            <span>Sum total of Initial Reporter Stake and Pre-Filled Stake</span>
-            <LinearPropertyLabel
-              key="totalRep"
-              label="Total REP"
-              value={totalRep}
-            />
-          </div>
-        )}
+        <div className={Styles.ShowTotals}>
+          <span>Totals</span>
+          <span>Sum total of Initial Reporter Stake and Pre-Filled Stake</span>
+          <LinearPropertyLabel
+            key="totalRep"
+            label="Total REP Needed"
+            value={totalRep}
+          />
+          {insufficientRep && <span className={FormStyles.ErrorText}>{insufficientRep}</span>}
+        </div>
+
         <LinearPropertyLabel
           key="totalEstimatedGasFee"
           label={Gnosis_ENABLED ? "Transaction Fee" : "Gas Fee"}
