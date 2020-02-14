@@ -25,36 +25,61 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     successfulDisputes,
     redeemedPositions,
   } = sP.timeframeData;
+
   const properties = [
     {
       key: 0,
       label: "Positions",
       value: positions,
+      options: {
+        decimals: 0,
+        decimalsRounded: 0,
+      },
     },
     {
       key: 1,
       label: "Number of Trades",
       value: numberOfTrades,
+      options: {
+        decimals: 0,
+        decimalsRounded: 0,
+      },
     },
     {
       key: 2,
       label: "Markets Traded",
       value: marketsTraded,
+      options: {
+        decimals: 0,
+        decimalsRounded: 0,
+      },
     },
     {
       key: 3,
       label: "Markets Created",
       value: marketsCreated,
+      options: {
+        decimals: 0,
+        decimalsRounded: 0,
+      },
     },
     {
       key: 4,
       label: "Successful Disputes",
       value: successfulDisputes,
+      options: {
+        decimals: 0,
+        decimalsRounded: 0,
+      },
     },
     {
       key: 5,
       label: "Redeemed Positions",
       value: redeemedPositions,
+      options: {
+        decimals: 0,
+        decimalsRounded: 0,
+      },
     },
   ];
 

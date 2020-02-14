@@ -702,12 +702,6 @@ export class ReportingBondsView extends Component<
       });
     } else {
       this.setState({ stakeError: '' });
-      if (
-        this.state.scalarError === '' &&
-        ((isScalar && inputScalarOutcome !== '') || !isScalar)
-      ) {
-        disabled = true;
-      }
     }
     let inputToAttoRep = '0';
     if (!isNaN(Number(inputStakeValue)) && inputStakeValue !== '') {
@@ -772,6 +766,11 @@ export class ReportingBondsView extends Component<
         ).formatted
       : formatAttoRep(createBigNumber(inputtedReportingStake.inputToAttoRep || ZERO))
           .formatted;
+
+    let buttonDisabled = disabled;
+    if (isScalar && inputScalarOutcome === '') {
+      buttonDisabled = true;
+    }
 
     return (
       <div
@@ -866,7 +865,7 @@ export class ReportingBondsView extends Component<
         )}
         <PrimaryButton
           text={migrateRep ? 'Confirm and Migrate REP' : 'Confirm'}
-          disabled={migrateRep ? disabled || !readAndAgreedCheckbox : disabled}
+          disabled={migrateRep ? buttonDisabled || !readAndAgreedCheckbox : buttonDisabled}
           action={() => reportAction()}
         />
       </div>

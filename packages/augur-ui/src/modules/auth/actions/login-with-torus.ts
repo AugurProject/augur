@@ -25,7 +25,7 @@ export const loginWithTorus = () => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState,
 ) => {
-  const useGnosis = getState().env['gnosis-enabled'];
+  const useGnosis = getState().env['gnosis']?.enabled;
   const networkId = getNetworkId();
   const torusNetwork = getTorusNetwork(networkId);
   let accountObject: Partial<LoginAccount> = {};

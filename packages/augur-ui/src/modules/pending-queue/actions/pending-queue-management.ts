@@ -6,6 +6,7 @@ import { Action } from "redux";
 
 export const ADD_PENDING_DATA = "ADD_PENDING_DATA";
 export const REMOVE_PENDING_DATA = "REMOVE_PENDING_DATA";
+export const REMOVE_PENDING_DATA_BY_HASH = 'REMOVE_PENDING_DATA_BY_HASH';
 
 export const loadPendingQueue = (pendingQueue: any) => (
   dispatch: ThunkDispatch<void, any, Action>
@@ -49,4 +50,12 @@ export const removePendingData = (
 ): BaseAction => ({
   type: REMOVE_PENDING_DATA,
   data: { pendingId, queueName },
+});
+
+export const removePendingDataByHash = (
+  hash: string,
+  queueName: string,
+): BaseAction => ({
+  type: REMOVE_PENDING_DATA_BY_HASH,
+  data: { hash, queueName },
 });

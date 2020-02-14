@@ -40,7 +40,6 @@
       > div:nth-of-type(2) {
 
         > div:first-of-type {
-          background: @color-module-background;
           display: flex;
           justify-content: flex-end;
           width: 100%;
@@ -100,10 +99,18 @@
   }
 
   > div > ul {
-    background: @color-module-background;
+    background: @color-active-background;
     height: calc(100vh - @top-bar-height-mobile);
     margin-top: @top-bar-height-mobile;
     padding-bottom: @top-bar-height-mobile;
+
+    > button {
+      display: flex;
+      margin-top: @size-10;
+      margin-right: @size-16;
+      align-items: center;
+      margin-left: auto;
+    }
 
     &.accountDetailsOpen {
       margin-top: 0;
@@ -161,6 +168,10 @@
           }
         }
       }
+
+      button {
+        padding: @size-8 @size-12;
+      }
     }
 
     > div {
@@ -170,7 +181,7 @@
 
   > div > footer {
     align-items: center;
-    background: @color-module-background;
+    background: @color-active-background;
     bottom: 0px;
     display: flex;
     height: @top-bar-height-mobile;
@@ -178,6 +189,7 @@
     padding: 0 @size-16;
     position: fixed;
     width: calc(100% - @size-52);
+    border-top: @size-1 solid @color-dark-grey;
 
     > div:nth-of-type(2) {
       .mono-10-semi-bold;

@@ -204,6 +204,19 @@
 
     padding: @size-6 @size-12;
   }
+
+  > svg {
+    fill: none;
+    height: @size-12;
+    width: @size-12;
+    display: flex;
+    
+    > rect {
+      fill: @color-primary-text;
+      height: 1px;
+      width: @size-8;
+    }
+  }
 }
 
 .BuyOrderButton {

@@ -38,8 +38,9 @@ import {
   DOINITIALREPORT,
   PUBLICFILLORDER,
   PUBLICTRADE,
-  MODAL_WALLET_ERROR,
+  MODAL_ERROR,
   REDEEMSTAKE,
+  CREATE_MARKET,
 } from 'modules/common/constants';
 import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
@@ -65,6 +66,7 @@ import { updateModal } from 'modules/modal/actions/update-modal';
 import * as _ from 'lodash';
 import { loadMarketOrderBook } from 'modules/orders/actions/load-market-orderbook';
 import { isCurrentMarket } from 'modules/trades/helpers/is-current-market';
+import { removePendingDataByHash } from 'modules/pending-queue/actions/pending-queue-management';
 
 const handleAlert = (
   log: any,
@@ -164,7 +166,7 @@ export const handleGnosisStateUpdate = (response) => async(
       const hasEth = (await loginAccount.meta.signer.provider.getBalance(loginAccount.meta.signer._address)).gt(0);
 
       dispatch(updateModal({
-        type: MODAL_WALLET_ERROR,
+        type: MODAL_ERROR,
         error: getRelayerDownErrorMessage(loginAccount.meta.accountType, hasEth),
         showDiscordLink: false,
         showAddFundsHelp: !hasEth,
@@ -192,7 +194,7 @@ export const handleNewBlockLog = (log: Events.NewBlock) => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { blockchain, loginAccount, appStatus } = getState();
+  const { blockchain } = getState();
   dispatch(
     updateBlockchain({
       currentBlockNumber: log.highestAvailableBlockNumber,
@@ -263,7 +265,16 @@ export const handleDBMarketCreatedEvent = (event: any) => (
 ) => {
   if (event.data) {
     const marketIds = _.map(event.data, 'market');
-    dispatch(loadMarketsInfo(marketIds));
+    dispatch(
+      loadMarketsInfo(marketIds, (err, marketInfos) =>
+        Object.keys(marketInfos).map(id => {
+          const market = marketInfos[id]
+          if (market) {
+            dispatch(removePendingDataByHash(market.transactionHash, CREATE_MARKET))
+          }
+        })
+      )
+    );
   }
 };
 

@@ -41,14 +41,8 @@ export default class ModalNetworkConnect extends Component<ModalNetworkConnectPr
     super(props);
     // prioritize ethereumNode connections
     let ethereumNode = "";
-    if (props.env["ethereum-node"]) {
-      if (props.env["ethereum-node"].ipc) {
-        ethereumNode = props.env["ethereum-node"].ipc;
-      } else if (props.env["ethereum-node"].ws) {
-        ethereumNode = props.env["ethereum-node"].ws;
-      } else if (props.env["ethereum-node"].http) {
-        ethereumNode = props.env["ethereum-node"].http;
-      }
+    if (props.env["ethereum"]?.http) {
+      ethereumNode = props.env["ethereum"].http;
     }
 
     this.state = {
@@ -110,17 +104,15 @@ export default class ModalNetworkConnect extends Component<ModalNetworkConnectPr
     // because we prioritize, lets wipe out all previous connection options but not remove things like timeout.
     const updatedEnv = {
       ...env,
-      "ethereum-node": {
-        ...env["ethereum-node"],
-        ipc: "",
+      "ethereum": {
+        ...env["ethereum"],
         http: "",
-        ws: "",
         ...ethNode,
       },
     };
     const endpoints = {
-      ethereumNodeHTTP: updatedEnv["ethereum-node"].http,
-      ethereumNodeWS: updatedEnv["ethereum-node"].ws,
+      ethereumNodeHTTP: updatedEnv["ethereum"]?.http,
+      ethereumNodeWS: null
     };
 
     // reloads window

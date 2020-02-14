@@ -50,27 +50,9 @@ export class SDK {
 
     this.config = {
       networkId: this.networkId,
-      ethereum: {
-        http: env['ethereum-node'].http,
-        rpcRetryCount: 5,
-        rpcRetryInterval: 0,
-        rpcConcurrency: 40
-      },
-      gnosis: {
-        enabled: env['gnosis-enabled'],
-        http: env['gnosis-relay']
-      },
-      zeroX: {
-        rpc: {
-          enabled: true,
-          ws: env['0x-endpoint']
-        },
-        mesh: {
-          verbosity: 5,
-          bootstrapList: (env['0x-mesh'] || {}).bootstrapList,
-          enabled: !!(env['0x-mesh'] || {}).enabled,
-        }
-      },
+      ethereum: env['ethereum'],
+      gnosis: env['gnosis'],
+      zeroX: env['zeroX'],
       addresses,
     };
 
