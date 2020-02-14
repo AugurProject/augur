@@ -43,7 +43,7 @@ export class BulkSyncStrategy extends AbstractSyncStrategy implements SyncStrate
       });
 
       highestSyncedBlockNumber = Math.min(endBlockNumber, highestSyncedBlockNumber + this.chunkSize);
-      const logsWeCareAbout = logs.filter(item => address.includes(item.address));
+      const logsWeCareAbout = logs.filter(item => address.includes(_.toLower(item.address)));
 
       const sortedLogs = _.orderBy(logsWeCareAbout, ['blockNumber', 'logIndex'], ['asc', 'asc']);
 

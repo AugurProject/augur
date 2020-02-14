@@ -1,8 +1,6 @@
 import { Log, ParsedLog } from '@augurproject/types';
-import { Block, BlockAndLogStreamer } from 'ethereumjs-blockstream';
 import * as _ from 'lodash';
 import * as fp from 'lodash/fp';
-import { toChecksumAddress } from 'ethereumjs-util';
 
 type EventTopics = string | string[];
 
@@ -109,7 +107,7 @@ export class LogFilterAggregator implements LogFilterAggregatorInterface {
 
     const getAddresses = fp.compose(
       fp.uniq,
-      fp.map(toChecksumAddress),
+      fp.map(_.toLower),
       fp.compact,
       fp.flatten,
       fp.map('contractAddresses')
@@ -132,11 +130,11 @@ export class LogFilterAggregator implements LogFilterAggregatorInterface {
     const addressesWeCareAbout = this.logCallbackMetaData
       .map(item => item.contractAddresses)
       .reduce((acc, item) => [...acc, ...item], [])
-      .map(item => toChecksumAddress(item));
+      .map(item => _.toLower(item));
 
     const logsWeCareAbout = logs
       .filter(item =>
-        addressesWeCareAbout.includes(toChecksumAddress(item.address))
+        addressesWeCareAbout.includes(_.toLower(item.address))
       )
       .sort((a, b) => b.logIndex - a.logIndex);
 
@@ -166,7 +164,7 @@ export class LogFilterAggregator implements LogFilterAggregatorInterface {
     // Group by contract address
     const contractAddresses = eventNames
       .map(this.deps.getEventContractAddress)
-      .map(item => toChecksumAddress(item));
+      .map(item => _.toLower(item));
 
     // get all topics for the provided eventNames
     const topics = eventNames.reduce((acc, eventName) => {
@@ -206,7 +204,7 @@ export class LogFilterAggregator implements LogFilterAggregatorInterface {
     return async (blockNumber: number, logs: ParsedLog[]) => {
       const filteredLogs = logs
         .filter(log =>
-          contractAddresses.includes(toChecksumAddress(log.address))
+          contractAddresses.includes(_.toLower(log.address))
         )
         .filter(log => !_.isEmpty(_.intersection(log.topics, topics)));
 

@@ -25,7 +25,7 @@ describe('LogFilterAggregator', () => {
   const sampleLogs: Log[] = [
     {
       blockHash: 'HASH-1234',
-      blockNumber: 1234,  
+      blockNumber: 1234,
       logIndex: 1,
       address: CONTRACT_ADDRESSES[1],
       data: '',
@@ -139,7 +139,7 @@ describe('LogFilterAggregator', () => {
       logFilterAggregator.listenForEvent('SomeEvent', jest.fn());
       logFilterAggregator.listenForEvent('SomeOtherEvent', jest.fn());
       expect(logFilterAggregator.buildFilter()).toEqual({
-        address: [toChecksumAddress(CONTRACT_ADDRESSES[1])],
+        address: [(CONTRACT_ADDRESSES[1]).toLowerCase()],
         topics: [['0xSOMETOPIC', '0xSOMEOTHERTOPIC']],
       } as ExtendedFilter);
     });
@@ -152,8 +152,8 @@ describe('LogFilterAggregator', () => {
 
       expect(logFilterAggregator.buildFilter()).toEqual({
         address: [
-          toChecksumAddress(CONTRACT_ADDRESSES[0]),
-          toChecksumAddress(CONTRACT_ADDRESSES[1]),
+          (CONTRACT_ADDRESSES[0]).toLowerCase(),
+          (CONTRACT_ADDRESSES[1]).toLowerCase(),
         ],
         topics: [
           [

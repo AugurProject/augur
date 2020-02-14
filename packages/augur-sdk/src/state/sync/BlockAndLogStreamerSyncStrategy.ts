@@ -172,7 +172,7 @@ export class BlockAndLogStreamerSyncStrategy extends AbstractSyncStrategy
       const currentBlock = blocksToEmit[i];
       const logsToEmit = logs.filter(
         log => parseInt(currentBlock.number, 16) === log.blockNumber
-      ).filter(item => address.includes(item.address));
+      ).filter(item => address.includes(_.toLower(item.address)));
       const currentBlockNumber = parseInt(currentBlock.number, 16);
       await this.onLogsAdded(currentBlockNumber, this.parseLogs(logsToEmit));
     }
