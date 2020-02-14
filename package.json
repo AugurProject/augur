@@ -97,7 +97,6 @@
     "**/scrypt": "https://github.com/AugurProject/blackhole.git"
   },
   "dependencies": {
-    "docusaurus-init": "1.12.0",
-    "fingerprintjs2": "^2.1.0"
+    "docusaurus-init": "1.12.0"
   }
 }

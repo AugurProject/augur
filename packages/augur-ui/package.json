@@ -103,7 +103,8 @@
     "shelljs": "0.8.3",
     "trezor-connect": "7.0.5",
     "uuid-parse": "^1.1.0",
-    "web3": "1.2.1"
+    "web3": "1.2.1",
+    "fingerprintjs2": "2.1.0"
   },
   "devDependencies": {
     "@augurproject/tools": "2.0.0-alpha.2",
