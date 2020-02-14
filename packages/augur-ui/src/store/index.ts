@@ -39,7 +39,7 @@ const localStorageMiddleware = store => next => action => {
   ) {
     return;
   }
-  const { address } = state.loginAccount;
+  const { address, affiliate } = state.loginAccount;
   const {
     pendingLiquidityOrders,
     analytics,
@@ -95,6 +95,7 @@ const localStorageMiddleware = store => next => action => {
         selectedUniverse: {
           ...storedAccountData.selectedUniverse,
         },
+        affiliate
       })
     );
   }
