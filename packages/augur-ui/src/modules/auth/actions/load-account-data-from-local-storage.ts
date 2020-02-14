@@ -15,6 +15,7 @@ import { AppState } from "store";
 import { getNetworkId } from "modules/contracts/actions/contractCalls";
 import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
 import { loadAnalytics } from "modules/app/actions/analytics-management";
+import { saveAffiliateAddress } from "modules/account/actions/login-account";
 
 export const loadAccountDataFromLocalStorage = (address: string): ThunkAction<any, any, any, any> => (
   dispatch: ThunkDispatch<void, any, Action>,
@@ -29,6 +30,7 @@ export const loadAccountDataFromLocalStorage = (address: string): ThunkAction<an
       const { favorites } = storedAccountData;
       const { readNotifications } = storedAccountData;
       const { pendingQueue } = storedAccountData;
+      const { affiliate } = storedAccountData;
       if (readNotifications) {
         dispatch(updateReadNotifications(readNotifications));
       }
@@ -83,6 +85,7 @@ export const loadAccountDataFromLocalStorage = (address: string): ThunkAction<an
           })
         );
       }
+      if (affiliate) dispatch(saveAffiliateAddress(affiliate));
       if (
         pendingLiquidityOrders
       ) {

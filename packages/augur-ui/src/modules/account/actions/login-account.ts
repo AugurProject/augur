@@ -1,4 +1,7 @@
-import { LoginAccount, AccountBalances } from 'modules/types';
+import { LoginAccount } from 'modules/types';
+import { ThunkDispatch } from 'redux-thunk';
+import { Action } from 'redux';
+import isAddress from 'modules/auth/helpers/is-address';
 
 export const UPDATE_LOGIN_ACCOUNT = 'UPDATE_LOGIN_ACCOUNT';
 export const UPDATE_LOGIN_ACCOUNT_BALANCES = 'UPDATE_LOGIN_ACCOUNT_BALANCES';
@@ -28,4 +31,10 @@ export function clearLoginAccount(): ClearLoginAccountAction {
     type: CLEAR_LOGIN_ACCOUNT,
     data: null,
   };
+}
+
+export const saveAffiliateAddress = (affiliate: string) => (
+  dispatch: ThunkDispatch<void, any, Action>
+) => {
+  return isAddress(affiliate) ? dispatch(updateLoginAccount({ affiliate })) : null;
 }
