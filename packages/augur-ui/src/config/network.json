@@ -37,12 +37,14 @@
     },
     "zeroX": {
       "rpc": {
-        "enabled": true,
+        "enabled": false,
         "ws":  "wss://v2.augur.net/0x-ws"
       },
       "mesh": {
-        "enabled": false,
-        "bootstrapList": []
+        "enabled": true,
+        "bootstrapList": [
+          "/dns4/v2-bootstrap.augur.net/tcp/443/wss/ipfs/16Uiu2HAmRMgvPQV2UYKXuuCnNaFLpc36PhLp2UKVcL1ePseVcz4y"
+        ]
       }
     }
   }
