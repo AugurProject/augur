@@ -168,7 +168,11 @@ export const TimezoneDropdown = (props: TimezoneDropdownProps) => {
   }, [props.timezone, props.timestamp]);
 
   return (
-    <section className={classNames(Styles.Timezones, {[Styles.Condensed]: props.condensedStyle})}>
+    <section
+      className={classNames(Styles.Timezones, {
+        [Styles.Condensed]: props.condensedStyle,
+      })}
+    >
       <TextInput
         value={value === UTC_Default ? '' : value}
         placeholder={UTC_Default}
@@ -893,9 +897,9 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
     selected: this.props.defaultSelected || null,
   };
 
-  componentDidUpdate(prevProps: RadioGroupProps, prevState: RadioGroupState){
-    if (this.props.defaultSelected !== prevProps.defaultSelected){
-      this.updateChecked(this.props.defaultSelected)
+  componentDidUpdate(prevProps: RadioGroupProps, prevState: RadioGroupState) {
+    if (this.props.defaultSelected !== prevProps.defaultSelected) {
+      this.updateChecked(this.props.defaultSelected);
     }
   }
 
@@ -1147,7 +1151,7 @@ export const RadioTwoLineBar = ({
   error,
   description,
   hideRadioButton,
-  renderMarkdown
+  renderMarkdown,
 }: RadioTwoLineBarProps) => (
   <div
     className={classNames(Styles.RadioTwoLineBar, {
@@ -1161,7 +1165,9 @@ export const RadioTwoLineBar = ({
   >
     {!hideRadioButton && (checked ? FilledRadio : EmptyRadio)}
     <h5>{header}</h5>
-    {renderMarkdown && <MarkdownRenderer hideLabel noPrewrap text={description} />}
+    {renderMarkdown && (
+      <MarkdownRenderer hideLabel noPrewrap text={description} />
+    )}
     {!renderMarkdown && <p>{description}</p>}
   </div>
 );
@@ -1225,23 +1231,36 @@ interface LocationDisplayProps {
   pages: Array<{}>;
 }
 
-export const LocationDisplay = ({
-  currentStep,
-  pages,
-}: LocationDisplayProps) => (
-  <div className={Styles.LocationDisplay}>
-    {pages.map((page: Object, index: Number) => (
-      <React.Fragment key={index}>
-        <span
-          className={classNames({ [Styles.Selected]: index === currentStep })}
-        >
-          {page.title}
-        </span>
-        {index !== pages.length - 1 && DirectionArrow}
-      </React.Fragment>
-    ))}
-  </div>
-);
+export class LocationDisplay extends React.Component<LocationDisplayProps, {}> {
+  scrollTo: any = null;
+
+  componentDidUpdate(prevProps) {
+    this.scrollTo && this.scrollTo.scrollLeft = 50;
+  }
+
+  render() {
+    const { pages, currentStep } = this.props;
+    return (
+      <div className={Styles.LocationDisplay}>
+        {pages.map((page: Object, index: Number) => (
+          <React.Fragment key={index}>
+            <span
+              className={classNames({
+                [Styles.Selected]: index === currentStep,
+              })}
+              ref={scrollTo => {
+                this.scrollTo = scrollTo;
+              }}
+            >
+              {page.title}
+            </span>
+            {index !== pages.length - 1 && DirectionArrow}
+          </React.Fragment>
+        ))}
+      </div>
+    );
+  }
+}
 
 export class TextInput extends React.Component<TextInputProps, TextInputState> {
   static defaultProps = {
@@ -1258,7 +1277,7 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
     window.addEventListener('click', this.handleWindowOnClick);
   }
 
-  componentDidUpdate(prevProps: TextInputProps, prevState: TextInputState){
+  componentDidUpdate(prevProps: TextInputProps, prevState: TextInputState) {
     const { value } = prevProps;
     if (value !== this.props.value) {
       this.setState({ value: this.props.value });
@@ -1313,7 +1332,7 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
       trailingLabel,
       innerLabel,
       maxLength,
-      hideTrailingOnMobile
+      hideTrailingOnMobile,
     } = this.props;
     const { autoCompleteList = [] } = this.props;
     const { showList } = this.state;
@@ -1371,7 +1390,13 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
             />
           )}
           {trailingLabel && (
-            <span className={classNames(Styles.Trailing, {[Styles.Hide]: hideTrailingOnMobile})}>{trailingLabel}</span>
+            <span
+              className={classNames(Styles.Trailing, {
+                [Styles.Hide]: hideTrailingOnMobile,
+              })}
+            >
+              {trailingLabel}
+            </span>
           )}
         </div>
         {error && <span className={Styles.ErrorText}>{errorMessage}</span>}
@@ -1436,7 +1461,7 @@ export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
       focused,
       errorMessage,
       uniqueKey,
-      condensedStyle
+      condensedStyle,
     } = this.props;
     const error =
       errorMessage && errorMessage !== '' && errorMessage.length > 0;
@@ -1444,7 +1469,10 @@ export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
     return (
       <div
         key={`timeSelector${uniqueKey}`}
-        className={classNames(Styles.TimeSelector, {[Styles.Condensed]: condensedStyle, [Styles.Default]: !hour || !minute || !meridiem})}
+        className={classNames(Styles.TimeSelector, {
+          [Styles.Condensed]: condensedStyle,
+          [Styles.Default]: !hour || !minute || !meridiem,
+        })}
         ref={timeSelector => {
           this.timeSelector = timeSelector;
         }}
@@ -2202,7 +2230,8 @@ export const CategoryRow = ({
     })}
   >
     <span>
-     {icon} {category && category.length <= 3 ? category.toUpperCase() : category}
+      {icon}{' '}
+      {category && category.length <= 3 ? category.toUpperCase() : category}
     </span>
     {loading && <span>{LoadingEllipse}</span>}
     {!loading && <span>{count}</span>}

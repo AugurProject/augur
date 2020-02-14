@@ -101,6 +101,11 @@
       > div,
       > div[class*='Normal'] {
         min-width: 100%;
+        width: unset;
+
+        > div {
+          min-width: unset;
+        }
       }
 
       > div[class*='TextInput'],
