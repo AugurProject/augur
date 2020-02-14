@@ -27,13 +27,14 @@ const DEFAULT_GAS_PRICE = new BigNumber(4e9); // Default: GasPrice: 4 Gwei
 const BASE_GAS_ESTIMATE = '75000';
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 
-// Relay Queue
-let SIG_QUEUE = [];
-let RELAY_BUSY = false;
-
 interface SigningQueueTask {
   tx: Transaction<ethers.utils.BigNumber>,
   operation: Operation
+};
+
+interface RelayerQueueTask {
+  tx: RelayTransaction,
+  txMetadata: TransactionMetadata
 };
 
 export class ContractDependenciesGnosis extends ContractDependenciesEthers {
@@ -51,6 +52,49 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
     this._currentNonce++;
     return result;
   });
+
+  private _relayQueue: AsyncQueue<RelayerQueueTask> = queue(async (request: RelayerQueueTask) => {
+    if (this.useRelay) {
+      try {
+        const txHash: string = await this.execTransactionOnRelayer(request.tx);
+
+        this.onTransactionStatusChanged(
+          request.txMetadata,
+          TransactionStatus.PENDING,
+          txHash
+        );
+
+        return await this.provider.waitForTransaction(txHash);
+      }
+      catch (error) {
+        if (error === TransactionStatus.RELAYER_DOWN) {
+          this.onTransactionStatusChanged(
+            request.txMetadata,
+            TransactionStatus.RELAYER_DOWN,
+          );
+        } else if (error === TransactionStatus.FAILURE) {
+          this.onTransactionStatusChanged(
+            request.txMetadata,
+            TransactionStatus.FAILURE,
+          );
+        }
+
+        await this._relayQueue.kill();
+        throw error;
+      }
+    } else{
+      // If the Relay Service is not being used so we'll execute the TX directly
+      const txHash: string = await this.execTransactionDirectly(request.tx);
+
+      this.onTransactionStatusChanged(
+        request.txMetadata,
+        TransactionStatus.PENDING,
+        txHash
+      );
+      return await this.provider.waitForTransaction(txHash);
+    }
+  });
+
 
   gnosisSafe: ethers.Contract;
 
@@ -157,7 +201,6 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
     }
   }
 
-
   async signTransaction(tx: Transaction<ethers.utils.BigNumber>, operation: Operation = Operation.Call) {
     return new Promise<RelayTransaction>((resolve, reject) => {
       this._signingQueue.push( {tx, operation }, (error, value: RelayTransaction) => {
@@ -178,68 +221,15 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
 
     const relayTransaction = await this.signTransaction(tx);
 
-    // Push transaction to relay onto SIG_QUEUE
-    SIG_QUEUE.push({ tx: relayTransaction, txMetadata });
-    return await this.waitForTx();
+    return await this.waitForTx({ tx: relayTransaction, txMetadata });
   }
 
-
-  async waitForTx(): Promise<ethers.providers.TransactionReceipt> {
-    return new Promise(async (resolve, reject) => {
-      if (!RELAY_BUSY) {
-        if (SIG_QUEUE.length > 0) {
-          const request = SIG_QUEUE[0];
-          let txHash: string;
-
-          try {
-            RELAY_BUSY = true;
-            SIG_QUEUE.shift();
-
-            if (this.useRelay) {
-              txHash = await this.execTransactionOnRelayer(request.tx);
-            } else {
-              // If the Relay Service is not being used so we'll execute the TX directly
-              txHash = await this.execTransactionDirectly(request.tx);
-            }
-
-            this.onTransactionStatusChanged(
-              request.txMetadata,
-              TransactionStatus.PENDING,
-              txHash
-            );
-
-            return this.provider.waitForTransaction(txHash).then(res => {
-              RELAY_BUSY = false;
-              resolve(res);
-              this.waitForTx();
-            });
-          }
-          catch (error) {
-            // Clear QUEUE
-            SIG_QUEUE = [];
-            RELAY_BUSY = false;
-
-            if (error === TransactionStatus.RELAYER_DOWN) {
-              this.onTransactionStatusChanged(
-                request.txMetadata,
-                TransactionStatus.RELAYER_DOWN,
-                txHash
-              );
-            } else if (error === TransactionStatus.FAILURE) {
-              this.onTransactionStatusChanged(
-                request.txMetadata,
-                TransactionStatus.FAILURE,
-                txHash
-              );
-            }
-            reject(error);
-          }
-        } else {
-          // Queue empty
-        }
-      } else {
-        // Relayer Busy
-      }
+  async waitForTx(task: RelayerQueueTask): Promise<ethers.providers.TransactionReceipt> {
+    return new Promise((resolve, reject) => {
+      this._relayQueue.push(task, (error, value: ethers.providers.TransactionReceipt) => {
+        if(error) reject(error);
+        else resolve(value);
+      });
     });
   }
 
