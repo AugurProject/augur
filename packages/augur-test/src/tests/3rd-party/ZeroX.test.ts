@@ -313,6 +313,7 @@ describe('3rd Party :: ZeroX :: ', () => {
       );
 
       await johnBulkSyncStrategy.start(0, await john.provider.getBlockNumber());
+      await maryBulkSyncStrategy.start(0, await john.provider.getBlockNumber());
 
       const fillAmount = new BigNumber(50);
       const fillPrice = new BigNumber(0.6);
@@ -327,9 +328,10 @@ describe('3rd Party :: ZeroX :: ', () => {
         true
       );
 
+      await expect(simulationData.numFills).toEqual(new BigNumber(1));
       await expect(simulationData.tokensDepleted).toEqual(fillAmount.multipliedBy(fillPrice));
       await expect(simulationData.sharesFilled).toEqual(fillAmount);
-      await expect(simulationData.numFills).toEqual(new BigNumber(1));
+
     }, 240000);
   });
 
@@ -341,6 +343,13 @@ describe('3rd Party :: ZeroX :: ', () => {
       connectorJohn.initialize(john.augur, await johnDB);
       johnAPI = new API(john.augur, johnDB);
       await john.approveCentralAuthority();
+
+      johnBulkSyncStrategy = new BulkSyncStrategy(
+        john.provider.getLogs,
+        (await johnDB).logFilters.buildFilter,
+        (await johnDB).logFilters.onLogsAdded,
+        john.augur.contractEvents.parseLogs,
+      );
     }, 120000);
 
     test('State API :: ZeroX :: getOrders', async () => {
@@ -378,6 +387,8 @@ describe('3rd Party :: ZeroX :: ', () => {
 
       // Terrible, but not clear how else to wait on the mesh event propagating to the callback and it finishing updating the DB...
       await sleep(300);
+
+      await johnBulkSyncStrategy.start(0, await john.provider.getBlockNumber());
 
       // Get orders for the market
       const orders: ZeroXOrders = await johnAPI.route('getZeroXOrders', {

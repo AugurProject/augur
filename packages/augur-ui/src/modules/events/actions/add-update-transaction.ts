@@ -25,10 +25,9 @@ import {
 import { CreateMarketData } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { Events, Getters, TXEventName } from '@augurproject/sdk';
+import { Events, TXEventName } from '@augurproject/sdk';
 import {
   addPendingData,
-  removePendingData,
 } from 'modules/pending-queue/actions/pending-queue-management';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { TransactionMetadataParams } from 'contract-dependencies-ethers/build';
@@ -160,14 +159,13 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
           blockchain.currentAugurTimestamp * 1000,
           methodCall
         );
-        dispatch(addPendingData(id, CREATE_MARKET, eventName, hash, data));
+        // pending queue will be updated when created market event comes in.
+        if (eventName !== TXEventName.Success)
+          dispatch(addPendingData(id, CREATE_MARKET, eventName, hash, data));
         if (hash)
           dispatch(
             updateLiqTransactionParamHash({ txParamHash: id, txHash: hash })
           );
-        if (hash && eventName === TXEventName.Success) {
-          dispatch(removePendingData(id, CREATE_MARKET));
-        }
         if (hash && eventName === TXEventName.Failure || eventName === TXEventName.RelayerDown) {
           // if tx fails, revert hash to generated tx id, for retry
           dispatch(

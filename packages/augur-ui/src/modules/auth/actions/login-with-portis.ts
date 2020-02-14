@@ -34,7 +34,7 @@ export const loginWithPortis = (forceRegisterPage = false) => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState,
 ) => {
-  const useGnosis = getState().env['gnosis-enabled'];
+  const useGnosis = getState().env['gnosis']?.enabled;
   const networkId = getNetworkId();
   const portisNetwork = getPortisNetwork(networkId);
 

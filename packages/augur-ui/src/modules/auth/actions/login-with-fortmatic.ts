@@ -24,7 +24,7 @@ export const loginWithFortmatic = () => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState,
 ) => {
-  const useGnosis = getState().env['gnosis-enabled'];
+  const useGnosis = getState().env['gnosis']?.enabled;
   const networkId: string = getNetworkId();
   const supportedNetworks = getFormaticNetwork(networkId);
 
