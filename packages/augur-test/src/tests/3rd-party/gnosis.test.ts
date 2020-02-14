@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js';
 import { JsonRpcProvider } from 'ethers/providers';
 import * as _ from 'lodash';
-import { Addresses, ContractAddresses, NetworkId } from '@augurproject/artifacts';
+import { Environments, ContractAddresses, NetworkId } from '@augurproject/artifacts';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { GnosisRelayAPI, GnosisSafeState, } from '@augurproject/gnosis-relay-api';
 import { Connectors } from '@augurproject/sdk';
@@ -30,7 +30,7 @@ describe('3rd Party :: Gnosis :: ', () => {
   beforeAll(async () => {
     providerJohn = new EthersProvider(new JsonRpcProvider('http://localhost:8545'), 5, 0, 40);
     networkId = await providerJohn.getNetworkId();
-    addresses = Addresses[networkId];
+    addresses = Environments[networkId].addresses;
 
     const connectorJohn = new Connectors.DirectConnector();
     john = await ContractAPI.userWrapper(ACCOUNTS[0], providerJohn, addresses, connectorJohn, new GnosisRelayAPI('http://localhost:8888/api/'), undefined, undefined);

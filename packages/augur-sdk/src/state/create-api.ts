@@ -1,5 +1,4 @@
-import { ContractAddresses, getStartingBlockForNetwork, NetworkId, getAddressesForNetwork } from '@augurproject/artifacts';
-import { UploadBlockNumbers } from '@augurproject/artifacts/build';
+import { ContractAddresses, NetworkId, getAddressesForNetwork } from '@augurproject/artifacts';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { EthersSigner } from 'contract-dependencies-ethers';
 import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis';
@@ -17,6 +16,7 @@ import { LogFilterAggregator } from './logs/LogFilterAggregator';
 import { BlockAndLogStreamerSyncStrategy } from './sync/BlockAndLogStreamerSyncStrategy';
 import { BulkSyncStrategy } from './sync/BulkSyncStrategy';
 import { WarpSyncStrategy } from './sync/WarpSyncStrategy';
+import { Environments } from "@augurproject/artifacts/build";
 
 export interface SDKConfiguration {
   networkId: NetworkId,
@@ -56,7 +56,7 @@ export interface SDKConfiguration {
 export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: EthersProvider, logFilterAggregator: LogFilterAggregator) {
   return async () => {
     const networkId = await provider.getNetworkId();
-    const uploadBlockNumber = UploadBlockNumbers[networkId];
+    const uploadBlockNumber = Environments[networkId].uploadBlockNumber
     const uploadBlockHeaders = await provider.getBlock(uploadBlockNumber);
     const currentBlockNumber = await provider.getBlockNumber();
 

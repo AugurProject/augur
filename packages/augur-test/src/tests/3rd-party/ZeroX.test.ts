@@ -1,6 +1,6 @@
 import { WSClient } from '@0x/mesh-rpc-client';
 import {
-  Addresses,
+  Environments,
   ContractAddresses,
   NetworkId,
 } from '@augurproject/artifacts';
@@ -48,7 +48,7 @@ describe('3rd Party :: ZeroX :: ', () => {
     providerJohn = new EthersProvider(new JsonRpcProvider('http://localhost:8545'), 5, 0, 40);
     providerMary = new EthersProvider(new JsonRpcProvider('http://localhost:8545'), 5, 0, 40);
     networkId = await providerJohn.getNetworkId();
-    addresses = Addresses[networkId];
+    addresses = Environments[networkId].addresses;
 
     meshClient = new WSClient('ws://localhost:60557');
   }, 240000);

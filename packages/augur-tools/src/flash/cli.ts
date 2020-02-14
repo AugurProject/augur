@@ -5,7 +5,7 @@ import { addScripts } from './scripts';
 import { addGanacheScripts } from './ganache-scripts';
 import { Account, ACCOUNTS } from '../constants';
 import { NetworkConfiguration, NETWORKS } from '@augurproject/core';
-import { Addresses } from '@augurproject/artifacts';
+import { Environments } from '@augurproject/artifacts';
 import { computeAddress } from 'ethers/utils';
 import * as fs from 'fs';
 
@@ -69,7 +69,7 @@ async function run() {
           flash.network = NetworkConfiguration.create(opts.network as NETWORKS);
           flash.provider = flash.makeProvider(flash.network);
           const networkId = await flash.getNetworkId(flash.provider);
-          flash.contractAddresses = Addresses[networkId];
+          flash.contractAddresses = Environments[networkId].addresses;
         }
         await flash.call(script.name, opts);
       } catch(e){

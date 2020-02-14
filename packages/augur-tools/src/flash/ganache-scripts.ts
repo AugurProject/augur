@@ -9,12 +9,12 @@ import {
   hashContracts
 } from '../libs/ganache';
 import { generateWarpSyncTestData } from '../libs/generate-warp-sync-test-data';
-import { FlashArguments, FlashSession } from "./flash";
+import { FlashArguments, FlashSession } from './flash';
 
 import { ethers } from 'ethers';
 import * as ganache from 'ganache-core';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
-import { setAddresses, NetworkId } from '@augurproject/artifacts';
+import { NetworkId, setEnvironmentConfig } from '@augurproject/artifacts';
 import * as fs from 'async-file';
 import { LogReplayer } from './replay-logs';
 import { LogReplayerV1 } from './replay-logs-v1';
@@ -219,7 +219,7 @@ export function addGanacheScripts(flash: FlashSession) {
 
       if (writeArtifacts) {
         const networkId = await this.provider.getNetworkId() as NetworkId;
-        await setAddresses(networkId, seed.addresses);
+        await setEnvironmentConfig(networkId, seed.addresses, 0); // TODO use actual upload block number
       }
     },
   });
@@ -271,7 +271,7 @@ export function addGanacheScripts(flash: FlashSession) {
 
       console.log('Creating seed file.');
       await this.call('ganache', { internal: true });
-      await this.call('deploy', { writeArtifacts: writeArtifacts, timeControlled: true });
+      await this.call('deploy', { writeArtifacts, timeControlled: true });
       await this.call('make-seed', { name, filepath, save: true });
     },
   });

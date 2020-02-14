@@ -35,7 +35,7 @@ import {
 import { NetworkConfiguration } from './NetworkConfiguration';
 import { Contracts, ContractData } from './Contracts';
 import { Dependencies } from '../libraries/GenericContractInterfaces';
-import { ContractAddresses, NetworkId, setAddresses, setUploadBlockNumber } from '@augurproject/artifacts';
+import { ContractAddresses, NetworkId, setEnvironmentConfig } from '@augurproject/artifacts';
 import { TRADING_CONTRACTS } from './constants';
 
 export class ContractDeployer {
@@ -181,8 +181,7 @@ Deploying to: ${networkConfiguration.networkName}
         }
 
         if (this.configuration.writeArtifacts) {
-          await this.generateUploadBlockNumberMapping(blockNumber);
-          await this.generateAddressMappingFile();
+          await this.generateEnvironmentConfigFile(blockNumber);
         }
 
         await this.augur.finishDeployment();
@@ -573,7 +572,7 @@ Deploying to: ${networkConfiguration.networkName}
         }
     }
 
-    private async generateAddressMappingFile(): Promise<void> {
+    private async generateEnvironmentConfigFile(blockNumber: number): Promise<void> {
         const mapping: Partial<ContractAddresses> = {};
         mapping['Augur'] = this.augur!.address;
         if (this.universe) mapping['Universe'] = this.universe.address;
@@ -628,13 +627,7 @@ Deploying to: ${networkConfiguration.networkName}
             })
         }
 
-        const networkId = (await this.provider.getNetwork()).chainId;
-
-        await setAddresses(String(networkId) as NetworkId, mapping as ContractAddresses);
-    }
-
-    private async generateUploadBlockNumberMapping(blockNumber: number): Promise<void> {
-        const networkId = (await this.provider.getNetwork()).chainId as unknown as NetworkId;
-        await setUploadBlockNumber(networkId, blockNumber);
+        const networkId = String((await this.provider.getNetwork()).chainId) as NetworkId;
+        await setEnvironmentConfig(networkId, mapping as ContractAddresses, blockNumber);
     }
 }

@@ -1,9 +1,8 @@
 export const abi = require('./abi.json');
 export const abiV1 = require('./abi.v1.json');
-export const Addresses: AllContractAddresses = require('./addresses.json');
+
+export const Environments: EnvironmentsConfig = require('./environments.json')
 export const Contracts = require('./contracts.json');
-export const UploadBlockNumbers: UploadBlockNumbers = require('./upload-block-numbers.json');
-export const Networks = require('./networks.json');
 export * from './templates';
 export { ContractEvents } from './events';
 
@@ -11,20 +10,21 @@ import { exists, readFile, writeFile } from 'async-file';
 import path from 'path';
 
 try {
-  const localAddresses: { [networkId: string]: ContractAddresses } = require('./local-addresses.json');
-  Object.keys(localAddresses).forEach((networkId) => {
-    Addresses[networkId] = localAddresses[networkId];
+  const localEnvironments: EnvironmentsConfig = require('./local-environments.json');
+  Object.keys(localEnvironments).forEach((networkId) => {
+    Environments[networkId] = localEnvironments[networkId];
   });
 } catch (e) {
   // if the local addresses don't exist, do nothing
 }
-try {
-  const localUploadBlockNumbers: UploadBlockNumbers = require('./local-upload-block-numbers.json');
-  Object.keys(localUploadBlockNumbers).forEach((networkId) => {
-    UploadBlockNumbers[networkId] = localUploadBlockNumbers[networkId];
-  });
-} catch (e) {
-  // if the local upload block numbers don't exist, do nothing
+
+export interface EnvironmentsConfig {
+  [networkId: string]: EnvironmentConfig;
+}
+
+export interface EnvironmentConfig {
+  addresses: ContractAddresses;
+  uploadBlockNumber: number;
 }
 
 export enum NetworkId {
@@ -116,13 +116,13 @@ export interface NetworkContractAddresses {
   104: ContractAddresses;
 }
 
-export async function setAddresses(networkId: NetworkId, addresses: ContractAddresses): Promise<void> {
+export async function setEnvironmentConfig(networkId: NetworkId, addresses: ContractAddresses, uploadBlockNumber: number): Promise<void> {
   const isDev = isDevNetworkId(networkId);
   // be sure to be in src dir, not build
-  const filename = isDev ? '../src/local-addresses.json' : '../src/addresses.json';
+  const filename = isDev ? '../src/local-environments.json' : '../src/environments.json';
   const filepath = path.join(__dirname, filename);
 
-  let contents: AllContractAddresses = {};
+  let contents: EnvironmentsConfig = {};
   if (await exists(filepath)) {
     const blob = await readFile(filepath, 'utf8');
     try {
@@ -131,78 +131,46 @@ export async function setAddresses(networkId: NetworkId, addresses: ContractAddr
       contents = {}; // throw out unparseable addresses file
     }
   }
-  contents[networkId] = addresses;
+  contents[networkId] = { addresses, uploadBlockNumber };
   await writeFile(filepath, JSON.stringify(contents, null, 2), 'utf8');
 }
 
-export async function setUploadBlockNumber(networkId: NetworkId, uploadBlock: number): Promise<void> {
-  const isDev = isDevNetworkId(networkId);
-  // be sure to be in src dir, not build
-  const filename = isDev ? '../src/local-upload-block-numbers.json' : '../src/upload-block-numbers.json';
-  const filepath = path.join(__dirname, filename);
+export function getEnvironmentConfigForNetwork(networkId: NetworkId): EnvironmentConfig {
+  const environment: EnvironmentConfig = Environments[networkId];
 
-  let contents: UploadBlockNumbers = {};
-  if (await exists(filepath)) {
-    const blob = await readFile(filepath, 'utf8');
-    try {
-      contents = JSON.parse(blob);
-    } catch {
-      contents = {}; // throw out unparseable block numbers file
+  if (typeof environment.addresses === 'undefined') {
+    if (networkId !== '1') {
+      console.log(`Contract addresses aren't available for network ${networkId}. If you're running in development mode, be sure to have started a local ethereum node, and then have rebuilt using yarn build before starting the dev server`);
     }
-
-    contents[networkId] = uploadBlock;
-
-    await writeFile(filepath, JSON.stringify(contents, null, 2), 'utf8');
+    throw new Error(`Unable to read contract addresses for network: ${networkId}. Known addresses: ${JSON.stringify(Environments)}`);
   }
+
+  if (typeof environment.uploadBlockNumber === 'undefined') {
+    if (networkId !== '1') {
+      console.log(`Starting block number isn't available for network ${networkId}. If you're running in development mode, be sure to have started a local ethereum node, and then have rebuilt using yarn build before starting the dev server`);
+    }
+    throw new Error(`Unable to read starting block number for network: ${networkId}. Known starting block numbers: ${JSON.stringify(Environments)}`);
+  }
+
+  return environment;
 }
 
 export function getAddressesForNetwork(networkId: NetworkId): ContractAddresses {
-  const addresses = Addresses[networkId];
-  if (typeof addresses === 'undefined') {
-    if (networkId !== '1') {
-      console.log(
-        `Contract addresses aren't available for network ${networkId}. If you're running in development mode, be sure to have started a local ethereum node, and then have rebuilt using yarn build before starting the dev server`
-      );
-    }
-    throw new Error(
-      `Unable to read contract addresses for network: ${
-        networkId
-      }. Known addresses: ${JSON.stringify(Addresses)}`
-    );
-  }
-
-  return addresses;
+  return getEnvironmentConfigForNetwork(networkId).addresses;
 }
 
-export function getStartingBlockForNetwork(networkId: NetworkId): number {
-  const blockNumber = UploadBlockNumbers[networkId];
-  if (typeof blockNumber === 'undefined') {
-    if (networkId !== '1') {
-      console.log(
-        `Starting block number isn't available for network ${networkId}. If you're running in development mode, be sure to have started a local ethereum node, and then have rebuilt using yarn build before starting the dev server`
-      );
-    }
-    throw new Error(
-      `Unable to read starting block number for network: ${
-        networkId
-      }. Known starting block numbers: ${JSON.stringify(UploadBlockNumbers)}`
-    );
-  }
-
-  return blockNumber;
-}
-
-export async function updateAddresses(): Promise<void> {
+export async function updateEnvironmentsConfig(): Promise<void> {
   // be sure to be in src dir, not build
-  await Promise.all(['../src/local-addresses.json', '../src/addresses.json'].map(async (filename) => {
+  const files = ['../src/local-environments.json', '../src/environments.json'];
+  await Promise.all(files.map(async (filename) => {
     const filepath = path.join(__dirname, filename);
 
     if (await exists(filepath)) {
       const blob = await readFile(filepath, 'utf8');
       try {
-        const addresses = JSON.parse(blob);
-        Object.keys(addresses).forEach((networkId) => {
-          Addresses[networkId] = addresses[networkId];
+        const environments = JSON.parse(blob);
+        Object.keys(environments).forEach((networkId) => {
+          Environments[networkId] = environments[networkId];
         });
 
       } catch {

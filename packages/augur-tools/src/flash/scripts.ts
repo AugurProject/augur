@@ -16,7 +16,7 @@ import moment from 'moment';
 import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from 'ethers/utils';
 import { ethers } from 'ethers';
-import { abiV1, Addresses } from '@augurproject/artifacts';
+import { abiV1, updateEnvironmentsConfig, Environments } from '@augurproject/artifacts';
 import {
   calculatePayoutNumeratorsArray,
   QUINTILLION,
@@ -39,7 +39,6 @@ import { OrderBookShaper, OrderBookConfig } from './orderbook-shaper';
 import { NumOutcomes } from '@augurproject/sdk/src/state/logs/types';
 import { flattenZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
 import { awaitUserInput, formatAddress, sleep } from './util';
-import { updateAddresses } from "@augurproject/artifacts/build";
 
 export function addScripts(flash: FlashSession) {
   flash.addScript({
@@ -214,7 +213,6 @@ export function addScripts(flash: FlashSession) {
     ],
     async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
-      const endPoint = 'ws://localhost:60557';
       const user = await this.ensureUser();
 
       const target = String(args.target);
@@ -626,7 +624,7 @@ export function addScripts(flash: FlashSession) {
       const tradeGroupId = String(Date.now());
       const oneHundredDays = new BigNumber(8640000);
       const expirationTime = new BigNumber(timestamp).plus(oneHundredDays);
-      const orders = []
+      const orders = [];
       for (let a = 0; a < numOutcomes; a++) {
         const outcome = Number(Object.keys(orderBook)[a]) as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
         const buySell = Object.values(orderBook)[a];
@@ -2068,7 +2066,7 @@ export function addScripts(flash: FlashSession) {
         } else {
           const gethDocker = fake ? 'docker:geth:pop' : 'docker:geth:pop-normal-time';
           spawnSync('yarn', [gethDocker]);
-          await updateAddresses(); // add pop-geth addresses to global Addresses
+          await updateEnvironmentsConfig(); // add pop-geth addresses to global Addresses
         }
 
         await sleep(10000); // give geth some time to start
@@ -2081,7 +2079,7 @@ export function addScripts(flash: FlashSession) {
           const deployMethod = fake ? 'fake-all' : 'normal-all';
           await this.call(deployMethod, { createMarkets: true });
         } else {
-          this.contractAddresses = Addresses[networkId];
+          this.contractAddresses = Environments[networkId].addresses;
         }
 
         await spawnSync('yarn', ['build']); // so UI etc will have the correct addresses
@@ -2246,7 +2244,7 @@ export function addScripts(flash: FlashSession) {
 
   flash.addScript({
     name: 'init-warp-sync',
-    async call(this: FlashSession, args: FlashArguments) {
+    async call(this: FlashSession) {
       const user = await this.ensureUser();
 
       await user.initWarpSync(user.augur.contracts.universe.address);
