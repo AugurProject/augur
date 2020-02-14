@@ -43,6 +43,13 @@ export class DerivedDB extends RollbackTable {
     augur.events.once(SubscriptionEventName.BulkSyncComplete, this.onBulkSyncComplete.bind(this));
   }
 
+  protected async bulkUpsertDocuments(documents: BaseDocument[]): Promise<void> {
+    for (let document of documents) {
+      const documentID = this.getIDValue(document);
+      await this.upsertDocument(documentID, document);
+    }
+  }
+
   async onBulkSyncComplete({highestAvailableBlockNumber}) {
     console.log('onBulkSyncComplete-checkpoint-1');
 

@@ -40,10 +40,10 @@ export abstract class AbstractTable {
   }
 
   protected async bulkUpsertDocuments(documents: BaseDocument[]): Promise<void> {
-    for (let document of documents) {
-      const documentID = this.getIDValue(document);
-      await this.upsertDocument(documentID, document);
+    for (const document of documents) {
+      delete document.constructor;
     }
+    await this.table.bulkAdd(documents);
   }
 
   protected async upsertDocument(documentID: ID, document: BaseDocument): Promise<void> {
