@@ -2069,6 +2069,7 @@ export function addScripts(flash: FlashSession) {
           const gethDocker = fake ? 'docker:geth:pop' : 'docker:geth:pop-normal-time';
           spawnSync('yarn', [gethDocker]);
           await updateAddresses(); // add pop-geth addresses to global Addresses
+          this.contractAddresses = Addresses[networkId];
         }
 
         await sleep(10000); // give geth some time to start
@@ -2082,7 +2083,6 @@ export function addScripts(flash: FlashSession) {
           await this.call(deployMethod, { createMarkets: true });
         }
 
-        this.contractAddresses = Addresses[networkId];
         await spawnSync('yarn', ['build']); // so UI etc will have the correct addresses
 
         const env = {
