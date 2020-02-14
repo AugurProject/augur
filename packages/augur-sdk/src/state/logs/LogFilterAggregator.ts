@@ -187,7 +187,7 @@ export class LogFilterAggregator implements LogFilterAggregatorInterface {
     });
   }
 
-  async onBlockRemoved(blockNumber: number): Promise<void> {
+  onBlockRemoved = async (blockNumber: number): Promise<void> => {
     for (let i = 0; i < this.blockRemovalCallback.length; i++) {
       await this.blockRemovalCallback[i](blockNumber);
     }
