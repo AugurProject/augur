@@ -16,7 +16,7 @@ import {
   SIGNIN_LOADING_TEXT_PORTIS,
   SIGNIN_LOADING_TEXT_TORUS,
   SIGNIN_LOADING_TEXT_FORTMATIC,
-  MODAL_WALLET_ERROR,
+  MODAL_ERROR,
 } from 'modules/common/constants';
 import { loginWithInjectedWeb3 } from 'modules/auth/actions/login-with-injected-web3';
 import { loginWithPortis } from 'modules/auth/actions/login-with-portis';
@@ -53,7 +53,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
     dispatch(loginWithFortmatic()),
   errorModal: (error) => dispatch(
     updateModal({
-      type: MODAL_WALLET_ERROR,
+      type: MODAL_ERROR,
       error: error ? JSON.stringify(error) : ''
     })
   ),

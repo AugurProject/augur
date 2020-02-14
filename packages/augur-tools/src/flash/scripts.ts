@@ -142,6 +142,7 @@ export function addScripts(flash: FlashSession) {
       const relayerAddressConfig = this.network && this.network.gnosisRelayerAddress;
       const relayerAddress = relayerAddressArg || relayerAddressConfig;
       if (relayerAddress) {
+        this.log(`Fauceting to relayer @ ${relayerAddress}`);
         await this.call('faucet', {
           amount: '1000000',
           target: relayerAddress,
@@ -181,7 +182,7 @@ export function addScripts(flash: FlashSession) {
       // Cannot directly faucet to target because:
       // 1) it might not have ETH, and
       // 2) specifying sender for contract calls only works if signer is available,
-      //    which is typically only true of main account and its gnosis safe
+      //    which is typically only true of main account or its gnosis safe
       if (target) {
         await user.augur.contracts.cash.transfer(target, atto);
       }
