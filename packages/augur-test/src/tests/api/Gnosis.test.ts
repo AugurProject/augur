@@ -109,9 +109,7 @@ describe('Gnosis :: ', () => {
   });
 
   test('calculating safe address from creation params', async () => {
-    const safe = await john.createGnosisSafeViaRelay(
-      john.augur.contracts.cash.address
-    );
+    const safe = await john.createGnosisSafeViaRelay();
 
     const calculateGnosisSafeAddressParams: CalculateGnosisSafeAddressParams = {
       owner: john.account.publicKey,
