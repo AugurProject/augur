@@ -6,13 +6,14 @@ import classNames from 'classnames';
 import makePath from 'modules/routes/helpers/make-path';
 import ConnectDropdown from 'modules/auth/containers/connect-dropdown';
 import ConnectAccount from 'modules/auth/containers/connect-account';
-import { LogoutIcon } from 'modules/common/icons';
+import { LogoutIcon, PlusCircleIcon } from 'modules/common/icons';
 import { NavMenuItem } from 'modules/types';
 import Styles from 'modules/app/components/side-nav/side-nav.styles.less';
 import { HelpIcon, HelpMenuList } from 'modules/app/components/help-resources';
 import { SecondaryButton } from 'modules/common/buttons';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import { helpIcon, Chevron, Dot } from 'modules/common/icons';
+import { MODAL_ADD_FUNDS } from 'modules/common/constants';
 
 interface SideNavProps {
   defaultMobileClick: Function;
@@ -28,6 +29,7 @@ interface SideNavProps {
   isHelpMenuOpen: boolean;
   updateHelpMenuState: Function;
   updateConnectionTray: Function;
+  updateModal: Function;
 }
 
 const SideNav = ({
@@ -44,6 +46,7 @@ const SideNav = ({
   isHelpMenuOpen,
   updateHelpMenuState,
   updateConnectionTray,
+  updateModal,
 }: SideNavProps) => {
   useEffect(() => {
     if (isHelpMenuOpen) {
@@ -61,7 +64,12 @@ const SideNav = ({
       })}
     >
       <div>
-        {isLogged && (<HelpIcon isHelpMenuOpen={isHelpMenuOpen} updateHelpMenuState={updateHelpMenuState} />)}
+        {isLogged && (
+          <HelpIcon
+            isHelpMenuOpen={isHelpMenuOpen}
+            updateHelpMenuState={updateHelpMenuState}
+          />
+        )}
         <ConnectAccount />
       </div>
       <div className={Styles.SideNav__container}>
@@ -73,6 +81,13 @@ const SideNav = ({
             })}
           >
             {isHelpMenuOpen && <HelpMenuList />}
+            {isLogged && (
+              <SecondaryButton
+                action={() => updateModal({ type: MODAL_ADD_FUNDS })}
+                text="Add Funds"
+                icon={PlusCircleIcon}
+              />
+            )}
             {accessFilteredMenu.map((item, idx) => (
               <li
                 key={idx}
@@ -85,7 +100,11 @@ const SideNav = ({
                   to={item.route ? makePath(item.route) : null}
                   onClick={() => defaultMobileClick()}
                 >
-                  <span>{item.title}</span>
+                  {item.button ? (
+                    <SecondaryButton text={item.title} action={null} />
+                  ) : (
+                    <span>{item.title}</span>
+                  )}
                   {item.showAlert && Dot}
                 </Link>
               </li>
@@ -95,7 +114,7 @@ const SideNav = ({
               {showMigrateRepButton && (
                 <span className={Styles.SideNavMigrateRep}>
                   <SecondaryButton
-                    text='Migrate V1 to V2 REP'
+                    text="Migrate V1 to V2 REP"
                     action={() => migrateV1Rep()}
                   />
                   <label
@@ -127,7 +146,7 @@ const SideNav = ({
             <div className={Styles.GlobalChat}>
               <SecondaryButton
                 action={showGlobalChat}
-                text='Global Chat'
+                text="Global Chat"
                 icon={Chevron}
               />
             </div>

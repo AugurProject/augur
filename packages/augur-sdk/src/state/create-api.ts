@@ -71,20 +71,22 @@ export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: Ethe
     const warpSyncStrategy = new WarpSyncStrategy(warpController, logFilterAggregator.onLogsAdded);
 
     const endWarpSyncBlockNumber = await warpSyncStrategy.start();
-    const endBulkSyncBlockNumber = await bulkSyncStrategy.start(endWarpSyncBlockNumber || uploadBlockNumber, currentBlockNumber);
+    const staringSyncBlock = Math.max(await (await db).getSyncStartingBlock(), endWarpSyncBlockNumber || uploadBlockNumber);
+    const endBulkSyncBlockNumber = await bulkSyncStrategy.start(staringSyncBlock, currentBlockNumber);
 
     console.log('Syncing Complete - SDK Ready');
     client.events.emit(SubscriptionEventName.SDKReady, {
       eventName: SubscriptionEventName.SDKReady,
     });
 
-    const endBulkSyncBlockNumberHeader = await provider.getBlock(endBulkSyncBlockNumber);
-    warpController.createAllCheckpoints(endBulkSyncBlockNumberHeader);
-
     blockAndLogStreamerSyncStrategy.listenForBlockRemoved(logFilterAggregator.onBlockRemoved);
 
     // Check on each new block to see if we need to generate a checkpoint.
-    client.events.on(SubscriptionEventName.NewBlock, warpController.onNewBlock);
+    // client.events.on(SubscriptionEventName.NewBlock, async (newBlock) => {
+    //   const block = await provider.getBlock(newBlock.lastSyncedBlockNumber)
+    //   warpController.onNewBlock(block);
+    // });
+
     blockAndLogStreamerSyncStrategy.start(endBulkSyncBlockNumber);
   };
 }
