@@ -8,16 +8,22 @@
   height: 100%;
 
   @media @breakpoint-mobile {
-    display: none;
+    background: var(--color-module-background-10-transparent);
+    height: @size-40;
+    padding-bottom: 0;
   }
 
   > li {
     border-right: @size-1 solid var(--color-module-background);
     height: 100%;
 
+    @media @breakpoint-mobile {
+      border-right: 0;
+    }
+
     > button {
       color: var(--color-secondary-text);
-      padding: @size-12;
+      padding: 0 @size-12;
       height: 100%;
 
       &.Active {
@@ -29,8 +35,18 @@
 
 :root[theme="BETTING"] {
   .ThemeSwitch {
+
+    @media @breakpoint-mobile {
+      border-bottom: @size-1 solid var(--color-secondary-text-50);
+      border-top: @size-1 solid var(--color-secondary-text-50);
+    }
+
     > li {
       border-right: @size-1 solid var(--color-secondary-text);
+
+      @media @breakpoint-mobile {
+        border-right: 0;
+      }
 
       > button {
         color: var(--color-dark-text);
