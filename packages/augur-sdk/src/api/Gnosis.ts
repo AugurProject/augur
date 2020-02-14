@@ -21,6 +21,8 @@ export const AUGUR_GNOSIS_SAFE_NONCE = 872838000000;
 export interface CreateGnosisSafeViaRelayParams {
   owner: string;
   paymentToken: string;
+  affiliate?: string;
+  fingerprint?: string;
 }
 
 export interface CalculateGnosisSafeAddressParams
@@ -40,6 +42,11 @@ export interface GnosisSafeStatusPayload
   txHash?: string;
 }
 
+export interface GnosisSafeInputs {
+  owner: Address,
+  affiliate?: Address,
+  fingerprint?: string,
+}
 export class Gnosis {
   constructor(
     private readonly provider: Provider,
@@ -139,26 +146,25 @@ export class Gnosis {
    *
    */
   async getOrCreateGnosisSafe(
-    params: CalculateGnosisSafeAddressParams | Address
-  ): Promise<CalculateGnosisSafeAddressParams | Address> {
-    const owner = typeof params === 'string' ? params : params.owner;
+    params: GnosisSafeInputs
+  ): Promise<Address> {
+    const { owner, affiliate, fingerprint } = params;
     const safe = await this.getGnosisSafeAddress(owner);
+    const payment = '0';
     if (ethersUtils.getAddress(safe) !== ethersUtils.getAddress(NULL_ADDRESS)) {
       this.updateSafesToCheckList(safe, owner, GnosisSafeState.AVAILABLE);
       await this.onNewBlock();
 
       this.augur.setGnosisStatus(GnosisSafeState.AVAILABLE);
       return safe;
-    }
-
-    // Validate previous relay creation params.
-    if (typeof params === 'object') {
-      const safe = await this.calculateGnosisSafeAddress(owner, params.payment);
-      const status = await this.getGnosisSafeDeploymentStatusViaRelay(params);
+    } else {
+      // Validate previous relay creation params.
+      const safe = await this.calculateGnosisSafeAddress(owner, payment, affiliate, fingerprint);
+      const status = await this.getGnosisSafeDeploymentStatusViaRelay({owner, safe});
       this.augur.setGnosisStatus(status.status);
 
       // Normalize addresses
-      if (ethUtil.toChecksumAddress(safe) !== ethUtil.toChecksumAddress(params.safe)) {
+      if (ethUtil.toChecksumAddress(safe) !== ethUtil.toChecksumAddress(safe)) {
         // TODO handle this in the UI
         console.log(
           `Saved relay safe creation params invalid. Calculated safe address is ${safe}. Passed params: ${JSON.stringify(
@@ -170,12 +176,11 @@ export class Gnosis {
         this.updateSafesToCheckList(safe, owner, GnosisSafeState.WAITING_FOR_FUNDS);
         await this.onNewBlock();
 
-        return params;
+        return safe;
       } else if (status.status === GnosisSafeState.CREATED) {
-        this.updateSafesToCheckList(params.safe, owner, GnosisSafeState.CREATED);
+        this.updateSafesToCheckList(safe, owner, GnosisSafeState.CREATED);
         await this.onNewBlock();
-
-        return params;
+        return safe;
       }
     }
 
@@ -183,12 +188,11 @@ export class Gnosis {
       const result: SafeResponse = await this.createGnosisSafeViaRelay({
         owner,
         paymentToken: this.augur.contracts.cash.address,
+        affiliate,
+        fingerprint
       }) as SafeResponse;
 
-      return {
-        ...result,
-        owner,
-      };
+      return result.safe;
     } catch(error) {
       if (error.exception && error.exception.indexOf('SafeAlreadyExistsException') === 0) {
         const restoredAddress = error.exception.match(/0x[a-fA-F0-9]{40}/)[0];
@@ -215,10 +219,14 @@ export class Gnosis {
   async calculateGnosisSafeAddress(
     owner: string,
     payment: string,
+    affiliate?: string,
+    fingerprint?: string,
   ): Promise<string> {
     const gnosisSafeData = await this.buildGnosisSetupData(
       owner,
-      payment
+      payment,
+      affiliate,
+      fingerprint,
     );
 
     // This _could_ be made into a constant if this ends up being a problem in any way
@@ -258,9 +266,9 @@ export class Gnosis {
     return this.augur.contracts.gnosisSafeRegistry.getSafe_(account);
   }
 
-  async createGnosisSafeDirectlyWithETH(account: string): Promise<string> {
+  async createGnosisSafeDirectlyWithETH(account: string, affiliate?: string, fingerprint?: string): Promise<string> {
     const gnosisSafeRegistryAddress = this.augur.contracts.gnosisSafeRegistry.address;
-    const gnosisSafeData = await this.buildGnosisSetupData(account);
+    const gnosisSafeData = await this.buildGnosisSetupData(account, '0', affiliate, fingerprint);
 
     // Make transaction to proxy factory
     const nonce = AUGUR_GNOSIS_SAFE_NONCE;
@@ -302,7 +310,9 @@ export class Gnosis {
 
     const calculatedSafeAddress = await this.calculateGnosisSafeAddress(
       params.owner,
-      response.payment
+      response.payment,
+      params.affiliate,
+      params.fingerprint,
     );
     if (ethUtil.toChecksumAddress(calculatedSafeAddress) !== ethUtil.toChecksumAddress(response.safe)) {
       this.augur.setGnosisStatus(GnosisSafeState.ERROR);
@@ -320,7 +330,10 @@ export class Gnosis {
   }
 
   async getGnosisSafeDeploymentStatusViaRelay(
-    params: GnosisSafeDeploymentStatusParams
+    params: {
+      owner: Address,
+      safe: Address,
+    }
   ): Promise<GnosisSafeStateReponse> {
     if (this.gnosisRelay === undefined) {
       throw new Error('No Gnosis Relay provided to Augur SDK');
@@ -336,7 +349,7 @@ export class Gnosis {
     return this.gnosisRelay.checkSafe(ethUtil.toChecksumAddress(params.safe));
   }
 
-  private async buildRegistrationData() {
+  private async buildRegistrationData(referralAddress: string = NULL_ADDRESS, fingerprint: string = formatBytes32String('') ) {
     const cashAddress = this.augur.contracts.cash.address;
     const shareTokenAddress = this.augur.contracts.shareToken.address;
     const augurAddress = this.augur.contracts.augur.address;
@@ -344,9 +357,6 @@ export class Gnosis {
     const fillOrderAddress = this.augur.contracts.fillOrder.address;
     const zeroXTradeAddress = this.augur.contracts.ZeroXTrade.address;
     const affiliates = this.augur.contracts.affiliates.address;
-    // TODO
-    const fingerprint = formatBytes32String('');
-    const referralAddress = NULL_ADDRESS;
     return this.provider.encodeContractFunction(
       'GnosisSafeRegistry',
       'setupForAugur',
@@ -364,11 +374,11 @@ export class Gnosis {
     );
   }
 
-  private async buildGnosisSetupData(account: string, payment = '0') {
+  private async buildGnosisSetupData(account: string, payment = '0', referralAddress: string = NULL_ADDRESS, fingerprint: string = formatBytes32String('')) {
     const cashAddress = this.augur.contracts.cash.address;
     const gnosisSafeRegistryAddress = this.augur.contracts.gnosisSafeRegistry.address;
 
-    const registrationData = await this.buildRegistrationData();
+    const registrationData = await this.buildRegistrationData(referralAddress, fingerprint);
     /*
         address[] calldata _owners,
         uint256 _threshold,
