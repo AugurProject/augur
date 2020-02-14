@@ -1,7 +1,7 @@
 export const abi = require('./abi.json');
 export const abiV1 = require('./abi.v1.json');
 
-export const Environments: EnvironmentsConfig = require('./environments.json')
+export const Environments: EnvironmentsConfig = require('./environments.json');
 export const Contracts = require('./contracts.json');
 export * from './templates';
 export { ContractEvents } from './events';
@@ -161,7 +161,7 @@ export function getAddressesForNetwork(networkId: NetworkId): ContractAddresses 
 
 export async function updateEnvironmentsConfig(): Promise<void> {
   // be sure to be in src dir, not build
-  const files = ['../src/local-environments.json', '../src/environments.json'];
+  const files = ['../src/environments.json', '../src/local-environments.json'];
   await Promise.all(files.map(async (filename) => {
     const filepath = path.join(__dirname, filename);
 

@@ -123,29 +123,5 @@
       "ZeroXTrade": "0x9F4FB174acc19f5921aE1663eD56120A086727f7"
     },
     "uploadBlockNumber": 16622921
-  },
-  "101": {
-    "uploadBlockNumber": 113
-  },
-  "102": {
-    "uploadBlockNumber": 2
-  },
-  "103": {
-    "uploadBlockNumber": 4
-  },
-  "104": {
-    "uploadBlockNumber": 4
-  },
-  "105": {
-    "uploadBlockNumber": 100
-  },
-  "8995": {
-    "uploadBlockNumber": 0
-  },
-  "12346": {
-    "uploadBlockNumber": 0
-  },
-  "123456": {
-    "uploadBlockNumber": 0
   }
 }
