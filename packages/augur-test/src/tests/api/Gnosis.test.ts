@@ -98,13 +98,7 @@ describe('Gnosis :: ', () => {
         {owner:john.account.publicKey}
       );
 
-      expect(result).toEqual(
-        expect.objectContaining({
-          safe: expect.stringContaining('0x'),
-          owner: john.account.publicKey,
-          payment: expect.stringContaining('0x'),
-        })
-      );
+      expect(result).toEqual(expect.stringContaining('0x'));
     });
   });
 
