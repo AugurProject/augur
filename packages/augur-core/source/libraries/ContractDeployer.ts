@@ -55,8 +55,7 @@ export class ContractDeployer {
         console.log(`\n\n-----------------
 Deploying to: ${networkConfiguration.networkName}
     compiled contracts: ${deployerConfiguration.contractInputPath}
-    contract address: ${deployerConfiguration.contractAddressesOutputPath}
-    upload blocks #s: ${deployerConfiguration.uploadBlockNumbersOutputPath}
+    contract environment config: ${deployerConfiguration.environmentsConfigOutputPath}
 `);
         await contractDeployer.deploy();
     };

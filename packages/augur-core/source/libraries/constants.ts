@@ -51,7 +51,7 @@ export const TRADING_CONTRACTS = [
     'ZeroXTrade',
     'ProfitLoss',
     'SimulateTrade',
-    'ZeroXExchange', // uses registration name, not addresses.json name
+    'ZeroXExchange', // uses registration name, not environments.json name
     'GnosisSafeRegistry'
 ];
 

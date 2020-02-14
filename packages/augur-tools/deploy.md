@@ -4,7 +4,7 @@ source ~/bin/kovan_deploy_env.sh
 yarn && yarn build
 yarn workspace @augurproject/core build #optional, contracts should be checked in compiled
 yarn flash run deploy --write-artifacts
-# cp local-addresses.json and local-upload-block-numbers.json
+# cp local-environments.json
 yarn workspace @augurproject/tools deploy:merge
 git status
 # commit changes and push PR

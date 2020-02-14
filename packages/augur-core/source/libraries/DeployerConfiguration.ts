@@ -15,8 +15,7 @@ const CONTRACT_INPUT_ROOT  = (typeof process.env.CONTRACT_INPUT_ROOT === 'undefi
 
 export interface DeployerConfiguration {
   contractInputPath: string;
-  contractAddressesOutputPath: string;
-  uploadBlockNumbersOutputPath: string;
+  environmentsConfigOutputPath: string;
   augurAddress: string|undefined;
   useNormalTime: boolean;
   isProduction: boolean; // Determines if faucets are enabled / created
@@ -87,8 +86,7 @@ function envOrDefault(envName: string, default_: boolean): boolean {
 
 export const defaultDeployerConfiguration: DeployerConfiguration = {
   contractInputPath: path.join(CONTRACT_INPUT_ROOT, 'contracts.json'),
-  contractAddressesOutputPath: path.join(ARTIFACT_OUTPUT_ROOT, 'addresses.json'),
-  uploadBlockNumbersOutputPath: path.join(ARTIFACT_OUTPUT_ROOT, 'upload-block-numbers.json'),
+  environmentsConfigOutputPath: path.join(ARTIFACT_OUTPUT_ROOT, 'environments.json'),
   augurAddress: process.env.AUGUR_ADDRESS,
   isProduction: envOrDefault('IS_PRODUCTION', false),
   useNormalTime: !envOrDefault('FAKE_TIME', false),

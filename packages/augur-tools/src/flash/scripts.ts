@@ -92,7 +92,7 @@ export function addScripts(flash: FlashSession) {
       {
         name: 'write-artifacts',
         abbr: 'w',
-        description: 'Overwrite addresses.json.',
+        description: 'Overwrite environments.json.',
         flag: true,
       },
       {
@@ -131,10 +131,10 @@ export function addScripts(flash: FlashSession) {
         compilerOutput,
         config
       );
-      flash.contractAddresses = addresses;
+      this.contractAddresses = addresses;
 
       if (useSdk) {
-        await flash.ensureUser(this.network, useSdk);
+        await this.ensureUser(this.network, useSdk);
       }
 
       const relayerAddressArg = args.relayerAddress as string;

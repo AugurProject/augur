@@ -15,8 +15,7 @@ const augurCorePath = path.join(__dirname, '../../../augur-core/');
 const root = path.join(augurCorePath, '../augur-artifacts/src');
 const flashDeployerConfigurationDefaults: DeployerConfigurationOverwrite = {
   contractInputPath: path.join(root, 'contracts.json'),
-  contractAddressesOutputPath: path.join(root, 'addresses.json'),
-  uploadBlockNumbersOutputPath: path.join(root, 'upload-block-numbers.json'),
+  environmentsConfigOutputPath: path.join(root, 'environments.json'),
 };
 
 export interface UsefulContractObjects {

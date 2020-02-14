@@ -166,7 +166,7 @@ export function addGanacheScripts(flash: FlashSession) {
       },
       {
         name: 'write-artifacts',
-        description: "Only meaningful in conjunction with --use. Overwrite addresses.json to include seed file's addresses.",
+        description: "Only meaningful in conjunction with --use. Overwrite environments.json to include seed file's addresses.",
         flag: true,
       },
     ],
@@ -192,7 +192,7 @@ export function addGanacheScripts(flash: FlashSession) {
       },
       {
         name: 'write-artifacts',
-        description: "Overwrite addresses.json to include seed file's addresses.",
+        description: "Overwrite environments.json to include seed file's addresses.",
         flag: true,
       },
     ],
@@ -252,7 +252,7 @@ export function addGanacheScripts(flash: FlashSession) {
       },
       {
         name: 'write-artifacts',
-        description: "Overwrite addresses.json to include seed file's addresses.",
+        description: "Overwrite environments.json to include seed file's addresses.",
         flag: true,
       },
     ],
