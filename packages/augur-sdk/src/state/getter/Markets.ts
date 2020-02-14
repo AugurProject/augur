@@ -990,7 +990,7 @@ function getMarketOutcomes(
             tickSize
             ).toString(10)
             : null,
-        description: Buffer.from(outcomeDescription, 'hex').toString(),
+        description: Buffer.from(outcomeDescription, 'hex').toString().trim(),
         volume: marketData.outcomeVolumes ? new BigNumber(marketData.outcomeVolumes[i + 1]).toString(10) : '0',
       });
     }
