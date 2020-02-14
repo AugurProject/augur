@@ -21,7 +21,7 @@ import {
   SIGNIN_SIGN_WALLET,
   ONBOARDING_SEEN_KEY,
   MODAL_ACCOUNT_CREATED,
-  MODAL_WALLET_ERROR,
+  MODAL_ERROR,
 } from 'modules/common/constants';
 import { loginWithInjectedWeb3 } from 'modules/auth/actions/login-with-injected-web3';
 import { loginWithPortis } from 'modules/auth/actions/login-with-portis';
@@ -68,7 +68,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
     dispatch(loginWithFortmatic()),
   errorModal: (error) => dispatch(
     updateModal({
-      type: MODAL_WALLET_ERROR,
+      type: MODAL_ERROR,
       error: JSON.stringify(error)
     })
   ),
