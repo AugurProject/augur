@@ -346,9 +346,7 @@ export class MarketDB extends DerivedDB {
       if(log['extraInfo'].template) {
         let errors = [];
         log['isTemplate'] = isTemplateMarket(log['extraInfo'].description, log['extraInfo'].template, log['outcomes'], log['extraInfo'].longDescription, log['endTime'], errors);
-        if (errors.length > 0){
-          console.error(log['extraInfo'].description, errors);
-        }
+        if (errors.length > 0) console.error(log['extraInfo'].description, errors);
       }
     } catch (err) {
       log['extraInfo'] = {};
