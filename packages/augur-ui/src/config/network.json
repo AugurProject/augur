@@ -41,7 +41,7 @@
     },
     "debug": {
       "connect": true,
-      "broadcast": false
+      "broadcast": false,
       "rpcRetryCount": 5,
       "rpcRetryInterval": 0,
       "rpcConcurrency": 40
