@@ -17,7 +17,7 @@ import {
   MODAL_NETWORK_DISABLED,
   ACCOUNT_TYPES,
   MODAL_LOADING,
-  MODAL_WALLET_ERROR,
+  MODAL_ERROR,
   MODAL_ACCOUNT_CREATED,
   MODAL_AUGUR_USES_DAI,
   MODAL_BUY_DAI,
@@ -98,7 +98,7 @@ function pollForAccount(
         dispatch(logout());
         dispatch(
           updateModal({
-            type: MODAL_WALLET_ERROR,
+            type: MODAL_ERROR,
           })
         );
       };
