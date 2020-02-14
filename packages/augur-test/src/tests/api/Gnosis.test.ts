@@ -144,15 +144,13 @@ describe('Gnosis :: ', () => {
 
     jest.spyOn(mockGnosisRelay, 'createSafe').mockResolvedValue(fakeResponse);
     await expect(
-      john.createGnosisSafeViaRelay(john.augur.contracts.cash.address)
+      john.createGnosisSafeViaRelay()
     ).rejects.toThrowError(new RegExp('Potential malicious relay'));
   });
 
   describe('make safe through relay', () => {
     test.skip('polling for status', async done => {
-      const gnosisSafeResponse = await john.createGnosisSafeViaRelay(
-        john.augur.contracts.cash.address
-      );
+      const gnosisSafeResponse = await john.createGnosisSafeViaRelay();
 
       // Get the safe deployment status
       await expect(

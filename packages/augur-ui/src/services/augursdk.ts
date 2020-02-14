@@ -141,11 +141,11 @@ export class SDK {
     this.client.signer = signer;
 
     if (useGnosis) {
-      account = (await this.retrieveOrCreateGnosisSafe(
+      account = await this.retrieveOrCreateGnosisSafe(
         account,
         this.networkId,
         affiliate
-      )) as string;
+      ) as string;
 
       this.client.setUseGnosisSafe(true);
       this.client.setUseGnosisRelay(true);

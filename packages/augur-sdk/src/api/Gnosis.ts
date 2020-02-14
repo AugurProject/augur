@@ -160,7 +160,7 @@ export class Gnosis {
     } else {
       // Validate previous relay creation params.
       const safe = await this.calculateGnosisSafeAddress(owner, payment, affiliate, fingerprint);
-      const status = await this.getGnosisSafeDeploymentStatusViaRelay({owner, safe});
+      const status = await this.getGnosisSafeDeploymentStatusViaRelay({ owner, safe });
       this.augur.setGnosisStatus(status.status);
 
       // Normalize addresses
@@ -187,7 +187,6 @@ export class Gnosis {
     try {
       const result: SafeResponse = await this.createGnosisSafeViaRelay({
         owner,
-        paymentToken: this.augur.contracts.cash.address,
         affiliate,
         fingerprint
       }) as SafeResponse;
@@ -288,7 +287,7 @@ export class Gnosis {
   }
 
   async createGnosisSafeViaRelay(
-    params: CreateGnosisSafeViaRelayParams
+    params: GnosisSafeInputs
   ): Promise<SafeResponse> {
     if (this.gnosisRelay === undefined) {
       throw new Error('No Gnosis Relay provided to Augur SDK');
@@ -296,13 +295,13 @@ export class Gnosis {
 
     const gnosisSafeRegistryAddress = this.augur.contracts.gnosisSafeRegistry.address;
 
-    const setupData = await this.buildRegistrationData();
+    const setupData = await this.buildRegistrationData(params.affiliate, params.fingerprint);
 
     const response = await this.gnosisRelay.createSafe({
       saltNonce: AUGUR_GNOSIS_SAFE_NONCE,
       owners: [params.owner],
       threshold: 1,
-      paymentToken: params.paymentToken,
+      paymentToken: this.augur.contracts.cash.address,
       to: gnosisSafeRegistryAddress,
       setupData,
       callback: gnosisSafeRegistryAddress

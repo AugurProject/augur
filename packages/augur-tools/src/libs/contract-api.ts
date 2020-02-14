@@ -700,9 +700,8 @@ export class ContractAPI {
     return this.augur.gnosis.getGnosisSafeAddress(account);
   }
 
-  async createGnosisSafeViaRelay(paymentToken: string): Promise<SafeResponse> {
+  async createGnosisSafeViaRelay(): Promise<SafeResponse> {
     const params = {
-      paymentToken,
       owner: this.account.publicKey,
     };
     return this.augur.gnosis.createGnosisSafeViaRelay(params);
@@ -786,7 +785,7 @@ export class ContractAPI {
     }
 
     console.log('Attempting to create safe via relay');
-    const safeResponse = await this.createGnosisSafeViaRelay(this.augur.addresses.Cash);
+    const safeResponse = await this.createGnosisSafeViaRelay();
     return safeResponse.safe
   }
 
