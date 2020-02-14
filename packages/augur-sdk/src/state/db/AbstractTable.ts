@@ -1,5 +1,4 @@
-import { Dexie } from "dexie";
-import * as _ from 'lodash';
+import { Dexie } from 'dexie';
 
 export type PrimitiveID = string | number | Date;
 
@@ -50,7 +49,7 @@ export abstract class AbstractTable {
     delete document.constructor;
     const result = await this.table.update(documentID, document);
     if (result === 0) {
-      await this.table.put(document);
+      await this.table.add(document);
     }
   }
 

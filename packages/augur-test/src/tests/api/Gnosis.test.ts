@@ -4,17 +4,17 @@ import { SubscriptionEventName } from '@augurproject/sdk';
 import { CalculateGnosisSafeAddressParams } from '@augurproject/sdk/build/api/Gnosis';
 import {
   ACCOUNTS,
-  ContractAPI,
   defaultSeedPath,
   loadSeedFile,
   Seed,
 } from '@augurproject/tools';
+import { TestContractAPI } from '@augurproject/tools';
 import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
 import { BigNumber } from 'bignumber.js';
 import { makeProvider, MockGnosisRelayAPI } from '../../libs';
 
 describe('Gnosis :: ', () => {
-  let john: ContractAPI;
+  let john: TestContractAPI;
   let mockGnosisRelay: MockGnosisRelayAPI;
   let seed: Seed;
   let provider: TestEthersProvider;
@@ -28,7 +28,7 @@ describe('Gnosis :: ', () => {
     const providerFork = await provider.fork();
 
     mockGnosisRelay = new MockGnosisRelayAPI();
-    john = await ContractAPI.userWrapper(
+    john = await TestContractAPI.userWrapper(
       ACCOUNTS[0],
       providerFork,
       seed.addresses,
@@ -53,18 +53,16 @@ describe('Gnosis :: ', () => {
 
   describe('getOrCreateGnosisSafe method', () => {
     test('should return wallet address if it exists', async done => {
-      john.augur
-        .events
-        .on(SubscriptionEventName.GnosisSafeStatus, payload => {
-          expect(payload).toEqual(
-            expect.objectContaining({
-              status: GnosisSafeState.AVAILABLE,
-              safe: gnosisSafe.address,
-              owner: john.account.publicKey,
-            })
-          );
-          done();
-        });
+      john.augur.events.on(SubscriptionEventName.GnosisSafeStatus, payload => {
+        expect(payload).toEqual(
+          expect.objectContaining({
+            status: GnosisSafeState.AVAILABLE,
+            safe: gnosisSafe.address,
+            owner: john.account.publicKey,
+          })
+        );
+        done();
+      });
 
       const gnosisSafe = await john.createGnosisSafeDirectlyWithETH();
 
@@ -75,22 +73,18 @@ describe('Gnosis :: ', () => {
     });
 
     test('should emit event with status if relay request was created', async done => {
-      john.augur
-        .events
-        .on(SubscriptionEventName.GnosisSafeStatus, payload => {
-          expect(payload).toEqual(
-            expect.objectContaining({
-              status: GnosisSafeState.WAITING_FOR_FUNDS,
-              safe: expect.stringContaining('0x'),
-              owner: john.account.publicKey,
-            })
-          );
-          done();
-        });
+      john.augur.events.on(SubscriptionEventName.GnosisSafeStatus, payload => {
+        expect(payload).toEqual(
+          expect.objectContaining({
+            status: GnosisSafeState.WAITING_FOR_FUNDS,
+            safe: expect.stringContaining('0x'),
+            owner: john.account.publicKey,
+          })
+        );
+        done();
+      });
 
-      await john.augur.gnosis.getOrCreateGnosisSafe(
-        john.account.publicKey
-      );
+      await john.augur.gnosis.getOrCreateGnosisSafe(john.account.publicKey);
     });
 
     test('should return creation params if relay request was created', async () => {
@@ -121,7 +115,8 @@ describe('Gnosis :: ', () => {
     };
 
     const calculatedAddress = await john.augur.gnosis.calculateGnosisSafeAddress(
-      calculateGnosisSafeAddressParams.owner, safe.payment
+      calculateGnosisSafeAddressParams.owner,
+      safe.payment
     );
 
     expect(calculatedAddress).toEqual(safe.safe);
@@ -139,7 +134,7 @@ describe('Gnosis :: ', () => {
       gasPriceEstimated: '0x1',
       gasEstimated: '0x7270e0',
       payment: '0x7270e0',
-      callback: '0x0000000000000000000000000000000000000000'
+      callback: '0x0000000000000000000000000000000000000000',
     };
 
     jest.spyOn(mockGnosisRelay, 'createSafe').mockResolvedValue(fakeResponse);
@@ -182,9 +177,9 @@ describe('Gnosis :: ', () => {
       // This is here to make TS happy.
       if (resp.status !== GnosisSafeState.CREATED) return;
 
-      john.augur
-        .events
-        .on(SubscriptionEventName.GnosisSafeStatus, async payload => {
+      john.augur.events.on(
+        SubscriptionEventName.GnosisSafeStatus,
+        async payload => {
           await expect(payload).toMatchObject({
             status: GnosisSafeState.AVAILABLE,
           });
@@ -196,7 +191,8 @@ describe('Gnosis :: ', () => {
             )
           ).resolves.toMatch(new RegExp(gnosisSafeResponse.safe, 'i'));
           done();
-        });
+        }
+      );
 
       const receipt = await john.provider.waitForTransaction(resp.txHash);
       await expect(receipt).not.toBeNull();

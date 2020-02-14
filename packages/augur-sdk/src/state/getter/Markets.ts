@@ -1,36 +1,44 @@
-import { BigNumber } from "bignumber.js";
-import { SearchResults } from "flexsearch";
-import { DB } from "../db/DB";
-import { MarketFields } from "../db/SyncableFlexSearch";
-import { Getter } from "./Router";
-import { Order, Orders, OrderState, OutcomeParam, OnChainTrading } from "./OnChainTrading";
-import {
-  Address,
-  DisputeDoc,
-  MarketData,
-  OrderEventType,
-  OrderType,
-  ParsedOrderEventLog,
-  NumOutcomes,
-} from "../logs/types";
 import { ExtraInfoTemplate } from '@augurproject/artifacts';
-import { sortOptions } from "./types";
-import { MarketReportingState } from "../../constants";
+import { BigNumber } from 'bignumber.js';
+import Dexie from 'dexie';
+import { SearchResults } from 'flexsearch';
+import * as t from 'io-ts';
+import * as _ from 'lodash';
+import { OrderBook } from '../../api/Liquidity';
+import { MarketReportingState } from '../../constants';
 import {
   Augur,
   convertOnChainAmountToDisplayAmount,
   convertOnChainPriceToDisplayPrice,
   marketTypeToName,
   numTicksToTickSize,
-  QUINTILLION
-} from "../../index";
-import { calculatePayoutNumeratorsValue, getOutcomeValue, PayoutNumeratorValue } from "../../utils";
-import { OrderBook } from "../../api/Liquidity";
-import * as _ from "lodash";
-import * as t from "io-ts";
-import { pipe } from "fp-ts/lib/pipeable";
-import { fold } from "fp-ts/lib/Either";
-import Dexie from "dexie";
+  QUINTILLION,
+} from '../../index';
+import {
+  calculatePayoutNumeratorsValue,
+  getOutcomeValue,
+  PayoutNumeratorValue,
+} from '../../utils';
+import { DB } from '../db/DB';
+import { MarketFields } from '../db/SyncableFlexSearch';
+import {
+  Address,
+  DisputeDoc,
+  MarketData,
+  NumOutcomes,
+  OrderEventType,
+  OrderType,
+  ParsedOrderEventLog,
+} from '../logs/types';
+import {
+  OnChainTrading,
+  Order,
+  Orders,
+  OrderState,
+  OutcomeParam,
+} from './OnChainTrading';
+import { Getter } from './Router';
+import { sortOptions } from './types';
 
 export enum GetMarketsSortBy {
   marketOI = 'marketOI',
@@ -747,7 +755,7 @@ export class Markets {
   ): Promise<MarketInfo[]> {
     if(params.marketIds.length === 0) return [];
 
-    const markets = await db.dexieDB["Markets"].where("market").anyOfIgnoreCase(params.marketIds).toArray();
+    const markets = await db.Markets.where("market").anyOfIgnoreCase(params.marketIds).toArray();
     const reportingFeeDivisor = await augur.contracts.universe.getOrCacheReportingFeeDivisor_();
 
     return getMarketsInfo(db, markets, reportingFeeDivisor);
@@ -1016,17 +1024,25 @@ async function getMarketsInfo(
   markets: MarketData[],
   reportingFeeDivisor: BigNumber
 ): Promise<MarketInfo[]> {
-  const marketIds = _.map(markets, "market");
+  const marketIds = _.map(markets, 'market');
   // TODO This is just used to get the last price. This can be acheived far more efficiently than pulling all order events for all time
-  const orderFilledLogs = await db.dexieDB["OrderEvent"].where("market").anyOfIgnoreCase(marketIds).and(function(item) { return item.eventType === OrderEventType.Fill }).toArray();
-  const disputeDocs = await db.dexieDB["Dispute"].where("market").anyOfIgnoreCase(marketIds).toArray();
-  const disputeDocsByMarket = _.groupBy(disputeDocs, "market");
-  const orderFilledLogsByMarket = _.groupBy(orderFilledLogs, "market");
+  const orderFilledLogs = await db.ParsedOrderEvent.where('market').
+    anyOfIgnoreCase(marketIds).
+    and(function(item) {
+      return item.eventType === OrderEventType.Fill;
+    }).
+    toArray();
+  const disputeDocs = await db.Dispute.where('market').
+    anyOfIgnoreCase(marketIds).
+    toArray();
+  const disputeDocsByMarket = _.groupBy(disputeDocs, 'market');
+  const orderFilledLogsByMarket = _.groupBy(orderFilledLogs, 'market');
 
   return _.map(markets, (marketData) => {
-    const orderFilledLogs = (orderFilledLogsByMarket[marketData.market] || []).sort((a, b) => {
+    const orderFilledLogs = (orderFilledLogsByMarket[marketData.market] ||
+      []).sort((a, b) => {
       // Same block, need to sort by logIndex.
-      if(a.blockNumber === b.blockNumber) {
+      if (a.blockNumber === b.blockNumber) {
         return b.logIndex - a.logIndex;
       }
 

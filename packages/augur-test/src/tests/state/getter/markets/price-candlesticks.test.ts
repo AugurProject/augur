@@ -1,26 +1,15 @@
 import { ORDER_TYPES } from '@augurproject/sdk';
-import { DB } from '@augurproject/sdk/build/state/db/DB';
-import { API } from '@augurproject/sdk/build/state/getter/API';
-import { BulkSyncStrategy } from '@augurproject/sdk/build/state/sync/BulkSyncStrategy';
 import { ContractAPI } from '@augurproject/tools';
+import { TestContractAPI } from '@augurproject/tools';
 import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
 import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
 import { BigNumber } from 'bignumber.js';
-import {
-  _beforeAll,
-  _beforeEach,
-  CHUNK_SIZE,
-  outcome0,
-  outcome1,
-} from './common';
+import { _beforeAll, _beforeEach, outcome0, outcome1 } from './common';
 
 describe('State API :: Markets :: GetMarkets', () => {
-  let db: Promise<DB>;
-  let api: API;
-  let john: ContractAPI;
-  let mary: ContractAPI;
+  let john: TestContractAPI;
+  let mary: TestContractAPI;
   let bob: ContractAPI;
-  let bulkSyncStrategy: BulkSyncStrategy;
 
   let baseProvider: TestEthersProvider;
   let markets = {};
@@ -33,16 +22,15 @@ describe('State API :: Markets :: GetMarkets', () => {
 
   beforeEach(async () => {
     const state = await _beforeEach({ baseProvider, markets });
-    db = state.db;
-    api = state.api;
     john = state.john;
     mary = state.mary;
     bob = state.bob;
-    bulkSyncStrategy = state.johnBulkSyncStrategy;
   });
 
   test(':getMarketPriceCandlesticks', async () => {
-    const yesNoMarket = john.augur.contracts.marketFromAddress(markets['yesNoMarket1']);
+    const yesNoMarket = john.augur.contracts.marketFromAddress(
+      markets['yesNoMarket1']
+    );
 
     const startTime = (await john.getTimestamp()).toNumber();
 
@@ -305,9 +293,9 @@ describe('State API :: Markets :: GetMarkets', () => {
 
     const endTime = (await john.getTimestamp()).toNumber();
 
-    await bulkSyncStrategy.start(0, await john.provider.getBlockNumber());
+    await john.sync();
 
-    let yesNoMarketPriceCandlesticks = await api.route(
+    let yesNoMarketPriceCandlesticks = await john.api.route(
       'getMarketPriceCandlesticks',
       {
         marketId: yesNoMarket.address,
@@ -400,12 +388,12 @@ describe('State API :: Markets :: GetMarkets', () => {
         expect(
           yesNoMarketPriceCandlesticks[outcome][candlestickIndex][
             'startTimestamp'
-            ]
+          ]
         ).toBeInstanceOf(Number);
       }
     }
 
-    yesNoMarketPriceCandlesticks = await api.route(
+    yesNoMarketPriceCandlesticks = await john.api.route(
       'getMarketPriceCandlesticks',
       {
         marketId: yesNoMarket.address,
@@ -455,7 +443,7 @@ describe('State API :: Markets :: GetMarkets', () => {
         expect(
           yesNoMarketPriceCandlesticks[outcome][candlestickIndex][
             'startTimestamp'
-            ]
+          ]
         ).toBeInstanceOf(Number);
       }
     }

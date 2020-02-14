@@ -1,6 +1,5 @@
 import Dexie from 'dexie';
 import { Augur } from '../../Augur';
-import { SubscriptionEventName } from '../../constants';
 import {
   LogCallbackType,
   LogFilterAggregatorInterface,
@@ -28,7 +27,8 @@ import {
   MarketOIChangedLog,
   MarketParticipantsDisavowedLog,
   MarketTransferredLog,
-  MarketVolumeChangedLog, OrderEventLog,
+  MarketVolumeChangedLog,
+  OrderEventLog,
   ParsedOrderEventLog,
   ParticipationTokensRedeemedLog,
   ProfitLossChangedLog,
@@ -71,7 +71,7 @@ export class DB {
   private syncableDatabases: { [dbName: string]: BaseSyncableDB } = {};
   private disputeDatabase: DisputeDatabase;
   private currentOrdersDatabase: CurrentOrdersDatabase;
-  private marketDatabase: MarketDB;
+  public marketDatabase: MarketDB;
   private cancelledOrdersDatabase: CancelledOrdersDB;
   private parsedOrderEventDatabase: ParsedOrderEventDB;
   private zeroXOrders: ZeroXOrders;
@@ -226,10 +226,43 @@ export class DB {
   async getSyncStartingBlock(): Promise<number> {
     const highestSyncBlocks = [];
     for (const genericEventDBDescription of this.genericEventDBDescriptions) {
-      highestSyncBlocks.push(await this.syncStatus.getHighestSyncBlock(genericEventDBDescription.EventName));
+      highestSyncBlocks.push(await this.syncStatus.getHighestSyncBlock(
+        genericEventDBDescription.EventName));
     }
 
     return Math.min(...highestSyncBlocks);
+  }
+
+  /**
+   * Syncs generic events and user-specific events with blockchain and updates MetaDB info.
+   */
+  async sync(highestAvailableBlockNumber?: number): Promise<void> {
+    const dbSyncPromises = [];
+    if(!highestAvailableBlockNumber) {
+      highestAvailableBlockNumber = await this.augur.provider.getBlockNumber();
+    }
+
+    for (const {EventName:dbName, primaryKey } of this.genericEventDBDescriptions) {
+      if (primaryKey) {
+        dbSyncPromises.push(
+          this.syncableDatabases[`${dbName}Rollup`].sync(
+            highestAvailableBlockNumber,
+          ),
+        );
+      }
+    }
+
+    await Promise.all(dbSyncPromises);
+
+    // Derived DBs are synced after generic log DBs complete
+    console.log('Syncing derived DBs');
+
+    await this.disputeDatabase.sync(highestAvailableBlockNumber);
+    await this.currentOrdersDatabase.sync(highestAvailableBlockNumber);
+    await this.cancelledOrdersDatabase.sync(highestAvailableBlockNumber);
+
+    // The Market DB syncs after the derived DBs, as it depends on a derived DB
+    await this.marketDatabase.sync(highestAvailableBlockNumber);
   }
 
   /**
@@ -239,10 +272,18 @@ export class DB {
    */
   rollback = async (blockNumber: number): Promise<void> => {
     const dbRollbackPromises = [];
-    // Perform rollback on SyncableDBs & UserSyncableDBs
+    // Perform rollback on SyncableDBs & rollups
     for (const genericEventDBDescription of this.genericEventDBDescriptions) {
       const dbName = genericEventDBDescription.EventName;
       dbRollbackPromises.push(this.syncableDatabases[dbName].rollback(blockNumber));
+
+      if (genericEventDBDescription.primaryKey) {
+        dbRollbackPromises.push(
+          this.syncableDatabases[`${genericEventDBDescription.EventName}Rollup`].rollback(
+            blockNumber,
+          ),
+        );
+      }
     }
 
     // Perform rollback on derived DBs

@@ -125,7 +125,7 @@ export class WarpController {
   async createInitialCheckpoint() {
     const mostRecentCheckpoint = await this.db.warpCheckpoints.getMostRecentCheckpoint();
     if (!mostRecentCheckpoint) {
-      this.db.warpCheckpoints.createInitialCheckpoint(this.uploadBlockNumber);
+      await this.db.warpCheckpoints.createInitialCheckpoint(this.uploadBlockNumber);
     }
   }
 

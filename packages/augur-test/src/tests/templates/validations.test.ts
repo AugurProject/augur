@@ -169,19 +169,26 @@ const templateValidations = [
   },
   {
     skip: false,
-    title: 'Will the total gross for bob be $333 USD or more, on domestic opening weekend of January 17, 2020 in the US, according to www.boxofficemojo.com/?',
-    templateInfo: '{"hash":"0xb73321f8c801632a143f77240aa90d211fa69313d3a3dc206a504aaa06464ec0","question":"Will the total gross for [0] be $[1] USD or more, on domestic opening weekend of [2] in the US, according to www.boxofficemojo.com/?","inputs":[{"id":0,"value":"bob","type":"TEXT","timestamp":null},{"id":1,"value":"333","type":"TEXT","timestamp":null},{"id":2,"value":"January 17, 2020","type":"DATEYEAR","timestamp":1579240800}]}',
+    title:
+      'Will the total gross for bob be $333 USD or more, on domestic opening weekend of January 17, 2020 in the US, according to www.boxofficemojo.com/?',
+    templateInfo:
+      '{"hash":"0xb73321f8c801632a143f77240aa90d211fa69313d3a3dc206a504aaa06464ec0","question":"Will the total gross for [0] be $[1] USD or more, on domestic opening weekend of [2] in the US, according to www.boxofficemojo.com/?","inputs":[{"id":0,"value":"bob","type":"TEXT","timestamp":null},{"id":1,"value":"333","type":"TEXT","timestamp":null},{"id":2,"value":"January 17, 2020","type":"DATEYEAR","timestamp":1579240800}]}',
     endTime: '1579687200',
-    resolutionRules: 'Gross total should include the first Friday through Sunday of the movie release and does not include extra days due to holidays\nThis market is intended to be about a Single Movie, if this is not the case, this market should settle as invalid.\nIf www.boxofficemojo.com is down or not available use www.the-numbers.com to determine domestic US total gross of movie.',
-    result: 'success'
+    resolutionRules:
+      'Gross total should include the first Friday through Sunday of the movie release and does not include extra days due to holidays\nThis market is intended to be about a Single Movie, if this is not the case, this market should settle as invalid.\nIf www.boxofficemojo.com is down or not available use www.the-numbers.com to determine domestic US total gross of movie.',
+    result: 'success',
   },
   {
     skip: false,
-    title: 'Will the total gross for bob be $333 USD or more, on domestic opening weekend of January 17, 2020 in the US, according to www.boxofficemojo.com/?',
-    templateInfo: '{"hash":"0xb73321f8c801632a143f77240aa90d211fa69313d3a3dc206a504aaa06464ec0","question":"Will the total gross for [0] be $[1] USD or more, on domestic opening weekend of [2] in the US, according to www.boxofficemojo.com/?","inputs":[{"id":0,"value":"bob","type":"TEXT","timestamp":null},{"id":1,"value":"333","type":"TEXT","timestamp":null},{"id":2,"value":"January 17, 2020","type":"DATEYEAR","timestamp":1579240800}]}',
+    title:
+      'Will the total gross for bob be $333 USD or more, on domestic opening weekend of January 17, 2020 in the US, according to www.boxofficemojo.com/?',
+    templateInfo:
+      '{"hash":"0xb73321f8c801632a143f77240aa90d211fa69313d3a3dc206a504aaa06464ec0","question":"Will the total gross for [0] be $[1] USD or more, on domestic opening weekend of [2] in the US, according to www.boxofficemojo.com/?","inputs":[{"id":0,"value":"bob","type":"TEXT","timestamp":null},{"id":1,"value":"333","type":"TEXT","timestamp":null},{"id":2,"value":"January 17, 2020","type":"DATEYEAR","timestamp":1579240800}]}',
     endTime: '1579350800',
-    resolutionRules: 'Gross total should include the first Friday through Sunday of the movie release and does not include extra days due to holidays\nThis market is intended to be about a Single Movie, if this is not the case, this market should settle as invalid.\nIf www.boxofficemojo.com is down or not available use www.the-numbers.com to determine domestic US total gross of movie.',
-    result: 'event expiration can not be before Wednesday after movie opening weekend and/or opening day must be a friday'
+    resolutionRules:
+      'Gross total should include the first Friday through Sunday of the movie release and does not include extra days due to holidays\nThis market is intended to be about a Single Movie, if this is not the case, this market should settle as invalid.\nIf www.boxofficemojo.com is down or not available use www.the-numbers.com to determine domestic US total gross of movie.',
+    result:
+      'event expiration can not be before Wednesday after movie opening weekend and/or opening day must be a friday',
   },
 ];
 

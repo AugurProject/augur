@@ -50,10 +50,7 @@ export class DerivedDB extends RollbackTable {
     }
   }
 
-  async onBulkSyncComplete({highestAvailableBlockNumber}) {
-    console.log('onBulkSyncComplete-checkpoint-1');
-
-    await this.sync(highestAvailableBlockNumber);
+  async onBulkSyncComplete() {
     this.stateDB.registerEventListener(this.mergeEventNames, this.handleMergeEvent.bind(this));
   }
 

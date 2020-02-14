@@ -1,10 +1,8 @@
+import { ParsedLog } from '@augurproject/types';
 import * as _ from 'lodash';
-import { BaseDocument } from './AbstractTable';
 import { Augur } from '../../Augur';
+import { BaseDocument } from './AbstractTable';
 import { DB } from './DB';
-import { Log, ParsedLog } from '@augurproject/types';
-import { SyncStatus } from './SyncStatus';
-import { SubscriptionEventName } from '../../constants';
 import { RollbackTable } from './RollbackTable';
 
 export interface Document extends BaseDocument {
@@ -73,12 +71,18 @@ export class BaseSyncableDB extends RollbackTable {
       });
     }
 
-    await this.syncStatus.setHighestSyncBlock(this.dbName, blocknumber, this.syncing);
+    await this.syncStatus.setHighestSyncBlock(this.dbName, blocknumber,
+      this.syncing);
 
     return blocknumber;
   };
 
-  protected async getLogs(augur: Augur, startBlock: number, endBlock: number): Promise<ParsedLog[]> {
+  async sync(highestAvailableBlockNumber: number): Promise<void> {
+    // This is a no-op for generic dbs.
+  }
+
+  protected async getLogs(
+    augur: Augur, startBlock: number, endBlock: number): Promise<ParsedLog[]> {
     return augur.contractEvents.getLogs(this.eventName, startBlock, endBlock);
   }
 

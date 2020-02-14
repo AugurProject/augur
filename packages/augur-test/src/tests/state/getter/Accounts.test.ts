@@ -1,43 +1,28 @@
 import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
-import { DB } from '@augurproject/sdk/build/state/db/DB';
 import { Action, Coin } from '@augurproject/sdk/build/state/getter/Accounts';
-import { API } from '@augurproject/sdk/build/state/getter/API';
-import { BulkSyncStrategy } from '@augurproject/sdk/build/state/sync/BulkSyncStrategy';
-import {
-  ACCOUNTS,
-  ContractAPI,
-  defaultSeedPath,
-  loadSeedFile,
-} from '@augurproject/tools';
+import { ACCOUNTS, defaultSeedPath, loadSeedFile } from '@augurproject/tools';
+import { TestContractAPI } from '@augurproject/tools';
 import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
 import { BigNumber } from 'bignumber.js';
-import { makeDbMock, makeProvider } from '../../../libs';
-
-const mock = makeDbMock();
+import { makeProvider } from '../../../libs';
 
 describe('State API :: Accounts :: ', () => {
-  let bulkSyncStrategy: BulkSyncStrategy;
-  let db: Promise<DB>;
-  let api: API;
-  let john: ContractAPI;
-  let mary: ContractAPI;
+  let john: TestContractAPI;
+  let mary: TestContractAPI;
 
   beforeAll(async () => {
     const seed = await loadSeedFile(defaultSeedPath);
     const provider = await makeProvider(seed, ACCOUNTS);
 
-    john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, seed.addresses);
-    mary = await ContractAPI.userWrapper(ACCOUNTS[1], provider, seed.addresses);
-
-
-    db = mock.makeDB(john.augur, ACCOUNTS);
-    api = new API(john.augur, db);
-
-    bulkSyncStrategy = new BulkSyncStrategy(
-      john.provider.getLogs,
-      (await db).logFilters.buildFilter,
-      (await db).logFilters.onLogsAdded,
-      john.augur.contractEvents.parseLogs,
+    john = await TestContractAPI.userWrapper(
+      ACCOUNTS[0],
+      provider,
+      seed.addresses
+    );
+    mary = await TestContractAPI.userWrapper(
+      ACCOUNTS[1],
+      provider,
+      seed.addresses
     );
 
     await john.approveCentralAuthority();
@@ -54,9 +39,9 @@ describe('State API :: Accounts :: ', () => {
     ]);
     const johnScalarMarket = await john.createReasonableScalarMarket();
 
-    await bulkSyncStrategy.start(0, await john.provider.getBlockNumber());
+    await john.sync();
 
-    let accountTransactionHistory = await api.route(
+    let accountTransactionHistory = await john.api.route(
       'getAccountTransactionHistory',
       {
         universe: john.augur.contracts.universe.address.toLowerCase(), // Test that lower-case addresses can be passed in
@@ -201,10 +186,13 @@ describe('State API :: Accounts :: ', () => {
       stringTo32ByteHex('42')
     );
 
-    await bulkSyncStrategy.start(0, await john.provider.getBlockNumber());
+    await john.sync();
 
     // Fill orders
-    const cost = numShares.times(78).div(10).times(1e18);
+    const cost = numShares
+      .times(78)
+      .div(10)
+      .times(1e18);
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnYesNoMarket.address, outcome0),
       numShares.div(10).times(2),
@@ -254,9 +242,9 @@ describe('State API :: Accounts :: ', () => {
       cost
     );
 
-    await bulkSyncStrategy.start(0, await john.provider.getBlockNumber());
+    await john.sync();
 
-    accountTransactionHistory = await api.route(
+    accountTransactionHistory = await john.api.route(
       'getAccountTransactionHistory',
       {
         universe: john.augur.contracts.universe.address,
@@ -320,7 +308,7 @@ describe('State API :: Accounts :: ', () => {
         fee: '0',
         marketDescription: 'Categorical market description',
         outcome: 1,
-        outcomeDescription:'A'.padEnd(32, '\u0000'),
+        outcomeDescription: 'A'.padEnd(32, '\u0000'),
 
         price: '0.22',
         quantity: '30',
@@ -364,7 +352,7 @@ describe('State API :: Accounts :: ', () => {
       },
     ]);
 
-    await bulkSyncStrategy.start(0, await john.provider.getBlockNumber());
+    await john.sync();
 
     // Move time to open reporting
     let newTime = (await johnYesNoMarket.getEndTime_()).plus(
@@ -385,9 +373,9 @@ describe('State API :: Accounts :: ', () => {
     ];
     await john.doInitialReport(johnYesNoMarket, noPayoutSet);
 
-    await bulkSyncStrategy.start(0, await john.provider.getBlockNumber());
+    await john.sync();
 
-    accountTransactionHistory = await api.route(
+    accountTransactionHistory = await john.api.route(
       'getAccountTransactionHistory',
       {
         universe: john.augur.contracts.universe.address,
@@ -419,12 +407,17 @@ describe('State API :: Accounts :: ', () => {
     await john.setTimestamp(newTime);
 
     // Purchase participation tokens
-    const curDisputeWindowAddress = await john.getOrCreateCurrentDisputeWindow(false);
+    const curDisputeWindowAddress = await john.getOrCreateCurrentDisputeWindow(
+      false
+    );
     const curDisputeWindow = await john.augur.contracts.disputeWindowFromAddress(
       curDisputeWindowAddress
     );
     const amountParticipationTokens = new BigNumber(1).pow(18);
-    await john.buyParticipationTokens(curDisputeWindow.address, amountParticipationTokens);
+    await john.buyParticipationTokens(
+      curDisputeWindow.address,
+      amountParticipationTokens
+    );
 
     await john.repFaucet(new BigNumber(1e25));
     await mary.repFaucet(new BigNumber(1e25));
@@ -436,16 +429,13 @@ describe('State API :: Accounts :: ', () => {
         //  the market johnYesNoMarket is used
         //  this used to work because john has a ton of extra REP. now he doesn't
         const market = await mary.getMarketContract(johnYesNoMarket.address);
-        await mary.contribute(
-          market,
-          yesPayoutSet,
-          new BigNumber(2).pow(18)
-        );
+        await mary.contribute(market, yesPayoutSet, new BigNumber(2).pow(18));
         const remainingToFill = await john.getRemainingToFill(
           johnYesNoMarket,
           yesPayoutSet
         );
-        if (remainingToFill.gte(0)) await mary.contribute(market, yesPayoutSet, remainingToFill);
+        if (remainingToFill.gte(0))
+          await mary.contribute(market, yesPayoutSet, remainingToFill);
       } else {
         await john.contribute(
           johnYesNoMarket,
@@ -456,13 +446,14 @@ describe('State API :: Accounts :: ', () => {
           johnYesNoMarket,
           noPayoutSet
         );
-        if (remainingToFill.gte(0)) await john.contribute(johnYesNoMarket, noPayoutSet, remainingToFill);
+        if (remainingToFill.gte(0))
+          await john.contribute(johnYesNoMarket, noPayoutSet, remainingToFill);
       }
     }
 
-    await bulkSyncStrategy.start(0, await john.provider.getBlockNumber());
+    await john.sync();
 
-    accountTransactionHistory = await api.route(
+    accountTransactionHistory = await john.api.route(
       'getAccountTransactionHistory',
       {
         universe: john.augur.contracts.universe.address,
@@ -511,7 +502,10 @@ describe('State API :: Accounts :: ', () => {
     );
 
     // Redeem participation tokens
-    await john.redeemParticipationTokens(curDisputeWindow.address, john.account.publicKey);
+    await john.redeemParticipationTokens(
+      curDisputeWindow.address,
+      john.account.publicKey
+    );
 
     // Claim initial reporter
     const initialReporter = await john.getInitialReporter(johnYesNoMarket);
@@ -527,12 +521,12 @@ describe('State API :: Accounts :: ', () => {
     await john.augur.contracts.shareToken.claimTradingProceeds(
       johnYesNoMarket.address,
       john.account.publicKey,
-      stringTo32ByteHex(''),
+      stringTo32ByteHex('')
     );
 
-    await bulkSyncStrategy.start(0, await john.provider.getBlockNumber());
+    await john.sync();
 
-    accountTransactionHistory = await api.route(
+    accountTransactionHistory = await john.api.route(
       'getAccountTransactionHistory',
       {
         universe: john.augur.contracts.universe.address,
@@ -555,7 +549,7 @@ describe('State API :: Accounts :: ', () => {
       },
     ]);
 
-    accountTransactionHistory = await api.route(
+    accountTransactionHistory = await john.api.route(
       'getAccountTransactionHistory',
       {
         universe: john.augur.contracts.universe.address,
@@ -590,7 +584,7 @@ describe('State API :: Accounts :: ', () => {
       },
     ]);
 
-    accountTransactionHistory = await api.route(
+    accountTransactionHistory = await john.api.route(
       'getAccountTransactionHistory',
       {
         universe: john.augur.contracts.universe.address,
@@ -626,7 +620,7 @@ describe('State API :: Accounts :: ', () => {
     ]);
 
     // Test earliestTransactionTime/latestTransactionTime params
-    accountTransactionHistory = await api.route(
+    accountTransactionHistory = await john.api.route(
       'getAccountTransactionHistory',
       {
         universe: john.augur.contracts.universe.address,
@@ -642,7 +636,6 @@ describe('State API :: Accounts :: ', () => {
       }
     );
     expect(accountTransactionHistory.length).toEqual(7);
-
   });
 
   test(':getUserCurrentDisputeStake', async () => {
@@ -681,9 +674,9 @@ describe('State API :: Accounts :: ', () => {
     await john.contribute(johnYesNoMarket, noPayoutSet, new BigNumber(5));
     await john.contribute(johnYesNoMarket, noPayoutSet, new BigNumber(7));
 
-    await bulkSyncStrategy.start(0, await john.provider.getBlockNumber());
+    await john.sync();
 
-    let userCurrentDisputeStake = await api.route(
+    let userCurrentDisputeStake = await john.api.route(
       'getUserCurrentDisputeStake',
       {
         marketId: johnYesNoMarket.address,
@@ -692,19 +685,19 @@ describe('State API :: Accounts :: ', () => {
     );
 
     await expect(userCurrentDisputeStake).toContainEqual({
-      outcome: "0",
+      outcome: '0',
       isInvalid: true,
       malformed: undefined,
-      payoutNumerators: ["100", "0", "0"],
-      userStakeCurrent: "4",
+      payoutNumerators: ['100', '0', '0'],
+      userStakeCurrent: '4',
     });
 
     await expect(userCurrentDisputeStake).toContainEqual({
-      outcome: "1",
+      outcome: '1',
       isInvalid: undefined,
       malformed: undefined,
-      payoutNumerators: ["0", "100", "0"],
-      userStakeCurrent: "12",
+      payoutNumerators: ['0', '100', '0'],
+      userStakeCurrent: '12',
     });
   });
 });
