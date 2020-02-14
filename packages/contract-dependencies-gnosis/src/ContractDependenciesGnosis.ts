@@ -68,6 +68,9 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
       }
       catch (error) {
         if (error === TransactionStatus.RELAYER_DOWN) {
+          // Relayer down we must clear the queue
+          await this._relayQueue.kill();
+
           this.onTransactionStatusChanged(
             request.txMetadata,
             TransactionStatus.RELAYER_DOWN,
@@ -78,8 +81,6 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
             TransactionStatus.FAILURE,
           );
         }
-
-        await this._relayQueue.kill();
         throw error;
       }
     } else{
