@@ -19,6 +19,11 @@ const analytics = isLocalHost() ? {} : Analytics({
 });
 */
 
-const analytics = {};
+const analytics = {
+  track: (name, data) => {},
+  page: (data) => {},
+  reset: () => {},
+  identify: (name, data) => {}
+};
 
 export { analytics };
