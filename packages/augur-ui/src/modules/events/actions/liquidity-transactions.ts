@@ -1,21 +1,9 @@
 import { createBigNumber } from "utils/create-big-number";
 import { convertOnChainPriceToDisplayPrice, Events, Getters } from "@augurproject/sdk/build";
-import { TX_PRICE, TX_OUTCOMES, TX_PRICES, TX_TYPES, TX_OUTCOME_ID, TX_ORDER_TYPE, ZERO, BUY, SELL } from "modules/common/constants";
+import { TX_OUTCOMES, TX_PRICES, TX_TYPES, ZERO, BUY, SELL } from "modules/common/constants";
 import { deleteSuccessfulLiquidityOrder, updateLiquidityOrderStatus } from "modules/orders/actions/liquidity-management";
-
-export function deleteLiquidityOrder(
-  tx: Events.TXStatus,
-  market: Getters.Markets.MarketInfo,
-  dispatch
-) {
-  const properties = processLiquidityOrder(tx, market);
-  dispatch(
-    deleteSuccessfulLiquidityOrder({
-      txParamHash: properties.transactionHash,
-      ...properties,
-    })
-  );
-}
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
 export function deleteMultipleLiquidityOrders(
   tx: Events.TXStatus,
@@ -67,11 +55,10 @@ interface Tx {
   orderPrice: string
 }
 
-export function setLiquidityOrderStatus(
+export const setLiquidityOrderStatus = (
   tx: Tx,
-  market: Getters.Markets.MarketInfo,
-  dispatch
-) {
+  market: Getters.Markets.MarketInfo
+) => (dispatch: ThunkDispatch<void, any, Action>) => {
   const properties = processLiquidityOrder(tx, market);
   return dispatch(
     updateLiquidityOrderStatus({
@@ -80,7 +67,7 @@ export function setLiquidityOrderStatus(
       eventName: tx.eventName,
     })
   );
-}
+};
 
 export function processLiquidityOrder(
   tx: Tx,

@@ -162,7 +162,6 @@ export const sendLiquidityOrder = (options: any) => async (
         eventName: TXEventName.Pending,
       },
       market,
-      dispatch
     )
   );
 
@@ -249,7 +248,6 @@ const createZeroXLiquidityOrders = async (
             eventName: TXEventName.Pending,
           },
           market,
-          dispatch
         )
       );
     }
@@ -290,7 +288,6 @@ const createZeroXLiquidityOrders = async (
                 eventName: TXEventName.Failure,
               },
               market,
-              dispatch
             )
           );
         });
