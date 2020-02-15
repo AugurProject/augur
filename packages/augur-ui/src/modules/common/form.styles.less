@@ -31,6 +31,14 @@
         margin: 0;
       }
 
+      > div {
+        width: unset;
+
+        > div {
+          min-width: unset;
+        }
+      }
+
       > button {
         z-index: @above-all-content;
         max-width: @size-32;
@@ -101,11 +109,6 @@
       > div,
       > div[class*='Normal'] {
         min-width: 100%;
-        width: unset;
-
-        > div {
-          min-width: unset;
-        }
       }
 
       > div[class*='TextInput'],

@@ -1234,10 +1234,6 @@ interface LocationDisplayProps {
 export class LocationDisplay extends React.Component<LocationDisplayProps, {}> {
   scrollTo: any = null;
 
-  componentDidUpdate(prevProps) {
-    this.scrollTo && this.scrollTo.scrollLeft = 50;
-  }
-
   render() {
     const { pages, currentStep } = this.props;
     return (
