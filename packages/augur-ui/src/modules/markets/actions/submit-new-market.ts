@@ -66,7 +66,7 @@ export function submitNewMarket(
                 ...p,
                 {
                   id: i.id,
-                  value: i.userInput,
+                  value: i.userInput.trim(),
                   type: i.type,
                   timestamp:
                     (i.type === TemplateInputType.DATETIME &&
