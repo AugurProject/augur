@@ -73,7 +73,7 @@ export function setLiquidityOrderStatus(
   dispatch
 ) {
   const properties = processLiquidityOrder(tx, market);
-  dispatch(
+  return dispatch(
     updateLiquidityOrderStatus({
       txParamHash: properties.transactionHash,
       ...properties,

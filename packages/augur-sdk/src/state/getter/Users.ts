@@ -8,12 +8,10 @@ import {
   ParsedOrderEventLog,
   LogTimestamp,
   MarketData,
-  OrderState,
   Log,
 } from '../logs/types';
 import {
   DisputeCrowdsourcerRedeemed,
-  MarketFinalized,
   OrderEvent,
   ProfitLossChanged,
 } from '../../event-handlers';
@@ -25,7 +23,6 @@ import {
 } from '../../index';
 import { sortOptions } from './types';
 import { MarketReportingState, OrderEventType } from '../../constants';
-import { formatBytes32String } from 'ethers/utils';
 
 import * as _ from 'lodash';
 import * as t from 'io-ts';
@@ -33,24 +30,16 @@ import { QUINTILLION } from '../../utils';
 import {
   OnChainTrading,
   MarketTradingHistory,
-  Orders,
   getMarkets,
   Order,
 } from './OnChainTrading';
 import { MarketInfo, Markets } from './Markets';
 import { Accounts, AccountReportingHistory } from './Accounts';
-import { PlaceTradeDisplayParams } from '../../api/Trade';
-import * as uuid from 'uuid';
-import { ethers } from 'ethers';
-import {
-  convertDisplayAmountToOnChainAmount,
-  convertDisplayPriceToOnChainPrice,
-  numTicksToTickSizeWithDisplayPrices,
-} from '../../utils';
-import { StoredOrder } from '../db/ZeroXOrders';
 import { ZeroXOrders } from './ZeroXOrdersGetters';
 
-const DEFAULT_NUMBER_OF_BUCKETS = 30;
+const ONE_DAY = 1;
+const DAYS_IN_MONTH = 30
+const DEFAULT_NUMBER_OF_BUCKETS = DAYS_IN_MONTH;
 
 const userTradingPositionsParams = t.intersection([
   t.type({
@@ -157,7 +146,7 @@ export interface UserTradingPositions {
     // per-market rollup of trading positions
     [marketId: string]: MarketTradingPosition;
   };
-  frozenFundsTotal: string; // User's total frozen funds. See docs on FrozenFunds. This total includes market validity bonds in addition to sum of frozen funds for all market outcomes in which user has a position.
+  frozenFundsTotal: string; // User's total frozen funds. See docs on FrozenFunds. This total includes sum of frozen funds for all market outcomes in which user has a position.
   unrealizedRevenue24hChangePercent: string;
 }
 
@@ -282,10 +271,10 @@ export class Users {
 
     if (positions && Object.keys(positions).length > 0) {
       userPositionTotals = {
-        totalFrozenFunds: userPositions.frozenFundsTotal,
-        totalRealizedPL: positions[30].realized,
+        totalFrozenFunds: positions[DAYS_IN_MONTH].frozenFunds,
+        totalRealizedPL: positions[DAYS_IN_MONTH].realized,
         tradingPositionsTotal: {
-          unrealizedRevenue24hChangePercent: positions[1].unrealizedPercent,
+          unrealizedRevenue24hChangePercent: positions[ONE_DAY].unrealizedPercent,
         },
       };
     }
@@ -815,15 +804,6 @@ export class Users {
       },
       new BigNumber(0)
     );
-    const ownedMarketsResponse = await db.Markets.where('marketCreator')
-      .equals(params.account)
-      .and(log => !log.finalized)
-      .toArray();
-    const ownedMarkets = _.map(ownedMarketsResponse, 'market');
-    const totalValidityBonds = await augur.contracts.hotLoading.getTotalValidityBonds_(
-      ownedMarkets
-    );
-    frozenFundsTotal = frozenFundsTotal.plus(totalValidityBonds);
 
     const universe = params.universe
       ? params.universe
@@ -838,7 +818,7 @@ export class Users {
       tradingPositionsPerMarket: marketTradingPositions,
       frozenFundsTotal: frozenFundsTotal.dividedBy(QUINTILLION).toFixed(),
       unrealizedRevenue24hChangePercent:
-        (profitLossSummary && profitLossSummary[1].unrealizedPercent) || '0',
+        (profitLossSummary && profitLossSummary[ONE_DAY].unrealizedPercent) || '0',
     };
   }
 
@@ -995,7 +975,7 @@ export class Users {
     const now = await augur.contracts.augur.getTimestamp_();
     const endTime = params.endTime || now.toNumber();
 
-    for (const days of [1, 30]) {
+    for (const days of [ONE_DAY, DAYS_IN_MONTH]) {
       const periodInterval = days * 60 * 60 * 24;
       const startTime = endTime - periodInterval;
 
@@ -1016,7 +996,6 @@ export class Users {
           'PL calculation in summary returning more thant two bucket'
         );
       }
-
       const negativeStartProfit: MarketTradingPosition = {
         timestamp: startProfit.timestamp,
         realized: new BigNumber(startProfit.realized).negated().toFixed(),
@@ -1036,6 +1015,19 @@ export class Users {
       result[days] = sumTradingPositions([endProfit, negativeStartProfit]);
     }
 
+    const ownedMarketsResponse = await db.Markets.where('marketCreator')
+      .equals(params.account)
+      .and(log => !log.finalized)
+      .toArray();
+    const ownedMarkets = _.map(ownedMarketsResponse, 'market');
+    const totalValidityBonds = await augur.contracts.hotLoading.getTotalValidityBonds_(
+      ownedMarkets
+    );
+    result[DAYS_IN_MONTH].frozenFunds = new BigNumber(
+      result[DAYS_IN_MONTH].frozenFunds
+    )
+      .plus(totalValidityBonds.dividedBy(QUINTILLION))
+      .toFixed();
     return result;
   }
 }

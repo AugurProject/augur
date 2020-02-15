@@ -280,6 +280,9 @@ export const handleDBMarketCreatedEvent = (event: any) => (
           const market = marketInfos[id]
           if (market) {
             dispatch(removePendingDataByHash(market.transactionHash, CREATE_MARKET))
+            if (isSameAddress(market.author, getState().loginAccount.address)) {
+              dispatch(loadAllAccountPositions());
+            }
           }
         })
       )
