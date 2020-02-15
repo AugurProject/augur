@@ -3,6 +3,7 @@ import ipfsPlugin from './plugin-ipfs';
 import { isLocalHost } from 'utils/is-localhost';
 import segmentPlugin from '@analytics/segment';
 
+/*
 const analytics = isLocalHost() ? {} : Analytics({
   app: 'augur-ui',
   version: 3,
@@ -16,5 +17,8 @@ const analytics = isLocalHost() ? {} : Analytics({
     }),
   ],
 });
+*/
+
+const analytics = {};
 
 export { analytics };
