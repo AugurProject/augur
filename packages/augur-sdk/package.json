@@ -76,7 +76,7 @@
     "websocket-as-promised": "1.0.1",
     "worker-loader": "2.0.0",
     "ws": "7.1.2",
-    "yarn": "1.17.3"
+    "yarn": "1.22.0"
   },
   "devDependencies": {
     "@augurproject/types": "2.0.0-alpha.2",
