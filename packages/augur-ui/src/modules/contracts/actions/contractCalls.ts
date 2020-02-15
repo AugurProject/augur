@@ -37,6 +37,7 @@ import { CreateMarketData, LiquidityOrder } from 'modules/types';
 import { formatBytes32String } from 'ethers/utils';
 import { constructMarketParams } from 'modules/create-market/helpers/construct-market-params';
 import { ExtraInfoTemplate } from '@augurproject/artifacts';
+import { getFingerprint } from 'utils/get-fingerprint';
 
 export function clearUserTx(): void {
   // const Augur = augurSdk.get();
@@ -805,7 +806,7 @@ export async function placeTrade(
   marketId: string,
   numOutcomes: number,
   outcomeId: number,
-  fingerprint: string = formatBytes32String('11'),
+  fingerprint: string = getFingerprint(),
   doNotCreateOrders: boolean,
   numTicks: BigNumber | string,
   minPrice: BigNumber | string,
@@ -814,7 +815,7 @@ export async function placeTrade(
   displayPrice: BigNumber | string,
   displayShares: BigNumber | string,
   expirationTime?: BigNumber,
-  tradeGroupId?: Number,
+  tradeGroupId?: string,
 ): Promise<void> {
   const Augur = augurSdk.get();
   const params: PlaceTradeDisplayParams = {
@@ -841,7 +842,7 @@ export async function simulateTrade(
   marketId: string,
   numOutcomes: number,
   outcomeId: number,
-  fingerprint: string = formatBytes32String('11'),
+  fingerprint: string = getFingerprint(),
   doNotCreateOrders: boolean,
   numTicks: BigNumber | string,
   minPrice: BigNumber | string,
@@ -876,7 +877,7 @@ export async function simulateTradeGasLimit(
   marketId: string,
   numOutcomes: number,
   outcomeId: number,
-  fingerprint: string = formatBytes32String('11'),
+  fingerprint: string = getFingerprint(),
   doNotCreateOrders: boolean,
   numTicks: BigNumber | string,
   minPrice: BigNumber | string,
@@ -909,7 +910,7 @@ export async function simulateTradeGasLimit(
 export async function claimMarketsProceedsEstimateGas(
   markets: string[],
   shareHolder: string,
-  fingerprint: string = formatBytes32String('11')
+  fingerprint: string = getFingerprint();
 ) {
   const augur = augurSdk.get();
 
