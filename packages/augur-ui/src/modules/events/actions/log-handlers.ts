@@ -41,6 +41,7 @@ import {
   MODAL_ERROR,
   REDEEMSTAKE,
   CREATE_MARKET,
+  MODAL_GAS_PRICE,
 } from 'modules/common/constants';
 import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
@@ -151,6 +152,14 @@ export const handleTxRelayerDown = (txStatus: Events.TXStatus) => (
   dispatch(addUpdateTransaction(txStatus));
 };
 
+export const handleTxFeeTooLow = (txStatus: Events.TXStatus) => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  console.log('TxFeeTooLow Transaction', txStatus.transaction.name);
+  dispatch(addUpdateTransaction(txStatus));
+  dispatch(updateModal({ type: MODAL_GAS_PRICE, feeTooLow: true }));
+};
 
 export const handleGnosisStateUpdate = (response) => async(
   dispatch: ThunkDispatch<void, any, Action>,

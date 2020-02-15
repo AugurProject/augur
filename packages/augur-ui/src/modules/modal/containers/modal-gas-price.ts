@@ -23,9 +23,16 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   },
 });
 
+const mergeProps = (sP: any, dP: any) => ({
+  closeAction: dP.closeAction,
+  saveAction: dP.saveAction,
+  feeTooLow: sP.modal.feeTooLow,
+});
+
 export default withRouter(
   connect(
     mapStateToProps,
-    mapDispatchToProps
+    mapDispatchToProps,
+    mergeProps
   )(Gas)
 );
