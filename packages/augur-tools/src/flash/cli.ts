@@ -69,7 +69,7 @@ async function run() {
           flash.network = NetworkConfiguration.create(opts.network as NETWORKS);
           flash.provider = flash.makeProvider(flash.network);
           const networkId = await flash.getNetworkId(flash.provider);
-          flash.contractAddresses = Environments[networkId].addresses;
+          flash.contractAddresses = Environments[networkId] && Environments[networkId].addresses;
         }
         await flash.call(script.name, opts);
       } catch(e){
