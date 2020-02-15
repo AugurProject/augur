@@ -83,8 +83,8 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
         }
         throw error;
       }
-    } else{
-      // If the Relay Service is not being used so we'll execute the TX directly
+    } else {
+      // The Relay Service is not being used so we'll execute the TX directly
       const txHash: string = await this.execTransactionDirectly(request.tx);
 
       this.onTransactionStatusChanged(
