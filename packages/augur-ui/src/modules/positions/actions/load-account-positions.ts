@@ -53,7 +53,7 @@ export const loadAccountPositionsTotals = () => async (
   });
   dispatch(
     updateLoginAccount({
-      totalFrozenFunds: positions[30].frozenFunds,
+      totalFrozenFunds: positions[1].frozenFunds,
       totalRealizedPL: positions[30].realized,
       tradingPositionsTotal: { unrealizedRevenue24hChangePercent : positions[1].unrealizedPercent },
     })

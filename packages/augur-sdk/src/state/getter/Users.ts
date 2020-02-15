@@ -271,7 +271,7 @@ export class Users {
 
     if (positions && Object.keys(positions).length > 0) {
       userPositionTotals = {
-        totalFrozenFunds: positions[DAYS_IN_MONTH].frozenFunds,
+        totalFrozenFunds: positions[ONE_DAY].frozenFunds,
         totalRealizedPL: positions[DAYS_IN_MONTH].realized,
         tradingPositionsTotal: {
           unrealizedRevenue24hChangePercent: positions[ONE_DAY].unrealizedPercent,
@@ -1023,8 +1023,8 @@ export class Users {
     const totalValidityBonds = await augur.contracts.hotLoading.getTotalValidityBonds_(
       ownedMarkets
     );
-    result[DAYS_IN_MONTH].frozenFunds = new BigNumber(
-      result[DAYS_IN_MONTH].frozenFunds
+    result[ONE_DAY].frozenFunds = new BigNumber(
+      result[ONE_DAY].frozenFunds
     )
       .plus(totalValidityBonds.dividedBy(QUINTILLION))
       .toFixed();
