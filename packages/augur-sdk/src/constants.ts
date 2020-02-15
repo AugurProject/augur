@@ -60,6 +60,7 @@ export enum TXEventName {
   Success = "Success",
   Failure = "Failure",
   RelayerDown = "RelayerDown",
+  FeeTooLow = "FeeTooLow",
 }
 
 export function isSubscriptionEventName(eventName: string): string | null {
