@@ -8,11 +8,18 @@ import { totalTradingBalance } from 'modules/auth/selectors/login-account';
 import { formatGasCost } from 'utils/format-number';
 import { createBigNumber } from 'utils/create-big-number';
 import { GWEI_CONVERSION } from 'modules/common/constants';
+import { augurSdk } from 'services/augursdk';
 
 
 const mapStateToProps = (state: AppState, ownProps) => {
   const { loginAccount, appStatus, blockchain } = state;
   const { zeroXEnabled: Ox_ENABLED } = appStatus;
+
+  const getGasConfirmEstimate = async () => {
+    const augur = augurSdk.get();
+    const gasConfirmTime = await augur.getGasConfirmEstimate();
+    return gasConfirmTime;
+  }
 
   const gasPriceInWei = formatGasCost(
     createBigNumber(state.gasPriceInfo.userDefinedGasPrice || 0).times(
@@ -43,6 +50,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
     Ox_ENABLED,
     gasPrice: gasPriceInWei,
     orderBook: outcomeOrderBook,
+    getGasConfirmEstimate
   };
 };
 
