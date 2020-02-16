@@ -156,6 +156,9 @@ export interface UserPositionTotals {
     unrealizedRevenue24hChangePercent: string;
   };
 }
+export interface UserTotalOnChainFrozenFunds {
+  totalFrozenFunds: string;
+}
 export interface ProfitLossResult {
   timestamp: number;
   position: string;
@@ -195,6 +198,7 @@ export class Users {
   static getProfitLossParams = getProfitLossParams;
   static getProfitLossSummaryParams = getProfitLossSummaryParams;
   static getUserAccountParams = getUserAccountParams;
+  static getTotalOnChainFrozenFundsParams = getUserAccountParams;
 
   @Getter('getUserAccountParams')
   static async getUserAccountData(
@@ -264,17 +268,21 @@ export class Users {
         c.marketId,
       ]);
 
-    const positions = await Users.getProfitLossSummary(augur, db, {
+    const profitLoss = await Users.getProfitLossSummary(augur, db, {
       account: params.account,
       universe: params.universe,
     });
 
-    if (positions && Object.keys(positions).length > 0) {
+    const funds = await Users.getTotalOnChainFrozenFunds(augur, db, {
+      account: params.account,
+      universe: params.universe,
+    })
+    if (profitLoss && Object.keys(profitLoss).length > 0) {
       userPositionTotals = {
-        totalFrozenFunds: positions[ONE_DAY].frozenFunds,
-        totalRealizedPL: positions[DAYS_IN_MONTH].realized,
+        totalFrozenFunds: funds.totalFrozenFunds,
+        totalRealizedPL: profitLoss[DAYS_IN_MONTH].realized,
         tradingPositionsTotal: {
-          unrealizedRevenue24hChangePercent: positions[ONE_DAY].unrealizedPercent,
+          unrealizedRevenue24hChangePercent: profitLoss[ONE_DAY].unrealizedPercent,
         },
       };
     }
@@ -288,7 +296,7 @@ export class Users {
       ])
     );
     const userOpenOrdersMarketIds = Object.keys(userOpenOrders.orders);
-
+    if (userOpenOrdersMarketIds.length === 0) console.log('User has no open orders')
     const set = new Set(
       uniqMarketIds
         .concat(userOpenOrdersMarketIds)
@@ -822,6 +830,61 @@ export class Users {
     };
   }
 
+  @Getter('getTotalOnChainFrozenFundsParams')
+  static async getTotalOnChainFrozenFunds(
+    augur: Augur,
+    db: DB,
+    params: t.TypeOf<typeof Users.getTotalOnChainFrozenFundsParams>
+  ): Promise<UserTotalOnChainFrozenFunds> {
+    if (!params.universe && !params.account) {
+      throw new Error(
+        "'getTotalOnChainFrozenFunds' requires a 'universe' or 'account' param be provided"
+      );
+    }
+    const profitLossCollection = await db.ProfitLossChanged.where(
+      'account'
+    ).equals(params.account);
+
+    const profitLossRecords = await profitLossCollection
+      .and(log => {
+        if (params.universe && log.universe !== params.universe) return false;
+        return true;
+      })
+      .toArray();
+
+    const profitLossResultsByMarketAndOutcome = reduceMarketAndOutcomeDocsToOnlyLatest(
+      await getProfitLossRecordsByMarketAndOutcome(
+        db,
+        params.account,
+        profitLossRecords
+      )
+    );
+
+    const allProfitLossResults = _.flatten(
+      _.values(_.mapValues(profitLossResultsByMarketAndOutcome, _.values))
+    );
+
+    const frozenFunds = _.reduce(
+      allProfitLossResults,
+      (value, tradingPosition) => {
+        return value.plus(tradingPosition.frozenFunds);
+      },
+      new BigNumber(0)
+    );
+    // includes validity bonds for market creations
+    const ownedMarketsResponse = await db.Markets.where('marketCreator')
+      .equals(params.account)
+      .and(log => !log.finalized)
+      .toArray();
+    const ownedMarkets = _.map(ownedMarketsResponse, 'market');
+    const totalValidityBonds = await augur.contracts.hotLoading.getTotalValidityBonds_(
+      ownedMarkets
+    );
+
+    const totalFrozenFunds = (totalValidityBonds.plus(frozenFunds)).dividedBy(QUINTILLION).toFixed();
+    return { totalFrozenFunds };
+  };
+
   @Getter('getProfitLossParams')
   static async getProfitLoss(
     augur: Augur,
@@ -1014,20 +1077,6 @@ export class Users {
       };
       result[days] = sumTradingPositions([endProfit, negativeStartProfit]);
     }
-
-    const ownedMarketsResponse = await db.Markets.where('marketCreator')
-      .equals(params.account)
-      .and(log => !log.finalized)
-      .toArray();
-    const ownedMarkets = _.map(ownedMarketsResponse, 'market');
-    const totalValidityBonds = await augur.contracts.hotLoading.getTotalValidityBonds_(
-      ownedMarkets
-    );
-    result[ONE_DAY].frozenFunds = new BigNumber(
-      result[ONE_DAY].frozenFunds
-    )
-      .plus(totalValidityBonds.dividedBy(QUINTILLION))
-      .toFixed();
     return result;
   }
 }

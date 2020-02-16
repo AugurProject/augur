@@ -1,9 +1,8 @@
 import { Getters } from '@augurproject/sdk/build';
 import { updateAlert } from 'modules/alerts/actions/alerts';
 import {
-  loadAccountPositionsTotals,
-  loadMarketAccountPositions,
   loadAllAccountPositions,
+  loadAccountOnChainFrozenFundsTotals,
 } from 'modules/positions/actions/load-account-positions';
 import {
   removeMarket,
@@ -105,11 +104,6 @@ const updateMarketOrderBook = (marketId: string) => (
     dispatch(throttleLoadMarketOrders(marketId));
   }
 }
-const loadUserPositionsAndBalances = (marketId: string) => (
-  dispatch: ThunkDispatch<void, any, Action>
-) => {
-  dispatch(loadMarketAccountPositions(marketId));
-};
 
 export const handleTxAwaitingSigning = (txStatus: Events.TXStatus) => (
   dispatch: ThunkDispatch<void, any, Action>,
@@ -281,7 +275,7 @@ export const handleDBMarketCreatedEvent = (event: any) => (
           if (market) {
             dispatch(removePendingDataByHash(market.transactionHash, CREATE_MARKET))
             if (isSameAddress(market.author, getState().loginAccount.address)) {
-              dispatch(loadAllAccountPositions());
+              dispatch(loadAccountOnChainFrozenFundsTotals());
             }
           }
         })
@@ -393,7 +387,6 @@ export const handleOrderCanceledLog = (log: Logs.ParsedOrderEventLog) => (
         })
       );
       dispatch(throttleLoadUserOpenOrders());
-      dispatch(loadAccountPositionsTotals());
     }
   }
   dispatch(updateMarketOrderBook(log.market));
@@ -494,7 +487,7 @@ export const handleProfitLossChangedLog = (log: Logs.ProfitLossChangedLog) => (
     getState().loginAccount.address
   );
   if (isUserDataUpdate) {
-    dispatch(loadUserPositionsAndBalances(log.market));
+    dispatch(loadAllAccountPositions());
   }
 };
 

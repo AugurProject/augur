@@ -13,26 +13,10 @@ import { augurSdk } from 'services/augursdk';
 import { Getters } from '@augurproject/sdk';
 
 export const loadAllAccountPositions = (
-  options: any = {},
   callback: NodeStyleCallback = logError,
 ) => (dispatch: ThunkDispatch<void, any, Action>) => {
   dispatch(
     loadAccountPositionsInternal(
-      options,
-      (err: any, { positions = {} }: any) => {
-        if (!err) userPositionProcessing(positions, dispatch, callback);
-      }
-    )
-  );
-};
-
-export const loadMarketAccountPositions = (
-  marketId: string,
-  callback: NodeStyleCallback = logError
-) => (dispatch: ThunkDispatch<void, any, Action>) => {
-  dispatch(
-    loadAccountPositionsInternal(
-      { marketId },
       (err: any, { positions = {} }: any) => {
         if (!err) userPositionProcessing(positions, dispatch, callback);
         dispatch(loadAccountPositionsTotals());
@@ -51,17 +35,37 @@ export const loadAccountPositionsTotals = () => async (
     account: loginAccount.mixedCaseAddress,
     universe: universe.id,
   });
+  const frozen = await Augur.getTotalOnChainFrozenFunds({
+    account: loginAccount.mixedCaseAddress,
+    universe: universe.id,
+  });
   dispatch(
     updateLoginAccount({
-      totalFrozenFunds: positions[1].frozenFunds,
+      totalFrozenFunds: frozen.totalFrozenFunds,
       totalRealizedPL: positions[30].realized,
       tradingPositionsTotal: { unrealizedRevenue24hChangePercent : positions[1].unrealizedPercent },
     })
   );
 };
 
+export const loadAccountOnChainFrozenFundsTotals = () => async (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  const { universe, loginAccount } = getState();
+  const Augur = augurSdk.get();
+  const frozen = await Augur.getTotalOnChainFrozenFunds({
+    account: loginAccount.mixedCaseAddress,
+    universe: universe.id,
+  });
+  dispatch(
+    updateLoginAccount({
+      totalFrozenFunds: frozen.totalFrozenFunds,
+    })
+  );
+};
+
 const loadAccountPositionsInternal = (
-  options: any = {},
   callback: NodeStyleCallback
 ) => async (
   dispatch: ThunkDispatch<void, any, Action>,
@@ -70,19 +74,13 @@ const loadAccountPositionsInternal = (
   const { universe, loginAccount } = getState();
   if (loginAccount.address == null || universe.id == null)
     return callback(null, {});
-  const params = {
-    ...options,
+  const Augur = augurSdk.get();
+  const positions = await Augur.getUserTradingPositions({
     account: loginAccount.mixedCaseAddress,
     universe: universe.id,
-  };
-  const Augur = augurSdk.get();
-  const positions = await Augur.getUserTradingPositions(params);
+  });
   if (positions == null || positions.tradingPositions == null) {
     return callback(null, {});
-  }
-
-  if (!options.marketId) {
-    dispatch(loadAccountPositionsTotals());
   }
 
   const marketIds = Array.from(

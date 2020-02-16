@@ -413,6 +413,7 @@ export class Augur<TProvider extends Provider = Provider> {
   ): ReturnType<typeof Users.getProfitLossSummary> => {
     return this.bindTo(Users.getProfitLossSummary)(params);
   };
+
   getAccountTimeRangedStats = (
     params: Parameters<typeof Users.getAccountTimeRangedStats>[2]
   ): ReturnType<typeof Users.getAccountTimeRangedStats> => {
@@ -425,6 +426,11 @@ export class Augur<TProvider extends Provider = Provider> {
     return this.bindTo(Users.getUserAccountData)(params);
   };
 
+  getTotalOnChainFrozenFunds = (
+    params: Parameters<typeof Users.getTotalOnChainFrozenFunds>[2]
+  ): ReturnType<typeof Users.getTotalOnChainFrozenFunds> => {
+    return this.bindTo(Users.getTotalOnChainFrozenFunds)(params);
+  };
   getAccountTransactionHistory = (
     params: Parameters<typeof Accounts.getAccountTransactionHistory>[2]
   ): ReturnType<typeof Accounts.getAccountTransactionHistory> => {
