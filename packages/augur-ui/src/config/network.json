@@ -41,7 +41,7 @@
         "ws":  "wss://v2.augur.net/0x-ws"
       },
       "mesh": {
-        "enabled": true,
+        "enabled": true
       }
     }
   }
