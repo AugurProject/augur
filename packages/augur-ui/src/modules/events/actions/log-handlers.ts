@@ -226,9 +226,9 @@ export const handleMarketsUpdatedLog = ({
   getState: () => AppState
 ) => {
   console.log('handleMarketsUpdatedChangedLog');
-
   let marketsDataById = {};
   if (Array.isArray(marketsInfo)) {
+    if (marketsInfo.length === 0) return;
     marketsDataById = marketsInfo.reduce(
       (acc, marketData) => ({
         [marketData.id]: marketData,
@@ -238,6 +238,7 @@ export const handleMarketsUpdatedLog = ({
     );
   } else {
     const market = marketsInfo as Getters.Markets.MarketInfo;
+    if (Object.keys(market).length === 0) return;
     marketsDataById[market.id] = market;
   }
 
