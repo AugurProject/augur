@@ -38,6 +38,34 @@
   }
 }
 
+:root[theme="BETTING"] {
+  .PrimaryButton {
+
+    background: var(--color-primary-action-15);
+    color: var(--color-primary-text);
+    border: @size-1 solid var(--color-primary-action);
+
+    &:not(:disabled):hover {
+      background: var(--color-primary-action-40);
+    }
+
+    &:not(:disabled):focus {
+      background: var(--color-primary-action-15);
+      border: @size-1 solid var(--color-outcome-five);
+    }
+
+    &:not(:disabled):active {
+      background: var(--color-primary-action-40);
+    }
+
+    &:disabled {
+      background: var(--color-primary-action-15);
+      border: @size-1 solid var(--color-primary-action-40);
+      opacity: 0.25;
+    }
+  }
+}
+
 .CloseButton {
   justify-content: flex-end;
   display: flex;
@@ -203,6 +231,37 @@
     .text-10-bold;
 
     padding: @size-6 @size-12;
+  }
+}
+
+:root[theme="BETTING"] {
+  .SecondaryButton {
+
+    background: var(--color-secondary-action);
+    color: var(--color-primary-text);
+    border: @size-1 solid var(--color-primary-text);
+
+    &:not(:disabled):hover {
+      background: var(--color-primary-text);
+      color: var(--color-secondary-action);
+    }
+
+    &:not(:disabled):focus {
+      background: var(--color-secondary-action);
+      border: @size-1 solid var(--color-outcome-five);
+    }
+
+    &:not(:disabled):active {
+      background: var(--color-primary-text);
+      color: var(--color-secondary-action);
+    }
+
+    &:disabled {
+      background: var(--color-secondary-action);
+      color: var(--color-primary-text);
+      border: @size-1 solid var(--color-primary-text);
+      opacity: 0.25;
+    }
   }
 }
 

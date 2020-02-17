@@ -14,14 +14,16 @@
 
   > button {
     align-items: center;
-    background: var(--color-secondary-action);
     border-radius: @border-radius-default;
-    color: var(--color-primary-text);
+    
     display: flex;
     flex-flow: row nowrap;
     justify-content: space-between;
     white-space: nowrap;
     width: 100%;
+
+    background: var(--color-secondary-action);
+    color: var(--color-primary-text);
 
     > b {
       margin-right: auto;
@@ -330,6 +332,18 @@
 }
 
 :root[theme="BETTING"] {
+  .Dropdown {
+    > button {
+
+      // arrow
+      > svg {
+        > path {
+          fill: var(--color-primary-text);
+        }
+      }
+    }
+  }
+
   .showColor {
     .generate-betting-indexed-color-outcome-classes({
       &.showColor-@{newIndex} {
