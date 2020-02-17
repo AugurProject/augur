@@ -49,17 +49,19 @@ export const HelpMenuList = () => {
   return (
     <span className={classNames(Styles.HelpMenuList)}>
       <li>popular help resources</li>
-      {HELP_LINKS.map((helpLink, index) => (
-        <li key={'helpLink_' + index} className={helpLink.className}>
-          <ExternalLinkButton
-            light
-            URL={helpLink.link}
-            label={helpLink.label}
-            customLink={helpLink.customLink}
-            showNonLink={helpLink.showNonLink}
-          />
-        </li>
-      ))}
+      {HELP_LINKS.map(
+        ({ className, link, label, customLink, showNonLink }, index) => (
+          <li key={'helpLink_' + index} className={className}>
+            <ExternalLinkButton
+              light
+              URL={link}
+              label={label}
+              customLink={customLink}
+              showNonLink={showNonLink}
+            />
+          </li>
+        )
+      )}
     </span>
   );
 };
@@ -68,28 +70,27 @@ interface HelpMenuProps {
   closeHelpMenu: Function;
 }
 
-export const HelpMenu = ({
-  closeHelpMenu
-}: HelpMenuProps) => {
+export const HelpMenu = ({ closeHelpMenu }: HelpMenuProps) => {
   return (
     <div className={classNames(Styles.HelpMenu)}>
       <span>popular help resources</span>
-      {HELP_LINKS.map((helpLink, index) => (
-        <span key={'helpLink_' + index} className={helpLink.className}>
-          <ExternalLinkButton
-            light
-            URL={helpLink.link}
-            label={helpLink.label}
-            customLink={helpLink.customLink}
-            showNonLink={helpLink.showNonLink}
-            callback={closeHelpMenu}
-          />
-        </span>
-      ))}
+      {HELP_LINKS.map(
+        ({ className, link, label, customLink, showNonLink }, index) => (
+          <span key={'helpLink_' + index} className={className}>
+            <ExternalLinkButton
+              light
+              URL={link}
+              label={label}
+              customLink={customLink}
+              showNonLink={showNonLink}
+              callback={closeHelpMenu}
+            />
+          </span>
+        )
+      )}
     </div>
   );
 };
-
 
 interface HelpIconProps {
   isHelpMenuOpen: boolean;
@@ -98,7 +99,7 @@ interface HelpIconProps {
 
 export const HelpIcon = ({
   updateHelpMenuState,
-  isHelpMenuOpen
+  isHelpMenuOpen,
 }: HelpIconProps) => {
   return (
     <div
@@ -132,8 +133,13 @@ export const HelpResources = ({
       })}
       onClick={event => event.stopPropagation()}
     >
-      <HelpIcon updateHelpMenuState={updateHelpMenuState} isHelpMenuOpen={isHelpMenuOpen} />
-      {isHelpMenuOpen && (<HelpMenu closeHelpMenu={() => updateHelpMenuState(false)}/>)}
+      <HelpIcon
+        updateHelpMenuState={updateHelpMenuState}
+        isHelpMenuOpen={isHelpMenuOpen}
+      />
+      {isHelpMenuOpen && (
+        <HelpMenu closeHelpMenu={() => updateHelpMenuState(false)} />
+      )}
     </div>
   );
 };

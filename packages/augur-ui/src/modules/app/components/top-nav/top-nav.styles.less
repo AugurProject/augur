@@ -153,10 +153,14 @@ button.AddFunds {
 
     > ul {
       border-bottom: @size-1 solid var(--color-primary-text);
-      border-top: @size-1 solid var(--color-secondary-text);
+      border-top: @size-1 solid var(--color-secondary-text-50);
 
       > li:hover {
         &:not(.CreatetButton) {
+
+          &:not(.Selected) {
+            border-bottom: @size-2 solid var(--color-module-background);
+          }
           span {
             color: var(--color-module-background);
           }
