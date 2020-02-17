@@ -124,10 +124,10 @@
     jsonschema "^1.2.0"
     lodash.values "^4.3.0"
 
-"@0x/mesh-browser@9.0.0-wss-support":
-  version "9.0.0-wss-support"
-  resolved "https://registry.yarnpkg.com/@0x/mesh-browser/-/mesh-browser-9.0.0-wss-support.tgz#c7a6eb643bcfd6e9038a2bb808a318492cd78d84"
-  integrity sha512-0S+jzvM7FIZI9WKgtak18UCxKufx86rE2qc4kTXg6m7e2r8SssauWaaziX7Gmvf4yfJhxxArfximRCpFXKNNmQ==
+"@0x/mesh-browser@9.0.0-extra-peers-and-logging":
+  version "9.0.0-extra-peers-and-logging"
+  resolved "https://registry.yarnpkg.com/@0x/mesh-browser/-/mesh-browser-9.0.0-extra-peers-and-logging.tgz#6f5c865b2aeb0424c44006cf2451dc1d7f922f6c"
+  integrity sha512-81MMLe1Vm98PGfeiFRbnpHlJIt+Ub4udk+qYkNH1aYV+sAcS8mZ7dDA2aRN3cCYZebUJmNVbb1OdmYlvjESHtg==
   dependencies:
     "@0x/order-utils" "^10.0.1"
     "@0x/utils" "^5.1.2"
@@ -23619,7 +23619,6 @@ scrypt.js@^0.3.0:
 
 scrypt@^6.0.2, "scrypt@https://github.com/AugurProject/blackhole.git":
   version "1.0.0"
-  uid f8230443bf4fc9d5921655e06ebe2755d84afbcd
   resolved "https://github.com/AugurProject/blackhole.git#f8230443bf4fc9d5921655e06ebe2755d84afbcd"
 
 scryptsy@2.1.0, scryptsy@^2.1.0:

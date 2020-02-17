@@ -249,66 +249,31 @@
   .Container {
     background: var(--color-primary-text);
 
-  > div > footer {
-    align-items: center;
-    background: var(--color-active-background);
-    bottom: 0px;
-    display: flex;
-    height: @top-bar-height-mobile;
-    justify-content: flex-start;
-    padding: 0 @size-16;
-    position: fixed;
-    width: calc(100% - @size-52);
-    border-top: @size-1 solid var(--color-dark-grey);
+    > div > footer {
+      background: var(--color-active-background);
+      border-top: @size-1 solid var(--color-dark-grey);
 
-    > div:nth-of-type(2) {
-      .mono-10-semi-bold;
-
-      display: flex;
-      color: var(--color-primary-text);
-      background: var(--color-secondary-action);
-      cursor: pointer;
-      text-transform: uppercase;
-      order: 1;
-      border: @size-1 solid var(--color-secondary-action-outline);
-      border-radius: @border-radius-default;
-      padding: @size-4;
-
-      > svg {
-        width: @size-10;
-        height: @size-10;
-        fill: var(--color-primary-text);
-        margin-left: 0px !important;
-      }
-    }
-
-    > .GlobalChat {
-      background: var(--color-dark-grey);
-      margin-left: auto;
-      order: 2;
-
-      // Closed global chat window
-      > button {
-        .mono-10-semi-bold;
-
-        padding: @size-4;
-        align-items: center;
+      > div:nth-of-type(2) {
         color: var(--color-primary-text);
         background: var(--color-secondary-action);
-        display: flex;
-        flex-direction: row-reverse;
-        text-transform: uppercase;
+        border: @size-1 solid var(--color-secondary-action-outline);
+        border-radius: @border-radius-default;
 
         > svg {
           fill: var(--color-primary-text);
-          margin-left: @size-4;
-          margin-bottom: @size-2;
-          transform: rotate(180deg);
-          width: @size-10;
-          height: @size-10;
+        }
+      }
 
-          path {
+      > .GlobalChat {
+        background: var(--color-dark-grey);
+        > button {
+          color: var(--color-primary-text);
+          background: var(--color-secondary-action);
+          > svg {
             fill: var(--color-primary-text);
+            path {
+              fill: var(--color-primary-text);
+            }
           }
         }
       }
