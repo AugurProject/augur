@@ -1,6 +1,8 @@
 import { createSelector } from 'reselect';
-import { formatDai } from 'utils/format-number';
+import { formatDai, formatNone } from 'utils/format-number';
 import { selectAccountFunds } from 'modules/auth/selectors/login-account';
+import { AuthStatus } from 'modules/types';
+import { selectAuthStatus } from 'store/select-state';
 
 export const selectOutcomeLastPrice = (
   marketOutcomeData: any,
@@ -12,28 +14,41 @@ export const selectOutcomeLastPrice = (
 
 export const selectCoreStats = createSelector(
   selectAccountFunds,
-  (accountFunds: any) => ({
-    availableFunds: {
+  selectAuthStatus,
+  (accountFunds: any, authStatus: AuthStatus) => {
+    const availableFunds = {
       label: 'Available Funds',
       value: formatDai(accountFunds.totalAvailableTradingBalance, {
         removeComma: true,
       }),
       useFull: true,
-    },
-    frozenFunds: {
+    };
+    const frozenFunds = {
       label: 'Frozen Funds',
       value: formatDai(accountFunds.totalFrozenFunds, { removeComma: true }),
       useFull: true,
-    },
-    totalFunds: {
+    };
+    const totalFunds = {
       label: 'Total Funds',
       value: formatDai(accountFunds.totalAccountValue, { removeComma: true }),
       useFull: true,
-    },
-    realizedPL: {
+    };
+    const realizedPL = {
       label: 'Realized P/L',
       value: formatDai(accountFunds.totalRealizedPL, { removeComma: true }),
       useFull: true,
-    },
-  })
+    };
+    if (!authStatus.isLogged) {
+      availableFunds.value = formatNone();
+      frozenFunds.value = formatNone();
+      totalFunds.value = formatNone();
+      realizedPL.value = formatNone();
+    }
+    return {
+      availableFunds,
+      frozenFunds,
+      totalFunds,
+      realizedPL,
+    };
+  }
 );

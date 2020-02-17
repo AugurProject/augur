@@ -23,7 +23,7 @@ interface PortfolioViewState {
   extendMarkets: boolean;
   extendOpenOrders: boolean;
   extendFilledOrders: boolean;
-  initialPage: string;
+  initialPage: number;
 }
 
 export default class PortfolioView extends React.Component<
@@ -35,7 +35,7 @@ export default class PortfolioView extends React.Component<
     extendMarkets: false,
     extendOpenOrders: false,
     extendFilledOrders: false,
-    initialPage: parseQuery(this.props.location.search)[CREATE_MARKET_PORTFOLIO] || 0,
+    initialPage: parseFloat(parseQuery(this.props.location.search)[CREATE_MARKET_PORTFOLIO]) || 0,
   };
 
   toggle = (extend: string, hide: string) => {

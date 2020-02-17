@@ -1,9 +1,8 @@
 import { Getters } from '@augurproject/sdk/build';
 import { updateAlert } from 'modules/alerts/actions/alerts';
 import {
-  loadAccountPositionsTotals,
-  loadMarketAccountPositions,
   loadAllAccountPositions,
+  loadAccountOnChainFrozenFundsTotals,
 } from 'modules/positions/actions/load-account-positions';
 import {
   removeMarket,
@@ -41,6 +40,7 @@ import {
   MODAL_ERROR,
   REDEEMSTAKE,
   CREATE_MARKET,
+  MODAL_GAS_PRICE,
 } from 'modules/common/constants';
 import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
@@ -104,11 +104,6 @@ const updateMarketOrderBook = (marketId: string) => (
     dispatch(throttleLoadMarketOrders(marketId));
   }
 }
-const loadUserPositionsAndBalances = (marketId: string) => (
-  dispatch: ThunkDispatch<void, any, Action>
-) => {
-  dispatch(loadMarketAccountPositions(marketId));
-};
 
 export const handleTxAwaitingSigning = (txStatus: Events.TXStatus) => (
   dispatch: ThunkDispatch<void, any, Action>,
@@ -151,6 +146,14 @@ export const handleTxRelayerDown = (txStatus: Events.TXStatus) => (
   dispatch(addUpdateTransaction(txStatus));
 };
 
+export const handleTxFeeTooLow = (txStatus: Events.TXStatus) => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  console.log('TxFeeTooLow Transaction', txStatus.transaction.name);
+  dispatch(addUpdateTransaction(txStatus));
+  dispatch(updateModal({ type: MODAL_GAS_PRICE, feeTooLow: true }));
+};
 
 export const handleGnosisStateUpdate = (response) => async(
   dispatch: ThunkDispatch<void, any, Action>,
@@ -223,9 +226,9 @@ export const handleMarketsUpdatedLog = ({
   getState: () => AppState
 ) => {
   console.log('handleMarketsUpdatedChangedLog');
-
   let marketsDataById = {};
   if (Array.isArray(marketsInfo)) {
+    if (marketsInfo.length === 0) return;
     marketsDataById = marketsInfo.reduce(
       (acc, marketData) => ({
         [marketData.id]: marketData,
@@ -235,6 +238,7 @@ export const handleMarketsUpdatedLog = ({
     );
   } else {
     const market = marketsInfo as Getters.Markets.MarketInfo;
+    if (Object.keys(market).length === 0) return;
     marketsDataById[market.id] = market;
   }
 
@@ -271,6 +275,9 @@ export const handleDBMarketCreatedEvent = (event: any) => (
           const market = marketInfos[id]
           if (market) {
             dispatch(removePendingDataByHash(market.transactionHash, CREATE_MARKET))
+            if (isSameAddress(market.author, getState().loginAccount.address)) {
+              dispatch(loadAccountOnChainFrozenFundsTotals());
+            }
           }
         })
       )
@@ -381,7 +388,6 @@ export const handleOrderCanceledLog = (log: Logs.ParsedOrderEventLog) => (
         })
       );
       dispatch(throttleLoadUserOpenOrders());
-      dispatch(loadAccountPositionsTotals());
     }
   }
   dispatch(updateMarketOrderBook(log.market));
@@ -482,7 +488,7 @@ export const handleProfitLossChangedLog = (log: Logs.ProfitLossChangedLog) => (
     getState().loginAccount.address
   );
   if (isUserDataUpdate) {
-    dispatch(loadUserPositionsAndBalances(log.market));
+    dispatch(loadAllAccountPositions());
   }
 };
 

@@ -36,6 +36,8 @@ services:
       - augur
   db:
     image: postgres:10-alpine
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
     ports:
       - "5432:5432"
     networks:

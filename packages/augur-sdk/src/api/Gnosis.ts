@@ -164,8 +164,8 @@ export class Gnosis {
       this.augur.setGnosisStatus(status.status);
 
       // Normalize addresses
-      if (ethUtil.toChecksumAddress(safe) !== ethUtil.toChecksumAddress(safe)) {
-        // TODO handle this in the UI
+      if (ethUtil.toChecksumAddress(safe) !== ethUtil.toChecksumAddress(params.safe)) {
+        // TODO handle this in the UI. Should present some warning modal indicating that we're having trouble creating accounts
         console.log(
           `Saved relay safe creation params invalid. Calculated safe address is ${safe}. Passed params: ${JSON.stringify(
             params
