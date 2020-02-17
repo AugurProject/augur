@@ -2080,9 +2080,10 @@ export function addScripts(flash: FlashSession) {
         if (dev) {
           const deployMethod = fake ? 'fake-all' : 'normal-all';
           await this.call(deployMethod, { createMarkets: true });
+        } else {
+          this.contractAddresses = Addresses[networkId];
         }
 
-        this.contractAddresses = Addresses[networkId];
         await spawnSync('yarn', ['build']); // so UI etc will have the correct addresses
 
         const env = {

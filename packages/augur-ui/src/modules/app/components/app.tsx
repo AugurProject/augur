@@ -42,8 +42,8 @@ import {
   Notification,
 } from 'modules/types';
 import ForkingBanner from 'modules/reporting/containers/forking-banner';
-import parseQuery from 'modules/routes/helpers/parse-query';
-import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names';
+import parseQuery, { parseLocation } from 'modules/routes/helpers/parse-query';
+import { MARKET_ID_PARAM_NAME, AFFILIATE_NAME } from 'modules/routes/constants/param-names';
 import makePath from 'modules/routes/helpers/make-path';
 import { ExternalLinkText } from 'modules/common/buttons';
 import { HelmetTag } from 'modules/seo/helmet-tag';
@@ -89,6 +89,7 @@ interface AppProps {
   showGlobalChat: Function;
   migrateV1Rep: Function;
   showMigrateRepButton: boolean;
+  saveAffilateAddress: Function;
 }
 
 export default class AppView extends Component<AppProps> {
@@ -183,6 +184,12 @@ export default class AppView extends Component<AppProps> {
       document.body.classList.add('App--windowsScrollBars');
     }
     this.checkIsMobile();
+
+    const affiliate = parseLocation(location.href)[AFFILIATE_NAME];
+    if (affiliate) {
+      this.props.saveAffilateAddress(affiliate)
+    }
+
   }
 
   compomentWillUnmount() {
@@ -366,7 +373,7 @@ export default class AppView extends Component<AppProps> {
 
     const onTradingTutorial =
       parseQuery(location.search)[MARKET_ID_PARAM_NAME] === TRADING_TUTORIAL;
-    
+
     return (
       <main>
         <HelmetTag {...APP_HEAD_TAGS} />

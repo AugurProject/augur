@@ -188,7 +188,7 @@ export default class Form extends React.Component<FormProps, FormState> {
   };
 
   componentDidMount() {
-    this.node && this.node.scrollIntoView();
+    window.scrollTo(0, 1);
   }
 
   componentWillUnmount() {

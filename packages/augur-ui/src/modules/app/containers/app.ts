@@ -29,6 +29,7 @@ import {
 import { updateSelectedCategories } from "modules/markets-list/actions/update-markets-list";
 import { updateAuthStatus, IS_CONNECTION_TRAY_OPEN } from "modules/auth/actions/auth-status";
 import { MODAL_GLOBAL_CHAT, MODAL_MIGRATE_REP } from 'modules/common/constants';
+import { saveAffiliateAddress } from "modules/account/actions/login-account";
 
 const mapStateToProps = state => {
   const { alerts } = selectInfoAlertsAndSeenCount(state);
@@ -78,6 +79,7 @@ const mapDispatchToProps = dispatch => ({
   dispatch(updateAuthStatus(IS_CONNECTION_TRAY_OPEN, value)),
   showGlobalChat: () => dispatch(updateModal({type: MODAL_GLOBAL_CHAT})),
   migrateV1Rep: () => dispatch(updateModal({ type: MODAL_MIGRATE_REP })),
+  saveAffilateAddress: address => dispatch(saveAffiliateAddress(address))
 });
 
 const AppContainer = compose(

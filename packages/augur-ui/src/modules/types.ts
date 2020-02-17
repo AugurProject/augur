@@ -663,6 +663,7 @@ export interface LoginAccount {
   balances: AccountBalances;
   reporting: Getters.Accounts.AccountReportingHistory;
   settings?: LoginAccountSettings;
+  affiliate?: string;
 }
 
 export interface Web3 {
