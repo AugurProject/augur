@@ -96,24 +96,24 @@
     flex-grow: 1;
     min-height: min-content;
     overflow: auto;
-  }
 
-  > div > ul {
-    background: var(--color-active-background);
-    height: calc(100vh - @top-bar-height-mobile);
-    margin-top: @top-bar-height-mobile;
-    padding-bottom: @top-bar-height-mobile;
+    > ul {
+      > button {
+        display: flex;
+        margin: @size-10 @size-16;
+        align-items: center;
+        width: 90%;
+        justify-content: center;
+        
+      }
 
-    > button {
-      display: flex;
-      margin-top: @size-10;
-      margin-right: @size-16;
-      align-items: center;
-      margin-left: auto;
+      &.accountDetailsOpen {
+        margin-top: 0;
+      }
     }
 
-    &.accountDetailsOpen {
-      margin-top: 0;
+    > ul:first-of-type {
+      margin-top: @top-bar-height-mobile;
     }
 
     > ul:not(:first-of-type) {
@@ -125,63 +125,50 @@
         margin-top: 0;
       }
 
-      &.selected {
-        a {
-          padding: @size-21 @size-16 @size-14;
-        }
+      > li {
+          &.selected {
+            a {
+              padding: @size-21 @size-16 @size-14;
+            }
 
-        span {
-          .text-12-semi-bold;
-
-          border-bottom: @size-2 solid var(--color-primary-action);
-          padding-bottom: @size-5;
-          color: var(--color-primary-text);
-          width: fit-content;
-        }
-  
-        &.selected {
-          a {
-            padding: @size-21 @size-16 @size-14;
-          }
-  
-          span {
-            .text-12-semi-bold;
-  
-            border-bottom: 2px solid var(--color-primary-action);
-            padding-bottom: @size-5;
-            color: var(--color-primary-text);
-            width: fit-content;
-          }
-  
-          svg {
-            margin-bottom: @size-12;
-          }
-        }
-  
-        a,
-        button {
-          display: flex;
-          padding: @size-21 @size-16;
-          align-items: center;
-  
-          > span {
-            .text-12-semi-bold;
-  
-            align-items: center;
-            color: var(--color-inactive-text);
-            display: flex;
-            text-transform: uppercase;
-          }
-  
-          > svg {
-            height: @size-4;
-            width: @size-4;
-            fill: none;
-            margin-left: @size-4;
-            margin-bottom: @size-4;
+            span {
+              .text-12-semi-bold;
     
-            > circle {
-              fill: var(--color-outcome-five);
+              border-bottom: @size-2 solid var(--color-primary-action);
+              padding-bottom: @size-5;
+              color: var(--color-primary-text);
+              width: fit-content;
+            }
+
+            svg {
+              margin-bottom: @size-12;
+            }
+          }
+    
+          a {
+            display: flex;
+            padding: @size-21 @size-16;
+            align-items: center;
+    
+            > span {
+              .text-12-semi-bold;
+    
+              align-items: center;
+              color: var(--color-inactive-text);
+              display: flex;
+              text-transform: uppercase;
+            }
+    
+            > svg {
+              height: @size-4;
+              width: @size-4;
+              fill: none;
+              margin-left: @size-4;
+              margin-bottom: @size-4;
+      
+              > circle {
+                fill: var(--color-outcome-five);
+              }
             }
           }
         }
@@ -190,7 +177,6 @@
       > div {
         margin-left: @size-32;
       }
-    }
 
     > footer {
       align-items: center;
@@ -205,7 +191,8 @@
   
       > div:nth-of-type(2) {
         .mono-10-semi-bold;
-  
+        
+        color: var(--color-primary-text);
         display: flex;
         padding: @size-21 @size-16;
         align-items: center;
@@ -233,6 +220,20 @@
         }
       }
 
+      > .GlobalChat > button {
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: flex-end;
+
+        > svg {
+          margin-right: @size-4;
+  
+          > path {
+            fill: var(--color-primary-text);
+          }
+        }
+      }
+
       button {
         padding: @size-8 @size-12;
       }
@@ -248,35 +249,55 @@
   }
   .Container {
     background: var(--color-primary-text);
+    > div {
+      > ul:not(:first-of-type) {
+        background: var(--color-primary-text);
 
-    > div > footer {
-      background: var(--color-active-background);
-      border-top: @size-1 solid var(--color-dark-grey);
-
-      > div:nth-of-type(2) {
-        color: var(--color-primary-text);
-        background: var(--color-secondary-action);
-        border: @size-1 solid var(--color-secondary-action-outline);
-        border-radius: @border-radius-default;
-
-        > svg {
-          fill: var(--color-primary-text);
+        > li {
+          &.selected {
+            span {
+              color: var(--color-module-background);
+            }
+          }
         }
       }
 
-      > .GlobalChat {
-        background: var(--color-dark-grey);
-        > button {
+      > footer {
+        background: var(--color-active-background);
+        border-top: @size-1 solid var(--color-dark-grey);
+  
+        > div:nth-of-type(2) {
           color: var(--color-primary-text);
           background: var(--color-secondary-action);
+          border: @size-1 solid var(--color-secondary-action-outline);
+          border-radius: @border-radius-default;
+          padding: @size-8 @size-16;
+          margin-left: @size-16;
+  
           > svg {
             fill: var(--color-primary-text);
-            path {
+
+            > g > path {
               fill: var(--color-primary-text);
+            }
+          }
+        }
+  
+        > .GlobalChat {
+          background: var(--color-dark-grey);
+          > button {
+            color: var(--color-primary-text);
+            background: var(--color-secondary-action);
+            > svg {
+              fill: var(--color-primary-text);
+              path {
+                fill: var(--color-primary-text);
+              }
             }
           }
         }
       }
     }
+    
   }
 }
