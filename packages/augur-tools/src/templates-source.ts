@@ -2189,8 +2189,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `NBA (Point Spread): Will the [0] to win by more than [1].5 points over the [2]?`,
-                example: `NBA (Point Spread): Will the Brooklyn Nets to win by more than 10.5 points over the NY Knicks?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+                question: `NBA (Point Spread): [0] to win by more than [1].5 points over the [2]?`,
+                example: `NBA (Point Spread): Brooklyn Nets to win by more than 10.5 points over the NY Knicks?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
                 inputs: [
                   {
                     id: 0,
