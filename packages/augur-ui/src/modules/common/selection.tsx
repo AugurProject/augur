@@ -213,6 +213,7 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
         <button
           className={classNames(Styles.label, {
             [Styles.SelectedLabel]: selected,
+            [Styles.BettingUI]: true,
           })}
         >
           <span ref={ref => (this.labelRef = ref)}>

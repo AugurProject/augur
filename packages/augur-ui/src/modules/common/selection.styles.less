@@ -14,14 +14,20 @@
 
   > button {
     align-items: center;
-    background: var(--color-secondary-action);
     border-radius: @border-radius-default;
-    color: var(--color-primary-text);
+    
     display: flex;
     flex-flow: row nowrap;
     justify-content: space-between;
     white-space: nowrap;
     width: 100%;
+
+    background: var(--color-secondary-action);
+    color: var(--color-primary-text);
+
+    > .BettingUI {
+      color: var(--color-secondary-text);
+    }
 
     > b {
       margin-right: auto;
@@ -194,6 +200,10 @@
     background: var(--color-secondary-action);
     padding: 0 @size-8;
     text-transform: uppercase;
+
+    > .BettingUI {
+      color: red;
+    }
 
     // vertical line before arrow icon
     > span {
