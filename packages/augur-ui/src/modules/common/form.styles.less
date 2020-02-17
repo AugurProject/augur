@@ -31,6 +31,14 @@
         margin: 0;
       }
 
+      > div {
+        width: unset;
+
+        > div {
+          min-width: unset;
+        }
+      }
+
       > button {
         z-index: @above-all-content;
         max-width: @size-32;
@@ -442,7 +450,6 @@
     @media @breakpoint-mobile {
       .text-12;
 
-      max-height: 50px;
       white-space: normal;
       margin-bottom: @size-16;
     }

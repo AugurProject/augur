@@ -17,7 +17,8 @@
     z-index: @mask-modal;
 
     > div {
-      background: var(--color-module-background);
+      // Background for close icon and help icon when AccountFunds is closed.
+      background: var(--color-dark-grey);
       display: flex;
       justify-content: flex-end;
 
@@ -26,8 +27,9 @@
         display: flex;
 
         > div:first-of-type {
-          background: var(--color-page-background);
-          border-bottom: 1px solid var(--color-dark-grey);
+          // Background for close icon and help icon when AccountFunds is opened.
+          background: var(--color-dark-grey);
+          border-bottom: @size-1 solid var(--color-dark-grey);
           display: flex;
           justify-content: flex-end;
           width: 100%;
@@ -38,7 +40,6 @@
       > div:nth-of-type(2) {
 
         > div:first-of-type {
-          background: var(--color-page-background);
           display: flex;
           justify-content: flex-end;
           width: 100%;
@@ -95,9 +96,24 @@
     flex-grow: 1;
     min-height: min-content;
     overflow: auto;
-    
-    @media @breakpoint-mobile {
-      margin-top: @top-bar-height-mobile;
+  }
+
+  > div > ul {
+    background: var(--color-active-background);
+    height: calc(100vh - @top-bar-height-mobile);
+    margin-top: @top-bar-height-mobile;
+    padding-bottom: @top-bar-height-mobile;
+
+    > button {
+      display: flex;
+      margin-top: @size-10;
+      margin-right: @size-16;
+      align-items: center;
+      margin-left: auto;
+    }
+
+    &.accountDetailsOpen {
+      margin-top: 0;
     }
 
     > ul:not(:first-of-type) {
@@ -108,11 +124,19 @@
       &.accountDetailsOpen {
         margin-top: 0;
       }
-  
-      > li {
-        &.disabled {
-          pointer-events: none;
-          opacity: 0.25;
+
+      &.selected {
+        a {
+          padding: @size-21 @size-16 @size-14;
+        }
+
+        span {
+          .text-12-semi-bold;
+
+          border-bottom: @size-2 solid var(--color-primary-action);
+          padding-bottom: @size-5;
+          color: var(--color-primary-text);
+          width: fit-content;
         }
   
         &.selected {
@@ -183,38 +207,15 @@
         .mono-10-semi-bold;
   
         display: flex;
-        color: var(--color-primary-text);
-        background: var(--color-secondary-action);
-        cursor: pointer;
-        text-transform: uppercase;
-        order: 1;
-        border: @size-1 solid var(--color-secondary-action-outline);
-        border-radius: @border-radius-default;
-        padding: @size-4;
-  
-        > svg {
-          width: @size-10;
-          height: @size-10;
-          fill: var(--color-primary-text);
-          margin-left: 0px !important;
-        }
-      }
-  
-      > .GlobalChat {
-        background: var(--color-dark-grey);
-        margin-left: auto;
-        order: 2;
-  
-        // Closed global chat window
-        > button {
-          .mono-10-semi-bold;
-  
-          padding: @size-4;
+        padding: @size-21 @size-16;
+        align-items: center;
+
+        > span {
+          .text-12-semi-bold;
+
           align-items: center;
-          background: var(--color-seconday-action);
-          color: var(--color-primary-text);
+          color: var(--color-secondary-text);
           display: flex;
-          flex-direction: row-reverse;
           text-transform: uppercase;
   
           > svg {
@@ -231,6 +232,10 @@
           }
         }
       }
+
+      button {
+        padding: @size-8 @size-12;
+      }
     }
   }
 }
@@ -244,14 +249,66 @@
   .Container {
     background: var(--color-primary-text);
 
-    > div {
-      > ul:not(:first-of-type) {
-        background: var(--color-primary-text);
-        > li {
-          &.selected {
-            span {
-              color: var(--color-module-background);
-            }
+  > div > footer {
+    align-items: center;
+    background: var(--color-active-background);
+    bottom: 0px;
+    display: flex;
+    height: @top-bar-height-mobile;
+    justify-content: flex-start;
+    padding: 0 @size-16;
+    position: fixed;
+    width: calc(100% - @size-52);
+    border-top: @size-1 solid var(--color-dark-grey);
+
+    > div:nth-of-type(2) {
+      .mono-10-semi-bold;
+
+      display: flex;
+      color: var(--color-primary-text);
+      background: var(--color-secondary-action);
+      cursor: pointer;
+      text-transform: uppercase;
+      order: 1;
+      border: @size-1 solid var(--color-secondary-action-outline);
+      border-radius: @border-radius-default;
+      padding: @size-4;
+
+      > svg {
+        width: @size-10;
+        height: @size-10;
+        fill: var(--color-primary-text);
+        margin-left: 0px !important;
+      }
+    }
+
+    > .GlobalChat {
+      background: var(--color-dark-grey);
+      margin-left: auto;
+      order: 2;
+
+      // Closed global chat window
+      > button {
+        .mono-10-semi-bold;
+
+        padding: @size-4;
+        align-items: center;
+        color: var(--color-primary-text);
+        background: var(--color-secondary-action);
+        display: flex;
+        flex-direction: row-reverse;
+        text-transform: uppercase;
+
+        > svg {
+          fill: var(--color-primary-text);
+          margin-left: @size-4;
+          margin-bottom: @size-2;
+          transform: rotate(180deg);
+          width: @size-10;
+          height: @size-10;
+
+          path {
+            fill: var(--color-primary-text);
           }
         }
       }

@@ -25,7 +25,6 @@ import {
   DisputeWindow,
   WarpSyncData,
   ZeroX,
-  NativePlaceTradeDisplayParams,
 } from '@augurproject/sdk';
 import { BigNumber } from 'bignumber.js';
 import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis/build';
@@ -117,8 +116,7 @@ export class ContractAPI {
     await this.repFaucet(repBond.plus(10**18));
   }
 
-  async createReasonableYesNoMarket(description: string = 'YesNo market description'): Promise<ContractInterfaces.Market> {
-    const time = this.augur.contracts.getTime();
+  async createReasonableYesNoMarket(description = 'YesNo market description'): Promise<ContractInterfaces.Market> {
     const currentTimestamp = (await this.getTimestamp()).toNumber();
 
     return this.createYesNoMarket({
@@ -133,8 +131,7 @@ export class ContractAPI {
     });
   }
 
-  async createReasonableMarket(outcomes: string[], description: string = 'Categorical market description'): Promise<ContractInterfaces.Market> {
-    const time = this.augur.contracts.getTime();
+  async createReasonableMarket(outcomes: string[], description = 'Categorical market description'): Promise<ContractInterfaces.Market> {
     const currentTimestamp = (await this.getTimestamp()).toNumber();
 
     return this.createCategoricalMarket({
@@ -150,8 +147,7 @@ export class ContractAPI {
     });
   }
 
-  async createReasonableScalarMarket(description: string = 'Scalar market description'): Promise<ContractInterfaces.Market> {
-    const time = this.augur.contracts.getTime();
+  async createReasonableScalarMarket(description = 'Scalar market description'): Promise<ContractInterfaces.Market> {
     const currentTimestamp = (await this.getTimestamp()).toNumber();
     const minPrice = new BigNumber(50).multipliedBy(new BigNumber(10).pow(18));
     const maxPrice = new BigNumber(250).multipliedBy(new BigNumber(10).pow(18));
@@ -526,7 +522,7 @@ export class ContractAPI {
   }
 
   async getTimestamp(): Promise<BigNumber> {
-    return (await this.augur.contracts.augur.getTimestamp_());
+    return (this.augur.contracts.augur.getTimestamp_());
   }
 
   async doInitialReport(market: ContractInterfaces.Market, payoutNumerators: BigNumber[], description = '', extraStake = '0'): Promise<void> {
@@ -806,26 +802,26 @@ export class ContractAPI {
   }
 
   async initializeUniverseForWarpSync(): Promise<void> {
-    return await this.augur.warpSync.initializeUniverse(this.augur.contracts.universe.address);
+    return this.augur.warpSync.initializeUniverse(this.augur.contracts.universe.address);
   }
 
   async getWarpSyncMarket(): Promise<ContractInterfaces.Market> {
-    return await this.augur.warpSync.getWarpSyncMarket(this.augur.contracts.universe.address);
+    return this.augur.warpSync.getWarpSyncMarket(this.augur.contracts.universe.address);
   }
 
   async getLastWarpSyncData(): Promise<WarpSyncData> {
-    return await this.augur.warpSync.getLastWarpSyncData(this.augur.contracts.universe.address);
+    return this.augur.warpSync.getLastWarpSyncData(this.augur.contracts.universe.address);
   }
 
   async getWarpSyncHashFromPayout(payout: BigNumber[]): Promise<string> {
-    return await this.augur.warpSync.getWarpSyncHashFromPayout(payout);
+    return this.augur.warpSync.getWarpSyncHashFromPayout(payout);
   }
 
   async getPayoutFromWarpSyncHash(hash: string): Promise<BigNumber[]> {
-    return await this.augur.warpSync.getPayoutFromWarpSyncHash(hash);
+    return this.augur.warpSync.getPayoutFromWarpSyncHash(hash);
   }
 
   async getWarpSyncHashFromMarket(market: ContractInterfaces.Market): Promise<string> {
-    return await this.augur.warpSync.getWarpSyncHashFromMarket(market);
+    return this.augur.warpSync.getWarpSyncHashFromMarket(market);
   }
 }

@@ -641,7 +641,7 @@ export const isTemplateMarket = (
     // check market title/question matches built template question
     let checkMarketTitle = template.question;
     template.inputs.map((i: ExtraInfoTemplateInput) => {
-      checkMarketTitle = checkMarketTitle.replace(`[${i.id}]`, i.value);
+      checkMarketTitle = checkMarketTitle.replace(`[${i.id}]`, i.value.trim());
     });
     if (checkMarketTitle !== title) {
       errors.push('populated title does not match title given');

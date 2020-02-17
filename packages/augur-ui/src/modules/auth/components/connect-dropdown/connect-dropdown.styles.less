@@ -64,6 +64,10 @@
     background: var(--color-module-background);
   }
 
+  @media @breakpoint-mobile {
+    background: @color-module-background;
+  }
+
   > div:first-of-type {
     .mono-11-bold;
 
@@ -109,7 +113,6 @@
 
       > svg {
         height: @size-12;
-        margin-left: @size-20;
         width: @size-12;
 
         > path {
@@ -171,7 +174,7 @@
 
         width: @size-12;
         height: @size-12;
-        margin-left: @size-20;
+        margin-left: @size-4;
       }
     }
 

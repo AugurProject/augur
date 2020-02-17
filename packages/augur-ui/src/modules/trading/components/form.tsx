@@ -100,6 +100,7 @@ interface FromProps {
   orderPriceEntered: Function;
   orderAmountEntered: Function;
   gasPrice: number;
+  getGasConfirmEstimate: Function;
 }
 
 interface TestResults {
@@ -191,21 +192,12 @@ class Form extends Component<FromProps, FormState> {
     this.calcPercentagePrice = this.calcPercentagePrice.bind(this);
   }
 
-  async componentDidUpdate(prevProps) {
-    const networkId = getNetworkId();
-    const endPoint = GAS_CONFIRM_ESTIMATE[networkId];
-    if (
-      endPoint &&
-      this.props.gasPrice !== prevProps.gasPrice &&
-      this.props.gasPrice
-    ) {
-      const gasConfirmEstimateResponse = await fetch(
-        `${endPoint}${this.props.gasPrice}`
-      );
-      const gasConfirmEstimate = await gasConfirmEstimateResponse.json();
-      this.setState({ confirmationTimeEstimation: gasConfirmEstimate.result });
-    }
 
+  componentDidMount() {
+    this.getGasConfirmEstimate();
+  }
+
+  componentDidUpdate(prevProps) {
     this.updateTestProperty(this.INPUT_TYPES.QUANTITY, this.props);
     this.updateTestProperty(this.INPUT_TYPES.PRICE, this.props);
     this.updateTestProperty(this.INPUT_TYPES.EST_DAI, this.props);
@@ -226,6 +218,10 @@ class Form extends Component<FromProps, FormState> {
       !!!this.props[this.INPUT_TYPES.PRICE]
     ) {
       this.setState({ percentage: '' });
+    }
+
+    if (prevProps.gasPrice !== this.props.gasPrice) {
+      this.getGasConfirmEstimate();
     }
   }
 
@@ -258,6 +254,15 @@ class Form extends Component<FromProps, FormState> {
           });
         }
       );
+    }
+  }
+
+  async getGasConfirmEstimate() {
+    try {
+      const confirmationTimeEstimation = await this.props.getGasConfirmEstimate();
+      this.setState({ confirmationTimeEstimation });
+    } catch(error) {
+      this.setState({ confirmationTimeEstimation: 0 });
     }
   }
 

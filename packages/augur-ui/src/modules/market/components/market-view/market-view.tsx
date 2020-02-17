@@ -333,8 +333,11 @@ export default class MarketView extends Component<
     FindReact(document.getElementById('tabs_mobileView')).handleClick(null, 1);
   }
 
-  updateSelectedOutcome(selectedOutcomeId) {
+  updateSelectedOutcome(selectedOutcomeId, keepOrder) {
     if (selectedOutcomeId !== this.state.selectedOutcomeId) {
+      if (keepOrder) {
+        return this.setState({selectedOutcomeId});
+      }
       this.setState({
         selectedOutcomeId,
         selectedOrderProperties: {
@@ -668,6 +671,9 @@ export default class MarketView extends Component<
                         selectedOutcomeId={outcomeId}
                         updateSelectedOutcome={this.updateSelectedOutcomeSwitch}
                         orderBook={orderBook}
+                        updateSelectedOrderProperties={
+                          this.updateSelectedOrderProperties
+                        }
                       />
                       <div className={Styles.PriceHistory}>
                         <h3>Price History</h3>
@@ -902,6 +908,9 @@ export default class MarketView extends Component<
                     updateSelectedOutcome={this.updateSelectedOutcome}
                     hideOutcomes={cat5 ? !extendOutcomesList : false}
                     orderBook={orderBook}
+                    updateSelectedOrderProperties={
+                      this.updateSelectedOrderProperties
+                    }
                   />
                   <div
                     className={classNames(Styles.ChartsPane, {

@@ -18,7 +18,8 @@ const mapStateToProps = (state: AppState, ownProps) => {
     hasForked && !!universe.forkingInfo.winningChildUniverseId;
   const initialReport = !migrateMarket && !migrateRep;
   const openReporting = market.reportingState === REPORTING_STATE.OPEN_REPORTING;
-  const owesRep = migrateMarket || (!openReporting && !isSameAddress(market.designatedReporter, loginAccount.address));
+  const owesRep = migrateMarket ? migrateMarket : (!openReporting && !isSameAddress(market.author, loginAccount.address));
+  const enoughRepBalance = owesRep ? userAttoRep.gte(createBigNumber(market.noShowBondAmount)) : true;
 
   return {
     owesRep,
@@ -29,7 +30,8 @@ const mapStateToProps = (state: AppState, ownProps) => {
     Gnosis_ENABLED: state.appStatus.gnosisEnabled,
     ethToDaiRate: state.appStatus.ethToDaiRate,
     gasPrice: getGasPrice(state),
-    openReporting
+    openReporting,
+    enoughRepBalance
   };
 };
 
