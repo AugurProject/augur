@@ -213,14 +213,15 @@ export function connectAugur(
     if (loggedInAccountType === ACCOUNT_TYPES.TORUS) {
       preloadAccount(ACCOUNT_TYPES.TORUS);
     }
-
+    /*
     let provider;
     if (windowApp.web3) {
       provider = new Web3Provider(windowApp.web3.currentProvider);
     } else {
       provider = new JsonRpcProvider(env['ethereum'].http);
     }
-
+    */
+    const provider = new JsonRpcProvider(env['ethereum'].http);
     let sdk: Augur<Provider> = null;
     try {
       sdk = await augurSdk.makeClient(provider, env);

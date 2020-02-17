@@ -26,7 +26,7 @@
   },
   "kovan": {
     "ethereum": {
-      "http": "https://eth-kovan.alchemyapi.io/jsonrpc/1FomA6seLdWDvpIRvL9J5NhwPHLIGbWA",
+      "http": "https://kovan.augur.net/ethereum-http",
       "rpcRetryCount": 5,
       "rpcRetryInterval": 0,
       "rpcConcurrency": 40
