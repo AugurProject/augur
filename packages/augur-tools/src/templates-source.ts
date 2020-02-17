@@ -3884,17 +3884,11 @@ export const TEMPLATES = {
                   },
                   {
                     id: 2,
-                    type: TemplateInputType.DROPDOWN,
-                    values: LIST_VALUES.OLYMPIC_LIST_MEDAL,
-                    placeholder: `Any/a Gold`,
-                  },
-                  {
-                    id: 3,
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `Field (Any other team)`,
                   },
                   {
-                    id: 4,
+                    id: 3,
                     type: TemplateInputType.USER_DROPDOWN_OUTCOME,
                     placeholder: `Select Country`,
                     values: LIST_VALUES.OLYMPIC_COUNTRIES,
@@ -4211,17 +4205,11 @@ export const TEMPLATES = {
                   },
                   {
                     id: 2,
-                    type: TemplateInputType.DROPDOWN,
-                    values: LIST_VALUES.OLYMPIC_LIST_MEDAL,
-                    placeholder: `Any/a Gold`,
-                  },
-                  {
-                    id: 3,
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `Field (Any other team)`,
                   },
                   {
-                    id: 4,
+                    id: 3,
                     type: TemplateInputType.USER_DROPDOWN_OUTCOME,
                     placeholder: `Select Country`,
                     values: LIST_VALUES.OLYMPIC_COUNTRIES,
