@@ -45,16 +45,18 @@ export class Controller {
   private allEvents = async (blockNumber: number, allLogs: ParsedLog[]) => {
     // Grab market ids from all logs.
     // Compose applies operations from bottom to top.
-    const logMarketIds = fp.compose(
+    const marketIds = fp.compose(
       fp.compact,
       fp.uniq,
-      fp.filter(NULL_ADDRESS),
       fp.map('market')
     )(allLogs);
 
-    if(logMarketIds.length > 0) this.updateMarketsData(logMarketIds as string[]);
+    const validMarketIds = marketIds.filter(m => m !== NULL_ADDRESS);
+    const nullMarketLogs = allLogs.filter(l => l.market === NULL_ADDRESS);
+
+    if (validMarketIds.length > 0) this.updateMarketsData(validMarketIds as string[]);
     // emit non market related logs
-    allLogs.forEach(l => l.market === NULL_ADDRESS && this.augur.events.emit(l.name, {...l}));
+    if (nullMarketLogs.length > 0) nullMarketLogs.forEach(l => this.augur.events.emit(l.name, {...l}));
   }
 
   private notifyNewBlockEvent = async (blockNumber: number): Promise<void> => {
