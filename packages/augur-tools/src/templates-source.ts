@@ -3893,6 +3893,12 @@ export const TEMPLATES = {
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `Field (Any other team)`,
                   },
+                  {
+                    id: 4,
+                    type: TemplateInputType.USER_DROPDOWN_OUTCOME,
+                    placeholder: `Select Country`,
+                    values: LIST_VALUES.OLYMPIC_COUNTRIES,
+                  },
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
@@ -3932,6 +3938,12 @@ export const TEMPLATES = {
                     id: 3,
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `Field (Any other team)`,
+                  },
+                  {
+                    id: 4,
+                    type: TemplateInputType.USER_DROPDOWN_OUTCOME,
+                    placeholder: `Select Country`,
+                    values: LIST_VALUES.OLYMPIC_COUNTRIES,
                   },
                 ],
                 resolutionRules: {
@@ -4208,6 +4220,12 @@ export const TEMPLATES = {
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `Field (Any other team)`,
                   },
+                  {
+                    id: 4,
+                    type: TemplateInputType.USER_DROPDOWN_OUTCOME,
+                    placeholder: `Select Country`,
+                    values: LIST_VALUES.OLYMPIC_COUNTRIES,
+                  },
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
@@ -4247,6 +4265,12 @@ export const TEMPLATES = {
                     id: 3,
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `Field (Any other team)`,
+                  },
+                  {
+                    id: 4,
+                    type: TemplateInputType.USER_DROPDOWN_OUTCOME,
+                    placeholder: `Select Country`,
+                    values: LIST_VALUES.OLYMPIC_COUNTRIES,
                   },
                 ],
                 resolutionRules: {
