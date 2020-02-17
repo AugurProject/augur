@@ -22,7 +22,7 @@ import { ethers } from 'ethers';
 import { getAddress } from 'ethers/utils/address';
 import * as _ from 'lodash';
 
-const MIN_GAS_PRICE = new BigNumber(1e9) // Min: 1 Gwei
+const MIN_GAS_PRICE = new BigNumber(1e9); // Min: 1 Gwei
 const DEFAULT_GAS_PRICE = new BigNumber(4e9); // Default: GasPrice: 4 Gwei
 const BASE_GAS_ESTIMATE = '75000';
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
@@ -38,7 +38,7 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
   useSafe = false;
   status = null;
 
-  private _currentNonce: number = -1;
+  private _currentNonce = -1;
   private _signingQueue: AsyncQueue<SigningQueueTask> = queue(async (task: SigningQueueTask ) => {
     if (this._currentNonce === -1) {
       this._currentNonce = Number(await this.gnosisSafe.nonce());
@@ -49,12 +49,11 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
     return result;
   });
 
-
   gnosisSafe: ethers.Contract;
 
   constructor(
     provider: EthersProvider,
-    public readonly gnosisRelay: IGnosisRelayAPI,
+    readonly gnosisRelay: IGnosisRelayAPI,
     signer?: EthersSigner,
     private gasToken: string = NULL_ADDRESS,
     public gasPrice: BigNumber = DEFAULT_GAS_PRICE,
@@ -126,7 +125,7 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
   }
 
   async submitTransaction(transaction: Transaction<BigNumber>): Promise<TransactionReceipt> {
-    if (!this.signer) throw new Error("Attempting to sign a transaction while not providing a signer");
+    if (!this.signer) throw new Error('Attempting to sign a transaction while not providing a signer');
     const tx = this.transactionToEthersTransaction(transaction);
     const txMetadataKey = `0x${transaction.data.substring(10)}`;
     const txMetadata = this.transactionDataMetaData[txMetadataKey];
@@ -135,10 +134,10 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
     try {
       const receipt = await this.sendTransaction(tx, txMetadata);
       hash = receipt.transactionHash;
-      const status = receipt.status == 1 ? TransactionStatus.SUCCESS : TransactionStatus.FAILURE;
+      const status = receipt.status === 1 ? TransactionStatus.SUCCESS : TransactionStatus.FAILURE;
       this.onTransactionStatusChanged(txMetadata, status, hash);
       // ethers has `status` on the receipt as optional, even though it isn't and never will be undefined if using a modern network (which this is designed for)
-      return <TransactionReceipt>receipt;
+      return receipt as TransactionReceipt;
     } catch (e) {
       if (this.gnosisSafe) {
         this._currentNonce = Number(await this.gnosisSafe.nonce());
@@ -271,7 +270,6 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
     };
   }
 
-
   async execTransactionOnRelayer(
     relayTransaction: RelayTransaction
   ) {
@@ -283,7 +281,10 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
         const status = response.status;
         const isServerError = status >= 500;
         console.error(`Gnosis Relay ${status} Error: ${exception}`);
-        if (isServerError || exception.includes("funds")) {
+        if (exception && exception.includes("There are too many transactions in the queue")) {
+          throw TransactionStatus.FEE_TOO_LOW;
+        }
+        else if (isServerError || exception && exception.includes('funds')) {
           // In the event of a 5XX error or when the relayer has no funds we should consider the relay down
           this.setUseRelay(false);
           this.setStatus(GnosisSafeState.ERROR);

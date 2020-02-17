@@ -23,6 +23,7 @@
 
       @media @breakpoint-mobile {
         border: none;
+        background: var(--color-module-background);
       }
     }
   }
@@ -35,7 +36,7 @@
     }
 
     background: var(--color-dark-grey);
-    border: @size-1 solid var(--color-dark-grey);
+    border: @size-1 solid var(--color-module-background);
     border-bottom: 0;
     display: flex;
     padding: @size-12;
@@ -44,6 +45,7 @@
     @media @breakpoint-mobile {
       border: none;
       background: var(--color-module-background);
+      border-left: @size-1 solid var(--color-module-background);
       padding: @size-24 @size-12;
       max-height: @size-72;
     }

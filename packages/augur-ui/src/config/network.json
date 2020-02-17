@@ -37,12 +37,11 @@
     },
     "zeroX": {
       "rpc": {
-        "enabled": true,
+        "enabled": false,
         "ws":  "wss://v2.augur.net/0x-ws"
       },
       "mesh": {
-        "enabled": false,
-        "bootstrapList": []
+        "enabled": true
       }
     }
   }

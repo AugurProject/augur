@@ -124,10 +124,10 @@
     jsonschema "^1.2.0"
     lodash.values "^4.3.0"
 
-"@0x/mesh-browser@9.0.0-wss-support":
-  version "9.0.0-wss-support"
-  resolved "https://registry.yarnpkg.com/@0x/mesh-browser/-/mesh-browser-9.0.0-wss-support.tgz#c7a6eb643bcfd6e9038a2bb808a318492cd78d84"
-  integrity sha512-0S+jzvM7FIZI9WKgtak18UCxKufx86rE2qc4kTXg6m7e2r8SssauWaaziX7Gmvf4yfJhxxArfximRCpFXKNNmQ==
+"@0x/mesh-browser@9.0.0-extra-peers-and-logging":
+  version "9.0.0-extra-peers-and-logging"
+  resolved "https://registry.yarnpkg.com/@0x/mesh-browser/-/mesh-browser-9.0.0-extra-peers-and-logging.tgz#6f5c865b2aeb0424c44006cf2451dc1d7f922f6c"
+  integrity sha512-81MMLe1Vm98PGfeiFRbnpHlJIt+Ub4udk+qYkNH1aYV+sAcS8mZ7dDA2aRN3cCYZebUJmNVbb1OdmYlvjESHtg==
   dependencies:
     "@0x/order-utils" "^10.0.1"
     "@0x/utils" "^5.1.2"
@@ -28835,10 +28835,10 @@ yargs@^7.0.0, yargs@^7.1.0:
     y18n "^3.2.1"
     yargs-parser "^5.0.0"
 
-yarn@1.17.3:
-  version "1.17.3"
-  resolved "https://registry.yarnpkg.com/yarn/-/yarn-1.17.3.tgz#60e0b77d079eb78e753bb616f7592b51b6a9adce"
-  integrity sha512-CgA8o7nRZaQvmeF/WBx2FC7f9W/0X59T2IaLYqgMo6637wfp5mMEsM3YXoJtKUspnpmDJKl/gGFhnqS+sON7hA==
+yarn@1.22.0:
+  version "1.22.0"
+  resolved "https://registry.yarnpkg.com/yarn/-/yarn-1.22.0.tgz#acf82906e36bcccd1ccab1cfb73b87509667c881"
+  integrity sha512-KMHP/Jq53jZKTY9iTUt3dIVl/be6UPs2INo96+BnZHLKxYNTfwMmlgHTaMWyGZoO74RI4AIFvnWhYrXq2USJkg==
 
 yauzl@2.4.1:
   version "2.4.1"

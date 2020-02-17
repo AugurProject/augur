@@ -161,7 +161,7 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalAccountCreated />
     case TYPES.MODAL_AUGUR_USES_DAI:
       return <ModalAugurUsesDai />
-    case TYPES.MODAL_WALLET_ERROR:
+    case TYPES.MODAL_ERROR:
       return <ModalWalletError />
     case TYPES.MODAL_SCALAR_MARKET:
       return <ModalScalar {...modal} />

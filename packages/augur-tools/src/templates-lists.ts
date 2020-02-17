@@ -1,6 +1,8 @@
 export const LIST_VALUES = {
   YEARS: ['2020', '2021', '2022', '2023', '2024', '2025'],
   PRES_YEARS: ['2020', '2024', '2028'],
+  SUMMER_OLYMPIC_YEARS: ['2020', '2024', '2028'],
+  WINTER_OLYMPIC_YEARS: ['2022', '2026', '2030'],
   YEAR_RANGE: ['2020-21', '2021-22', '2022-23'],
   FOOTBALL_AWARDS: [
     'MVP',
@@ -2013,6 +2015,12 @@ export const LIST_VALUES = {
     'Seattle',
     'Grand Canyon',
     'UT-Pan American',
+  ],
+  TENNIS_MATCH_SETS: [
+    '1', '2', '3', '4', '5',
+  ],
+  TENNIS_GAMES_SETS: [
+    'games', 'sets',
   ],
   TENNIS_MENS_SINGLES_TOURNAMENTS: [
     'Qatar Exxon Mobil Open',

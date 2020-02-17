@@ -1,6 +1,5 @@
 import { ExchangeFillEvent, ValidationResults, GetOrdersResponse } from '@0x/mesh-browser';
 import { OrderEvent, OrderInfo, WSClient } from '@0x/mesh-rpc-client';
-import { SignedOrder } from '@0x/types';
 import { Event } from '@augurproject/core/build/libraries/ContractInterfaces';
 import { BigNumber } from 'bignumber.js';
 import { ethers } from 'ethers';
@@ -117,6 +116,23 @@ export interface MatchingOrders {
   loopLimit: BigNumber;
 }
 
+export interface SignedOrder {
+  makerAddress: string;
+  takerAddress: string;
+  feeRecipientAddress: string;
+  senderAddress: string;
+  makerAssetAmount: BigNumber;
+  takerAssetAmount: BigNumber;
+  makerFee: BigNumber;
+  takerFee: BigNumber;
+  expirationTimeSeconds: BigNumber;
+  salt: BigNumber;
+  makerAssetData: string;
+  takerAssetData: string;
+  makerFeeAssetData: string;
+  takerFeeAssetData: string;
+}
+
 export class ZeroX {
 
   private _rpc?: WSClient;
@@ -136,6 +152,8 @@ export class ZeroX {
       if (!this._mesh && this.client) {
         this.client.events.emit('ZeroX:RPC:OrderEvent', orderEvents);
       }
+    }).catch((err) => {
+      throw Error(`Failure when subscribing to OrdersAsync in ZeroX set rpc: ${err}`);
     });
 
     if (this.client) this.client.events.emit(SubscriptionEventName.ZeroXReady);
@@ -148,7 +166,7 @@ export class ZeroX {
 
   set mesh(mesh: BrowserMesh|null) {
     if(!mesh && this._mesh) {
-      console.log("Browser mesh is being cleared, but there is no way to stop a running instance. You may end up with multiple instances of _mesh running.")
+      console.log('Browser mesh is being cleared, but there is no way to stop a running instance. You may end up with multiple instances of _mesh running.');
       this._mesh = null;
       return;
     }
@@ -175,7 +193,7 @@ export class ZeroX {
   }
 
   disconnect() {
-    console.log("Disconnecting from ZeroX");
+    console.log('Disconnecting from ZeroX');
     this.mesh = null;
     this.rpc = null;
   }
@@ -193,25 +211,22 @@ export class ZeroX {
     } else if (this.mesh) {
       response = await this.getMeshOrders();
     } else {
-      throw new Error("Attempting to get orders with no connection to 0x");
+      throw new Error('Attempting to get orders with no connection to 0x');
     }
     return response ? response.ordersInfos : [];
   }
 
   isReady(): boolean {
-    if (this.rpc) return true;
-    if (this.mesh) return true;
-    return false;
+    return Boolean(this.rpc || this.mesh);
   }
-  async getMeshOrders(tries: number = 15): Promise<OrderInfo[]> {
-
-    var response;
+  async getMeshOrders(tries = 15): Promise<OrderInfo[]> {
+    let response;
     try {
       response = await this.mesh.getOrdersAsync();
     }
     catch(error) {
       if(tries > 0) {
-        console.log("Mesh retrying to fetch orders");
+        console.log('Mesh retrying to fetch orders');
         await sleep(3000);
         response = await this.getMeshOrders(tries - 1);
       }
@@ -219,8 +234,8 @@ export class ZeroX {
         response = undefined;
       }
     }
-    if (response.ordersInfos.length < 1 && tries > 0) {
-      console.log("Mesh retrying to fetch orders");
+    if (response && response.ordersInfos.length < 1 && tries > 0) {
+      console.log('Mesh retrying to fetch orders');
       await sleep(tries < 12 ? 2000 : 250);
       response = await this.getMeshOrders(tries - 1);
     }
@@ -264,7 +279,7 @@ export class ZeroX {
     params: ZeroXPlaceTradeParams,
     ignoreOrders?: string[]
   ): Promise<void> {
-    if (!this.client) throw new Error('To place ZeroX trade, make sure Augur client instance was initialized with it enabled.')
+    if (!this.client) throw new Error('To place ZeroX trade, make sure Augur client instance was initialized with it enabled.');
 
     const invalidReason = await this.checkIfTradeValid(params);
     if (invalidReason) throw new Error(invalidReason);
@@ -323,7 +338,7 @@ export class ZeroX {
 
   async placeOrders(orders: ZeroXPlaceTradeDisplayParams[]): Promise<void> {
     const onChainOrders = [];
-    for (let params of orders) {
+    for (const params of orders) {
       onChainOrders.push(this.getOnChainTradeParams(params));
     }
     await this.placeOnChainOrders(onChainOrders);
@@ -331,7 +346,7 @@ export class ZeroX {
 
   async placeOnChainOrders(orders: ZeroXPlaceTradeParams[]): Promise<void> {
     const zeroXOrders = [];
-    for (let params of orders) {
+    for (const params of orders) {
       const result = await this.createZeroXOrder(params);
       zeroXOrders.push(result.order);
     }
@@ -347,7 +362,7 @@ export class ZeroX {
   }
 
   async createZeroXOrder(params: ZeroXPlaceTradeParams) {
-    if (!this.client) throw new Error('To place ZeroX order, make sure Augur client instance was initialized with it enabled.')
+    if (!this.client) throw new Error('To place ZeroX order, make sure Augur client instance was initialized with it enabled.');
     const salt = new BigNumber(Date.now());
     const result = await this.client.contracts.ZeroXTrade.createZeroXOrder_(
       new BigNumber(params.direction),
@@ -393,7 +408,7 @@ export class ZeroX {
   }
 
   async signOrder(
-    signedOrder: any,
+    signedOrder: SignedOrder,
     orderHash: string,
     gnosis = true
   ): Promise<string> {
@@ -404,7 +419,7 @@ export class ZeroX {
     }
   }
 
-  async signGnosisOrder(signedOrder: any, orderHash: string): Promise<string> {
+  async signGnosisOrder(signedOrder: SignedOrder, orderHash: string): Promise<string> {
     const gnosisSafeAddress: string = signedOrder[0];
 
     const gnosisSafe = this.client.contracts.gnosisSafeFromAddress(
@@ -450,25 +465,25 @@ export class ZeroX {
         return this._rpc.addOrdersAsync(orders);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       return setTimeout(this.addOrders(orders), 5000);
     }
   }
 
   async cancelOrder(order) {
-    if (!this.client) throw new Error('To cancel ZeroX orders, make sure your Augur Client instance was initialized with it enabled.')
+    if (!this.client) throw new Error('To cancel ZeroX orders, make sure your Augur Client instance was initialized with it enabled.');
     return this.client.contracts.zeroXExchange.cancelOrder(order);
   }
 
   async batchCancelOrders(orders) {
-    if (!this.client) throw new Error('To cancel ZeroX orders, make sure your Augur Client instance was initialized with it enabled.')
+    if (!this.client) throw new Error('To cancel ZeroX orders, make sure your Augur Client instance was initialized with it enabled.');
     return this.client.contracts.zeroXExchange.batchCancelOrders(orders);
   }
 
   async simulateTrade(
     params: ZeroXPlaceTradeDisplayParams
   ): Promise<ZeroXSimulateTradeData> {
-    if (!this.client) throw new Error('To place ZeroX trades, make sure your Augur Client instance was initialized with it enabled.')
+    if (!this.client) throw new Error('To place ZeroX trades, make sure your Augur Client instance was initialized with it enabled.');
     const onChainTradeParams = this.getOnChainTradeParams(params);
     const { orders, signatures, orderIds, loopLimit } = await this.getMatchingOrders(
       onChainTradeParams,
@@ -520,7 +535,7 @@ export class ZeroX {
   simulateMakeOrder(params: ZeroXPlaceTradeParams): BigNumber[] {
     const sharesDepleted = BigNumber.min(params.shares, params.amount);
     const price =
-      params.direction == 0
+      params.direction === 0
         ? params.price
         : params.numTicks.minus(params.price);
     const tokensDepleted = params.amount
@@ -554,20 +569,20 @@ export class ZeroX {
       return { orders: [], signatures: [], orderIds: [], loopLimit: new BigNumber(0)};
     }
 
-    let ordersMap = []
+    let ordersMap = [];
     if (zeroXOrders[params.market] && zeroXOrders[params.market][outcome] && zeroXOrders[params.market][outcome][orderType]) {
       ordersMap = zeroXOrders[params.market][outcome][orderType];
     }
 
-    const sortedOrders = _.values(ordersMap).sort(function(a,b) {
-      var price = 0;
+    const sortedOrders = _.values(ordersMap).sort((a, b) => {
+      let price = 0;
       if(params.direction === 0) {
-        var price = (a.price - b.price);
+        price = (a.price - b.price);
       }
       if(params.direction === 1) {
-        var price = (b.price - a.price);
+        price = (b.price - a.price);
       }
-      return price === 0? b.amount - a.amount : price;
+      return price === 0 ? b.amount - a.amount : price;
 
     });
 
@@ -656,7 +671,7 @@ export class ZeroX {
     for (const event of events) {
       if (
         event.name === 'Fill' &&
-        (event.parameters as ExchangeFillEvent).makerAddress == account
+        (event.parameters as ExchangeFillEvent).makerAddress === account
       ) {
         const onChainAmountFilled = (event.parameters as ExchangeFillEvent)
           .makerAssetFilledAmount;

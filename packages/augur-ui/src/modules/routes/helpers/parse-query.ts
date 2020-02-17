@@ -24,3 +24,11 @@ export default function parseQuery(searchString) {
       return p;
     }, {});
 }
+
+export function parseLocation(href) {
+  let query = href;
+  if (query.indexOf('?') !== -1) {
+    query = query.replace('#!', '&').split('?')[1];
+  }
+  return parseQuery(query);
+}

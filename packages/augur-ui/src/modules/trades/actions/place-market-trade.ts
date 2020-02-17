@@ -1,6 +1,6 @@
 import { createBigNumber } from "utils/create-big-number";
 import {
-  BUY, INVALID_OUTCOME_ID,
+  BUY, INVALID_OUTCOME_ID, MODAL_ERROR,
 } from "modules/common/constants";
 import logError from "utils/log-error";
 import { AppState } from "store";
@@ -12,6 +12,7 @@ import { addPendingOrder, removePendingOrder, updatePendingOrderStatus } from "m
 import { convertUnixToFormattedDate } from "utils/format-date";
 import { generateTradeGroupId } from "utils/generate-trade-group-id";
 import { getOutcomeNameWithOutcome } from "utils/get-outcome";
+import { updateModal } from "modules/modal/actions/update-modal";
 
 export const placeMarketTrade = ({
   marketId,
@@ -78,6 +79,12 @@ export const placeMarketTrade = ({
   })
     .catch((err) => {
       console.log(err);
+      dispatch(
+        updateModal({
+          type: MODAL_ERROR,
+          error: JSON.stringify(err)
+        })
+      );
       dispatch(
         updatePendingOrderStatus(tradeGroupId, marketId, TXEventName.Failure, null)
       );

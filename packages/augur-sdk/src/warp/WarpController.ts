@@ -84,6 +84,7 @@ export const databasesToSync: RollupDescription = [
 ];
 
 export class WarpController {
+  private checkpointCreationInProgress = false;
   private static DEFAULT_NODE_TYPE = { format: 'dag-pb', hashAlg: 'sha2-256' };
   checkpoints: Checkpoints;
 
@@ -127,8 +128,12 @@ export class WarpController {
   }
 
   async createAllCheckpoints(highestBlock: Block) {
+    // Skip this warpSyncFile run. Will get em' next time.
+    if(this.checkpointCreationInProgress) return;
+    this.checkpointCreationInProgress = true;
     await this.createInitialCheckpoint();
     await this.createCheckpoints(highestBlock);
+    this.checkpointCreationInProgress = false;
 
     // For reproducibility we need hash consistent block number ranges for each warp sync.
     const [
@@ -340,30 +345,28 @@ export class WarpController {
   }
 
   async createCheckpoints(end: Block) {
-    const mostRecentCheckpoint = await this.db.warpCheckpoints.getMostRecentCheckpoint();
-    const [
-      newBeginBlock,
-      newEndBlock,
-    ] = await this.checkpoints.calculateBoundary(
-      mostRecentCheckpoint.begin,
-      end,
-    );
+    let endBlock = (await this.db.warpCheckpoints.getMostRecentCheckpoint()).begin;
+    while(!this.checkpoints.isSameDay(endBlock, end)) {
+      const mostRecentCheckpoint = await this.db.warpCheckpoints.getMostRecentCheckpoint();
+      const [
+        newBeginBlock,
+        newEndBlock,
+      ] = await this.checkpoints.calculateBoundary(
+        mostRecentCheckpoint.begin,
+        end,
+      );
 
-    // This is where we actually create the checkpoint.
-    const checkPointIPFSObject = await this.createCheckpoint(
-      mostRecentCheckpoint.begin,
-      newBeginBlock,
-    );
-    await this.db.warpCheckpoints.createCheckpoint(
-      newBeginBlock,
-      newEndBlock,
-      checkPointIPFSObject,
-    );
-
-    if (this.checkpoints.isSameDay(newEndBlock, end)) {
-      return;
-    } else {
-      return this.createCheckpoints(end);
+      // This is where we actually create the checkpoint.
+      const checkPointIPFSObject = await this.createCheckpoint(
+        mostRecentCheckpoint.begin,
+        newBeginBlock,
+      );
+      await this.db.warpCheckpoints.createCheckpoint(
+        newBeginBlock,
+        newEndBlock,
+        checkPointIPFSObject,
+      );
+      endBlock = newEndBlock;
     }
   }
 
