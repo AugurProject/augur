@@ -294,8 +294,8 @@ export class ZeroX {
     const numOrders = _.size(orders);
 
     // No orders available to take. Maybe make some new ones
-    if (numOrders === 0 && !params.doNotCreateOrders) {
-      await this.placeOnChainOrders([params]);
+    if (numOrders === 0) {
+      if (!params.doNotCreateOrders) await this.placeOnChainOrders([params]);
       return;
     }
 
