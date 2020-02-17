@@ -24,6 +24,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 });
 
 const mergeProps = (sP: any, dP: any) => ({
+  ...sP,
   closeAction: dP.closeAction,
   saveAction: dP.saveAction,
   feeTooLow: sP.modal.feeTooLow,
