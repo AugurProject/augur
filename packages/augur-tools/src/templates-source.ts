@@ -2189,8 +2189,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `NBA (Point Spread): Will the [0] to win by more than [1].5 points over the [2]?`,
-                example: `NBA (Point Spread): Will the Brooklyn Nets to win by more than 10.5 points over the NY Knicks?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+                question: `NBA (Point Spread): [0] to win by more than [1].5 points over the [2]?`,
+                example: `NBA (Point Spread): Brooklyn Nets to win by more than 10.5 points over the NY Knicks?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -3884,14 +3884,14 @@ export const TEMPLATES = {
                   },
                   {
                     id: 2,
-                    type: TemplateInputType.DROPDOWN,
-                    values: LIST_VALUES.OLYMPIC_LIST_MEDAL,
-                    placeholder: `Any/a Gold`,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Field (Any other team)`,
                   },
                   {
                     id: 3,
-                    type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `Field (Any other team)`,
+                    type: TemplateInputType.USER_DROPDOWN_OUTCOME,
+                    placeholder: `Select Country`,
+                    values: LIST_VALUES.OLYMPIC_COUNTRIES,
                   },
                 ],
                 resolutionRules: {
@@ -3932,6 +3932,12 @@ export const TEMPLATES = {
                     id: 3,
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `Field (Any other team)`,
+                  },
+                  {
+                    id: 4,
+                    type: TemplateInputType.USER_DROPDOWN_OUTCOME,
+                    placeholder: `Select Country`,
+                    values: LIST_VALUES.OLYMPIC_COUNTRIES,
                   },
                 ],
                 resolutionRules: {
@@ -4199,14 +4205,14 @@ export const TEMPLATES = {
                   },
                   {
                     id: 2,
-                    type: TemplateInputType.DROPDOWN,
-                    values: LIST_VALUES.OLYMPIC_LIST_MEDAL,
-                    placeholder: `Any/a Gold`,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Field (Any other team)`,
                   },
                   {
                     id: 3,
-                    type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `Field (Any other team)`,
+                    type: TemplateInputType.USER_DROPDOWN_OUTCOME,
+                    placeholder: `Select Country`,
+                    values: LIST_VALUES.OLYMPIC_COUNTRIES,
                   },
                 ],
                 resolutionRules: {
@@ -4247,6 +4253,12 @@ export const TEMPLATES = {
                     id: 3,
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `Field (Any other team)`,
+                  },
+                  {
+                    id: 4,
+                    type: TemplateInputType.USER_DROPDOWN_OUTCOME,
+                    placeholder: `Select Country`,
+                    values: LIST_VALUES.OLYMPIC_COUNTRIES,
                   },
                 ],
                 resolutionRules: {

@@ -55,6 +55,7 @@ export class Augur<TProvider extends Provider = Provider> {
   private txAwaitingSigningCallback: TXStatusCallback;
   private txPendingCallback: TXStatusCallback;
   private txFailureCallback: TXStatusCallback;
+  private txFeeTooLowCallback: TXStatusCallback;
   private txRelayerDownCallback: TXStatusCallback;
 
   get zeroX(): ZeroX {
@@ -305,6 +306,8 @@ export class Augur<TProvider extends Provider = Provider> {
       this.txSuccessCallback = callback;
     } else if (eventName === TXEventName.Failure) {
       this.txFailureCallback = callback;
+    } else if (eventName === TXEventName.FeeTooLow) {
+      this.txFeeTooLowCallback = callback;
     } else if (eventName === TXEventName.RelayerDown) {
       this.txRelayerDownCallback = callback;
     }
@@ -323,6 +326,8 @@ export class Augur<TProvider extends Provider = Provider> {
       this.txSuccessCallback = null;
     } else if (eventName === TXEventName.Failure) {
       this.txFailureCallback = null;
+    } else if (eventName === TXEventName.FeeTooLow) {
+      this.txFeeTooLowCallback = null;
     } else if (eventName === TXEventName.RelayerDown) {
       this.txRelayerDownCallback = null;
     }
@@ -408,6 +413,7 @@ export class Augur<TProvider extends Provider = Provider> {
   ): ReturnType<typeof Users.getProfitLossSummary> => {
     return this.bindTo(Users.getProfitLossSummary)(params);
   };
+
   getAccountTimeRangedStats = (
     params: Parameters<typeof Users.getAccountTimeRangedStats>[2]
   ): ReturnType<typeof Users.getAccountTimeRangedStats> => {
@@ -420,6 +426,11 @@ export class Augur<TProvider extends Provider = Provider> {
     return this.bindTo(Users.getUserAccountData)(params);
   };
 
+  getTotalOnChainFrozenFunds = (
+    params: Parameters<typeof Users.getTotalOnChainFrozenFunds>[2]
+  ): ReturnType<typeof Users.getTotalOnChainFrozenFunds> => {
+    return this.bindTo(Users.getTotalOnChainFrozenFunds)(params);
+  };
   getAccountTransactionHistory = (
     params: Parameters<typeof Accounts.getAccountTransactionHistory>[2]
   ): ReturnType<typeof Accounts.getAccountTransactionHistory> => {
@@ -557,6 +568,16 @@ export class Augur<TProvider extends Provider = Provider> {
             hash,
           } as TXStatus;
           this.txFailureCallback(txn);
+        } else if (
+          status === TransactionStatus.FEE_TOO_LOW &&
+          this.txFailureCallback
+        ) {
+          const txn: TXStatus = {
+            transaction,
+            eventName: TXEventName.FeeTooLow,
+            hash,
+          } as TXStatus;
+          this.txFeeTooLowCallback(txn);
         } else if (
           status === TransactionStatus.RELAYER_DOWN &&
           this.txRelayerDownCallback

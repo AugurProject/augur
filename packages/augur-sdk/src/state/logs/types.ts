@@ -351,10 +351,7 @@ export interface TimestampSetLog extends Log {
 
 export enum TokenType {
   ReputationToken,
-  ShareToken,
   DisputeCrowdsourcer,
-  FeeWindow, // No longer a valid type but here for backward compat with Augur Node processing
-  FeeToken, // No longer a valid type but here for backward compat with Augur Node processing
   ParticipationToken,
 }
 

@@ -29,6 +29,7 @@ export enum TransactionStatus {
   SUCCESS,
   FAILURE,
   RELAYER_DOWN,
+  FEE_TOO_LOW,
 }
 
 export type TransactionStatusCallback = (transaction: TransactionMetadata, status: TransactionStatus, hash?: string) => void;

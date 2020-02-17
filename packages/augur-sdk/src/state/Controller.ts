@@ -2,7 +2,7 @@ import { ParsedLog } from '@augurproject/types';
 import { Block } from 'ethers/providers';
 import * as fp from 'lodash/fp';
 import { Augur } from '../Augur';
-import { SubscriptionEventName } from '../constants';
+import { SubscriptionEventName, NULL_ADDRESS } from '../constants';
 import { Subscriptions } from '../subscriptions';
 import { DB } from './db/DB';
 import { Markets } from './getter/Markets';
@@ -21,7 +21,7 @@ export class Controller {
     private logFilterAggregator: LogFilterAggregatorInterface,
   ) {
     this.events = new Subscriptions(augur.events);
-    this.logFilterAggregator.listenForAllEvents(this.updateMarketsData);
+    this.logFilterAggregator.listenForAllEvents(this.allEvents);
     this.logFilterAggregator.notifyNewBlockAfterLogsProcess(this.notifyNewBlockEvent.bind(this));
 
     db.then((dbObject) => {
@@ -31,25 +31,33 @@ export class Controller {
     });
   }
 
-  private updateMarketsData = async (blockNumber: number, allLogs: ParsedLog[]) => {
-    // Grab market ids from all logs.
-    // Compose applies operations from bottom to top.
-    const logMarketIds = fp.compose(
-      fp.compact,
-      fp.uniq,
-      fp.map('market')
-    )(allLogs);
-
-    if(logMarketIds.length === 0) return;
-
+  private updateMarketsData = async (marketIds: string[]) => {
+    console.log('marketIds', marketIds.length);
     const marketsInfo = await Markets.getMarketsInfo(this.augur, await this.db, {
-      marketIds: logMarketIds
+      marketIds
     });
 
     this.augur.events.emit(SubscriptionEventName.MarketsUpdated,  {
       marketsInfo
     });
   };
+
+  private allEvents = async (blockNumber: number, allLogs: ParsedLog[]) => {
+    // Grab market ids from all logs.
+    // Compose applies operations from bottom to top.
+    const marketIds = fp.compose(
+      fp.compact,
+      fp.uniq,
+      fp.map('market')
+    )(allLogs);
+
+    const validMarketIds = marketIds.filter(m => m !== NULL_ADDRESS);
+    const nullMarketLogs = allLogs.filter(l => l.market === NULL_ADDRESS);
+
+    if (validMarketIds.length > 0) this.updateMarketsData(validMarketIds as string[]);
+    // emit non market related logs
+    if (nullMarketLogs.length > 0) nullMarketLogs.forEach(l => this.augur.events.emit(l.name, {...l}));
+  }
 
   private notifyNewBlockEvent = async (blockNumber: number): Promise<void> => {
     let lowestBlock = await (await this
