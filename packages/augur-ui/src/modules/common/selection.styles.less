@@ -25,10 +25,6 @@
     background: var(--color-secondary-action);
     color: var(--color-primary-text);
 
-    > .BettingUI {
-      color: var(--color-secondary-text);
-    }
-
     > b {
       margin-right: auto;
     }
@@ -201,10 +197,6 @@
     padding: 0 @size-8;
     text-transform: uppercase;
 
-    > .BettingUI {
-      color: red;
-    }
-
     // vertical line before arrow icon
     > span {
       overflow: hidden;
@@ -340,6 +332,18 @@
 }
 
 :root[theme="BETTING"] {
+  .Dropdown {
+    > button {
+
+      // arrow
+      > svg {
+        > path {
+          fill: var(--color-primary-text);
+        }
+      }
+    }
+  }
+
   .showColor {
     .generate-betting-indexed-color-outcome-classes({
       &.showColor-@{newIndex} {
