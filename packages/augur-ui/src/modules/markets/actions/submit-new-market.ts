@@ -47,7 +47,7 @@ export function submitNewMarket(
       await approveToTrade();
     }
 
-    if (hasOrders) {
+    if (!!hasOrders) {
       dispatch(
         addMarketLiquidityOrders({
           txParamHash: hashId,
