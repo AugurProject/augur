@@ -67,9 +67,8 @@ const SideNav = ({
       </div>
       <div className={Styles.Container}>
         <div>
-          {isConnectionTrayOpen && <ConnectDropdown />}
-          {isHelpMenuOpen && <HelpMenuList />}
           <ThemeSwitch />
+          {isConnectionTrayOpen && <ConnectDropdown />}
           <ul
             className={classNames({
               [Styles.accountDetailsOpen]: isConnectionTrayOpen,
