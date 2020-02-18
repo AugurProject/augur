@@ -110,8 +110,8 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
     super(props);
 
     this.state = {
-      orderPrice: props.selectedOrderProperties.price || '',
-      orderQuantity: props.selectedOrderProperties.quantity || '',
+      orderPrice: props.selectedOrderProperties.orderPrice || '',
+      orderQuantity: props.selectedOrderProperties.orderQuantity || '',
       orderDaiEstimate: '',
       orderEscrowdDai: '',
       gasCostEst: '',
