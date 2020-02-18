@@ -27,10 +27,14 @@ const DEFAULT_GAS_PRICE = new BigNumber(4e9); // Default: GasPrice: 4 Gwei
 const BASE_GAS_ESTIMATE = '75000';
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 
-
 interface SigningQueueTask {
   tx: Transaction<ethers.utils.BigNumber>,
   operation: Operation
+};
+
+interface RelayerQueueTask {
+  tx: RelayTransaction,
+  txMetadata: TransactionMetadata
 };
 
 export class ContractDependenciesGnosis extends ContractDependenciesEthers {
@@ -48,6 +52,50 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
     this._currentNonce++;
     return result;
   });
+
+  private _relayQueue: AsyncQueue<RelayerQueueTask> = queue(async (request: RelayerQueueTask) => {
+    if (this.useRelay) {
+      try {
+        const txHash: string = await this.execTransactionOnRelayer(request.tx);
+
+        this.onTransactionStatusChanged(
+          request.txMetadata,
+          TransactionStatus.PENDING,
+          txHash
+        );
+
+        return await this.provider.waitForTransaction(txHash);
+      }
+      catch (error) {
+        if (error === TransactionStatus.RELAYER_DOWN) {
+          // Relayer down we must clear the queue
+          await this._relayQueue.kill();
+
+          this.onTransactionStatusChanged(
+            request.txMetadata,
+            TransactionStatus.RELAYER_DOWN,
+          );
+        } else if (error === TransactionStatus.FAILURE) {
+          this.onTransactionStatusChanged(
+            request.txMetadata,
+            TransactionStatus.FAILURE,
+          );
+        }
+        throw error;
+      }
+    } else {
+      // The Relay Service is not being used so we'll execute the TX directly
+      const txHash: string = await this.execTransactionDirectly(request.tx);
+
+      this.onTransactionStatusChanged(
+        request.txMetadata,
+        TransactionStatus.PENDING,
+        txHash
+      );
+      return await this.provider.waitForTransaction(txHash);
+    }
+  });
+
 
   gnosisSafe: ethers.Contract;
 
@@ -154,7 +202,6 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
     }
   }
 
-
   async signTransaction(tx: Transaction<ethers.utils.BigNumber>, operation: Operation = Operation.Call) {
     return new Promise<RelayTransaction>((resolve, reject) => {
       this._signingQueue.push( {tx, operation }, (error, value: RelayTransaction) => {
@@ -175,21 +222,16 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
 
     const relayTransaction = await this.signTransaction(tx);
 
-    let txHash: string;
-    if (this.useRelay) {
-      txHash = await this.execTransactionOnRelayer(relayTransaction);
-    } else {
-      // If the Relay Service is not being used so we'll execute the TX directly
-      txHash = await this.execTransactionDirectly(relayTransaction);
-    }
+    return await this.waitForTx({ tx: relayTransaction, txMetadata });
+  }
 
-    this.onTransactionStatusChanged(
-      txMetadata,
-      TransactionStatus.PENDING,
-      txHash
-    );
-
-    return this.provider.waitForTransaction(txHash);
+  async waitForTx(task: RelayerQueueTask): Promise<ethers.providers.TransactionReceipt> {
+    return new Promise((resolve, reject) => {
+      this._relayQueue.push(task, (error, value: ethers.providers.TransactionReceipt) => {
+        if(error) reject(error);
+        else resolve(value);
+      });
+    });
   }
 
   async sendDelegateTransaction(
