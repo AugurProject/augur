@@ -146,7 +146,7 @@ export class Gnosis {
     const owner = params.owner;
     const affiliate = params.affiliate;
     const fingerprint = params.fingerprint;
-    const safeCalculated = !!params.safe;
+
     const safe = await this.getGnosisSafeAddress(owner);
     if (ethersUtils.getAddress(safe) !== ethersUtils.getAddress(NULL_ADDRESS)) {
       this.updateSafesToCheckList(safe, owner, GnosisSafeState.AVAILABLE);
@@ -157,7 +157,7 @@ export class Gnosis {
     }
 
     // Validate previous relay creation params.
-    if (!safeCalculated) {
+    if (!!params.safe) {
       const safe = await this.calculateGnosisSafeAddress(owner, params.payment, affiliate, fingerprint);
       const status = await this.getGnosisSafeDeploymentStatusViaRelay(params);
       this.augur.setGnosisStatus(status.status);

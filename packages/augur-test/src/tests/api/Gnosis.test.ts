@@ -12,7 +12,6 @@ import {
 import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
 import { BigNumber } from 'bignumber.js';
 import { makeProvider, MockGnosisRelayAPI } from '../../libs';
-import { stringTo32ByteHex } from '@augurproject/core/source/libraries/HelperFunctions';
 
 describe('Gnosis :: ', () => {
   let john: ContractAPI;
@@ -72,7 +71,7 @@ describe('Gnosis :: ', () => {
       const result = await john.augur.gnosis.getOrCreateGnosisSafe(
         { owner: john.account.publicKey }
       );
-      expect(result).toEqual(gnosisSafe.address);
+      expect(result.safe).toEqual(gnosisSafe.address);
     });
 
     test('should emit event with status if relay request was created', async done => {
@@ -119,8 +118,8 @@ describe('Gnosis :: ', () => {
       paymentToken: safe.paymentToken,
       payment: safe.payment,
       safe: safe.safe,
-      affiliate: NULL_ADDRESS,
-      fingerprint: stringTo32ByteHex('')
+      affiliate: null,
+      fingerprint: null
     };
 
     const calculatedAddress = await john.augur.gnosis.calculateGnosisSafeAddress(
