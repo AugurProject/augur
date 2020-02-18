@@ -954,6 +954,29 @@
   }
 }
 
+:root[theme="BETTING"] {
+  .TextInput {
+    > div {
+      > div.AutoCompleteList {
+        background-color: var(--color-module-background);
+        box-shadow: 0 0 @size-4 var(--color-primary-text-15);
+
+        > button {
+          color: var(--color-primary-text);
+
+          &:before {
+            background-color: var(--color-secondary-text-50);
+          }
+
+          &:hover {
+            background-color: var(--color-page-background);
+          }
+        }
+      }
+    }
+  }
+}
+
 .ErrorText {
   .text-12;
 
@@ -1487,8 +1510,18 @@ button.MaxDark {
 :root[theme="BETTING"] {
   .DatePicker {
     :global {
+      .DateInput {
+        > svg {
+          display: none;
+        }
+      }
+
       .DayPicker__horizontal_2 {
+        margin-top: -@size-20;
         background-color: var(--color-module-background);
+        box-shadow: 0 0 @size-4 var(--color-primary-text-15);
+        border-radius: @border-radius-default;
+        border: @size-1 solid var(--color-dark-grey);
       }
 
       .DayPicker_weekHeader_li_1 {
@@ -1900,7 +1933,7 @@ button.MaxDark {
 
     > div {
       margin-top: @size-4;
-      box-shadow: 0 0 @size-4 var(--color-primary-text);
+      box-shadow: 0 0 @size-4 var(--color-primary-text-15);
       border-radius: @border-radius-default;
       border: @size-1 solid var(--color-dark-grey);
       background: var(--color-module-background);
