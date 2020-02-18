@@ -66,7 +66,7 @@ async function run() {
         const opts = Object.assign({}, program.opts(), args);
         await processAccounts(flash, opts);
         if (script.ignoreNetwork !== true && opts.network !== 'none') {
-          flash.network = NetworkConfiguration.create(opts.network as NETWORKS);
+          flash.network = NetworkConfiguration.create(opts.network as NETWORKS, false);
           flash.provider = flash.makeProvider(flash.network);
           const networkId = await flash.getNetworkId(flash.provider);
           flash.contractAddresses = Addresses[networkId];
