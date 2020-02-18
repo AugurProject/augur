@@ -570,7 +570,7 @@ export class Augur<TProvider extends Provider = Provider> {
           this.txFailureCallback(txn);
         } else if (
           status === TransactionStatus.FEE_TOO_LOW &&
-          this.txFailureCallback
+          this.txFeeTooLowCallback
         ) {
           const txn: TXStatus = {
             transaction,
