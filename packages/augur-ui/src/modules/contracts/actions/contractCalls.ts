@@ -910,7 +910,7 @@ export async function simulateTradeGasLimit(
 export async function claimMarketsProceedsEstimateGas(
   markets: string[],
   shareHolder: string,
-  fingerprint: string = getFingerprint();
+  fingerprint: string = getFingerprint(),
 ) {
   const augur = augurSdk.get();
 
