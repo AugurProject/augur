@@ -120,7 +120,7 @@ export class SDK {
       return result.safe;
     } else {
       const result = await this.client.gnosis.getOrCreateGnosisSafe(
-        walletAddress
+        { owner: walletAddress, affiliate, fingerprint }
       );
 
       if (typeof result === 'string') {

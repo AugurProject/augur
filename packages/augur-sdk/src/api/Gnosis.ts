@@ -15,7 +15,6 @@ import { formatBytes32String } from 'ethers/utils';
 import { NULL_ADDRESS, Provider, SubscriptionEventName } from '..';
 import { Augur } from '../Augur';
 import { Address } from '../state/logs/types';
-import { stringTo32ByteHex } from '@augurproject/core/source/libraries/HelperFunctions';
 
 export const AUGUR_GNOSIS_SAFE_NONCE = 872838000000;
 
@@ -142,46 +141,44 @@ export class Gnosis {
    *
    */
   async getOrCreateGnosisSafe(
-    params: CalculateGnosisSafeAddressParams | Address
-  ): Promise<CalculateGnosisSafeAddressParams | Address> {
-    const owner = typeof params === 'string' ? params : params.owner;
-    const affiliate = typeof params === 'object' && params.affiliate;
-    const fingerprint = typeof params === 'object' && params.fingerprint;
-    const safe = await this.getGnosisSafeAddress(owner);
+    params: Partial<CalculateGnosisSafeAddressParams>
+  ): Promise<Partial<CalculateGnosisSafeAddressParams> | Address> {
+    const owner = params.owner;
+    const affiliate = params.affiliate;
+    const fingerprint = params.fingerprint;
+    let safe = await this.getGnosisSafeAddress(owner);
     if (ethersUtils.getAddress(safe) !== ethersUtils.getAddress(NULL_ADDRESS)) {
       this.updateSafesToCheckList(safe, owner, GnosisSafeState.AVAILABLE);
       await this.onNewBlock();
 
       this.augur.setGnosisStatus(GnosisSafeState.AVAILABLE);
-      return safe;
+      return { ...params, safe };
     }
 
     // Validate previous relay creation params.
-    if (typeof params === 'object') {
-      const safe = await this.calculateGnosisSafeAddress(owner, params.payment, affiliate, fingerprint);
-      const status = await this.getGnosisSafeDeploymentStatusViaRelay(params);
-      this.augur.setGnosisStatus(status.status);
+    safe = await this.calculateGnosisSafeAddress(owner, params.payment, affiliate, fingerprint);
+    const status = await this.getGnosisSafeDeploymentStatusViaRelay(params);
+    this.augur.setGnosisStatus(status.status);
 
-      // Normalize addresses
-      if (ethUtil.toChecksumAddress(safe) !== ethUtil.toChecksumAddress(params.safe)) {
-        // TODO handle this in the UI. Should present some warning modal indicating that we're having trouble creating accounts
-        console.log(
-          `Saved relay safe creation params invalid. Calculated safe address is ${safe}. Passed params: ${JSON.stringify(
-            params
-          )}.`
-        );
-      } else if (status.status === GnosisSafeState.WAITING_FOR_FUNDS) {
-        // Still pending, add to watchlist.
-        this.updateSafesToCheckList(safe, owner, GnosisSafeState.WAITING_FOR_FUNDS);
-        await this.onNewBlock();
+    // Normalize addresses
+    if (ethUtil.toChecksumAddress(safe) !== ethUtil.toChecksumAddress(params.safe)) {
+      // TODO handle this in the UI. Should present some warning modal indicating that we're having trouble creating accounts
+      console.log(
+        `Saved relay safe creation params invalid. Calculated safe address is ${safe}. Passed params: ${JSON.stringify(
+          params
+        )}.`
+      );
+    } else if (status.status === GnosisSafeState.WAITING_FOR_FUNDS) {
+      // Still pending, add to watchlist.
+      this.updateSafesToCheckList(safe, owner, GnosisSafeState.WAITING_FOR_FUNDS);
+      await this.onNewBlock();
 
-        return params;
-      } else if (status.status === GnosisSafeState.CREATED) {
-        this.updateSafesToCheckList(params.safe, owner, GnosisSafeState.CREATED);
-        await this.onNewBlock();
+      return params;
+    } else if (status.status === GnosisSafeState.CREATED) {
+      this.updateSafesToCheckList(params.safe, owner, GnosisSafeState.CREATED);
+      await this.onNewBlock();
 
-        return params;
-      }
+      return params;
     }
 
     try {
@@ -193,10 +190,10 @@ export class Gnosis {
       }) as SafeResponse;
 
       return {
-        ...result,
         affiliate,
         fingerprint,
         owner,
+        ...result,
       };
     } catch(error) {
       if (error.exception && error.exception.indexOf('SafeAlreadyExistsException') === 0) {
@@ -210,7 +207,7 @@ export class Gnosis {
         this.updateSafesToCheckList(restoredAddress, owner, status.status);
         await this.onNewBlock();
 
-        return restoredAddress
+        return { ...params, safe: restoredAddress }
       }
       throw error;
     }
@@ -225,7 +222,7 @@ export class Gnosis {
     owner: string,
     payment: string,
     affiliate: string = NULL_ADDRESS,
-    fingerprint: string = stringTo32ByteHex(''),
+    fingerprint: string = formatBytes32String(''),
   ): Promise<string> {
     const gnosisSafeData = await this.buildGnosisSetupData(
       owner,
@@ -271,7 +268,7 @@ export class Gnosis {
     return this.augur.contracts.gnosisSafeRegistry.getSafe_(account);
   }
 
-  async createGnosisSafeDirectlyWithETH(account: string, affiliate: string = NULL_ADDRESS, fingerprint: string = stringTo32ByteHex('')): Promise<string> {
+  async createGnosisSafeDirectlyWithETH(account: string, affiliate: string = NULL_ADDRESS, fingerprint: string = formatBytes32String('')): Promise<string> {
     const gnosisSafeRegistryAddress = this.augur.contracts.gnosisSafeRegistry.address;
     const gnosisSafeData = await this.buildGnosisSetupData(account, affiliate, fingerprint);
 
@@ -335,7 +332,7 @@ export class Gnosis {
   }
 
   async getGnosisSafeDeploymentStatusViaRelay(
-    params: GnosisSafeDeploymentStatusParams
+    params: Partial<GnosisSafeDeploymentStatusParams>
   ): Promise<GnosisSafeStateReponse> {
     if (this.gnosisRelay === undefined) {
       throw new Error('No Gnosis Relay provided to Augur SDK');

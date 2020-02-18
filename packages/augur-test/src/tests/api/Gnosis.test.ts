@@ -70,7 +70,7 @@ describe('Gnosis :: ', () => {
       const gnosisSafe = await john.createGnosisSafeDirectlyWithETH();
 
       const result = await john.augur.gnosis.getOrCreateGnosisSafe(
-        john.account.publicKey
+        { owner: john.account.publicKey }
       );
       expect(result).toEqual(gnosisSafe.address);
     });
@@ -90,13 +90,13 @@ describe('Gnosis :: ', () => {
         });
 
       await john.augur.gnosis.getOrCreateGnosisSafe(
-        john.account.publicKey
+        { owner: john.account.publicKey }
       );
     });
 
     test('should return creation params if relay request was created', async () => {
       const result = await john.augur.gnosis.getOrCreateGnosisSafe(
-        john.account.publicKey
+        { owner: john.account.publicKey }
       );
 
       expect(result).toEqual(
