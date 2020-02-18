@@ -142,11 +142,12 @@ export class Gnosis {
    */
   async getOrCreateGnosisSafe(
     params: Partial<CalculateGnosisSafeAddressParams>
-  ): Promise<Partial<CalculateGnosisSafeAddressParams> | Address> {
+  ): Promise<Partial<CalculateGnosisSafeAddressParams>> {
     const owner = params.owner;
     const affiliate = params.affiliate;
     const fingerprint = params.fingerprint;
-    let safe = await this.getGnosisSafeAddress(owner);
+    const safeCalculated = !!params.safe;
+    const safe = await this.getGnosisSafeAddress(owner);
     if (ethersUtils.getAddress(safe) !== ethersUtils.getAddress(NULL_ADDRESS)) {
       this.updateSafesToCheckList(safe, owner, GnosisSafeState.AVAILABLE);
       await this.onNewBlock();
@@ -156,29 +157,31 @@ export class Gnosis {
     }
 
     // Validate previous relay creation params.
-    safe = await this.calculateGnosisSafeAddress(owner, params.payment, affiliate, fingerprint);
-    const status = await this.getGnosisSafeDeploymentStatusViaRelay(params);
-    this.augur.setGnosisStatus(status.status);
+    if (!safeCalculated) {
+      const safe = await this.calculateGnosisSafeAddress(owner, params.payment, affiliate, fingerprint);
+      const status = await this.getGnosisSafeDeploymentStatusViaRelay(params);
+      this.augur.setGnosisStatus(status.status);
 
-    // Normalize addresses
-    if (ethUtil.toChecksumAddress(safe) !== ethUtil.toChecksumAddress(params.safe)) {
-      // TODO handle this in the UI. Should present some warning modal indicating that we're having trouble creating accounts
-      console.log(
-        `Saved relay safe creation params invalid. Calculated safe address is ${safe}. Passed params: ${JSON.stringify(
-          params
-        )}.`
-      );
-    } else if (status.status === GnosisSafeState.WAITING_FOR_FUNDS) {
-      // Still pending, add to watchlist.
-      this.updateSafesToCheckList(safe, owner, GnosisSafeState.WAITING_FOR_FUNDS);
-      await this.onNewBlock();
+      // Normalize addresses
+      if (ethUtil.toChecksumAddress(safe) !== ethUtil.toChecksumAddress(params.safe)) {
+        // TODO handle this in the UI. Should present some warning modal indicating that we're having trouble creating accounts
+        console.log(
+          `Saved relay safe creation params invalid. Calculated safe address is ${safe}. Passed params: ${JSON.stringify(
+            params
+          )}.`
+        );
+      } else if (status.status === GnosisSafeState.WAITING_FOR_FUNDS) {
+        // Still pending, add to watchlist.
+        this.updateSafesToCheckList(safe, owner, GnosisSafeState.WAITING_FOR_FUNDS);
+        await this.onNewBlock();
 
-      return params;
-    } else if (status.status === GnosisSafeState.CREATED) {
-      this.updateSafesToCheckList(params.safe, owner, GnosisSafeState.CREATED);
-      await this.onNewBlock();
+        return params;
+      } else if (status.status === GnosisSafeState.CREATED) {
+        this.updateSafesToCheckList(params.safe, owner, GnosisSafeState.CREATED);
+        await this.onNewBlock();
 
-      return params;
+        return params;
+      }
     }
 
     try {

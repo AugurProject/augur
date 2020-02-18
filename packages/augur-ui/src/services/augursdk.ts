@@ -89,16 +89,16 @@ export class SDK {
   /**
    * @name getOrCreateGnosisSafe
    * @description - Kick off the Gnosis safe creation process for a given wallet address.
-   * @param {string} walletAddress - Wallet address
+   * @param {string} owner - Wallet address
    * @returns {Promise<void>}
    */
-  async getOrCreateGnosisSafe(walletAddress: string, networkId: NetworkId, affiliate: string = NULL_ADDRESS): Promise<void | string> {
+  async getOrCreateGnosisSafe(owner: string, networkId: NetworkId, affiliate: string = NULL_ADDRESS): Promise<void | string> {
     if (!this.client) {
       console.log('Trying to init gnosis safe before Augur is initalized');
       return;
     }
 
-    const gnosisLocalstorageItemKey = `gnosis-relay-request-${networkId}-${walletAddress}`;
+    const gnosisLocalstorageItemKey = `gnosis-relay-request-${networkId}-${owner}`;
     const fingerprint = getFingerprint();
     // Up to UI side to check the localstorage wallet matches the wallet address.
     const calculateGnosisSafeAddressParamsString = localStorage.getItem(
@@ -112,20 +112,13 @@ export class SDK {
         ...calculateGnosisSafeAddressParams,
         affiliate,
         fingerprint,
-        owner: walletAddress,
+        owner,
       });
-      if (typeof result === 'string') {
-        return result;
-      }
       return result.safe;
     } else {
       const result = await this.client.gnosis.getOrCreateGnosisSafe(
-        { owner: walletAddress, affiliate, fingerprint }
+        { owner, affiliate, fingerprint }
       );
-
-      if (typeof result === 'string') {
-        return result;
-      }
 
       // Write response to localstorage.
       localStorage.setItem(gnosisLocalstorageItemKey, JSON.stringify(result));
