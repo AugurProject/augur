@@ -110,8 +110,8 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
     super(props);
 
     this.state = {
-      orderPrice: props.selectedOrderProperties.price || '',
-      orderQuantity: props.selectedOrderProperties.quantity || '',
+      orderPrice: props.selectedOrderProperties.orderPrice || '',
+      orderQuantity: props.selectedOrderProperties.orderQuantity || '',
       orderDaiEstimate: '',
       orderEscrowdDai: '',
       gasCostEst: '',
@@ -129,6 +129,20 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
     this.updateOrderProperty = this.updateOrderProperty.bind(this);
     this.updateNewOrderProperties = this.updateNewOrderProperties.bind(this);
     this.clearOrderConfirmation = this.clearOrderConfirmation.bind(this);
+  }
+
+  componentDidMount() {
+    const { selectedOrderProperties } = this.props;
+
+    this.updateTradeTotalCost(
+      {
+        ...selectedOrderProperties,
+        orderQuantity: convertExponentialToDecimal(
+          selectedOrderProperties.orderQuantity
+        ),
+      },
+      true
+    );
   }
 
   componentDidUpdate(prevProps) {
