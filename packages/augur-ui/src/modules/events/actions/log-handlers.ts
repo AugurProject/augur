@@ -1,9 +1,8 @@
 import { Getters } from '@augurproject/sdk/build';
 import { updateAlert } from 'modules/alerts/actions/alerts';
 import {
-  loadAccountPositionsTotals,
-  loadMarketAccountPositions,
   loadAllAccountPositions,
+  loadAccountOnChainFrozenFundsTotals,
 } from 'modules/positions/actions/load-account-positions';
 import {
   removeMarket,
@@ -105,11 +104,6 @@ const updateMarketOrderBook = (marketId: string) => (
     dispatch(throttleLoadMarketOrders(marketId));
   }
 }
-const loadUserPositionsAndBalances = (marketId: string) => (
-  dispatch: ThunkDispatch<void, any, Action>
-) => {
-  dispatch(loadMarketAccountPositions(marketId));
-};
 
 export const handleTxAwaitingSigning = (txStatus: Events.TXStatus) => (
   dispatch: ThunkDispatch<void, any, Action>,
@@ -232,9 +226,9 @@ export const handleMarketsUpdatedLog = ({
   getState: () => AppState
 ) => {
   console.log('handleMarketsUpdatedChangedLog');
-
   let marketsDataById = {};
   if (Array.isArray(marketsInfo)) {
+    if (marketsInfo.length === 0) return;
     marketsDataById = marketsInfo.reduce(
       (acc, marketData) => ({
         [marketData.id]: marketData,
@@ -244,6 +238,7 @@ export const handleMarketsUpdatedLog = ({
     );
   } else {
     const market = marketsInfo as Getters.Markets.MarketInfo;
+    if (Object.keys(market).length === 0) return;
     marketsDataById[market.id] = market;
   }
 
@@ -280,6 +275,9 @@ export const handleDBMarketCreatedEvent = (event: any) => (
           const market = marketInfos[id]
           if (market) {
             dispatch(removePendingDataByHash(market.transactionHash, CREATE_MARKET))
+            if (isSameAddress(market.author, getState().loginAccount.address)) {
+              dispatch(loadAccountOnChainFrozenFundsTotals());
+            }
           }
         })
       )
@@ -390,7 +388,6 @@ export const handleOrderCanceledLog = (log: Logs.ParsedOrderEventLog) => (
         })
       );
       dispatch(throttleLoadUserOpenOrders());
-      dispatch(loadAccountPositionsTotals());
     }
   }
   dispatch(updateMarketOrderBook(log.market));
@@ -491,7 +488,7 @@ export const handleProfitLossChangedLog = (log: Logs.ProfitLossChangedLog) => (
     getState().loginAccount.address
   );
   if (isUserDataUpdate) {
-    dispatch(loadUserPositionsAndBalances(log.market));
+    dispatch(loadAllAccountPositions());
   }
 };
 
