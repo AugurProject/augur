@@ -1892,6 +1892,57 @@ button.MaxDark {
   }
 }
 
+:root[theme="BETTING"] {
+  .TimeSelector {
+    > svg {
+      display: none;
+    }
+
+    > div {
+      margin-top: @size-4;
+      box-shadow: 0 0 @size-4 var(--color-primary-text);
+      border-radius: @border-radius-default;
+      border: @size-1 solid var(--color-dark-grey);
+      background: var(--color-module-background);
+      padding: @size-22 @size-24;
+
+      > span {
+        color: var(--color-primary-text);
+        margin-top: @size-16;
+      }
+
+      > div:last-of-type {
+        margin-left: @size-24;
+      }
+    }
+  }
+
+  .IndividualTimeSelector {
+    > span {
+      .mono-10-semi-bold;
+
+      color: var(--color-secondary-text);
+      text-transform: uppercase;
+      margin-bottom: @size-4;
+    }
+    
+    > button > svg > path {
+      fill: var(--color-secondary-text);
+      stroke: var(--color-secondary-text);
+    }
+
+    > input {
+      .mono-12-semi-bold;
+
+      border: @size-1 solid var(--color-dark-grey);
+      border-radius: @border-radius-default;
+      background-color: var(--color-page-background);
+      color: var(--color-primary-text);
+      margin: @size-12 0;
+    }
+  }
+}
+
 .ErrorLabel {
   background: var(--color-error-20);
   border-radius: @border-radius-default;
