@@ -3,13 +3,15 @@
 // Used in Betting UI
 .HelpIcon {
   z-index: @above-all-content-above;
+
   > span {
-    padding: @size-18;
+    padding: @size-15 @size-17 @size-18;
     display: flex;
     cursor: pointer;
-    border: @size-1 solid var(--color-dark-grey);
-    border-bottom: 0;
     max-height: @size-56;
+    border-top: @size-3 solid transparent;
+    border-left: @size-1 solid var(--color-module-background);
+    border-right: @size-1 solid var(--color-module-background);
 
     > svg {
       width: @size-20;
@@ -25,18 +27,14 @@
     }
 
     &:hover {
-      border: @size-1 solid var(--color-module-background);
-      border-bottom: 0;
       background: var(--color-module-background);
     }
 
     @media @breakpoint-mobile {
-      border: none;
       padding: @size-26;
       max-height: @size-72;
 
       &:hover {
-        border: none;
         background: var(--color-page-background);
       }
     }
@@ -44,13 +42,8 @@
 
   &.Open {
     > span {
-      border-bottom: 0;
       background: var(--color-module-background);
       z-index: @above-all-content;
-
-      @media @breakpoint-mobile {
-        border-top: 0;
-      }
     }
   }
 }
@@ -62,8 +55,7 @@
   border-radius: @border-radius-default;
   width: @size-210;
   top: 100%;
-  right: -@size-1;
-  margin-top: -@size-1;
+  right: 0;
   border-top-right-radius: 0;
   border-top-left-radius: 0;
   display: flex;
@@ -128,12 +120,10 @@
 .HelpMenu {
   position: absolute;
   background: var(--color-module-background);
-  border: @size-1 solid var(--color-secondary-action-outline);
   border-radius: @border-radius-default;
   width: @size-210;
   top: 100%;
-  right: -@size-2;
-  margin-top: -@size-1;
+  right: 0;
   border-top-right-radius: 0;
   border-top-left-radius: 0;
   display: flex;
@@ -195,8 +185,6 @@
 }
 
 .HelpResources {
-  border-left: @size-1 solid var(--color-module-background);
-  border-right: @size-1 solid var(--color-module-background);
   color: var(--color-primary-text);
   display: flex;
   flex: 1;
@@ -208,5 +196,56 @@
   @media @breakpoint-mobile {
     max-height: @size-72;
     max-width: @size-72;
+  }
+}
+
+:root[theme="BETTING"] {
+  .HelpIcon {
+    > span {
+      border-left: @size-1 solid var(--color-secondary-text-50);
+      border-right: @size-1 solid var(--color-secondary-text-50);
+
+      &:hover {
+        border-top: @size-3 solid var(--color-primary-action);
+        background: var(--color-secondary-text-25);
+      }
+
+      > svg {
+        > circle {
+          fill: var(--color-module-background);
+        }
+
+        > path {
+          fill: var(--color-primary-text);
+        }
+      }
+    }
+
+    &.Open {
+      > span {
+        border-top: @size-3 solid var(--color-primary-action);
+        border-left: @size-1 solid var(--color-page-background);
+      border-right: @size-1 solid var(--color-page-background);
+        background: var(--color-page-background);
+
+        > svg {
+          > circle {
+            fill: var(--color-primary-text);
+          }
+  
+          > path {
+            fill: var(--color-module-background);
+          }
+        }
+      }
+    }
+  }
+  
+  .HelpMenu {
+    box-shadow: @size-2 @size-2 @size-5 var(--color-secondary-text-50);
+
+    > span:first-of-type {
+      background: var(--color-page-background);
+    }
   }
 }
