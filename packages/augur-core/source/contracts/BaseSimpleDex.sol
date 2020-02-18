@@ -123,7 +123,7 @@ contract BaseSimpleDex is Initializable, ReentrancyGuard, VariableSupplyToken, C
         uint256 _amountInputWithFee = _inputAmount.mul(997);
         uint256 _numerator = _amountInputWithFee.mul(_outputReserve);
         uint256 _denominator = _inputReserve.mul(1000).add(_amountInputWithFee);
-        return _numerator / _denominator;
+        return (_numerator / _denominator) + 1; // Account for possible off by one rounding error
     }
 
     function getTokenPurchaseCost(uint256 _tokenAmount) public view returns (uint256) {
