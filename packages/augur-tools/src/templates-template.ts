@@ -367,17 +367,6 @@ export const isValidTemplateMarket = (
   return !!marketTitle.match(templateValidation);
 };
 
-function convertOutcomes(outcomes: string[]) {
-  if (!outcomes) return [];
-  return outcomes.map(o => {
-    const outcomeDescription = o.replace('0x', '');
-    const value = Buffer.from(outcomeDescription, 'hex').toString();
-    return [...value]
-      .reduce((p, i) => (i.charCodeAt(0) !== 0 ? [...p, i] : p), [])
-      .join('');
-  });
-}
-
 function hasMarketQuestionDependencies(
   validationDep: DropdownDependencies,
   inputs: ExtraInfoTemplateInput[]
@@ -722,8 +711,7 @@ export const isTemplateMarket = (
     }
 
     // check for outcome duplicates
-    const outcomeValues = convertOutcomes(outcomes);
-    if (new Set(outcomeValues).size !== outcomeValues.length) {
+    if (new Set(outcomes).size !== outcomes.length) {
       errors.push('outcome array has duplicates');
       return false;
     }
@@ -737,7 +725,7 @@ export const isTemplateMarket = (
     }
 
     // check that required outcomes exist
-    if (!hasRequiredOutcomes(validation.requiredOutcomes, outcomeValues)) {
+    if (!hasRequiredOutcomes(validation.requiredOutcomes, outcomes)) {
       errors.push('required outcomes are missing');
       return false;
     }
@@ -759,7 +747,7 @@ export const isTemplateMarket = (
           validation.outcomeDependencies,
           validation.requiredOutcomes,
           template.inputs,
-          outcomeValues
+          outcomes
         )
       ) {
         errors.push('outcome dependencies are incorrect');
@@ -771,7 +759,7 @@ export const isTemplateMarket = (
       !hasSubstituteOutcomes(
         template.inputs,
         validation.substituteDependencies,
-        outcomeValues
+        outcomes
       )
     ) {
       errors.push(
