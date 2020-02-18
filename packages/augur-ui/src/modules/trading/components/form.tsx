@@ -184,7 +184,7 @@ class Form extends Component<FromProps, FormState> {
       percentage: '',
       confirmationTimeEstimation: 0,
     };
-
+    
     this.changeOutcomeDropdown = this.changeOutcomeDropdown.bind(this);
     this.updateTestProperty = this.updateTestProperty.bind(this);
     this.clearOrderFormProperties = this.clearOrderFormProperties.bind(this);
@@ -412,7 +412,7 @@ class Form extends Component<FromProps, FormState> {
     // Check to ensure orders don't expiry within 70s
     // Also consider getGasConfirmEstimate * 1.5 seconds
     const minOrderLifespan = 70;
-    const gasConfirmEstimate = this.state.confirmationTimeEstimation * 1.5; // In Seconds
+    const gasConfirmEstimate = this.state ? this.state.confirmationTimeEstimation * 1.5 : 0; // In Seconds
     const expiryTime = expiration - gasConfirmEstimate - moment().unix();
     if (expiration && expiryTime < minOrderLifespan) {
       errorCount += 1;
