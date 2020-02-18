@@ -42,8 +42,10 @@ export interface GnosisSafeStatusPayload
   txHash?: string;
 }
 
-export interface GnosisSafeInputs {
+export interface GnosisSafeInputOutputs {
   owner: Address,
+  safe?: Address,
+  payment: string,
   affiliate?: Address,
   fingerprint?: string,
 }
@@ -146,17 +148,16 @@ export class Gnosis {
    *
    */
   async getOrCreateGnosisSafe(
-    params: GnosisSafeInputs
-  ): Promise<Address> {
-    const { owner, affiliate, fingerprint } = params;
+    params: GnosisSafeInputOutputs
+  ): Promise<GnosisSafeInputOutputs> {
+    const { owner, affiliate, fingerprint, payment } = params;
     const safe = await this.getGnosisSafeAddress(owner);
-    const payment = '0';
     if (ethersUtils.getAddress(safe) !== ethersUtils.getAddress(NULL_ADDRESS)) {
       this.updateSafesToCheckList(safe, owner, GnosisSafeState.AVAILABLE);
       await this.onNewBlock();
 
       this.augur.setGnosisStatus(GnosisSafeState.AVAILABLE);
-      return safe;
+      return {...params, safe};
     } else {
       // Validate previous relay creation params.
       const safe = await this.calculateGnosisSafeAddress(owner, payment, affiliate, fingerprint);
@@ -176,22 +177,20 @@ export class Gnosis {
         this.updateSafesToCheckList(safe, owner, GnosisSafeState.WAITING_FOR_FUNDS);
         await this.onNewBlock();
 
-        return safe;
+        return {...params, safe};
       } else if (status.status === GnosisSafeState.CREATED) {
         this.updateSafesToCheckList(safe, owner, GnosisSafeState.CREATED);
         await this.onNewBlock();
-        return safe;
+        return {...params, safe};
       }
     }
 
     try {
       const result: SafeResponse = await this.createGnosisSafeViaRelay({
-        owner,
-        affiliate,
-        fingerprint
+        ...params
       }) as SafeResponse;
 
-      return result.safe;
+      return {...params, safe: result.safe};
     } catch(error) {
       if (error.exception && error.exception.indexOf('SafeAlreadyExistsException') === 0) {
         const restoredAddress = error.exception.match(/0x[a-fA-F0-9]{40}/)[0];
@@ -204,7 +203,7 @@ export class Gnosis {
         this.updateSafesToCheckList(restoredAddress, owner, status.status);
         await this.onNewBlock();
 
-        return restoredAddress
+        return {...params, safe: restoredAddress};
       }
       throw error;
     }
@@ -287,7 +286,7 @@ export class Gnosis {
   }
 
   async createGnosisSafeViaRelay(
-    params: GnosisSafeInputs
+    params: GnosisSafeInputOutputs
   ): Promise<SafeResponse> {
     if (this.gnosisRelay === undefined) {
       throw new Error('No Gnosis Relay provided to Augur SDK');

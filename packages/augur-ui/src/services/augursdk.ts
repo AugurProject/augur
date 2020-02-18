@@ -6,7 +6,7 @@ import {
   createClient,
   SDKConfiguration,
   NULL_ADDRESS,
-  GnosisSafeInputs
+  GnosisSafeInputOutputs
 } from '@augurproject/sdk';
 import { EthersSigner } from 'contract-dependencies-ethers';
 import { formatBytes32String } from 'ethers/utils';
@@ -100,7 +100,7 @@ export class SDK {
 
     const gnosisLocalstorageItemKey = `gnosis-relay-request-${networkId}-${owner}`;
     const fingerprint = getFingerprint();
-    let calculateGnosisSafeAddressParams: GnosisSafeInputs = { owner, affiliate, fingerprint };
+    let calculateGnosisSafeAddressParams: GnosisSafeInputOutputs = { owner, affiliate, fingerprint, payment: '0', safe: NULL_ADDRESS };
     // Up to UI side to check the localstorage wallet matches the wallet address.
     const calculateGnosisSafeAddressParamsString = localStorage.getItem(
       gnosisLocalstorageItemKey
@@ -109,13 +109,13 @@ export class SDK {
     if (calculateGnosisSafeAddressParamsString) {
       calculateGnosisSafeAddressParams = JSON.parse(
         calculateGnosisSafeAddressParamsString
-      ) as GnosisSafeInputs;
+      ) as GnosisSafeInputOutputs;
     }
 
-    const safe = await this.client.gnosis.getOrCreateGnosisSafe(calculateGnosisSafeAddressParams);
+    const creationParameters = await this.client.gnosis.getOrCreateGnosisSafe(calculateGnosisSafeAddressParams);
     // Write response to localstorage.
-    localStorage.setItem(gnosisLocalstorageItemKey, JSON.stringify(calculateGnosisSafeAddressParams));
-    return safe;
+    localStorage.setItem(gnosisLocalstorageItemKey, JSON.stringify(creationParameters));
+    return creationParameters.safe;
   }
 
   async syncUserData(
