@@ -1,5 +1,5 @@
 import { GnosisSafeState } from '@augurproject/gnosis-relay-api';
-import { SubscriptionEventName } from '@augurproject/sdk';
+import { SubscriptionEventName, NULL_ADDRESS } from '@augurproject/sdk';
 // tslint:disable-next-line:import-blacklist
 import { CalculateGnosisSafeAddressParams } from '@augurproject/sdk/build/api/Gnosis';
 import {
@@ -12,6 +12,7 @@ import {
 import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
 import { BigNumber } from 'bignumber.js';
 import { makeProvider, MockGnosisRelayAPI } from '../../libs';
+import { stringTo32ByteHex } from '@augurproject/core/source/libraries/HelperFunctions';
 
 describe('Gnosis :: ', () => {
   let john: ContractAPI;
@@ -69,7 +70,7 @@ describe('Gnosis :: ', () => {
       const gnosisSafe = await john.createGnosisSafeDirectlyWithETH();
 
       const result = await john.augur.gnosis.getOrCreateGnosisSafe(
-        {owner:john.account.publicKey}
+        john.account.publicKey
       );
       expect(result).toEqual(gnosisSafe.address);
     });
@@ -89,27 +90,37 @@ describe('Gnosis :: ', () => {
         });
 
       await john.augur.gnosis.getOrCreateGnosisSafe(
-        {owner:john.account.publicKey}
+        john.account.publicKey
       );
     });
 
     test('should return creation params if relay request was created', async () => {
       const result = await john.augur.gnosis.getOrCreateGnosisSafe(
-        {owner:john.account.publicKey}
+        john.account.publicKey
       );
 
-      expect(result).toEqual(expect.stringContaining('0x'));
+      expect(result).toEqual(
+        expect.objectContaining({
+          safe: expect.stringContaining('0x'),
+          owner: john.account.publicKey,
+          payment: expect.stringContaining('0x'),
+        })
+      );
     });
   });
 
   test('calculating safe address from creation params', async () => {
-    const safe = await john.createGnosisSafeViaRelay();
+    const safe = await john.createGnosisSafeViaRelay(
+      john.augur.contracts.cash.address
+    );
 
     const calculateGnosisSafeAddressParams: CalculateGnosisSafeAddressParams = {
       owner: john.account.publicKey,
       paymentToken: safe.paymentToken,
       payment: safe.payment,
       safe: safe.safe,
+      affiliate: NULL_ADDRESS,
+      fingerprint: stringTo32ByteHex('')
     };
 
     const calculatedAddress = await john.augur.gnosis.calculateGnosisSafeAddress(
@@ -136,13 +147,15 @@ describe('Gnosis :: ', () => {
 
     jest.spyOn(mockGnosisRelay, 'createSafe').mockResolvedValue(fakeResponse);
     await expect(
-      john.createGnosisSafeViaRelay()
+      john.createGnosisSafeViaRelay(john.augur.contracts.cash.address)
     ).rejects.toThrowError(new RegExp('Potential malicious relay'));
   });
 
   describe('make safe through relay', () => {
     test.skip('polling for status', async done => {
-      const gnosisSafeResponse = await john.createGnosisSafeViaRelay();
+      const gnosisSafeResponse = await john.createGnosisSafeViaRelay(
+        john.augur.contracts.cash.address
+      );
 
       // Get the safe deployment status
       await expect(

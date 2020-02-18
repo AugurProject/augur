@@ -31,7 +31,7 @@ import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis/build';
 import { formatBytes32String } from 'ethers/utils';
 import { Account } from '../constants';
 import { makeGnosisDependencies, makeSigner } from './blockchain';
-import { sleep } from '@augurproject/core/build/libraries/HelperFunctions';
+import { sleep, stringTo32ByteHex } from '@augurproject/core/build/libraries/HelperFunctions';
 
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 const ETERNAL_APPROVAL_VALUE = new BigNumber('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'); // 2^256 - 1
@@ -700,9 +700,12 @@ export class ContractAPI {
     return this.augur.gnosis.getGnosisSafeAddress(account);
   }
 
-  async createGnosisSafeViaRelay(): Promise<SafeResponse> {
+  async createGnosisSafeViaRelay(paymentToken: string): Promise<SafeResponse> {
     const params = {
+      paymentToken,
       owner: this.account.publicKey,
+      affiliate: NULL_ADDRESS,
+      fingerprint: stringTo32ByteHex('')
     };
     return this.augur.gnosis.createGnosisSafeViaRelay(params);
   }
@@ -785,7 +788,7 @@ export class ContractAPI {
     }
 
     console.log('Attempting to create safe via relay');
-    const safeResponse = await this.createGnosisSafeViaRelay();
+    const safeResponse = await this.createGnosisSafeViaRelay(this.augur.addresses.Cash);
     return safeResponse.safe
   }
 
