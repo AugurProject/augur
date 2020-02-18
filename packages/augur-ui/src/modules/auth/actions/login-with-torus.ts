@@ -11,7 +11,7 @@ import { windowRef } from 'utils/window-ref';
 import { LoginAccount } from 'modules/types';
 import { AppState } from 'store';
 
-const getTorusNetwork = (networkId): string => {
+export const getTorusNetwork = (networkId): string => {
   if (networkId === NETWORK_IDS.Mainnet) {
     return 'mainnet';
   } else if (networkId === NETWORK_IDS.Kovan) {
@@ -31,7 +31,11 @@ export const loginWithTorus = () => async (
   let accountObject: Partial<LoginAccount> = {};
 
   if (torusNetwork) {
-    const torus: any = new Torus({});
+    const torus = new Torus({});
+
+    if (torusNetwork === 'localhost') {
+      throw new Error('localhost currently not working for torus')
+    }
 
     try {
       await torus.init({
@@ -69,9 +73,15 @@ export const loginWithTorus = () => async (
           .querySelector('#torusWidget')
           .setAttribute('style', 'display:none');
       }
+
     } catch (error) {
-      document.querySelector('#torusIframe').remove();
       document.querySelector('#torusWidget').remove();
+      // On error, we need to cleanup the second instance of the torus iframes
+      const torusIframe = document.querySelectorAll('#torusIframe');
+      if (torusIframe.length > 0 && torusIframe[1]) {
+        torusIframe[1].remove();
+      }
+
       throw error;
     }
 

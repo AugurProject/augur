@@ -10,13 +10,13 @@ import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { windowRef } from 'utils/window-ref';
 import { AppState } from 'store';
 
-const getFormaticNetwork = (networkId: string): false | string   => {
+const getFormaticNetwork = (networkId: string): string   => {
   if (networkId === NETWORK_IDS.Mainnet) {
     return 'mainnet';
   } else if (networkId === NETWORK_IDS.Kovan) {
     return 'kovan';
   } else {
-    return false;
+    return 'localhost';
   }
 };
 
@@ -26,11 +26,11 @@ export const loginWithFortmatic = () => async (
 ) => {
   const useGnosis = getState().env['gnosis']?.enabled;
   const networkId: string = getNetworkId();
-  const supportedNetworks = getFormaticNetwork(networkId);
+  const supportedNetwork = getFormaticNetwork(networkId);
 
-  if (supportedNetworks) {
+  if (supportedNetwork) {
     try {
-      const fm = new Fortmatic(networkId === NETWORK_IDS.Mainnet ? FORTMATIC_API_KEY : FORTMATIC_API_TEST_KEY, supportedNetworks);
+      const fm = new Fortmatic(networkId === NETWORK_IDS.Kovan ? FORTMATIC_API_TEST_KEY : FORTMATIC_API_KEY, supportedNetwork);
       const web3 = new Web3(fm.getProvider());
       const provider = new PersonalSigningWeb3Provider(fm.getProvider());
 
