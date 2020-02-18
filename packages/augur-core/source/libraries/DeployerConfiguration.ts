@@ -49,7 +49,7 @@ const EXTERNAL_ADDRESSES: NetworksToExternalAddresses = {
   ropsten: {},
   kovan: {
     // from: https://github.com/0xProject/0x-mesh/blob/dee8353e2e51862920745f5006e5fd38ab162b4b/ethereum/contract_addresses.go#L102
-    Exchange: '0x4eacd0af335451709e1e7b570b8ea68edec8bc97',
+    Exchange: '0x4eacd0aF335451709e1e7B570B8Ea68EdEC8bc97',
     /*
     MCDCol: "0xc7aa227823789e363f29679f23f7e8f6d9904a9b",
     MCDColJoin: "0xebbd300bb527f1d50abd937f8ca11d7fd0e5b68b",
