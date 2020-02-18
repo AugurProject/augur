@@ -131,6 +131,20 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
     this.clearOrderConfirmation = this.clearOrderConfirmation.bind(this);
   }
 
+  componentDidMount() {
+    const { selectedOrderProperties } = this.props;
+
+    this.updateTradeTotalCost(
+      {
+        ...selectedOrderProperties,
+        orderQuantity: convertExponentialToDecimal(
+          selectedOrderProperties.orderQuantity
+        ),
+      },
+      true
+    );
+  }
+
   componentDidUpdate(prevProps) {
     const { selectedOrderProperties } = this.props;
     const { orderPrice, orderQuantity, selectedNav } = this.state;

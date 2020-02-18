@@ -184,7 +184,7 @@ class Form extends Component<FromProps, FormState> {
       percentage: '',
       confirmationTimeEstimation: 0,
     };
-
+    
     this.changeOutcomeDropdown = this.changeOutcomeDropdown.bind(this);
     this.updateTestProperty = this.updateTestProperty.bind(this);
     this.clearOrderFormProperties = this.clearOrderFormProperties.bind(this);
