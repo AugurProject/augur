@@ -1484,6 +1484,137 @@ button.MaxDark {
   }
 }
 
+:root[theme="BETTING"] {
+  .DatePicker {
+    :global {
+      .DayPicker__horizontal_2 {
+        background-color: var(--color-module-background);
+      }
+
+      .DayPicker_weekHeader_li_1 {
+        .mono-10-semi-bold;
+  
+        color: var(--color-secondary-text);
+        text-transform: uppercase;
+      }
+
+      .DayPicker_weekHeader_1 {
+        top: @size-56;
+      }
+
+      .DayPickerNavigation_leftButton__horizontal_3 {
+        padding: 0;
+
+        > svg {
+          height: @size-20;
+          width: @size-20;
+  
+          > rect {
+            stroke: var(--color-dark-text);
+          }
+
+          > path {
+            stroke: var(--color-primary-text);
+          }
+  
+          &:hover {
+            > rect,
+            > path {
+              stroke: var(--color-primary-text);
+            }
+          }
+        }
+      }
+  
+      .DayPickerNavigation_rightButton__horizontal_3 {
+        padding: 0;
+
+        > svg {
+          height: @size-20;
+          width: @size-20;
+  
+          > rect {
+            stroke: var(--color-dark-text);
+          }
+
+          > path {
+            stroke: var(--color-primary-text);
+          }
+  
+          &:hover {
+            > rect,
+            > path {
+              stroke: var(--color-primary-text);
+            }
+          }
+        }
+      }
+
+      .CalendarMonth_caption_1 {
+        .text-14-bold;
+  
+        color: var(--color-primary-text);
+        padding-top: @size-18;
+        padding-bottom: @size-46;
+  
+        > strong {
+          font-weight: bold;
+        }
+      }
+
+      .CalendarDay_container_1 {
+        .mono-default;
+  
+        background: var(--color-page-background);
+        border: 0;
+        color: var(--color-primary-text);
+
+        > button {
+          border: @size-2 solid transparent;
+        }
+  
+        &.CalendarDay__selected:hover {
+          background: var(--color-primary-text);
+        }
+
+        &.CalendarDay__selected {
+          background: var(--color-primary-action);
+          color: var(--color-primary-text);
+  
+          &:hover {
+            background: var(--color-primary-action);
+            border: 0;
+            color: var(--color-primary-text);
+          }
+        }
+  
+        &.CalendarDay__blocked_out_of_range_2.CalendarDay__blocked_out_of_range_2,
+        &:hover {
+          background: var(--color-table-header);
+          border: 0;
+          color: var(--color-secondary-text-50);
+        }
+  
+        &.CalendarDay__blocked_out_of_range_2.CalendarDay__blocked_out_of_range_2:hover {
+          background: var(--color-table-header);
+          border: 0;
+          color: var(--color-secondary-text-50);
+        }
+  
+        &:hover {
+          border: 0;
+          color: var(--color-primary-text);
+
+          > button {
+            border: @size-2 solid var(--color-primary-action);
+            background: var(--color-active-background);
+          }
+        }
+      }
+    }
+  }
+}
+
 .InputDropdown {
   background-color: var(--color-primary-text);
   color: var(--color-secondary-text);
