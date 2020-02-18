@@ -190,7 +190,11 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
         this._currentNonce = Number(await this.gnosisSafe.nonce());
       }
 
-      if (e === TransactionStatus.RELAYER_DOWN) {
+      if (e === TransactionStatus.FEE_TOO_LOW) {
+        this.onTransactionStatusChanged(txMetadata, TransactionStatus.FEE_TOO_LOW, hash);
+        throw Error('Fee too low');
+      }
+      else if (e === TransactionStatus.RELAYER_DOWN) {
         this.onTransactionStatusChanged(txMetadata, TransactionStatus.RELAYER_DOWN, hash);
         throw Error('Relayer down');
       } else {
