@@ -309,7 +309,7 @@ export class ZeroX {
       params.amount,
       params.fingerprint,
       params.tradeGroupId,
-      new BigNumber(1).multipliedBy(new BigNumber(loopLimit)), // TODO: This is the param indicating the maximum amount of DAI to spend to cover the 0x protocol fee. Should be calculated and likely far lower
+      new BigNumber(10**18).multipliedBy(new BigNumber(loopLimit)), // TODO: This is the param indicating the maximum amount of DAI to spend to cover the 0x protocol fee. Should be calculated and likely far lower
       new BigNumber(loopLimit), // This is the maximum number of trades to actually make. This lets us put in more orders than we could fill with the gasLimit but handle failures and still fill the desired amount
       orders,
       signatures,
