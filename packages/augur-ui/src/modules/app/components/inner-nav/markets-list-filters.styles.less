@@ -131,3 +131,16 @@
   pointer-events: none;
   opacity: 0.5;
 }
+
+:root[theme="BETTING"] {
+  .FiltersGroup {
+    // Filters header
+    > div:first-of-type {
+
+      // TODO: color doesn't work here
+      > svg > path {
+        stroke: var(--color-primary-text);
+      }
+    }
+  }
+}
