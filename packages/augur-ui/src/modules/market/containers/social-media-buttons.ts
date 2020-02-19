@@ -7,6 +7,7 @@ import { SocialMediaButtons } from '../components/common/social-media-buttons';
 import { sendFacebookShare, sendTwitterShare } from 'services/analytics/helpers';
 
 const mapStateToProps = (state: AppState) => ({
+    address: state.loginAccount.address,
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
