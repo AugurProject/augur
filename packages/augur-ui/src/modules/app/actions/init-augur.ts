@@ -46,6 +46,7 @@ import { logout } from 'modules/auth/actions/logout';
 import { updateCanHotload } from 'modules/app/actions/update-connection';
 import { Augur, Provider } from '@augurproject/sdk';
 import { getLoggedInUserFromLocalStorage } from 'services/storage/localStorage';
+import { getFingerprint } from 'utils/get-fingerprint';
 import { tryToPersistStorage } from 'utils/storage-manager';
 
 const ACCOUNTS_POLL_INTERVAL_DURATION = 10000;
@@ -309,6 +310,8 @@ export function initAugur(
       JSON.stringify(env, null, 2) +
       "\n**********************************"
     );
+    // cache fingerprint
+    getFingerprint();
     dispatch(updateEnv(env));
     tryToPersistStorage();
     connectAugur(history, env, true, callback)(dispatch, getState);

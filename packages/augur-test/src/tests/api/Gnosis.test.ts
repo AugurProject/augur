@@ -1,5 +1,5 @@
 import { GnosisSafeState } from '@augurproject/gnosis-relay-api';
-import { SubscriptionEventName } from '@augurproject/sdk';
+import { SubscriptionEventName, NULL_ADDRESS } from '@augurproject/sdk';
 // tslint:disable-next-line:import-blacklist
 import { CalculateGnosisSafeAddressParams } from '@augurproject/sdk/build/api/Gnosis';
 import {
@@ -70,9 +70,9 @@ describe('Gnosis :: ', () => {
       const gnosisSafe = await john.createGnosisSafeDirectlyWithETH();
 
       const result = await john.augur.gnosis.getOrCreateGnosisSafe(
-        john.account.publicKey
+        { owner: john.account.publicKey }
       );
-      expect(result).toEqual(gnosisSafe.address);
+      expect(result.safe).toEqual(gnosisSafe.address);
     });
 
     test('should emit event with status if relay request was created', async done => {
@@ -87,12 +87,14 @@ describe('Gnosis :: ', () => {
         done();
       });
 
-      await john.augur.gnosis.getOrCreateGnosisSafe(john.account.publicKey);
+      await john.augur.gnosis.getOrCreateGnosisSafe(
+        { owner: john.account.publicKey }
+      );
     });
 
     test('should return creation params if relay request was created', async () => {
       const result = await john.augur.gnosis.getOrCreateGnosisSafe(
-        john.account.publicKey
+        { owner: john.account.publicKey }
       );
 
       expect(result).toEqual(
@@ -115,6 +117,8 @@ describe('Gnosis :: ', () => {
       paymentToken: safe.paymentToken,
       payment: safe.payment,
       safe: safe.safe,
+      affiliate: null,
+      fingerprint: null
     };
 
     const calculatedAddress = await john.augur.gnosis.calculateGnosisSafeAddress(

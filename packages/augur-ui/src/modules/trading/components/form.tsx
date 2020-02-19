@@ -9,7 +9,6 @@ import {
   BUY,
   SELL,
   INVALID_OUTCOME_ID,
-  GAS_CONFIRM_ESTIMATE,
   ONE,
 } from 'modules/common/constants';
 import FormStyles from 'modules/common/form-styles.less';
@@ -36,7 +35,6 @@ import moment, { Moment } from 'moment';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { SimpleTimeSelector } from 'modules/create-market/components/common';
 import { formatBestPrice } from 'utils/format-number';
-import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 
 const DEFAULT_TRADE_INTERVAL = new BigNumber(10**17);
 const DEFAULT_EXPIRATION_DAYS = 0;
@@ -184,7 +182,7 @@ class Form extends Component<FromProps, FormState> {
       percentage: '',
       confirmationTimeEstimation: 0,
     };
-    
+
     this.changeOutcomeDropdown = this.changeOutcomeDropdown.bind(this);
     this.updateTestProperty = this.updateTestProperty.bind(this);
     this.clearOrderFormProperties = this.clearOrderFormProperties.bind(this);
@@ -813,7 +811,9 @@ class Form extends Component<FromProps, FormState> {
         return bnMaxPrice.minus(tickSize);
       }
     const correctDec = formatBestPrice(calcPrice, tickSize);
-    return correctDec.fullPrecision;
+    const precision = getPrecision(tickSize, 0);
+    const value = createBigNumber(correctDec.fullPrecision).toFixed(precision);
+    return value;
   }
 
   render() {
