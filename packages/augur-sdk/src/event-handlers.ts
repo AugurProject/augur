@@ -260,7 +260,10 @@ export interface TokensTransferred extends FormattedEventLog {
   tokenType: string;
   market: Address;
 }
-
+export interface ReportingFeeChanged extends FormattedEventLog {
+  universe: Address;
+  reportingFee: string;
+}
 export interface TradingProceedsClaimed extends FormattedEventLog {
   universe: Address;
   shareToken; Address;

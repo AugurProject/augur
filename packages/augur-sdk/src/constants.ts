@@ -45,6 +45,7 @@ export enum SubscriptionEventName {
   TokensBurned = "TokensBurned",
   TokensMinted = "TokensMinted",
   TokensTransferred = "TokensTransferred",
+  ReportingFeeChanged = "ReportingFeeChanged",
   TradingProceedsClaimed = "TradingProceedsClaimed",
   UniverseCreated = "UniverseCreated",
   UniverseForked = "UniverseForked",
