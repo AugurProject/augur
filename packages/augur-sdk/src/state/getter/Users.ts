@@ -216,6 +216,7 @@ export class Users {
     let marketTradeHistory = null;
     let marketsInfo = null;
     let marketList = null;
+    let drMarketList = null;
     let userTradeHistory = null;
     let userOpenOrders: UserOpenOrders = null;
     let userPositions: UserTradingPositions = null;
@@ -247,6 +248,12 @@ export class Users {
 
     marketList = await Markets.getMarkets(augur, db, {
       creator: params.account,
+      designatedReporter: params.account,
+      universe: params.universe,
+    });
+
+    drMarketList = await Markets.getMarkets(augur, db, {
+      designatedReporter: params.account,
       universe: params.universe,
     });
 
@@ -315,7 +322,7 @@ export class Users {
       userStakedRep,
       userPositions,
       userPositionTotals,
-      marketsInfo: [...(marketList || {}).markets, ...marketsInfo],
+      marketsInfo: [...(marketList || {}).markets, ...marketsInfo, ...(drMarketList || {}).markets],
     };
   }
 

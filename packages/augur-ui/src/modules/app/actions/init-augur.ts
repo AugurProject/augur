@@ -46,6 +46,7 @@ import { logout } from 'modules/auth/actions/logout';
 import { updateCanHotload } from 'modules/app/actions/update-connection';
 import { Augur, Provider } from '@augurproject/sdk';
 import { getLoggedInUserFromLocalStorage } from 'services/storage/localStorage';
+import { getFingerprint } from 'utils/get-fingerprint';
 import { tryToPersistStorage } from 'utils/storage-manager';
 
 const ACCOUNTS_POLL_INTERVAL_DURATION = 10000;
@@ -70,8 +71,10 @@ function pollForAccount(
       const loggedInUser = getLoggedInUserFromLocalStorage();
       const loggedInAccount = loggedInUser && loggedInUser.address || null;
       const loggedInAccountType = loggedInUser && loggedInUser.type || null;
+      const unlockedAccount = windowRef.ethereum && windowRef.ethereum.selectedAddress;
 
       const showModal = accountType => {
+        const isWeb3Wallet = accountType === ACCOUNT_TYPES.WEB3WALLET;
         const onboardingShown = [
           MODAL_ACCOUNT_CREATED,
           MODAL_AUGUR_USES_DAI,
@@ -87,9 +90,10 @@ function pollForAccount(
                 setTimeout(() => {
                   dispatch(closeModal());
                 }),
-              message: accountType === ACCOUNT_TYPES.WEB3WALLET ? SIGNIN_LOADING_TEXT : `Connecting to our partners at ${accountType} to create your secure account.`,
+              message: isWeb3Wallet ? SIGNIN_LOADING_TEXT : `Connecting to our partners at ${accountType} to create your secure account.`,
               showLearnMore: true,
               showCloseAfterDelay: true,
+              showMetaMaskHelper: !isWeb3Wallet || unlockedAccount ? false : true,
             })
           );
         }
@@ -309,6 +313,8 @@ export function initAugur(
       JSON.stringify(env, null, 2) +
       "\n**********************************"
     );
+    // cache fingerprint
+    getFingerprint();
     dispatch(updateEnv(env));
     tryToPersistStorage();
     connectAugur(history, env, true, callback)(dispatch, getState);
