@@ -43,6 +43,8 @@
     "prepush": "yarn test && node scripts/pre-push.js"
   },
   "dependencies": {
+    "3box": "^1.17.0",
+    "3box-comments-react": "^1.0.2",
     "@0x/order-utils": "8.4.0",
     "@analytics/segment": "0.4.0",
     "@augurproject/sdk": "2.0.0-alpha.2",
