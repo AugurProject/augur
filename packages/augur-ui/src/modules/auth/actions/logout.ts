@@ -34,10 +34,6 @@ export function logout() {
       document.querySelector('.por_portis-container').remove();
     }
 
-    if (windowRef.fm) {
-      await windowRef.fm.user.logout();
-    }
-
     // Gnosis cleanup
     if (augurSdk && augurSdk.sdk) {
       augurSdk.sdk.setUseGnosisSafe(false);

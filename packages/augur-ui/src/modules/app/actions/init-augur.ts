@@ -24,6 +24,8 @@ import {
   MODAL_TEST_BET,
   MODAL_TUTORIAL_INTRO,
   SIGNIN_LOADING_TEXT,
+  NETWORK_IDS,
+  NETWORK_NAMES,
 } from 'modules/common/constants';
 import { windowRef } from 'utils/window-ref';
 import { AppState } from 'store';
@@ -48,6 +50,9 @@ import { Augur, Provider } from '@augurproject/sdk';
 import { getLoggedInUserFromLocalStorage } from 'services/storage/localStorage';
 import { getFingerprint } from 'utils/get-fingerprint';
 import { tryToPersistStorage } from 'utils/storage-manager';
+import Torus from '@toruslabs/torus-embed';
+import { isDevNetworkId } from '@augurproject/artifacts/src';
+import { getNetwork } from 'utils/get-network-name';
 
 const ACCOUNTS_POLL_INTERVAL_DURATION = 10000;
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
@@ -218,10 +223,33 @@ export function connectAugur(
       preloadAccount(ACCOUNT_TYPES.TORUS);
     }
 
-    let provider;
-    if (windowApp.web3) {
-      provider = new Web3Provider(windowApp.web3.currentProvider);
+    let provider = null;
+    let networkId = env['networkId'];
+
+    // Unless DEV, use the provider on window if it exists, otherwise use torus provider
+    if (networkId && !isDevNetworkId(networkId)) {
+      if (windowRef.web3) {
+          // Use window provider
+          provider = new Web3Provider(windowRef.web3.currentProvider);
+      } else {
+        // Use torus provider
+        const host = getNetwork(networkId);
+        const torus: any = new Torus({});
+
+        await torus.init({
+          network: { host },
+          showTorusButton: false,
+        });
+
+        // Tor.us cleanup
+        const torusWidget = document.querySelector('#torusWidget');
+        if (torusWidget) {
+          torusWidget.remove();
+        }
+        provider = new Web3Provider(torus.provider);
+      }
     } else {
+      // In DEV, use local ethereum node
       provider = new JsonRpcProvider(env['ethereum'].http);
     }
 
