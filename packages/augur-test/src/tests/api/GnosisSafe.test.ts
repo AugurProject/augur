@@ -1,20 +1,16 @@
-import {
-  ACCOUNTS,
-  ContractAPI,
-  defaultSeedPath,
-  loadSeedFile,
-} from '@augurproject/tools';
+import { ACCOUNTS, defaultSeedPath, loadSeedFile } from '@augurproject/tools';
+import { TestContractAPI } from '@augurproject/tools';
 import { BigNumber } from 'bignumber.js';
 import { makeProvider, MockGnosisRelayAPI } from '../../libs';
 
-let john: ContractAPI;
+let john: TestContractAPI;
 let mockGnosisRelay: MockGnosisRelayAPI;
 
 beforeAll(async () => {
   const seed = await loadSeedFile(defaultSeedPath);
   const provider = await makeProvider(seed, ACCOUNTS);
 
-  const mary = await ContractAPI.userWrapper(
+  const mary = await TestContractAPI.userWrapper(
     ACCOUNTS[1],
     provider,
     seed.addresses,
@@ -24,11 +20,16 @@ beforeAll(async () => {
 
   mockGnosisRelay = new MockGnosisRelayAPI();
   mockGnosisRelay.initialize(mary);
-  john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, seed.addresses, undefined, mockGnosisRelay);
+  john = await TestContractAPI.userWrapper(
+    ACCOUNTS[0],
+    provider,
+    seed.addresses,
+    undefined,
+    mockGnosisRelay
+  );
 });
 
 test('GnosisSafe :: Create and Use Gnosis Safe for Transactions', async () => {
-
   // Make the Safe directly using ETH
   const gnosisSafe = await john.createGnosisSafeDirectlyWithETH();
   const owners = await gnosisSafe.getOwners_();
@@ -64,5 +65,4 @@ test('GnosisSafe :: Create and Use Gnosis Safe for Transactions', async () => {
 
   const amountInOrder = await john.augur.contracts.orders.getAmount_(orderId);
   await expect(amountInOrder.toNumber()).toEqual(10 ** 16);
-
 });

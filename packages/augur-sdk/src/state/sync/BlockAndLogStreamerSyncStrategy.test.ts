@@ -22,7 +22,7 @@ describe('BlockstreamListener', () => {
   let deps: Mockify<BlockAndLogStreamerListenerDependencies>;
   let blockAndLogStreamerListener: BlockAndLogStreamerSyncStrategy;
 
-  const CONTRACT_ADDRESSES = ['0xSOMEUNKNOWNADDRESS', '0xSOMEADDRESS'] as const;
+  const CONTRACT_ADDRESSES = ['0xsomeunknownaddress', '0xsomeaddress'] as const;
 
   // Most of this data is invented to satisfy typescript.
   const sampleLogs: Log[] = [

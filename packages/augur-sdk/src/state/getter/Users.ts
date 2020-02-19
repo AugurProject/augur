@@ -841,11 +841,10 @@ export class Users {
         "'getTotalOnChainFrozenFunds' requires a 'universe' or 'account' param be provided"
       );
     }
-    const profitLossCollection = await db.ProfitLossChanged.where(
-      'account'
-    ).equals(params.account);
 
-    const profitLossRecords = await profitLossCollection
+    const profitLossRecords = await db.ProfitLossChanged.where(
+      'account'
+    ).equals(params.account)
       .and(log => {
         if (params.universe && log.universe !== params.universe) return false;
         return true;

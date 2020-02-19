@@ -7,19 +7,12 @@ import {
   Connectors,
   MarketReportingState,
 } from '@augurproject/sdk';
-import { DB } from '@augurproject/sdk/build/state/db/DB';
-import { API } from '@augurproject/sdk/build/state/getter/API';
 import {
   GetMarketsSortBy,
   MarketList,
 } from '@augurproject/sdk/build/state/getter/Markets';
-import { BulkSyncStrategy } from '@augurproject/sdk/build/state/sync/BulkSyncStrategy';
-import {
-  ACCOUNTS,
-  ContractAPI,
-  defaultSeedPath,
-  loadSeedFile,
-} from '@augurproject/tools';
+import { ACCOUNTS, defaultSeedPath, loadSeedFile } from '@augurproject/tools';
+import { TestContractAPI } from '@augurproject/tools';
 import {
   NULL_ADDRESS,
   stringTo32ByteHex,
@@ -27,27 +20,20 @@ import {
 import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from 'ethers/utils';
 import * as _ from 'lodash';
-import { makeDbMock, makeProvider, MockGnosisRelayAPI } from '../../../../libs';
+import { makeProvider, MockGnosisRelayAPI } from '../../../../libs';
 import { MockBrowserMesh } from '../../../../libs/MockBrowserMesh';
 import { MockMeshServer, stopServer } from '../../../../libs/MockMeshServer';
 
 describe('State API :: General', () => {
-  let john: ContractAPI;
-  let johnDB: Promise<DB>;
-  let johnAPI: API;
-  let johnBulkSyncStrategy: BulkSyncStrategy;
+  let john: TestContractAPI;
 
-  let mary: ContractAPI;
-  let maryDB: Promise<DB>;
-  let maryAPI: API;
-  let maryBulkSyncStrategy: BulkSyncStrategy
+  let mary: TestContractAPI;
 
   let provider: EthersProvider;
   let addresses: ContractAddresses;
 
   let meshBrowser: BrowserMesh;
   let meshClient: WSClient;
-  const mock = makeDbMock();
 
   beforeAll(async () => {
     const { port } = await MockMeshServer.create();
@@ -69,7 +55,7 @@ describe('State API :: General', () => {
       const johnConnector = new Connectors.DirectConnector();
       const johnGnosis = new MockGnosisRelayAPI();
       const johnBrowserMesh = new MockBrowserMesh(meshClient);
-      john = await ContractAPI.userWrapper(
+      john = await TestContractAPI.userWrapper(
         ACCOUNTS[0],
         provider,
         addresses,
@@ -81,23 +67,13 @@ describe('State API :: General', () => {
       expect(john).toBeDefined();
 
       johnGnosis.initialize(john);
-      johnDB = mock.makeDB(john.augur, ACCOUNTS);
-      johnConnector.initialize(john.augur, await johnDB);
-      johnAPI = new API(john.augur, johnDB);
-      johnBulkSyncStrategy = new BulkSyncStrategy(
-        provider.getLogs,
-        (await johnDB).logFilters.buildFilter,
-        (await johnDB).logFilters.onLogsAdded,
-        john.augur.contractEvents.parseLogs,
-      );
-
-
+      johnConnector.initialize(john.augur, john.db);
       await john.approveCentralAuthority();
 
       const maryConnector = new Connectors.DirectConnector();
       const maryGnosis = new MockGnosisRelayAPI();
       const maryBrowserMesh = new MockBrowserMesh(meshClient);
-      mary = await ContractAPI.userWrapper(
+      mary = await TestContractAPI.userWrapper(
         ACCOUNTS[1],
         provider,
         addresses,
@@ -107,17 +83,7 @@ describe('State API :: General', () => {
         maryBrowserMesh
       );
       maryGnosis.initialize(mary);
-      maryDB = mock.makeDB(mary.augur, ACCOUNTS);
-      maryConnector.initialize(mary.augur, await maryDB);
-      maryAPI = new API(mary.augur, maryDB);
-
-      maryBulkSyncStrategy = new BulkSyncStrategy(
-        provider.getLogs,
-        (await maryDB).logFilters.buildFilter,
-        (await maryDB).logFilters.onLogsAdded,
-        mary.augur.contractEvents.parseLogs,
-      );
-
+      maryConnector.initialize(mary.augur, mary.db);
       await mary.approveCentralAuthority();
 
       maryBrowserMesh.addOtherBrowserMeshToMockNetwork(johnBrowserMesh);
@@ -136,13 +102,13 @@ describe('State API :: General', () => {
         stringTo32ByteHex('B'),
       ]);
 
-      await johnBulkSyncStrategy.start(0, await john.provider.getBlockNumber());
-      await maryBulkSyncStrategy.start(0, await mary.provider.getBlockNumber());
+      await john.sync();
+      await mary.sync();
 
       // Test invalid universe address
       let errorMessage = '';
       try {
-        await johnAPI.route('getMarkets', {
+        await john.api.route('getMarkets', {
           universe: NULL_ADDRESS,
         });
       } catch (error) {
@@ -151,7 +117,7 @@ describe('State API :: General', () => {
       expect(errorMessage).toEqual('Unknown universe: ' + NULL_ADDRESS);
 
       // Test market count
-      marketList = await johnAPI.route('getMarkets', {
+      marketList = await john.api.route('getMarkets', {
         universe: addresses.Universe,
         isSortDescending: false,
       });
@@ -159,7 +125,7 @@ describe('State API :: General', () => {
       expect(marketList.markets.length).toEqual(2);
 
       // Test creator
-      marketList = await johnAPI.route('getMarkets', {
+      marketList = await john.api.route('getMarkets', {
         universe: addresses.Universe,
         creator: ACCOUNTS[0].publicKey,
         isSortDescending: false,
@@ -167,7 +133,7 @@ describe('State API :: General', () => {
 
       expect(marketList.markets.length).toEqual(1);
 
-      marketList = await johnAPI.route('getMarkets', {
+      marketList = await john.api.route('getMarkets', {
         universe: addresses.Universe,
         creator: NULL_ADDRESS,
       });
@@ -181,13 +147,13 @@ describe('State API :: General', () => {
       });
 
       // Test designatedReporter
-      marketList = await johnAPI.route('getMarkets', {
+      marketList = await john.api.route('getMarkets', {
         universe: addresses.Universe,
         designatedReporter: ACCOUNTS[0].publicKey,
       });
       expect(marketList.markets.length).toEqual(1);
 
-      marketList = await johnAPI.route('getMarkets', {
+      marketList = await john.api.route('getMarkets', {
         universe: addresses.Universe,
         designatedReporter: NULL_ADDRESS,
       });
@@ -201,7 +167,7 @@ describe('State API :: General', () => {
       });
 
       // Test maxFee
-      marketList = await johnAPI.route('getMarkets', {
+      marketList = await john.api.route('getMarkets', {
         universe: addresses.Universe,
         maxFee: '0',
       });
@@ -214,42 +180,41 @@ describe('State API :: General', () => {
         },
       });
 
-      marketList = await johnAPI.route('getMarkets', {
+      marketList = await john.api.route('getMarkets', {
         universe: addresses.Universe,
         maxFee: '0.1',
       });
       expect(marketList.markets.length).toEqual(2);
 
       // Test search & categories params
-      marketList = await johnAPI.route('getMarkets', {
+      marketList = await john.api.route('getMarkets', {
         universe: addresses.Universe,
         search: 'Categorical',
       });
       expect(marketList.markets.length).toEqual(1);
       expect(marketList.markets[0].id).toEqual(categoricalMarket1.address);
 
-
-      marketList = await johnAPI.route('getMarkets', {
+      marketList = await john.api.route('getMarkets', {
         universe: addresses.Universe,
         categories: ['flash', 'reasonable', 'yesno'],
       });
 
       expect(marketList.markets.length).toEqual(1);
 
-      marketList = await johnAPI.route('getMarkets', {
+      marketList = await john.api.route('getMarkets', {
         universe: addresses.Universe,
         search: ACCOUNTS[0].publicKey,
       });
       expect(marketList.markets.length).toEqual(1);
       expect(marketList.markets[0].id).toEqual(yesNoMarket1.address);
 
-      marketList = await johnAPI.route('getMarkets', {
+      marketList = await john.api.route('getMarkets', {
         universe: addresses.Universe,
         search: 'ipsum ipsum',
       });
       expect(marketList.markets.length).toEqual(0);
 
-      marketList = await johnAPI.route('getMarkets', {
+      marketList = await john.api.route('getMarkets', {
         universe: addresses.Universe,
         categories: ['ipsum', 'ipsum', 'ipsum'],
       });
@@ -258,9 +223,11 @@ describe('State API :: General', () => {
       // Test maxLiquiditySpread
       const yesNoMarket2 = await john.createReasonableYesNoMarket();
       const yesNoMarket3 = await john.createReasonableYesNoMarket();
-      await johnBulkSyncStrategy.start(0, await john.provider.getBlockNumber());
+      await john.sync();
 
-      const expirationTimeInSeconds = new BigNumber(Math.round(+new Date() / 1000).valueOf()).plus(10000);
+      const expirationTimeInSeconds = new BigNumber(
+        Math.round(+new Date() / 1000).valueOf()
+      ).plus(10000);
 
       await john.placeZeroXOrder({
         direction: ask,
@@ -367,9 +334,10 @@ describe('State API :: General', () => {
       // Terrible, but not clear how else to wait on the mesh event propagating to the callback and it finishing updating the DB...
       await sleep(300);
 
-      await johnBulkSyncStrategy.start(0, await john.provider.getBlockNumber());
+      await john.sync();
+      await john.db.marketDatabase.syncOrderBooks([yesNoMarket1.address, yesNoMarket2.address, yesNoMarket3.address])
 
-      marketList = await johnAPI.route('getMarkets', {
+      marketList = await john.api.route('getMarkets', {
         universe: addresses.Universe,
         maxLiquiditySpread: '10',
       });
@@ -379,7 +347,7 @@ describe('State API :: General', () => {
       expect(marketIds).toContain(yesNoMarket3.address);
       expect(marketList.meta.filteredOutCount).toEqual(3);
 
-      marketList = await johnAPI.route('getMarkets', {
+      marketList = await john.api.route('getMarkets', {
         universe: addresses.Universe,
         maxLiquiditySpread: '15',
       });
@@ -390,7 +358,7 @@ describe('State API :: General', () => {
       expect(marketIds).toContain(yesNoMarket3.address);
       expect(marketList.meta.filteredOutCount).toEqual(2);
 
-      marketList = await johnAPI.route('getMarkets', {
+      marketList = await john.api.route('getMarkets', {
         universe: addresses.Universe,
         maxLiquiditySpread: '20',
       });
@@ -412,18 +380,19 @@ describe('State API :: General', () => {
         new BigNumber(2000),
         new BigNumber(0.78),
         new BigNumber(0),
-        expirationTimeInSeconds,
+        expirationTimeInSeconds
       );
 
-      await johnBulkSyncStrategy.start(0, await john.provider.getBlockNumber());
+      await john.sync();
+      await john.db.marketDatabase.syncOrderBooks([yesNoMarket1.address])
 
-      marketList = await johnAPI.route('getMarkets', {
+      marketList = await john.api.route('getMarkets', {
         universe: addresses.Universe,
         includeInvalidMarkets: false,
       });
       expect(marketList.markets.length).toEqual(3);
 
-      marketList = await johnAPI.route('getMarkets', {
+      marketList = await john.api.route('getMarkets', {
         universe: addresses.Universe,
         includeInvalidMarkets: true,
       });
@@ -433,10 +402,10 @@ describe('State API :: General', () => {
       // Move timestamp to designated reporting phase
       const endTime = await yesNoMarket1.getEndTime_();
       await john.setTimestamp(endTime.plus(1));
-      await johnBulkSyncStrategy.start(0, await john.provider.getBlockNumber());
+      await john.sync();
 
       // Test reportingStates
-      marketList = await johnAPI.route('getMarkets', {
+      marketList = await john.api.route('getMarkets', {
         universe: addresses.Universe,
         reportingStates: [MarketReportingState.DesignatedReporting],
         isSortDescending: false,
@@ -444,7 +413,7 @@ describe('State API :: General', () => {
 
       expect(marketList.markets.length).toEqual(4);
 
-      marketList = await johnAPI.route('getMarkets', {
+      marketList = await john.api.route('getMarkets', {
         universe: addresses.Universe,
         reportingStates: [MarketReportingState.PreReporting],
       });
@@ -459,10 +428,10 @@ describe('State API :: General', () => {
 
       await john.doInitialReport(yesNoMarket3, noPayoutSet);
 
-      await johnBulkSyncStrategy.start(0, await john.provider.getBlockNumber());;
+      await john.sync();
 
       // Test sortBy
-      marketList = await johnAPI.route('getMarkets', {
+      marketList = await john.api.route('getMarkets', {
         universe: addresses.Universe,
         sortBy: GetMarketsSortBy.endTime,
       });
@@ -470,7 +439,7 @@ describe('State API :: General', () => {
       expect(marketList.markets.length).toEqual(4);
       expect(marketList.markets[0].id).toEqual(yesNoMarket2.address);
 
-      marketList = await johnAPI.route('getMarkets', {
+      marketList = await john.api.route('getMarkets', {
         universe: addresses.Universe,
         sortBy: GetMarketsSortBy.disputeRound,
       });
@@ -478,7 +447,7 @@ describe('State API :: General', () => {
       expect(marketList.markets.length).toEqual(4);
       expect(marketList.markets[0].id).toEqual(yesNoMarket3.address);
 
-      marketList = await johnAPI.route('getMarkets', {
+      marketList = await john.api.route('getMarkets', {
         universe: addresses.Universe,
         sortBy: GetMarketsSortBy.totalRepStakedInMarket,
       });
@@ -486,7 +455,7 @@ describe('State API :: General', () => {
       expect(marketList.markets.length).toEqual(4);
       expect(marketList.markets[0].id).toEqual(yesNoMarket3.address);
 
-      marketList = await johnAPI.route('getMarkets', {
+      marketList = await john.api.route('getMarkets', {
         universe: addresses.Universe,
         sortBy: GetMarketsSortBy.marketOI,
       });
@@ -494,7 +463,7 @@ describe('State API :: General', () => {
       expect(marketList.markets.length).toEqual(4);
       expect(marketList.markets[0].id).toEqual(yesNoMarket2.address);
 
-      marketList = await johnAPI.route('getMarkets', {
+      marketList = await john.api.route('getMarkets', {
         universe: addresses.Universe,
         sortBy: GetMarketsSortBy.volume,
       });
@@ -502,9 +471,8 @@ describe('State API :: General', () => {
       expect(marketList.markets.length).toEqual(4);
       expect(marketList.markets[0].id).toEqual(yesNoMarket2.address);
 
-
       // Test Recently Depleted Liquidity + Invalid
-      marketList = await johnAPI.route('getMarkets', {
+      marketList = await john.api.route('getMarkets', {
         universe: addresses.Universe,
         maxLiquiditySpread: '10',
       });
@@ -526,9 +494,10 @@ describe('State API :: General', () => {
       );
 
       // Invalid markets that pass the spread filter should appear as Recently Depleted Liquidity
-      await johnBulkSyncStrategy.start(0, await john.provider.getBlockNumber());
+      await john.sync();
+      await john.db.marketDatabase.syncOrderBooks([yesNoMarket3.address])
 
-      marketList = await johnAPI.route('getMarkets', {
+      marketList = await john.api.route('getMarkets', {
         universe: addresses.Universe,
         maxLiquiditySpread: '0',
         includeInvalidMarkets: true,

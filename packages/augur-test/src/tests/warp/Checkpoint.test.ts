@@ -114,7 +114,7 @@ describe('Checkpoint', () => {
       await expect(
         checkpoints.calculateBoundary(
           uploadBlockHeaders,
-          currentBlockNumberHeaders,
+          currentBlockNumberHeaders
         )
       ).resolves.toEqual([
         expect.objectContaining({

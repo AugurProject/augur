@@ -75,6 +75,12 @@ export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: Ethe
     const endBulkSyncBlockNumber = await bulkSyncStrategy.start(staringSyncBlock, currentBlockNumber);
 
     console.log('Syncing Complete - SDK Ready');
+    await (await db).sync();
+
+    // This will register the event listeners for the various derived/rollup dbs.
+    client.events.emit(SubscriptionEventName.BulkSyncComplete, {
+      eventName: SubscriptionEventName.BulkSyncComplete,
+    });
     client.events.emit(SubscriptionEventName.SDKReady, {
       eventName: SubscriptionEventName.SDKReady,
     });
@@ -82,12 +88,12 @@ export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: Ethe
     blockAndLogStreamerSyncStrategy.listenForBlockRemoved(logFilterAggregator.onBlockRemoved);
 
     // Check on each new block to see if we need to generate a checkpoint.
-    // client.events.on(SubscriptionEventName.NewBlock, async (newBlock) => {
-    //   const block = await provider.getBlock(newBlock.lastSyncedBlockNumber)
-    //   warpController.onNewBlock(block);
-    // });
+    client.events.on(SubscriptionEventName.NewBlock, async (newBlock) => {
+      const block = await provider.getBlock(newBlock.lastSyncedBlockNumber);
+      await warpController.onNewBlock(block);
+    });
 
-    blockAndLogStreamerSyncStrategy.start(endBulkSyncBlockNumber);
+    await blockAndLogStreamerSyncStrategy.start(endBulkSyncBlockNumber);
   };
 }
 

@@ -1,6 +1,4 @@
-import { DB } from '@augurproject/sdk/build/state/db/DB';
-import { API } from '@augurproject/sdk/build/state/getter/API';
-import { ContractAPI } from '@augurproject/tools';
+import { TestContractAPI } from '@augurproject/tools';
 import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
 import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
 import {
@@ -16,10 +14,8 @@ import {
 } from './common';
 
 describe('State API :: Users :: ', () => {
-  let db: Promise<DB>;
-  let api: API;
-  let john: ContractAPI;
-  let mary: ContractAPI;
+  let john: TestContractAPI;
+  let mary: TestContractAPI;
   let baseProvider: TestEthersProvider;
 
   beforeAll(async () => {
@@ -29,8 +25,7 @@ describe('State API :: Users :: ', () => {
 
   beforeEach(async () => {
     const state = await _beforeEach({ baseProvider });
-    db = state.db;
-    api = state.api;
+
     john = state.john;
     mary = state.mary;
   });
@@ -85,6 +80,12 @@ describe('State API :: Users :: ', () => {
       },
     ];
 
-    await processTrades(john, mary, db, api, trades, market, john.augur.contracts.universe.address);
+    await processTrades(
+      john,
+      mary,
+      trades,
+      market,
+      john.augur.contracts.universe.address
+    );
   });
 });

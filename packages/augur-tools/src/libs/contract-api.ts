@@ -1,37 +1,37 @@
 import { WSClient } from '@0x/mesh-rpc-client';
 import { ContractAddresses } from '@augurproject/artifacts';
 import { ContractInterfaces } from '@augurproject/core';
+import { sleep } from '@augurproject/core/build/libraries/HelperFunctions';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import {
+  GnosisSafeState,
   GnosisSafeStateReponse,
   IGnosisRelayAPI,
   SafeResponse,
-  GnosisSafeState,
 } from '@augurproject/gnosis-relay-api';
 import {
   Augur,
+  BrowserMesh,
   Connectors,
   CreateCategoricalMarketParams,
   CreateScalarMarketParams,
   CreateYesNoMarketParams,
+  DisputeWindow,
+  EmptyConnector,
   Getters,
+  HotLoadMarketInfo,
   PlaceTradeDisplayParams,
   SimulateTradeData,
-  ZeroXPlaceTradeDisplayParams,
-  ZeroXSimulateTradeData,
-  BrowserMesh,
-  EmptyConnector,
-  HotLoadMarketInfo,
-  DisputeWindow,
   WarpSyncData,
   ZeroX,
+  ZeroXPlaceTradeDisplayParams,
+  ZeroXSimulateTradeData,
 } from '@augurproject/sdk';
 import { BigNumber } from 'bignumber.js';
 import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis/build';
 import { formatBytes32String } from 'ethers/utils';
 import { Account } from '../constants';
 import { makeGnosisDependencies, makeSigner } from './blockchain';
-import { sleep } from '@augurproject/core/build/libraries/HelperFunctions';
 
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 const ETERNAL_APPROVAL_VALUE = new BigNumber('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'); // 2^256 - 1
@@ -44,7 +44,7 @@ export class ContractAPI {
     connector: Connectors.BaseConnector = new EmptyConnector(),
     gnosisRelay: IGnosisRelayAPI = undefined,
     meshClient: WSClient = undefined,
-    meshBrowser: BrowserMesh = undefined
+    meshBrowser: BrowserMesh = undefined,
   ) {
     const signer = await makeSigner(account, provider);
     const dependencies = makeGnosisDependencies(provider, gnosisRelay, signer, addresses.Cash, new BigNumber(0), null, account.publicKey);
