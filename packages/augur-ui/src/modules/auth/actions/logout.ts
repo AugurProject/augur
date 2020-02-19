@@ -8,6 +8,7 @@ import { analytics } from 'services/analytics';
 import { isLocalHost } from 'utils/is-localhost';
 import { augurSdk } from 'services/augursdk';
 import { updateAppStatus, GNOSIS_ENABLED, GNOSIS_STATUS } from 'modules/app/actions/update-app-status';
+import { clearLiquidityOrders } from 'modules/orders/actions/liquidity-management';
 
 export function logout() {
   return async (dispatch: ThunkDispatch<void, any, Action>) => {
@@ -20,6 +21,7 @@ export function logout() {
       localStorageRef.removeItem('loggedInUser');
     }
     dispatch(clearLoginAccount());
+    dispatch(clearLiquidityOrders());
 
     // Close Mobile Menu
     dispatch(updateMobileMenuState(0));
