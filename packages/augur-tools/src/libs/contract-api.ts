@@ -704,6 +704,8 @@ export class ContractAPI {
     const params = {
       paymentToken,
       owner: this.account.publicKey,
+      affiliate: NULL_ADDRESS,
+      fingerprint: formatBytes32String('')
     };
     return this.augur.gnosis.createGnosisSafeViaRelay(params);
   }
