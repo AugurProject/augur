@@ -4,7 +4,8 @@ import {
   CalculateGnosisSafeAddressParams,
   Connectors,
   createClient,
-  SDKConfiguration
+  SDKConfiguration,
+  NULL_ADDRESS
 } from '@augurproject/sdk';
 import { EthersSigner } from 'contract-dependencies-ethers';
 
@@ -19,6 +20,7 @@ import { analytics } from './analytics';
 import { isLocalHost } from 'utils/is-localhost';
 import { createBrowserMesh } from './browser-mesh';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
+import { getFingerprint } from 'utils/get-fingerprint';
 
 export class SDK {
   client: Augur | null = null;
@@ -43,6 +45,7 @@ export class SDK {
     env: EnvObject,
     signer: EthersSigner = undefined,
     account: string = null,
+    affiliate: string = NULL_ADDRESS,
     enableFlexSearch = true,
   ): Promise<Augur> {
     this.networkId = (await provider.getNetwork()).chainId.toString() as NetworkId;
@@ -72,7 +75,7 @@ export class SDK {
     this.client = await createClient(this.config, this.connector, account, signer, ethersProvider, enableFlexSearch, createBrowserMesh);
 
     if (!isEmpty(account)) {
-      this.syncUserData(account, signer, this.networkId, this.config.gnosis && this.config.gnosis.enabled).catch((error) => {
+      this.syncUserData(account, signer, this.networkId, this.config.gnosis && this.config.gnosis.enabled, affiliate).catch((error) => {
         console.log('Gnosis safe create error during create: ', error);
       });
     }
@@ -86,17 +89,17 @@ export class SDK {
   /**
    * @name getOrCreateGnosisSafe
    * @description - Kick off the Gnosis safe creation process for a given wallet address.
-   * @param {string} walletAddress - Wallet address
+   * @param {string} owner - Wallet address
    * @returns {Promise<void>}
    */
-  async getOrCreateGnosisSafe(walletAddress: string, networkId: NetworkId): Promise<void | string> {
+  async getOrCreateGnosisSafe(owner: string, networkId: NetworkId, affiliate: string = NULL_ADDRESS): Promise<void | string> {
     if (!this.client) {
       console.log('Trying to init gnosis safe before Augur is initalized');
       return;
     }
 
-    const gnosisLocalstorageItemKey = `gnosis-relay-request-${networkId}-${walletAddress}`;
-
+    const gnosisLocalstorageItemKey = `gnosis-relay-request-${networkId}-${owner}`;
+    const fingerprint = getFingerprint();
     // Up to UI side to check the localstorage wallet matches the wallet address.
     const calculateGnosisSafeAddressParamsString = localStorage.getItem(
       gnosisLocalstorageItemKey
@@ -107,20 +110,15 @@ export class SDK {
       ) as CalculateGnosisSafeAddressParams;
       const result = await this.client.gnosis.getOrCreateGnosisSafe({
         ...calculateGnosisSafeAddressParams,
-        owner: walletAddress,
+        affiliate,
+        fingerprint,
+        owner,
       });
-      if (typeof result === 'string') {
-        return result;
-      }
       return result.safe;
     } else {
       const result = await this.client.gnosis.getOrCreateGnosisSafe(
-        walletAddress
+        { owner, affiliate, fingerprint }
       );
-
-      if (typeof result === 'string') {
-        return result;
-      }
 
       // Write response to localstorage.
       localStorage.setItem(gnosisLocalstorageItemKey, JSON.stringify(result));
@@ -133,6 +131,7 @@ export class SDK {
     signer: EthersSigner,
     expectedNetworkId: NetworkId,
     useGnosis: boolean,
+    affiliate: string,
     updateUser?: Function
   ) {
     if (!this.client) {
@@ -152,7 +151,8 @@ export class SDK {
     if (useGnosis) {
       account = (await this.getOrCreateGnosisSafe(
         account,
-        this.networkId
+        this.networkId,
+        affiliate
       )) as string;
 
       this.client.setUseGnosisSafe(true);
