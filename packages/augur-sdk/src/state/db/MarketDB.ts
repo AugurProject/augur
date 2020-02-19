@@ -127,7 +127,7 @@ export class MarketDB extends DerivedDB {
 
     let marketsData;
     if (marketIds.length === 0) {
-      marketsData = await this.table.toArray();
+      marketsData = await this.allDocs();
       ids = marketsData.map(data => data.market);
     } else {
       marketsData = await this.table.where('market').anyOf(marketIds).toArray();

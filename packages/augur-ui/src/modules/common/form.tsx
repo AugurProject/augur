@@ -664,7 +664,7 @@ export class CategoryMultiSelect extends Component<
     );
 
     return (
-      <ul className={Styles.CategoryMultiSelect}>
+      <ul className={classNames(Styles.CategoryMultiSelect, {[Styles.CustomPrimary]: customPrimary, [Styles.CustomTertiary]: customTertiary})}>
         <DropdownInputGroup
           defaultValue={selected[0]}
           staticLabel="Primary Category"
