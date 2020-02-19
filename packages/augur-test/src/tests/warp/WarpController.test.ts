@@ -176,7 +176,15 @@ describe('WarpController', () => {
     test('return array of checkpoints available', async () => {
       await expect(
         warpController.getAvailableCheckpointsByHash(secondCheckpointFileHash)
-      ).resolves.toEqual([0, 168, 176]);
+      ).resolves.toEqual([expect.objectContaining({
+        Name: '0'
+      }),
+        expect.objectContaining({
+        Name: '168'
+      }),
+        expect.objectContaining({
+        Name: '176'
+      })]);
     });
   });
 

@@ -54,7 +54,7 @@ import { MarketDB } from './MarketDB';
 import { ParsedOrderEventDB } from './ParsedOrderEventDB';
 import { SyncableDB } from './SyncableDB';
 import { SyncStatus } from './SyncStatus';
-import { WarpCheckpoints } from './WarpCheckpoints';
+import { WarpSyncCheckpointsDB } from './WarpSyncCheckpointsDB';
 import { StoredOrder, ZeroXOrders } from './ZeroXOrders';
 
 interface Schemas {
@@ -77,7 +77,7 @@ export class DB {
   private parsedOrderEventDatabase: ParsedOrderEventDB;
   private zeroXOrders: ZeroXOrders;
   syncStatus: SyncStatus;
-  warpCheckpoints: WarpCheckpoints;
+  warpCheckpoints: WarpSyncCheckpointsDB;
 
   readonly genericEventDBDescriptions: GenericEventDBDescription[] = [
     { EventName: 'CompleteSetsPurchased', indexes: ['timestamp'] },
@@ -152,7 +152,7 @@ export class DB {
     await this.dexieDB.open();
 
     this.syncStatus = new SyncStatus(networkId, uploadBlockNumber, this);
-    this.warpCheckpoints = new WarpCheckpoints(networkId, this);
+    this.warpCheckpoints = new WarpSyncCheckpointsDB(networkId, this);
 
     // Create SyncableDBs for generic event types & UserSyncableDBs for user-specific event types
     for (const genericEventDBDescription of this.genericEventDBDescriptions) {
@@ -202,7 +202,7 @@ export class DB {
     schemas['CancelledOrders'] = 'orderHash,[makerAddress+market]';
     schemas['SyncStatus'] = 'eventName,blockNumber,syncing';
     schemas['Rollback'] = ',[tableName+rollbackBlockNumber]';
-    schemas['WarpCheckpoints'] = '++_id,begin.number,end.number';
+    schemas['WarpSyncCheckpoints'] = '++_id,begin.number,end.number';
     return schemas;
   }
 

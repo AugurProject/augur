@@ -16,9 +16,9 @@ export interface WarpCheckpointDocument {
   end?: Block
 }
 
-export class WarpCheckpoints extends AbstractTable {
+export class WarpSyncCheckpointsDB extends AbstractTable {
   constructor(networkId: number, db: DB) {
-    super(networkId, 'WarpCheckpoints', db.dexieDB);
+    super(networkId, 'WarpSyncCheckpoints', db.dexieDB);
   }
 
   async getAllIPFSObjects() {

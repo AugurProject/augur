@@ -7,7 +7,7 @@ import _ from 'lodash';
 import { Provider } from '..';
 
 import { DB } from '../state/db/DB';
-import { IpfsInfo } from '../state/db/WarpCheckpoints';
+import { IpfsInfo } from '../state/db/WarpSyncCheckpointsDB';
 import { Address, Log } from '../state/logs/types';
 import { Log as SerializedLog } from '@augurproject/types';
 import { Checkpoints } from './Checkpoints';
