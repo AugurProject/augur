@@ -1977,6 +1977,18 @@ div.error > div > div > div > div > input {
   color: var(--color-primary-text);
 }
 
+:root[theme="BETTING"] {
+  .CategoryRow {
+    > span:first-of-type {
+      color: var(--color-primary-text);
+
+      > svg > path {
+        stroke: var(--color-primary-text);
+      }
+    }
+  }
+}
+
 @keyframes spin {
   100% {
     transform: rotate(360deg);
