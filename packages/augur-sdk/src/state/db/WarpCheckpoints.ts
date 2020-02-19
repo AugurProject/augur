@@ -22,7 +22,7 @@ export class WarpCheckpoints extends AbstractTable {
   }
 
   async getAllIPFSObjects() {
-    const rows = await this.table.toArray();
+    const rows = await this.allDocs();
     return rows.filter((item) => item.ipfsInfo).map((item) => item.ipfsInfo)
   }
 
