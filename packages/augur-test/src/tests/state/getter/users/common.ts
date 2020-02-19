@@ -6,18 +6,18 @@ import {
 } from '@augurproject/sdk';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
 import { API } from '@augurproject/sdk/build/state/getter/API';
-import { BulkSyncStrategy } from '@augurproject/sdk/build/state/sync/BulkSyncStrategy';
 import {
   ACCOUNTS,
   ContractAPI,
   defaultSeedPath,
   loadSeedFile,
 } from '@augurproject/tools';
+import { TestContractAPI } from '@augurproject/tools';
+import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
+import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
 import { BigNumber } from 'bignumber.js';
 import * as _ from 'lodash';
 import { makeDbMock, makeProvider } from '../../../../libs';
-import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
-import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
 
 export interface TradeData {
   direction: number;
@@ -64,30 +64,19 @@ export const A = ONE;
 export const B = TWO;
 export const C = THREE;
 
-
 export interface AllState {
   baseProvider: TestEthersProvider;
 }
 
 export interface SomeState {
-  db: Promise<DB>;
-  api: API;
-
-  john: ContractAPI;
-  mary: ContractAPI;
+  john: TestContractAPI;
+  mary: TestContractAPI;
 }
 
 export async function _beforeAll(): Promise<AllState> {
   const seed = await loadSeedFile(defaultSeedPath);
   const baseProvider = await makeProvider(seed, ACCOUNTS);
-  const addresses = baseProvider.getContractAddresses();
-
-  const john = await ContractAPI.userWrapper(ACCOUNTS[0], baseProvider, addresses);
-  const mary = await ContractAPI.userWrapper(ACCOUNTS[1], baseProvider, addresses);
-  await john.approveCentralAuthority();
-  await mary.approveCentralAuthority();
-
-  return { baseProvider }
+  return { baseProvider };
 }
 
 export async function _beforeEach(allState: AllState): Promise<SomeState> {
@@ -95,22 +84,28 @@ export async function _beforeEach(allState: AllState): Promise<SomeState> {
 
   const provider = await baseProvider.fork();
   const addresses = baseProvider.getContractAddresses();
-  const john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, addresses);
-  const mary = await ContractAPI.userWrapper(ACCOUNTS[1], provider, addresses);
-  const db = makeDbMock().makeDB(john.augur, ACCOUNTS);
-  const api = new API(john.augur, db);
+  const john = await TestContractAPI.userWrapper(
+    ACCOUNTS[0],
+    provider,
+    addresses
+  );
+  const mary = await TestContractAPI.userWrapper(
+    ACCOUNTS[1],
+    provider,
+    addresses
+  );
+  await john.approveCentralAuthority();
+  await mary.approveCentralAuthority();
 
   return {
-    db, api, john, mary
-  }
+    john,
+    mary,
+  };
 }
 
-
 export async function processTrades(
-  user0: ContractAPI,
-  user1: ContractAPI,
-  db: Promise<DB>,
-  api: API,
+  user0,
+  user1,
   tradeData: UTPTradeData[],
   market: ContractInterfaces.Market,
   universe: string,
@@ -120,21 +115,17 @@ export async function processTrades(
   for (const trade of tradeData) {
     await doTrade(user0, user1, trade, market, minPrice, maxPrice);
 
-    const bulkSyncStrategy = new BulkSyncStrategy(
-      user0.provider.getLogs,
-      (await db).logFilters.buildFilter,
-      (await db).logFilters.onLogsAdded,
-      user0.augur.contractEvents.parseLogs,
+    await user0.sync();
+    await user1.sync();
+
+    const { tradingPositions } = await user0.api.route(
+      'getUserTradingPositions',
+      {
+        universe,
+        account: user1.account.publicKey,
+        marketId: market.address,
+      }
     );
-
-
-    await bulkSyncStrategy.start(0, await user0.provider.getBlockNumber());
-
-    const { tradingPositions } = await api.route('getUserTradingPositions', {
-      universe,
-      account: user1.account.publicKey,
-      marketId: market.address,
-    });
 
     const tradingPosition = _.find(tradingPositions, position => {
       return position.outcome === trade.outcome;
@@ -146,9 +137,7 @@ export async function processTrades(
     await expect(tradingPosition.averagePrice).toEqual(
       trade.avgPrice.toString()
     );
-    await expect(tradingPosition.realized).toEqual(
-      trade.realizedPL.toString()
-    );
+    await expect(tradingPosition.realized).toEqual(trade.realizedPL.toString());
     await expect(tradingPosition.frozenFunds).toEqual(
       trade.frozenFunds.toString()
     );

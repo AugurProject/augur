@@ -135,6 +135,13 @@ export class ZeroXOrders extends AbstractTable {
     })
   }
 
+  protected async bulkUpsertDocuments(documents: BaseDocument[]): Promise<void> {
+    for (const document of documents) {
+      delete document.constructor;
+    }
+    await this.table.bulkPut(documents);
+  }
+
   static create(db: DB, networkId: number, augur: Augur): ZeroXOrders {
     const zeroXOrders = new ZeroXOrders(db, networkId, augur);
     return zeroXOrders;
@@ -217,7 +224,7 @@ export class ZeroXOrders extends AbstractTable {
       }, signedOrder);
     });
 
-    if (ordersToAdd.length > 0) this.augur.zeroX.addOrders(ordersToAdd);
+    if (ordersToAdd.length > 0) await this.augur.zeroX.addOrders(ordersToAdd);
     console.log(`Synced ${orders.length } ZeroX Orders`);
   }
 
