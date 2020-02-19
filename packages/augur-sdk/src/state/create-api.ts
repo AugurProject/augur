@@ -167,7 +167,7 @@ export async function createServer(config: SDKConfiguration, client?: Augur, acc
     client = await createClient(config, connector, account, undefined, undefined, true);
   }
 
-  const ethersProvider = new EthersProvider( new JsonRpcProvider(config.ethereum.http), 10, 0, 40);
+  const ethersProvider: EthersProvider = client.provider as EthersProvider;
   const contractEvents = new ContractEvents(
     ethersProvider,
     client.addresses.Augur,
