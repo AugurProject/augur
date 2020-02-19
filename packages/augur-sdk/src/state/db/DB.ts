@@ -106,7 +106,7 @@ export class DB {
     { EventName: 'TokenBalanceChanged', indexes: ['[universe+owner+tokenType]'], primaryKey: '[owner+token]' },
     { EventName: 'TokensMinted', indexes: [] },
     { EventName: 'TokensTransferred', indexes: [] },
-    { EventName: 'ReportingFeeChanged', indexes: [] },
+    { EventName: 'ReportingFeeChanged', indexes: ['universe'] },
     { EventName: 'TradingProceedsClaimed', indexes: ['timestamp'] },
     { EventName: 'UniverseCreated', indexes: ['childUniverse', 'parentUniverse'] },
     { EventName: 'UniverseForked', indexes: ['universe'] },
