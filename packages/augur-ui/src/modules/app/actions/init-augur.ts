@@ -71,8 +71,10 @@ function pollForAccount(
       const loggedInUser = getLoggedInUserFromLocalStorage();
       const loggedInAccount = loggedInUser && loggedInUser.address || null;
       const loggedInAccountType = loggedInUser && loggedInUser.type || null;
+      const unlockedAccount = windowRef.ethereum && windowRef.ethereum.selectedAddress;
 
       const showModal = accountType => {
+        const isWeb3Wallet = accountType === ACCOUNT_TYPES.WEB3WALLET;
         const onboardingShown = [
           MODAL_ACCOUNT_CREATED,
           MODAL_AUGUR_USES_DAI,
@@ -88,9 +90,10 @@ function pollForAccount(
                 setTimeout(() => {
                   dispatch(closeModal());
                 }),
-              message: accountType === ACCOUNT_TYPES.WEB3WALLET ? SIGNIN_LOADING_TEXT : `Connecting to our partners at ${accountType} to create your secure account.`,
+              message: isWeb3Wallet ? SIGNIN_LOADING_TEXT : `Connecting to our partners at ${accountType} to create your secure account.`,
               showLearnMore: true,
               showCloseAfterDelay: true,
+              showMetaMaskHelper: !isWeb3Wallet || unlockedAccount ? false : true,
             })
           );
         }
