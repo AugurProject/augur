@@ -1593,6 +1593,10 @@ button.MaxDark {
   max-height: @size-44;
   min-width: @size-210;
 
+  @media @breakpoint-mobile {
+    max-height: unset;
+  }
+
   > button {
     .text-14;
 
