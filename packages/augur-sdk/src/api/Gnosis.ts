@@ -301,7 +301,7 @@ export class Gnosis {
 
     const gnosisSafeRegistryAddress = this.augur.contracts.gnosisSafeRegistry.address;
 
-    const setupData = await this.buildRegistrationData();
+    const setupData = await this.buildRegistrationData(params.affiliate, params.fingerprint);
 
     const response = await this.gnosisRelay.createSafe({
       saltNonce: AUGUR_GNOSIS_SAFE_NONCE,
