@@ -1,7 +1,4 @@
-import { DB } from '@augurproject/sdk/build/state/db/DB';
-import { API } from '@augurproject/sdk/build/state/getter/API';
 import { UniverseDetails } from '@augurproject/sdk/build/state/getter/Universe';
-import { BulkSyncStrategy } from '@augurproject/sdk/build/state/sync/BulkSyncStrategy';
 import {
   ACCOUNTS,
   ContractAPI,
@@ -9,6 +6,7 @@ import {
   fork,
   loadSeedFile,
 } from '@augurproject/tools';
+import { TestContractAPI } from '@augurproject/tools';
 import {
   getPayoutNumerators,
   makeValidScalarOutcome,
@@ -17,17 +15,12 @@ import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersPro
 import { NULL_ADDRESS } from '@augurproject/tools/build/libs/Utils';
 import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from 'ethers/utils';
-import { makeDbMock, makeProvider } from '../../../libs';
-
-const mock = makeDbMock();
+import { makeProvider } from '../../../libs';
 
 describe('State API :: Universe :: ', () => {
-  let db: Promise<DB>;
-  let api: API;
-  let john: ContractAPI;
-  let mary: ContractAPI;
-  let bob: ContractAPI;
-  let bulkSyncStrategy: BulkSyncStrategy;
+  let john: TestContractAPI;
+  let mary: TestContractAPI;
+  let bob: TestContractAPI;
 
   let baseProvider: TestEthersProvider;
 
@@ -36,9 +29,21 @@ describe('State API :: Universe :: ', () => {
     baseProvider = await makeProvider(seed, ACCOUNTS);
     const addresses = baseProvider.getContractAddresses();
 
-    john = await ContractAPI.userWrapper(ACCOUNTS[0], baseProvider, addresses);
-    mary = await ContractAPI.userWrapper(ACCOUNTS[1], baseProvider, addresses);
-    bob = await ContractAPI.userWrapper(ACCOUNTS[2], baseProvider, addresses);
+    john = await TestContractAPI.userWrapper(
+      ACCOUNTS[0],
+      baseProvider,
+      addresses
+    );
+    mary = await TestContractAPI.userWrapper(
+      ACCOUNTS[1],
+      baseProvider,
+      addresses
+    );
+    bob = await TestContractAPI.userWrapper(
+      ACCOUNTS[2],
+      baseProvider,
+      addresses
+    );
     await john.approveCentralAuthority();
     await mary.approveCentralAuthority();
     await bob.approveCentralAuthority();
@@ -47,42 +52,35 @@ describe('State API :: Universe :: ', () => {
   beforeEach(async () => {
     const provider = await baseProvider.fork();
     const addresses = baseProvider.getContractAddresses();
-    john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, addresses);
-    mary = await ContractAPI.userWrapper(ACCOUNTS[1], provider, addresses);
-    bob = await ContractAPI.userWrapper(ACCOUNTS[2], provider, addresses);
-    db = makeDbMock().makeDB(john.augur, ACCOUNTS);
-    api = new API(john.augur, db);
-
-    bulkSyncStrategy = new BulkSyncStrategy(
-      john.provider.getLogs,
-      (await db).logFilters.buildFilter,
-      (await db).logFilters.onLogsAdded,
-      john.augur.contractEvents.parseLogs,
-    );
-
+    john = await TestContractAPI.userWrapper(ACCOUNTS[0], provider, addresses);
+    mary = await TestContractAPI.userWrapper(ACCOUNTS[1], provider, addresses);
+    bob = await TestContractAPI.userWrapper(ACCOUNTS[2], provider, addresses);
   });
 
   // TODO Fix the 0x error occurring when multiple fork getter tests run in one file.
   test('getForkMigrationTotals : YesNo', async () => {
     const universe = john.augur.contracts.universe;
 
-    await bulkSyncStrategy.start(0, await john.provider.getBlockNumber());;
-    let migrationTotals = await api.route('getForkMigrationTotals', {
+    await john.sync();
+    let migrationTotals = await john.api.route('getForkMigrationTotals', {
       universe: universe.address,
     });
 
     expect(migrationTotals).toEqual({});
 
     const market = await john.createReasonableYesNoMarket();
-    await bulkSyncStrategy.start(0, await john.provider.getBlockNumber());;
-    const marketInfo = (await api.route('getMarketsInfo',
-      { marketIds: [market.address] }))[0];
+    await john.sync();
+    const marketInfo = (await john.api.route('getMarketsInfo', {
+      marketIds: [market.address],
+    }))[0];
 
     await fork(john, marketInfo);
 
     const repTokenAddress = await john.augur.contracts.universe.getReputationToken_();
     const repToken = john.augur.contracts.reputationTokenFromAddress(
-      repTokenAddress, john.augur.networkId);
+      repTokenAddress,
+      john.augur.networkId
+    );
 
     const invalidNumerators = getPayoutNumerators(marketInfo, 0);
     const noNumerators = getPayoutNumerators(marketInfo, 1);
@@ -95,8 +93,8 @@ describe('State API :: Universe :: ', () => {
     await john.augur.contracts.universe.createChildUniverse(noNumerators);
     await repToken.migrateOutByPayout(noNumerators, new BigNumber(1e21));
 
-    await bulkSyncStrategy.start(0, await john.provider.getBlockNumber());;
-    migrationTotals = await api.route('getForkMigrationTotals', {
+    await john.sync();
+    migrationTotals = await john.api.route('getForkMigrationTotals', {
       universe: universe.address,
     });
 
@@ -107,34 +105,23 @@ describe('State API :: Universe :: ', () => {
           outcomeName: 'Invalid',
           outcome: '0',
           amount: '1000000000000000000000',
-          payoutNumerators: [
-            '100',
-            '0',
-            '0',
-          ],
+          payoutNumerators: ['100', '0', '0'],
         },
         {
           outcomeName: 'No',
           outcome: '1',
           amount: '1000000000000000000000',
-          payoutNumerators: [
-            '0',
-            '100',
-            '0',
-          ],
+          payoutNumerators: ['0', '100', '0'],
         },
       ],
     });
-
   });
 
   test('getForkMigrationTotals : Categorical', async () => {
     const universe = john.augur.contracts.universe;
 
-    const actualDB = await db;
-
-    await bulkSyncStrategy.start(0, await john.provider.getBlockNumber());;
-    let migrationTotals = await api.route('getForkMigrationTotals', {
+    await john.sync();
+    let migrationTotals = await john.api.route('getForkMigrationTotals', {
       universe: universe.address,
     });
 
@@ -143,15 +130,18 @@ describe('State API :: Universe :: ', () => {
     const market = await john.createReasonableMarket(
       ['foo', 'bar', 'happiness', 'smile'].map(formatBytes32String)
     );
-    await bulkSyncStrategy.start(0, await john.provider.getBlockNumber());;
-    const marketInfo = (await api.route('getMarketsInfo',
-      { marketIds: [market.address] }))[0];
+    await john.sync();
+    const marketInfo = (await john.api.route('getMarketsInfo', {
+      marketIds: [market.address],
+    }))[0];
 
     await fork(john, marketInfo);
 
     const repTokenAddress = await john.augur.contracts.universe.getReputationToken_();
     const repToken = john.augur.contracts.reputationTokenFromAddress(
-      repTokenAddress, john.augur.networkId);
+      repTokenAddress,
+      john.augur.networkId
+    );
 
     const invalidNumerators = getPayoutNumerators(marketInfo, 0);
     const fooNumerators = getPayoutNumerators(marketInfo, 1);
@@ -164,8 +154,8 @@ describe('State API :: Universe :: ', () => {
     await john.augur.contracts.universe.createChildUniverse(fooNumerators);
     await repToken.migrateOutByPayout(fooNumerators, new BigNumber(1e21));
 
-    await bulkSyncStrategy.start(0, await john.provider.getBlockNumber());;
-    migrationTotals = await api.route('getForkMigrationTotals', {
+    await john.sync();
+    migrationTotals = await john.api.route('getForkMigrationTotals', {
       universe: universe.address,
     });
 
@@ -177,47 +167,33 @@ describe('State API :: Universe :: ', () => {
           outcome: '0',
           isInvalid: true,
           amount: '1000000000000000000000',
-          payoutNumerators: [
-            '100',
-            '0',
-            '0',
-            '0',
-            '0',
-          ],
+          payoutNumerators: ['100', '0', '0', '0', '0'],
         },
         {
           outcomeName: 'foo'.padEnd(32, '\0'),
           outcome: '1',
           amount: '1000000000000000000000',
-          payoutNumerators: [
-            '0',
-            '100',
-            '0',
-            '0',
-            '0',
-          ],
+          payoutNumerators: ['0', '100', '0', '0', '0'],
         },
       ],
     });
-
   });
 
   test('getForkMigrationTotals : Scalar', async () => {
     const universe = john.augur.contracts.universe;
 
-    const actualDB = await db;
-
-    await bulkSyncStrategy.start(0, await john.provider.getBlockNumber());;
-    let migrationTotals = await api.route('getForkMigrationTotals', {
+    await john.sync();
+    let migrationTotals = await john.api.route('getForkMigrationTotals', {
       universe: universe.address,
     });
 
     expect(migrationTotals).toEqual({});
 
     const market = await john.createReasonableScalarMarket();
-    await bulkSyncStrategy.start(0, await john.provider.getBlockNumber());;
-    const marketInfo = (await api.route('getMarketsInfo',
-      { marketIds: [market.address] }))[0];
+    await john.sync();
+    const marketInfo = (await john.api.route('getMarketsInfo', {
+      marketIds: [market.address],
+    }))[0];
 
     const invalidNumerators = getPayoutNumerators(marketInfo, 'invalid');
     const fooOutcome = makeValidScalarOutcome(marketInfo);
@@ -227,7 +203,9 @@ describe('State API :: Universe :: ', () => {
 
     const repTokenAddress = await john.augur.contracts.universe.getReputationToken_();
     const repToken = john.augur.contracts.reputationTokenFromAddress(
-      repTokenAddress, john.augur.networkId);
+      repTokenAddress,
+      john.augur.networkId
+    );
 
     await john.repFaucet(new BigNumber(1e21));
 
@@ -236,8 +214,8 @@ describe('State API :: Universe :: ', () => {
     await john.repFaucet(new BigNumber(1e21));
     await john.augur.contracts.universe.createChildUniverse(fooNumerators);
     await repToken.migrateOutByPayout(fooNumerators, new BigNumber(1e21));
-    await bulkSyncStrategy.start(0, await john.provider.getBlockNumber());;
-    migrationTotals = await api.route('getForkMigrationTotals', {
+    await john.sync();
+    migrationTotals = await john.api.route('getForkMigrationTotals', {
       universe: universe.address,
     });
 
@@ -249,21 +227,13 @@ describe('State API :: Universe :: ', () => {
           outcome: '0',
           amount: '1000000000000000000000',
           isInvalid: true,
-          payoutNumerators: [
-            '20000',
-            '0',
-            '0',
-          ],
+          payoutNumerators: ['20000', '0', '0'],
         },
         {
           outcomeName: '116000000000000000000',
           outcome: '116000000000000000000',
           amount: '1000000000000000000000',
-          payoutNumerators: [
-            '0',
-            '13400',
-            '6600',
-          ],
+          payoutNumerators: ['0', '13400', '6600'],
         },
       ],
     });
@@ -271,9 +241,8 @@ describe('State API :: Universe :: ', () => {
 
   test('getUniverseChildren : Genesis', async () => {
     const genesisUniverse = john.augur.contracts.universe;
-    const actualDB = await db;
 
-    const legacyRep = new BigNumber(11000000).multipliedBy(10**18);
+    const legacyRep = new BigNumber(11000000).multipliedBy(10 ** 18);
     let johnRep = legacyRep; // we faucet 11 million attoREP for john during deployment
     let maryRep = new BigNumber(0);
     const bobRep = new BigNumber(0);
@@ -288,11 +257,14 @@ describe('State API :: Universe :: ', () => {
     // Verify from John's perspective.
 
     console.log("Verify from John's perspective.");
-    await bulkSyncStrategy.start(0, await john.provider.getBlockNumber());;
-    let universeChildren: UniverseDetails = await api.route('getUniverseChildren', {
-      universe: genesisUniverse.address,
-      account: john.account.publicKey,
-    });
+    await john.sync();
+    let universeChildren: UniverseDetails = await john.api.route(
+      'getUniverseChildren',
+      {
+        universe: genesisUniverse.address,
+        account: john.account.publicKey,
+      }
+    );
 
     expect(universeChildren).toMatchObject({
       id: genesisUniverse.address,
@@ -310,8 +282,8 @@ describe('State API :: Universe :: ', () => {
     // Tests case where there aren't any TokenBalanceChanged logs.
 
     console.log("Verify from Bob's perspective.");
-    await bulkSyncStrategy.start(0, await john.provider.getBlockNumber());;
-    universeChildren = await api.route('getUniverseChildren', {
+    await john.sync();
+    universeChildren = await john.api.route('getUniverseChildren', {
       universe: genesisUniverse.address,
       account: bob.account.publicKey,
     });
@@ -333,12 +305,12 @@ describe('State API :: Universe :: ', () => {
     console.log('Create a market to see how that affects numberOfMarkets.');
     const repBond = await genesisUniverse.getOrCacheMarketRepBond_();
     const market = await john.createReasonableScalarMarket();
-    johnRep = johnRep.plus(10**18).minus(42905190235); // extra fauceted REP, minus bond increase from fauceting REP
-    totalRep = totalRep.plus(repBond).plus(10**18); // repBond not added to john because he put it in the market
+    johnRep = johnRep.plus(10 ** 18).minus(42905190235); // extra fauceted REP, minus bond increase from fauceting REP
+    totalRep = totalRep.plus(repBond).plus(10 ** 18); // repBond not added to john because he put it in the market
 
-    await bulkSyncStrategy.start(0, await john.provider.getBlockNumber());;
+    await john.sync();
 
-    universeChildren = await api.route('getUniverseChildren', {
+    universeChildren = await john.api.route('getUniverseChildren', {
       universe: genesisUniverse.address,
       account: john.account.publicKey,
     });
@@ -357,10 +329,15 @@ describe('State API :: Universe :: ', () => {
     // Fork to see how that affects the children.
 
     console.log('Fork to see how that affects the children.');
-    const marketInfo = (await api.route('getMarketsInfo', {marketIds: [market.address]}))[0];
+    const marketInfo = (await john.api.route('getMarketsInfo', {
+      marketIds: [market.address],
+    }))[0];
     await fork(john, marketInfo);
     const repTokenAddress = await john.augur.contracts.universe.getReputationToken_();
-    const repToken = john.augur.contracts.reputationTokenFromAddress(repTokenAddress, john.augur.networkId);
+    const repToken = john.augur.contracts.reputationTokenFromAddress(
+      repTokenAddress,
+      john.augur.networkId
+    );
     // The fork script faucets a lot of REP then uses up a difficult-to-predict amount.
     johnRep = await repToken.balanceOf_(john.account.publicKey);
     totalRep = await repToken.totalSupply_();
@@ -370,12 +347,15 @@ describe('State API :: Universe :: ', () => {
     // Call twice because there's a bug when the first migration meets the goal.
     await john.augur.contracts.universe.createChildUniverse(invalidNumerators);
     await repToken.migrateOutByPayout(invalidNumerators, new BigNumber(1));
-    await repToken.migrateOutByPayout(invalidNumerators, childUniverseRep.minus(1));
+    await repToken.migrateOutByPayout(
+      invalidNumerators,
+      childUniverseRep.minus(1)
+    );
     johnRep = johnRep.minus(childUniverseRep);
     totalRep = totalRep.minus(childUniverseRep);
 
-    await bulkSyncStrategy.start(0, await john.provider.getBlockNumber());;
-    universeChildren = await api.route('getUniverseChildren', {
+    await john.sync();
+    universeChildren = await john.api.route('getUniverseChildren', {
       universe: genesisUniverse.address,
       account: john.account.publicKey,
     });
@@ -404,5 +384,4 @@ describe('State API :: Universe :: ', () => {
     expect(universeChildren.children[0].creationTimestamp).toBeGreaterThan(0);
     expect(universeChildren.children[0].id).not.toEqual(NULL_ADDRESS);
   });
-
 });

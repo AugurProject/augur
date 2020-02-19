@@ -43,7 +43,7 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
   status = null;
 
   private _currentNonce = -1;
-  private _signingQueue: AsyncQueue<SigningQueueTask> = queue(async (task: SigningQueueTask ) => {
+  private _signingQueue: AsyncQueue<SigningQueueTask> = queue(async (task: SigningQueueTask) => {
     if (this._currentNonce === -1) {
       this._currentNonce = Number(await this.gnosisSafe.nonce());
     }
@@ -92,7 +92,7 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
         TransactionStatus.PENDING,
         txHash
       );
-      return await this.provider.waitForTransaction(txHash);
+      return this.provider.waitForTransaction(txHash);
     }
   });
 
@@ -226,7 +226,7 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
 
     const relayTransaction = await this.signTransaction(tx);
 
-    return await this.waitForTx({ tx: relayTransaction, txMetadata });
+    return this.waitForTx({ tx: relayTransaction, txMetadata });
   }
 
   async waitForTx(task: RelayerQueueTask): Promise<ethers.providers.TransactionReceipt> {
@@ -326,16 +326,16 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
         const status = response.status;
         const isServerError = status >= 500;
         console.error(`Gnosis Relay ${status} Error: ${exception}`);
-        if (exception && exception.includes("There are too many transactions in the queue")) {
+        if (exception && exception.includes('There are too many transactions in the queue')) {
           throw TransactionStatus.FEE_TOO_LOW;
-        }
-        else if (isServerError || exception && exception.includes('funds')) {
+        } else if (isServerError || exception && exception.includes('funds')) {
           // In the event of a 5XX error or when the relayer has no funds we should consider the relay down
           this.setUseRelay(false);
           this.setStatus(GnosisSafeState.ERROR);
           throw TransactionStatus.RELAYER_DOWN;
+        } else {
+          throw TransactionStatus.FAILURE;
         }
-        throw TransactionStatus.FAILURE;
       }
   }
 

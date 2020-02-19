@@ -17,7 +17,6 @@ import { LogFilterAggregator } from './logs/LogFilterAggregator';
 import { BlockAndLogStreamerSyncStrategy } from './sync/BlockAndLogStreamerSyncStrategy';
 import { BulkSyncStrategy } from './sync/BulkSyncStrategy';
 import { WarpSyncStrategy } from './sync/WarpSyncStrategy';
-import { Web3Provider } from 'ethers/providers';
 
 export interface SDKConfiguration {
   networkId: NetworkId,
@@ -76,6 +75,12 @@ export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: Ethe
     const endBulkSyncBlockNumber = await bulkSyncStrategy.start(staringSyncBlock, currentBlockNumber);
 
     console.log('Syncing Complete - SDK Ready');
+    await (await db).sync();
+
+    // This will register the event listeners for the various derived/rollup dbs.
+    client.events.emit(SubscriptionEventName.BulkSyncComplete, {
+      eventName: SubscriptionEventName.BulkSyncComplete,
+    });
     client.events.emit(SubscriptionEventName.SDKReady, {
       eventName: SubscriptionEventName.SDKReady,
     });
@@ -83,12 +88,12 @@ export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: Ethe
     blockAndLogStreamerSyncStrategy.listenForBlockRemoved(logFilterAggregator.onBlockRemoved);
 
     // Check on each new block to see if we need to generate a checkpoint.
-    // client.events.on(SubscriptionEventName.NewBlock, async (newBlock) => {
-    //   const block = await provider.getBlock(newBlock.lastSyncedBlockNumber)
-    //   warpController.onNewBlock(block);
-    // });
+    client.events.on(SubscriptionEventName.NewBlock, async (newBlock) => {
+      const block = await provider.getBlock(newBlock.lastSyncedBlockNumber);
+      await warpController.onNewBlock(block);
+    });
 
-    blockAndLogStreamerSyncStrategy.start(endBulkSyncBlockNumber);
+    await blockAndLogStreamerSyncStrategy.start(endBulkSyncBlockNumber);
   };
 }
 
@@ -124,8 +129,7 @@ export async function createClient(
       // interface instead of actually import @0x/mesh-browser -- since
       // that would attempt to start the wasm client in nodejs and cause
       // everything to die.
-      const web3Provider = (ethersProvider.provider as Web3Provider)._web3Provider as SupportedProvider;
-      createBrowserMesh(config, web3Provider, zeroX);
+      createBrowserMesh(config, ethersProvider, zeroX);
     }
   }
 

@@ -7,8 +7,9 @@ import { Abi } from 'ethereum';
 import * as _ from 'lodash';
 import { AsyncQueue, queue, retry } from 'async';
 import { isInstanceOfBigNumber, isInstanceOfArray } from './utils';
-import { JSONRPCRequestPayload } from 'ethereum-types';
+import { JSONRPCRequestPayload, JSONRPCErrorCallback, JSONRPCResponsePayload } from 'ethereum-types';
 import { BigNumber } from "bignumber.js";
+
 
 interface ContractMapping {
   [contractName: string]: ethers.utils.Interface;
@@ -56,7 +57,11 @@ export class EthersProvider extends ethers.providers.BaseProvider
         retry(
           { times, interval },
           async () => {
-            return await _this.provider.perform(item.message, item.params);
+            if (item.message === "send") {
+              return await _this.provider.send(item.params.method, item.params.params);
+            } else {
+              return await _this.provider.perform(item.message, item.params);
+            }
           },
           callback
         );
@@ -241,9 +246,15 @@ export class EthersProvider extends ethers.providers.BaseProvider
     }));
   }
 
-  // This is to support the 0x Provider Engine requirements
-  async sendAsync(payload: JSONRPCRequestPayload): Promise<any> {
-    return this.provider.send(payload.method, payload.params);
+  // This is to support the 0x Web3 Provider Engine requirements
+  sendAsync(payload: JSONRPCRequestPayload, callback?: JSONRPCErrorCallback): void {
+    this.performQueue.push({ message: "send", params: payload }, (error, result) => {
+      if (callback) callback(error, {
+        result,
+        id: payload.id,
+        jsonrpc: payload.jsonrpc,
+      });
+    });
   }
 
   async perform(message: any, params: any): Promise<any> {

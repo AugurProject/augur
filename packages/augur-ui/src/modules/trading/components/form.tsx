@@ -9,7 +9,6 @@ import {
   BUY,
   SELL,
   INVALID_OUTCOME_ID,
-  GAS_CONFIRM_ESTIMATE,
   ONE,
 } from 'modules/common/constants';
 import FormStyles from 'modules/common/form-styles.less';
@@ -36,7 +35,6 @@ import moment, { Moment } from 'moment';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { SimpleTimeSelector } from 'modules/create-market/components/common';
 import { formatBestPrice } from 'utils/format-number';
-import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 
 const DEFAULT_TRADE_INTERVAL = new BigNumber(10**17);
 const DEFAULT_EXPIRATION_DAYS = 0;
@@ -412,7 +410,7 @@ class Form extends Component<FromProps, FormState> {
     // Check to ensure orders don't expiry within 70s
     // Also consider getGasConfirmEstimate * 1.5 seconds
     const minOrderLifespan = 70;
-    const gasConfirmEstimate = this.state.confirmationTimeEstimation * 1.5; // In Seconds
+    const gasConfirmEstimate = this.state ? this.state.confirmationTimeEstimation * 1.5 : 0; // In Seconds
     const expiryTime = expiration - gasConfirmEstimate - moment().unix();
     if (expiration && expiryTime < minOrderLifespan) {
       errorCount += 1;
@@ -813,7 +811,9 @@ class Form extends Component<FromProps, FormState> {
         return bnMaxPrice.minus(tickSize);
       }
     const correctDec = formatBestPrice(calcPrice, tickSize);
-    return correctDec.fullPrecision;
+    const precision = getPrecision(tickSize, 0);
+    const value = createBigNumber(correctDec.fullPrecision).toFixed(precision);
+    return value;
   }
 
   render() {

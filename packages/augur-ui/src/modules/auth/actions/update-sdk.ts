@@ -19,13 +19,15 @@ export const updateSdk = (
   loginAccount: Partial<LoginAccount>,
   networkId: string,
   useGnosis: boolean
-) => async (dispatch: ThunkDispatch<void, any, Action>) => {
+) => async (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   if (!loginAccount || !loginAccount.address || !loginAccount.meta) return;
   if (!augurSdk.sdk) return;
 
   try {
-    dispatch(updateAppStatus(Ox_ENABLED, augurSdk.sdk.zeroX));
+    dispatch(updateAppStatus(Ox_ENABLED, !!augurSdk.sdk.zeroX));
     if (useGnosis) {
+      // check for affilitate
+      const affiliate = (getState().loginAccount || {}).affiliate;
       const updateUserAccount = safeAddress => {
         const newAccount = {
           ...loginAccount,
@@ -41,8 +43,9 @@ export const updateSdk = (
       await augurSdk.syncUserData(
         loginAccount.mixedCaseAddress,
         loginAccount.meta.signer,
-        networkId,
+        networkId as NetworkId,
         true,
+        affiliate,
         updateUserAccount
       );
     } else {
@@ -51,8 +54,9 @@ export const updateSdk = (
       await augurSdk.syncUserData(
         loginAccount.mixedCaseAddress,
         loginAccount.meta.signer,
-        networkId,
-        false
+        networkId as NetworkId,
+        false,
+        null,
       );
     }
 
