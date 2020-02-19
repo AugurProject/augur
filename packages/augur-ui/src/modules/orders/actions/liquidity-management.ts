@@ -17,6 +17,7 @@ import { setLiquidityOrderStatus } from 'modules/events/actions/liquidity-transa
 export const UPDATE_LIQUIDITY_ORDER = 'UPDATE_LIQUIDITY_ORDER';
 export const ADD_MARKET_LIQUIDITY_ORDERS = 'ADD_MARKET_LIQUIDITY_ORDERS';
 export const REMOVE_LIQUIDITY_ORDER = 'REMOVE_LIQUIDITY_ORDER';
+export const CLEAR_LIQUIDITY_ORDER = 'CLEAR_LIQUIDITY_ORDER';
 export const LOAD_PENDING_LIQUIDITY_ORDERS = 'LOAD_PENDING_LIQUIDITY_ORDERS';
 export const CLEAR_ALL_MARKET_ORDERS = 'CLEAR_ALL_MARKET_ORDERS';
 export const UPDATE_TX_PARAM_HASH_TX_HASH = 'UPDATE_TX_PARAM_HASH_TX_HASH';
@@ -64,6 +65,10 @@ export const loadBulkPendingLiquidityOrders = (
 ) => ({
   type: LOAD_PENDING_LIQUIDITY_ORDERS,
   data: { pendingLiquidityOrders },
+});
+
+export const clearLiquidityOrders = () => ({
+  type: CLEAR_LIQUIDITY_ORDER,
 });
 
 export const addMarketLiquidityOrders = ({ liquidityOrders, txParamHash }) => ({
