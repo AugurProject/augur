@@ -149,6 +149,7 @@
       > div:first-of-type {
         background-color: var(--color-page-background);
         border-top: @size-3 solid var(--color-primary-action);
+        border-right: @size-1 solid transparent;
 
         &:hover {
           background-color: var(--color-page-background);
@@ -191,6 +192,11 @@
         }
       }
     }
+  }
+
+  .ConnectDropdown {
+    // if we don't drop this boxshadow close to the bottom then we get an odd look to the top section.
+    box-shadow: 0 @size-4 @size-4 var(--color-primary-text-15);
   }
 
   .AccountInfo {
