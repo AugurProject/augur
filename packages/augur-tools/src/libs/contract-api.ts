@@ -32,10 +32,6 @@ import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis/build';
 import { formatBytes32String } from 'ethers/utils';
 import { Account } from '../constants';
 import { makeGnosisDependencies, makeSigner } from './blockchain';
-<<<<<<< HEAD
-import { sleep, stringTo32ByteHex } from '@augurproject/core/build/libraries/HelperFunctions';
-=======
->>>>>>> master
 
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 const ETERNAL_APPROVAL_VALUE = new BigNumber('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'); // 2^256 - 1
@@ -709,7 +705,7 @@ export class ContractAPI {
       paymentToken,
       owner: this.account.publicKey,
       affiliate: NULL_ADDRESS,
-      fingerprint: stringTo32ByteHex('')
+      fingerprint: formatBytes32String('')
     };
     return this.augur.gnosis.createGnosisSafeViaRelay(params);
   }
