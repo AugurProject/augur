@@ -962,7 +962,7 @@ export const POPULAR_CATEGORIES_ICONS = [
   CategoryCrypto,
 ];
 
-export const CATEGORIES_MAX = 5;
+export const CATEGORIES_MAX = 8;
 
 export enum PAGINATION_VIEW_OPTIONS {
   ALL = 'All',
