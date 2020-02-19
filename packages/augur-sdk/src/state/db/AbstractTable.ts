@@ -5,6 +5,8 @@ export type PrimitiveID = string | number | Date;
 
 export type ID = PrimitiveID | Array<PrimitiveID>;
 
+export const ALL_DOCS_BATCH_SIZE = 200;
+
 export interface BaseDocument {
   [key: string]: any;
 }
@@ -27,8 +29,18 @@ export abstract class AbstractTable {
     await this.table.clear();
   }
 
+  // We pull all docs in batches to avoid maximum IPC message errors
   async allDocs(): Promise<any[]> {
-    return this.table.toArray()
+    const results: any[] = [];
+    const documentCount = await this.getDocumentCount();
+    for (let batchIdx = 0; batchIdx * ALL_DOCS_BATCH_SIZE <= documentCount; batchIdx++) {
+      const batchResults = await this.table
+        .offset(batchIdx * ALL_DOCS_BATCH_SIZE)
+        .limit(ALL_DOCS_BATCH_SIZE)
+        .toArray();
+      results.push(...batchResults);
+    }
+    return results;
   }
 
   async getDocumentCount(): Promise<number> {
