@@ -2,6 +2,7 @@ import {
   UPDATE_LIQUIDITY_ORDER,
   ADD_MARKET_LIQUIDITY_ORDERS,
   REMOVE_LIQUIDITY_ORDER,
+  CLEAR_LIQUIDITY_ORDER,
   LOAD_PENDING_LIQUIDITY_ORDERS,
   CLEAR_ALL_MARKET_ORDERS,
   UPDATE_TX_PARAM_HASH_TX_HASH,
@@ -135,6 +136,9 @@ export default function(
       if (Object.keys(pendingLiquidityOrders[txParamHash]).length === 0)
         delete pendingLiquidityOrders[txParamHash];
       return { ...pendingLiquidityOrders };
+    }
+    case CLEAR_LIQUIDITY_ORDER: {
+      return DEFAULT_STATE;
     }
     default:
       return pendingLiquidityOrders;
