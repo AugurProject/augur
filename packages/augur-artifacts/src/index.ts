@@ -39,7 +39,7 @@ export enum NetworkId {
   PrivateGanache = '123456',
 };
 
-function isDevNetworkId(id: NetworkId): boolean {
+export function isDevNetworkId(id: NetworkId): boolean {
   return [
     NetworkId.Mainnet,
     NetworkId.Ropsten,

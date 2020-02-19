@@ -37,7 +37,7 @@ import { listenForStartUpEvents } from 'modules/events/actions/listen-to-updates
 import { loginWithInjectedWeb3 } from 'modules/auth/actions/login-with-injected-web3';
 import { loginWithPortis } from 'modules/auth/actions/login-with-portis';
 import { loginWithFortmatic } from 'modules/auth/actions/login-with-fortmatic';
-import { loginWithTorus, getTorusNetwork } from 'modules/auth/actions/login-with-torus';
+import { loginWithTorus } from 'modules/auth/actions/login-with-torus';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { updateLoginAccount } from 'modules/account/actions/login-account';
 import {
@@ -50,6 +50,8 @@ import { Augur, Provider } from '@augurproject/sdk';
 import { getLoggedInUserFromLocalStorage } from 'services/storage/localStorage';
 import { tryToPersistStorage } from 'utils/storage-manager';
 import Torus from '@toruslabs/torus-embed';
+import { isDevNetworkId } from '@augurproject/artifacts/src';
+import { getNetwork } from 'utils/get-network-name';
 
 const ACCOUNTS_POLL_INTERVAL_DURATION = 10000;
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
@@ -218,22 +220,16 @@ export function connectAugur(
     }
 
     let provider = null;
-    let networkId = null;
+    let networkId = env['networkId'];
 
-    if (process.env.ETHEREUM_NETWORK === 'kovan') {
-      networkId = NETWORK_IDS.Kovan;
-    } else if (process.env.ETHEREUM_NETWORK === 'mainnet') {
-      networkId = NETWORK_IDS.Mainnet;
-    }
-
-    // For Mainnet/Kovan, use the provider on window if it exists, otherwise use torus provider
-    if (networkId && [NETWORK_IDS.Mainnet, NETWORK_IDS.Kovan].includes(networkId)) {
+    // Unless DEV, use the provider on window if it exists, otherwise use torus provider
+    if (networkId && !isDevNetworkId(networkId)) {
       if (windowRef.web3) {
           // Use window provider
           provider = new Web3Provider(windowRef.web3.currentProvider);
       } else {
         // Use torus provider
-        const host = getTorusNetwork(networkId);
+        const host = getNetwork(networkId);
         const torus: any = new Torus({});
 
         await torus.init({

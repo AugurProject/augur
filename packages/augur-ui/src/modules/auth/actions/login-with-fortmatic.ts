@@ -5,20 +5,11 @@ import { Action } from 'redux';
 import { PersonalSigningWeb3Provider } from 'utils/personal-signing-web3-provider';
 import Fortmatic from 'fortmatic';
 import Web3 from 'web3';
-import { ACCOUNT_TYPES, FORTMATIC_API_KEY, FORTMATIC_API_TEST_KEY, NETWORK_IDS } from 'modules/common/constants';
+import { ACCOUNT_TYPES, FORTMATIC_API_KEY, FORTMATIC_API_TEST_KEY, NETWORK_IDS, NETWORK_NAMES } from 'modules/common/constants';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { windowRef } from 'utils/window-ref';
 import { AppState } from 'store';
-
-const getFormaticNetwork = (networkId: string): string   => {
-  if (networkId === NETWORK_IDS.Mainnet) {
-    return 'mainnet';
-  } else if (networkId === NETWORK_IDS.Kovan) {
-    return 'kovan';
-  } else {
-    return 'localhost';
-  }
-};
+import { getNetwork } from 'utils/get-network-name';
 
 export const loginWithFortmatic = () => async (
   dispatch: ThunkDispatch<void, any, Action>,
@@ -26,7 +17,7 @@ export const loginWithFortmatic = () => async (
 ) => {
   const useGnosis = getState().env['gnosis']?.enabled;
   const networkId: string = getNetworkId();
-  const supportedNetwork = getFormaticNetwork(networkId);
+  const supportedNetwork = getNetwork(networkId);
 
   if (supportedNetwork) {
     try {

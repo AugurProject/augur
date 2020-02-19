@@ -5,21 +5,12 @@ import { Action } from 'redux';
 import { PersonalSigningWeb3Provider } from 'utils/personal-signing-web3-provider';
 import Torus from '@toruslabs/torus-embed';
 import Web3 from 'web3';
-import { ACCOUNT_TYPES, NETWORK_IDS } from 'modules/common/constants';
+import { ACCOUNT_TYPES } from 'modules/common/constants';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { windowRef } from 'utils/window-ref';
 import { LoginAccount } from 'modules/types';
 import { AppState } from 'store';
-
-export const getTorusNetwork = (networkId): string => {
-  if (networkId === NETWORK_IDS.Mainnet) {
-    return 'mainnet';
-  } else if (networkId === NETWORK_IDS.Kovan) {
-    return 'kovan';
-  } else {
-    return 'localhost';
-  }
-};
+import { getNetwork } from 'utils/get-network-name';
 
 export const loginWithTorus = () => async (
   dispatch: ThunkDispatch<void, any, Action>,
@@ -27,7 +18,7 @@ export const loginWithTorus = () => async (
 ) => {
   const useGnosis = getState().env['gnosis']?.enabled;
   const networkId = getNetworkId();
-  const torusNetwork = getTorusNetwork(networkId);
+  const torusNetwork = getNetwork(networkId);
   let accountObject: Partial<LoginAccount> = {};
 
   if (torusNetwork) {
