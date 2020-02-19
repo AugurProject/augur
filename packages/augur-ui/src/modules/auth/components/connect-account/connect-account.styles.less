@@ -16,6 +16,22 @@
   }
 
   &.selected {
+    &:before {
+      content: '';
+    
+      background: #1B1A1E;
+      bottom: -@size-1;
+      height: @size-3;
+      position: absolute;
+      transform: translateX(@size-1);
+      width: calc(100% - @size-2);
+      z-index: @default-z-index;
+    
+      @media @breakpoint-mobile {
+        display: none;
+      }
+    }
+
     > div:first-of-type {
       background-color: var(--color-module-background);
       border: @size-1 solid var(--color-secondary-action-outline);
@@ -76,22 +92,6 @@
   }
 }
 
-.ConnectAccount.selected:before {
-  content: '';
-
-  background: #1B1A1E;
-  bottom: -@size-1;
-  height: @size-3;
-  position: absolute;
-  transform: translateX(@size-1);
-  width: calc(100% - @size-2);
-  z-index: @default-z-index;
-
-  @media @breakpoint-mobile {
-    display: none;
-  }
-}
-
 .ConnectDropdown {
   position: absolute;
   right: 0px;
@@ -134,6 +134,78 @@
         .text-10-bold;
 
         margin-top: 0px;
+      }
+    }
+
+    > span {
+      display: none;
+    }
+  }
+}
+
+:root[theme="BETTING"] {
+  .ConnectAccount {
+    &.selected {
+      > div:first-of-type {
+        background-color: var(--color-page-background);
+        border-top: @size-3 solid var(--color-primary-action);
+
+        &:hover {
+          background-color: var(--color-page-background);
+        }
+
+        > div:first-of-type > span > span > svg > path {
+          stroke: var(--color-primary-text);
+        }
+
+        div.AccountInfo > div {
+          > span,
+          > div:last-of-type {
+            color: var(--color-primary-text);
+          }
+        }
+      }
+
+      &:before {
+        display: none;
+      }
+    }
+
+    > div:first-of-type {
+      border: 0;
+      background: var(--color-primary-text);
+      border-top: @size-3 solid transparent;
+      border-right: @size-1 solid var(--color-secondary-text-50);
+
+      &:hover {
+        background-color: var(--color-secondary-text-25);
+        border-top: @size-3 solid var(--color-primary-action);
+      }
+
+      > div:first-of-type {
+        > span {
+          align-self: baseline;
+          > span > svg > path {
+            stroke: var(--color-module-background);
+          }
+        }
+      }
+    }
+  }
+
+  .AccountInfo {
+    > div {
+      > div:first-of-type {
+        display: none;
+      }
+
+      > div:last-of-type {
+        color: var(--color-dark-grey);
+      }
+
+      > span {
+        display: block;
+        color: var(--color-module-background);
       }
     }
   }
