@@ -21,6 +21,8 @@ import { ContractAPI } from './contract-api';
 import { makeDbMock } from './MakeDbMock';
 import { API } from '@augurproject/sdk/build/state/getter/API';
 
+const biggestNumber = new BigNumber(2).pow(256).minus(2);
+
 export class TestContractAPI extends ContractAPI {
   protected bulkSyncStrategy: BulkSyncStrategy;
   api: API;
@@ -120,4 +122,19 @@ export class TestContractAPI extends ContractAPI {
       }
     }
   };
+
+  async reportWarpSyncMarket(hash:string) {
+    const payoutNumerators = await this.getPayoutFromWarpSyncHash(hash);
+    const warpSyncMarket = await this.getWarpSyncMarket();
+
+    const reportedValue = new BigNumber(465);
+    let timestamp = await this.getTimestamp();
+    timestamp = timestamp.plus(1000000);
+    await this.setTimestamp(timestamp);
+    await this.doInitialReport(warpSyncMarket, payoutNumerators);
+
+    timestamp = timestamp.plus(1000000);
+    await this.setTimestamp(timestamp);
+    await this.finalizeMarket(warpSyncMarket);
+  }
 }
