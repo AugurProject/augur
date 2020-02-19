@@ -7,8 +7,8 @@ import Row from 'modules/common/row';
 import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
 
 const mapStateToProps = (state: AppState, ownProps) => {
-  const { marketInfos } = state;
-  const market = marketInfos[ownProps.marketId];
+  const { marketInfos, newMarket } = state;
+  const market = newMarket ? newMarket : marketInfos[ownProps.marketId];
   // default values for create market preview
   const minPrice = market ? market.minPrice : 0;
   const maxPrice = market ? market.maxPrice : 1;
