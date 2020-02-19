@@ -118,42 +118,50 @@ export interface NetworkContractAddresses {
 
 export async function setAddresses(networkId: NetworkId, addresses: ContractAddresses): Promise<void> {
   const isDev = isDevNetworkId(networkId);
-  // be sure to be in src dir, not build
-  const filename = isDev ? '../src/local-addresses.json' : '../src/addresses.json';
-  const filepath = path.join(__dirname, filename);
+  // write to both src and build
+  const filenames = isDev
+    ? ['../src/local-addresses.json', '../build/local-addresses.json']
+    : ['../src/addresses.json', '../build/addresses.json'];
+  await Promise.all(filenames.map(async (filename) => {
+    const filepath = path.join(__dirname, filename);
 
-  let contents: AllContractAddresses = {};
-  if (await exists(filepath)) {
-    const blob = await readFile(filepath, 'utf8');
-    try {
-      contents = JSON.parse(blob);
-    } catch {
-      contents = {}; // throw out unparseable addresses file
+    let contents: AllContractAddresses = {};
+    if (await exists(filepath)) {
+      const blob = await readFile(filepath, 'utf8');
+      try {
+        contents = JSON.parse(blob);
+      } catch {
+        contents = {}; // throw out unparseable addresses file
+      }
     }
-  }
-  contents[networkId] = addresses;
-  await writeFile(filepath, JSON.stringify(contents, null, 2), 'utf8');
+    contents[networkId] = addresses;
+    await writeFile(filepath, JSON.stringify(contents, null, 2), 'utf8');
+  }));
 }
 
 export async function setUploadBlockNumber(networkId: NetworkId, uploadBlock: number): Promise<void> {
   const isDev = isDevNetworkId(networkId);
   // be sure to be in src dir, not build
-  const filename = isDev ? '../src/local-upload-block-numbers.json' : '../src/upload-block-numbers.json';
-  const filepath = path.join(__dirname, filename);
+  const filenames = isDev
+    ? ['../src/local-upload-block-numbers.json', '../build/local-upload-block-numbers.json']
+    : ['../src/upload-block-numbers.json', '../build/upload-block-numbers.json'];
+  await Promise.all(filenames.map(async (filename) => {
+    const filepath = path.join(__dirname, filename);
 
-  let contents: UploadBlockNumbers = {};
-  if (await exists(filepath)) {
-    const blob = await readFile(filepath, 'utf8');
-    try {
-      contents = JSON.parse(blob);
-    } catch {
-      contents = {}; // throw out unparseable block numbers file
+    let contents: UploadBlockNumbers = {};
+    if (await exists(filepath)) {
+      const blob = await readFile(filepath, 'utf8');
+      try {
+        contents = JSON.parse(blob);
+      } catch {
+        contents = {}; // throw out unparseable block numbers file
+      }
+
+      contents[networkId] = uploadBlock;
+
+      await writeFile(filepath, JSON.stringify(contents, null, 2), 'utf8');
     }
-
-    contents[networkId] = uploadBlock;
-
-    await writeFile(filepath, JSON.stringify(contents, null, 2), 'utf8');
-  }
+  }));
 }
 
 export function getAddressesForNetwork(networkId: NetworkId): ContractAddresses {
