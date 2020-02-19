@@ -47,7 +47,7 @@
     height: @size-20;
     margin: @size-8 0 @size-10 @size-10;
     text-overflow: ellipsis;
-    border: none !important;
+    border: none;
     color: var(--color-primary-text);
 
     @media @breakpoint-mobile {
@@ -111,6 +111,22 @@
 
     &:disabled {
       opacity: 0.5;
+    }
+
+    > input {
+      border: none;
+    }
+
+    input:hover {
+      border: none;
+    }
+
+    input:focus {
+      border: none;
+    }
+
+    input:active {
+      border: none;
     }
   }
 }
