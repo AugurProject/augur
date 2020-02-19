@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { Component } from 'react';
+import Box from '3box';
+import Comments from '3box-comments-react';
 
 import Styles from 'modules/market/components/market-view/market-view.styles.less';
 
@@ -9,41 +11,64 @@ interface MarketCommentsProps {
   networkId: string;
 }
 
-export const MarketComments = ({ marketId, colorScheme, numPosts, networkId }: MarketCommentsProps) => {
-  const [didError, setDidError] = useState(false);
-  const { FB } = window;
-
-  useEffect(() => {
-    try {
-      // XFBML enables you to incorporate FBML into your websites and IFrame applications.
-      // https://developers.facebook.com/docs/reference/javascript/FB.XFBML.parse/
-      if (FB) {
-        FB.XFBML.parse();
-      }
-    } catch (error) {
-      console.error(error);
-      setDidError(true);
-    }
-  }, []);
-
-  if (didError) {
-    return null
+export class MarketComments extends Component {
+  state = {
+    box: {},
+    myProfile: {},
+    address: '',
+    isReady: false,
   };
 
-  const fbCommentsUrl = `http://www.augur.net/comments/${networkId}/${marketId}`;
+  componentDidMount() {
+    this.handleLogin();
+  };
 
-  return (
-    <section className={Styles.Comments}>
-      <span />
-      <div
-        id='fb-comments'
-        className='fb-comments'
-        data-colorscheme={colorScheme}
-        data-href={fbCommentsUrl}
-        data-width='100%'
-        data-numposts={numPosts.toString()}
-        data-order-by='social' // social is seen as "Top" in the select input
-      />
-    </section>
-  );
-};
+  handleLogin = async () => {
+    const addresses = await window.ethereum.enable();
+    const address = addresses[0];
+
+    const box = await Box.openBox(address, window.ethereum);
+
+    box.onSyncDone(() => this.setState({box, address, isReady: true}));
+  };
+
+  render () {
+    const {
+      box,
+      address,
+      isReady,
+    } = this.state;
+
+    return (
+      <section className={Styles.Comments}>
+        3Box Comment Plugin
+        {isReady && (
+          <Comments
+            // required
+            spaceName="3boxtestcomments"
+            threadName="explicitNestLevel6"
+            adminEthAddr="0x2a0D29C819609Df18D8eAefb429AEC067269BBb6"
+
+            // Required props for context A) & B)
+            box={box}
+            currentUserAddr={address}
+
+            // Required prop for context B
+            // loginFunction={this.handleLogin}
+
+            // Required prop for context C)
+            // ethereum={window.ethereum}
+
+            // optional
+            // members={false}
+            // showCommentCount={10}
+            // threadOpts={{}}
+            // useHovers={false}
+            // currentUser3BoxProfile={currentUser3BoxProfile}
+            // userProfileURL={address => `https://mywebsite.com/user/${address}`}
+          />
+        )}
+      </section>
+    );
+  }
+}
