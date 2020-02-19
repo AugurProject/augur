@@ -1,9 +1,7 @@
-import { Augur } from '@augurproject/sdk';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
 import { LogFilterAggregator } from '@augurproject/sdk/build/state/logs/LogFilterAggregator';
 import { BlockAndLogStreamerListenerInterface } from '@augurproject/sdk/build/state/sync/BlockAndLogStreamerSyncStrategy';
 import { configureDexieForNode } from '@augurproject/sdk/build/state/utils/DexieIDBShim';
-import { Account } from '@augurproject/tools';
 import uuid = require('uuid');
 
 configureDexieForNode(true);
@@ -46,11 +44,11 @@ export function makeDbMock(prefix:string = uuid.v4()) {
   return {
     wipeDB,
     constants,
-    makeDB: (augur: Augur, todoremove?) => {
+    makeDB: augur => {
       const logFilterAggregator = LogFilterAggregator.create(
         augur.contractEvents.getEventTopics,
         augur.contractEvents.parseLogs,
-        augur.contractEvents.getEventContractAddress
+        augur.contractEvents.getEventContractAddress,
       );
 
       const db = DB.createAndInitializeDB(

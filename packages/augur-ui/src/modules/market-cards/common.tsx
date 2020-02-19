@@ -14,7 +14,12 @@ import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import { CheckCircleIcon } from 'modules/common/icons';
-import { FormattedNumber, MarketData, OutcomeFormatted, ConsensusFormatted } from 'modules/types';
+import {
+  FormattedNumber,
+  MarketData,
+  OutcomeFormatted,
+  ConsensusFormatted,
+} from 'modules/types';
 import { formatAttoRep, formatDai, formatNumber } from 'utils/format-number';
 import { Getters } from '@augurproject/sdk';
 import InvalidLabel from 'modules/common/containers/labels';
@@ -60,8 +65,15 @@ export const Outcome = (props: OutcomeProps) => {
         })}
       >
         <div>
-          {props.invalid ? <InvalidLabel text={props.description} keyId={`${props.marketId}_${props.description}`} /> : <span>{props.description}</span>}
-          <span className={classNames({[Styles.Zero]: percent === 0})}>
+          {props.invalid ? (
+            <InvalidLabel
+              text={props.description}
+              keyId={`${props.marketId}_${props.description}`}
+            />
+          ) : (
+            <span>{props.description}</span>
+          )}
+          <span className={classNames({ [Styles.Zero]: percent === 0 })}>
             {percent === 0
               ? `0.00${props.isScalar ? '' : '%'}`
               : `${formatDai(percent).formatted}%`}
@@ -295,19 +307,30 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
             ((!props.expanded && index < showOutcomeNumber) ||
               (props.expanded || props.marketType === YES_NO)) &&
             (inDispute ? (
-              <DisputeOutcome
-                key={outcome.id}
-                description={outcome.description}
-                invalid={outcome.id === 0}
-                index={index > 2 ? index : index + 1}
-                stake={props.stakes.find(
-                  stake => parseFloat(stake.outcome) === outcome.id
-                )}
-                dispute={props.dispute}
-                id={outcome.id}
-                canDispute={props.canDispute}
-                canSupport={props.canSupport}
-              />
+              <>
+                {props.marketType === SCALAR &&
+                  index === 1 &&
+                  props.expanded && (
+                    <ScalarBlankDisputeOutcome
+                      denomination={props.scalarDenomination}
+                      dispute={props.dispute}
+                      canDispute={props.canDispute}
+                    />
+                  )}
+                <DisputeOutcome
+                  key={outcome.id}
+                  description={outcome.description}
+                  invalid={outcome.id === 0}
+                  index={index > 2 ? index : index + 1}
+                  stake={props.stakes.find(
+                    stake => parseFloat(stake.outcome) === outcome.id
+                  )}
+                  dispute={props.dispute}
+                  id={outcome.id}
+                  canDispute={props.canDispute}
+                  canSupport={props.canSupport}
+                />
+              </>
             ) : (
               <Outcome
                 key={outcome.id}
@@ -323,7 +346,7 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
               />
             ))
         )}
-      {props.marketType === SCALAR && inDispute && (
+      {props.marketType === SCALAR && inDispute && !props.expanded && (
         <ScalarBlankDisputeOutcome
           denomination={props.scalarDenomination}
           dispute={props.dispute}
@@ -388,12 +411,18 @@ export interface ResolvedOutcomesProps {
 }
 
 export const ResolvedOutcomes = (props: ResolvedOutcomesProps) => {
-  const outcomes = props.outcomes.filter(outcome => String(outcome.id) !== props.consensusFormatted.outcome);
+  const outcomes = props.outcomes.filter(
+    outcome => String(outcome.id) !== props.consensusFormatted.outcome
+  );
 
   return (
     <div className={Styles.ResolvedOutcomes}>
       <span>Winning Outcome {CheckCircleIcon} </span>
-      <span>{props.consensusFormatted.invalid ? INVALID_OUTCOME_NAME : props.consensusFormatted.outcomeName}</span>
+      <span>
+        {props.consensusFormatted.invalid
+          ? INVALID_OUTCOME_NAME
+          : props.consensusFormatted.outcomeName}
+      </span>
       {props.expanded && (
         <div>
           <span>other outcomes</span>

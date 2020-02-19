@@ -96,6 +96,16 @@ export class MarketDB extends DerivedDB {
     }
   }
 
+  async doSync(highestAvailableBlockNumber: number): Promise<void> {
+    this.syncing = true;
+    await super.doSync(highestAvailableBlockNumber);
+    await this.syncOrderBooks([]);
+    const timestamp = (await this.augur.getTimestamp()).toNumber();
+    await this.processTimestamp(timestamp, highestAvailableBlockNumber);
+    await this.syncFTS();
+    this.syncing = false;
+  }
+
   async handleMergeEvent(
     blocknumber: number, logs: ParsedLog[],
     syncing = false): Promise<number> {

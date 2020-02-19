@@ -6,17 +6,16 @@ const express = require('express');
 const helmet = require('helmet');
 const http = require('http');
 
-
 /* Setup Steps:
-  * 1. Start and populate blockchain.
-  * 2. Serve app, set to point to local blockchain.
-  * 3. Create puppeteer browser instance
-  *
-  * Test Steps:
-  * 1. Point browser at local app server.
-  * 2. Wait a while for the browser app to sync with the local blockchain.
-  * 3. Verify the app state.
-  */
+ * 1. Start and populate blockchain.
+ * 2. Serve app, set to point to local blockchain.
+ * 3. Create puppeteer browser instance
+ *
+ * Test Steps:
+ * 1. Point browser at local app server.
+ * 2. Wait a while for the browser app to sync with the local blockchain.
+ * 3. Verify the app state.
+ */
 
 describe.skip('Browser testing', () => {
   let page;
@@ -33,7 +32,8 @@ describe.skip('Browser testing', () => {
     app.use(helmet());
 
     app.use(express.static(webappBuildDir));
-    app.listen = function() { // taken from augur-ui's server.js
+    app.listen = function() {
+      // taken from augur-ui's server.js
       const server = http.createServer(this);
       return server.listen.apply(server, arguments);
     };
@@ -77,17 +77,17 @@ describe.skip('Browser testing', () => {
 
     await page.goto(`http://localhost:${port}/#!/markets`);
 
-    await expect(page.title()).
-      resolves.
-      toMatch('Markets | Augur', { timeout: 20000 });
-    await expect(page.$('.paginator_v1-styles_location')).
-      resolves.
-      toBeDefined();
-    await expect(page.waitForSelector(
-      '.market-common-styles_MarketCommon__container',
-      {
+    await expect(page.title()).resolves.toMatch('Markets | Augur', {
+      timeout: 20000,
+    });
+    await expect(
+      page.$('.paginator_v1-styles_location')
+    ).resolves.toBeDefined();
+    await expect(
+      page.waitForSelector('.market-common-styles_MarketCommon__container', {
         visible: true,
         timeout: 20000,
-      })).resolves.toBeDefined();
+      })
+    ).resolves.toBeDefined();
   });
 });

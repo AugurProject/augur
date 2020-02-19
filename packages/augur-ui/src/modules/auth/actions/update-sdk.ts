@@ -53,7 +53,8 @@ export const updateSdk = (
         loginAccount.mixedCaseAddress,
         loginAccount.meta.signer,
         networkId as NetworkId,
-        false
+        false,
+        null,
       );
     }
 

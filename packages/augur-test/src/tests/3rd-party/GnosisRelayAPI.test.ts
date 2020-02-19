@@ -10,31 +10,28 @@ import {
   ACCOUNTS,
   makeDependencies,
   makeSigner,
-} from '@augurproject/tools/build';
+} from '@augurproject/tools';
 import { NULL_ADDRESS } from '@augurproject/tools/build/libs/Utils';
 import { BigNumber } from 'bignumber.js';
 import { ethers } from 'ethers';
 
 type TestingEnv = 'local' | 'kovan';
-const ENV: TestingEnv = 'local' || process.env.TEST_ENV as TestingEnv;
+const ENV: TestingEnv = 'local' || (process.env.TEST_ENV as TestingEnv);
 
-const {
-  RELAY_API,
-  SAFE_FUNDER_PRIVATE_KEY,
-  SAFE_FUNDER_PUBLIC_KEY,
-  URL,
-} = {
-  'local': {
+const { RELAY_API, SAFE_FUNDER_PRIVATE_KEY, SAFE_FUNDER_PUBLIC_KEY, URL } = {
+  local: {
     RELAY_API: 'http://localhost:8888/api/',
-    SAFE_FUNDER_PRIVATE_KEY: 'fae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a',
+    SAFE_FUNDER_PRIVATE_KEY:
+      'fae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a',
     SAFE_FUNDER_PUBLIC_KEY: '0x913dA4198E6bE1D5f5E4a40D0667f70C0B5430Eb',
     URL: 'http://localhost:8545',
   },
-  'kovan': {
+  kovan: {
     RELAY_API: 'https://gnosis.kovan.augur.net/api/',
     SAFE_FUNDER_PRIVATE_KEY: process.env.SAFE_FUNDER_PRIVATE_KEY,
     SAFE_FUNDER_PUBLIC_KEY: process.env.SAFE_FUNDER_PUBLIC_KEY,
-    URL: 'https://eth-kovan.alchemyapi.io/jsonrpc/1FomA6seLdWDvpIRvL9J5NhwPHLIGbWA',
+    URL:
+      'https://eth-kovan.alchemyapi.io/jsonrpc/1FomA6seLdWDvpIRvL9J5NhwPHLIGbWA',
   },
 }[ENV];
 
@@ -79,7 +76,7 @@ describe('Gnosis Relay API', () => {
       // The safe is not yet funded (or deployed)
       let safeStatus = await api.checkSafe(safeAddress);
       await expect(safeStatus).toEqual({
-        status: GnosisSafeState.WAITING_FOR_FUNDS
+        status: GnosisSafeState.WAITING_FOR_FUNDS,
       });
 
       // Fund the safe
@@ -117,7 +114,11 @@ describe('Gnosis Relay API', () => {
       await provider.waitForTransaction(txResponse.hash);
 
       // Lets send a transaction through the safe using the relay service
-      const gnosisSafe = new ethers.Contract(safeAddress, abi['GnosisSafe'], provider);
+      const gnosisSafe = new ethers.Contract(
+        safeAddress,
+        abi['GnosisSafe'],
+        provider
+      );
 
       const to = DUMMY_ADDRESS;
       const data = '0x';
@@ -126,7 +127,7 @@ describe('Gnosis Relay API', () => {
       const gasToken = NULL_ADDRESS;
       const safeTxGas = '100000';
       const dataGas = '300000';
-      const gasPrice = 5 * 10**9;
+      const gasPrice = 5 * 10 ** 9;
       const refundReceiver = NULL_ADDRESS;
       const nonce = (await gnosisSafe.nonce()).toNumber();
 
@@ -142,15 +143,28 @@ describe('Gnosis Relay API', () => {
         gasPrice: new BigNumber(gasPrice),
         refundReceiver,
         nonce,
-        signatures: [{
-          s: '',
-          r: '',
-          v: 0,
-        }],
+        signatures: [
+          {
+            s: '',
+            r: '',
+            v: 0,
+          },
+        ],
       };
 
       console.log('Getting TX Hash and Signing for a relay TX Execution');
-      const txHashBytes = await gnosisSafe.getTransactionHash(to, value, data, operation, safeTxGas, dataGas, gasPrice, gasToken, refundReceiver, nonce);
+      const txHashBytes = await gnosisSafe.getTransactionHash(
+        to,
+        value,
+        data,
+        operation,
+        safeTxGas,
+        dataGas,
+        gasPrice,
+        gasToken,
+        refundReceiver,
+        nonce
+      );
       await expect(txHashBytes).not.toEqual(undefined);
 
       const sig = signingKey.signDigest(ethers.utils.arrayify(txHashBytes));
@@ -175,7 +189,6 @@ describe('Gnosis Relay API', () => {
         contractAddress: null,
       });
       expect(receipt.blockNumber).not.toBeNull();
-
     }, 600000);
 
     test('ERC20 (Cash)', async () => {
@@ -185,7 +198,8 @@ describe('Gnosis Relay API', () => {
       const addresses = Addresses[103];
       const cash = new Cash(
         makeDependencies(account, ethersProvider, signer),
-        addresses.Cash);
+        addresses.Cash
+      );
       // const cash = new ethers.Contract(addresses.Cash, abi['Cash'], provider);
 
       const gnosisSafeData = {
@@ -207,7 +221,7 @@ describe('Gnosis Relay API', () => {
       // The safe is not yet funded (or deployed)
       let safeStatus = await api.checkSafe(safeAddress);
       await expect(safeStatus).toEqual({
-        status: GnosisSafeState.WAITING_FOR_FUNDS
+        status: GnosisSafeState.WAITING_FOR_FUNDS,
       });
 
       // Fund the safe
@@ -241,7 +255,11 @@ describe('Gnosis Relay API', () => {
       await provider.waitForTransaction(txResponse.hash);
 
       // Lets send a transaction through the safe using the relay service
-      const gnosisSafe = new ethers.Contract(safeAddress, abi['GnosisSafe'], provider);
+      const gnosisSafe = new ethers.Contract(
+        safeAddress,
+        abi['GnosisSafe'],
+        provider
+      );
 
       const to = DUMMY_ADDRESS;
       const data = '0x';
@@ -250,7 +268,7 @@ describe('Gnosis Relay API', () => {
       const gasToken = NULL_ADDRESS;
       const safeTxGas = '100000';
       const dataGas = '300000';
-      const gasPrice = 5 * 10**9;
+      const gasPrice = 5 * 10 ** 9;
       const refundReceiver = NULL_ADDRESS;
       const nonce = (await gnosisSafe.nonce()).toNumber();
 
@@ -266,15 +284,28 @@ describe('Gnosis Relay API', () => {
         gasPrice: new BigNumber(gasPrice),
         refundReceiver,
         nonce,
-        signatures: [{
-          s: '',
-          r: '',
-          v: 0,
-        }],
+        signatures: [
+          {
+            s: '',
+            r: '',
+            v: 0,
+          },
+        ],
       };
 
       console.log('Getting TX Hash and Signing for a relay TX Execution');
-      const txHashBytes = await gnosisSafe.getTransactionHash(to, value, data, operation, safeTxGas, dataGas, gasPrice, gasToken, refundReceiver, nonce);
+      const txHashBytes = await gnosisSafe.getTransactionHash(
+        to,
+        value,
+        data,
+        operation,
+        safeTxGas,
+        dataGas,
+        gasPrice,
+        gasToken,
+        refundReceiver,
+        nonce
+      );
       await expect(txHashBytes).not.toEqual(undefined);
 
       const sig = signingKey.signDigest(ethers.utils.arrayify(txHashBytes));
@@ -299,7 +330,6 @@ describe('Gnosis Relay API', () => {
         contractAddress: null,
       });
       expect(receipt.blockNumber).not.toBeNull();
-
     }, 600000);
   });
 });

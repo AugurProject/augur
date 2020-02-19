@@ -93,7 +93,9 @@ export class WarpController {
   }
 
   static async create(db: DB, provider: Provider, uploadBlockNumber: Block) {
-    const ipfs = await IPFS.create();
+    const ipfs = await IPFS.create({
+      repo: './data',
+    });
     return new WarpController(db, ipfs, provider, uploadBlockNumber);
   }
 
@@ -123,7 +125,7 @@ export class WarpController {
   async createInitialCheckpoint() {
     const mostRecentCheckpoint = await this.db.warpCheckpoints.getMostRecentCheckpoint();
     if (!mostRecentCheckpoint) {
-      this.db.warpCheckpoints.createInitialCheckpoint(this.uploadBlockNumber);
+      await this.db.warpCheckpoints.createInitialCheckpoint(this.uploadBlockNumber);
     }
   }
 
@@ -186,10 +188,7 @@ export class WarpController {
       file.addBlockSize(indexFileLinks[i].Size);
     }
 
-    const indexFile = new DAGNode(file.marshal());
-    for (let i = 0; i < indexFileLinks.length; i++) {
-      indexFile.addLink(indexFileLinks[i]);
-    }
+    const indexFile = new DAGNode(file.marshal(), indexFileLinks);
 
     const indexFileResponse = await this.ipfs.dag.put(
       indexFile,
@@ -220,13 +219,8 @@ export class WarpController {
     for (let i = 0; i < results.length; i++) {
       file.addBlockSize(results[i].Size);
     }
-    const links = [];
-    const indexFile = new DAGNode(file.marshal());
-    for (let i = 0; i < results.length; i++) {
-      const link = results[i];
-      links.push(link);
-      indexFile.addLink(link);
-    }
+    const links = results;
+    const indexFile = new DAGNode(file.marshal(), results);
 
     const indexFileResponse = await this.ipfs.dag.put(
       indexFile,
@@ -311,36 +305,27 @@ export class WarpController {
   }
 
   async createCheckpoint(begin: Block, end: Block) {
-    let indexFileLinks = [];
+    const logs = [];
     for (const { databaseName } of databasesToSync) {
-      const table = this.db[databaseName];
-      const [links, r] = await this.addDBToIPFS(
-        table.where('blockNumber').
-          between(begin.number, end.number, true, true),
-        databaseName,
-      );
-      indexFileLinks = [...indexFileLinks, ...links];
+      // Awaiting here to reduce load on db.
+      logs.push(await this.db[databaseName].where('blockNumber').
+        between(begin.number, end.number, true, true).toArray());
     }
 
-    const file = Unixfs.default('file');
-    for (let i = 0; i < indexFileLinks.length; i++) {
-      file.addBlockSize(indexFileLinks[i].Size);
-    }
-
-    const indexFile = new DAGNode(file.marshal());
-    for (let i = 0; i < indexFileLinks.length; i++) {
-      indexFile.addLink(indexFileLinks[i]);
-    }
-
-    const indexFileResponse = await this.ipfs.dag.put(
-      indexFile,
-      WarpController.DEFAULT_NODE_TYPE,
+    const sortedLogs = _.orderBy(
+      _.flatten(logs),
+      ['blockNumber', 'logIndex'],
+      ['asc', 'asc']
     );
+
+    const [result] = await this.ipfs.add({
+      content: Buffer.from(JSON.stringify(sortedLogs)),
+    });
 
     return {
       Name: `${begin.number}`,
-      Hash: indexFileResponse.toString(),
-      Size: file.fileSize(),
+      Hash: result.hash,
+      Size: result.size,
     };
   }
 
@@ -520,7 +505,7 @@ export class WarpController {
   }
 
   getFile(ipfsPath: string) {
-    return this.ipfs.cat(ipfsPath);
+    return this.ipfs.cat(ipfsPath).then((item) => item.toString());
   }
 
   async getAvailableCheckpointsByHash(ipfsRootHash: string): Promise<number[]> {

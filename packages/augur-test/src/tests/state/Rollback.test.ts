@@ -1,16 +1,9 @@
-import { WSClient } from '@0x/mesh-rpc-client';
 import { ContractAddresses } from '@augurproject/artifacts';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { Augur, Connectors } from '@augurproject/sdk';
-import { DB } from '@augurproject/sdk/build/state/db/DB';
-import { API } from '@augurproject/sdk/build/state/getter/API';
 import { BulkSyncStrategy } from '@augurproject/sdk/build/state/sync/BulkSyncStrategy';
-import {
-  ACCOUNTS,
-  ContractAPI,
-  defaultSeedPath,
-  loadSeedFile,
-} from '@augurproject/tools';
+import { ACCOUNTS, defaultSeedPath, loadSeedFile } from '@augurproject/tools';
+import { TestContractAPI } from '@augurproject/tools';
 import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
 import { BigNumber } from 'bignumber.js';
 import {
@@ -19,8 +12,7 @@ import {
   makeTestAugur,
   MockGnosisRelayAPI,
 } from '../../libs';
-import { MockBrowserMesh } from '../../libs/MockBrowserMesh';
-import { MockMeshServer, stopServer } from '../../libs/MockMeshServer';
+import { sleep } from '@augurproject/core/build/libraries/HelperFunctions';
 
 const mock = makeDbMock();
 let augur: Augur;
@@ -33,17 +25,16 @@ let augur: Augur;
  */
 test('sync databases', async () => {
   const seed = await loadSeedFile(defaultSeedPath);
-  augur = await makeTestAugur(seed, ACCOUNTS);
-  const db = await mock.makeDB(augur, ACCOUNTS);
+  const baseProvider = await makeProvider(seed, ACCOUNTS);
+  const addresses = baseProvider.getContractAddresses();
 
-  const bulkSyncStrategy = new BulkSyncStrategy(
-    augur.provider.getLogs,
-    (await db).logFilters.buildFilter,
-    (await db).logFilters.onLogsAdded,
-    augur.contractEvents.parseLogs,
+  const john = await TestContractAPI.userWrapper(
+    ACCOUNTS[0],
+    baseProvider,
+    addresses
   );
 
-  await bulkSyncStrategy.start(0, await augur.provider.getBlockNumber());
+  await john.sync();
 
   const syncableDBName = 'DisputeCrowdsourcerCompleted';
   const metaDBName = 'BlockNumbersSequenceIds';
@@ -52,10 +43,10 @@ test('sync databases', async () => {
   const originalHighestSyncedBlockNumbers: any = {};
   originalHighestSyncedBlockNumbers[
     syncableDBName
-  ] = await db.syncStatus.getHighestSyncBlock(syncableDBName);
+  ] = await john.db.syncStatus.getHighestSyncBlock(syncableDBName);
   originalHighestSyncedBlockNumbers[
     metaDBName
-  ] = await db.syncStatus.getHighestSyncBlock(metaDBName);
+  ] = await john.db.syncStatus.getHighestSyncBlock(metaDBName);
 
   const blockLogs = [
     {
@@ -73,8 +64,8 @@ test('sync databases', async () => {
     },
   ];
 
-  await db.addNewBlock(syncableDBName, blockLogs);
-  let highestSyncedBlockNumber = await db.syncStatus.getHighestSyncBlock(
+  await john.db.addNewBlock(syncableDBName, blockLogs);
+  let highestSyncedBlockNumber = await john.db.syncStatus.getHighestSyncBlock(
     syncableDBName
   );
   expect(highestSyncedBlockNumber).toBe(
@@ -83,8 +74,8 @@ test('sync databases', async () => {
 
   blockLogs[0].blockNumber = highestSyncedBlockNumber + 1;
 
-  await db.addNewBlock(syncableDBName, blockLogs);
-  highestSyncedBlockNumber = await db.syncStatus.getHighestSyncBlock(
+  await john.db.addNewBlock(syncableDBName, blockLogs);
+  highestSyncedBlockNumber = await john.db.syncStatus.getHighestSyncBlock(
     syncableDBName
   );
   expect(highestSyncedBlockNumber).toBe(
@@ -92,7 +83,7 @@ test('sync databases', async () => {
   );
 
   // Verify that 2 new blocks were added to SyncableDB
-  let result = await db.DisputeCrowdsourcerCompleted.toArray();
+  let result = await john.db.DisputeCrowdsourcerCompleted.toArray();
   expect(result[0].blockNumber).toEqual(
     originalHighestSyncedBlockNumbers[syncableDBName] + 1
   );
@@ -100,33 +91,28 @@ test('sync databases', async () => {
   expect(result[1].blockNumber).toEqual(
     originalHighestSyncedBlockNumbers[syncableDBName] + 2
   );
-  expect(result[1].logIndex).toEqual(1);
 
-  await db.logFilters.onBlockRemoved(highestSyncedBlockNumber - 1);
 
+  await john.db.logFilters.onBlockRemoved(highestSyncedBlockNumber - 1);
   // Verify that newest 2 blocks were removed from SyncableDB
-  result = await db.DisputeCrowdsourcerCompleted.toArray();
+  result = await john.db.DisputeCrowdsourcerCompleted.toArray();
+
   expect(result).toEqual([]);
 
-  expect(await db.syncStatus.getHighestSyncBlock(syncableDBName)).toBe(
+
+  expect(await john.db.syncStatus.getHighestSyncBlock(syncableDBName)).toBe(
     originalHighestSyncedBlockNumbers[syncableDBName]
   );
-  expect(await db.syncStatus.getHighestSyncBlock(metaDBName)).toBe(
+  expect(await john.db.syncStatus.getHighestSyncBlock(metaDBName)).toBe(
     originalHighestSyncedBlockNumbers[metaDBName]
   );
 });
 
 test('rollback derived database', async () => {
-  let john: ContractAPI;
-  let johnDB: Promise<DB>;
-  let johnAPI: API;
+  let john: TestContractAPI;
 
   let provider: EthersProvider;
   let addresses: ContractAddresses;
-
-  const { port } = await MockMeshServer.create();
-  const meshClient = new WSClient(`ws://localhost:${port}`);
-  const meshBrowser = new MockBrowserMesh(meshClient);
 
   const seed = await loadSeedFile(defaultSeedPath);
   addresses = seed.addresses;
@@ -134,85 +120,73 @@ test('rollback derived database', async () => {
 
   const johnConnector = new Connectors.DirectConnector();
   const johnGnosis = new MockGnosisRelayAPI();
-  john = await ContractAPI.userWrapper(
+  john = await TestContractAPI.userWrapper(
     ACCOUNTS[0],
     provider,
     addresses,
     johnConnector,
-    johnGnosis,
-    meshClient,
-    meshBrowser
+    johnGnosis
   );
   expect(john).toBeDefined();
 
   johnGnosis.initialize(john);
-  johnDB = mock.makeDB(john.augur, ACCOUNTS);
-  johnConnector.initialize(john.augur, await johnDB);
-  johnAPI = new API(john.augur, johnDB);
-  const bulkSyncStrategy = new BulkSyncStrategy(
-    provider.getLogs,
-    (await johnDB).logFilters.buildFilter,
-    (await johnDB).logFilters.onLogsAdded,
-    john.augur.contractEvents.parseLogs,
-  );
+  johnConnector.initialize(john.augur, john.db);
 
+  Object.defineProperty(john.db.marketDatabase, 'syncing', {
+    get: jest.fn(() => false),
+    set: jest.fn()
+  });
 
   await john.approveCentralAuthority();
 
-  // Create a market
-  const market = await john.createReasonableMarket([
-    stringTo32ByteHex('A'),
-    stringTo32ByteHex('B'),
-  ]);
-  const expirationTimeInSeconds = new BigNumber(Math.round(+new Date() / 1000).valueOf()).plus(10000);
+  await john.repFaucet(new BigNumber(1e20));
 
-  await bulkSyncStrategy.start(0, await john.provider.getBlockNumber());
+  await john.sync();
 
-  // Place first trade
-  await john.placeBasicYesNoZeroXTrade(
-    0,
-    market.address,
-    1,
-    new BigNumber(2000),
-    new BigNumber(0.78),
-    new BigNumber(0),
-    expirationTimeInSeconds
+  // Buy PTs
+  const curDisputeWindowAddress = await john.getOrCreateCurrentDisputeWindow(
+    false
+  );
+  const curDisputeWindow = await john.augur.contracts.disputeWindowFromAddress(
+    curDisputeWindowAddress
+  );
+  const amountParticipationTokens = new BigNumber(1e18);
+  await john.buyParticipationTokens(
+    curDisputeWindow.address,
+    amountParticipationTokens
   );
 
-  await bulkSyncStrategy.start(0, await john.provider.getBlockNumber());
-  let marketData = await (await johnDB).Markets.get(market.address);
-  const firstTradeBlock = marketData.blockNumber;
+  await john.sync();
 
-  // Place a trade on Invalid
-  await john.placeBasicYesNoZeroXTrade(
-    0,
-    market.address,
-    0,
-    new BigNumber(2000),
-    new BigNumber(0.78),
-    new BigNumber(0),
-    expirationTimeInSeconds
+  // Confirm balance
+  let ptBalanceRecord = await john.db.TokenBalanceChangedRollup.get([john.account.publicKey, curDisputeWindowAddress]);
+  let ptBalance = new BigNumber(ptBalanceRecord.balance);
+  await expect(ptBalance).toEqual(amountParticipationTokens);
+
+  // Rollback
+  await john.db.rollback(ptBalanceRecord.blockNumber);
+
+  // Confirm nothing there
+  ptBalanceRecord = await john.db.TokenBalanceChangedRollup.get([john.account.publicKey, curDisputeWindowAddress]);
+  await expect(ptBalanceRecord).toBeFalsy();
+
+  // Buy Pts again. Since we told the DB to rollback but in reality no log removal occured the balance will be 2x
+  await john.buyParticipationTokens(
+    curDisputeWindow.address,
+    amountParticipationTokens
   );
 
-  await bulkSyncStrategy.start(0, await john.provider.getBlockNumber());
+  await john.sync();
 
-  // Sync
-  await bulkSyncStrategy.start(0, await john.provider.getBlockNumber());
-  marketData = await (await johnDB).Markets.get(market.address);
+  ptBalanceRecord = await john.db.TokenBalanceChangedRollup.get([john.account.publicKey, curDisputeWindowAddress]);
+  ptBalance = new BigNumber(ptBalanceRecord.balance);
+  await expect(ptBalance).toEqual(amountParticipationTokens.multipliedBy(2));
 
-  // Confirm the invalidFilter has been set due to this order on the market data
-  await expect(marketData.invalidFilter).toEqual(1);
+  // Rollback second purchase
+  await john.db.rollback(ptBalanceRecord.blockNumber);
 
-  // Now we'll rollback the block this update came in
-  await (await johnDB).rollback(firstTradeBlock);
-
-  marketData = await (await johnDB).Markets.get(market.address);
-
-  // Confirm the invalidFilter has been set due to this order on the market data
-  await expect(marketData.invalidFilter).toEqual(0);
-
-
-  // cleanup
-  meshClient.destroy();
-  stopServer();
+  // Confirm first balance
+  ptBalanceRecord = await john.db.TokenBalanceChangedRollup.get([john.account.publicKey, curDisputeWindowAddress]);
+  ptBalance = new BigNumber(ptBalanceRecord.balance);
+  await expect(ptBalance).toEqual(amountParticipationTokens);
 });
