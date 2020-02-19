@@ -12,6 +12,8 @@ import { loadAccountData } from 'modules/auth/actions/load-account-data';
 import { updateAssets } from 'modules/auth/actions/update-assets';
 import { NetworkId } from '@augurproject/artifacts';
 import { AppState } from 'store';
+import { updateModal } from 'modules/modal/actions/update-modal';
+import { MODAL_ERROR } from 'modules/common/constants';
 
 export const updateSdk = (
   loginAccount: Partial<LoginAccount>,
@@ -64,5 +66,11 @@ export const updateSdk = (
 
   } catch (error) {
     logError(error);
+    dispatch(
+      updateModal({
+        type: MODAL_ERROR,
+        error,
+      })
+    );
   }
 };
