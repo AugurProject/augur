@@ -33,7 +33,6 @@ interface CreateMarketViewProps extends RouteComponentProps<{}> {
     market: NewMarket,
     callback?: NodeStyleCallback
   ) => void;
-  updateNewMarket: (data: NewMarket) => void;
   meta: LoginAccountMeta;
   availableEth?: number;
   availableRep?: number;
