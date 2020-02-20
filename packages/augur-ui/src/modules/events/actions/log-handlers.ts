@@ -90,12 +90,17 @@ const handleAlert = (
     console.error('alert could not be created', e);
   }
 };
-const ORDER_BOOK_REFRESH_MS = 1000;
-const OPEN_ORDERS_REFRESH_MS = 2000;
-const loadOrderBook = _.throttle((dispatch, marketId) => dispatch(loadMarketOrderBook(marketId)), ORDER_BOOK_REFRESH_MS, { leading: true });
-const loadUserOpenOrders = _.throttle(dispatch => dispatch(loadAccountOpenOrders()), OPEN_ORDERS_REFRESH_MS, { leading: true });
+const HIGH_PRI_REFRESH_MS = 1000;
+const MED_PRI_LOAD_REFRESH_MS = 2000;
+const loadOrderBook = _.throttle((dispatch, marketId) => dispatch(loadMarketOrderBook(marketId)), HIGH_PRI_REFRESH_MS, { leading: true });
+const loadUserOpenOrders = _.throttle(dispatch => dispatch(loadAccountOpenOrders()), MED_PRI_LOAD_REFRESH_MS, { leading: true });
+// trailing calls of timeframe
+const loadAccountPositions = _.throttle(dispatch => dispatch(loadAllAccountPositions()), MED_PRI_LOAD_REFRESH_MS, { trailing: true });
+const loadFrozenFunds = _.throttle(dispatch => dispatch(loadAccountOnChainFrozenFundsTotals()), MED_PRI_LOAD_REFRESH_MS, { trailing: true });
 const throttleLoadMarketOrders = (marketId) => dispatch => loadOrderBook(dispatch, marketId);
 const throttleLoadUserOpenOrders = () => dispatch => loadUserOpenOrders(dispatch);
+const throttleLoadAccountPositions = () => dispatch => loadAccountPositions(dispatch);
+const throttleLoadFrozenFunds = () => dispatch => loadFrozenFunds(dispatch);
 
 const updateMarketOrderBook = (marketId: string) => (
   dispatch: ThunkDispatch<void, any, Action>
@@ -276,7 +281,7 @@ export const handleDBMarketCreatedEvent = (event: any) => (
           if (market) {
             dispatch(removePendingDataByHash(market.transactionHash, CREATE_MARKET))
             if (isSameAddress(market.author, getState().loginAccount.address)) {
-              dispatch(loadAccountOnChainFrozenFundsTotals());
+              dispatch(throttleLoadFrozenFunds());
             }
           }
         })
@@ -423,7 +428,7 @@ export const handleTradingProceedsClaimedLog = (
     getState().loginAccount.address
   );
   if (isUserDataUpdate) {
-    dispatch(loadAllAccountPositions());
+    dispatch(throttleLoadAccountPositions());
     const { blockchain } = getState();
     dispatch(
       updateAlert(log.market, {
@@ -488,7 +493,7 @@ export const handleProfitLossChangedLog = (log: Logs.ProfitLossChangedLog) => (
     getState().loginAccount.address
   );
   if (isUserDataUpdate) {
-    dispatch(loadAllAccountPositions());
+    dispatch(throttleLoadAccountPositions());
   }
 };
 
@@ -579,7 +584,7 @@ export const handleMarketFinalizedLog = (log: Logs.MarketFinalizedLog) => (
     positionMarketids.length > 0 &&
     Object.keys(positionMarketids).includes(log.market);
   if (updatePositions) {
-    dispatch(loadAllAccountPositions());
+    dispatch(throttleLoadAccountPositions());
   }
 };
 
