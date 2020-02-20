@@ -22,7 +22,6 @@ import { formatOrderBook } from "modules/create-market/helpers/format-order-book
 
 interface FeesLiquidityProps {
   newMarket: NewMarket;
-  updateNewMarket: Function;
   address: String;
   updatePage: Function;
   clearNewMarket: Function;
