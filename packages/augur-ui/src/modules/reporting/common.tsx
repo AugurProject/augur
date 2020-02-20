@@ -10,6 +10,7 @@ import {
   DISPUTE_GAS_COST,
   INITAL_REPORT_GAS_COST,
   HEADER_TYPE,
+  INVALID_OUTCOME_ID,
 } from 'modules/common/constants';
 import {
   FormattedNumber,
@@ -752,10 +753,8 @@ export class ReportingBondsView extends Component<
       : 'Initial Reporter Stake';
 
     repLabel = openReporting ? 'Open Reporting winning Stake' : repLabel;
-    let showTotal = showInput;
     if (owesRep) {
       repLabel = 'REP needed';
-      showTotal = true;
     }
     const reviewLabel = migrateRep
     ? 'Review REP to migrate'
@@ -770,7 +769,7 @@ export class ReportingBondsView extends Component<
           .formatted;
 
     let buttonDisabled = disabled;
-    if (isScalar && inputScalarOutcome === '') {
+    if (isScalar && inputScalarOutcome === '' && id !== String(INVALID_OUTCOME_ID)) {
       buttonDisabled = true;
     }
     let insufficientRep = '';
