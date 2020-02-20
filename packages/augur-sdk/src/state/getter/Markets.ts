@@ -5,7 +5,7 @@ import { SearchResults } from 'flexsearch';
 import * as t from 'io-ts';
 import * as _ from 'lodash';
 import { OrderBook } from '../../api/Liquidity';
-import { MarketReportingState } from '../../constants';
+import { MarketReportingState, INIT_REPORTING_FEE_DIVISOR } from '../../constants';
 import {
   Augur,
   convertOnChainAmountToDisplayAmount,
@@ -478,9 +478,6 @@ export class Markets {
     params.limit = typeof params.limit === 'undefined' ? 10 : params.limit;
     params.offset = typeof params.offset === 'undefined' ? 0 : params.offset;
 
-    const universe = augur.getUniverse(params.universe);
-    const reportingFeeDivisor = await universe.getOrCacheReportingFeeDivisor_();
-
     // Get Market docs for all markets with the specified filters
     const numMarketDocs = await db.Markets.count();
     let marketIds: string[] = [];
@@ -491,6 +488,9 @@ export class Markets {
       const marketsFTSResults = await getMarketsSearchResults(params.universe, params.search || '', params.categories || [], augur);
       marketIds = _.map(marketsFTSResults, "market");
     }
+
+    const reportingFeeLog = await db.ReportingFeeChanged.where("universe").equals(params.universe).first();
+    const reportingFeeDivisor = new BigNumber(reportingFeeLog ? reportingFeeLog.reportingFee : INIT_REPORTING_FEE_DIVISOR);
 
     // Filter out markets not related to the specified user
     if (params.userPortfolioAddress) {
