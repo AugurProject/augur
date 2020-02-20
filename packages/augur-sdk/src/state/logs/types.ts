@@ -355,6 +355,10 @@ export enum TokenType {
   ParticipationToken,
 }
 
+export interface ReportingFeeChangedLog extends Log {
+  universe: Address;
+  reportingFee: string;
+}
 export interface TokensMinted extends Log {
   universe: Address;
   token: Address;

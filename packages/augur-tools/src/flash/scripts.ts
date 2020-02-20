@@ -2093,6 +2093,7 @@ export function addScripts(flash: FlashSession) {
           GNOSIS_SAFE_CONTRACT_ADDRESS: formatAddress(this.contractAddresses.GnosisSafe, { prefix: true }),
           PROXY_FACTORY_CONTRACT_ADDRESS: formatAddress(this.contractAddresses.ProxyFactory, { prefix: true }),
           ZEROX_CONTRACT_ADDRESS: formatAddress(this.contractAddresses.ZeroXTrade, { lower: true, prefix: false }),
+          SAFE_DEFAULT_TOKEN_ADDRESS: formatAddress(this.contractAddresses.Cash, { lower: true, prefix: true })
         };
 
         if (detach) {
