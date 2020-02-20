@@ -26,6 +26,8 @@ import { makeDbMock, makeProvider } from '../../libs';
 
 const mock = makeDbMock();
 
+const filterRetrievelFn = (ipfs: IPFS) => (ipfsPath:string) => ipfs.cat(ipfsPath).then((item) => item.toString()).then((item) => JSON.parse(item));
+
 describe('WarpController', () => {
   const biggestNumber = new BigNumber(2).pow(256).minus(2);
   let addresses: ContractAddresses;
@@ -70,13 +72,12 @@ describe('WarpController', () => {
     // partially populate db.
     await john.sync(170);
 
-    // I'm just assuming the upload block is 0. Shouldn't
-    // really be a problem that we are grabbing extra blocks.
     warpController = new WarpController(
       john.db,
       ipfs,
       provider,
-      uploadBlockHeaders
+      uploadBlockHeaders,
+      filterRetrievelFn(ipfs),
     );
     firstCheckpointFileHash = await warpController.createAllCheckpoints(
       await provider.getBlock(170)
@@ -357,7 +358,8 @@ describe('WarpController', () => {
         newJohnDB,
         ipfs,
         provider,
-        uploadBlockHeaders
+        uploadBlockHeaders,
+        filterRetrievelFn(ipfs),
       );
       newJohnApi = new API(newJohn.augur, Promise.resolve(newJohnDB));
       warpSyncStrategy = new WarpSyncStrategy(
@@ -369,7 +371,8 @@ describe('WarpController', () => {
         newJohnDB,
         ipfs,
         provider,
-        uploadBlockHeaders
+        uploadBlockHeaders,
+        filterRetrievelFn(ipfs),
       );
       newJohnApi = new API(newJohn.augur, Promise.resolve(newJohnDB));
 

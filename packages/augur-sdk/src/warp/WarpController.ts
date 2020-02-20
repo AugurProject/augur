@@ -102,8 +102,15 @@ export class WarpController {
   constructor(
     private db: DB,
     private ipfs: IPFS,
-    provider: Provider,
+    private provider: Provider,
     private uploadBlockNumber: Block,
+    // This is to simplify swapping out file retrieval mechanism.
+    private _fileRetrievalFn: (ipfsPath: string) => Promise<any> = (
+      ipfsPath: string
+    ) =>
+      fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsPath}`).then(item =>
+        item.json()
+      )
   ) {
     this.checkpoints = new Checkpoints(provider);
   }
@@ -505,7 +512,7 @@ export class WarpController {
   }
 
   getFile(ipfsPath: string) {
-    return this.ipfs.cat(ipfsPath).then((item) => item.toString());
+    return this._fileRetrievalFn(ipfsPath);
   }
 
   async getAvailableCheckpointsByHash(ipfsRootHash: string): Promise<number[]> {
