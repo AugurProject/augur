@@ -333,7 +333,15 @@ export class ZeroXOrders extends AbstractTable {
     }
 
     // No idea why the BigNumber instance returned here just wont serialize to hex
-    const tokenid = new BN(`${ids[0].toString()}`).toHexString().substr(2);
+    let tokenid = new BN(`${ids[0].toString()}`).toHexString().substr(2);
+
+    // Since `id[n]` is a BigNumber, it is possible for the higher order bits
+    // to all be 0. This will result in the tokenid serialization here to be
+    // less than the expected full 32 bytes (64 characters in hex).
+    if (tokenid.length < 64) {
+      tokenid = tokenid.slice(2).padStart(64 - tokenid.length, '0');
+    }
+
     // From ZeroXTrade.sol
     //  assembly {
     //      _market := shr(96, and(_tokenId, 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF000000000000000000000000))
