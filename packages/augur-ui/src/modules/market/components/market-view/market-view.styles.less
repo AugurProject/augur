@@ -381,9 +381,98 @@ section[class*="OutcomesList"] {
 
   > div {
     grid-column: 2;
-    margin: @size-32 @size-8 @size-24;
+    margin: @size-32 0 @size-24;
     max-width: 100%;
     width: 100%;
+
+    button {
+      padding: @size-1 @size-7 @size-2;
+    }
+
+    textarea {
+      margin-left: 0;
+      min-width: 100%;
+    }
+
+    img[class="input_user"] {
+      left: @size-8;
+    }
+
+    div[class="inputPicker"] {
+      right: @size-8;
+    }
+
+    div[class="context"] {
+      justify-content: flex-end;
+
+      > div {
+        .text-14-bold;
+      }
+    }
+
+    div[class="comment_content_context"] {
+      margin-bottom: @size-8;
+    }
+
+    div[class="comment_content_context_main_user_info_username"] {
+      .text-16-bold;
+
+      color: @color-primary-text;
+    }
+
+    div[class="comment_content_context_main_user_info_address"] {
+      .text-14;
+
+      color: @color-secondary-text;
+      padding-bottom: 0;
+    }
+
+    div[class="comment_content_context_main"] {
+
+    }
+
+    div[class="comment_content_context_time"] {
+      .text-10;
+
+      color: @color-secondary-text;
+    }
+
+    div[class="comment_content_text"] {
+      .text-14;
+
+      color: @color-primary-text;
+    }
+
+    div[class*="inlinePicker"] {
+      padding: 0 @size-8;
+    }
+
+    svg, svg[class="comment_content_context_main_user_delete_button_icon"] path {
+      fill: @color-primary-text;
+      opacity: 1;
+    }
+
+    button[class*="vote_btn"]:hover {
+      svg[class*="upvote"] {
+        fill: #005eff;
+      }
+
+      svg[class*="downvote"] {
+        fill: #ff0051;
+      }
+    }
+
+    button[class="comment_content_context_main_user_reply_button"]:hover {
+      svg {
+        fill: @color-dark-text;
+      }
+    }
+
+    button[class="sc-emoji-picker-button"]:hover {
+      svg {
+        fill: @color-dark-text;
+      }
+    }
   }
 }
 
