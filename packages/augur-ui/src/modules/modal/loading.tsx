@@ -53,7 +53,7 @@ export const Loading = ({
       {showHelper && (
         <ModalMetaMaskFinder handleClick={() => setshowHelper(false)} />
       )}
-      {LoadingEllipse}
+      {LoadingEllipse()}
       <div>
         {message}
         { showLearnMore && <ExternalLinkButton URL='https://docs.augur.net/' label={'Learn More'} /> }
