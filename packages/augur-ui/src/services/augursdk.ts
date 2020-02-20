@@ -52,11 +52,9 @@ export class SDK {
     const addresses = getAddressesForNetwork(this.networkId);
 
     this.config = {
-      networkId: this.networkId,
-      ethereum: env['ethereum'],
-      gnosis: env['gnosis'],
-      zeroX: env['zeroX'],
       addresses,
+      ...env,
+      networkId: this.networkId,
     };
 
     const ethersProvider = new EthersProvider(
@@ -66,8 +64,9 @@ export class SDK {
       this.config.ethereum.rpcConcurrency
     );
 
-    if (this.config.sdk && this.config.sdk.enabled) {
+    if (this.config.sdk?.enabled) {
       this.connector = new Connectors.WebsocketConnector();
+      await this.connect(account);
     } else {
       this.connector = new Connectors.SingleThreadConnector();
     }
@@ -90,6 +89,8 @@ export class SDK {
    * @name getOrCreateGnosisSafe
    * @description - Kick off the Gnosis safe creation process for a given wallet address.
    * @param {string} owner - Wallet address
+   * @param networkId
+   * @param affiliate
    * @returns {Promise<void>}
    */
   async getOrCreateGnosisSafe(owner: string, networkId: NetworkId, affiliate: string = NULL_ADDRESS): Promise<void | string> {

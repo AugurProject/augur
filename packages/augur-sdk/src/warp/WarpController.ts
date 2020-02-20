@@ -276,7 +276,7 @@ export class WarpController {
       await this.provider.getBlock(end),
       checkPointIPFSObject
     );
-  }s
+  };
 
   async createCheckpoints(end: Block) {
     let endBlock = (await this.db.warpCheckpoints.getMostRecentCheckpoint())
