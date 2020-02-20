@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import OverviewChart from 'modules/account/components/overview-chart';
 import getProfitLoss from 'modules/positions/actions/get-profit-loss';
 import { ThunkDispatch } from 'redux-thunk';

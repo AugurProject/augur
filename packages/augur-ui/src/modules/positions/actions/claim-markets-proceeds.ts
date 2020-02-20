@@ -8,7 +8,7 @@ import {
   claimMarketsProceeds,
   claimMarketsProceedsEstimateGas,
 } from 'modules/contracts/actions/contractCalls';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { NodeStyleCallback } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';

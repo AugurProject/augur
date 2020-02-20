@@ -2,7 +2,7 @@ import logError from 'utils/log-error';
 import { ThunkDispatch } from 'redux-thunk';
 import { NodeStyleCallback } from 'modules/types';
 import { Action } from 'redux';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { finalizeMarket } from 'modules/contracts/actions/contractCalls';
 
 export const sendFinalizeMarket = (

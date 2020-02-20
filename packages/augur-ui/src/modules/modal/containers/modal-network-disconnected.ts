@@ -2,7 +2,7 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import ModalNetworkDisconnected from "modules/modal/components/modal-network-disconnected";
 import { updateIsReconnectionPaused } from "modules/app/actions/update-connection";
-import { AppState } from "store";
+import { AppState } from "appStore";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 

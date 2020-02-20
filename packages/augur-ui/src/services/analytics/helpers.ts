@@ -1,7 +1,7 @@
 import { analytics } from './analytics';
 import { ThunkDispatch, ThunkAction } from 'redux-thunk';
 import { Action } from 'redux';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { createBigNumber } from 'utils/create-big-number';
 import { Analytic } from 'modules/types';
 import { isLocalHost } from 'utils/is-localhost';

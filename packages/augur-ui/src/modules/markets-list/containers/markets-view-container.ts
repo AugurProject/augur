@@ -11,7 +11,7 @@ import {
   LoadMarketsFilterOptions,
 } from 'modules/markets/actions/load-markets';
 import { buildSearchString } from 'modules/markets/selectors/build-search-string';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { NodeStyleCallback } from 'modules/types';

@@ -21,7 +21,7 @@ import makeQuery from 'modules/routes/helpers/make-query';
 import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names';
 import { addPendingOrder } from 'modules/orders/actions/pending-orders-management';
 import { orderSubmitted } from 'services/analytics/helpers';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { totalTradingBalance } from 'modules/auth/selectors/login-account';
 import { isGnosisUnavailable } from 'modules/app/selectors/gnosis';
 

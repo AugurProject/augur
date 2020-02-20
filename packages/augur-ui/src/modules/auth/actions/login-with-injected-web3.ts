@@ -17,7 +17,7 @@ import { augurSdk } from 'services/augursdk';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import { logout } from 'modules/auth/actions/logout';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 
 // MetaMask, dapper, Mobile wallets
 export const loginWithInjectedWeb3 = () => (

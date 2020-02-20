@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { COLUMN_TYPES, INVALID_OUTCOME_ID, BUY, SELL } from 'modules/common/constants';
 import { selectMarketOutcomeBestBidAsk, selectBestBidAlert } from 'modules/markets/selectors/select-market-outcome-best-bid-ask';
 import Row from 'modules/common/row';

@@ -7,7 +7,7 @@ import {
 import { makeEdgeUiContext } from "edge-login-ui-web";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
-import { AppState } from "store";
+import { AppState } from "appStore";
 
 export const BEGIN_EDGE_LOADING = "BEGIN_EDGE_LOADING";
 export const UPDATE_EDGE_CONTEXT = "UPDATE_EDGE_CONTEXT";

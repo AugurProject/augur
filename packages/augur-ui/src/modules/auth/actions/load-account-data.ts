@@ -8,7 +8,7 @@ import { loadGasPriceInfo } from 'modules/app/actions/load-gas-price-info';
 import { NodeStyleCallback, WindowApp } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { getEthToDaiRate } from 'modules/app/actions/get-ethToDai-rate';
 import { registerUserDefinedGasPriceFunction } from 'modules/app/actions/register-user-defined-gasPrice-function';
 

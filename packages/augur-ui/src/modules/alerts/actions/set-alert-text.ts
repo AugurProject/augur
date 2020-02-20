@@ -47,7 +47,7 @@ import {
   ZERO,
   ONE,
 } from 'modules/common/constants';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { MarketData } from 'modules/types';

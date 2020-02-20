@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 import { LoginAccount, MarketInfos, MarketsList, AccountBalances, ReportingListState } from 'modules/types';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { Getters } from '@augurproject/sdk/build';
 
 export const selectAccountPositionsState = (state: AppState) =>

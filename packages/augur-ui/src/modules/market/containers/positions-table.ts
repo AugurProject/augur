@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { AppState } from "store";
+import { AppState } from "appStore";
 import { MarketPositionsTable } from "modules/portfolio/components/common/market-positions-table";
 import { selectUserMarketPositions } from "modules/markets/selectors/select-user-market-positions";
 

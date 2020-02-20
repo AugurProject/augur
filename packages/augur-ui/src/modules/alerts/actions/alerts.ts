@@ -1,9 +1,9 @@
-import store, { AppState } from 'store';
+import store, { AppState } from 'appStore';
 import setAlertText from 'modules/alerts/actions/set-alert-text';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import makePath from 'modules/routes/helpers/make-path';
 import { TRANSACTIONS } from 'modules/routes/constants/views';
-import { selectCurrentTimestampInSeconds } from 'store/select-state';
+import { selectCurrentTimestampInSeconds } from 'appStore/select-state';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';

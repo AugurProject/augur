@@ -6,7 +6,7 @@ import {
   selectMarketInfosState,
   selectPendingLiquidityOrders,
   selectReadNotificationState,
-} from 'store/select-state';
+} from 'appStore/select-state';
 import { MarketReportingState } from '@augurproject/sdk';
 import {
   CLAIM_REPORTING_FEES_TITLE,
@@ -25,7 +25,7 @@ import {
   ZERO,
 } from 'modules/common/constants';
 import userOpenOrders from 'modules/orders/selectors/user-open-orders';
-import store, { AppState } from 'store';
+import store, { AppState } from 'appStore';
 import { MarketClaimablePositions, MarketReportClaimableContracts, } from 'modules/types';
 import { selectLoginAccountClaimablePositions } from 'modules/positions/selectors/login-account-claimable-winnings';
 import { selectReportingWinningsByMarket } from 'modules/positions/selectors/select-reporting-winnings-by-market';

@@ -5,7 +5,7 @@ import { selectNotifications } from 'modules/notifications/selectors/notificatio
 import { updateReadNotifications } from 'modules/notifications/actions/update-notifications';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { selectMarket } from 'modules/markets/selectors/market';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import {
   MODAL_FINALIZE_MARKET,
   MODAL_CLAIM_MARKETS_PROCEEDS,

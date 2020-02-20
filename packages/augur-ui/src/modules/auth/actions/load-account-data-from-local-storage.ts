@@ -11,7 +11,7 @@ import { loadPendingQueue } from "modules/pending-queue/actions/pending-queue-ma
 import { setSelectedUniverse } from "./selected-universe-management";
 import { ThunkDispatch, ThunkAction } from "redux-thunk";
 import { Action } from "redux";
-import { AppState } from "store";
+import { AppState } from "appStore";
 import { getNetworkId } from "modules/contracts/actions/contractCalls";
 import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
 import { loadAnalytics } from "modules/app/actions/analytics-management";

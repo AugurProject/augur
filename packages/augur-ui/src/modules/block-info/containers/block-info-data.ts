@@ -1,5 +1,5 @@
 import { connect } from "react-redux";
-import { AppState } from "store";
+import { AppState } from "appStore";
 import BlockInfoData from "modules/block-info/block-info-data";
 import { selectBlockInfoData } from "modules/block-info/selectors/block-info-data";
 

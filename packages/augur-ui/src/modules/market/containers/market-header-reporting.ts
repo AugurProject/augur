@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { MarketHeaderReporting } from 'modules/market/components/market-header/market-header-reporting';
 import { sendFinalizeMarket } from 'modules/markets/actions/finalize-market';
-import { selectCurrentTimestampInSeconds } from 'store/select-state';
+import { selectCurrentTimestampInSeconds } from 'appStore/select-state';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import {
   MODAL_CLAIM_MARKETS_PROCEEDS,

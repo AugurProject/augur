@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import * as constants from 'modules/common/constants';
 import Row from 'modules/common/row';
 import { Properties } from 'modules/common/row-column';

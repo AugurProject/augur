@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 
 import { MarketHeaderBar } from 'modules/market/components/market-header/market-header-bar';
 import { toggleFavorite } from 'modules/markets/actions/update-favorites';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 
 const mapStateToProps = (state: AppState, ownProps) => ({
   isLogged: state.authStatus.isLogged,

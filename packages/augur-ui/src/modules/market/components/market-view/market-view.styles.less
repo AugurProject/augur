@@ -181,7 +181,7 @@ section[class*="OutcomesList"] {
     display: flex;
     flex-flow: column nowrap;
     flex: 1;
-    
+
     &:not(.Hide) {
       max-height: 50%;
 
@@ -374,21 +374,16 @@ section[class*="OutcomesList"] {
 }
 
 .Comments {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  align-self: center;
-  justify-content: center;
-  width: calc(100% - 40.625rem);
+  display: grid;
+  margin: @size-4 @size-6;
+  grid-gap: @size-2 @size-4;
+  grid-template-columns: minmax(250px, 325px) minmax(0%, 1fr) minmax(250px, 325px);
 
-  > span {
-    display: none;
-  }
-
-  > div:first-of-type,
-  > div:first-of-type > span,
-  > div:first-of-type > span > iframe {
-    width: 100% !important;
+  > div {
+    grid-column: 2;
+    margin: @size-32 @size-8 @size-24;
+    max-width: 100%;
+    width: 100%;
   }
 }
 
@@ -446,7 +441,7 @@ div.OutcomeNameDisplay {
     display: grid;
     grid-gap: @size-8 0;
     grid-template-rows: min-content;
- 
+
     > h1 {
       .text-14-bold;
 

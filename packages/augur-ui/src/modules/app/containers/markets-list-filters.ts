@@ -10,7 +10,7 @@ import {
 import MarketsListFilters from '../components/inner-nav/markets-list-filters';
 import { TEMPLATE_FILTER } from 'modules/common/constants';
 import { Getters } from '@augurproject/sdk';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 
 const mapStateToProps = (state: AppState) => {
   const { maxFee, maxLiquiditySpread, includeInvalidMarkets, templateFilter } = state.filterSortOptions;

@@ -3,7 +3,7 @@ import {
   BUY, INVALID_OUTCOME_ID, MODAL_ERROR,
 } from "modules/common/constants";
 import logError from "utils/log-error";
-import { AppState } from "store";
+import { AppState } from "appStore";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { placeTrade, approveToTrade } from "modules/contracts/actions/contractCalls";

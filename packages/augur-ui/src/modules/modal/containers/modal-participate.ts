@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { ModalParticipate } from 'modules/modal/components/modal-participate';
 import { purchaseParticipationTokens } from 'modules/reporting/actions/participation-tokens-management';
 import { closeModal } from 'modules/modal/actions/close-modal';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { getGasPrice } from 'modules/auth/selectors/get-gas-price';
