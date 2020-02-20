@@ -964,6 +964,13 @@
 :root[theme="BETTING"] {
   .TextInput {
     > div {
+
+      > input,
+      > textarea {
+        background-color: var(--color-secondary-action);
+        border: @size-1 solid var(--color-dark-grey);
+      }
+
       > div.AutoCompleteList {
         background-color: var(--color-module-background);
         box-shadow: 0 0 @size-4 var(--color-primary-text-15);
