@@ -23,7 +23,7 @@ import {
   convertAttoValueToDisplayValue,
 } from '../../index';
 import { sortOptions } from './types';
-import { MarketReportingState, OrderEventType } from '../../constants';
+import { MarketReportingState, OrderEventType, INIT_REPORTING_FEE_DIVISOR } from '../../constants';
 
 import * as _ from 'lodash';
 import * as t from 'io-ts';
@@ -724,7 +724,7 @@ export class Users {
       ) {
         if (marketData.tentativeWinningPayoutNumerators) {
           const reportingFeeLog = await db.ReportingFeeChanged.where("universe").equals(params.universe).first();
-          const reportingFeeDivisor = new BigNumber(reportingFeeLog.reportingFee);
+          const reportingFeeDivisor = new BigNumber(reportingFeeLog ? reportingFeeLog.reportingFee : INIT_REPORTING_FEE_DIVISOR);
           for (const tentativeWinningPayoutNumerator in marketData.tentativeWinningPayoutNumerators) {
             if (
               marketOutcomeBalances[marketData.market] &&
