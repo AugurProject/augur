@@ -15,15 +15,15 @@
   height: @size-44;
 
   align-items: center;
+  background: var(--color-dark-grey);
+  border: @size-1 solid var(--color-secondary-action);
   box-sizing: border-box;
   border-radius: @border-radius-default;
+  color: var(--color-secondary-text);
   display: flex;
   padding: 0;
   transition: min-width @animation-speed-normal @animation-default-type;
   width: 100%;
-  background: var(--color-dark-grey);
-  border: @size-1 solid var(--color-secondary-action);
-  color: var(--color-secondary-text);
 
   @media @breakpoint-mobile {
     .text-12;
@@ -33,22 +33,22 @@
   }
 
   > svg {
+    fill: var(--color-primary-text);
     margin-left: @size-13;
     height: @size-14;
     width: @size-14;
-    fill: var(--color-primary-text);
   }
 
   > input {
     .text-14;
 
+    border: none;
+    color: var(--color-primary-text);
     line-height: normal;
     padding: 0;
     height: @size-20;
     margin: @size-8 0 @size-10 @size-10;
     text-overflow: ellipsis;
-    border: none;
-    color: var(--color-primary-text);
 
     @media @breakpoint-mobile {
       .text-12;
