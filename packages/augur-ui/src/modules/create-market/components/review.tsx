@@ -41,7 +41,6 @@ import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 
 interface ReviewProps {
   newMarket: NewMarket;
-  updateNewMarket: Function;
   address: string;
   gasPrice: string;
   availableRepFormatted: FormattedNumber;
