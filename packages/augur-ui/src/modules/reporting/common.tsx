@@ -48,6 +48,7 @@ import Styles from 'modules/reporting/common.styles.less';
 import {
   convertDisplayValuetoAttoValue,
   convertAttoValueToDisplayValue,
+  TXEventName,
 } from '@augurproject/sdk';
 import { calculatePosition } from 'modules/market/components/market-scalar-outcome-display/market-scalar-outcome-display';
 import { getRepThresholdForPacing } from 'modules/contracts/actions/contractCalls';
@@ -889,10 +890,11 @@ export interface ReportingCardProps {
   showReportingModal: Function;
   callback: Function;
   isLogged: boolean;
+  reportingStatus?: string;
 }
 
 export const ReportingCard = (props: ReportingCardProps) => {
-  const { market, currentAugurTimestamp, showReportingModal, isLogged } = props;
+  const { market, currentAugurTimestamp, showReportingModal, isLogged, reportingStatus } = props;
 
   if (!market) return null;
 
@@ -900,7 +902,12 @@ export const ReportingCard = (props: ReportingCardProps) => {
 
   const preReporting = reportingState === REPORTING_STATE.PRE_REPORTING;
   const headerType = reportingState === REPORTING_STATE.OPEN_REPORTING && HEADER_TYPE.H2;
-
+  let buttonText = 'Report';
+  if (reportingStatus === TXEventName.Pending) {
+    buttonText = 'Processing...';
+  } else if (reportingStatus === TXEventName.Success) {
+    buttonText = 'Confirmed!';
+  } 
   return (
     <div className={Styles.ReportingCard}>
       <InReportingLabel
@@ -920,9 +927,9 @@ export const ReportingCard = (props: ReportingCardProps) => {
       )}
       <div data-tip data-for={'tooltip--preReporting' + id}>
         <PrimaryButton
-          text="Report"
+          text={buttonText}
           action={showReportingModal}
-          disabled={preReporting || !isLogged}
+          disabled={preReporting || !isLogged || reportingStatus}
         />
         {(preReporting || !isLogged) && (
           <ReactTooltip
