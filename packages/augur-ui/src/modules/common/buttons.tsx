@@ -24,7 +24,7 @@ import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import Styles from 'modules/common/buttons.styles.less';
 import { AppState } from 'store';
 import { MARKET_TEMPLATES } from 'modules/create-market/constants';
-import { Getters } from '@augurproject/sdk/src';
+import { Getters, TXEventName } from '@augurproject/sdk/src';
 import { addCategoryStats } from 'modules/create-market/get-template';
 import ChevronFlip from 'modules/common/chevron-flip';
 import { Link } from 'react-router-dom';
@@ -40,6 +40,7 @@ export interface DefaultButtonProps {
   noIcon?: boolean;
   subText?: string;
   pointDown?: boolean;
+  reportingStatus?: string;
 }
 
 export interface SortButtonProps {
@@ -130,6 +131,22 @@ export const SecondaryButton = (props: DefaultButtonProps) => (
     {props.text}
   </button>
 );
+
+export const ProcessingButton = (props: DefaultButtonProps) => {
+  let buttonText = 'Report';
+  if (props.reportingStatus === TXEventName.Pending) {
+    buttonText = 'Processing...';
+  } else if (props.reportingStatus === TXEventName.Success) {
+    buttonText = 'Confirmed!';
+  } 
+  return (
+    <PrimaryButton
+      text={buttonText}
+      action={e => props.action(e)}
+      disabled={props.disabled || props.reportingStatus}
+    />
+  );
+}
 
 export const PrimarySignInButton = (props: DefaultButtonProps) => (
   <button
