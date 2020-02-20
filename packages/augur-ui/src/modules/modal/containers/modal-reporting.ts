@@ -6,7 +6,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { REPORTING_STATE, MODAL_ADD_FUNDS, REP } from 'modules/common/constants';
 import { formatRep } from 'utils/format-number';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { updateModal } from '../actions/update-modal';
 
 const mapStateToProps = (state: AppState, ownProps) => {

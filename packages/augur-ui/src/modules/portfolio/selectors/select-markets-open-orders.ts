@@ -1,5 +1,5 @@
 import { createSelector } from "reselect";
-import store, { AppState } from "store";
+import store, { AppState } from "appStore";
 import * as constants from "modules/common/constants";
 import { selectMarkets } from "modules/markets/selectors/markets-all";
 import getUserFilledOrders from "modules/orders/selectors/filled-orders";

@@ -9,7 +9,7 @@ import { ACCOUNT_TYPES, NETWORK_IDS } from 'modules/common/constants';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { windowRef } from 'utils/window-ref';
 import { LoginAccount } from 'modules/types';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 
 const getTorusNetwork = (networkId): string => {
   if (networkId === NETWORK_IDS.Mainnet) {

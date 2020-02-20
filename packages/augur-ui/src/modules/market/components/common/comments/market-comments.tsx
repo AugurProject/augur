@@ -41,7 +41,6 @@ export class MarketComments extends Component {
 
     return (
       <section className={Styles.Comments}>
-        3Box Comment Plugin
         {isReady && (
           <Comments
             // required

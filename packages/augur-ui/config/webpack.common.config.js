@@ -40,13 +40,6 @@ module.exports = {
     modules: ["node_modules", PATHS.APP],
     extensions: [".html", ".less", ".json", ".js", ".jsx", ".ts", ".tsx"],
     alias: {
-      assets: path.resolve(PATHS.APP, "assets"),
-      config: path.resolve(PATHS.APP, "config"),
-      modules: path.resolve(PATHS.APP, "modules"),
-      reducers: path.resolve(PATHS.APP, "reducers"),
-      services: path.resolve(PATHS.APP, "services"),
-      store: path.resolve(PATHS.APP, "store"),
-      utils: path.resolve(PATHS.APP, "utils"),
       test: PATHS.TEST,
       assertions: path.resolve(PATHS.TEST, "assertions")
     },
@@ -101,6 +94,17 @@ module.exports = {
           "postcss-loader",
           "less-loader"
         ]
+      },
+      {
+        test: /\.s[ac]ss$/i,
+        use: [
+          // Creates `style` nodes from JS strings
+          'style-loader',
+          // Translates CSS into CommonJS
+          'css-loader',
+          // Compiles Sass to CSS
+          'sass-loader',
+        ],
       },
       {
         test: /\.css$/,

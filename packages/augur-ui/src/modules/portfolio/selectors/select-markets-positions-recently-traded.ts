@@ -1,10 +1,10 @@
 import { createSelector } from "reselect";
-import store from "store";
+import store from "appStore";
 import { getLastTradeTimestamp } from "modules/portfolio/helpers/get-last-trade-timestamp";
 import {
   selectMarketTradingHistoryState,
   selectAccountPositionsState,
-} from "store/select-state";
+} from "appStore/select-state";
 
 export default function() {
   return marketsPositionsRecentlyTraded(store.getState());

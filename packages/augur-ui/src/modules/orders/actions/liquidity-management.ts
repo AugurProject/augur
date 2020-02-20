@@ -4,7 +4,7 @@ import { BUY, MAX_BULK_ORDER_COUNT, ZERO } from 'modules/common/constants';
 import { LiquidityOrder, CreateLiquidityOrders } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import {
   createLiquidityOrder,
   isTransactionConfirmed,

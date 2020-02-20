@@ -2,7 +2,7 @@ import { connect } from "react-redux";
 import { isEmpty } from "utils/is-empty";
 import OrderBook from "modules/market-charts/components/order-book/order-book";
 import { selectMarket } from "modules/markets/selectors/market";
-import { selectCurrentTimestampInSeconds } from "store/select-state";
+import { selectCurrentTimestampInSeconds } from "appStore/select-state";
 import { ASKS, BIDS } from "modules/common/constants";
 import orderAndAssignCumulativeShares from "modules/markets/helpers/order-and-assign-cumulative-shares";
 

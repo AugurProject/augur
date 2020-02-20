@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import Confirm from 'modules/trading/components/confirm';
 import { createBigNumber } from 'utils/create-big-number';
 import { getGasPrice } from 'modules/auth/selectors/get-gas-price';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { totalTradingBalance } from 'modules/auth/selectors/login-account';
 
 const mapStateToProps = (state: AppState, ownProps) => {

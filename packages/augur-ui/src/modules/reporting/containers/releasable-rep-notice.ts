@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import {
   ZERO,
 } from 'modules/common/constants';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { DISMISSABLE_NOTICE_BUTTON_TYPES } from 'modules/reporting/common';
 import { DismissableNotice } from 'modules/reporting/common';
 import { createBigNumber } from 'utils/create-big-number';

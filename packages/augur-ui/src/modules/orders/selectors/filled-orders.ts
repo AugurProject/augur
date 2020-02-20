@@ -1,4 +1,4 @@
-import store from "store";
+import store from "appStore";
 import { createBigNumber } from "utils/create-big-number";
 import { BUY, SELL, ZERO } from "modules/common/constants";
 import { convertUnixToFormattedDate } from "utils/format-date";
@@ -6,7 +6,7 @@ import {
   selectMarketInfosState,
   selectMarketTradingHistoryState,
   selectLoginAccountAddress,
-} from "store/select-state";
+} from "appStore/select-state";
 import createCachedSelector from "re-reselect";
 import { selectUserOpenOrders } from "modules/orders/selectors/user-open-orders";
 import { isSameAddress } from "utils/isSameAddress";

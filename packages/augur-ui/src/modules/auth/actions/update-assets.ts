@@ -7,7 +7,7 @@ import {
   getRepBalance,
   getLegacyRepBalance,
 } from 'modules/contracts/actions/contractCalls';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { ThunkDispatch, ThunkAction } from 'redux-thunk';
 import { Action } from 'redux';
 import { formatAttoRep } from 'utils/format-number';

@@ -10,7 +10,7 @@ import {
 } from 'modules/common/constants';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { selectMarket } from 'modules/markets/selectors/market';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { dateHasPassed } from 'utils/format-date';
 import { DISMISSABLE_NOTICE_BUTTON_TYPES } from 'modules/reporting/common';
 import { DismissableNotice } from 'modules/reporting/common';

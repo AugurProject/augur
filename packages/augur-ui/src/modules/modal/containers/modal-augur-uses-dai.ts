@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { Onboarding } from 'modules/modal/onboarding';
 import { updateModal } from 'modules/modal/actions/update-modal';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { MODAL_BUY_DAI } from 'modules/common/constants';

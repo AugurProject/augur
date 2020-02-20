@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { GnosisSafeState } from '@augurproject/gnosis-relay-api/src/GnosisRelayAPI';
 
 export const selectAuthState = (state: AppState) => state.authStatus;

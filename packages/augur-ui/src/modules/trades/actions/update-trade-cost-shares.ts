@@ -2,7 +2,7 @@ import { createBigNumber } from 'utils/create-big-number';
 import { BUY, ZERO, ZEROX_GAS_FEE } from 'modules/common/constants';
 import logError from 'utils/log-error';
 import { generateTrade } from 'modules/trades/helpers/generate-trade';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { BigNumber } from "bignumber.js";

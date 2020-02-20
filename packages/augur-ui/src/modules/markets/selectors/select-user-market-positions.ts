@@ -2,7 +2,7 @@ import { createSelector } from "reselect";
 import {
   selectAccountPositionsState,
   selectMarketInfosState
-} from "store/select-state";
+} from "appStore/select-state";
 import { positionSummary } from "modules/positions/selectors/positions-summary";
 import { Getters } from "@augurproject/sdk";
 

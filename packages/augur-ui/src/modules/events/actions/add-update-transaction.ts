@@ -1,4 +1,4 @@
-import store, { AppState } from 'store';
+import store, { AppState } from 'appStore';
 import {
   addCanceledOrder,
   removeCanceledOrder,

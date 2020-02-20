@@ -26,7 +26,7 @@ import {
   SIGNIN_LOADING_TEXT,
 } from 'modules/common/constants';
 import { windowRef } from 'utils/window-ref';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { EnvObject, NodeStyleCallback, WindowApp } from 'modules/types';

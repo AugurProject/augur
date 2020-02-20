@@ -1,4 +1,4 @@
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { Action } from 'redux';
 import { ThunkDispatch, ThunkAction } from 'redux-thunk';
 import { uniswapEthForDaiRate } from 'modules/contracts/actions/contractCalls';

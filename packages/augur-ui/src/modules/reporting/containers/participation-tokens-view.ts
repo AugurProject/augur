@@ -4,7 +4,7 @@ import { updateModal } from 'modules/modal/actions/update-modal';
 import { MODAL_CLAIM_FEES, MODAL_PARTICIPATE, ZERO } from 'modules/common/constants';
 import { formatAttoDai, formatAttoRep, formatPercent, } from 'utils/format-number';
 import { createBigNumber } from 'utils/create-big-number';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 
 const mapStateToProps = (state: AppState) => {
   const isLoggedIn = state.authStatus.isLogged;

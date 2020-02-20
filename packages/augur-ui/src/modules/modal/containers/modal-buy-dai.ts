@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 import { Onboarding } from 'modules/modal/onboarding';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import { updateModal } from 'modules/modal/actions/update-modal';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { MODAL_ADD_FUNDS, MODAL_TEST_BET } from 'modules/common/constants';

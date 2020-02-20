@@ -3,7 +3,7 @@ import { Getters } from '@augurproject/sdk';
 import {
   selectLoginAccountReportingState,
   selectLoginAccountBalancesState,
-} from 'store/select-state';
+} from 'appStore/select-state';
 import { AccountBalances } from 'modules/types';
 import {
   formatAttoRep,

@@ -14,7 +14,7 @@ import {
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { windowRef } from 'utils/window-ref';
 import { updateModal } from 'modules/modal/actions/update-modal';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 
 const getPortisNetwork = (networkId): false | string | INetwork => {
   const myPrivateEthereumNode = {
