@@ -95,7 +95,6 @@ Running on the "kovan" testnet
 |  `yarn docker:geth:pop`               |  5 second block times, fake time, use flash scripts to move time . |
 |  `yarn docker:geth:pop-normal-time`   |  5 second block times, real time, has contracts and canned market data. |
 |  `yarn docker:geth`                   |  5 second block times, blank image with no contracts uploaded. <br><br>Use `deploy` script from `augur-tools` to manually deploy the contracts. <br/>```yarn tools deploy``` <br><br> See [Augur Tools](packages/augur-tools) for more information.|
-|  `yarn docker:gnosis`                 |  Local Gnosis relayer for local development work. |
 
 ## Gnosis Development
 

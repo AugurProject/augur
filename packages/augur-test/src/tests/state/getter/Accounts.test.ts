@@ -308,8 +308,7 @@ describe('State API :: Accounts :: ', () => {
         fee: '0',
         marketDescription: 'Categorical market description',
         outcome: 1,
-        outcomeDescription: 'A'.padEnd(32, '\u0000'),
-
+        outcomeDescription: 'A',
         price: '0.22',
         quantity: '30',
         total: '23.4',
@@ -321,7 +320,7 @@ describe('State API :: Accounts :: ', () => {
         fee: '0',
         marketDescription: 'Categorical market description',
         outcome: 2,
-        outcomeDescription: 'B'.padEnd(32, '\u0000'),
+        outcomeDescription: 'B',
         price: '0.22',
         quantity: '30',
         total: '23.4',

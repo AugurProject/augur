@@ -987,7 +987,7 @@ function getMarketOutcomes(
     });
     for (let i = 0; i < marketData.outcomes.length; i++) {
       const ordersFilled = parsedOrderEventLogs.filter((parsedOrderEventLog) => parsedOrderEventLog.outcome === '0x0' + (i + 1) );
-      const outcomeDescription = marketData.outcomes[i].replace('0x', '');
+      const outcomeDescription = marketData.outcomes[i];
       outcomes.push({
         id: i + 1,
         price:
@@ -998,7 +998,7 @@ function getMarketOutcomes(
             tickSize
             ).toString(10)
             : null,
-        description: Buffer.from(outcomeDescription, 'hex').toString().trim(),
+        description: outcomeDescription,
         volume: marketData.outcomeVolumes ? new BigNumber(marketData.outcomeVolumes[i + 1]).toString(10) : '0',
       });
     }
