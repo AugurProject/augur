@@ -29,7 +29,7 @@ describe('LogFilterAggregator', () => {
       logIndex: 1,
       address: CONTRACT_ADDRESSES[1],
       data: '',
-      name: '',
+      name: 'SomeEvent',
       removed: false,
       topics: ['0xSOMETOPIC'],
       transactionHash: 'HASHONE',
@@ -41,7 +41,7 @@ describe('LogFilterAggregator', () => {
       logIndex: 2,
       address: CONTRACT_ADDRESSES[1],
       data: '',
-      name: '',
+      name: 'SomeOtherEvent',
       removed: false,
       topics: ['0xSOMEOTHERTOPIC'],
       transactionHash: 'HASHTWO',
@@ -53,7 +53,7 @@ describe('LogFilterAggregator', () => {
       logIndex: 3,
       address: CONTRACT_ADDRESSES[0],
       data: '',
-      name: '',
+      name: 'SomeOtherEventWeAreNotListeningFor',
       removed: false,
       topics: ['0xSOMEOTHERTOPICWEARENOTLISTENINGFOR'],
       transactionHash: 'HASHTHREE',
@@ -65,7 +65,7 @@ describe('LogFilterAggregator', () => {
       logIndex: 3,
       address: CONTRACT_ADDRESSES[0],
       data: '',
-      name: '',
+      name: 'SomeOtherEvent',
       removed: false,
       topics: ['0xSOMEOTHERTOPIC'],
       transactionHash: 'HASHFOUR',
@@ -125,11 +125,11 @@ describe('LogFilterAggregator', () => {
 
       test('should filter logs passed to listeners', async () => {
         await logFilterAggregator.onLogsAdded(1234, sampleLogs);
-        expect(onNewLogCallback).toBeCalledWith(1234, [
+        expect(onNewLogCallback).toBeCalledWith(1234, expect.arrayContaining([
           expect.objectContaining({
             transactionHash: 'HASHONE',
           }),
-        ]);
+        ]));
       });
     });
 
@@ -143,60 +143,56 @@ describe('LogFilterAggregator', () => {
 
       test('should filter logs passed to listeners', async () => {
         await logFilterAggregator.onLogsAdded(1234, sampleLogs);
-        expect(onNewLogCallback).toBeCalledWith(1234, [
+        expect(onNewLogCallback).toBeCalledWith(1234, expect.arrayContaining([
           expect.objectContaining({
-            transactionHash: 'HASHONE',
+            transactionHash: 'HASHFOUR',
           }),
           expect.objectContaining({
             transactionHash: 'HASHTWO',
           }),
-        ]);
+          expect.objectContaining({
+            transactionHash: 'HASHONE',
+          }),
+        ]));
       });
     });
 
     describe('Subscribe to all logs', () => {
-      beforeEach(() => {
-        logFilterAggregator.listenForAllEvents(onNewLogCallback);
-      });
-
       test('should pass logs to callback for single filter', async () => {
-        logFilterAggregator.listenForEvent('SomeEvent', jest.fn());
+        logFilterAggregator.listenForEvent('SomeEvent', onNewLogCallback);
 
         await logFilterAggregator.onLogsAdded(1234, sampleLogs);
 
         // This will only include the logs we have callbacks registered for.
-        expect(onNewLogCallback).toHaveBeenCalledWith(1234, [
-          expect.objectContaining({
-            transactionHash: 'HASHTWO',
-          }),
+        expect(onNewLogCallback).toHaveBeenCalledWith(1234, expect.arrayContaining([
           expect.objectContaining({
             transactionHash: 'HASHONE',
           }),
-        ]);
+        ]));
       });
 
       test('should pass logs to callback for multiple filters', async () => {
         // Calling same callback twice to ensure order.
         logFilterAggregator.listenForEvent('SomeEvent', onNewLogCallback);
-        logFilterAggregator.listenForEvent('SomeOtherEvent', jest.fn());
+        logFilterAggregator.listenForEvent('SomeOtherEvent', onNewLogCallback);
 
         await logFilterAggregator.onLogsAdded(1234, sampleLogs);
 
-        expect(onNewLogCallback).toHaveBeenNthCalledWith(1, 1234, [
+        expect(onNewLogCallback).toHaveBeenNthCalledWith(1, 1234, expect.arrayContaining([
           expect.objectContaining({
             transactionHash: 'HASHONE',
           }),
-        ]);
+        ]));
 
-        // "All logs"
-        expect(onNewLogCallback).toHaveBeenNthCalledWith(2, 1234, [
+        // "Second filter"
+        expect(onNewLogCallback).toHaveBeenNthCalledWith(2, 1234, expect.arrayContaining([
           expect.objectContaining({
             transactionHash: 'HASHTWO',
           }),
           expect.objectContaining({
-            transactionHash: 'HASHONE',
+            transactionHash: 'HASHFOUR',
           }),
-        ]);
+        ]));
       });
     });
   });
