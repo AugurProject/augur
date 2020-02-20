@@ -159,6 +159,8 @@ export const SECONDS_IN_A_YEAR = new BigNumber(SECONDS_IN_A_DAY).multipliedBy(36
 
 export const GENESIS = 'Genesis';
 
+export const DEFAULT_REPORTING_FEE_DIVISOR = '100';
+
 export enum MarketReportingStateByNum {
   'PreReporting',
   'DesignatedReporting',
