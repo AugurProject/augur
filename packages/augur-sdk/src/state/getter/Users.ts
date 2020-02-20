@@ -20,9 +20,10 @@ import {
   numTicksToTickSize,
   convertOnChainAmountToDisplayAmount,
   convertOnChainPriceToDisplayPrice,
+  convertAttoValueToDisplayValue,
 } from '../../index';
 import { sortOptions } from './types';
-import { MarketReportingState, OrderEventType } from '../../constants';
+import { MarketReportingState, OrderEventType, INIT_REPORTING_FEE_DIVISOR } from '../../constants';
 
 import * as _ from 'lodash';
 import * as t from 'io-ts';
@@ -713,7 +714,7 @@ export class Users {
         new BigNumber(tokenBalanceChangedLog.outcome).toNumber()
       ] = tokenBalanceChangedLog.balance;
     }
-    // Set unclaimedProceeds & unclaimedProfit
+
     for (const marketData of marketsData) {
       marketTradingPositions[marketData.market].unclaimedProceeds = '0';
       marketTradingPositions[marketData.market].unclaimedProfit = '0';
@@ -722,13 +723,15 @@ export class Users {
         marketData.reportingState === MarketReportingState.AwaitingFinalization
       ) {
         if (marketData.tentativeWinningPayoutNumerators) {
+          const reportingFeeLog = await db.ReportingFeeChanged.where("universe").equals(params.universe).first();
+          const reportingFeeDivisor = new BigNumber(reportingFeeLog ? reportingFeeLog.reportingFee : INIT_REPORTING_FEE_DIVISOR);
           for (const tentativeWinningPayoutNumerator in marketData.tentativeWinningPayoutNumerators) {
             if (
               marketOutcomeBalances[marketData.market] &&
               marketData.tentativeWinningPayoutNumerators[
                 tentativeWinningPayoutNumerator
               ] !== '0x00' &&
-              marketOutcomeBalances[marketData.market][
+              !!marketOutcomeBalances[marketData.market][
                 tentativeWinningPayoutNumerator
               ]
             ) {
@@ -737,54 +740,39 @@ export class Users {
                   tentativeWinningPayoutNumerator
                 ]
               );
-              const reportingFeeDivisor = marketData.feeDivisor;
-              const reportingFee = new BigNumber(
-                tokenBalanceChangedLogs[0].balance
-              ).div(reportingFeeDivisor);
-              const unclaimedProceeds = numShares
+              const ONE = new BigNumber(1);
+              const feePercentage = ONE.div(new BigNumber(marketData.feeDivisor)).plus(ONE.div(new BigNumber(reportingFeeDivisor)));
+              const shareValue = convertAttoValueToDisplayValue(numShares
                 .times(
                   marketData.tentativeWinningPayoutNumerators[
                     tentativeWinningPayoutNumerator
                   ]
-                )
-                .minus(marketData.feePerCashInAttoCash)
-                .minus(reportingFee);
-
+                ));
+              const feeAmount = shareValue.times(feePercentage);
+              const unclaimedProceeds = shareValue.minus(feeAmount);
               marketTradingPositions[
                 marketData.market
               ].unclaimedProceeds = new BigNumber(
                 marketTradingPositions[marketData.market].unclaimedProceeds
               )
                 .plus(unclaimedProceeds)
-                .toString();
+                .toFixed(2);
               marketTradingPositions[
                 marketData.market
               ].unclaimedProfit = new BigNumber(unclaimedProceeds)
                 .minus(
                   new BigNumber(
                     marketTradingPositions[marketData.market].unrealizedCost
-                  ).times(QUINTILLION)
+                  )
                 )
-                .toString();
+                .toFixed(2);
             }
           }
         }
       }
     }
-    // Format unclaimedProceeds & unclaimedProfit to Dai with 2 decimal places
+
     for (const marketData of marketsData) {
-      marketTradingPositions[
-        marketData.market
-      ].unclaimedProceeds = new BigNumber(
-        marketTradingPositions[marketData.market].unclaimedProceeds
-      )
-        .dividedBy(QUINTILLION)
-        .toFixed(2);
-      marketTradingPositions[marketData.market].unclaimedProfit = new BigNumber(
-        marketTradingPositions[marketData.market].unclaimedProfit
-      )
-        .dividedBy(QUINTILLION)
-        .toFixed(2);
       marketTradingPositions[
         marketData.market
       ].userSharesBalances = marketOutcomeBalances[marketData.market]
