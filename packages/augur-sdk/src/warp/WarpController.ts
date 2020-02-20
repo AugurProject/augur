@@ -132,9 +132,9 @@ export class WarpController {
       return;
     }
 
-    // Presumably we would report here.
+    await this.createAllCheckpoints(newBlock);
 
-    this.createAllCheckpoints(newBlock);
+    // Presumably we would report here.
   };
 
   async createInitialCheckpoint() {
@@ -156,8 +156,8 @@ export class WarpController {
 
     // For reproducibility we need hash consistent block number ranges for each warp sync.
     const [
-      begin,
-      end,
+      beginBlock,
+      endBlock,
     ] = await this.db.warpCheckpoints.getCheckpointBlockRange();
 
     const topLevelDirectory = new DAGNode(
@@ -185,7 +185,7 @@ export class WarpController {
       const [links, r] = await this.addDBToIPFS(
         this.db[databaseName]
           .where('blockNumber')
-          .between(begin.number, end.number, true, true),
+          .between(beginBlock.number, endBlock.number, true, true),
         databaseName
       );
       indexFileLinks = [...indexFileLinks, ...links];
@@ -224,6 +224,10 @@ export class WarpController {
     );
 
     console.log('checkpoint', d.toString());
+
+    // Add checkpoint to db.
+    await this.db.warpSync.createCheckpoint(beginBlock, endBlock, d.toString());
+
     return d.toString();
   }
 
@@ -576,6 +580,10 @@ export class WarpController {
       console.error(e);
       return false;
     }
+  }
+
+  async getMostRecentWarpSync() {
+    return this.db.warpSync.getMostRecentWarpSync();
   }
 
   async getMostRecentCheckpoint() {
