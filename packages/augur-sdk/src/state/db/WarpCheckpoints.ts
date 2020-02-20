@@ -2,7 +2,7 @@ import { Block } from 'ethers/providers';
 import { AbstractTable } from './AbstractTable';
 import { DB } from './DB';
 
-interface IpfsInfo {
+export interface IpfsInfo {
   Name: string,
   Hash: string,
   Size: 0,

@@ -29,7 +29,6 @@ const mock = makeDbMock();
 const filterRetrievelFn = (ipfs: IPFS) => (ipfsPath:string) => ipfs.cat(ipfsPath).then((item) => item.toString()).then((item) => JSON.parse(item));
 
 describe('WarpController', () => {
-  const biggestNumber = new BigNumber(2).pow(256).minus(2);
   let addresses: ContractAddresses;
   let dependencies: ContractDependenciesEthers;
   let ipfs;
@@ -160,18 +159,13 @@ describe('WarpController', () => {
       const beginBlock = await provider.getBlock(targetBeginNumber);
       const endBlock = await provider.getBlock(targetEndNumber);
       const hash = await warpController.createCheckpoint(
-        beginBlock,
-        endBlock,
-      );
-
-      console.log(
-        'await ipfs.cat(`${hash.Hash}`)',
-        (await ipfs.cat(`${hash.Hash}`)).toString()
+        targetBeginNumber,
+        targetEndNumber,
       );
 
       const result = JSON.parse(
         (await ipfs.cat(`${hash.Hash}`)).toString()
-      ).map(item => item.blockNumber);
+      )['logs'].map(item => item.blockNumber);
 
       expect(Math.min(...result)).toEqual(targetBeginNumber);
       expect(Math.max(...result)).toEqual(targetEndNumber);
@@ -457,6 +451,12 @@ describe('WarpController', () => {
             universe: addresses.Universe,
           })
         ).resolves.toEqual(rolledbackFixtureMarketList);
+      });
+
+      test('should populate checkpoint db', async () => {
+        // populate db.
+        const blockNumber = await warpSyncStrategy.start(secondCheckpointFileHash);
+        await expect(newJohnDB.warpCheckpoints.table.toArray()).resolves.toEqual(await john.db.warpCheckpoints.table.toArray());
       });
     });
   });
