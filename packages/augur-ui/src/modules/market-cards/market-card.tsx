@@ -238,7 +238,7 @@ export default class MarketCard extends React.Component<
       <div
         className={classNames(Styles.MarketCard, {
           [Styles.Loading]: loading,
-          [Styles.Nonexpanding]: !expandedOptionShowing,
+          [Styles.Nonexpanding]: !expandedOptionShowing || condensed,
           [Styles.Condensed]: condensed,
         })}
       >
