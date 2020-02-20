@@ -91,9 +91,9 @@ export function convertDisplayValuetoAttoValue(
 }
 
 export function convertAttoValueToDisplayValue(
-  displayValue: BigNumber
+  attoValue: BigNumber
 ): BigNumber {
-  return displayValue.dividedBy(QUINTILLION);
+  return attoValue.dividedBy(QUINTILLION);
 }
 
 export function compareObjects(key: string, order: string) {
