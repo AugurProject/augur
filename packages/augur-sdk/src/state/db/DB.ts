@@ -177,8 +177,8 @@ export class DB {
     // last-synced block (in case of restarting after a crash)
     const startSyncBlockNumber = await this.getSyncStartingBlock();
     if (startSyncBlockNumber > this.syncStatus.defaultStartSyncBlockNumber) {
-      console.log('Performing rollback of block ' + startSyncBlockNumber + ' onward');
-      await this.rollback(startSyncBlockNumber);
+      console.log('Performing rollback of block ' + (startSyncBlockNumber - 1) + ' onward');
+      await this.rollback(startSyncBlockNumber - 1);
     }
 
     return this;
@@ -232,7 +232,7 @@ export class DB {
         genericEventDBDescription.EventName));
     }
 
-    return Math.min(...highestSyncBlocks);
+    return Math.min(...highestSyncBlocks) + 1;
   }
 
   /**
