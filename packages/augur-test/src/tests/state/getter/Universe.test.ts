@@ -170,7 +170,7 @@ describe('State API :: Universe :: ', () => {
           payoutNumerators: ['100', '0', '0', '0', '0'],
         },
         {
-          outcomeName: 'foo'.padEnd(32, '\0'),
+          outcomeName: 'foo',
           outcome: '1',
           amount: '1000000000000000000000',
           payoutNumerators: ['0', '100', '0', '0', '0'],
