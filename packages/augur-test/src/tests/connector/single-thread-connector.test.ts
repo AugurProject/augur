@@ -13,6 +13,7 @@ import { ACCOUNTS, defaultSeedPath, loadSeedFile } from '@augurproject/tools';
 import { TestContractAPI } from '@augurproject/tools';
 import { BigNumber } from 'bignumber.js';
 import { makeProvider } from '../../libs';
+import * as _ from 'lodash';
 
 let connector: SingleThreadConnector;
 let provider: EthersProvider;
@@ -72,23 +73,23 @@ test('SingleThreadConnector :: Should route correctly and handle events, extraIn
   });
 
   await connector.on(
-    SubscriptionEventName.MarketCreated,
-    async (arg: MarketCreated): Promise<void> => {
-      console.log('SubscriptionEventName.MarketCreated',
-        SubscriptionEventName.MarketCreated);
-
-      expect(arg).toHaveProperty(
-        'extraInfo',
-        '{"categories": ["yesNo category 1", "yesNo category 2"], "description": "yesNo description 1", "longDescription": "yesNo longDescription 1"}'
-      );
-
-      const getMarkets = connector.bindTo(Markets.getMarkets);
-      const marketList = await getMarkets({
-        universe: john.augur.contracts.universe.address,
+    SubscriptionEventName.DBMarketCreatedEvent,
+    async (event: any): Promise<void> => {
+      console.log('SubscriptionEventName.DBMarketCreatedEvent',
+        SubscriptionEventName.DBMarketCreatedEvent);
+      const marketIds = _.map(event.data, 'market');
+      const getMarketsInfo = connector.bindTo(Markets.getMarketsInfo);
+      const marketList = await getMarketsInfo({
+        marketIds
       });
-      expect(marketList.markets[0].id).toEqual(yesNoMarket1.address);
 
-      await connector.off(SubscriptionEventName.MarketCreated);
+      expect(marketList[0].categories[0]).toEqual("yesNo category 1".toLowerCase());
+      expect(marketList[0].categories[1]).toEqual("yesNo category 2".toLowerCase());
+      expect(marketList[0].description).toEqual("yesNo description 1");
+      expect(marketList[0].details).toEqual("yesNo longDescription 1");
+      expect(marketList[0].id).toEqual(yesNoMarket1.address);
+
+      await connector.off(SubscriptionEventName.DBMarketCreatedEvent);
       expect(connector.subscriptions).toEqual({});
       done();
     }
