@@ -34,7 +34,6 @@ describe('LogFilterAggregator', () => {
       topics: ['0xSOMETOPIC'],
       transactionHash: 'HASHONE',
       transactionIndex: 1,
-      transactionLogIndex: 1,
     },
     {
       blockHash: 'HASH-1234',
@@ -47,7 +46,6 @@ describe('LogFilterAggregator', () => {
       topics: ['0xSOMEOTHERTOPIC'],
       transactionHash: 'HASHTWO',
       transactionIndex: 2,
-      transactionLogIndex: 2,
     },
     {
       blockHash: 'HASH-1234',
@@ -60,7 +58,6 @@ describe('LogFilterAggregator', () => {
       topics: ['0xSOMEOTHERTOPICWEARENOTLISTENINGFOR'],
       transactionHash: 'HASHTHREE',
       transactionIndex: 3,
-      transactionLogIndex: 3,
     },
     {
       blockHash: 'HASH-1234',
@@ -73,7 +70,6 @@ describe('LogFilterAggregator', () => {
       topics: ['0xSOMEOTHERTOPIC'],
       transactionHash: 'HASHFOUR',
       transactionIndex: 4,
-      transactionLogIndex: 4,
     },
   ];
 
@@ -94,7 +90,6 @@ describe('LogFilterAggregator', () => {
         blockNumber: log.blockNumber,
         transactionIndex: log.transactionIndex || 0,
         transactionHash: log.transactionHash,
-        transactionLogIndex: 1,
         logIndex: 1,
         removed: false,
       }))
@@ -102,21 +97,11 @@ describe('LogFilterAggregator', () => {
 
     deps = {
       getEventTopics: jest.fn(),
-      getEventContractAddress: jest.fn(),
       parseLogs,
     };
 
     logFilterAggregator = new LogFilterAggregator(deps);
 
-    deps.getEventContractAddress.mockImplementation(
-      (eventName: string): string => {
-        if (eventName === 'SomeTopicFromAnotherAddress') {
-          return CONTRACT_ADDRESSES[0];
-        } else {
-          return CONTRACT_ADDRESSES[1];
-        }
-      }
-    );
     deps.getEventTopics.mockImplementation(eventName => {
       return {
         SomeTopicFromAnotherAddress: ['0xSOMETOPICFROMANOTHERADDRESS'],
@@ -124,44 +109,6 @@ describe('LogFilterAggregator', () => {
         SomeOtherEvent: ['0xSOMEOTHERTOPIC'],
         SomeEventWithoutLogs: ['0xSOMETOPICWITHOUTLOGS'],
       }[eventName];
-    });
-  });
-
-  describe('buildFilter', () => {
-    test('no filters', async () => {
-      expect(logFilterAggregator.buildFilter()).toEqual({
-        address: [],
-        topics: [],
-      } as ExtendedFilter);
-    });
-
-    test('single contract, multiple filters', () => {
-      logFilterAggregator.listenForEvent('SomeEvent', jest.fn());
-      logFilterAggregator.listenForEvent('SomeOtherEvent', jest.fn());
-      expect(logFilterAggregator.buildFilter()).toEqual({
-        address: [(CONTRACT_ADDRESSES[1]).toLowerCase()],
-        topics: [['0xSOMETOPIC', '0xSOMEOTHERTOPIC']],
-      } as ExtendedFilter);
-    });
-
-    test('single listener, multiple contracts', () => {
-      logFilterAggregator.listenForEvent(
-        ['SomeTopicFromAnotherAddress', 'SomeEvent'],
-        jest.fn()
-      );
-
-      expect(logFilterAggregator.buildFilter()).toEqual({
-        address: [
-          (CONTRACT_ADDRESSES[0]).toLowerCase(),
-          (CONTRACT_ADDRESSES[1]).toLowerCase(),
-        ],
-        topics: [
-          [
-            '0xSOMETOPICFROMANOTHERADDRESS',
-            '0xSOMETOPIC',
-          ],
-        ],
-      } as ExtendedFilter);
     });
   });
 

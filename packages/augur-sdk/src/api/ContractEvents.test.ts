@@ -29,59 +29,6 @@ function makeProviderMock(opts?: any): Provider {
   };
 }
 
-test('get logs', async () => {
-  const logs: Log[] = [{
-    name: 'fake',
-    blockNumber: 19,
-    address: '0xthere',
-    data: 'some data',
-    topics: ['some topic'],
-    blockHash: '0x123',
-    logIndex: 2,
-    removed: false,
-    transactionHash: '0x9876',
-    transactionIndex: 3,  // not specified in logValues
-    transactionLogIndex: 0,
-  }];
-  const logValues: LogValues = {
-    name: 'joy',
-    blockNumber: 12,
-    address: '0xthere',
-    data: 'other data',
-    topics: ['some topic', 'another topic'],
-    blockHash: '0x4444',
-    logIndex: 22,
-    removed: true,
-    transactionHash: '0x7777',
-    transactionLogIndex: 4,  // not specified in log but could be
-    fakeValueIMadeUp: 'ddr3',  // not specified in log and cannot be
-  };
-  const provider = makeProviderMock({ logs, logValues });
-  const contractEvents = new ContractEvents(provider, '0x0', '0x0', '0xthere', '0x0');
-
-  const eventName = 'some event name';
-  const fromBlock = 0;
-  const toBlock = 42;
-
-  const eventLogs = await contractEvents.getLogs(eventName, fromBlock, toBlock);
-  expect(eventLogs).toEqual([
-    {
-      name: 'joy',
-      blockNumber: 19,
-      address: '0xthere',
-      data: 'other data',
-      topics: ['some topic'],
-      blockHash: '0x123',
-      logIndex: 2,
-      removed: false,
-      transactionHash: '0x9876',
-      transactionIndex: 3,
-      transactionLogIndex: 0,  // value comes only from `log` despite `logValues` specifying it
-      fakeValueIMadeUp: 'ddr3',  // `log` only overwrites certain predefined values, which this is not one of
-    },
-  ]);
-});
-
 test('get event topics', async () => {
   const eventTopic = 'foobarington';
   const provider = makeProviderMock({ eventTopic });
@@ -90,44 +37,4 @@ test('get event topics', async () => {
   const topics = await contractEvents.getEventTopics('foobar');
 
   expect(topics).toEqual([eventTopic]);
-});
-
-test('throw error if getting log for address that is not registered', async () => {
-  const logs: Log[] = [{
-    name: 'fake',
-    blockNumber: 19,
-    address: '0xbadbadbadbad',
-    data: 'some data',
-    topics: ['some topic'],
-    blockHash: '0x123',
-    logIndex: 2,
-    removed: false,
-    transactionHash: '0x9876',
-    transactionIndex: 3,  // not specified in logValues
-    transactionLogIndex: 0,
-  }];
-  const logValues: LogValues = {
-    name: 'joy',
-    blockNumber: 12,
-    address: '0xbadbadbadbad',
-    data: 'other data',
-    topics: ['some topic', 'another topic'],
-    blockHash: '0x4444',
-    logIndex: 22,
-    removed: true,
-    transactionHash: '0x7777',
-    transactionLogIndex: 4,  // not specified in log but could be
-    fakeValueIMadeUp: 'ddr3',  // not specified in log and cannot be
-  };
-  const provider = makeProviderMock({ logs, logValues });
-
-  const contractEvents = new ContractEvents(provider, '0x0', '0x0', '0x0', '0x0');
-  const eventName = 'fake';
-  const fromBlock = 0;
-  const toBlock = 42;
-
-  expect.assertions(1);
-  await expect(contractEvents.getLogs(eventName, fromBlock, toBlock)).rejects.toEqual(new Error(
-    `Recieved a log for an unknown contract at address ${logs[0].address}. Double check that deployment is up to date and new ABIs have been committed.`
-  ));
 });
