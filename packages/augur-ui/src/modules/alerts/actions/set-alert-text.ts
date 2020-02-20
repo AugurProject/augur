@@ -331,8 +331,9 @@ export default function setAlertText(alert: any, callback: Function) {
         const payoutNums = convertPayoutNumeratorsToStrings(
           alert.params._payoutNumerators || alert.params.payoutNumerators
         );
+        const amountStaked = alert.params.amountStaked && convertAttoValueToDisplayValue(createBigNumber(alert.params.amountStaked)).toString()
         const repAmount = formatRep(
-          createBigNumber(
+          amountStaked ? amountStaked : createBigNumber(
             alert.params.preFilled
               ? alert.params._additionalStake
               : alert.params._amount
