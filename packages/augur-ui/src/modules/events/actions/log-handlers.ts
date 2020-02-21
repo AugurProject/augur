@@ -11,7 +11,6 @@ import {
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info';
 import {
   loadMarketTradingHistory,
-  loadUserFilledOrders,
 } from 'modules/markets/actions/market-trading-history-management';
 import { updateAssets } from 'modules/auth/actions/update-assets';
 import { loadAccountOpenOrders } from 'modules/orders/actions/load-account-open-orders';
@@ -408,7 +407,6 @@ export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
     dispatch(
       orderFilled(marketId, log, isSameAddress(log.orderCreator, address))
     );
-    dispatch(loadUserFilledOrders(marketId));
     dispatch(throttleLoadUserOpenOrders());
     handleAlert(log, PUBLICFILLORDER, true, dispatch, getState);
   }

@@ -170,14 +170,17 @@ export interface ProfitLossResult {
   total: string;
 }
 
-export interface UserAccountDataResult {
-  userTradeHistory: MarketTradingHistory;
+export interface UserAccountDataResult extends UserPositionsPlusResult {
   marketTradeHistory: MarketTradingHistory;
   userOpenOrders: UserOpenOrders;
   userStakedRep: AccountReportingHistory;
+  marketsInfo: MarketInfo[];
+}
+
+export interface UserPositionsPlusResult {
+  userTradeHistory: MarketTradingHistory;
   userPositions: UserTradingPositions;
   userPositionTotals: UserPositionTotals;
-  marketsInfo: MarketInfo[];
 }
 
 export class Users {
@@ -200,6 +203,7 @@ export class Users {
   static getProfitLossSummaryParams = getProfitLossSummaryParams;
   static getUserAccountParams = getUserAccountParams;
   static getTotalOnChainFrozenFundsParams = getUserAccountParams;
+  static getUserPositionsPlusParams = getUserAccountParams;
 
   @Getter('getUserAccountParams')
   static async getUserAccountData(
@@ -324,6 +328,58 @@ export class Users {
       userPositions,
       userPositionTotals,
       marketsInfo: [...(marketList || {}).markets, ...marketsInfo, ...(drMarketList || {}).markets],
+    };
+  }
+
+
+  @Getter('getUserPositionsPlusParams')
+  static async getUserPositionsPlus(
+    augur: Augur,
+    db: DB,
+    params: t.TypeOf<typeof Users.getUserAccountParams>
+  ): Promise<UserPositionsPlusResult> {
+    if (!params.universe || !params.account) {
+      throw new Error(
+        "'getUserAccountData' requires a 'universe' and 'account' param be provided"
+      );
+    }
+
+    let userPositionTotals = null;
+
+    const userTradeHistory = await OnChainTrading.getTradingHistory(augur, db, {
+      account: params.account,
+      universe: params.universe,
+      filterFinalized: true,
+    });
+
+    const userPositions = await Users.getUserTradingPositions(augur, db, {
+      account: params.account,
+      universe: params.universe,
+    });
+
+    const profitLoss = await Users.getProfitLossSummary(augur, db, {
+      account: params.account,
+      universe: params.universe,
+    });
+
+    const funds = await Users.getTotalOnChainFrozenFunds(augur, db, {
+      account: params.account,
+      universe: params.universe,
+    })
+    if (profitLoss && Object.keys(profitLoss).length > 0) {
+      userPositionTotals = {
+        totalFrozenFunds: funds.totalFrozenFunds,
+        totalRealizedPL: profitLoss[DAYS_IN_MONTH].realized,
+        tradingPositionsTotal: {
+          unrealizedRevenue24hChangePercent: profitLoss[ONE_DAY].unrealizedPercent,
+        },
+      };
+    }
+
+    return {
+      userTradeHistory,
+      userPositions,
+      userPositionTotals,
     };
   }
 
