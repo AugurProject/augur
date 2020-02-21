@@ -467,11 +467,13 @@ section[class*="OutcomesList"] {
 
     button[class*="vote_btn"]:hover {
       svg[class*="upvote"] {
-        fill: limegreen;
+        fill: @color-upvote;
+        opacity: 1;
       }
 
       svg[class*="downvote"] {
-        fill: red;
+        fill: @color-downvote;
+        opacity: 1;
       }
     }
 
@@ -498,25 +500,29 @@ section[class*="OutcomesList"] {
 
     div[class="reactions"] div[class="emoji-bar"] div[class*="emoji-item"] {
       background-color: transparent;
-      color: limegreen;
+      color: @color-upvote;
     }
 
     div[class="comment_vote"] {
       div[class*="positive"] {
-        color: limegreen;
+        color: @color-upvote;
       }
 
       div[class*="negative"] {
-        color: red;
+        color: @color-downvote;
       }
 
       button[class*="vote_btn"] {
+        svg[class*="vote_icon"] {
+          opacity: 1;
+        }
+
         svg[class*="vote_icon upvote voted"] {
-          fill: limegreen;
+          fill: @color-upvote;
         }
 
         svg[class*="vote_icon downvote voted"] {
-          fill: red;
+          fill: @color-downvote;
         }
       }
     }
