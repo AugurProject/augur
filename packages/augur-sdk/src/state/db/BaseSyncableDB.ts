@@ -81,11 +81,6 @@ export class BaseSyncableDB extends RollbackTable {
     // This is a no-op for generic dbs.
   }
 
-  protected async getLogs(
-    augur: Augur, startBlock: number, endBlock: number): Promise<ParsedLog[]> {
-    return augur.contractEvents.getLogs(this.eventName, startBlock, endBlock);
-  }
-
   getFullEventName(): string {
     return this.eventName;
   }

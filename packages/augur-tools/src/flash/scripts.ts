@@ -1404,7 +1404,6 @@ export function addScripts(flash: FlashSession) {
         logIndex: log.logIndex || 0,
         transactionHash: log.transactionHash || '',
         transactionIndex: log.transactionIndex || 0,
-        transactionLogIndex: log.transactionLogIndex || 0,
         blockNumber: log.blockNumber || 0,
         blockHash: log.blockHash || '0',
         removed: log.removed || false,

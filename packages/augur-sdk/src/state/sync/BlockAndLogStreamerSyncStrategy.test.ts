@@ -22,7 +22,7 @@ describe('BlockstreamListener', () => {
   let deps: Mockify<BlockAndLogStreamerListenerDependencies>;
   let blockAndLogStreamerListener: BlockAndLogStreamerSyncStrategy;
 
-  const CONTRACT_ADDRESSES = ['0xsomeunknownaddress', '0xsomeaddress'] as const;
+  const CONTRACT_ADDRESSES = ['0xsomeunknownaddress', '0xsomeaddress'];
 
   // Most of this data is invented to satisfy typescript.
   const sampleLogs: Log[] = [
@@ -37,7 +37,6 @@ describe('BlockstreamListener', () => {
       topics: ['0xSOMETOPIC'],
       transactionHash: 'HASHONE',
       transactionIndex: 1,
-      transactionLogIndex: 1,
     },
     {
       blockHash: 'HASH-1234',
@@ -50,7 +49,6 @@ describe('BlockstreamListener', () => {
       topics: ['0xSOMEOTHERTOPIC'],
       transactionHash: 'HASHTWO',
       transactionIndex: 2,
-      transactionLogIndex: 2,
     },
     {
       blockHash: 'HASH-1234',
@@ -63,7 +61,6 @@ describe('BlockstreamListener', () => {
       topics: ['0xSOMEOTHERTOPICWEARENOTLISTENINGFOR'],
       transactionHash: 'HASHTHREE',
       transactionIndex: 3,
-      transactionLogIndex: 3,
     },
     {
       blockHash: 'HASH-1234',
@@ -76,7 +73,6 @@ describe('BlockstreamListener', () => {
       topics: ['0xSOMEOTHERTOPIC'],
       transactionHash: 'HASHFOUR',
       transactionIndex: 4,
-      transactionLogIndex: 4,
     },
   ];
 
@@ -104,7 +100,6 @@ describe('BlockstreamListener', () => {
         blockNumber: log.blockNumber,
         transactionIndex: log.transactionIndex || 0,
         transactionHash: log.transactionHash,
-        transactionLogIndex: 1,
         logIndex: 1,
         removed: false,
       }))
@@ -125,7 +120,7 @@ describe('BlockstreamListener', () => {
 
     blockAndLogStreamerListener = new BlockAndLogStreamerSyncStrategy(
       deps.getLogs,
-      deps.buildFilter,
+      CONTRACT_ADDRESSES,
       deps.onLogsAdded,
       deps.blockAndLogStreamer,
       deps.listenForNewBlocks,

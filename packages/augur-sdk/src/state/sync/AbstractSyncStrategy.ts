@@ -8,7 +8,7 @@ import {
 export abstract class AbstractSyncStrategy {
   constructor(
     protected getLogs: (filter: Filter) => Promise<Log[]>,
-    protected buildFilter: () => ExtendedFilter,
+    protected contractAddresses: string[],
     protected onLogsAdded: (blockNumber: number, logs: ParsedLog[]) => Promise<void>
   ) {}
 
