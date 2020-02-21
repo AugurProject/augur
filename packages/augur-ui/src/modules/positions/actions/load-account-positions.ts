@@ -25,7 +25,7 @@ export const loadAllAccountPositions = (
   );
 };
 
-export const loadAccountPositionsTotals = () => async (
+const loadAccountPositionsTotals = () => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {

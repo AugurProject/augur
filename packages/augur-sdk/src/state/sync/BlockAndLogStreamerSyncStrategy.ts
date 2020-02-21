@@ -39,7 +39,6 @@ export interface BlockAndLogStreamerListenerDependencies {
   getLogs: (filter: Filter) => Promise<Log[]>;
   blockAndLogStreamer: BlockAndLogStreamerInterface<Block, ExtendedLog>;
   listenForNewBlocks: (callback: (block: Block) => Promise<void>) => void;
-  buildFilter: () => ExtendedFilter;
   onLogsAdded: (blockNumber: number, logs: Log[]) => Promise<void>;
 }
 

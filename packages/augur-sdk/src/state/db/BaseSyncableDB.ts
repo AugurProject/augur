@@ -4,6 +4,7 @@ import { Augur } from '../../Augur';
 import { BaseDocument } from './AbstractTable';
 import { DB } from './DB';
 import { RollbackTable } from './RollbackTable';
+import { SubscriptionEventName } from '../../constants';
 
 export interface Document extends BaseDocument {
   blockNumber: number;
@@ -64,10 +65,13 @@ export class BaseSyncableDB extends RollbackTable {
     }
     if (documents && (documents as any[]).length) {
       _.each(documents, (document: any) => {
-        this.augur.events.emit(this.eventName, {
-          eventName: this.eventName,
-          ...document,
-        });
+        this.augur.events.emitAfter(SubscriptionEventName.NewBlock,
+          this.eventName,
+          {
+            eventName: this.eventName,
+            ...document,
+          }
+        );
       });
     }
 

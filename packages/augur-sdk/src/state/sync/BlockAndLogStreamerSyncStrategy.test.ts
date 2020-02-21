@@ -109,14 +109,8 @@ describe('BlockstreamListener', () => {
       blockAndLogStreamer,
       listenForNewBlocks: jest.fn(),
       getLogs: jest.fn(),
-      buildFilter: jest.fn(),
       onLogsAdded: jest.fn(),
     };
-
-    deps.buildFilter.mockReturnValue({
-      address: CONTRACT_ADDRESSES.slice(),
-      topics: ['0xSOMETOPIC']
-    });
 
     blockAndLogStreamerListener = new BlockAndLogStreamerSyncStrategy(
       deps.getLogs,
