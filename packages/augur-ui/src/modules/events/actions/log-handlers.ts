@@ -41,6 +41,7 @@ import {
   REDEEMSTAKE,
   CREATE_MARKET,
   MODAL_GAS_PRICE,
+  SUBMIT_REPORT,
 } from 'modules/common/constants';
 import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
@@ -67,7 +68,7 @@ import { updateModal } from 'modules/modal/actions/update-modal';
 import * as _ from 'lodash';
 import { loadMarketOrderBook } from 'modules/orders/actions/load-market-orderbook';
 import { isCurrentMarket } from 'modules/trades/helpers/is-current-market';
-import { removePendingDataByHash } from 'modules/pending-queue/actions/pending-queue-management';
+import { removePendingDataByHash, addPendingData } from 'modules/pending-queue/actions/pending-queue-management';
 
 const handleAlert = (
   log: any,
@@ -450,6 +451,7 @@ export const handleInitialReportSubmittedLog = (
   if (isUserDataUpdate) {
     handleAlert(log, DOINITIALREPORT, false, dispatch, getState);
     dispatch(loadAccountReportingHistory());
+    dispatch(addPendingData(log.market, SUBMIT_REPORT, TXEventName.Success, 0, {}));
   }
   if (isOnReportingPage()) dispatch(reloadReportingPage());
 };
