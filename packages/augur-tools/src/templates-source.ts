@@ -2892,7 +2892,7 @@ export const TEMPLATES = {
                 denomination: 'wins',
                 tickSize: 0.1,
                 minPrice: 0,
-                maxPrice: 34,
+                maxPrice: 36,
                 inputs: [
                   {
                     id: 0,
@@ -3970,7 +3970,7 @@ export const TEMPLATES = {
                 denomination: 'medals',
                 tickSize: 0.1,
                 minPrice: 0,
-                maxPrice: 500,
+                maxPrice: 250,
                 inputs: [
                   {
                     id: 0,
@@ -4294,7 +4294,7 @@ export const TEMPLATES = {
                 denomination: 'medals',
                 tickSize: 0.1,
                 minPrice: 0,
-                maxPrice: 500,
+                maxPrice: 250,
                 inputs: [
                   {
                     id: 0,
@@ -5276,6 +5276,8 @@ export const TEMPLATES = {
                 example: `NCAA FB: Total number of wins Michigan Wolverines will finish the 2019 regular season with?`,
                 denomination: 'wins',
                 tickSize: 0.1,
+                minPrice: 0,
+                maxPrice: 12,
                 inputs: [
                   {
                     id: 0,
