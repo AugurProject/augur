@@ -63,26 +63,18 @@ export const loadMarketTradingHistory = (
 };
 
 export const loadUserFilledOrders = (
-  options = {},
+  marketId: string,
 ) => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
   const { loginAccount, universe } = getState();
-  const allOptions = Object.assign(
-    {
-      account: loginAccount.address,
-      universe: universe.id,
-      orderState: FILLED,
-      filterFinalized: true
-    },
-    options
-  );
   const Augur = augurSdk.get();
-  const userTradingHistory = await Augur.getTradingHistory(allOptions);
-  const marketIds = Object.keys(userTradingHistory);
+  const userTradingHistory = await Augur.getTradingHistory({
+    account: loginAccount.address,
+    universe: universe.id,
+    filterFinalized: true,
+    marketIds: [marketId],
+  });
   dispatch(updateUserFilledOrders(loginAccount.address, userTradingHistory));
-  if (!marketIds || marketIds.length === 0) return;
-  const tradingHistory = await Augur.getTradingHistory({ marketIds });
-  dispatch(bulkMarketTradingHistory(tradingHistory));
 };

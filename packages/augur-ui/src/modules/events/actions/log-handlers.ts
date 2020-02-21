@@ -47,6 +47,7 @@ import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
 import {
   isOnDisputingPage,
   isOnReportingPage,
+  isOnTradePage,
 } from 'modules/trades/helpers/is-on-page';
 import {
   reloadDisputingPage,
@@ -94,13 +95,8 @@ const HIGH_PRI_REFRESH_MS = 1000;
 const MED_PRI_LOAD_REFRESH_MS = 2000;
 const loadOrderBook = _.throttle((dispatch, marketId) => dispatch(loadMarketOrderBook(marketId)), HIGH_PRI_REFRESH_MS, { leading: true });
 const loadUserOpenOrders = _.throttle(dispatch => dispatch(loadAccountOpenOrders()), MED_PRI_LOAD_REFRESH_MS, { leading: true });
-// trailing calls of timeframe
-const loadAccountPositions = _.throttle(dispatch => dispatch(loadAllAccountPositions()), MED_PRI_LOAD_REFRESH_MS, { trailing: true });
-const loadFrozenFunds = _.throttle(dispatch => dispatch(loadAccountOnChainFrozenFundsTotals()), MED_PRI_LOAD_REFRESH_MS, { trailing: true });
 const throttleLoadMarketOrders = (marketId) => dispatch => loadOrderBook(dispatch, marketId);
 const throttleLoadUserOpenOrders = () => dispatch => loadUserOpenOrders(dispatch);
-const throttleLoadAccountPositions = () => dispatch => loadAccountPositions(dispatch);
-const throttleLoadFrozenFunds = () => dispatch => loadFrozenFunds(dispatch);
 
 const updateMarketOrderBook = (marketId: string) => (
   dispatch: ThunkDispatch<void, any, Action>
@@ -281,7 +277,7 @@ export const handleDBMarketCreatedEvent = (event: any) => (
           if (market) {
             dispatch(removePendingDataByHash(market.transactionHash, CREATE_MARKET))
             if (isSameAddress(market.author, getState().loginAccount.address)) {
-              dispatch(throttleLoadFrozenFunds());
+              dispatch(loadAccountOnChainFrozenFundsTotals());
             }
           }
         })
@@ -412,12 +408,15 @@ export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
     dispatch(
       orderFilled(marketId, log, isSameAddress(log.orderCreator, address))
     );
-    dispatch(loadUserFilledOrders({ marketId }));
+    dispatch(loadUserFilledOrders(marketId));
     dispatch(throttleLoadUserOpenOrders());
     handleAlert(log, PUBLICFILLORDER, true, dispatch, getState);
   }
-  dispatch(loadMarketTradingHistory(marketId));
-  dispatch(updateMarketOrderBook(log.market));
+  if (!isOnTradePage()) {
+    dispatch(loadMarketTradingHistory(marketId));
+  } else {
+    dispatch(updateMarketOrderBook(log.market));
+  }
 };
 
 export const handleTradingProceedsClaimedLog = (
@@ -428,7 +427,6 @@ export const handleTradingProceedsClaimedLog = (
     getState().loginAccount.address
   );
   if (isUserDataUpdate) {
-    dispatch(throttleLoadAccountPositions());
     const { blockchain } = getState();
     dispatch(
       updateAlert(log.market, {
@@ -493,7 +491,7 @@ export const handleProfitLossChangedLog = (log: Logs.ProfitLossChangedLog) => (
     getState().loginAccount.address
   );
   if (isUserDataUpdate) {
-    dispatch(throttleLoadAccountPositions());
+    dispatch(loadAllAccountPositions());
   }
 };
 
@@ -546,19 +544,6 @@ export const handleMarketTransferredLog = (log: any) => (
   dispatch(loadMarketsInfo([log.market]));
 };
 
-export const handleMarketVolumeChangedLog = (
-  log: Logs.MarketVolumeChangedLog
-) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
-  console.log('handleMarketVolumeChangedLog');
-};
-
-export const handleMarketOIChangedLog = (log: Logs.MarketOIChangedLog) => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
-  console.log('handleMarketOIChangedLog');
-};
-
 export const handleUniverseForkedLog = (log: Logs.UniverseForkedLog) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
@@ -584,7 +569,7 @@ export const handleMarketFinalizedLog = (log: Logs.MarketFinalizedLog) => (
     positionMarketids.length > 0 &&
     Object.keys(positionMarketids).includes(log.market);
   if (updatePositions) {
-    dispatch(throttleLoadAccountPositions());
+    dispatch(loadAllAccountPositions());
   }
 };
 
