@@ -5,10 +5,7 @@ import { SingleThreadConnector } from '@augurproject/sdk/build/connector';
 import { SubscriptionEventName } from '@augurproject/sdk/build/constants';
 import { MarketCreated } from '@augurproject/sdk/build/events';
 import { SDKConfiguration } from '@augurproject/sdk/build/state';
-import { Controller } from '@augurproject/sdk/build/state/Controller';
 import { Markets } from '@augurproject/sdk/build/state/getter/Markets';
-import { LogFilterAggregator } from '@augurproject/sdk/build/state/logs/LogFilterAggregator';
-import { BlockAndLogStreamerSyncStrategy } from '@augurproject/sdk/build/state/sync/BlockAndLogStreamerSyncStrategy';
 import { ACCOUNTS, defaultSeedPath, loadSeedFile } from '@augurproject/tools';
 import { TestContractAPI } from '@augurproject/tools';
 import { BigNumber } from 'bignumber.js';
@@ -24,13 +21,6 @@ jest.mock('@augurproject/sdk/build/state/create-api', () => {
   return {
     __esModule: true,
     startServerFromClient: () => {
-      const logFilterAggregator = new LogFilterAggregator({
-        getEventTopics: john.augur.contractEvents.getEventTopics,
-        parseLogs: john.augur.contractEvents.parseLogs,
-        getEventContractAddress:
-          john.augur.contractEvents.getEventContractAddress,
-      });
-
       return john.api;
     },
   };

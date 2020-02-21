@@ -7,7 +7,6 @@ import {
   YesNoOutcomes,
   MarketData
 } from './state/logs/types';
-import { toAscii } from './state/utils/utils';
 
 export const QUINTILLION = new BigNumber(10).pow(18);
 
@@ -301,7 +300,7 @@ export function describeCategoricalOutcome(
 ): string {
   if (outcome === 0) return CommonOutcomes.Invalid;
   // Outcome 0 is invalid, so, subtract 1 to outcome to map to outcome description.
-  return toAscii(outcomes[outcome - 1]);
+  return outcomes[outcome - 1];
 }
 
 export function describeScalarOutcome(

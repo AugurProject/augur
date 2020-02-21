@@ -48,7 +48,6 @@ export function makeDbMock(prefix:string = uuid.v4()) {
       const logFilterAggregator = LogFilterAggregator.create(
         augur.contractEvents.getEventTopics,
         augur.contractEvents.parseLogs,
-        augur.contractEvents.getEventContractAddress,
       );
 
       const db = DB.createAndInitializeDB(

@@ -59,10 +59,12 @@ export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: Ethe
     const uploadBlockNumber = getStartingBlockForNetwork(networkId);
     const uploadBlockHeaders = await provider.getBlock(uploadBlockNumber);
     const currentBlockNumber = await provider.getBlockNumber();
+    const contractAddresses = client.contractEvents.getAugurContractAddresses();
 
-    const bulkSyncStrategy = new BulkSyncStrategy(provider.getLogs, logFilterAggregator.buildFilter, logFilterAggregator.onLogsAdded, client.contractEvents.parseLogs);
+    const bulkSyncStrategy = new BulkSyncStrategy(provider.getLogs, contractAddresses, logFilterAggregator.onLogsAdded, client.contractEvents.parseLogs);
     const blockAndLogStreamerSyncStrategy = BlockAndLogStreamerSyncStrategy.create(
       provider,
+      contractAddresses,
       logFilterAggregator,
       client.contractEvents.parseLogs,
     );
@@ -179,7 +181,6 @@ export async function createServer(config: SDKConfiguration, client?: Augur, acc
   const logFilterAggregator = LogFilterAggregator.create(
     contractEvents.getEventTopics,
     contractEvents.parseLogs,
-    contractEvents.getEventContractAddress
   );
   const db = DB.createAndInitializeDB(
     Number(config.networkId),
