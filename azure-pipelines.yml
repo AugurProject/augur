@@ -147,11 +147,6 @@ jobs:
           NODE_OPTIONS: "--max_old_space_size=6144"
         condition:  eq(variables['JOB_TRIGGER_UI'], 'true')
       - bash: |
-          set -euo pipefail
-          bash <(curl -s https://peek.run/ci)
-        displayName: feature peek
-        condition:  and(eq(variables['JOB_TRIGGER_UI'], 'true'), eq(variables['Build.Reason'], 'PullRequest'))
-      - bash: |
           rm /tmp/seed.json
           set -euo pipefail
           free -m
@@ -165,6 +160,16 @@ jobs:
         inputs:
           testRunner: JUnit
           testResultsFiles: '**/junit.xml'
+
+  - job: FeaturePeek
+    dependsOn:
+      - TestAndLint
+    condition: and(eq(variables['JOB_TRIGGER_UI'], 'true'), eq(variables['Build.Reason'], 'PullRequest'))
+    steps:
+      - bash: |
+          set -euo pipefail
+          bash <(curl -s https://peek.run/ci)
+        displayName: feature peek
 
   - job: ContractSanityCheck
     dependsOn:
