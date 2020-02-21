@@ -55,27 +55,14 @@ export const MigrateRep = (props: MigrateRepForm) => {
       <main>
         <h1>You have V1 REP in your wallet</h1>
         <h2>
-          Migrate your V1 REP to V2 REP to use it in Augur V2.
+          Migrate your V1 REP to V2 REP to use it in Augur V2. The quantity of V1 REP shown below will migrate to an equal amount of V2 REP. For example 100 V1 REP will migrate to 100 V2 REP.
           <ExternalLinkButton label='Learn more' URL='http://docs.augur.net/' />
         </h2>
-
         <div>
-          <div>
-            <span>V1 REP Balance</span>
-            <span>
-              {formatRep(loginAccount.balances.legacyRep).formattedValue}
-            </span>
-            <span>
-              -{formatRep(loginAccount.balances.legacyRep).formattedValue}
-            </span>
-          </div>
-          <div>
-            <span>V2 REP Balance</span>
-            <span>{formatRep(loginAccount.balances.rep).formattedValue}</span>
-            <span>
-              +{formatRep(loginAccount.balances.legacyRep).formattedValue}
-            </span>
-          </div>
+          <span>V1 REP to migrate</span>
+          <span>
+            {formatRep(loginAccount.balances.legacyRep).formattedValue}
+          </span>
         </div>
         <div>
           <LinearPropertyLabel
@@ -96,7 +83,7 @@ export const MigrateRep = (props: MigrateRepForm) => {
       <ButtonsRow
         buttons={[
           {
-            text: 'Convert',
+            text: 'Migrate',
             action: () => {
               closeAction();
               convertV1ToV2();

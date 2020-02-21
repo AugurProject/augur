@@ -283,15 +283,13 @@ class Form extends Component<FromProps, FormState> {
   findMultipleOf = () => {
     const { market } = this.props;
     let tradeInterval = DEFAULT_TRADE_INTERVAL;
-    let numTicks = market.numTicks;
-
-    if (!numTicks) {
-      numTicks = tickSizeToNumTickWithDisplayPrices(
-        createBigNumber(market.tickSize),
-        createBigNumber(market.minPrice),
-        createBigNumber(market.maxPrice)
-      );
-    }
+    const numTicks = market.numTicks
+      ? createBigNumber(market.numTicks)
+      : tickSizeToNumTickWithDisplayPrices(
+          createBigNumber(market.tickSize),
+          createBigNumber(market.minPrice),
+          createBigNumber(market.maxPrice)
+        );
 
     if (market.marketType == SCALAR) {
       tradeInterval = getTradeInterval(
@@ -367,14 +365,13 @@ class Form extends Component<FromProps, FormState> {
       );
     }
 
-    let numTicks = market.numTicks;
-    if (!numTicks) {
-      numTicks = tickSizeToNumTickWithDisplayPrices(
-        createBigNumber(market.tickSize),
-        createBigNumber(market.minPrice),
-        createBigNumber(market.maxPrice)
-      );
-    }
+    const numTicks = market.numTicks
+      ? createBigNumber(market.numTicks)
+      : tickSizeToNumTickWithDisplayPrices(
+          createBigNumber(market.tickSize),
+          createBigNumber(market.minPrice),
+          createBigNumber(market.maxPrice)
+        );
 
     let tradeInterval = DEFAULT_TRADE_INTERVAL;
     if (market.marketType == SCALAR) {
@@ -793,9 +790,13 @@ class Form extends Component<FromProps, FormState> {
     minPrice: string,
     maxPrice: string,
     tickSize: number,
-    numTicks: string
   ) {
     if (percentage === undefined || percentage === null) return Number(0);
+    const numTicks = tickSizeToNumTickWithDisplayPrices(
+        createBigNumber(tickSize),
+        createBigNumber(minPrice),
+        createBigNumber(maxPrice)
+      );
     const bnMinPrice = createBigNumber(minPrice);
     const bnMaxPrice = createBigNumber(maxPrice);
     const percentNumTicks = createBigNumber(numTicks).times(
@@ -838,7 +839,6 @@ class Form extends Component<FromProps, FormState> {
     const s = this.state;
 
     const tickSize = parseFloat(market.tickSize);
-    const numTicks = market.numTicks;
     const max = maxPrice && maxPrice.toString();
     const min = minPrice && minPrice.toString();
     const errors = Array.from(
@@ -1022,7 +1022,6 @@ class Form extends Component<FromProps, FormState> {
                         min,
                         max,
                         tickSize,
-                        numTicks
                       );
                       this.updateAndValidate(this.INPUT_TYPES.PRICE, value);
                     });

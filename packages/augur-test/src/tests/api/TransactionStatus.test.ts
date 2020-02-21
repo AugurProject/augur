@@ -96,7 +96,6 @@ test("TransactionStatus :: transaction status events failure", async (done) => {
         data: "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
         logIndex: 0,
         blockHash: "0x691568428d9171d2d3d415fc816944b3324d47635c1f3f5ea7e0a7e78f045c75",
-        transactionLogIndex: 0,
       }],
     })
     .mockReturnValueOnce({ status: 2, logs: [] });

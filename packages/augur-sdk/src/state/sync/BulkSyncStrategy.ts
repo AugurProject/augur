@@ -7,12 +7,12 @@ import { SyncStrategy } from './index';
 export class BulkSyncStrategy extends AbstractSyncStrategy implements SyncStrategy {
   constructor(
     getLogs: (filter: Filter) => Promise<Log[]>,
-    buildFilter: () => ExtendedFilter,
+    contractAddresses: string[],
     onLogsAdded: (blockNumber: number, logs: ParsedLog[]) => Promise<void>,
     protected parseLogs:(logs: Log[]) => ParsedLog[],
     protected chunkSize = 100000,
   ) {
-    super(getLogs, buildFilter, onLogsAdded);
+    super(getLogs, contractAddresses, onLogsAdded);
   }
 
   async start(
@@ -25,27 +25,18 @@ export class BulkSyncStrategy extends AbstractSyncStrategy implements SyncStrate
 
     let highestSyncedBlockNumber = startBlockNumber;
 
-    // Ethers doesn't support muliople addresses. Filter by topic
-    // on node and filter by address on our side.
-    // See: https://github.com/ethers-io/ethers.js/issues/473
-    const { address, ...filter } = this.buildFilter();
-
-    // With a wide open filter we get events from unknown sources.
-    if (_.isEmpty(filter.topics)) throw new Error('Cannot bulk sync with an empty topics filter.');
-
     while(highestSyncedBlockNumber < endBlockNumber) {
       const fromBlock = highestSyncedBlockNumber;
       const toBlock = Math.min(endBlockNumber, highestSyncedBlockNumber + this.chunkSize);
       const logs = await this.getLogs({
-        ...filter,
+        address: this.contractAddresses,
         fromBlock,
         toBlock,
       });
 
       highestSyncedBlockNumber = Math.min(endBlockNumber, highestSyncedBlockNumber + this.chunkSize);
-      const logsWeCareAbout = logs.filter(item => address.includes(_.toLower(item.address)));
 
-      const sortedLogs = _.orderBy(logsWeCareAbout, ['blockNumber', 'logIndex'], ['asc', 'asc']);
+      const sortedLogs = _.orderBy(logs, ['blockNumber', 'logIndex'], ['asc', 'asc']);
 
       const label = `${highestSyncedBlockNumber}-${endBlockNumber}`
       console.time(label);
