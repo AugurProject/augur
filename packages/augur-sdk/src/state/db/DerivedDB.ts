@@ -121,7 +121,7 @@ export class DerivedDB extends RollbackTable {
     );
     this.updatingHighestSyncBlock = false;
     if (logs.length > 0) {
-      this.augur.events.emit(`DerivedDB:updated:${this.name}`, { data: documentsByIdByTopic });
+      this.augur.events.emitAfter(SubscriptionEventName.NewBlock, `DerivedDB:updated:${this.name}`, { data: documentsByIdByTopic });
     }
 
     return blocknumber;
