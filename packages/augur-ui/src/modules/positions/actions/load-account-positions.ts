@@ -22,6 +22,7 @@ export const loadAllAccountPositions = () => async (dispatch: ThunkDispatch<void
     account: loginAccount.mixedCaseAddress,
     universe: universe.id,
   });
+  console.log('positionsPlus.userTradeHistory', positionsPlus.userTradeHistory);
   dispatch(updateUserFilledOrders(mixedCaseAddress, positionsPlus.userTradeHistory));
   if (positionsPlus.userPositions) dispatch(userPositionProcessing(positionsPlus.userPositions));
   if (positionsPlus.userPositionTotals) dispatch(updateLoginAccount(positionsPlus.userPositionTotals));

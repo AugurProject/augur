@@ -411,9 +411,8 @@ export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
     dispatch(throttleLoadUserOpenOrders());
     handleAlert(log, PUBLICFILLORDER, true, dispatch, getState);
   }
-  if (!isOnTradePage()) {
+  if (isOnTradePage()) {
     dispatch(loadMarketTradingHistory(marketId));
-  } else {
     dispatch(updateMarketOrderBook(log.market));
   }
 };
