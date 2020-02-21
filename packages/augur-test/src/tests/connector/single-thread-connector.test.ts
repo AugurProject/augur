@@ -86,4 +86,5 @@ test('SingleThreadConnector :: Should route correctly and handle events, extraIn
   );
 
   await john.sync();
+  john.augur.events.emit(SubscriptionEventName.NewBlock, {});
 });
