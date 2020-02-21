@@ -443,22 +443,35 @@ section[class*="OutcomesList"] {
       color: @color-primary-text;
     }
 
-    div[class*="inlinePicker"] {
-      padding: 0 @size-8;
+    div[class*="sc-user-input--picker-wrapper"] {
+      // component is using "!important", leaving me no choice but to use it as well
+      padding: 0 !important;
+      width: auto;
     }
 
-    svg, svg[class="comment_content_context_main_user_delete_button_icon"] path {
+    svg,
+    svg[class="comment_content_context_main_user_delete_button_icon"] path {
       fill: @color-primary-text;
+      opacity: 1;
+
+      @media all and (max-width: 600px) {
+        fill: @color-dark-text;
+        opacity: 1;
+      }
+    }
+
+    svg[class="comment_control_mobile_icon"] circle {
+      fill: @color-secondary-text;
       opacity: 1;
     }
 
     button[class*="vote_btn"]:hover {
       svg[class*="upvote"] {
-        fill: #005eff;
+        fill: limegreen;
       }
 
       svg[class*="downvote"] {
-        fill: #ff0051;
+        fill: red;
       }
     }
 
@@ -468,9 +481,85 @@ section[class*="OutcomesList"] {
       }
     }
 
-    button[class="sc-emoji-picker-button"]:hover {
+    div[class*="sc-user-input--picker-wrapper"]:hover {
       svg {
         fill: @color-dark-text;
+      }
+    }
+
+    input[class="sc-popup-window--search"] {
+      color: @color-primary-text;
+      background-color: #fff;
+
+      &:focus {
+        border: none;
+      }
+    }
+
+    div[class="reactions"] div[class="emoji-bar"] div[class*="emoji-item"] {
+      background-color: transparent;
+      color: limegreen;
+    }
+
+    div[class="comment_vote"] {
+      div[class*="positive"] {
+        color: limegreen;
+      }
+
+      div[class*="negative"] {
+        color: red;
+      }
+
+      button[class*="vote_btn"] {
+        svg[class*="vote_icon upvote voted"] {
+          fill: limegreen;
+        }
+
+        svg[class*="vote_icon downvote voted"] {
+          fill: red;
+        }
+      }
+    }
+
+    div[class*="isDeletedComment"] {
+      background-color: @color-module-background;
+      border-color: @color-module-background;
+
+      p {
+        .text-14;
+
+        color: @color-primary-text;
+      }
+    }
+
+    div[class="comments_footer"] {
+      margin: @size-40 auto;
+
+      > span {
+        color: @color-secondary-text;
+
+        svg {
+          width: auto;
+
+          path {
+            fill: @color-secondary-text;
+          }
+        }
+      }
+    }
+
+    div[class="dialogue_button_container"] {
+      height: auto;
+
+      button {
+        .text-14-bold;
+
+        background-color: transparent;
+        border: @size-1 solid @color-secondary-text;
+        border-radius: @size-3;
+        color: @color-primary-text;
+        padding: @size-12 auto;
+        width: 100%;
       }
     }
   }
@@ -585,14 +674,11 @@ div.OutcomeNameDisplay {
   }
 
   .Comments {
-    padding-top: @size-48;
-    width: 100%;
+    padding: @size-40 @size-12 @size-12;
+    grid-template-columns: 1fr;
 
-    > span {
-      background: @color-dark-grey;
-      display: block;
-      height: @size-2;
-      margin: 0 @size-12 @size-8;
+    > div {
+      grid-column: 1;
     }
   }
 }
