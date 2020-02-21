@@ -148,7 +148,7 @@ export class MarketDB extends DerivedDB {
       }
     }
 
-    await this.bulkUpsertDocuments(documents);
+    await this.saveDocuments(documents);
   }
 
   markMarketLiquidityAsDirty(marketId: string) {
@@ -462,7 +462,7 @@ export class MarketDB extends DerivedDB {
     }
 
     if (updateDocs.length > 0) {
-      await this.bulkUpsertDocuments(updateDocs);
+      await this.saveDocuments(updateDocs);
       this.augur.events.emitAfter(SubscriptionEventName.NewBlock, SubscriptionEventName.ReportingStateChanged, { data: updateDocs });
     }
   }

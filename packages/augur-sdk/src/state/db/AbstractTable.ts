@@ -15,11 +15,13 @@ export abstract class AbstractTable {
   protected networkId: number;
   readonly dbName: string;
   protected idFields: string[];
+  protected syncing: boolean;
 
   protected constructor(networkId: number, dbName: string, db: Dexie) {
     this.networkId = networkId;
     this.dbName = dbName;
     this.table = db[dbName];
+    this.syncing = false;
     const keyPath = this.table.schema.primKey.keyPath;
     this.idFields = typeof keyPath === 'string' ? [keyPath] : keyPath;
   }
@@ -50,11 +52,29 @@ export abstract class AbstractTable {
     return this.table.get(id);
   }
 
-  protected async bulkUpsertDocuments(documents: BaseDocument[]): Promise<void> {
+  protected async bulkAddDocuments(documents: BaseDocument[]): Promise<void> {
     for (const document of documents) {
       delete document.constructor;
     }
     await this.table.bulkAdd(documents);
+  }
+
+  protected async bulkPutDocuments(documents: BaseDocument[]): Promise<void> {
+    for (const document of documents) {
+      delete document.constructor;
+    }
+    await this.table.bulkPut(documents);
+  }
+
+  protected async bulkUpsertDocuments(documents: BaseDocument[]): Promise<void> {
+    for (const document of documents) {
+      const documentID = this.getIDValue(document);
+      await this.upsertDocument(documentID, document);
+    }
+  }
+
+  protected async saveDocuments(documents: BaseDocument[]): Promise<void> {
+    return this.bulkUpsertDocuments(documents);
   }
 
   protected async upsertDocument(documentID: ID, document: BaseDocument): Promise<void> {

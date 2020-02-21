@@ -43,13 +43,6 @@ export class DerivedDB extends RollbackTable {
     augur.events.once(SubscriptionEventName.BulkSyncComplete, this.onBulkSyncComplete.bind(this));
   }
 
-  protected async bulkUpsertDocuments(documents: BaseDocument[]): Promise<void> {
-    for (let document of documents) {
-      const documentID = this.getIDValue(document);
-      await this.upsertDocument(documentID, document);
-    }
-  }
-
   async onBulkSyncComplete() {
     this.stateDB.registerEventListener(this.mergeEventNames, this.handleMergeEvent.bind(this));
   }
@@ -90,8 +83,6 @@ export class DerivedDB extends RollbackTable {
     logs: ParsedLog[],
     syncing = false
   ): Promise<number> {
-    logs = _.cloneDeep(logs);
-
     let documentsByIdByTopic = null;
     if (logs.length > 0) {
       const documentsById = _.groupBy(logs, this.getIDValue.bind(this));
@@ -111,7 +102,7 @@ export class DerivedDB extends RollbackTable {
       });
 
       documentsByIdByTopic = _.sortBy(documentsByIdByTopic, ['blockNumber', 'logIndex'], ['asc', 'asc']);
-      await this.bulkUpsertDocuments(documentsByIdByTopic);
+      await this.saveDocuments(documentsByIdByTopic);
     }
 
     await this.syncStatus.setHighestSyncBlock(
@@ -120,7 +111,7 @@ export class DerivedDB extends RollbackTable {
       syncing
     );
     this.updatingHighestSyncBlock = false;
-    if (logs.length > 0) {
+    if (logs.length > 0 && !this.syncing) {
       this.augur.events.emitAfter(SubscriptionEventName.NewBlock, `DerivedDB:updated:${this.name}`, { data: documentsByIdByTopic });
     }
 

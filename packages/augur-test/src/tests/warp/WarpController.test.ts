@@ -4,6 +4,7 @@ import { API } from '@augurproject/sdk/build/state/getter/API';
 import { WarpSyncGetter } from '@augurproject/sdk/build/state/getter/WarpSyncGetter';
 import { BulkSyncStrategy } from '@augurproject/sdk/build/state/sync/BulkSyncStrategy';
 import { WarpSyncStrategy } from '@augurproject/sdk/build/state/sync/WarpSyncStrategy';
+import * as IPFS from 'ipfs';
 import { configureDexieForNode } from '@augurproject/sdk/build/state/utils/DexieIDBShim';
 import {
   databasesToSync,
@@ -22,7 +23,6 @@ import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersPro
 import { BigNumber } from 'bignumber.js';
 import { ContractDependenciesEthers } from 'contract-dependencies-ethers';
 import { Block } from 'ethers/providers';
-import * as IPFS from 'ipfs';
 import { makeDbMock, makeProvider } from '../../libs';
 
 const mock = makeDbMock();
@@ -51,9 +51,6 @@ describe('WarpController', () => {
 
   beforeAll(async () => {
     configureDexieForNode(true);
-    ipfs = await IPFS.create({
-      repo: './data',
-    });
 
     seed = await loadSeedFile(defaultSeedPath, 'WarpSync');
 
@@ -78,11 +75,12 @@ describe('WarpController', () => {
 
     warpController = new WarpController(
       john.db,
-      ipfs,
       provider,
       uploadBlockHeaders,
+      ipfs,
       filterRetrievelFn(ipfs)
     );
+    ipfs = await warpController.getIpfs();
     firstCheckpointFileHash = await warpController.createAllCheckpoints(
       await provider.getBlock(170)
     );
@@ -379,9 +377,9 @@ describe('WarpController', () => {
       newJohnDB = await mock.makeDB(newJohn.augur);
       newJohnWarpController = new WarpController(
         newJohnDB,
-        ipfs,
         provider,
         uploadBlockHeaders,
+        ipfs,
         filterRetrievelFn(ipfs)
       );
       newJohnApi = new API(newJohn.augur, Promise.resolve(newJohnDB));
@@ -392,9 +390,9 @@ describe('WarpController', () => {
 
       newJohnWarpController = new WarpController(
         newJohnDB,
-        ipfs,
         provider,
         uploadBlockHeaders,
+        ipfs,
         filterRetrievelFn(ipfs)
       );
       newJohnApi = new API(newJohn.augur, Promise.resolve(newJohnDB));
@@ -445,13 +443,16 @@ describe('WarpController', () => {
     describe('checkpoint syncing', () => {
       test('identify new diff and just pull that', async () => {
         // populate db.
+        console.log(`XXX 1`);
         let blockNumber = await warpSyncStrategy.start(firstCheckpointFileHash);
 
         // This should populate the checkpoints DB.
+        console.log(`XXX 2`);
         await newJohnWarpController.createAllCheckpoints(
           firstCheckpointBlockHeaders
         );
 
+        console.log(`XXX 3`);
         const firstBlockNumber = await fixtureBulkSyncStrategy.start(
           0,
           blockNumber
@@ -461,6 +462,7 @@ describe('WarpController', () => {
         });
 
         // Sanity check.
+        console.log(`XXX 4`);
         await expect(
           newJohnApi.route('getMarkets', {
             universe: addresses.Universe,
@@ -468,8 +470,10 @@ describe('WarpController', () => {
         ).resolves.toEqual(fixtureMarketList);
 
         // populate db. Admittedly this just proves the logs were loaded.
+        console.log(`XXX 5`);
         blockNumber = await warpSyncStrategy.start(secondCheckpointFileHash);
 
+        console.log(`XXX 6`);
         await fixtureBulkSyncStrategy.start(firstBlockNumber + 1, blockNumber);
         const rolledbackFixtureMarketList = await fixtureApi.route(
           'getMarkets',

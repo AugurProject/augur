@@ -29,11 +29,9 @@ export class CancelledOrdersDB extends DerivedDB {
     // Filter
     logs = logs.map(log => {
       try {
-        return Object.assign({}, log, {parsedMakerAssetData: ZeroXOrders.parseAssetData(log.makerAssetData)});
+        return Object.assign({}, log, {parsedMakerAssetData: ZeroXOrders.parseAssetData(log.makerAssetData).orderData});
       } catch(e) {
-        if (e.message === "Cancel for order not in multi-asset format")
-          return null;
-        throw e;
+        return null;
       }
     }).filter(log => !!log);
     return super.handleMergeEvent(blocknumber, logs, syncing);

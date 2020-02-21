@@ -69,14 +69,13 @@ export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: Ethe
       client.contractEvents.parseLogs,
     );
 
-    const warpController = await WarpController.create((await db), provider, uploadBlockHeaders);
+    const warpController = new WarpController((await db), provider, uploadBlockHeaders);
     const warpSyncStrategy = new WarpSyncStrategy(warpController, logFilterAggregator.onLogsAdded);
 
     const endWarpSyncBlockNumber = await warpSyncStrategy.start();
     const staringSyncBlock = Math.max(await (await db).getSyncStartingBlock(), endWarpSyncBlockNumber || uploadBlockNumber);
     const endBulkSyncBlockNumber = await bulkSyncStrategy.start(staringSyncBlock, currentBlockNumber);
 
-    console.log('Syncing Complete - SDK Ready');
     await (await db).sync();
 
     // This will register the event listeners for the various derived/rollup dbs.
@@ -86,6 +85,7 @@ export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: Ethe
     client.events.emit(SubscriptionEventName.SDKReady, {
       eventName: SubscriptionEventName.SDKReady,
     });
+    console.log('Syncing Complete - SDK Ready');
 
     blockAndLogStreamerSyncStrategy.listenForBlockRemoved(logFilterAggregator.onBlockRemoved);
 
@@ -122,17 +122,6 @@ export async function createClient(
   if (config.zeroX) {
     const rpcEndpoint = (config.zeroX.rpc && config.zeroX.rpc.enabled) ? config.zeroX.rpc.ws : undefined;
     zeroX = new ZeroX(rpcEndpoint)
-
-    if (config.zeroX.mesh && config.zeroX.mesh.enabled && createBrowserMesh) {
-      // This function is passed in and takes care of assigning it to the
-      // zeroX instance. This is largely due to the need to have special
-      // casing for if the mesh dies and we want to restart it. This is
-      // passed in as a function so all we need in this file is an
-      // interface instead of actually import @0x/mesh-browser -- since
-      // that would attempt to start the wasm client in nodejs and cause
-      // everything to die.
-      createBrowserMesh(config, ethersProvider, zeroX);
-    }
   }
 
   const client = await Augur.create(
@@ -143,6 +132,20 @@ export async function createClient(
     zeroX,
     enableFlexSearch
   );
+
+  // Delay loading of the browser mesh until we're finished syncing
+  client.events.once(SubscriptionEventName.BulkSyncComplete, () => {
+    if (config.zeroX.mesh && config.zeroX.mesh.enabled && createBrowserMesh) {
+      // This function is passed in and takes care of assigning it to the
+      // zeroX instance. This is largely due to the need to have special
+      // casing for if the mesh dies and we want to restart it. This is
+      // passed in as a function so all we need in this file is an
+      // interface instead of actually import @0x/mesh-browser -- since
+      // that would attempt to start the wasm client in nodejs and cause
+      // everything to die.
+      createBrowserMesh(config, ethersProvider, zeroX);
+    }
+  });
 
   return client;
 }

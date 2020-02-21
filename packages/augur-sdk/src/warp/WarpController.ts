@@ -95,23 +95,13 @@ export class WarpController {
   private checkpointCreationInProgress = false;
   private static DEFAULT_NODE_TYPE = { format: 'dag-pb', hashAlg: 'sha2-256' };
   checkpoints: Checkpoints;
-
-  get ready() {
-    return this.ipfs.ready;
-  }
-
-  static async create(db: DB, provider: Provider, uploadBlockNumber: Block) {
-    const ipfs = await IPFS.create({
-      repo: './data',
-    });
-    return new WarpController(db, ipfs, provider, uploadBlockNumber);
-  }
+  private ipfs: Promise<IPFS>;
 
   constructor(
     private db: DB,
-    private ipfs: IPFS,
     private provider: Provider,
     private uploadBlockNumber: Block,
+    ipfs?: Promise<IPFS>,
     // This is to simplify swapping out file retrieval mechanism.
     private _fileRetrievalFn: (ipfsPath: string) => Promise<any> = (
       ipfsPath: string
@@ -121,6 +111,17 @@ export class WarpController {
       )
   ) {
     this.checkpoints = new Checkpoints(provider);
+    if (ipfs) {
+      this.ipfs = ipfs;
+    } else {
+      this.ipfs = IPFS.create({
+        repo: './data',
+      });
+    }
+  }
+
+  async getIpfs(): Promise<IPFS> {
+    return this.ipfs;
   }
 
   onNewBlock = async (newBlock: Block): Promise<void> => {
@@ -163,7 +164,7 @@ export class WarpController {
     const topLevelDirectory = new DAGNode(
       Unixfs.default('directory').marshal()
     );
-    const versionFile = await this.ipfs.add({
+    const versionFile = await (await this.ipfs).add({
       content: Buffer.from(WARPSYNC_VERSION),
     });
     topLevelDirectory.addLink({
@@ -194,7 +195,7 @@ export class WarpController {
 
     topLevelDirectory.addLink({
       Name: 'tables',
-      Hash: await this.ipfs.dag.put(
+      Hash: await (await this.ipfs).dag.put(
         tableNode,
         WarpController.DEFAULT_NODE_TYPE
       ),
@@ -208,7 +209,7 @@ export class WarpController {
 
     const indexFile = new DAGNode(file.marshal(), indexFileLinks);
 
-    const indexFileResponse = await this.ipfs.dag.put(
+    const indexFileResponse = await (await this.ipfs).dag.put(
       indexFile,
       WarpController.DEFAULT_NODE_TYPE
     );
@@ -218,7 +219,7 @@ export class WarpController {
       Size: file.fileSize(),
     });
 
-    const d = await this.ipfs.dag.put(
+    const d = await (await this.ipfs).dag.put(
       topLevelDirectory,
       WarpController.DEFAULT_NODE_TYPE
     );
@@ -235,6 +236,7 @@ export class WarpController {
     table: Pick<Dexie.Table<any, any>, 'toArray'>,
     name: string
   ): Promise<[IPFSObject[], IPFSObject]> {
+    const ipfs: IPFS = await this.ipfs;
     const results = await this.ipfsAddRows(await table.toArray());
 
     const file = Unixfs.default('file');
@@ -244,7 +246,7 @@ export class WarpController {
     const links = results;
     const indexFile = new DAGNode(file.marshal(), results);
 
-    const indexFileResponse = await this.ipfs.dag.put(
+    const indexFileResponse = await (await this.ipfs).dag.put(
       indexFile,
       WarpController.DEFAULT_NODE_TYPE
     );
@@ -270,7 +272,7 @@ export class WarpController {
       Size: file.fileSize(),
     });
 
-    const q = await this.ipfs.dag.put(
+    const q = await (await this.ipfs).dag.put(
       directoryNode,
       WarpController.DEFAULT_NODE_TYPE
     );
@@ -298,7 +300,7 @@ export class WarpController {
       await directoryNode.addLink(items[i]);
     }
 
-    const q = await this.ipfs.dag.put(
+    const q = await (await this.ipfs).dag.put(
       directoryNode,
       WarpController.DEFAULT_NODE_TYPE
     );
@@ -319,7 +321,7 @@ export class WarpController {
       content: Buffer.from(JSON.stringify(row) + '\n'),
     }));
 
-    const data = await this.ipfs.add(requests);
+    const data = await (await this.ipfs).add(requests);
     return data.map(item => ({
       Hash: item.hash,
       Size: item.size,
@@ -344,7 +346,7 @@ export class WarpController {
       ['asc', 'asc']
     );
 
-    const [result] = await this.ipfs.add({
+    const [result] = await (await this.ipfs).add({
       content: Buffer.from(
         JSON.stringify(<CheckpointInterface>{
           startBlockNumber,
@@ -494,7 +496,7 @@ export class WarpController {
           indexFile.addLink(items[i]);
         }
 
-        const indexFileResponse = await this.ipfs.dag.put(
+        const indexFileResponse = await (await this.ipfs).dag.put(
           indexFile,
           WarpController.DEFAULT_NODE_TYPE
         );
@@ -530,7 +532,7 @@ export class WarpController {
       indexFile.addLink(links[i]);
     }
 
-    const indexFileResponse = await this.ipfs.dag.put(
+    const indexFileResponse = await (await this.ipfs).dag.put(
       indexFile,
       WarpController.DEFAULT_NODE_TYPE
     );
@@ -555,7 +557,7 @@ export class WarpController {
   async getAvailableCheckpointsByHash(
     ipfsRootHash: string
   ): Promise<IpfsInfo[]> {
-    const files = await this.ipfs.ls(`${ipfsRootHash}/checkpoints/`);
+    const files = await (await this.ipfs).ls(`${ipfsRootHash}/checkpoints/`);
     console.log('getAvailableCheckpointsByHash files', JSON.stringify(files));
     return files.map(({ name, hash }) => ({
       Name: name,
@@ -568,13 +570,13 @@ export class WarpController {
     ipfsRootHash: string,
     checkpointBlockNumber: string | number
   ): Promise<CheckpointInterface> {
-    return this.getFile(`${ipfsRootHash}/checkpoints/${checkpointBlockNumber}`);
+    return await this.getFile(`${ipfsRootHash}/checkpoints/${checkpointBlockNumber}`);
   }
 
   async pinHashByGatewayUrl(urlString: string) {
     const url = new URL(urlString);
     try {
-      await this.ipfs.pin.add(url.pathname);
+      await (await this.ipfs).pin.add(url.pathname);
       return true;
     } catch (e) {
       console.error(e);
