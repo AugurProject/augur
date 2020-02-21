@@ -18,7 +18,6 @@ import {
   SIGNIN_LOADING_TEXT_TORUS,
   SIGNIN_LOADING_TEXT_FORTMATIC,
   SIGNIN_SIGN_WALLET,
-  ONBOARDING_SEEN_KEY,
   MODAL_ACCOUNT_CREATED,
   MODAL_ERROR,
 } from 'modules/common/constants';
@@ -82,8 +81,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     setTimeout(() => {
       dP.closeModal();
 
-      const showOnboardingSeen = windowRef.localStorage.getItem(ONBOARDING_SEEN_KEY);
-      if (LOGIN_OR_SIGNUP === 'Signup' &&!showOnboardingSeen) {
+      if (LOGIN_OR_SIGNUP === 'Signup') {
         // Kicks off onboarding
         dP.accountCreatedModal();
       }
