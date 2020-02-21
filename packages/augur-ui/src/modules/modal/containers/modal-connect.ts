@@ -42,6 +42,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
         message,
         showMetaMaskHelper,
         callback,
+        showCloseAfterDelay: true,
       })
     ),
   connectMetaMask: () => dispatch(loginWithInjectedWeb3()),

@@ -16,7 +16,7 @@ interface LoadingProps {
   showLearnMore?: boolean;
 }
 
-const ONE_MINUTES = 60000;
+const FIFTEEN_SECONDS = 15000;
 
 export const Loading = ({
   showMetaMaskHelper,
@@ -39,7 +39,7 @@ export const Loading = ({
     if (showCloseAfterDelay) {
       timeoutId = setTimeout(() => {
         setshowAbandon(true);
-      }, ONE_MINUTES);
+      }, FIFTEEN_SECONDS);
     }
     return () => {
       if (timeoutId) {
