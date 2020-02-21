@@ -351,6 +351,44 @@
   }
 }
 
+:root[theme="BETTING"] {
+  .TradingForm {
+    > ul {
+      > li {
+        > div.TradingFormInputContainer {
+          background-color: var(--color-secondary-action);
+
+          > input {
+            background-color: var(--color-secondary-action);
+          }
+        }
+
+        &.AdvancedShown {
+          > div:nth-of-type(2):not([class*="Normal"]) {
+
+            // Day input
+            > div[class*="TextInput"] {
+            
+              > div > input {
+                border: @size-1 solid var(--color-dark-grey);
+  
+                &:hover {
+                  border: @size-1 solid var(--color-dark-text);
+                }
+  
+                &:focus-within {
+                  border: @size-1 solid var(--color-dark-text);
+                }
+              }
+            }
+          }
+        }
+
+      }
+    }
+  }
+}
+
 .ErrorContainer {
   background: var(--color-error-20);
   border: 1px solid var(--color-error);
@@ -527,6 +565,20 @@
 
     > input {
       border: 0;
+    }
+  }
+}
+
+:root[theme="BETTING"] {
+  .TradingFormInputContainer {
+    border: @size-1 solid var(--color-dark-grey);
+
+    &:hover {
+      border: @size-1 solid var(--color-dark-text);
+    }
+
+    &:focus-within {
+      border: @size-1 solid var(--color-dark-text);
     }
   }
 }
