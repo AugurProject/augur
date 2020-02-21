@@ -69,7 +69,7 @@ import { getNetwork } from 'utils/get-network-name';
         dispatch(
           updateModal({
             type: MODAL_ERROR,
-            error: JSON.stringify(error),
+            error: JSON.stringify(error && error.message ? error.message : 'Sorry, something went wrong.'),
           })
         );
       });
