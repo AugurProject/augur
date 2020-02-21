@@ -52,37 +52,74 @@ export const APP_HEAD_TAGS = {
   canonicalUrl: 'http://v2.augur.net/#!/markets?maxFee=1&spread=100',
 };
 
+
+const CREATE_MARKET_VIEW_TITLE = 'Create Market — Creating popular, liquid, and valid markets';
+
 export const CREATE_MARKET_VIEW_HEAD_TAGS = {
   ...COMMON_HEAD_TAGS,
-  title: 'Create market',
+  title: CREATE_MARKET_VIEW_TITLE,
+  ogTitle: CREATE_MARKET_VIEW_TITLE,
+  twitterTitle: CREATE_MARKET_VIEW_TITLE,
 };
+
+const MARKETS_VIEW_TITLE = 'The world’s most accessible, no-limit betting exchange';
+const MARKETS_VIEW_DESCRIPTION = 'Bet and trade on user-created markets, from weather to crypto to finance. No limits on the amount you can bet or what you can bet on. Lowest fees and the best odds.';
 
 export const MARKETS_VIEW_HEAD_TAGS = {
   ...COMMON_HEAD_TAGS,
-  title: 'Markets',
-  canonicalUrl: 'http://v2.augur.net/#!/markets?maxFee=1&spread=100',
+  title: MARKETS_VIEW_TITLE,
+  ogTitle: MARKETS_VIEW_TITLE,
+  twitterTitle: MARKETS_VIEW_TITLE,
+  description: MARKETS_VIEW_DESCRIPTION,
+  ogDescription: MARKETS_VIEW_DESCRIPTION,
+  twitterDescription: MARKETS_VIEW_DESCRIPTION,
+  canonicalUrl: 'http://v2.augur.net/#!/markets',
 };
 
 export const MARKET_VIEW_HEAD_TAGS = {
   ...COMMON_HEAD_TAGS,
 };
 
+const ACCOUNT_VIEW_VIEW_TITLE = 'Account Summary — View your balances, P/L, watchlist & more';
+
 export const ACCOUNT_VIEW_HEAD_TAGS = {
   ...COMMON_HEAD_TAGS,
-  title: 'Account Summary',
+  title: ACCOUNT_VIEW_VIEW_TITLE,
+  ogTitle: ACCOUNT_VIEW_VIEW_TITLE,
+  twitterTitle: ACCOUNT_VIEW_VIEW_TITLE,
 };
+
+const PORTFOLIO_VIEW_TITLE = 'Portfolio — View your positions, orders & more';
 
 export const PORTFOLIO_VIEW_HEAD_TAGS = {
   ...COMMON_HEAD_TAGS,
-  title: 'Portfolio',
+  title: PORTFOLIO_VIEW_TITLE,
+  ogTitle: PORTFOLIO_VIEW_TITLE,
+  twitterTitle: PORTFOLIO_VIEW_TITLE,
 };
+
+const REPORTING_TITLE = 'Reporting — Determining the outcome of markets';
+const REPORTING_DESCRIPTION = 'Be rewarded for resolving Augur markets by verifying their outcomes when reporting begins. The reporting process finalizes markets to determine the winning shares.';
 
 export const REPORTING_HEAD_TAGS = {
   ...COMMON_HEAD_TAGS,
-  title: 'Reporting',
+  title: REPORTING_TITLE,
+  ogTitle: REPORTING_TITLE,
+  twitterTitle: REPORTING_TITLE,
+  description: REPORTING_DESCRIPTION,
+  ogDescription: REPORTING_DESCRIPTION,
+  twitterDescription: REPORTING_DESCRIPTION,
 };
+
+const DISPUTING_TITLE = 'Disputing — Disputing incorrect tentative outcomes';
+const DISPUTING_DESCRIPTION = 'Be rewarded for maintaining the integrity of Augur’s resolution process. Dispute a tentative outcome by staking collateral on an alternative outcome.';
 
 export const DISPUTING_HEAD_TAGS = {
   ...COMMON_HEAD_TAGS,
-  title: 'Disputing',
+  title: DISPUTING_TITLE,
+  ogTitle: DISPUTING_TITLE,
+  twitterTitle: DISPUTING_TITLE,
+  description: DISPUTING_DESCRIPTION,
+  ogDescription: DISPUTING_DESCRIPTION,
+  twitterDescription: DISPUTING_DESCRIPTION,
 };
