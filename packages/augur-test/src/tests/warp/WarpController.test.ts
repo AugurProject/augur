@@ -443,16 +443,13 @@ describe('WarpController', () => {
     describe('checkpoint syncing', () => {
       test('identify new diff and just pull that', async () => {
         // populate db.
-        console.log(`XXX 1`);
         let blockNumber = await warpSyncStrategy.start(firstCheckpointFileHash);
 
         // This should populate the checkpoints DB.
-        console.log(`XXX 2`);
         await newJohnWarpController.createAllCheckpoints(
           firstCheckpointBlockHeaders
         );
 
-        console.log(`XXX 3`);
         const firstBlockNumber = await fixtureBulkSyncStrategy.start(
           0,
           blockNumber
@@ -462,7 +459,6 @@ describe('WarpController', () => {
         });
 
         // Sanity check.
-        console.log(`XXX 4`);
         await expect(
           newJohnApi.route('getMarkets', {
             universe: addresses.Universe,
@@ -470,10 +466,8 @@ describe('WarpController', () => {
         ).resolves.toEqual(fixtureMarketList);
 
         // populate db. Admittedly this just proves the logs were loaded.
-        console.log(`XXX 5`);
         blockNumber = await warpSyncStrategy.start(secondCheckpointFileHash);
 
-        console.log(`XXX 6`);
         await fixtureBulkSyncStrategy.start(firstBlockNumber + 1, blockNumber);
         const rolledbackFixtureMarketList = await fixtureApi.route(
           'getMarkets',
