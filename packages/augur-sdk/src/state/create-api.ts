@@ -75,8 +75,11 @@ export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: Ethe
     const endWarpSyncBlockNumber = await warpSyncStrategy.start();
     const staringSyncBlock = Math.max(await (await db).getSyncStartingBlock(), endWarpSyncBlockNumber || uploadBlockNumber);
     const endBulkSyncBlockNumber = await bulkSyncStrategy.start(staringSyncBlock, currentBlockNumber);
-
+    
+    const derivedSyncLabel = `Syncing rollup and derived DBs`
+    console.time(derivedSyncLabel);
     await (await db).sync();
+    console.timeEnd(derivedSyncLabel);
 
     // This will register the event listeners for the various derived/rollup dbs.
     client.events.emit(SubscriptionEventName.BulkSyncComplete, {
@@ -167,9 +170,11 @@ export async function createServer(config: SDKConfiguration, client?: Augur, acc
   // functionality since that was really originally designed for client connection
   // over a connector TO the server.
   if (!client) {
-    console.log('Creating a new client');
+    const creatingClientLabel = 'Creating a new client';
+    console.time(creatingClientLabel);
     const connector = new EmptyConnector();
     client = await createClient(config, connector, account, undefined, undefined, true);
+    console.time(creatingClientLabel);
   }
 
   const ethersProvider: EthersProvider = client.provider as EthersProvider;
