@@ -28,9 +28,6 @@ export class WarpSyncDB extends AbstractTable {
   }
 
   async getMostRecentWarpSync():Promise<WarpSyncDocument | undefined> {
-    console.log('await this.table.toArray()',
-      JSON.stringify(await this.table.toArray()));
-
     return this.table.orderBy('end.number').last();
   }
 }
