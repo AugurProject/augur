@@ -44,8 +44,8 @@ export class MarketComments extends Component {
         {isReady && (
           <Comments
             // required
-            spaceName="3boxtestcomments"
-            threadName="explicitNestLevel6"
+            spaceName="augur"
+            threadName={this.props.marketId}
             adminEthAddr="0x2a0D29C819609Df18D8eAefb429AEC067269BBb6"
 
             // Required props for context A) & B)
