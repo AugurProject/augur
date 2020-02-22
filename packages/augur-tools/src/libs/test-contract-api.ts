@@ -136,5 +136,7 @@ export class TestContractAPI extends ContractAPI {
     timestamp = timestamp.plus(1000000);
     await this.setTimestamp(timestamp);
     await this.finalizeMarket(warpSyncMarket);
+
+    return warpSyncMarket;
   }
 }
