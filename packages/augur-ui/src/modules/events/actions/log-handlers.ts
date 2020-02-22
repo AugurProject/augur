@@ -362,7 +362,6 @@ export const handleOrderCreatedLog = (log: Logs.ParsedOrderEventLog) => (
   if (isUserDataUpdate && authStatus.isLogged) {
     handleAlert(log, PUBLICTRADE, false, dispatch, getState);
     dispatch(throttleLoadUserOpenOrders());
-    console.log('log order created', log);
     const pendingOrderId = constructPendingOrderid(log.amount, log.price, log.outcome, log.market)
     dispatch(removePendingOrder(pendingOrderId, log.market));
   }
