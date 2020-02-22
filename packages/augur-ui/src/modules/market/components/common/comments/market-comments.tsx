@@ -46,7 +46,7 @@ export class MarketComments extends Component {
             // required
             spaceName="augur"
             threadName={this.props.marketId}
-            adminEthAddr="0x2a0D29C819609Df18D8eAefb429AEC067269BBb6"
+            adminEthAddr="0x913dA4198E6bE1D5f5E4a40D0667f70C0B5430Eb"
 
             // Required props for context A) & B)
             box={box}
