@@ -21,6 +21,7 @@ import {
   PUBLICFILLORDER,
   BUYPARTICIPATIONTOKENS,
   MODAL_ERROR,
+  DOINITIALREPORT
 } from 'modules/common/constants';
 import { CreateMarketData } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';

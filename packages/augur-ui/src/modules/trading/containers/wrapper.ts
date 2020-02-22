@@ -54,6 +54,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
     gasPrice: getGasPrice(state),
     hasFunds,
     isLogged: authStatus.isLogged,
+    restoredAccount: authStatus.restoredAccount,
     Gnosis_ENABLED,
     currentTimestamp: blockchain.currentAugurTimestamp,
     availableDai,

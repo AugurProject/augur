@@ -152,17 +152,15 @@ describe('WarpController', () => {
       // Specific event type doesn't matter. Just need two logs that
       // will produce a range of blocks whose first and last will
       // contain said log.
-      const logs = await john.augur.contractEvents.getLogs(
-        'MarketCreated',
-        uploadBlockHeaders.number,
-        newBlockHeaders.number
-      );
+      const logs = await john.db.MarketCreated.toArray();
 
       const targetBeginNumber = Math.min(...logs.map(item => item.blockNumber));
       const targetEndNumber = Math.max(...logs.map(item => item.blockNumber));
+      const beginBlock = await provider.getBlock(targetBeginNumber);
+      const endBlock = await provider.getBlock(targetEndNumber);
       const hash = await warpController.createCheckpoint(
-        await provider.getBlock(targetBeginNumber),
-        await provider.getBlock(targetEndNumber)
+        beginBlock,
+        endBlock,
       );
 
       console.log(
@@ -342,7 +340,7 @@ describe('WarpController', () => {
 
       fixtureBulkSyncStrategy = new BulkSyncStrategy(
         provider.getLogs,
-        fixtureDB.logFilters.buildFilter,
+        john.augur.contractEvents.getAugurContractAddresses(),
         fixtureDB.logFilters.onLogsAdded,
         fixture.augur.contractEvents.parseLogs,
         50
@@ -428,7 +426,7 @@ describe('WarpController', () => {
           firstCheckpointBlockHeaders
         );
 
-        const firstBlockNumber = await fixtureBulkSyncStrategy.start(0, blockNumber);
+        const firstBlockNumber = await fixtureBulkSyncStrategy.start(0, 170);
         const fixtureMarketList = await fixtureApi.route('getMarkets', {
           universe: addresses.Universe,
         });

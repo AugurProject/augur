@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import getValue from 'utils/get-value';
 import { AppState } from 'appStore';
 import * as constants from 'modules/common/constants';
-import { formatShares, formatEther } from 'utils/format-number';
+import { formatShares, formatDai } from 'utils/format-number';
 import Row from 'modules/common/row';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
@@ -37,19 +37,19 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     {
       key: 'quantity',
       columnType: COLUMN_TYPES.VALUE,
-      value: formatShares(order.quantity),
+      value: formatShares(order.quantity, { decimals: 2, decimalsRounded: 2 }),
       keyId: 'order-quantity-' + order.id,
     },
     {
       key: 'price',
       columnType: COLUMN_TYPES.VALUE,
-      value: formatEther(order.price),
+      value: formatDai(order.price),
       keyId: 'order-price-' + order.id,
     },
     {
       key: 'orderEstimate',
       columnType: COLUMN_TYPES.VALUE,
-      value: formatEther(order.orderEstimate),
+      value: formatDai(order.orderEstimate),
       keyId: 'order-orderEstimate-' + order.id,
     },
     {

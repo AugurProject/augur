@@ -426,6 +426,12 @@ export class Augur<TProvider extends Provider = Provider> {
     return this.bindTo(Users.getUserAccountData)(params);
   };
 
+  getUserPositionsPlus = (
+    params: Parameters<typeof Users.getUserPositionsPlus>[2]
+  ): ReturnType<typeof Users.getUserPositionsPlus> => {
+    return this.bindTo(Users.getUserPositionsPlus)(params);
+  };
+
   getTotalOnChainFrozenFunds = (
     params: Parameters<typeof Users.getTotalOnChainFrozenFunds>[2]
   ): ReturnType<typeof Users.getTotalOnChainFrozenFunds> => {

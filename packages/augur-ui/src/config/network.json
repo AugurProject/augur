@@ -25,23 +25,9 @@
     }
   },
   "kovan": {
+    "networkId": "42",
     "ethereum": {
       "http": "https://eth-kovan.alchemyapi.io/jsonrpc/1FomA6seLdWDvpIRvL9J5NhwPHLIGbWA",
-      "ws": "wss://eth-kovan.ws.alchemyapi.io/ws/1FomA6seLdWDvpIRvL9J5NhwPHLIGbW",
-      "pollingIntervalMilliseconds": 500,
-      "blockRetention": 100,
-      "connectionTimeout": 60000
-    },
-    "gnosis-enabled": true,
-    "gnosis-relay": "https://gnosis.kovan.augur.net/api/",
-    "0x-eth-node": "https://eth-kovan.alchemyapi.io/jsonrpc/wk8iQPITIJU1L28NfAyVETjeiCwjBvNB",
-    "universe": null,
-    "0x-mesh": {
-      "enabled": true
-    },
-    "debug": {
-      "connect": true,
-      "broadcast": false,
       "rpcRetryCount": 5,
       "rpcRetryInterval": 0,
       "rpcConcurrency": 40

@@ -3,46 +3,35 @@ import { toChecksumAddress } from 'ethereumjs-util';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { PersonalSigningWeb3Provider } from 'utils/personal-signing-web3-provider';
-import { INetwork } from '@portis/web3';
 import Web3 from 'web3';
 import {
   ACCOUNT_TYPES,
   PORTIS_API_KEY,
-  NETWORK_IDS,
   MODAL_ERROR,
 } from 'modules/common/constants';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { windowRef } from 'utils/window-ref';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { AppState } from 'appStore';
+import { getNetwork } from 'utils/get-network-name';
 
-const getPortisNetwork = (networkId): false | string | INetwork => {
-  const myPrivateEthereumNode = {
-    nodeUrl: 'http://localhost:8545',
-    chainId: networkId,
-  };
-  if (networkId === NETWORK_IDS.Mainnet) {
-    return 'mainnet';
-  } else if (networkId === NETWORK_IDS.Kovan) {
-    return 'kovan';
-  } else {
-    return myPrivateEthereumNode;
-  }
-};
-
-export const loginWithPortis = (forceRegisterPage = false) => async (
+ export const loginWithPortis = (forceRegisterPage = false) => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState,
 ) => {
   const useGnosis = getState().env['gnosis']?.enabled;
   const networkId = getNetworkId();
-  const portisNetwork = getPortisNetwork(networkId);
+  const portisNetwork = getNetwork(networkId);
+  const localPortisNetwork = {
+    nodeUrl: 'http://localhost:8545',
+    chainId: networkId,
+  };
 
   if (portisNetwork) {
     try {
       // Only inject Portis if we are using Portis
       const Portis = require('@portis/web3');
-      const portis = new Portis(PORTIS_API_KEY, portisNetwork, {
+      const portis = new Portis(PORTIS_API_KEY, portisNetwork === 'localhost' ? localPortisNetwork : portisNetwork, {
         scope: ['email'],
         registerPageByDefault: forceRegisterPage,
       });
@@ -80,7 +69,7 @@ export const loginWithPortis = (forceRegisterPage = false) => async (
         dispatch(
           updateModal({
             type: MODAL_ERROR,
-            error: JSON.stringify(error),
+            error: JSON.stringify(error && error.message ? error.message : 'Sorry, something went wrong.'),
           })
         );
       });

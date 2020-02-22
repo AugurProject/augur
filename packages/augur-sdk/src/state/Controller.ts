@@ -32,7 +32,6 @@ export class Controller {
   }
 
   private updateMarketsData = async (marketIds: string[]) => {
-    console.log('marketIds', marketIds.length);
     const marketsInfo = await Markets.getMarketsInfo(this.augur, await this.db, {
       marketIds
     });

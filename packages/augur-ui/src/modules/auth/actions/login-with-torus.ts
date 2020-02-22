@@ -5,21 +5,12 @@ import { Action } from 'redux';
 import { PersonalSigningWeb3Provider } from 'utils/personal-signing-web3-provider';
 import Torus from '@toruslabs/torus-embed';
 import Web3 from 'web3';
-import { ACCOUNT_TYPES, NETWORK_IDS } from 'modules/common/constants';
+import { ACCOUNT_TYPES } from 'modules/common/constants';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { windowRef } from 'utils/window-ref';
 import { LoginAccount } from 'modules/types';
 import { AppState } from 'appStore';
-
-const getTorusNetwork = (networkId): string => {
-  if (networkId === NETWORK_IDS.Mainnet) {
-    return 'mainnet';
-  } else if (networkId === NETWORK_IDS.Kovan) {
-    return 'kovan';
-  } else {
-    return 'localhost';
-  }
-};
+import { getNetwork } from 'utils/get-network-name';
 
 export const loginWithTorus = () => async (
   dispatch: ThunkDispatch<void, any, Action>,
@@ -27,11 +18,15 @@ export const loginWithTorus = () => async (
 ) => {
   const useGnosis = getState().env['gnosis']?.enabled;
   const networkId = getNetworkId();
-  const torusNetwork = getTorusNetwork(networkId);
+  const torusNetwork = getNetwork(networkId);
   let accountObject: Partial<LoginAccount> = {};
 
   if (torusNetwork) {
-    const torus: any = new Torus({});
+    const torus = new Torus({});
+
+    if (torusNetwork === 'localhost') {
+      throw new Error('localhost currently not working for torus')
+    }
 
     try {
       await torus.init({
@@ -69,9 +64,15 @@ export const loginWithTorus = () => async (
           .querySelector('#torusWidget')
           .setAttribute('style', 'display:none');
       }
+
     } catch (error) {
-      document.querySelector('#torusIframe').remove();
       document.querySelector('#torusWidget').remove();
+      // On error, we need to cleanup the second instance of the torus iframes
+      const torusIframe = document.querySelectorAll('#torusIframe');
+      if (torusIframe.length > 0 && torusIframe[1]) {
+        torusIframe[1].remove();
+      }
+
       throw error;
     }
 

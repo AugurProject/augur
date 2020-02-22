@@ -55,6 +55,7 @@ interface WrapperProps {
   hasFunds: boolean;
   hasHistory: boolean;
   isLogged: boolean;
+  restoredAccount: boolean;
   initialLiquidity?: boolean;
   tradingTutorial?: boolean;
   currentTimestamp: number;
@@ -396,6 +397,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       Gnosis_ENABLED,
       hasFunds,
       isLogged,
+      restoredAccount,
       loginModal,
       addFundsModal,
       hasHistory,
@@ -457,7 +459,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       />
     );
     switch (true) {
-      case !isLogged && !tradingTutorial:
+      case !restoredAccount && !isLogged && !tradingTutorial:
         actionButton = (
           <PrimaryButton
             id="login-button"
@@ -466,7 +468,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           />
         );
         break;
-      case isLogged && !hasFunds && !tradingTutorial:
+      case !restoredAccount && isLogged && !hasFunds && !tradingTutorial:
         actionButton = (
           <PrimaryButton
             id="add-funds"

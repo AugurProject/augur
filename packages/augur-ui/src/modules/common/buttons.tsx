@@ -24,7 +24,7 @@ import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import Styles from 'modules/common/buttons.styles.less';
 import { AppState } from 'appStore';
 import { MARKET_TEMPLATES } from 'modules/create-market/constants';
-import { Getters } from '@augurproject/sdk/src';
+import { Getters, TXEventName } from '@augurproject/sdk/src';
 import { addCategoryStats } from 'modules/create-market/get-template';
 import ChevronFlip from 'modules/common/chevron-flip';
 import { Link } from 'react-router-dom';
@@ -40,6 +40,8 @@ export interface DefaultButtonProps {
   noIcon?: boolean;
   subText?: string;
   pointDown?: boolean;
+  reportingStatus?: string;
+  URL?: string;
 }
 
 export interface SortButtonProps {
@@ -107,14 +109,30 @@ export interface ExternalLinkTextProps {
 }
 
 export const PrimaryButton = (props: DefaultButtonProps) => (
-  <button
-    onClick={e => props.action(e)}
-    className={Styles.PrimaryButton}
-    disabled={props.disabled}
-    title={props.title || props.text}
-  >
-    {props.text}
-  </button>
+  <>
+    {props.URL && (
+      <a href={props.URL} target="blank">
+        <button
+          onClick={e => props.action(e)}
+          className={Styles.PrimaryButton}
+          disabled={props.disabled}
+          title={props.title || props.text}
+        >
+          {props.text}
+        </button>
+      </a>
+    )}
+    {!props.URL && (
+      <button
+        onClick={e => props.action(e)}
+        className={Styles.PrimaryButton}
+        disabled={props.disabled}
+        title={props.title || props.text}
+      >
+        {props.text}
+      </button>
+    )}
+  </>
 );
 
 export const SecondaryButton = (props: DefaultButtonProps) => (
@@ -130,6 +148,22 @@ export const SecondaryButton = (props: DefaultButtonProps) => (
     {props.text}
   </button>
 );
+
+export const ProcessingButton = (props: DefaultButtonProps) => {
+  let buttonText = 'Report';
+  if (props.reportingStatus === TXEventName.Pending) {
+    buttonText = 'Processing...';
+  } else if (props.reportingStatus === TXEventName.Success) {
+    buttonText = 'Confirmed!';
+  }
+  return (
+    <PrimaryButton
+      text={buttonText}
+      action={e => props.action(e)}
+      disabled={props.disabled || props.reportingStatus}
+    />
+  );
+};
 
 export const PrimarySignInButton = (props: DefaultButtonProps) => (
   <button
@@ -208,7 +242,7 @@ export const FavoritesButton = ({
   action,
   disabled,
   title,
-  hideText
+  hideText,
 }: FavoritesButtonProps) => (
   <button
     onClick={e => action(e)}
@@ -220,8 +254,7 @@ export const FavoritesButton = ({
     title={title}
   >
     {StarIcon}
-    {!hideText &&
-      `${isFavorite ? ' Remove from' : ' Add to'} watchlist`}
+    {!hideText && `${isFavorite ? ' Remove from' : ' Add to'} watchlist`}
   </button>
 );
 
@@ -272,7 +305,9 @@ export const CancelTextButton = ({
 }: DefaultButtonProps) => (
   <button
     onClick={e => action(e)}
-    className={classNames(Styles.CancelTextButton, {[Styles.IconButton]: !text})}
+    className={classNames(Styles.CancelTextButton, {
+      [Styles.IconButton]: !text,
+    })}
     disabled={disabled}
     title={title}
   >
@@ -350,7 +385,7 @@ export const REPFaucetButton = (props: DefaultActionButtonProps) => (
     disabled={props.disabled}
     title={props.title || 'REP Faucet'}
   >
-    <span>{props.title ? props.title : "REP Faucet"}</span>
+    <span>{props.title ? props.title : 'REP Faucet'}</span>
     {RepLogoIcon}
   </button>
 );
@@ -421,14 +456,17 @@ export const ViewTransactionDetailsButton = (
 );
 
 export const ExternalLinkText = (props: ExternalLinkTextProps) => (
-  <button
-    className={Styles.ExternalLinkText}
-  >
+  <button className={Styles.ExternalLinkText}>
     {props.URL && (
-      <a href={props.URL} target='blank'>
-        {props.title
-        ? <><strong>{props.title}</strong>{props.label}</>
-        : props.label}
+      <a href={props.URL} target="blank">
+        {props.title ? (
+          <>
+            <strong>{props.title}</strong>
+            {props.label}
+          </>
+        ) : (
+          props.label
+        )}
       </a>
     )}
 
@@ -442,7 +480,7 @@ export const ExternalLinkButton = (props: ExternalLinkButtonProps) => (
       [Styles.LightAlternate]: props.light,
     })}
     onClick={e => {
-      props.action && props.action(e)
+      props.action && props.action(e);
       props.callback && props.callback();
     }}
   >

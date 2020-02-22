@@ -6,7 +6,6 @@ import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import {
-  ONBOARDING_SEEN_KEY,
   TRADING_TUTORIAL,
 } from 'modules/common/constants';
 import { windowRef } from 'utils/window-ref';
@@ -24,11 +23,6 @@ const mapStateToProps = (state: AppState) => ({
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
   track: (eventName, payload) => dispatch(track(eventName, payload)),
-  setOnboardingSeen: () => {
-    if (windowRef && windowRef.localStorage.setItem) {
-      windowRef.localStorage.setItem(ONBOARDING_SEEN_KEY, 'true');
-    }
-  },
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
@@ -56,7 +50,6 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
           }),
         });
         !sP.isTablet && dP.track(START_TEST_TRADE, {});
-        dP.setOnboardingSeen();
         dP.closeModal();
       },
     },
@@ -64,7 +57,6 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
       text: 'Finish',
       action: () => {
         !sP.isTablet && dP.track(SKIPPED_TEST_TRADE, {});
-        dP.setOnboardingSeen();
         dP.closeModal();
       },
     },

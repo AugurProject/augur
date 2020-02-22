@@ -350,6 +350,9 @@ export class MarketDB extends DerivedDB {
     log['timestamp'] = new BigNumber(log['timestamp'], 16).toNumber();
     log['creationTime'] = log['timestamp'];
     log['endTime'] = new BigNumber(log['endTime'], 16).toNumber();
+    log['outcomes'] = _.map(log['outcomes'], (rawOutcome) => {
+      return Buffer.from(rawOutcome.replace('0x', ''), 'hex').toString().trim().replace(/\0/g, '');
+    });
     try {
       log['extraInfo'] = JSON.parse(log['extraInfo']);
       log['extraInfo'].categories = log['extraInfo'].categories.map((category) => category.toLowerCase());
@@ -459,7 +462,7 @@ export class MarketDB extends DerivedDB {
 
     if (updateDocs.length > 0) {
       await this.bulkUpsertDocuments(updateDocs);
-      this.augur.events.emit(SubscriptionEventName.ReportingStateChanged, { data: updateDocs });
+      this.augur.events.emitAfter(SubscriptionEventName.NewBlock, SubscriptionEventName.ReportingStateChanged, { data: updateDocs });
     }
   }
 

@@ -42,6 +42,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
         message,
         showMetaMaskHelper,
         callback,
+        showCloseAfterDelay: true,
       })
     ),
   connectMetaMask: () => dispatch(loginWithInjectedWeb3()),
@@ -54,7 +55,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   errorModal: (error) => dispatch(
     updateModal({
       type: MODAL_ERROR,
-      error: error ? JSON.stringify(error) : ''
+      error: error ? JSON.stringify(error) : 'Sorry, please try again.',
     })
   ),
 });
@@ -62,7 +63,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 const mergeProps = (sP: any, dP: any, oP: any) => {
   const onError = (error, accountType) => {
     console.error(`ERROR:${accountType}`, error);
-    dP.errorModal(error);
+    dP.errorModal(error.message ? error.message : error ? error : '');
   };
 
   const redirect = () => {

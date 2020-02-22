@@ -120,6 +120,24 @@
         grid-column: 2 / span 1;
       }
     }
+
+    &.CustomPrimary {
+      > li:first-of-type {
+        > div:nth-of-type(2) {
+          grid-column: 1;
+        }
+      }
+    }
+    &.CustomTertiary {
+      > li:last-of-type {
+        > div:last-of-type {
+          grid-column: unset;
+          > div > input {
+            min-width: @size-210;
+          }
+        }
+      }
+    }
   }
 }
 
@@ -1592,6 +1610,10 @@ button.MaxDark {
   position: relative;
   max-height: @size-44;
   min-width: @size-210;
+
+  @media @breakpoint-mobile {
+    max-height: unset;
+  }
 
   > button {
     .text-14;

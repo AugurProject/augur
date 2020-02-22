@@ -8,6 +8,7 @@ import {
   createTemplateOutcomes,
   buildMarketDescription,
   getTemplateCategoriesList,
+  getFormattedOutcomes,
 } from 'modules/create-market/get-template';
 import { YES_NO, SCALAR, CATEGORICAL } from 'modules/common/constants';
 import {
@@ -86,24 +87,26 @@ export const TemplatePicker = ({ newMarket, updateNewMarket }) => {
             setDefaultValue(value);
             if (!value) return;
             const template = templates[value];
+            const scalarDenomination = newMarket.marketType === SCALAR && template.denomination;
+            const outcomes =
+            newMarket.marketType === CATEGORICAL
+              ? createTemplateOutcomes(template.inputs)
+              : ['', ''];
+            const outcomesFormatted = getFormattedOutcomes(newMarket.marketType, outcomes, scalarDenomination)
             updateNewMarket({
               ...deepClone<NewMarket>(EMPTY_STATE),
               description: buildMarketDescription(
                 template.question,
                 template.inputs
               ),
-              outcomes:
-                newMarket.marketType === CATEGORICAL
-                  ? createTemplateOutcomes(template.inputs)
-                  : ['', ''],
+              outcomes,
+              outcomesFormatted,
               currentStep: newMarket.currentStep,
               tickSize:
                 newMarket.marketType === SCALAR && template.tickSize
                   ? template.tickSize
                   : DEFAULT_TICK_SIZE,
-              scalarDenomination:
-                newMarket.marketType === SCALAR &&
-                template.denomination,
+              scalarDenomination,
               minPrice:
                 newMarket.marketType === SCALAR && template.minPrice
                   ? template.minPrice

@@ -43,6 +43,7 @@ import {
   TransferSingleLog,
   UniverseCreatedLog,
   UniverseForkedLog,
+  ReportingFeeChangedLog,
 } from '../logs/types';
 import { BaseSyncableDB } from './BaseSyncableDB';
 import { CancelledOrdersDB } from './CancelledOrdersDB';
@@ -105,6 +106,7 @@ export class DB {
     { EventName: 'TokenBalanceChanged', indexes: ['[universe+owner+tokenType]'], primaryKey: '[owner+token]' },
     { EventName: 'TokensMinted', indexes: [] },
     { EventName: 'TokensTransferred', indexes: [] },
+    { EventName: 'ReportingFeeChanged', indexes: ['universe'] },
     { EventName: 'TradingProceedsClaimed', indexes: ['timestamp'] },
     { EventName: 'UniverseCreated', indexes: ['childUniverse', 'parentUniverse'] },
     { EventName: 'UniverseForked', indexes: ['universe'] },
@@ -383,4 +385,5 @@ export class DB {
   get Dispute() { return this.dexieDB.table<DisputeDoc>('Dispute'); }
   get CurrentOrders() { return this.dexieDB.table<CurrentOrder>('CurrentOrders'); }
   get ZeroXOrders() { return this.dexieDB.table<StoredOrder>('ZeroXOrders'); }
+  get ReportingFeeChanged() { return this.dexieDB.table<ReportingFeeChangedLog>('ReportingFeeChanged') }
 }

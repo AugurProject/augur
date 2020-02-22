@@ -96,12 +96,14 @@ export const sendFacebookShare = (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
+  const { address } = getState().loginAccount;
   dispatch(
     track(MARKET_SHARED, {
       source: MARKET_PAGE,
       service: 'facebook',
       marketId: marketAddress,
       marketDescription: marketDescription,
+      affiliate: address
     })
   );
 };
@@ -113,12 +115,14 @@ export const sendTwitterShare = (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
+  const { address } = getState().loginAccount;
   dispatch(
     track(MARKET_SHARED, {
       source: MARKET_PAGE,
       service: 'twitter',
       marketId: marketAddress,
       marketDescription: marketDescription,
+      affiliate: address
     })
   );
 };

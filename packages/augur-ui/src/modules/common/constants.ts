@@ -498,7 +498,6 @@ export const PERIODS = [
 export const UPPER_FIXED_PRECISION_BOUND = 2;
 export const LOWER_FIXED_PRECISION_BOUND = 0;
 
-export const ONBOARDING_SEEN_KEY = 'onboardingSeen';
 export const SCALAR_MODAL_SEEN = 'scalarModalSeen';
 
 // # Modal Constants
@@ -866,6 +865,7 @@ export const TIMEFRAME_OPTIONS = [
 export const CLAIM_STAKE_FEES = 'CLAIM_STAKE_FEES';
 export const CLAIM_MARKETS_PROCEEDS = 'CLAIM_MARKETS_PROCEEDS';
 export const CREATE_MARKET = 'CREATE_MARKET';
+export const SUBMIT_REPORT = 'SUBMIT_REPORT';
 
 // Pending Queue SINGLE TYPE
 export const CLAIM_FEE_WINDOWS = 'CLAIM_FEE_WINDOWS';
@@ -1175,7 +1175,7 @@ export const DISPUTING_GUIDE = {
   content: [{
     header: 'Disputing',
     paragraphs: [
-      'After a market’s initial report, it will wait for the current dispute window to end before entering into the ‘Currently Disputing’ tab. This is the time for users to dispute a Tentative Outcome if thet believe the market has been reported on incorectly. Markets awaiting their first or next dispute round can be seen in the ‘Awaiting Next Dispute Round’ tab. An exception to this is when markets have been selected for Fast Resolution.'
+      'After a market’s initial report, it will wait for the current dispute window to end before entering into the ‘Currently Disputing’ tab. This is the time for users to dispute a Tentative Outcome if thet believe the market has been reported on incorrectly. Markets awaiting their first or next dispute round can be seen in the ‘Awaiting Next Dispute Round’ tab. An exception to this is when markets have been selected for Fast Resolution.'
     ]
   }, {
     header: 'How to dispute an outcome',

@@ -80,14 +80,16 @@ export class TestContractAPI extends ContractAPI {
 
     this.api = new API(augur, Promise.resolve(db));
 
+    const contractAddresses = augur.contractEvents.getAugurContractAddresses();
+
     this.bulkSyncStrategy = new BulkSyncStrategy(
       provider.getLogs,
-      db.logFilters.buildFilter,
+      contractAddresses,
       db.logFilters.onLogsAdded,
       augur.contractEvents.parseLogs,
     );
 
-    this.blockAndLogStreamerSyncStrategy = BlockAndLogStreamerSyncStrategy.create(provider, db.logFilters, augur.contractEvents.parseLogs)
+    this.blockAndLogStreamerSyncStrategy = BlockAndLogStreamerSyncStrategy.create(provider, contractAddresses, db.logFilters, augur.contractEvents.parseLogs)
   }
 
   sync = async (highestBlockNumberToSync?: number) => {

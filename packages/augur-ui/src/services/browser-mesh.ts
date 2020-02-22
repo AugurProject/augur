@@ -63,10 +63,6 @@ function createBrowserMeshRestartFunction(
 ) {
   return err => {
     console.error('Browser mesh error: ', err.message, err.stack);
-    if (
-      err.message ===
-      'timed out waiting for first block to be processed by Mesh node. Check your backing Ethereum RPC endpoint'
-    ) {
       console.log('Restarting Mesh Sync');
 
       // Passing `true` as the last parameter to make sure the config doesn't include custom addresses on retry
@@ -84,7 +80,6 @@ function createBrowserMeshRestartFunction(
       mesh.startAsync().then(() => {
         zeroX.mesh = mesh;
       })
-    }
   };
 }
 
