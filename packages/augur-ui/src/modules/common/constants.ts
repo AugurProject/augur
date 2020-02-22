@@ -498,7 +498,6 @@ export const PERIODS = [
 export const UPPER_FIXED_PRECISION_BOUND = 2;
 export const LOWER_FIXED_PRECISION_BOUND = 0;
 
-export const ONBOARDING_SEEN_KEY = 'onboardingSeen';
 export const SCALAR_MODAL_SEEN = 'scalarModalSeen';
 
 // # Modal Constants
