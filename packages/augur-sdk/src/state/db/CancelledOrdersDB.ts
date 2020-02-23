@@ -37,6 +37,17 @@ export class CancelledOrdersDB extends DerivedDB {
     return super.handleMergeEvent(blocknumber, logs, syncing);
   }
 
+  async getEvents(highestSyncedBlockNumber: number, eventName: string): Promise<any[]> {
+    const events = await super.getEvents(highestSyncedBlockNumber, eventName);
+    const augurEvents = [];
+    for (const event of events) {
+      try {
+        augurEvents.push(Object.assign({}, event, {parsedMakerAssetData: ZeroXOrders.parseAssetData(event.makerAssetData).orderData}));
+      } catch(e) { }
+    }
+    return augurEvents;
+  }
+
   protected processDoc(log: ParsedLog): ParsedLog {
     const cancelLog: CancelLogWithMakerAssetData = log as unknown as CancelLogWithMakerAssetData;
     const {

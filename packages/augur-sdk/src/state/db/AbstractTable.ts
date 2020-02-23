@@ -1,4 +1,5 @@
 import { Dexie } from 'dexie';
+import * as _ from 'lodash';
 
 export type PrimitiveID = string | number | Date;
 
@@ -59,7 +60,7 @@ export abstract class AbstractTable {
     await this.table.bulkAdd(documents);
   }
 
-  protected async bulkPutDocuments(documents: BaseDocument[]): Promise<void> {
+  protected async bulkPutDocuments(documents: BaseDocument[], documentIds?: any[]): Promise<void> {
     for (const document of documents) {
       delete document.constructor;
     }
@@ -67,10 +68,15 @@ export abstract class AbstractTable {
   }
 
   protected async bulkUpsertDocuments(documents: BaseDocument[]): Promise<void> {
-    for (const document of documents) {
-      const documentID = this.getIDValue(document);
-      await this.upsertDocument(documentID, document);
+    const documentIds = _.map(documents, this.getIDValue.bind(this));
+    const existingDocuments = await this.table.bulkGet(documentIds);
+    let docIndex = 0;
+    for (let existingDocument of existingDocuments) {
+      existingDocuments[docIndex] = Object.assign(existingDocument || {}, documents[docIndex]);
+      delete existingDocuments.constructor;
+      docIndex++;
     }
+    this.bulkPutDocuments(existingDocuments, documentIds);
   }
 
   protected async saveDocuments(documents: BaseDocument[]): Promise<void> {
