@@ -327,8 +327,8 @@ export default class MarketView extends Component<
     }
   }
 
-  updateSelectedOutcomeSwitch(selectedOutcomeId) {
-    this.updateSelectedOutcome(selectedOutcomeId);
+  updateSelectedOutcomeSwitch(selectedOutcomeId, keepOrder) {
+    this.updateSelectedOutcome(selectedOutcomeId, keepOrder);
 
     FindReact(document.getElementById('tabs_mobileView')).handleClick(null, 1);
   }
@@ -610,7 +610,6 @@ export default class MarketView extends Component<
       const newOrderBook = orders.filter(order => !order.disappear);
       outcomeOrderBook = formatOrderBook(newOrderBook);
     }
-
     return (
       <div
         ref={node => {

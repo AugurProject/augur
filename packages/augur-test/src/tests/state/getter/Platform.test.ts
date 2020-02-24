@@ -1,7 +1,4 @@
 import { ContractInterfaces } from '@augurproject/core';
-import { DB } from '@augurproject/sdk/build/state/db/DB';
-import { API } from '@augurproject/sdk/build/state/getter/API';
-import { BulkSyncStrategy } from '@augurproject/sdk/build/state/sync/BulkSyncStrategy';
 import {
   ACCOUNTS,
   ContractAPI,
@@ -9,34 +6,28 @@ import {
   fork,
   loadSeedFile,
 } from '@augurproject/tools';
+import { TestContractAPI } from '@augurproject/tools';
 import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
 import { BigNumber } from 'bignumber.js';
-import { makeDbMock, makeProvider } from '../../../libs';
-
-const mock = makeDbMock();
+import { makeProvider } from '../../../libs';
 
 describe('State API :: get-platform-activity-stats :: ', () => {
-  let db: Promise<DB>;
-  let api: API;
-  let john: ContractAPI;
-  let mary: ContractAPI;
-  let bulkSyncStrategy: BulkSyncStrategy;
+  let john: TestContractAPI;
+  let mary: TestContractAPI;
 
   beforeAll(async () => {
     const seed = await loadSeedFile(defaultSeedPath);
     const provider = await makeProvider(seed, ACCOUNTS);
 
-    john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, seed.addresses);
-    mary = await ContractAPI.userWrapper(ACCOUNTS[1], provider, seed.addresses);
-
-    db = mock.makeDB(john.augur, ACCOUNTS);
-    api = new API(john.augur, db);
-
-    bulkSyncStrategy = new BulkSyncStrategy(
-      john.provider.getLogs,
-      (await db).logFilters.buildFilter,
-      (await db).logFilters.onLogsAdded,
-      john.augur.contractEvents.parseLogs,
+    john = await TestContractAPI.userWrapper(
+      ACCOUNTS[0],
+      provider,
+      seed.addresses
+    );
+    mary = await TestContractAPI.userWrapper(
+      ACCOUNTS[1],
+      provider,
+      seed.addresses
     );
 
     await john.approveCentralAuthority();
@@ -83,14 +74,14 @@ describe('State API :: get-platform-activity-stats :: ', () => {
     await john.buyCompleteSets(yesNoMarket, numberOfCompleteSets);
     await john.sellCompleteSets(yesNoMarket, numberOfCompleteSets);
 
-    await bulkSyncStrategy.start(0, await john.provider.getBlockNumber());
-    const markets = await api.route('getMarketsInfo', {
+    await john.sync();
+    const markets = await john.api.route('getMarketsInfo', {
       marketIds: [yesNoMarket.address],
     });
     await fork(john, markets[0]);
-    await bulkSyncStrategy.start(0, await john.provider.getBlockNumber());
+    await john.sync();
 
-    const stats = await api.route('getPlatformActivityStats', {
+    const stats = await john.api.route('getPlatformActivityStats', {
       universe: universe.address,
     });
 

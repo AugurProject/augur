@@ -2,13 +2,12 @@ import { createBigNumber } from "utils/create-big-number";
 import {
   BUY, INVALID_OUTCOME_ID, MODAL_ERROR,
 } from "modules/common/constants";
-import logError from "utils/log-error";
 import { AppState } from "store";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { placeTrade, approveToTrade } from "modules/contracts/actions/contractCalls";
 import { Getters, TXEventName } from "@augurproject/sdk";
-import { addPendingOrder, removePendingOrder, updatePendingOrderStatus } from "modules/orders/actions/pending-orders-management";
+import { addPendingOrder, removePendingOrder, updatePendingOrderStatus, generatePendingOrderId } from "modules/orders/actions/pending-orders-management";
 import { convertUnixToFormattedDate } from "utils/format-date";
 import { generateTradeGroupId } from "utils/generate-trade-group-id";
 import { getOutcomeNameWithOutcome } from "utils/get-outcome";
@@ -19,7 +18,6 @@ export const placeMarketTrade = ({
   outcomeId,
   tradeInProgress,
   doNotCreateOrders,
-  callback = logError,
 }: any) => async (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   if (!marketId) return null;
   const { marketInfos, loginAccount, blockchain } = getState();
@@ -39,9 +37,7 @@ export const placeMarketTrade = ({
   const displayAmount = tradeInProgress.numShares;
   const orderType = tradeInProgress.side === BUY ? 0 : 1;
   const expirationTime = tradeInProgress.expirationTime ? createBigNumber(tradeInProgress.expirationTime) : undefined;
-
-  const fingerprint = undefined; // TODO: get this from state
-  const tradeGroupId = generateTradeGroupId();
+  const tradeGroupId = generatePendingOrderId(displayAmount, displayPrice, outcomeId, marketId, market.tickSize, market.minPrice);
   dispatch(addPendingOrder(
     {
       ...tradeInProgress,
@@ -64,7 +60,6 @@ export const placeMarketTrade = ({
     market.id,
     market.numOutcomes,
     parseInt(outcomeId, 10),
-    fingerprint,
     doNotCreateOrders,
     market.numTicks,
     market.minPrice,
@@ -73,11 +68,8 @@ export const placeMarketTrade = ({
     displayPrice,
     userShares,
     expirationTime,
-  ).then(() => {
-    dispatch(removePendingOrder(tradeGroupId, market.id));
-    callback(null, null)
-  })
-    .catch((err) => {
+    tradeGroupId,
+  ).catch((err) => {
       console.log(err);
       dispatch(
         updateModal({
@@ -88,6 +80,5 @@ export const placeMarketTrade = ({
       dispatch(
         updatePendingOrderStatus(tradeGroupId, marketId, TXEventName.Failure, null)
       );
-      callback(err, null)
     });
 };

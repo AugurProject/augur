@@ -10,7 +10,6 @@ export const data = [
       '0xcc3e95975e8bb2a265afb84708d3ecbaca8f81bcfd7e697882715ab8a363a369',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -28,7 +27,6 @@ export const data = [
       '0x85b57152d8a1df5166654463b780d4b9908d5c2a6c63a510e13f8b7563f93c10',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -46,7 +44,6 @@ export const data = [
       '0x874f97db792f5b625357fb32cc39de5a8a13eeb450e83d3cff1f77db675c852e',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -64,7 +61,6 @@ export const data = [
       '0x0712587a0f7b4386a541cf9350ed026f8b829d248ff261c2347b50d28a47fe37',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -82,7 +78,6 @@ export const data = [
       '0xa16df2ced184cb2f133cb25b21e388a5eb70832bc230dd997ede477eb88e1175',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -100,7 +95,6 @@ export const data = [
       '0xd8cf03d0e0a904922c5730549ad55fcaca0c13e4ad132723dd622c76b58b9ad5',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -118,7 +112,6 @@ export const data = [
       '0x6abc54cb707cddbe3dd800889eda97b06f851dd8e639d950a1b39cf9e4874f8f',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -136,7 +129,6 @@ export const data = [
       '0x6633fa980338594da0865f83230a09d002237179eae0dbf7da7df3c4bf738098',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -154,7 +146,6 @@ export const data = [
       '0x07907abb5ebc7724e4fb000a8479e27019ce562e5d86c7dccd8c9940a55d004a',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -172,11 +163,6 @@ export const data = [
       '0x9d85c2d88de80a938c24689d8b0cfef61e0463a40911d8902b41051614ff8c48',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
-    removed: false,
-    address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
-    data:
-      '0x0000000000000000000000002adaeaf11753515a37a3d50cecb636cf72ae48544f4943617368466163746f727900000000000000000000000000000000000000',
     topics: [
       '0xa037dd0e01f0488a530cb17065a6d2f284fae016004fc744ee2a41d5cacf85d5',
     ],
@@ -190,7 +176,6 @@ export const data = [
       '0x4ae9c3517b950c9b1224a759797f4c95a3e67184d1be55638f0f04bd5c42cae0',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -208,7 +193,6 @@ export const data = [
       '0x2b8a575852148c77237a841477daeea6ad195edc2bf5ef020afd7dd869e7ede8',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -226,7 +210,6 @@ export const data = [
       '0x8db01b55a0a7e9d2ec2333c7c15eb7b6b432e4e5f7d3075ccd6b75cd65950e9d',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -244,7 +227,6 @@ export const data = [
       '0x8c5df496c42bafad7f96c4a2b9e7f294d3f4c220bffa51c6f34e75ab91ee754a',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -262,7 +244,6 @@ export const data = [
       '0x8dc9dd7502be5d471c56cb03cabdbf86ceda6d47123ddfd36060c2f35c9118b8',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -280,7 +261,6 @@ export const data = [
       '0xad57c64eb3e870b2dd11aed620f0fb91b16be1844d12ee8a515eab02c8efd313',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -298,7 +278,6 @@ export const data = [
       '0x9550e3e0b4ed8a7d05bbae95ecdd1fe1ec235c14aca773c8d7984436cfd2be03',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -316,7 +295,6 @@ export const data = [
       '0x9e8596081ac16bd0a1be649ab2ef09a6aa775461ce1df477631ea2d682a7c67b',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -334,7 +312,6 @@ export const data = [
       '0xbc38a75bd03c7c7997c52ae3d5295aa4ff129c5ef4cfe87685d50d3d711b3f11',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -352,7 +329,6 @@ export const data = [
       '0x5aca8cf0b1286e3cc03fdfeee79d834329ba2d5e23df4afc191bb8de180a3f37',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -370,7 +346,6 @@ export const data = [
       '0xbaf8d8babd26ed7a6ef5675e6770be4d58fc270cc829e6bdd8b7c926ebb9c532',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -388,7 +363,6 @@ export const data = [
       '0x9306ecf696b370e871c4959255521fd9d85a415c7c90c95f5e356b7696ca2868',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -406,7 +380,6 @@ export const data = [
       '0xb4b16b85f02a6b39315d8bd0f38af6566266fc35f31e99d3657f654aa43e31ba',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -424,7 +397,6 @@ export const data = [
       '0xc128710af249673163b620d6fa163bc82220a259d82b334bea1a59b694401ad4',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -442,7 +414,6 @@ export const data = [
       '0x005569e21be9b2792e1a70cacbcbae3b34131f80c09b2881ec903cef063ec134',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -460,7 +431,6 @@ export const data = [
       '0xd12efa3c2c82d69f00cea974fde2cb48c8c6246691bac5a074350fdf8f436d04',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -478,7 +448,6 @@ export const data = [
       '0x137e68d264312fe2caf85e59feb3ac74cf1672d3b15dad31fe1e518128b19721',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -496,7 +465,6 @@ export const data = [
       '0x9223e92b524be85b2e3b695835cb513a539f37fbb443be5d9b2e53e11fa11e1b',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -514,7 +482,6 @@ export const data = [
       '0x322fb9f28e4136ce97089329811ca033bc28f1a45d66c9e4c30bceb29ad7ea82',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -532,7 +499,6 @@ export const data = [
       '0xfad9f559cf341804f1088597d90c0f37ee619d5fb419d6f3e70452d312e1f865',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -550,7 +516,6 @@ export const data = [
       '0x5f96ee99287617668d72bc0f8958d25c17c618db68c4095917cecbab5983209c',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -568,7 +533,6 @@ export const data = [
       '0xb66dcc4d2a4ac036ca0c21e317c193559f064d9ac0f06c6669e3a3503a0f31f3',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -586,7 +550,6 @@ export const data = [
       '0xfd108fe414614d9dfe92f5aadea9ab26ea43655f55f164e1a689cc9010c6ef2c',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -604,7 +567,6 @@ export const data = [
       '0x639dcd42a5ec906053fd1cbcde33a47b494ad4c3facd3213be2c4ce2b0b2ce58',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -622,7 +584,6 @@ export const data = [
       '0xfff8c39cdc979ad22f2341079e9c3d7131397a83ea3d2a4d2d61f85b0c7a8abf',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -640,7 +601,6 @@ export const data = [
       '0x7929dd11c9aa7dbc695bd7014ce6219825ad4459344a05490b28f916c9b15245',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -658,7 +618,6 @@ export const data = [
       '0xe8c23361f6d8d0c7d77ae296b0e69e8a07e69c7c402d2d31935761316ce6c91c',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -676,7 +635,6 @@ export const data = [
       '0xdfde386cff2a5134c409fb6beb0c02659642fa7855994b1247c876554f164baf',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -694,7 +652,6 @@ export const data = [
       '0xeb9cc7ae5da82a9c56800ec0ddf038ecc0758418eddbb70c1b3c5ca618a9441f',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -712,7 +669,6 @@ export const data = [
       '0xaf0478e784a93e3564ffb095de43ca7943d5869e3b7e2fe378829ce6ccfa9c3e',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -730,7 +686,6 @@ export const data = [
       '0xd674ab8b166882e300b6a43c6d0cbd04e22f01884a33dc566ea04ccd7a1c7414',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -748,7 +703,6 @@ export const data = [
       '0x949df221a440ecf2169e67e1d2513b290959a7847d9119b49fe58d9676d6454a',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -766,7 +720,6 @@ export const data = [
       '0x37801c0fa71d261626535632018b1fbce66614dbb40237dd20a2e741f84442c7',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x15152AaDcA3C571B0Ba332e1020FCeA43F95A3F9',
     data:
@@ -784,7 +737,6 @@ export const data = [
       '0xd5e2b3803567ab5caaaccf2f55a3113d67eacbaad13bd6f892247a1b2617aa4f',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x15152AaDcA3C571B0Ba332e1020FCeA43F95A3F9',
     data:
@@ -802,7 +754,6 @@ export const data = [
       '0x83f9710f9764ac8f98a4e55dd1f80f814f959ebaf3ea9c5d7d15a7e30bffba07',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x850212e53c1d8898740dd776E78C77B87D94F234',
     data: '0x',
@@ -821,7 +772,6 @@ export const data = [
       '0x725f93b4727abb611adfa66d44e00c5efc9694692f2de6f9d776a1e64c0bf481',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xf33A8Abcf994BAFCb28682f08c48015A57EA35d3',
     data: '0x',
@@ -840,7 +790,6 @@ export const data = [
       '0x7e955afed9ab3b6048cf295510bae16b3b0746a021344e24cf4d6e5e74bba5fd',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -858,7 +807,6 @@ export const data = [
       '0xce10b52ca0ee343bdecb15b59af8c3c3754be769f2399115f0b31d000bcaab29',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x575F3c652894360F4b7655379EA1eae53381e012',
     data: '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
@@ -877,7 +825,6 @@ export const data = [
       '0x7daa7f0149486ffd4195eb4c5597e43cc86df916f32b1c5ea9c98b70318e3559',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xE78A332d0f96AA9A56b876C20125ba8A88619D07',
     data: '0x0000000000000000000000000000000000000000000000000000000000000001',
@@ -896,7 +843,6 @@ export const data = [
       '0x7daa7f0149486ffd4195eb4c5597e43cc86df916f32b1c5ea9c98b70318e3559',
     logIndex: 1,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x575F3c652894360F4b7655379EA1eae53381e012',
     data: '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
@@ -915,7 +861,6 @@ export const data = [
       '0x7daa7f0149486ffd4195eb4c5597e43cc86df916f32b1c5ea9c98b70318e3559',
     logIndex: 2,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xE78A332d0f96AA9A56b876C20125ba8A88619D07',
     data: '0x0000000000000000000000000000000000000000000000000000000000000001',
@@ -934,7 +879,6 @@ export const data = [
       '0x7daa7f0149486ffd4195eb4c5597e43cc86df916f32b1c5ea9c98b70318e3559',
     logIndex: 3,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x575F3c652894360F4b7655379EA1eae53381e012',
     data: '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
@@ -953,7 +897,6 @@ export const data = [
       '0x7daa7f0149486ffd4195eb4c5597e43cc86df916f32b1c5ea9c98b70318e3559',
     logIndex: 4,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xE78A332d0f96AA9A56b876C20125ba8A88619D07',
     data: '0x0000000000000000000000000000000000000000000000000000000000000001',
@@ -972,7 +915,6 @@ export const data = [
       '0x7daa7f0149486ffd4195eb4c5597e43cc86df916f32b1c5ea9c98b70318e3559',
     logIndex: 5,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x575F3c652894360F4b7655379EA1eae53381e012',
     data: '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
@@ -991,7 +933,6 @@ export const data = [
       '0xa2dd461ecc5b7f6ec406164d5f3d28d2b4ab774395246fbdb1255c773d1757fc',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data: '0x0000000000000000000000000000000000000000000000000000000050639702',
@@ -1008,7 +949,6 @@ export const data = [
       '0x8b2c8ef53f60d970fa104dd5d96f2c3fd359169e087cdd2a3ce7d858de0a0bc5',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x1FD9274a2FE0E86f5A7b5Bde57b93C8C9b62e21d',
     data: '0x',
@@ -1028,7 +968,6 @@ export const data = [
       '0x8b2c8ef53f60d970fa104dd5d96f2c3fd359169e087cdd2a3ce7d858de0a0bc5',
     logIndex: 1,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x1FD9274a2FE0E86f5A7b5Bde57b93C8C9b62e21d',
     data: '0x',
@@ -1048,7 +987,6 @@ export const data = [
       '0x48c60f440339a5dd2ef4346cd55c434af8891e8f1a620ac943959f68b81aad13',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x948FE39685DF87B87004a37DcB92Bd18c6D70a5e',
     data:
@@ -1068,7 +1006,6 @@ export const data = [
       '0x48c60f440339a5dd2ef4346cd55c434af8891e8f1a620ac943959f68b81aad13',
     logIndex: 1,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x948FE39685DF87B87004a37DcB92Bd18c6D70a5e',
     data: '0x0000000000000000000000000000000000000000000000000000000000000001',
@@ -1087,7 +1024,6 @@ export const data = [
       '0x48c60f440339a5dd2ef4346cd55c434af8891e8f1a620ac943959f68b81aad13',
     logIndex: 2,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x948FE39685DF87B87004a37DcB92Bd18c6D70a5e',
     data:
@@ -1107,7 +1043,6 @@ export const data = [
       '0x90a827889374640a8117e892af1f664342362a386e72cffd19365a97b8a2eb4f',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x1FD9274a2FE0E86f5A7b5Bde57b93C8C9b62e21d',
     data: '0x',
@@ -1127,7 +1062,6 @@ export const data = [
       '0x90a827889374640a8117e892af1f664342362a386e72cffd19365a97b8a2eb4f',
     logIndex: 1,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x1FD9274a2FE0E86f5A7b5Bde57b93C8C9b62e21d',
     data: '0x',
@@ -1147,7 +1081,6 @@ export const data = [
       '0x90a827889374640a8117e892af1f664342362a386e72cffd19365a97b8a2eb4f',
     logIndex: 2,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x575F3c652894360F4b7655379EA1eae53381e012',
     data: '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
@@ -1166,7 +1099,6 @@ export const data = [
       '0x90a827889374640a8117e892af1f664342362a386e72cffd19365a97b8a2eb4f',
     logIndex: 3,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x1FD9274a2FE0E86f5A7b5Bde57b93C8C9b62e21d',
     data: '0x',
@@ -1186,7 +1118,6 @@ export const data = [
       '0x90a827889374640a8117e892af1f664342362a386e72cffd19365a97b8a2eb4f',
     logIndex: 4,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x1FD9274a2FE0E86f5A7b5Bde57b93C8C9b62e21d',
     data: '0x',
@@ -1206,7 +1137,6 @@ export const data = [
       '0x90a827889374640a8117e892af1f664342362a386e72cffd19365a97b8a2eb4f',
     logIndex: 5,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x575F3c652894360F4b7655379EA1eae53381e012',
     data: '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
@@ -1225,7 +1155,6 @@ export const data = [
       '0x90a827889374640a8117e892af1f664342362a386e72cffd19365a97b8a2eb4f',
     logIndex: 6,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -1245,7 +1174,6 @@ export const data = [
       '0x481bf90efe24e160a7ad1711cb6fc3083f927aa6f9d3294125b9ea5a2261d419',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x948FE39685DF87B87004a37DcB92Bd18c6D70a5e',
     data: '0x0000000000000000000000000000000000000000000000000000000000000001',
@@ -1264,7 +1192,6 @@ export const data = [
       '0x6a455c500887dbea0e45bb8b6d97a749e86493127493d2ca03c1511486e1b21e',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x948FE39685DF87B87004a37DcB92Bd18c6D70a5e',
     data: '0x0000000000000000000000000000000000000000000000000000000000000001',
@@ -1283,7 +1210,6 @@ export const data = [
       '0x6a455c500887dbea0e45bb8b6d97a749e86493127493d2ca03c1511486e1b21e',
     logIndex: 1,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x0fF6ee01f88145298761a29A0372Ed24E16E73B1',
     data:
@@ -1303,7 +1229,6 @@ export const data = [
       '0x6a455c500887dbea0e45bb8b6d97a749e86493127493d2ca03c1511486e1b21e',
     logIndex: 2,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x0fF6ee01f88145298761a29A0372Ed24E16E73B1',
     data: '0x0000000000000000000000000000000000000000000000000000000000000001',
@@ -1322,7 +1247,6 @@ export const data = [
       '0x6a455c500887dbea0e45bb8b6d97a749e86493127493d2ca03c1511486e1b21e',
     logIndex: 3,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -1343,7 +1267,6 @@ export const data = [
       '0x6a455c500887dbea0e45bb8b6d97a749e86493127493d2ca03c1511486e1b21e',
     logIndex: 4,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -1363,7 +1286,6 @@ export const data = [
       '0x1f3cf2e90234931543eafe50fe9dacdb85cc30868a5d7149a3b71a680a85096e',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x575F3c652894360F4b7655379EA1eae53381e012',
     data: '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
@@ -1382,7 +1304,6 @@ export const data = [
       '0x6848f441e3f9b56a2967378ae1a4a1b75f862831501ae8c49e19180975b6dc84',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x575F3c652894360F4b7655379EA1eae53381e012',
     data: '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
@@ -1401,7 +1322,6 @@ export const data = [
       '0x4477de9cf08897cc7b73735f762130371a51cf7658841cc0de4c27ded9e76c3f',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xE78A332d0f96AA9A56b876C20125ba8A88619D07',
     data: '0x0000000000000000000000000000000000000000000000000000000000000001',
@@ -1420,7 +1340,6 @@ export const data = [
       '0xbef4f1b1b103a82922639c5f8aab5de9c0933de328cac7ba6f8b2f13414bba7b',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x575F3c652894360F4b7655379EA1eae53381e012',
     data: '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
@@ -1439,7 +1358,6 @@ export const data = [
       '0x2d2b1b58f329ff894e565b0a0b74a0728957fb0f41d231929208e97f5f40d167',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xE78A332d0f96AA9A56b876C20125ba8A88619D07',
     data: '0x0000000000000000000000000000000000000000000000000000000000000001',
@@ -1458,7 +1376,6 @@ export const data = [
       '0x4357db20e925075cb5f9ee309b71c360c990e03f4714bc78cc7ba04802f4594a',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x575F3c652894360F4b7655379EA1eae53381e012',
     data: '0x0000000000000000000000000000000000000000000000008ac7230489e80000',
@@ -1476,7 +1393,6 @@ export const data = [
       '0x4357db20e925075cb5f9ee309b71c360c990e03f4714bc78cc7ba04802f4594a',
     logIndex: 1,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x575F3c652894360F4b7655379EA1eae53381e012',
     data: '0x0000000000000000000000000000000000000000000000008ac7230489e80000',
@@ -1495,7 +1411,6 @@ export const data = [
       '0x304bc4d971937abd3febaeaa0ac2def870794c4d0c927e606121ee7a602105ab',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x0fF6ee01f88145298761a29A0372Ed24E16E73B1',
     data:
@@ -1515,7 +1430,6 @@ export const data = [
       '0x304bc4d971937abd3febaeaa0ac2def870794c4d0c927e606121ee7a602105ab',
     logIndex: 1,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x0fF6ee01f88145298761a29A0372Ed24E16E73B1',
     data: '0x00000000000000000000000000000000000000000000000004da50a323a12dd3',
@@ -1534,7 +1448,6 @@ export const data = [
       '0x304bc4d971937abd3febaeaa0ac2def870794c4d0c927e606121ee7a602105ab',
     logIndex: 2,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -1555,7 +1468,6 @@ export const data = [
       '0x304bc4d971937abd3febaeaa0ac2def870794c4d0c927e606121ee7a602105ab',
     logIndex: 3,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -1575,7 +1487,6 @@ export const data = [
       '0x045627f41884e05c3a693fc9df8ada7844e2a08c2c23e31ae83fc338a3ce1e11',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x1FD9274a2FE0E86f5A7b5Bde57b93C8C9b62e21d',
     data: '0x',
@@ -1595,7 +1506,6 @@ export const data = [
       '0x045627f41884e05c3a693fc9df8ada7844e2a08c2c23e31ae83fc338a3ce1e11',
     logIndex: 1,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x1FD9274a2FE0E86f5A7b5Bde57b93C8C9b62e21d',
     data: '0x',
@@ -1615,7 +1525,6 @@ export const data = [
       '0x045627f41884e05c3a693fc9df8ada7844e2a08c2c23e31ae83fc338a3ce1e11',
     logIndex: 2,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -1634,7 +1543,6 @@ export const data = [
       '0x045627f41884e05c3a693fc9df8ada7844e2a08c2c23e31ae83fc338a3ce1e11',
     logIndex: 3,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x1FD9274a2FE0E86f5A7b5Bde57b93C8C9b62e21d',
     data: '0x',
@@ -1654,7 +1562,6 @@ export const data = [
       '0x045627f41884e05c3a693fc9df8ada7844e2a08c2c23e31ae83fc338a3ce1e11',
     logIndex: 4,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x1FD9274a2FE0E86f5A7b5Bde57b93C8C9b62e21d',
     data: '0x',
@@ -1674,7 +1581,6 @@ export const data = [
       '0x045627f41884e05c3a693fc9df8ada7844e2a08c2c23e31ae83fc338a3ce1e11',
     logIndex: 5,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -1693,7 +1599,6 @@ export const data = [
       '0x045627f41884e05c3a693fc9df8ada7844e2a08c2c23e31ae83fc338a3ce1e11',
     logIndex: 6,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data: '0x00000000000000000000000000000000000000000000000004da50a323a12dd3',
@@ -1711,7 +1616,6 @@ export const data = [
       '0x045627f41884e05c3a693fc9df8ada7844e2a08c2c23e31ae83fc338a3ce1e11',
     logIndex: 7,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data: '0x00000000000000000000000000000000000000000000000004da50a323a12dd3',
@@ -1729,7 +1633,6 @@ export const data = [
       '0x045627f41884e05c3a693fc9df8ada7844e2a08c2c23e31ae83fc338a3ce1e11',
     logIndex: 8,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x0fF6ee01f88145298761a29A0372Ed24E16E73B1',
     data:
@@ -1750,7 +1653,6 @@ export const data = [
       '0x045627f41884e05c3a693fc9df8ada7844e2a08c2c23e31ae83fc338a3ce1e11',
     logIndex: 9,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x0fF6ee01f88145298761a29A0372Ed24E16E73B1',
     data: '0x00000000000000000000000000000000000000000000000004da50a323a12dd3',
@@ -1769,7 +1671,6 @@ export const data = [
       '0x045627f41884e05c3a693fc9df8ada7844e2a08c2c23e31ae83fc338a3ce1e11',
     logIndex: 10,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -1790,7 +1691,6 @@ export const data = [
       '0x045627f41884e05c3a693fc9df8ada7844e2a08c2c23e31ae83fc338a3ce1e11',
     logIndex: 11,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -1810,7 +1710,6 @@ export const data = [
       '0x045627f41884e05c3a693fc9df8ada7844e2a08c2c23e31ae83fc338a3ce1e11',
     logIndex: 12,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -1830,7 +1729,6 @@ export const data = [
       '0x045627f41884e05c3a693fc9df8ada7844e2a08c2c23e31ae83fc338a3ce1e11',
     logIndex: 13,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x0fF6ee01f88145298761a29A0372Ed24E16E73B1',
     data:
@@ -1851,7 +1749,6 @@ export const data = [
       '0x045627f41884e05c3a693fc9df8ada7844e2a08c2c23e31ae83fc338a3ce1e11',
     logIndex: 14,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x0fF6ee01f88145298761a29A0372Ed24E16E73B1',
     data: '0x00000000000000000000000000000000000000000000000004da50a323a12dd3',
@@ -1870,7 +1767,6 @@ export const data = [
       '0x045627f41884e05c3a693fc9df8ada7844e2a08c2c23e31ae83fc338a3ce1e11',
     logIndex: 15,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -1891,7 +1787,6 @@ export const data = [
       '0x045627f41884e05c3a693fc9df8ada7844e2a08c2c23e31ae83fc338a3ce1e11',
     logIndex: 16,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -1911,7 +1806,6 @@ export const data = [
       '0x045627f41884e05c3a693fc9df8ada7844e2a08c2c23e31ae83fc338a3ce1e11',
     logIndex: 17,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -1931,7 +1825,6 @@ export const data = [
       '0x045627f41884e05c3a693fc9df8ada7844e2a08c2c23e31ae83fc338a3ce1e11',
     logIndex: 18,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data: '0x0000000000000000000000000000000000000000000000008ac7230489e80000',
@@ -1949,7 +1842,6 @@ export const data = [
       '0x045627f41884e05c3a693fc9df8ada7844e2a08c2c23e31ae83fc338a3ce1e11',
     logIndex: 19,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x575F3c652894360F4b7655379EA1eae53381e012',
     data: '0x0000000000000000000000000000000000000000000000008ac7230489e80000',
@@ -1968,7 +1860,6 @@ export const data = [
       '0x045627f41884e05c3a693fc9df8ada7844e2a08c2c23e31ae83fc338a3ce1e11',
     logIndex: 20,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x575F3c652894360F4b7655379EA1eae53381e012',
     data: '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
@@ -1987,7 +1878,6 @@ export const data = [
       '0x045627f41884e05c3a693fc9df8ada7844e2a08c2c23e31ae83fc338a3ce1e11',
     logIndex: 21,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x575F3c652894360F4b7655379EA1eae53381e012',
     data: '0x0000000000000000000000000000000000000000000000008ac7230489e80000',
@@ -2006,7 +1896,6 @@ export const data = [
       '0x045627f41884e05c3a693fc9df8ada7844e2a08c2c23e31ae83fc338a3ce1e11',
     logIndex: 22,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x575F3c652894360F4b7655379EA1eae53381e012',
     data: '0x0000000000000000000000000000000000000000000000008ac7230489e80000',
@@ -2024,7 +1913,6 @@ export const data = [
       '0x045627f41884e05c3a693fc9df8ada7844e2a08c2c23e31ae83fc338a3ce1e11',
     logIndex: 23,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -2044,7 +1932,6 @@ export const data = [
       '0x1f08b2c3989bc1e9ac5af68aa4cb704b31aa191c94af6f6e7bb7597fe3045f2b',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x575F3c652894360F4b7655379EA1eae53381e012',
     data: '0x0000000000000000000000000000000000000000000000008ac7230489e80000',
@@ -2062,7 +1949,6 @@ export const data = [
       '0x1f08b2c3989bc1e9ac5af68aa4cb704b31aa191c94af6f6e7bb7597fe3045f2b',
     logIndex: 1,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x575F3c652894360F4b7655379EA1eae53381e012',
     data: '0x0000000000000000000000000000000000000000000000008ac7230489e80000',
@@ -2081,7 +1967,6 @@ export const data = [
       '0x8b846ff42b24e0425ea0ebf3920a3167286d57d6a79180daf31417940fd2b659',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x0fF6ee01f88145298761a29A0372Ed24E16E73B1',
     data:
@@ -2101,7 +1986,6 @@ export const data = [
       '0x8b846ff42b24e0425ea0ebf3920a3167286d57d6a79180daf31417940fd2b659',
     logIndex: 1,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x0fF6ee01f88145298761a29A0372Ed24E16E73B1',
     data: '0x00000000000000000000000000000000000000000000000004da50a323a12dd3',
@@ -2120,7 +2004,6 @@ export const data = [
       '0x8b846ff42b24e0425ea0ebf3920a3167286d57d6a79180daf31417940fd2b659',
     logIndex: 2,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -2141,7 +2024,6 @@ export const data = [
       '0x8b846ff42b24e0425ea0ebf3920a3167286d57d6a79180daf31417940fd2b659',
     logIndex: 3,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -2161,7 +2043,6 @@ export const data = [
       '0x5c92ffaae1778dd867d639423ea8781a198cc5f5c18188d909941a0521aaf605',
     logIndex: 0,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x0fF6ee01f88145298761a29A0372Ed24E16E73B1',
     data:
@@ -2182,7 +2063,6 @@ export const data = [
       '0x5c92ffaae1778dd867d639423ea8781a198cc5f5c18188d909941a0521aaf605',
     logIndex: 1,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x0fF6ee01f88145298761a29A0372Ed24E16E73B1',
     data: '0x00000000000000000000000000000000000000000000000004da50a323a12dd3',
@@ -2201,7 +2081,6 @@ export const data = [
       '0x5c92ffaae1778dd867d639423ea8781a198cc5f5c18188d909941a0521aaf605',
     logIndex: 2,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -2222,7 +2101,6 @@ export const data = [
       '0x5c92ffaae1778dd867d639423ea8781a198cc5f5c18188d909941a0521aaf605',
     logIndex: 3,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -2242,7 +2120,6 @@ export const data = [
       '0x5c92ffaae1778dd867d639423ea8781a198cc5f5c18188d909941a0521aaf605',
     logIndex: 4,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -2262,7 +2139,6 @@ export const data = [
       '0x5c92ffaae1778dd867d639423ea8781a198cc5f5c18188d909941a0521aaf605',
     logIndex: 5,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x0fF6ee01f88145298761a29A0372Ed24E16E73B1',
     data:
@@ -2283,7 +2159,6 @@ export const data = [
       '0x5c92ffaae1778dd867d639423ea8781a198cc5f5c18188d909941a0521aaf605',
     logIndex: 6,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x0fF6ee01f88145298761a29A0372Ed24E16E73B1',
     data: '0x00000000000000000000000000000000000000000000000004da50a323a12dd3',
@@ -2302,7 +2177,6 @@ export const data = [
       '0x5c92ffaae1778dd867d639423ea8781a198cc5f5c18188d909941a0521aaf605',
     logIndex: 7,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -2323,7 +2197,6 @@ export const data = [
       '0x5c92ffaae1778dd867d639423ea8781a198cc5f5c18188d909941a0521aaf605',
     logIndex: 8,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -2343,7 +2216,6 @@ export const data = [
       '0x5c92ffaae1778dd867d639423ea8781a198cc5f5c18188d909941a0521aaf605',
     logIndex: 9,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:
@@ -2363,7 +2235,6 @@ export const data = [
       '0x5c92ffaae1778dd867d639423ea8781a198cc5f5c18188d909941a0521aaf605',
     logIndex: 10,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x575F3c652894360F4b7655379EA1eae53381e012',
     data: '0x0000000000000000000000000000000000000000000000008ac7230489e80000',
@@ -2382,7 +2253,6 @@ export const data = [
       '0x5c92ffaae1778dd867d639423ea8781a198cc5f5c18188d909941a0521aaf605',
     logIndex: 11,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x575F3c652894360F4b7655379EA1eae53381e012',
     data: '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
@@ -2401,7 +2271,6 @@ export const data = [
       '0x5c92ffaae1778dd867d639423ea8781a198cc5f5c18188d909941a0521aaf605',
     logIndex: 12,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x575F3c652894360F4b7655379EA1eae53381e012',
     data: '0x0000000000000000000000000000000000000000000000008ac7230489e80000',
@@ -2420,7 +2289,6 @@ export const data = [
       '0x5c92ffaae1778dd867d639423ea8781a198cc5f5c18188d909941a0521aaf605',
     logIndex: 13,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0x575F3c652894360F4b7655379EA1eae53381e012',
     data: '0x0000000000000000000000000000000000000000000000008ac7230489e80000',
@@ -2438,7 +2306,6 @@ export const data = [
       '0x5c92ffaae1778dd867d639423ea8781a198cc5f5c18188d909941a0521aaf605',
     logIndex: 14,
     transactionIndex: 0,
-    transactionLogIndex: 0,
     removed: false,
     address: '0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885',
     data:

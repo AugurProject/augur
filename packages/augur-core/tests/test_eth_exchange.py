@@ -27,6 +27,10 @@ def test_eth_exchange(localFixture, augur, cash, ethExchange):
     sellEth(localFixture, ethExchange, ethAmount, account)
     assert roughlyEqual(initialCash + 10**19, cash.balanceOf(account), 10**17)
 
+    # Confirm that our estimate functions match
+    cashAmount = ethExchange.getTokenPurchaseCost(ethAmount)
+    assert ethExchange.getCashSaleProceeds(cashAmount) == ethAmount
+
 
 def addLiquidity(fixture, exchange, cash, cashAmount, ethAmount, address):
     cash.faucet(cashAmount)

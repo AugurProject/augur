@@ -24,6 +24,8 @@ import {
   MODAL_TEST_BET,
   MODAL_TUTORIAL_INTRO,
   SIGNIN_LOADING_TEXT,
+  NETWORK_IDS,
+  NETWORK_NAMES,
 } from 'modules/common/constants';
 import { windowRef } from 'utils/window-ref';
 import { AppState } from 'store';
@@ -46,7 +48,11 @@ import { logout } from 'modules/auth/actions/logout';
 import { updateCanHotload } from 'modules/app/actions/update-connection';
 import { Augur, Provider } from '@augurproject/sdk';
 import { getLoggedInUserFromLocalStorage } from 'services/storage/localStorage';
+import { getFingerprint } from 'utils/get-fingerprint';
 import { tryToPersistStorage } from 'utils/storage-manager';
+import Torus from '@toruslabs/torus-embed';
+import { isDevNetworkId } from '@augurproject/artifacts/src';
+import { getNetwork } from 'utils/get-network-name';
 
 const ACCOUNTS_POLL_INTERVAL_DURATION = 10000;
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
@@ -70,8 +76,10 @@ function pollForAccount(
       const loggedInUser = getLoggedInUserFromLocalStorage();
       const loggedInAccount = loggedInUser && loggedInUser.address || null;
       const loggedInAccountType = loggedInUser && loggedInUser.type || null;
+      const unlockedAccount = windowRef.ethereum && windowRef.ethereum.selectedAddress;
 
       const showModal = accountType => {
+        const isWeb3Wallet = accountType === ACCOUNT_TYPES.WEB3WALLET;
         const onboardingShown = [
           MODAL_ACCOUNT_CREATED,
           MODAL_AUGUR_USES_DAI,
@@ -87,9 +95,10 @@ function pollForAccount(
                 setTimeout(() => {
                   dispatch(closeModal());
                 }),
-              message: accountType === ACCOUNT_TYPES.WEB3WALLET ? SIGNIN_LOADING_TEXT : `Connecting to our partners at ${accountType} to create your secure account.`,
+              message: isWeb3Wallet ? SIGNIN_LOADING_TEXT : `Connecting to our partners at ${accountType} to create your secure account.`,
               showLearnMore: true,
               showCloseAfterDelay: true,
+              showMetaMaskHelper: !isWeb3Wallet || unlockedAccount ? false : true,
             })
           );
         }
@@ -214,10 +223,33 @@ export function connectAugur(
       preloadAccount(ACCOUNT_TYPES.TORUS);
     }
 
-    let provider;
-    if (windowApp.web3) {
-      provider = new Web3Provider(windowApp.web3.currentProvider);
+    let provider = null;
+    let networkId = env['networkId'];
+
+    // Unless DEV, use the provider on window if it exists, otherwise use torus provider
+    if (networkId && !isDevNetworkId(networkId)) {
+      if (windowRef.web3) {
+          // Use window provider
+          provider = new Web3Provider(windowRef.web3.currentProvider);
+      } else {
+        // Use torus provider
+        const host = getNetwork(networkId);
+        const torus: any = new Torus({});
+
+        await torus.init({
+          network: { host },
+          showTorusButton: false,
+        });
+
+        // Tor.us cleanup
+        const torusWidget = document.querySelector('#torusWidget');
+        if (torusWidget) {
+          torusWidget.remove();
+        }
+        provider = new Web3Provider(torus.provider);
+      }
     } else {
+      // In DEV, use local ethereum node
       provider = new JsonRpcProvider(env['ethereum'].http);
     }
 
@@ -309,6 +341,8 @@ export function initAugur(
       JSON.stringify(env, null, 2) +
       "\n**********************************"
     );
+    // cache fingerprint
+    getFingerprint();
     dispatch(updateEnv(env));
     tryToPersistStorage();
     connectAugur(history, env, true, callback)(dispatch, getState);

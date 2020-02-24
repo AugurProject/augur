@@ -5,47 +5,26 @@ import { updateAccountPositionsData } from 'modules/positions/actions/account-po
 import {
   AccountPositionAction,
   AccountPosition,
-  NodeStyleCallback,
 } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { augurSdk } from 'services/augursdk';
 import { Getters } from '@augurproject/sdk';
+import { updateUserFilledOrders } from 'modules/markets/actions/market-trading-history-management';
 
-export const loadAllAccountPositions = (
-  callback: NodeStyleCallback = logError,
-) => (dispatch: ThunkDispatch<void, any, Action>) => {
-  dispatch(
-    loadAccountPositionsInternal(
-      (err: any, { positions = {} }: any) => {
-        if (!err) userPositionProcessing(positions, dispatch, callback);
-        dispatch(loadAccountPositionsTotals());
-      }
-    )
-  );
-};
-
-export const loadAccountPositionsTotals = () => async (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
+export const loadAllAccountPositions = () => async (dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState) => {
   const { universe, loginAccount } = getState();
+  const { mixedCaseAddress } = loginAccount;
   const Augur = augurSdk.get();
-  const positions = await Augur.getProfitLossSummary({
+  const positionsPlus: Getters.Users.UserPositionsPlusResult = await Augur.getUserPositionsPlus({
     account: loginAccount.mixedCaseAddress,
     universe: universe.id,
   });
-  const frozen = await Augur.getTotalOnChainFrozenFunds({
-    account: loginAccount.mixedCaseAddress,
-    universe: universe.id,
-  });
-  dispatch(
-    updateLoginAccount({
-      totalFrozenFunds: frozen.totalFrozenFunds,
-      totalRealizedPL: positions[30].realized,
-      tradingPositionsTotal: { unrealizedRevenue24hChangePercent : positions[1].unrealizedPercent },
-    })
-  );
+
+  dispatch(updateUserFilledOrders(mixedCaseAddress, positionsPlus.userTradeHistory));
+  if (positionsPlus.userPositions) dispatch(userPositionProcessing(positionsPlus.userPositions));
+  if (positionsPlus.userPositionTotals) dispatch(updateLoginAccount(positionsPlus.userPositionTotals));
 };
 
 export const loadAccountOnChainFrozenFundsTotals = () => async (
@@ -58,6 +37,10 @@ export const loadAccountOnChainFrozenFundsTotals = () => async (
     account: loginAccount.mixedCaseAddress,
     universe: universe.id,
   });
+  const frozen = await Augur.getTotalOnChainFrozenFunds({
+    account: loginAccount.mixedCaseAddress,
+    universe: universe.id,
+  });
   dispatch(
     updateLoginAccount({
       totalFrozenFunds: frozen.totalFrozenFunds,
@@ -65,44 +48,12 @@ export const loadAccountOnChainFrozenFundsTotals = () => async (
   );
 };
 
-const loadAccountPositionsInternal = (
-  callback: NodeStyleCallback
-) => async (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
-  const { universe, loginAccount } = getState();
-  if (loginAccount.address == null || universe.id == null)
-    return callback(null, {});
-  const Augur = augurSdk.get();
-  const positions = await Augur.getUserTradingPositions({
-    account: loginAccount.mixedCaseAddress,
-    universe: universe.id,
-  });
-  if (positions == null || positions.tradingPositions == null) {
-    return callback(null, {});
-  }
-
-  const marketIds = Array.from(
-    new Set([
-      ...positions.tradingPositions.reduce(
-        (p: any, position: any) => [...p, position.marketId],
-        []
-      ),
-    ])
-  );
-
-  if (marketIds.length === 0) return callback(null, {});
-  callback(null, { marketIds, positions });
-};
-
 export const userPositionProcessing = (
   positions: Getters.Users.UserTradingPositions,
+) => (
   dispatch: ThunkDispatch<void, any, Action>,
-  callback?: NodeStyleCallback
 ) => {
   if (!positions || !positions.tradingPositions) {
-    if (callback) return callback(null);
     return;
   }
 
@@ -157,5 +108,4 @@ export const userPositionProcessing = (
     };
     dispatch(updateAccountPositionsData(positionData));
   });
-  if (callback) callback(null, positions);
 };

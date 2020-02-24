@@ -96,6 +96,36 @@ export class MarketDB extends DerivedDB {
     }
   }
 
+    // Don't call this interval during tests
+    if (process.env.NODE_ENV !== 'test') {
+      if (!liquidityCheckInterval) {
+        // call recalc liquidity every 3mins
+        const THREE_MINS_IN_MS = 180000;
+        liquidityCheckInterval = setInterval(async () => {
+          if (liquidityDirty.size > 0) {
+            const marketIdsToCheck = Array.from(liquidityDirty) as string[];
+            await this.syncOrderBooks(marketIdsToCheck);
+            liquidityDirty.clear();
+          }
+        },THREE_MINS_IN_MS);
+      }
+    }
+  }
+
+  async handleMergeEvent(
+    blocknumber: number, logs: ParsedLog[],
+    syncing = false): Promise<number> {
+
+    const result = await super.handleMergeEvent(blocknumber, logs, syncing);
+
+    await this.syncOrderBooks([]);
+
+    const timestamp = (await this.augur.getTimestamp()).toNumber();
+    await this.processTimestamp(timestamp, result);
+    await this.syncFTS();
+    return result;
+  }
+
   async handleMergeEvent(
     blocknumber: number, logs: ParsedLog[],
     syncing = false): Promise<number> {
@@ -117,7 +147,7 @@ export class MarketDB extends DerivedDB {
 
     let marketsData;
     if (marketIds.length === 0) {
-      marketsData = await this.table.toArray();
+      marketsData = await this.allDocs();
       ids = marketsData.map(data => data.market);
     } else {
       marketsData = await this.table.where('market').anyOf(marketIds).toArray();
@@ -340,6 +370,9 @@ export class MarketDB extends DerivedDB {
     log['timestamp'] = new BigNumber(log['timestamp'], 16).toNumber();
     log['creationTime'] = log['timestamp'];
     log['endTime'] = new BigNumber(log['endTime'], 16).toNumber();
+    log['outcomes'] = _.map(log['outcomes'], (rawOutcome) => {
+      return Buffer.from(rawOutcome.replace('0x', ''), 'hex').toString().trim().replace(/\0/g, '');
+    });
     try {
       log['extraInfo'] = JSON.parse(log['extraInfo']);
       log['extraInfo'].categories = log['extraInfo'].categories.map((category) => category.toLowerCase());
@@ -449,7 +482,7 @@ export class MarketDB extends DerivedDB {
 
     if (updateDocs.length > 0) {
       await this.bulkUpsertDocuments(updateDocs);
-      this.augur.events.emit(SubscriptionEventName.ReportingStateChanged, { data: updateDocs });
+      this.augur.events.emitAfter(SubscriptionEventName.NewBlock, SubscriptionEventName.ReportingStateChanged, { data: updateDocs });
     }
   }
 

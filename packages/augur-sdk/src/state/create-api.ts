@@ -1,8 +1,8 @@
-import { ContractAddresses, getStartingBlockForNetwork, NetworkId, getAddressesForNetwork } from '@augurproject/artifacts';
-import { UploadBlockNumbers } from '@augurproject/artifacts/build';
+import { ContractAddresses, getAddressesForNetwork, getStartingBlockForNetwork, NetworkId } from '@augurproject/artifacts';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { EthersSigner } from 'contract-dependencies-ethers';
 import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis';
+import { SupportedProvider } from "ethereum-types";
 import { JsonRpcProvider } from 'ethers/providers';
 import { ContractEvents } from '../api/ContractEvents';
 import { ZeroX } from '../api/ZeroX';
@@ -56,13 +56,15 @@ export interface SDKConfiguration {
 export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: EthersProvider, logFilterAggregator: LogFilterAggregator) {
   return async () => {
     const networkId = await provider.getNetworkId();
-    const uploadBlockNumber = UploadBlockNumbers[networkId];
+    const uploadBlockNumber = getStartingBlockForNetwork(networkId);
     const uploadBlockHeaders = await provider.getBlock(uploadBlockNumber);
     const currentBlockNumber = await provider.getBlockNumber();
+    const contractAddresses = client.contractEvents.getAugurContractAddresses();
 
-    const bulkSyncStrategy = new BulkSyncStrategy(provider.getLogs, logFilterAggregator.buildFilter, logFilterAggregator.onLogsAdded, client.contractEvents.parseLogs);
+    const bulkSyncStrategy = new BulkSyncStrategy(provider.getLogs, contractAddresses, logFilterAggregator.onLogsAdded, client.contractEvents.parseLogs);
     const blockAndLogStreamerSyncStrategy = BlockAndLogStreamerSyncStrategy.create(
       provider,
+      contractAddresses,
       logFilterAggregator,
       client.contractEvents.parseLogs,
     );
@@ -75,6 +77,12 @@ export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: Ethe
     const endBulkSyncBlockNumber = await bulkSyncStrategy.start(staringSyncBlock, currentBlockNumber);
 
     console.log('Syncing Complete - SDK Ready');
+    await (await db).sync();
+
+    // This will register the event listeners for the various derived/rollup dbs.
+    client.events.emit(SubscriptionEventName.BulkSyncComplete, {
+      eventName: SubscriptionEventName.BulkSyncComplete,
+    });
     client.events.emit(SubscriptionEventName.SDKReady, {
       eventName: SubscriptionEventName.SDKReady,
     });
@@ -82,12 +90,12 @@ export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: Ethe
     blockAndLogStreamerSyncStrategy.listenForBlockRemoved(logFilterAggregator.onBlockRemoved);
 
     // Check on each new block to see if we need to generate a checkpoint.
-    // client.events.on(SubscriptionEventName.NewBlock, async (newBlock) => {
-    //   const block = await provider.getBlock(newBlock.lastSyncedBlockNumber)
-    //   warpController.onNewBlock(block);
-    // });
+    client.events.on(SubscriptionEventName.NewBlock, async (newBlock) => {
+      const block = await provider.getBlock(newBlock.lastSyncedBlockNumber);
+      await warpController.onNewBlock(block);
+    });
 
-    blockAndLogStreamerSyncStrategy.start(endBulkSyncBlockNumber);
+    await blockAndLogStreamerSyncStrategy.start(endBulkSyncBlockNumber);
   };
 }
 
@@ -98,8 +106,8 @@ export async function createClient(
   signer?: EthersSigner,
   provider?: EthersProvider,
   enableFlexSearch = false,
-  createBrowserMesh?: (config: SDKConfiguration, zeroX: ZeroX) => void
-): Promise<Augur> {
+  createBrowserMesh?: (config: SDKConfiguration, web3Provider: SupportedProvider, zeroX: ZeroX) => void
+  ): Promise<Augur> {
 
   const ethersProvider = provider || new EthersProvider( new JsonRpcProvider(config.ethereum.http), 10, 0, 40);
   const addresses = config.addresses || getAddressesForNetwork(config.networkId);
@@ -123,7 +131,7 @@ export async function createClient(
       // interface instead of actually import @0x/mesh-browser -- since
       // that would attempt to start the wasm client in nodejs and cause
       // everything to die.
-      createBrowserMesh(config, zeroX);
+      createBrowserMesh(config, ethersProvider, zeroX);
     }
   }
 
@@ -161,7 +169,7 @@ export async function createServer(config: SDKConfiguration, client?: Augur, acc
     client = await createClient(config, connector, account, undefined, undefined, true);
   }
 
-  const ethersProvider = new EthersProvider( new JsonRpcProvider(config.ethereum.http), 10, 0, 40);
+  const ethersProvider: EthersProvider = client.provider as EthersProvider;
   const contractEvents = new ContractEvents(
     ethersProvider,
     client.addresses.Augur,
@@ -173,7 +181,6 @@ export async function createServer(config: SDKConfiguration, client?: Augur, acc
   const logFilterAggregator = LogFilterAggregator.create(
     contractEvents.getEventTopics,
     contractEvents.parseLogs,
-    contractEvents.getEventContractAddress
   );
   const db = DB.createAndInitializeDB(
     Number(config.networkId),
@@ -194,6 +201,12 @@ export async function startServerFromClient(config: SDKConfiguration, client?: A
   const { api, sync } = await createServer(config, client);
 
   sync();
+  /*
+  controller.run().catch((err) => {
+    // TODO: PG needs to handle what happens if the server side of the connector dies
+    console.log('Error starting up Augur syncing services');
+  });
+  */
 
   return api;
 }

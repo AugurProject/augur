@@ -5,7 +5,7 @@ volumes:
 
 services:
   0x-mesh-bootstrap:
-    image: 0xorg/mesh-bootstrap:pre-release-9.0.0-wss-support
+    image: 0xorg/mesh-bootstrap:9.0.1
     restart: on-failure
     ports:
       - 60558:60558 # P2PTCPPort
@@ -50,6 +50,7 @@ services:
       - SAFE_CONTRACT_ADDRESS=${GNOSIS_SAFE_CONTRACT_ADDRESS}
       - SAFE_OLD_CONTRACT_ADDRESS=${GNOSIS_SAFE_CONTRACT_ADDRESS}
       - SAFE_PROXY_FACTORY_ADDRESS=${PROXY_FACTORY_CONTRACT_ADDRESS}
+      - SAFE_DEFAULT_TOKEN_ADDRESS=${SAFE_DEFAULT_TOKEN_ADDRESS}
     depends_on:
       - db
       - redis
@@ -77,6 +78,7 @@ services:
       - SAFE_CONTRACT_ADDRESS=${GNOSIS_SAFE_CONTRACT_ADDRESS}
       - SAFE_OLD_CONTRACT_ADDRESS=${GNOSIS_SAFE_CONTRACT_ADDRESS}
       - SAFE_PROXY_FACTORY_ADDRESS=${PROXY_FACTORY_CONTRACT_ADDRESS}
+      - SAFE_DEFAULT_TOKEN_ADDRESS=${SAFE_DEFAULT_TOKEN_ADDRESS}
     depends_on:
       - db
       - redis

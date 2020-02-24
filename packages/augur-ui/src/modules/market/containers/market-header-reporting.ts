@@ -9,6 +9,7 @@ import {
   MODAL_CLAIM_MARKETS_PROCEEDS,
   DESIGNATED_REPORTER_SELF,
   MODAL_REPORTING,
+  SUBMIT_REPORT,
 } from 'modules/common/constants';
 import { NodeStyleCallback } from 'modules/types';
 import { createBigNumber } from 'utils/create-big-number';
@@ -16,11 +17,17 @@ import { ZERO } from 'modules/common/constants';
 import { isSameAddress } from 'utils/isSameAddress';
 
 const mapStateToProps = (state, ownProps) => {
+  const { pendingQueue } = state;
   const market = ownProps.market || selectMarket(ownProps.marketId);
   const disputeInfoStakes = market.disputeInfo && market.disputeInfo.stakes;
+  const marketId = ownProps.market ? ownProps.market.id : ownProps.marketId;
   return {
     currentTimestamp: selectCurrentTimestampInSeconds(state) || 0,
     market,
+    reportingStatus:
+      pendingQueue[SUBMIT_REPORT] &&
+      pendingQueue[SUBMIT_REPORT][marketId] &&
+      pendingQueue[SUBMIT_REPORT][marketId].status,
     isLogged: state.authStatus.isLogged,
     isDesignatedReporter: ownProps.preview
       ? market.designatedReporterType === DESIGNATED_REPORTER_SELF

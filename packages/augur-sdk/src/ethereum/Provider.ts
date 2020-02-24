@@ -3,7 +3,7 @@ import { Block, BlockTag } from "ethers/providers";
 import { Filter, Log, LogValues } from "@augurproject/types";
 import { NetworkId } from "@augurproject/artifacts";
 import { ethers } from "ethers";
-import { JSONRPCRequestPayload } from "ethereum-types";
+import { JSONRPCRequestPayload, JSONRPCErrorCallback } from "ethereum-types";
 
 export interface Provider {
   disconnect(): void;
@@ -16,5 +16,5 @@ export interface Provider {
   encodeContractFunction(contractName: string, functionName: string, funcParams: any[]): string;
   parseLogValues(contractName: string, log: Log): LogValues;
   getBalance(address: string): Promise<ethers.utils.BigNumber>;
-  sendAsync(payload: JSONRPCRequestPayload): Promise<any>;
+  sendAsync(payload: JSONRPCRequestPayload, callback: JSONRPCErrorCallback): void;
 }

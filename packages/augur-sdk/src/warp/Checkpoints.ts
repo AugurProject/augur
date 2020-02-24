@@ -2,7 +2,7 @@ import { Block } from 'ethers/providers';
 import { Provider } from '..';
 
 const SECONDS_IN_A_DAY = 86400;
-const GUESS_ON_NUMBER_OF_BLOCKS_PER_DAY = 5760;
+const GUESS_ON_NUMBER_OF_BLOCKS_PER_DAY = 5760 * 5;
 
 export class Checkpoints {
   constructor(private provider: Provider) {}

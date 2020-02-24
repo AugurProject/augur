@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import classNames from "classnames";
 
 import getValue from "utils/get-value";
@@ -8,7 +8,6 @@ import MarketTitle from 'modules/market/containers/market-title';
 import { Order } from "modules/portfolio/types";
 
 import Styles from "modules/portfolio/components/common/expanded-content.styles.less";
-import { cancelOrder } from "modules/orders/actions/cancel-order";
 
 export interface OpenOrderExpandedContentProps {
   openOrder: Order;
@@ -20,7 +19,6 @@ const OpenOrderExpandedContent = (props: OpenOrderExpandedContentProps) => {
 
   const tokensEscrowed = getValue(openOrder, "tokensEscrowed");
   const sharesEscrowed = getValue(openOrder, "sharesEscrowed");
-  const creationTime = getValue(openOrder, "creationTime.formattedLocalShortDateTimeNoTimezone");
   const expiry = getValue(openOrder, 'expiry.formattedLocalShortDateTimeNoTimezone');
 
   return (
@@ -59,10 +57,10 @@ const OpenOrderExpandedContent = (props: OpenOrderExpandedContentProps) => {
           </div>
           {openOrder.cancelOrder && (
             <CancelTextButton
-              disabled={openOrder.pending}
+              disabled={!!openOrder.pending}
               action={(e: Event) => {
                 e.stopPropagation();
-                cancelOrder(String(openOrder.id));
+                openOrder.cancelOrder(openOrder);
               }}
               text="Cancel"
             />

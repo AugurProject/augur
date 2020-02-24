@@ -294,22 +294,22 @@ export class ZeroX {
     const numOrders = _.size(orders);
 
     // No orders available to take. Maybe make some new ones
-    if (numOrders === 0 && !params.doNotCreateOrders) {
-      await this.placeOnChainOrders([params]);
+    if (numOrders === 0) {
+      if (!params.doNotCreateOrders) await this.placeOnChainOrders([params]);
       return;
     }
 
     const account = await this.client.getAccount();
     const gasPrice = await this.client.getGasPrice();
-    // TODO: We should be getting this by querying the exchange contract directly via `protocolFeeMultiplier()`
-    const protocolFee = gasPrice.multipliedBy(150000).multipliedBy(new BigNumber(loopLimit));
+    const exchangeFeeMultiplier = await this.client.contracts.zeroXExchange.protocolFeeMultiplier_();
+    const protocolFee = gasPrice.multipliedBy(exchangeFeeMultiplier).multipliedBy(new BigNumber(loopLimit));
     const walletEthBalance = await this.client.getEthBalance(account);
 
     const result: Event[] = await this.client.contracts.ZeroXTrade.trade(
       params.amount,
       params.fingerprint,
       params.tradeGroupId,
-      new BigNumber(1).multipliedBy(new BigNumber(loopLimit)), // TODO: This is the param indicating the maximum amount of DAI to spend to cover the 0x protocol fee. Should be calculated and likely far lower
+      new BigNumber(10**18).multipliedBy(new BigNumber(loopLimit)), // TODO: This is the param indicating the maximum amount of DAI to spend to cover the 0x protocol fee. Should be calculated and likely far lower
       new BigNumber(loopLimit), // This is the maximum number of trades to actually make. This lets us put in more orders than we could fill with the gasLimit but handle failures and still fill the desired amount
       orders,
       signatures,
@@ -321,7 +321,7 @@ export class ZeroX {
       params.amount,
       result
     );
-    console.log(amountRemaining.toString());
+    console.log(`Amount remaining to trade: ${amountRemaining.toString()}`);
     if (amountRemaining.gt(0)) {
       params.amount = amountRemaining;
       // On successive iterations we specify previously for certain taken signed orders since its possible we do another loop before the mesh has updated our view on the orderbook
@@ -675,6 +675,7 @@ export class ZeroX {
       ) {
         const onChainAmountFilled = (event.parameters as ExchangeFillEvent)
           .makerAssetFilledAmount;
+        console.log(`Fill event detected. Amount Filled: ${onChainAmountFilled.toFixed()}`);
         amountRemaining = amountRemaining.minus(onChainAmountFilled);
       }
       if (event.name === 'OrderEvent') {
