@@ -5,7 +5,6 @@ import { isTransactionConfirmed } from 'modules/contracts/actions/contractCalls'
 import {
   convertDisplayAmountToOnChainAmount,
   convertDisplayPriceToOnChainPrice,
-  convertDisplayValuetoAttoValue,
 } from '@augurproject/sdk';
 import { createBigNumber } from 'utils/create-big-number';
 import { TransactionMetadataParams } from 'contract-dependencies-ethers/src';
@@ -68,8 +67,6 @@ export const constructPendingOrderid = (
     market,
   };
 
-  console.log(params);
-
   return generateTxParameterId(params);
 };
 
@@ -102,8 +99,6 @@ export const generatePendingOrderId = (
     outcome: hexOutcome,
     market: marketId,
   };
-
-  console.log(params);
 
   return generateTxParameterId(params);
 };
