@@ -143,8 +143,6 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalSignin {...props} isLogin />;
     case TYPES.MODAL_SIGNUP:
       return <ModalSignin {...props} isLogin={false} />;
-    case TYPES.MODAL_CONNECT:
-      return <ModalConnect />;
     case TYPES.MODAL_LOADING:
       return <ModalLoading />;
     case TYPES.MODAL_UNIVERSE_SELECTOR:

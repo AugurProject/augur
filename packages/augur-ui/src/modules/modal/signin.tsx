@@ -22,7 +22,6 @@ interface LoginProps {
   closeModal: Function;
   signupModal: Function;
   loginModal: Function;
-  connectModal: Function;
   isLogin: boolean;
   connectMethods: ConnectMethod[];
 }
@@ -32,7 +31,6 @@ export const SignIn = (props: LoginProps) => {
     closeModal,
     signupModal,
     loginModal,
-    connectModal,
     isLogin = true,
     connectMethods,
   } = props;
@@ -87,15 +85,6 @@ export const SignIn = (props: LoginProps) => {
       <div>OR</div>
 
       {secondaryButtonsToShow}
-
-      <footer>
-        <div>
-          Want to use a different wallet?{' '}
-          <span onClick={() => connectModal(isLogin ? 'login' : 'signup')}>
-            Connect
-          </span>
-        </div>
-      </footer>
     </div>
   );
 };
