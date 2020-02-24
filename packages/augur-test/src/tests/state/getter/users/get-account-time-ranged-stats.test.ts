@@ -10,7 +10,6 @@ describe('State API :: Users :: ', () => {
   let john: TestContractAPI;
   let mary: TestContractAPI;
   let baseProvider: TestEthersProvider;
-  let bulkSyncStrategy: BulkSyncStrategy;
 
   beforeAll(async () => {
     const state = await _beforeAll();
@@ -21,13 +20,6 @@ describe('State API :: Users :: ', () => {
     const state = await _beforeEach({ baseProvider });
     john = state.john;
     mary = state.mary;
-
-    bulkSyncStrategy = new BulkSyncStrategy(
-      john.provider.getLogs,
-      (await db).logFilters.buildFilter,
-      (await db).logFilters.onLogsAdded,
-      john.augur.contractEvents.parseLogs,
-    );
   });
 
   test(':getAccountTimeRangedStats', async () => {

@@ -144,20 +144,6 @@ export async function _beforeEach(allState: AllState): Promise<SomeState> {
     addresses
   );
 
-  const johnBulkSyncStrategy = new BulkSyncStrategy(
-    john.provider.getLogs,
-    (await db).logFilters.buildFilter,
-    (await db).logFilters.onLogsAdded,
-    john.augur.contractEvents.parseLogs,
-  );
-
-  const maryBulkSyncStrategy = new BulkSyncStrategy(
-    john.provider.getLogs,
-    (await db).logFilters.buildFilter,
-    (await db).logFilters.onLogsAdded,
-    john.augur.contractEvents.parseLogs,
-  );
-
   return {
     john,
     mary,

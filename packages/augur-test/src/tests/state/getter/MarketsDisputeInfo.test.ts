@@ -25,7 +25,6 @@ describe('State API :: Markets :: ', () => {
   let john: TestContractAPI;
   let mary: TestContractAPI;
   let bob: ContractAPI;
-  let bulkSyncStrategy: BulkSyncStrategy;
 
   let baseProvider: TestEthersProvider;
   const markets = {};

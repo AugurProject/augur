@@ -33,13 +33,6 @@ beforeAll(async () => {
 
   john = await TestContractAPI.userWrapper(ACCOUNTS[0], provider, addresses);
 
-  bulkSyncStrategy = new BulkSyncStrategy(
-    john.provider.getLogs,
-    (await db).logFilters.buildFilter,
-    (await db).logFilters.onLogsAdded,
-    john.augur.contractEvents.parseLogs,
-  );
-
   await john.approveCentralAuthority();
 
   connector = new SingleThreadConnector();

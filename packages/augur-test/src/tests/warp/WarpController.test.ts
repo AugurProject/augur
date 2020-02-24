@@ -61,6 +61,27 @@ describe('WarpController', () => {
     firstCheckpointBlockHeaders = await provider.getBlock(170);
     newBlockHeaders = await provider.getBlock('latest');
 
+    john = await TestContractAPI.userWrapper(
+      ACCOUNTS[0],
+      provider,
+      seed.addresses
+    );
+
+    // partially populate db.
+    await john.sync(170);
+
+    // I'm just assuming the upload block is 0. Shouldn't
+    // really be a problem that we are grabbing extra blocks.
+    warpController = new WarpController(
+      john.db,
+      ipfs,
+      provider,
+      uploadBlockHeaders
+    );
+    firstCheckpointFileHash = await warpController.createAllCheckpoints(
+      await provider.getBlock(170)
+    );
+
     await john.sync();
 
     secondCheckpointFileHash = await warpController.createAllCheckpoints(
@@ -69,6 +90,7 @@ describe('WarpController', () => {
 
     allMarketIds = (await john.db.MarketCreated.toArray()).map(
       market => market.market
+    );
   });
 
   afterAll(async () => {

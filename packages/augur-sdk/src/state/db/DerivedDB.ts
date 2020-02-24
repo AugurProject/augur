@@ -54,6 +54,36 @@ export class DerivedDB extends RollbackTable {
     this.stateDB.registerEventListener(this.mergeEventNames, this.handleMergeEvent.bind(this));
   }
 
+  async sync(highestAvailableBlockNumber: number): Promise<void> {
+    this.syncing = true;
+    await this.doSync(highestAvailableBlockNumber);
+    await this.syncStatus.setHighestSyncBlock(
+      this.dbName,
+      highestAvailableBlockNumber,
+      true
+    );
+    this.syncing = false;
+  }
+
+  // For all mergable event types get any new documents we haven't pulled in and pull them in
+  async doSync(highestAvailableBlockNumber: number): Promise<void> {
+    const highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(
+      this.dbName
+    );
+    for (const eventName of this.mergeEventNames) {
+      const result = await this.stateDB.dexieDB[eventName].where("blockNumber").aboveOrEqual(highestSyncedBlockNumber).toArray();
+      if (result.length > 0) {
+        await this.handleMergeEvent(
+          highestAvailableBlockNumber,
+          (result as unknown[]) as ParsedLog[],
+          true
+        );
+      }
+    }
+
+    await this.syncStatus.updateSyncingToFalse(this.dbName);
+  }
+
   // For a group of documents/logs for a particular event type get the latest per id and update the DB documents for the corresponding ids
   async handleMergeEvent (
     blocknumber: number,

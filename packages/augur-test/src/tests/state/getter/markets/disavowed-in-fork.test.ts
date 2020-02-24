@@ -9,7 +9,6 @@ describe('State API :: Markets :: GetMarketsInfo', () => {
   let bob: TestContractAPI;
 
   let baseProvider: TestEthersProvider;
-  let bulkSyncStrategy: BulkSyncStrategy;
   let markets = {};
 
   beforeAll(async () => {
@@ -23,7 +22,6 @@ describe('State API :: Markets :: GetMarketsInfo', () => {
     john = state.john;
     mary = state.mary;
     bob = state.bob;
-    bulkSyncStrategy = state.johnBulkSyncStrategy;
   });
 
   test(':getMarketsInfo disavowed in fork', async () => {

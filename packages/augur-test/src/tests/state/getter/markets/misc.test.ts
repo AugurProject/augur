@@ -32,8 +32,6 @@ describe('State API :: Markets :: ', () => {
     john = state.john;
     mary = state.mary;
     bob = state.bob;
-    johnBulkSyncStrategy = state.johnBulkSyncStrategy;
-    maryBulkSyncStrategy = state.maryBulkSyncStrategy;
   });
 
   test(':getMarkets userPortfolioAddress', async () => {

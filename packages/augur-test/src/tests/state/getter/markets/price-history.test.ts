@@ -25,7 +25,6 @@ describe('State API :: Markets :: GetMarkets', () => {
     john = state.john;
     mary = state.mary;
     bob = state.bob;
-    bulkSyncStrategy = state.johnBulkSyncStrategy;
   });
 
   test(':getMarketPriceHistory', async () => {

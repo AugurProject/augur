@@ -362,13 +362,6 @@ describe('3rd Party :: ZeroX :: ', () => {
       );
       connectorJohn.initialize(john.augur, john.db);
       await john.approveCentralAuthority();
-
-      johnBulkSyncStrategy = new BulkSyncStrategy(
-        john.provider.getLogs,
-        (await johnDB).logFilters.buildFilter,
-        (await johnDB).logFilters.onLogsAdded,
-        john.augur.contractEvents.parseLogs,
-      );
     }, 120000);
 
     test('State API :: ZeroX :: getOrders', async () => {
@@ -405,8 +398,6 @@ describe('3rd Party :: ZeroX :: ', () => {
       });
 
       await john.sync();
-
-      await johnBulkSyncStrategy.start(0, await john.provider.getBlockNumber());
 
       // Get orders for the market
       const orders: ZeroXOrders = await john.api.route('getZeroXOrders', {

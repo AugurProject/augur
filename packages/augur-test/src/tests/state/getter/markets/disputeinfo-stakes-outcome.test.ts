@@ -7,7 +7,6 @@ describe('State API :: Markets :: GetMarketsInfo', () => {
   let john: TestContractAPI;
   let mary: TestContractAPI;
   let bob: ContractAPI;
-  let bulkSyncStrategy: BulkSyncStrategy;
 
   let baseProvider: TestEthersProvider;
   let markets = {};
@@ -24,7 +23,6 @@ describe('State API :: Markets :: GetMarketsInfo', () => {
     john = state.john;
     mary = state.mary;
     bob = state.bob;
-    bulkSyncStrategy = state.johnBulkSyncStrategy;
   });
 
   test('disputeinfo.stakes outcome valid/invalid', async () => {

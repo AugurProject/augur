@@ -10,7 +10,6 @@ describe('State API :: Markets :: Categories', () => {
   let john: TestContractAPI;
   let mary: TestContractAPI;
   let bob: ContractAPI;
-  let bulkSyncStrategy: BulkSyncStrategy;
 
   let baseProvider: TestEthersProvider;
   let markets = {};
@@ -27,7 +26,6 @@ describe('State API :: Markets :: Categories', () => {
     john = state.john;
     mary = state.mary;
     bob = state.bob;
-    bulkSyncStrategy = state.johnBulkSyncStrategy;
   });
 
   test(':getCategoryStats', async () => {

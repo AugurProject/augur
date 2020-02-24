@@ -96,34 +96,14 @@ export class MarketDB extends DerivedDB {
     }
   }
 
-    // Don't call this interval during tests
-    if (process.env.NODE_ENV !== 'test') {
-      if (!liquidityCheckInterval) {
-        // call recalc liquidity every 3mins
-        const THREE_MINS_IN_MS = 180000;
-        liquidityCheckInterval = setInterval(async () => {
-          if (liquidityDirty.size > 0) {
-            const marketIdsToCheck = Array.from(liquidityDirty) as string[];
-            await this.syncOrderBooks(marketIdsToCheck);
-            liquidityDirty.clear();
-          }
-        },THREE_MINS_IN_MS);
-      }
-    }
-  }
-
-  async handleMergeEvent(
-    blocknumber: number, logs: ParsedLog[],
-    syncing = false): Promise<number> {
-
-    const result = await super.handleMergeEvent(blocknumber, logs, syncing);
-
+  async doSync(highestAvailableBlockNumber: number): Promise<void> {
+    this.syncing = true;
+    await super.doSync(highestAvailableBlockNumber);
     await this.syncOrderBooks([]);
-
     const timestamp = (await this.augur.getTimestamp()).toNumber();
-    await this.processTimestamp(timestamp, result);
+    await this.processTimestamp(timestamp, highestAvailableBlockNumber);
     await this.syncFTS();
-    return result;
+    this.syncing = false;
   }
 
   async handleMergeEvent(
