@@ -19,10 +19,9 @@ import {
   formatNumber,
 } from 'utils/format-number';
 import convertExponentialToDecimal from 'utils/convert-exponential';
-import { MarketData, OutcomeFormatted, OutcomeOrderBook } from 'modules/types';
+import { MarketData, OutcomeFormatted } from 'modules/types';
 import { calculateTotalOrderValue } from 'modules/trades/helpers/calc-order-profit-loss-percents';
 import { formatDai } from 'utils/format-number';
-import { GnosisSafeState } from '@augurproject/gnosis-relay-api';
 import { Moment } from 'moment';
 
 export interface SelectedOrderProperties {
