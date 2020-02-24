@@ -245,7 +245,7 @@ export default class FormDetails extends React.Component<
               <section>
                 <TextInput
                   type="number"
-                  placeholder="0"
+                  placeholder="Enter Min Range value"
                   onChange={(value: string) => {
                     onChange('minPrice', value);
                     if (!checkValidNumber(value))
@@ -258,7 +258,7 @@ export default class FormDetails extends React.Component<
                 <span>to</span>
                 <TextInput
                   type="number"
-                  placeholder="100"
+                  placeholder="Enter Max Range value"
                   onChange={(value: string) => {
                     onChange('maxPrice', value);
                     if (!checkValidNumber(value))

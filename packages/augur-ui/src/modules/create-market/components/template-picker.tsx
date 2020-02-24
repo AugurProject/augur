@@ -110,11 +110,11 @@ export const TemplatePicker = ({ newMarket, updateNewMarket }) => {
               minPrice:
                 newMarket.marketType === SCALAR && template.minPrice
                   ? template.minPrice
-                  : newMarket.minPrice,
+                  : '',
               maxPrice:
                 newMarket.marketType === SCALAR && template.maxPrice
                   ? template.maxPrice
-                  : newMarket.maxPrice,
+                  : '',
               minPriceBigNumber:
                   newMarket.marketType === SCALAR && template.minPrice
                     ? template.minPrice
