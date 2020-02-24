@@ -159,6 +159,7 @@ export interface TemplateValidation {
   closingDateDependencies: DateInputDependencies[];
   placeholderValues: PlaceholderValues;
   afterTuesdayDateNoFriday: number[];
+  noAdditionalOutcomes: boolean;
 }
 
 export interface TemplateValidationHash {
@@ -176,6 +177,7 @@ export interface Template {
   tickSize?: number;
   minPrice?: number;
   maxPrice?: number;
+  noAdditionalUserOutcomes?: boolean;
 }
 
 export interface TemplateInput {
@@ -727,6 +729,12 @@ export const isTemplateMarket = (
     // check that required outcomes exist
     if (!hasRequiredOutcomes(validation.requiredOutcomes, outcomes)) {
       errors.push('required outcomes are missing');
+      return false;
+    }
+
+    // check no additional outcomes is a requirement
+    if (validation.noAdditionalOutcomes && validation.requiredOutcomes.length !== outcomes.length) {
+      errors.push('no additioanl outcomes is a requirement, only required outcomes are allowed');
       return false;
     }
 
