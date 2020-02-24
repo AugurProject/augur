@@ -55,6 +55,7 @@ interface WrapperProps {
   hasFunds: boolean;
   hasHistory: boolean;
   isLogged: boolean;
+  restoredAccount: boolean;
   initialLiquidity?: boolean;
   tradingTutorial?: boolean;
   currentTimestamp: number;
@@ -110,8 +111,8 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
     super(props);
 
     this.state = {
-      orderPrice: props.selectedOrderProperties.price || '',
-      orderQuantity: props.selectedOrderProperties.quantity || '',
+      orderPrice: props.selectedOrderProperties.orderPrice || '',
+      orderQuantity: props.selectedOrderProperties.orderQuantity || '',
       orderDaiEstimate: '',
       orderEscrowdDai: '',
       gasCostEst: '',
@@ -129,6 +130,20 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
     this.updateOrderProperty = this.updateOrderProperty.bind(this);
     this.updateNewOrderProperties = this.updateNewOrderProperties.bind(this);
     this.clearOrderConfirmation = this.clearOrderConfirmation.bind(this);
+  }
+
+  componentDidMount() {
+    const { selectedOrderProperties } = this.props;
+
+    this.updateTradeTotalCost(
+      {
+        ...selectedOrderProperties,
+        orderQuantity: convertExponentialToDecimal(
+          selectedOrderProperties.orderQuantity
+        ),
+      },
+      true
+    );
   }
 
   componentDidUpdate(prevProps) {
@@ -382,6 +397,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       Gnosis_ENABLED,
       hasFunds,
       isLogged,
+      restoredAccount,
       loginModal,
       addFundsModal,
       hasHistory,
@@ -443,7 +459,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       />
     );
     switch (true) {
-      case !isLogged && !tradingTutorial:
+      case !restoredAccount && !isLogged && !tradingTutorial:
         actionButton = (
           <PrimaryButton
             id="login-button"
@@ -452,7 +468,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           />
         );
         break;
-      case isLogged && !hasFunds && !tradingTutorial:
+      case !restoredAccount && isLogged && !hasFunds && !tradingTutorial:
         actionButton = (
           <PrimaryButton
             id="add-funds"

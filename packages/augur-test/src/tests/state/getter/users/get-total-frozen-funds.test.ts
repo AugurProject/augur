@@ -1,11 +1,9 @@
 import { DB } from '@augurproject/sdk/build/state/db/DB';
 
 import { API } from '@augurproject/sdk/build/state/getter/API';
-import { BulkSyncStrategy } from '@augurproject/sdk/build/state/sync/BulkSyncStrategy';
-import { ContractAPI } from '@augurproject/tools';
+import { TestContractAPI } from '@augurproject/tools';
 import { BigNumber } from 'bignumber.js';
 import * as _ from 'lodash';
-import { makeDbMock } from '../../../../libs';
 import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
 import {
   _beforeAll,
@@ -16,15 +14,11 @@ import {
   YES,
 } from './common';
 import { UserTotalOnChainFrozenFunds } from '@augurproject/sdk/src/state/getter/Users';
-import { convertAttoValueToDisplayValue } from '@augurproject/sdk/src';
 
 describe('State API :: Users :: ', () => {
-  let db: Promise<DB>;
-  let api: API;
-  let john: ContractAPI;
-  let mary: ContractAPI;
+  let john: TestContractAPI;
+  let mary: TestContractAPI;
   let baseProvider: TestEthersProvider;
-  let bulkSyncStrategy: BulkSyncStrategy;
 
   beforeAll(async () => {
     const state = await _beforeAll();
@@ -33,30 +27,21 @@ describe('State API :: Users :: ', () => {
 
   beforeEach(async () => {
     const state = await _beforeEach({ baseProvider });
-    db = state.db;
-    api = state.api;
     john = state.john;
     mary = state.mary;
-
-    bulkSyncStrategy = new BulkSyncStrategy(
-      john.provider.getLogs,
-      (await db).logFilters.buildFilter,
-      (await db).logFilters.onLogsAdded,
-      john.augur.contractEvents.parseLogs,
-    );
   });
 
   test(':getTotalOnChainFrozenFunds ', async () => {
-    const initialFrozenFunds: UserTotalOnChainFrozenFunds = await api.route('getTotalOnChainFrozenFunds', {
+    const initialFrozenFunds: UserTotalOnChainFrozenFunds = await john.api.route('getTotalOnChainFrozenFunds', {
       universe: john.augur.contracts.universe.address,
       account: john.account.publicKey,
     });
     await expect(initialFrozenFunds.totalFrozenFunds).toEqual('0');
 
     const market1 = await john.createReasonableYesNoMarket();
-    await bulkSyncStrategy.start(0, await john.provider.getBlockNumber());;
+    await john.sync();
 
-    const marketCreatedFrozenFunds: UserTotalOnChainFrozenFunds = await api.route('getTotalOnChainFrozenFunds', {
+    const marketCreatedFrozenFunds: UserTotalOnChainFrozenFunds = await john.api.route('getTotalOnChainFrozenFunds', {
       universe: john.augur.contracts.universe.address,
       account: john.account.publicKey,
     });
@@ -64,9 +49,9 @@ describe('State API :: Users :: ', () => {
     await expect(marketCreatedFrozenFunds.totalFrozenFunds).toEqual("10");
 
     const market2 = await john.createReasonableYesNoMarket();
-    await bulkSyncStrategy.start(0, await john.provider.getBlockNumber());;
+    await john.sync();
 
-    const marketCreatedFrozenFunds2: UserTotalOnChainFrozenFunds = await api.route('getTotalOnChainFrozenFunds', {
+    const marketCreatedFrozenFunds2: UserTotalOnChainFrozenFunds = await john.api.route('getTotalOnChainFrozenFunds', {
       universe: john.augur.contracts.universe.address,
       account: john.account.publicKey,
     });
@@ -105,14 +90,14 @@ describe('State API :: Users :: ', () => {
       await doTrade(john, mary, trade, trade.market);
     }
 
-    await bulkSyncStrategy.start(0, await john.provider.getBlockNumber());
+    await john.sync();
 
-    const { frozenFundsTotal } = await api.route('getUserTradingPositions', {
+    const { frozenFundsTotal } = await john.api.route('getUserTradingPositions', {
       universe: john.augur.contracts.universe.address,
       account: john.account.publicKey,
     });
 
-    const afterTradesFrozenFunds: UserTotalOnChainFrozenFunds = await api.route('getTotalOnChainFrozenFunds', {
+    const afterTradesFrozenFunds: UserTotalOnChainFrozenFunds = await john.api.route('getTotalOnChainFrozenFunds', {
       universe: john.augur.contracts.universe.address,
       account: john.account.publicKey,
     });

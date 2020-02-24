@@ -132,8 +132,8 @@ export const AddFunds = ({
       value: ADD_FUNDS_TRANSFER,
     },
     {
-      header: 'Swap',
-      description: fundTypeToUse === DAI ? 'Swap ETH or REP for DAI and vice versa' : 'Swap ETH or DAI for REP and vice versa',
+      header: 'Convert',
+      description: fundTypeToUse === DAI ? 'Trade ETH or REP for DAI and vice versa' : 'Trade ETH or DAI for REP and vice versa',
       value: ADD_FUNDS_SWAP,
     },
   ];
@@ -155,7 +155,7 @@ export const AddFunds = ({
   const SWAP_ID = 0;
   const POOL_ID = 1;
   const pillOptions = [
-    { label: 'Swap', id: SWAP_ID },
+    { label: 'Convert', id: SWAP_ID },
     { label: 'Pool', subLabel: '(Advanced)', id: POOL_ID },
   ];
 
@@ -199,8 +199,8 @@ export const AddFunds = ({
         >
           {selectedOption === ADD_FUNDS_SWAP && (
             <>
-              <h1>Swap</h1>
-              <h2>{`Swap a currency for ${fundTypeToUse} or add to the ${fundTypeToUse} pool `}</h2>
+              <h1>Convert</h1>
+              <h2>{fundTypeToUse === REP ? 'Trade a currency for REP or add to the REP pool' : 'Trade ETH or REP for DAI and vice versa'}</h2>
 
               <div className={Styles.AddFundsSwap}>
                 <PillSelection

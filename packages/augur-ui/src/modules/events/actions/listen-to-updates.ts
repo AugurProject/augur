@@ -10,11 +10,9 @@ import {
   handleMarketCreatedLog,
   handleMarketFinalizedLog,
   handleMarketMigratedLog,
-  handleMarketOIChangedLog,
   handleMarketParticipantsDisavowedLog,
   handleMarketsUpdatedLog,
   handleMarketTransferredLog,
-  handleMarketVolumeChangedLog,
   handleNewBlockLog,
   handleOrderLog,
   handleParticipationTokensRedeemedLog,
@@ -102,12 +100,6 @@ const EVENTS = {
   ),
   [SubscriptionEventName.MarketTransferred]: wrapLogHandler(
     handleMarketTransferredLog
-  ),
-  [SubscriptionEventName.MarketVolumeChanged]: wrapLogHandler(
-    handleMarketVolumeChangedLog
-  ),
-  [SubscriptionEventName.MarketOIChanged]: wrapLogHandler(
-    handleMarketOIChangedLog
   ),
   [SubscriptionEventName.ProfitLossChanged]: wrapLogHandler(
     handleProfitLossChangedLog

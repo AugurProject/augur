@@ -6,7 +6,6 @@ export type GetBlockByString = (hash: string) => Promise<Block | null>
 export interface ExtendedLog extends Log {
   transactionIndex: number;
   removed: boolean;
-  transactionLogIndex: number;
   transactionHash: string;
   address: string;
   data: string;

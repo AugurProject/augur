@@ -81,7 +81,6 @@ const mapDispatchToProps = dispatch => ({
   dispatch(updateAuthStatus(IS_CONNECTION_TRAY_OPEN, value)),
   showGlobalChat: () => dispatch(updateModal({type: MODAL_GLOBAL_CHAT})),
   migrateV1Rep: () => dispatch(updateModal({ type: MODAL_MIGRATE_REP })),
-  setTheme: (theme) => dispatch(setTheme(theme)),
   saveAffilateAddress: address => dispatch(saveAffiliateAddress(address))
 });
 

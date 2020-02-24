@@ -11,42 +11,41 @@ import {
   GnosisSafeState,
 } from '@augurproject/gnosis-relay-api';
 import { Connectors } from '@augurproject/sdk';
-import { DB } from '@augurproject/sdk/build/state/db/DB';
-import { API } from '@augurproject/sdk/build/state/getter/API';
 import {
   ZeroXOrder,
   ZeroXOrders,
 } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
-import { BulkSyncStrategy } from '@augurproject/sdk/build/state/sync/BulkSyncStrategy';
-import { ACCOUNTS, ContractAPI } from '@augurproject/tools';
+import { ACCOUNTS } from '@augurproject/tools';
+import { TestContractAPI } from '@augurproject/tools';
 import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
 import { BigNumber } from 'bignumber.js';
 import { JsonRpcProvider } from 'ethers/providers';
 import { formatBytes32String } from 'ethers/utils';
 import * as _ from 'lodash';
-import { makeDbMock } from '../../libs';
 
 describe('3rd Party :: ZeroX :: ', () => {
-  let john: ContractAPI;
-  let johnDB: Promise<DB>;
-  let johnAPI: API;
-  let johnBulkSyncStrategy: BulkSyncStrategy;
-
-  let mary: ContractAPI;
-  let maryDB: Promise<DB>;
-  let maryAPI: API;
-  let maryBulkSyncStrategy: BulkSyncStrategy;
+  let john: TestContractAPI;
+  let mary: TestContractAPI;
 
   let meshClient: WSClient;
   let providerJohn: EthersProvider;
   let providerMary: EthersProvider;
   let networkId: NetworkId;
   let addresses: ContractAddresses;
-  const mock = makeDbMock();
 
   beforeAll(async () => {
-    providerJohn = new EthersProvider(new JsonRpcProvider('http://localhost:8545'), 5, 0, 40);
-    providerMary = new EthersProvider(new JsonRpcProvider('http://localhost:8545'), 5, 0, 40);
+    providerJohn = new EthersProvider(
+      new JsonRpcProvider('http://localhost:8545'),
+      5,
+      0,
+      40
+    );
+    providerMary = new EthersProvider(
+      new JsonRpcProvider('http://localhost:8545'),
+      5,
+      0,
+      40
+    );
     networkId = await providerJohn.getNetworkId();
     addresses = Addresses[networkId];
 
@@ -60,17 +59,16 @@ describe('3rd Party :: ZeroX :: ', () => {
   describe('with gnosis', () => {
     beforeAll(async () => {
       const johnConnector = new Connectors.DirectConnector();
-      john = await ContractAPI.userWrapper(ACCOUNTS[0], providerJohn, addresses, johnConnector, new GnosisRelayAPI('http://localhost:8888/api/'), meshClient, undefined);
-      johnDB = mock.makeDB(john.augur, ACCOUNTS);
-      johnConnector.initialize(john.augur, await johnDB);
-      johnAPI = new API(john.augur, johnDB);
-      johnBulkSyncStrategy = new BulkSyncStrategy(
-        john.provider.getLogs,
-        (await johnDB).logFilters.buildFilter,
-        (await johnDB).logFilters.onLogsAdded,
-        john.augur.contractEvents.parseLogs,
+      john = await TestContractAPI.userWrapper(
+        ACCOUNTS[0],
+        providerJohn,
+        addresses,
+        johnConnector,
+        new GnosisRelayAPI('http://localhost:8888/api/'),
+        meshClient,
+        undefined
       );
-
+      johnConnector.initialize(john.augur, john.db);
 
       await john.approveCentralAuthority();
       const johnSafe = await john.fundSafe();
@@ -83,20 +81,21 @@ describe('3rd Party :: ZeroX :: ', () => {
       john.setUseGnosisRelay(true);
 
       const maryConnector = new Connectors.DirectConnector();
-      mary = await ContractAPI.userWrapper(ACCOUNTS[2], providerMary, addresses, maryConnector, new GnosisRelayAPI('http://localhost:8888/api/'), meshClient, undefined);
-      maryDB = mock.makeDB(mary.augur, ACCOUNTS);
-      maryConnector.initialize(mary.augur, await maryDB);
-      maryAPI = new API(mary.augur, maryDB);
-      maryBulkSyncStrategy = new BulkSyncStrategy(
-        mary.provider.getLogs,
-        (await maryDB).logFilters.buildFilter,
-        (await maryDB).logFilters.onLogsAdded,
-        mary.augur.contractEvents.parseLogs,
+      mary = await TestContractAPI.userWrapper(
+        ACCOUNTS[2],
+        providerMary,
+        addresses,
+        maryConnector,
+        new GnosisRelayAPI('http://localhost:8888/api/'),
+        meshClient,
+        undefined
       );
-
+      maryConnector.initialize(mary.augur, await mary.db);
 
       await mary.approveCentralAuthority();
-      const marySafe = await mary.fundSafe().catch((e) => console.error(`Safe funding failed: ${JSON.stringify(e)}`));
+      const marySafe = await mary
+        .fundSafe()
+        .catch(e => console.error(`Safe funding failed: ${JSON.stringify(e)}`));
       if (marySafe) {
         const marySafeStatus = await mary.getSafeStatus(marySafe);
         console.log(`Safe ${marySafe}: ${marySafeStatus}`);
@@ -116,7 +115,7 @@ describe('3rd Party :: ZeroX :: ', () => {
         stringTo32ByteHex('A'),
         stringTo32ByteHex('B'),
       ]);
-      await johnBulkSyncStrategy.start(0, await john.provider.getBlockNumber());
+      await john.sync();
 
       // Give John enough cash to pay for the 0x order.
       await john.faucet(new BigNumber(1e22));
@@ -124,7 +123,7 @@ describe('3rd Party :: ZeroX :: ', () => {
       // Place an order
       const direction = 0;
       const outcome = 0;
-      const displayPrice = new BigNumber(.22);
+      const displayPrice = new BigNumber(0.22);
       const expirationTime = new BigNumber(new Date().valueOf()).plus(1000000);
       await john.placeZeroXOrder({
         direction,
@@ -146,14 +145,16 @@ describe('3rd Party :: ZeroX :: ', () => {
       await sleep(300);
 
       // Get orders for the market
-      const orders: ZeroXOrders = await johnAPI.route('getZeroXOrders', {
+      const orders: ZeroXOrders = await john.api.route('getZeroXOrders', {
         marketId: market.address,
       });
       const order: ZeroXOrder = _.values(orders[market.address][0]['0'])[0];
       await expect(order).not.toBeUndefined();
       await expect(order.price).toEqual('0.22');
       await expect(order.amount).toEqual('10');
-      await expect(order.expirationTimeSeconds.toString()).toEqual(expirationTime.toFixed());
+      await expect(order.expirationTimeSeconds.toString()).toEqual(
+        expirationTime.toFixed()
+      );
     }, 240000);
 
     test('State API :: ZeroX :: getOrders :: Poor', async () => {
@@ -162,7 +163,7 @@ describe('3rd Party :: ZeroX :: ', () => {
         stringTo32ByteHex('A'),
         stringTo32ByteHex('B'),
       ]);
-      await johnBulkSyncStrategy.start(0, await john.provider.getBlockNumber());
+      await john.sync();
 
       // Give John enough cash to pay for the 0x order.
       await john.faucet(new BigNumber(1e22));
@@ -170,30 +171,32 @@ describe('3rd Party :: ZeroX :: ', () => {
       // Place an order
       const direction = 0;
       const outcome = 0;
-      const displayPrice = new BigNumber(.22);
+      const displayPrice = new BigNumber(0.22);
       const expirationTime = new BigNumber(new Date().valueOf()).plus(1000000);
-      await expect(john.placeZeroXOrder({
-        direction,
-        market: market.address,
-        numTicks: await market.getNumTicks_(),
-        numOutcomes: 3,
-        outcome,
-        tradeGroupId: '42',
-        fingerprint: formatBytes32String('11'),
-        doNotCreateOrders: false,
-        displayMinPrice: new BigNumber(0),
-        displayMaxPrice: new BigNumber(1),
-        displayAmount: new BigNumber(1e20), // insane amount
-        displayPrice,
-        displayShares: new BigNumber(0),
-        expirationTime,
-      })).rejects.toThrow();
+      await expect(
+        john.placeZeroXOrder({
+          direction,
+          market: market.address,
+          numTicks: await market.getNumTicks_(),
+          numOutcomes: 3,
+          outcome,
+          tradeGroupId: '42',
+          fingerprint: formatBytes32String('11'),
+          doNotCreateOrders: false,
+          displayMinPrice: new BigNumber(0),
+          displayMaxPrice: new BigNumber(1),
+          displayAmount: new BigNumber(1e20), // insane amount
+          displayPrice,
+          displayShares: new BigNumber(0),
+          expirationTime,
+        })
+      ).rejects.toThrow();
     }, 240000);
 
     test('ZeroX Trade :: placeTrade', async () => {
       const market1 = await john.createReasonableYesNoMarket();
 
-      await johnBulkSyncStrategy.start(0, await john.provider.getBlockNumber());
+      await john.sync();
 
       const outcome = 1;
       await john.placeBasicYesNoZeroXTrade(
@@ -236,8 +239,8 @@ describe('3rd Party :: ZeroX :: ', () => {
         new BigNumber(1000000000000000)
       );
 
-      await johnBulkSyncStrategy.start(0, await john.provider.getBlockNumber());
-      await maryBulkSyncStrategy.start(0, await mary.provider.getBlockNumber());
+      await john.sync();
+      await mary.sync();
 
       await mary.placeBasicYesNoZeroXTrade(
         1,
@@ -249,11 +252,17 @@ describe('3rd Party :: ZeroX :: ', () => {
         new BigNumber(1000000000000000)
       );
 
-      await johnBulkSyncStrategy.start(0, await john.provider.getBlockNumber());
-      await maryBulkSyncStrategy.start(0, await mary.provider.getBlockNumber());
+      await john.sync();
+      await mary.sync();
 
-      const johnShares = await john.getNumSharesInMarket(market1, new BigNumber(outcome));
-      const maryShares = await mary.getNumSharesInMarket(market1, new BigNumber(0));
+      const johnShares = await john.getNumSharesInMarket(
+        market1,
+        new BigNumber(outcome)
+      );
+      const maryShares = await mary.getNumSharesInMarket(
+        market1,
+        new BigNumber(0)
+      );
 
       await expect(johnShares.toNumber()).toEqual(10 ** 18);
       await expect(maryShares.toNumber()).toEqual(10 ** 18);
@@ -297,7 +306,9 @@ describe('3rd Party :: ZeroX :: ', () => {
         false
       );
 
-      await expect(simulationData.tokensDepleted).toEqual(amount.multipliedBy(price));
+      await expect(simulationData.tokensDepleted).toEqual(
+        amount.multipliedBy(price)
+      );
       await expect(simulationData.sharesDepleted).toEqual(zero);
       await expect(simulationData.sharesFilled).toEqual(zero);
       await expect(simulationData.numFills).toEqual(zero);
@@ -312,8 +323,8 @@ describe('3rd Party :: ZeroX :: ', () => {
         new BigNumber(1000000000000000)
       );
 
-      await johnBulkSyncStrategy.start(0, await john.provider.getBlockNumber());
-      await maryBulkSyncStrategy.start(0, await john.provider.getBlockNumber());
+      await john.sync();
+      await mary.sync();
 
       const fillAmount = new BigNumber(50);
       const fillPrice = new BigNumber(0.6);
@@ -329,7 +340,9 @@ describe('3rd Party :: ZeroX :: ', () => {
       );
 
       await expect(simulationData.numFills).toEqual(new BigNumber(1));
-      await expect(simulationData.tokensDepleted).toEqual(fillAmount.multipliedBy(fillPrice));
+      await expect(simulationData.tokensDepleted).toEqual(
+        fillAmount.multipliedBy(fillPrice)
+      );
       await expect(simulationData.sharesFilled).toEqual(fillAmount);
 
     }, 240000);
@@ -338,18 +351,17 @@ describe('3rd Party :: ZeroX :: ', () => {
   describe('without gnosis', () => {
     beforeAll(async () => {
       const connectorJohn = new Connectors.DirectConnector();
-      john = await ContractAPI.userWrapper(ACCOUNTS[0], providerJohn, addresses, connectorJohn, undefined, meshClient, undefined);
-      johnDB = mock.makeDB(john.augur, ACCOUNTS);
-      connectorJohn.initialize(john.augur, await johnDB);
-      johnAPI = new API(john.augur, johnDB);
-      await john.approveCentralAuthority();
-
-      johnBulkSyncStrategy = new BulkSyncStrategy(
-        john.provider.getLogs,
-        (await johnDB).logFilters.buildFilter,
-        (await johnDB).logFilters.onLogsAdded,
-        john.augur.contractEvents.parseLogs,
+      john = await TestContractAPI.userWrapper(
+        ACCOUNTS[0],
+        providerJohn,
+        addresses,
+        connectorJohn,
+        undefined,
+        meshClient,
+        undefined
       );
+      connectorJohn.initialize(john.augur, john.db);
+      await john.approveCentralAuthority();
     }, 120000);
 
     test('State API :: ZeroX :: getOrders', async () => {
@@ -358,7 +370,7 @@ describe('3rd Party :: ZeroX :: ', () => {
         stringTo32ByteHex('A'),
         stringTo32ByteHex('B'),
       ]);
-      await johnBulkSyncStrategy.start(0, await john.provider.getBlockNumber());
+      await john.sync();
 
       // Give John enough cash to pay for the 0x order.
       await john.faucet(new BigNumber(1e22));
@@ -366,7 +378,7 @@ describe('3rd Party :: ZeroX :: ', () => {
       // Place an order
       const direction = 0;
       const outcome = 0;
-      const displayPrice = new BigNumber(.22);
+      const displayPrice = new BigNumber(0.22);
       const expirationTime = new BigNumber(new Date().valueOf()).plus(1000000);
       await john.placeZeroXOrder({
         direction,
@@ -385,21 +397,19 @@ describe('3rd Party :: ZeroX :: ', () => {
         expirationTime,
       });
 
-      // Terrible, but not clear how else to wait on the mesh event propagating to the callback and it finishing updating the DB...
-      await sleep(300);
-
-      await johnBulkSyncStrategy.start(0, await john.provider.getBlockNumber());
+      await john.sync();
 
       // Get orders for the market
-      const orders: ZeroXOrders = await johnAPI.route('getZeroXOrders', {
+      const orders: ZeroXOrders = await john.api.route('getZeroXOrders', {
         marketId: market.address,
       });
       const order: ZeroXOrder = _.values(orders[market.address][0]['0'])[0];
       await expect(order).not.toBeUndefined();
       await expect(order.price).toEqual('0.22');
       await expect(order.amount).toEqual('10');
-      await expect(order.expirationTimeSeconds.toString()).toEqual(expirationTime.toFixed());
+      await expect(order.expirationTimeSeconds.toString()).toEqual(
+        expirationTime.toFixed()
+      );
     }, 60000);
-
   });
 });

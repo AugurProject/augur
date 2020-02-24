@@ -1,6 +1,5 @@
 import Dexie from 'dexie';
 import { Augur } from '../../Augur';
-import { SubscriptionEventName } from '../../constants';
 import {
   LogCallbackType,
   LogFilterAggregatorInterface,
@@ -28,7 +27,8 @@ import {
   MarketOIChangedLog,
   MarketParticipantsDisavowedLog,
   MarketTransferredLog,
-  MarketVolumeChangedLog, OrderEventLog,
+  MarketVolumeChangedLog,
+  OrderEventLog,
   ParsedOrderEventLog,
   ParticipationTokensRedeemedLog,
   ProfitLossChangedLog,
@@ -43,9 +43,12 @@ import {
   TransferSingleLog,
   UniverseCreatedLog,
   UniverseForkedLog,
+  ReportingFeeChangedLog,
 } from '../logs/types';
+import { BaseSyncableDB } from './BaseSyncableDB';
 import { CancelledOrdersDB } from './CancelledOrdersDB';
 import { CurrentOrdersDatabase } from './CurrentOrdersDB';
+import { DelayedSyncableDB } from './DelayedSyncableDB';
 import { DisputeDatabase } from './DisputeDB';
 import { MarketDB } from './MarketDB';
 import { ParsedOrderEventDB } from './ParsedOrderEventDB';
@@ -66,10 +69,10 @@ export interface DerivedDBConfiguration {
 
 export class DB {
   private blockstreamDelay: number;
-  private syncableDatabases: { [dbName: string]: SyncableDB } = {};
+  private syncableDatabases: { [dbName: string]: BaseSyncableDB } = {};
   private disputeDatabase: DisputeDatabase;
   private currentOrdersDatabase: CurrentOrdersDatabase;
-  private marketDatabase: MarketDB;
+  public marketDatabase: MarketDB;
   private cancelledOrdersDatabase: CancelledOrdersDB;
   private parsedOrderEventDatabase: ParsedOrderEventDB;
   private zeroXOrders: ZeroXOrders;
@@ -103,6 +106,7 @@ export class DB {
     { EventName: 'TokenBalanceChanged', indexes: ['[universe+owner+tokenType]'], primaryKey: '[owner+token]' },
     { EventName: 'TokensMinted', indexes: [] },
     { EventName: 'TokensTransferred', indexes: [] },
+    { EventName: 'ReportingFeeChanged', indexes: ['universe'] },
     { EventName: 'TradingProceedsClaimed', indexes: ['timestamp'] },
     { EventName: 'UniverseCreated', indexes: ['childUniverse', 'parentUniverse'] },
     { EventName: 'UniverseForked', indexes: ['universe'] },
@@ -155,7 +159,7 @@ export class DB {
       new SyncableDB(this.augur, this, networkId, genericEventDBDescription.EventName, genericEventDBDescription.EventName, genericEventDBDescription.indexes);
 
       if(genericEventDBDescription.primaryKey) {
-        new SyncableDB(this.augur, this, networkId, genericEventDBDescription.EventName, `${genericEventDBDescription.EventName}Rollup`, genericEventDBDescription.indexes);
+        new DelayedSyncableDB(this.augur, this, networkId, genericEventDBDescription.EventName, `${genericEventDBDescription.EventName}Rollup`, genericEventDBDescription.indexes);
       }
     }
     // Custom Derived DBs here
@@ -207,7 +211,7 @@ export class DB {
    *
    * @param {SyncableDB} db dbController that utilizes the SyncableDB
    */
-  notifySyncableDBAdded(db: SyncableDB): void {
+  notifySyncableDBAdded(db: BaseSyncableDB): void {
     this.syncableDatabases[db.dbName] = db;
   }
 
@@ -224,19 +228,43 @@ export class DB {
   async getSyncStartingBlock(): Promise<number> {
     const highestSyncBlocks = [];
     for (const genericEventDBDescription of this.genericEventDBDescriptions) {
-      highestSyncBlocks.push(await this.syncStatus.getHighestSyncBlock(genericEventDBDescription.EventName));
+      highestSyncBlocks.push(await this.syncStatus.getHighestSyncBlock(
+        genericEventDBDescription.EventName));
     }
 
     return Math.min(...highestSyncBlocks);
   }
 
   /**
-   * Gets a syncable database based upon the name
-   *
-   * @param {string} dbName The name of the database
+   * Syncs generic events and user-specific events with blockchain and updates MetaDB info.
    */
-  getSyncableDatabase(dbName: string): SyncableDB {
-    return this.syncableDatabases[dbName];
+  async sync(highestAvailableBlockNumber?: number): Promise<void> {
+    const dbSyncPromises = [];
+    if(!highestAvailableBlockNumber) {
+      highestAvailableBlockNumber = await this.augur.provider.getBlockNumber();
+    }
+
+    for (const {EventName:dbName, primaryKey } of this.genericEventDBDescriptions) {
+      if (primaryKey) {
+        dbSyncPromises.push(
+          this.syncableDatabases[`${dbName}Rollup`].sync(
+            highestAvailableBlockNumber,
+          ),
+        );
+      }
+    }
+
+    await Promise.all(dbSyncPromises);
+
+    // Derived DBs are synced after generic log DBs complete
+    console.log('Syncing derived DBs');
+
+    await this.disputeDatabase.sync(highestAvailableBlockNumber);
+    await this.currentOrdersDatabase.sync(highestAvailableBlockNumber);
+    await this.cancelledOrdersDatabase.sync(highestAvailableBlockNumber);
+
+    // The Market DB syncs after the derived DBs, as it depends on a derived DB
+    await this.marketDatabase.sync(highestAvailableBlockNumber);
   }
 
   /**
@@ -246,10 +274,18 @@ export class DB {
    */
   rollback = async (blockNumber: number): Promise<void> => {
     const dbRollbackPromises = [];
-    // Perform rollback on SyncableDBs & UserSyncableDBs
+    // Perform rollback on SyncableDBs & rollups
     for (const genericEventDBDescription of this.genericEventDBDescriptions) {
       const dbName = genericEventDBDescription.EventName;
       dbRollbackPromises.push(this.syncableDatabases[dbName].rollback(blockNumber));
+
+      if (genericEventDBDescription.primaryKey) {
+        dbRollbackPromises.push(
+          this.syncableDatabases[`${genericEventDBDescription.EventName}Rollup`].rollback(
+            blockNumber,
+          ),
+        );
+      }
     }
 
     // Perform rollback on derived DBs
@@ -349,4 +385,5 @@ export class DB {
   get Dispute() { return this.dexieDB.table<DisputeDoc>('Dispute'); }
   get CurrentOrders() { return this.dexieDB.table<CurrentOrder>('CurrentOrders'); }
   get ZeroXOrders() { return this.dexieDB.table<StoredOrder>('ZeroXOrders'); }
+  get ReportingFeeChanged() { return this.dexieDB.table<ReportingFeeChangedLog>('ReportingFeeChanged') }
 }

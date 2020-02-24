@@ -15,6 +15,7 @@ export enum ACCOUNT_TYPES {
 }
 
 export enum SubscriptionEventName {
+  BulkSyncComplete = "BulkSyncComplete",
   CompleteSetsPurchased = "CompleteSetsPurchased",
   CompleteSetsSold = "CompleteSetsSold",
   DisputeCrowdsourcerCompleted = "DisputeCrowdsourcerCompleted",
@@ -44,6 +45,7 @@ export enum SubscriptionEventName {
   TokensBurned = "TokensBurned",
   TokensMinted = "TokensMinted",
   TokensTransferred = "TokensTransferred",
+  ReportingFeeChanged = "ReportingFeeChanged",
   TradingProceedsClaimed = "TradingProceedsClaimed",
   UniverseCreated = "UniverseCreated",
   UniverseForked = "UniverseForked",
@@ -156,6 +158,8 @@ export const SECONDS_IN_A_DAY = new BigNumber(86400, 10);
 export const SECONDS_IN_A_YEAR = new BigNumber(SECONDS_IN_A_DAY).multipliedBy(365);
 
 export const GENESIS = 'Genesis';
+
+export const INIT_REPORTING_FEE_DIVISOR = '100';
 
 export enum MarketReportingStateByNum {
   'PreReporting',

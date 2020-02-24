@@ -1,36 +1,22 @@
 import { ORDER_TYPES, SECONDS_IN_A_DAY } from '@augurproject/sdk';
 import { MarketReportingState } from '@augurproject/sdk/build/constants';
-import { DB } from '@augurproject/sdk/build/state/db/DB';
-import { API } from '@augurproject/sdk/build/state/getter/API';
 import {
   MarketList,
   MarketOrderBook,
 } from '@augurproject/sdk/build/state/getter/Markets';
-import { BulkSyncStrategy } from '@augurproject/sdk/build/state/sync/BulkSyncStrategy';
-import { ACCOUNTS, ContractAPI } from '@augurproject/tools';
+import { ACCOUNTS } from '@augurproject/tools';
+import { TestContractAPI } from '@augurproject/tools';
 import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
 import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
 import { BigNumber } from 'bignumber.js';
 import { getAddress } from 'ethers/utils/address';
 import * as _ from 'lodash';
-import { makeDbMock } from '../../../../libs';
-import {
-  _beforeAll,
-  _beforeEach,
-  CHUNK_SIZE,
-  outcome0,
-  outcome1,
-} from './common';
+import { _beforeAll, _beforeEach, outcome0, outcome1 } from './common';
 
 describe('State API :: Markets :: ', () => {
-  let johnDb: Promise<DB>;
-  let maryDb: Promise<DB>;
-  let api: API;
-  let john: ContractAPI;
-  let mary: ContractAPI;
-  let bob: ContractAPI;
-  let johnBulkSyncStrategy: BulkSyncStrategy;
-  let maryBulkSyncStrategy: BulkSyncStrategy;
+  let john: TestContractAPI;
+  let mary: TestContractAPI;
+  let bob: TestContractAPI;
 
   let baseProvider: TestEthersProvider;
   let markets = {};
@@ -43,13 +29,9 @@ describe('State API :: Markets :: ', () => {
 
   beforeEach(async () => {
     const state = await _beforeEach({ baseProvider, markets });
-    johnDb = state.db;
-    api = state.api;
     john = state.john;
     mary = state.mary;
     bob = state.bob;
-    johnBulkSyncStrategy = state.johnBulkSyncStrategy;
-    maryBulkSyncStrategy = state.maryBulkSyncStrategy;
   });
 
   test(':getMarkets userPortfolioAddress', async () => {
@@ -63,21 +45,24 @@ describe('State API :: Markets :: ', () => {
       feePerCashInAttoCash: lowFeePerCashInAttoCash,
       affiliateFeeDivisor,
       designatedReporter,
-      extraInfo: '{"categories": ["yesNo 1 primary", "yesNo 1 secondary", "yesNo 1 tertiary"], "description": "yesNo description 1", "longDescription": "yesNo longDescription 1"}',
+      extraInfo:
+        '{"categories": ["yesNo 1 primary", "yesNo 1 secondary", "yesNo 1 tertiary"], "description": "yesNo description 1", "longDescription": "yesNo longDescription 1"}',
     });
 
-    const yesNoMarket2 = john.augur.contracts.marketFromAddress(markets['yesNoMarket2']);
-    const categoricalMarket1 = john.augur.contracts.marketFromAddress(markets['categoricalMarket1']);
-    const categoricalMarket2 = john.augur.contracts.marketFromAddress(markets['categoricalMarket2']);
+    const yesNoMarket2 = john.augur.contracts.marketFromAddress(
+      markets['yesNoMarket2']
+    );
+    const categoricalMarket1 = john.augur.contracts.marketFromAddress(
+      markets['categoricalMarket1']
+    );
+    const categoricalMarket2 = john.augur.contracts.marketFromAddress(
+      markets['categoricalMarket2']
+    );
 
     // Report on a market with Bob
     await john.setTimestamp(endTime.plus(24 * 60 * 60 * 2));
 
-    let payoutSet = [
-      new BigNumber(0),
-      new BigNumber(100),
-      new BigNumber(0),
-    ];
+    let payoutSet = [new BigNumber(0), new BigNumber(100), new BigNumber(0)];
     await bob.doInitialReport(yesNoMarket2, payoutSet);
 
     payoutSet = [
@@ -113,17 +98,17 @@ describe('State API :: Markets :: ', () => {
       stringTo32ByteHex(''),
       stringTo32ByteHex('42')
     );
-    await johnBulkSyncStrategy.start(0, await john.provider.getBlockNumber());
+    await john.sync();
 
     let marketList: MarketList;
 
     // Test user portfolio filter
-    marketList = await api.route('getMarkets', {
+    marketList = await john.api.route('getMarkets', {
       universe: universe.address,
       userPortfolioAddress: getAddress(ACCOUNTS[2].publicKey),
     });
     expect(marketList.markets.length).toEqual(4);
-    const marketIds = _.map(marketList.markets, 'id')
+    const marketIds = _.map(marketList.markets, 'id');
     expect(marketIds).toContain(categoricalMarket1.address);
     expect(marketIds).toContain(categoricalMarket2.address);
     expect(marketIds).toContain(yesNoMarket1.address);
@@ -139,10 +124,21 @@ describe('State API :: Markets :: ', () => {
     beforeAll(async () => {
       blockProvider = await baseProvider.fork();
       const addresses = blockProvider.getContractAddresses();
-      john = await ContractAPI.userWrapper(ACCOUNTS[0], blockProvider, addresses);
-      mary = await ContractAPI.userWrapper(ACCOUNTS[1], blockProvider, addresses);
-      bob = await ContractAPI.userWrapper(ACCOUNTS[2], blockProvider, addresses);
-      johnDb = makeDbMock().makeDB(john.augur, ACCOUNTS);
+      john = await TestContractAPI.userWrapper(
+        ACCOUNTS[0],
+        blockProvider,
+        addresses
+      );
+      mary = await TestContractAPI.userWrapper(
+        ACCOUNTS[1],
+        blockProvider,
+        addresses
+      );
+      bob = await TestContractAPI.userWrapper(
+        ACCOUNTS[2],
+        blockProvider,
+        addresses
+      );
 
       const yesNoMarket = await john.createReasonableYesNoMarket();
       markets['yesNoMarket'] = yesNoMarket.address;
@@ -226,52 +222,39 @@ describe('State API :: Markets :: ', () => {
         createBids(price.minus(priceAdjustment), outcome1),
       ]);
 
-      const bulkSyncStrategy = new BulkSyncStrategy(
-        john.provider.getLogs,
-        (await johnDb).logFilters.buildFilter,
-        (await johnDb).logFilters.onLogsAdded,
-        john.augur.contractEvents.parseLogs,
-      );
-
-      await bulkSyncStrategy.start(0, await john.provider.getBlockNumber());
+      await john.sync();
     });
 
     beforeEach(async () => {
       const provider = await blockProvider.fork();
       const addresses = blockProvider.getContractAddresses();
-      john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, addresses);
-      mary = await ContractAPI.userWrapper(ACCOUNTS[1], provider, addresses);
-      bob = await ContractAPI.userWrapper(ACCOUNTS[2], provider, addresses);
-      johnDb = makeDbMock().makeDB(john.augur, ACCOUNTS);
-      maryDb = makeDbMock().makeDB(john.augur, ACCOUNTS);
-
-      johnBulkSyncStrategy = new BulkSyncStrategy(
-        john.provider.getLogs,
-        (await johnDb).logFilters.buildFilter,
-        (await johnDb).logFilters.onLogsAdded,
-        john.augur.contractEvents.parseLogs,
+      john = await TestContractAPI.userWrapper(
+        ACCOUNTS[0],
+        provider,
+        addresses
       );
-
-      maryBulkSyncStrategy = new BulkSyncStrategy(
-        mary.provider.getLogs,
-        (await maryDb).logFilters.buildFilter,
-        (await maryDb).logFilters.onLogsAdded,
-        mary.augur.contractEvents.parseLogs,
+      mary = await TestContractAPI.userWrapper(
+        ACCOUNTS[1],
+        provider,
+        addresses
       );
+      bob = await TestContractAPI.userWrapper(ACCOUNTS[2], provider, addresses);
 
-      api = new API(john.augur, johnDb);
+      await john.sync();
     });
 
     test('should require marketId', async () => {
-      await expect(api.route('getMarketOrderBook', {})).rejects.toThrowError();
+      await expect(
+        john.api.route('getMarketOrderBook', {})
+      ).rejects.toThrowError();
     });
 
     describe('outcomeId', () => {
       test('can be a single value', async () => {
-        const yesNoMarket = john.augur.contracts.marketFromAddress(markets['yesNoMarket']);
-
-        await johnBulkSyncStrategy.start(0, await john.provider.getBlockNumber());
-        const orderBook = (await api.route('getMarketOrderBook', {
+        const yesNoMarket = john.augur.contracts.marketFromAddress(
+          markets['yesNoMarket']
+        );
+        const orderBook = (await john.api.route('getMarketOrderBook', {
           marketId: yesNoMarket.address,
           outcomeId: outcome0.toNumber(),
           onChain: true,
@@ -285,9 +268,11 @@ describe('State API :: Markets :: ', () => {
       });
 
       test('can be an array', async () => {
-        const yesNoMarket = john.augur.contracts.marketFromAddress(markets['yesNoMarket']);
-        await johnBulkSyncStrategy.start(0, await john.provider.getBlockNumber());
-        const orderBook = (await api.route('getMarketOrderBook', {
+        const yesNoMarket = john.augur.contracts.marketFromAddress(
+          markets['yesNoMarket']
+        );
+        await john.sync();
+        const orderBook = (await john.api.route('getMarketOrderBook', {
           marketId: yesNoMarket.address,
           outcomeId: [outcome0.toNumber(), outcome1.toNumber()],
           onChain: true,
@@ -302,9 +287,11 @@ describe('State API :: Markets :: ', () => {
       });
 
       test('can be omitted', async () => {
-        const yesNoMarket = john.augur.contracts.marketFromAddress(markets['yesNoMarket']);
-        await johnBulkSyncStrategy.start(0, await john.provider.getBlockNumber());
-        const orderBook = (await api.route('getMarketOrderBook', {
+        const yesNoMarket = john.augur.contracts.marketFromAddress(
+          markets['yesNoMarket']
+        );
+        await john.sync();
+        const orderBook = (await john.api.route('getMarketOrderBook', {
           marketId: yesNoMarket.address,
           outcomeId: [outcome0.toNumber(), outcome1.toNumber()],
           onChain: true,
@@ -321,9 +308,10 @@ describe('State API :: Markets :: ', () => {
 
     test('should return a complete orderbook for john', async () => {
       const yesNoMarket = john.augur.contracts.marketFromAddress(
-        markets['yesNoMarket']);
-      await johnBulkSyncStrategy.start(0, await john.provider.getBlockNumber());
-      const orderBook = (await api.route('getMarketOrderBook', {
+        markets['yesNoMarket']
+      );
+      await john.sync();
+      const orderBook = (await john.api.route('getMarketOrderBook', {
         marketId: yesNoMarket.address,
         account: john.account.publicKey,
         onChain: true,
@@ -399,12 +387,12 @@ describe('State API :: Markets :: ', () => {
     });
 
     test('should return mysize of zero for mary', async () => {
-      const yesNoMarket = john.augur.contracts.marketFromAddress(markets['yesNoMarket']);
+      const yesNoMarket = john.augur.contracts.marketFromAddress(
+        markets['yesNoMarket']
+      );
 
-      const maryApi = new API(mary.augur, maryDb);
-      await maryBulkSyncStrategy.start(0, await mary.provider.getBlockNumber());
-
-      const orderBook = (await maryApi.route('getMarketOrderBook', {
+      await mary.sync();
+      const orderBook = (await mary.api.route('getMarketOrderBook', {
         marketId: yesNoMarket.address,
         onChain: true,
       })) as MarketOrderBook;
@@ -456,68 +444,70 @@ describe('State API :: Markets :: ', () => {
   });
 
   test(':getCategories : all reporting states', async () => {
-    await johnBulkSyncStrategy.start(0, await john.provider.getBlockNumber());
-    const categories = await api.route('getCategories', {
+    await john.sync();
+    const categories = await john.api.route('getCategories', {
       universe: john.augur.contracts.universe.address,
     });
-    expect(categories.sort()).toEqual([
-      'common',
-      'yesno 1 secondary',
-      'yesno 1 tertiary',
-      'yesno 2 primary',
-      'yesno 2 secondary',
-      'yesno 2 tertiary',
-      'categorical 1 primary',
-      'categorical 1 secondary',
-      'categorical 1 tertiary',
-      'categorical 2 primary',
-      'categorical 2 secondary',
-      'categorical 2 tertiary',
-      'scalar 1 secondary',
-      'scalar 1 tertiary',
-      'scalar 2 primary',
-      'scalar 2 secondary',
-      'scalar 2 tertiary',
-    ].sort());
+    expect(categories.sort()).toEqual(
+      [
+        'common',
+        'yesno 1 secondary',
+        'yesno 1 tertiary',
+        'yesno 2 primary',
+        'yesno 2 secondary',
+        'yesno 2 tertiary',
+        'categorical 1 primary',
+        'categorical 1 secondary',
+        'categorical 1 tertiary',
+        'categorical 2 primary',
+        'categorical 2 secondary',
+        'categorical 2 tertiary',
+        'scalar 1 secondary',
+        'scalar 1 tertiary',
+        'scalar 2 primary',
+        'scalar 2 secondary',
+        'scalar 2 tertiary',
+      ].sort()
+    );
   });
 
   test(':getCategories : some reporting states', async () => {
-    await johnBulkSyncStrategy.start(0, await john.provider.getBlockNumber());
-    const categories = await api.route('getCategories', {
+    await john.sync();
+    const categories = await john.api.route('getCategories', {
       universe: john.augur.contracts.universe.address,
       reportingStates: [
         MarketReportingState.OpenReporting,
         MarketReportingState.PreReporting,
       ],
     });
-    expect(categories.sort()).toMatchObject([
-      'common',
-      'yesno 1 secondary',
-      'yesno 1 tertiary',
-      'yesno 2 primary',
-      'yesno 2 secondary',
-      'yesno 2 tertiary',
-      'categorical 1 primary',
-      'categorical 1 secondary',
-      'categorical 1 tertiary',
-      'categorical 2 primary',
-      'categorical 2 secondary',
-      'categorical 2 tertiary',
-      'scalar 1 secondary',
-      'scalar 1 tertiary',
-      'scalar 2 primary',
-      'scalar 2 secondary',
-      'scalar 2 tertiary',
-    ].sort());
+    expect(categories.sort()).toMatchObject(
+      [
+        'common',
+        'yesno 1 secondary',
+        'yesno 1 tertiary',
+        'yesno 2 primary',
+        'yesno 2 secondary',
+        'yesno 2 tertiary',
+        'categorical 1 primary',
+        'categorical 1 secondary',
+        'categorical 1 tertiary',
+        'categorical 2 primary',
+        'categorical 2 secondary',
+        'categorical 2 tertiary',
+        'scalar 1 secondary',
+        'scalar 1 tertiary',
+        'scalar 2 primary',
+        'scalar 2 secondary',
+        'scalar 2 tertiary',
+      ].sort()
+    );
   });
 
   test(':getCategories : forking reporting state when no market has ever forked', async () => {
-    await johnBulkSyncStrategy.start(0, await john.provider.getBlockNumber());
-    const categories = await api.route('getCategories', {
+    await john.sync();
+    const categories = await john.api.route('getCategories', {
       universe: john.augur.contracts.universe.address,
-      reportingStates: [
-        MarketReportingState.Forking,
-      ],
+      reportingStates: [MarketReportingState.Forking],
     });
     expect(categories).toMatchObject([]);
   });

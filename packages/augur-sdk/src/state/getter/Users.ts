@@ -20,9 +20,10 @@ import {
   numTicksToTickSize,
   convertOnChainAmountToDisplayAmount,
   convertOnChainPriceToDisplayPrice,
+  convertAttoValueToDisplayValue,
 } from '../../index';
 import { sortOptions } from './types';
-import { MarketReportingState, OrderEventType } from '../../constants';
+import { MarketReportingState, OrderEventType, INIT_REPORTING_FEE_DIVISOR } from '../../constants';
 
 import * as _ from 'lodash';
 import * as t from 'io-ts';
@@ -169,14 +170,17 @@ export interface ProfitLossResult {
   total: string;
 }
 
-export interface UserAccountDataResult {
-  userTradeHistory: MarketTradingHistory;
+export interface UserAccountDataResult extends UserPositionsPlusResult {
   marketTradeHistory: MarketTradingHistory;
   userOpenOrders: UserOpenOrders;
   userStakedRep: AccountReportingHistory;
+  marketsInfo: MarketInfo[];
+}
+
+export interface UserPositionsPlusResult {
+  userTradeHistory: MarketTradingHistory;
   userPositions: UserTradingPositions;
   userPositionTotals: UserPositionTotals;
-  marketsInfo: MarketInfo[];
 }
 
 export class Users {
@@ -199,6 +203,7 @@ export class Users {
   static getProfitLossSummaryParams = getProfitLossSummaryParams;
   static getUserAccountParams = getUserAccountParams;
   static getTotalOnChainFrozenFundsParams = getUserAccountParams;
+  static getUserPositionsPlusParams = getUserAccountParams;
 
   @Getter('getUserAccountParams')
   static async getUserAccountData(
@@ -216,6 +221,7 @@ export class Users {
     let marketTradeHistory = null;
     let marketsInfo = null;
     let marketList = null;
+    let drMarketList = null;
     let userTradeHistory = null;
     let userOpenOrders: UserOpenOrders = null;
     let userPositions: UserTradingPositions = null;
@@ -247,6 +253,12 @@ export class Users {
 
     marketList = await Markets.getMarkets(augur, db, {
       creator: params.account,
+      designatedReporter: params.account,
+      universe: params.universe,
+    });
+
+    drMarketList = await Markets.getMarkets(augur, db, {
+      designatedReporter: params.account,
       universe: params.universe,
     });
 
@@ -315,7 +327,59 @@ export class Users {
       userStakedRep,
       userPositions,
       userPositionTotals,
-      marketsInfo: [...(marketList || {}).markets, ...marketsInfo],
+      marketsInfo: [...(marketList || {}).markets, ...marketsInfo, ...(drMarketList || {}).markets],
+    };
+  }
+
+
+  @Getter('getUserPositionsPlusParams')
+  static async getUserPositionsPlus(
+    augur: Augur,
+    db: DB,
+    params: t.TypeOf<typeof Users.getUserAccountParams>
+  ): Promise<UserPositionsPlusResult> {
+    if (!params.universe || !params.account) {
+      throw new Error(
+        "'getUserAccountData' requires a 'universe' and 'account' param be provided"
+      );
+    }
+
+    let userPositionTotals = null;
+
+    const userTradeHistory = await OnChainTrading.getTradingHistory(augur, db, {
+      account: params.account,
+      universe: params.universe,
+      filterFinalized: true,
+    });
+
+    const userPositions = await Users.getUserTradingPositions(augur, db, {
+      account: params.account,
+      universe: params.universe,
+    });
+
+    const profitLoss = await Users.getProfitLossSummary(augur, db, {
+      account: params.account,
+      universe: params.universe,
+    });
+
+    const funds = await Users.getTotalOnChainFrozenFunds(augur, db, {
+      account: params.account,
+      universe: params.universe,
+    })
+    if (profitLoss && Object.keys(profitLoss).length > 0) {
+      userPositionTotals = {
+        totalFrozenFunds: funds.totalFrozenFunds,
+        totalRealizedPL: profitLoss[DAYS_IN_MONTH].realized,
+        tradingPositionsTotal: {
+          unrealizedRevenue24hChangePercent: profitLoss[ONE_DAY].unrealizedPercent,
+        },
+      };
+    }
+
+    return {
+      userTradeHistory,
+      userPositions,
+      userPositionTotals,
     };
   }
 
@@ -706,7 +770,7 @@ export class Users {
         new BigNumber(tokenBalanceChangedLog.outcome).toNumber()
       ] = tokenBalanceChangedLog.balance;
     }
-    // Set unclaimedProceeds & unclaimedProfit
+
     for (const marketData of marketsData) {
       marketTradingPositions[marketData.market].unclaimedProceeds = '0';
       marketTradingPositions[marketData.market].unclaimedProfit = '0';
@@ -715,13 +779,15 @@ export class Users {
         marketData.reportingState === MarketReportingState.AwaitingFinalization
       ) {
         if (marketData.tentativeWinningPayoutNumerators) {
+          const reportingFeeLog = await db.ReportingFeeChanged.where("universe").equals(params.universe).first();
+          const reportingFeeDivisor = new BigNumber(reportingFeeLog ? reportingFeeLog.reportingFee : INIT_REPORTING_FEE_DIVISOR);
           for (const tentativeWinningPayoutNumerator in marketData.tentativeWinningPayoutNumerators) {
             if (
               marketOutcomeBalances[marketData.market] &&
               marketData.tentativeWinningPayoutNumerators[
                 tentativeWinningPayoutNumerator
               ] !== '0x00' &&
-              marketOutcomeBalances[marketData.market][
+              !!marketOutcomeBalances[marketData.market][
                 tentativeWinningPayoutNumerator
               ]
             ) {
@@ -730,54 +796,39 @@ export class Users {
                   tentativeWinningPayoutNumerator
                 ]
               );
-              const reportingFeeDivisor = marketData.feeDivisor;
-              const reportingFee = new BigNumber(
-                tokenBalanceChangedLogs[0].balance
-              ).div(reportingFeeDivisor);
-              const unclaimedProceeds = numShares
+              const ONE = new BigNumber(1);
+              const feePercentage = ONE.div(new BigNumber(marketData.feeDivisor)).plus(ONE.div(new BigNumber(reportingFeeDivisor)));
+              const shareValue = convertAttoValueToDisplayValue(numShares
                 .times(
                   marketData.tentativeWinningPayoutNumerators[
                     tentativeWinningPayoutNumerator
                   ]
-                )
-                .minus(marketData.feePerCashInAttoCash)
-                .minus(reportingFee);
-
+                ));
+              const feeAmount = shareValue.times(feePercentage);
+              const unclaimedProceeds = shareValue.minus(feeAmount);
               marketTradingPositions[
                 marketData.market
               ].unclaimedProceeds = new BigNumber(
                 marketTradingPositions[marketData.market].unclaimedProceeds
               )
                 .plus(unclaimedProceeds)
-                .toString();
+                .toFixed(2);
               marketTradingPositions[
                 marketData.market
               ].unclaimedProfit = new BigNumber(unclaimedProceeds)
                 .minus(
                   new BigNumber(
                     marketTradingPositions[marketData.market].unrealizedCost
-                  ).times(QUINTILLION)
+                  )
                 )
-                .toString();
+                .toFixed(2);
             }
           }
         }
       }
     }
-    // Format unclaimedProceeds & unclaimedProfit to Dai with 2 decimal places
+
     for (const marketData of marketsData) {
-      marketTradingPositions[
-        marketData.market
-      ].unclaimedProceeds = new BigNumber(
-        marketTradingPositions[marketData.market].unclaimedProceeds
-      )
-        .dividedBy(QUINTILLION)
-        .toFixed(2);
-      marketTradingPositions[marketData.market].unclaimedProfit = new BigNumber(
-        marketTradingPositions[marketData.market].unclaimedProfit
-      )
-        .dividedBy(QUINTILLION)
-        .toFixed(2);
       marketTradingPositions[
         marketData.market
       ].userSharesBalances = marketOutcomeBalances[marketData.market]
@@ -841,11 +892,10 @@ export class Users {
         "'getTotalOnChainFrozenFunds' requires a 'universe' or 'account' param be provided"
       );
     }
-    const profitLossCollection = await db.ProfitLossChanged.where(
-      'account'
-    ).equals(params.account);
 
-    const profitLossRecords = await profitLossCollection
+    const profitLossRecords = await db.ProfitLossChanged.where(
+      'account'
+    ).equals(params.account)
       .and(log => {
         if (params.universe && log.universe !== params.universe) return false;
         return true;

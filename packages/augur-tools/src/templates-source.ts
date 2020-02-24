@@ -923,7 +923,7 @@ export const TEMPLATES = {
             question: `NHL: Total number of wins the [0] will finish [1] regular season with?`,
             example: `NHL: Total number of wins the LA Kings will finish 2019-20 regular season with?`,
             denomination: 'wins',
-            tickSize: 1,
+            tickSize: 0.1,
             minPrice: 0,
             maxPrice: 82,
             inputs: [
@@ -944,6 +944,9 @@ export const TEMPLATES = {
               [REQUIRED]: [
                 {
                   text: `Regular Season win totals are for regular season games ONLY and will not include any play-in, playoffs, or championship games`,
+                },
+                {
+                  text: `Market should resolve as whole number value of wins`,
                 },
               ],
             },
@@ -2421,7 +2424,7 @@ export const TEMPLATES = {
                 question: `NBA: Total number of wins the [0] will finish the [1] regular season with?`,
                 example: `NBA: Total number of wins the NY Knicks will finish the 2019-20 regular season with?`,
                 denomination: 'wins',
-                tickSize: 1,
+                tickSize: 0.1,
                 minPrice: 0,
                 maxPrice: 82,
                 inputs: [
@@ -2442,6 +2445,9 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     {
                       text: `Regular Season win totals are for regular season games ONLY and will not include any play-in, playoffs, or championship games`,
+                    },
+                    {
+                      text: `Market should resolve as whole number value of wins`,
                     },
                   ],
                 },
@@ -2884,9 +2890,9 @@ export const TEMPLATES = {
                 question: `WNBA: Total number of wins [0] will finish [1] regular season with?`,
                 example: `WNBA: Total number of wins New York Liberty will finish 2019-20 regular season with?`,
                 denomination: 'wins',
-                tickSize: 1,
+                tickSize: 0.1,
                 minPrice: 0,
-                maxPrice: 34,
+                maxPrice: 36,
                 inputs: [
                   {
                     id: 0,
@@ -2905,6 +2911,9 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     {
                       text: `Regular Season win totals are for regular season games ONLY and will not include any play-in, playoffs, or championship games`,
+                    },
+                    {
+                      text: `Market should resolve as whole number value of wins`,
                     },
                   ],
                 },
@@ -3645,7 +3654,7 @@ export const TEMPLATES = {
             question: `MLB: Total number of wins the [0] will finish the [1] regular season with?`,
             example: `MLB: Total number of wins the LA Dodgers will finish the 2019 regular season with?`,
             denomination: 'wins',
-            tickSize: 1,
+            tickSize: 0.1,
             minPrice: 0,
             maxPrice: 162,
             inputs: [
@@ -3666,6 +3675,9 @@ export const TEMPLATES = {
               [REQUIRED]: [
                 {
                   text: `Regular Season win totals are for regular season games ONLY and will not include any play-in, playoffs, or championship games.`,
+                },
+                {
+                  text: `Market should resolve as whole number value of wins`,
                 },
               ],
             },
@@ -3884,14 +3896,14 @@ export const TEMPLATES = {
                   },
                   {
                     id: 2,
-                    type: TemplateInputType.DROPDOWN,
-                    values: LIST_VALUES.OLYMPIC_LIST_MEDAL,
-                    placeholder: `Any/a Gold`,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Field (Any other team)`,
                   },
                   {
                     id: 3,
-                    type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `Field (Any other team)`,
+                    type: TemplateInputType.USER_DROPDOWN_OUTCOME,
+                    placeholder: `Select Country`,
+                    values: LIST_VALUES.OLYMPIC_COUNTRIES,
                   },
                 ],
                 resolutionRules: {
@@ -3933,6 +3945,12 @@ export const TEMPLATES = {
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `Field (Any other team)`,
                   },
+                  {
+                    id: 4,
+                    type: TemplateInputType.USER_DROPDOWN_OUTCOME,
+                    placeholder: `Select Country`,
+                    values: LIST_VALUES.OLYMPIC_COUNTRIES,
+                  },
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
@@ -3950,9 +3968,9 @@ export const TEMPLATES = {
                 question: `How many [0] medals will [1] finish with in the [2] Summer Olympics?`,
                 example: `How many Gold medals will Norway finish with in the 2020 Summer Olympics?`,
                 denomination: 'medals',
-                tickSize: 1,
+                tickSize: 0.1,
                 minPrice: 0,
-                maxPrice: 500,
+                maxPrice: 250,
                 inputs: [
                   {
                     id: 0,
@@ -3977,6 +3995,9 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     {
                       text: `Metal count is determined at event expiration, if event expiration is before the completion of the games this market should resolve as 'Invalid'`,
+                    },
+                    {
+                      text: `Market should resolve as whole number value of metals`,
                     },
                   ],
                 },
@@ -4199,14 +4220,14 @@ export const TEMPLATES = {
                   },
                   {
                     id: 2,
-                    type: TemplateInputType.DROPDOWN,
-                    values: LIST_VALUES.OLYMPIC_LIST_MEDAL,
-                    placeholder: `Any/a Gold`,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Field (Any other team)`,
                   },
                   {
                     id: 3,
-                    type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `Field (Any other team)`,
+                    type: TemplateInputType.USER_DROPDOWN_OUTCOME,
+                    placeholder: `Select Country`,
+                    values: LIST_VALUES.OLYMPIC_COUNTRIES,
                   },
                 ],
                 resolutionRules: {
@@ -4248,6 +4269,12 @@ export const TEMPLATES = {
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `Field (Any other team)`,
                   },
+                  {
+                    id: 4,
+                    type: TemplateInputType.USER_DROPDOWN_OUTCOME,
+                    placeholder: `Select Country`,
+                    values: LIST_VALUES.OLYMPIC_COUNTRIES,
+                  },
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
@@ -4265,9 +4292,9 @@ export const TEMPLATES = {
                 question: `How many [0] medals will [1] finish with in the [2] Winter Olympics?`,
                 example: `How many Gold medals will Norway finish with in the 2020 Winter Olympics?`,
                 denomination: 'medals',
-                tickSize: 1,
+                tickSize: 0.1,
                 minPrice: 0,
-                maxPrice: 500,
+                maxPrice: 250,
                 inputs: [
                   {
                     id: 0,
@@ -4292,6 +4319,9 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     {
                       text: `Metal count is determined at event expiration, if event expiration is before the completion of the games this market should resolve as 'Invalid'`,
+                    },
+                    {
+                      text: `Market should resolve as whole number value of medals`,
                     },
                   ],
                 },
@@ -4776,7 +4806,7 @@ export const TEMPLATES = {
                 question: `Total number of wins [0] will finish [1] regular season with?`,
                 example: `Total number of wins NY Giants will finish 2019 regular season with?`,
                 denomination: 'wins',
-                tickSize: 1,
+                tickSize: 0.1,
                 minPrice: 0,
                 maxPrice: 16,
                 inputs: [
@@ -4797,6 +4827,9 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     {
                       text: `Regular Season win totals are for regular season games ONLY and will not include any play-in, playoffs, or championship games`,
+                    },
+                    {
+                      text: `Market should resolve as whole number value of wins`,
                     },
                   ],
                 },
@@ -5242,7 +5275,9 @@ export const TEMPLATES = {
                 question: `NCAA FB: Total number of wins [0] will finish the [1] regular season with?`,
                 example: `NCAA FB: Total number of wins Michigan Wolverines will finish the 2019 regular season with?`,
                 denomination: 'wins',
-                tickSize: 1,
+                tickSize: 0.1,
+                minPrice: 0,
+                maxPrice: 12,
                 inputs: [
                   {
                     id: 0,
@@ -5261,6 +5296,9 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     {
                       text: `Regular Season win totals are for regular season games ONLY and will not include any play-in, playoffs, or championship games`,
+                    },
+                    {
+                      text: `Market should resolve as whole number value of wins`,
                     },
                   ],
                 },

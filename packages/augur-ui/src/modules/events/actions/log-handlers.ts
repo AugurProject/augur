@@ -11,7 +11,6 @@ import {
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info';
 import {
   loadMarketTradingHistory,
-  loadUserFilledOrders,
 } from 'modules/markets/actions/market-trading-history-management';
 import { updateAssets } from 'modules/auth/actions/update-assets';
 import { loadAccountOpenOrders } from 'modules/orders/actions/load-account-open-orders';
@@ -41,12 +40,14 @@ import {
   REDEEMSTAKE,
   CREATE_MARKET,
   MODAL_GAS_PRICE,
+  SUBMIT_REPORT,
 } from 'modules/common/constants';
 import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
 import {
   isOnDisputingPage,
   isOnReportingPage,
+  isOnTradePage,
 } from 'modules/trades/helpers/is-on-page';
 import {
   reloadDisputingPage,
@@ -66,7 +67,7 @@ import { updateModal } from 'modules/modal/actions/update-modal';
 import * as _ from 'lodash';
 import { loadMarketOrderBook } from 'modules/orders/actions/load-market-orderbook';
 import { isCurrentMarket } from 'modules/trades/helpers/is-current-market';
-import { removePendingDataByHash } from 'modules/pending-queue/actions/pending-queue-management';
+import { removePendingDataByHash, addPendingData } from 'modules/pending-queue/actions/pending-queue-management';
 
 const handleAlert = (
   log: any,
@@ -90,10 +91,10 @@ const handleAlert = (
     console.error('alert could not be created', e);
   }
 };
-const ORDER_BOOK_REFRESH_MS = 1000;
-const OPEN_ORDERS_REFRESH_MS = 2000;
-const loadOrderBook = _.throttle((dispatch, marketId) => dispatch(loadMarketOrderBook(marketId)), ORDER_BOOK_REFRESH_MS, { leading: true });
-const loadUserOpenOrders = _.throttle(dispatch => dispatch(loadAccountOpenOrders()), OPEN_ORDERS_REFRESH_MS, { leading: true });
+const HIGH_PRI_REFRESH_MS = 1000;
+const MED_PRI_LOAD_REFRESH_MS = 2000;
+const loadOrderBook = _.throttle((dispatch, marketId) => dispatch(loadMarketOrderBook(marketId)), HIGH_PRI_REFRESH_MS, { leading: true });
+const loadUserOpenOrders = _.throttle(dispatch => dispatch(loadAccountOpenOrders()), MED_PRI_LOAD_REFRESH_MS, { leading: true });
 const throttleLoadMarketOrders = (marketId) => dispatch => loadOrderBook(dispatch, marketId);
 const throttleLoadUserOpenOrders = () => dispatch => loadUserOpenOrders(dispatch);
 
@@ -226,9 +227,9 @@ export const handleMarketsUpdatedLog = ({
   getState: () => AppState
 ) => {
   console.log('handleMarketsUpdatedChangedLog');
-
   let marketsDataById = {};
   if (Array.isArray(marketsInfo)) {
+    if (marketsInfo.length === 0) return;
     marketsDataById = marketsInfo.reduce(
       (acc, marketData) => ({
         [marketData.id]: marketData,
@@ -238,6 +239,7 @@ export const handleMarketsUpdatedLog = ({
     );
   } else {
     const market = marketsInfo as Getters.Markets.MarketInfo;
+    if (Object.keys(market).length === 0) return;
     marketsDataById[market.id] = market;
   }
 
@@ -406,12 +408,13 @@ export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
     dispatch(
       orderFilled(marketId, log, isSameAddress(log.orderCreator, address))
     );
-    dispatch(loadUserFilledOrders({ marketId }));
     dispatch(throttleLoadUserOpenOrders());
     handleAlert(log, PUBLICFILLORDER, true, dispatch, getState);
   }
-  dispatch(loadMarketTradingHistory(marketId));
-  dispatch(updateMarketOrderBook(log.market));
+  if (isOnTradePage()) {
+    dispatch(loadMarketTradingHistory(marketId));
+    dispatch(updateMarketOrderBook(log.market));
+  }
 };
 
 export const handleTradingProceedsClaimedLog = (
@@ -422,7 +425,6 @@ export const handleTradingProceedsClaimedLog = (
     getState().loginAccount.address
   );
   if (isUserDataUpdate) {
-    dispatch(loadAllAccountPositions());
     const { blockchain } = getState();
     dispatch(
       updateAlert(log.market, {
@@ -446,6 +448,7 @@ export const handleInitialReportSubmittedLog = (
   if (isUserDataUpdate) {
     handleAlert(log, DOINITIALREPORT, false, dispatch, getState);
     dispatch(loadAccountReportingHistory());
+    dispatch(addPendingData(log.market, SUBMIT_REPORT, TXEventName.Success, 0, {}));
   }
   if (isOnReportingPage()) dispatch(reloadReportingPage());
 };
@@ -538,19 +541,6 @@ export const handleMarketTransferredLog = (log: any) => (
 ) => {
   console.log('handleMarketTransferredLog');
   dispatch(loadMarketsInfo([log.market]));
-};
-
-export const handleMarketVolumeChangedLog = (
-  log: Logs.MarketVolumeChangedLog
-) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
-  console.log('handleMarketVolumeChangedLog');
-};
-
-export const handleMarketOIChangedLog = (log: Logs.MarketOIChangedLog) => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
-  console.log('handleMarketOIChangedLog');
 };
 
 export const handleUniverseForkedLog = (log: Logs.UniverseForkedLog) => (

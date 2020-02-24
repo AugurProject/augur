@@ -1404,7 +1404,6 @@ export function addScripts(flash: FlashSession) {
         logIndex: log.logIndex || 0,
         transactionHash: log.transactionHash || '',
         transactionIndex: log.transactionIndex || 0,
-        transactionLogIndex: log.transactionLogIndex || 0,
         blockNumber: log.blockNumber || 0,
         blockHash: log.blockHash || '0',
         removed: log.removed || false,
@@ -2093,6 +2092,7 @@ export function addScripts(flash: FlashSession) {
           GNOSIS_SAFE_CONTRACT_ADDRESS: formatAddress(this.contractAddresses.GnosisSafe, { prefix: true }),
           PROXY_FACTORY_CONTRACT_ADDRESS: formatAddress(this.contractAddresses.ProxyFactory, { prefix: true }),
           ZEROX_CONTRACT_ADDRESS: formatAddress(this.contractAddresses.ZeroXTrade, { lower: true, prefix: false }),
+          SAFE_DEFAULT_TOKEN_ADDRESS: formatAddress(this.contractAddresses.Cash, { lower: true, prefix: true })
         };
 
         if (detach) {

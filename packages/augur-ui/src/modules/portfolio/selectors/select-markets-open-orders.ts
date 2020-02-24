@@ -5,12 +5,13 @@ import { selectMarkets } from "modules/markets/selectors/markets-all";
 import getUserFilledOrders from "modules/orders/selectors/filled-orders";
 import getUserOpenOrders from "modules/orders/selectors/user-open-orders";
 import getMarketsPositionsRecentlyTraded from "modules/portfolio/selectors/select-markets-positions-recently-traded";
+import { selectUserMarketOpenOrders } from "store/select-state";
 
 export default function() {
   return marketsOpenOrders(store.getState() as AppState);
 }
 
-export const marketsOpenOrders = createSelector(selectMarkets, (allMarkets) => {
+export const marketsOpenOrders = createSelector(selectMarkets, selectUserMarketOpenOrders, (allMarkets, openOrders) => {
   const markets = allMarkets.reduce((p, m) => {
     if (m.marketStatus === constants.MARKET_CLOSED) return p;
     const userOpenOrders = getUserOpenOrders(m.id) || [];

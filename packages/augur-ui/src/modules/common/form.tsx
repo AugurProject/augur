@@ -664,7 +664,7 @@ export class CategoryMultiSelect extends Component<
     );
 
     return (
-      <ul className={Styles.CategoryMultiSelect}>
+      <ul className={classNames(Styles.CategoryMultiSelect, {[Styles.CustomPrimary]: customPrimary, [Styles.CustomTertiary]: customTertiary})}>
         <DropdownInputGroup
           defaultValue={selected[0]}
           staticLabel="Primary Category"
@@ -1233,11 +1233,19 @@ interface LocationDisplayProps {
 
 export class LocationDisplay extends React.Component<LocationDisplayProps, {}> {
   scrollTo: any = null;
+  container: any = null;
+
+  componentDidUpdate() {
+    this.container.scrollLeft = this.scrollTo.offsetLeft / 2;
+  }
 
   render() {
     const { pages, currentStep } = this.props;
+   
     return (
-      <div className={Styles.LocationDisplay}>
+      <div className={Styles.LocationDisplay} ref={container => {
+        this.container = container;
+      }}>
         {pages.map((page: Object, index: Number) => (
           <React.Fragment key={index}>
             <span
@@ -1245,7 +1253,9 @@ export class LocationDisplay extends React.Component<LocationDisplayProps, {}> {
                 [Styles.Selected]: index === currentStep,
               })}
               ref={scrollTo => {
-                this.scrollTo = scrollTo;
+                if (index === currentStep) {
+                  this.scrollTo = scrollTo;
+                }
               }}
             >
               {page.title}

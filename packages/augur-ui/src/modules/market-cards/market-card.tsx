@@ -128,7 +128,7 @@ export default class MarketCard extends React.Component<
       designatedReporter,
       isTemplate,
       consensusFormatted,
-      mostLikelyInvalid
+      mostLikelyInvalid,
     } = market;
 
     if (loading) {
@@ -232,11 +232,13 @@ export default class MarketCard extends React.Component<
         ? HEADER_TYPE.H3
         : undefined;
 
+    const restOfOutcomes = isScalar && inDispute ? disputeInfo.stakes.length - showOutcomeNumber - 1 : outcomesFormatted.length - showOutcomeNumber;
+  
     return (
       <div
         className={classNames(Styles.MarketCard, {
           [Styles.Loading]: loading,
-          [Styles.Nonexpanding]: !expandedOptionShowing,
+          [Styles.Nonexpanding]: !expandedOptionShowing || condensed,
           [Styles.Condensed]: condensed,
         })}
       >
@@ -277,7 +279,7 @@ export default class MarketCard extends React.Component<
             className={classNames(Styles.TopRow, {
               [Styles.scalar]: isScalar,
               [Styles.template]: isTemplate,
-              [Styles.invalid]: mostLikelyInvalid
+              [Styles.invalid]: mostLikelyInvalid,
             })}
           >
             {marketStatus === MARKET_REPORTING && (
@@ -322,9 +324,7 @@ export default class MarketCard extends React.Component<
             </DotSelection>
           </div>
 
-          <MarketTitle
-            id={id}
-            headerType={headerType} />
+          <MarketTitle id={id} headerType={headerType} />
           {!condensed && !marketResolved ? (
             <>
               <OutcomeGroup
@@ -354,11 +354,8 @@ export default class MarketCard extends React.Component<
                   />
                   {s.expanded
                     ? 'show less'
-                    : `${outcomesFormatted.length -
-                        showOutcomeNumber} more outcome${
-                        outcomesFormatted.length - showOutcomeNumber > 1
-                          ? 's'
-                          : ''
+                    : `${restOfOutcomes} more outcome${
+                        restOfOutcomes > 1 ? 's' : ''
                       }`}
                 </button>
               )}

@@ -2,7 +2,7 @@ import React from 'react';
 import classNames from 'classnames';
 import Styles from 'modules/market/components/market-header/market-header-reporting.styles.less';
 import { REPORTING_STATE, SCALAR, INVALID_OUTCOME_NAME } from 'modules/common/constants';
-import { PrimaryButton } from 'modules/common/buttons';
+import { PrimaryButton, ProcessingButton } from 'modules/common/buttons';
 import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
 import { MarketData } from 'modules/types';
 import { Getters } from '@augurproject/sdk';
@@ -15,6 +15,7 @@ interface MarketHeaderReportingProps {
   isDesignatedReporter?: boolean;
   claimMarketsProceeds: Function;
   showReportingModal: Function;
+  reportingStatus: string;
 }
 
 export const MarketHeaderReporting = ({
@@ -24,7 +25,8 @@ export const MarketHeaderReporting = ({
   tentativeWinner,
   isLogged,
   canClaimProceeds,
-  showReportingModal
+  showReportingModal,
+  reportingStatus
 }: MarketHeaderReportingProps) => {
   const { reportingState, id, consensusFormatted } = market;
   let content = null;
@@ -98,11 +100,10 @@ export const MarketHeaderReporting = ({
   ) {
     content = (
       <div className={classNames(Styles.Content, Styles.Report)}>
-        <PrimaryButton
-          id="button"
-          text="Report"
-          disabled={!isLogged}
+        <ProcessingButton
           action={() => showReportingModal()}
+          reportingStatus={reportingStatus}
+          disabled={!isLogged}
         />
       </div>
     );

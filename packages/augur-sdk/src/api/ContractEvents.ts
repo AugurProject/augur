@@ -25,25 +25,29 @@ export class ContractEvents {
     this.provider.storeAbiData(abi.AugurTrading as Abi, 'AugurTrading');
     this.provider.storeAbiData(abi.ShareToken as Abi, 'ShareToken');
     this.provider.storeAbiData(abi.Exchange as Abi, 'Exchange');
+    this.augurAddress = this.augurAddress.toLowerCase();
+    this.augurTradingAddress = this.augurTradingAddress.toLowerCase();
+    this.shareTokenAddress = this.shareTokenAddress.toLowerCase();
+    this.zeroXExchangeAddress = this.zeroXExchangeAddress.toLowerCase();
     this.contractAddressToName[this.augurAddress] = 'Augur';
     this.contractAddressToName[this.augurTradingAddress] = 'AugurTrading';
     this.contractAddressToName[this.shareTokenAddress] = 'ShareToken';
     this.contractAddressToName[this.zeroXExchangeAddress] = 'Exchange';
   }
 
-  async getLogs(eventName: string, fromBlock: number, toBlock: number | 'latest', additionalTopics?: Array<string | string[]>): Promise<ParsedLog[]> {
-    let topics: Array<string | string[]> = this.getEventTopics(eventName);
-    if (additionalTopics) {
-      topics = topics.concat(additionalTopics);
-    }
-    const logs = await this.provider.getLogs({ fromBlock, toBlock, topics, address: this.getEventContractAddress(eventName) });
-    return this.parseLogs(logs);
-  }
-
   getEventContractName = (eventName: string) => {
     const contractName = this.eventNameToContractName[eventName];
     return contractName || 'Augur';
   };
+
+  getAugurContractAddresses = () => {
+    return [
+      this.augurAddress,
+      this.shareTokenAddress,
+      this.augurTradingAddress,
+      this.zeroXExchangeAddress
+    ];
+  }
 
   getEventContractAddress = (eventName: string) => {
     const contractName = this.getEventContractName(eventName);
@@ -75,7 +79,6 @@ export class ContractEvents {
           blockHash: log.blockHash,
           transactionIndex: log.transactionIndex,
           removed: log.removed,
-          transactionLogIndex: log.transactionLogIndex,
           transactionHash: log.transactionHash,
           logIndex: log.logIndex,
           topics: log.topics,

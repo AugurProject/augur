@@ -17,33 +17,37 @@ let db: Promise<DB>;
 beforeAll(async () => {
   const seed = await loadSeedFile(defaultSeedPath);
   augur = await makeTestAugur(seed, ACCOUNTS);
-  db = mock.makeDB(augur, ACCOUNTS);
+  db = mock.makeDB(augur);
 });
 
-test("State API :: Bad parameters to getter", async () => {
+test('State API :: Bad parameters to getter', async () => {
   const api = new API(augur, db); // have to do this to initialize the routes
   const router = new Router(augur, db);
 
-  let message = "";
+  let message = '';
   try {
-    await router.route("getMarkets", { this: "that" });
+    await router.route('getMarkets', { this: 'that' });
   } catch (error) {
     message = error.message;
   }
 
-  expect(message.startsWith("Invalid request object: Invalid value undefined supplied")).toBe(true);
+  expect(
+    message.startsWith(
+      'Invalid request object: Invalid value undefined supplied'
+    )
+  ).toBe(true);
 });
 
-test("State API :: Nonexistant getter", async () => {
+test('State API :: Nonexistant getter', async () => {
   const api = new API(augur, db); // have to do this to initialize the routes
   const router = new Router(augur, db);
 
-  let message = "";
+  let message = '';
   try {
-    await router.route("fooBar", { this: "that" });
+    await router.route('fooBar', { this: 'that' });
   } catch (error) {
     message = error.message;
   }
 
-  expect(message).toEqual("Invalid request fooBar");
+  expect(message).toEqual('Invalid request fooBar');
 });

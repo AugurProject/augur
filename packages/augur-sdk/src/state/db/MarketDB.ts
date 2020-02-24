@@ -110,6 +110,20 @@ export class MarketDB extends DerivedDB {
     return result;
   }
 
+  async handleMergeEvent(
+    blocknumber: number, logs: ParsedLog[],
+    syncing = false): Promise<number> {
+
+    const result = await super.handleMergeEvent(blocknumber, logs, syncing);
+
+    await this.syncOrderBooks([]);
+
+    const timestamp = (await this.augur.getTimestamp()).toNumber();
+    await this.processTimestamp(timestamp, result);
+    await this.syncFTS();
+    return result;
+  }
+
   syncOrderBooks = async (marketIds: string[]): Promise<void> => {;
     let ids = marketIds;
     const highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(this.dbName);
@@ -117,7 +131,7 @@ export class MarketDB extends DerivedDB {
 
     let marketsData;
     if (marketIds.length === 0) {
-      marketsData = await this.table.toArray();
+      marketsData = await this.allDocs();
       ids = marketsData.map(data => data.market);
     } else {
       marketsData = await this.table.where('market').anyOf(marketIds).toArray();
@@ -340,6 +354,9 @@ export class MarketDB extends DerivedDB {
     log['timestamp'] = new BigNumber(log['timestamp'], 16).toNumber();
     log['creationTime'] = log['timestamp'];
     log['endTime'] = new BigNumber(log['endTime'], 16).toNumber();
+    log['outcomes'] = _.map(log['outcomes'], (rawOutcome) => {
+      return Buffer.from(rawOutcome.replace('0x', ''), 'hex').toString().trim().replace(/\0/g, '');
+    });
     try {
       log['extraInfo'] = JSON.parse(log['extraInfo']);
       log['extraInfo'].categories = log['extraInfo'].categories.map((category) => category.toLowerCase());
@@ -449,7 +466,7 @@ export class MarketDB extends DerivedDB {
 
     if (updateDocs.length > 0) {
       await this.bulkUpsertDocuments(updateDocs);
-      this.augur.events.emit(SubscriptionEventName.ReportingStateChanged, { data: updateDocs });
+      this.augur.events.emitAfter(SubscriptionEventName.NewBlock, SubscriptionEventName.ReportingStateChanged, { data: updateDocs });
     }
   }
 

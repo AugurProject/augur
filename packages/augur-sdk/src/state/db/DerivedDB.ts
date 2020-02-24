@@ -1,5 +1,6 @@
 import * as _ from 'lodash';
 import { Augur } from '../../Augur';
+import { SubscriptionEventName } from '../../constants';
 import { BaseDocument } from './AbstractTable';
 import { Log, ParsedLog } from '@augurproject/types';
 import { DB } from './DB';
@@ -39,7 +40,18 @@ export class DerivedDB extends RollbackTable {
     this.stateDB = db;
     this.name = name;
 
-    db.registerEventListener(mergeEventNames, this.handleMergeEvent.bind(this));
+    augur.events.once(SubscriptionEventName.BulkSyncComplete, this.onBulkSyncComplete.bind(this));
+  }
+
+  protected async bulkUpsertDocuments(documents: BaseDocument[]): Promise<void> {
+    for (let document of documents) {
+      const documentID = this.getIDValue(document);
+      await this.upsertDocument(documentID, document);
+    }
+  }
+
+  async onBulkSyncComplete() {
+    this.stateDB.registerEventListener(this.mergeEventNames, this.handleMergeEvent.bind(this));
   }
 
   // For a group of documents/logs for a particular event type get the latest per id and update the DB documents for the corresponding ids
@@ -79,7 +91,7 @@ export class DerivedDB extends RollbackTable {
     );
     this.updatingHighestSyncBlock = false;
     if (logs.length > 0) {
-      this.augur.events.emit(`DerivedDB:updated:${this.name}`, { data: documentsByIdByTopic });
+      this.augur.events.emitAfter(SubscriptionEventName.NewBlock, `DerivedDB:updated:${this.name}`, { data: documentsByIdByTopic });
     }
 
     return blocknumber;
