@@ -45,5 +45,27 @@
         "enabled": true
       }
     }
+  },
+  "demo": {
+    "networkId": "42",
+    "ethereum": {
+      "http": "https://eth-kovan.alchemyapi.io/jsonrpc/1FomA6seLdWDvpIRvL9J5NhwPHLIGbWA",
+      "rpcRetryCount": 5,
+      "rpcRetryInterval": 0,
+      "rpcConcurrency": 40
+    },
+    "gnosis": {
+      "enabled": true,
+      "http": "https://gnosis.demo.augur.net/api/"
+    },
+    "zeroX": {
+      "rpc": {
+        "enabled": false,
+        "ws":  "wss://demo.augur.net/0x-ws"
+      },
+      "mesh": {
+        "enabled": true
+      }
+    }
   }
 }
