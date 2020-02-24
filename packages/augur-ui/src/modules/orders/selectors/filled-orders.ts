@@ -160,8 +160,8 @@ function selectMarketsDataStateMarket(state, marketId) {
 
 function selectMarketUserFilledHistoryState(state: AppState, marketId) {
   const filledOrders = selectFilledOrders(state);
-  const usersFilled = filledOrders[state.loginAccount.address]
-  return usersFilled[marketId];
+  const usersFilled = (filledOrders[state.loginAccount.address] || {})
+  return usersFilled[marketId] || [];
 }
 
 export default function(marketId) {
