@@ -465,6 +465,7 @@ export interface MarketData extends Log {
   feePercent: number;
   finalized: boolean;
   lastTradedTimestamp: UnixTimestamp;
+  isWarpSync: boolean;
 }
 
 export interface DisputeDoc extends Log {

@@ -30,6 +30,7 @@ import { Platform } from './state/getter/Platform';
 import { Status } from './state/getter/status';
 import { Universe } from './state/getter/Universe';
 import { Users } from './state/getter/Users';
+import { WarpSyncGetter } from './state/getter/WarpSyncGetter';
 import { ZeroXOrdersGetters } from './state/getter/ZeroXOrdersGetters';
 import { WarpSync } from './api/WarpSync';
 import { Address } from './state/logs/types';
@@ -289,6 +290,7 @@ export class Augur<TProvider extends Provider = Provider> {
   bindTo<R, P>(
     f: (db: any, augur: any, params: P) => Promise<R>
   ): (params: P) => Promise<R> {
+
     return this.connector && this.connector.bindTo(f);
   }
 
@@ -401,6 +403,12 @@ export class Augur<TProvider extends Provider = Provider> {
     params: Parameters<typeof Users.getUserOpenOrders>[2]
   ): ReturnType<typeof Users.getUserOpenOrders> => {
     return this.bindTo(Users.getUserOpenOrders)(params);
+  };
+
+  getMostRecentWarpSync = (
+  ): ReturnType<typeof WarpSyncGetter.getMostRecentWarpSync> => {
+    console.log('getMostRecentWarpSync');
+    return this.bindTo(WarpSyncGetter.getMostRecentWarpSync)(undefined);
   };
 
   getProfitLoss = (
