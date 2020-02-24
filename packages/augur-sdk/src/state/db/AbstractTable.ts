@@ -96,11 +96,11 @@ export abstract class AbstractTable {
   }
 
   protected getIDValue(document: any): ID {
-    if (this.idFields.length == 1) return document[this.idFields[0]];
+    if (this.idFields.length === 1) return _.get(document, this.idFields[0]);
 
     const id = [];
-    for (let idField of this.idFields) {
-      id.push(document[idField]);
+    for (const idField of this.idFields) {
+      id.push(_.get(document, idField));
     }
     return id;
   }
