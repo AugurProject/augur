@@ -176,6 +176,7 @@ export interface Template {
   tickSize?: number;
   minPrice?: number;
   maxPrice?: number;
+  noAdditionalUserOutcomes?: boolean;
 }
 
 export interface TemplateInput {
