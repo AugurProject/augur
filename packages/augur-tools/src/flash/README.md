@@ -248,16 +248,19 @@ error: `populated market question does not match regex`
 14. Most categorical templates have required outcomes, for example, "Other (Field)" is required so that a market can resolve with a valid outcome of the winning outcome isn't listed explicitly.
 error: `required outcomes are missing`
 
-15. Special data dropdown dependencies have to be met, for example, a crypto BTC/USD market can not use BTC/EUR source for market resolution.
+15. Some categorical templates do not allow additional user outcomes, for example, there are a few Golf templates that all required outcomes are the only allowed outcomes to be on the templated market.
+error: `no additioanl outcomes is a requirement, only required outcomes are allowed`
+
+16. Special data dropdown dependencies have to be met, for example, a crypto BTC/USD market can not use BTC/EUR source for market resolution.
 error: `market question dropdown dependencies values are incorrect`
 
-16. There is also possible Special data dropdown dependencies for outcomes, if an American Football market is for AFC football championship. NFC teams can not be used as outcomes.
+17. There is also possible Special data dropdown dependencies for outcomes, if an American Football market is for AFC football championship. NFC teams can not be used as outcomes.
 error: `outcome dependencies are incorrect`
 
-17. There are categorical markets that use market question inputs in outcomes. These values need to match, example Point Spread markets have the team name and points in the outcome. `[Team A] -[Whole #].5` gets updated with the team choice and points from market question to produce the outcome. example `Arizona Cardinals -4.5`
+18. There are categorical markets that use market question inputs in outcomes. These values need to match, example Point Spread markets have the team name and points in the outcome. `[Team A] -[Whole #].5` gets updated with the team choice and points from market question to produce the outcome. example `Arizona Cardinals -4.5`
 error: `outcomes values from substituted market question inputs are incorrect`
 
-18. The resolution rules hash of passed in resolution rules needs to match the hash of the resolution rules in the validation structure.
+19. The resolution rules hash of passed in resolution rules needs to match the hash of the resolution rules in the validation structure.
 error: `hash of resolution details is different than validation resolution rules hash`
 
-19. For unexpected result like a crash error will be formated like `unknown, ...` with catch exception.
+20. For unexpected result like a crash error will be formated like `unknown, ...` with catch exception.

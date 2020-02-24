@@ -2,7 +2,7 @@ import { Block } from 'ethers/providers';
 import { AbstractTable } from './AbstractTable';
 import { DB } from './DB';
 
-interface IpfsInfo {
+export interface IpfsInfo {
   Name: string,
   Hash: string,
   Size: 0,
@@ -16,9 +16,9 @@ export interface WarpCheckpointDocument {
   end?: Block
 }
 
-export class WarpCheckpoints extends AbstractTable {
+export class WarpSyncCheckpointsDB extends AbstractTable {
   constructor(networkId: number, db: DB) {
-    super(networkId, 'WarpCheckpoints', db.dexieDB);
+    super(networkId, 'WarpSyncCheckpoints', db.dexieDB);
   }
 
   async getAllIPFSObjects() {

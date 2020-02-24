@@ -79,6 +79,7 @@ const generateValidations = (
     closingDateDependencies: null,
     placeholderValues: null,
     afterTuesdayDateNoFriday: null,
+    noAdditionalOutcomes: false,
   };
   const newTemplates = JSON.parse(JSON.stringify(templates));
   const topCategories = Object.keys(newTemplates);
@@ -120,6 +121,7 @@ const addTemplates = (
         closingDateDependencies: getClosingDateDependencies(t.inputs),
         placeholderValues: getPlaceholderValues(t.inputs),
         afterTuesdayDatenoFriday: getInputsAfterTuesdayDateNoFriday(t.inputs),
+        noAdditionalOutcomes: t.noAdditionalUserOutcomes,
       };
     });
   }
