@@ -961,6 +961,36 @@
   }
 }
 
+:root[theme="BETTING"] {
+  .TextInput {
+    > div {
+
+      > input,
+      > textarea {
+        background-color: var(--color-secondary-action);
+        border: @size-1 solid var(--color-dark-grey);
+      }
+
+      > div.AutoCompleteList {
+        background-color: var(--color-module-background);
+        box-shadow: 0 0 @size-4 var(--color-primary-text-15);
+
+        > button {
+          color: var(--color-primary-text);
+
+          &:before {
+            background-color: var(--color-secondary-text-50);
+          }
+
+          &:hover {
+            background-color: var(--color-page-background);
+          }
+        }
+      }
+    }
+  }
+}
+
 .ErrorText {
   .text-12;
 
@@ -1491,6 +1521,147 @@ button.MaxDark {
   }
 }
 
+:root[theme="BETTING"] {
+  .DatePicker {
+    :global {
+      .DateInput {
+        > svg {
+          display: none;
+        }
+      }
+
+      .DayPicker__horizontal_2 {
+        margin-top: -@size-20;
+        background-color: var(--color-module-background);
+        box-shadow: 0 0 @size-4 var(--color-primary-text-15);
+        border-radius: @border-radius-default;
+        border: @size-1 solid var(--color-dark-grey);
+      }
+
+      .DayPicker_weekHeader_li_1 {
+        .mono-10-semi-bold;
+  
+        color: var(--color-secondary-text);
+        text-transform: uppercase;
+      }
+
+      .DayPicker_weekHeader_1 {
+        top: @size-56;
+      }
+
+      .DayPickerNavigation_leftButton__horizontal_3 {
+        padding: 0;
+
+        > svg {
+          height: @size-20;
+          width: @size-20;
+  
+          > rect {
+            stroke: var(--color-dark-text);
+          }
+
+          > path {
+            stroke: var(--color-primary-text);
+          }
+  
+          &:hover {
+            > rect,
+            > path {
+              stroke: var(--color-primary-text);
+            }
+          }
+        }
+      }
+  
+      .DayPickerNavigation_rightButton__horizontal_3 {
+        padding: 0;
+
+        > svg {
+          height: @size-20;
+          width: @size-20;
+  
+          > rect {
+            stroke: var(--color-dark-text);
+          }
+
+          > path {
+            stroke: var(--color-primary-text);
+          }
+  
+          &:hover {
+            > rect,
+            > path {
+              stroke: var(--color-primary-text);
+            }
+          }
+        }
+      }
+
+      .CalendarMonth_caption_1 {
+        .text-14-bold;
+  
+        color: var(--color-primary-text);
+        padding-top: @size-18;
+        padding-bottom: @size-46;
+  
+        > strong {
+          font-weight: bold;
+        }
+      }
+
+      .CalendarDay_container_1 {
+        .mono-default;
+  
+        background: var(--color-page-background);
+        border: 0;
+        color: var(--color-primary-text);
+
+        > button {
+          border: @size-2 solid transparent;
+        }
+  
+        &.CalendarDay__selected:hover {
+          background: var(--color-primary-text);
+        }
+
+        &.CalendarDay__selected {
+          background: var(--color-primary-action);
+          color: var(--color-primary-text);
+  
+          &:hover {
+            background: var(--color-primary-action);
+            border: 0;
+            color: var(--color-primary-text);
+          }
+        }
+  
+        &.CalendarDay__blocked_out_of_range_2.CalendarDay__blocked_out_of_range_2,
+        &:hover {
+          background: var(--color-table-header);
+          border: 0;
+          color: var(--color-secondary-text-50);
+        }
+  
+        &.CalendarDay__blocked_out_of_range_2.CalendarDay__blocked_out_of_range_2:hover {
+          background: var(--color-table-header);
+          border: 0;
+          color: var(--color-secondary-text-50);
+        }
+  
+        &:hover {
+          border: 0;
+          color: var(--color-primary-text);
+
+          > button {
+            border: @size-2 solid var(--color-primary-action);
+            background: var(--color-active-background);
+          }
+        }
+      }
+    }
+  }
+}
+
 .InputDropdown {
   background-color: var(--color-primary-text);
   color: var(--color-secondary-text);
@@ -1768,6 +1939,57 @@ button.MaxDark {
   }
 }
 
+:root[theme="BETTING"] {
+  .TimeSelector {
+    > svg {
+      display: none;
+    }
+
+    > div {
+      margin-top: @size-4;
+      box-shadow: 0 0 @size-4 var(--color-primary-text-15);
+      border-radius: @border-radius-default;
+      border: @size-1 solid var(--color-dark-grey);
+      background: var(--color-module-background);
+      padding: @size-22 @size-24;
+
+      > span {
+        color: var(--color-primary-text);
+        margin-top: @size-16;
+      }
+
+      > div:last-of-type {
+        margin-left: @size-24;
+      }
+    }
+  }
+
+  .IndividualTimeSelector {
+    > span {
+      .mono-10-semi-bold;
+
+      color: var(--color-secondary-text);
+      text-transform: uppercase;
+      margin-bottom: @size-4;
+    }
+    
+    > button > svg > path {
+      fill: var(--color-secondary-text);
+      stroke: var(--color-secondary-text);
+    }
+
+    > input {
+      .mono-12-semi-bold;
+
+      border: @size-1 solid var(--color-dark-grey);
+      border-radius: @border-radius-default;
+      background-color: var(--color-page-background);
+      color: var(--color-primary-text);
+      margin: @size-12 0;
+    }
+  }
+}
+
 .ErrorLabel {
   background: var(--color-error-20);
   border-radius: @border-radius-default;
@@ -1975,6 +2197,18 @@ div.error > div > div > div > div > input {
 
 .CategoryRow:hover span:last-of-type {
   color: var(--color-primary-text);
+}
+
+:root[theme="BETTING"] {
+  .CategoryRow {
+    > span:first-of-type {
+      color: var(--color-primary-text);
+
+      > svg > path {
+        stroke: var(--color-primary-text);
+      }
+    }
+  }
 }
 
 @keyframes spin {

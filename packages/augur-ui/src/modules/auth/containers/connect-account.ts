@@ -12,6 +12,7 @@ const mapStateToProps = state => ({
   restoredAccount: state.authStatus.restoredAccount,
   universeId: state.universe.id,
   userInfo: state.loginAccount.meta,
+  balances: state.loginAccount.balances,
   isConnectionTrayOpen: state.authStatus.isConnectionTrayOpen,
   mobileMenuState: state.sidebarStatus.mobileMenuState,
 });

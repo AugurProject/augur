@@ -6,6 +6,7 @@ import ConnectDropdown from 'modules/auth/containers/connect-dropdown';
 import ChevronFlip from 'modules/common/chevron-flip';
 import formatAddress from 'modules/auth/helpers/format-address';
 import { LoginAccount } from 'modules/types';
+import { formatDai } from 'utils/format-number';
 
 import Styles from 'modules/auth/components/connect-account/connect-account.styles.less';
 import ToggleHeightStyles from 'utils/toggle-height.styles.less';
@@ -19,6 +20,7 @@ interface ConnectAccountProps {
   updateMobileMenuState: Function;
   mobileMenuState: number;
   userInfo: LoginAccount['meta'];
+  balances: LoginAccount['balances'];
 }
 
 export default class ConnectAccount extends Component<ConnectAccountProps> {
@@ -52,8 +54,9 @@ export default class ConnectAccount extends Component<ConnectAccountProps> {
       restoredAccount,
       isConnectionTrayOpen,
       userInfo,
+      balances,
     } = this.props;
-
+    console.log(userInfo);
     if (!isLogged && !restoredAccount || !userInfo) return null;
 
     return (
@@ -85,6 +88,7 @@ export default class ConnectAccount extends Component<ConnectAccountProps> {
                     ? userInfo.email
                     : formatAddress(userInfo.address)}
                 </div>
+                <span>{formatDai(balances.dai).full}</span>
               </div>
             </div>
             <span>
