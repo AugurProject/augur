@@ -68,6 +68,7 @@ import * as _ from 'lodash';
 import { loadMarketOrderBook } from 'modules/orders/actions/load-market-orderbook';
 import { isCurrentMarket } from 'modules/trades/helpers/is-current-market';
 import { removePendingDataByHash, addPendingData } from 'modules/pending-queue/actions/pending-queue-management';
+import { removePendingOrder, constructPendingOrderid } from 'modules/orders/actions/pending-orders-management';
 
 const handleAlert = (
   log: any,
@@ -361,6 +362,8 @@ export const handleOrderCreatedLog = (log: Logs.ParsedOrderEventLog) => (
   if (isUserDataUpdate && authStatus.isLogged) {
     handleAlert(log, PUBLICTRADE, false, dispatch, getState);
     dispatch(throttleLoadUserOpenOrders());
+    const pendingOrderId = constructPendingOrderid(log.amount, log.price, log.outcome, log.market)
+    dispatch(removePendingOrder(pendingOrderId, log.market));
   }
   dispatch(updateMarketOrderBook(log.market));
 };
@@ -410,6 +413,7 @@ export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
     );
     dispatch(throttleLoadUserOpenOrders());
     handleAlert(log, PUBLICFILLORDER, true, dispatch, getState);
+    dispatch(removePendingOrder(log.tradeGroupId, marketId));
   }
   if (isOnTradePage()) {
     dispatch(loadMarketTradingHistory(marketId));
