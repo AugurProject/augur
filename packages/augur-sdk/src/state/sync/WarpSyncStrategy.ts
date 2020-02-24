@@ -1,7 +1,6 @@
-import { Log } from '@augurproject/types';
+import { Log, ParsedLog } from '@augurproject/types';
 import { WarpController } from '../../warp/WarpController';
 import _ from 'lodash';
-import { Address } from '../logs/types';
 
 export class WarpSyncStrategy {
   constructor(
@@ -25,22 +24,23 @@ export class WarpSyncStrategy {
     const availableCheckpoints = await this.warpSyncController.getAvailableCheckpointsByHash(ipfsRootHash);
     const { begin } = await this.warpSyncController.getMostRecentCheckpoint();
 
-    const checkpointsToSync = availableCheckpoints.filter((item) => item >= begin.number);
+    const checkpointsToSync = availableCheckpoints.filter((item) => Number(item.Name) >= begin.number);
     let maxBlockNumber;
     for (let i = 0; i < checkpointsToSync.length; i++) {
-      const logs = await this.warpSyncController.getCheckpointFile(ipfsRootHash, checkpointsToSync[i]);
-      maxBlockNumber = await this.processFile(logs);
+      const {
+        endBlockNumber, logs
+      } = await this.warpSyncController.getCheckpointFile(ipfsRootHash, checkpointsToSync[i].Name);
+      await this.processFile(logs);
+      await this.warpSyncController.updateCheckpointDbByNumber(endBlockNumber, endBlockNumber + 1, checkpointsToSync[i]);
+      maxBlockNumber= endBlockNumber;
     }
 
     return maxBlockNumber;
   }
-
-  async processFile(buffer: string): Promise<number | undefined> {
-    const splitLogs = JSON.parse(buffer);
-
-    const maxBlockNumber = _.maxBy<number>(_.map(splitLogs, 'blockNumber'), item =>
+  async processFile(logs: Log[]): Promise<number | undefined> {
+    const maxBlockNumber = _.maxBy<number>(_.map(logs, 'blockNumber'), item =>
       Number(item));
-    const sortedLogs = _.orderBy(splitLogs, ['blockNumber', 'logIndex'], ['asc', 'asc']);
+    const sortedLogs = _.orderBy(logs, ['blockNumber', 'logIndex'], ['asc', 'asc']);
 
     await this.onLogsAdded(maxBlockNumber, sortedLogs);
 
