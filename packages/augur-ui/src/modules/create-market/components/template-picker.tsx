@@ -108,21 +108,21 @@ export const TemplatePicker = ({ newMarket, updateNewMarket }) => {
                   : DEFAULT_TICK_SIZE,
               scalarDenomination,
               minPrice:
-                newMarket.marketType === SCALAR && template.minPrice
+                newMarket.marketType === SCALAR && template.minPrice !== undefined
                   ? template.minPrice
                   : '',
               maxPrice:
-                newMarket.marketType === SCALAR && template.maxPrice
+                newMarket.marketType === SCALAR && template.maxPrice !== undefined
                   ? template.maxPrice
                   : '',
               minPriceBigNumber:
-                  newMarket.marketType === SCALAR && template.minPrice
+                  newMarket.marketType === SCALAR && template.minPrice !== undefined
                     ? template.minPrice
-                    : newMarket.minPrice,
+                    : null,
               maxPriceBigNumber:
-                  newMarket.marketType === SCALAR && template.maxPrice
+                  newMarket.marketType === SCALAR && template.maxPrice !== undefined
                     ? template.maxPrice
-                    : newMarket.maxPrice,
+                    : null,
               marketType: newMarket.marketType,
               categories: [
                 newMarket.categories[0],
