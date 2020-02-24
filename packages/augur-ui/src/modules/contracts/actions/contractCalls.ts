@@ -806,7 +806,6 @@ export async function placeTrade(
   marketId: string,
   numOutcomes: number,
   outcomeId: number,
-  fingerprint: string = getFingerprint(),
   doNotCreateOrders: boolean,
   numTicks: BigNumber | string,
   minPrice: BigNumber | string,
@@ -816,6 +815,7 @@ export async function placeTrade(
   displayShares: BigNumber | string,
   expirationTime?: BigNumber,
   tradeGroupId?: string,
+  fingerprint: string = getFingerprint(),
 ): Promise<void> {
   const Augur = augurSdk.get();
   const params: PlaceTradeDisplayParams = {

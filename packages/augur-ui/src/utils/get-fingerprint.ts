@@ -23,7 +23,7 @@ async function calculateFingerprint(): Promise<string> {
           32
         );
         fingerprint = formatBytes32String(value);
-        console.log('fingerprint', fingerprint);
+        // console.log('fingerprint', fingerprint);
         resolve(fingerprint);
       });
     }, 500)

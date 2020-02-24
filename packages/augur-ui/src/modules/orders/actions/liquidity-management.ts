@@ -263,7 +263,6 @@ const createZeroXLiquidityOrders = async (
         market.id,
         market.numOutcomes,
         o.outcomeId,
-        fingerprint,
         false,
         market.numTicks,
         market.minPrice,
