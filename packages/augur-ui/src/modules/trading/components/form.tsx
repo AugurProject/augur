@@ -9,7 +9,6 @@ import {
   BUY,
   SELL,
   INVALID_OUTCOME_ID,
-  GAS_CONFIRM_ESTIMATE,
   ONE,
 } from 'modules/common/constants';
 import FormStyles from 'modules/common/form-styles.less';
@@ -36,7 +35,6 @@ import moment, { Moment } from 'moment';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { SimpleTimeSelector } from 'modules/create-market/components/common';
 import { formatBestPrice } from 'utils/format-number';
-import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 
 const DEFAULT_TRADE_INTERVAL = new BigNumber(10**17);
 const DEFAULT_EXPIRATION_DAYS = 0;
@@ -285,15 +283,13 @@ class Form extends Component<FromProps, FormState> {
   findMultipleOf = () => {
     const { market } = this.props;
     let tradeInterval = DEFAULT_TRADE_INTERVAL;
-    let numTicks = market.numTicks;
-
-    if (!numTicks) {
-      numTicks = tickSizeToNumTickWithDisplayPrices(
-        createBigNumber(market.tickSize),
-        createBigNumber(market.minPrice),
-        createBigNumber(market.maxPrice)
-      );
-    }
+    const numTicks = market.numTicks
+      ? createBigNumber(market.numTicks)
+      : tickSizeToNumTickWithDisplayPrices(
+          createBigNumber(market.tickSize),
+          createBigNumber(market.minPrice),
+          createBigNumber(market.maxPrice)
+        );
 
     if (market.marketType == SCALAR) {
       tradeInterval = getTradeInterval(
@@ -369,14 +365,13 @@ class Form extends Component<FromProps, FormState> {
       );
     }
 
-    let numTicks = market.numTicks;
-    if (!numTicks) {
-      numTicks = tickSizeToNumTickWithDisplayPrices(
-        createBigNumber(market.tickSize),
-        createBigNumber(market.minPrice),
-        createBigNumber(market.maxPrice)
-      );
-    }
+    const numTicks = market.numTicks
+      ? createBigNumber(market.numTicks)
+      : tickSizeToNumTickWithDisplayPrices(
+          createBigNumber(market.tickSize),
+          createBigNumber(market.minPrice),
+          createBigNumber(market.maxPrice)
+        );
 
     let tradeInterval = DEFAULT_TRADE_INTERVAL;
     if (market.marketType == SCALAR) {
@@ -412,7 +407,7 @@ class Form extends Component<FromProps, FormState> {
     // Check to ensure orders don't expiry within 70s
     // Also consider getGasConfirmEstimate * 1.5 seconds
     const minOrderLifespan = 70;
-    const gasConfirmEstimate = this.state.confirmationTimeEstimation * 1.5; // In Seconds
+    const gasConfirmEstimate = this.state ? this.state.confirmationTimeEstimation * 1.5 : 0; // In Seconds
     const expiryTime = expiration - gasConfirmEstimate - moment().unix();
     if (expiration && expiryTime < minOrderLifespan) {
       errorCount += 1;
@@ -795,9 +790,13 @@ class Form extends Component<FromProps, FormState> {
     minPrice: string,
     maxPrice: string,
     tickSize: number,
-    numTicks: string
   ) {
     if (percentage === undefined || percentage === null) return Number(0);
+    const numTicks = tickSizeToNumTickWithDisplayPrices(
+        createBigNumber(tickSize),
+        createBigNumber(minPrice),
+        createBigNumber(maxPrice)
+      );
     const bnMinPrice = createBigNumber(minPrice);
     const bnMaxPrice = createBigNumber(maxPrice);
     const percentNumTicks = createBigNumber(numTicks).times(
@@ -813,7 +812,9 @@ class Form extends Component<FromProps, FormState> {
         return bnMaxPrice.minus(tickSize);
       }
     const correctDec = formatBestPrice(calcPrice, tickSize);
-    return correctDec.fullPrecision;
+    const precision = getPrecision(tickSize, 0);
+    const value = createBigNumber(correctDec.fullPrecision).toFixed(precision);
+    return value;
   }
 
   render() {
@@ -838,7 +839,6 @@ class Form extends Component<FromProps, FormState> {
     const s = this.state;
 
     const tickSize = parseFloat(market.tickSize);
-    const numTicks = market.numTicks;
     const max = maxPrice && maxPrice.toString();
     const min = minPrice && minPrice.toString();
     const errors = Array.from(
@@ -1022,7 +1022,6 @@ class Form extends Component<FromProps, FormState> {
                         min,
                         max,
                         tickSize,
-                        numTicks
                       );
                       this.updateAndValidate(this.INPUT_TYPES.PRICE, value);
                     });

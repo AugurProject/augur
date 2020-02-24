@@ -135,6 +135,13 @@ export class ZeroXOrders extends AbstractTable {
     })
   }
 
+  protected async bulkUpsertDocuments(documents: BaseDocument[]): Promise<void> {
+    for (const document of documents) {
+      delete document.constructor;
+    }
+    await this.table.bulkPut(documents);
+  }
+
   static create(db: DB, networkId: number, augur: Augur): ZeroXOrders {
     const zeroXOrders = new ZeroXOrders(db, networkId, augur);
     return zeroXOrders;
@@ -142,7 +149,7 @@ export class ZeroXOrders extends AbstractTable {
 
   async clearDBAndCacheOrders(): Promise<void> {
     // Note: This does mean if a user reloads before syncing the old orders could be lost if they previous to that had not broadcast their orders completely somehow
-    this.pastOrders = _.keyBy(await this.table.toArray(), "orderHash");
+    this.pastOrders = _.keyBy(await this.allDocs(), "orderHash");
     await this.clearDB();
   }
 
@@ -217,7 +224,7 @@ export class ZeroXOrders extends AbstractTable {
       }, signedOrder);
     });
 
-    if (ordersToAdd.length > 0) this.augur.zeroX.addOrders(ordersToAdd);
+    if (ordersToAdd.length > 0) await this.augur.zeroX.addOrders(ordersToAdd);
     console.log(`Synced ${orders.length } ZeroX Orders`);
   }
 
@@ -326,7 +333,11 @@ export class ZeroXOrders extends AbstractTable {
     }
 
     // No idea why the BigNumber instance returned here just wont serialize to hex
-    const tokenid = new BN(`${ids[0].toString()}`).toHexString().substr(2);
+    // Since `ids[n]` is a BigNumber, it is possible for the higher order bits
+    // to all be 0. This will result in the tokenid serialization here to be
+    // less than the expected full 32 bytes (64 characters in hex).
+    let tokenid = new BN(`${ids[0].toString()}`).toHexString().substr(2).padStart(64, '0');
+
     // From ZeroXTrade.sol
     //  assembly {
     //      _market := shr(96, and(_tokenId, 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF000000000000000000000000))

@@ -7,8 +7,8 @@ import Row from 'modules/common/row';
 import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
 
 const mapStateToProps = (state: AppState, ownProps) => {
-  const { marketInfos } = state;
-  const market = marketInfos[ownProps.marketId];
+  const { marketInfos, newMarket } = state;
+  const market = newMarket ? newMarket : marketInfos[ownProps.marketId];
   // default values for create market preview
   const minPrice = market ? market.minPrice : 0;
   const maxPrice = market ? market.maxPrice : 1;
@@ -68,12 +68,12 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       showEmptyDash: true,
       alert: bestBidAlert,
       action: (e) => {
+        oP.updateSelectedOutcome(outcome.id, true);
         oP.updateSelectedOrderProperties({
-          orderPrice: topBidPrice && topBidPrice.value,
-          orderQuantity: topBidShares && topBidShares.value,
+          orderPrice: topBidPrice && topBidPrice.value.toString(),
+          orderQuantity: topBidShares && topBidShares.value.toString(),
           selectedNav: SELL
         });
-        oP.updateSelectedOutcome(outcome.id, true);
         e.stopPropagation();
       }
     },
@@ -84,12 +84,12 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       useFull: true,
       showEmptyDash: true,
       action: (e) => {
-          oP.updateSelectedOrderProperties({
-          orderPrice: topAskPrice && topAskPrice.value,
-          orderQuantity: topAskShares && topAskShares.value,
+        oP.updateSelectedOutcome(outcome.id, true);
+        oP.updateSelectedOrderProperties({
+          orderPrice: topAskPrice && topAskPrice.value.toString(),
+          orderQuantity: topAskShares && topAskShares.value.toString(),
           selectedNav: BUY
         });
-        oP.updateSelectedOutcome(outcome.id, true);
         e.stopPropagation();
       }
     },

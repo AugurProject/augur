@@ -54,6 +54,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
     gasPrice: getGasPrice(state),
     hasFunds,
     isLogged: authStatus.isLogged,
+    restoredAccount: authStatus.restoredAccount,
     Gnosis_ENABLED,
     currentTimestamp: blockchain.currentAugurTimestamp,
     availableDai,
@@ -95,8 +96,6 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     outcomeId,
     tradeInProgress,
     doNotCreateOrders,
-    callback,
-    onComplete
   ) =>
     dispatch(
       placeMarketTrade({
@@ -104,8 +103,6 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
         outcomeId,
         tradeInProgress,
         doNotCreateOrders,
-        callback,
-        onComplete,
       })
     ),
     orderSubmitted: (type, marketId) => dispatch(orderSubmitted(type, marketId))

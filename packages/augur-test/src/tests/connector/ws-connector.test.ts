@@ -11,15 +11,15 @@ jest.mock('websocket-as-promised', () => {
       open: () => true,
       close: () => true,
       onError: {
-        addListener: () => { },
+        addListener: () => {},
       },
       onMessage: {
-        addListener: () => { },
+        addListener: () => {},
       },
       onClose: {
-        addListener: () => { },
+        addListener: () => {},
       },
-      async sendRequest (message: any): Promise<any> {
+      async sendRequest(message: any): Promise<any> {
         return new Promise((resolve, reject) => {
           if (message.method === 'subscribe') {
             resolve({
@@ -45,14 +45,12 @@ test('WebsocketConnector :: Should route correctly and handle events', async don
       http: '',
       rpcRetryCount: 5,
       rpcRetryInterval: 0,
-      rpcConcurrency: 40
+      rpcConcurrency: 40,
     },
     sdk: {
-      ws: 'ws://localhost:9001'
+      ws: 'ws://localhost:9001',
     },
-    syncing: {
-
-    }
+    syncing: {},
   };
   const connector = new WebsocketConnector();
   await connector.connect(config);
@@ -60,24 +58,24 @@ test('WebsocketConnector :: Should route correctly and handle events', async don
   await connector.on(
     SubscriptionEventName.NewBlock,
     async (arg: NewBlock): Promise<void> => {
-      expect(arg).toEqual(
-        {
-          '0': {
-            blocksBehindCurrent: 0,
-            eventName: SubscriptionEventName.NewBlock,
-            highestAvailableBlockNumber: 88,
-            lastSyncedBlockNumber: 88,
-            percentSynced: '0.0000',
-          },
+      expect(arg).toEqual({
+        '0': {
+          blocksBehindCurrent: 0,
           eventName: SubscriptionEventName.NewBlock,
-        }
-      );
+          highestAvailableBlockNumber: 88,
+          lastSyncedBlockNumber: 88,
+          percentSynced: '0.0000',
+        },
+        eventName: SubscriptionEventName.NewBlock,
+      });
 
       const getMarkets = connector.bindTo(Markets.getMarkets);
       const marketList = await getMarkets({
         universe: '123456',
       });
-      expect(marketList).toEqual(['0xa223fFddee6e9eB50513Be1B3C5aE9159c7B3407']);
+      expect(marketList).toEqual([
+        '0xa223fFddee6e9eB50513Be1B3C5aE9159c7B3407',
+      ]);
 
       await connector.off(SubscriptionEventName.NewBlock);
       expect(connector.subscriptions).toEqual({});
