@@ -977,12 +977,6 @@ export class Users {
         true,
         true
       )
-      .and(log => {
-        return (
-          log.orderFiller === params.account ||
-          log.orderCreator === params.account
-        );
-      })
       .toArray();
     const ordersFilledResultsByMarketAndOutcome = await getOrderFilledRecordsByMarketAndOutcome(
       db,
