@@ -3,6 +3,7 @@ import { updateAlert } from 'modules/alerts/actions/alerts';
 import {
   loadAllAccountPositions,
   loadAccountOnChainFrozenFundsTotals,
+  checkUpdateUserPositions,
 } from 'modules/positions/actions/load-account-positions';
 import {
   removeMarket,
@@ -415,6 +416,7 @@ export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
     handleAlert(log, PUBLICFILLORDER, true, dispatch, getState);
     dispatch(removePendingOrder(log.tradeGroupId, marketId));
   }
+  dispatch(checkUpdateUserPositions(marketId));
   if (isOnTradePage()) {
     dispatch(loadMarketTradingHistory(marketId));
     dispatch(updateMarketOrderBook(log.market));
