@@ -667,6 +667,7 @@ export const BUY = 'buy';
 export const SELL = 'sell';
 export const BUY_INDEX = 0;
 export const SELL_INDEX = 1;
+export const HEX_BUY = '0x00';
 export const BOUGHT = 'bought';
 export const SOLD = 'sold';
 export const BUYING = 'buying';
