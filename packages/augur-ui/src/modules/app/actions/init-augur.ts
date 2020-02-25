@@ -228,7 +228,15 @@ export function connectAugur(
 
     if (env['ethereum'].http) {
       // Use node provided in the ethereum_node_http param
-      provider = new JsonRpcProvider(env['ethereum'].http);
+      try {
+        provider = new JsonRpcProvider(env['ethereum'].http);
+      } catch(error) {
+        dispatch(
+          updateModal({
+            type: MODAL_NETWORK_DISABLED,
+          })
+        );
+      }
     }
     else if (networkId && !isDevNetworkId(networkId)) {
       // Unless DEV, use the provider on window if it exists, otherwise use torus provider
