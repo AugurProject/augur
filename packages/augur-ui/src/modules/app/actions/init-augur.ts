@@ -226,11 +226,15 @@ export function connectAugur(
     let provider = null;
     let networkId = env['networkId'];
 
-    // Unless DEV, use the provider on window if it exists, otherwise use torus provider
-    if (networkId && !isDevNetworkId(networkId)) {
+    if (env['ethereum'].http) {
+      // Use node provided in the ethereum_node_http param
+      provider = new JsonRpcProvider(env['ethereum'].http);
+    }
+    else if (networkId && !isDevNetworkId(networkId)) {
+      // Unless DEV, use the provider on window if it exists, otherwise use torus provider
       if (windowRef.web3) {
-          // Use window provider
-          provider = new Web3Provider(windowRef.web3.currentProvider);
+        // Use window provider
+        provider = new Web3Provider(windowRef.web3.currentProvider);
       } else {
         // Use torus provider
         const host = getNetwork(networkId);
@@ -248,7 +252,8 @@ export function connectAugur(
         }
         provider = new Web3Provider(torus.provider);
       }
-    } else {
+    }
+    else {
       // In DEV, use local ethereum node
       provider = new JsonRpcProvider(env['ethereum'].http);
     }
