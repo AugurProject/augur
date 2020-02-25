@@ -1,21 +1,14 @@
 import { ContractAddresses } from '@augurproject/artifacts';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
-import { Augur, Connectors } from '@augurproject/sdk';
-import { BulkSyncStrategy } from '@augurproject/sdk/build/state/sync/BulkSyncStrategy';
+import { Connectors } from '@augurproject/sdk';
 import { ACCOUNTS, defaultSeedPath, loadSeedFile } from '@augurproject/tools';
 import { TestContractAPI } from '@augurproject/tools';
-import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
 import { BigNumber } from 'bignumber.js';
 import {
-  makeDbMock,
   makeProvider,
-  makeTestAugur,
   MockGnosisRelayAPI,
 } from '../../libs';
-import { sleep } from '@augurproject/core/build/libraries/HelperFunctions';
 
-const mock = makeDbMock();
-let augur: Augur;
 
 /**
  * Adds 2 new blocks to DisputeCrowdsourcerCompleted DB and performs a rollback.

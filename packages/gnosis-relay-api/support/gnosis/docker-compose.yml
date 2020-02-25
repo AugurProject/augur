@@ -95,7 +95,7 @@ services:
       - augur
 
   0x-mesh-standalone:
-    image: 0xorg/mesh:pre-release-9.0.0-wss-support
+    image: 0xorg/mesh:9.0.1
     restart: on-failure
     hostname: 0x
     depends_on:

@@ -251,7 +251,7 @@ export const FavoritesButton = ({
       [Styles.FavoriteButton_small]: isSmall,
     })}
     disabled={disabled}
-    title={title}
+    title={title || 'Toggle Favorite'}
   >
     {StarIcon}
     {!hideText && `${isFavorite ? ' Remove from' : ' Add to'} watchlist`}
@@ -450,8 +450,8 @@ export const ViewTransactionDetailsButton = (
       showNonLink
       txhash={props.transactionHash}
       label={props.label ? props.label : 'View'}
+      showIcon
     />
-    {ViewIcon}
   </div>
 );
 
@@ -557,6 +557,7 @@ interface EtherscanLinkTSXProps {
   txhash: string;
   label: string;
   showNonLink?: boolean;
+  showIcon?: boolean;
 }
 
 const EtherscanLinkTSX = ({
@@ -564,14 +565,21 @@ const EtherscanLinkTSX = ({
   txhash,
   label,
   showNonLink,
+  showIcon,
 }: EtherscanLinkTSXProps) => (
   <span>
     {baseUrl && (
       <a href={baseUrl + txhash} target="blank">
         {label}
+        {showIcon && ViewIcon}
       </a>
     )}
-    {!baseUrl && showNonLink && <span>{label}</span>}
+    {!baseUrl && showNonLink && (
+      <span>
+        {label}
+        {showIcon && ViewIcon}
+      </span>
+    )}
   </span>
 );
 

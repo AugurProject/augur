@@ -226,6 +226,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `PGA: Which team will win the [0] Presidents Cup?`,
                 example: `PGA: Which team will win the 2020 Presidents Cup?`,
+                noAdditionalUserOutcomes: true,
                 inputs: [
                   {
                     id: 0,
@@ -419,6 +420,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Euro Tour: Which golf team will win the [0] Ryders Cup?`,
                 example: `Euro Tour: Which golf team will win the 2020 Ryders Cup?`,
+                noAdditionalUserOutcomes: true,
                 inputs: [
                   {
                     id: 0,

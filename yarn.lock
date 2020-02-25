@@ -124,10 +124,10 @@
     jsonschema "^1.2.0"
     lodash.values "^4.3.0"
 
-"@0x/mesh-browser@9.0.0-extra-peers-and-logging":
-  version "9.0.0-extra-peers-and-logging"
-  resolved "https://registry.yarnpkg.com/@0x/mesh-browser/-/mesh-browser-9.0.0-extra-peers-and-logging.tgz#6f5c865b2aeb0424c44006cf2451dc1d7f922f6c"
-  integrity sha512-81MMLe1Vm98PGfeiFRbnpHlJIt+Ub4udk+qYkNH1aYV+sAcS8mZ7dDA2aRN3cCYZebUJmNVbb1OdmYlvjESHtg==
+"@0x/mesh-browser@9.0.1":
+  version "9.0.1"
+  resolved "https://registry.yarnpkg.com/@0x/mesh-browser/-/mesh-browser-9.0.1.tgz#cde715db81a59643a0d48d61cbe1d539cb63bfa0"
+  integrity sha512-l3L1Se6oK6rFLjyPhaCP7TTZ0jHEQot5sxYJYQ8fZxzaGM2rbG/ha+71EatPvbOL2CBuz5ABtGKMr0aBq1mFHw==
   dependencies:
     "@0x/order-utils" "^10.0.1"
     "@0x/utils" "^5.1.2"
@@ -135,10 +135,10 @@
     browserfs "^1.4.3"
     ethereum-types "^3.0.0"
 
-"@0x/mesh-rpc-client@9.0.0-wss-support":
-  version "9.0.0-wss-support"
-  resolved "https://registry.yarnpkg.com/@0x/mesh-rpc-client/-/mesh-rpc-client-9.0.0-wss-support.tgz#7ea51eed8bd6279ee7ef4bc1149c7758a630bc73"
-  integrity sha512-UNMBO+6jajp+SAXI+kPetnnCR7KBpcEDr0kf4P6Ad4ABssj3NkYZzpiAoB5g8BdOSzQI/XuzBmDA4wfLMOGqjg==
+"@0x/mesh-rpc-client@9.0.1":
+  version "9.0.1"
+  resolved "https://registry.yarnpkg.com/@0x/mesh-rpc-client/-/mesh-rpc-client-9.0.1.tgz#c3bebf7876cf52a254411ee73e78bdbf16f9330c"
+  integrity sha512-+Y8EPFqjZcH/9R9gI9M0rdeWQdrLMJX/INyvWm42QVxFs6F/JURvJLSYwUalcrIirumop362mKPRe/5rx4wQSw==
   dependencies:
     "@0x/assert" "^3.0.2"
     "@0x/types" "^3.1.1"
@@ -7492,11 +7492,6 @@ copy-webpack-plugin@4.6.0:
     p-limit "^1.0.0"
     serialize-javascript "^1.4.0"
 
-core-js-bundle@^3.2.1:
-  version "3.6.4"
-  resolved "https://registry.yarnpkg.com/core-js-bundle/-/core-js-bundle-3.6.4.tgz#d4e098323c035f4a1b61f00db0b8def04c243920"
-  integrity sha512-qDHS3GbIEs5dZaBiCVhhtCoF79KU/ek0w+H7zfJf9RuGN0GiKfxHZfAtDy4zFtQ6X00t7Wvvr3wHzMj+/IgbPg==
-
 core-js-compat@^3.1.1:
   version "3.6.4"
   resolved "https://registry.yarnpkg.com/core-js-compat/-/core-js-compat-3.6.4.tgz#938476569ebb6cda80d339bcf199fae4f16fff17"
@@ -8820,10 +8815,15 @@ detective@^5.2.0:
     defined "^1.0.0"
     minimist "^1.1.1"
 
-dexie@*, dexie@2.0.4:
+dexie@*:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/dexie/-/dexie-2.0.4.tgz#6027a5e05879424e8f9979d8c14e7420f27e3a11"
   integrity sha512-aQ/s1U2wHxwBKRrt2Z/mwFNHMQWhESerFsMYzE+5P5OsIe5o1kgpFMWkzKTtkvkyyEni6mWr/T4HUJuY9xIHLA==
+
+dexie@3.0.0-rc.4:
+  version "3.0.0-rc.4"
+  resolved "https://registry.yarnpkg.com/dexie/-/dexie-3.0.0-rc.4.tgz#86d52b58a3a4ffc2d01c8f8d41114ab02bbb4ea1"
+  integrity sha512-zsttc+pYSSBPhwYlfQcPfB9n3jdyye0WubtDtO9lJ0r051V67W+BGDGsodNwYb/NmyTYG3jxN9M0z4FbFtYqtg==
 
 dezalgo@^1.0.0:
   version "1.0.3"
@@ -10701,10 +10701,10 @@ eventsource@^1.0.7:
   dependencies:
     original "^1.0.0"
 
-eventtargeter@0.7.0:
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/eventtargeter/-/eventtargeter-0.7.0.tgz#3d6a8cea2ebea1ddf47023a171e9a2b4a8cc7f60"
-  integrity sha512-Zq9ugV4CWWsh/+cfE2m9IUNcE5N//6hxrbWlzg42iE75z4/LXfE21Wv+yaf0mM24ncEM69GWDzTr9aDlcrA8og==
+eventtargeter@0.8.0:
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/eventtargeter/-/eventtargeter-0.8.0.tgz#ca23a8c465bca44f7e5aa00efe365a699bb44915"
+  integrity sha512-ldFAonAo7vyXeBDcTTOoxTtdibw1JvADllLkldxxdqb4+8LPoibU+e9XGQkD98l5wavImIab1jNwuzMtnR2MAg==
 
 evp_bytestokey@^1.0.0, evp_bytestokey@^1.0.3:
   version "1.0.3"
@@ -13241,18 +13241,17 @@ indent-string@^4.0.0:
   resolved "https://registry.yarnpkg.com/indent-string/-/indent-string-4.0.0.tgz#624f8f4497d619b2d9768531d58f4122854d7251"
   integrity sha512-EdDDZu4A2OyIK7Lr/2zG+w5jmbuk1DVBnEwREQvBzspBJkCEbRa8GxU1lghYcaGJCnRWibjDXlq779X1/y5xwg==
 
-indexeddbshim@5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/indexeddbshim/-/indexeddbshim-5.0.0.tgz#9cab3925abaf2795ebb889585cb23637c17a4c0d"
-  integrity sha512-jZz6HDO/zf9jMTnJ+wSsGI1n3G2K1/s0BuOA6aINAmk6ktoigPqTIwrHOrUvdxgjSCw/AeLO7vub8Q40YDgQtg==
+indexeddbshim@6.1.0:
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/indexeddbshim/-/indexeddbshim-6.1.0.tgz#3af4e91b8ede2067ea1b040a2b7ca50c7ffce5d4"
+  integrity sha512-y56LxY6900CzpdmqmlF+8gp2KRcM6dIK5cTO48fsv+5fHInOR1qqGBCr5qdsPR6wI5DoT57ICot0un4R4SIWCg==
   dependencies:
-    core-js-bundle "^3.2.1"
-    eventtargeter "0.7.0"
+    eventtargeter "0.8.0"
     regenerator-runtime "^0.13.3"
-    sync-promise "git+https://github.com/brettz9/sync-promise.git#full-sync-missing-promise-features"
-    typeson "5.13.0"
-    typeson-registry "1.0.0-alpha.28"
-    websql "git+https://github.com/brettz9/node-websql.git#configurable-secure2"
+    sync-promise "https://github.com/brettz9/sync-promise.git#full-sync-missing-promise-features"
+    typeson "5.18.2"
+    typeson-registry "1.0.0-alpha.35"
+    websql "https://github.com/brettz9/node-websql.git#configurable-secure2"
 
 indexes-of@^1.0.1:
   version "1.0.1"
@@ -25408,9 +25407,9 @@ symbol-tree@^3.2.2:
   resolved "https://registry.yarnpkg.com/symbol-tree/-/symbol-tree-3.2.4.tgz#430637d248ba77e078883951fb9aa0eed7c63fa2"
   integrity sha512-9QNk5KwDF+Bvz+PyObkmSYjI5ksVUYtjW7AU22r2NKcfLJcXp96hkDWU3+XndOsUb+AQ9QhfzfCT2O+CNWT5Tw==
 
-"sync-promise@git+https://github.com/brettz9/sync-promise.git#full-sync-missing-promise-features":
+"sync-promise@https://github.com/brettz9/sync-promise.git#full-sync-missing-promise-features":
   version "1.0.1"
-  resolved "git+https://github.com/brettz9/sync-promise.git#25845a49a00aa2d2c985a5149b97c86a1fcdc75a"
+  resolved "https://github.com/brettz9/sync-promise.git#25845a49a00aa2d2c985a5149b97c86a1fcdc75a"
 
 syntax-error@^1.1.1:
   version "1.4.0"
@@ -26224,19 +26223,19 @@ typescript@3.7.5:
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.7.5.tgz#0692e21f65fd4108b9330238aac11dd2e177a1ae"
   integrity sha512-/P5lkRXkWHNAbcJIiHPfRoKqyd7bsyCma1hZNUGfn20qm64T6ZBlrzprymeu918H+mB/0rIg2gGK/BXkhhYgBw==
 
-typeson-registry@1.0.0-alpha.28:
-  version "1.0.0-alpha.28"
-  resolved "https://registry.yarnpkg.com/typeson-registry/-/typeson-registry-1.0.0-alpha.28.tgz#cc76b71cdafa7f39c0d39fba9573114675ff098b"
-  integrity sha512-WQD4dPXak+20mUiFFeaI0xh+dqiMQs2fmPFzX6akg1+WN74ocVFjYFwRbWNdtLuCUomxXrxAMP9dxjCakZQHvQ==
+typeson-registry@1.0.0-alpha.35:
+  version "1.0.0-alpha.35"
+  resolved "https://registry.yarnpkg.com/typeson-registry/-/typeson-registry-1.0.0-alpha.35.tgz#b86abfe440e6ee69102eebb0e8c5a916dd182ff9"
+  integrity sha512-a/NffrpFswBTyU6w2d6vjk62K1TZ45H64af9AfRbn7LXqNEfL+h+gw3OV2IaG+enfwqgLB5WmbkrNBaQuc/97A==
   dependencies:
     base64-arraybuffer-es6 "0.5.0"
-    typeson "5.13.0"
-    whatwg-url "7.0.0"
+    typeson "5.18.2"
+    whatwg-url "7.1.0"
 
-typeson@5.13.0:
-  version "5.13.0"
-  resolved "https://registry.yarnpkg.com/typeson/-/typeson-5.13.0.tgz#dc65b23ea1978a315ed4c95e58a5b6936bcc3591"
-  integrity sha512-xcSaSt+hY/VcRYcqZuVkJwMjDXXJb4CZd51qDocpYw8waA314ygyOPlKhsGsw4qKuJ0tfLLUrxccrm+xvyS0AQ==
+typeson@5.18.2:
+  version "5.18.2"
+  resolved "https://registry.yarnpkg.com/typeson/-/typeson-5.18.2.tgz#0d217fc0e11184a66aa7ca0076d9aa7707eb7bc2"
+  integrity sha512-Vetd+OGX05P4qHyHiSLdHZ5Z5GuQDrHHwSdjkqho9NSCYVSLSfRMjklD/unpHH8tXBR9Z/R05rwJSuMpMFrdsw==
 
 typewise-core@^1.2, typewise-core@^1.2.0:
   version "1.2.0"
@@ -28169,9 +28168,9 @@ websocket@^1.0.29:
     typedarray-to-buffer "^3.1.5"
     yaeti "^0.0.6"
 
-"websql@git+https://github.com/brettz9/node-websql.git#configurable-secure2":
+"websql@https://github.com/brettz9/node-websql.git#configurable-secure2":
   version "1.0.0"
-  resolved "git+https://github.com/brettz9/node-websql.git#5149bc0763376ca757fc32dc74345ada0467bfbb"
+  resolved "https://github.com/brettz9/node-websql.git#5149bc0763376ca757fc32dc74345ada0467bfbb"
   dependencies:
     argsarray "^0.0.1"
     immediate "^3.2.2"
@@ -28201,10 +28200,10 @@ whatwg-mimetype@^2.1.0, whatwg-mimetype@^2.2.0:
   resolved "https://registry.yarnpkg.com/whatwg-mimetype/-/whatwg-mimetype-2.3.0.tgz#3d4b1e0312d2079879f826aff18dbeeca5960fbf"
   integrity sha512-M4yMwr6mAnQz76TbJm914+gPpB/nCwvZbJU28cUD6dR004SAxDLOOSUaB1JDRqLtaOV/vi0IC5lEAGFgrjGv/g==
 
-whatwg-url@7.0.0:
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/whatwg-url/-/whatwg-url-7.0.0.tgz#fde926fa54a599f3adf82dff25a9f7be02dc6edd"
-  integrity sha512-37GeVSIJ3kn1JgKyjiYNmSLP1yzbpb29jdmwBSgkD9h40/hyrR/OifpVUndji3tmwGgD8qpw7iQu3RSbCrBpsQ==
+whatwg-url@7.1.0, whatwg-url@^7.0.0:
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/whatwg-url/-/whatwg-url-7.1.0.tgz#c2c492f1eca612988efd3d2266be1b9fc6170d06"
+  integrity sha512-WUu7Rg1DroM7oQvGWfOiAK21n74Gg+T4elXEQYkOhtyLeWiJFoOGLXPKI/9gzIie9CtwVLm8wtw6YJdKyxSjeg==
   dependencies:
     lodash.sortby "^4.7.0"
     tr46 "^1.0.1"
@@ -28214,15 +28213,6 @@ whatwg-url@^6.4.1:
   version "6.5.0"
   resolved "https://registry.yarnpkg.com/whatwg-url/-/whatwg-url-6.5.0.tgz#f2df02bff176fd65070df74ad5ccbb5a199965a8"
   integrity sha512-rhRZRqx/TLJQWUpQ6bmrt2UV4f0HCQ463yQuONJqC6fO2VoEb1pTYddbe59SkYq87aoM5A3bdhMZiUiVws+fzQ==
-  dependencies:
-    lodash.sortby "^4.7.0"
-    tr46 "^1.0.1"
-    webidl-conversions "^4.0.2"
-
-whatwg-url@^7.0.0:
-  version "7.1.0"
-  resolved "https://registry.yarnpkg.com/whatwg-url/-/whatwg-url-7.1.0.tgz#c2c492f1eca612988efd3d2266be1b9fc6170d06"
-  integrity sha512-WUu7Rg1DroM7oQvGWfOiAK21n74Gg+T4elXEQYkOhtyLeWiJFoOGLXPKI/9gzIie9CtwVLm8wtw6YJdKyxSjeg==
   dependencies:
     lodash.sortby "^4.7.0"
     tr46 "^1.0.1"
