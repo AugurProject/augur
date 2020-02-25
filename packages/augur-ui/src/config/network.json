@@ -28,7 +28,6 @@
   "kovan": {
     "networkId": "42",
     "ethereum": {
-      "http": "",
       "rpcRetryCount": 5,
       "rpcRetryInterval": 0,
       "rpcConcurrency": 40
@@ -51,7 +50,6 @@
   "demo": {
     "networkId": "42",
     "ethereum": {
-      "http": "",
       "rpcRetryCount": 5,
       "rpcRetryInterval": 0,
       "rpcConcurrency": 40
