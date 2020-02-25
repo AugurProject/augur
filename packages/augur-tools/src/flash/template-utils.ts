@@ -31,7 +31,7 @@ export const validateMarketTemplate = (
     const extraInfoTemplate = JSON.parse(templateInfo) as ExtraInfoTemplate;
     let outcomes = [];
     if (outcomesString) {
-      outcomes = outcomesString.split(',').map(stringTo32ByteHex);
+      outcomes = outcomesString.split(',');
     }
     let details = longDescription;
     if (longDescription) {
