@@ -3,10 +3,7 @@ import { BaseDocument } from './AbstractTable';
 import { Augur } from '../../Augur';
 import { BaseSyncableDB } from './BaseSyncableDB';
 import { DB } from './DB';
-import { Log, ParsedLog } from '@augurproject/types';
-import { SyncStatus } from './SyncStatus';
 import { SubscriptionEventName } from '../../constants';
-import { RollbackTable } from './RollbackTable';
 
 export interface Document extends BaseDocument {
   blockNumber: number;
@@ -29,11 +26,9 @@ export class DelayedSyncableDB extends BaseSyncableDB {
     augur.events.once(SubscriptionEventName.BulkSyncComplete, this.onBulkSyncComplete.bind(this));
   }
 
-  protected async bulkUpsertDocuments(documents: BaseDocument[]): Promise<void> {
-    for (const document of documents) {
-      const documentID = this.getIDValue(document);
-      await this.upsertDocument(documentID, document);
-    }
+  protected async saveDocuments(documents: BaseDocument[]): Promise<void> {
+    if (this.syncing) return this.bulkPutDocuments(documents);
+    return super.bulkUpsertDocuments(documents);
   }
 
   async onBulkSyncComplete() {
@@ -43,8 +38,24 @@ export class DelayedSyncableDB extends BaseSyncableDB {
   async sync(highestAvailableBlockNumber: number): Promise<void> {
     this.syncing = true;
 
-    const result = await this.db.dexieDB[this.eventName].toArray();
-    await this.bulkUpsertDocuments(_.orderBy(result, ['blockNumber', 'logIndex'], ['asc', 'asc']));
+    const highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(
+      this.dbName
+    );
+
+    const result: Document = await this.db.dexieDB[this.eventName].where("blockNumber").aboveOrEqual(highestSyncedBlockNumber).toArray();
+    const documentsById = _.groupBy(result, this.getIDValue.bind(this));
+    const documents = _.flatMap(documentsById, documents => {
+      return documents.reduce((val, doc) => {
+          if (val.blockNumber < doc.blockNumber || (val.blockNumber === doc.blockNumber && val.logIndex < doc.logIndex)) {
+            return doc;
+          }
+          return val;
+        },
+        documents[0]
+      );
+    });
+
+    await this.saveDocuments(documents);
 
     this.syncing = false;
   }

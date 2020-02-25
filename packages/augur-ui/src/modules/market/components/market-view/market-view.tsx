@@ -92,7 +92,7 @@ interface MarketViewProps {
   clearOrderBook: Function;
 }
 
-interface DefaultOrderPropertiesMap {
+export interface DefaultOrderPropertiesMap {
   [outcomeId: number]: DefaultOrderProperties;
 }
 interface MarketViewState {

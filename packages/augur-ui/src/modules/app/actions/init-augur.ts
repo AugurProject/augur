@@ -70,7 +70,7 @@ function pollForAccount(
       clearInterval(intervalId);
     }
 
-    if (!attemptedLogin && connection.isConnected) {
+    if (!attemptedLogin) {
       attemptedLogin = true;
 
       const loggedInUser = getLoggedInUserFromLocalStorage();

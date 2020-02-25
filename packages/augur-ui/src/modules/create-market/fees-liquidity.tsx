@@ -19,6 +19,7 @@ import Styles from "modules/create-market/fees-liquidity.styles.less";
 import { OutcomeFormatted, NewMarket } from "modules/types";
 import { MARKET_COPY_LIST } from "modules/create-market/constants";
 import { formatOrderBook } from "modules/create-market/helpers/format-order-book";
+import { DefaultOrderPropertiesMap } from "modules/market/components/market-view/market-view";
 
 interface FeesLiquidityProps {
   newMarket: NewMarket;
@@ -35,23 +36,36 @@ interface FeesLiquidityState {
   selectedOutcome: number;
   hoveredDepth: any;
   hoveredPrice: any;
+  selectedOrderProperties: DefaultOrderPropertiesMap;
 }
 
 export default class FeesLiquidity extends React.Component<
   FeesLiquidityProps,
   FeesLiquidityState
 > {
+  DEFAULT_ORDER_PROPERTIES = {
+    orderPrice: '',
+    orderQuantity: '',
+    selectedNav: BUY,
+  };
   state: FeesLiquidityState = {
     selectedOutcome: this.props.newMarket.marketType === CATEGORICAL ? 1 : 2,
     hoveredDepth: [],
     hoveredPrice: null,
+    selectedOrderProperties: this.DEFAULT_ORDER_PROPERTIES,
   };
 
   updateSelectedOrderProperties = (selectedOrderProperties) => {
+    this.setState({selectedOrderProperties})
   }
 
   updateSelectedOutcome = (value: number) => {
-    this.setState({selectedOutcome: value});
+    this.setState({
+      selectedOutcome: value,
+      selectedOrderProperties: {
+        ...this.DEFAULT_ORDER_PROPERTIES,
+      },
+    });
   }
 
   updateLiquidity = (selectedOutcome: OutcomeFormatted, s) => {
@@ -171,7 +185,7 @@ export default class FeesLiquidity extends React.Component<
         <div>
           <TradingForm
             market={newMarket}
-            selectedOrderProperties={{ orderPrice: "", orderQuantity: "", selectedNav: BUY}}
+            selectedOrderProperties={s.selectedOrderProperties}
             selectedOutcomeId={s.selectedOutcome}
             updateSelectedOrderProperties={this.updateSelectedOrderProperties}
             updateLiquidity={this.updateLiquidity}
