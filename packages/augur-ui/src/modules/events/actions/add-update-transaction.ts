@@ -19,13 +19,15 @@ import {
   PUBLICFILLORDER,
   BUYPARTICIPATIONTOKENS,
   MODAL_ERROR,
+  MIGRATE_FROM_LEG_REP_TOKEN,
+  MIGRATE_V1_V2,
 } from 'modules/common/constants';
 import { CreateMarketData } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { Events, TXEventName } from '@augurproject/sdk';
 import {
-  addPendingData,
+  addPendingData, removePendingData,
 } from 'modules/pending-queue/actions/pending-queue-management';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { TransactionMetadataParams } from 'contract-dependencies-ethers/build';
@@ -185,6 +187,25 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
         orderIds.map(id => dispatch(addCanceledOrder(id, eventName)));
         if (eventName === TXEventName.Success) {
           orderIds.map(id => dispatch(removeCanceledOrder(id)));
+        }
+        break;
+      }
+      case MIGRATE_FROM_LEG_REP_TOKEN: {
+        if (eventName !== TXEventName.Success) {
+          const { params } = transaction;
+          console.log('params', params);
+          const genHash = params.value;
+          dispatch(
+            updateAlert(genHash, {
+              id: genHash,
+              uniqueId: genHash,
+              params,
+              status: eventName,
+              timestamp: blockchain.currentAugurTimestamp * 1000,
+              name: methodCall,
+            })
+          );
+          dispatch(removePendingData(MIGRATE_V1_V2, MIGRATE_V1_V2))
         }
         break;
       }

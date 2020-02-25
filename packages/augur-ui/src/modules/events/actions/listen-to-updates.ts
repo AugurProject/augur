@@ -33,6 +33,7 @@ import {
   handleGnosisStateUpdate,
   handleDBMarketCreatedEvent,
   handleReportingStateChanged,
+  handleTokensBurnedLog,
 } from 'modules/events/actions/log-handlers';
 import { wrapLogHandler } from 'modules/events/actions/wrap-log-handler';
 import { ThunkDispatch } from 'redux-thunk';
@@ -112,6 +113,9 @@ const EVENTS = {
   ),
   [SubscriptionEventName.TokensMinted]: wrapLogHandler(
     handleTokensMintedLog
+  ),
+  [SubscriptionEventName.TokensBurned]: wrapLogHandler(
+    handleTokensBurnedLog
   ),
   [SubscriptionEventName.GnosisSafeStatus]: wrapLogHandler(
     handleGnosisStateUpdate

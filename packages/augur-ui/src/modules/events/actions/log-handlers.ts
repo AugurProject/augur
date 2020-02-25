@@ -70,6 +70,7 @@ import { loadMarketOrderBook } from 'modules/orders/actions/load-market-orderboo
 import { isCurrentMarket } from 'modules/trades/helpers/is-current-market';
 import { removePendingDataByHash, addPendingData } from 'modules/pending-queue/actions/pending-queue-management';
 import { removePendingOrder, constructPendingOrderid } from 'modules/orders/actions/pending-orders-management';
+import { loadAccountData } from 'modules/auth/actions/load-account-data';
 
 const handleAlert = (
   log: any,
@@ -312,7 +313,7 @@ export const handleMarketMigratedLog = (log: any) => (
   dispatch(loadUniverseDetails(universeId, userAddress));
 };
 
-export const handleTokensTransferredLog = (log: any) => (
+export const handleTokensTransferredLog = (log: Logs.TokensTransferredLog) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
@@ -322,6 +323,19 @@ export const handleTokensTransferredLog = (log: any) => (
   if (isUserDataUpdate) {
     // TODO: will need to update user's contribution to dispute/reporting
     // dispatch(loadReportingWindowBounds());
+  }
+};
+
+export const handleTokensBurnedLog = (log: any) => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  const { address } = getState().loginAccount;
+  const isUserDataUpdate = isSameAddress(log.owner, address);
+  if (isUserDataUpdate) {
+    if (log.tokenType === Logs.TokenType.ReputationToken) {
+      console.log(log);
+    }
   }
 };
 
