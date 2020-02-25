@@ -1,4 +1,5 @@
 import { Dexie } from 'dexie';
+import * as _ from 'lodash';
 
 export type PrimitiveID = string | number | Date;
 
@@ -15,11 +16,13 @@ export abstract class AbstractTable {
   protected networkId: number;
   readonly dbName: string;
   protected idFields: string[];
+  protected syncing: boolean;
 
   protected constructor(networkId: number, dbName: string, db: Dexie) {
     this.networkId = networkId;
     this.dbName = dbName;
     this.table = db[dbName];
+    this.syncing = false;
     const keyPath = this.table.schema.primKey.keyPath;
     this.idFields = typeof keyPath === 'string' ? [keyPath] : keyPath;
   }
@@ -50,11 +53,33 @@ export abstract class AbstractTable {
     return this.table.get(id);
   }
 
-  protected async bulkUpsertDocuments(documents: BaseDocument[]): Promise<void> {
+  protected async bulkAddDocuments(documents: BaseDocument[]): Promise<void> {
     for (const document of documents) {
       delete document.constructor;
     }
     await this.table.bulkAdd(documents);
+  }
+
+  protected async bulkPutDocuments(documents: BaseDocument[], documentIds?: any[]): Promise<void> {
+    for (const document of documents) {
+      delete document.constructor;
+    }
+    await this.table.bulkPut(documents);
+  }
+
+  protected async bulkUpsertDocuments(documents: BaseDocument[]): Promise<void> {
+    const documentIds = _.map(documents, this.getIDValue.bind(this));
+    const existingDocuments = await this.table.bulkGet(documentIds);
+    let docIndex = 0;
+    for (const existingDocument of existingDocuments) {
+      existingDocuments[docIndex] = Object.assign({}, existingDocument || {}, documents[docIndex]);
+      docIndex++;
+    }
+    await this.bulkPutDocuments(existingDocuments, documentIds);
+  }
+
+  protected async saveDocuments(documents: BaseDocument[]): Promise<void> {
+    return this.bulkUpsertDocuments(documents);
   }
 
   protected async upsertDocument(documentID: ID, document: BaseDocument): Promise<void> {
@@ -70,11 +95,11 @@ export abstract class AbstractTable {
   }
 
   protected getIDValue(document: any): ID {
-    if (this.idFields.length == 1) return document[this.idFields[0]];
+    if (this.idFields.length === 1) return _.get(document, this.idFields[0]);
 
     const id = [];
-    for (let idField of this.idFields) {
-      id.push(document[idField]);
+    for (const idField of this.idFields) {
+      id.push(_.get(document, idField));
     }
     return id;
   }

@@ -16,10 +16,7 @@ export class ParsedOrderEventDB extends SyncableDB {
     return super.addNewBlock(blocknumber, this.processOrderEvent(logs));
   }
 
-  private processOrderEvent(originalLogs: ParsedLog[]) {
-    // Copy the objects.
-    const logs = _.cloneDeep(originalLogs);
-
+  private processOrderEvent(logs: ParsedLog[]) {
     for (let i = 0; i < logs.length; i++) {
       logs[i].orderCreator = logs[i].addressData[0];
       logs[i].orderFiller = logs[i].addressData[1];
