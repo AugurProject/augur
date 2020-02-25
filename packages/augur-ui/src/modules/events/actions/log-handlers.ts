@@ -328,19 +328,6 @@ export const handleTokensTransferredLog = (log: Logs.TokensTransferredLog) => (
   }
 };
 
-export const handleTokensBurnedLog = (log: any) => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
-  const { address } = getState().loginAccount;
-  const isUserDataUpdate = isSameAddress(log.owner, address);
-  if (isUserDataUpdate) {
-    if (log.tokenType === Logs.TokenType.ReputationToken) {
-      console.log(log);
-    }
-  }
-};
-
 export const handleTokenBalanceChangedLog = (
   log: Logs.TokenBalanceChangedLog
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
