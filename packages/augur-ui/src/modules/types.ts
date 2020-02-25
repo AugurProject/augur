@@ -488,7 +488,7 @@ export interface ReportingListState {
   };
 }
 export interface FilledOrders {
-  [account: string]: Getters.Trading.Orders;
+  [account: string]: Getters.Trading.MarketTradingHistory;
 }
 
 export interface OpenOrders {

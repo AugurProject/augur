@@ -619,7 +619,12 @@
   text-transform: uppercase;
   padding: @size-2 @size-4;
 
-  > svg {
+  > span > a {
+    display: flex;
+  }
+  
+  > span > a > svg,
+  > span > span > svg {
     fill: none;
     height: @size-10;
     margin-left: @size-4;
