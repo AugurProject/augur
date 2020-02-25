@@ -9,6 +9,7 @@ import { AsyncQueue, queue, retry } from 'async';
 import { isInstanceOfBigNumber, isInstanceOfArray } from './utils';
 import { JSONRPCRequestPayload, JSONRPCErrorCallback, JSONRPCResponsePayload } from 'ethereum-types';
 import { BigNumber } from "bignumber.js";
+import { FasterAbiInterface } from './FasterAbiInterface';
 
 interface MultiAddressFilter {
   blockhash?: string;
@@ -19,7 +20,7 @@ interface MultiAddressFilter {
 }
 
 interface ContractMapping {
-  [contractName: string]: ethers.utils.Interface;
+  [contractName: string]: FasterAbiInterface;
 }
 
 interface PerformQueueTask {
@@ -123,7 +124,7 @@ export class EthersProvider extends ethers.providers.BaseProvider
   }
 
   storeAbiData(abi: Abi, contractName: string): void {
-    this.contractMapping[contractName] = new ethers.utils.Interface(abi);
+    this.contractMapping[contractName] = new FasterAbiInterface(abi);
   }
 
   async getEthBalance(address: string): Promise<string> {
@@ -173,7 +174,7 @@ export class EthersProvider extends ethers.providers.BaseProvider
 
   parseLogValues(contractName: string, log: Log): LogValues {
     const contractInterface = this.getContractInterface(contractName);
-    const parsedLog = contractInterface.parseLog(log);
+    const parsedLog = contractInterface.fastParseLog(log);
     const omittedValues = _.map(_.range(parsedLog.values.length), n =>
       n.toString()
     );
@@ -197,7 +198,7 @@ export class EthersProvider extends ethers.providers.BaseProvider
     };
   }
 
-  private getContractInterface(contractName: string): ethers.utils.Interface {
+  private getContractInterface(contractName: string): FasterAbiInterface {
     const contractInterface = this.contractMapping[contractName];
     if (!contractInterface) {
       throw new Error(
