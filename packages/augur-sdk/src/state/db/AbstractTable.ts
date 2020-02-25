@@ -71,12 +71,11 @@ export abstract class AbstractTable {
     const documentIds = _.map(documents, this.getIDValue.bind(this));
     const existingDocuments = await this.table.bulkGet(documentIds);
     let docIndex = 0;
-    for (let existingDocument of existingDocuments) {
-      existingDocuments[docIndex] = Object.assign(existingDocument || {}, documents[docIndex]);
-      delete existingDocuments.constructor;
+    for (const existingDocument of existingDocuments) {
+      existingDocuments[docIndex] = Object.assign({}, existingDocument || {}, documents[docIndex]);
       docIndex++;
     }
-    this.bulkPutDocuments(existingDocuments, documentIds);
+    await this.bulkPutDocuments(existingDocuments, documentIds);
   }
 
   protected async saveDocuments(documents: BaseDocument[]): Promise<void> {
