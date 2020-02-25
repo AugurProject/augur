@@ -47,13 +47,13 @@ import {
   SELL_INDEX,
   ZERO,
   ONE,
+  MIGRATE_FROM_LEG_REP_TOKEN,
 } from 'modules/common/constants';
 import { AppState } from 'store';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { MarketData } from 'modules/types';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
-import { isSameAddress } from 'utils/isSameAddress';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 
 function toCapitalizeCase(label) {
@@ -451,6 +451,11 @@ export default function setAlertText(alert: any, callback: Function) {
         alert.description = 'You are approved to use Dai on Augur';
         break;
 
+      case MIGRATE_FROM_LEG_REP_TOKEN:
+        const amount = formatRep(convertAttoValueToDisplayValue(createBigNumber(alert.params.amount)));
+        alert.title = 'REP migrated from V1 to V2';
+        alert.description = `You have migrated ${amount.formatted} V1 REP to V2 REP`;
+        break;
       default: {
         break;
       }
