@@ -10,10 +10,10 @@ import { LogoutIcon, PlusCircleIcon } from 'modules/common/icons';
 import { NavMenuItem } from 'modules/types';
 import Styles from 'modules/app/components/side-nav/side-nav.styles.less';
 import { HelpIcon, HelpMenuList } from 'modules/app/components/help-resources';
-import { SecondaryButton } from 'modules/common/buttons';
+import { SecondaryButton, ProcessingButton } from 'modules/common/buttons';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import { helpIcon, Chevron, Dot } from 'modules/common/icons';
-import { MODAL_ADD_FUNDS } from 'modules/common/constants';
+import { MODAL_ADD_FUNDS, MIGRATE_V1_V2 } from 'modules/common/constants';
 
 interface SideNavProps {
   defaultMobileClick: Function;
@@ -113,9 +113,12 @@ const SideNav = ({
             <div>
               {showMigrateRepButton && (
                 <span className={Styles.SideNavMigrateRep}>
-                  <SecondaryButton
+                  <ProcessingButton
                     text="Migrate V1 to V2 REP"
                     action={() => migrateV1Rep()}
+                    queueName={MIGRATE_V1_V2}
+                    queueId={MIGRATE_V1_V2}
+                    secondaryButton
                   />
                   <label
                     className={classNames(Styles.SideNavMigrateTooltipHint)}

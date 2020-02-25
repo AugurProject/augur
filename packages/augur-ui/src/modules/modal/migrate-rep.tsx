@@ -9,7 +9,8 @@ import { ExternalLinkButton } from 'modules/common/buttons';
 import { LinearPropertyLabel } from 'modules/common/labels';
 import { InfoIcon } from 'modules/common/icons';
 import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
-import { V1_REP_MIGRATE_ESTIMATE } from 'modules/common/constants';
+import { V1_REP_MIGRATE_ESTIMATE, MIGRATE_V1_V2 } from 'modules/common/constants';
+import { TXEventName } from '@augurproject/sdk/src';
 
 interface MigrateRepForm {
   closeAction: Function;
@@ -19,6 +20,7 @@ interface MigrateRepForm {
   ethToDaiRate: BigNumber;
   convertV1ToV2Estimate: Function;
   gasPrice: number;
+  addPendingData: Function;
 }
 
 export const MigrateRep = (props: MigrateRepForm) => {
@@ -30,6 +32,7 @@ export const MigrateRep = (props: MigrateRepForm) => {
     convertV1ToV2Estimate,
     ethToDaiRate,
     gasPrice,
+    addPendingData
   } = props;
 
   const [gasLimit, setGasLimit] = useState(V1_REP_MIGRATE_ESTIMATE);
@@ -86,6 +89,7 @@ export const MigrateRep = (props: MigrateRepForm) => {
             text: 'Migrate',
             action: () => {
               closeAction();
+              addPendingData(MIGRATE_V1_V2, MIGRATE_V1_V2, TXEventName.Pending, MIGRATE_V1_V2);
               convertV1ToV2();
             },
             disabled:
