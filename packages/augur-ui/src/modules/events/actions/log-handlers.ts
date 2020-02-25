@@ -1,5 +1,5 @@
 import { Getters } from '@augurproject/sdk/build';
-import { updateAlert } from 'modules/alerts/actions/alerts';
+import { updateAlert, addAlert } from 'modules/alerts/actions/alerts';
 import {
   loadAllAccountPositions,
   loadAccountOnChainFrozenFundsTotals,
@@ -42,6 +42,8 @@ import {
   CREATE_MARKET,
   MODAL_GAS_PRICE,
   SUBMIT_REPORT,
+  MIGRATE_FROM_LEG_REP_TOKEN,
+  MIGRATE_V1_V2,
 } from 'modules/common/constants';
 import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
@@ -68,7 +70,7 @@ import { updateModal } from 'modules/modal/actions/update-modal';
 import * as _ from 'lodash';
 import { loadMarketOrderBook } from 'modules/orders/actions/load-market-orderbook';
 import { isCurrentMarket } from 'modules/trades/helpers/is-current-market';
-import { removePendingDataByHash, addPendingData } from 'modules/pending-queue/actions/pending-queue-management';
+import { removePendingDataByHash, addPendingData, removePendingData } from 'modules/pending-queue/actions/pending-queue-management';
 import { removePendingOrder, constructPendingOrderid } from 'modules/orders/actions/pending-orders-management';
 import { loadAccountData } from 'modules/auth/actions/load-account-data';
 
@@ -658,6 +660,22 @@ export const handleTokensMintedLog = (log: Logs.TokensMinted) => (
     const isUserDataUpdate = isSameAddress(log.target, userAddress);
     if (isUserDataUpdate) {
       dispatch(loadUniverseDetails(log.universe, userAddress));
+    }
+  }
+  if (log.tokenType === Logs.TokenType.ReputationToken && !isForking) {
+    const isUserDataUpdate = isSameAddress(log.target, userAddress);
+    if (isUserDataUpdate) {
+      dispatch(
+        addAlert({
+          id: MIGRATE_FROM_LEG_REP_TOKEN,
+          uniqueId: MIGRATE_FROM_LEG_REP_TOKEN,
+          params: {...log},
+          status: TXEventName.Success,
+          timestamp: getState().blockchain.currentAugurTimestamp * 1000,
+          name: MIGRATE_FROM_LEG_REP_TOKEN,
+        })
+      );
+      dispatch(removePendingData(MIGRATE_V1_V2, MIGRATE_V1_V2))
     }
   }
 };

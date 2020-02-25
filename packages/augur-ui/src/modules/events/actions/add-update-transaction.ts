@@ -190,25 +190,7 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
         }
         break;
       }
-      case MIGRATE_FROM_LEG_REP_TOKEN: {
-        if (eventName !== TXEventName.Success) {
-          const { params } = transaction;
-          console.log('params', params);
-          const genHash = params.value;
-          dispatch(
-            updateAlert(genHash, {
-              id: genHash,
-              uniqueId: genHash,
-              params,
-              status: eventName,
-              timestamp: blockchain.currentAugurTimestamp * 1000,
-              name: methodCall,
-            })
-          );
-          dispatch(removePendingData(MIGRATE_V1_V2, MIGRATE_V1_V2))
-        }
-        break;
-      }
+
       default:
         return null;
     }
