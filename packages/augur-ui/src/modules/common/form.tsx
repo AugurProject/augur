@@ -81,7 +81,7 @@ interface TextInputProps {
   placeholder?: string;
   onChange: Function;
   value?: string;
-  maxLength?: string;
+  maxLength?: number;
   trailingLabel?: string;
   innerLabel?: string;
   autoCompleteList?: SortedGroup[];
@@ -797,8 +797,9 @@ export const ReportingRadioBarGroup = ({
         <section>
           <span>Tentative Outcome</span>
           <span>
-            Add Pre-emptive stake to Support this outcome if you believe it to
-            be correct.
+            Believe this is the correct outcome? Any REP you stake here will go
+            toward disputing in its favor, in the event that it is no longer the
+            Tentative Winner.
           </span>
           <ReportingRadioBar
             market={market}
@@ -1024,7 +1025,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
                 <Subheaders
                   header="pre-filled stake"
                   subheader={
-                    formatAttoRep(stake.stakeCurrent || ZERO).formatted
+                    formatAttoRep(stake.stakeCurrent || ZERO).full
                   }
                 />
               )}
@@ -1242,7 +1243,7 @@ export class LocationDisplay extends React.Component<LocationDisplayProps, {}> {
 
   render() {
     const { pages, currentStep } = this.props;
-   
+
     return (
       <div className={Styles.LocationDisplay} ref={container => {
         this.container = container;
@@ -1275,7 +1276,7 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
   };
 
   state: TextInputState = {
-    value: !this.props.value ? '' : this.props.value,
+    value: this.props.value === undefined ? '' : this.props.value,
     showList: false,
   };
   refDropdown: any = null;
