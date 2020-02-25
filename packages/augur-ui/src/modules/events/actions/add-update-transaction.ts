@@ -1,4 +1,4 @@
-import store, { AppState } from 'store';
+import { AppState } from 'store';
 import {
   addCanceledOrder,
   removeCanceledOrder,
@@ -19,15 +19,13 @@ import {
   PUBLICFILLORDER,
   BUYPARTICIPATIONTOKENS,
   MODAL_ERROR,
-  MIGRATE_FROM_LEG_REP_TOKEN,
-  MIGRATE_V1_V2,
 } from 'modules/common/constants';
 import { CreateMarketData } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { Events, TXEventName } from '@augurproject/sdk';
 import {
-  addPendingData, removePendingData,
+  addPendingData,
 } from 'modules/pending-queue/actions/pending-queue-management';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { TransactionMetadataParams } from 'contract-dependencies-ethers/build';
