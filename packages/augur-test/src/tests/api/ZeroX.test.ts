@@ -270,7 +270,6 @@ describe('Augur API :: ZeroX :: ', () => {
       ]);
 
       await john.sync();
-      await mary.sync();
       // Place an order
       const expirationTime = new BigNumber(new Date().valueOf()).plus(10000);
       await john.placeZeroXOrder({

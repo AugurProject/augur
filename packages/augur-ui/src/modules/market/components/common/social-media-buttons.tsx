@@ -36,7 +36,7 @@ export const SocialMediaButtons = ({
   };
 
   const encodedMarketUrl = encodeURIComponent(
-    `${window.location.origin}/#!/market?id=${marketAddress}`
+    `${window.location.origin}/#!/market?id=${marketAddress}&=affiliate=${address}`
   );
   const encodedMarketDescription = encodeURI(marketDescription);
 
@@ -77,6 +77,7 @@ export const SocialMediaButtons = ({
     <>
       <button
         id='facebookButton'
+        title="Share on Facebook"
         onClick={() => {
           handleFacebookClick();
         }}
@@ -85,6 +86,7 @@ export const SocialMediaButtons = ({
       </button>
       <button
         id='twitterButton'
+        title="Share on Twitter"
         onClick={() => {
           handleTwitterClick();
         }}

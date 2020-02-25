@@ -195,6 +195,7 @@ export const handleSDKReadyEvent = () => (
 
   // app is connected when subscribed to sdk
   dispatch(updateConnectionStatus(true));
+  dispatch(loadAccountData());
   dispatch(loadUniverseForkingInfo());
   dispatch(getCategoryStats());
 };

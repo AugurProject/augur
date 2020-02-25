@@ -4,6 +4,7 @@ import { API } from '@augurproject/sdk/build/state/getter/API';
 import { WarpSyncGetter } from '@augurproject/sdk/build/state/getter/WarpSyncGetter';
 import { BulkSyncStrategy } from '@augurproject/sdk/build/state/sync/BulkSyncStrategy';
 import { WarpSyncStrategy } from '@augurproject/sdk/build/state/sync/WarpSyncStrategy';
+import * as IPFS from 'ipfs';
 import { configureDexieForNode } from '@augurproject/sdk/build/state/utils/DexieIDBShim';
 import {
   databasesToSync,
@@ -22,7 +23,6 @@ import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersPro
 import { BigNumber } from 'bignumber.js';
 import { ContractDependenciesEthers } from 'contract-dependencies-ethers';
 import { Block } from 'ethers/providers';
-import * as IPFS from 'ipfs';
 import { makeDbMock, makeProvider } from '../../libs';
 
 const mock = makeDbMock();
@@ -51,9 +51,6 @@ describe('WarpController', () => {
 
   beforeAll(async () => {
     configureDexieForNode(true);
-    ipfs = await IPFS.create({
-      repo: './data',
-    });
 
     seed = await loadSeedFile(defaultSeedPath, 'WarpSync');
 
@@ -78,11 +75,12 @@ describe('WarpController', () => {
 
     warpController = new WarpController(
       john.db,
-      ipfs,
       provider,
       uploadBlockHeaders,
+      ipfs,
       filterRetrievelFn(ipfs)
     );
+    ipfs = await warpController.getIpfs();
     firstCheckpointFileHash = await warpController.createAllCheckpoints(
       await provider.getBlock(170)
     );
@@ -305,38 +303,8 @@ describe('WarpController', () => {
             name: 'checkpoints',
             type: 'dir',
           }),
-          expect.objectContaining({
-            name: 'index',
-            type: 'file',
-          }),
-          expect.objectContaining({
-            name: 'tables',
-            type: 'dir',
-          }),
         ]);
       });
-    });
-  });
-
-  describe('non-empty dbs', () => {
-    // This is a spot check.
-    test('should have some logs', async () => {
-      const marketCreated = await ipfs.cat(
-        `${secondCheckpointFileHash}/tables/MarketCreated/index`
-      );
-      const splitLogs = marketCreated
-        .toString()
-        .split('\n')
-        .filter(log => log)
-        .map(log => {
-          try {
-            return JSON.parse(log);
-          } catch (e) {
-            console.error(e, log);
-          }
-        });
-
-      expect(splitLogs).toEqual(await john.db.MarketCreated.toArray());
     });
   });
 
@@ -379,9 +347,9 @@ describe('WarpController', () => {
       newJohnDB = await mock.makeDB(newJohn.augur);
       newJohnWarpController = new WarpController(
         newJohnDB,
-        ipfs,
         provider,
         uploadBlockHeaders,
+        ipfs,
         filterRetrievelFn(ipfs)
       );
       newJohnApi = new API(newJohn.augur, Promise.resolve(newJohnDB));
@@ -392,9 +360,9 @@ describe('WarpController', () => {
 
       newJohnWarpController = new WarpController(
         newJohnDB,
-        ipfs,
         provider,
         uploadBlockHeaders,
+        ipfs,
         filterRetrievelFn(ipfs)
       );
       newJohnApi = new API(newJohn.augur, Promise.resolve(newJohnDB));

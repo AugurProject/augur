@@ -83,7 +83,7 @@ export default class MarketHeader extends Component<
     toggleFavorite: () => {},
   };
   detailsContainer: any;
-  clipboardMarketId: any = new Clipboard('#copy_marketId');
+  clipboardMarketId: any = new Clipboard('#copy_marketURL');
   refTitle: any = null;
   refNotCollapsed: any = null;
 
@@ -286,8 +286,9 @@ export default class MarketHeader extends Component<
                   marketDescription={description}
                 />
                 <div
-                  id="copy_marketId"
-                  data-clipboard-text={market.id}
+                  id="copy_marketURL"
+                  title="Copy Market link"
+                  data-clipboard-text={window.location.href}
                   onClick={() => {
                     marketLinkCopied(market.id, MARKET_PAGE);
                     this.setState({ showCopied: true }, () => {

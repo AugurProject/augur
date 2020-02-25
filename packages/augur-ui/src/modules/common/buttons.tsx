@@ -279,7 +279,7 @@ export const FavoritesButton = ({
       [Styles.FavoriteButton_small]: isSmall,
     })}
     disabled={disabled}
-    title={title}
+    title={title || 'Toggle Favorite'}
   >
     {StarIcon}
     {!hideText && `${isFavorite ? ' Remove from' : ' Add to'} watchlist`}
