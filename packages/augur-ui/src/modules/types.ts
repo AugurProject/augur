@@ -808,6 +808,8 @@ export interface NavMenuItem {
   disabled?: boolean;
   showAlert?: boolean;
   button?: boolean;
+  fillSpace?: boolean;
+  alternateStyle?: boolean;
 }
 
 export interface SortedGroup {

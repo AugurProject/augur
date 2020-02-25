@@ -63,6 +63,7 @@ const TopNav = ({
             <li
               className={classNames({
                 [Styles['Selected']]: selected,
+                [Styles['FillSpace']]: item.fillSpace
               })}
               key={item.title}
             >
@@ -81,7 +82,7 @@ const TopNav = ({
             />
           </div>
         )}
-        {showMigrateRepButton && (
+        {t && (
           <span>
             <label
               className={classNames(TooltipStyles.TooltipHint)}
@@ -114,16 +115,6 @@ const TopNav = ({
               URL={'https://augur.net'}
             />
           </div>
-        )}
-
-        {isLogged && (
-          <button
-            className={Styles.AddFunds}
-            title="Add Funds"
-            onClick={() => updateModal({ type: MODAL_ADD_FUNDS })}
-          >
-            Add Funds {PlusCircleIcon}
-          </button>
         )}
       </ul>
       <GlobalChat show={false} numberOfPeers={15} />
