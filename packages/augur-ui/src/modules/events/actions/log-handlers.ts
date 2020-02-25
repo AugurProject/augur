@@ -70,6 +70,7 @@ import { loadMarketOrderBook } from 'modules/orders/actions/load-market-orderboo
 import { isCurrentMarket } from 'modules/trades/helpers/is-current-market';
 import { removePendingDataByHash, addPendingData } from 'modules/pending-queue/actions/pending-queue-management';
 import { removePendingOrder, constructPendingOrderid } from 'modules/orders/actions/pending-orders-management';
+import { loadAccountData } from 'modules/auth/actions/load-account-data';
 
 const handleAlert = (
   log: any,
