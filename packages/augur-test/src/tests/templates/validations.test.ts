@@ -9,7 +9,7 @@ beforeAll(async () => {
 
 const templateValidations = [
   {
-    skip: false,
+    skip: true,
     title: 'Will h win the 2020 Arlington Million?',
     templateInfo:
       '{"hash":"0xb1e8150accfc1fb7e312342f9a45f333e7468dbdb39ca696501d221fc72a1675","question":"Will [0] win the [1] [2]?","inputs":[{"id":0,"value":"h","type":"TEXT","timestamp":"h"},{"id":1,"value":"2020","type":"DROPDOWN","timestamp":"2020"},{"id":2,"value":"Arlington Million","type":"DROPDOWN","timestamp":"Arlington Million"}]}',
@@ -19,7 +19,7 @@ const templateValidations = [
     result: 'success',
   },
   {
-    skip: false,
+    skip: true,
     title:
       'NHL (O/U): Anaheim Ducks vs. Arizona Coyotes: Total goals scored; Over/Under 4.5?',
     templateInfo:
@@ -31,7 +31,7 @@ const templateValidations = [
     result: 'success',
   },
   {
-    skip: false,
+    skip: true,
     title:
       'NFL (Point Spread): Arizona Cardinals to win by more than 2.5 points over Baltimore Ravens?',
     templateInfo:
@@ -43,7 +43,7 @@ const templateValidations = [
     result: 'success',
   },
   {
-    skip: false,
+    skip: true,
     title: 'NFL: Will the Arizona Cardinals win vs. the Atlanta Falcons?',
     templateInfo:
       '{"hash":"0xa5807ee39ca0820d64cfea3370d04ae94118dcfd902f6fe7bfa3234fc27f573c","question":"NFL: Will the [0] win vs. the [1]?","inputs":[{"id":0,"value":"Arizona Cardinals","type":"DROPDOWN","timestamp":"Arizona Cardinals"},{"id":1,"value":"Atlanta Falcons","type":"DROPDOWN","timestamp":"Atlanta Falcons"},{"id":2,"value":"1575590400","type":"ESTDATETIME","timestamp":"1575590400"}]}',
@@ -53,7 +53,7 @@ const templateValidations = [
     result: 'success',
   },
   {
-    skip: false,
+    skip: true,
     title:
       'NFL: Will the Arizona Cardinals & Atlanta Falcons win vs. the Atlanta Falcons?',
     templateInfo:
@@ -64,7 +64,7 @@ const templateValidations = [
     result: 'error: populated market question does not match regex',
   },
   {
-    skip: false,
+    skip: true,
     title:
       'NFL: Will the Arizona Cardinals Atlanta Falcons win vs. the Atlanta Falcons?',
     templateInfo:
@@ -75,7 +75,7 @@ const templateValidations = [
     result: 'error: populated market question does not match regex',
   },
   {
-    skip: false,
+    skip: true,
     title:
       'NFL: Will the Arizona Cardinals|Atlanta Falcons win vs. the Atlanta Falcons?',
     templateInfo:
@@ -86,7 +86,7 @@ const templateValidations = [
     result: 'error: populated market question does not match regex',
   },
   {
-    skip: false,
+    skip: true,
     title:
       'Will the price of BTC/USD, exceed 4 anytime between the open of December 24, 2019 and close of December 31, 2019, according to TradingView.com "BTCUSD (crypto - Bitfinex)"?',
     templateInfo:
@@ -97,7 +97,7 @@ const templateValidations = [
     result: 'error: populated title does not match title given',
   },
   {
-    skip: false,
+    skip: true,
     title: 'blah blah blah blah blah blah?',
     templateInfo:
       '{"hash":"1x111111111137f91b56786842d3cdda72b0d83f7b4ca9ea70b75dc354d5fff9a","question":"Will the [0] close on or above [1] on [2]?","inputs":[{"id":0,"value":"CAC 40","type":"DROPDOWN","timestamp":"CAC 40"},{"id":1,"value":"5200","type":"TEXT","timestamp":"5200"},{"id":2,"value":"December 31, 2019","type":"DATEYEAR","timestamp":"1577772000"}]}',
@@ -107,7 +107,7 @@ const templateValidations = [
     result: 'error: no validation found for hash',
   },
   {
-    skip: false,
+    skip: true,
     title: 'Will the BSE Sensex 30 close on or above 33 on December 29, 2019?',
     templateInfo:
       '{"hash":"0x37f0cf523f502c2156a1c5a00be2246905259b2be655e4f6337c007268597678","question":"Will the [0] close on or above [1] on [2]?","inputs":[{"id":0,"value":"BSE Sensex 30","type":"DROPDOWN","timestamp":null},{"id":1,"value":"33","type":"TEXT","timestamp":null},{"id":2,"value":"December 29, 2019","type":"DATEYEAR","timestamp":1577645591}]}',
@@ -117,7 +117,7 @@ const templateValidations = [
     result: 'error: market question date can not be on weekend or on a holiday',
   },
   {
-    skip: false,
+    skip: true,
     title: 'Will the BSE Sensex 30 close on or above 33 on December 29, 2019?',
     templateInfo:
       '{"hash":"0x37f0cf523f502c2156a1c5a00be2246905259b2be655e4f6337c007268597678","question":"Will the [0] close on or above [1] on [2]?","inputs":[{"id":0,"value":"BSE Sensex 30","type":"DROPDOWN","timestamp":null},{"id":1,"value":"33","type":"TEXT","timestamp":null},{"id":2,"value":"December 29, 2019","type":"DATEYEAR","timestamp":1577645591}]}',
@@ -127,7 +127,7 @@ const templateValidations = [
     result: 'error: market question date can not be on weekend or on a holiday',
   },
   {
-    skip: false,
+    skip: true,
     title: 'Will the BSE Sensex 30 close on or above 33 on January 20, 2020?',
     templateInfo:
       '{"hash":"0x37f0cf523f502c2156a1c5a00be2246905259b2be655e4f6337c007268597678","question":"Will the [0] close on or above [1] on [2]?","inputs":[{"id":0,"value":"BSE Sensex 30","type":"DROPDOWN","timestamp":null},{"id":1,"value":"33","type":"TEXT","timestamp":null},{"id":2,"value":"January 20, 2020","type":"DATEYEAR","timestamp":1579478400}]}',
@@ -137,7 +137,7 @@ const templateValidations = [
     result: 'error: market question date can not be on weekend or on a holiday',
   },
   {
-    skip: false,
+    skip: true,
     title:
       'Will the BSE Sensex 30 close on or above 33.00.01 on December 31, 2019?',
     templateInfo:
@@ -148,7 +148,7 @@ const templateValidations = [
     result: 'error: populated market question does not match regex',
   },
   {
-    skip: false,
+    skip: true,
     title: 'Will the Russell 1000 close on or above 14 on January 2, 2020?',
     templateInfo:
       '{"hash":"0x37f0cf523f502c2156a1c5a00be2246905259b2be655e4f6337c007268597678","question":"Will the [0] close on or above [1] on [2]?","inputs":[{"id":0,"value":"Russell 1000","type":"DROPDOWN","timestamp":null},{"id":1,"value":"14","type":"TEXT","timestamp":null},{"id":2,"value":"January 2, 2020","type":"DATEYEAR","timestamp":1577944800}]}',
@@ -158,7 +158,7 @@ const templateValidations = [
     result: 'success',
   },
   {
-    skip: false,
+    skip: true,
     title: 'Will the Russell 1000 close on or above 14 on January 2, 2020?',
     templateInfo:
       '{"hash":"0x37f0cf523f502c2156a1c5a00be2246905259b2be655e4f6337c007268597678","question":"Will the [0] close on or above [1] on [2]?","inputs":[{"id":0,"value":"Russell 1000","type":"DROPDOWN","timestamp":null},{"id":1,"value":"14","type":"TEXT","timestamp":null},{"id":2,"value":"January 2, 2020","type":"DATEYEAR","timestamp":1577944800}]}',
@@ -168,7 +168,7 @@ const templateValidations = [
     result: 'error: event expiration can not be before exchange close time',
   },
   {
-    skip: false,
+    skip: true,
     title:
       'Will the total gross for bob be $333 USD or more, on domestic opening weekend of January 17, 2020 in the US, according to www.boxofficemojo.com/?',
     templateInfo:
@@ -179,7 +179,7 @@ const templateValidations = [
     result: 'success',
   },
   {
-    skip: false,
+    skip: true,
     title:
       'Will the total gross for bob be $333 USD or more, on domestic opening weekend of January 17, 2020 in the US, according to www.boxofficemojo.com/?',
     templateInfo:
@@ -189,6 +189,32 @@ const templateValidations = [
       'Gross total should include the first Friday through Sunday of the movie release and does not include extra days due to holidays\nThis market is intended to be about a Single Movie, if this is not the case, this market should settle as invalid.\nIf www.boxofficemojo.com is down or not available use www.the-numbers.com to determine domestic US total gross of movie.',
     result:
       'event expiration can not be before Wednesday after movie opening weekend and/or opening day must be a friday',
+  },
+  {
+    skip: false,
+    title:
+      'PGA: Which team will win the 2020 Presidents Cup?',
+    templateInfo:
+      '{"hash":"0x32005caba2639c59cba6d6b661c2623eefb32b4457d47188709b52570e61e25b","question":"PGA: Which team will win the [0] Presidents Cup?","inputs":[{"id":0,"value":"2020","type":"DROPDOWN","timestamp":null}]}',
+    endTime: '1582588800',
+    outcomes: 'No winner/Event cancelled,United States Team,International Team',
+    resolutionRules:
+      "If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No winner/Event Cancelled'.\nOnly one team can be listed per outcome, if not then the market should resolve as 'Invalid'\nThis market is intended to have two teams, United States verse International, if not the case this market should resolve as 'Invalid'\nIncludes regulation, any play-offs and sudden death",
+    result:
+      'success',
+  },
+  {
+    skip: false,
+    title:
+      'PGA: Which team will win the 2020 Presidents Cup?',
+    templateInfo:
+      '{"hash":"0x32005caba2639c59cba6d6b661c2623eefb32b4457d47188709b52570e61e25b","question":"PGA: Which team will win the [0] Presidents Cup?","inputs":[{"id":0,"value":"2020","type":"DROPDOWN","timestamp":null}]}',
+    endTime: '1582588800',
+    outcomes: 'No winner/Event cancelled,United States Team,International Team,Bad Outcome',
+    resolutionRules:
+      "If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No winner/Event Cancelled'.\nOnly one team can be listed per outcome, if not then the market should resolve as 'Invalid'\nThis market is intended to have two teams, United States verse International, if not the case this market should resolve as 'Invalid'\nIncludes regulation, any play-offs and sudden death",
+    result:
+      'no additioanl outcomes is a requirement, only required outcomes are allowed',
   },
 ];
 
@@ -200,8 +226,8 @@ test('flash :: tempalte validation tests', async () => {
     }
     const result = await flash.call('validate-template', t);
     console.log('index:', i, t.title);
-    console.log('expected', result);
-    console.log('result: ', t.result);
+    console.log('expected', t.result);
+    console.log('validation result: ', result);
     await expect(result).toEqual(t.result);
   });
 });

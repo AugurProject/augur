@@ -81,7 +81,7 @@ interface TextInputProps {
   placeholder?: string;
   onChange: Function;
   value?: string;
-  maxLength?: string;
+  maxLength?: number;
   trailingLabel?: string;
   innerLabel?: string;
   autoCompleteList?: SortedGroup[];
@@ -1275,7 +1275,7 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
   };
 
   state: TextInputState = {
-    value: !this.props.value ? '' : this.props.value,
+    value: this.props.value === undefined ? '' : this.props.value,
     showList: false,
   };
   refDropdown: any = null;
