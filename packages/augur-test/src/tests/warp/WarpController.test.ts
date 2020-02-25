@@ -303,38 +303,8 @@ describe('WarpController', () => {
             name: 'checkpoints',
             type: 'dir',
           }),
-          expect.objectContaining({
-            name: 'index',
-            type: 'file',
-          }),
-          expect.objectContaining({
-            name: 'tables',
-            type: 'dir',
-          }),
         ]);
       });
-    });
-  });
-
-  describe('non-empty dbs', () => {
-    // This is a spot check.
-    test('should have some logs', async () => {
-      const marketCreated = await ipfs.cat(
-        `${secondCheckpointFileHash}/tables/MarketCreated/index`
-      );
-      const splitLogs = marketCreated
-        .toString()
-        .split('\n')
-        .filter(log => log)
-        .map(log => {
-          try {
-            return JSON.parse(log);
-          } catch (e) {
-            console.error(e, log);
-          }
-        });
-
-      expect(splitLogs).toEqual(await john.db.MarketCreated.toArray());
     });
   });
 
