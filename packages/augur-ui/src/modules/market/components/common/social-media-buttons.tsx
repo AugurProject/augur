@@ -77,6 +77,7 @@ export const SocialMediaButtons = ({
     <>
       <button
         id='facebookButton'
+        title="Share on Facebook"
         onClick={() => {
           handleFacebookClick();
         }}
@@ -85,6 +86,7 @@ export const SocialMediaButtons = ({
       </button>
       <button
         id='twitterButton'
+        title="Share on Twitter"
         onClick={() => {
           handleTwitterClick();
         }}
