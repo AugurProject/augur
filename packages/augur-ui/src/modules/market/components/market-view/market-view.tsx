@@ -781,7 +781,7 @@ export default class MarketView extends Component<
                     </div>
                   </ModulePane>
                 </ModuleTabs>
-                {pane !== 'Trade' && window.ethereum && (
+                {pane !== 'Trade' && (
                   <MarketComments marketId={marketId} networkId={networkId} />
                 )}
               </>
@@ -1034,7 +1034,7 @@ export default class MarketView extends Component<
                     </div>
                   </div>
                 </div>
-                {!tradingTutorial && window.ethereum && (
+                {!tradingTutorial && (
                   <MarketComments marketId={marketId} networkId={networkId} />
                 )}
               </>

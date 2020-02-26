@@ -3,13 +3,7 @@ import Box from '3box';
 import Comments from '3box-comments-react';
 
 import Styles from 'modules/market/components/market-view/market-view.styles.less';
-
-interface MarketCommentsProps {
-  marketId: string;
-  colorScheme: string;
-  numPosts: number;
-  networkId: string;
-}
+import { ACCOUNT_TYPES } from 'modules/common/constants';
 
 export class MarketComments extends Component {
   state = {
@@ -23,15 +17,66 @@ export class MarketComments extends Component {
     this.handleLogin();
   };
 
+  componentDidUpdate(prevProps, prevState): void {
+    if (prevProps.provider !== this.props.provider
+      || prevProps.address !== this.props.address
+      || prevProps.accountType !== this.props.accountType) {
+      console.log('componentDidUpdate');
+      this.handleLogin();
+    }
+  }
+
+  getProvider = (accountType) => {
+    const provider = {
+      [ACCOUNT_TYPES.PORTIS]: window.portis.provider,
+      default: null
+    };
+
+    return (provider[accountType] || provider['default'])();
+  };
+
+  getWalletInfo = async () => {
+    const {address, accountType, provider} = this.props;
+
+    if (address && accountType && provider) {
+      return {
+        address,
+        accountType,
+        provider,
+      }
+    } else if (window.ethereum) {
+      const addresses = await window.ethereum.enable();
+      const address = addresses[0];
+
+      return {
+        address,
+        accountType: ACCOUNT_TYPES.METAMASK,
+        provider: window.ethereum,
+      }
+    } else {
+      return {}
+    }
+  };
+
   handleLogin = async () => {
-    const addresses = await window.ethereum.enable();
-    const address = addresses[0];
+    const { address, provider } = await this.getWalletInfo();
+    if (!address) {
+      this.setState({isReady: false});
+      return;
+    }
 
-    const box = await Box.create(window.ethereum);
-    await box.auth(['augur'], address);
+    console.log('address and provider #####', {address, provider});
+
+    const box = await Box.create(provider);
+    console.log('box ###', box);
+
+    await box.auth(['augur'], {address});
+    console.log('auth done ###');
+
     await box.syncDone;
+    console.log('box sync done ###');
 
-    this.setState({box, address, isReady: true})
+    this.setState({box, address, isReady: true});
   };
 
   render () {

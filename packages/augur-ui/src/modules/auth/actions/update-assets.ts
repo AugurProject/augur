@@ -47,7 +47,7 @@ function updateBalances(
     const legacyRep = formatAttoRep(legacyAttoRep).value;
     const dai = amounts[1];
     const eth = amounts[2];
-    dispatch(addedDaiEvent(dai)); 
+    dispatch(addedDaiEvent(dai));
     dispatch(updateLoginAccount({ balances: { attoRep, rep, dai, eth, legacyAttoRep, legacyRep } }));
     return callback(null, { rep, dai, eth });
   });

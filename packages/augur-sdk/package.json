@@ -64,7 +64,7 @@
     "ganache-core": "2.9.1",
     "indexeddbshim": "5.0.0",
     "io-ts": "1.10.4",
-    "ipfs": "0.39.0",
+    "ipfs": "0.40.0",
     "ipld-dag-pb": "0.18.1",
     "isomorphic-ws": "4.0.1",
     "lodash": "4.17.15",
