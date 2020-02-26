@@ -30,9 +30,7 @@ export const purchaseParticipationTokens = (
     return callback(null, gas);
   }
   dispatch(addPendingData(BUY_PARTICIPATION_TOKENS, BUY_PARTICIPATION_TOKENS, TXEventName.Pending, BUY_PARTICIPATION_TOKENS));
-  buyParticipationTokens(universeId, amount).then(() => {
-    dispatch(removePendingData(BUY_PARTICIPATION_TOKENS, BUY_PARTICIPATION_TOKENS))
-  }).catch(() => {
+  buyParticipationTokens(universeId, amount).catch(() => {
     dispatch(removePendingData(BUY_PARTICIPATION_TOKENS, BUY_PARTICIPATION_TOKENS))
   });
   callback(null);
