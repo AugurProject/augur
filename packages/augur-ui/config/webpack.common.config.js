@@ -13,6 +13,7 @@ const PATHS = {
   APP: path.resolve(__dirname, "../src"),
   TEST: path.resolve(__dirname, "../test"),
   ORBIT: path.resolve(__dirname, "../../orbit-web"),
+  ROOT_UI: path.resolve(__dirname, "../"),
 };
 
 module.exports = {
@@ -96,22 +97,17 @@ module.exports = {
         ]
       },
       {
-        test: /\.s[ac]ss$/i,
-        use: [
-          // Creates `style` nodes from JS strings
-          'style-loader',
-          // Translates CSS into CommonJS
-          'css-loader',
-          // Compiles Sass to CSS
-          'sass-loader',
-        ],
-      },
-      {
         test: /\.css$/,
-        use: [
-          "style-loader",
-          "postcss-loader"
-        ]
+        use: [{
+          loader: "style-loader",
+        }, {
+          loader: "postcss-loader",
+          options: {
+            config: {
+              path: PATHS.ROOT_UI
+            }
+          },
+        }],
       }
     ]
   },
