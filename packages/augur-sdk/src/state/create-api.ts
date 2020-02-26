@@ -1,4 +1,4 @@
-import { ContractAddresses, getAddressesForNetwork, getStartingBlockForNetwork, NetworkId } from '@augurproject/artifacts';
+import { getAddressesForNetwork, getStartingBlockForNetwork, SDKConfiguration } from '@augurproject/artifacts';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { EthersSigner } from 'contract-dependencies-ethers';
 import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis';
@@ -17,43 +17,6 @@ import { LogFilterAggregator } from './logs/LogFilterAggregator';
 import { BlockAndLogStreamerSyncStrategy } from './sync/BlockAndLogStreamerSyncStrategy';
 import { BulkSyncStrategy } from './sync/BulkSyncStrategy';
 import { WarpSyncStrategy } from './sync/WarpSyncStrategy';
-import { EndpointSettings } from './getter/types';
-
-export interface SDKConfiguration {
-  networkId: NetworkId,
-  ethereum?: {
-    http?: string,
-    rpcRetryCount: number,
-    rpcRetryInterval: number,
-    rpcConcurrency: number
-  },
-  sdk?: {
-    enabled?: boolean,
-    ws: string,
-  },
-  gnosis?: {
-    enabled?: boolean,
-    http: string
-  },
-  zeroX?: {
-    rpc?: {
-      enabled?: boolean,
-      ws?: string
-    },
-    mesh?: {
-      verbosity?: 0|1|2|3|4|5,
-      enabled?: boolean,
-      bootstrapList?: string[]
-    }
-  },
-  syncing?: {
-    enabled?: boolean,
-    blockstreamDelay?: number,
-    chunkSize?: number
-  },
-  addresses?: ContractAddresses,
-  server?: EndpointSettings
-};
 
 export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: EthersProvider, logFilterAggregator: LogFilterAggregator) {
   return async () => {

@@ -1,6 +1,6 @@
 import { WSClient } from '@0x/mesh-rpc-client';
 import {
-  Addresses,
+  getAddressesForNetwork,
   ContractAddresses,
   NetworkId,
 } from '@augurproject/artifacts';
@@ -46,8 +46,8 @@ describe('3rd Party :: ZeroX :: ', () => {
       0,
       40
     );
-    networkId = await providerJohn.getNetworkId();
-    addresses = Addresses[networkId];
+    networkId = await providerJohn.getNetworkId() as NetworkId;
+    addresses = getAddressesForNetwork(networkId);
 
     meshClient = new WSClient('ws://localhost:60557');
   }, 240000);

@@ -1,17 +1,13 @@
 import { BigNumber } from 'bignumber.js';
 import { JsonRpcProvider } from 'ethers/providers';
 import * as _ from 'lodash';
-import { Addresses, ContractAddresses, NetworkId } from '@augurproject/artifacts';
+import { getAddressesForNetwork, ContractAddresses, NetworkId } from '@augurproject/artifacts';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { GnosisRelayAPI, GnosisSafeState, } from '@augurproject/gnosis-relay-api';
 import { Connectors } from '@augurproject/sdk';
 import { ACCOUNTS, TestContractAPI } from '@augurproject/tools';
-import { DB } from '@augurproject/sdk/build/state/db/DB';
-import { API } from '@augurproject/sdk/build/state/getter/API';
 import { AllOrders, Order, } from '@augurproject/sdk/build/state/getter/OnChainTrading';
-import { BulkSyncStrategy } from '@augurproject/sdk/build/state/sync/BulkSyncStrategy';
 import { stringTo32ByteHex, } from '@augurproject/tools/build/libs/Utils';
-import { makeDbMock } from '../../libs';
 
 async function getSafe(person: TestContractAPI): Promise<string> {
   return person.augur.contracts.gnosisSafeRegistry.getSafe_(
@@ -32,8 +28,8 @@ describe('3rd Party :: Gnosis :: ', () => {
       0,
       40
     );
-    networkId = await providerJohn.getNetworkId();
-    addresses = Addresses[networkId];
+    networkId = await providerJohn.getNetworkId() as NetworkId;
+    addresses = getAddressesForNetwork(networkId);
 
     const connectorJohn = new Connectors.DirectConnector();
     john = await TestContractAPI.userWrapper(

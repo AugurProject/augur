@@ -1,10 +1,13 @@
-import { NetworkId, getAddressesForNetwork } from '@augurproject/artifacts';
+import {
+  NetworkId,
+  getAddressesForNetwork,
+  SDKConfiguration
+} from '@augurproject/artifacts';
 import {
   Augur,
   CalculateGnosisSafeAddressParams,
   Connectors,
   createClient,
-  SDKConfiguration,
   NULL_ADDRESS
 } from '@augurproject/sdk';
 import { EthersSigner } from 'contract-dependencies-ethers';

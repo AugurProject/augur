@@ -1,31 +1,82 @@
 export const abi = require('./abi.json');
 export const abiV1 = require('./abi.v1.json');
-export const Addresses: AllContractAddresses = require('./addresses.json');
 export const Contracts = require('./contracts.json');
-export const UploadBlockNumbers: UploadBlockNumbers = require('./upload-block-numbers.json');
-export const Networks = require('./networks.json');
 export * from './templates';
 export { ContractEvents } from './events';
 
 import { exists, readFile, writeFile } from 'async-file';
+import deepmerge from 'deepmerge';
 import path from 'path';
+import requireAll from 'require-all';
 
-try {
-  const localAddresses: { [networkId: string]: ContractAddresses } = require('./local-addresses.json');
-  Object.keys(localAddresses).forEach((networkId) => {
-    Addresses[networkId] = localAddresses[networkId];
-  });
-} catch (e) {
-  // if the local addresses don't exist, do nothing
-}
-try {
-  const localUploadBlockNumbers: UploadBlockNumbers = require('./local-upload-block-numbers.json');
-  Object.keys(localUploadBlockNumbers).forEach((networkId) => {
-    UploadBlockNumbers[networkId] = localUploadBlockNumbers[networkId];
-  });
-} catch (e) {
-  // if the local upload block numbers don't exist, do nothing
-}
+export interface SDKConfiguration {
+  networkId: NetworkId,
+  gas?: {
+    limit?: number,
+    price?: number
+  },
+  deploy?: {
+    isProduction: boolean,
+    enableFaucets: boolean,
+    normalTime: boolean,
+    privateKey: string,
+    contractInputPath: string,
+    writeArtifacts?: boolean,
+    externalAddresses?: ExternalAddresses,
+  }
+  ethereum?: {
+    http?: string,
+    ws?: string,
+    rpcRetryCount: number,
+    rpcRetryInterval: number,
+    rpcConcurrency: number
+  },
+  sdk?: {
+    enabled: boolean,
+    ws: string,
+  },
+  gnosis?: {
+    enabled: boolean,
+    http?: string,
+    relayerAddress?: string,
+  },
+  zeroX?: {
+    rpc?: {
+      enabled: boolean,
+      ws?: string
+    },
+    mesh?: {
+      enabled: boolean,
+      verbosity?: 0|1|2|3|4|5,
+      bootstrapList?: string[]
+    }
+  },
+  syncing?: {
+    enabled: boolean,
+    blockstreamDelay?: number,
+    chunkSize?: number
+  },
+  uploadBlockNumber?: number,
+  addresses?: ContractAddresses,
+  server?: {
+    httpPort: number;
+    startHTTP: boolean;
+    httpsPort: number;
+    startHTTPS: boolean;
+    wsPort: number;
+    startWS: boolean;
+    wssPort: number;
+    startWSS: boolean;
+    certificateFile?: string;
+    certificateKeyFile?: string;
+  }
+};
+
+export let environments: {[network: string]: SDKConfiguration} = requireAll({
+  dirname: path.join(__dirname, '/environments'),
+  filter: /^(.+)\.json/,
+  recursive: false,
+});
 
 export enum NetworkId {
   Mainnet = '1',
@@ -48,10 +99,6 @@ export function isDevNetworkId(id: NetworkId): boolean {
   ].indexOf(id) === -1;
 }
 
-export interface UploadBlockNumbers {
-  [networkId: string]: number
-}
-
 export interface ContractAddresses {
   Universe: string;
   Augur: string;
@@ -62,7 +109,7 @@ export interface ContractAddresses {
   ShareToken: string;
   CreateOrder: string;
   FillOrder: string;
-  Order: string;
+  Order?: string;
   Orders: string;
   Trade: string;
   SimulateTrade: string;
@@ -99,8 +146,20 @@ export interface ContractAddresses {
   ZRXToken?: string;
 }
 
-export interface AllContractAddresses {
-  [networkId: string]: ContractAddresses
+export interface ExternalAddresses {
+  LegacyReputationToken?: string;
+  Cash?: string;
+  DaiVat?: string;
+  DaiPot?: string;
+  DaiJoin?: string;
+  MCDCol?: string,
+  MCDColJoin?: string,
+  MCDFaucet?: string,
+  GnosisSafe?: string;
+  ProxyFactory?: string;
+  Exchange?: string;
+  UniswapV2Factory?: string;
+  ENSRegistry?: string;
 }
 
 // TS doesn't allow mapping of any type but string or number so we list it out manually
@@ -116,106 +175,201 @@ export interface NetworkContractAddresses {
   104: ContractAddresses;
 }
 
-export async function setAddresses(networkId: NetworkId, addresses: ContractAddresses): Promise<void> {
-  const isDev = isDevNetworkId(networkId);
-  // write to both src and build
-  const filenames = isDev
-    ? ['../src/local-addresses.json', '../build/local-addresses.json']
-    : ['../src/addresses.json', '../build/addresses.json'];
-  await Promise.all(filenames.map(async (filename) => {
-    const filepath = path.join(__dirname, filename);
-
-    let contents: AllContractAddresses = {};
-    if (await exists(filepath)) {
-      const blob = await readFile(filepath, 'utf8');
-      try {
-        contents = JSON.parse(blob);
-      } catch {
-        contents = {}; // throw out unparseable addresses file
-      }
-    }
-    contents[networkId] = addresses;
-    await writeFile(filepath, JSON.stringify(contents, null, 2), 'utf8');
+export async function setEnvironmentConfig(env: string, config: SDKConfiguration): Promise<void> {
+  await Promise.all(['src', 'build'].map(async (dir: string) => {
+    const filepath = path.join(__dirname, '..', dir, 'environments', `${env}.json`);
+    await writeFile(filepath, JSON.stringify(config, null, 2), 'utf8');
   }));
 }
 
-export async function setUploadBlockNumber(networkId: NetworkId, uploadBlock: number): Promise<void> {
-  const isDev = isDevNetworkId(networkId);
-  // be sure to be in src dir, not build
-  const filenames = isDev
-    ? ['../src/local-upload-block-numbers.json', '../build/local-upload-block-numbers.json']
-    : ['../src/upload-block-numbers.json', '../build/upload-block-numbers.json'];
-  await Promise.all(filenames.map(async (filename) => {
-    const filepath = path.join(__dirname, filename);
+export async function updateConfig(env: string, config: Partial<SDKConfiguration>): Promise<SDKConfiguration> {
+  const original: Partial<SDKConfiguration> = await readConfig(env).then((c) => c || {}).catch(() => ({}));
+  const updated = {
+    ...original,
+    ...config
+  };
+  const valid = validConfigOrDie(updated);
+  setEnvironmentConfig(env, valid);
+  return valid;
+}
 
-    let contents: UploadBlockNumbers = {};
-    if (await exists(filepath)) {
-      const blob = await readFile(filepath, 'utf8');
-      try {
-        contents = JSON.parse(blob);
-      } catch {
-        contents = {}; // throw out unparseable block numbers file
-      }
-
-      contents[networkId] = uploadBlock;
-
-      await writeFile(filepath, JSON.stringify(contents, null, 2), 'utf8');
+export function getEnvironmentConfigForNetwork(networkId: NetworkId, breakOnMulti=false, validate=true): SDKConfiguration {
+  let targetConfig: SDKConfiguration = null;
+  Object.values(environments).forEach((config) => {
+    if (config.networkId === networkId) {
+      if (breakOnMulti && targetConfig) throw Error(`Multiple environment configs for network "${networkId}"`)
+      targetConfig = config;
     }
-  }));
+  });
+
+  if (validate) {
+    if (!targetConfig) {
+      throw new Error(`No config for network "${networkId}". Existing configs: ${JSON.stringify(environments)}`);
+    }
+    if (!targetConfig.addresses) {
+      throw new Error(`Config for network is missing addresses. Config: ${JSON.stringify(targetConfig)}`)
+    }
+    if (!targetConfig.uploadBlockNumber) {
+      throw new Error(`Config for network is missing uploadBlockNumber. Config: ${JSON.stringify(targetConfig)}`)
+    }
+  }
+
+  return targetConfig;
 }
 
 export function getAddressesForNetwork(networkId: NetworkId): ContractAddresses {
-  const addresses = Addresses[networkId];
-  if (typeof addresses === 'undefined') {
-    if (networkId !== '1') {
-      console.log(
-        `Contract addresses aren't available for network ${networkId}. If you're running in development mode, be sure to have started a local ethereum node, and then have rebuilt using yarn build before starting the dev server`
-      );
-    }
-    throw new Error(
-      `Unable to read contract addresses for network: ${
-        networkId
-      }. Known addresses: ${JSON.stringify(Addresses)}`
-    );
-  }
-
-  return addresses;
+  return getEnvironmentConfigForNetwork(networkId).addresses;
 }
 
 export function getStartingBlockForNetwork(networkId: NetworkId): number {
-  const blockNumber = UploadBlockNumbers[networkId];
-  if (typeof blockNumber === 'undefined') {
-    if (networkId !== '1') {
-      console.log(
-        `Starting block number isn't available for network ${networkId}. If you're running in development mode, be sure to have started a local ethereum node, and then have rebuilt using yarn build before starting the dev server`
-      );
-    }
-    throw new Error(
-      `Unable to read starting block number for network: ${
-        networkId
-      }. Known starting block numbers: ${JSON.stringify(UploadBlockNumbers)}`
-    );
-  }
-
-  return blockNumber;
+  return getEnvironmentConfigForNetwork(networkId).uploadBlockNumber;
 }
 
-export async function updateAddresses(): Promise<void> {
-  // be sure to be in src dir, not build
-  await Promise.all(['../src/local-addresses.json', '../src/addresses.json'].map(async (filename) => {
-    const filepath = path.join(__dirname, filename);
+export async function updateEnvironmentsConfig(): Promise<void> {
+  const updatedEnvironments = requireAll({
+    dirname: path.join(__dirname, '../src/environments'), // be sure to be in src dir, not build
+    filter: /^(.+)\.json/,
+    recursive: false,
+  });
+  Object.keys(updatedEnvironments).forEach((env) => {
+    environments[env] = updatedEnvironments[env];
+  })
+}
 
-    if (await exists(filepath)) {
+async function readConfig(env: string): Promise<SDKConfiguration> {
+  const filepath = path.join(__dirname, '../src/environments', `${env}.json`);
+  if (await exists(filepath)) {
+    let config;
+    try {
       const blob = await readFile(filepath, 'utf8');
-      try {
-        const addresses = JSON.parse(blob);
-        Object.keys(addresses).forEach((networkId) => {
-          Addresses[networkId] = addresses[networkId];
-        });
-
-      } catch {
-        throw Error(`Cannot parse addresses file ${filepath}`)
-      }
+      config = JSON.parse(blob);
+    } catch {
+      throw Error(`Cannot parse config file ${filepath}`)
     }
-  }));
+
+    if (isValidConfig(config)) {
+      return config;
+    } else {
+      throw Error(`Bad config file at ${filepath}`)
+    }
+  } else {
+    return null;
+  }
 }
+
+export function isValidConfig(suspect: Partial<SDKConfiguration>): suspect is SDKConfiguration {
+  if (typeof suspect.networkId === 'undefined') return false;
+  if (suspect.deploy) {
+    if (typeof suspect.deploy.enableFaucets === 'undefined') return false;
+    if (typeof suspect.deploy.normalTime === 'undefined') return false;
+    if (typeof suspect.deploy.privateKey === 'undefined') return false;
+    if (typeof suspect.deploy.contractInputPath === 'undefined') return false;
+    if (typeof suspect.deploy.writeArtifacts === 'undefined') return false;
+  }
+  if (suspect.ethereum) {
+    if (typeof suspect.ethereum.rpcRetryCount === 'undefined') return false;
+    if (typeof suspect.ethereum.rpcRetryInterval === 'undefined') return false;
+    if (typeof suspect.ethereum.rpcConcurrency === 'undefined') return false;
+  }
+  if (suspect.sdk) {
+    if (typeof suspect.sdk.enabled === 'undefined') return false;
+    if (typeof suspect.sdk.ws === 'undefined') return false;
+  }
+  if (suspect.gnosis && typeof suspect.gnosis.enabled === 'undefined') return false;
+  if (suspect.zeroX) {
+    if (suspect.zeroX.rpc) {
+      if (typeof suspect.zeroX.rpc.enabled === 'undefined') return false;
+    }
+    if (suspect.zeroX.mesh) {
+      if (typeof suspect.zeroX.mesh.enabled === 'undefined') return false;
+    }
+  }
+  if (suspect.syncing && typeof suspect.syncing.enabled === 'undefined') return false;
+  if (suspect.server) {
+    if (typeof suspect.server.httpPort === 'undefined') return false;
+    if (typeof suspect.server.startHTTP === 'undefined') return false;
+    if (typeof suspect.server.httpsPort === 'undefined') return false;
+    if (typeof suspect.server.startHTTPS === 'undefined') return false;
+    if (typeof suspect.server.wsPort === 'undefined') return false;
+    if (typeof suspect.server.startWS === 'undefined') return false;
+    if (typeof suspect.server.wssPort === 'undefined') return false;
+    if (typeof suspect.server.startWSS === 'undefined') return false;
+  }
+  return true;
+}
+
+const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
+  networkId: NetworkId.PrivateGanache,
+  ethereum: {
+    http: 'http://localhost:8545',
+    ws: 'ws://localhost:8546',
+    rpcRetryCount: 5,
+    rpcRetryInterval: 0,
+    rpcConcurrency: 40
+  },
+  gas: {
+    price: 20e9,
+    limit: 75e5
+  },
+  deploy: {
+    isProduction: false,
+    enableFaucets: true,
+    normalTime: true,
+    privateKey: 'fae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a',
+    contractInputPath: path.join(__dirname, 'contracts.json'),
+    writeArtifacts: true,
+  },
+  gnosis: {
+    enabled: false,
+    http: 'http://localhost:8888/api/',
+    relayerAddress: '0x9d4c6d4b84cd046381923c9bc136d6ff1fe292d9'
+  },
+  zeroX: {
+    rpc: {
+      enabled: false,
+      ws: 'ws://localhost:60557'
+    },
+    mesh: {
+      enabled: false,
+    }
+  },
+  uploadBlockNumber: 0,
+};
+
+export function buildConfig(env: string, specified: RecursivePartial<SDKConfiguration> = {}): SDKConfiguration {
+  const existing = deepmerge(DEFAULT_SDK_CONFIGURATION, environments[env] || {});
+  return configFromEnvvars(deepmerge(existing, specified) as SDKConfiguration) as SDKConfiguration;
+}
+
+export function configFromEnvvars(config?: Partial<SDKConfiguration>): Partial<SDKConfiguration> {
+  const e = process.env;
+
+  if (e.GAS_LIMIT) config = deepmerge(config, { gas: { limit: e.GAS_LIMIT }});
+  if (e.GAS_PRICE) config = deepmerge(config, { gas: { price: e.GAS_PRICE }});
+
+  if (e.ENABLE_FAUCETS) config = deepmerge(config, { deploy: { enableFaucets: e.ENABLE_FAUCETS }});
+  if (e.NORMAL_TIME) config = deepmerge(config, { deploy: { normalTime: e.NORMAL_TIME }});
+  if (e.PRIVATE_KEY) config = deepmerge(config, { deploy: { privateTime: e.PRIVATE_KEY }});
+  if (e.CONTRACT_INPUT_PATH) config = deepmerge(config, { deploy: { contractInputPath: e.CONTRACT_INPUT_PATH }});
+  if (e.WRITE_ARTIFACTS) config = deepmerge(config, { deploy: { writeArtifacts: e.WRITE_ARTIFACTS }});
+
+  if (e.ETHEREUM_HTTP) config = deepmerge(config, { ethereum: { http: e.ETHEREUM_HTTP }});
+  if (e.ETHEREUM_WS) config = deepmerge(config, { ethereum: { ws: e.ETHEREUM_WS }});
+
+  return config
+}
+
+export function validConfigOrDie(config: Partial<SDKConfiguration>): SDKConfiguration {
+  if (isValidConfig(config)) {
+    return config;
+  } else {
+    throw Error(`Invalid config: ${JSON.stringify(config, null, 2)}`);
+  }
+}
+
+type RecursivePartial<T> = {
+  [P in keyof T]?:
+  T[P] extends (infer U)[] ? Array<RecursivePartial<U>> :
+    T[P] extends object ? RecursivePartial<T[P]> :
+      T[P];
+};

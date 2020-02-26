@@ -1,13 +1,12 @@
 import { FlashSession } from './flash';
 import Vorpal from 'vorpal';
-import program from "commander";
+import program from 'commander';
 import { addScripts } from './scripts';
 import { addGanacheScripts } from './ganache-scripts';
 import { Account, ACCOUNTS } from '../constants';
-import { NetworkConfiguration, NETWORKS } from '@augurproject/core';
-import { Addresses } from '@augurproject/artifacts';
 import { computeAddress } from 'ethers/utils';
 import * as fs from 'fs';
+import { buildConfig, validConfigOrDie } from '@augurproject/artifacts';
 
 async function processAccounts(flash: FlashSession, args: any) {
     // Figure out which private key to use.
@@ -67,10 +66,9 @@ async function run() {
         const opts = Object.assign({}, program.opts(), args);
         await processAccounts(flash, opts);
         if (script.ignoreNetwork !== true && opts.network !== 'none') {
-          flash.network = NetworkConfiguration.create(opts.network as NETWORKS, false);
-          flash.provider = flash.makeProvider(flash.network);
-          const networkId = await flash.getNetworkId(flash.provider);
-          flash.contractAddresses = Addresses[networkId];
+          flash.network = opts.network;
+          flash.config = validConfigOrDie(buildConfig(flash.network));
+          flash.provider = flash.makeProvider(flash.config);
         }
         await flash.call(script.name, opts);
       } catch(e){

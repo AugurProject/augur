@@ -1,10 +1,8 @@
-import { ContractAddresses } from '@augurproject/artifacts';
+import { ContractAddresses, SDKConfiguration } from '@augurproject/artifacts';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
 import { SingleThreadConnector } from '@augurproject/sdk/build/connector';
 import { SubscriptionEventName } from '@augurproject/sdk/build/constants';
-import { MarketCreated } from '@augurproject/sdk/build/events';
-import { SDKConfiguration } from '@augurproject/sdk/build/state';
 import { Markets } from '@augurproject/sdk/build/state/getter/Markets';
 import { ACCOUNTS, defaultSeedPath, loadSeedFile } from '@augurproject/tools';
 import { TestContractAPI } from '@augurproject/tools';

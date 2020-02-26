@@ -1,21 +1,22 @@
 // An example how to use Augur to retrieve data
 //
 //
-import { NetworkId } from "@augurproject/artifacts";
-import { SingleThreadConnector } from "../connector";
-import { SubscriptionEventName } from "../constants";
-import { MarketCreated, NewBlock } from "../events";
-import { SDKConfiguration, startServer } from "./create-api";
+import { NetworkId, SDKConfiguration } from '@augurproject/artifacts';
+import { SingleThreadConnector } from '../connector';
+import { SubscriptionEventName } from '../constants';
+import { MarketCreated, NewBlock } from '../events';
+import { startServer } from './create-api';
 
 
-const settings = require("@augurproject/sdk/src/state/settings.json");
+const settings = require('@augurproject/sdk/src/state/settings.json');
 
-console.log("Starting web worker");
+console.log('Starting web worker');
 
-(async function() {
+(async () => {
   try {
     const config: SDKConfiguration = {
       networkId: NetworkId.Kovan,
+      uploadBlockNumber: 16622921,
       ethereum: {
         http: settings.ethNodeURLs[4],
         rpcRetryCount: 5,
@@ -24,7 +25,7 @@ console.log("Starting web worker");
       },
       gnosis: {
         enabled: true,
-        http: "http://localhost:8000"
+        http: 'http://localhost:8000'
       },
       syncing: {
         enabled: false
@@ -53,11 +54,11 @@ console.log("Starting web worker");
       });
 
     const markets = await augur.getMarkets({
-      universe: "0x02149d40d255fceac54a3ee3899807b0539bad60",
+      universe: '0x02149d40d255fceac54a3ee3899807b0539bad60',
     });
 
     console.log(markets);
-    console.log("Done");
+    console.log('Done');
   } catch (e) {
     console.log(e);
   }

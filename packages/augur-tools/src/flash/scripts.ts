@@ -5,18 +5,17 @@ import { _1_ETH } from '../constants';
 import {
   Contracts as compilerOutput,
   getAddressesForNetwork,
-  NetworkId
+  NetworkId,
+  updateEnvironmentsConfig,
+  abiV1,
+  SDKConfiguration,
+  environments
 } from '@augurproject/artifacts';
-import {
-  NetworkConfiguration,
-  NETWORKS,
-  ContractInterfaces,
-} from '@augurproject/core';
+import { ContractInterfaces } from '@augurproject/core';
 import moment from 'moment';
 import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from 'ethers/utils';
 import { ethers } from 'ethers';
-import { abiV1, Addresses } from '@augurproject/artifacts';
 import {
   calculatePayoutNumeratorsArray,
   QUINTILLION,
@@ -26,6 +25,7 @@ import {
   numTicksToTickSizeWithDisplayPrices,
   convertOnChainPriceToDisplayPrice,
   NativePlaceTradeDisplayParams,
+  startServer
 } from '@augurproject/sdk';
 import { fork } from './fork';
 import { dispute } from './dispute';
@@ -38,13 +38,12 @@ import { ContractAPI } from '../libs/contract-api';
 import { OrderBookShaper, OrderBookConfig } from './orderbook-shaper';
 import { NumOutcomes } from '@augurproject/sdk/src/state/logs/types';
 import { flattenZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
-import { formatAddress, sleep, waitForSigint } from "./util";
-import { updateAddresses } from '@augurproject/artifacts/build';
+import { formatAddress, sleep, waitForSigint } from './util';
 import * as fs from 'fs';
-import { SDKConfiguration, startServer } from '@augurproject/sdk/build';
 import { EndpointSettings } from '@augurproject/sdk/build/state/getter/types';
 import { runWsServer, runWssServer } from '@augurproject/sdk/build/state/WebsocketEndpoint';
 import { createApp, runHttpServer, runHttpsServer } from '@augurproject/sdk/build/state/HTTPEndpoint';
+import { buildConfig } from "@augurproject/artifacts/build";
 
 export function addScripts(flash: FlashSession) {
   flash.addScript({
@@ -61,7 +60,7 @@ export function addScripts(flash: FlashSession) {
         name: 'network',
         abbr: 'n',
         description:
-          'Which network to connect to. Defaults to "environment" aka local node.',
+          'Which network to connect to. Defaults to "local" aka local node.',
       },
       {
         name: 'useSdk',
@@ -77,16 +76,14 @@ export function addScripts(flash: FlashSession) {
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
-      const network = (args.network as NETWORKS) || 'environment';
+      const network = (args.network as string) || 'local';
       const account = args.account as string;
-      const useSdk = args.useSdk as boolean;
-      const useZeroX = args.useZeroX as boolean;
+      const useSdk = Boolean(args.useSdk);
+      const useZeroX = Boolean(args.useZeroX);
       if (account) flash.account = account;
-      this.network = NetworkConfiguration.create(network);
-      flash.provider = this.makeProvider(this.network);
-      const networkId = await this.getNetworkId(flash.provider);
-      flash.contractAddresses = getAddressesForNetwork(networkId as NetworkId);
-      await flash.ensureUser(this.network, useSdk, true, null, useZeroX, useZeroX);
+      this.config = environments[network];
+      this.provider = this.makeProvider(this.config);
+      await this.ensureUser(this.network, useSdk, true, null, useZeroX, useZeroX);
     },
   });
 
@@ -98,7 +95,7 @@ export function addScripts(flash: FlashSession) {
       {
         name: 'write-artifacts',
         abbr: 'w',
-        description: 'Overwrite addresses.json.',
+        description: 'Overwrite environments/$env.json.',
         flag: true,
       },
       {
@@ -118,39 +115,48 @@ export function addScripts(flash: FlashSession) {
         name: 'relayer-address',
         abbr: 'r',
         description: 'gnosis relayer address'
-      }
+      },
+      {
+        name: 'environment',
+        abbr: 'e',
+        description: 'name of environment. ex: local, kovan, mainnet'
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
-      const useSdk = args.useSdk as boolean;
+      const useSdk = Boolean(args.useSdk);
+      const env = args.environment as string || this.network || 'local';
       if (this.noProvider()) return;
 
       console.log('Deploying: ', args);
 
-      const config = {
-        writeArtifacts: args.writeArtifacts as boolean,
-        useNormalTime: !(args.timeControlled as boolean),
-      };
+      if (typeof args.writeArtifacts !== 'undefined') {
+        this.config.deploy.writeArtifacts = Boolean(args.writeArtifacts)
+      }
+      if (typeof args.timeControlled !== 'undefined') {
+        this.config.deploy.normalTime = !Boolean(args.timeControlled)
+      }
+      if (typeof args.relayerAddress !== 'undefined') {
+        this.config.gnosis.relayerAddress = args.relayerAddress as string;
+      }
 
       const { addresses } = await deployContracts(
+        env,
         this.provider,
         this.accounts[0],
         compilerOutput,
-        config
+        this.config,
       );
-      flash.contractAddresses = addresses;
+      this.config.addresses = addresses;
 
       if (useSdk) {
         await flash.ensureUser(this.network, useSdk);
       }
 
-      const relayerAddressArg = args.relayerAddress as string;
-      const relayerAddressConfig = this.network && this.network.gnosisRelayerAddress;
-      const relayerAddress = relayerAddressArg || relayerAddressConfig;
-      if (relayerAddress) {
-        this.log(`Fauceting to relayer @ ${relayerAddress}`);
+      if (this.config.gnosis?.relayerAddress) {
+        this.log(`Fauceting to relayer @ ${this.config.gnosis.relayerAddress}`);
         await this.call('faucet', {
           amount: '1000000',
-          target: relayerAddress,
+          target: this.config.gnosis.relayerAddress,
         })
       }
     },
@@ -1381,7 +1387,7 @@ export function addScripts(flash: FlashSession) {
         timeControlled: true,
         relayer_address: args.relayerAddress as string,
       });
-      const createMarkets = args.createMarkets as boolean;
+      const createMarkets = Boolean(args.createMarkets);
       if (createMarkets) {
         await this.call('create-canned-markets', {});
       }
@@ -1410,7 +1416,7 @@ export function addScripts(flash: FlashSession) {
         timeControlled: false,
         relayer_address: args.relayerAddress as string,
       });
-      const createMarkets = args.createMarkets as boolean;
+      const createMarkets = Boolean(args.createMarkets);
       if (createMarkets) {
         await this.call('create-canned-markets', {});
       }
@@ -2127,32 +2133,28 @@ export function addScripts(flash: FlashSession) {
         } else {
           const gethDocker = fake ? 'docker:geth:pop' : 'docker:geth:pop-normal-time';
           spawnSync('yarn', [gethDocker]);
-          await updateAddresses(); // add pop-geth addresses to global Addresses
+          await updateEnvironmentsConfig(); // add pop-geth addresses to global
         }
 
         await sleep(10000); // give geth some time to start
-
-        this.network = NetworkConfiguration.create();
-        this.provider = flash.makeProvider(flash.network);
-        const networkId = await this.getNetworkId(this.provider);
+        this.config = buildConfig('local');
+        this.provider = flash.makeProvider(this.config);
 
         if (dev) {
           const deployMethod = fake ? 'fake-all' : 'normal-all';
           await this.call(deployMethod, { createMarkets: true });
-        } else {
-          this.contractAddresses = Addresses[networkId];
         }
 
         await spawnSync('yarn', ['build']); // so UI etc will have the correct addresses
 
         const env = {
           ...process.env,
-          ETHEREUM_CHAIN_ID: networkId,
-          CUSTOM_CONTRACT_ADDRESSES: JSON.stringify(this.contractAddresses),
-          GNOSIS_SAFE_CONTRACT_ADDRESS: formatAddress(this.contractAddresses.GnosisSafe, { prefix: true }),
-          PROXY_FACTORY_CONTRACT_ADDRESS: formatAddress(this.contractAddresses.ProxyFactory, { prefix: true }),
-          ZEROX_CONTRACT_ADDRESS: formatAddress(this.contractAddresses.ZeroXTrade, { lower: true, prefix: false }),
-          SAFE_DEFAULT_TOKEN_ADDRESS: formatAddress(this.contractAddresses.Cash, { lower: true, prefix: true })
+          ETHEREUM_CHAIN_ID: this.config.networkId,
+          CUSTOM_CONTRACT_ADDRESSES: JSON.stringify(this.config.addresses),
+          GNOSIS_SAFE_CONTRACT_ADDRESS: formatAddress(this.config.addresses.GnosisSafe, { prefix: true }),
+          PROXY_FACTORY_CONTRACT_ADDRESS: formatAddress(this.config.addresses.ProxyFactory, { prefix: true }),
+          ZEROX_CONTRACT_ADDRESS: formatAddress(this.config.addresses.ZeroXTrade, { lower: true, prefix: false }),
+          SAFE_DEFAULT_TOKEN_ADDRESS: formatAddress(this.config.addresses.Cash, { lower: true, prefix: true })
         };
 
         if (detach) {
