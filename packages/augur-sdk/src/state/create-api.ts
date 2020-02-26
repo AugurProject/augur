@@ -21,7 +21,7 @@ import { WarpSyncStrategy } from './sync/WarpSyncStrategy';
 export interface SDKConfiguration {
   networkId: NetworkId,
   ethereum?: {
-    http: string,
+    http?: string,
     rpcRetryCount: number,
     rpcRetryInterval: number,
     rpcConcurrency: number
@@ -111,6 +111,10 @@ export async function createClient(
   enableFlexSearch = false,
   createBrowserMesh?: (config: SDKConfiguration, web3Provider: SupportedProvider, zeroX: ZeroX) => void
   ): Promise<Augur> {
+
+  if (!provider && !config.ethereum.http) {
+    throw Error('No ethereum http endpoint provided');
+  }
 
   const ethersProvider = provider || new EthersProvider( new JsonRpcProvider(config.ethereum.http), 10, 0, 40);
   const addresses = config.addresses || getAddressesForNetwork(config.networkId);

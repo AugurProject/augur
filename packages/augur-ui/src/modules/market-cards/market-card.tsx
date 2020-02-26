@@ -153,10 +153,11 @@ export default class MarketCard extends React.Component<
       );
     }
 
-    const InfoIcons = (
+    const InfoIcons = ({ id }) => (
       <>
         {address && isSameAddress(address, author) && (
           <HoverIcon
+            id={id}
             label="marketCreator"
             icon={MarketCreator}
             hoverText="Market Creator"
@@ -164,6 +165,7 @@ export default class MarketCard extends React.Component<
         )}
         {address && isSameAddress(address, designatedReporter) && (
           <HoverIcon
+            id={id}
             label="reporter"
             icon={DesignatedReporter}
             hoverText="Designated Reporter"
@@ -171,6 +173,7 @@ export default class MarketCard extends React.Component<
         )}
         {hasPosition && (
           <HoverIcon
+            id={id}
             label="Position"
             icon={PositionIcon}
             hoverText="Position"
@@ -178,6 +181,7 @@ export default class MarketCard extends React.Component<
         )}
         {hasStaked && (
           <HoverIcon
+            id={id}
             label="dispute"
             icon={DisputeStake}
             hoverText="Dispute Stake"
@@ -372,7 +376,7 @@ export default class MarketCard extends React.Component<
             />
           )}
         </>
-        <div>{InfoIcons}</div>
+        <div><InfoIcons id={id} /></div>
       </div>
     );
   }
