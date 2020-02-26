@@ -1582,12 +1582,14 @@ export const CategoricalTemplateDropdowns = (
           data,
         });
       });
-      setSourceUserInput(source && source.userInput);
-      setdropdownList(
-        isDepDropdown
-          ? createTemplateValueList(depDropdownInput.values[source.userInput])
-          : createTemplateValueList(depDropdownInput.values)
-      );
+      if (source && source.userInput !== undefined) {
+        setSourceUserInput(source.userInput);
+        setdropdownList(
+          isDepDropdown
+            ? createTemplateValueList(depDropdownInput.values[source.userInput])
+            : createTemplateValueList(depDropdownInput.values)
+        );
+      }
     } else {
       if (outcomeList.length == 0 && defaultOutcomeItems.length > 0) {
         defaultOutcomeItems.map((i: CategoricalDropDownItem) =>
@@ -1596,6 +1598,7 @@ export const CategoricalTemplateDropdowns = (
       }
 
       if (isDepDropdown && sourceUserInput !== source.userInput) {
+        setSourceUserInput(source.userInput);
         dispatch({ type: ACTIONS.REMOVE_ALL, data: null });
         setdropdownList(
           isDepDropdown
