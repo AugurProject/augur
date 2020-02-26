@@ -23,6 +23,8 @@ interface TopNavProps {
   updateModal: Function;
 }
 
+const SPREAD_INDEX = 3;
+
 const TopNav = ({
   isLogged,
   isDisabled = false,
@@ -44,7 +46,7 @@ const TopNav = ({
   return (
     <aside className={Styles.TopNav}>
       <ul>
-        {accessFilteredMenu.map(item => {
+        {accessFilteredMenu.map((item, index) => {
           const selected = isCurrentItem(item);
           if (item.title === 'Create') {
             return (
@@ -60,53 +62,55 @@ const TopNav = ({
             );
           }
           return (
-            <li
-              className={classNames({
-                [Styles['Selected']]: selected,
-                [Styles['FillSpace']]: item.fillSpace
-              })}
-              key={item.title}
-            >
-              <Link to={item.route ? makePath(item.route) : null}>
-                <span>{item.title}</span>
-                {item.showAlert && Dot}
-              </Link>
-            </li>
+            <>
+              {index === SPREAD_INDEX && <li key={index} className={Styles.FillSpace} />}
+              {index === SPREAD_INDEX && showMigrateRepButton && (
+                <li>
+                  <div className={Styles.MigrateRep}>
+                    <SecondaryButton
+                      text="Migrate V1 to V2 REP"
+                      action={() => migrateV1Rep()}
+                    />
+                  </div>
+                  <span>
+                    <label
+                      className={classNames(TooltipStyles.TooltipHint)}
+                      data-tip
+                      data-for={'migrateRep'}
+                    >
+                      {helpIcon}
+                    </label>
+                    <ReactTooltip
+                      id={'migrateRep'}
+                      className={TooltipStyles.Tooltip}
+                      effect="solid"
+                      place="top"
+                      type="light"
+                    >
+                      <p>
+                        {
+                          'You have V1 REP in your wallet. Migrate it to V2 REP to use it in Augur V2'
+                        }
+                      </p>
+                    </ReactTooltip>
+                  </span>
+                </li>
+              )}
+              <li
+                className={classNames({
+                  [Styles['Selected']]: selected,
+                  [Styles['AlternateStyle']]: item.alternateStyle,
+                })}
+                key={item.title}
+              >
+                <Link to={item.route ? makePath(item.route) : null}>
+                  <span>{item.title}</span>
+                  {item.showAlert && Dot}
+                </Link>
+              </li>
+            </>
           );
         })}
-        {showMigrateRepButton && (
-          <div className={Styles.MigrateRep}>
-            <SecondaryButton
-              text="Migrate V1 to V2 REP"
-              action={() => migrateV1Rep()}
-            />
-          </div>
-        )}
-        {t && (
-          <span>
-            <label
-              className={classNames(TooltipStyles.TooltipHint)}
-              data-tip
-              data-for={'migrateRep'}
-            >
-              {helpIcon}
-            </label>
-            <ReactTooltip
-              id={'migrateRep'}
-              className={TooltipStyles.Tooltip}
-              effect="solid"
-              place="top"
-              type="light"
-            >
-              <p>
-                {
-                  'You have V1 REP in your wallet. Migrate it to V2 REP to use it in Augur V2'
-                }
-              </p>
-            </ReactTooltip>
-          </span>
-        )}
-
         {!isLogged && (
           <div className={Styles.BettingUI}>
             <ExternalLinkText

@@ -117,23 +117,25 @@ export default class AppView extends Component<AppProps> {
       title: 'Portfolio',
       route: MY_POSITIONS,
       requireLogin: true,
-      fillSpace: true,
     },
     {
       title: 'Disputing',
       route: DISPUTING,
       requireLogin: true,
+      alternateStyle: true,
     },
     {
       title: 'Reporting',
       route: REPORTING,
       requireLogin: true,
+      alternateStyle: true,
     },
     {
       title: 'Create Market',
       route: CREATE_MARKET,
       requireLogin: true,
       button: true,
+      alternateStyle: true,
       disabled: !!this.props.universe.forkingInfo,
     },
   ];
