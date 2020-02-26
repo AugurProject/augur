@@ -17,7 +17,7 @@ export const loadPendingQueue = (pendingQueue: any) => (
     if (!data) return;
     Object.keys(data).map(async (d: any) => {
       const pendingData = data[d];
-      if (!pendingData.pendingId) return;
+      if (!pendingData.pendingId || !pendingData.hash) return;
       if (pendingData.status === TXEventName.Failure) dispatch(addPendingData(d, queue, pendingData.status, pendingData.hash, pendingData.data));;
       const confirmed = await isTransactionConfirmed(pendingData.hash);
       confirmed
