@@ -40,8 +40,9 @@ export interface DefaultButtonProps {
   noIcon?: boolean;
   subText?: string;
   pointDown?: boolean;
-  reportingStatus?: string;
   URL?: string;
+  status?: string;
+  secondaryButton?: boolean;
 }
 
 export interface SortButtonProps {
@@ -149,21 +150,48 @@ export const SecondaryButton = (props: DefaultButtonProps) => (
   </button>
 );
 
-export const ProcessingButton = (props: DefaultButtonProps) => {
-  let buttonText = 'Report';
-  if (props.reportingStatus === TXEventName.Pending) {
+const ProcessingButtonComponent = (props: DefaultButtonProps) => {
+  let buttonText = props.text;
+  if (props.status === TXEventName.Pending) {
     buttonText = 'Processing...';
-  } else if (props.reportingStatus === TXEventName.Success) {
+  } else if (props.status === TXEventName.Success) {
     buttonText = 'Confirmed!';
   }
   return (
-    <PrimaryButton
-      text={buttonText}
-      action={e => props.action(e)}
-      disabled={props.disabled || props.reportingStatus}
-    />
+    <>
+      {props.secondaryButton ? (
+        <SecondaryButton
+          text={buttonText}
+          action={e => props.action(e)}
+          disabled={props.disabled || Boolean(props.status)}
+        />
+      ) : (
+        <PrimaryButton
+          text={buttonText}
+          action={e => props.action(e)}
+          disabled={props.disabled || Boolean(props.status)}
+        />
+      )}
+    </>
   );
 };
+
+const mapStateToPropsProcessingButton = (state: AppState, ownProps) => {
+  const { pendingQueue } = state;
+
+  const status =
+    pendingQueue[ownProps.queueName] &&
+    pendingQueue[ownProps.queueName][ownProps.queueId] &&
+    pendingQueue[ownProps.queueName][ownProps.queueId].status;
+
+  return {
+    status,
+  };
+};
+
+export const ProcessingButton = connect(mapStateToPropsProcessingButton)(
+  ProcessingButtonComponent
+);
 
 export const PrimarySignInButton = (props: DefaultButtonProps) => (
   <button

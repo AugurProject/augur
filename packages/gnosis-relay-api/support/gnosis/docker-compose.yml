@@ -12,8 +12,7 @@ services:
       - 60559:60559 # P2PWebSocketsPort
     environment:
       - ETHEREUM_CHAIN_ID=${ETHEREUM_CHAIN_ID}
-      - USE_BOOTSTRAP_LIST=true
-      - BOOTSTRAP_LIST=
+      - USE_BOOTSTRAP_LIST=false
       - VERBOSITY=5 # 5=debug 6=trace
       - P2P_BIND_ADDRS=/ip4/0.0.0.0/tcp/60558,/ip4/0.0.0.0/tcp/60559/ws
       - P2P_ADVERTISE_ADDRS=/ip4/127.0.0.1/tcp/60558/ipfs/16Uiu2HAmRMgvPQV2UYKXuuCnNaFLpc36PhLp2UKVcL1ePseVcz4y,/ip4/127.0.0.1/tcp/60559/ws/ipfs/16Uiu2HAmRMgvPQV2UYKXuuCnNaFLpc36PhLp2UKVcL1ePseVcz4y

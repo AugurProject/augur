@@ -5,13 +5,17 @@ import TooltipStyles from 'modules/common/tooltip.styles.less';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import makePath from 'modules/routes/helpers/make-path';
-import { SecondaryButton, ExternalLinkText } from 'modules/common/buttons';
+import {
+  SecondaryButton,
+  ExternalLinkText,
+  ProcessingButton,
+} from 'modules/common/buttons';
 import { GlobalChat } from 'modules/global-chat/components/global-chat';
 
 import Styles from 'modules/app/components/top-nav/top-nav.styles.less';
 import { NavMenuItem } from 'modules/types';
 import { helpIcon, PlusCircleIcon, Dot } from 'modules/common/icons';
-import { MODAL_ADD_FUNDS } from 'modules/common/constants';
+import { MODAL_ADD_FUNDS, MIGRATE_V1_V2 } from 'modules/common/constants';
 
 interface TopNavProps {
   isLogged: boolean;
@@ -63,13 +67,18 @@ const TopNav = ({
           }
           return (
             <>
-              {index === SPREAD_INDEX && <li key={index} className={Styles.FillSpace} />}
+              {index === SPREAD_INDEX && (
+                <li key={index} className={Styles.FillSpace} />
+              )}
               {index === SPREAD_INDEX && showMigrateRepButton && (
                 <li>
                   <div className={Styles.MigrateRep}>
-                    <SecondaryButton
+                    <ProcessingButton
                       text="Migrate V1 to V2 REP"
                       action={() => migrateV1Rep()}
+                      queueName={MIGRATE_V1_V2}
+                      queueId={MIGRATE_V1_V2}
+                      secondaryButton
                     />
                   </div>
                   <span>
