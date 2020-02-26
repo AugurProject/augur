@@ -44,6 +44,7 @@ import {
   SUBMIT_REPORT,
   MIGRATE_FROM_LEG_REP_TOKEN,
   MIGRATE_V1_V2,
+  BUY_PARTICIPATION_TOKENS,
 } from 'modules/common/constants';
 import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
@@ -640,6 +641,7 @@ export const handleTokensMintedLog = (log: Logs.TokensMinted) => (
   if (log.tokenType === Logs.TokenType.ParticipationToken) {
     const isUserDataUpdate = isSameAddress(log.target, userAddress);
     if (isUserDataUpdate) {
+      dispatch(removePendingData(BUY_PARTICIPATION_TOKENS, BUY_PARTICIPATION_TOKENS));
       dispatch(loadAccountReportingHistory());
     }
     dispatch(loadDisputeWindow());
