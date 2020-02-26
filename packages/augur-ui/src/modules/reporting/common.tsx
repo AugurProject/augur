@@ -11,6 +11,7 @@ import {
   INITAL_REPORT_GAS_COST,
   HEADER_TYPE,
   INVALID_OUTCOME_ID,
+  SUBMIT_REPORT,
 } from 'modules/common/constants';
 import {
   FormattedNumber,
@@ -918,7 +919,6 @@ export interface ReportingCardProps {
   showReportingModal: Function;
   callback: Function;
   isLogged: boolean;
-  reportingStatus?: string;
 }
 
 export const ReportingCard = (props: ReportingCardProps) => {
@@ -927,7 +927,6 @@ export const ReportingCard = (props: ReportingCardProps) => {
     currentAugurTimestamp,
     showReportingModal,
     isLogged,
-    reportingStatus,
   } = props;
 
   if (!market) return null;
@@ -957,9 +956,11 @@ export const ReportingCard = (props: ReportingCardProps) => {
       )}
       <div data-tip data-for={'tooltip--preReporting' + id}>
         <ProcessingButton
+          text='Report'
           action={showReportingModal}
-          reportingStatus={reportingStatus}
           disabled={preReporting || !isLogged}
+          queueName={SUBMIT_REPORT}
+          queueId={id}
         />
         {(preReporting || !isLogged) && (
           <ReactTooltip
