@@ -233,7 +233,7 @@ export default class MarketCard extends React.Component<
         : undefined;
 
     const restOfOutcomes = isScalar && inDispute ? disputeInfo.stakes.length - showOutcomeNumber - 1 : outcomesFormatted.length - showOutcomeNumber;
-  
+
     return (
       <div
         className={classNames(Styles.MarketCard, {
@@ -264,7 +264,7 @@ export default class MarketCard extends React.Component<
               <LabelValue
                 condensed
                 label="Total Dispute Stake"
-                value={formatAttoRep(disputeInfo.stakeCompletedTotal).formatted}
+                value={formatAttoRep(disputeInfo.stakeCompletedTotal).full}
               />
             )}
             <div className={Styles.hoverIconTray}>{InfoIcons}</div>
