@@ -280,7 +280,6 @@ export interface ReportingRadioBarProps extends BaseRadioButtonProp {
   userOutcomeCurrentRoundDispute: Getters.Accounts.UserCurrentOutcomeDisputeStake | null;
   hideButton?: boolean;
   isDisputing: boolean;
-  Gnosis_ENABLED: boolean;
 }
 
 export interface RadioTwoLineBarProps extends BaseRadioButtonProp {
@@ -777,8 +776,8 @@ export const ReportingRadioBarGroup = ({
     radioButton => radioButton.stake.tentativeWinning
   );
   let winningStakeCurrent = '0';
-  let disputeAmount = '0';
   let notNewTentativeWinner = false;
+  let remainingState = '0';
   if (tentativeWinning) {
     const winning = disputeInfo.stakes.find(s => s.tentativeWinning);
     const disputeOutcome = disputeInfo.stakes.find(s => s.outcome === selected);
@@ -786,8 +785,9 @@ export const ReportingRadioBarGroup = ({
       notNewTentativeWinner = createBigNumber(winning.stakeCurrent).gt(
         disputeOutcome.bondSizeCurrent
       );
-      disputeAmount = formatAttoRep(disputeOutcome.bondSizeCurrent).formatted;
-      winningStakeCurrent = formatAttoRep(winning.stakeCurrent).formatted;
+      // double pre-filled to make new outcome tentative winner.
+      winningStakeCurrent = formatAttoRep(createBigNumber(winning.stakeCurrent).times(2)).formatted;
+      remainingState = formatAttoRep(disputeOutcome.stakeRemaining).formatted;
     }
   }
 
@@ -832,8 +832,8 @@ export const ReportingRadioBarGroup = ({
         notNewTentativeWinner &&
         tentativeWinning.id !== selected && (
           <Error
-            header={`Filling this bond of ${disputeAmount} REP only completes this current round`}
-            subheader={`Tentative Winning outcome has ${winningStakeCurrent} REP already staked for next round. More REP will be needed to make this outcome the Tentative Winner. This will require an additional transaction.`}
+            header={`Filling this bond of ${remainingState} REP only completes this current round`}
+            subheader={`${winningStakeCurrent} additional REP will still be needed to make it Tentative Winning Outcome. This will require an additional transaction.`}
           />
         )}
       {radioButtons.map(
@@ -948,11 +948,10 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
       userOutcomeCurrentRoundDispute,
       hideButton,
       isDisputing,
-      Gnosis_ENABLED,
     } = this.props;
 
     let { stake } = this.props;
-    const { disputeInfo, reportingState, marketType } = market;
+    const { disputeInfo, marketType } = market;
     const isScalar = marketType === SCALAR;
     if (isScalar) {
       for (const index in disputeInfo.stakes) {

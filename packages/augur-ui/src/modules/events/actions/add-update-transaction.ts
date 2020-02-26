@@ -1,4 +1,4 @@
-import store, { AppState } from 'store';
+import { AppState } from 'store';
 import {
   addCanceledOrder,
   removeCanceledOrder,
@@ -188,6 +188,7 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
         }
         break;
       }
+
       default:
         return null;
     }

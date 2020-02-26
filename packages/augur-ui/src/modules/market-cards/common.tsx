@@ -378,6 +378,7 @@ export const LabelValue = (props: LabelValueProps) => (
 );
 
 export interface HoverIconProps {
+  id: string;
   icon: JSX.Element;
   hoverText: string;
   label: string;
@@ -387,11 +388,11 @@ export const HoverIcon = (props: HoverIconProps) => (
   <div
     className={Styles.HoverIcon}
     data-tip
-    data-for={`tooltip-${props.label}`}
+    data-for={`tooltip-${props.id}${props.label}`}
   >
     {props.icon}
     <ReactTooltip
-      id={`tooltip-${props.label}`}
+      id={`tooltip-${props.id}${props.label}`}
       className={TooltipStyles.Tooltip}
       effect="solid"
       place="top"
