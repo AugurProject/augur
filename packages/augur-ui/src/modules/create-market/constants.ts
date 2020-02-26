@@ -81,7 +81,6 @@ export const EMPTY_STATE: NewMarket = {
   marketType: YES_NO,
   outcomes: ['', ''],
   outcomesFormatted: YES_NO_OUTCOMES,
-  scalarSmallNum: '',
   scalarBigNum: '',
   scalarDenomination: '',
   description: '',
