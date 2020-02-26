@@ -50,7 +50,8 @@ const localStorageMiddleware = store => next => action => {
     pendingQueue,
     drafts,
     env,
-    connection
+    connection,
+    loginAccount
   } = state;
   const windowApp: WindowApp = windowRef as WindowApp;
   if (windowApp.localStorage && windowApp.localStorage.setItem) {
@@ -95,6 +96,7 @@ const localStorageMiddleware = store => next => action => {
         selectedUniverse: {
           ...storedAccountData.selectedUniverse,
         },
+        settings: loginAccount.settings || {},
         affiliate
       })
     );
