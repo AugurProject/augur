@@ -140,6 +140,7 @@ describe('State API :: Markets :: ', () => {
 
       await expect(john.api.route('getMarkets', {
         universe: universe.address,
+        includeWarpSyncMarkets: true,
       })).resolves.toEqual({
         markets: expect.arrayContaining(expectedMarketAssertions),
         meta: expect.any(Object)
@@ -148,12 +149,20 @@ describe('State API :: Markets :: ', () => {
 
     test('should be able to filter out warp sync markets', async () => {
       const universe = john.augur.contracts.universe;
-      // We only care about the warpsync markets.
+      // We only care about the warpsync markets, hence the slice.
       const expectedMarketAssertions = expectedMarkets.slice(0).map((item, i) => expect.objectContaining({
           id: item.address,
           isWarpSync: (i !== 0)
         })
       );
+
+      // Check the default value.
+      await expect(john.api.route('getMarkets', {
+        universe: universe.address,
+      })).resolves.toEqual({
+        markets: expect.not.arrayContaining(expectedMarketAssertions),
+        meta: expect.any(Object)
+      });
 
       await expect(john.api.route('getMarkets', {
         universe: universe.address,
@@ -162,7 +171,6 @@ describe('State API :: Markets :: ', () => {
         markets: expect.arrayContaining(expectedMarketAssertions),
         meta: expect.any(Object)
       });
-
 
       await expect(john.api.route('getMarkets', {
         universe: universe.address,
