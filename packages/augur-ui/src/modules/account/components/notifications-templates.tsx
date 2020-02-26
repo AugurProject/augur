@@ -253,8 +253,8 @@ export const ClaimReportingFeesTemplate = (
   props: ClaimReportingFeesTemplateTemplateProps
 ) => {
   const { claimReportingFees } = props;
-  const unclaimedREP = claimReportingFees.totalUnclaimedRepFormatted.formatted;
-  const unclaimedDai = claimReportingFees.totalUnclaimedDaiFormatted.formatted;
+  const unclaimedREP = claimReportingFees.totalUnclaimedRepFormatted.formattedValue;
+  const unclaimedDai = claimReportingFees.totalUnclaimedDaiFormatted.formattedValue;
 
   return (
     <Template

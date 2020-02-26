@@ -1,5 +1,9 @@
 {
   "dev": {
+    "sdk": {
+      "enabled": false,
+      "ws": "ws://localhost:9001"
+    },
     "ethereum": {
       "http": "http://127.0.0.1:8545",
       "rpcRetryCount": 5,

@@ -27,7 +27,7 @@ function createBrowserMeshConfig(
   } else if (ethereumRPCURL) {
     meshConfig.ethereumRPCURL = ethereumRPCURL;
   } else {
-    throw new Error("No Web3 provider or RPC URL provided to Browser Mesh");
+    throw new Error('No Web3 provider or RPC URL provided to Browser Mesh');
   }
 
   const contractAddresses = getAddressesForNetwork(
@@ -88,7 +88,7 @@ export async function createBrowserMesh(
   web3Provider: SupportedProvider,
   zeroX: ZeroX
 ) {
-  if (!config.zeroX || !config.zeroX.mesh || !config.zeroX.mesh.enabled) {
+  if (!config.zeroX?.mesh?.enabled) {
     throw new Error(`Attempting to create browser mesh without it being enabled in config ${JSON.stringify(config)}`);
   }
 

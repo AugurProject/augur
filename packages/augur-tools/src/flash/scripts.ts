@@ -39,7 +39,12 @@ import { OrderBookShaper, OrderBookConfig } from './orderbook-shaper';
 import { NumOutcomes } from '@augurproject/sdk/src/state/logs/types';
 import { flattenZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
 import { formatAddress, sleep, waitForSigint } from "./util";
-import { updateAddresses } from "@augurproject/artifacts/build";
+import { updateAddresses } from '@augurproject/artifacts/build';
+import * as fs from 'fs';
+import { SDKConfiguration, startServer } from '@augurproject/sdk/build';
+import { EndpointSettings } from '@augurproject/sdk/build/state/getter/types';
+import { runWsServer, runWssServer } from '@augurproject/sdk/build/state/WebsocketEndpoint';
+import { createApp, runHttpServer, runHttpsServer } from '@augurproject/sdk/build/state/HTTPEndpoint';
 
 export function addScripts(flash: FlashSession) {
   flash.addScript({
@@ -677,7 +682,6 @@ export function addScripts(flash: FlashSession) {
     },
   });
 
-
   flash.addScript({
     name: 'create-scalar-zerox-orders',
     options: [
@@ -938,7 +942,6 @@ export function addScripts(flash: FlashSession) {
 
     },
   });
-
 
   flash.addScript({
     name: 'order-firehose',
@@ -2120,6 +2123,66 @@ export function addScripts(flash: FlashSession) {
           await spawnSync('yarn', ['workspace', '@augurproject/gnosis-relay-api', 'kill-relay']);
         }
       }
+    }
+  });
+
+  flash.addScript({
+    name: 'sdk-server',
+    ignoreNetwork: true,
+    options: [
+      {
+        name: 'config-file',
+        abbr: 'f',
+        description: 'SDKConfiguration JSON file',
+      },
+      {
+        name: 'config',
+        abbr: 'c',
+        description: 'serialized SDKConfiguration JSON',
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const configFile = args.configFile as string;
+      const config = args.config as string;
+
+      let configuration: SDKConfiguration;
+      if (configFile && config) {
+        throw Error('Cannot specify both config-file and config');
+      } else if (configFile) {
+        configuration = JSON.parse(fs.readFileSync(configFile).toString())
+      } else if (config) {
+        configuration = JSON.parse(config);
+      } else {
+        // TODO support default network SDKConfiguration
+        throw Error('Must specify config-file or config')
+      }
+
+      const api = await startServer(configuration, this.account);
+      const app = createApp(api);
+
+      const endpointSettings: EndpointSettings = {
+        httpPort: 9003,
+        startHTTP: true,
+        httpsPort: 9004,
+        startHTTPS: true,
+        wsPort: 9001,
+        startWS: true,
+        wssPort: 9002,
+        startWSS: true,
+        ...(configuration.server || {})
+      };
+
+      const httpServer = endpointSettings.startHTTP && runHttpServer(app, endpointSettings);
+      const httpsServer = endpointSettings.startHTTPS && runHttpsServer(app, endpointSettings);
+      const wsServer = endpointSettings.startWS && runWsServer(api, app, endpointSettings);
+      const wssServer = endpointSettings.startWSS && runWssServer(api, app, endpointSettings);
+
+      this.log('Running SDK server. Type ctrl-c to quit:\n');
+      await waitForSigint();
+      httpServer.close();
+      httpsServer.close();
+      wsServer.close();
+      wssServer.close();
     }
   });
 
