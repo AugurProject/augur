@@ -113,7 +113,7 @@ const reportingStateToLabelTime = (
       time = endTimeFormatted;
       break;
     case REPORTING_STATE.DESIGNATED_REPORTING:
-      label = 'Designated Reporting';
+      label = 'Time left to report';
       time = formatTime(endTimeFormatted.timestamp + OneDay);
       break;
     case REPORTING_STATE.OPEN_REPORTING:

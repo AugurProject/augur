@@ -32,6 +32,10 @@ const DEFAULT_STATE: LoginAccount = {
   settings: {
     showInvalidMarketsBannerFeesOrLiquiditySpread: true,
     showInvalidMarketsBannerHideOrShow: true,
+    templateFilter: null,
+    maxFee: null,
+    spread: null,
+    showInvalid: null,
   },
   timeframeData: {
     positions: 0,
