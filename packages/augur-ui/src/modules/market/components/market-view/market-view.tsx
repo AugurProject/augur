@@ -932,6 +932,7 @@ export default class MarketView extends Component<
                       preview={preview}
                       orderBook={outcomeOrderBook}
                       canHotload={canHotload}
+                      extendOutcomesList={extendOutcomesList}
                     />
                   </div>
                   <div
