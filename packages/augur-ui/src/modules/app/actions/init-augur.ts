@@ -1,5 +1,4 @@
 import {
-  checkIsKnownUniverse,
   getNetworkId,
 } from 'modules/contracts/actions/contractCalls';
 import isGlobalWeb3 from 'modules/auth/helpers/is-global-web3';
@@ -18,14 +17,7 @@ import {
   ACCOUNT_TYPES,
   MODAL_LOADING,
   MODAL_ERROR,
-  MODAL_ACCOUNT_CREATED,
-  MODAL_AUGUR_USES_DAI,
-  MODAL_BUY_DAI,
-  MODAL_TEST_BET,
-  MODAL_TUTORIAL_INTRO,
-  SIGNIN_LOADING_TEXT,
-  NETWORK_IDS,
-  NETWORK_NAMES,
+  SIGNIN_SIGN_WALLET,
 } from 'modules/common/constants';
 import { windowRef } from 'utils/window-ref';
 import { AppState } from 'store';
@@ -54,98 +46,54 @@ import Torus from '@toruslabs/torus-embed';
 import { isDevNetworkId } from '@augurproject/artifacts/src';
 import { getNetwork } from 'utils/get-network-name';
 
-const ACCOUNTS_POLL_INTERVAL_DURATION = 10000;
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
 
-function pollForAccount(
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) {
-  let attemptedLogin = false;
-  let intervalId = null;
+async function loadAccountIfStored(dispatch: ThunkDispatch<void, any, Action>) {
+  const loggedInUser = getLoggedInUserFromLocalStorage();
+  const loggedInAccount = (loggedInUser && loggedInUser.address) || null;
+  const loggedInAccountType = (loggedInUser && loggedInUser.type) || null;
 
-  async function attemptLogin() {
-    const { connection, modal } = getState();
-    if (attemptedLogin) {
-      clearInterval(intervalId);
-    }
-
-    if (!attemptedLogin) {
-      attemptedLogin = true;
-
-      const loggedInUser = getLoggedInUserFromLocalStorage();
-      const loggedInAccount = loggedInUser && loggedInUser.address || null;
-      const loggedInAccountType = loggedInUser && loggedInUser.type || null;
-      const unlockedAccount = windowRef.ethereum && windowRef.ethereum.selectedAddress;
-
-      const showModal = accountType => {
-        const isWeb3Wallet = accountType === ACCOUNT_TYPES.WEB3WALLET;
-        const onboardingShown = [
-          MODAL_ACCOUNT_CREATED,
-          MODAL_AUGUR_USES_DAI,
-          MODAL_BUY_DAI,
-          MODAL_TEST_BET,
-          MODAL_TUTORIAL_INTRO,
-        ].includes(modal.type);
-        if (!onboardingShown) {
+  const errorModal = () => {
+    dispatch(logout());
+    dispatch(
+      updateModal({
+        type: MODAL_ERROR,
+      })
+    );
+  };
+  try {
+    if (loggedInAccount) {
+      if (isGlobalWeb3() && loggedInAccountType === ACCOUNT_TYPES.WEB3WALLET) {
+        console.log('showMetaMaskHelper::', !windowRef.ethereum.selectedAddress);
+        if (!windowRef.ethereum.selectedAddress) {
+          // show metamask signer
           dispatch(
             updateModal({
               type: MODAL_LOADING,
-              callback: () =>
-                setTimeout(() => {
-                  dispatch(closeModal());
-                }),
-              message: isWeb3Wallet ? SIGNIN_LOADING_TEXT : `Connecting to our partners at ${accountType} to create your secure account.`,
-              showLearnMore: true,
-              showCloseAfterDelay: true,
-              showMetaMaskHelper: !isWeb3Wallet || unlockedAccount ? false : true,
+              message: SIGNIN_SIGN_WALLET,
+              showMetaMaskHelper: true,
+              callback: () => dispatch(closeModal()),
             })
           );
         }
-      };
 
-      const errorModal = () => {
-        dispatch(logout());
-        dispatch(
-          updateModal({
-            type: MODAL_ERROR,
-          })
-        );
-      };
+        await dispatch(loginWithInjectedWeb3());
+      }
+      if (loggedInAccountType === ACCOUNT_TYPES.PORTIS) {
+        await dispatch(loginWithPortis(false));
+      }
 
-      if (loggedInAccount) {
-        try {
-          if (
-            isGlobalWeb3() &&
-            loggedInAccountType === ACCOUNT_TYPES.WEB3WALLET
-          ) {
-            showModal(ACCOUNT_TYPES.WEB3WALLET);
-            await dispatch(loginWithInjectedWeb3());
-          }
-          if (loggedInAccountType === ACCOUNT_TYPES.PORTIS) {
-            showModal(ACCOUNT_TYPES.PORTIS);
-            await dispatch(loginWithPortis(false));
-          }
+      if (loggedInAccountType === ACCOUNT_TYPES.FORTMATIC) {
+        await dispatch(loginWithFortmatic());
+      }
 
-          if (loggedInAccountType === ACCOUNT_TYPES.FORTMATIC) {
-            showModal(ACCOUNT_TYPES.FORTMATIC);
-            await dispatch(loginWithFortmatic());
-          }
-
-          if (loggedInAccountType === ACCOUNT_TYPES.TORUS) {
-            showModal(ACCOUNT_TYPES.TORUS);
-            await dispatch(loginWithTorus());
-          }
-        } catch (error) {
-          errorModal();
-        }
+      if (loggedInAccountType === ACCOUNT_TYPES.TORUS) {
+        await dispatch(loginWithTorus());
       }
     }
+  } catch (error) {
+    errorModal();
   }
-
-  intervalId = setInterval(() => {
-    attemptLogin();
-  }, ACCOUNTS_POLL_INTERVAL_DURATION);
 }
 
 function pollForNetwork(
@@ -289,7 +237,6 @@ export function connectAugur(
       ];
       universeId = !storedUniverseId ? universeId : storedUniverseId;
     }
-    const known = await checkIsKnownUniverse(universeId);
     dispatch(updateUniverse({ id: universeId }));
 
     // If the network disconnected modal is being shown, but we are now
@@ -299,7 +246,7 @@ export function connectAugur(
     }
 
     if (isInitialConnection) {
-      pollForAccount(dispatch, getState);
+      loadAccountIfStored(dispatch);
       pollForNetwork(dispatch, getState);
     }
 
