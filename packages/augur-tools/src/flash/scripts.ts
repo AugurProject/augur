@@ -1002,6 +1002,11 @@ export function addScripts(flash: FlashSession) {
         flag: true,
         description: 'do not faucet or approve, has already been done'
       },
+      {
+        name: 'useGnosis',
+        flag: true,
+        description: 'use gnosis safe instead of user account'
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const marketIds = String(args.marketIds)
@@ -1016,7 +1021,8 @@ export function addScripts(flash: FlashSession) {
       const burstRounds = args.burstRounds ? Number(args.burstRounds) : 10;
       const orderSize = args.orderSize ? Number(args.orderSize) : 10;
       const expiration = args.expiration ? new BigNumber(String(args.expiration)) : new BigNumber(600); // ten minutes
-      const user: ContractAPI = await this.ensureUser(this.network, false, true, address, true, true);
+      const useGnosis = Boolean(args.useGnosis);
+      const user: ContractAPI = await this.ensureUser(this.network, false, true, address, true, useGnosis);
 
       const skipFaucetOrApproval = args.skipFaucetOrApproval as boolean;
       if (!skipFaucetOrApproval) {
