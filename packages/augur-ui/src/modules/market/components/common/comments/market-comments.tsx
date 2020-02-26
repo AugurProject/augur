@@ -27,9 +27,11 @@ export class MarketComments extends Component {
     const addresses = await window.ethereum.enable();
     const address = addresses[0];
 
-    const box = await Box.openBox(address, window.ethereum);
+    const box = await Box.create(window.ethereum);
+    await box.auth(['augur'], address);
+    await box.syncDone;
 
-    box.onSyncDone(() => this.setState({box, address, isReady: true}));
+    this.setState({box, address, isReady: true})
   };
 
   render () {
