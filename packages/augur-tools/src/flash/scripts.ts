@@ -38,7 +38,7 @@ import { ContractAPI } from '../libs/contract-api';
 import { OrderBookShaper, OrderBookConfig } from './orderbook-shaper';
 import { NumOutcomes } from '@augurproject/sdk/src/state/logs/types';
 import { flattenZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
-import { awaitUserInput, formatAddress, sleep } from './util';
+import { formatAddress, sleep, waitForSigint } from "./util";
 import { updateAddresses } from "@augurproject/artifacts/build";
 
 export function addScripts(flash: FlashSession) {
@@ -2108,7 +2108,9 @@ export function addScripts(flash: FlashSession) {
             env,
             stdio: 'inherit',
           });
-          await awaitUserInput('Running dockers. Press ENTER to quit:\n');
+
+          this.log('Running dockers. Type ctrl-c to quit:\n');
+          await waitForSigint();
         }
 
       } finally {
