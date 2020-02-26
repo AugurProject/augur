@@ -12,6 +12,8 @@ import {
   HEADER_TYPE,
   INVALID_OUTCOME_ID,
   SUBMIT_REPORT,
+  BUY_PARTICIPATION_TOKENS,
+  REDEEM_PARTICIPATION_TOKENS
 } from 'modules/common/constants';
 import {
   FormattedNumber,
@@ -922,12 +924,7 @@ export interface ReportingCardProps {
 }
 
 export const ReportingCard = (props: ReportingCardProps) => {
-  const {
-    market,
-    currentAugurTimestamp,
-    showReportingModal,
-    isLogged,
-  } = props;
+  const { market, currentAugurTimestamp, showReportingModal, isLogged } = props;
 
   if (!market) return null;
 
@@ -956,7 +953,7 @@ export const ReportingCard = (props: ReportingCardProps) => {
       )}
       <div data-tip data-for={'tooltip--preReporting' + id}>
         <ProcessingButton
-          text='Report'
+          text="Report"
           action={showReportingModal}
           disabled={preReporting || !isLogged}
           queueName={SUBMIT_REPORT}
@@ -1191,10 +1188,12 @@ export const ParticipationTokensView = (
         tooltipText="The % of participation tokens you own among all participation tokens purchased in the current window"
       />
 
-      <PrimaryButton
+      <ProcessingButton
         disabled={disablePurchaseButton}
         text="Get Participation Tokens"
         action={openModal}
+        queueName={BUY_PARTICIPATION_TOKENS}
+        queueId={BUY_PARTICIPATION_TOKENS}
       />
 
       <section />
@@ -1222,11 +1221,12 @@ export const ParticipationTokensView = (
           "The total amount of unclaimed Dai you've earned through reporting"
         }
       />
-
-      <PrimaryButton
+      <ProcessingButton
         disabled={!hasRedeemable}
         text="Redeem Past Participation Tokens"
         action={openClaimParticipationTokensModal}
+        queueName={REDEEM_PARTICIPATION_TOKENS}
+        queueId={REDEEM_PARTICIPATION_TOKENS}
       />
     </div>
   );
