@@ -785,6 +785,7 @@ export const ReportingRadioBarGroup = ({
       notNewTentativeWinner = createBigNumber(winning.stakeCurrent).gt(
         disputeOutcome.bondSizeCurrent
       );
+      // double pre-filled to make new outcome tentative winner.
       winningStakeCurrent = formatAttoRep(createBigNumber(winning.stakeCurrent).times(2)).formatted;
       remainingState = formatAttoRep(disputeOutcome.stakeRemaining).formatted;
     }
