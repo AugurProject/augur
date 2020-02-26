@@ -13,11 +13,13 @@ export class WarpSyncStrategy {
   }
 
   async start(ipfsRootHash?: string): Promise<number | undefined> {
-    // No hash, nothing to do!
-    if (!ipfsRootHash) return undefined;
-
     await this.warpSyncController.createInitialCheckpoint();
-    return this.loadCheckpoints(ipfsRootHash);
+
+    if (ipfsRootHash) {
+      return this.loadCheckpoints(ipfsRootHash);
+    } else { // No hash, nothing more to do!
+      return undefined;
+    }
   }
 
   async loadCheckpoints(ipfsRootHash: string): Promise<number | undefined> {

@@ -123,7 +123,7 @@
       // Advanced order dropdown
       &:nth-of-type(6) {
         margin: @size-12 0;
-        width: fit-content;
+        width: min-content;
 
         > button {
           .mono-10-semi-bold;
@@ -276,6 +276,7 @@
                 color: @color-primary-text;
                 background: @color-secondary-action;
                 border: @size-1 solid @color-secondary-action-outline;
+                padding: @size-2;
 
                 &:hover {
                   background: @color-secondary-hover;
@@ -286,7 +287,9 @@
 
                 > span {
                   .mono-10-bold;
+
                   color: @color-primary-text;
+                  white-space: nowrap;
                 }
               }
             }

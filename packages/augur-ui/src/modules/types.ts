@@ -358,7 +358,6 @@ export interface NewMarket {
   type: string;
   outcomes: string[];
   outcomesFormatted: OutcomeFormatted[];
-  scalarSmallNum: string;
   scalarBigNum: string;
   scalarDenomination: string;
   description: string;
@@ -407,7 +406,6 @@ export interface Draft {
   currentStep: number;
   type: string;
   outcomes: string[];
-  scalarSmallNum: string;
   scalarBigNum: string;
   scalarDenomination: string;
   description: string;
@@ -647,6 +645,10 @@ export interface LoginAccountMeta {
 export interface LoginAccountSettings {
   showInvalidMarketsBannerFeesOrLiquiditySpread?: boolean;
   showInvalidMarketsBannerHideOrShow?: boolean;
+  templateFilter?: boolean;
+  maxFee?: boolean;
+  spread?: boolean;
+  showInvalid?: boolean;
 }
 
 export interface LoginAccount {
@@ -808,6 +810,7 @@ export interface NavMenuItem {
   disabled?: boolean;
   showAlert?: boolean;
   button?: boolean;
+  alternateStyle?: boolean;
 }
 
 export interface SortedGroup {

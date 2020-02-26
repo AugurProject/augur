@@ -5,13 +5,17 @@ import TooltipStyles from 'modules/common/tooltip.styles.less';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import makePath from 'modules/routes/helpers/make-path';
-import { SecondaryButton, ExternalLinkText } from 'modules/common/buttons';
+import {
+  SecondaryButton,
+  ExternalLinkText,
+  ProcessingButton,
+} from 'modules/common/buttons';
 import { GlobalChat } from 'modules/global-chat/components/global-chat';
 
 import Styles from 'modules/app/components/top-nav/top-nav.styles.less';
 import { NavMenuItem } from 'modules/types';
 import { helpIcon, PlusCircleIcon, Dot } from 'modules/common/icons';
-import { MODAL_ADD_FUNDS } from 'modules/common/constants';
+import { MODAL_ADD_FUNDS, MIGRATE_V1_V2 } from 'modules/common/constants';
 
 interface TopNavProps {
   isLogged: boolean;
@@ -22,6 +26,8 @@ interface TopNavProps {
   showMigrateRepButton: boolean;
   updateModal: Function;
 }
+
+const SPREAD_INDEX = 3;
 
 const TopNav = ({
   isLogged,
@@ -44,7 +50,7 @@ const TopNav = ({
   return (
     <aside className={Styles.TopNav}>
       <ul>
-        {accessFilteredMenu.map(item => {
+        {accessFilteredMenu.map((item, index) => {
           const selected = isCurrentItem(item);
           if (item.title === 'Create') {
             return (
@@ -60,52 +66,60 @@ const TopNav = ({
             );
           }
           return (
-            <li
-              className={classNames({
-                [Styles['Selected']]: selected,
-              })}
-              key={item.title}
-            >
-              <Link to={item.route ? makePath(item.route) : null}>
-                <span>{item.title}</span>
-                {item.showAlert && Dot}
-              </Link>
-            </li>
+            <>
+              {index === SPREAD_INDEX && (
+                <li key={index} className={Styles.FillSpace} />
+              )}
+              {index === SPREAD_INDEX && showMigrateRepButton && (
+                <li>
+                  <div className={Styles.MigrateRep}>
+                    <ProcessingButton
+                      text="Migrate V1 to V2 REP"
+                      action={() => migrateV1Rep()}
+                      queueName={MIGRATE_V1_V2}
+                      queueId={MIGRATE_V1_V2}
+                      secondaryButton
+                    />
+                  </div>
+                  <span>
+                    <label
+                      className={classNames(TooltipStyles.TooltipHint)}
+                      data-tip
+                      data-for={'migrateRep'}
+                    >
+                      {helpIcon}
+                    </label>
+                    <ReactTooltip
+                      id={'migrateRep'}
+                      className={TooltipStyles.Tooltip}
+                      effect="solid"
+                      place="top"
+                      type="light"
+                    >
+                      <p>
+                        {
+                          'You have V1 REP in your wallet. Migrate it to V2 REP to use it in Augur V2'
+                        }
+                      </p>
+                    </ReactTooltip>
+                  </span>
+                </li>
+              )}
+              <li
+                className={classNames({
+                  [Styles['Selected']]: selected,
+                  [Styles['AlternateStyle']]: item.alternateStyle,
+                })}
+                key={item.title}
+              >
+                <Link to={item.route ? makePath(item.route) : null}>
+                  <span>{item.title}</span>
+                  {item.showAlert && Dot}
+                </Link>
+              </li>
+            </>
           );
         })}
-        {showMigrateRepButton && (
-          <div className={Styles.MigrateRep}>
-            <SecondaryButton
-              text="Migrate V1 to V2 REP"
-              action={() => migrateV1Rep()}
-            />
-          </div>
-        )}
-        {showMigrateRepButton && (
-          <span>
-            <label
-              className={classNames(TooltipStyles.TooltipHint)}
-              data-tip
-              data-for={'migrateRep'}
-            >
-              {helpIcon}
-            </label>
-            <ReactTooltip
-              id={'migrateRep'}
-              className={TooltipStyles.Tooltip}
-              effect="solid"
-              place="top"
-              type="light"
-            >
-              <p>
-                {
-                  'You have V1 REP in your wallet. Migrate it to V2 REP to use it in Augur V2'
-                }
-              </p>
-            </ReactTooltip>
-          </span>
-        )}
-
         {!isLogged && (
           <div className={Styles.BettingUI}>
             <ExternalLinkText
@@ -114,16 +128,6 @@ const TopNav = ({
               URL={'https://augur.net'}
             />
           </div>
-        )}
-
-        {isLogged && (
-          <button
-            className={Styles.AddFunds}
-            title="Add Funds"
-            onClick={() => updateModal({ type: MODAL_ADD_FUNDS })}
-          >
-            Add Funds {PlusCircleIcon}
-          </button>
         )}
       </ul>
       <GlobalChat show={false} numberOfPeers={15} />

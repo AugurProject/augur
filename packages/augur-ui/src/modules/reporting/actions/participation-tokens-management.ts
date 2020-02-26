@@ -7,6 +7,9 @@ import {
   buyParticipationTokens,
   buyParticipationTokensEstimateGas,
 } from 'modules/contracts/actions/contractCalls';
+import { addPendingData, removePendingData } from 'modules/pending-queue/actions/pending-queue-management';
+import { BUY_PARTICIPATION_TOKENS } from 'modules/common/constants';
+import { TXEventName } from '@augurproject/sdk/src';
 
 export const purchaseParticipationTokens = (
   amount: string,
@@ -26,6 +29,9 @@ export const purchaseParticipationTokens = (
     );
     return callback(null, gas);
   }
-  buyParticipationTokens(universeId, amount);
+  dispatch(addPendingData(BUY_PARTICIPATION_TOKENS, BUY_PARTICIPATION_TOKENS, TXEventName.Pending, BUY_PARTICIPATION_TOKENS));
+  buyParticipationTokens(universeId, amount).catch(() => {
+    dispatch(removePendingData(BUY_PARTICIPATION_TOKENS, BUY_PARTICIPATION_TOKENS))
+  });
   callback(null);
 };

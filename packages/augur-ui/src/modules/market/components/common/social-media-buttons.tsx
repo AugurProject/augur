@@ -36,7 +36,7 @@ export const SocialMediaButtons = ({
   };
 
   const encodedMarketUrl = encodeURIComponent(
-    `${window.location.origin}/#!/market?id=${marketAddress}`
+    `${window.location.origin}/#!/market?id=${marketAddress}&=affiliate=${address}`
   );
   const encodedMarketDescription = encodeURI(marketDescription);
 
