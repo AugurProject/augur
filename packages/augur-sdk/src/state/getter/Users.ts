@@ -954,16 +954,15 @@ export class Users {
         ? Math.ceil((endTime - startTime) / DEFAULT_NUMBER_OF_BUCKETS)
         : params.periodInterval;
 
-    const profitLossOrders = await db.ProfitLossChanged.where(
-      '[universe+account+timestamp]'
-    )
-      .between(
-        [params.universe, params.account, `0x${startTime.toString(16)}`],
-        [params.universe, params.account, `0x${endTime.toString(16)}`],
-        true,
-        true
-      )
-      .toArray();
+      const profitLossOrders = await db.ProfitLossChanged.where('[universe+account+timestamp]').between([
+        params.universe,
+        params.account,
+        Dexie.minKey
+      ], [
+        params.universe,
+        params.account,
+        Dexie.maxKey
+      ]).toArray();
     const profitLossByMarketAndOutcome = await getProfitLossRecordsByMarketAndOutcome(
       db,
       params.account!,
@@ -1036,11 +1035,12 @@ export class Users {
               }
               const outcomeValues =
                 ordersFilledResultsByMarketAndOutcome[marketId][outcome];
+              const last = getLastDocBeforeTimestamp<ParsedOrderEventLog>(
+                outcomeValues,
+                bucketTimestamp);
+              // if market not traded in timeframe use last pl avg price
               let outcomeValue = new BigNumber(
-                getLastDocBeforeTimestamp<ParsedOrderEventLog>(
-                  outcomeValues,
-                  bucketTimestamp
-                )!.price
+                last ? last.price : latestOutcomePLValue.avgPrice
               );
               if (
                 marketFinalizedByMarket[marketId] &&
@@ -1125,7 +1125,7 @@ export class Users {
   }
 }
 
-export function sumTradingPositions(
+function sumTradingPositions(
   tradingPositions: MarketTradingPosition[]
 ): MarketTradingPosition {
   const summedTrade = _.reduce(
@@ -1197,6 +1197,7 @@ export function sumTradingPositions(
   summedTrade.frozenFunds = frozenFunds.toFixed();
   summedTrade.total = total.toFixed();
   summedTrade.totalCost = totalCost.toFixed();
+  summedTrade.unrealized = unrealized.toFixed();
   summedTrade.realizedPercent = realizedCost.isZero()
     ? '0'
     : realized.dividedBy(realizedCost).toFixed(4);
