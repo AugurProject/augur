@@ -14,18 +14,18 @@ export class WebsocketConnector extends BaseConnector {
 
   async connect(config: SDKConfiguration, account?: string): Promise<void> {
     this.socket = new WebSocketAsPromised(config.sdk.ws, {
-      packMessage: (data: any) => JSON.stringify(data),
-      unpackMessage: (message: string) => JSON.parse(message),
+      packMessage: JSON.stringify,
+      unpackMessage: JSON.parse,
       attachRequestId: (data: any, requestId: number) =>
         Object.assign({ id: requestId }, data),
-      extractRequestId: (data: any) => data && data.id,
+      extractRequestId: (data: any) => data?.id,
       createWebSocket: (url: string) => new WebSocket(url),
     } as any);
 
     this.socket.onMessage.addListener((message: string) => {
       try {
         const response = JSON.parse(message);
-        this.messageReceived(response.result);
+        this.messageReceived(response);
       } catch (error) {
         console.error('Bad JSON RPC response: ' + message);
       }
@@ -36,11 +36,12 @@ export class WebsocketConnector extends BaseConnector {
       console.log(message);
     });
 
-    this.socket.open();
+    await this.socket.open();
   }
 
-  messageReceived(message: any) {
-    if (message.result) {
+  messageReceived(message) {
+    // TODO why test for result here? SDKReady event doesn't really have one
+    if (message?.result) {
       if (this.subscriptions[message.eventName]) {
         this.subscriptions[message.eventName].callback(message.result);
       }
@@ -55,11 +56,12 @@ export class WebsocketConnector extends BaseConnector {
     f: (db: any, augur: any, params: P) => Promise<R>
   ): (params: P) => Promise<R> {
     return async (params: P): Promise<R> => {
-      return this.socket.sendRequest({
+      const response = await this.socket.sendRequest({
         method: f.name,
         params,
         jsonrpc: '2.0',
       });
+      return response?.result;
     };
   }
 
@@ -67,7 +69,7 @@ export class WebsocketConnector extends BaseConnector {
     eventName: SubscriptionEventName | string,
     callback: Callback
   ): Promise<void> {
-    const response: any = await this.socket.sendRequest({
+    const response = await this.socket.sendRequest({
       method: 'subscribe',
       eventName,
       jsonrpc: '2.0',

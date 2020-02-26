@@ -294,7 +294,7 @@ export function connectAugur(
 
     // If the network disconnected modal is being shown, but we are now
     // connected -- hide it.
-    if (modal && modal.type === MODAL_NETWORK_DISCONNECTED) {
+    if (modal?.type === MODAL_NETWORK_DISCONNECTED) {
       dispatch(closeModal());
     }
 

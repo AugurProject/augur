@@ -1,5 +1,5 @@
-import { v4 as uuidv4 } from "uuid";
-import { EventEmitter } from "events";
+import { v4 as uuidv4 } from 'uuid';
+import { EventEmitter } from 'events';
 
 export interface EventData {
   eventName: string;
@@ -61,7 +61,7 @@ export class Subscriptions extends EventEmitter {
   }
 
   removeAllListeners(eventName?: string | symbol): this {
-    this.emit("removeAllListeners");
+    this.emit('removeAllListeners');
     return eventName ? super.removeAllListeners(eventName) : super.removeAllListeners();
   }
 
@@ -79,7 +79,7 @@ export class Subscriptions extends EventEmitter {
         this.removeListener(eventName, publish);
         this.parentEmitter.removeListener(eventName, handler);
       })
-      .once("removeAllListeners", (): void => {
+      .once('removeAllListeners', (): void => {
         this.parentEmitter.removeListener(eventName, handler);
       });
 
