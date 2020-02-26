@@ -751,6 +751,8 @@ class Form extends Component<FromProps, FormState> {
       [this.INPUT_TYPES.EST_DAI]: '',
       fastForwardTime: DEFAULT_EXPIRATION_DAYS,
       expirationDateOption: EXPIRATION_DATE_OPTIONS.DAYS,
+      showAdvanced: false,
+      advancedOption: ADVANCED_OPTIONS.GOOD_TILL,
       errors: {
         [this.INPUT_TYPES.MULTIPLE_QUANTITY]: [],
         [this.INPUT_TYPES.QUANTITY]: [],
