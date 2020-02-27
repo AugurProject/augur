@@ -711,6 +711,24 @@ div.ButtonsRow:last-of-type {
   max-width: 20rem;
 }
 
+.DescriptionWithLink {
+  > p {
+    .text-14-paragraph;
+
+    @media @breakpoint-mobile {
+      .text-12-paragraph;
+    }
+
+    color: @color-primary-text;
+    line-height: 150%;
+    margin: 0 0 @size-2 0;
+  }
+
+  > a {
+    color: @color-primary-action
+  }
+}
+
 .Message {
   .Container;
 
@@ -1374,12 +1392,12 @@ div.ButtonsRow:last-of-type {
       }
 
       > button {
-        .text-14;
+        .text-10;
 
         background: none;
         border: none;
         margin-left: @size-3;
-        text-transform: unset;
+        text-transform: uppercase;
       }
     }
 
@@ -1452,6 +1470,72 @@ div.ButtonsRow:last-of-type {
         }
       }
     }
+  }
+
+  > div {
+    border-top: 1px solid @color-secondary-action-outline;
+  }
+}
+
+.MigrateRepInfo {
+  .Message;
+  max-width: 614px;
+
+  > main {
+    margin: @size-22 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    > h1 {
+      .text-16-medium;
+
+      color: @color-primary-text;
+      margin: 0 0 @size-16 0;
+      text-transform: unset;
+    }
+
+    > h2 {
+      .text-14;
+
+      color: @color-secondary-text;
+      line-height: 140%;
+      margin-bottom: @size-28;
+      padding: 0 @size-50;
+      text-align: center;
+      @media @breakpoint-mobile {
+        padding: 0;
+      }
+
+      > button {
+        .text-10;
+
+        background: none;
+        border: none;
+        text-transform: uppercase;
+      }
+    }
+
+    > h3 {
+      margin-bottom: @size-4;
+      text-transform: uppercase;
+    }
+
+    > span {
+      margin-bottom: @size-16;
+    }
+
+    > button {
+      .text-10;
+
+      background: none;
+      border: none;
+      text-transform: uppercase;
+    }
+  }
+
+  > div {
+    border-top: 1px solid @color-secondary-action-outline;
   }
 }
 
