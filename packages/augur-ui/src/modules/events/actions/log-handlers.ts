@@ -655,7 +655,6 @@ export const handleTokensMintedLog = (log: Logs.TokensMinted) => (
   if (log.tokenType === Logs.TokenType.ReputationToken && !isForking) {
     const isUserDataUpdate = isSameAddress(log.target, userAddress);
     if (isUserDataUpdate) {
-      console.log('MIGRATE_FROM_LEG_REP_TOKEN', log.blockNumber, log.blockHash)
       dispatch(
         updateAlert(log.blockHash, {
           id: log.blockHash,
