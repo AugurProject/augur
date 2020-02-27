@@ -4,7 +4,7 @@ import {
   YOUR_OVERVIEW_TITLE,
   TIMEFRAME_OPTIONS,
 } from 'modules/common/constants';
-import { RepLogoIcon } from 'modules/common/icons';
+import { v2AugurLogo } from 'modules/common/icons';
 import { PropertyLabel } from 'modules/common/labels';
 import QuadBox from 'modules/portfolio/components/common/quad-box';
 import Funds from 'modules/account/containers/funds';
@@ -36,7 +36,7 @@ const Overview = ({
               label="REP Balance"
               value={repBalanceFormatted.formatted}
             />
-            {RepLogoIcon}
+            {v2AugurLogo}
             <PropertyLabel
               label="REP Staked"
               value={repTotalAmountStakedFormatted.formatted}

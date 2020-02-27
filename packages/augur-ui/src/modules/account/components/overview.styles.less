@@ -33,8 +33,26 @@
   > svg {
     height: @size-30;
     width: @size-30;
+
     > path {
-      fill: var(--color-primary-text);
+      fill: var(--color-brand-secondary);
+
+      &:first-of-type {
+        fill: var(--color-brand);
+      }
+    }
+  }
+}
+
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .RepBalances {
+    > svg > path {
+      fill: var(--color-brand-secondary-flip);
+
+      &:first-of-type {
+        fill: var(--color-brand);
+      }
     }
   }
 }

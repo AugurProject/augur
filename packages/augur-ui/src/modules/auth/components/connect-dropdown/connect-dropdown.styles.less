@@ -13,12 +13,7 @@
   }
 }
 
-.WalletProvider,
-.GasEdit,
-.TxFee,
-.Logout,
-.AddFunds,
-.AccountFunds  {
+.SharedStyles {
   align-items: center;
   background: var(--color-module-background);
   border-bottom: @size-1 solid var(--color-dark-grey);
@@ -30,6 +25,8 @@
 }
 
 .AddFunds {
+  .SharedStyles;
+
   @media @breakpoint-mobile {
     display: none;
   }
@@ -58,6 +55,8 @@
 }
 
 .AccountFunds {
+  .SharedStyles;
+
   background: var(--color-table-header);
 
   @media @breakpoint-mobile {
@@ -97,6 +96,8 @@
 
 .WalletProvider,
 .GasEdit {
+  .SharedStyles;
+
   > div > div:first-of-type {
     .mono-10-medium;
 
@@ -208,6 +209,8 @@
 }
 
 .Logout {
+  .SharedStyles;
+
   @media @breakpoint-mobile {
     display: none;
   }
@@ -244,8 +247,13 @@
     border: 0;
   }
 
+  .AccountFunds {
+    background: var(--color-module-background);
+  }
+
   .AddFunds {
-    background-color: var(--color-page-background);
+    background: var(--color-page-background);
+
     > div {
       .mono-12-semi-bold;
     }

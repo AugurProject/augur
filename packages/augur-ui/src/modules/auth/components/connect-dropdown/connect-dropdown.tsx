@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ReactTooltip from 'react-tooltip';
 import { ACCOUNT_TYPES } from 'modules/common/constants';
-import { DaiLogoIcon, EthIcon, helpIcon, LogoutIcon, Open, Pencil, RepLogoIcon, } from 'modules/common/icons';
+import { DaiLogoIcon, EthIcon, helpIcon, LogoutIcon, Open, Pencil, v2AugurLogo } from 'modules/common/icons';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import { formatDai, formatEther, formatRep } from 'utils/format-number';
 import { AccountBalances } from 'modules/types';
@@ -86,7 +86,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
     },
     {
       name: 'REP',
-      logo: RepLogoIcon,
+      logo: v2AugurLogo,
       value: formatRep(balances.rep, {
         zeroStyled: false,
         decimalsRounded: 4,
