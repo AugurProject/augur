@@ -37,10 +37,6 @@ export const loadAccountOnChainFrozenFundsTotals = () => async (
     account: loginAccount.mixedCaseAddress,
     universe: universe.id,
   });
-  const frozen = await Augur.getTotalOnChainFrozenFunds({
-    account: loginAccount.mixedCaseAddress,
-    universe: universe.id,
-  });
   dispatch(
     updateLoginAccount({
       totalFrozenFunds: frozen.totalFrozenFunds,

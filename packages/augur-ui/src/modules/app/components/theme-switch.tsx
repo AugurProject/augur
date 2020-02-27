@@ -26,5 +26,13 @@ export const ThemeSwitch = ({ theme, setTheme }: ThemeSwitchProps) => (
         Betting Exchange
       </button>
     </li>
+    <li>
+      <button
+        className={classNames({ [Styles.Active]: theme === THEMES.SPORTS })}
+        onClick={() => setTheme(THEMES.SPORTS)}
+      >
+        Sportsbook
+      </button>
+    </li>
   </ul>
 );
