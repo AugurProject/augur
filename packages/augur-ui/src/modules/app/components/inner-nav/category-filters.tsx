@@ -2,7 +2,6 @@ import React from 'react';
 import Styles from 'modules/app/components/inner-nav/category-filters.styles.less';
 import { MenuChevron, SearchIcon } from 'modules/common/icons';
 import { CategoryRow } from 'modules/common/form';
-import {BettingLayButton, BettingBackButton } from 'modules/common/buttons';
 import getValue from 'utils/get-value';
 import { CATEGORIES_MAX, CATEGORY_PARAM_NAME } from 'modules/common/constants';
 import parseQuery from 'modules/routes/helpers/parse-query';
@@ -153,12 +152,6 @@ export default class CategoryFilters extends React.Component<
 
     return (
       <div className={Styles.CategoriesGroup}>
-        <BettingLayButton
-          action={() => {}}
-          text={"6.5"}
-          subText={"$100.43"}
-        />
-
         <span>Popular Categories</span>
         {renderPopular}
       </div>
