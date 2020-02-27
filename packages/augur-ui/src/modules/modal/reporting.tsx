@@ -241,7 +241,7 @@ export default class ModalReporting extends Component<
       } else {
         addPendingData(marketId, SUBMIT_REPORT, TXEventName.Pending, 0, {});
         doInitialReport(report).catch(err => {
-          removePendingData(marketId, SUBMIT_REPORT);
+          addPendingData(marketId, SUBMIT_REPORT, TXEventName.Failure, 0, {});
         });
       }
     } else {
