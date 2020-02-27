@@ -202,110 +202,6 @@
   }
 }
 
-.BettingLayButton {
-  .Button;
-
-  background: transparent;
-  border: @size-1 solid var(--color-secondary-action-outline);
-  color: var(--color-primary-text);
-  padding: @size-12 @size-24;
-
-  > div > div {
-
-    > div:first-of-type {
-      .text-14-bold;
-
-      color: var(--color-primary-text);
-      margin-bottom: @size-4;
-      text-align: center;
-    }
-
-    > div:last-of-type {
-      .text-10;
-
-      color: var(--color-secondary-text);
-      text-align: center;
-    }
-  }
-
-  &:disabled {
-    background: var(--color-inactive-text);
-  }
-
-  &:hover:enabled {
-    background: var(--color-primary-action-5);
-  }
-
-  &:focus:enabled {
-    background: var(--color-primary-action-10);
-  }
-
-  &:active:enabled {
-    background: var(--color-primary-action-15);
-  }
-
-  &.Small {
-    .text-10-bold;
-
-    padding: @size-6 @size-12;
-  }
-}
-
-.BettingBackButton {
-  .Button;
-
-  background: transparent;
-  border: @size-1 solid var(--color-secondary-action-outline);
-  color: var(--color-primary-text);
-  padding: @size-12 @size-24;
-
-  > div:first-of-type {
-    align-items: center;
-    display: flex;
-    justify-content: flex-start;
-  }
-
-  > div > div:nth-of-type(2) {
-    margin-left: @size-21;
-
-    > div:first-of-type {
-      .text-14-bold;
-
-      color: var(--color-primary-text);
-      margin-bottom: @size-4;
-    }
-
-    > div:last-of-type {
-      .text-10;
-
-      color: var(--color-secondary-text);
-    }
-  }
-
-  &:disabled {
-    background: var(--color-inactive-text);
-  }
-
-  &:hover:enabled {
-    background: var(--color-primary-action-5);
-  }
-
-  &:focus:enabled {
-    background: var(--color-primary-action-10);
-  }
-
-  &:active:enabled {
-    background: var(--color-primary-action-15);
-  }
-
-  &.Small {
-    .text-10-bold;
-
-    padding: @size-6 @size-12;
-  }
-}
-
-
 .SecondaryButton {
   .Button;
 
@@ -1105,6 +1001,90 @@
         width: @size-80;
       }
     }
+  }
+}
+
+.BettingLayButton {
+  .Button;
+
+  background: transparent;
+  border: @size-1 solid var(--color-outcome-five);
+  color: var(--color-primary-text);
+  padding: @size-6 @size-12;
+
+  > div {
+    > div:first-of-type {
+      .text-12-bold;
+
+      color: var(--color-primary-text);
+      text-align: center;
+    }
+
+    > div:last-of-type {
+      .text-12;
+
+      color: var(--color-secondary-text);
+      text-align: center;
+    }
+  }
+
+  &:disabled {
+    background: var(--color-inactive-text);
+    opacity: 0.15;
+  }
+
+  &:hover:enabled {
+    background: var(--color-outcome-five-40);
+  }
+
+  &:focus:enabled {
+    background: var(--color-outcome-five-40);
+  }
+
+  &:active:enabled {
+    background: var(--color-outcome-five-40);
+  }
+}
+
+.BettingBackButton {
+  .Button;
+
+  background: transparent;
+  border: @size-1 solid var(--color-outcome-two);
+  color: var(--color-primary-text);
+  padding: @size-3 @size-5;
+
+  > div {
+    > div:first-of-type {
+      .text-12-bold;
+
+      color: var(--color-primary-text);
+      text-align: center;
+    }
+
+    > div:last-of-type {
+      .text-12;
+
+      color: var(--color-secondary-text);
+      text-align: center;
+    }
+  }
+
+  &:disabled {
+    background: var(--color-inactive-text);
+    opacity: 0.15;
+  }
+
+  &:hover:enabled {
+    background: var(--color-outcome-two-40);
+  }
+
+  &:focus:enabled {
+    background: var(--color-outcome-two-40);
+  }
+
+  &:active:enabled {
+    background: var(--color-outcome-two-40);
   }
 }
 

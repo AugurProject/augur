@@ -158,11 +158,7 @@ export default class CategoryFilters extends React.Component<
           text={"6.5"}
           subText={"$100.43"}
         />
-        <BettingBackButton
-          action={() => {}}
-          text={"6.5"}
-        subText={"$100.43"}
-        />
+
         <span>Popular Categories</span>
         {renderPopular}
       </div>
