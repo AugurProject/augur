@@ -983,7 +983,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
         })}
         role="button"
         onClick={e => {
-          !hideButton && updateChecked(id, isInvalid);
+          !checked && !hideButton && updateChecked(id, isInvalid);
         }}
       >
         {checked ? FilledRadio : EmptyRadio}
