@@ -221,6 +221,38 @@ export const SecondarySignInButton = (props: DefaultButtonProps) => (
   </button>
 );
 
+export const BettingLayButton = (props: DefaultButtonProps) => (
+  <button
+    onClick={e => props.action(e)}
+    className={classNames(Styles.BettingLayButton, {
+      [Styles.Small]: props.small,
+    })}
+    disabled={props.disabled}
+    title={props.title || props.text}
+  >
+    <div>
+      <div>{props.text}</div>
+      <div>{props.subText}</div>
+    </div>
+  </button>
+);
+
+export const BettingBackButton = (props: DefaultButtonProps) => (
+  <button
+    onClick={e => props.action(e)}
+    className={classNames(Styles.BettingLayButton, {
+      [Styles.Small]: props.small,
+    })}
+    disabled={props.disabled}
+    title={props.title || props.text}
+  >
+    <div>
+      <div>{props.text}</div>
+      <div>{props.subText}</div>
+    </div>
+  </button>
+);
+
 export const OrderButton = (props: OrderButtonProps) => (
   <button
     onClick={e => props.action(e)}
