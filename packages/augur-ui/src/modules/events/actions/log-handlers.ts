@@ -665,7 +665,7 @@ export const handleTokensMintedLog = (log: Logs.TokensMinted) => (
           name: MIGRATE_FROM_LEG_REP_TOKEN,
         }, false)
       );
-      dispatch(removePendingData(MIGRATE_V1_V2, MIGRATE_V1_V2))
+      dispatch(addPendingData(MIGRATE_V1_V2, MIGRATE_V1_V2, TXEventName.Success, MIGRATE_V1_V2));
     }
   }
 };
