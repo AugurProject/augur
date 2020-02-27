@@ -655,15 +655,16 @@ export const handleTokensMintedLog = (log: Logs.TokensMinted) => (
   if (log.tokenType === Logs.TokenType.ReputationToken && !isForking) {
     const isUserDataUpdate = isSameAddress(log.target, userAddress);
     if (isUserDataUpdate) {
+      console.log('MIGRATE_FROM_LEG_REP_TOKEN', log.blockNumber, log.blockHash)
       dispatch(
-        addAlert({
-          id: MIGRATE_FROM_LEG_REP_TOKEN,
-          uniqueId: MIGRATE_FROM_LEG_REP_TOKEN,
+        updateAlert(log.blockHash, {
+          id: log.blockHash,
+          uniqueId: log.blockHash,
           params: {...log},
           status: TXEventName.Success,
           timestamp: getState().blockchain.currentAugurTimestamp * 1000,
           name: MIGRATE_FROM_LEG_REP_TOKEN,
-        })
+        }, false)
       );
       dispatch(removePendingData(MIGRATE_V1_V2, MIGRATE_V1_V2))
     }
