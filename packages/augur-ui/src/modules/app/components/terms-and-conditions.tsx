@@ -5,13 +5,15 @@ const TermsAndConditions = () => (
   <footer className={Styles.TermsAndConditions}>
     <a
       href="https://raw.githubusercontent.com/AugurProject/augur-core/master/LICENSE"
-      target="blank"
+      target="_blank"
+      rel="noreferrer"
     >
       Augur Core License
     </a>
     <a
       href="https://raw.githubusercontent.com/AugurProject/augur/master/LICENSE"
-      target="blank"
+      target="_blank"
+      rel="noreferrer"
     >
       Augur License
     </a>

@@ -1255,7 +1255,7 @@ interface DiscordLinkProps {
 export const DiscordLink = (props: DiscordLinkProps) => (
   <div className={Styles.discordLink}>
     {props.label}
-    <a href={DISCORD_LINK} target="_blank">
+    <a href={DISCORD_LINK} target="_blank" rel="noreferrer">
       Discord
     </a>
   </div>

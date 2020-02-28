@@ -348,7 +348,7 @@ export const LinkContentSection = ({ linkContent }: LinkContentSectionProps) => 
     {linkContent.map((content, idx) => (
       <div key={idx}>
         {content.link && (
-          <a href={content.link} target="_blank">
+          <a href={content.link} target="_blank" rel="noreferrer">
             <ExternalLinkButton label={content.content} />
           </a>
         )}
@@ -737,7 +737,7 @@ export const CreditCard = ({
     )}
 
     {accountMeta.accountType === ACCOUNT_TYPES.PORTIS && (
-      <a href='https://wallet.portis.io/buy/' target='_blank'>
+      <a href='https://wallet.portis.io/buy/' target='_blank' rel="noreferrer">
         <PrimaryButton
           action={() => null}
           text={`Buy with ${accountMeta.accountType}`}
@@ -810,7 +810,7 @@ export const Coinbase = ({
     <ol>
       <li>
         Login to your account at{' '}
-        <a href='https://www.coinbase.com' target='blank'>
+        <a href='https://www.coinbase.com' target='_blank' rel="noreferrer">
           www.coinbase.com
         </a>
       </li>
@@ -863,7 +863,7 @@ export const Transfer = ({
           fundTypeLabel
         )}{' '}
         using an app or exchange (see our list of{' '}
-        <a target='blank' href='https://docs.augur.net/'>
+        <a target='_blank' href='https://docs.augur.net/'>
           popular ways to buy {fundTypeLabel})
         </a>
       </li>
