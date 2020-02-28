@@ -13,7 +13,6 @@ import {
   handleTxFeeTooLow,
   handleSDKReadyEvent,
   handleGnosisStateUpdate,
-  handleDBMarketUpdatedEvent,
   handleReportingStateChanged,
 } from 'modules/events/actions/log-handlers';
 import { wrapLogHandler } from 'modules/events/actions/wrap-log-handler';
