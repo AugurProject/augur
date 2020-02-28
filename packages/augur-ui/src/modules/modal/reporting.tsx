@@ -14,6 +14,7 @@ import {
   REPORTING_STATE,
   INVALID_OUTCOME_NAME,
   SUBMIT_REPORT,
+  SUBMIT_DISPUTE,
 } from 'modules/common/constants';
 import {
   doInitialReport,
@@ -270,9 +271,12 @@ export default class ModalReporting extends Component<
           return contribute_estimateGas(report);
         }
       } else {
-        contributeToTentativeWinner
+        addPendingData(marketId, SUBMIT_DISPUTE, TXEventName.Pending, 0, {matchingId: report.outcomeId});
+        (contributeToTentativeWinner
         ? addRepToTentativeWinningOutcome(report)
-        : contribute(report);
+        : contribute(report)).catch(err => {
+          addPendingData(marketId, SUBMIT_DISPUTE, TXEventName.Failure, 0, {matchingId: report.outcomeId});
+        });
       }
     }
     if (!estimateGas) {

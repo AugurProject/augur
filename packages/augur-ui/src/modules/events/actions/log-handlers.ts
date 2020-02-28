@@ -45,6 +45,7 @@ import {
   MIGRATE_FROM_LEG_REP_TOKEN,
   MIGRATE_V1_V2,
   BUY_PARTICIPATION_TOKENS,
+  SUBMIT_DISPUTE,
 } from 'modules/common/constants';
 import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
@@ -605,6 +606,7 @@ export const handleDisputeCrowdsourcerContributionLog = (
   if (isUserDataUpdate) {
     handleAlert(log, CONTRIBUTE, false, dispatch, getState);
     dispatch(loadAccountReportingHistory());
+    dispatch(removePendingData(log.market, SUBMIT_DISPUTE));
   }
   if (isOnDisputingPage()) dispatch(reloadDisputingPage());
 };
