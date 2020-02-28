@@ -188,6 +188,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
                 <SecondaryButton
                   action={() => wallet.action()}
                   text='OPEN'
+                  title='Open'
                   icon={Open}
                   disabled={wallet.disabled}
                 />
@@ -198,18 +199,17 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
         <div className={Styles.GasEdit}>
           <div>
             <div>
-              <div>
-                Transaction fee
-                {renderToolTip('tooltip--gasEdit', 'The fee for processing your transactions.')}
-              </div>
-              <div>
-                ${getGasCostInDai(ethToDaiRate, createBigNumber(userDefinedGasPrice).toNumber())} / Trade  ({gasPriceSpeed} {gasPriceTime})
-              </div>
+              Transaction fee
+              {renderToolTip('tooltip--gasEdit', 'The fee for processing your transactions.')}
+            </div>
+            <div>
+              ${getGasCostInDai(ethToDaiRate, createBigNumber(userDefinedGasPrice).toNumber())} / Trade  ({gasPriceSpeed} {gasPriceTime})
             </div>
           </div>
           <SecondaryButton
             action={() => gasModal()}
             text='EDIT'
+            title='Edit'
             icon={Pencil}
           />
         </div>
@@ -223,6 +223,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
             <SecondaryButton
               action={() => universeSelectorModal()}
               text='CHANGE UNIVERSE'
+              title='Change Universe'
             />
           </div>
         )}

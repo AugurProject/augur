@@ -105,15 +105,19 @@
     margin: @size-4 0;
     display: flex;
 
-    > span > label {
-      margin: 0;
+    > span {
+      margin-left: @size-4;
 
-      > svg {
-        height: @size-12;
-        width: @size-12;
+      > label {
+        margin: 0;
 
-        > path {
-          fill: var(--color-secondary-text);
+        > svg {
+          height: @size-12;
+          width: @size-12;
+
+          > path {
+            fill: var(--color-secondary-text);
+          }
         }
       }
     }
@@ -149,7 +153,7 @@
   height: @size-57;
   padding: @size-12 @size-16;
 
-  > div > div:first-of-type {
+  > div {
     display: block;
     cursor: pointer;
     color: var(--color-primary-text);
@@ -180,6 +184,30 @@
       .text-12;
       color: var(--color-primary-text);
       margin-bottom: @size-4;
+    }
+  }
+
+  > button > svg {
+    height: @size-10;
+    width: @size-10;
+
+    > path {
+      stroke: var(--color-primary-text);
+    }
+  }
+}
+
+.WalletProvider {
+  > button > svg {
+    height: @size-10;
+    width: @size-10;
+
+    > path:first-of-type {
+      fill: var(--color-primary-text);
+    }
+
+    > path:last-of-type {
+      stroke: var(--color-primary-text);
     }
   }
 }
@@ -259,6 +287,43 @@
   .WalletProvider,
   .GasEdit {
     background: var(--color-page-background);
+
+    div:first-of-type > div {
+      &:first-of-type {
+        .mono-10-semi-bold;
+
+        color: var(--color-primary-text);
+        text-transform: uppercase;
+      }
+      &:last-of-type {
+        .text-12;
+
+        color: var(--color-secondary-text);
+      }
+    }
+
+    > button {
+      flex-flow: row nowrap;
+  
+      > svg {
+        margin-left: 0;
+        margin-right: @size-4;
+      }
+    }
+  }
+
+  .WalletProvider > button:hover > svg > {
+    > path:first-of-type {
+      fill: var(--color-module-background);
+    }
+
+    > path:last-of-type {
+      stroke: var(--color-module-background);
+    }
+  }
+
+  .GasEdit > button:hover > svg > path {
+    stroke: var(--color-module-background);
   }
 
   .Logout {
