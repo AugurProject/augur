@@ -38,7 +38,7 @@ export const TutorialPopUp = (props: TutorialPopUpProps) => (
         <span className={classNames({[Styles.Lighten]: subheader.lighten})} key={idx}>
           {subheader.text}
           {subheader.linkText && (
-            <a href={subheader.link} target="blank">
+            <a href={subheader.link} target="_blank" rel="noopener noreferrer">
               {subheader.linkText}
             </a>
           )}

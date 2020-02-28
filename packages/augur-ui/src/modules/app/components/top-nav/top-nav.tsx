@@ -124,7 +124,7 @@ const TopNav = ({
         {!isLogged && (
           <div className={Styles.BettingUI}>
             <ExternalLinkText
-              title={'Betting Exchange App'}
+              title={'Betting UI'}
               label={' - Coming Soon!'}
               URL={'https://augur.net'}
             />
