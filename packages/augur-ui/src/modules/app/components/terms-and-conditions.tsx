@@ -6,14 +6,14 @@ const TermsAndConditions = () => (
     <a
       href="https://raw.githubusercontent.com/AugurProject/augur-core/master/LICENSE"
       target="_blank"
-      rel="noreferrer"
+      rel="noopener noreferrer"
     >
       Augur Core License
     </a>
     <a
       href="https://raw.githubusercontent.com/AugurProject/augur/master/LICENSE"
       target="_blank"
-      rel="noreferrer"
+      rel="noopener noreferrer"
     >
       Augur License
     </a>

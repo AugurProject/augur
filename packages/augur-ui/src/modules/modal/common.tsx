@@ -348,7 +348,7 @@ export const LinkContentSection = ({ linkContent }: LinkContentSectionProps) => 
     {linkContent.map((content, idx) => (
       <div key={idx}>
         {content.link && (
-          <a href={content.link} target="_blank" rel="noreferrer">
+          <a href={content.link} target="_blank" rel="noopener noreferrer">
             <ExternalLinkButton label={content.content} />
           </a>
         )}
@@ -737,7 +737,7 @@ export const CreditCard = ({
     )}
 
     {accountMeta.accountType === ACCOUNT_TYPES.PORTIS && (
-      <a href='https://wallet.portis.io/buy/' target='_blank' rel="noreferrer">
+      <a href='https://wallet.portis.io/buy/' target='_blank' rel="noopener noreferrer">
         <PrimaryButton
           action={() => null}
           text={`Buy with ${accountMeta.accountType}`}
@@ -810,7 +810,7 @@ export const Coinbase = ({
     <ol>
       <li>
         Login to your account at{' '}
-        <a href='https://www.coinbase.com' target='_blank' rel="noreferrer">
+        <a href='https://www.coinbase.com' target='_blank' rel="noopener noreferrer">
           www.coinbase.com
         </a>
       </li>
