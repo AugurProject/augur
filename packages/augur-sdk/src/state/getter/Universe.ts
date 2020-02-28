@@ -20,6 +20,7 @@ import {
 } from '../../index';
 import { NULL_ADDRESS } from './types';
 import { ContractInterfaces } from '@augurproject/core';
+import { WarpSyncGetter } from './WarpSyncGetter';
 
 
 export interface NonForkingMigrationTotals {}
@@ -47,6 +48,7 @@ export interface UniverseDetails {
   totalOpenInterest: string;
   numberOfMarkets: number;
   children: UniverseDetails[];
+  warpSyncHash: string;
 }
 
 export class Universe {
@@ -122,7 +124,8 @@ async function getUniverseDetails(augur: Augur, db: DB, address: string, account
   const totalRepSupply = (await getRepSupply(augur, universe)).toString();
   const totalOpenInterest = (await universe.getOpenInterestInAttoCash_()).toString();
   const numberOfMarkets = (await getMarketsForUniverse(db, address)).length;
-
+  const warpSyncObject = await WarpSyncGetter.getMostRecentWarpSync(augur, db, undefined);
+  const warpSyncHash = warpSyncObject ? warpSyncObject.hash : undefined;
   const children = []; // don't recurse
 
   return {
@@ -134,6 +137,7 @@ async function getUniverseDetails(augur: Augur, db: DB, address: string, account
     totalRepSupply,
     totalOpenInterest,
     numberOfMarkets,
+    warpSyncHash,
     children,
   };
 }

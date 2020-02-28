@@ -71,13 +71,13 @@ export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: Ethe
       client.contractEvents.parseLogs,
     );
 
-    const warpController = new WarpController((await db), provider, uploadBlockHeaders);
+    const warpController = new WarpController((await db), client, provider, uploadBlockHeaders);
     const warpSyncStrategy = new WarpSyncStrategy(warpController, logFilterAggregator.onLogsAdded);
 
     const endWarpSyncBlockNumber = await warpSyncStrategy.start();
     const staringSyncBlock = Math.max(await (await db).getSyncStartingBlock(), endWarpSyncBlockNumber || uploadBlockNumber);
     const endBulkSyncBlockNumber = await bulkSyncStrategy.start(staringSyncBlock, currentBlockNumber);
-    
+
     const derivedSyncLabel = `Syncing rollup and derived DBs`
     console.time(derivedSyncLabel);
     await (await db).sync();
