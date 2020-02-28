@@ -579,12 +579,17 @@ export class ContractAPI {
     await this.augur.contracts.cashFaucet.faucet(attoCash, { sender: account });
   }
 
-  async repFaucet(attoRep: BigNumber): Promise<void> {
-    const reputationToken = this.augur.contracts.getReputationToken();
-    if (typeof reputationToken['faucet'] === 'function') {
-      await reputationToken['faucet'](attoRep);
+  async repFaucet(attoRep: BigNumber, useLegacy: boolean = false): Promise<void> {
+    let reputationToken = this.augur.contracts.getReputationToken();
+    if (useLegacy) {
+      console.log('useLegacyRep', useLegacy)
+      await this.augur.contracts.legacyReputationToken.faucet(attoRep);
     } else {
-      throw Error('Cannot faucet REP with non-test version of REP contract.');
+      if (typeof reputationToken['faucet'] === 'function') {
+        await reputationToken['faucet'](attoRep);
+      } else {
+        throw Error('Cannot faucet REP with non-test version of REP contract.');
+      }
     }
   }
 

@@ -127,7 +127,7 @@ export const MigrateRep = (props: MigrateRepForm) => {
             In order to migrate your V1 REP to V2 REP to use it in Augur V2, you
             need to send your V1 REP to your Augur Account Address shown below.
             <p />
-            hen your V1 REP is in your Augur Account Address you will see a
+            then your V1 REP is in your Augur Account Address you will see a
             button named “Migrate V1 to V2 REP” in the Augur app navigation.
             From here you can migrate all V1 REP in your account to V2 REP.
             <ExternalLinkButton

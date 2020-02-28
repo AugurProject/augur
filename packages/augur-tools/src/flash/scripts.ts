@@ -253,19 +253,33 @@ export function addScripts(flash: FlashSession) {
         abbr: 't',
         description: 'Account to send funds (defaults to current user)',
         required: false
+      },
+      {
+        name: 'useLegacyRep',
+        abbr: 'r',
+        flag: true,
+        description: 'faucet legacy rep',
+        required: false
       }
     ],
     async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
+      const useLegacyRep = Boolean(args.useLegacyRep)
       const user = await this.ensureUser();
       const amount = Number(args.amount);
       const atto = new BigNumber(amount).times(_1_ETH);
 
-      await user.repFaucet(atto);
+      console.log('useLegacyRep', useLegacyRep);
+      await user.repFaucet(atto, useLegacyRep);
 
       // if we have a target we transfer from current account to target.
       if(args.target) {
-        await user.augur.contracts.reputationToken.transfer(String(args.target), atto);
+        if (useLegacyRep) {
+          console.log('useLegacyRep', useLegacyRep, args.target);
+          await user.augur.contracts.legacyReputationToken.transfer(String(args.target), atto);
+        } else {
+          await user.augur.contracts.reputationToken.transfer(String(args.target), atto);
+        }
       }
     },
   });
