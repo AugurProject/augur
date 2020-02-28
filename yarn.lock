@@ -2930,22 +2930,22 @@
   dependencies:
     defer-to-connect "^1.0.1"
 
-"@toruslabs/fetch-node-details@^2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@toruslabs/fetch-node-details/-/fetch-node-details-2.0.1.tgz#7caa15c54a2ace9f41fe0bb36babeb092be19d70"
-  integrity sha512-1rm0tO9bMms7qtvwtY8Znz6lOhqtaXe0TEgFvcceYJjkgU8HAMcYZDriooanDiHrdZ0DDvY4GypKVDidmZSBTw==
+"@toruslabs/fetch-node-details@^2.0.2":
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/@toruslabs/fetch-node-details/-/fetch-node-details-2.0.2.tgz#e2f1c2eb3d3e4e1ca1a5bb5baa10ddc286341373"
+  integrity sha512-kn4VZMIjZ19dJiaKPcTcd19LV4V45lDvfYl14CWwdHpxtBX1Mxkog85jU6l1mUh6cPgRfR0lcksn9rEr7kBLGQ==
   dependencies:
-    web3-eth-contract "^1.2.5"
-    web3-utils "^1.2.5"
+    web3-eth-contract "^1.2.6"
+    web3-utils "^1.2.6"
 
-"@toruslabs/torus-embed@1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@toruslabs/torus-embed/-/torus-embed-1.0.0.tgz#4d856aa1b7c40bbaf1ab77fc55988a12fb755ff6"
-  integrity sha512-GwiND+AU2VupmLhByiZkvE0uU51f4vHMLyhgaVEZeAJiyy4+72YE0lhrxn0yDHSMmrIrkxYXsAEz5puK1gi7gg==
+"@toruslabs/torus-embed@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@toruslabs/torus-embed/-/torus-embed-1.1.0.tgz#0c23b6ab905cac6edae1dd17b6a57645e4cba704"
+  integrity sha512-PVuAv/B6jyCkIjCVigxcY7+OTvNryd0EVhRpNbihR8J8xjYNIJeVg9btQ1utptBlmsJ/yl5X7mYRi7imlJz19A==
   dependencies:
     "@chaitanyapotti/random-id" "^1.0.3"
-    "@toruslabs/fetch-node-details" "^2.0.1"
-    "@toruslabs/torus.js" "^1.0.6"
+    "@toruslabs/fetch-node-details" "^2.0.2"
+    "@toruslabs/torus.js" "^1.0.7"
     eth-json-rpc-errors "^2.0.2"
     fast-deep-equal "^3.1.1"
     json-rpc-engine "^5.1.8"
@@ -2955,23 +2955,23 @@
     obs-store "^4.0.3"
     post-message-stream "^3.0.0"
     pump "^3.0.0"
-    readable-stream "^3.5.0"
+    readable-stream "^3.6.0"
     safe-event-emitter "^1.0.1"
     sri-toolbox "^0.2.0"
     through2 "^3.0.1"
     web3 "^0.20.7"
 
-"@toruslabs/torus.js@^1.0.6":
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/@toruslabs/torus.js/-/torus.js-1.0.6.tgz#b8ad8b47c49946072695db537234811b82c70bf0"
-  integrity sha512-5vC3e5Q4J1I7NvGaTpnb3i77/88i/x5dS5b1I0HYZaBYhHbixWOCHisCWie7PuHh3/oSG66qiJiiCw0Y4xyp5g==
+"@toruslabs/torus.js@^1.0.7":
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/@toruslabs/torus.js/-/torus.js-1.0.7.tgz#3940cabfff0b5306568d97a3556b66b030a17ce3"
+  integrity sha512-JB2xSOgRRWTX57DRDUbGWjEJdAeNZjWUPfucg0M8RmqH3eETjwuBpA0ECi7e7gZKuZ0D34pBTn+a1TPBYLfTLA==
   dependencies:
     bn.js "^5.1.1"
     eccrypto "^1.1.3"
     elliptic "^6.5.2"
     json-stable-stringify "^1.0.1"
-    loglevel "^1.6.6"
-    web3-utils "^1.2.5"
+    loglevel "^1.6.7"
+    web3-utils "^1.2.6"
 
 "@types/anymatch@*":
   version "1.3.1"
@@ -17376,7 +17376,7 @@ loglevel@^1.6.4:
   resolved "https://registry.yarnpkg.com/loglevel/-/loglevel-1.6.6.tgz#0ee6300cc058db6b3551fa1c4bf73b83bb771312"
   integrity sha512-Sgr5lbboAUBo3eXCSPL4/KoVz3ROKquOjcctxmHIt+vol2DrqTQe3SwkKKuYhEiWB5kYa13YyopJ69deJ1irzQ==
 
-loglevel@^1.6.6, loglevel@^1.6.7:
+loglevel@^1.6.7:
   version "1.6.7"
   resolved "https://registry.yarnpkg.com/loglevel/-/loglevel-1.6.7.tgz#b3e034233188c68b889f5b862415306f565e2c56"
   integrity sha512-cY2eLFrQSAfVPhCgH1s7JI73tMbg9YC3v3+ZHVW67sBS7UxWzNEk/ZBbSfLykBWHp33dqqtOv82gjhKEi81T/A==
@@ -22609,7 +22609,7 @@ readable-stream@^1.0.33:
     isarray "0.0.1"
     string_decoder "~0.10.x"
 
-readable-stream@^3.5.0:
+readable-stream@^3.6.0:
   version "3.6.0"
   resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-3.6.0.tgz#337bbda3adc0706bd3e024426a286d4b4b2c9198"
   integrity sha512-BViHy7LKeTz4oNnkcLJ+lVSL6vpiFeX6/d3oSH8zCW7UxP2onchk+vTGB143xuFjHS3deTgkKoXXymXqymiIdA==
@@ -27481,7 +27481,7 @@ web3-eth-contract@1.2.4:
     web3-eth-abi "1.2.4"
     web3-utils "1.2.4"
 
-web3-eth-contract@^1.2.5:
+web3-eth-contract@^1.2.6:
   version "1.2.6"
   resolved "https://registry.yarnpkg.com/web3-eth-contract/-/web3-eth-contract-1.2.6.tgz#39111543960035ed94c597a239cf5aa1da796741"
   integrity sha512-ak4xbHIhWgsbdPCkSN+HnQc1SH4c856y7Ly+S57J/DQVzhFZemK5HvWdpwadJrQTcHET3ZeId1vq3kmW7UYodw==
@@ -27847,7 +27847,7 @@ web3-utils@1.2.4:
     underscore "1.9.1"
     utf8 "3.0.0"
 
-web3-utils@1.2.6, web3-utils@^1.2.5:
+web3-utils@1.2.6, web3-utils@^1.2.6:
   version "1.2.6"
   resolved "https://registry.yarnpkg.com/web3-utils/-/web3-utils-1.2.6.tgz#b9a25432da00976457fcc1094c4af8ac6d486db9"
   integrity sha512-8/HnqG/l7dGmKMgEL9JeKPTtjScxOePTzopv5aaKFExPfaBrYRkgoMqhoowCiAl/s16QaTn4DoIF1QC4YsT7Mg==

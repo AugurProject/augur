@@ -114,7 +114,7 @@ export interface ExternalLinkTextProps {
 export const PrimaryButton = (props: DefaultButtonProps) => (
   <>
     {props.URL && (
-      <a href={props.URL} target="blank">
+      <a href={props.URL} target="_blank" rel="noopener noreferrer">
         <button
           onClick={e => props.action(e)}
           className={Styles.PrimaryButton}
@@ -183,7 +183,7 @@ const ProcessingButtonComponent = (props: DefaultButtonProps) => {
   let buttonText = props.text;
   if (props.status === TXEventName.Pending) {
     buttonText = 'Processing...';
-  } 
+  }
   const failed = props.status === TXEventName.Failure;
   const confirmed = props.status === TXEventName.Success;
   return (
@@ -220,12 +220,12 @@ const mapStateToPropsProcessingButton = (state: AppState, ownProps) => {
   const { pendingQueue } = state;
   let disabled = false;
 
-  const pendingData = 
+  const pendingData =
   pendingQueue[ownProps.queueName] &&
   pendingQueue[ownProps.queueName][ownProps.queueId];
 
   let status = pendingData && pendingData.status;
-  
+
   if (ownProps.matchingId !== undefined && pendingData) {
     if (pendingData.data.matchingId.toString() !== ownProps.matchingId.toString()) {
       status = null;
@@ -234,7 +234,7 @@ const mapStateToPropsProcessingButton = (state: AppState, ownProps) => {
   }
 
   return {
-    disabled,
+    disabled: ownProps.disabled || disabled,
     status,
   };
 };
@@ -542,7 +542,7 @@ export const ViewTransactionDetailsButton = (
 export const ExternalLinkText = (props: ExternalLinkTextProps) => (
   <button className={Styles.ExternalLinkText}>
     {props.URL && (
-      <a href={props.URL} target="blank">
+      <a href={props.URL} target="_blank" rel="noopener noreferrer">
         {props.title ? (
           <>
             <strong>{props.title}</strong>
@@ -573,7 +573,7 @@ export const ExternalLinkButton = (props: ExternalLinkButtonProps) => (
     ) : (
       <>
         {props.URL && (
-          <a href={props.URL} target="blank">
+          <a href={props.URL} target="_blank" rel="noopener noreferrer">
             {props.label}
           </a>
         )}
@@ -653,7 +653,7 @@ const EtherscanLinkTSX = ({
 }: EtherscanLinkTSXProps) => (
   <span>
     {baseUrl && (
-      <a href={baseUrl + txhash} target="blank">
+      <a href={baseUrl + txhash} target="_blank" rel="noopener noreferrer">
         {label}
         {showIcon && ViewIcon}
       </a>

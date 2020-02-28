@@ -4,13 +4,14 @@ import * as IPFS from 'ipfs';
 import * as Unixfs from 'ipfs-unixfs';
 import { DAGNode } from 'ipld-dag-pb';
 import _ from 'lodash';
-import { Provider } from '..';
+import { Provider, Augur } from '..';
 
 import { DB } from '../state/db/DB';
 import { IpfsInfo } from '../state/db/WarpSyncCheckpointsDB';
 import { Address, Log } from '../state/logs/types';
 import { Log as SerializedLog } from '@augurproject/types';
 import { Checkpoints } from './Checkpoints';
+import { SubscriptionEventName } from '../constants';
 
 export const WARPSYNC_VERSION = '1';
 
@@ -99,6 +100,7 @@ export class WarpController {
 
   constructor(
     private db: DB,
+    private augur: Augur<Provider>,
     private provider: Provider,
     private uploadBlockNumber: Block,
     ipfs?: Promise<IPFS>,
@@ -133,9 +135,9 @@ export class WarpController {
       return;
     }
 
-    await this.createAllCheckpoints(newBlock);
+    const hash = await this.createAllCheckpoints(newBlock);
 
-    // Presumably we would report here.
+    this.augur.events.emit(SubscriptionEventName.WarpSyncHashUpdated, { hash})
   };
 
   async createInitialCheckpoint() {
