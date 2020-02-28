@@ -77,6 +77,11 @@
     > span {
       display: flex;
       margin-left: @size-8;
+
+      > svg > path {
+        // chevron flip
+        stroke: var(--color-primary-text);
+      }
     }
 
     > svg {
@@ -152,6 +157,10 @@
           fill: var(--color-primary-text);
         }
       }
+    }
+
+    > div > div {
+      background: transparent;
     }
   }
 }
