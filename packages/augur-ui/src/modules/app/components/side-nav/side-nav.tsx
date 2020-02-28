@@ -153,7 +153,7 @@ const SideNav = ({
               />
             </div>
             {isLogged && (
-              <div onClick={() => logout()}>Logout {LogoutIcon()}</div>
+              <button onClick={() => logout()}>Logout {LogoutIcon}</button>
             )}
           </footer>
         </div>

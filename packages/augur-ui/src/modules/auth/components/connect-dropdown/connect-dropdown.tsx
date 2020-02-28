@@ -23,7 +23,6 @@ interface ConnectDropdownProps {
   };
   balances: AccountBalances;
   gasModal: Function;
-  averageGasPrice: number;
   userDefinedGasPrice: number;
   gasPriceSpeed: number;
   gasPriceTime: string;
@@ -40,7 +39,6 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
   const {
     isLogged,
     restoredAccount,
-    averageGasPrice,
     userDefinedGasPrice,
     accountMeta,
     gasPriceSpeed,
@@ -229,12 +227,9 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
           </div>
         )}
 
-        <div className={Styles.Logout}>
-          <div onClick={() => logout()}>
-            <div>Logout</div>
-            <div>{LogoutIcon()}</div>
-          </div>
-        </div>
+        <button className={Styles.Logout} onClick={() => logout()}>
+            Logout {LogoutIcon}
+        </button>
       </div>
     </div>
   );

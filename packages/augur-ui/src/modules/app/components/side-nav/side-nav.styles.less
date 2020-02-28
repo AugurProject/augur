@@ -188,34 +188,21 @@
       padding: 0 @size-16;
       position: fixed;
       width: calc(100% - @size-52);
-  
-      > div:nth-of-type(2) {
-        .mono-10-semi-bold;
-        
+
+      > button {
+        .text-12-bold;
+
         color: var(--color-primary-text);
         display: flex;
-        padding: @size-21 @size-16;
-        align-items: center;
+        margin-left: auto;
 
-        > span {
-          .text-12-semi-bold;
+        > svg {
+          height: @size-16;
+          width: @size-16;
+          margin-left: @size-8;
 
-          align-items: center;
-          color: var(--color-secondary-text);
-          display: flex;
-          text-transform: uppercase;
-  
-          > svg {
+          > g {
             fill: var(--color-primary-text);
-            height: @size-4;
-            margin-left: @size-2;
-            transform: rotate(180deg);
-            width: @size-10;
-            height: @size-10;
-  
-            path {
-              fill: var(--color-primary-text);
-            }
           }
         }
       }

@@ -210,34 +210,27 @@
 
 .Logout {
   .SharedStyles;
+  .text-10-semi-bold;
+
+  border-top: @size-1 solid var(--color-dark-grey);
+  color: var(--color-primary-text);
+  height: @size-44;
+  justify-content: flex-end;
+  padding: 0 @size-16;
+  width: 100%;
+
+  > svg {
+    height: @size-16;
+    width: @size-16;
+    margin-left: @size-6;
+
+    > g {
+      fill: var(--color-primary-text);
+    }
+  }
 
   @media @breakpoint-mobile {
     display: none;
-  }
-
-  height: 44px;
-  justify-content: flex-end;
-
-  > div {
-    cursor: pointer;
-    display: flex;
-
-    > div:first-of-type {
-      .mono-10;
-
-      text-transform: uppercase;
-    }
-
-    > div:last-of-type {
-      align-items: center;
-      display: flex;
-
-      > svg {
-        height: @size-8;
-        margin: 0 !important;
-      }
-    }
-
   }
 }
 
@@ -260,6 +253,21 @@
 
     > button {
       .text-10-semi-bold;
+    }
+  }
+
+  .WalletProvider,
+  .GasEdit {
+    background: var(--color-page-background);
+  }
+
+  .Logout {
+    flex-flow: row-reverse;
+    justify-content: flex-start;
+    border-bottom: 0;
+
+    > svg {
+      margin-right: @size-6;
     }
   }
 }
