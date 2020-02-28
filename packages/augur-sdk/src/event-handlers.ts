@@ -1,5 +1,6 @@
 import { TransactionMetadata } from "contract-dependencies-ethers/build";
 import { TXEventName } from "./constants";
+import { ParsedLog } from "@augurproject/types/types";
 
 type Address = string;
 type Bytes32 = string;
@@ -176,6 +177,7 @@ export interface NewBlock extends FormattedEventLog {
   lastSyncedBlockNumber: number;
   percentSynced: string;
   timestamp: number;
+  logs: ParsedLog[];
 }
 
 // @TODO:: TODO - verify eventType and orderType somehow
