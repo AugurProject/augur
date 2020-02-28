@@ -48,7 +48,6 @@ const StartUpEvents = {
 
 const EVENTS = {
   [SubscriptionEventName.NewBlock]: wrapLogHandler(handleNewBlockLog),
-  [SubscriptionEventName.MarketCreated]: wrapLogHandler(handleMarketCreatedLog),
   [SubscriptionEventName.MarketMigrated]: wrapLogHandler(
     handleMarketMigratedLog
   ),

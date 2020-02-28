@@ -267,21 +267,21 @@ export const handleMarketsUpdatedLog = ({
   if (isOnDisputingPage()) dispatch(reloadDisputingPage());
 };
 
-export const handleMarketCreatedLog = (log: any) => (
+export const handleMarketCreatedLog = (logs: any) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const isUserDataUpdate = isSameAddress(
+  logs.filter(log => isSameAddress(
     log.marketCreator,
     getState().loginAccount.address
-  );
-  if (log.removed) {
-    dispatch(removeMarket(log.market));
-  }
-  if (isUserDataUpdate) {
-    handleAlert(log, CREATEMARKET, false, dispatch, getState);
-    dispatch(marketCreationCreated(log.market, log.extraInfo));
-  }
+  )).map(log => {
+    if (log.removed) {
+      dispatch(removeMarket(log.market));
+    } else {
+      handleAlert(log, CREATEMARKET, false, dispatch, getState);
+      dispatch(marketCreationCreated(log.market, log.extraInfo));
+    }
+  })
 };
 
 export const handleDBMarketCreatedEvent = (event: any) => (
