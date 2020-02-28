@@ -269,13 +269,11 @@ export function addScripts(flash: FlashSession) {
       const amount = Number(args.amount);
       const atto = new BigNumber(amount).times(_1_ETH);
 
-      console.log('useLegacyRep', useLegacyRep);
       await user.repFaucet(atto, useLegacyRep);
 
       // if we have a target we transfer from current account to target.
       if(args.target) {
         if (useLegacyRep) {
-          console.log('useLegacyRep', useLegacyRep, args.target);
           await user.augur.contracts.legacyReputationToken.transfer(String(args.target), atto);
         } else {
           await user.augur.contracts.reputationToken.transfer(String(args.target), atto);

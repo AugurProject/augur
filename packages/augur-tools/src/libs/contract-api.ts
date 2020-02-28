@@ -582,7 +582,6 @@ export class ContractAPI {
   async repFaucet(attoRep: BigNumber, useLegacy: boolean = false): Promise<void> {
     let reputationToken = this.augur.contracts.getReputationToken();
     if (useLegacy) {
-      console.log('useLegacyRep', useLegacy)
       await this.augur.contracts.legacyReputationToken.faucet(attoRep);
     } else {
       if (typeof reputationToken['faucet'] === 'function') {
