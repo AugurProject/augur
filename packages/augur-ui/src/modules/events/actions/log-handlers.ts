@@ -74,15 +74,8 @@ import { isCurrentMarket } from 'modules/trades/helpers/is-current-market';
 import { removePendingDataByHash, addPendingData, removePendingData } from 'modules/pending-queue/actions/pending-queue-management';
 import { removePendingOrder, constructPendingOrderid } from 'modules/orders/actions/pending-orders-management';
 import { loadAccountData } from 'modules/auth/actions/load-account-data';
+import { wrapLogHandler } from './wrap-log-handler';
 
-const EventHandlers = {
-  [SubscriptionEventName.TokensTransferred]: this.handleTokensTransferredLog,
-  [SubscriptionEventName.TokenBalanceChanged]: this.handleTokenBalanceChangedLog,
-  [SubscriptionEventName.TokensMinted]: this.handleTokensMintedLog,
-  [SubscriptionEventName.ProfitLossChanged]: this.handleProfitLossChangedLog,
-  [SubscriptionEventName.DisputeWindowCreated]: this.handleDisputeWindowCreatedLog,
-  [SubscriptionEventName.MarketFinalized]: this.handleMarketFinalizedLog,
-}
 const handleAlert = (
   log: any,
   name: string,
@@ -234,7 +227,7 @@ export const handleNewBlockLog = (log: Events.NewBlock) => async (
   if (log.logs && log.logs.length > 0){
     console.log(log.logs);
     const eventLogs = log.logs.reduce(
-      (p, l) => ({ p, [l.name]: [...p[l.name], l] }),
+      (p, l) => ({ ...p, [l.name]: p[l.name] ? [...p[l.name], l] : [l] }),
       {}
     );
     Object.keys(eventLogs).map(event => {
@@ -674,3 +667,12 @@ export const handleTokensMintedLog = (logs: Logs.TokensMinted[]) => (
       }
     })
 };
+
+const EventHandlers = {
+  [SubscriptionEventName.TokensTransferred]: wrapLogHandler(handleTokensTransferredLog),
+  [SubscriptionEventName.TokenBalanceChanged]: wrapLogHandler(handleTokenBalanceChangedLog),
+  [SubscriptionEventName.TokensMinted]: wrapLogHandler(handleTokensMintedLog),
+  [SubscriptionEventName.ProfitLossChanged]: wrapLogHandler(handleProfitLossChangedLog),
+  [SubscriptionEventName.DisputeWindowCreated]: wrapLogHandler(handleDisputeWindowCreatedLog),
+  [SubscriptionEventName.MarketFinalized]: wrapLogHandler(handleMarketFinalizedLog),
+}
