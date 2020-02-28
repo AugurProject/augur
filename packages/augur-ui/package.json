@@ -50,7 +50,7 @@
     "@ledgerhq/hw-app-eth": "5.7.0",
     "@ledgerhq/hw-transport-u2f": "5.7.0",
     "@portis/web3": "2.0.0-beta.54",
-    "@toruslabs/torus-embed": "1.0.0",
+    "@toruslabs/torus-embed": "1.1.0",
     "analytics": "0.3.0",
     "async-es": "2.6.3",
     "bignumber.js": "9.0.0",
@@ -63,6 +63,7 @@
     "ethereumjs-util": "5.2.0",
     "ethers": "4.0.37",
     "express": "4.17.1",
+    "fingerprintjs2": "2.1.0",
     "fortmatic": "1.0.2",
     "helmet": "3.21.0",
     "highcharts": "7.2.0",
@@ -103,8 +104,7 @@
     "shelljs": "0.8.3",
     "trezor-connect": "7.0.5",
     "uuid-parse": "^1.1.0",
-    "web3": "1.2.1",
-    "fingerprintjs2": "2.1.0"
+    "web3": "1.2.1"
   },
   "devDependencies": {
     "@augurproject/tools": "2.0.0-alpha.2",

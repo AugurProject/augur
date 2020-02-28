@@ -747,7 +747,7 @@ export const CreditCard = ({
     {accountMeta.accountType === ACCOUNT_TYPES.TORUS && (
       <PrimaryButton
         disabled={!isAmountValid}
-        action={() => addFundsTorus(amountToBuy)}
+        action={() => addFundsTorus(amountToBuy, toChecksumAddress(walletAddress))}
         text={`Buy with ${accountMeta.accountType}`}
       />
     )}
