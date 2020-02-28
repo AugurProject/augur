@@ -114,7 +114,7 @@ export interface ExternalLinkTextProps {
 export const PrimaryButton = (props: DefaultButtonProps) => (
   <>
     {props.URL && (
-      <a href={props.URL} target="blank">
+      <a href={props.URL} target="_blank" rel="noopener noreferrer">
         <button
           onClick={e => props.action(e)}
           className={Styles.PrimaryButton}
@@ -542,7 +542,7 @@ export const ViewTransactionDetailsButton = (
 export const ExternalLinkText = (props: ExternalLinkTextProps) => (
   <button className={Styles.ExternalLinkText}>
     {props.URL && (
-      <a href={props.URL} target="blank">
+      <a href={props.URL} target="_blank" rel="noopener noreferrer">
         {props.title ? (
           <>
             <strong>{props.title}</strong>
@@ -573,7 +573,7 @@ export const ExternalLinkButton = (props: ExternalLinkButtonProps) => (
     ) : (
       <>
         {props.URL && (
-          <a href={props.URL} target="blank">
+          <a href={props.URL} target="_blank" rel="noopener noreferrer">
             {props.label}
           </a>
         )}
@@ -653,7 +653,7 @@ const EtherscanLinkTSX = ({
 }: EtherscanLinkTSXProps) => (
   <span>
     {baseUrl && (
-      <a href={baseUrl + txhash} target="blank">
+      <a href={baseUrl + txhash} target="_blank" rel="noopener noreferrer">
         {label}
         {showIcon && ViewIcon}
       </a>
