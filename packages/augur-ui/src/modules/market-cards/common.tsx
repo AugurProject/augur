@@ -9,6 +9,7 @@ import {
   YES_NO,
   ZERO,
   INVALID_OUTCOME_NAME,
+  SUBMIT_DISPUTE,
 } from 'modules/common/constants';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import ReactTooltip from 'react-tooltip';
@@ -23,7 +24,7 @@ import {
 import { formatAttoRep, formatDai, formatNumber } from 'utils/format-number';
 import { Getters } from '@augurproject/sdk';
 import InvalidLabel from 'modules/common/containers/labels';
-import { SecondaryButton } from 'modules/common/buttons';
+import { SecondaryButton, ProcessingButton } from 'modules/common/buttons';
 
 import Styles from 'modules/market-cards/common.styles.less';
 import MarketCard from 'modules/market-cards/market-card';
@@ -94,6 +95,7 @@ export interface DisputeOutcomeProps {
   id: number;
   canDispute: boolean;
   canSupport: boolean;
+  marketId: string;
 }
 
 export const DisputeOutcome = (props: DisputeOutcomeProps) => {
@@ -148,8 +150,12 @@ export const DisputeOutcome = (props: DisputeOutcomeProps) => {
           )}
         </div>
         {showButton && (
-          <SecondaryButton
+          <ProcessingButton
             small
+            queueName={SUBMIT_DISPUTE}
+            queueId={props.marketId}
+            matchingId={props.id}
+            secondaryButton
             disabled={!props.canDispute}
             text={
               props.stake && props.stake.tentativeWinning
@@ -319,6 +325,7 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
                   )}
                 <DisputeOutcome
                   key={outcome.id}
+                  marketId={props.marketId}
                   description={outcome.description}
                   invalid={outcome.id === 0}
                   index={index > 2 ? index : index + 1}
