@@ -174,6 +174,7 @@ interface ScalarBlankDisputeOutcomeProps {
   denomination: string;
   dispute: Function;
   canDispute: boolean;
+  marketid: string;
 }
 
 export const ScalarBlankDisputeOutcome = (
@@ -183,7 +184,9 @@ export const ScalarBlankDisputeOutcome = (
     <span>{`Dispute current Tentative Winner with new ${props.denomination} value`}</span>
     <div className={Styles.blank}>
       <div></div>
-      <SecondaryButton
+      <ProcessingButton
+        queueName={SUBMIT_DISPUTE}
+        queueId={props.marketId}
         small
         disabled={!props.canDispute}
         text={'Dispute Tentative Winner'}
@@ -321,6 +324,7 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
                       denomination={props.scalarDenomination}
                       dispute={props.dispute}
                       canDispute={props.canDispute}
+                      marketId={props.marketId}
                     />
                   )}
                 <DisputeOutcome
@@ -358,6 +362,7 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
           denomination={props.scalarDenomination}
           dispute={props.dispute}
           canDispute={props.canDispute}
+          marketId={props.marketId}
         />
       )}
     </div>
