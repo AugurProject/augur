@@ -185,6 +185,7 @@ export const ScalarBlankDisputeOutcome = (
     <div className={Styles.blank}>
       <div></div>
       <ProcessingButton
+        secondaryButton
         queueName={SUBMIT_DISPUTE}
         queueId={props.marketId}
         small
