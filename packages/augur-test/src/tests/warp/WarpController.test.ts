@@ -75,6 +75,7 @@ describe('WarpController', () => {
 
     warpController = new WarpController(
       john.db,
+      john.augur,
       provider,
       uploadBlockHeaders,
       ipfs,
@@ -347,6 +348,7 @@ describe('WarpController', () => {
       newJohnDB = await mock.makeDB(newJohn.augur);
       newJohnWarpController = new WarpController(
         newJohnDB,
+        john.augur,
         provider,
         uploadBlockHeaders,
         ipfs,
@@ -360,6 +362,7 @@ describe('WarpController', () => {
 
       newJohnWarpController = new WarpController(
         newJohnDB,
+        john.augur,
         provider,
         uploadBlockHeaders,
         ipfs,
