@@ -114,6 +114,17 @@
       position: absolute;
       right: @size-32;
 
+      path {
+        &:nth-child(odd) {
+          fill: @color-secondary-text;
+          stroke: none;
+        }
+
+        &:nth-child(even) {
+          stroke: @color-secondary-text;
+        }
+      }
+
       @media @breakpoint-mobile {
         display: none;
       }
