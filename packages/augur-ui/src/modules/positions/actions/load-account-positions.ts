@@ -5,106 +5,51 @@ import { updateAccountPositionsData } from 'modules/positions/actions/account-po
 import {
   AccountPositionAction,
   AccountPosition,
-  NodeStyleCallback,
 } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { augurSdk } from 'services/augursdk';
 import { Getters } from '@augurproject/sdk';
+import { updateUserFilledOrders } from 'modules/markets/actions/market-trading-history-management';
 
-export const loadAllAccountPositions = (
-  options: any = {},
-  callback: NodeStyleCallback = logError,
-) => (dispatch: ThunkDispatch<void, any, Action>) => {
-  dispatch(
-    loadAccountPositionsInternal(
-      options,
-      (err: any, { positions = {} }: any) => {
-        if (!err) userPositionProcessing(positions, dispatch, callback);
-      }
-    )
-  );
+export const loadAllAccountPositions = () => async (dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState) => {
+  const { universe, loginAccount } = getState();
+  const { mixedCaseAddress } = loginAccount;
+  const Augur = augurSdk.get();
+  const positionsPlus: Getters.Users.UserPositionsPlusResult = await Augur.getUserPositionsPlus({
+    account: loginAccount.mixedCaseAddress,
+    universe: universe.id,
+  });
+
+  dispatch(updateUserFilledOrders(mixedCaseAddress, positionsPlus.userTradeHistory));
+  if (positionsPlus.userPositions) dispatch(userPositionProcessing(positionsPlus.userPositions));
+  if (positionsPlus.userPositionTotals) dispatch(updateLoginAccount(positionsPlus.userPositionTotals));
 };
 
-export const loadMarketAccountPositions = (
-  marketId: string,
-  callback: NodeStyleCallback = logError
-) => (dispatch: ThunkDispatch<void, any, Action>) => {
-  dispatch(
-    loadAccountPositionsInternal(
-      { marketId },
-      (err: any, { positions = {} }: any) => {
-        if (!err) userPositionProcessing(positions, dispatch, callback);
-        dispatch(loadAccountPositionsTotals());
-      }
-    )
-  );
-};
-
-export const loadAccountPositionsTotals = () => async (
+export const loadAccountOnChainFrozenFundsTotals = () => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
   const { universe, loginAccount } = getState();
   const Augur = augurSdk.get();
-  const positions = await Augur.getProfitLossSummary({
+  const frozen = await Augur.getTotalOnChainFrozenFunds({
     account: loginAccount.mixedCaseAddress,
     universe: universe.id,
   });
   dispatch(
     updateLoginAccount({
-      totalFrozenFunds: positions[30].frozenFunds,
-      totalRealizedPL: positions[30].realized,
-      tradingPositionsTotal: { unrealizedRevenue24hChangePercent : positions[1].unrealizedPercent },
+      totalFrozenFunds: frozen.totalFrozenFunds,
     })
   );
 };
 
-const loadAccountPositionsInternal = (
-  options: any = {},
-  callback: NodeStyleCallback
-) => async (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
-  const { universe, loginAccount } = getState();
-  if (loginAccount.address == null || universe.id == null)
-    return callback(null, {});
-  const params = {
-    ...options,
-    account: loginAccount.mixedCaseAddress,
-    universe: universe.id,
-  };
-  const Augur = augurSdk.get();
-  const positions = await Augur.getUserTradingPositions(params);
-  if (positions == null || positions.tradingPositions == null) {
-    return callback(null, {});
-  }
-
-  if (!options.marketId) {
-    dispatch(loadAccountPositionsTotals());
-  }
-
-  const marketIds = Array.from(
-    new Set([
-      ...positions.tradingPositions.reduce(
-        (p: any, position: any) => [...p, position.marketId],
-        []
-      ),
-    ])
-  );
-
-  if (marketIds.length === 0) return callback(null, {});
-  callback(null, { marketIds, positions });
-};
-
 export const userPositionProcessing = (
   positions: Getters.Users.UserTradingPositions,
+) => (
   dispatch: ThunkDispatch<void, any, Action>,
-  callback?: NodeStyleCallback
 ) => {
   if (!positions || !positions.tradingPositions) {
-    if (callback) return callback(null);
     return;
   }
 
@@ -159,5 +104,4 @@ export const userPositionProcessing = (
     };
     dispatch(updateAccountPositionsData(positionData));
   });
-  if (callback) callback(null, positions);
 };
