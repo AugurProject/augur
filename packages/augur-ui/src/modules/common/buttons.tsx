@@ -198,6 +198,7 @@ const ProcessingButtonComponent = (props: DefaultButtonProps) => {
       }
       {!failed && !confirmed && props.secondaryButton &&
         <SecondaryButton
+          {...props}
           text={buttonText}
           action={e => props.action(e)}
           disabled={props.disabled || Boolean(props.status)}
@@ -205,6 +206,7 @@ const ProcessingButtonComponent = (props: DefaultButtonProps) => {
       }
       {!failed && !confirmed && !props.secondaryButton &&
         <PrimaryButton
+          {...props}
           text={buttonText}
           action={e => props.action(e)}
           disabled={props.disabled || Boolean(props.status)}
@@ -216,13 +218,23 @@ const ProcessingButtonComponent = (props: DefaultButtonProps) => {
 
 const mapStateToPropsProcessingButton = (state: AppState, ownProps) => {
   const { pendingQueue } = state;
+  let disabled = false;
 
-  const status =
-    pendingQueue[ownProps.queueName] &&
-    pendingQueue[ownProps.queueName][ownProps.queueId] &&
-    pendingQueue[ownProps.queueName][ownProps.queueId].status;
+  const pendingData = 
+  pendingQueue[ownProps.queueName] &&
+  pendingQueue[ownProps.queueName][ownProps.queueId];
+
+  let status = pendingData && pendingData.status;
+  
+  if (ownProps.matchingId !== undefined && pendingData) {
+    if (pendingData.data.matchingId.toString() !== ownProps.matchingId.toString()) {
+      status = null;
+      disabled = true;
+    }
+  }
 
   return {
+    disabled,
     status,
   };
 };
