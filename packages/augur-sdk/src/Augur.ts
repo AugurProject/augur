@@ -52,6 +52,8 @@ export class Augur<TProvider extends Provider = Provider> {
   readonly hotLoading: HotLoading;
   readonly events: Subscriptions;
 
+  private _sdkReady = false;
+
   private txSuccessCallback: TXStatusCallback;
   private txAwaitingSigningCallback: TXStatusCallback;
   private txPendingCallback: TXStatusCallback;
@@ -69,6 +71,10 @@ export class Augur<TProvider extends Provider = Provider> {
     }
 
     this._zeroX = zeroX;
+  }
+
+  get sdkReady(): boolean {
+    return this._sdkReady;
   }
 
   constructor(
@@ -89,6 +95,10 @@ export class Augur<TProvider extends Provider = Provider> {
 
     this.events = new Subscriptions(augurEmitter);
     this.events.on(SubscriptionEventName.GnosisSafeStatus, this.updateGnosisSafe.bind(this));
+    this.events.on(SubscriptionEventName.SDKReady, () => {
+      this._sdkReady = true;
+      console.log('SDK is ready')
+    });
 
     this.connector.client = this;
     if(this.zeroX) this.zeroX.client = this;
@@ -290,8 +300,7 @@ export class Augur<TProvider extends Provider = Provider> {
   bindTo<R, P>(
     f: (db: any, augur: any, params: P) => Promise<R>
   ): (params: P) => Promise<R> {
-
-    return this.connector && this.connector.bindTo(f);
+    return this.connector?.bindTo(f);
   }
 
   async on(

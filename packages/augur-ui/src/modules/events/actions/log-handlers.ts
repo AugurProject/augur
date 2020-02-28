@@ -44,6 +44,7 @@ import {
   SUBMIT_REPORT,
   MIGRATE_FROM_LEG_REP_TOKEN,
   MIGRATE_V1_V2,
+  BUY_PARTICIPATION_TOKENS,
 } from 'modules/common/constants';
 import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
@@ -640,6 +641,7 @@ export const handleTokensMintedLog = (log: Logs.TokensMinted) => (
   if (log.tokenType === Logs.TokenType.ParticipationToken) {
     const isUserDataUpdate = isSameAddress(log.target, userAddress);
     if (isUserDataUpdate) {
+      dispatch(removePendingData(BUY_PARTICIPATION_TOKENS, BUY_PARTICIPATION_TOKENS));
       dispatch(loadAccountReportingHistory());
     }
     dispatch(loadDisputeWindow());
@@ -654,16 +656,16 @@ export const handleTokensMintedLog = (log: Logs.TokensMinted) => (
     const isUserDataUpdate = isSameAddress(log.target, userAddress);
     if (isUserDataUpdate) {
       dispatch(
-        addAlert({
-          id: MIGRATE_FROM_LEG_REP_TOKEN,
-          uniqueId: MIGRATE_FROM_LEG_REP_TOKEN,
+        updateAlert(log.blockHash, {
+          id: log.blockHash,
+          uniqueId: log.blockHash,
           params: {...log},
           status: TXEventName.Success,
           timestamp: getState().blockchain.currentAugurTimestamp * 1000,
           name: MIGRATE_FROM_LEG_REP_TOKEN,
-        })
+        }, false)
       );
-      dispatch(removePendingData(MIGRATE_V1_V2, MIGRATE_V1_V2))
+      dispatch(addPendingData(MIGRATE_V1_V2, MIGRATE_V1_V2, TXEventName.Success, MIGRATE_V1_V2));
     }
   }
 };

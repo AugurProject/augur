@@ -248,6 +248,7 @@
   margin-left: @size-16;
 
   > svg {
+    align-self: center;
     width: @size-6;
     height: @size-12;
 
@@ -603,6 +604,42 @@
   > svg > path {
     fill: @color-primary-text;
   }
+}
+
+.FailedButton {
+  .text-12-bold;
+
+  color: @color-primary-text;
+  background: fade(@color-error, 20%);
+  border: 1px solid @color-error;
+  border-radius: @border-radius-default;
+  padding: @size-8 @size-12;
+  display: flex;
+  align-content: center;
+  align-items: center;
+
+  > svg {
+    width: @size-8;
+    height: @size-8;
+    margin-left: @size-8;
+
+    > path {
+      stroke: @color-primary-text;
+    }
+  } 
+}
+
+.ConfirmedButton {
+  .text-12-bold;
+
+  color: @color-primary-text;
+  background: fade(@color-positive, 20%);
+  border: 1px solid @color-positive;
+  border-radius: @border-radius-default;
+  padding: @size-8 @size-12;
+  display: flex;
+  align-content: center;
+  align-items: center;
 }
 
 .ViewTransactionDetailsButton {

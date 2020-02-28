@@ -24,6 +24,7 @@ interface MarketChartsPaneProps {
   toggle: Function;
   tradingTutorial?: boolean;
   orderBook: IndividualOutcomeOrderBook;
+  extendOutcomesList: boolean;
 }
 
 interface MarketChartsPaneState {
@@ -76,6 +77,7 @@ export default class MarketChartsPane extends Component<
       market,
       toggle,
       orderBook,
+      extendOutcomesList,
     } = this.props;
     const { hoveredPrice, hoveredDepth } = this.state;
     const shared = { marketId, selectedOutcomeId };
@@ -112,7 +114,11 @@ export default class MarketChartsPane extends Component<
             </ModuleTabs>
           ) : (
             <ModuleTabs selected={preview ? 2 : 0} showToggle toggle={toggle}>
-              <ModulePane label="Price History">
+              <ModulePane label="Price History"
+                  onClickCallback={() => {
+                    extendOutcomesList && toggle();
+                  }
+                }>
                 {!preview && (
                   <PriceHistory
                     {...shared}
@@ -120,7 +126,11 @@ export default class MarketChartsPane extends Component<
                   />
                 )}
               </ModulePane>
-              <ModulePane label="Candlesticks">
+              <ModulePane label="Candlesticks"
+                onClickCallback={() => {
+                    extendOutcomesList && toggle();
+                  }
+                }>
                 {!preview && (
                   <Candlestick
                     {...shared}
@@ -131,7 +141,11 @@ export default class MarketChartsPane extends Component<
                   />
                 )}
               </ModulePane>
-              <ModulePane label="Market Depth">
+              <ModulePane label="Market Depth"
+                onClickCallback={() => {
+                    extendOutcomesList && toggle();
+                  }
+                }>
                 <DepthChart
                   {...shared}
                   updateSelectedOrderProperties={updateSelectedOrderProperties}

@@ -13,7 +13,8 @@ import { MarketData, ReportingListState } from 'modules/types';
 import { Getters } from '@augurproject/sdk/src';
 import { LoadingMarketCard } from 'modules/market-cards/common';
 import { Pagination } from 'modules/common/pagination';
-import { REPORTING_STATE } from 'modules/common/constants';
+import { REPORTING_STATE, SMALL_MOBILE } from 'modules/common/constants';
+import Media from 'react-media';
 
 const ITEMS_PER_SECTION = 10;
 const NUM_LOADING_CARDS = 5;
@@ -271,72 +272,92 @@ export default class MarketsInDispute extends Component<
       didCheck: filterByMyPortfolio,
     };
     return (
-      <QuadBox
-        title="Markets In Dispute"
-        switchHeaders={true}
-        showFilterSearch={true}
-        onSearchChange={this.onSearchChange}
-        sortByOptions={sortByOptions}
-        updateDropdown={this.updateDropdown}
-        h1Title={true}
-        bottomBarContent={
-          <SwitchLabelsGroup
-            tabs={tabs}
-            selectedTab={selectedTab}
-            selectTab={this.selectTab}
-            checkBox={userAddress && checkBox}
-          />
-        }
-        leftContent={
-          userAddress && (
-            <label className={Styles.OnlyPortfolio} htmlFor="checkbox">
-              <Checkbox
-                id="checkbox"
-                value={checkBox.didCheck}
-                isChecked={checkBox.didCheck}
-                onClick={(e: React.SyntheticEvent) => {
-                  e.preventDefault();
-                  checkBox.action();
-                }}
-              />
-              {checkBox.label}
-            </label>
-          )
-        }
-        content={
-          <div className={Styles.MarketCards}>
-            {!isLoadingMarkets && filteredData[selectedTab].length === 0 && (
-              <EmptyDisplay
-                selectedTab={label}
-                filterLabel={''}
-                search={search}
-              />
-            )}
-            {isLoadingMarkets &&
-              filteredData[selectedTab].length === 0 &&
-              new Array(NUM_LOADING_CARDS)
-                .fill(null)
-                .map((prop, index) => (
-                  <LoadingMarketCard key={`${index}-loading`} />
-                ))}
-            {filteredData[selectedTab].length > 0 &&
-              filteredData[selectedTab].map(market => (
-                <MarketCard key={market.id} market={market} />
-              ))}
-            {showPagination && (
-              <div className={PaginationStyles.PaginationContainer}>
-                <Pagination
-                  page={offset}
-                  itemCount={marketCount}
-                  itemsPerPage={limit}
-                  action={this.setOffset}
-                  updateLimit={null}
+      <div className={Styles.MarketsInDispute}>
+        <Media query={SMALL_MOBILE}>
+          {matches =>
+            matches && (
+              <label htmlFor="checkbox">
+                <Checkbox
+                  id="checkbox"
+                  value={checkBox.didCheck}
+                  isChecked={checkBox.didCheck}
+                  onClick={(e: React.SyntheticEvent) => {
+                    e.preventDefault();
+                    checkBox.action(e);
+                  }}
                 />
-              </div>
-            )}
-          </div>
-        }
-      />
+                {checkBox.label}
+              </label>
+            )
+          }
+        </Media>
+        <QuadBox
+          title="Markets In Dispute"
+          switchHeaders={true}
+          showFilterSearch={true}
+          onSearchChange={this.onSearchChange}
+          sortByOptions={sortByOptions}
+          updateDropdown={this.updateDropdown}
+          h1Title={true}
+          bottomBarContent={
+            <SwitchLabelsGroup
+              tabs={tabs}
+              selectedTab={selectedTab}
+              selectTab={this.selectTab}
+              checkBox={userAddress && checkBox}
+            />
+          }
+          leftContent={
+            userAddress && (
+              <label className={Styles.OnlyPortfolio} htmlFor="checkbox">
+                <Checkbox
+                  id="checkbox"
+                  value={checkBox.didCheck}
+                  isChecked={checkBox.didCheck}
+                  onClick={(e: React.SyntheticEvent) => {
+                    e.preventDefault();
+                    checkBox.action();
+                  }}
+                />
+                {checkBox.label}
+              </label>
+            )
+          }
+          content={
+            <div className={Styles.MarketCards}>
+              {!isLoadingMarkets && filteredData[selectedTab].length === 0 && (
+                <EmptyDisplay
+                  selectedTab={label}
+                  filterLabel={''}
+                  search={search}
+                />
+              )}
+              {isLoadingMarkets &&
+                filteredData[selectedTab].length === 0 &&
+                new Array(NUM_LOADING_CARDS)
+                  .fill(null)
+                  .map((prop, index) => (
+                    <LoadingMarketCard key={`${index}-loading`} />
+                  ))}
+              {filteredData[selectedTab].length > 0 &&
+                filteredData[selectedTab].map(market => (
+                  <MarketCard key={market.id} market={market} />
+                ))}
+              {showPagination && (
+                <div className={PaginationStyles.PaginationContainer}>
+                  <Pagination
+                    page={offset}
+                    itemCount={marketCount}
+                    itemsPerPage={limit}
+                    action={this.setOffset}
+                    updateLimit={null}
+                  />
+                </div>
+              )}
+            </div>
+          }
+        />
+      </div>
     );
   }
 }

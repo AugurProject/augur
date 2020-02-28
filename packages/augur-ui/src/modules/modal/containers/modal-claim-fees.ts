@@ -206,7 +206,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
           },
           {
             preText: ' and',
-            boldText: `${claimReportingFees.totalUnclaimedDaiFormatted.formatted} DAI`,
+            boldText: `${claimReportingFees.totalUnclaimedDaiFormatted.formattedValue} DAI`,
             postText:
               'of reporting fees to collect from the following markets:',
           },
@@ -219,7 +219,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
           },
           {
             preText: ' and',
-            boldText: `${claimReportingFees.totalUnclaimedDaiFormatted.formatted} DAI`,
+            boldText: `${claimReportingFees.totalUnclaimedDaiFormatted.formattedValue} DAI`,
             postText:
               'of reporting fees to collect from the following markets:',
           },

@@ -17,6 +17,7 @@ const mapStateToProps = (state: AppState) => ({
   Gnosis_ENABLED: state.appStatus.gnosisEnabled,
   ethToDaiRate: state.appStatus.ethToDaiRate,
   gasPrice: getGasPrice(state),
+  walletBalances: state.loginAccount.balances,
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
@@ -27,14 +28,19 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
     dispatch(addPendingData(pendingId, queueName, status, hash, info)),
 });
 
-const mergeProps = (sP: any, dP: any, oP: any) => ({
-  ...dP,
-  loginAccount: sP.loginAccount,
-  ethToDaiRate: sP.ethToDaiRate,
-  Gnosis_ENABLED: sP.Gnosis_ENABLED,
-  gasPrice: sP.gasPrice,
-  closeAction: () => dP.closeModal(),
-});
+const mergeProps = (sP: any, dP: any, oP: any) => {
+  const showForSafeWallet = sP.walletBalances.legacyRep > 0;
+
+  return {
+    ...dP,
+    loginAccount: sP.loginAccount,
+    ethToDaiRate: sP.ethToDaiRate,
+    Gnosis_ENABLED: sP.Gnosis_ENABLED,
+    gasPrice: sP.gasPrice,
+    closeAction: () => dP.closeModal(),
+    showForSafeWallet,
+  };
+};
 
 export default withRouter(
   connect(

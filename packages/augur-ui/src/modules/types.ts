@@ -358,7 +358,6 @@ export interface NewMarket {
   type: string;
   outcomes: string[];
   outcomesFormatted: OutcomeFormatted[];
-  scalarSmallNum: string;
   scalarBigNum: string;
   scalarDenomination: string;
   description: string;
@@ -407,7 +406,6 @@ export interface Draft {
   currentStep: number;
   type: string;
   outcomes: string[];
-  scalarSmallNum: string;
   scalarBigNum: string;
   scalarDenomination: string;
   description: string;
@@ -630,6 +628,7 @@ export interface AccountBalances {
   rep: number;
   dai: number;
   legacyRep: number;
+  legacyRepNonSafe: number;
   attoRep: string;
   legacyAttoRep: string;
 }
@@ -812,6 +811,7 @@ export interface NavMenuItem {
   disabled?: boolean;
   showAlert?: boolean;
   button?: boolean;
+  alternateStyle?: boolean;
 }
 
 export interface SortedGroup {

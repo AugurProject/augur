@@ -13,8 +13,9 @@ const DEFAULT_STATE: LoginAccount = {
     rep: 0,
     dai: 0,
     legacyRep: 0,
-    attoRep: "0",
-    legacyAttoRep: "0",
+    legacyRepNonSafe: 0,
+    attoRep: '0',
+    legacyAttoRep: '0',
   },
   reporting: {
     profitLoss: ZERO,
@@ -24,10 +25,10 @@ const DEFAULT_STATE: LoginAccount = {
     participationTokens: null,
   },
   allowance: ZERO,
-  totalOpenOrdersFrozenFunds: "0",
+  totalOpenOrdersFrozenFunds: '0',
   allowanceFormatted: formatAttoDai(ZERO),
   tradingPositionsTotal: {
-    unrealizedRevenue24hChangePercent: "0",
+    unrealizedRevenue24hChangePercent: '0',
   },
   settings: {
     showInvalidMarketsBannerFeesOrLiquiditySpread: true,
