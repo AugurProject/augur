@@ -231,7 +231,8 @@ export const handleNewBlockLog = (log: Events.NewBlock) => async (
       {}
     );
     Object.keys(eventLogs).map(event => {
-      EventHandlers[event](eventLogs[event]);
+      if (EventHandlers[event])
+        EventHandlers[event](eventLogs[event]);
     })
   }
 };
