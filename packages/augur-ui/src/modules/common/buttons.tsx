@@ -28,6 +28,7 @@ import { Getters, TXEventName } from '@augurproject/sdk/src';
 import { addCategoryStats } from 'modules/create-market/get-template';
 import ChevronFlip from 'modules/common/chevron-flip';
 import { Link } from 'react-router-dom';
+import { removePendingData } from 'modules/pending-queue/actions/pending-queue-management';
 
 export interface DefaultButtonProps {
   id?: string;
@@ -43,6 +44,7 @@ export interface DefaultButtonProps {
   URL?: string;
   status?: string;
   secondaryButton?: boolean;
+  cancel?: Function;
 }
 
 export interface SortButtonProps {
@@ -150,28 +152,64 @@ export const SecondaryButton = (props: DefaultButtonProps) => (
   </button>
 );
 
+const FailedButton = (props: DefaultButtonProps) => {
+  return (
+    <button
+      onClick={() => props.action()}
+      className={Styles.FailedButton}
+      disabled={props.disabled}
+      title={props.title || 'Failed'}
+    >
+      Failed
+      {XIcon}
+    </button>
+  )
+}
+
+const ConfirmedButton = (props: DefaultButtonProps) => {
+  return (
+    <button
+      onClick={() => null}
+      className={Styles.ConfirmedButton}
+      disabled={props.disabled}
+      title={props.title || 'Confirmed'}
+    >
+      Confirmed!
+    </button>
+  )
+}
+
 const ProcessingButtonComponent = (props: DefaultButtonProps) => {
   let buttonText = props.text;
   if (props.status === TXEventName.Pending) {
     buttonText = 'Processing...';
-  } else if (props.status === TXEventName.Success) {
-    buttonText = 'Confirmed!';
-  }
+  } 
+  const failed = props.status === TXEventName.Failure;
+  const confirmed = props.status === TXEventName.Success;
   return (
     <>
-      {props.secondaryButton ? (
+      {failed &&
+        <FailedButton
+          action={() => props.cancel()}
+        />
+      }
+      {confirmed &&
+        <ConfirmedButton action={() => null}/>
+      }
+      {!failed && !confirmed && props.secondaryButton &&
         <SecondaryButton
           text={buttonText}
           action={e => props.action(e)}
           disabled={props.disabled || Boolean(props.status)}
         />
-      ) : (
+      }
+      {!failed && !confirmed && !props.secondaryButton &&
         <PrimaryButton
           text={buttonText}
           action={e => props.action(e)}
           disabled={props.disabled || Boolean(props.status)}
         />
-      )}
+      }
     </>
   );
 };
@@ -189,7 +227,13 @@ const mapStateToPropsProcessingButton = (state: AppState, ownProps) => {
   };
 };
 
-export const ProcessingButton = connect(mapStateToPropsProcessingButton)(
+const mapDispatchToPropsProcessingButton = (dispatch, ownProps) => ({
+  cancel: () =>
+    dispatch(removePendingData(ownProps.queueId, ownProps.queueName)),
+});
+
+
+export const ProcessingButton = connect(mapStateToPropsProcessingButton, mapDispatchToPropsProcessingButton)(
   ProcessingButtonComponent
 );
 
