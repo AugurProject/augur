@@ -416,7 +416,6 @@ export class Augur<TProvider extends Provider = Provider> {
 
   getMostRecentWarpSync = (
   ): ReturnType<typeof WarpSyncGetter.getMostRecentWarpSync> => {
-    console.log('getMostRecentWarpSync');
     return this.bindTo(WarpSyncGetter.getMostRecentWarpSync)(undefined);
   };
 
