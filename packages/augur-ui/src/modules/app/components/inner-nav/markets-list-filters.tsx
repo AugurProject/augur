@@ -34,55 +34,55 @@ interface MarketsListFiltersProps {
   location: Location;
 }
 
-const MarketsListFilters = (props: MarketsListFiltersProps) => {
+const MarketsListFilters = ({
+  maxFee,
+  maxLiquiditySpread,
+  location,
+  includeInvalidMarkets,
+  allTemplateFilter,
+  isSearching,
+  updateMaxFee,
+  updateMaxSpread,
+  updateShowInvalid,
+  updateTemplateFilter,
+  history,
+}: MarketsListFiltersProps) => {
   useEffect(() => {
-    const filterOptionsFromQuery = parseQuery(props.location.search);
-    if (
-      filterOptionsFromQuery.maxFee &&
-      filterOptionsFromQuery.maxFee !== props.maxFee
-    ) {
-      props.updateMaxFee(filterOptionsFromQuery.maxFee);
+    const {
+      maxFee: maxFeeQuery,
+      spread,
+      templateFilter,
+      showInvalid,
+    } = parseQuery(location.search);
+    if (maxFeeQuery && maxFeeQuery !== maxFee) {
+      updateMaxFee(maxFeeQuery);
     }
-    if (
-      filterOptionsFromQuery.spread &&
-      filterOptionsFromQuery.spread !== props.maxLiquiditySpread
-    ) {
-      props.updateMaxSpread(filterOptionsFromQuery.spread);
+    if (spread && spread !== maxLiquiditySpread) {
+      updateMaxSpread(spread);
     }
-    if (
-      filterOptionsFromQuery.templateFilter &&
-      filterOptionsFromQuery.templateFilter !== props.allTemplateFilter
-    ) {
-      props.updateTemplateFilter(filterOptionsFromQuery.templateFilter);
+    if (templateFilter && templateFilter !== allTemplateFilter) {
+      updateTemplateFilter(templateFilter);
     }
-    if (
-      filterOptionsFromQuery.showInvalid &&
-      filterOptionsFromQuery.showInvalid !== props.includeInvalidMarkets
-    ) {
-      props.updateShowInvalid(filterOptionsFromQuery.showInvalid);
+    if (showInvalid && showInvalid !== includeInvalidMarkets) {
+      updateShowInvalid(showInvalid);
     }
-  }, [props.location.search]);
+  }, [location.search]);
 
   const [showFilters, setShowFilters] = useState(false);
 
-  if (!props.maxLiquiditySpread) return null;
+  if (!maxLiquiditySpread) return null;
 
   return (
     <div className={Styles.Filters}>
       <div
         className={classNames(Styles.FiltersGroup, {
-          [Styles.Searching]: props.isSearching,
+          [Styles.Searching]: isSearching,
         })}
       >
         <div onClick={() => setShowFilters(!showFilters)}>
           {FilterIcon}
           Filters
-          <ChevronFlip
-            pointDown={showFilters}
-            stroke="#D7DDE0"
-            filledInIcon
-            quick
-          />
+          <ChevronFlip pointDown={showFilters} noHardStroke filledInIcon quick />
         </div>
         {showFilters && (
           <>
@@ -93,15 +93,10 @@ const MarketsListFilters = (props: MarketsListFiltersProps) => {
 
             <RadioBarGroup
               radioButtons={templateFilterValues}
-              defaultSelected={props.allTemplateFilter}
+              defaultSelected={allTemplateFilter}
               onChange={(value: string) => {
-                updateQuery(
-                  TEMPLATE_FILTER,
-                  value,
-                  props.location,
-                  props.history
-                );
-                props.updateTemplateFilter(value);
+                updateQuery(TEMPLATE_FILTER, value, location, history);
+                updateTemplateFilter(value);
               }}
             />
 
@@ -115,15 +110,10 @@ const MarketsListFilters = (props: MarketsListFiltersProps) => {
 
             <RadioBarGroup
               radioButtons={feeFilters}
-              defaultSelected={props.maxFee}
+              defaultSelected={maxFee}
               onChange={(value: string) => {
-                updateQuery(
-                  MAXFEE_PARAM_NAME,
-                  value,
-                  props.location,
-                  props.history
-                );
-                props.updateMaxFee(value);
+                updateQuery(MAXFEE_PARAM_NAME, value, location, history);
+                updateMaxFee(value);
               }}
             />
 
@@ -137,15 +127,10 @@ const MarketsListFilters = (props: MarketsListFiltersProps) => {
 
             <RadioBarGroup
               radioButtons={spreadFilters}
-              defaultSelected={props.maxLiquiditySpread}
+              defaultSelected={maxLiquiditySpread}
               onChange={(value: string) => {
-                updateQuery(
-                  SPREAD_PARAM_NAME,
-                  value,
-                  props.location,
-                  props.history
-                );
-                props.updateMaxSpread(value);
+                updateQuery(SPREAD_PARAM_NAME, value, location, history);
+                updateMaxSpread(value);
               }}
             />
 
@@ -159,15 +144,15 @@ const MarketsListFilters = (props: MarketsListFiltersProps) => {
 
             <RadioBarGroup
               radioButtons={invalidFilters}
-              defaultSelected={String(props.includeInvalidMarkets)}
+              defaultSelected={String(includeInvalidMarkets)}
               onChange={(value: string) => {
                 updateQuery(
                   SHOW_INVALID_MARKETS_PARAM_NAME,
                   value,
-                  props.location,
-                  props.history
+                  location,
+                  history
                 );
-                props.updateShowInvalid(value);
+                updateShowInvalid(value);
               }}
             />
           </>
