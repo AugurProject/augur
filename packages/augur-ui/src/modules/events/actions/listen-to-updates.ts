@@ -1,25 +1,8 @@
 import {
-  handleDisputeCrowdsourcerCompletedLog,
-  handleDisputeCrowdsourcerContributionLog,
-  handleDisputeCrowdsourcerCreatedLog,
-  handleDisputeCrowdsourcerRedeemedLog,
-  handleDisputeWindowCreatedLog,
-  handleInitialReporterRedeemedLog,
-  handleInitialReporterTransferredLog,
-  handleInitialReportSubmittedLog,
-  handleMarketCreatedLog,
-  handleMarketFinalizedLog,
   handleMarketMigratedLog,
-  handleMarketParticipantsDisavowedLog,
   handleMarketsUpdatedLog,
-  handleMarketTransferredLog,
   handleNewBlockLog,
   handleOrderLog,
-  handleParticipationTokensRedeemedLog,
-  handleProfitLossChangedLog,
-  handleReportingParticipantDisavowedLog,
-  handleTokenBalanceChangedLog,
-  handleTokensTransferredLog,
   handleTradingProceedsClaimedLog,
   handleTxAwaitingSigning,
   handleTxFailure,
@@ -29,9 +12,8 @@ import {
   handleTxRelayerDown,
   handleTxFeeTooLow,
   handleSDKReadyEvent,
-  handleTokensMintedLog,
   handleGnosisStateUpdate,
-  handleDBMarketCreatedEvent,
+  handleDBMarketUpdatedEvent,
   handleReportingStateChanged,
 } from 'modules/events/actions/log-handlers';
 import { wrapLogHandler } from 'modules/events/actions/wrap-log-handler';
@@ -55,50 +37,14 @@ const EVENTS = {
   [SubscriptionEventName.TradingProceedsClaimed]: wrapLogHandler(
     handleTradingProceedsClaimedLog
   ),
-  [SubscriptionEventName.InitialReportSubmitted]: wrapLogHandler(
-    handleInitialReportSubmittedLog
-  ),
-  [SubscriptionEventName.InitialReporterRedeemed]: wrapLogHandler(
-    handleInitialReporterRedeemedLog
-  ),
-  [SubscriptionEventName.DisputeCrowdsourcerCreated]: wrapLogHandler(
-    handleDisputeCrowdsourcerCreatedLog
-  ),
-  [SubscriptionEventName.DisputeCrowdsourcerContribution]: wrapLogHandler(
-    handleDisputeCrowdsourcerContributionLog
-  ),
-  [SubscriptionEventName.DisputeCrowdsourcerCompleted]: wrapLogHandler(
-    handleDisputeCrowdsourcerCompletedLog
-  ),
-  [SubscriptionEventName.DisputeCrowdsourcerRedeemed]: wrapLogHandler(
-    handleDisputeCrowdsourcerRedeemedLog
-  ),
   [SubscriptionEventName.UniverseForked]: wrapLogHandler(
     handleUniverseForkedLog
-  ),
-  [SubscriptionEventName.InitialReporterTransferred]: wrapLogHandler(
-    handleInitialReporterTransferredLog
-  ),
-  [SubscriptionEventName.ParticipationTokensRedeemed]: wrapLogHandler(
-    handleParticipationTokensRedeemedLog
-  ),
-  [SubscriptionEventName.ReportingParticipantDisavowed]: wrapLogHandler(
-    handleReportingParticipantDisavowedLog
-  ),
-  [SubscriptionEventName.MarketParticipantsDisavowed]: wrapLogHandler(
-    handleMarketParticipantsDisavowedLog
-  ),
-  [SubscriptionEventName.MarketTransferred]: wrapLogHandler(
-    handleMarketTransferredLog
   ),
   [SubscriptionEventName.MarketsUpdated]: wrapLogHandler(
     handleMarketsUpdatedLog
   ),
   [SubscriptionEventName.GnosisSafeStatus]: wrapLogHandler(
     handleGnosisStateUpdate
-  ),
-  [SubscriptionEventName.DBMarketCreatedEvent]: wrapLogHandler(
-    handleDBMarketCreatedEvent
   ),
   [SubscriptionEventName.ReportingStateChanged]: wrapLogHandler(
     handleReportingStateChanged
