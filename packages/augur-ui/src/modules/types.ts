@@ -628,6 +628,7 @@ export interface AccountBalances {
   rep: number;
   dai: number;
   legacyRep: number;
+  legacyRepNonSafe: number;
   attoRep: string;
   legacyAttoRep: string;
 }

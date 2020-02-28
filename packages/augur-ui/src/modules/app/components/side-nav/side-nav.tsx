@@ -7,7 +7,7 @@ import makePath from 'modules/routes/helpers/make-path';
 import ConnectDropdown from 'modules/auth/containers/connect-dropdown';
 import ConnectAccount from 'modules/auth/containers/connect-account';
 import { LogoutIcon, PlusCircleIcon } from 'modules/common/icons';
-import { NavMenuItem } from 'modules/types';
+import { NavMenuItem, AccountBalances } from 'modules/types';
 import Styles from 'modules/app/components/side-nav/side-nav.styles.less';
 import { HelpIcon, HelpMenuList } from 'modules/app/components/help-resources';
 import { SecondaryButton, ProcessingButton } from 'modules/common/buttons';
@@ -26,6 +26,7 @@ interface SideNavProps {
   showGlobalChat: Function;
   migrateV1Rep: Function;
   showMigrateRepButton: boolean;
+  walletBalances: AccountBalances;
   isHelpMenuOpen: boolean;
   updateHelpMenuState: Function;
   updateConnectionTray: Function;
@@ -43,6 +44,7 @@ const SideNav = ({
   showGlobalChat,
   migrateV1Rep,
   showMigrateRepButton,
+  walletBalances,
   isHelpMenuOpen,
   updateHelpMenuState,
   updateConnectionTray,
@@ -114,7 +116,7 @@ const SideNav = ({
               {showMigrateRepButton && (
                 <span className={Styles.SideNavMigrateRep}>
                   <ProcessingButton
-                    text="Migrate V1 to V2 REP"
+                    text={walletBalances.legacyRep > 0 ? 'Migrate V1 to V2 REP' : ' Migrate V1 REP'}
                     action={() => migrateV1Rep()}
                     queueName={MIGRATE_V1_V2}
                     queueId={MIGRATE_V1_V2}
@@ -130,9 +132,9 @@ const SideNav = ({
                   <ReactTooltip
                     id={'migrateRep'}
                     className={TooltipStyles.Tooltip}
-                    effect="solid"
-                    place="top"
-                    type="light"
+                    effect='solid'
+                    place='top'
+                    type='light'
                   >
                     <p>
                       {
@@ -149,7 +151,7 @@ const SideNav = ({
             <div className={Styles.GlobalChat}>
               <SecondaryButton
                 action={showGlobalChat}
-                text="Global Chat"
+                text='Global Chat'
                 icon={Chevron}
               />
             </div>

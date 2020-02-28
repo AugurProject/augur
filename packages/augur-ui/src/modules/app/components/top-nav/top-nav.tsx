@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
-
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import makePath from 'modules/routes/helpers/make-path';
@@ -11,11 +10,11 @@ import {
   ProcessingButton,
 } from 'modules/common/buttons';
 import { GlobalChat } from 'modules/global-chat/components/global-chat';
-
-import Styles from 'modules/app/components/top-nav/top-nav.styles.less';
-import { NavMenuItem } from 'modules/types';
+import { NavMenuItem, AccountBalances } from 'modules/types';
 import { helpIcon, PlusCircleIcon, Dot } from 'modules/common/icons';
 import { MODAL_ADD_FUNDS, MIGRATE_V1_V2 } from 'modules/common/constants';
+
+import Styles from 'modules/app/components/top-nav/top-nav.styles.less';
 
 interface TopNavProps {
   isLogged: boolean;
@@ -24,6 +23,7 @@ interface TopNavProps {
   isDisabled?: boolean;
   migrateV1Rep: Function;
   showMigrateRepButton: boolean;
+  walletBalances: AccountBalances;
   updateModal: Function;
 }
 
@@ -36,6 +36,7 @@ const TopNav = ({
   currentBasePath,
   migrateV1Rep,
   showMigrateRepButton = false,
+  walletBalances,
   updateModal,
 }: TopNavProps) => {
   const isCurrentItem = item => {
@@ -74,7 +75,7 @@ const TopNav = ({
                 <li>
                   <div className={Styles.MigrateRep}>
                     <ProcessingButton
-                      text="Migrate V1 to V2 REP"
+                      text={walletBalances.legacyRep > 0 ? 'Migrate V1 to V2 REP' : ' Migrate V1 REP'}
                       action={() => migrateV1Rep()}
                       queueName={MIGRATE_V1_V2}
                       queueId={MIGRATE_V1_V2}
