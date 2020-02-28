@@ -2,7 +2,7 @@
 
 // Used in Betting UI
 .AccountInfo {
-  border: 1px solid var(--color-secondary-action-outline);
+  border: @size-1 solid var(--color-secondary-action-outline);
   box-sizing: border-box;
   border-radius: @size-3;
   min-width: @account-details-menu-width;
@@ -13,15 +13,10 @@
   }
 }
 
-.WalletProvider,
-.GasEdit,
-.TxFee,
-.Logout,
-.AddFunds,
-.AccountFunds  {
+.SharedStyles {
   align-items: center;
   background: var(--color-module-background);
-  border-bottom: 1px solid var(--color-dark-grey);
+  border-bottom: @size-1 solid var(--color-dark-grey);
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -30,6 +25,8 @@
 }
 
 .AddFunds {
+  .SharedStyles;
+
   @media @breakpoint-mobile {
     display: none;
   }
@@ -58,7 +55,13 @@
 }
 
 .AccountFunds {
+  .SharedStyles;
+
   background: var(--color-table-header);
+
+  @media @breakpoint-mobile {
+    background: var(--color-module-background);
+  }
 
   > div:first-of-type {
     .mono-11-bold;
@@ -67,6 +70,10 @@
     color: var(--color-primary-text);
     display: flex;
     text-transform: uppercase;
+
+    @media @breakpoint-mobile {
+      .mono-12-bold;
+    }
 
     > svg {
       fill: var(--color-primary-text);
@@ -80,11 +87,17 @@
     .mono-11-bold;
 
     color: var(--color-primary-text);
+
+    @media @breakpoint-mobile {
+      .mono-12-medium;
+    }
   }
 }
 
 .WalletProvider,
 .GasEdit {
+  .SharedStyles;
+
   > div > div:first-of-type {
     .mono-10-medium;
 
@@ -92,16 +105,19 @@
     margin: @size-4 0;
     display: flex;
 
-    > span > label {
-      margin: 0;
+    > span {
+      margin-left: @size-4;
 
-      > svg {
-        height: @size-12;
-        margin-left: @size-20;
-        width: @size-12;
+      > label {
+        margin: 0;
 
-        > path {
-          fill: var(--color-secondary-text);
+        > svg {
+          height: @size-12;
+          width: @size-12;
+
+          > path {
+            fill: var(--color-secondary-text);
+          }
         }
       }
     }
@@ -137,7 +153,7 @@
   height: @size-57;
   padding: @size-12 @size-16;
 
-  > div > div:first-of-type {
+  > div {
     display: block;
     cursor: pointer;
     color: var(--color-primary-text);
@@ -159,7 +175,7 @@
 
         width: @size-12;
         height: @size-12;
-        margin-left: @size-20;
+        margin-left: @size-4;
       }
     }
 
@@ -168,6 +184,30 @@
       .text-12;
       color: var(--color-primary-text);
       margin-bottom: @size-4;
+    }
+  }
+
+  > button > svg {
+    height: @size-10;
+    width: @size-10;
+
+    > path {
+      stroke: var(--color-primary-text);
+    }
+  }
+}
+
+.WalletProvider {
+  > button > svg {
+    height: @size-10;
+    width: @size-10;
+
+    > path:first-of-type {
+      fill: var(--color-primary-text);
+    }
+
+    > path:last-of-type {
+      stroke: var(--color-primary-text);
     }
   }
 }
@@ -183,63 +223,116 @@
 
   @media @breakpoint-mobile {
     background: var(--color-module-background);
-    border-bottom: 1px solid var(--color-dark-grey);
+    border-bottom: @size-1 solid var(--color-dark-grey);
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     flex-direction: row;
     padding: @size-16 @size-12;
     width: 100%;
 
     > button {
-      width: 100%;
+      width: @size-85;
     }
   }
 }
 
 .Logout {
+  .SharedStyles;
+  .text-10-semi-bold;
+
+  border-top: @size-1 solid var(--color-dark-grey);
+  color: var(--color-primary-text);
+  height: @size-44;
+  justify-content: flex-end;
+  padding: 0 @size-16;
+  width: 100%;
+
+  > svg {
+    height: @size-16;
+    width: @size-16;
+    margin-left: @size-6;
+
+    > g {
+      fill: var(--color-primary-text);
+    }
+  }
+
   @media @breakpoint-mobile {
     display: none;
   }
-
-  height: 44px;
-  justify-content: flex-end;
-
-  > div {
-    cursor: pointer;
-    display: flex;
-
-    > div:first-of-type {
-      .mono-10;
-
-      text-transform: uppercase;
-    }
-
-    > div:last-of-type {
-      align-items: center;
-      display: flex;
-
-      > svg {
-        height: @size-8;
-        margin: 0 !important;
-      }
-    }
-
-  }
 }
 
-:root[theme="BETTING"] {
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
   .AccountInfo {
     border: 0;
   }
 
+  .AccountFunds {
+    background: var(--color-module-background);
+  }
+
   .AddFunds {
-    background-color: var(--color-page-background);
+    background: var(--color-page-background);
+
     > div {
       .mono-12-semi-bold;
     }
 
     > button {
       .text-10-semi-bold;
+    }
+  }
+
+  .WalletProvider,
+  .GasEdit {
+    background: var(--color-page-background);
+
+    div:first-of-type > div {
+      &:first-of-type {
+        .mono-10-semi-bold;
+
+        color: var(--color-primary-text);
+        text-transform: uppercase;
+      }
+      &:last-of-type {
+        .text-12;
+
+        color: var(--color-secondary-text);
+      }
+    }
+
+    > button {
+      flex-flow: row nowrap;
+  
+      > svg {
+        margin-left: 0;
+        margin-right: @size-4;
+      }
+    }
+  }
+
+  .WalletProvider > button:hover > svg > {
+    > path:first-of-type {
+      fill: var(--color-module-background);
+    }
+
+    > path:last-of-type {
+      stroke: var(--color-module-background);
+    }
+  }
+
+  .GasEdit > button:hover > svg > path {
+    stroke: var(--color-module-background);
+  }
+
+  .Logout {
+    flex-flow: row-reverse;
+    justify-content: flex-start;
+    border-bottom: 0;
+
+    > svg {
+      margin-right: @size-6;
     }
   }
 }

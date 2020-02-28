@@ -18,6 +18,7 @@ import TooltipStyles from 'modules/common/tooltip.styles.less';
 import parseQuery from 'modules/routes/helpers/parse-query';
 import updateQuery from 'modules/routes/helpers/update-query';
 import { INVALID_OPTIONS } from 'modules/types';
+import ChevronFlip from 'modules/common/chevron-flip';
 
 interface MarketsListFiltersProps {
   maxFee: string;
@@ -33,128 +34,129 @@ interface MarketsListFiltersProps {
   location: Location;
 }
 
-const MarketsListFilters = (props: MarketsListFiltersProps) => {
+const MarketsListFilters = ({
+  maxFee,
+  maxLiquiditySpread,
+  location,
+  includeInvalidMarkets,
+  allTemplateFilter,
+  isSearching,
+  updateMaxFee,
+  updateMaxSpread,
+  updateShowInvalid,
+  updateTemplateFilter,
+  history,
+}: MarketsListFiltersProps) => {
   useEffect(() => {
-    const filterOptionsFromQuery = parseQuery(props.location.search);
-    if (
-      filterOptionsFromQuery.maxFee &&
-      filterOptionsFromQuery.maxFee !== props.maxFee
-    ) {
-      props.updateMaxFee(filterOptionsFromQuery.maxFee);
+    const {
+      maxFee: maxFeeQuery,
+      spread,
+      templateFilter,
+      showInvalid,
+    } = parseQuery(location.search);
+    if (maxFeeQuery && maxFeeQuery !== maxFee) {
+      updateMaxFee(maxFeeQuery);
     }
-    if (
-      filterOptionsFromQuery.spread &&
-      filterOptionsFromQuery.spread !== props.maxLiquiditySpread
-    ) {
-      props.updateMaxSpread(filterOptionsFromQuery.spread);
+    if (spread && spread !== maxLiquiditySpread) {
+      updateMaxSpread(spread);
     }
-    if (
-      filterOptionsFromQuery.templateFilter &&
-      filterOptionsFromQuery.templateFilter !== props.allTemplateFilter
-    ) {
-      props.updateTemplateFilter(filterOptionsFromQuery.templateFilter);
+    if (templateFilter && templateFilter !== allTemplateFilter) {
+      updateTemplateFilter(templateFilter);
     }
-    if (
-      filterOptionsFromQuery.showInvalid &&
-      filterOptionsFromQuery.showInvalid !== props.includeInvalidMarkets
-    ) {
-      props.updateShowInvalid(filterOptionsFromQuery.showInvalid)
+    if (showInvalid && showInvalid !== includeInvalidMarkets) {
+      updateShowInvalid(showInvalid);
     }
-  }, [props.location.search]);
+  }, [location.search]);
 
-  if (!props.maxLiquiditySpread) return null;
+  const [showFilters, setShowFilters] = useState(false);
+
+  if (!maxLiquiditySpread) return null;
 
   return (
     <div className={Styles.Filters}>
       <div
         className={classNames(Styles.FiltersGroup, {
-          [Styles.Searching]: props.isSearching,
+          [Styles.Searching]: isSearching,
         })}
       >
-        <div>
+        <div onClick={() => setShowFilters(!showFilters)}>
           {FilterIcon}
           Filters
+          <ChevronFlip pointDown={showFilters} noHardStroke filledInIcon quick />
         </div>
+        {showFilters && (
+          <>
+            <div className={Styles.Filter}>
+              <span>Markets</span>
+              {templateFilterTooltip()}
+            </div>
 
-        <div className={Styles.Filter}>
-          <span>Markets</span>
-          {templateFilterTooltip()}
-        </div>
+            <RadioBarGroup
+              radioButtons={templateFilterValues}
+              defaultSelected={allTemplateFilter}
+              onChange={(value: string) => {
+                updateQuery(TEMPLATE_FILTER, value, location, history);
+                updateTemplateFilter(value);
+              }}
+            />
 
-        <RadioBarGroup
-          radioButtons={templateFilterValues}
-          defaultSelected={props.allTemplateFilter}
-          onChange={(value: string) => {
-            updateQuery(TEMPLATE_FILTER, value, props.location, props.history);
-            props.updateTemplateFilter(value);
-          }}
-        />
+            <div className={Styles.Filter}>
+              <span>Fees</span>
+              {generateTooltip(
+                'Filters markets based on estimated total fees paid to market creators and reporters',
+                'fees'
+              )}
+            </div>
 
-        <div className={Styles.Filter}>
-          <span>Fees</span>
-          {generateTooltip(
-            'Filters markets based on estimated total fees paid to market creators and reporters',
-            'fees'
-          )}
-        </div>
+            <RadioBarGroup
+              radioButtons={feeFilters}
+              defaultSelected={maxFee}
+              onChange={(value: string) => {
+                updateQuery(MAXFEE_PARAM_NAME, value, location, history);
+                updateMaxFee(value);
+              }}
+            />
 
-        <RadioBarGroup
-          radioButtons={feeFilters}
-          defaultSelected={props.maxFee}
-          onChange={(value: string) => {
-            updateQuery(
-              MAXFEE_PARAM_NAME,
-              value,
-              props.location,
-              props.history
-            );
-            props.updateMaxFee(value);
-          }}
-        />
+            <div className={Styles.Filter}>
+              <span>Liquidity Spread</span>
+              {generateTooltip(
+                'Filters markets based on how wide a bid/offer spread is and the depth of volume',
+                'liquidity'
+              )}
+            </div>
 
-        <div className={Styles.Filter}>
-          <span>Liquidity Spread</span>
-          {generateTooltip(
-            'Filters markets based on how wide a bid/offer spread is and the depth of volume',
-            'liquidity'
-          )}
-        </div>
+            <RadioBarGroup
+              radioButtons={spreadFilters}
+              defaultSelected={maxLiquiditySpread}
+              onChange={(value: string) => {
+                updateQuery(SPREAD_PARAM_NAME, value, location, history);
+                updateMaxSpread(value);
+              }}
+            />
 
-        <RadioBarGroup
-          radioButtons={spreadFilters}
-          defaultSelected={props.maxLiquiditySpread}
-          onChange={(value: string) => {
-            updateQuery(
-              SPREAD_PARAM_NAME,
-              value,
-              props.location,
-              props.history
-            );
-            props.updateMaxSpread(value);
-          }}
-        />
+            <div className={Styles.Filter}>
+              <span>Invalid Markets</span>
+              {generateTooltip(
+                'Filters markets where the current best bid/offer would profit as a result of a market resolving as invalid',
+                'invalid'
+              )}
+            </div>
 
-        <div className={Styles.Filter}>
-          <span>Invalid Markets</span>
-          {generateTooltip(
-            'Filters markets where the current best bid/offer would profit as a result of a market resolving as invalid',
-            'invalid'
-          )}
-        </div>
-
-        <RadioBarGroup
-          radioButtons={invalidFilters}
-          defaultSelected={String(props.includeInvalidMarkets)}
-          onChange={(value: string) => {
-            updateQuery(
-              SHOW_INVALID_MARKETS_PARAM_NAME,
-              value,
-              props.location,
-              props.history
-            );
-            props.updateShowInvalid(value);
-          }}
-        />
+            <RadioBarGroup
+              radioButtons={invalidFilters}
+              defaultSelected={String(includeInvalidMarkets)}
+              onChange={(value: string) => {
+                updateQuery(
+                  SHOW_INVALID_MARKETS_PARAM_NAME,
+                  value,
+                  location,
+                  history
+                );
+                updateShowInvalid(value);
+              }}
+            />
+          </>
+        )}
       </div>
     </div>
   );
