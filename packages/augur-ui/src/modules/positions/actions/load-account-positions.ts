@@ -12,12 +12,16 @@ import { augurSdk } from 'services/augursdk';
 import { Getters } from '@augurproject/sdk';
 import { updateUserFilledOrders } from 'modules/markets/actions/market-trading-history-management';
 
-export const checkUpdateUserPositions = marketId => (
+export const checkUpdateUserPositions = (marketIds: string[]) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
   const { accountPositions } = getState();
-  if (Object.keys(accountPositions).includes(marketId)) {
+  const posMarketIds = Object.keys(accountPositions);
+  let included = false;
+  posMarketIds.map(m => {
+    if (marketIds.includes(m)) included = true});
+  if (included) {
     dispatch(loadAllAccountPositions());
   }
 };

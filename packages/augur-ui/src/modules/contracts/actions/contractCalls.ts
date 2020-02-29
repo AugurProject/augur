@@ -138,18 +138,6 @@ export async function convertV1ToV2_estimate() {
   return approvalGas.plus(migrationGas);
 }
 
-export async function getCurrentBlock() {
-  const Augur = augurSdk.get();
-  const blockNumber = await Augur.provider.getBlockNumber();
-  return blockNumber;
-}
-
-export async function getTimestamp(): Promise<number> {
-  const Augur = augurSdk.get();
-  const timestamp = await Augur.getTimestamp();
-  return timestamp.toNumber();
-}
-
 export async function getRepBalance(
   universe: string,
   address: string

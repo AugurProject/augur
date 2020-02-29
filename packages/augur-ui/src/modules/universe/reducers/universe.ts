@@ -14,6 +14,7 @@ const DEFAULT_STATE: Universe = {
   totalRepSupply: '0',
   totalOpenInterest: '0',
   numberOfMarkets: 0,
+  warpSyncHash: undefined,
   disputeWindow: {
     address: null,
     startTime: 0,
@@ -21,7 +22,7 @@ const DEFAULT_STATE: Universe = {
     purchased: '0',
     fees: '0',
   },
-  timeframeData: { 
+  timeframeData: {
     activeUsers: 0,
     openInterest: ZERO,
     marketsCreated: 0,

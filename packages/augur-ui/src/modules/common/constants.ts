@@ -821,14 +821,12 @@ export const NEW = 'New';
 export const RESOLVED_MARKETS_OPEN_ORDERS_TITLE =
   'Open Orders in Resolved Market';
 export const REPORTING_ENDS_SOON_TITLE = 'You need to report';
-export const FINALIZE_MARKET_TITLE = 'Finalize Market';
 export const SIGN_SEND_ORDERS = 'Sign to approve your orders';
 export const CLAIM_REPORTING_FEES_TITLE = 'Claim Stake and Fees';
 export const PROCEEDS_TO_CLAIM_TITLE = 'Claim Proceeds';
 export const MARKET_IS_MOST_LIKELY_INVALID_TITLE = 'Market is Failing Invalid Filter';
 export const OPEN_ORDERS_RESOLVED_MARKET = 'resolvedMarketsOpenOrders';
 export const REPORT_ON_MARKET = 'reportOnMarkets';
-export const FINALIZE_MARKET = 'finalizeMarkets';
 export const MARKET_IN_DISPUTE = 'marketsInDispute';
 export const CLAIM_REPORTING_FEES = 'claimReportingFees';
 export const UNSIGNED_ORDERS = 'unsignedOrders';
@@ -838,7 +836,6 @@ export const MARKET_IS_MOST_LIKELY_INVALID = 'marketIsMostLikelyInvalid';
 export const NOTIFICATION_TYPES = {
   [OPEN_ORDERS_RESOLVED_MARKET]: OPEN_ORDERS_RESOLVED_MARKET,
   [REPORT_ON_MARKET]: REPORT_ON_MARKET,
-  [FINALIZE_MARKET]: FINALIZE_MARKET,
   [MARKET_IN_DISPUTE]: MARKET_IN_DISPUTE,
   [CLAIM_REPORTING_FEES]: CLAIM_REPORTING_FEES,
   [UNSIGNED_ORDERS]: UNSIGNED_ORDERS,
@@ -870,6 +867,7 @@ export const SUBMIT_REPORT = 'SUBMIT_REPORT';
 export const MIGRATE_V1_V2 = 'MIGRATE_V1_V2';
 export const BUY_PARTICIPATION_TOKENS = 'BUY_PARTICIPATION_TOKENS';
 export const REDEEM_PARTICIPATION_TOKENS = 'REDEEM_PARTICIPATION_TOKENS';
+export const SUBMIT_DISPUTE = 'SUBMIT_DISPUTE';
 
 // Pending Queue SINGLE TYPE
 export const CLAIM_FEE_WINDOWS = 'CLAIM_FEE_WINDOWS';
