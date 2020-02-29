@@ -55,7 +55,7 @@ export class Universe {
   static getForkMigrationTotalsParams = t.type({
     universe: t.string,
   });
-  static getUniverseChildrenParams = t.partial({
+  static getUniverseChildrenParams = t.type({
     universe: t.string,
     account: t.string,
   });
@@ -90,11 +90,7 @@ export class Universe {
     params: t.TypeOf<typeof Universe.getUniverseChildrenParams>
   ): Promise<UniverseDetails|null> {
     const { universe, account } = params;
-    if (!params.universe) {
-      throw new Error(
-        "'getUniverseChildren' requires an 'universe'"
-      );
-    }
+
     const details = await getUniverseDetails(augur, db, universe, account);
     if (details === null) return null;
 
@@ -124,7 +120,7 @@ async function getUniverseDetails(augur: Augur, db: DB, address: string, account
   }
 
   const creationTimestamp = Number(universeCreationLog.creationTimestamp);
-  const usersRep = account ? (await getUserRep(db, universe, account)).toString() : '0';
+  const usersRep = (await getUserRep(db, universe, account)).toString();
   const totalRepSupply = (await getRepSupply(augur, universe)).toString();
   const totalOpenInterest = (await universe.getOpenInterestInAttoCash_()).toString();
   const numberOfMarkets = (await getMarketsForUniverse(db, address)).length;
