@@ -419,7 +419,6 @@ export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
     handleAlert(log, PUBLICFILLORDER, true, dispatch, getState);
     dispatch(removePendingOrder(log.tradeGroupId, marketId));
   }
-  dispatch(checkUpdateUserPositions([marketId]));
   if (isOnTradePage()) {
     dispatch(loadMarketTradingHistory(marketId));
     dispatch(updateMarketOrderBook(log.market));
