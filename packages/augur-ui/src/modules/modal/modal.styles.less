@@ -779,7 +779,7 @@ div.ButtonsRow:last-of-type {
 }
 
 .SignIn,
-.Connect,
+.HardwareWallet,
 .Loading {
   .Container;
 
@@ -908,9 +908,34 @@ div.ButtonsRow:last-of-type {
   > button:last-of-type {
     margin: 0 0 @size-32 0;
   }
+
+  > footer {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+
+    > div:first-of-type {
+      .text-12;
+
+      color: @color-secondary-text;
+
+      > span {
+        color: @color-primary-action;
+        cursor: pointer;
+      }
+    }
+
+    > div:last-of-type {
+      .text-12;
+
+      color: @color-secondary-text;
+      cursor: pointer;
+      text-align: center;
+    }
+  }
 }
 
-.Connect {
+.HardwareWallet {
   @media @breakpoint-mobile {
     margin: @size-48 0;
     padding-top: 57px;
@@ -940,8 +965,8 @@ div.ButtonsRow:last-of-type {
     }
   }
 
-  > header {
-    margin: 0 0 @size-24 0;
+  > section {
+    margin: 0 0 @size-16 0;
 
     > div:first-of-type {
       .text-24-bold;
@@ -955,24 +980,31 @@ div.ButtonsRow:last-of-type {
 
       color: @color-secondary-text;
       line-height: @size-20;
-
-      @media @breakpoint-mobile {
-        .text-12;
-      }
     }
   }
 
   > button {
-    .text-14-bold;
+    > a {
+      .text-10;
 
-    color: @color-primary-text;
-    margin: 0 0 @size-8 0;
-    min-height: 52px;
-    text-align: left;
-  }
+      color: @color-primary-action;
+      text-transform: uppercase;
+    }
 
-  > button:last-of-type {
-    margin: 0;
+    > svg {
+      margin-top: 0;
+    }
+
+    path {
+      &:nth-child(odd) {
+        fill: @color-primary-action;
+        stroke: none;
+      }
+
+      &:nth-child(even) {
+        stroke: @color-primary-action;
+      }
+    }
   }
 }
 
@@ -3188,7 +3220,7 @@ div.ButtonsRow:last-of-type {
   > ul {
     height: @size-32;
     > li {
-      background: @color-secondary-action;
+      background: @color-dark-grey;
       width: 50%;
 
       >  button {
@@ -3201,7 +3233,7 @@ div.ButtonsRow:last-of-type {
   }
 
   > ul > li[class*='Selected'] {
-    background: @color-dark-grey;
+    background: @color-secondary-action;
   }
 
   > ul > li:first-of-type {
