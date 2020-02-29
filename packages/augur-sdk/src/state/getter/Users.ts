@@ -1243,10 +1243,10 @@ function sumTradingPositions(
     : realized.dividedBy(realizedCost).toFixed(4);
   summedTrade.unrealizedPercent = unrealizedCost.isZero()
     ? '0'
-    : unrealized.dividedBy(unrealizedCost).toFixed();
+    : unrealized.dividedBy(unrealizedCost).toFixed(4);
   summedTrade.unrealized24HrPercent = unrealizedCost.isZero()
     ? '0'
-    : unrealized24Hr.dividedBy(unrealizedCost).toFixed();
+    : unrealized24Hr.dividedBy(unrealizedCost).toFixed(4);
   summedTrade.totalPercent = totalCost.isZero()
     ? '0'
     : total.dividedBy(totalCost).toFixed(4);
@@ -1518,8 +1518,8 @@ function getTradingPositionFromProfitLossFrame(
   const realizedPercent = realizedCost.isZero()
     ? new BigNumber(0)
     : realizedProfit.dividedBy(realizedCost);
-  const unrealized24HrPercent = unrealized24Hr.dividedBy(unrealizedCost);
-  const unrealizedPercent = unrealized.dividedBy(unrealizedCost);
+  const unrealized24HrPercent = unrealizedCost.isZero() ? new BigNumber(0) : unrealized24Hr.dividedBy(unrealizedCost);
+  const unrealizedPercent = unrealizedCost.isZero() ? new BigNumber(0) : unrealized.dividedBy(unrealizedCost);
   const totalPercent = realizedProfit
     .plus(unrealized)
     .dividedBy(realizedCost.plus(unrealizedCost));
@@ -1540,9 +1540,9 @@ function getTradingPositionFromProfitLossFrame(
     realizedCost: realizedCost.toFixed(),
     totalCost: unrealizedCost.plus(realizedCost).toFixed(),
     realizedPercent: realizedPercent.toFixed(),
-    unrealizedPercent: unrealizedPercent.toFixed(),
-    unrealized24HrPercent: unrealized24HrPercent.toFixed(),
-    totalPercent: totalPercent.toFixed(),
+    unrealizedPercent: unrealizedPercent.toFixed(4),
+    unrealized24HrPercent: unrealized24HrPercent.toFixed(4),
+    totalPercent: totalPercent.toFixed(4),
     currentValue: currentValue.toFixed(),
   } as TradingPosition;
 }

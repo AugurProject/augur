@@ -31,7 +31,7 @@ export default class OpenMarkets extends Component<OpenMarketsProps> {
     const positionValueChange =
       marketsObj[market.id] &&
       marketsObj[market.id].myPositionsSummary &&
-      marketsObj[market.id].myPositionsSummary.valueChange || formatNumber(0);
+      marketsObj[market.id].myPositionsSummary.valueChange24Hr || formatNumber(0);
     return (
       <MarketRow
         key={'position_' + market.id}
