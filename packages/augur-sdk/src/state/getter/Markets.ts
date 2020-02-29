@@ -472,7 +472,6 @@ export class Markets {
     if (!(await augur.contracts.augur.isKnownUniverse_(params.universe))) {
       throw new Error('Unknown universe: ' + params.universe);
     }
-
     params.includeWarpSyncMarkets = typeof params.includeWarpSyncMarkets === 'undefined' ? false : params.includeWarpSyncMarkets;
     params.maxLiquiditySpread = typeof params.maxLiquiditySpread === 'undefined' ? MaxLiquiditySpread.OneHundredPercent : params.maxLiquiditySpread;
     params.includeInvalidMarkets = typeof params.includeInvalidMarkets === 'undefined' ? true : params.includeInvalidMarkets;
