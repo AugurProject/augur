@@ -1172,7 +1172,7 @@ function sumTradingPositions(
       const unrealized = new BigNumber(resultPosition.unrealized).plus(
         tradingPosition.unrealized
       );
-      const unrealized24Hr = new BigNumber(resultPosition.unrealized).plus(
+      const unrealized24Hr = new BigNumber(resultPosition.unrealized24Hr).plus(
         tradingPosition.unrealized24Hr
       );
       const realizedCost = new BigNumber(resultPosition.realizedCost).plus(
