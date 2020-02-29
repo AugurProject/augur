@@ -272,7 +272,6 @@ export const handleMarketCreatedLog = (logs: any) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  console.log('handleMarketCreatedLog');
   const userLogs = logs.filter(log =>
     isSameAddress(log.marketCreator, getState().loginAccount.address)
   );
