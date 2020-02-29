@@ -272,6 +272,7 @@ export const handleMarketCreatedLog = (logs: any) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
+  console.log('handleMarketCreatedLog');
   const userLogs = logs.filter(log =>
     isSameAddress(log.marketCreator, getState().loginAccount.address)
   );
@@ -279,10 +280,19 @@ export const handleMarketCreatedLog = (logs: any) => (
     if (log.removed) {
       dispatch(removeMarket(log.market));
     } else {
-      dispatch(
-        removePendingDataByHash(log.market.transactionHash, CREATE_MARKET)
-      );
-      dispatch(marketCreationCreated(log.market, log.extraInfo));
+      dispatch(loadMarketsInfo([log.market], (err, marketInfos) => {
+        if (err) return console.error(err);
+        Object.keys(marketInfos).map(id => {
+          const market = marketInfos[id]
+          if (market) {
+            dispatch(
+              removePendingDataByHash(market.transactionHash, CREATE_MARKET)
+            );
+            handleAlert(log, CREATEMARKET, false, dispatch, getState);
+            dispatch(marketCreationCreated(market, log.extraInfo));
+          }
+        })
+      }));
     }
   });
   if (userLogs.length > 0) {
