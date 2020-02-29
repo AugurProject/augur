@@ -323,6 +323,14 @@ export const handleMarketMigratedLog = (log: any) => (
   dispatch(loadUniverseDetails(universeId, userAddress));
 };
 
+export const handleWarpSyncHashUpdatedLog = (log: any) => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  const { universe, loginAccount } = getState();
+  dispatch(loadUniverseDetails(universe.id, loginAccount.address));
+};
+
 export const handleTokensTransferredLog = (logs: Logs.TokensTransferredLog[]) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
