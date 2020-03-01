@@ -45,6 +45,7 @@ export interface DefaultButtonProps {
   status?: string;
   secondaryButton?: boolean;
   cancel?: Function;
+  cancelButton?: boolean;
 }
 
 export interface SortButtonProps {
@@ -204,8 +205,16 @@ const ProcessingButtonComponent = (props: DefaultButtonProps) => {
           disabled={props.disabled || Boolean(props.status)}
         />
       }
-      {!failed && !confirmed && !props.secondaryButton &&
+      {!failed && !confirmed && !props.secondaryButton && !props.cancelButton &&
         <PrimaryButton
+          {...props}
+          text={buttonText}
+          action={e => props.action(e)}
+          disabled={props.disabled || Boolean(props.status)}
+        />
+      }
+      {!failed && !confirmed && props.cancelButton &&
+        <CancelTextButton
           {...props}
           text={buttonText}
           action={e => props.action(e)}

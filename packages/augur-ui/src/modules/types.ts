@@ -199,6 +199,7 @@ export interface PendingQueue {
     [pendingId: string]: {
       status: string;
       blockNumber: number;
+      hash: string;
       parameters?: UIOrder | NewMarket;
       data: CreateMarketData;
     };
@@ -266,6 +267,7 @@ export interface Notification {
   markets: string[];
   claimReportingFees?: object;
   totalProceeds?: number;
+  transactionView: string;
 }
 
 export interface OrderStatus {
