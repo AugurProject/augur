@@ -1438,7 +1438,7 @@ MUST emit when the URI is updated for a token ID.
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ISimpleDex.token()"><code class="function-signature">token()</code></a></li><li><a href="#ISimpleDex.cash()"><code class="function-signature">cash()</code></a></li><li><a href="#ISimpleDex.tokenReserve()"><code class="function-signature">tokenReserve()</code></a></li><li><a href="#ISimpleDex.cashReserve()"><code class="function-signature">cashReserve()</code></a></li><li><a href="#ISimpleDex.blockNumberLast()"><code class="function-signature">blockNumberLast()</code></a></li><li><a href="#ISimpleDex.tokenPriceCumulativeLast()"><code class="function-signature">tokenPriceCumulativeLast()</code></a></li><li><a href="#ISimpleDex.buyToken(address)"><code class="function-signature">buyToken(address _recipient)</code></a></li><li><a href="#ISimpleDex.getTokenPurchaseCost(uint256)"><code class="function-signature">getTokenPurchaseCost(uint256 _tokenAmount)</code></a></li><li><a href="#ISimpleDex.publicMint(address)"><code class="function-signature">publicMint(address to)</code></a></li><li><a href="#ISimpleDex.publicBurn(address)"><code class="function-signature">publicBurn(address to)</code></a></li><li><a href="#ISimpleDex.skim(address)"><code class="function-signature">skim(address to)</code></a></li><li><a href="#ISimpleDex.sync()"><code class="function-signature">sync()</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ISimpleDex.token()"><code class="function-signature">token()</code></a></li><li><a href="#ISimpleDex.cash()"><code class="function-signature">cash()</code></a></li><li><a href="#ISimpleDex.tokenReserve()"><code class="function-signature">tokenReserve()</code></a></li><li><a href="#ISimpleDex.cashReserve()"><code class="function-signature">cashReserve()</code></a></li><li><a href="#ISimpleDex.blockNumberLast()"><code class="function-signature">blockNumberLast()</code></a></li><li><a href="#ISimpleDex.tokenPriceCumulativeLast()"><code class="function-signature">tokenPriceCumulativeLast()</code></a></li><li><a href="#ISimpleDex.buyToken(address)"><code class="function-signature">buyToken(address _recipient)</code></a></li><li><a href="#ISimpleDex.autoBuyTokenAmount(address,uint256)"><code class="function-signature">autoBuyTokenAmount(address _recipient, uint256 _tokenAmount)</code></a></li><li><a href="#ISimpleDex.getTokenPurchaseCost(uint256)"><code class="function-signature">getTokenPurchaseCost(uint256 _tokenAmount)</code></a></li><li><a href="#ISimpleDex.publicMint(address)"><code class="function-signature">publicMint(address to)</code></a></li><li><a href="#ISimpleDex.publicBurn(address)"><code class="function-signature">publicBurn(address to)</code></a></li><li><a href="#ISimpleDex.skim(address)"><code class="function-signature">skim(address to)</code></a></li><li><a href="#ISimpleDex.sync()"><code class="function-signature">sync()</code></a></li></ul></div>
 
 
 
@@ -1479,6 +1479,12 @@ MUST emit when the URI is updated for a token ID.
 
 
 <h4><a class="anchor" aria-hidden="true" id="ISimpleDex.buyToken(address)"></a><code class="function-signature">buyToken(address _recipient) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ISimpleDex.autoBuyTokenAmount(address,uint256)"></a><code class="function-signature">autoBuyTokenAmount(address _recipient, uint256 _tokenAmount) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
 
 
 

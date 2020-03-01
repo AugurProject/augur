@@ -70,7 +70,7 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
     )
         external
         view
-        returns (uint256, bytes memory)
+        returns (uint256 _reason, bytes memory _context)
     {
         uint256 _maxDaiNeeded = ethExchange.getTokenPurchaseCost(_maxPossibleCharge); // TODO Apply slippage from approvalData
         address _walletAddress = getCreate2WalletAddress(_from);
@@ -153,7 +153,7 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
         uint256 transactionFee,
         uint256 gasPrice,
         uint256 gasLimit,
-        uint256 nonce) public returns (bytes32) {
+        uint256 nonce) public view returns (bytes32) {
         bytes memory packed = abi.encodePacked("rlx:", from, to, encodedFunction, transactionFee, gasPrice, gasLimit, nonce, getHubAddr());
         return keccak256(abi.encodePacked(packed, relay));
     }

@@ -37,7 +37,6 @@ interface ExternalAddresses {
   ProxyFactory?: string;
   Exchange?: string;
   UniswapV2Factory?: string;
-  ENSRegistry?: string;
 }
 
 type NetworksToExternalAddresses = {
