@@ -3,8 +3,6 @@ import { UPDATE_ENV } from 'modules/app/actions/update-env';
 import { DEFAULT_SDK_CONFIGURATION, SDKConfiguration } from '@augurproject/artifacts';
 
 const DEFAULT_STATE: SDKConfiguration = JSON.parse(JSON.stringify(DEFAULT_SDK_CONFIGURATION));
-  // useWeb3Transport: true,
-  // universe: undefined,
 
 export default function(env = DEFAULT_STATE, { type, data }: BaseAction): SDKConfiguration {
   switch (type) {

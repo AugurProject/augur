@@ -7,14 +7,15 @@ import { augurEmitter } from '../events';
 import { API } from './getter/API';
 import { AddressFormatReviver } from './AddressFormatReviver';
 import { IsJsonRpcRequest } from './IsJsonRpcRequest';
-import { JsonRpcRequest, EndpointSettings } from './getter/types';
+import { JsonRpcRequest } from './getter/types';
 import { MakeJsonRpcError, JsonRpcErrorCode } from './MakeJsonRpcError';
 import { MakeJsonRpcResponse } from './MakeJsonRpcResponse';
 import { Subscriptions } from '../subscriptions';
-import { SubscriptionEventName } from "../constants";
+import { SubscriptionEventName } from '../constants';
+import { SDKConfiguration } from '@augurproject/artifacts';
 
-export function runWsServer(api: API, app: express.Application, endpointSettings: EndpointSettings): WebSocket.Server {
-  const { wsPort: port } = endpointSettings;
+export function runWsServer(api: API, app: express.Application, config: SDKConfiguration): WebSocket.Server {
+  const { wsPort: port } = config.server;
   const server = http.createServer(app).listen(port, () => {
     console.log(`WS listening on ${port}`);
   });
@@ -23,8 +24,8 @@ export function runWsServer(api: API, app: express.Application, endpointSettings
   return wsServer;
 }
 
-export function runWssServer(api: API, app: express.Application, endpointSettings: EndpointSettings): WebSocket.Server {
-  const { wssPort: port } = endpointSettings;
+export function runWssServer(api: API, app: express.Application, config: SDKConfiguration): WebSocket.Server {
+  const { wssPort: port } = config.server;
   const server = https.createServer(app).listen(port, () => {
     console.log(`WS listening on ${port}`);
   });

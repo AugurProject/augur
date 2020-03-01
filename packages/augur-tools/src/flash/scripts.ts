@@ -40,7 +40,6 @@ import { NumOutcomes } from '@augurproject/sdk/src/state/logs/types';
 import { flattenZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
 import { formatAddress, sleep, waitForSigint } from './util';
 import * as fs from 'fs';
-import { EndpointSettings } from '@augurproject/sdk/build/state/getter/types';
 import { runWsServer, runWssServer } from '@augurproject/sdk/build/state/WebsocketEndpoint';
 import { createApp, runHttpServer, runHttpsServer } from '@augurproject/sdk/build/state/HTTPEndpoint';
 import { buildConfig } from "@augurproject/artifacts/build";
@@ -1459,7 +1458,7 @@ export function addScripts(flash: FlashSession) {
         args.to === null || args.to === 'latest' ? 'latest' : Number(args.to);
 
       const logs = await this.provider.getLogs({
-        address: user.augur.addresses.Augur,
+        address: user.augur.config.addresses.Augur,
         fromBlock,
         toBlock,
         topics: [],
@@ -2182,53 +2181,14 @@ export function addScripts(flash: FlashSession) {
   flash.addScript({
     name: 'sdk-server',
     ignoreNetwork: true,
-    options: [
-      {
-        name: 'config-file',
-        abbr: 'f',
-        description: 'SDKConfiguration JSON file',
-      },
-      {
-        name: 'config',
-        abbr: 'c',
-        description: 'serialized SDKConfiguration JSON',
-      },
-    ],
-    async call(this: FlashSession, args: FlashArguments) {
-      const configFile = args.configFile as string;
-      const config = args.config as string;
-
-      let configuration: SDKConfiguration;
-      if (configFile && config) {
-        throw Error('Cannot specify both config-file and config');
-      } else if (configFile) {
-        configuration = JSON.parse(fs.readFileSync(configFile).toString())
-      } else if (config) {
-        configuration = JSON.parse(config);
-      } else {
-        // TODO support default network SDKConfiguration
-        throw Error('Must specify config-file or config')
-      }
-
-      const api = await startServer(configuration, this.account);
+    async call(this: FlashSession) {
+      const api = await startServer(this.config, this.account);
       const app = createApp(api);
 
-      const endpointSettings: EndpointSettings = {
-        httpPort: 9003,
-        startHTTP: true,
-        httpsPort: 9004,
-        startHTTPS: true,
-        wsPort: 9001,
-        startWS: true,
-        wssPort: 9002,
-        startWSS: true,
-        ...(configuration.server || {})
-      };
-
-      const httpServer = endpointSettings.startHTTP && runHttpServer(app, endpointSettings);
-      const httpsServer = endpointSettings.startHTTPS && runHttpsServer(app, endpointSettings);
-      const wsServer = endpointSettings.startWS && runWsServer(api, app, endpointSettings);
-      const wssServer = endpointSettings.startWSS && runWssServer(api, app, endpointSettings);
+      const httpServer = this.config.server?.startHTTP && runHttpServer(app, this.config);
+      const httpsServer = this.config.server?.startHTTPS && runHttpsServer(app, this.config);
+      const wsServer = this.config.server?.startWS && runWsServer(api, app, this.config);
+      const wssServer = this.config.server?.startWSS && runWssServer(api, app, this.config);
 
       this.log('Running SDK server. Type ctrl-c to quit:\n');
       await waitForSigint();

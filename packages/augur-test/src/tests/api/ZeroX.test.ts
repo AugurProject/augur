@@ -1,29 +1,25 @@
 import { WSClient } from '@0x/mesh-rpc-client';
-import { ContractAddresses } from '@augurproject/artifacts';
+import { SDKConfiguration } from '@augurproject/artifacts';
 import { sleep } from '@augurproject/core/build/libraries/HelperFunctions';
-import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { Connectors } from '@augurproject/sdk';
 import { ZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
 import { ACCOUNTS, defaultSeedPath, loadSeedFile } from '@augurproject/tools';
 import { TestContractAPI } from '@augurproject/tools';
-import {
-  NULL_ADDRESS,
-  stringTo32ByteHex,
-} from '@augurproject/tools/build/libs/Utils';
+import { NULL_ADDRESS, stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
 import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from 'ethers/utils';
 import * as _ from 'lodash';
 import { makeProvider, MockGnosisRelayAPI } from '../../libs';
 import { MockBrowserMesh } from '../../libs/MockBrowserMesh';
 import { MockMeshServer, stopServer } from '../../libs/MockMeshServer';
+import { TestEthersProvider } from "@augurproject/tools/build/libs/TestEthersProvider";
 
 describe('Augur API :: ZeroX :: ', () => {
   let john: TestContractAPI;
-
   let mary: TestContractAPI;
 
-  let provider: EthersProvider;
-  let addresses: ContractAddresses;
+  let provider: TestEthersProvider;
+  let config: SDKConfiguration;
 
   let meshClient: WSClient;
 
@@ -32,8 +28,8 @@ describe('Augur API :: ZeroX :: ', () => {
     meshClient = new WSClient(`ws://localhost:${port}`);
 
     const seed = await loadSeedFile(defaultSeedPath);
-    addresses = seed.addresses;
     provider = await makeProvider(seed, ACCOUNTS);
+    config = provider.getConfig();
   });
 
   afterAll(() => {
@@ -49,7 +45,7 @@ describe('Augur API :: ZeroX :: ', () => {
       john = await TestContractAPI.userWrapper(
         ACCOUNTS[0],
         provider,
-        addresses,
+        config,
         johnConnector,
         johnGnosis,
         meshClient,
@@ -66,7 +62,7 @@ describe('Augur API :: ZeroX :: ', () => {
       mary = await TestContractAPI.userWrapper(
         ACCOUNTS[1],
         provider,
-        addresses,
+        config,
         maryConnector,
         maryGnosis,
         meshClient,
@@ -359,7 +355,7 @@ describe('Augur API :: ZeroX :: ', () => {
       john = await TestContractAPI.userWrapper(
         ACCOUNTS[0],
         provider,
-        addresses,
+        config,
         johnConnector,
         undefined,
         meshClient,
@@ -374,7 +370,7 @@ describe('Augur API :: ZeroX :: ', () => {
       mary = await TestContractAPI.userWrapper(
         ACCOUNTS[1],
         provider,
-        addresses,
+        config,
         maryConnector,
         undefined,
         meshClient,

@@ -14,7 +14,7 @@ import { FlashArguments, FlashSession } from './flash';
 import { ethers } from 'ethers';
 import * as ganache from 'ganache-core';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
-import { updateConfig, NetworkId, SDKConfiguration } from '@augurproject/artifacts';
+import { updateConfig, NetworkId } from '@augurproject/artifacts';
 import * as fs from 'async-file';
 import { LogReplayer } from './replay-logs';
 import { LogReplayerV1 } from './replay-logs-v1';
@@ -34,7 +34,7 @@ export function addGanacheScripts(flash: FlashSession) {
   };
 
   flash.createSeed = async function(this: FlashSession) {
-    return createSeed(this.provider, this.ganacheDb, this.contractAddresses);
+    return createSeed(this.provider, this.ganacheDb, this.config.addresses);
   };
 
   flash.addScript({
@@ -109,16 +109,17 @@ export function addGanacheScripts(flash: FlashSession) {
       const name = args.name as string || 'default';
       const seed = await this.createSeed() as Seed;
 
-      const WarpSync = await generateWarpSyncTestData(seed);
 
-      if (args.save as boolean) {
+      const warpSync = await generateWarpSyncTestData(this.config, seed);
+
+      if (Boolean(args.save)) {
         const filepath = args.filepath as string || defaultSeedPath;
         await writeSeedFile({
           addresses: seed.addresses,
           contractsHash: seed.contractsHash,
           seeds: {
             'default': seed.data,
-            WarpSync
+            warpSync
           }
         }, filepath);
       }
@@ -251,14 +252,14 @@ export function addGanacheScripts(flash: FlashSession) {
       },
       {
         name: 'write-artifacts',
-        description: "Overwrite addresses.json to include seed file's addresses.",
+        description: "Create/overwrite environments/local.json to include seed file's addresses.",
         flag: true,
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const name = args.name as string || 'default';
       const filepath = args.filepath as string || defaultSeedPath;
-      const writeArtifacts = args.writeArtifacts as boolean;
+      const writeArtifacts = Boolean(args.writeArtifacts);
 
       if (await fs.exists(filepath)) {
         const seed: Seed = await loadSeedFile(filepath);

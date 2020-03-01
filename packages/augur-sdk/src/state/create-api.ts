@@ -41,7 +41,7 @@ export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: Ethe
     const staringSyncBlock = Math.max(await (await db).getSyncStartingBlock(), endWarpSyncBlockNumber || uploadBlockNumber);
     const endBulkSyncBlockNumber = await bulkSyncStrategy.start(staringSyncBlock, currentBlockNumber);
 
-    const derivedSyncLabel = `Syncing rollup and derived DBs`
+    const derivedSyncLabel = 'Syncing rollup and derived DBs';
     console.time(derivedSyncLabel);
     await (await db).sync();
     console.timeEnd(derivedSyncLabel);
@@ -85,17 +85,14 @@ export async function createClient(
   } else {
       throw Error('No ethereum http endpoint provided');
   }
-  const networkId = config.networkId || await ethersProvider.getNetworkId();
-
-  if (!(config.addresses || networkId)) {
-    throw Error('Config must include addresses or networkId because node did not provide networkId');
+  if (!config.addresses) {
+    throw Error('Config must include addresses');
   }
-  const addresses = config.addresses || getAddressesForNetwork(networkId);
 
   const contractDependencies = ContractDependenciesGnosis.create(
     ethersProvider,
     signer,
-    addresses.Cash,
+    config.addresses.Cash,
     config.gnosis?.http,
   );
 
@@ -108,7 +105,7 @@ export async function createClient(
   const client = await Augur.create(
     ethersProvider,
     contractDependencies,
-    addresses,
+    config,
     connector,
     zeroX,
     enableFlexSearch
@@ -137,8 +134,6 @@ export async function createServer(config: SDKConfiguration, client?: Augur, acc
   config = {
     syncing: {
       enabled: true,
-      blockstreamDelay: 10,
-      chunkSize: 100000
     },
     ...config
   };
@@ -157,10 +152,10 @@ export async function createServer(config: SDKConfiguration, client?: Augur, acc
   const ethersProvider: EthersProvider = client.provider as EthersProvider;
   const contractEvents = new ContractEvents(
     ethersProvider,
-    client.addresses.Augur,
-    client.addresses.AugurTrading,
-    client.addresses.ShareToken,
-    client.addresses.Exchange
+    client.config.addresses.Augur,
+    client.config.addresses.AugurTrading,
+    client.config.addresses.ShareToken,
+    client.config.addresses.Exchange
   );
 
   const logFilterAggregator = LogFilterAggregator.create(

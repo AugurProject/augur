@@ -1,4 +1,4 @@
-import { ContractAddresses, NetworkId } from '@augurproject/artifacts';
+import { SDKConfiguration } from '@augurproject/artifacts';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
 import { API } from '@augurproject/sdk/build/state/getter/API';
 import { WarpSyncGetter } from '@augurproject/sdk/build/state/getter/WarpSyncGetter';
@@ -20,7 +20,6 @@ import {
 } from '@augurproject/tools';
 import { Seed, TestContractAPI } from '@augurproject/tools';
 import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
-import { BigNumber } from 'bignumber.js';
 import { ContractDependenciesEthers } from 'contract-dependencies-ethers';
 import { Block } from 'ethers/providers';
 import { makeDbMock, makeProvider } from '../../libs';
@@ -34,11 +33,10 @@ const filterRetrievelFn = (ipfs: IPFS) => (ipfsPath: string) =>
     .then(item => JSON.parse(item));
 
 describe('WarpController', () => {
-  let addresses: ContractAddresses;
+  let config: SDKConfiguration;
   let dependencies: ContractDependenciesEthers;
   let ipfs;
   let john: TestContractAPI;
-  let networkId: NetworkId;
   let provider: TestEthersProvider;
   let warpController: WarpController;
   let firstCheckpointFileHash: string;
@@ -52,13 +50,12 @@ describe('WarpController', () => {
   beforeAll(async () => {
     configureDexieForNode(true);
 
-    seed = await loadSeedFile(defaultSeedPath, 'WarpSync');
+    seed = await loadSeedFile(defaultSeedPath, 'warpSync');
 
     provider = await makeProvider(seed, ACCOUNTS);
-    networkId = await provider.getNetworkId();
+    config = provider.getConfig();
     const signer = await makeSigner(ACCOUNTS[0], provider);
     dependencies = makeDependencies(ACCOUNTS[0], provider, signer);
-    addresses = seed.addresses;
 
     uploadBlockHeaders = await provider.getBlock(0);
     firstCheckpointBlockHeaders = await provider.getBlock(170);
@@ -67,7 +64,7 @@ describe('WarpController', () => {
     john = await TestContractAPI.userWrapper(
       ACCOUNTS[0],
       provider,
-      seed.addresses
+      config
     );
 
     // partially populate db.
@@ -160,8 +157,6 @@ describe('WarpController', () => {
 
       const targetBeginNumber = Math.min(...logs.map(item => item.blockNumber));
       const targetEndNumber = Math.max(...logs.map(item => item.blockNumber));
-      const beginBlock = await provider.getBlock(targetBeginNumber);
-      const endBlock = await provider.getBlock(targetEndNumber);
       const hash = await warpController.createCheckpoint(
         targetBeginNumber,
         targetEndNumber
@@ -325,7 +320,7 @@ describe('WarpController', () => {
       fixture = await TestContractAPI.userWrapper(
         ACCOUNTS[0],
         provider,
-        seed.addresses
+        config
       );
 
       fixtureDB = await mock.makeDB(fixture.augur);
@@ -342,7 +337,7 @@ describe('WarpController', () => {
       newJohn = await TestContractAPI.userWrapper(
         ACCOUNTS[0],
         provider,
-        seed.addresses
+        config
       );
 
       newJohnDB = await mock.makeDB(newJohn.augur);
@@ -402,11 +397,11 @@ describe('WarpController', () => {
 
       test('should populate market data', async () => {
         const fixtureMarketList = await fixtureApi.route('getMarkets', {
-          universe: addresses.Universe,
+          universe: config.addresses.Universe,
         });
 
         const result = await newJohnApi.route('getMarkets', {
-          universe: addresses.Universe,
+          universe: config.addresses.Universe,
         });
 
         expect(result).toEqual(fixtureMarketList);
@@ -428,13 +423,13 @@ describe('WarpController', () => {
           blockNumber
         );
         const fixtureMarketList = await fixtureApi.route('getMarkets', {
-          universe: addresses.Universe,
+          universe: config.addresses.Universe,
         });
 
         // Sanity check.
         await expect(
           newJohnApi.route('getMarkets', {
-            universe: addresses.Universe,
+            universe: config.addresses.Universe,
           })
         ).resolves.toEqual(fixtureMarketList);
 
@@ -445,20 +440,20 @@ describe('WarpController', () => {
         const rolledbackFixtureMarketList = await fixtureApi.route(
           'getMarkets',
           {
-            universe: addresses.Universe,
+            universe: config.addresses.Universe,
           }
         );
 
         await expect(
           newJohnApi.route('getMarkets', {
-            universe: addresses.Universe,
+            universe: config.addresses.Universe,
           })
         ).resolves.toEqual(rolledbackFixtureMarketList);
       });
 
       test('should populate checkpoint db', async () => {
         // populate db.
-        const blockNumber = await warpSyncStrategy.start(
+        await warpSyncStrategy.start(
           secondCheckpointFileHash
         );
         await expect(

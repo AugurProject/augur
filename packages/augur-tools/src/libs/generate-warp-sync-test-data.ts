@@ -4,25 +4,26 @@ import { BigNumber } from 'bignumber.js';
 
 import { ACCOUNTS } from '../constants';
 import { ContractAPI } from './contract-api';
-import { extractSeed } from './ganache';
+import { extractSeed, Seed } from './ganache';
 import { makeProviderWithDB } from './LocalAugur';
 import { stringTo32ByteHex } from './Utils';
+import { SDKConfiguration } from '@augurproject/artifacts';
 
 const outcome0 = new BigNumber(0);
 const outcome1 = new BigNumber(1);
 
-export async function generateWarpSyncTestData(seed) {
+export async function generateWarpSyncTestData(config: SDKConfiguration, seed: Seed) {
   const [db, provider] = await makeProviderWithDB(seed, ACCOUNTS);
 
   const john = await ContractAPI.userWrapper(
     ACCOUNTS[0],
     provider,
-    seed.addresses
+    config
   );
   const mary = await ContractAPI.userWrapper(
     ACCOUNTS[1],
     provider,
-    seed.addresses
+    config
   );
 
   await john.approveCentralAuthority();

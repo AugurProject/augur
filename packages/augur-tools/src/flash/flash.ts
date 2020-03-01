@@ -125,7 +125,7 @@ export class FlashSession {
     useZerox: boolean = null,
     useGnosis: boolean = null,
   ): Promise<ContractAPI> {
-    if (typeof this.config.addresses === 'undefined') {
+    if (typeof this.config?.addresses === 'undefined') {
       throw Error('ERROR: Must load contract addresses first.');
     }
 
@@ -281,7 +281,7 @@ export class FlashSession {
     } as unknown) as LogFilterAggregatorInterface;
 
     return DB.createAndInitializeDB(
-      Number(this.user.augur.networkId),
+      Number(this.user.augur.config.networkId),
       logFilterAggregator,
       this.user.augur,
       true

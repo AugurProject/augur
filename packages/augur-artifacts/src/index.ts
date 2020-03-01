@@ -11,6 +11,14 @@ import requireAll from 'require-all';
 
 export interface SDKConfiguration {
   networkId: NetworkId,
+  ethereum?: {
+    http?: string,
+    ws?: string,
+    useWeb3Transport?: boolean,
+    rpcRetryCount: number,
+    rpcRetryInterval: number,
+    rpcConcurrency: number
+  },
   gas?: {
     limit?: number,
     price?: number
@@ -23,18 +31,6 @@ export interface SDKConfiguration {
     contractInputPath: string,
     writeArtifacts?: boolean,
     externalAddresses?: ExternalAddresses,
-  }
-  ethereum?: {
-    http?: string,
-    ws?: string,
-    useWeb3Transport?: boolean,
-    rpcRetryCount: number,
-    rpcRetryInterval: number,
-    rpcConcurrency: number
-  },
-  sdk?: {
-    enabled: boolean,
-    ws: string,
   },
   gnosis?: {
     enabled: boolean,
@@ -54,11 +50,11 @@ export interface SDKConfiguration {
   },
   syncing?: {
     enabled: boolean,
-    blockstreamDelay?: number,
-    chunkSize?: number
+  }
+  sdk?: {
+    enabled: boolean,
+    ws?: string,
   },
-  uploadBlockNumber?: number,
-  addresses?: ContractAddresses,
   server?: {
     httpPort: number;
     startHTTP: boolean;
@@ -70,7 +66,9 @@ export interface SDKConfiguration {
     startWSS: boolean;
     certificateFile?: string;
     certificateKeyFile?: string;
-  }
+  },
+  uploadBlockNumber?: number,
+  addresses?: ContractAddresses,
 };
 
 export let environments: {[network: string]: SDKConfiguration} = {};
@@ -80,12 +78,12 @@ if (process?.versions?.node) {
     filter: /^(.+)\.json/,
     recursive: false,
   });
-} {
+} else {
   // tslint:disable-next-line:ban-ts-ignore
   // @ts-ignore
   const context = require.context('./environments', false, /.*\.json$/);
   const envNameRegex = new RegExp('([^\/]*)\.json$');
-  context.keys().forEach((file) => {
+  context.keys().forEach((file: string) => {
     const key = file.match(envNameRegex)[1];
     environments[key] = context(file);
   });
@@ -286,7 +284,7 @@ export function isValidConfig(suspect: Partial<SDKConfiguration>): suspect is SD
   }
   if (suspect.sdk) {
     if (typeof suspect.sdk.enabled === 'undefined') return false;
-    if (typeof suspect.sdk.ws === 'undefined') return false;
+    if (suspect.sdk.enabled && typeof suspect.sdk.ws === 'undefined') return false;
   }
   if (suspect.gnosis && typeof suspect.gnosis.enabled === 'undefined') return false;
   if (suspect.zeroX) {
@@ -297,7 +295,6 @@ export function isValidConfig(suspect: Partial<SDKConfiguration>): suspect is SD
       if (typeof suspect.zeroX.mesh.enabled === 'undefined') return false;
     }
   }
-  if (suspect.syncing && typeof suspect.syncing.enabled === 'undefined') return false;
   if (suspect.server) {
     if (typeof suspect.server.httpPort === 'undefined') return false;
     if (typeof suspect.server.startHTTP === 'undefined') return false;
@@ -346,6 +343,16 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
       enabled: false,
     }
   },
+  server: {
+    httpPort: 9003,
+    startHTTP: true,
+    httpsPort: 9004,
+    startHTTPS: true,
+    wsPort: 9001,
+    startWS: true,
+    wssPort: 9002,
+    startWSS: true,
+  },
   uploadBlockNumber: 0,
 };
 
@@ -357,17 +364,46 @@ export function buildConfig(env: string, specified: RecursivePartial<SDKConfigur
 export function configFromEnvvars(config?: Partial<SDKConfiguration>): Partial<SDKConfiguration> {
   const e = process.env;
 
+  if (e.NETWORK_ID) config = deepmerge(config, { networkId: e.NETWORK_ID });
+
+  if (e.ETHEREUM_HTTP) config = deepmerge(config, { ethereum: { http: e.ETHEREUM_HTTP }});
+  if (e.ETHEREUM_WS) config = deepmerge(config, { ethereum: { ws: e.ETHEREUM_WS }});
+  if (e.ETHEREUM_RPC_RETRY_COUNT) config = deepmerge(config, { ethereum: { rpcRetryCount: e.ETHEREUM_RPC_RETRY_COUNT }});
+  if (e.ETHEREUM_RPC_RETRY_INTERVAL) config = deepmerge(config, { ethereum: { rpcRetryInterval: e.ETHEREUM_RPC_RETRY_INTERVAL }});
+  if (e.ETHEREUM_RPC_CONCURRENCY) config = deepmerge(config, { ethereum: { rpcConcurrency: e.ETHEREUM_RPC_CONCURRENCY }});
+
   if (e.GAS_LIMIT) config = deepmerge(config, { gas: { limit: e.GAS_LIMIT }});
   if (e.GAS_PRICE) config = deepmerge(config, { gas: { price: e.GAS_PRICE }});
 
   if (e.ENABLE_FAUCETS) config = deepmerge(config, { deploy: { enableFaucets: e.ENABLE_FAUCETS }});
   if (e.NORMAL_TIME) config = deepmerge(config, { deploy: { normalTime: e.NORMAL_TIME }});
-  if (e.PRIVATE_KEY) config = deepmerge(config, { deploy: { privateTime: e.PRIVATE_KEY }});
+  if (e.ETHEREUM_PRIVATE_KEY) config = deepmerge(config, { deploy: { privateTime: e.ETHEREUM_PRIVATE_KEY }});
   if (e.CONTRACT_INPUT_PATH) config = deepmerge(config, { deploy: { contractInputPath: e.CONTRACT_INPUT_PATH }});
   if (e.WRITE_ARTIFACTS) config = deepmerge(config, { deploy: { writeArtifacts: e.WRITE_ARTIFACTS }});
 
-  if (e.ETHEREUM_HTTP) config = deepmerge(config, { ethereum: { http: e.ETHEREUM_HTTP }});
-  if (e.ETHEREUM_WS) config = deepmerge(config, { ethereum: { ws: e.ETHEREUM_WS }});
+  if (e.GNOSIS_ENABLED) config = deepmerge(config, { gnosis: { enabled: e.GNOSIS_ENABLED }});
+  if (e.GNOSIS_HTTP) config = deepmerge(config, { gnosis: { http: e.GNOSIS_HTTP }});
+  if (e.GNOSIS_RELAYER_ADDRESS) config = deepmerge(config, { gnosis: { relayerAddress: e.GNOSIS_RELAYER_ADDRESS }});
+
+  if (e.ZEROX_RPC_ENABLED) config = deepmerge(config, { zeroX: { rpc: { enabled: e.ZEROX_RPC_ENABLED }}});
+  if (e.ZEROX_RPC_WS) config = deepmerge(config, { zeroX: { rpc: { ws: e.ZEROX_RPC_WS }}});
+  if (e.ZEROX_MESH_ENABLED) config = deepmerge(config, { zeroX: { mesh: { enabled: e.ZEROX_MESH_ENABLED }}});
+
+  if (e.SDK_ENABLED) config = deepmerge(config, { sdk: { enabled: e.SDK_ENABLED }});
+  if (e.SDK_WS) config = deepmerge(config, { sdk: { ws: e.SDK_WS }});
+
+  if (e.SERVER_HTTP_PORT) config = deepmerge(config, { server: { httpPort: e.SERVER_HTTP_PORT }});
+  if (e.SERVER_START_HTTP) config = deepmerge(config, { server: { startHTTP: e.SERVER_START_HTTP }});
+  if (e.SERVER_HTTPS_PORT) config = deepmerge(config, { server: { httpsPort: e.SERVER_HTTPS_PORT }});
+  if (e.SERVER_START_HTTPS) config = deepmerge(config, { server: { startHTTPS: e.SERVER_START_HTTPS }});
+  if (e.SERVER_WS_PORT) config = deepmerge(config, { server: { wsPort: e.SERVER_WS_PORT }});
+  if (e.SERVER_START_WS) config = deepmerge(config, { server: { startWS: e.SERVER_START_WS }});
+  if (e.SERVER_WSS_PORT) config = deepmerge(config, { server: { wssPort: e.SERVER_WSS_PORT }});
+  if (e.SERVER_START_WSS) config = deepmerge(config, { server: { startWSS: e.SERVER_START_WSS }});
+
+  if (e.UPLOAD_BLOCK_NUMBER) config = deepmerge(config, { uploadBlockNumber: e.UPLOAD_BLOCK_NUMBER });
+
+  if (e.ADDRESSES) config = deepmerge(config, { addresses: JSON.parse(e.ADDRESSES) });
 
   return config
 }

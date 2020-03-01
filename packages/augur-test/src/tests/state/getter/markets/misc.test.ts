@@ -190,21 +190,21 @@ describe('State API :: Markets :: ', () => {
 
     beforeAll(async () => {
       blockProvider = await baseProvider.fork();
-      const addresses = blockProvider.getContractAddresses();
+      const config = blockProvider.getConfig();
       john = await TestContractAPI.userWrapper(
         ACCOUNTS[0],
         blockProvider,
-        addresses
+        config
       );
       mary = await TestContractAPI.userWrapper(
         ACCOUNTS[1],
         blockProvider,
-        addresses
+        config
       );
       bob = await TestContractAPI.userWrapper(
         ACCOUNTS[2],
         blockProvider,
-        addresses
+        config
       );
 
       const yesNoMarket = await john.createReasonableYesNoMarket();
@@ -294,18 +294,18 @@ describe('State API :: Markets :: ', () => {
 
     beforeEach(async () => {
       const provider = await blockProvider.fork();
-      const addresses = blockProvider.getContractAddresses();
+      const config = blockProvider.getConfig();
       john = await TestContractAPI.userWrapper(
         ACCOUNTS[0],
         provider,
-        addresses
+        config
       );
       mary = await TestContractAPI.userWrapper(
         ACCOUNTS[1],
         provider,
-        addresses
+        config
       );
-      bob = await TestContractAPI.userWrapper(ACCOUNTS[2], provider, addresses);
+      bob = await TestContractAPI.userWrapper(ACCOUNTS[2], provider, config);
 
       await john.sync();
     });

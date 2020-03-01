@@ -74,9 +74,7 @@ async function makeGanacheOpts(accounts: Account[], db: MemDown) {
   }) : defaultDate;
 
   // Need to do this to get a consistent timestamp for the the next block
-  while(Date.now() % 1000 > 100) {
-    true;
-  }
+  while(Date.now() % 1000 > 100) {}
 
   return {
     accounts,

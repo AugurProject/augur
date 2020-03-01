@@ -328,7 +328,7 @@ export class MarketDB extends DerivedDB {
   }
 
   private processMarketCreated = (log: ParsedLog): ParsedLog => {
-    log['isWarpSync'] = log.marketCreator.toLowerCase() === this.augur.addresses.WarpSync.toLowerCase();
+    log['isWarpSync'] = log.marketCreator.toLowerCase() === this.augur.config.addresses.WarpSync.toLowerCase();
     log['reportingState'] = MarketReportingState.PreReporting;
     log['finalized'] = 0;
     log['invalidFilter'] = 0;
