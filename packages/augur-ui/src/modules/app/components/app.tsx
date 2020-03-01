@@ -38,7 +38,6 @@ import {
   Universe,
   Blockchain,
   LoginAccount,
-  EnvObject,
   Notification,
   AccountBalances,
 } from 'modules/types';
@@ -49,11 +48,12 @@ import makePath from 'modules/routes/helpers/make-path';
 import { ExternalLinkText } from 'modules/common/buttons';
 import { HelmetTag } from 'modules/seo/helmet-tag';
 import { APP_HEAD_TAGS } from 'modules/seo/helmet-configs';
+import { SDKConfiguration } from '@augurproject/artifacts';
 
 interface AppProps {
   notifications: Notification[];
   blockchain: Blockchain;
-  env: EnvObject;
+  config: SDKConfiguration;
   history: History;
   initAugur: Function;
   isLogged: boolean;

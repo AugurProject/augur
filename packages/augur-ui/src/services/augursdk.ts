@@ -17,7 +17,6 @@ import {
   listenToUpdates,
   unListenToEvents,
 } from 'modules/events/actions/listen-to-updates';
-import { EnvObject } from 'modules/types';
 import { isEmpty } from 'utils/is-empty';
 import { analytics } from './analytics';
 import { isLocalHost } from 'utils/is-localhost';
@@ -33,7 +32,6 @@ export class SDK {
   private connector:Connectors.BaseConnector;
   private config: SDKConfiguration;
 
-
   // Keeping this here for backward compatibility
   get sdk() {
     return this.client;
@@ -45,20 +43,13 @@ export class SDK {
 
   async makeClient(
     provider: JsonRpcProvider,
-    env: EnvObject,
+    config: SDKConfiguration,
     signer: EthersSigner = undefined,
     account: string = null,
     affiliate: string = NULL_ADDRESS,
     enableFlexSearch = true,
   ): Promise<Augur> {
-    this.networkId = (await provider.getNetwork()).chainId.toString() as NetworkId;
-    const addresses = getAddressesForNetwork(this.networkId);
-
-    this.config = {
-      addresses,
-      ...env,
-      networkId: this.networkId,
-    };
+    this.config = config;
 
     const ethersProvider = new EthersProvider(
       provider,

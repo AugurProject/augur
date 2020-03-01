@@ -27,6 +27,7 @@ export interface SDKConfiguration {
   ethereum?: {
     http?: string,
     ws?: string,
+    useWeb3Transport?: boolean,
     rpcRetryCount: number,
     rpcRetryInterval: number,
     rpcConcurrency: number
@@ -72,11 +73,23 @@ export interface SDKConfiguration {
   }
 };
 
-export let environments: {[network: string]: SDKConfiguration} = requireAll({
-  dirname: path.join(__dirname, '/environments'),
-  filter: /^(.+)\.json/,
-  recursive: false,
-});
+export let environments: {[network: string]: SDKConfiguration} = {};
+if (process?.versions?.node) {
+  environments = requireAll({
+    dirname: path.join(__dirname, '/environments'),
+    filter: /^(.+)\.json/,
+    recursive: false,
+  });
+} {
+  // tslint:disable-next-line:ban-ts-ignore
+  // @ts-ignore
+  const context = require.context('./environments', false, /.*\.json$/);
+  const envNameRegex = new RegExp('([^\/]*)\.json$');
+  context.keys().forEach((file) => {
+    const key = file.match(envNameRegex)[1];
+    environments[key] = context(file);
+  });
+}
 
 export enum NetworkId {
   Mainnet = '1',
@@ -298,7 +311,7 @@ export function isValidConfig(suspect: Partial<SDKConfiguration>): suspect is SD
   return true;
 }
 
-const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
+export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
   networkId: NetworkId.PrivateGanache,
   ethereum: {
     http: 'http://localhost:8545',

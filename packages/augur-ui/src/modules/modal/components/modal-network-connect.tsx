@@ -8,7 +8,8 @@ import ModalActions from "modules/modal/components/common/modal-actions";
 import { windowRef } from "utils/window-ref";
 import { editEndpointParams } from "utils/edit-endpoint-params";
 import { MODAL_NETWORK_CONNECT } from "modules/common/constants";
-import { EnvObject, WindowApp } from "modules/types";
+import { WindowApp } from "modules/types";
+import { SDKConfiguration } from "@augurproject/artifacts";
 
 
 interface ModalNetworkConnectProps {
@@ -16,7 +17,7 @@ interface ModalNetworkConnectProps {
     type: string;
     isInitialConnection?: boolean;
   };
-  env: EnvObject;
+  config: SDKConfiguration;
   submitForm: Function;
   isConnectedThroughWeb3: boolean;
 }
@@ -41,8 +42,8 @@ export default class ModalNetworkConnect extends Component<ModalNetworkConnectPr
     super(props);
     // prioritize ethereumNode connections
     let ethereumNode = "";
-    if (props.env["ethereum"]?.http) {
-      ethereumNode = props.env["ethereum"].http;
+    if (props.config.ethereum?.http) {
+      ethereumNode = props.config.ethereum?.http;
     }
 
     this.state = {
