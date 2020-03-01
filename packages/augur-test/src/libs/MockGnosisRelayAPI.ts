@@ -18,6 +18,7 @@ import { prefixHex } from '@augurproject/utils';
 import { BigNumber } from 'bignumber.js';
 import * as ethUtil from 'ethereumjs-util';
 import { ethers } from 'ethers';
+import { Operation } from '@augurproject/gnosis-relay-api';
 
 export class MockGnosisRelayAPI implements IGnosisRelayAPI {
   // If we ever need to have multiple inflight safe creation txs this should become an mapping.
@@ -170,5 +171,24 @@ export class MockGnosisRelayAPI implements IGnosisRelayAPI {
       baseGas: '75000',
       safeTxGas: '80000',
     };
+  }
+
+  static createTransaction(tx?: Partial<RelayTransaction>): RelayTransaction {
+    return {
+      safe: '',
+      to: '',
+      data: '',
+      value: new BigNumber(12),
+      operation: Operation.Call,
+      gasToken: '',
+      safeTxGas: '',
+      dataGas: '',
+      gasPrice: new BigNumber(12),
+      refundReceiver: '',
+      nonce: 12,
+      signatures: [],
+
+      ...(tx || {})
+    }
   }
 }

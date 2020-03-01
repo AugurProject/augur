@@ -91,3 +91,47 @@
     }
   }
 }
+
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .Search {
+    background: var(--color-secondary-action);
+    border: @size-1 solid var(--color-dark-grey);
+
+    &:hover {
+      border: @size-1 solid var(--color-dark-text);
+    }
+
+    &:focus {
+      border: @size-1 solid var(--color-dark-text);
+    }
+
+    &:active {
+      border: @size-1 solid var(--color-dark-grey);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+    }
+
+    > input {
+      border: none;
+    }
+
+    input:hover {
+      border: none;
+    }
+
+    input:focus {
+      border: none;
+    }
+
+    input:active {
+      border: none;
+    }
+
+    input:disabled {
+      border: none;
+    }
+  }
+}

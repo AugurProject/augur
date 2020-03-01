@@ -21,8 +21,9 @@ import {
   CHOICE,
 } from '@augurproject/artifacts';
 import { YesNoMarketIcon, CategoricalMarketIcon, ScalarMarketIcon } from 'modules/common/icons';
-import { YES_NO, CATEGORICAL, SCALAR } from 'modules/common/constants';
+import { YES_NO, CATEGORICAL, SCALAR, YES_NO_OUTCOMES, SCALAR_OUTCOMES, NON_EXISTENT } from 'modules/common/constants';
 import { NameValuePair } from 'modules/common/selection';
+import { OutcomeFormatted } from 'modules/types';
 
 const MarketTypeIcons = {
   [YES_NO]: YesNoMarketIcon,
@@ -283,6 +284,34 @@ export const createTemplateOutcomes = (inputs: TemplateInput[]) => {
       }
       return input.userInput || input.placeholder;
     });
+};
+
+export const getFormattedOutcomes = (
+  marketType: string,
+  outcomes: string[],
+  scalarDenomination: string
+): OutcomeFormatted[] => {
+  let outcomesFormatted: OutcomeFormatted[] = deepClone<OutcomeFormatted[]>(
+    YES_NO_OUTCOMES
+  );
+  if (marketType === CATEGORICAL) {
+    outcomesFormatted = outcomes.map((outcome, index) => ({
+      description: outcome,
+      id: index + 1,
+      isTradeable: true,
+    }));
+    outcomesFormatted.unshift({
+      id: 0,
+      description: 'Invalid',
+      isTradeable: true,
+    });
+  } else if (marketType === SCALAR) {
+    outcomesFormatted = deepClone<OutcomeFormatted[]>(SCALAR_OUTCOMES);
+    if (scalarDenomination)
+      outcomesFormatted[1].description = scalarDenomination;
+  }
+
+  return outcomesFormatted;
 };
 
 export const substituteUserOutcome = (

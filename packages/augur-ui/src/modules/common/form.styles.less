@@ -120,6 +120,24 @@
         grid-column: 2 / span 1;
       }
     }
+
+    &.CustomPrimary {
+      > li:first-of-type {
+        > div:nth-of-type(2) {
+          grid-column: 1;
+        }
+      }
+    }
+    &.CustomTertiary {
+      > li:last-of-type {
+        > div:last-of-type {
+          grid-column: unset;
+          > div > input {
+            min-width: @size-210;
+          }
+        }
+      }
+    }
   }
 }
 
@@ -961,9 +979,17 @@
   }
 }
 
-:root[theme="BETTING"] {
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
   .TextInput {
     > div {
+
+      > input,
+      > textarea {
+        background-color: var(--color-secondary-action);
+        border: @size-1 solid var(--color-dark-grey);
+      }
+
       > div.AutoCompleteList {
         background-color: var(--color-module-background);
         box-shadow: 0 0 @size-4 var(--color-primary-text-15);
@@ -1514,7 +1540,8 @@ button.MaxDark {
   }
 }
 
-:root[theme="BETTING"] {
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
   .DatePicker {
     :global {
       .DateInput {
@@ -1757,6 +1784,10 @@ button.MaxDark {
   max-height: @size-44;
   min-width: @size-210;
 
+  @media @breakpoint-mobile {
+    max-height: unset;
+  }
+
   > button {
     .text-14;
 
@@ -1932,7 +1963,8 @@ button.MaxDark {
   }
 }
 
-:root[theme="BETTING"] {
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
   .TimeSelector {
     > svg {
       display: none;
@@ -2196,7 +2228,8 @@ div.error > div > div > div > div > input {
   color: var(--color-primary-text);
 }
 
-:root[theme="BETTING"] {
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
   .CategoryRow {
     > span:first-of-type {
       color: var(--color-primary-text);

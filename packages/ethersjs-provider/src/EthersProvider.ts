@@ -7,8 +7,16 @@ import { Abi } from 'ethereum';
 import * as _ from 'lodash';
 import { AsyncQueue, queue, retry } from 'async';
 import { isInstanceOfBigNumber, isInstanceOfArray } from './utils';
-import { JSONRPCRequestPayload } from 'ethereum-types';
+import { JSONRPCRequestPayload, JSONRPCErrorCallback, JSONRPCResponsePayload } from 'ethereum-types';
 import { BigNumber } from "bignumber.js";
+
+interface MultiAddressFilter {
+  blockhash?: string;
+  fromBlock?: number | string;
+  toBlock?: number | string;
+  address?: string | string[];
+  topics?: Array<string | string[]>;
+}
 
 interface ContractMapping {
   [contractName: string]: ethers.utils.Interface;
@@ -56,7 +64,11 @@ export class EthersProvider extends ethers.providers.BaseProvider
         retry(
           { times, interval },
           async () => {
-            return await _this.provider.perform(item.message, item.params);
+            if (item.message === "send") {
+              return await _this.provider.send(item.params.method, item.params.params);
+            } else {
+              return await _this.provider.perform(item.message, item.params);
+            }
           },
           callback
         );
@@ -195,9 +207,32 @@ export class EthersProvider extends ethers.providers.BaseProvider
     return contractInterface;
   }
 
-  private async _getLogs(filter: Filter): Promise<ethers.providers.Log[]> {
+  // We're primarily hacking this and bypassing ethers to support multiple addresses in the filter but this also allows us to cut out some expensive behavior we don't care about for the address
+  async getMultiAddressLogs(filter: MultiAddressFilter): Promise<Array<Log>> {
+    await this.ready;
+    if (filter.address && Array.isArray(filter.address)) {
+      filter.address['toLowerCase'] = () => {
+        return _.map(filter.address, (address) => address.toLowerCase());
+      }
+    }
+    if (filter.fromBlock !== undefined) filter.fromBlock = ethers.utils.hexStripZeros(ethers.utils.hexlify(filter.fromBlock));
+    if (filter.toBlock !== undefined) filter.toBlock = ethers.utils.hexStripZeros(ethers.utils.hexlify(filter.toBlock));
+    const logs = await this.perform('getLogs', { filter });
+    for (const log of logs) {
+      log.logIndex = parseInt(log.logIndex, 16);
+      log.blockNumber = parseInt(log.blockNumber, 16);
+      log.transactionIndex = parseInt(log.transactionIndex, 16);
+      log.blockHash = formatLogHash(log.blockHash);
+      log.transactionHash = formatLogHash(log.transactionHash);
+      log.topics = _.map(log.topics, formatLogHash);
+      log.data = log.data ? ethers.utils.hexlify(log.data) : "0x";
+    }
+    return logs;
+  }
+
+  private async _getLogs(filter: MultiAddressFilter): Promise<ethers.providers.Log[]> {
     try {
-      return await super.getLogs(filter);
+      return await this.getMultiAddressLogs(filter);
     } catch (e) {
       // Check if infura log limit error.
       // See https://infura.io/docs/ethereum/json-rpc/eth_getLogs.
@@ -226,7 +261,7 @@ export class EthersProvider extends ethers.providers.BaseProvider
     }
   }
 
-  getLogs = async (filter: Filter): Promise<Log[]> => {
+  getLogs = async (filter: MultiAddressFilter): Promise<Log[]> => {
     const logs = await this._getLogs(filter);
     return logs.map<Log>(log => ({
       name: '',
@@ -235,15 +270,20 @@ export class EthersProvider extends ethers.providers.BaseProvider
       blockHash: '',
       logIndex: 0,
       transactionIndex: 0,
-      transactionLogIndex: 0,
       removed: false,
       ...log,
     }));
   }
 
-  // This is to support the 0x Provider Engine requirements
-  async sendAsync(payload: JSONRPCRequestPayload): Promise<any> {
-    return this.provider.send(payload.method, payload.params);
+  // This is to support the 0x Web3 Provider Engine requirements
+  sendAsync(payload: JSONRPCRequestPayload, callback?: JSONRPCErrorCallback): void {
+    this.performQueue.push({ message: "send", params: payload }, (error, result) => {
+      if (callback) callback(error, {
+        result,
+        id: payload.id,
+        jsonrpc: payload.jsonrpc,
+      });
+    });
   }
 
   async perform(message: any, params: any): Promise<any> {
@@ -258,4 +298,9 @@ export class EthersProvider extends ethers.providers.BaseProvider
   }
 
   disconnect(): void {}
+}
+
+function formatLogHash(hash: string): string {
+  if (hash.substring(0, 2) !== '0x') hash = '0x' + hash;
+  return hash.toLowerCase();
 }

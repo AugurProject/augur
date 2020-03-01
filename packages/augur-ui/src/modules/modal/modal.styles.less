@@ -57,7 +57,8 @@
     display: flex;
     flex-flow: row-reverse nowrap;
 
-    > button {
+    > button, 
+    > a {
       margin-left: @size-16;
     }
   }
@@ -1369,6 +1370,7 @@ div.ButtonsRow:last-of-type {
 
 .MigrateRep {
   .Message;
+  max-width: 614px;
 
   > main {
     margin: @size-22 0;
@@ -1380,35 +1382,53 @@ div.ButtonsRow:last-of-type {
       .text-16-medium;
 
       color: var(--color-primary-text);
+      margin: 0 0 @size-16 0;
       text-transform: unset;
-      margin: 0;
     }
 
     > h2 {
       .text-14;
 
       color: var(--color-secondary-text);
+      line-height: 140%;
       margin: @size-6 0 0;
+      padding: 0 @size-50;
+
+      @media @breakpoint-mobile {
+        padding: 0;
+      }
 
       > button {
         .text-14;
 
+        background: none;
+        border: none;
         margin-left: @size-3;
         text-transform: unset;
       }
     }
 
     > div:first-of-type {
-      margin: @size-24 0;
+      align-items: center;
+      background: var(--color-secondary-action);
+      border-radius: @size-6;
       display: flex;
+      flex-direction: column;
+      padding: @size-22 0;
+      margin: @size-35 0;
+      width: 222px;
 
       > div {
-        padding: @size-12 0;
+        align-items: center;
+        color: var(--color-secondary-text);
         background: var(--color-secondary-action);
         border-radius: @size-6;
         display: flex;
         flex-direction: column;
-        align-items: center;
+        margin-bottom: @size-4;
+        padding: @size-12 0;
+
+
         width: 222px;
 
         > span:first-of-type {
@@ -1426,23 +1446,13 @@ div.ButtonsRow:last-of-type {
           margin-bottom: @size-4;
           line-height: @size-28;
         }
-
-        > span:last-of-type {
-          .mono-14;
-
-          color: var(--color-secondary-text);
-          line-height: @size-16;
-        }
-
-        &:first-of-type {
-          margin-right: @size-24;
-        }
       }
     }
 
     > div:nth-of-type(2),
     > div:nth-of-type(3) {
       width: 330px;
+
     }
 
     > div:nth-of-type(2) {
@@ -1464,12 +1474,11 @@ div.ButtonsRow:last-of-type {
       }
 
       > div {
-        grid-column: 1 / span 2;
-      }
-    }
+        > span:last-of-type {
+          .mono-12;
+        }
 
-    > div:nth-of-type(3) {
-      margin-top: @size-34;
+      }
     }
 
     > div:last-of-type {
@@ -1479,6 +1488,7 @@ div.ButtonsRow:last-of-type {
       margin-top: @size-24;
       display: flex;
       align-items: center;
+      justify-content: center;
 
       > span {
         .text-11-bold;

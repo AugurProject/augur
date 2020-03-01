@@ -4,12 +4,10 @@ import {
   removeCanceledOrder,
 } from 'modules/orders/actions/update-order-status';
 import {
-  PUBLICTRADE,
   CANCELORDER,
   CANCELORDERS,
   TX_ORDER_ID,
   TX_ORDER_IDS,
-  TX_MARKET_ID,
   CREATEMARKET,
   CREATECATEGORICALMARKET,
   CREATESCALARMARKET,

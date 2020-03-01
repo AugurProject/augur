@@ -25,6 +25,7 @@
     }
   },
   "kovan": {
+    "networkId": "42",
     "ethereum": {
       "http": "https://eth-kovan.alchemyapi.io/jsonrpc/1FomA6seLdWDvpIRvL9J5NhwPHLIGbWA",
       "rpcRetryCount": 5,

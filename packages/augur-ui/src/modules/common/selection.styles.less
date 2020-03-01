@@ -331,7 +331,8 @@
   });
 }
 
-:root[theme="BETTING"] {
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
   .Dropdown {
     > button {
 
@@ -341,6 +342,34 @@
           fill: var(--color-primary-text);
         }
       }
+    }
+  }
+
+  .Large {
+    > button {
+      .text-12;
+  
+      @media @breakpoint-mobile {
+        .text-12;
+      }
+    }
+
+    > div > div > button {
+      .text-12;
+    }
+  }
+
+  .Normal {
+    > button {
+      .text-10;
+  
+      @media @breakpoint-mobile {
+        .text-10;
+      }
+    }
+
+    > div > div > button {
+      .text-10;
     }
   }
 

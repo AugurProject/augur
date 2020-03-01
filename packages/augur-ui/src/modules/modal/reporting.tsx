@@ -13,6 +13,7 @@ import {
   SCALAR,
   REPORTING_STATE,
   INVALID_OUTCOME_NAME,
+  SUBMIT_REPORT,
 } from 'modules/common/constants';
 import {
   doInitialReport,
@@ -28,7 +29,7 @@ import {
 } from 'modules/contracts/actions/contractCalls';
 
 import Styles from 'modules/modal/modal.styles.less';
-import { Getters } from '@augurproject/sdk';
+import { Getters, TXEventName } from '@augurproject/sdk';
 import { loadAccountCurrentDisputeHistory } from 'modules/auth/actions/load-account-reporting';
 import ReleasableRepNotice from 'modules/reporting/containers/releasable-rep-notice';
 import { ExplainerBlock } from 'modules/create-market/components/common';
@@ -48,6 +49,8 @@ interface ModalReportingProps {
   migrateMarket: boolean;
   isDisputing: boolean;
   getRepModal: Function;
+  addPendingData: Function;
+  removePendingData: Function;
 }
 
 interface ModalReportingState {
@@ -183,7 +186,7 @@ export default class ModalReporting extends Component<
   };
 
   reportingAction = (estimateGas = false) => {
-    const { migrateMarket, migrateRep, market } = this.props;
+    const { migrateMarket, migrateRep, market, addPendingData, removePendingData } = this.props;
     const {
       marketId,
       maxPrice,
@@ -232,10 +235,14 @@ export default class ModalReporting extends Component<
         reportAndMigrateMarket(report);
       }
     } else if (isReporting) {
+
       if (estimateGas) {
         return doInitialReport_estimaetGas(report);
       } else {
-        doInitialReport(report);
+        addPendingData(marketId, SUBMIT_REPORT, TXEventName.Pending, 0, {});
+        doInitialReport(report).catch(err => {
+          removePendingData(marketId, SUBMIT_REPORT);
+        });
       }
     } else {
       // disputing

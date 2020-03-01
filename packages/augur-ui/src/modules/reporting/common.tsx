@@ -10,6 +10,7 @@ import {
   DISPUTE_GAS_COST,
   INITAL_REPORT_GAS_COST,
   HEADER_TYPE,
+  INVALID_OUTCOME_ID,
 } from 'modules/common/constants';
 import {
   FormattedNumber,
@@ -22,6 +23,7 @@ import {
   SecondaryButton,
   CancelTextButton,
   PrimaryButton,
+  ProcessingButton,
 } from 'modules/common/buttons';
 import { Checkbox, TextInput } from 'modules/common/form';
 import {
@@ -212,11 +214,12 @@ export interface ReportingModalButtonProps {
   action: ButtonActionType;
 }
 
-export const ReportingModalButton = ({highlightedText, text, action}: ReportingModalButtonProps) => (
-  <button
-    className={Styles.ReportingModalButton}
-    onClick={e => action(e)}
-  >
+export const ReportingModalButton = ({
+  highlightedText,
+  text,
+  action,
+}: ReportingModalButtonProps) => (
+  <button className={Styles.ReportingModalButton} onClick={e => action(e)}>
     {highlightedText && <span>{highlightedText}</span>}
     {text}
   </button>
@@ -250,8 +253,8 @@ export class PreFilledStake extends Component<PreFilledStakeProps, {}> {
         <span>
           `Pre-fund future dispute rounds to accelerate market resolution. Any
           contributed REP will automatically go toward disputing in favor of
-          this outcome, if it is no longer the tentative
-          winning outcome in future rounds`
+          this outcome, if it is no longer the tentative winning outcome in
+          future rounds`
         </span>
         {!this.props.showInput && (
           <SecondaryButton
@@ -398,7 +401,7 @@ export class DisputingBondsView extends Component<
     gasEstimate: formatGasCostToEther(
       DISPUTE_GAS_COST,
       { decimalsRounded: 4 },
-      this.props.gasPrice,
+      this.props.gasPrice
     ),
   };
 
@@ -499,7 +502,7 @@ export class DisputingBondsView extends Component<
         gasEstimate: formatGasCostToEther(
           gasLimit,
           { decimalsRounded: 4 },
-          this.props.gasPrice,
+          this.props.gasPrice
         ),
       });
     }
@@ -518,7 +521,13 @@ export class DisputingBondsView extends Component<
       ethToDaiRate,
     } = this.props;
 
-    const { disabled, scalarError, stakeError, isScalar, gasEstimate } = this.state;
+    const {
+      disabled,
+      scalarError,
+      stakeError,
+      isScalar,
+      gasEstimate,
+    } = this.state;
     const min = convertAttoValueToDisplayValue(
       createBigNumber(market.noShowBondAmount)
     );
@@ -570,8 +579,12 @@ export class DisputingBondsView extends Component<
         />
         <LinearPropertyLabel
           key="estimatedGasFee"
-          label={Gnosis_ENABLED ? "Transaction Fee" : "Gas Fee"}
-          value={Gnosis_ENABLED ? displayGasInDai(gasEstimate, ethToDaiRate) : gasEstimate}
+          label={Gnosis_ENABLED ? 'Transaction Fee' : 'Gas Fee'}
+          value={
+            Gnosis_ENABLED
+              ? displayGasInDai(gasEstimate, ethToDaiRate)
+              : gasEstimate
+          }
         />
         <PrimaryButton
           text="Confirm"
@@ -620,7 +633,10 @@ export class ReportingBondsView extends Component<
 > {
   state: ReportingBondsViewState = {
     showInput: false,
-    disabled: this.props.market.marketType === SCALAR && this.props.migrateRep ? true : false,
+    disabled:
+      this.props.market.marketType === SCALAR && this.props.migrateRep
+        ? true
+        : false,
     scalarError: '',
     stakeError: '',
     isScalar: this.props.market.marketType === SCALAR,
@@ -629,7 +645,7 @@ export class ReportingBondsView extends Component<
     gasEstimate: formatGasCostToEther(
       INITAL_REPORT_GAS_COST,
       { decimalsRounded: 4 },
-      this.props.gasPrice,
+      this.props.gasPrice
     ),
   };
 
@@ -640,13 +656,15 @@ export class ReportingBondsView extends Component<
         threshold: String(convertAttoValueToDisplayValue(threshold)),
       });
       if (this.props.Gnosis_ENABLED) {
-        const gasLimit = await this.props.reportAction(true).catch(e => console.error(e));
+        const gasLimit = await this.props
+          .reportAction(true)
+          .catch(e => console.error(e));
         this.setState({
           gasEstimate: formatGasCostToEther(
             gasLimit || INITAL_REPORT_GAS_COST,
             { decimalsRounded: 4 },
-            this.props.gasPrice,
-          )
+            this.props.gasPrice
+          ),
         });
       }
     }
@@ -730,7 +748,7 @@ export class ReportingBondsView extends Component<
       Gnosis_ENABLED,
       ethToDaiRate,
       openReporting,
-      enoughRepBalance
+      enoughRepBalance,
     } = this.props;
 
     const {
@@ -747,36 +765,37 @@ export class ReportingBondsView extends Component<
     const repAmount = migrateRep
       ? formatAttoRep(inputtedReportingStake.inputToAttoRep).formatted
       : formatAttoRep(market.noShowBondAmount).formatted;
-    let repLabel = migrateRep
-      ? 'REP to migrate'
-      : 'Initial Reporter Stake';
+    let repLabel = migrateRep ? 'REP to migrate' : 'Initial Reporter Stake';
 
     repLabel = openReporting ? 'Open Reporting winning Stake' : repLabel;
-    let showTotal = showInput;
     if (owesRep) {
       repLabel = 'REP needed';
       showTotal = true;
     }
     const reviewLabel = migrateRep
-    ? 'Review REP to migrate'
-    : 'Review Initial Reporting Stake';
+      ? 'Review REP to migrate'
+      : 'Review Initial Reporting Stake';
     const totalRep = owesRep
       ? formatAttoRep(
           createBigNumber(inputtedReportingStake.inputToAttoRep || ZERO).plus(
             market.noShowBondAmount
           )
         ).formatted
-      : formatAttoRep(createBigNumber(inputtedReportingStake.inputToAttoRep || ZERO))
-          .formatted;
+      : formatAttoRep(
+          createBigNumber(inputtedReportingStake.inputToAttoRep || ZERO)
+        ).formatted;
 
     let buttonDisabled = disabled;
-    if (isScalar && inputScalarOutcome === '') {
+    if (
+      isScalar &&
+      inputScalarOutcome === '' &&
+      id !== String(INVALID_OUTCOME_ID)
+    ) {
       buttonDisabled = true;
     }
     let insufficientRep = '';
     if (!enoughRepBalance) {
-      insufficientRep = 'Not enough REP to report',
-      buttonDisabled = true;
+      (insufficientRep = 'Not enough REP to report'), (buttonDisabled = true);
     }
     return (
       <div
@@ -827,13 +846,19 @@ export class ReportingBondsView extends Component<
             label="Total REP Needed"
             value={totalRep}
           />
-          {insufficientRep && <span className={FormStyles.ErrorText}>{insufficientRep}</span>}
+          {insufficientRep && (
+            <span className={FormStyles.ErrorText}>{insufficientRep}</span>
+          )}
         </div>
 
         <LinearPropertyLabel
           key="totalEstimatedGasFee"
-          label={Gnosis_ENABLED ? "Transaction Fee" : "Gas Fee"}
-          value={Gnosis_ENABLED ? displayGasInDai(gasEstimate, ethToDaiRate) : `${gasEstimate} ETH`}
+          label={Gnosis_ENABLED ? 'Transaction Fee' : 'Gas Fee'}
+          value={
+            Gnosis_ENABLED
+              ? displayGasInDai(gasEstimate, ethToDaiRate)
+              : `${gasEstimate} ETH`
+          }
         />
         {migrateRep &&
           createBigNumber(inputtedReportingStake.inputStakeValue).lt(
@@ -871,7 +896,11 @@ export class ReportingBondsView extends Component<
         )}
         <PrimaryButton
           text={migrateRep ? 'Confirm and Migrate REP' : 'Confirm'}
-          disabled={migrateRep ? buttonDisabled || !readAndAgreedCheckbox : buttonDisabled}
+          disabled={
+            migrateRep
+              ? buttonDisabled || !readAndAgreedCheckbox
+              : buttonDisabled
+          }
           action={() => reportAction()}
         />
       </div>
@@ -890,17 +919,25 @@ export interface ReportingCardProps {
   showReportingModal: Function;
   callback: Function;
   isLogged: boolean;
+  reportingStatus?: string;
 }
 
 export const ReportingCard = (props: ReportingCardProps) => {
-  const { market, currentAugurTimestamp, showReportingModal, isLogged } = props;
+  const {
+    market,
+    currentAugurTimestamp,
+    showReportingModal,
+    isLogged,
+    reportingStatus,
+  } = props;
 
   if (!market) return null;
 
   const { id, reportingState, disputeInfo, endTimeFormatted } = market;
 
   const preReporting = reportingState === REPORTING_STATE.PRE_REPORTING;
-  const headerType = reportingState === REPORTING_STATE.OPEN_REPORTING && HEADER_TYPE.H2;
+  const headerType =
+    reportingState === REPORTING_STATE.OPEN_REPORTING && HEADER_TYPE.H2;
 
   return (
     <div className={Styles.ReportingCard}>
@@ -920,9 +957,9 @@ export const ReportingCard = (props: ReportingCardProps) => {
         />
       )}
       <div data-tip data-for={'tooltip--preReporting' + id}>
-        <PrimaryButton
-          text="Report"
+        <ProcessingButton
           action={showReportingModal}
+          reportingStatus={reportingStatus}
           disabled={preReporting || !isLogged}
         />
         {(preReporting || !isLogged) && (
@@ -1135,21 +1172,23 @@ export const ParticipationTokensView = (
         header="Total Reporting Fees"
         subheader={disputeWindowFees.formatted}
         secondSubheader="DAI"
-        tooltipText='The total amount to be paid to reporters'
+        tooltipText="The total amount to be paid to reporters"
       />
       <Subheaders
         large
         info
         header="Total Participation Tokens Purchased"
         subheader={purchasedParticipationTokens.formatted}
-        tooltipText={'The total amount of participation tokens purchased by reporters in the current window'}
+        tooltipText={
+          'The total amount of participation tokens purchased by reporters in the current window'
+        }
       />
       <Subheaders
         info
         header="Participation Tokens I OWN in Current Dispute Window"
         subheader={tokensOwned.formatted}
         secondSubheader={`(${percentageOfTotalFees.formatted}% of Total Fees)`}
-        tooltipText='The % of participation tokens you own among all participation tokens purchased in the current window'
+        tooltipText="The % of participation tokens you own among all participation tokens purchased in the current window"
       />
 
       <PrimaryButton
@@ -1170,14 +1209,18 @@ export const ParticipationTokensView = (
         info
         header="Participation Tokens Purchased"
         subheader={pastParticipationTokensPurchased.formatted}
-        tooltipText={'The total amount of unredeemed participation tokens you\ve purchased for past reporting minus any you\'ve lost for incorrect reporting'}
+        tooltipText={
+          "The total amount of unredeemed participation tokens you\ve purchased for past reporting minus any you've lost for incorrect reporting"
+        }
       />
       <Subheaders
         info
         header="My Portion of Reporting Fees"
         subheader={participationTokensClaimableFees.formatted}
         secondSubheader="DAI"
-        tooltipText={'The total amount of unclaimed Dai you\'ve earned through reporting'}
+        tooltipText={
+          "The total amount of unclaimed Dai you've earned through reporting"
+        }
       />
 
       <PrimaryButton
