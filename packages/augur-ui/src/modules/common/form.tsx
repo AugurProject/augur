@@ -2229,7 +2229,7 @@ export const CategoryRow = ({
       {icon}{' '}
       {category && category.length <= 3 ? category.toUpperCase() : category}
     </span>
-    {loading && <span>{LoadingEllipse()}</span>}
+    {loading && <span>{LoadingEllipse}</span>}
     {!loading && <span>{count}</span>}
   </div>
 );

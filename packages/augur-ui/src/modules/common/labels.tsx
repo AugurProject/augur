@@ -1242,7 +1242,7 @@ export const MarketStateLabel = (props: MarketStateLabelProps) => (
     {props.selected && !props.loading && <div>({props.count})</div>}
     {props.loading && props.selected && (
       <div>
-        <span>{LoadingEllipse()}</span>
+        <span>{LoadingEllipse}</span>
       </div>
     )}
   </div>

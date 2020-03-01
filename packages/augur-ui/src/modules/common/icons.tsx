@@ -1150,39 +1150,30 @@ export const DoubleArrows = (
   </svg>
 );
 
-export const LoadingEllipse = () => {
-  const currentTheme = document.documentElement.getAttribute('theme');
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-      <path
-        d="M7.99998 14.4C11.5346 14.4 14.4 11.5346 14.4 7.99998C14.4 4.46535 11.5346 1.59998 7.99998 1.59998C4.46535 1.59998 1.59998 4.46535 1.59998 7.99998"
-        stroke="url(#paint0_linear)"
-        strokeWidth="1.4"
-        strokeMiterlimit="1.5728"
-        strokeLinecap="round"
-      />
-      <defs>
-        <linearGradient
-          id="paint0_linear"
-          x1="-2.4575e-05"
-          y1="12"
-          x2="7.99997"
-          y2="9.59998"
-          gradientUnits="userSpaceOnUse"
-        >
-          <stop
-            stopColor={currentTheme === 'BETTING' ? "#0E0E21" : "white"}
-            stopOpacity="0"
-          />
-          <stop
-            offset="1"
-            stopColor={currentTheme === 'BETTING' ? "#0E0E21" :"white"}
-          />
-        </linearGradient>
-      </defs>
-    </svg>
-  )
-};
+export const LoadingEllipse = (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+    <path
+      d="M7.99998 14.4C11.5346 14.4 14.4 11.5346 14.4 7.99998C14.4 4.46535 11.5346 1.59998 7.99998 1.59998C4.46535 1.59998 1.59998 4.46535 1.59998 7.99998"
+      stroke="url(#paint0_linear)"
+      strokeWidth="1.4"
+      strokeMiterlimit="1.5728"
+      strokeLinecap="round"
+    />
+    <defs>
+      <linearGradient
+        id="paint0_linear"
+        x1="-2.4575e-05"
+        y1="12"
+        x2="7.99997"
+        y2="9.59998"
+        gradientUnits="userSpaceOnUse"
+      >
+        <stop stopColor="white" stopOpacity="0" />
+        <stop offset="1" stopColor="white" />
+      </linearGradient>
+    </defs>
+  </svg>
+);
 
 export const Compact = (
   <svg width="16" height="16" viewBox="0 0 16 16">
