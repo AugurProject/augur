@@ -887,7 +887,7 @@ def test_protocol_fee_coverage(contractsFixture, cash, market):
     contractsFixture.sendEth(account, ethExchange.address, ethAmount)
     ethExchange.publicMint(account)
 
-    # We still fail since we have no approved any purchase of ETH using our DAI
+    # We still fail since we have not approved any purchase of ETH using our DAI
     with raises(TransactionFailed):
         assert ZeroXTrade.trade(fix(5), longTo32Bytes(11), tradeGroupID, 0, 10, orders, signatures, sender=account) == 0
 

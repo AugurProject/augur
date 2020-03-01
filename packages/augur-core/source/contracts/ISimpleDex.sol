@@ -12,6 +12,7 @@ interface ISimpleDex {
     function tokenPriceCumulativeLast() external view returns (uint256);
 
     function buyToken(address _recipient) external returns (uint256 _tokenAmount);
+    function autoBuyTokenAmount(address _recipient, uint256 _tokenAmount) external returns (uint256);
     function getTokenPurchaseCost(uint256 _tokenAmount) external view returns (uint256);
 
     function publicMint(address to) external returns (uint256 liquidity);

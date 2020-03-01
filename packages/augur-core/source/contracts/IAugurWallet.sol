@@ -1,0 +1,12 @@
+pragma solidity 0.5.15;
+
+import 'ROOT/libraries/token/IERC20.sol';
+import 'ROOT/libraries/token/IERC1155.sol';
+import 'ROOT/reporting/IAffiliates.sol';
+import 'ROOT/ISimpleDex.sol';
+
+
+interface IAugurWallet {
+    function initialize(address _referralAddress, bytes32 _fingerprint, address _augur, IERC20 _cash, IAffiliates _affiliates, IERC1155 _shareToken, address _createOrder, address _fillOrder, address _zeroXTrade) external;
+    function executeTransaction(address _to, bytes calldata _data, uint256 _value) external;
+}

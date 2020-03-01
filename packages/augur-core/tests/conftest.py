@@ -10,7 +10,7 @@ from json import dump as json_dump, load as json_load, dumps as json_dumps
 from os import path, walk, makedirs, remove as remove_file
 from re import findall
 from contract import Contract
-from utils import stringToBytes, BuyWithCash, PrintGasUsed, nullAddress
+from utils import stringToBytes, BuyWithCash, PrintGasUsed, nullAddress, relayHubSignedDeployTx
 
 from web3 import (
     EthereumTesterProvider,
@@ -138,7 +138,7 @@ def pytest_configure(config):
     # register an additional marker
     config.addinivalue_line("markers", "cover: use coverage contracts")
 
-TRADING_CONTRACTS = ['CreateOrder','FillOrder','CancelOrder','Trade','Orders','ZeroXTrade','ProfitLoss','SimulateTrade','GnosisSafeRegistry']
+TRADING_CONTRACTS = ['CreateOrder','FillOrder','CancelOrder','Trade','Orders','ZeroXTrade','ProfitLoss','SimulateTrade','GnosisSafeRegistry','AugurWalletRegistry']
 
 class ContractsFixture:
     signatures = {}
@@ -333,8 +333,9 @@ class ContractsFixture:
             return(self.contracts[lookupKey])
         compiledCode = self.getCompiledCode(resolvedPath)
         # abstract contracts have a 0-length array for bytecode
+        abstractContracts = ["GSNRecipient", "Context"]
         if len(compiledCode) == 0:
-            if ("libraries" in relativeFilePath or lookupKey.startswith("I") or lookupKey.startswith("Base") or lookupKey.startswith("DS")):
+            if ("libraries" in relativeFilePath or lookupKey.startswith("I") or lookupKey.startswith("Base") or lookupKey.startswith("DS") or lookupKey in abstractContracts):
                 pass#print "Skipping upload of " + lookupKey + " because it had no bytecode (likely a abstract class/interface)."
             else:
                 raise Exception("Contract: " + lookupKey + " has no bytecode, but this is not expected. It probably doesn't implement all its abstract methods")
@@ -508,6 +509,11 @@ class ContractsFixture:
         # We have to upload Augur Trading before trading contracts
         return self.upload("../source/contracts/trading/AugurTrading.sol", constructorArgs=[self.contracts["Augur"].address])
 
+    def deployRelayHub(self):
+        self.sendEth(self.accounts[0], "0xff20d47eb84b1b85aadcccc43d2dc0124c6211f7", 42 * 10**17)
+        tester = self.testerProvider.ethereum_tester
+        test = tester.send_raw_transaction(relayHubSignedDeployTx)
+
     def doAugurTradingApprovals(self):
         self.contracts["AugurTrading"].doApprovals()
 
@@ -635,6 +641,7 @@ def augurInitializedSnapshot(fixture, baseSnapshot):
     fixture.resetToSnapshot(baseSnapshot)
     fixture.uploadAugur()
     fixture.uploadAugurTrading()
+    fixture.deployRelayHub()
     fixture.uploadAllContracts()
     fixture.uploadTestDaiContracts()
     fixture.upload0xContracts()
@@ -677,7 +684,7 @@ def kitchenSinkSnapshot(fixture, augurInitializedSnapshot):
     snapshot['categoricalMarket'] = categoricalMarket
     snapshot['categorical8Market'] = categorical8Market
     snapshot['scalarMarket'] = scalarMarket
-    snapshot['reputationToken'] = fixture.applySignature('ReputationToken', universe.getReputationToken())
+    snapshot['reputationToken'] = fixture.applySignature('TestNetReputationToken', universe.getReputationToken())
     return snapshot
 
 @pytest.fixture
