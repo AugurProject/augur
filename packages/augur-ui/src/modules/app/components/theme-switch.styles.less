@@ -23,8 +23,9 @@
 
     > button {
       color: var(--color-secondary-text);
-      padding: 0 @size-12;
+      padding: 0 @size-8;
       height: 100%;
+      white-space: nowrap;
 
       &.Active {
         color: var(--color-primary-text);
@@ -33,7 +34,8 @@
   }
 }
 
-:root[theme="BETTING"] {
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
   .ThemeSwitch {
 
     @media @breakpoint-mobile {

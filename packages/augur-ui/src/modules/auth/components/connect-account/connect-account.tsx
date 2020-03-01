@@ -56,7 +56,6 @@ export default class ConnectAccount extends Component<ConnectAccountProps> {
       userInfo,
       balances,
     } = this.props;
-    console.log(userInfo);
     if (!isLogged && !restoredAccount || !userInfo) return null;
 
     return (

@@ -202,7 +202,8 @@
   background-color: var(--color-module-background);
 }
 
-:root[theme="BETTING"] {
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
   .TopBar {
     background: var(--color-primary-text);
   }
@@ -212,18 +213,6 @@
   }
 
   .statsContainer {
-    > div:first-of-type {
-      >div {
-        > span:nth-of-type(2),
-        > span:last-of-type {
-          color: var(--color-module-background);
-        }
-      }
-    }
-    > div:last-of-type {
-      border: @size-1 solid var(--color-secondary-text-50);
-      border-bottom: 0;
-      border-top: 0;
-    }
+    display: none;
   }
 }

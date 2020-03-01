@@ -67,15 +67,21 @@
   > div:first-of-type {
     .text-12-bold;
 
-    text-transform: uppercase;
-    color: var(--color-primary-text);
-    margin: @size-24 @size-32 @size-19 @size-32;
-    display: flex;
     align-items: center;
+    color: var(--color-primary-text);
+    cursor: pointer;
+    display: flex;
+    margin: @size-24 @size-32 @size-19 @size-32;
+    text-transform: uppercase;
 
     > span {
       display: flex;
       margin-left: @size-8;
+
+      > svg > path {
+        // chevron flip
+        stroke: var(--color-primary-text);
+      }
     }
 
     > svg {
@@ -141,7 +147,8 @@
   opacity: 0.5;
 }
 
-:root[theme="BETTING"] {
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
   .FiltersGroup {
     // Filters header
     > div:first-of-type {
@@ -150,6 +157,10 @@
           fill: var(--color-primary-text);
         }
       }
+    }
+
+    > div > div {
+      background: transparent;
     }
   }
 }

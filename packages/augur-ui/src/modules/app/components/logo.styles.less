@@ -11,6 +11,10 @@
   > svg:first-of-type {
     display: none;
 
+    path:first-of-type {
+      fill: var(--color-brand);
+    }
+
     path:last-of-type {
       fill: var(--color-brand-secondary);
     }
@@ -21,6 +25,15 @@
   }
 
   > svg:last-of-type {
+
+    path {
+      fill: var(--color-brand-secondary);
+
+      &:first-of-type {
+        fill: var(--color-brand);
+      }
+    }
+
     @media @breakpoint-mobile {
       display: none;
     }

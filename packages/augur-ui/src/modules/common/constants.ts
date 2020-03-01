@@ -31,7 +31,7 @@ export const INVALID_BEST_BID_ALERT_VALUE = createBigNumber('.1');
 export const THEMES = {
   BETTING: 'BETTING',
   TRADING: 'TRADING',
-  SPORTS_BOOK: 'SPORTS_BOOK',
+  SPORTS: 'SPORTS',
 };
 // # Network Constants
 export const MILLIS_PER_BLOCK = 12000;

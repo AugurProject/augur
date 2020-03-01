@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ReactTooltip from 'react-tooltip';
 import { ACCOUNT_TYPES } from 'modules/common/constants';
-import { DaiLogoIcon, EthIcon, helpIcon, LogoutIcon, Open, Pencil, RepLogoIcon, } from 'modules/common/icons';
+import { DaiLogoIcon, EthIcon, helpIcon, LogoutIcon, Open, Pencil, v2AugurLogo } from 'modules/common/icons';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import { formatDai, formatEther, formatRep } from 'utils/format-number';
 import { AccountBalances } from 'modules/types';
@@ -23,7 +23,6 @@ interface ConnectDropdownProps {
   };
   balances: AccountBalances;
   gasModal: Function;
-  averageGasPrice: number;
   userDefinedGasPrice: number;
   gasPriceSpeed: number;
   gasPriceTime: string;
@@ -40,7 +39,6 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
   const {
     isLogged,
     restoredAccount,
-    averageGasPrice,
     userDefinedGasPrice,
     accountMeta,
     gasPriceSpeed,
@@ -86,7 +84,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
     },
     {
       name: 'REP',
-      logo: RepLogoIcon,
+      logo: v2AugurLogo,
       value: formatRep(balances.rep, {
         zeroStyled: false,
         decimalsRounded: 4,
@@ -190,6 +188,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
                 <SecondaryButton
                   action={() => wallet.action()}
                   text='OPEN'
+                  title='Open'
                   icon={Open}
                   disabled={wallet.disabled}
                 />
@@ -200,18 +199,17 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
         <div className={Styles.GasEdit}>
           <div>
             <div>
-              <div>
-                Transaction fee
-                {renderToolTip('tooltip--gasEdit', 'The fee for processing your transactions.')}
-              </div>
-              <div>
-                ${getGasCostInDai(ethToDaiRate, createBigNumber(userDefinedGasPrice).toNumber())} / Trade  ({gasPriceSpeed} {gasPriceTime})
-              </div>
+              Transaction fee
+              {renderToolTip('tooltip--gasEdit', 'The fee for processing your transactions.')}
+            </div>
+            <div>
+              ${getGasCostInDai(ethToDaiRate, createBigNumber(userDefinedGasPrice).toNumber())} / Trade  ({gasPriceSpeed} {gasPriceTime})
             </div>
           </div>
           <SecondaryButton
             action={() => gasModal()}
             text='EDIT'
+            title='Edit'
             icon={Pencil}
           />
         </div>
@@ -225,16 +223,14 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
             <SecondaryButton
               action={() => universeSelectorModal()}
               text='CHANGE UNIVERSE'
+              title='Change Universe'
             />
           </div>
         )}
 
-        <div className={Styles.Logout}>
-          <div onClick={() => logout()}>
-            <div>Logout</div>
-            <div>{LogoutIcon()}</div>
-          </div>
-        </div>
+        <button className={Styles.Logout} onClick={() => logout()}>
+            Logout {LogoutIcon}
+        </button>
       </div>
     </div>
   );
