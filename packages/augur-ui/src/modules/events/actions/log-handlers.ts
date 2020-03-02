@@ -1,8 +1,9 @@
-import { Getters } from '@augurproject/sdk/build';
+import { Getters, SubscriptionEventName } from '@augurproject/sdk';
 import { updateAlert } from 'modules/alerts/actions/alerts';
 import {
   loadAllAccountPositions,
   loadAccountOnChainFrozenFundsTotals,
+  checkUpdateUserPositions,
 } from 'modules/positions/actions/load-account-positions';
 import {
   removeMarket,
@@ -41,6 +42,9 @@ import {
   CREATE_MARKET,
   MODAL_GAS_PRICE,
   SUBMIT_REPORT,
+  MIGRATE_FROM_LEG_REP_TOKEN,
+  BUYPARTICIPATIONTOKENS,
+  SUBMIT_DISPUTE,
 } from 'modules/common/constants';
 import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
@@ -67,8 +71,11 @@ import { updateModal } from 'modules/modal/actions/update-modal';
 import * as _ from 'lodash';
 import { loadMarketOrderBook } from 'modules/orders/actions/load-market-orderbook';
 import { isCurrentMarket } from 'modules/trades/helpers/is-current-market';
-import { removePendingDataByHash, addPendingData } from 'modules/pending-queue/actions/pending-queue-management';
+import { removePendingDataByHash, addPendingData, removePendingData, removePendingTransaction } from 'modules/pending-queue/actions/pending-queue-management';
 import { removePendingOrder, constructPendingOrderid } from 'modules/orders/actions/pending-orders-management';
+import { loadAccountData } from 'modules/auth/actions/load-account-data';
+import { wrapLogHandler } from './wrap-log-handler';
+import { updateUniverse } from 'modules/universe/actions/update-universe';
 
 const handleAlert = (
   log: any,
@@ -115,6 +122,14 @@ export const handleTxAwaitingSigning = (txStatus: Events.TXStatus) => (
   dispatch(addUpdateTransaction(txStatus));
 };
 
+export const handleTxPending = (txStatus: Events.TXStatus) => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  console.log('TxPending Transaction', txStatus.transaction.name);
+  dispatch(addUpdateTransaction(txStatus));
+};
+
 export const handleTxSuccess = (txStatus: Events.TXStatus) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
@@ -122,14 +137,6 @@ export const handleTxSuccess = (txStatus: Events.TXStatus) => (
   console.log('TxSuccess Transaction', txStatus.transaction.name);
   dispatch(addUpdateTransaction(txStatus));
   dispatch(updateAssets());
-};
-
-export const handleTxPending = (txStatus: Events.TXStatus) => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
-  console.log('TxPending Transaction', txStatus.transaction.name);
-  dispatch(addUpdateTransaction(txStatus));
 };
 
 export const handleTxFailure = (txStatus: Events.TXStatus) => (
@@ -191,6 +198,7 @@ export const handleSDKReadyEvent = () => (
 
   // app is connected when subscribed to sdk
   dispatch(updateConnectionStatus(true));
+  dispatch(loadAccountData());
   dispatch(loadUniverseForkingInfo());
   dispatch(getCategoryStats());
 };
@@ -217,6 +225,17 @@ export const handleNewBlockLog = (log: Events.NewBlock) => async (
       loadAnalytics(getState().analytics, blockchain.currentAugurTimestamp)
     );
   }
+  if (log.logs && log.logs.length > 0){
+    console.log(log.logs);
+    const eventLogs = log.logs.reduce(
+      (p, l) => ({ ...p, [l.name]: p[l.name] ? [...p[l.name], l] : [l] }),
+      {}
+    );
+    Object.keys(eventLogs).map(event => {
+      if (EventHandlers[event])
+        dispatch(EventHandlers[event](eventLogs[event]));
+    })
+  }
 };
 
 export const handleMarketsUpdatedLog = ({
@@ -227,7 +246,6 @@ export const handleMarketsUpdatedLog = ({
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  console.log('handleMarketsUpdatedChangedLog');
   let marketsDataById = {};
   if (Array.isArray(marketsInfo)) {
     if (marketsInfo.length === 0) return;
@@ -243,47 +261,41 @@ export const handleMarketsUpdatedLog = ({
     if (Object.keys(market).length === 0) return;
     marketsDataById[market.id] = market;
   }
-
+  const marketIds = Object.keys(marketsDataById);
+  console.log('handleMarketsUpdatedChangedLog', marketIds);
   dispatch(updateMarketsData(marketsDataById));
-  if (isOnDisputingPage()) dispatch(reloadDisputingPage());
+  if (isOnDisputingPage()) dispatch(reloadDisputingPage(marketIds));
+  if (isOnReportingPage()) dispatch(reloadReportingPage(marketIds));
 };
 
-export const handleMarketCreatedLog = (log: any) => (
+export const handleMarketCreatedLog = (logs: any) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const isUserDataUpdate = isSameAddress(
-    log.marketCreator,
-    getState().loginAccount.address
+  const userLogs = logs.filter(log =>
+    isSameAddress(log.marketCreator, getState().loginAccount.address)
   );
-  if (log.removed) {
-    dispatch(removeMarket(log.market));
-  }
-  if (isUserDataUpdate) {
-    handleAlert(log, CREATEMARKET, false, dispatch, getState);
-    dispatch(marketCreationCreated(log.market, log.extraInfo));
-  }
-};
-
-export const handleDBMarketCreatedEvent = (event: any) => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
-  if (event.data) {
-    const marketIds = _.map(event.data, 'market');
-    dispatch(
-      loadMarketsInfo(marketIds, (err, marketInfos) =>
+  userLogs.map(log => {
+    if (log.removed) {
+      dispatch(removeMarket(log.market));
+    } else {
+      dispatch(loadMarketsInfo([log.market], (err, marketInfos) => {
+        if (err) return console.error(err);
         Object.keys(marketInfos).map(id => {
           const market = marketInfos[id]
           if (market) {
-            dispatch(removePendingDataByHash(market.transactionHash, CREATE_MARKET))
-            if (isSameAddress(market.author, getState().loginAccount.address)) {
-              dispatch(loadAccountOnChainFrozenFundsTotals());
-            }
+            dispatch(
+              removePendingDataByHash(market.transactionHash, CREATE_MARKET)
+            );
+            handleAlert(log, CREATEMARKET, false, dispatch, getState);
+            dispatch(marketCreationCreated(market, log.extraInfo));
           }
         })
-      )
-    );
+      }));
+    }
+  });
+  if (userLogs.length > 0) {
+    dispatch(loadAccountOnChainFrozenFundsTotals());
   }
 };
 
@@ -311,27 +323,36 @@ export const handleMarketMigratedLog = (log: any) => (
   dispatch(loadUniverseDetails(universeId, userAddress));
 };
 
-export const handleTokensTransferredLog = (log: any) => (
+export const handleWarpSyncHashUpdatedLog = (log: { hash: string}) => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  if (log.hash) {
+    dispatch(updateUniverse({ warpSyncHash: log.hash }));
+  }
+};
+
+export const handleTokensTransferredLog = (logs: Logs.TokensTransferredLog[]) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
   const { address } = getState().loginAccount;
-  const isUserDataUpdate =
-    isSameAddress(log.from, address) || isSameAddress(log.to, address);
-  if (isUserDataUpdate) {
-    // TODO: will need to update user's contribution to dispute/reporting
-    // dispatch(loadReportingWindowBounds());
-  }
+  logs.filter(log => isSameAddress(log.from, address)).map(log => {
+      // TODO: will need to update user's contribution to dispute/reporting
+      // dispatch(loadReportingWindowBounds());
+  })
 };
 
 export const handleTokenBalanceChangedLog = (
-  log: Logs.TokenBalanceChangedLog
+  logs: Logs.TokenBalanceChangedLog[]
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const { address } = getState().loginAccount;
-  const isUserDataUpdate = isSameAddress(log.owner, address);
-  if (isUserDataUpdate) {
-    // dispatch(loadReportingWindowBounds());
-  }
+  logs.filter(log => isSameAddress(log.owner, address)).map(log => {
+    const isUserDataUpdate = isSameAddress(log.owner, address);
+    if (isUserDataUpdate) {
+      // dispatch(loadReportingWindowBounds());
+    }
+  })
 };
 
 export const handleOrderLog = (log: any) => {
@@ -402,12 +423,13 @@ export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
   getState: () => AppState
 ) => {
   const { loginAccount, authStatus } = getState();
+  const { isLogged } = authStatus;
   const marketId = log.market;
   const { address } = loginAccount;
   const isUserDataUpdate =
     isSameAddress(log.orderCreator, address) ||
     isSameAddress(log.orderFiller, address);
-  if (isUserDataUpdate && authStatus.isLogged) {
+  if (isUserDataUpdate && isLogged) {
     dispatch(
       orderFilled(marketId, log, isSameAddress(log.orderCreator, address))
     );
@@ -443,108 +465,94 @@ export const handleTradingProceedsClaimedLog = (
 
 // ---- initial reporting ----- //
 export const handleInitialReportSubmittedLog = (
-  log: Logs.InitialReportSubmittedLog
+  logs: Logs.InitialReportSubmittedLog[]
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
-  const isUserDataUpdate = isSameAddress(
-    log.reporter,
-    getState().loginAccount.address
-  );
-  if (isUserDataUpdate) {
-    handleAlert(log, DOINITIALREPORT, false, dispatch, getState);
+  const address = getState().loginAccount.address;
+  const userLogs = logs.filter(log => isSameAddress(log.reporter, address));
+  if (userLogs.length > 0) {
+    userLogs.map(log => {
+      handleAlert(log, DOINITIALREPORT, false, dispatch, getState)
+      dispatch(addPendingData(log.market, SUBMIT_REPORT, TXEventName.Success, '0', undefined));
+    });
     dispatch(loadAccountReportingHistory());
     dispatch(addPendingData(log.market, SUBMIT_REPORT, TXEventName.Success, 0, {}));
   }
-  if (isOnReportingPage()) dispatch(reloadReportingPage());
+  const marketIds = userLogs.map(log => log.market)
+  if (isOnReportingPage()) dispatch(reloadReportingPage(marketIds));
 };
 
 export const handleInitialReporterRedeemedLog = (
-  log: Logs.InitialReporterRedeemedLog
+  logs: Logs.InitialReporterRedeemedLog[]
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
-  const isUserDataUpdate = isSameAddress(
-    log.reporter,
-    getState().loginAccount.address
-  );
-  if (isUserDataUpdate) {
+  const address = getState().loginAccount.address;
+  if (logs.filter(log => isSameAddress(log.reporter, address)).length > 0) {
     dispatch(loadAccountReportingHistory());
+    dispatch(removePendingTransaction(REDEEMSTAKE));
   }
 };
 
-export const handleInitialReporterTransferredLog = (log: any) => (
+export const handleInitialReporterTransferredLog = (logs: any) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  console.log('handleInitialReporterTransferredLog');
-  const isUserDataUpdate =
-    isSameAddress(log.from, getState().loginAccount.address) ||
-    isSameAddress(log.to, getState().loginAccount.address);
-  if (isUserDataUpdate) {
+  const address = getState().loginAccount.address
+  if (logs.filter(log => isSameAddress(log.from, address) ||
+    isSameAddress(log.to, address)).length > 0) {
     dispatch(loadAccountReportingHistory());
   }
-  if (isOnReportingPage()) dispatch(reloadReportingPage());
+  const marketIds = userLogs.map(log => log.market)
+  if (isOnReportingPage()) dispatch(reloadReportingPage(marketIds));
 };
 // ---- ------------ ----- //
 
-export const handleProfitLossChangedLog = (log: Logs.ProfitLossChangedLog) => (
+export const handleProfitLossChangedLog = (logs: Logs.ProfitLossChangedLog[]) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  console.log('handleProfitLossChangedLog');
-  const isUserDataUpdate = isSameAddress(
-    log.account,
-    getState().loginAccount.address
-  );
-  if (isUserDataUpdate) {
+  const address = getState().loginAccount.address
+  if (logs.filter(log => isSameAddress(log.account, address)).length > 0)
     dispatch(loadAllAccountPositions());
-  }
 };
 
 export const handleParticipationTokensRedeemedLog = (
-  log: Logs.ParticipationTokensRedeemedLog
+  logs: Logs.ParticipationTokensRedeemedLog[]
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
-  console.log('handleParticipationTokensRedeemedLog');
-  const isUserDataUpdate = isSameAddress(
-    log.account,
-    getState().loginAccount.address
-  );
-  if (isUserDataUpdate) {
-    dispatch(loadAccountReportingHistory());
-    handleAlert(
-      { ...log, marketId: 1 },
+  const address = getState().loginAccount.address
+  if (logs.filter(log => isSameAddress(log.account, address)).length > 0) {
+    logs.map(log => handleAlert({ ...log, marketId: 1 },
       REDEEMSTAKE,
       false,
       dispatch,
       getState
-    );
+    ));
+    dispatch(loadAccountReportingHistory());
+    dispatch(removePendingTransaction(REDEEMSTAKE));
   }
 };
 
 export const handleReportingParticipantDisavowedLog = (
-  log: Logs.ReportingParticipantDisavowedLog
+  logs: Logs.ReportingParticipantDisavowedLog[]
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
-  console.log('handleReportingParticipantDisavowedLog');
-  const isUserDataUpdate = isSameAddress(
-    log.reportingParticipant,
-    getState().loginAccount.address
-  );
-  if (isUserDataUpdate) {
+  const address = getState().loginAccount.address
+  if (logs.filter(log => isSameAddress(log.reportingParticipant, address)).length > 0) {
     dispatch(loadAccountReportingHistory());
   }
 };
 
-export const handleMarketParticipantsDisavowedLog = (log: any) => (
+export const handleMarketParticipantsDisavowedLog = (logs: any) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  console.log('handleMarketParticipantsDisavowedLog');
-  dispatch(loadMarketsInfo([log.market]));
+  const marketIds = logs.map(log => log.market);
+  dispatch(loadMarketsInfo(marketIds));
 };
 
-export const handleMarketTransferredLog = (log: any) => (
+export const handleMarketTransferredLog = (logs: any) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  console.log('handleMarketTransferredLog');
-  dispatch(loadMarketsInfo([log.market]));
+  const marketIds = logs.map(log => log.market);
+  dispatch(loadMarketsInfo(marketIds));
 };
 
 export const handleUniverseForkedLog = (log: Logs.UniverseForkedLog) => (
@@ -554,94 +562,150 @@ export const handleUniverseForkedLog = (log: Logs.UniverseForkedLog) => (
   console.log('handleUniverseForkedLog');
   const { forkingMarket } = log;
   dispatch(loadUniverseForkingInfo(forkingMarket));
-  if (isOnDisputingPage()) dispatch(reloadDisputingPage());
+  if (isOnDisputingPage()) dispatch(reloadDisputingPage([]));
 };
 
-export const handleMarketFinalizedLog = (log: Logs.MarketFinalizedLog) => (
+export const handleMarketFinalizedLog = (logs: Logs.MarketFinalizedLog[]) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { universe, accountPositions } = getState();
-  if (universe.forkingInfo) {
-    if (log.market === universe.forkingInfo.forkingMarket) {
-      dispatch(loadUniverseForkingInfo());
+  const { universe } = getState();
+  logs.map(log => {
+    if (universe.forkingInfo) {
+      if (log.market === universe.forkingInfo.forkingMarket) {
+        dispatch(loadUniverseForkingInfo());
+      }
     }
-  }
-  const positionMarketids = Object.keys(accountPositions);
-  const updatePositions =
-    positionMarketids.length > 0 &&
-    Object.keys(positionMarketids).includes(log.market);
-  if (updatePositions) {
-    dispatch(loadAllAccountPositions());
-  }
-};
+  })
+  const marketIds = logs.map(m => m.market);
+  dispatch(checkUpdateUserPositions(marketIds));
+ };
 
 // ---- disputing ----- //
 export const handleDisputeCrowdsourcerCreatedLog = (
-  log: Logs.DisputeCrowdsourcerCreatedLog
+  logs: Logs.DisputeCrowdsourcerCreatedLog[]
 ) => (dispatch: ThunkDispatch<void, any, Action>) => {
-  if (isOnDisputingPage()) dispatch(reloadDisputingPage());
-};
-
-export const handleDisputeCrowdsourcerContributionLog = (
-  log: Logs.DisputeCrowdsourcerContributionLog
-) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
-  const isUserDataUpdate = isSameAddress(
-    log.reporter,
-    getState().loginAccount.address
-  );
-  if (isUserDataUpdate) {
-    handleAlert(log, CONTRIBUTE, false, dispatch, getState);
-    dispatch(loadAccountReportingHistory());
-  }
-  if (isOnDisputingPage()) dispatch(reloadDisputingPage());
+  if (isOnDisputingPage()) dispatch(reloadDisputingPage([]));
 };
 
 export const handleDisputeCrowdsourcerCompletedLog = (
-  log: Logs.DisputeCrowdsourcerCompletedLog
+  logs: Logs.DisputeCrowdsourcerCompletedLog[]
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
-  handleAlert(log, CONTRIBUTE, false, dispatch, getState);
-  if (isOnDisputingPage()) dispatch(reloadDisputingPage());
+  if (isOnDisputingPage()) dispatch(reloadDisputingPage([]));
+};
+
+export const handleDisputeCrowdsourcerContributionLog = (
+  logs: Logs.DisputeCrowdsourcerContributionLog[]
+) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
+  const userLogs = logs.filter(log => isSameAddress(
+    log.reporter,
+    getState().loginAccount.address
+  ))
+  if (userLogs.length > 0) {
+    logs.map(log => {
+      handleAlert(log, CONTRIBUTE, false, dispatch, getState);
+      dispatch(removePendingData(log.market, SUBMIT_DISPUTE));
+    });
+    dispatch(loadAccountReportingHistory());
+  }
+  if (isOnDisputingPage()) dispatch(reloadDisputingPage([]));
 };
 
 export const handleDisputeCrowdsourcerRedeemedLog = (
-  log: Logs.DisputeCrowdsourcerRedeemedLog
+  logs: Logs.DisputeCrowdsourcerRedeemedLog[]
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
-  const isUserDataUpdate = isSameAddress(
+  const userLogs = logs.filter(log => isSameAddress(
     log.reporter,
     getState().loginAccount.address
-  );
-  if (isUserDataUpdate) {
+  ))
+  if (userLogs.length > 0) {
     dispatch(loadAccountReportingHistory());
   }
+  dispatch(removePendingTransaction(REDEEMSTAKE));
 };
 // ---- ------------ ----- //
 
 export const handleDisputeWindowCreatedLog = (
-  log: Logs.DisputeWindowCreatedLog
+  logs: Logs.DisputeWindowCreatedLog[]
 ) => (dispatch: ThunkDispatch<void, any, Action>) => {
-  dispatch(loadDisputeWindow());
-  dispatch(loadAccountReportingHistory());
-  if (isOnDisputingPage()) dispatch(reloadDisputingPage());
+  if (logs.length > 0) {
+    dispatch(loadDisputeWindow());
+    dispatch(loadAccountReportingHistory());
+    if (isOnDisputingPage()) dispatch(reloadDisputingPage([]));
+  }
 };
 
-export const handleTokensMintedLog = (log: Logs.TokensMinted) => (
+export const handleTokensMintedLog = (logs: Logs.TokensMinted[]) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
   const userAddress = getState().loginAccount.address;
   const isForking = !!getState().universe.forkingInfo;
-  if (log.tokenType === Logs.TokenType.ParticipationToken) {
-    const isUserDataUpdate = isSameAddress(log.target, userAddress);
-    if (isUserDataUpdate) {
+  logs.filter(log => isSameAddress(log.target, userAddress)).map(log => {
+    if (log.tokenType === Logs.TokenType.ParticipationToken) {
+      dispatch(removePendingTransaction(BUYPARTICIPATIONTOKENS));
       dispatch(loadAccountReportingHistory());
+      dispatch(loadDisputeWindow());
     }
-    dispatch(loadDisputeWindow());
-  }
-  if (log.tokenType === Logs.TokenType.ReputationToken && isForking) {
-    const isUserDataUpdate = isSameAddress(log.target, userAddress);
-    if (isUserDataUpdate) {
-      dispatch(loadUniverseDetails(log.universe, userAddress));
+    if (log.tokenType === Logs.TokenType.ReputationToken && isForking) {
+        dispatch(loadUniverseDetails(log.universe, userAddress));
     }
-  }
+    if (log.tokenType === Logs.TokenType.ReputationToken && !isForking) {
+        dispatch(
+          updateAlert(log.blockHash, {
+            id: log.blockHash,
+            uniqueId: log.blockHash,
+            params: {...log},
+            status: TXEventName.Success,
+            timestamp: getState().blockchain.currentAugurTimestamp * 1000,
+            name: MIGRATE_FROM_LEG_REP_TOKEN,
+          }, false));
+        dispatch(removePendingTransaction(MIGRATE_FROM_LEG_REP_TOKEN));
+      }
+    })
 };
+
+const EventHandlers = {
+  [SubscriptionEventName.TokensTransferred]: wrapLogHandler(handleTokensTransferredLog),
+  [SubscriptionEventName.TokenBalanceChanged]: wrapLogHandler(handleTokenBalanceChangedLog),
+  [SubscriptionEventName.TokensMinted]: wrapLogHandler(handleTokensMintedLog),
+  [SubscriptionEventName.ProfitLossChanged]: wrapLogHandler(handleProfitLossChangedLog),
+  [SubscriptionEventName.DisputeWindowCreated]: wrapLogHandler(handleDisputeWindowCreatedLog),
+  [SubscriptionEventName.MarketFinalized]: wrapLogHandler(handleMarketFinalizedLog),
+  [SubscriptionEventName.DisputeCrowdsourcerContribution]: wrapLogHandler(
+    handleDisputeCrowdsourcerContributionLog
+  ),
+  [SubscriptionEventName.DisputeCrowdsourcerCompleted]: wrapLogHandler(
+    handleDisputeCrowdsourcerCompletedLog
+  ),
+  [SubscriptionEventName.DisputeCrowdsourcerRedeemed]: wrapLogHandler(
+    handleDisputeCrowdsourcerRedeemedLog
+  ),
+  [SubscriptionEventName.DisputeCrowdsourcerCreated]: wrapLogHandler(
+    handleDisputeCrowdsourcerCreatedLog
+  ),
+  [SubscriptionEventName.ParticipationTokensRedeemed]: wrapLogHandler(
+    handleParticipationTokensRedeemedLog
+  ),
+  [SubscriptionEventName.ReportingParticipantDisavowed]: wrapLogHandler(
+    handleReportingParticipantDisavowedLog
+  ),
+  [SubscriptionEventName.MarketParticipantsDisavowed]: wrapLogHandler(
+    handleMarketParticipantsDisavowedLog
+  ),
+  [SubscriptionEventName.MarketTransferred]: wrapLogHandler(
+    handleMarketTransferredLog
+  ),
+  [SubscriptionEventName.InitialReporterTransferred]: wrapLogHandler(
+    handleInitialReporterTransferredLog
+  ),
+  [SubscriptionEventName.InitialReporterRedeemed]: wrapLogHandler(
+    handleInitialReporterRedeemedLog
+  ),
+  [SubscriptionEventName.InitialReportSubmitted]: wrapLogHandler(
+    handleInitialReportSubmittedLog
+  ),
+  [SubscriptionEventName.MarketCreated]: wrapLogHandler(
+    handleMarketCreatedLog
+  ),
+}

@@ -557,8 +557,8 @@ export const MODAL_MARKET_LOADING = 'MODAL_MARKET_LOADING';
 export const MODAL_DR_QUICK_GUIDE = 'MODAL_DR_QUICK_GUIDE';
 export const MODAL_MIGRATE_MARKET = 'MODAL_MIGRATE_MARKET';
 export const MODAL_LOGIN = 'MODAL_LOGIN';
+export const MODAL_HARDWARE_WALLET = 'MODAL_HARDWARE_WALLET';
 export const MODAL_SIGNUP = 'MODAL_SIGNUP';
-export const MODAL_CONNECT = 'MODAL_CONNECT';
 export const MODAL_LOADING = 'MODAL_LOADING';
 export const MODAL_ACCOUNT_CREATED = 'MODAL_ACCOUNT_CREATED';
 export const MODAL_ERROR = 'MODAL_ERROR';
@@ -601,8 +601,6 @@ export const DOINITIALREPORT = 'DOINITIALREPORT';
 export const FINALIZE = 'FINALIZE';
 export const FINALIZEFORK = 'FINALIZEFORK';
 export const MIGRATETHROUGHONEFORK = 'MIGRATETHROUGHONEFORK';
-export const MIGRATEBALANCESFROMLEGACYREP = 'MIGRATEBALANCESFROMLEGACYREP';
-export const MIGRATEALLOWANCESFROMLEGACYREP = 'MIGRATEALLOWANCESFROMLEGACYREP';
 export const MIGRATEIN = 'MIGRATEIN';
 export const MIGRATEOUT = 'MIGRATEOUT';
 export const MIGRATEOUTBYPAYOUT = 'MIGRATEOUTBYPAYOUT';
@@ -656,6 +654,7 @@ export const SENDETHER = 'SENDETHER';
 export const SENDREPUTATION = 'SENDREPUTATION';
 export const CUSTOM = 'Custom';
 export const PREFILLEDSTAKE = 'PREFILLEDSTAKE';
+export const MIGRATE_FROM_LEG_REP_TOKEN = 'MIGRATEFROMLEGACYREPUTATIONTOKEN';
 
 // # Orders/Trade Constants
 export const ORDER_BOOK_TABLE = 'ORDER_BOOK_TABLE';
@@ -673,6 +672,7 @@ export const BUY = 'buy';
 export const SELL = 'sell';
 export const BUY_INDEX = 0;
 export const SELL_INDEX = 1;
+export const HEX_BUY = '0x00';
 export const BOUGHT = 'bought';
 export const SOLD = 'sold';
 export const BUYING = 'buying';
@@ -833,7 +833,6 @@ export const PROCEEDS_TO_CLAIM_TITLE = 'Claim Proceeds';
 export const MARKET_IS_MOST_LIKELY_INVALID_TITLE = 'Market is Failing Invalid Filter';
 export const OPEN_ORDERS_RESOLVED_MARKET = 'resolvedMarketsOpenOrders';
 export const REPORT_ON_MARKET = 'reportOnMarkets';
-export const FINALIZE_MARKET = 'finalizeMarkets';
 export const MARKET_IN_DISPUTE = 'marketsInDispute';
 export const CLAIM_REPORTING_FEES = 'claimReportingFees';
 export const UNSIGNED_ORDERS = 'unsignedOrders';
@@ -843,7 +842,6 @@ export const MARKET_IS_MOST_LIKELY_INVALID = 'marketIsMostLikelyInvalid';
 export const NOTIFICATION_TYPES = {
   [OPEN_ORDERS_RESOLVED_MARKET]: OPEN_ORDERS_RESOLVED_MARKET,
   [REPORT_ON_MARKET]: REPORT_ON_MARKET,
-  [FINALIZE_MARKET]: FINALIZE_MARKET,
   [MARKET_IN_DISPUTE]: MARKET_IN_DISPUTE,
   [CLAIM_REPORTING_FEES]: CLAIM_REPORTING_FEES,
   [UNSIGNED_ORDERS]: UNSIGNED_ORDERS,
@@ -872,6 +870,8 @@ export const CLAIM_STAKE_FEES = 'CLAIM_STAKE_FEES';
 export const CLAIM_MARKETS_PROCEEDS = 'CLAIM_MARKETS_PROCEEDS';
 export const CREATE_MARKET = 'CREATE_MARKET';
 export const SUBMIT_REPORT = 'SUBMIT_REPORT';
+export const SUBMIT_DISPUTE = 'SUBMIT_DISPUTE';
+export const TRANSACTIONS = 'TRANSACTIONS';
 
 // Pending Queue SINGLE TYPE
 export const CLAIM_FEE_WINDOWS = 'CLAIM_FEE_WINDOWS';

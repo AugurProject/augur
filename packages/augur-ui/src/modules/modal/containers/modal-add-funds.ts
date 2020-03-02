@@ -30,16 +30,17 @@ const addFundsPortis = async (amount) => {
 
 const addFundsFortmatic = async (amount, crypto, address) => {
   await fm.user.deposit({
-    amount,
+    amount: amount.toNumber(),
     crypto,
     address,
   });
 }
 
-const addFundsTorus = async (amount) => {
+const addFundsTorus = async (amount, address) => {
   await window.torus.initiateTopup('wyre', {
     selectedCurrency: 'USD',
-    fiatValue: amount,
+    selectedAddress: address,
+    fiatValue: amount.toNumber(),
     selectedCryptoCurrency: 'DAI'
   });
 }
@@ -47,7 +48,7 @@ const addFundsTorus = async (amount) => {
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
   track: (eventName, payload) => dispatch(track(eventName, payload)),
-  addFundsTorus: (amount) => addFundsTorus(amount),
+  addFundsTorus: (amount, address) => addFundsTorus(amount, address),
   addFundsFortmatic: (amount, crypto, address) => addFundsFortmatic(amount, crypto, address),
 });
 

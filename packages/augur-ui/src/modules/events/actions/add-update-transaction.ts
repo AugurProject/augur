@@ -1,4 +1,4 @@
-import store, { AppState } from 'store';
+import { AppState } from 'store';
 import {
   addCanceledOrder,
   removeCanceledOrder,
@@ -19,13 +19,15 @@ import {
   PUBLICFILLORDER,
   BUYPARTICIPATIONTOKENS,
   MODAL_ERROR,
+  MIGRATE_FROM_LEG_REP_TOKEN,
+  REDEEMSTAKE,
 } from 'modules/common/constants';
 import { CreateMarketData } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { Events, TXEventName } from '@augurproject/sdk';
 import {
-  addPendingData,
+  addPendingData, addUpdatePendingTransaction,
 } from 'modules/pending-queue/actions/pending-queue-management';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { TransactionMetadataParams } from 'contract-dependencies-ethers/build';
@@ -37,6 +39,7 @@ import { updateModal } from 'modules/modal/actions/update-modal';
 import { updateAppStatus, GNOSIS_STATUS } from 'modules/app/actions/update-app-status';
 import { GnosisSafeState } from '@augurproject/gnosis-relay-api/src/GnosisRelayAPI';
 
+const ADD_PENDING_QUEUE_METHOD_CALLS = [BUYPARTICIPATIONTOKENS, MIGRATE_FROM_LEG_REP_TOKEN, REDEEMSTAKE];
 export const getRelayerDownErrorMessage = (walletType, hasEth) => {
   const errorMessage = 'We\'re currently experiencing a technical difficulty processing transaction fees in Dai. If possible please come back later to process this transaction';
 
@@ -53,8 +56,11 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
   const { eventName, transaction, hash } = txStatus;
   if (transaction) {
     const methodCall = transaction.name.toUpperCase();
-    const { blockchain, alerts, loginAccount } = getState();
+    const { blockchain, loginAccount } = getState();
 
+    if (ADD_PENDING_QUEUE_METHOD_CALLS.includes(methodCall)) {
+      dispatch(addUpdatePendingTransaction(methodCall, eventName, blockchain.currentBlockNumber, hash, { ...transaction }));
+    }
     if (eventName === TXEventName.RelayerDown) {
       const hasEth = (await loginAccount.meta.signer.provider.getBalance(loginAccount.meta.signer._address)).gt(0);
 
@@ -188,6 +194,7 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
         }
         break;
       }
+
       default:
         return null;
     }

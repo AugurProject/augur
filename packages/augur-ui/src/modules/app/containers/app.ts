@@ -35,8 +35,7 @@ import { saveAffiliateAddress } from "modules/account/actions/login-account";
 const mapStateToProps = state => {
   const { alerts } = selectInfoAlertsAndSeenCount(state);
   const notifications = selectNotifications(state);
-  const v1RepBalance = state.loginAccount.balances;
-  const showMigrateRepButton = v1RepBalance.legacyAttoRep > 0;
+  const walletBalances = state.loginAccount.balances;
 
   return {
     notifications,
@@ -58,7 +57,7 @@ const mapStateToProps = state => {
     useWeb3Transport: isGlobalWeb3(),
     sidebarStatus: state.sidebarStatus,
     isConnectionTrayOpen: state.authStatus.isConnectionTrayOpen,
-    showMigrateRepButton,
+    walletBalances,
   }
 };
 

@@ -11,6 +11,10 @@ import {
   INITAL_REPORT_GAS_COST,
   HEADER_TYPE,
   INVALID_OUTCOME_ID,
+  SUBMIT_REPORT,
+  BUYPARTICIPATIONTOKENS,
+   TRANSACTIONS,
+   REDEEMSTAKE
 } from 'modules/common/constants';
 import {
   FormattedNumber,
@@ -685,7 +689,7 @@ export class ReportingBondsView extends Component<
         scalarError: 'Input value not between scalar market range',
         disabled: true,
       });
-    } else if (isNaN(Number(range)) || range === '') {
+    } else if (!market.isWarpSync && (isNaN(Number(range)) || range === '')) {
       this.setState({ scalarError: 'Enter a valid number', disabled: true });
     } else {
       this.setState({ scalarError: '' });
@@ -946,6 +950,7 @@ export const ReportingCard = (props: ReportingCardProps) => {
         disputeInfo={disputeInfo}
         endTimeFormatted={endTimeFormatted}
         currentAugurTimestamp={currentAugurTimestamp}
+        isWarpSync={market.isWarpSync}
       />
       <MarketTitle id={id} headerType={headerType} />
       {reportingState !== REPORTING_STATE.OPEN_REPORTING && (
@@ -958,9 +963,12 @@ export const ReportingCard = (props: ReportingCardProps) => {
       )}
       <div data-tip data-for={'tooltip--preReporting' + id}>
         <ProcessingButton
+          text="Report"
           action={showReportingModal}
           reportingStatus={reportingStatus}
           disabled={preReporting || !isLogged}
+          queueName={SUBMIT_REPORT}
+          queueId={id}
         />
         {(preReporting || !isLogged) && (
           <ReactTooltip
@@ -1191,10 +1199,12 @@ export const ParticipationTokensView = (
         tooltipText="The % of participation tokens you own among all participation tokens purchased in the current window"
       />
 
-      <PrimaryButton
+      <ProcessingButton
         disabled={disablePurchaseButton}
         text="Get Participation Tokens"
         action={openModal}
+        queueName={TRANSACTIONS}
+        queueId={BUYPARTICIPATIONTOKENS}
       />
 
       <section />
@@ -1222,11 +1232,12 @@ export const ParticipationTokensView = (
           "The total amount of unclaimed Dai you've earned through reporting"
         }
       />
-
-      <PrimaryButton
+      <ProcessingButton
         disabled={!hasRedeemable}
         text="Redeem Past Participation Tokens"
         action={openClaimParticipationTokensModal}
+        queueName={TRANSACTIONS}
+        queueId={REDEEMSTAKE}
       />
     </div>
   );

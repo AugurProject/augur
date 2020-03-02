@@ -5,6 +5,17 @@
   display: flex;
   flex-direction: column;
   height: 100%;
+
+  @media @breakpoint-mobile {
+    overflow: hidden;
+  }
+}
+
+@supports (-moz-appearance:none) { 
+  .Side {
+    // firefox doesn't support overlay. need auto
+    overflow-y: auto;
+  }
 }
 
 .Side {

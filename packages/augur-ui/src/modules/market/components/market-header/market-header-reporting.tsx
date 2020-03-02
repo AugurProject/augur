@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 import Styles from 'modules/market/components/market-header/market-header-reporting.styles.less';
-import { REPORTING_STATE, SCALAR, INVALID_OUTCOME_NAME } from 'modules/common/constants';
+import { REPORTING_STATE, SCALAR, INVALID_OUTCOME_NAME, SUBMIT_REPORT, SUBMIT_DISPUTE } from 'modules/common/constants';
 import { PrimaryButton, ProcessingButton } from 'modules/common/buttons';
 import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
 import { MarketData } from 'modules/types';
@@ -26,7 +26,6 @@ export const MarketHeaderReporting = ({
   isLogged,
   canClaimProceeds,
   showReportingModal,
-  reportingStatus
 }: MarketHeaderReportingProps) => {
   const { reportingState, id, consensusFormatted } = market;
   let content = null;
@@ -82,12 +81,14 @@ export const MarketHeaderReporting = ({
             )}
         </div>
         {reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE && (
-          <PrimaryButton
-            id="button"
+          <ProcessingButton
+            queueName={SUBMIT_DISPUTE}
+            queueId={id}
+            small
+            disabled={!isLogged}
             text={
               slowDisputing ? 'Dispute Outcome' : 'Support or Dispute Outcome'
             }
-            disabled={!isLogged}
             action={() => showReportingModal()}
           />
         )}
@@ -101,9 +102,11 @@ export const MarketHeaderReporting = ({
     content = (
       <div className={classNames(Styles.Content, Styles.Report)}>
         <ProcessingButton
+          text='Report'
           action={() => showReportingModal()}
-          reportingStatus={reportingStatus}
           disabled={!isLogged}
+          queueName={SUBMIT_REPORT}
+          queueId={id}
         />
       </div>
     );

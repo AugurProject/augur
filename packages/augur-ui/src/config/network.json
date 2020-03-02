@@ -1,5 +1,9 @@
 {
   "dev": {
+    "sdk": {
+      "enabled": false,
+      "ws": "ws://localhost:9001"
+    },
     "ethereum": {
       "http": "http://127.0.0.1:8545",
       "rpcRetryCount": 5,
@@ -12,11 +16,12 @@
     },
     "zeroX": {
       "rpc": {
-        "enabled": true,
+        "enabled": false,
         "ws":  "ws://localhost:60557"
       },
       "mesh": {
         "enabled": true,
+        "verbosity": 1,
         "bootstrapList": [
           "/ip4/127.0.0.1/tcp/60558/ipfs/16Uiu2HAmRMgvPQV2UYKXuuCnNaFLpc36PhLp2UKVcL1ePseVcz4y",
           "/ip4/127.0.0.1/tcp/60559/ws/ipfs/16Uiu2HAmRMgvPQV2UYKXuuCnNaFLpc36PhLp2UKVcL1ePseVcz4y"
@@ -27,7 +32,6 @@
   "kovan": {
     "networkId": "42",
     "ethereum": {
-      "http": "https://eth-kovan.alchemyapi.io/jsonrpc/1FomA6seLdWDvpIRvL9J5NhwPHLIGbWA",
       "rpcRetryCount": 5,
       "rpcRetryInterval": 0,
       "rpcConcurrency": 40
@@ -42,6 +46,29 @@
         "ws":  "wss://v2.augur.net/0x-ws"
       },
       "mesh": {
+        "verbosity": 1,
+        "enabled": true
+      }
+    }
+  },
+  "demo": {
+    "networkId": "42",
+    "ethereum": {
+      "rpcRetryCount": 5,
+      "rpcRetryInterval": 0,
+      "rpcConcurrency": 40
+    },
+    "gnosis": {
+      "enabled": true,
+      "http": "https://gnosis.demo.augur.net/api/"
+    },
+    "zeroX": {
+      "rpc": {
+        "enabled": false,
+        "ws":  "wss://demo.augur.net/0x-ws"
+      },
+      "mesh": {
+        "verbosity": 1,
         "enabled": true
       }
     }
