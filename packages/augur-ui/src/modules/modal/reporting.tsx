@@ -171,10 +171,10 @@ export default class ModalReporting extends Component<
       disputeInfo.stakes.filter(stake => !stake.isInvalidOutcome).forEach(stake => {
         radioButtons.push({
           id: String(stake.outcome),
-          header: `Enter a hash value`,
-          value: warpSyncHash,
+          header: stake.outcome ? `${stake.outcome}` : `Enter a hash value`,
+          value: stake.outcome ? warpSyncHash : null,
           description: stake.outcome,
-          checked: true,
+          checked: checked === stake.outcome,
           isInvalid: false,
           stake,
         });
@@ -350,7 +350,7 @@ export default class ModalReporting extends Component<
               <MigrateRepInfo />
             }
             <section>
-              <MarketTypeLabel marketType={marketType} />
+              <MarketTypeLabel marketType={marketType} isWarpSync={market.isWarpSync} />
               <RedFlag market={market} />
               {isTemplate && <TemplateShield market={market} />}
             </section>
