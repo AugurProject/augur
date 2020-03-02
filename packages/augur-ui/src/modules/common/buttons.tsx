@@ -161,23 +161,22 @@ export const SecondaryButton = (props: DefaultButtonProps) => (
 );
 
 const ProcessingButtonComponent = (props: DefaultButtonProps) => {
+  let isDisabled = props.disabled;
   let icon = props.icon;
   let buttonText = props.text;
   let buttonAction = props.action;
-  if (props.status === TXEventName.Pending) {
+  if (props.status === TXEventName.Pending || props.status === TXEventName.AwaitingSigning) {
     buttonText = 'Processing...';
+    isDisabled = true;
   }
   const failed = props.status === TXEventName.Failure;
   const confirmed = props.status === TXEventName.Success;
-  if (failed) {
-    buttonText = 'Failed';
+  if (failed) buttonText = 'Failed';
+  if (confirmed) buttonText = 'Confirmed'
+  if (failed || confirmed) {
     buttonAction = e => props.cancel(e);
     icon = XIcon;
-  }
-  if (confirmed) {
-    buttonText = 'Confirmed'
-    buttonAction = e => props.cancel(e);
-    icon = XIcon;
+    isDisabled = false;
   }
   return (
     <>
@@ -189,7 +188,7 @@ const ProcessingButtonComponent = (props: DefaultButtonProps) => {
           icon={icon}
           text={buttonText}
           action={buttonAction}
-          disabled={props.disabled || Boolean(props.status)}
+          disabled={isDisabled}
         />
       }
       {!props.secondaryButton && !props.cancelButton &&
@@ -200,7 +199,7 @@ const ProcessingButtonComponent = (props: DefaultButtonProps) => {
           icon={icon}
           text={buttonText}
           action={buttonAction}
-          disabled={props.disabled || Boolean(props.status)}
+          disabled={isDisabled}
         />
       }
       {props.cancelButton &&
@@ -211,7 +210,7 @@ const ProcessingButtonComponent = (props: DefaultButtonProps) => {
           icon={icon}
           text={buttonText}
           action={buttonAction}
-          disabled={props.disabled || Boolean(props.status)}
+          disabled={isDisabled}
         />
       }
     </>
