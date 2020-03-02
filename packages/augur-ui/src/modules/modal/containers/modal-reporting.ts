@@ -20,6 +20,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
     hasForked && !!universe.forkingInfo.winningChildUniverseId;
 
   return {
+    warpSyncHash: universe.warpSyncHash,
     modal: modal,
     market,
     rep: formatRep(loginAccount.balances.rep).formatted,

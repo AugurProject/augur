@@ -52,6 +52,7 @@ interface ModalReportingProps {
   getRepModal: Function;
   addPendingData: Function;
   removePendingData: Function;
+  warpSyncHash?: string;
 }
 
 interface ModalReportingState {
@@ -74,7 +75,7 @@ export default class ModalReporting extends Component<
       ? this.props.selectedOutcome.toString()
       : null,
     inputtedReportingStake: { inputStakeValue: '0', inputToAttoRep: '0' },
-    inputScalarOutcome: '',
+    inputScalarOutcome: this.props.warpSyncHash || '',
     isReporting:
       this.props.market.reportingState === REPORTING_STATE.OPEN_REPORTING ||
       this.props.market.reportingState === REPORTING_STATE.DESIGNATED_REPORTING,
@@ -120,7 +121,7 @@ export default class ModalReporting extends Component<
   };
 
   buildRadioButtonCollection = () => {
-    const { market, selectedOutcome } = this.props;
+    const { market, selectedOutcome, warpSyncHash } = this.props;
     const { checked } = this.state;
     const {
       marketType,
@@ -128,6 +129,7 @@ export default class ModalReporting extends Component<
       disputeInfo,
       minPrice,
       maxPrice,
+      isWarpSync
     } = market;
 
     let sortedOutcomes = outcomesFormatted;
@@ -161,7 +163,23 @@ export default class ModalReporting extends Component<
         };
       });
 
-    if (marketType === SCALAR) {
+    if (isWarpSync) {
+      if (selectedOutcome && String(selectedOutcome) !== 'null')
+        this.updateScalarOutcome(String(selectedOutcome));
+      radioButtons = [];
+      const denomination = market.scalarDenomination;
+      disputeInfo.stakes.filter(stake => !stake.isInvalidOutcome).forEach(stake => {
+        radioButtons.push({
+          id: String(stake.outcome),
+          header: `Enter a hash value`,
+          value: warpSyncHash,
+          description: stake.outcome,
+          checked: true,
+          isInvalid: false,
+          stake,
+        });
+      });
+    } else if (marketType === SCALAR) {
       if (selectedOutcome && String(selectedOutcome) !== 'null')
         this.updateScalarOutcome(String(selectedOutcome));
       radioButtons = [];

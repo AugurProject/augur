@@ -688,7 +688,7 @@ export class ReportingBondsView extends Component<
         scalarError: 'Input value not between scalar market range',
         disabled: true,
       });
-    } else if (isNaN(Number(range)) || range === '') {
+    } else if (!market.isWarpSync && (isNaN(Number(range)) || range === '')) {
       this.setState({ scalarError: 'Enter a valid number', disabled: true });
     } else {
       this.setState({ scalarError: '' });
