@@ -2938,7 +2938,7 @@
     web3-eth-contract "^1.2.6"
     web3-utils "^1.2.6"
 
-"@toruslabs/torus-embed@^1.1.0":
+"@toruslabs/torus-embed@1.1.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@toruslabs/torus-embed/-/torus-embed-1.1.0.tgz#0c23b6ab905cac6edae1dd17b6a57645e4cba704"
   integrity sha512-PVuAv/B6jyCkIjCVigxcY7+OTvNryd0EVhRpNbihR8J8xjYNIJeVg9btQ1utptBlmsJ/yl5X7mYRi7imlJz19A==
