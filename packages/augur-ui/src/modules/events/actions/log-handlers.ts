@@ -76,6 +76,7 @@ import { removePendingDataByHash, addPendingData, removePendingData } from 'modu
 import { removePendingOrder, constructPendingOrderid } from 'modules/orders/actions/pending-orders-management';
 import { loadAccountData } from 'modules/auth/actions/load-account-data';
 import { wrapLogHandler } from './wrap-log-handler';
+import { updateUniverse } from 'modules/universe/actions/update-universe';
 
 const handleAlert = (
   log: any,
@@ -321,6 +322,15 @@ export const handleMarketMigratedLog = (log: any) => (
     dispatch(loadMarketsInfo([log.market]));
   }
   dispatch(loadUniverseDetails(universeId, userAddress));
+};
+
+export const handleWarpSyncHashUpdatedLog = (log: { hash: string}) => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  if (log.hash) {
+    dispatch(updateUniverse({ warpSyncHash: log.hash }));
+  }
 };
 
 export const handleTokensTransferredLog = (logs: Logs.TokensTransferredLog[]) => (
