@@ -14,6 +14,7 @@ import {
   handleSDKReadyEvent,
   handleGnosisStateUpdate,
   handleReportingStateChanged,
+  handleWarpSyncHashUpdatedLog,
 } from 'modules/events/actions/log-handlers';
 import { wrapLogHandler } from 'modules/events/actions/wrap-log-handler';
 import { ThunkDispatch } from 'redux-thunk';
@@ -47,6 +48,9 @@ const EVENTS = {
   ),
   [SubscriptionEventName.ReportingStateChanged]: wrapLogHandler(
     handleReportingStateChanged
+  ),
+  [SubscriptionEventName.WarpSyncHashUpdated]: wrapLogHandler(
+    handleWarpSyncHashUpdatedLog
   ),
   [TXEventName.AwaitingSigning]: wrapLogHandler(handleTxAwaitingSigning),
   [TXEventName.Success]: wrapLogHandler(handleTxSuccess),
