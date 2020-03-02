@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { TIMEFRAME_OPTIONS } from 'modules/common/constants';
 import { LinearPropertyLabel } from 'modules/common/labels';
 import { formatNumber } from 'utils/format-number';
-import { PillSelection, Tab } from 'modules/common/selection';
+import { PillSelection } from 'modules/common/selection';
 import Styles from 'modules/account/components/stats.styles.less';
 
 export interface StatsProps {
@@ -36,10 +36,9 @@ const Stats = ({
 
   return (
     <div className={Styles.Stats}>
-      <Tab
+      <PillSelection
         options={TIMEFRAME_OPTIONS}
         defaultSelection={timeframe}
-        large={true}
         onChange={selected => updateSelected(selected)}
       />
       {properties.map(
