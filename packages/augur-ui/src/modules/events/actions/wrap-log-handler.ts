@@ -9,6 +9,11 @@ export const wrapLogHandler = (logHandler: Function) => (
   getState: () => AppState
 ) => {
   if (log) {
+    if (Array.isArray(log)) {
+      console.log('events', log.map(l => l.eventName));
+    } else {
+      console.log('event', log.eventName);
+    }
     const universeId: string = getState().universe.id;
     const isInCurrentUniverse = true;
     // TODO: need to filter based on current selected universe
