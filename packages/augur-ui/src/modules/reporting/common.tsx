@@ -942,6 +942,7 @@ export const ReportingCard = (props: ReportingCardProps) => {
         disputeInfo={disputeInfo}
         endTimeFormatted={endTimeFormatted}
         currentAugurTimestamp={currentAugurTimestamp}
+        isWarpSync={market.isWarpSync}
       />
       <MarketTitle id={id} headerType={headerType} />
       {reportingState !== REPORTING_STATE.OPEN_REPORTING && (

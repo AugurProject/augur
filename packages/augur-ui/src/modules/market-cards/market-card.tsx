@@ -291,6 +291,7 @@ export default class MarketCard extends React.Component<
                 marketStatus={marketStatus}
                 reportingState={reportingState}
                 disputeInfo={disputeInfo}
+                isWarpSync={market.isWarpSync}
               />
             )}
             {isScalar && <MarketTypeLabel marketType={marketType} />}
