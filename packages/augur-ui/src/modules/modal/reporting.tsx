@@ -75,7 +75,7 @@ export default class ModalReporting extends Component<
       ? this.props.selectedOutcome.toString()
       : null,
     inputtedReportingStake: { inputStakeValue: '0', inputToAttoRep: '0' },
-    inputScalarOutcome: this.props.warpSyncHash || '',
+    inputScalarOutcome: this.props.market.isWarpSync ? this.props.warpSyncHash : '',
     isReporting:
       this.props.market.reportingState === REPORTING_STATE.OPEN_REPORTING ||
       this.props.market.reportingState === REPORTING_STATE.DESIGNATED_REPORTING,
