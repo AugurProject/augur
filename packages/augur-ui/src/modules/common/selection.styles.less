@@ -454,11 +454,12 @@
   align-items: center;
   display: flex;
   flex-flow: row nowrap;
-  height: @size-24;
+  height: @size-40;
 
   > li {
     background: transparent;
     border: @size-1 solid var(--color-secondary-action-outline);
+    border-radius: 0;
     border-right: 0;
     box-sizing: border-box;
     display: flex;
@@ -469,17 +470,11 @@
 
     &.Selected,
     &:hover {
-      background: var(--color-secondary-action-outline-30);
-      border-right: @size-1 solid var(--color-secondary-action-outline);
+      border: @size-1 solid var(--color-primary-text);
+      border-right: @size-1 solid var(--color-primary-text);
 
-      > button {
-        color: var(--color-primary-text);
-
-        > span {
-          .text-9;
-
-          color: var(--color-secondary-text);
-        }
+      &:last-of-type {
+        border-right: @size-1 solid var(--color-primary-text);
       }
 
       & + li {
@@ -490,12 +485,22 @@
     &:first-of-type {
       border-bottom-left-radius: @border-radius-default;
       border-top-left-radius: @border-radius-default;
+
+      > button {
+        border-bottom-left-radius: @border-radius-default;
+        border-top-left-radius: @border-radius-default;
+      }
     }
 
     &:last-of-type {
       border-bottom-right-radius: @border-radius-default;
       border-right: @size-1 solid var(--color-secondary-action-outline);
       border-top-right-radius: @border-radius-default;
+
+      > button {
+        border-bottom-right-radius: @border-radius-default;
+        border-top-right-radius: @border-radius-default;
+      }
     }
 
     > button {
@@ -504,13 +509,32 @@
       background: transparent;
       color: var(--color-secondary-text);
       height: 100%;
-      padding: @size-4 @size-16;
-      text-transform: uppercase;
+      padding: 0px @size-16;
+      border-radius: 0;
+    }
+  }
 
-      > span {
-        .text-9;
+  &.TabLarge {
+    height: @size-40;
 
-        color: var(--color-secondary-text);
+    > li {
+      > button {
+        .mono-14-bold;
+
+        padding: 0px @size-24;
+      }
+    }
+  }
+
+  &.TabSmall {
+    height: @size-26;
+
+    > li {
+      > button {
+        .mono-12-bold;
+
+        padding: 0px @size-24;
+        text-transform: uppercase;
       }
     }
   }
