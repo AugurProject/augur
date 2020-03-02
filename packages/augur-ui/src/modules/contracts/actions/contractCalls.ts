@@ -457,6 +457,8 @@ export interface doReportDisputeAddStake {
   description: string;
   attoRepAmount: string;
   isInvalid: boolean;
+  isWarpSync?: boolean;
+  warpSyncHash?: string;
 }
 
 export async function doInitialReport_estimaetGas(report: doReportDisputeAddStake) {
@@ -473,7 +475,8 @@ export async function doInitialReport_estimaetGas(report: doReportDisputeAddStak
 export async function doInitialReport(report: doReportDisputeAddStake) {
   const market = getMarket(report.marketId);
   if (!market) return false;
-  const payoutNumerators = getPayoutNumerators(report);
+  const augur = augurSdk.get();
+  const payoutNumerators = report.isWarpSync ? await augur.getPayoutFromWarpSyncHash(report.warpSyncHash) : getPayoutNumerators(report);
   return market.doInitialReport(
     payoutNumerators,
     report.description,

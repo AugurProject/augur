@@ -205,7 +205,7 @@ export default class ModalReporting extends Component<
   };
 
   reportingAction = (estimateGas = false) => {
-    const { migrateMarket, migrateRep, market, addPendingData, removePendingData } = this.props;
+    const { migrateMarket, migrateRep, market, addPendingData, warpSyncHash } = this.props;
     const {
       marketId,
       maxPrice,
@@ -214,6 +214,7 @@ export default class ModalReporting extends Component<
       numOutcomes,
       marketType,
       disputeInfo,
+      isWarpSync
     } = market;
     const { isReporting } = this.state;
     let outcomeId = null;
@@ -239,6 +240,8 @@ export default class ModalReporting extends Component<
       attoRepAmount: estimateGas ? ONE_REP : this.state.inputtedReportingStake.inputToAttoRep,
       outcomeId,
       isInvalid: isSelectedOutcomeInvalid,
+      warpSyncHash: selectedRadio.value,
+      isWarpSync,
     };
 
     if (migrateRep) {
