@@ -663,7 +663,12 @@ export class CategoryMultiSelect extends Component<
     );
 
     return (
-      <ul className={classNames(Styles.CategoryMultiSelect, {[Styles.CustomPrimary]: customPrimary, [Styles.CustomTertiary]: customTertiary})}>
+      <ul
+        className={classNames(Styles.CategoryMultiSelect, {
+          [Styles.CustomPrimary]: customPrimary,
+          [Styles.CustomTertiary]: customTertiary,
+        })}
+      >
         <DropdownInputGroup
           defaultValue={selected[0]}
           staticLabel="Primary Category"
@@ -786,7 +791,9 @@ export const ReportingRadioBarGroup = ({
         disputeOutcome.bondSizeCurrent
       );
       // double pre-filled to make new outcome tentative winner.
-      winningStakeCurrent = formatAttoRep(createBigNumber(winning.stakeCurrent).times(2)).formatted;
+      winningStakeCurrent = formatAttoRep(
+        createBigNumber(winning.stakeCurrent).times(2)
+      ).formatted;
       remainingState = formatAttoRep(disputeOutcome.stakeRemaining).formatted;
     }
   }
@@ -860,11 +867,13 @@ export const ReportingRadioBarGroup = ({
             />
           )
       )}
-      <span>
-        {!isDisputing
-          ? "Select Invalid if you believe this market's outcome was ambiguous or unverifiable."
-          : 'If you believe this market to be invalid, you can help fill the dispute bond of the official Invalid outcome below to make Invalid the new Tentative Outcome. Please check the resolution details above carefully.'}
-      </span>
+      {!market.isWarpSync && (
+        <span>
+          {!isDisputing
+            ? "Select Invalid if you believe this market's outcome was ambiguous or unverifiable."
+            : 'If you believe this market to be invalid, you can help fill the dispute bond of the official Invalid outcome below to make Invalid the new Tentative Outcome. Please check the resolution details above carefully.'}
+        </span>
+      )}
       {radioButtons.map(
         (radio, index) =>
           !radio.stake.tentativeWinning &&
@@ -1023,9 +1032,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
               {stake && stake.tentativeWinning && (
                 <Subheaders
                   header="pre-filled stake"
-                  subheader={
-                    formatAttoRep(stake.stakeCurrent || ZERO).full
-                  }
+                  subheader={formatAttoRep(stake.stakeCurrent || ZERO).full}
                 />
               )}
               {checked && (
@@ -1231,7 +1238,6 @@ interface LocationDisplayProps {
   pages: Array<{}>;
 }
 
-
 export class LocationDisplay extends React.Component<LocationDisplayProps, {}> {
   scrollTo: any = null;
   container: any = null;
@@ -1244,9 +1250,12 @@ export class LocationDisplay extends React.Component<LocationDisplayProps, {}> {
     const { pages, currentStep } = this.props;
 
     return (
-      <div className={Styles.LocationDisplay} ref={container => {
-        this.container = container;
-      }}>
+      <div
+        className={Styles.LocationDisplay}
+        ref={container => {
+          this.container = container;
+        }}
+      >
         {pages.map((page: Object, index: Number) => (
           <React.Fragment key={index}>
             <span
