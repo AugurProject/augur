@@ -11,7 +11,7 @@ import { InfoIcon } from 'modules/common/icons';
 import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 import {
   V1_REP_MIGRATE_ESTIMATE,
-  MIGRATE_V1_V2,
+  MIGRATE_FROM_LEG_REP_TOKEN,
 } from 'modules/common/constants';
 import { TXEventName } from '@augurproject/sdk/src';
 
@@ -146,12 +146,6 @@ export const MigrateRep = (props: MigrateRepForm) => {
             action: showForSafeWallet
               ? () => {
                   closeAction();
-                  addPendingData(
-                    MIGRATE_V1_V2,
-                    MIGRATE_V1_V2,
-                    TXEventName.Pending,
-                    MIGRATE_V1_V2
-                  );
                   convertV1ToV2();
                 }
               : () => closeAction(),
