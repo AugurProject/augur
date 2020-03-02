@@ -12,8 +12,9 @@ import {
   HEADER_TYPE,
   INVALID_OUTCOME_ID,
   SUBMIT_REPORT,
-  BUY_PARTICIPATION_TOKENS,
-  REDEEM_PARTICIPATION_TOKENS
+  BUYPARTICIPATIONTOKENS,
+   TRANSACTIONS,
+   REDEEMSTAKE
 } from 'modules/common/constants';
 import {
   FormattedNumber,
@@ -688,7 +689,7 @@ export class ReportingBondsView extends Component<
         scalarError: 'Input value not between scalar market range',
         disabled: true,
       });
-    } else if (isNaN(Number(range)) || range === '') {
+    } else if (!market.isWarpSync && (isNaN(Number(range)) || range === '')) {
       this.setState({ scalarError: 'Enter a valid number', disabled: true });
     } else {
       this.setState({ scalarError: '' });
@@ -1192,8 +1193,8 @@ export const ParticipationTokensView = (
         disabled={disablePurchaseButton}
         text="Get Participation Tokens"
         action={openModal}
-        queueName={BUY_PARTICIPATION_TOKENS}
-        queueId={BUY_PARTICIPATION_TOKENS}
+        queueName={TRANSACTIONS}
+        queueId={BUYPARTICIPATIONTOKENS}
       />
 
       <section />
@@ -1225,8 +1226,8 @@ export const ParticipationTokensView = (
         disabled={!hasRedeemable}
         text="Redeem Past Participation Tokens"
         action={openClaimParticipationTokensModal}
-        queueName={REDEEM_PARTICIPATION_TOKENS}
-        queueId={REDEEM_PARTICIPATION_TOKENS}
+        queueName={TRANSACTIONS}
+        queueId={REDEEMSTAKE}
       />
     </div>
   );

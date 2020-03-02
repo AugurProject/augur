@@ -13,7 +13,7 @@ import { HelpIcon, HelpMenuList } from 'modules/app/components/help-resources';
 import { SecondaryButton, ProcessingButton } from 'modules/common/buttons';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import { helpIcon, Chevron, Dot } from 'modules/common/icons';
-import { MODAL_ADD_FUNDS, MIGRATE_V1_V2 } from 'modules/common/constants';
+import { MODAL_ADD_FUNDS, MIGRATE_FROM_LEG_REP_TOKEN, TRANSACTIONS } from 'modules/common/constants';
 
 interface SideNavProps {
   defaultMobileClick: Function;
@@ -118,8 +118,8 @@ const SideNav = ({
                   <ProcessingButton
                     text={walletBalances.legacyRep > 0 ? 'Migrate V1 to V2 REP' : ' Migrate V1 REP'}
                     action={() => migrateV1Rep()}
-                    queueName={MIGRATE_V1_V2}
-                    queueId={MIGRATE_V1_V2}
+                    queueName={TRANSACTIONS}
+                    queueId={MIGRATE_FROM_LEG_REP_TOKEN}
                     secondaryButton
                   />
                   <label

@@ -43,8 +43,7 @@ import {
   MODAL_GAS_PRICE,
   SUBMIT_REPORT,
   MIGRATE_FROM_LEG_REP_TOKEN,
-  MIGRATE_V1_V2,
-  BUY_PARTICIPATION_TOKENS,
+  BUYPARTICIPATIONTOKENS,
   SUBMIT_DISPUTE,
 } from 'modules/common/constants';
 import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
@@ -72,7 +71,7 @@ import { updateModal } from 'modules/modal/actions/update-modal';
 import * as _ from 'lodash';
 import { loadMarketOrderBook } from 'modules/orders/actions/load-market-orderbook';
 import { isCurrentMarket } from 'modules/trades/helpers/is-current-market';
-import { removePendingDataByHash, addPendingData, removePendingData } from 'modules/pending-queue/actions/pending-queue-management';
+import { removePendingDataByHash, addPendingData, removePendingData, removePendingTransaction } from 'modules/pending-queue/actions/pending-queue-management';
 import { removePendingOrder, constructPendingOrderid } from 'modules/orders/actions/pending-orders-management';
 import { loadAccountData } from 'modules/auth/actions/load-account-data';
 import { wrapLogHandler } from './wrap-log-handler';
@@ -485,8 +484,10 @@ export const handleInitialReporterRedeemedLog = (
   logs: Logs.InitialReporterRedeemedLog[]
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const address = getState().loginAccount.address;
-  if (logs.filter(log => isSameAddress(log.reporter, address)).length > 0)
+  if (logs.filter(log => isSameAddress(log.reporter, address)).length > 0) {
     dispatch(loadAccountReportingHistory());
+    dispatch(removePendingTransaction(REDEEMSTAKE));
+  }
 };
 
 export const handleInitialReporterTransferredLog = (logs: any) => (
@@ -524,6 +525,7 @@ export const handleParticipationTokensRedeemedLog = (
       getState
     ));
     dispatch(loadAccountReportingHistory());
+    dispatch(removePendingTransaction(REDEEMSTAKE));
   }
 };
 
@@ -618,6 +620,7 @@ export const handleDisputeCrowdsourcerRedeemedLog = (
   if (userLogs.length > 0) {
     dispatch(loadAccountReportingHistory());
   }
+  dispatch(removePendingTransaction(REDEEMSTAKE));
 };
 // ---- ------------ ----- //
 
@@ -639,7 +642,7 @@ export const handleTokensMintedLog = (logs: Logs.TokensMinted[]) => (
   const isForking = !!getState().universe.forkingInfo;
   logs.filter(log => isSameAddress(log.target, userAddress)).map(log => {
     if (log.tokenType === Logs.TokenType.ParticipationToken) {
-      dispatch(removePendingData(BUY_PARTICIPATION_TOKENS, BUY_PARTICIPATION_TOKENS));
+      dispatch(removePendingTransaction(BUYPARTICIPATIONTOKENS));
       dispatch(loadAccountReportingHistory());
       dispatch(loadDisputeWindow());
     }
@@ -656,7 +659,7 @@ export const handleTokensMintedLog = (logs: Logs.TokensMinted[]) => (
             timestamp: getState().blockchain.currentAugurTimestamp * 1000,
             name: MIGRATE_FROM_LEG_REP_TOKEN,
           }, false));
-        dispatch(addPendingData(MIGRATE_V1_V2, MIGRATE_V1_V2, TXEventName.Success, MIGRATE_V1_V2));
+        dispatch(removePendingTransaction(MIGRATE_FROM_LEG_REP_TOKEN));
       }
     })
 };
