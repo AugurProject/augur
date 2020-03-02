@@ -40,6 +40,7 @@ import {
   LoginAccount,
   EnvObject,
   Notification,
+  AccountBalances,
 } from 'modules/types';
 import ForkingBanner from 'modules/reporting/containers/forking-banner';
 import parseQuery, { parseLocation } from 'modules/routes/helpers/parse-query';
@@ -91,6 +92,7 @@ interface AppProps {
   showMigrateRepButton: boolean;
   theme: string;
   setTheme: Function;
+  walletBalances: AccountBalances;
   saveAffilateAddress: Function;
 }
 
@@ -123,18 +125,21 @@ export default class AppView extends Component<AppProps> {
     {
       title: 'Disputing',
       route: DISPUTING,
-      requireLogin: false,
+      requireLogin: true,
+      alternateStyle: true,
     },
     {
       title: 'Reporting',
       route: REPORTING,
-      requireLogin: false,
+      requireLogin: true,
+      alternateStyle: true,
     },
     {
       title: 'Create Market',
       route: CREATE_MARKET,
       requireLogin: true,
       button: true,
+      alternateStyle: true,
       disabled: !!this.props.universe.forkingInfo,
     },
   ];
@@ -364,7 +369,7 @@ export default class AppView extends Component<AppProps> {
       isConnectionTrayOpen,
       updateConnectionTray,
       migrateV1Rep,
-      showMigrateRepButton,
+      walletBalances,
       updateModal,
       isHelpMenuOpen,
       updateHelpMenuState,
@@ -377,6 +382,7 @@ export default class AppView extends Component<AppProps> {
     const onTradingTutorial =
       parseQuery(location.search)[MARKET_ID_PARAM_NAME] === TRADING_TUTORIAL;
 
+    const showMigrateRepButton = walletBalances.legacyRep > 0 || walletBalances.legacyRepNonSafe > 0;
     return (
       <main>
         <HelmetTag {...APP_HEAD_TAGS} />
@@ -450,6 +456,7 @@ export default class AppView extends Component<AppProps> {
                 showGlobalChat={() => this.props.showGlobalChat()}
                 migrateV1Rep={migrateV1Rep}
                 showMigrateRepButton={showMigrateRepButton}
+                walletBalances={walletBalances}
                 updateModal={updateModal}
               />
 
@@ -460,6 +467,7 @@ export default class AppView extends Component<AppProps> {
                 currentBasePath={sidebarStatus.currentBasePath}
                 migrateV1Rep={migrateV1Rep}
                 showMigrateRepButton={showMigrateRepButton}
+                walletBalances={walletBalances}
                 updateModal={updateModal}
               />
             </section>
@@ -505,7 +513,7 @@ export default class AppView extends Component<AppProps> {
                 {!isLogged && (
                   <div className={Styles.BettingUI}>
                     <ExternalLinkText
-                      title={'Betting Exchange App'}
+                      title={'Betting UI'}
                       label={' - Coming Soon!'}
                       URL={'https://augur.net'}
                     />

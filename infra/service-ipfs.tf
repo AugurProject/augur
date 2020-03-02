@@ -53,7 +53,6 @@ module "service-ipfs" {
   stage                          = var.environment
   name                           = "ipfs"
   alb_security_group             = module.alb_security_group.this_security_group_id
-  use_alb_security_group         = true
   container_definition_json      = module.task-ipfs.json
   ignore_changes_task_definition = false
   ecs_cluster_arn                = aws_ecs_cluster.ecs.arn

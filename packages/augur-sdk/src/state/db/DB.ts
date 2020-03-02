@@ -54,7 +54,8 @@ import { MarketDB } from './MarketDB';
 import { ParsedOrderEventDB } from './ParsedOrderEventDB';
 import { SyncableDB } from './SyncableDB';
 import { SyncStatus } from './SyncStatus';
-import { WarpCheckpoints } from './WarpCheckpoints';
+import { WarpSyncCheckpointsDB } from './WarpSyncCheckpointsDB';
+import { WarpSyncDB } from './WarpSyncDB';
 import { StoredOrder, ZeroXOrders } from './ZeroXOrders';
 
 interface Schemas {
@@ -77,7 +78,8 @@ export class DB {
   private parsedOrderEventDatabase: ParsedOrderEventDB;
   private zeroXOrders: ZeroXOrders;
   syncStatus: SyncStatus;
-  warpCheckpoints: WarpCheckpoints;
+  warpCheckpoints: WarpSyncCheckpointsDB;
+  warpSync: WarpSyncDB;
 
   readonly genericEventDBDescriptions: GenericEventDBDescription[] = [
     { EventName: 'CompleteSetsPurchased', indexes: ['timestamp'] },
@@ -152,7 +154,8 @@ export class DB {
     await this.dexieDB.open();
 
     this.syncStatus = new SyncStatus(networkId, uploadBlockNumber, this);
-    this.warpCheckpoints = new WarpCheckpoints(networkId, this);
+    this.warpCheckpoints = new WarpSyncCheckpointsDB(networkId, this);
+    this.warpSync = new WarpSyncDB(networkId, this);
 
     // Create SyncableDBs for generic event types & UserSyncableDBs for user-specific event types
     for (const genericEventDBDescription of this.genericEventDBDescriptions) {
@@ -177,8 +180,8 @@ export class DB {
     // last-synced block (in case of restarting after a crash)
     const startSyncBlockNumber = await this.getSyncStartingBlock();
     if (startSyncBlockNumber > this.syncStatus.defaultStartSyncBlockNumber) {
-      console.log('Performing rollback of block ' + startSyncBlockNumber + ' onward');
-      await this.rollback(startSyncBlockNumber);
+      console.log('Performing rollback of block ' + (startSyncBlockNumber - 1) + ' onward');
+      await this.rollback(startSyncBlockNumber - 1);
     }
 
     return this;
@@ -202,7 +205,8 @@ export class DB {
     schemas['CancelledOrders'] = 'orderHash,[makerAddress+market]';
     schemas['SyncStatus'] = 'eventName,blockNumber,syncing';
     schemas['Rollback'] = ',[tableName+rollbackBlockNumber]';
-    schemas['WarpCheckpoints'] = '++_id,begin.number,end.number';
+    schemas['WarpSync'] = '[begin.number+end.number],end.number';
+    schemas['WarpSyncCheckpoints'] = '++_id,begin.number,end.number';
     return schemas;
   }
 
@@ -232,7 +236,7 @@ export class DB {
         genericEventDBDescription.EventName));
     }
 
-    return Math.min(...highestSyncBlocks);
+    return Math.min(...highestSyncBlocks) + 1;
   }
 
   /**

@@ -29,14 +29,23 @@ export class CancelledOrdersDB extends DerivedDB {
     // Filter
     logs = logs.map(log => {
       try {
-        return Object.assign({}, log, {parsedMakerAssetData: ZeroXOrders.parseAssetData(log.makerAssetData)});
+        return Object.assign({}, log, {parsedMakerAssetData: ZeroXOrders.parseAssetData(log.makerAssetData).orderData});
       } catch(e) {
-        if (e.message === "Cancel for order not in multi-asset format")
-          return null;
-        throw e;
+        return null;
       }
     }).filter(log => !!log);
     return super.handleMergeEvent(blocknumber, logs, syncing);
+  }
+
+  async getEvents(highestSyncedBlockNumber: number, eventName: string): Promise<any[]> {
+    const events = await super.getEvents(highestSyncedBlockNumber, eventName);
+    const augurEvents = [];
+    for (const event of events) {
+      try {
+        augurEvents.push(Object.assign({}, event, {parsedMakerAssetData: ZeroXOrders.parseAssetData(event.makerAssetData).orderData}));
+      } catch(e) { }
+    }
+    return augurEvents;
   }
 
   protected processDoc(log: ParsedLog): ParsedLog {

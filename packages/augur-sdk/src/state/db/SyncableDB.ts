@@ -3,10 +3,6 @@ import { BaseDocument } from './AbstractTable';
 import { Augur } from '../../Augur';
 import { BaseSyncableDB } from './BaseSyncableDB';
 import { DB } from './DB';
-import { Log, ParsedLog } from '@augurproject/types';
-import { SyncStatus } from './SyncStatus';
-import { SubscriptionEventName } from '../../constants';
-import { RollbackTable } from './RollbackTable';
 
 export interface Document extends BaseDocument {
   blockNumber: number;

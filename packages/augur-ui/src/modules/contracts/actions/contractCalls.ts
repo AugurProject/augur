@@ -138,18 +138,6 @@ export async function convertV1ToV2_estimate() {
   return approvalGas.plus(migrationGas);
 }
 
-export async function getCurrentBlock() {
-  const Augur = augurSdk.get();
-  const blockNumber = await Augur.provider.getBlockNumber();
-  return blockNumber;
-}
-
-export async function getTimestamp(): Promise<number> {
-  const Augur = augurSdk.get();
-  const timestamp = await Augur.getTimestamp();
-  return timestamp.toNumber();
-}
-
 export async function getRepBalance(
   universe: string,
   address: string
@@ -469,6 +457,8 @@ export interface doReportDisputeAddStake {
   description: string;
   attoRepAmount: string;
   isInvalid: boolean;
+  isWarpSync?: boolean;
+  warpSyncHash?: string;
 }
 
 export async function doInitialReport_estimaetGas(report: doReportDisputeAddStake) {
@@ -485,7 +475,8 @@ export async function doInitialReport_estimaetGas(report: doReportDisputeAddStak
 export async function doInitialReport(report: doReportDisputeAddStake) {
   const market = getMarket(report.marketId);
   if (!market) return false;
-  const payoutNumerators = getPayoutNumerators(report);
+  const augur = augurSdk.get();
+  const payoutNumerators = report.isWarpSync ? await augur.getPayoutFromWarpSyncHash(report.warpSyncHash) : getPayoutNumerators(report);
   return market.doInitialReport(
     payoutNumerators,
     report.description,

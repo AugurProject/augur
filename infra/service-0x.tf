@@ -1,10 +1,14 @@
 /* ECS Service for 0x */
 
 locals {
-  bootstrap_name   = "0x-mesh-bootstrap"
-  bootstrap_ports  = [60558, 60559]
-  rpc_name         = "0x-mesh-rpc"
-  rpc_port         = 60557
+  bootstrap_name = "0x-mesh-bootstrap"
+  rpc_name       = "0x-mesh-rpc"
+  zerox_ports = {
+    rpc_http : 60556
+    rpc_ws : 60557
+    p2p_tcp : 60558
+    p2p_ws : 60559
+  }
   zerox-trade-addr = jsondecode(data.local_file.contract-addresses.content)[var.ethereum_chain_id]["ZeroXTrade"]
 }
 
@@ -16,8 +20,8 @@ module "zeroX-security-group" {
   vpc_id = module.vpc.vpc_id
   ingress_with_cidr_blocks = [
     {
-      from_port   = 60556
-      to_port     = 60559
+      from_port   = local.zerox_ports.rpc_http
+      to_port     = local.zerox_ports.p2p_ws
       protocol    = "tcp"
       cidr_blocks = "0.0.0.0/0"
     }
@@ -37,7 +41,7 @@ data aws_secretsmanager_secret_version "zero-x-privatekey" {
 module "task-0x-mesh-bootstrap" {
   source           = "git::https://github.com/cloudposse/terraform-aws-ecs-container-definition.git?ref=tags/0.23.0"
   container_name   = local.bootstrap_name
-  container_image  = "0xorg/mesh-bootstrap:pre-release-9.0.0-wss-support"
+  container_image  = "0xorg/mesh-bootstrap:9.0.1"
   container_memory = 512
   container_cpu    = 256
   entrypoint = [
@@ -47,14 +51,14 @@ module "task-0x-mesh-bootstrap" {
   ]
   port_mappings = [
     {
-      hostPort : local.bootstrap_ports[0],
+      hostPort : local.zerox_ports.p2p_tcp,
       protocol : "tcp",
-      containerPort : local.bootstrap_ports[0]
+      containerPort : local.zerox_ports.p2p_tcp
     },
     {
-      hostPort : local.bootstrap_ports[1],
+      hostPort : local.zerox_ports.p2p_ws,
       protocol : "tcp",
-      containerPort : local.bootstrap_ports[1]
+      containerPort : local.zerox_ports.p2p_ws
     }
   ]
   log_configuration = {
@@ -73,11 +77,11 @@ module "task-0x-mesh-bootstrap" {
     },
     {
       name : "P2P_ADVERTISE_ADDRS",
-      value : "/dns4/${var.environment}.${var.domain}/tcp/${local.bootstrap_ports[1]}/ws/ipfs/${var.ipfs_pubkey}"
+      value : "/dns4/${var.environment}-bootstrap.${var.domain}/tcp/${local.zerox_ports.p2p_ws}/wss/ipfs/${var.ipfs_pubkey}"
     },
     {
       name : "P2P_BIND_ADDRS",
-      value : "/ip4/0.0.0.0/tcp/${local.bootstrap_ports[0]},/ip4/0.0.0.0/tcp/${local.bootstrap_ports[1]}/ws"
+      value : "/ip4/0.0.0.0/tcp/${local.zerox_ports.p2p_tcp},/ip4/0.0.0.0/tcp/${local.zerox_ports.p2p_ws}/wss"
     },
     {
       name : "PRIVATE_KEY",
@@ -93,14 +97,29 @@ module "task-0x-mesh-bootstrap" {
 module "task-0x-mesh-rpc" {
   source           = "git::https://github.com/cloudposse/terraform-aws-ecs-container-definition.git?ref=tags/0.23.0"
   container_name   = local.rpc_name
-  container_image  = "0xorg/mesh:pre-release-9.0.0-wss-support"
+  container_image  = "0xorg/mesh:9.0.1"
   container_memory = 512
   container_cpu    = 256
   port_mappings = [
     {
-      hostPort : local.rpc_port,
+      hostPort : local.zerox_ports.rpc_http
       protocol : "tcp",
-      containerPort : local.rpc_port
+      containerPort : local.zerox_ports.rpc_http
+    },
+    {
+      hostPort : local.zerox_ports.rpc_ws
+      protocol : "tcp",
+      containerPort : local.zerox_ports.rpc_ws
+    },
+    {
+      hostPort : local.zerox_ports.p2p_tcp
+      protocol : "tcp",
+      containerPort : local.zerox_ports.p2p_tcp
+    },
+    {
+      hostPort : local.zerox_ports.p2p_ws
+      protocol : "tcp",
+      containerPort : local.zerox_ports.p2p_ws
     }
   ]
   log_configuration = {
@@ -114,56 +133,59 @@ module "task-0x-mesh-rpc" {
   }
   environment = [
     {
+      name : "BLOCK_POLLING_INTERVAL"
+      value : "5s"
+    },
+    {
+      name : "BOOTSTRAP_LIST",
+      value : "/dns4/${local.bootstrap_name}.${var.environment}/tcp/${local.zerox_ports.p2p_tcp}/ipfs/${var.ipfs_pubkey},/dns4/${local.bootstrap_name}.${var.environment}/tcp/${local.zerox_ports.p2p_ws}/wss/ipfs/${var.ipfs_pubkey}"
+    },
+    {
+      name : "CUSTOM_ORDER_FILTER",
+      value : "{\"properties\":{\"makerAssetData\":{\"pattern\":\".*${local.zerox-trade-addr}.*\"}}}"
+    },
+    {
       name : "ETHEREUM_CHAIN_ID",
       value : "42"
     },
     {
-      name : "CUSTOM_CONTRACT_ADDRESS",
-      value : ""
+      name : "ETHEREUM_RPC_MAX_REQUESTS_PER_24_HR_UTC",
+      value : "5000000"
     },
     {
       name : "ETHEREUM_RPC_URL",
       value : "https://eth-kovan.alchemyapi.io/jsonrpc/Kd37_uEmJGwU6pYq6jrXaJXXi8u9IoOM"
     },
     {
+      name : "HTTP_RPC_ADDR",
+      value : "0.0.0.0:${local.zerox_ports.rpc_http}"
+    },
+    {
+      name : "P2P_TCP_PORT",
+      value : local.zerox_ports.p2p_tcp
+    },
+    {
+      name : "P2P_WEBSOCKETS_PORT",
+      value : local.zerox_ports.p2p_ws
+    },
+    {
       name : "USE_BOOTSTRAP_LIST",
       value : "true"
     },
     {
-      name : "BOOTSTRAP_LIST",
-      value : "/dns4/${local.bootstrap_name}.${var.environment}/tcp/60558/ipfs/${var.ipfs_pubkey},/dns4/${local.bootstrap_name}.${var.environment}/tcp/60559/ws/ipfs/${var.ipfs_pubkey}"
-    },
-    {
-      name : "BLOCK_POLLING_INTERVAL"
-      value : "1s"
-    },
-    {
-      name : "ETHEREUM_RPC_MAX_REQUESTS_PER_24_HR_UTC",
-      value : "169120"
+      name : "VERBOSITY",
+      value : "5"
     },
     {
       name : "WS_RPC_ADDR",
-      value : "0.0.0.0:60557"
+      value : "0.0.0.0:${local.zerox_ports.rpc_ws}"
     },
     {
-      name : "VERBOSITY",
-      value : "4"
-    },
-    {
-      name : "P2P_TCP_PORT",
-      value : "60558"
-    },
-    {
-      name : "P2P_WEBSOCKETS_PORT",
-      value : "60558"
-    },
-    {
-      name : "CUSTOM_ORDER_FILTER",
-      value : "{\"properties\":{\"makerAssetData\":{\"pattern\":\".*${local.zerox-trade-addr}.*\"}}}"
+      name: "ZEROX_CONTRACT_ADDRESS"
+      value: local.zerox-trade-addr
     }
   ]
 }
-
 
 /* Services */
 module "discovery-0x-mesh-bootstrap" {
@@ -192,9 +214,9 @@ module "service-0x-mesh-bootstrap" {
   ecs_load_balancers = [
     {
       container_name   = local.bootstrap_name
-      container_port   = local.bootstrap_ports[1]
+      container_port   = local.zerox_ports.p2p_ws
       elb_name         = null
-      target_group_arn = module.alb.target_group_arns[2]
+      target_group_arn = module.ingress-0x-mesh-bootstrap.target_group_arn
     }
   ]
   desired_count = 1
@@ -234,7 +256,7 @@ module "service-0x-rpc" {
   ecs_load_balancers = [
     {
       container_name   = local.rpc_name
-      container_port   = local.rpc_port
+      container_port   = local.zerox_ports.rpc_ws
       elb_name         = null
       target_group_arn = module.ingress-0x-mesh-rpc.target_group_arn
     }

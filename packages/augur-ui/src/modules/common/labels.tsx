@@ -52,6 +52,9 @@ export interface MarketTypeProps {
 
 export interface MarketStatusProps {
   reportingState: string;
+  endTimeFormatted: DateFormattedObject;
+  currentAugurTimestamp: number;
+  isWarpSync?: boolean;
 }
 
 export interface InReportingLabelProps extends MarketStatusProps {
@@ -761,10 +764,11 @@ export const MarketTypeLabel = ({ marketType }: MarketTypeProps) => {
 };
 
 export const MarketStatusLabel = (props: MarketStatusProps) => {
-  const { reportingState, mini } = props;
+  const { reportingState, mini, isWarpSync } = props;
   let open = false;
   let resolved = false;
   let reporting = false;
+  let warpSync = false;
   let text: string;
   switch (reportingState) {
     case REPORTING_STATE.PRE_REPORTING:
@@ -782,6 +786,10 @@ export const MarketStatusLabel = (props: MarketStatusProps) => {
       break;
   }
 
+  if (isWarpSync) {
+    warpSync = true;
+    text = 'Warp Sync Market';
+  }
   return (
     <span
       className={classNames(Styles.MarketStatus, {
@@ -789,6 +797,7 @@ export const MarketStatusLabel = (props: MarketStatusProps) => {
         [Styles.MarketStatus_open]: open,
         [Styles.MarketStatus_resolved]: resolved,
         [Styles.MarketStatus_reporting]: reporting,
+        [Styles.MarketStatus_warpSync]: warpSync,
       })}
     >
       {text}
@@ -797,7 +806,7 @@ export const MarketStatusLabel = (props: MarketStatusProps) => {
 };
 
 export const InReportingLabel = (props: InReportingLabelProps) => {
-  const { reportingState, disputeInfo } = props;
+  const { reportingState, disputeInfo, isWarpSync } = props;
 
   const reportingStates = [
     REPORTING_STATE.DESIGNATED_REPORTING,
@@ -813,25 +822,26 @@ export const InReportingLabel = (props: InReportingLabelProps) => {
   let reportingExtraText: string | null;
   // const text: string = constants.IN_REPORTING;
   const text = '';
-  let customLabel: string | null = null;
 
   if (reportingState === REPORTING_STATE.DESIGNATED_REPORTING) {
     reportingExtraText = constants.WAITING_ON_REPORTER;
-    customLabel = constants.REPORTING_ENDS;
   } else if (reportingState === REPORTING_STATE.OPEN_REPORTING) {
     reportingExtraText = constants.OPEN_REPORTING;
   } else if (disputeInfo && disputeInfo.disputePacingOn) {
     reportingExtraText = constants.SLOW_DISPUTE;
   } else if (disputeInfo && !disputeInfo.disputePacingOn) {
     reportingExtraText = constants.FAST_DISPUTE;
-    customLabel = constants.DISPUTE_ENDS;
   } else {
     reportingExtraText = null;
   }
 
+  if (isWarpSync) {
+    reportingExtraText = 'Warp Sync Market';
+  }
+
   return (
     <span
-      className={classNames(Styles.MarketStatus, Styles.MarketStatus_reporting)}
+      className={classNames(Styles.MarketStatus, Styles.MarketStatus_reporting, {[Styles.MarketStatus_warpSync]: isWarpSync})}
     >
       {text}
       {reportingExtraText && (
@@ -1255,7 +1265,7 @@ interface DiscordLinkProps {
 export const DiscordLink = (props: DiscordLinkProps) => (
   <div className={Styles.discordLink}>
     {props.label}
-    <a href={DISCORD_LINK} target="_blank">
+    <a href={DISCORD_LINK} target="_blank" rel="noopener noreferrer">
       Discord
     </a>
   </div>

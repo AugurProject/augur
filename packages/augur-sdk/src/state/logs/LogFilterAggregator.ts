@@ -97,8 +97,7 @@ export class LogFilterAggregator implements LogFilterAggregatorInterface {
     // Fire this after all "filtered" log callbacks are processed.
     const allLogsCallbackMetaDataPromises = this.allLogsCallbackMetaData.map(
       cb => {
-        // Clone objects to prevent the joyus side effects shared memory mutations.
-        cb(blockNumber, _.cloneDeep(sortedLogs));
+        cb(blockNumber, sortedLogs);
       }
     );
     await Promise.all(allLogsCallbackMetaDataPromises);

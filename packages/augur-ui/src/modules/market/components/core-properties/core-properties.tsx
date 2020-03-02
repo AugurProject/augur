@@ -180,7 +180,7 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({
         )}
       </div>
 
-      {isScalar &&
+      {!market.isWarpSync && isScalar &&
         (!reportingBarShowing || showExtraDetails) && (
           <div className={Styles.ScalarBox}>
             <MarketScalarOutcomeDisplay

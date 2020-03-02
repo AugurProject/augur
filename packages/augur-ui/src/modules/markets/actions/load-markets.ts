@@ -252,6 +252,7 @@ const loadReportingMarkets = (
   const params = {
     sortBy: Getters.Markets.GetMarketsSortBy.endTime,
     universe: universe.id,
+    includeWarpSyncMarkets: true,
     ...filterOptions,
   };
   // format offset to getters expectations

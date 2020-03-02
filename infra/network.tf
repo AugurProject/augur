@@ -91,7 +91,7 @@ module "alb" {
         enabled             = true
         protocol            = "HTTP"
         path                = "/"
-        port                = 60556
+        port                = 60557
         healthy_threshold   = 5
         unhealthy_threshold = 2
         timeout             = 5
@@ -122,18 +122,17 @@ module "alb" {
       backend_port     = 8888
       target_type      = "ip"
       health_check = {
-        success_codes = "200-399"
+        enabled             = true
+        protocol            = "HTTP"
+        path                = "/check/"
+        port                = "traffic-port"
+        healthy_threshold   = 2
+        unhealthy_threshold = 2
+        timeout             = 5
+        interval            = 30
+        matcher             = "200-399"
       }
     }
-  ]
-
-  https_listeners = [
-    {
-      port               = 443
-      protocol           = "HTTPS"
-      certificate_arn    = data.aws_acm_certificate.default.arn
-      target_group_index = 0
-    },
   ]
 
   http_tcp_listeners = [
@@ -148,32 +147,19 @@ module "alb" {
       target_group_index = 2
     },
   ]
+
+  https_listeners = [
+    {
+      port               = 443
+      protocol           = "HTTPS"
+      certificate_arn    = data.aws_acm_certificate.default.arn
+      target_group_index = 0
+    },
+  ]
 }
 
-// Add self to default SG for container-container communication
-resource aws_security_group_rule "cluster-sg" {
-  type              = "ingress"
-  self              = true
-  from_port         = 0
-  to_port           = 0
-  protocol          = "-1"
-  security_group_id = module.vpc.vpc_default_security_group_id
-}
-
-module "ingress-0x-mesh-rpc" {
-  source                              = "git::https://github.com/cloudposse/terraform-aws-alb-ingress.git?ref=0.9.0"
-  namespace                           = var.namespace
-  stage                               = var.environment
-  name                                = var.name
-  vpc_id                              = module.vpc.vpc_id
-  default_target_group_enabled        = false
-  target_group_arn                    = module.alb.target_group_arns[1]
-  unauthenticated_listener_arns       = [module.alb.http_tcp_listener_arns[0], module.alb.https_listener_arns[0]]
-  unauthenticated_listener_arns_count = 2
-  unauthenticated_paths               = ["/0x-ws"]
-}
-
-
+/* Ingress Rules for subdomains*/
+// Corroborate with DNS settings
 module "ingress-gnosis-web" {
   source                              = "git::https://github.com/cloudposse/terraform-aws-alb-ingress.git?ref=0.9.0"
   namespace                           = var.namespace
@@ -182,8 +168,43 @@ module "ingress-gnosis-web" {
   vpc_id                              = module.vpc.vpc_id
   default_target_group_enabled        = false
   target_group_arn                    = module.alb.target_group_arns[3]
-  unauthenticated_listener_arns       = [module.alb.https_listener_arns[0]]
-  unauthenticated_listener_arns_count = 1
-  unauthenticated_hosts               = ["gnosis.${var.environment}.${var.domain}"]
+  unauthenticated_listener_arns       = [module.alb.http_tcp_listener_arns[0], module.alb.https_listener_arns[0]]
+  unauthenticated_listener_arns_count = 2
+  unauthenticated_hosts               = ["${var.environment}-gnosis.${var.domain}"]
 }
 
+module "ingress-0x-mesh-bootstrap" {
+  source                       = "git::https://github.com/cloudposse/terraform-aws-alb-ingress.git?ref=0.9.0"
+  namespace                    = var.namespace
+  stage                        = var.environment
+  name                         = var.name
+  vpc_id                       = module.vpc.vpc_id
+  default_target_group_enabled = false
+  target_group_arn             = module.alb.target_group_arns[2]
+  unauthenticated_listener_arns = [
+    module.alb.http_tcp_listener_arns[0],
+    module.alb.http_tcp_listener_arns[1],
+    module.alb.https_listener_arns[0]
+  ]
+  unauthenticated_listener_arns_count = 3
+  unauthenticated_hosts               = ["${var.environment}-bootstrap.${var.domain}"]
+  unauthenticated_priority            = 101
+}
+
+
+module "ingress-0x-mesh-rpc" {
+  source                       = "git::https://github.com/cloudposse/terraform-aws-alb-ingress.git?ref=0.9.0"
+  namespace                    = var.namespace
+  stage                        = var.environment
+  name                         = var.name
+  vpc_id                       = module.vpc.vpc_id
+  default_target_group_enabled = false
+  target_group_arn             = module.alb.target_group_arns[1]
+  unauthenticated_listener_arns = [
+    module.alb.http_tcp_listener_arns[0],
+    module.alb.https_listener_arns[0]
+  ]
+  unauthenticated_listener_arns_count = 2
+  unauthenticated_paths               = ["/0x-ws"]
+  unauthenticated_priority            = 105
+}

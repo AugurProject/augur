@@ -38,8 +38,13 @@ import { ContractAPI } from '../libs/contract-api';
 import { OrderBookShaper, OrderBookConfig } from './orderbook-shaper';
 import { NumOutcomes } from '@augurproject/sdk/src/state/logs/types';
 import { flattenZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
-import { awaitUserInput, formatAddress, sleep } from './util';
-import { updateAddresses } from "@augurproject/artifacts/build";
+import { formatAddress, sleep, waitForSigint } from "./util";
+import { updateAddresses } from '@augurproject/artifacts/build';
+import * as fs from 'fs';
+import { SDKConfiguration, startServer } from '@augurproject/sdk/build';
+import { EndpointSettings } from '@augurproject/sdk/build/state/getter/types';
+import { runWsServer, runWssServer } from '@augurproject/sdk/build/state/WebsocketEndpoint';
+import { createApp, runHttpServer, runHttpsServer } from '@augurproject/sdk/build/state/HTTPEndpoint';
 
 export function addScripts(flash: FlashSession) {
   flash.addScript({
@@ -248,19 +253,31 @@ export function addScripts(flash: FlashSession) {
         abbr: 't',
         description: 'Account to send funds (defaults to current user)',
         required: false
+      },
+      {
+        name: 'useLegacyRep',
+        abbr: 'r',
+        flag: true,
+        description: 'faucet legacy rep',
+        required: false
       }
     ],
     async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
+      const useLegacyRep = Boolean(args.useLegacyRep)
       const user = await this.ensureUser();
       const amount = Number(args.amount);
       const atto = new BigNumber(amount).times(_1_ETH);
 
-      await user.repFaucet(atto);
+      await user.repFaucet(atto, useLegacyRep);
 
       // if we have a target we transfer from current account to target.
       if(args.target) {
-        await user.augur.contracts.reputationToken.transfer(String(args.target), atto);
+        if (useLegacyRep) {
+          await user.augur.contracts.legacyReputationToken.transfer(String(args.target), atto);
+        } else {
+          await user.augur.contracts.reputationToken.transfer(String(args.target), atto);
+        }
       }
     },
   });
@@ -488,10 +505,23 @@ export function addScripts(flash: FlashSession) {
         description:
           'Which network to connect to. Defaults to "environment" aka local node.',
       },
+      {
+        name: 'useGnosis',
+        flag: true,
+        description: 'use gnosis safe instead of user account'
+      },
+      {
+        name: 'userAccount',
+        abbr: 'u',
+        description:
+          'User account to create orders, if not provided then contract owner is used',
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const market = String(args.marketId);
-      const user = await this.ensureUser(this.network, true, true, null, true, true);
+      const useGnosis = Boolean(args.useGnosis);
+      const address = args.userAccount ? (args.userAccount as string) : null;
+      const user = await this.ensureUser(this.network, false, true, address, true, useGnosis);
       const skipFaucetApproval = args.skipFaucetOrApproval as boolean;
       if (!skipFaucetApproval) {
         await user.faucetOnce(QUINTILLION.multipliedBy(1000000));
@@ -580,11 +610,24 @@ export function addScripts(flash: FlashSession) {
         description:
           'Which network to connect to. Defaults to "environment" aka local node.',
       },
+      {
+        name: 'useGnosis',
+        flag: true,
+        description: 'use gnosis safe instead of user account'
+      },
+      {
+        name: 'userAccount',
+        abbr: 'u',
+        description:
+          'User account to create orders, if not provided then contract owner is used',
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const market = String(args.marketId);
       const numOutcomes = Number(args.numOutcomes);
-      const user = await this.ensureUser(this.network, true, true, null, true, true);
+      const useGnosis = Boolean(args.useGnosis);
+      const address = args.userAccount ? (args.userAccount as string) : null;
+      const user = await this.ensureUser(this.network, false, true, address, true, useGnosis);
       const skipFaucetApproval = args.skipFaucetOrApproval as boolean;
       if (!skipFaucetApproval) {
         await user.faucetOnce(QUINTILLION.multipliedBy(1000000));
@@ -677,7 +720,6 @@ export function addScripts(flash: FlashSession) {
     },
   });
 
-
   flash.addScript({
     name: 'create-scalar-zerox-orders',
     options: [
@@ -721,10 +763,23 @@ export function addScripts(flash: FlashSession) {
         description:
           'Which network to connect to. Defaults to "environment" aka local node.',
       },
+      {
+        name: 'useGnosis',
+        flag: true,
+        description: 'use gnosis safe instead of user account'
+      },
+      {
+        name: 'userAccount',
+        abbr: 'u',
+        description:
+          'User account to create orders, if not provided then contract owner is used',
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const market = String(args.marketId);
-      const user = await this.ensureUser(this.network, true, true, null, true, true);
+      const useGnosis = Boolean(args.useGnosis);
+      const address = args.userAccount ? (args.userAccount as string) : null;
+      const user = await this.ensureUser(this.network, false, true, address, true, useGnosis);
       const skipFaucetApproval = args.skipFaucetOrApproval as boolean;
       if (!skipFaucetApproval) {
         await user.faucetOnce(QUINTILLION.multipliedBy(1000000));
@@ -939,7 +994,6 @@ export function addScripts(flash: FlashSession) {
     },
   });
 
-
   flash.addScript({
     name: 'order-firehose',
     options: [
@@ -1002,6 +1056,11 @@ export function addScripts(flash: FlashSession) {
         flag: true,
         description: 'do not faucet or approve, has already been done'
       },
+      {
+        name: 'useGnosis',
+        flag: true,
+        description: 'use gnosis safe instead of user account'
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const marketIds = String(args.marketIds)
@@ -1016,7 +1075,8 @@ export function addScripts(flash: FlashSession) {
       const burstRounds = args.burstRounds ? Number(args.burstRounds) : 10;
       const orderSize = args.orderSize ? Number(args.orderSize) : 10;
       const expiration = args.expiration ? new BigNumber(String(args.expiration)) : new BigNumber(600); // ten minutes
-      const user: ContractAPI = await this.ensureUser(this.network, false, true, address, true, true);
+      const useGnosis = Boolean(args.useGnosis);
+      const user: ContractAPI = await this.ensureUser(this.network, false, true, address, true, useGnosis);
 
       const skipFaucetOrApproval = args.skipFaucetOrApproval as boolean;
       if (!skipFaucetOrApproval) {
@@ -2102,7 +2162,9 @@ export function addScripts(flash: FlashSession) {
             env,
             stdio: 'inherit',
           });
-          await awaitUserInput('Running dockers. Press ENTER to quit:\n');
+
+          this.log('Running dockers. Type ctrl-c to quit:\n');
+          await waitForSigint();
         }
 
       } finally {
@@ -2112,6 +2174,66 @@ export function addScripts(flash: FlashSession) {
           await spawnSync('yarn', ['workspace', '@augurproject/gnosis-relay-api', 'kill-relay']);
         }
       }
+    }
+  });
+
+  flash.addScript({
+    name: 'sdk-server',
+    ignoreNetwork: true,
+    options: [
+      {
+        name: 'config-file',
+        abbr: 'f',
+        description: 'SDKConfiguration JSON file',
+      },
+      {
+        name: 'config',
+        abbr: 'c',
+        description: 'serialized SDKConfiguration JSON',
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const configFile = args.configFile as string;
+      const config = args.config as string;
+
+      let configuration: SDKConfiguration;
+      if (configFile && config) {
+        throw Error('Cannot specify both config-file and config');
+      } else if (configFile) {
+        configuration = JSON.parse(fs.readFileSync(configFile).toString())
+      } else if (config) {
+        configuration = JSON.parse(config);
+      } else {
+        // TODO support default network SDKConfiguration
+        throw Error('Must specify config-file or config')
+      }
+
+      const api = await startServer(configuration, this.account);
+      const app = createApp(api);
+
+      const endpointSettings: EndpointSettings = {
+        httpPort: 9003,
+        startHTTP: true,
+        httpsPort: 9004,
+        startHTTPS: true,
+        wsPort: 9001,
+        startWS: true,
+        wssPort: 9002,
+        startWSS: true,
+        ...(configuration.server || {})
+      };
+
+      const httpServer = endpointSettings.startHTTP && runHttpServer(app, endpointSettings);
+      const httpsServer = endpointSettings.startHTTPS && runHttpsServer(app, endpointSettings);
+      const wsServer = endpointSettings.startWS && runWsServer(api, app, endpointSettings);
+      const wssServer = endpointSettings.startWSS && runWssServer(api, app, endpointSettings);
+
+      this.log('Running SDK server. Type ctrl-c to quit:\n');
+      await waitForSigint();
+      httpServer.close();
+      httpsServer.close();
+      wsServer.close();
+      wssServer.close();
     }
   });
 

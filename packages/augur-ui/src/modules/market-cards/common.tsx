@@ -9,6 +9,7 @@ import {
   YES_NO,
   ZERO,
   INVALID_OUTCOME_NAME,
+  SUBMIT_DISPUTE,
 } from 'modules/common/constants';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import ReactTooltip from 'react-tooltip';
@@ -23,7 +24,7 @@ import {
 import { formatAttoRep, formatDai, formatNumber } from 'utils/format-number';
 import { Getters } from '@augurproject/sdk';
 import InvalidLabel from 'modules/common/containers/labels';
-import { SecondaryButton } from 'modules/common/buttons';
+import { SecondaryButton, ProcessingButton } from 'modules/common/buttons';
 
 import Styles from 'modules/market-cards/common.styles.less';
 import MarketCard from 'modules/market-cards/market-card';
@@ -94,6 +95,7 @@ export interface DisputeOutcomeProps {
   id: number;
   canDispute: boolean;
   canSupport: boolean;
+  marketId: string;
 }
 
 export const DisputeOutcome = (props: DisputeOutcomeProps) => {
@@ -148,8 +150,12 @@ export const DisputeOutcome = (props: DisputeOutcomeProps) => {
           )}
         </div>
         {showButton && (
-          <SecondaryButton
+          <ProcessingButton
             small
+            queueName={SUBMIT_DISPUTE}
+            queueId={props.marketId}
+            matchingId={props.id}
+            secondaryButton
             disabled={!props.canDispute}
             text={
               props.stake && props.stake.tentativeWinning
@@ -168,6 +174,7 @@ interface ScalarBlankDisputeOutcomeProps {
   denomination: string;
   dispute: Function;
   canDispute: boolean;
+  marketid: string;
 }
 
 export const ScalarBlankDisputeOutcome = (
@@ -177,7 +184,10 @@ export const ScalarBlankDisputeOutcome = (
     <span>{`Dispute current Tentative Winner with new ${props.denomination} value`}</span>
     <div className={Styles.blank}>
       <div></div>
-      <SecondaryButton
+      <ProcessingButton
+        secondaryButton
+        queueName={SUBMIT_DISPUTE}
+        queueId={props.marketId}
         small
         disabled={!props.canDispute}
         text={'Dispute Tentative Winner'}
@@ -315,10 +325,12 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
                       denomination={props.scalarDenomination}
                       dispute={props.dispute}
                       canDispute={props.canDispute}
+                      marketId={props.marketId}
                     />
                   )}
                 <DisputeOutcome
                   key={outcome.id}
+                  marketId={props.marketId}
                   description={outcome.description}
                   invalid={outcome.id === 0}
                   index={index > 2 ? index : index + 1}
@@ -351,6 +363,7 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
           denomination={props.scalarDenomination}
           dispute={props.dispute}
           canDispute={props.canDispute}
+          marketId={props.marketId}
         />
       )}
     </div>
@@ -378,6 +391,7 @@ export const LabelValue = (props: LabelValueProps) => (
 );
 
 export interface HoverIconProps {
+  id: string;
   icon: JSX.Element;
   hoverText: string;
   label: string;
@@ -387,11 +401,11 @@ export const HoverIcon = (props: HoverIconProps) => (
   <div
     className={Styles.HoverIcon}
     data-tip
-    data-for={`tooltip-${props.label}`}
+    data-for={`tooltip-${props.id}${props.label}`}
   >
     {props.icon}
     <ReactTooltip
-      id={`tooltip-${props.label}`}
+      id={`tooltip-${props.id}${props.label}`}
       className={TooltipStyles.Tooltip}
       effect="solid"
       place="top"
