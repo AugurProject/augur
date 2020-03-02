@@ -23,6 +23,7 @@ export const selectMarketPositionsSummary = createSelector(
         totalPercent: formatPercent(0),
         totalReturns: formatDai(0),
         valueChange: formatPercent(0),
+        valueChange24Hr: formatPercent(0),
       };
     }
     const marketPositions = marketAccountPositions.tradingPositionsPerMarket;
@@ -40,11 +41,19 @@ export const selectMarketPositionsSummary = createSelector(
       { decimalsRounded: 2 }
     );
 
+    const valueChange24Hr = formatPercent(
+      createBigNumber(
+        marketPositions.unrealized24HrPercent || ZERO
+      ).times(100),
+      { decimalsRounded: 2 }
+    );
+
     return {
       currentValue,
       totalPercent,
       totalReturns,
       valueChange,
+      valueChange24Hr
     };
   }
 );
