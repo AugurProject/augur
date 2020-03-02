@@ -99,7 +99,9 @@ const TopNav = ({
                     >
                       <p>
                         {
-                          'You have V1 REP in your wallet. Migrate it to V2 REP to use it in Augur V2'
+                          walletBalances.legacyRep > 0
+                            ? 'You have V1 REP in your Augur account address. Migrate it to V2 REP to use it in Augur V2.'
+                            : 'You have V1 REP in your wallet. Migrate it to V2 REP to use it in Augur V2.'
                         }
                       </p>
                     </ReactTooltip>
