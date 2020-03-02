@@ -129,6 +129,7 @@ export default class MarketCard extends React.Component<
       isTemplate,
       consensusFormatted,
       mostLikelyInvalid,
+      isWarpSync
     } = market;
 
     if (loading) {
@@ -294,7 +295,7 @@ export default class MarketCard extends React.Component<
                 isWarpSync={market.isWarpSync}
               />
             )}
-            {isScalar && <MarketTypeLabel marketType={marketType} />}
+            {isScalar && !isWarpSync && <MarketTypeLabel marketType={marketType} />}
             <RedFlag market={market} />
             {isTemplate && <TemplateShield market={market} />}
             <CategoryTagTrail categories={categoriesWithClick} />
