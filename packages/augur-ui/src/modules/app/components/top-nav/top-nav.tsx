@@ -11,8 +11,8 @@ import {
 } from 'modules/common/buttons';
 import { GlobalChat } from 'modules/global-chat/components/global-chat';
 import { NavMenuItem, AccountBalances } from 'modules/types';
-import { helpIcon, PlusCircleIcon, Dot } from 'modules/common/icons';
-import { MODAL_ADD_FUNDS, MIGRATE_V1_V2 } from 'modules/common/constants';
+import { helpIcon, Dot } from 'modules/common/icons';
+import { TRANSACTIONS, MIGRATE_FROM_LEG_REP_TOKEN } from 'modules/common/constants';
 
 import Styles from 'modules/app/components/top-nav/top-nav.styles.less';
 
@@ -77,8 +77,8 @@ const TopNav = ({
                     <ProcessingButton
                       text={walletBalances.legacyRep > 0 ? 'Migrate V1 to V2 REP' : ' Migrate V1 REP'}
                       action={() => migrateV1Rep()}
-                      queueName={MIGRATE_V1_V2}
-                      queueId={MIGRATE_V1_V2}
+                      queueName={TRANSACTIONS}
+                      queueId={MIGRATE_FROM_LEG_REP_TOKEN}
                       secondaryButton
                     />
                   </div>

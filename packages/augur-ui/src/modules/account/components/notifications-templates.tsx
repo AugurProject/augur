@@ -4,7 +4,7 @@ import {
   formatTime,
   MarketProgress,
 } from 'modules/common/progress';
-import { CancelTextButton } from 'modules/common/buttons';
+import { CancelTextButton, ProcessingButton } from 'modules/common/buttons';
 import {
   DateFormattedObject,
   MarketData,
@@ -18,6 +18,7 @@ import {
   MARKET_STATUS_MESSAGES,
   NOTIFICATION_TYPES,
   REPORTING_ENDS,
+  TRANSACTIONS,
 } from 'modules/common/constants';
 import MarketTitle from 'modules/market/containers/market-title';
 import { MarketReportingState } from '@augurproject/sdk/build';
@@ -30,6 +31,7 @@ interface BaseProps {
   isDisabled: boolean;
   buttonAction: Function;
   buttonLabel: string;
+  transactionView?: string;
 }
 
 interface OpenOrdersResolvedMarketsTemplateProps extends BaseProps {
@@ -85,6 +87,7 @@ const Template = ({
   currentTime,
   isDisabled,
   buttonLabel,
+  transactionView,
 }: TemplateProps) => {
   const showCounter = market && notificationsWithCountdown.includes(type);
   return (
@@ -96,11 +99,22 @@ const Template = ({
         {showCounter && (
           <Counter type={type} market={market} currentTime={currentTime} />
         )}
-        <CancelTextButton
-          text={buttonLabel}
-          action={() => buttonAction()}
-          disabled={isDisabled}
-        />
+        {transactionView &&
+          <ProcessingButton
+            text={buttonLabel}
+            action={() => buttonAction()}
+            queueName={TRANSACTIONS}
+            queueId={transactionView}
+            cancelButton
+          />
+        }
+        {!transactionView &&
+          <CancelTextButton
+            text={buttonLabel}
+            action={() => buttonAction()}
+            disabled={isDisabled}
+          />
+        }
       </div>
     </>
   );

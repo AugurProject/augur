@@ -52,6 +52,8 @@ export interface MarketTypeProps {
 
 export interface MarketStatusProps {
   reportingState: string;
+  endTimeFormatted: DateFormattedObject;
+  currentAugurTimestamp: number;
 }
 
 export interface InReportingLabelProps extends MarketStatusProps {
