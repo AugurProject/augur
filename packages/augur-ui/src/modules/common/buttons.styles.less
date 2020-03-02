@@ -1006,11 +1006,10 @@
   }
 }
 
-.BettingLayButton {
+.BettingBackLayButton {
   .Button;
 
   background: transparent;
-  border: @size-1 solid var(--color-outcome-five);
   color: var(--color-primary-text);
   padding: @size-6 @size-12;
 
@@ -1028,63 +1027,46 @@
     text-align: center;
   }
 
-  &:disabled {
-    background: var(--color-inactive-text);
-    opacity: 0.15;
-  }
+  &.Back {
+    border: @size-1 solid var(--color-outcome-five);
 
-  &:hover:enabled {
-    background: var(--color-outcome-five-40);
-  }
-
-  &:focus:enabled {
-    background: var(--color-outcome-five-40);
-  }
-
-  &:active:enabled {
-    background: var(--color-outcome-five-40);
-  }
-}
-
-.BettingBackButton {
-  .Button;
-
-  background: transparent;
-  border: @size-1 solid var(--color-outcome-two);
-  color: var(--color-primary-text);
-  padding: @size-6 @size-12;
-
-  > div {
-    > div:first-of-type {
-      .text-12-bold;
-
-      color: var(--color-primary-text);
-      text-align: center;
+    &:disabled {
+      background: var(--color-inactive-text);
+      opacity: 0.15;
     }
-
-    > div:last-of-type {
-      .text-12;
-
-      color: var(--color-secondary-text);
-      text-align: center;
+  
+    &:hover:enabled {
+      background: var(--color-outcome-five-40);
+    }
+  
+    &:focus:enabled {
+      background: var(--color-outcome-five-40);
+    }
+  
+    &:active:enabled {
+      background: var(--color-outcome-five-40);
     }
   }
 
-  &:disabled {
-    background: var(--color-inactive-text);
-    opacity: 0.15;
-  }
+  &.Lay {
+    border: @size-1 solid var(--color-outcome-two);
 
-  &:hover:enabled {
-    background: var(--color-outcome-two-40);
-  }
-
-  &:focus:enabled {
-    background: var(--color-outcome-two-40);
-  }
-
-  &:active:enabled {
-    background: var(--color-outcome-two-40);
+    &:disabled {
+      background: var(--color-inactive-text);
+      opacity: 0.15;
+    }
+  
+    &:hover:enabled {
+      background: var(--color-outcome-two-40);
+    }
+  
+    &:focus:enabled {
+      background: var(--color-outcome-two-40);
+    }
+  
+    &:active:enabled {
+      background: var(--color-outcome-two-40);
+    }
   }
 }
 

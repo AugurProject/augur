@@ -1,6 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { ASCENDING, DESCENDING, BUY } from 'modules/common/constants';
+import {
+  ASCENDING,
+  DESCENDING,
+  BUY,
+  BETTING_LAY,
+  BETTING_BACK
+} from 'modules/common/constants';
 import {
   StarIcon,
   SortIcon,
@@ -42,6 +48,10 @@ export interface DefaultButtonProps {
   pointDown?: boolean;
   reportingStatus?: string;
   URL?: string;
+}
+
+export interface BettingBackLayButtonProps extends DefaultButtonProps {
+  type: BETTING_LAY | BETTING_BACK;
 }
 
 export interface SortButtonProps {
@@ -559,31 +569,18 @@ interface EtherscanLinkTSXProps {
   showNonLink?: boolean;
 }
 
-export const BettingLayButton = (props: DefaultButtonProps) => (
+export const BettingBackLayButton = (props: BettingBackLayButtonProps) => (
   <button
     onClick={e => props.action(e)}
-    className={classNames(Styles.BettingLayButton)}
+    className={classNames(Styles.BettingBackLayButton, {
+      [Styles.Back]: props.type === BETTING_BACK,
+      [Styles.Lay]: props.type === BETTING_LAY
+    })}
     disabled={props.disabled}
     title={props.title || props.text}
   >
-    <div>
-      <div>{props.text}</div>
-      <div>{props.subText}</div>
-    </div>
-  </button>
-);
-
-export const BettingBackButton = (props: DefaultButtonProps) => (
-  <button
-    onClick={e => props.action(e)}
-    className={classNames(Styles.BettingBackButton)}
-    disabled={props.disabled}
-    title={props.title || props.text}
-  >
-    <div>
-      <div>{props.text}</div>
-      <div>{props.subText}</div>
-    </div>
+    <div>{props.text}</div>
+    <div>{props.subText}</div>
   </button>
 );
 
