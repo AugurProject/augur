@@ -46,6 +46,8 @@ export interface DefaultButtonProps {
   secondaryButton?: boolean;
   cancel?: Function;
   cancelButton?: boolean;
+  confirmed?: boolean;
+  failed?: boolean;
 }
 
 export interface SortButtonProps {
@@ -129,11 +131,14 @@ export const PrimaryButton = (props: DefaultButtonProps) => (
     {!props.URL && (
       <button
         onClick={e => props.action(e)}
-        className={Styles.PrimaryButton}
+        className={classNames(Styles.PrimaryButton, {
+          [Styles.Confirmed]: props.confirmed,
+          [Styles.Failed]: props.failed
+        })}
         disabled={props.disabled}
         title={props.title || props.text}
       >
-        {props.text}
+        {props.text} {props.icon}
       </button>
     )}
   </>
@@ -144,6 +149,8 @@ export const SecondaryButton = (props: DefaultButtonProps) => (
     onClick={e => props.action(e)}
     className={classNames(Styles.SecondaryButton, {
       [Styles.Small]: props.small,
+      [Styles.Confirmed]: props.confirmed,
+      [Styles.Failed]: props.failed
     })}
     disabled={props.disabled}
     title={props.title || props.text}
@@ -153,71 +160,57 @@ export const SecondaryButton = (props: DefaultButtonProps) => (
   </button>
 );
 
-const FailedButton = (props: DefaultButtonProps) => {
-  return (
-    <button
-      onClick={() => props.action()}
-      className={Styles.FailedButton}
-      disabled={props.disabled}
-      title={props.title || 'Failed'}
-    >
-      Failed
-      {XIcon}
-    </button>
-  )
-}
-
-const ConfirmedButton = (props: DefaultButtonProps) => {
-  return (
-    <button
-      onClick={() => null}
-      className={Styles.ConfirmedButton}
-      disabled={props.disabled}
-      title={props.title || 'Confirmed'}
-    >
-      Confirmed!
-    </button>
-  )
-}
-
 const ProcessingButtonComponent = (props: DefaultButtonProps) => {
+  let icon = props.icon;
   let buttonText = props.text;
+  let buttonAction = props.action;
   if (props.status === TXEventName.Pending) {
     buttonText = 'Processing...';
   }
   const failed = props.status === TXEventName.Failure;
   const confirmed = props.status === TXEventName.Success;
+  if (failed) {
+    buttonText = 'Failed';
+    buttonAction = e => props.cancel(e);
+    icon = XIcon;
+  }
+  if (confirmed) {
+    buttonText = 'Confirmed'
+    buttonAction = e => props.cancel(e);
+    icon = XIcon;
+  }
   return (
     <>
-      {failed &&
-        <FailedButton
-          action={() => props.cancel()}
-        />
-      }
-      {confirmed &&
-        <ConfirmedButton action={() => null}/>
-      }
-      {!failed && !confirmed && props.secondaryButton &&
+      {props.secondaryButton &&
         <SecondaryButton
           {...props}
+          confirmed={confirmed}
+          failed={failed}
+          icon={icon}
           text={buttonText}
-          action={e => props.action(e)}
+          action={buttonAction}
           disabled={props.disabled || Boolean(props.status)}
         />
       }
-      {!failed && !confirmed && !props.secondaryButton && !props.cancelButton &&
+      {!props.secondaryButton && !props.cancelButton &&
         <PrimaryButton
           {...props}
+          confirmed={confirmed}
+          failed={failed}
+          icon={icon}
           text={buttonText}
-          action={e => props.action(e)}
+          action={buttonAction}
           disabled={props.disabled || Boolean(props.status)}
         />
       }
-      {!failed && !confirmed && props.cancelButton &&
+      {props.cancelButton &&
         <CancelTextButton
           {...props}
+          confirmed={confirmed}
+          failed={failed}
+          icon={icon}
           text={buttonText}
-          action={e => props.action(e)}
+          action={buttonAction}
           disabled={props.disabled || Boolean(props.status)}
         />
       }
@@ -395,16 +388,21 @@ export const CancelTextButton = ({
   action,
   title,
   disabled,
+  confirmed,
+  failed,
+  icon,
 }: DefaultButtonProps) => (
   <button
     onClick={e => action(e)}
     className={classNames(Styles.CancelTextButton, {
       [Styles.IconButton]: !text,
+      [Styles.Confirmed]: confirmed,
+      [Styles.Failed]: failed,
     })}
     disabled={disabled}
     title={title}
   >
-    {text || XIcon}
+    {text} {icon}
   </button>
 );
 
