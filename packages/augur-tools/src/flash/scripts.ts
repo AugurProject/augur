@@ -505,10 +505,23 @@ export function addScripts(flash: FlashSession) {
         description:
           'Which network to connect to. Defaults to "environment" aka local node.',
       },
+      {
+        name: 'useGnosis',
+        flag: true,
+        description: 'use gnosis safe instead of user account'
+      },
+      {
+        name: 'userAccount',
+        abbr: 'u',
+        description:
+          'User account to create orders, if not provided then contract owner is used',
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const market = String(args.marketId);
-      const user = await this.ensureUser(this.network, true, true, null, true, true);
+      const useGnosis = Boolean(args.useGnosis);
+      const address = args.userAccount ? (args.userAccount as string) : null;
+      const user = await this.ensureUser(this.network, false, true, address, true, useGnosis);
       const skipFaucetApproval = args.skipFaucetOrApproval as boolean;
       if (!skipFaucetApproval) {
         await user.faucetOnce(QUINTILLION.multipliedBy(1000000));
@@ -597,11 +610,24 @@ export function addScripts(flash: FlashSession) {
         description:
           'Which network to connect to. Defaults to "environment" aka local node.',
       },
+      {
+        name: 'useGnosis',
+        flag: true,
+        description: 'use gnosis safe instead of user account'
+      },
+      {
+        name: 'userAccount',
+        abbr: 'u',
+        description:
+          'User account to create orders, if not provided then contract owner is used',
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const market = String(args.marketId);
       const numOutcomes = Number(args.numOutcomes);
-      const user = await this.ensureUser(this.network, true, true, null, true, true);
+      const useGnosis = Boolean(args.useGnosis);
+      const address = args.userAccount ? (args.userAccount as string) : null;
+      const user = await this.ensureUser(this.network, false, true, address, true, useGnosis);
       const skipFaucetApproval = args.skipFaucetOrApproval as boolean;
       if (!skipFaucetApproval) {
         await user.faucetOnce(QUINTILLION.multipliedBy(1000000));
@@ -737,10 +763,23 @@ export function addScripts(flash: FlashSession) {
         description:
           'Which network to connect to. Defaults to "environment" aka local node.',
       },
+      {
+        name: 'useGnosis',
+        flag: true,
+        description: 'use gnosis safe instead of user account'
+      },
+      {
+        name: 'userAccount',
+        abbr: 'u',
+        description:
+          'User account to create orders, if not provided then contract owner is used',
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const market = String(args.marketId);
-      const user = await this.ensureUser(this.network, true, true, null, true, true);
+      const useGnosis = Boolean(args.useGnosis);
+      const address = args.userAccount ? (args.userAccount as string) : null;
+      const user = await this.ensureUser(this.network, false, true, address, true, useGnosis);
       const skipFaucetApproval = args.skipFaucetOrApproval as boolean;
       if (!skipFaucetApproval) {
         await user.faucetOnce(QUINTILLION.multipliedBy(1000000));

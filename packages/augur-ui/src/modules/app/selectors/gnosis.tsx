@@ -19,7 +19,6 @@ export const isGnosisUnavailable = createSelector(
         GnosisSafeState.CREATED,
         GnosisSafeState.UNAVAILABLE,
       ].includes(gnosisStatus);
-
     return gnosisUnavailable;
   }
 );
