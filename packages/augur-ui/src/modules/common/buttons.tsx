@@ -50,10 +50,6 @@ export interface DefaultButtonProps {
   URL?: string;
 }
 
-export interface BettingBackLayButtonProps extends DefaultButtonProps {
-  type: BETTING_LAY | BETTING_BACK;
-}
-
 export interface SortButtonProps {
   text: string;
   action: Function;
@@ -562,11 +558,13 @@ export const FilterButton = (props: DefaultActionButtonProps) => (
   </button>
 );
 
-interface EtherscanLinkTSXProps {
-  baseUrl?: string | null;
-  txhash: string;
-  label: string;
-  showNonLink?: boolean;
+export interface BettingBackLayButtonProps {
+  title?: string;
+  text?: string;
+  subText?: string;
+  action: Function;
+  disabled?: boolean;
+  type: BETTING_LAY | BETTING_BACK;
 }
 
 export const BettingBackLayButton = (props: BettingBackLayButtonProps) => (
@@ -583,6 +581,13 @@ export const BettingBackLayButton = (props: BettingBackLayButtonProps) => (
     <div>{props.subText}</div>
   </button>
 );
+
+interface EtherscanLinkTSXProps {
+  baseUrl?: string | null;
+  txhash: string;
+  label: string;
+  showNonLink?: boolean;
+}
 
 const EtherscanLinkTSX = ({
   baseUrl,
