@@ -425,7 +425,7 @@ export class DisputingBondsView extends Component<
       this.setState({ scalarError: 'Enter a valid number', disabled: true });
     } else {
       this.setState({ scalarError: '' });
-      if (this.state.stakeError === '' && stakeValue !== '') {
+      if (this.state.stakeError === '' && stakeValue !== '' && stakeValue !== '0') {
         this.setState({ disabled: false });
       }
     }
