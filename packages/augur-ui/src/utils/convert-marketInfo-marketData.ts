@@ -103,7 +103,7 @@ function getMarketStatus(reportingState: string) {
 function processOutcomes(
   market: Getters.Markets.MarketInfo
 ): OutcomeFormatted[] {
-  return market.outcomes.filter(o => market.isWarpSync ? o.id !== 0 : true).map(outcome => ({
+  return market.outcomes.map(outcome => ({
     ...outcome,
     marketId: market.id,
     lastPricePercent: outcome.price

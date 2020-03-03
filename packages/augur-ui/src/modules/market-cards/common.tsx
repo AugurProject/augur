@@ -116,7 +116,7 @@ export const DisputeOutcome = (props: DisputeOutcomeProps) => {
         [Styles[`Outcome-${props.index}`]]: !props.invalid,
       })}
     >
-      <span>{props.isWarpSync ? props.stake.warpSyncHash : props.description}</span>
+      <span>{props.isWarpSync && !props.invalid ? props.stake.warpSyncHash : props.description}</span>
       {props.stake && props.stake.tentativeWinning ? (
         <span>tentative winner</span>
       ) : (
@@ -254,7 +254,8 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
   const sortedStakeOutcomes = selectSortedDisputingOutcomes(
     props.marketType,
     props.outcomes,
-    props.stakes
+    props.stakes,
+    props.isWarpSync
   );
 
   const { inDispute, showOutcomeNumber, isWarpSync } = props;
