@@ -46,6 +46,7 @@ import noop from 'utils/noop';
 import { Getters } from '@augurproject/sdk';
 import { MarketData, DisputeInputtedValues, SortedGroup } from 'modules/types';
 import MarkdownRenderer from 'modules/common/markdown-renderer';
+import { openTop } from './selection.styles.less';
 
 interface CheckboxProps {
   id: string;
@@ -72,6 +73,7 @@ interface DatePickerProps {
   navNext?: any;
   errorMessage?: string;
   condensedStyle?: boolean;
+  openTop?: boolean;
 }
 
 interface TextInputProps {
@@ -87,6 +89,7 @@ interface TextInputProps {
   autoCompleteList?: SortedGroup[];
   onAutoCompleteListSelected?: Function;
   hideTrailingOnMobile?: boolean;
+  openTop?: boolean;
 }
 
 interface TextInputState {
@@ -155,6 +158,7 @@ interface TimezoneDropdownProps {
   timestamp?: number;
   timezone: string;
   condensedStyle?: boolean;
+  openTop?: boolean;
 }
 
 export const TimezoneDropdown = (props: TimezoneDropdownProps) => {
@@ -178,6 +182,7 @@ export const TimezoneDropdown = (props: TimezoneDropdownProps) => {
         placeholder={UTC_Default}
         autoCompleteList={timezones.timezones}
         onChange={() => {}}
+        openTop={props.openTop}
         onAutoCompleteListSelected={timezone => {
           const parse = /\(UTC (.*)\)/i;
           if (timezone !== '') {
@@ -1349,6 +1354,7 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
       innerLabel,
       maxLength,
       hideTrailingOnMobile,
+      openTop
     } = this.props;
     const { autoCompleteList = [] } = this.props;
     const { showList } = this.state;
@@ -1383,6 +1389,7 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
               <div
                 className={classNames(Styles.AutoCompleteList, {
                   [Styles.active]: showList,
+                  [Styles.OpenTop]: openTop
                 })}
               >
                 {filteredList.map(item => (
@@ -1431,6 +1438,7 @@ interface TimeSelectorProps {
   errorMessage?: string;
   uniqueKey?: string;
   condensedStyle?: boolean;
+  openTop?: boolean; 
 }
 
 export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
@@ -1488,6 +1496,7 @@ export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
         className={classNames(Styles.TimeSelector, {
           [Styles.Condensed]: condensedStyle,
           [Styles.Default]: !hour || !minute || !meridiem,
+          [Styles.OpenTop]: openTop,
         })}
         ref={timeSelector => {
           this.timeSelector = timeSelector;
@@ -1701,6 +1710,7 @@ export const DatePicker = (props: DatePickerProps) => (
   >
     <SingleDatePicker
       id={props.id}
+      openDirection={props.openTop ? "up" : "down"}
       date={props.date}
       placeholder={props.placeholder || 'Date (D MMM YYYY)'}
       onDateChange={props.onDateChange}

@@ -1231,6 +1231,7 @@ class Form extends Component<FromProps, FormState> {
                   {s.expirationDateOption ===
                     EXPIRATION_DATE_OPTIONS.CUSTOM && (
                     <SimpleTimeSelector
+                      openTop
                       onChange={value => {
                         this.updateAndValidate(
                           this.INPUT_TYPES.EXPIRATION_DATE,
