@@ -13,7 +13,7 @@
     overflow: auto;
     position: fixed;
     transition: left 0.2s ease-in-out;
-    width: calc(100% - @size-52);
+    width: 100%;
     z-index: @mask-modal;
 
     > div {
@@ -49,7 +49,6 @@
 
     &.showNav {
       left: 0;
-      
     }
   }
 }
@@ -112,11 +111,13 @@
       }
     }
 
-    > ul:first-of-type {
+    > ul:first-child,
+    > div:first-child,
+    > span:first-child {
       margin-top: @top-bar-height-mobile;
     }
 
-    > ul:not(:first-of-type) {
+    > ul:last-of-type {
       background: var(--color-page-background);
       height: calc(100vh - @top-bar-height-mobile);
       padding-bottom: @top-bar-height-mobile;
@@ -173,10 +174,6 @@
           }
         }
       }
-  
-      > div {
-        margin-left: @size-32;
-      }
 
     > footer {
       align-items: center;
@@ -187,7 +184,7 @@
       justify-content: flex-start;
       padding: 0 @size-16;
       position: fixed;
-      width: calc(100% - @size-52);
+      width: 100%;
 
       > button {
         .text-12-bold;
