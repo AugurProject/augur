@@ -1067,6 +1067,68 @@
   }
 }
 
+.BettingBackLayButton {
+  .Button;
+
+  background: transparent;
+  color: var(--color-primary-text);
+  padding: @size-6 @size-12;
+
+  > div:first-of-type {
+    .text-12-bold;
+
+    color: var(--color-primary-text);
+    text-align: center;
+  }
+
+  > div:last-of-type {
+    .text-12;
+
+    color: var(--color-primary-text);
+    text-align: center;
+  }
+
+  &.Back {
+    border: @size-1 solid var(--color-positive);
+
+    &:disabled {
+      background: var(--color-positive-15);
+    }
+  
+    &:hover:enabled {
+      background: var(--color-positive-40);
+    }
+  
+    &:focus:enabled {
+      background: var(--color-positive-40);
+    }
+  
+    &:active:enabled {
+      background: var(--color-positive-40);
+    }
+  }
+
+  &.Lay {
+    border: @size-1 solid var(--color-negative);
+
+    &:disabled {
+      background: var(--color-negative-15);
+    }
+  
+    &:hover:enabled {
+      background: var(--color-negative-40);
+    }
+  
+    &:focus:enabled {
+      background: var(--color-negative-40);
+    }
+  
+    &:active:enabled {
+      background: var(--color-negative-40);
+    }
+  }
+}
+
 @keyframes colorchange {
   0% {
     background-color: var(--color-secondary-action-outline-70);
