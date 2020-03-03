@@ -550,14 +550,10 @@ export class Markets {
     if (params.includeWarpSyncMarkets) {
       const marketId = await augur.contracts.warpSync.markets_(params.universe);
       const warpSyncMarket = await db.Markets.where("market").anyOf(marketId).first();
-      if (warpSyncMarket) {
-        if (!warpSyncMarket.tentativeWinningPayoutNumerators) {
-          tentativeWinningHashMatch = false;
-        } else {
-          const tentativeWinningHash = augur.getWarpSyncHashFromPayout(warpSyncMarket.tentativeWinningPayoutNumerators.map(p => new BigNumber(p)));
-          const currentWarpSyncHash = await db.warpSync.table.orderBy('end.number').last();
-          tentativeWinningHashMatch = tentativeWinningHash && currentWarpSyncHash ? tentativeWinningHash === currentWarpSyncHash.hash : false;
-        }
+      if (warpSyncMarket && warpSyncMarket.tentativeWinningPayoutNumerators) {
+        const tentativeWinningHash = augur.getWarpSyncHashFromPayout(warpSyncMarket.tentativeWinningPayoutNumerators.map(p => new BigNumber(p)));
+        const currentWarpSyncHash = await db.warpSync.table.orderBy('end.number').last();
+        tentativeWinningHashMatch = tentativeWinningHash && currentWarpSyncHash ? tentativeWinningHash === currentWarpSyncHash.hash : false;
       }
     }
 
