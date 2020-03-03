@@ -22,11 +22,11 @@ import {
   calculatePayoutNumeratorsArray,
   convertDisplayValuetoAttoValue,
 } from '@augurproject/sdk';
-
 import { generateTradeGroupId } from 'utils/generate-trade-group-id';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import {
   NULL_ADDRESS,
+  FAKE_HASH,
   SCALAR,
   CATEGORICAL,
   TEN_TO_THE_EIGHTEENTH_POWER,
@@ -544,7 +544,7 @@ function getMarket(marketId) {
 async function getPayoutNumerators(inputs: doReportDisputeAddStake) {
   const augur = augurSdk.get();
   return inputs.isWarpSync
-    ? await augur.getPayoutFromWarpSyncHash(inputs.warpSyncHash || '0')
+    ? await augur.getPayoutFromWarpSyncHash(inputs.warpSyncHash || FAKE_HASH)
     : calculatePayoutNumeratorsArray(
         inputs.maxPrice,
         inputs.minPrice,

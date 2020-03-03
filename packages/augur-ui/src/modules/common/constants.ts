@@ -19,6 +19,7 @@ import { formatShares, formatDai } from 'utils/format-number';
 
 // # MISC Constants
 export const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
+export const FAKE_HASH = '1111111111111111111111111';
 export const MALFORMED_OUTCOME = 'malformed outcome';
 // # Asset Types
 export const ETH = 'ETH';
