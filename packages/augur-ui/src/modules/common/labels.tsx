@@ -740,7 +740,7 @@ export const LinearPropertyLabel = ({
   </div>
 );
 
-export const MarketTypeLabel = ({ marketType }: MarketTypeProps) => {
+export const MarketTypeLabel = ({ marketType, isWarpSync }: MarketTypeProps) => {
   if (!marketType) {
     return null;
   }
@@ -749,13 +749,14 @@ export const MarketTypeLabel = ({ marketType }: MarketTypeProps) => {
     [CATEGORICAL]: 'Categorical',
     [SCALAR]: 'Scalar Market',
   };
-  const text = labelTexts[marketType];
-  const isScalar = marketType === SCALAR;
+  const text = isWarpSync ? 'Warp Sync Market' : labelTexts[marketType];
+  const isScalar = !isWarpSync && marketType === SCALAR;
 
   return (
     <span
       className={classNames(Styles.MarketTypeLabel, {
         [Styles.MarketScalarLabel]: isScalar,
+        [Styles.MarketStatus_warpSync]: isWarpSync
       })}
     >
       {text} {isScalar && ScalarIcon}

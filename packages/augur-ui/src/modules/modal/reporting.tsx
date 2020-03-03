@@ -171,10 +171,10 @@ export default class ModalReporting extends Component<
       disputeInfo.stakes.filter(stake => !stake.isInvalidOutcome).forEach(stake => {
         radioButtons.push({
           id: String(stake.outcome),
-          header: `Enter a hash value`,
-          value: warpSyncHash,
+          header: stake.outcome ? `${stake.outcome}` : `Enter a hash value`,
+          value: stake.outcome ? warpSyncHash : null,
           description: stake.outcome,
-          checked: true,
+          checked: checked === stake.outcome,
           isInvalid: false,
           stake,
         });
@@ -205,7 +205,7 @@ export default class ModalReporting extends Component<
   };
 
   reportingAction = (estimateGas = false) => {
-    const { migrateMarket, migrateRep, market, addPendingData, removePendingData } = this.props;
+    const { migrateMarket, migrateRep, market, addPendingData, warpSyncHash } = this.props;
     const {
       marketId,
       maxPrice,
@@ -214,6 +214,7 @@ export default class ModalReporting extends Component<
       numOutcomes,
       marketType,
       disputeInfo,
+      isWarpSync
     } = market;
     const { isReporting } = this.state;
     let outcomeId = null;
@@ -239,6 +240,8 @@ export default class ModalReporting extends Component<
       attoRepAmount: estimateGas ? ONE_REP : this.state.inputtedReportingStake.inputToAttoRep,
       outcomeId,
       isInvalid: isSelectedOutcomeInvalid,
+      warpSyncHash: selectedRadio.value,
+      isWarpSync,
     };
 
     if (migrateRep) {
@@ -347,7 +350,7 @@ export default class ModalReporting extends Component<
               <MigrateRepInfo />
             }
             <section>
-              <MarketTypeLabel marketType={marketType} />
+              <MarketTypeLabel marketType={marketType} isWarpSync={market.isWarpSync} />
               <RedFlag market={market} />
               {isTemplate && <TemplateShield market={market} />}
             </section>
