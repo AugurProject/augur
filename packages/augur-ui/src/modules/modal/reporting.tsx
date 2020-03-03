@@ -183,7 +183,7 @@ export default class ModalReporting extends Component<
       disputeInfo.stakes
         .filter(stake => !stake.isInvalidOutcome)
         .forEach(stake => {
-          const warpSyncHashValue = stake && stake.warpSyncHash || warpSyncHash;
+          const warpSyncHashValue = stake && stake.warpSyncHash;
 
           radioButtons.push({
             id: String(stake.outcome),
