@@ -391,6 +391,7 @@ export default class MarketHeader extends Component<
                   <CoreProperties
                     market={market}
                     reportingBarShowing={reportingBarShowing}
+                    showExtraDetailsChevron={showProperties}
                   />
                 )}
                 <button
