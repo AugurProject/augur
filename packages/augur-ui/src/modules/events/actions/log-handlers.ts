@@ -494,9 +494,10 @@ export const handleInitialReporterTransferredLog = (logs: any) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const address = getState().loginAccount.address
-  if (logs.filter(log => isSameAddress(log.from, address) ||
-    isSameAddress(log.to, address)).length > 0) {
+  const address = getState().loginAccount.address;
+  const userLogs = logs.filter(log => isSameAddress(log.from, address) ||
+    isSameAddress(log.to, address));
+  if (userLogs.length > 0) {
     dispatch(loadAccountReportingHistory());
   }
   const marketIds = userLogs.map(log => log.market)
