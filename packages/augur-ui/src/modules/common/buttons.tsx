@@ -1,6 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { ASCENDING, DESCENDING, BUY } from 'modules/common/constants';
+import {
+  ASCENDING,
+  DESCENDING,
+  BUY,
+  BETTING_LAY,
+  BETTING_BACK
+} from 'modules/common/constants';
 import {
   StarIcon,
   SortIcon,
@@ -511,6 +517,37 @@ export const FilterButton = (props: DefaultActionButtonProps) => (
   >
     Categories & Filters
     {Filter}
+  </button>
+);
+
+export interface BettingBackLayButtonProps {
+  title?: string;
+  text?: string;
+  subText?: string;
+  action: Function;
+  disabled?: boolean;
+  type: BETTING_LAY | BETTING_BACK;
+}
+
+export const BettingBackLayButton = ({
+  title,
+  text,
+  subText,
+  action,
+  disabled,
+  type
+}: BettingBackLayButtonProps) => (
+  <button
+    onClick={e => action(e)}
+    className={classNames(Styles.BettingBackLayButton, {
+      [Styles.Back]: type === BETTING_BACK,
+      [Styles.Lay]: type === BETTING_LAY
+    })}
+    disabled={disabled}
+    title={title || text}
+  >
+    <div>{text}</div>
+    <div>{subText}</div>
   </button>
 );
 
