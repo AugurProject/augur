@@ -484,9 +484,13 @@ export const handleInitialReporterRedeemedLog = (
   logs: Logs.InitialReporterRedeemedLog[]
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const address = getState().loginAccount.address;
-  if (logs.filter(log => isSameAddress(log.reporter, address)).length > 0) {
+  const reporterLogs = logs.filter(log => isSameAddress(log.reporter, address));
+  if (reporterLogs.length > 0) {
     dispatch(loadAccountReportingHistory());
     dispatch(removePendingTransaction(REDEEMSTAKE));
+    reporterLogs.map(log => {
+      handleAlert(log, REDEEMSTAKE, false, dispatch, getState);
+    })
   }
 };
 
@@ -620,6 +624,7 @@ export const handleDisputeCrowdsourcerRedeemedLog = (
   ))
   if (userLogs.length > 0) {
     dispatch(loadAccountReportingHistory());
+    userLogs.map(log => handleAlert(log, REDEEMSTAKE, false, dispatch, getState));
   }
   dispatch(removePendingTransaction(REDEEMSTAKE));
 };

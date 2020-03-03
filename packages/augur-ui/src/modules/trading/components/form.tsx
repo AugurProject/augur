@@ -10,6 +10,7 @@ import {
   SELL,
   INVALID_OUTCOME_ID,
   ONE,
+  SMALL_MOBILE,
 } from 'modules/common/constants';
 import FormStyles from 'modules/common/form-styles.less';
 import Styles from 'modules/trading/components/form.styles.less';
@@ -35,8 +36,9 @@ import moment, { Moment } from 'moment';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { SimpleTimeSelector } from 'modules/create-market/components/common';
 import { formatBestPrice } from 'utils/format-number';
+import Media from 'react-media';
 
-const DEFAULT_TRADE_INTERVAL = new BigNumber(10**17);
+const DEFAULT_TRADE_INTERVAL = new BigNumber(10 ** 17);
 const DEFAULT_EXPIRATION_DAYS = 0;
 
 enum ADVANCED_OPTIONS {
@@ -190,7 +192,6 @@ class Form extends Component<FromProps, FormState> {
     this.calcPercentagePrice = this.calcPercentagePrice.bind(this);
   }
 
-
   componentDidMount() {
     this.getGasConfirmEstimate();
   }
@@ -259,7 +260,7 @@ class Form extends Component<FromProps, FormState> {
     try {
       const confirmationTimeEstimation = await this.props.getGasConfirmEstimate();
       this.setState({ confirmationTimeEstimation });
-    } catch(error) {
+    } catch (error) {
       this.setState({ confirmationTimeEstimation: 0 });
     }
   }
@@ -299,10 +300,8 @@ class Form extends Component<FromProps, FormState> {
       );
     }
 
-    return tradeInterval
-      .dividedBy(market.tickSize)
-      .dividedBy(10 ** 18);
-  }
+    return tradeInterval.dividedBy(market.tickSize).dividedBy(10 ** 18);
+  };
 
   findNearestValues = value => {
     const valueBn = createBigNumber(value);
@@ -407,7 +406,9 @@ class Form extends Component<FromProps, FormState> {
     // Check to ensure orders don't expiry within 70s
     // Also consider getGasConfirmEstimate * 1.5 seconds
     const minOrderLifespan = 70;
-    const gasConfirmEstimate = this.state ? this.state.confirmationTimeEstimation * 1.5 : 0; // In Seconds
+    const gasConfirmEstimate = this.state
+      ? this.state.confirmationTimeEstimation * 1.5
+      : 0; // In Seconds
     const expiryTime = expiration - gasConfirmEstimate - moment().unix();
     if (expiration && expiryTime < minOrderLifespan) {
       errorCount += 1;
@@ -457,7 +458,8 @@ class Form extends Component<FromProps, FormState> {
         );
       }
     }
-    if (value &&
+    if (
+      value &&
       value
         .minus(minPrice)
         .mod(tickSize)
@@ -791,14 +793,14 @@ class Form extends Component<FromProps, FormState> {
     percentage: string,
     minPrice: string,
     maxPrice: string,
-    tickSize: number,
+    tickSize: number
   ) {
     if (percentage === undefined || percentage === null) return Number(0);
     const numTicks = tickSizeToNumTickWithDisplayPrices(
-        createBigNumber(tickSize),
-        createBigNumber(minPrice),
-        createBigNumber(maxPrice)
-      );
+      createBigNumber(tickSize),
+      createBigNumber(minPrice),
+      createBigNumber(maxPrice)
+    );
     const bnMinPrice = createBigNumber(minPrice);
     const bnMaxPrice = createBigNumber(maxPrice);
     const percentNumTicks = createBigNumber(numTicks).times(
@@ -807,12 +809,10 @@ class Form extends Component<FromProps, FormState> {
     if (percentNumTicks.lt(tickSize)) {
       return bnMinPrice.plus(tickSize);
     }
-    const calcPrice = percentNumTicks
-      .times(tickSize)
-      .plus(bnMinPrice);
-      if (calcPrice.eq(maxPrice)){
-        return bnMaxPrice.minus(tickSize);
-      }
+    const calcPrice = percentNumTicks.times(tickSize).plus(bnMinPrice);
+    if (calcPrice.eq(maxPrice)) {
+      return bnMaxPrice.minus(tickSize);
+    }
     const correctDec = formatBestPrice(calcPrice, tickSize);
     const precision = getPrecision(tickSize, 0);
     const value = createBigNumber(correctDec.fullPrecision).toFixed(precision);
@@ -885,9 +885,11 @@ class Form extends Component<FromProps, FormState> {
         <ul>
           <li>
             <label htmlFor="quantity">Quantity</label>
-            {!isScalar &&
-              <label>(must be a multiple of {this.findMultipleOf().toString()})</label>
-            }
+            {!isScalar && (
+              <label>
+                (must be a multiple of {this.findMultipleOf().toString()})
+              </label>
+            )}
             <div
               className={classNames(Styles.TradingFormInputContainer, {
                 [Styles.error]: s.errors[this.INPUT_TYPES.QUANTITY].length,
@@ -1023,7 +1025,7 @@ class Form extends Component<FromProps, FormState> {
                         percentage,
                         min,
                         max,
-                        tickSize,
+                        tickSize
                       );
                       this.updateAndValidate(this.INPUT_TYPES.PRICE, value);
                     });
@@ -1153,7 +1155,10 @@ class Form extends Component<FromProps, FormState> {
                     value === ADVANCED_OPTIONS.EXPIRATION
                       ? moment
                           .unix(currentTimestamp)
-                          .add(DEFAULT_EXPIRATION_DAYS, EXPIRATION_DATE_OPTIONS.DAYS)
+                          .add(
+                            DEFAULT_EXPIRATION_DAYS,
+                            EXPIRATION_DATE_OPTIONS.DAYS
+                          )
                           .unix()
                       : null;
                   this.updateAndValidate(
@@ -1174,7 +1179,8 @@ class Form extends Component<FromProps, FormState> {
               {s.advancedOption === '1' && (
                 <>
                   <div>
-                    {s.expirationDateOption !== EXPIRATION_DATE_OPTIONS.CUSTOM && (
+                    {s.expirationDateOption !==
+                      EXPIRATION_DATE_OPTIONS.CUSTOM && (
                       <TextInput
                         value={s.fastForwardTime.toString()}
                         placeholder={'0'}
@@ -1183,7 +1189,10 @@ class Form extends Component<FromProps, FormState> {
                             value === '' || isNaN(value) ? 0 : parseInt(value);
                           this.updateAndValidate(
                             this.INPUT_TYPES.EXPIRATION_DATE,
-                            moment.unix(currentTimestamp).add(addedValue, s.expirationDateOption).unix()
+                            moment
+                              .unix(currentTimestamp)
+                              .add(addedValue, s.expirationDateOption)
+                              .unix()
                           );
                           this.setState({ fastForwardTime: addedValue });
                         }}
@@ -1210,35 +1219,45 @@ class Form extends Component<FromProps, FormState> {
                         },
                       ]}
                       onChange={value => {
-                        const fastForwardTime = this.state.fastForwardTime ? this.state.fastForwardTime : 0;
+                        const fastForwardTime = this.state.fastForwardTime
+                          ? this.state.fastForwardTime
+                          : 0;
                         this.updateAndValidate(
                           this.INPUT_TYPES.EXPIRATION_DATE,
-                          moment.unix(currentTimestamp).add(fastForwardTime, value).unix()
+                          moment
+                            .unix(currentTimestamp)
+                            .add(fastForwardTime, value)
+                            .unix()
                         );
                         this.setState({ expirationDateOption: value });
                       }}
                     />
                   </div>
-                  {s.expirationDateOption !== EXPIRATION_DATE_OPTIONS.CUSTOM && (
+                  {s.expirationDateOption !==
+                    EXPIRATION_DATE_OPTIONS.CUSTOM && (
                     <span>
-                      {
-                        s[this.INPUT_TYPES.EXPIRATION_DATE] &&
-                        convertUnixToFormattedDate(Number(s[this.INPUT_TYPES.EXPIRATION_DATE])
-                        ).formattedLocalShortWithUtcOffset
-                      }
+                      {s[this.INPUT_TYPES.EXPIRATION_DATE] &&
+                        convertUnixToFormattedDate(
+                          Number(s[this.INPUT_TYPES.EXPIRATION_DATE])
+                        ).formattedLocalShortWithUtcOffset}
                     </span>
                   )}
                   {s.expirationDateOption ===
                     EXPIRATION_DATE_OPTIONS.CUSTOM && (
-                    <SimpleTimeSelector
-                      onChange={value => {
-                        this.updateAndValidate(
-                          this.INPUT_TYPES.EXPIRATION_DATE,
-                          value.timestamp
-                        );
-                      }}
-                      currentTime={currentTimestamp}
-                    />
+                    <Media query={SMALL_MOBILE}>
+                      {matches => (
+                        <SimpleTimeSelector
+                          openTop={matches}
+                          onChange={value => {
+                            this.updateAndValidate(
+                              this.INPUT_TYPES.EXPIRATION_DATE,
+                              value.timestamp
+                            );
+                          }}
+                          currentTime={currentTimestamp}
+                        />
+                      )}
+                    </Media>
                   )}
                 </>
               )}
