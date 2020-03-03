@@ -244,9 +244,25 @@
   
   .HelpMenu {
     box-shadow: @size-2 @size-2 @size-5 var(--color-secondary-text-50);
+    background: var(--color-table-header);
 
     > span:first-of-type {
       background: var(--color-page-background);
+      border-bottom: @size-1 solid var(--color-dark-grey);
+    }
+
+    > span:not(:first-of-type) {
+      padding: @size-13 0;
+      margin: 0 @size-16;
+    }
+
+    > span:nth-of-type(2) {
+      display: none;
+      border-top: 0;
+    }
+
+    > span:nth-of-type(3) {
+      border-top: 0;
     }
   }
 }
