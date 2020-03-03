@@ -221,13 +221,12 @@ export default class ModalReporting extends Component<
     return radioButtons;
   };
 
-  reportingAction = (estimateGas = false) => {
+  reportingAction = (estimateGas: boolean = false) => {
     const {
       migrateMarket,
       migrateRep,
       market,
       addPendingData,
-      warpSyncHash,
     } = this.props;
     const {
       marketId,

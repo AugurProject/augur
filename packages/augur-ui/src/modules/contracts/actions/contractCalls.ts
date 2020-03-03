@@ -464,8 +464,7 @@ export interface doReportDisputeAddStake {
 export async function doInitialReport_estimaetGas(report: doReportDisputeAddStake) {
   const market = getMarket(report.marketId);
   if (!market) return false;
-  const augur = augurSdk.get();
-  const payoutNumerators = report.isWarpSync ? await augur.getPayoutFromWarpSyncHash(report.warpSyncHash) : getPayoutNumerators(report);
+  const payoutNumerators = await getPayoutNumerators(report);
   return market.doInitialReport_estimateGas(
     payoutNumerators,
     report.description,
@@ -476,8 +475,7 @@ export async function doInitialReport_estimaetGas(report: doReportDisputeAddStak
 export async function doInitialReport(report: doReportDisputeAddStake) {
   const market = getMarket(report.marketId);
   if (!market) return false;
-  const augur = augurSdk.get();
-  const payoutNumerators = report.isWarpSync ? await augur.getPayoutFromWarpSyncHash(report.warpSyncHash) : getPayoutNumerators(report);
+  const payoutNumerators = await getPayoutNumerators(report);
   return market.doInitialReport(
     payoutNumerators,
     report.description,
@@ -490,8 +488,7 @@ export async function addRepToTentativeWinningOutcome_estimateGas(
 ) {
   const market = getMarket(addStake.marketId);
   if (!market) return false;
-  const augur = augurSdk.get();
-  const payoutNumerators = addStake.isWarpSync ? await augur.getPayoutFromWarpSyncHash(addStake.warpSyncHash) : getPayoutNumerators(addStake);
+  const payoutNumerators = await getPayoutNumerators(addStake);
   return market.contributeToTentative_estimateGas(
     payoutNumerators,
     createBigNumber(addStake.attoRepAmount),
@@ -504,8 +501,7 @@ export async function addRepToTentativeWinningOutcome(
 ) {
   const market = getMarket(addStake.marketId);
   if (!market) return false;
-  const augur = augurSdk.get();
-  const payoutNumerators = addStake.isWarpSync ? await augur.getPayoutFromWarpSyncHash(addStake.warpSyncHash) : getPayoutNumerators(addStake);
+  const payoutNumerators = await getPayoutNumerators(addStake);
   return market.contributeToTentative(
     payoutNumerators,
     createBigNumber(addStake.attoRepAmount),
@@ -516,8 +512,7 @@ export async function addRepToTentativeWinningOutcome(
 export async function contribute_estimateGas(dispute: doReportDisputeAddStake) {
   const market = getMarket(dispute.marketId);
   if (!market) return false;
-  const augur = augurSdk.get();
-  const payoutNumerators = dispute.isWarpSync ? await augur.getPayoutFromWarpSyncHash(dispute.warpSyncHash) : getPayoutNumerators(dispute);
+  const payoutNumerators = await getPayoutNumerators(dispute);
   return market.contribute_estimateGas(
     payoutNumerators,
     createBigNumber(dispute.attoRepAmount),
@@ -528,8 +523,7 @@ export async function contribute_estimateGas(dispute: doReportDisputeAddStake) {
 export async function contribute(dispute: doReportDisputeAddStake) {
   const market = getMarket(dispute.marketId);
   if (!market) return false;
-  const augur = augurSdk.get();
-  const payoutNumerators = dispute.isWarpSync ? await augur.getPayoutFromWarpSyncHash(dispute.warpSyncHash) : getPayoutNumerators(dispute);
+  const payoutNumerators = await getPayoutNumerators(dispute);
   return market.contribute(
     payoutNumerators,
     createBigNumber(dispute.attoRepAmount),
@@ -547,16 +541,19 @@ function getMarket(marketId) {
   return market;
 }
 
-function getPayoutNumerators(inputs: doReportDisputeAddStake) {
-  return calculatePayoutNumeratorsArray(
-    inputs.maxPrice,
-    inputs.minPrice,
-    inputs.numTicks,
-    inputs.numOutcomes,
-    inputs.marketType,
-    inputs.outcomeId,
-    inputs.isInvalid
-  );
+async function getPayoutNumerators(inputs: doReportDisputeAddStake) {
+  const augur = augurSdk.get();
+  return inputs.isWarpSync
+    ? await augur.getPayoutFromWarpSyncHash(inputs.warpSyncHash || '0')
+    : calculatePayoutNumeratorsArray(
+        inputs.maxPrice,
+        inputs.minPrice,
+        inputs.numTicks,
+        inputs.numOutcomes,
+        inputs.marketType,
+        inputs.outcomeId,
+        inputs.isInvalid
+      );
 }
 
 export interface CreateNewMarketParams {

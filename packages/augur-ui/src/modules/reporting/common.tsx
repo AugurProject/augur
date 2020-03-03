@@ -383,6 +383,7 @@ export interface DisputingBondsViewProps {
   Gnosis_ENABLED: boolean;
   gasPrice: number;
   ethToDaiRate: BigNumber;
+  warpSyncHash: string;
 }
 
 interface DisputingBondsViewState {
@@ -523,6 +524,7 @@ export class DisputingBondsView extends Component<
       id,
       Gnosis_ENABLED,
       ethToDaiRate,
+      warpSyncHash
     } = this.props;
 
     const {
@@ -543,7 +545,7 @@ export class DisputingBondsView extends Component<
       <div className={classNames(Styles.DisputingBondsView)}>
         {isScalar && id === 'null' && (
           <ScalarOutcomeView
-            inputScalarOutcome={inputScalarOutcome}
+            inputScalarOutcome={!inputScalarOutcome && market.isWarpSync ? warpSyncHash : inputScalarOutcome}
             updateScalarOutcome={this.updateScalarOutcome}
             scalarDenomination={market.scalarDenomination}
             scalarError={scalarError}
