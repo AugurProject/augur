@@ -47,7 +47,7 @@ export class WarpSync {
     const bytes = bs58.decode(warpSyncHash)
     const encodedWarpSyncHash = bytes.toString('hex');
     // first 6 characters of the hex ipfs hash are always 0x1220
-    const payout = new BigNumber(`0x${encodedWarpSyncHash.slice(6)}`, 16);
+    const payout = new BigNumber(`0x${encodedWarpSyncHash.slice(4)}`, 16);
     return [new BigNumber(0), MAX_PAYOUT.minus(payout), payout];
   }
 
