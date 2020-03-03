@@ -190,7 +190,9 @@ export class WarpController {
     console.log('checkpoint', d.toString());
 
     // Add checkpoint to db.
-    await this.db.warpSync.createCheckpoint(beginBlock, endBlock, d.toString());
+    if (endBlock) {
+      await this.db.warpSync.createCheckpoint(beginBlock, endBlock, d.toString());
+    }
 
     return d.toString();
   }
