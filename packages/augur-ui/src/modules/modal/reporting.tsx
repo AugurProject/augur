@@ -2,7 +2,12 @@ import React, { Component } from 'react';
 import { MarketData, DisputeInputtedValues } from 'modules/types';
 import { Title } from 'modules/modal/common';
 import { SecondaryButton } from 'modules/common/buttons';
-import { MarketTypeLabel, RedFlag, RepBalance, TemplateShield } from 'modules/common/labels';
+import {
+  MarketTypeLabel,
+  RedFlag,
+  RepBalance,
+  TemplateShield,
+} from 'modules/common/labels';
 import { Subheaders } from 'modules/reporting/common';
 import {
   ReportingRadioBarGroup,
@@ -75,7 +80,13 @@ export default class ModalReporting extends Component<
       ? this.props.selectedOutcome.toString()
       : null,
     inputtedReportingStake: { inputStakeValue: '0', inputToAttoRep: '0' },
-    inputScalarOutcome: this.props.market.isWarpSync ? this.props.warpSyncHash : '',
+    inputScalarOutcome:
+      this.props.market.isWarpSync &&
+      (this.props.market.reportingState === REPORTING_STATE.OPEN_REPORTING ||
+        this.props.market.reportingState ===
+          REPORTING_STATE.DESIGNATED_REPORTING)
+        ? this.props.warpSyncHash
+        : '',
     isReporting:
       this.props.market.reportingState === REPORTING_STATE.OPEN_REPORTING ||
       this.props.market.reportingState === REPORTING_STATE.DESIGNATED_REPORTING,
@@ -115,7 +126,9 @@ export default class ModalReporting extends Component<
     );
     const radioValue = radioButtons.find(r => r.checked);
     this.updateScalarOutcome(
-      radioValue && radioValue.value && String(radioValue.value) ? String(radioValue.value) : ''
+      radioValue && radioValue.value && String(radioValue.value)
+        ? String(radioValue.value)
+        : ''
     );
     this.setState({ radioButtons, checked: selected });
   };
@@ -129,7 +142,7 @@ export default class ModalReporting extends Component<
       disputeInfo,
       minPrice,
       maxPrice,
-      isWarpSync
+      isWarpSync,
     } = market;
 
     let sortedOutcomes = outcomesFormatted;
@@ -168,17 +181,21 @@ export default class ModalReporting extends Component<
         this.updateScalarOutcome(String(selectedOutcome));
       radioButtons = [];
       const denomination = market.scalarDenomination;
-      disputeInfo.stakes.filter(stake => !stake.isInvalidOutcome).forEach(stake => {
-        radioButtons.push({
-          id: String(stake.outcome),
-          header: stake.outcome ? `${stake.outcome}` : `Enter a hash value`,
-          value: stake.outcome ? warpSyncHash : null,
-          description: stake.outcome,
-          checked: checked === stake.outcome,
-          isInvalid: false,
-          stake,
+      disputeInfo.stakes
+        .filter(stake => !stake.isInvalidOutcome)
+        .forEach(stake => {
+          const warpSyncHash = stake && stake.warpSyncHash;
+
+          radioButtons.push({
+            id: String(stake.outcome),
+            header: warpSyncHash || `Enter a hash value`,
+            value: warpSyncHash || null,
+            description: warpSyncHash || stake.outcome,
+            checked: checked === stake.outcome,
+            isInvalid: false,
+            stake,
+          });
         });
-      });
     } else if (marketType === SCALAR) {
       if (selectedOutcome && String(selectedOutcome) !== 'null')
         this.updateScalarOutcome(String(selectedOutcome));
@@ -205,7 +222,13 @@ export default class ModalReporting extends Component<
   };
 
   reportingAction = (estimateGas = false) => {
-    const { migrateMarket, migrateRep, market, addPendingData, warpSyncHash } = this.props;
+    const {
+      migrateMarket,
+      migrateRep,
+      market,
+      addPendingData,
+      warpSyncHash,
+    } = this.props;
     const {
       marketId,
       maxPrice,
@@ -214,7 +237,7 @@ export default class ModalReporting extends Component<
       numOutcomes,
       marketType,
       disputeInfo,
-      isWarpSync
+      isWarpSync,
     } = market;
     const { isReporting } = this.state;
     let outcomeId = null;
@@ -237,7 +260,9 @@ export default class ModalReporting extends Component<
       numOutcomes,
       marketType,
       description: '',
-      attoRepAmount: estimateGas ? ONE_REP : this.state.inputtedReportingStake.inputToAttoRep,
+      attoRepAmount: estimateGas
+        ? ONE_REP
+        : this.state.inputtedReportingStake.inputToAttoRep,
       outcomeId,
       isInvalid: isSelectedOutcomeInvalid,
       warpSyncHash: selectedRadio.value,
@@ -257,7 +282,6 @@ export default class ModalReporting extends Component<
         reportAndMigrateMarket(report);
       }
     } else if (isReporting) {
-
       if (estimateGas) {
         return doInitialReport_estimaetGas(report);
       } else {
@@ -282,7 +306,8 @@ export default class ModalReporting extends Component<
         const selectedOutcome = disputeInfo.stakes.find(
           s => s.outcome === selectedRadio.id
         );
-        if (selectedOutcome && selectedOutcome.tentativeWinning) contributeToTentativeWinner = true
+        if (selectedOutcome && selectedOutcome.tentativeWinning)
+          contributeToTentativeWinner = true;
       }
 
       if (estimateGas) {
@@ -292,11 +317,16 @@ export default class ModalReporting extends Component<
           return contribute_estimateGas(report);
         }
       } else {
-        addPendingData(marketId, SUBMIT_DISPUTE, TXEventName.Pending, 0, {matchingId: report.outcomeId});
+        addPendingData(marketId, SUBMIT_DISPUTE, TXEventName.Pending, 0, {
+          matchingId: report.outcomeId,
+        });
         (contributeToTentativeWinner
-        ? addRepToTentativeWinningOutcome(report)
-        : contribute(report)).catch(err => {
-          addPendingData(marketId, SUBMIT_DISPUTE, TXEventName.Failure, 0, {matchingId: report.outcomeId});
+          ? addRepToTentativeWinningOutcome(report)
+          : contribute(report)
+        ).catch(err => {
+          addPendingData(marketId, SUBMIT_DISPUTE, TXEventName.Failure, 0, {
+            matchingId: report.outcomeId,
+          });
         });
       }
     }
@@ -314,7 +344,15 @@ export default class ModalReporting extends Component<
   };
 
   render() {
-    const { closeAction, title, market, rep, migrateRep, isDisputing, getRepModal } = this.props;
+    const {
+      closeAction,
+      title,
+      market,
+      rep,
+      migrateRep,
+      isDisputing,
+      getRepModal,
+    } = this.props;
     const {
       checked,
       inputScalarOutcome,
@@ -322,12 +360,7 @@ export default class ModalReporting extends Component<
       userCurrentDisputeRound,
       radioButtons,
     } = this.state;
-    const {
-      description,
-      marketType,
-      details,
-      isTemplate,
-    } = market;
+    const { description, marketType, details, isTemplate } = market;
     const {
       explainerBlockTitle,
       explainerBlockSubtexts,
@@ -346,11 +379,12 @@ export default class ModalReporting extends Component<
             />
           )}
           <div>
-            {migrateRep &&
-              <MigrateRepInfo />
-            }
+            {migrateRep && <MigrateRepInfo />}
             <section>
-              <MarketTypeLabel marketType={marketType} isWarpSync={market.isWarpSync} />
+              <MarketTypeLabel
+                marketType={marketType}
+                isWarpSync={market.isWarpSync}
+              />
               <RedFlag market={market} />
               {isTemplate && <TemplateShield market={market} />}
             </section>
@@ -361,11 +395,8 @@ export default class ModalReporting extends Component<
                 <MarkdownRenderer text={details} hideLabel />
               </div>
             )}
-            <CoreProperties
-              market={market}
-              reportingBarShowing={false}
-            />
-            </div>
+            <CoreProperties market={market} reportingBarShowing={false} />
+          </div>
           {isDisputing && (
             <div>
               <RepBalance alternate rep={rep} />
