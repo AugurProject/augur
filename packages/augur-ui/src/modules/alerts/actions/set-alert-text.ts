@@ -192,16 +192,29 @@ export default function setAlertText(alert: any, callback: Function) {
         break;
 
       case REDEEMSTAKE:
-        alert.title = 'Redeem participation tokens';
+        let participation = false;
+        if (alert.params && alert.params.attoParticipationTokens) {
+          participation = true;
+        }
+        alert.title = participation ? 'Redeem participation tokens' : 'REP Stake Redeemed';
         if (!alert.description && alert.params) {
-          const tokens = formatRep(
-            convertAttoValueToDisplayValue(createBigNumber(alert.params.attoParticipationTokens)).toString()
-          );
-          alert.description = `Redeemed ${
-            tokens.formatted
-          } Participation Token${
-            createBigNumber(tokens.value).eq(ONE) ? '' : 's'
-          }`;
+          if (participation) {
+            const tokens = formatRep(
+              convertAttoValueToDisplayValue(createBigNumber(alert.params.attoParticipationTokens)).toString()
+            );
+            alert.description = `Redeemed ${
+              tokens.formatted
+            } Participation Token${
+              createBigNumber(tokens.value).eq(ONE) ? '' : 's'
+            }`;
+          } else {
+            const REPVal = formatRep(
+              convertAttoValueToDisplayValue(createBigNumber(alert.params.amountRedeemed)).toString()
+            );
+            alert.description = `${
+              REPVal.formatted
+            } REP stake redeemed`;
+          } 
         }
         break;
 
