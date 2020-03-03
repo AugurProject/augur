@@ -226,7 +226,6 @@ export default class MarketCard extends React.Component<
     const canSupport = !disputeInfo.disputePacingOn;
 
     const expandedOptionShowing =
-      !isWarpSync &&
       outcomesFormatted &&
       outcomesFormatted.length > showOutcomeNumber &&
       !expandedView;

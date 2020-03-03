@@ -10,6 +10,7 @@ import {
   ZERO,
   INVALID_OUTCOME_NAME,
   SUBMIT_DISPUTE,
+  SCALAR_DOWN_ID,
 } from 'modules/common/constants';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import ReactTooltip from 'react-tooltip';
@@ -115,7 +116,7 @@ export const DisputeOutcome = (props: DisputeOutcomeProps) => {
         [Styles[`Outcome-${props.index}`]]: !props.invalid,
       })}
     >
-      <span>{props.isWarpSync ? props.stake.warpSyncHash : props.description}</span>
+      <span>{props.isWarpSync && !props.invalid ? props.stake.warpSyncHash : props.description}</span>
       {props.stake && props.stake.tentativeWinning ? (
         <span>tentative winner</span>
       ) : (
@@ -175,7 +176,7 @@ interface ScalarBlankDisputeOutcomeProps {
   denomination: string;
   dispute: Function;
   canDispute: boolean;
-  marketid: string;
+  marketId: string;
 }
 
 export const ScalarBlankDisputeOutcome = (
@@ -253,7 +254,8 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
   const sortedStakeOutcomes = selectSortedDisputingOutcomes(
     props.marketType,
     props.outcomes,
-    props.stakes
+    props.stakes,
+    props.isWarpSync
   );
 
   const { inDispute, showOutcomeNumber, isWarpSync } = props;
@@ -262,7 +264,9 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
   const removedInvalid = outcomesCopy.splice(0, 1)[0];
 
   if (inDispute) {
-    if (!props.expanded) {
+    if (isWarpSync) {
+      disputingOutcomes = disputingOutcomes.filter(o => o.id !== SCALAR_DOWN_ID)
+    } else if (!props.expanded) {
       disputingOutcomes.splice(showOutcomeNumber, showOutcomeNumber + 1);
     }
   } else {
@@ -296,7 +300,7 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
             }
             scalarDenomination={props.scalarDenomination}
             marketId={props.marketId}
-            outcomeId={SCALAR_UP_ID}
+            outcomeId={String(SCALAR_UP_ID)}
           />
           <Outcome
             description={removedInvalid.description}
@@ -309,7 +313,7 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
             max={props.max}
             isScalar={props.marketType === SCALAR}
             marketId={props.marketId}
-            outcomeId={INVALID_OUTCOME_ID}
+            outcomeId={String(INVALID_OUTCOME_ID)}
           />
         </>
       )}
@@ -318,7 +322,9 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
           (outcome: OutcomeFormatted, index: number) =>
             ((!props.expanded && index < showOutcomeNumber) ||
               (props.expanded || props.marketType === YES_NO)) &&
-            (inDispute ? (
+            (inDispute && !!props.stakes.find(
+              stake => parseFloat(stake.outcome) === outcome.id
+            ) ? (
               <>
                 {props.marketType === SCALAR &&
                   index === 1 &&
