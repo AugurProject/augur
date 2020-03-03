@@ -6,7 +6,6 @@ import { PersonalSigningWeb3Provider } from 'utils/personal-signing-web3-provide
 import Fortmatic from 'fortmatic';
 import Web3 from 'web3';
 import { ACCOUNT_TYPES, FORTMATIC_API_KEY, FORTMATIC_API_TEST_KEY, NETWORK_IDS, NETWORK_NAMES } from 'modules/common/constants';
-import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { windowRef } from 'utils/window-ref';
 import { AppState } from 'store';
 import { getNetwork } from 'utils/get-network-name';
@@ -16,7 +15,7 @@ export const loginWithFortmatic = () => async (
   getState: () => AppState,
 ) => {
   const useGnosis = getState().env['gnosis']?.enabled;
-  const networkId: string = getNetworkId();
+  const networkId: string = getState().env['networkId'];
   const supportedNetwork = getNetwork(networkId);
 
   if (supportedNetwork) {

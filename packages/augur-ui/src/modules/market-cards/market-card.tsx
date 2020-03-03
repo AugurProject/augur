@@ -129,6 +129,7 @@ export default class MarketCard extends React.Component<
       isTemplate,
       consensusFormatted,
       mostLikelyInvalid,
+      isWarpSync
     } = market;
 
     if (loading) {
@@ -225,6 +226,7 @@ export default class MarketCard extends React.Component<
     const canSupport = !disputeInfo.disputePacingOn;
 
     const expandedOptionShowing =
+      !isWarpSync &&
       outcomesFormatted &&
       outcomesFormatted.length > showOutcomeNumber &&
       !expandedView;
@@ -291,9 +293,10 @@ export default class MarketCard extends React.Component<
                 marketStatus={marketStatus}
                 reportingState={reportingState}
                 disputeInfo={disputeInfo}
+                isWarpSync={market.isWarpSync}
               />
             )}
-            {isScalar && <MarketTypeLabel marketType={marketType} />}
+            {isScalar && !isWarpSync && <MarketTypeLabel marketType={marketType} />}
             <RedFlag market={market} />
             {isTemplate && <TemplateShield market={market} />}
             <CategoryTagTrail categories={categoriesWithClick} />
@@ -346,6 +349,7 @@ export default class MarketCard extends React.Component<
                 canDispute={canDispute}
                 canSupport={canSupport}
                 marketId={id}
+                isWarpSync={market.isWarpSync}
               />
               {expandedOptionShowing && (
                 <button onClick={this.expand}>

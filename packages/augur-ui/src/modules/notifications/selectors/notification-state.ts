@@ -22,6 +22,7 @@ import {
   TYPE_VIEW_ORDERS,
   SIGN_SEND_ORDERS,
   ZERO,
+  REDEEMSTAKE,
 } from 'modules/common/constants';
 import userOpenOrders from 'modules/orders/selectors/user-open-orders';
 import store, { AppState } from 'store';
@@ -239,6 +240,7 @@ export const selectNotifications = createSelector(
         buttonLabel: TYPE_VIEW_DETAILS,
         market: null,
         claimReportingFees,
+        transactionView: REDEEMSTAKE,
         id: NOTIFICATION_TYPES.claimReportingFees,
       });
     }

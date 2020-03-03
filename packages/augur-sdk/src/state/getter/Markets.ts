@@ -192,6 +192,7 @@ export interface StakeDetails {
   isInvalidOutcome: boolean;
   isMalformedOutcome: boolean;
   tentativeWinning: boolean;
+  warpSyncHash: string;
 }
 
 export interface MarketPriceCandlestick {
@@ -611,7 +612,7 @@ export class Markets {
     marketData = marketData.slice(params.offset, params.offset + params.limit);
 
     // Get markets info to return
-    let marketsInfo: MarketInfo[] = await getMarketsInfo(db, marketData, reportingFeeDivisor, augur.addresses.WarpSync);
+    let marketsInfo: MarketInfo[] = await getMarketsInfo(db, marketData, reportingFeeDivisor, augur);
 
     return {
       markets: marketsInfo,
@@ -764,7 +765,7 @@ export class Markets {
     const markets = await db.Markets.where("market").anyOfIgnoreCase(params.marketIds).toArray();
     const reportingFeeDivisor = await augur.contracts.universe.getOrCacheReportingFeeDivisor_();
 
-    return getMarketsInfo(db, markets, reportingFeeDivisor, augur.addresses.WarpSync);
+    return getMarketsInfo(db, markets, reportingFeeDivisor, augur);
   }
 
   @Getter('getCategoriesParams')
@@ -1029,7 +1030,7 @@ async function getMarketsInfo(
   db: DB,
   markets: MarketData[],
   reportingFeeDivisor: BigNumber,
-  warpSyncAddress: string
+  augur: Augur,
 ): Promise<MarketInfo[]> {
   const marketIds = _.map(markets, 'market');
   // TODO This is just used to get the last price. This can be acheived far more efficiently than pulling all order events for all time
@@ -1129,7 +1130,7 @@ async function getMarketsInfo(
       disputePacingOn: marketData.pacingOn ? marketData.pacingOn : false,
       stakeCompletedTotal: totalRepStakedInMarket.toFixed(),
       bondSizeOfNewStake: totalRepStakedInMarket.multipliedBy(2).toFixed(),
-      stakes: formatStakeDetails(db, marketData, disputeDocsByMarket[marketData.market] || []),
+      stakes: formatStakeDetails(augur, db, marketData, disputeDocsByMarket[marketData.market] || []),
     };
 
     return {
@@ -1177,7 +1178,7 @@ async function getMarketsInfo(
   });
 }
 
-function formatStakeDetails(db: DB, market: MarketData, stakeDetails: DisputeDoc[]): StakeDetails[] {
+function formatStakeDetails(augur: Augur, db: DB, market: MarketData, stakeDetails: DisputeDoc[]): StakeDetails[] {
   const formattedStakeDetails: StakeDetails[] = [];
 
   for (let i = 0; i < stakeDetails.length; i++) {
@@ -1186,6 +1187,7 @@ function formatStakeDetails(db: DB, market: MarketData, stakeDetails: DisputeDoc
     let bondSizeCurrent = new BigNumber(market.totalRepStakedInMarket, 16)
       .multipliedBy(2)
       .minus(new BigNumber(outcomeDetails.totalRepStakedInPayout || 0).multipliedBy(3)).toFixed();
+    const warpSyncHash = market.isWarpSync ? augur.getWarpSyncHashFromPayout(outcomeDetails.payoutNumerators.map(p => new BigNumber(p))) : null;
     if (outcomeDetails.disputeRound < market.disputeRound) {
       formattedStakeDetails[i] = {
         outcome: outcomeValue.outcome,
@@ -1195,6 +1197,7 @@ function formatStakeDetails(db: DB, market: MarketData, stakeDetails: DisputeDoc
         stakeCurrent: '0',
         stakeRemaining: bondSizeCurrent,
         tentativeWinning: false,
+        warpSyncHash,
       };
     } else {
       const tentativeWinning = String(outcomeDetails.payoutNumerators) === String(market.tentativeWinningPayoutNumerators);
@@ -1207,6 +1210,7 @@ function formatStakeDetails(db: DB, market: MarketData, stakeDetails: DisputeDoc
         stakeCurrent: new BigNumber(outcomeDetails.stakeCurrent || '0x0', 16).toFixed(),
         stakeRemaining: new BigNumber(outcomeDetails.stakeRemaining || '0x0', 16).toFixed(),
         tentativeWinning,
+        warpSyncHash,
       };
     }
   }

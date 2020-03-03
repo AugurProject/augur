@@ -9,7 +9,6 @@ import {
   PORTIS_API_KEY,
   MODAL_ERROR,
 } from 'modules/common/constants';
-import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { windowRef } from 'utils/window-ref';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { AppState } from 'store';
@@ -20,7 +19,7 @@ import { getNetwork } from 'utils/get-network-name';
   getState: () => AppState,
 ) => {
   const useGnosis = getState().env['gnosis']?.enabled;
-  const networkId = getNetworkId();
+  const networkId: string = getState().env['networkId'];
   const portisNetwork = getNetwork(networkId);
   const localPortisNetwork = {
     nodeUrl: 'http://localhost:8545',
