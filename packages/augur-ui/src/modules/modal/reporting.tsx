@@ -188,7 +188,7 @@ export default class ModalReporting extends Component<
           radioButtons.push({
             id: String(stake.outcome),
             header: warpSyncHashValue || `Enter a hash value`,
-            value: warpSyncHashValue || null,
+            value: warpSyncHashValue || warpSyncHash,
             description: warpSyncHashValue || stake.outcome,
             checked: checked === stake.outcome,
             isInvalid: false,
