@@ -401,7 +401,7 @@ export const CancelTextButton = ({
     disabled={disabled}
     title={title}
   >
-    {text} {icon}
+    {text} {!icon && !text? XIcon : icon}
   </button>
 );
 
