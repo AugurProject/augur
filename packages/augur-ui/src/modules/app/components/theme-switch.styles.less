@@ -6,6 +6,7 @@
   display: flex;
   flex-flow: row nowrap;
   height: 100%;
+  justify-content: space-around;
 
   @media @breakpoint-mobile {
     background: var(--color-module-background-10-transparent);
@@ -23,9 +24,13 @@
 
     > button {
       color: var(--color-secondary-text);
-      padding: 0 @size-8;
+      padding: 0 @size-16;
       height: 100%;
       white-space: nowrap;
+
+      @media @breakpoint-mobile {
+        .text-12;
+      }
 
       &.Active {
         color: var(--color-primary-text);
@@ -37,7 +42,6 @@
 :root[theme="BETTING"],
 :root[theme="SPORTS"] {
   .ThemeSwitch {
-
     @media @breakpoint-mobile {
       border-bottom: @size-1 solid var(--color-secondary-text-50);
       border-top: @size-1 solid var(--color-secondary-text-50);

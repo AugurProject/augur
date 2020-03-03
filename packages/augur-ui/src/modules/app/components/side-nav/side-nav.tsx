@@ -81,9 +81,7 @@ const SideNav = ({
           {isHelpMenuOpen && <HelpMenuList />}
           <ThemeSwitch />
           <ul
-            className={classNames({
-              [Styles.accountDetailsOpen]: isConnectionTrayOpen,
-            })}
+            className={Styles.MainMenu}
           >
             {isLogged && (
               <SecondaryButton

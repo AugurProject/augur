@@ -85,9 +85,10 @@
   background: var(--color-module-background);
   position: absolute;
   left: 0;
-  width: 100%;
   height: 100vh;
   overflow: auto;
+  transition: width ease-in-out .25s;
+  width: calc(100% - @size-52);
 
   > div {
     display: flex;
@@ -105,10 +106,6 @@
         justify-content: center;
         
       }
-
-      &.accountDetailsOpen {
-        margin-top: 0;
-      }
     }
 
     > ul:first-child,
@@ -121,59 +118,55 @@
       background: var(--color-page-background);
       height: calc(100vh - @top-bar-height-mobile);
       padding-bottom: @top-bar-height-mobile;
-  
-      &.accountDetailsOpen {
-        margin-top: 0;
-      }
 
       > li {
-          &.selected {
-            a {
-              padding: @size-21 @size-16 @size-14;
-            }
-
-            span {
-              .text-12-semi-bold;
-    
-              border-bottom: @size-2 solid var(--color-primary-action);
-              padding-bottom: @size-5;
-              color: var(--color-primary-text);
-              width: fit-content;
-            }
-
-            svg {
-              margin-bottom: @size-12;
-            }
-          }
-    
+        &.selected {
           a {
-            display: flex;
-            padding: @size-21 @size-16;
+            padding: @size-21 @size-16 @size-14;
+          }
+
+          span {
+            .text-12-semi-bold;
+  
+            border-bottom: @size-2 solid var(--color-primary-action);
+            padding-bottom: @size-5;
+            color: var(--color-primary-text);
+            width: fit-content;
+          }
+
+          svg {
+            margin-bottom: @size-12;
+          }
+        }
+  
+        a {
+          display: flex;
+          padding: @size-21 @size-16;
+          align-items: center;
+  
+          > span {
+            .text-12-semi-bold;
+  
             align-items: center;
+            color: var(--color-inactive-text);
+            display: flex;
+            text-transform: uppercase;
+          }
+  
+          > svg {
+            height: @size-4;
+            width: @size-4;
+            fill: none;
+            margin-left: @size-4;
+            margin-bottom: @size-4;
     
-            > span {
-              .text-12-semi-bold;
-    
-              align-items: center;
-              color: var(--color-inactive-text);
-              display: flex;
-              text-transform: uppercase;
-            }
-    
-            > svg {
-              height: @size-4;
-              width: @size-4;
-              fill: none;
-              margin-left: @size-4;
-              margin-bottom: @size-4;
-      
-              > circle {
-                fill: var(--color-outcome-five);
-              }
+            > circle {
+              fill: var(--color-outcome-five);
             }
           }
         }
       }
+    }
 
     > footer {
       align-items: center;
@@ -184,7 +177,8 @@
       justify-content: flex-start;
       padding: 0 @size-16;
       position: fixed;
-      width: 100%;
+      transition: width ease-in-out .25s;
+      width: calc(100% - @size-52);
 
       > button {
         .text-12-bold;
@@ -234,55 +228,86 @@
   }
   .Container {
     background: var(--color-primary-text);
+    width: 100%;
+
     > div {
-      > ul:not(:first-of-type) {
+      > ul:last-of-type {
         background: var(--color-primary-text);
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: 0fr 0fr 0fr 0fr 0fr;
 
         > li {
           &.selected {
+
             span {
               color: var(--color-module-background);
             }
           }
         }
+
+        > li:first-of-type {
+          order: 1;
+        }
+
+        > li:nth-of-type(2) {
+          order: 3;
+        }
+
+        > li:nth-of-type(3) {
+          order: 2;
+        }
+
+        > li:nth-of-type(4),
+        > li:nth-of-type(5),
+        > li:nth-of-type(6) {
+          display: none;
+        }
       }
 
       > footer {
-        background: var(--color-active-background);
-        border-top: @size-1 solid var(--color-dark-grey);
+        background: var(--color-primary-text);
+        border-top: none;
+        width: 100%;
+        flex-flow: row-reverse nowrap;
   
-        > div:nth-of-type(2) {
-          color: var(--color-primary-text);
-          background: var(--color-secondary-action);
-          border: @size-1 solid var(--color-secondary-action-outline);
+        > button {
+          color: var(--color-module-background);
+          border: 0;
+          background: none;
           border-radius: @border-radius-default;
           padding: @size-8 @size-16;
           margin-left: @size-16;
+          margin-right: auto;
+          flex-flow: row-reverse nowrap;
   
           > svg {
-            fill: var(--color-primary-text);
+            margin-left: 0;
+            margin-right: @size-8;
+            fill: var(--color-module-background);
 
             > g > path {
-              fill: var(--color-primary-text);
+              fill: var(--color-module-background);
             }
           }
         }
   
         > .GlobalChat {
-          background: var(--color-dark-grey);
           > button {
-            color: var(--color-primary-text);
-            background: var(--color-secondary-action);
+            color: var(--color-module-background);
+            background: var(--color-primary-text);
+            border: @size-1 solid var(--color-dark-grey);
+
             > svg {
-              fill: var(--color-primary-text);
+              fill: var(--color-module-background);
+
               path {
-                fill: var(--color-primary-text);
+                fill: var(--color-module-background);
               }
             }
           }
         }
       }
     }
-    
   }
 }
