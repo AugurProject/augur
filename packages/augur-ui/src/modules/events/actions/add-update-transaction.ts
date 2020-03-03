@@ -22,6 +22,7 @@ import {
   MODAL_ERROR,
   MIGRATE_FROM_LEG_REP_TOKEN,
   REDEEMSTAKE,
+  APPROVE,
 } from 'modules/common/constants';
 import { CreateMarketData } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
@@ -40,7 +41,13 @@ import { updateModal } from 'modules/modal/actions/update-modal';
 import { updateAppStatus, GNOSIS_STATUS } from 'modules/app/actions/update-app-status';
 import { GnosisSafeState } from '@augurproject/gnosis-relay-api/src/GnosisRelayAPI';
 
-const ADD_PENDING_QUEUE_METHOD_CALLS = [BUYPARTICIPATIONTOKENS, MIGRATE_FROM_LEG_REP_TOKEN, REDEEMSTAKE];
+const ADD_PENDING_QUEUE_METHOD_CALLS = [
+  BUYPARTICIPATIONTOKENS,
+  MIGRATE_FROM_LEG_REP_TOKEN,
+  REDEEMSTAKE,
+  BATCHCANCELORDERS,
+  APPROVE
+];
 export const getRelayerDownErrorMessage = (walletType, hasEth) => {
   const errorMessage = 'We\'re currently experiencing a technical difficulty processing transaction fees in Dai. If possible please come back later to process this transaction';
 

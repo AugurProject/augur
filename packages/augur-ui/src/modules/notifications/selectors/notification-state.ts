@@ -6,6 +6,7 @@ import {
   selectMarketInfosState,
   selectPendingLiquidityOrders,
   selectReadNotificationState,
+  selectUserMarketOpenOrders
 } from 'store/select-state';
 import { MarketReportingState } from '@augurproject/sdk';
 import {
@@ -23,6 +24,7 @@ import {
   SIGN_SEND_ORDERS,
   ZERO,
   REDEEMSTAKE,
+  BATCHCANCELORDERS,
 } from 'modules/common/constants';
 import userOpenOrders from 'modules/orders/selectors/user-open-orders';
 import store, { AppState } from 'store';
@@ -34,19 +36,17 @@ import { isSameAddress } from 'utils/isSameAddress';
 
 // Get all the users CLOSED markets with OPEN ORDERS
 export const selectResolvedMarketsOpenOrders = createSelector(
-  selectMarkets,
-  markets => {
-    if (markets.length > 0) {
-      return markets
-        .filter(
-          market =>
-            market.reportingState === REPORTING_STATE.AWAITING_FINALIZATION ||
-            market.reportingState === REPORTING_STATE.FINALIZED
-        )
-        .filter(market => userOpenOrders(market.id).length > 0)
-        .map(getRequiredMarketData);
-    }
-    return [];
+  selectUserMarketOpenOrders,
+  openOrders => {
+    return Object.keys(openOrders)
+      .map(id => selectMarket(id))
+      .filter(
+        market =>
+          market.reportingState == REPORTING_STATE.AWAITING_FINALIZATION ||
+          market.reportingState === REPORTING_STATE.FINALIZED
+      )
+      .filter(market => userOpenOrders(market.id).length > 0)
+      .map(getRequiredMarketData);
   }
 );
 
@@ -303,6 +303,7 @@ const generateCards = (markets, type) => {
       isNew: true,
       title: RESOLVED_MARKETS_OPEN_ORDERS_TITLE,
       buttonLabel: TYPE_VIEW_ORDERS,
+      transactionView: BATCHCANCELORDERS,
     };
   } else if (type === NOTIFICATION_TYPES.reportOnMarkets) {
     defaults = {
