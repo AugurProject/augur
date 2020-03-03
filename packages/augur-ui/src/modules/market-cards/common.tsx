@@ -96,6 +96,7 @@ export interface DisputeOutcomeProps {
   canDispute: boolean;
   canSupport: boolean;
   marketId: string;
+  isWarpSync?: boolean;
 }
 
 export const DisputeOutcome = (props: DisputeOutcomeProps) => {
@@ -114,7 +115,7 @@ export const DisputeOutcome = (props: DisputeOutcomeProps) => {
         [Styles[`Outcome-${props.index}`]]: !props.invalid,
       })}
     >
-      <span>{props.description}</span>
+      <span>{props.isWarpSync ? props.stake.warpSyncHash : props.description}</span>
       {props.stake && props.stake.tentativeWinning ? (
         <span>tentative winner</span>
       ) : (
@@ -245,6 +246,7 @@ export interface OutcomeGroupProps {
   canDispute: boolean;
   canSupport: boolean;
   marketId: string;
+  isWarpSync?: boolean;
 }
 
 export const OutcomeGroup = (props: OutcomeGroupProps) => {
@@ -254,7 +256,7 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
     props.stakes
   );
 
-  const { inDispute, showOutcomeNumber } = props;
+  const { inDispute, showOutcomeNumber, isWarpSync } = props;
   let disputingOutcomes = sortedStakeOutcomes;
   let outcomesCopy = props.outcomes.slice(0);
   const removedInvalid = outcomesCopy.splice(0, 1)[0];
@@ -341,6 +343,7 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
                   id={outcome.id}
                   canDispute={props.canDispute}
                   canSupport={props.canSupport}
+                  isWarpSync={isWarpSync}
                 />
               </>
             ) : (
