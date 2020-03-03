@@ -156,7 +156,7 @@ export default class ModalReporting extends Component<
           id: String(outcome.id),
           header: outcome.description,
           value: outcome.id,
-          description: stake.outcome,
+          description: stake && stake.outcome ? stake.outcome : '',
           checked: checked === outcome.id.toString(),
           isInvalid: outcome.id === 0,
           stake,
