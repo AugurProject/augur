@@ -225,11 +225,6 @@ export default class MarketCard extends React.Component<
       isLogged;
     const canSupport = !disputeInfo.disputePacingOn;
 
-    const expandedOptionShowing =
-      outcomesFormatted &&
-      outcomesFormatted.length > showOutcomeNumber &&
-      !expandedView;
-
     const headerType =
       location.pathname === makePath(DISPUTING)
         ? HEADER_TYPE.H2
@@ -238,6 +233,8 @@ export default class MarketCard extends React.Component<
         : undefined;
 
     const restOfOutcomes = isScalar && inDispute ? disputeInfo.stakes.length - showOutcomeNumber - 1 : outcomesFormatted.length - showOutcomeNumber;
+
+    const expandedOptionShowing = restOfOutcomes > 0 && !expandedView;
 
     return (
       <div
