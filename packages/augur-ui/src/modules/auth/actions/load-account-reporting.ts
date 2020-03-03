@@ -32,7 +32,7 @@ export const loadAccountReportingHistory = () => async (
   }
   dispatch(updateLoginAccount({ reporting }));
 
-  dispatch(loadMarketsInfoIfNotLoaded(marketIds));
+  if (marketIds.length > 0) dispatch(loadMarketsInfoIfNotLoaded(marketIds));
 };
 
 export const loadAccountCurrentDisputeHistory = async (
