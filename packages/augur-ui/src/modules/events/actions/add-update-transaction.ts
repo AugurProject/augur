@@ -6,6 +6,7 @@ import {
 import {
   CANCELORDER,
   CANCELORDERS,
+  BATCHCANCELORDERS,
   TX_ORDER_ID,
   TX_ORDER_IDS,
   CREATEMARKET,
@@ -183,6 +184,14 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
         dispatch(addCanceledOrder(orderId, eventName));
         if (eventName === TXEventName.Success) {
           dispatch(removeCanceledOrder(orderId));
+        }
+        break;
+      }
+      case BATCHCANCELORDERS: {
+        const orders = transaction.params && transaction.params.orders || [];
+        orders.map(order => dispatch(addCanceledOrder(order.orderId, eventName)));
+        if (eventName === TXEventName.Failure || eventName === TXEventName.Success) {
+          orders.map(order => dispatch(removeCanceledOrder(order.orderId)));
         }
         break;
       }
