@@ -464,7 +464,8 @@ export interface doReportDisputeAddStake {
 export async function doInitialReport_estimaetGas(report: doReportDisputeAddStake) {
   const market = getMarket(report.marketId);
   if (!market) return false;
-  const payoutNumerators = getPayoutNumerators(report);
+  const augur = augurSdk.get();
+  const payoutNumerators = report.isWarpSync ? await augur.getPayoutFromWarpSyncHash(report.warpSyncHash) : getPayoutNumerators(report);
   return market.doInitialReport_estimateGas(
     payoutNumerators,
     report.description,
@@ -489,7 +490,8 @@ export async function addRepToTentativeWinningOutcome_estimateGas(
 ) {
   const market = getMarket(addStake.marketId);
   if (!market) return false;
-  const payoutNumerators = getPayoutNumerators(addStake);
+  const augur = augurSdk.get();
+  const payoutNumerators = addStake.isWarpSync ? await augur.getPayoutFromWarpSyncHash(addStake.warpSyncHash) : getPayoutNumerators(addStake);
   return market.contributeToTentative_estimateGas(
     payoutNumerators,
     createBigNumber(addStake.attoRepAmount),
@@ -514,7 +516,8 @@ export async function addRepToTentativeWinningOutcome(
 export async function contribute_estimateGas(dispute: doReportDisputeAddStake) {
   const market = getMarket(dispute.marketId);
   if (!market) return false;
-  const payoutNumerators = getPayoutNumerators(dispute);
+  const augur = augurSdk.get();
+  const payoutNumerators = dispute.isWarpSync ? await augur.getPayoutFromWarpSyncHash(dispute.warpSyncHash) : getPayoutNumerators(dispute);
   return market.contribute_estimateGas(
     payoutNumerators,
     createBigNumber(dispute.attoRepAmount),
