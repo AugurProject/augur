@@ -567,18 +567,25 @@ export interface BettingBackLayButtonProps {
   type: BETTING_LAY | BETTING_BACK;
 }
 
-export const BettingBackLayButton = (props: BettingBackLayButtonProps) => (
+export const BettingBackLayButton = ({
+  title,
+  text,
+  subText,
+  action,
+  disabled,
+  type
+}: BettingBackLayButtonProps) => (
   <button
-    onClick={e => props.action(e)}
+    onClick={e => action(e)}
     className={classNames(Styles.BettingBackLayButton, {
-      [Styles.Back]: props.type === BETTING_BACK,
-      [Styles.Lay]: props.type === BETTING_LAY
+      [Styles.Back]: type === BETTING_BACK,
+      [Styles.Lay]: type === BETTING_LAY
     })}
-    disabled={props.disabled}
-    title={props.title || props.text}
+    disabled={disabled}
+    title={title || text}
   >
-    <div>{props.text}</div>
-    <div>{props.subText}</div>
+    <div>{text}</div>
+    <div>{subText}</div>
   </button>
 );
 
