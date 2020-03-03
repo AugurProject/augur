@@ -6,6 +6,7 @@ import { updateLoginAccount } from 'modules/account/actions/login-account';
 import { NodeStyleCallback } from 'modules/types';
 import { NOTIFICATION_TYPES } from 'modules/common/constants';
 import { updateReadNotifications } from 'modules/notifications/actions/update-notifications';
+import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info';
 
 export const loadAccountReportingHistory = () => async (
   dispatch: ThunkDispatch<void, any, Action>,
@@ -30,6 +31,8 @@ export const loadAccountReportingHistory = () => async (
     dispatch(updateReadNotifications([{...notification, isImportant: true, isNew: true}]))
   }
   dispatch(updateLoginAccount({ reporting }));
+
+  dispatch(loadMarketsInfoIfNotLoaded(marketIds));
 };
 
 export const loadAccountCurrentDisputeHistory = async (
