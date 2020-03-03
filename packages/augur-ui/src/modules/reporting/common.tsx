@@ -511,6 +511,10 @@ export class DisputingBondsView extends Component<
         ),
       });
     }
+    if (this.props.warpSyncHash) {
+      this.updateScalarOutcome(this.props.warpSyncHash);
+      this.updateInputtedStake('0');
+    }
   }
 
   render() {
