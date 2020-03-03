@@ -457,60 +457,145 @@
   height: @size-40;
 
   > li {
-    background: transparent;
-    border: @size-1 solid var(--color-secondary-action-outline);
-    border-radius: 0;
-    border-right: 0;
     box-sizing: border-box;
     display: flex;
     flex-flow: column nowrap;
     height: 100%;
     justify-content: center;
     white-space: nowrap;
+    background: transparent;
+    border: 0;
+    border-bottom: @size-1 solid var(--color-secondary-action-outline);
+    border-radius: 0;
+
+    > button {
+      .mono-12-bold;
+
+      height: 100%;
+      color: var(--color-secondary-text);
+      background: var(--color-page-background);
+      padding: 0px @size-24;
+      border-radius: 0;
+      text-transform: uppercase;
+    }
 
     &.Selected,
     &:hover {
-      border: @size-1 solid var(--color-primary-text);
-      border-right: @size-1 solid var(--color-primary-text);
-
-      &:last-of-type {
-        border-right: @size-1 solid var(--color-primary-text);
-      }
-
-      & + li {
-        border-left: 0;
+      > button {
+        color: var(--color-primary-text);
       }
     }
 
-    &:first-of-type {
-      border-bottom-left-radius: @border-radius-default;
-      border-top-left-radius: @border-radius-default;
+    &:focus {
+      outline: none;
+      border: @size-2 solid var(--color-outcome-five);
+    }
+
+    &:active {
+      border-bottom: @size-2 solid var(--color-primary-text);
+      > button {
+        color: var(--color-primary-text);
+      }
+    }
+
+    &:disabled {
+      border-bottom: var(--color-secondary-action-outline-25);
+      background: var(--color-module-background-25);
+      > button {
+        color: var(--color-secondary-text-25);
+        background: var(--color-module-background-25);
+      }
+    }
+  }
+
+  &.TabLarge,
+  &.TabSmall {
+    > li {
+      background: transparent;
+      border: @size-1 solid var(--color-secondary-action-outline);
+      border-right: 0;
 
       > button {
+
+      }
+
+      &:first-of-type {
         border-bottom-left-radius: @border-radius-default;
         border-top-left-radius: @border-radius-default;
+  
+        > button {
+          border-bottom-left-radius: @border-radius-default;
+          border-top-left-radius: @border-radius-default;
+        }
       }
-    }
-
-    &:last-of-type {
-      border-bottom-right-radius: @border-radius-default;
-      border-right: @size-1 solid var(--color-secondary-action-outline);
-      border-top-right-radius: @border-radius-default;
-
-      > button {
+  
+      &:last-of-type {
         border-bottom-right-radius: @border-radius-default;
+        border-right: @size-1 solid var(--color-secondary-action-outline);
         border-top-right-radius: @border-radius-default;
+  
+        > button {
+          border-bottom-right-radius: @border-radius-default;
+          border-top-right-radius: @border-radius-default;
+        }
       }
-    }
 
-    > button {
-      .mono-9-semi-bold;
+      &.Selected,
+      &:hover {
+        border: @size-1 solid var(--color-primary-text);
+        border-right: @size-1 solid var(--color-primary-text);
+  
+        &:last-of-type {
+          border-right: @size-1 solid var(--color-primary-text);
+        }
 
-      background: transparent;
-      color: var(--color-secondary-text);
-      height: 100%;
-      padding: 0px @size-16;
-      border-radius: 0;
+        > button {
+          color: var(--color-secondary-text);
+        }
+
+        & + li {
+          border-left: 0;
+        }
+      }
+
+      &:focus {
+        border: @size-2 solid var(--color-outcome-five);
+        border-right: @size-2 solid var(--color-outcome-five);
+  
+        &:last-of-type {
+          border-right: @size-2 solid var(--color-outcome-five);
+        }
+  
+        & + li {
+          border-left: 0;
+        }
+      }
+
+      &:active {
+        border: @size-1 solid var(--color-primary-text);
+        border-right: @size-1 solid var(--color-primary-text);
+  
+        &:last-of-type {
+          border-right: @size-1 solid var(--color-primary-text);
+        }
+  
+        & + li {
+          border-left: 0;
+        }
+      }
+
+      &:disabled {
+        border: @size-1 solid var(--color-module-background-25);
+        border-right: @size-1 solid var(--color-module-background-25);
+  
+        &:last-of-type {
+          border-right: @size-1 solid var(--color-module-background-25);
+        }
+  
+        & + li {
+          border-left: 0;
+        }
+      }
     }
   }
 
@@ -522,6 +607,7 @@
         .mono-14-bold;
 
         padding: 0px @size-24;
+        text-transform: none;
       }
     }
   }
@@ -533,8 +619,7 @@
       > button {
         .mono-12-bold;
 
-        padding: 0px @size-24;
-        text-transform: uppercase;
+        padding: 0px @size-8;
       }
     }
   }

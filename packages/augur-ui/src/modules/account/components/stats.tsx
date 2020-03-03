@@ -39,7 +39,7 @@ const Stats = ({
       <Tab
         options={TIMEFRAME_OPTIONS}
         defaultSelection={timeframe}
-        large={true}
+        small={true}
         onChange={selected => updateSelected(selected)}
       />
       {properties.map(

@@ -65,6 +65,7 @@ interface TabProps {
   onChange(value: number): void;
   defaultSelection: number;
   large?: boolean;
+  small?: boolean;
 }
 
 interface TabState {
@@ -405,7 +406,8 @@ export const Tab = ({
   options,
   onChange,
   defaultSelection = 0,
-  large
+  large,
+  small
 }: TabProps) => {
   const [selected, setSelected] = useState(defaultSelection);
   const buttonSelect = (option: SelectionOption) => {
@@ -428,14 +430,11 @@ export const Tab = ({
     </li>
   );
 
-  console.log('Tab')
-  console.log(large)
-
   return (
     <ul 
       className={classNames(Styles.Tab, {
         [Styles.TabLarge]: large,
-        [Styles.TabSmall]: !large,
+        [Styles.TabSmall]: small,
       })}>
       {options.map(
         (option: SelectionOption): React.ReactNode =>
