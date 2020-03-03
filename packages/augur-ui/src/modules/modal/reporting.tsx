@@ -263,7 +263,7 @@ export default class ModalReporting extends Component<
         : this.state.inputtedReportingStake.inputToAttoRep,
       outcomeId,
       isInvalid: isSelectedOutcomeInvalid,
-      warpSyncHash: selectedRadio.value,
+      warpSyncHash: isWarpSync && selectedRadio.value || this.state.inputScalarOutcome,
       isWarpSync,
     };
 

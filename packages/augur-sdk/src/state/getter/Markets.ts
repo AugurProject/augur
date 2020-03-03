@@ -546,9 +546,26 @@ export class Markets {
       feePercent = maxMarketCreatorFee.toNumber();
     }
 
+    let tentativeWinningHashMatch = false;
+    if (params.includeWarpSyncMarkets) {
+      const marketId = await augur.contracts.warpSync.markets_(params.universe);
+      const warpSyncMarket = await db.Markets.where("market").anyOf(marketId).first();
+      if (warpSyncMarket) {
+        if (!warpSyncMarket.tentativeWinningPayoutNumerators) {
+          tentativeWinningHashMatch = false;
+        } else {
+          const tentativeWinningHash = augur.getWarpSyncHashFromPayout(warpSyncMarket.tentativeWinningPayoutNumerators.map(p => new BigNumber(p)));
+          const currentWarpSyncHash = await db.warpSync.table.orderBy('end.number').last();
+          tentativeWinningHashMatch = tentativeWinningHash && currentWarpSyncHash ? tentativeWinningHash === currentWarpSyncHash.hash : false;
+        }
+      }
+    }
+
     let marketData = await marketsCollection.and((market) => {
       if(!params.includeWarpSyncMarkets && market.isWarpSync) {
         return false;
+      } else if (market.isWarpSync) {
+        return !tentativeWinningHashMatch;
       }
 
       // Apply reporting states if we did the original query without using that index
