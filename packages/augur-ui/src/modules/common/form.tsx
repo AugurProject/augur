@@ -1486,6 +1486,7 @@ export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
       errorMessage,
       uniqueKey,
       condensedStyle,
+      openTop
     } = this.props;
     const error =
       errorMessage && errorMessage !== '' && errorMessage.length > 0;
@@ -1702,6 +1703,7 @@ export const DatePicker = (props: DatePickerProps) => (
   <div
     className={classNames(Styles.DatePicker, {
       [Styles.Condensed]: props.condensedStyle,
+      [Styles.OpenTop]: props.openTop,
       [Styles.error]:
         props.errorMessage &&
         props.errorMessage !== '' &&
