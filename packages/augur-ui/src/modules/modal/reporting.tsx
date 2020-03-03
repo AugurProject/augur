@@ -180,17 +180,16 @@ export default class ModalReporting extends Component<
       if (selectedOutcome && String(selectedOutcome) !== 'null')
         this.updateScalarOutcome(String(selectedOutcome));
       radioButtons = [];
-      const denomination = market.scalarDenomination;
       disputeInfo.stakes
         .filter(stake => !stake.isInvalidOutcome)
         .forEach(stake => {
-          const warpSyncHash = stake && stake.warpSyncHash;
+          const warpSyncHashValue = stake && stake.warpSyncHash || warpSyncHash;
 
           radioButtons.push({
             id: String(stake.outcome),
-            header: warpSyncHash || `Enter a hash value`,
-            value: warpSyncHash || null,
-            description: warpSyncHash || stake.outcome,
+            header: warpSyncHashValue || `Enter a hash value`,
+            value: warpSyncHashValue || null,
+            description: warpSyncHashValue || stake.outcome,
             checked: checked === stake.outcome,
             isInvalid: false,
             stake,
