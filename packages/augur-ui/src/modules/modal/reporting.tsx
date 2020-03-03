@@ -14,6 +14,7 @@ import {
   REPORTING_STATE,
   INVALID_OUTCOME_NAME,
   SUBMIT_REPORT,
+  SUBMIT_DISPUTE,
 } from 'modules/common/constants';
 import {
   doInitialReport,
@@ -51,6 +52,7 @@ interface ModalReportingProps {
   getRepModal: Function;
   addPendingData: Function;
   removePendingData: Function;
+  warpSyncHash?: string;
 }
 
 interface ModalReportingState {
@@ -73,7 +75,7 @@ export default class ModalReporting extends Component<
       ? this.props.selectedOutcome.toString()
       : null,
     inputtedReportingStake: { inputStakeValue: '0', inputToAttoRep: '0' },
-    inputScalarOutcome: '',
+    inputScalarOutcome: this.props.market.isWarpSync ? this.props.warpSyncHash : '',
     isReporting:
       this.props.market.reportingState === REPORTING_STATE.OPEN_REPORTING ||
       this.props.market.reportingState === REPORTING_STATE.DESIGNATED_REPORTING,
@@ -119,7 +121,7 @@ export default class ModalReporting extends Component<
   };
 
   buildRadioButtonCollection = () => {
-    const { market, selectedOutcome } = this.props;
+    const { market, selectedOutcome, warpSyncHash } = this.props;
     const { checked } = this.state;
     const {
       marketType,
@@ -127,6 +129,7 @@ export default class ModalReporting extends Component<
       disputeInfo,
       minPrice,
       maxPrice,
+      isWarpSync
     } = market;
 
     let sortedOutcomes = outcomesFormatted;
@@ -160,7 +163,23 @@ export default class ModalReporting extends Component<
         };
       });
 
-    if (marketType === SCALAR) {
+    if (isWarpSync) {
+      if (selectedOutcome && String(selectedOutcome) !== 'null')
+        this.updateScalarOutcome(String(selectedOutcome));
+      radioButtons = [];
+      const denomination = market.scalarDenomination;
+      disputeInfo.stakes.filter(stake => !stake.isInvalidOutcome).forEach(stake => {
+        radioButtons.push({
+          id: String(stake.outcome),
+          header: `Enter a hash value`,
+          value: warpSyncHash,
+          description: stake.outcome,
+          checked: true,
+          isInvalid: false,
+          stake,
+        });
+      });
+    } else if (marketType === SCALAR) {
       if (selectedOutcome && String(selectedOutcome) !== 'null')
         this.updateScalarOutcome(String(selectedOutcome));
       radioButtons = [];
@@ -186,7 +205,7 @@ export default class ModalReporting extends Component<
   };
 
   reportingAction = (estimateGas = false) => {
-    const { migrateMarket, migrateRep, market, addPendingData, removePendingData } = this.props;
+    const { migrateMarket, migrateRep, market, addPendingData, warpSyncHash } = this.props;
     const {
       marketId,
       maxPrice,
@@ -195,6 +214,7 @@ export default class ModalReporting extends Component<
       numOutcomes,
       marketType,
       disputeInfo,
+      isWarpSync
     } = market;
     const { isReporting } = this.state;
     let outcomeId = null;
@@ -220,6 +240,8 @@ export default class ModalReporting extends Component<
       attoRepAmount: estimateGas ? ONE_REP : this.state.inputtedReportingStake.inputToAttoRep,
       outcomeId,
       isInvalid: isSelectedOutcomeInvalid,
+      warpSyncHash: selectedRadio.value,
+      isWarpSync,
     };
 
     if (migrateRep) {
@@ -241,7 +263,7 @@ export default class ModalReporting extends Component<
       } else {
         addPendingData(marketId, SUBMIT_REPORT, TXEventName.Pending, 0, {});
         doInitialReport(report).catch(err => {
-          removePendingData(marketId, SUBMIT_REPORT);
+          addPendingData(marketId, SUBMIT_REPORT, TXEventName.Failure, 0, {});
         });
       }
     } else {
@@ -270,9 +292,12 @@ export default class ModalReporting extends Component<
           return contribute_estimateGas(report);
         }
       } else {
-        contributeToTentativeWinner
+        addPendingData(marketId, SUBMIT_DISPUTE, TXEventName.Pending, 0, {matchingId: report.outcomeId});
+        (contributeToTentativeWinner
         ? addRepToTentativeWinningOutcome(report)
-        : contribute(report);
+        : contribute(report)).catch(err => {
+          addPendingData(marketId, SUBMIT_DISPUTE, TXEventName.Failure, 0, {matchingId: report.outcomeId});
+        });
       }
     }
     if (!estimateGas) {

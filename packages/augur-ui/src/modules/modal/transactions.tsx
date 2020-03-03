@@ -476,7 +476,7 @@ export const Transactions: React.FC<TransactionsProps> = props => {
           />
         </span>
         <span>Coin</span>
-        <span>Fee</span>
+        <span>Trading Fee</span>
         <span>Total</span>
         <span>Etherscan</span>
       </div>

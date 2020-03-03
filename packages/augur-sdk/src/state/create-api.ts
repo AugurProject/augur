@@ -2,7 +2,7 @@ import { ContractAddresses, getAddressesForNetwork, getStartingBlockForNetwork, 
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { EthersSigner } from 'contract-dependencies-ethers';
 import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis';
-import { SupportedProvider } from "ethereum-types";
+import { SupportedProvider } from 'ethereum-types';
 import { JsonRpcProvider } from 'ethers/providers';
 import { ContractEvents } from '../api/ContractEvents';
 import { ZeroX } from '../api/ZeroX';
@@ -17,11 +17,12 @@ import { LogFilterAggregator } from './logs/LogFilterAggregator';
 import { BlockAndLogStreamerSyncStrategy } from './sync/BlockAndLogStreamerSyncStrategy';
 import { BulkSyncStrategy } from './sync/BulkSyncStrategy';
 import { WarpSyncStrategy } from './sync/WarpSyncStrategy';
+import { EndpointSettings } from './getter/types';
 
 export interface SDKConfiguration {
   networkId: NetworkId,
   ethereum?: {
-    http: string,
+    http?: string,
     rpcRetryCount: number,
     rpcRetryInterval: number,
     rpcConcurrency: number
@@ -50,7 +51,8 @@ export interface SDKConfiguration {
     blockstreamDelay?: number,
     chunkSize?: number
   },
-  addresses?: ContractAddresses
+  addresses?: ContractAddresses,
+  server?: EndpointSettings
 };
 
 export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: EthersProvider, logFilterAggregator: LogFilterAggregator) {
@@ -69,15 +71,17 @@ export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: Ethe
       client.contractEvents.parseLogs,
     );
 
-    const warpController = await WarpController.create((await db), provider, uploadBlockHeaders);
+    const warpController = new WarpController((await db), client, provider, uploadBlockHeaders);
     const warpSyncStrategy = new WarpSyncStrategy(warpController, logFilterAggregator.onLogsAdded);
 
     const endWarpSyncBlockNumber = await warpSyncStrategy.start();
     const staringSyncBlock = Math.max(await (await db).getSyncStartingBlock(), endWarpSyncBlockNumber || uploadBlockNumber);
     const endBulkSyncBlockNumber = await bulkSyncStrategy.start(staringSyncBlock, currentBlockNumber);
 
-    console.log('Syncing Complete - SDK Ready');
+    const derivedSyncLabel = `Syncing rollup and derived DBs`
+    console.time(derivedSyncLabel);
     await (await db).sync();
+    console.timeEnd(derivedSyncLabel);
 
     // This will register the event listeners for the various derived/rollup dbs.
     client.events.emit(SubscriptionEventName.BulkSyncComplete, {
@@ -86,6 +90,7 @@ export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: Ethe
     client.events.emit(SubscriptionEventName.SDKReady, {
       eventName: SubscriptionEventName.SDKReady,
     });
+    console.log('Syncing Complete - SDK Ready');
 
     blockAndLogStreamerSyncStrategy.listenForBlockRemoved(logFilterAggregator.onBlockRemoved);
 
@@ -109,30 +114,32 @@ export async function createClient(
   createBrowserMesh?: (config: SDKConfiguration, web3Provider: SupportedProvider, zeroX: ZeroX) => void
   ): Promise<Augur> {
 
-  const ethersProvider = provider || new EthersProvider( new JsonRpcProvider(config.ethereum.http), 10, 0, 40);
-  const addresses = config.addresses || getAddressesForNetwork(config.networkId);
+  let ethersProvider: EthersProvider;
+  if (provider) {
+    ethersProvider = provider
+  } else if (config.ethereum?.http) {
+    ethersProvider = new EthersProvider( new JsonRpcProvider(config.ethereum.http), 10, 0, 40);
+  } else {
+      throw Error('No ethereum http endpoint provided');
+  }
+  const networkId = config.networkId || await ethersProvider.getNetworkId();
+
+  if (!(config.addresses || networkId)) {
+    throw Error('Config must include addresses or networkId because node did not provide networkId');
+  }
+  const addresses = config.addresses || getAddressesForNetwork(networkId);
+
   const contractDependencies = ContractDependenciesGnosis.create(
     ethersProvider,
     signer,
     addresses.Cash,
-    config.gnosis.http
+    config.gnosis?.http,
   );
 
-  let zeroX: ZeroX | null = null;
+  let zeroX: ZeroX = null;
   if (config.zeroX) {
-    const rpcEndpoint = (config.zeroX.rpc && config.zeroX.rpc.enabled) ? config.zeroX.rpc.ws : undefined;
+    const rpcEndpoint = (config.zeroX.rpc?.enabled) ? config.zeroX.rpc.ws : undefined;
     zeroX = new ZeroX(rpcEndpoint)
-
-    if (config.zeroX.mesh && config.zeroX.mesh.enabled && createBrowserMesh) {
-      // This function is passed in and takes care of assigning it to the
-      // zeroX instance. This is largely due to the need to have special
-      // casing for if the mesh dies and we want to restart it. This is
-      // passed in as a function so all we need in this file is an
-      // interface instead of actually import @0x/mesh-browser -- since
-      // that would attempt to start the wasm client in nodejs and cause
-      // everything to die.
-      createBrowserMesh(config, ethersProvider, zeroX);
-    }
   }
 
   const client = await Augur.create(
@@ -144,12 +151,26 @@ export async function createClient(
     enableFlexSearch
   );
 
+  // Delay loading of the browser mesh until we're finished syncing
+  client.events.once(SubscriptionEventName.BulkSyncComplete, () => {
+    if (config.zeroX?.mesh?.enabled && createBrowserMesh) {
+      // This function is passed in and takes care of assigning it to the
+      // zeroX instance. This is largely due to the need to have special
+      // casing for if the mesh dies and we want to restart it. This is
+      // passed in as a function so all we need in this file is an
+      // interface instead of actually import @0x/mesh-browser -- since
+      // that would attempt to start the wasm client in nodejs and cause
+      // everything to die.
+      createBrowserMesh(config, ethersProvider, zeroX);
+    }
+  });
+
   return client;
 }
 
 export async function createServer(config: SDKConfiguration, client?: Augur, account?: string): Promise<{ api: API, controller: Controller, sync: () => Promise<void> }> {
   console.log('Creating Server');
-  // Validate the config -- check that the syncing key exits and use defaults if not
+  // Validate the config -- check that the syncing key exists and use defaults if not
   config = {
     syncing: {
       enabled: true,
@@ -164,9 +185,10 @@ export async function createServer(config: SDKConfiguration, client?: Augur, acc
   // functionality since that was really originally designed for client connection
   // over a connector TO the server.
   if (!client) {
-    console.log('Creating a new client');
-    const connector = new EmptyConnector();
-    client = await createClient(config, connector, account, undefined, undefined, true);
+    const creatingClientLabel = 'Creating a new client';
+    console.time(creatingClientLabel);
+    client = await createClient(config, new EmptyConnector(), account, undefined, undefined, true);
+    console.time(creatingClientLabel);
   }
 
   const ethersProvider: EthersProvider = client.provider as EthersProvider;
@@ -186,10 +208,10 @@ export async function createServer(config: SDKConfiguration, client?: Augur, acc
     Number(config.networkId),
     logFilterAggregator,
     client,
-    config.zeroX && (config.zeroX.mesh && config.zeroX.mesh.enabled || config.zeroX.rpc && config.zeroX.rpc.enabled)
+    config.zeroX?.mesh?.enabled || config.zeroX?.rpc?.enabled
   );
 
-  const sync = buildSyncStrategies(client, db, ethersProvider, logFilterAggregator)
+  const sync = buildSyncStrategies(client, db, ethersProvider, logFilterAggregator);
 
   const controller = new Controller(client, db, logFilterAggregator);
   const api = new API(client, db);
@@ -200,6 +222,7 @@ export async function createServer(config: SDKConfiguration, client?: Augur, acc
 export async function startServerFromClient(config: SDKConfiguration, client?: Augur ): Promise<API> {
   const { api, sync } = await createServer(config, client);
 
+  // TODO should this await?
   sync();
   /*
   controller.run().catch((err) => {
@@ -214,6 +237,7 @@ export async function startServerFromClient(config: SDKConfiguration, client?: A
 export async function startServer(config: SDKConfiguration, account?: string): Promise<API> {
   const { api, sync } = await createServer(config, undefined, account);
 
+  // TODO should this await?
   sync();
 
   return api;

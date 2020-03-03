@@ -58,8 +58,9 @@ async function run() {
     for (const opt of script.options || []) {
       const args = [ `--${opt.name} ${opt.flag ? '' : `<${opt.name}>`}`];
       if (opt.abbr) args.unshift(`-${opt.abbr}`);
-      const option = opt.required === true ? subcommand.requiredOption(args.join(', ')) : subcommand.option(args.join(', '))
-        .description(opt.description || '')
+      opt.required
+        ? subcommand.requiredOption(args.join(', '))
+        : subcommand.option(args.join(', ')).description(opt.description || '')
     }
     subcommand.action(async (args) => {
       try {

@@ -1,8 +1,8 @@
-import { EventEmitter } from "events";
-import { SubscriptionEventName } from "./constants";
-import { SubscriptionType, TXStatus } from "./event-handlers";
+import { EventEmitter } from 'events';
+import { SubscriptionEventName } from './constants';
+import { SubscriptionType, TXStatus } from './event-handlers';
 
-export * from "./event-handlers";
+export * from './event-handlers';
 
 
 // Some events, like MarketState, are not always sourced from logs and do not have an "eventName"

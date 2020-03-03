@@ -92,7 +92,7 @@ interface MarketViewProps {
   clearOrderBook: Function;
 }
 
-interface DefaultOrderPropertiesMap {
+export interface DefaultOrderPropertiesMap {
   [outcomeId: number]: DefaultOrderProperties;
 }
 interface MarketViewState {
@@ -932,6 +932,7 @@ export default class MarketView extends Component<
                       preview={preview}
                       orderBook={outcomeOrderBook}
                       canHotload={canHotload}
+                      extendOutcomesList={extendOutcomesList}
                     />
                   </div>
                   <div

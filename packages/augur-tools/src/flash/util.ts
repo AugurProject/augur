@@ -1,19 +1,8 @@
-import readline from 'readline';
-
-export function awaitUserInput(question: string): Promise<void> {
-  const talker = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  });
-
+export function waitForSigint(): Promise<void> {
   return new Promise((resolve) => {
-    talker.question(question, () => {
-      talker.close();
-      resolve();
-    });
-  });
+    process.on('SIGINT', () => resolve())
+  })
 }
-
 export function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => {
     setTimeout(resolve, ms);

@@ -93,18 +93,6 @@ class Notifications extends React.Component<
         };
         break;
 
-      case NOTIFICATION_TYPES.finalizeMarkets:
-        buttonAction = () => {
-          this.markAsRead(notification);
-          this.disableNotification(notification.id, true);
-          if (notification.market) {
-            this.props.finalizeMarketModal(notification.market.id, () =>
-              this.disableNotification(notification.id, false)
-            );
-          }
-        };
-        break;
-
       case NOTIFICATION_TYPES.marketsInDispute:
         buttonAction = () => {
           this.markAsRead(notification);
@@ -225,6 +213,7 @@ class Notifications extends React.Component<
         claimReportingFees,
         totalProceeds,
         type,
+        transactionView,
       } = notification;
 
       const templateProps = {
@@ -237,6 +226,7 @@ class Notifications extends React.Component<
         buttonAction,
         buttonLabel,
         type,
+        transactionView,
       };
 
       const notificationCardProps = {
@@ -271,9 +261,6 @@ class Notifications extends React.Component<
               isDisabled={isDisabled}
               {...templateProps}
             />
-          ) as any : null}
-          {type === NOTIFICATION_TYPES.finalizeMarkets ? (
-            <FinalizeTemplate isDisabled={isDisabled} {...templateProps} />
           ) as any : null}
           {type === NOTIFICATION_TYPES.marketsInDispute ? (
             <DisputeTemplate isDisabled={isDisabled} {...templateProps} />

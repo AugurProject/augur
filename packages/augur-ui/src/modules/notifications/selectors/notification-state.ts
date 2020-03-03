@@ -10,7 +10,6 @@ import {
 import { MarketReportingState } from '@augurproject/sdk';
 import {
   CLAIM_REPORTING_FEES_TITLE,
-  FINALIZE_MARKET_TITLE,
   MARKET_IS_MOST_LIKELY_INVALID_TITLE,
   NOTIFICATION_TYPES,
   PROCEEDS_TO_CLAIM_TITLE,
@@ -23,6 +22,7 @@ import {
   TYPE_VIEW_ORDERS,
   SIGN_SEND_ORDERS,
   ZERO,
+  REDEEMSTAKE,
 } from 'modules/common/constants';
 import userOpenOrders from 'modules/orders/selectors/user-open-orders';
 import store, { AppState } from 'store';
@@ -180,7 +180,6 @@ export const selectUnsignedOrders = createSelector(
 export const selectNotifications = createSelector(
   selectReportOnMarkets,
   selectResolvedMarketsOpenOrders,
-  selectFinalizeMarkets,
   selectMarketsInDispute,
   selectReportingWinningsByMarket,
   selectUnsignedOrders,
@@ -189,7 +188,6 @@ export const selectNotifications = createSelector(
   (
     reportOnMarkets,
     resolvedMarketsOpenOrder,
-    finalizeMarkets,
     marketsInDispute,
     claimReportingFees,
     unsignedOrders,
@@ -204,10 +202,6 @@ export const selectNotifications = createSelector(
     const resolvedMarketsOpenOrderNotifications = generateCards(
       resolvedMarketsOpenOrder,
       NOTIFICATION_TYPES.resolvedMarketsOpenOrders
-    );
-    const finalizeMarketsNotifications = generateCards(
-      finalizeMarkets,
-      NOTIFICATION_TYPES.finalizeMarkets
     );
     const marketsInDisputeNotifications = generateCards(
       marketsInDispute,
@@ -226,7 +220,6 @@ export const selectNotifications = createSelector(
     let notifications = [
       ...reportOnMarketsNotifications,
       ...resolvedMarketsOpenOrderNotifications,
-      ...finalizeMarketsNotifications,
       ...marketsInDisputeNotifications,
       ...unsignedOrdersNotifications,
       ...mostLikelyInvalidMarketsNotifications,
@@ -247,6 +240,7 @@ export const selectNotifications = createSelector(
         buttonLabel: TYPE_VIEW_DETAILS,
         market: null,
         claimReportingFees,
+        transactionView: REDEEMSTAKE,
         id: NOTIFICATION_TYPES.claimReportingFees,
       });
     }
@@ -318,14 +312,6 @@ const generateCards = (markets, type) => {
       isNew: true,
       title: REPORTING_ENDS_SOON_TITLE,
       buttonLabel: TYPE_REPORT,
-    };
-  } else if (type === NOTIFICATION_TYPES.finalizeMarkets) {
-    defaults = {
-      type,
-      isImportant: false,
-      isNew: true,
-      title: FINALIZE_MARKET_TITLE,
-      buttonLabel: TYPE_VIEW_DETAILS,
     };
   } else if (type === NOTIFICATION_TYPES.marketsInDispute) {
     defaults = {

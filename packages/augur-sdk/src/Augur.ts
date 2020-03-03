@@ -30,6 +30,7 @@ import { Platform } from './state/getter/Platform';
 import { Status } from './state/getter/status';
 import { Universe } from './state/getter/Universe';
 import { Users } from './state/getter/Users';
+import { WarpSyncGetter } from './state/getter/WarpSyncGetter';
 import { ZeroXOrdersGetters } from './state/getter/ZeroXOrdersGetters';
 import { WarpSync } from './api/WarpSync';
 import { Address } from './state/logs/types';
@@ -51,6 +52,8 @@ export class Augur<TProvider extends Provider = Provider> {
   readonly hotLoading: HotLoading;
   readonly events: Subscriptions;
 
+  private _sdkReady = false;
+
   private txSuccessCallback: TXStatusCallback;
   private txAwaitingSigningCallback: TXStatusCallback;
   private txPendingCallback: TXStatusCallback;
@@ -68,6 +71,10 @@ export class Augur<TProvider extends Provider = Provider> {
     }
 
     this._zeroX = zeroX;
+  }
+
+  get sdkReady(): boolean {
+    return this._sdkReady;
   }
 
   constructor(
@@ -88,6 +95,10 @@ export class Augur<TProvider extends Provider = Provider> {
 
     this.events = new Subscriptions(augurEmitter);
     this.events.on(SubscriptionEventName.GnosisSafeStatus, this.updateGnosisSafe.bind(this));
+    this.events.on(SubscriptionEventName.SDKReady, () => {
+      this._sdkReady = true;
+      console.log('SDK is ready')
+    });
 
     this.connector.client = this;
     if(this.zeroX) this.zeroX.client = this;
@@ -289,7 +300,7 @@ export class Augur<TProvider extends Provider = Provider> {
   bindTo<R, P>(
     f: (db: any, augur: any, params: P) => Promise<R>
   ): (params: P) => Promise<R> {
-    return this.connector && this.connector.bindTo(f);
+    return this.connector?.bindTo(f);
   }
 
   async on(
@@ -401,6 +412,19 @@ export class Augur<TProvider extends Provider = Provider> {
     params: Parameters<typeof Users.getUserOpenOrders>[2]
   ): ReturnType<typeof Users.getUserOpenOrders> => {
     return this.bindTo(Users.getUserOpenOrders)(params);
+  };
+
+  getMostRecentWarpSync = (
+  ): ReturnType<typeof WarpSyncGetter.getMostRecentWarpSync> => {
+    return this.bindTo(WarpSyncGetter.getMostRecentWarpSync)(undefined);
+  };
+
+  getPayoutFromWarpSyncHash = (hash: string): Promise<BigNumber[]> => {
+      return this.warpSync.getPayoutFromWarpSyncHash(hash);
+  };
+
+  getWarpSyncHashFromPayout = (payout: BigNumber[]): string => {
+    return this.warpSync.getWarpSyncHashFromPayout(payout);
   };
 
   getProfitLoss = (

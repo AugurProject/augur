@@ -33,7 +33,7 @@ contract WarpSync is IWarpSync, Initializable {
     int256 private INT256_MIN = int256(2**255);
     int256 private INT256_MAX = int256(2**255 - 1);
     int256[] private PRICES = [INT256_MIN, INT256_MAX];
-    string private constant EXTRA_INFO = '{"description":"What will the next Augur Warp Sync hash be?","longDescription":"What will the Augur SDK warp sync hash be for the last block with a timestamp less than the reporting start timestamp for this market?"}';
+    string private constant EXTRA_INFO = '{"description":"What will the next Augur Warp Sync hash be?","longDescription":"What will the Augur SDK warp sync hash be for the last block with a timestamp less than the reporting start timestamp for this market? At least 30 blocks should be mined after this block before attempting to generate a hash in order to account for possible rollbacks."}';
 
     function initialize(IAugur _augur) public beforeInitialized returns (bool) {
         endInitialization();

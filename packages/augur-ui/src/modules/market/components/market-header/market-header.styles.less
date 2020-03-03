@@ -223,6 +223,7 @@ div.Toggle {
     width: 100%;
 
     > svg {
+      align-self: center;
       height: @size-16;
       width: @size-12;
       margin-left: auto;
@@ -528,10 +529,10 @@ div.ExpandedContent {
 
         &.HideProperties > div[class*="CoreProperties"] {
           > div[class*="ScalarBox"] {
-            border-top: 0;
+            // border-top: 0;
           }
 
-          > div {
+          > div:not([class*="ScalarBox"]) {
             > div:first-of-type {
               display: none;
             }

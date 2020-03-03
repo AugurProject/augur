@@ -1306,6 +1306,7 @@ export interface CategoricalTemplateTextInputsProps {
 
 const SimpleTextInputOutcomes = (props: CategoricalTemplateTextInputsProps) => {
   const [marketOutcomes, setMarketOutcomes] = useState(null);
+  const [noAdditionOutcomes] = useState(!!props.newMarket.template.noAdditionalUserOutcomes);
   const [required] = useState(
     props.newMarket.template.inputs
       .filter(i => i.type === TemplateInputType.ADDED_OUTCOME)
@@ -1336,20 +1337,24 @@ const SimpleTextInputOutcomes = (props: CategoricalTemplateTextInputsProps) => {
 
   return (
     <>
-      <Subheaders
-        header="Outcomes"
-        subheader="List the outcomes people can choose from."
-      />
-      <NumberedList
-        initialList={showOutcomes}
-        minShown={2}
-        maxList={7 - required.length}
-        placeholder={'Enter outcome'}
-        updateList={(value: string[]) => {
-          onChange('outcomes', [...value, ...required.map(i => i.value)]);
-        }}
-        errorMessage={validations && validations.outcomes}
-      />
+      {!noAdditionOutcomes && (
+        <>
+          <Subheaders
+            header="Outcomes"
+            subheader="List the outcomes people can choose from."
+          />
+          <NumberedList
+            initialList={showOutcomes}
+            minShown={2}
+            maxList={7 - required.length}
+            placeholder={'Enter outcome'}
+            updateList={(value: string[]) => {
+              onChange('outcomes', [...value, ...required.map(i => i.value)]);
+            }}
+            errorMessage={validations && validations.outcomes}
+          />
+        </>
+      )}
       <Subheaders
         header="Required Outcomes"
         subheader="Required unchangeable additional outcomes"
@@ -1577,12 +1582,14 @@ export const CategoricalTemplateDropdowns = (
           data,
         });
       });
-      setSourceUserInput(source && source.userInput);
-      setdropdownList(
-        isDepDropdown
-          ? createTemplateValueList(depDropdownInput.values[source.userInput])
-          : createTemplateValueList(depDropdownInput.values)
-      );
+      if (source && source.userInput !== undefined) {
+        setSourceUserInput(source.userInput);
+        setdropdownList(
+          isDepDropdown
+            ? createTemplateValueList(depDropdownInput.values[source.userInput])
+            : createTemplateValueList(depDropdownInput.values)
+        );
+      }
     } else {
       if (outcomeList.length == 0 && defaultOutcomeItems.length > 0) {
         defaultOutcomeItems.map((i: CategoricalDropDownItem) =>
@@ -1591,6 +1598,7 @@ export const CategoricalTemplateDropdowns = (
       }
 
       if (isDepDropdown && sourceUserInput !== source.userInput) {
+        setSourceUserInput(source.userInput);
         dispatch({ type: ACTIONS.REMOVE_ALL, data: null });
         setdropdownList(
           isDepDropdown

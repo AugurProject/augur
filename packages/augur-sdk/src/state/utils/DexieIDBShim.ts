@@ -11,6 +11,27 @@ const UnicodeIDContinue =
 
 const UnicodeIdentifiers = {UnicodeIDStart, UnicodeIDContinue};
 
+declare var IDBKeyRangeObject: {
+  prototype: IDBKeyRange;
+  new(): IDBKeyRange;
+  /**
+   * Returns a new IDBKeyRange spanning from lower to upper. If lowerOpen is true, lower is not included in the range. If upperOpen is true, upper is not included in the range.
+   */
+  bound(lower: any, upper: any, lowerOpen?: boolean, upperOpen?: boolean): IDBKeyRange;
+  /**
+   * Returns a new IDBKeyRange starting at key with no upper bound. If open is true, key is not included in the range.
+   */
+  lowerBound(lower: any, open?: boolean): IDBKeyRange;
+  /**
+   * Returns a new IDBKeyRange spanning only key.
+   */
+  only(value: any): IDBKeyRange;
+  /**
+   * Returns a new IDBKeyRange with no lower bound and ending at key. If open is true, key is not included in the range.
+   */
+  upperBound(upper: any, open?: boolean): IDBKeyRange;
+};
+
 export function configureDexieForNode(inMemory: boolean) {
     const shim: {indexedDB?: IDBFactory, IDBKeyRange?: IDBKeyRange } = {};
     const globVarsOptions = { checkOrigin: false };
@@ -19,5 +40,5 @@ export function configureDexieForNode(inMemory: boolean) {
     obj.shimIndexedDB.__setUnicodeIdentifiers(UnicodeIdentifiers);
     const { indexedDB, IDBKeyRange } = shim;
     Dexie.dependencies.indexedDB = indexedDB!;
-    Dexie.dependencies.IDBKeyRange = IDBKeyRange!;
+    Dexie.dependencies.IDBKeyRange = (IDBKeyRange as unknown) as typeof IDBKeyRangeObject;
 }

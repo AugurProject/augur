@@ -11,6 +11,60 @@
   &:disabled {
     cursor: @button-cursor-disabled;
   }
+
+  &.Confirmed {
+    color: var(--color-primary-text);
+    background: var(--color-positive-20);
+    border: 1px solid var(--color-positive);
+    border-radius: @border-radius-default;
+    &:hover:enabled {
+      background: var(--color-positive-20);
+    }
+
+    &:focus:enabled {
+      background: var(--color-positive-20);
+    }
+
+    &:active:enabled {
+      background: var(--color-positive-20);
+    }
+    > svg {
+      width: @size-8;
+      height: @size-8;
+      margin-left: @size-8;
+
+      > path {
+        stroke: var(--color-primary-text);
+      }
+    }
+  }
+
+  &.Failed {
+    color: var(--color-primary-text);
+    background: var(--color-error-20);
+    border: 1px solid var(--color-error);
+    border-radius: @border-radius-default;
+    &:hover:enabled {
+      background: var(--color-error-20);
+    }
+
+    &:focus:enabled {
+      background: var(--color-error-20);
+    }
+
+    &:active:enabled {
+      background: var(--color-error-20);
+    }
+    > svg {
+      width: @size-8;
+      height: @size-8;
+      margin-left: @size-8;
+
+      > path {
+        stroke: var(--color-primary-text);
+      }
+    }
+  }
 }
 
 .PrimaryButton {
@@ -309,6 +363,7 @@
   margin-left: @size-16;
 
   > svg {
+    align-self: center;
     width: @size-6;
     height: @size-12;
 
@@ -441,6 +496,7 @@
 }
 
 .CancelTextButton {
+  .Button;
   .mono-10-semi-bold;
 
   align-items: center;
@@ -680,7 +736,12 @@
   text-transform: uppercase;
   padding: @size-2 @size-4;
 
-  > svg {
+  > span > a {
+    display: flex;
+  }
+
+  > span > a > svg,
+  > span > span > svg {
     fill: none;
     height: @size-10;
     margin-left: @size-4;
@@ -1002,6 +1063,68 @@
         height: @size-16;
         width: @size-80;
       }
+    }
+  }
+}
+
+.BettingBackLayButton {
+  .Button;
+
+  background: transparent;
+  color: var(--color-primary-text);
+  padding: @size-6 @size-12;
+
+  > div:first-of-type {
+    .text-12-bold;
+
+    color: var(--color-primary-text);
+    text-align: center;
+  }
+
+  > div:last-of-type {
+    .text-12;
+
+    color: var(--color-primary-text);
+    text-align: center;
+  }
+
+  &.Back {
+    border: @size-1 solid var(--color-positive);
+
+    &:disabled {
+      background: var(--color-positive-15);
+    }
+  
+    &:hover:enabled {
+      background: var(--color-positive-40);
+    }
+  
+    &:focus:enabled {
+      background: var(--color-positive-40);
+    }
+  
+    &:active:enabled {
+      background: var(--color-positive-40);
+    }
+  }
+
+  &.Lay {
+    border: @size-1 solid var(--color-negative);
+
+    &:disabled {
+      background: var(--color-negative-15);
+    }
+  
+    &:hover:enabled {
+      background: var(--color-negative-40);
+    }
+  
+    &:focus:enabled {
+      background: var(--color-negative-40);
+    }
+  
+    &:active:enabled {
+      background: var(--color-negative-40);
     }
   }
 }

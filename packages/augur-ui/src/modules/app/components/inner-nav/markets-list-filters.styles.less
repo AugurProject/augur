@@ -10,7 +10,7 @@
 
   @media @breakpoint-mobile {
     border-top: none;
-    margin: 0;
+    margin: 0 0 @size-32 0;
   }
 }
 
@@ -82,6 +82,11 @@
         // chevron flip
         stroke: var(--color-primary-text);
       }
+    }
+
+    > span {
+      display: flex;
+      margin-left: @size-8;
     }
 
     > svg {

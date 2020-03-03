@@ -90,6 +90,7 @@ const getMarketsParamsSpecific = t.intersection([
     maxEndTime: t.number,
     maxLiquiditySpread: GetMaxLiquiditySpread,
     includeInvalidMarkets: t.boolean,
+    includeWarpSyncMarkets: t.boolean,
     categories: t.array(t.string),
     sortBy: getMarketsSortBy,
     userPortfolioAddress: t.string,
@@ -168,6 +169,7 @@ export interface MarketInfo {
   template: ExtraInfoTemplate;
   isTemplate: boolean;
   mostLikelyInvalid: boolean;
+  isWarpSync: boolean;
 }
 
 export interface DisputeInfo {
@@ -470,7 +472,7 @@ export class Markets {
     if (!(await augur.contracts.augur.isKnownUniverse_(params.universe))) {
       throw new Error('Unknown universe: ' + params.universe);
     }
-
+    params.includeWarpSyncMarkets = typeof params.includeWarpSyncMarkets === 'undefined' ? false : params.includeWarpSyncMarkets;
     params.maxLiquiditySpread = typeof params.maxLiquiditySpread === 'undefined' ? MaxLiquiditySpread.OneHundredPercent : params.maxLiquiditySpread;
     params.includeInvalidMarkets = typeof params.includeInvalidMarkets === 'undefined' ? true : params.includeInvalidMarkets;
     params.sortBy = typeof params.sortBy === 'undefined' ? GetMarketsSortBy.liquidity : params.sortBy;
@@ -544,6 +546,10 @@ export class Markets {
     }
 
     let marketData = await marketsCollection.and((market) => {
+      if(!params.includeWarpSyncMarkets && market.isWarpSync) {
+        return false;
+      }
+
       // Apply reporting states if we did the original query without using that index
       if (!usedReportingStates && params.reportingStates) {
         if (!params.reportingStates.includes(market.reportingState)) return false;
@@ -605,7 +611,7 @@ export class Markets {
     marketData = marketData.slice(params.offset, params.offset + params.limit);
 
     // Get markets info to return
-    const marketsInfo: MarketInfo[] = await getMarketsInfo(db, marketData, reportingFeeDivisor);
+    let marketsInfo: MarketInfo[] = await getMarketsInfo(db, marketData, reportingFeeDivisor, augur.addresses.WarpSync);
 
     return {
       markets: marketsInfo,
@@ -758,7 +764,7 @@ export class Markets {
     const markets = await db.Markets.where("market").anyOfIgnoreCase(params.marketIds).toArray();
     const reportingFeeDivisor = await augur.contracts.universe.getOrCacheReportingFeeDivisor_();
 
-    return getMarketsInfo(db, markets, reportingFeeDivisor);
+    return getMarketsInfo(db, markets, reportingFeeDivisor, augur.addresses.WarpSync);
   }
 
   @Getter('getCategoriesParams')
@@ -1022,7 +1028,8 @@ function getPeriodStartTime(
 async function getMarketsInfo(
   db: DB,
   markets: MarketData[],
-  reportingFeeDivisor: BigNumber
+  reportingFeeDivisor: BigNumber,
+  warpSyncAddress: string
 ): Promise<MarketInfo[]> {
   const marketIds = _.map(markets, 'market');
   // TODO This is just used to get the last price. This can be acheived far more efficiently than pulling all order events for all time
@@ -1164,7 +1171,8 @@ async function getMarketsInfo(
       disavowed: marketData.disavowed,
       template,
       isTemplate: marketData.isTemplate,
-      mostLikelyInvalid: marketData.invalidFilter
+      mostLikelyInvalid: marketData.invalidFilter,
+      isWarpSync: marketData.isWarpSync,
     };
   });
 }
