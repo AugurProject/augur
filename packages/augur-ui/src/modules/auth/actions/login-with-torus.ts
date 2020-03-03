@@ -6,7 +6,6 @@ import { PersonalSigningWeb3Provider } from 'utils/personal-signing-web3-provide
 import Torus from '@toruslabs/torus-embed';
 import Web3 from 'web3';
 import { ACCOUNT_TYPES } from 'modules/common/constants';
-import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { windowRef } from 'utils/window-ref';
 import { LoginAccount } from 'modules/types';
 import { AppState } from 'store';
@@ -17,7 +16,7 @@ export const loginWithTorus = () => async (
   getState: () => AppState,
 ) => {
   const useGnosis = getState().env['gnosis']?.enabled;
-  const networkId = getNetworkId();
+  const networkId: string = getState().env['networkId'];
   const torusNetwork = getNetwork(networkId);
   let accountObject: Partial<LoginAccount> = {};
 
