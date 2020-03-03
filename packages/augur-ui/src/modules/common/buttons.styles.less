@@ -1028,44 +1028,42 @@
   }
 
   &.Back {
-    border: @size-1 solid var(--color-outcome-five);
+    border: @size-1 solid var(--color-positive);
 
     &:disabled {
-      background: var(--color-inactive-text);
-      opacity: 0.15;
+      background: var(--color-positive-15);
     }
   
     &:hover:enabled {
-      background: var(--color-outcome-five-40);
+      background: var(--color-positive-40);
     }
   
     &:focus:enabled {
-      background: var(--color-outcome-five-40);
+      background: var(--color-positive-40);
     }
   
     &:active:enabled {
-      background: var(--color-outcome-five-40);
+      background: var(--color-positive-40);
     }
   }
 
   &.Lay {
-    border: @size-1 solid var(--color-outcome-two);
+    border: @size-1 solid var(--color-negative);
 
     &:disabled {
-      background: var(--color-inactive-text);
-      opacity: 0.15;
+      background: var(--color-negative-15);
     }
   
     &:hover:enabled {
-      background: var(--color-outcome-two-40);
+      background: var(--color-negative-40);
     }
   
     &:focus:enabled {
-      background: var(--color-outcome-two-40);
+      background: var(--color-negative-40);
     }
   
     &:active:enabled {
-      background: var(--color-outcome-two-40);
+      background: var(--color-negative-40);
     }
   }
 }
