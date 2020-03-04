@@ -77,14 +77,12 @@ const SideNav = ({
       </div>
       <div className={Styles.Container}>
         <div>
-          <ThemeSwitch />
           {isConnectionTrayOpen && <ConnectDropdown />}
+          {isHelpMenuOpen && <HelpMenuList />}
+          <ThemeSwitch />
           <ul
-            className={classNames({
-              [Styles.accountDetailsOpen]: isConnectionTrayOpen,
-            })}
+            className={Styles.MainMenu}
           >
-            {isHelpMenuOpen && <HelpMenuList />}
             {isLogged && (
               <SecondaryButton
                 action={() => updateModal({ type: MODAL_ADD_FUNDS })}
