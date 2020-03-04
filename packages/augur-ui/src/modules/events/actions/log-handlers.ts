@@ -666,6 +666,7 @@ export const handleTokensMintedLog = (logs: Logs.TokensMinted[]) => (
             status: TXEventName.Success,
             timestamp: getState().blockchain.currentAugurTimestamp * 1000,
             name: MIGRATE_FROM_LEG_REP_TOKEN,
+            toast: true,
           }, false));
         dispatch(removePendingTransaction(MIGRATE_FROM_LEG_REP_TOKEN));
       }
