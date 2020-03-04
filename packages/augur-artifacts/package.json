@@ -9,7 +9,6 @@
     "build": "tsc -b"
   },
   "dependencies": {
-    "@types/webpack-env": "1.15.1",
     "deepmerge": "4.2.2",
     "require-all": "3.0.0"
   }

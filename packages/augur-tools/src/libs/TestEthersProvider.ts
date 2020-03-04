@@ -5,6 +5,7 @@ import { ethers } from 'ethers';
 import { createSeed } from './ganache';
 import { makeProvider } from './LocalAugur';
 import { Account } from '../constants';
+import { buildConfig } from '@augurproject/artifacts';
 
 export class TestEthersProvider extends EthersProvider {
   constructor(
@@ -25,9 +26,9 @@ export class TestEthersProvider extends EthersProvider {
   };
 
   getConfig(): SDKConfiguration {
-    return {
+    return buildConfig('local', {
       networkId: NetworkId.PrivateGanache,
       addresses: this.contractAddresses
-    };
+    });
   }
 }

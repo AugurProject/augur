@@ -575,11 +575,8 @@ export class ContractAPI {
   }
 
   async faucetOnce(attoCash: BigNumber, account?: string): Promise<void> {
-    console.log('TATTLETALE', 100)
     account = account ||  await this.augur.getAccount();
-    console.log('TATTLETALE', 101)
     await this.augur.contracts.cashFaucet.faucet(attoCash, { sender: account });
-    console.log('TATTLETALE', 102)
   }
 
   async repFaucet(attoRep: BigNumber, useLegacy = false): Promise<void> {

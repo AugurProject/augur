@@ -183,7 +183,7 @@ Deploying to: ${env}
         }
 
         if (this.configuration.deploy.writeArtifacts) {
-          await this.generateAddressMappingFile(env, blockNumber);
+          await this.generateLocalEnvFile(env, blockNumber);
         }
 
         await this.augur.finishDeployment();
@@ -574,7 +574,7 @@ Deploying to: ${env}
         }
     }
 
-    private async generateAddressMappingFile(env: string, uploadBlockNumber: number): Promise<void> {
+    private async generateLocalEnvFile(env: string, uploadBlockNumber: number): Promise<void> {
         const mapping: Partial<ContractAddresses> = {};
         mapping['Augur'] = this.augur!.address;
         if (this.universe) mapping['Universe'] = this.universe.address;

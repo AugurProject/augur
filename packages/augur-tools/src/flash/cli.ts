@@ -6,8 +6,7 @@ import { addGanacheScripts } from './ganache-scripts';
 import { Account, ACCOUNTS } from '../constants';
 import { computeAddress } from 'ethers/utils';
 import * as fs from 'fs';
-import { buildConfig, validConfigOrDie } from '@augurproject/artifacts';
-import { SDKConfiguration } from '@augurproject/artifacts';
+import { buildConfig, validConfigOrDie, SDKConfiguration } from '@augurproject/artifacts';
 
 async function processAccounts(flash: FlashSession, args: any) {
     // Figure out which private key to use.

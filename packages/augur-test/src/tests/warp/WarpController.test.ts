@@ -68,7 +68,7 @@ describe('WarpController', () => {
     );
 
     // partially populate db.
-    await john.sync(170);
+    await john.sync(172);
 
     warpController = new WarpController(
       john.db,

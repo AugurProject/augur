@@ -42,7 +42,7 @@
     "@augurproject/sdk": "2.0.0-alpha.2",
     "blockstream-adapters": "2.0.0-alpha.2",
     "commander": "4.1.0",
-    "deepmerge": "^4.2.2",
+    "deepmerge": "4.2.2",
     "ethereumjs-blockstream": "7.0.0",
     "ethers": "4.0.37",
     "ethjs-abi": "0.2.1",

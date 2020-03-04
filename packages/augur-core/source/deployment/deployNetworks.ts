@@ -16,14 +16,16 @@ export async function deployToNetwork(networkName: string) {
 
 if (require.main === module) {
     if (process.argv.length < 3) {
-
+        console.error(`Must pass in 2 args, the last of which is the network name. Given args: ${process.argv}`);
+        process.exitCode = 1
+    } else {
+        const network = process.argv[2] as string;
+        deployToNetwork(network).then(() => {
+            console.log('Deployment to all networks succeeded');
+            process.exitCode = 0;
+        }).catch((error) => {
+            console.log('Deployment interrupted with error: ', error);
+            process.exitCode = 1;
+        });
     }
-    const network = process.argv[2] as string;
-    deployToNetwork(network).then(() => {
-        console.log('Deployment to all networks succeeded');
-        process.exitCode = 0;
-    }).catch((error) => {
-        console.log('Deployment interrupted with error: ', error);
-        process.exitCode = 1;
-    });
 }
