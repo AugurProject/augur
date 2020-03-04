@@ -11,6 +11,7 @@ export class MarketComments extends Component {
     myProfile: {},
     address: '',
     isReady: false,
+    provider: null,
   };
 
   componentDidMount() {
@@ -38,11 +39,11 @@ export class MarketComments extends Component {
   getWalletInfo = async () => {
     const {address, accountType, provider} = this.props;
 
-    if (address && accountType && provider) {
+    if (accountType && provider) {
       return {
         address,
         accountType,
-        provider,
+        provider: provider,
       }
     } else if (window.ethereum) {
       const addresses = await window.ethereum.enable();
@@ -59,24 +60,45 @@ export class MarketComments extends Component {
   };
 
   handleLogin = async () => {
-    const { address, provider } = await this.getWalletInfo();
-    if (!address) {
+    const { provider } = await this.getWalletInfo();
+
+    if (!provider) {
       this.setState({isReady: false});
       return;
     }
 
-    console.log('address and provider #####', {address, provider});
+    let box;
+    let address = (await window.ethereum.enable())[0];
+    // let address = (await provider.enable())[0];
+    // let address = (await window.portis.provider.enable())[0];
 
-    const box = await Box.create(provider);
-    console.log('box ###', box);
+    try {
+      // box = await Box.openBox({address}, provider);
+      // await box.onSyncDone();
 
-    await box.auth(['augur'], {address});
-    console.log('auth done ###');
+      // const box = await Box.openBox(adminEthAddr, ethereum);
+      // const space = await box.openSpace(spaceName, spaceOpts);
+      // box = await Box.openBox("0x48903df4d9b4d224f9f2306e408447d689546ef4", provider._web3Provider);
+      // const space = await box.openSpace('augur', {});
 
-    await box.syncDone;
-    console.log('box sync done ###');
+      box = await Box.create(provider);
+      console.log('box ###', box);
 
-    this.setState({box, address, isReady: true});
+      await box.auth(['augur123123123'], {address});
+      console.log('auth done ###');
+
+      await box.syncDone;
+
+      const space = await box.openSpace('augur123123123', {});
+      await space.syncDone;
+
+      console.log('box sync done ###');
+    } catch (error) {
+      console.error(error);
+      // return
+    }
+
+    this.setState({box, address, isReady: true, provider});
   };
 
   render () {
@@ -84,6 +106,7 @@ export class MarketComments extends Component {
       box,
       address,
       isReady,
+      provider
     } = this.state;
 
     return (
@@ -91,9 +114,9 @@ export class MarketComments extends Component {
         {isReady && (
           <Comments
             // required
-            spaceName="augur"
+            spaceName="augur123123123"
             threadName={this.props.marketId}
-            adminEthAddr="0x913dA4198E6bE1D5f5E4a40D0667f70C0B5430Eb"
+            adminEthAddr="0x48903df4d9b4d224f9f2306e408447d689546ef4"
 
             // Required props for context A) & B)
             box={box}
@@ -103,7 +126,7 @@ export class MarketComments extends Component {
             // loginFunction={this.handleLogin}
 
             // Required prop for context C)
-            // ethereum={window.ethereum}
+            // ethereum={provider._web3Provider}
 
             // optional
             // members={false}

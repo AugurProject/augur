@@ -12,7 +12,6 @@ const PATHS = {
   BUILD: path.resolve(__dirname, "../build"),
   APP: path.resolve(__dirname, "../src"),
   TEST: path.resolve(__dirname, "../test"),
-  ORBIT: path.resolve(__dirname, "../../orbit-web"),
   ROOT_UI: path.resolve(__dirname, "../"),
 };
 
@@ -140,10 +139,6 @@ module.exports = {
       {
         from: path.resolve(PATHS.APP, "robots.txt"),
         to: PATHS.BUILD
-      },
-      {
-        from: path.resolve(PATHS.ORBIT, "dist"),
-        to: path.resolve(PATHS.BUILD, "chat")
       },
     ]),
     new HtmlWebpackPlugin({
