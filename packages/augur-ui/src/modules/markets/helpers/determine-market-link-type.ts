@@ -3,7 +3,6 @@ import {
   TYPE_REPORT,
   TYPE_DISPUTE,
   TYPE_TRADE,
-  TYPE_FINALIZE_MARKET,
   TYPE_CLAIM_PROCEEDS
 } from "modules/common/constants";
 import { REPORTING_STATE } from "modules/common/constants";

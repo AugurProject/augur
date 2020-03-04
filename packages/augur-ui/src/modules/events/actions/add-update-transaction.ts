@@ -23,6 +23,8 @@ import {
   MIGRATE_FROM_LEG_REP_TOKEN,
   REDEEMSTAKE,
   APPROVE,
+  TRADINGPROCEEDSCLAIMED,
+  CLAIMMARKETSPROCEEDS,
 } from 'modules/common/constants';
 import { CreateMarketData } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
@@ -46,7 +48,9 @@ const ADD_PENDING_QUEUE_METHOD_CALLS = [
   MIGRATE_FROM_LEG_REP_TOKEN,
   REDEEMSTAKE,
   BATCHCANCELORDERS,
-  APPROVE
+  APPROVE,
+  TRADINGPROCEEDSCLAIMED,
+  CLAIMMARKETSPROCEEDS
 ];
 export const getRelayerDownErrorMessage = (walletType, hasEth) => {
   const errorMessage = 'We\'re currently experiencing a technical difficulty processing transaction fees in Dai. If possible please come back later to process this transaction';
