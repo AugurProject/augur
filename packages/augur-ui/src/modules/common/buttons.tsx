@@ -155,8 +155,7 @@ export const SecondaryButton = (props: DefaultButtonProps) => (
     disabled={props.disabled}
     title={props.title || props.text}
   >
-    {!!props.icon && props.icon}
-    {props.text}
+    {props.text} {!!props.icon && props.icon}
   </button>
 );
 

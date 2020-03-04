@@ -115,7 +115,7 @@ const SideNav = ({
             <div>
               {showMigrateRepButton && (
                 <span className={Styles.SideNavMigrateRep}>
-                  {walletBalances.legacyRep > 0 &&
+                  {showMigrateRepButton && walletBalances.legacyRepNonSafe <= 0 &&
                     <ProcessingButton
                       text={'Migrate V1 to V2 REP'}
                       action={() => migrateV1Rep()}
@@ -124,7 +124,7 @@ const SideNav = ({
                       secondaryButton
                     />
                   }
-                  {walletBalances.legacyRep <= 0 && walletBalances.legacyRepNonSafe > 0 &&
+                  {walletBalances.legacyRepNonSafe > 0 &&
                     <SecondaryButton
                       text={'Migrate V1 REP'}
                       action={() => migrateV1Rep()}
