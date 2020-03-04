@@ -22,6 +22,7 @@ import { getGasCostInDai } from 'modules/modal/gas';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
 
 import Styles from 'modules/auth/components/connect-dropdown/connect-dropdown.styles.less';
+import { AFFILIATE_NAME } from 'modules/routes/constants/param-names';
 
 interface ConnectDropdownProps {
   isLogged: boolean;
@@ -73,7 +74,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
   const [showMetaMaskHelper, setShowMetaMaskHelper] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   let timeoutId = null;
-  const referralLink = `${window.location.origin}?affiliate=${loginAccountAddress}`;
+  const referralLink = `${window.location.origin}?${AFFILIATE_NAME}=${loginAccountAddress}`;
 
   const copyClicked = () => {
     setIsCopied(true);
