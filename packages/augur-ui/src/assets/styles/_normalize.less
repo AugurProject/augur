@@ -57,3 +57,14 @@ input {
   border: none;
   font-family: inherit;
 }
+
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+  // remove arrows on number inputs
+    -webkit-appearance: none;
+    // margin: 0;
+}
+
+input[type=number] {
+    -moz-appearance:textfield;
+}
