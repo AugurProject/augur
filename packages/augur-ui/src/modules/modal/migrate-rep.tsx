@@ -11,9 +11,7 @@ import { InfoIcon } from 'modules/common/icons';
 import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 import {
   V1_REP_MIGRATE_ESTIMATE,
-  MIGRATE_FROM_LEG_REP_TOKEN,
 } from 'modules/common/constants';
-import { TXEventName } from '@augurproject/sdk/src';
 
 import Styles from 'modules/modal/modal.styles.less';
 
@@ -38,7 +36,6 @@ export const MigrateRep = (props: MigrateRepForm) => {
     convertV1ToV2Estimate,
     ethToDaiRate,
     gasPrice,
-    addPendingData,
     showForSafeWallet,
   } = props;
 
