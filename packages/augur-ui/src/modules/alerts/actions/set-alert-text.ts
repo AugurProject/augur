@@ -62,7 +62,7 @@ function toCapitalizeCase(label) {
 export function getInfo(params: any, status: string, marketInfo: MarketData) {
   const outcome = new BigNumber(params.outcome || params._outcome).toString();
   const outcomeDescription = getOutcomeNameWithOutcome(marketInfo, outcome);
-  let orderType = params.orderType === HEX_BUY ? BUY : SELL;
+  let orderType = params.orderType === HEX_BUY || params.orderType === BUY_INDEX ? BUY : SELL;
   if (status === TXEventName.Failure) {
     orderType =
       new BigNumber(params._direction).toNumber() === BUY_INDEX ? BUY : SELL;
