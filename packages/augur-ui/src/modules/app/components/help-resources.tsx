@@ -47,7 +47,7 @@ const HELP_LINKS = [
 
 export const HelpMenuList = () => {
   return (
-    <span className={classNames(Styles.HelpMenuList)}>
+    <ul className={classNames(Styles.HelpMenuList)}>
       <li>popular help resources</li>
       {HELP_LINKS.map(
         ({ className, link, label, customLink, showNonLink }, index) => (
@@ -62,7 +62,7 @@ export const HelpMenuList = () => {
           </li>
         )
       )}
-    </span>
+    </ul>
   );
 };
 

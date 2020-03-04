@@ -779,6 +779,9 @@
 
   > svg {
     margin-left: @size-4;
+    height: @size-10;
+    width: @size-10;
+
     > path {
       &:nth-child(odd) {
         fill: var(--color-primary-action);
@@ -806,6 +809,75 @@
 
       &:nth-child(even) {
         stroke: var(--color-outcome-seven);
+      }
+    }
+  }
+}
+
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .ExternalLinkButton {
+    color: var(--color-text-secondary);
+    flex-flow: row-reverse nowrap;
+    justify-content: flex-end;
+
+    > a {
+      .text-14;
+
+      color: var(--color-text-secondary);
+      text-transform: capitalize;
+    }
+
+    &:hover {
+      color: var(--color-primary-text);
+
+      > a {
+        color: var(--color-primary-text);
+      }
+    }
+
+    > svg {
+      margin-left: 0;
+      margin-right: @size-10;
+      height: @size-12;
+      width: @size-12;
+
+      > path {
+        &:nth-child(odd) {
+          fill: var(--color-primary-text);
+          stroke: none;
+        }
+
+        &:nth-child(even) {
+          stroke: var(--color-primary-text);
+        }
+      }
+    }
+
+    &.LightAlternate {
+      color: var(--color-secondary-text);
+
+      > a {
+        color: var(--color-secondary-text);
+      }
+
+      &:hover {
+        color: var(--color-primary-text);
+  
+        > a {
+          color: var(--color-primary-text);
+        }
+      }
+
+      > svg > path {
+        &:nth-child(odd) {
+          fill: var(--color-primary-text);
+          stroke: none;
+        }
+
+        &:nth-child(even) {
+          stroke: var(--color-primary-text);
+        }
       }
     }
   }
