@@ -6,6 +6,7 @@ import {
   selectMarketInfosState,
   selectPendingLiquidityOrders,
   selectReadNotificationState,
+  selectUserMarketOpenOrders
 } from 'store/select-state';
 import { MarketReportingState } from '@augurproject/sdk';
 import {
@@ -23,6 +24,10 @@ import {
   SIGN_SEND_ORDERS,
   ZERO,
   REDEEMSTAKE,
+  BATCHCANCELORDERS,
+  SUBMIT_DISPUTE,
+  TRANSACTIONS,
+  SUBMIT_REPORT,
 } from 'modules/common/constants';
 import userOpenOrders from 'modules/orders/selectors/user-open-orders';
 import store, { AppState } from 'store';
@@ -34,19 +39,17 @@ import { isSameAddress } from 'utils/isSameAddress';
 
 // Get all the users CLOSED markets with OPEN ORDERS
 export const selectResolvedMarketsOpenOrders = createSelector(
-  selectMarkets,
-  markets => {
-    if (markets.length > 0) {
-      return markets
-        .filter(
-          market =>
-            market.reportingState === REPORTING_STATE.AWAITING_FINALIZATION ||
-            market.reportingState === REPORTING_STATE.FINALIZED
-        )
-        .filter(market => userOpenOrders(market.id).length > 0)
-        .map(getRequiredMarketData);
-    }
-    return [];
+  selectUserMarketOpenOrders,
+  openOrders => {
+    return Object.keys(openOrders)
+      .map(id => selectMarket(id))
+      .filter(
+        market =>
+          market.reportingState == REPORTING_STATE.AWAITING_FINALIZATION ||
+          market.reportingState === REPORTING_STATE.FINALIZED
+      )
+      .filter(market => userOpenOrders(market.id).length > 0)
+      .map(getRequiredMarketData);
   }
 );
 
@@ -240,7 +243,8 @@ export const selectNotifications = createSelector(
         buttonLabel: TYPE_VIEW_DETAILS,
         market: null,
         claimReportingFees,
-        transactionView: REDEEMSTAKE,
+        queueName: TRANSACTIONS,
+        queueId: REDEEMSTAKE,
         id: NOTIFICATION_TYPES.claimReportingFees,
       });
     }
@@ -303,6 +307,8 @@ const generateCards = (markets, type) => {
       isNew: true,
       title: RESOLVED_MARKETS_OPEN_ORDERS_TITLE,
       buttonLabel: TYPE_VIEW_ORDERS,
+      queueName: TRANSACTIONS,
+      queueId: BATCHCANCELORDERS,
     };
   } else if (type === NOTIFICATION_TYPES.reportOnMarkets) {
     defaults = {
@@ -312,6 +318,7 @@ const generateCards = (markets, type) => {
       isNew: true,
       title: REPORTING_ENDS_SOON_TITLE,
       buttonLabel: TYPE_REPORT,
+      queueName: SUBMIT_REPORT
     };
   } else if (type === NOTIFICATION_TYPES.marketsInDispute) {
     defaults = {
@@ -320,6 +327,7 @@ const generateCards = (markets, type) => {
       isNew: true,
       title: TYPE_DISPUTE,
       buttonLabel: TYPE_DISPUTE,
+      queueName: SUBMIT_DISPUTE,
     };
   } else if (type === NOTIFICATION_TYPES.unsignedOrders) {
     defaults = {

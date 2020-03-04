@@ -9,13 +9,12 @@ import makeQuery from "modules/routes/helpers/make-query";
 
 import { NotificationCard } from "modules/account/components/notification-card";
 import { PillLabel } from "modules/common/labels";
-import { REPORTING, DISPUTING, MARKET } from "modules/routes/constants/views";
+import { MARKET } from "modules/routes/constants/views";
 import {
   MARKET_ID_PARAM_NAME,
   RETURN_PARAM_NAME,
 } from "modules/routes/constants/param-names";
 import {
-  FinalizeTemplate,
   OpenOrdersResolvedMarketsTemplate,
   ReportEndingSoonTemplate,
   DisputeTemplate,
@@ -213,7 +212,8 @@ class Notifications extends React.Component<
         claimReportingFees,
         totalProceeds,
         type,
-        transactionView,
+        queueName,
+        queueId,
       } = notification;
 
       const templateProps = {
@@ -226,7 +226,8 @@ class Notifications extends React.Component<
         buttonAction,
         buttonLabel,
         type,
-        transactionView,
+        queueName,
+        queueId,
       };
 
       const notificationCardProps = {

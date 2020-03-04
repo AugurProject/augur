@@ -6,6 +6,7 @@ import {
 import {
   CANCELORDER,
   CANCELORDERS,
+  BATCHCANCELORDERS,
   TX_ORDER_ID,
   TX_ORDER_IDS,
   CREATEMARKET,
@@ -21,6 +22,7 @@ import {
   MODAL_ERROR,
   MIGRATE_FROM_LEG_REP_TOKEN,
   REDEEMSTAKE,
+  APPROVE,
 } from 'modules/common/constants';
 import { CreateMarketData } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
@@ -39,7 +41,13 @@ import { updateModal } from 'modules/modal/actions/update-modal';
 import { updateAppStatus, GNOSIS_STATUS } from 'modules/app/actions/update-app-status';
 import { GnosisSafeState } from '@augurproject/gnosis-relay-api/src/GnosisRelayAPI';
 
-const ADD_PENDING_QUEUE_METHOD_CALLS = [BUYPARTICIPATIONTOKENS, MIGRATE_FROM_LEG_REP_TOKEN, REDEEMSTAKE];
+const ADD_PENDING_QUEUE_METHOD_CALLS = [
+  BUYPARTICIPATIONTOKENS,
+  MIGRATE_FROM_LEG_REP_TOKEN,
+  REDEEMSTAKE,
+  BATCHCANCELORDERS,
+  APPROVE
+];
 export const getRelayerDownErrorMessage = (walletType, hasEth) => {
   const errorMessage = 'We\'re currently experiencing a technical difficulty processing transaction fees in Dai. If possible please come back later to process this transaction';
 
@@ -183,6 +191,14 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
         dispatch(addCanceledOrder(orderId, eventName));
         if (eventName === TXEventName.Success) {
           dispatch(removeCanceledOrder(orderId));
+        }
+        break;
+      }
+      case BATCHCANCELORDERS: {
+        const orders = transaction.params && transaction.params.orders || [];
+        orders.map(order => dispatch(addCanceledOrder(order.orderId, eventName)));
+        if (eventName === TXEventName.Failure || eventName === TXEventName.Success) {
+          orders.map(order => dispatch(removeCanceledOrder(order.orderId)));
         }
         break;
       }

@@ -207,9 +207,9 @@ const ProcessingButtonComponent = (props: DefaultButtonProps) => {
           {...props}
           confirmed={confirmed}
           failed={failed}
-          icon={failed ? icon : null}
+          icon={icon}
           text={buttonText}
-          action={!confirmed ? buttonAction : () => null}
+          action={buttonAction}
           disabled={isDisabled}
         />
       }

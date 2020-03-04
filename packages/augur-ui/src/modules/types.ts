@@ -268,7 +268,8 @@ export interface Notification {
   markets: string[];
   claimReportingFees?: object;
   totalProceeds?: number;
-  transactionView: string;
+  queueName?: string;
+  queueId?: string;
 }
 
 export interface OrderStatus {
