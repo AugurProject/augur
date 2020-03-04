@@ -255,10 +255,10 @@ export class PreFilledStake extends Component<PreFilledStakeProps, {}> {
       <div className={Styles.PreFilledStake}>
         <span>Add Pre-Filled Stake?</span>
         <span>
-          `Pre-fund future dispute rounds to accelerate market resolution. Any
+          Pre-fund future dispute rounds to accelerate market resolution. Any
           contributed REP will automatically go toward disputing in favor of
           this outcome, if it is no longer the tentative winning outcome in
-          future rounds`
+          future rounds
         </span>
         {!this.props.showInput && (
           <SecondaryButton
@@ -492,9 +492,7 @@ export class DisputingBondsView extends Component<
     } else {
       this.setState({ stakeError: '' });
       if (
-        (this.state.scalarError === '' &&
-          ((isScalar && inputScalarOutcome !== '') || isInvalid || !!warpSyncHash)) ||
-        !isScalar
+        ((isScalar && inputScalarOutcome !== '') || isInvalid || !!warpSyncHash) || !isScalar
       ) {
         this.setState({ disabled: false });
       }
