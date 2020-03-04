@@ -18,6 +18,7 @@ import {
 import deepClone from 'utils/deep-clone';
 import { NewMarket } from 'modules/types';
 import classNames from 'classnames';
+import { createBigNumber } from 'utils/create-big-number';
 
 export const TemplatePicker = ({ newMarket, updateNewMarket }) => {
   const { categories, marketType } = newMarket;
@@ -93,6 +94,14 @@ export const TemplatePicker = ({ newMarket, updateNewMarket }) => {
               ? createTemplateOutcomes(template.inputs)
               : ['', ''];
             const outcomesFormatted = getFormattedOutcomes(newMarket.marketType, outcomes, scalarDenomination)
+            let minPrice = '0';
+            let maxPrice = '1';
+            if (newMarket.marketType === SCALAR) {
+              minPrice = '';
+              maxPrice = '';
+              if (template.minPrice !== undefined) minPrice = String(template.minPrice);
+              if (template.maxPrice !== undefined) maxPrice = String(template.maxPrice);
+            }
             updateNewMarket({
               ...deepClone<NewMarket>(EMPTY_STATE),
               description: buildMarketDescription(
@@ -107,22 +116,16 @@ export const TemplatePicker = ({ newMarket, updateNewMarket }) => {
                   ? template.tickSize
                   : DEFAULT_TICK_SIZE,
               scalarDenomination,
-              minPrice:
-                newMarket.marketType === SCALAR && template.minPrice
-                  ? template.minPrice
-                  : newMarket.minPrice,
-              maxPrice:
-                newMarket.marketType === SCALAR && template.maxPrice
-                  ? template.maxPrice
-                  : newMarket.maxPrice,
+              minPrice,
+              maxPrice,
               minPriceBigNumber:
-                  newMarket.marketType === SCALAR && template.minPrice
-                    ? template.minPrice
-                    : newMarket.minPrice,
+                minPrice != ''
+                    ? createBigNumber(minPrice)
+                    : null,
               maxPriceBigNumber:
-                  newMarket.marketType === SCALAR && template.maxPrice
-                    ? template.maxPrice
-                    : newMarket.maxPrice,
+                  maxPrice != ''
+                    ? createBigNumber(maxPrice)
+                    : null,
               marketType: newMarket.marketType,
               categories: [
                 newMarket.categories[0],

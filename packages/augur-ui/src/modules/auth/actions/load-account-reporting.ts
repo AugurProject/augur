@@ -4,12 +4,14 @@ import { augurSdk } from 'services/augursdk';
 import { AppState } from 'store';
 import { updateLoginAccount } from 'modules/account/actions/login-account';
 import { NodeStyleCallback } from 'modules/types';
+import { NOTIFICATION_TYPES } from 'modules/common/constants';
+import { updateReadNotifications } from 'modules/notifications/actions/update-notifications';
 
 export const loadAccountReportingHistory = () => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { universe, loginAccount } = getState();
+  const { universe, loginAccount, readNotifications } = getState();
   if (!loginAccount || !loginAccount.address) return;
   const Augur = augurSdk.get();
   const reporting = await Augur.getAccountRepStakeSummary({
@@ -23,6 +25,10 @@ export const loadAccountReportingHistory = () => async (
   if (reporting.disputing && reporting.disputing.contracts.length > 0)
     reporting.disputing.contracts.map(c => [...marketIds, c.marketId]);
 
+  const notification = readNotifications.find(n => n.type === NOTIFICATION_TYPES.claimReportingFees);
+  if (notification) {
+    dispatch(updateReadNotifications([{...notification, isImportant: true, isNew: true}]))
+  }
   dispatch(updateLoginAccount({ reporting }));
 };
 

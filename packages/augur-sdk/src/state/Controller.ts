@@ -58,7 +58,7 @@ export class Controller {
     if (nullMarketLogs.length > 0) nullMarketLogs.forEach(l => this.augur.events.emit(l.name, {...l}));
   }
 
-  private notifyNewBlockEvent = async (blockNumber: number): Promise<void> => {
+  private notifyNewBlockEvent = async (blockNumber: number, logs: ParsedLog[]): Promise<void> => {
     let lowestBlock = await (await this
       .db).syncStatus.getLowestSyncingBlockForAllDBs();
 
@@ -77,6 +77,7 @@ export class Controller {
       blocksBehindCurrent,
       percentSynced,
       timestamp: timestamp.toNumber(),
+      logs,
     });
   };
 

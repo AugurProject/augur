@@ -115,6 +115,73 @@ describe('State API :: Markets :: ', () => {
     expect(marketIds).toContain(yesNoMarket2.address);
   });
 
+  describe('warp sync markets', () => {
+    let expectedMarkets;
+    beforeEach(async () => {
+      await john.initializeUniverseForWarpSync();
+
+      const someHash = 'QmNLei78zWmzUdbeRB3CiUfAizWUrbeeZh5K1rhAQKChD2';
+      expectedMarkets = [
+        await john.createReasonableYesNoMarket(),
+        await john.reportWarpSyncMarket(someHash),
+        await john.reportWarpSyncMarket(someHash),
+      ];
+
+      await john.sync();
+    });
+
+    test('should tag warp sync markets', async () => {
+      const universe = john.augur.contracts.universe;
+      const expectedMarketAssertions = expectedMarkets.map((item, i) => expect.objectContaining({
+          id: item.address,
+          isWarpSync: (i !== 0)
+        })
+      );
+
+      await expect(john.api.route('getMarkets', {
+        universe: universe.address,
+        includeWarpSyncMarkets: true,
+      })).resolves.toEqual({
+        markets: expect.arrayContaining(expectedMarketAssertions),
+        meta: expect.any(Object)
+      });
+    });
+
+    test('should be able to filter out warp sync markets', async () => {
+      const universe = john.augur.contracts.universe;
+      // We only care about the warpsync markets, hence the slice.
+      const expectedMarketAssertions = expectedMarkets.slice(0).map((item, i) => expect.objectContaining({
+          id: item.address,
+          isWarpSync: (i !== 0)
+        })
+      );
+
+      // Check the default value.
+      await expect(john.api.route('getMarkets', {
+        universe: universe.address,
+      })).resolves.toEqual({
+        markets: expect.not.arrayContaining(expectedMarketAssertions),
+        meta: expect.any(Object)
+      });
+
+      await expect(john.api.route('getMarkets', {
+        universe: universe.address,
+        includeWarpSyncMarkets: true,
+      })).resolves.toEqual({
+        markets: expect.arrayContaining(expectedMarketAssertions),
+        meta: expect.any(Object)
+      });
+
+      await expect(john.api.route('getMarkets', {
+        universe: universe.address,
+        includeWarpSyncMarkets: false,
+      })).resolves.not.toEqual({
+        markets: expect.arrayContaining(expectedMarketAssertions),
+        meta: expect.any(Object)
+      });
+    });
+  });
+
   describe(':getMarketOrderBook', () => {
     const numShares = new BigNumber(10000000000000);
     const price = new BigNumber(22);

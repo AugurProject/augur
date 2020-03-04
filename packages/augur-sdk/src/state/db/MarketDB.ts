@@ -148,7 +148,7 @@ export class MarketDB extends DerivedDB {
       }
     }
 
-    await this.bulkUpsertDocuments(documents);
+    await this.saveDocuments(documents);
   }
 
   markMarketLiquidityAsDirty(marketId: string) {
@@ -328,6 +328,7 @@ export class MarketDB extends DerivedDB {
   }
 
   private processMarketCreated = (log: ParsedLog): ParsedLog => {
+    log['isWarpSync'] = log.marketCreator.toLowerCase() === this.augur.addresses.WarpSync.toLowerCase();
     log['reportingState'] = MarketReportingState.PreReporting;
     log['finalized'] = 0;
     log['invalidFilter'] = 0;
@@ -461,7 +462,7 @@ export class MarketDB extends DerivedDB {
     }
 
     if (updateDocs.length > 0) {
-      await this.bulkUpsertDocuments(updateDocs);
+      await this.saveDocuments(updateDocs);
       this.augur.events.emitAfter(SubscriptionEventName.NewBlock, SubscriptionEventName.ReportingStateChanged, { data: updateDocs });
     }
   }

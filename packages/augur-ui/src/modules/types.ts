@@ -199,6 +199,7 @@ export interface PendingQueue {
     [pendingId: string]: {
       status: string;
       blockNumber: number;
+      hash: string;
       parameters?: UIOrder | NewMarket;
       data: CreateMarketData;
     };
@@ -250,6 +251,7 @@ export interface MyPositionsSummary {
   totalPercent: FormattedNumber;
   totalReturns: FormattedNumber;
   valueChange: FormattedNumber;
+  valueChange24Hr: FormattedNumber;
 }
 
 export interface Notification {
@@ -266,6 +268,7 @@ export interface Notification {
   markets: string[];
   claimReportingFees?: object;
   totalProceeds?: number;
+  transactionView: string;
 }
 
 export interface OrderStatus {
@@ -358,7 +361,6 @@ export interface NewMarket {
   type: string;
   outcomes: string[];
   outcomesFormatted: OutcomeFormatted[];
-  scalarSmallNum: string;
   scalarBigNum: string;
   scalarDenomination: string;
   description: string;
@@ -407,7 +409,6 @@ export interface Draft {
   currentStep: number;
   type: string;
   outcomes: string[];
-  scalarSmallNum: string;
   scalarBigNum: string;
   scalarDenomination: string;
   description: string;
@@ -488,7 +489,7 @@ export interface ReportingListState {
   };
 }
 export interface FilledOrders {
-  [account: string]: Getters.Trading.Orders;
+  [account: string]: Getters.Trading.MarketTradingHistory;
 }
 
 export interface OpenOrders {
@@ -630,6 +631,7 @@ export interface AccountBalances {
   rep: number;
   dai: number;
   legacyRep: number;
+  legacyRepNonSafe: number;
   attoRep: string;
   legacyAttoRep: string;
 }
@@ -647,6 +649,10 @@ export interface LoginAccountMeta {
 export interface LoginAccountSettings {
   showInvalidMarketsBannerFeesOrLiquiditySpread?: boolean;
   showInvalidMarketsBannerHideOrShow?: boolean;
+  templateFilter?: boolean;
+  maxFee?: boolean;
+  spread?: boolean;
+  showInvalid?: boolean;
 }
 
 export interface LoginAccount {
@@ -808,6 +814,7 @@ export interface NavMenuItem {
   disabled?: boolean;
   showAlert?: boolean;
   button?: boolean;
+  alternateStyle?: boolean;
 }
 
 export interface SortedGroup {

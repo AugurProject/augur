@@ -81,7 +81,7 @@ interface TextInputProps {
   placeholder?: string;
   onChange: Function;
   value?: string;
-  maxLength?: string;
+  maxLength?: number;
   trailingLabel?: string;
   innerLabel?: string;
   autoCompleteList?: SortedGroup[];
@@ -280,7 +280,6 @@ export interface ReportingRadioBarProps extends BaseRadioButtonProp {
   userOutcomeCurrentRoundDispute: Getters.Accounts.UserCurrentOutcomeDisputeStake | null;
   hideButton?: boolean;
   isDisputing: boolean;
-  Gnosis_ENABLED: boolean;
 }
 
 export interface RadioTwoLineBarProps extends BaseRadioButtonProp {
@@ -664,7 +663,12 @@ export class CategoryMultiSelect extends Component<
     );
 
     return (
-      <ul className={classNames(Styles.CategoryMultiSelect, {[Styles.CustomPrimary]: customPrimary, [Styles.CustomTertiary]: customTertiary})}>
+      <ul
+        className={classNames(Styles.CategoryMultiSelect, {
+          [Styles.CustomPrimary]: customPrimary,
+          [Styles.CustomTertiary]: customTertiary,
+        })}
+      >
         <DropdownInputGroup
           defaultValue={selected[0]}
           staticLabel="Primary Category"
@@ -777,8 +781,8 @@ export const ReportingRadioBarGroup = ({
     radioButton => radioButton.stake.tentativeWinning
   );
   let winningStakeCurrent = '0';
-  let disputeAmount = '0';
   let notNewTentativeWinner = false;
+  let remainingState = '0';
   if (tentativeWinning) {
     const winning = disputeInfo.stakes.find(s => s.tentativeWinning);
     const disputeOutcome = disputeInfo.stakes.find(s => s.outcome === selected);
@@ -786,8 +790,11 @@ export const ReportingRadioBarGroup = ({
       notNewTentativeWinner = createBigNumber(winning.stakeCurrent).gt(
         disputeOutcome.bondSizeCurrent
       );
-      disputeAmount = formatAttoRep(disputeOutcome.bondSizeCurrent).formatted;
-      winningStakeCurrent = formatAttoRep(winning.stakeCurrent).formatted;
+      // double pre-filled to make new outcome tentative winner.
+      winningStakeCurrent = formatAttoRep(
+        createBigNumber(winning.stakeCurrent).times(2)
+      ).formatted;
+      remainingState = formatAttoRep(disputeOutcome.stakeRemaining).formatted;
     }
   }
 
@@ -797,8 +804,9 @@ export const ReportingRadioBarGroup = ({
         <section>
           <span>Tentative Outcome</span>
           <span>
-            Add Pre-emptive stake to Support this outcome if you believe it to
-            be correct.
+            Believe this is the correct outcome? Any REP you stake here will go
+            toward disputing in its favor, in the event that it is no longer the
+            Tentative Winner.
           </span>
           <ReportingRadioBar
             market={market}
@@ -831,8 +839,8 @@ export const ReportingRadioBarGroup = ({
         notNewTentativeWinner &&
         tentativeWinning.id !== selected && (
           <Error
-            header={`Filling this bond of ${disputeAmount} REP only completes this current round`}
-            subheader={`Tentative Winning outcome has ${winningStakeCurrent} REP already staked for next round. More REP will be needed to make this outcome the Tentative Winner. This will require an additional transaction.`}
+            header={`Filling this bond of ${remainingState} REP only completes this current round`}
+            subheader={`${winningStakeCurrent} additional REP will still be needed to make it Tentative Winning Outcome. This will require an additional transaction.`}
           />
         )}
       {radioButtons.map(
@@ -859,11 +867,13 @@ export const ReportingRadioBarGroup = ({
             />
           )
       )}
-      <span>
-        {!isDisputing
-          ? "Select Invalid if you believe this market's outcome was ambiguous or unverifiable."
-          : 'If you believe this market to be invalid, you can help fill the dispute bond of the official Invalid outcome below to make Invalid the new Tentative Outcome. Please check the resolution details above carefully.'}
-      </span>
+      {!market.isWarpSync && (
+        <span>
+          {!isDisputing
+            ? "Select Invalid if you believe this market's outcome was ambiguous or unverifiable."
+            : 'If you believe this market to be invalid, you can help fill the dispute bond of the official Invalid outcome below to make Invalid the new Tentative Outcome. Please check the resolution details above carefully.'}
+        </span>
+      )}
       {radioButtons.map(
         (radio, index) =>
           !radio.stake.tentativeWinning &&
@@ -947,11 +957,10 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
       userOutcomeCurrentRoundDispute,
       hideButton,
       isDisputing,
-      Gnosis_ENABLED,
     } = this.props;
 
     let { stake } = this.props;
-    const { disputeInfo, reportingState, marketType } = market;
+    const { disputeInfo, marketType } = market;
     const isScalar = marketType === SCALAR;
     if (isScalar) {
       for (const index in disputeInfo.stakes) {
@@ -983,7 +992,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
         })}
         role="button"
         onClick={e => {
-          !hideButton && updateChecked(id, isInvalid);
+          !checked && !hideButton && updateChecked(id, isInvalid);
         }}
       >
         {checked ? FilledRadio : EmptyRadio}
@@ -1023,9 +1032,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
               {stake && stake.tentativeWinning && (
                 <Subheaders
                   header="pre-filled stake"
-                  subheader={
-                    formatAttoRep(stake.stakeCurrent || ZERO).formatted
-                  }
+                  subheader={formatAttoRep(stake.stakeCurrent || ZERO).full}
                 />
               )}
               {checked && (
@@ -1231,7 +1238,6 @@ interface LocationDisplayProps {
   pages: Array<{}>;
 }
 
-
 export class LocationDisplay extends React.Component<LocationDisplayProps, {}> {
   scrollTo: any = null;
   container: any = null;
@@ -1242,11 +1248,14 @@ export class LocationDisplay extends React.Component<LocationDisplayProps, {}> {
 
   render() {
     const { pages, currentStep } = this.props;
-   
+
     return (
-      <div className={Styles.LocationDisplay} ref={container => {
-        this.container = container;
-      }}>
+      <div
+        className={Styles.LocationDisplay}
+        ref={container => {
+          this.container = container;
+        }}
+      >
         {pages.map((page: Object, index: Number) => (
           <React.Fragment key={index}>
             <span
@@ -1275,7 +1284,7 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
   };
 
   state: TextInputState = {
-    value: !this.props.value ? '' : this.props.value,
+    value: this.props.value === undefined ? '' : this.props.value,
     showList: false,
   };
   refDropdown: any = null;

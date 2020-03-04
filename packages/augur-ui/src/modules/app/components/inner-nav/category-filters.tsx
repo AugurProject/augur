@@ -124,7 +124,7 @@ export default class CategoryFilters extends React.Component<
               category={item.category}
               icon={item.icon}
               loading={true}
-              count={null} />;
+              count={null} />
           </div>
         );
       }

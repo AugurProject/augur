@@ -74,7 +74,7 @@ export const placeMarketTrade = ({
       dispatch(
         updateModal({
           type: MODAL_ERROR,
-          error: JSON.stringify(err)
+          error: err.message ? err.message : JSON.stringify(err),
         })
       );
       dispatch(

@@ -25,6 +25,21 @@
       margin: 0 @size-16;
       display: flex;
       align-items: center;
+
+      > span {
+        height: @size-19;
+        right: 96px;
+        width: @size-16;
+        margin-left: @size-10;
+      }
+
+      &.AlternateStyle {
+        > a > span {
+          .text-12-medium;
+
+          color: var(--color-secondary-text);
+        }
+      }
     }
 
     > li:hover {
@@ -41,7 +56,7 @@
       height: @size-35;
 
       > span {
-        .text-12-bold;
+        .text-12-semi-bold;
 
         align-self: center;
         color: var(--color-secondary-text);
@@ -104,12 +119,20 @@
       }
     }
 
-    > span {
-      height: @size-19;
-      position: absolute;
-      right: 96px;
-      width: @size-32;
-    }
+      path {
+        &:nth-child(odd) {
+          fill: var(--color-secondary-text);
+          stroke: none;
+        }
+
+        &:nth-child(even) {
+          stroke: var(--color-secondary-text);
+        }
+      }
+
+      @media @breakpoint-mobile {
+        display: none;
+      }
   }
 }
 
@@ -160,6 +183,14 @@ button.AddFunds {
       border-bottom: @size-1 solid var(--color-primary-text);
       border-top: @size-1 solid var(--color-secondary-text-50);
 
+      > li:nth-of-type(2) {
+        order: 3;
+      }
+
+      > li:nth-of-type(3) {
+        order: 2;
+      }
+
       > li:hover {
         &:not(.CreatetButton) {
 
@@ -182,6 +213,11 @@ button.AddFunds {
         }
       }
 
+      > li.FillSpace,
+      > li.AlternateStyle {
+        display: none;
+      }
+
       .Selected {
         border-bottom: @size-2 solid var(--color-primary-action);
 
@@ -197,4 +233,8 @@ button.AddFunds {
       }
     }
   }
+}
+
+.FillSpace {
+  flex: 1;
 }

@@ -1,8 +1,10 @@
 import { ContractAddresses, NetworkId } from '@augurproject/artifacts';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
 import { API } from '@augurproject/sdk/build/state/getter/API';
+import { WarpSyncGetter } from '@augurproject/sdk/build/state/getter/WarpSyncGetter';
 import { BulkSyncStrategy } from '@augurproject/sdk/build/state/sync/BulkSyncStrategy';
 import { WarpSyncStrategy } from '@augurproject/sdk/build/state/sync/WarpSyncStrategy';
+import * as IPFS from 'ipfs';
 import { configureDexieForNode } from '@augurproject/sdk/build/state/utils/DexieIDBShim';
 import {
   databasesToSync,
@@ -21,13 +23,17 @@ import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersPro
 import { BigNumber } from 'bignumber.js';
 import { ContractDependenciesEthers } from 'contract-dependencies-ethers';
 import { Block } from 'ethers/providers';
-import * as IPFS from 'ipfs';
 import { makeDbMock, makeProvider } from '../../libs';
 
 const mock = makeDbMock();
 
+const filterRetrievelFn = (ipfs: IPFS) => (ipfsPath: string) =>
+  ipfs
+    .cat(ipfsPath)
+    .then(item => item.toString())
+    .then(item => JSON.parse(item));
+
 describe('WarpController', () => {
-  const biggestNumber = new BigNumber(2).pow(256).minus(2);
   let addresses: ContractAddresses;
   let dependencies: ContractDependenciesEthers;
   let ipfs;
@@ -45,9 +51,6 @@ describe('WarpController', () => {
 
   beforeAll(async () => {
     configureDexieForNode(true);
-    ipfs = await IPFS.create({
-      repo: './data',
-    });
 
     seed = await loadSeedFile(defaultSeedPath, 'WarpSync');
 
@@ -70,14 +73,15 @@ describe('WarpController', () => {
     // partially populate db.
     await john.sync(170);
 
-    // I'm just assuming the upload block is 0. Shouldn't
-    // really be a problem that we are grabbing extra blocks.
     warpController = new WarpController(
       john.db,
-      ipfs,
+      john.augur,
       provider,
-      uploadBlockHeaders
+      uploadBlockHeaders,
+      ipfs,
+      filterRetrievelFn(ipfs)
     );
+    ipfs = await warpController.getIpfs();
     firstCheckpointFileHash = await warpController.createAllCheckpoints(
       await provider.getBlock(170)
     );
@@ -159,21 +163,30 @@ describe('WarpController', () => {
       const beginBlock = await provider.getBlock(targetBeginNumber);
       const endBlock = await provider.getBlock(targetEndNumber);
       const hash = await warpController.createCheckpoint(
-        beginBlock,
-        endBlock,
+        targetBeginNumber,
+        targetEndNumber
       );
 
-      console.log(
-        'await ipfs.cat(`${hash.Hash}`)',
-        (await ipfs.cat(`${hash.Hash}`)).toString()
-      );
-
-      const result = JSON.parse(
-        (await ipfs.cat(`${hash.Hash}`)).toString()
-      ).map(item => item.blockNumber);
+      const result = JSON.parse((await ipfs.cat(`${hash.Hash}`)).toString())[
+        'logs'
+      ].map(item => item.blockNumber);
 
       expect(Math.min(...result)).toEqual(targetBeginNumber);
       expect(Math.max(...result)).toEqual(targetEndNumber);
+    });
+  });
+
+  describe('getMostRecentWarpSync getter', () => {
+    test('should return the most recent warp sync data', async () => {
+      // This block range will encompass all the checkpoints.
+      const [begin, end] = await john.db.warpCheckpoints.getCheckpointBlockRange();
+      await expect(WarpSyncGetter.getMostRecentWarpSync(john.augur, john.db, undefined)).resolves.toEqual(
+        expect.objectContaining({
+          hash: secondCheckpointFileHash,
+          begin,
+          end,
+        })
+      );
     });
   });
 
@@ -181,7 +194,17 @@ describe('WarpController', () => {
     test('return array of checkpoints available', async () => {
       await expect(
         warpController.getAvailableCheckpointsByHash(secondCheckpointFileHash)
-      ).resolves.toEqual([0, 168, 176]);
+      ).resolves.toEqual([
+        expect.objectContaining({
+          Name: '0',
+        }),
+        expect.objectContaining({
+          Name: '168',
+        }),
+        expect.objectContaining({
+          Name: '176',
+        }),
+      ]);
     });
   });
 
@@ -281,38 +304,8 @@ describe('WarpController', () => {
             name: 'checkpoints',
             type: 'dir',
           }),
-          expect.objectContaining({
-            name: 'index',
-            type: 'file',
-          }),
-          expect.objectContaining({
-            name: 'tables',
-            type: 'dir',
-          }),
         ]);
       });
-    });
-  });
-
-  describe('non-empty dbs', () => {
-    // This is a spot check.
-    test('should have some logs', async () => {
-      const marketCreated = await ipfs.cat(
-        `${secondCheckpointFileHash}/tables/MarketCreated/index`
-      );
-      const splitLogs = marketCreated
-        .toString()
-        .split('\n')
-        .filter(log => log)
-        .map(log => {
-          try {
-            return JSON.parse(log);
-          } catch (e) {
-            console.error(e, log);
-          }
-        });
-
-      expect(splitLogs).toEqual(await john.db.MarketCreated.toArray());
     });
   });
 
@@ -355,9 +348,11 @@ describe('WarpController', () => {
       newJohnDB = await mock.makeDB(newJohn.augur);
       newJohnWarpController = new WarpController(
         newJohnDB,
-        ipfs,
+        john.augur,
         provider,
-        uploadBlockHeaders
+        uploadBlockHeaders,
+        ipfs,
+        filterRetrievelFn(ipfs)
       );
       newJohnApi = new API(newJohn.augur, Promise.resolve(newJohnDB));
       warpSyncStrategy = new WarpSyncStrategy(
@@ -367,9 +362,11 @@ describe('WarpController', () => {
 
       newJohnWarpController = new WarpController(
         newJohnDB,
-        ipfs,
+        john.augur,
         provider,
-        uploadBlockHeaders
+        uploadBlockHeaders,
+        ipfs,
+        filterRetrievelFn(ipfs)
       );
       newJohnApi = new API(newJohn.augur, Promise.resolve(newJohnDB));
 
@@ -426,7 +423,10 @@ describe('WarpController', () => {
           firstCheckpointBlockHeaders
         );
 
-        const firstBlockNumber = await fixtureBulkSyncStrategy.start(0, 170);
+        const firstBlockNumber = await fixtureBulkSyncStrategy.start(
+          0,
+          blockNumber
+        );
         const fixtureMarketList = await fixtureApi.route('getMarkets', {
           universe: addresses.Universe,
         });
@@ -454,6 +454,16 @@ describe('WarpController', () => {
             universe: addresses.Universe,
           })
         ).resolves.toEqual(rolledbackFixtureMarketList);
+      });
+
+      test('should populate checkpoint db', async () => {
+        // populate db.
+        const blockNumber = await warpSyncStrategy.start(
+          secondCheckpointFileHash
+        );
+        await expect(
+          newJohnDB.warpCheckpoints.table.toArray()
+        ).resolves.toEqual(await john.db.warpCheckpoints.table.toArray());
       });
     });
   });

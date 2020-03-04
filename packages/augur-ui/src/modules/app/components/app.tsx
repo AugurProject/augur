@@ -30,6 +30,7 @@ import {
   MODAL_NETWORK_CONNECT,
   MOBILE_MENU_STATES,
   TRADING_TUTORIAL,
+  THEMES,
 } from 'modules/common/constants';
 
 import Styles from 'modules/app/components/app.styles.less';
@@ -40,6 +41,7 @@ import {
   LoginAccount,
   EnvObject,
   Notification,
+  AccountBalances,
 } from 'modules/types';
 import ForkingBanner from 'modules/reporting/containers/forking-banner';
 import parseQuery, { parseLocation } from 'modules/routes/helpers/parse-query';
@@ -91,6 +93,7 @@ interface AppProps {
   showMigrateRepButton: boolean;
   theme: string;
   setTheme: Function;
+  walletBalances: AccountBalances;
   saveAffilateAddress: Function;
 }
 
@@ -110,31 +113,34 @@ export default class AppView extends Component<AppProps> {
       disabled: false,
     },
     {
-      title: 'Account Summary',
+      title: this.props.theme !== THEMES.TRADING ? 'My Account' : 'Account Summary',
       route: ACCOUNT_SUMMARY,
       requireLogin: true,
       showAlert: this.props.notifications.filter(item => item.isNew).length > 0,
     },
     {
-      title: 'Portfolio',
+      title: this.props.theme !== THEMES.TRADING ? 'My Bets' : 'Portfolio',
       route: MY_POSITIONS,
       requireLogin: true,
     },
     {
       title: 'Disputing',
       route: DISPUTING,
-      requireLogin: false,
+      requireLogin: true,
+      alternateStyle: true,
     },
     {
       title: 'Reporting',
       route: REPORTING,
-      requireLogin: false,
+      requireLogin: true,
+      alternateStyle: true,
     },
     {
       title: 'Create Market',
       route: CREATE_MARKET,
       requireLogin: true,
       button: true,
+      alternateStyle: true,
       disabled: !!this.props.universe.forkingInfo,
     },
   ];
@@ -206,7 +212,8 @@ export default class AppView extends Component<AppProps> {
       universe,
       updateCurrentBasePath,
       updateMobileMenuState,
-      sidebarStatus
+      sidebarStatus,
+      theme
     } = this.props;
     if (isMobile !== prevProps.isMobile) {
       updateMobileMenuState(MOBILE_MENU_STATES.CLOSED);
@@ -364,19 +371,24 @@ export default class AppView extends Component<AppProps> {
       isConnectionTrayOpen,
       updateConnectionTray,
       migrateV1Rep,
-      showMigrateRepButton,
+      walletBalances,
       updateModal,
       isHelpMenuOpen,
       updateHelpMenuState,
       notifications,
+      theme
     } = this.props;
-    this.sideNavMenuData[1].showAlert =
+    const sideNavMenuData = this.sideNavMenuData;
+    sideNavMenuData[1].title = theme !== THEMES.TRADING ? 'My Account' : 'Account Summary';
+    sideNavMenuData[2].title = theme !== THEMES.TRADING ? 'My Bets' : 'Portfolio';
+    sideNavMenuData[1].showAlert =
       notifications.filter(item => item.isNew).length > 0;
     const currentPath = parsePath(location.pathname)[0];
 
     const onTradingTutorial =
       parseQuery(location.search)[MARKET_ID_PARAM_NAME] === TRADING_TUTORIAL;
 
+    const showMigrateRepButton = walletBalances.legacyRep > 0 || walletBalances.legacyRepNonSafe > 0;
     return (
       <main>
         <HelmetTag {...APP_HEAD_TAGS} />
@@ -440,7 +452,7 @@ export default class AppView extends Component<AppProps> {
                   updateMobileMenuState(MOBILE_MENU_STATES.CLOSED);
                 }}
                 isLogged={isLogged || restoredAccount}
-                menuData={this.sideNavMenuData}
+                menuData={sideNavMenuData}
                 currentBasePath={sidebarStatus.currentBasePath}
                 isConnectionTrayOpen={isConnectionTrayOpen}
                 isHelpMenuOpen={isHelpMenuOpen}
@@ -450,16 +462,18 @@ export default class AppView extends Component<AppProps> {
                 showGlobalChat={() => this.props.showGlobalChat()}
                 migrateV1Rep={migrateV1Rep}
                 showMigrateRepButton={showMigrateRepButton}
+                walletBalances={walletBalances}
                 updateModal={updateModal}
               />
 
               {/* HIDDEN ON MOBILE */}
               <TopNav
                 isLogged={isLogged || restoredAccount}
-                menuData={this.sideNavMenuData}
+                menuData={sideNavMenuData}
                 currentBasePath={sidebarStatus.currentBasePath}
                 migrateV1Rep={migrateV1Rep}
                 showMigrateRepButton={showMigrateRepButton}
+                walletBalances={walletBalances}
                 updateModal={updateModal}
               />
             </section>
@@ -505,7 +519,7 @@ export default class AppView extends Component<AppProps> {
                 {!isLogged && (
                   <div className={Styles.BettingUI}>
                     <ExternalLinkText
-                      title={'Betting Exchange App'}
+                      title={'Betting UI'}
                       label={' - Coming Soon!'}
                       URL={'https://augur.net'}
                     />
