@@ -492,9 +492,7 @@ export class DisputingBondsView extends Component<
     } else {
       this.setState({ stakeError: '' });
       if (
-        (this.state.scalarError === '' &&
-          ((isScalar && inputScalarOutcome !== '') || isInvalid || !!warpSyncHash)) ||
-        !isScalar
+        ((isScalar && inputScalarOutcome !== '') || isInvalid || !!warpSyncHash) || !isScalar
       ) {
         this.setState({ disabled: false });
       }
