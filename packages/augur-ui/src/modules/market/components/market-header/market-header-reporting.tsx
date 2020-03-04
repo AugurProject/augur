@@ -1,8 +1,17 @@
 import React from 'react';
 import classNames from 'classnames';
 import Styles from 'modules/market/components/market-header/market-header-reporting.styles.less';
-import { REPORTING_STATE, SCALAR, INVALID_OUTCOME_NAME, SUBMIT_REPORT, SUBMIT_DISPUTE } from 'modules/common/constants';
-import { PrimaryButton, ProcessingButton } from 'modules/common/buttons';
+import {
+  REPORTING_STATE,
+  SCALAR,
+  INVALID_OUTCOME_NAME,
+  SUBMIT_REPORT,
+  SUBMIT_DISPUTE,
+  PROCEEDS_TO_CLAIM_TITLE,
+  TRANSACTIONS,
+  CLAIMMARKETSPROCEEDS,
+} from 'modules/common/constants';
+import { ProcessingButton } from 'modules/common/buttons';
 import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
 import { MarketData } from 'modules/types';
 import { Getters } from '@augurproject/sdk';
@@ -43,13 +52,12 @@ export const MarketHeaderReporting = ({
           </span>
         </div>
         {canClaimProceeds && (
-          <PrimaryButton
-            id="button"
-            text="Claim Proceeds"
+          <ProcessingButton
+            text={PROCEEDS_TO_CLAIM_TITLE}
+            action={() => claimMarketsProceeds([id])}
             disabled={!isLogged || !canClaimProceeds}
-            action={() => {
-              claimMarketsProceeds([id]);
-            }}
+            queueName={TRANSACTIONS}
+            queueId={CLAIMMARKETSPROCEEDS}
           />
         )}
       </div>
