@@ -13,6 +13,8 @@ const outcome0 = new BigNumber(0);
 const outcome1 = new BigNumber(1);
 
 export async function generateWarpSyncTestData(config: SDKConfiguration, seed: Seed) {
+  const metadata = {};
+
   const [db, provider] = await makeProviderWithDB(seed, ACCOUNTS);
 
   const john = await ContractAPI.userWrapper(
@@ -40,7 +42,6 @@ export async function generateWarpSyncTestData(config: SDKConfiguration, seed: S
   // Move timestamp ahead 12 hours.
   await provider.provider.send('evm_increaseTime', [SECONDS_IN_A_DAY.toNumber() / 2]);
 
-
   // Place orders
   const numShares = new BigNumber(10000000000000);
   const price = new BigNumber(22);
@@ -55,6 +56,7 @@ export async function generateWarpSyncTestData(config: SDKConfiguration, seed: S
     stringTo32ByteHex('42')
   );
 
+  metadata['checkpoint1'] = await provider.provider.getBlockNumber();
 
   await john.placeOrder(
     yesNoMarket.address,
@@ -80,6 +82,8 @@ export async function generateWarpSyncTestData(config: SDKConfiguration, seed: S
     stringTo32ByteHex(''),
     stringTo32ByteHex('42')
   );
+  metadata['checkpoint2'] = await provider.provider.getBlockNumber();
+
   await john.placeOrder(
     categoricalMarket.address,
     ORDER_TYPES.BID,
@@ -126,6 +130,8 @@ export async function generateWarpSyncTestData(config: SDKConfiguration, seed: S
     '42'
   );
 
+  metadata['checkpoint3'] = await provider.provider.getBlockNumber();
+
   // Move timestamp ahead 12 hours.
   await provider.provider.send('evm_increaseTime', [SECONDS_IN_A_DAY.toNumber() / 2]);
   await mary.fillOrder(
@@ -150,5 +156,8 @@ export async function generateWarpSyncTestData(config: SDKConfiguration, seed: S
     '43'
   );
 
-  return extractSeed(db);
+  return {
+    data: await extractSeed(db),
+    metadata,
+  };
 }

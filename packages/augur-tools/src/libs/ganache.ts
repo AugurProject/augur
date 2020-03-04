@@ -10,6 +10,11 @@ const levelup = require('levelup');
 import * as path from 'path';
 import * as fs from 'async-file';
 
+
+interface Metadata {
+  [item:string]: any
+}
+
 interface SeedCommon {
   addresses: ContractAddresses;
   contractsHash: string;
@@ -17,12 +22,16 @@ interface SeedCommon {
 
 export interface SeedFile extends SeedCommon{
   seeds: {
-    [seedName:string]: LevelDBRow[];
+    [seedName:string]: {
+      data: LevelDBRow[],
+      metadata: Metadata
+    };
   };
 }
 
 export interface Seed extends SeedCommon {
   data: LevelDBRow[];
+  metadata: Metadata;
 }
 
 export async function makeGanacheProvider(db: MemDown, accounts: Account[]): Promise<ethers.providers.Web3Provider> {
@@ -127,11 +136,12 @@ export async function extractSeed(db: MemDown):Promise<LevelDBRow[]> {
 
 }
 
-export async function createSeed(provider: EthersProvider, db: MemDown, addresses: ContractAddresses): Promise<Seed> {
+export async function createSeed(provider: EthersProvider, db: MemDown, addresses: ContractAddresses, metadata: Metadata = {}): Promise<Seed> {
   return {
     addresses,
     contractsHash: hashContracts(),
     data: await extractSeed(db),
+    metadata,
   };
 }
 
@@ -145,6 +155,6 @@ export async function loadSeedFile(seedFilePath: string, seedToLoad = 'default')
   return {
     contractsHash,
     addresses,
-    data: seeds[seedToLoad]
+    ...seeds[seedToLoad]
   }
 }

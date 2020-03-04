@@ -106,10 +106,7 @@ export function addGanacheScripts(flash: FlashSession) {
       if (this.noProvider()) return;
       if (this.noGanache()) return;
 
-      const name = args.name as string || 'default';
       const seed = await this.createSeed() as Seed;
-
-
       const warpSync = await generateWarpSyncTestData(this.config, seed);
 
       if (Boolean(args.save)) {
@@ -118,7 +115,10 @@ export function addGanacheScripts(flash: FlashSession) {
           addresses: seed.addresses,
           contractsHash: seed.contractsHash,
           seeds: {
-            'default': seed.data,
+            'default': {
+              data: seed.data,
+              metadata: {},
+            },
             warpSync
           }
         }, filepath);
