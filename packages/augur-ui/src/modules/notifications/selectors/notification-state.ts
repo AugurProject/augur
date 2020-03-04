@@ -28,6 +28,7 @@ import {
   SUBMIT_DISPUTE,
   TRANSACTIONS,
   SUBMIT_REPORT,
+  CLAIMMARKETSPROCEEDS,
 } from 'modules/common/constants';
 import userOpenOrders from 'modules/orders/selectors/user-open-orders';
 import store, { AppState } from 'store';
@@ -263,6 +264,8 @@ export const selectNotifications = createSelector(
         markets: accountMarketClaimablePositions.markets,
         totalProceeds: accountMarketClaimablePositions.totals.totalUnclaimedProceeds.toString(),
         id: NOTIFICATION_TYPES.proceedsToClaim,
+        queueName: TRANSACTIONS,
+        queueId: CLAIMMARKETSPROCEEDS,
       });
     }
 
@@ -344,6 +347,8 @@ const generateCards = (markets, type) => {
       isNew: true,
       title: PROCEEDS_TO_CLAIM_TITLE,
       buttonLabel: TYPE_VIEW_DETAILS,
+      queueName: TRANSACTIONS,
+      queueId: CLAIMMARKETSPROCEEDS,
     };
   } else if (type === NOTIFICATION_TYPES.marketIsMostLikelyInvalid) {
     defaults = {
