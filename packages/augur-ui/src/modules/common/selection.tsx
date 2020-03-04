@@ -60,6 +60,18 @@ interface PillSelectionState {
   selected: number;
 }
 
+interface TabProps {
+  options: SelectionOption[];
+  onChange(value: number): void;
+  defaultSelection: number;
+  large?: boolean;
+  small?: boolean;
+}
+
+interface TabState {
+  selected: number;
+}
+
 interface DotSelectionProps {
   children: JSX.Element[] | JSX.Element;
 }
@@ -382,6 +394,48 @@ export const PillSelection = ({
 
   return (
     <ul className={Styles.PillSelection}>
+      {options.map(
+        (option: SelectionOption): React.ReactNode =>
+          renderButton(option)
+      )}
+    </ul>
+  );
+}
+
+export const Tab = ({
+  options,
+  onChange,
+  defaultSelection = 0,
+  large,
+  small
+}: TabProps) => {
+  const [selected, setSelected] = useState(defaultSelection);
+  const buttonSelect = (option: SelectionOption) => {
+    if (option.id !== selected) {
+      setSelected(option.id);
+      onChange(option.id);
+    }
+  };
+
+  const renderButton = (option: SelectionOption): React.ReactNode => (
+    <li
+      className={classNames({
+        [Styles.Selected]: selected === option.id
+      })}
+      key={option.label}
+    >
+      <button onClick={() => buttonSelect(option)}>
+        {option.label}
+      </button>
+    </li>
+  );
+
+  return (
+    <ul 
+      className={classNames(Styles.Tab, {
+        [Styles.TabLarge]: large,
+        [Styles.TabSmall]: small,
+      })}>
       {options.map(
         (option: SelectionOption): React.ReactNode =>
           renderButton(option)
