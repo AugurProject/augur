@@ -39,6 +39,7 @@ const TopNav = ({
   walletBalances,
   updateModal,
 }: TopNavProps) => {
+
   const isCurrentItem = item => {
     if (item.route === 'markets' && currentBasePath === 'market') return true;
     return item.route === currentBasePath;
@@ -74,7 +75,6 @@ const TopNav = ({
               {index === SPREAD_INDEX && showMigrateRepButton && (
                 <li>
                   <div className={Styles.MigrateRep}>
-                  { walletBalances.legacyRep > 0 &&
                     <ProcessingButton
                       text={'Migrate V1 to V2 REP'}
                       action={() => migrateV1Rep()}
@@ -82,13 +82,6 @@ const TopNav = ({
                       queueId={MIGRATE_FROM_LEG_REP_TOKEN}
                       secondaryButton
                     />
-                  }
-                  { walletBalances.legacyRep <= 0 && walletBalances.legacyRepNonSafe > 0 &&
-                    <SecondaryButton
-                      text={'Migrate V1 REP'}
-                      action={() => migrateV1Rep()}
-                    />
-                  }
                   </div>
                   <span>
                     <label

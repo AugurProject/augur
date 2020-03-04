@@ -115,21 +115,13 @@ const SideNav = ({
             <div>
               {showMigrateRepButton && (
                 <span className={Styles.SideNavMigrateRep}>
-                  {walletBalances.legacyRep > 0 &&
-                    <ProcessingButton
-                      text={'Migrate V1 to V2 REP'}
-                      action={() => migrateV1Rep()}
-                      queueName={TRANSACTIONS}
-                      queueId={MIGRATE_FROM_LEG_REP_TOKEN}
-                      secondaryButton
-                    />
-                  }
-                  {walletBalances.legacyRep <= 0 && walletBalances.legacyRepNonSafe > 0 &&
-                    <SecondaryButton
-                      text={'Migrate V1 REP'}
-                      action={() => migrateV1Rep()}
-                    />
-                  }
+                  <ProcessingButton
+                    text={'Migrate V1 to V2 REP'}
+                    action={() => migrateV1Rep()}
+                    queueName={TRANSACTIONS}
+                    queueId={MIGRATE_FROM_LEG_REP_TOKEN}
+                    secondaryButton
+                  />
                   <label
                     className={classNames(Styles.SideNavMigrateTooltipHint)}
                     data-tip

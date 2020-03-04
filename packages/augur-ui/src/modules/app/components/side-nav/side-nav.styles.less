@@ -49,27 +49,31 @@
 
     &.showNav {
       left: 0;
-      
+
     }
   }
 }
 
 .SideNavMigrateRep {
+  display: flex;
+
   button {
     .mono-10-bold;
+
+    align-items: center;
+    display: flex;
+    flex-direction: row-reverse;
+    margin-right: @size-8;
     text-transform: uppercase;
   }
 }
 
 .SideNavMigrateTooltipHint {
-  display: inline;
-  position: relative;
-  top: 0.2rem;
-  left: 0.3rem;
+  margin: @size-10 0;
 
   > svg {
-    max-height: @size-16;
-    max-width: @size-16;
+    height: @size-16;
+    width: @size-16;
 
     > circle {
       fill: @color-secondary-action;

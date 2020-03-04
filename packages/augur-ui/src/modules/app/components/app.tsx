@@ -1,7 +1,7 @@
 // TODO -- this component needs to be broken up
 //         all logic related to sidebar(s) need to be housed w/in a separate component
 
-import React, { Component } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import classNames from 'classnames';
 import isWindows from 'utils/is-windows';
 import Modal from 'modules/modal/containers/modal-view';
@@ -100,6 +100,10 @@ export default class AppView extends Component<AppProps> {
     sdkEndpoint: null,
     useWeb3Transport: false,
   };
+
+  state = {
+    showMigrateRepButton: false
+  }
 
   sideNavMenuData = [
     {
@@ -207,13 +211,33 @@ export default class AppView extends Component<AppProps> {
       universe,
       updateCurrentBasePath,
       updateMobileMenuState,
-      sidebarStatus
+      sidebarStatus,
+      walletBalances,
     } = this.props;
     if (isMobile !== prevProps.isMobile) {
       updateMobileMenuState(MOBILE_MENU_STATES.CLOSED);
     }
     if (universe.forkingInfo !== prevProps.universe.forkingInfo) {
       this.sideNavMenuData[5].disabled = !!prevProps.universe.forkingInfo;
+    }
+
+    if (
+      walletBalances.legacyRep !== prevProps.walletBalances.legacyRep ||
+      walletBalances.legacyRepNonSafe !==
+        prevProps.walletBalances.legacyRepNonSafe
+    ) {
+      if (walletBalances.legacyRep > 0 || walletBalances.legacyRepNonSafe > 0) {
+        this.setState({ showMigrateRepButton: true });
+      } else {
+        if (prevProps.walletBalances.legacyRep > 0) {
+          // Show Success processing label for 3 seconds before hiding
+          setTimeout(() => {
+            this.setState({ showMigrateRepButton: false });
+          }, 3000);
+        } else {
+          this.setState({ showMigrateRepButton: false });
+        }
+      }
     }
 
     if (location !== prevProps.location) {
@@ -378,7 +402,6 @@ export default class AppView extends Component<AppProps> {
     const onTradingTutorial =
       parseQuery(location.search)[MARKET_ID_PARAM_NAME] === TRADING_TUTORIAL;
 
-    const showMigrateRepButton = walletBalances.legacyRep > 0 || walletBalances.legacyRepNonSafe > 0;
     return (
       <main>
         <HelmetTag {...APP_HEAD_TAGS} />
@@ -451,7 +474,7 @@ export default class AppView extends Component<AppProps> {
                 logout={() => this.props.logout()}
                 showGlobalChat={() => this.props.showGlobalChat()}
                 migrateV1Rep={migrateV1Rep}
-                showMigrateRepButton={showMigrateRepButton}
+                showMigrateRepButton={this.state.showMigrateRepButton}
                 walletBalances={walletBalances}
                 updateModal={updateModal}
               />
@@ -462,7 +485,7 @@ export default class AppView extends Component<AppProps> {
                 menuData={this.sideNavMenuData}
                 currentBasePath={sidebarStatus.currentBasePath}
                 migrateV1Rep={migrateV1Rep}
-                showMigrateRepButton={showMigrateRepButton}
+                showMigrateRepButton={this.state.showMigrateRepButton}
                 walletBalances={walletBalances}
                 updateModal={updateModal}
               />
