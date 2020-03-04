@@ -1,9 +1,8 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { selectMarket } from 'modules/markets/selectors/market';
 import { startClaimingMarketsProceeds } from 'modules/positions/actions/claim-markets-proceeds';
 import { selectCurrentTimestampInSeconds } from 'store/select-state';
-import { createBigNumber, BigNumber } from 'utils/create-big-number';
+import { createBigNumber } from 'utils/create-big-number';
 import { getGasPrice } from 'modules/auth/selectors/get-gas-price';
 import {
   formatGasCostToEther,
@@ -148,7 +147,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     descriptionMessage: [
       {
         preText: 'You currently have a total of',
-        boldText: totalUnclaimedProceedsFormatted.formatted,
+        boldText: totalUnclaimedProceedsFormatted.full,
       },
     ],
     rows: claimableMarkets,
