@@ -31,6 +31,8 @@ import Styles from 'modules/market-cards/common.styles.less';
 import MarketCard from 'modules/market-cards/market-card';
 import { selectSortedDisputingOutcomes } from 'modules/markets/selectors/market';
 import { calculatePosition } from 'modules/market/components/market-scalar-outcome-display/market-scalar-outcome-display';
+import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
+import { MarketInfo } from '@augurproject/sdk/src/state/getter/Markets';
 
 export interface PercentProps {
   percent: number;
@@ -459,6 +461,40 @@ export const ResolvedOutcomes = (props: ResolvedOutcomesProps) => {
           </div>
         </div>
       )}
+    </div>
+  );
+};
+
+export interface TentativeWinnerProps {
+  tentativeWinner: Getters.Markets.StakeDetails;
+  market: MarketInfo;
+  dispute: Function;
+  canDispute: boolean;
+}
+
+export const TentativeWinner = (props: TentativeWinnerProps) => {
+  return (
+    <div className={classNames(Styles.ResolvedOutcomes, Styles.TentativeWinner)}>
+      <span>Tentative Winner</span>
+      <span>
+        {props.tentativeWinner.isInvalidOutcome
+          ? INVALID_OUTCOME_NAME
+          : getOutcomeNameWithOutcome(
+            props.market,
+            props.tentativeWinner.outcome,
+            props.tentativeWinner.isInvalidOutcome,
+            true
+          )}
+      </span>
+      <ProcessingButton
+            small
+            queueName={SUBMIT_DISPUTE}
+            queueId={props.market.id}
+            secondaryButton
+            disabled={!props.canDispute}
+            text={'SUPPORT OR DISPUTE OUTCOME'}
+            action={() => props.dispute()}
+          />
     </div>
   );
 };
