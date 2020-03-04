@@ -441,6 +441,7 @@ export class DisputingBondsView extends Component<
       stakeRemaining,
       tentativeWinning,
       isInvalid,
+      warpSyncHash,
     } = this.props;
     let inputToAttoRep = null;
     const { isScalar } = this.state;
@@ -452,11 +453,12 @@ export class DisputingBondsView extends Component<
       );
     }
     if (
-      isNaN(Number(inputStakeValue)) ||
+      !!!warpSyncHash &&
+      (isNaN(Number(inputStakeValue)) ||
       inputStakeValue === '' ||
       inputStakeValue === '0' ||
       inputStakeValue === '.' ||
-      inputStakeValue === '0.'
+      inputStakeValue === '0.')
     ) {
       this.setState({ stakeError: 'Enter a valid number', disabled: true });
       return updateInputtedStake({ inputStakeValue, ZERO });
@@ -491,7 +493,7 @@ export class DisputingBondsView extends Component<
       this.setState({ stakeError: '' });
       if (
         (this.state.scalarError === '' &&
-          ((isScalar && inputScalarOutcome !== '') || isInvalid)) ||
+          ((isScalar && inputScalarOutcome !== '') || isInvalid || !!warpSyncHash)) ||
         !isScalar
       ) {
         this.setState({ disabled: false });
