@@ -45,6 +45,7 @@ import {
   MIGRATE_FROM_LEG_REP_TOKEN,
   BUYPARTICIPATIONTOKENS,
   SUBMIT_DISPUTE,
+  CLAIMMARKETSPROCEEDS,
 } from 'modules/common/constants';
 import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
@@ -460,6 +461,7 @@ export const handleTradingProceedsClaimedLog = (
         params: { ...log },
       })
     );
+    dispatch(removePendingTransaction(CLAIMMARKETSPROCEEDS));
   }
 };
 
@@ -664,6 +666,7 @@ export const handleTokensMintedLog = (logs: Logs.TokensMinted[]) => (
             status: TXEventName.Success,
             timestamp: getState().blockchain.currentAugurTimestamp * 1000,
             name: MIGRATE_FROM_LEG_REP_TOKEN,
+            toast: true,
           }, false));
         dispatch(removePendingTransaction(MIGRATE_FROM_LEG_REP_TOKEN));
       }

@@ -306,6 +306,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
             createBigNumber(newOrder.totalOrderValue.fullPrecision),
             {
               decimalsRounded: UPPER_FIXED_PRECISION_BOUND,
+              roundDown: false,
             }
           ).roundedValue;
 
@@ -359,6 +360,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
 
         const numShares = formatShares(createBigNumber(newOrder.numShares), {
           decimalsRounded: UPPER_FIXED_PRECISION_BOUND,
+          roundDown: false,
         }).rounded;
 
         const formattedGasCost = formatGasCostToEther(

@@ -932,20 +932,11 @@ export async function claimMarketsProceedsEstimateGas(
   fingerprint: string = getFingerprint(),
 ) {
   const augur = augurSdk.get();
-
-  if (markets.length > 1) {
-    return augur.contracts.augurTrading.claimMarketsProceeds_estimateGas(
-      markets,
-      shareHolder,
-      fingerprint
-    );
-  } else {
-    return augur.contracts.augurTrading.claimTradingProceeds_estimateGas(
-      markets[0],
-      shareHolder,
-      fingerprint
-    );
-  }
+  return augur.contracts.augurTrading.claimMarketsProceeds_estimateGas(
+    markets,
+    shareHolder,
+    fingerprint
+  );
 }
 
 export async function claimMarketsProceeds(
@@ -954,20 +945,11 @@ export async function claimMarketsProceeds(
   fingerprint: string = formatBytes32String('11'),
 ) {
   const augur = augurSdk.get();
-
-  if (markets.length > 1) {
-    augur.contracts.augurTrading.claimMarketsProceeds(
-      markets,
-      shareHolder,
-      fingerprint
-    );
-  } else {
-    augur.contracts.augurTrading.claimTradingProceeds(
-      markets[0],
-      shareHolder,
-      fingerprint
-    );
-  }
+  augur.contracts.augurTrading.claimMarketsProceeds(
+    markets,
+    shareHolder,
+    fingerprint
+  );
 }
 
 export async function migrateThroughOneForkEstimateGas(
