@@ -62,7 +62,7 @@ function toCapitalizeCase(label) {
 export function getInfo(params: any, status: string, marketInfo: MarketData) {
   const outcome = new BigNumber(params.outcome || params._outcome).toString();
   const outcomeDescription = getOutcomeNameWithOutcome(marketInfo, outcome);
-  let orderType = params.orderType === HEX_BUY ? BUY : SELL;
+  let orderType = params.orderType === HEX_BUY || params.orderType === BUY_INDEX ? BUY : SELL;
   if (status === TXEventName.Failure) {
     orderType =
       new BigNumber(params._direction).toNumber() === BUY_INDEX ? BUY : SELL;
@@ -192,16 +192,29 @@ export default function setAlertText(alert: any, callback: Function) {
         break;
 
       case REDEEMSTAKE:
-        alert.title = 'Redeem participation tokens';
+        let participation = false;
+        if (alert.params && alert.params.attoParticipationTokens) {
+          participation = true;
+        }
+        alert.title = participation ? 'Redeem participation tokens' : 'REP Stake Redeemed';
         if (!alert.description && alert.params) {
-          const tokens = formatRep(
-            convertAttoValueToDisplayValue(createBigNumber(alert.params.attoParticipationTokens)).toString()
-          );
-          alert.description = `Redeemed ${
-            tokens.formatted
-          } Participation Token${
-            createBigNumber(tokens.value).eq(ONE) ? '' : 's'
-          }`;
+          if (participation) {
+            const tokens = formatRep(
+              convertAttoValueToDisplayValue(createBigNumber(alert.params.attoParticipationTokens)).toString()
+            );
+            alert.description = `Redeemed ${
+              tokens.formatted
+            } Participation Token${
+              createBigNumber(tokens.value).eq(ONE) ? '' : 's'
+            }`;
+          } else {
+            const REPVal = formatRep(
+              convertAttoValueToDisplayValue(createBigNumber(alert.params.amountRedeemed)).toString()
+            );
+            alert.description = `${
+              REPVal.formatted
+            } REP stake redeemed`;
+          } 
         }
         break;
 

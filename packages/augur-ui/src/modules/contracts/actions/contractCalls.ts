@@ -462,6 +462,7 @@ export interface doReportDisputeAddStake {
 }
 
 export async function doInitialReport_estimaetGas(report: doReportDisputeAddStake) {
+  if(report.isWarpSync) return doInitialReportWarpSync_estimaetGas(report);
   const market = getMarket(report.marketId);
   if (!market) return false;
   const payoutNumerators = await getPayoutNumerators(report);
@@ -473,10 +474,35 @@ export async function doInitialReport_estimaetGas(report: doReportDisputeAddStak
 }
 
 export async function doInitialReport(report: doReportDisputeAddStake) {
+  if(report.isWarpSync) return doInitialReportWarpSync(report);
   const market = getMarket(report.marketId);
   if (!market) return false;
   const payoutNumerators = await getPayoutNumerators(report);
   return market.doInitialReport(
+    payoutNumerators,
+    report.description,
+    createBigNumber(report.attoRepAmount || '0')
+  );
+}
+
+export async function doInitialReportWarpSync_estimaetGas(report: doReportDisputeAddStake) {
+  const Augur = augurSdk.get();
+  const universe = Augur.contracts.universe.address;
+  const payoutNumerators = await getPayoutNumerators(report);
+  return Augur.contracts.warpSync.doInitialReport_estimateGas(
+    universe,
+    payoutNumerators,
+    report.description,
+    createBigNumber(report.attoRepAmount || '0')
+  );
+}
+
+export async function doInitialReportWarpSync(report: doReportDisputeAddStake) {
+  const Augur = augurSdk.get();
+  const universe = Augur.contracts.universe.address;
+  const payoutNumerators = await getPayoutNumerators(report);
+  return Augur.contracts.warpSync.doInitialReport(
+    universe,
     payoutNumerators,
     report.description,
     createBigNumber(report.attoRepAmount || '0')

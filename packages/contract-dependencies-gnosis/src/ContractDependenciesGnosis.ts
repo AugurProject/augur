@@ -325,11 +325,12 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
         const exception = (response.data || {}).exception;
         const status = response.status;
         const isServerError = status >= 500;
+        const isMultiError = 'SafeMultisigTxExists';
         console.error(`Gnosis Relay ${status} Error: ${exception}`);
         if (exception && exception.includes('There are too many transactions in the queue')) {
           throw TransactionStatus.FEE_TOO_LOW;
-        } else if (isServerError || exception && exception.includes('funds')) {
-          // In the event of a 5XX error or when the relayer has no funds we should consider the relay down
+        } else if (isServerError || exception && exception.includes('funds') || exception && exception.includes(isMultiError)) {
+          // In the event of a SafeMultisigTxExists, 5XX error or when the relayer has no funds we should consider the relay down
           this.setUseRelay(false);
           this.setStatus(GnosisSafeState.ERROR);
           throw TransactionStatus.RELAYER_DOWN;
