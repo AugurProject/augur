@@ -42,7 +42,7 @@ const EVENTS = {
   [SubscriptionEventName.MarketsUpdated]: wrapLogHandler(
     handleMarketsUpdatedLog
   ),
-  [SubscriptionEventName.GnosisSafeStatus]: wrapLogHandler(
+  [SubscriptionEventName.WalletStatus]: wrapLogHandler(
     handleGnosisStateUpdate
   ),
   [SubscriptionEventName.ReportingStateChanged]: wrapLogHandler(

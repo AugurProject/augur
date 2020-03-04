@@ -40,6 +40,7 @@
     "@augurproject/core": "2.0.0-alpha.2",
     "@augurproject/ethersjs-provider": "2.0.0-alpha.2",
     "@augurproject/sdk": "2.0.0-alpha.2",
+    "@openzeppelin/gsn-helpers": "0.2.3",
     "blockstream-adapters": "2.0.0-alpha.2",
     "commander": "4.1.0",
     "deepmerge": "^4.2.2",

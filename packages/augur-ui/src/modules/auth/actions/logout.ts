@@ -38,7 +38,7 @@ export function logout() {
 
     // Gnosis cleanup
     if (augurSdk && augurSdk.sdk) {
-      augurSdk.sdk.setUseGnosisSafe(false);
+      augurSdk.sdk.setUseWallet(false);
       augurSdk.sdk.gnosis.augur.setGnosisStatus(null);
     }
     dispatch(updateAppStatus(GNOSIS_ENABLED, false));

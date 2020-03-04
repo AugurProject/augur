@@ -1,7 +1,6 @@
 import { WSClient } from '@0x/mesh-rpc-client';
 import { ContractAddresses } from '@augurproject/artifacts';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
-import { IGnosisRelayAPI } from '@augurproject/gnosis-relay-api';
 import {
   Augur,
   BrowserMesh,
@@ -14,14 +13,12 @@ import { DB } from '@augurproject/sdk/build/state/db/DB';
 import { BlockAndLogStreamerSyncStrategy } from '@augurproject/sdk/build/state/sync/BlockAndLogStreamerSyncStrategy';
 import { BulkSyncStrategy } from '@augurproject/sdk/build/state/sync/BulkSyncStrategy';
 import { BigNumber } from 'bignumber.js';
-import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis/build';
 import { Account } from '../constants';
-import { makeGnosisDependencies, makeSigner } from './blockchain';
+import { makeGSNDependencies, makeSigner } from './blockchain';
 import { ContractAPI } from './contract-api';
 import { makeDbMock } from './MakeDbMock';
 import { API } from '@augurproject/sdk/build/state/getter/API';
-
-const biggestNumber = new BigNumber(2).pow(256).minus(2);
+import { ContractDependenciesGSN } from 'contract-dependencies-gsn';
 
 export class TestContractAPI extends ContractAPI {
   protected bulkSyncStrategy: BulkSyncStrategy;
@@ -34,17 +31,14 @@ export class TestContractAPI extends ContractAPI {
     provider: EthersProvider,
     addresses: ContractAddresses,
     connector: Connectors.BaseConnector = new EmptyConnector(),
-    gnosisRelay: IGnosisRelayAPI = undefined,
     meshClient: WSClient = undefined,
     meshBrowser: BrowserMesh = undefined,
   ) {
     const signer = await makeSigner(account, provider);
-    const dependencies = makeGnosisDependencies(
+    const dependencies = await makeGSNDependencies(
       provider,
-      gnosisRelay,
       signer,
-      addresses.Cash,
-      new BigNumber(0),
+      addresses.AugurWalletRegistry,
       null,
       account.publicKey,
     );
@@ -74,7 +68,7 @@ export class TestContractAPI extends ContractAPI {
   constructor(
     readonly augur: Augur,
     readonly provider: EthersProvider,
-    readonly dependencies: ContractDependenciesGnosis,
+    readonly dependencies: ContractDependenciesGSN,
     public account: Account,
     public db: DB,
   ) {

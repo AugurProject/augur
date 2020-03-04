@@ -3,23 +3,12 @@ import { JsonRpcProvider } from 'ethers/providers';
 import * as _ from 'lodash';
 import { Addresses, ContractAddresses, NetworkId } from '@augurproject/artifacts';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
-import { GnosisRelayAPI, GnosisSafeState, } from '@augurproject/gnosis-relay-api';
 import { Connectors } from '@augurproject/sdk';
 import { ACCOUNTS, TestContractAPI } from '@augurproject/tools';
-import { DB } from '@augurproject/sdk/build/state/db/DB';
-import { API } from '@augurproject/sdk/build/state/getter/API';
 import { AllOrders, Order, } from '@augurproject/sdk/build/state/getter/OnChainTrading';
-import { BulkSyncStrategy } from '@augurproject/sdk/build/state/sync/BulkSyncStrategy';
 import { stringTo32ByteHex, } from '@augurproject/tools/build/libs/Utils';
-import { makeDbMock } from '../../libs';
 
-async function getSafe(person: TestContractAPI): Promise<string> {
-  return person.augur.contracts.gnosisSafeRegistry.getSafe_(
-    person.account.publicKey
-  );
-}
-
-describe('3rd Party :: Gnosis :: ', () => {
+describe('3rd Party :: GSN :: ', () => {
   let john: TestContractAPI;
   let providerJohn: EthersProvider;
   let networkId: NetworkId;
@@ -37,11 +26,10 @@ describe('3rd Party :: Gnosis :: ', () => {
 
     const connectorJohn = new Connectors.DirectConnector();
     john = await TestContractAPI.userWrapper(
-      ACCOUNTS[0],
+      ACCOUNTS[7],
       providerJohn,
       addresses,
       connectorJohn,
-      new GnosisRelayAPI('http://localhost:8888/api/'),
       undefined,
       undefined
     );
@@ -51,32 +39,39 @@ describe('3rd Party :: Gnosis :: ', () => {
 
     const funderCash = new BigNumber(10).pow(26);
     await john.faucet(funderCash);
-    await john.transferCash(ACCOUNTS[7].publicKey, funderCash);
+    await john.transferCash(ACCOUNTS[0].publicKey, funderCash);
 
-    // setup gnosis
-    await john.faucet(funderCash);
-    const safe = await john.fundSafe();
-    const safeStatus = await john.getSafeStatus(safe);
-    console.log(`Safe ${safe}: ${safeStatus}`);
-    expect(safeStatus).toBe(GnosisSafeState.AVAILABLE);
+    await john.getOrCreateWallet();
+    john.setUseWallet(true);
+    john.setUseRelay(true);
 
-    await john.augur.setGasPrice(new BigNumber(9));
-    john.setGnosisSafeAddress(safe);
-    john.setUseGnosisSafe(true);
-    john.setUseGnosisRelay(true);
+    await john.augur.setGasPrice(new BigNumber(20 * 10**9));
   }, 120000);
 
-  test('State API :: Gnosis :: getOrders', async () => {
+  test('State API :: GSN :: getOrders', async () => {
+    const walletAddress = await john.getWalletAddress(john.account.publicKey);
+
     // Create a market
+    console.log(`TRYING TO CREATE A MARKET`);
     const market = await john.createReasonableMarket([
       stringTo32ByteHex('A'),
       stringTo32ByteHex('B'),
     ]);
     await john.sync();
 
+    // Faucet some REP asnd confirm the wallet recieves it
+    const repAmount = new BigNumber(1e10);
+    const repBalance = await john.getRepBalance(walletAddress);
+    console.log('GETTING REP');
+    await john.repFaucet(repAmount);
+    const newRepBalance = await john.getRepBalance(walletAddress);
+    await expect(newRepBalance.toFixed()).toBe(repBalance.plus(repAmount).toFixed());
+
     // Give John enough cash to pay for the 0x order.
 
-    await john.faucet(new BigNumber(1e22));
+    const cashAmount = new BigNumber(1e22);
+    console.log('GETTING MONEY FOR ORDER');
+    await john.faucetOnce(cashAmount, john.account.publicKey);
 
     // Place an order
     const bid = new BigNumber(0);
@@ -104,6 +99,6 @@ describe('3rd Party :: Gnosis :: ', () => {
     const order: Order = _.values(orders[market.address][0][0])[0];
     expect(order).toBeDefined();
     expect(order.price).toBe('0.22');
-    expect(order.owner.toLowerCase()).toBe((await getSafe(john)).toLowerCase());
+    expect(order.owner.toLowerCase()).toBe(walletAddress.toLowerCase());
   }, 120000);
 });

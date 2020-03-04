@@ -1,15 +1,13 @@
 import { ContractAddresses, NetworkId } from '@augurproject/artifacts';
 import { ContractInterfaces } from '@augurproject/core';
-import { GnosisSafeState, GnosisSafeStateReponse } from '@augurproject/gnosis-relay-api';
 import { BigNumber } from 'bignumber.js';
 import { EthersSigner, TransactionStatus, TransactionStatusCallback } from 'contract-dependencies-ethers';
-import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis';
+import { ContractDependenciesGSN, WalletState } from 'contract-dependencies-gsn';
 import { TransactionResponse } from 'ethers/providers';
 import { Arrayish } from 'ethers/utils';
 import { getAddress } from 'ethers/utils/address';
 import { ContractEvents } from './api/ContractEvents';
 import { Contracts } from './api/Contracts';
-import { Gnosis, GnosisSafeStatusPayload } from './api/Gnosis';
 import { HotLoading, DisputeWindow, GetDisputeWindowParams } from './api/HotLoading';
 import { Liquidity } from './api/Liquidity';
 import { CreateYesNoMarketParams, CreateCategoricalMarketParams, CreateScalarMarketParams, Market } from './api/Market';
@@ -33,8 +31,10 @@ import { Users } from './state/getter/Users';
 import { WarpSyncGetter } from './state/getter/WarpSyncGetter';
 import { ZeroXOrdersGetters } from './state/getter/ZeroXOrdersGetters';
 import { WarpSync } from './api/WarpSync';
-import { Address } from './state/logs/types';
 import { Subscriptions } from './subscriptions';
+import axios from 'axios';
+import { GSN } from './api/GSN';
+
 
 export class Augur<TProvider extends Provider = Provider> {
   syncableFlexSearch: SyncableFlexSearch;
@@ -44,8 +44,8 @@ export class Augur<TProvider extends Provider = Provider> {
   readonly onChainTrade: OnChainTrade;
   readonly trade: Trade;
   readonly market: Market;
-  readonly gnosis: Gnosis;
   readonly warpSync: WarpSync;
+  readonly gsn: GSN;
 
   readonly universe: Universe;
   readonly liquidity: Liquidity;
@@ -79,7 +79,7 @@ export class Augur<TProvider extends Provider = Provider> {
 
   constructor(
     readonly provider: TProvider,
-    readonly dependencies: ContractDependenciesGnosis,
+    readonly dependencies: ContractDependenciesGSN,
     readonly networkId: NetworkId,
     readonly addresses: ContractAddresses,
     public connector: BaseConnector = new EmptyConnector(),
@@ -94,7 +94,6 @@ export class Augur<TProvider extends Provider = Provider> {
     }
 
     this.events = new Subscriptions(augurEmitter);
-    this.events.on(SubscriptionEventName.GnosisSafeStatus, this.updateGnosisSafe.bind(this));
     this.events.on(SubscriptionEventName.SDKReady, () => {
       this._sdkReady = true;
       console.log('SDK is ready')
@@ -115,7 +114,6 @@ export class Augur<TProvider extends Provider = Provider> {
       this.addresses.ShareToken,
       this.addresses.Exchange,
       );
-    this.gnosis = new Gnosis(this.provider, this, this.dependencies);
     this.warpSync = new WarpSync(this);
     this.hotLoading = new HotLoading(this);
     this.onChainTrade = new OnChainTrade(this);
@@ -123,12 +121,13 @@ export class Augur<TProvider extends Provider = Provider> {
     if (enableFlexSearch && !this.syncableFlexSearch) {
       this.syncableFlexSearch = new SyncableFlexSearch();
     }
+    this.gsn = new GSN(this.provider, this, this.dependencies);
     this.registerTransactionStatusEvents();
   }
 
   static async create<TProvider extends Provider = Provider>(
     provider: TProvider,
-    dependencies: ContractDependenciesGnosis,
+    dependencies: ContractDependenciesGSN,
     addresses: ContractAddresses,
     connector: BaseConnector = new SingleThreadConnector(),
     zeroX: ZeroX = null,
@@ -177,8 +176,8 @@ export class Augur<TProvider extends Provider = Provider> {
 
   async getAccount(): Promise<string | null> {
     let account = this.dependencies.address;
-    if (this.dependencies.useSafe && this.dependencies.safeAddress) {
-      account = this.dependencies.safeAddress;
+    if (this.dependencies.useWallet && this.dependencies.status == WalletState.AVAILABLE) {
+      account = this.dependencies.walletAddress;
     } else if (!account) {
       account = await this.dependencies.signer.getAddress();
     }
@@ -198,53 +197,40 @@ export class Augur<TProvider extends Provider = Provider> {
     await this.dependencies.signer.sendTransaction(ethersTransaction);
   }
 
-  async updateGnosisSafe(payload: GnosisSafeStatusPayload): Promise<void> {}
-
   setGasPrice(gasPrice: BigNumber): void {
     this.dependencies.setGasPrice(gasPrice);
   }
 
-  setGnosisSafeAddress(safeAddress: string): void {
-    this.dependencies.setSafeAddress(safeAddress);
-  }
-
-  setGnosisStatus(status: GnosisSafeState): void {
+  setWalletStatus(status: WalletState): void {
     this.dependencies.setStatus(status);
   }
 
-  getGnosisStatus(): GnosisSafeState {
+  getWalletStatus(): WalletState {
     return this.dependencies.getStatus();
   }
 
-  setUseGnosisSafe(useSafe: boolean): void {
-    this.dependencies.setUseSafe(useSafe);
+  setUseWallet(useSafe: boolean): void {
+    this.dependencies.setUseWallet(useSafe);
   }
 
-  setUseGnosisRelay(useRelay: boolean): void {
+  setUseRelay(useRelay: boolean): void {
     this.dependencies.setUseRelay(useRelay);
   }
 
-  getUseGnosisSafe(): boolean {
-    return this.dependencies.useSafe;
-  }
-
-  checkSafe(owner:Address, safe: Address): Promise<GnosisSafeStateReponse> {
-    return this.gnosis.getGnosisSafeDeploymentStatusViaRelay({
-      owner,
-      safe,
-    });
+  getUseWallet(): boolean {
+    return this.dependencies.useWallet;
   }
 
   async getGasStation() {
-    return await this.gnosis.gasStation();
+    try {
+      const result = await axios.get("https://ethgasstation.info/json/ethgasAPI.json");
+      return result.data
+    } catch (error) {
+      throw error;
+    }
   }
 
   async getGasConfirmEstimate() {
-    if(!this.getUseGnosisSafe()) {
-      console.log("When not using gnosis safe, Augur doesn't properly estimate the amount of time a transaction should take.")
-      return 180;
-    }
-
     var gasLevels = await this.getGasStation();
     var recommended = (parseInt(gasLevels["standard"]) + 1000000000);
     var fast = (parseInt(gasLevels["fast"]) + 1000000000);

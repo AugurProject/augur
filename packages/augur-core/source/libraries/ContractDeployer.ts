@@ -21,7 +21,6 @@ import {
   ProfitLoss,
   SimulateTrade,
   ZeroXTrade,
-  GnosisSafeRegistry,
   WarpSync,
   EthExchange,
   AugurWalletRegistry,
@@ -138,19 +137,6 @@ Deploying to: ${networkConfiguration.networkName}
             await this.uploadTestDaiContracts();
         }
 
-        // Proxy Factory & Gnosis Safe
-        if (this.configuration.isProduction || externalAddresses.GnosisSafe || externalAddresses.ProxyFactory) {
-            if (!(externalAddresses.ProxyFactory && externalAddresses.GnosisSafe)) {
-                throw new Error('Must provide ALL Gnosis contracts if any are provided');
-            }
-
-            await this.augur!.registerContract(stringTo32ByteHex('ProxyFactory'), externalAddresses.ProxyFactory);
-
-            await this.augur!.registerContract(stringTo32ByteHex('GnosisSafe'), externalAddresses.GnosisSafe);
-        } else {
-            await this.uploadGnosisContracts();
-        }
-
         // 0x Exchange
         if (this.configuration.isProduction || externalAddresses.Exchange) {
             if (!externalAddresses.Exchange) throw new Error('Must provide Exchange (ZeroXExchange)');
@@ -167,13 +153,14 @@ Deploying to: ${networkConfiguration.networkName}
                 console.log(`Relay Hub is already deployed to this environment. Skipping Deploy.`)
             } else {
                 console.log(`Deploying Relay Hub.`)
-                await this.signer.sendTransaction({
+                let response = await this.signer.sendTransaction({
                     to: RELAY_HUB_DEPLOYER_ADDRESS,
                     data: '0x00',
                     value: '0x3A4965BF58A40000',
                 })
-                const response = await this.provider.sendTransaction(RELAY_HUB_SIGNED_DEPLOY_TX);
-                const reciept = await response.wait();
+                let reciept = await response.wait();
+                response = await this.provider.sendTransaction(RELAY_HUB_SIGNED_DEPLOY_TX);
+                reciept = await response.wait();
                 if (reciept.contractAddress !== RELAY_HUB_ADDRESS) {
                     throw new Error(`Relay Hub deployment failed. Deployed address: ${reciept.contractAddress}`);
                 }
@@ -329,14 +316,6 @@ Deploying to: ${networkConfiguration.networkName}
         await cash.initialize(this.augur!.address);
     }
 
-    private async uploadGnosisContracts(): Promise<void> {
-        const proxyFactoryContract = await this.contracts.get('ProxyFactory');
-        proxyFactoryContract.address = await this.uploadAndAddToAugur(proxyFactoryContract, 'ProxyFactory', []);
-
-        const gnosisSafeContract = await this.contracts.get('GnosisSafe');
-        gnosisSafeContract.address = await this.uploadAndAddToAugur(gnosisSafeContract, 'GnosisSafe', []);
-    }
-
     async uploadLegacyRep(): Promise<string> {
         const contract = await this.contracts.get('LegacyReputationToken');
         contract.address = await this.uploadAndAddToAugur(contract, 'LegacyReputationToken');
@@ -434,7 +413,6 @@ Deploying to: ${networkConfiguration.networkName}
         if (contractName === 'Cash') return;
         if (contractName === 'CashFaucet') return;
         if (contractName === 'CashFaucetProxy') return;
-        if (contractName === 'GnosisSafe') return;
         // 0x
         if ([
           'ERC20Proxy',
@@ -514,10 +492,6 @@ Deploying to: ${networkConfiguration.networkName}
         const zeroXTradeContract = await this.getContractAddress('ZeroXTrade');
         const zeroXTrade = new ZeroXTrade(this.dependencies, zeroXTradeContract);
         promises.push(zeroXTrade.initialize(this.augur!.address, this.augurTrading!.address));
-
-        const gnosisSafeRegistryContract = await this.getContractAddress('GnosisSafeRegistry');
-        const gnosisSafeRegistry = new GnosisSafeRegistry(this.dependencies, gnosisSafeRegistryContract);
-        promises.push(gnosisSafeRegistry.initialize(this.augur!.address, this.augurTrading!.address));
 
         const warpSyncContract = await this.getContractAddress('WarpSync');
         const warpSync = new WarpSync(this.dependencies, warpSyncContract);
@@ -607,12 +581,9 @@ Deploying to: ${networkConfiguration.networkName}
         mapping['Augur'] = this.contracts.get('Augur').address!;
         mapping['LegacyReputationToken'] = this.contracts.get('LegacyReputationToken').address!;
         mapping['Cash'] = this.getContractAddress('Cash');
-        mapping['ProxyFactory'] = this.contracts.get('ProxyFactory').address!;
-        mapping['GnosisSafe'] = this.contracts.get('GnosisSafe').address!;
         if (!this.configuration.isProduction) mapping['CashFaucet'] = this.getCashFaucetAddress();
         mapping['BuyParticipationTokens'] = this.contracts.get('BuyParticipationTokens').address!;
         mapping['RedeemStake'] = this.contracts.get('RedeemStake').address!;
-        mapping['GnosisSafeRegistry'] = this.contracts.get('GnosisSafeRegistry').address!;
         mapping['WarpSync'] = this.contracts.get('WarpSync').address!;
         mapping['ShareToken'] = this.contracts.get('ShareToken').address!;
         mapping['HotLoading'] = this.contracts.get('HotLoading').address!;

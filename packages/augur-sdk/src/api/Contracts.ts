@@ -19,13 +19,10 @@ export class Contracts {
   time: SomeTime | void;
   legacyReputationToken: ContractInterfaces.LegacyReputationToken;
   simulateTrade: ContractInterfaces.SimulateTrade;
-  gnosisSafe: ContractInterfaces.GnosisSafe;
-  proxyFactory: ContractInterfaces.ProxyFactory;
   ZeroXTrade: ContractInterfaces.ZeroXTrade;
   buyParticipationTokens: ContractInterfaces.BuyParticipationTokens;
   redeemStake: ContractInterfaces.RedeemStake;
   cashFaucet: ContractInterfaces.CashFaucet;
-  gnosisSafeRegistry: ContractInterfaces.GnosisSafeRegistry;
   hotLoading: ContractInterfaces.HotLoading;
   zeroXExchange: ContractInterfaces.Exchange;
   affiliates: ContractInterfaces.Affiliates;
@@ -33,6 +30,7 @@ export class Contracts {
   profitLoss: ContractInterfaces.ProfitLoss;
   ethExchange: ContractInterfaces.EthExchange;
   warpSync: ContractInterfaces.WarpSync;
+  augurWalletRegistry: ContractInterfaces.AugurWalletRegistry;
 
   reputationToken: SomeRepToken | null = null;
   private readonly dependencies: ContractDependenciesEthers;
@@ -52,13 +50,10 @@ export class Contracts {
     this.shareToken = new ContractInterfaces.ShareToken(dependencies, addresses.ShareToken);
     this.legacyReputationToken = new ContractInterfaces.LegacyReputationToken(dependencies, addresses.LegacyReputationToken);
     this.simulateTrade = new ContractInterfaces.SimulateTrade(dependencies, addresses.SimulateTrade);
-    this.gnosisSafe = new ContractInterfaces.GnosisSafe(dependencies, addresses.GnosisSafe);
-    this.proxyFactory = new ContractInterfaces.ProxyFactory(dependencies, addresses.ProxyFactory);
     this.ZeroXTrade = new ContractInterfaces.ZeroXTrade(dependencies, addresses.ZeroXTrade);
     this.buyParticipationTokens = new ContractInterfaces.BuyParticipationTokens(dependencies, addresses.BuyParticipationTokens);
     this.redeemStake = new ContractInterfaces.RedeemStake(dependencies, addresses.RedeemStake);
     this.cashFaucet = new ContractInterfaces.CashFaucet(dependencies, addresses.CashFaucet);
-    this.gnosisSafeRegistry = new ContractInterfaces.GnosisSafeRegistry(dependencies, addresses.GnosisSafeRegistry);
     this.hotLoading = new ContractInterfaces.HotLoading(dependencies, addresses.HotLoading);
     this.zeroXExchange = new ContractInterfaces.Exchange(dependencies, addresses.Exchange);
     this.affiliates = new ContractInterfaces.Affiliates(dependencies, addresses.Affiliates);
@@ -66,6 +61,7 @@ export class Contracts {
     this.profitLoss= new ContractInterfaces.ProfitLoss(dependencies, addresses.ProfitLoss);
     this.ethExchange = new ContractInterfaces.EthExchange(dependencies, addresses.EthExchange);
     this.warpSync = new ContractInterfaces.WarpSync(dependencies, addresses.WarpSync);
+    this.augurWalletRegistry = new ContractInterfaces.AugurWalletRegistry(dependencies, addresses.AugurWalletRegistry);
 
     if (typeof addresses.Time !== "undefined") {
       this.time = new ContractInterfaces.Time(dependencies, addresses.Time);
@@ -127,9 +123,5 @@ export class Contracts {
 
   isTimeControlled(contract: SomeTime): contract is ContractInterfaces.TimeControlled {
     return (contract as ContractInterfaces.TimeControlled).setTimestamp !== undefined;
-  }
-
-  gnosisSafeFromAddress(address: string): ContractInterfaces.GnosisSafe {
-    return new ContractInterfaces.GnosisSafe(this.dependencies, address);
   }
 }

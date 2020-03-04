@@ -1,6 +1,7 @@
 {
   "extends": "../../tsconfig-base.json",
   "compilerOptions": {
+    "allowJs": true,
     "outDir": "build",
     "rootDir": "src"
   },
@@ -11,8 +12,6 @@
     "path": "../contract-dependencies"
   },{
     "path": "../contract-dependencies-ethers"
-  },{
-    "path": "../gnosis-relay-api"
   }
 ]
 }

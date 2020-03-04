@@ -4,10 +4,7 @@ import { Connectors } from '@augurproject/sdk';
 import { ACCOUNTS, defaultSeedPath, loadSeedFile } from '@augurproject/tools';
 import { TestContractAPI } from '@augurproject/tools';
 import { BigNumber } from 'bignumber.js';
-import {
-  makeProvider,
-  MockGnosisRelayAPI,
-} from '../../libs';
+import { makeProvider } from '../../libs';
 
 
 /**
@@ -112,17 +109,14 @@ test('rollback derived database', async () => {
   provider = await makeProvider(seed, ACCOUNTS);
 
   const johnConnector = new Connectors.DirectConnector();
-  const johnGnosis = new MockGnosisRelayAPI();
   john = await TestContractAPI.userWrapper(
     ACCOUNTS[0],
     provider,
     addresses,
     johnConnector,
-    johnGnosis
   );
   expect(john).toBeDefined();
 
-  johnGnosis.initialize(john);
   johnConnector.initialize(john.augur, john.db);
 
   Object.defineProperty(john.db.marketDatabase, 'syncing', {

@@ -6,10 +6,6 @@ import {
 } from '@augurproject/artifacts';
 import { sleep } from '@augurproject/core/build/libraries/HelperFunctions';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
-import {
-  GnosisRelayAPI,
-  GnosisSafeState,
-} from '@augurproject/gnosis-relay-api';
 import { Connectors } from '@augurproject/sdk';
 import {
   ZeroXOrder,
@@ -56,7 +52,7 @@ describe('3rd Party :: ZeroX :: ', () => {
     meshClient.destroy();
   });
 
-  describe('with gnosis', () => {
+  describe('with gsn', () => {
     beforeAll(async () => {
       const johnConnector = new Connectors.DirectConnector();
       john = await TestContractAPI.userWrapper(
@@ -64,21 +60,16 @@ describe('3rd Party :: ZeroX :: ', () => {
         providerJohn,
         addresses,
         johnConnector,
-        new GnosisRelayAPI('http://localhost:8888/api/'),
         meshClient,
         undefined
       );
       johnConnector.initialize(john.augur, john.db);
 
       await john.approveCentralAuthority();
-      const johnSafe = await john.fundSafe();
-      const johnSafeStatus = await john.getSafeStatus(johnSafe);
-      console.log(`Safe ${johnSafe}: ${johnSafeStatus}`);
-      expect(johnSafeStatus).toBe(GnosisSafeState.AVAILABLE);
+      await john.getOrCreateWallet();
       await john.augur.setGasPrice(new BigNumber(90000));
-      john.setGnosisSafeAddress(johnSafe);
-      john.setUseGnosisSafe(true);
-      john.setUseGnosisRelay(true);
+      john.setUseWallet(true);
+      john.setUseRelay(true);
 
       const maryConnector = new Connectors.DirectConnector();
       mary = await TestContractAPI.userWrapper(
@@ -86,30 +77,22 @@ describe('3rd Party :: ZeroX :: ', () => {
         providerMary,
         addresses,
         maryConnector,
-        new GnosisRelayAPI('http://localhost:8888/api/'),
         meshClient,
         undefined
       );
       maryConnector.initialize(mary.augur, await mary.db);
 
       await mary.approveCentralAuthority();
-      const marySafe = await mary
-        .fundSafe()
+      await mary
+        .getOrCreateWallet()
         .catch(e => console.error(`Safe funding failed: ${JSON.stringify(e)}`));
-      if (marySafe) {
-        const marySafeStatus = await mary.getSafeStatus(marySafe);
-        console.log(`Safe ${marySafe}: ${marySafeStatus}`);
-        expect(marySafeStatus).toBe(GnosisSafeState.AVAILABLE);
-        await john.sendEther(marySafe, new BigNumber(10 ** 15));
-        await mary.augur.setGasPrice(new BigNumber(90000));
-        mary.setGnosisSafeAddress(marySafe);
-        mary.setUseGnosisSafe(true);
-        mary.setUseGnosisRelay(true);
-      }
+      await mary.augur.setGasPrice(new BigNumber(90000));
+      mary.setUseWallet(true);
+      mary.setUseRelay(true);
     }, 240000);
 
     test('State API :: ZeroX :: placeThenGetOrders', async () => {
-      await expect(mary.augur.getUseGnosisSafe()).toEqual(true);
+      await expect(mary.augur.getUseWallet()).toEqual(true);
       // Create a market
       const market = await john.createReasonableMarket([
         stringTo32ByteHex('A'),
@@ -348,7 +331,7 @@ describe('3rd Party :: ZeroX :: ', () => {
     }, 240000);
   });
 
-  describe('without gnosis', () => {
+  describe('without gsn', () => {
     beforeAll(async () => {
       const connectorJohn = new Connectors.DirectConnector();
       john = await TestContractAPI.userWrapper(
@@ -356,7 +339,6 @@ describe('3rd Party :: ZeroX :: ', () => {
         providerJohn,
         addresses,
         connectorJohn,
-        undefined,
         meshClient,
         undefined
       );

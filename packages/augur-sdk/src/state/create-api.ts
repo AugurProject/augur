@@ -1,7 +1,7 @@
 import { ContractAddresses, getAddressesForNetwork, getStartingBlockForNetwork, NetworkId } from '@augurproject/artifacts';
-import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { EthersSigner } from 'contract-dependencies-ethers';
-import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis';
+import { EthersProvider } from '@augurproject/ethersjs-provider';
+import { ContractDependenciesGSN } from 'contract-dependencies-gsn';
 import { SupportedProvider } from 'ethereum-types';
 import { JsonRpcProvider } from 'ethers/providers';
 import { ContractEvents } from '../api/ContractEvents';
@@ -129,11 +129,10 @@ export async function createClient(
   }
   const addresses = config.addresses || getAddressesForNetwork(networkId);
 
-  const contractDependencies = ContractDependenciesGnosis.create(
+  const contractDependencies = await ContractDependenciesGSN.create(
     ethersProvider,
     signer,
-    addresses.Cash,
-    config.gnosis?.http,
+    addresses.AugurWalletRegistry
   );
 
   let zeroX: ZeroX = null;

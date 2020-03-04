@@ -1,7 +1,7 @@
 {
-  "name": "contract-dependencies-gnosis",
+  "name": "contract-dependencies-gsn",
   "version": "2.0.0-alpha.2",
-  "description": "Contract Dependencies for Ethers.JS using a Gnosis Safe Wallet",
+  "description": "Contract Dependencies for Ethers.JS using the GSN",
   "author": "The Augur Developers <team@augur.net>",
   "license": "MIT",
   "main": "build",
@@ -11,7 +11,7 @@
   "scripts": {
     "rebuild": "yarn build",
     "lint": "tslint -c tslint.json -p . ./src/*.ts ./src/**/*.ts ./src/**/**/*.ts ./src/**/**/**/*.ts",
-    "build": "tsc -b",
+    "build": "tsc -b --verbose",
     "watch": "tsc -w",
     "nuke": "rm -f package-lock.json; rm -f yarn.lock; rm -rf node_modules; yarn clean",
     "prepare": "tsc",
@@ -26,10 +26,12 @@
   },
   "homepage": "https://github.com/AugurProject/augur#readme",
   "dependencies": {
-    "@augurproject/gnosis-relay-api": "2.0.0-alpha.2",
+    "abi-decoder": "2.3.0",
+    "axios": "0.19.2",
     "bignumber.js": "9.0.0",
     "contract-dependencies": "2.0.0-alpha.2",
     "contract-dependencies-ethers": "2.0.0-alpha.2",
+    "ethereumjs-tx": "2.1.2",
     "ethers": "4.0.37"
   },
   "devDependencies": {

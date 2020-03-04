@@ -31,14 +31,14 @@ import { fork } from './fork';
 import { dispute } from './dispute';
 import { MarketList, MarketOrderBook } from '@augurproject/sdk/build/state/getter/Markets';
 import { generateTemplateValidations } from './generate-templates';
-import { spawn, spawnSync } from 'child_process';
+import { spawn, spawnSync, execSync } from 'child_process';
 import { showTemplateByHash, validateMarketTemplate } from './template-utils';
 import { cannedMarkets, singleOutcomeAsks, singleOutcomeBids } from './data/canned-markets';
 import { ContractAPI } from '../libs/contract-api';
 import { OrderBookShaper, OrderBookConfig } from './orderbook-shaper';
 import { NumOutcomes } from '@augurproject/sdk/src/state/logs/types';
 import { flattenZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
-import { formatAddress, sleep, waitForSigint } from "./util";
+import { formatAddress, sleep, waitForSigint, awaitUserInput } from "./util";
 import { updateAddresses } from '@augurproject/artifacts/build';
 import * as fs from 'fs';
 import { SDKConfiguration, startServer } from '@augurproject/sdk/build';
@@ -2008,46 +2008,6 @@ export function addScripts(flash: FlashSession) {
   });
 
   flash.addScript({
-    name: 'check-safe-registration',
-    options: [
-      {
-        name: 'target',
-        abbr: 't',
-        description: 'address to check registry contract for the safe address.',
-      },
-    ],
-    async call(
-      this: FlashSession,
-      args: FlashArguments
-    ): Promise<void> {
-      if (this.noProvider()) return null;
-      const user = await this.ensureUser(this.network, false, false);
-
-      const result = await user.augur.contracts.gnosisSafeRegistry.getSafe_(args['target'] as string);
-      console.log(result);
-  }});
-
-  flash.addScript({
-    name: 'get-safe-nonce',
-    options: [
-      {
-        name: 'target',
-        abbr: 't',
-        description: 'address to check registry contract for the safe address.',
-      },
-    ],
-    async call(
-      this: FlashSession,
-      args: FlashArguments
-    ): Promise<void> {
-      if (this.noProvider()) return null;
-      const user = await this.ensureUser(this.network, false);
-      const gnosisSafe = await user.augur.contracts.gnosisSafeFromAddress(args['target'] as string);
-
-      console.log((await gnosisSafe.nonce_()).toString());
-  }});
-
-  flash.addScript({
     name: 'docker-all',
     ignoreNetwork: true,
     options: [
@@ -2075,7 +2035,7 @@ export function addScripts(flash: FlashSession) {
       const fake = Boolean(args.fake);
       const detach = Boolean(args.detach);
 
-      spawnSync('docker', ['pull', 'augurproject/safe-relay-service_web:latest']);
+      //spawnSync('docker', ['pull', 'augurproject/safe-relay-service_web:latest']);
       spawnSync('docker', ['pull', '0xorg/mesh:latest']);
 
       this.log(`Deploy contracts: ${dev}`);
@@ -2091,6 +2051,7 @@ export function addScripts(flash: FlashSession) {
           await updateAddresses(); // add pop-geth addresses to global Addresses
         }
 
+        console.log(`Waiting for Geth to start up`);
         await sleep(10000); // give geth some time to start
 
         this.network = NetworkConfiguration.create();
@@ -2098,41 +2059,31 @@ export function addScripts(flash: FlashSession) {
         const networkId = await this.getNetworkId(this.provider);
 
         if (dev) {
+          console.log(`Deploying contracts`);
           const deployMethod = fake ? 'fake-all' : 'normal-all';
           await this.call(deployMethod, { createMarkets: true });
         } else {
           this.contractAddresses = Addresses[networkId];
         }
 
+        console.log(`Building`);
         await spawnSync('yarn', ['build']); // so UI etc will have the correct addresses
 
-        const env = {
-          ...process.env,
-          ETHEREUM_CHAIN_ID: networkId,
-          CUSTOM_CONTRACT_ADDRESSES: JSON.stringify(this.contractAddresses),
-          GNOSIS_SAFE_CONTRACT_ADDRESS: formatAddress(this.contractAddresses.GnosisSafe, { prefix: true }),
-          PROXY_FACTORY_CONTRACT_ADDRESS: formatAddress(this.contractAddresses.ProxyFactory, { prefix: true }),
-          ZEROX_CONTRACT_ADDRESS: formatAddress(this.contractAddresses.ZeroXTrade, { lower: true, prefix: false }),
-          SAFE_DEFAULT_TOKEN_ADDRESS: formatAddress(this.contractAddresses.Cash, { lower: true, prefix: true })
-        };
+        // Run the GSN relay
+        console.log(`Running GSN relayer`);
+        await spawnSync('npx', ['oz-gsn', 'run-relayer']);
+        // TODO: Below should be done via a REP auction
+        //console.log(`Funding AugurWalletRegistry for Relay Hub`);
+        //await fundRecipient(this.provider, { recipient: this.contractAddresses.AugurWalletRegistry, from: this.account, amount: 10**18 });
 
-        if (detach) {
-          spawnSync('yarn', ['workspace', '@augurproject/gnosis-relay-api', 'run-relay', '-d'], { env });
-        } else {
-          spawn('yarn', ['workspace', '@augurproject/gnosis-relay-api', 'run-relay'], {
-            env,
-            stdio: 'inherit',
-          });
-
-          this.log('Running dockers. Type ctrl-c to quit:\n');
-          await waitForSigint();
+        if (!detach) {
+          await awaitUserInput('Running dockers. Press ENTER to quit:');
         }
-
       } finally {
         if (!detach) {
-          this.log('Stopping dockers');
+          this.log('Stopping dockers & GSN Relay');
           await spawnSync('docker', ['kill', 'geth']);
-          await spawnSync('yarn', ['workspace', '@augurproject/gnosis-relay-api', 'kill-relay']);
+          await execSync("kill $(ps aux | grep 'gsn-relay' | awk '{print $2}')");
         }
       }
     }

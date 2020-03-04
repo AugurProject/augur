@@ -72,12 +72,10 @@ export interface ContractAddresses {
   TradingEscapeHatch?: string;
   Time?: string;
   TimeControlled?: string;
-  GnosisSafe?: string;
   ProxyFactory?: string;
   BuyParticipationTokens?: string;
   RedeemStake?: string;
   CashFaucet?: string;
-  GnosisSafeRegistry?: string;
   HotLoading?: string;
   ZeroXTrade?: string;
   Affiliates?: string;
@@ -85,6 +83,8 @@ export interface ContractAddresses {
   ProfitLoss?: string;
   EthExchange?: string;
   WarpSync?: string;
+  AugurWalletRegistry?: string;
+  OICash?: string;
 
   // 0x
   //   The 0x contract names must be what 0x mesh expects.

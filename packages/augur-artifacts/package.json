@@ -6,6 +6,6 @@
   "license": "MIT",
   "main": "build",
   "scripts": {
-    "build": "tsc -b"
+    "build": "tsc -b --verbose"
   }
 }

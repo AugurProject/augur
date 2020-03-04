@@ -5,7 +5,6 @@ set -euo pipefail
 cleanup() {
   echo "stopping geth docker image"
   docker kill geth
-  yarn workspace @augurproject/gnosis-relay-api kill-relay
 }
 
 trap cleanup SIGINT SIGTERM
@@ -16,7 +15,7 @@ FAKE_TIME="${2-false}"
 
 # make sure we have the latest images
 # (workaround until next version of docker supports the --pull flag)
-docker pull augurproject/safe-relay-service_web:latest
+#docker pull augurproject/safe-relay-service_web:latest
 docker pull 0xorg/mesh:latest
 
 echo "Deploy contracts: $DEV"
@@ -31,9 +30,9 @@ if [ "$DEV" == "true" ]; then
   # Until then -- Make sure changes work in BOTH scripts
 
   if [ "$FAKE_TIME" == "true" ]; then
-    yarn flash fake-all --createMarkets
+    yarn flash fake-all
   else
-    yarn flash normal-all --createMarkets
+    yarn flash normal-all
   fi
 
   # pick up the creation of / changes to local-addresses.json
@@ -53,8 +52,6 @@ else
 fi
 
 source ./scripts/env.sh
-if [[ "${DETACH-false}" == "true" ]]; then
-  yarn workspace @augurproject/gnosis-relay-api run-relay -d
-else
-  yarn workspace @augurproject/gnosis-relay-api run-relay
-fi
+
+echo "Starting GSN Relayer"
+npx oz-gsn run-relayer

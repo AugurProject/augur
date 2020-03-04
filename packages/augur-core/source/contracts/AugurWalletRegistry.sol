@@ -6,10 +6,7 @@ import 'ROOT/IAugur.sol';
 import 'ROOT/IAugurWallet.sol';
 import 'ROOT/AugurWallet.sol';
 import 'ROOT/trading/IAugurTrading.sol';
-import 'ROOT/external/IGnosisSafe.sol';
-import 'ROOT/external/IProxyFactory.sol';
 import 'ROOT/libraries/Initializable.sol';
-import 'ROOT/external/IProxy.sol';
 import 'ROOT/libraries/token/IERC1155.sol';
 import 'ROOT/reporting/IAffiliates.sol';
 
@@ -25,10 +22,6 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
 
     IAugur public augur;
     IAugurTrading public augurTrading;
-    bytes32 public proxyCodeHash;
-    bytes32 public deploymentData;
-    address public gnosisSafeMasterCopy;
-    IProxyFactory public proxyFactory;
 
     IERC20 public cash;
     address public affiliates;
@@ -72,7 +65,7 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
         view
         returns (uint256 _reason, bytes memory _context)
     {
-        uint256 _maxDaiNeeded = ethExchange.getTokenPurchaseCost(_maxPossibleCharge); // TODO Apply slippage from approvalData
+        uint256 _maxDaiNeeded = ethExchange.getTokenPurchaseCost(_maxPossibleCharge); // TODO Apply slippage
         address _walletAddress = getCreate2WalletAddress(_from);
         // TODO if Wallet
         // TODO check approval
@@ -116,7 +109,6 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
         _wallet.initialize(_referralAddress, _fingerprint, address(augur), cash, IAffiliates(affiliates), IERC1155(shareToken), createOrder, fillOrder, zeroXTrade);
         wallets[_owner] = _wallet;
         return _walletAddress;
-        // TODO augurTrading.logGnosisSafeRegistered(address(_wallet), _owner);
     }
 
     function getCreate2WalletAddress(address _owner) public view returns (address) {

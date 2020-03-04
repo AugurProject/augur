@@ -1,6 +1,5 @@
 import { ContractAddresses, NetworkId } from '@augurproject/artifacts';
 import { NetworkConfiguration } from '@augurproject/core';
-import { EthersProvider } from '@augurproject/ethersjs-provider';
 import {
   Connectors,
   createClient,
@@ -17,6 +16,7 @@ import { providers } from 'ethers';
 import { Account } from '../constants';
 import { makeSigner } from '../libs/blockchain';
 import { ContractAPI } from '../libs/contract-api';
+import { EthersProvider } from '@augurproject/ethersjs-provider';
 
 configureDexieForNode(true);
 
@@ -193,14 +193,10 @@ export class FlashSession {
         // IF we want this flash client to use a safe associated with the past in
         // account, configure it at this point.
         if (config.gnosis.enabled) {
-          const safe = await this.user.getOrCreateSafe();
-          await this.user.faucetOnce(new BigNumber(1e21), safe);
-          const safeStatus = await this.user.getSafeStatus(safe);
-          console.log(`Safe ${safe}: ${safeStatus}`);
+          await this.user.getOrCreateWallet();
           this.user.augur.setGasPrice(new BigNumber(90000));
-          this.user.setGnosisSafeAddress(safe);
-          this.user.setUseGnosisSafe(true);
-          this.user.setUseGnosisRelay(true);
+          this.user.setUseWallet(true);
+          this.user.setUseRelay(true);
         } else if (approveCentralAuthority) {
           await this.user.approveCentralAuthority();
         }

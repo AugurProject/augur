@@ -18,7 +18,6 @@ export const INTERNAL_CONTRACTS = [
     'ProfitLoss',
     'Time',
     'ZeroXTrade',
-    'GnosisSafeRegistry',
     'WarpSync',
     'OICash',
     'Affiliates',
@@ -53,7 +52,6 @@ export const TRADING_CONTRACTS = [
     'ProfitLoss',
     'SimulateTrade',
     'ZeroXExchange', // uses registration name, not addresses.json name
-    'GnosisSafeRegistry',
     'AugurWalletRegistry',
 ];
 
@@ -88,11 +86,10 @@ export const EXTERNAL_CONTRACTS = [
     'DaiJoin',
     'DaiPot',
     'DaiVat',
-    // Gnosis
-    'GnosisSafe',
-    'ProxyFactory',
     // Uniswap
     'UniswapV2Factory',
+    // GSN
+    'RelayHub'
 ];
 
 export const REGISTERED_EXTERNAL_CONTRACTS = [
@@ -105,9 +102,6 @@ export const REGISTERED_EXTERNAL_CONTRACTS = [
     'DaiJoin',
     'DaiPot',
     'DaiVat',
-    // Gnosis
-    'GnosisSafe',
-    'ProxyFactory',
     // Uniswap
     // "UniswapV2Factory", TODO
 ];
@@ -127,7 +121,6 @@ export const REGISTERED_INTERNAL_CONTRACTS = [
     'ProfitLoss',
     'Time',
     'ZeroXTrade',
-    'GnosisSafeRegistry',
     'WarpSync',
     'OICash',
     'Affiliates',
@@ -162,7 +155,6 @@ export const INITIALIZED_CONTRACTS = [
     'ProfitLoss',
     'SimulateTrade',
     'ZeroXTrade',
-    'GnosisSafeRegistry',
     'WarpSync',
     'EthExchange', // TODO Remove once uniswap in
     'AugurWalletRegistry',
