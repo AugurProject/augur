@@ -32,7 +32,6 @@ import MarketCard from 'modules/market-cards/market-card';
 import { selectSortedDisputingOutcomes } from 'modules/markets/selectors/market';
 import { calculatePosition } from 'modules/market/components/market-scalar-outcome-display/market-scalar-outcome-display';
 import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
-import { MarketInfo } from '@augurproject/sdk/src/state/getter/Markets';
 
 export interface PercentProps {
   percent: number;
@@ -467,7 +466,7 @@ export const ResolvedOutcomes = (props: ResolvedOutcomesProps) => {
 
 export interface TentativeWinnerProps {
   tentativeWinner: Getters.Markets.StakeDetails;
-  market: MarketInfo;
+  market: MarketData;
   dispute: Function;
   canDispute: boolean;
 }
