@@ -46,11 +46,19 @@ describe('WarpController', () => {
   let firstCheckpointBlockHeaders: Block;
   let newBlockHeaders: Block;
   let seed: Seed;
+  let metadata: {
+    [name: string]: number
+  };
 
   beforeAll(async () => {
     configureDexieForNode(true);
 
     seed = await loadSeedFile(defaultSeedPath, 'warpSync');
+
+    metadata = seed.metadata;
+    console.log('metadata', JSON.stringify(metadata));
+
+    const firstCheckpointBlockNumber = metadata.checkpoint2_start;
 
     provider = await makeProvider(seed, ACCOUNTS);
     config = provider.getConfig();
@@ -58,7 +66,7 @@ describe('WarpController', () => {
     dependencies = makeDependencies(ACCOUNTS[0], provider, signer);
 
     uploadBlockHeaders = await provider.getBlock(0);
-    firstCheckpointBlockHeaders = await provider.getBlock(170);
+    firstCheckpointBlockHeaders = await provider.getBlock(firstCheckpointBlockNumber);
     newBlockHeaders = await provider.getBlock('latest');
 
     john = await TestContractAPI.userWrapper(
@@ -68,7 +76,7 @@ describe('WarpController', () => {
     );
 
     // partially populate db.
-    await john.sync(172);
+    await john.sync(firstCheckpointBlockNumber);
 
     warpController = new WarpController(
       john.db,
@@ -79,15 +87,15 @@ describe('WarpController', () => {
       filterRetrievelFn(ipfs)
     );
     ipfs = await warpController.getIpfs();
-    firstCheckpointFileHash = await warpController.createAllCheckpoints(
-      await provider.getBlock(170)
-    );
+    firstCheckpointFileHash = (await warpController.onNewBlock(
+      firstCheckpointBlockHeaders
+    )) || '';
 
     await john.sync();
 
-    secondCheckpointFileHash = await warpController.createAllCheckpoints(
+    secondCheckpointFileHash = (await warpController.onNewBlock(
       newBlockHeaders
-    );
+    )) || '';
 
     allMarketIds = (await john.db.MarketCreated.toArray()).map(
       market => market.market
@@ -107,6 +115,9 @@ describe('WarpController', () => {
         0,
         175
       );
+
+      console.log('result', JSON.stringify(result));
+
       expect(result).not.toEqual(
         expect.arrayContaining([
           expect.objectContaining({
@@ -139,10 +150,10 @@ describe('WarpController', () => {
         john.db.warpCheckpoints.getCheckpointBlockRange()
       ).resolves.toEqual([
         expect.objectContaining({
-          number: 0,
+          number: metadata.checkpoint1_start,
         }),
         expect.objectContaining({
-          number: 177,
+          number: metadata.checkpoint3_end,
         }),
       ]);
     });
@@ -191,13 +202,13 @@ describe('WarpController', () => {
         warpController.getAvailableCheckpointsByHash(secondCheckpointFileHash)
       ).resolves.toEqual([
         expect.objectContaining({
-          Name: '0',
+          Name: metadata.checkpoint1_start.toString(),
         }),
         expect.objectContaining({
-          Name: '168',
+          Name: metadata.checkpoint2_start.toString(),
         }),
         expect.objectContaining({
-          Name: '176',
+          Name: metadata.checkpoint3_start.toString(),
         }),
       ]);
     });
@@ -209,43 +220,43 @@ describe('WarpController', () => {
         expect.objectContaining({
           _id: 1,
           begin: expect.objectContaining({
-            number: 0,
+            number: metadata.checkpoint1_start,
           }),
           end: expect.objectContaining({
-            number: 167,
+            number: metadata.checkpoint1_end,
           }),
           ipfsInfo: expect.objectContaining({
-            Name: '0',
+            Name: metadata.checkpoint1_start.toString(),
           }),
         }),
         expect.objectContaining({
           _id: 2,
           begin: expect.objectContaining({
-            number: 168,
+            number: metadata.checkpoint2_start,
           }),
           end: expect.objectContaining({
-            number: 175,
+            number: metadata.checkpoint2_end,
           }),
           ipfsInfo: expect.objectContaining({
-            Name: '168',
+            Name: metadata.checkpoint2_start.toString(),
           }),
         }),
         expect.objectContaining({
           _id: 3,
           begin: expect.objectContaining({
-            number: 176,
+            number:  metadata.checkpoint3_start,
           }),
           end: expect.objectContaining({
-            number: 177,
+            number:  metadata.checkpoint3_end,
           }),
           ipfsInfo: expect.objectContaining({
-            Name: '176',
+            Name:  metadata.checkpoint3_start.toString(),
           }),
         }),
         expect.objectContaining({
           _id: 4,
           begin: expect.objectContaining({
-            number: 178,
+            number:  metadata.checkpoint4_start,
           }),
         }),
       ]);
@@ -256,13 +267,13 @@ describe('WarpController', () => {
         ipfs.ls(`${secondCheckpointFileHash}/checkpoints/`)
       ).resolves.toEqual([
         expect.objectContaining({
-          name: '0',
+          name: metadata.checkpoint1_start.toString(),
         }),
         expect.objectContaining({
-          name: '168',
+          name: metadata.checkpoint2_start.toString()
         }),
         expect.objectContaining({
-          name: '176',
+          name: metadata.checkpoint3_start.toString()
         }),
       ]);
     });
@@ -272,10 +283,10 @@ describe('WarpController', () => {
         john.db.warpCheckpoints.getCheckpointBlockRange()
       ).resolves.toEqual([
         expect.objectContaining({
-          number: 0,
+          number: metadata.checkpoint1_start,
         }),
         expect.objectContaining({
-          number: 177,
+          number: metadata.checkpoint3_end,
         }),
       ]);
     });

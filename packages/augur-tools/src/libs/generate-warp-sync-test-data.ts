@@ -17,6 +17,8 @@ export async function generateWarpSyncTestData(config: SDKConfiguration, seed: S
 
   const [db, provider] = await makeProviderWithDB(seed, ACCOUNTS);
 
+  metadata['checkpoint1_start'] = 0;
+
   const john = await ContractAPI.userWrapper(
     ACCOUNTS[0],
     provider,
@@ -27,6 +29,9 @@ export async function generateWarpSyncTestData(config: SDKConfiguration, seed: S
     provider,
     config
   );
+
+  await john.faucet(new BigNumber(1e18)); // faucet enough cash for the various fill orders
+  await mary.faucet(new BigNumber(1e18)); // faucet enough cash for the various fill orders
 
   await john.approveCentralAuthority();
   await mary.approveCentralAuthority();
@@ -56,8 +61,6 @@ export async function generateWarpSyncTestData(config: SDKConfiguration, seed: S
     stringTo32ByteHex('42')
   );
 
-  metadata['checkpoint1'] = await provider.provider.getBlockNumber();
-
   await john.placeOrder(
     yesNoMarket.address,
     ORDER_TYPES.BID,
@@ -68,6 +71,8 @@ export async function generateWarpSyncTestData(config: SDKConfiguration, seed: S
     stringTo32ByteHex(''),
     stringTo32ByteHex('42')
   );
+
+  metadata['checkpoint1_end'] = await provider.provider.getBlockNumber();
 
   // Move timestamp ahead 12 hours.
   await provider.provider.send('evm_increaseTime', [SECONDS_IN_A_DAY.toNumber() / 2]);
@@ -82,7 +87,7 @@ export async function generateWarpSyncTestData(config: SDKConfiguration, seed: S
     stringTo32ByteHex(''),
     stringTo32ByteHex('42')
   );
-  metadata['checkpoint2'] = await provider.provider.getBlockNumber();
+  metadata['checkpoint2_start'] = await provider.provider.getBlockNumber();
 
   await john.placeOrder(
     categoricalMarket.address,
@@ -96,8 +101,6 @@ export async function generateWarpSyncTestData(config: SDKConfiguration, seed: S
   );
 
   // Fill orders
-  await john.faucet(new BigNumber(1e18)); // faucet enough cash for the various fill orders
-  await mary.faucet(new BigNumber(1e18)); // faucet enough cash for the various fill orders
   const yesNoOrderId0 = await john.getBestOrderId(
     ORDER_TYPES.BID,
     yesNoMarket.address,
@@ -130,7 +133,7 @@ export async function generateWarpSyncTestData(config: SDKConfiguration, seed: S
     '42'
   );
 
-  metadata['checkpoint3'] = await provider.provider.getBlockNumber();
+  metadata['checkpoint2_end'] = await provider.provider.getBlockNumber();
 
   // Move timestamp ahead 12 hours.
   await provider.provider.send('evm_increaseTime', [SECONDS_IN_A_DAY.toNumber() / 2]);
@@ -140,6 +143,8 @@ export async function generateWarpSyncTestData(config: SDKConfiguration, seed: S
     '43'
   );
 
+  metadata['checkpoint3_start'] = await provider.provider.getBlockNumber();
+
   // Move timestamp ahead 12 hours.
   await provider.provider.send('evm_increaseTime', [SECONDS_IN_A_DAY.toNumber() / 2]);
   await mary.fillOrder(
@@ -148,6 +153,8 @@ export async function generateWarpSyncTestData(config: SDKConfiguration, seed: S
     '43'
   );
 
+  metadata['checkpoint3_end'] = await provider.provider.getBlockNumber()
+
   // Move timestamp ahead 12 hours.
   await provider.provider.send('evm_increaseTime', [SECONDS_IN_A_DAY.toNumber() / 2]);
   await mary.fillOrder(
@@ -155,6 +162,8 @@ export async function generateWarpSyncTestData(config: SDKConfiguration, seed: S
     numShares.div(10).multipliedBy(4),
     '43'
   );
+
+  metadata['checkpoint4_start'] = await provider.provider.getBlockNumber();
 
   return {
     data: await extractSeed(db),
