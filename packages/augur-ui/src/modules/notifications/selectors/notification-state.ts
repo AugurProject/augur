@@ -25,6 +25,9 @@ import {
   ZERO,
   REDEEMSTAKE,
   BATCHCANCELORDERS,
+  SUBMIT_DISPUTE,
+  TRANSACTIONS,
+  SUBMIT_REPORT,
 } from 'modules/common/constants';
 import userOpenOrders from 'modules/orders/selectors/user-open-orders';
 import store, { AppState } from 'store';
@@ -240,7 +243,8 @@ export const selectNotifications = createSelector(
         buttonLabel: TYPE_VIEW_DETAILS,
         market: null,
         claimReportingFees,
-        transactionView: REDEEMSTAKE,
+        queueName: TRANSACTIONS,
+        queueId: REDEEMSTAKE,
         id: NOTIFICATION_TYPES.claimReportingFees,
       });
     }
@@ -303,7 +307,8 @@ const generateCards = (markets, type) => {
       isNew: true,
       title: RESOLVED_MARKETS_OPEN_ORDERS_TITLE,
       buttonLabel: TYPE_VIEW_ORDERS,
-      transactionView: BATCHCANCELORDERS,
+      queueName: TRANSACTIONS,
+      queueId: BATCHCANCELORDERS,
     };
   } else if (type === NOTIFICATION_TYPES.reportOnMarkets) {
     defaults = {
@@ -313,6 +318,7 @@ const generateCards = (markets, type) => {
       isNew: true,
       title: REPORTING_ENDS_SOON_TITLE,
       buttonLabel: TYPE_REPORT,
+      queueName: SUBMIT_REPORT
     };
   } else if (type === NOTIFICATION_TYPES.marketsInDispute) {
     defaults = {
@@ -321,6 +327,7 @@ const generateCards = (markets, type) => {
       isNew: true,
       title: TYPE_DISPUTE,
       buttonLabel: TYPE_DISPUTE,
+      queueName: SUBMIT_DISPUTE,
     };
   } else if (type === NOTIFICATION_TYPES.unsignedOrders) {
     defaults = {

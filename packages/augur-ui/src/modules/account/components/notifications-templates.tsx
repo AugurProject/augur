@@ -18,7 +18,6 @@ import {
   MARKET_STATUS_MESSAGES,
   NOTIFICATION_TYPES,
   REPORTING_ENDS,
-  TRANSACTIONS,
 } from 'modules/common/constants';
 import MarketTitle from 'modules/market/containers/market-title';
 import { MarketReportingState } from '@augurproject/sdk/build';
@@ -31,7 +30,8 @@ interface BaseProps {
   isDisabled: boolean;
   buttonAction: Function;
   buttonLabel: string;
-  transactionView?: string;
+  queueName?: string;
+  queueId?: string;
 }
 
 interface OpenOrdersResolvedMarketsTemplateProps extends BaseProps {
@@ -87,7 +87,8 @@ const Template = ({
   currentTime,
   isDisabled,
   buttonLabel,
-  transactionView,
+  queueName,
+  queueId,
 }: TemplateProps) => {
   const showCounter = market && notificationsWithCountdown.includes(type);
   return (
@@ -99,16 +100,15 @@ const Template = ({
         {showCounter && (
           <Counter type={type} market={market} currentTime={currentTime} />
         )}
-        {transactionView &&
+        {queueName && (queueId || (market && market.id)) ?
           <ProcessingButton
             text={buttonLabel}
             action={() => buttonAction()}
-            queueName={TRANSACTIONS}
-            queueId={transactionView}
+            queueName={queueName}
+            queueId={queueId || market.id }
             cancelButton
           />
-        }
-        {!transactionView &&
+        :
           <CancelTextButton
             text={buttonLabel}
             action={() => buttonAction()}
@@ -204,17 +204,6 @@ export const OpenOrdersResolvedMarketsTemplate = (
   return (
     <Template
       message={`You have open orders in this resolved market: "${description}"`}
-      {...props}
-    />
-  );
-};
-
-export const FinalizeTemplate = (props: FinalizeTemplateProps) => {
-  const { description } = props.market;
-
-  return (
-    <Template
-      message={`The market: "${description}" is resolved and is ready to be finalized.`}
       {...props}
     />
   );

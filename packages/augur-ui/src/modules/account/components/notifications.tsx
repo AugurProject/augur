@@ -212,7 +212,8 @@ class Notifications extends React.Component<
         claimReportingFees,
         totalProceeds,
         type,
-        transactionView,
+        queueName,
+        queueId,
       } = notification;
 
       const templateProps = {
@@ -225,7 +226,8 @@ class Notifications extends React.Component<
         buttonAction,
         buttonLabel,
         type,
-        transactionView,
+        queueName,
+        queueId,
       };
 
       const notificationCardProps = {
