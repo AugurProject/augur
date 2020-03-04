@@ -45,6 +45,7 @@ import {
   MIGRATE_FROM_LEG_REP_TOKEN,
   BUYPARTICIPATIONTOKENS,
   SUBMIT_DISPUTE,
+  CLAIMMARKETSPROCEEDS,
 } from 'modules/common/constants';
 import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
@@ -460,6 +461,7 @@ export const handleTradingProceedsClaimedLog = (
         params: { ...log },
       })
     );
+    dispatch(removePendingTransaction(CLAIMMARKETSPROCEEDS));
   }
 };
 
