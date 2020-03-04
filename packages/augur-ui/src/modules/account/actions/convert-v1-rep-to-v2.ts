@@ -13,6 +13,7 @@ import { TXEventName } from '@augurproject/sdk';
 
 export default function(callback: NodeStyleCallback = logError) {
   return async (dispatch: ThunkDispatch<void, any, Action>) => {
+    dispatch(addUpdatePendingTransaction(MIGRATE_FROM_LEG_REP_TOKEN, TXEventName.Pending));
     await convertV1ToV2Approve().catch((err: Error) => {
       dispatch(addUpdatePendingTransaction(MIGRATE_FROM_LEG_REP_TOKEN, TXEventName.Failure));
     });

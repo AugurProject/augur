@@ -1,6 +1,5 @@
 import { createSelector } from "reselect";
 import store, { AppState } from "store";
-import * as constants from "modules/common/constants";
 import { selectMarkets } from "modules/markets/selectors/markets-all";
 import getUserFilledOrders from "modules/orders/selectors/filled-orders";
 import getUserOpenOrders from "modules/orders/selectors/user-open-orders";
@@ -13,7 +12,6 @@ export default function() {
 
 export const marketsOpenOrders = createSelector(selectMarkets, selectUserMarketOpenOrders, (allMarkets, openOrders) => {
   const markets = allMarkets.reduce((p, m) => {
-    if (m.marketStatus === constants.MARKET_CLOSED) return p;
     const userOpenOrders = getUserOpenOrders(m.id) || [];
     const marketsPositionsRecentlyTraded = getMarketsPositionsRecentlyTraded();
     if (userOpenOrders.length === 0) return p;
