@@ -126,11 +126,11 @@ export const WALLET_TYPE = {
 
 export const SIGNIN_LOADING_TEXT = 'Sit tight - loading your account.';
 export const SIGNIN_LOADING_TEXT_PORTIS =
-  'Connecting to our partners at Portis to create your secure account.';
+  'Connecting to our partners at Portis to log you in to your secure account.';
 export const SIGNIN_LOADING_TEXT_FORTMATIC =
-  'Connecting to our partners at Fortmatic to create your secure account.';
+  'Connecting to our partners at Fortmatic to log you in to your secure account.';
 export const SIGNIN_LOADING_TEXT_TORUS =
-  'Connecting to our partners at Torus to create your secure account.';
+  'Connecting to our partners at Torus to log you in to your secure account.';
 export const SIGNIN_SIGN_WALLET =
   'Your wallet will ask you to digitally sign in to link it with Augur';
 
