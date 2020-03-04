@@ -16,6 +16,10 @@
     width: calc(100% - @size-52);
     z-index: @mask-modal;
 
+    > div:first-of-type {
+      z-index: @above-all-content;
+    }
+
     > div {
       // Background for close icon and help icon when AccountFunds is closed.
       background: @color-dark-grey;

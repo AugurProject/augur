@@ -31,7 +31,6 @@ interface OrderBookSideProps {
   setHovers: Function;
   type: string;
   marketType: string;
-  scrollToTop: boolean;
   hoveredSide?: string;
   hoveredOrderIndex?: number;
   showButtons: boolean;
@@ -70,23 +69,20 @@ class OrderBookSide extends Component<OrderBookSideProps, {}> {
   static defaultProps = {
     fixedPrecision: 4,
     pricePrecision: 4,
-    scrollToTop: false,
   };
 
   componentDidMount() {
-    if (this.props.scrollToTop) this.side.scrollTop = this.side.scrollHeight;
+    const { type } = this.props;
+    this.side.scrollTop = type === BIDS ? 0 : this.side.scrollHeight;
   }
 
   componentDidUpdate(prevProps: OrderBookSideProps) {
-    const { orderBook, scrollToTop } = this.props;
-    // console.log("comp did update", this.props.type, this.side.scrollTop, this.side.scrollHeight);
+    const { orderBook, type } = this.props;
     if (
-      scrollToTop &&
-      JSON.stringify(prevProps.orderBook.asks) !==
-        JSON.stringify(orderBook.asks)
+      JSON.stringify(prevProps.orderBook[type]) !==
+        JSON.stringify(orderBook[type])
     ) {
-      // console.log("scroll stuff", this.side.scrollTop, this.side.scrollHeight);
-      this.side.scrollTop = this.side.scrollHeight;
+      this.side.scrollTop = type === BIDS ? 0 : this.side.scrollHeight;
     }
   }
   render() {
@@ -266,7 +262,6 @@ export default class OrderBook extends Component<
           hoveredSide={hoveredSide}
           hoveredOrderIndex={hoveredOrderIndex}
           type={ASKS}
-          scrollToTop
           showButtons={showButtons}
           orderbookLoading={orderbookLoading}
         />
