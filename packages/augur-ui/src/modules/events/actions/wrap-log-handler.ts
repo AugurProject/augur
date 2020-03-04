@@ -10,7 +10,7 @@ export const wrapLogHandler = (logHandler: Function) => (
 ) => {
   if (log) {
     if (Array.isArray(log)) {
-      console.log('events', log.map(l => l.eventName));
+      console.log('events', log.map(l => l.name));
     } else {
       console.log('event', log.eventName);
     }

@@ -91,6 +91,7 @@ interface AppProps {
   migrateV1Rep: Function;
   walletBalances: AccountBalances;
   saveAffilateAddress: Function;
+  showMigrateRepButton: boolean;
 }
 
 export default class AppView extends Component<AppProps> {
@@ -370,6 +371,7 @@ export default class AppView extends Component<AppProps> {
       isHelpMenuOpen,
       updateHelpMenuState,
       notifications,
+      showMigrateRepButton,
     } = this.props;
     this.sideNavMenuData[1].showAlert =
       notifications.filter(item => item.isNew).length > 0;
@@ -378,7 +380,6 @@ export default class AppView extends Component<AppProps> {
     const onTradingTutorial =
       parseQuery(location.search)[MARKET_ID_PARAM_NAME] === TRADING_TUTORIAL;
 
-    const showMigrateRepButton = walletBalances.legacyRep > 0 || walletBalances.legacyRepNonSafe > 0;
     return (
       <main>
         <HelmetTag {...APP_HEAD_TAGS} />
