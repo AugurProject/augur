@@ -285,6 +285,7 @@ export interface ReportingRadioBarProps extends BaseRadioButtonProp {
   userOutcomeCurrentRoundDispute: Getters.Accounts.UserCurrentOutcomeDisputeStake | null;
   hideButton?: boolean;
   isDisputing: boolean;
+  isWarpSync: boolean;
 }
 
 export interface RadioTwoLineBarProps extends BaseRadioButtonProp {
@@ -831,6 +832,7 @@ export const ReportingRadioBarGroup = ({
             )}
             hideButton={disputeInfo.disputePacingOn}
             isDisputing={isDisputing}
+            isWarpSync={market.isWarpSync}
           />
         </section>
       )}
@@ -869,6 +871,7 @@ export const ReportingRadioBarGroup = ({
                 d => d.outcome === String(radio.value)
               )}
               isDisputing={isDisputing}
+              isWarpSync={market.isWarpSync}
             />
           )
       )}
@@ -900,6 +903,7 @@ export const ReportingRadioBarGroup = ({
                 d => d.outcome === String(radio.value)
               )}
               isDisputing={isDisputing}
+              isWarpSync={market.isWarpSync}
             />
           )
       )}
@@ -962,6 +966,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
       userOutcomeCurrentRoundDispute,
       hideButton,
       isDisputing,
+      isWarpSync
     } = this.props;
 
     let { stake } = this.props;
@@ -1052,6 +1057,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
                   stakeRemaining={stake && stake.stakeRemaining}
                   tentativeWinning={stake && stake.tentativeWinning}
                   reportAction={reportAction}
+                  isWarpSync={isWarpSync}
                 />
               )}
             </>
@@ -1438,7 +1444,7 @@ interface TimeSelectorProps {
   errorMessage?: string;
   uniqueKey?: string;
   condensedStyle?: boolean;
-  openTop?: boolean; 
+  openTop?: boolean;
 }
 
 export class TimeSelector extends React.Component<TimeSelectorProps, {}> {

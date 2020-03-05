@@ -406,4 +406,30 @@
 			}
 		}
 	}
+
+	@media @breakpoint-mobile {
+		margin-top: @size-12;
+	}
+}
+
+.TentativeWinner {
+	> span:first-of-type {
+		.text-10-medium;
+
+		color: @color-tenative-winner;
+	}
+
+	> span:last-of-type {
+		.text-12-bold;
+		
+		color: @color-secondary-text;
+	}
+
+	> button {
+		grid-row: 1 / span 2;
+		grid-column: 2;
+		margin-left: auto;
+		width: fit-content;
+		height: fit-content;
+	}
 }
