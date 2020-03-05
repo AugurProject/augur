@@ -184,6 +184,15 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
           dP.closeModal();
         },
       },
+      {
+        text: 'Close',
+        action: () => {
+          if (sP.modal.cb) {
+            sP.modal.cb();
+          }
+          dP.closeModal();
+        },
+      },
     ],
   };
 };
