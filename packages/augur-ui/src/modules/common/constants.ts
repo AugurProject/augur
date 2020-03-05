@@ -126,11 +126,11 @@ export const WALLET_TYPE = {
 
 export const SIGNIN_LOADING_TEXT = 'Sit tight - loading your account.';
 export const SIGNIN_LOADING_TEXT_PORTIS =
-  'Connecting to our partners at Portis to create your secure account.';
+  'Connecting to our partners at Portis to log you in to your secure account.';
 export const SIGNIN_LOADING_TEXT_FORTMATIC =
-  'Connecting to our partners at Fortmatic to create your secure account.';
+  'Connecting to our partners at Fortmatic to log you in to your secure account.';
 export const SIGNIN_LOADING_TEXT_TORUS =
-  'Connecting to our partners at Torus to create your secure account.';
+  'Connecting to our partners at Torus to log you in to your secure account.';
 export const SIGNIN_SIGN_WALLET =
   'Your wallet will ask you to digitally sign in to link it with Augur';
 
@@ -578,9 +578,12 @@ export const INFO = 'INFO';
 export const CREATEGENESISUNIVERSE = 'CREATEGENESISUNIVERSE';
 export const CANCELORDER = 'CANCELORDER';
 export const CANCELORDERS = 'CANCELORDERS';
+export const BATCHCANCELORDERS = 'BATCHCANCELORDERS';
 export const WITHDRAWETHERTOIFPOSSIBLE = 'WITHDRAWETHERTOIFPOSSIBLE';
 export const CALCULATEREPORTINGFEE = 'CALCULATEREPORTINGFEE';
 export const CLAIMTRADINGPROCEEDS = 'CLAIMTRADINGPROCEEDS';
+export const CLAIMMARKETSPROCEEDS = 'CLAIMMARKETSPROCEEDS';
+export const TRADINGPROCEEDSCLAIMED = 'TRADINGPROCEEDSCLAIMED';
 export const PUBLICCREATEORDER = 'PUBLICCREATEORDER';
 export const PUBLICCREATEORDERS = 'PUBLICCREATEORDERS';
 export const BUYPARTICIPATIONTOKENS = 'BUYPARTICIPATIONTOKENS';
@@ -824,6 +827,7 @@ export const REPORTING_ENDS_SOON_TITLE = 'You need to report';
 export const SIGN_SEND_ORDERS = 'Sign to approve your orders';
 export const CLAIM_REPORTING_FEES_TITLE = 'Claim Stake and Fees';
 export const PROCEEDS_TO_CLAIM_TITLE = 'Claim Proceeds';
+export const CLAIM_ALL_TITLE = 'Claim All'
 export const MARKET_IS_MOST_LIKELY_INVALID_TITLE = 'Market is Failing Invalid Filter';
 export const OPEN_ORDERS_RESOLVED_MARKET = 'resolvedMarketsOpenOrders';
 export const REPORT_ON_MARKET = 'reportOnMarkets';

@@ -45,6 +45,7 @@ import {
   MIGRATE_FROM_LEG_REP_TOKEN,
   BUYPARTICIPATIONTOKENS,
   SUBMIT_DISPUTE,
+  CLAIMMARKETSPROCEEDS,
 } from 'modules/common/constants';
 import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
@@ -460,6 +461,7 @@ export const handleTradingProceedsClaimedLog = (
         params: { ...log },
       })
     );
+    dispatch(removePendingTransaction(CLAIMMARKETSPROCEEDS));
   }
 };
 
@@ -484,9 +486,13 @@ export const handleInitialReporterRedeemedLog = (
   logs: Logs.InitialReporterRedeemedLog[]
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const address = getState().loginAccount.address;
-  if (logs.filter(log => isSameAddress(log.reporter, address)).length > 0) {
+  const reporterLogs = logs.filter(log => isSameAddress(log.reporter, address));
+  if (reporterLogs.length > 0) {
     dispatch(loadAccountReportingHistory());
     dispatch(removePendingTransaction(REDEEMSTAKE));
+    reporterLogs.map(log => {
+      handleAlert(log, REDEEMSTAKE, false, dispatch, getState);
+    })
   }
 };
 
@@ -494,9 +500,10 @@ export const handleInitialReporterTransferredLog = (logs: any) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const address = getState().loginAccount.address
-  if (logs.filter(log => isSameAddress(log.from, address) ||
-    isSameAddress(log.to, address)).length > 0) {
+  const address = getState().loginAccount.address;
+  const userLogs = logs.filter(log => isSameAddress(log.from, address) ||
+    isSameAddress(log.to, address));
+  if (userLogs.length > 0) {
     dispatch(loadAccountReportingHistory());
   }
   const marketIds = userLogs.map(log => log.market)
@@ -619,6 +626,7 @@ export const handleDisputeCrowdsourcerRedeemedLog = (
   ))
   if (userLogs.length > 0) {
     dispatch(loadAccountReportingHistory());
+    userLogs.map(log => handleAlert(log, REDEEMSTAKE, false, dispatch, getState));
   }
   dispatch(removePendingTransaction(REDEEMSTAKE));
 };
@@ -658,6 +666,7 @@ export const handleTokensMintedLog = (logs: Logs.TokensMinted[]) => (
             status: TXEventName.Success,
             timestamp: getState().blockchain.currentAugurTimestamp * 1000,
             name: MIGRATE_FROM_LEG_REP_TOKEN,
+            toast: true,
           }, false));
         dispatch(removePendingTransaction(MIGRATE_FROM_LEG_REP_TOKEN));
       }

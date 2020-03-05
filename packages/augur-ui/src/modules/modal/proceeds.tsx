@@ -16,6 +16,7 @@ import {
 } from 'modules/common/labels';
 
 import Styles from 'modules/modal/modal.styles.less';
+import { CLAIM_ALL_TITLE } from 'modules/common/constants';
 
 interface ProceedsProps {
   closeAction: Function;
@@ -49,7 +50,7 @@ export const Proceeds = ({
       {breakdown && <Breakdown short rows={breakdown} />}
     </main>
     <BulkTxLabel
-      buttonName={'Claim All'}
+      buttonName={CLAIM_ALL_TITLE}
       count={submitAllTxCount}
       needsApproval={false}
     />

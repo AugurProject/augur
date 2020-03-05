@@ -155,8 +155,7 @@ export const SecondaryButton = (props: DefaultButtonProps) => (
     disabled={props.disabled}
     title={props.title || props.text}
   >
-    {!!props.icon && props.icon}
-    {props.text}
+    {props.text} {!!props.icon && props.icon}
   </button>
 );
 
@@ -207,9 +206,9 @@ const ProcessingButtonComponent = (props: DefaultButtonProps) => {
           {...props}
           confirmed={confirmed}
           failed={failed}
-          icon={failed ? icon : null}
+          icon={icon}
           text={buttonText}
-          action={!confirmed ? buttonAction : () => null}
+          action={buttonAction}
           disabled={isDisabled}
         />
       }
@@ -401,7 +400,7 @@ export const CancelTextButton = ({
     disabled={disabled}
     title={title}
   >
-    {text} {icon}
+    {text} {!icon && !text? XIcon : icon}
   </button>
 );
 

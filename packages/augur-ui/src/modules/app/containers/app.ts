@@ -28,18 +28,24 @@ import {
 } from "modules/app/actions/update-sidebar-status";
 import { updateSelectedCategories } from "modules/markets-list/actions/update-markets-list";
 import { updateAuthStatus, IS_CONNECTION_TRAY_OPEN } from "modules/auth/actions/auth-status";
-import { MODAL_GLOBAL_CHAT, MODAL_MIGRATE_REP } from 'modules/common/constants';
+import { MODAL_GLOBAL_CHAT, MODAL_MIGRATE_REP, TRANSACTIONS, MIGRATE_FROM_LEG_REP_TOKEN } from 'modules/common/constants';
 import { saveAffiliateAddress } from "modules/account/actions/login-account";
+import { AppState } from "store";
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: AppState) => {
+  const { loginAccount, pendingQueue } = state;
+  const { balances } = loginAccount;
   const { alerts } = selectInfoAlertsAndSeenCount(state);
   const notifications = selectNotifications(state);
-  const walletBalances = state.loginAccount.balances;
-
+  const walletBalances = loginAccount.balances;
+  const pending =
+    pendingQueue[TRANSACTIONS] &&
+    pendingQueue[TRANSACTIONS][MIGRATE_FROM_LEG_REP_TOKEN];
+  const showMigrateRepButton =
+    !!balances.legacyRep || !!balances.legacyRepNonSafe || !!pending;
   return {
     notifications,
     blockchain: state.blockchain,
-    categories: state.categories,
     connection: state.connection,
     env: state.env,
     isLogged: state.authStatus.isLogged,
@@ -47,15 +53,15 @@ const mapStateToProps = state => {
     isMobile: state.appStatus.isMobile,
     isMobileSmall: state.appStatus.isMobileSmall,
     isHelpMenuOpen: state.appStatus.isHelpMenuOpen,
-    loginAccount: state.loginAccount,
+    loginAccount,
     modal: state.modal,
     toasts: alerts.filter(alert => alert.toast && !alert.seen),
     universe: state.universe,
-    url: state.url,
     useWeb3Transport: isGlobalWeb3(),
     sidebarStatus: state.sidebarStatus,
     isConnectionTrayOpen: state.authStatus.isConnectionTrayOpen,
     walletBalances,
+    showMigrateRepButton,
   }
 };
 
