@@ -35,11 +35,11 @@ async function run() {
     .name('flash')
     .storeOptionsAsProperties(false)
     .passCommandToAction(false)
-    .option('-k, --key <key>', 'Private key to use, Overrides ETHEREUM_PRIVATE_KEY environment variable, if set.')
+    .option('--key <key>', 'Private key to use, Overrides ETHEREUM_PRIVATE_KEY environment variable, if set.')
     .option('--keyfile <keyfile>', 'File containing private key to use. Overrides ETHEREUM_PRIVATE_KEY environment variable, if set.')
-    .option('-n, --network <network>', `Name of network to run on. Use "none" for commands that don't use a network.`, 'local')
-    .option('-c, --config <config>', 'JSON of configuration')
-    .option('-f, --configFile <configFile>', 'Path configuration file');
+    .option('--network <network>', `Name of network to run on. Use "none" for commands that don't use a network.`, 'local')
+    .option('--config <config>', 'JSON of configuration')
+    .option('--configFile <configFile>', 'Path to configuration file');
 
   program
     .command('interactive')
