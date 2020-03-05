@@ -1,5 +1,5 @@
 import { Augur } from '../Augur';
-import { SDKConfiguration } from '../state/create-api';
+import { SDKConfiguration } from '@augurproject/artifacts';
 import { SubscriptionEventName } from '../constants';
 import { Callback } from '../events';
 import { BaseConnector } from './base-connector';

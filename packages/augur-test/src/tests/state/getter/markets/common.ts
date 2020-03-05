@@ -29,22 +29,22 @@ export interface SomeState {
 export async function _beforeAll(): Promise<AllState> {
   const seed = await loadSeedFile(defaultSeedPath);
   const baseProvider = await makeProvider(seed, ACCOUNTS);
-  const addresses = baseProvider.getContractAddresses();
+  const config = baseProvider.getConfig();
 
   const john = await TestContractAPI.userWrapper(
     ACCOUNTS[0],
     baseProvider,
-    addresses
+    config
   );
   const mary = await TestContractAPI.userWrapper(
     ACCOUNTS[1],
     baseProvider,
-    addresses
+    config
   );
   const bob = await TestContractAPI.userWrapper(
     ACCOUNTS[2],
     baseProvider,
-    addresses
+    config
   );
   await john.approveCentralAuthority();
   await mary.approveCentralAuthority();
@@ -127,21 +127,21 @@ export async function _beforeEach(allState: AllState): Promise<SomeState> {
   const { baseProvider } = allState;
 
   const provider = await baseProvider.fork();
-  const addresses = baseProvider.getContractAddresses();
+  const config = baseProvider.getConfig();
   const john = await TestContractAPI.userWrapper(
     ACCOUNTS[0],
     provider,
-    addresses
+    config
   );
   const mary = await TestContractAPI.userWrapper(
     ACCOUNTS[1],
     provider,
-    addresses
+    config
   );
   const bob = await TestContractAPI.userWrapper(
     ACCOUNTS[2],
     provider,
-    addresses
+    config
   );
 
   return {

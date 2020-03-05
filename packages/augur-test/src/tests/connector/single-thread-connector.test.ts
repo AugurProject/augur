@@ -1,21 +1,18 @@
-import { ContractAddresses } from '@augurproject/artifacts';
-import { EthersProvider } from '@augurproject/ethersjs-provider';
+import { ContractAddresses, SDKConfiguration } from '@augurproject/artifacts';
 import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
 import { SingleThreadConnector } from '@augurproject/sdk/build/connector';
 import { SubscriptionEventName } from '@augurproject/sdk/build/constants';
-import { MarketCreated } from '@augurproject/sdk/build/events';
-import { SDKConfiguration } from '@augurproject/sdk/build/state';
 import { Markets } from '@augurproject/sdk/build/state/getter/Markets';
 import { ACCOUNTS, defaultSeedPath, loadSeedFile } from '@augurproject/tools';
 import { TestContractAPI } from '@augurproject/tools';
 import { BigNumber } from 'bignumber.js';
 import { makeProvider } from '../../libs';
 import * as _ from 'lodash';
+import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
 
 let connector: SingleThreadConnector;
-let provider: EthersProvider;
+let provider: TestEthersProvider;
 let john: TestContractAPI;
-let addresses: ContractAddresses;
 
 jest.mock('@augurproject/sdk/build/state/create-api', () => {
   return {
@@ -29,9 +26,9 @@ jest.mock('@augurproject/sdk/build/state/create-api', () => {
 beforeAll(async () => {
   const seed = await loadSeedFile(defaultSeedPath);
   provider = await makeProvider(seed, ACCOUNTS);
-  addresses = seed.addresses;
 
-  john = await TestContractAPI.userWrapper(ACCOUNTS[0], provider, addresses);
+
+  john = await TestContractAPI.userWrapper(ACCOUNTS[0], provider, provider.getConfig());
 
   await john.approveCentralAuthority();
 
@@ -73,10 +70,10 @@ test('SingleThreadConnector :: Should route correctly and handle events, extraIn
         marketIds
       });
 
-      expect(marketList[0].categories[0]).toEqual("yesNo category 1".toLowerCase());
-      expect(marketList[0].categories[1]).toEqual("yesNo category 2".toLowerCase());
-      expect(marketList[0].description).toEqual("yesNo description 1");
-      expect(marketList[0].details).toEqual("yesNo longDescription 1");
+      expect(marketList[0].categories[0]).toEqual('yesNo category 1'.toLowerCase());
+      expect(marketList[0].categories[1]).toEqual('yesNo category 2'.toLowerCase());
+      expect(marketList[0].description).toEqual('yesNo description 1');
+      expect(marketList[0].details).toEqual('yesNo longDescription 1');
       expect(marketList[0].id).toEqual(yesNoMarket1.address);
 
       await connector.off(SubscriptionEventName.DBMarketCreatedEvent);

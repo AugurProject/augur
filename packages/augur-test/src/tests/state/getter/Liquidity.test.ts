@@ -1,6 +1,4 @@
 import { WSClient } from '@0x/mesh-rpc-client';
-import { ContractAddresses } from '@augurproject/artifacts';
-import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { BrowserMesh, Connectors } from '@augurproject/sdk';
 import { MarketLiquidityRanking } from '@augurproject/sdk/build/state/getter/Liquidity';
 import { ACCOUNTS, defaultSeedPath, loadSeedFile } from '@augurproject/tools';
@@ -11,12 +9,14 @@ import { formatBytes32String } from 'ethers/utils';
 import { makeProvider, MockGnosisRelayAPI } from '../../../libs';
 import { MockBrowserMesh } from '../../../libs/MockBrowserMesh';
 import { MockMeshServer, stopServer } from '../../../libs/MockMeshServer';
+import { SDKConfiguration } from '@augurproject/artifacts';
+import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
 
 describe('State API :: Liquidity', () => {
   let john: TestContractAPI;
 
-  let provider: EthersProvider;
-  let addresses: ContractAddresses;
+  let provider: TestEthersProvider;
+  let config: SDKConfiguration;
 
   let meshBrowser: BrowserMesh;
   let meshClient: WSClient;
@@ -27,8 +27,8 @@ describe('State API :: Liquidity', () => {
     meshBrowser = new MockBrowserMesh(meshClient);
 
     const seed = await loadSeedFile(defaultSeedPath);
-    addresses = seed.addresses;
     provider = await makeProvider(seed, ACCOUNTS);
+    config = provider.getConfig();
   });
 
   afterAll(() => {
@@ -42,7 +42,7 @@ describe('State API :: Liquidity', () => {
       john = await TestContractAPI.userWrapper(
         ACCOUNTS[0],
         provider,
-        addresses,
+        config,
         johnConnector,
         johnGnosis,
         meshClient,
@@ -56,7 +56,7 @@ describe('State API :: Liquidity', () => {
       await john.approveCentralAuthority();
     });
     test(': Liquidity Ranking', async () => {
-      let liquidityRankingParams = {
+      const liquidityRankingParams = {
         orderBook: {
           1: {
             bids: [],

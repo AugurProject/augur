@@ -1,5 +1,3 @@
-import { ContractAddresses } from '@augurproject/artifacts';
-import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { Connectors } from '@augurproject/sdk';
 import { ACCOUNTS, defaultSeedPath, loadSeedFile } from '@augurproject/tools';
 import { TestContractAPI } from '@augurproject/tools';
@@ -19,12 +17,12 @@ import {
 test('sync databases', async () => {
   const seed = await loadSeedFile(defaultSeedPath);
   const baseProvider = await makeProvider(seed, ACCOUNTS);
-  const addresses = baseProvider.getContractAddresses();
+  const config = baseProvider.getConfig();
 
   const john = await TestContractAPI.userWrapper(
     ACCOUNTS[0],
     baseProvider,
-    addresses
+    config
   );
 
   await john.sync();
@@ -102,21 +100,16 @@ test('sync databases', async () => {
 });
 
 test('rollback derived database', async () => {
-  let john: TestContractAPI;
-
-  let provider: EthersProvider;
-  let addresses: ContractAddresses;
-
   const seed = await loadSeedFile(defaultSeedPath);
-  addresses = seed.addresses;
-  provider = await makeProvider(seed, ACCOUNTS);
+  const provider = await makeProvider(seed, ACCOUNTS);
+  const config = provider.getConfig();
 
   const johnConnector = new Connectors.DirectConnector();
   const johnGnosis = new MockGnosisRelayAPI();
-  john = await TestContractAPI.userWrapper(
+  const john = await TestContractAPI.userWrapper(
     ACCOUNTS[0],
     provider,
-    addresses,
+    config,
     johnConnector,
     johnGnosis
   );

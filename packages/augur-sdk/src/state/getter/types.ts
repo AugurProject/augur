@@ -22,16 +22,3 @@ export interface JsonRpcResponse {
   result?: any;
   error?: any;
 }
-
-export interface EndpointSettings {
-  httpPort: number;
-  startHTTP: boolean;
-  httpsPort: number;
-  startHTTPS: boolean;
-  wsPort: number;
-  startWS: boolean;
-  wssPort: number;
-  startWSS: boolean;
-  certificateFile?: string;
-  certificateKeyFile?: string;
-}
