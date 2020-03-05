@@ -577,9 +577,11 @@ interface FundsHelpProps {
 
 export const FundsHelp = ({ fundType = DAI }: FundsHelpProps) => (
   <div className={Styles.FundsHelp}>
-    <span>Need help?</span>
-    <span>Learn how to buy {fundType === DAI ? `Dai ($)` : fundType} {fundType === DAI ? generateDaiTooltip() : ''} and  send it to your Augur account address.</span>
-    <ExternalLinkButton URL='https://docs.augur.net/' label='Learn More' />
+    <p>Need help?</p>
+    <div>
+      <span>Learn how to buy {fundType === DAI ? `Dai ($)` : fundType} {fundType === DAI ? generateDaiTooltip() : ''} and  send it to your Augur account address.</span>
+      <ExternalLinkButton URL='https://docs.augur.net/' label='Learn More' />
+    </div>
   </div>
 );
 
