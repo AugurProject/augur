@@ -384,6 +384,7 @@ export interface DisputingBondsViewProps {
   gasPrice: number;
   ethToDaiRate: BigNumber;
   warpSyncHash: string;
+  isWarpSync: boolean;
 }
 
 interface DisputingBondsViewState {
@@ -511,7 +512,7 @@ export class DisputingBondsView extends Component<
         ),
       });
     }
-    if (this.props.warpSyncHash) {
+    if (this.props.isWarpSync) {
       this.updateScalarOutcome(this.props.warpSyncHash);
       this.updateInputtedStake('0');
     }
