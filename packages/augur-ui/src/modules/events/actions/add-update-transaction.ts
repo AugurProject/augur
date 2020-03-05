@@ -1,9 +1,5 @@
 import { AppState } from 'store';
 import {
-  addCanceledOrder,
-  removeCanceledOrder,
-} from 'modules/orders/actions/update-order-status';
-import {
   CANCELORDER,
   CANCELORDERS,
   BATCHCANCELORDERS,
@@ -31,7 +27,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { Events, TXEventName } from '@augurproject/sdk';
 import {
-  addPendingData, addUpdatePendingTransaction,
+  addPendingData, addUpdatePendingTransaction, addCanceledOrder,
 } from 'modules/pending-queue/actions/pending-queue-management';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { TransactionMetadataParams } from 'contract-dependencies-ethers/build';
@@ -191,26 +187,17 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
       }
       case CANCELORDER: {
         const orderId = transaction.params && transaction.params.order[TX_ORDER_ID];
-        dispatch(addCanceledOrder(orderId, eventName));
-        if (eventName === TXEventName.Success) {
-          dispatch(removeCanceledOrder(orderId));
-        }
+        dispatch(addCanceledOrder(orderId, eventName, hash))
         break;
       }
       case BATCHCANCELORDERS: {
         const orders = transaction.params && transaction.params.orders || [];
-        orders.map(order => dispatch(addCanceledOrder(order.orderId, eventName)));
-        if (eventName === TXEventName.Failure || eventName === TXEventName.Success) {
-          orders.map(order => dispatch(removeCanceledOrder(order.orderId)));
-        }
+        orders.map(order => dispatch(addCanceledOrder(order.orderId, eventName, hash)));
         break;
       }
       case CANCELORDERS: {
         const orderIds = transaction.params && transaction.params.order[TX_ORDER_IDS];
-        orderIds.map(id => dispatch(addCanceledOrder(id, eventName)));
-        if (eventName === TXEventName.Success) {
-          orderIds.map(id => dispatch(removeCanceledOrder(id)));
-        }
+        orderIds.map(orderId => dispatch(addCanceledOrder(orderId, eventName, hash)));
         break;
       }
 

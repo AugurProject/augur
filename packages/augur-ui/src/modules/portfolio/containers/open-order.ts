@@ -8,14 +8,15 @@ import Row from 'modules/common/row';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { TXEventName } from '@augurproject/sdk/src/constants';
-import { removeCanceledOrder } from 'modules/orders/actions/update-order-status';
 import { OPEN } from 'modules/common/constants';
+import { selectCancelingOrdersState } from 'store/select-state';
+import { removeCanceledOrder } from 'modules/pending-queue/actions/pending-queue-management';
 
 const { COLUMN_TYPES } = constants;
 
 const mapStateToProps = (state: AppState) => ({
   currentTimestamp: state.blockchain.currentAugurTimestamp,
-  orderCancellation: state.orderCancellation,
+  pendingOrderCancellations: selectCancelingOrdersState(state),
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
@@ -29,7 +30,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
   const avgPrice = getValue(openOrder, 'avgPrice');
   const unmatchedShares = getValue(openOrder, 'unmatchedShares');
   const isCanceling =
-    sP.orderCancellation && sP.orderCancellation[openOrder.id];
+    sP.pendingOrderCancellations[openOrder.id];
 
   const orderLabel =
     openOrder.description || openOrder.name || openOrder.outcomeName;

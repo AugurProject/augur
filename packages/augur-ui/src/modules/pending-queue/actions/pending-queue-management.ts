@@ -4,7 +4,7 @@ import { isTransactionConfirmed } from 'modules/contracts/actions/contractCalls'
 import { TXEventName } from '@augurproject/sdk';
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
-import { TRANSACTIONS } from "modules/common/constants";
+import { TRANSACTIONS, CANCELORDER } from "modules/common/constants";
 
 export const ADD_PENDING_DATA = "ADD_PENDING_DATA";
 export const REMOVE_PENDING_DATA = "REMOVE_PENDING_DATA";
@@ -83,3 +83,9 @@ export const removePendingDataByHash = (
   type: REMOVE_PENDING_DATA_BY_HASH,
   data: { hash, queueName },
 });
+
+export const addCanceledOrder = (orderId: string, status: string, hash: string) => (dispatch: ThunkDispatch<void, any, Action>) =>
+  dispatch(addPendingData(orderId, CANCELORDER, status, hash));
+
+export const removeCanceledOrder = (orderId: string) => (dispatch: ThunkDispatch<void, any, Action>) =>
+  dispatch(removePendingData(orderId, CANCELORDER));
