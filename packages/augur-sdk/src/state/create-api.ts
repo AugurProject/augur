@@ -18,10 +18,9 @@ import { BlockAndLogStreamerSyncStrategy } from './sync/BlockAndLogStreamerSyncS
 import { BulkSyncStrategy } from './sync/BulkSyncStrategy';
 import { WarpSyncStrategy } from './sync/WarpSyncStrategy';
 
-export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: EthersProvider, logFilterAggregator: LogFilterAggregator) {
+export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: EthersProvider, logFilterAggregator: LogFilterAggregator, config: SDKConfiguration) {
   return async () => {
-    const networkId = await provider.getNetworkId();
-    const uploadBlockNumber = getStartingBlockForNetwork(networkId);
+    const uploadBlockNumber = getStartingBlockForNetwork(config.networkId);
     const uploadBlockHeaders = await provider.getBlock(uploadBlockNumber);
     const currentBlockNumber = await provider.getBlockNumber();
     const contractAddresses = client.contractEvents.getAugurContractAddresses();
@@ -169,7 +168,7 @@ export async function createServer(config: SDKConfiguration, client?: Augur, acc
     config.zeroX?.mesh?.enabled || config.zeroX?.rpc?.enabled
   );
 
-  const sync = buildSyncStrategies(client, db, ethersProvider, logFilterAggregator);
+  const sync = buildSyncStrategies(client, db, ethersProvider, logFilterAggregator, config);
 
   const controller = new Controller(client, db, logFilterAggregator);
   const api = new API(client, db);
