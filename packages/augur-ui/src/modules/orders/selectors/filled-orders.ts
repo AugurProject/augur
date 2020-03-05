@@ -55,9 +55,10 @@ function findOrders(
         transactionHash,
         marketId,
         logIndex,
+        tradeGroupId: orderTradeGroupId,
       },
     ) => {
-      const foundOrder = order.find(({ id }) => id === orderId);
+      const foundOrder = order.find(({ id, tradeGroupId }) => id === orderId || tradeGroupId === orderTradeGroupId);
       const amountBN = createBigNumber(amount);
       const priceBN = createBigNumber(price);
 
@@ -90,6 +91,7 @@ function findOrders(
           marketDescription,
           marketType,
           logIndex,
+          tradeGroupId: orderTradeGroupId,
         });
 
         foundOrder.originalQuantity = foundOrder.originalQuantity.plus(
@@ -125,6 +127,7 @@ function findOrders(
           marketType,
           originalQuantity,
           logIndex,
+          tradeGroupId: orderTradeGroupId,
           trades: [
             {
               outcome: outcomeValue.description,

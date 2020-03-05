@@ -144,7 +144,7 @@ export const handleTxFailure = (txStatus: Events.TXStatus) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  console.log('TxFailure Transaction', txStatus.transaction.name);
+  console.log('TxFailure Transaction', txStatus.transaction.name, txStatus);
   dispatch(addUpdateTransaction(txStatus));
 };
 
