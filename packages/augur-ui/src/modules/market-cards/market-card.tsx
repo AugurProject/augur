@@ -13,6 +13,7 @@ import {
   LabelValue,
   OutcomeGroup,
   ResolvedOutcomes,
+  TentativeWinner,
 } from 'modules/market-cards/common';
 import toggleCategory from 'modules/routes/helpers/toggle-category';
 import { DISPUTING, MARKETS } from 'modules/routes/constants/views';
@@ -129,7 +130,7 @@ export default class MarketCard extends React.Component<
       isTemplate,
       consensusFormatted,
       mostLikelyInvalid,
-      isWarpSync
+      isWarpSync,
     } = market;
 
     if (loading) {
@@ -232,7 +233,10 @@ export default class MarketCard extends React.Component<
         ? HEADER_TYPE.H3
         : undefined;
 
-    const restOfOutcomes = isScalar && inDispute ? disputeInfo.stakes.length - showOutcomeNumber - 1 : outcomesFormatted.length - showOutcomeNumber;
+    const restOfOutcomes =
+      isScalar && inDispute
+        ? disputeInfo.stakes.length - showOutcomeNumber - 1
+        : outcomesFormatted.length - showOutcomeNumber;
 
     const expandedOptionShowing = restOfOutcomes > 0 && !expandedView;
 
@@ -292,7 +296,9 @@ export default class MarketCard extends React.Component<
                 isWarpSync={market.isWarpSync}
               />
             )}
-            {isScalar && !isWarpSync && <MarketTypeLabel marketType={marketType} />}
+            {isScalar && !isWarpSync && (
+              <MarketTypeLabel marketType={marketType} />
+            )}
             <RedFlag market={market} />
             {isTemplate && <TemplateShield market={market} />}
             <CategoryTagTrail categories={categoriesWithClick} />
@@ -375,8 +381,20 @@ export default class MarketCard extends React.Component<
               expanded={expandedView}
             />
           )}
+          {condensed && inDispute && (
+            <TentativeWinner
+              market={market}
+              tentativeWinner={disputeInfo.stakes.find(
+                stake => stake.tentativeWinning
+              )}
+              dispute={dispute}
+              canDispute={canDispute}
+            />
+          )}
         </>
-        <div><InfoIcons id={id} /></div>
+        <div>
+          <InfoIcons id={id} />
+        </div>
       </div>
     );
   }
