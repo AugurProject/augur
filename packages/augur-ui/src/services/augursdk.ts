@@ -50,6 +50,7 @@ export class SDK {
     enableFlexSearch = true,
   ): Promise<Augur> {
     this.config = config;
+    this.networkId = config.networkId;
 
     const ethersProvider = new EthersProvider(
       provider,
@@ -68,7 +69,7 @@ export class SDK {
     this.client = await createClient(this.config, this.connector, account, signer, ethersProvider, enableFlexSearch, createBrowserMesh);
 
     if (!isEmpty(account)) {
-      this.syncUserData(account, signer, this.networkId, this.config.gnosis && this.config.gnosis.enabled, affiliate).catch((error) => {
+      this.syncUserData(account, signer, this.networkId, this.config.gnosis?.enabled, affiliate).catch((error) => {
         console.log('Gnosis safe create error during create: ', error);
       });
     }
