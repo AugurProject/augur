@@ -3,6 +3,7 @@ import QuadBox from 'modules/portfolio/components/common/quad-box';
 import EmptyDisplay from 'modules/portfolio/components/common/empty-display';
 import { Tab } from 'modules/portfolio/types';
 import { SwitchLabelsGroup } from 'modules/common/switch-labels-group';
+import { SwitchBackLayGroup } from 'modules/common/switch-back-lay-group';
 import MarketCard from 'modules/market-cards/containers/market-card';
 import { Checkbox } from 'modules/common/form';
 
@@ -300,7 +301,7 @@ export default class MarketsInDispute extends Component<
           updateDropdown={this.updateDropdown}
           h1Title={true}
           bottomBarContent={
-            <SwitchLabelsGroup
+            <SwitchBackLayGroup
               tabs={tabs}
               selectedTab={selectedTab}
               selectTab={this.selectTab}
