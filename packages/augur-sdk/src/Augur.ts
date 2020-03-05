@@ -1,4 +1,4 @@
-import { SDKConfiguration } from '@augurproject/artifacts';
+import { SDKConfiguration, NetworkId } from '@augurproject/artifacts';
 import { ContractInterfaces } from '@augurproject/core';
 import { GnosisSafeState, GnosisSafeStateReponse } from '@augurproject/gnosis-relay-api';
 import { BigNumber } from 'bignumber.js';
@@ -142,6 +142,10 @@ export class Augur<TProvider extends Provider = Provider> {
     );
     await client.contracts.setReputationToken(config.networkId)
     return client;
+  }
+
+  get networkId(): NetworkId {
+    return this.config.networkId;
   }
 
   async getTransaction(hash: string): Promise<TransactionResponse> {
