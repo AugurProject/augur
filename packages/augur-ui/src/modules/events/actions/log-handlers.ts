@@ -52,6 +52,7 @@ import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
 import {
   isOnDisputingPage,
   isOnReportingPage,
+  isOnTradePage,
 } from 'modules/trades/helpers/is-on-page';
 import {
   reloadDisputingPage,
@@ -144,7 +145,6 @@ export const handleTxFailure = (txStatus: Events.TXStatus) => (
   getState: () => AppState
 ) => {
   console.log('TxFailure Transaction', txStatus.transaction.name);
-  console.log(txStatus);
   dispatch(addUpdateTransaction(txStatus));
 };
 
@@ -365,7 +365,7 @@ export const handleOrderLog = (log: any) => {
     case OrderEventType.Cancel:
       return handleOrderCanceledLog(log);
     case OrderEventType.Fill:
-      return;
+      return handleOrderFilledLog(log);
     default:
       console.log(`Unknown order event type "${log.eventType}" for log`, log);
   }
@@ -419,31 +419,28 @@ export const handleOrderCanceledLog = (log: Logs.ParsedOrderEventLog) => (
   dispatch(updateMarketOrderBook(log.market));
 };
 
-export const handleOrderFilledLog = (logs: Logs.ParsedOrderEventLog[]) => (
+export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
   const { loginAccount, authStatus } = getState();
   const { isLogged } = authStatus;
+  const marketId = log.market;
   const { address } = loginAccount;
-  const userLogs = logs.filter(log => isSameAddress(log.orderCreator, address) || isSameAddress(log.orderFiller, address));
-  if (userLogs.length > 0 && isLogged) {
-    userLogs.map (log => {
-      const marketId = log.market;
-      dispatch(
-        orderFilled(marketId, log, isSameAddress(log.orderCreator, address))
-      );
-      handleAlert(log, PUBLICFILLORDER, true, dispatch, getState);
-      dispatch(removePendingOrder(log.tradeGroupId, marketId));
-    })
+  const isUserDataUpdate =
+    isSameAddress(log.orderCreator, address) ||
+    isSameAddress(log.orderFiller, address);
+  if (isUserDataUpdate && isLogged) {
+    dispatch(
+      orderFilled(marketId, log, isSameAddress(log.orderCreator, address))
+    );
+    dispatch(throttleLoadUserOpenOrders());
+    handleAlert(log, PUBLICFILLORDER, true, dispatch, getState);
+    dispatch(removePendingOrder(log.tradeGroupId, marketId));
   }
-  const currentMarket: string = logs.reduce(
-    (p: string, log): string => isCurrentMarket(log.market) ? log.market : p,
-    null
-  );
-  if (currentMarket) {
-    dispatch(updateMarketOrderBook(currentMarket));
-    dispatch(loadMarketTradingHistory(currentMarket));
+  if (isOnTradePage()) {
+    dispatch(loadMarketTradingHistory(marketId));
+    dispatch(updateMarketOrderBook(log.market));
   }
 };
 
@@ -519,10 +516,8 @@ export const handleProfitLossChangedLog = (logs: Logs.ProfitLossChangedLog[]) =>
   getState: () => AppState
 ) => {
   const address = getState().loginAccount.address
-  if (logs.filter(log => isSameAddress(log.account, address)).length > 0) {
+  if (logs.filter(log => isSameAddress(log.account, address)).length > 0)
     dispatch(loadAllAccountPositions());
-    dispatch(throttleLoadUserOpenOrders());
-  }
 };
 
 export const handleParticipationTokensRedeemedLog = (
@@ -720,8 +715,5 @@ const EventHandlers = {
   ),
   [SubscriptionEventName.MarketCreated]: wrapLogHandler(
     handleMarketCreatedLog
-  ),
-  [OrderEventType.Fill]: wrapLogHandler(
-    handleOrderFilledLog
   ),
 }
