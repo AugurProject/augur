@@ -14,7 +14,7 @@ import { addPendingData } from 'modules/pending-queue/actions/pending-queue-mana
 const mapStateToProps = (state: AppState) => ({
   modal: state.modal,
   loginAccount: state.loginAccount,
-  Gnosis_ENABLED: state.appStatus.gnosisEnabled,
+  GSN_ENABLED: state.appStatus.gsnEnabled,
   ethToDaiRate: state.appStatus.ethToDaiRate,
   gasPrice: getGasPrice(state),
   walletBalances: state.loginAccount.balances,
@@ -35,7 +35,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     ...dP,
     loginAccount: sP.loginAccount,
     ethToDaiRate: sP.ethToDaiRate,
-    Gnosis_ENABLED: sP.Gnosis_ENABLED,
+    GSN_ENABLED: sP.GSN_ENABLED,
     gasPrice: sP.gasPrice,
     closeAction: () => dP.closeModal(),
     showForSafeWallet,

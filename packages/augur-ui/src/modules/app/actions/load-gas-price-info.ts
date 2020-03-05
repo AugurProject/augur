@@ -38,8 +38,8 @@ export function loadGasPriceInfo(
 async function getGasPriceRanges(networkId: string, callback: DataCallback) {
   const defaultGasPrice = setDefaultGasInfo();
   try {
-    const relayerGasStation = await augurSdk.sdk.gnosis.gasStation();
-    // Take the Gnosis relayer gas estimates for safeLow, standard, and fast
+    const relayerGasStation = await augurSdk.sdk.getGasStation();
+    // Take the eth gas station gas estimates for safeLow, standard, and fast
     // Add 1 GWEI to all of them (b/c we use a lot of gas).
     const relayerGasStationResults = {
       safeLow: ++formatGasCostGwei(relayerGasStation.safeLow, {}).value,

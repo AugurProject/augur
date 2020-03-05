@@ -124,7 +124,7 @@ export class FlashSession {
     approveCentralAuthority = true,
     accountAddress: string|null = null,
     useZerox = false,
-    useGnosis = false
+    useGSN = false
   ): Promise<ContractAPI> {
     if (typeof this.contractAddresses === 'undefined') {
       throw Error('ERROR: Must load contract addresses first.');
@@ -142,9 +142,8 @@ export class FlashSession {
         rpcRetryInterval: 0,
         rpcConcurrency: 40
       },
-      gnosis: {
-        enabled: useGnosis,
-        http: useGnosis ? network.gnosisRelayerUrl : undefined
+      gsn: {
+        enabled: useGSN,
       },
       zeroX: {
         rpc: {
@@ -167,8 +166,8 @@ export class FlashSession {
       if (config?.zeroX?.rpc?.enabled) {
         console.log('ZeroX Enabled:', config.zeroX.rpc.ws);
       }
-      if (config?.gnosis?.enabled) {
-        console.log('Gnosis Enabled:', config.gnosis.http);
+      if (config?.gsn?.enabled) {
+        console.log('GSN Enabled');
       }
 
       try {
@@ -190,11 +189,11 @@ export class FlashSession {
         this.user = new ContractAPI(client, this.provider, client.dependencies, account);
         this.user.augur.setGasPrice(new BigNumber(this.network.gasPrice.toString()));
 
-        // IF we want this flash client to use a safe associated with the past in
+        // IF we want this flash client to use a wallet associated with the past in
         // account, configure it at this point.
-        if (config.gnosis.enabled) {
+        if (config.gsn.enabled) {
           await this.user.getOrCreateWallet();
-          this.user.augur.setGasPrice(new BigNumber(90000));
+          this.user.augur.setGasPrice(new BigNumber(20*10e9));
           this.user.setUseWallet(true);
           this.user.setUseRelay(true);
         } else if (approveCentralAuthority) {

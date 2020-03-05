@@ -52,7 +52,7 @@ export class GSN {
       const registeredAddress = await this.getWalletAddress(s.owner);
       if (registeredAddress !== NULL_ADDRESS) {
         status = WalletState.AVAILABLE;
-      } else if ((await this.augur.contracts.cash.balanceOf_(s.wallet)).gt(1)) { // TODO Get actual safe creation cost
+      } else if ((await this.augur.contracts.cash.balanceOf_(s.wallet)).gt(1)) { // TODO XXX Get actual safe creation cost
         status = WalletState.FUNDED;
       } else {
         status = WalletState.WAITING_FOR_FUNDS;
@@ -94,8 +94,7 @@ export class GSN {
       return wallet;
     }
 
-    await this.createWallet(params, owner, wallet);
-    return null;
+    return await this.createWallet(params, owner, wallet);
   }
 
   /**
@@ -117,7 +116,7 @@ export class GSN {
     params: CreateWalletParams,
     owner?: string,
     wallet?: string
-  ): Promise<void> {
+  ): Promise<string> {
     if (!owner) owner = await this.dependencies.signer.getAddress();
     if (!wallet) wallet = await this.calculateWalletAddress(owner);
     this.updateWalletsToCheckList(wallet, owner, WalletState.PENDING);
@@ -126,5 +125,6 @@ export class GSN {
     // We set the status back as if the tx failed this is the proper state
     this.updateWalletsToCheckList(wallet, owner, WalletState.FUNDED);
     await this.onNewBlock();
+    return wallet;
   }
 }

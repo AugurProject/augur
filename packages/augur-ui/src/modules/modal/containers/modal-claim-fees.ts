@@ -35,7 +35,7 @@ const mapStateToProps = (state: AppState) => {
       { decimalsRounded: 4 },
       getGasPrice(state)
     ),
-    Gnosis_ENABLED: state.appStatus.gnosisEnabled,
+    GSN_ENABLED: state.appStatus.gsnEnabled,
     ethToDaiRate: state.appStatus.ethToDaiRate,
     pendingQueue: state.pendingQueue || [],
     claimReportingFees: selectReportingWinningsByMarket(state),
@@ -127,7 +127,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
             },
             {
               label: 'Transaction Fee',
-              value: sP.Gnosis_ENABLED
+              value: sP.GSN_ENABLED
                 ? displayGasInDai(gasCost, sP.ethToDaiRate)
                 : gasCost + ' ETH',
             },
@@ -167,7 +167,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
         },
         {
           label: 'Transaction Fee',
-          value: sP.Gnosis_ENABLED
+          value: sP.GSN_ENABLED
             ? displayGasInDai(gasCost, sP.ethToDaiRate)
             : gasCost + ' ETH',
         },

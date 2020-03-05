@@ -62,10 +62,9 @@ import { loadUniverseForkingInfo } from 'modules/universe/actions/load-forking-i
 import { loadUniverseDetails } from 'modules/universe/actions/load-universe-details';
 import { getCategoryStats } from 'modules/create-market/actions/get-category-stats';
 import {
-  GNOSIS_STATUS,
+  WALLET_STATUS,
   updateAppStatus,
 } from 'modules/app/actions/update-app-status';
-import { GnosisSafeState } from '@augurproject/gnosis-relay-api/build/GnosisRelayAPI';
 import { loadAnalytics } from 'modules/app/actions/analytics-management';
 import { marketCreationCreated, orderFilled } from 'services/analytics/helpers';
 import { updateModal } from 'modules/modal/actions/update-modal';
@@ -76,6 +75,7 @@ import { removePendingDataByHash, addPendingData, removePendingData } from 'modu
 import { removePendingOrder, constructPendingOrderid } from 'modules/orders/actions/pending-orders-management';
 import { loadAccountData } from 'modules/auth/actions/load-account-data';
 import { wrapLogHandler } from './wrap-log-handler';
+import { WalletState } from 'contract-dependencies-gsn';
 
 const handleAlert = (
   log: any,
@@ -164,16 +164,16 @@ export const handleTxFeeTooLow = (txStatus: Events.TXStatus) => (
   dispatch(updateModal({ type: MODAL_GAS_PRICE, feeTooLow: true }));
 };
 
-export const handleGnosisStateUpdate = (response) => async(
+export const handleWalletStateUpdate = (response) => async(
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  console.log('handleGnosisStateUpdate', response);
+  console.log('handleWalletStateUpdate', response);
   const status = response.status;
   if (response && status) {
-    dispatch(updateAppStatus(GNOSIS_STATUS, status));
+    dispatch(updateAppStatus(WALLET_STATUS, status));
 
-    if (status === GnosisSafeState.ERROR) {
+    if (status === WalletState.Error) {
       const loginAccount = getState().loginAccount;
       const hasEth = (await loginAccount.meta.signer.provider.getBalance(loginAccount.meta.signer._address)).gt(0);
 

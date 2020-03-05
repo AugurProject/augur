@@ -31,9 +31,8 @@ export interface SDKConfiguration {
     enabled?: boolean,
     ws: string,
   },
-  gnosis?: {
+  gsn?: {
     enabled?: boolean,
-    http: string
   },
   zeroX?: {
     rpc?: {

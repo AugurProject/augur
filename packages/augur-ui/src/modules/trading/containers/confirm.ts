@@ -8,12 +8,12 @@ import { totalTradingBalance } from 'modules/auth/selectors/login-account';
 const mapStateToProps = (state: AppState, ownProps) => {
   const { authStatus, loginAccount, appStatus, newMarket } = state;
   const {
-    gnosisEnabled: Gnosis_ENABLED,
+    gsnEnabled: GSN_ENABLED,
     ethToDaiRate,
-    gnosisStatus,
+    walletStatus: walletStatus,
   } = appStatus;
 
-  const hasFunds = Gnosis_ENABLED
+  const hasFunds = GSN_ENABLED
     ? !!loginAccount.balances.dai
     : !!loginAccount.balances.eth && !!loginAccount.balances.dai;
 
@@ -28,9 +28,9 @@ const mapStateToProps = (state: AppState, ownProps) => {
     hasFunds,
     isLogged: authStatus.isLogged,
     allowanceBigNumber: loginAccount.allowance,
-    Gnosis_ENABLED,
+    GSN_ENABLED,
     ethToDaiRate,
-    gnosisStatus,
+    walletStatus,
   };
 };
 

@@ -375,7 +375,7 @@ export class ZeroX {
     );
     const order = result[0];
     const hash = result[1];
-    const makerAddress: string = order[0]; // signer or gnosis safe
+    const makerAddress: string = order[0]; // signer or wallet
     const signature = await this.signOrder(
       order,
       hash,
@@ -410,23 +410,23 @@ export class ZeroX {
   async signOrder(
     signedOrder: SignedOrder,
     orderHash: string,
-    gnosis = true
+    wallet = true
   ): Promise<string> {
-    if (gnosis) {
-      return this.signGnosisOrder(signedOrder, orderHash);
+    if (wallet) {
+      return this.signWalletOrder(signedOrder, orderHash);
     } else {
       return this.signSimpleOrder(orderHash);
     }
   }
 
-  async signGnosisOrder(signedOrder: SignedOrder, orderHash: string): Promise<string> {
-    const gnosisSafeAddress: string = signedOrder[0];
+  async signWalletOrder(signedOrder: SignedOrder, orderHash: string): Promise<string> {
+    const walletAddress: string = signedOrder[0];
 
     const eip1271OrderWithHash = await this.client.contracts.ZeroXTrade.encodeEIP1271OrderWithHash_(
       signedOrder,
       orderHash
     );
-    const messageHash = "";// TODOawait augurWallet.getMessageHash_(eip1271OrderWithHash);
+    const messageHash = "";// TODO XXX await augurWallet.getMessageHash_(eip1271OrderWithHash);
 
     // In 0x v3, '07' is EIP1271Wallet
     // See https://github.com/0xProject/0x-mesh/blob/0xV3/zeroex/order.go#L51

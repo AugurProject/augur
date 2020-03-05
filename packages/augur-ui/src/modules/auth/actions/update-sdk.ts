@@ -5,7 +5,7 @@ import { updateLoginAccount } from 'modules/account/actions/login-account';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { toChecksumAddress } from 'ethereumjs-util';
-import { updateAppStatus, GNOSIS_ENABLED, Ox_ENABLED } from 'modules/app/actions/update-app-status';
+import { updateAppStatus, GSN_ENABLED, Ox_ENABLED } from 'modules/app/actions/update-app-status';
 import { loadAccountDataFromLocalStorage } from './load-account-data-from-local-storage';
 import { IS_LOGGED, updateAuthStatus } from 'modules/auth/actions/auth-status';
 import { loadAccountData } from 'modules/auth/actions/load-account-data';
@@ -18,14 +18,14 @@ import { MODAL_ERROR } from 'modules/common/constants';
 export const updateSdk = (
   loginAccount: Partial<LoginAccount>,
   networkId: string,
-  useGnosis: boolean
+  useGSN: boolean
 ) => async (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   if (!loginAccount || !loginAccount.address || !loginAccount.meta) return;
   if (!augurSdk.sdk) return;
 
   try {
     dispatch(updateAppStatus(Ox_ENABLED, !!augurSdk.sdk.zeroX));
-    if (useGnosis) {
+    if (useGSN) {
       // check for affilitate
       const affiliate = (getState().loginAccount || {}).affiliate;
       const updateUserAccount = safeAddress => {
@@ -36,7 +36,7 @@ export const updateSdk = (
           address: toChecksumAddress(safeAddress),
         };
         dispatch(updateLoginAccount(newAccount));
-        dispatch(updateAppStatus(GNOSIS_ENABLED, true));
+        dispatch(updateAppStatus(GSN_ENABLED, true));
         dispatch(loadAccountDataFromLocalStorage(safeAddress));
       };
 

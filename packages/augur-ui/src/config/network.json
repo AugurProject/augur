@@ -10,9 +10,8 @@
       "rpcRetryInterval": 0,
       "rpcConcurrency": 40
     },
-    "gnosis": {
-      "enabled": true,
-      "http": "http://localhost:8888/api/"
+    "gsn": {
+      "enabled": true
     },
     "zeroX": {
       "rpc": {
@@ -36,9 +35,8 @@
       "rpcRetryInterval": 0,
       "rpcConcurrency": 40
     },
-    "gnosis": {
-      "enabled": true,
-      "http": "https://gnosis.kovan.augur.net/api/"
+    "gsn": {
+      "enabled": true
     },
     "zeroX": {
       "rpc": {
@@ -58,9 +56,8 @@
       "rpcRetryInterval": 0,
       "rpcConcurrency": 40
     },
-    "gnosis": {
-      "enabled": true,
-      "http": "https://gnosis.demo.augur.net/api/"
+    "gsn": {
+      "enabled": true
     },
     "zeroX": {
       "rpc": {

@@ -59,7 +59,6 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
   _signingQueue: AsyncQueue<SigningQueueTask> = queue(async (task: SigningQueueTask) => {
     if (this._currentNonce === -1) {
       const nonce = await this.relayHub.getNonce(await this.signer.getAddress());
-      console.log(`NONCE: ${nonce}`);
       this._currentNonce = nonce.toNumber();
     }
     const result = await this.validateAndSign(task.tx);
@@ -91,12 +90,12 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
     this.relayHub = new ethers.Contract(
       RELAY_HUB_ADDRESS,
       abi['RelayHub'],
-      this.signer
+      provider
     );
     this.augurWalletRegistry = new ethers.Contract(
       augurWalletRegistryAddress,
       abi['AugurWalletRegistry'],
-      this.signer
+      provider
     );
   }
 
@@ -109,16 +108,19 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
       const dependencies = new ContractDependenciesGSN(provider, signer, augurWalletRegistryAddress, gasPrice, address);
 
       let status = WalletState.WAITING_FOR_FUNDS;
-      const signerAddress = await dependencies.signer.getAddress();
-      let walletAddress = await dependencies.augurWalletRegistry.getWallet(signerAddress);
-      if (walletAddress !== NULL_ADDRESS) {
-        status = WalletState.AVAILABLE;
+      if (dependencies.signer) {
+        const signerAddress = await dependencies.signer.getAddress();
+        let walletAddress = await dependencies.augurWalletRegistry.getWallet(signerAddress);
+        if (walletAddress !== NULL_ADDRESS) {
+          status = WalletState.AVAILABLE;
+        }
+        if (!walletAddress) {
+          walletAddress = await dependencies.augurWalletRegistry.getCreate2WalletAddress(signerAddress);
+        }
+        dependencies.walletAddress = walletAddress;
       }
+
       dependencies.setStatus(status);
-      if (!walletAddress) {
-        walletAddress = await dependencies.augurWalletRegistry.getCreate2WalletAddress(signerAddress);
-      }
-      dependencies.walletAddress = walletAddress;
 
       return dependencies;
   }
@@ -136,7 +138,6 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
   }
 
   setUseRelay(useRelay: boolean): void {
-    console.log(`set use relay: ${useRelay}`);
     this.useRelay = useRelay;
   }
 
@@ -168,11 +169,8 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
   }
 
   async validateAndSign(tx: Transaction<ethers.utils.BigNumber>): Promise<PreparedTransaction> {
-    console.log(`Validate and sign`);
     const relayOptions = this.relayClient.getTransactionOptions(tx, this.gasPrice.toNumber());
-    console.log(`Got Relay Options. Getting prepared TX from relay`);
     const preparedTx = await this.relayClient.selectRelayAndGetTxHash(tx.data, relayOptions, this._currentNonce);
-    console.log(`Signing TX`);
     preparedTx.signature = await this.signer.signMessage(ethers.utils.arrayify(preparedTx.txHash));
     return preparedTx;
   }
@@ -182,7 +180,6 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
     txMetadata: TransactionMetadata
   ): Promise<ethers.providers.TransactionReceipt> {
     if (this.useWallet && this.status === WalletState.AVAILABLE) {
-      console.log('Converting to a wallet TX');
       tx = this.convertToWalletTx(tx);
     }
     
@@ -192,14 +189,11 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
 
     // Just use normal signing/sending if we're not using the relay
     if (!this.useRelay) {
-      console.log('Bypassing relay');
       return super.sendTransaction(tx, txMetadata);
     }
 
-    console.log('Getting Hash and relay from relay client');
     const relayTransaction = await this.signTransaction(tx);
 
-    console.log('Sending to relay client');
     return this.waitForTx({ tx: relayTransaction, txMetadata });
   }
 

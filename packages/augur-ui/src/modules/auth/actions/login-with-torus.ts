@@ -16,7 +16,7 @@ export const loginWithTorus = () => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState,
 ) => {
-  const useGnosis = getState().env['gnosis']?.enabled;
+  const useGSN = getState().env['gsn']?.enabled;
   const networkId = getNetworkId();
   const torusNetwork = getNetwork(networkId);
   let accountObject: Partial<LoginAccount> = {};
@@ -82,10 +82,10 @@ export const loginWithTorus = () => async (
       );
       accountObject.meta.email = userInfo.email;
       accountObject.meta.profileImage = userInfo.profileImage;
-      dispatch(updateSdk(accountObject, undefined, useGnosis));
+      dispatch(updateSdk(accountObject, undefined, useGSN));
     } catch (error) {
       // User denied request
-      dispatch(updateSdk(accountObject, undefined, useGnosis));
+      dispatch(updateSdk(accountObject, undefined, useGSN));
     }
   } else {
     throw Error('Network currently not supported with Torus');

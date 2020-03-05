@@ -19,6 +19,7 @@ import { analytics } from './analytics';
 import { isLocalHost } from 'utils/is-localhost';
 import { createBrowserMesh } from './browser-mesh';
 import { getFingerprint } from 'utils/get-fingerprint';
+import { BigNumber } from 'bignumber.js';
 
 export class SDK {
   client: Augur | null = null;
@@ -72,8 +73,8 @@ export class SDK {
     this.client = await createClient(this.config, this.connector, account, signer, ethersProvider, enableFlexSearch, createBrowserMesh);
 
     if (!isEmpty(account)) {
-      this.syncUserData(account, signer, this.networkId, this.config.gnosis && this.config.gnosis.enabled, affiliate).catch((error) => {
-        console.log('Gnosis safe create error during create: ', error);
+      this.syncUserData(account, signer, this.networkId, this.config.gsn && this.config.gsn.enabled, affiliate).catch((error) => {
+        console.log('Wallet create error during create: ', error);
       });
     }
 
@@ -85,13 +86,11 @@ export class SDK {
 
   /**
    * @name getOrCreateWallet
-   * @description - Kick off the Gnosis safe creation process for a given wallet address.
-   * @param {string} owner - Wallet address
-   * @param networkId
+   * @description - Kick off the Wallet creation process for a given wallet address.
    * @param affiliate
    * @returns {Promise<void>}
    */
-  async getOrCreateWallet(owner: string, networkId: NetworkId, affiliate: string = NULL_ADDRESS): Promise<void | string> {
+  async getOrCreateWallet(affiliate: string = NULL_ADDRESS): Promise<void | string> {
     if (!this.client) {
       console.log('Trying to init wallet before Augur is initalized');
       return;
@@ -108,7 +107,7 @@ export class SDK {
     account: string,
     signer: EthersSigner,
     expectedNetworkId: NetworkId,
-    useGnosis: boolean,
+    useGSN: boolean,
     affiliate: string,
     updateUser?: Function
   ) {
@@ -126,22 +125,19 @@ export class SDK {
 
     this.client.signer = signer;
 
-    if (useGnosis) {
-      account = (await this.getOrCreateWallet(
-        account,
-        this.networkId,
-        affiliate
-      )) as string;
+    if (useGSN) {
+      // TODO XXX : This is really error prone. The wallet needs to have Cash in it _before_ this is called. Also txs that are working are getting "no signer" errors after they are sent 
+      this.client.setUseRelay(true);
+      account = (await this.getOrCreateWallet(affiliate)) as string;
 
       this.client.setUseWallet(true);
-      this.client.setUseRelay(true);
       if (!!updateUser) {
         updateUser(account);
       }
     }
 
     if (!isLocalHost()) {
-      analytics.identify(account, { networkId: this.networkId, useGnosis });
+      analytics.identify(account, { networkId: this.networkId, useGSN });
     }
   }
 

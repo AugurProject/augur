@@ -41,7 +41,7 @@ describe('Augur API :: ZeroX :: ', () => {
     stopServer();
   });
 
-  describe('without gnosis', () => {
+  describe('without wallet', () => {
     beforeAll(async () => {
       const johnConnector = new Connectors.DirectConnector();
       const johnBrowserMesh = new MockBrowserMesh(meshClient);

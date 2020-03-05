@@ -40,7 +40,6 @@ export function bytesToHex_noPrefix(bytes: string | number): string {
 
 export function getTransactionHash(from: string, to: string, tx: string, txfee: number, gas_price: number, gas_limit: number, nonce: number, relay_hub_address: string, relay_address: string): string {
   let txhstr = bytesToHex_noPrefix(tx);
-  console.log(`getTransactionHash: ${from} ${to} ${txfee} ${gas_price} ${gas_limit} ${nonce} ${relay_hub_address} ${relay_address}`);
   let dataToHash =
     Buffer.from(RELAY_PREFIX).toString('hex') +
     removeHexPrefix(from) +
@@ -57,7 +56,6 @@ export function getTransactionHash(from: string, to: string, tx: string, txfee: 
 
 export function getEcRecoverMeta(message: string, signature: string): string {
   const sig = ethers.utils.splitSignature(signature);
-  console.log(`SIG RESULTS: ${JSON.stringify(sig)}`);
 
   const msg = Buffer.concat([
     Buffer.from('\x19Ethereum Signed Message:\n32'),

@@ -9,9 +9,8 @@ interface NetworkOptions {
     privateKey?: string;
     gasPrice: ethers.utils.BigNumber;
     gasLimit: ethers.utils.BigNumber;
-    gnosisRelayerAddress?: string; // fauceting during deploy only happens if specified
+    gsnRelayerAddress?: string; // fauceting during deploy only happens if specified
     zeroxEndpoint?: string,
-    gnosisRelayerUrl?: string
 }
 
 export const NETWORKS = [
@@ -72,9 +71,8 @@ const networks: NetworksToOptions = {
             typeof process.env.ETHEREUM_GAS_LIMIT === 'undefined'
                 ? new ethers.utils.BigNumber(7500000)
                 : new ethers.utils.BigNumber(process.env.ETHEREUM_GAS_LIMIT),
-        gnosisRelayerAddress: '0x01d640bff4b3a5e5cc720f0be37847f88edf626e',
+        gsnRelayerAddress: '0x01d640bff4b3a5e5cc720f0be37847f88edf626e',
         zeroxEndpoint: 'wss://v2.augur.net/0x-ws',
-        gnosisRelayerUrl: 'https://gnosis.kovan.augur.net/api/'
     },
     rinkeby: {
         isProduction: false,
@@ -118,9 +116,8 @@ const networks: NetworksToOptions = {
             typeof process.env.ETHEREUM_GAS_LIMIT === 'undefined'
                 ? new ethers.utils.BigNumber(7500000)
                 : new ethers.utils.BigNumber(process.env.ETHEREUM_GAS_LIMIT),
-        gnosisRelayerAddress: '0x9d4c6d4b84cd046381923c9bc136d6ff1fe292d9',
+        gsnRelayerAddress: '0x9d4c6d4b84cd046381923c9bc136d6ff1fe292d9',
         zeroxEndpoint: 'ws://localhost:60557',
-        gnosisRelayerUrl: 'http://localhost:8888/api/'
     },
     mainnet: {
         isProduction: true,
@@ -150,9 +147,8 @@ export class NetworkConfiguration {
         readonly ws?: string,
         readonly ipc?: string,
         readonly privateKey?: string,
-        readonly gnosisRelayerAddress?: string, // fauceting during deploy only happens if specified
+        readonly gsnRelayerAddress?: string, // fauceting during deploy only happens if specified
         readonly zeroxEndpoint?: string,
-        readonly gnosisRelayerUrl?: string
     ) {
     }
 
@@ -202,9 +198,8 @@ export class NetworkConfiguration {
             network.ws,
             network.ipc,
             network.privateKey,
-            network.gnosisRelayerAddress,
+            network.gsnRelayerAddress,
             network.zeroxEndpoint,
-            network.gnosisRelayerUrl
         );
     }
 }

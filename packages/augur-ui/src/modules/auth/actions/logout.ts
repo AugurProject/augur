@@ -7,7 +7,7 @@ import { updateMobileMenuState } from 'modules/app/actions/update-sidebar-status
 import { analytics } from 'services/analytics';
 import { isLocalHost } from 'utils/is-localhost';
 import { augurSdk } from 'services/augursdk';
-import { updateAppStatus, GNOSIS_ENABLED, GNOSIS_STATUS } from 'modules/app/actions/update-app-status';
+import { updateAppStatus, GSN_ENABLED, WALLET_STATUS } from 'modules/app/actions/update-app-status';
 import { clearLiquidityOrders } from 'modules/orders/actions/liquidity-management';
 
 export function logout() {
@@ -36,13 +36,13 @@ export function logout() {
       document.querySelector('.por_portis-container').remove();
     }
 
-    // Gnosis cleanup
+    // Wallet cleanup
     if (augurSdk && augurSdk.sdk) {
       augurSdk.sdk.setUseWallet(false);
-      augurSdk.sdk.gnosis.augur.setGnosisStatus(null);
+      augurSdk.sdk.setWalletStatus(null);
     }
-    dispatch(updateAppStatus(GNOSIS_ENABLED, false));
-    dispatch(updateAppStatus(GNOSIS_STATUS, null));
+    dispatch(updateAppStatus(GSN_ENABLED, false));
+    dispatch(updateAppStatus(WALLET_STATUS, null));
 
 
     if (!isLocalHost()) {

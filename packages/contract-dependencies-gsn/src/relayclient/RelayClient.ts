@@ -18,6 +18,7 @@ import { BigNumber } from 'bignumber.js';
 import * as ethUtils from 'ethereumjs-util';
 import { Transaction as ethJsTx } from 'ethereumjs-tx';
 import * as abi_decoder from 'abi-decoder';
+import * as _ from 'lodash';
 
 const relayHubAbi = require('./IRelayHub');
 
@@ -120,7 +121,6 @@ export class RelayClient {
   }
 
   async sendTransaction(preparedTx: PreparedTransaction) {
-    console.log(`sending prepared tx: ${JSON.stringify(preparedTx)}`);
     const tx = await this.relayTransaction(preparedTx.encodedFunctionCall, preparedTx.options, preparedTx.signature, preparedTx.relay, preparedTx.txHash, preparedTx.nonce);
     return ethUtils.bufferToHex(tx.hash(true));
   }
@@ -164,8 +164,8 @@ export class RelayClient {
     relay_address = relay_address.toLowerCase();
     let message = ethUtils.rlphash(tx.raw.slice(0, 6));
     let tx_v = parseInt(returned_tx.v, 16);
-    let tx_r = Buffer.from(removeHexPrefix(returned_tx.r), 'hex');
-    let tx_s = Buffer.from(removeHexPrefix(returned_tx.s), 'hex');
+    let tx_r = Buffer.from(padTo64(removeHexPrefix(returned_tx.r)), 'hex');
+    let tx_s = Buffer.from(padTo64(removeHexPrefix(returned_tx.s)), 'hex');
 
     let signer = ethUtils.bufferToHex(ethUtils.pubToAddress(ethUtils.ecrecover(message, tx_v, tx_r, tx_s)));
     let request_decoded_params = abi_decoder.decodeMethod(returned_tx.input).params;
@@ -357,7 +357,6 @@ export class RelayClient {
     // If we don't have a gas limit, then estimate it, since we need a concrete value for checking the recipient balance
     try {
       if (!gasLimit) {
-        console.log("estimating gas");
         gasLimit = await this.estimateGas(
           {
             ...options,
@@ -376,12 +375,10 @@ export class RelayClient {
     options.gas_limit = gasLimit;
 
     // Check that the recipient has enough balance in the hub, assuming a relaying fee of zero
-    console.log("validating recipient balance");
     await this.validateRecipientBalance(relayHub, options.to, gasLimit, gasPrice, 0);
 
     const blockNow = await this.provider.getBlockNumber();
     const blockFrom = Math.max(1, blockNow - relay_lookup_limit_blocks);
-    console.log("getting relay pinger");
     const pinger = await this.serverHelper.newActiveRelayPinger(blockFrom, gasPrice);
     const errors = [];
 
@@ -409,7 +406,6 @@ export class RelayClient {
     relay.address = relay.RelayServerAddress;
     let txfee = options.txfee || relay.transactionFee;
 
-    console.log("getting tx hash");
     let txHash = getTransactionHash(
         options.from,
         options.to,

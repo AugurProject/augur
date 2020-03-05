@@ -5,10 +5,9 @@ import { AppState } from 'store';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import getValue from 'utils/get-value';
 import { ADD_FUNDS, track } from 'services/analytics/helpers';
-import { GnosisSafeState } from '@augurproject/gnosis-relay-api';
 import { createBigNumber } from 'utils/create-big-number';
+import { WalletState } from 'contract-dependencies-gsn';
 
 const mapStateToProps = (state: AppState) => {
   // TODO placeholder rates until price feed is hooked up
@@ -20,7 +19,7 @@ const mapStateToProps = (state: AppState) => {
     loginAccount: state.loginAccount,
     ETH_RATE,
     REP_RATE,
-    isRelayDown: state.appStatus.gnosisStatus === GnosisSafeState.ERROR,
+    isRelayDown: state.appStatus.walletStatus === WalletState.ERROR,
   }
 };
 

@@ -19,7 +19,7 @@ import { getNetwork } from 'utils/get-network-name';
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState,
 ) => {
-  const useGnosis = getState().env['gnosis']?.enabled;
+  const useGSN = getState().env['gsn']?.enabled;
   const networkId = getNetworkId();
   const portisNetwork = getNetwork(networkId);
   const localPortisNetwork = {
@@ -57,7 +57,7 @@ import { getNetwork } from 'utils/get-network-name';
           },
         };
 
-        dispatch(updateSdk(accountObject, undefined, useGnosis));
+        dispatch(updateSdk(accountObject, undefined, useGSN));
       };
 
       portis.onLogin((account, email) => {

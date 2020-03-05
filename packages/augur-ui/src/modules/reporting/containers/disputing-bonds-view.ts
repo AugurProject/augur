@@ -5,7 +5,7 @@ import { getGasPrice } from 'modules/auth/selectors/get-gas-price';
 const mapStateToProps = state => {
   return {
     userAvailableRep: state.loginAccount.balances && state.loginAccount.balances.rep,
-    Gnosis_ENABLED: state.appStatus.gnosisEnabled,
+    GSN_ENABLED: state.appStatus.gsnEnabled,
     ethToDaiRate: state.appStatus.ethToDaiRate,
     gasPrice: getGasPrice(state),
   };

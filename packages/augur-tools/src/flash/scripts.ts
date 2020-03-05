@@ -114,11 +114,6 @@ export function addScripts(flash: FlashSession) {
         description: 'a few scripts need sdk, -u to wire up sdk',
         flag: true,
       },
-      {
-        name: 'relayer-address',
-        abbr: 'r',
-        description: 'gnosis relayer address'
-      }
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const useSdk = args.useSdk as boolean;
@@ -141,17 +136,6 @@ export function addScripts(flash: FlashSession) {
 
       if (useSdk) {
         await flash.ensureUser(this.network, useSdk);
-      }
-
-      const relayerAddressArg = args.relayerAddress as string;
-      const relayerAddressConfig = this.network && this.network.gnosisRelayerAddress;
-      const relayerAddress = relayerAddressArg || relayerAddressConfig;
-      if (relayerAddress) {
-        this.log(`Fauceting to relayer @ ${relayerAddress}`);
-        await this.call('faucet', {
-          amount: '1000000',
-          target: relayerAddress,
-        })
       }
     },
   });
@@ -187,7 +171,7 @@ export function addScripts(flash: FlashSession) {
       // Cannot directly faucet to target because:
       // 1) it might not have ETH, and
       // 2) specifying sender for contract calls only works if signer is available,
-      //    which is typically only true of main account or its gnosis safe
+      //    which is typically only true of main account or its wallet
       if (target) {
         await user.augur.contracts.cash.transfer(target, atto);
       }
@@ -1018,9 +1002,9 @@ export function addScripts(flash: FlashSession) {
         description: 'do not faucet or approve, has already been done'
       },
       {
-        name: 'useGnosis',
+        name: 'useGsn',
         flag: true,
-        description: 'use gnosis safe instead of user account'
+        description: 'use wallet instead of user account'
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
@@ -1036,8 +1020,8 @@ export function addScripts(flash: FlashSession) {
       const burstRounds = args.burstRounds ? Number(args.burstRounds) : 10;
       const orderSize = args.orderSize ? Number(args.orderSize) : 10;
       const expiration = args.expiration ? new BigNumber(String(args.expiration)) : new BigNumber(600); // ten minutes
-      const useGnosis = Boolean(args.useGnosis);
-      const user: ContractAPI = await this.ensureUser(this.network, false, true, address, true, useGnosis);
+      const useGsn = Boolean(args.useGsn);
+      const user: ContractAPI = await this.ensureUser(this.network, false, true, address, true, useGsn);
 
       const skipFaucetOrApproval = args.skipFaucetOrApproval as boolean;
       if (!skipFaucetOrApproval) {
@@ -1329,18 +1313,12 @@ export function addScripts(flash: FlashSession) {
         description:
           'create canned markets',
         flag: true,
-      },
-      {
-        name: 'relayer-address',
-        abbr: 'r',
-        description: 'gnosis relayer address'
       }
     ],
     async call(this: FlashSession, args: FlashArguments) {
       await this.call('deploy', {
         writeArtifacts: true,
         timeControlled: true,
-        relayer_address: args.relayerAddress as string,
       });
       const createMarkets = args.createMarkets as boolean;
       if (createMarkets) {
@@ -1358,18 +1336,12 @@ export function addScripts(flash: FlashSession) {
         description:
           'create canned markets',
         flag: true,
-      },
-      {
-        name: 'relayer-address',
-        abbr: 'r',
-        description: 'gnosis relayer address'
       }
     ],
     async call(this: FlashSession, args: FlashArguments) {
       await this.call('deploy', {
         writeArtifacts: true,
         timeControlled: false,
-        relayer_address: args.relayerAddress as string,
       });
       const createMarkets = args.createMarkets as boolean;
       if (createMarkets) {
