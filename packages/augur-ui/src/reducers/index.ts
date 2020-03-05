@@ -14,7 +14,6 @@ import marketInfos from 'modules/markets/reducers/market-infos';
 import modal from 'modules/modal/reducers/modal';
 import newMarket from 'modules/markets/reducers/new-market';
 import alerts from 'modules/alerts/reducers/alerts';
-import orderCancellation from 'modules/orders/reducers/order-cancellation';
 import pendingLiquidityOrders from 'modules/orders/reducers/liquidity-orders';
 import analytics from 'modules/app/reducers/analytics';
 import universe from 'modules/universe/reducers/universe';
@@ -42,7 +41,6 @@ import {
   NewMarket,
   Alert,
   Notification,
-  OrderCancellations,
   LiquidityOrders,
   PendingOrders,
   PendingQueue,
@@ -76,7 +74,6 @@ export function createReducer() {
     modal,
     newMarket,
     readNotifications,
-    orderCancellation,
     pendingLiquidityOrders,
     pendingOrders,
     pendingQueue,
@@ -112,7 +109,6 @@ export interface AppStateInterface {
   modal: any;
   newMarket: NewMarket;
   readNotifications: Notification[];
-  orderCancellation: OrderCancellations;
   pendingLiquidityOrders: LiquidityOrders;
   pendingOrders: PendingOrders;
   pendingQueue: PendingQueue;

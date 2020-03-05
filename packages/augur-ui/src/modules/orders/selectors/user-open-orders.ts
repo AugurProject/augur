@@ -21,7 +21,7 @@ import { cancelOrder } from 'modules/orders/actions/cancel-order';
 import {
   selectMarketInfosState,
   selectUserMarketOpenOrders,
-  selectOrderCancellationState,
+  selectCancelingOrdersState,
   selectPendingOrdersState,
 } from 'store/select-state';
 import { createSelector } from 'reselect';
@@ -48,7 +48,7 @@ export default function(marketId) {
 export const selectUserOpenOrders = createSelector(
   selectMarketsDataStateMarket,
   selectUserMarketOpenOrdersMarket,
-  selectOrderCancellationState,
+  selectCancelingOrdersState,
   selectPendingOrdersStateMarket,
   (market, userMarketOpenOrders, orderCancellation, pendingOrders) => {
     if (!market) return [];
