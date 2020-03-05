@@ -1,5 +1,5 @@
 import { WSClient } from '@0x/mesh-rpc-client';
-import { ContractAddresses } from '@augurproject/artifacts';
+import { SDKConfiguration } from '@augurproject/artifacts';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { IGnosisRelayAPI } from '@augurproject/gnosis-relay-api';
 import {
@@ -32,7 +32,7 @@ export class TestContractAPI extends ContractAPI {
   static async userWrapper(
     account: Account,
     provider: EthersProvider,
-    addresses: ContractAddresses,
+    config: SDKConfiguration,
     connector: Connectors.BaseConnector = new EmptyConnector(),
     gnosisRelay: IGnosisRelayAPI = undefined,
     meshClient: WSClient = undefined,
@@ -43,7 +43,7 @@ export class TestContractAPI extends ContractAPI {
       provider,
       gnosisRelay,
       signer,
-      addresses.Cash,
+      config.addresses.Cash,
       new BigNumber(0),
       null,
       account.publicKey,
@@ -57,7 +57,7 @@ export class TestContractAPI extends ContractAPI {
     const augur = await Augur.create(
       provider,
       dependencies,
-      addresses,
+      config,
       connector,
       zeroX,
       true,

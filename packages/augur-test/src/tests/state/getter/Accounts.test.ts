@@ -5,24 +5,27 @@ import { TestContractAPI } from '@augurproject/tools';
 import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
 import { BigNumber } from 'bignumber.js';
 import { makeProvider } from '../../../libs';
+import { SDKConfiguration } from '@augurproject/artifacts';
 
 describe('State API :: Accounts :: ', () => {
   let john: TestContractAPI;
   let mary: TestContractAPI;
+  let config: SDKConfiguration;
 
   beforeAll(async () => {
     const seed = await loadSeedFile(defaultSeedPath);
     const provider = await makeProvider(seed, ACCOUNTS);
+    config = provider.getConfig();
 
     john = await TestContractAPI.userWrapper(
       ACCOUNTS[0],
       provider,
-      seed.addresses
+      config
     );
     mary = await TestContractAPI.userWrapper(
       ACCOUNTS[1],
       provider,
-      seed.addresses
+      config
     );
 
     await john.approveCentralAuthority();
@@ -433,8 +436,9 @@ describe('State API :: Accounts :: ', () => {
           johnYesNoMarket,
           yesPayoutSet
         );
-        if (remainingToFill.gte(0))
+        if (remainingToFill.gte(0)) {
           await mary.contribute(market, yesPayoutSet, remainingToFill);
+        }
       } else {
         await john.contribute(
           johnYesNoMarket,
@@ -445,8 +449,9 @@ describe('State API :: Accounts :: ', () => {
           johnYesNoMarket,
           noPayoutSet
         );
-        if (remainingToFill.gte(0))
+        if (remainingToFill.gte(0)) {
           await john.contribute(johnYesNoMarket, noPayoutSet, remainingToFill);
+        }
       }
     }
 
@@ -642,7 +647,7 @@ describe('State API :: Accounts :: ', () => {
     const johnYesNoMarket = await john.createReasonableYesNoMarket();
 
     // Move time to open reporting
-    let newTime = (await johnYesNoMarket.getEndTime_()).plus(
+    const newTime = (await johnYesNoMarket.getEndTime_()).plus(
       SECONDS_IN_A_DAY.times(7)
     );
     await john.setTimestamp(newTime);
@@ -675,7 +680,7 @@ describe('State API :: Accounts :: ', () => {
 
     await john.sync();
 
-    let userCurrentDisputeStake = await john.api.route(
+    const userCurrentDisputeStake = await john.api.route(
       'getUserCurrentDisputeStake',
       {
         marketId: johnYesNoMarket.address,

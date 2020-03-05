@@ -523,29 +523,6 @@ export interface Favorite {
   [marketId: string]: number;
 }
 
-export interface EthereumNodeOptions {
-  blockRetention: number;
-  connectionTimeout: number;
-  http: string;
-  pollingIntervalMilliseconds: number;
-  ws: string;
-}
-
-export interface EnvObject {
-  useWeb3Transport: boolean;
-  'ethereum-node': EthereumNodeOptions;
-  universe?: string;
-  '0x-endpoint'?: string,
-  'gnosis-relay'?: string,
-  sdkEndpoint?: string,
-  debug?: EnvDebugOptions,
-}
-
-export interface EnvDebugOptions {
-  connect: boolean;
-  broadcast: boolean;
-}
-
 export interface QueryEndpoints {
   ethereum_node_http?: string;
   ethereum_node_ws?: string;

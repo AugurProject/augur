@@ -1,4 +1,4 @@
-import { ContractAddresses, getAddressesForNetwork, getStartingBlockForNetwork, NetworkId } from '@augurproject/artifacts';
+import { getAddressesForNetwork, getStartingBlockForNetwork, SDKConfiguration } from '@augurproject/artifacts';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { EthersSigner } from 'contract-dependencies-ethers';
 import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis';
@@ -17,48 +17,10 @@ import { LogFilterAggregator } from './logs/LogFilterAggregator';
 import { BlockAndLogStreamerSyncStrategy } from './sync/BlockAndLogStreamerSyncStrategy';
 import { BulkSyncStrategy } from './sync/BulkSyncStrategy';
 import { WarpSyncStrategy } from './sync/WarpSyncStrategy';
-import { EndpointSettings } from './getter/types';
 
-export interface SDKConfiguration {
-  networkId: NetworkId,
-  ethereum?: {
-    http?: string,
-    rpcRetryCount: number,
-    rpcRetryInterval: number,
-    rpcConcurrency: number
-  },
-  sdk?: {
-    enabled?: boolean,
-    ws: string,
-  },
-  gnosis?: {
-    enabled?: boolean,
-    http: string
-  },
-  zeroX?: {
-    rpc?: {
-      enabled?: boolean,
-      ws?: string
-    },
-    mesh?: {
-      verbosity?: 0|1|2|3|4|5,
-      enabled?: boolean,
-      bootstrapList?: string[]
-    }
-  },
-  syncing?: {
-    enabled?: boolean,
-    blockstreamDelay?: number,
-    chunkSize?: number
-  },
-  addresses?: ContractAddresses,
-  server?: EndpointSettings
-};
-
-export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: EthersProvider, logFilterAggregator: LogFilterAggregator) {
+export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: EthersProvider, logFilterAggregator: LogFilterAggregator, config: SDKConfiguration) {
   return async () => {
-    const networkId = await provider.getNetworkId();
-    const uploadBlockNumber = getStartingBlockForNetwork(networkId);
+    const uploadBlockNumber = getStartingBlockForNetwork(config.networkId);
     const uploadBlockHeaders = await provider.getBlock(uploadBlockNumber);
     const currentBlockNumber = await provider.getBlockNumber();
     const contractAddresses = client.contractEvents.getAugurContractAddresses();
@@ -78,7 +40,7 @@ export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: Ethe
     const staringSyncBlock = Math.max(await (await db).getSyncStartingBlock(), endWarpSyncBlockNumber || uploadBlockNumber);
     const endBulkSyncBlockNumber = await bulkSyncStrategy.start(staringSyncBlock, currentBlockNumber);
 
-    const derivedSyncLabel = `Syncing rollup and derived DBs`
+    const derivedSyncLabel = 'Syncing rollup and derived DBs';
     console.time(derivedSyncLabel);
     await (await db).sync();
     console.timeEnd(derivedSyncLabel);
@@ -122,17 +84,14 @@ export async function createClient(
   } else {
       throw Error('No ethereum http endpoint provided');
   }
-  const networkId = config.networkId || await ethersProvider.getNetworkId();
-
-  if (!(config.addresses || networkId)) {
-    throw Error('Config must include addresses or networkId because node did not provide networkId');
+  if (!config.addresses) {
+    throw Error('Config must include addresses');
   }
-  const addresses = config.addresses || getAddressesForNetwork(networkId);
 
   const contractDependencies = ContractDependenciesGnosis.create(
     ethersProvider,
     signer,
-    addresses.Cash,
+    config.addresses.Cash,
     config.gnosis?.http,
   );
 
@@ -145,7 +104,7 @@ export async function createClient(
   const client = await Augur.create(
     ethersProvider,
     contractDependencies,
-    addresses,
+    config,
     connector,
     zeroX,
     enableFlexSearch
@@ -174,8 +133,6 @@ export async function createServer(config: SDKConfiguration, client?: Augur, acc
   config = {
     syncing: {
       enabled: true,
-      blockstreamDelay: 10,
-      chunkSize: 100000
     },
     ...config
   };
@@ -194,10 +151,10 @@ export async function createServer(config: SDKConfiguration, client?: Augur, acc
   const ethersProvider: EthersProvider = client.provider as EthersProvider;
   const contractEvents = new ContractEvents(
     ethersProvider,
-    client.addresses.Augur,
-    client.addresses.AugurTrading,
-    client.addresses.ShareToken,
-    client.addresses.Exchange
+    client.config.addresses.Augur,
+    client.config.addresses.AugurTrading,
+    client.config.addresses.ShareToken,
+    client.config.addresses.Exchange
   );
 
   const logFilterAggregator = LogFilterAggregator.create(
@@ -211,7 +168,7 @@ export async function createServer(config: SDKConfiguration, client?: Augur, acc
     config.zeroX?.mesh?.enabled || config.zeroX?.rpc?.enabled
   );
 
-  const sync = buildSyncStrategies(client, db, ethersProvider, logFilterAggregator);
+  const sync = buildSyncStrategies(client, db, ethersProvider, logFilterAggregator, config);
 
   const controller = new Controller(client, db, logFilterAggregator);
   const api = new API(client, db);

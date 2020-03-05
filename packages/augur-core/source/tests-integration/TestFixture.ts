@@ -3,8 +3,6 @@ import { BigNumber } from 'bignumber.js';
 import { ContractCompiler } from '../libraries/ContractCompiler';
 import { ContractDeployer } from '../libraries/ContractDeployer';
 import { CompilerConfiguration } from '../libraries/CompilerConfiguration';
-import { CreateDeployerConfiguration } from '../libraries/DeployerConfiguration';
-import { NetworkConfiguration } from '../libraries/NetworkConfiguration';
 import { ContractDependenciesEthers } from 'contract-dependencies-ethers';
 import {
   DisputeWindow, ShareToken, TimeControlled, Cash, Universe,
@@ -13,6 +11,7 @@ import {
 import { Dependencies } from '../libraries/GenericContractInterfaces';
 import { EthersFastSubmitWallet } from '../libraries/EthersFastSubmitWallet';
 import { formatBytes32String } from 'ethers/utils';
+import { buildConfig } from '@augurproject/artifacts';
 
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 
@@ -36,20 +35,22 @@ export class TestFixture {
     }
 
     static create = async (pretendToBeProduction = false): Promise<TestFixture> => {
-        const networkConfiguration = NetworkConfiguration.create();
         const compilerConfiguration = CompilerConfiguration.create();
+        const config = buildConfig('test', {
+            deploy: {
+                isProduction: pretendToBeProduction,
+                normalTime: false,
+            }
+        });
 
         const compiledContracts = await new ContractCompiler(compilerConfiguration).compileContracts();
 
-        const provider = new ethers.providers.JsonRpcProvider(networkConfiguration.http);
-        const signer = await EthersFastSubmitWallet.create(networkConfiguration.privateKey as string, provider);
+        const provider = new ethers.providers.JsonRpcProvider(config.ethereum.http);
+        const signer = await EthersFastSubmitWallet.create(config.deploy.privateKey as string, provider);
         const dependencies = new ContractDependenciesEthers(provider, signer, signer.address);
 
-        const deployerConfiguration = CreateDeployerConfiguration("environment", { useNormalTime: false });
-
-        let contractDeployer = new ContractDeployer(deployerConfiguration, dependencies, provider, signer, compiledContracts);
-
-        await contractDeployer.deploy();
+        const contractDeployer = new ContractDeployer(config, dependencies, provider, signer, compiledContracts);
+        await contractDeployer.deploy('test');
 
         return new TestFixture(dependencies, provider, contractDeployer, signer.address);
     };
@@ -140,7 +141,7 @@ export class TestFixture {
         return;
     }
 
-    async claimTradingProceeds(market: Market, shareholder: string, fingerprint = formatBytes32String("")): Promise<void> {
+    async claimTradingProceeds(market: Market, shareholder: string, fingerprint = formatBytes32String('')): Promise<void> {
         const shareTokenContract = await this.contractDeployer.getContractAddress('ShareToken');
         const shareToken = new ShareToken(this.dependencies, shareTokenContract);
         await shareToken.claimTradingProceeds(market.address, shareholder, fingerprint);
@@ -312,6 +313,6 @@ export class TestFixture {
     }
 
     async pokeRepOracle(): Promise<BigNumber> {
-        return await this.contractDeployer.universe!.pokeRepMarketCapInAttoCash_();
+        return this.contractDeployer.universe!.pokeRepMarketCapInAttoCash_();
     }
 }

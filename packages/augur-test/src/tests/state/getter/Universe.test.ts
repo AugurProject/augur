@@ -1,7 +1,6 @@
 import { UniverseDetails } from '@augurproject/sdk/build/state/getter/Universe';
 import {
   ACCOUNTS,
-  ContractAPI,
   defaultSeedPath,
   fork,
   loadSeedFile,
@@ -16,6 +15,7 @@ import { NULL_ADDRESS } from '@augurproject/tools/build/libs/Utils';
 import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from 'ethers/utils';
 import { makeProvider } from '../../../libs';
+import { SDKConfiguration } from '@augurproject/artifacts';
 
 describe('State API :: Universe :: ', () => {
   let john: TestContractAPI;
@@ -23,26 +23,27 @@ describe('State API :: Universe :: ', () => {
   let bob: TestContractAPI;
 
   let baseProvider: TestEthersProvider;
+  let config: SDKConfiguration;
 
   beforeAll(async () => {
     const seed = await loadSeedFile(defaultSeedPath);
     baseProvider = await makeProvider(seed, ACCOUNTS);
-    const addresses = baseProvider.getContractAddresses();
+    config = baseProvider.getConfig();
 
     john = await TestContractAPI.userWrapper(
       ACCOUNTS[0],
       baseProvider,
-      addresses
+      config
     );
     mary = await TestContractAPI.userWrapper(
       ACCOUNTS[1],
       baseProvider,
-      addresses
+      config
     );
     bob = await TestContractAPI.userWrapper(
       ACCOUNTS[2],
       baseProvider,
-      addresses
+      config
     );
     await john.approveCentralAuthority();
     await mary.approveCentralAuthority();
@@ -51,10 +52,9 @@ describe('State API :: Universe :: ', () => {
 
   beforeEach(async () => {
     const provider = await baseProvider.fork();
-    const addresses = baseProvider.getContractAddresses();
-    john = await TestContractAPI.userWrapper(ACCOUNTS[0], provider, addresses);
-    mary = await TestContractAPI.userWrapper(ACCOUNTS[1], provider, addresses);
-    bob = await TestContractAPI.userWrapper(ACCOUNTS[2], provider, addresses);
+    john = await TestContractAPI.userWrapper(ACCOUNTS[0], provider, config);
+    mary = await TestContractAPI.userWrapper(ACCOUNTS[1], provider, config);
+    bob = await TestContractAPI.userWrapper(ACCOUNTS[2], provider, config);
   });
 
   // TODO Fix the 0x error occurring when multiple fork getter tests run in one file.
@@ -79,7 +79,7 @@ describe('State API :: Universe :: ', () => {
     const repTokenAddress = await john.augur.contracts.universe.getReputationToken_();
     const repToken = john.augur.contracts.reputationTokenFromAddress(
       repTokenAddress,
-      john.augur.networkId
+      john.augur.config.networkId
     );
 
     const invalidNumerators = getPayoutNumerators(marketInfo, 0);
@@ -140,7 +140,7 @@ describe('State API :: Universe :: ', () => {
     const repTokenAddress = await john.augur.contracts.universe.getReputationToken_();
     const repToken = john.augur.contracts.reputationTokenFromAddress(
       repTokenAddress,
-      john.augur.networkId
+      john.augur.config.networkId
     );
 
     const invalidNumerators = getPayoutNumerators(marketInfo, 0);
@@ -204,7 +204,7 @@ describe('State API :: Universe :: ', () => {
     const repTokenAddress = await john.augur.contracts.universe.getReputationToken_();
     const repToken = john.augur.contracts.reputationTokenFromAddress(
       repTokenAddress,
-      john.augur.networkId
+      john.augur.config.networkId
     );
 
     await john.repFaucet(new BigNumber(1e21));
@@ -336,7 +336,7 @@ describe('State API :: Universe :: ', () => {
     const repTokenAddress = await john.augur.contracts.universe.getReputationToken_();
     const repToken = john.augur.contracts.reputationTokenFromAddress(
       repTokenAddress,
-      john.augur.networkId
+      john.augur.config.networkId
     );
     // The fork script faucets a lot of REP then uses up a difficult-to-predict amount.
     johnRep = await repToken.balanceOf_(john.account.publicKey);

@@ -1,17 +1,13 @@
 import { BigNumber } from 'bignumber.js';
 import { JsonRpcProvider } from 'ethers/providers';
 import * as _ from 'lodash';
-import { Addresses, ContractAddresses, NetworkId } from '@augurproject/artifacts';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { GnosisRelayAPI, GnosisSafeState, } from '@augurproject/gnosis-relay-api';
 import { Connectors } from '@augurproject/sdk';
 import { ACCOUNTS, TestContractAPI } from '@augurproject/tools';
-import { DB } from '@augurproject/sdk/build/state/db/DB';
-import { API } from '@augurproject/sdk/build/state/getter/API';
 import { AllOrders, Order, } from '@augurproject/sdk/build/state/getter/OnChainTrading';
-import { BulkSyncStrategy } from '@augurproject/sdk/build/state/sync/BulkSyncStrategy';
 import { stringTo32ByteHex, } from '@augurproject/tools/build/libs/Utils';
-import { makeDbMock } from '../../libs';
+import { buildConfig, SDKConfiguration } from '@augurproject/artifacts';
 
 async function getSafe(person: TestContractAPI): Promise<string> {
   return person.augur.contracts.gnosisSafeRegistry.getSafe_(
@@ -22,24 +18,22 @@ async function getSafe(person: TestContractAPI): Promise<string> {
 describe('3rd Party :: Gnosis :: ', () => {
   let john: TestContractAPI;
   let providerJohn: EthersProvider;
-  let networkId: NetworkId;
-  let addresses: ContractAddresses;
+  let config: SDKConfiguration;
 
   beforeAll(async () => {
+    config = buildConfig('local');
     providerJohn = new EthersProvider(
-      new JsonRpcProvider('http://localhost:8545'),
-      5,
-      0,
-      40
+      new JsonRpcProvider(config.ethereum.http),
+      config.ethereum.rpcRetryCount,
+      config.ethereum.rpcRetryInterval,
+      config.ethereum.rpcConcurrency
     );
-    networkId = await providerJohn.getNetworkId();
-    addresses = Addresses[networkId];
 
     const connectorJohn = new Connectors.DirectConnector();
     john = await TestContractAPI.userWrapper(
       ACCOUNTS[0],
       providerJohn,
-      addresses,
+      config,
       connectorJohn,
       new GnosisRelayAPI('http://localhost:8888/api/'),
       undefined,

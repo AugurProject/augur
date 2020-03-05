@@ -73,7 +73,7 @@ export class DB {
   private syncableDatabases: { [dbName: string]: BaseSyncableDB } = {};
   private disputeDatabase: DisputeDatabase;
   private currentOrdersDatabase: CurrentOrdersDatabase;
-  public marketDatabase: MarketDB;
+  marketDatabase: MarketDB;
   private cancelledOrdersDatabase: CancelledOrdersDB;
   private parsedOrderEventDatabase: ParsedOrderEventDB;
   private zeroXOrders: ZeroXOrders;
@@ -127,7 +127,7 @@ export class DB {
    * @param {number} networkId Network on which to sync events
    * @param logFilterAggregator object responsible for routing logs to individual db tables.
    * @param augur
-   * @param uploadBlockNumber
+   * @param enableZeroX
    * @returns {Promise<DB>} Promise to a DB controller object
    */
   static createAndInitializeDB(networkId: number, logFilterAggregator:LogFilterAggregatorInterface, augur: Augur, enableZeroX= false): Promise<DB> {

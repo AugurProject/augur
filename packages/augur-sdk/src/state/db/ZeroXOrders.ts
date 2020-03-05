@@ -119,9 +119,9 @@ export class ZeroXOrders extends AbstractTable {
     this.syncStatus = db.syncStatus;
     this.stateDB = db;
     this.augur = augur;
-    this.tradeTokenAddress = this.augur.addresses.ZeroXTrade.substr(2).toLowerCase(); // normalize and remove the 0x
-    const cashTokenAddress = this.augur.addresses.Cash.substr(2).toLowerCase(); // normalize and remove the 0x
-    const shareTokenAddress = this.augur.addresses.ShareToken.substr(2).toLowerCase(); // normalize and remove the 0x
+    this.tradeTokenAddress = this.augur.config.addresses.ZeroXTrade.substr(2).toLowerCase(); // normalize and remove the 0x
+    const cashTokenAddress = this.augur.config.addresses.Cash.substr(2).toLowerCase(); // normalize and remove the 0x
+    const shareTokenAddress = this.augur.config.addresses.ShareToken.substr(2).toLowerCase(); // normalize and remove the 0x
     this.cashAssetData = `0xf47261b0000000000000000000000000${cashTokenAddress}`;
     this.shareAssetData = `0xa7cb5fb7000000000000000000000000${shareTokenAddress}000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000`;
     this.takerAssetData = `0xa7cb5fb7000000000000000000000000${this.tradeTokenAddress}000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000`;
@@ -148,7 +148,7 @@ export class ZeroXOrders extends AbstractTable {
 
   async clearDBAndCacheOrders(): Promise<void> {
     // Note: This does mean if a user reloads before syncing the old orders could be lost if they previous to that had not broadcast their orders completely somehow
-    this.pastOrders = _.keyBy(await this.allDocs(), "orderHash");
+    this.pastOrders = _.keyBy(await this.allDocs(), 'orderHash');
     await this.clearDB();
   }
 
@@ -168,7 +168,7 @@ export class ZeroXOrders extends AbstractTable {
     // Remove Canceled, Expired, and Invalid Orders and emit event
     const canceledOrders = _.keyBy(
       _.filter(filteredOrders, (orderEvent => orderEvent.endState === 'CANCELLED' || orderEvent.endState === 'EXPIRED' || orderEvent.endState === 'INVALID' || orderEvent.endState === 'UNFUNDED')),
-      "orderHash"
+      'orderHash'
     );
 
     for (const d of documents) {
@@ -183,7 +183,7 @@ export class ZeroXOrders extends AbstractTable {
     // Deal with partial fills and emit event
     const filledOrders = _.keyBy(
       _.filter(filteredOrders, (orderEvent => orderEvent.endState === 'FILLED' || orderEvent.endState === 'FULLY_FILLED')),
-      "orderHash"
+      'orderHash'
     );
 
     documents = _.filter(documents, this.validateStoredOrder.bind(this));
@@ -196,7 +196,7 @@ export class ZeroXOrders extends AbstractTable {
   }
 
   async sync(): Promise<void> {
-    console.log("Syncing ZeroX Orders");
+    console.log('Syncing ZeroX Orders');
     const orders: OrderInfo[] = await this.augur.zeroX.getOrders();
     let documents;
     if (orders && orders.length > 0) {
@@ -213,13 +213,13 @@ export class ZeroXOrders extends AbstractTable {
         this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Create, ...d});
       }
     }
-    const chainId = Number(this.augur.networkId);
+    const chainId = Number(this.augur.config.networkId);
     const ordersToAdd = _.map(_.values(this.pastOrders), (order) => {
       const signedOrder = order.signedOrder;
       return Object.assign({
         chainId,
-        makerFeeAssetData: "0x",
-        takerFeeAssetData: "0x",
+        makerFeeAssetData: '0x',
+        takerFeeAssetData: '0x',
       }, signedOrder);
     });
 
@@ -312,7 +312,7 @@ export class ZeroXOrders extends AbstractTable {
 
   isValidMultiAssetFormat(multiAssetData: any): boolean {
     const amounts = multiAssetData[0] as BigNumber[];
-    if (amounts.length != 3) return false;
+    if (amounts.length !== 3) return false;
     if (!amounts[0].eq(1)) return false;
     if (!amounts[1].eq(0)) return false;
     if (!amounts[2].eq(0)) return false;
@@ -321,8 +321,8 @@ export class ZeroXOrders extends AbstractTable {
     const cashAssetData = nestedAssetData[1];
     const shareAssetData = nestedAssetData[2];
     if (tradeTokenAssetData.substr(34, 40) !== this.tradeTokenAddress) return false;
-    if (cashAssetData != this.cashAssetData) return false;
-    if (shareAssetData != this.shareAssetData) return false;
+    if (cashAssetData !== this.cashAssetData) return false;
+    if (shareAssetData !== this.shareAssetData) return false;
     return true;
   }
 
@@ -340,7 +340,7 @@ export class ZeroXOrders extends AbstractTable {
     // Since `ids[n]` is a BigNumber, it is possible for the higher order bits
     // to all be 0. This will result in the tokenid serialization here to be
     // less than the expected full 32 bytes (64 characters in hex).
-    let tokenid = new BN(`${ids[0].toString()}`).toHexString().substr(2).padStart(64, '0');
+    const tokenid = new BN(`${ids[0].toString()}`).toHexString().substr(2).padStart(64, '0');
 
     // From ZeroXTrade.sol
     //  assembly {

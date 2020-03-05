@@ -36,7 +36,7 @@ export class WarpSyncCheckpointsDB extends AbstractTable {
     const lastCheckpoint = await this.table.orderBy('_id').filter((item) => typeof item.end !== 'undefined').last();
     return [
         firstCheckpoint.begin,
-        lastCheckpoint.end,
+        lastCheckpoint?.end,
     ];
   }
 

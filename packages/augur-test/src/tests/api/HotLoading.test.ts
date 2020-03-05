@@ -12,7 +12,7 @@ beforeAll(async () => {
   john = await TestContractAPI.userWrapper(
     ACCOUNTS[0],
     provider,
-    seed.addresses
+    provider.getConfig()
   );
   await john.approveCentralAuthority();
 });
@@ -65,7 +65,7 @@ test('Hot Loading :: Get Market Data', async () => {
 });
 
 test('Hot Loading :: Get Dispute Window Data', async () => {
-  let disputeWindowData = await john.getHotLoadingDisputeWindowData();
+  const disputeWindowData = await john.getHotLoadingDisputeWindowData();
 
   await expect(disputeWindowData).toBeDefined();
 

@@ -73,21 +73,13 @@ const TopNav = ({
               {index === SPREAD_INDEX && showMigrateRepButton && (
                 <li>
                   <div className={Styles.MigrateRep}>
-                  { showMigrateRepButton && walletBalances.legacyRepNonSafe <= 0 &&
                     <ProcessingButton
-                      text={'Migrate V1 to V2 REP'}
-                      action={() => migrateV1Rep()}
-                      queueName={TRANSACTIONS}
-                      queueId={MIGRATE_FROM_LEG_REP_TOKEN}
-                      secondaryButton
-                    />
-                  }
-                  { walletBalances.legacyRepNonSafe > 0 &&
-                    <SecondaryButton
-                      text={'Migrate V1 REP'}
-                      action={() => migrateV1Rep()}
-                    />
-                  }
+                        text={'Migrate V1 to V2 REP'}
+                        action={() => migrateV1Rep()}
+                        queueName={TRANSACTIONS}
+                        queueId={MIGRATE_FROM_LEG_REP_TOKEN}
+                        secondaryButton
+                      />
                   </div>
                   <span>
                     <label
