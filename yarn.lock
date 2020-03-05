@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"3box-comments-react@1.0.3-beta.6":
-  version "1.0.3-beta.6"
-  resolved "https://registry.yarnpkg.com/3box-comments-react/-/3box-comments-react-1.0.3-beta.6.tgz#7930304c742aec7f151bfc075cd17bf1026683d6"
-  integrity sha512-bXQiNHP/S5CObSQc3y7onXF2Qvk6JU3BaZ6ycyWfaNtPrTxJRc4K+/nJyKYBQ20t3LNWHYG0ANeOIouBWZp5MA==
+"3box-comments-react@1.0.3-beta.8":
+  version "1.0.3-beta.8"
+  resolved "https://registry.yarnpkg.com/3box-comments-react/-/3box-comments-react-1.0.3-beta.8.tgz#5e29849b0898c47e8866c5800d10cfd76e25a415"
+  integrity sha512-ynHVuqH5Q+a2Qf6CbVnW0a3dNv6kTVzy4j54YuTzeXTqI2O+g35dvaYArV3El6YQvpAgFXueKD40Zx3NthqKfg==
   dependencies:
     "3box" "^1.17.0"
     "3id-resolver" "0.0.6"
@@ -31,10 +31,10 @@
     orbit-db "^0.23.1"
     orbit-db-access-controllers "~0.2.4"
 
-"3box@1.17.1":
-  version "1.17.1"
-  resolved "https://registry.yarnpkg.com/3box/-/3box-1.17.1.tgz#7060f4b81eeccb7c7308125af343f25a55df79ee"
-  integrity sha512-QDhW0V14P7auvCx+2WlPPJ6B/qji4PiVxVyVtr9sT4aRMx1AYVnCqik3u3uiVPFTTWj09eBXsE8NK+M4pCGfsQ==
+"3box@1.17.2-beta.2":
+  version "1.17.2-beta.2"
+  resolved "https://registry.yarnpkg.com/3box/-/3box-1.17.2-beta.2.tgz#539073e3e50d0a6ac7af9ded4a3df50a6ca2182b"
+  integrity sha512-GsueXhNQZgO5uHK434W0jHxFiGDvuoKT9ZVOzBzZB2MXNyAY5vVXzEKEUVAF96kvYFGSUJFkpFUUkjqHi5ua/A==
   dependencies:
     "3box-orbitdb-plugins" "^1.1.0"
     "3id-blockchain-utils" "^0.3.2"

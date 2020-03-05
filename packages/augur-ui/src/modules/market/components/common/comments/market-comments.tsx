@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Box from '3box';
 import Comments from '3box-comments-react';
+import Web3 from 'web3';
 
 import Styles from 'modules/market/components/market-view/market-view.styles.less';
 import { ACCOUNT_TYPES } from 'modules/common/constants';
@@ -70,7 +71,7 @@ export class MarketComments extends Component {
     let box;
     let address = (await window.ethereum.enable())[0];
     // let address = (await provider.enable())[0];
-    // let address = (await window.portis.provider.enable())[0];
+    // let address = (await window.ethereum.enable())[0];
 
     try {
       // box = await Box.openBox({address}, provider);
@@ -81,18 +82,47 @@ export class MarketComments extends Component {
       // box = await Box.openBox("0x48903df4d9b4d224f9f2306e408447d689546ef4", provider._web3Provider);
       // const space = await box.openSpace('augur', {});
 
-      box = await Box.create(provider);
-      console.log('box ###', box);
+      // const box = await Box.create(provider)
+      // const address = '0x12345abcde'
+      // const spaces = ['myDapp']
+      // await box.auth(spaces, { address })
+      // await box.syncDone
+      //
+      // const space = await box.openSpace('narwhal')
+      // await space.syncDone
+      //
+      // const thread = await space.joinThread(<name>)
 
-      await box.auth(['augur123123123'], {address});
-      console.log('auth done ###');
+      // box = await Box.create(window.ethereum);
+      // console.log('box ###', box);
+      //
+      // await box.auth(['augurtestone'], {address});
+      // console.log('auth done ###');
+      //
+      // await box.syncDone;
+      //
+      // const space = await box.openSpace('augurtestone', {});
+      //
+      // await space.syncDone;
 
+      // const box = await Box.openBox(address, window.ethereum);
+      // await box.onSyncDone();
+      // const space = await box.openSpace('augurtestone', {});
+      // await space.onSyncDone();
+
+      // console.log('box sync done ###');
+      const web3Provider = new Web3(window.ethereum).currentProvider;
+      const box = await Box.create(web3Provider);
+      const spaces = ['augurtestone'];
+      await box.auth(spaces, { address });
       await box.syncDone;
 
-      const space = await box.openSpace('augur123123123', {});
+      const space = await box.openSpace('augurtestone');
       await space.syncDone;
 
-      console.log('box sync done ###');
+      // const thread = await space.joinThread(this.props.marketId);
+      // const thread = await box.openThread('augurtestone', this.props.marketId, { firstModerator: address, members: false })
+
     } catch (error) {
       console.error(error);
       // return
@@ -114,9 +144,9 @@ export class MarketComments extends Component {
         {isReady && (
           <Comments
             // required
-            spaceName="augur123123123"
+            spaceName="augurtestone"
             threadName={this.props.marketId}
-            adminEthAddr="0x48903df4d9b4d224f9f2306e408447d689546ef4"
+            adminEthAddr={address}
 
             // Required props for context A) & B)
             box={box}
