@@ -60,12 +60,9 @@ function findOrders(
       const foundOrder = order.find(({ id }) => id === orderId);
       const amountBN = createBigNumber(amount);
       const priceBN = createBigNumber(price);
-      let typeOp = type;
 
       let originalQuantity = amountBN;
       if (isSameAddress(creator, accountId) && !foundOrder) {
-        typeOp = type === BUY ? SELL : BUY; // marketTradingHistory is from filler perspective
-
         const matchingOpenOrder = openOrders.find(
           (openOrder) => openOrder.id === orderId,
         );
@@ -86,7 +83,7 @@ function findOrders(
           outcome: outcomeValue.description,
           amount: amountBN,
           price: priceBN,
-          type: typeOp,
+          type,
           timestamp: timestampFormatted,
           transactionHash,
           marketId,
@@ -120,7 +117,7 @@ function findOrders(
           id: orderId,
           timestamp: timestampFormatted,
           outcome: outcomeValue.description,
-          type: typeOp,
+          type,
           price: priceBN,
           amount: amountBN,
           marketId,
@@ -133,7 +130,7 @@ function findOrders(
               outcome: outcomeValue.description,
               amount: amountBN,
               price: priceBN,
-              type: typeOp,
+              type,
               timestamp: timestampFormatted,
               transactionHash,
               marketId,
