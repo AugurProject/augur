@@ -492,7 +492,7 @@ export class Markets {
       marketIds = _.map(marketsFTSResults, 'market');
     }
 
-    const reportingFeeLog = await db.ReportingFeeChanged.where('universe').equals(params.universe).first();
+    const reportingFeeLog = _.last(_.sortBy(await db.ReportingFeeChanged.where("universe").equals(params.universe).toArray(), 'blockNumber'));
     const reportingFeeDivisor = new BigNumber(reportingFeeLog ? reportingFeeLog.reportingFee : INIT_REPORTING_FEE_DIVISOR);
 
     // Filter out markets not related to the specified user
