@@ -364,6 +364,8 @@ export const handleOrderLog = (log: any) => {
     case OrderEventType.Expire:
     case OrderEventType.Cancel:
       return handleOrderCanceledLog(log);
+    case OrderEventType.Fill:
+      return;
     default:
       console.log(`Unknown order event type "${log.eventType}" for log`, log);
   }
