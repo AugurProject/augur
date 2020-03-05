@@ -31,6 +31,7 @@ import Styles from 'modules/market-cards/common.styles.less';
 import MarketCard from 'modules/market-cards/market-card';
 import { selectSortedDisputingOutcomes } from 'modules/markets/selectors/market';
 import { calculatePosition } from 'modules/market/components/market-scalar-outcome-display/market-scalar-outcome-display';
+import { SmallSubheadersTooltip } from 'modules/create-market/components/common';
 
 export interface PercentProps {
   percent: number;
@@ -135,9 +136,14 @@ export const DisputeOutcome = (props: DisputeOutcomeProps) => {
       <div>
         <div>
           <span>
-            {props.stake && props.stake.tentativeWinning
-              ? 'pre-filled stake'
-              : 'make tentative winner'}
+          {props.stake && props.stake.tentativeWinning
+              ? <SmallSubheadersTooltip
+                  header="pre-filled stake"
+                  subheader={``}
+                  text="Users can add extra support for a Tentative Winning Outcome"
+                />
+              : 'make tentative winner'
+            }
           </span>
           {props.stake && props.stake.tentativeWinning ? (
             <span>
