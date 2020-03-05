@@ -245,9 +245,11 @@ export default class ModalReporting extends Component<
     let isSelectedOutcomeInvalid = selectedRadio.isInvalid;
     if (marketType === SCALAR) {
       // checked might be invalid outcome
-      outcomeId = parseFloat(
-        this.state.inputScalarOutcome || this.state.checked
-      );
+      // check if existing outcomeId
+      // check if new scalar outcome, outcomeId is 'null' in this case
+      const inputted = outcomeId === "null" ? parseFloat(
+        this.state.inputScalarOutcome) : outcomeId;
+      outcomeId = estimateGas ? minPrice : inputted || this.state.checked;
     }
     const ONE_REP = '1000000000000000000';
     const report = {

@@ -6,8 +6,8 @@ import { ThunkDispatch } from 'redux-thunk';
 import { CANCELORDER } from 'modules/common/constants';
 import { addAlert } from 'modules/alerts/actions/alerts';
 import { Action } from 'redux';
-import { removeCanceledOrder, addCanceledOrder } from 'modules/orders/actions/update-order-status';
 import { TXEventName } from '@augurproject/sdk';
+import { removeCanceledOrder, addCanceledOrder } from 'modules/pending-queue/actions/pending-queue-management';
 
 const BATCH_CANCEL_MAX = 4;
 
@@ -74,5 +74,5 @@ const sendCancelAlert = (order, dispatch) => {
 };
 
 const setCancelOrderStatus = (ids: string[]) => dispatch => {
-  ids.map(id => dispatch(addCanceledOrder(id, TXEventName.Pending)))
+  ids.map(id => dispatch(addCanceledOrder(id, TXEventName.Pending, null)))
 }
