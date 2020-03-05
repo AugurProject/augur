@@ -3,9 +3,9 @@ import { ContractAPI } from '..';
 import { ParsedLog } from '@augurproject/types';
 import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from 'ethers/utils';
-import { ContractAddresses } from '@augurproject/artifacts';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { ethers } from 'ethers';
+import { SDKConfiguration } from '@augurproject/artifacts';
 
 interface AddressMapping { [addr1: string]: string; }
 interface IdMapping { [id1: string]: string; }
@@ -23,7 +23,7 @@ export class LogReplayer {
   constructor(
     initialAccounts: Account[],
     private provider: EthersProvider,
-    private contractAddresses: ContractAddresses
+    private config: SDKConfiguration
   ) {
     if (initialAccounts.length < 1) {
       throw Error("LogReplayer's initial accounts list must contain at least one account");
@@ -35,7 +35,7 @@ export class LogReplayer {
   }
 
   async User(account: Account): Promise<ContractAPI> {
-    const user = await ContractAPI.userWrapper(account, this.provider, this.contractAddresses);
+    const user = await ContractAPI.userWrapper(account, this.provider, this.config);
     await user.approveCentralAuthority();
     return user;
   }
@@ -85,7 +85,7 @@ export class LogReplayer {
 
     if (parentUniverse === NULL_ADDRESS) { // Deployment already gave us a genesis universe so just record it.
       const user = await this.User(this.piggybank); // Piggybank is typically the Augur deployer, including genesis universe.
-      this.universes[childUniverse] = user.augur.addresses.Universe;
+      this.universes[childUniverse] = user.augur.config.addresses.Universe;
     } else {
       // TODO No need to support forking yet. But when it is supported, remember
       //      that parentPayoutDistributionHash is part of the Universe contract.

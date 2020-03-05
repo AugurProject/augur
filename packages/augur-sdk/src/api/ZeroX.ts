@@ -384,8 +384,8 @@ export class ZeroX {
 
     return {
       order: {
-        chainId: Number(this.client.networkId),
-        exchangeAddress: this.client.addresses.Exchange,
+        chainId: Number(this.client.config.networkId),
+        exchangeAddress: this.client.config.addresses.Exchange,
         makerAddress,
         makerAssetData: order[10],
         makerFeeAssetData: order[12],

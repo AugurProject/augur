@@ -1,4 +1,4 @@
-import { ContractAddresses, NetworkId } from '@augurproject/artifacts';
+import { SDKConfiguration } from '@augurproject/artifacts';
 import { ContractInterfaces } from '@augurproject/core';
 import { GnosisSafeState, GnosisSafeStateReponse } from '@augurproject/gnosis-relay-api';
 import { BigNumber } from 'bignumber.js';
@@ -80,18 +80,17 @@ export class Augur<TProvider extends Provider = Provider> {
   constructor(
     readonly provider: TProvider,
     readonly dependencies: ContractDependenciesGnosis,
-    readonly networkId: NetworkId,
-    readonly addresses: ContractAddresses,
+    public config: SDKConfiguration,
     public connector: BaseConnector = new EmptyConnector(),
     private _zeroX = null,
     enableFlexSearch = false
   ) {
     this.provider = provider;
     this.dependencies = dependencies;
-    this.networkId = networkId;
     if (!this.connector || connector.constructor.name !== 'EmptyConnector') {
       this.connector = connector;
     }
+    if (!config.addresses) throw Error(`Augur config must include addresses. Config=${JSON.stringify(config)}`)
 
     this.events = new Subscriptions(augurEmitter);
     this.events.on(SubscriptionEventName.GnosisSafeStatus, this.updateGnosisSafe.bind(this));
@@ -104,16 +103,15 @@ export class Augur<TProvider extends Provider = Provider> {
     if(this.zeroX) this.zeroX.client = this;
 
     // API
-    this.addresses = addresses;
-    this.contracts = new Contracts(this.addresses, this.dependencies);
+    this.contracts = new Contracts(this.config.addresses, this.dependencies);
     this.market = new Market(this);
     this.liquidity = new Liquidity(this);
     this.contractEvents = new ContractEvents(
       this.provider,
-      this.addresses.Augur,
-      this.addresses.AugurTrading,
-      this.addresses.ShareToken,
-      this.addresses.Exchange,
+      this.config.addresses.Augur,
+      this.config.addresses.AugurTrading,
+      this.config.addresses.ShareToken,
+      this.config.addresses.Exchange,
       );
     this.gnosis = new Gnosis(this.provider, this, this.dependencies);
     this.warpSync = new WarpSync(this);
@@ -129,22 +127,20 @@ export class Augur<TProvider extends Provider = Provider> {
   static async create<TProvider extends Provider = Provider>(
     provider: TProvider,
     dependencies: ContractDependenciesGnosis,
-    addresses: ContractAddresses,
+    config: SDKConfiguration,
     connector: BaseConnector = new SingleThreadConnector(),
     zeroX: ZeroX = null,
     enableFlexSearch = false
   ): Promise<Augur<Provider>> {
-    const networkId = await provider.getNetworkId();
     const client = new Augur<TProvider>(
       provider,
       dependencies,
-      networkId,
-      addresses,
+      config,
       connector,
       zeroX,
       enableFlexSearch
     );
-    await client.contracts.setReputationToken(networkId)
+    await client.contracts.setReputationToken(config.networkId)
     return client;
   }
 
@@ -236,7 +232,7 @@ export class Augur<TProvider extends Provider = Provider> {
   }
 
   async getGasStation() {
-    return await this.gnosis.gasStation();
+    return this.gnosis.gasStation();
   }
 
   async getGasConfirmEstimate() {
@@ -245,11 +241,11 @@ export class Augur<TProvider extends Provider = Provider> {
       return 180;
     }
 
-    var gasLevels = await this.getGasStation();
-    var recommended = (parseInt(gasLevels["standard"]) + 1000000000);
-    var fast = (parseInt(gasLevels["fast"]) + 1000000000);
-    var gasPrice = await this.getGasPrice();
-    var gasPriceNum = gasPrice.toNumber();
+    const gasLevels = await this.getGasStation();
+    const recommended = (parseInt(gasLevels['standard']) + 1000000000);
+    const fast = (parseInt(gasLevels['fast']) + 1000000000);
+    const gasPrice = await this.getGasPrice();
+    const gasPriceNum = gasPrice.toNumber();
     if (gasPriceNum >= fast) {
       return 60;
     }
@@ -272,7 +268,7 @@ export class Augur<TProvider extends Provider = Provider> {
   getOrders(): ContractInterfaces.Orders {
     return new ContractInterfaces.Orders(
       this.dependencies,
-      this.addresses.Orders
+      this.config.addresses.Orders
     );
   }
 

@@ -1,4 +1,4 @@
-import { abi, Addresses } from '@augurproject/artifacts';
+import { abi, getAddressesForNetwork, NetworkId } from '@augurproject/artifacts';
 import { Cash } from '@augurproject/core/build/libraries/ContractInterfaces';
 import { EthersProvider } from '@augurproject/ethersjs-provider/build';
 import {
@@ -195,7 +195,7 @@ describe('Gnosis Relay API', () => {
       const account = ACCOUNTS[0];
       const ethersProvider = new EthersProvider(provider, 5, 0, 40);
       const signer = await makeSigner(ACCOUNTS[0], ethersProvider);
-      const addresses = Addresses[103];
+      const addresses = getAddressesForNetwork('103' as NetworkId);
       const cash = new Cash(
         makeDependencies(account, ethersProvider, signer),
         addresses.Cash

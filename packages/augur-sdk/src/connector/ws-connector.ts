@@ -2,7 +2,7 @@ import WebSocket from 'isomorphic-ws';
 import WebSocketAsPromised from 'websocket-as-promised';
 import { SubscriptionEventName } from '../constants';
 import { Callback, SubscriptionType } from '../events';
-import { SDKConfiguration } from '../state';
+import { SDKConfiguration } from '@augurproject/artifacts';
 import { BaseConnector } from './base-connector';
 
 export class WebsocketConnector extends BaseConnector {

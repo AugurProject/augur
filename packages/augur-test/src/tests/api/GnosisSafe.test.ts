@@ -9,11 +9,12 @@ let mockGnosisRelay: MockGnosisRelayAPI;
 beforeAll(async () => {
   const seed = await loadSeedFile(defaultSeedPath);
   const provider = await makeProvider(seed, ACCOUNTS);
+  const config = provider.getConfig();
 
   const mary = await TestContractAPI.userWrapper(
     ACCOUNTS[1],
     provider,
-    seed.addresses,
+    config,
     undefined,
     undefined
   );
@@ -23,7 +24,7 @@ beforeAll(async () => {
   john = await TestContractAPI.userWrapper(
     ACCOUNTS[0],
     provider,
-    seed.addresses,
+    config,
     undefined,
     mockGnosisRelay
   );

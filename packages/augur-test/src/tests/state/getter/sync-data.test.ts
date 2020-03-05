@@ -15,7 +15,7 @@ beforeAll(async () => {
   john = await TestContractAPI.userWrapper(
     ACCOUNTS[0],
     provider,
-    seed.addresses
+    provider.getConfig()
   );
   await john.approveCentralAuthority();
 });
@@ -36,9 +36,9 @@ test('State API :: Status :: getSyncData', async () => {
   ).toFixed(4);
 
   expect(syncData).toEqual({
-    highestAvailableBlockNumber: highestAvailableBlockNumber,
+    highestAvailableBlockNumber,
     lastSyncedBlockNumber: 10,
-    blocksBehindCurrent: blocksBehindCurrent,
-    percentSynced: percentSynced,
+    blocksBehindCurrent,
+    percentSynced,
   });
 });

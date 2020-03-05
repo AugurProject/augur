@@ -14,7 +14,7 @@ describe('WarpSync', () => {
     john = await TestContractAPI.userWrapper(
       ACCOUNTS[0],
       provider,
-      seed.addresses
+      provider.getConfig()
     );
     await john.approveCentralAuthority();
     await john.initializeUniverseForWarpSync();

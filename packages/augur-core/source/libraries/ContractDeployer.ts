@@ -3,7 +3,6 @@ import { BigNumber } from 'bignumber.js';
 import { readFile } from 'async-file';
 import { stringTo32ByteHex, resolveAll } from './HelperFunctions';
 import { CompilerOutput } from 'solc';
-import { DeployerConfiguration } from './DeployerConfiguration';
 import {
   Augur,
   AugurTrading,
@@ -32,14 +31,13 @@ import {
   ERC20Proxy,
   MultiAssetProxy,
 } from './ContractInterfaces';
-import { NetworkConfiguration } from './NetworkConfiguration';
 import { Contracts, ContractData } from './Contracts';
 import { Dependencies } from '../libraries/GenericContractInterfaces';
-import { ContractAddresses, NetworkId, setAddresses, setUploadBlockNumber } from '@augurproject/artifacts';
+import { ContractAddresses, NetworkId, updateConfig, SDKConfiguration } from '@augurproject/artifacts';
 import { TRADING_CONTRACTS } from './constants';
 
 export class ContractDeployer {
-    private readonly configuration: DeployerConfiguration;
+    private readonly configuration: SDKConfiguration;
     private readonly contracts: Contracts;
     private readonly dependencies: Dependencies<BigNumber>;
     private readonly provider: ethers.providers.JsonRpcProvider;
@@ -48,41 +46,45 @@ export class ContractDeployer {
     augurTrading: AugurTrading|null = null;
     universe: Universe|null = null;
 
-    static deployToNetwork = async (networkConfiguration: NetworkConfiguration, dependencies: Dependencies<BigNumber>, provider: ethers.providers.JsonRpcProvider,signer: ethers.Signer, deployerConfiguration: DeployerConfiguration) => {
-        const compilerOutput = JSON.parse(await readFile(deployerConfiguration.contractInputPath, 'utf8'));
-        const contractDeployer = new ContractDeployer(deployerConfiguration, dependencies, provider, signer, compilerOutput);
+    static deployToNetwork = async (env: string, config: SDKConfiguration, dependencies: Dependencies<BigNumber>, provider: ethers.providers.JsonRpcProvider,signer: ethers.Signer) => {
+        const compilerOutput = JSON.parse(await readFile(config.deploy.contractInputPath, 'utf8'));
+        const contractDeployer = new ContractDeployer(config, dependencies, provider, signer, compilerOutput);
 
         console.log(`\n\n-----------------
-Deploying to: ${networkConfiguration.networkName}
-    compiled contracts: ${deployerConfiguration.contractInputPath}
-    contract address: ${deployerConfiguration.contractAddressesOutputPath}
-    upload blocks #s: ${deployerConfiguration.uploadBlockNumbersOutputPath}
+Deploying to: ${env}
+    compiled contracts: ${config.deploy.contractInputPath}
 `);
-        await contractDeployer.deploy();
+        await contractDeployer.deploy(env);
     };
 
-    constructor(configuration: DeployerConfiguration, dependencies: Dependencies<BigNumber>, provider: ethers.providers.JsonRpcProvider, signer: ethers.Signer, compilerOutput: CompilerOutput) {
+    constructor(configuration: SDKConfiguration, dependencies: Dependencies<BigNumber>, provider: ethers.providers.JsonRpcProvider, signer: ethers.Signer, compilerOutput: CompilerOutput) {
         this.configuration = configuration;
         this.dependencies = dependencies;
         this.provider = provider;
         this.signer = signer;
         this.contracts = new Contracts(compilerOutput);
+
+        if (!configuration.deploy) {
+            throw Error('ContractDeployer configuration must include "deploy" config.');
+        } else if (typeof configuration.deploy.externalAddresses === 'undefined') {
+            configuration.deploy.externalAddresses = {};
+        }
     }
 
     async getBlockNumber(): Promise<number> {
         return this.provider.getBlock('latest', false).then( (block) => block.number);
     }
 
-    async deploy(): Promise<ContractAddresses> {
+    async deploy(env: string): Promise<ContractAddresses> {
         const blockNumber = await this.getBlockNumber();
         this.augur = await this.uploadAugur();
         this.augurTrading = await this.uploadAugurTrading();
         await this.uploadAllContracts();
 
-        const externalAddresses = this.configuration.externalAddresses;
+        const externalAddresses = this.configuration.deploy.externalAddresses;
 
         // Legacy REP
-        if (this.configuration.isProduction || externalAddresses.LegacyReputationToken) {
+        if (this.configuration.deploy.isProduction || externalAddresses.LegacyReputationToken) {
             if (!externalAddresses.LegacyReputationToken) throw new Error('Must provide LegacyReputationToken');
             console.log(`Registering Legacy Rep Contract at ${externalAddresses.LegacyReputationToken}`);
             await this.augur!.registerContract(stringTo32ByteHex('LegacyReputationToken'), externalAddresses.LegacyReputationToken);
@@ -91,7 +93,7 @@ Deploying to: ${networkConfiguration.networkName}
         }
 
         // Cash
-        if (this.configuration.isProduction
+        if (this.configuration.deploy.isProduction
             || externalAddresses.Cash
             || externalAddresses.DaiVat
             || externalAddresses.DaiPot
@@ -115,7 +117,7 @@ Deploying to: ${networkConfiguration.networkName}
             console.log(`Registering Join Contract at ${externalAddresses.DaiJoin}`);
             await this.augur!.registerContract(stringTo32ByteHex('DaiJoin'), externalAddresses.DaiJoin);
 
-            if (!this.configuration.isProduction) {
+            if (!this.configuration.deploy.isProduction) {
                 if (!(externalAddresses.MCDCol && externalAddresses.MCDColJoin && externalAddresses.MCDFaucet)) {
                     throw new Error('Must provide ALL Testnet Maker contracts');
                 }
@@ -140,7 +142,7 @@ Deploying to: ${networkConfiguration.networkName}
         }
 
         // Proxy Factory & Gnosis Safe
-        if (this.configuration.isProduction || externalAddresses.GnosisSafe || externalAddresses.ProxyFactory) {
+        if (this.configuration.deploy.isProduction || externalAddresses.GnosisSafe || externalAddresses.ProxyFactory) {
             if (!(externalAddresses.ProxyFactory && externalAddresses.GnosisSafe)) {
                 throw new Error('Must provide ALL Gnosis contracts if any are provided');
             }
@@ -153,7 +155,7 @@ Deploying to: ${networkConfiguration.networkName}
         }
 
         // 0x Exchange
-        if (this.configuration.isProduction || externalAddresses.Exchange) {
+        if (this.configuration.deploy.isProduction || externalAddresses.Exchange) {
             if (!externalAddresses.Exchange) throw new Error('Must provide Exchange (ZeroXExchange)');
             console.log(`Registering 0x Exchange Contract at ${externalAddresses.Exchange}`);
             await this.augurTrading!.registerContract(stringTo32ByteHex('ZeroXExchange'), externalAddresses.Exchange);
@@ -164,7 +166,7 @@ Deploying to: ${networkConfiguration.networkName}
         await this.initializeAllContracts();
         await this.doTradingApprovals();
 
-        if (!this.configuration.useNormalTime) {
+        if (!this.configuration.deploy.normalTime) {
             await this.resetTimeControlled();
         }
 
@@ -180,9 +182,8 @@ Deploying to: ${networkConfiguration.networkName}
             await this.migrateFromLegacyRep();
         }
 
-        if (this.configuration.writeArtifacts) {
-          await this.generateUploadBlockNumberMapping(blockNumber);
-          await this.generateAddressMappingFile();
+        if (this.configuration.deploy.writeArtifacts) {
+          await this.generateLocalEnvFile(env, blockNumber);
         }
 
         await this.augur.finishDeployment();
@@ -214,10 +215,10 @@ Deploying to: ${networkConfiguration.networkName}
             if (contract.contractName === 'TestNetReputationToken') continue;
             if (contract.contractName === 'TestNetReputationTokenFactory') continue;
             if (contract.contractName === 'CashFaucetProxy') continue;
-            if (contract.contractName === 'Time') contract = this.configuration.useNormalTime ? contract : this.contracts.get('TimeControlled');
-            if (contract.contractName === 'ReputationTokenFactory') contract = this.configuration.isProduction ? contract: this.contracts.get('TestNetReputationTokenFactory');
+            if (contract.contractName === 'Time') contract = this.configuration.deploy.normalTime ? contract : this.contracts.get('TimeControlled');
+            if (contract.contractName === 'ReputationTokenFactory') contract = this.configuration.deploy.isProduction ? contract: this.contracts.get('TestNetReputationTokenFactory');
             if (contract.contractName === 'CashFaucet') {
-                if (this.configuration.isProduction) continue;
+                if (this.configuration.deploy.isProduction) continue;
                 mapping['CashFaucet'] = this.getCashFaucetAddress();
                 continue;
             }
@@ -225,7 +226,7 @@ Deploying to: ${networkConfiguration.networkName}
             if (contract.relativeFilePath.startsWith('external/')) continue;
 
             // 0x
-            if (this.configuration.externalAddresses.Exchange && [
+            if (this.configuration.deploy.externalAddresses.Exchange && [
               'ERC20Proxy',
               'ERC721Proxy',
               'ERC1155Proxy',
@@ -252,7 +253,7 @@ Deploying to: ${networkConfiguration.networkName}
     }
 
     getContractAddress = (contractName: string): string => {
-        if (this.configuration.externalAddresses[contractName]) return this.configuration.externalAddresses[contractName];
+        if (this.configuration.deploy.externalAddresses[contractName]) return this.configuration.deploy.externalAddresses[contractName];
         if (contractName === 'CashFaucet') return this.getCashFaucetAddress();
         if (!this.contracts.has(contractName)) throw new Error(`Contract named ${contractName} does not exist.`);
         const contract = this.contracts.get(contractName);
@@ -405,8 +406,8 @@ Deploying to: ${networkConfiguration.networkName}
         if (contractName === 'ReputationToken') return;
         if (contractName === 'TestNetReputationToken') return;
         if (contractName === 'ProxyFactory') return;
-        if (contractName === 'Time') contract = this.configuration.useNormalTime ? contract : this.contracts.get('TimeControlled');
-        if (contractName === 'ReputationTokenFactory') contract = this.configuration.isProduction ? contract : this.contracts.get('TestNetReputationTokenFactory');
+        if (contractName === 'Time') contract = this.configuration.deploy.normalTime ? contract : this.contracts.get('TimeControlled');
+        if (contractName === 'ReputationTokenFactory') contract = this.configuration.deploy.isProduction ? contract : this.contracts.get('TestNetReputationTokenFactory');
         if (contract.relativeFilePath.startsWith('legacy_reputation/')) return;
         if (contractName === 'LegacyReputationToken') return;
         if (contractName === 'Cash') return;
@@ -505,7 +506,7 @@ Deploying to: ${networkConfiguration.networkName}
         const ethExchange = new EthExchange(this.dependencies, ethExchangeContract);
         promises.push(ethExchange.initialize(this.augur!.address));
 
-        if (!this.configuration.useNormalTime) {
+        if (!this.configuration.deploy.normalTime) {
             const timeContract = await this.getContractAddress('TimeControlled');
             const time = new TimeControlled(this.dependencies, timeContract);
             promises.push(time.initialize(this.augur!.address));
@@ -573,7 +574,7 @@ Deploying to: ${networkConfiguration.networkName}
         }
     }
 
-    private async generateAddressMappingFile(): Promise<void> {
+    private async generateLocalEnvFile(env: string, uploadBlockNumber: number): Promise<void> {
         const mapping: Partial<ContractAddresses> = {};
         mapping['Augur'] = this.augur!.address;
         if (this.universe) mapping['Universe'] = this.universe.address;
@@ -583,7 +584,7 @@ Deploying to: ${networkConfiguration.networkName}
         mapping['Cash'] = this.getContractAddress('Cash');
         mapping['ProxyFactory'] = this.contracts.get('ProxyFactory').address!;
         mapping['GnosisSafe'] = this.contracts.get('GnosisSafe').address!;
-        if (!this.configuration.isProduction) mapping['CashFaucet'] = this.getCashFaucetAddress();
+        if (!this.configuration.deploy.isProduction) mapping['CashFaucet'] = this.getCashFaucetAddress();
         mapping['BuyParticipationTokens'] = this.contracts.get('BuyParticipationTokens').address!;
         mapping['RedeemStake'] = this.contracts.get('RedeemStake').address!;
         mapping['GnosisSafeRegistry'] = this.contracts.get('GnosisSafeRegistry').address!;
@@ -621,20 +622,19 @@ Deploying to: ${networkConfiguration.networkName}
             mapping[contract.contractName] = contract.address;
         }
 
-        if (this.configuration.externalAddresses) {
-            Object.keys(this.configuration.externalAddresses).forEach((name) => {
-                const address = this.configuration.externalAddresses[name];
+        if (this.configuration.deploy.externalAddresses) {
+            Object.keys(this.configuration.deploy.externalAddresses).forEach((name) => {
+                const address = this.configuration.deploy.externalAddresses[name];
                 mapping[name] = address;
             })
         }
 
-        const networkId = (await this.provider.getNetwork()).chainId;
+        const networkId = String((await this.provider.getNetwork()).chainId) as NetworkId;
 
-        await setAddresses(String(networkId) as NetworkId, mapping as ContractAddresses);
-    }
-
-    private async generateUploadBlockNumberMapping(blockNumber: number): Promise<void> {
-        const networkId = (await this.provider.getNetwork()).chainId as unknown as NetworkId;
-        await setUploadBlockNumber(networkId, blockNumber);
+        await updateConfig(env, {
+            networkId,
+            uploadBlockNumber,
+            addresses: mapping as ContractAddresses,
+        });
     }
 }

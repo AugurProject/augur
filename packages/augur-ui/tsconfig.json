@@ -71,7 +71,7 @@
   },
   "include": [
     "./src/**/*",
-    "./src/config/network.json"
+    "../augur-artifacts/src/environments/*.json"
   ],
   "exclude": [
     "./src/**/*.test.ts"

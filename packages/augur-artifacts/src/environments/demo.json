@@ -1,0 +1,22 @@
+{
+  "networkId": "42",
+  "ethereum": {
+    "rpcRetryCount": 5,
+    "rpcRetryInterval": 0,
+    "rpcConcurrency": 40
+  },
+  "gnosis": {
+    "enabled": true,
+    "http": "https://gnosis.demo.augur.net/api/"
+  },
+  "zeroX": {
+    "rpc": {
+      "enabled": false,
+      "ws": "wss://demo.augur.net/0x-ws"
+    },
+    "mesh": {
+      "verbosity": 1,
+      "enabled": true
+    }
+  }
+}
