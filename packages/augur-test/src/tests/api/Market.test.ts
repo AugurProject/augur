@@ -9,16 +9,17 @@ let mary: TestContractAPI;
 beforeAll(async () => {
   const seed = await loadSeedFile(defaultSeedPath);
   const provider = await makeProvider(seed, ACCOUNTS);
+  const config = provider.getConfig();
 
   john = await TestContractAPI.userWrapper(
     ACCOUNTS[0],
     provider,
-    seed.addresses
+    config
   );
   mary = await TestContractAPI.userWrapper(
     ACCOUNTS[1],
     provider,
-    seed.addresses
+    config
   );
   await john.approveCentralAuthority();
   await mary.approveCentralAuthority();

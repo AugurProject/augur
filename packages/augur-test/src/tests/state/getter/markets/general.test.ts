@@ -1,7 +1,6 @@
 import { WSClient } from '@0x/mesh-rpc-client';
-import { ContractAddresses } from '@augurproject/artifacts';
+import { SDKConfiguration } from '@augurproject/artifacts';
 import { sleep } from '@augurproject/core/build/libraries/HelperFunctions';
-import { EthersProvider } from '@augurproject/ethersjs-provider';
 import {
   BrowserMesh,
   Connectors,
@@ -23,14 +22,14 @@ import * as _ from 'lodash';
 import { makeProvider, MockGnosisRelayAPI } from '../../../../libs';
 import { MockBrowserMesh } from '../../../../libs/MockBrowserMesh';
 import { MockMeshServer, stopServer } from '../../../../libs/MockMeshServer';
+import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
 
 describe('State API :: General', () => {
   let john: TestContractAPI;
-
   let mary: TestContractAPI;
 
-  let provider: EthersProvider;
-  let addresses: ContractAddresses;
+  let provider: TestEthersProvider;
+  let config: SDKConfiguration;
 
   let meshBrowser: BrowserMesh;
   let meshClient: WSClient;
@@ -41,8 +40,8 @@ describe('State API :: General', () => {
     meshBrowser = new MockBrowserMesh(meshClient);
 
     const seed = await loadSeedFile(defaultSeedPath);
-    addresses = seed.addresses;
     provider = await makeProvider(seed, ACCOUNTS);
+    config = provider.getConfig();
   });
 
   afterAll(() => {
@@ -58,7 +57,7 @@ describe('State API :: General', () => {
       john = await TestContractAPI.userWrapper(
         ACCOUNTS[0],
         provider,
-        addresses,
+        config,
         johnConnector,
         johnGnosis,
         meshClient,
@@ -76,7 +75,7 @@ describe('State API :: General', () => {
       mary = await TestContractAPI.userWrapper(
         ACCOUNTS[1],
         provider,
-        addresses,
+        config,
         maryConnector,
         maryGnosis,
         meshClient,
@@ -118,7 +117,7 @@ describe('State API :: General', () => {
 
       // Test market count
       marketList = await john.api.route('getMarkets', {
-        universe: addresses.Universe,
+        universe: config.addresses.Universe,
         isSortDescending: false,
       });
 
@@ -126,7 +125,7 @@ describe('State API :: General', () => {
 
       // Test creator
       marketList = await john.api.route('getMarkets', {
-        universe: addresses.Universe,
+        universe: config.addresses.Universe,
         creator: ACCOUNTS[0].publicKey,
         isSortDescending: false,
       });
@@ -134,7 +133,7 @@ describe('State API :: General', () => {
       expect(marketList.markets.length).toEqual(1);
 
       marketList = await john.api.route('getMarkets', {
-        universe: addresses.Universe,
+        universe: config.addresses.Universe,
         creator: NULL_ADDRESS,
       });
       expect(marketList).toEqual({
@@ -148,13 +147,13 @@ describe('State API :: General', () => {
 
       // Test designatedReporter
       marketList = await john.api.route('getMarkets', {
-        universe: addresses.Universe,
+        universe: config.addresses.Universe,
         designatedReporter: ACCOUNTS[0].publicKey,
       });
       expect(marketList.markets.length).toEqual(1);
 
       marketList = await john.api.route('getMarkets', {
-        universe: addresses.Universe,
+        universe: config.addresses.Universe,
         designatedReporter: NULL_ADDRESS,
       });
       expect(marketList).toEqual({
@@ -168,7 +167,7 @@ describe('State API :: General', () => {
 
       // Test maxFee
       marketList = await john.api.route('getMarkets', {
-        universe: addresses.Universe,
+        universe: config.addresses.Universe,
         maxFee: '0',
       });
       expect(marketList).toEqual({
@@ -181,41 +180,41 @@ describe('State API :: General', () => {
       });
 
       marketList = await john.api.route('getMarkets', {
-        universe: addresses.Universe,
+        universe: config.addresses.Universe,
         maxFee: '0.1',
       });
       expect(marketList.markets.length).toEqual(2);
 
       // Test search & categories params
       marketList = await john.api.route('getMarkets', {
-        universe: addresses.Universe,
+        universe: config.addresses.Universe,
         search: 'Categorical',
       });
       expect(marketList.markets.length).toEqual(1);
       expect(marketList.markets[0].id).toEqual(categoricalMarket1.address);
 
       marketList = await john.api.route('getMarkets', {
-        universe: addresses.Universe,
+        universe: config.addresses.Universe,
         categories: ['flash', 'reasonable', 'yesno'],
       });
 
       expect(marketList.markets.length).toEqual(1);
 
       marketList = await john.api.route('getMarkets', {
-        universe: addresses.Universe,
+        universe: config.addresses.Universe,
         search: ACCOUNTS[0].publicKey,
       });
       expect(marketList.markets.length).toEqual(1);
       expect(marketList.markets[0].id).toEqual(yesNoMarket1.address);
 
       marketList = await john.api.route('getMarkets', {
-        universe: addresses.Universe,
+        universe: config.addresses.Universe,
         search: 'ipsum ipsum',
       });
       expect(marketList.markets.length).toEqual(0);
 
       marketList = await john.api.route('getMarkets', {
-        universe: addresses.Universe,
+        universe: config.addresses.Universe,
         categories: ['ipsum', 'ipsum', 'ipsum'],
       });
       expect(marketList.markets.length).toEqual(0);
@@ -335,10 +334,10 @@ describe('State API :: General', () => {
       await sleep(300);
 
       await john.sync();
-      await john.db.marketDatabase.syncOrderBooks([yesNoMarket1.address, yesNoMarket2.address, yesNoMarket3.address])
+      await john.db.marketDatabase.syncOrderBooks([yesNoMarket1.address, yesNoMarket2.address, yesNoMarket3.address]);
 
       marketList = await john.api.route('getMarkets', {
-        universe: addresses.Universe,
+        universe: config.addresses.Universe,
         maxLiquiditySpread: '10',
       });
 
@@ -348,7 +347,7 @@ describe('State API :: General', () => {
       expect(marketList.meta.filteredOutCount).toEqual(3);
 
       marketList = await john.api.route('getMarkets', {
-        universe: addresses.Universe,
+        universe: config.addresses.Universe,
         maxLiquiditySpread: '15',
       });
 
@@ -359,7 +358,7 @@ describe('State API :: General', () => {
       expect(marketList.meta.filteredOutCount).toEqual(2);
 
       marketList = await john.api.route('getMarkets', {
-        universe: addresses.Universe,
+        universe: config.addresses.Universe,
         maxLiquiditySpread: '20',
       });
 
@@ -384,16 +383,16 @@ describe('State API :: General', () => {
       );
 
       await john.sync();
-      await john.db.marketDatabase.syncOrderBooks([yesNoMarket1.address])
+      await john.db.marketDatabase.syncOrderBooks([yesNoMarket1.address]);
 
       marketList = await john.api.route('getMarkets', {
-        universe: addresses.Universe,
+        universe: config.addresses.Universe,
         includeInvalidMarkets: false,
       });
       expect(marketList.markets.length).toEqual(3);
 
       marketList = await john.api.route('getMarkets', {
-        universe: addresses.Universe,
+        universe: config.addresses.Universe,
         includeInvalidMarkets: true,
       });
 
@@ -406,7 +405,7 @@ describe('State API :: General', () => {
 
       // Test reportingStates
       marketList = await john.api.route('getMarkets', {
-        universe: addresses.Universe,
+        universe: config.addresses.Universe,
         reportingStates: [MarketReportingState.DesignatedReporting],
         isSortDescending: false,
       });
@@ -414,7 +413,7 @@ describe('State API :: General', () => {
       expect(marketList.markets.length).toEqual(4);
 
       marketList = await john.api.route('getMarkets', {
-        universe: addresses.Universe,
+        universe: config.addresses.Universe,
         reportingStates: [MarketReportingState.PreReporting],
       });
 
@@ -432,7 +431,7 @@ describe('State API :: General', () => {
 
       // Test sortBy
       marketList = await john.api.route('getMarkets', {
-        universe: addresses.Universe,
+        universe: config.addresses.Universe,
         sortBy: GetMarketsSortBy.endTime,
       });
 
@@ -440,7 +439,7 @@ describe('State API :: General', () => {
       expect(marketList.markets[0].id).toEqual(yesNoMarket2.address);
 
       marketList = await john.api.route('getMarkets', {
-        universe: addresses.Universe,
+        universe: config.addresses.Universe,
         sortBy: GetMarketsSortBy.disputeRound,
       });
 
@@ -448,7 +447,7 @@ describe('State API :: General', () => {
       expect(marketList.markets[0].id).toEqual(yesNoMarket3.address);
 
       marketList = await john.api.route('getMarkets', {
-        universe: addresses.Universe,
+        universe: config.addresses.Universe,
         sortBy: GetMarketsSortBy.totalRepStakedInMarket,
       });
 
@@ -456,7 +455,7 @@ describe('State API :: General', () => {
       expect(marketList.markets[0].id).toEqual(yesNoMarket3.address);
 
       marketList = await john.api.route('getMarkets', {
-        universe: addresses.Universe,
+        universe: config.addresses.Universe,
         sortBy: GetMarketsSortBy.marketOI,
       });
 
@@ -464,7 +463,7 @@ describe('State API :: General', () => {
       expect(marketList.markets[0].id).toEqual(yesNoMarket2.address);
 
       marketList = await john.api.route('getMarkets', {
-        universe: addresses.Universe,
+        universe: config.addresses.Universe,
         sortBy: GetMarketsSortBy.volume,
       });
 
@@ -473,7 +472,7 @@ describe('State API :: General', () => {
 
       // Test Recently Depleted Liquidity + Invalid
       marketList = await john.api.route('getMarkets', {
-        universe: addresses.Universe,
+        universe: config.addresses.Universe,
         maxLiquiditySpread: '10',
       });
 
@@ -495,10 +494,10 @@ describe('State API :: General', () => {
 
       // Invalid markets that pass the spread filter should appear as Recently Depleted Liquidity
       await john.sync();
-      await john.db.marketDatabase.syncOrderBooks([yesNoMarket3.address])
+      await john.db.marketDatabase.syncOrderBooks([yesNoMarket3.address]);
 
       marketList = await john.api.route('getMarkets', {
-        universe: addresses.Universe,
+        universe: config.addresses.Universe,
         maxLiquiditySpread: '0',
         includeInvalidMarkets: true,
       });

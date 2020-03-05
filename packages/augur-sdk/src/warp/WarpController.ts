@@ -126,7 +126,8 @@ export class WarpController {
     return this.ipfs;
   }
 
-  onNewBlock = async (newBlock: Block): Promise<void> => {
+  onNewBlock = async (newBlock: Block): Promise<string | void> => {
+    await this.createInitialCheckpoint();
     const mostRecentCheckpoint = await this.db.warpCheckpoints.getMostRecentCheckpoint();
     if (
       mostRecentCheckpoint &&
@@ -138,6 +139,8 @@ export class WarpController {
     const hash = await this.createAllCheckpoints(newBlock);
 
     this.augur.events.emit(SubscriptionEventName.WarpSyncHashUpdated, { hash})
+
+    return hash;
   };
 
   async createInitialCheckpoint() {

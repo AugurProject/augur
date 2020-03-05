@@ -1,5 +1,5 @@
 import { GnosisSafeState } from '@augurproject/gnosis-relay-api';
-import { SubscriptionEventName, NULL_ADDRESS } from '@augurproject/sdk';
+import { SubscriptionEventName } from '@augurproject/sdk';
 // tslint:disable-next-line:import-blacklist
 import { CalculateGnosisSafeAddressParams } from '@augurproject/sdk/build/api/Gnosis';
 import {
@@ -14,7 +14,7 @@ import { makeProvider, MockGnosisRelayAPI } from '../../libs';
 import { TransactionStatus } from 'contract-dependencies-ethers';
 import { formatBytes32String } from 'ethers/utils';
 import { TransactionReceipt } from 'ethers/providers';
-import BigNumber from "bignumber.js";
+import BigNumber from 'bignumber.js';
 
 describe('Gnosis :: ', () => {
   let john: TestContractAPI;
@@ -34,7 +34,7 @@ describe('Gnosis :: ', () => {
     john = await TestContractAPI.userWrapper(
       ACCOUNTS[0],
       providerFork,
-      seed.addresses,
+      providerFork.getConfig(),
       undefined,
       mockGnosisRelay
     );

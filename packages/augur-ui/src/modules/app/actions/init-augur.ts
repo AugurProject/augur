@@ -8,7 +8,6 @@ import { updateUniverse } from 'modules/universe/actions/update-universe';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import logError from 'utils/log-error';
-import networkConfig from 'config/network.json';
 import { JsonRpcProvider, Web3Provider } from 'ethers/providers';
 import { isEmpty } from 'utils/is-empty';
 import {
@@ -23,7 +22,7 @@ import { windowRef } from 'utils/window-ref';
 import { AppState } from 'store';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { EnvObject, NodeStyleCallback, WindowApp } from 'modules/types';
+import { NodeStyleCallback, WindowApp } from 'modules/types';
 import { augurSdk } from 'services/augursdk';
 import { listenForStartUpEvents } from 'modules/events/actions/listen-to-updates';
 import { loginWithInjectedWeb3 } from 'modules/auth/actions/login-with-injected-web3';
@@ -43,8 +42,9 @@ import { getLoggedInUserFromLocalStorage } from 'services/storage/localStorage';
 import { getFingerprint } from 'utils/get-fingerprint';
 import { tryToPersistStorage } from 'utils/storage-manager';
 import Torus from '@toruslabs/torus-embed';
-import { isDevNetworkId } from '@augurproject/artifacts/src';
+import { isDevNetworkId, SDKConfiguration } from '@augurproject/artifacts';
 import { getNetwork } from 'utils/get-network-name';
+import { buildConfig } from '@augurproject/artifacts';
 
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
 
@@ -119,8 +119,8 @@ function pollForNetwork(
 
 export function connectAugur(
   history: History,
-  env: any,
-  isInitialConnection: boolean = false,
+  config: SDKConfiguration,
+  isInitialConnection = false,
   callback: NodeStyleCallback = logError
 ) {
   return async (
@@ -128,7 +128,7 @@ export function connectAugur(
     getState: () => AppState
   ) => {
     const { modal, loginAccount } = getState();
-    let windowApp = windowRef as WindowApp;
+    const windowApp = windowRef as WindowApp;
 
     const loggedInUser = getLoggedInUserFromLocalStorage();
     const loggedInAccount = loggedInUser && loggedInUser.address || null;
@@ -172,12 +172,12 @@ export function connectAugur(
     }
 
     let provider = null;
-    let networkId = env['networkId'];
+    const networkId = config.networkId;
 
-    if (env['ethereum'].http) {
+    if (config.ethereum?.http) {
       // Use node provided in the ethereum_node_http param
       try {
-        provider = new JsonRpcProvider(env['ethereum'].http);
+        provider = new JsonRpcProvider(config.ethereum.http);
       } catch(error) {
         dispatch(
           updateModal({
@@ -211,18 +211,18 @@ export function connectAugur(
     }
     else {
       // In DEV, use local ethereum node
-      provider = new JsonRpcProvider(env['ethereum'].http);
+      provider = new JsonRpcProvider(config.ethereum.http);
     }
 
     let sdk: Augur<Provider> = null;
     try {
-      sdk = await augurSdk.makeClient(provider, env);
+      sdk = await augurSdk.makeClient(provider, config);
     } catch (e) {
       console.error(e);
       return callback('SDK could not be created', null);
     }
 
-    let universeId = env.universe || sdk.contracts.universe.address;
+    let universeId = config.addresses?.Universe || sdk.contracts.universe.address;
     if (
       windowApp.localStorage &&
       windowApp.localStorage.getItem &&
@@ -281,30 +281,28 @@ export function initAugur(
     dispatch: ThunkDispatch<void, any, Action>,
     getState: () => AppState
   ) => {
-    const env: EnvObject = networkConfig[`${process.env.ETHEREUM_NETWORK}`];
+    // const config: SDKConfiguration = environments[`${process.env.ETHEREUM_NETWORK}`];
+    const config = buildConfig(process.env.ETHEREUM_NETWORK || 'local');
 
-    // TODO: Make this flag a part of the `ethereum` key
-    env.useWeb3Transport = useWeb3Transport;
+    config.ethereum.useWeb3Transport = useWeb3Transport;
 
     if (ethereumNodeHttp) {
-      env['ethereum'].http = ethereumNodeHttp;
+      config.ethereum.http = ethereumNodeHttp;
     }
 
     if (sdkEndpoint) {
-      env['sdk'] = {
-        http: sdkEndpoint
-      };
+      config.sdk.ws = sdkEndpoint;
     }
 
     console.log(
-      "******** CONFIGURATION ***********\n" +
-      JSON.stringify(env, null, 2) +
-      "\n**********************************"
+      '******** CONFIGURATION ***********\n' +
+      JSON.stringify(config, null, 2) +
+      '\n**********************************'
     );
     // cache fingerprint
     getFingerprint();
-    dispatch(updateEnv(env));
+    dispatch(updateEnv(config));
     tryToPersistStorage();
-    connectAugur(history, env, true, callback)(dispatch, getState);
+    connectAugur(history, config, true, callback)(dispatch, getState);
   };
 }

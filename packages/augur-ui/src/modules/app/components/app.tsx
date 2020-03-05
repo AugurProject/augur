@@ -38,7 +38,6 @@ import {
   Universe,
   Blockchain,
   LoginAccount,
-  EnvObject,
   Notification,
   AccountBalances,
 } from 'modules/types';
@@ -49,11 +48,12 @@ import makePath from 'modules/routes/helpers/make-path';
 import { ExternalLinkText } from 'modules/common/buttons';
 import { HelmetTag } from 'modules/seo/helmet-tag';
 import { APP_HEAD_TAGS } from 'modules/seo/helmet-configs';
+import { SDKConfiguration } from '@augurproject/artifacts';
 
 interface AppProps {
   notifications: Notification[];
   blockchain: Blockchain;
-  env: EnvObject;
+  config: SDKConfiguration;
   history: History;
   initAugur: Function;
   isLogged: boolean;
@@ -91,6 +91,7 @@ interface AppProps {
   migrateV1Rep: Function;
   walletBalances: AccountBalances;
   saveAffilateAddress: Function;
+  showMigrateRepButton: boolean;
 }
 
 export default class AppView extends Component<AppProps> {
@@ -370,6 +371,7 @@ export default class AppView extends Component<AppProps> {
       isHelpMenuOpen,
       updateHelpMenuState,
       notifications,
+      showMigrateRepButton,
     } = this.props;
     this.sideNavMenuData[1].showAlert =
       notifications.filter(item => item.isNew).length > 0;
@@ -378,7 +380,6 @@ export default class AppView extends Component<AppProps> {
     const onTradingTutorial =
       parseQuery(location.search)[MARKET_ID_PARAM_NAME] === TRADING_TUTORIAL;
 
-    const showMigrateRepButton = walletBalances.legacyRep > 0 || walletBalances.legacyRepNonSafe > 0;
     return (
       <main>
         <HelmetTag {...APP_HEAD_TAGS} />

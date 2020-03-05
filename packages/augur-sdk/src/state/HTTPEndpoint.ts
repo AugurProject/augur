@@ -6,9 +6,10 @@ import * as https from 'https';
 import * as http from 'http';
 import { AddressFormatReviver } from './AddressFormatReviver';
 import { API } from './getter/API';
-import { EndpointSettings, JsonRpcRequest } from './getter/types';
+import { JsonRpcRequest } from './getter/types';
 import { JsonRpcErrorCode, MakeJsonRpcError } from './MakeJsonRpcError';
 import { MakeJsonRpcResponse } from './MakeJsonRpcResponse';
+import { SDKConfiguration } from '@augurproject/artifacts';
 
 export function createApp(api: API): express.Application {
   const app = express();
@@ -43,19 +44,19 @@ export function createApp(api: API): express.Application {
   return app;
 }
 
-export function runHttpServer(app: express.Application, endpointSettings: EndpointSettings): http.Server {
-  const { httpPort: port } = endpointSettings;
+export function runHttpServer(app: express.Application, config: SDKConfiguration): http.Server {
+  const { httpPort: port } = config.server;
   return app.listen(port, () => {
     console.log(`HTTP Listening on ${port}`);
   });
 }
 
-export function runHttpsServer(app: express.Application, endpointSettings: EndpointSettings): https.Server {
+export function runHttpsServer(app: express.Application, config: SDKConfiguration): https.Server {
   const {
     certificateFile: cert,
     certificateKeyFile: key,
     httpsPort: port,
-  } = endpointSettings;
+  } = config.server;
 
   return https.createServer({cert, key}, app).listen(port, () => {
     console.log(`HTTPS listening on ${port}`);

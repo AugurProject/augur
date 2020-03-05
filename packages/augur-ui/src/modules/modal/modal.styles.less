@@ -344,19 +344,15 @@ div.ButtonsRow:last-of-type {
 }
 
 .FundsHelp {
-  > span {
-    display: flex;
-  }
-
-  > span:first-of-type {
+  > p {
     .text-12-bold;
 
     color: @color-primary-text;
     margin: 50px 0 @size-8;
   }
 
-  > span:nth-of-type(2) {
-    .text-10;
+  > div  {
+    .text-12;
 
     color: @color-secondary-text;
     line-height: 140%;
@@ -365,19 +361,31 @@ div.ButtonsRow:last-of-type {
       width: @size-16;
       height: @size-16;
       margin: 0 @size-2;
-    }
-  }
 
-  @media @breakpoint-mobile {
-    flex-direction: column;
-    justify-content: flex-end;
-    display: flex;
+      > span svg {
+        height: @size-12;
+        transform: translateY(@size-2);
+        width: @size-12;
+      }
+    }
 
     > button {
-      justify-content: flex-start;
-      margin: @size-16 0;
-      width: fit-content;
+      .text-10-bold;
+
+      background: none;
+      border: none;
+      padding: 0 0 0 @size-2;
+
+      @media @breakpoint-mobile {
+        padding: 0;
+      }
+
+      > svg {
+        height: @size-10;
+        width: @size-10;
+      }
     }
+
   }
 }
 
@@ -489,7 +497,7 @@ div.ButtonsRow:last-of-type {
       }
 
       > h3 {
-        .mono-11-bold;
+        .mono-10-bold;
 
         color: @color-primary-text;
         text-transform: uppercase;
@@ -641,12 +649,26 @@ div.ButtonsRow:last-of-type {
     margin: @size-4 0 @size-24 0;
 
     svg {
-      transform: translateY(@size-4);
+      height: @size-12;
+      transform: translateY(2px);
+      width: @size-12;
     }
   }
 
+  > a > button {
+    margin-top: @size-8;
+  }
+
   > button:last-of-type {
-    margin: @size-16 0 0 0;
+    .text-10-bold;
+
+    background: none;
+    border: none;
+
+    > svg {
+      height: @size-10;
+      width: @size-10;
+    }
   }
 }
 
@@ -656,7 +678,21 @@ div.ButtonsRow:last-of-type {
   }
 
   > ol svg {
-    transform: translateY(@size-3);
+    height: @size-12;
+    transform: translateY(2px);
+    width: @size-12;
+  }
+
+  > button:last-of-type {
+    .text-10-bold;
+
+    background: none;
+    border: none;
+
+    > svg {
+      height: @size-10;
+      width: @size-10;
+    }
   }
 }
 
@@ -2599,24 +2635,24 @@ div.ButtonsRow:last-of-type {
   flex-flow: row nowrap;
   justify-content: space-between;
   line-height: @size-14;
-  margin: @size-8 0 @size-18 0;
+  margin: @size-8 0;
   padding: @size-12 @size-9;
   padding-right: 0;
   width: fit-content;
   position: relative;
 
   > div {
+    font-size: @size-12;
     margin-right: @size-12;
+    max-width: 153px;
     word-break: break-all;
-    max-width: 125px;
   }
 
   > button {
-    .mono-10;
-
     align-items: center;
     color: @color-inactive-text;
     display: flex;
+    font-size: @size-12;
     margin-left: @size-8;
     margin-right: @size-12;
     padding: @size-6;

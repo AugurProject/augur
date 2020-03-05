@@ -4,26 +4,34 @@ import { BigNumber } from 'bignumber.js';
 
 import { ACCOUNTS } from '../constants';
 import { ContractAPI } from './contract-api';
-import { extractSeed } from './ganache';
+import { extractSeed, Seed } from './ganache';
 import { makeProviderWithDB } from './LocalAugur';
 import { stringTo32ByteHex } from './Utils';
+import { SDKConfiguration } from '@augurproject/artifacts';
 
 const outcome0 = new BigNumber(0);
 const outcome1 = new BigNumber(1);
 
-export async function generateWarpSyncTestData(seed) {
+export async function generateWarpSyncTestData(config: SDKConfiguration, seed: Seed) {
+  const metadata = {};
+
   const [db, provider] = await makeProviderWithDB(seed, ACCOUNTS);
+
+  metadata['checkpoint1_start'] = 0;
 
   const john = await ContractAPI.userWrapper(
     ACCOUNTS[0],
     provider,
-    seed.addresses
+    config
   );
   const mary = await ContractAPI.userWrapper(
     ACCOUNTS[1],
     provider,
-    seed.addresses
+    config
   );
+
+  await john.faucet(new BigNumber(1e18)); // faucet enough cash for the various fill orders
+  await mary.faucet(new BigNumber(1e18)); // faucet enough cash for the various fill orders
 
   await john.approveCentralAuthority();
   await mary.approveCentralAuthority();
@@ -39,7 +47,6 @@ export async function generateWarpSyncTestData(seed) {
   // Move timestamp ahead 12 hours.
   await provider.provider.send('evm_increaseTime', [SECONDS_IN_A_DAY.toNumber() / 2]);
 
-
   // Place orders
   const numShares = new BigNumber(10000000000000);
   const price = new BigNumber(22);
@@ -54,7 +61,6 @@ export async function generateWarpSyncTestData(seed) {
     stringTo32ByteHex('42')
   );
 
-
   await john.placeOrder(
     yesNoMarket.address,
     ORDER_TYPES.BID,
@@ -65,6 +71,8 @@ export async function generateWarpSyncTestData(seed) {
     stringTo32ByteHex(''),
     stringTo32ByteHex('42')
   );
+
+  metadata['checkpoint1_end'] = await provider.provider.getBlockNumber();
 
   // Move timestamp ahead 12 hours.
   await provider.provider.send('evm_increaseTime', [SECONDS_IN_A_DAY.toNumber() / 2]);
@@ -79,6 +87,8 @@ export async function generateWarpSyncTestData(seed) {
     stringTo32ByteHex(''),
     stringTo32ByteHex('42')
   );
+  metadata['checkpoint2_start'] = await provider.provider.getBlockNumber();
+
   await john.placeOrder(
     categoricalMarket.address,
     ORDER_TYPES.BID,
@@ -91,8 +101,6 @@ export async function generateWarpSyncTestData(seed) {
   );
 
   // Fill orders
-  await john.faucet(new BigNumber(1e18)); // faucet enough cash for the various fill orders
-  await mary.faucet(new BigNumber(1e18)); // faucet enough cash for the various fill orders
   const yesNoOrderId0 = await john.getBestOrderId(
     ORDER_TYPES.BID,
     yesNoMarket.address,
@@ -125,6 +133,8 @@ export async function generateWarpSyncTestData(seed) {
     '42'
   );
 
+  metadata['checkpoint2_end'] = await provider.provider.getBlockNumber();
+
   // Move timestamp ahead 12 hours.
   await provider.provider.send('evm_increaseTime', [SECONDS_IN_A_DAY.toNumber() / 2]);
   await mary.fillOrder(
@@ -132,6 +142,8 @@ export async function generateWarpSyncTestData(seed) {
     numShares.div(10).multipliedBy(3),
     '43'
   );
+
+  metadata['checkpoint3_start'] = await provider.provider.getBlockNumber();
 
   // Move timestamp ahead 12 hours.
   await provider.provider.send('evm_increaseTime', [SECONDS_IN_A_DAY.toNumber() / 2]);
@@ -141,6 +153,8 @@ export async function generateWarpSyncTestData(seed) {
     '43'
   );
 
+  metadata['checkpoint3_end'] = await provider.provider.getBlockNumber()
+
   // Move timestamp ahead 12 hours.
   await provider.provider.send('evm_increaseTime', [SECONDS_IN_A_DAY.toNumber() / 2]);
   await mary.fillOrder(
@@ -149,5 +163,10 @@ export async function generateWarpSyncTestData(seed) {
     '43'
   );
 
-  return extractSeed(db);
+  metadata['checkpoint4_start'] = await provider.provider.getBlockNumber();
+
+  return {
+    data: await extractSeed(db),
+    metadata,
+  };
 }

@@ -9,16 +9,15 @@ import {
   hashContracts
 } from '../libs/ganache';
 import { generateWarpSyncTestData } from '../libs/generate-warp-sync-test-data';
-import { FlashArguments, FlashSession } from "./flash";
+import { FlashArguments, FlashSession } from './flash';
 
 import { ethers } from 'ethers';
 import * as ganache from 'ganache-core';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
-import { setAddresses, NetworkId } from '@augurproject/artifacts';
+import { updateConfig, NetworkId } from '@augurproject/artifacts';
 import * as fs from 'async-file';
 import { LogReplayer } from './replay-logs';
 import { LogReplayerV1 } from './replay-logs-v1';
-import { NetworkConfiguration } from '@augurproject/core';
 
 export const defaultSeedPath = '/tmp/seed.json';
 
@@ -35,7 +34,7 @@ export function addGanacheScripts(flash: FlashSession) {
   };
 
   flash.createSeed = async function(this: FlashSession) {
-    return createSeed(this.provider, this.ganacheDb, this.contractAddresses);
+    return createSeed(this.provider, this.ganacheDb, this.config.addresses);
   };
 
   flash.addScript({
@@ -62,7 +61,7 @@ export function addGanacheScripts(flash: FlashSession) {
         this.ganacheServer = await makeGanacheServer(this.ganacheDb, this.accounts);
         this.ganacheProvider = new ethers.providers.Web3Provider(this.ganacheServer.ganacheProvider);
         this.ganacheServer.listen(this.ganachePort, () => null);
-        this.network = NetworkConfiguration.create('environment');
+        this.network = 'local';
         this.log(`Server started on port ${this.ganachePort}`);
       }
 
@@ -107,19 +106,20 @@ export function addGanacheScripts(flash: FlashSession) {
       if (this.noProvider()) return;
       if (this.noGanache()) return;
 
-      const name = args.name as string || 'default';
       const seed = await this.createSeed() as Seed;
+      const warpSync = await generateWarpSyncTestData(this.config, seed);
 
-      const WarpSync = await generateWarpSyncTestData(seed);
-
-      if (args.save as boolean) {
+      if (Boolean(args.save)) {
         const filepath = args.filepath as string || defaultSeedPath;
         await writeSeedFile({
           addresses: seed.addresses,
           contractsHash: seed.contractsHash,
           seeds: {
-            'default': seed.data,
-            WarpSync
+            'default': {
+              data: seed.data,
+              metadata: {},
+            },
+            warpSync
           }
         }, filepath);
       }
@@ -192,7 +192,7 @@ export function addGanacheScripts(flash: FlashSession) {
       },
       {
         name: 'write-artifacts',
-        description: "Overwrite addresses.json to include seed file's addresses.",
+        description: "Overwrite environments/local.json to include seed file's addresses.",
         flag: true,
       },
     ],
@@ -219,7 +219,7 @@ export function addGanacheScripts(flash: FlashSession) {
 
       if (writeArtifacts) {
         const networkId = await this.provider.getNetworkId() as NetworkId;
-        await setAddresses(networkId, seed.addresses);
+        await updateConfig('local', { networkId, addresses: seed.addresses});
       }
     },
   });
@@ -252,14 +252,14 @@ export function addGanacheScripts(flash: FlashSession) {
       },
       {
         name: 'write-artifacts',
-        description: "Overwrite addresses.json to include seed file's addresses.",
+        description: "Create/overwrite environments/local.json to include seed file's addresses.",
         flag: true,
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const name = args.name as string || 'default';
       const filepath = args.filepath as string || defaultSeedPath;
-      const writeArtifacts = args.writeArtifacts as boolean;
+      const writeArtifacts = Boolean(args.writeArtifacts);
 
       if (await fs.exists(filepath)) {
         const seed: Seed = await loadSeedFile(filepath);
@@ -271,7 +271,7 @@ export function addGanacheScripts(flash: FlashSession) {
 
       console.log('Creating seed file.');
       await this.call('ganache', { internal: true });
-      await this.call('deploy', { writeArtifacts: writeArtifacts, timeControlled: true });
+      await this.call('deploy', { writeArtifacts, timeControlled: true });
       await this.call('make-seed', { name, filepath, save: true });
     },
   });

@@ -4,8 +4,6 @@ import {
   convertDisplayPriceToOnChainPrice,
   numTicksToTickSize,
 } from '@augurproject/sdk';
-import { DB } from '@augurproject/sdk/build/state/db/DB';
-import { API } from '@augurproject/sdk/build/state/getter/API';
 import {
   ACCOUNTS,
   ContractAPI,
@@ -17,7 +15,7 @@ import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersPro
 import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
 import { BigNumber } from 'bignumber.js';
 import * as _ from 'lodash';
-import { makeDbMock, makeProvider } from '../../../../libs';
+import { makeProvider } from '../../../../libs';
 
 export interface TradeData {
   direction: number;
@@ -83,16 +81,16 @@ export async function _beforeEach(allState: AllState): Promise<SomeState> {
   const { baseProvider } = allState;
 
   const provider = await baseProvider.fork();
-  const addresses = baseProvider.getContractAddresses();
+  const config = baseProvider.getConfig();
   const john = await TestContractAPI.userWrapper(
     ACCOUNTS[0],
     provider,
-    addresses
+    config
   );
   const mary = await TestContractAPI.userWrapper(
     ACCOUNTS[1],
     provider,
-    addresses
+    config
   );
   await john.approveCentralAuthority();
   await mary.approveCentralAuthority();

@@ -16,14 +16,14 @@ beforeAll(async () => {
   john = await TestContractAPI.userWrapper(
     ACCOUNTS[0],
     provider,
-    seed.addresses
+    provider.getConfig()
   );
   await john.approveCentralAuthority();
 });
 
 test('TransactionStatus :: transaction status updates', async () => {
-  const transactions: Array<TransactionMetadata> = [];
-  const statuses: Array<TransactionStatus> = [];
+  const transactions: TransactionMetadata[] = [];
+  const statuses: TransactionStatus[] = [];
   const hashes: Array<string | undefined> = [];
   john.augur.registerTransactionStatusCallback(
     'Test',
