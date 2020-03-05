@@ -1196,6 +1196,15 @@ export const DISPUTING_GUIDE = {
     paragraphs: [
       'Users who correctly staked on the Winning Outcome get to take a share of the REP that was staked on the incorrect outcome(s). This means you can potentially earn 40% ROI by disputing (i.e staking) against liars and reporting the truth. This keeps the Augur oracle secure and ultimately the Augur platform working how it should.'
     ]
+  }, {
+    header: 'Pre-filled Stake',
+    paragraphs: [
+      'Users can add extra support for a Tentative Winning Outcome by pre-staking REP that will be used to dispute in that outcome’s favor in the event that is no longer the Tentative Winning Outcome. Pre-filling can help accelerate a market’s resolution.',
+      'Pre-filled Stake yields ROI if and only if: ',
+      '1) the market resolves to the staked-on outcome and',
+      '2) the pre-stake ends up being used to dispute in that outcome’s favor',
+      'If the market resolves to the staked-on outcome but the pre-stake is not used, you will receive back the pre-stake but no ROI. If the market does not resolve to the staked-on outcome, you will lose the pre-stake.'
+    ]
   }],
   learnMoreButtonText: 'Learn more about disputing',
   closeButtonText: 'Close'
