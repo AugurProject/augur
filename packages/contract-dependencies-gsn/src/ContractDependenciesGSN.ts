@@ -138,15 +138,9 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
       const receipt = await this.sendTransaction(tx, txMetadata);
       hash = receipt.transactionHash;
       let status = receipt.status === 1 ? TransactionStatus.SUCCESS : TransactionStatus.FAILURE;
-      if (this.useRelay && receipt.status === 1) {
-        // Even though the TX was a "success" the actual delegated call may have failed so we check that status here.
-        const transactionRelayedLog = this.relayHub.interface.parseLog(receipt.logs.pop());
-        const callStatus = new BigNumber(transactionRelayedLog.values.status)
-        if (callStatus.gt(0)) {
-          status = TransactionStatus.FAILURE;
-          const reason = GSN_RELAY_CALL_STATUS[callStatus.toNumber()];
-          console.error(`TX ${txMetadata.name} with hash ${hash} failed. Error Reason: ${reason}`)
-        }
+      if (receipt.status === 1) {
+        // Even though the TX was a "success" the actual delegated call may have failed so we check that status here by parsing relay hub and wallet registry logs
+        status = this.parseTransactionLogs(receipt, txMetadata.name, hash);
       }
       this.onTransactionStatusChanged(txMetadata, status, hash);
       // ethers has `status` on the receipt as optional, even though it isn't and never will be undefined if using a modern network (which this is designed for)
@@ -157,6 +151,27 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
     } finally {
       delete this.transactionDataMetaData[txMetadataKey];
     }
+  }
+
+  parseTransactionLogs(txReceipt: ethers.providers.TransactionReceipt, txName: string, txHash: string): TransactionStatus {
+    if (this.useRelay) {
+      const transactionRelayedLog = this.relayHub.interface.parseLog(txReceipt.logs.pop());
+      const callStatus = new BigNumber(transactionRelayedLog.values.status)
+      if (callStatus.gt(0)) {
+        const reason = GSN_RELAY_CALL_STATUS[callStatus.toNumber()];
+        console.error(`TX ${txName} with hash ${txHash} failed in Relay Machinery. Error Reason: ${reason}`)
+        return TransactionStatus.FAILURE;
+      }
+    }
+    if (this.useWallet) {
+      const executeTransactionStatusLog = this.augurWalletRegistry.interface.parseLog(txReceipt.logs.pop());
+      const transactionSuccess = executeTransactionStatusLog.values.success;
+      if (!transactionSuccess) {
+        console.error(`TX ${txName} with hash ${txHash} failed the transaction execution.`)
+        return TransactionStatus.FAILURE;
+      }
+    }
+    return TransactionStatus.SUCCESS;
   }
 
   async validateAndSign(tx: Transaction<ethers.utils.BigNumber>): Promise<PreparedTransaction> {
