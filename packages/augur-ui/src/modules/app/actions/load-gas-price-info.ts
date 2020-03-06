@@ -43,7 +43,7 @@ async function getGasPriceRanges(networkId: string, callback: DataCallback) {
     // Add 1 GWEI to all of them (b/c we use a lot of gas).
     const relayerGasStationResults = {
       safeLow: ++formatGasCostGwei(relayerGasStation.safeLow, {}).value,
-      average: ++formatGasCostGwei(relayerGasStation.standard, {}).value,
+      average: ++formatGasCostGwei(relayerGasStation.standard || relayerGasStation.average, {}).value,
       fast: ++formatGasCostGwei(relayerGasStation.fast, {}).value,
     };
     callback(relayerGasStationResults);

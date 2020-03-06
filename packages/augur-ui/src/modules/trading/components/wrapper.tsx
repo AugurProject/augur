@@ -50,7 +50,7 @@ interface WrapperProps {
   updateTradeShares: Function;
   disclaimerSeen: boolean;
   gasPrice: number;
-  Gsn_ENABLED: boolean;
+  GsnEnabled: boolean;
   hasFunds: boolean;
   hasHistory: boolean;
   isLogged: boolean;
@@ -393,7 +393,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       initialLiquidity,
       tradingTutorial,
       tutorialNext,
-      Gsn_ENABLED,
+      GsnEnabled,
       hasFunds,
       isLogged,
       restoredAccount,
@@ -569,7 +569,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               outcomeName={selectedOutcome.description}
               scalarDenomination={market.scalarDenomination}
               tradingTutorial={tradingTutorial}
-              Gsn_ENABLED={Gsn_ENABLED}
+              GsnEnabled={GsnEnabled}
               gsnUnavailable={gsnUnavailable}
             />
           )}

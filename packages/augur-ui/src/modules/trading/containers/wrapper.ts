@@ -39,9 +39,9 @@ const mapStateToProps = (state: AppState, ownProps) => {
   const marketId = ownProps.market.id;
   const hasHistory = !!accountPositions[marketId] || !!userOpenOrders[marketId];
   const {
-    gsnEnabled: GSN_ENABLED,
+    gsnEnabled: GsnEnabled,
   } = appStatus;
-  const hasFunds = GSN_ENABLED
+  const hasFunds = GsnEnabled
     ? !!loginAccount.balances.dai
     : !!loginAccount.balances.eth && !!loginAccount.balances.dai;
 
@@ -56,7 +56,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
     hasFunds,
     isLogged: authStatus.isLogged,
     restoredAccount: authStatus.restoredAccount,
-    GSN_ENABLED,
+    GsnEnabled,
     currentTimestamp: blockchain.currentAugurTimestamp,
     availableDai,
     gsnUnavailable: isGSNUnavailable(state),

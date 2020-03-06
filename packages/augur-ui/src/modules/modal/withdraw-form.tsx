@@ -33,7 +33,7 @@ interface WithdrawFormProps {
     dai: number;
   };
   account: string;
-  Gsn_ENABLED: boolean;
+  GsnEnabled: boolean;
   ethToDaiRate: BigNumber;
   gasPrice: number;
 }
@@ -92,10 +92,10 @@ export class WithdrawForm extends Component<
   };
 
   handleMax = () => {
-    const { balances, fallBackGasCosts, Gsn_ENABLED, gasPrice } = this.props;
+    const { balances, fallBackGasCosts, GsnEnabled, gasPrice } = this.props;
     const { currency, relayerGasCosts } = this.state;
 
-    const gasEstimate = Gsn_ENABLED
+    const gasEstimate = GsnEnabled
     ? formatGasCostToEther(
         relayerGasCosts,
         { decimalsRounded: 4 },
@@ -115,7 +115,7 @@ export class WithdrawForm extends Component<
     const {
       balances,
       fallBackGasCosts,
-      Gsn_ENABLED,
+      GsnEnabled,
       ethToDaiRate,
       gasPrice,
     } = this.props;
@@ -128,7 +128,7 @@ export class WithdrawForm extends Component<
     const availableDai = createBigNumber(balances.dai);
     let amountMinusGas = ZERO;
 
-    if (Gsn_ENABLED) {
+    if (GsnEnabled) {
       const relayerGasCostsETH = formatGasCostToEther(
         relayerGasCosts,
         { decimalsRounded: 4 },
@@ -188,11 +188,11 @@ export class WithdrawForm extends Component<
       updatedErrors.amount = 'Quantity must be greater than zero.';
     }
 
-    if (Gsn_ENABLED && amountMinusGas.lt(ZERO)) {
+    if (GsnEnabled && amountMinusGas.lt(ZERO)) {
       updatedErrors.amount = 'Not enough DAI available to pay gas cost.';
     }
 
-    if (!Gsn_ENABLED && amountMinusGas.lt(ZERO)) {
+    if (!GsnEnabled && amountMinusGas.lt(ZERO)) {
       updatedErrors.amount = 'Not enough ETH available to pay gas cost.';
     }
 
@@ -238,7 +238,7 @@ export class WithdrawForm extends Component<
       transferFunds,
       balances,
       closeAction,
-      Gsn_ENABLED,
+      GsnEnabled,
       ethToDaiRate,
       gasPrice,
     } = this.props;
@@ -255,7 +255,7 @@ export class WithdrawForm extends Component<
       formattedAmount = formatRep(amount || 0);
     }
 
-    const gasEstimate = Gsn_ENABLED
+    const gasEstimate = GsnEnabled
       ? formatGasCostToEther(
           relayerGasCosts,
           { decimalsRounded: 4 },
@@ -282,7 +282,7 @@ export class WithdrawForm extends Component<
       },
       {
         label: 'Transaction Fee',
-        value: Gsn_ENABLED
+        value: GsnEnabled
           ? displayGasInDai(gasEstimate, ethToDaiRate)
           : gasEstimate,
       },

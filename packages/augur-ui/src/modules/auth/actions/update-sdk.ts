@@ -7,8 +7,8 @@ import { Action } from 'redux';
 import { toChecksumAddress } from 'ethereumjs-util';
 import {
   updateAppStatus,
-  GSN_ENABLED,
   Ox_ENABLED,
+  GSN_ENABLED,
 } from 'modules/app/actions/update-app-status';
 import { loadAccountDataFromLocalStorage } from './load-account-data-from-local-storage';
 import { IS_LOGGED, updateAuthStatus } from 'modules/auth/actions/auth-status';

@@ -18,10 +18,10 @@ import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
 
 const mapStateToProps = (state: AppState) => {
   const networkId = getNetworkId();
-  const GSN_ENABLED = state.appStatus.gsnEnabled;
+  const GsnEnabled = state.appStatus.gsnEnabled;
   const gsnUnavailable = isGSNUnavailable(state);
 
-  const showFaucets = GSN_ENABLED
+  const showFaucets = GsnEnabled
     ? networkId !== NETWORK_IDS.Mainnet && !gsnUnavailable
     : networkId !== NETWORK_IDS.Mainnet;
 
