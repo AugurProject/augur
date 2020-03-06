@@ -44,8 +44,7 @@ const ADD_PENDING_QUEUE_METHOD_CALLS = [
   MIGRATE_FROM_LEG_REP_TOKEN,
   REDEEMSTAKE,
   BATCHCANCELORDERS,
-  TRADINGPROCEEDSCLAIMED,
-  CLAIMMARKETSPROCEEDS
+  TRADINGPROCEEDSCLAIMED
 ];
 export const getRelayerDownErrorMessage = (walletType, hasEth) => {
   const errorMessage = 'We\'re currently experiencing a technical difficulty processing transaction fees in Dai. If possible please come back later to process this transaction';
@@ -132,6 +131,15 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
     }
 
     switch (methodCall) {
+      case CLAIMMARKETSPROCEEDS: {
+        const params = transaction.params;
+        if (params._markets.length === 1) {
+          dispatch(addPendingData(params._markets[0], CLAIMMARKETSPROCEEDS, eventName, hash, {...transaction}));
+        } else {
+          dispatch(addUpdatePendingTransaction(methodCall, eventName, blockchain.currentBlockNumber, hash, { ...transaction }));
+        }
+        break;
+      }
       case BUYPARTICIPATIONTOKENS: {
         if (eventName === TXEventName.Success) {
           const { universe } = getState();
