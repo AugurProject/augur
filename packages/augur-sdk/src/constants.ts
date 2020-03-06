@@ -39,7 +39,6 @@ export enum SubscriptionEventName {
   ProfitLossChanged = "ProfitLossChanged",
   ReportingParticipantDisavowed = "ReportingParticipantDisavowed",
   SDKReady = "SDKReady",
-  WalletStatus = "WalletStatus",
   TimestampSet = "TimestampSet",
   TokenBalanceChanged = "TokenBalanceChanged",
   TokensBurned = "TokensBurned",

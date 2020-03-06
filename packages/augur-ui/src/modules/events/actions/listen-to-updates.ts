@@ -12,7 +12,6 @@ import {
   handleTxRelayerDown,
   handleTxFeeTooLow,
   handleSDKReadyEvent,
-  handleWalletStateUpdate,
   handleReportingStateChanged,
 } from 'modules/events/actions/log-handlers';
 import { wrapLogHandler } from 'modules/events/actions/wrap-log-handler';
@@ -41,9 +40,6 @@ const EVENTS = {
   ),
   [SubscriptionEventName.MarketsUpdated]: wrapLogHandler(
     handleMarketsUpdatedLog
-  ),
-  [SubscriptionEventName.WalletStatus]: wrapLogHandler(
-    handleWalletStateUpdate
   ),
   [SubscriptionEventName.ReportingStateChanged]: wrapLogHandler(
     handleReportingStateChanged

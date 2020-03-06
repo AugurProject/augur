@@ -82,5 +82,6 @@ export const createFundedGsnWallet = () => async (
 ) => {
   const { loginAccount } = getState();
   const { affiliate, address } = loginAccount;
+  // TODO call new method to create wallet
   augurSdk.getOrCreateWallet(address, affiliate);
 };

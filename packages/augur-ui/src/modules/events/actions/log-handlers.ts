@@ -61,10 +61,6 @@ import {
 import { loadUniverseForkingInfo } from 'modules/universe/actions/load-forking-info';
 import { loadUniverseDetails } from 'modules/universe/actions/load-universe-details';
 import { getCategoryStats } from 'modules/create-market/actions/get-category-stats';
-import {
-  WALLET_STATUS,
-  updateAppStatus,
-} from 'modules/app/actions/update-app-status';
 import { loadAnalytics } from 'modules/app/actions/analytics-management';
 import { marketCreationCreated, orderFilled } from 'services/analytics/helpers';
 import { updateModal } from 'modules/modal/actions/update-modal';
@@ -160,30 +156,6 @@ export const handleTxFeeTooLow = (txStatus: Events.TXStatus) => (
   console.log('TxFeeTooLow Transaction', txStatus.transaction.name);
   dispatch(addUpdateTransaction(txStatus));
   dispatch(updateModal({ type: MODAL_GAS_PRICE, feeTooLow: true }));
-};
-
-export const handleWalletStateUpdate = (response) => async(
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
-  const status = response.status;
-  if (response && status) {
-    dispatch(updateAppStatus(WALLET_STATUS, status));
-
-    if (status === 0) { // TODO XXX: Should have some error event for when no suitable relay can be found instead
-      const loginAccount = getState().loginAccount;
-      const hasEth = (await loginAccount.meta.signer.provider.getBalance(loginAccount.meta.signer._address)).gt(0);
-
-      dispatch(updateModal({
-        type: MODAL_ERROR,
-        error: getRelayerDownErrorMessage(loginAccount.meta.accountType, hasEth),
-        showDiscordLink: false,
-        showAddFundsHelp: !hasEth,
-        walletType: loginAccount.meta.accountType,
-        title: 'We\'re having trouble processing transactions',
-      }));
-    }
-  }
 };
 
 export const handleSDKReadyEvent = () => (

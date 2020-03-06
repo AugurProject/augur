@@ -34,7 +34,6 @@ import { updateLiqTransactionParamHash } from 'modules/orders/actions/liquidity-
 import { addAlert, updateAlert } from 'modules/alerts/actions/alerts';
 import { getDeconstructedMarketId } from 'modules/create-market/helpers/construct-market-params';
 import { updateModal } from 'modules/modal/actions/update-modal';
-import { updateAppStatus, WALLET_STATUS } from 'modules/app/actions/update-app-status';
 
 export const getRelayerDownErrorMessage = (walletType, hasEth) => {
   const errorMessage = 'We\'re currently experiencing a technical difficulty processing transaction fees in Dai. If possible please come back later to process this transaction';
