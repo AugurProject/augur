@@ -408,6 +408,9 @@ jobs:
           FAKE_TIME: false
     variables:
       YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
+      ZEROX_RPC_ENABLED: false
+      ZEROX_MESH_ENABLED: false
+      GNOSIS_ENABLED: false
     steps:
       - checkout: self
       - task: NodeTool@0

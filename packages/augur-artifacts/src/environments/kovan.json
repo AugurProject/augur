@@ -30,7 +30,9 @@
     },
     "mesh": {
       "verbosity": 1,
-      "enabled": true
+      "enabled": true,
+      "useBootstrapList": true,
+      "bootstrapList": []
     }
   },
   "uploadBlockNumber": 16622921,

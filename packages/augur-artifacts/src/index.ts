@@ -45,6 +45,7 @@ export interface SDKConfiguration {
     mesh?: {
       enabled: boolean,
       verbosity?: 0|1|2|3|4|5,
+      useBootstrapList?: boolean,
       bootstrapList?: string[]
     }
   },
@@ -195,10 +196,7 @@ export async function setEnvironmentConfig(env: string, config: SDKConfiguration
 
 export async function updateConfig(env: string, config: Partial<SDKConfiguration>): Promise<SDKConfiguration> {
   const original: Partial<SDKConfiguration> = await readConfig(env).then((c) => c || {}).catch(() => ({}));
-  const updated = {
-    ...original,
-    ...config
-  };
+  const updated = deepmerge(original, config);
   const valid = validConfigOrDie(updated);
   setEnvironmentConfig(env, valid);
   return valid;
@@ -247,21 +245,14 @@ export async function updateEnvironmentsConfig(): Promise<void> {
   })
 }
 
-async function readConfig(env: string): Promise<SDKConfiguration> {
+export async function readConfig(env: string): Promise<SDKConfiguration> {
   const filepath = path.join(__dirname, '../src/environments', `${env}.json`);
   if (await exists(filepath)) {
-    let config;
     try {
       const blob = await readFile(filepath, 'utf8');
-      config = JSON.parse(blob);
+      return JSON.parse(blob);
     } catch {
       throw Error(`Cannot parse config file ${filepath}`)
-    }
-
-    if (isValidConfig(config)) {
-      return config;
-    } else {
-      throw Error(`Bad config file at ${filepath}`)
     }
   } else {
     return null;
@@ -269,41 +260,46 @@ async function readConfig(env: string): Promise<SDKConfiguration> {
 }
 
 export function isValidConfig(suspect: Partial<SDKConfiguration>): suspect is SDKConfiguration {
-  if (typeof suspect.networkId === 'undefined') return false;
+  function fail(where: string): boolean {
+    console.error(`Bad config due to: ${where}`);
+    return false;
+  }
+
+  if (typeof suspect.networkId === 'undefined') return fail('suspect.networkId');
   if (suspect.deploy) {
-    if (typeof suspect.deploy.enableFaucets === 'undefined') return false;
-    if (typeof suspect.deploy.normalTime === 'undefined') return false;
-    if (typeof suspect.deploy.privateKey === 'undefined') return false;
-    if (typeof suspect.deploy.contractInputPath === 'undefined') return false;
-    if (typeof suspect.deploy.writeArtifacts === 'undefined') return false;
+    if (typeof suspect.deploy.enableFaucets === 'undefined') return fail('deploy.enableFaucets');
+    if (typeof suspect.deploy.normalTime === 'undefined') return fail('deploy.normalTime');
+    if (typeof suspect.deploy.privateKey === 'undefined') return fail('deploy.privateKey');
+    if (typeof suspect.deploy.contractInputPath === 'undefined') return fail('deploy.contractInputPath');
+    if (typeof suspect.deploy.writeArtifacts === 'undefined') return fail('deploy.writeArtifacts');
   }
   if (suspect.ethereum) {
-    if (typeof suspect.ethereum.rpcRetryCount === 'undefined') return false;
-    if (typeof suspect.ethereum.rpcRetryInterval === 'undefined') return false;
-    if (typeof suspect.ethereum.rpcConcurrency === 'undefined') return false;
+    if (typeof suspect.ethereum.rpcRetryCount === 'undefined') return fail('ethereum.rpcRetryCount');
+    if (typeof suspect.ethereum.rpcRetryInterval === 'undefined') return fail('ethereum.rpcRetryInterval');
+    if (typeof suspect.ethereum.rpcConcurrency === 'undefined') return fail('ethereum.rpcConcurrency');
   }
   if (suspect.sdk) {
-    if (typeof suspect.sdk.enabled === 'undefined') return false;
-    if (suspect.sdk.enabled && typeof suspect.sdk.ws === 'undefined') return false;
+    if (typeof suspect.sdk.enabled === 'undefined') return fail('sdk.enabled');
+    if (suspect.sdk.enabled && typeof suspect.sdk.ws === 'undefined') return fail('sdk.ws');
   }
-  if (suspect.gnosis && typeof suspect.gnosis.enabled === 'undefined') return false;
+  if (suspect.gnosis && typeof suspect.gnosis.enabled === 'undefined') return fail('gnosis.enabled');
   if (suspect.zeroX) {
     if (suspect.zeroX.rpc) {
-      if (typeof suspect.zeroX.rpc.enabled === 'undefined') return false;
+      if (typeof suspect.zeroX.rpc.enabled === 'undefined') return fail('zeroX.rpc.enabled');
     }
     if (suspect.zeroX.mesh) {
-      if (typeof suspect.zeroX.mesh.enabled === 'undefined') return false;
+      if (typeof suspect.zeroX.mesh.enabled === 'undefined') return fail('zeroX.mesh.enabled');
     }
   }
   if (suspect.server) {
-    if (typeof suspect.server.httpPort === 'undefined') return false;
-    if (typeof suspect.server.startHTTP === 'undefined') return false;
-    if (typeof suspect.server.httpsPort === 'undefined') return false;
-    if (typeof suspect.server.startHTTPS === 'undefined') return false;
-    if (typeof suspect.server.wsPort === 'undefined') return false;
-    if (typeof suspect.server.startWS === 'undefined') return false;
-    if (typeof suspect.server.wssPort === 'undefined') return false;
-    if (typeof suspect.server.startWSS === 'undefined') return false;
+    if (typeof suspect.server.httpPort === 'undefined') return fail('server.httpPort');
+    if (typeof suspect.server.startHTTP === 'undefined') return fail('server.startHTTP');
+    if (typeof suspect.server.httpsPort === 'undefined') return fail('server.httpsPort');
+    if (typeof suspect.server.startHTTPS === 'undefined') return fail('server.startHTTPS');
+    if (typeof suspect.server.wsPort === 'undefined') return fail('server.wsPort');
+    if (typeof suspect.server.startWS === 'undefined') return fail('server.startWS');
+    if (typeof suspect.server.wssPort === 'undefined') return fail('server.wssPort');
+    if (typeof suspect.server.startWSS === 'undefined') return fail('server.startWSS');
   }
   return true;
 }
@@ -330,7 +326,7 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
     writeArtifacts: true,
   },
   gnosis: {
-    enabled: false,
+    enabled: true,
     http: 'http://localhost:8888/api/',
     relayerAddress: '0x9d4c6d4b84cd046381923c9bc136d6ff1fe292d9'
   },
@@ -340,7 +336,12 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
       ws: 'ws://localhost:60557'
     },
     mesh: {
-      enabled: false,
+      useBootstrapList: true,
+      bootstrapList: [
+        '/dns4/localhost/tcp/60558/ipfs/16Uiu2HAmRMgvPQV2UYKXuuCnNaFLpc36PhLp2UKVcL1ePseVcz4y',
+        '/dns4/localhost/tcp/60559/ws/ipfs/16Uiu2HAmRMgvPQV2UYKXuuCnNaFLpc36PhLp2UKVcL1ePseVcz4y'
+      ],
+      enabled: true,
     }
   },
   server: {
@@ -357,8 +358,11 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
 };
 
 export function buildConfig(env: string, specified: RecursivePartial<SDKConfiguration> = {}): SDKConfiguration {
-  const existing = deepmerge(DEFAULT_SDK_CONFIGURATION, environments[env] || {});
-  return configFromEnvvars(deepmerge(existing, specified) as SDKConfiguration) as SDKConfiguration;
+  let config: Partial<SDKConfiguration> = deepmerge(DEFAULT_SDK_CONFIGURATION, environments[env] || {});
+  config = deepmerge(config, specified);
+  config = deepmerge(config, configFromEnvvars(config));
+  const valid = validConfigOrDie(config);
+  return valid;
 }
 
 export function configFromEnvvars(config?: Partial<SDKConfiguration>): Partial<SDKConfiguration> {
@@ -418,7 +422,7 @@ export function validConfigOrDie(config: Partial<SDKConfiguration>): SDKConfigur
 
 type RecursivePartial<T> = {
   [P in keyof T]?:
-  T[P] extends (infer U)[] ? Array<RecursivePartial<U>> :
+  T[P] extends Array<infer U> ? Array<RecursivePartial<U>> :
     T[P] extends object ? RecursivePartial<T[P]> :
       T[P];
 };

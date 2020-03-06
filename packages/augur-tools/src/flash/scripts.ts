@@ -8,13 +8,13 @@ import {
   NetworkId,
   updateEnvironmentsConfig,
   abiV1,
-  SDKConfiguration,
-  environments
+  environments,
+  buildConfig
 } from '@augurproject/artifacts';
 import { ContractInterfaces } from '@augurproject/core';
 import moment from 'moment';
 import { BigNumber } from 'bignumber.js';
-import { formatBytes32String } from 'ethers/utils';
+import { deepCopy, formatBytes32String } from "ethers/utils";
 import { ethers } from 'ethers';
 import {
   calculatePayoutNumeratorsArray,
@@ -39,10 +39,9 @@ import { OrderBookShaper, OrderBookConfig } from './orderbook-shaper';
 import { NumOutcomes } from '@augurproject/sdk/src/state/logs/types';
 import { flattenZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
 import { formatAddress, sleep, waitForSigint } from './util';
-import * as fs from 'fs';
 import { runWsServer, runWssServer } from '@augurproject/sdk/build/state/WebsocketEndpoint';
 import { createApp, runHttpServer, runHttpsServer } from '@augurproject/sdk/build/state/HTTPEndpoint';
-import { buildConfig } from "@augurproject/artifacts/build";
+import deepmerge from "deepmerge";
 
 export function addScripts(flash: FlashSession) {
   flash.addScript({
@@ -87,6 +86,13 @@ export function addScripts(flash: FlashSession) {
   });
 
   flash.addScript({
+    name: 'show-config',
+    async call(this: FlashSession) {
+      this.log(JSON.stringify(this.config, null, 2));
+    }
+  });
+
+  flash.addScript({
     name: 'deploy',
     description:
       'Upload contracts to blockchain and register them with the Augur contract.',
@@ -94,7 +100,12 @@ export function addScripts(flash: FlashSession) {
       {
         name: 'write-artifacts',
         abbr: 'w',
-        description: 'Overwrite environments/$env.json.',
+        description: 'Deprecated. Kept for compatibility.',
+        flag: true,
+      },
+      {
+        name: 'do-not-write-artifacts',
+        description: 'Prevents deploy from overwriting environments/$env.json',
         flag: true,
       },
       {
@@ -128,8 +139,8 @@ export function addScripts(flash: FlashSession) {
 
       console.log('Deploying: ', args);
 
-      if (typeof args.writeArtifacts !== 'undefined') {
-        this.config.deploy.writeArtifacts = Boolean(args.writeArtifacts)
+      if (typeof args.doNotWriteArtifacts !== 'undefined') {
+        this.config.deploy.writeArtifacts = !Boolean(args.doNotWriteArtifacts)
       }
       if (typeof args.timeControlled !== 'undefined') {
         this.config.deploy.normalTime = !Boolean(args.timeControlled)
@@ -153,10 +164,19 @@ export function addScripts(flash: FlashSession) {
 
       if (this.config.gnosis?.relayerAddress) {
         this.log(`Fauceting to relayer @ ${this.config.gnosis.relayerAddress}`);
+        const config = this.config;
+        this.config = deepmerge(this.config, {
+          gnosis: { enabled: false },
+          zeroX: {
+            rpc: { enabled: false },
+            mesh: { enabled: false },
+          }
+        });
         await this.call('faucet', {
           amount: '1000000',
           target: this.config.gnosis.relayerAddress,
-        })
+        });
+        this.config = config;
       }
     },
   });
@@ -1382,7 +1402,6 @@ export function addScripts(flash: FlashSession) {
     ],
     async call(this: FlashSession, args: FlashArguments) {
       await this.call('deploy', {
-        writeArtifacts: true,
         timeControlled: true,
         relayer_address: args.relayerAddress as string,
       });
@@ -1411,7 +1430,6 @@ export function addScripts(flash: FlashSession) {
     ],
     async call(this: FlashSession, args: FlashArguments) {
       await this.call('deploy', {
-        writeArtifacts: true,
         timeControlled: false,
         relayer_address: args.relayerAddress as string,
       });
