@@ -1402,7 +1402,6 @@ export function addScripts(flash: FlashSession) {
     ],
     async call(this: FlashSession, args: FlashArguments) {
       await this.call('deploy', {
-        writeArtifacts: true,
         timeControlled: true,
         relayer_address: args.relayerAddress as string,
       });
@@ -1431,7 +1430,6 @@ export function addScripts(flash: FlashSession) {
     ],
     async call(this: FlashSession, args: FlashArguments) {
       await this.call('deploy', {
-        writeArtifacts: true,
         timeControlled: false,
         relayer_address: args.relayerAddress as string,
       });
