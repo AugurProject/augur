@@ -20,6 +20,7 @@ import { isLocalHost } from 'utils/is-localhost';
 import { createBrowserMesh } from './browser-mesh';
 import { getFingerprint } from 'utils/get-fingerprint';
 import { BigNumber } from 'bignumber.js';
+import { WalletState } from 'contract-dependencies-gsn/src';
 
 export class SDK {
   client: Augur | null = null;
@@ -108,7 +109,8 @@ export class SDK {
 
     this.client.signer = signer;
 
-    if (useGSN) {
+    if (useGSN && account) {
+      // TODO: In Dev this may be annoying as you can't faucet cash if these are on and you havent ever done a tx with the GSN relay
       this.client.setUseRelay(true);
       this.client.setUseWallet(true);
       if (!!updateUser) {

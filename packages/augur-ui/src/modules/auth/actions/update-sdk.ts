@@ -74,3 +74,13 @@ export const updateSdk = (
     );
   }
 };
+
+
+export const createFundedGsnWallet = () => async (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  const { loginAccount } = getState();
+  const { affiliate, address } = loginAccount;
+  augurSdk.getOrCreateWallet(address, affiliate);
+};

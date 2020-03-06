@@ -50,7 +50,7 @@ interface WrapperProps {
   updateTradeShares: Function;
   disclaimerSeen: boolean;
   gasPrice: number;
-  Gnosis_ENABLED: boolean;
+  Gsn_ENABLED: boolean;
   hasFunds: boolean;
   hasHistory: boolean;
   isLogged: boolean;
@@ -59,7 +59,7 @@ interface WrapperProps {
   tradingTutorial?: boolean;
   currentTimestamp: number;
   availableDai: number;
-  GnosisUnavailable: boolean;
+  GsnUnavailable: boolean;
 }
 
 interface WrapperState {
@@ -393,7 +393,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       initialLiquidity,
       tradingTutorial,
       tutorialNext,
-      Gnosis_ENABLED,
+      Gsn_ENABLED,
       hasFunds,
       isLogged,
       restoredAccount,
@@ -401,7 +401,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       addFundsModal,
       hasHistory,
       availableDai,
-      GnosisUnavailable,
+      GsnUnavailable,
     } = this.props;
     let {
       marketType,
@@ -454,7 +454,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
             }
           }
         }}
-        disabled={!trade || !trade.limitPrice || GnosisUnavailable || insufficientFunds}
+        disabled={!trade || !trade.limitPrice || GsnUnavailable || insufficientFunds}
       />
     );
     switch (true) {
@@ -568,8 +568,8 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               outcomeName={selectedOutcome.description}
               scalarDenomination={market.scalarDenomination}
               tradingTutorial={tradingTutorial}
-              Gnosis_ENABLED={Gnosis_ENABLED}
-              GnosisUnavailable={GnosisUnavailable}
+              Gsn_ENABLED={Gsn_ENABLED}
+              GsnUnavailable={GsnUnavailable}
             />
           )}
         <div>{actionButton}</div>

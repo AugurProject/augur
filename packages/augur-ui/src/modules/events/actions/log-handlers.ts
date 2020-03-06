@@ -135,7 +135,6 @@ export const handleTxSuccess = (txStatus: Events.TXStatus) => (
 ) => {
   console.log('TxSuccess Transaction', txStatus.transaction.name);
   dispatch(addUpdateTransaction(txStatus));
-  dispatch(updateAssets());
 };
 
 export const handleTxFailure = (txStatus: Events.TXStatus) => (
@@ -167,7 +166,6 @@ export const handleWalletStateUpdate = (response) => async(
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  console.log('handleWalletStateUpdate', response);
   const status = response.status;
   if (response && status) {
     dispatch(updateAppStatus(WALLET_STATUS, status));

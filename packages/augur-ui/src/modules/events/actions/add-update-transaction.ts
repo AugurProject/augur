@@ -52,7 +52,7 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
   const { eventName, transaction, hash } = txStatus;
   if (transaction) {
     const methodCall = transaction.name.toUpperCase();
-    const { blockchain, alerts, loginAccount } = getState();
+    const { blockchain, loginAccount } = getState();
 
     if (eventName === TXEventName.RelayerDown) {
       const hasEth = (await loginAccount.meta.signer.provider.getBalance(loginAccount.meta.signer._address)).gt(0);

@@ -91,6 +91,8 @@ interface AppProps {
   migrateV1Rep: Function;
   walletBalances: AccountBalances;
   saveAffilateAddress: Function;
+  createFundedGsnWallet: Function;
+  showCreateAccountButton: boolean;
 }
 
 export default class AppView extends Component<AppProps> {
@@ -370,6 +372,8 @@ export default class AppView extends Component<AppProps> {
       isHelpMenuOpen,
       updateHelpMenuState,
       notifications,
+      createFundedGsnWallet,
+      showCreateAccountButton,
     } = this.props;
     this.sideNavMenuData[1].showAlert =
       notifications.filter(item => item.isNew).length > 0;
@@ -465,6 +469,8 @@ export default class AppView extends Component<AppProps> {
                 showMigrateRepButton={showMigrateRepButton}
                 walletBalances={walletBalances}
                 updateModal={updateModal}
+                showCreateAccountButton={showCreateAccountButton}
+                createFundedGsnWallet={createFundedGsnWallet}
               />
             </section>
             <AlertsContainer

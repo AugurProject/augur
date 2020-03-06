@@ -379,7 +379,7 @@ export interface DisputingBondsViewProps {
   stakeRemaining?: string;
   tentativeWinning?: boolean;
   reportAction: Function;
-  Gnosis_ENABLED: boolean;
+  Gsn_ENABLED: boolean;
   gasPrice: number;
   ethToDaiRate: BigNumber;
 }
@@ -499,7 +499,7 @@ export class DisputingBondsView extends Component<
   };
 
   async componentDidMount() {
-    if (this.props.Gnosis_ENABLED) {
+    if (this.props.Gsn_ENABLED) {
       const gasLimit = await this.props.reportAction(true);
       this.setState({
         gasEstimate: formatGasCostToEther(
@@ -520,7 +520,7 @@ export class DisputingBondsView extends Component<
       tentativeWinning,
       reportAction,
       id,
-      Gnosis_ENABLED,
+      Gsn_ENABLED,
       ethToDaiRate,
     } = this.props;
 
@@ -582,9 +582,9 @@ export class DisputingBondsView extends Component<
         />
         <LinearPropertyLabel
           key="estimatedGasFee"
-          label={Gnosis_ENABLED ? 'Transaction Fee' : 'Gas Fee'}
+          label={Gsn_ENABLED ? 'Transaction Fee' : 'Gas Fee'}
           value={
-            Gnosis_ENABLED
+            Gsn_ENABLED
               ? displayGasInDai(gasEstimate, ethToDaiRate)
               : gasEstimate
           }
@@ -604,7 +604,7 @@ export interface ReportingBondsViewProps {
   id: string;
   updateScalarOutcome: Function;
   reportAction: Function;
-  Gnosis_ENABLED: boolean;
+  Gsn_ENABLED: boolean;
   gasPrice: number;
   ethToDaiRate: BigNumber;
   inputtedReportingStake: DisputeInputtedValues;
@@ -658,7 +658,7 @@ export class ReportingBondsView extends Component<
       this.setState({
         threshold: String(convertAttoValueToDisplayValue(threshold)),
       });
-      if (this.props.Gnosis_ENABLED) {
+      if (this.props.Gsn_ENABLED) {
         const gasLimit = await this.props
           .reportAction(true)
           .catch(e => console.error(e));
@@ -748,7 +748,7 @@ export class ReportingBondsView extends Component<
       migrateRep,
       initialReport,
       owesRep,
-      Gnosis_ENABLED,
+      Gsn_ENABLED,
       ethToDaiRate,
       openReporting,
       enoughRepBalance,
@@ -855,9 +855,9 @@ export class ReportingBondsView extends Component<
 
         <LinearPropertyLabel
           key="totalEstimatedGasFee"
-          label={Gnosis_ENABLED ? 'Transaction Fee' : 'Gas Fee'}
+          label={Gsn_ENABLED ? 'Transaction Fee' : 'Gas Fee'}
           value={
-            Gnosis_ENABLED
+            Gsn_ENABLED
               ? displayGasInDai(gasEstimate, ethToDaiRate)
               : `${gasEstimate} ETH`
           }

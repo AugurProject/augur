@@ -2251,6 +2251,31 @@ export function addScripts(flash: FlashSession) {
   });
 
   flash.addScript({
+    name: 'deposit-relay',
+    options: [
+      {
+        name: 'ethAmount',
+        abbr: 'e',
+        description: 'amount of ETH to provide to the exchange',
+      },
+      {
+        name: 'relayHub',
+        abbr: 'r',
+        description: 'address to relay hub',
+        required: true,
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const address = String(args.relayHub);
+      const attoEth = args.ethAmount ? new BigNumber(Number(args.ethAmount)).times(_1_ETH) : new BigNumber(1).times(_1_ETH);
+
+      const user = await this.ensureUser();
+
+      await user.depositRelay(address, attoEth);
+    },
+  });
+
+  flash.addScript({
     name: 'init-warp-sync',
     async call(this: FlashSession, args: FlashArguments) {
       const user = await this.ensureUser();

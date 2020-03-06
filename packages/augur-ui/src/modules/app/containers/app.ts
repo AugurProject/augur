@@ -30,16 +30,21 @@ import { updateSelectedCategories } from "modules/markets-list/actions/update-ma
 import { updateAuthStatus, IS_CONNECTION_TRAY_OPEN } from "modules/auth/actions/auth-status";
 import { MODAL_GLOBAL_CHAT, MODAL_MIGRATE_REP } from 'modules/common/constants';
 import { saveAffiliateAddress } from "modules/account/actions/login-account";
+import { createFundedGsnWallet } from "modules/auth/actions/update-sdk";
+import { AppState } from "store";
+import { WalletState } from "contract-dependencies-gsn/src";
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: AppState) => {
+  const { appStatus } = state;
+  const { walletStatus } = appStatus;
   const { alerts } = selectInfoAlertsAndSeenCount(state);
   const notifications = selectNotifications(state);
   const walletBalances = state.loginAccount.balances;
+  const showCreateAccountButton = walletStatus === WalletState.WAITING_FOR_FUNDS || walletStatus === WalletState.FUNDED;
 
   return {
     notifications,
     blockchain: state.blockchain,
-    categories: state.categories,
     connection: state.connection,
     env: state.env,
     isLogged: state.authStatus.isLogged,
@@ -51,11 +56,11 @@ const mapStateToProps = state => {
     modal: state.modal,
     toasts: alerts.filter(alert => alert.toast && !alert.seen),
     universe: state.universe,
-    url: state.url,
     useWeb3Transport: isGlobalWeb3(),
     sidebarStatus: state.sidebarStatus,
     isConnectionTrayOpen: state.authStatus.isConnectionTrayOpen,
     walletBalances,
+    showCreateAccountButton
   }
 };
 
@@ -78,7 +83,8 @@ const mapDispatchToProps = dispatch => ({
   dispatch(updateAuthStatus(IS_CONNECTION_TRAY_OPEN, value)),
   showGlobalChat: () => dispatch(updateModal({type: MODAL_GLOBAL_CHAT})),
   migrateV1Rep: () => dispatch(updateModal({ type: MODAL_MIGRATE_REP })),
-  saveAffilateAddress: address => dispatch(saveAffiliateAddress(address))
+  saveAffilateAddress: address => dispatch(saveAffiliateAddress(address)),
+  createFundedGsnWallet: () => dispatch(createFundedGsnWallet())
 });
 
 const AppContainer = compose(

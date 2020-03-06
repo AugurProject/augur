@@ -596,6 +596,10 @@ export class ContractAPI {
     await this.augur.contracts.ethExchange.publicMintAuto(owner, attoCash, {attachedEth: attoEth});
   }
 
+  async depositRelay(address: string, attoEth: BigNumber): Promise<void> {
+    await this.augur.contracts.relayHub.depositFor(address, {attachedEth: attoEth});
+  }
+
   async initWarpSync(universe: string): Promise<void> {
     await this.augur.contracts.warpSync.initializeUniverse(universe);
   }
@@ -735,11 +739,11 @@ export class ContractAPI {
     return safe;
   }
 
-  async getOrCreateWallet(): Promise<void> {
+  async getOrCreateWallet(): Promise<string> {
     const walletFromRegistry = await this.augur.contracts.augurWalletRegistry.getWallet_(this.account.publicKey);
     if(walletFromRegistry !== NULL_ADDRESS) {
       console.log(`Found wallet: ${walletFromRegistry}`);
-      return;
+      return walletFromRegistry;
     }
 
     const walletAddress = await this.augur.gsn.calculateWalletAddress(this.account.publicKey);
