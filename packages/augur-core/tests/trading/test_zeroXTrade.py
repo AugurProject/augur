@@ -913,7 +913,7 @@ def test_augur_wallet_trade(contractsFixture, augur, cash, market, universe):
         with PrintGasUsed(contractsFixture, "ZeroXTrade.trade", 0):
             nonce+=1
             tradeData = ZeroXTrade.trade_encode(fillAmount, fingerprint, tradeGroupId, 0, 10, orders, signatures)
-            augurWalletTradeData = augurWalletRegistry.executeWalletTransaction_encode(ZeroXTrade.address, tradeData, 0)
+            augurWalletTradeData = augurWalletRegistry.executeWalletTransaction_encode(ZeroXTrade.address, tradeData, 0, nullAddress, fingerprint)
             messageHash = augurWalletRegistry.getRelayMessageHash(relayer,
                 senderAccount,
                 augurWalletRegistry.address,

@@ -91,7 +91,7 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
         ethExchange.buyToken(address(this));
     }
 
-    function createAugurWallet(address _referralAddress, bytes32 _fingerprint) public returns (address) {
+    function createAugurWallet(address _referralAddress, bytes32 _fingerprint) public returns (IAugurWallet) {
         // Create2 creation of wallet based on msg.sender
         address _owner = _msgSender();
         address _walletAddress;
@@ -108,7 +108,7 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
         IAugurWallet _wallet = IAugurWallet(_walletAddress);
         _wallet.initialize(_owner, _referralAddress, _fingerprint, address(augur), cash, IAffiliates(affiliates), IERC1155(shareToken), createOrder, fillOrder, zeroXTrade);
         wallets[_owner] = _wallet;
-        return _walletAddress;
+        return _wallet;
     }
 
     function getCreate2WalletAddress(address _owner) public view returns (address) {
@@ -131,9 +131,12 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
         return wallets[_account];
     }
 
-    function executeWalletTransaction(address _to, bytes memory _data, uint256 _value) public {
+    function executeWalletTransaction(address _to, bytes memory _data, uint256 _value, address _referralAddress, bytes32 _fingerprint) public {
         address _user = _msgSender();
         IAugurWallet _wallet = getWallet(_user);
+        if (_wallet == IAugurWallet(0)) {
+            _wallet = createAugurWallet(_referralAddress, _fingerprint);
+        }
         _wallet.executeTransaction(_to, _data, _value);
     }
 

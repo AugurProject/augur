@@ -103,7 +103,7 @@ def test_augur_wallet_registry(contractsFixture, augur, universe, cash, reputati
     # Now lets have the relayer send an actual tx for the user to faucet cash into their wallet
     repAmount = 10**18
     repFaucetData = reputationToken.faucet_encode(repAmount)
-    augurWalletRepFaucetData = augurWalletRegistry.executeWalletTransaction_encode(reputationToken.address, repFaucetData, 0)
+    augurWalletRepFaucetData = augurWalletRegistry.executeWalletTransaction_encode(reputationToken.address, repFaucetData, 0, nullAddress, fingerprint)
     nonce += 1
 
     messageHash = augurWalletRegistry.getRelayMessageHash(relayer,
@@ -145,6 +145,87 @@ def test_augur_wallet_registry(contractsFixture, augur, universe, cash, reputati
     )
 
     assert reputationToken.balanceOf(walletAddress) == initialRep + repAmount
+
+def test_augur_wallet_registry_auto_create(contractsFixture, augur, universe, cash, reputationToken):
+    augurWalletRegistry = contractsFixture.contracts["AugurWalletRegistry"]
+    ethExchange = contractsFixture.contracts["EthExchange"]
+    relayHub = contractsFixture.applySignature("RelayHub", RELAY_HUB_ADDRESS)
+    account = contractsFixture.accounts[0]
+    accountKey = contractsFixture.privateKeys[0]
+    relayer = contractsFixture.accounts[1]
+    relayOwner = contractsFixture.accounts[2]
+
+    # Register a relay
+    unstakeDelay = 2 * 7 * 24 * 60 * 60
+    relayHub.stake(relayer, unstakeDelay, value=2*10**18, sender=relayOwner)
+    relayHub.registerRelay(10, "url", sender=relayer)
+
+    # Fund the registry manually
+    relayHub.depositFor(augurWalletRegistry.address, value=2*10**18)
+
+    # Fund the wallet so we can generate it and have it reimburse the relay hub
+    cashAmount = 100*10**18
+    walletAddress = augurWalletRegistry.getCreate2WalletAddress(account)
+    cash.faucet(cashAmount)
+    cash.transfer(walletAddress, cashAmount, sender=account)
+
+    # We'll provide some liquidity to the eth exchange
+    cashAmount = 1000 * 10**18
+    ethAmount = 10 * 10**18
+    cash.faucet(cashAmount)
+    cash.transfer(ethExchange.address, cashAmount)
+    contractsFixture.sendEth(account, ethExchange.address, ethAmount)
+    ethExchange.publicMint(account)
+
+    # We do this again in order to trigger a storage update that will make using the exchange cheaper
+    cash.faucet(cashAmount)
+    cash.transfer(ethExchange.address, cashAmount)
+    contractsFixture.sendEth(account, ethExchange.address, ethAmount)
+    ethExchange.publicMint(account)
+
+    assert augurWalletRegistry.getWallet(account) == nullAddress
+
+    repAmount = 10**18
+    fingerprint = longTo32Bytes(42)
+    repFaucetData = reputationToken.faucet_encode(repAmount)
+    augurWalletRepFaucetData = augurWalletRegistry.executeWalletTransaction_encode(reputationToken.address, repFaucetData, 0, nullAddress, fingerprint)
+    nonce = 0
+    maxDaiTxFee = 10**18
+    additionalFee = 10 # 10%
+    gasPrice = 1
+    gasLimit = 3000000
+    approvalData = ""
+
+    messageHash = augurWalletRegistry.getRelayMessageHash(
+        relayer,
+        account,
+        augurWalletRegistry.address,
+        augurWalletRepFaucetData,
+        additionalFee,
+        gasPrice,
+        gasLimit,
+        nonce)
+
+    signature = signMessage(messageHash, accountKey)
+
+    initialRep = reputationToken.balanceOf(walletAddress)
+
+    relayHub.relayCall(
+        account,
+        augurWalletRegistry.address,
+        augurWalletRepFaucetData,
+        additionalFee,
+        gasPrice,
+        gasLimit,
+        nonce,
+        signature,
+        approvalData,
+        sender=relayer
+    )
+
+    assert augurWalletRegistry.getWallet(account) == walletAddress
+    assert reputationToken.balanceOf(walletAddress) == initialRep + repAmount
+
 
 def signMessage(messageHash, private_key):
     key = normalize_key(private_key.to_hex())
