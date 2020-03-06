@@ -7,6 +7,7 @@ import { Account, ACCOUNTS } from '../constants';
 import { computeAddress } from 'ethers/utils';
 import * as fs from 'fs';
 import { buildConfig, validConfigOrDie, SDKConfiguration } from '@augurproject/artifacts';
+import deepmerge from 'deepmerge';
 
 async function processAccounts(flash: FlashSession, args: any) {
     // Figure out which private key to use.
@@ -76,9 +77,14 @@ async function run() {
         if (opts.config) {
           specified = JSON.parse(opts.config);
         }
-        specified.zeroX.rpc.enabled = true;
-        specified.zeroX.mesh.enabled = false;
-        flash.config = validConfigOrDie(buildConfig(flash.network, specified));
+        flash.config = validConfigOrDie(
+          buildConfig(
+            flash.network,
+            deepmerge(specified, {
+              zeroX: { rpc: { enabled: true }, mesh: { enabled: false } },
+            })
+          )
+        );
 
         if (!script.ignoreNetwork && opts.network !== 'none') {
           flash.provider = flash.makeProvider(flash.config);
