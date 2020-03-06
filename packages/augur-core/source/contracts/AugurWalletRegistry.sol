@@ -106,7 +106,7 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
             }
         }
         IAugurWallet _wallet = IAugurWallet(_walletAddress);
-        _wallet.initialize(_referralAddress, _fingerprint, address(augur), cash, IAffiliates(affiliates), IERC1155(shareToken), createOrder, fillOrder, zeroXTrade);
+        _wallet.initialize(_owner, _referralAddress, _fingerprint, address(augur), cash, IAffiliates(affiliates), IERC1155(shareToken), createOrder, fillOrder, zeroXTrade);
         wallets[_owner] = _wallet;
         return _walletAddress;
     }
@@ -135,6 +135,14 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
         address _user = _msgSender();
         IAugurWallet _wallet = getWallet(_user);
         _wallet.executeTransaction(_to, _data, _value);
+    }
+
+    function walletTransferedOwnership(address _oldOwner, address _newOwner) external {
+        require(wallets[_newOwner] == IAugurWallet(0));
+        IAugurWallet _wallet = IAugurWallet(_msgSender());
+        require(_wallet == wallets[_oldOwner]);
+        wallets[_oldOwner] = IAugurWallet(0);
+        wallets[_newOwner] = _wallet;
     }
 
     function getRelayMessageHash(

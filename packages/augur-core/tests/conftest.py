@@ -138,7 +138,7 @@ def pytest_configure(config):
     # register an additional marker
     config.addinivalue_line("markers", "cover: use coverage contracts")
 
-TRADING_CONTRACTS = ['CreateOrder','FillOrder','CancelOrder','Trade','Orders','ZeroXTrade','ProfitLoss','SimulateTrade','GnosisSafeRegistry','AugurWalletRegistry']
+TRADING_CONTRACTS = ['CreateOrder','FillOrder','CancelOrder','Trade','Orders','ZeroXTrade','ProfitLoss','SimulateTrade','AugurWalletRegistry']
 
 class ContractsFixture:
     signatures = {}
