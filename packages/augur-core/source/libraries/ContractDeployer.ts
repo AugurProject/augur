@@ -456,7 +456,7 @@ Deploying to: ${env}
 
     private async initializeAllContracts(): Promise<void> {
         console.log('Initializing contracts...');
-        const promises: Array<Promise<any>> = [];
+        let promises: Array<Promise<any>> = [];
 
         const shareTokenContract = await this.getContractAddress('ShareToken');
         const shareToken = new ShareToken(this.dependencies, shareTokenContract);
@@ -485,6 +485,12 @@ Deploying to: ${env}
         const profitLossContract = await this.getContractAddress('ProfitLoss');
         const profitLoss = new ProfitLoss(this.dependencies, profitLossContract);
         promises.push(profitLoss.initialize(this.augur!.address, this.augurTrading!.address));
+
+        // Too many txn in flight on kovan breaks things
+        console.log('Awaiting promises before continuing');
+        await resolveAll(promises);
+        promises = [];
+        console.log('Continuing');
 
         const simulateTradeContract = await this.getContractAddress('SimulateTrade');
         const simulateTrade = new SimulateTrade(this.dependencies, simulateTradeContract);
