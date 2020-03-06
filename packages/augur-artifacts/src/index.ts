@@ -330,17 +330,17 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
     writeArtifacts: true,
   },
   gnosis: {
-    enabled: false,
+    enabled: true,
     http: 'http://localhost:8888/api/',
     relayerAddress: '0x9d4c6d4b84cd046381923c9bc136d6ff1fe292d9'
   },
   zeroX: {
     rpc: {
-      enabled: false,
+      enabled: true,
       ws: 'ws://localhost:60557'
     },
     mesh: {
-      enabled: false,
+      enabled: true,
     }
   },
   server: {
