@@ -20,6 +20,7 @@ import { isLocalHost } from 'utils/is-localhost';
 import { createBrowserMesh } from './browser-mesh';
 import { getFingerprint } from 'utils/get-fingerprint';
 import { BigNumber } from 'bignumber.js';
+import { WalletState } from 'contract-dependencies-gsn/src';
 
 export class SDK {
   client: Augur | null = null;
@@ -84,15 +85,20 @@ export class SDK {
     return this.client;
   }
 
-  async getOrCreateWallet(affiliate: string = NULL_ADDRESS): Promise<void | string> {
+  async getOrCreateWallet(account: string, affiliate: string = NULL_ADDRESS): Promise<string> {
     if (!this.client) {
       console.log('Trying to init wallet before Augur is initalized');
-      return;
+      return null;
     }
-
-    const fingerprint = getFingerprint();
-    const walletAddress = await this.client.gsn.getOrCreateWallet({ affiliate, fingerprint });
-
+    let walletAddress = await this.client.gsn.calculateWalletAddress(account);
+    const walletStatus = this.client.getWalletStatus();
+    if (walletStatus === WalletState.FUNDED) {
+      const fingerprint = getFingerprint();
+      walletAddress = await this.client.gsn.getOrCreateWallet({ affiliate, fingerprint });
+    } else {
+      // watch wallet address
+      this.client.gsn.updateWalletsToCheckList(walletAddress, account, walletStatus);
+    }
     return walletAddress;
   }
 
@@ -118,10 +124,10 @@ export class SDK {
 
     this.client.signer = signer;
 
-    if (useGSN) {
+    if (useGSN && account) {
       // TODO XXX : This is really error prone. The wallet needs to have Cash in it _before_ this is called. Also txs that are working are getting "no signer" errors after they are sent
       this.client.setUseRelay(true);
-      account = (await this.getOrCreateWallet(affiliate)) as string;
+      account = await this.getOrCreateWallet(account, affiliate)
 
       this.client.setUseWallet(true);
       if (!!updateUser) {
