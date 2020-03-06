@@ -1,3 +1,4 @@
+import deepmerge from 'deepmerge';
 import { ethers } from 'ethers';
 import { BigNumber } from 'bignumber.js';
 import { readFile } from 'async-file';
@@ -183,7 +184,7 @@ Deploying to: ${env}
         }
 
         if (this.configuration.deploy.writeArtifacts) {
-          await this.generateLocalEnvFile(env, blockNumber);
+          await this.generateLocalEnvFile(env, blockNumber, this.configuration);
         }
 
         await this.augur.finishDeployment();
@@ -574,7 +575,7 @@ Deploying to: ${env}
         }
     }
 
-    private async generateLocalEnvFile(env: string, uploadBlockNumber: number): Promise<void> {
+    private async generateLocalEnvFile(env: string, uploadBlockNumber: number, config: SDKConfiguration): Promise<void> {
         const mapping: Partial<ContractAddresses> = {};
         mapping['Augur'] = this.augur!.address;
         if (this.universe) mapping['Universe'] = this.universe.address;
@@ -631,10 +632,10 @@ Deploying to: ${env}
 
         const networkId = String((await this.provider.getNetwork()).chainId) as NetworkId;
 
-        await updateConfig(env, {
+        await updateConfig(env, deepmerge(config, {
             networkId,
             uploadBlockNumber,
             addresses: mapping as ContractAddresses,
-        });
+        }));
     }
 }
