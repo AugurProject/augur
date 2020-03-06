@@ -9,6 +9,7 @@ import {
   updateAppStatus,
   Ox_ENABLED,
   GSN_ENABLED,
+  WALLET_STATUS,
 } from 'modules/app/actions/update-app-status';
 import { loadAccountDataFromLocalStorage } from './load-account-data-from-local-storage';
 import { IS_LOGGED, updateAuthStatus } from 'modules/auth/actions/auth-status';
@@ -17,7 +18,7 @@ import { updateAssets } from 'modules/auth/actions/update-assets';
 import { NetworkId } from '@augurproject/artifacts';
 import { AppState } from 'store';
 import { updateModal } from 'modules/modal/actions/update-modal';
-import { MODAL_ERROR } from 'modules/common/constants';
+import { MODAL_ERROR, WALLET_STATUS_VALUES } from 'modules/common/constants';
 
 export const updateSdk = (
   loginAccount: Partial<LoginAccount>,
@@ -35,8 +36,12 @@ export const updateSdk = (
     dispatch(updateAppStatus(Ox_ENABLED, !!augurSdk.sdk.zeroX));
     dispatch(updateAppStatus(GSN_ENABLED, useGSN));
     if (useGSN) {
+      const hasWallet = await augurSdk.client.gsn.userHasInitializedWallet(newAccount.address);
+      if (hasWallet) {
+        dispatch(updateAppStatus(WALLET_STATUS, WALLET_STATUS_VALUES.CREATED));
+      }
       const walletAddress = await augurSdk.client.gsn.calculateWalletAddress(
-        loginAccount.address
+        newAccount.address
       );
       newAccount = {
         ...loginAccount,
@@ -82,8 +87,11 @@ export const createFundedGsnWallet = () => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { loginAccount } = getState();
-  const { affiliate, address } = loginAccount;
-  // TODO call new method to create wallet
-  augurSdk.getOrCreateWallet(address, affiliate);
+  try {
+    await augurSdk.client.gsn.initializeWallet();
+    dispatch(updateAppStatus(WALLET_STATUS, WALLET_STATUS_VALUES.CREATED));
+  } catch (e) {
+    dispatch(updateAppStatus(WALLET_STATUS, WALLET_STATUS_VALUES.FUNDED_NEED_CREATE));
+  }
+
 };
