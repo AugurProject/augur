@@ -76,6 +76,7 @@ async function run() {
         if (opts.config) {
           specified = JSON.parse(opts.config);
         }
+        specified.zeroX.rpc.enabled = true;
         flash.config = validConfigOrDie(buildConfig(flash.network, specified));
 
         if (!script.ignoreNetwork && opts.network !== 'none') {
