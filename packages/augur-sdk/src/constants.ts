@@ -15,6 +15,7 @@ export enum ACCOUNT_TYPES {
 }
 
 export enum SubscriptionEventName {
+  BulkSyncComplete = "BulkSyncComplete",
   CompleteSetsPurchased = "CompleteSetsPurchased",
   CompleteSetsSold = "CompleteSetsSold",
   DisputeCrowdsourcerCompleted = "DisputeCrowdsourcerCompleted",
@@ -44,13 +45,16 @@ export enum SubscriptionEventName {
   TokensBurned = "TokensBurned",
   TokensMinted = "TokensMinted",
   TokensTransferred = "TokensTransferred",
+  ReportingFeeChanged = "ReportingFeeChanged",
   TradingProceedsClaimed = "TradingProceedsClaimed",
   UniverseCreated = "UniverseCreated",
   UniverseForked = "UniverseForked",
   UserDataSynced = "UserDataSynced",
   MarketsUpdated = "updated:Markets",
   DBMarketCreatedEvent = "DerivedDB:updated:Markets",
-  ReportingStateChanged = "ReportingStateChanged"
+  ReportingStateChanged = "ReportingStateChanged",
+  ZeroXReady = "ZeroXReady",
+  WarpSyncHashUpdated = "WarpSyncHashUpdated"
 }
 
 export enum TXEventName {
@@ -59,6 +63,7 @@ export enum TXEventName {
   Success = "Success",
   Failure = "Failure",
   RelayerDown = "RelayerDown",
+  FeeTooLow = "FeeTooLow",
 }
 
 export function isSubscriptionEventName(eventName: string): string | null {
@@ -94,9 +99,9 @@ export const ETHER = new ethersUtils.BigNumber(10).pow(18);
 
 export const TRADE_GAS_BUFFER = new BigNumber("600000", 10);
 
-export const MAX_FILLS_PER_TX = new BigNumber("5", 10);
+export const MAX_FILLS_PER_TX = new BigNumber("3", 10);
 
-export const MAX_GAS_LIMIT_FOR_TRADE = new BigNumber("4000000", 10);
+export const MAX_GAS_LIMIT_FOR_TRADE = new BigNumber("3500000", 10);
 
 export const PLACE_ORDER_NO_SHARES = {
   2: new BigNumber("547694", 10),
@@ -119,13 +124,13 @@ export const PLACE_ORDER_WITH_SHARES = {
 };
 
 export const WORST_CASE_FILL = {
-  2: new BigNumber("750000", 10),
-  3: new BigNumber("879183", 10),
-  4: new BigNumber("1100000", 10),
-  5: new BigNumber("1240000", 10),
-  6: new BigNumber("1416000", 10),
-  7: new BigNumber("1600000", 10),
-  8: new BigNumber("1770000", 10),
+  2: new BigNumber("935219", 10),
+  3: new BigNumber("996763", 10),
+  4: new BigNumber("1058302", 10),
+  5: new BigNumber("1119834", 10),
+  6: new BigNumber("1181369", 10),
+  7: new BigNumber("1242902", 10),
+  8: new BigNumber("1242902", 10),
 };
 
 export const CLAIM_GAS_COST = new BigNumber(794379);
@@ -154,6 +159,8 @@ export const SECONDS_IN_A_DAY = new BigNumber(86400, 10);
 export const SECONDS_IN_A_YEAR = new BigNumber(SECONDS_IN_A_DAY).multipliedBy(365);
 
 export const GENESIS = 'Genesis';
+
+export const INIT_REPORTING_FEE_DIVISOR = '100';
 
 export enum MarketReportingStateByNum {
   'PreReporting',

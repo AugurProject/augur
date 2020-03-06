@@ -1,31 +1,39 @@
-import { BigNumber } from "bignumber.js";
-import { ContractAPI, loadSeedFile, ACCOUNTS, defaultSeedPath, Account, blockchain } from "@augurproject/tools";
-import { TransactionStatus, TransactionMetadata } from "contract-dependencies-ethers";
-import { makeProvider } from "../../libs";
-import { Getters, TXEventName } from "@augurproject/sdk";
-import { EthersProvider } from "@augurproject/ethersjs-provider";
-import { EthersFastSubmitWallet } from "@augurproject/core";
+import { ACCOUNTS, defaultSeedPath, loadSeedFile } from '@augurproject/tools';
+import { TestContractAPI } from '@augurproject/tools';
+import { BigNumber } from 'bignumber.js';
+import {
+  TransactionMetadata,
+  TransactionStatus,
+} from 'contract-dependencies-ethers';
+import { makeProvider } from '../../libs';
 
-let john: ContractAPI;
+let john: TestContractAPI;
 
 beforeAll(async () => {
   const seed = await loadSeedFile(defaultSeedPath);
   const provider = await makeProvider(seed, ACCOUNTS);
 
-  john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, seed.addresses);
+  john = await TestContractAPI.userWrapper(
+    ACCOUNTS[0],
+    provider,
+    provider.getConfig()
+  );
   await john.approveCentralAuthority();
 });
 
-test("TransactionStatus :: transaction status updates", async () => {
-  const transactions: Array<TransactionMetadata> = [];
-  const statuses: Array<TransactionStatus> = [];
+test('TransactionStatus :: transaction status updates', async () => {
+  const transactions: TransactionMetadata[] = [];
+  const statuses: TransactionStatus[] = [];
   const hashes: Array<string | undefined> = [];
-  john.augur.registerTransactionStatusCallback("Test", (transaction, status, hash) => {
-    if (transaction.name != "createYesNoMarket") return;
-    transactions.push(transaction);
-    statuses.push(status);
-    hashes.push(hash);
-  });
+  john.augur.registerTransactionStatusCallback(
+    'Test',
+    (transaction, status, hash) => {
+      if (transaction.name != 'createYesNoMarket') return;
+      transactions.push(transaction);
+      statuses.push(status);
+      hashes.push(hash);
+    }
+  );
 
   await john.createReasonableYesNoMarket();
 
@@ -41,9 +49,8 @@ test("TransactionStatus :: transaction status updates", async () => {
   await expect(transactions[1]).toEqual(transactions[2]);
 
   const tx = transactions[0];
-  await expect(tx.name).toEqual("createYesNoMarket");
+  await expect(tx.name).toEqual('createYesNoMarket');
   await expect(tx.params._affiliateFeeDivisor).toEqual(new BigNumber(25));
-
 });
 
 /*
@@ -89,7 +96,6 @@ test("TransactionStatus :: transaction status events failure", async (done) => {
         data: "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
         logIndex: 0,
         blockHash: "0x691568428d9171d2d3d415fc816944b3324d47635c1f3f5ea7e0a7e78f045c75",
-        transactionLogIndex: 0,
       }],
     })
     .mockReturnValueOnce({ status: 2, logs: [] });
@@ -108,7 +114,7 @@ test("TransactionStatus :: transaction status events failure", async (done) => {
     return wallet;
   });
 
-  john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, seed.addresses);
+  john = await TestContractAPI.userWrapper(ACCOUNTS[0], provider, seed.addresses);
   await john.approveCentralAuthority();
 
   john.augur.on(TXEventName.Failure, failure);

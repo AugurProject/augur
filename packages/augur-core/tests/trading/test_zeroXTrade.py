@@ -187,11 +187,10 @@ def test_basic_trading(contractsFixture, cash, market, universe):
     newEthBalance = contractsFixture.ethBalance(contractsFixture.accounts[2])
     assert initialETHBalance - newEthBalance < 10**7
 
-    # The order is completely filled so further attempts to take it will result in failure
+    # The order is completely filled so further attempts to take it will result in a no-op
     assert cash.faucet(fix(10, 60))
     assert cash.faucet(fix(10, 40), sender=contractsFixture.accounts[1])
-    with raises(TransactionFailed):
-        ZeroXTrade.trade(fillAmount, fingerprint, tradeGroupId, 0, 10, orders, signatures, sender=contractsFixture.accounts[1], value=150000)
+    assert ZeroXTrade.trade(fillAmount, fingerprint, tradeGroupId, 0, 10, orders, signatures, sender=contractsFixture.accounts[1], value=150000) == fillAmount
 
     assert yesShareTokenBalance == fix(10)
     assert noShareTokenBalance == fix(10)
@@ -220,8 +219,7 @@ def test_cancelation(contractsFixture, cash, market, universe):
     # Lets take the order as another user and confirm we cannot take a canceled order
     assert cash.faucet(fix(1, 60))
     assert cash.faucet(fix(1, 40), sender=contractsFixture.accounts[1])
-    with raises(TransactionFailed):
-        ZeroXTrade.trade(fillAmount, fingerprint, tradeGroupId, 0, 10, orders, signatures, sender=contractsFixture.accounts[1], value=150000)
+    assert ZeroXTrade.trade(fillAmount, fingerprint, tradeGroupId, 0, 10, orders, signatures, sender=contractsFixture.accounts[1], value=150000) == fillAmount
 
     # Now lets make and cancel several
     # First we'll create a signed order
@@ -840,12 +838,11 @@ def test_gnosis_safe_trade(contractsFixture, augur, cash, market, universe, gnos
     amountRemaining = ZeroXTrade.trade(fillAmount + 10**17, fingerprint, tradeGroupId, 0, 10, orders, signatures, sender=contractsFixture.accounts[2], value=150000)
     assert amountRemaining == 10**17
 
-    # The order is completely filled so further attempts to take it will result in failure
+    # The order is completely filled so further attempts to take it will result in a no-op
     assert cash.faucet(fix(1, 60))
     assert cash.transfer(gnosisSafeAddress, fix(1, 60))
     assert cash.faucet(fix(1, 40), sender=contractsFixture.accounts[1])
-    with raises(TransactionFailed):
-        ZeroXTrade.trade(fillAmount, fingerprint, tradeGroupId, 0, 10, orders, signatures, sender=contractsFixture.accounts[1], value=150000)
+    assert ZeroXTrade.trade(fillAmount, fingerprint, tradeGroupId, 0, 10, orders, signatures, sender=contractsFixture.accounts[1], value=150000) == fillAmount
 
     assert yesShareTokenBalance == fix(1)
     assert noShareTokenBalance == fix(1)

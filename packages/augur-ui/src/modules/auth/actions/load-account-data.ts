@@ -16,23 +16,29 @@ export const loadAccountData = (
   callback: NodeStyleCallback = logError
 ) => async (dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState) => {
-  const { loginAccount, universe, gasPriceInfo } = getState();
-  const { mixedCaseAddress: address } = loginAccount;
-  if (!address) return callback('account address required');
-  const windowApp = windowRef as WindowApp;
-  if (
-    windowApp &&
-    windowApp.localStorage.setItem &&
-    loginAccount &&
-    loginAccount.meta
-  ) {
-    windowApp.localStorage.setItem('loggedInAccountType', loginAccount.meta.accountType);
-    windowApp.localStorage.setItem('loggedInAccount', address);
+  const { loginAccount, universe, gasPriceInfo, connection, authStatus } = getState();
+  if (connection.isConnected && authStatus.isLogged) {
+    const { mixedCaseAddress: address } = loginAccount;
+    if (!address) return callback('account address required');
+    const windowApp = windowRef as WindowApp;
+    if (
+      windowApp &&
+      windowApp.localStorage.setItem &&
+      loginAccount &&
+      loginAccount.meta
+    ) {
+      const loggedInUser = {
+        accountType: loginAccount.meta.accountType,
+        address
+      };
+      windowApp.localStorage.setItem('loggedInUser', JSON.stringify(loggedInUser));
+
+    }
+    dispatch(loadAccountHistory());
+    dispatch(checkAccountAllowance());
+    dispatch(loadUniverseDetails(universe.id, address));
+    dispatch(loadGasPriceInfo());
+    dispatch(getEthToDaiRate());
+    registerUserDefinedGasPriceFunction(gasPriceInfo.userDefinedGasPrice, gasPriceInfo.average);
   }
-  dispatch(loadAccountHistory());
-  dispatch(checkAccountAllowance());
-  dispatch(loadUniverseDetails(universe.id, address));
-  dispatch(loadGasPriceInfo());
-  dispatch(getEthToDaiRate());
-  registerUserDefinedGasPriceFunction(gasPriceInfo.userDefinedGasPrice, gasPriceInfo.average);
 };

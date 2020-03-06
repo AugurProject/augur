@@ -1,6 +1,7 @@
 import {
   ADD_PENDING_DATA,
   REMOVE_PENDING_DATA,
+  REMOVE_PENDING_DATA_BY_HASH
 } from "modules/pending-queue/actions/pending-queue-management";
 import { PendingQueue, BaseAction } from "modules/types";
 
@@ -14,7 +15,7 @@ export default function(pendingQueue: PendingQueue = DEFAULT_STATE, { type, data
         pendingQueue[queueName][pendingId] = {
           status,
           data: info,
-          hash: hash,
+          hash,
           blockNumber,
         };
       } else {
@@ -22,13 +23,27 @@ export default function(pendingQueue: PendingQueue = DEFAULT_STATE, { type, data
         pendingQueue[queueName][pendingId] = {
           status,
           data: info,
-          hash: hash,
+          hash,
           blockNumber,
         };
       }
 
       return {
         ...pendingQueue,
+      };
+    }
+    case REMOVE_PENDING_DATA_BY_HASH: {
+      const { hash, queueName } = data;
+      let pending = pendingQueue;
+      if (pendingQueue[queueName]) {
+        const queue = pendingQueue[queueName];
+        pending[queueName] = Object.keys(queue).reduce(
+          (p, o) => (queue[o].hash !== hash ? {...p, [o]: queue[o]} : p),
+          {}
+        );
+      }
+      return {
+        ...pending,
       };
     }
     case REMOVE_PENDING_DATA: {

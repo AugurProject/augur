@@ -18,6 +18,7 @@ import { isSameAddress } from 'utils/isSameAddress';
 const mapStateToProps = (state, ownProps) => {
   const market = ownProps.market || selectMarket(ownProps.marketId);
   const disputeInfoStakes = market.disputeInfo && market.disputeInfo.stakes;
+  const marketId = ownProps.market ? ownProps.market.id : ownProps.marketId;
   return {
     currentTimestamp: selectCurrentTimestampInSeconds(state) || 0,
     market,

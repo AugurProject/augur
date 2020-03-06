@@ -30,10 +30,11 @@ import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import Styles from 'modules/common/buttons.styles.less';
 import { AppState } from 'store';
 import { MARKET_TEMPLATES } from 'modules/create-market/constants';
-import { Getters } from '@augurproject/sdk/src';
+import { Getters, TXEventName } from '@augurproject/sdk/src';
 import { addCategoryStats } from 'modules/create-market/get-template';
 import ChevronFlip from 'modules/common/chevron-flip';
 import { Link } from 'react-router-dom';
+import { removePendingData } from 'modules/pending-queue/actions/pending-queue-management';
 
 export interface DefaultButtonProps {
   id?: string;
@@ -46,6 +47,13 @@ export interface DefaultButtonProps {
   noIcon?: boolean;
   subText?: string;
   pointDown?: boolean;
+  URL?: string;
+  status?: string;
+  secondaryButton?: boolean;
+  cancel?: Function;
+  cancelButton?: boolean;
+  confirmed?: boolean;
+  failed?: boolean;
 }
 
 export interface SortButtonProps {
@@ -113,14 +121,33 @@ export interface ExternalLinkTextProps {
 }
 
 export const PrimaryButton = (props: DefaultButtonProps) => (
-  <button
-    onClick={e => props.action(e)}
-    className={Styles.PrimaryButton}
-    disabled={props.disabled}
-    title={props.title || props.text}
-  >
-    {props.text}
-  </button>
+  <>
+    {props.URL && (
+      <a href={props.URL} target="_blank" rel="noopener noreferrer">
+        <button
+          onClick={e => props.action(e)}
+          className={Styles.PrimaryButton}
+          disabled={props.disabled}
+          title={props.title || props.text}
+        >
+          {props.text}
+        </button>
+      </a>
+    )}
+    {!props.URL && (
+      <button
+        onClick={e => props.action(e)}
+        className={classNames(Styles.PrimaryButton, {
+          [Styles.Confirmed]: props.confirmed,
+          [Styles.Failed]: props.failed
+        })}
+        disabled={props.disabled}
+        title={props.title || props.text}
+      >
+        {props.text} {props.icon}
+      </button>
+    )}
+  </>
 );
 
 export const SecondaryButton = (props: DefaultButtonProps) => (
@@ -128,13 +155,104 @@ export const SecondaryButton = (props: DefaultButtonProps) => (
     onClick={e => props.action(e)}
     className={classNames(Styles.SecondaryButton, {
       [Styles.Small]: props.small,
+      [Styles.Confirmed]: props.confirmed,
+      [Styles.Failed]: props.failed
     })}
     disabled={props.disabled}
     title={props.title || props.text}
   >
-    {!!props.icon && props.icon}
-    {props.text}
+    {props.text} {!!props.icon && props.icon}
   </button>
+);
+
+const ProcessingButtonComponent = (props: DefaultButtonProps) => {
+  let isDisabled = props.disabled;
+  let icon = props.icon;
+  let buttonText = props.text;
+  let buttonAction = props.action;
+  if (props.status === TXEventName.Pending || props.status === TXEventName.AwaitingSigning) {
+    buttonText = 'Processing...';
+    isDisabled = true;
+  }
+  const failed = props.status === TXEventName.Failure;
+  const confirmed = props.status === TXEventName.Success;
+  if (failed) buttonText = 'Failed';
+  if (confirmed) buttonText = 'Confirmed'
+  if (failed || confirmed) {
+    buttonAction = e => props.cancel(e);
+    icon = XIcon;
+    isDisabled = false;
+  }
+  return (
+    <>
+      {props.secondaryButton &&
+        <SecondaryButton
+          {...props}
+          confirmed={confirmed}
+          failed={failed}
+          icon={icon}
+          text={buttonText}
+          action={buttonAction}
+          disabled={isDisabled}
+        />
+      }
+      {!props.secondaryButton && !props.cancelButton &&
+        <PrimaryButton
+          {...props}
+          confirmed={confirmed}
+          failed={failed}
+          icon={icon}
+          text={buttonText}
+          action={buttonAction}
+          disabled={isDisabled}
+        />
+      }
+      {props.cancelButton &&
+        <CancelTextButton
+          {...props}
+          confirmed={confirmed}
+          failed={failed}
+          icon={icon}
+          text={buttonText}
+          action={buttonAction}
+          disabled={isDisabled}
+        />
+      }
+    </>
+  );
+};
+
+const mapStateToPropsProcessingButton = (state: AppState, ownProps) => {
+  const { pendingQueue } = state;
+  let disabled = false;
+
+  const pendingData =
+  pendingQueue[ownProps.queueName] &&
+  pendingQueue[ownProps.queueName][ownProps.queueId];
+
+  let status = pendingData && pendingData.status;
+
+  if (ownProps.matchingId !== undefined && pendingData) {
+    if (pendingData.data.matchingId.toString() !== ownProps.matchingId.toString()) {
+      status = null;
+      disabled = true;
+    }
+  }
+
+  return {
+    disabled: ownProps.disabled || disabled,
+    status,
+  };
+};
+
+const mapDispatchToPropsProcessingButton = (dispatch, ownProps) => ({
+  cancel: () =>
+    dispatch(removePendingData(ownProps.queueId, ownProps.queueName)),
+});
+
+
+export const ProcessingButton = connect(mapStateToPropsProcessingButton, mapDispatchToPropsProcessingButton)(
+  ProcessingButtonComponent
 );
 
 export const PrimarySignInButton = (props: DefaultButtonProps) => (
@@ -214,7 +332,7 @@ export const FavoritesButton = ({
   action,
   disabled,
   title,
-  hideText
+  hideText,
 }: FavoritesButtonProps) => (
   <button
     onClick={e => action(e)}
@@ -223,11 +341,10 @@ export const FavoritesButton = ({
       [Styles.FavoriteButton_small]: isSmall,
     })}
     disabled={disabled}
-    title={title}
+    title={title || 'Toggle Favorite'}
   >
     {StarIcon}
-    {!hideText &&
-      `${isFavorite ? ' Remove from' : ' Add to'} watchlist`}
+    {!hideText && `${isFavorite ? ' Remove from' : ' Add to'} watchlist`}
   </button>
 );
 
@@ -275,14 +392,21 @@ export const CancelTextButton = ({
   action,
   title,
   disabled,
+  confirmed,
+  failed,
+  icon,
 }: DefaultButtonProps) => (
   <button
     onClick={e => action(e)}
-    className={classNames(Styles.CancelTextButton, {[Styles.IconButton]: !text})}
+    className={classNames(Styles.CancelTextButton, {
+      [Styles.IconButton]: !text,
+      [Styles.Confirmed]: confirmed,
+      [Styles.Failed]: failed,
+    })}
     disabled={disabled}
     title={title}
   >
-    {text || XIcon}
+    {text} {!icon && !text? XIcon : icon}
   </button>
 );
 
@@ -356,7 +480,7 @@ export const REPFaucetButton = (props: DefaultActionButtonProps) => (
     disabled={props.disabled}
     title={props.title || 'REP Faucet'}
   >
-    <span>{props.title ? props.title : "REP Faucet"}</span>
+    <span>{props.title ? props.title : 'REP Faucet'}</span>
     {RepLogoIcon}
   </button>
 );
@@ -421,20 +545,23 @@ export const ViewTransactionDetailsButton = (
       showNonLink
       txhash={props.transactionHash}
       label={props.label ? props.label : 'View'}
+      showIcon
     />
-    {ViewIcon}
   </div>
 );
 
 export const ExternalLinkText = (props: ExternalLinkTextProps) => (
-  <button
-    className={Styles.ExternalLinkText}
-  >
+  <button className={Styles.ExternalLinkText}>
     {props.URL && (
-      <a href={props.URL} target='blank'>
-        {props.title
-        ? <><strong>{props.title}</strong>{props.label}</>
-        : props.label}
+      <a href={props.URL} target="_blank" rel="noopener noreferrer">
+        {props.title ? (
+          <>
+            <strong>{props.title}</strong>
+            {props.label}
+          </>
+        ) : (
+          props.label
+        )}
       </a>
     )}
 
@@ -448,7 +575,7 @@ export const ExternalLinkButton = (props: ExternalLinkButtonProps) => (
       [Styles.LightAlternate]: props.light,
     })}
     onClick={e => {
-      props.action && props.action(e)
+      props.action && props.action(e);
       props.callback && props.callback();
     }}
   >
@@ -457,7 +584,7 @@ export const ExternalLinkButton = (props: ExternalLinkButtonProps) => (
     ) : (
       <>
         {props.URL && (
-          <a href={props.URL} target="blank">
+          <a href={props.URL} target="_blank" rel="noopener noreferrer">
             {props.label}
           </a>
         )}
@@ -556,6 +683,7 @@ interface EtherscanLinkTSXProps {
   txhash: string;
   label: string;
   showNonLink?: boolean;
+  showIcon?: boolean;
 }
 
 const EtherscanLinkTSX = ({
@@ -563,14 +691,21 @@ const EtherscanLinkTSX = ({
   txhash,
   label,
   showNonLink,
+  showIcon,
 }: EtherscanLinkTSXProps) => (
   <span>
     {baseUrl && (
-      <a href={baseUrl + txhash} target="blank">
+      <a href={baseUrl + txhash} target="_blank" rel="noopener noreferrer">
         {label}
+        {showIcon && ViewIcon}
       </a>
     )}
-    {!baseUrl && showNonLink && <span>{label}</span>}
+    {!baseUrl && showNonLink && (
+      <span>
+        {label}
+        {showIcon && ViewIcon}
+      </span>
+    )}
   </span>
 );
 

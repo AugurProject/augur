@@ -17,6 +17,7 @@ import { setLiquidityOrderStatus } from 'modules/events/actions/liquidity-transa
 export const UPDATE_LIQUIDITY_ORDER = 'UPDATE_LIQUIDITY_ORDER';
 export const ADD_MARKET_LIQUIDITY_ORDERS = 'ADD_MARKET_LIQUIDITY_ORDERS';
 export const REMOVE_LIQUIDITY_ORDER = 'REMOVE_LIQUIDITY_ORDER';
+export const CLEAR_LIQUIDITY_ORDER = 'CLEAR_LIQUIDITY_ORDER';
 export const LOAD_PENDING_LIQUIDITY_ORDERS = 'LOAD_PENDING_LIQUIDITY_ORDERS';
 export const CLEAR_ALL_MARKET_ORDERS = 'CLEAR_ALL_MARKET_ORDERS';
 export const UPDATE_TX_PARAM_HASH_TX_HASH = 'UPDATE_TX_PARAM_HASH_TX_HASH';
@@ -64,6 +65,10 @@ export const loadBulkPendingLiquidityOrders = (
 ) => ({
   type: LOAD_PENDING_LIQUIDITY_ORDERS,
   data: { pendingLiquidityOrders },
+});
+
+export const clearLiquidityOrders = () => ({
+  type: CLEAR_LIQUIDITY_ORDER,
 });
 
 export const addMarketLiquidityOrders = ({ liquidityOrders, txParamHash }) => ({
@@ -159,10 +164,9 @@ export const sendLiquidityOrder = (options: any) => async (
         outcomeId: order.outcomeId,
         orderPrice: order.price,
         orderType: order.type,
-        eventName: TXEventName.Pending
+        eventName: TXEventName.Pending,
       },
       market,
-      dispatch
     )
   );
 
@@ -229,20 +233,36 @@ export const startOrderSending = (options: CreateLiquidityOrders) => async (
   }
 };
 
-const createZeroXLiquidityOrders = (
+const createZeroXLiquidityOrders = async (
   market: Getters.Markets.MarketInfo,
   orders: LiquidityOrder[],
   dispatch
 ) => {
   try {
     const fingerprint = undefined; // TODO: get this from state
-    orders.map((o: LiquidityOrder) =>
-      placeTrade(
+    let i = 0;
+    // set all orders to pending before processing them.
+    for (i; i < orders.length; i++) {
+      const o: LiquidityOrder = orders[i];
+      dispatch(
+        setLiquidityOrderStatus(
+          {
+            outcomeId: o.outcomeId,
+            orderPrice: createBigNumber(o.price).toString(),
+            orderType: o.type,
+            eventName: TXEventName.Pending,
+          },
+          market,
+        )
+      );
+    }
+    for (i = 0; i < orders.length; i++) {
+      const o: LiquidityOrder = orders[i];
+      await placeTrade(
         o.type === BUY ? 0 : 1,
         market.id,
         market.numOutcomes,
         o.outcomeId,
-        fingerprint,
         false,
         market.numTicks,
         market.minPrice,
@@ -251,29 +271,31 @@ const createZeroXLiquidityOrders = (
         o.price,
         '0',
         undefined
-      ).then(() => {
-        dispatch(
-          deleteSuccessfulLiquidityOrder({
-            txParamHash: market.transactionHash,
-            outcomeId: o.outcomeId,
-            type: o.type,
-            price: o.price,
-          })
-        );
-      }).catch((err) => {
-        dispatch(
-          setLiquidityOrderStatus(
-            {
+      )
+        .then(() => {
+          dispatch(
+            deleteSuccessfulLiquidityOrder({
+              txParamHash: market.transactionHash,
               outcomeId: o.outcomeId,
-              orderPrice: createBigNumber(o.price).toString(),
-              orderType: o.type,
-              eventName: TXEventName.Failure
-            },
-            market,
-            dispatch
-          )
-      )})
-    );
+              type: o.type,
+              price: o.price,
+            })
+          );
+        })
+        .catch(err => {
+          dispatch(
+            setLiquidityOrderStatus(
+              {
+                outcomeId: o.outcomeId,
+                orderPrice: createBigNumber(o.price).toString(),
+                orderType: o.type,
+                eventName: TXEventName.Failure,
+              },
+              market,
+            )
+          );
+        });
+    }
   } catch (e) {
     console.error(e);
   }

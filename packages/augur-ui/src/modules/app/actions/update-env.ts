@@ -1,8 +1,8 @@
-import { EnvObject } from "modules/types";
+import { SDKConfiguration } from '@augurproject/artifacts';
 
-export const UPDATE_ENV = "UPDATE_ENV";
+export const UPDATE_ENV = 'UPDATE_ENV';
 
-export function updateEnv(env: EnvObject) {
+export function updateEnv(env: SDKConfiguration) {
   return {
     type: UPDATE_ENV,
     data: { env },

@@ -3,7 +3,7 @@ import classNames from 'classnames';
 
 import ToggleRow from 'modules/common/toggle-row';
 import { MarketStatusLabel, TemplateShield, MarketTypeLabel } from 'modules/common/labels';
-import { SCALAR } from 'modules/common/constants';
+import { SCALAR, SIGN_SEND_ORDERS } from 'modules/common/constants';
 import MarketTitle from 'modules/market/containers/market-title';
 import { TXEventName } from '@augurproject/sdk';
 import { SubmitTextButton } from 'modules/common/buttons';
@@ -71,6 +71,7 @@ const MarketRow = ({
               reportingState={market.reportingState}
               alternate
               mini
+              isWarpSync={market.isWarpSync}
             />
             {market.marketType === SCALAR && <MarketTypeLabel marketType={market.marketType} />}
           </div>
@@ -90,7 +91,7 @@ const MarketRow = ({
               You have pending initial liquidity.
               <SubmitTextButton
                 action={() => unsignedOrdersModal(market.marketId)}
-                text="View orders"
+                text={SIGN_SEND_ORDERS}
               />
             </span>
           )}

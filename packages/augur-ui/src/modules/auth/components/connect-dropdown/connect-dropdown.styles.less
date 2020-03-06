@@ -63,6 +63,10 @@
     background: var(--color-module-background);
   }
 
+  @media @breakpoint-mobile {
+    background: @color-module-background;
+  }
+
   > div:first-of-type {
     .mono-11-bold;
 
@@ -141,6 +145,7 @@
     background: var(--color-secondary-action);
 
     > svg {
+      fill: @color-secondary-text;
       height: @size-9;
       margin-left: @size-5;
     }
@@ -149,7 +154,6 @@
 
 .GasEdit {
   align-items: center;
-  border: none;
   height: @size-57;
   padding: @size-12 @size-16;
 
@@ -160,7 +164,7 @@
     width: @size-136;
     width: -moz-fit-content;
     width: fit-content;
-    
+
     // Transation fee
     > div:first-of-type {
       .mono-10-medium;
@@ -184,6 +188,14 @@
       .text-12;
       color: var(--color-primary-text);
       margin-bottom: @size-4;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 235px;
+      white-space: nowrap;
+
+      @media @breakpoint-mobile {
+        width: calc(100vw - 167px);
+      }
     }
   }
 
@@ -334,5 +346,47 @@
     > svg {
       margin-right: @size-6;
     }
+  }
+}
+}
+
+.ShowConfirmaiton {
+  position: relative;
+}
+
+.ShowConfirmaiton:after {
+  content: '';
+
+  border-top: solid @size-12 var(--color-primary-text);
+  border-left: solid @size-12 transparent;
+  border-right: solid @size-12 transparent;
+  position: absolute;
+  right: @size-16;
+  top: -@size-16;
+
+  @media @breakpoint-mobile {
+    bottom: @size-25;
+    left: @size-8;
+  }
+}
+
+.ShowConfirmaiton:before {
+  .text-10;
+
+  content: 'Copied!';
+  align-items: center;
+  color: var(--color-inactive-text);
+  background: var(--color-primary-text);
+  border-radius: @border-radius-default;
+  display: flex;
+  justify-content: center;
+  padding: @size-8 @size-12;
+  position: absolute;
+  right: 0;
+  text-transform: capitalize;
+  top: -39px;
+
+  @media @breakpoint-mobile {
+    bottom: @size-32;
   }
 }

@@ -1,21 +1,20 @@
+import { TestContractAPI } from '@augurproject/tools';
+import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
 import { BigNumber } from 'bignumber.js';
-
-import { API } from '@augurproject/sdk/build/state/getter/API';
-import { DB } from '@augurproject/sdk/build/state/db/DB';
-import { ContractAPI} from '@augurproject/tools';
-import { makeDbMock} from '../../../../libs';
-import { TestEthersProvider } from '../../../../libs/TestEthersProvider';
-import { _beforeAll, _beforeEach, doTrade, SHORT } from './common';
 import * as _ from 'lodash';
-import { PLTradeData, LONG, YES } from './common';
-
-const mock = makeDbMock();
+import {
+  _beforeAll,
+  _beforeEach,
+  doTrade,
+  LONG,
+  PLTradeData,
+  SHORT,
+  YES,
+} from './common';
 
 describe('State API :: Users :: ', () => {
-  let db: Promise<DB>;
-  let api: API;
-  let john: ContractAPI;
-  let mary: ContractAPI;
+  let john: TestContractAPI;
+  let mary: TestContractAPI;
   let baseProvider: TestEthersProvider;
 
   beforeAll(async () => {
@@ -25,8 +24,7 @@ describe('State API :: Users :: ', () => {
 
   beforeEach(async () => {
     const state = await _beforeEach({ baseProvider });
-    db = state.db;
-    api = state.api;
+
     john = state.john;
     mary = state.mary;
   });
@@ -87,24 +85,28 @@ describe('State API :: Users :: ', () => {
       await doTrade(john, mary, trade, trade.market);
     }
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    await john.sync();
 
-    const profitLoss = await api.route('getProfitLoss', {
+    const profitLoss = await john.api.route('getProfitLoss', {
       universe: john.augur.contracts.universe.address,
       account: mary.account.publicKey,
       startTime: startTime.toNumber(),
     });
 
     for (const trade of trades) {
-      const plFrame = _.find(profitLoss, (pl) => {
+      const plFrame = _.find(profitLoss, pl => {
         return new BigNumber(pl.timestamp).gte(trade.timestamp);
       });
 
-      await expect(Number.parseFloat(plFrame.realized)).toEqual(trade.realizedPL);
-      await expect(Number.parseFloat(plFrame.unrealized)).toEqual(trade.unrealizedPL);
+      await expect(Number.parseFloat(plFrame.realized)).toEqual(
+        trade.realizedPL
+      );
+      await expect(Number.parseFloat(plFrame.unrealized)).toEqual(
+        trade.unrealizedPL
+      );
     }
 
-    const profitLossSummary = await api.route('getProfitLossSummary', {
+    const profitLossSummary = await john.api.route('getProfitLossSummary', {
       universe: john.augur.contracts.universe.address,
       account: mary.account.publicKey,
     });
@@ -112,12 +114,18 @@ describe('State API :: Users :: ', () => {
     const oneDayPLSummary = profitLossSummary['1'];
     const thirtyDayPLSummary = profitLossSummary['30'];
 
-    await expect(Number.parseFloat(oneDayPLSummary.realized)).toEqual(trades[3].realizedPL);
+    await expect(Number.parseFloat(oneDayPLSummary.realized)).toEqual(
+      trades[3].realizedPL
+    );
     await expect(Number.parseFloat(oneDayPLSummary.unrealized)).toEqual(0.5);
     await expect(Number.parseFloat(oneDayPLSummary.frozenFunds)).toEqual(1.5);
 
-    await expect(Number.parseFloat(thirtyDayPLSummary.realized)).toEqual(trades[3].realizedPL);
+    await expect(Number.parseFloat(thirtyDayPLSummary.realized)).toEqual(
+      trades[3].realizedPL
+    );
     await expect(Number.parseFloat(thirtyDayPLSummary.unrealized)).toEqual(0.5);
-    await expect(Number.parseFloat(thirtyDayPLSummary.frozenFunds)).toEqual(9.5);
+    await expect(Number.parseFloat(thirtyDayPLSummary.frozenFunds)).toEqual(
+      9.5
+    );
   });
 });

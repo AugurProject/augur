@@ -354,6 +354,7 @@ interface DateTimeSelectorProps {
   uniqueKey?: string;
   condensedStyle?: boolean;
   isAfter: number;
+  openTop?: boolean;
 }
 
 interface TimeSelectorParams {
@@ -435,6 +436,7 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
     uniqueKey,
     condensedStyle,
     isAfter,
+    openTop
   } = props;
 
   const [dateFocused, setDateFocused] = useState(false);
@@ -483,6 +485,7 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
           focused={dateFocused}
           errorMessage={validations && validations.setEndTime}
           condensedStyle={condensedStyle}
+          openTop={openTop}
         />
         <TimeSelector
           hour={hour}
@@ -491,6 +494,7 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
           onChange={(label: string, value: number) => {
             onChange(label, value);
           }}
+          openTop={openTop}
           onFocusChange={(focused: Boolean) => {
             const timeSelector: TimeSelectorParams = {};
             if (!hour) {
@@ -512,6 +516,7 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
           condensedStyle={condensedStyle}
         />
         <TimezoneDropdown
+          openTop={openTop}
           onChange={(offsetName: string, offset: number, timezone: string) => {
             const timezoneParams = { offset, timezone, offsetName };
             onChange('timezoneDropdown', timezoneParams);
@@ -936,7 +941,7 @@ export const InputFactory = (props: InputFactoryProps) => {
 };
 
 export const SimpleTimeSelector = (props: EstimatedStartSelectorProps) => {
-  const { currentTime, onChange } = props;
+  const { currentTime, onChange, openTop } = props;
 
   const [endTime, setEndTime] = useState(null);
   const [hour, setHour] = useState(null);
@@ -963,6 +968,7 @@ export const SimpleTimeSelector = (props: EstimatedStartSelectorProps) => {
     <DateTimeSelector
       setEndTime={endTime}
       condensedStyle
+      openTop={openTop}
       onChange={(label, value) => {
         switch (label) {
           case 'timezoneDropdown':
@@ -1012,6 +1018,7 @@ interface EstimatedStartSelectorProps {
   onChange: Function;
   inputIndex: number;
   isAfter: number;
+  openTop?: boolean;
 }
 
 export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
@@ -1306,6 +1313,7 @@ export interface CategoricalTemplateTextInputsProps {
 
 const SimpleTextInputOutcomes = (props: CategoricalTemplateTextInputsProps) => {
   const [marketOutcomes, setMarketOutcomes] = useState(null);
+  const [noAdditionOutcomes] = useState(!!props.newMarket.template.noAdditionalUserOutcomes);
   const [required] = useState(
     props.newMarket.template.inputs
       .filter(i => i.type === TemplateInputType.ADDED_OUTCOME)
@@ -1336,20 +1344,24 @@ const SimpleTextInputOutcomes = (props: CategoricalTemplateTextInputsProps) => {
 
   return (
     <>
-      <Subheaders
-        header="Outcomes"
-        subheader="List the outcomes people can choose from."
-      />
-      <NumberedList
-        initialList={showOutcomes}
-        minShown={2}
-        maxList={7 - required.length}
-        placeholder={'Enter outcome'}
-        updateList={(value: string[]) => {
-          onChange('outcomes', [...value, ...required.map(i => i.value)]);
-        }}
-        errorMessage={validations && validations.outcomes}
-      />
+      {!noAdditionOutcomes && (
+        <>
+          <Subheaders
+            header="Outcomes"
+            subheader="List the outcomes people can choose from."
+          />
+          <NumberedList
+            initialList={showOutcomes}
+            minShown={2}
+            maxList={7 - required.length}
+            placeholder={'Enter outcome'}
+            updateList={(value: string[]) => {
+              onChange('outcomes', [...value, ...required.map(i => i.value)]);
+            }}
+            errorMessage={validations && validations.outcomes}
+          />
+        </>
+      )}
       <Subheaders
         header="Required Outcomes"
         subheader="Required unchangeable additional outcomes"
@@ -1577,12 +1589,14 @@ export const CategoricalTemplateDropdowns = (
           data,
         });
       });
-      setSourceUserInput(source && source.userInput);
-      setdropdownList(
-        isDepDropdown
-          ? createTemplateValueList(depDropdownInput.values[source.userInput])
-          : createTemplateValueList(depDropdownInput.values)
-      );
+      if (source && source.userInput !== undefined) {
+        setSourceUserInput(source.userInput);
+        setdropdownList(
+          isDepDropdown
+            ? createTemplateValueList(depDropdownInput.values[source.userInput])
+            : createTemplateValueList(depDropdownInput.values)
+        );
+      }
     } else {
       if (outcomeList.length == 0 && defaultOutcomeItems.length > 0) {
         defaultOutcomeItems.map((i: CategoricalDropDownItem) =>
@@ -1591,6 +1605,7 @@ export const CategoricalTemplateDropdowns = (
       }
 
       if (isDepDropdown && sourceUserInput !== source.userInput) {
+        setSourceUserInput(source.userInput);
         dispatch({ type: ACTIONS.REMOVE_ALL, data: null });
         setdropdownList(
           isDepDropdown

@@ -20,12 +20,14 @@ import { MarketData } from 'modules/types';
 interface CorePropertiesProps {
   market: MarketData;
   reportingBarShowing?: boolean;
+  showExtraDetailsChevron?: boolean;
 }
 
 // TODO: Get market 24 hour volume, currently just using volume
 const CoreProperties: React.FC<CorePropertiesProps> = ({
   market,
   reportingBarShowing,
+  showExtraDetailsChevron,
 }) => {
   const [showExtraDetails, setShowExtraDetails] = useState(false);
   const isScalar = market.marketType === SCALAR;
@@ -130,6 +132,22 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({
                   </>
                 }
               />
+              {isScalar && reportingBarShowing &&
+                <>
+                  <PropertyLabel
+                    label="Denomination"
+                    value={market.scalarDenomination}
+                  />
+                  <PropertyLabel
+                    label="Min"
+                    value={market.minPrice}
+                  />
+                  <PropertyLabel
+                    label="Max"
+                    value={market.maxPrice}
+                  />
+                </>
+              }
             </>
           )}
         </div>
@@ -152,7 +170,7 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({
             />
           </div>
         )}
-        {reportingBarShowing && (
+        {reportingBarShowing && showExtraDetailsChevron && (
           <button onClick={() => setShowExtraDetails(() => !showExtraDetails)}>
             <ChevronFlip
               pointDown={showExtraDetails}
@@ -164,7 +182,7 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({
         )}
       </div>
 
-      {isScalar &&
+      {!market.isWarpSync && isScalar &&
         (!reportingBarShowing || showExtraDetails) && (
           <div className={Styles.ScalarBox}>
             <MarketScalarOutcomeDisplay

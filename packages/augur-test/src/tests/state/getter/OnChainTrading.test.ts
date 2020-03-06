@@ -1,35 +1,36 @@
-import { makeDbMock, makeProvider } from '../../../libs';
-import { ContractAPI, loadSeedFile, ACCOUNTS, defaultSeedPath } from '@augurproject/tools';
-import { API } from '@augurproject/sdk/build/state/getter/API';
-import { DB } from '@augurproject/sdk/build/state/db/DB';
-import {
-  MarketReportingState,
-} from '@augurproject/sdk/build/constants';
+import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
 import {
   MarketTradingHistory,
   Orders,
   OrderState,
 } from '@augurproject/sdk/build/state/getter/OnChainTrading';
+import { ACCOUNTS, defaultSeedPath, loadSeedFile } from '@augurproject/tools';
+import { TestContractAPI } from '@augurproject/tools';
+import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
 import { BigNumber } from 'bignumber.js';
-import { stringTo32ByteHex } from '../../../libs/Utils';
-import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
-
-const mock = makeDbMock();
+import { makeProvider } from '../../../libs';
+import { SDKConfiguration } from '@augurproject/artifacts';
 
 describe('State API :: Trading :: ', () => {
-  let db: Promise<DB>;
-  let api: API;
-  let john: ContractAPI;
-  let mary: ContractAPI;
+  let john: TestContractAPI;
+  let mary: TestContractAPI;
+  let config: SDKConfiguration;
 
   beforeAll(async () => {
     const seed = await loadSeedFile(defaultSeedPath);
     const provider = await makeProvider(seed, ACCOUNTS);
+    config = provider.getConfig();
 
-    john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, seed.addresses);
-    mary = await ContractAPI.userWrapper(ACCOUNTS[1], provider, seed.addresses);
-    db = mock.makeDB(john.augur, ACCOUNTS);
-    api = new API(john.augur, db);
+    john = await TestContractAPI.userWrapper(
+      ACCOUNTS[0],
+      provider,
+      config
+    );
+    mary = await TestContractAPI.userWrapper(
+      ACCOUNTS[1],
+      provider,
+      config
+    );
   });
 
   test(':getTradingHistory', async () => {
@@ -83,12 +84,15 @@ describe('State API :: Trading :: ', () => {
     await mary.fillOrder(orderId1, numShares.div(2), '43');
     await mary.fillOrder(orderId2, numShares.div(2), '43');
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    await john.sync();
 
     // Get trades by user
-    let trades: MarketTradingHistory[] = await api.route('getTradingHistory', {
-      account: mary.account.publicKey,
-    });
+    let trades: MarketTradingHistory[] = await john.api.route(
+      'getTradingHistory',
+      {
+        account: mary.account.publicKey,
+      }
+    );
 
     await expect(trades[market1.address]).toHaveLength(1);
     await expect(trades[market2.address]).toHaveLength(1);
@@ -102,7 +106,7 @@ describe('State API :: Trading :: ', () => {
     await expect(trade.selfFilled).toEqual(false);
 
     // Get trades by market
-    trades = await api.route('getTradingHistory', {
+    trades = await john.api.route('getTradingHistory', {
       marketIds: [market1.address],
     });
 
@@ -124,9 +128,9 @@ describe('State API :: Trading :: ', () => {
 
     await john.finalizeMarket(market1);
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    await john.sync();
 
-    trades = await api.route('getTradingHistory', {
+    trades = await john.api.route('getTradingHistory', {
       marketIds: [market1.address, market2.address],
       filterFinalized: true,
     });
@@ -164,10 +168,10 @@ describe('State API :: Trading :: ', () => {
     // Take half the order using the same account
     const orderId = await john.getBestOrderId(bid, market.address, outcome);
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    await john.sync();
 
     // Get orders for the market
-    let orders: Orders = await api.route('getOpenOnChainOrders', {
+    let orders: Orders = await john.api.route('getOpenOnChainOrders', {
       marketId: market.address,
       orderState: OrderState.OPEN,
     });
@@ -176,10 +180,10 @@ describe('State API :: Trading :: ', () => {
 
     await john.fillOrder(orderId, numShares.div(2), '42');
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    await john.sync();
 
     // Get orders for the market
-    orders = await api.route('getOpenOnChainOrders', {
+    orders = await john.api.route('getOpenOnChainOrders', {
       marketId: market.address,
     });
     order = orders[market.address][0]['0'][orderId];
@@ -192,10 +196,10 @@ describe('State API :: Trading :: ', () => {
     // Cancel order
     await john.cancelNativeOrder(orderId);
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    await john.sync();
 
     // Get orders for the market
-    orders = await api.route('getOpenOnChainOrders', {
+    orders = await john.api.route('getOpenOnChainOrders', {
       marketId: market.address,
     });
     order = orders[market.address][0]['0'][orderId];
@@ -205,14 +209,14 @@ describe('State API :: Trading :: ', () => {
     await expect(order.canceledTransactionHash).toEqual(order.transactionHash);
 
     // Get only Open orders
-    orders = await api.route('getOpenOnChainOrders', {
+    orders = await john.api.route('getOpenOnChainOrders', {
       marketId: market.address,
       orderState: OrderState.OPEN,
     });
     await expect(orders).toEqual({});
 
     // Get Canceled orders
-    orders = await api.route('getOpenOnChainOrders', {
+    orders = await john.api.route('getOpenOnChainOrders', {
       marketId: market.address,
       orderState: OrderState.CANCELED,
     });
@@ -235,10 +239,10 @@ describe('State API :: Trading :: ', () => {
       stringTo32ByteHex('42')
     );
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    await john.sync();
 
     // Test `filterFinalized` param
-    orders = await api.route('getOpenOnChainOrders', {
+    orders = await john.api.route('getOpenOnChainOrders', {
       marketId: market.address,
       filterFinalized: true,
     });

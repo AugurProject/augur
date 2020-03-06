@@ -75,7 +75,7 @@
     padding: @size-6 @size-20;
 
     @media @breakpoint-mobile {
-      padding: @size-3 @size-20 @size-12;
+      padding: @size-3 @size-3 @size-12;
     }
 
     > div {
@@ -149,6 +149,7 @@
 
       > div {
         .mono-11-medium;
+
         color: var(--color-positive);
       }
     }
@@ -171,6 +172,10 @@
   @media @breakpoint-mobile {
     border-left: 1px solid var(--color-module-background);
     padding: 0 0 0 @size-18;
+  }
+
+  @media @breakpoint-tablet {
+    padding: @size-8;
   }
 
   &:hover {

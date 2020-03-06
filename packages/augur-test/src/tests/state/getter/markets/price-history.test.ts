@@ -1,24 +1,14 @@
-import { API } from '@augurproject/sdk/build/state/getter/API';
-import { DB } from '@augurproject/sdk/build/state/db/DB';
-import { ContractAPI } from '@augurproject/tools';
-import { BigNumber } from 'bignumber.js';
 import { ORDER_TYPES, SECONDS_IN_A_DAY } from '@augurproject/sdk';
-import { TestEthersProvider } from '../../../../libs/TestEthersProvider';
-import { stringTo32ByteHex } from '../../../../libs/Utils';
-import {
-  _beforeAll,
-  _beforeEach,
-  CHUNK_SIZE,
-  outcome0,
-  outcome1,
-} from './common';
+import { TestContractAPI } from '@augurproject/tools';
+import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
+import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
+import { BigNumber } from 'bignumber.js';
+import { _beforeAll, _beforeEach, outcome0, outcome1 } from './common';
 
 describe('State API :: Markets :: GetMarkets', () => {
-  let db: Promise<DB>;
-  let api: API;
-  let john: ContractAPI;
-  let mary: ContractAPI;
-  let bob: ContractAPI;
+  let john: TestContractAPI;
+  let mary: TestContractAPI;
+  let bob: TestContractAPI;
 
   let baseProvider: TestEthersProvider;
   let markets = {};
@@ -31,16 +21,19 @@ describe('State API :: Markets :: GetMarkets', () => {
 
   beforeEach(async () => {
     const state = await _beforeEach({ baseProvider, markets });
-    db = state.db;
-    api = state.api;
+
     john = state.john;
     mary = state.mary;
     bob = state.bob;
   });
 
   test(':getMarketPriceHistory', async () => {
-    const yesNoMarket = john.augur.contracts.marketFromAddress(markets['yesNoMarket1']);
-    const categoricalMarket = john.augur.contracts.marketFromAddress(markets['categoricalMarket1']);
+    const yesNoMarket = john.augur.contracts.marketFromAddress(
+      markets['yesNoMarket1']
+    );
+    const categoricalMarket = john.augur.contracts.marketFromAddress(
+      markets['categoricalMarket1']
+    );
 
     // Place orders
 
@@ -175,11 +168,14 @@ describe('State API :: Markets :: GetMarkets', () => {
       '43'
     );
 
-    await (await db).sync(john.augur, CHUNK_SIZE, 0);
+    await john.sync();
 
-    const yesNoMarketPriceHistory = await api.route('getMarketPriceHistory', {
-      marketId: yesNoMarket.address,
-    });
+    const yesNoMarketPriceHistory = await john.api.route(
+      'getMarketPriceHistory',
+      {
+        marketId: yesNoMarket.address,
+      }
+    );
     expect(yesNoMarketPriceHistory).toMatchObject({
       '0': [
         { amount: '8000000000000', price: '22' },
@@ -209,7 +205,7 @@ describe('State API :: Markets :: GetMarkets', () => {
       }
     }
 
-    const categoricalMarketPriceHistory = await api.route(
+    const categoricalMarketPriceHistory = await john.api.route(
       'getMarketPriceHistory',
       {
         marketId: categoricalMarket.address,
@@ -237,8 +233,7 @@ describe('State API :: Markets :: GetMarkets', () => {
       ) {
         expect(
           categoricalMarketPriceHistory[outcome][fillOrder]
-        ).toHaveProperty('timestamp'
-        );
+        ).toHaveProperty('timestamp');
         if (fillOrder > 0) {
           expect(
             categoricalMarketPriceHistory[outcome][fillOrder].timestamp

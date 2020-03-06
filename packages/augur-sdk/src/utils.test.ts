@@ -239,11 +239,11 @@ test('describe yes-no outcome', () => {
 });
 
 test('describe categorical outcome', () => {
-  const outcomes = ['real', 'a dream', 'a trick'].map(formatBytes32String);
+  const outcomes = ['real', 'a dream', 'a trick'];
   expect(describeCategoricalOutcome(0, outcomes)).toEqual(CommonOutcomes.Invalid);
-  expect(describeCategoricalOutcome(1, outcomes)).toEqual('real'.padEnd(32, '\u0000'));
-  expect(describeCategoricalOutcome(2, outcomes)).toEqual('a dream'.padEnd(32, '\u0000'));
-  expect(describeCategoricalOutcome(3, outcomes)).toEqual('a trick'.padEnd(32, '\u0000'));
+  expect(describeCategoricalOutcome(1, outcomes)).toEqual('real');
+  expect(describeCategoricalOutcome(2, outcomes)).toEqual('a dream');
+  expect(describeCategoricalOutcome(3, outcomes)).toEqual('a trick');
 });
 
 test('describe scalar outcome', () => {
@@ -284,9 +284,9 @@ test('describe universe outcome : categorical', () => {
   const outcome: PayoutNumeratorValue = { outcome: '1' };
   const marketData = {
     marketType: MarketType.Categorical,
-    outcomes: ['real', 'a dream', 'a trick'].map(formatBytes32String),
+    outcomes: ['real', 'a dream', 'a trick'],
   } as MarketData;
-  expect(describeUniverseOutcome(outcome, marketData)).toEqual('real'.padEnd(32, '\u0000'));
+  expect(describeUniverseOutcome(outcome, marketData)).toEqual('real');
 });
 
 test('describe universe outcome : scalar', () => {
@@ -312,11 +312,11 @@ test('describe market outcome : yes-no', () => {
 test('describe market outcome : categorical', () => {
   const marketData = {
     marketType: MarketType.Categorical,
-    outcomes: ['real', 'a dream', 'a trick'].map(formatBytes32String),
+    outcomes: ['real', 'a dream', 'a trick'],
   } as MarketData;
-  expect(describeMarketOutcome('0x01', marketData)).toEqual('real'.padEnd(32, '\u0000'));
-  expect(describeMarketOutcome('0x02', marketData)).toEqual('a dream'.padEnd(32, '\u0000'));
-  expect(describeMarketOutcome('0x03', marketData)).toEqual('a trick'.padEnd(32, '\u0000'));
+  expect(describeMarketOutcome('0x01', marketData)).toEqual('real');
+  expect(describeMarketOutcome('0x02', marketData)).toEqual('a dream');
+  expect(describeMarketOutcome('0x03', marketData)).toEqual('a trick');
 });
 
 test('describe market outcome : scalar', () => {

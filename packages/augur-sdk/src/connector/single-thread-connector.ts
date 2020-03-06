@@ -1,11 +1,10 @@
-import { Augur } from '../Augur';
+import { SDKConfiguration } from '@augurproject/artifacts';
 import { API } from '../state/getter/API';
-import { SDKConfiguration, startServerFromClient } from '../state/create-api';
+import { startServerFromClient } from '../state/create-api';
 import { BaseConnector } from './base-connector';
 import { SubscriptionEventName } from '../constants';
 import { Subscriptions } from '../subscriptions';
 import { Callback } from '../events';
-import { BrowserMesh, ZeroX } from '../api/ZeroX';
 
 export class SingleThreadConnector extends BaseConnector {
   private get events(): Subscriptions {

@@ -1,9 +1,8 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { selectMarket } from 'modules/markets/selectors/market';
 import { startClaimingMarketsProceeds } from 'modules/positions/actions/claim-markets-proceeds';
 import { selectCurrentTimestampInSeconds } from 'store/select-state';
-import { createBigNumber, BigNumber } from 'utils/create-big-number';
+import { createBigNumber } from 'utils/create-big-number';
 import { getGasPrice } from 'modules/auth/selectors/get-gas-price';
 import {
   formatGasCostToEther,
@@ -15,7 +14,8 @@ import { Proceeds } from 'modules/modal/proceeds';
 import {
   CLAIM_MARKETS_PROCEEDS_GAS_ESTIMATE,
   MAX_BULK_CLAIM_MARKETS_PROCEEDS_COUNT,
-  ZERO,
+  PROCEEDS_TO_CLAIM_TITLE,
+  CLAIM_ALL_TITLE,
 } from 'modules/common/constants';
 import { CLAIM_MARKETS_PROCEEDS } from 'modules/common/constants';
 import { AppState } from 'store';
@@ -73,7 +73,7 @@ const mapStateToProps = (state: AppState) => {
               value: unclaimedProfit.full,
             },
           ],
-          text: 'Claim Proceeds',
+          text: PROCEEDS_TO_CLAIM_TITLE,
           action: null,
         };
       }
@@ -143,11 +143,11 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
   }
 
   return {
-    title: 'Claim Proceeds',
+    title: PROCEEDS_TO_CLAIM_TITLE,
     descriptionMessage: [
       {
         preText: 'You currently have a total of',
-        boldText: totalUnclaimedProceedsFormatted.formatted,
+        boldText: totalUnclaimedProceedsFormatted.full,
       },
     ],
     rows: claimableMarkets,
@@ -174,13 +174,22 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     },
     buttons: [
       {
-        text: `${multiMarket ? 'Claim All' : 'Claim Proceeds'}`,
+        text: `${multiMarket ? CLAIM_ALL_TITLE : PROCEEDS_TO_CLAIM_TITLE}`,
         disabled: claimableMarkets.find(market => market.status === 'pending'),
         action: () => {
           dP.startClaimingMarketsProceeds(
             claimableMarkets.map(m => m.marketId),
             sP.modal.cb
           );
+          dP.closeModal();
+        },
+      },
+      {
+        text: 'Close',
+        action: () => {
+          if (sP.modal.cb) {
+            sP.modal.cb();
+          }
           dP.closeModal();
         },
       },

@@ -48,7 +48,7 @@ export default class Reporting extends React.Component<ReportingProps> {
                       showLoggedOut={showLoggedOut}
                       loggedOutMessage='Connect a wallet to see your markets that are ready for Reporting.'
                       emptyHeader='There are no markets available for you to Report on.'
-                      emptySubheader='Check your Upcoming Designated Reporting to see Markets that will soon be availble for reporting.'
+                      emptySubheader='Check your Upcoming Designated Reporting to see Markets that will soon be available for reporting.'
                     />
                     <ReportingList
                       reportingType={REPORTING_STATE.PRE_REPORTING}
@@ -56,7 +56,7 @@ export default class Reporting extends React.Component<ReportingProps> {
                       showLoggedOut={showLoggedOut}
                       loggedOutMessage='Connect a wallet to see your markets that will soon be ready to Report on.'
                       emptyHeader='There are no markets coming up in the next week for you to Report on.'
-                      emptySubheader='Check your Upcoming Designated Reporting to see Markets that will soon be availble to Report on.'
+                      emptySubheader='Check your Upcoming Designated Reporting to see Markets that will soon be available to Report on.'
                     />
                   </ModulePane>
                   <ModulePane label='Open reporting'>
@@ -83,7 +83,7 @@ export default class Reporting extends React.Component<ReportingProps> {
                       showLoggedOut={showLoggedOut}
                       loggedOutMessage='Connect a wallet to see your markets that are ready for Reporting.'
                       emptyHeader='There are no markets available for you to Report on.'
-                      emptySubheader=' Check your Upcoming Designated Reporting to see Markets that will soon be availble to Report on.'
+                      emptySubheader=' Check your Upcoming Designated Reporting to see Markets that will soon be available to Report on.'
                     />
                     <ReportingList
                       reportingType={REPORTING_STATE.PRE_REPORTING}
@@ -91,7 +91,7 @@ export default class Reporting extends React.Component<ReportingProps> {
                       showLoggedOut={showLoggedOut}
                       loggedOutMessage='Connect a wallet to see your markets that will soon be ready to Report on.'
                       emptyHeader='There are no markets coming up in the next week for you to Report on. '
-                      emptySubheader='Check your Upcoming Designated Reporting to see Markets that will soon be availble to Report on.'
+                      emptySubheader='Check your Upcoming Designated Reporting to see Markets that will soon be available to Report on.'
                     />
                   </div>
                   <div>
@@ -119,7 +119,7 @@ export default class Reporting extends React.Component<ReportingProps> {
                       showLoggedOut={showLoggedOut}
                       loggedOutMessage='Connect a wallet to see your markets that are ready for Reporting.'
                       emptyHeader='There are no markets available for you to Report on.'
-                      emptySubheader=' Check your Upcoming Designated Reporting to see Markets that will soon be availble to Report on.'
+                      emptySubheader=' Check your Upcoming Designated Reporting to see Markets that will soon be available to Report on.'
                     />
                     <ReportingList
                       reportingType={REPORTING_STATE.PRE_REPORTING}
@@ -127,7 +127,7 @@ export default class Reporting extends React.Component<ReportingProps> {
                       showLoggedOut={showLoggedOut}
                       loggedOutMessage='Connect a wallet to see your markets that will soon be ready to Report on.'
                       emptyHeader='There are no markets coming up in the next week for you to Report on. '
-                      emptySubheader='Check your Upcoming Designated Reporting to see Markets that will soon be availble to Report on.'
+                      emptySubheader='Check your Upcoming Designated Reporting to see Markets that will soon be available to Report on.'
                     />
                     <ReportingList
                       reportingType={REPORTING_STATE.OPEN_REPORTING}

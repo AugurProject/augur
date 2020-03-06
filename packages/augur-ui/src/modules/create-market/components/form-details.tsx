@@ -109,26 +109,6 @@ export default class FormDetails extends React.Component<
       >
         <div>
           <Header text="Market details" />
-
-          {isTemplate && (
-            <>
-              <div>
-                <SmallSubheaders
-                  header="Market Type"
-                  subheader={MARKET_TYPE_NAME[marketType]}
-                />
-                <SmallSubheaders
-                  header="Primary Category"
-                  subheader={categories[0]}
-                />
-                <SmallSubheaders
-                  header={'Secondary category'}
-                  subheader={categories[1] === '' ? '-' : categories[1]}
-                />
-              </div>
-              <LineBreak />
-            </>
-          )}
           {!isTemplate && (
             <>
               <Subheaders
@@ -265,7 +245,7 @@ export default class FormDetails extends React.Component<
               <section>
                 <TextInput
                   type="number"
-                  placeholder="0"
+                  placeholder="Enter Min Range value"
                   onChange={(value: string) => {
                     onChange('minPrice', value);
                     if (!checkValidNumber(value))
@@ -278,7 +258,7 @@ export default class FormDetails extends React.Component<
                 <span>to</span>
                 <TextInput
                   type="number"
-                  placeholder="100"
+                  placeholder="Enter Max Range value"
                   onChange={(value: string) => {
                     onChange('maxPrice', value);
                     if (!checkValidNumber(value))

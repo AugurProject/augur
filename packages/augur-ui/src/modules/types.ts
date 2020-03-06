@@ -199,6 +199,7 @@ export interface PendingQueue {
     [pendingId: string]: {
       status: string;
       blockNumber: number;
+      hash: string;
       parameters?: UIOrder | NewMarket;
       data: CreateMarketData;
     };
@@ -250,6 +251,7 @@ export interface MyPositionsSummary {
   totalPercent: FormattedNumber;
   totalReturns: FormattedNumber;
   valueChange: FormattedNumber;
+  valueChange24Hr: FormattedNumber;
 }
 
 export interface Notification {
@@ -266,6 +268,8 @@ export interface Notification {
   markets: string[];
   claimReportingFees?: object;
   totalProceeds?: number;
+  queueName?: string;
+  queueId?: string;
 }
 
 export interface OrderStatus {
@@ -358,7 +362,6 @@ export interface NewMarket {
   type: string;
   outcomes: string[];
   outcomesFormatted: OutcomeFormatted[];
-  scalarSmallNum: string;
   scalarBigNum: string;
   scalarDenomination: string;
   description: string;
@@ -407,7 +410,6 @@ export interface Draft {
   currentStep: number;
   type: string;
   outcomes: string[];
-  scalarSmallNum: string;
   scalarBigNum: string;
   scalarDenomination: string;
   description: string;
@@ -488,7 +490,7 @@ export interface ReportingListState {
   };
 }
 export interface FilledOrders {
-  [account: string]: Getters.Trading.Orders;
+  [account: string]: Getters.Trading.MarketTradingHistory;
 }
 
 export interface OpenOrders {
@@ -519,29 +521,6 @@ export interface FilterSortOptions {
 
 export interface Favorite {
   [marketId: string]: number;
-}
-
-export interface EthereumNodeOptions {
-  blockRetention: number;
-  connectionTimeout: number;
-  http: string;
-  pollingIntervalMilliseconds: number;
-  ws: string;
-}
-
-export interface EnvObject {
-  useWeb3Transport: boolean;
-  'ethereum-node': EthereumNodeOptions;
-  universe?: string;
-  '0x-endpoint'?: string,
-  'gnosis-relay'?: string,
-  sdkEndpoint?: string,
-  debug?: EnvDebugOptions,
-}
-
-export interface EnvDebugOptions {
-  connect: boolean;
-  broadcast: boolean;
 }
 
 export interface QueryEndpoints {
@@ -630,6 +609,7 @@ export interface AccountBalances {
   rep: number;
   dai: number;
   legacyRep: number;
+  legacyRepNonSafe: number;
   attoRep: string;
   legacyAttoRep: string;
 }
@@ -647,6 +627,10 @@ export interface LoginAccountMeta {
 export interface LoginAccountSettings {
   showInvalidMarketsBannerFeesOrLiquiditySpread?: boolean;
   showInvalidMarketsBannerHideOrShow?: boolean;
+  templateFilter?: boolean;
+  maxFee?: boolean;
+  spread?: boolean;
+  showInvalid?: boolean;
 }
 
 export interface LoginAccount {
@@ -663,6 +647,7 @@ export interface LoginAccount {
   balances: AccountBalances;
   reporting: Getters.Accounts.AccountReportingHistory;
   settings?: LoginAccountSettings;
+  affiliate?: string;
 }
 
 export interface Web3 {
@@ -806,6 +791,8 @@ export interface NavMenuItem {
   requireLogin?: boolean;
   disabled?: boolean;
   showAlert?: boolean;
+  button?: boolean;
+  alternateStyle?: boolean;
 }
 
 export interface SortedGroup {

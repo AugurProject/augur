@@ -1,5 +1,6 @@
 import * as _ from 'lodash';
 import { Augur } from '../../Augur';
+import { SubscriptionEventName } from '../../constants';
 import { BaseDocument } from './AbstractTable';
 import { Log, ParsedLog } from '@augurproject/types';
 import { DB } from './DB';
@@ -39,7 +40,11 @@ export class DerivedDB extends RollbackTable {
     this.stateDB = db;
     this.name = name;
 
-    db.registerEventListener(mergeEventNames, this.handleMergeEvent.bind(this));
+    augur.events.once(SubscriptionEventName.BulkSyncComplete, this.onBulkSyncComplete.bind(this));
+  }
+
+  async onBulkSyncComplete() {
+    this.stateDB.registerEventListener(this.mergeEventNames, this.handleMergeEvent.bind(this));
   }
 
   async sync(highestAvailableBlockNumber: number): Promise<void> {
@@ -58,18 +63,42 @@ export class DerivedDB extends RollbackTable {
     const highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(
       this.dbName
     );
+    const documentById = {};
     for (const eventName of this.mergeEventNames) {
-      const result = await this.stateDB.dexieDB[eventName].where("blockNumber").aboveOrEqual(highestSyncedBlockNumber).toArray();
+      const result = await this.getEvents(highestSyncedBlockNumber, eventName);
       if (result.length > 0) {
-        await this.handleMergeEvent(
-          highestAvailableBlockNumber,
-          (result as unknown[]) as ParsedLog[],
-          true
-        );
+        const resultsById = _.groupBy(result, this.getIDValue.bind(this));
+        _.forEach(resultsById, (documents, documentId) => {
+          const latestDoc = documents.reduce((val, doc) => {
+            if (val.blockNumber < doc.blockNumber || (val.blockNumber === doc.blockNumber && val.logIndex < doc.logIndex)) {
+              return doc;
+            }
+            return val;
+          }, documents[0]);
+          const processedDoc = this.processDoc(latestDoc as ParsedLog);
+          const existingDoc = documentById[documentId];
+          if (existingDoc) {
+            documentById[documentId] = Object.assign(existingDoc, processedDoc);
+          } else {
+            documentById[documentId] = processedDoc;
+          }
+        });
       }
     }
 
+    await this.saveDocuments(_.values(documentById));
+
+    await this.syncStatus.setHighestSyncBlock(
+      this.dbName,
+      highestAvailableBlockNumber,
+      true
+    );
+
     await this.syncStatus.updateSyncingToFalse(this.dbName);
+  }
+
+  async getEvents(highestSyncedBlockNumber: number, eventName: string): Promise<BaseDocument[]> {
+    return await this.stateDB.dexieDB[eventName].where("blockNumber").aboveOrEqual(highestSyncedBlockNumber).toArray();
   }
 
   // For a group of documents/logs for a particular event type get the latest per id and update the DB documents for the corresponding ids
@@ -78,58 +107,35 @@ export class DerivedDB extends RollbackTable {
     logs: ParsedLog[],
     syncing = false
   ): Promise<number> {
-    let success = true;
     let documentsByIdByTopic = null;
     if (logs.length > 0) {
-      this.lock(this.HANDLE_MERGE_EVENT_LOCK);
       const documentsById = _.groupBy(logs, this.getIDValue.bind(this));
       documentsByIdByTopic = _.flatMap(documentsById, idDocuments => {
-        const mostRecentTopics = _.flatMap(_.groupBy(idDocuments, 'topic'), documents => {
-          return _.reduce(
-            documents,
-            (val, doc) => {
-              if (val.blockNumber < doc.blockNumber) {
-                val = doc;
-              } else if (
-                val.blockNumber === doc.blockNumber &&
-                val.logIndex < doc.logIndex
-              ) {
-                val = doc;
+        const mostRecentTopics = _.flatMap(_.groupBy(idDocuments, 'topics[0]'), documents => {
+          return documents.reduce((val, doc) => {
+              if (val.blockNumber < doc.blockNumber || (val.blockNumber === doc.blockNumber && val.logIndex < doc.logIndex)) {
+                return doc;
               }
               return val;
             },
             documents[0]
           );
         });
-        const processedDocs = _.map(mostRecentTopics, this.processDoc.bind(this));
-        return _.assign({}, ...processedDocs);
-      }) as any[];
 
-      // NOTE: "!syncing" is because during bulk sync we can rely on the order of events provided as they are handled in sequence
-      if (this.requiresOrder && !syncing) documentsByIdByTopic = _.sortBy(documentsByIdByTopic, ['blockNumber', 'logIndex']);
-      await this.bulkUpsertDocuments(documentsByIdByTopic);
-      this.clearLocks();
+        return _.map(mostRecentTopics, this.processDoc.bind(this));
+      });
+
+      await this.saveDocuments(documentsByIdByTopic);
     }
 
-    if (success) {
-      if (!syncing) {
-        // The mutex behavior here is needed since a derived DB may be responding to multiple updates in parallel
-        while (this.updatingHighestSyncBlock) {
-          await sleep(10);
-        }
-        this.updatingHighestSyncBlock = true;
-        await this.syncStatus.setHighestSyncBlock(
-          this.dbName,
-          blocknumber,
-          syncing
-        );
-        this.updatingHighestSyncBlock = false;
-        if (logs.length > 0) {
-          this.augur.events.emit(`DerivedDB:updated:${this.name}`, { data: documentsByIdByTopic });
-        }
-      }
-    } else {
-      throw new Error(`Unable to add new block`);
+    await this.syncStatus.setHighestSyncBlock(
+      this.dbName,
+      blocknumber,
+      syncing
+    );
+    this.updatingHighestSyncBlock = false;
+    if (logs.length > 0 && !this.syncing) {
+      this.augur.events.emitAfter(SubscriptionEventName.NewBlock, `DerivedDB:updated:${this.name}`, { data: documentsByIdByTopic });
     }
 
     return blocknumber;

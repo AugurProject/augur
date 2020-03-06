@@ -57,7 +57,8 @@
     display: flex;
     flex-flow: row-reverse nowrap;
 
-    > button {
+    > button,
+    > a {
       margin-left: @size-16;
     }
   }
@@ -297,7 +298,6 @@ div.Onboarding {
   }
 
   @media @breakpoint-mobile {
-    margin: 0 0 @size-16;
     padding: @size-8 @size-16 @size-16;
   }
 
@@ -343,19 +343,15 @@ div.ButtonsRow:last-of-type {
 }
 
 .FundsHelp {
-  > span {
-    display: flex;
-  }
-
-  > span:first-of-type {
+  > p {
     .text-12-bold;
 
     color: var(--color-primary-text);
     margin: 50px 0 @size-8;
   }
 
-  > span:nth-of-type(2) {
-    .text-10;
+  > div  {
+    .text-12;
 
     color: var(--color-secondary-text);
     line-height: 140%;
@@ -364,19 +360,31 @@ div.ButtonsRow:last-of-type {
       width: @size-16;
       height: @size-16;
       margin: 0 @size-2;
-    }
-  }
 
-  @media @breakpoint-mobile {
-    flex-direction: column;
-    justify-content: flex-end;
-    display: flex;
+      > span svg {
+        height: @size-12;
+        transform: translateY(@size-2);
+        width: @size-12;
+      }
+    }
 
     > button {
-      justify-content: flex-start;
-      margin: @size-16 0;
-      width: fit-content;
+      .text-10-bold;
+
+      background: none;
+      border: none;
+      padding: 0 0 0 @size-2;
+
+      @media @breakpoint-mobile {
+        padding: 0;
+      }
+
+      > svg {
+        height: @size-10;
+        width: @size-10;
+      }
     }
+
   }
 }
 
@@ -488,7 +496,7 @@ div.ButtonsRow:last-of-type {
       }
 
       > h3 {
-        .mono-11-bold;
+        .mono-10-bold;
 
         color: var(--color-primary-text);
         text-transform: uppercase;
@@ -640,12 +648,26 @@ div.ButtonsRow:last-of-type {
     margin: @size-4 0 @size-24 0;
 
     svg {
-      transform: translateY(@size-4);
+      height: @size-12;
+      transform: translateY(2px);
+      width: @size-12;
     }
   }
 
+  > a > button {
+    margin-top: @size-8;
+  }
+
   > button:last-of-type {
-    margin: @size-16 0 0 0;
+    .text-10-bold;
+
+    background: none;
+    border: none;
+
+    > svg {
+      height: @size-10;
+      width: @size-10;
+    }
   }
 }
 
@@ -655,7 +677,21 @@ div.ButtonsRow:last-of-type {
   }
 
   > ol svg {
-    transform: translateY(@size-3);
+    height: @size-12;
+    transform: translateY(2px);
+    width: @size-12;
+  }
+
+  > button:last-of-type {
+    .text-10-bold;
+
+    background: none;
+    border: none;
+
+    > svg {
+      height: @size-10;
+      width: @size-10;
+    }
   }
 }
 
@@ -710,6 +746,24 @@ div.ButtonsRow:last-of-type {
   max-width: 20rem;
 }
 
+.DescriptionWithLink {
+  > p {
+    .text-14-paragraph;
+
+    @media @breakpoint-mobile {
+      .text-12-paragraph;
+    }
+
+    color: @color-primary-text;
+    line-height: 150%;
+    margin: 0 0 @size-2 0;
+  }
+
+  > a {
+    color: @color-primary-action
+  }
+}
+
 .Message {
   .Container;
 
@@ -760,7 +814,7 @@ div.ButtonsRow:last-of-type {
 }
 
 .SignIn,
-.Connect,
+.HardwareWallet,
 .Loading {
   .Container;
 
@@ -915,9 +969,34 @@ div.ButtonsRow:last-of-type {
   > button:last-of-type {
     margin: 0 0 @size-32 0;
   }
+
+  > footer {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+
+    > div:first-of-type {
+      .text-12;
+
+      color: @color-secondary-text;
+
+      > span {
+        color: @color-primary-action;
+        cursor: pointer;
+      }
+    }
+
+    > div:last-of-type {
+      .text-12;
+
+      color: @color-secondary-text;
+      cursor: pointer;
+      text-align: center;
+    }
+  }
 }
 
-.Connect {
+.HardwareWallet {
   @media @breakpoint-mobile {
     margin: @size-48 0;
     padding-top: 57px;
@@ -947,8 +1026,8 @@ div.ButtonsRow:last-of-type {
     }
   }
 
-  > header {
-    margin: 0 0 @size-24 0;
+  > section {
+    margin: 0 0 @size-16 0;
 
     > div:first-of-type {
       .text-24-bold;
@@ -962,15 +1041,12 @@ div.ButtonsRow:last-of-type {
 
       color: var(--color-secondary-text);
       line-height: @size-20;
-
-      @media @breakpoint-mobile {
-        .text-12;
-      }
     }
   }
 
   > button {
-    .text-14-bold;
+    > a {
+      .text-10;
 
     color: var(--color-primary-text);
     margin: 0 0 @size-8 0;
@@ -978,8 +1054,20 @@ div.ButtonsRow:last-of-type {
     text-align: left;
   }
 
-  > button:last-of-type {
-    margin: 0;
+    > svg {
+      margin-top: 0;
+    }
+
+    path {
+      &:nth-child(odd) {
+        fill: @color-primary-action;
+        stroke: none;
+      }
+
+      &:nth-child(even) {
+        stroke: @color-primary-action;
+      }
+    }
   }
 }
 
@@ -1180,7 +1268,7 @@ div.ButtonsRow:last-of-type {
       padding: @size-12 @size-24;
 
       > span {
-        .mono-10;
+        .text-10-medium;
 
         color: var(--color-inactive-text);
         flex: 0 0 5.5rem;
@@ -1370,6 +1458,7 @@ div.ButtonsRow:last-of-type {
 
 .MigrateRep {
   .Message;
+  max-width: 614px;
 
   > main {
     margin: @size-22 0;
@@ -1382,7 +1471,6 @@ div.ButtonsRow:last-of-type {
 
       color: var(--color-primary-text);
       text-transform: unset;
-      margin: 0;
     }
 
     > h2 {
@@ -1390,18 +1478,31 @@ div.ButtonsRow:last-of-type {
 
       color: var(--color-secondary-text);
       margin: @size-6 0 0;
+      padding: 0 @size-50;
+
+      @media @breakpoint-mobile {
+        padding: 0;
+      }
 
       > button {
-        .text-14;
+        .text-10;
 
+        background: none;
+        border: none;
         margin-left: @size-3;
-        text-transform: unset;
+        text-transform: uppercase;
       }
     }
 
     > div:first-of-type {
-      margin: @size-24 0;
+      align-items: center;
+      background: var(--color-secondary-action);
+      border-radius: @size-6;
       display: flex;
+      flex-direction: column;
+      padding: @size-22 0;
+      margin: @size-35 0;
+      width: 222px;
 
       > div {
         padding: @size-12 0;
@@ -1427,23 +1528,13 @@ div.ButtonsRow:last-of-type {
           margin-bottom: @size-4;
           line-height: @size-28;
         }
-
-        > span:last-of-type {
-          .mono-14;
-
-          color: var(--color-secondary-text);
-          line-height: @size-16;
-        }
-
-        &:first-of-type {
-          margin-right: @size-24;
-        }
       }
     }
 
     > div:nth-of-type(2),
     > div:nth-of-type(3) {
       width: 330px;
+
     }
 
     > div:nth-of-type(2) {
@@ -1465,12 +1556,11 @@ div.ButtonsRow:last-of-type {
       }
 
       > div {
-        grid-column: 1 / span 2;
-      }
-    }
+        > span:last-of-type {
+          .mono-12;
+        }
 
-    > div:nth-of-type(3) {
-      margin-top: @size-34;
+      }
     }
 
     > div:last-of-type {
@@ -1480,6 +1570,7 @@ div.ButtonsRow:last-of-type {
       margin-top: @size-24;
       display: flex;
       align-items: center;
+      justify-content: center;
 
       > span {
         .text-11-bold;
@@ -1501,6 +1592,72 @@ div.ButtonsRow:last-of-type {
         }
       }
     }
+  }
+
+  > div {
+    border-top: 1px solid @color-secondary-action-outline;
+  }
+}
+
+.MigrateRepInfo {
+  .Message;
+  max-width: 614px;
+
+  > main {
+    margin: @size-22 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    > h1 {
+      .text-16-medium;
+
+      color: @color-primary-text;
+      margin: 0 0 @size-16 0;
+      text-transform: unset;
+    }
+
+    > h2 {
+      .text-14;
+
+      color: @color-secondary-text;
+      line-height: 140%;
+      margin-bottom: @size-28;
+      padding: 0 @size-50;
+      text-align: center;
+      @media @breakpoint-mobile {
+        padding: 0;
+      }
+
+      > button {
+        .text-10;
+
+        background: none;
+        border: none;
+        text-transform: uppercase;
+      }
+    }
+
+    > h3 {
+      margin-bottom: @size-4;
+      text-transform: uppercase;
+    }
+
+    > span {
+      margin-bottom: @size-16;
+    }
+
+    > button {
+      .text-10;
+
+      background: none;
+      border: none;
+      text-transform: uppercase;
+    }
+  }
+
+  > div {
+    border-top: 1px solid @color-secondary-action-outline;
   }
 }
 
@@ -2077,7 +2234,7 @@ div.ButtonsRow:last-of-type {
   display: grid;
   grid-template-columns:
     200px minmax(320px, 2fr) minmax(125px, 1fr) minmax(125px, 150px)
-    repeat(2, 100px) 50px repeat(2, 100px) 80px;
+    repeat(2, 100px) 50px repeat(2, 100px) 100px;
   grid-template-rows: auto;
 }
 
@@ -2299,6 +2456,11 @@ div.ButtonsRow:last-of-type {
   }
 
   > div:first-of-type {
+    max-height: 650px;
+    overflow: overlay;
+  }
+
+  > div:first-of-type > div:first-of-type {
     .TransactionsTable;
     .text-12;
 
@@ -2308,6 +2470,7 @@ div.ButtonsRow:last-of-type {
     margin: @size-24 0 0;
     min-height: @size-32;
     text-transform: uppercase;
+    min-width: fit-content;
 
     @media @breakpoint-mobile {
       margin: 0;
@@ -2337,7 +2500,7 @@ div.ButtonsRow:last-of-type {
     }
   }
 
-  > section:last-of-type {
+  > div:first-of-type > section:last-of-type {
     .TransactionsTable;
 
     border-top: 0;
@@ -2345,6 +2508,7 @@ div.ButtonsRow:last-of-type {
     max-height: 650px;
     overflow: overlay;
     margin-bottom: @size-32;
+    min-width: fit-content;
 
     @media @breakpoint-mobile {
       max-height: 600px;
@@ -2532,24 +2696,24 @@ div.ButtonsRow:last-of-type {
   flex-flow: row nowrap;
   justify-content: space-between;
   line-height: @size-14;
-  margin: @size-8 0 @size-18 0;
+  margin: @size-8 0;
   padding: @size-12 @size-9;
   padding-right: 0;
   width: fit-content;
   position: relative;
 
   > div {
+    font-size: @size-12;
     margin-right: @size-12;
+    max-width: 153px;
     word-break: break-all;
-    max-width: 125px;
   }
 
   > button {
-    .mono-10;
-
     align-items: center;
     color: var(--color-inactive-text);
     display: flex;
+    font-size: @size-12;
     margin-left: @size-8;
     margin-right: @size-12;
     padding: @size-6;
@@ -2935,6 +3099,16 @@ div.ButtonsRow:last-of-type {
           display: flex;
           align-items: center;
           height: @size-16;
+        }
+      }
+
+      .Details {
+        .text-12;
+
+        color: @color-secondary-text;
+
+        > h2 {
+          .text-10;
         }
       }
 

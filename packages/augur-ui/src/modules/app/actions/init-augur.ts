@@ -1,5 +1,4 @@
 import {
-  checkIsKnownUniverse,
   getNetworkId,
 } from 'modules/contracts/actions/contractCalls';
 import isGlobalWeb3 from 'modules/auth/helpers/is-global-web3';
@@ -9,29 +8,21 @@ import { updateUniverse } from 'modules/universe/actions/update-universe';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import logError from 'utils/log-error';
-import networkConfig from 'config/network.json';
 import { JsonRpcProvider, Web3Provider } from 'ethers/providers';
 import { isEmpty } from 'utils/is-empty';
 import {
-  MODAL_NETWORK_MISMATCH,
   MODAL_NETWORK_DISCONNECTED,
   MODAL_NETWORK_DISABLED,
   ACCOUNT_TYPES,
-  NETWORK_NAMES,
   MODAL_LOADING,
-  MODAL_WALLET_ERROR,
-  MODAL_ACCOUNT_CREATED,
-  MODAL_AUGUR_USES_DAI,
-  MODAL_BUY_DAI,
-  MODAL_TEST_BET,
-  MODAL_TUTORIAL_INTRO,
-  SIGNIN_LOADING_TEXT,
+  MODAL_ERROR,
+  SIGNIN_SIGN_WALLET,
 } from 'modules/common/constants';
 import { windowRef } from 'utils/window-ref';
 import { AppState } from 'store';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { EnvObject, NodeStyleCallback, WindowApp } from "modules/types";
+import { NodeStyleCallback, WindowApp } from 'modules/types';
 import { augurSdk } from 'services/augursdk';
 import { listenForStartUpEvents } from 'modules/events/actions/listen-to-updates';
 import { loginWithInjectedWeb3 } from 'modules/auth/actions/login-with-injected-web3';
@@ -47,99 +38,62 @@ import {
 import { logout } from 'modules/auth/actions/logout';
 import { updateCanHotload } from 'modules/app/actions/update-connection';
 import { Augur, Provider } from '@augurproject/sdk';
+import { getLoggedInUserFromLocalStorage } from 'services/storage/localStorage';
+import { getFingerprint } from 'utils/get-fingerprint';
+import { tryToPersistStorage } from 'utils/storage-manager';
+import Torus from '@toruslabs/torus-embed';
+import { isDevNetworkId, SDKConfiguration } from '@augurproject/artifacts';
+import { getNetwork } from 'utils/get-network-name';
+import { buildConfig } from '@augurproject/artifacts';
 
-const ACCOUNTS_POLL_INTERVAL_DURATION = 10000;
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
 
-function pollForAccount(
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) {
-  const windowApp = windowRef as WindowApp;
+async function loadAccountIfStored(dispatch: ThunkDispatch<void, any, Action>) {
+  const loggedInUser = getLoggedInUserFromLocalStorage();
+  const loggedInAccount = (loggedInUser && loggedInUser.address) || null;
+  const loggedInAccountType = (loggedInUser && loggedInUser.type) || null;
 
-  let attemptedLogin = false;
-  let intervalId = null;
-
-  async function attemptLogin() {
-    const { connection, modal } = getState();
-    if (attemptedLogin) {
-      clearInterval(intervalId);
-    }
-
-    if (!attemptedLogin && connection.isConnected) {
-      attemptedLogin = true;
-
-      const loggedInAccount = windowApp.localStorage.getItem('loggedInAccount');
-      const loggedInAccountType = windowApp.localStorage.getItem(
-        'loggedInAccountType'
-      );
-
-      const showModal = accountType => {
-        const onboardingShown = [
-          MODAL_ACCOUNT_CREATED,
-          MODAL_AUGUR_USES_DAI,
-          MODAL_BUY_DAI,
-          MODAL_TEST_BET,
-          MODAL_TUTORIAL_INTRO,
-        ].includes(modal.type);
-        if (!onboardingShown) {
+  const errorModal = () => {
+    dispatch(logout());
+    dispatch(
+      updateModal({
+        type: MODAL_ERROR,
+      })
+    );
+  };
+  try {
+    if (loggedInAccount) {
+      if (isGlobalWeb3() && loggedInAccountType === ACCOUNT_TYPES.WEB3WALLET) {
+        console.log('showMetaMaskHelper::', !windowRef.ethereum.selectedAddress);
+        if (!windowRef.ethereum.selectedAddress) {
+          // show metamask signer
           dispatch(
             updateModal({
               type: MODAL_LOADING,
-              callback: () =>
-                setTimeout(() => {
-                  dispatch(closeModal());
-                }),
-              message: accountType === ACCOUNT_TYPES.WEB3WALLET ? SIGNIN_LOADING_TEXT : `Connecting to our partners at ${accountType} to create your secure account.`,
-              showLearnMore: true,
-              showCloseAfterDelay: true,
+              message: SIGNIN_SIGN_WALLET,
+              showMetaMaskHelper: true,
+              callback: () => dispatch(closeModal()),
             })
           );
         }
-      };
 
-      const errorModal = () => {
-        dispatch(logout());
-        dispatch(
-          updateModal({
-            type: MODAL_WALLET_ERROR,
-          })
-        );
-      };
+        await dispatch(loginWithInjectedWeb3());
+      }
+      if (loggedInAccountType === ACCOUNT_TYPES.PORTIS) {
+        await dispatch(loginWithPortis(false));
+      }
 
-      if (loggedInAccount) {
-        try {
-          if (
-            isGlobalWeb3() &&
-            loggedInAccountType === ACCOUNT_TYPES.WEB3WALLET
-          ) {
-            showModal(ACCOUNT_TYPES.WEB3WALLET);
-            await dispatch(loginWithInjectedWeb3());
-          }
-          if (loggedInAccountType === ACCOUNT_TYPES.PORTIS) {
-            showModal(ACCOUNT_TYPES.PORTIS);
-            await dispatch(loginWithPortis(false));
-          }
+      if (loggedInAccountType === ACCOUNT_TYPES.FORTMATIC) {
+        await dispatch(loginWithFortmatic());
+      }
 
-          if (loggedInAccountType === ACCOUNT_TYPES.FORTMATIC) {
-            showModal(ACCOUNT_TYPES.FORTMATIC);
-            await dispatch(loginWithFortmatic());
-          }
-
-          if (loggedInAccountType === ACCOUNT_TYPES.TORUS) {
-            showModal(ACCOUNT_TYPES.TORUS);
-            await dispatch(loginWithTorus());
-          }
-        } catch (error) {
-          errorModal();
-        }
+      if (loggedInAccountType === ACCOUNT_TYPES.TORUS) {
+        await dispatch(loginWithTorus());
       }
     }
+  } catch (error) {
+    errorModal();
   }
-
-  intervalId = setInterval(() => {
-    attemptLogin();
-  }, ACCOUNTS_POLL_INTERVAL_DURATION);
 }
 
 function pollForNetwork(
@@ -165,8 +119,8 @@ function pollForNetwork(
 
 export function connectAugur(
   history: History,
-  env: any,
-  isInitialConnection: boolean = false,
+  config: SDKConfiguration,
+  isInitialConnection = false,
   callback: NodeStyleCallback = logError
 ) {
   return async (
@@ -174,12 +128,11 @@ export function connectAugur(
     getState: () => AppState
   ) => {
     const { modal, loginAccount } = getState();
-    let windowApp = windowRef as WindowApp;
+    const windowApp = windowRef as WindowApp;
 
-    const loggedInAccount = windowApp.localStorage.getItem('loggedInAccount');
-    const loggedInAccountType = windowApp.localStorage.getItem(
-      'loggedInAccountType'
-    );
+    const loggedInUser = getLoggedInUserFromLocalStorage();
+    const loggedInAccount = loggedInUser && loggedInUser.address || null;
+    const loggedInAccountType = loggedInUser && loggedInUser.type || null;
 
     // Preload Account
     const preloadAccount = accountType => {
@@ -218,23 +171,58 @@ export function connectAugur(
       preloadAccount(ACCOUNT_TYPES.TORUS);
     }
 
-    let provider;
-    if (window.web3) {
-      provider = new Web3Provider(window.web3.currentProvider);
-    } else {
-      provider = new JsonRpcProvider(env['ethereum-node'].http);
+    let provider = null;
+    const networkId = config.networkId;
+
+    if (config.ethereum?.http) {
+      // Use node provided in the ethereum_node_http param
+      try {
+        provider = new JsonRpcProvider(config.ethereum.http);
+      } catch(error) {
+        dispatch(
+          updateModal({
+            type: MODAL_NETWORK_DISABLED,
+          })
+        );
+      }
+    }
+    else if (networkId && !isDevNetworkId(networkId)) {
+      // Unless DEV, use the provider on window if it exists, otherwise use torus provider
+      if (windowRef.web3) {
+        // Use window provider
+        provider = new Web3Provider(windowRef.web3.currentProvider);
+      } else {
+        // Use torus provider
+        const host = getNetwork(networkId);
+        const torus: any = new Torus({});
+
+        await torus.init({
+          network: { host },
+          showTorusButton: false,
+        });
+
+        // Tor.us cleanup
+        const torusWidget = document.querySelector('#torusWidget');
+        if (torusWidget) {
+          torusWidget.remove();
+        }
+        provider = new Web3Provider(torus.provider);
+      }
+    }
+    else {
+      // In DEV, use local ethereum node
+      provider = new JsonRpcProvider(config.ethereum.http);
     }
 
     let sdk: Augur<Provider> = null;
     try {
-      sdk = await augurSdk.makeClient(provider, env);
+      sdk = await augurSdk.makeClient(provider, config);
     } catch (e) {
       console.error(e);
       return callback('SDK could not be created', null);
     }
 
-    windowApp = windowRef as WindowApp;
-    let universeId = env.universe || sdk.contracts.universe.address;
+    let universeId = config.addresses?.Universe || sdk.contracts.universe.address;
     if (
       windowApp.localStorage &&
       windowApp.localStorage.getItem &&
@@ -249,23 +237,24 @@ export function connectAugur(
       ];
       universeId = !storedUniverseId ? universeId : storedUniverseId;
     }
-    const known = await checkIsKnownUniverse(universeId);
     dispatch(updateUniverse({ id: universeId }));
 
     // If the network disconnected modal is being shown, but we are now
     // connected -- hide it.
-    if (modal && modal.type === MODAL_NETWORK_DISCONNECTED) {
+    if (modal?.type === MODAL_NETWORK_DISCONNECTED) {
       dispatch(closeModal());
     }
 
     if (isInitialConnection) {
-      pollForAccount(dispatch, getState);
+      loadAccountIfStored(dispatch);
       pollForNetwork(dispatch, getState);
     }
 
     // wire up start up events for sdk
     dispatch(listenForStartUpEvents(sdk));
     dispatch(updateCanHotload(true));
+
+    await augurSdk.connect();
 
     callback(null);
   };
@@ -282,7 +271,7 @@ export function initAugur(
   history: History,
   {
     ethereumNodeHttp,
-    ethereumNodeWs,
+    ethereumNodeWs, /* unused */
     sdkEndpoint,
     useWeb3Transport,
   }: initAugurParams,
@@ -292,18 +281,28 @@ export function initAugur(
     dispatch: ThunkDispatch<void, any, Action>,
     getState: () => AppState
   ) => {
-    const env: EnvObject = networkConfig[`${process.env.ETHEREUM_NETWORK}`];
-    console.log(env);
-    env.useWeb3Transport = useWeb3Transport;
-    env['ethereum-node'].http = ethereumNodeHttp
-      ? ethereumNodeHttp
-      : env['ethereum-node'].http;
-    const defaultWS = isEmpty(ethereumNodeHttp) ? env['ethereum-node'].ws : '';
-    // If only the http param is provided we need to prevent this "default from taking precedence.
-    env['ethereum-node'].ws = ethereumNodeWs ? ethereumNodeWs : defaultWS;
-    env['sdkEndpoint'] = sdkEndpoint;
+    // const config: SDKConfiguration = environments[`${process.env.ETHEREUM_NETWORK}`];
+    const config = buildConfig(process.env.ETHEREUM_NETWORK || 'local');
 
-    dispatch(updateEnv(env));
-    connectAugur(history, env, true, callback)(dispatch, getState);
+    config.ethereum.useWeb3Transport = useWeb3Transport;
+
+    if (ethereumNodeHttp) {
+      config.ethereum.http = ethereumNodeHttp;
+    }
+
+    if (sdkEndpoint) {
+      config.sdk.ws = sdkEndpoint;
+    }
+
+    console.log(
+      '******** CONFIGURATION ***********\n' +
+      JSON.stringify(config, null, 2) +
+      '\n**********************************'
+    );
+    // cache fingerprint
+    getFingerprint();
+    dispatch(updateEnv(config));
+    tryToPersistStorage();
+    connectAugur(history, config, true, callback)(dispatch, getState);
   };
 }

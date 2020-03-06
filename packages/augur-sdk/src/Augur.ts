@@ -1,4 +1,4 @@
-import { ContractAddresses, NetworkId } from '@augurproject/artifacts';
+import { SDKConfiguration, NetworkId } from '@augurproject/artifacts';
 import { ContractInterfaces } from '@augurproject/core';
 import { GnosisSafeState, GnosisSafeStateReponse } from '@augurproject/gnosis-relay-api';
 import { BigNumber } from 'bignumber.js';
@@ -30,7 +30,9 @@ import { Platform } from './state/getter/Platform';
 import { Status } from './state/getter/status';
 import { Universe } from './state/getter/Universe';
 import { Users } from './state/getter/Users';
+import { WarpSyncGetter } from './state/getter/WarpSyncGetter';
 import { ZeroXOrdersGetters } from './state/getter/ZeroXOrdersGetters';
+import { WarpSync } from './api/WarpSync';
 import { Address } from './state/logs/types';
 import { Subscriptions } from './subscriptions';
 
@@ -43,16 +45,20 @@ export class Augur<TProvider extends Provider = Provider> {
   readonly trade: Trade;
   readonly market: Market;
   readonly gnosis: Gnosis;
+  readonly warpSync: WarpSync;
 
   readonly universe: Universe;
   readonly liquidity: Liquidity;
   readonly hotLoading: HotLoading;
   readonly events: Subscriptions;
 
+  private _sdkReady = false;
+
   private txSuccessCallback: TXStatusCallback;
   private txAwaitingSigningCallback: TXStatusCallback;
   private txPendingCallback: TXStatusCallback;
   private txFailureCallback: TXStatusCallback;
+  private txFeeTooLowCallback: TXStatusCallback;
   private txRelayerDownCallback: TXStatusCallback;
 
   get zeroX(): ZeroX {
@@ -67,41 +73,48 @@ export class Augur<TProvider extends Provider = Provider> {
     this._zeroX = zeroX;
   }
 
+  get sdkReady(): boolean {
+    return this._sdkReady;
+  }
+
   constructor(
     readonly provider: TProvider,
     readonly dependencies: ContractDependenciesGnosis,
-    readonly networkId: NetworkId,
-    readonly addresses: ContractAddresses,
+    public config: SDKConfiguration,
     public connector: BaseConnector = new EmptyConnector(),
     private _zeroX = null,
     enableFlexSearch = false
   ) {
     this.provider = provider;
     this.dependencies = dependencies;
-    this.networkId = networkId;
     if (!this.connector || connector.constructor.name !== 'EmptyConnector') {
       this.connector = connector;
     }
+    if (!config.addresses) throw Error(`Augur config must include addresses. Config=${JSON.stringify(config)}`)
 
     this.events = new Subscriptions(augurEmitter);
     this.events.on(SubscriptionEventName.GnosisSafeStatus, this.updateGnosisSafe.bind(this));
+    this.events.on(SubscriptionEventName.SDKReady, () => {
+      this._sdkReady = true;
+      console.log('SDK is ready')
+    });
 
     this.connector.client = this;
     if(this.zeroX) this.zeroX.client = this;
 
     // API
-    this.addresses = addresses;
-    this.contracts = new Contracts(this.addresses, this.dependencies);
+    this.contracts = new Contracts(this.config.addresses, this.dependencies);
     this.market = new Market(this);
     this.liquidity = new Liquidity(this);
     this.contractEvents = new ContractEvents(
       this.provider,
-      this.addresses.Augur,
-      this.addresses.AugurTrading,
-      this.addresses.ShareToken,
-      this.addresses.Exchange,
+      this.config.addresses.Augur,
+      this.config.addresses.AugurTrading,
+      this.config.addresses.ShareToken,
+      this.config.addresses.Exchange,
       );
     this.gnosis = new Gnosis(this.provider, this, this.dependencies);
+    this.warpSync = new WarpSync(this);
     this.hotLoading = new HotLoading(this);
     this.onChainTrade = new OnChainTrade(this);
     this.trade = new Trade(this);
@@ -114,23 +127,25 @@ export class Augur<TProvider extends Provider = Provider> {
   static async create<TProvider extends Provider = Provider>(
     provider: TProvider,
     dependencies: ContractDependenciesGnosis,
-    addresses: ContractAddresses,
+    config: SDKConfiguration,
     connector: BaseConnector = new SingleThreadConnector(),
     zeroX: ZeroX = null,
     enableFlexSearch = false
   ): Promise<Augur<Provider>> {
-    const networkId = await provider.getNetworkId();
     const client = new Augur<TProvider>(
       provider,
       dependencies,
-      networkId,
-      addresses,
+      config,
       connector,
       zeroX,
       enableFlexSearch
     );
-    await client.contracts.setReputationToken(networkId);
+    await client.contracts.setReputationToken(config.networkId)
     return client;
+  }
+
+  get networkId(): NetworkId {
+    return this.config.networkId;
   }
 
   async getTransaction(hash: string): Promise<TransactionResponse> {
@@ -221,7 +236,7 @@ export class Augur<TProvider extends Provider = Provider> {
   }
 
   async getGasStation() {
-    return await this.gnosis.gasStation();
+    return this.gnosis.gasStation();
   }
 
   async getGasConfirmEstimate() {
@@ -230,11 +245,11 @@ export class Augur<TProvider extends Provider = Provider> {
       return 180;
     }
 
-    var gasLevels = await this.getGasStation();
-    var recommended = (parseInt(gasLevels["standard"]) + 1000000000);
-    var fast = (parseInt(gasLevels["fast"]) + 1000000000);
-    var gasPrice = await this.getGasPrice();
-    var gasPriceNum = gasPrice.toNumber();
+    const gasLevels = await this.getGasStation();
+    const recommended = (parseInt(gasLevels['standard']) + 1000000000);
+    const fast = (parseInt(gasLevels['fast']) + 1000000000);
+    const gasPrice = await this.getGasPrice();
+    const gasPriceNum = gasPrice.toNumber();
     if (gasPriceNum >= fast) {
       return 60;
     }
@@ -257,7 +272,7 @@ export class Augur<TProvider extends Provider = Provider> {
   getOrders(): ContractInterfaces.Orders {
     return new ContractInterfaces.Orders(
       this.dependencies,
-      this.addresses.Orders
+      this.config.addresses.Orders
     );
   }
 
@@ -285,7 +300,7 @@ export class Augur<TProvider extends Provider = Provider> {
   bindTo<R, P>(
     f: (db: any, augur: any, params: P) => Promise<R>
   ): (params: P) => Promise<R> {
-    return this.connector && this.connector.bindTo(f);
+    return this.connector?.bindTo(f);
   }
 
   async on(
@@ -302,6 +317,8 @@ export class Augur<TProvider extends Provider = Provider> {
       this.txSuccessCallback = callback;
     } else if (eventName === TXEventName.Failure) {
       this.txFailureCallback = callback;
+    } else if (eventName === TXEventName.FeeTooLow) {
+      this.txFeeTooLowCallback = callback;
     } else if (eventName === TXEventName.RelayerDown) {
       this.txRelayerDownCallback = callback;
     }
@@ -320,6 +337,8 @@ export class Augur<TProvider extends Provider = Provider> {
       this.txSuccessCallback = null;
     } else if (eventName === TXEventName.Failure) {
       this.txFailureCallback = null;
+    } else if (eventName === TXEventName.FeeTooLow) {
+      this.txFeeTooLowCallback = null;
     } else if (eventName === TXEventName.RelayerDown) {
       this.txRelayerDownCallback = null;
     }
@@ -395,6 +414,19 @@ export class Augur<TProvider extends Provider = Provider> {
     return this.bindTo(Users.getUserOpenOrders)(params);
   };
 
+  getMostRecentWarpSync = (
+  ): ReturnType<typeof WarpSyncGetter.getMostRecentWarpSync> => {
+    return this.bindTo(WarpSyncGetter.getMostRecentWarpSync)(undefined);
+  };
+
+  getPayoutFromWarpSyncHash = (hash: string): Promise<BigNumber[]> => {
+      return this.warpSync.getPayoutFromWarpSyncHash(hash);
+  };
+
+  getWarpSyncHashFromPayout = (payout: BigNumber[]): string => {
+    return this.warpSync.getWarpSyncHashFromPayout(payout);
+  };
+
   getProfitLoss = (
     params: Parameters<typeof Users.getProfitLoss>[2]
   ): ReturnType<typeof Users.getProfitLoss> => {
@@ -405,6 +437,7 @@ export class Augur<TProvider extends Provider = Provider> {
   ): ReturnType<typeof Users.getProfitLossSummary> => {
     return this.bindTo(Users.getProfitLossSummary)(params);
   };
+
   getAccountTimeRangedStats = (
     params: Parameters<typeof Users.getAccountTimeRangedStats>[2]
   ): ReturnType<typeof Users.getAccountTimeRangedStats> => {
@@ -417,6 +450,17 @@ export class Augur<TProvider extends Provider = Provider> {
     return this.bindTo(Users.getUserAccountData)(params);
   };
 
+  getUserPositionsPlus = (
+    params: Parameters<typeof Users.getUserPositionsPlus>[2]
+  ): ReturnType<typeof Users.getUserPositionsPlus> => {
+    return this.bindTo(Users.getUserPositionsPlus)(params);
+  };
+
+  getTotalOnChainFrozenFunds = (
+    params: Parameters<typeof Users.getTotalOnChainFrozenFunds>[2]
+  ): ReturnType<typeof Users.getTotalOnChainFrozenFunds> => {
+    return this.bindTo(Users.getTotalOnChainFrozenFunds)(params);
+  };
   getAccountTransactionHistory = (
     params: Parameters<typeof Accounts.getAccountTransactionHistory>[2]
   ): ReturnType<typeof Accounts.getAccountTransactionHistory> => {
@@ -554,6 +598,16 @@ export class Augur<TProvider extends Provider = Provider> {
             hash,
           } as TXStatus;
           this.txFailureCallback(txn);
+        } else if (
+          status === TransactionStatus.FEE_TOO_LOW &&
+          this.txFeeTooLowCallback
+        ) {
+          const txn: TXStatus = {
+            transaction,
+            eventName: TXEventName.FeeTooLow,
+            hash,
+          } as TXStatus;
+          this.txFeeTooLowCallback(txn);
         } else if (
           status === TransactionStatus.RELAYER_DOWN &&
           this.txRelayerDownCallback

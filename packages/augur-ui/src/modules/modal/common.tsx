@@ -348,7 +348,7 @@ export const LinkContentSection = ({ linkContent }: LinkContentSectionProps) => 
     {linkContent.map((content, idx) => (
       <div key={idx}>
         {content.link && (
-          <a href={content.link} target="_blank">
+          <a href={content.link} target="_blank" rel="noopener noreferrer">
             <ExternalLinkButton label={content.content} />
           </a>
         )}
@@ -577,9 +577,11 @@ interface FundsHelpProps {
 
 export const FundsHelp = ({ fundType = DAI }: FundsHelpProps) => (
   <div className={Styles.FundsHelp}>
-    <span>Need help?</span>
-    <span>Learn how to buy {fundType === DAI ? `Dai ($)` : fundType} {fundType === DAI ? generateDaiTooltip() : ''} and  send it to your Augur account address.</span>
-    <ExternalLinkButton URL='https://docs.augur.net/' label='Learn More' />
+    <p>Need help?</p>
+    <div>
+      <span>Learn how to buy {fundType === DAI ? `Dai ($)` : fundType} {fundType === DAI ? generateDaiTooltip() : ''} and  send it to your Augur account address.</span>
+      <ExternalLinkButton URL='https://docs.augur.net/' label='Learn More' />
+    </div>
   </div>
 );
 
@@ -737,7 +739,7 @@ export const CreditCard = ({
     )}
 
     {accountMeta.accountType === ACCOUNT_TYPES.PORTIS && (
-      <a href='https://wallet.portis.io/buy/' target='_blank'>
+      <a href='https://wallet.portis.io/buy/' target='_blank' rel="noopener noreferrer">
         <PrimaryButton
           action={() => null}
           text={`Buy with ${accountMeta.accountType}`}
@@ -747,7 +749,7 @@ export const CreditCard = ({
     {accountMeta.accountType === ACCOUNT_TYPES.TORUS && (
       <PrimaryButton
         disabled={!isAmountValid}
-        action={() => addFundsTorus(amountToBuy)}
+        action={() => addFundsTorus(amountToBuy, toChecksumAddress(walletAddress))}
         text={`Buy with ${accountMeta.accountType}`}
       />
     )}
@@ -810,7 +812,7 @@ export const Coinbase = ({
     <ol>
       <li>
         Login to your account at{' '}
-        <a href='https://www.coinbase.com' target='blank'>
+        <a href='https://www.coinbase.com' target='_blank' rel="noopener noreferrer">
           www.coinbase.com
         </a>
       </li>
@@ -863,7 +865,7 @@ export const Transfer = ({
           fundTypeLabel
         )}{' '}
         using an app or exchange (see our list of{' '}
-        <a target='blank' href='https://docs.augur.net/'>
+        <a target='_blank' href='https://docs.augur.net/'>
           popular ways to buy {fundTypeLabel})
         </a>
       </li>

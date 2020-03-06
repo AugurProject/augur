@@ -1,11 +1,11 @@
-import store from "store";
+import store, { AppState } from "store";
 import { createBigNumber } from "utils/create-big-number";
 import { BUY, SELL, ZERO } from "modules/common/constants";
 import { convertUnixToFormattedDate } from "utils/format-date";
 import {
   selectMarketInfosState,
-  selectMarketTradingHistoryState,
   selectLoginAccountAddress,
+  selectFilledOrders,
 } from "store/select-state";
 import createCachedSelector from "re-reselect";
 import { selectUserOpenOrders } from "modules/orders/selectors/user-open-orders";
@@ -55,17 +55,15 @@ function findOrders(
         transactionHash,
         marketId,
         logIndex,
+        tradeGroupId: orderTradeGroupId,
       },
     ) => {
-      const foundOrder = order.find(({ id }) => id === orderId);
+      const foundOrder = order.find(({ id, tradeGroupId }) => id === orderId || tradeGroupId === orderTradeGroupId);
       const amountBN = createBigNumber(amount);
       const priceBN = createBigNumber(price);
-      let typeOp = type;
 
       let originalQuantity = amountBN;
       if (isSameAddress(creator, accountId) && !foundOrder) {
-        typeOp = type === BUY ? SELL : BUY; // marketTradingHistory is from filler perspective
-
         const matchingOpenOrder = openOrders.find(
           (openOrder) => openOrder.id === orderId,
         );
@@ -86,13 +84,14 @@ function findOrders(
           outcome: outcomeValue.description,
           amount: amountBN,
           price: priceBN,
-          type: typeOp,
+          type,
           timestamp: timestampFormatted,
           transactionHash,
           marketId,
           marketDescription,
           marketType,
           logIndex,
+          tradeGroupId: orderTradeGroupId,
         });
 
         foundOrder.originalQuantity = foundOrder.originalQuantity.plus(
@@ -120,7 +119,7 @@ function findOrders(
           id: orderId,
           timestamp: timestampFormatted,
           outcome: outcomeValue.description,
-          type: typeOp,
+          type,
           price: priceBN,
           amount: amountBN,
           marketId,
@@ -128,12 +127,13 @@ function findOrders(
           marketType,
           originalQuantity,
           logIndex,
+          tradeGroupId: orderTradeGroupId,
           trades: [
             {
               outcome: outcomeValue.description,
               amount: amountBN,
               price: priceBN,
-              type: typeOp,
+              type,
               timestamp: timestampFormatted,
               transactionHash,
               marketId,
@@ -158,8 +158,10 @@ function selectMarketsDataStateMarket(state, marketId) {
   return selectMarketInfosState(state)[marketId];
 }
 
-function selectMarketTradingHistoryStateMarket(state, marketId) {
-  return selectMarketTradingHistoryState(state)[marketId];
+function selectMarketUserFilledHistoryState(state: AppState, marketId) {
+  const filledOrders = selectFilledOrders(state);
+  const usersFilled = (filledOrders[state.loginAccount.address] || {})
+  return usersFilled[marketId] || [];
 }
 
 export default function(marketId) {
@@ -168,25 +170,21 @@ export default function(marketId) {
 }
 
 export const selectUserFilledOrders = createCachedSelector(
-  selectMarketTradingHistoryStateMarket,
   selectLoginAccountAddress,
   selectMarketsDataStateMarket,
   selectUserOpenOrders,
-  (marketTradeHistory, accountId, marketInfos, openOrders) => {
+  selectMarketUserFilledHistoryState,
+  (accountId, marketInfos, openOrders, filledMarketOrders) => {
     if (
-      !marketTradeHistory ||
-      marketTradeHistory.length < 1 ||
+      !filledMarketOrders ||
+      filledMarketOrders.length < 1 ||
       marketInfos === undefined
     ) {
       return [];
     }
 
-    const tradesCreatedOrFilledByThisAccount = marketTradeHistory.filter(
-      (trade) => isSameAddress(trade.creator, accountId) || isSameAddress(trade.filler, accountId),
-    );
-
     const orders = findOrders(
-      tradesCreatedOrFilledByThisAccount,
+      filledMarketOrders,
       accountId,
       marketInfos,
       openOrders,

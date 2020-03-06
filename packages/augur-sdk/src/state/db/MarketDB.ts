@@ -35,6 +35,9 @@ interface LiquidityResults {
   [liquidity: number]: number;
 }
 
+let liquidityCheckInterval = null;
+const liquidityDirty = new Set();
+
 /**
  * Market specific derived DB intended for filtering purposes
  */
@@ -65,10 +68,32 @@ export class MarketDB extends DerivedDB {
       'MarketMigrated': this.processMarketMigrated,
     };
 
-    this.augur.events.subscribe('DB:updated:ZeroXOrders', (orderEvents) => this.syncOrderBooks([orderEvents.market]));
-    this.augur.events.subscribe('DB:get:ZeroXOrders', (markets) => this.syncOrderBooks(markets));
+    this.augur.events.subscribe('DB:updated:ZeroXOrders', (orderEvents) => this.markMarketLiquidityAsDirty(orderEvents.market));
     this.augur.events.subscribe(SubscriptionEventName.NewBlock, this.processNewBlock);
     this.augur.events.subscribe(SubscriptionEventName.TimestampSet, this.processTimestampSet);
+
+    // Don't call this interval during tests
+    if (process.env.NODE_ENV !== 'test') {
+      if (!liquidityCheckInterval) {
+        // call recalc liquidity every 3mins
+        const THREE_MINS_IN_MS = 180000;
+        liquidityCheckInterval = setInterval(async () => {
+          if (liquidityDirty.size > 0) {
+            const marketIdsToCheck = Array.from(liquidityDirty) as string[];
+            await this.syncOrderBooks(marketIdsToCheck);
+            liquidityDirty.clear();
+          }
+        },THREE_MINS_IN_MS);
+      }
+    }
+  }
+
+  syncFTS = async (): Promise<void> => {
+    if (this.augur.syncableFlexSearch) {
+      let marketDocs = await this.allDocs();
+      marketDocs = marketDocs.slice(0, marketDocs.length);
+      await this.augur.syncableFlexSearch.addMarketCreatedDocs(marketDocs);
+    }
   }
 
   async doSync(highestAvailableBlockNumber: number): Promise<void> {
@@ -81,12 +106,18 @@ export class MarketDB extends DerivedDB {
     this.syncing = false;
   }
 
-  syncFTS = async (): Promise<void> => {
-    if (this.augur.syncableFlexSearch) {
-      let marketDocs = await this.allDocs();
-      marketDocs = marketDocs.slice(0, marketDocs.length);
-      await this.augur.syncableFlexSearch.addMarketCreatedDocs(marketDocs);
-    }
+  async handleMergeEvent(
+    blocknumber: number, logs: ParsedLog[],
+    syncing = false): Promise<number> {
+
+    const result = await super.handleMergeEvent(blocknumber, logs, syncing);
+
+    await this.syncOrderBooks([]);
+
+    const timestamp = (await this.augur.getTimestamp()).toNumber();
+    await this.processTimestamp(timestamp, result);
+    await this.syncFTS();
+    return result;
   }
 
   syncOrderBooks = async (marketIds: string[]): Promise<void> => {;
@@ -96,10 +127,10 @@ export class MarketDB extends DerivedDB {
 
     let marketsData;
     if (marketIds.length === 0) {
-      marketsData = await this.stateDB.Markets.toArray();
+      marketsData = await this.allDocs();
       ids = marketsData.map(data => data.market);
     } else {
-      marketsData = await this.stateDB.Markets.where('market').anyOf(marketIds).toArray();
+      marketsData = await this.table.where('market').anyOf(marketIds).toArray();
     }
 
     const reportingFeeDivisor = await this.augur.contracts.universe.getReportingFeeDivisor_();
@@ -117,7 +148,11 @@ export class MarketDB extends DerivedDB {
       }
     }
 
-    await this.bulkUpsertDocuments(documents);
+    await this.saveDocuments(documents);
+  }
+
+  markMarketLiquidityAsDirty(marketId: string) {
+    liquidityDirty.add(marketId);
   }
 
   async getOrderBookData(augur: Augur, marketId: string, marketData: MarketData, reportingFeeDivisor: BigNumber, ETHInAttoDAI: BigNumber): Promise<MarketOrderBookData> {
@@ -156,8 +191,8 @@ export class MarketDB extends DerivedDB {
 
     const spread10 = new BigNumber(marketOrderBookData.liquidity[10]);
     const spread15 = new BigNumber(marketOrderBookData.liquidity[15]);
-    const lastSpread10 = new BigNumber(marketData.liquidity[10]);
-    const lastSpread15 = new BigNumber(marketData.liquidity[15]);
+    const lastSpread10 = marketData.liquidity ? new BigNumber(marketData.liquidity[10]) : new BigNumber(0);
+    const lastSpread15 = marketData.liquidity ? new BigNumber(marketData.liquidity[15]) : new BigNumber(0);
 
     const passesSpreadCheck = (spread10.gt(0) || spread15.gt(0));
     // Keep track when a market has under a 15% spread. Used for `hasRecentlyDepletedLiquidity`
@@ -293,6 +328,7 @@ export class MarketDB extends DerivedDB {
   }
 
   private processMarketCreated = (log: ParsedLog): ParsedLog => {
+    log['isWarpSync'] = log.marketCreator.toLowerCase() === this.augur.config.addresses.WarpSync.toLowerCase();
     log['reportingState'] = MarketReportingState.PreReporting;
     log['finalized'] = 0;
     log['invalidFilter'] = 0;
@@ -315,15 +351,31 @@ export class MarketDB extends DerivedDB {
     log['timestamp'] = new BigNumber(log['timestamp'], 16).toNumber();
     log['creationTime'] = log['timestamp'];
     log['endTime'] = new BigNumber(log['endTime'], 16).toNumber();
+    log['outcomes'] = _.map(log['outcomes'], (rawOutcome) => {
+      return Buffer.from(rawOutcome.replace('0x', ''), 'hex').toString().trim().replace(/\0/g, '');
+    });
+
     try {
       log['extraInfo'] = JSON.parse(log['extraInfo']);
-      log['extraInfo'].categories = log['extraInfo'].categories.map((category) => category.toLowerCase());
-      if(log['extraInfo'].template) {
-        log['isTemplate'] = isTemplateMarket(log['extraInfo'].description, log['extraInfo'].template, log['outcomes'], log['extraInfo'].longDescription, log['endTime']);
-      }
     } catch (err) {
       log['extraInfo'] = {};
     }
+    try {
+      if (log['extraInfo'].categories)
+        log['extraInfo'].categories = log['extraInfo'].categories.map((category) => category.toLowerCase());
+    } catch (err) {
+      log['extraInfo'].categories = [];
+    }
+    try {
+      if(log['extraInfo'].template) {
+        let errors = [];
+        log['isTemplate'] = isTemplateMarket(log['extraInfo'].description, log['extraInfo'].template, log['outcomes'], log['extraInfo'].longDescription, log['endTime'], errors);
+        if (errors.length > 0) console.error(log['extraInfo'].description, errors);
+      }
+    } catch (err) {
+      log['extraInfo'].isTemplate = false;
+    }
+
     if (this.augur.syncableFlexSearch) {
       this.augur.syncableFlexSearch.addMarketCreatedDocs([log as unknown as MarketData]);
     }
@@ -421,8 +473,8 @@ export class MarketDB extends DerivedDB {
     }
 
     if (updateDocs.length > 0) {
-      await this.bulkUpsertDocuments(updateDocs);
-      this.augur.events.emit(SubscriptionEventName.ReportingStateChanged, { data: updateDocs });
+      await this.saveDocuments(updateDocs);
+      this.augur.events.emitAfter(SubscriptionEventName.NewBlock, SubscriptionEventName.ReportingStateChanged, { data: updateDocs });
     }
   }
 

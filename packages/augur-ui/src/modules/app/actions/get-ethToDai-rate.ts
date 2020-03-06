@@ -20,6 +20,7 @@ export const getEthToDaiRate = (
 };
 
 export const ethToDai = (ethAmount, ethToDaiRate) => {
+  if (!ethToDaiRate) return formatDaiEstimate(0);
   return formatDaiEstimate(ethToDaiRate.times(ethAmount));
 };
 

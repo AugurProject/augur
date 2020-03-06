@@ -46,6 +46,7 @@ import noop from 'utils/noop';
 import { Getters } from '@augurproject/sdk';
 import { MarketData, DisputeInputtedValues, SortedGroup } from 'modules/types';
 import MarkdownRenderer from 'modules/common/markdown-renderer';
+import { openTop } from './selection.styles.less';
 
 interface CheckboxProps {
   id: string;
@@ -72,6 +73,7 @@ interface DatePickerProps {
   navNext?: any;
   errorMessage?: string;
   condensedStyle?: boolean;
+  openTop?: boolean;
 }
 
 interface TextInputProps {
@@ -81,12 +83,13 @@ interface TextInputProps {
   placeholder?: string;
   onChange: Function;
   value?: string;
-  maxLength?: string;
+  maxLength?: number;
   trailingLabel?: string;
   innerLabel?: string;
   autoCompleteList?: SortedGroup[];
   onAutoCompleteListSelected?: Function;
   hideTrailingOnMobile?: boolean;
+  openTop?: boolean;
 }
 
 interface TextInputState {
@@ -155,6 +158,7 @@ interface TimezoneDropdownProps {
   timestamp?: number;
   timezone: string;
   condensedStyle?: boolean;
+  openTop?: boolean;
 }
 
 export const TimezoneDropdown = (props: TimezoneDropdownProps) => {
@@ -168,12 +172,17 @@ export const TimezoneDropdown = (props: TimezoneDropdownProps) => {
   }, [props.timezone, props.timestamp]);
 
   return (
-    <section className={classNames(Styles.Timezones, {[Styles.Condensed]: props.condensedStyle})}>
+    <section
+      className={classNames(Styles.Timezones, {
+        [Styles.Condensed]: props.condensedStyle,
+      })}
+    >
       <TextInput
         value={value === UTC_Default ? '' : value}
         placeholder={UTC_Default}
         autoCompleteList={timezones.timezones}
         onChange={() => {}}
+        openTop={props.openTop}
         onAutoCompleteListSelected={timezone => {
           const parse = /\(UTC (.*)\)/i;
           if (timezone !== '') {
@@ -276,7 +285,7 @@ export interface ReportingRadioBarProps extends BaseRadioButtonProp {
   userOutcomeCurrentRoundDispute: Getters.Accounts.UserCurrentOutcomeDisputeStake | null;
   hideButton?: boolean;
   isDisputing: boolean;
-  Gnosis_ENABLED: boolean;
+  isWarpSync: boolean;
 }
 
 export interface RadioTwoLineBarProps extends BaseRadioButtonProp {
@@ -660,7 +669,12 @@ export class CategoryMultiSelect extends Component<
     );
 
     return (
-      <ul className={Styles.CategoryMultiSelect}>
+      <ul
+        className={classNames(Styles.CategoryMultiSelect, {
+          [Styles.CustomPrimary]: customPrimary,
+          [Styles.CustomTertiary]: customTertiary,
+        })}
+      >
         <DropdownInputGroup
           defaultValue={selected[0]}
           staticLabel="Primary Category"
@@ -773,8 +787,8 @@ export const ReportingRadioBarGroup = ({
     radioButton => radioButton.stake.tentativeWinning
   );
   let winningStakeCurrent = '0';
-  let disputeAmount = '0';
   let notNewTentativeWinner = false;
+  let remainingState = '0';
   if (tentativeWinning) {
     const winning = disputeInfo.stakes.find(s => s.tentativeWinning);
     const disputeOutcome = disputeInfo.stakes.find(s => s.outcome === selected);
@@ -782,8 +796,11 @@ export const ReportingRadioBarGroup = ({
       notNewTentativeWinner = createBigNumber(winning.stakeCurrent).gt(
         disputeOutcome.bondSizeCurrent
       );
-      disputeAmount = formatAttoRep(disputeOutcome.bondSizeCurrent).formatted;
-      winningStakeCurrent = formatAttoRep(winning.stakeCurrent).formatted;
+      // double pre-filled to make new outcome tentative winner.
+      winningStakeCurrent = formatAttoRep(
+        createBigNumber(winning.stakeCurrent).times(2)
+      ).formatted;
+      remainingState = formatAttoRep(disputeOutcome.stakeRemaining).formatted;
     }
   }
 
@@ -793,8 +810,9 @@ export const ReportingRadioBarGroup = ({
         <section>
           <span>Tentative Outcome</span>
           <span>
-            Add Pre-emptive stake to Support this outcome if you believe it to
-            be correct.
+            Believe this is the correct outcome? Any REP you stake here will go
+            toward disputing in its favor, in the event that it is no longer the
+            Tentative Winner.
           </span>
           <ReportingRadioBar
             market={market}
@@ -814,6 +832,7 @@ export const ReportingRadioBarGroup = ({
             )}
             hideButton={disputeInfo.disputePacingOn}
             isDisputing={isDisputing}
+            isWarpSync={market.isWarpSync}
           />
         </section>
       )}
@@ -827,8 +846,8 @@ export const ReportingRadioBarGroup = ({
         notNewTentativeWinner &&
         tentativeWinning.id !== selected && (
           <Error
-            header={`Filling this bond of ${disputeAmount} REP only completes this current round`}
-            subheader={`Tentative Winning outcome has ${winningStakeCurrent} REP already staked for next round. More REP will be needed to make this outcome the Tentative Winner. This will require an additional transaction.`}
+            header={`Filling this bond of ${remainingState} REP only completes this current round`}
+            subheader={`${winningStakeCurrent} additional REP will still be needed to make it Tentative Winning Outcome. This will require an additional transaction.`}
           />
         )}
       {radioButtons.map(
@@ -852,14 +871,17 @@ export const ReportingRadioBarGroup = ({
                 d => d.outcome === String(radio.value)
               )}
               isDisputing={isDisputing}
+              isWarpSync={market.isWarpSync}
             />
           )
       )}
-      <span>
-        {!isDisputing
-          ? "Select Invalid if you believe this market's outcome was ambiguous or unverifiable."
-          : 'If you believe this market to be invalid, you can help fill the dispute bond of the official Invalid outcome below to make Invalid the new Tentative Outcome. Please check the resolution details above carefully.'}
-      </span>
+      {!market.isWarpSync && (
+        <span>
+          {!isDisputing
+            ? "Select Invalid if you believe this market's outcome was ambiguous or unverifiable."
+            : 'If you believe this market to be invalid, you can help fill the dispute bond of the official Invalid outcome below to make Invalid the new Tentative Outcome. Please check the resolution details above carefully.'}
+        </span>
+      )}
       {radioButtons.map(
         (radio, index) =>
           !radio.stake.tentativeWinning &&
@@ -881,6 +903,7 @@ export const ReportingRadioBarGroup = ({
                 d => d.outcome === String(radio.value)
               )}
               isDisputing={isDisputing}
+              isWarpSync={market.isWarpSync}
             />
           )
       )}
@@ -893,9 +916,9 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
     selected: this.props.defaultSelected || null,
   };
 
-  componentDidUpdate(prevProps: RadioGroupProps, prevState: RadioGroupState){
-    if (this.props.defaultSelected !== prevProps.defaultSelected){
-      this.updateChecked(this.props.defaultSelected)
+  componentDidUpdate(prevProps: RadioGroupProps, prevState: RadioGroupState) {
+    if (this.props.defaultSelected !== prevProps.defaultSelected) {
+      this.updateChecked(this.props.defaultSelected);
     }
   }
 
@@ -943,11 +966,11 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
       userOutcomeCurrentRoundDispute,
       hideButton,
       isDisputing,
-      Gnosis_ENABLED,
+      isWarpSync
     } = this.props;
 
     let { stake } = this.props;
-    const { disputeInfo, reportingState, marketType } = market;
+    const { disputeInfo, marketType } = market;
     const isScalar = marketType === SCALAR;
     if (isScalar) {
       for (const index in disputeInfo.stakes) {
@@ -979,7 +1002,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
         })}
         role="button"
         onClick={e => {
-          !hideButton && updateChecked(id, isInvalid);
+          !checked && !hideButton && updateChecked(id, isInvalid);
         }}
       >
         {checked ? FilledRadio : EmptyRadio}
@@ -1019,9 +1042,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
               {stake && stake.tentativeWinning && (
                 <Subheaders
                   header="pre-filled stake"
-                  subheader={
-                    formatAttoRep(stake.stakeCurrent || ZERO).formatted
-                  }
+                  subheader={formatAttoRep(stake.stakeCurrent || ZERO).full}
                 />
               )}
               {checked && (
@@ -1036,6 +1057,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
                   stakeRemaining={stake && stake.stakeRemaining}
                   tentativeWinning={stake && stake.tentativeWinning}
                   reportAction={reportAction}
+                  isWarpSync={isWarpSync}
                 />
               )}
             </>
@@ -1147,7 +1169,7 @@ export const RadioTwoLineBar = ({
   error,
   description,
   hideRadioButton,
-  renderMarkdown
+  renderMarkdown,
 }: RadioTwoLineBarProps) => (
   <div
     className={classNames(Styles.RadioTwoLineBar, {
@@ -1161,7 +1183,9 @@ export const RadioTwoLineBar = ({
   >
     {!hideRadioButton && (checked ? FilledRadio : EmptyRadio)}
     <h5>{header}</h5>
-    {renderMarkdown && <MarkdownRenderer hideLabel noPrewrap text={description} />}
+    {renderMarkdown && (
+      <MarkdownRenderer hideLabel noPrewrap text={description} />
+    )}
     {!renderMarkdown && <p>{description}</p>}
   </div>
 );
@@ -1225,23 +1249,45 @@ interface LocationDisplayProps {
   pages: Array<{}>;
 }
 
-export const LocationDisplay = ({
-  currentStep,
-  pages,
-}: LocationDisplayProps) => (
-  <div className={Styles.LocationDisplay}>
-    {pages.map((page: Object, index: Number) => (
-      <React.Fragment key={index}>
-        <span
-          className={classNames({ [Styles.Selected]: index === currentStep })}
-        >
-          {page.title}
-        </span>
-        {index !== pages.length - 1 && DirectionArrow}
-      </React.Fragment>
-    ))}
-  </div>
-);
+export class LocationDisplay extends React.Component<LocationDisplayProps, {}> {
+  scrollTo: any = null;
+  container: any = null;
+
+  componentDidUpdate() {
+    this.container.scrollLeft = this.scrollTo.offsetLeft / 2;
+  }
+
+  render() {
+    const { pages, currentStep } = this.props;
+
+    return (
+      <div
+        className={Styles.LocationDisplay}
+        ref={container => {
+          this.container = container;
+        }}
+      >
+        {pages.map((page: Object, index: Number) => (
+          <React.Fragment key={index}>
+            <span
+              className={classNames({
+                [Styles.Selected]: index === currentStep,
+              })}
+              ref={scrollTo => {
+                if (index === currentStep) {
+                  this.scrollTo = scrollTo;
+                }
+              }}
+            >
+              {page.title}
+            </span>
+            {index !== pages.length - 1 && DirectionArrow}
+          </React.Fragment>
+        ))}
+      </div>
+    );
+  }
+}
 
 export class TextInput extends React.Component<TextInputProps, TextInputState> {
   static defaultProps = {
@@ -1249,7 +1295,7 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
   };
 
   state: TextInputState = {
-    value: !this.props.value ? '' : this.props.value,
+    value: this.props.value === undefined ? '' : this.props.value,
     showList: false,
   };
   refDropdown: any = null;
@@ -1258,7 +1304,7 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
     window.addEventListener('click', this.handleWindowOnClick);
   }
 
-  componentDidUpdate(prevProps: TextInputProps, prevState: TextInputState){
+  componentDidUpdate(prevProps: TextInputProps, prevState: TextInputState) {
     const { value } = prevProps;
     if (value !== this.props.value) {
       this.setState({ value: this.props.value });
@@ -1313,7 +1359,8 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
       trailingLabel,
       innerLabel,
       maxLength,
-      hideTrailingOnMobile
+      hideTrailingOnMobile,
+      openTop
     } = this.props;
     const { autoCompleteList = [] } = this.props;
     const { showList } = this.state;
@@ -1348,6 +1395,7 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
               <div
                 className={classNames(Styles.AutoCompleteList, {
                   [Styles.active]: showList,
+                  [Styles.OpenTop]: openTop
                 })}
               >
                 {filteredList.map(item => (
@@ -1371,7 +1419,13 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
             />
           )}
           {trailingLabel && (
-            <span className={classNames(Styles.Trailing, {[Styles.Hide]: hideTrailingOnMobile})}>{trailingLabel}</span>
+            <span
+              className={classNames(Styles.Trailing, {
+                [Styles.Hide]: hideTrailingOnMobile,
+              })}
+            >
+              {trailingLabel}
+            </span>
           )}
         </div>
         {error && <span className={Styles.ErrorText}>{errorMessage}</span>}
@@ -1390,6 +1444,7 @@ interface TimeSelectorProps {
   errorMessage?: string;
   uniqueKey?: string;
   condensedStyle?: boolean;
+  openTop?: boolean;
 }
 
 export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
@@ -1436,7 +1491,8 @@ export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
       focused,
       errorMessage,
       uniqueKey,
-      condensedStyle
+      condensedStyle,
+      openTop
     } = this.props;
     const error =
       errorMessage && errorMessage !== '' && errorMessage.length > 0;
@@ -1444,7 +1500,11 @@ export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
     return (
       <div
         key={`timeSelector${uniqueKey}`}
-        className={classNames(Styles.TimeSelector, {[Styles.Condensed]: condensedStyle, [Styles.Default]: !hour || !minute || !meridiem})}
+        className={classNames(Styles.TimeSelector, {
+          [Styles.Condensed]: condensedStyle,
+          [Styles.Default]: !hour || !minute || !meridiem,
+          [Styles.OpenTop]: openTop,
+        })}
         ref={timeSelector => {
           this.timeSelector = timeSelector;
         }}
@@ -1649,6 +1709,7 @@ export const DatePicker = (props: DatePickerProps) => (
   <div
     className={classNames(Styles.DatePicker, {
       [Styles.Condensed]: props.condensedStyle,
+      [Styles.OpenTop]: props.openTop,
       [Styles.error]:
         props.errorMessage &&
         props.errorMessage !== '' &&
@@ -1657,6 +1718,7 @@ export const DatePicker = (props: DatePickerProps) => (
   >
     <SingleDatePicker
       id={props.id}
+      openDirection={props.openTop ? "up" : "down"}
       date={props.date}
       placeholder={props.placeholder || 'Date (D MMM YYYY)'}
       onDateChange={props.onDateChange}
@@ -2202,7 +2264,8 @@ export const CategoryRow = ({
     })}
   >
     <span>
-     {icon} {category && category.length <= 3 ? category.toUpperCase() : category}
+      {icon}{' '}
+      {category && category.length <= 3 ? category.toUpperCase() : category}
     </span>
     {loading && <span>{LoadingEllipse}</span>}
     {!loading && <span>{count}</span>}

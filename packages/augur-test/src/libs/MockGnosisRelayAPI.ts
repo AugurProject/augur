@@ -1,8 +1,6 @@
-import { Abi } from 'ethereum';
-import { abi } from '@augurproject/artifacts';
-import * as ethUtil from 'ethereumjs-util';
 import {
   CreateSafeData,
+  GasStationResponse,
   GnosisSafeState,
   GnosisSafeStateReponse,
   IGnosisRelayAPI,
@@ -10,17 +8,17 @@ import {
   RelayTxEstimateData,
   RelayTxEstimateResponse,
   SafeResponse,
-  GasStationResponse,
 } from '@augurproject/gnosis-relay-api';
 import { NULL_ADDRESS } from '@augurproject/sdk';
-
 // tslint:disable-next-line:import-blacklist
 import { AUGUR_GNOSIS_SAFE_NONCE } from '@augurproject/sdk/build/api/Gnosis';
 
 import { ContractAPI } from '@augurproject/tools';
 import { prefixHex } from '@augurproject/utils';
 import { BigNumber } from 'bignumber.js';
+import * as ethUtil from 'ethereumjs-util';
 import { ethers } from 'ethers';
+import { Operation } from '@augurproject/gnosis-relay-api';
 
 export class MockGnosisRelayAPI implements IGnosisRelayAPI {
   // If we ever need to have multiple inflight safe creation txs this should become an mapping.
@@ -173,5 +171,24 @@ export class MockGnosisRelayAPI implements IGnosisRelayAPI {
       baseGas: '75000',
       safeTxGas: '80000',
     };
+  }
+
+  static createTransaction(tx?: Partial<RelayTransaction>): RelayTransaction {
+    return {
+      safe: '',
+      to: '',
+      data: '',
+      value: new BigNumber(12),
+      operation: Operation.Call,
+      gasToken: '',
+      safeTxGas: '',
+      dataGas: '',
+      gasPrice: new BigNumber(12),
+      refundReceiver: '',
+      nonce: 12,
+      signatures: [],
+
+      ...(tx || {})
+    }
   }
 }

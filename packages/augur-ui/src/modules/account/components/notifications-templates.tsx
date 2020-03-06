@@ -4,7 +4,7 @@ import {
   formatTime,
   MarketProgress,
 } from 'modules/common/progress';
-import { CancelTextButton } from 'modules/common/buttons';
+import { CancelTextButton, ProcessingButton } from 'modules/common/buttons';
 import {
   DateFormattedObject,
   MarketData,
@@ -30,6 +30,8 @@ interface BaseProps {
   isDisabled: boolean;
   buttonAction: Function;
   buttonLabel: string;
+  queueName?: string;
+  queueId?: string;
 }
 
 interface OpenOrdersResolvedMarketsTemplateProps extends BaseProps {
@@ -85,6 +87,8 @@ const Template = ({
   currentTime,
   isDisabled,
   buttonLabel,
+  queueName,
+  queueId,
 }: TemplateProps) => {
   const showCounter = market && notificationsWithCountdown.includes(type);
   return (
@@ -96,11 +100,21 @@ const Template = ({
         {showCounter && (
           <Counter type={type} market={market} currentTime={currentTime} />
         )}
-        <CancelTextButton
-          text={buttonLabel}
-          action={() => buttonAction()}
-          disabled={isDisabled}
-        />
+        {queueName && (queueId || (market && market.id)) ?
+          <ProcessingButton
+            text={buttonLabel}
+            action={() => buttonAction()}
+            queueName={queueName}
+            queueId={queueId || market.id }
+            cancelButton
+          />
+        :
+          <CancelTextButton
+            text={buttonLabel}
+            action={() => buttonAction()}
+            disabled={isDisabled}
+          />
+        }
       </div>
     </>
   );
@@ -195,17 +209,6 @@ export const OpenOrdersResolvedMarketsTemplate = (
   );
 };
 
-export const FinalizeTemplate = (props: FinalizeTemplateProps) => {
-  const { description } = props.market;
-
-  return (
-    <Template
-      message={`The market: "${description}" is resolved and is ready to be finalized.`}
-      {...props}
-    />
-  );
-};
-
 export const UnsignedOrdersTemplate = (props: UnsignedOrdersTemplateProps) => {
   const { description } = props.market;
 
@@ -253,8 +256,8 @@ export const ClaimReportingFeesTemplate = (
   props: ClaimReportingFeesTemplateTemplateProps
 ) => {
   const { claimReportingFees } = props;
-  const unclaimedREP = claimReportingFees.totalUnclaimedRepFormatted.formatted;
-  const unclaimedDai = claimReportingFees.totalUnclaimedDaiFormatted.formatted;
+  const unclaimedREP = claimReportingFees.totalUnclaimedRepFormatted.formattedValue;
+  const unclaimedDai = claimReportingFees.totalUnclaimedDaiFormatted.formattedValue;
 
   return (
     <Template

@@ -1,14 +1,14 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { AppState } from 'store';
-import { COLUMN_TYPES, INVALID_OUTCOME_ID } from 'modules/common/constants';
+import { COLUMN_TYPES, INVALID_OUTCOME_ID, BUY, SELL } from 'modules/common/constants';
 import { selectMarketOutcomeBestBidAsk, selectBestBidAlert } from 'modules/markets/selectors/select-market-outcome-best-bid-ask';
 import Row from 'modules/common/row';
 import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
 
 const mapStateToProps = (state: AppState, ownProps) => {
-  const { marketInfos } = state;
-  const market = marketInfos[ownProps.marketId];
+  const { marketInfos, newMarket } = state;
+  const market = newMarket ? newMarket : marketInfos[ownProps.marketId];
   // default values for create market preview
   const minPrice = market ? market.minPrice : 0;
   const maxPrice = market ? market.maxPrice : 1;
@@ -67,7 +67,15 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       useFull: true,
       showEmptyDash: true,
       alert: bestBidAlert,
-
+      action: (e) => {
+        oP.updateSelectedOutcome(outcome.id, true);
+        oP.updateSelectedOrderProperties({
+          orderPrice: topBidPrice && topBidPrice.value.toString(),
+          orderQuantity: topBidShares && topBidShares.value.toString(),
+          selectedNav: SELL
+        });
+        e.stopPropagation();
+      }
     },
     {
       key: "topAskPrice",
@@ -75,6 +83,15 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       value: topAskPrice,
       useFull: true,
       showEmptyDash: true,
+      action: (e) => {
+        oP.updateSelectedOutcome(outcome.id, true);
+        oP.updateSelectedOrderProperties({
+          orderPrice: topAskPrice && topAskPrice.value.toString(),
+          orderQuantity: topAskShares && topAskShares.value.toString(),
+          selectedNav: BUY
+        });
+        e.stopPropagation();
+      }
     },
     {
       key: "topAskShares",

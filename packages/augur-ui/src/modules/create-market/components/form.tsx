@@ -51,7 +51,7 @@ import {
   ExplainerBlock,
   ContentBlock,
 } from 'modules/create-market/components/common';
-import { NewMarket, Drafts } from 'modules/types';
+import { NewMarket, Drafts, OutcomeFormatted } from 'modules/types';
 import FormDetails from 'modules/create-market/containers/form-details';
 import Review from 'modules/create-market/containers/review';
 import FeesLiquidity from 'modules/create-market/containers/fees-liquidity';
@@ -89,6 +89,7 @@ import {
   buildResolutionDetails,
   hasNoTemplateCategoryChildren,
   hasNoTemplateCategoryTertiaryChildren,
+  getFormattedOutcomes,
 } from 'modules/create-market/get-template';
 import deepClone from 'utils/deep-clone';
 
@@ -100,7 +101,7 @@ import {
 import { selectSortedMarketOutcomes } from 'modules/markets/selectors/market';
 import { createBigNumber } from 'utils/create-big-number';
 import makeQuery from 'modules/routes/helpers/make-query';
-import { CREATE_MARKET_FORM_PARAM_NAME } from 'modules/routes/constants/param-names';
+import { CREATE_MARKET_FORM_PARAM_NAME, CREATE_MARKET_PORTFOLIO } from 'modules/routes/constants/param-names';
 import {
   TemplateInputType,
   TimeOffset,
@@ -188,7 +189,7 @@ export default class Form extends React.Component<FormProps, FormState> {
   };
 
   componentDidMount() {
-    this.node && this.node.scrollIntoView();
+    window.scrollTo(0, 1);
   }
 
   componentWillUnmount() {
@@ -618,27 +619,11 @@ export default class Form extends React.Component<FormProps, FormState> {
     updateNewMarket({ [name]: value });
 
     if (name === 'outcomes') {
-      let outcomesFormatted = [];
-      if (newMarket.marketType === CATEGORICAL) {
-        outcomesFormatted = value.map((outcome, index) => ({
-          description: outcome,
-          id: index + 1,
-          isTradeable: true,
-        }));
-        outcomesFormatted.unshift({
-          id: 0,
-          description: 'Invalid',
-        });
-        removeAllOrdersFromNewMarket();
-      } else if (newMarket.marketType === SCALAR) {
-        outcomesFormatted = SCALAR_OUTCOMES;
-        outcomesFormatted[1].description =
-          newMarket.scalarDenomination === ''
-            ? NON_EXISTENT
-            : newMarket.scalarDenomination;
-      } else {
-        outcomesFormatted = YES_NO_OUTCOMES;
-      }
+      const outcomesFormatted = getFormattedOutcomes(
+        newMarket.marketType,
+        value,
+        newMarket.scalarDenomination
+      );
       updateNewMarket({ outcomesFormatted });
     } else if (name === 'marketType') {
       let outcomesFormatted = [];
@@ -943,6 +928,9 @@ export default class Form extends React.Component<FormProps, FormState> {
                           this.setState({ blockShown: true }, () => {
                             history.push({
                               pathname: makePath(MY_POSITIONS, null),
+                              search:  makeQuery({
+                                [CREATE_MARKET_PORTFOLIO]: 3,
+                              }),
                             });
                           });
                         });

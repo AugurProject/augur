@@ -19,6 +19,7 @@ import { formatShares, formatDai } from 'utils/format-number';
 
 // # MISC Constants
 export const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
+export const FAKE_HASH = '1111111111111111111111111';
 export const MALFORMED_OUTCOME = 'malformed outcome';
 // # Asset Types
 export const ETH = 'ETH';
@@ -131,11 +132,11 @@ export const WALLET_TYPE = {
 
 export const SIGNIN_LOADING_TEXT = 'Sit tight - loading your account.';
 export const SIGNIN_LOADING_TEXT_PORTIS =
-  'Connecting to our partners at Portis to create your secure account.';
+  'Connecting to our partners at Portis to log you in to your secure account.';
 export const SIGNIN_LOADING_TEXT_FORTMATIC =
-  'Connecting to our partners at Fortmatic to create your secure account.';
+  'Connecting to our partners at Fortmatic to log you in to your secure account.';
 export const SIGNIN_LOADING_TEXT_TORUS =
-  'Connecting to our partners at Torus to create your secure account.';
+  'Connecting to our partners at Torus to log you in to your secure account.';
 export const SIGNIN_SIGN_WALLET =
   'Your wallet will ask you to digitally sign in to link it with Augur';
 
@@ -504,7 +505,6 @@ export const PERIODS = [
 export const UPPER_FIXED_PRECISION_BOUND = 2;
 export const LOWER_FIXED_PRECISION_BOUND = 0;
 
-export const ONBOARDING_SEEN_KEY = 'onboardingSeen';
 export const SCALAR_MODAL_SEEN = 'scalarModalSeen';
 
 // # Modal Constants
@@ -558,11 +558,11 @@ export const MODAL_MARKET_LOADING = 'MODAL_MARKET_LOADING';
 export const MODAL_DR_QUICK_GUIDE = 'MODAL_DR_QUICK_GUIDE';
 export const MODAL_MIGRATE_MARKET = 'MODAL_MIGRATE_MARKET';
 export const MODAL_LOGIN = 'MODAL_LOGIN';
+export const MODAL_HARDWARE_WALLET = 'MODAL_HARDWARE_WALLET';
 export const MODAL_SIGNUP = 'MODAL_SIGNUP';
-export const MODAL_CONNECT = 'MODAL_CONNECT';
 export const MODAL_LOADING = 'MODAL_LOADING';
 export const MODAL_ACCOUNT_CREATED = 'MODAL_ACCOUNT_CREATED';
-export const MODAL_WALLET_ERROR = 'MODAL_WALLET_ERROR';
+export const MODAL_ERROR = 'MODAL_ERROR';
 
 // transactions parameter names
 export const TX_ORDER_ID = 'orderId';
@@ -584,9 +584,12 @@ export const INFO = 'INFO';
 export const CREATEGENESISUNIVERSE = 'CREATEGENESISUNIVERSE';
 export const CANCELORDER = 'CANCELORDER';
 export const CANCELORDERS = 'CANCELORDERS';
+export const BATCHCANCELORDERS = 'BATCHCANCELORDERS';
 export const WITHDRAWETHERTOIFPOSSIBLE = 'WITHDRAWETHERTOIFPOSSIBLE';
 export const CALCULATEREPORTINGFEE = 'CALCULATEREPORTINGFEE';
 export const CLAIMTRADINGPROCEEDS = 'CLAIMTRADINGPROCEEDS';
+export const CLAIMMARKETSPROCEEDS = 'CLAIMMARKETSPROCEEDS';
+export const TRADINGPROCEEDSCLAIMED = 'TRADINGPROCEEDSCLAIMED';
 export const PUBLICCREATEORDER = 'PUBLICCREATEORDER';
 export const PUBLICCREATEORDERS = 'PUBLICCREATEORDERS';
 export const BUYPARTICIPATIONTOKENS = 'BUYPARTICIPATIONTOKENS';
@@ -602,8 +605,6 @@ export const DOINITIALREPORT = 'DOINITIALREPORT';
 export const FINALIZE = 'FINALIZE';
 export const FINALIZEFORK = 'FINALIZEFORK';
 export const MIGRATETHROUGHONEFORK = 'MIGRATETHROUGHONEFORK';
-export const MIGRATEBALANCESFROMLEGACYREP = 'MIGRATEBALANCESFROMLEGACYREP';
-export const MIGRATEALLOWANCESFROMLEGACYREP = 'MIGRATEALLOWANCESFROMLEGACYREP';
 export const MIGRATEIN = 'MIGRATEIN';
 export const MIGRATEOUT = 'MIGRATEOUT';
 export const MIGRATEOUTBYPAYOUT = 'MIGRATEOUTBYPAYOUT';
@@ -657,6 +658,7 @@ export const SENDETHER = 'SENDETHER';
 export const SENDREPUTATION = 'SENDREPUTATION';
 export const CUSTOM = 'Custom';
 export const PREFILLEDSTAKE = 'PREFILLEDSTAKE';
+export const MIGRATE_FROM_LEG_REP_TOKEN = 'MIGRATEFROMLEGACYREPUTATIONTOKEN';
 
 // # Orders/Trade Constants
 export const ORDER_BOOK_TABLE = 'ORDER_BOOK_TABLE';
@@ -674,6 +676,7 @@ export const BUY = 'buy';
 export const SELL = 'sell';
 export const BUY_INDEX = 0;
 export const SELL_INDEX = 1;
+export const HEX_BUY = '0x00';
 export const BOUGHT = 'bought';
 export const SOLD = 'sold';
 export const BUYING = 'buying';
@@ -829,14 +832,13 @@ export const NEW = 'New';
 export const RESOLVED_MARKETS_OPEN_ORDERS_TITLE =
   'Open Orders in Resolved Market';
 export const REPORTING_ENDS_SOON_TITLE = 'You need to report';
-export const FINALIZE_MARKET_TITLE = 'Finalize Market';
-export const UNSIGNED_ORDERS_TITLE = 'Unsigned Orders';
+export const SIGN_SEND_ORDERS = 'Sign to approve your orders';
 export const CLAIM_REPORTING_FEES_TITLE = 'Claim Stake and Fees';
 export const PROCEEDS_TO_CLAIM_TITLE = 'Claim Proceeds';
+export const CLAIM_ALL_TITLE = 'Claim All'
 export const MARKET_IS_MOST_LIKELY_INVALID_TITLE = 'Market is Failing Invalid Filter';
 export const OPEN_ORDERS_RESOLVED_MARKET = 'resolvedMarketsOpenOrders';
 export const REPORT_ON_MARKET = 'reportOnMarkets';
-export const FINALIZE_MARKET = 'finalizeMarkets';
 export const MARKET_IN_DISPUTE = 'marketsInDispute';
 export const CLAIM_REPORTING_FEES = 'claimReportingFees';
 export const UNSIGNED_ORDERS = 'unsignedOrders';
@@ -846,7 +848,6 @@ export const MARKET_IS_MOST_LIKELY_INVALID = 'marketIsMostLikelyInvalid';
 export const NOTIFICATION_TYPES = {
   [OPEN_ORDERS_RESOLVED_MARKET]: OPEN_ORDERS_RESOLVED_MARKET,
   [REPORT_ON_MARKET]: REPORT_ON_MARKET,
-  [FINALIZE_MARKET]: FINALIZE_MARKET,
   [MARKET_IN_DISPUTE]: MARKET_IN_DISPUTE,
   [CLAIM_REPORTING_FEES]: CLAIM_REPORTING_FEES,
   [UNSIGNED_ORDERS]: UNSIGNED_ORDERS,
@@ -874,6 +875,9 @@ export const TIMEFRAME_OPTIONS = [
 export const CLAIM_STAKE_FEES = 'CLAIM_STAKE_FEES';
 export const CLAIM_MARKETS_PROCEEDS = 'CLAIM_MARKETS_PROCEEDS';
 export const CREATE_MARKET = 'CREATE_MARKET';
+export const SUBMIT_REPORT = 'SUBMIT_REPORT';
+export const SUBMIT_DISPUTE = 'SUBMIT_DISPUTE';
+export const TRANSACTIONS = 'TRANSACTIONS';
 
 // Pending Queue SINGLE TYPE
 export const CLAIM_FEE_WINDOWS = 'CLAIM_FEE_WINDOWS';
@@ -970,7 +974,7 @@ export const POPULAR_CATEGORIES_ICONS = [
   CategoryCrypto,
 ];
 
-export const CATEGORIES_MAX = 5;
+export const CATEGORIES_MAX = 8;
 
 export enum PAGINATION_VIEW_OPTIONS {
   ALL = 'All',
@@ -1004,7 +1008,7 @@ export const TRADING_TUTORIAL_COPY = {
         text:
           "First, lets start by looking over the market details. Be sure to check that the question isn't subjective or ambiguous, and that the Resolution Source abides by the",
         linkText: 'community guidelines.',
-        link: 'https://www.docs.augur.net',
+        link: 'https://docs.augur.net',
       },
     ],
   },
@@ -1027,7 +1031,7 @@ export const TRADING_TUTORIAL_COPY = {
       {
         text: "To learn more about selling shares, or going 'short,' see our",
         linkText: 'guide.',
-        link: 'https://www.docs.augur.net',
+        link: 'https://docs.augur.net',
       },
     ],
   },
@@ -1040,7 +1044,7 @@ export const TRADING_TUTORIAL_COPY = {
       {
         text: "To learn why invalid is an outcome, see our",
         linkText: "guide.",
-        link: 'https://www.docs.augur.net'
+        link: 'https://docs.augur.net'
       },
     ],
   },[TRADING_TUTORIAL_STEPS.QUANTITY]: {
@@ -1183,7 +1187,7 @@ export const DISPUTING_GUIDE = {
   content: [{
     header: 'Disputing',
     paragraphs: [
-      'After a market’s initial report, it will wait for the current dispute window to end before entering into the ‘Currently Disputing’ tab. This is the time for users to dispute a Tentative Outcome if thet believe the market has been reported on incorectly. Markets awaiting their first or next dispute round can be seen in the ‘Awaiting Next Dispute Round’ tab. An exception to this is when markets have been selected for Fast Resolution.'
+      'After a market’s initial report, it will wait for the current dispute window to end before entering into the ‘Currently Disputing’ tab. This is the time for users to dispute a Tentative Outcome if thet believe the market has been reported on incorrectly. Markets awaiting their first or next dispute round can be seen in the ‘Awaiting Next Dispute Round’ tab. An exception to this is when markets have been selected for Fast Resolution.'
     ]
   }, {
     header: 'How to dispute an outcome',
@@ -1199,6 +1203,15 @@ export const DISPUTING_GUIDE = {
     header: 'The benefits of reporting',
     paragraphs: [
       'Users who correctly staked on the Winning Outcome get to take a share of the REP that was staked on the incorrect outcome(s). This means you can potentially earn 40% ROI by disputing (i.e staking) against liars and reporting the truth. This keeps the Augur oracle secure and ultimately the Augur platform working how it should.'
+    ]
+  }, {
+    header: 'Pre-filled Stake',
+    paragraphs: [
+      'Users can add extra support for a Tentative Winning Outcome by pre-staking REP that will be used to dispute in that outcome’s favor in the event that is no longer the Tentative Winning Outcome. Pre-filling can help accelerate a market’s resolution.',
+      'Pre-filled Stake yields ROI if and only if: ',
+      '1) the market resolves to the staked-on outcome and',
+      '2) the pre-stake ends up being used to dispute in that outcome’s favor',
+      'If the market resolves to the staked-on outcome but the pre-stake is not used, you will receive back the pre-stake but no ROI. If the market does not resolve to the staked-on outcome, you will lose the pre-stake.'
     ]
   }],
   learnMoreButtonText: 'Learn more about disputing',
@@ -1310,3 +1323,5 @@ export enum HEADER_TYPE {
   H2 = 'h2',
   H3 = 'h3',
 }
+
+export const LOGGED_IN_USER_LOCAL_STORAGE_KEY = 'loggedInUser';

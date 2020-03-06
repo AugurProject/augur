@@ -113,6 +113,7 @@
   .Dropdown;
 
   height: @size-32;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
 
   @media @breakpoint-mobile {
     height: @size-40;
@@ -256,7 +257,7 @@
 }
 
 .stretchOut {
-  @media @breakpoint-mobile-mid {
+  @media @breakpoint-mobile {
     height: @size-48;
     // height: unset;
     max-width: unset;
@@ -301,7 +302,7 @@
 }
 
 .openTop {
-  > div > div:first-of-type {
+  > div {
     bottom: 106%;
     top: unset;
   }
@@ -440,6 +441,12 @@
       height: 100%;
       padding: @size-4 @size-16;
       text-transform: uppercase;
+
+      > span {
+        .text-9;
+
+        color: @color-secondary-text;
+      }
     }
   }
 }

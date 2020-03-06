@@ -1,49 +1,24 @@
-import { makeDbMock, makeProvider } from '../../libs';
-import { ContractAPI, loadSeedFile, ACCOUNTS, defaultSeedPath } from '@augurproject/tools';
-import { API } from '@augurproject/sdk/build/state/getter/API';
-import { BigNumber } from 'bignumber.js';
-import { ContractAddresses } from '@augurproject/artifacts';
-import { Controller } from '@augurproject/sdk/build/state/Controller';
-import { DB } from '@augurproject/sdk/build/state/db/DB';
-import { EthersProvider } from '@augurproject/ethersjs-provider';
-import { BlockAndLogStreamerListener } from '@augurproject/sdk/build/state/db/BlockAndLogStreamerListener';
-import {
-  Markets,
-} from '@augurproject/sdk/build/state/getter/Markets';
+import { ContractAddresses, SDKConfiguration } from '@augurproject/artifacts';
+import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
 import { SingleThreadConnector } from '@augurproject/sdk/build/connector';
 import { SubscriptionEventName } from '@augurproject/sdk/build/constants';
-import { SDKConfiguration } from '@augurproject/sdk/build/state';
-import { MarketCreated } from '@augurproject/sdk/build/events';
-import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
+import { Markets } from '@augurproject/sdk/build/state/getter/Markets';
+import { ACCOUNTS, defaultSeedPath, loadSeedFile } from '@augurproject/tools';
+import { TestContractAPI } from '@augurproject/tools';
+import { BigNumber } from 'bignumber.js';
+import { makeProvider } from '../../libs';
+import * as _ from 'lodash';
+import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
 
 let connector: SingleThreadConnector;
-let provider: EthersProvider;
-let john: ContractAPI;
-let addresses: ContractAddresses;
-let db: Promise<DB>;
-
-const mock = makeDbMock();
+let provider: TestEthersProvider;
+let john: TestContractAPI;
 
 jest.mock('@augurproject/sdk/build/state/create-api', () => {
   return {
     __esModule: true,
     startServerFromClient: () => {
-      const blockAndLogStreamerListener = BlockAndLogStreamerListener.create(
-        provider,
-        john.augur.contractEvents.getEventTopics,
-        john.augur.contractEvents.parseLogs,
-        john.augur.contractEvents.getEventContractAddress,
-      );
-      const api = new API(john.augur, db);
-      const controller = new Controller(
-        john.augur,
-        db,
-        blockAndLogStreamerListener
-      );
-
-      controller.run();
-
-      return api;
+      return john.api;
     },
   };
 });
@@ -51,10 +26,9 @@ jest.mock('@augurproject/sdk/build/state/create-api', () => {
 beforeAll(async () => {
   const seed = await loadSeedFile(defaultSeedPath);
   provider = await makeProvider(seed, ACCOUNTS);
-  addresses = seed.addresses;
 
-  john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, addresses);
-  db = mock.makeDB(john.augur, ACCOUNTS);
+
+  john = await TestContractAPI.userWrapper(ACCOUNTS[0], provider, provider.getConfig());
 
   await john.approveCentralAuthority();
 
@@ -66,14 +40,16 @@ beforeAll(async () => {
       http: '',
       rpcRetryCount: 5,
       rpcRetryInterval: 0,
-      rpcConcurrency: 40
-    }
+      rpcConcurrency: 40,
+    },
   };
   connector.client = john.augur;
   await connector.connect(config);
 });
 
 test('SingleThreadConnector :: Should route correctly and handle events, extraInfo', async done => {
+  await john.sync();
+
   const yesNoMarket1 = await john.createYesNoMarket({
     endTime: (await john.getTimestamp()).plus(SECONDS_IN_A_DAY),
     feePerCashInAttoCash: new BigNumber(10).pow(18).div(20), // 5% creator fee
@@ -84,26 +60,28 @@ test('SingleThreadConnector :: Should route correctly and handle events, extraIn
   });
 
   await connector.on(
-    SubscriptionEventName.MarketCreated,
-    async (arg: MarketCreated): Promise<void> => {
-      expect(arg).toHaveProperty(
-        'extraInfo',
-        '{"categories": ["yesNo category 1", "yesNo category 2"], "description": "yesNo description 1", "longDescription": "yesNo longDescription 1"}'
-      );
-
-      await (await db).sync(john.augur, mock.constants.chunkSize, 0);
-
-      const getMarkets = connector.bindTo(Markets.getMarkets);
-      const marketList = await getMarkets({
-        universe: john.augur.contracts.universe.address,
+    SubscriptionEventName.DBMarketCreatedEvent,
+    async (event: any): Promise<void> => {
+      console.log('SubscriptionEventName.DBMarketCreatedEvent',
+        SubscriptionEventName.DBMarketCreatedEvent);
+      const marketIds = _.map(event.data, 'market');
+      const getMarketsInfo = connector.bindTo(Markets.getMarketsInfo);
+      const marketList = await getMarketsInfo({
+        marketIds
       });
-      expect(marketList.markets[0].id).toEqual(yesNoMarket1.address);
 
-      await connector.off(SubscriptionEventName.MarketCreated);
+      expect(marketList[0].categories[0]).toEqual('yesNo category 1'.toLowerCase());
+      expect(marketList[0].categories[1]).toEqual('yesNo category 2'.toLowerCase());
+      expect(marketList[0].description).toEqual('yesNo description 1');
+      expect(marketList[0].details).toEqual('yesNo longDescription 1');
+      expect(marketList[0].id).toEqual(yesNoMarket1.address);
+
+      await connector.off(SubscriptionEventName.DBMarketCreatedEvent);
       expect(connector.subscriptions).toEqual({});
       done();
     }
   );
 
-  await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+  await john.sync();
+  john.augur.events.emit(SubscriptionEventName.NewBlock, {});
 });

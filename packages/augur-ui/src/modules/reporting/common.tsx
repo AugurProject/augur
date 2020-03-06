@@ -10,6 +10,11 @@ import {
   DISPUTE_GAS_COST,
   INITAL_REPORT_GAS_COST,
   HEADER_TYPE,
+  INVALID_OUTCOME_ID,
+  SUBMIT_REPORT,
+  BUYPARTICIPATIONTOKENS,
+   TRANSACTIONS,
+   REDEEMSTAKE
 } from 'modules/common/constants';
 import {
   FormattedNumber,
@@ -22,6 +27,7 @@ import {
   SecondaryButton,
   CancelTextButton,
   PrimaryButton,
+  ProcessingButton,
 } from 'modules/common/buttons';
 import { Checkbox, TextInput } from 'modules/common/form';
 import {
@@ -40,7 +46,7 @@ import {
 import { MarketProgress } from 'modules/common/progress';
 import { ExclamationCircle, InfoIcon, XIcon } from 'modules/common/icons';
 import ChevronFlip from 'modules/common/chevron-flip';
-
+import FormStyles from 'modules/common/form.styles.less';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import ButtonStyles from 'modules/common/buttons.styles.less';
 import Styles from 'modules/reporting/common.styles.less';
@@ -212,11 +218,12 @@ export interface ReportingModalButtonProps {
   action: ButtonActionType;
 }
 
-export const ReportingModalButton = ({highlightedText, text, action}: ReportingModalButtonProps) => (
-  <button
-    className={Styles.ReportingModalButton}
-    onClick={e => action(e)}
-  >
+export const ReportingModalButton = ({
+  highlightedText,
+  text,
+  action,
+}: ReportingModalButtonProps) => (
+  <button className={Styles.ReportingModalButton} onClick={e => action(e)}>
     {highlightedText && <span>{highlightedText}</span>}
     {text}
   </button>
@@ -248,10 +255,10 @@ export class PreFilledStake extends Component<PreFilledStakeProps, {}> {
       <div className={Styles.PreFilledStake}>
         <span>Add Pre-Filled Stake?</span>
         <span>
-          `Pre-fund future dispute rounds to accelerate market resolution. Any
+          Pre-fund future dispute rounds to accelerate market resolution. Any
           contributed REP will automatically go toward disputing in favor of
-          this outcome, if it is no longer the tentative
-          winning outcome in future rounds`
+          this outcome, if it is no longer the tentative winning outcome in
+          future rounds
         </span>
         {!this.props.showInput && (
           <SecondaryButton
@@ -376,6 +383,8 @@ export interface DisputingBondsViewProps {
   Gnosis_ENABLED: boolean;
   gasPrice: number;
   ethToDaiRate: BigNumber;
+  warpSyncHash: string;
+  isWarpSync: boolean;
 }
 
 interface DisputingBondsViewState {
@@ -398,7 +407,7 @@ export class DisputingBondsView extends Component<
     gasEstimate: formatGasCostToEther(
       DISPUTE_GAS_COST,
       { decimalsRounded: 4 },
-      this.props.gasPrice,
+      this.props.gasPrice
     ),
   };
 
@@ -413,11 +422,11 @@ export class DisputingBondsView extends Component<
         scalarError: 'Input value not between scalar market range',
         disabled: true,
       });
-    } else if (isNaN(Number(range)) || range === '') {
+    } else if (!market.isWarpSync && (isNaN(Number(range)) || range === '')) {
       this.setState({ scalarError: 'Enter a valid number', disabled: true });
     } else {
       this.setState({ scalarError: '' });
-      if (this.state.stakeError === '' && stakeValue !== '') {
+      if (this.state.stakeError === '' && stakeValue !== '' && stakeValue !== '0') {
         this.setState({ disabled: false });
       }
     }
@@ -433,6 +442,7 @@ export class DisputingBondsView extends Component<
       stakeRemaining,
       tentativeWinning,
       isInvalid,
+      warpSyncHash,
     } = this.props;
     let inputToAttoRep = null;
     const { isScalar } = this.state;
@@ -444,14 +454,15 @@ export class DisputingBondsView extends Component<
       );
     }
     if (
-      isNaN(Number(inputStakeValue)) ||
+      !!!warpSyncHash &&
+      (isNaN(Number(inputStakeValue)) ||
       inputStakeValue === '' ||
       inputStakeValue === '0' ||
       inputStakeValue === '.' ||
-      inputStakeValue === '0.'
+      inputStakeValue === '0.')
     ) {
       this.setState({ stakeError: 'Enter a valid number', disabled: true });
-      return updateInputtedStake({ inputStakeValue, inputToAttoRep });
+      return updateInputtedStake({ inputStakeValue, ZERO });
     } else if (
       createBigNumber(userAvailableRep).lt(createBigNumber(inputStakeValue))
     ) {
@@ -482,9 +493,7 @@ export class DisputingBondsView extends Component<
     } else {
       this.setState({ stakeError: '' });
       if (
-        (this.state.scalarError === '' &&
-          ((isScalar && inputScalarOutcome !== '') || isInvalid)) ||
-        !isScalar
+        ((isScalar && inputScalarOutcome !== '') || isInvalid || !!warpSyncHash) || !isScalar
       ) {
         this.setState({ disabled: false });
       }
@@ -499,9 +508,13 @@ export class DisputingBondsView extends Component<
         gasEstimate: formatGasCostToEther(
           gasLimit,
           { decimalsRounded: 4 },
-          this.props.gasPrice,
+          this.props.gasPrice
         ),
       });
+    }
+    if (this.props.isWarpSync) {
+      this.updateScalarOutcome(this.props.warpSyncHash);
+      this.updateInputtedStake('0');
     }
   }
 
@@ -516,9 +529,16 @@ export class DisputingBondsView extends Component<
       id,
       Gnosis_ENABLED,
       ethToDaiRate,
+      warpSyncHash
     } = this.props;
 
-    const { disabled, scalarError, stakeError, isScalar, gasEstimate } = this.state;
+    const {
+      disabled,
+      scalarError,
+      stakeError,
+      isScalar,
+      gasEstimate,
+    } = this.state;
     const min = convertAttoValueToDisplayValue(
       createBigNumber(market.noShowBondAmount)
     );
@@ -530,7 +550,7 @@ export class DisputingBondsView extends Component<
       <div className={classNames(Styles.DisputingBondsView)}>
         {isScalar && id === 'null' && (
           <ScalarOutcomeView
-            inputScalarOutcome={inputScalarOutcome}
+            inputScalarOutcome={!inputScalarOutcome && market.isWarpSync ? warpSyncHash : inputScalarOutcome}
             updateScalarOutcome={this.updateScalarOutcome}
             scalarDenomination={market.scalarDenomination}
             scalarError={scalarError}
@@ -570,8 +590,12 @@ export class DisputingBondsView extends Component<
         />
         <LinearPropertyLabel
           key="estimatedGasFee"
-          label={Gnosis_ENABLED ? "Transaction Fee" : "Gas Fee"}
-          value={Gnosis_ENABLED ? displayGasInDai(gasEstimate, ethToDaiRate) : gasEstimate}
+          label={Gnosis_ENABLED ? 'Transaction Fee' : 'Gas Fee'}
+          value={
+            Gnosis_ENABLED
+              ? displayGasInDai(gasEstimate, ethToDaiRate)
+              : gasEstimate
+          }
         />
         <PrimaryButton
           text="Confirm"
@@ -599,6 +623,8 @@ export interface ReportingBondsViewProps {
   migrateRep: boolean;
   userAttoRep: BigNumber;
   owesRep: boolean;
+  openReporting: boolean;
+  enoughRepBalance: boolean;
 }
 
 interface ReportingBondsViewState {
@@ -618,7 +644,10 @@ export class ReportingBondsView extends Component<
 > {
   state: ReportingBondsViewState = {
     showInput: false,
-    disabled: this.props.market.marketType === SCALAR && this.props.migrateRep ? true : false,
+    disabled:
+      this.props.market.marketType === SCALAR && this.props.migrateRep
+        ? true
+        : false,
     scalarError: '',
     stakeError: '',
     isScalar: this.props.market.marketType === SCALAR,
@@ -627,7 +656,7 @@ export class ReportingBondsView extends Component<
     gasEstimate: formatGasCostToEther(
       INITAL_REPORT_GAS_COST,
       { decimalsRounded: 4 },
-      this.props.gasPrice,
+      this.props.gasPrice
     ),
   };
 
@@ -637,16 +666,16 @@ export class ReportingBondsView extends Component<
       this.setState({
         threshold: String(convertAttoValueToDisplayValue(threshold)),
       });
-
       if (this.props.Gnosis_ENABLED) {
-        const gasLimit = await this.props.reportAction(true);
+        const gasLimit = await this.props
+          .reportAction(true)
+          .catch(e => console.error(e));
         this.setState({
           gasEstimate: formatGasCostToEther(
-            gasLimit,
+            gasLimit || INITAL_REPORT_GAS_COST,
             { decimalsRounded: 4 },
-            this.props.gasPrice,
-          )
-
+            this.props.gasPrice
+          ),
         });
       }
     }
@@ -667,7 +696,7 @@ export class ReportingBondsView extends Component<
         scalarError: 'Input value not between scalar market range',
         disabled: true,
       });
-    } else if (isNaN(Number(range)) || range === '') {
+    } else if (!market.isWarpSync && (isNaN(Number(range)) || range === '')) {
       this.setState({ scalarError: 'Enter a valid number', disabled: true });
     } else {
       this.setState({ scalarError: '' });
@@ -679,33 +708,28 @@ export class ReportingBondsView extends Component<
   };
 
   updateInputtedStake = (inputStakeValue: string) => {
-    const { updateInputtedStake, inputScalarOutcome, userAttoRep } = this.props;
-    const { isScalar, threshold } = this.state;
-
+    const { updateInputtedStake, userAttoRep } = this.props;
+    const { threshold } = this.state;
+    let disabled = false;
     if (isNaN(Number(inputStakeValue))) {
-      this.setState({ stakeError: 'Enter a valid number', disabled: true });
+      disabled = true;
+      this.setState({ stakeError: 'Enter a valid number' });
     } else if (
       createBigNumber(userAttoRep).lt(createBigNumber(inputStakeValue))
     ) {
+      disabled = true;
       this.setState({
         stakeError: 'Value is bigger than user REP balance',
-        disabled: true,
       });
     } else if (
       createBigNumber(threshold).lt(createBigNumber(inputStakeValue))
     ) {
+      disabled = true;
       this.setState({
         stakeError: `Value is bigger than the REP threshold: ${threshold}`,
-        disabled: true,
       });
     } else {
       this.setState({ stakeError: '' });
-      if (
-        this.state.scalarError === '' &&
-        ((isScalar && inputScalarOutcome !== '') || !isScalar)
-      ) {
-        this.setState({ disabled: false });
-      }
     }
     let inputToAttoRep = '0';
     if (!isNaN(Number(inputStakeValue)) && inputStakeValue !== '') {
@@ -714,6 +738,7 @@ export class ReportingBondsView extends Component<
       );
     }
     updateInputtedStake({ inputToAttoRep, inputStakeValue });
+    this.setState({ disabled });
   };
 
   checkCheckbox = (readAndAgreedCheckbox: boolean) => {
@@ -733,6 +758,8 @@ export class ReportingBondsView extends Component<
       owesRep,
       Gnosis_ENABLED,
       ethToDaiRate,
+      openReporting,
+      enoughRepBalance,
     } = this.props;
 
     const {
@@ -749,25 +776,37 @@ export class ReportingBondsView extends Component<
     const repAmount = migrateRep
       ? formatAttoRep(inputtedReportingStake.inputToAttoRep).formatted
       : formatAttoRep(market.noShowBondAmount).formatted;
-    let repLabel = migrateRep
-      ? 'REP to migrate'
-      : 'Initial Reporter Stake';
+    let repLabel = migrateRep ? 'REP to migrate' : 'Initial Reporter Stake';
 
+    repLabel = openReporting ? 'Open Reporting winning Stake' : repLabel;
     if (owesRep) {
       repLabel = 'REP needed';
     }
     const reviewLabel = migrateRep
-    ? 'Review REP to migrate'
-    : 'Review Initial Reporting Stake';
+      ? 'Review REP to migrate'
+      : 'Review Initial Reporting Stake';
     const totalRep = owesRep
       ? formatAttoRep(
           createBigNumber(inputtedReportingStake.inputToAttoRep || ZERO).plus(
             market.noShowBondAmount
           )
         ).formatted
-      : formatAttoRep(createBigNumber(inputtedReportingStake.inputToAttoRep || ZERO))
-          .formatted;
+      : formatAttoRep(
+          createBigNumber(inputtedReportingStake.inputToAttoRep || ZERO)
+        ).formatted;
 
+    let buttonDisabled = disabled;
+    if (
+      isScalar &&
+      inputScalarOutcome === '' &&
+      id !== String(INVALID_OUTCOME_ID)
+    ) {
+      buttonDisabled = true;
+    }
+    let insufficientRep = '';
+    if (!enoughRepBalance) {
+      (insufficientRep = 'Not enough REP to report'), (buttonDisabled = true);
+    }
     return (
       <div
         className={classNames(Styles.ReportingBondsView, {
@@ -809,21 +848,27 @@ export class ReportingBondsView extends Component<
             threshold={threshold}
           />
         )}
-        {showInput && (
-          <div className={Styles.ShowTotals}>
-            <span>Totals</span>
-            <span>Sum total of Initial Reporter Stake and Pre-Filled Stake</span>
-            <LinearPropertyLabel
-              key="totalRep"
-              label="Total REP"
-              value={totalRep}
-            />
-          </div>
-        )}
+        <div className={Styles.ShowTotals}>
+          <span>Totals</span>
+          <span>Sum total of Initial Reporter Stake and Pre-Filled Stake</span>
+          <LinearPropertyLabel
+            key="totalRep"
+            label="Total REP Needed"
+            value={totalRep}
+          />
+          {insufficientRep && (
+            <span className={FormStyles.ErrorText}>{insufficientRep}</span>
+          )}
+        </div>
+
         <LinearPropertyLabel
           key="totalEstimatedGasFee"
-          label={Gnosis_ENABLED ? "Transaction Fee" : "Gas Fee"}
-          value={Gnosis_ENABLED ? displayGasInDai(gasEstimate, ethToDaiRate) : `${gasEstimate} ETH`}
+          label={Gnosis_ENABLED ? 'Transaction Fee' : 'Gas Fee'}
+          value={
+            Gnosis_ENABLED
+              ? displayGasInDai(gasEstimate, ethToDaiRate)
+              : `${gasEstimate} ETH`
+          }
         />
         {migrateRep &&
           createBigNumber(inputtedReportingStake.inputStakeValue).lt(
@@ -861,7 +906,11 @@ export class ReportingBondsView extends Component<
         )}
         <PrimaryButton
           text={migrateRep ? 'Confirm and Migrate REP' : 'Confirm'}
-          disabled={migrateRep ? disabled || !readAndAgreedCheckbox : disabled}
+          disabled={
+            migrateRep
+              ? buttonDisabled || !readAndAgreedCheckbox
+              : buttonDisabled
+          }
           action={() => reportAction()}
         />
       </div>
@@ -890,7 +939,8 @@ export const ReportingCard = (props: ReportingCardProps) => {
   const { id, reportingState, disputeInfo, endTimeFormatted } = market;
 
   const preReporting = reportingState === REPORTING_STATE.PRE_REPORTING;
-  const headerType = reportingState === REPORTING_STATE.OPEN_REPORTING && HEADER_TYPE.H2;
+  const headerType =
+    reportingState === REPORTING_STATE.OPEN_REPORTING && HEADER_TYPE.H2;
 
   return (
     <div className={Styles.ReportingCard}>
@@ -899,6 +949,7 @@ export const ReportingCard = (props: ReportingCardProps) => {
         disputeInfo={disputeInfo}
         endTimeFormatted={endTimeFormatted}
         currentAugurTimestamp={currentAugurTimestamp}
+        isWarpSync={market.isWarpSync}
       />
       <MarketTitle id={id} headerType={headerType} />
       {reportingState !== REPORTING_STATE.OPEN_REPORTING && (
@@ -910,10 +961,12 @@ export const ReportingCard = (props: ReportingCardProps) => {
         />
       )}
       <div data-tip data-for={'tooltip--preReporting' + id}>
-        <PrimaryButton
+        <ProcessingButton
           text="Report"
           action={showReportingModal}
           disabled={preReporting || !isLogged}
+          queueName={SUBMIT_REPORT}
+          queueId={id}
         />
         {(preReporting || !isLogged) && (
           <ReactTooltip
@@ -1125,27 +1178,31 @@ export const ParticipationTokensView = (
         header="Total Reporting Fees"
         subheader={disputeWindowFees.formatted}
         secondSubheader="DAI"
-        tooltipText='The total amount to be paid to reporters'
+        tooltipText="The total amount to be paid to reporters"
       />
       <Subheaders
         large
         info
         header="Total Participation Tokens Purchased"
         subheader={purchasedParticipationTokens.formatted}
-        tooltipText={'The total amount of participation tokens purchased by reporters in the current window'}
+        tooltipText={
+          'The total amount of participation tokens purchased by reporters in the current window'
+        }
       />
       <Subheaders
         info
         header="Participation Tokens I OWN in Current Dispute Window"
         subheader={tokensOwned.formatted}
         secondSubheader={`(${percentageOfTotalFees.formatted}% of Total Fees)`}
-        tooltipText='The % of participation tokens you own among all participation tokens purchased in the current window'
+        tooltipText="The % of participation tokens you own among all participation tokens purchased in the current window"
       />
 
-      <PrimaryButton
+      <ProcessingButton
         disabled={disablePurchaseButton}
         text="Get Participation Tokens"
         action={openModal}
+        queueName={TRANSACTIONS}
+        queueId={BUYPARTICIPATIONTOKENS}
       />
 
       <section />
@@ -1160,20 +1217,25 @@ export const ParticipationTokensView = (
         info
         header="Participation Tokens Purchased"
         subheader={pastParticipationTokensPurchased.formatted}
-        tooltipText={'The total amount of unredeemed participation tokens you\ve purchased for past reporting minus any you\'ve lost for incorrect reporting'}
+        tooltipText={
+          "The total amount of unredeemed participation tokens you\ve purchased for past reporting minus any you've lost for incorrect reporting"
+        }
       />
       <Subheaders
         info
         header="My Portion of Reporting Fees"
         subheader={participationTokensClaimableFees.formatted}
         secondSubheader="DAI"
-        tooltipText={'The total amount of unclaimed Dai you\'ve earned through reporting'}
+        tooltipText={
+          "The total amount of unclaimed Dai you've earned through reporting"
+        }
       />
-
-      <PrimaryButton
+      <ProcessingButton
         disabled={!hasRedeemable}
         text="Redeem Past Participation Tokens"
         action={openClaimParticipationTokensModal}
+        queueName={TRANSACTIONS}
+        queueId={REDEEMSTAKE}
       />
     </div>
   );

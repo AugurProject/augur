@@ -10,18 +10,36 @@ const levelup = require('levelup');
 import * as path from 'path';
 import * as fs from 'async-file';
 
-export interface Seed {
+
+interface Metadata {
+  [item:string]: any
+}
+
+interface SeedCommon {
   addresses: ContractAddresses;
   contractsHash: string;
+}
+
+export interface SeedFile extends SeedCommon{
+  seeds: {
+    [seedName:string]: {
+      data: LevelDBRow[],
+      metadata: Metadata
+    };
+  };
+}
+
+export interface Seed extends SeedCommon {
   data: LevelDBRow[];
+  metadata: Metadata;
 }
 
 export async function makeGanacheProvider(db: MemDown, accounts: Account[]): Promise<ethers.providers.Web3Provider> {
-  return new ethers.providers.Web3Provider(ganache.provider(makeGanacheOpts(accounts, db)));
+  return new ethers.providers.Web3Provider(ganache.provider(await makeGanacheOpts(accounts, db)));
 }
 
 export async function makeGanacheServer(db: MemDown, accounts: Account[]): Promise<ganache.GanacheServer> {
-  return ganache.server(makeGanacheOpts(accounts, db));
+  return ganache.server(await makeGanacheOpts(accounts, db));
 }
 
 export function createDb(): MemDown {
@@ -41,7 +59,32 @@ export async function createDbFromSeed(seed: Seed): Promise<MemDown> {
   return db;
 }
 
-function makeGanacheOpts(accounts: Account[], db: MemDown) {
+async function makeGanacheOpts(accounts: Account[], db: MemDown) {
+  // Arbitrary date.
+  const defaultDate = new Date('2012-09-27');
+
+  // Determine the max timestamp of the previous seed.
+  const maxBlock = await new Promise<number | undefined>((resolve, reject) => {
+    levelup(db).get('!blockLogs!length', (err, value) => {
+      if(err) resolve(undefined);
+      resolve(value);
+    });
+  });
+
+  const maxBlockTimeStamp = maxBlock ? await new Promise<Date>((resolve, reject) => {
+    if(!maxBlock) resolve(defaultDate);
+    levelup(db).get(`!blocks!${maxBlock - 1}`, (err, value) => {
+      if(err) resolve(defaultDate);
+
+      const blockInfo = JSON.parse(value.toString());
+      const timestamp = blockInfo['header']['timestamp'];
+      resolve(new Date(Number(timestamp) * 1000));
+    });
+  }) : defaultDate;
+
+  // Need to do this to get a consistent timestamp for the the next block
+  while(Date.now() % 1000 > 100) {}
+
   return {
     accounts,
     // TODO: For some reason, our contracts here are too large even though production ones aren't. Is it from debugging or lack of flattening?
@@ -51,7 +94,8 @@ function makeGanacheOpts(accounts: Account[], db: MemDown) {
     debug: false,
     network_id: 123456,
     _chainId: 123456,
-    hardfork: "istanbul"
+    hardfork: "istanbul",
+    time: maxBlockTimeStamp
     // vmErrorsOnRPCResponse: false,
   };
 }
@@ -62,7 +106,7 @@ export function hashContracts(): string {
   return md5.digest('hex');
 }
 
-interface LevelDBRow {
+export interface LevelDBRow {
   key: string;
   value: string;
   type: 'put';
@@ -92,18 +136,25 @@ export async function extractSeed(db: MemDown):Promise<LevelDBRow[]> {
 
 }
 
-export async function createSeed(provider: EthersProvider, db: MemDown, addresses: ContractAddresses): Promise<Seed> {
+export async function createSeed(provider: EthersProvider, db: MemDown, addresses: ContractAddresses, metadata: Metadata = {}): Promise<Seed> {
   return {
     addresses,
     contractsHash: hashContracts(),
     data: await extractSeed(db),
+    metadata,
   };
 }
 
-export async function writeSeedFile(seed: Seed, filePath: string): Promise<void> {
+export async function writeSeedFile(seed: SeedFile, filePath: string): Promise<void> {
   await fs.writeFile(path.resolve(filePath), JSON.stringify(seed));
 }
 
-export async function loadSeedFile(seedFilePath: string): Promise<Seed> {
-  return JSON.parse(await fs.readFile(seedFilePath));
+export async function loadSeedFile(seedFilePath: string, seedToLoad = 'default'): Promise<Seed> {
+  const {contractsHash, addresses, seeds}:SeedFile = JSON.parse(await fs.readFile(seedFilePath));
+
+  return {
+    contractsHash,
+    addresses,
+    ...seeds[seedToLoad]
+  }
 }

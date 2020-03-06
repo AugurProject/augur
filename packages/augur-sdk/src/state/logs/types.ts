@@ -351,13 +351,14 @@ export interface TimestampSetLog extends Log {
 
 export enum TokenType {
   ReputationToken,
-  ShareToken,
   DisputeCrowdsourcer,
-  FeeWindow, // No longer a valid type but here for backward compat with Augur Node processing
-  FeeToken, // No longer a valid type but here for backward compat with Augur Node processing
   ParticipationToken,
 }
 
+export interface ReportingFeeChangedLog extends Log {
+  universe: Address;
+  reportingFee: string;
+}
 export interface TokensMinted extends Log {
   universe: Address;
   token: Address;
@@ -447,6 +448,7 @@ export interface MarketData extends Log {
   feeDivisor: number;
   hasRecentlyDepletedLiquidity: boolean;
   lastPassingLiquidityCheck: number;
+  liquidityDirty: boolean;
   finalizationBlockNumber: string;
   finalizationTime: UnixTimestamp;
   winningPayoutNumerators: string[];
@@ -463,6 +465,7 @@ export interface MarketData extends Log {
   feePercent: number;
   finalized: boolean;
   lastTradedTimestamp: UnixTimestamp;
+  isWarpSync: boolean;
 }
 
 export interface DisputeDoc extends Log {
@@ -477,46 +480,46 @@ export interface DisputeDoc extends Log {
 }
 
 export interface InitialReporterTransferredLog extends Log {
-  universe: string;
-  market: string;
-  from: string;
-  to: string;
+  universe: Address;
+  market: Address;
+  from: Address;
+  to: Address;
 }
 
 export interface MarketParticipantsDisavowedLog extends Log {
-  universe: string;
-  market: string;
+  universe: Address;
+  market: Address;
 }
 
 export interface MarketTransferredLog extends Log {
-  universe: string;
-  market: string;
-  from: string;
-  to: string;
+  universe: Address;
+  market: Address;
+  from: Address;
+  to: Address;
 }
 
 export interface TokensTransferredLog extends Log {
-  universe: string;
-  market: string;
-  token: string;
-  from: string;
-  to: string;
+  universe: Address;
+  market: Address;
+  token: Address;
+  from: Address;
+  to: Address;
   value: string;
   tokenType: number;
 }
 
 export interface TransferSingleLog extends Log {
   operator: string;
-  from: string;
-  to: string;
+  from: Address;
+  to: Address;
   id: string;
   value: string;
 }
 
 export interface TransferBatchLog extends Log {
   operator: string;
-  from: string;
-  to: string;
+  from: Address;
+  to: Address;
   ids: string[];
   values: string[];
 }

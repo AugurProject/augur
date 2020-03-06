@@ -5,18 +5,17 @@ import { _1_ETH } from '../constants';
 import {
   Contracts as compilerOutput,
   getAddressesForNetwork,
-  NetworkId
+  NetworkId,
+  updateEnvironmentsConfig,
+  abiV1,
+  environments,
+  buildConfig
 } from '@augurproject/artifacts';
-import {
-  NetworkConfiguration,
-  NETWORKS,
-  ContractInterfaces,
-} from '@augurproject/core';
+import { ContractInterfaces } from '@augurproject/core';
 import moment from 'moment';
 import { BigNumber } from 'bignumber.js';
-import { formatBytes32String } from 'ethers/utils';
+import { deepCopy, formatBytes32String } from "ethers/utils";
 import { ethers } from 'ethers';
-import { abiV1 } from '@augurproject/artifacts';
 import {
   calculatePayoutNumeratorsArray,
   QUINTILLION,
@@ -26,19 +25,23 @@ import {
   numTicksToTickSizeWithDisplayPrices,
   convertOnChainPriceToDisplayPrice,
   NativePlaceTradeDisplayParams,
+  startServer
 } from '@augurproject/sdk';
 import { fork } from './fork';
 import { dispute } from './dispute';
 import { MarketList, MarketOrderBook } from '@augurproject/sdk/build/state/getter/Markets';
 import { generateTemplateValidations } from './generate-templates';
-import { spawn } from 'child_process';
+import { spawn, spawnSync } from 'child_process';
 import { showTemplateByHash, validateMarketTemplate } from './template-utils';
 import { cannedMarkets, singleOutcomeAsks, singleOutcomeBids } from './data/canned-markets';
 import { ContractAPI } from '../libs/contract-api';
 import { OrderBookShaper, OrderBookConfig } from './orderbook-shaper';
 import { NumOutcomes } from '@augurproject/sdk/src/state/logs/types';
 import { flattenZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
-import { sleep } from '@augurproject/sdk/build/state/utils/utils';
+import { formatAddress, sleep, waitForSigint } from './util';
+import { runWsServer, runWssServer } from '@augurproject/sdk/build/state/WebsocketEndpoint';
+import { createApp, runHttpServer, runHttpsServer } from '@augurproject/sdk/build/state/HTTPEndpoint';
+import deepmerge from "deepmerge";
 
 export function addScripts(flash: FlashSession) {
   flash.addScript({
@@ -55,7 +58,7 @@ export function addScripts(flash: FlashSession) {
         name: 'network',
         abbr: 'n',
         description:
-          'Which network to connect to. Defaults to "environment" aka local node.',
+          'Which network to connect to. Defaults to "local" aka local node.',
       },
       {
         name: 'useSdk',
@@ -71,17 +74,22 @@ export function addScripts(flash: FlashSession) {
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
-      const network = (args.network as NETWORKS) || 'environment';
+      const network = (args.network as string) || 'local';
       const account = args.account as string;
-      const useSdk = args.useSdk as boolean;
-      const useZeroX = args.useZeroX as boolean;
+      const useSdk = Boolean(args.useSdk);
+      const useZeroX = Boolean(args.useZeroX);
       if (account) flash.account = account;
-      this.network = NetworkConfiguration.create(network);
-      flash.provider = this.makeProvider(this.network);
-      const networkId = await this.getNetworkId(flash.provider);
-      flash.contractAddresses = getAddressesForNetwork(networkId as NetworkId);
-      await flash.ensureUser(this.network, useSdk, true, null, useZeroX, useZeroX);
+      this.config = environments[network];
+      this.provider = this.makeProvider(this.config);
+      await this.ensureUser(this.network, useSdk, true, null, useZeroX, useZeroX);
     },
+  });
+
+  flash.addScript({
+    name: 'show-config',
+    async call(this: FlashSession) {
+      this.log(JSON.stringify(this.config, null, 2));
+    }
   });
 
   flash.addScript({
@@ -92,7 +100,12 @@ export function addScripts(flash: FlashSession) {
       {
         name: 'write-artifacts',
         abbr: 'w',
-        description: 'Overwrite addresses.json.',
+        description: 'Deprecated. Kept for compatibility.',
+        flag: true,
+      },
+      {
+        name: 'do-not-write-artifacts',
+        description: 'Prevents deploy from overwriting environments/$env.json',
         flag: true,
       },
       {
@@ -112,39 +125,58 @@ export function addScripts(flash: FlashSession) {
         name: 'relayer-address',
         abbr: 'r',
         description: 'gnosis relayer address'
-      }
+      },
+      {
+        name: 'environment',
+        abbr: 'e',
+        description: 'name of environment. ex: local, kovan, mainnet'
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
-      const useSdk = args.useSdk as boolean;
+      const useSdk = Boolean(args.useSdk);
+      const env = args.environment as string || this.network || 'local';
       if (this.noProvider()) return;
 
       console.log('Deploying: ', args);
 
-      const config = {
-        writeArtifacts: args.writeArtifacts as boolean,
-        useNormalTime: !(args.timeControlled as boolean),
-      };
+      if (typeof args.doNotWriteArtifacts !== 'undefined') {
+        this.config.deploy.writeArtifacts = !Boolean(args.doNotWriteArtifacts)
+      }
+      if (typeof args.timeControlled !== 'undefined') {
+        this.config.deploy.normalTime = !Boolean(args.timeControlled)
+      }
+      if (typeof args.relayerAddress !== 'undefined') {
+        this.config.gnosis.relayerAddress = args.relayerAddress as string;
+      }
 
       const { addresses } = await deployContracts(
+        env,
         this.provider,
         this.accounts[0],
         compilerOutput,
-        config
+        this.config,
       );
-      flash.contractAddresses = addresses;
+      this.config.addresses = addresses;
 
       if (useSdk) {
         await flash.ensureUser(this.network, useSdk);
       }
 
-      const relayerAddressArg = args.relayerAddress as string;
-      const relayerAddressConfig = this.network && this.network.gnosisRelayerAddress;
-      const relayerAddress = relayerAddressArg || relayerAddressConfig;
-      if (relayerAddress) {
+      if (this.config.gnosis?.relayerAddress) {
+        this.log(`Fauceting to relayer @ ${this.config.gnosis.relayerAddress}`);
+        const config = this.config;
+        this.config = deepmerge(this.config, {
+          gnosis: { enabled: false },
+          zeroX: {
+            rpc: { enabled: false },
+            mesh: { enabled: false },
+          }
+        });
         await this.call('faucet', {
           amount: '1000000',
-          target: relayerAddress,
-        })
+          target: this.config.gnosis.relayerAddress,
+        });
+        this.config = config;
       }
     },
   });
@@ -180,7 +212,7 @@ export function addScripts(flash: FlashSession) {
       // Cannot directly faucet to target because:
       // 1) it might not have ETH, and
       // 2) specifying sender for contract calls only works if signer is available,
-      //    which is typically only true of main account and its gnosis safe
+      //    which is typically only true of main account or its gnosis safe
       if (target) {
         await user.augur.contracts.cash.transfer(target, atto);
       }
@@ -246,19 +278,31 @@ export function addScripts(flash: FlashSession) {
         abbr: 't',
         description: 'Account to send funds (defaults to current user)',
         required: false
+      },
+      {
+        name: 'useLegacyRep',
+        abbr: 'r',
+        flag: true,
+        description: 'faucet legacy rep',
+        required: false
       }
     ],
     async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
+      const useLegacyRep = Boolean(args.useLegacyRep)
       const user = await this.ensureUser();
       const amount = Number(args.amount);
       const atto = new BigNumber(amount).times(_1_ETH);
 
-      await user.repFaucet(atto);
+      await user.repFaucet(atto, useLegacyRep);
 
       // if we have a target we transfer from current account to target.
       if(args.target) {
-        await user.augur.contracts.reputationToken.transfer(String(args.target), atto);
+        if (useLegacyRep) {
+          await user.augur.contracts.legacyReputationToken.transfer(String(args.target), atto);
+        } else {
+          await user.augur.contracts.reputationToken.transfer(String(args.target), atto);
+        }
       }
     },
   });
@@ -486,10 +530,23 @@ export function addScripts(flash: FlashSession) {
         description:
           'Which network to connect to. Defaults to "environment" aka local node.',
       },
+      {
+        name: 'useGnosis',
+        flag: true,
+        description: 'use gnosis safe instead of user account'
+      },
+      {
+        name: 'userAccount',
+        abbr: 'u',
+        description:
+          'User account to create orders, if not provided then contract owner is used',
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const market = String(args.marketId);
-      const user = await this.ensureUser(this.network, true, true, null, true, true);
+      const useGnosis = Boolean(args.useGnosis);
+      const address = args.userAccount ? (args.userAccount as string) : null;
+      const user = await this.ensureUser(this.network, false, true, address, true, useGnosis);
       const skipFaucetApproval = args.skipFaucetOrApproval as boolean;
       if (!skipFaucetApproval) {
         await user.faucetOnce(QUINTILLION.multipliedBy(1000000));
@@ -578,11 +635,24 @@ export function addScripts(flash: FlashSession) {
         description:
           'Which network to connect to. Defaults to "environment" aka local node.',
       },
+      {
+        name: 'useGnosis',
+        flag: true,
+        description: 'use gnosis safe instead of user account'
+      },
+      {
+        name: 'userAccount',
+        abbr: 'u',
+        description:
+          'User account to create orders, if not provided then contract owner is used',
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const market = String(args.marketId);
       const numOutcomes = Number(args.numOutcomes);
-      const user = await this.ensureUser(this.network, true, true, null, true, true);
+      const useGnosis = Boolean(args.useGnosis);
+      const address = args.userAccount ? (args.userAccount as string) : null;
+      const user = await this.ensureUser(this.network, false, true, address, true, useGnosis);
       const skipFaucetApproval = args.skipFaucetOrApproval as boolean;
       if (!skipFaucetApproval) {
         await user.faucetOnce(QUINTILLION.multipliedBy(1000000));
@@ -590,10 +660,6 @@ export function addScripts(flash: FlashSession) {
       }
 
       const orderBook = {
-        0: {
-          buy: singleOutcomeBids,
-          sell: singleOutcomeAsks,
-        },
         1: {
           buy: singleOutcomeBids,
           sell: singleOutcomeAsks,
@@ -679,7 +745,6 @@ export function addScripts(flash: FlashSession) {
     },
   });
 
-
   flash.addScript({
     name: 'create-scalar-zerox-orders',
     options: [
@@ -723,10 +788,23 @@ export function addScripts(flash: FlashSession) {
         description:
           'Which network to connect to. Defaults to "environment" aka local node.',
       },
+      {
+        name: 'useGnosis',
+        flag: true,
+        description: 'use gnosis safe instead of user account'
+      },
+      {
+        name: 'userAccount',
+        abbr: 'u',
+        description:
+          'User account to create orders, if not provided then contract owner is used',
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const market = String(args.marketId);
-      const user = await this.ensureUser(this.network, true, true, null, true, true);
+      const useGnosis = Boolean(args.useGnosis);
+      const address = args.userAccount ? (args.userAccount as string) : null;
+      const user = await this.ensureUser(this.network, false, true, address, true, useGnosis);
       const skipFaucetApproval = args.skipFaucetOrApproval as boolean;
       if (!skipFaucetApproval) {
         await user.faucetOnce(QUINTILLION.multipliedBy(1000000));
@@ -823,7 +901,9 @@ export function addScripts(flash: FlashSession) {
       }
     ],
     async call(this: FlashSession, args: FlashArguments) {
-      const result = await this.user.augur.getMarketOrderBook({ marketId: String(args.marketId)});
+      const user: ContractAPI = await this.ensureUser(this.network, true, true, null, true, true);
+      await new Promise<void>(resolve => setTimeout(resolve, 90000));
+      const result = await user.augur.getMarketOrderBook({ marketId: String(args.marketId)});
       this.log(JSON.stringify(result));
       return result;
     }
@@ -902,7 +982,7 @@ export function addScripts(flash: FlashSession) {
         name: 'expiration',
         abbr: 'x',
         required: false,
-        description: 'number of added seconds to order will live, default is five minutes',
+        description: 'number of added seconds to order will live, default is ten minutes',
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
@@ -912,7 +992,7 @@ export function addScripts(flash: FlashSession) {
       const address = args.userAccount ? (args.userAccount as string) : null;
       const interval = args.refreshInterval ? Number(args.refreshInterval) * 1000 : 15000;
       const orderSize = args.orderSize ? Number(args.orderSize) : null;
-      const expiration = args.expiration ? new BigNumber(String(args.expiration)) : new BigNumber(18000); // five minutes
+      const expiration = args.expiration ? new BigNumber(String(args.expiration)) : new BigNumber(600);
       const user: ContractAPI = await this.ensureUser(this.network, true, true, address, true, true);
       console.log('waiting many seconds on purpose for client to sync');
       await new Promise<void>(resolve => setTimeout(resolve, 90000));
@@ -938,7 +1018,6 @@ export function addScripts(flash: FlashSession) {
 
     },
   });
-
 
   flash.addScript({
     name: 'order-firehose',
@@ -983,7 +1062,7 @@ export function addScripts(flash: FlashSession) {
         name: 'expiration',
         abbr: 'x',
         required: false,
-        description: 'number of added seconds to order will live, default is five minutes',
+        description: 'number of added seconds to order will live, default is ten minutes',
       },
       {
         name: 'orderSize',
@@ -995,19 +1074,24 @@ export function addScripts(flash: FlashSession) {
         name: 'outcomes',
         abbr: 'o',
         required: false,
-        description: 'outcomes to put orders on, default is 1,2',
+        description: 'outcomes to put orders on, default is 2,1',
       },
       {
         name: 'skipFaucetOrApproval',
         flag: true,
         description: 'do not faucet or approve, has already been done'
       },
+      {
+        name: 'useGnosis',
+        flag: true,
+        description: 'use gnosis safe instead of user account'
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const marketIds = String(args.marketIds)
         .split(',')
         .map(id => id.trim());
-      const orderOutcomes: number[] = (args.outcomes ? String(args.outcomes) : "1,2")
+      const orderOutcomes: number[] = (args.outcomes ? String(args.outcomes) : '2,1')
         .split(',')
         .map(id => Number(id.trim()));
       const address = args.userAccount ? (args.userAccount as string) : null;
@@ -1015,10 +1099,10 @@ export function addScripts(flash: FlashSession) {
       const numOrderLimit = args.numOrderLimit ? Number(args.numOrderLimit) : 100;
       const burstRounds = args.burstRounds ? Number(args.burstRounds) : 10;
       const orderSize = args.orderSize ? Number(args.orderSize) : 10;
-      const expiration = args.expiration ? new BigNumber(String(args.expiration)) : new BigNumber(18000); // five minutes
-      const user: ContractAPI = await this.ensureUser(this.network, true, true, address, true, true);
-      console.log('waiting few seconds on purpose for client to sync');
-      await new Promise<void>(resolve => setTimeout(resolve, 15000));
+      const expiration = args.expiration ? new BigNumber(String(args.expiration)) : new BigNumber(600); // ten minutes
+      const useGnosis = Boolean(args.useGnosis);
+      const user: ContractAPI = await this.ensureUser(this.network, false, true, address, true, useGnosis);
+
       const skipFaucetOrApproval = args.skipFaucetOrApproval as boolean;
       if (!skipFaucetOrApproval) {
         this.log('order-firehose, faucet and approval');
@@ -1026,11 +1110,11 @@ export function addScripts(flash: FlashSession) {
         await user.approve(QUINTILLION.multipliedBy(100000));
       }
       // create tight orderbook config
-      let bids = {};
-      let asks = {};
+      const bids = {};
+      const asks = {};
       for(let i = 1; i < 49; i++) { bids[((0.01 * i).toString().slice(0, 4))] = orderSize }
       for(let i = 50; i < 99; i++) { asks[((0.01 * i).toString().slice(0, 4))] = orderSize }
-      let config: OrderBookConfig = {bids, asks};
+      const config: OrderBookConfig = {bids, asks};
       const shapers = marketIds.map(m => new OrderBookShaper(m, null, expiration, orderOutcomes, config));
       let i = 0;
       for(i; i < burstRounds; i++) {
@@ -1046,7 +1130,7 @@ export function addScripts(flash: FlashSession) {
               const grabAmount = Math.min(ordersLeft, orders.length);
               const createOrders = orders.splice(0, grabAmount);
               createOrders.map(order => console.log(`${order.market} Creating ${order.displayAmount} at ${order.displayPrice} on outcome ${order.outcome}`));
-              user.placeZeroXOrders(createOrders).catch(this.log);
+              await user.placeZeroXOrders(createOrders).catch(this.log);
               totalOrdersCreated = totalOrdersCreated + createOrders.length;
             }
           }
@@ -1318,11 +1402,10 @@ export function addScripts(flash: FlashSession) {
     ],
     async call(this: FlashSession, args: FlashArguments) {
       await this.call('deploy', {
-        writeArtifacts: true,
         timeControlled: true,
         relayer_address: args.relayerAddress as string,
       });
-      const createMarkets = args.createMarkets as boolean;
+      const createMarkets = Boolean(args.createMarkets);
       if (createMarkets) {
         await this.call('create-canned-markets', {});
       }
@@ -1347,11 +1430,10 @@ export function addScripts(flash: FlashSession) {
     ],
     async call(this: FlashSession, args: FlashArguments) {
       await this.call('deploy', {
-        writeArtifacts: true,
         timeControlled: false,
         relayer_address: args.relayerAddress as string,
       });
-      const createMarkets = args.createMarkets as boolean;
+      const createMarkets = Boolean(args.createMarkets);
       if (createMarkets) {
         await this.call('create-canned-markets', {});
       }
@@ -1394,7 +1476,7 @@ export function addScripts(flash: FlashSession) {
         args.to === null || args.to === 'latest' ? 'latest' : Number(args.to);
 
       const logs = await this.provider.getLogs({
-        address: user.augur.addresses.Augur,
+        address: user.augur.config.addresses.Augur,
         fromBlock,
         toBlock,
         topics: [],
@@ -1405,7 +1487,6 @@ export function addScripts(flash: FlashSession) {
         logIndex: log.logIndex || 0,
         transactionHash: log.transactionHash || '',
         transactionIndex: log.transactionIndex || 0,
-        transactionLogIndex: log.transactionLogIndex || 0,
         blockNumber: log.blockNumber || 0,
         blockHash: log.blockHash || '0',
         removed: log.removed || false,
@@ -1908,7 +1989,7 @@ export function addScripts(flash: FlashSession) {
         this.log(`Created market ${marketId}`);
       }
 
-      await (await this.db).sync(user.augur, 100000, 0);
+      await sleep(2000);
       const marketInfo = (await this.api.route('getMarketsInfo', {
         marketIds: [marketId],
       }))[0];
@@ -1954,7 +2035,7 @@ export function addScripts(flash: FlashSession) {
         this.log(`Created market ${marketId}`);
       }
 
-      await (await this.db).sync(user.augur, 100000, 0);
+      await sleep(2000);
       const marketInfo = (await this.api.route('getMarketsInfo', {
         marketIds: [marketId],
       }))[0];
@@ -2027,6 +2108,114 @@ export function addScripts(flash: FlashSession) {
 
       console.log((await gnosisSafe.nonce_()).toString());
   }});
+
+  flash.addScript({
+    name: 'docker-all',
+    ignoreNetwork: true,
+    options: [
+      {
+        name: 'dev',
+        abbr: 'd',
+        description: 'Deploy to node instead of using pop-docker image',
+        flag: true,
+      },
+      {
+        name: 'fake',
+        abbr: 'f',
+        description: 'Use fake time (TimeControlled) instead of real time',
+        flag: true,
+      },
+      {
+        name: 'detach',
+        abbr: 'D',
+        description: 'Do not stop dockers after running command and do not wait for user input before exiting',
+        flag: true,
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const dev = Boolean(args.dev);
+      const fake = Boolean(args.fake);
+      const detach = Boolean(args.detach);
+
+      spawnSync('docker', ['pull', 'augurproject/safe-relay-service_web:latest']);
+      spawnSync('docker', ['pull', '0xorg/mesh:latest']);
+
+      this.log(`Deploy contracts: ${dev}`);
+      this.log(`Use fake time: ${fake}`);
+      this.log(`Detach: ${detach}`);
+
+      try {
+        if (dev) {
+          spawnSync('yarn', ['workspace', '@augurproject/tools', 'docker:geth:detached']);
+        } else {
+          const gethDocker = fake ? 'docker:geth:pop' : 'docker:geth:pop-normal-time';
+          spawnSync('yarn', [gethDocker]);
+          await updateEnvironmentsConfig(); // add pop-geth addresses to global
+        }
+
+        await sleep(10000); // give geth some time to start
+        this.config = buildConfig('local');
+        this.provider = flash.makeProvider(this.config);
+
+        if (dev) {
+          const deployMethod = fake ? 'fake-all' : 'normal-all';
+          await this.call(deployMethod, { createMarkets: true });
+        }
+
+        await spawnSync('yarn', ['build']); // so UI etc will have the correct addresses
+
+        const env = {
+          ...process.env,
+          ETHEREUM_CHAIN_ID: this.config.networkId,
+          CUSTOM_CONTRACT_ADDRESSES: JSON.stringify(this.config.addresses),
+          GNOSIS_SAFE_CONTRACT_ADDRESS: formatAddress(this.config.addresses.GnosisSafe, { prefix: true }),
+          PROXY_FACTORY_CONTRACT_ADDRESS: formatAddress(this.config.addresses.ProxyFactory, { prefix: true }),
+          ZEROX_CONTRACT_ADDRESS: formatAddress(this.config.addresses.ZeroXTrade, { lower: true, prefix: false }),
+          SAFE_DEFAULT_TOKEN_ADDRESS: formatAddress(this.config.addresses.Cash, { lower: true, prefix: true })
+        };
+
+        if (detach) {
+          spawnSync('yarn', ['workspace', '@augurproject/gnosis-relay-api', 'run-relay', '-d'], { env });
+        } else {
+          spawn('yarn', ['workspace', '@augurproject/gnosis-relay-api', 'run-relay'], {
+            env,
+            stdio: 'inherit',
+          });
+
+          this.log('Running dockers. Type ctrl-c to quit:\n');
+          await waitForSigint();
+        }
+
+      } finally {
+        if (!detach) {
+          this.log('Stopping dockers');
+          await spawnSync('docker', ['kill', 'geth']);
+          await spawnSync('yarn', ['workspace', '@augurproject/gnosis-relay-api', 'kill-relay']);
+        }
+      }
+    }
+  });
+
+  flash.addScript({
+    name: 'sdk-server',
+    ignoreNetwork: true,
+    async call(this: FlashSession) {
+      const api = await startServer(this.config, this.account);
+      const app = createApp(api);
+
+      const httpServer = this.config.server?.startHTTP && runHttpServer(app, this.config);
+      const httpsServer = this.config.server?.startHTTPS && runHttpsServer(app, this.config);
+      const wsServer = this.config.server?.startWS && runWsServer(api, app, this.config);
+      const wssServer = this.config.server?.startWSS && runWssServer(api, app, this.config);
+
+      this.log('Running SDK server. Type ctrl-c to quit:\n');
+      await waitForSigint();
+      httpServer.close();
+      httpsServer.close();
+      wsServer.close();
+      wssServer.close();
+    }
+  });
 
   flash.addScript({
     name: '0x-docker',
@@ -2103,13 +2292,8 @@ export function addScripts(flash: FlashSession) {
       const removePrefix = args.removePrefix as boolean;
       const lower = args.lower as boolean;
       let address = this.contractAddresses[name];
-      if (removePrefix) {
-        address = address.slice(2);
-      }
-      if (lower) {
-        address = address.toLowerCase();
-      }
-      console.log(address);
+      address = formatAddress(address, { lower, prefix: !removePrefix});
+      this.log(address);
       return address;
     },
   });
@@ -2222,6 +2406,14 @@ export function addScripts(flash: FlashSession) {
       const balance = await user.getRepBalance(target || this.account);
       this.log(balance.toFixed());
       return balance;
+    },
+  });
+
+  flash.addScript({
+    name: 'ping',
+    ignoreNetwork: true,
+    async call(this: FlashSession) {
+      this.log('pong');
     },
   });
 }

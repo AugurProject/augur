@@ -1,94 +1,56 @@
-import { ContractAPI, ACCOUNTS } from '@augurproject/tools';
 import { BigNumber } from 'bignumber.js';
-import { makeDbMock } from '../../libs';
-import { DB } from '@augurproject/sdk/build/state/db/DB';
-import { Connectors } from '@augurproject/sdk';
-import { API } from '@augurproject/sdk/build/state/getter/API';
-import { NULL_ADDRESS, stringTo32ByteHex } from '../../libs/Utils';
-import { sleep } from '@augurproject/core/build/libraries/HelperFunctions';
+import { JsonRpcProvider } from 'ethers/providers';
 import * as _ from 'lodash';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
-import { JsonRpcProvider } from 'ethers/providers';
-import { Addresses, ContractAddresses, NetworkId } from '@augurproject/artifacts';
-import { GnosisRelayAPI, GnosisSafeState } from '@augurproject/gnosis-relay-api';
-import { AllOrders, Order } from '@augurproject/sdk/build/state/getter/OnChainTrading';
+import { GnosisRelayAPI, GnosisSafeState, } from '@augurproject/gnosis-relay-api';
+import { Connectors } from '@augurproject/sdk';
+import { ACCOUNTS, TestContractAPI } from '@augurproject/tools';
+import { AllOrders, Order, } from '@augurproject/sdk/build/state/getter/OnChainTrading';
+import { stringTo32ByteHex, } from '@augurproject/tools/build/libs/Utils';
+import { buildConfig, SDKConfiguration } from '@augurproject/artifacts';
 
-async function getSafe(person: ContractAPI): Promise<string> {
-  return person.augur.contracts.gnosisSafeRegistry.getSafe_(person.account.publicKey);
-}
-
-async function getOrCreateSafe(person: ContractAPI, initialPayment=new BigNumber(1e21)): Promise<string> {
-  const safeFromRegistry = await getSafe(person);
-  if(safeFromRegistry !== NULL_ADDRESS) {
-    console.log(`Found safe: ${safeFromRegistry}`);
-    return safeFromRegistry;
-  }
-
-  console.log('Attempting to create safe via relay');
-  const safeResponse = await person.createGnosisSafeViaRelay(person.augur.addresses.Cash);
-  return safeResponse.safe
-}
-
-async function getSafeStatus(person: ContractAPI, safe: string) {
-  const status = await person.augur.checkSafe(person.account.publicKey, safe);
-  if (typeof status === 'string') {
-    return status;
-  } else if (typeof status === 'object' && typeof status.status === 'string') {
-    return status.status
-  } else {
-    throw Error(`Received erroneous response when deploying safe via relay: "${status}"`);
-  }
-}
-
-async function fundSafe(person: ContractAPI, safe=undefined, amount=new BigNumber(1e21)) {
-  safe = safe || await getOrCreateSafe(person, amount);
-
-  await person.faucet(new BigNumber(1e21));
-  await person.transferCash(safe, new BigNumber(1e21));
-
-  let status: string;
-  for (let i = 0; i < 10; i++) {
-    status = await getSafeStatus(person, safe);
-    if (status !== GnosisSafeState.WAITING_FOR_FUNDS) {
-      break;
-    }
-    await sleep(2000);
-  }
-
-  await sleep(10000);
-
-  return safe;
+async function getSafe(person: TestContractAPI): Promise<string> {
+  return person.augur.contracts.gnosisSafeRegistry.getSafe_(
+    person.account.publicKey
+  );
 }
 
 describe('3rd Party :: Gnosis :: ', () => {
-  let john: ContractAPI;
+  let john: TestContractAPI;
   let providerJohn: EthersProvider;
-  let networkId: NetworkId;
-  let addresses: ContractAddresses;
-  let dbPromise: Promise<DB>;
-  let api: API;
-  const mock = makeDbMock();
+  let config: SDKConfiguration;
 
   beforeAll(async () => {
-    providerJohn = new EthersProvider(new JsonRpcProvider('http://localhost:8545'), 5, 0, 40);
-    networkId = await providerJohn.getNetworkId();
-    addresses = Addresses[networkId];
+    config = buildConfig('local');
+    providerJohn = new EthersProvider(
+      new JsonRpcProvider(config.ethereum.http),
+      config.ethereum.rpcRetryCount,
+      config.ethereum.rpcRetryInterval,
+      config.ethereum.rpcConcurrency
+    );
 
     const connectorJohn = new Connectors.DirectConnector();
-    john = await ContractAPI.userWrapper(ACCOUNTS[0], providerJohn, addresses, connectorJohn, new GnosisRelayAPI('http://localhost:8888/api/'), undefined, undefined);
-    dbPromise = mock.makeDB(john.augur, ACCOUNTS);
-    connectorJohn.initialize(john.augur, await dbPromise);
-    api = new API(john.augur, dbPromise);
+    john = await TestContractAPI.userWrapper(
+      ACCOUNTS[0],
+      providerJohn,
+      config,
+      connectorJohn,
+      new GnosisRelayAPI('http://localhost:8888/api/'),
+      undefined,
+      undefined
+    );
+
+    connectorJohn.initialize(john.augur, john.db);
     await john.approveCentralAuthority();
 
-    const funderCash = (new BigNumber(10)).pow(26);
-    await john.faucet(funderCash)
+    const funderCash = new BigNumber(10).pow(26);
+    await john.faucet(funderCash);
     await john.transferCash(ACCOUNTS[7].publicKey, funderCash);
 
     // setup gnosis
-    await john.faucet(funderCash)
-    const safe = await fundSafe(john);
-    const safeStatus = await getSafeStatus(john, safe);
+    await john.faucet(funderCash);
+    const safe = await john.fundSafe();
+    const safeStatus = await john.getSafeStatus(safe);
     console.log(`Safe ${safe}: ${safeStatus}`);
     expect(safeStatus).toBe(GnosisSafeState.AVAILABLE);
 
@@ -102,9 +64,9 @@ describe('3rd Party :: Gnosis :: ', () => {
     // Create a market
     const market = await john.createReasonableMarket([
       stringTo32ByteHex('A'),
-      stringTo32ByteHex('B')
+      stringTo32ByteHex('B'),
     ]);
-    await (await dbPromise).sync(john.augur, mock.constants.chunkSize, 0);
+    await john.sync();
 
     // Give John enough cash to pay for the 0x order.
 
@@ -126,12 +88,11 @@ describe('3rd Party :: Gnosis :: ', () => {
       stringTo32ByteHex('42')
     );
 
-    // Sync
-    await (await dbPromise).sync(john.augur, mock.constants.chunkSize, 0);
+    await john.sync();
 
     // Get orders for the market
-    const orders: AllOrders = await api.route('getOpenOnChainOrders', {
-      marketId: market.address
+    const orders: AllOrders = await john.api.route('getOpenOnChainOrders', {
+      marketId: market.address,
     });
     console.log('orders:', JSON.stringify(orders, null, 2));
     const order: Order = _.values(orders[market.address][0][0])[0];

@@ -19,6 +19,7 @@ import {
   CLAIM_STAKE_FEES,
   CLAIM_FEES_GAS_COST,
   ZERO,
+  CLAIM_ALL_TITLE,
 } from 'modules/common/constants';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
@@ -206,7 +207,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
           },
           {
             preText: ' and',
-            boldText: `${claimReportingFees.totalUnclaimedDaiFormatted.formatted} DAI`,
+            boldText: `${claimReportingFees.totalUnclaimedDaiFormatted.formattedValue} DAI`,
             postText:
               'of reporting fees to collect from the following markets:',
           },
@@ -219,7 +220,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
           },
           {
             preText: ' and',
-            boldText: `${claimReportingFees.totalUnclaimedDaiFormatted.formatted} DAI`,
+            boldText: `${claimReportingFees.totalUnclaimedDaiFormatted.formattedValue} DAI`,
             postText:
               'of reporting fees to collect from the following markets:',
           },
@@ -236,7 +237,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
         ? null
         : [
             {
-              text: 'Claim All',
+              text: CLAIM_ALL_TITLE,
               disabled: modalRows.find(market => market.status === 'pending'),
               action: () => {
                 dP.redeemStake(allRedeemStakeOptions, () => {

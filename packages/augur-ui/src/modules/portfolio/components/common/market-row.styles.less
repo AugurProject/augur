@@ -28,8 +28,9 @@
 
     &.Pending {
       > span > button {
+        .text-14;
+
         margin-left: @size-4;
-        text-transform: capitalize;
       }
     }
 
@@ -68,7 +69,7 @@
     }
 
     > span:nth-of-type(2) {
-      .text-10;
+      .text-14;
 
       color: var(--color-secondary-text);
       margin-top: @size-4;
@@ -89,6 +90,22 @@
       padding-bottom: 2px;
     }
   }
+
+  @media @breakpoint-mobile-tablet {
+    > div > span:nth-of-type(2) {
+      .text-12-medium;
+
+      display: flex;
+      flex-direction: column;
+
+      > button {
+        .text-12-medium;
+
+        text-align: left;
+        margin-left: 0;
+      }
+    }
+  }
 }
 
 .Arrow {
@@ -96,7 +113,7 @@
   margin-right: @size-18;
 }
 
-@media @breakpoint-mobile-mid {
+@media @breakpoint-mobile {
   .MarketRow {
     > div {
       &.Show {

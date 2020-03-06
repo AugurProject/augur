@@ -28,7 +28,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
     },
     {
       content: 'Learn more about DAI',
-      link: 'https://docs.augur.net',
+      link: 'https://augur.gitbook.io/help-center/prediction-markets/crypto-glossary#what-is-dai',
     },
   ],
   buttons: [

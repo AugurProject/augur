@@ -466,15 +466,21 @@ div.ReportingSubheaders {
 }
 
 .ScalarOutcomesView {
-  > h2 {
-    .mono-11;
+  display: flex;
+  align-items: center;
+  color: var(--color-primary-text);
+  margin-top: @size-8;
 
-    color: var(--color-primary-text);
-    margin-top: @size-8;
-  }
   > div:first-of-type {
     margin-top: 0;
     max-width: 300px;
+  }
+
+  > h2 {
+    .mono-11;
+
+    color: @color-primary-text;
+    margin-left: @size-8;
   }
 }
 
@@ -519,7 +525,7 @@ div.ReportingSubheaders {
     }
   }
 
-  @media @breakpoint-mobile-mid {
+  @media @breakpoint-mobile {
     > button {
       width: 100%;
     }
@@ -623,7 +629,7 @@ div.ReportingSubheaders {
   border-radius: @size-3;
   border: @size-1 solid var(--color-dark-grey);
   display: grid;
-  grid-template-columns: auto 80px;
+  grid-template-columns: auto auto;
   padding: @size-12 @size-24;
   margin-bottom: @size-8;
 

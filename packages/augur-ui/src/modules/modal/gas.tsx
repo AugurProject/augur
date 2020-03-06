@@ -24,6 +24,7 @@ interface GasProps {
   fast: number;
   userDefinedGasPrice?: number;
   ethToDaiRate: BigNumber;
+  feeTooLow: boolean;
 }
 
 interface GasState {
@@ -58,6 +59,7 @@ export const Gas = (props: GasProps) => {
     average,
     fast,
     ethToDaiRate,
+    feeTooLow,
   } = props;
 
   const doesGasPriceMatchPresets = (amount: number) => {
@@ -196,6 +198,9 @@ export const Gas = (props: GasProps) => {
               <span>{getEstTime(amount)}</span>
             </div>
           </div>
+        )}
+        {feeTooLow && (
+          <AlertMessage preText='A Transaction you made was rejected by the network because your gas price was too low. Try increasing your gas price or waiting till the network is less busy.' />
         )}
         {showLowAlert && (
           <AlertMessage preText='Transactions are unlikely to be processed at your current gas price.' />

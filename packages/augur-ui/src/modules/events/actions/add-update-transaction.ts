@@ -1,15 +1,10 @@
-import store, { AppState } from 'store';
+import { AppState } from 'store';
 import {
-  addCanceledOrder,
-  removeCanceledOrder,
-} from 'modules/orders/actions/update-order-status';
-import {
-  PUBLICTRADE,
   CANCELORDER,
   CANCELORDERS,
+  BATCHCANCELORDERS,
   TX_ORDER_ID,
   TX_ORDER_IDS,
-  TX_MARKET_ID,
   CREATEMARKET,
   CREATECATEGORICALMARKET,
   CREATESCALARMARKET,
@@ -20,15 +15,19 @@ import {
   YES_NO,
   PUBLICFILLORDER,
   BUYPARTICIPATIONTOKENS,
-  MODAL_WALLET_ERROR,
+  MODAL_ERROR,
+  MIGRATE_FROM_LEG_REP_TOKEN,
+  REDEEMSTAKE,
+  APPROVE,
+  TRADINGPROCEEDSCLAIMED,
+  CLAIMMARKETSPROCEEDS,
 } from 'modules/common/constants';
 import { CreateMarketData } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { Events, Getters, TXEventName } from '@augurproject/sdk';
+import { Events, TXEventName } from '@augurproject/sdk';
 import {
-  addPendingData,
-  removePendingData,
+  addPendingData, addUpdatePendingTransaction, addCanceledOrder,
 } from 'modules/pending-queue/actions/pending-queue-management';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { TransactionMetadataParams } from 'contract-dependencies-ethers/build';
@@ -40,6 +39,14 @@ import { updateModal } from 'modules/modal/actions/update-modal';
 import { updateAppStatus, GNOSIS_STATUS } from 'modules/app/actions/update-app-status';
 import { GnosisSafeState } from '@augurproject/gnosis-relay-api/src/GnosisRelayAPI';
 
+const ADD_PENDING_QUEUE_METHOD_CALLS = [
+  BUYPARTICIPATIONTOKENS,
+  MIGRATE_FROM_LEG_REP_TOKEN,
+  REDEEMSTAKE,
+  BATCHCANCELORDERS,
+  TRADINGPROCEEDSCLAIMED,
+  CLAIMMARKETSPROCEEDS
+];
 export const getRelayerDownErrorMessage = (walletType, hasEth) => {
   const errorMessage = 'We\'re currently experiencing a technical difficulty processing transaction fees in Dai. If possible please come back later to process this transaction';
 
@@ -56,15 +63,18 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
   const { eventName, transaction, hash } = txStatus;
   if (transaction) {
     const methodCall = transaction.name.toUpperCase();
-    const { blockchain, alerts, loginAccount } = getState();
+    const { blockchain, loginAccount } = getState();
 
+    if (ADD_PENDING_QUEUE_METHOD_CALLS.includes(methodCall)) {
+      dispatch(addUpdatePendingTransaction(methodCall, eventName, blockchain.currentBlockNumber, hash, { ...transaction }));
+    }
     if (eventName === TXEventName.RelayerDown) {
       const hasEth = (await loginAccount.meta.signer.provider.getBalance(loginAccount.meta.signer._address)).gt(0);
 
       dispatch(updateAppStatus(GNOSIS_STATUS, GnosisSafeState.ERROR));
 
       dispatch(updateModal({
-        type: MODAL_WALLET_ERROR,
+        type: MODAL_ERROR,
         error: getRelayerDownErrorMessage(loginAccount.meta.accountType, hasEth),
         showDiscordLink: false,
         showAddFundsHelp: !hasEth,
@@ -160,14 +170,13 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
           blockchain.currentAugurTimestamp * 1000,
           methodCall
         );
-        dispatch(addPendingData(id, CREATE_MARKET, eventName, hash, data));
+        // pending queue will be updated when created market event comes in.
+        if (eventName !== TXEventName.Success)
+          dispatch(addPendingData(id, CREATE_MARKET, eventName, hash, data));
         if (hash)
           dispatch(
             updateLiqTransactionParamHash({ txParamHash: id, txHash: hash })
           );
-        if (hash && eventName === TXEventName.Success) {
-          dispatch(removePendingData(id, CREATE_MARKET));
-        }
         if (hash && eventName === TXEventName.Failure || eventName === TXEventName.RelayerDown) {
           // if tx fails, revert hash to generated tx id, for retry
           dispatch(
@@ -178,20 +187,20 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
       }
       case CANCELORDER: {
         const orderId = transaction.params && transaction.params.order[TX_ORDER_ID];
-        dispatch(addCanceledOrder(orderId, eventName));
-        if (eventName === TXEventName.Success) {
-          dispatch(removeCanceledOrder(orderId));
-        }
+        dispatch(addCanceledOrder(orderId, eventName, hash))
+        break;
+      }
+      case BATCHCANCELORDERS: {
+        const orders = transaction.params && transaction.params.orders || [];
+        orders.map(order => dispatch(addCanceledOrder(order.orderId, eventName, hash)));
         break;
       }
       case CANCELORDERS: {
         const orderIds = transaction.params && transaction.params.order[TX_ORDER_IDS];
-        orderIds.map(id => dispatch(addCanceledOrder(id, eventName)));
-        if (eventName === TXEventName.Success) {
-          orderIds.map(id => dispatch(removeCanceledOrder(id)));
-        }
+        orderIds.map(orderId => dispatch(addCanceledOrder(orderId, eventName, hash)));
         break;
       }
+
       default:
         return null;
     }

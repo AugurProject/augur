@@ -9,13 +9,12 @@ import makeQuery from "modules/routes/helpers/make-query";
 
 import { NotificationCard } from "modules/account/components/notification-card";
 import { PillLabel } from "modules/common/labels";
-import { REPORTING, DISPUTING, MARKET } from "modules/routes/constants/views";
+import { MARKET } from "modules/routes/constants/views";
 import {
   MARKET_ID_PARAM_NAME,
   RETURN_PARAM_NAME,
 } from "modules/routes/constants/param-names";
 import {
-  FinalizeTemplate,
   OpenOrdersResolvedMarketsTemplate,
   ReportEndingSoonTemplate,
   DisputeTemplate,
@@ -93,18 +92,6 @@ class Notifications extends React.Component<
         };
         break;
 
-      case NOTIFICATION_TYPES.finalizeMarkets:
-        buttonAction = () => {
-          this.markAsRead(notification);
-          this.disableNotification(notification.id, true);
-          if (notification.market) {
-            this.props.finalizeMarketModal(notification.market.id, () =>
-              this.disableNotification(notification.id, false)
-            );
-          }
-        };
-        break;
-
       case NOTIFICATION_TYPES.marketsInDispute:
         buttonAction = () => {
           this.markAsRead(notification);
@@ -136,10 +123,7 @@ class Notifications extends React.Component<
       case NOTIFICATION_TYPES.claimReportingFees:
         buttonAction = () => {
           this.markAsRead(notification);
-          this.disableNotification(notification.id, true);
-          this.props.claimReportingFees(notification.claimReportingFees, () =>
-            this.disableNotification(notification.id, false)
-          );
+          this.props.claimReportingFees(notification.claimReportingFees);
         };
         break;
 
@@ -225,6 +209,8 @@ class Notifications extends React.Component<
         claimReportingFees,
         totalProceeds,
         type,
+        queueName,
+        queueId,
       } = notification;
 
       const templateProps = {
@@ -237,6 +223,8 @@ class Notifications extends React.Component<
         buttonAction,
         buttonLabel,
         type,
+        queueName,
+        queueId,
       };
 
       const notificationCardProps = {
@@ -271,9 +259,6 @@ class Notifications extends React.Component<
               isDisabled={isDisabled}
               {...templateProps}
             />
-          ) as any : null}
-          {type === NOTIFICATION_TYPES.finalizeMarkets ? (
-            <FinalizeTemplate isDisabled={isDisabled} {...templateProps} />
           ) as any : null}
           {type === NOTIFICATION_TYPES.marketsInDispute ? (
             <DisputeTemplate isDisabled={isDisabled} {...templateProps} />

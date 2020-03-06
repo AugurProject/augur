@@ -31,6 +31,14 @@
         margin: 0;
       }
 
+      > div {
+        width: unset;
+
+        > div {
+          min-width: unset;
+        }
+      }
+
       > button {
         z-index: @above-all-content;
         max-width: @size-32;
@@ -110,6 +118,24 @@
 
       > div[class*='TextInput'] {
         grid-column: 2 / span 1;
+      }
+    }
+
+    &.CustomPrimary {
+      > li:first-of-type {
+        > div:nth-of-type(2) {
+          grid-column: 1;
+        }
+      }
+    }
+    &.CustomTertiary {
+      > li:last-of-type {
+        > div:last-of-type {
+          grid-column: unset;
+          > div > input {
+            min-width: @size-210;
+          }
+        }
       }
     }
   }
@@ -442,7 +468,6 @@
     @media @breakpoint-mobile {
       .text-12;
 
-      max-height: 50px;
       white-space: normal;
       margin-bottom: @size-16;
     }
@@ -867,6 +892,11 @@
       top: 106%;
       width: min-content;
       z-index: @mask;
+
+      &.OpenTop {
+        top: unset;
+        bottom: @size-24;
+      }
 
       &.active {
         display: block;
@@ -1513,6 +1543,16 @@ button.MaxDark {
       }
     }
   }
+
+  &.OpenTop {
+    :global {
+      .DateInput_1 {
+        > svg {
+          display: none;
+        }
+      }
+    }
+  }
 }
 
 :root[theme="BETTING"],
@@ -1759,6 +1799,10 @@ button.MaxDark {
   max-height: @size-44;
   min-width: @size-210;
 
+  @media @breakpoint-mobile {
+    max-height: unset;
+  }
+
   > button {
     .text-14;
 
@@ -1863,6 +1907,19 @@ button.MaxDark {
   &.Default {
     > button {
       color: var(--color-secondary-text);
+    }
+  }
+
+  &.OpenTop {
+    > div {
+      top: unset;
+      bottom: 24px;
+      left: unset;
+      right: 0;
+    }
+
+    > svg {
+      display: none;
     }
   }
 }

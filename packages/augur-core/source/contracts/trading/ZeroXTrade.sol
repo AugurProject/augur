@@ -249,10 +249,11 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155, CashSender {
             validateOrder(_order, _fillAmountRemaining);
 
             // Update 0x and pay protocol fee. This will also validate signatures and order state for us.
-            IExchange.FillResults memory totalFillResults = exchange.fillOrder.value(_protocolFee)(
+            IExchange.FillResults memory totalFillResults = fillOrderNoThrow(
                 _order,
                 _fillAmountRemaining,
-                _signatures[i]
+                _signatures[i],
+                _protocolFee
             );
 
             if (totalFillResults.takerAssetFilledAmount == 0) {
@@ -276,6 +277,22 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155, CashSender {
         }
 
         return _fillAmountRemaining;
+    }
+
+    function fillOrderNoThrow(IExchange.Order memory _order, uint256 _takerAssetFillAmount, bytes memory _signature, uint256 _protocolFee) internal returns (IExchange.FillResults memory fillResults) {
+        bytes memory fillOrderCalldata = abi.encodeWithSelector(
+            IExchange(address(0)).fillOrder.selector,
+            _order,
+            _takerAssetFillAmount,
+            _signature
+        );
+
+        (bool _didSucceed, bytes memory _returnData) = address(exchange).call.value(_protocolFee)(fillOrderCalldata);
+        if (_didSucceed) {
+            assert(_returnData.length == 160);
+            fillResults = abi.decode(_returnData, (IExchange.FillResults));
+        }
+        return fillResults;
     }
 
     function coverProtocolFee(uint256 _amountEthRequired, uint256 _maxProtocolFeeDai) internal {

@@ -4,17 +4,20 @@ import { SubscriptionEventName } from '@augurproject/sdk';
 import { CalculateGnosisSafeAddressParams } from '@augurproject/sdk/build/api/Gnosis';
 import {
   ACCOUNTS,
-  ContractAPI,
   defaultSeedPath,
   loadSeedFile,
   Seed,
 } from '@augurproject/tools';
-import { BigNumber } from 'bignumber.js';
+import { TestContractAPI } from '@augurproject/tools';
+import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
 import { makeProvider, MockGnosisRelayAPI } from '../../libs';
-import { TestEthersProvider } from '../../libs/TestEthersProvider';
+import { TransactionStatus } from 'contract-dependencies-ethers';
+import { formatBytes32String } from 'ethers/utils';
+import { TransactionReceipt } from 'ethers/providers';
+import BigNumber from 'bignumber.js';
 
 describe('Gnosis :: ', () => {
-  let john: ContractAPI;
+  let john: TestContractAPI;
   let mockGnosisRelay: MockGnosisRelayAPI;
   let seed: Seed;
   let provider: TestEthersProvider;
@@ -28,10 +31,10 @@ describe('Gnosis :: ', () => {
     const providerFork = await provider.fork();
 
     mockGnosisRelay = new MockGnosisRelayAPI();
-    john = await ContractAPI.userWrapper(
+    john = await TestContractAPI.userWrapper(
       ACCOUNTS[0],
       providerFork,
-      seed.addresses,
+      providerFork.getConfig(),
       undefined,
       mockGnosisRelay
     );
@@ -53,49 +56,45 @@ describe('Gnosis :: ', () => {
 
   describe('getOrCreateGnosisSafe method', () => {
     test('should return wallet address if it exists', async done => {
-      john.augur
-        .events
-        .on(SubscriptionEventName.GnosisSafeStatus, payload => {
-          expect(payload).toEqual(
-            expect.objectContaining({
-              status: GnosisSafeState.AVAILABLE,
-              safe: gnosisSafe.address,
-              owner: john.account.publicKey,
-            })
-          );
-          done();
-        });
+      john.augur.events.on(SubscriptionEventName.GnosisSafeStatus, payload => {
+        expect(payload).toEqual(
+          expect.objectContaining({
+            status: GnosisSafeState.AVAILABLE,
+            safe: gnosisSafe.address,
+            owner: john.account.publicKey,
+          })
+        );
+        done();
+      });
 
       const gnosisSafe = await john.createGnosisSafeDirectlyWithETH();
 
       const result = await john.augur.gnosis.getOrCreateGnosisSafe(
-        john.account.publicKey
+        { owner: john.account.publicKey }
       );
-      expect(result).toEqual(gnosisSafe.address);
+      expect(result.safe).toEqual(gnosisSafe.address);
     });
 
     test('should emit event with status if relay request was created', async done => {
-      john.augur
-        .events
-        .on(SubscriptionEventName.GnosisSafeStatus, payload => {
-          expect(payload).toEqual(
-            expect.objectContaining({
-              status: GnosisSafeState.WAITING_FOR_FUNDS,
-              safe: expect.stringContaining('0x'),
-              owner: john.account.publicKey,
-            })
-          );
-          done();
-        });
+      john.augur.events.on(SubscriptionEventName.GnosisSafeStatus, payload => {
+        expect(payload).toEqual(
+          expect.objectContaining({
+            status: GnosisSafeState.WAITING_FOR_FUNDS,
+            safe: expect.stringContaining('0x'),
+            owner: john.account.publicKey,
+          })
+        );
+        done();
+      });
 
       await john.augur.gnosis.getOrCreateGnosisSafe(
-        john.account.publicKey
+        { owner: john.account.publicKey }
       );
     });
 
     test('should return creation params if relay request was created', async () => {
       const result = await john.augur.gnosis.getOrCreateGnosisSafe(
-        john.account.publicKey
+        { owner: john.account.publicKey }
       );
 
       expect(result).toEqual(
@@ -118,10 +117,13 @@ describe('Gnosis :: ', () => {
       paymentToken: safe.paymentToken,
       payment: safe.payment,
       safe: safe.safe,
+      affiliate: null,
+      fingerprint: null
     };
 
     const calculatedAddress = await john.augur.gnosis.calculateGnosisSafeAddress(
-      calculateGnosisSafeAddressParams.owner, safe.payment
+      calculateGnosisSafeAddressParams.owner,
+      safe.payment
     );
 
     expect(calculatedAddress).toEqual(safe.safe);
@@ -139,7 +141,7 @@ describe('Gnosis :: ', () => {
       gasPriceEstimated: '0x1',
       gasEstimated: '0x7270e0',
       payment: '0x7270e0',
-      callback: '0x0000000000000000000000000000000000000000'
+      callback: '0x0000000000000000000000000000000000000000',
     };
 
     jest.spyOn(mockGnosisRelay, 'createSafe').mockResolvedValue(fakeResponse);
@@ -148,8 +150,135 @@ describe('Gnosis :: ', () => {
     ).rejects.toThrowError(new RegExp('Potential malicious relay'));
   });
 
+  describe('execTransactionOnRelayer errors', () => {
+    test('too many txs, fee too low', async () => {
+      jest.spyOn(mockGnosisRelay, 'execTransaction').mockRejectedValue({
+        response: {
+          status: 42, // must exist but value is not relevant for this test
+          data: { exception: 'There are too many transactions in the queue' }
+        }
+      });
+      await expect(john.augur.dependencies.execTransactionOnRelayer(MockGnosisRelayAPI.createTransaction()))
+        .rejects.toEqual(TransactionStatus.FEE_TOO_LOW);
+    });
+
+    test('relayer down due to lack of funds', async () => {
+      jest.spyOn(mockGnosisRelay, 'execTransaction').mockRejectedValue({
+        response: {
+          status: 42, // must exist but value is not relevant for this test
+          data: { exception: 'blah blah funds blah blah' }
+        }
+      });
+      await expect(john.augur.dependencies.execTransactionOnRelayer(MockGnosisRelayAPI.createTransaction()))
+        .rejects.toEqual(TransactionStatus.RELAYER_DOWN);
+      expect(john.augur.dependencies.useSafe).toEqual(false);
+      expect(john.augur.dependencies.status).toEqual(GnosisSafeState.ERROR);
+    });
+
+    test('relayer down 500 status', async () => {
+      jest.spyOn(mockGnosisRelay, 'execTransaction').mockRejectedValue({
+        response: {
+          status: 500,
+        }
+      });
+      await expect(john.augur.dependencies.execTransactionOnRelayer(MockGnosisRelayAPI.createTransaction()))
+        .rejects.toEqual(TransactionStatus.RELAYER_DOWN);
+      expect(john.augur.dependencies.useSafe).toEqual(false);
+      expect(john.augur.dependencies.status).toEqual(GnosisSafeState.ERROR);
+    });
+
+    test('unknown relayer failure', async () => {
+      jest.spyOn(mockGnosisRelay, 'execTransaction').mockRejectedValue({
+        response: {
+          status: 42, // must be any number <500
+        }
+      });
+      await expect(john.augur.dependencies.execTransactionOnRelayer(MockGnosisRelayAPI.createTransaction()))
+        .rejects.toEqual(TransactionStatus.FAILURE)
+    });
+  });
+
+  describe('relay queue', () => {
+    test('success, useRelay=true', async () => {
+      const hash = formatBytes32String('some hash');
+      const txMetadata = {name: 'foo', params: ['bar', 'zam']};
+      const tx = { tx: MockGnosisRelayAPI.createTransaction(), txMetadata };
+      const receipt: TransactionReceipt = { byzantium: false };
+
+      const transactionStatusCallback = jest.fn();
+      const spyWaitForTransaction = jest.spyOn(john.dependencies.provider, 'waitForTransaction').mockResolvedValue(receipt);
+      jest.spyOn(mockGnosisRelay, 'execTransaction').mockResolvedValue(hash);
+      john.augur.dependencies.registerTransactionStatusCallback('test', transactionStatusCallback);
+
+      await expect(john.augur.dependencies.waitForTx(tx)).resolves.toEqual(receipt);
+      expect(transactionStatusCallback).toBeCalledWith(txMetadata, TransactionStatus.PENDING, hash);
+      expect(spyWaitForTransaction).toBeCalledWith(hash);
+    });
+
+    test('success, useRelay=false', async () => {
+      const hash = formatBytes32String('some hash');
+      const txMetadata = {name: 'foo', params: ['bar', 'zam']};
+      const tx = { tx: MockGnosisRelayAPI.createTransaction(), txMetadata };
+      const receipt: TransactionReceipt = { byzantium: false };
+
+      const transactionStatusCallback = jest.fn();
+      const spyWaitForTransaction = jest.spyOn(john.dependencies.provider, 'waitForTransaction').mockResolvedValue(receipt);
+      // TODO
+      jest.spyOn(john.dependencies, 'execTransactionDirectly').mockResolvedValue(hash);
+      john.augur.dependencies.registerTransactionStatusCallback('test', transactionStatusCallback);
+
+      john.augur.dependencies.useRelay = false;
+
+      await expect(john.augur.dependencies.waitForTx(tx)).resolves.toEqual(receipt);
+      expect(transactionStatusCallback).toBeCalledWith(txMetadata, TransactionStatus.PENDING, hash);
+      expect(spyWaitForTransaction).toBeCalledWith(hash);
+    });
+
+    test('relayer down', async () => {
+      jest.spyOn(mockGnosisRelay, 'execTransaction').mockRejectedValue({
+        response: {
+          status: 500,
+        }
+      });
+      // tslint:disable-next-line:ban-ts-ignore
+      // @ts-ignore - for access to private field _relayQueue
+      const spyRelayQueueKill = jest.spyOn(john.dependencies._relayQueue, 'kill');
+      const transactionStatusCallback = jest.fn();
+      john.augur.dependencies.registerTransactionStatusCallback('test', transactionStatusCallback);
+
+      const txMetadata = {name: 'foo', params: ['bar', 'zam']};
+      await expect(john.augur.dependencies.waitForTx({
+        tx: MockGnosisRelayAPI.createTransaction(),
+        txMetadata
+      })).rejects.toThrow(String(TransactionStatus.RELAYER_DOWN));
+      expect(spyRelayQueueKill).toHaveBeenCalled();
+      expect(transactionStatusCallback).toBeCalledWith(txMetadata, TransactionStatus.RELAYER_DOWN, undefined);
+    });
+
+    test('relayer failure', async () => {
+      jest.spyOn(mockGnosisRelay, 'execTransaction').mockRejectedValue({
+        response: {
+          status: 42, // must be any number <500
+        }
+      });
+      // tslint:disable-next-line:ban-ts-ignore
+      // @ts-ignore - for access to private field _relayQueue
+      const spyRelayQueueKill = jest.spyOn(john.dependencies._relayQueue, 'kill');
+      const transactionStatusCallback = jest.fn();
+      john.augur.dependencies.registerTransactionStatusCallback('test', transactionStatusCallback);
+
+      const txMetadata = {name: 'foo', params: ['bar', 'zam']};
+      await expect(john.augur.dependencies.waitForTx({
+        tx: MockGnosisRelayAPI.createTransaction(),
+        txMetadata
+      })).rejects.toThrow(String(TransactionStatus.FAILURE));
+      expect(spyRelayQueueKill).not.toHaveBeenCalled();
+      expect(transactionStatusCallback).toBeCalledWith(txMetadata, TransactionStatus.FAILURE, undefined);
+    });
+  });
+
   describe('make safe through relay', () => {
-    test.skip('polling for status', async done => {
+    test.skip('polling for status', async (done) => {
       const gnosisSafeResponse = await john.createGnosisSafeViaRelay(
         john.augur.contracts.cash.address
       );
@@ -182,9 +311,9 @@ describe('Gnosis :: ', () => {
       // This is here to make TS happy.
       if (resp.status !== GnosisSafeState.CREATED) return;
 
-      john.augur
-        .events
-        .on(SubscriptionEventName.GnosisSafeStatus, async payload => {
+      john.augur.events.on(
+        SubscriptionEventName.GnosisSafeStatus,
+        async (payload) => {
           await expect(payload).toMatchObject({
             status: GnosisSafeState.AVAILABLE,
           });
@@ -196,7 +325,8 @@ describe('Gnosis :: ', () => {
             )
           ).resolves.toMatch(new RegExp(gnosisSafeResponse.safe, 'i'));
           done();
-        });
+        }
+      );
 
       const receipt = await john.provider.waitForTransaction(resp.txHash);
       await expect(receipt).not.toBeNull();

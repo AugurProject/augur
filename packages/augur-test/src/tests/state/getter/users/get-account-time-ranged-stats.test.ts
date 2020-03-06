@@ -1,22 +1,14 @@
-import { BigNumber } from 'bignumber.js';
-
-import { API } from '@augurproject/sdk/build/state/getter/API';
-import { DB } from '@augurproject/sdk/build/state/db/DB';
-import { ContractAPI, ACCOUNTS} from '@augurproject/tools';
 import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
+import { ACCOUNTS, TestContractAPI } from '@augurproject/tools';
+import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
+import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
+import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from 'ethers/utils';
-import { makeDbMock} from '../../../../libs';
-import { stringTo32ByteHex } from '../../../../libs/Utils';
-import { TestEthersProvider } from '../../../../libs/TestEthersProvider';
 import { _beforeAll, _beforeEach } from './common';
 
-const mock = makeDbMock();
-
 describe('State API :: Users :: ', () => {
-  let db: Promise<DB>;
-  let api: API;
-  let john: ContractAPI;
-  let mary: ContractAPI;
+  let john: TestContractAPI;
+  let mary: TestContractAPI;
   let baseProvider: TestEthersProvider;
 
   beforeAll(async () => {
@@ -26,8 +18,6 @@ describe('State API :: Users :: ', () => {
 
   beforeEach(async () => {
     const state = await _beforeEach({ baseProvider });
-    db = state.db;
-    api = state.api;
     john = state.john;
     mary = state.mary;
   });
@@ -43,7 +33,7 @@ describe('State API :: Users :: ', () => {
     ]);
     const johnScalarMarket = await john.createReasonableScalarMarket();
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    await john.sync();
 
     // Place orders
     const bid = new BigNumber(0);
@@ -143,7 +133,7 @@ describe('State API :: Users :: ', () => {
       stringTo32ByteHex('42')
     );
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    await john.sync();
 
     // Fill orders
     await mary.faucet(new BigNumber(1e18)); // faucet enough cash for the various fill orders
@@ -188,21 +178,21 @@ describe('State API :: Users :: ', () => {
       '43'
     );
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    await john.sync();
 
     // Cancel an order
     await john.cancelNativeOrder(
       await john.getBestOrderId(bid, johnScalarMarket.address, outcome2)
     );
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    await john.sync();
 
     // Purchase & sell complete sets
     let numberOfCompleteSets = new BigNumber(1);
     await john.buyCompleteSets(johnYesNoMarket, numberOfCompleteSets);
     await john.sellCompleteSets(johnYesNoMarket, numberOfCompleteSets);
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    await john.sync();
 
     // Move time to open reporting
     let newTime = (await johnYesNoMarket.getEndTime_()).plus(
@@ -224,7 +214,7 @@ describe('State API :: Users :: ', () => {
     // implicitly creates dispute window
     await john.doInitialReport(johnYesNoMarket, noPayoutSet);
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    await john.sync();
 
     // Move time to dispute window start time
     let disputeWindowAddress = await johnYesNoMarket.getDisputeWindow_();
@@ -236,12 +226,15 @@ describe('State API :: Users :: ', () => {
 
     // Purchase participation tokens
     let curDisputeWindowAddress = await john.getOrCreateCurrentDisputeWindow(
-      false);
+      false
+    );
     let curDisputeWindow = await john.augur.contracts.disputeWindowFromAddress(
       curDisputeWindowAddress
     );
-    await john.buyParticipationTokens(curDisputeWindow.address,
-      new BigNumber(1));
+    await john.buyParticipationTokens(
+      curDisputeWindow.address,
+      new BigNumber(1)
+    );
 
     await john.repFaucet(new BigNumber(1e25));
     await mary.repFaucet(new BigNumber(1e25));
@@ -250,11 +243,7 @@ describe('State API :: Users :: ', () => {
     for (let disputeRound = 1; disputeRound <= 3; disputeRound++) {
       if (disputeRound % 2 !== 0) {
         const market = await mary.getMarketContract(johnYesNoMarket.address);
-        await mary.contribute(
-          market,
-          yesPayoutSet,
-          new BigNumber(25000)
-        );
+        await mary.contribute(market, yesPayoutSet, new BigNumber(25000));
         const remainingToFill = await john.getRemainingToFill(
           johnYesNoMarket,
           yesPayoutSet
@@ -278,7 +267,7 @@ describe('State API :: Users :: ', () => {
       }
     }
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    await john.sync();
 
     // Move time forward by 2 weeks
     newTime = newTime.plus(SECONDS_IN_A_DAY.times(14));
@@ -294,8 +283,10 @@ describe('State API :: Users :: ', () => {
     );
 
     // Redeem participation tokens
-    await john.redeemParticipationTokens(disputeWindow.address,
-      john.account.publicKey);
+    await john.redeemParticipationTokens(
+      disputeWindow.address,
+      john.account.publicKey
+    );
 
     // Claim initial reporter
     let initialReporter = await john.getInitialReporter(johnYesNoMarket);
@@ -314,14 +305,14 @@ describe('State API :: Users :: ', () => {
       formatBytes32String('')
     );
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    await john.sync();
 
     // Test non-existent universe address
     const nonexistentAddress = '0x1111111111111111111111111111111111111111';
 
     let errorMessage = '';
     try {
-      await api.route('getAccountTimeRangedStats', {
+      await john.api.route('getAccountTimeRangedStats', {
         universe: nonexistentAddress,
         account: nonexistentAddress,
         startTime: 1234,
@@ -334,14 +325,14 @@ describe('State API :: Users :: ', () => {
       'Unknown universe: 0x1111111111111111111111111111111111111111'
     );
 
-    await api.route('getAccountTimeRangedStats', {
+    await john.api.route('getAccountTimeRangedStats', {
       universe: universe.address,
       account: nonexistentAddress,
     });
 
     // Test endTime and startTime
     try {
-      await api.route('getAccountTimeRangedStats', {
+      await john.api.route('getAccountTimeRangedStats', {
         universe: universe.address,
         account: ACCOUNTS[0].publicKey,
         startTime: 123456,
@@ -350,10 +341,11 @@ describe('State API :: Users :: ', () => {
     } catch (error) {
       errorMessage = error.message;
     }
-    expect(errorMessage).
-      toEqual('startTime must be less than or equal to endTime');
+    expect(errorMessage).toEqual(
+      'startTime must be less than or equal to endTime'
+    );
 
-    let stats = await api.route('getAccountTimeRangedStats', {
+    let stats = await john.api.route('getAccountTimeRangedStats', {
       universe: universe.address,
       account: ACCOUNTS[0].publicKey,
       startTime: 0,
@@ -361,7 +353,7 @@ describe('State API :: Users :: ', () => {
     });
     expect(stats).toMatchObject({});
 
-    stats = await api.route('getAccountTimeRangedStats', {
+    stats = await john.api.route('getAccountTimeRangedStats', {
       universe: universe.address,
       account: ACCOUNTS[0].publicKey,
       startTime: newTime.plus(1).toNumber(),
@@ -369,7 +361,7 @@ describe('State API :: Users :: ', () => {
     });
     expect(stats).toMatchObject({});
 
-    stats = await api.route('getAccountTimeRangedStats', {
+    stats = await john.api.route('getAccountTimeRangedStats', {
       universe: universe.address,
       account: ACCOUNTS[0].publicKey,
     });
@@ -391,7 +383,7 @@ describe('State API :: Users :: ', () => {
     ]);
     const johnScalarMarket2 = await john.createReasonableScalarMarket();
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    await john.sync();
 
     // Place orders
     await john.placeOrder(
@@ -485,7 +477,7 @@ describe('State API :: Users :: ', () => {
       stringTo32ByteHex('42')
     );
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    await john.sync();
 
     // Fill orders
     await mary.fillOrder(
@@ -532,10 +524,10 @@ describe('State API :: Users :: ', () => {
       '43'
     );
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    await john.sync();
 
     // Re-test startTime and endTime with order filler account
-    stats = await api.route('getAccountTimeRangedStats', {
+    stats = await john.api.route('getAccountTimeRangedStats', {
       universe: universe.address,
       account: ACCOUNTS[1].publicKey,
       startTime: 0,
@@ -543,7 +535,7 @@ describe('State API :: Users :: ', () => {
     });
     expect(stats).toMatchObject({});
 
-    stats = await api.route('getAccountTimeRangedStats', {
+    stats = await john.api.route('getAccountTimeRangedStats', {
       universe: universe.address,
       account: ACCOUNTS[1].publicKey,
       startTime: 0,
@@ -558,7 +550,7 @@ describe('State API :: Users :: ', () => {
       redeemedPositions: 0,
     });
 
-    stats = await api.route('getAccountTimeRangedStats', {
+    stats = await john.api.route('getAccountTimeRangedStats', {
       universe: universe.address,
       account: ACCOUNTS[1].publicKey,
       startTime: newTime.plus(1).toNumber(),
@@ -571,14 +563,14 @@ describe('State API :: Users :: ', () => {
       await john.getBestOrderId(bid, johnScalarMarket2.address, outcome2)
     );
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    await john.sync();
 
     // Purchase & sell complete sets
     numberOfCompleteSets = new BigNumber(1);
     await john.buyCompleteSets(johnYesNoMarket2, numberOfCompleteSets);
     await john.sellCompleteSets(johnYesNoMarket2, numberOfCompleteSets);
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    await john.sync();
 
     // Move time to open reporting
     newTime = (await johnYesNoMarket2.getEndTime_()).plus(
@@ -588,7 +580,7 @@ describe('State API :: Users :: ', () => {
 
     await john.doInitialReport(johnYesNoMarket2, noPayoutSet);
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    await john.sync();
 
     // Move time to dispute window start time
     disputeWindowAddress = await johnYesNoMarket2.getDisputeWindow_();
@@ -603,18 +595,16 @@ describe('State API :: Users :: ', () => {
     curDisputeWindow = await john.augur.contracts.disputeWindowFromAddress(
       curDisputeWindowAddress
     );
-    await john.buyParticipationTokens(curDisputeWindow.address,
-      new BigNumber(1));
+    await john.buyParticipationTokens(
+      curDisputeWindow.address,
+      new BigNumber(1)
+    );
 
     // Dispute 2 times
     for (let disputeRound = 1; disputeRound <= 3; disputeRound++) {
       if (disputeRound % 2 !== 0) {
         const market = await mary.getMarketContract(johnYesNoMarket2.address);
-        await mary.contribute(
-          market,
-          yesPayoutSet,
-          new BigNumber(25000)
-        );
+        await mary.contribute(market, yesPayoutSet, new BigNumber(25000));
         const remainingToFill = await john.getRemainingToFill(
           johnYesNoMarket2,
           yesPayoutSet
@@ -638,7 +628,7 @@ describe('State API :: Users :: ', () => {
       }
     }
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    await john.sync();
 
     // Move time forward by 2 weeks
     newTime = newTime.plus(SECONDS_IN_A_DAY.times(14));
@@ -654,8 +644,10 @@ describe('State API :: Users :: ', () => {
     );
 
     // Redeem participation tokens
-    await john.redeemParticipationTokens(disputeWindow.address,
-      john.account.publicKey);
+    await john.redeemParticipationTokens(
+      disputeWindow.address,
+      john.account.publicKey
+    );
 
     // Claim initial reporter
     initialReporter = await john.getInitialReporter(johnYesNoMarket2);
@@ -674,9 +666,9 @@ describe('State API :: Users :: ', () => {
       formatBytes32String('')
     );
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    await john.sync();
 
-    stats = await api.route('getAccountTimeRangedStats', {
+    stats = await john.api.route('getAccountTimeRangedStats', {
       universe: universe.address,
       account: ACCOUNTS[0].publicKey,
     });
@@ -689,5 +681,4 @@ describe('State API :: Users :: ', () => {
       successfulDisputes: 2,
     });
   });
-
 });

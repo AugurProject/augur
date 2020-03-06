@@ -1,18 +1,11 @@
-import { API } from '@augurproject/sdk/build/state/getter/API';
-import { DB } from '@augurproject/sdk/build/state/db/DB';
 import { ContractAPI, fork } from '@augurproject/tools';
-import { TestEthersProvider } from '../../../../libs/TestEthersProvider';
-import {
-  _beforeAll,
-  _beforeEach,
-  CHUNK_SIZE,
-  } from './common';
+import { TestContractAPI } from '@augurproject/tools';
+import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
+import { _beforeAll, _beforeEach } from './common';
 
 describe('State API :: Markets :: GetMarketsInfo', () => {
-  let db: Promise<DB>;
-  let api: API;
-  let john: ContractAPI;
-  let mary: ContractAPI;
+  let john: TestContractAPI;
+  let mary: TestContractAPI;
   let bob: ContractAPI;
 
   let baseProvider: TestEthersProvider;
@@ -26,18 +19,19 @@ describe('State API :: Markets :: GetMarketsInfo', () => {
 
   beforeEach(async () => {
     const state = await _beforeEach({ baseProvider, markets });
-    db = state.db;
-    api = state.api;
+
     john = state.john;
     mary = state.mary;
     bob = state.bob;
   });
 
   test('disputeinfo.stakes outcome valid/invalid', async () => {
-    const market = john.augur.contracts.marketFromAddress(markets['yesNoMarket1']);
+    const market = john.augur.contracts.marketFromAddress(
+      markets['yesNoMarket1']
+    );
 
-    await (await db).sync(john.augur, CHUNK_SIZE, 0);
-    let infos = await api.route('getMarketsInfo', {
+    await john.sync();
+    let infos = await john.api.route('getMarketsInfo', {
       marketIds: [market.address],
     });
     expect(infos.length).toEqual(1);
@@ -45,8 +39,8 @@ describe('State API :: Markets :: GetMarketsInfo', () => {
 
     await fork(john, info);
 
-    await (await db).sync(john.augur, CHUNK_SIZE, 0);
-    infos = await api.route('getMarketsInfo', {
+    await john.sync();
+    infos = await john.api.route('getMarketsInfo', {
       marketIds: [market.address],
     });
     expect(infos.length).toEqual(1);

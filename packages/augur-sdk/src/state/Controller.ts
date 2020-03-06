@@ -2,57 +2,38 @@ import { ParsedLog } from '@augurproject/types';
 import { Block } from 'ethers/providers';
 import * as fp from 'lodash/fp';
 import { Augur } from '../Augur';
-import { SubscriptionEventName } from '../constants';
+import { SubscriptionEventName, NULL_ADDRESS } from '../constants';
 import { Subscriptions } from '../subscriptions';
-import { BlockAndLogStreamerListenerInterface } from './db/BlockAndLogStreamerListener';
 import { DB } from './db/DB';
 import { Markets } from './getter/Markets';
+import { LogFilterAggregatorInterface } from './logs/LogFilterAggregator';
 
 const settings = require('./settings.json');
 
 export class Controller {
   private static latestBlock: Block;
-  private static throttled: any;
 
   private readonly events;
 
   constructor(
     private augur: Augur,
     private db: Promise<DB>,
-    private blockAndLogStreamerListener: BlockAndLogStreamerListenerInterface
+    private logFilterAggregator: LogFilterAggregatorInterface,
   ) {
     this.events = new Subscriptions(augur.events);
-  }
+    this.logFilterAggregator.listenForAllEvents(this.allEvents);
+    this.logFilterAggregator.notifyNewBlockAfterLogsProcess(this.notifyNewBlockEvent.bind(this));
 
-  async run(): Promise<void> {
-    try {
-      this.blockAndLogStreamerListener.notifyNewBlockAfterLogsProcess(this.notifyNewBlockEvent.bind(this));
-
-      const db = await this.db;
-      await db.sync(this.augur, settings.chunkSize, settings.blockstreamDelay);
-
-      this.blockAndLogStreamerListener.listenForBlockRemoved(
-        db.rollback.bind(db)
+    db.then((dbObject) => {
+      logFilterAggregator.listenForBlockRemoved(
+        dbObject.rollback.bind(db)
       );
-      this.blockAndLogStreamerListener.startBlockStreamListener();
-    } catch (err) {
-      console.log(err);
-    }
+    });
   }
 
-  private updateMarketsData = async (blockNumber: number, allLogs: ParsedLog[]) => {
-    // Grab market ids from all logs.
-    // Compose applies operations from bottom to top.
-    const logMarketIds = fp.compose(
-      fp.compact,
-      fp.uniq,
-      fp.map('market')
-    )(allLogs);
-
-    if(logMarketIds.length === 0) return;
-
+  private updateMarketsData = async (marketIds: string[]) => {
     const marketsInfo = await Markets.getMarketsInfo(this.augur, await this.db, {
-      marketIds: logMarketIds
+      marketIds
     });
 
     this.augur.events.emit(SubscriptionEventName.MarketsUpdated,  {
@@ -60,32 +41,52 @@ export class Controller {
     });
   };
 
-  private notifyNewBlockEvent = async (): Promise<void> => {
+  private allEvents = async (blockNumber: number, allLogs: ParsedLog[]) => {
+    // Grab market ids from all logs.
+    // Compose applies operations from bottom to top.
+    const marketIds = fp.compose(
+      fp.compact,
+      fp.uniq,
+      fp.map('market')
+    )(allLogs);
+
+    const validMarketIds = marketIds.filter(m => m !== NULL_ADDRESS);
+    const nullMarketLogs = allLogs.filter(l => l.market === NULL_ADDRESS);
+
+    if (validMarketIds.length > 0) this.updateMarketsData(validMarketIds as string[]);
+    // emit non market related logs
+    if (nullMarketLogs.length > 0) nullMarketLogs.forEach(l => this.augur.events.emit(l.name, {...l}));
+  }
+
+  private notifyNewBlockEvent = async (blockNumber: number, logs: ParsedLog[]): Promise<void> => {
     let lowestBlock = await (await this
       .db).syncStatus.getLowestSyncingBlockForAllDBs();
-    const block = await this.getLatestBlock();
 
     if (lowestBlock === -1) {
-      lowestBlock = block.number;
+      lowestBlock = blockNumber;
     }
 
-    const blocksBehindCurrent = block.number - lowestBlock;
-    const percentSynced = ((lowestBlock / block.number) * 100).toFixed(4);
+    const blocksBehindCurrent = blockNumber - lowestBlock;
+    const percentSynced = ((lowestBlock / blockNumber) * 100).toFixed(4);
 
     const timestamp = await this.augur.getTimestamp();
     this.augur.events.emit(SubscriptionEventName.NewBlock, {
       eventName: SubscriptionEventName.NewBlock,
-      highestAvailableBlockNumber: block.number,
+      highestAvailableBlockNumber: blockNumber,
       lastSyncedBlockNumber: lowestBlock,
       blocksBehindCurrent,
       percentSynced,
       timestamp: timestamp.toNumber(),
+      logs,
     });
   };
 
   private async getLatestBlock(): Promise<Block> {
     const blockNumber: number = await this.augur.provider.getBlockNumber();
     Controller.latestBlock = await this.augur.provider.getBlock(blockNumber);
+    if (!Controller.latestBlock) {
+      throw new Error(`Could not get latest block: ${blockNumber}`);
+    }
 
     return Controller.latestBlock;
   }

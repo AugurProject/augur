@@ -1,25 +1,22 @@
-import { API } from '@augurproject/sdk/build/state/getter/API';
-import { DB } from '@augurproject/sdk/build/state/db/DB';
-import { ContractAPI} from '@augurproject/tools';
-import { TestEthersProvider } from '../../../../libs/TestEthersProvider';
+import { TestContractAPI } from '@augurproject/tools';
+import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
+import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
 import {
   _beforeAll,
   _beforeEach,
   A,
   B,
+  C,
+  INVALID,
+  LONG,
   processTrades,
   SHORT,
   UTPTradeData,
-  LONG,
-  C, INVALID
 } from './common';
-import { stringTo32ByteHex } from '../../../../libs/Utils';
 
 describe('State API :: Users :: ', () => {
-  let db: Promise<DB>;
-  let api: API;
-  let john: ContractAPI;
-  let mary: ContractAPI;
+  let john: TestContractAPI;
+  let mary: TestContractAPI;
   let baseProvider: TestEthersProvider;
 
   beforeAll(async () => {
@@ -29,8 +26,7 @@ describe('State API :: Users :: ', () => {
 
   beforeEach(async () => {
     const state = await _beforeEach({ baseProvider });
-    db = state.db;
-    api = state.api;
+
     john = state.john;
     mary = state.mary;
   });
@@ -110,11 +106,17 @@ describe('State API :: Users :: ', () => {
         price: 0.1,
         position: 0,
         avgPrice: 0,
-        realizedPL: -.5,
+        realizedPL: -0.5,
         frozenFunds: 2,
       },
     ];
 
-    await processTrades(john, mary, db, api, trades, market, john.augur.contracts.universe.address);
+    await processTrades(
+      john,
+      mary,
+      trades,
+      market,
+      john.augur.contracts.universe.address
+    );
   });
 });

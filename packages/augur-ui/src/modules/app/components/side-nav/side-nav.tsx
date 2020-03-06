@@ -116,7 +116,7 @@ const SideNav = ({
               {showMigrateRepButton && (
                 <span className={Styles.SideNavMigrateRep}>
                   <ProcessingButton
-                    text={walletBalances.legacyRep > 0 ? 'Migrate V1 to V2 REP' : ' Migrate V1 REP'}
+                    text={'Migrate V1 to V2 REP'}
                     action={() => migrateV1Rep()}
                     queueName={TRANSACTIONS}
                     queueId={MIGRATE_FROM_LEG_REP_TOKEN}

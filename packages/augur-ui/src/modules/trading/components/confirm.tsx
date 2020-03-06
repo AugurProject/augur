@@ -68,12 +68,23 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
   }
 
   componentDidUpdate(prevProps) {
-    const { trade, gasPrice, availableEth, availableDai } = this.props;
+    const {
+      trade,
+      gasPrice,
+      availableEth,
+      availableDai,
+      GnosisUnavailable,
+    } = this.props;
     if (
       JSON.stringify(trade) !== JSON.stringify(prevProps.trade) ||
       gasPrice !== prevProps.gasPrice ||
-      !createBigNumber(prevProps.availableEth).eq(createBigNumber(availableEth)) ||
-      !createBigNumber(prevProps.availableDai).eq(createBigNumber(availableDai))
+      !createBigNumber(prevProps.availableEth).eq(
+        createBigNumber(availableEth)
+      ) ||
+      !createBigNumber(prevProps.availableDai).eq(
+        createBigNumber(availableDai)
+      ) ||
+      prevProps.GnosisUnavailable !== GnosisUnavailable
     ) {
       this.setState({
         messages: this.constructMessages(this.props),
@@ -106,16 +117,16 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     let needsApproval = false;
     let messages: Message | null = null;
 
-    const gasCost = gasLimit ? formatGasCostToEther(
-      gasLimit,
-      { decimalsRounded: 4 },
-      gasPrice
-    ) : ZERO;
+    const gasCost = gasLimit
+      ? formatGasCostToEther(gasLimit, { decimalsRounded: 4 }, gasPrice)
+      : ZERO;
 
     let gasCostDai = null;
 
     if (Gnosis_ENABLED && ethToDaiRate) {
-      gasCostDai = formatDai(ethToDaiRate.multipliedBy(createBigNumber(gasCost))).formattedValue;
+      gasCostDai = formatDai(
+        ethToDaiRate.multipliedBy(createBigNumber(gasCost))
+      ).formattedValue;
     }
 
     if (
@@ -151,6 +162,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
 
     // GAS error in DAI [Gnosis]
     if (
+      !tradingTutorial &&
       Gnosis_ENABLED &&
       totalCost &&
       createBigNumber(gasCostDai).gte(createBigNumber(availableDai))
@@ -164,6 +176,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
 
     // GAS error in ETH
     if (
+      !tradingTutorial &&
       !Gnosis_ENABLED &&
       totalCost &&
       createBigNumber(gasCost).gte(createBigNumber(availableEth))
@@ -176,10 +189,12 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     }
 
     if (
+      !tradingTutorial &&
       totalCost &&
       createBigNumber(potentialDaiLoss.fullPrecision).gt(
         createBigNumber(availableDai)
-      ) && !tradingTutorial
+      ) &&
+      !tradingTutorial
     ) {
       messages = {
         header: 'Insufficient DAI',
@@ -188,12 +203,12 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       };
     }
 
-    if (GnosisUnavailable) {
+    if (GnosisUnavailable && !tradingTutorial) {
       messages = {
         header: 'Waiting For Gnosis Safe',
         type: WARNING,
         message: 'Please hold on while we create your Augur wallet',
-      }
+      };
     }
 
     return messages;
@@ -215,7 +230,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       gasLimit,
       gasPrice,
       Gnosis_ENABLED,
-      initialLiquidity
+      initialLiquidity,
     } = this.props;
 
     const {
@@ -235,7 +250,9 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     const greaterLess = side === BUY ? 'greater' : 'less';
     const higherLower = side === BUY ? 'higher' : 'lower';
 
-    const marketRange = createBigNumber(maxPrice).minus(createBigNumber(minPrice)).abs();
+    const marketRange = createBigNumber(maxPrice)
+      .minus(createBigNumber(minPrice))
+      .abs();
 
     let gasCostDai = null;
 
@@ -246,7 +263,9 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     );
 
     if (Gnosis_ENABLED && ethToDaiRate) {
-      gasCostDai = formatDai(ethToDaiRate.multipliedBy(createBigNumber(gasCost)));
+      gasCostDai = formatDai(
+        ethToDaiRate.multipliedBy(createBigNumber(gasCost))
+      );
     }
 
     const limitPricePercentage = (side === BUY
@@ -284,48 +303,43 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       <section className={Styles.TradingConfirm}>
         {!initialLiquidity && shareCost && shareCost.value !== 0 && (
           <div className={Styles.details}>
-            <div className={Styles.properties}>
-              CLOSING POSITION
-            </div>
+            <div className={Styles.properties}>Closing Position</div>
             <div
               className={classNames(Styles.AggregatePosition, {
                 [Styles.long]: side === BUY,
                 [Styles.short]: side === SELL,
               })}
             >
-              {
-                `${side === BUY ? BUYING_BACK : SELLING_OUT}
+              {`${side === BUY ? BUYING_BACK : SELLING_OUT}
                 ${shareCost.fullPrecision}
-                Shares @ ${limitPrice}`
-              }
+                Shares @ ${limitPrice}`}
             </div>
             <LinearPropertyLabel
-              label='SETTLEMENT FEE'
+              label="Settlement Fee"
               value={orderShareTradingFee}
               showDenomination={true}
             />
-            { gasCostDai && gasCostDai.roundedValue.gt(0) > 0 && <LinearPropertyLabel
-              label='EST. TX FEE'
-              value={gasCostDai}
-              showDenomination={true}
-            />}
+            {gasCostDai && gasCostDai.roundedValue.gt(0) > 0 && (
+              <LinearPropertyLabel
+                label="Est. TX Fee"
+                value={gasCostDai}
+                showDenomination={true}
+              />
+            )}
             <LinearPropertyLabel
-              label='PROFIT LESS FEES'
+              label="Profit Less Fees"
               value={orderShareProfit}
               accentValue={notProfitable}
               showDenomination={true}
             />
           </div>
         )}
-        {!initialLiquidity && newOrderAmount !== "0" && (
+        {!initialLiquidity && newOrderAmount !== '0' && (
           <div className={Styles.details}>
-             <div
-              className={classNames(
-                Styles.properties,
-                Styles.TooltipContainer
-              )}
+            <div
+              className={classNames(Styles.properties, Styles.TooltipContainer)}
             >
-              NEW POSITION
+              New Position
               <span className={Styles.Tooltip}>
                 <label
                   className={classNames(
@@ -354,38 +368,34 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
                 [Styles.short]: side === SELL,
               })}
             >
-                {
-                `${side === BUY ? BUYING : SELLING}
+              {`${side === BUY ? BUYING : SELLING}
                 ${newOrderAmount}
-                Shares @ ${limitPrice}`
-                }
+                Shares @ ${limitPrice}`}
             </div>
             <LinearPropertyLabel
-              label='Max Profit'
+              label="Max Profit"
               value={potentialDaiProfit}
               showDenomination={true}
             />
             <LinearPropertyLabel
-              label='Max Loss'
+              label="Max Loss"
               value={potentialDaiLoss}
               showDenomination={true}
             />
-            {gasCostDai && gasCostDai.roundedValue.gt(0) > 0 && <LinearPropertyLabel
-              label='EST. TX FEE'
-              value={gasCostDai}
-              showDenomination={true}
-            />}
-
+            {gasCostDai && gasCostDai.roundedValue.gt(0) > 0 && (
+              <LinearPropertyLabel
+                label="Est. TX Fee"
+                value={gasCostDai}
+                showDenomination={true}
+              />
+            )}
           </div>
         )}
         {messages && (
           <div
-            className={classNames(
-              Styles.MessageContainer,
-              {
-                [Styles.Error]: messages.type === ERROR
-              }
-            )}
+            className={classNames(Styles.MessageContainer, {
+              [Styles.Error]: messages.type === ERROR,
+            })}
           >
             {messages.type === ERROR ? ExclamationCircle : InformationIcon}
             <span>{messages.header}</span>

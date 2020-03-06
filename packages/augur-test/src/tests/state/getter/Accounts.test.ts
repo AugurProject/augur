@@ -1,28 +1,33 @@
-import { API } from '@augurproject/sdk/build/state/getter/API';
-import { DB } from '@augurproject/sdk/build/state/db/DB';
-import { Action, Coin } from '@augurproject/sdk/build/state/getter/Accounts';
-import { makeDbMock, makeProvider } from '../../../libs';
-import { ContractAPI, loadSeedFile, ACCOUNTS, defaultSeedPath } from '@augurproject/tools';
-import { stringTo32ByteHex } from '../../../libs/Utils';
-import { BigNumber } from 'bignumber.js';
 import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
-
-const mock = makeDbMock();
+import { Action, Coin } from '@augurproject/sdk/build/state/getter/Accounts';
+import { ACCOUNTS, defaultSeedPath, loadSeedFile } from '@augurproject/tools';
+import { TestContractAPI } from '@augurproject/tools';
+import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
+import { BigNumber } from 'bignumber.js';
+import { makeProvider } from '../../../libs';
+import { SDKConfiguration } from '@augurproject/artifacts';
 
 describe('State API :: Accounts :: ', () => {
-  let db: Promise<DB>;
-  let api: API;
-  let john: ContractAPI;
-  let mary: ContractAPI;
+  let john: TestContractAPI;
+  let mary: TestContractAPI;
+  let config: SDKConfiguration;
 
   beforeAll(async () => {
     const seed = await loadSeedFile(defaultSeedPath);
     const provider = await makeProvider(seed, ACCOUNTS);
+    config = provider.getConfig();
 
-    john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, seed.addresses);
-    mary = await ContractAPI.userWrapper(ACCOUNTS[1], provider, seed.addresses);
-    db = mock.makeDB(john.augur, ACCOUNTS);
-    api = new API(john.augur, db);
+    john = await TestContractAPI.userWrapper(
+      ACCOUNTS[0],
+      provider,
+      config
+    );
+    mary = await TestContractAPI.userWrapper(
+      ACCOUNTS[1],
+      provider,
+      config
+    );
+
     await john.approveCentralAuthority();
     await mary.approveCentralAuthority();
   });
@@ -37,9 +42,9 @@ describe('State API :: Accounts :: ', () => {
     ]);
     const johnScalarMarket = await john.createReasonableScalarMarket();
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    await john.sync();
 
-    let accountTransactionHistory = await api.route(
+    let accountTransactionHistory = await john.api.route(
       'getAccountTransactionHistory',
       {
         universe: john.augur.contracts.universe.address.toLowerCase(), // Test that lower-case addresses can be passed in
@@ -184,10 +189,13 @@ describe('State API :: Accounts :: ', () => {
       stringTo32ByteHex('42')
     );
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    await john.sync();
 
     // Fill orders
-    const cost = numShares.times(78).div(10).times(1e18);
+    const cost = numShares
+      .times(78)
+      .div(10)
+      .times(1e18);
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnYesNoMarket.address, outcome0),
       numShares.div(10).times(2),
@@ -237,9 +245,9 @@ describe('State API :: Accounts :: ', () => {
       cost
     );
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    await john.sync();
 
-    accountTransactionHistory = await api.route(
+    accountTransactionHistory = await john.api.route(
       'getAccountTransactionHistory',
       {
         universe: john.augur.contracts.universe.address,
@@ -303,8 +311,7 @@ describe('State API :: Accounts :: ', () => {
         fee: '0',
         marketDescription: 'Categorical market description',
         outcome: 1,
-        outcomeDescription:'A'.padEnd(32, '\u0000'),
-
+        outcomeDescription: 'A',
         price: '0.22',
         quantity: '30',
         total: '23.4',
@@ -316,7 +323,7 @@ describe('State API :: Accounts :: ', () => {
         fee: '0',
         marketDescription: 'Categorical market description',
         outcome: 2,
-        outcomeDescription: 'B'.padEnd(32, '\u0000'),
+        outcomeDescription: 'B',
         price: '0.22',
         quantity: '30',
         total: '23.4',
@@ -347,7 +354,7 @@ describe('State API :: Accounts :: ', () => {
       },
     ]);
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    await john.sync();
 
     // Move time to open reporting
     let newTime = (await johnYesNoMarket.getEndTime_()).plus(
@@ -368,9 +375,9 @@ describe('State API :: Accounts :: ', () => {
     ];
     await john.doInitialReport(johnYesNoMarket, noPayoutSet);
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    await john.sync();
 
-    accountTransactionHistory = await api.route(
+    accountTransactionHistory = await john.api.route(
       'getAccountTransactionHistory',
       {
         universe: john.augur.contracts.universe.address,
@@ -402,12 +409,17 @@ describe('State API :: Accounts :: ', () => {
     await john.setTimestamp(newTime);
 
     // Purchase participation tokens
-    const curDisputeWindowAddress = await john.getOrCreateCurrentDisputeWindow(false);
+    const curDisputeWindowAddress = await john.getOrCreateCurrentDisputeWindow(
+      false
+    );
     const curDisputeWindow = await john.augur.contracts.disputeWindowFromAddress(
       curDisputeWindowAddress
     );
     const amountParticipationTokens = new BigNumber(1).pow(18);
-    await john.buyParticipationTokens(curDisputeWindow.address, amountParticipationTokens);
+    await john.buyParticipationTokens(
+      curDisputeWindow.address,
+      amountParticipationTokens
+    );
 
     await john.repFaucet(new BigNumber(1e25));
     await mary.repFaucet(new BigNumber(1e25));
@@ -419,16 +431,14 @@ describe('State API :: Accounts :: ', () => {
         //  the market johnYesNoMarket is used
         //  this used to work because john has a ton of extra REP. now he doesn't
         const market = await mary.getMarketContract(johnYesNoMarket.address);
-        await mary.contribute(
-          market,
-          yesPayoutSet,
-          new BigNumber(2).pow(18)
-        );
+        await mary.contribute(market, yesPayoutSet, new BigNumber(2).pow(18));
         const remainingToFill = await john.getRemainingToFill(
           johnYesNoMarket,
           yesPayoutSet
         );
-        if (remainingToFill.gte(0)) await mary.contribute(market, yesPayoutSet, remainingToFill);
+        if (remainingToFill.gte(0)) {
+          await mary.contribute(market, yesPayoutSet, remainingToFill);
+        }
       } else {
         await john.contribute(
           johnYesNoMarket,
@@ -439,13 +449,15 @@ describe('State API :: Accounts :: ', () => {
           johnYesNoMarket,
           noPayoutSet
         );
-        if (remainingToFill.gte(0)) await john.contribute(johnYesNoMarket, noPayoutSet, remainingToFill);
+        if (remainingToFill.gte(0)) {
+          await john.contribute(johnYesNoMarket, noPayoutSet, remainingToFill);
+        }
       }
     }
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    await john.sync();
 
-    accountTransactionHistory = await api.route(
+    accountTransactionHistory = await john.api.route(
       'getAccountTransactionHistory',
       {
         universe: john.augur.contracts.universe.address,
@@ -494,7 +506,10 @@ describe('State API :: Accounts :: ', () => {
     );
 
     // Redeem participation tokens
-    await john.redeemParticipationTokens(curDisputeWindow.address, john.account.publicKey);
+    await john.redeemParticipationTokens(
+      curDisputeWindow.address,
+      john.account.publicKey
+    );
 
     // Claim initial reporter
     const initialReporter = await john.getInitialReporter(johnYesNoMarket);
@@ -510,12 +525,12 @@ describe('State API :: Accounts :: ', () => {
     await john.augur.contracts.shareToken.claimTradingProceeds(
       johnYesNoMarket.address,
       john.account.publicKey,
-      stringTo32ByteHex(''),
+      stringTo32ByteHex('')
     );
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    await john.sync();
 
-    accountTransactionHistory = await api.route(
+    accountTransactionHistory = await john.api.route(
       'getAccountTransactionHistory',
       {
         universe: john.augur.contracts.universe.address,
@@ -538,7 +553,7 @@ describe('State API :: Accounts :: ', () => {
       },
     ]);
 
-    accountTransactionHistory = await api.route(
+    accountTransactionHistory = await john.api.route(
       'getAccountTransactionHistory',
       {
         universe: john.augur.contracts.universe.address,
@@ -573,7 +588,7 @@ describe('State API :: Accounts :: ', () => {
       },
     ]);
 
-    accountTransactionHistory = await api.route(
+    accountTransactionHistory = await john.api.route(
       'getAccountTransactionHistory',
       {
         universe: john.augur.contracts.universe.address,
@@ -609,7 +624,7 @@ describe('State API :: Accounts :: ', () => {
     ]);
 
     // Test earliestTransactionTime/latestTransactionTime params
-    accountTransactionHistory = await api.route(
+    accountTransactionHistory = await john.api.route(
       'getAccountTransactionHistory',
       {
         universe: john.augur.contracts.universe.address,
@@ -625,7 +640,6 @@ describe('State API :: Accounts :: ', () => {
       }
     );
     expect(accountTransactionHistory.length).toEqual(7);
-
   });
 
   test(':getUserCurrentDisputeStake', async () => {
@@ -633,7 +647,7 @@ describe('State API :: Accounts :: ', () => {
     const johnYesNoMarket = await john.createReasonableYesNoMarket();
 
     // Move time to open reporting
-    let newTime = (await johnYesNoMarket.getEndTime_()).plus(
+    const newTime = (await johnYesNoMarket.getEndTime_()).plus(
       SECONDS_IN_A_DAY.times(7)
     );
     await john.setTimestamp(newTime);
@@ -664,9 +678,9 @@ describe('State API :: Accounts :: ', () => {
     await john.contribute(johnYesNoMarket, noPayoutSet, new BigNumber(5));
     await john.contribute(johnYesNoMarket, noPayoutSet, new BigNumber(7));
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    await john.sync();
 
-    let userCurrentDisputeStake = await api.route(
+    const userCurrentDisputeStake = await john.api.route(
       'getUserCurrentDisputeStake',
       {
         marketId: johnYesNoMarket.address,
@@ -675,19 +689,19 @@ describe('State API :: Accounts :: ', () => {
     );
 
     await expect(userCurrentDisputeStake).toContainEqual({
-      outcome: "0",
+      outcome: '0',
       isInvalid: true,
       malformed: undefined,
-      payoutNumerators: ["100", "0", "0"],
-      userStakeCurrent: "4",
+      payoutNumerators: ['100', '0', '0'],
+      userStakeCurrent: '4',
     });
 
     await expect(userCurrentDisputeStake).toContainEqual({
-      outcome: "1",
+      outcome: '1',
       isInvalid: undefined,
       malformed: undefined,
-      payoutNumerators: ["0", "100", "0"],
-      userStakeCurrent: "12",
+      payoutNumerators: ['0', '100', '0'],
+      userStakeCurrent: '12',
     });
   });
 });

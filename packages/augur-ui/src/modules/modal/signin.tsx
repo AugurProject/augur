@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import {
   PrimarySignInButton,
   SecondarySignInButton,
@@ -22,7 +22,7 @@ interface LoginProps {
   closeModal: Function;
   signupModal: Function;
   loginModal: Function;
-  connectModal: Function;
+  hardwareWalletModal: Function;
   isLogin: boolean;
   connectMethods: ConnectMethod[];
 }
@@ -32,24 +32,12 @@ export const SignIn = (props: LoginProps) => {
     closeModal,
     signupModal,
     loginModal,
-    connectModal,
+    hardwareWalletModal,
     isLogin = true,
     connectMethods,
   } = props;
 
   const LOGIN_OR_SIGNUP = isLogin ? 'Login' : 'Signup';
-
-  const [isGnosis, setIsGnosis] = useState(
-    Boolean(window.localStorage.getItem('isGnosis'))
-  );
-
-  useEffect(() => {
-    if (isGnosis) {
-      window.localStorage.setItem('isGnosis', 'true');
-    } else {
-      window.localStorage.removeItem('isGnosis');
-    }
-  }, [isGnosis]);
 
   const parimaryButtonsToShow = connectMethods
     .filter(method => !method.hidden)
@@ -102,18 +90,10 @@ export const SignIn = (props: LoginProps) => {
 
       <footer>
         <div>
-          Want to use a different wallet?{' '}
-          <span onClick={() => connectModal(isLogin ? 'login' : 'signup')}>
-            Connect
+          Want to use a hardware wallet?{' '}
+          <span onClick={() => hardwareWalletModal(isLogin)}>
+            Learn more
           </span>
-        </div>
-
-        <div
-          title='Gnosis safe is under development'
-          onClick={() => setIsGnosis(!isGnosis)}
-        >
-          Use Gnosis Safe ⚠️
-          <input type='checkbox' readOnly checked={isGnosis ? true : false} />
         </div>
       </footer>
     </div>

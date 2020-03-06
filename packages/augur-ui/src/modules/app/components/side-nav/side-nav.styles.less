@@ -13,8 +13,12 @@
     overflow: auto;
     position: fixed;
     transition: left 0.2s ease-in-out;
-    width: 100%;
+    width: calc(100% - @size-52);
     z-index: @mask-modal;
+
+    > div:first-of-type {
+      z-index: @above-all-content;
+    }
 
     > div {
       // Background for close icon and help icon when AccountFunds is closed.
@@ -49,6 +53,7 @@
 
     &.showNav {
       left: 0;
+      
     }
   }
 }

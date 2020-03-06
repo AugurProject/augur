@@ -1,5 +1,6 @@
 export * from './flash';
-export { ContractAPI} from './libs/contract-api';
+export { ContractAPI } from './libs/contract-api';
+export { TestContractAPI } from './libs/test-contract-api';
 export {
   deployContracts,
   UsefulContractObjects,
@@ -8,6 +9,7 @@ export {
   makeGnosisDependencies,
 } from './libs/blockchain';
 import * as blockchain from './libs/blockchain';
+
 export { blockchain };
 
 export {

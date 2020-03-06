@@ -5,13 +5,11 @@ import { AppState } from 'store';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { approveToTrade } from 'modules/contracts/actions/contractCalls';
 import { updateModal } from '../actions/update-modal';
 import isMetaMaskPresent from 'modules/auth/helpers/is-meta-mask';
 import {
   MODAL_LOGIN,
   MODAL_SIGNUP,
-  MODAL_CONNECT,
   MODAL_LOADING,
   ACCOUNT_TYPES,
   SIGNIN_LOADING_TEXT_PORTIS,
@@ -19,9 +17,9 @@ import {
   SIGNIN_LOADING_TEXT_TORUS,
   SIGNIN_LOADING_TEXT_FORTMATIC,
   SIGNIN_SIGN_WALLET,
-  ONBOARDING_SEEN_KEY,
   MODAL_ACCOUNT_CREATED,
-  MODAL_WALLET_ERROR,
+  MODAL_ERROR,
+  MODAL_HARDWARE_WALLET,
 } from 'modules/common/constants';
 import { loginWithInjectedWeb3 } from 'modules/auth/actions/login-with-injected-web3';
 import { loginWithPortis } from 'modules/auth/actions/login-with-portis';
@@ -33,8 +31,6 @@ import {
   PhoneLogin,
   MetaMaskLogin,
 } from 'modules/common/icons';
-import makePath from 'modules/routes/helpers/make-path';
-import { MARKETS } from 'modules/routes/constants/views';
 import { windowRef } from 'utils/window-ref';
 
 const mapStateToProps = (state: AppState) => ({
@@ -43,11 +39,9 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
-  // approveAccount: () => approveToTrade(),
   loginModal: () => dispatch(updateModal({ type: MODAL_LOGIN })),
+  hardwareWalletModal: (isLogin) => dispatch(updateModal({ type: MODAL_HARDWARE_WALLET, isLogin })),
   signupModal: () => dispatch(updateModal({ type: MODAL_SIGNUP })),
-  connectModal: loginOrSignup =>
-    dispatch(updateModal({ type: MODAL_CONNECT, loginOrSignup })),
   accountCreatedModal: () =>
     dispatch(updateModal({ type: MODAL_ACCOUNT_CREATED })),
   loadingModal: (message, callback, showMetaMaskHelper = false) =>
@@ -57,6 +51,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
         message,
         showMetaMaskHelper,
         callback,
+        showCloseAfterDelay: true,
       })
     ),
   connectMetaMask: () => dispatch(loginWithInjectedWeb3()),
@@ -66,9 +61,10 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
     dispatch(loginWithTorus()),
   connectFortmatic: () =>
     dispatch(loginWithFortmatic()),
-  errorModal: () => dispatch(
+  errorModal: (error) => dispatch(
     updateModal({
-      type: MODAL_WALLET_ERROR,
+      type: MODAL_ERROR,
+      error: error ? JSON.stringify(error) : 'Sorry, please try again.',
     })
   ),
 });
@@ -78,15 +74,14 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
 
   const onError = (error, accountType) => {
     console.error(`ERROR:${accountType}`, error);
-    dP.errorModal();
+    dP.errorModal(error.message ? error.message : error ? error : '');
   };
 
   const login = () => {
     setTimeout(() => {
       dP.closeModal();
 
-      const showOnboardingSeen = windowRef.localStorage.getItem(ONBOARDING_SEEN_KEY);
-      if (LOGIN_OR_SIGNUP === 'Signup' &&!showOnboardingSeen) {
+      if (LOGIN_OR_SIGNUP === 'Signup') {
         // Kicks off onboarding
         dP.accountCreatedModal();
       }
@@ -166,8 +161,8 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
   return {
     loginModal: dP.loginModal,
     signupModal: dP.signupModal,
-    connectModal: dP.connectModal,
     closeModal: dP.closeModal,
+    hardwareWalletModal: dP.hardwareWalletModal,
     isLogin: oP.isLogin,
     connectMethods,
   };

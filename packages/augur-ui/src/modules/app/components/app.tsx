@@ -39,21 +39,22 @@ import {
   Universe,
   Blockchain,
   LoginAccount,
-  EnvObject,
   Notification,
+  AccountBalances,
 } from 'modules/types';
 import ForkingBanner from 'modules/reporting/containers/forking-banner';
-import parseQuery from 'modules/routes/helpers/parse-query';
-import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names';
+import parseQuery, { parseLocation } from 'modules/routes/helpers/parse-query';
+import { MARKET_ID_PARAM_NAME, AFFILIATE_NAME } from 'modules/routes/constants/param-names';
 import makePath from 'modules/routes/helpers/make-path';
 import { ExternalLinkText } from 'modules/common/buttons';
 import { HelmetTag } from 'modules/seo/helmet-tag';
 import { APP_HEAD_TAGS } from 'modules/seo/helmet-configs';
+import { SDKConfiguration } from '@augurproject/artifacts';
 
 interface AppProps {
   notifications: Notification[];
   blockchain: Blockchain;
-  env: EnvObject;
+  config: SDKConfiguration;
   history: History;
   initAugur: Function;
   isLogged: boolean;
@@ -89,6 +90,8 @@ interface AppProps {
   isHelpMenuOpen: boolean;
   showGlobalChat: Function;
   migrateV1Rep: Function;
+  walletBalances: AccountBalances;
+  saveAffilateAddress: Function;
   showMigrateRepButton: boolean;
   theme: string;
   setTheme: Function;
@@ -123,17 +126,21 @@ export default class AppView extends Component<AppProps> {
     {
       title: 'Disputing',
       route: DISPUTING,
-      requireLogin: false,
+      requireLogin: true,
+      alternateStyle: true,
     },
     {
       title: 'Reporting',
       route: REPORTING,
-      requireLogin: false,
+      requireLogin: true,
+      alternateStyle: true,
     },
     {
-      title: 'Create',
+      title: 'Create Market',
       route: CREATE_MARKET,
       requireLogin: true,
+      button: true,
+      alternateStyle: true,
       disabled: !!this.props.universe.forkingInfo,
     },
   ];
@@ -186,6 +193,12 @@ export default class AppView extends Component<AppProps> {
       document.body.classList.add('App--windowsScrollBars');
     }
     this.checkIsMobile();
+
+    const affiliate = parseLocation(location.href)[AFFILIATE_NAME];
+    if (affiliate) {
+      this.props.saveAffilateAddress(affiliate)
+    }
+
   }
 
   compomentWillUnmount() {
@@ -358,12 +371,13 @@ export default class AppView extends Component<AppProps> {
       isConnectionTrayOpen,
       updateConnectionTray,
       migrateV1Rep,
-      showMigrateRepButton,
+      walletBalances,
       updateModal,
       isHelpMenuOpen,
       updateHelpMenuState,
       notifications,
       theme
+      showMigrateRepButton,
     } = this.props;
     const sideNavMenuData = this.sideNavMenuData;
     sideNavMenuData[1].title = theme !== THEMES.TRADING ? 'My Account' : 'Account Summary';
@@ -374,7 +388,7 @@ export default class AppView extends Component<AppProps> {
 
     const onTradingTutorial =
       parseQuery(location.search)[MARKET_ID_PARAM_NAME] === TRADING_TUTORIAL;
-    
+
     return (
       <main>
         <HelmetTag {...APP_HEAD_TAGS} />
@@ -448,6 +462,8 @@ export default class AppView extends Component<AppProps> {
                 showGlobalChat={() => this.props.showGlobalChat()}
                 migrateV1Rep={migrateV1Rep}
                 showMigrateRepButton={showMigrateRepButton}
+                walletBalances={walletBalances}
+                updateModal={updateModal}
               />
 
               {/* HIDDEN ON MOBILE */}
@@ -457,6 +473,7 @@ export default class AppView extends Component<AppProps> {
                 currentBasePath={sidebarStatus.currentBasePath}
                 migrateV1Rep={migrateV1Rep}
                 showMigrateRepButton={showMigrateRepButton}
+                walletBalances={walletBalances}
                 updateModal={updateModal}
               />
             </section>
@@ -502,7 +519,7 @@ export default class AppView extends Component<AppProps> {
                 {!isLogged && (
                   <div className={Styles.BettingUI}>
                     <ExternalLinkText
-                      title={'Betting Exchange App'}
+                      title={'Betting UI'}
                       label={' - Coming Soon!'}
                       URL={'https://augur.net'}
                     />

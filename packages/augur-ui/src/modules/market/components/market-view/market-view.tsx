@@ -92,7 +92,7 @@ interface MarketViewProps {
   clearOrderBook: Function;
 }
 
-interface DefaultOrderPropertiesMap {
+export interface DefaultOrderPropertiesMap {
   [outcomeId: number]: DefaultOrderProperties;
 }
 interface MarketViewState {
@@ -251,7 +251,7 @@ export default class MarketView extends Component<
       this.props.loadMarketTradingHistory(marketId);
     }
     if (!this.props.isMarketLoading) {
-      closeMarketLoadingModalOnly(this.props.modalShowing);
+      if (closeMarketLoadingModalOnly) closeMarketLoadingModalOnly(this.props.modalShowing);
     }
 
     if (
@@ -268,7 +268,8 @@ export default class MarketView extends Component<
   }
 
   componentWillUnmount() {
-    this.props.clearOrderBook();
+    const { clearOrderBook } = this.props;
+    if (clearOrderBook) this.props.clearOrderBook();
   }
 
   tradingTutorialWidthCheck() {
@@ -326,14 +327,17 @@ export default class MarketView extends Component<
     }
   }
 
-  updateSelectedOutcomeSwitch(selectedOutcomeId) {
-    this.updateSelectedOutcome(selectedOutcomeId);
+  updateSelectedOutcomeSwitch(selectedOutcomeId, keepOrder) {
+    this.updateSelectedOutcome(selectedOutcomeId, keepOrder);
 
     FindReact(document.getElementById('tabs_mobileView')).handleClick(null, 1);
   }
 
-  updateSelectedOutcome(selectedOutcomeId) {
+  updateSelectedOutcome(selectedOutcomeId, keepOrder) {
     if (selectedOutcomeId !== this.state.selectedOutcomeId) {
+      if (keepOrder) {
+        return this.setState({selectedOutcomeId});
+      }
       this.setState({
         selectedOutcomeId,
         selectedOrderProperties: {
@@ -606,7 +610,6 @@ export default class MarketView extends Component<
       const newOrderBook = orders.filter(order => !order.disappear);
       outcomeOrderBook = formatOrderBook(newOrderBook);
     }
-
     return (
       <div
         ref={node => {
@@ -667,6 +670,9 @@ export default class MarketView extends Component<
                         selectedOutcomeId={outcomeId}
                         updateSelectedOutcome={this.updateSelectedOutcomeSwitch}
                         orderBook={orderBook}
+                        updateSelectedOrderProperties={
+                          this.updateSelectedOrderProperties
+                        }
                       />
                       <div className={Styles.PriceHistory}>
                         <h3>Price History</h3>
@@ -901,6 +907,9 @@ export default class MarketView extends Component<
                     updateSelectedOutcome={this.updateSelectedOutcome}
                     hideOutcomes={cat5 ? !extendOutcomesList : false}
                     orderBook={orderBook}
+                    updateSelectedOrderProperties={
+                      this.updateSelectedOrderProperties
+                    }
                   />
                   <div
                     className={classNames(Styles.ChartsPane, {
@@ -923,6 +932,7 @@ export default class MarketView extends Component<
                       preview={preview}
                       orderBook={outcomeOrderBook}
                       canHotload={canHotload}
+                      extendOutcomesList={extendOutcomesList}
                     />
                   </div>
                   <div

@@ -22,28 +22,37 @@ export class RollbackTable extends AbstractTable {
 
     protected constructor(networkId: number, augur: Augur, dbName: string, db: DB) {
         super(networkId, dbName, db.dexieDB);
-        this.isStandardRollback = this.idFields === STANDARD_PRIMARY_KEY;
+        this.isStandardRollback = _.isEqual(this.idFields, STANDARD_PRIMARY_KEY);
         this.rollbackTable = db.dexieDB['Rollback'];
         this.syncing = false;
         this.syncStatus = db.syncStatus;
         this.augur = augur;
     }
 
-    protected async upsertDocument(documentID: ID, document: BaseDocument): Promise<void> {
-        if (!this.isStandardRollback && !this.syncing) {
-            const rollbackID = [document.blockNumber, this.dbName, documentID];
-            const curRollbackDoc = await this.rollbackTable.get(rollbackID);
-            // If a previous doc exists for this blocknumber already we dont want to override it.
-            if (!curRollbackDoc) {
-                let rollbackDocument = await this.table.get(documentID);
-                if (!rollbackDocument) rollbackDocument = { [DELETE_KEY]: true };
-                rollbackDocument['tableName'] = this.dbName;
-                rollbackDocument['rollbackBlockNumber'] = document.blockNumber;
-                rollbackDocument['primaryKey'] = documentID;
-                await this.rollbackTable.put(rollbackDocument, rollbackID);
+    protected async bulkPutDocuments(documents: BaseDocument[], documentIds?: any[]): Promise<void> {
+        if (!this.isStandardRollback && !this.syncing && documentIds) {
+            const rollbackDocuments = [];
+            const rollbackIds = [];
+            let docIndex = 0;
+            for (const document of documents) {
+                const documentID = documentIds[docIndex];
+                const rollbackID = [document.blockNumber, this.dbName, documentID];
+                const curRollbackDoc = await this.rollbackTable.get(rollbackID);
+                // If a previous doc exists for this blocknumber already we dont want to override it.
+                if (!curRollbackDoc) {
+                    let rollbackDocument = await this.table.get(documentID);
+                    if (!rollbackDocument) rollbackDocument = { [DELETE_KEY]: true };
+                    rollbackDocument['tableName'] = this.dbName;
+                    rollbackDocument['rollbackBlockNumber'] = document.blockNumber;
+                    rollbackDocument['primaryKey'] = documentID;
+                    rollbackDocuments.push(rollbackDocument);
+                    rollbackIds.push(rollbackID);
+                }
+                docIndex++;
             }
+            await this.rollbackTable.bulkPut(rollbackDocuments, rollbackIds);
         }
-        await super.upsertDocument(documentID, document);
+        await super.bulkPutDocuments(documents);
     }
 
     async rollback(blockNumber: number): Promise<void> {
