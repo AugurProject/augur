@@ -19,6 +19,7 @@ import {
   SecondaryButton,
   SubmitTextButton,
   ExternalLinkButton,
+  ProcessingButton,
 } from 'modules/common/buttons';
 import {
   LinearPropertyLabel,
@@ -109,6 +110,8 @@ export interface ActionRow {
   action: Function;
   status: typeof PENDING | typeof SUCCESS | typeof FAILURE;
   properties: Array<{ value: string; label: string; addExtraSpace: boolean }>;
+  queueName?: string;
+  queueId?: string;
 }
 
 export interface ActionRowsProps {
@@ -467,12 +470,12 @@ export const ActionRows = (props: ActionRowsProps) =>
         </div>
       </section>
       <div>
-        {row.status && row.status !== SUCCESS && <PendingLabel status={row.status} />}
-        {row.status === SUCCESS && <ConfirmedLabel />}
-        <SubmitTextButton
-          disabled={row.status === SUCCESS || row.status === PENDING}
+        <ProcessingButton 
           text={row.text}
+          queueName={row.queueName}
+          queueId={row.queueId}
           action={row.action}
+          submitTextButtton={true}
         />
       </div>
       {row.notice && <DismissableNotice title={row.notice} description={''} show={true} buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE} />}
