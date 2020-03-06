@@ -12,24 +12,32 @@ import { ThunkDispatch, ThunkAction } from 'redux-thunk';
 import { Action } from 'redux';
 import { formatAttoRep } from 'utils/format-number';
 import { addedDaiEvent } from 'services/analytics/helpers';
+import { updateAppStatus, WALLET_STATUS } from 'modules/app/actions/update-app-status';
+import { createBigNumber } from 'utils/create-big-number';
+import { ZERO, WALLET_STATUS_VALUES } from 'modules/common/constants';
 
 export const updateAssets = (
-  callback: NodeStyleCallback = logError
+  callback: NodeStyleCallback,
 ): ThunkAction<any, any, any, any> => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { loginAccount, universe } = getState();
+  const { loginAccount, universe, appStatus } = getState();
   const { address, meta } = loginAccount;
   const nonSafeWallet = meta.signer._address;
 
-  return updateBalances(
+  updateBalances(
     universe.id,
     address,
     nonSafeWallet,
     dispatch,
-    callback
-  );
+    (err, balances) => {
+      let status = appStatus[WALLET_STATUS];
+      if (createBigNumber(balances.dai).gt(ZERO) && status !== WALLET_STATUS_VALUES.CREATED) {
+        dispatch(updateAppStatus(WALLET_STATUS, WALLET_STATUS_VALUES.FUNDED_NEED_CREATE));
+      }
+      if (callback) callback(balances);
+    });
 };
 
 function updateBalances(

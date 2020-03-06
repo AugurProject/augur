@@ -25,7 +25,7 @@ const mapStateToProps = (state: AppState) => {
   account: loginAccount.address,
   modal,
   balances,
-  GSN_ENABLED: appStatus.gsnEnabled,
+  GsnEnabled: appStatus.gsnEnabled,
   ethToDaiRate: appStatus.ethToDaiRate,
   gasPrice: getGasPrice(state),
   fallBackGasCosts: {
@@ -66,7 +66,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
   fallBackGasCosts: sP.fallBackGasCosts,
-  GSN_ENABLED: sP.GSN_ENABLED,
+  GsnEnabled: sP.GsnEnabled,
   ethToDaiRate: sP.ethToDaiRate,
   balances: sP.balances,
   account: sP.account,

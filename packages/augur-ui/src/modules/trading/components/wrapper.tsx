@@ -50,7 +50,7 @@ interface WrapperProps {
   updateTradeShares: Function;
   disclaimerSeen: boolean;
   gasPrice: number;
-  Gsn_ENABLED: boolean;
+  GsnEnabled: boolean;
   hasFunds: boolean;
   hasHistory: boolean;
   isLogged: boolean;
@@ -59,7 +59,7 @@ interface WrapperProps {
   tradingTutorial?: boolean;
   currentTimestamp: number;
   availableDai: number;
-  GsnUnavailable: boolean;
+  gsnUnavailable: boolean;
 }
 
 interface WrapperState {
@@ -393,7 +393,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       initialLiquidity,
       tradingTutorial,
       tutorialNext,
-      Gsn_ENABLED,
+      GsnEnabled,
       hasFunds,
       isLogged,
       restoredAccount,
@@ -401,7 +401,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       addFundsModal,
       hasHistory,
       availableDai,
-      GsnUnavailable,
+      gsnUnavailable,
     } = this.props;
     let {
       marketType,
@@ -431,6 +431,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       trade &&
       trade.costInDai &&
       createBigNumber(trade.costInDai.value).gte(createBigNumber(availableDai));
+
     let actionButton: any = (
       <OrderButton
         type={selectedNav}
@@ -454,7 +455,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
             }
           }
         }}
-        disabled={!trade || !trade.limitPrice || GsnUnavailable || insufficientFunds}
+        disabled={!trade || !trade.limitPrice || gsnUnavailable || insufficientFunds}
       />
     );
     switch (true) {
@@ -568,8 +569,8 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               outcomeName={selectedOutcome.description}
               scalarDenomination={market.scalarDenomination}
               tradingTutorial={tradingTutorial}
-              Gsn_ENABLED={Gsn_ENABLED}
-              GsnUnavailable={GsnUnavailable}
+              GsnEnabled={GsnEnabled}
+              gsnUnavailable={gsnUnavailable}
             />
           )}
         <div>{actionButton}</div>

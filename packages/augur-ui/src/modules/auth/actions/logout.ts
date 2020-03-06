@@ -7,7 +7,7 @@ import { updateMobileMenuState } from 'modules/app/actions/update-sidebar-status
 import { analytics } from 'services/analytics';
 import { isLocalHost } from 'utils/is-localhost';
 import { augurSdk } from 'services/augursdk';
-import { updateAppStatus, GSN_ENABLED, WALLET_STATUS } from 'modules/app/actions/update-app-status';
+import { updateAppStatus, WALLET_STATUS, GSN_ENABLED } from 'modules/app/actions/update-app-status';
 import { clearLiquidityOrders } from 'modules/orders/actions/liquidity-management';
 
 export function logout() {

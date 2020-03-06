@@ -19,7 +19,7 @@ const mapStateToProps = (state: AppState) => ({
     },
   ],
   title: 'Buy Participation Tokens',
-  GSN_ENABLED: state.appStatus.gsnEnabled,
+  GsnEnabled: state.appStatus.gsnEnabled,
   ethToDaiRate: state.appStatus.ethToDaiRate,
 });
 

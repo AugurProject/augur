@@ -37,7 +37,7 @@ const mapStateToProps = state => {
       state.loginAccount &&
       state.loginAccount.meta,
     balances: state.loginAccount && state.loginAccount.balances,
-    GSN_ENABLED: state.appStatus.gsnEnabled,
+    GsnEnabled: state.appStatus.gsnEnabled,
     ethToDaiRate: state.appStatus.ethToDaiRate,
   };
 };

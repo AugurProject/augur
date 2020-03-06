@@ -749,6 +749,7 @@ export class ContractAPI {
     const walletAddress = await this.augur.gsn.calculateWalletAddress(this.account.publicKey);
     console.log(`Funding Wallet Address`);
     await this.fundSafe(walletAddress);
+    return walletAddress;
   }
 
   async initializeUniverseForWarpSync(): Promise<void> {

@@ -47,7 +47,7 @@ interface ReviewProps {
   availableEthFormatted: FormattedNumber;
   availableDaiFormatted: FormattedNumber;
   estimateSubmitNewMarket: Function;
-  Gsn_ENABLED: boolean;
+  GsnEnabled: boolean;
   ethToDaiRate: BigNumber;
   setDisableCreate: Function;
   showAddFundsModal: Function;
@@ -142,7 +142,7 @@ export default class Review extends React.Component<
 
 
   getInsufficientFundsAmounts(): InsufficientFunds {
-    const { availableEthFormatted, availableRepFormatted, availableDaiFormatted, Gsn_ENABLED } = this.props;
+    const { availableEthFormatted, availableRepFormatted, availableDaiFormatted, GsnEnabled } = this.props;
     const s = this.state;
     let insufficientFunds: InsufficientFunds = null;
 
@@ -170,7 +170,7 @@ export default class Review extends React.Component<
         createBigNumber(availableDaiFormatted.value || '0'),
         formattedInitialLiquidityGas || '0',
         formattedInitialLiquidityDai || '0',
-        Gsn_ENABLED
+        GsnEnabled
       );
     }
 
@@ -182,7 +182,7 @@ export default class Review extends React.Component<
   }
 
   async calculateMarketCreationCosts() {
-    const { newMarket, gasPrice, Gsn_ENABLED } = this.props;
+    const { newMarket, gasPrice, GsnEnabled } = this.props;
 
     const marketCreationCostBreakdown = await getCreateMarketBreakdown();
     this.setState(
@@ -203,7 +203,7 @@ export default class Review extends React.Component<
           newMarket,
           (err, gasEstimateValue) => {
             if (err) console.error(err);
-            const gasCost = Gsn_ENABLED
+            const gasCost = GsnEnabled
             ? formatDaiEstimate(formatGasCostToEther(
                 gasEstimateValue,
                 { decimalsRounded: 4 },
@@ -238,7 +238,7 @@ export default class Review extends React.Component<
       availableEthFormatted,
       availableDaiFormatted,
       availableRepFormatted,
-      Gsn_ENABLED,
+      GsnEnabled,
       ethToDaiRate,
       showAddFundsModal,
     } = this.props;
@@ -346,28 +346,28 @@ export default class Review extends React.Component<
                 label={"Initial Liquidity"}
                 value={s.formattedInitialLiquidityDai.formattedValue + " DAI"}
               />
-              {Gsn_ENABLED && ethToDaiRate && <LinearPropertyLabelTooltip
+              {GsnEnabled && ethToDaiRate && <LinearPropertyLabelTooltip
                 label={'Transaction Fee'}
                 value={initialLiquidityGasInDai + ' DAI'}
               />}
-              {!Gsn_ENABLED && <LinearPropertyLabelTooltip
+              {!GsnEnabled && <LinearPropertyLabelTooltip
                 label={'Gas Cost'}
                 value={s.formattedInitialLiquidityGas.formattedValue + ' ETH'}
               />}
             </span>
           </>}
 
-          <Subheaders header="Totals" subheader={Gsn_ENABLED ? "Sum total of DAI and REP required to create this market" : "Sum total of DAI, ETH and REP required to create this market"} />
+          <Subheaders header="Totals" subheader={GsnEnabled ? "Sum total of DAI and REP required to create this market" : "Sum total of DAI, ETH and REP required to create this market"} />
           <span>
             <LinearPropertyLabel
               label={"Total DAI"}
               value={totalDai.formattedValue + " DAI"}
             />
-            {Gsn_ENABLED && <LinearPropertyLabel
+            {GsnEnabled && <LinearPropertyLabel
               label={"Transaction Fee"}
               value={totalGasInDai + " DAI"}
             />}
-            {!Gsn_ENABLED && <LinearPropertyLabel
+            {!GsnEnabled && <LinearPropertyLabel
               label={"Transaction Fee"}
               value={totalEth.formattedValue + " ETH"}
             />}
@@ -388,7 +388,7 @@ export default class Review extends React.Component<
             totalDai={totalDai}
             totalEth={totalEth}
             totalRep={s.designatedReportNoShowReputationBond}
-            Gsn_ENABLED={Gsn_ENABLED}
+            GsnEnabled={GsnEnabled}
           />
         </div>
       </div>

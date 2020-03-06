@@ -23,7 +23,7 @@ import { addPendingOrder } from 'modules/orders/actions/pending-orders-managemen
 import { orderSubmitted } from 'services/analytics/helpers';
 import { AppState } from 'store';
 import { totalTradingBalance } from 'modules/auth/selectors/login-account';
-import { isGSNUnavailable } from 'modules/app/selectors/gsn';
+import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
 
 const getMarketPath = id => {
   return {
@@ -39,9 +39,9 @@ const mapStateToProps = (state: AppState, ownProps) => {
   const marketId = ownProps.market.id;
   const hasHistory = !!accountPositions[marketId] || !!userOpenOrders[marketId];
   const {
-    gsnEnabled: GSN_ENABLED,
+    gsnEnabled: GsnEnabled,
   } = appStatus;
-  const hasFunds = GSN_ENABLED
+  const hasFunds = GsnEnabled
     ? !!loginAccount.balances.dai
     : !!loginAccount.balances.eth && !!loginAccount.balances.dai;
 
@@ -49,16 +49,17 @@ const mapStateToProps = (state: AppState, ownProps) => {
   if (ownProps.initialLiquidity) {
     availableDai = availableDai.minus(newMarket.initialLiquidityDai);
   }
+
   return {
     hasHistory,
     gasPrice: getGasPrice(state),
     hasFunds,
     isLogged: authStatus.isLogged,
     restoredAccount: authStatus.restoredAccount,
-    GSN_ENABLED,
+    GsnEnabled,
     currentTimestamp: blockchain.currentAugurTimestamp,
     availableDai,
-    GSNUnavailable: isGSNUnavailable(state),
+    gsnUnavailable: isGSNUnavailable(state),
   };
 };
 

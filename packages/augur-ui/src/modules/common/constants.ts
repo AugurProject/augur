@@ -72,6 +72,12 @@ export const GAS_TIME_LEFT_LABELS = {
   SLOW: '30 min or more',
 };
 
+export const WALLET_STATUS_VALUES = {
+  WAITING_FOR_FUNDING: 'WAITING_FOR_FUNDING',
+  FUNDED_NEED_CREATE: 'FUNDED_NEED_CREATE',
+  CREATED: 'CREATED',
+};
+
 
 // ethereumNodeHttp
 export const ETHEREUM_NODE_HTTP = 'ethereum_node_http';

@@ -21,7 +21,7 @@ interface MigrateRepForm {
   closeAction: Function;
   loginAccount: LoginAccount;
   convertV1ToV2: Function;
-  Gsn_ENABLED: boolean;
+  GsnEnabled: boolean;
   ethToDaiRate: BigNumber;
   convertV1ToV2Estimate: Function;
   gasPrice: number;
@@ -34,7 +34,7 @@ export const MigrateRep = (props: MigrateRepForm) => {
     closeAction,
     convertV1ToV2,
     loginAccount,
-    Gsn_ENABLED,
+    GsnEnabled,
     convertV1ToV2Estimate,
     ethToDaiRate,
     gasPrice,
@@ -45,7 +45,7 @@ export const MigrateRep = (props: MigrateRepForm) => {
   const [gasLimit, setGasLimit] = useState(V1_REP_MIGRATE_ESTIMATE);
 
   useEffect(() => {
-    if (Gsn_ENABLED) {
+    if (GsnEnabled) {
       convertV1ToV2Estimate().then(gasLimit => {
         setGasLimit(gasLimit);
       });
@@ -67,9 +67,9 @@ export const MigrateRep = (props: MigrateRepForm) => {
       <div>
         <LinearPropertyLabel
           key="cost"
-          label={Gsn_ENABLED ? 'Transaction Fee' : 'Gas Cost'}
+          label={GsnEnabled ? 'Transaction Fee' : 'Gas Cost'}
           value={
-            Gsn_ENABLED
+            GsnEnabled
               ? displayGasInDai(gasEstimate, ethToDaiRate)
               : gasEstimate
           }
