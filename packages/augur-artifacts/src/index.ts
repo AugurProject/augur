@@ -336,7 +336,7 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
   },
   zeroX: {
     rpc: {
-      enabled: true,
+      enabled: false,
       ws: 'ws://localhost:60557'
     },
     mesh: {
