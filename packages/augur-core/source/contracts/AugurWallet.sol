@@ -26,14 +26,14 @@ contract AugurWallet is Initializable, Ownable, IAugurWallet {
     bytes4 constant internal EIP1271_MAGIC_VALUE = 0x20c13b0b;
 
     bytes32 public domainSeparator;
+    IERC20 public cash;
 
     function initialize(address _owner, address _referralAddress, bytes32 _fingerprint, address _augur, IERC20 _cash, IAffiliates _affiliates, IERC1155 _shareToken, address _createOrder, address _fillOrder, address _zeroXTrade) external beforeInitialized {
         endInitialization();
         domainSeparator = keccak256(abi.encode(DOMAIN_SEPARATOR_TYPEHASH, this));
         owner = _owner;
         registry = IAugurWalletRegistry(msg.sender);
-
-        _cash.approve(msg.sender, MAX_APPROVAL_AMOUNT);
+        cash = _cash;
 
         _cash.approve(_augur, MAX_APPROVAL_AMOUNT);
 
@@ -52,10 +52,21 @@ contract AugurWallet is Initializable, Ownable, IAugurWallet {
         }
     }
 
-    function executeTransaction(address _to, bytes calldata _data, uint256 _value) external {
+    function transferCash(address _to, uint256 _amount) external {
+        require(msg.sender == address(registry));
+        cash.transfer(_to, _amount);
+    }
+
+    function giveRegistryEth(uint256 _amount) external {
+        require(msg.sender == address(registry));
+        (bool _success,) = address(this).call.value(_amount)("");
+        require(_success);
+    }
+
+    function executeTransaction(address _to, bytes calldata _data, uint256 _value) external returns (bool) {
         require(msg.sender == address(registry));
         (bool _didSucceed, bytes memory _resultData) = address(_to).call.value(_value)(_data);
-        require(_didSucceed);
+        return _didSucceed;
     }
 
     function isValidSignature(bytes calldata _data, bytes calldata _signature) external view returns (bytes4) {
@@ -88,4 +99,6 @@ contract AugurWallet is Initializable, Ownable, IAugurWallet {
     function onTransferOwnership(address _oldOwner, address _newOwner) internal {
         registry.walletTransferedOwnership(_oldOwner, _newOwner);
     }
+
+    function () external payable {}
 }

@@ -811,7 +811,7 @@ def test_augur_wallet_trade(contractsFixture, augur, cash, market, universe):
     gasLimit = 3000000
     nonce = 0
     approvalData = ""
-    augurWalletCreationData = augurWalletRegistry.createAugurWallet_encode(nullAddress, fingerprint, maxDaiTxFee)
+    augurWalletCreationData = augurWalletRegistry.publicCreateAugurWallet_encode(nullAddress, fingerprint, maxDaiTxFee)
 
     messageHash = augurWalletRegistry.getRelayMessageHash(relayer,
         account,
@@ -907,13 +907,14 @@ def test_augur_wallet_trade(contractsFixture, augur, cash, market, universe):
     assert cash.transfer(walletAddress, fix(1, 60))
     assert cash.faucet(fix(1, 40))
     assert cash.transfer(walletAddress2, fix(1, 40))
+    ethPayment = 10**16
 
     walletAddress2InitialBalance = cash.balanceOf(walletAddress2)
     with TokenDelta(cash, -fix(1, 60), walletAddress, "Tester 0 cash taken incorrect"):
         with PrintGasUsed(contractsFixture, "ZeroXTrade.trade", 0):
             nonce+=1
             tradeData = ZeroXTrade.trade_encode(fillAmount, fingerprint, tradeGroupId, 0, 10, orders, signatures)
-            augurWalletTradeData = augurWalletRegistry.executeWalletTransaction_encode(ZeroXTrade.address, tradeData, 0, nullAddress, fingerprint)
+            augurWalletTradeData = augurWalletRegistry.executeWalletTransaction_encode(ZeroXTrade.address, tradeData, 0, ethPayment, nullAddress, fingerprint)
             messageHash = augurWalletRegistry.getRelayMessageHash(relayer,
                 senderAccount,
                 augurWalletRegistry.address,

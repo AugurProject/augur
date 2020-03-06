@@ -22,7 +22,8 @@ def test_augur_wallet_registry(contractsFixture, augur, universe, cash, reputati
     relayHub.registerRelay(10, "url", sender=relayer)
 
     # Fund the registry manually
-    relayHub.depositFor(augurWalletRegistry.address, value=2*10**18)
+    initialRegistryHubBalance = 2*10**18
+    relayHub.depositFor(augurWalletRegistry.address, value=initialRegistryHubBalance)
 
     # Fund the wallet so we can generate it and have it reimburse the relay hub
     cashAmount = 100*10**18
@@ -53,58 +54,15 @@ def test_augur_wallet_registry(contractsFixture, augur, universe, cash, reputati
     gasLimit = 3000000
     nonce = 0
     approvalData = ""
-    augurWalletCreationData = augurWalletRegistry.createAugurWallet_encode(nullAddress, fingerprint, maxDaiTxFee)
-
-    messageHash = augurWalletRegistry.getRelayMessageHash(relayer,
-        account,
-        augurWalletRegistry.address,
-        augurWalletCreationData,
-        additionalFee,
-        gasPrice,
-        gasLimit,
-        nonce)
-    signature = signMessage(messageHash, accountKey)
-
-    assert relayHub.canRelay(
-        relayer,
-        account,
-        augurWalletRegistry.address,
-        augurWalletCreationData,
-        additionalFee,
-        gasPrice,
-        gasLimit,
-        nonce,
-        signature,
-        approvalData)[0] == 0
-
-    TransactionRelayedLog = {
-        "status": 0,
-    }
-    with AssertLog(contractsFixture, "TransactionRelayed", TransactionRelayedLog, contract=relayHub):
-        relayHub.relayCall(
-            account,
-            augurWalletRegistry.address,
-            augurWalletCreationData,
-            additionalFee,
-            gasPrice,
-            gasLimit,
-            nonce,
-            signature,
-            approvalData,
-            sender=relayer
-        )
-
-    assert augurWalletRegistry.getWallet(account) == walletAddress
-
-    wallet = contractsFixture.applySignature("AugurWallet", walletAddress)
-
-    assert cash.allowance(walletAddress, augur.address, 2 ** 256 - 1)
+    ethPayment = 10**16
 
     # Now lets have the relayer send an actual tx for the user to faucet cash into their wallet
     repAmount = 10**18
     repFaucetData = reputationToken.faucet_encode(repAmount)
-    augurWalletRepFaucetData = augurWalletRegistry.executeWalletTransaction_encode(reputationToken.address, repFaucetData, 0, nullAddress, fingerprint)
-    nonce += 1
+    augurWalletRepFaucetData = augurWalletRegistry.executeWalletTransaction_encode(reputationToken.address, repFaucetData, 0, ethPayment, nullAddress, fingerprint)
+    nonce = 0
+
+    assert augurWalletRegistry.getPaymentFromEncodedFunction(augurWalletRepFaucetData) == ethPayment
 
     messageHash = augurWalletRegistry.getRelayMessageHash(relayer,
         account,
@@ -131,20 +89,32 @@ def test_augur_wallet_registry(contractsFixture, augur, universe, cash, reputati
 
     initialRep = reputationToken.balanceOf(walletAddress)
 
-    relayHub.relayCall(
-        account,
-        augurWalletRegistry.address,
-        augurWalletRepFaucetData,
-        additionalFee,
-        gasPrice,
-        gasLimit,
-        nonce,
-        signature,
-        approvalData,
-        sender=relayer
-    )
+    TransactionRelayedLog = {
+        "status": 0,
+    }
+    with AssertLog(contractsFixture, "TransactionRelayed", TransactionRelayedLog, contract=relayHub):
+        relayHub.relayCall(
+            account,
+            augurWalletRegistry.address,
+            augurWalletRepFaucetData,
+            additionalFee,
+            gasPrice,
+            gasLimit,
+            nonce,
+            signature,
+            approvalData,
+            sender=relayer
+        )
+
+    assert augurWalletRegistry.getWallet(account) == walletAddress
+
+    assert cash.allowance(walletAddress, augur.address, 2 ** 256 - 1)
 
     assert reputationToken.balanceOf(walletAddress) == initialRep + repAmount
+
+    # The relay hub balance for the registry is at least what it was initially
+    newRegistryHubBalance = relayHub.balanceOf(augurWalletRegistry.address)
+    assert newRegistryHubBalance >= initialRegistryHubBalance
 
 def test_augur_wallet_registry_auto_create(contractsFixture, augur, universe, cash, reputationToken):
     augurWalletRegistry = contractsFixture.contracts["AugurWalletRegistry"]
@@ -187,8 +157,9 @@ def test_augur_wallet_registry_auto_create(contractsFixture, augur, universe, ca
 
     repAmount = 10**18
     fingerprint = longTo32Bytes(42)
+    ethPayment = 10**16
     repFaucetData = reputationToken.faucet_encode(repAmount)
-    augurWalletRepFaucetData = augurWalletRegistry.executeWalletTransaction_encode(reputationToken.address, repFaucetData, 0, nullAddress, fingerprint)
+    augurWalletRepFaucetData = augurWalletRegistry.executeWalletTransaction_encode(reputationToken.address, repFaucetData, 0, ethPayment, nullAddress, fingerprint)
     nonce = 0
     maxDaiTxFee = 10**18
     additionalFee = 10 # 10%
