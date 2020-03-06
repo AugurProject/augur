@@ -487,10 +487,10 @@ Deploying to: ${env}
         promises.push(profitLoss.initialize(this.augur!.address, this.augurTrading!.address));
 
         // Too many txn in flight on kovan breaks things
-        console.log('Awaiting promises before continuing');
+        console.log('Awaiting promises before continuing deploy');
         await resolveAll(promises);
         promises = [];
-        console.log('Continuing');
+        console.log('Continuing deploy');
 
         const simulateTradeContract = await this.getContractAddress('SimulateTrade');
         const simulateTrade = new SimulateTrade(this.dependencies, simulateTradeContract);
