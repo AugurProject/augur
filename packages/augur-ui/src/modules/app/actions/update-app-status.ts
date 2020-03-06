@@ -20,11 +20,13 @@ export function updateAppStatus(statusKey: string, value: boolean | BigNumber | 
   };
 }
 
+const setHTMLTheme = (theme) => document.documentElement.setAttribute(THEME, theme);
+export const getTheme = () => document.documentElement.getAttribute(THEME);
+
 export function setTheme(theme: string) {
-  const html = document.documentElement;
-  const currentTheme = html.getAttribute(THEME);
+  const currentTheme = getTheme();
   if (theme !== currentTheme) {
-    html.setAttribute(THEME, theme);
+    setHTMLTheme(theme);
   }
   return {
     type: UPDATE_APP_STATUS,
