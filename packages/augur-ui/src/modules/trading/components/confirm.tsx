@@ -43,8 +43,8 @@ interface ConfirmProps {
   numOutcomes: number;
   tradingTutorial?: boolean;
   ethToDaiRate: BigNumber;
-  Gnosis_ENABLED: boolean;
-  GnosisUnavailable: boolean;
+  Gsn_ENABLED: boolean;
+  GsnUnavailable: boolean;
   initialLiquidity: boolean;
 }
 
@@ -73,7 +73,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       gasPrice,
       availableEth,
       availableDai,
-      GnosisUnavailable,
+      GsnUnavailable,
     } = this.props;
     if (
       JSON.stringify(trade) !== JSON.stringify(prevProps.trade) ||
@@ -84,7 +84,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       !createBigNumber(prevProps.availableDai).eq(
         createBigNumber(availableDai)
       ) ||
-      prevProps.GnosisUnavailable !== GnosisUnavailable
+      prevProps.GsnUnavailable !== GsnUnavailable
     ) {
       this.setState({
         messages: this.constructMessages(this.props),
@@ -102,8 +102,8 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       availableDai,
       tradingTutorial,
       ethToDaiRate,
-      Gnosis_ENABLED,
-      GnosisUnavailable,
+      Gsn_ENABLED,
+      GsnUnavailable,
     } = props || this.props;
 
     const {
@@ -123,7 +123,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
 
     let gasCostDai = null;
 
-    if (Gnosis_ENABLED && ethToDaiRate) {
+    if (Gsn_ENABLED && ethToDaiRate) {
       gasCostDai = formatDai(
         ethToDaiRate.multipliedBy(createBigNumber(gasCost))
       ).formattedValue;
@@ -160,10 +160,10 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       };
     }
 
-    // GAS error in DAI [Gnosis]
+    // GAS error in DAI [Gsn]
     if (
       !tradingTutorial &&
-      Gnosis_ENABLED &&
+      Gsn_ENABLED &&
       totalCost &&
       createBigNumber(gasCostDai).gte(createBigNumber(availableDai))
     ) {
@@ -177,7 +177,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     // GAS error in ETH
     if (
       !tradingTutorial &&
-      !Gnosis_ENABLED &&
+      !Gsn_ENABLED &&
       totalCost &&
       createBigNumber(gasCost).gte(createBigNumber(availableEth))
     ) {
@@ -203,9 +203,9 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       };
     }
 
-    if (GnosisUnavailable && !tradingTutorial) {
+    if (GsnUnavailable && !tradingTutorial) {
       messages = {
-        header: 'Waiting For Gnosis Safe',
+        header: 'Waiting For Gsn Safe',
         type: WARNING,
         message: 'Please hold on while we create your Augur wallet',
       };
@@ -229,7 +229,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       ethToDaiRate,
       gasLimit,
       gasPrice,
-      Gnosis_ENABLED,
+      Gsn_ENABLED,
       initialLiquidity,
     } = this.props;
 
@@ -262,7 +262,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       gasPrice
     );
 
-    if (Gnosis_ENABLED && ethToDaiRate) {
+    if (Gsn_ENABLED && ethToDaiRate) {
       gasCostDai = formatDai(
         ethToDaiRate.multipliedBy(createBigNumber(gasCost))
       );

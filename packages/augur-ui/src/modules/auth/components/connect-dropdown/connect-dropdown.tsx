@@ -32,7 +32,7 @@ interface ConnectDropdownProps {
   universeOutcomeName: string;
   parentUniverseId: string;
   universeHasChildren: boolean;
-  Gnosis_ENABLED: boolean;
+  Gsn_ENABLED: boolean;
   ethToDaiRate: BigNumber;
 }
 
@@ -52,7 +52,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
     universeOutcomeName,
     parentUniverseId,
     universeHasChildren,
-    Gnosis_ENABLED,
+    Gsn_ENABLED,
     ethToDaiRate,
   } = props;
 
@@ -82,7 +82,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
       }).formattedValue,
       name: 'ETH',
       logo: EthIcon,
-      disabled: Gnosis_ENABLED ? balances.eth === 0 : false,
+      disabled: Gsn_ENABLED ? balances.eth === 0 : false,
     },
     {
       name: 'REP',
@@ -91,7 +91,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
         zeroStyled: false,
         decimalsRounded: 4,
       }).formattedValue,
-      disabled: Gnosis_ENABLED ? balances.rep === 0 : false,
+      disabled: Gsn_ENABLED ? balances.rep === 0 : false,
     },
   ];
 

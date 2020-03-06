@@ -718,7 +718,7 @@ export interface NoFundsErrorsProps {
   availableEthFormatted: FormattedNumber;
   availableRepFormatted: FormattedNumber;
   availableDaiFormatted: FormattedNumber;
-  Gnosis_ENABLED: boolean;
+  Gsn_ENABLED: boolean;
   showAddFundsModal: Function;
 }
 export const NoFundsErrors = (props: NoFundsErrorsProps) => {
@@ -732,12 +732,12 @@ export const NoFundsErrors = (props: NoFundsErrorsProps) => {
     availableEthFormatted,
     availableRepFormatted,
     availableDaiFormatted,
-    Gnosis_ENABLED,
+    Gsn_ENABLED,
   } = props;
 
   return (
     <div className={classNames({ [Styles.HasError]: noEth || noDai || noRep })}>
-      {noEth && !Gnosis_ENABLED && (
+      {noEth && !Gsn_ENABLED && (
         <DismissableNotice
           title="Not enough ETH in your wallet"
           description={`You have ${availableEthFormatted.formatted} ETH of ${totalEth.formatted} required to create this market`}

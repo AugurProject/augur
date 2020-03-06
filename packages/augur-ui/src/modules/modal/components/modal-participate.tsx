@@ -23,7 +23,7 @@ interface ModalParticipateProps {
   purchaseParticipationTokens: Function;
   messages: AlertMessageProps[];
   title: string;
-  Gnosis_ENABLED: boolean;
+  Gsn_ENABLED: boolean;
   ethToDaiRate: BigNumber;
 }
 
@@ -33,7 +33,7 @@ export const ModalParticipate = (props: ModalParticipateProps) => {
     gasPrice,
     messages,
     title,
-    Gnosis_ENABLED,
+    Gsn_ENABLED,
     ethToDaiRate,
   } = props;
 
@@ -119,10 +119,10 @@ export const ModalParticipate = (props: ModalParticipateProps) => {
     },
     {
       label: 'gas',
-      value: Gnosis_ENABLED
+      value: Gsn_ENABLED
         ? displayGasInDai(gasEstimate, ethToDaiRate)
         : gasEstimate,
-      denomination: Gnosis_ENABLED ? 'DAI' : 'ETH',
+      denomination: Gsn_ENABLED ? 'DAI' : 'ETH',
       showDenomination: true,
     },
   ];

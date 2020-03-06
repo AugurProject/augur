@@ -689,7 +689,7 @@ export class ContractAPI {
     return this.augur.gsn.getWalletAddress(account);
   }
 
-  async createWalletViaRelay(): Promise<void> {
+  async createWalletViaRelay(): Promise<string> {
     const params = {
       affiliate: NULL_ADDRESS,
       fingerprint: formatBytes32String('')
@@ -743,11 +743,11 @@ export class ContractAPI {
     return safe;
   }
 
-  async getOrCreateWallet(): Promise<void> {
+  async getOrCreateWallet(): Promise<string> {
     const walletFromRegistry = await this.augur.contracts.augurWalletRegistry.getWallet_(this.account.publicKey);
     if(walletFromRegistry !== NULL_ADDRESS) {
       console.log(`Found wallet: ${walletFromRegistry}`);
-      return;
+      return walletFromRegistry;
     }
 
     const walletAddress = await this.augur.gsn.calculateWalletAddress(this.account.publicKey);

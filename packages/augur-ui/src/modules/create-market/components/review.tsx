@@ -47,7 +47,7 @@ interface ReviewProps {
   availableEthFormatted: FormattedNumber;
   availableDaiFormatted: FormattedNumber;
   estimateSubmitNewMarket: Function;
-  Gnosis_ENABLED: boolean;
+  Gsn_ENABLED: boolean;
   ethToDaiRate: BigNumber;
   setDisableCreate: Function;
   showAddFundsModal: Function;
@@ -142,7 +142,7 @@ export default class Review extends React.Component<
 
 
   getInsufficientFundsAmounts(): InsufficientFunds {
-    const { availableEthFormatted, availableRepFormatted, availableDaiFormatted, Gnosis_ENABLED } = this.props;
+    const { availableEthFormatted, availableRepFormatted, availableDaiFormatted, Gsn_ENABLED } = this.props;
     const s = this.state;
     let insufficientFunds: InsufficientFunds = null;
 
@@ -170,7 +170,7 @@ export default class Review extends React.Component<
         createBigNumber(availableDaiFormatted.value || '0'),
         formattedInitialLiquidityGas || '0',
         formattedInitialLiquidityDai || '0',
-        Gnosis_ENABLED
+        Gsn_ENABLED
       );
     }
 
@@ -182,7 +182,7 @@ export default class Review extends React.Component<
   }
 
   async calculateMarketCreationCosts() {
-    const { newMarket, gasPrice, Gnosis_ENABLED } = this.props;
+    const { newMarket, gasPrice, Gsn_ENABLED } = this.props;
 
     const marketCreationCostBreakdown = await getCreateMarketBreakdown();
     this.setState(
@@ -203,7 +203,7 @@ export default class Review extends React.Component<
           newMarket,
           (err, gasEstimateValue) => {
             if (err) console.error(err);
-            const gasCost = Gnosis_ENABLED
+            const gasCost = Gsn_ENABLED
             ? formatDaiEstimate(formatGasCostToEther(
                 gasEstimateValue,
                 { decimalsRounded: 4 },
@@ -238,7 +238,7 @@ export default class Review extends React.Component<
       availableEthFormatted,
       availableDaiFormatted,
       availableRepFormatted,
-      Gnosis_ENABLED,
+      Gsn_ENABLED,
       ethToDaiRate,
       showAddFundsModal,
     } = this.props;
@@ -346,28 +346,28 @@ export default class Review extends React.Component<
                 label={"Initial Liquidity"}
                 value={s.formattedInitialLiquidityDai.formattedValue + " DAI"}
               />
-              {Gnosis_ENABLED && ethToDaiRate && <LinearPropertyLabelTooltip
+              {Gsn_ENABLED && ethToDaiRate && <LinearPropertyLabelTooltip
                 label={'Transaction Fee'}
                 value={initialLiquidityGasInDai + ' DAI'}
               />}
-              {!Gnosis_ENABLED && <LinearPropertyLabelTooltip
+              {!Gsn_ENABLED && <LinearPropertyLabelTooltip
                 label={'Gas Cost'}
                 value={s.formattedInitialLiquidityGas.formattedValue + ' ETH'}
               />}
             </span>
           </>}
 
-          <Subheaders header="Totals" subheader={Gnosis_ENABLED ? "Sum total of DAI and REP required to create this market" : "Sum total of DAI, ETH and REP required to create this market"} />
+          <Subheaders header="Totals" subheader={Gsn_ENABLED ? "Sum total of DAI and REP required to create this market" : "Sum total of DAI, ETH and REP required to create this market"} />
           <span>
             <LinearPropertyLabel
               label={"Total DAI"}
               value={totalDai.formattedValue + " DAI"}
             />
-            {Gnosis_ENABLED && <LinearPropertyLabel
+            {Gsn_ENABLED && <LinearPropertyLabel
               label={"Transaction Fee"}
               value={totalGasInDai + " DAI"}
             />}
-            {!Gnosis_ENABLED && <LinearPropertyLabel
+            {!Gsn_ENABLED && <LinearPropertyLabel
               label={"Transaction Fee"}
               value={totalEth.formattedValue + " ETH"}
             />}
@@ -388,7 +388,7 @@ export default class Review extends React.Component<
             totalDai={totalDai}
             totalEth={totalEth}
             totalRep={s.designatedReportNoShowReputationBond}
-            Gnosis_ENABLED={Gnosis_ENABLED}
+            Gsn_ENABLED={Gsn_ENABLED}
           />
         </div>
       </div>
