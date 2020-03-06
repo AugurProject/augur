@@ -59,7 +59,7 @@ interface WrapperProps {
   tradingTutorial?: boolean;
   currentTimestamp: number;
   availableDai: number;
-  GsnUnavailable: boolean;
+  gsnUnavailable: boolean;
 }
 
 interface WrapperState {
@@ -401,7 +401,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       addFundsModal,
       hasHistory,
       availableDai,
-      GsnUnavailable,
+      gsnUnavailable,
     } = this.props;
     let {
       marketType,
@@ -431,6 +431,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       trade &&
       trade.costInDai &&
       createBigNumber(trade.costInDai.value).gte(createBigNumber(availableDai));
+
     let actionButton: any = (
       <OrderButton
         type={selectedNav}
@@ -454,7 +455,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
             }
           }
         }}
-        disabled={!trade || !trade.limitPrice || GsnUnavailable || insufficientFunds}
+        disabled={!trade || !trade.limitPrice || gsnUnavailable || insufficientFunds}
       />
     );
     switch (true) {
@@ -569,7 +570,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               scalarDenomination={market.scalarDenomination}
               tradingTutorial={tradingTutorial}
               Gsn_ENABLED={Gsn_ENABLED}
-              GsnUnavailable={GsnUnavailable}
+              gsnUnavailable={gsnUnavailable}
             />
           )}
         <div>{actionButton}</div>

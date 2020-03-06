@@ -159,9 +159,9 @@ export async function getLegacyRepBalance(
   const { contracts } = augurSdk.get();
   const lagacyRep = contracts.legacyReputationToken.address;
   const networkId = getNetworkId();
-  const balance = await contracts
+  const balance = !!address ? await contracts
     .reputationTokenFromAddress(lagacyRep, networkId)
-    .balanceOf_(address);
+    .balanceOf_(address) : createBigNumber(0);
   return balance;
 }
 

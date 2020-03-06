@@ -44,7 +44,7 @@ interface ConfirmProps {
   tradingTutorial?: boolean;
   ethToDaiRate: BigNumber;
   Gsn_ENABLED: boolean;
-  GsnUnavailable: boolean;
+  gsnUnavailable: boolean;
   initialLiquidity: boolean;
 }
 
@@ -73,7 +73,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       gasPrice,
       availableEth,
       availableDai,
-      GsnUnavailable,
+      gsnUnavailable,
     } = this.props;
     if (
       JSON.stringify(trade) !== JSON.stringify(prevProps.trade) ||
@@ -84,7 +84,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       !createBigNumber(prevProps.availableDai).eq(
         createBigNumber(availableDai)
       ) ||
-      prevProps.GsnUnavailable !== GsnUnavailable
+      prevProps.gsnUnavailable !== gsnUnavailable
     ) {
       this.setState({
         messages: this.constructMessages(this.props),
@@ -103,7 +103,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       tradingTutorial,
       ethToDaiRate,
       Gsn_ENABLED,
-      GsnUnavailable,
+      gsnUnavailable,
     } = props || this.props;
 
     const {
@@ -203,11 +203,11 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       };
     }
 
-    if (GsnUnavailable && !tradingTutorial) {
+    if (gsnUnavailable && !tradingTutorial) {
       messages = {
-        header: 'Waiting For Gsn Safe',
+        header: 'Create GSN Wallet',
         type: WARNING,
-        message: 'Please hold on while we create your Augur wallet',
+        message: 'Please create GSN wallet to start trading',
       };
     }
 

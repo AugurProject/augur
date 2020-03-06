@@ -17,7 +17,7 @@ import { createBigNumber } from 'utils/create-big-number';
 import { ZERO, WALLET_STATUS_VALUES } from 'modules/common/constants';
 
 export const updateAssets = (
-  callback: NodeStyleCallback = logError
+  callback: NodeStyleCallback,
 ): ThunkAction<any, any, any, any> => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
@@ -36,7 +36,7 @@ export const updateAssets = (
       if (createBigNumber(balances.dai).gt(ZERO) && status !== WALLET_STATUS_VALUES.CREATED) {
         dispatch(updateAppStatus(WALLET_STATUS, WALLET_STATUS_VALUES.FUNDED_NEED_CREATE));
       }
-      callback(balances);
+      if (callback) callback(balances);
     });
 };
 

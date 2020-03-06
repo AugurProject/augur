@@ -23,7 +23,7 @@ import { addPendingOrder } from 'modules/orders/actions/pending-orders-managemen
 import { orderSubmitted } from 'services/analytics/helpers';
 import { AppState } from 'store';
 import { totalTradingBalance } from 'modules/auth/selectors/login-account';
-import { isGSNUnavailable } from 'modules/app/selectors/gsn';
+import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
 
 const getMarketPath = id => {
   return {
@@ -49,6 +49,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
   if (ownProps.initialLiquidity) {
     availableDai = availableDai.minus(newMarket.initialLiquidityDai);
   }
+
   return {
     hasHistory,
     gasPrice: getGasPrice(state),
@@ -58,7 +59,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
     GSN_ENABLED,
     currentTimestamp: blockchain.currentAugurTimestamp,
     availableDai,
-    GSNUnavailable: isGSNUnavailable(state),
+    gsnUnavailable: isGSNUnavailable(state),
   };
 };
 

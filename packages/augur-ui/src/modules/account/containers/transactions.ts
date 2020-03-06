@@ -14,16 +14,15 @@ import { AppState } from 'store';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { getNetworkId, getLegacyRep } from 'modules/contracts/actions/contractCalls'
-import getValue from 'utils/get-value';
-import { isGSNUnavailable } from 'modules/app/selectors/gsn';
+import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
 
 const mapStateToProps = (state: AppState) => {
   const networkId = getNetworkId();
-  const GSN_ENABLED = getValue(state, 'appStatus.gsnEnabled');
-  const GSNUnavailable = isGSNUnavailable(state);
+  const GSN_ENABLED = state.appStatus.gsnEnabled;
+  const gsnUnavailable = isGSNUnavailable(state);
 
   const showFaucets = GSN_ENABLED
-    ? networkId !== NETWORK_IDS.Mainnet && !GSNUnavailable
+    ? networkId !== NETWORK_IDS.Mainnet && !gsnUnavailable
     : networkId !== NETWORK_IDS.Mainnet;
 
   return {
