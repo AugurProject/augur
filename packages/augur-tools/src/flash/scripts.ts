@@ -9,12 +9,14 @@ import {
   updateEnvironmentsConfig,
   abiV1,
   environments,
-  buildConfig
+  buildConfig,
+  mergeConfig,
+  SDKConfiguration
 } from '@augurproject/artifacts';
 import { ContractInterfaces } from '@augurproject/core';
 import moment from 'moment';
 import { BigNumber } from 'bignumber.js';
-import { deepCopy, formatBytes32String } from "ethers/utils";
+import { formatBytes32String } from 'ethers/utils';
 import { ethers } from 'ethers';
 import {
   calculatePayoutNumeratorsArray,
@@ -41,7 +43,6 @@ import { flattenZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOr
 import { formatAddress, sleep, waitForSigint } from './util';
 import { runWsServer, runWssServer } from '@augurproject/sdk/build/state/WebsocketEndpoint';
 import { createApp, runHttpServer, runHttpsServer } from '@augurproject/sdk/build/state/HTTPEndpoint';
-import deepmerge from "deepmerge";
 
 export function addScripts(flash: FlashSession) {
   flash.addScript({
@@ -112,7 +113,7 @@ export function addScripts(flash: FlashSession) {
         name: 'time-controlled',
         abbr: 't',
         description:
-          'Use the TimeControlled contract for testing environments. Set to "true" or "false".',
+          'Use the TimeControlled contract for testing environments.',
         flag: true,
       },
       {
@@ -165,13 +166,13 @@ export function addScripts(flash: FlashSession) {
       if (this.config.gnosis?.relayerAddress) {
         this.log(`Fauceting to relayer @ ${this.config.gnosis.relayerAddress}`);
         const config = this.config;
-        this.config = deepmerge(this.config, {
+        this.config = mergeConfig(this.config, {
           gnosis: { enabled: false },
           zeroX: {
             rpc: { enabled: false },
             mesh: { enabled: false },
           }
-        });
+        }) as SDKConfiguration;
         await this.call('faucet', {
           amount: '1000000',
           target: this.config.gnosis.relayerAddress,

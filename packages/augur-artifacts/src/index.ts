@@ -194,9 +194,9 @@ export async function setEnvironmentConfig(env: string, config: SDKConfiguration
   }));
 }
 
-export async function updateConfig(env: string, config: Partial<SDKConfiguration>): Promise<SDKConfiguration> {
-  const original: Partial<SDKConfiguration> = await readConfig(env).then((c) => c || {}).catch(() => ({}));
-  const updated = deepmerge(original, config);
+export async function updateConfig(env: string, config: RecursivePartial<SDKConfiguration>): Promise<SDKConfiguration> {
+  const original: RecursivePartial<SDKConfiguration> = await readConfig(env).then((c) => c || {}).catch(() => ({}));
+  const updated = mergeConfig(original, config);
   const valid = validConfigOrDie(updated);
   setEnvironmentConfig(env, valid);
   return valid;
@@ -206,7 +206,7 @@ export function getEnvironmentConfigForNetwork(networkId: NetworkId, breakOnMult
   let targetConfig: SDKConfiguration = null;
   Object.values(environments).forEach((config) => {
     if (config.networkId === networkId) {
-      if (breakOnMulti && targetConfig) throw Error(`Multiple environment configs for network "${networkId}"`)
+      if (breakOnMulti && targetConfig) throw Error(`Multiple environment configs for network "${networkId}"`);
       targetConfig = config;
     }
   });
@@ -259,7 +259,7 @@ export async function readConfig(env: string): Promise<SDKConfiguration> {
   }
 }
 
-export function isValidConfig(suspect: Partial<SDKConfiguration>): suspect is SDKConfiguration {
+export function isValidConfig(suspect: RecursivePartial<SDKConfiguration>): suspect is SDKConfiguration {
   function fail(where: string): boolean {
     console.error(`Bad config due to: ${where}`);
     return false;
@@ -289,6 +289,9 @@ export function isValidConfig(suspect: Partial<SDKConfiguration>): suspect is SD
     }
     if (suspect.zeroX.mesh) {
       if (typeof suspect.zeroX.mesh.enabled === 'undefined') return fail('zeroX.mesh.enabled');
+      if (suspect.zeroX.mesh.useBootstrapList && typeof suspect.zeroX.mesh.bootstrapList === 'undefined') {
+        return fail('zeroX.mesh.bootstrapList');
+      }
     }
   }
   if (suspect.server) {
@@ -358,61 +361,84 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
 };
 
 export function buildConfig(env: string, specified: RecursivePartial<SDKConfiguration> = {}): SDKConfiguration {
-  let config: Partial<SDKConfiguration> = deepmerge(DEFAULT_SDK_CONFIGURATION, environments[env] || {});
-  config = deepmerge(config, specified);
-  config = deepmerge(config, configFromEnvvars(config));
-  const valid = validConfigOrDie(config);
-  return valid;
+  const config: RecursivePartial<SDKConfiguration> = mergeConfig(
+    DEFAULT_SDK_CONFIGURATION,
+    environments[env] || {},
+    specified,
+    configFromEnvvars()
+  );
+  return validConfigOrDie(config);
 }
 
-export function configFromEnvvars(config?: Partial<SDKConfiguration>): Partial<SDKConfiguration> {
+export function mergeConfig(...configs: Array<RecursivePartial<SDKConfiguration>>): RecursivePartial<SDKConfiguration> {
+  return configs.reduce((left, right) => {
+    return deepmerge(left, right, { arrayMerge: (target, source) => source });
+  }, {})
+}
+
+export function configFromEnvvars(): RecursivePartial<SDKConfiguration> {
+  let config: RecursivePartial<SDKConfiguration> = {};
   const e = process.env;
+  const d = mergeConfig;
 
-  if (e.NETWORK_ID) config = deepmerge(config, { networkId: e.NETWORK_ID });
+  if (e.NETWORK_ID) config = d(config, { networkId: e.NETWORK_ID as NetworkId });
 
-  if (e.ETHEREUM_HTTP) config = deepmerge(config, { ethereum: { http: e.ETHEREUM_HTTP }});
-  if (e.ETHEREUM_WS) config = deepmerge(config, { ethereum: { ws: e.ETHEREUM_WS }});
-  if (e.ETHEREUM_RPC_RETRY_COUNT) config = deepmerge(config, { ethereum: { rpcRetryCount: e.ETHEREUM_RPC_RETRY_COUNT }});
-  if (e.ETHEREUM_RPC_RETRY_INTERVAL) config = deepmerge(config, { ethereum: { rpcRetryInterval: e.ETHEREUM_RPC_RETRY_INTERVAL }});
-  if (e.ETHEREUM_RPC_CONCURRENCY) config = deepmerge(config, { ethereum: { rpcConcurrency: e.ETHEREUM_RPC_CONCURRENCY }});
+  if (e.ETHEREUM_HTTP) config = d(config, { ethereum: { http: e.ETHEREUM_HTTP }});
+  if (e.ETHEREUM_WS) config = d(config, { ethereum: { ws: e.ETHEREUM_WS }});
+  if (e.ETHEREUM_RPC_RETRY_COUNT) config = d(config, { ethereum: { rpcRetryCount: Number(e.ETHEREUM_RPC_RETRY_COUNT) }});
+  if (e.ETHEREUM_RPC_RETRY_INTERVAL) config = d(config, { ethereum: { rpcRetryInterval: Number(e.ETHEREUM_RPC_RETRY_INTERVAL) }});
+  if (e.ETHEREUM_RPC_CONCURRENCY) config = d(config, { ethereum: { rpcConcurrency: Number(e.ETHEREUM_RPC_CONCURRENCY) }});
 
-  if (e.GAS_LIMIT) config = deepmerge(config, { gas: { limit: e.GAS_LIMIT }});
-  if (e.GAS_PRICE) config = deepmerge(config, { gas: { price: e.GAS_PRICE }});
+  if (e.GAS_LIMIT) config = d(config, { gas: { limit: Number(e.GAS_LIMIT) }});
+  if (e.GAS_PRICE) config = d(config, { gas: { price: Number(e.GAS_PRICE) }});
 
-  if (e.ENABLE_FAUCETS) config = deepmerge(config, { deploy: { enableFaucets: e.ENABLE_FAUCETS }});
-  if (e.NORMAL_TIME) config = deepmerge(config, { deploy: { normalTime: e.NORMAL_TIME }});
-  if (e.ETHEREUM_PRIVATE_KEY) config = deepmerge(config, { deploy: { privateTime: e.ETHEREUM_PRIVATE_KEY }});
-  if (e.CONTRACT_INPUT_PATH) config = deepmerge(config, { deploy: { contractInputPath: e.CONTRACT_INPUT_PATH }});
-  if (e.WRITE_ARTIFACTS) config = deepmerge(config, { deploy: { writeArtifacts: e.WRITE_ARTIFACTS }});
+  if (e.ENABLE_FAUCETS) config = d(config, { deploy: { enableFaucets: bool(e.ENABLE_FAUCETS) }});
+  if (e.NORMAL_TIME) config = d(config, { deploy: { normalTime: bool(e.NORMAL_TIME) }});
+  if (e.ETHEREUM_PRIVATE_KEY) config = d(config, { deploy: { privateKey: e.ETHEREUM_PRIVATE_KEY }});
+  if (e.CONTRACT_INPUT_PATH) config = d(config, { deploy: { contractInputPath: e.CONTRACT_INPUT_PATH }});
+  if (e.WRITE_ARTIFACTS) config = d(config, { deploy: { writeArtifacts: bool(e.WRITE_ARTIFACTS) }});
 
-  if (e.GNOSIS_ENABLED) config = deepmerge(config, { gnosis: { enabled: e.GNOSIS_ENABLED }});
-  if (e.GNOSIS_HTTP) config = deepmerge(config, { gnosis: { http: e.GNOSIS_HTTP }});
-  if (e.GNOSIS_RELAYER_ADDRESS) config = deepmerge(config, { gnosis: { relayerAddress: e.GNOSIS_RELAYER_ADDRESS }});
+  if (e.GNOSIS_ENABLED) config = d(config, { gnosis: { enabled: bool(e.GNOSIS_ENABLED) }});
+  if (e.GNOSIS_HTTP) config = d(config, { gnosis: { http: e.GNOSIS_HTTP }});
+  if (e.GNOSIS_RELAYER_ADDRESS) config = d(config, { gnosis: { relayerAddress: e.GNOSIS_RELAYER_ADDRESS }});
 
-  if (e.ZEROX_RPC_ENABLED) config = deepmerge(config, { zeroX: { rpc: { enabled: e.ZEROX_RPC_ENABLED }}});
-  if (e.ZEROX_RPC_WS) config = deepmerge(config, { zeroX: { rpc: { ws: e.ZEROX_RPC_WS }}});
-  if (e.ZEROX_MESH_ENABLED) config = deepmerge(config, { zeroX: { mesh: { enabled: e.ZEROX_MESH_ENABLED }}});
+  if (e.ZEROX_RPC_ENABLED) config = d(config, { zeroX: { rpc: { enabled: bool(e.ZEROX_RPC_ENABLED) }}});
+  if (e.ZEROX_RPC_WS) config = d(config, { zeroX: { rpc: { ws: e.ZEROX_RPC_WS }}});
+  if (e.ZEROX_MESH_ENABLED) config = d(config, { zeroX: { mesh: { enabled: bool(e.ZEROX_MESH_ENABLED) }}});
+  if (e.ZEROX_USE_BOOTSTRAP_LIST) config = d(config, { zeroX: { mesh: { useBootstrapList: bool(e.ZEROX_USE_BOOTSTRAP_LIST) }}});
+  if (e.ZEROX_MESH_BOOTSTRAP_LIST) config = d(config, { zeroX: { mesh: { bootstrapList: JSON.parse(e.ZEROX_MESH_BOOTSTRAP_LIST) }}});
 
-  if (e.SDK_ENABLED) config = deepmerge(config, { sdk: { enabled: e.SDK_ENABLED }});
-  if (e.SDK_WS) config = deepmerge(config, { sdk: { ws: e.SDK_WS }});
+  if (e.SDK_ENABLED) config = d(config, { sdk: { enabled: bool(e.SDK_ENABLED) }});
+  if (e.SDK_WS) config = d(config, { sdk: { ws: e.SDK_WS }});
 
-  if (e.SERVER_HTTP_PORT) config = deepmerge(config, { server: { httpPort: e.SERVER_HTTP_PORT }});
-  if (e.SERVER_START_HTTP) config = deepmerge(config, { server: { startHTTP: e.SERVER_START_HTTP }});
-  if (e.SERVER_HTTPS_PORT) config = deepmerge(config, { server: { httpsPort: e.SERVER_HTTPS_PORT }});
-  if (e.SERVER_START_HTTPS) config = deepmerge(config, { server: { startHTTPS: e.SERVER_START_HTTPS }});
-  if (e.SERVER_WS_PORT) config = deepmerge(config, { server: { wsPort: e.SERVER_WS_PORT }});
-  if (e.SERVER_START_WS) config = deepmerge(config, { server: { startWS: e.SERVER_START_WS }});
-  if (e.SERVER_WSS_PORT) config = deepmerge(config, { server: { wssPort: e.SERVER_WSS_PORT }});
-  if (e.SERVER_START_WSS) config = deepmerge(config, { server: { startWSS: e.SERVER_START_WSS }});
+  if (e.SERVER_HTTP_PORT) config = d(config, { server: { httpPort: Number(e.SERVER_HTTP_PORT) }});
+  if (e.SERVER_START_HTTP) config = d(config, { server: { startHTTP: bool(e.SERVER_START_HTTP) }});
+  if (e.SERVER_HTTPS_PORT) config = d(config, { server: { httpsPort: Number(e.SERVER_HTTPS_PORT) }});
+  if (e.SERVER_START_HTTPS) config = d(config, { server: { startHTTPS: bool(e.SERVER_START_HTTPS) }});
+  if (e.SERVER_WS_PORT) config = d(config, { server: { wsPort: Number(e.SERVER_WS_PORT) }});
+  if (e.SERVER_START_WS) config = d(config, { server: { startWS: bool(e.SERVER_START_WS) }});
+  if (e.SERVER_WSS_PORT) config = d(config, { server: { wssPort: Number(e.SERVER_WSS_PORT) }});
+  if (e.SERVER_START_WSS) config = d(config, { server: { startWSS: bool(e.SERVER_START_WSS) }});
 
-  if (e.UPLOAD_BLOCK_NUMBER) config = deepmerge(config, { uploadBlockNumber: e.UPLOAD_BLOCK_NUMBER });
+  if (e.UPLOAD_BLOCK_NUMBER) config = d(config, { uploadBlockNumber: Number(e.UPLOAD_BLOCK_NUMBER) });
 
-  if (e.ADDRESSES) config = deepmerge(config, { addresses: JSON.parse(e.ADDRESSES) });
+  if (e.ADDRESSES) config = d(config, { addresses: JSON.parse(e.ADDRESSES) });
 
   return config
 }
 
-export function validConfigOrDie(config: Partial<SDKConfiguration>): SDKConfiguration {
+function bool(s: string): boolean {
+  if (s.toLowerCase() === 'true') {
+    return true;
+  } else if (s.toLowerCase() === 'false') {
+    return false;
+  } else {
+    // TODO should this instead throw an error?
+    return undefined;
+  }
+}
+
+export function validConfigOrDie(config: RecursivePartial<SDKConfiguration>): SDKConfiguration {
   if (isValidConfig(config)) {
     return config;
   } else {
@@ -420,7 +446,7 @@ export function validConfigOrDie(config: Partial<SDKConfiguration>): SDKConfigur
   }
 }
 
-type RecursivePartial<T> = {
+export type RecursivePartial<T> = {
   [P in keyof T]?:
   T[P] extends Array<infer U> ? Array<RecursivePartial<U>> :
     T[P] extends object ? RecursivePartial<T[P]> :
