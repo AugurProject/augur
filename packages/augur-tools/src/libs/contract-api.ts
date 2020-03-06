@@ -596,6 +596,10 @@ export class ContractAPI {
     await this.augur.contracts.ethExchange.publicMintAuto(owner, attoCash, {attachedEth: attoEth});
   }
 
+  async depositRelay(address: string, attoEth: BigNumber): Promise<void> {
+    await this.augur.contracts.relayHub.depositFor(address, {attachedEth: attoEth});
+  }
+
   async initWarpSync(universe: string): Promise<void> {
     await this.augur.contracts.warpSync.initializeUniverse(universe);
   }

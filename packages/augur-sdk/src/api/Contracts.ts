@@ -4,6 +4,7 @@ import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 
 export type SomeRepToken = ContractInterfaces.ReputationToken | ContractInterfaces.TestNetReputationToken;
 export type SomeTime = ContractInterfaces.Time | ContractInterfaces.TimeControlled;
+const RELAY_HUB_ADDRESS = "0xD216153c06E857cD7f72665E0aF1d7D82172F494";
 
 export class Contracts {
   augur: ContractInterfaces.Augur;
@@ -31,6 +32,7 @@ export class Contracts {
   ethExchange: ContractInterfaces.EthExchange;
   warpSync: ContractInterfaces.WarpSync;
   augurWalletRegistry: ContractInterfaces.AugurWalletRegistry;
+  relayHub: ContractInterfaces.RelayHub;
 
   reputationToken: SomeRepToken | null = null;
   private readonly dependencies: ContractDependenciesEthers;
@@ -62,6 +64,7 @@ export class Contracts {
     this.ethExchange = new ContractInterfaces.EthExchange(dependencies, addresses.EthExchange);
     this.warpSync = new ContractInterfaces.WarpSync(dependencies, addresses.WarpSync);
     this.augurWalletRegistry = new ContractInterfaces.AugurWalletRegistry(dependencies, addresses.AugurWalletRegistry);
+    this.relayHub = new ContractInterfaces.RelayHub(dependencies, RELAY_HUB_ADDRESS)
 
     if (typeof addresses.Time !== "undefined") {
       this.time = new ContractInterfaces.Time(dependencies, addresses.Time);

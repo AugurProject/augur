@@ -182,7 +182,7 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
     if (this.useWallet && this.status === WalletState.AVAILABLE) {
       tx = this.convertToWalletTx(tx);
     }
-    
+
     if (this.useRelay && tx.to != this.augurWalletRegistry.address) {
       throw new Error("Cannot use GSN relay to process TXs except to create a wallet or send wallet transaction execution requests");
     }

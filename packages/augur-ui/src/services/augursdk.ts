@@ -84,12 +84,6 @@ export class SDK {
     return this.client;
   }
 
-  /**
-   * @name getOrCreateWallet
-   * @description - Kick off the Wallet creation process for a given wallet address.
-   * @param affiliate
-   * @returns {Promise<void>}
-   */
   async getOrCreateWallet(affiliate: string = NULL_ADDRESS): Promise<void | string> {
     if (!this.client) {
       console.log('Trying to init wallet before Augur is initalized');
@@ -97,7 +91,6 @@ export class SDK {
     }
 
     const fingerprint = getFingerprint();
-    // Up to UI side to check the localstorage wallet matches the wallet address.
     const walletAddress = await this.client.gsn.getOrCreateWallet({ affiliate, fingerprint });
 
     return walletAddress;
@@ -126,7 +119,7 @@ export class SDK {
     this.client.signer = signer;
 
     if (useGSN) {
-      // TODO XXX : This is really error prone. The wallet needs to have Cash in it _before_ this is called. Also txs that are working are getting "no signer" errors after they are sent 
+      // TODO XXX : This is really error prone. The wallet needs to have Cash in it _before_ this is called. Also txs that are working are getting "no signer" errors after they are sent
       this.client.setUseRelay(true);
       account = (await this.getOrCreateWallet(affiliate)) as string;
 

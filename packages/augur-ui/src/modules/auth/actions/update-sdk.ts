@@ -5,7 +5,7 @@ import { updateLoginAccount } from 'modules/account/actions/login-account';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { toChecksumAddress } from 'ethereumjs-util';
-import { updateAppStatus, GSN_ENABLED, Ox_ENABLED } from 'modules/app/actions/update-app-status';
+import { updateAppStatus, GSN_ENABLED, Ox_ENABLED, WALLET_STATUS } from 'modules/app/actions/update-app-status';
 import { loadAccountDataFromLocalStorage } from './load-account-data-from-local-storage';
 import { IS_LOGGED, updateAuthStatus } from 'modules/auth/actions/auth-status';
 import { loadAccountData } from 'modules/auth/actions/load-account-data';
@@ -14,6 +14,7 @@ import { NetworkId } from '@augurproject/artifacts';
 import { AppState } from 'store';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { MODAL_ERROR } from 'modules/common/constants';
+import { getFingerprint } from 'utils/get-fingerprint';
 
 export const updateSdk = (
   loginAccount: Partial<LoginAccount>,
@@ -58,6 +59,9 @@ export const updateSdk = (
         false,
         null,
       );
+      const Augur = augurSdk.get();
+      const walletStatus = Augur.getWalletStatus();
+      dispatch(updateAppStatus(WALLET_STATUS, walletStatus));
     }
 
     dispatch(updateAuthStatus(IS_LOGGED, true));
@@ -73,4 +77,16 @@ export const updateSdk = (
       })
     );
   }
+};
+
+
+export const createFundedGsnWallet = () => async (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  const { loginAccount } = getState();
+  const { affiliate } = loginAccount;
+  const fingerprint = getFingerprint();
+  const Augur = augurSdk.get();
+  Augur.gsn.getOrCreateWallet({ affiliate, fingerprint });
 };

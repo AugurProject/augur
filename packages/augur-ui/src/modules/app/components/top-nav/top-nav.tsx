@@ -11,8 +11,8 @@ import {
 } from 'modules/common/buttons';
 import { GlobalChat } from 'modules/global-chat/components/global-chat';
 import { NavMenuItem, AccountBalances } from 'modules/types';
-import { helpIcon, PlusCircleIcon, Dot } from 'modules/common/icons';
-import { MODAL_ADD_FUNDS, MIGRATE_V1_V2 } from 'modules/common/constants';
+import { helpIcon, Dot } from 'modules/common/icons';
+import { MIGRATE_V1_V2, CREATE_GSN_WALLET } from 'modules/common/constants';
 
 import Styles from 'modules/app/components/top-nav/top-nav.styles.less';
 
@@ -25,6 +25,8 @@ interface TopNavProps {
   showMigrateRepButton: boolean;
   walletBalances: AccountBalances;
   updateModal: Function;
+  showCreateAccountButton: boolean;
+  createFundedGsnWallet: Function;
 }
 
 const SPREAD_INDEX = 3;
@@ -35,9 +37,10 @@ const TopNav = ({
   menuData,
   currentBasePath,
   migrateV1Rep,
+  createFundedGsnWallet,
   showMigrateRepButton = false,
+  showCreateAccountButton = false,
   walletBalances,
-  updateModal,
 }: TopNavProps) => {
   const isCurrentItem = item => {
     if (item.route === 'markets' && currentBasePath === 'market') return true;
@@ -100,6 +103,42 @@ const TopNav = ({
                       <p>
                         {
                           'You have V1 REP in your wallet. Migrate it to V2 REP to use it in Augur V2'
+                        }
+                      </p>
+                    </ReactTooltip>
+                  </span>
+                </li>
+              )}
+              {index === SPREAD_INDEX && showCreateAccountButton && (
+                <li>
+                  <div className={Styles.MigrateRep}>
+                    <ProcessingButton
+                      text={walletBalances.dai === 0 ? 'Waiting for Funding' : 'Create Account'}
+                      action={() => createFundedGsnWallet()}
+                      disabled={walletBalances.dai === 0}
+                      queueName={CREATE_GSN_WALLET}
+                      queueId={CREATE_GSN_WALLET}
+                      secondaryButton
+                    />
+                  </div>
+                  <span>
+                    <label
+                      className={classNames(TooltipStyles.TooltipHint)}
+                      data-tip
+                      data-for={'accountCreation'}
+                    >
+                      {helpIcon}
+                    </label>
+                    <ReactTooltip
+                      id={'accountCreation'}
+                      className={TooltipStyles.Tooltip}
+                      effect="solid"
+                      place="top"
+                      type="light"
+                    >
+                      <p>
+                        {
+                          'Account used to interact with Augur, needs to be funded before creation'
                         }
                       </p>
                     </ReactTooltip>
