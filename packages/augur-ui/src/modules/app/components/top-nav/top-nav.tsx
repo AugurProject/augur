@@ -12,7 +12,7 @@ import {
 import { GlobalChat } from 'modules/global-chat/components/global-chat';
 import { NavMenuItem, AccountBalances } from 'modules/types';
 import { helpIcon, Dot } from 'modules/common/icons';
-import { MIGRATE_V1_V2, CREATE_GSN_WALLET } from 'modules/common/constants';
+import { MIGRATE_V1_V2, CREATEAUGURWALLET } from 'modules/common/constants';
 
 import Styles from 'modules/app/components/top-nav/top-nav.styles.less';
 
@@ -116,8 +116,8 @@ const TopNav = ({
                       text={walletBalances.dai === 0 ? 'Waiting for Funding' : 'Create Account'}
                       action={() => createFundedGsnWallet()}
                       disabled={walletBalances.dai === 0}
-                      queueName={CREATE_GSN_WALLET}
-                      queueId={CREATE_GSN_WALLET}
+                      queueName={CREATEAUGURWALLET}
+                      queueId={CREATEAUGURWALLET}
                       secondaryButton
                     />
                   </div>
@@ -138,7 +138,7 @@ const TopNav = ({
                     >
                       <p>
                         {
-                          'Account used to interact with Augur, needs to be funded before creation'
+                          'Account used to interact with Augur, needs to be funded before created'
                         }
                       </p>
                     </ReactTooltip>

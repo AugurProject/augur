@@ -58,7 +58,6 @@ export const updateSdk = (
         false,
         null,
       );
-      const Augur = augurSdk.get();
     }
 
     dispatch(updateAuthStatus(IS_LOGGED, true));
