@@ -1260,6 +1260,8 @@ div.ButtonsRow:last-of-type {
         height: @size-32;
         margin: 0 -@size-16 @size-4;
         padding: @size-10 @size-16;
+        grid-template-columns: repeat(4, 1fr);
+        display: grid;
 
         > span {
           .mono-9;
@@ -1336,12 +1338,15 @@ div.ButtonsRow:last-of-type {
           flex-flow: row wrap;
           height: 7.25rem;
           padding: @size-12 @size-16;
+          grid-template-columns: repeat(4, 1fr);
+          display: grid;
 
           > span:first-of-type {
             .mono-11;
 
             flex: 1 100%;
             margin-bottom: @size-8;
+            grid-column: 1 / span 5;
           }
 
           > span {
@@ -1357,6 +1362,7 @@ div.ButtonsRow:last-of-type {
           > div {
             flex: 1 100%;
             margin: @size-24 0;
+            grid-column: 4;
           }
         }
       }
