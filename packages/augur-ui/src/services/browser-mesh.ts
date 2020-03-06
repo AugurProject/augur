@@ -13,12 +13,14 @@ function createBrowserMeshConfig(
   web3Provider: SupportedProvider,
   ethereumChainID: number,
   verbosity = 5,
+  useBootstrapList: boolean,
   bootstrapList: string[],
   forceIgnoreCustomAddresses = false,
 ) {
   const meshConfig: Config = {
     ethereumChainID,
     verbosity,
+    useBootstrapList,
     bootstrapList,
   };
 
@@ -72,6 +74,7 @@ function createBrowserMeshRestartFunction(
           web3Provider,
           meshConfig.ethereumChainID,
           meshConfig.verbosity,
+          meshConfig.useBootstrapList,
           meshConfig.bootstrapList,
           true
         )
@@ -97,6 +100,7 @@ export async function createBrowserMesh(
     web3Provider,
     Number(config.networkId),
     config.zeroX.mesh.verbosity || 5,
+    config.zeroX.mesh.useBootstrapList,
     config.zeroX.mesh.bootstrapList
   );
 

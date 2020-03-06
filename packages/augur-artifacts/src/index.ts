@@ -45,6 +45,7 @@ export interface SDKConfiguration {
     mesh?: {
       enabled: boolean,
       verbosity?: 0|1|2|3|4|5,
+      useBootstrapList?: boolean,
       bootstrapList?: string[]
     }
   },
@@ -340,6 +341,11 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
       ws: 'ws://localhost:60557'
     },
     mesh: {
+      useBootstrapList: true,
+      bootstrapList: [
+        "/dns4/localhost/tcp/60558/ipfs/16Uiu2HAmRMgvPQV2UYKXuuCnNaFLpc36PhLp2UKVcL1ePseVcz4y",
+        "/dns4/localhost/tcp/60559/ws/ipfs/16Uiu2HAmRMgvPQV2UYKXuuCnNaFLpc36PhLp2UKVcL1ePseVcz4y"
+      ],
       enabled: true,
     }
   },
