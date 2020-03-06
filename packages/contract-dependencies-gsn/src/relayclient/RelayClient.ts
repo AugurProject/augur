@@ -495,6 +495,7 @@ export class RelayClient {
             });
             console.log('relayTransaction:', ('' + error).replace(/ (\w+:)/g, '\n$1 '));
         }
+        throw new Error(errMsg);
     }
   }
 

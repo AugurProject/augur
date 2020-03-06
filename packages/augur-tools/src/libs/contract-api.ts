@@ -686,15 +686,7 @@ export class ContractAPI {
   }
 
   async getWalletAddress(account: string): Promise<string> {
-    return this.augur.gsn.getWalletAddress(account);
-  }
-
-  async createWalletViaRelay(): Promise<void> {
-    const params = {
-      affiliate: NULL_ADDRESS,
-      fingerprint: formatBytes32String('')
-    };
-    return this.augur.gsn.createWallet(params);
+    return this.augur.gsn.calculateWalletAddress(account);
   }
 
   async getHotLoadingMarketData(market: string): Promise<HotLoadMarketInfo> {
@@ -753,9 +745,6 @@ export class ContractAPI {
     const walletAddress = await this.augur.gsn.calculateWalletAddress(this.account.publicKey);
     console.log(`Funding Wallet Address`);
     await this.fundSafe(walletAddress);
-
-    console.log('Attempting to create wallet via relay');
-    return this.createWalletViaRelay();
   }
 
   async initializeUniverseForWarpSync(): Promise<void> {

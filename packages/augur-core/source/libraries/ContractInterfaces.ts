@@ -27,6 +27,8 @@ export class Exchange extends c.Exchange<BigNumber> {
 }
 export class Augur extends c.Augur<BigNumber> {
 }
+export class AugurWallet extends c.AugurWallet<BigNumber> {
+}
 export class AugurWalletRegistry extends c.AugurWalletRegistry<BigNumber> {
 }
 export class Cash extends c.Cash<BigNumber> {

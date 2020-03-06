@@ -25,6 +25,7 @@ export const INTERNAL_CONTRACTS = [
     'EthExchange',
     'RepExchangeFactory',
     'RepExchange',
+    'AugurWallet',
     'AugurWalletRegistry',
     // utility
     'BuyParticipationTokens',

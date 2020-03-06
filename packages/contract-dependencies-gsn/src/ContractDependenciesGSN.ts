@@ -10,30 +10,22 @@ import {
 } from 'contract-dependencies-ethers';
 import { AsyncQueue, queue } from 'async';
 import { ethers } from 'ethers';
-import { getAddress } from 'ethers/utils/address';
 import * as _ from 'lodash';
 import { RelayClient, PreparedTransaction } from './relayclient';
+import { formatBytes32String } from 'ethers/utils';
+
 
 const NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
 const RELAY_HUB_ADDRESS = "0xD216153c06E857cD7f72665E0aF1d7D82172F494";
 const MIN_GAS_PRICE = new BigNumber(20e9); // Min: 1 Gwei
 const DEFAULT_GAS_PRICE = new BigNumber(20e9); // Default: GasPrice: 4 Gwei
 
-export enum WalletState {
-  // Wallet address is waiting for funds.
-  WAITING_FOR_FUNDS = 'WAITING_FOR_FUNDS',
-
-  // The Wallet address is funded. The TX to create needs to be sent
-  FUNDED = 'FUNDED',
-
-  // The TX to create has been sent
-  PENDING = 'PENDING',
-
-  // The Wallet is ready for use
-  AVAILABLE = 'AVAILABLE',
-
-  // The Relay service is behaving badly
-  ERROR = 'ERROR',
+const GSN_RELAY_CALL_STATUS = {
+  0: "OK",                      // The transaction was successfully relayed and execution successful - never included in the event
+  1: "RelayedCallFailed",       // The transaction was relayed, but the relayed call failed
+  2: "PreRelayedFailed",        // The transaction was not relayed due to preRelatedCall reverting
+  3: "PostRelayedFailed",       // The transaction was relayed and reverted due to postRelatedCall reverting
+  4: "RecipientBalanceChanged"  // The transaction was relayed and reverted due to the recipient's balance changing
 }
 
 interface SigningQueueTask {
@@ -48,11 +40,12 @@ interface RelayerQueueTask {
 export class ContractDependenciesGSN extends ContractDependenciesEthers {
   useRelay: boolean = false;
   useWallet: boolean = false;
-  status: WalletState = WalletState.WAITING_FOR_FUNDS;
   walletAddress: string = null;
   relayClient: RelayClient;
   relayHub: ethers.Contract;
   augurWalletRegistry: ethers.Contract;
+  referralAddress: string = NULL_ADDRESS;
+  fingerprint: string = formatBytes32String('');
 
   _currentNonce = -1;
 
@@ -106,31 +99,11 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
     gasPrice: BigNumber = DEFAULT_GAS_PRICE,
     address?: string): Promise<ContractDependenciesGSN> {
       const dependencies = new ContractDependenciesGSN(provider, signer, augurWalletRegistryAddress, gasPrice, address);
-
-      let status = WalletState.WAITING_FOR_FUNDS;
       if (dependencies.signer) {
         const signerAddress = await dependencies.signer.getAddress();
-        let walletAddress = await dependencies.augurWalletRegistry.getWallet(signerAddress);
-        if (walletAddress !== NULL_ADDRESS) {
-          status = WalletState.AVAILABLE;
-        }
-        if (!walletAddress) {
-          walletAddress = await dependencies.augurWalletRegistry.getCreate2WalletAddress(signerAddress);
-        }
-        dependencies.walletAddress = walletAddress;
+        dependencies.walletAddress = await dependencies.augurWalletRegistry.getCreate2WalletAddress(signerAddress);;
       }
-
-      dependencies.setStatus(status);
-
       return dependencies;
-  }
-
-  setStatus(status: WalletState): void {
-    this.status = status;
-  }
-
-  getStatus(): WalletState {
-    return this.status;
   }
 
   setUseWallet(useWallet: boolean): void {
@@ -139,6 +112,14 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
 
   setUseRelay(useRelay: boolean): void {
     this.useRelay = useRelay;
+  }
+
+  setReferralAddress(referralAddress: string): void {
+    this.referralAddress = referralAddress;
+  }
+
+  setFingerprint(fingerprint: string): void {
+    this.fingerprint = fingerprint;
   }
 
   setGasPrice(gasPrice: BigNumber): void {
@@ -156,7 +137,17 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
     try {
       const receipt = await this.sendTransaction(tx, txMetadata);
       hash = receipt.transactionHash;
-      const status = receipt.status === 1 ? TransactionStatus.SUCCESS : TransactionStatus.FAILURE;
+      let status = receipt.status === 1 ? TransactionStatus.SUCCESS : TransactionStatus.FAILURE;
+      if (this.useRelay && receipt.status === 1) {
+        // Even though the TX was a "success" the actual delegated call may have failed so we check that status here.
+        const transactionRelayedLog = this.relayHub.interface.parseLog(receipt.logs.pop());
+        const callStatus = new BigNumber(transactionRelayedLog.values.status)
+        if (callStatus.gt(0)) {
+          status = TransactionStatus.FAILURE;
+          const reason = GSN_RELAY_CALL_STATUS[callStatus.toNumber()];
+          console.error(`TX ${txMetadata.name} with hash ${hash} failed. Error Reason: ${reason}`)
+        }
+      }
       this.onTransactionStatusChanged(txMetadata, status, hash);
       // ethers has `status` on the receipt as optional, even though it isn't and never will be undefined if using a modern network (which this is designed for)
       return receipt as TransactionReceipt;
@@ -179,17 +170,17 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
     tx: Transaction<ethers.utils.BigNumber>,
     txMetadata: TransactionMetadata
   ): Promise<ethers.providers.TransactionReceipt> {
-    if (this.useWallet && this.status === WalletState.AVAILABLE) {
+    if (this.useWallet) {
       tx = this.convertToWalletTx(tx);
     }
     
-    if (this.useRelay && tx.to != this.augurWalletRegistry.address) {
-      throw new Error("Cannot use GSN relay to process TXs except to create a wallet or send wallet transaction execution requests");
-    }
-
     // Just use normal signing/sending if we're not using the relay
     if (!this.useRelay) {
       return super.sendTransaction(tx, txMetadata);
+    }
+
+    if (this.useRelay && tx.to != this.augurWalletRegistry.address) {
+      throw new Error("Cannot use GSN relay to process TXs except to create a wallet or send wallet transaction execution requests");
     }
 
     const relayTransaction = await this.signTransaction(tx);
@@ -216,7 +207,7 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
   }
 
   convertToWalletTx(tx: Transaction<ethers.utils.BigNumber>): Transaction<ethers.utils.BigNumber> {
-    const proxiedTxData =  this.augurWalletRegistry.interface.functions['executeWalletTransaction'].encode([tx.to, tx.data, tx.value]);
+    const proxiedTxData =  this.augurWalletRegistry.interface.functions['executeWalletTransaction'].encode([tx.to, tx.data, tx.value, this.referralAddress, this.fingerprint]);
     tx.data = proxiedTxData;
     tx.to = this.augurWalletRegistry.address;
     tx.value = new ethers.utils.BigNumber(0);

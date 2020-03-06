@@ -2,7 +2,7 @@ import { ContractAddresses, NetworkId } from '@augurproject/artifacts';
 import { ContractInterfaces } from '@augurproject/core';
 import { BigNumber } from 'bignumber.js';
 import { EthersSigner, TransactionStatus, TransactionStatusCallback } from 'contract-dependencies-ethers';
-import { ContractDependenciesGSN, WalletState } from 'contract-dependencies-gsn';
+import { ContractDependenciesGSN } from 'contract-dependencies-gsn';
 import { TransactionResponse } from 'ethers/providers';
 import { Arrayish } from 'ethers/utils';
 import { getAddress } from 'ethers/utils/address';
@@ -121,7 +121,7 @@ export class Augur<TProvider extends Provider = Provider> {
     if (enableFlexSearch && !this.syncableFlexSearch) {
       this.syncableFlexSearch = new SyncableFlexSearch();
     }
-    this.gsn = new GSN(this.provider, this, this.dependencies);
+    this.gsn = new GSN(this.provider, this);
     this.registerTransactionStatusEvents();
   }
 
@@ -176,7 +176,7 @@ export class Augur<TProvider extends Provider = Provider> {
 
   async getAccount(): Promise<string | null> {
     let account = this.dependencies.address;
-    if (this.dependencies.useWallet && this.dependencies.status == WalletState.AVAILABLE) {
+    if (this.dependencies.useWallet) {
       account = this.dependencies.walletAddress;
     } else if (!account) {
       account = await this.dependencies.signer.getAddress();
@@ -199,14 +199,6 @@ export class Augur<TProvider extends Provider = Provider> {
 
   setGasPrice(gasPrice: BigNumber): void {
     this.dependencies.setGasPrice(gasPrice);
-  }
-
-  setWalletStatus(status: WalletState): void {
-    this.dependencies.setStatus(status);
-  }
-
-  getWalletStatus(): WalletState {
-    return this.dependencies.getStatus();
   }
 
   setUseWallet(useSafe: boolean): void {

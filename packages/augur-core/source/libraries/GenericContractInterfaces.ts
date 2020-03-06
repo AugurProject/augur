@@ -3316,6 +3316,124 @@ export class Augur<TBigNumber> extends Contract<TBigNumber> {
 }
 
 
+export class AugurWallet<TBigNumber> extends Contract<TBigNumber> {
+	public constructor(dependencies: Dependencies<TBigNumber>, address: string) {
+		super(dependencies, address)
+	}
+
+	public DOMAIN_SEPARATOR_TYPEHASH_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"DOMAIN_SEPARATOR_TYPEHASH","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
+	public MSG_TYPEHASH_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"MSG_TYPEHASH","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
+	public domainSeparator_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"domainSeparator","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
+	public executeTransaction = async (to: string, data: string, value: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_to","type":"address"},{"internalType":"bytes","name":"_data","type":"bytes"},{"internalType":"uint256","name":"_value","type":"uint256"}],"name":"executeTransaction","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [to, data, value], 'executeTransaction', options.sender)
+	}
+	
+	public executeTransaction_estimateGas = async (to: string, data: string, value: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_to","type":"address"},{"internalType":"bytes","name":"_data","type":"bytes"},{"internalType":"uint256","name":"_value","type":"uint256"}],"name":"executeTransaction","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [to, data, value], 'executeTransaction', options.sender)
+	}
+
+	public executeTransaction_ = async (to: string, data: string, value: TBigNumber, options?: { sender?: string }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_to","type":"address"},{"internalType":"bytes","name":"_data","type":"bytes"},{"internalType":"uint256","name":"_value","type":"uint256"}],"name":"executeTransaction","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		await this.localCall(abi, [to, data, value], options.sender)
+	}
+
+	public getInitialized_ = async (options?: { sender?: string }): Promise<boolean> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"getInitialized","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <boolean>result[0]
+	}
+
+	public getMessageHash_ = async (message: string, options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"bytes","name":"_message","type":"bytes"}],"name":"getMessageHash","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [message], options.sender)
+		return <string>result[0]
+	}
+
+	public getOwner_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"getOwner","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
+	public initialize = async (owner: string, referralAddress: string, fingerprint: string, augur: string, cash: string, affiliates: string, shareToken: string, createOrder: string, fillOrder: string, zeroXTrade: string, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_owner","type":"address"},{"internalType":"address","name":"_referralAddress","type":"address"},{"internalType":"bytes32","name":"_fingerprint","type":"bytes32"},{"internalType":"address","name":"_augur","type":"address"},{"internalType":"contract IERC20","name":"_cash","type":"address"},{"internalType":"contract IAffiliates","name":"_affiliates","type":"address"},{"internalType":"contract IERC1155","name":"_shareToken","type":"address"},{"internalType":"address","name":"_createOrder","type":"address"},{"internalType":"address","name":"_fillOrder","type":"address"},{"internalType":"address","name":"_zeroXTrade","type":"address"}],"name":"initialize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [owner, referralAddress, fingerprint, augur, cash, affiliates, shareToken, createOrder, fillOrder, zeroXTrade], 'initialize', options.sender)
+	}
+	
+	public initialize_estimateGas = async (owner: string, referralAddress: string, fingerprint: string, augur: string, cash: string, affiliates: string, shareToken: string, createOrder: string, fillOrder: string, zeroXTrade: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_owner","type":"address"},{"internalType":"address","name":"_referralAddress","type":"address"},{"internalType":"bytes32","name":"_fingerprint","type":"bytes32"},{"internalType":"address","name":"_augur","type":"address"},{"internalType":"contract IERC20","name":"_cash","type":"address"},{"internalType":"contract IAffiliates","name":"_affiliates","type":"address"},{"internalType":"contract IERC1155","name":"_shareToken","type":"address"},{"internalType":"address","name":"_createOrder","type":"address"},{"internalType":"address","name":"_fillOrder","type":"address"},{"internalType":"address","name":"_zeroXTrade","type":"address"}],"name":"initialize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [owner, referralAddress, fingerprint, augur, cash, affiliates, shareToken, createOrder, fillOrder, zeroXTrade], 'initialize', options.sender)
+	}
+
+	public initialize_ = async (owner: string, referralAddress: string, fingerprint: string, augur: string, cash: string, affiliates: string, shareToken: string, createOrder: string, fillOrder: string, zeroXTrade: string, options?: { sender?: string }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_owner","type":"address"},{"internalType":"address","name":"_referralAddress","type":"address"},{"internalType":"bytes32","name":"_fingerprint","type":"bytes32"},{"internalType":"address","name":"_augur","type":"address"},{"internalType":"contract IERC20","name":"_cash","type":"address"},{"internalType":"contract IAffiliates","name":"_affiliates","type":"address"},{"internalType":"contract IERC1155","name":"_shareToken","type":"address"},{"internalType":"address","name":"_createOrder","type":"address"},{"internalType":"address","name":"_fillOrder","type":"address"},{"internalType":"address","name":"_zeroXTrade","type":"address"}],"name":"initialize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		await this.localCall(abi, [owner, referralAddress, fingerprint, augur, cash, affiliates, shareToken, createOrder, fillOrder, zeroXTrade], options.sender)
+	}
+
+	public isValidSignature_ = async (data: string, signature: string, options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"bytes","name":"_data","type":"bytes"},{"internalType":"bytes","name":"_signature","type":"bytes"}],"name":"isValidSignature","outputs":[{"internalType":"bytes4","name":"","type":"bytes4"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [data, signature], options.sender)
+		return <string>result[0]
+	}
+
+	public registry_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"registry","outputs":[{"internalType":"contract IAugurWalletRegistry","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
+	public transferOwnership = async (newOwner: string, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_newOwner","type":"address"}],"name":"transferOwnership","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [newOwner], 'transferOwnership', options.sender)
+	}
+	
+	public transferOwnership_estimateGas = async (newOwner: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_newOwner","type":"address"}],"name":"transferOwnership","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [newOwner], 'transferOwnership', options.sender)
+	}
+
+	public transferOwnership_ = async (newOwner: string, options?: { sender?: string }): Promise<boolean> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_newOwner","type":"address"}],"name":"transferOwnership","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const result = await this.localCall(abi, [newOwner], options.sender)
+		return <boolean>result[0]
+	}
+}
+
+
 export class AugurWalletRegistry<TBigNumber> extends Contract<TBigNumber> {
 	public constructor(dependencies: Dependencies<TBigNumber>, address: string) {
 		super(dependencies, address)
@@ -3358,19 +3476,19 @@ export class AugurWalletRegistry<TBigNumber> extends Contract<TBigNumber> {
 
 	public createAugurWallet = async (referralAddress: string, fingerprint: string, options?: { sender?: string }): Promise<Array<Event>> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_referralAddress","type":"address"},{"internalType":"bytes32","name":"_fingerprint","type":"bytes32"}],"name":"createAugurWallet","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_referralAddress","type":"address"},{"internalType":"bytes32","name":"_fingerprint","type":"bytes32"}],"name":"createAugurWallet","outputs":[{"internalType":"contract IAugurWallet","name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		return await this.remoteCall(abi, [referralAddress, fingerprint], 'createAugurWallet', options.sender)
 	}
 	
 	public createAugurWallet_estimateGas = async (referralAddress: string, fingerprint: string, options?: { sender?: string }): Promise<TBigNumber> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_referralAddress","type":"address"},{"internalType":"bytes32","name":"_fingerprint","type":"bytes32"}],"name":"createAugurWallet","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_referralAddress","type":"address"},{"internalType":"bytes32","name":"_fingerprint","type":"bytes32"}],"name":"createAugurWallet","outputs":[{"internalType":"contract IAugurWallet","name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		return await this.estimateGas(abi, [referralAddress, fingerprint], 'createAugurWallet', options.sender)
 	}
 
 	public createAugurWallet_ = async (referralAddress: string, fingerprint: string, options?: { sender?: string }): Promise<string> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_referralAddress","type":"address"},{"internalType":"bytes32","name":"_fingerprint","type":"bytes32"}],"name":"createAugurWallet","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_referralAddress","type":"address"},{"internalType":"bytes32","name":"_fingerprint","type":"bytes32"}],"name":"createAugurWallet","outputs":[{"internalType":"contract IAugurWallet","name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		const result = await this.localCall(abi, [referralAddress, fingerprint], options.sender)
 		return <string>result[0]
 	}
@@ -3389,22 +3507,22 @@ export class AugurWalletRegistry<TBigNumber> extends Contract<TBigNumber> {
 		return <string>result[0]
 	}
 
-	public executeWalletTransaction = async (to: string, data: string, value: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
+	public executeWalletTransaction = async (to: string, data: string, value: TBigNumber, referralAddress: string, fingerprint: string, options?: { sender?: string }): Promise<Array<Event>> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_to","type":"address"},{"internalType":"bytes","name":"_data","type":"bytes"},{"internalType":"uint256","name":"_value","type":"uint256"}],"name":"executeWalletTransaction","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.remoteCall(abi, [to, data, value], 'executeWalletTransaction', options.sender)
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_to","type":"address"},{"internalType":"bytes","name":"_data","type":"bytes"},{"internalType":"uint256","name":"_value","type":"uint256"},{"internalType":"address","name":"_referralAddress","type":"address"},{"internalType":"bytes32","name":"_fingerprint","type":"bytes32"}],"name":"executeWalletTransaction","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [to, data, value, referralAddress, fingerprint], 'executeWalletTransaction', options.sender)
 	}
 	
-	public executeWalletTransaction_estimateGas = async (to: string, data: string, value: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
+	public executeWalletTransaction_estimateGas = async (to: string, data: string, value: TBigNumber, referralAddress: string, fingerprint: string, options?: { sender?: string }): Promise<TBigNumber> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_to","type":"address"},{"internalType":"bytes","name":"_data","type":"bytes"},{"internalType":"uint256","name":"_value","type":"uint256"}],"name":"executeWalletTransaction","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.estimateGas(abi, [to, data, value], 'executeWalletTransaction', options.sender)
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_to","type":"address"},{"internalType":"bytes","name":"_data","type":"bytes"},{"internalType":"uint256","name":"_value","type":"uint256"},{"internalType":"address","name":"_referralAddress","type":"address"},{"internalType":"bytes32","name":"_fingerprint","type":"bytes32"}],"name":"executeWalletTransaction","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [to, data, value, referralAddress, fingerprint], 'executeWalletTransaction', options.sender)
 	}
 
-	public executeWalletTransaction_ = async (to: string, data: string, value: TBigNumber, options?: { sender?: string }): Promise<void> => {
+	public executeWalletTransaction_ = async (to: string, data: string, value: TBigNumber, referralAddress: string, fingerprint: string, options?: { sender?: string }): Promise<void> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_to","type":"address"},{"internalType":"bytes","name":"_data","type":"bytes"},{"internalType":"uint256","name":"_value","type":"uint256"}],"name":"executeWalletTransaction","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		await this.localCall(abi, [to, data, value], options.sender)
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_to","type":"address"},{"internalType":"bytes","name":"_data","type":"bytes"},{"internalType":"uint256","name":"_value","type":"uint256"},{"internalType":"address","name":"_referralAddress","type":"address"},{"internalType":"bytes32","name":"_fingerprint","type":"bytes32"}],"name":"executeWalletTransaction","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		await this.localCall(abi, [to, data, value, referralAddress, fingerprint], options.sender)
 	}
 
 	public fillOrder_ = async (options?: { sender?: string }): Promise<string> => {
@@ -3524,6 +3642,24 @@ export class AugurWalletRegistry<TBigNumber> extends Contract<TBigNumber> {
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"shareToken","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [], options.sender)
 		return <string>result[0]
+	}
+
+	public walletTransferedOwnership = async (oldOwner: string, newOwner: string, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_oldOwner","type":"address"},{"internalType":"address","name":"_newOwner","type":"address"}],"name":"walletTransferedOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [oldOwner, newOwner], 'walletTransferedOwnership', options.sender)
+	}
+	
+	public walletTransferedOwnership_estimateGas = async (oldOwner: string, newOwner: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_oldOwner","type":"address"},{"internalType":"address","name":"_newOwner","type":"address"}],"name":"walletTransferedOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [oldOwner, newOwner], 'walletTransferedOwnership', options.sender)
+	}
+
+	public walletTransferedOwnership_ = async (oldOwner: string, newOwner: string, options?: { sender?: string }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_oldOwner","type":"address"},{"internalType":"address","name":"_newOwner","type":"address"}],"name":"walletTransferedOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		await this.localCall(abi, [oldOwner, newOwner], options.sender)
 	}
 
 	public wallets_ = async (arg0: string, options?: { sender?: string }): Promise<string> => {

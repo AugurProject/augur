@@ -7,7 +7,6 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { ADD_FUNDS, track } from 'services/analytics/helpers';
 import { createBigNumber } from 'utils/create-big-number';
-import { WalletState } from 'contract-dependencies-gsn';
 
 const mapStateToProps = (state: AppState) => {
   // TODO placeholder rates until price feed is hooked up
@@ -19,7 +18,7 @@ const mapStateToProps = (state: AppState) => {
     loginAccount: state.loginAccount,
     ETH_RATE,
     REP_RATE,
-    isRelayDown: state.appStatus.walletStatus === WalletState.ERROR,
+    isRelayDown: false, // TODO XXX Need to have some suitable status update for when relayer is down. No longer related to wallets
   }
 };
 

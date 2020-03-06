@@ -24,6 +24,7 @@ import {
   WarpSync,
   EthExchange,
   AugurWalletRegistry,
+  RelayHub,
   // 0x
   Exchange,
   ERC1155Proxy,
@@ -185,6 +186,32 @@ Deploying to: ${networkConfiguration.networkName}
         if (!externalAddresses.LegacyReputationToken) {
             console.log('Migrating from fake legacy REP');
             await this.migrateFromLegacyRep();
+        }
+
+        // Handle some things that make testing less erorr prone that will need to occur naturally in production
+        if (!this.configuration.isProduction) {
+            const cash = new Cash(this.dependencies, this.getContractAddress('Cash'));
+
+            console.log("Approving Augur");
+            const authority = this.getContractAddress('Augur');
+            await cash.approve(authority, new BigNumber(2).pow(256).minus(new BigNumber(1)));
+
+            console.log("Add ETH exchange liquidity");
+            const ethExchange = new EthExchange(this.dependencies, this.getContractAddress("EthExchange"));
+            const cashAmount = new BigNumber(2000 * 1e18) // 2000 Dai
+            const ethAmount = new BigNumber(10 * 1e18) // 10 ETH
+            console.log("Cash faucet");
+            await cash.faucet(cashAmount.multipliedBy(2));
+            console.log("eth exchange publicMintAuto");
+            // We do this twice to get a store in place for the oracle storage to make future calls less expensive.
+            await ethExchange.publicMintAuto(await this.dependencies.getDefaultAddress(), cashAmount, {attachedEth: ethAmount});
+            await ethExchange.publicMintAuto(await this.dependencies.getDefaultAddress(), cashAmount, {attachedEth: ethAmount});
+
+            // Fund the registry address TODO: This should just participate in the REP mint auction that will occur when thats in
+            console.log("Funding Relayer Recipient");
+            const registryEthAmount = new BigNumber(2 * 1e18); // 2 ETH (The maximum deposit)
+            const relayHub = new RelayHub(this.dependencies, RELAY_HUB_ADDRESS);
+            await relayHub.depositFor(this.getContractAddress("AugurWalletRegistry"), {attachedEth: registryEthAmount})
         }
 
         if (this.configuration.writeArtifacts) {

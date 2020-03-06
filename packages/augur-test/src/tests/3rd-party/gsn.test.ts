@@ -36,12 +36,11 @@ describe('3rd Party :: GSN :: ', () => {
 
     connectorJohn.initialize(john.augur, john.db);
     await john.approveCentralAuthority();
+    const walletCash = new BigNumber(10).pow(24);
+    const walletAddress = await john.getWalletAddress(john.account.publicKey);
+    await john.faucet(walletCash);
+    await john.transferCash(walletAddress, walletCash);
 
-    const funderCash = new BigNumber(10).pow(26);
-    await john.faucet(funderCash);
-    await john.transferCash(ACCOUNTS[0].publicKey, funderCash);
-
-    await john.getOrCreateWallet();
     john.setUseWallet(true);
     john.setUseRelay(true);
 
@@ -52,7 +51,6 @@ describe('3rd Party :: GSN :: ', () => {
     const walletAddress = await john.getWalletAddress(john.account.publicKey);
 
     // Create a market
-    console.log(`TRYING TO CREATE A MARKET`);
     const market = await john.createReasonableMarket([
       stringTo32ByteHex('A'),
       stringTo32ByteHex('B'),
@@ -62,7 +60,6 @@ describe('3rd Party :: GSN :: ', () => {
     // Faucet some REP asnd confirm the wallet recieves it
     const repAmount = new BigNumber(1e10);
     const repBalance = await john.getRepBalance(walletAddress);
-    console.log('GETTING REP');
     await john.repFaucet(repAmount);
     const newRepBalance = await john.getRepBalance(walletAddress);
     await expect(newRepBalance.toFixed()).toBe(repBalance.plus(repAmount).toFixed());
@@ -70,7 +67,6 @@ describe('3rd Party :: GSN :: ', () => {
     // Give John enough cash to pay for the 0x order.
 
     const cashAmount = new BigNumber(1e22);
-    console.log('GETTING MONEY FOR ORDER');
     await john.faucetOnce(cashAmount, john.account.publicKey);
 
     // Place an order

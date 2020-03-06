@@ -124,4 +124,8 @@ export class Contracts {
   isTimeControlled(contract: SomeTime): contract is ContractInterfaces.TimeControlled {
     return (contract as ContractInterfaces.TimeControlled).setTimestamp !== undefined;
   }
+
+  augurWalletFromAddress(address: string): ContractInterfaces.AugurWallet {
+    return new ContractInterfaces.AugurWallet(this.dependencies, address);
+  }
 }

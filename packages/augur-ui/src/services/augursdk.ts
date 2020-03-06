@@ -72,8 +72,11 @@ export class SDK {
 
     this.client = await createClient(this.config, this.connector, account, signer, ethersProvider, enableFlexSearch, createBrowserMesh);
 
+    this.client.dependencies.setReferralAddress(affiliate);
+    this.client.dependencies.setFingerprint(getFingerprint());
+
     if (!isEmpty(account)) {
-      this.syncUserData(account, signer, this.networkId, this.config.gsn && this.config.gsn.enabled, affiliate).catch((error) => {
+      this.syncUserData(account, signer, this.networkId, this.config.gsn && this.config.gsn.enabled).catch((error) => {
         console.log('Wallet create error during create: ', error);
       });
     }
@@ -84,31 +87,11 @@ export class SDK {
     return this.client;
   }
 
-  /**
-   * @name getOrCreateWallet
-   * @description - Kick off the Wallet creation process for a given wallet address.
-   * @param affiliate
-   * @returns {Promise<void>}
-   */
-  async getOrCreateWallet(affiliate: string = NULL_ADDRESS): Promise<void | string> {
-    if (!this.client) {
-      console.log('Trying to init wallet before Augur is initalized');
-      return;
-    }
-
-    const fingerprint = getFingerprint();
-    // Up to UI side to check the localstorage wallet matches the wallet address.
-    const walletAddress = await this.client.gsn.getOrCreateWallet({ affiliate, fingerprint });
-
-    return walletAddress;
-  }
-
   async syncUserData(
     account: string,
     signer: EthersSigner,
     expectedNetworkId: NetworkId,
     useGSN: boolean,
-    affiliate: string,
     updateUser?: Function
   ) {
     if (!this.client) {
@@ -126,10 +109,7 @@ export class SDK {
     this.client.signer = signer;
 
     if (useGSN) {
-      // TODO XXX : This is really error prone. The wallet needs to have Cash in it _before_ this is called. Also txs that are working are getting "no signer" errors after they are sent 
       this.client.setUseRelay(true);
-      account = (await this.getOrCreateWallet(affiliate)) as string;
-
       this.client.setUseWallet(true);
       if (!!updateUser) {
         updateUser(account);

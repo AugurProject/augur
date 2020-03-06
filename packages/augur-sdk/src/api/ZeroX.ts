@@ -426,7 +426,12 @@ export class ZeroX {
       signedOrder,
       orderHash
     );
-    const messageHash = "";// TODO XXX await augurWallet.getMessageHash_(eip1271OrderWithHash);
+
+    const augurWallet = this.client.contracts.augurWalletFromAddress(
+      walletAddress
+    );
+
+    const messageHash = await augurWallet.getMessageHash_(eip1271OrderWithHash);
 
     // In 0x v3, '07' is EIP1271Wallet
     // See https://github.com/0xProject/0x-mesh/blob/0xV3/zeroex/order.go#L51
@@ -436,9 +441,7 @@ export class ZeroX {
       ethers.utils.arrayify(messageHash)
     );
     const { r, s, v } = ethers.utils.splitSignature(signedMessage);
-    const signature = `0x${r.slice(2)}${s.slice(2)}${(v + 4).toString(
-      16
-    )}${signatureType}`;
+    const signature = `0x${r.slice(2)}${s.slice(2)}${v.toString(16)}${signatureType}`;
     return signature;
   }
 

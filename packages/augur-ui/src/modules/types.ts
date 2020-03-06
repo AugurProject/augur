@@ -17,7 +17,6 @@ import { Getters, PayoutNumeratorValue } from '@augurproject/sdk';
 import { TransactionMetadataParams } from 'contract-dependencies-ethers/build';
 import { BigNumber } from 'utils/create-big-number';
 import { Template } from '@augurproject/artifacts';
-import { WalletState } from 'contract-dependencies-gsn';
 
 export enum SizeTypes {
   SMALL = 'small',
@@ -584,7 +583,6 @@ export interface AppStatus {
   ethToDaiRate: BigNumber;
   gsnEnabled: boolean;
   zeroXEnabled: boolean;
-  walletStatus: WalletState;
 }
 
 export interface AuthStatus {

@@ -58,7 +58,7 @@ contract AugurWallet is Initializable, Ownable, IAugurWallet {
         require(_didSucceed);
     }
 
-    function isValidSignature(bytes calldata _data, bytes calldata _signature) external returns (bytes4) {
+    function isValidSignature(bytes calldata _data, bytes calldata _signature) external view returns (bytes4) {
         bytes32 _messageHash = getMessageHash(_data);
         require(_signature.length >= 65, "Signature data length incorrect");
         bytes32 _r;

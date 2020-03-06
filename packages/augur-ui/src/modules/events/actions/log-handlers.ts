@@ -75,7 +75,6 @@ import { removePendingDataByHash, addPendingData, removePendingData } from 'modu
 import { removePendingOrder, constructPendingOrderid } from 'modules/orders/actions/pending-orders-management';
 import { loadAccountData } from 'modules/auth/actions/load-account-data';
 import { wrapLogHandler } from './wrap-log-handler';
-import { WalletState } from 'contract-dependencies-gsn';
 
 const handleAlert = (
   log: any,
@@ -173,7 +172,7 @@ export const handleWalletStateUpdate = (response) => async(
   if (response && status) {
     dispatch(updateAppStatus(WALLET_STATUS, status));
 
-    if (status === WalletState.Error) {
+    if (status === 0) { // TODO XXX: Should have some error event for when no suitable relay can be found instead
       const loginAccount = getState().loginAccount;
       const hasEth = (await loginAccount.meta.signer.provider.getBalance(loginAccount.meta.signer._address)).gt(0);
 

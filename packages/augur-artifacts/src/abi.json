@@ -10855,6 +10855,251 @@
 			"type": "function"
 		}
 	],
+	"AugurWallet": [
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "DOMAIN_SEPARATOR_TYPEHASH",
+			"outputs": [
+				{
+					"internalType": "bytes32",
+					"name": "",
+					"type": "bytes32"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "MSG_TYPEHASH",
+			"outputs": [
+				{
+					"internalType": "bytes32",
+					"name": "",
+					"type": "bytes32"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "domainSeparator",
+			"outputs": [
+				{
+					"internalType": "bytes32",
+					"name": "",
+					"type": "bytes32"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_to",
+					"type": "address"
+				},
+				{
+					"internalType": "bytes",
+					"name": "_data",
+					"type": "bytes"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_value",
+					"type": "uint256"
+				}
+			],
+			"name": "executeTransaction",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getInitialized",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "bytes",
+					"name": "_message",
+					"type": "bytes"
+				}
+			],
+			"name": "getMessageHash",
+			"outputs": [
+				{
+					"internalType": "bytes32",
+					"name": "",
+					"type": "bytes32"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getOwner",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_owner",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_referralAddress",
+					"type": "address"
+				},
+				{
+					"internalType": "bytes32",
+					"name": "_fingerprint",
+					"type": "bytes32"
+				},
+				{
+					"internalType": "address",
+					"name": "_augur",
+					"type": "address"
+				},
+				{
+					"internalType": "contract IERC20",
+					"name": "_cash",
+					"type": "address"
+				},
+				{
+					"internalType": "contract IAffiliates",
+					"name": "_affiliates",
+					"type": "address"
+				},
+				{
+					"internalType": "contract IERC1155",
+					"name": "_shareToken",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_createOrder",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_fillOrder",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_zeroXTrade",
+					"type": "address"
+				}
+			],
+			"name": "initialize",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "bytes",
+					"name": "_data",
+					"type": "bytes"
+				},
+				{
+					"internalType": "bytes",
+					"name": "_signature",
+					"type": "bytes"
+				}
+			],
+			"name": "isValidSignature",
+			"outputs": [
+				{
+					"internalType": "bytes4",
+					"name": "",
+					"type": "bytes4"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "registry",
+			"outputs": [
+				{
+					"internalType": "contract IAugurWalletRegistry",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_newOwner",
+					"type": "address"
+				}
+			],
+			"name": "transferOwnership",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		}
+	],
 	"AugurWalletRegistry": [
 		{
 			"anonymous": false,
@@ -11023,7 +11268,7 @@
 			"name": "createAugurWallet",
 			"outputs": [
 				{
-					"internalType": "address",
+					"internalType": "contract IAugurWallet",
 					"name": "",
 					"type": "address"
 				}
@@ -11079,6 +11324,16 @@
 					"internalType": "uint256",
 					"name": "_value",
 					"type": "uint256"
+				},
+				{
+					"internalType": "address",
+					"name": "_referralAddress",
+					"type": "address"
+				},
+				{
+					"internalType": "bytes32",
+					"name": "_fingerprint",
+					"type": "bytes32"
 				}
 			],
 			"name": "executeWalletTransaction",
@@ -11356,6 +11611,26 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_oldOwner",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_newOwner",
+					"type": "address"
+				}
+			],
+			"name": "walletTransferedOwnership",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
