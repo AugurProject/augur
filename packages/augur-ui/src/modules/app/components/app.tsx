@@ -376,7 +376,7 @@ export default class AppView extends Component<AppProps> {
       isHelpMenuOpen,
       updateHelpMenuState,
       notifications,
-      theme
+      theme,
       showMigrateRepButton,
     } = this.props;
     const sideNavMenuData = this.sideNavMenuData;

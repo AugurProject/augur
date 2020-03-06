@@ -3,7 +3,7 @@ import ReactTooltip from 'react-tooltip';
 import Clipboard from 'clipboard';
 import classNames from 'classnames';
 import { ACCOUNT_TYPES } from 'modules/common/constants';
-import { DaiLogoIcon, EthIcon, helpIcon, LogoutIcon, Open, Pencil, v2AugurLogo } from 'modules/common/icons';
+import { DaiLogoIcon, EthIcon, helpIcon, LogoutIcon, Open, Pencil, v2AugurLogo, ClipboardCopy } from 'modules/common/icons';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import { formatDai, formatEther, formatRep } from 'utils/format-number';
 import { AccountBalances } from 'modules/types';
