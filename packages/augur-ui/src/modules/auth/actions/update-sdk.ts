@@ -82,6 +82,6 @@ export const createFundedGsnWallet = () => async (
   getState: () => AppState
 ) => {
   const { loginAccount } = getState();
-  const { affiliate } = loginAccount;
-  augurSdk.getOrCreateWallet(affiliate);
+  const { affiliate, address } = loginAccount;
+  augurSdk.getOrCreateWallet(address, affiliate);
 };

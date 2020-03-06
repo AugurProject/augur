@@ -118,8 +118,10 @@ export class GSN {
     wallet?: string
   ): Promise<string> {
     if (!owner) owner = await this.dependencies.signer.getAddress();
-    if (!wallet) wallet = await this.calculateWalletAddress(owner);
-    this.updateWalletsToCheckList(wallet, owner, WalletState.PENDING);
+    if (!wallet || wallet === ethersUtils.getAddress(NULL_ADDRESS))
+      wallet = await this.calculateWalletAddress(owner);
+
+      this.updateWalletsToCheckList(wallet, owner, WalletState.PENDING);
     await this.onNewBlock();
     await this.augur.contracts.augurWalletRegistry.createAugurWallet(params.affiliate, params.fingerprint);
     // We set the status back as if the tx failed this is the proper state
