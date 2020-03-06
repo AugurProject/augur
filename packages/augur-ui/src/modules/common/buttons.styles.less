@@ -13,20 +13,20 @@
   }
 
   &.Confirmed {
-    color: @color-primary-text;
-    background: fade(@color-positive, 20%);
-    border: 1px solid @color-positive;
+    color: var(--color-primary-text);
+    background: var(--color-positive-20);
+    border: 1px solid var(--color-positive);
     border-radius: @border-radius-default;
     &:hover:enabled {
-      background: fade(@color-positive, 20%);
+      background: var(--color-positive-20);
     }
 
     &:focus:enabled {
-      background: fade(@color-positive, 20%);
+      background: var(--color-positive-20);
     }
 
     &:active:enabled {
-      background: fade(@color-positive, 20%);
+      background: var(--color-positive-20);
     }
     > svg {
       width: @size-8;
@@ -34,26 +34,26 @@
       margin-left: @size-8;
 
       > path {
-        stroke: @color-primary-text;
+        stroke: var(--color-primary-text);
       }
     }
   }
 
   &.Failed {
-    color: @color-primary-text;
-    background: fade(@color-error, 20%);
-    border: 1px solid @color-error;
+    color: var(--color-primary-text);
+    background: var(--color-error-20);
+    border: 1px solid var(--color-error);
     border-radius: @border-radius-default;
     &:hover:enabled {
-      background: fade(@color-error, 20%);
+      background: var(--color-error-20);
     }
 
     &:focus:enabled {
-      background: fade(@color-error, 20%);
+      background: var(--color-error-20);
     }
 
     &:active:enabled {
-      background: fade(@color-error, 20%);
+      background: var(--color-error-20);
     }
     > svg {
       width: @size-8;
@@ -61,7 +61,7 @@
       margin-left: @size-8;
 
       > path {
-        stroke: @color-primary-text;
+        stroke: var(--color-primary-text);
       }
     }
   }
@@ -293,7 +293,7 @@
     width: @size-12;
 
     > rect {
-      fill: @color-primary-text;
+      fill: var(--color-primary-text);
       height: 1px;
       width: @size-8;
     }
