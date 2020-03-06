@@ -508,7 +508,16 @@
 
     &:hover {
       color: fade(@color-primary-text, 20%);
+      font-weight: normal;
     }
+  }
+
+  &.Failed {
+    color: @color-error;
+  }
+
+  &.Confirmed {
+    color: @color-positive;
   }
 }
 
