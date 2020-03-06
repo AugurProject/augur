@@ -167,13 +167,16 @@ export const handleWalletStateUpdate = (response) => async(
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  console.log('handleWalletStateUpdate', response);
   const status = response.status;
   if (response && status) {
-    dispatch(updateAppStatus(WALLET_STATUS, status));
-
+    const loginAccount = getState().loginAccount;
+    const { address } = loginAccount;
+    if (isSameAddress(response.wallet, address)) {
+      console.log('handleWalletStateUpdate', response.wallet, response.status);
+      dispatch(updateAppStatus(WALLET_STATUS, status));
+    }
     if (status === WalletState.Error) {
-      const loginAccount = getState().loginAccount;
+      console.log('handleWalletStateUpdate', response);
       const hasEth = (await loginAccount.meta.signer.provider.getBalance(loginAccount.meta.signer._address)).gt(0);
 
       dispatch(updateModal({
