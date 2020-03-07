@@ -329,7 +329,7 @@ class Form extends Component<FromProps, FormState> {
     expiration?
   ): TestResults {
     const props = nextProps || this.props;
-    const { market } = props;
+    const { market, currentTimestamp } = props;
     const isScalar: boolean = market.marketType === SCALAR;
     let errorCount = 0;
     let passedTest = !!isOrderValid;
@@ -409,12 +409,13 @@ class Form extends Component<FromProps, FormState> {
     const gasConfirmEstimate = this.state
       ? this.state.confirmationTimeEstimation * 1.5
       : 0; // In Seconds
-    const expiryTime = expiration - gasConfirmEstimate - moment().unix();
+    const earliestExp = minOrderLifespan + gasConfirmEstimate;
+    const expiryTime = expiration - gasConfirmEstimate - currentTimestamp;
     if (expiration && expiryTime < minOrderLifespan) {
       errorCount += 1;
       passedTest = false;
       errors[this.INPUT_TYPES.EXPIRATION_DATE].push(
-        'Order expires less than 70 seconds into the future (after est confirmation time)'
+        `Order expires to soon! earilest expiration is ${earliestExp} seconds)`
       );
     }
     return { isOrderValid: passedTest, errors, errorCount };
