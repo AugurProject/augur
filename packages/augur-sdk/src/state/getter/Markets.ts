@@ -240,7 +240,7 @@ export interface OutcomeOrderBook {
 export interface MarketOrderBook {
   marketId: string;
   orderBook: OutcomeOrderBook;
-  expirationTime?: number;
+  expirationTime?: number; // expirationTimeSeconds of soonest order to expire in whole orderbook
 }
 
 export interface LiquidityOrderBookInfo {
