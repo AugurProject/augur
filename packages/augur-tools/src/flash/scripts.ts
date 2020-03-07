@@ -4,9 +4,7 @@ import { createCannedMarkets } from './create-canned-markets-and-orders';
 import { _1_ETH } from '../constants';
 import {
   Contracts as compilerOutput,
-  getAddressesForNetwork,
-  NetworkId,
-  updateEnvironmentsConfig,
+  refreshSDKConfig,
   abiV1,
   environments,
   buildConfig,
@@ -253,7 +251,6 @@ export function addScripts(flash: FlashSession) {
     ],
     async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
-      const endPoint = 'ws://localhost:60557';
       const user = await this.ensureUser();
 
       const target = String(args.target);
@@ -298,7 +295,7 @@ export function addScripts(flash: FlashSession) {
     ],
     async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
-      const useLegacyRep = Boolean(args.useLegacyRep)
+      const useLegacyRep = Boolean(args.useLegacyRep);
       const user = await this.ensureUser();
       const amount = Number(args.amount);
       const atto = new BigNumber(amount).times(_1_ETH);
@@ -713,7 +710,7 @@ export function addScripts(flash: FlashSession) {
       const tradeGroupId = String(Date.now());
       const oneHundredDays = new BigNumber(8640000);
       const expirationTime = new BigNumber(timestamp).plus(oneHundredDays);
-      const orders = []
+      const orders = [];
       for (let a = 0; a < numOutcomes; a++) {
         const outcome = Number(Object.keys(orderBook)[a]) as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
         const buySell = Object.values(orderBook)[a];
@@ -2172,7 +2169,7 @@ export function addScripts(flash: FlashSession) {
         } else {
           const gethDocker = fake ? 'docker:geth:pop' : 'docker:geth:pop-normal-time';
           spawnSync('yarn', [gethDocker]);
-          await updateEnvironmentsConfig(); // add pop-geth addresses to global
+          await refreshSDKConfig(); // add pop-geth addresses to global
         }
 
         await sleep(10000); // give geth some time to start
@@ -2240,13 +2237,11 @@ export function addScripts(flash: FlashSession) {
     async call(this: FlashSession) {
       if (this.noProvider()) return null;
 
-      const networkId = await this.provider.getNetworkId();
       // const ethNode = this.network.http;
       const ethNode = 'http://geth:8545';
-      const addresses = getAddressesForNetwork(networkId as NetworkId);
+      console.log(`Starting 0x mesh. chainId=${this.config.networkId} ethnode=${ethNode}`);
 
-      console.log(`Starting 0x mesh. chainId=${networkId} ethnode=${ethNode}`);
-
+      const zeroXTradeAddress = formatAddress(this.config.addresses.ZeroXTrade, { prefix: false, lower: true });
       const mesh = spawn('docker', [
         'run',
         '--rm',
@@ -2255,13 +2250,13 @@ export function addScripts(flash: FlashSession) {
         '-p', '60557:60557', // rpc_port_number
         '-p', '60558:60558', // P2PTCPPort
         '-p', '60559:60559', // P2PWebSocketsPort
-        '-e', `ETHEREUM_CHAIN_ID=${networkId}`,
+        '-e', `ETHEREUM_CHAIN_ID=${this.config.networkId}`,
         '-e', `ETHEREUM_RPC_URL=${ethNode}`,
         '-e', 'USE_BOOTSTRAP_LIST=false',
         '-e', 'BLOCK_POLLING_INTERVAL=1s',
         '-e', 'ETHEREUM_RPC_MAX_REQUESTS_PER_24_HR_UTC=169120', // needed when polling interval is 1s
-        '-e', `CUSTOM_CONTRACT_ADDRESSES=${JSON.stringify(addresses)}`,
-        '-e', `CUSTOM_ORDER_FILTER={"properties":{"makerAssetData":{"pattern":".*${addresses.ZeroXTrade.slice(2).toLowerCase()}.*"}}}`,
+        '-e', `CUSTOM_CONTRACT_ADDRESSES=${JSON.stringify(this.config.addresses)}`,
+        '-e', `CUSTOM_ORDER_FILTER={"properties":{"makerAssetData":{"pattern":".*${zeroXTradeAddress}.*"}}}`,
         '-e', 'VERBOSITY=4', // 5=debug 6=trace
         '-e', 'RPC_ADDR=0x:60557', // need to use "0x" network
         '0xorg/mesh:9.0.0',
@@ -2309,7 +2304,7 @@ export function addScripts(flash: FlashSession) {
       const name = args.name as string;
       const removePrefix = args.removePrefix as boolean;
       const lower = args.lower as boolean;
-      let address = this.contractAddresses[name];
+      let address = this.config.addresses[name];
       address = formatAddress(address, { lower, prefix: !removePrefix});
       this.log(address);
       return address;
@@ -2331,9 +2326,9 @@ export function addScripts(flash: FlashSession) {
       if (this.noProvider()) return;
 
       if (ugly) {
-        console.log(JSON.stringify(this.contractAddresses))
+        console.log(JSON.stringify(this.config.addresses))
       } else {
-        console.log(JSON.stringify(this.contractAddresses, null, 2))
+        console.log(JSON.stringify(this.config.addresses, null, 2))
       }
     },
   });
@@ -2366,7 +2361,7 @@ export function addScripts(flash: FlashSession) {
 
   flash.addScript({
     name: 'init-warp-sync',
-    async call(this: FlashSession, args: FlashArguments) {
+    async call(this: FlashSession) {
       const user = await this.ensureUser();
 
       await user.initWarpSync(user.augur.contracts.universe.address);
