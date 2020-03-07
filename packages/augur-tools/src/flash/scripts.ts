@@ -197,15 +197,23 @@ export function addScripts(flash: FlashSession) {
         abbr: 't',
         description: 'Account to send funds (defaults to current user)',
         required: false
-      }
+      },
+      {
+        name: 'use-gnosis',
+        abbr: 'g',
+        description: 'Faucet via gnosis',
+        flag: true,
+        required: false
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const target = args.target as string;
-      if (this.noProvider()) return;
-      const user = await this.ensureUser();
-
+      const useGnosis = Boolean(args.useGnosis);
       const amount = Number(args.amount);
       const atto = new BigNumber(amount).times(_1_ETH);
+
+      if (this.noProvider()) return;
+      const user = await this.ensureUser(undefined, null, true, null, null, useGnosis);
 
       await user.faucetOnce(atto);
 
@@ -467,8 +475,18 @@ export function addScripts(flash: FlashSession) {
 
   flash.addScript({
     name: 'create-canned-markets',
-    async call(this: FlashSession) {
-      const user = await this.ensureUser();
+    options: [
+      {
+        name: 'use-gnosis',
+        abbr: 'g',
+        description: 'Faucet via gnosis',
+        flag: true,
+        required: false
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const useGnosis = Boolean(args.useGnosis);
+      const user = await this.ensureUser(undefined, null, true, null, null, useGnosis);
       await user.repFaucet(QUINTILLION.multipliedBy(1000000));
       await user.faucetOnce(QUINTILLION.multipliedBy(1000000));
       await user.approve(QUINTILLION.multipliedBy(3000000));

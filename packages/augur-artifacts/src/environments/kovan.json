@@ -7,8 +7,8 @@
     "rpcConcurrency": 40
   },
   "gas": {
-    "price": 20e9,
-    "limit": 75e5
+    "price": 20000000000,
+    "limit": 7500000
   },
   "deploy": {
     "isProduction": false,
@@ -16,7 +16,8 @@
     "normalTime": true,
     "externalAddresses": {
       "Exchange": "0x4eacd0aF335451709e1e7B570B8Ea68EdEC8bc97"
-    }
+    },
+    "writeArtifacts": true
   },
   "gnosis": {
     "enabled": true,
@@ -37,34 +38,44 @@
       ]
     }
   },
-  "uploadBlockNumber": 16622921,
+  "uploadBlockNumber": 17217157,
   "addresses": {
-    "Augur": "0x98976c6B72858DF90751Bc327353bB9F46a4Aa5D",
-    "Universe": "0xEDB625aCDa507C238208e16515C8eeae217beF1b",
-    "LegacyReputationToken": "0x071E60551e928aD781349cc5f375af4828796494",
-    "Cash": "0x86309723166C177591960E5A9a5ecb7056564331",
-    "ProxyFactory": "0xde8ff87de43701CFc80a9E8a7560dABBee903082",
-    "GnosisSafe": "0x8c377b7D50fabe87dc930e9E1d552Bb6E6e51e60",
-    "CashFaucet": "0x86309723166C177591960E5A9a5ecb7056564331",
-    "BuyParticipationTokens": "0xb037bD5764aCf143945BB357317499C5fFDC74ba",
-    "RedeemStake": "0x8ed95130AefECbB540a957857cfe23d0084f95d9",
-    "GnosisSafeRegistry": "0x27976c02716Ac39DD772942876D11190870719D8",
-    "WarpSync": "0x2964e9b0635c43288B403e98AF1975107B40a6c5",
-    "ShareToken": "0x3Ce63181dC7923811fcB51e00fD946Ca69e19164",
-    "HotLoading": "0x303cEe8f2251eC8DD471Ac9BAba3fE14920a5ed3",
-    "EthExchange": "0xe5055E3A6bDFeFe489a8Bf0Fe86017e8bb5AeC3b",
-    "Affiliates": "0x417b5E94AdE02e969aFfd797fE8e8Cb8A0Fb349A",
-    "AffiliateValidator": "0x843bA8A660E717FbF8f9B5D0a7a79d3026822637",
+    "Augur": "0xb0bdE3B97549A805A8c4c8AcF876A877C3C56980",
+    "Universe": "0x23f84e337698A9E97a42327C6Dff6686541Ba35D",
+    "LegacyReputationToken": "0x91cB06d1995D1aC52f9f67aF9Dc38444ba8fB6AC",
+    "Cash": "0x0FCEB5D3522537513b9E0e922eF837f2cEc3c802",
+    "ProxyFactory": "0x929CF3F7f8bC73c17Ca6238F8408379A91Ee1f6F",
+    "GnosisSafe": "0x321fd7D3097190492CFf384F48d6d9f3B862c67F",
+    "CashFaucet": "0x0FCEB5D3522537513b9E0e922eF837f2cEc3c802",
+    "BuyParticipationTokens": "0x35B05A8Da164950e407E7650A8E40c3a6E162161",
+    "RedeemStake": "0xcD69d5814f05EcE102F1C343484B0d477F5b7714",
+    "GnosisSafeRegistry": "0xca3C2C3246902222C5f770729AE1A63C01f2d57A",
+    "WarpSync": "0x80c4eE3476DC33FA6e08191567cDD7145615AAC5",
+    "ShareToken": "0xd163230e7E9504A77Be89564786351599c322ab4",
+    "HotLoading": "0x24277b702E7FC7f82bB06e83EF550Fe78eB8Dbf8",
+    "EthExchange": "0x036B4BB29c560043E40f0d83CA28e23Fb1e55E83",
+    "Affiliates": "0x53C81174C48E0ff7Aa4cdA3A18872dF867c3E36D",
+    "AffiliateValidator": "0x97a3F813a81EF422e29E6362394B8D4E9Fc4Cd58",
     "Exchange": "0x4eacd0aF335451709e1e7B570B8Ea68EdEC8bc97",
-    "Time": "0xaF8904f61F34195548C6469E70Cf754D0C2B55cd",
-    "AugurTrading": "0x64256a6688c3925b1ea3d14214A7856951AD9477",
-    "CancelOrder": "0x56Ddc0ACfF3723dA0c0B03E188E9Ac59892b8870",
-    "CreateOrder": "0xb0c2c266d452a2AfD43638bc758fc5ccdD332D0e",
-    "FillOrder": "0xbaC54F8B8301FDCb3B8F52530fAfED4034D36d72",
-    "Orders": "0xaA865e11A9b967DcB9945869cDC18d1519F785CA",
-    "ProfitLoss": "0x21A73178bF6689f0efD2156D176ba106273b4b78",
-    "SimulateTrade": "0xe24B48D0fF488D8307dB39fb74fd0055e007e53B",
-    "Trade": "0x076173E37142c0123fD82Bce0C03eA56e7fEDEed",
-    "ZeroXTrade": "0xF6e791393480eD275Cb1729b99C7806EBFc194C0"
+    "Time": "0xeBDFF03EA712ab00C2dDF24486B2778FB1Be51Ab",
+    "AugurTrading": "0x4eB4e532E4eA437D9F0217f05b24Eaf28376570f",
+    "CancelOrder": "0xAb2D526CD40bC38976974B63371690676CC8AD7b",
+    "CreateOrder": "0x0b735E4Ff5A90F41032dBC9a4691DE42d76C6E28",
+    "FillOrder": "0x57Eae94954E83156C543259479E58b931F9293E1",
+    "Orders": "0x5A515D50211FDEA9ECA8105c91B60Ba824a2bff1",
+    "ProfitLoss": "0x611C30cb3D018AEB3d6cCC9c1E6C010122eB15B7",
+    "SimulateTrade": "0xa22c8000f1fEd47542693412Ed8046C2FE740Daf",
+    "Trade": "0x6792760DF54DCE2d6615ab561367c643534f342E",
+    "ZeroXTrade": "0xbB6F5540C70BA77a2C3c4783055ea83e0Da0D931"
+  },
+  "server": {
+    "httpPort": 9003,
+    "startHTTP": true,
+    "httpsPort": 9004,
+    "startHTTPS": true,
+    "wsPort": 9001,
+    "startWS": true,
+    "wssPort": 9002,
+    "startWSS": true
   }
 }
