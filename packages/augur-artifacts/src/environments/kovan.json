@@ -29,10 +29,12 @@
       "ws": "wss://v2.augur.net/0x-ws"
     },
     "mesh": {
-      "verbosity": 1,
+      "verbosity": 4,
       "enabled": true,
       "useBootstrapList": true,
-      "bootstrapList": []
+      "bootstrapList": [
+        "/dns4/demo-bootstrap.augur.net/tcp/443/wss/ipfs/16Uiu2HAmRMgvPQV2UYKXuuCnNaFLpc36PhLp2UKVcL1ePseVcz4y"
+      ]
     }
   },
   "uploadBlockNumber": 16622921,
