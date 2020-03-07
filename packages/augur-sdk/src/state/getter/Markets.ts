@@ -764,8 +764,8 @@ export class Markets {
     };
 
     const expirationTime = flattenZeroXOrders(orders).reduce(
-      (p, o) =>
-        o.expirationTimeSeconds.lt(p) || p.eq(0) ? o.expirationTimeSeconds : p,
+      (p, o) => o.expirationTimeSeconds &&
+        (o.expirationTimeSeconds.lt(p) || p.eq(0)) ? o.expirationTimeSeconds : p,
       new BigNumber(0)
     ).toNumber();
 
