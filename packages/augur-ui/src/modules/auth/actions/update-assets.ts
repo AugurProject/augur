@@ -14,7 +14,7 @@ import { formatAttoRep } from 'utils/format-number';
 import { addedDaiEvent } from 'services/analytics/helpers';
 import { updateAppStatus, WALLET_STATUS } from 'modules/app/actions/update-app-status';
 import { createBigNumber } from 'utils/create-big-number';
-import { ZERO, WALLET_STATUS_VALUES } from 'modules/common/constants';
+import { WALLET_STATUS_VALUES, TWO } from 'modules/common/constants';
 
 export const updateAssets = (
   callback: NodeStyleCallback,
@@ -33,9 +33,12 @@ export const updateAssets = (
     dispatch,
     (err, balances) => {
       let status = appStatus[WALLET_STATUS];
-      if (createBigNumber(balances.dai).gt(ZERO) && status !== WALLET_STATUS_VALUES.CREATED) {
+      // TODO: set min amount of DAI, for testing need a real values
+      if (createBigNumber(balances.dai).gt(TWO) && status !== WALLET_STATUS_VALUES.CREATED) {
         dispatch(updateAppStatus(WALLET_STATUS, WALLET_STATUS_VALUES.FUNDED_NEED_CREATE));
       }
+      if (!status) dispatch(updateAppStatus(WALLET_STATUS, WALLET_STATUS_VALUES.WAITING_FOR_FUNDING));
+
       if (callback) callback(balances);
     });
 };

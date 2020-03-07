@@ -118,7 +118,6 @@ const TopNav = ({
                       disabled={walletBalances.dai === 0}
                       queueName={CREATEAUGURWALLET}
                       queueId={CREATEAUGURWALLET}
-                      secondaryButton
                     />
                   </div>
                   <span>

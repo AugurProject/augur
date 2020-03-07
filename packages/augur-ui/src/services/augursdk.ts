@@ -19,8 +19,6 @@ import { analytics } from './analytics';
 import { isLocalHost } from 'utils/is-localhost';
 import { createBrowserMesh } from './browser-mesh';
 import { getFingerprint } from 'utils/get-fingerprint';
-import { BigNumber } from 'bignumber.js';
-import { WalletState } from 'contract-dependencies-gsn/src';
 
 export class SDK {
   client: Augur | null = null;

@@ -3,6 +3,7 @@ import { Abi } from 'ethereum';
 import { Provider } from '..';
 import { Augur } from '../Augur';
 import { NULL_ADDRESS } from '../constants';
+import { BigNumber } from "bignumber.js";
 
 export class GSN {
   constructor(
@@ -42,7 +43,8 @@ export class GSN {
   async initializeWallet(
   ): Promise<void> {
     // TODO: Any transaction will do for the purposes of this function as they all initialize a wallet when the useWallet flag is true. In that spirit we have users do light gas fee ops that have no incentives here. Could cycle them randomly even.
-    await this.augur.contracts.universe.sweepInterest();
+    //await this.augur.contracts.universe.sweepInterest();
+    this.augur.contracts.cashFaucet.faucet(new BigNumber('1000000000000000000000'));
     return;
   }
 }

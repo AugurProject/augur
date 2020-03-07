@@ -657,7 +657,8 @@ export const SENDREPUTATION = 'SENDREPUTATION';
 export const CUSTOM = 'Custom';
 export const PREFILLEDSTAKE = 'PREFILLEDSTAKE';
 export const MIGRATE_FROM_LEG_REP_TOKEN = 'MIGRATEFROMLEGACYREPUTATIONTOKEN';
-export const CREATEAUGURWALLET = 'CREATEAUGURWALLET';
+export const CREATEAUGURWALLET = 'FAUCET'; // actual transaction method call used when wallet is created
+
 // # Orders/Trade Constants
 export const ORDER_BOOK_TABLE = 'ORDER_BOOK_TABLE';
 export const ORDER_BOOK_CHART = 'ORDER_BOOK_CHART';

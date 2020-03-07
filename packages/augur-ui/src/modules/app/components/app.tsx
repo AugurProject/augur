@@ -458,6 +458,8 @@ export default class AppView extends Component<AppProps> {
                 showMigrateRepButton={showMigrateRepButton}
                 walletBalances={walletBalances}
                 updateModal={updateModal}
+                showCreateAccountButton={showCreateAccountButton}
+                createFundedGsnWallet={createFundedGsnWallet}
               />
 
               {/* HIDDEN ON MOBILE */}
