@@ -10857,6 +10857,11 @@
 	],
 	"AugurWallet": [
 		{
+			"payable": true,
+			"stateMutability": "payable",
+			"type": "fallback"
+		},
+		{
 			"constant": true,
 			"inputs": [],
 			"name": "DOMAIN_SEPARATOR_TYPEHASH",
@@ -10880,6 +10885,21 @@
 					"internalType": "bytes32",
 					"name": "",
 					"type": "bytes32"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "cash",
+			"outputs": [
+				{
+					"internalType": "contract IERC20",
+					"name": "",
+					"type": "address"
 				}
 			],
 			"payable": false,
@@ -10921,7 +10941,13 @@
 				}
 			],
 			"name": "executeTransaction",
-			"outputs": [],
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
 			"payable": false,
 			"stateMutability": "nonpayable",
 			"type": "function"
@@ -10975,6 +11001,21 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "_amount",
+					"type": "uint256"
+				}
+			],
+			"name": "giveRegistryEth",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -11083,6 +11124,26 @@
 			"inputs": [
 				{
 					"internalType": "address",
+					"name": "_to",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_amount",
+					"type": "uint256"
+				}
+			],
+			"name": "transferCash",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
 					"name": "_newOwner",
 					"type": "address"
 				}
@@ -11101,6 +11162,19 @@
 		}
 	],
 	"AugurWalletRegistry": [
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": false,
+					"internalType": "bool",
+					"name": "success",
+					"type": "bool"
+				}
+			],
+			"name": "ExecuteTransactionStatus",
+			"type": "event"
+		},
 		{
 			"anonymous": false,
 			"inputs": [
@@ -11140,7 +11214,7 @@
 				},
 				{
 					"internalType": "bytes",
-					"name": "",
+					"name": "_encodedFunction",
 					"type": "bytes"
 				},
 				{
@@ -11252,32 +11326,6 @@
 			"type": "function"
 		},
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "_referralAddress",
-					"type": "address"
-				},
-				{
-					"internalType": "bytes32",
-					"name": "_fingerprint",
-					"type": "bytes32"
-				}
-			],
-			"name": "createAugurWallet",
-			"outputs": [
-				{
-					"internalType": "contract IAugurWallet",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [],
 			"name": "createOrder",
@@ -11323,6 +11371,11 @@
 				{
 					"internalType": "uint256",
 					"name": "_value",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_payment",
 					"type": "uint256"
 				},
 				{
@@ -11406,6 +11459,27 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "bytes",
+					"name": "_encodedFunction",
+					"type": "bytes"
+				}
+			],
+			"name": "getPaymentFromEncodedFunction",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
 			"type": "function"
 		},
 		{
@@ -11507,29 +11581,8 @@
 					"type": "bool"
 				}
 			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"name": "maxDaiTransactionFee",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
+			"payable": true,
+			"stateMutability": "payable",
 			"type": "function"
 		},
 		{

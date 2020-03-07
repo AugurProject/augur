@@ -2146,7 +2146,7 @@ MUST emit when the URI is updated for a token ID.
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ISimpleDex.token()"><code class="function-signature">token()</code></a></li><li><a href="#ISimpleDex.cash()"><code class="function-signature">cash()</code></a></li><li><a href="#ISimpleDex.tokenReserve()"><code class="function-signature">tokenReserve()</code></a></li><li><a href="#ISimpleDex.cashReserve()"><code class="function-signature">cashReserve()</code></a></li><li><a href="#ISimpleDex.blockNumberLast()"><code class="function-signature">blockNumberLast()</code></a></li><li><a href="#ISimpleDex.tokenPriceCumulativeLast()"><code class="function-signature">tokenPriceCumulativeLast()</code></a></li><li><a href="#ISimpleDex.buyToken(address)"><code class="function-signature">buyToken(address _recipient)</code></a></li><li><a href="#ISimpleDex.autoBuyTokenAmount(address,uint256)"><code class="function-signature">autoBuyTokenAmount(address _recipient, uint256 _tokenAmount)</code></a></li><li><a href="#ISimpleDex.getTokenPurchaseCost(uint256)"><code class="function-signature">getTokenPurchaseCost(uint256 _tokenAmount)</code></a></li><li><a href="#ISimpleDex.publicMint(address)"><code class="function-signature">publicMint(address to)</code></a></li><li><a href="#ISimpleDex.publicBurn(address)"><code class="function-signature">publicBurn(address to)</code></a></li><li><a href="#ISimpleDex.skim(address)"><code class="function-signature">skim(address to)</code></a></li><li><a href="#ISimpleDex.sync()"><code class="function-signature">sync()</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ISimpleDex.token()"><code class="function-signature">token()</code></a></li><li><a href="#ISimpleDex.cash()"><code class="function-signature">cash()</code></a></li><li><a href="#ISimpleDex.tokenReserve()"><code class="function-signature">tokenReserve()</code></a></li><li><a href="#ISimpleDex.cashReserve()"><code class="function-signature">cashReserve()</code></a></li><li><a href="#ISimpleDex.blockNumberLast()"><code class="function-signature">blockNumberLast()</code></a></li><li><a href="#ISimpleDex.tokenPriceCumulativeLast()"><code class="function-signature">tokenPriceCumulativeLast()</code></a></li><li><a href="#ISimpleDex.buyToken(address)"><code class="function-signature">buyToken(address _recipient)</code></a></li><li><a href="#ISimpleDex.autoBuyTokenAmount(address,uint256)"><code class="function-signature">autoBuyTokenAmount(address _recipient, uint256 _tokenAmount)</code></a></li><li><a href="#ISimpleDex.getTokenPurchaseCost(uint256)"><code class="function-signature">getTokenPurchaseCost(uint256 _tokenAmount)</code></a></li><li><a href="#ISimpleDex.getCashSaleProceeds(uint256)"><code class="function-signature">getCashSaleProceeds(uint256 _cashAmount)</code></a></li><li><a href="#ISimpleDex.publicMint(address)"><code class="function-signature">publicMint(address to)</code></a></li><li><a href="#ISimpleDex.publicBurn(address)"><code class="function-signature">publicBurn(address to)</code></a></li><li><a href="#ISimpleDex.skim(address)"><code class="function-signature">skim(address to)</code></a></li><li><a href="#ISimpleDex.sync()"><code class="function-signature">sync()</code></a></li></ul></div>
 
 
 
@@ -2199,6 +2199,12 @@ MUST emit when the URI is updated for a token ID.
 
 
 <h4><a class="anchor" aria-hidden="true" id="ISimpleDex.getTokenPurchaseCost(uint256)"></a><code class="function-signature">getTokenPurchaseCost(uint256 _tokenAmount) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ISimpleDex.getCashSaleProceeds(uint256)"></a><code class="function-signature">getCashSaleProceeds(uint256 _cashAmount) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
 
 
 
@@ -2908,7 +2914,7 @@ MUST emit when the URI is updated for a token ID.
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#AugurWallet.initialize(address,address,bytes32,address,contract IERC20,contract IAffiliates,contract IERC1155,address,address,address)"><code class="function-signature">initialize(address _owner, address _referralAddress, bytes32 _fingerprint, address _augur, contract IERC20 _cash, contract IAffiliates _affiliates, contract IERC1155 _shareToken, address _createOrder, address _fillOrder, address _zeroXTrade)</code></a></li><li><a href="#AugurWallet.executeTransaction(address,bytes,uint256)"><code class="function-signature">executeTransaction(address _to, bytes _data, uint256 _value)</code></a></li><li><a href="#AugurWallet.isValidSignature(bytes,bytes)"><code class="function-signature">isValidSignature(bytes _data, bytes _signature)</code></a></li><li><a href="#AugurWallet.getMessageHash(bytes)"><code class="function-signature">getMessageHash(bytes _message)</code></a></li><li><a href="#AugurWallet.onTransferOwnership(address,address)"><code class="function-signature">onTransferOwnership(address _oldOwner, address _newOwner)</code></a></li><li class="inherited"><a href="#Ownable.constructor()"><code class="function-signature">constructor()</code></a></li><li class="inherited"><a href="#Ownable.getOwner()"><code class="function-signature">getOwner()</code></a></li><li class="inherited"><a href="#Ownable.transferOwnership(address)"><code class="function-signature">transferOwnership(address _newOwner)</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#AugurWallet.initialize(address,address,bytes32,address,contract IERC20,contract IAffiliates,contract IERC1155,address,address,address)"><code class="function-signature">initialize(address _owner, address _referralAddress, bytes32 _fingerprint, address _augur, contract IERC20 _cash, contract IAffiliates _affiliates, contract IERC1155 _shareToken, address _createOrder, address _fillOrder, address _zeroXTrade)</code></a></li><li><a href="#AugurWallet.transferCash(address,uint256)"><code class="function-signature">transferCash(address _to, uint256 _amount)</code></a></li><li><a href="#AugurWallet.giveRegistryEth(uint256)"><code class="function-signature">giveRegistryEth(uint256 _amount)</code></a></li><li><a href="#AugurWallet.executeTransaction(address,bytes,uint256)"><code class="function-signature">executeTransaction(address _to, bytes _data, uint256 _value)</code></a></li><li><a href="#AugurWallet.isValidSignature(bytes,bytes)"><code class="function-signature">isValidSignature(bytes _data, bytes _signature)</code></a></li><li><a href="#AugurWallet.getMessageHash(bytes)"><code class="function-signature">getMessageHash(bytes _message)</code></a></li><li><a href="#AugurWallet.onTransferOwnership(address,address)"><code class="function-signature">onTransferOwnership(address _oldOwner, address _newOwner)</code></a></li><li><a href="#AugurWallet.fallback()"><code class="function-signature">fallback()</code></a></li><li class="inherited"><a href="#Ownable.constructor()"><code class="function-signature">constructor()</code></a></li><li class="inherited"><a href="#Ownable.getOwner()"><code class="function-signature">getOwner()</code></a></li><li class="inherited"><a href="#Ownable.transferOwnership(address)"><code class="function-signature">transferOwnership(address _newOwner)</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul></div>
 
 
 
@@ -2918,7 +2924,19 @@ MUST emit when the URI is updated for a token ID.
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="AugurWallet.executeTransaction(address,bytes,uint256)"></a><code class="function-signature">executeTransaction(address _to, bytes _data, uint256 _value)</code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="AugurWallet.transferCash(address,uint256)"></a><code class="function-signature">transferCash(address _to, uint256 _amount)</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="AugurWallet.giveRegistryEth(uint256)"></a><code class="function-signature">giveRegistryEth(uint256 _amount)</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="AugurWallet.executeTransaction(address,bytes,uint256)"></a><code class="function-signature">executeTransaction(address _to, bytes _data, uint256 _value) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
 
 
 
@@ -2944,13 +2962,19 @@ Returns hash of a message that can be signed by owners.
 
 
 
+<h4><a class="anchor" aria-hidden="true" id="AugurWallet.fallback()"></a><code class="function-signature">fallback()</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
 
 
 ### `IAugurWallet`
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IAugurWallet.initialize(address,address,bytes32,address,contract IERC20,contract IAffiliates,contract IERC1155,address,address,address)"><code class="function-signature">initialize(address _owner, address _referralAddress, bytes32 _fingerprint, address _augur, contract IERC20 _cash, contract IAffiliates _affiliates, contract IERC1155 _shareToken, address _createOrder, address _fillOrder, address _zeroXTrade)</code></a></li><li><a href="#IAugurWallet.executeTransaction(address,bytes,uint256)"><code class="function-signature">executeTransaction(address _to, bytes _data, uint256 _value)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IAugurWallet.initialize(address,address,bytes32,address,contract IERC20,contract IAffiliates,contract IERC1155,address,address,address)"><code class="function-signature">initialize(address _owner, address _referralAddress, bytes32 _fingerprint, address _augur, contract IERC20 _cash, contract IAffiliates _affiliates, contract IERC1155 _shareToken, address _createOrder, address _fillOrder, address _zeroXTrade)</code></a></li><li><a href="#IAugurWallet.transferCash(address,uint256)"><code class="function-signature">transferCash(address _to, uint256 _amount)</code></a></li><li><a href="#IAugurWallet.giveRegistryEth(uint256)"><code class="function-signature">giveRegistryEth(uint256 _amount)</code></a></li><li><a href="#IAugurWallet.executeTransaction(address,bytes,uint256)"><code class="function-signature">executeTransaction(address _to, bytes _data, uint256 _value)</code></a></li></ul></div>
 
 
 
@@ -2960,7 +2984,19 @@ Returns hash of a message that can be signed by owners.
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IAugurWallet.executeTransaction(address,bytes,uint256)"></a><code class="function-signature">executeTransaction(address _to, bytes _data, uint256 _value)</code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IAugurWallet.transferCash(address,uint256)"></a><code class="function-signature">transferCash(address _to, uint256 _amount)</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IAugurWallet.giveRegistryEth(uint256)"></a><code class="function-signature">giveRegistryEth(uint256 _amount)</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IAugurWallet.executeTransaction(address,bytes,uint256)"></a><code class="function-signature">executeTransaction(address _to, bytes _data, uint256 _value) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
 
 
 
@@ -3046,7 +3082,7 @@ Allows the current owner to transfer control of the contract to a newOwner.
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#AugurWalletRegistry.initialize(contract IAugur,contract IAugurTrading)"><code class="function-signature">initialize(contract IAugur _augur, contract IAugurTrading _augurTrading)</code></a></li><li><a href="#AugurWalletRegistry.acceptRelayedCall(address,address,bytes,uint256,uint256,uint256,uint256,bytes,uint256)"><code class="function-signature">acceptRelayedCall(address, address _from, bytes, uint256, uint256, uint256, uint256, bytes, uint256 _maxPossibleCharge)</code></a></li><li><a href="#AugurWalletRegistry._preRelayedCall(bytes)"><code class="function-signature">_preRelayedCall(bytes _context)</code></a></li><li><a href="#AugurWalletRegistry._postRelayedCall(bytes,bool,uint256,bytes32)"><code class="function-signature">_postRelayedCall(bytes _context, bool, uint256 _actualCharge, bytes32)</code></a></li><li><a href="#AugurWalletRegistry.createAugurWallet(address,bytes32)"><code class="function-signature">createAugurWallet(address _referralAddress, bytes32 _fingerprint)</code></a></li><li><a href="#AugurWalletRegistry.getCreate2WalletAddress(address)"><code class="function-signature">getCreate2WalletAddress(address _owner)</code></a></li><li><a href="#AugurWalletRegistry.getWallet(address)"><code class="function-signature">getWallet(address _account)</code></a></li><li><a href="#AugurWalletRegistry.executeWalletTransaction(address,bytes,uint256,address,bytes32)"><code class="function-signature">executeWalletTransaction(address _to, bytes _data, uint256 _value, address _referralAddress, bytes32 _fingerprint)</code></a></li><li><a href="#AugurWalletRegistry.walletTransferedOwnership(address,address)"><code class="function-signature">walletTransferedOwnership(address _oldOwner, address _newOwner)</code></a></li><li><a href="#AugurWalletRegistry.getRelayMessageHash(address,address,address,bytes,uint256,uint256,uint256,uint256)"><code class="function-signature">getRelayMessageHash(address relay, address from, address to, bytes encodedFunction, uint256 transactionFee, uint256 gasPrice, uint256 gasLimit, uint256 nonce)</code></a></li><li><a href="#AugurWalletRegistry.fallback()"><code class="function-signature">fallback()</code></a></li><li class="inherited"><a href="#GSNRecipient.getHubAddr()"><code class="function-signature">getHubAddr()</code></a></li><li class="inherited"><a href="#GSNRecipient._upgradeRelayHub(address)"><code class="function-signature">_upgradeRelayHub(address newRelayHub)</code></a></li><li class="inherited"><a href="#GSNRecipient.relayHubVersion()"><code class="function-signature">relayHubVersion()</code></a></li><li class="inherited"><a href="#GSNRecipient._withdrawDeposits(uint256,address payable)"><code class="function-signature">_withdrawDeposits(uint256 amount, address payable payee)</code></a></li><li class="inherited"><a href="#GSNRecipient._msgSender()"><code class="function-signature">_msgSender()</code></a></li><li class="inherited"><a href="#GSNRecipient._msgData()"><code class="function-signature">_msgData()</code></a></li><li class="inherited"><a href="#GSNRecipient.preRelayedCall(bytes)"><code class="function-signature">preRelayedCall(bytes context)</code></a></li><li class="inherited"><a href="#GSNRecipient.postRelayedCall(bytes,bool,uint256,bytes32)"><code class="function-signature">postRelayedCall(bytes context, bool success, uint256 actualCharge, bytes32 preRetVal)</code></a></li><li class="inherited"><a href="#GSNRecipient._approveRelayedCall()"><code class="function-signature">_approveRelayedCall()</code></a></li><li class="inherited"><a href="#GSNRecipient._approveRelayedCall(bytes)"><code class="function-signature">_approveRelayedCall(bytes context)</code></a></li><li class="inherited"><a href="#GSNRecipient._rejectRelayedCall(uint256)"><code class="function-signature">_rejectRelayedCall(uint256 errorCode)</code></a></li><li class="inherited"><a href="#GSNRecipient._computeCharge(uint256,uint256,uint256)"><code class="function-signature">_computeCharge(uint256 gas, uint256 gasPrice, uint256 serviceFee)</code></a></li><li class="inherited"><a href="#Context.constructor()"><code class="function-signature">constructor()</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="#GSNRecipient.RelayHubChanged(address,address)"><code class="function-signature">RelayHubChanged(address oldRelayHub, address newRelayHub)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#AugurWalletRegistry.initialize(contract IAugur,contract IAugurTrading)"><code class="function-signature">initialize(contract IAugur _augur, contract IAugurTrading _augurTrading)</code></a></li><li><a href="#AugurWalletRegistry.acceptRelayedCall(address,address,bytes,uint256,uint256,uint256,uint256,bytes,uint256)"><code class="function-signature">acceptRelayedCall(address, address _from, bytes _encodedFunction, uint256, uint256, uint256, uint256, bytes, uint256 _maxPossibleCharge)</code></a></li><li><a href="#AugurWalletRegistry.getPaymentFromEncodedFunction(bytes)"><code class="function-signature">getPaymentFromEncodedFunction(bytes _encodedFunction)</code></a></li><li><a href="#AugurWalletRegistry._preRelayedCall(bytes)"><code class="function-signature">_preRelayedCall(bytes _context)</code></a></li><li><a href="#AugurWalletRegistry._postRelayedCall(bytes,bool,uint256,bytes32)"><code class="function-signature">_postRelayedCall(bytes _context, bool, uint256 _actualCharge, bytes32)</code></a></li><li><a href="#AugurWalletRegistry.getCreate2WalletAddress(address)"><code class="function-signature">getCreate2WalletAddress(address _owner)</code></a></li><li><a href="#AugurWalletRegistry.getWallet(address)"><code class="function-signature">getWallet(address _account)</code></a></li><li><a href="#AugurWalletRegistry.executeWalletTransaction(address,bytes,uint256,uint256,address,bytes32)"><code class="function-signature">executeWalletTransaction(address _to, bytes _data, uint256 _value, uint256 _payment, address _referralAddress, bytes32 _fingerprint)</code></a></li><li><a href="#AugurWalletRegistry.walletTransferedOwnership(address,address)"><code class="function-signature">walletTransferedOwnership(address _oldOwner, address _newOwner)</code></a></li><li><a href="#AugurWalletRegistry.getRelayMessageHash(address,address,address,bytes,uint256,uint256,uint256,uint256)"><code class="function-signature">getRelayMessageHash(address relay, address from, address to, bytes encodedFunction, uint256 transactionFee, uint256 gasPrice, uint256 gasLimit, uint256 nonce)</code></a></li><li><a href="#AugurWalletRegistry.fallback()"><code class="function-signature">fallback()</code></a></li><li class="inherited"><a href="#GSNRecipient.getHubAddr()"><code class="function-signature">getHubAddr()</code></a></li><li class="inherited"><a href="#GSNRecipient._upgradeRelayHub(address)"><code class="function-signature">_upgradeRelayHub(address newRelayHub)</code></a></li><li class="inherited"><a href="#GSNRecipient.relayHubVersion()"><code class="function-signature">relayHubVersion()</code></a></li><li class="inherited"><a href="#GSNRecipient._withdrawDeposits(uint256,address payable)"><code class="function-signature">_withdrawDeposits(uint256 amount, address payable payee)</code></a></li><li class="inherited"><a href="#GSNRecipient._msgSender()"><code class="function-signature">_msgSender()</code></a></li><li class="inherited"><a href="#GSNRecipient._msgData()"><code class="function-signature">_msgData()</code></a></li><li class="inherited"><a href="#GSNRecipient.preRelayedCall(bytes)"><code class="function-signature">preRelayedCall(bytes context)</code></a></li><li class="inherited"><a href="#GSNRecipient.postRelayedCall(bytes,bool,uint256,bytes32)"><code class="function-signature">postRelayedCall(bytes context, bool success, uint256 actualCharge, bytes32 preRetVal)</code></a></li><li class="inherited"><a href="#GSNRecipient._approveRelayedCall()"><code class="function-signature">_approveRelayedCall()</code></a></li><li class="inherited"><a href="#GSNRecipient._approveRelayedCall(bytes)"><code class="function-signature">_approveRelayedCall(bytes context)</code></a></li><li class="inherited"><a href="#GSNRecipient._rejectRelayedCall(uint256)"><code class="function-signature">_rejectRelayedCall(uint256 errorCode)</code></a></li><li class="inherited"><a href="#GSNRecipient._computeCharge(uint256,uint256,uint256)"><code class="function-signature">_computeCharge(uint256 gas, uint256 gasPrice, uint256 serviceFee)</code></a></li><li class="inherited"><a href="#Context.constructor()"><code class="function-signature">constructor()</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#AugurWalletRegistry.ExecuteTransactionStatus(bool)"><code class="function-signature">ExecuteTransactionStatus(bool success)</code></a></li><li class="inherited"><a href="#GSNRecipient.RelayHubChanged(address,address)"><code class="function-signature">RelayHubChanged(address oldRelayHub, address newRelayHub)</code></a></li></ul></div>
 
 
 
@@ -3056,7 +3092,13 @@ Allows the current owner to transfer control of the contract to a newOwner.
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="AugurWalletRegistry.acceptRelayedCall(address,address,bytes,uint256,uint256,uint256,uint256,bytes,uint256)"></a><code class="function-signature">acceptRelayedCall(address, address _from, bytes, uint256, uint256, uint256, uint256, bytes, uint256 _maxPossibleCharge) <span class="return-arrow">→</span> <span class="return-type">uint256,bytes</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="AugurWalletRegistry.acceptRelayedCall(address,address,bytes,uint256,uint256,uint256,uint256,bytes,uint256)"></a><code class="function-signature">acceptRelayedCall(address, address _from, bytes _encodedFunction, uint256, uint256, uint256, uint256, bytes, uint256 _maxPossibleCharge) <span class="return-arrow">→</span> <span class="return-type">uint256,bytes</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="AugurWalletRegistry.getPaymentFromEncodedFunction(bytes)"></a><code class="function-signature">getPaymentFromEncodedFunction(bytes _encodedFunction) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
 
 
 
@@ -3074,12 +3116,6 @@ Allows the current owner to transfer control of the contract to a newOwner.
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="AugurWalletRegistry.createAugurWallet(address,bytes32)"></a><code class="function-signature">createAugurWallet(address _referralAddress, bytes32 _fingerprint) <span class="return-arrow">→</span> <span class="return-type">contract IAugurWallet</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
 <h4><a class="anchor" aria-hidden="true" id="AugurWalletRegistry.getCreate2WalletAddress(address)"></a><code class="function-signature">getCreate2WalletAddress(address _owner) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">public</span></h4>
 
 
@@ -3092,7 +3128,7 @@ Allows the current owner to transfer control of the contract to a newOwner.
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="AugurWalletRegistry.executeWalletTransaction(address,bytes,uint256,address,bytes32)"></a><code class="function-signature">executeWalletTransaction(address _to, bytes _data, uint256 _value, address _referralAddress, bytes32 _fingerprint)</code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="AugurWalletRegistry.executeWalletTransaction(address,bytes,uint256,uint256,address,bytes32)"></a><code class="function-signature">executeWalletTransaction(address _to, bytes _data, uint256 _value, uint256 _payment, address _referralAddress, bytes32 _fingerprint)</code><span class="function-visibility">public</span></h4>
 
 
 
@@ -3113,6 +3149,12 @@ Allows the current owner to transfer control of the contract to a newOwner.
 <h4><a class="anchor" aria-hidden="true" id="AugurWalletRegistry.fallback()"></a><code class="function-signature">fallback()</code><span class="function-visibility">external</span></h4>
 
 
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="AugurWalletRegistry.ExecuteTransactionStatus(bool)"></a><code class="function-signature">ExecuteTransactionStatus(bool success)</code><span class="function-visibility"></span></h4>
 
 
 
@@ -3569,6 +3611,159 @@ not including any gas used by {postRelayedCall} itself. `preRetVal` is {preRelay
 {postRelayedCall} is called with 100k gas: if it runs out during execution or otherwise reverts, the relayed call
 and the call to {preRelayedCall} will be reverted retroactively, but the recipient will still be charged for the
 transaction&#x27;s cost.
+
+
+
+
+
+### `LibBytes`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#LibBytes.equals(bytes,bytes)"><code class="function-signature">equals(bytes lhs, bytes rhs)</code></a></li><li><a href="#LibBytes.contentAddress(bytes)"><code class="function-signature">contentAddress(bytes input)</code></a></li><li><a href="#LibBytes.memCopy(uint256,uint256,uint256)"><code class="function-signature">memCopy(uint256 dest, uint256 source, uint256 length)</code></a></li><li><a href="#LibBytes.slice(bytes,uint256,uint256)"><code class="function-signature">slice(bytes b, uint256 from, uint256 to)</code></a></li><li><a href="#LibBytes.sliceDestructive(bytes,uint256,uint256)"><code class="function-signature">sliceDestructive(bytes b, uint256 from, uint256 to)</code></a></li><li><a href="#LibBytes.popLastByte(bytes)"><code class="function-signature">popLastByte(bytes b)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="LibBytes.equals(bytes,bytes)"></a><code class="function-signature">equals(bytes lhs, bytes rhs) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
+
+Tests equality of two byte arrays.
+ @param lhs First byte array to compare.
+ @param rhs Second byte array to compare.
+ @return True if arrays are the same. False otherwise.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="LibBytes.contentAddress(bytes)"></a><code class="function-signature">contentAddress(bytes input) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
+
+Gets the memory address for the contents of a byte array.
+ @param input Byte array to lookup.
+ @return memoryAddress Memory address of the contents of the byte array.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="LibBytes.memCopy(uint256,uint256,uint256)"></a><code class="function-signature">memCopy(uint256 dest, uint256 source, uint256 length)</code><span class="function-visibility">internal</span></h4>
+
+Copies `length` bytes from memory location `source` to `dest`.
+ @param dest memory address to copy bytes to.
+ @param source memory address to copy bytes from.
+ @param length number of bytes to copy.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="LibBytes.slice(bytes,uint256,uint256)"></a><code class="function-signature">slice(bytes b, uint256 from, uint256 to) <span class="return-arrow">→</span> <span class="return-type">bytes</span></code><span class="function-visibility">internal</span></h4>
+
+Returns a slices from a byte array.
+ @param b The byte array to take a slice from.
+ @param from The starting index for the slice (inclusive).
+ @param to The final index for the slice (exclusive).
+ @return result The slice containing bytes at indices [from, to)
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="LibBytes.sliceDestructive(bytes,uint256,uint256)"></a><code class="function-signature">sliceDestructive(bytes b, uint256 from, uint256 to) <span class="return-arrow">→</span> <span class="return-type">bytes</span></code><span class="function-visibility">internal</span></h4>
+
+Returns a slice from a byte array without preserving the input.
+ @param b The byte array to take a slice from. Will be destroyed in the process.
+ @param from The starting index for the slice (inclusive).
+ @param to The final index for the slice (exclusive).
+ @return result The slice containing bytes at indices [from, to)
+ @dev When `from == 0`, the original array will match the slice. In other cases its state will be corrupted.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="LibBytes.popLastByte(bytes)"></a><code class="function-signature">popLastByte(bytes b) <span class="return-arrow">→</span> <span class="return-type">bytes1</span></code><span class="function-visibility">internal</span></h4>
+
+Pops the last byte off of a byte array by modifying its length.
+ @param b Byte array that will be modified.
+ @return The byte that was popped off.
+
+
+
+
+
+### `RLPReader`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#RLPReader.decodeTransaction(bytes)"><code class="function-signature">decodeTransaction(bytes rawTransaction)</code></a></li><li><a href="#RLPReader.toRlpItem(bytes)"><code class="function-signature">toRlpItem(bytes item)</code></a></li><li><a href="#RLPReader.toList(struct RLPReader.RLPItem)"><code class="function-signature">toList(struct RLPReader.RLPItem item)</code></a></li><li><a href="#RLPReader.isList(struct RLPReader.RLPItem)"><code class="function-signature">isList(struct RLPReader.RLPItem item)</code></a></li><li><a href="#RLPReader.numItems(struct RLPReader.RLPItem)"><code class="function-signature">numItems(struct RLPReader.RLPItem item)</code></a></li><li><a href="#RLPReader._itemLength(uint256)"><code class="function-signature">_itemLength(uint256 memPtr)</code></a></li><li><a href="#RLPReader._payloadOffset(uint256)"><code class="function-signature">_payloadOffset(uint256 memPtr)</code></a></li><li><a href="#RLPReader.toRlpBytes(struct RLPReader.RLPItem)"><code class="function-signature">toRlpBytes(struct RLPReader.RLPItem item)</code></a></li><li><a href="#RLPReader.toBoolean(struct RLPReader.RLPItem)"><code class="function-signature">toBoolean(struct RLPReader.RLPItem item)</code></a></li><li><a href="#RLPReader.toAddress(struct RLPReader.RLPItem)"><code class="function-signature">toAddress(struct RLPReader.RLPItem item)</code></a></li><li><a href="#RLPReader.toUint(struct RLPReader.RLPItem)"><code class="function-signature">toUint(struct RLPReader.RLPItem item)</code></a></li><li><a href="#RLPReader.toBytes(struct RLPReader.RLPItem)"><code class="function-signature">toBytes(struct RLPReader.RLPItem item)</code></a></li><li><a href="#RLPReader.copy(uint256,uint256,uint256)"><code class="function-signature">copy(uint256 src, uint256 dest, uint256 len)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="RLPReader.decodeTransaction(bytes)"></a><code class="function-signature">decodeTransaction(bytes rawTransaction) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256,uint256,address,uint256,bytes</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="RLPReader.toRlpItem(bytes)"></a><code class="function-signature">toRlpItem(bytes item) <span class="return-arrow">→</span> <span class="return-type">struct RLPReader.RLPItem</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="RLPReader.toList(struct RLPReader.RLPItem)"></a><code class="function-signature">toList(struct RLPReader.RLPItem item) <span class="return-arrow">→</span> <span class="return-type">struct RLPReader.RLPItem[]</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="RLPReader.isList(struct RLPReader.RLPItem)"></a><code class="function-signature">isList(struct RLPReader.RLPItem item) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="RLPReader.numItems(struct RLPReader.RLPItem)"></a><code class="function-signature">numItems(struct RLPReader.RLPItem item) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="RLPReader._itemLength(uint256)"></a><code class="function-signature">_itemLength(uint256 memPtr) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="RLPReader._payloadOffset(uint256)"></a><code class="function-signature">_payloadOffset(uint256 memPtr) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="RLPReader.toRlpBytes(struct RLPReader.RLPItem)"></a><code class="function-signature">toRlpBytes(struct RLPReader.RLPItem item) <span class="return-arrow">→</span> <span class="return-type">bytes</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="RLPReader.toBoolean(struct RLPReader.RLPItem)"></a><code class="function-signature">toBoolean(struct RLPReader.RLPItem item) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="RLPReader.toAddress(struct RLPReader.RLPItem)"></a><code class="function-signature">toAddress(struct RLPReader.RLPItem item) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="RLPReader.toUint(struct RLPReader.RLPItem)"></a><code class="function-signature">toUint(struct RLPReader.RLPItem item) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="RLPReader.toBytes(struct RLPReader.RLPItem)"></a><code class="function-signature">toBytes(struct RLPReader.RLPItem item) <span class="return-arrow">→</span> <span class="return-type">bytes</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="RLPReader.copy(uint256,uint256,uint256)"></a><code class="function-signature">copy(uint256 src, uint256 dest, uint256 len)</code><span class="function-visibility">internal</span></h4>
+
+
 
 
 

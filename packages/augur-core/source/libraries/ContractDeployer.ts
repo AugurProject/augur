@@ -206,12 +206,6 @@ Deploying to: ${networkConfiguration.networkName}
             // We do this twice to get a store in place for the oracle storage to make future calls less expensive.
             await ethExchange.publicMintAuto(await this.dependencies.getDefaultAddress(), cashAmount, {attachedEth: ethAmount});
             await ethExchange.publicMintAuto(await this.dependencies.getDefaultAddress(), cashAmount, {attachedEth: ethAmount});
-
-            // Fund the registry address TODO: This should just participate in the REP mint auction that will occur when thats in
-            console.log("Funding Relayer Recipient");
-            const registryEthAmount = new BigNumber(2 * 1e18); // 2 ETH (The maximum deposit)
-            const relayHub = new RelayHub(this.dependencies, RELAY_HUB_ADDRESS);
-            await relayHub.depositFor(this.getContractAddress("AugurWalletRegistry"), {attachedEth: registryEthAmount})
         }
 
         if (this.configuration.writeArtifacts) {
@@ -530,7 +524,8 @@ Deploying to: ${networkConfiguration.networkName}
 
         const augurWalletRegistryContract = await this.getContractAddress('AugurWalletRegistry');
         const augurWalletRegistry = new AugurWalletRegistry(this.dependencies, augurWalletRegistryContract);
-        promises.push(augurWalletRegistry.initialize(this.augur!.address, this.augurTrading!.address));
+        const initialEthAmount = new BigNumber(1e17);
+        promises.push(augurWalletRegistry.initialize(this.augur!.address, this.augurTrading!.address, {attachedEth: initialEthAmount}));
 
         if (!this.configuration.useNormalTime) {
             const timeContract = await this.getContractAddress('TimeControlled');

@@ -479,7 +479,10 @@ class ContractsFixture:
             else:
                 raise "contract has no 'initialize' method on it."
         for contractName in TRADING_CONTRACTS:
-            self.contracts[contractName].initialize(self.contracts['Augur'].address, self.contracts['AugurTrading'].address)
+            value = 0
+            if contractName == "AugurWalletRegistry":
+                value = 10**17
+            self.contracts[contractName].initialize(self.contracts['Augur'].address, self.contracts['AugurTrading'].address, value=value)
 
     ####
     #### Helpers

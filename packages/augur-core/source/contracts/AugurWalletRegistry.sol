@@ -43,7 +43,10 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
 
     uint256 private constant MAX_APPROVAL_AMOUNT = 2 ** 256 - 1;
 
-    function initialize(IAugur _augur, IAugurTrading _augurTrading) public beforeInitialized returns (bool) {
+    uint256 private constant MAX_TX_FEE_IN_ETH = 10**17;
+
+    function initialize(IAugur _augur, IAugurTrading _augurTrading) public payable beforeInitialized returns (bool) {
+        require(msg.value >= MAX_TX_FEE_IN_ETH, "Must provide initial Max TX Fee Deposit");
         endInitialization();
         augur = _augur;
         cash = IERC20(_augur.lookup("Cash"));
@@ -56,6 +59,8 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
         zeroXTrade = _augurTrading.lookup("ZeroXTrade");
         ethExchange = ISimpleDex(_augur.lookup("EthExchange"));
         require(ethExchange != ISimpleDex(0));
+
+        IRelayHub(getHubAddr()).depositFor.value(address(this).balance)(address(this));
         return true;
     }
 
@@ -74,7 +79,7 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
         view
         returns (uint256 _reason, bytes memory _context)
     {
-        // executeWalletTransaction is the only possible encodedFunction that can succesfully be called through the relayHub
+        // executeWalletTransaction is the only encodedFunction that can succesfully be called through the relayHub
         uint256 _payment = getPaymentFromEncodedFunction(_encodedFunction);
         GSNRecipientERC20FeeErrorCodes _code = getAcceptRelayCallStatus(_from, _payment, _maxPossibleCharge);
         if (_code != GSNRecipientERC20FeeErrorCodes.OK) {
@@ -84,7 +89,7 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
         return _approveRelayedCall(abi.encode(_from, _ethPayment));
     }
 
-    function getPaymentFromEncodedFunction(bytes memory _encodedFunction) public view returns (uint256) {
+    function getPaymentFromEncodedFunction(bytes memory _encodedFunction) public pure returns (uint256) {
         bytes memory _encodedFunctionParams = _encodedFunction.sliceDestructive(4, _encodedFunction.length);
         (address _to, bytes memory _data, uint256 _value, uint256 _payment, address _affilate, bytes32 _fingerprint) = abi.decode(_encodedFunctionParams, (address, bytes, uint256, uint256, address, bytes32));
         return _payment;

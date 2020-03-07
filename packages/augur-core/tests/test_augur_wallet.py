@@ -21,9 +21,7 @@ def test_augur_wallet_registry(contractsFixture, augur, universe, cash, reputati
     relayHub.stake(relayer, unstakeDelay, value=2*10**18, sender=relayOwner)
     relayHub.registerRelay(10, "url", sender=relayer)
 
-    # Fund the registry manually
-    initialRegistryHubBalance = 2*10**18
-    relayHub.depositFor(augurWalletRegistry.address, value=initialRegistryHubBalance)
+    initialRegistryHubBalance = relayHub.balanceOf(augurWalletRegistry.address)
 
     # Fund the wallet so we can generate it and have it reimburse the relay hub
     cashAmount = 100*10**18
@@ -129,9 +127,6 @@ def test_augur_wallet_registry_auto_create(contractsFixture, augur, universe, ca
     unstakeDelay = 2 * 7 * 24 * 60 * 60
     relayHub.stake(relayer, unstakeDelay, value=2*10**18, sender=relayOwner)
     relayHub.registerRelay(10, "url", sender=relayer)
-
-    # Fund the registry manually
-    relayHub.depositFor(augurWalletRegistry.address, value=2*10**18)
 
     # Fund the wallet so we can generate it and have it reimburse the relay hub
     cashAmount = 100*10**18
