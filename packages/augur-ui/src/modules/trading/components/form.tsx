@@ -415,7 +415,7 @@ class Form extends Component<FromProps, FormState> {
       errorCount += 1;
       passedTest = false;
       errors[this.INPUT_TYPES.EXPIRATION_DATE].push(
-        `Order expires to soon! earilest expiration is ${earliestExp} minutes)`
+        `Order expires to soon! Earilest expiration is ${earliestExp} minutes`
       );
     }
     return { isOrderValid: passedTest, errors, errorCount };
