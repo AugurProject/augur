@@ -58,6 +58,7 @@ import { formatOrderBook } from 'modules/create-market/helpers/format-order-book
 import { Getters } from '@augurproject/sdk';
 import { HelmetTag } from 'modules/seo/helmet-tag';
 import { MARKET_VIEW_HEAD_TAGS } from 'modules/seo/helmet-configs';
+import MarketOrderbookRefresher from 'modules/market/containers/market-orderbook-refresher';
 
 interface MarketViewProps {
   isMarketLoading: boolean;
@@ -619,6 +620,7 @@ export default class MarketView extends Component<
           [Styles.Inactive]: preview,
         })}
       >
+        <MarketOrderbookRefresher />
         {tradingTutorial && <span />}
         <HelmetTag
           {...MARKET_VIEW_HEAD_TAGS}
