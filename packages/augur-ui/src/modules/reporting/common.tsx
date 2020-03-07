@@ -13,8 +13,9 @@ import {
   INVALID_OUTCOME_ID,
   SUBMIT_REPORT,
   BUYPARTICIPATIONTOKENS,
-   TRANSACTIONS,
-   REDEEMSTAKE
+  TRANSACTIONS,
+  REDEEMSTAKE,
+  HELP_CENTER_PARTICIPATION_TOKENS,
 } from 'modules/common/constants';
 import {
   FormattedNumber,
@@ -28,6 +29,7 @@ import {
   CancelTextButton,
   PrimaryButton,
   ProcessingButton,
+  ExternalLinkButton,
 } from 'modules/common/buttons';
 import { Checkbox, TextInput } from 'modules/common/form';
 import {
@@ -426,7 +428,11 @@ export class DisputingBondsView extends Component<
       this.setState({ scalarError: 'Enter a valid number', disabled: true });
     } else {
       this.setState({ scalarError: '' });
-      if (this.state.stakeError === '' && stakeValue !== '' && stakeValue !== '0') {
+      if (
+        this.state.stakeError === '' &&
+        stakeValue !== '' &&
+        stakeValue !== '0'
+      ) {
         this.setState({ disabled: false });
       }
     }
@@ -456,10 +462,10 @@ export class DisputingBondsView extends Component<
     if (
       !!!warpSyncHash &&
       (isNaN(Number(inputStakeValue)) ||
-      inputStakeValue === '' ||
-      inputStakeValue === '0' ||
-      inputStakeValue === '.' ||
-      inputStakeValue === '0.')
+        inputStakeValue === '' ||
+        inputStakeValue === '0' ||
+        inputStakeValue === '.' ||
+        inputStakeValue === '0.')
     ) {
       this.setState({ stakeError: 'Enter a valid number', disabled: true });
       return updateInputtedStake({ inputStakeValue, ZERO });
@@ -493,7 +499,10 @@ export class DisputingBondsView extends Component<
     } else {
       this.setState({ stakeError: '' });
       if (
-        ((isScalar && inputScalarOutcome !== '') || isInvalid || !!warpSyncHash) || !isScalar
+        (isScalar && inputScalarOutcome !== '') ||
+        isInvalid ||
+        !!warpSyncHash ||
+        !isScalar
       ) {
         this.setState({ disabled: false });
       }
@@ -529,7 +538,7 @@ export class DisputingBondsView extends Component<
       id,
       Gnosis_ENABLED,
       ethToDaiRate,
-      warpSyncHash
+      warpSyncHash,
     } = this.props;
 
     const {
@@ -550,7 +559,11 @@ export class DisputingBondsView extends Component<
       <div className={classNames(Styles.DisputingBondsView)}>
         {isScalar && id === 'null' && (
           <ScalarOutcomeView
-            inputScalarOutcome={!inputScalarOutcome && market.isWarpSync ? warpSyncHash : inputScalarOutcome}
+            inputScalarOutcome={
+              !inputScalarOutcome && market.isWarpSync
+                ? warpSyncHash
+                : inputScalarOutcome
+            }
             updateScalarOutcome={this.updateScalarOutcome}
             scalarDenomination={market.scalarDenomination}
             scalarError={scalarError}
@@ -1169,7 +1182,7 @@ export const ParticipationTokensView = (
         <span>Don’t see any reports that need disputing? </span>
         You can earn a proportional share of the profits from this dispute
         window.
-        <span>Learn more</span>
+        <span><a href={HELP_CENTER_PARTICIPATION_TOKENS} target="_blank" rel="noopener noreferrer">Learn more</a></span>
       </span>
 
       <Subheaders
