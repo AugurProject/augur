@@ -6,7 +6,6 @@ import {
 } from "modules/common/constants";
 import { LiquidityOrder, TestTradingOrder, IndividualOutcomeOrderBook } from 'modules/types';
 import { createBigNumber } from 'utils/create-big-number';
-import { Getters } from "@augurproject/sdk";
 
 function calcSpread(asks, bids) {
   if (asks.length === 0 || bids.length === 0) {
@@ -29,4 +28,3 @@ export function formatOrderBook(outcomesOrderBook: LiquidityOrder[] | TestTradin
     spread
   } as IndividualOutcomeOrderBook;
 }
-
