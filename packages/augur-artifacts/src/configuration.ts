@@ -248,7 +248,7 @@ export function refreshSDKConfig(): void {
 }
 
 export async function updateConfig(env: string, config: RecursivePartial<SDKConfiguration>): Promise<SDKConfiguration> {
-  const original = environments[env];
+  const original = environments[env] || {};
   const updated = mergeConfig(original, config);
   const valid = validConfigOrDie(updated);
   writeConfig(env, valid);
