@@ -39,6 +39,7 @@ import {
 } from './OnChainTrading';
 import { Getter } from './Router';
 import { sortOptions } from './types';
+import { flattenZeroXOrders } from './ZeroXOrdersGetters';
 
 export enum GetMarketsSortBy {
   marketOI = 'marketOI',
@@ -239,6 +240,7 @@ export interface OutcomeOrderBook {
 export interface MarketOrderBook {
   marketId: string;
   orderBook: OutcomeOrderBook;
+  expirationTime?: number;
 }
 
 export interface LiquidityOrderBookInfo {
@@ -761,9 +763,16 @@ export class Markets {
       );
     };
 
+    const expirationTime = flattenZeroXOrders(orders).reduce(
+      (p, o) =>
+        o.expirationTimeSeconds.lt(p) || p.eq(0) ? o.expirationTimeSeconds : p,
+      new BigNumber(0)
+    ).toNumber();
+
     return {
       marketId: params.marketId,
       orderBook: processMarket(orders),
+      expirationTime,
     };
   }
 
