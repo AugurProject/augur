@@ -409,13 +409,13 @@ class Form extends Component<FromProps, FormState> {
     const gasConfirmEstimate = this.state
       ? this.state.confirmationTimeEstimation * 1.5
       : 0; // In Seconds
-    const earliestExp = minOrderLifespan + gasConfirmEstimate;
+    const earliestExp = Math.ceil((minOrderLifespan + gasConfirmEstimate) / 60);
     const expiryTime = expiration - gasConfirmEstimate - currentTimestamp;
     if (expiration && expiryTime < minOrderLifespan) {
       errorCount += 1;
       passedTest = false;
       errors[this.INPUT_TYPES.EXPIRATION_DATE].push(
-        `Order expires to soon! earilest expiration is ${earliestExp} seconds)`
+        `Order expires to soon! earilest expiration is ${earliestExp} minutes)`
       );
     }
     return { isOrderValid: passedTest, errors, errorCount };
