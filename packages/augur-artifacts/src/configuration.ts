@@ -196,6 +196,10 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
       ],
     }
   },
+  sdk: {
+    enabled: false,
+    ws: 'ws://localhost:9001',
+  },
   server: {
     httpPort: 9003,
     startHTTP: true,
@@ -414,17 +418,22 @@ function loadSDKConfigs(relativePath: string) {
       environments[key] = envs[key];
     })
   } else {
-    // tslint:disable-next-line:ban-ts-ignore
-    // @ts-ignore
-    const context = require.context(relativePath, false, /.*\.json$/);
-    const envNameRegex = new RegExp('([^\/]*)\.json$');
-    context.keys().forEach((file: string) => {
-      const key = file.match(envNameRegex)[1];
-      environments[key] = context(file);
-    });
+    throw Error('Cannot reload SDK config files in browser')
   }
 }
 
 export const environments: {[network: string]: SDKConfiguration} = {};
 
-loadSDKConfigs('./environments');
+if (process?.versions?.node) {
+  loadSDKConfigs('./environments');
+} else {
+  // tslint:disable-next-line:ban-ts-ignore
+  // @ts-ignore
+  const context = require.context('./environments', false, /.*\.json$/);
+  const envNameRegex = new RegExp('([^\/]*)\.json$');
+  context.keys().forEach((file: string) => {
+    const key = file.match(envNameRegex)[1];
+    environments[key] = context(file);
+  });
+}
+
