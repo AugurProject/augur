@@ -6,6 +6,7 @@ import ModalReporting from 'modules/modal/containers/modal-reporting';
 import ModalConfirm from 'modules/modal/components/modal-confirm';
 import ModalReview from 'modules/modal/components/modal-review';
 import ModalRepFaucet from 'modules/modal/containers/modal-rep-faucet';
+import ModalGsnFaucet from 'modules/modal/containers/modal-gsn-faucet';
 import ModalCreateMarket from 'modules/modal/containers/modal-create-market';
 import ModalDaiFaucet from 'modules/modal/containers/modal-dai-faucet';
 import ModalCreationHelp from 'modules/modal/containers/modal-creation-help';
@@ -76,6 +77,8 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalTransactions />;
     case TYPES.MODAL_REP_FAUCET:
       return <ModalRepFaucet />;
+    case TYPES.MODAL_GSN_FAUCET:
+      return <ModalGsnFaucet />;
     case TYPES.MODAL_CREATE_MARKET:
       return <ModalCreateMarket />;
     case TYPES.MODAL_ADD_FUNDS:

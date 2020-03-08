@@ -24,7 +24,6 @@ export class SDK {
   client: Augur | null = null;
   isSubscribed = false;
   networkId: NetworkId;
-  private signerNetworkId: string;
   private connector:Connectors.BaseConnector;
   private config: SDKConfiguration;
 

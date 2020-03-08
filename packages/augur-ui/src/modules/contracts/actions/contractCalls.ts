@@ -167,6 +167,7 @@ export async function getLegacyRepBalance(
 
 
 export async function getEthBalance(address: string): Promise<number> {
+  if (!address) return 0;
   const Augur = augurSdk.get();
   const balance = await Augur.getEthBalance(address);
   const balances = formatAttoEth(balance, { decimals: 4 });
@@ -300,6 +301,17 @@ export async function finalizeMarket(marketId: string) {
 export function getDai() {
   const { contracts } = augurSdk.get();
   return contracts.cashFaucet.faucet(new BigNumber('1000000000000000000000'));
+}
+
+export function fundGsnWallet(gsnWalletAddress: string) {
+  const amount = new BigNumber('1000000000000000000000');
+  const { contracts } = augurSdk.get();
+
+  augurSdk.client.setUseRelay(false);
+  contracts.cashFaucet.faucet(amount).then(() => {
+    contracts.cash.transfer(gsnWalletAddress, amount);
+    augurSdk.client.setUseRelay(true);
+  })
 }
 
 export async function uniswapEthForRepRate(wei: BigNumber): Promise<BigNumber> {

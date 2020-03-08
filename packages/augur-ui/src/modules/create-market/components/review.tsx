@@ -325,7 +325,7 @@ export default class Review extends React.Component<
           <Subheaders copyType={MARKET_COPY_LIST.VALIDITY_BOND} header="Validity bond" subheader={"The bond is paid in DAI and is refunded to the Market Creator if the Final Outcome of the Market is not Invalid. The Validity Bond is a dynamic amount based on the percentage of Markets in Augur that are being Finalized as Invalid."} link />
           <span>
             <LinearPropertyLabel
-              label={"Valididty Bond"}
+              label={"Validity Bond"}
               value={s.validityBond && s.validityBond.formattedValue + " DAI"}
             />
           </span>

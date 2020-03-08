@@ -10,7 +10,6 @@ import {
   LargeDaiIcon,
   DaiLogoIcon,
   EthIcon,
-  ViewIcon,
   helpIcon,
 } from 'modules/common/icons';
 import {
