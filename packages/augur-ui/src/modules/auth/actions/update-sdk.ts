@@ -52,20 +52,13 @@ export const updateSdk = (
         mixedCaseAddress: toChecksumAddress(walletAddress),
         address: toChecksumAddress(walletAddress),
       };
-
-      await augurSdk.syncUserData(
-        loginAccount.mixedCaseAddress,
-        loginAccount.meta.signer,
-        networkId as NetworkId,
-        true
-      );
     }
     dispatch(loadAccountDataFromLocalStorage(newAccount.address));
     await augurSdk.syncUserData(
       newAccount.mixedCaseAddress,
       newAccount.meta.signer,
       networkId as NetworkId,
-      false
+      useGSN
     );
 
     dispatch(updateLoginAccount(newAccount));
