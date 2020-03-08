@@ -524,7 +524,7 @@ Deploying to: ${networkConfiguration.networkName}
 
         const augurWalletRegistryContract = await this.getContractAddress('AugurWalletRegistry');
         const augurWalletRegistry = new AugurWalletRegistry(this.dependencies, augurWalletRegistryContract);
-        const initialEthAmount = new BigNumber(1e17);
+        const initialEthAmount = new BigNumber(1e17).multipliedBy(2.5);
         promises.push(augurWalletRegistry.initialize(this.augur!.address, this.augurTrading!.address, {attachedEth: initialEthAmount}));
 
         if (!this.configuration.useNormalTime) {

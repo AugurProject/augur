@@ -85,11 +85,11 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
         if (_code != GSNRecipientERC20FeeErrorCodes.OK) {
             return _rejectRelayedCall(uint256(_code));
         }
-        uint256 _ethPayment = ethExchange.getCashSaleProceeds(_payment);
-        return _approveRelayedCall(abi.encode(_from, _ethPayment));
+        uint256 _initialEth = address(this).balance;
+        return _approveRelayedCall(abi.encode(_from, _initialEth));
     }
 
-    function getPaymentFromEncodedFunction(bytes memory _encodedFunction) public pure returns (uint256) {
+    function getPaymentFromEncodedFunction(bytes memory _encodedFunction) private pure returns (uint256) {
         bytes memory _encodedFunctionParams = _encodedFunction.sliceDestructive(4, _encodedFunction.length);
         (address _to, bytes memory _data, uint256 _value, uint256 _payment, address _affilate, bytes32 _fingerprint) = abi.decode(_encodedFunctionParams, (address, bytes, uint256, uint256, address, bytes32));
         return _payment;
@@ -109,20 +109,23 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
     function _preRelayedCall(bytes memory _context) internal returns (bytes32) { }
 
     function _postRelayedCall(bytes memory _context, bool, uint256 _actualCharge, bytes32) internal {
-        (address _from, uint256 _ethPayment) = abi.decode(_context, (address, uint256));
+        (address _from, uint256 _initialEth) = abi.decode(_context, (address, uint256));
 
         // Refund any excess ETH paid back to the wallet
-        uint256 _ethRefund = _ethPayment.sub(_actualCharge);
+        uint256 _ethPaid = address(this).balance.sub(_initialEth);
+        uint256 _ethRefund = _ethPaid.sub(_actualCharge);
         (bool _success,) = address(wallets[_from]).call.value(_ethRefund)("");
         require(_success);
 
         // Top off Relay Hub balance with whatever ETH we have
-        IRelayHub(getHubAddr()).depositFor.value(address(this).balance)(address(this));
+        uint256 _depositAmount = address(this).balance;
+        _depositAmount = _depositAmount.min(2 ether); // This is the maximum single RelayHub deposit
+        IRelayHub(getHubAddr()).depositFor.value(_depositAmount)(address(this));
     }
 
     function getEthFromWallet(IAugurWallet _wallet, uint256 _cashAmount) private {
         uint256 _ethAmount = ethExchange.getCashSaleProceeds(_cashAmount);
-        // If the wallet has sufficient ETH just make it send that, otherwise do a swap using its Cash
+        // If the wallet has sufficient ETH just make it send it to us, otherwise do a swap using its Cash
         if (address(_wallet).balance >= _ethAmount) {
             _wallet.giveRegistryEth(_ethAmount);
             return;
@@ -180,11 +183,15 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
         if (_wallet == IAugurWallet(0)) {
             _wallet = createAugurWallet(_referralAddress, _fingerprint);
         }
-        // If the user is paying for this tx directly we don't need to reimburse the registry as no payment to the relay hub is happening. We do this here to avoid hard coded gas stipend problems in GSN V1
+        // If the user is having this sent via relay we need to reimburse this contract for paying the relayer. We do the payment here to avoid hard coded gas stipend problems in GSN V1
         if (_user != msg.sender) {
             getEthFromWallet(_wallet, _payment);
         }
         bool _success = _wallet.executeTransaction(_to, _data, _value);
+        // If the transaction is being executed directly we fail if the execution failed. If its being done via relay we do not fail so that payment still occurs.
+        if (_user == msg.sender) {
+            require(_success);
+        }
         emit ExecuteTransactionStatus(_success);
     }
 

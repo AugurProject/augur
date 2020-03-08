@@ -6,6 +6,8 @@ import { NULL_ADDRESS } from '../constants';
 import { BigNumber } from "bignumber.js";
 
 export class GSN {
+  walletAddresses: {[key: string]: string} = {};
+
   constructor(
     private readonly provider: Provider,
     private readonly augur: Augur,
@@ -22,7 +24,10 @@ export class GSN {
   async calculateWalletAddress(
     owner: string
   ): Promise<string> {
-    return this.augur.contracts.augurWalletRegistry.getCreate2WalletAddress_(owner);
+    if (this.walletAddresses[owner] === undefined) {
+      this.walletAddresses[owner] = await this.augur.contracts.augurWalletRegistry.getCreate2WalletAddress_(owner);
+    }
+    return this.walletAddresses[owner];
   }
 
   /**

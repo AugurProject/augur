@@ -40,7 +40,7 @@ export class ContractAPI {
     meshBrowser: BrowserMesh = undefined,
   ) {
     const signer = await makeSigner(account, provider);
-    const dependencies = await makeGSNDependencies(provider, signer, addresses.AugurWalletRegistry, new BigNumber(0), account.publicKey);
+    const dependencies = await makeGSNDependencies(provider, signer, addresses.AugurWalletRegistry, addresses.EthExchange, new BigNumber(0), account.publicKey);
 
     let zeroX = null;
     if (meshClient || meshBrowser) {

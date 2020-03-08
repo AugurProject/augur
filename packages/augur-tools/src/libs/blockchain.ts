@@ -48,6 +48,6 @@ export function makeDependencies(account: Account, provider: EthersProvider, sig
   return new ContractDependenciesEthers(provider, signer, account.publicKey);
 }
 
-export async function makeGSNDependencies(provider: EthersProvider, signer: EthersFastSubmitWallet, augurWalletRegistryAddress: string, gasPrice?: BigNumber, address?: string): Promise<ContractDependenciesGSN> {
-  return await ContractDependenciesGSN.create(provider, signer, augurWalletRegistryAddress, gasPrice, address);
+export async function makeGSNDependencies(provider: EthersProvider, signer: EthersFastSubmitWallet, augurWalletRegistryAddress: string, ethExchangeAddress: string, gasPrice?: BigNumber, address?: string): Promise<ContractDependenciesGSN> {
+  return await ContractDependenciesGSN.create(provider, signer, augurWalletRegistryAddress, ethExchangeAddress, gasPrice, address);
 }

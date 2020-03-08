@@ -131,7 +131,8 @@ export async function createClient(
   const contractDependencies = await ContractDependenciesGSN.create(
     ethersProvider,
     signer,
-    addresses.AugurWalletRegistry
+    addresses.AugurWalletRegistry,
+    addresses.EthExchange
   );
 
   let zeroX: ZeroX = null;

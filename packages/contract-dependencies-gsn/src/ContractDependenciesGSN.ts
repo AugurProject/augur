@@ -20,6 +20,8 @@ const RELAY_HUB_ADDRESS = "0xD216153c06E857cD7f72665E0aF1d7D82172F494";
 const MIN_GAS_PRICE = new BigNumber(20e9); // Min: 1 Gwei
 const DEFAULT_GAS_PRICE = new BigNumber(20e9); // Default: GasPrice: 4 Gwei
 
+const OVEREAD_RELAY_GAS = 400000;
+
 const GSN_RELAY_CALL_STATUS = {
   0: "OK",                      // The transaction was successfully relayed and execution successful - never included in the event
   1: "RelayedCallFailed",       // The transaction was relayed, but the relayed call failed
@@ -44,6 +46,7 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
   relayClient: RelayClient;
   relayHub: ethers.Contract;
   augurWalletRegistry: ethers.Contract;
+  ethExchange: ethers.Contract;
   referralAddress: string = NULL_ADDRESS;
   fingerprint: string = formatBytes32String('');
 
@@ -60,7 +63,7 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
   });
 
   _relayQueue: AsyncQueue<RelayerQueueTask> = queue(async (request: RelayerQueueTask) => {
-    const txHash: string = await this.execTransaction(request.tx);
+    const txHash: string = await this.relayClient.sendTransaction(request.tx);
 
     this.onTransactionStatusChanged(
       request.txMetadata,
@@ -75,11 +78,12 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
     readonly provider: EthersProvider,
     signer: EthersSigner,
     augurWalletRegistryAddress: string,
+    ethExchangeAddress: string,
     public gasPrice: BigNumber = DEFAULT_GAS_PRICE,
     address?: string
   ) {
     super(provider, signer, address);
-    this.relayClient = new RelayClient(this.provider, { verbose: true });
+    this.relayClient = new RelayClient(this.provider, { verbose: false });
     this.relayHub = new ethers.Contract(
       RELAY_HUB_ADDRESS,
       abi['RelayHub'],
@@ -90,20 +94,21 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
       abi['AugurWalletRegistry'],
       provider
     );
+    this.ethExchange = new ethers.Contract(
+      ethExchangeAddress,
+      abi['EthExchange'],
+      provider
+    );
   }
 
   static async create(
     provider: EthersProvider,
     signer: EthersSigner,
     augurWalletRegistryAddress: string,
+    ethExchangeAddress: string,
     gasPrice: BigNumber = DEFAULT_GAS_PRICE,
     address?: string): Promise<ContractDependenciesGSN> {
-      const dependencies = new ContractDependenciesGSN(provider, signer, augurWalletRegistryAddress, gasPrice, address);
-      if (dependencies.signer) {
-        const signerAddress = await dependencies.signer.getAddress();
-        dependencies.walletAddress = await dependencies.augurWalletRegistry.getCreate2WalletAddress(signerAddress);;
-      }
-      return dependencies;
+      return new ContractDependenciesGSN(provider, signer, augurWalletRegistryAddress, ethExchangeAddress, gasPrice, address);
   }
 
   setUseWallet(useWallet: boolean): void {
@@ -156,12 +161,14 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
   parseTransactionLogs(txReceipt: ethers.providers.TransactionReceipt, txName: string, txHash: string): TransactionStatus {
     if (this.useRelay) {
       const transactionRelayedLog = this.relayHub.interface.parseLog(txReceipt.logs.pop());
-      const callStatus = new BigNumber(transactionRelayedLog.values.status)
+      const callStatus = new BigNumber(transactionRelayedLog.values.status);
       if (callStatus.gt(0)) {
         const reason = GSN_RELAY_CALL_STATUS[callStatus.toNumber()];
         console.error(`TX ${txName} with hash ${txHash} failed in Relay Machinery. Error Reason: ${reason}`)
         return TransactionStatus.FAILURE;
       }
+      // Pop the deposit log
+      txReceipt.logs.pop();
     }
     if (this.useWallet) {
       const executeTransactionStatusLog = this.augurWalletRegistry.interface.parseLog(txReceipt.logs.pop());
@@ -186,7 +193,8 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
     txMetadata: TransactionMetadata
   ): Promise<ethers.providers.TransactionReceipt> {
     if (this.useWallet) {
-      tx = this.convertToWalletTx(tx);
+      const payment = await this.getRelayPaymentForEthersTransaction(tx);
+      tx = this.convertToWalletTx(tx, new ethers.utils.BigNumber(payment.toFixed()));
     }
 
     if (this.useRelay && tx.to !== this.augurWalletRegistry.address) {
@@ -221,18 +229,46 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
     });
   }
 
-  convertToWalletTx(tx: Transaction<ethers.utils.BigNumber>): Transaction<ethers.utils.BigNumber> {
-    const proxiedTxData =  this.augurWalletRegistry.interface.functions['executeWalletTransaction'].encode([tx.to, tx.data, tx.value, this.referralAddress, this.fingerprint]);
-    tx.data = proxiedTxData;
-    tx.to = this.augurWalletRegistry.address;
-    tx.value = new ethers.utils.BigNumber(0);
-    return tx;
+  convertToWalletTx(tx: Transaction<ethers.utils.BigNumber>, payment?: ethers.utils.BigNumber): Transaction<ethers.utils.BigNumber> {
+    payment = payment || new ethers.utils.BigNumber(0); // For gas estimates we use a payment of 0 dai as no payment is required
+    const data =  this.augurWalletRegistry.interface.functions['executeWalletTransaction'].encode([tx.to, tx.data, tx.value, payment, this.referralAddress, this.fingerprint]);
+    return {
+      data,
+      to: this.augurWalletRegistry.address,
+      from: tx.from
+    }
   }
 
-  async execTransaction(
-    relayTransaction: PreparedTransaction
-  ): Promise<string> {
-    const txHash = await this.relayClient.sendTransaction(relayTransaction);
-    return txHash;
+  async estimateGas(transaction: Transaction<BigNumber>): Promise<BigNumber> {
+    let ethersTransaction = this.transactionToEthersTransaction(transaction);
+    return this.estimateGasForEthersTransaction(ethersTransaction);
+  }
+
+  async estimateGasForEthersTransaction(transaction: Transaction<ethers.utils.BigNumber>): Promise<BigNumber> {
+    if (this.useWallet) {
+      transaction = this.convertToWalletTx(transaction);
+    }
+    if (this.useRelay) {
+      const estimate = await this.relayClient.estimateGas(transaction);
+      return new BigNumber(estimate);
+    }
+    return super.estimateGasForEthersTransaction(transaction);
+  }
+
+  async getRelayPayment(transaction: Transaction<BigNumber>): Promise<BigNumber> {
+    const ethersTransaction = this.transactionToEthersTransaction(transaction);
+    return this.getRelayPaymentForEthersTransaction(ethersTransaction);
+  }
+
+  async getRelayPaymentForEthersTransaction(tx: Transaction<ethers.utils.BigNumber>): Promise<BigNumber> {
+    if (!this.useWallet || !this.useRelay) return new BigNumber(0);
+    let gasEstimate = await this.estimateGasForEthersTransaction(tx);
+    gasEstimate = gasEstimate.plus(OVEREAD_RELAY_GAS);
+    let ethCost = gasEstimate.multipliedBy(this.gasPrice);
+    ethCost = ethCost.multipliedBy((100+this.relayClient.config.txFee) / 100);
+    const cashCost: ethers.utils.BigNumber = await this.ethExchange.getTokenPurchaseCost('0x'+ethCost.toString(16));
+    let cost = new BigNumber(cashCost.toString());
+    cost = cost.multipliedBy(1.05); // account for slippage; CONSIDER: make this configurable?
+    return cost.decimalPlaces(0);
   }
 }

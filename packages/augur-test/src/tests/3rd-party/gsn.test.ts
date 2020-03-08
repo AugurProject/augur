@@ -55,9 +55,10 @@ describe('3rd Party :: GSN :: ', () => {
       stringTo32ByteHex('A'),
       stringTo32ByteHex('B'),
     ]);
+    await expect(market.address).not.toEqual("");
     await john.sync();
 
-    // Faucet some REP asnd confirm the wallet recieves it
+    // Faucet some REP and confirm the wallet recieves it
     const repAmount = new BigNumber(1e10);
     const repBalance = await john.getRepBalance(walletAddress);
     await john.repFaucet(repAmount);

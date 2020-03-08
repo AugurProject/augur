@@ -481,7 +481,7 @@ class ContractsFixture:
         for contractName in TRADING_CONTRACTS:
             value = 0
             if contractName == "AugurWalletRegistry":
-                value = 10**17
+                value = 2.5 * 10**17
             self.contracts[contractName].initialize(self.contracts['Augur'].address, self.contracts['AugurTrading'].address, value=value)
 
     ####

@@ -176,10 +176,11 @@ export class Augur<TProvider extends Provider = Provider> {
 
   async getAccount(): Promise<string | null> {
     let account = this.dependencies.address;
+    const signer = await this.dependencies.signer.getAddress();
     if (this.dependencies.useWallet) {
-      account = this.dependencies.walletAddress;
+      account = await this.gsn.calculateWalletAddress(signer);
     } else if (!account) {
-      account = await this.dependencies.signer.getAddress();
+      account = signer;
     }
     if (!account) return null;
     return getAddress(account);

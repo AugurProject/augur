@@ -363,7 +363,6 @@ export class RelayClient {
             gasPrice,
             data: encodedFunctionCall,
           },
-          relayHub.address,
         );
       }
     } catch (err) {
@@ -513,16 +512,9 @@ export class RelayClient {
     }
   }
 
-  async estimateGas(txParams: any, hubAddress: string): Promise<number> {
-    if (!hubAddress) {
-      const hub = await createRelayHubFromRecipient(this.provider, txParams.to);
-      hubAddress = hub.address;
-    }
-    const txParamsFromHub = {
-      ...txParams,
-      from: hubAddress,
-      data: appendAddress(txParams.data, txParams.from),
-    };
-    return (await this.provider.estimateGas(txParamsFromHub)).toNumber();
+  async estimateGas(txParams: any): Promise<number> {
+    let gasEstimate = (await this.provider.estimateGas(txParams)).toNumber();
+    gasEstimate += 150000; // This is a rough upper bound estimate of the cost of swapping DAI for ETH which will occur only if the sender is the relay hub
+    return gasEstimate;
   }
 }

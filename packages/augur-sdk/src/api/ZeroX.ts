@@ -364,6 +364,7 @@ export class ZeroX {
   async createZeroXOrder(params: ZeroXPlaceTradeParams) {
     if (!this.client) throw new Error('To place ZeroX order, make sure Augur client instance was initialized with it enabled.');
     const salt = new BigNumber(Date.now());
+    const sender = await this.client.getAccount();
     const result = await this.client.contracts.ZeroXTrade.createZeroXOrder_(
       new BigNumber(params.direction),
       params.amount,
@@ -371,7 +372,8 @@ export class ZeroX {
       params.market,
       new BigNumber(params.outcome),
       params.expirationTime,
-      salt
+      salt,
+      { sender }
     );
     const order = result[0];
     const hash = result[1];

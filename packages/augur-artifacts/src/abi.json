@@ -11465,27 +11465,6 @@
 			"constant": true,
 			"inputs": [
 				{
-					"internalType": "bytes",
-					"name": "_encodedFunction",
-					"type": "bytes"
-				}
-			],
-			"name": "getPaymentFromEncodedFunction",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "pure",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
 					"internalType": "address",
 					"name": "relay",
 					"type": "address"

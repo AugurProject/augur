@@ -24,7 +24,7 @@ def test_augur_wallet_registry(contractsFixture, augur, universe, cash, reputati
     initialRegistryHubBalance = relayHub.balanceOf(augurWalletRegistry.address)
 
     # Fund the wallet so we can generate it and have it reimburse the relay hub
-    cashAmount = 100*10**18
+    cashAmount = 1000 * 10**18
     walletAddress = augurWalletRegistry.getCreate2WalletAddress(account)
     cash.faucet(cashAmount)
     cash.transfer(walletAddress, cashAmount, sender=account)
@@ -60,9 +60,8 @@ def test_augur_wallet_registry(contractsFixture, augur, universe, cash, reputati
     augurWalletRepFaucetData = augurWalletRegistry.executeWalletTransaction_encode(reputationToken.address, repFaucetData, 0, ethPayment, nullAddress, fingerprint)
     nonce = 0
 
-    assert augurWalletRegistry.getPaymentFromEncodedFunction(augurWalletRepFaucetData) == ethPayment
-
-    messageHash = augurWalletRegistry.getRelayMessageHash(relayer,
+    messageHash = augurWalletRegistry.getRelayMessageHash(
+        relayer,
         account,
         augurWalletRegistry.address,
         augurWalletRepFaucetData,
@@ -113,6 +112,61 @@ def test_augur_wallet_registry(contractsFixture, augur, universe, cash, reputati
     # The relay hub balance for the registry is at least what it was initially
     newRegistryHubBalance = relayHub.balanceOf(augurWalletRegistry.address)
     assert newRegistryHubBalance >= initialRegistryHubBalance
+
+    # Lets try making a market with the wallet
+    endTime = augur.getTimestamp() + 10000
+    feePerEthInWei = 10**16
+    affiliateFeeDivisor = 100
+    createMarketData = universe.createYesNoMarket_encode(endTime, feePerEthInWei, nullAddress, affiliateFeeDivisor, account, "")
+    augurWalletCreateMarketData = augurWalletRegistry.executeWalletTransaction_encode(universe.address, createMarketData, 0, ethPayment, nullAddress, fingerprint)
+
+    nonce += 1
+
+    messageHash = augurWalletRegistry.getRelayMessageHash(relayer,
+        account,
+        augurWalletRegistry.address,
+        augurWalletCreateMarketData,
+        additionalFee,
+        gasPrice,
+        gasLimit,
+        nonce)
+
+    signature = signMessage(messageHash, accountKey)
+
+    assert relayHub.canRelay(
+        relayer,
+        account,
+        augurWalletRegistry.address,
+        augurWalletCreateMarketData,
+        additionalFee,
+        gasPrice,
+        gasLimit,
+        nonce,
+        signature,
+        approvalData)[0] == 0
+
+    MarketCreatedLog = {
+        "marketCreator": walletAddress
+    }
+
+    TransactionRelayedLog = {
+        "status": 0,
+    }
+    with AssertLog(contractsFixture, "MarketCreated", MarketCreatedLog):
+        with AssertLog(contractsFixture, "TransactionRelayed", TransactionRelayedLog, contract=relayHub):
+            relayHub.relayCall(
+                account,
+                augurWalletRegistry.address,
+                augurWalletCreateMarketData,
+                additionalFee,
+                gasPrice,
+                gasLimit,
+                nonce,
+                signature,
+                approvalData,
+                sender=relayer
+            )
+    
 
 def test_augur_wallet_registry_auto_create(contractsFixture, augur, universe, cash, reputationToken):
     augurWalletRegistry = contractsFixture.contracts["AugurWalletRegistry"]

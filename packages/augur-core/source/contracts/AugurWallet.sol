@@ -59,7 +59,7 @@ contract AugurWallet is Initializable, Ownable, IAugurWallet {
 
     function giveRegistryEth(uint256 _amount) external {
         require(msg.sender == address(registry));
-        (bool _success,) = address(this).call.value(_amount)("");
+        (bool _success,) = msg.sender.call.value(_amount)("");
         require(_success);
     }
 
