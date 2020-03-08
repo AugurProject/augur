@@ -242,11 +242,6 @@ export function getConfigForNetwork(networkId: NetworkId, breakOnMulti=true, val
   return targetConfig;
 }
 
-export function refreshSDKConfig(): void {
-  // be sure to be in src dir, not build
-  loadSDKConfigs('../src/environments');
-}
-
 export async function updateConfig(env: string, config: RecursivePartial<SDKConfiguration>): Promise<SDKConfiguration> {
   const original = environments[env] || {};
   const updated = mergeConfig(original, config);
@@ -396,7 +391,19 @@ export function configFromEnvvars(): RecursivePartial<SDKConfiguration> {
   return config
 }
 
+export function refreshSDKConfig(): void {
+  // be sure to be in src dir, not build
+  loadSDKConfigs('../src/environments');
+}
+
 function loadSDKConfigs(relativePath: string) {
+  Object.keys(require.cache).forEach((id: string) => {
+    if (/\/environments\/.*?\.json$/.test(id)) {
+      console.log('deleting cache for module:', id);
+      delete require.cache[id];
+    }
+  });
+
   if (process?.versions?.node) {
     const envs = requireAll({
       dirname: path.join(__dirname, relativePath),

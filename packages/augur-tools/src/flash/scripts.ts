@@ -2173,6 +2173,7 @@ export function addScripts(flash: FlashSession) {
         }
 
         await sleep(10000); // give geth some time to start
+        refreshSDKConfig();
         this.config = buildConfig('local');
         this.provider = flash.makeProvider(this.config);
 
@@ -2181,7 +2182,7 @@ export function addScripts(flash: FlashSession) {
           await this.call(deployMethod, { createMarkets: true });
         }
 
-        //await spawnSync('yarn', ['build']); // so UI etc will have the correct addresses
+        await spawnSync('yarn', ['build']); // so UI, CI, etc will have the correct addresses
 
         env = {
           ...process.env,
