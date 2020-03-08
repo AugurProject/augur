@@ -39,7 +39,7 @@ export function logout() {
     // Wallet cleanup
     if (augurSdk && augurSdk.sdk) {
       augurSdk.sdk.setUseWallet(false);
-      augurSdk.sdk.setWalletStatus(null);
+      dispatch(updateAppStatus(WALLET_STATUS, null));
     }
     dispatch(updateAppStatus(GSN_ENABLED, false));
     dispatch(updateAppStatus(WALLET_STATUS, null));
