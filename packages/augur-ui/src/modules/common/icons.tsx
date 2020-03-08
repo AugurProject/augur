@@ -1147,7 +1147,7 @@ export const DoubleArrows = (
 );
 
 export const LoadingEllipse = (
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+  <svg viewBox="0 0 16 16" fill="none">
     <path
       d="M7.99998 14.4C11.5346 14.4 14.4 11.5346 14.4 7.99998C14.4 4.46535 11.5346 1.59998 7.99998 1.59998C4.46535 1.59998 1.59998 4.46535 1.59998 7.99998"
       stroke="url(#paint0_linear)"

@@ -869,6 +869,10 @@ span.PendingLabel {
         width: @size-10;
         animation: spin 2s linear infinite;
 
+        LinearGradient > stop {
+          stop-color: var(--color-primary-text);
+        }
+
         path {
           stroke: var(--color-secondary-text);
         }
