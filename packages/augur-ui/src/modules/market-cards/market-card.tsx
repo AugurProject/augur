@@ -339,7 +339,6 @@ export const MarketCard = ({
             {expandedOptionShowing && (
               <button onClick={() => setExpanded(!expanded)}>
                 <ChevronFlip
-                  stroke="#fff"
                   pointDown={expanded}
                   quick
                   filledInIcon

@@ -555,6 +555,10 @@
     height: 100%;
     margin-bottom: @size-12;
 
+    > span > svg > path {
+      stroke: var(--color-primary-text);
+    }
+
     @media @breakpoint-mobile {
       border: @size-1 solid var(--color-secondary-action-outline);
       border-radius: @border-radius-default;
