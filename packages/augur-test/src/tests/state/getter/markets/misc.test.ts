@@ -385,6 +385,7 @@ describe('State API :: Markets :: ', () => {
       })) as MarketOrderBook;
 
       expect(orderBook).toEqual({
+        expirationTime: 0,
         marketId: yesNoMarket.address,
         orderBook: {
           [outcome0.toString()]: {

@@ -2133,17 +2133,20 @@ export function addScripts(flash: FlashSession) {
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
+      process.removeAllListeners('SIGINT');
+      process.removeAllListeners('SIGTERM');
+      process.removeAllListeners('SIGHUP');
+
       const dev = Boolean(args.dev);
       const fake = Boolean(args.fake);
       const detach = Boolean(args.detach);
 
       spawnSync('docker', ['pull', 'augurproject/safe-relay-service_web:latest']);
-      spawnSync('docker', ['pull', '0xorg/mesh:latest']);
-
       this.log(`Deploy contracts: ${dev}`);
       this.log(`Use fake time: ${fake}`);
       this.log(`Detach: ${detach}`);
 
+      let env;
       try {
         if (dev) {
           spawnSync('yarn', ['workspace', '@augurproject/tools', 'docker:geth:detached']);
@@ -2162,9 +2165,9 @@ export function addScripts(flash: FlashSession) {
           await this.call(deployMethod, { createMarkets: true });
         }
 
-        await spawnSync('yarn', ['build']); // so UI etc will have the correct addresses
+        //await spawnSync('yarn', ['build']); // so UI etc will have the correct addresses
 
-        const env = {
+        env = {
           ...process.env,
           ETHEREUM_CHAIN_ID: this.config.networkId,
           CUSTOM_CONTRACT_ADDRESSES: JSON.stringify(this.config.addresses),
@@ -2174,24 +2177,20 @@ export function addScripts(flash: FlashSession) {
           SAFE_DEFAULT_TOKEN_ADDRESS: formatAddress(this.config.addresses.Cash, { lower: true, prefix: true })
         };
 
-        if (detach) {
-          spawnSync('yarn', ['workspace', '@augurproject/gnosis-relay-api', 'run-relay', '-d'], { env });
-        } else {
-          spawn('yarn', ['workspace', '@augurproject/gnosis-relay-api', 'run-relay'], {
-            env,
-            stdio: 'inherit',
-          });
+        this.log('Running dockers. Type ctrl-c to quit:');
+        await spawnSync('yarn', ['workspace', '@augurproject/gnosis-relay-api', 'run-relay', '-d'], {
+          env,
+          stdio: 'inherit'
+        });
+        if (detach) return;
 
-          this.log('Running dockers. Type ctrl-c to quit:\n');
-          await waitForSigint();
-        }
-
+        spawn('yarn', ['workspace', '@augurproject/gnosis-relay-api', 'relay-logs'], {env, stdio: 'inherit'});
+        await waitForSigint();
       } finally {
-        if (!detach) {
-          this.log('Stopping dockers');
-          await spawnSync('docker', ['kill', 'geth']);
-          await spawnSync('yarn', ['workspace', '@augurproject/gnosis-relay-api', 'kill-relay']);
-        }
+        this.log('Stopping geth');
+        await spawnSync('docker', ['kill', 'geth'], { stdio: 'inherit' });
+        this.log('Stopping relays');
+        await spawnSync('yarn', ['workspace', '@augurproject/gnosis-relay-api', 'kill-relay'], { env, stdio: 'inherit' });
       }
     }
   });
