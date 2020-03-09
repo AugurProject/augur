@@ -660,6 +660,10 @@ export interface WindowApp extends Window {
   ethereum: {
     selectedAddress;
     networkVersion: string;
+    isMetaMask?: boolean;
+    on?: Function;
+    enable?: Function;
+    send?: Function;
   };
   localStorage: Storage;
   integrationHelpers: any;

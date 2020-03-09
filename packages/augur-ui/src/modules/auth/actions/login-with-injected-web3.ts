@@ -20,7 +20,7 @@ import { logout } from 'modules/auth/actions/logout';
 import { AppState } from 'store';
 
 // MetaMask, dapper, Mobile wallets
-export const loginWithInjectedWeb3 = () => (
+export const loginWithInjectedWeb3 = () => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState,
 ) => {
@@ -84,9 +84,18 @@ export const loginWithInjectedWeb3 = () => (
     }
   };
 
-  return windowRef.ethereum
+  try {
+    // This is equivalent to ethereum.enable()
+    // Handle connecting, per EIP 1102
+    const request = await windowRef.ethereum.send('eth_requestAccounts');
+    const address = request.result[0];
+    success(address, false);
+  }
+  catch (err) {
+    return windowRef.ethereum
     .enable()
     .then((resolve: string[]) => success(resolve[0], false), failure);
+  }
 };
 
 const login = (account: string) => (

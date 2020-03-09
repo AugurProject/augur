@@ -3,7 +3,6 @@ import { toChecksumAddress } from 'ethereumjs-util';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { PersonalSigningWeb3Provider } from 'utils/personal-signing-web3-provider';
-import Web3 from 'web3';
 import {
   ACCOUNT_TYPES,
   PORTIS_API_KEY,
@@ -28,8 +27,10 @@ import { getNetwork } from 'utils/get-network-name';
 
   if (portisNetwork) {
     try {
-      // Only inject Portis if we are using Portis
+      // Use require instead of import for wallet SDK packages
+      // to conditionally load web3 into the DOM
       const Portis = require('@portis/web3');
+      const Web3 = require('web3');
       const portis = new Portis(PORTIS_API_KEY, portisNetwork === 'localhost' ? localPortisNetwork : portisNetwork, {
         scope: ['email'],
         registerPageByDefault: forceRegisterPage,
