@@ -209,13 +209,13 @@ export const CountdownProgress = (props: CountdownProgressProps) => {
 
     timeLeft = time.timestamp - currentTime.timestamp;
     countdown = (countdownBreakpoint || OneWeek) >= timeLeft && timeLeft > 0;
-    valueString = countdown
-      ? `${daysRemaining}:${
+    valueString = !countdown || label === 'Expired'
+      ? time.formattedLocalShortDateSecondary
+      : `${daysRemaining}:${
           hoursRemaining >= 10 ? hoursRemaining : '0' + hoursRemaining
         }:${
           minutesRemaining >= 10 ? minutesRemaining : '0' + minutesRemaining
-        }:${secondsRemaining >= 10 ? secondsRemaining : '0' + secondsRemaining}`
-      : time.formattedLocalShortDateSecondary;
+        }:${secondsRemaining >= 10 ? secondsRemaining : '0' + secondsRemaining}`;
   }
   const breakpointOne =
     timeLeft <= firstBreakpoint && timeLeft > secondBreakpoint && countdown;
@@ -226,7 +226,7 @@ export const CountdownProgress = (props: CountdownProgressProps) => {
       className={classNames(Styles.ProgressLabel, {
         [Styles.FirstBreakpoint]: breakpointOne,
         [Styles.SecondBreakpoint]: breakpointTwo,
-        [Styles.Finished]: timeLeft < 0,
+        [Styles.Finished]: timeLeft < 0 || label === 'Expired',
         [Styles.AlignRight]: alignRight,
       })}
     >
