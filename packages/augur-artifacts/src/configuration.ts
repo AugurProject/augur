@@ -198,7 +198,7 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
   },
   sdk: {
     enabled: false,
-    ws: 'ws://localhost:9001',
+    ws: 'ws://localhost:60557',
   },
   server: {
     httpPort: 9003,
