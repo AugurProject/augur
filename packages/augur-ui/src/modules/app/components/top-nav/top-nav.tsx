@@ -119,7 +119,7 @@ const TopNav = ({
                   {item.showAlert && Dot}
                 </Link>
               </li>
-            </>
+            </ React.Fragment>
           );
         })}
         {!isLogged && (
