@@ -571,3 +571,56 @@
     }
   }
 }
+
+:root[theme="BETTING"],
+:root[theme="SPORTs"] {
+  .MarketCard {
+    > div.TopRow {
+      > button[class*="FavoriteButton"] {
+        margin-left: @size-10;
+        margin-right: 0;
+        order: 4;
+      }
+
+      > div[class*='DotSelection'] {
+        > button > svg {
+          height: @size-18;
+          width: @size-18;
+          fill: none;
+          stroke: var(--color-inactive-text);
+        }
+        > div {
+          border: 0;
+          box-shadow: 0 0 @size-4 var(--color-primary-text-15);
+          top: @size-22;
+
+          > div {
+            .text-14;
+
+            align-content: center;
+            color: var(--color-secondary-text);
+            height: @size-44;
+
+            &:after {
+              top: @size-13;
+            }
+
+            > span {
+              .text-14;
+
+              color: var(--color-secondary-text);
+            }
+          }
+  
+          > div:nth-of-type(3):after {
+            display: none;
+          }
+  
+          > div:nth-of-type(4) {
+            display: none;
+          }
+        }
+      }
+    }
+  }
+}
