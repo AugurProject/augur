@@ -2204,10 +2204,15 @@ export function addScripts(flash: FlashSession) {
         spawn('yarn', ['workspace', '@augurproject/gnosis-relay-api', 'relay-logs'], {env, stdio: 'inherit'});
         await waitForSigint();
       } finally {
-        this.log('Stopping geth');
-        await spawnSync('docker', ['kill', 'geth'], { stdio: 'inherit' });
-        this.log('Stopping relays');
-        await spawnSync('yarn', ['workspace', '@augurproject/gnosis-relay-api', 'kill-relay'], { env, stdio: 'inherit' });
+        if (!detach) {
+          this.log('Stopping geth');
+          await spawnSync('docker', ['kill', 'geth'], { stdio: 'inherit' });
+          this.log('Stopping relays');
+          await spawnSync('yarn', ['workspace', '@augurproject/gnosis-relay-api', 'kill-relay'], {
+            env,
+            stdio: 'inherit'
+          });
+        }
       }
     }
   });
