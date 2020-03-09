@@ -24,7 +24,7 @@ interface HelpResourcesProps {
 
 const HELP_LINKS = [
   {
-    label: 'trading tutorial',
+    label: 'view trading tutorial',
     showNonLink: true,
     customLink: {
       pathname: MARKET,
@@ -33,7 +33,7 @@ const HELP_LINKS = [
       }),
     },
   },
-  {
+  {    
     label: 'help center',
     link: HELP_CENTER,
   },
@@ -49,6 +49,14 @@ const HELP_LINKS = [
     label: 'how to dispute',
     link: HELP_CENTER_HOW_TO_DISPUTE,
   },
+  {
+    label: 'submit feedback',
+    link: 'https://github.com/AugurProject/augur/issues/new/choose',
+  },
+  {
+    label: 'community support',
+    link: 'https://discordapp.com/invite/STswGEF',
+  },
 ];
 
 export const HelpMenuList = () => {
@@ -63,6 +71,7 @@ export const HelpMenuList = () => {
             label={helpLink.label}
             customLink={helpLink.customLink}
             showNonLink={helpLink.showNonLink}
+            lightLink={helpLink.lightLink}
           />
         </li>
       ))}
@@ -86,6 +95,7 @@ export const HelpMenu = ({ closeHelpMenu }: HelpMenuProps) => {
             label={helpLink.label}
             customLink={helpLink.customLink}
             showNonLink={helpLink.showNonLink}
+            lightLink={helpLink.lightLink}
             callback={closeHelpMenu}
           />
         </span>
