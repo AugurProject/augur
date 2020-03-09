@@ -41,8 +41,8 @@ import { GnosisSafeState } from '@augurproject/gnosis-relay-api/src/GnosisRelayA
 
 const ADD_PENDING_QUEUE_METHOD_CALLS = [
   BUYPARTICIPATIONTOKENS,
-  MIGRATE_FROM_LEG_REP_TOKEN,
   REDEEMSTAKE,
+  MIGRATE_FROM_LEG_REP_TOKEN,
   BATCHCANCELORDERS,
   TRADINGPROCEEDSCLAIMED
 ];
@@ -131,6 +131,16 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
     }
 
     switch (methodCall) {
+      case REDEEMSTAKE: {
+        const params = transaction.params;
+        params._reportingParticipants.map(participant => 
+          dispatch(addPendingData(participant, REDEEMSTAKE, eventName, hash, {...transaction}))
+        );
+        params._disputeWindows.map(window => 
+          dispatch(addPendingData(window, REDEEMSTAKE, eventName, hash, {...transaction}))
+        );
+        break;
+      }
       case CLAIMMARKETSPROCEEDS: {
         const params = transaction.params;
         if (params._markets.length === 1) {
