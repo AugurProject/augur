@@ -20,6 +20,7 @@ import {
   CLAIM_FEES_GAS_COST,
   ZERO,
   CLAIM_ALL_TITLE,
+  REDEEMSTAKE,
 } from 'modules/common/constants';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
@@ -120,6 +121,8 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
           status: pending && pending.status,
           notice,
           marketTxCount,
+          queueName: REDEEMSTAKE,
+          queueId: marketObj.contracts[0],
           properties: [
             {
               label: 'Reporting stake',
@@ -154,6 +157,8 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       title: isForking
         ? 'Release Participation REP'
         : 'Reedeem all participation tokens',
+      queueName: REDEEMSTAKE,
+      queueId: claimReportingFees.participationContracts.contracts[0],
       text: 'Claim',
       status: disputeWindowsPending,
       properties: [
