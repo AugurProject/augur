@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import { formatShares } from 'utils/format-number';
+import { formatShares, formatDai } from 'utils/format-number';
 import { MarketData } from 'modules/types';
 import {
   LinearPropertyLabel,
@@ -29,18 +29,22 @@ const FilledOrdersTable = (props: FilledOrdersTableProps) => {
         )}
         <ul>
           <li>Filled</li>
+          <li>Price</li>
           <li>Time Stamp</li>
-          <li>Transaction Details</li>
+          <li>Details</li>
         </ul>
         {filledOrder.trades.map((trade: MarketData, i: number) => (
           <ul key={i}>
             <li>
               <ValueLabel value={formatShares(trade.amount, opts)} />
             </li>
+            <li>
+              <ValueLabel value={formatDai(trade.price, opts)} />
+            </li>
             <li>{trade.timestamp.formattedLocalShortDateTimeNoTimezone}</li>
             <li>
               <ViewTransactionDetailsButton
-                label={'VIEW Etherscan Transaction'}
+                label={'VIEW Etherscan'}
                 light
                 transactionHash={trade.transactionHash}
               />
@@ -58,6 +62,11 @@ const FilledOrdersTable = (props: FilledOrdersTableProps) => {
               highlightFirst
               label="Filled"
               value={formatShares(trade.amount, opts).formatted}
+            />
+            <LinearPropertyLabel
+              highlightFirst
+              label="Price"
+              value={formatDai(trade.price, opts).formatted}
             />
             <LinearPropertyLabel
               highlightFirst

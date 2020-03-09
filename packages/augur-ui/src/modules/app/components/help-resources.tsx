@@ -5,7 +5,13 @@ import { QuestionIcon } from 'modules/common/icons';
 import { ExternalLinkButton } from 'modules/common/buttons';
 
 import Styles from 'modules/app/components/help-resources.styles.less';
-import { TRADING_TUTORIAL } from 'modules/common/constants';
+import {
+  TRADING_TUTORIAL,
+  HELP_CENTER,
+  HELP_CENTER_ADD_FUNDS,
+  HELP_CENTER_HOW_TO_TRADE,
+  HELP_CENTER_HOW_TO_DISPUTE,
+} from 'modules/common/constants';
 import { MARKET } from 'modules/routes/constants/views';
 import makeQuery from 'modules/routes/helpers/make-query';
 import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names';
@@ -29,19 +35,19 @@ const HELP_LINKS = [
   },
   {
     label: 'help center',
-    link: 'https://docs.augur.net',
+    link: HELP_CENTER,
   },
   {
     label: 'how to add funds',
-    link: 'https://docs.augur.net',
+    link: HELP_CENTER_ADD_FUNDS,
   },
   {
     label: 'how to trade',
-    link: 'https://docs.augur.net',
+    link: HELP_CENTER_HOW_TO_TRADE,
   },
   {
     label: 'how to dispute',
-    link: 'https://docs.augur.net',
+    link: HELP_CENTER_HOW_TO_DISPUTE,
   },
 ];
 

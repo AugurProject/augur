@@ -7,7 +7,7 @@ import { updateModal } from 'modules/modal/actions/update-modal';
 import { AppState } from 'store';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { MODAL_ADD_FUNDS, MODAL_TEST_BET } from 'modules/common/constants';
+import { MODAL_ADD_FUNDS, MODAL_TEST_BET, HELP_CENTER_ADD_FUNDS} from 'modules/common/constants';
 import { OnboardingPaymentIcon } from 'modules/common/icons';
 import { BUY_DAI, track } from 'services/analytics/helpers';
 
@@ -33,7 +33,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
     },
     {
       content: 'LEARN MORE',
-      link: 'https://docs.augur.net',
+      link: HELP_CENTER_ADD_FUNDS,
     },
   ],
   buttons: [

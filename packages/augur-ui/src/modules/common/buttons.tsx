@@ -54,6 +54,7 @@ export interface DefaultButtonProps {
   cancelButton?: boolean;
   confirmed?: boolean;
   failed?: boolean;
+  submitTextButtton?: boolean;
 }
 
 export interface SortButtonProps {
@@ -139,7 +140,7 @@ export const PrimaryButton = (props: DefaultButtonProps) => (
         onClick={e => props.action(e)}
         className={classNames(Styles.PrimaryButton, {
           [Styles.Confirmed]: props.confirmed,
-          [Styles.Failed]: props.failed
+          [Styles.Failed]: props.failed,
         })}
         disabled={props.disabled}
         title={props.title || props.text}
@@ -156,7 +157,7 @@ export const SecondaryButton = (props: DefaultButtonProps) => (
     className={classNames(Styles.SecondaryButton, {
       [Styles.Small]: props.small,
       [Styles.Confirmed]: props.confirmed,
-      [Styles.Failed]: props.failed
+      [Styles.Failed]: props.failed,
     })}
     disabled={props.disabled}
     title={props.title || props.text}
@@ -170,14 +171,17 @@ const ProcessingButtonComponent = (props: DefaultButtonProps) => {
   let icon = props.icon;
   let buttonText = props.text;
   let buttonAction = props.action;
-  if (props.status === TXEventName.Pending || props.status === TXEventName.AwaitingSigning) {
+  if (
+    props.status === TXEventName.Pending ||
+    props.status === TXEventName.AwaitingSigning
+  ) {
     buttonText = 'Processing...';
     isDisabled = true;
   }
   const failed = props.status === TXEventName.Failure;
   const confirmed = props.status === TXEventName.Success;
   if (failed) buttonText = 'Failed';
-  if (confirmed) buttonText = 'Confirmed'
+  if (confirmed) buttonText = 'Confirmed';
   if (failed || confirmed) {
     buttonAction = e => props.cancel(e);
     icon = XIcon;
@@ -185,7 +189,7 @@ const ProcessingButtonComponent = (props: DefaultButtonProps) => {
   }
   return (
     <>
-      {props.secondaryButton &&
+      {props.secondaryButton && (
         <SecondaryButton
           {...props}
           confirmed={confirmed}
@@ -195,8 +199,8 @@ const ProcessingButtonComponent = (props: DefaultButtonProps) => {
           action={buttonAction}
           disabled={isDisabled}
         />
-      }
-      {!props.secondaryButton && !props.cancelButton &&
+      )}
+      {!props.secondaryButton && !props.cancelButton && !props.submitTextButtton && (
         <PrimaryButton
           {...props}
           confirmed={confirmed}
@@ -206,8 +210,18 @@ const ProcessingButtonComponent = (props: DefaultButtonProps) => {
           action={buttonAction}
           disabled={isDisabled}
         />
-      }
-      {props.cancelButton &&
+      )}
+      {props.submitTextButtton && (
+        <SubmitTextButton
+          {...props}
+          confirmed={confirmed}
+          failed={failed}
+          text={buttonText}
+          action={buttonAction}
+          disabled={isDisabled}
+        />
+      )}
+      {props.cancelButton && (
         <CancelTextButton
           {...props}
           confirmed={confirmed}
@@ -217,7 +231,7 @@ const ProcessingButtonComponent = (props: DefaultButtonProps) => {
           action={buttonAction}
           disabled={isDisabled}
         />
-      }
+      )}
     </>
   );
 };
@@ -227,13 +241,15 @@ const mapStateToPropsProcessingButton = (state: AppState, ownProps) => {
   let disabled = false;
 
   const pendingData =
-  pendingQueue[ownProps.queueName] &&
-  pendingQueue[ownProps.queueName][ownProps.queueId];
+    pendingQueue[ownProps.queueName] &&
+    pendingQueue[ownProps.queueName][ownProps.queueId];
 
   let status = pendingData && pendingData.status;
 
   if (ownProps.matchingId !== undefined && pendingData) {
-    if (pendingData.data.matchingId.toString() !== ownProps.matchingId.toString()) {
+    if (
+      pendingData.data.matchingId.toString() !== ownProps.matchingId.toString()
+    ) {
       status = null;
       disabled = true;
     }
@@ -250,10 +266,10 @@ const mapDispatchToPropsProcessingButton = (dispatch, ownProps) => ({
     dispatch(removePendingData(ownProps.queueId, ownProps.queueName)),
 });
 
-
-export const ProcessingButton = connect(mapStateToPropsProcessingButton, mapDispatchToPropsProcessingButton)(
-  ProcessingButtonComponent
-);
+export const ProcessingButton = connect(
+  mapStateToPropsProcessingButton,
+  mapDispatchToPropsProcessingButton
+)(ProcessingButtonComponent);
 
 export const PrimarySignInButton = (props: DefaultButtonProps) => (
   <button
@@ -406,7 +422,7 @@ export const CancelTextButton = ({
     disabled={disabled}
     title={title}
   >
-    {text} {!icon && !text? XIcon : icon}
+    {text} {!icon && !text ? XIcon : icon}
   </button>
 );
 
@@ -431,7 +447,10 @@ export const TextButtonFlip = (props: DefaultButtonProps) => (
 export const SubmitTextButton = (props: DefaultButtonProps) => (
   <button
     onClick={e => props.action(e)}
-    className={Styles.SubmitTextButton}
+    className={classNames(Styles.SubmitTextButton, {
+      [Styles.Confirmed]: props.confirmed,
+      [Styles.Failed]: props.failed,
+    })}
     disabled={props.disabled}
     title={props.title}
   >
