@@ -5,10 +5,12 @@ import {
   DESCENDING,
   BUY,
   BETTING_LAY,
-  BETTING_BACK
+  BETTING_BACK,
+  THEMES
 } from 'modules/common/constants';
 import {
   StarIcon,
+  StarIconSportsBetting,
   SortIcon,
   PercentIcon,
   QRCodeIcon,
@@ -25,6 +27,7 @@ import {
   BackIcon,
   AlternateDaiLogoIcon,
 } from 'modules/common/icons';
+import { getTheme } from 'modules/app/actions/update-app-status';
 import classNames from 'classnames';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import Styles from 'modules/common/buttons.styles.less';
@@ -359,7 +362,7 @@ export const FavoritesButton = ({
     disabled={disabled}
     title={title || 'Toggle Favorite'}
   >
-    {StarIcon}
+    {getTheme() !== THEMES.TRADING ? StarIconSportsBetting : StarIcon}
     {!hideText && `${isFavorite ? ' Remove from' : ' Add to'} watchlist`}
   </button>
 );
