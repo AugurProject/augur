@@ -17,21 +17,14 @@ const mapStateToProps = (state: AppState, ownProps) => {
 
   const expirationTime = tradingTutorial || !!!orderBooks[marketId] ? 0 : orderBooks[marketId].expirationTime;
 
-  const getGasConfirmEstimate = async () => {
-    const augur = augurSdk.get();
-    const gasConfirmTime = await augur.getGasConfirmEstimate();
-    return gasConfirmTime;
-  };
-
   return {
     expirationTime,
-    getGasConfirmEstimate,
     currentTimestamp,
     marketId
   };
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
+const mapDispatchToProps = (dispatch) => ({
   loadMarketOrderBook: marketId => dispatch(loadMarketOrderBook(marketId)),
 });
 
