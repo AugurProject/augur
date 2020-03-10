@@ -475,6 +475,41 @@
   }
 }
 
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .FavoriteButton {
+    > svg > path {
+      fill: var(--color-dark-text);
+      fill-opacity: 0.5;
+      stroke: none;
+    }
+
+    &:hover:enabled {
+      > svg > path {
+        fill: var(--color-primary-text);
+        fill-opacity: 1;
+        stroke: none;
+      }
+    }
+  }
+
+  .FavoriteButton_Favorite {
+    > svg > path {
+      fill: var(--color-reporting);
+      fill-opacity: 1;
+      stroke: none;
+    }
+
+    &:hover:enabled {
+      > svg > path {
+        fill: var(--color-reporting);
+        fill-opacity: 1;
+        stroke: none;
+      }
+    }
+  }
+}
+
 .CompactButton {
   .Button;
   .mono-9-bold;
@@ -570,6 +605,14 @@
     &:hover {
       color: var(--color-primary-text-20);
     }
+  }
+
+  &.Failed {
+    color: var(--color-error);
+  }
+
+  &.Confirmed {
+    color: var(--color-positive);
   }
 }
 
@@ -935,7 +978,7 @@
 
       &:hover {
         color: var(--color-primary-text);
-  
+
         > a {
           color: var(--color-primary-text);
         }
@@ -1164,15 +1207,15 @@
     &:disabled {
       background: var(--color-positive-15);
     }
-  
+
     &:hover:enabled {
       background: var(--color-positive-40);
     }
-  
+
     &:focus:enabled {
       background: var(--color-positive-40);
     }
-  
+
     &:active:enabled {
       background: var(--color-positive-40);
     }
@@ -1184,15 +1227,15 @@
     &:disabled {
       background: var(--color-negative-15);
     }
-  
+
     &:hover:enabled {
       background: var(--color-negative-40);
     }
-  
+
     &:focus:enabled {
       background: var(--color-negative-40);
     }
-  
+
     &:active:enabled {
       background: var(--color-negative-40);
     }

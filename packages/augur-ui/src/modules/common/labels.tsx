@@ -31,7 +31,9 @@ import {
   REPORTING_STATE,
   DISCORD_LINK,
   ACCOUNT_TYPES,
+  THEMES,
 } from 'modules/common/constants';
+import { getTheme } from 'modules/app/actions/update-app-status';
 import { ViewTransactionDetailsButton } from 'modules/common/buttons';
 import { formatNumber } from 'utils/format-number';
 import { DateFormattedObject, FormattedNumber, SizeTypes } from 'modules/types';
@@ -246,28 +248,26 @@ interface RedFlagProps {
   market: Getters.Markets.MarketInfo;
 }
 
-export const RedFlag = ({ market }: RedFlagProps) => {
-  return market.mostLikelyInvalid ? (
-    <>
-      <label
-        className={TooltipStyles.TooltipHint}
-        data-tip
-        data-for={`tooltip-${market.id}-redFlag`}
-      >
-        {RedFlagIcon}
-      </label>
-      <ReactTooltip
-        id={`tooltip-${market.id}-redFlag`}
-        className={TooltipStyles.Tooltip}
-        effect="solid"
-        place="right"
-        type="light"
-      >
-        {PROBABLE_INVALID_MARKET}
-      </ReactTooltip>
-    </>
-  ) : null;
-};
+export const RedFlag = ({ market }: RedFlagProps) => market.mostLikelyInvalid ? (
+  <>
+    <label
+      className={classNames(TooltipStyles.TooltipHint, Styles.RedFlag)}
+      data-tip
+      data-for={`tooltip-${market.id}-redFlag`}
+    >
+      {getTheme() !== THEMES.TRADING ? `High Risk` : RedFlagIcon}
+    </label>
+    <ReactTooltip
+      id={`tooltip-${market.id}-redFlag`}
+      className={TooltipStyles.Tooltip}
+      effect="solid"
+      place="right"
+      type="light"
+    >
+      {PROBABLE_INVALID_MARKET}
+    </ReactTooltip>
+  </>
+) : null;
 
 interface TemplateShieldProps {
   market: Getters.Markets.MarketInfo;

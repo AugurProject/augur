@@ -66,7 +66,7 @@ const TopNav = ({
             );
           }
           return (
-            <>
+            <React.Fragment key={item.title}>
               {index === SPREAD_INDEX && (
                 <li key={index} className={Styles.FillSpace} />
               )}
@@ -119,7 +119,7 @@ const TopNav = ({
                   {item.showAlert && Dot}
                 </Link>
               </li>
-            </>
+            </ React.Fragment>
           );
         })}
         {!isLogged && (

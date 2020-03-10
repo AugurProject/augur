@@ -28,7 +28,7 @@ import InvalidLabel from 'modules/common/containers/labels';
 import { SecondaryButton, ProcessingButton } from 'modules/common/buttons';
 
 import Styles from 'modules/market-cards/common.styles.less';
-import MarketCard from 'modules/market-cards/market-card';
+import { MarketCard } from 'modules/market-cards/market-card';
 import { selectSortedDisputingOutcomes } from 'modules/markets/selectors/market';
 import { calculatePosition } from 'modules/market/components/market-scalar-outcome-display/market-scalar-outcome-display';
 import { getOutcomeNameWithOutcome } from 'utils/get-outcome';

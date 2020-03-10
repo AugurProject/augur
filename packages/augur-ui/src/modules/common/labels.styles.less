@@ -927,3 +927,18 @@ span.PendingLabel {
     color: var(--color-primary-action);
   }
 }
+
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  label.RedFlag {
+    .text-10-semi-bold;
+    
+    align-items: center;
+    border-radius: @size-4;
+    background: var(--color-resolved-10);
+    color: var(--color-resolved);
+    display: flex;
+    padding: @size-4;
+    text-transform: uppercase;
+  }
+}

@@ -207,6 +207,30 @@
 :root[theme="SPORTS"] {
   .TopBar {
     background: var(--color-primary-text);
+
+    > div:last-of-type {
+      > button[class*="SecondaryButton"] {
+        border: @size-1 solid var(--color-secondary-action);
+        color: var(--color-secondary-action);
+        background: transparent;
+  
+        &:hover {
+          border: @size-1 solid var(--color-secondary-action);
+          background: var(--color-secondary-action);
+          color: var(--color-primary-text);
+        }
+      }
+  
+      > button[class*="PrimaryButton"] {
+        color: var(--color-module-background);
+
+        &:hover {
+          border: @size-1 solid var(--color-secondary-action);
+          background: var(--color-secondary-action);
+          color: var(--color-primary-text);
+        }
+      }
+    }
   }
 
   .Logo {
