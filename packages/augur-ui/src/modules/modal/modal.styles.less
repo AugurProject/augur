@@ -1108,6 +1108,10 @@ div.ButtonsRow:last-of-type {
     animation-timing-function: linear;
     height: @size-32;
     width: @size-32;
+
+    LinearGradient > stop {
+      stop-color: var(--color-primary-text);
+    }
   }
 
   > article {
@@ -1135,6 +1139,17 @@ div.ButtonsRow:last-of-type {
     position: absolute;
     right: @size-12;
     top: @size-12;
+  }
+}
+
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .Loading {
+    > svg {
+      LinearGradient > stop {
+        stop-color: var(--color-reporting);
+      }
+    }
   }
 }
 
