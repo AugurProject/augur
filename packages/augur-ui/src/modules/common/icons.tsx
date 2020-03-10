@@ -524,7 +524,7 @@ export const Syncing = (
 );
 
 export const MenuChevron = (
-  <svg width="6" height="10" viewBox="0 0 6 10" fill="none">
+  <svg viewBox="0 0 6 10" fill="none">
     <path
       fillRule="evenodd"
       clipRule="evenodd"
@@ -967,7 +967,7 @@ export const LogoutIcon = (
 );
 
 export const errorIcon = (
-  <svg width="16px" height="16px" viewBox="0 0 16 16">
+  <svg viewBox="0 0 16 16">
     <defs />
     <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
       <g transform="translate(-24.000000, -607.000000)">
@@ -989,7 +989,7 @@ export const errorIcon = (
 );
 
 export const Alerts = unseenCount => (
-  <svg width="34" height="24" viewBox="0 0 34 24">
+  <svg viewBox="0 0 34 24">
     <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
       <g>
         <g
@@ -1178,7 +1178,7 @@ export const LoadingEllipse = (
 );
 
 export const Compact = (
-  <svg width="16" height="16" viewBox="0 0 16 16">
+  <svg viewBox="0 0 16 16">
     <rect y="13.1001" width="16" height="2.9" />
     <rect y="8.7998" width="16" height="2.9" />
     <rect y="4.3999" width="16" height="2.9" />
@@ -1187,7 +1187,7 @@ export const Compact = (
 );
 
 export const Classic = (
-  <svg width="16" height="16" viewBox="0 0 16 16">
+  <svg viewBox="0 0 16 16">
     <rect y="12.2002" width="16" height="3.8" />
     <rect y="6" width="16" height="4.2" />
     <rect width="16" height="4" />
@@ -1195,14 +1195,14 @@ export const Classic = (
 );
 
 export const Expanded = (
-  <svg width="16" height="16" viewBox="0 0 16 16">
+  <svg viewBox="0 0 16 16">
     <rect y="9" width="16" height="7" />
     <rect width="16" height="7" />
   </svg>
 );
 
 export const MagnifyingGlass = (
-  <svg width="24" height="24" viewBox="0 0 24 24">
+  <svg viewBox="0 0 24 24">
     <path
       fillRule="evenodd"
       clipRule="evenodd"
