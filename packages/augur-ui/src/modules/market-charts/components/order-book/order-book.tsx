@@ -1,4 +1,4 @@
-import React, { Component, useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import classNames from 'classnames';
 
 import OrderHeader from 'modules/market-charts/components/order-header/order-header';
@@ -14,7 +14,6 @@ import {
 import { CancelTextButton } from 'modules/common/buttons';
 import Styles from 'modules/market-charts/components/order-book/order-book.styles.less';
 import {
-  OutcomeFormatted,
   QuantityOutcomeOrderBook,
   QuantityOrderBookOrder,
 } from 'modules/types';
@@ -24,8 +23,6 @@ import { formatShares } from 'utils/format-number';
 interface OrderBookSideProps {
   orderBook: QuantityOutcomeOrderBook;
   updateSelectedOrderProperties: Function;
-  hasOrders: boolean;
-  orderBookKeys: object;
   fixedPrecision: number;
   pricePrecision: number;
   setHovers: Function;
@@ -46,18 +43,9 @@ interface OrderBookProps {
   pricePrecision: number;
   toggle: boolean;
   hide: boolean;
-  marketId: string;
-  initialLiquidity: boolean;
   marketType: string;
-  account: string;
-  selectedOutcome: OutcomeFormatted;
   showButtons: boolean;
   orderbookLoading: boolean;
-}
-
-interface OrderBookState {
-  hoveredOrderIndex?: number;
-  hoveredSide?: string;
 }
 
 const OrderBookSide = ({
@@ -192,84 +180,71 @@ const OrderBookSide = ({
   );
 };
 
-// tslint:disable-next-line: max-classes-per-file
-export default class OrderBook extends Component<
-  OrderBookProps,
-  OrderBookState
-> {
-  static defaultProps = {
-    extend: false,
-    hide: false,
-    fixedPrecision: 2,
-    pricePrecision: 2,
-  };
+const OrderBook = ({
+  orderBook,
+  updateSelectedOrderProperties,
+  hasOrders,
+  fixedPrecision = 2,
+  pricePrecision = 2,
+  toggle,
+  hide = false,
+  marketType,
+  showButtons,
+  orderbookLoading,
+}: OrderBookProps) => {
+  const [hoverState, setHoverState] = useState({ hoveredOrderIndex: null,
+    hoveredSide: null });
+  const setHovers = (hoveredOrderIndex: number, hoveredSide: string) => setHoverState({ hoveredOrderIndex, hoveredSide });
 
-  state: OrderBookState = {
-    hoveredOrderIndex: null,
-    hoveredSide: null,
-  };
+  return (
+    <section className={Styles.OrderBook}>
+      <OrderHeader
+        title="Order Book"
+        headers={['quantity', 'price', 'my quantity']}
+        toggle={toggle}
+        hide={hide}
+      />
+      <OrderBookSide
+        fixedPrecision={fixedPrecision}
+        pricePrecision={pricePrecision}
+        orderBook={orderBook}
+        updateSelectedOrderProperties={updateSelectedOrderProperties}
+        marketType={marketType}
+        setHovers={setHovers}
+        hoveredSide={hoverState.hoveredSide}
+        hoveredOrderIndex={hoverState.hoveredOrderIndex}
+        type={ASKS}
+        showButtons={showButtons}
+        orderbookLoading={orderbookLoading}
+      />
+      {!hide && (
+        <div className={Styles.Midmarket}>
+          {hasOrders &&
+            `spread: ${
+              orderBook.spread
+                ? `$${createBigNumber(orderBook.spread).toFixed(
+                    pricePrecision
+                  )}`
+                : '—'
+            }`}
+        </div>
+      )}
+      <OrderBookSide
+        fixedPrecision={fixedPrecision}
+        pricePrecision={pricePrecision}
+        orderBook={orderBook}
+        updateSelectedOrderProperties={updateSelectedOrderProperties}
+        marketType={marketType}
+        setHovers={setHovers}
+        hoveredSide={hoverState.hoveredSide}
+        hoveredOrderIndex={hoverState.hoveredOrderIndex}
+        type={BIDS}
+        showButtons={showButtons}
+        orderbookLoading={orderbookLoading}
+      />
+    </section>
+  );
+};
 
-  setHovers = (hoveredOrderIndex: number, hoveredSide: string) => {
-    this.setState({
-      hoveredOrderIndex,
-      hoveredSide,
-    });
-  };
+export default OrderBook;
 
-  render() {
-    const {
-      pricePrecision,
-      toggle,
-      hide,
-      marketType,
-      hasOrders,
-      orderBook,
-      showButtons,
-      orderbookLoading,
-    } = this.props;
-    const { hoveredSide, hoveredOrderIndex } = this.state;
-
-    return (
-      <section className={Styles.OrderBook}>
-        <OrderHeader
-          title="Order Book"
-          headers={['quantity', 'price', 'my quantity']}
-          toggle={toggle}
-          hide={hide}
-        />
-        <OrderBookSide
-          {...this.props}
-          marketType={marketType}
-          setHovers={this.setHovers}
-          hoveredSide={hoveredSide}
-          hoveredOrderIndex={hoveredOrderIndex}
-          type={ASKS}
-          showButtons={showButtons}
-          orderbookLoading={orderbookLoading}
-        />
-        {!hide && (
-          <div className={Styles.Midmarket}>
-            {hasOrders &&
-              `spread: ${
-                orderBook.spread
-                  ? `$${createBigNumber(orderBook.spread).toFixed(
-                      pricePrecision
-                    )}`
-                  : '—'
-              }`}
-          </div>
-        )}
-        <OrderBookSide
-          {...this.props}
-          marketType={marketType}
-          setHovers={this.setHovers}
-          hoveredSide={hoveredSide}
-          hoveredOrderIndex={hoveredOrderIndex}
-          type={BIDS}
-          showButtons={showButtons}
-          orderbookLoading={orderbookLoading}
-        />
-      </section>
-    );
-  }
-}
