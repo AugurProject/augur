@@ -273,7 +273,9 @@ export default class MarketCard extends React.Component<
                 value={formatAttoRep(disputeInfo.stakeCompletedTotal).full}
               />
             )}
-            <div className={Styles.hoverIconTray}>{InfoIcons}</div>
+            <div className={Styles.hoverIconTray}>
+              <InfoIcons id={id} />
+            </div>
             <MarketProgress
               reportingState={reportingState}
               currentTime={currentAugurTimestamp}

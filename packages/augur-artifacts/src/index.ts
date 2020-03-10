@@ -70,6 +70,10 @@ export interface SDKConfiguration {
   },
   uploadBlockNumber?: number,
   addresses?: ContractAddresses,
+  plugins?: {
+    chat?: '3box'|'orbit'|undefined,
+    comments?: '3box'|'facebook'|undefined,
+  }
 };
 
 export let environments: {[network: string]: SDKConfiguration} = {};
