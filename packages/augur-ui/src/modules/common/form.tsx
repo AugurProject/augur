@@ -985,7 +985,6 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
         stake = disputeInfo.stakes.find(s => s.outcome === null);
       }
     }
-    console.log(userOutcomeCurrentRoundDispute);
     if (stake && stake.stakeCurrent === '-') stake.stakeCurrent = '0';
     const fullBond =
       stake && inputtedReportingStake
@@ -1042,18 +1041,18 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
                 />
               )}
               {stake && stake.tentativeWinning && (
-                <>
+                <div className={Styles.PreFilled}>
                   <Subheaders
                     header="pre-filled stake"
                     subheader={formatAttoRep(stake.stakeCurrent || ZERO).full}
                   />
                   {userOutcomeCurrentRoundDispute && (
                     <Subheaders
-                      header="My contribution"
-                      subheader={formatAttoRep(stake.stakeCurrent || ZERO).full}
+                      header="My contribution:"
+                      subheader={formatAttoRep(userOutcomeCurrentRoundDispute.userStakeCurrent || ZERO).full}
                     />
                   )}
-                </>
+                </div>
               )}
               {checked && (
                 <DisputingBondsView
