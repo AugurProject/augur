@@ -68,7 +68,6 @@
     "ZeroXTrade": "0xF6e791393480eD275Cb1729b99C7806EBFc194C0"
   },
   "plugins": {
-    "chat": "orbit",
-    "comments": "facebook"
+    "chat": "orbit"
   }
 }
