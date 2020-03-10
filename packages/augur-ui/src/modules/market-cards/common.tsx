@@ -56,30 +56,40 @@ export interface OutcomeProps {
   outcomeId: string;
 }
 
-export const Outcome = (props: OutcomeProps) => {
-  const percent = props.lastPricePercent
-    ? calculatePosition(props.min, props.max, props.lastPricePercent)
+export const Outcome = ({
+  description,
+  lastPricePercent,
+  invalid,
+  index,
+  min,
+  max,
+  isScalar,
+  marketId,
+  outcomeId,
+}: OutcomeProps) => {
+  const percent = lastPricePercent
+    ? calculatePosition(min, max, lastPricePercent)
     : 0;
   return (
-    <MarketLink id={props.marketId} outcomeId={props.outcomeId.toString()}>
+    <MarketLink id={marketId} outcomeId={outcomeId.toString()}>
       <div
         className={classNames(Styles.Outcome, {
-          [Styles.invalid]: props.invalid,
-          [Styles[`Outcome-${props.index + 1}`]]: !props.invalid,
+          [Styles.invalid]: invalid,
+          [Styles[`Outcome-${index + 1}`]]: !invalid,
         })}
       >
         <div>
-          {props.invalid ? (
+          {invalid ? (
             <InvalidLabel
-              text={props.description}
-              keyId={`${props.marketId}_${props.description}`}
+              text={description}
+              keyId={`${marketId}_${description}`}
             />
           ) : (
-            <span>{props.description}</span>
+            <span>{description}</span>
           )}
           <span className={classNames({ [Styles.Zero]: percent === 0 })}>
             {percent === 0
-              ? `0.00${props.isScalar ? '' : '%'}`
+              ? `0.00${isScalar ? '' : '%'}`
               : `${formatDai(percent).formatted}%`}
           </span>
         </div>
@@ -102,29 +112,39 @@ export interface DisputeOutcomeProps {
   isWarpSync?: boolean;
 }
 
-export const DisputeOutcome = (props: DisputeOutcomeProps) => {
-  const stakeCurrent = props.stake && formatAttoRep(props.stake.stakeCurrent);
-  const bondSizeCurrent =
-    props.stake && formatAttoRep(props.stake.bondSizeCurrent);
+// TODO: needs a refactor. repeated Logic, overwrapped HTML.
+export const DisputeOutcome = ({
+  description,
+  invalid,
+  index,
+  stake,
+  dispute,
+  id,
+  canDispute,
+  canSupport,
+  marketId,
+  isWarpSync,
+}: DisputeOutcomeProps) => {
+  const stakeCurrent = stake && formatAttoRep(stake.stakeCurrent);
+  const bondSizeCurrent = stake && formatAttoRep(stake.bondSizeCurrent);
 
   const showButton =
-    !props.stake.tentativeWinning ||
-    (props.canSupport && props.stake.tentativeWinning);
+    !stake.tentativeWinning || (canSupport && stake.tentativeWinning);
 
   return (
     <div
       className={classNames(Styles.DisputeOutcome, {
-        [Styles.invalid]: props.invalid,
-        [Styles[`Outcome-${props.index}`]]: !props.invalid,
+        [Styles.invalid]: invalid,
+        [Styles[`Outcome-${index}`]]: !invalid,
       })}
     >
-      <span>{props.isWarpSync && !props.invalid ? props.stake.warpSyncHash : props.description}</span>
-      {props.stake && props.stake.tentativeWinning ? (
+      <span>{isWarpSync && !invalid ? stake.warpSyncHash : description}</span>
+      {stake && stake.tentativeWinning ? (
         <span>tentative winner</span>
       ) : (
         <Percent
           percent={
-            props.stake
+            stake
               ? calculatePosition(
                   ZERO,
                   createBigNumber(bondSizeCurrent.value),
@@ -137,24 +157,25 @@ export const DisputeOutcome = (props: DisputeOutcomeProps) => {
       <div>
         <div>
           <span>
-          {props.stake && props.stake.tentativeWinning
-              ? <SmallSubheadersTooltip
-                  header="pre-filled stake"
-                  subheader={``}
-                  text="Users can add extra support for a Tentative Winning Outcome"
-                />
-              : 'make tentative winner'
-            }
+            {stake && stake.tentativeWinning ? (
+              <SmallSubheadersTooltip
+                header="pre-filled stake"
+                subheader={``}
+                text="Users can add extra support for a Tentative Winning Outcome"
+              />
+            ) : (
+              'make tentative winner'
+            )}
           </span>
-          {props.stake && props.stake.tentativeWinning ? (
+          {stake && stake.tentativeWinning ? (
             <span>
-              {props.stake ? stakeCurrent.formatted : 0}
+              {stake ? stakeCurrent.formatted : 0}
               <span> REP</span>
             </span>
           ) : (
             <span>
-              {props.stake ? stakeCurrent.formatted : 0}
-              <span>/ {props.stake ? bondSizeCurrent.formatted : 0} REP</span>
+              {stake ? stakeCurrent.formatted : 0}
+              <span>/ {stake ? bondSizeCurrent.formatted : 0} REP</span>
             </span>
           )}
         </div>
@@ -162,16 +183,16 @@ export const DisputeOutcome = (props: DisputeOutcomeProps) => {
           <ProcessingButton
             small
             queueName={SUBMIT_DISPUTE}
-            queueId={props.marketId}
-            matchingId={props.id}
+            queueId={marketId}
+            matchingId={id}
             secondaryButton
-            disabled={!props.canDispute}
+            disabled={!canDispute}
             text={
-              props.stake && props.stake.tentativeWinning
+              stake && stake.tentativeWinning
                 ? 'Support Tentative Winner'
                 : 'Dispute Tentative Winner'
             }
-            action={() => props.dispute(props.id.toString())}
+            action={() => dispute(id.toString())}
           />
         )}
       </div>
@@ -186,21 +207,24 @@ interface ScalarBlankDisputeOutcomeProps {
   marketId: string;
 }
 
-export const ScalarBlankDisputeOutcome = (
-  props: ScalarBlankDisputeOutcomeProps
-) => (
+export const ScalarBlankDisputeOutcome = ({
+  denomination,
+  dispute,
+  canDispute,
+  marketId,
+}: ScalarBlankDisputeOutcomeProps) => (
   <div className={classNames(Styles.DisputeOutcome, Styles[`Outcome-1`])}>
-    <span>{`Dispute current Tentative Winner with new ${props.denomination} value`}</span>
+    <span>{`Dispute current Tentative Winner with new ${denomination} value`}</span>
     <div className={Styles.blank}>
       <div></div>
       <ProcessingButton
         secondaryButton
         queueName={SUBMIT_DISPUTE}
-        queueId={props.marketId}
+        queueId={marketId}
         small
-        disabled={!props.canDispute}
+        disabled={!canDispute}
         text={'Dispute Tentative Winner'}
-        action={() => props.dispute(null)}
+        action={() => dispute(null)}
       />
     </div>
   </div>
@@ -215,25 +239,32 @@ export interface ScalarOutcomeProps {
   outcomeId: string;
 }
 
-export const ScalarOutcome = (props: ScalarOutcomeProps) => (
-  <MarketLink id={props.marketId} outcomeId={props.outcomeId}>
+export const ScalarOutcome = ({
+  scalarDenomination,
+  min,
+  max,
+  lastPrice,
+  marketId,
+  outcomeId,
+}: ScalarOutcomeProps) => (
+  <MarketLink id={marketId} outcomeId={outcomeId}>
     <div className={Styles.ScalarOutcome}>
       <div>
-        {props.lastPrice !== null && (
+        {lastPrice !== null && (
           <span
             style={{
               left:
-                calculatePosition(props.min, props.max, props.lastPrice) + '%',
+                calculatePosition(min, max, lastPrice) + '%',
             }}
           >
-            {props.lastPrice.formatted}
+            {lastPrice.formatted}
           </span>
         )}
       </div>
       <div>
-        {formatDai(props.min).formatted}
-        <span>{props.scalarDenomination}</span>
-        {formatDai(props.max).formatted}
+        {formatDai(min).formatted}
+        <span>{scalarDenomination}</span>
+        {formatDai(max).formatted}
       </div>
     </div>
   </MarketLink>
@@ -246,7 +277,6 @@ export interface OutcomeGroupProps {
   scalarDenomination?: string;
   min?: BigNumber;
   max?: BigNumber;
-  reportingState: string;
   stakes: Getters.Markets.StakeDetails[];
   dispute?: Function;
   inDispute?: boolean;
@@ -257,29 +287,45 @@ export interface OutcomeGroupProps {
   isWarpSync?: boolean;
 }
 
-export const OutcomeGroup = (props: OutcomeGroupProps) => {
+export const OutcomeGroup = ({
+  outcomes,
+  expanded,
+  marketType,
+  scalarDenomination,
+  min,
+  max,
+  stakes,
+  dispute,
+  inDispute,
+  showOutcomeNumber,
+  canDispute,
+  canSupport,
+  marketId,
+  isWarpSync,
+}: OutcomeGroupProps) => {
   const sortedStakeOutcomes = selectSortedDisputingOutcomes(
-    props.marketType,
-    props.outcomes,
-    props.stakes,
-    props.isWarpSync
+    marketType,
+    outcomes,
+    stakes,
+    isWarpSync
   );
-
-  const { inDispute, showOutcomeNumber, isWarpSync } = props;
+  const isScalar = marketType === SCALAR;
   let disputingOutcomes = sortedStakeOutcomes;
-  let outcomesCopy = props.outcomes.slice(0);
+  let outcomesCopy = outcomes.slice(0);
   const removedInvalid = outcomesCopy.splice(0, 1)[0];
 
   if (inDispute) {
     if (isWarpSync) {
-      disputingOutcomes = disputingOutcomes.filter(o => o.id !== SCALAR_DOWN_ID)
-    } else if (!props.expanded) {
+      disputingOutcomes = disputingOutcomes.filter(
+        o => o.id !== SCALAR_DOWN_ID
+      );
+    } else if (!expanded) {
       disputingOutcomes.splice(showOutcomeNumber, showOutcomeNumber + 1);
     }
   } else {
-    if (!props.expanded && props.outcomes.length > showOutcomeNumber) {
+    if (!expanded && outcomes.length > showOutcomeNumber) {
       outcomesCopy.splice(showOutcomeNumber - 1, 0, removedInvalid);
-    } else if (props.marketType === YES_NO) {
+    } else if (marketType === YES_NO) {
       outcomesCopy.reverse().splice(outcomesCopy.length, 0, removedInvalid);
     } else {
       outcomesCopy.splice(outcomesCopy.length, 0, removedInvalid);
@@ -292,21 +338,21 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
     <div
       className={classNames(Styles.OutcomeGroup, {
         [Styles.Dispute]: inDispute,
-        [Styles.Scalar]: props.marketType === SCALAR && !inDispute,
+        [Styles.Scalar]: isScalar && !inDispute,
       })}
     >
-      {props.marketType === SCALAR && !inDispute && (
+      {isScalar && !inDispute && (
         <>
           <ScalarOutcome
-            min={props.min}
-            max={props.max}
+            min={min}
+            max={max}
             lastPrice={
-              props.outcomes[SCALAR_UP_ID].price
-                ? formatNumber(props.outcomes[SCALAR_UP_ID].price)
+              outcomes[SCALAR_UP_ID].price
+                ? formatNumber(outcomes[SCALAR_UP_ID].price)
                 : null
             }
-            scalarDenomination={props.scalarDenomination}
-            marketId={props.marketId}
+            scalarDenomination={scalarDenomination}
+            marketId={marketId}
             outcomeId={String(SCALAR_UP_ID)}
           />
           <Outcome
@@ -314,48 +360,37 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
             lastPricePercent={
               removedInvalid.price ? removedInvalid.lastPricePercent : null
             }
-            invalid={true}
+            invalid
             index={0}
-            min={props.min}
-            max={props.max}
-            isScalar={props.marketType === SCALAR}
-            marketId={props.marketId}
+            min={min}
+            max={max}
+            isScalar={isScalar}
+            marketId={marketId}
             outcomeId={String(INVALID_OUTCOME_ID)}
           />
         </>
       )}
-      {(props.marketType !== SCALAR || inDispute) &&
+      {(!isScalar || inDispute) &&
         outcomesShow.map(
           (outcome: OutcomeFormatted, index: number) =>
-            ((!props.expanded && index < showOutcomeNumber) ||
-              (props.expanded || props.marketType === YES_NO)) &&
-            (inDispute && !!props.stakes.find(
-              stake => parseFloat(stake.outcome) === outcome.id
-            ) ? (
+            ((!expanded && index < showOutcomeNumber) ||
+              (expanded || marketType === YES_NO)) &&
+            (inDispute &&
+            !!stakes.find(stake => parseFloat(stake.outcome) === outcome.id) ? (
               <>
-                {props.marketType === SCALAR &&
-                  index === 1 &&
-                  props.expanded && (
-                    <ScalarBlankDisputeOutcome
-                      denomination={props.scalarDenomination}
-                      dispute={props.dispute}
-                      canDispute={props.canDispute}
-                      marketId={props.marketId}
-                    />
-                  )}
                 <DisputeOutcome
                   key={outcome.id}
-                  marketId={props.marketId}
+                  marketId={marketId}
                   description={outcome.description}
                   invalid={outcome.id === 0}
                   index={index > 2 ? index : index + 1}
-                  stake={props.stakes.find(
+                  stake={stakes.find(
                     stake => parseFloat(stake.outcome) === outcome.id
                   )}
-                  dispute={props.dispute}
+                  dispute={dispute}
                   id={outcome.id}
-                  canDispute={props.canDispute}
-                  canSupport={props.canSupport}
+                  canDispute={canDispute}
+                  canSupport={canSupport}
                   isWarpSync={isWarpSync}
                 />
               </>
@@ -366,20 +401,20 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
                 lastPricePercent={outcome.lastPricePercent}
                 invalid={outcome.id === 0}
                 index={index > 2 ? index : index + 1}
-                min={props.min}
-                max={props.max}
-                isScalar={props.marketType === SCALAR}
-                marketId={props.marketId}
-                outcomeId={outcome.id}
+                min={min}
+                max={max}
+                isScalar={isScalar}
+                marketId={marketId}
+                outcomeId={String(outcome.id)}
               />
             ))
         )}
-      {props.marketType === SCALAR && inDispute && !props.expanded && (
+      {isScalar && inDispute && !expanded && (
         <ScalarBlankDisputeOutcome
-          denomination={props.scalarDenomination}
-          dispute={props.dispute}
-          canDispute={props.canDispute}
-          marketId={props.marketId}
+          denomination={scalarDenomination}
+          dispute={dispute}
+          canDispute={canDispute}
+          marketId={marketId}
         />
       )}
     </div>
@@ -479,27 +514,29 @@ export interface TentativeWinnerProps {
 
 export const TentativeWinner = (props: TentativeWinnerProps) => {
   return (
-    <div className={classNames(Styles.ResolvedOutcomes, Styles.TentativeWinner)}>
+    <div
+      className={classNames(Styles.ResolvedOutcomes, Styles.TentativeWinner)}
+    >
       <span>Tentative Winner</span>
       <span>
         {props.tentativeWinner.isInvalidOutcome
           ? INVALID_OUTCOME_NAME
           : getOutcomeNameWithOutcome(
-            props.market,
-            props.tentativeWinner.outcome,
-            props.tentativeWinner.isInvalidOutcome,
-            true
-          )}
+              props.market,
+              props.tentativeWinner.outcome,
+              props.tentativeWinner.isInvalidOutcome,
+              true
+            )}
       </span>
       <ProcessingButton
-            small
-            queueName={SUBMIT_DISPUTE}
-            queueId={props.market.id}
-            secondaryButton
-            disabled={!props.canDispute}
-            text={'SUPPORT OR DISPUTE OUTCOME'}
-            action={() => props.dispute()}
-          />
+        small
+        queueName={SUBMIT_DISPUTE}
+        queueId={props.market.id}
+        secondaryButton
+        disabled={!props.canDispute}
+        text={'SUPPORT OR DISPUTE OUTCOME'}
+        action={() => props.dispute()}
+      />
     </div>
   );
 };
