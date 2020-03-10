@@ -945,4 +945,20 @@ span.PendingLabel {
     padding: @size-4;
     text-transform: uppercase;
   }
+
+  .MarketLabel {
+    &.loading {  
+      > div:last-of-type {
+        > span svg {
+          LinearGradient > stop {
+            stop-color: var(--color-reporting);
+          }
+
+          path {
+            stroke: var(--color-reporting);
+          }
+        }
+      }
+    }
+  }
 }

@@ -2271,6 +2271,16 @@ div.error > div > div > div > div > input {
         stroke: var(--color-primary-text);
       }
     }
+
+    &.loading {
+      > span:last-of-type {
+        > svg {
+          LinearGradient > stop {
+            stop-color: var(--color-reporting);
+          }
+        }
+      }
+    }
   }
 }
 

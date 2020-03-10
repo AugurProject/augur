@@ -1142,6 +1142,17 @@ div.ButtonsRow:last-of-type {
   }
 }
 
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .Loading {
+    > svg {
+      LinearGradient > stop {
+        stop-color: var(--color-reporting);
+      }
+    }
+  }
+}
+
 @keyframes spin {
   from {
     transform: rotate(0deg);
