@@ -42,6 +42,7 @@ import ModalHardwareWallet from 'modules/modal/containers/modal-hardware-wallet'
 import ModalLoading from 'modules/modal/containers/modal-loading';
 import ModalUniverseSelector from 'modules/modal/containers/modal-universe-selector';
 import ModalTestBet from 'modules/modal/containers/modal-test-bet';
+import ModalAugurP2P from 'modules/modal/containers/modal-p2p-trading';
 import ModalGlobalChat from 'modules/modal/containers/modal-global-chat';
 import ModalAccountCreated from 'modules/modal/containers/modal-account-created';
 import ModalWalletError from 'modules/modal/containers/modal-wallet-error';
@@ -154,6 +155,8 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalUniverseSelector />;
     case TYPES.MODAL_TEST_BET:
       return <ModalTestBet />;
+    case TYPES.MODAL_AUGUR_P2P:
+      return <ModalAugurP2P />;
     case TYPES.MODAL_TUTORIAL_OUTRO:
       return <ModalTutorialOutro {...modal} />;
     case TYPES.MODAL_TUTORIAL_INTRO:

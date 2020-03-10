@@ -506,6 +506,8 @@ export const LOWER_FIXED_PRECISION_BOUND = 0;
 
 export const SCALAR_MODAL_SEEN = 'scalarModalSeen';
 
+export const ONBOARDING_MAX_STEPS = 5;
+
 // # Modal Constants
 export const MODAL_LEDGER = 'MODAL_LEDGER';
 export const MODAL_TREZOR = 'MODAL_TREZOR';
@@ -540,6 +542,7 @@ export const MODAL_ADD_FUNDS = 'MODAL_ADD_FUNDS';
 export const MODAL_UNIVERSE_SELECTOR = 'MODAL_UNIVERSE_SELECTOR';
 export const MODAL_BUY_DAI = 'MODAL_BUY_DAI';
 export const MODAL_TEST_BET = 'MODAL_TEST_BET';
+export const MODAL_AUGUR_P2P = 'MODAL_AUGUR_P2P';
 export const MODAL_GLOBAL_CHAT = 'MODAL_GLOBAL_CHAT';
 export const MODAL_AUGUR_USES_DAI = 'MODAL_AUGUR_USES_DAI';
 export const MODAL_TUTORIAL_OUTRO = 'MODAL_TUTORIAL_OUTRO';
