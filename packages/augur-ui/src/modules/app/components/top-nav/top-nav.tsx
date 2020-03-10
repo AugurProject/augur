@@ -113,7 +113,7 @@ const TopNav = ({
                 <li>
                   <div className={Styles.MigrateRep}>
                     <ProcessingButton
-                      text={walletBalances.dai === 0 ? 'Waiting for Funding' : 'Create Account'}
+                      text={walletBalances.dai === 0 ? 'Waiting for Funding' : 'Initiaize GSN Wallet'}
                       action={() => createFundedGsnWallet()}
                       disabled={walletBalances.dai === 0}
                       queueName={CREATEAUGURWALLET}

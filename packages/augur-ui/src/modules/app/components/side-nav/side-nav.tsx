@@ -151,7 +151,7 @@ const SideNav = ({
               {showCreateAccountButton && (
                 <span className={Styles.SideNavMigrateRep}>
                   <ProcessingButton
-                    text={walletBalances.dai === 0 ? 'Waiting for Funding' : 'Create Account'}
+                    text={walletBalances.dai === 0 ? 'Waiting for Funding' : 'Initiaize GSN Wallet'}
                     action={() => createFundedGsnWallet()}
                     disabled={walletBalances.dai === 0}
                     queueName={CREATEAUGURWALLET}
