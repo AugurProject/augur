@@ -475,6 +475,41 @@
   }
 }
 
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .FavoriteButton {
+    > svg > path {
+      fill: var(--color-dark-text);
+      fill-opacity: 0.5;
+      stroke: none;
+    }
+
+    &:hover:enabled {
+      > svg > path {
+        fill: var(--color-primary-text);
+        fill-opacity: 1;
+        stroke: none;
+      }
+    }
+  }
+
+  .FavoriteButton_Favorite {
+    > svg > path {
+      fill: var(--color-reporting);
+      fill-opacity: 1;
+      stroke: none;
+    }
+  
+    &:hover:enabled {
+      > svg > path {
+        fill: var(--color-reporting);
+        fill-opacity: 1;
+        stroke: none;
+      }
+    }
+  }
+}
+
 .CompactButton {
   .Button;
   .mono-9-bold;
@@ -573,11 +608,11 @@
   }
 
   &.Failed {
-    color: @color-error;
+    color: var(--color-error);
   }
 
   &.Confirmed {
-    color: @color-positive;
+    color: var(--color-positive);
   }
 }
 
