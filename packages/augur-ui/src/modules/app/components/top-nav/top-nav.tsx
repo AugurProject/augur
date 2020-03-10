@@ -57,7 +57,7 @@ const TopNav = ({
           const selected = isCurrentItem(item);
           if (item.title === 'Create') {
             return (
-              <li className={Styles.CreateButton} key={item.name}>
+              <li className={Styles.CreateButton} key={item.title}>
                 <Link to={item.route ? makePath(item.route) : null}>
                   <SecondaryButton
                     disabled={isDisabled}
@@ -115,7 +115,7 @@ const TopNav = ({
                   [Styles['Selected']]: selected,
                   [Styles['AlternateStyle']]: item.alternateStyle,
                 })}
-                key={item.name}
+                key={item.title}
               >
                 <Link to={item.route ? makePath(item.route) : null}>
                   <span>{item.title}</span>
