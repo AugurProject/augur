@@ -684,7 +684,7 @@ export const BettingBackLayButton = ({
   subText,
   action,
   disabled,
-  type
+  type,
 }: BettingBackLayButtonProps) => (
   <button
     onClick={e => action(e)}

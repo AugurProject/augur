@@ -11,7 +11,11 @@ import {
   INVALID_OUTCOME_NAME,
   SUBMIT_DISPUTE,
   SCALAR_DOWN_ID,
+  THEMES,
+  BETTING_BACK,
+  BETTING_LAY,
 } from 'modules/common/constants';
+import { getTheme } from 'modules/app/actions/update-app-status';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
@@ -25,7 +29,7 @@ import {
 import { formatAttoRep, formatDai, formatNumber } from 'utils/format-number';
 import { Getters } from '@augurproject/sdk';
 import InvalidLabel from 'modules/common/containers/labels';
-import { SecondaryButton, ProcessingButton } from 'modules/common/buttons';
+import { ProcessingButton, BettingBackLayButton } from 'modules/common/buttons';
 
 import Styles from 'modules/market-cards/common.styles.less';
 import { MarketCard } from 'modules/market-cards/market-card';
@@ -44,6 +48,11 @@ export const Percent = (props: PercentProps) => (
   </div>
 );
 
+export interface BettingOutcomeProps {
+  description: string;
+  index: number;
+}
+
 export interface OutcomeProps {
   description: string;
   lastPricePercent?: FormattedNumber;
@@ -54,6 +63,7 @@ export interface OutcomeProps {
   isScalar: boolean;
   marketId: string;
   outcomeId: string;
+  theme: string;
 }
 
 export const Outcome = ({
@@ -285,6 +295,7 @@ export interface OutcomeGroupProps {
   canSupport: boolean;
   marketId: string;
   isWarpSync?: boolean;
+  theme: string;
 }
 
 export const OutcomeGroup = ({
@@ -302,6 +313,7 @@ export const OutcomeGroup = ({
   canSupport,
   marketId,
   isWarpSync,
+  theme = getTheme(),
 }: OutcomeGroupProps) => {
   const sortedStakeOutcomes = selectSortedDisputingOutcomes(
     marketType,
@@ -310,6 +322,7 @@ export const OutcomeGroup = ({
     isWarpSync
   );
   const isScalar = marketType === SCALAR;
+  const isTrading = theme === THEMES.TRADING;
   let disputingOutcomes = sortedStakeOutcomes;
   let outcomesCopy = outcomes.slice(0);
   const removedInvalid = outcomesCopy.splice(0, 1)[0];
@@ -324,14 +337,16 @@ export const OutcomeGroup = ({
     }
   } else {
     if (!expanded && outcomes.length > showOutcomeNumber) {
-      outcomesCopy.splice(showOutcomeNumber - 1, 0, removedInvalid);
+      outcomesCopy.splice(showOutcomeNumber - 1, 0);
     } else if (marketType === YES_NO) {
-      outcomesCopy.reverse().splice(outcomesCopy.length, 0, removedInvalid);
+      outcomesCopy.reverse().splice(outcomesCopy.length, 0);
     } else {
-      outcomesCopy.splice(outcomesCopy.length, 0, removedInvalid);
+      outcomesCopy.splice(outcomesCopy.length, 0);
     }
   }
-
+  if (isTrading) {
+    outcomesCopy.splice(outcomesCopy.length, 0, removedInvalid);
+  }
   const outcomesShow = inDispute ? disputingOutcomes : outcomesCopy;
 
   return (
@@ -355,7 +370,7 @@ export const OutcomeGroup = ({
             marketId={marketId}
             outcomeId={String(SCALAR_UP_ID)}
           />
-          <Outcome
+          {isTrading && <Outcome
             description={removedInvalid.description}
             lastPricePercent={
               removedInvalid.price ? removedInvalid.lastPricePercent : null
@@ -367,7 +382,7 @@ export const OutcomeGroup = ({
             isScalar={isScalar}
             marketId={marketId}
             outcomeId={String(INVALID_OUTCOME_ID)}
-          />
+          />}
         </>
       )}
       {(!isScalar || inDispute) &&
@@ -427,17 +442,21 @@ export interface LabelValueProps {
   condensed?: boolean;
 }
 
-export const LabelValue = (props: LabelValueProps) => (
+export const LabelValue = ({
+  label,
+  value,
+  condensed,
+}: LabelValueProps) => (
   <div
     className={classNames(Styles.LabelValue, {
-      [Styles.Condensed]: props.condensed,
+      [Styles.Condensed]: condensed,
     })}
   >
     <span>
-      {props.label}
+      {label}
       <span>:</span>
     </span>
-    <span>{props.value}</span>
+    <span>{value}</span>
   </div>
 );
 
@@ -448,15 +467,20 @@ export interface HoverIconProps {
   label: string;
 }
 
-export const HoverIcon = (props: HoverIconProps) => (
+export const HoverIcon = ({
+  id,
+  icon,
+  hoverText,
+  label,
+}: HoverIconProps) => (
   <div
     className={Styles.HoverIcon}
     data-tip
-    data-for={`tooltip-${props.id}${props.label}`}
+    data-for={`tooltip-${id}${label}`}
   >
-    {props.icon}
+    {icon}
     <ReactTooltip
-      id={`tooltip-${props.id}${props.label}`}
+      id={`tooltip-${id}${label}`}
       className={TooltipStyles.Tooltip}
       effect="solid"
       place="top"
@@ -464,7 +488,7 @@ export const HoverIcon = (props: HoverIconProps) => (
       data-event="mouseover"
       data-event-off="blur scroll"
     >
-      {props.hoverText}
+      {hoverText}
     </ReactTooltip>
   </div>
 );
@@ -475,24 +499,28 @@ export interface ResolvedOutcomesProps {
   expanded?: Boolean;
 }
 
-export const ResolvedOutcomes = (props: ResolvedOutcomesProps) => {
-  const outcomes = props.outcomes.filter(
-    outcome => String(outcome.id) !== props.consensusFormatted.outcome
+export const ResolvedOutcomes = ({
+  outcomes,
+  consensusFormatted,
+  expanded,
+}: ResolvedOutcomesProps) => {
+  const outcomesFiltered = outcomes.filter(
+    outcome => String(outcome.id) !== consensusFormatted.outcome
   );
 
   return (
     <div className={Styles.ResolvedOutcomes}>
       <span>Winning Outcome {CheckCircleIcon} </span>
       <span>
-        {props.consensusFormatted.invalid
+        {consensusFormatted.invalid
           ? INVALID_OUTCOME_NAME
-          : props.consensusFormatted.outcomeName}
+          : consensusFormatted.outcomeName}
       </span>
-      {props.expanded && (
+      {expanded && (
         <div>
           <span>other outcomes</span>
           <div>
-            {outcomes.map((outcome, index) => (
+            {outcomesFiltered.map((outcome, index) => (
               <span>
                 {outcome.description}
                 {index + 1 !== outcomes.length && <span>|</span>}
@@ -512,30 +540,35 @@ export interface TentativeWinnerProps {
   canDispute: boolean;
 }
 
-export const TentativeWinner = (props: TentativeWinnerProps) => {
+export const TentativeWinner = ({
+  tentativeWinner,
+  market,
+  dispute,
+  canDispute,
+}: TentativeWinnerProps) => {
   return (
     <div
       className={classNames(Styles.ResolvedOutcomes, Styles.TentativeWinner)}
     >
       <span>Tentative Winner</span>
       <span>
-        {props.tentativeWinner.isInvalidOutcome
+        {tentativeWinner.isInvalidOutcome
           ? INVALID_OUTCOME_NAME
           : getOutcomeNameWithOutcome(
-              props.market,
-              props.tentativeWinner.outcome,
-              props.tentativeWinner.isInvalidOutcome,
+              market,
+              tentativeWinner.outcome,
+              tentativeWinner.isInvalidOutcome,
               true
             )}
       </span>
       <ProcessingButton
         small
         queueName={SUBMIT_DISPUTE}
-        queueId={props.market.id}
+        queueId={market.id}
         secondaryButton
-        disabled={!props.canDispute}
+        disabled={!canDispute}
         text={'SUPPORT OR DISPUTE OUTCOME'}
-        action={() => props.dispute()}
+        action={() => dispute()}
       />
     </div>
   );

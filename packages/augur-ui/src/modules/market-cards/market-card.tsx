@@ -347,7 +347,6 @@ export const MarketCard = ({
               min={minPriceBigNumber}
               max={maxPriceBigNumber}
               expanded={expandedView ? true : expanded}
-              reportingState={reportingState}
               stakes={disputeInfo.stakes}
               dispute={dispute}
               inDispute={inDispute}
@@ -356,6 +355,7 @@ export const MarketCard = ({
               canSupport={canSupport}
               marketId={id}
               isWarpSync={market.isWarpSync}
+              theme={theme}
             />
             {expandedOptionShowing && (
               <button onClick={() => setExpanded(!expanded)}>
