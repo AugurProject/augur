@@ -16,6 +16,7 @@ import {
   MAX_BULK_CLAIM_MARKETS_PROCEEDS_COUNT,
   PROCEEDS_TO_CLAIM_TITLE,
   CLAIM_ALL_TITLE,
+  CLAIMMARKETSPROCEEDS,
 } from 'modules/common/constants';
 import { CLAIM_MARKETS_PROCEEDS } from 'modules/common/constants';
 import { AppState } from 'store';
@@ -110,11 +111,15 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
   const claimableMarkets = showBreakdown
     ? markets.map(m => ({
         ...m,
+        queueName: CLAIMMARKETSPROCEEDS,
+        queueId: m.marketId,
         action: () => dP.startClaimingMarketsProceeds([m.marketId], () => {}),
       }))
     : markets.map(m => ({
         ...m,
         action: () => dP.startClaimingMarketsProceeds([m.marketId], () => {}),
+        queueName: CLAIMMARKETSPROCEEDS,
+        queueId: m.marketId,
         properties: [
           ...m.properties,
           {
