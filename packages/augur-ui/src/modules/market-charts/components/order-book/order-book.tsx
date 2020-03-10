@@ -200,26 +200,15 @@ const OrderBook = ({
   currentTimeInSeconds,
   loadMarketOrderBook,
 }: OrderBookProps) => {
-  const [hoverState, setHoverState] = useState({ hoveredOrderIndex: null,
-    hoveredSide: null });
+  const [hoverState, setHoverState] = useState({ hoveredOrderIndex: null, hoveredSide: null });
   const setHovers = (hoveredOrderIndex: number, hoveredSide: string) => setHoverState({ hoveredOrderIndex, hoveredSide });
 
   useEffect(() => {
     const expirationMaxSeconds =
       expirationTime - currentTimeInSeconds - MIN_ORDER_LIFESPAN;
-    if (
-      expirationMaxSeconds > 0 &&
-      expirationMaxSeconds < NUMBER_OF_SECONDS_IN_A_DAY
-    ) {
-      console.log('Timer', expirationMaxSeconds);
-      const timer = setTimeout(() => {
-        console.log('Timer hit');
-        loadMarketOrderBook();
-      }, expirationMaxSeconds * 1000);
-      return () => {
-        console.log('Timer stop');
-        clearTimeout(timer);
-      };
+    if (expirationMaxSeconds > 0 && expirationMaxSeconds < NUMBER_OF_SECONDS_IN_A_DAY) {
+      const timer = setTimeout(() => loadMarketOrderBook(), expirationMaxSeconds * 1000);
+      return () => clearTimeout(timer);
     }
     return () => {};
   }, [expirationTime]);

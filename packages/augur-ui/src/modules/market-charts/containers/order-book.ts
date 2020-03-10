@@ -6,25 +6,26 @@ import { selectCurrentTimestampInSeconds } from "store/select-state";
 import { loadMarketOrderBook } from 'modules/orders/actions/load-market-orderbook';
 import { ASKS, BIDS } from "modules/common/constants";
 import orderAndAssignCumulativeShares from "modules/markets/helpers/order-and-assign-cumulative-shares";
+import { AppState } from "store";
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = (state: AppState, ownProps) => {
+  const { orderBooks } = state;
   const market = ownProps.market || selectMarket(ownProps.marketId);
+  const orderBook = orderBooks && orderBooks[market.id] || { expirationTime: 0 };
   const selectedOutcomeId = (ownProps.selectedOutcomeId !== undefined && ownProps.selectedOutcomeId !== null) ? ownProps.selectedOutcomeId : market.defaultSelectedOutcomeId;
-  const orderBook = ownProps.orderBook;
+  const outcomeOrderBook = orderBook && orderBook[selectedOutcomeId] || {};
 
   const outcome =
     (market.outcomesFormatted || []).find(
       (outcome) => outcome.id === selectedOutcomeId
     );
 
-  const expirationTime = ownProps.initialLiquidity || !!!orderBook ? 0 : orderBook.expirationTime;
-
   return {
-    expirationTime,
+    expirationTime: ownProps.initialLiquidity || !!!orderBook ? 0 : orderBook.expirationTime,
     outcomeName: outcome && outcome.description,
     selectedOutcome: outcome,
     currentTimeInSeconds: selectCurrentTimestampInSeconds(state),
-    orderBook: orderAndAssignCumulativeShares(orderBook),
+    orderBook: orderAndAssignCumulativeShares(outcomeOrderBook),
     hasOrders:
       !isEmpty(orderBook[BIDS]) ||
       !isEmpty(orderBook[ASKS]),
