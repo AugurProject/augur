@@ -151,7 +151,7 @@
     }
   }
 
-  > div:last-of-type {
+  > div.InfoIcons {
     display: flex;
     grid-row: 4 / span 1;
     grid-column: 1;
@@ -159,8 +159,8 @@
     border-right: 1px solid var(--color-dark-grey);
     margin-right: -1px;
 
-    > div:not(:first-of-type) {
-      margin-left: @size-4;
+    > div {
+      margin-right: @size-4;
     }
 
     > div:nth-of-type(3),
@@ -578,18 +578,22 @@
 
 :root[theme="BETTING"],
 :root[theme="SPORTS"] {
-  .MatchedLine {
-    .text-12;
-    color: var(--color-secondary-text);
-
-    > b {
-      .text-12-bold;
-
-      color: var(--color-primary-text);
-    }
-  }
   .MarketCard {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: @size-20 1fr 0fr 0fr;
+    grid-gap: @size-8;
+    padding: @size-12;
+
+    > div:first-of-type {
+      display: none;
+    }
+
     > div.TopRow {
+      border: 0;
+      grid-column: span 2;
+      grid-row: 1;
+      padding-left: 0;
+
       > button[class*="FavoriteButton"] {
         margin-left: @size-10;
         margin-right: 0;
@@ -634,6 +638,114 @@
             display: none;
           }
         }
+      }
+    }
+
+    > h3 {
+      border: 0;
+      grid-column: 1;
+      grid-row: 2;
+      padding: 0;
+    }
+
+    > div[class*="OutcomeGroup"] {
+      border: 0;
+      grid-column: 2;
+      grid-row: 2 / span 2;
+      padding: 0;
+    }
+
+    > div.InfoIcons {
+      padding: 0;
+      grid-column: 1;
+      grid-row: 3;
+
+      > div > svg {
+        > circle {
+          fill: var(--color-table-header);
+        }
+
+        > path {
+          fill: var(--color-secondary-text);
+        }
+      }
+
+      > div:first-of-type {
+        order: 4;
+      }
+
+      > div:nth-of-type(2) {
+        order: 3;
+      }
+
+      > div:nth-of-type(3) {
+        order: 1;
+      }
+
+      > div:nth-of-type(4) {
+        order: 2;
+      }
+    }
+
+    > button {
+      margin: 0;
+      grid-column: 2;
+      grid-row: 4;
+      justify-content: flex-end;
+      padding: 0;
+    }
+
+    > span {
+      grid-column: 1;
+      grid-row: 4;
+      flex-flow: row nowrap;
+      border: 0;
+      padding: 0;
+
+      > span:first-of-type {
+        .text-12;
+
+        color: var(--color-secondary-text);
+      }
+
+      > span:last-of-type {
+        .text-12-bold;
+
+        color: var(--color-primary-text);
+      }
+    }
+    > div:last-of-type {
+      border: 0;
+    }
+  }
+
+  .MatchedLine {
+    .text-12;
+    color: var(--color-secondary-text);
+    height: @size-18;
+
+    > b {
+      .text-12-bold;
+
+      color: var(--color-primary-text);
+    }
+  }
+
+  .RulesButton {
+    .text-10-semi-bold;
+
+    color: var(--color-primary-text);
+    display: flex;
+    flex-flow: row nowrap;
+    height: @size-18;
+
+    > svg {
+      height: @size-12;
+      width: @size-15;
+      margin-right: @size-4;
+
+      > path {
+        stroke: var(--color-secondary-text);
       }
     }
   }

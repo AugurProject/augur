@@ -38,6 +38,7 @@ import {
   CopyAlternateIcon,
   Person,
   PositionIcon,
+  Rules,
 } from 'modules/common/icons';
 import { MarketProgress } from 'modules/common/progress';
 import ChevronFlip from 'modules/common/chevron-flip';
@@ -291,10 +292,18 @@ export const MarketCard = ({
           {isTemplate && <TemplateShield market={market} />}
           <CategoryTagTrail categories={categoriesWithClick} />
           {notTrading ? (
-            <span className={Styles.MatchedLine}>
-              Matched <b>{`${volumeFormatted.full}`}</b>
-              {` (${settlementFeePercent.full} fee)`}
-            </span>
+            <>
+              <span className={Styles.MatchedLine}>
+                Matched<b>{` ${volumeFormatted.full}`}</b>
+                {` (${settlementFeePercent.full} fee)`}
+              </span>
+              <button
+                className={Styles.RulesButton}
+                onClick={() => console.log('pop up a rules modal')}
+              >
+                {Rules} Rules
+              </button>
+            </>
           ) : (
             <MarketProgress
               reportingState={reportingState}
@@ -381,9 +390,17 @@ export const MarketCard = ({
           />
         )}
       </>
-      <div>
+      <div className={Styles.InfoIcons}>
         <InfoIcons id={id} />
       </div>
+      {notTrading && (
+        <MarketProgress
+          reportingState={reportingState}
+          currentTime={currentAugurTimestamp}
+          endTimeFormatted={endTimeFormatted}
+          reportingWindowEndTime={disputeInfo.disputeWindow.endTime}
+        />
+      )}
     </div>
   );
 };
