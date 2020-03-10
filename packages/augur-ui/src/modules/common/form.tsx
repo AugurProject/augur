@@ -804,8 +804,6 @@ export const ReportingRadioBarGroup = ({
     }
   }
 
-  console.log(userCurrentDisputeRound);
-
   return (
     <div className={Styles.ReportingRadioBarGroup}>
       {isDisputing && tentativeWinning && (
