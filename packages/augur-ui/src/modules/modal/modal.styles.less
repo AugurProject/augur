@@ -64,6 +64,21 @@
   }
 }
 
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .Container {
+    > div:last-of-type {
+      display: flex;
+      flex-flow: row-reverse nowrap;
+
+      > button,
+      > a {
+        margin-left: @size-8;
+      }
+    }
+  }
+}
+
 .LargeSubheader {
   .text-22-bold;
 
@@ -755,12 +770,6 @@ div.ButtonsRow:last-of-type {
   }
 }
 
-.CondensedContainer {
-  .Container;
-
-  max-width: 20rem;
-}
-
 .DescriptionWithLink {
   > p {
     .text-14-paragraph;
@@ -1174,7 +1183,7 @@ div.ButtonsRow:last-of-type {
 .CreateMarketMessage {
   .Container;
 
-  max-width: 45rem;
+  max-width: @size-720;
 }
 
 .NoScroll {
@@ -1184,8 +1193,8 @@ div.ButtonsRow:last-of-type {
 }
 
 .CategorySelection {
-  min-height: 44px;
-  max-height: 108px;
+  min-height: @size-44;
+  max-height: @size-108;
   padding: 0 @size-16;
 
   @media @breakpoint-mobile {
@@ -1195,9 +1204,9 @@ div.ButtonsRow:last-of-type {
   > div {
     align-items: center;
     background: var(--color-module-background);
-    border: 1px solid var(--color-dark-grey);
+    border: @size-1 solid var(--color-dark-grey);
     border-radius: @border-radius-default;
-    height: 44px;
+    height: @size-44;
 
     > span:first-of-type {
       .text-14;
@@ -1234,15 +1243,15 @@ div.ButtonsRow:last-of-type {
 
   > div {
     background: var(--color-module-background);
-    border: 1px solid var(--color-dark-grey);
+    border: @size-1 solid var(--color-dark-grey);
     border-radius: @border-radius-default;
-    height: 82px;
+    height: @size-82;
     margin-top: @size-8;
     padding: @size-20 @size-24;
     width: 100%;
 
     @media @breakpoint-mobile {
-      height: 111px;
+      height: @size-111;
       padding: @size-16;
     }
 
@@ -1547,7 +1556,7 @@ div.ButtonsRow:last-of-type {
       flex-direction: column;
       padding: @size-22 0;
       margin: @size-35 0;
-      width: 222px;
+      width: @size-222;
 
       > div {
         padding: @size-12 0;
@@ -1556,7 +1565,7 @@ div.ButtonsRow:last-of-type {
         display: flex;
         flex-direction: column;
         align-items: center;
-        width: 222px;
+        width: @size-222;
 
         > span:first-of-type {
           .text-14;
@@ -1774,7 +1783,7 @@ div.ButtonsRow:last-of-type {
 
       > div > div > div > input {
         background: var(--color-dark-grey);
-        border: 1px solid var(--color-secondary-action);
+        border: @size-1 solid var(--color-secondary-action);
       }
     }
 
@@ -1794,7 +1803,7 @@ div.ButtonsRow:last-of-type {
 }
 
 .GroupedForm {
-  border-bottom: 1px solid var(--color-dark-grey);
+  border-bottom: @size-1 solid var(--color-dark-grey);
   display: flex;
   flex-flow: column nowrap;
   justify-content: space-between;
@@ -1849,11 +1858,11 @@ div.ButtonsRow:last-of-type {
       .text-14;
 
       background: var(--color-secondary-action);
-      border: 1px solid var(--color-secondary-action-outline);
+      border: @size-1 solid var(--color-secondary-action-outline);
       border-radius: @border-radius-default;
       color: var(--color-primary-text);
       height: @size-40;
-      line-height: 1rem;
+      line-height: @size-16;
 
       &::placeholder {
         color: var(--color-inactive-text);
@@ -2034,7 +2043,7 @@ div.ButtonsRow:last-of-type {
       > div {
         background-color: var(--color-secondary-action);
         cursor: pointer;
-        padding: 4px 8px;
+        padding: @size-4 @size-8;
         color: var(--color-primary-text);
         border-radius: @size-3;
         border: @size-1 solid var(--color-secondary-action-outline);
@@ -2787,7 +2796,7 @@ div.ButtonsRow:last-of-type {
   border-right: solid @size-12 transparent;
   position: absolute;
   right: @size-16;
-  top: -6px;
+  top: -@size-6;
 }
 
 .ShowConfirmaiton:before {
@@ -2809,13 +2818,13 @@ div.ButtonsRow:last-of-type {
 .ActionRow {
   align-items: center;
   background: var(--color-module-background);
-  border-bottom: 1px solid var(--color-dark-grey);
+  border-bottom: @size-1 solid var(--color-dark-grey);
   display: flex;
   flex-flow: column nowrap;
   padding: @size-16;
 
   &:not(:first-of-type) {
-    margin-top: 0.25rem;
+    margin-top: @size-4;
   }
 
   > section {
@@ -2836,7 +2845,7 @@ div.ButtonsRow:last-of-type {
 
       > span {
         display: flex;
-        margin-bottom: 0.25rem;
+        margin-bottom: @size-4;
       }
     }
 
