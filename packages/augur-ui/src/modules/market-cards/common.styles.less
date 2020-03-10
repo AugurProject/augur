@@ -453,3 +453,25 @@
 		height: fit-content;
 	}
 }
+
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+	.BettingOutcome {
+		border: @size-1 solid var(--color-secondary-action-outline);
+		border-radius: @border-radius-default;
+		display: grid;
+		grid-gap: @size-3 @size-4;
+		grid-template-columns: 1fr 1fr;
+		grid-template-rows: 0fr 0fr;
+		padding: @size-5;
+
+		> span {
+			.text-12-semi-bold;
+
+			color: var(--color-primary-text);
+			grid-row: 1;
+			grid-column: span 2;
+			text-align: center;
+		}
+	}
+}

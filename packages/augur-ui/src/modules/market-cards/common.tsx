@@ -50,8 +50,37 @@ export const Percent = (props: PercentProps) => (
 
 export interface BettingOutcomeProps {
   description: string;
-  index: number;
+  outcomeId: string;
+  marketId: string;
 }
+
+export const BettingOutcome = ({
+  description,
+  outcomeId,
+  marketId,
+}: BettingOutcomeProps) => (
+  <MarketLink id={marketId} outcomeId={outcomeId.toString()}>
+    <div className={Styles.BettingOutcome}>
+      <span>{description}</span>
+      <BettingBackLayButton
+        type={BETTING_LAY}
+        action={() =>
+          console.log('Under Construction: setup actions for this button!')
+        }
+        text="6.2"
+        subText="$100.23"
+      />
+      <BettingBackLayButton
+        type={BETTING_BACK}
+        action={() =>
+          console.log('Under Construction: setup actions for this button!')
+        }
+        text="6.5"
+        subText="$102.35"
+      />
+    </div>
+  </MarketLink>
+);
 
 export interface OutcomeProps {
   description: string;
@@ -63,7 +92,7 @@ export interface OutcomeProps {
   isScalar: boolean;
   marketId: string;
   outcomeId: string;
-  theme: string;
+  isTrading: boolean;
 }
 
 export const Outcome = ({
@@ -76,7 +105,16 @@ export const Outcome = ({
   isScalar,
   marketId,
   outcomeId,
+  isTrading,
 }: OutcomeProps) => {
+  if (!isTrading)
+    return (
+      <BettingOutcome
+        marketId={marketId}
+        outcomeId={outcomeId}
+        description={description}
+      />
+    );
   const percent = lastPricePercent
     ? calculatePosition(min, max, lastPricePercent)
     : 0;
@@ -263,8 +301,7 @@ export const ScalarOutcome = ({
         {lastPrice !== null && (
           <span
             style={{
-              left:
-                calculatePosition(min, max, lastPrice) + '%',
+              left: calculatePosition(min, max, lastPrice) + '%',
             }}
           >
             {lastPrice.formatted}
@@ -370,19 +407,21 @@ export const OutcomeGroup = ({
             marketId={marketId}
             outcomeId={String(SCALAR_UP_ID)}
           />
-          {isTrading && <Outcome
-            description={removedInvalid.description}
-            lastPricePercent={
-              removedInvalid.price ? removedInvalid.lastPricePercent : null
-            }
-            invalid
-            index={0}
-            min={min}
-            max={max}
-            isScalar={isScalar}
-            marketId={marketId}
-            outcomeId={String(INVALID_OUTCOME_ID)}
-          />}
+          {isTrading && (
+            <Outcome
+              description={removedInvalid.description}
+              lastPricePercent={
+                removedInvalid.price ? removedInvalid.lastPricePercent : null
+              }
+              invalid
+              index={0}
+              min={min}
+              max={max}
+              isScalar={isScalar}
+              marketId={marketId}
+              outcomeId={String(INVALID_OUTCOME_ID)}
+            />
+          )}
         </>
       )}
       {(!isScalar || inDispute) &&
@@ -421,6 +460,7 @@ export const OutcomeGroup = ({
                 isScalar={isScalar}
                 marketId={marketId}
                 outcomeId={String(outcome.id)}
+                isTrading={isTrading}
               />
             ))
         )}
@@ -442,11 +482,7 @@ export interface LabelValueProps {
   condensed?: boolean;
 }
 
-export const LabelValue = ({
-  label,
-  value,
-  condensed,
-}: LabelValueProps) => (
+export const LabelValue = ({ label, value, condensed }: LabelValueProps) => (
   <div
     className={classNames(Styles.LabelValue, {
       [Styles.Condensed]: condensed,
@@ -467,17 +503,8 @@ export interface HoverIconProps {
   label: string;
 }
 
-export const HoverIcon = ({
-  id,
-  icon,
-  hoverText,
-  label,
-}: HoverIconProps) => (
-  <div
-    className={Styles.HoverIcon}
-    data-tip
-    data-for={`tooltip-${id}${label}`}
-  >
+export const HoverIcon = ({ id, icon, hoverText, label }: HoverIconProps) => (
+  <div className={Styles.HoverIcon} data-tip data-for={`tooltip-${id}${label}`}>
     {icon}
     <ReactTooltip
       id={`tooltip-${id}${label}`}
