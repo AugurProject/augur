@@ -25,6 +25,7 @@ import {
   MARKET_REPORTING,
   REPORTING_STATE,
   SCALAR,
+  THEMES,
 } from 'modules/common/constants';
 import { FavoritesButton } from 'modules/common/buttons';
 import Clipboard from 'clipboard';
@@ -50,6 +51,7 @@ import { isSameAddress } from 'utils/isSameAddress';
 
 interface MarketCardProps {
   market: MarketData;
+  theme: string;
   isLogged?: boolean;
   history: History;
   location: Location;
@@ -87,14 +89,16 @@ export const MarketCard = ({
   dispute,
   marketLinkCopied,
   toggleFavorite,
+  theme,
 }: MarketCardProps) => {
   const [expanded, setExpanded] = useState(false);
   useEffect(() => {
     const clipboardMarketId = new Clipboard('#copy_marketId');
     const clipboardAuthor = new Clipboard('#copy_author');
-  }, [market.id, market.author])
+  }, [market.id, market.author]);
   const {
     outcomesFormatted,
+    settlementFeePercent,
     marketType,
     scalarDenomination,
     minPriceBigNumber,
@@ -222,6 +226,7 @@ export const MarketCard = ({
       : outcomesFormatted.length - showOutcomeNumber;
 
   const expandedOptionShowing = restOfOutcomes > 0 && !expandedView;
+  const notTrading = theme !== THEMES.TRADING;
 
   return (
     <div
@@ -237,13 +242,13 @@ export const MarketCard = ({
             <>
               <LabelValue
                 label={condensed ? 'Volume' : 'Total Volume'}
-                value={`$${volumeFormatted.formatted}`}
+                value={`${volumeFormatted.full}`}
                 condensed
               />
               {!condensed && (
                 <LabelValue
                   label="Open Interest"
-                  value={`$${openInterestFormatted.formatted}`}
+                  value={`${openInterestFormatted.full}`}
                   condensed
                 />
               )}
@@ -285,12 +290,19 @@ export const MarketCard = ({
           <RedFlag market={market} />
           {isTemplate && <TemplateShield market={market} />}
           <CategoryTagTrail categories={categoriesWithClick} />
-          <MarketProgress
-            reportingState={reportingState}
-            currentTime={currentAugurTimestamp}
-            endTimeFormatted={endTimeFormatted}
-            reportingWindowEndTime={disputeInfo.disputeWindow.endTime}
-          />
+          {notTrading ? (
+            <span className={Styles.MatchedLine}>
+              Matched <b>{`${volumeFormatted.full}`}</b>
+              {` (${settlementFeePercent.full} fee)`}
+            </span>
+          ) : (
+            <MarketProgress
+              reportingState={reportingState}
+              currentTime={currentAugurTimestamp}
+              endTimeFormatted={endTimeFormatted}
+              reportingWindowEndTime={disputeInfo.disputeWindow.endTime}
+            />
+          )}
           <FavoritesButton
             action={() => toggleFavorite(id)}
             isFavorite={isFavorite}
@@ -338,12 +350,7 @@ export const MarketCard = ({
             />
             {expandedOptionShowing && (
               <button onClick={() => setExpanded(!expanded)}>
-                <ChevronFlip
-                  pointDown={expanded}
-                  quick
-                  filledInIcon
-                  hover
-                />
+                <ChevronFlip pointDown={expanded} quick filledInIcon hover />
                 {expanded
                   ? 'show less'
                   : `${restOfOutcomes} more outcome${

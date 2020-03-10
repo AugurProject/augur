@@ -16,9 +16,9 @@ const mapStateToProps = (state, ownProps) => {
   const hasStaked = hasStakeInMarket(state, ownProps.market.marketId);
 
   return {
+    theme: state.appStatus.theme,
     hasPosition: !!positions[ownProps.market.marketId],
     isLogged: state.authStatus.isLogged,
-    isMobile: state.appStatus.isMobile,
     pendingLiquidityOrders: state.pendingLiquidityOrders,
     currentAugurTimestamp: state.blockchain.currentAugurTimestamp,
     disputingWindowEndTime: state.universe.disputeWindow && state.universe.disputeWindow.endTime || 0,
