@@ -2220,8 +2220,13 @@ div.error > div > div > div > div > input {
       animation: spin 2s linear infinite;
       border: none;
 
-      > svg LinearGradient > stop {
-        stop-color: var(--color-primary-text);
+      > svg {
+        width: @size-16;
+        height: @size-16;
+
+        LinearGradient > stop {
+          stop-color: var(--color-primary-text);
+        }
       }
     }
   }
@@ -2264,6 +2269,16 @@ div.error > div > div > div > div > input {
 
       > svg > path {
         stroke: var(--color-primary-text);
+      }
+    }
+
+    &.loading {
+      > span:last-of-type {
+        > svg {
+          LinearGradient > stop {
+            stop-color: var(--color-reporting);
+          }
+        }
       }
     }
   }
