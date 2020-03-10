@@ -64,21 +64,6 @@
   }
 }
 
-:root[theme="BETTING"],
-:root[theme="SPORTS"] {
-  .Container {
-    > div:last-of-type {
-      display: flex;
-      flex-flow: row-reverse nowrap;
-
-      > button,
-      > a {
-        margin-left: @size-8;
-      }
-    }
-  }
-}
-
 .LargeSubheader {
   .text-22-bold;
 
@@ -377,7 +362,7 @@ div.ButtonsRow:last-of-type {
     .text-12-bold;
 
     color: var(--color-primary-text);
-    margin: 50px 0 @size-8;
+    margin: @size-50 0 @size-8;
   }
 
   > div  {
@@ -2884,51 +2869,6 @@ div.ButtonsRow:last-of-type {
 
     > span {
       margin-right: 0.75rem;
-    }
-  }
-}
-
-.SelectableTable {
-  align-items: center;
-  display: flex;
-  flex-flow: column nowrap;
-  justify-content: stretch;
-
-  > button {
-    border: 1px solid var(--color-dark-grey);
-    border-top: 0;
-    color: var(--color-primary-text);
-    display: flex;
-    flex: 1;
-    flex-flow: row nowrap;
-    width: 100%;
-
-    > span {
-      .mono-10;
-
-      border-right: 1px solid var(--color-dark-grey);
-      flex: 1;
-      padding: @size-4 @size-8;
-      text-align: left;
-      white-space: nowrap;
-
-      &:last-of-type {
-        border-right: 0;
-      }
-    }
-
-    &:hover {
-      color: var(--color-inactive-text);
-      cursor: pointer;
-    }
-
-    &:first-of-type {
-      border-top: 1px solid var(--color-dark-grey);
-
-      &:hover {
-        color: var(--color-primary-text);
-        cursor: auto;
-      }
     }
   }
 }
