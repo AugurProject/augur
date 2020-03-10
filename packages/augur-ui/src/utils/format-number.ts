@@ -464,7 +464,7 @@ export function formatNumber(
       o.formattedValue = '0';
     } else if (value.abs().lt(useSignificantFiguresThreshold)) {
       if (!decimals) {
-        o.formattedValue = '0';
+        o.formattedValue = String(value);
       } else {
         formatSigFig = true;
         o.formattedValue = value.toPrecision(decimals, roundingMode);
