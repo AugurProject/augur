@@ -195,7 +195,7 @@ async function runSimulateTrade(
     userShares
   );
 
-  let gasLimit: BigNumber = createBigNumber(0);
+  let gasLimit: BigNumber = createBigNumber(ZEROX_GAS_FEE);
 
   const totalFee = createBigNumber(simulateTradeValue.settlementFees, 10);
   newTradeDetails.totalFee = totalFee.toFixed();
@@ -211,9 +211,7 @@ async function runSimulateTrade(
     .toFixed();
   if (isNaN(newTradeDetails.feePercent)) newTradeDetails.feePercent = '0';
 
-  if (newTradeDetails.sharesFilled.toNumber() === 0) {
-    gasLimit = createBigNumber(0);
-  } else {
+  if (newTradeDetails.sharesFilled.toNumber() > 0) {
     gasLimit = await simulateTradeGasLimit(
       orderType,
       marketId,
