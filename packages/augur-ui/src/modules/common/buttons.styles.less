@@ -169,6 +169,17 @@
     justify-content: flex-start;
   }
 
+  > div > div:first-of-type {
+    > svg {
+      width: @size-20;
+      height: @size-20;
+
+      > path {
+        stroke: var(--color-primary-text);
+      }
+    }
+  }
+
   > div > div:nth-of-type(2) {
     margin-left: @size-21;
 
@@ -215,6 +226,17 @@
     align-items: center;
     display: flex;
     justify-content: flex-start;
+  }
+
+  > div > div:first-of-type {
+    > svg {
+      width: @size-18;
+      height: @size-18;
+
+      > path {
+        fill: var(--color-primary-text);
+      }
+    }
   }
 
   > div > div:nth-of-type(2) {

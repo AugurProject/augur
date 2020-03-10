@@ -163,7 +163,7 @@ export const PlusCircleIcon = (
 );
 
 export const EthIcon = (
-  <svg width="7" height="12" viewBox="0 0 7 12">
+  <svg viewBox="0 0 7 12">
     <path d="M3.49891 11.9999L3.49895 12.0001L3.49897 12L7 6.80985L3.49897 8.98586L0 6.80981L3.49891 11.9999Z" />
     <path d="M3.49896 0L3.49892 6.83319e-05L0 6.11126L2.6703e-05 6.11128L3.49894 8.28837L3.49897 8.2884V8.28836L6.99792 6.11126L3.49896 0Z" />
   </svg>
@@ -351,7 +351,7 @@ export const SearchIcon = (
 );
 
 export const FilterIcon = (
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+  <svg viewBox="0 0 16 16" fill="none">
     <g clipPath="url(#clip0)">
       <path
         d="M5.35993 6.08008C4.57176 6.07886 3.87889 6.60179 3.66393 7.36008H1.67993V8.32008H3.66393C3.87527 9.08221 4.56904 9.60978 5.35993 9.60978C6.15083 9.60978 6.84459 9.08221 7.05593 8.32008H14.3199V7.36008H7.05593C6.84098 6.60179 6.1481 6.07886 5.35993 6.08008ZM5.35993 8.64008C4.9181 8.64008 4.55993 8.28191 4.55993 7.84008C4.55993 7.39825 4.9181 7.04008 5.35993 7.04008C5.80176 7.04008 6.15993 7.39825 6.15993 7.84008C6.15993 8.28191 5.80176 8.64008 5.35993 8.64008Z"
@@ -442,7 +442,7 @@ export const InputErrorIcon = (c = '#ff2727') => (
 );
 
 export const Hint = (
-  <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+  <svg viewBox="0 0 18 18" fill="none">
     <circle cx="9" cy="9" r="8" strokeWidth="2" />
     <path d="M6.5 6.30273H9.74023V11.7051H11.8086V12.6426H6.5V11.7051H8.65625V7.24609H6.5V6.30273ZM8.51562 4.63867C8.51562 4.45898 8.56836 4.30859 8.67383 4.1875C8.7832 4.0625 8.94727 4 9.16602 4C9.38086 4 9.54297 4.0625 9.65234 4.1875C9.76172 4.30859 9.81641 4.45898 9.81641 4.63867C9.81641 4.81445 9.76172 4.96094 9.65234 5.07812C9.54297 5.19531 9.38086 5.25391 9.16602 5.25391C8.94727 5.25391 8.7832 5.19531 8.67383 5.07812C8.56836 4.96094 8.51562 4.81445 8.51562 4.63867Z" />
   </svg>
@@ -524,7 +524,7 @@ export const Syncing = (
 );
 
 export const MenuChevron = (
-  <svg width="6" height="10" viewBox="0 0 6 10" fill="none">
+  <svg viewBox="0 0 6 10" fill="none">
     <path
       fillRule="evenodd"
       clipRule="evenodd"
@@ -967,7 +967,7 @@ export const LogoutIcon = (
 );
 
 export const errorIcon = (
-  <svg width="16px" height="16px" viewBox="0 0 16 16">
+  <svg viewBox="0 0 16 16">
     <defs />
     <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
       <g transform="translate(-24.000000, -607.000000)">
@@ -989,7 +989,7 @@ export const errorIcon = (
 );
 
 export const Alerts = unseenCount => (
-  <svg width="34" height="24" viewBox="0 0 34 24">
+  <svg viewBox="0 0 34 24">
     <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
       <g>
         <g
@@ -1153,7 +1153,7 @@ export const DoubleArrows = (
 );
 
 export const LoadingEllipse = (
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+  <svg viewBox="0 0 16 16" fill="none">
     <path
       d="M7.99998 14.4C11.5346 14.4 14.4 11.5346 14.4 7.99998C14.4 4.46535 11.5346 1.59998 7.99998 1.59998C4.46535 1.59998 1.59998 4.46535 1.59998 7.99998"
       stroke="url(#paint0_linear)"
@@ -1178,7 +1178,7 @@ export const LoadingEllipse = (
 );
 
 export const Compact = (
-  <svg width="16" height="16" viewBox="0 0 16 16">
+  <svg viewBox="0 0 16 16">
     <rect y="13.1001" width="16" height="2.9" />
     <rect y="8.7998" width="16" height="2.9" />
     <rect y="4.3999" width="16" height="2.9" />
@@ -1187,7 +1187,7 @@ export const Compact = (
 );
 
 export const Classic = (
-  <svg width="16" height="16" viewBox="0 0 16 16">
+  <svg viewBox="0 0 16 16">
     <rect y="12.2002" width="16" height="3.8" />
     <rect y="6" width="16" height="4.2" />
     <rect width="16" height="4" />
@@ -1195,14 +1195,14 @@ export const Classic = (
 );
 
 export const Expanded = (
-  <svg width="16" height="16" viewBox="0 0 16 16">
+  <svg viewBox="0 0 16 16">
     <rect y="9" width="16" height="7" />
     <rect width="16" height="7" />
   </svg>
 );
 
 export const MagnifyingGlass = (
-  <svg width="24" height="24" viewBox="0 0 24 24">
+  <svg viewBox="0 0 24 24">
     <path
       fillRule="evenodd"
       clipRule="evenodd"
@@ -1273,21 +1273,19 @@ export const Open = (
 );
 
 export const MetaMaskLogin = (
-  <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+  <svg viewBox="0 0 18 18" fill="none">
     <path
       fillRule="evenodd"
       clipRule="evenodd"
       d="M0.144387 3.55334L1.0107 0.900024L6.4492 3.1674H11.5508L16.9862 0.901333L16.9879 0.900024L16.9881 0.900542L16.9893 0.900024L16.9882 0.900883L17.8542 3.55334L17.3778 6.38354L16.6588 9.11972L18 13.0088L16.9412 17.0129L12.8503 15.7104L12.2246 16.1928L10.4439 16.9646H9.04813H9H7.60428L5.82353 16.1928L5.14973 15.7104L1.05882 17.0129L0 13.0088L1.3404 9.12204L0.62083 6.38354L0.144387 3.55334ZM10.5221 15.3244L10.3542 13.9782L10.3476 13.9736L9.91444 13.7324H8.08556L7.69766 13.9484L7.52607 15.3244H9H9.04813H10.3476H10.5221ZM11.5306 9.85376L10.7033 11.6033L13.6364 10.8427L11.5306 9.85376ZM7.30707 11.6033L6.47978 9.85376L4.37395 10.8427L7.30707 11.6033ZM0.723745 3.77166L1.45746 1.52074C1.45746 1.52074 6.96034 5.69518 7.0011 5.7361C7.04187 5.77703 4.79995 7.57777 4.79995 7.57777L1.7428 8.51906L1.12727 6.17265L0.723745 3.77166ZM16.5081 1.52074L17.2418 3.77166L16.8383 6.17265L16.2228 8.51906L13.1656 7.57777C13.1656 7.57777 10.9237 5.77703 10.9645 5.7361C11.0052 5.69518 16.5081 1.52074 16.5081 1.52074Z"
-      fill="#E9E5F2"
     />
   </svg>
 );
 
 export const EmailLogin = (
-  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+  <svg viewBox="0 0 20 20" fill="none">
     <path
       d="M14.2218 17.3887C12.3586 18.1 6.67252 19.2647 3.58749 15.7164C0.601178 12.2781 1.89802 7.07502 4.1348 4.4743C6.15615 2.12502 10.3347 1.03686 13.9966 2.52327C17.6584 4.00967 18.2687 7.44767 18.1408 9.42908C18.0128 11.4105 17.4019 13.5485 15.4104 13.7041C13.4189 13.8596 13.0974 12.0008 12.9689 11.1025C12.8403 10.2042 13.3224 6.3643 13.3224 6.3643C8.95346 5.03145 7.41249 7.35458 6.92958 8.77939C6.44668 10.2042 6.28749 12.4337 8.08749 13.3939C9.88749 14.354 12.2635 13.1151 12.9703 11.1022"
-      stroke="#E9E5F2"
       strokeWidth="2"
       strokeMiterlimit="10"
     />
@@ -1295,10 +1293,9 @@ export const EmailLogin = (
 );
 
 export const PhoneLogin = (
-  <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+  <svg viewBox="0 0 18 18" fill="none">
     <path
       d="M11.6401 10.8526L10.3565 12.4557C8.36873 11.2875 6.71201 9.63141 5.54317 7.64407L7.1477 6.36044C7.33573 6.20988 7.46862 6.00129 7.52561 5.76723C7.58259 5.53318 7.56047 5.28685 7.4627 5.06669L6.0002 1.77326C5.89532 1.53699 5.70995 1.34565 5.47711 1.23335C5.24428 1.12106 4.97913 1.09511 4.72895 1.16013L1.94457 1.88238C1.68482 1.95028 1.459 2.11108 1.30987 2.33433C1.16074 2.55758 1.09867 2.82778 1.13542 3.09373C1.62403 6.57316 3.23212 9.79893 5.71659 12.2834C8.20105 14.7679 11.4268 16.376 14.9063 16.8646C15.1722 16.9013 15.4424 16.8392 15.6657 16.6901C15.8889 16.541 16.0497 16.3152 16.1176 16.0554L16.8399 13.271C16.9047 13.0209 16.8787 12.7558 16.7665 12.5231C16.6543 12.2903 16.4631 12.1048 16.227 11.9998L12.9339 10.5373C12.7137 10.4394 12.4673 10.4172 12.2332 10.4743C11.9991 10.5313 11.7905 10.6644 11.6401 10.8526V10.8526Z"
-      stroke="#E9E5F2"
       strokeWidth="1.5"
       strokeMiterlimit="10"
       strokeLinecap="square"
@@ -1307,12 +1304,11 @@ export const PhoneLogin = (
 );
 
 export const GoogleLogin = (
-  <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+  <svg viewBox="0 0 18 18" fill="none">
     <path
       fillRule="evenodd"
       clipRule="evenodd"
       d="M8.991 10.71V7.362H17.415C17.541 7.929 17.64 8.46 17.64 9.207C17.64 14.346 14.193 18 9 18C4.032 18 0 13.968 0 9C0 4.032 4.032 0 9 0C11.43 0 13.464 0.891 15.021 2.349L12.465 4.833C11.817 4.221 10.683 3.501 9 3.501C6.021 3.501 3.591 5.976 3.591 9.009C3.591 12.042 6.021 14.517 9 14.517C12.447 14.517 13.716 12.132 13.95 10.719H8.991V10.71Z"
-      fill="#E9E5F2"
     />
   </svg>
 );
@@ -1349,8 +1345,6 @@ export const TwitterButton = (
 
 export const Sports = (
   <svg
-    width="40"
-    height="40"
     viewBox="0 0 40 40"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
@@ -1441,14 +1435,14 @@ export const Finance = (
 );
 
 export const Olympics = (
-  <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M25.02 37.75L25 34.4167L34.3684 33.0833C35.0073 32.9918 35.5916 32.6725 36.0139 32.1844C36.4362 31.6963 36.668 31.0721 36.6667 30.4267V27.75H3.33338V30.4267C3.33207 31.0721 3.56388 31.6963 3.98617 32.1844C4.40845 32.6725 4.9928 32.9918 5.63171 33.0833L15 34.4167V37.75" stroke="#D7DDE0" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="square"/>
     <path d="M19.26 3.3335C18.9841 4.93977 18.323 6.45525 17.3334 7.75016C16.185 9.25016 13.3334 10.7352 13.3334 14.4168C13.334 15.5979 13.6483 16.7576 14.2443 17.7772C14.8402 18.7969 15.6963 19.64 16.725 20.2202C16.7622 19.695 16.9137 19.1843 17.1687 18.7237C17.4238 18.2631 17.7763 17.8637 18.2017 17.5535C19.0212 17.0154 19.6504 16.2328 20 15.3168C20.8854 15.8283 21.6412 16.5365 22.2091 17.3867C22.777 18.237 23.1417 19.2064 23.275 20.2202C24.3038 19.64 25.1599 18.7969 25.7558 17.7772C26.3517 16.7576 26.6661 15.5979 26.6667 14.4168C26.6667 12.5518 26.3334 7.47516 19.26 3.3335Z" stroke="#D7DDE0" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="square"/>
   </svg>
 );
 
 export const Crypto = (
-  <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+  <svg viewBox="0 0 40 40" fill="none">
     <path
       d="M6.25 20H7.5C10.335 20 13.5325 21.5587 15 23.75H20C22.5087 23.75 25 26.2413 25 28.75H13.75"
       stroke="#D7DDE0"
@@ -2072,7 +2066,7 @@ export const OpenArrow = (
 );
 
 export const CategoryCrypto = (
-  <svg width="13" height="12" viewBox="0 0 13 12" fill="none">
+  <svg viewBox="0 0 13 12" fill="none">
     <path
       d="M2.875 6H3.25C4.1005 6 5.05975 6.46762 5.5 7.125H7C7.75262 7.125 8.5 7.87238 8.5 8.625H5.125"
       stroke="white"
@@ -2105,7 +2099,7 @@ export const CategoryCrypto = (
 );
 
 export const CategoryFinance = (
-  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+  <svg viewBox="0 0 12 12" fill="none">
     <path
       d="M10.25 6L9 6L7.5 3.5L5 8.5L3.5 6L1.75 6"
       stroke="#2AE7A8"
@@ -2121,7 +2115,7 @@ export const CategoryFinance = (
 );
 
 export const CategoryEntertainment = (
-  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+  <svg viewBox="0 0 12 12" fill="none">
     <path
       d="M1.5 3.5L10.5 3.5L9.5 11.5L2.5 11.5L1.5 3.5Z"
       stroke="white"
@@ -2139,7 +2133,7 @@ export const CategoryEntertainment = (
 );
 
 export const CategoryPolitics = (
-  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+  <svg viewBox="0 0 12 12" fill="none">
     <path
       d="M9.25 6.75C9.25 4.95 7.8 3.5 6 3.5C4.2 3.5 2.75 4.95 2.75 6.75"
       stroke="#2AE7A8"
@@ -2179,7 +2173,7 @@ export const CategoryPolitics = (
 );
 
 export const CategorySports = (
-  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+  <svg viewBox="0 0 12 12" fill="none">
     <path
       d="M10 9.77539C9.075 8.80039 8.5 7.47539 8.5 6.00039C8.5 4.52539 9.075 3.22539 10 2.22539"
       stroke="white"

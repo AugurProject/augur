@@ -30,6 +30,11 @@
 
     > button {
       margin-right: @size-12;
+
+      > svg {
+        width: @size-34;
+        height: @size-24;
+      }
     }
 
     > button[class*="SecondaryButton"] {
@@ -139,7 +144,7 @@
       .mono-10-medium;
 
       color: var(--color-secondary-text);
-      margin-bottom: 2px;
+      margin-bottom: @size-2;
       text-transform: uppercase;
       white-space: nowrap;
     }

@@ -53,9 +53,14 @@
     }
   }
 
-  > svg rect,
-  > svg path {
-    fill: var(--color-secondary-action-outline);
+  > svg {
+    height: @size-16;
+    width: @size-16;
+
+    rect,
+    path {
+      fill: var(--color-secondary-action-outline);
+    }
   }
 
   &:hover {
