@@ -71,8 +71,8 @@ export interface SDKConfiguration {
   uploadBlockNumber?: number,
   addresses?: ContractAddresses,
   plugins?: {
-    chat?: '3box'|'orbit'|undefined,
-    comments?: '3box'|'facebook'|undefined,
+    chat?: '3box'|'orbit',
+    comments?: '3box'|'facebook',
   }
 };
 
