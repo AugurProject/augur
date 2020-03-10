@@ -18,6 +18,7 @@
     "prepush": "yarn lint",
     "test": "jest",
     "run-relay": "docker-compose -f support/gnosis/docker-compose.yml up",
+    "relay-logs": "docker-compose -f support/gnosis/docker-compose.yml logs -f",
     "kill-relay": "docker-compose -f support/gnosis/docker-compose.yml down"
   },
   "repository": {

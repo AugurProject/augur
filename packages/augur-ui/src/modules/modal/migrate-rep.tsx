@@ -10,7 +10,7 @@ import { LinearPropertyLabel } from 'modules/common/labels';
 import { InfoIcon } from 'modules/common/icons';
 import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 import {
-  V1_REP_MIGRATE_ESTIMATE,
+  V1_REP_MIGRATE_ESTIMATE, HELP_CENTER_LEARN_ABOUT_ADDRESS, HELP_CENTER_MIGRATE_REP,
 } from 'modules/common/constants';
 
 import Styles from 'modules/modal/modal.styles.less';
@@ -86,7 +86,7 @@ export const MigrateRep = (props: MigrateRepForm) => {
         address={toChecksumAddress(loginAccount.address)}
       />
       <ExternalLinkButton
-        URL="https://docs.augur.net/"
+        URL={HELP_CENTER_LEARN_ABOUT_ADDRESS}
         label={'Learn about your address'}
       />
     </>
@@ -114,7 +114,7 @@ export const MigrateRep = (props: MigrateRepForm) => {
             example 100 V1 REP will migrate to 100 V2 REP.
             <ExternalLinkButton
               label="Learn more"
-              URL="http://docs.augur.net/"
+              URL={HELP_CENTER_MIGRATE_REP}
             />
           </h2>
         )}
@@ -129,7 +129,7 @@ export const MigrateRep = (props: MigrateRepForm) => {
             From here you can migrate all V1 REP in your account to V2 REP.
             <ExternalLinkButton
               label="Learn more"
-              URL="http://docs.augur.net/"
+              URL={HELP_CENTER_MIGRATE_REP}
             />
           </h2>
         )}

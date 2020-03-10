@@ -414,6 +414,10 @@ div.ButtonsRow:last-of-type {
       display: flex;
       margin: @size-48 0;
     }
+
+    @media all and (max-width: 320px) { // iPhone 5
+      margin: @size-2;
+    }
   }
 
   .Container;
@@ -489,6 +493,10 @@ div.ButtonsRow:last-of-type {
         color: var(--color-secondary-text);
         display: flex;
         padding: @size-9 @size-12;
+
+        @media all and (max-width: 320px) { // iPhone 5
+          display: none;
+        }
       }
     }
 
@@ -568,6 +576,10 @@ div.ButtonsRow:last-of-type {
         > span:first-of-type {
           margin: @size-24 0 @size-8;
         }
+      }
+
+      @media all and (max-width: 320px) { // iPhone 5
+        visibility: hidden;
       }
     }
   }
@@ -655,7 +667,10 @@ div.ButtonsRow:last-of-type {
   }
 }
 
-.AddFundsCreditDebitCoinbase {
+
+
+.AddFundsCoinbase,
+.AddFundsCreditDebit {
   > h2 {
     margin: @size-4 0 @size-24 0;
 
@@ -665,12 +680,16 @@ div.ButtonsRow:last-of-type {
       width: @size-12;
     }
   }
+}
 
-  > a > button {
+.AddFundsCreditDebit {
+  > button {
     margin-top: @size-8;
   }
+}
 
-  > button:last-of-type {
+.AddFundsCoinbase {
+  > button {
     .text-10-bold;
 
     background: none;
@@ -942,6 +961,9 @@ div.ButtonsRow:last-of-type {
     > div:first-of-type {
       .text-12;
 
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: space-evenly;
       color: var(--color-secondary-text);
 
       > span {
@@ -956,7 +978,6 @@ div.ButtonsRow:last-of-type {
       color: var(--color-secondary-text);
       cursor: pointer;
       text-align: center;
-      width: @size-45;
     }
   }
 
@@ -1324,6 +1345,8 @@ div.ButtonsRow:last-of-type {
         height: @size-32;
         margin: 0 -@size-16 @size-4;
         padding: @size-10 @size-16;
+        grid-template-columns: repeat(4, 1fr);
+        display: grid;
 
         > span {
           .mono-9;
@@ -1400,12 +1423,15 @@ div.ButtonsRow:last-of-type {
           flex-flow: row wrap;
           height: @size-116;
           padding: @size-12 @size-16;
+          grid-template-columns: repeat(4, 1fr);
+          display: grid;
 
           > span:first-of-type {
             .mono-11;
 
             flex: 1 100%;
             margin-bottom: @size-8;
+            grid-column: 1 / span 5;
           }
 
           > span {
@@ -1421,6 +1447,7 @@ div.ButtonsRow:last-of-type {
           > div {
             flex: 1 100%;
             margin: @size-24 0;
+            grid-column: 4;
           }
         }
       }
@@ -2769,7 +2796,7 @@ div.ButtonsRow:last-of-type {
   border-left: solid @size-12 transparent;
   border-right: solid @size-12 transparent;
   position: absolute;
-  right: @size-16;
+  right: @size-21;
   top: -@size-6;
 }
 

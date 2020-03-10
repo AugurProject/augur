@@ -13,21 +13,21 @@ interface StateProps {
   modal: {
     type: string;
   };
-  config: SDKConfiguration;
+  env: SDKConfiguration;
   connection: string;
   isConnectedThroughWeb3: boolean;
 }
 
 const mapStateToProps = (state: StateProps) => ({
   modal: state.modal,
-  config: state.config,
+  env: state.env,
   connection: state.connection,
   isConnectedThroughWeb3: isWeb3Transport(),
 });
 
 const mapDispatchToProps = (dispatch) => ({
   submitForm: (e: Event) => e.preventDefault(),
-  updateEnv: (config: SDKConfiguration) => dispatch(updateEnv(config)),
+  updateEnv: (env: SDKConfiguration) => dispatch(updateEnv(env)),
   closeModal: () => dispatch(closeModal()),
   connectAugur: (history, env, isInitialConnection, cb) =>
     dispatch(connectAugur(history, env, isInitialConnection, cb)),
