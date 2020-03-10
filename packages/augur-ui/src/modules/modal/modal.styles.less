@@ -17,7 +17,7 @@
   display: flex;
   flex-flow: column nowrap;
   max-height: 90vh;
-  max-width: 35rem;
+  max-width: @size-560;
   position: relative;
   width: 100%;
 
@@ -27,10 +27,9 @@
   }
 
   > main > h1 {
-    .text-12;
+    .text-12-medium;
 
     color: var(--color-primary-text);
-    font-weight: @weight-medium;
     line-height: @size-16;
     margin-bottom: @size-16;
     text-align: left;
@@ -38,10 +37,9 @@
   }
 
   > main > h2 {
-    .text-16;
+    .text-16-medium;
 
     color: var(--color-primary-text);
-    font-weight: @weight-medium;
     margin: @size-8 0 @size-24;
   }
 
@@ -124,7 +122,7 @@
   > div:last-of-type {
     > svg {
       height: @size-64;
-      width: 52px;
+      width: @size-52;
 
       > path {
         fill: var(--color-secondary-text);
@@ -302,10 +300,9 @@ div.Onboarding {
   }
 
   > h1 {
-    .text-12;
+    .text-12-medium;
 
     color: var(--color-primary-text);
-    font-weight: @weight-medium;
     line-height: @size-16;
     margin-bottom: 0;
     text-align: left;
@@ -724,18 +721,18 @@ div.ButtonsRow:last-of-type {
 
     align-items: center;
     background: var(--color-secondary-action);
-    border: 2px solid var(--color-secondary-action-outline);
+    border: @size-2 solid var(--color-secondary-action-outline);
     border-radius: @border-radius-rounded;
     cursor: pointer;
     color: var(--color-primary-text);
     display: flex;
-    height: 48px;
+    height: @size-48;
     justify-content: center;
     padding: @size-14 @size-12 @size-14 @size-4;
-    width: 87px;
+    width: @size-87;
 
     &.selected {
-      border: 2px solid var(--color-primary-action);
+      border: @size-2 solid var(--color-primary-action);
     }
 
     > svg {
@@ -860,7 +857,7 @@ div.ButtonsRow:last-of-type {
   background: var(--color-module-background);
   box-shadow: 0px @size-4 @size-4 rgba(0, 0, 0, 0.25);
   max-width: @login-signup-modal-width;
-  padding: 48px 56px;
+  padding: @size-48 @size-56;
 
   @media @breakpoint-mobile {
     padding: @size-24;
@@ -874,8 +871,8 @@ div.ButtonsRow:last-of-type {
   cursor: pointer;
   height: @size-12;
   position: absolute;
-  right: 17px;
-  top: 17px;
+  right: @size-17;
+  top: @size-17;
   width: @size-12;
 
   @media @breakpoint-mobile {
@@ -892,7 +889,7 @@ div.ButtonsRow:last-of-type {
   @media @breakpoint-mobile {
     margin: @size-48 0;
     margin: @size-48 0;
-    padding-top: 57px;
+    padding-top: @size-57;
   }
 
   > div:first-of-type {
@@ -959,7 +956,7 @@ div.ButtonsRow:last-of-type {
       color: var(--color-secondary-text);
       cursor: pointer;
       text-align: center;
-      width: 45px;
+      width: @size-45;
     }
   }
 
@@ -976,7 +973,7 @@ div.ButtonsRow:last-of-type {
     &:after {
       content: '';
 
-      border: 1px solid var(--color-secondary-action-outline);
+      border: @size-1 solid var(--color-secondary-action-outline);
       width: 100%;
     }
 
@@ -1299,7 +1296,7 @@ div.ButtonsRow:last-of-type {
     > .Orders__header {
       align-items: center;
       background: var(--color-module-background);
-      border-top: 1px solid var(--color-dark-grey);
+      border-top: @size-1 solid var(--color-dark-grey);
       display: flex;
       flex-flow: row nowrap;
       height: @size-40;
@@ -1310,20 +1307,20 @@ div.ButtonsRow:last-of-type {
         .text-10-medium;
 
         color: var(--color-inactive-text);
-        flex: 0 0 5.5rem;
+        flex: 0 0 @size-88;
         text-transform: uppercase;
       }
 
       > span:first-of-type {
-        flex: 0 1 15.5rem;
+        flex: 0 1 @size-248;
       }
 
       > span:last-of-type {
-        flex: 1 0 6.5rem;
+        flex: 1 0 @size-104
       }
 
       @media @breakpoint-mobile {
-        border-bottom: 1px solid var(--color-dark-grey);
+        border-bottom: @size-1 solid var(--color-dark-grey);
         height: @size-32;
         margin: 0 -@size-16 @size-4;
         padding: @size-10 @size-16;
@@ -1331,7 +1328,7 @@ div.ButtonsRow:last-of-type {
         > span {
           .mono-9;
 
-          flex: 0 0 3.75rem;
+          flex: 0 0 @size-60;
         }
 
         > span:first-of-type,
@@ -1362,7 +1359,7 @@ div.ButtonsRow:last-of-type {
         > span:first-of-type {
           .mono-12-bold;
 
-          flex: 0 1 15.5rem;
+          flex: 0 1 @size-248;
           text-transform: capitalize;
 
           > span {
@@ -1381,17 +1378,17 @@ div.ButtonsRow:last-of-type {
         > span {
           .mono-12;
 
-          flex: 0 0 5.5rem;
+          flex: 0 0 @size-88;
         }
 
         > div {
           align-items: center;
           display: flex;
-          flex: 1 0 6.5rem;
+          flex: 1 0 @size-104;
 
           > button:first-of-type {
             margin-left: auto;
-            margin-right: 1rem;
+            margin-right: @size-16;
           }
         }
       }
@@ -1401,7 +1398,7 @@ div.ButtonsRow:last-of-type {
 
         > div {
           flex-flow: row wrap;
-          height: 7.25rem;
+          height: @size-116;
           padding: @size-12 @size-16;
 
           > span:first-of-type {
@@ -1435,7 +1432,7 @@ div.ButtonsRow:last-of-type {
     }
 
     > div:last-of-type {
-      margin-top: 1rem;
+      margin-top: @size-16;
     }
   }
 
@@ -1931,9 +1928,9 @@ div.ButtonsRow:last-of-type {
 .Gas {
   .Container;
 
-  max-width: 30rem; // 480px
+  max-width: @size-480;
   @media @breakpoint-mobile-mid {
-    max-width: 21.5rem; // 340px
+    max-width: @size-340;
   }
 
   > main {
@@ -1967,10 +1964,8 @@ div.ButtonsRow:last-of-type {
     }
 
     > button {
-      .button;
 
-      background: transparent;
-      border: 1px solid var(--color-secondary-action-outline);
+      border: @size-1 solid var(--color-secondary-action-outline);
       color: var(--color-primary-text);
       max-height: @button-height-default;
       padding: @size-8 @size-12;
@@ -1995,13 +1990,11 @@ div.ButtonsRow:last-of-type {
 
       align-items: center;
       background: var(--color-secondary-action);
-      color: var(--color-primary-text);
       display: flex;
       text-transform: uppercase;
       margin-left: auto;
       min-height: unset;
       min-width: unset;
-      padding: @size-4;
 
       > span {
         > svg {
@@ -2038,17 +2031,14 @@ div.ButtonsRow:last-of-type {
           font-weight: @weight-bold;
 
           > span:first-of-type {
+            .mono-11-bold;
             color: var(--color-secondary-text);
-            font-family: @Inter;
-            font-size: @size-11;
             text-transform: uppercase;
           }
 
           > span:nth-of-type(2) {
+            .mono-10;
             color: var(--color-dark-text);
-            font-family: @Inter;
-            font-size: @size-10;
-            font-weight: @weight-normal;
           }
         }
 
@@ -2082,9 +2072,8 @@ div.ButtonsRow:last-of-type {
 
         > div:first-of-type {
           > span:first-of-type {
+            .mono-11-bold;
             color: var(--color-primary-text);
-            font-family: @Inter;
-            font-size: @size-11;
             text-transform: uppercase;
           }
         }
@@ -2121,7 +2110,7 @@ div.ButtonsRow:last-of-type {
           border: @size-1 solid var(--color-secondary-action-outline);
           color: var(--color-primary-text);
           padding: @size-6 @size-16;
-          -moz-appearance:textfield;
+          -moz-appearance: textfield;
         }
 
         input::-webkit-outer-spin-button,
@@ -2235,7 +2224,7 @@ div.ButtonsRow:last-of-type {
       > h1,
       > div:first-of-type,
       > button {
-        padding: 0 0.5rem;
+        padding: 0 @size-8;
       }
 
       > section:first-of-type {
@@ -2263,7 +2252,7 @@ div.ButtonsRow:last-of-type {
   .text-12;
 
   color: var(--color-primary-text);
-  line-height: 20px;
+  line-height: @size-20;
   margin: 0;
 }
 
@@ -2688,7 +2677,7 @@ div.ButtonsRow:last-of-type {
   .Breakdown;
 
   margin-left: auto;
-  max-width: 15rem;
+  max-width: @size-240;
 
   @media @breakpoint-mobile {
     margin-left: 0;
@@ -2700,14 +2689,14 @@ div.ButtonsRow:last-of-type {
   .Breakdown;
 
   margin-right: auto;
-  max-width: 15rem;
+  max-width: @size-240;
 }
 
 .ReadableAddress {
   align-items: center;
   display: flex;
   flex-flow: column nowrap;
-  margin-top: 1rem;
+  margin-top: @size-16;
 
   > h4 {
     .mono-10;
@@ -2728,7 +2717,7 @@ div.ButtonsRow:last-of-type {
 
   align-items: center;
   background: var(--color-page-background);
-  border: 1px solid var(--color-secondary-action-outline);
+  border: @size-1 solid var(--color-secondary-action-outline);
   color: var(--color-secondary-text);
   display: flex;
   font-family: monospace;
@@ -2744,7 +2733,7 @@ div.ButtonsRow:last-of-type {
   > div {
     font-size: @size-12;
     margin-right: @size-12;
-    max-width: 153px;
+    max-width: @size-153;
     word-break: break-all;
   }
 
@@ -2759,7 +2748,7 @@ div.ButtonsRow:last-of-type {
     text-transform: uppercase;
     color: var(--color-primary-text);
     background: var(--color-secondary-action);
-    border: 1px solid var(--color-secondary-action-outline);
+    border: @size-1 solid var(--color-secondary-action-outline);
     border-radius: @border-radius-default;
 
     @media @breakpoint-mobile {
@@ -2825,8 +2814,8 @@ div.ButtonsRow:last-of-type {
       align-items: center;
       flex: 0 0 auto;
       flex-flow: row nowrap;
-      margin-left: 50px;
-      max-width: 250px;
+      margin-left: @size-50;
+      max-width: @size-250;
 
       > span {
         display: flex;
@@ -2835,19 +2824,18 @@ div.ButtonsRow:last-of-type {
     }
 
     > h2 {
-      .text-12;
+      .text-12-medium;
 
       color: var(--color-primary-text);
       flex: 1 auto;
-      font-weight: @weight-medium;
-      line-height: 15px;
+      line-height: @size-15;
     }
 
     @media @breakpoint-mobile {
       flex-direction: column;
 
       > h2 {
-        margin-bottom: 1rem;
+        margin-bottom: @size-16;
       }
 
       > div:first-of-type {
@@ -2868,13 +2856,13 @@ div.ButtonsRow:last-of-type {
     width: 100%;
 
     > span {
-      margin-right: 0.75rem;
+      margin-right: @size-12;
     }
   }
 }
 
 .DepositInfo {
-  border-top: 1px solid var(--color-dark-grey);
+  border-top: @size-1 solid var(--color-dark-grey);
   color: var(--color-primary-text);
 
   > h3 {
@@ -2936,17 +2924,16 @@ div.ButtonsRow:last-of-type {
   width: 100%;
 
   > label {
-    .text-14-bold;
+    .text-14-medium;
 
     align-items: center;
     color: var(--color-primary-text);
     display: flex;
-    font-weight: 500;
     text-transform: none;
     user-select: none;
 
     > div {
-      margin-right: 2.5rem;
+      margin-right: @size-40;
     }
   }
 
@@ -2959,7 +2946,7 @@ div.ButtonsRow:last-of-type {
 .ModalMigrateMarket {
   .Message;
 
-  max-width: 750px;
+  max-width: @size-750;
 
   > main {
     display: flex;
@@ -2967,7 +2954,7 @@ div.ButtonsRow:last-of-type {
     padding: 0;
 
     > div:first-of-type {
-      border-bottom: 1px solid var(--color-dark-grey);
+      border-bottom: @size-1 solid var(--color-dark-grey);
       display: flex;
       flex-direction: column;
       padding: @size-24;
@@ -3013,7 +3000,7 @@ div.ButtonsRow:last-of-type {
 .ModalUniverseSelector {
   .Container;
 
-  max-width: 50rem;
+  max-width: @size-800;
 
   > div:first-of-type {
     align-items: flex-start;
@@ -3116,17 +3103,17 @@ div.ButtonsRow:last-of-type {
 
       > div:first-of-type > div:first-of-type >
       div:first-of-type {
-        margin: 0.75rem 0;
+        margin: @size-12 0;
       }
       @media @breakpoint-mobile {
         div:nth-of-type(2) {
-          padding: 0.75rem 0;
+          padding: @size-12 0;
         }
       }
     }
 
     > div:nth-of-type(3) {
-      border-bottom: 1px solid var(--color-dark-grey);
+      border-bottom: @size-1 solid var(--color-dark-grey);
       display: flex;
       padding: @size-16 @size-40;
 
@@ -3225,7 +3212,7 @@ div.ButtonsRow:last-of-type {
         .mono-9;
 
         background: var(--color-open-15);
-        border-radius: 0.1875rem;
+        border-radius: @size-3;
         color: var(--color-open);
         padding: 0 1px;
       }
