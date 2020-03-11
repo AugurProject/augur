@@ -39,9 +39,10 @@ const mapDispatchToProps = (dispatch) => ({
   loadMarketOrderBook: marketId => dispatch(loadMarketOrderBook(marketId)),
 });
 
-const mergeProps = (sP: any, dP: any) => {
+const mergeProps = (sP: any, dP: any, oP: any) => {
 
   return {
+    ...oP,
     ...sP,
     loadMarketOrderBook: () => dP.loadMarketOrderBook(sP.marketId),
   }
