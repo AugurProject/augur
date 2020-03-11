@@ -1204,12 +1204,17 @@
   }
 }
 
-.BettingBackLayButton {
+.BettingButton {
   .Button;
 
+  align-items: center;
   background: transparent;
   color: var(--color-primary-text);
-  padding: @size-6 @size-12;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  min-height: @size-36;
+  min-width: @size-60;
 
   > div:first-of-type {
     .text-12-bold;
@@ -1227,9 +1232,10 @@
 
   &.Back {
     border: @size-1 solid var(--color-positive);
+    background: var(--color-positive-15);
 
     &:disabled {
-      background: var(--color-positive-15);
+      opacity: 0.15;
     }
   
     &:hover:enabled {
@@ -1237,7 +1243,7 @@
     }
   
     &:focus:enabled {
-      background: var(--color-positive-40);
+      border: @size-2 solid var(--color-outcome-five);
     }
   
     &:active:enabled {
@@ -1247,9 +1253,10 @@
 
   &.Lay {
     border: @size-1 solid var(--color-negative);
+    background: var(--color-negative-15);
 
     &:disabled {
-      background: var(--color-negative-15);
+      opacity: 0.15;
     }
   
     &:hover:enabled {
@@ -1257,7 +1264,7 @@
     }
   
     &:focus:enabled {
-      background: var(--color-negative-40);
+      border: @size-2 solid var(--color-outcome-five);
     }
   
     &:active:enabled {

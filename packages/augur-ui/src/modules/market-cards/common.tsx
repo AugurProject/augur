@@ -107,7 +107,7 @@ export const Outcome = ({
   outcomeId,
   isTrading,
 }: OutcomeProps) => {
-  if (!isTrading)
+  if (!isTrading) {
     return (
       <BettingOutcome
         marketId={marketId}
@@ -115,6 +115,7 @@ export const Outcome = ({
         description={description}
       />
     );
+  }
   const percent = lastPricePercent
     ? calculatePosition(min, max, lastPricePercent)
     : 0;
@@ -420,6 +421,7 @@ export const OutcomeGroup = ({
               isScalar={isScalar}
               marketId={marketId}
               outcomeId={String(INVALID_OUTCOME_ID)}
+              isTrading={isTrading}
             />
           )}
         </>

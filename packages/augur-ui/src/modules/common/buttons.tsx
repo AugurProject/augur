@@ -688,7 +688,7 @@ export const BettingBackLayButton = ({
 }: BettingBackLayButtonProps) => (
   <button
     onClick={e => action(e)}
-    className={classNames(Styles.BettingBackLayButton, {
+    className={classNames(Styles.BettingButton, {
       [Styles.Back]: type === BETTING_BACK,
       [Styles.Lay]: type === BETTING_LAY
     })}

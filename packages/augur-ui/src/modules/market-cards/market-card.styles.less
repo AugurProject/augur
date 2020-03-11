@@ -579,10 +579,28 @@
 :root[theme="BETTING"],
 :root[theme="SPORTS"] {
   .MarketCard {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 0fr;
     grid-template-rows: @size-20 1fr 0fr 0fr;
     grid-gap: @size-8;
     padding: @size-12;
+
+    &.Scalar {
+      grid-template-rows: @size-20 1fr 1fr 0fr 0fr;
+
+      > h3 {
+        grid-column: span 2;
+        grid-row: 2;
+      }
+
+      > div[class*="OutcomeGroup"] {
+        grid-column: span 2;
+        grid-row: 3;
+      }
+
+      > div.InfoIcons {
+        grid-row: 4;
+      }
+    }
 
     > div:first-of-type {
       display: none;
@@ -690,14 +708,14 @@
     > button {
       margin: 0;
       grid-column: 2;
-      grid-row: 4;
+      grid-row: -1;
       justify-content: flex-end;
       padding: 0;
     }
 
     > span {
       grid-column: 1;
-      grid-row: 4;
+      grid-row: -1;
       flex-flow: row nowrap;
       border: 0;
       padding: 0;

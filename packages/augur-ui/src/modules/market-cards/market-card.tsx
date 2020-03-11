@@ -235,6 +235,7 @@ export const MarketCard = ({
         [Styles.Loading]: loading,
         [Styles.Nonexpanding]: !expandedOptionShowing || condensed,
         [Styles.Condensed]: condensed,
+        [Styles.Scalar]: isScalar,
       })}
     >
       <>
