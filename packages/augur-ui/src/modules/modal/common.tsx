@@ -92,15 +92,6 @@ export interface MarketTitleProps {
   title: string;
 }
 
-export interface SelectableTableRow {
-  columns: Array<string | number>;
-  action: Function;
-}
-
-export interface SelectableTableProps {
-  tableData: Array<SelectableTableRow>;
-}
-
 export interface ActionRow {
   title: string;
   text: string;
@@ -424,18 +415,6 @@ export const MarketTitle = (props: MarketTitleProps) => <h2>{props.title}</h2>;
 
 export const CallToAction = (props: CallToActionProps) => (
   <h3>{props.callToAction}</h3>
-);
-
-export const SelectableTable = (props: SelectableTableProps) => (
-  <div className={Styles.SelectableTable}>
-    {props.tableData.map((row: SelectableTableRow) => (
-      <button key={`row_${row.columns[0]}`} onClick={() => row.action()}>
-        {row.columns.map((columnText: string | number) => (
-          <span key={`col_${columnText}`}>{columnText}</span>
-        ))}
-      </button>
-    ))}
-  </div>
 );
 
 export const Breakdown = (props: BreakdownProps) => (
