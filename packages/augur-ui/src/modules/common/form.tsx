@@ -966,7 +966,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
       userOutcomeCurrentRoundDispute,
       hideButton,
       isDisputing,
-      isWarpSync
+      isWarpSync,
     } = this.props;
 
     let { stake } = this.props;
@@ -983,7 +983,6 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
         stake = disputeInfo.stakes.find(s => s.outcome === null);
       }
     }
-
     if (stake && stake.stakeCurrent === '-') stake.stakeCurrent = '0';
     const fullBond =
       stake && inputtedReportingStake
@@ -1040,10 +1039,18 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
                 />
               )}
               {stake && stake.tentativeWinning && (
-                <Subheaders
-                  header="pre-filled stake"
-                  subheader={formatAttoRep(stake.stakeCurrent || ZERO).full}
-                />
+                <div className={Styles.PreFilled}>
+                  <Subheaders
+                    header="pre-filled stake"
+                    subheader={formatAttoRep(stake.stakeCurrent || ZERO).full}
+                  />
+                  {userOutcomeCurrentRoundDispute && (
+                    <Subheaders
+                      header="My contribution:"
+                      subheader={formatAttoRep(userOutcomeCurrentRoundDispute.userStakeCurrent || ZERO).full}
+                    />
+                  )}
+                </div>
               )}
               {checked && (
                 <DisputingBondsView
@@ -1360,7 +1367,7 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
       innerLabel,
       maxLength,
       hideTrailingOnMobile,
-      openTop
+      openTop,
     } = this.props;
     const { autoCompleteList = [] } = this.props;
     const { showList } = this.state;
@@ -1395,7 +1402,7 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
               <div
                 className={classNames(Styles.AutoCompleteList, {
                   [Styles.active]: showList,
-                  [Styles.OpenTop]: openTop
+                  [Styles.OpenTop]: openTop,
                 })}
               >
                 {filteredList.map(item => (
@@ -1492,7 +1499,7 @@ export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
       errorMessage,
       uniqueKey,
       condensedStyle,
-      openTop
+      openTop,
     } = this.props;
     const error =
       errorMessage && errorMessage !== '' && errorMessage.length > 0;
@@ -1718,7 +1725,7 @@ export const DatePicker = (props: DatePickerProps) => (
   >
     <SingleDatePicker
       id={props.id}
-      openDirection={props.openTop ? "up" : "down"}
+      openDirection={props.openTop ? 'up' : 'down'}
       date={props.date}
       placeholder={props.placeholder || 'Date (D MMM YYYY)'}
       onDateChange={props.onDateChange}

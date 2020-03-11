@@ -15,7 +15,6 @@ import { ethers, providers } from 'ethers';
 import { Account } from '../constants';
 import { makeSigner } from '../libs/blockchain';
 import { ContractAPI } from '../libs/contract-api';
-import deepmerge from 'deepmerge';
 
 configureDexieForNode(true);
 

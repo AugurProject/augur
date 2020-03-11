@@ -1,5 +1,5 @@
 # populated geth docker file
-FROM augurproject/dev-node-geth:latest as geth
+FROM augurproject/dev-node-geth:v1.9.9 as geth
 
 ARG fake_time=false
 ENV FAKE_TIME=$fake_time
@@ -36,7 +36,7 @@ RUN bash /augur/packages/augur-tools/docker-builder/run-geth-and-deploy.sh
 #RUN find /geth -name geth.ipc -delete
 
 # create final image with no cruft
-FROM augurproject/dev-node-geth:latest
+FROM augurproject/dev-node-geth:v1.9.9
 
 RUN apk add --no-cache \
     bash \
