@@ -6,8 +6,13 @@ import { addGanacheScripts } from './ganache-scripts';
 import { Account, ACCOUNTS } from '../constants';
 import { computeAddress } from 'ethers/utils';
 import * as fs from 'fs';
-import { buildConfig, validConfigOrDie, SDKConfiguration } from '@augurproject/artifacts';
-import deepmerge from 'deepmerge';
+import {
+  buildConfig,
+  validConfigOrDie,
+  SDKConfiguration,
+  mergeConfig,
+  RecursivePartial
+} from '@augurproject/artifacts';
 
 async function processAccounts(flash: FlashSession, args: any) {
     // Figure out which private key to use.
@@ -70,19 +75,17 @@ async function run() {
         await processAccounts(flash, opts);
         flash.network = opts.network;
 
-        let specified: Partial<SDKConfiguration> = {};
+        let specified: RecursivePartial<SDKConfiguration> = {};
         if (opts.configFile) {
           specified = JSON.parse(fs.readFileSync(opts.configFile).toString());
         }
         if (opts.config) {
-          specified = JSON.parse(opts.config);
+          specified = mergeConfig(specified, JSON.parse(opts.config));
         }
         flash.config = validConfigOrDie(
           buildConfig(
             flash.network,
-            deepmerge(specified, {
-              zeroX: { rpc: { enabled: true }, mesh: { enabled: false } },
-            })
+            specified,
           )
         );
 
