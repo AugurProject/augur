@@ -1,4 +1,3 @@
-import deepmerge from 'deepmerge';
 import { ethers } from 'ethers';
 import { BigNumber } from 'bignumber.js';
 import { readFile } from 'async-file';
@@ -34,7 +33,7 @@ import {
 } from './ContractInterfaces';
 import { Contracts, ContractData } from './Contracts';
 import { Dependencies } from '../libraries/GenericContractInterfaces';
-import { ContractAddresses, NetworkId, updateConfig, SDKConfiguration } from '@augurproject/artifacts';
+import { ContractAddresses, NetworkId, updateConfig, SDKConfiguration, mergeConfig } from '@augurproject/artifacts';
 import { TRADING_CONTRACTS } from './constants';
 
 export class ContractDeployer {
@@ -457,7 +456,7 @@ Deploying to: ${env}
 
     private async initializeAllContracts(): Promise<void> {
         console.log('Initializing contracts...');
-        const promises: Array<Promise<any>> = [];
+        let promises: Array<Promise<any>> = [];
 
         const shareTokenContract = await this.getContractAddress('ShareToken');
         const shareToken = new ShareToken(this.dependencies, shareTokenContract);
@@ -486,6 +485,12 @@ Deploying to: ${env}
         const profitLossContract = await this.getContractAddress('ProfitLoss');
         const profitLoss = new ProfitLoss(this.dependencies, profitLossContract);
         promises.push(profitLoss.initialize(this.augur!.address, this.augurTrading!.address));
+
+        // Too many txn in flight on kovan breaks things
+        console.log('Awaiting promises before continuing deploy');
+        await resolveAll(promises);
+        promises = [];
+        console.log('Continuing deploy');
 
         const simulateTradeContract = await this.getContractAddress('SimulateTrade');
         const simulateTrade = new SimulateTrade(this.dependencies, simulateTradeContract);
@@ -632,7 +637,7 @@ Deploying to: ${env}
 
         const networkId = String((await this.provider.getNetwork()).chainId) as NetworkId;
 
-        await updateConfig(env, deepmerge(config, {
+        await updateConfig(env, mergeConfig(config, {
             networkId,
             uploadBlockNumber,
             addresses: mapping as ContractAddresses,
