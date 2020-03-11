@@ -221,7 +221,7 @@ export class ZeroX {
     return Boolean(this.rpc || this.mesh);
   }
 
-  async placeTrade(params: ZeroXPlaceTradeDisplayParams): Promise<void> {
+  async placeTrade(params: ZeroXPlaceTradeDisplayParams): Promise<boolean> {
     const onChainTradeParams = this.getOnChainTradeParams(params);
     return this.placeOnChainTrade(onChainTradeParams);
   }
@@ -257,7 +257,7 @@ export class ZeroX {
   async placeOnChainTrade(
     params: ZeroXPlaceTradeParams,
     ignoreOrders?: string[]
-  ): Promise<void> {
+  ): Promise<boolean> {
     if (!this.client) throw new Error('To place ZeroX trade, make sure Augur client instance was initialized with it enabled.');
 
     const invalidReason = await this.checkIfTradeValid(params);
@@ -275,7 +275,7 @@ export class ZeroX {
     // No orders available to take. Maybe make some new ones
     if (numOrders === 0) {
       if (!params.doNotCreateOrders) await this.placeOnChainOrders([params]);
-      return;
+      return false;
     }
 
     const account = await this.client.getAccount();
@@ -308,6 +308,8 @@ export class ZeroX {
         params,
         orderIds.slice(0, loopLimit.toNumber()).concat(ignoreOrders || [])
       );
+    } else {
+      return true;
     }
   }
 
@@ -316,10 +318,9 @@ export class ZeroX {
   }
 
   async placeOrders(orders: ZeroXPlaceTradeDisplayParams[]): Promise<void> {
-    const onChainOrders = [];
-    for (const params of orders) {
-      onChainOrders.push(this.getOnChainTradeParams(params));
-    }
+    const onChainOrders = orders.map((params) => {
+      return this.getOnChainTradeParams(params);
+    });
     await this.placeOnChainOrders(onChainOrders);
   }
 
@@ -579,7 +580,6 @@ export class ZeroX {
         price = (b.price - a.price);
       }
       return price === 0 ? b.amount - a.amount : price;
-
     });
 
     const { loopLimit, gasLimit } = this.getTradeTransactionLimits(params);

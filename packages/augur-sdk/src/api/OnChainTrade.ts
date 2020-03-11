@@ -78,7 +78,7 @@ export class OnChainTrade {
     this.augur = augur;
   }
 
-  async placeTrade(params: NativePlaceTradeDisplayParams): Promise<void> {
+  async placeTrade(params: NativePlaceTradeDisplayParams): Promise<boolean> {
     const onChainTradeParams = this.getOnChainTradeParams(params);
     return this.placeOnChainTrade(onChainTradeParams);
   }
@@ -101,7 +101,7 @@ export class OnChainTrade {
     });
   }
 
-  async placeOnChainTrade(params: NativePlaceTradeChainParams): Promise<void> {
+  async placeOnChainTrade(params: NativePlaceTradeChainParams): Promise<boolean> {
     const invalidReason = await this.checkIfTradeValid(params);
     if (invalidReason) throw new Error(invalidReason);
 
@@ -122,6 +122,8 @@ export class OnChainTrade {
     if (amountRemaining.gt(0)) {
       params.amount = amountRemaining;
       return this.placeOnChainTrade(params);
+    } else {
+      return true;
     }
   }
 

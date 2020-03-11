@@ -490,7 +490,7 @@ export class Augur<TProvider extends Provider = Provider> {
     return this.trade.simulateTrade(params);
   }
 
-  async placeTrade(params: PlaceTradeDisplayParams): Promise<void> {
+  async placeTrade(params: PlaceTradeDisplayParams): Promise<boolean> {
     return this.trade.placeTrade(params);
   }
 

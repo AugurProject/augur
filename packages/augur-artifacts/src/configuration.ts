@@ -199,6 +199,9 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
       ],
     }
   },
+  syncing: {
+    enabled: true
+  },
   sdk: {
     enabled: false,
     ws: 'ws://localhost:60557',
@@ -352,57 +355,62 @@ export function buildConfig(env: string, specified: RecursivePartial<SDKConfigur
 }
 
 export function mergeConfig(...configs: Array<RecursivePartial<SDKConfiguration>>): RecursivePartial<SDKConfiguration> {
+  if (configs.length < 2) throw Error(`mergeConfig must be passed at least 2 configs, not ${configs.length} configs`);
+
   return configs.reduce((left, right) => {
     return deepmerge(left, right, { arrayMerge: (target, source) => source });
   }, {})
 }
 
+// NOTE: must also add these to webpack config at packages/augur-ui/config/webpack.common.config.js
 export function configFromEnvvars(): RecursivePartial<SDKConfiguration> {
   let config: RecursivePartial<SDKConfiguration> = {};
   const e = process.env;
   const d = mergeConfig;
+  const t = (envvar) => typeof envvar !== 'undefined';
 
-  if (e.NETWORK_ID) config = d(config, { networkId: e.NETWORK_ID as NetworkId });
+  if (t(e.NETWORK_ID)) config = d(config, { networkId: e.NETWORK_ID as NetworkId });
 
-  if (e.ETHEREUM_HTTP) config = d(config, { ethereum: { http: e.ETHEREUM_HTTP }});
-  if (e.ETHEREUM_WS) config = d(config, { ethereum: { ws: e.ETHEREUM_WS }});
-  if (e.ETHEREUM_RPC_RETRY_COUNT) config = d(config, { ethereum: { rpcRetryCount: Number(e.ETHEREUM_RPC_RETRY_COUNT) }});
-  if (e.ETHEREUM_RPC_RETRY_INTERVAL) config = d(config, { ethereum: { rpcRetryInterval: Number(e.ETHEREUM_RPC_RETRY_INTERVAL) }});
-  if (e.ETHEREUM_RPC_CONCURRENCY) config = d(config, { ethereum: { rpcConcurrency: Number(e.ETHEREUM_RPC_CONCURRENCY) }});
+  if (t(e.ETHEREUM_HTTP)) config = d(config, { ethereum: { http: e.ETHEREUM_HTTP }});
+  if (t(e.ETHEREUM_WS)) config = d(config, { ethereum: { ws: e.ETHEREUM_WS }});
+  if (t(e.ETHEREUM_RPC_RETRY_COUNT)) config = d(config, { ethereum: { rpcRetryCount: Number(e.ETHEREUM_RPC_RETRY_COUNT) }});
+  if (t(e.ETHEREUM_RPC_RETRY_INTERVAL)) config = d(config, { ethereum: { rpcRetryInterval: Number(e.ETHEREUM_RPC_RETRY_INTERVAL) }});
+  if (t(e.ETHEREUM_RPC_CONCURRENCY)) config = d(config, { ethereum: { rpcConcurrency: Number(e.ETHEREUM_RPC_CONCURRENCY) }});
 
-  if (e.GAS_LIMIT) config = d(config, { gas: { limit: Number(e.GAS_LIMIT) }});
-  if (e.GAS_PRICE) config = d(config, { gas: { price: Number(e.GAS_PRICE) }});
+  if (t(e.GAS_LIMIT)) config = d(config, { gas: { limit: Number(e.GAS_LIMIT) }});
+  if (t(e.GAS_PRICE)) config = d(config, { gas: { price: Number(e.GAS_PRICE) }});
 
-  if (e.ENABLE_FAUCETS) config = d(config, { deploy: { enableFaucets: bool(e.ENABLE_FAUCETS) }});
-  if (e.NORMAL_TIME) config = d(config, { deploy: { normalTime: bool(e.NORMAL_TIME) }});
-  if (e.ETHEREUM_PRIVATE_KEY) config = d(config, { deploy: { privateKey: e.ETHEREUM_PRIVATE_KEY }});
-  if (e.SAVE_PRIVATE_KEY) config = d(config, { deploy: { savePrivateKey: bool(e.SAVE_PRIVATE_KEY) }});
-  if (e.CONTRACT_INPUT_PATH) config = d(config, { deploy: { contractInputPath: e.CONTRACT_INPUT_PATH }});
-  if (e.WRITE_ARTIFACTS) config = d(config, { deploy: { writeArtifacts: bool(e.WRITE_ARTIFACTS) }});
+  if (t(e.ENABLE_FAUCETS)) config = d(config, { deploy: { enableFaucets: bool(e.ENABLE_FAUCETS) }});
+  if (t(e.NORMAL_TIME)) config = d(config, { deploy: { normalTime: bool(e.NORMAL_TIME) }});
+  if (t(e.ETHEREUM_PRIVATE_KEY)) config = d(config, { deploy: { privateKey: e.ETHEREUM_PRIVATE_KEY }});
+  if (t(e.SAVE_PRIVATE_KEY)) config = d(config, { deploy: { savePrivateKey: bool(e.SAVE_PRIVATE_KEY) }});
+  if (t(e.CONTRACT_INPUT_PATH)) config = d(config, { deploy: { contractInputPath: e.CONTRACT_INPUT_PATH }});
+  if (t(e.WRITE_ARTIFACTS)) config = d(config, { deploy: { writeArtifacts: bool(e.WRITE_ARTIFACTS) }});
 
-  if (e.GSN_ENABLED) config = d(config, { gsn: { enabled: bool(e.GSN_ENABLED) }});
+  if (t(e.GSN_ENABLED)) config = d(config, { gsn: { enabled: bool(e.GSN_ENABLED) }});
 
-  if (e.ZEROX_RPC_ENABLED) config = d(config, { zeroX: { rpc: { enabled: bool(e.ZEROX_RPC_ENABLED) }}});
-  if (e.ZEROX_RPC_WS) config = d(config, { zeroX: { rpc: { ws: e.ZEROX_RPC_WS }}});
-  if (e.ZEROX_MESH_ENABLED) config = d(config, { zeroX: { mesh: { enabled: bool(e.ZEROX_MESH_ENABLED) }}});
-  if (e.ZEROX_USE_BOOTSTRAP_LIST) config = d(config, { zeroX: { mesh: { useBootstrapList: bool(e.ZEROX_USE_BOOTSTRAP_LIST) }}});
-  if (e.ZEROX_MESH_BOOTSTRAP_LIST) config = d(config, { zeroX: { mesh: { bootstrapList: JSON.parse(e.ZEROX_MESH_BOOTSTRAP_LIST) }}});
+  if (t(e.ZEROX_RPC_ENABLED)) config = d(config, { zeroX: { rpc: { enabled: bool(e.ZEROX_RPC_ENABLED) }}});
+  if (t(e.ZEROX_RPC_WS)) config = d(config, { zeroX: { rpc: { ws: e.ZEROX_RPC_WS }}});
+  if (t(e.ZEROX_MESH_ENABLED)) config = d(config, { zeroX: { mesh: { enabled: bool(e.ZEROX_MESH_ENABLED) }}});
+  if (t(e.ZEROX_USE_BOOTSTRAP_LIST)) config = d(config, { zeroX: { mesh: { useBootstrapList: bool(e.ZEROX_USE_BOOTSTRAP_LIST) }}});
+  if (t(e.ZEROX_MESH_BOOTSTRAP_LIST)) config = d(config, { zeroX: { mesh: { bootstrapList: JSON.parse(e.ZEROX_MESH_BOOTSTRAP_LIST) }}});
 
-  if (e.SDK_ENABLED) config = d(config, { sdk: { enabled: bool(e.SDK_ENABLED) }});
-  if (e.SDK_WS) config = d(config, { sdk: { ws: e.SDK_WS }});
+  if (t(e.SDK_ENABLED)) config = d(config, { sdk: { enabled: bool(e.SDK_ENABLED) }});
+  if (t(e.SDK_WS)) config = d(config, { sdk: { ws: e.SDK_WS }});
 
-  if (e.SERVER_HTTP_PORT) config = d(config, { server: { httpPort: Number(e.SERVER_HTTP_PORT) }});
-  if (e.SERVER_START_HTTP) config = d(config, { server: { startHTTP: bool(e.SERVER_START_HTTP) }});
-  if (e.SERVER_HTTPS_PORT) config = d(config, { server: { httpsPort: Number(e.SERVER_HTTPS_PORT) }});
-  if (e.SERVER_START_HTTPS) config = d(config, { server: { startHTTPS: bool(e.SERVER_START_HTTPS) }});
-  if (e.SERVER_WS_PORT) config = d(config, { server: { wsPort: Number(e.SERVER_WS_PORT) }});
-  if (e.SERVER_START_WS) config = d(config, { server: { startWS: bool(e.SERVER_START_WS) }});
-  if (e.SERVER_WSS_PORT) config = d(config, { server: { wssPort: Number(e.SERVER_WSS_PORT) }});
-  if (e.SERVER_START_WSS) config = d(config, { server: { startWSS: bool(e.SERVER_START_WSS) }});
+  // skipped in webpack.common.config.js because these only apply to node, not browser
+  if (t(e.SERVER_HTTP_PORT)) config = d(config, { server: { httpPort: Number(e.SERVER_HTTP_PORT) }});
+  if (t(e.SERVER_START_HTTP)) config = d(config, { server: { startHTTP: bool(e.SERVER_START_HTTP) }});
+  if (t(e.SERVER_HTTPS_PORT)) config = d(config, { server: { httpsPort: Number(e.SERVER_HTTPS_PORT) }});
+  if (t(e.SERVER_START_HTTPS)) config = d(config, { server: { startHTTPS: bool(e.SERVER_START_HTTPS) }});
+  if (t(e.SERVER_WS_PORT)) config = d(config, { server: { wsPort: Number(e.SERVER_WS_PORT) }});
+  if (t(e.SERVER_START_WS)) config = d(config, { server: { startWS: bool(e.SERVER_START_WS) }});
+  if (t(e.SERVER_WSS_PORT)) config = d(config, { server: { wssPort: Number(e.SERVER_WSS_PORT) }});
+  if (t(e.SERVER_START_WSS)) config = d(config, { server: { startWSS: bool(e.SERVER_START_WSS) }});
 
-  if (e.UPLOAD_BLOCK_NUMBER) config = d(config, { uploadBlockNumber: Number(e.UPLOAD_BLOCK_NUMBER) });
+  if (t(e.UPLOAD_BLOCK_NUMBER)) config = d(config, { uploadBlockNumber: Number(e.UPLOAD_BLOCK_NUMBER) });
 
-  if (e.ADDRESSES) config = d(config, { addresses: JSON.parse(e.ADDRESSES) });
+  if (t(e.ADDRESSES)) config = d(config, { addresses: JSON.parse(e.ADDRESSES) });
 
   return config
 }

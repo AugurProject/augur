@@ -53,6 +53,19 @@ export class ContractAPI {
     return new ContractAPI(augur, provider, dependencies, account);
   }
 
+  static async wrapUsers(
+    accounts: Account[],
+    provider: EthersProvider,
+    config: SDKConfiguration,
+    connector: Connectors.BaseConnector = new EmptyConnector(),
+    meshClient: WSClient = undefined,
+    meshBrowser: BrowserMesh = undefined,
+  ): Promise<ContractAPI[]> {
+    return Promise.all(accounts.map((account) => ContractAPI.userWrapper(
+      account, provider, config, connector, meshClient, meshBrowser
+    )));
+  }
+
   constructor(
     readonly augur: Augur,
     readonly provider: EthersProvider,
@@ -79,18 +92,18 @@ export class ContractAPI {
     await this.augur.contracts.cash.approve(this.augur.config.addresses.ZeroXTrade, new BigNumber(2).pow(256).minus(new BigNumber(1)));
   }
 
-  async createYesNoMarket(params: CreateYesNoMarketParams): Promise<ContractInterfaces.Market> {
-    await this.marketFauceting();
+  async createYesNoMarket(params: CreateYesNoMarketParams, faucet = true): Promise<ContractInterfaces.Market> {
+    if (faucet) await this.marketFauceting();
     return this.augur.createYesNoMarket(params);
   }
 
-  async createCategoricalMarket(params: CreateCategoricalMarketParams): Promise<ContractInterfaces.Market> {
-    await this.marketFauceting();
+  async createCategoricalMarket(params: CreateCategoricalMarketParams, faucet = true): Promise<ContractInterfaces.Market> {
+    if (faucet) await this.marketFauceting();
     return this.augur.createCategoricalMarket(params);
   }
 
-  async createScalarMarket(params: CreateScalarMarketParams): Promise<ContractInterfaces.Market> {
-    await this.marketFauceting();
+  async createScalarMarket(params: CreateScalarMarketParams, faucet = true): Promise<ContractInterfaces.Market> {
+    if (faucet) await this.marketFauceting();
     return this.augur.createScalarMarket(params);
   }
 
@@ -101,13 +114,13 @@ export class ContractAPI {
   async marketFauceting() {
     const marketCreationFee = await this.augur.contracts.universe.getOrCacheValidityBond_();
     const repBond = await this.getRepBond();
-    console.log("Cash Faucet for market creation");
+    console.log('Cash Faucet for market creation');
     await this.faucet(marketCreationFee);
-    console.log("REP Faucet for market creation");
+    console.log('REP Faucet for market creation');
     await this.repFaucet(repBond.plus(10**18));
   }
 
-  async createReasonableYesNoMarket(description = 'YesNo market description'): Promise<ContractInterfaces.Market> {
+  async createReasonableYesNoMarket(description = 'YesNo market description', faucet=true): Promise<ContractInterfaces.Market> {
     const currentTimestamp = (await this.getTimestamp()).toNumber();
 
     return this.createYesNoMarket({
@@ -119,10 +132,10 @@ export class ContractAPI {
         categories: ['flash', 'Reasonable', 'YesNo'],
         description,
       }),
-    });
+    }, faucet);
   }
 
-  async createReasonableMarket(outcomes: string[], description = 'Categorical market description'): Promise<ContractInterfaces.Market> {
+  async createReasonableMarket(outcomes: string[], description = 'Categorical market description', faucet=true): Promise<ContractInterfaces.Market> {
     const currentTimestamp = (await this.getTimestamp()).toNumber();
 
     return this.createCategoricalMarket({
@@ -135,10 +148,10 @@ export class ContractAPI {
         description,
       }),
       outcomes,
-    });
+    }, faucet);
   }
 
-  async createReasonableScalarMarket(description = 'Scalar market description'): Promise<ContractInterfaces.Market> {
+  async createReasonableScalarMarket(description = 'Scalar market description', faucet=true): Promise<ContractInterfaces.Market> {
     const currentTimestamp = (await this.getTimestamp()).toNumber();
     const minPrice = new BigNumber(50).multipliedBy(new BigNumber(10).pow(18));
     const maxPrice = new BigNumber(250).multipliedBy(new BigNumber(10).pow(18));
@@ -155,7 +168,7 @@ export class ContractAPI {
       }),
       numTicks: new BigNumber(20000),
       prices: [minPrice, maxPrice],
-    });
+    }, faucet);
   }
 
   async placeOrder(
@@ -226,6 +239,7 @@ export class ContractAPI {
   }
 
   async placeZeroXOrders(params: ZeroXPlaceTradeDisplayParams[]): Promise<void> {
+    console.log(`${this.account.publicKey} is creating orders: ${JSON.stringify(params, null, 2)}`)
     await this.augur.zeroX.placeOrders(params);
   }
 
@@ -554,7 +568,6 @@ export class ContractAPI {
     const realAccount = await this.augur.getAccount();
     account = account || realAccount;
     let balance = await this.getCashBalance(realAccount);
-    const desired = attoCash;
     while (balance.lt(attoCash)) {
       await this.augur.contracts.cashFaucet.faucet(attoCash);
       balance = await this.getCashBalance(realAccount);
@@ -739,13 +752,13 @@ export class ContractAPI {
 
   async getOrCreateWallet(): Promise<string> {
     const walletFromRegistry = await this.augur.contracts.augurWalletRegistry.getWallet_(this.account.publicKey);
-    if(walletFromRegistry !== NULL_ADDRESS) {
+    if (walletFromRegistry !== NULL_ADDRESS) {
       console.log(`Found wallet: ${walletFromRegistry}`);
       return walletFromRegistry;
     }
 
     const walletAddress = await this.augur.gsn.calculateWalletAddress(this.account.publicKey);
-    console.log(`Funding Wallet Address`);
+    console.log('Funding Wallet Address');
     await this.fundSafe(walletAddress);
     return walletAddress;
   }

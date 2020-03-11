@@ -6,9 +6,9 @@ export async function sleep(milliseconds: number): Promise<void> {
     return new Promise<void>(resolve => setTimeout(resolve, milliseconds));
 }
 
-export async function resolveAll(promises: Iterable<Promise<any>>) {
+export async function resolveAll<T>(promises: Iterable<Promise<T>>) {
     let firstError: Error|null = null;
-    for (let promise of promises) {
+    for (const promise of promises) {
         try {
             await promise;
         } catch(e) {
@@ -30,14 +30,14 @@ async function asyncFilter(arr:Array<any>, filterFunction:(item:any) => Promise<
   }
 
 export async function recursiveReadDir(dir:string, ignore: (file: string, stats: fs.Stats) => boolean, allFiles:string[] = []): Promise<string[]> {
-    let files = (await readdirP(dir)).map(f => join(dir, f));
+    const files = (await readdirP(dir)).map(f => join(dir, f));
     allFiles.push(...files);
     await Promise.all(
         files.map(
             async f => (await statP(f)).isDirectory() && recursiveReadDir(f, ignore, allFiles)
         )
     )
-    return await asyncFilter(allFiles, async (file:string) => {
+    return asyncFilter(allFiles, async (file:string) => {
         const stat = await statP(file);
         return stat.isFile() && !ignore(file, stat);
     });

@@ -1,4 +1,6 @@
-export function bool(s: string): boolean {
+export function bool(s: string|boolean): boolean {
+  if (typeof s === 'boolean') return s;
+
   if (s.toLowerCase() === 'true') {
     return true;
   } else if (s.toLowerCase() === 'false') {
