@@ -164,6 +164,7 @@ export interface FormattedNumber {
   value: number;
   rounded: number | string;
   full: number | string;
+  percent: number | string;
 }
 
 export interface FormattedNumberOptions {

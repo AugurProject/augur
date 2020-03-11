@@ -851,7 +851,6 @@ class Form extends Component<FromProps, FormState> {
       (isScalar && selectedOutcome.id !== INVALID_OUTCOME_ID) || !isScalar;
 
     const nearestValues = this.findNearestValues(quantityValue);
-    console.log('this.state.percentage', s.percentage);
     return (
       <div className={Styles.TradingForm}>
         <div className={Styles.Outcome}>

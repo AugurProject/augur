@@ -50,7 +50,7 @@ const RowContent = (props: RowProps) => {
     isInvalid,
     outcome,
     colorId,
-    initialLiquidity
+    initialLiquidity,
   } = styleOptions;
 
   return (<ul

@@ -1,25 +1,29 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { AppState } from 'store';
-import { COLUMN_TYPES, INVALID_OUTCOME_ID, BUY, SELL } from 'modules/common/constants';
+import { COLUMN_TYPES, INVALID_OUTCOME_ID, BUY, SELL, SCALAR } from 'modules/common/constants';
 import { selectMarketOutcomeBestBidAsk, selectBestBidAlert } from 'modules/markets/selectors/select-market-outcome-best-bid-ask';
 import Row from 'modules/common/row';
 import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
+import { calcPercentageFromPrice } from 'utils/format-number';
+import getPrecision from 'utils/get-number-precision';
 
 const mapStateToProps = (state: AppState, ownProps) => {
   const { marketInfos, newMarket } = state;
-  const market = newMarket ? newMarket : marketInfos[ownProps.marketId];
+  const market = marketInfos[ownProps.marketId] ? marketInfos[ownProps.marketId] : newMarket ? newMarket : null;
   // default values for create market preview
   const minPrice = market ? market.minPrice : 0;
   const maxPrice = market ? market.maxPrice : 1;
   const tickSize = market ? market.tickSize : 100;
 
+  const showPercentages = ownProps.outcome && ownProps.outcome.id === INVALID_OUTCOME_ID && market.marketType === SCALAR;
   return {
     orderBook: ownProps.orderBook,
     minPrice,
     maxPrice,
     tickSize,
     preview: ownProps.preview,
+    showPercentages
   };
 };
 
@@ -41,10 +45,40 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
   const topBidShares = topBid.shares;
   const topAskShares = topAsk.shares;
 
-  const topBidPrice = topBid.price;
-  const topAskPrice = topAsk.price;
+  let topBidPrice = topBid.price;
+  let topAskPrice = topAsk.price;
+  let lastPrice = outcome.lastPrice;
 
-  const lastPrice = outcome.lastPrice;
+  if (sP.showPercentages) {
+    const topBidPercent = calcPercentageFromPrice(
+      topBidPrice.value,
+      sP.minPrice,
+      sP.maxPrice
+    );
+    topBidPrice =
+      topBidPrice.formatted !== '-'
+        ? { ...topBidPrice, usePercent: true, percent: topBidPercent }
+        : topBidPrice;
+
+    const topAskPercent = calcPercentageFromPrice(
+      topAskPrice.value,
+      sP.minPrice,
+      sP.maxPrice
+    );
+    topAskPrice =
+      topAskPrice.formatted !== '-'
+        ? { ...topAskPrice, usePercent: true, percent: topAskPercent }
+        : topAskPrice;
+    const lastPricePercent = calcPercentageFromPrice(
+      lastPrice.value,
+      sP.minPrice,
+      sP.maxPrice
+    );
+    lastPrice =
+      lastPrice.formatted !== '-'
+        ? { ...lastPrice, usePercent: true, percent: lastPricePercent }
+        : lastPrice;
+  }
 
   const columnProperties = [
     {
@@ -66,6 +100,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       value: topBidPrice,
       useFull: true,
       showEmptyDash: true,
+      usePercent: topBidPrice.usePercent,
       alert: bestBidAlert,
       action: (e) => {
         oP.updateSelectedOutcome(outcome.id, true);
@@ -83,6 +118,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       value: topAskPrice,
       useFull: true,
       showEmptyDash: true,
+      usePercent: topAskPrice.usePercent,
       action: (e) => {
         oP.updateSelectedOutcome(outcome.id, true);
         oP.updateSelectedOrderProperties({
@@ -122,7 +158,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       noToggle: true,
       colorId: outcome.id + 1,
       active: oP.selectedOutcomeId === outcome.id,
-      isInvalid: outcome.id === INVALID_OUTCOME_ID
+      isInvalid: outcome.id === INVALID_OUTCOME_ID,
     }
   };
 };
