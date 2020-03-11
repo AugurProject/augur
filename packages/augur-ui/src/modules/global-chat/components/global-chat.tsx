@@ -7,32 +7,38 @@ import Styles from 'modules/global-chat/components/global-chat.styles.less';
 import classNames = require('classnames');
 
 export interface GlobalChatProps {
-  show: boolean;
-  numberOfPeers: number;
+  initialChatVisibility: boolean;
+  whichChatPlugin?: string;
 }
 
-export const GlobalChat = (props: GlobalChatProps) => {
-  const [show, setShow] = useState(props.show);
+export const GlobalChat = ({
+  initialChatVisibility,
+  whichChatPlugin,
+}: GlobalChatProps) => {
+  const [show, setShow] = useState(initialChatVisibility);
+
   return (
-    <div className={Styles.GlobalChat}>
-      {!show &&
-        <SecondaryButton
-          action={() => setShow(!show)}
-          text='Global Chat'
-          icon={Chevron}
-        />
-      }
-      <div className={classNames({
-        [Styles.ShowGlobalChat]: show
-      })}>
-        <div>
-          <span>Global Chat</span>
-          <button onClick={() => setShow(!show)}>
-            {Close}
-          </button>
+    whichChatPlugin === 'orbit' && (
+      <div className={Styles.GlobalChat}>
+        {!show && (
+          <SecondaryButton
+            action={() => setShow(!show)}
+            text="Global Chat"
+            icon={Chevron}
+          />
+        )}
+        <div
+          className={classNames({
+            [Styles.ShowGlobalChat]: show,
+          })}
+        >
+          <div>
+            <span>Global Chat</span>
+            <button onClick={() => setShow(!show)}>{Close}</button>
+          </div>
+          <iframe src="./chat/index.html#/channel/augur" />
         </div>
-        <iframe src='./chat/index.html#/channel/augur' />
       </div>
-    </div>
+    )
   );
 };
