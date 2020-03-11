@@ -52,7 +52,8 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
 
   return {
     ...sP,
-    ...oP,
+    toggle: () => oP.toggle(),
+    updateSelectedOrderProperties: (value) => oP.updateSelectedOrderProperties(value),
     loadMarketOrderBook: () => dP.loadMarketOrderBook(sP.marketId),
   }
 }
