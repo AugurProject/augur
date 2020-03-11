@@ -13,7 +13,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
   const market = ownProps.market || selectMarket(ownProps.marketId);
   const orderBook = orderBooks && orderBooks[market.id] || { expirationTime: 0 };
   const selectedOutcomeId = (ownProps.selectedOutcomeId !== undefined && ownProps.selectedOutcomeId !== null) ? ownProps.selectedOutcomeId : market.defaultSelectedOutcomeId;
-  const outcomeOrderBook = orderBook && orderBook[selectedOutcomeId] || {};
+  const outcomeOrderBook = ownProps.orderBook || {};
 
   const outcome =
     (market.outcomesFormatted || []).find(
@@ -39,9 +39,10 @@ const mapDispatchToProps = (dispatch) => ({
   loadMarketOrderBook: marketId => dispatch(loadMarketOrderBook(marketId)),
 });
 
-const mergeProps = (sP: any, dP: any) => {
+const mergeProps = (sP: any, dP: any, oP: any) => {
 
   return {
+    ...oP,
     ...sP,
     loadMarketOrderBook: () => dP.loadMarketOrderBook(sP.marketId),
   }
