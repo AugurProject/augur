@@ -20,5 +20,8 @@
       "useBootstrapList": true,
       "bootstrapList": []
     }
+  },
+  "plugins": {
+    "chat": "orbit"
   }
 }

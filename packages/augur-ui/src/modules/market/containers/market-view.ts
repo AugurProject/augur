@@ -25,6 +25,7 @@ import {
   SCALAR_MODAL_SEEN,
 } from 'modules/common/constants';
 import { windowRef } from 'utils/window-ref';
+import { getAddress } from 'ethers/utils/address';
 import { selectCurrentTimestampInSeconds } from 'store/select-state';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { closeModal } from 'modules/modal/actions/close-modal';
@@ -44,7 +45,7 @@ import { Getters } from '@augurproject/sdk/src';
 
 const mapStateToProps = (state: AppState, ownProps) => {
   const { connection, universe, modal, loginAccount, orderBooks } = state;
-  const marketId = parseQuery(ownProps.location.search)[MARKET_ID_PARAM_NAME];
+  const marketId = getAddress(parseQuery(ownProps.location.search)[MARKET_ID_PARAM_NAME]);
   const queryOutcomeId = parseQuery(ownProps.location.search)[
     OUTCOME_ID_PARAM_NAME
   ];

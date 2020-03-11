@@ -58,7 +58,7 @@ describe('3rd Party :: ZeroX :: ', () => {
         providerJohn,
         config,
         johnConnector,
-        new GnosisRelayAPI('http://localhost:8888/api/'),
+        new GnosisRelayAPI(config.gnosis.http),
         meshClient,
         undefined
       );
@@ -80,7 +80,7 @@ describe('3rd Party :: ZeroX :: ', () => {
         providerMary,
         config,
         maryConnector,
-        new GnosisRelayAPI('http://localhost:8888/api/'),
+        new GnosisRelayAPI(config.gnosis.http),
         meshClient,
         undefined
       );
