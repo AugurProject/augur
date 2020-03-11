@@ -41,7 +41,6 @@ import { Augur, Provider } from '@augurproject/sdk';
 import { getLoggedInUserFromLocalStorage } from 'services/storage/localStorage';
 import { getFingerprint } from 'utils/get-fingerprint';
 import { tryToPersistStorage } from 'utils/storage-manager';
-import Torus from '@toruslabs/torus-embed';
 import { isDevNetworkId, SDKConfiguration } from '@augurproject/artifacts';
 import { getNetwork } from 'utils/get-network-name';
 import { buildConfig } from '@augurproject/artifacts';
@@ -193,9 +192,13 @@ export function connectAugur(
         provider = new Web3Provider(windowRef.web3.currentProvider);
       } else {
         // Use torus provider
-        const host = getNetwork(networkId);
-        const torus: any = new Torus({});
 
+        // Use require instead of import for wallet SDK packages
+        // to conditionally load web3 into the DOM
+        const Torus = require('@toruslabs/torus-embed').default;
+        const torus = new Torus({});
+
+        const host = getNetwork(networkId);
         await torus.init({
           network: { host },
           showTorusButton: false,
