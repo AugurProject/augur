@@ -119,10 +119,6 @@ export default class MarketsView extends Component<
     } = this.props;
     const { marketCount, offset } = this.state;
 
-    if (marketsInReportingState.length !== prevProps.marketsInReportingState.length) {
-      console.log(marketsInReportingState);
-    }
-
     if (
       offset !== prevState.offset ||
       marketCount !== prevState.marketCount ||
