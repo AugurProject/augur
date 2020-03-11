@@ -1,12 +1,11 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { AppState } from 'store';
-import { COLUMN_TYPES, INVALID_OUTCOME_ID, BUY, SELL, SCALAR } from 'modules/common/constants';
-import { selectMarketOutcomeBestBidAsk, selectBestBidAlert } from 'modules/markets/selectors/select-market-outcome-best-bid-ask';
+import { COLUMN_TYPES, INVALID_OUTCOME_ID, BUY, SELL, SCALAR, INVALID_BEST_BID_ALERT_VALUE } from 'modules/common/constants';
+import { selectMarketOutcomeBestBidAsk } from 'modules/markets/selectors/select-market-outcome-best-bid-ask';
 import Row from 'modules/common/row';
 import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
 import { calcPercentageFromPrice } from 'utils/format-number';
-import getPrecision from 'utils/get-number-precision';
 
 const mapStateToProps = (state: AppState, ownProps) => {
   const { marketInfos, newMarket } = state;
@@ -41,7 +40,6 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     }
   }
   const { topAsk, topBid } = selectMarketOutcomeBestBidAsk(outcomeOrderBook, sP.tickSize);
-  const bestBidAlert = selectBestBidAlert(outcome.id, topBid.price.value, sP.minPrice, sP.maxPrice)
   const topBidShares = topBid.shares;
   const topAskShares = topAsk.shares;
 
@@ -101,7 +99,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       useFull: true,
       showEmptyDash: true,
       usePercent: topBidPrice.usePercent,
-      alert: bestBidAlert,
+      alert: topBidPrice.usePercent && topBidPrice.percent >= INVALID_BEST_BID_ALERT_VALUE,
       action: (e) => {
         oP.updateSelectedOutcome(outcome.id, true);
         oP.updateSelectedOrderProperties({
