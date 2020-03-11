@@ -14,17 +14,20 @@ const mapStateToProps = (state: AppState, ownProps) => {
   const orderBook = orderBooks && orderBooks[market.id] || { expirationTime: 0 };
   const selectedOutcomeId = (ownProps.selectedOutcomeId !== undefined && ownProps.selectedOutcomeId !== null) ? ownProps.selectedOutcomeId : market.defaultSelectedOutcomeId;
   const outcomeOrderBook = ownProps.orderBook || {};
+  const usePercent = market.marketType === SCALAR && selectedOutcomeId === INVALID_OUTCOME_ID;
 
   const outcome =
     (market.outcomesFormatted || []).find(
       (outcome) => outcome.id === selectedOutcomeId
     );
-  let processedOrderbook = orderAndAssignCumulativeShares(outcomeOrderBook),
-  const usePercent = market.marketType === SCALAR && selectedOutcomeId === INVALID_OUTCOME_ID;
+
+  let processedOrderbook = orderAndAssignCumulativeShares(outcomeOrderBook);
+
   if (usePercent) {
     // calc percentages in orderbook
     processedOrderbook = calcOrderbookPercentages(processedOrderbook, market.minPrice, market.maxPrice);
   }
+
   return {
     expirationTime: ownProps.initialLiquidity || !!!orderBook ? 0 : orderBook.expirationTime,
     outcomeName: outcome && outcome.description,
