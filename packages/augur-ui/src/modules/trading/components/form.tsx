@@ -35,7 +35,7 @@ import {
 import moment, { Moment } from 'moment';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { SimpleTimeSelector } from 'modules/create-market/components/common';
-import { formatBestPrice } from 'utils/format-number';
+import { calcPercentageFromPrice, calcPriceFromPercentage } from 'utils/format-number';
 import Media from 'react-media';
 
 const DEFAULT_TRADE_INTERVAL = new BigNumber(10 ** 17);
@@ -189,7 +189,6 @@ class Form extends Component<FromProps, FormState> {
     this.updateTestProperty = this.updateTestProperty.bind(this);
     this.clearOrderFormProperties = this.clearOrderFormProperties.bind(this);
     this.updateAndValidate = this.updateAndValidate.bind(this);
-    this.calcPercentagePrice = this.calcPercentagePrice.bind(this);
   }
 
   componentDidMount() {
@@ -212,11 +211,26 @@ class Form extends Component<FromProps, FormState> {
         ],
       });
     }
+    const { maxPrice, minPrice, market, selectedOutcome } = this.props;
     if (
       !!prevProps[this.INPUT_TYPES.PRICE] &&
       !!!this.props[this.INPUT_TYPES.PRICE]
     ) {
       this.setState({ percentage: '' });
+    } else if (
+      market.marketType === SCALAR &&
+      selectedOutcome.id === INVALID_OUTCOME_ID &&
+      prevProps[this.INPUT_TYPES.PRICE] !== this.props[this.INPUT_TYPES.PRICE]
+    ) {
+      const price = this.props[this.INPUT_TYPES.PRICE];
+      const percentage = calcPercentageFromPrice(
+        price,
+        String(minPrice),
+        String(maxPrice),
+      );
+      this.setState({ percentage: String(percentage) }, () =>
+        this.updateAndValidate(this.INPUT_TYPES.PRICE, price)
+      );
     }
 
     if (prevProps.gasPrice !== this.props.gasPrice) {
@@ -790,36 +804,6 @@ class Form extends Component<FromProps, FormState> {
     );
   }
 
-  calcPercentagePrice(
-    percentage: string,
-    minPrice: string,
-    maxPrice: string,
-    tickSize: number
-  ) {
-    if (percentage === undefined || percentage === null) return Number(0);
-    const numTicks = tickSizeToNumTickWithDisplayPrices(
-      createBigNumber(tickSize),
-      createBigNumber(minPrice),
-      createBigNumber(maxPrice)
-    );
-    const bnMinPrice = createBigNumber(minPrice);
-    const bnMaxPrice = createBigNumber(maxPrice);
-    const percentNumTicks = createBigNumber(numTicks).times(
-      createBigNumber(percentage).dividedBy(100)
-    );
-    if (percentNumTicks.lt(tickSize)) {
-      return bnMinPrice.plus(tickSize);
-    }
-    const calcPrice = percentNumTicks.times(tickSize).plus(bnMinPrice);
-    if (calcPrice.eq(maxPrice)) {
-      return bnMaxPrice.minus(tickSize);
-    }
-    const correctDec = formatBestPrice(calcPrice, tickSize);
-    const precision = getPrecision(tickSize, 0);
-    const value = createBigNumber(correctDec.fullPrecision).toFixed(precision);
-    return value;
-  }
-
   render() {
     const {
       market,
@@ -867,6 +851,7 @@ class Form extends Component<FromProps, FormState> {
       (isScalar && selectedOutcome.id !== INVALID_OUTCOME_ID) || !isScalar;
 
     const nearestValues = this.findNearestValues(quantityValue);
+    console.log('this.state.percentage', s.percentage);
     return (
       <div className={Styles.TradingForm}>
         <div className={Styles.Outcome}>
@@ -1022,7 +1007,7 @@ class Form extends Component<FromProps, FormState> {
                   onChange={e => {
                     const percentage = e.target.value;
                     this.setState({ percentage }, () => {
-                      const value = this.calcPercentagePrice(
+                      const value = calcPriceFromPercentage(
                         percentage,
                         min,
                         max,
