@@ -6,7 +6,7 @@ module "ipfs-security-group" {
   source = "terraform-aws-modules/security-group/aws"
 
   name   = "ipfs-sg"
-  vpc_id = module.vpc.vpc_id
+  vpc_id = var.vpc_id
   ingress_with_cidr_blocks = [
     {
       from_port   = 4001
@@ -34,7 +34,7 @@ module "task-ipfs" {
   log_configuration = {
     logDriver = "awslogs"
     options = {
-      "awslogs-group" : aws_cloudwatch_log_group.ecs.name,
+      "awslogs-group" : var.ecs_log_group,
       "awslogs-region" : var.region,
       "awslogs-stream-prefix" : "ipfs"
     }
@@ -43,8 +43,8 @@ module "task-ipfs" {
 }
 
 module "discovery-ipfs" {
-  source       = "./modules/discovery"
-  namespace    = aws_service_discovery_private_dns_namespace.ecs.id
+  source       = "../../modules/discovery"
+  namespace    = var.service_discovery_namespace_id
   service_name = "ipfs"
 }
 
@@ -52,19 +52,19 @@ module "service-ipfs" {
   source                         = "git::https://github.com/cloudposse/terraform-aws-ecs-alb-service-task.git?ref=tags/0.21.0"
   stage                          = var.environment
   name                           = "ipfs"
-  alb_security_group             = module.alb_security_group.this_security_group_id
+  alb_security_group             = var.alb_sg
   container_definition_json      = module.task-ipfs.json
   ignore_changes_task_definition = false
-  ecs_cluster_arn                = aws_ecs_cluster.ecs.arn
+  ecs_cluster_arn                = var.ecs_cluster_arn
   launch_type                    = "FARGATE"
   network_mode                   = "awsvpc"
   assign_public_ip               = true
-  vpc_id                         = module.vpc.vpc_id
+  vpc_id                         = var.vpc_id
   security_group_ids = [
-    module.vpc.vpc_default_security_group_id,
+    var.vpc_sg,
     module.ipfs-security-group.this_security_group_id
   ]
-  subnet_ids    = module.subnets.public_subnet_ids
+  subnet_ids    = var.public_subnets
   desired_count = 2
   service_registries = [
     {
