@@ -32,6 +32,7 @@ interface OrderBookSideProps {
   hoveredOrderIndex?: number;
   showButtons: boolean;
   orderbookLoading: boolean;
+  usePercent: boolean;
 }
 
 interface OrderBookProps {
@@ -46,6 +47,7 @@ interface OrderBookProps {
   marketType: string;
   showButtons: boolean;
   orderbookLoading: boolean;
+  usePercent: boolean;
 }
 
 const OrderBookSide = ({
@@ -60,6 +62,7 @@ const OrderBookSide = ({
   marketType,
   showButtons,
   orderbookLoading,
+  usePercent,
 }: OrderBookSideProps) => {
   const side = useRef({
     current: { clientHeight: 0, scrollHeight: 0, scrollTop: 0 },
@@ -167,7 +170,7 @@ const OrderBookSide = ({
               showEmptyDash={true}
               showDenomination={false}
             />
-            <span>{createBigNumber(order.price).toFixed(pricePrecision)}</span>
+            <span>{usePercent ? order.percent : createBigNumber(order.price).toFixed(pricePrecision)}</span>
             <span>
               {hasSize
                 ? createBigNumber(order.mySize).toFixed(fixedPrecision)
@@ -191,6 +194,7 @@ const OrderBook = ({
   marketType,
   showButtons,
   orderbookLoading,
+  usePercent
 }: OrderBookProps) => {
   const [hoverState, setHoverState] = useState({ hoveredOrderIndex: null,
     hoveredSide: null });
@@ -200,7 +204,7 @@ const OrderBook = ({
     <section className={Styles.OrderBook}>
       <OrderHeader
         title="Order Book"
-        headers={['quantity', 'price', 'my quantity']}
+        headers={['quantity', usePercent ? 'percent' : 'price', 'my quantity']}
         toggle={toggle}
         hide={hide}
       />
@@ -216,6 +220,7 @@ const OrderBook = ({
         type={ASKS}
         showButtons={showButtons}
         orderbookLoading={orderbookLoading}
+        usePercent={usePercent}
       />
       {!hide && (
         <div className={Styles.Midmarket}>
@@ -241,6 +246,7 @@ const OrderBook = ({
         type={BIDS}
         showButtons={showButtons}
         orderbookLoading={orderbookLoading}
+        usePercent={usePercent}
       />
     </section>
   );
