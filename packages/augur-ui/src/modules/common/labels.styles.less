@@ -869,6 +869,10 @@ span.PendingLabel {
         width: @size-10;
         animation: spin 2s linear infinite;
 
+        LinearGradient > stop {
+          stop-color: var(--color-primary-text);
+        }
+
         path {
           stroke: var(--color-secondary-text);
         }
@@ -940,5 +944,21 @@ span.PendingLabel {
     display: flex;
     padding: @size-4;
     text-transform: uppercase;
+  }
+
+  .MarketLabel {
+    &.loading {  
+      > div:last-of-type {
+        > span svg {
+          LinearGradient > stop {
+            stop-color: var(--color-reporting);
+          }
+
+          path {
+            stroke: var(--color-reporting);
+          }
+        }
+      }
+    }
   }
 }
