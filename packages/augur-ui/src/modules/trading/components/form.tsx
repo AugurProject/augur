@@ -11,6 +11,7 @@ import {
   INVALID_OUTCOME_ID,
   ONE,
   SMALL_MOBILE,
+  MIN_ORDER_LIFESPAN,
 } from 'modules/common/constants';
 import FormStyles from 'modules/common/form-styles.less';
 import Styles from 'modules/trading/components/form.styles.less';
@@ -419,13 +420,12 @@ class Form extends Component<FromProps, FormState> {
 
     // Check to ensure orders don't expiry within 70s
     // Also consider getGasConfirmEstimate * 1.5 seconds
-    const minOrderLifespan = 70;
     const gasConfirmEstimate = this.state
       ? this.state.confirmationTimeEstimation * 1.5
       : 0; // In Seconds
-    const earliestExp = Math.ceil((minOrderLifespan + gasConfirmEstimate) / 60);
+    const earliestExp = Math.ceil((MIN_ORDER_LIFESPAN + gasConfirmEstimate) / 60);
     const expiryTime = expiration - gasConfirmEstimate - currentTimestamp;
-    if (expiration && expiryTime < minOrderLifespan) {
+    if (expiration && expiryTime < MIN_ORDER_LIFESPAN) {
       errorCount += 1;
       passedTest = false;
       errors[this.INPUT_TYPES.EXPIRATION_DATE].push(

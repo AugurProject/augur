@@ -41,10 +41,12 @@ import {
 } from 'utils/format-date';
 import { AppState } from 'store';
 import { loadMarketOrderBook, clearOrderBook } from 'modules/orders/actions/load-market-orderbook';
+import { Getters } from '@augurproject/sdk/src';
 
 const mapStateToProps = (state: AppState, ownProps) => {
   const { connection, universe, modal, loginAccount, orderBooks } = state;
-  const marketId = getAddress(parseQuery(ownProps.location.search)[MARKET_ID_PARAM_NAME]);
+  const queryId = parseQuery(ownProps.location.search)[MARKET_ID_PARAM_NAME];
+  const marketId = queryId === TRADING_TUTORIAL ? queryId : getAddress(queryId);
   const queryOutcomeId = parseQuery(ownProps.location.search)[
     OUTCOME_ID_PARAM_NAME
   ];
@@ -95,9 +97,9 @@ const mapStateToProps = (state: AppState, ownProps) => {
     };
   }
 
-  let orderBook = null;
+  let orderBook: Getters.Markets.OutcomeOrderBook = null;
   if (market && !tradingTutorial && !ownProps.preview) {
-    orderBook = orderBooks[marketId]
+    orderBook = (orderBooks[marketId] || {}).orderBook;
   }
 
   if (market && (tradingTutorial || ownProps.preview)) {

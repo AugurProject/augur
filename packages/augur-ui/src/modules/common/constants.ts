@@ -52,6 +52,7 @@ export const NETWORK_IDS = {
   Private4: '104',
 };
 
+export const MIN_ORDER_LIFESPAN = 70;
 export const GAS_PRICE_BACKUP_API_ENDPOINT = {
   [NETWORK_IDS.Mainnet]: 'https://api.etherscan.io/api?module=gastracker&action=gasoracle',
 }

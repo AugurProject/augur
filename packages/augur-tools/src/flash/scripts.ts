@@ -4,17 +4,17 @@ import { createCannedMarkets } from './create-canned-markets-and-orders';
 import { _1_ETH } from '../constants';
 import {
   Contracts as compilerOutput,
-  getAddressesForNetwork,
-  NetworkId,
-  updateEnvironmentsConfig,
+  refreshSDKConfig,
   abiV1,
   environments,
-  buildConfig
+  buildConfig,
+  mergeConfig,
+  SDKConfiguration
 } from '@augurproject/artifacts';
 import { ContractInterfaces } from '@augurproject/core';
 import moment from 'moment';
 import { BigNumber } from 'bignumber.js';
-import { deepCopy, formatBytes32String } from "ethers/utils";
+import { formatBytes32String } from 'ethers/utils';
 import { ethers } from 'ethers';
 import {
   calculatePayoutNumeratorsArray,
@@ -41,7 +41,6 @@ import { flattenZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOr
 import { formatAddress, sleep, waitForSigint } from './util';
 import { runWsServer, runWssServer } from '@augurproject/sdk/build/state/WebsocketEndpoint';
 import { createApp, runHttpServer, runHttpsServer } from '@augurproject/sdk/build/state/HTTPEndpoint';
-import deepmerge from "deepmerge";
 
 export function addScripts(flash: FlashSession) {
   flash.addScript({
@@ -112,7 +111,7 @@ export function addScripts(flash: FlashSession) {
         name: 'time-controlled',
         abbr: 't',
         description:
-          'Use the TimeControlled contract for testing environments. Set to "true" or "false".',
+          'Use the TimeControlled contract for testing environments.',
         flag: true,
       },
       {
@@ -165,13 +164,13 @@ export function addScripts(flash: FlashSession) {
       if (this.config.gnosis?.relayerAddress) {
         this.log(`Fauceting to relayer @ ${this.config.gnosis.relayerAddress}`);
         const config = this.config;
-        this.config = deepmerge(this.config, {
+        this.config = mergeConfig(this.config, {
           gnosis: { enabled: false },
           zeroX: {
             rpc: { enabled: false },
             mesh: { enabled: false },
           }
-        });
+        }) as SDKConfiguration;
         await this.call('faucet', {
           amount: '1000000',
           target: this.config.gnosis.relayerAddress,
@@ -196,15 +195,23 @@ export function addScripts(flash: FlashSession) {
         abbr: 't',
         description: 'Account to send funds (defaults to current user)',
         required: false
-      }
+      },
+      {
+        name: 'use-gnosis',
+        abbr: 'g',
+        description: 'Faucet via gnosis',
+        flag: true,
+        required: false
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const target = args.target as string;
-      if (this.noProvider()) return;
-      const user = await this.ensureUser();
-
+      const useGnosis = Boolean(args.useGnosis);
       const amount = Number(args.amount);
       const atto = new BigNumber(amount).times(_1_ETH);
+
+      if (this.noProvider()) return;
+      const user = await this.ensureUser(undefined, null, true, null, null, useGnosis);
 
       await user.faucetOnce(atto);
 
@@ -244,7 +251,6 @@ export function addScripts(flash: FlashSession) {
     ],
     async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
-      const endPoint = 'ws://localhost:60557';
       const user = await this.ensureUser();
 
       const target = String(args.target);
@@ -289,7 +295,7 @@ export function addScripts(flash: FlashSession) {
     ],
     async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
-      const useLegacyRep = Boolean(args.useLegacyRep)
+      const useLegacyRep = Boolean(args.useLegacyRep);
       const user = await this.ensureUser();
       const amount = Number(args.amount);
       const atto = new BigNumber(amount).times(_1_ETH);
@@ -466,8 +472,18 @@ export function addScripts(flash: FlashSession) {
 
   flash.addScript({
     name: 'create-canned-markets',
-    async call(this: FlashSession) {
-      const user = await this.ensureUser();
+    options: [
+      {
+        name: 'use-gnosis',
+        abbr: 'g',
+        description: 'Faucet via gnosis',
+        flag: true,
+        required: false
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const useGnosis = Boolean(args.useGnosis);
+      const user = await this.ensureUser(undefined, null, true, null, null, useGnosis);
       await user.repFaucet(QUINTILLION.multipliedBy(1000000));
       await user.faucetOnce(QUINTILLION.multipliedBy(1000000));
       await user.approve(QUINTILLION.multipliedBy(3000000));
@@ -694,7 +710,7 @@ export function addScripts(flash: FlashSession) {
       const tradeGroupId = String(Date.now());
       const oneHundredDays = new BigNumber(8640000);
       const expirationTime = new BigNumber(timestamp).plus(oneHundredDays);
-      const orders = []
+      const orders = [];
       for (let a = 0; a < numOutcomes; a++) {
         const outcome = Number(Object.keys(orderBook)[a]) as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
         const buySell = Object.values(orderBook)[a];
@@ -2153,10 +2169,11 @@ export function addScripts(flash: FlashSession) {
         } else {
           const gethDocker = fake ? 'docker:geth:pop' : 'docker:geth:pop-normal-time';
           spawnSync('yarn', [gethDocker]);
-          await updateEnvironmentsConfig(); // add pop-geth addresses to global
+          await refreshSDKConfig(); // add pop-geth addresses to global
         }
 
         await sleep(10000); // give geth some time to start
+        refreshSDKConfig();
         this.config = buildConfig('local');
         this.provider = flash.makeProvider(this.config);
 
@@ -2165,7 +2182,7 @@ export function addScripts(flash: FlashSession) {
           await this.call(deployMethod, { createMarkets: true });
         }
 
-        //await spawnSync('yarn', ['build']); // so UI etc will have the correct addresses
+        await spawnSync('yarn', ['build']); // so UI, CI, etc will have the correct addresses
 
         env = {
           ...process.env,
@@ -2187,10 +2204,15 @@ export function addScripts(flash: FlashSession) {
         spawn('yarn', ['workspace', '@augurproject/gnosis-relay-api', 'relay-logs'], {env, stdio: 'inherit'});
         await waitForSigint();
       } finally {
-        this.log('Stopping geth');
-        await spawnSync('docker', ['kill', 'geth'], { stdio: 'inherit' });
-        this.log('Stopping relays');
-        await spawnSync('yarn', ['workspace', '@augurproject/gnosis-relay-api', 'kill-relay'], { env, stdio: 'inherit' });
+        if (!detach) {
+          this.log('Stopping geth');
+          await spawnSync('docker', ['kill', 'geth'], { stdio: 'inherit' });
+          this.log('Stopping relays');
+          await spawnSync('yarn', ['workspace', '@augurproject/gnosis-relay-api', 'kill-relay'], {
+            env,
+            stdio: 'inherit'
+          });
+        }
       }
     }
   });
@@ -2221,13 +2243,11 @@ export function addScripts(flash: FlashSession) {
     async call(this: FlashSession) {
       if (this.noProvider()) return null;
 
-      const networkId = await this.provider.getNetworkId();
       // const ethNode = this.network.http;
       const ethNode = 'http://geth:8545';
-      const addresses = getAddressesForNetwork(networkId as NetworkId);
+      console.log(`Starting 0x mesh. chainId=${this.config.networkId} ethnode=${ethNode}`);
 
-      console.log(`Starting 0x mesh. chainId=${networkId} ethnode=${ethNode}`);
-
+      const zeroXTradeAddress = formatAddress(this.config.addresses.ZeroXTrade, { prefix: false, lower: true });
       const mesh = spawn('docker', [
         'run',
         '--rm',
@@ -2236,13 +2256,13 @@ export function addScripts(flash: FlashSession) {
         '-p', '60557:60557', // rpc_port_number
         '-p', '60558:60558', // P2PTCPPort
         '-p', '60559:60559', // P2PWebSocketsPort
-        '-e', `ETHEREUM_CHAIN_ID=${networkId}`,
+        '-e', `ETHEREUM_CHAIN_ID=${this.config.networkId}`,
         '-e', `ETHEREUM_RPC_URL=${ethNode}`,
         '-e', 'USE_BOOTSTRAP_LIST=false',
         '-e', 'BLOCK_POLLING_INTERVAL=1s',
         '-e', 'ETHEREUM_RPC_MAX_REQUESTS_PER_24_HR_UTC=169120', // needed when polling interval is 1s
-        '-e', `CUSTOM_CONTRACT_ADDRESSES=${JSON.stringify(addresses)}`,
-        '-e', `CUSTOM_ORDER_FILTER={"properties":{"makerAssetData":{"pattern":".*${addresses.ZeroXTrade.slice(2).toLowerCase()}.*"}}}`,
+        '-e', `CUSTOM_CONTRACT_ADDRESSES=${JSON.stringify(this.config.addresses)}`,
+        '-e', `CUSTOM_ORDER_FILTER={"properties":{"makerAssetData":{"pattern":".*${zeroXTradeAddress}.*"}}}`,
         '-e', 'VERBOSITY=4', // 5=debug 6=trace
         '-e', 'RPC_ADDR=0x:60557', // need to use "0x" network
         '0xorg/mesh:9.0.0',
@@ -2290,7 +2310,7 @@ export function addScripts(flash: FlashSession) {
       const name = args.name as string;
       const removePrefix = args.removePrefix as boolean;
       const lower = args.lower as boolean;
-      let address = this.contractAddresses[name];
+      let address = this.config.addresses[name];
       address = formatAddress(address, { lower, prefix: !removePrefix});
       this.log(address);
       return address;
@@ -2312,9 +2332,9 @@ export function addScripts(flash: FlashSession) {
       if (this.noProvider()) return;
 
       if (ugly) {
-        console.log(JSON.stringify(this.contractAddresses))
+        console.log(JSON.stringify(this.config.addresses))
       } else {
-        console.log(JSON.stringify(this.contractAddresses, null, 2))
+        console.log(JSON.stringify(this.config.addresses, null, 2))
       }
     },
   });
@@ -2347,7 +2367,7 @@ export function addScripts(flash: FlashSession) {
 
   flash.addScript({
     name: 'init-warp-sync',
-    async call(this: FlashSession, args: FlashArguments) {
+    async call(this: FlashSession) {
       const user = await this.ensureUser();
 
       await user.initWarpSync(user.augur.contracts.universe.address);

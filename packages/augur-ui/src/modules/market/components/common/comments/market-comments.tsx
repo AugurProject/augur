@@ -1,49 +1,29 @@
-import React, { useEffect, useState } from 'react';
-
-import Styles from 'modules/market/components/market-view/market-view.styles.less';
+import React from 'react';
+import { FacebookComments } from 'modules/market/components/common/comments/facebook-comments';
 
 interface MarketCommentsProps {
   marketId: string;
   colorScheme: string;
   numPosts: number;
   networkId: string;
+  whichCommentPlugin?: string;
 }
 
-export const MarketComments = ({ marketId, colorScheme, numPosts, networkId }: MarketCommentsProps) => {
-  const [didError, setDidError] = useState(false);
-  const { FB } = window;
-
-  useEffect(() => {
-    try {
-      // XFBML enables you to incorporate FBML into your websites and IFrame applications.
-      // https://developers.facebook.com/docs/reference/javascript/FB.XFBML.parse/
-      if (FB) {
-        FB.XFBML.parse();
-      }
-    } catch (error) {
-      console.error(error);
-      setDidError(true);
-    }
-  }, []);
-
-  if (didError) {
-    return null
-  };
-
-  const fbCommentsUrl = `http://www.augur.net/comments/${networkId}/${marketId}`;
-
+export const MarketComments = ({
+  marketId,
+  colorScheme,
+  numPosts,
+  networkId,
+  whichCommentPlugin,
+}: MarketCommentsProps) => {
   return (
-    <section className={Styles.Comments}>
-      <span />
-      <div
-        id='fb-comments'
-        className='fb-comments'
-        data-colorscheme={colorScheme}
-        data-href={fbCommentsUrl}
-        data-width='100%'
-        data-numposts={numPosts.toString()}
-        data-order-by='social' // social is seen as "Top" in the select input
+    whichCommentPlugin === 'facebook' && (
+      <FacebookComments
+        marketId={marketId}
+        colorScheme={colorScheme}
+        numPosts={numPosts}
+        networkId={networkId}
       />
-    </section>
+    )
   );
 };

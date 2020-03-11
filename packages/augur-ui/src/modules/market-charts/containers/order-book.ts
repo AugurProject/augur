@@ -5,23 +5,28 @@ import { selectMarket } from "modules/markets/selectors/market";
 import { selectCurrentTimestampInSeconds } from "store/select-state";
 import { ASKS, BIDS, SCALAR, INVALID_OUTCOME_ID } from "modules/common/constants";
 import { orderAndAssignCumulativeShares, calcOrderbookPercentages } from "modules/markets/helpers/order-and-assign-cumulative-shares";
+import { loadMarketOrderBook } from 'modules/orders/actions/load-market-orderbook';
+import { AppState } from "store";
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = (state: AppState, ownProps) => {
+  const { orderBooks } = state;
   const market = ownProps.market || selectMarket(ownProps.marketId);
+  const orderBook = orderBooks && orderBooks[market.id] || { expirationTime: 0 };
   const selectedOutcomeId = (ownProps.selectedOutcomeId !== undefined && ownProps.selectedOutcomeId !== null) ? ownProps.selectedOutcomeId : market.defaultSelectedOutcomeId;
-  const orderBook = ownProps.orderBook;
+  const outcomeOrderBook = orderBook && orderBook[selectedOutcomeId] || {};
 
   const outcome =
     (market.outcomesFormatted || []).find(
       (outcome) => outcome.id === selectedOutcomeId
     );
-  let processedOrderbook = orderAndAssignCumulativeShares(orderBook),
+  let processedOrderbook = orderAndAssignCumulativeShares(outcomeOrderBook),
   const usePercent = market.marketType === SCALAR && selectedOutcomeId === INVALID_OUTCOME_ID;
   if (usePercent) {
     // calc percentages in orderbook
     processedOrderbook = calcOrderbookPercentages(processedOrderbook, market.minPrice, market.maxPrice);
   }
   return {
+    expirationTime: ownProps.initialLiquidity || !!!orderBook ? 0 : orderBook.expirationTime,
     outcomeName: outcome && outcome.description,
     selectedOutcome: outcome,
     currentTimeInSeconds: selectCurrentTimestampInSeconds(state),
@@ -36,4 +41,20 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps)(OrderBook);
+const mapDispatchToProps = (dispatch) => ({
+  loadMarketOrderBook: marketId => dispatch(loadMarketOrderBook(marketId)),
+});
+
+const mergeProps = (sP: any, dP: any) => {
+
+  return {
+    ...sP,
+    loadMarketOrderBook: () => dP.loadMarketOrderBook(sP.marketId),
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps
+)(OrderBook);
