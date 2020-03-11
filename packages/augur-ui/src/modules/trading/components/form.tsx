@@ -220,7 +220,7 @@ class Form extends Component<FromProps, FormState> {
     } else if (
       market.marketType === SCALAR &&
       selectedOutcome.id === INVALID_OUTCOME_ID &&
-      prevProps[this.INPUT_TYPES.PRICE] !== this.props[this.INPUT_TYPES.PRICE]
+      !prevProps[this.INPUT_TYPES.PRICE] && !this.state.percentage && this.props[this.INPUT_TYPES.PRICE]
     ) {
       const price = this.props[this.INPUT_TYPES.PRICE];
       const percentage = calcPercentageFromPrice(
