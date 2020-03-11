@@ -263,6 +263,77 @@ export function connectAugur(
   };
 }
 
+function showIndexedDbSize() {
+  'use strict';
+  var db;
+  var storesizes = new Array();
+
+  function openDatabase(dbname) {
+    return new Promise(function(resolve, reject) {
+      var request = window.indexedDB.open(dbname);
+      request.onsuccess = function(event) {
+        db = event.target.result;
+        resolve(db.objectStoreNames);
+      };
+    });
+  }
+
+  function getObjectStoreData(storename) {
+    return new Promise(function(resolve, reject) {
+      var trans = db.transaction(storename, IDBTransaction.READ_ONLY);
+      var store = trans.objectStore(storename);
+      var items = [];
+      trans.oncomplete = function(evt) {
+        var szBytes = toSize(items);
+        var szMBytes = (szBytes / 1024 / 1024).toFixed(2);
+        storesizes.push({
+          'Store Name': storename,
+          'Items': items.length,
+          'Size': szMBytes + 'MB (' + szBytes + ' bytes)',
+        });
+        resolve();
+      };
+      var cursorRequest = store.openCursor();
+      cursorRequest.onerror = function(error) {
+        reject(error);
+      };
+      cursorRequest.onsuccess = function(evt) {
+        var cursor = evt.target.result;
+        if (cursor) {
+          items.push(cursor.value);
+          cursor.continue();
+        }
+      };
+    });
+  }
+
+  function toSize(items) {
+    var size = 0;
+    for (var i = 0; i < items.length; i++) {
+      var objectSize = JSON.stringify(items[i]).length;
+      size += objectSize * 2;
+    }
+    return size;
+  }
+
+  function process(stores) {
+    var PromiseArray = [];
+    for (var i = 0; i < stores.length; i++) {
+      PromiseArray.push(getObjectStoreData(stores[i]));
+    }
+    Promise.all(PromiseArray).then(function() {
+      console.table(storesizes);
+    });
+  }
+
+  openDatabase('./data').then(process);
+  openDatabase('data/blocks').then(process);
+  openDatabase('data/datastore').then(process);
+  openDatabase('data/keys').then(process);
+  openDatabase('0x-mesh-db').then(process);
+  openDatabase('augur-42').then(process);
+};
+
 interface initAugurParams {
   ethereumNodeHttp: string | null;
   ethereumNodeWs: string | null;
@@ -307,5 +378,7 @@ export function initAugur(
     dispatch(updateEnv(config));
     tryToPersistStorage();
     connectAugur(history, config, true, callback)(dispatch, getState);
+
+    windowRef.showIndexedDbSize = showIndexedDbSize;
   };
 }
