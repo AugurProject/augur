@@ -264,21 +264,33 @@ export function connectAugur(
 }
 
 function showIndexedDbSize() {
-  'use strict';
-  var db;
-  var storesizes = new Array();
+  "use strict";
 
-  function openDatabase(dbname) {
-    return new Promise(function(resolve, reject) {
-      var request = window.indexedDB.open(dbname);
-      request.onsuccess = function(event) {
-        db = event.target.result;
-        resolve(db.objectStoreNames);
-      };
+  function openDatabases(...dbnames) {
+    console.log('dbnames', dbnames);
+    return Promise.all(dbnames.map(dbname =>
+      (new Promise(function(resolve, reject) {
+        var request = window.indexedDB.open(dbname);
+        request.onsuccess = function(event) {
+          const db = event.target.result;
+          resolve(db);
+        };
+      })).then(async db => {
+        var PromiseArray = [];
+        console.log('total:', db.objectStoreNames.length);
+        for (var i = 0; i < db.objectStoreNames.length; i++) {
+          PromiseArray.push(await getObjectStoreData(db, db.objectStoreNames[i], i));
+        }
+        console.log('done', JSON.stringify(PromiseArray));
+
+        return PromiseArray;
+      })
+    )).then((amount) => {
+      return [].concat(...amount);
     });
   }
 
-  function getObjectStoreData(storename) {
+  function getObjectStoreData(db, storename) {
     return new Promise(function(resolve, reject) {
       var trans = db.transaction(storename, IDBTransaction.READ_ONLY);
       var store = trans.objectStore(storename);
@@ -286,12 +298,12 @@ function showIndexedDbSize() {
       trans.oncomplete = function(evt) {
         var szBytes = toSize(items);
         var szMBytes = (szBytes / 1024 / 1024).toFixed(2);
-        storesizes.push({
-          'Store Name': storename,
-          'Items': items.length,
-          'Size': szMBytes + 'MB (' + szBytes + ' bytes)',
+
+        resolve({
+          "Store Name": storename,
+          Items: items.length,
+          Size: szMBytes + "MB (" + szBytes + " bytes)"
         });
-        resolve();
       };
       var cursorRequest = store.openCursor();
       cursorRequest.onerror = function(error) {
@@ -316,23 +328,20 @@ function showIndexedDbSize() {
     return size;
   }
 
-  function process(stores) {
-    var PromiseArray = [];
-    for (var i = 0; i < stores.length; i++) {
-      PromiseArray.push(getObjectStoreData(stores[i]));
-    }
-    Promise.all(PromiseArray).then(function() {
-      console.table(storesizes);
-    });
+  function process(storesizes) {
+    console.log('process-checkpoint-1');
+    console.table(storesizes);
   }
 
-  openDatabase('./data').then(process);
-  openDatabase('data/blocks').then(process);
-  openDatabase('data/datastore').then(process);
-  openDatabase('data/keys').then(process);
-  openDatabase('0x-mesh-db').then(process);
-  openDatabase('augur-42').then(process);
-};
+  openDatabases(
+    "./data",
+    "data/blocks",
+    "data/datastore",
+    "data/keys",
+    "0x-mesh-db",
+    "augur-42"
+  ).then(process);
+}
 
 interface initAugurParams {
   ethereumNodeHttp: string | null;
