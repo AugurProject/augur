@@ -10,11 +10,11 @@ import { DB } from '@augurproject/sdk/build/state/db/DB';
 import { API } from '@augurproject/sdk/build/state/getter/API';
 import { LogFilterAggregatorInterface } from '@augurproject/sdk/build/state/logs/LogFilterAggregator';
 import { configureDexieForNode } from '@augurproject/sdk/build/state/utils/DexieIDBShim';
-import { BigNumber } from 'bignumber.js';
 import { ethers, providers } from 'ethers';
 import { Account } from '../constants';
 import { makeSigner } from '../libs/blockchain';
 import { ContractAPI } from '../libs/contract-api';
+import { mergeConfig, validConfigOrDie } from "@augurproject/artifacts/build";
 
 configureDexieForNode(true);
 
@@ -115,10 +115,18 @@ export class FlashSession {
     return false;
   }
 
+  async ensureSimpleUser(
+    network?: string,
+    approveCentralAuthority = false,
+    accountAddress: string = null,
+  ): Promise<ContractAPI> {
+    return this.ensureUser(network, null, approveCentralAuthority, accountAddress, false, false);
+  }
+
   sdkReady = false;
   async ensureUser(
     network?: string,
-    wireUpSdk: boolean|null = null,
+    deprecated: boolean|null = null,
     approveCentralAuthority = true,
     accountAddress: string|null = null,
     useZerox: boolean = null,
@@ -132,12 +140,11 @@ export class FlashSession {
       throw new Error('ERROR: No provider');
     }
 
-    // TODO respond if a sub-object does not exist -- config would be invalid
     if (useZerox !== null) {
-      this.config.zeroX.rpc.enabled = useZerox;
+      this.config = validConfigOrDie(mergeConfig(this.config, { zeroX: { rpc: { enabled: useZerox }}}));
     }
     if (useGSN !== null) {
-      this.config.gsn.enabled = useGSN;
+      this.config = validConfigOrDie(mergeConfig(this.config, { gsn: { enabled: useGSN }}));
     }
 
     // Initialize the user if this is the first time we are being called. This will create the provider and all of that jazz.

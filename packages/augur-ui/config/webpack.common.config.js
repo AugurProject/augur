@@ -215,7 +215,41 @@ module.exports = {
         // Will need to be negated in the relevant conditionals.
         AUGUR_HOSTED: process.env.AUGUR_HOSTED || false,
         ENABLE_MAINNET: process.env.ENABLE_MAINNET || false,
-        CURRENT_BRANCH: JSON.stringify(gitRevisionPlugin.branch())
+        CURRENT_BRANCH: JSON.stringify(gitRevisionPlugin.branch()),
+
+        // Config overrides
+        NETWORK_ID: process.env.NETWORK_ID,
+
+        ETHEREUM_HTTP: process.env.ETHEREUM_HTTP,
+        ETHEREUM_WS: process.env.ETHEREUM_WS,
+        ETHEREUM_RPC_RETRY_COUNT: process.env.ETHEREUM_RPC_RETRY_COUNT,
+        ETHEREUM_RPC_RETRY_INTERVAL: process.env.ETHEREUM_RPC_RETRY_INTERVAL,
+        ETHEREUM_RPC_CONCURRENCY: process.env.ETHEREUM_RPC_CONCURRENCY,
+
+        GAS_LIMIT: process.env.GAS_LIMIT,
+        GAS_PRICE: process.env.GAS_PRICE,
+
+        ENABLE_FAUCETS: process.env.ENABLE_FAUCETS,
+        NORMAL_TIME: process.env.NORMAL_TIME,
+        ETHEREUM_PRIVATE_KEY: process.env.ETHEREUM_PRIVATE_KEY,
+        SAVE_PRIVATE_KEY: process.env.SAVE_PRIVATE_KEY,
+        CONTRACT_INPUT_PATH: process.env.CONTRACT_INPUT_PATH,
+        WRITE_ARTIFACTS: process.env.WRITE_ARTIFACTS,
+
+        GSN_ENABLED: process.env.GSN_ENABLED,
+
+        ZEROX_RPC_ENABLED: process.env.ZEROX_RPC_ENABLED,
+        ZEROX_RPC_WS: process.env.ZEROX_RPC_WS,
+        ZEROX_MESH_ENABLED: process.env.ZEROX_MESH_ENABLED,
+        ZEROX_USE_BOOTSTRAP_LIST: process.env.ZEROX_USE_BOOTSTRAP_LIST,
+        ZEROX_MESH_BOOTSTRAP_LIST: process.env.ZEROX_MESH_BOOTSTRAP_LIST,
+
+        SDK_ENABLED: process.env.SDK_ENABLED,
+        SDK_WS: process.env.SDK_WS,
+
+        UPLOAD_BLOCK_NUMBER: process.env.UPLOAD_BLOCK_NUMBER,
+
+        ADDRESSES: process.env.ADDRESSES,
       }
     }),
   ],
