@@ -51,6 +51,7 @@ const mapDispatchToProps = (dispatch) => ({
 const mergeProps = (sP: any, dP: any, oP: any) => {
 
   return {
+    ...oP,
     ...sP,
     toggle: () => oP.toggle(),
     updateSelectedOrderProperties: (value) => oP.updateSelectedOrderProperties(value),
