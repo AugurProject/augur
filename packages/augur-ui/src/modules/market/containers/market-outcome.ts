@@ -5,7 +5,7 @@ import { COLUMN_TYPES, INVALID_OUTCOME_ID, BUY, SELL, SCALAR, INVALID_BEST_BID_A
 import { selectMarketOutcomeBestBidAsk } from 'modules/markets/selectors/select-market-outcome-best-bid-ask';
 import Row from 'modules/common/row';
 import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
-import { calcPercentageFromPrice } from 'utils/format-number';
+import { calcPercentageFromPrice, formatBlank } from 'utils/format-number';
 
 const mapStateToProps = (state: AppState, ownProps) => {
   const { marketInfos, newMarket } = state;
@@ -45,7 +45,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
 
   let topBidPrice = topBid.price;
   let topAskPrice = topAsk.price;
-  let lastPrice = outcome.lastPrice;
+  let lastPrice = outcome.lastPrice || formatBlank();
 
   if (sP.showPercentages) {
     const topBidPercent = calcPercentageFromPrice(
