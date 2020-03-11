@@ -103,9 +103,9 @@
     border-radius: @border-radius-default;
     content: " ";
     display: block;
-    height: 2px;
+    height: @size-2;
     margin: 0 auto;
-    width: 1rem;
+    width: @size-16;
   }
 }
 
@@ -113,5 +113,19 @@
   align-items: center;
   display: flex;
   justify-content: center;
-  margin: 2rem 2rem;
+  margin: @size-32;
+}
+
+
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+
+  .Active {
+
+    &::after {
+      background: var(--color-primary-action);
+      width: @size-9;
+    }
+  }
+
 }
