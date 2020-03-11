@@ -2165,7 +2165,7 @@ export function addScripts(flash: FlashSession) {
           await this.call(deployMethod, { createMarkets: true });
         }
 
-        //await spawnSync('yarn', ['build']); // so UI etc will have the correct addresses
+        await spawnSync('yarn', ['build']); // so UI etc will have the correct addresses
 
         env = {
           ...process.env,
