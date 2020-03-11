@@ -35,8 +35,8 @@ const mapStateToProps = (state: AppState, ownProps) => {
     currentTimeInSeconds: selectCurrentTimestampInSeconds(state),
     orderBook: processedOrderbook,
     hasOrders:
-      !isEmpty(orderBook[BIDS]) ||
-      !isEmpty(orderBook[ASKS]),
+      !isEmpty(processedOrderbook[BIDS]) ||
+      !isEmpty(processedOrderbook[ASKS]),
     marketType: market.marketType,
     marketId: market.marketId,
     initialLiquidity: ownProps.initialLiquidity,

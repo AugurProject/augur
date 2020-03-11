@@ -244,9 +244,9 @@ const OrderBook = ({
           {hasOrders &&
             `spread: ${
               orderBook.spread
-                ? `$${createBigNumber(orderBook.spread).toFixed(
+                ? `${!usePercent ? '$' : ''}${createBigNumber(orderBook.spread).toFixed(
                     pricePrecision
-                  )}`
+                  )} ${usePercent ? '%' : ''}`
                 : '—'
             }`}
         </div>

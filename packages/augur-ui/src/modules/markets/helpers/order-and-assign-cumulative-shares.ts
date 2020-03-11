@@ -93,9 +93,14 @@ export const calcOrderbookPercentages = memoize(
         ...o,
         percent: calcPercentageFromPrice(o.price, minPrice, maxPrice),
       }));
-
+      let spread = 0;
+      const bestBid = Math.min(...bids.map(bid => bid.percent));
+      const bestAsk = Math.max(...asks.map(ask => ask.percent));
+      if (bestBid !== undefined && bestAsk !== undefined) {
+        spread = bestAsk - bestBid;
+      }
     return {
-      spread: orderBook.spread,
+      spread: String(spread),
       bids,
       asks,
     };
