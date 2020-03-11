@@ -239,7 +239,7 @@ export interface TestTradingOrder {
   unmatchedShares: FormattedNumber;
 }
 export interface OrderBooks {
-  [marketId: string]: Getters.Markets.OutcomeOrderBook;
+  [marketId: string]: Getters.Markets.MarketOrderBook;
 }
 export interface IndividualOutcomeOrderBook {
   spread: string | BigNumber | null;
@@ -660,6 +660,10 @@ export interface WindowApp extends Window {
   ethereum: {
     selectedAddress;
     networkVersion: string;
+    isMetaMask?: boolean;
+    on?: Function;
+    enable?: Function;
+    send?: Function;
   };
   localStorage: Storage;
   integrationHelpers: any;

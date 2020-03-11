@@ -15,7 +15,6 @@ import { ethers, providers } from 'ethers';
 import { Account } from '../constants';
 import { makeSigner } from '../libs/blockchain';
 import { ContractAPI } from '../libs/contract-api';
-import deepmerge from 'deepmerge';
 
 configureDexieForNode(true);
 
@@ -108,7 +107,7 @@ export class FlashSession {
   }
 
   noAddresses() {
-    if (typeof this.contractAddresses === 'undefined') {
+    if (typeof this.config?.addresses === 'undefined') {
       this.log('ERROR: Must first load contract addresses.');
       return true;
     }
@@ -250,14 +249,14 @@ export class FlashSession {
   }
 
   async contractOwner(): Promise<ContractAPI> {
-    if (typeof this.contractAddresses === 'undefined') {
+    if (typeof this.config?.addresses === 'undefined') {
       throw Error('ERROR: Must load contract addresses first.');
     }
 
     return ContractAPI.userWrapper(
       this.accounts[0],
       this.provider,
-      this.contractAddresses
+      this.config,
     );
   }
 

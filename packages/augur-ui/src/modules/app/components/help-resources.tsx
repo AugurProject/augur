@@ -5,7 +5,13 @@ import { QuestionIcon } from 'modules/common/icons';
 import { ExternalLinkButton } from 'modules/common/buttons';
 
 import Styles from 'modules/app/components/help-resources.styles.less';
-import { TRADING_TUTORIAL } from 'modules/common/constants';
+import {
+  TRADING_TUTORIAL,
+  HELP_CENTER,
+  HELP_CENTER_ADD_FUNDS,
+  HELP_CENTER_HOW_TO_TRADE,
+  HELP_CENTER_HOW_TO_DISPUTE,
+} from 'modules/common/constants';
 import { MARKET } from 'modules/routes/constants/views';
 import makeQuery from 'modules/routes/helpers/make-query';
 import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names';
@@ -18,7 +24,7 @@ interface HelpResourcesProps {
 
 const HELP_LINKS = [
   {
-    label: 'trading tutorial',
+    label: 'view trading tutorial',
     showNonLink: true,
     customLink: {
       pathname: MARKET,
@@ -27,21 +33,29 @@ const HELP_LINKS = [
       }),
     },
   },
-  {
+  {    
     label: 'help center',
-    link: 'https://docs.augur.net',
+    link: HELP_CENTER,
   },
   {
     label: 'how to add funds',
-    link: 'https://docs.augur.net',
+    link: HELP_CENTER_ADD_FUNDS,
   },
   {
     label: 'how to trade',
-    link: 'https://docs.augur.net',
+    link: HELP_CENTER_HOW_TO_TRADE,
   },
   {
     label: 'how to dispute',
-    link: 'https://docs.augur.net',
+    link: HELP_CENTER_HOW_TO_DISPUTE,
+  },
+  {
+    label: 'submit feedback',
+    link: 'https://github.com/AugurProject/augur/issues/new/choose',
+  },
+  {
+    label: 'community support',
+    link: 'https://discordapp.com/invite/STswGEF',
   },
 ];
 
@@ -57,6 +71,7 @@ export const HelpMenuList = () => {
             label={helpLink.label}
             customLink={helpLink.customLink}
             showNonLink={helpLink.showNonLink}
+            lightLink={helpLink.lightLink}
           />
         </li>
       ))}
@@ -68,9 +83,7 @@ interface HelpMenuProps {
   closeHelpMenu: Function;
 }
 
-export const HelpMenu = ({
-  closeHelpMenu
-}: HelpMenuProps) => {
+export const HelpMenu = ({ closeHelpMenu }: HelpMenuProps) => {
   return (
     <div className={classNames(Styles.HelpMenu)}>
       <span>popular help resources</span>
@@ -82,6 +95,7 @@ export const HelpMenu = ({
             label={helpLink.label}
             customLink={helpLink.customLink}
             showNonLink={helpLink.showNonLink}
+            lightLink={helpLink.lightLink}
             callback={closeHelpMenu}
           />
         </span>
@@ -90,7 +104,6 @@ export const HelpMenu = ({
   );
 };
 
-
 interface HelpIconProps {
   isHelpMenuOpen: boolean;
   updateHelpMenuState: Function;
@@ -98,7 +111,7 @@ interface HelpIconProps {
 
 export const HelpIcon = ({
   updateHelpMenuState,
-  isHelpMenuOpen
+  isHelpMenuOpen,
 }: HelpIconProps) => {
   return (
     <div
@@ -132,8 +145,13 @@ export const HelpResources = ({
       })}
       onClick={event => event.stopPropagation()}
     >
-      <HelpIcon updateHelpMenuState={updateHelpMenuState} isHelpMenuOpen={isHelpMenuOpen} />
-      {isHelpMenuOpen && (<HelpMenu closeHelpMenu={() => updateHelpMenuState(false)}/>)}
+      <HelpIcon
+        updateHelpMenuState={updateHelpMenuState}
+        isHelpMenuOpen={isHelpMenuOpen}
+      />
+      {isHelpMenuOpen && (
+        <HelpMenu closeHelpMenu={() => updateHelpMenuState(false)} />
+      )}
     </div>
   );
 };

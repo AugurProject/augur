@@ -23,7 +23,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       ? {}
       : { ...BINARY_CATEGORICAL_FORMAT_OPTIONS };
   const orderQuantity = formatShares(filledOrder.amount, opts);
-  const orderPrice = formatDai(filledOrder.price);
+  const orderPrice = formatDai(filledOrder.price, { roundDown: true});
   const orderType = filledOrder.type;
 
   const originalQuantity = formatShares(filledOrder.originalQuantity, opts);

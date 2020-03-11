@@ -307,6 +307,8 @@ export const handleReportingStateChanged = (event: any) => (
   if (event.data) {
     const marketIds = _.map(event.data, 'market');
     dispatch(loadMarketsInfo(marketIds));
+    if (isOnDisputingPage()) dispatch(reloadDisputingPage(marketIds));
+    if (isOnReportingPage()) dispatch(reloadReportingPage(marketIds));
   }
 };
 

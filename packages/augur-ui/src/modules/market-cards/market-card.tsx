@@ -209,7 +209,7 @@ export default class MarketCard extends React.Component<
         ),
       }));
 
-    const marketResolved = reportingState === REPORTING_STATE.FINALIZED;
+    const marketResolved = reportingState === REPORTING_STATE.FINALIZED || reportingState === REPORTING_STATE.AWAITING_FINALIZATION;
     const isScalar = marketType === SCALAR;
     const inDispute =
       reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE ||
@@ -273,7 +273,9 @@ export default class MarketCard extends React.Component<
                 value={formatAttoRep(disputeInfo.stakeCompletedTotal).full}
               />
             )}
-            <div className={Styles.hoverIconTray}>{InfoIcons}</div>
+            <div className={Styles.hoverIconTray}>
+              <InfoIcons id={id} />
+            </div>
             <MarketProgress
               reportingState={reportingState}
               currentTime={currentAugurTimestamp}
