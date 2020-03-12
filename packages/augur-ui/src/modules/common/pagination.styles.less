@@ -4,7 +4,6 @@
   display: flex;
 
   > div {
-    margin-bottom: @size-48;
     margin-left: @size-16;
 
     @media @breakpoint-mobile {
@@ -13,7 +12,8 @@
   }
 
   button {
-    height: @size-32
+    background: transparent;
+    height: @size-30;
   }
 
   button > span {
@@ -140,30 +140,26 @@
     }
 
     section > button:not(:first-of-type):not(:last-of-type) {
-      &:hover {
-        &::before,
-        &::after {
-          content: " ";
-          display: block;
-          height: @size-2;
-          margin: 0 auto;
-          width: @size-9;
-        }
+      &::after {
+        background: transparent;
+        content: " ";
+        display: block;
+        height: @size-2;
+        margin: 0 auto;
+        width: @size-9;
+      }
 
-        &::before {
-          background: transparent;
-        }
+      &:hover::after {
+        background: var(--color-primary-text);
+      }
 
-        &::after {
-          background: var(--color-primary-text);
-          border-radius: 0;
-        }
+      &.Active::after {
+        background: var(--color-primary-action);
       }
     }
 
     // Show items per page
     > div {
-      margin-bottom: @size-48;
       margin-left: @size-16;
       height: @size-40;
       border: none;
@@ -206,31 +202,14 @@
 
       > div {
         width: 100%;
+        border-radius: @border-radius-default;
+        box-shadow: 0 0 @size-4 var(--color-primary-text-15);
+
         > div:first-of-type {
-          margin-top: 0;
+          margin: 0;
+          border: @size-1 solid var(--color-secondary-action-outline);
         }
       }
     }
   }
-
-  .Active {
-    &::before,
-    &::after {
-      content: " ";
-      display: block;
-      height: @size-2;
-      margin: 0 auto;
-      width: @size-9;
-    }
-
-    &::before {
-      background: transparent;
-    }
-
-    &::after {
-      background: var(--color-primary-action);
-      border-radius: 0;
-    }
-  }
-
 }

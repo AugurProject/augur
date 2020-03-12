@@ -1028,7 +1028,7 @@
   border-color: var(--color-secondary-action-outline);
   display: flex;
   height: @size-32;
-  padding: @size-8;
+  justify-content: center;
   width: @size-32;
 
   > svg {
@@ -1042,42 +1042,38 @@
     }
   }
 
-  &:hover {
-    > svg > path {
-      stroke: var(--color-primary-text);
-    }
+  &:hover > svg > path {
+    stroke: var(--color-primary-text);
   }
 }
 
 :root[theme="BETTING"],
 :root[theme="SPORTS"] {
   .DirectionButton {
-    background: var(--color-module-background-25);
-    border-color: var(--color-dark-text-25);
+    // background: var(--color-module-background);
+    background: transparent;
+    border-color: var(--color-dark-text);
 
-    > svg {
-      > path {
-        stroke: var(--color-primary-text-25);
-      }
+    > svg > path {
+      stroke: var(--color-primary-text);
     }
 
-    &:hover {
-      background: var(--color-module-background);
-      border-color: var(--color-dark-text);
-  
-      > svg {
-        > path {
-          stroke: var(--color-primary-text);
-        }
-      }
+    &:hover:enabled {
+      border-color: var(--color-pimary-text);
+    }
+
+    &:focus {
+      border: @size-2 solid var(--color-focused);
+    }
+
+    &:disabled {
+      opacity: 0.25;
     }
   }
 }
 
-.left {
-  > svg {
-    transform: rotate(180deg);
-  }
+.left > svg {
+  transform: rotate(180deg);
 }
 
 .ExportButton {
@@ -1133,10 +1129,8 @@
   }
 }
 
-.Ascending {
-  > svg > path:last-of-type {
-    fill: var(--color-primary-text);
-  }
+.Ascending > svg > path:last-of-type {
+  fill: var(--color-primary-text);
 }
 
 .FilterButton {
