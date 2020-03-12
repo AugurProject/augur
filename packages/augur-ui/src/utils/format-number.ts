@@ -617,3 +617,4 @@ export function calcPercentageFromPrice(
   const percentage = bnNormalizedPrice.dividedBy(bnPriceRange).times(100);
   return Number(percentage.toFixed(2));
 }
+
