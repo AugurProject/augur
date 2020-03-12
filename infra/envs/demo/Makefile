@@ -2,7 +2,6 @@
 # Assumes aws-vault is setup with MFA. See: (https://github.com/99designs/aws-vault)
 
 ORG = augur
-VAR_FILE = demo.tfvars
 
 .PHONY lint:
  lint:
@@ -10,11 +9,11 @@ VAR_FILE = demo.tfvars
 
 .PHONY: plan
 plan:
-	aws-vault exec ${ORG} -- terraform plan -var-file=${VAR_FILE}
+	aws-vault exec ${ORG} -- terraform plan
 
 .PHONY: apply
 apply:
-	aws-vault exec ${ORG} -- terraform apply -var-file=${VAR_FILE}
+	aws-vault exec ${ORG} -- terraform apply
 
 # Forces remote state unlock. Only use if you know what you're doing.
 .PHONY unlock:
@@ -33,4 +32,4 @@ taint-services:
 
 .PHONY: destroy
 destroy:
-	aws-vault exec ${ORG} -- terraform destroy -var-file=${VAR_FILE}
+	aws-vault exec ${ORG} -- terraform destroy

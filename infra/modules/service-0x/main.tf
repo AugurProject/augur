@@ -3,21 +3,20 @@
 locals {
   bootstrap_name = "0x-mesh-bootstrap"
   rpc_name       = "0x-mesh-rpc"
-  zerox_ports = {
+  zerox_ports    = {
     rpc_http : 60556
     rpc_ws : 60557
     p2p_tcp : 60558
     p2p_ws : 60559
   }
-  zerox-trade-addr = jsondecode(data.local_file.contract-addresses.content)[var.ethereum_chain_id]["ZeroXTrade"]
 }
 
 // Security Group
 module "zeroX-security-group" {
   source = "terraform-aws-modules/security-group/aws"
 
-  name   = "0x-sg"
-  vpc_id = module.vpc.vpc_id
+  name                     = "0x-sg"
+  vpc_id                   = var.vpc_id
   ingress_with_cidr_blocks = [
     {
       from_port   = local.zerox_ports.rpc_http
@@ -39,17 +38,17 @@ data aws_secretsmanager_secret_version "zero-x-privatekey" {
 
 /* Tasks */
 module "task-0x-mesh-bootstrap" {
-  source           = "git::https://github.com/cloudposse/terraform-aws-ecs-container-definition.git?ref=tags/0.23.0"
-  container_name   = local.bootstrap_name
-  container_image  = "0xorg/mesh-bootstrap:9.0.1"
-  container_memory = 512
-  container_cpu    = 256
-  entrypoint = [
+  source            = "git::https://github.com/cloudposse/terraform-aws-ecs-container-definition.git?ref=tags/0.23.0"
+  container_name    = local.bootstrap_name
+  container_image   = "0xorg/mesh-bootstrap:9.0.1"
+  container_memory  = 512
+  container_cpu     = 256
+  entrypoint        = [
     "sh",
     "-c",
     "mkdir -p ./0x_mesh/keys && echo $PRIVATE_KEY > ./0x_mesh/keys/privkey && ./mesh-bootstrap"
   ]
-  port_mappings = [
+  port_mappings     = [
     {
       hostPort : local.zerox_ports.p2p_tcp,
       protocol : "tcp",
@@ -62,15 +61,15 @@ module "task-0x-mesh-bootstrap" {
     }
   ]
   log_configuration = {
-    logDriver = "awslogs"
-    options = {
-      "awslogs-group" : aws_cloudwatch_log_group.ecs.name,
+    logDriver     = "awslogs"
+    options       = {
+      "awslogs-group" : var.ecs_log_group,
       "awslogs-region" : var.region,
       "awslogs-stream-prefix" : local.bootstrap_name
     }
     secretOptions = null
   }
-  environment = [
+  environment       = [
     {
       name : "ETHEREUM_CHAIN_ID",
       value : var.ethereum_chain_id
@@ -95,12 +94,12 @@ module "task-0x-mesh-bootstrap" {
 }
 
 module "task-0x-mesh-rpc" {
-  source           = "git::https://github.com/cloudposse/terraform-aws-ecs-container-definition.git?ref=tags/0.23.0"
-  container_name   = local.rpc_name
-  container_image  = "0xorg/mesh:9.0.1"
-  container_memory = 512
-  container_cpu    = 256
-  port_mappings = [
+  source            = "git::https://github.com/cloudposse/terraform-aws-ecs-container-definition.git?ref=tags/0.23.0"
+  container_name    = local.rpc_name
+  container_image   = "0xorg/mesh:9.0.1"
+  container_memory  = 512
+  container_cpu     = 256
+  port_mappings     = [
     {
       hostPort : local.zerox_ports.rpc_http
       protocol : "tcp",
@@ -123,15 +122,15 @@ module "task-0x-mesh-rpc" {
     }
   ]
   log_configuration = {
-    logDriver = "awslogs"
-    options = {
-      "awslogs-group" : aws_cloudwatch_log_group.ecs.name,
+    logDriver     = "awslogs"
+    options       = {
+      "awslogs-group" : var.ecs_log_group,
       "awslogs-region" : var.region,
       "awslogs-stream-prefix" : local.rpc_name
     }
     secretOptions = null
   }
-  environment = [
+  environment       = [
     {
       name : "BLOCK_POLLING_INTERVAL"
       value : "5s"
@@ -142,7 +141,7 @@ module "task-0x-mesh-rpc" {
     },
     {
       name : "CUSTOM_ORDER_FILTER",
-      value : "{\"properties\":{\"makerAssetData\":{\"pattern\":\".*${local.zerox-trade-addr}.*\"}}}"
+      value : "{\"properties\":{\"makerAssetData\":{\"pattern\":\".*${var.zerox-trade-address}.*\"}}}"
     },
     {
       name : "ETHEREUM_CHAIN_ID",
@@ -181,16 +180,16 @@ module "task-0x-mesh-rpc" {
       value : "0.0.0.0:${local.zerox_ports.rpc_ws}"
     },
     {
-      name: "ZEROX_CONTRACT_ADDRESS"
-      value: local.zerox-trade-addr
+      name : "ZEROX_CONTRACT_ADDRESS"
+      value : var.zerox-trade-address
     }
   ]
 }
 
 /* Services */
 module "discovery-0x-mesh-bootstrap" {
-  source       = "./modules/discovery"
-  namespace    = aws_service_discovery_private_dns_namespace.ecs.id
+  source       = "./../discovery"
+  namespace    = var.service_discovery_namespace_id
   service_name = local.bootstrap_name
 }
 
@@ -198,40 +197,40 @@ module "service-0x-mesh-bootstrap" {
   source                         = "git::https://github.com/cloudposse/terraform-aws-ecs-alb-service-task.git?ref=tags/0.21.0"
   stage                          = var.environment
   name                           = local.bootstrap_name
-  alb_security_group             = module.alb_security_group.this_security_group_id
+  alb_security_group             = var.alb_sg
   container_definition_json      = module.task-0x-mesh-bootstrap.json
   ignore_changes_task_definition = false
-  ecs_cluster_arn                = aws_ecs_cluster.ecs.arn
+  ecs_cluster_arn                = var.ecs_cluster_arn
   launch_type                    = "FARGATE"
   network_mode                   = "awsvpc"
   assign_public_ip               = true
-  vpc_id                         = module.vpc.vpc_id
-  security_group_ids = [
-    module.vpc.vpc_default_security_group_id,
+  vpc_id                         = var.vpc_id
+  security_group_ids             = [
+    var.vpc_sg,
     module.zeroX-security-group.this_security_group_id
   ]
-  subnet_ids = module.subnets.public_subnet_ids
-  ecs_load_balancers = [
+  subnet_ids                     = var.public_subnets
+  ecs_load_balancers             = [
     {
       container_name   = local.bootstrap_name
       container_port   = local.zerox_ports.p2p_ws
       elb_name         = null
-      target_group_arn = module.ingress-0x-mesh-bootstrap.target_group_arn
+      target_group_arn = var.zerox_bootstrap_tg_arn
     }
   ]
-  desired_count = 1
-  service_registries = [
+  desired_count                  = 1
+  service_registries             = [
     {
       registry_arn   = module.discovery-0x-mesh-bootstrap.arn
       port           = null
       container_name = null
       container_port = null
-  }]
+    }]
 }
 
 module "discovery-0x-mesh-rpc" {
-  source       = "./modules/discovery"
-  namespace    = aws_service_discovery_private_dns_namespace.ecs.id
+  source       = "./../discovery"
+  namespace    = var.service_discovery_namespace_id
   service_name = local.rpc_name
 }
 
@@ -239,29 +238,29 @@ module "service-0x-rpc" {
   source                         = "git::https://github.com/cloudposse/terraform-aws-ecs-alb-service-task.git?ref=tags/0.21.0"
   stage                          = var.environment
   name                           = local.rpc_name
-  alb_security_group             = module.alb_security_group.this_security_group_id
+  alb_security_group             = var.alb_sg
   container_definition_json      = module.task-0x-mesh-rpc.json
   ignore_changes_task_definition = false
-  ecs_cluster_arn                = aws_ecs_cluster.ecs.arn
+  ecs_cluster_arn                = var.ecs_cluster_arn
   launch_type                    = "FARGATE"
   network_mode                   = "awsvpc"
   assign_public_ip               = true
-  vpc_id                         = module.vpc.vpc_id
-  security_group_ids = [
-    module.vpc.vpc_default_security_group_id,
+  vpc_id                         = var.vpc_id
+  security_group_ids             = [
+    var.vpc_sg,
     module.zeroX-security-group.this_security_group_id
   ]
-  subnet_ids    = module.subnets.public_subnet_ids
-  desired_count = 1
-  ecs_load_balancers = [
+  subnet_ids                     = var.public_subnets
+  desired_count                  = 1
+  ecs_load_balancers             = [
     {
       container_name   = local.rpc_name
       container_port   = local.zerox_ports.rpc_ws
       elb_name         = null
-      target_group_arn = module.ingress-0x-mesh-rpc.target_group_arn
+      target_group_arn = var.zerox_rpc_tg_arn
     }
   ]
-  service_registries = [
+  service_registries             = [
     {
       registry_arn   = module.discovery-0x-mesh-rpc.arn
       port           = null
