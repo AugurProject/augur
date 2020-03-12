@@ -2,7 +2,8 @@ import React from 'react';
 import classNames from 'classnames';
 import { DirectionButton } from 'modules/common/buttons';
 import { SquareDropdown } from 'modules/common/selection';
-import { PAGINATION_VIEW_OPTIONS } from 'modules/common/constants';
+import { PAGINATION_VIEW_OPTIONS, THEMES } from 'modules/common/constants';
+import { getTheme } from 'modules/app/actions/update-app-status';
 import Styles from 'modules/common/pagination.styles.less';
 
 interface PaginationProps {
@@ -141,6 +142,7 @@ export const Pagination = (props: PaginationProps) => {
 
       { showLimitChanger &&
         <SquareDropdown
+          large={getTheme() !== THEMES.TRADING}
           defaultValue={itemsPerPage}
           options={getLimitOptions(itemCount, maxLimit)}
           onChange={updateLimit}
