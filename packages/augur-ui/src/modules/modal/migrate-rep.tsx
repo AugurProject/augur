@@ -10,10 +10,8 @@ import { LinearPropertyLabel } from 'modules/common/labels';
 import { InfoIcon } from 'modules/common/icons';
 import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 import {
-  V1_REP_MIGRATE_ESTIMATE,
-  MIGRATE_V1_V2,
+  V1_REP_MIGRATE_ESTIMATE, HELP_CENTER_LEARN_ABOUT_ADDRESS, HELP_CENTER_MIGRATE_REP,
 } from 'modules/common/constants';
-import { TXEventName } from '@augurproject/sdk/src';
 
 import Styles from 'modules/modal/modal.styles.less';
 
@@ -38,7 +36,6 @@ export const MigrateRep = (props: MigrateRepForm) => {
     convertV1ToV2Estimate,
     ethToDaiRate,
     gasPrice,
-    addPendingData,
     showForSafeWallet,
   } = props;
 
@@ -89,7 +86,7 @@ export const MigrateRep = (props: MigrateRepForm) => {
         address={toChecksumAddress(loginAccount.address)}
       />
       <ExternalLinkButton
-        URL="https://docs.augur.net/"
+        URL={HELP_CENTER_LEARN_ABOUT_ADDRESS}
         label={'Learn about your address'}
       />
     </>
@@ -117,7 +114,7 @@ export const MigrateRep = (props: MigrateRepForm) => {
             example 100 V1 REP will migrate to 100 V2 REP.
             <ExternalLinkButton
               label="Learn more"
-              URL="http://docs.augur.net/"
+              URL={HELP_CENTER_MIGRATE_REP}
             />
           </h2>
         )}
@@ -127,12 +124,12 @@ export const MigrateRep = (props: MigrateRepForm) => {
             In order to migrate your V1 REP to V2 REP to use it in Augur V2, you
             need to send your V1 REP to your Augur Account Address shown below.
             <p />
-            then your V1 REP is in your Augur Account Address you will see a
+            When your V1 REP is in your Augur Account Address you will see a
             button named “Migrate V1 to V2 REP” in the Augur app navigation.
             From here you can migrate all V1 REP in your account to V2 REP.
             <ExternalLinkButton
               label="Learn more"
-              URL="http://docs.augur.net/"
+              URL={HELP_CENTER_MIGRATE_REP}
             />
           </h2>
         )}
@@ -146,12 +143,6 @@ export const MigrateRep = (props: MigrateRepForm) => {
             action: showForSafeWallet
               ? () => {
                   closeAction();
-                  addPendingData(
-                    MIGRATE_V1_V2,
-                    MIGRATE_V1_V2,
-                    TXEventName.Pending,
-                    MIGRATE_V1_V2
-                  );
                   convertV1ToV2();
                 }
               : () => closeAction(),

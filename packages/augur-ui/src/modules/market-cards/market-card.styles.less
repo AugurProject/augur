@@ -292,7 +292,7 @@
     }
 
     > div:nth-last-of-type(2) {
-      margin-bottom: @size-8;
+      padding-bottom: @size-8;
       grid-column: 2;
     }
 
@@ -556,6 +556,10 @@
     margin-bottom: @size-12;
 
     @media @breakpoint-mobile {
+      border: @size-1 solid @color-secondary-action-outline;
+      border-radius: @border-radius-default;
+      height: @size-32;
+      justify-content: center;
       margin-top: @size-8;
       margin-bottom: 0;
     }
@@ -564,6 +568,7 @@
       grid-row: unset;
       margin-bottom: 0;
       margin-top: @size-8;
+
     }
   }
 }

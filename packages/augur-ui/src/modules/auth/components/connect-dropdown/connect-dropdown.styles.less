@@ -107,6 +107,7 @@
 
     > span > label {
       margin: 0;
+      margin-left: @size-4;
 
       > svg {
         height: @size-12;
@@ -131,12 +132,16 @@
     .mono-10-semi-bold;
 
     align-items: center;
-    padding: @size-5 @size-6 ;
-    flex-direction: row-reverse;
-    display: flex;
     background: @color-secondary-action;
+    border-radius: @size-3;
+    border: @size-1 solid @color-secondary-action-outline;
+    color: @color-primary-text;
+    display: flex;
+    flex-direction: row-reverse;
+    padding: @size-5 @size-6;
 
     > svg {
+      fill: @color-secondary-text;
       height: @size-9;
       margin-left: @size-5;
     }
@@ -145,7 +150,6 @@
 
 .GasEdit {
   align-items: center;
-  border: none;
   height: @size-57;
   padding: @size-12 @size-16;
 
@@ -156,7 +160,7 @@
     width: @size-136;
     width: -moz-fit-content;
     width: fit-content;
-    
+
     // Transation fee
     > div:first-of-type {
       .mono-10-medium;
@@ -178,8 +182,17 @@
     // Gas price
     > div:nth-of-type(2) {
       .text-12;
+
       color: @color-primary-text;
       margin-bottom: @size-4;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 235px;
+      white-space: nowrap;
+
+      @media @breakpoint-mobile {
+        width: calc(100vw - 167px);
+      }
     }
   }
 }
@@ -236,5 +249,46 @@
       }
     }
 
+  }
+}
+
+.ShowConfirmaiton {
+  position: relative;
+}
+
+.ShowConfirmaiton:after {
+  content: '';
+
+  border-top: solid @size-12 @color-primary-text;
+  border-left: solid @size-12 transparent;
+  border-right: solid @size-12 transparent;
+  position: absolute;
+  right: @size-16;
+  top: -@size-16;
+
+  @media @breakpoint-mobile {
+    bottom: @size-25;
+    left: @size-8;
+  }
+}
+
+.ShowConfirmaiton:before {
+  .text-10;
+
+  content: 'Copied!';
+  align-items: center;
+  color: @color-inactive-text;
+  background: @color-primary-text;
+  border-radius: @border-radius-default;
+  display: flex;
+  justify-content: center;
+  padding: @size-8 @size-12;
+  position: absolute;
+  right: 0;
+  text-transform: capitalize;
+  top: -39px;
+
+  @media @breakpoint-mobile {
+    bottom: @size-32;
   }
 }

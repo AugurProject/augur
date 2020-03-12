@@ -18,6 +18,7 @@ import {
   SecondaryButton,
   SubmitTextButton,
   ExternalLinkButton,
+  ProcessingButton,
 } from 'modules/common/buttons';
 import {
   LinearPropertyLabel,
@@ -26,7 +27,7 @@ import {
   ConfirmedLabel,
 } from 'modules/common/labels';
 import Styles from 'modules/modal/modal.styles.less';
-import { PENDING, SUCCESS, DAI, FAILURE, ACCOUNT_TYPES, ETH } from 'modules/common/constants';
+import { PENDING, SUCCESS, DAI, FAILURE, ACCOUNT_TYPES, ETH, HELP_CENTER_ADD_FUNDS, HELP_CENTER_LEARN_ABOUT_ADDRESS } from 'modules/common/constants';
 import { LinkContent, LoginAccount } from 'modules/types';
 import { DismissableNotice, DISMISSABLE_NOTICE_BUTTON_TYPES } from 'modules/reporting/common';
 import { toChecksumAddress } from 'ethereumjs-util';
@@ -108,6 +109,8 @@ export interface ActionRow {
   action: Function;
   status: typeof PENDING | typeof SUCCESS | typeof FAILURE;
   properties: Array<{ value: string; label: string; addExtraSpace: boolean }>;
+  queueName?: string;
+  queueId?: string;
 }
 
 export interface ActionRowsProps {
@@ -466,12 +469,12 @@ export const ActionRows = (props: ActionRowsProps) =>
         </div>
       </section>
       <div>
-        {row.status && row.status !== SUCCESS && <PendingLabel status={row.status} />}
-        {row.status === SUCCESS && <ConfirmedLabel />}
-        <SubmitTextButton
-          disabled={row.status === SUCCESS || row.status === PENDING}
+        <ProcessingButton
           text={row.text}
+          queueName={row.queueName}
+          queueId={row.queueId}
           action={row.action}
+          submitTextButtton={true}
         />
       </div>
       {row.notice && <DismissableNotice title={row.notice} description={''} show={true} buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE} />}
@@ -576,9 +579,11 @@ interface FundsHelpProps {
 
 export const FundsHelp = ({ fundType = DAI }: FundsHelpProps) => (
   <div className={Styles.FundsHelp}>
-    <span>Need help?</span>
-    <span>Learn how to buy {fundType === DAI ? `Dai ($)` : fundType} {fundType === DAI ? generateDaiTooltip() : ''} and  send it to your Augur account address.</span>
-    <ExternalLinkButton URL='https://docs.augur.net/' label='Learn More' />
+    <p>Need help?</p>
+    <div>
+      <span>Learn how to buy {fundType === DAI ? `Dai ($)` : fundType} {fundType === DAI ? generateDaiTooltip() : ''} and  send it to your Augur account address.</span>
+      <ExternalLinkButton URL={HELP_CENTER_ADD_FUNDS} label='Learn More' />
+    </div>
   </div>
 );
 
@@ -825,7 +830,7 @@ export const Coinbase = ({
     />
     {fundTypeToUse !== ETH && (
       <ExternalLinkButton
-        URL='https://docs.augur.net/'
+        URL={HELP_CENTER_LEARN_ABOUT_ADDRESS}
         label={'Learn about your address'}
       />
     )}
@@ -862,7 +867,7 @@ export const Transfer = ({
           fundTypeLabel
         )}{' '}
         using an app or exchange (see our list of{' '}
-        <a target='_blank' href='https://docs.augur.net/'>
+        <a target='_blank' href={HELP_CENTER_ADD_FUNDS}>
           popular ways to buy {fundTypeLabel})
         </a>
       </li>
@@ -877,7 +882,7 @@ export const Transfer = ({
     />
     {fundTypeToUse !== ETH && (
       <ExternalLinkButton
-        URL='https://docs.augur.net/'
+        URL={HELP_CENTER_LEARN_ABOUT_ADDRESS}
         label={'Learn about your address'}
       />
     )}

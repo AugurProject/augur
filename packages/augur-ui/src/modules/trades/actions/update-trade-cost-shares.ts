@@ -211,9 +211,7 @@ async function runSimulateTrade(
     .toFixed();
   if (isNaN(newTradeDetails.feePercent)) newTradeDetails.feePercent = '0';
 
-  if (newTradeDetails.sharesFilled.toNumber() === 0) {
-    gasLimit = createBigNumber(0);
-  } else {
+  if (newTradeDetails.sharesFilled.toNumber() > 0) {
     gasLimit = await simulateTradeGasLimit(
       orderType,
       marketId,

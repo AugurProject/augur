@@ -1,13 +1,18 @@
 import { FlashSession } from './flash';
 import Vorpal from 'vorpal';
-import program from "commander";
+import program from 'commander';
 import { addScripts } from './scripts';
 import { addGanacheScripts } from './ganache-scripts';
 import { Account, ACCOUNTS } from '../constants';
-import { NetworkConfiguration, NETWORKS } from '@augurproject/core';
-import { Addresses } from '@augurproject/artifacts';
 import { computeAddress } from 'ethers/utils';
 import * as fs from 'fs';
+import {
+  buildConfig,
+  validConfigOrDie,
+  SDKConfiguration,
+  mergeConfig,
+  RecursivePartial
+} from '@augurproject/artifacts';
 
 async function processAccounts(flash: FlashSession, args: any) {
     // Figure out which private key to use.
@@ -36,9 +41,11 @@ async function run() {
     .name('flash')
     .storeOptionsAsProperties(false)
     .passCommandToAction(false)
-    .option('-k, --key <key>', 'Private key to use, Overrides ETHEREUM_PRIVATE_KEY environment variable, if set.')
+    .option('--key <key>', 'Private key to use, Overrides ETHEREUM_PRIVATE_KEY environment variable, if set.')
     .option('--keyfile <keyfile>', 'File containing private key to use. Overrides ETHEREUM_PRIVATE_KEY environment variable, if set.')
-    .option('-n, --network <network>', `Name of network to run on. Use "none" for commands that don't use a network.)`, 'environment');
+    .option('--network <network>', `Name of network to run on. Use "none" for commands that don't use a network.`, 'local')
+    .option('--config <config>', 'JSON of configuration')
+    .option('--configFile <configFile>', 'Path to configuration file');
 
   program
     .command('interactive')
@@ -64,16 +71,29 @@ async function run() {
     }
     subcommand.action(async (args) => {
       try {
-        const opts = Object.assign({}, program.opts(), args);
+        const opts = {...program.opts(), ...args};
         await processAccounts(flash, opts);
-        if (script.ignoreNetwork !== true && opts.network !== 'none') {
-          flash.network = NetworkConfiguration.create(opts.network as NETWORKS, false);
-          flash.provider = flash.makeProvider(flash.network);
-          const networkId = await flash.getNetworkId(flash.provider);
-          flash.contractAddresses = Addresses[networkId];
+        flash.network = opts.network;
+
+        let specified: RecursivePartial<SDKConfiguration> = {};
+        if (opts.configFile) {
+          specified = JSON.parse(fs.readFileSync(opts.configFile).toString());
+        }
+        if (opts.config) {
+          specified = mergeConfig(specified, JSON.parse(opts.config));
+        }
+        flash.config = validConfigOrDie(
+          buildConfig(
+            flash.network,
+            specified,
+          )
+        );
+
+        if (!script.ignoreNetwork && opts.network !== 'none') {
+          flash.provider = flash.makeProvider(flash.config);
         }
         await flash.call(script.name, opts);
-      } catch(e){
+      } catch (e) {
         console.error(e);
         process.exit(1); // Needed to prevent hanging
       } finally {

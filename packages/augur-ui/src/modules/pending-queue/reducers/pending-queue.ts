@@ -15,7 +15,7 @@ export default function(pendingQueue: PendingQueue = DEFAULT_STATE, { type, data
         pendingQueue[queueName][pendingId] = {
           status,
           data: info,
-          hash: hash,
+          hash,
           blockNumber,
         };
       } else {
@@ -23,7 +23,7 @@ export default function(pendingQueue: PendingQueue = DEFAULT_STATE, { type, data
         pendingQueue[queueName][pendingId] = {
           status,
           data: info,
-          hash: hash,
+          hash,
           blockNumber,
         };
       }

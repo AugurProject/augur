@@ -1,8 +1,7 @@
-import { NetworkId } from '@augurproject/artifacts';
+import { NetworkId, SDKConfiguration } from '@augurproject/artifacts';
 import { WebsocketConnector } from '@augurproject/sdk/build/connector/ws-connector';
 import { SubscriptionEventName } from '@augurproject/sdk/build/constants';
 import { NewBlock } from '@augurproject/sdk/build/events';
-import { SDKConfiguration } from '@augurproject/sdk/build/state';
 import { Markets } from '@augurproject/sdk/build/state/getter/Markets';
 
 jest.mock('websocket-as-promised', () => {

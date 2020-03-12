@@ -19,6 +19,7 @@ import { formatShares, formatDai } from 'utils/format-number';
 
 // # MISC Constants
 export const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
+export const FAKE_HASH = '1111111111111111111111111';
 export const MALFORMED_OUTCOME = 'malformed outcome';
 // # Asset Types
 export const ETH = 'ETH';
@@ -51,6 +52,7 @@ export const NETWORK_IDS = {
   Private4: '104',
 };
 
+export const MIN_ORDER_LIFESPAN = 70;
 export const GAS_PRICE_BACKUP_API_ENDPOINT = {
   [NETWORK_IDS.Mainnet]: 'https://api.etherscan.io/api?module=gastracker&action=gasoracle',
 }
@@ -131,11 +133,11 @@ export const WALLET_TYPE = {
 
 export const SIGNIN_LOADING_TEXT = 'Sit tight - loading your account.';
 export const SIGNIN_LOADING_TEXT_PORTIS =
-  'Connecting to our partners at Portis to create your secure account.';
+  'Connecting to our partners at Portis to log you in to your secure account.';
 export const SIGNIN_LOADING_TEXT_FORTMATIC =
-  'Connecting to our partners at Fortmatic to create your secure account.';
+  'Connecting to our partners at Fortmatic to log you in to your secure account.';
 export const SIGNIN_LOADING_TEXT_TORUS =
-  'Connecting to our partners at Torus to create your secure account.';
+  'Connecting to our partners at Torus to log you in to your secure account.';
 export const SIGNIN_SIGN_WALLET =
   'Your wallet will ask you to digitally sign in to link it with Augur';
 
@@ -587,9 +589,12 @@ export const INFO = 'INFO';
 export const CREATEGENESISUNIVERSE = 'CREATEGENESISUNIVERSE';
 export const CANCELORDER = 'CANCELORDER';
 export const CANCELORDERS = 'CANCELORDERS';
+export const BATCHCANCELORDERS = 'BATCHCANCELORDERS';
 export const WITHDRAWETHERTOIFPOSSIBLE = 'WITHDRAWETHERTOIFPOSSIBLE';
 export const CALCULATEREPORTINGFEE = 'CALCULATEREPORTINGFEE';
 export const CLAIMTRADINGPROCEEDS = 'CLAIMTRADINGPROCEEDS';
+export const CLAIMMARKETSPROCEEDS = 'CLAIMMARKETSPROCEEDS';
+export const TRADINGPROCEEDSCLAIMED = 'TRADINGPROCEEDSCLAIMED';
 export const PUBLICCREATEORDER = 'PUBLICCREATEORDER';
 export const PUBLICCREATEORDERS = 'PUBLICCREATEORDERS';
 export const BUYPARTICIPATIONTOKENS = 'BUYPARTICIPATIONTOKENS';
@@ -605,8 +610,6 @@ export const DOINITIALREPORT = 'DOINITIALREPORT';
 export const FINALIZE = 'FINALIZE';
 export const FINALIZEFORK = 'FINALIZEFORK';
 export const MIGRATETHROUGHONEFORK = 'MIGRATETHROUGHONEFORK';
-export const MIGRATEBALANCESFROMLEGACYREP = 'MIGRATEBALANCESFROMLEGACYREP';
-export const MIGRATEALLOWANCESFROMLEGACYREP = 'MIGRATEALLOWANCESFROMLEGACYREP';
 export const MIGRATEIN = 'MIGRATEIN';
 export const MIGRATEOUT = 'MIGRATEOUT';
 export const MIGRATEOUTBYPAYOUT = 'MIGRATEOUTBYPAYOUT';
@@ -836,6 +839,7 @@ export const REPORTING_ENDS_SOON_TITLE = 'You need to report';
 export const SIGN_SEND_ORDERS = 'Sign to approve your orders';
 export const CLAIM_REPORTING_FEES_TITLE = 'Claim Stake and Fees';
 export const PROCEEDS_TO_CLAIM_TITLE = 'Claim Proceeds';
+export const CLAIM_ALL_TITLE = 'Claim All'
 export const MARKET_IS_MOST_LIKELY_INVALID_TITLE = 'Market is Failing Invalid Filter';
 export const OPEN_ORDERS_RESOLVED_MARKET = 'resolvedMarketsOpenOrders';
 export const REPORT_ON_MARKET = 'reportOnMarkets';
@@ -876,10 +880,8 @@ export const CLAIM_STAKE_FEES = 'CLAIM_STAKE_FEES';
 export const CLAIM_MARKETS_PROCEEDS = 'CLAIM_MARKETS_PROCEEDS';
 export const CREATE_MARKET = 'CREATE_MARKET';
 export const SUBMIT_REPORT = 'SUBMIT_REPORT';
-export const MIGRATE_V1_V2 = 'MIGRATE_V1_V2';
-export const BUY_PARTICIPATION_TOKENS = 'BUY_PARTICIPATION_TOKENS';
-export const REDEEM_PARTICIPATION_TOKENS = 'REDEEM_PARTICIPATION_TOKENS';
 export const SUBMIT_DISPUTE = 'SUBMIT_DISPUTE';
+export const TRANSACTIONS = 'TRANSACTIONS';
 
 // Pending Queue SINGLE TYPE
 export const CLAIM_FEE_WINDOWS = 'CLAIM_FEE_WINDOWS';
@@ -1206,6 +1208,15 @@ export const DISPUTING_GUIDE = {
     paragraphs: [
       'Users who correctly staked on the Winning Outcome get to take a share of the REP that was staked on the incorrect outcome(s). This means you can potentially earn 40% ROI by disputing (i.e staking) against liars and reporting the truth. This keeps the Augur oracle secure and ultimately the Augur platform working how it should.'
     ]
+  }, {
+    header: 'Pre-filled Stake',
+    paragraphs: [
+      'Users can add extra support for a Tentative Winning Outcome by pre-staking REP that will be used to dispute in that outcome’s favor in the event that is no longer the Tentative Winning Outcome. Pre-filling can help accelerate a market’s resolution.',
+      'Pre-filled Stake yields ROI if and only if: ',
+      '1) the market resolves to the staked-on outcome and',
+      '2) the pre-stake ends up being used to dispute in that outcome’s favor',
+      'If the market resolves to the staked-on outcome but the pre-stake is not used, you will receive back the pre-stake but no ROI. If the market does not resolve to the staked-on outcome, you will lose the pre-stake.'
+    ]
   }],
   learnMoreButtonText: 'Learn more about disputing',
   closeButtonText: 'Close'
@@ -1318,3 +1329,15 @@ export enum HEADER_TYPE {
 }
 
 export const LOGGED_IN_USER_LOCAL_STORAGE_KEY = 'loggedInUser';
+
+
+// Help Center links
+export const HELP_CENTER = 'https://augur.gitbook.io/help-center/';
+export const HELP_CENTER_ADD_FUNDS = 'https://augur.gitbook.io/help-center/trading-ui-1/adding-funds';
+export const HELP_CENTER_HOW_TO_TRADE = 'https://augur.gitbook.io/help-center/market-creation-1/how-to-make-a-trade';
+export const HELP_CENTER_HOW_TO_DISPUTE = 'https://augur.gitbook.io/help-center/disputing-explained';
+// TODO update with GSN
+export const HELP_CENTER_LEARN_ABOUT_ADDRESS = 'https://augur.gitbook.io/help-center/trading-ui-1/logging-in#what-is-gnosis-safe';
+export const HELP_CENTER_MIGRATE_REP = 'https://augur.gitbook.io/help-center/migrating-rep-v1-greater-than-v2';
+export const HELP_CENTER_PARTICIPATION_TOKENS = 'https://augur.gitbook.io/help-center/reporting-or-disputing-faq#what-are-participation-tokens';
+export const HELP_CENTER_INVALID_MARKETS = 'https://augur.gitbook.io/help-center/market-creation-1/trading-faq#what-does-invalid-mean';

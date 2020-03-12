@@ -29,20 +29,26 @@ import {
 } from "modules/app/actions/update-sidebar-status";
 import { updateSelectedCategories } from "modules/markets-list/actions/update-markets-list";
 import { updateAuthStatus, IS_CONNECTION_TRAY_OPEN } from "modules/auth/actions/auth-status";
-import { MODAL_GLOBAL_CHAT, MODAL_MIGRATE_REP, WALLET_STATUS_VALUES } from 'modules/common/constants';
+import { MODAL_GLOBAL_CHAT, MODAL_MIGRATE_REP, WALLET_STATUS_VALUES, TRANSACTIONS, MIGRATE_FROM_LEG_REP_TOKEN } from 'modules/common/constants';
 import { saveAffiliateAddress } from "modules/account/actions/login-account";
 import { createFundedGsnWallet } from "modules/auth/actions/update-sdk";
 import { AppState } from "store";
 
 const mapStateToProps = (state: AppState) => {
-  const { appStatus } = state;
+  const { appStatus, loginAccount, pendingQueue } = state;
+  const { balances } = loginAccount;
   const walletStatus = appStatus[WALLET_STATUS];
   const { alerts } = selectInfoAlertsAndSeenCount(state);
   const notifications = selectNotifications(state);
-  const walletBalances = state.loginAccount.balances;
+  const walletBalances = loginAccount.balances;
+  const pending =
+    pendingQueue[TRANSACTIONS] &&
+    pendingQueue[TRANSACTIONS][MIGRATE_FROM_LEG_REP_TOKEN];
   const showCreateAccountButton =
     walletStatus === WALLET_STATUS_VALUES.WAITING_FOR_FUNDING ||
     walletStatus === WALLET_STATUS_VALUES.FUNDED_NEED_CREATE;
+  const showMigrateRepButton =
+    !!balances.legacyRep || !!balances.legacyRepNonSafe || !!pending;
 
   return {
     notifications,
@@ -54,7 +60,7 @@ const mapStateToProps = (state: AppState) => {
     isMobile: state.appStatus.isMobile,
     isMobileSmall: state.appStatus.isMobileSmall,
     isHelpMenuOpen: state.appStatus.isHelpMenuOpen,
-    loginAccount: state.loginAccount,
+    loginAccount,
     modal: state.modal,
     toasts: alerts.filter(alert => alert.toast && !alert.seen),
     universe: state.universe,
@@ -62,7 +68,8 @@ const mapStateToProps = (state: AppState) => {
     sidebarStatus: state.sidebarStatus,
     isConnectionTrayOpen: state.authStatus.isConnectionTrayOpen,
     walletBalances,
-    showCreateAccountButton
+    showCreateAccountButton,
+    showMigrateRepButton,
   }
 };
 

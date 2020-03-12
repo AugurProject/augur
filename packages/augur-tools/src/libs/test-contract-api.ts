@@ -1,5 +1,5 @@
 import { WSClient } from '@0x/mesh-rpc-client';
-import { ContractAddresses } from '@augurproject/artifacts';
+import { SDKConfiguration } from '@augurproject/artifacts';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import {
   Augur,
@@ -29,7 +29,7 @@ export class TestContractAPI extends ContractAPI {
   static async userWrapper(
     account: Account,
     provider: EthersProvider,
-    addresses: ContractAddresses,
+    config: SDKConfiguration,
     connector: Connectors.BaseConnector = new EmptyConnector(),
     meshClient: WSClient = undefined,
     meshBrowser: BrowserMesh = undefined,
@@ -38,8 +38,8 @@ export class TestContractAPI extends ContractAPI {
     const dependencies = await makeGSNDependencies(
       provider,
       signer,
-      addresses.AugurWalletRegistry,
-      addresses.EthExchange,
+      config.addresses.AugurWalletRegistry,
+      config.addresses.EthExchange,
       null,
       account.publicKey,
     );
@@ -52,7 +52,7 @@ export class TestContractAPI extends ContractAPI {
     const augur = await Augur.create(
       provider,
       dependencies,
-      addresses,
+      config,
       connector,
       zeroX,
       true,

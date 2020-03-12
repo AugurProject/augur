@@ -11,10 +11,11 @@ import Styles from 'modules/market/components/market-orders-positions-table/open
 
 interface OpenOrdersTableProps {
   openOrders?: UIOrder[];
+  relative?: Boolean;
 }
 
 // Some component can be used in Betting UI
-const OpenOrdersTable: React.FC<OpenOrdersTableProps> = ({ openOrders }) => {
+const OpenOrdersTable: React.FC<OpenOrdersTableProps> = ({ openOrders, relative }) => {
   const dataTable = useRef(null);
   const [scrollable, setScrollable] = useState(false);
 
@@ -28,7 +29,8 @@ const OpenOrdersTable: React.FC<OpenOrdersTableProps> = ({ openOrders }) => {
 
   return (
     <div
-      className={classNames(Styles.Table, Styles.TableHeight, {
+      className={classNames(Styles.Table, {
+        [Styles.TableHeight]: !relative,
         [Styles.scrollable]: scrollable,
       })}
     >

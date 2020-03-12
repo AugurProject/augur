@@ -306,7 +306,7 @@ export const Transactions: React.FC<TransactionsProps> = props => {
   };
 
   const addTransactionRow = (tx: TransactionInfo) => {
-    const timestamp = moment(tx.timestamp * 1000).format('D MMM YYYY HH:mm:ss');
+    const timestamp = tx.timestamp ? moment(tx.timestamp * 1000).format('D MMM YYYY HH:mm:ss') : null;
     const key = `${tx.transactionHash}-${tx.timestamp}-${tx.action}-${tx.outcomeDescription}`;
     // we never show the coin type outside of tx.coin so we can just format by shares always here.
     const quantity = formatShares(createBigNumber(tx.quantity));
@@ -456,38 +456,41 @@ export const Transactions: React.FC<TransactionsProps> = props => {
         </div>
         <ExportButton action={triggerTransactionsExport} />
       </section>
-      <div ref={tableHeaderRef}>
-        <span>Date</span>
-        <span>Market</span>
-        <span>Outcome</span>
-        <span>Action</span>
-        <span>
-          <SortButton
-            text="Price"
-            sortOption={priceSort}
-            action={(e: Event) => cyclePriceSort(e)}
-          />
-        </span>
-        <span>
-          <SortButton
-            text="Quantity"
-            sortOption={quantitySort}
-            action={(e: Event) => cycleQuantitySort(e)}
-          />
-        </span>
-        <span>Coin</span>
-        <span>Trading Fee</span>
-        <span>Total</span>
-        <span>Etherscan</span>
+      <div>
+        <div ref={tableHeaderRef}>
+          <span>Date</span>
+          <span>Market</span>
+          <span>Outcome</span>
+          <span>Action</span>
+          <span>
+            <SortButton
+              text="Price"
+              sortOption={priceSort}
+              action={(e: Event) => cyclePriceSort(e)}
+            />
+          </span>
+          <span>
+            <SortButton
+              text="Quantity"
+              sortOption={quantitySort}
+              action={(e: Event) => cycleQuantitySort(e)}
+            />
+          </span>
+          <span>Coin</span>
+          <span>Trading Fee</span>
+          <span>Total</span>
+          <span>Etherscan</span>
+        </div>
+        <section ref={tableBodyRef}>
+          <>
+            {pageTransactions.length === 0 && (
+              <span className={Styles.NullTransactionsRow}>No Transactions</span>
+            )}
+            {transactionsRows}
+          </>
+        </section>
       </div>
-      <section ref={tableBodyRef}>
-        <>
-          {pageTransactions.length === 0 && (
-            <span className={Styles.NullTransactionsRow}>No Transactions</span>
-          )}
-          {transactionsRows}
-        </>
-      </section>
+
       <div>
         <Pagination {...pageInfo} updateLimit={() => {}} />
         <FormDropdown

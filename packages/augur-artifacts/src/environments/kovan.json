@@ -1,0 +1,84 @@
+{
+  "networkId": "42",
+  "ethereum": {
+    "http": "https://eth-kovan.alchemyapi.io/jsonrpc/1FomA6seLdWDvpIRvL9J5NhwPHLIGbWA",
+    "rpcRetryCount": 5,
+    "rpcRetryInterval": 0,
+    "rpcConcurrency": 40
+  },
+  "gas": {
+    "price": 20000000000,
+    "limit": 7500000
+  },
+  "deploy": {
+    "isProduction": false,
+    "enableFaucets": true,
+    "normalTime": true,
+    "externalAddresses": {
+      "Exchange": "0x4eacd0aF335451709e1e7B570B8Ea68EdEC8bc97"
+    },
+    "writeArtifacts": true
+  },
+  "gnosis": {
+    "enabled": true,
+    "http": "https://gnosis.kovan.augur.net/api/",
+    "relayerAddress": "0x01d640bff4b3a5e5cc720f0be37847f88edf626e"
+  },
+  "zeroX": {
+    "rpc": {
+      "enabled": false,
+      "ws": "wss://v2.augur.net/0x-ws"
+    },
+    "mesh": {
+      "verbosity": 1,
+      "enabled": true,
+      "useBootstrapList": true,
+      "bootstrapList": [
+        "/dns4/demo-bootstrap.augur.net/tcp/443/wss/ipfs/16Uiu2HAmRMgvPQV2UYKXuuCnNaFLpc36PhLp2UKVcL1ePseVcz4y"
+      ]
+    }
+  },
+  "uploadBlockNumber": 17217157,
+  "addresses": {
+    "Augur": "0xb0bdE3B97549A805A8c4c8AcF876A877C3C56980",
+    "Universe": "0x23f84e337698A9E97a42327C6Dff6686541Ba35D",
+    "LegacyReputationToken": "0x91cB06d1995D1aC52f9f67aF9Dc38444ba8fB6AC",
+    "Cash": "0x0FCEB5D3522537513b9E0e922eF837f2cEc3c802",
+    "ProxyFactory": "0x929CF3F7f8bC73c17Ca6238F8408379A91Ee1f6F",
+    "GnosisSafe": "0x321fd7D3097190492CFf384F48d6d9f3B862c67F",
+    "CashFaucet": "0x0FCEB5D3522537513b9E0e922eF837f2cEc3c802",
+    "BuyParticipationTokens": "0x35B05A8Da164950e407E7650A8E40c3a6E162161",
+    "RedeemStake": "0xcD69d5814f05EcE102F1C343484B0d477F5b7714",
+    "GnosisSafeRegistry": "0xca3C2C3246902222C5f770729AE1A63C01f2d57A",
+    "WarpSync": "0x80c4eE3476DC33FA6e08191567cDD7145615AAC5",
+    "ShareToken": "0xd163230e7E9504A77Be89564786351599c322ab4",
+    "HotLoading": "0x24277b702E7FC7f82bB06e83EF550Fe78eB8Dbf8",
+    "EthExchange": "0x036B4BB29c560043E40f0d83CA28e23Fb1e55E83",
+    "Affiliates": "0x53C81174C48E0ff7Aa4cdA3A18872dF867c3E36D",
+    "AffiliateValidator": "0x97a3F813a81EF422e29E6362394B8D4E9Fc4Cd58",
+    "Exchange": "0x4eacd0aF335451709e1e7B570B8Ea68EdEC8bc97",
+    "Time": "0xeBDFF03EA712ab00C2dDF24486B2778FB1Be51Ab",
+    "AugurTrading": "0x4eB4e532E4eA437D9F0217f05b24Eaf28376570f",
+    "CancelOrder": "0xAb2D526CD40bC38976974B63371690676CC8AD7b",
+    "CreateOrder": "0x0b735E4Ff5A90F41032dBC9a4691DE42d76C6E28",
+    "FillOrder": "0x57Eae94954E83156C543259479E58b931F9293E1",
+    "Orders": "0x5A515D50211FDEA9ECA8105c91B60Ba824a2bff1",
+    "ProfitLoss": "0x611C30cb3D018AEB3d6cCC9c1E6C010122eB15B7",
+    "SimulateTrade": "0xa22c8000f1fEd47542693412Ed8046C2FE740Daf",
+    "Trade": "0x6792760DF54DCE2d6615ab561367c643534f342E",
+    "ZeroXTrade": "0xbB6F5540C70BA77a2C3c4783055ea83e0Da0D931"
+  },
+  "server": {
+    "httpPort": 9003,
+    "startHTTP": true,
+    "httpsPort": 9004,
+    "startHTTPS": true,
+    "wsPort": 9001,
+    "startWS": true,
+    "wssPort": 9002,
+    "startWSS": true
+  },
+  "plugins": {
+    "chat": "orbit"
+  }
+}

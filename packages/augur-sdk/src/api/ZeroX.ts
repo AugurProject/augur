@@ -209,7 +209,7 @@ export class ZeroX {
     if (this.rpc) {
       response = await this.rpc.getOrdersAsync();
     } else if (this.mesh) {
-      response = await this.getMeshOrders();
+      response = await this.mesh.getOrdersAsync();
     } else {
       throw new Error('Attempting to get orders with no connection to 0x');
     }
@@ -218,28 +218,6 @@ export class ZeroX {
 
   isReady(): boolean {
     return Boolean(this.rpc || this.mesh);
-  }
-  async getMeshOrders(tries = 15): Promise<OrderInfo[]> {
-    let response;
-    try {
-      response = await this.mesh.getOrdersAsync();
-    }
-    catch(error) {
-      if(tries > 0) {
-        console.log('Mesh retrying to fetch orders');
-        await sleep(3000);
-        response = await this.getMeshOrders(tries - 1);
-      }
-      else {
-        response = undefined;
-      }
-    }
-    if (response && response.ordersInfos.length < 1 && tries > 0) {
-      console.log('Mesh retrying to fetch orders');
-      await sleep(tries < 12 ? 2000 : 250);
-      response = await this.getMeshOrders(tries - 1);
-    }
-    return response;
   }
 
   async placeTrade(params: ZeroXPlaceTradeDisplayParams): Promise<void> {
@@ -386,8 +364,8 @@ export class ZeroX {
 
     return {
       order: {
-        chainId: Number(this.client.networkId),
-        exchangeAddress: this.client.addresses.Exchange,
+        chainId: Number(this.client.config.networkId),
+        exchangeAddress: this.client.config.addresses.Exchange,
         makerAddress,
         makerAssetData: order[10],
         makerFeeAssetData: order[12],

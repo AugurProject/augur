@@ -1,4 +1,10 @@
 @import (reference) "~assets/styles/shared";
+// fixes an issue with firefox advanced dropdown...
+@supports (-moz-appearance:none) {
+  .TradingForm > ul > li.AdvancedShown > div:first-of-type > div:first-of-type {
+    width: unset;
+  } 
+}
 
 .TradingForm {
   > ul {

@@ -85,7 +85,7 @@ function getGasPriceValues(
 }
 
 function setDefaultGasInfo(): Partial<GasPriceInfo> {
-  // If both gasStations (relayer/etherscan) are unavailble we use the fallback defaults
+  // If both gasStations (relayer/etherscan) are unavailable we use the fallback defaults
   return {
     safeLow: formatGasCostGwei(DEFAULT_FALLBACK_GAS_SAFELOW, {}).value,
     average: formatGasCostGwei(DEFAULT_FALLBACK_GAS_AVERAGE, {}).value,

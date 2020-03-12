@@ -328,7 +328,7 @@ export class MarketDB extends DerivedDB {
   }
 
   private processMarketCreated = (log: ParsedLog): ParsedLog => {
-    log['isWarpSync'] = log.marketCreator.toLowerCase() === this.augur.addresses.WarpSync.toLowerCase();
+    log['isWarpSync'] = log.marketCreator.toLowerCase() === this.augur.config.addresses.WarpSync.toLowerCase();
     log['reportingState'] = MarketReportingState.PreReporting;
     log['finalized'] = 0;
     log['invalidFilter'] = 0;
@@ -354,17 +354,28 @@ export class MarketDB extends DerivedDB {
     log['outcomes'] = _.map(log['outcomes'], (rawOutcome) => {
       return Buffer.from(rawOutcome.replace('0x', ''), 'hex').toString().trim().replace(/\0/g, '');
     });
+
     try {
       log['extraInfo'] = JSON.parse(log['extraInfo']);
-      log['extraInfo'].categories = log['extraInfo'].categories.map((category) => category.toLowerCase());
+    } catch (err) {
+      log['extraInfo'] = {};
+    }
+    try {
+      if (log['extraInfo'].categories)
+        log['extraInfo'].categories = log['extraInfo'].categories.map((category) => category.toLowerCase());
+    } catch (err) {
+      log['extraInfo'].categories = [];
+    }
+    try {
       if(log['extraInfo'].template) {
         let errors = [];
         log['isTemplate'] = isTemplateMarket(log['extraInfo'].description, log['extraInfo'].template, log['outcomes'], log['extraInfo'].longDescription, log['endTime'], errors);
         if (errors.length > 0) console.error(log['extraInfo'].description, errors);
       }
     } catch (err) {
-      log['extraInfo'] = {};
+      log['extraInfo'].isTemplate = false;
     }
+
     if (this.augur.syncableFlexSearch) {
       this.augur.syncableFlexSearch.addMarketCreatedDocs([log as unknown as MarketData]);
     }

@@ -22,11 +22,11 @@ import {
   calculatePayoutNumeratorsArray,
   convertDisplayValuetoAttoValue,
 } from '@augurproject/sdk';
-
 import { generateTradeGroupId } from 'utils/generate-trade-group-id';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import {
   NULL_ADDRESS,
+  FAKE_HASH,
   SCALAR,
   CATEGORICAL,
   TEN_TO_THE_EIGHTEENTH_POWER,
@@ -469,12 +469,15 @@ export interface doReportDisputeAddStake {
   description: string;
   attoRepAmount: string;
   isInvalid: boolean;
+  isWarpSync?: boolean;
+  warpSyncHash?: string;
 }
 
 export async function doInitialReport_estimaetGas(report: doReportDisputeAddStake) {
+  if(report.isWarpSync) return doInitialReportWarpSync_estimaetGas(report);
   const market = getMarket(report.marketId);
   if (!market) return false;
-  const payoutNumerators = getPayoutNumerators(report);
+  const payoutNumerators = await getPayoutNumerators(report);
   return market.doInitialReport_estimateGas(
     payoutNumerators,
     report.description,
@@ -483,10 +486,35 @@ export async function doInitialReport_estimaetGas(report: doReportDisputeAddStak
 }
 
 export async function doInitialReport(report: doReportDisputeAddStake) {
+  if(report.isWarpSync) return doInitialReportWarpSync(report);
   const market = getMarket(report.marketId);
   if (!market) return false;
-  const payoutNumerators = getPayoutNumerators(report);
+  const payoutNumerators = await getPayoutNumerators(report);
   return market.doInitialReport(
+    payoutNumerators,
+    report.description,
+    createBigNumber(report.attoRepAmount || '0')
+  );
+}
+
+export async function doInitialReportWarpSync_estimaetGas(report: doReportDisputeAddStake) {
+  const Augur = augurSdk.get();
+  const universe = Augur.contracts.universe.address;
+  const payoutNumerators = await getPayoutNumerators(report);
+  return Augur.contracts.warpSync.doInitialReport_estimateGas(
+    universe,
+    payoutNumerators,
+    report.description,
+    createBigNumber(report.attoRepAmount || '0')
+  );
+}
+
+export async function doInitialReportWarpSync(report: doReportDisputeAddStake) {
+  const Augur = augurSdk.get();
+  const universe = Augur.contracts.universe.address;
+  const payoutNumerators = await getPayoutNumerators(report);
+  return Augur.contracts.warpSync.doInitialReport(
+    universe,
     payoutNumerators,
     report.description,
     createBigNumber(report.attoRepAmount || '0')
@@ -498,7 +526,7 @@ export async function addRepToTentativeWinningOutcome_estimateGas(
 ) {
   const market = getMarket(addStake.marketId);
   if (!market) return false;
-  const payoutNumerators = getPayoutNumerators(addStake);
+  const payoutNumerators = await getPayoutNumerators(addStake);
   return market.contributeToTentative_estimateGas(
     payoutNumerators,
     createBigNumber(addStake.attoRepAmount),
@@ -511,7 +539,7 @@ export async function addRepToTentativeWinningOutcome(
 ) {
   const market = getMarket(addStake.marketId);
   if (!market) return false;
-  const payoutNumerators = getPayoutNumerators(addStake);
+  const payoutNumerators = await getPayoutNumerators(addStake);
   return market.contributeToTentative(
     payoutNumerators,
     createBigNumber(addStake.attoRepAmount),
@@ -522,7 +550,7 @@ export async function addRepToTentativeWinningOutcome(
 export async function contribute_estimateGas(dispute: doReportDisputeAddStake) {
   const market = getMarket(dispute.marketId);
   if (!market) return false;
-  const payoutNumerators = getPayoutNumerators(dispute);
+  const payoutNumerators = await getPayoutNumerators(dispute);
   return market.contribute_estimateGas(
     payoutNumerators,
     createBigNumber(dispute.attoRepAmount),
@@ -533,7 +561,7 @@ export async function contribute_estimateGas(dispute: doReportDisputeAddStake) {
 export async function contribute(dispute: doReportDisputeAddStake) {
   const market = getMarket(dispute.marketId);
   if (!market) return false;
-  const payoutNumerators = getPayoutNumerators(dispute);
+  const payoutNumerators = await getPayoutNumerators(dispute);
   return market.contribute(
     payoutNumerators,
     createBigNumber(dispute.attoRepAmount),
@@ -551,16 +579,19 @@ function getMarket(marketId) {
   return market;
 }
 
-function getPayoutNumerators(inputs: doReportDisputeAddStake) {
-  return calculatePayoutNumeratorsArray(
-    inputs.maxPrice,
-    inputs.minPrice,
-    inputs.numTicks,
-    inputs.numOutcomes,
-    inputs.marketType,
-    inputs.outcomeId,
-    inputs.isInvalid
-  );
+async function getPayoutNumerators(inputs: doReportDisputeAddStake) {
+  const augur = augurSdk.get();
+  return inputs.isWarpSync
+    ? await augur.getPayoutFromWarpSyncHash(inputs.warpSyncHash || FAKE_HASH)
+    : calculatePayoutNumeratorsArray(
+        inputs.maxPrice,
+        inputs.minPrice,
+        inputs.numTicks,
+        inputs.numOutcomes,
+        inputs.marketType,
+        inputs.outcomeId,
+        inputs.isInvalid
+      );
 }
 
 export interface CreateNewMarketParams {
@@ -913,20 +944,11 @@ export async function claimMarketsProceedsEstimateGas(
   fingerprint: string = getFingerprint(),
 ) {
   const augur = augurSdk.get();
-
-  if (markets.length > 1) {
-    return augur.contracts.augurTrading.claimMarketsProceeds_estimateGas(
-      markets,
-      shareHolder,
-      fingerprint
-    );
-  } else {
-    return augur.contracts.augurTrading.claimTradingProceeds_estimateGas(
-      markets[0],
-      shareHolder,
-      fingerprint
-    );
-  }
+  return augur.contracts.augurTrading.claimMarketsProceeds_estimateGas(
+    markets,
+    shareHolder,
+    fingerprint
+  );
 }
 
 export async function claimMarketsProceeds(
@@ -935,20 +957,11 @@ export async function claimMarketsProceeds(
   fingerprint: string = formatBytes32String('11'),
 ) {
   const augur = augurSdk.get();
-
-  if (markets.length > 1) {
-    augur.contracts.augurTrading.claimMarketsProceeds(
-      markets,
-      shareHolder,
-      fingerprint
-    );
-  } else {
-    augur.contracts.augurTrading.claimTradingProceeds(
-      markets[0],
-      shareHolder,
-      fingerprint
-    );
-  }
+  augur.contracts.augurTrading.claimMarketsProceeds(
+    markets,
+    shareHolder,
+    fingerprint
+  );
 }
 
 export async function migrateThroughOneForkEstimateGas(

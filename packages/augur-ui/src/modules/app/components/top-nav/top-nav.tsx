@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import { Link } from 'react-router-dom';
@@ -9,10 +9,14 @@ import {
   ExternalLinkText,
   ProcessingButton,
 } from 'modules/common/buttons';
-import { GlobalChat } from 'modules/global-chat/components/global-chat';
+import GlobalChat from 'modules/global-chat/containers/global-chat';
 import { NavMenuItem, AccountBalances } from 'modules/types';
 import { helpIcon, Dot } from 'modules/common/icons';
-import { MIGRATE_V1_V2, CREATEAUGURWALLET } from 'modules/common/constants';
+import {
+  TRANSACTIONS,
+  MIGRATE_FROM_LEG_REP_TOKEN,
+  CREATEAUGURWALLET
+} from 'modules/common/constants';
 
 import Styles from 'modules/app/components/top-nav/top-nav.styles.less';
 
@@ -70,20 +74,20 @@ const TopNav = ({
             );
           }
           return (
-            <>
+            <Fragment key={index}>
               {index === SPREAD_INDEX && (
-                <li key={index} className={Styles.FillSpace} />
+                <li key='fill-space' className={Styles.FillSpace} />
               )}
               {index === SPREAD_INDEX && showMigrateRepButton && (
-                <li>
+                <li key='migrate-rep-button'>
                   <div className={Styles.MigrateRep}>
                     <ProcessingButton
-                      text={walletBalances.legacyRep > 0 ? 'Migrate V1 to V2 REP' : ' Migrate V1 REP'}
-                      action={() => migrateV1Rep()}
-                      queueName={MIGRATE_V1_V2}
-                      queueId={MIGRATE_V1_V2}
-                      secondaryButton
-                    />
+                        text={'Migrate V1 to V2 REP'}
+                        action={() => migrateV1Rep()}
+                        queueName={TRANSACTIONS}
+                        queueId={MIGRATE_FROM_LEG_REP_TOKEN}
+                        secondaryButton
+                      />
                   </div>
                   <span>
                     <label
@@ -102,7 +106,9 @@ const TopNav = ({
                     >
                       <p>
                         {
-                          'You have V1 REP in your wallet. Migrate it to V2 REP to use it in Augur V2'
+                          walletBalances.legacyRep > 0
+                            ? 'You have V1 REP in your Augur account address. Migrate it to V2 REP to use it in Augur V2.'
+                            : 'You have V1 REP in your wallet. Migrate it to V2 REP to use it in Augur V2.'
                         }
                       </p>
                     </ReactTooltip>
@@ -156,7 +162,7 @@ const TopNav = ({
                   {item.showAlert && Dot}
                 </Link>
               </li>
-            </>
+            </Fragment>
           );
         })}
         {!isLogged && (
@@ -169,7 +175,7 @@ const TopNav = ({
           </div>
         )}
       </ul>
-      <GlobalChat show={false} numberOfPeers={15} />
+      <GlobalChat />
     </aside>
   );
 };

@@ -1,7 +1,7 @@
 import { Augur } from '../Augur';
-import { SDKConfiguration } from '../state';
-import { SubscriptionEventName } from "../constants";
-import { Callback, SubscriptionType } from "../events";
+import { SDKConfiguration } from '@augurproject/artifacts';
+import { SubscriptionEventName } from '../constants';
+import { Callback, SubscriptionType } from '../events';
 
 export abstract class BaseConnector {
   private _client: Augur;

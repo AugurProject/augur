@@ -893,6 +893,11 @@
       width: min-content;
       z-index: @mask;
 
+      &.OpenTop {
+        top: unset;
+        bottom: @size-24;
+      }
+
       &.active {
         display: block;
         max-height: @size-400;
@@ -1507,6 +1512,16 @@ button.MaxDark {
       }
     }
   }
+
+  &.OpenTop {
+    :global {
+      .DateInput_1 {
+        > svg {
+          display: none;
+        }
+      }
+    }
+  }
 }
 
 .InputDropdown {
@@ -1721,6 +1736,19 @@ button.MaxDark {
       color: @color-secondary-text;
     }
   }
+
+  &.OpenTop {
+    > div {
+      top: unset;
+      bottom: 24px;
+      left: unset;
+      right: 0;
+    }
+
+    > svg {
+      display: none;
+    }
+  }
 }
 
 .IndividualTimeSelector {
@@ -1892,6 +1920,23 @@ div.error > div > div > div > div > input {
       > div {
         left: 0;
       }
+    }
+  }
+}
+
+.PreFilled {
+  display: flex;
+  justify-content: space-between;
+
+  > div:nth-of-type(2) {
+    flex-direction: row;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+
+    > span {
+      margin-bottom: 0;
+      margin-right: @size-4;
     }
   }
 }

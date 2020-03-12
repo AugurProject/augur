@@ -43,9 +43,9 @@ import {
   MODAL_GAS_PRICE,
   SUBMIT_REPORT,
   MIGRATE_FROM_LEG_REP_TOKEN,
-  MIGRATE_V1_V2,
-  BUY_PARTICIPATION_TOKENS,
+  BUYPARTICIPATIONTOKENS,
   SUBMIT_DISPUTE,
+  CLAIMMARKETSPROCEEDS,
 } from 'modules/common/constants';
 import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
@@ -67,10 +67,11 @@ import { updateModal } from 'modules/modal/actions/update-modal';
 import * as _ from 'lodash';
 import { loadMarketOrderBook } from 'modules/orders/actions/load-market-orderbook';
 import { isCurrentMarket } from 'modules/trades/helpers/is-current-market';
-import { removePendingDataByHash, addPendingData, removePendingData } from 'modules/pending-queue/actions/pending-queue-management';
+import { removePendingDataByHash, addPendingData, removePendingData, removePendingTransaction } from 'modules/pending-queue/actions/pending-queue-management';
 import { removePendingOrder, constructPendingOrderid } from 'modules/orders/actions/pending-orders-management';
 import { loadAccountData } from 'modules/auth/actions/load-account-data';
 import { wrapLogHandler } from './wrap-log-handler';
+import { updateUniverse } from 'modules/universe/actions/update-universe';
 
 const handleAlert = (
   log: any,
@@ -137,7 +138,7 @@ export const handleTxFailure = (txStatus: Events.TXStatus) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  console.log('TxFailure Transaction', txStatus.transaction.name);
+  console.log('TxFailure Transaction', txStatus.transaction.name, txStatus);
   dispatch(addUpdateTransaction(txStatus));
 };
 
@@ -275,6 +276,8 @@ export const handleReportingStateChanged = (event: any) => (
   if (event.data) {
     const marketIds = _.map(event.data, 'market');
     dispatch(loadMarketsInfo(marketIds));
+    if (isOnDisputingPage()) dispatch(reloadDisputingPage(marketIds));
+    if (isOnReportingPage()) dispatch(reloadReportingPage(marketIds));
   }
 };
 
@@ -290,6 +293,15 @@ export const handleMarketMigratedLog = (log: any) => (
     dispatch(loadMarketsInfo([log.market]));
   }
   dispatch(loadUniverseDetails(universeId, userAddress));
+};
+
+export const handleWarpSyncHashUpdatedLog = (log: { hash: string}) => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  if (log.hash) {
+    dispatch(updateUniverse({ warpSyncHash: log.hash }));
+  }
 };
 
 export const handleTokensTransferredLog = (logs: Logs.TokensTransferredLog[]) => (
@@ -397,7 +409,6 @@ export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
     handleAlert(log, PUBLICFILLORDER, true, dispatch, getState);
     dispatch(removePendingOrder(log.tradeGroupId, marketId));
   }
-  dispatch(checkUpdateUserPositions([marketId]));
   if (isOnTradePage()) {
     dispatch(loadMarketTradingHistory(marketId));
     dispatch(updateMarketOrderBook(log.market));
@@ -421,6 +432,7 @@ export const handleTradingProceedsClaimedLog = (
         params: { ...log },
       })
     );
+    dispatch(removePendingTransaction(CLAIMMARKETSPROCEEDS));
   }
 };
 
@@ -445,17 +457,24 @@ export const handleInitialReporterRedeemedLog = (
   logs: Logs.InitialReporterRedeemedLog[]
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const address = getState().loginAccount.address;
-  if (logs.filter(log => isSameAddress(log.reporter, address)).length > 0)
+  const reporterLogs = logs.filter(log => isSameAddress(log.reporter, address));
+  if (reporterLogs.length > 0) {
     dispatch(loadAccountReportingHistory());
+    dispatch(removePendingTransaction(REDEEMSTAKE));
+    reporterLogs.map(log => {
+      handleAlert(log, REDEEMSTAKE, false, dispatch, getState);
+    })
+  }
 };
 
 export const handleInitialReporterTransferredLog = (logs: any) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const address = getState().loginAccount.address
-  if (logs.filter(log => isSameAddress(log.from, address) ||
-    isSameAddress(log.to, address)).length > 0) {
+  const address = getState().loginAccount.address;
+  const userLogs = logs.filter(log => isSameAddress(log.from, address) ||
+    isSameAddress(log.to, address));
+  if (userLogs.length > 0) {
     dispatch(loadAccountReportingHistory());
   }
   const marketIds = userLogs.map(log => log.market)
@@ -484,6 +503,7 @@ export const handleParticipationTokensRedeemedLog = (
       getState
     ));
     dispatch(loadAccountReportingHistory());
+    dispatch(removePendingTransaction(REDEEMSTAKE));
   }
 };
 
@@ -577,7 +597,9 @@ export const handleDisputeCrowdsourcerRedeemedLog = (
   ))
   if (userLogs.length > 0) {
     dispatch(loadAccountReportingHistory());
+    userLogs.map(log => handleAlert(log, REDEEMSTAKE, false, dispatch, getState));
   }
+  dispatch(removePendingTransaction(REDEEMSTAKE));
 };
 // ---- ------------ ----- //
 
@@ -599,7 +621,7 @@ export const handleTokensMintedLog = (logs: Logs.TokensMinted[]) => (
   const isForking = !!getState().universe.forkingInfo;
   logs.filter(log => isSameAddress(log.target, userAddress)).map(log => {
     if (log.tokenType === Logs.TokenType.ParticipationToken) {
-      dispatch(removePendingData(BUY_PARTICIPATION_TOKENS, BUY_PARTICIPATION_TOKENS));
+      dispatch(removePendingTransaction(BUYPARTICIPATIONTOKENS));
       dispatch(loadAccountReportingHistory());
       dispatch(loadDisputeWindow());
     }
@@ -615,8 +637,9 @@ export const handleTokensMintedLog = (logs: Logs.TokensMinted[]) => (
             status: TXEventName.Success,
             timestamp: getState().blockchain.currentAugurTimestamp * 1000,
             name: MIGRATE_FROM_LEG_REP_TOKEN,
+            toast: true,
           }, false));
-        dispatch(addPendingData(MIGRATE_V1_V2, MIGRATE_V1_V2, TXEventName.Success, MIGRATE_V1_V2));
+        dispatch(removePendingTransaction(MIGRATE_FROM_LEG_REP_TOKEN));
       }
     })
 };

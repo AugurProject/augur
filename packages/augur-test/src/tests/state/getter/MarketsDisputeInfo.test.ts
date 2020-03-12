@@ -32,29 +32,29 @@ describe('State API :: Markets :: ', () => {
   beforeAll(async () => {
     const seed = await loadSeedFile(defaultSeedPath);
     baseProvider = await makeProvider(seed, ACCOUNTS);
-    const addresses = baseProvider.getContractAddresses();
+    const config = baseProvider.getConfig();
 
     john = await TestContractAPI.userWrapper(
       ACCOUNTS[0],
       baseProvider,
-      addresses
+      config
     );
     mary = await TestContractAPI.userWrapper(
       ACCOUNTS[1],
       baseProvider,
-      addresses
+      config
     );
     bob = await TestContractAPI.userWrapper(
       ACCOUNTS[2],
       baseProvider,
-      addresses
+      config
     );
 
     await john.approveCentralAuthority();
     await mary.approveCentralAuthority();
     await bob.approveCentralAuthority();
 
-    let endTime = (await john.getTimestamp()).plus(SECONDS_IN_A_DAY);
+    const endTime = (await john.getTimestamp()).plus(SECONDS_IN_A_DAY);
     const feePerCashInAttoCash = new BigNumber(10).pow(18).div(20); // 5% creator fee
     const affiliateFeeDivisor = new BigNumber(0);
     const designatedReporter = john.account.publicKey;
@@ -78,16 +78,16 @@ describe('State API :: Markets :: ', () => {
 
   beforeEach(async () => {
     const provider = await baseProvider.fork();
-    const addresses = baseProvider.getContractAddresses();
-    john = await TestContractAPI.userWrapper(ACCOUNTS[0], provider, addresses);
-    mary = await TestContractAPI.userWrapper(ACCOUNTS[1], provider, addresses);
-    bob = await TestContractAPI.userWrapper(ACCOUNTS[2], provider, addresses);
+    const config = baseProvider.getConfig();
+    john = await TestContractAPI.userWrapper(ACCOUNTS[0], provider, config);
+    mary = await TestContractAPI.userWrapper(ACCOUNTS[1], provider, config);
+    bob = await TestContractAPI.userWrapper(ACCOUNTS[2], provider, config);
   });
 
   test(':getMarketsInfo DisputeInfo', async () => {
     // Skip to yes/no market end time
     const yesNoMarket = markets['yesNoMarket1'];
-    let newTime = (await yesNoMarket.getEndTime_()).plus(1);
+    const newTime = (await yesNoMarket.getEndTime_()).plus(1);
     await john.setTimestamp(newTime);
 
     await john.sync();

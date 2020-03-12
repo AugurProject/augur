@@ -3,10 +3,7 @@ import { toChecksumAddress } from 'ethereumjs-util';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { PersonalSigningWeb3Provider } from 'utils/personal-signing-web3-provider';
-import Torus from '@toruslabs/torus-embed';
-import Web3 from 'web3';
 import { ACCOUNT_TYPES } from 'modules/common/constants';
-import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { windowRef } from 'utils/window-ref';
 import { LoginAccount } from 'modules/types';
 import { AppState } from 'store';
@@ -17,13 +14,16 @@ export const loginWithTorus = () => async (
   getState: () => AppState,
 ) => {
   const useGSN = getState().env['gsn']?.enabled;
-  const networkId = getNetworkId();
+  const networkId: string = getState().env['networkId'];
   const torusNetwork = getNetwork(networkId);
   let accountObject: Partial<LoginAccount> = {};
 
-  if (torusNetwork) {
-    const torus = new Torus({});
+  // Use require instead of import for wallet SDK packages
+  // to conditionally load web3 into the DOM
+  const Torus = require('@toruslabs/torus-embed').default;
+  const torus = new Torus({});
 
+  if (torusNetwork) {
     if (torusNetwork === 'localhost') {
       throw new Error('localhost currently not working for torus')
     }
@@ -34,14 +34,11 @@ export const loginWithTorus = () => async (
         showTorusButton: false,
       });
 
-      await torus.login({verifier: 'google'});
-
-      const web3 = new Web3(torus.provider);
+      const accounts = await torus.login({verifier: 'google'});
       const provider = new PersonalSigningWeb3Provider(torus.provider);
       const isWeb3 = true;
       windowRef.torus = torus;
 
-      const accounts = await web3.eth.getAccounts();
       const account = toChecksumAddress(accounts[0]);
       accountObject = {
         address: account,

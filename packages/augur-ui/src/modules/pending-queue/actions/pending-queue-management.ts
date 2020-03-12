@@ -1,8 +1,10 @@
 import { BaseAction, CreateMarketData } from "modules/types";
+import { TransactionMetadata } from "contract-dependencies-ethers/build";
 import { isTransactionConfirmed } from 'modules/contracts/actions/contractCalls';
 import { TXEventName } from '@augurproject/sdk';
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
+import { TRANSACTIONS, CANCELORDER } from "modules/common/constants";
 
 export const ADD_PENDING_DATA = "ADD_PENDING_DATA";
 export const REMOVE_PENDING_DATA = "REMOVE_PENDING_DATA";
@@ -26,6 +28,28 @@ export const loadPendingQueue = (pendingQueue: any) => (
     });
   });
 };
+
+export const addUpdatePendingTransaction = (
+  methodCall: string,
+  status: string,
+  blockNumber: number = 0,
+  hash: string = null,
+  info?: TransactionMetadata,
+): BaseAction => ({
+  type: ADD_PENDING_DATA,
+  data: {
+    pendingId: methodCall,
+    queueName: TRANSACTIONS,
+    blockNumber,
+    status,
+    hash,
+    info
+  },
+});
+
+export const removePendingTransaction = (
+  methodCall: string,
+): BaseAction => removePendingData(methodCall, TRANSACTIONS);
 
 export const addPendingData = (
   pendingId: string,
@@ -59,3 +83,9 @@ export const removePendingDataByHash = (
   type: REMOVE_PENDING_DATA_BY_HASH,
   data: { hash, queueName },
 });
+
+export const addCanceledOrder = (orderId: string, status: string, hash: string) => (dispatch: ThunkDispatch<void, any, Action>) =>
+  dispatch(addPendingData(orderId, CANCELORDER, status, hash));
+
+export const removeCanceledOrder = (orderId: string) => (dispatch: ThunkDispatch<void, any, Action>) =>
+  dispatch(removePendingData(orderId, CANCELORDER));

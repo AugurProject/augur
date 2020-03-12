@@ -1,5 +1,5 @@
 import { Getters } from '@augurproject/sdk';
-import { MarketData, Consensus, OutcomeFormatted } from 'modules/types';
+import { MarketData, OutcomeFormatted } from 'modules/types';
 import {
   REPORTING_STATE,
   MARKET_OPEN,
@@ -70,7 +70,8 @@ export function convertMarketInfoToMarketData(
     disputeInfo: processDisputeInfo(
       marketInfo.marketType,
       marketInfo.disputeInfo,
-      marketInfo.outcomes
+      marketInfo.outcomes,
+      marketInfo.isWarpSync,
     ),
   };
 
@@ -144,7 +145,8 @@ function getEmptyStake(outcomeId: string | null, bondSizeOfNewStake: string) {
 function processDisputeInfo(
   marketType: string,
   disputeInfo: Getters.Markets.DisputeInfo,
-  outcomes: Getters.Markets.MarketInfoOutcome[]
+  outcomes: Getters.Markets.MarketInfoOutcome[],
+  isWarpSync: boolean,
 ): Getters.Markets.DisputeInfo {
   if (!disputeInfo) return disputeInfo;
   if (marketType === SCALAR) {
@@ -153,7 +155,7 @@ function processDisputeInfo(
     );
     // add blank outcome
     const blankStake = getEmptyStake(null, disputeInfo.bondSizeOfNewStake);
-    if (invalidIncluded) {
+    if (invalidIncluded || isWarpSync) {
       return { ...disputeInfo, stakes: [...disputeInfo.stakes, blankStake] };
     } else {
       return {

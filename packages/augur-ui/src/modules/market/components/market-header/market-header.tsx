@@ -91,7 +91,7 @@ export default class MarketHeader extends Component<
     super(props);
     this.state = {
       showReadMore: false,
-      showProperties: false,
+      showProperties: true,
       detailsHeight: 0,
       headerCollapsed: false,
       showCopied: false,
@@ -391,6 +391,7 @@ export default class MarketHeader extends Component<
                   <CoreProperties
                     market={market}
                     reportingBarShowing={reportingBarShowing}
+                    showExtraDetailsChevron={showProperties}
                   />
                 )}
                 <button

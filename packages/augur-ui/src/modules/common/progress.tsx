@@ -138,7 +138,7 @@ const reportingStateToLabelTime = (
     case REPORTING_STATE.FINALIZED:
     default:
       label = 'Expired';
-      time = reportingEndTime;
+      time = endTimeFormatted;
       break;
   }
 
@@ -211,10 +211,10 @@ export const CountdownProgress = (props: CountdownProgressProps) => {
     countdown = (countdownBreakpoint || OneWeek) >= timeLeft && timeLeft > 0;
     valueString = countdown
       ? `${daysRemaining}:${
-          hoursRemaining >= 10 ? hoursRemaining : '0' + hoursRemaining
-        }:${
-          minutesRemaining >= 10 ? minutesRemaining : '0' + minutesRemaining
-        }:${secondsRemaining >= 10 ? secondsRemaining : '0' + secondsRemaining}`
+        hoursRemaining >= 10 ? hoursRemaining : '0' + hoursRemaining
+      }:${
+        minutesRemaining >= 10 ? minutesRemaining : '0' + minutesRemaining
+      }:${secondsRemaining >= 10 ? secondsRemaining : '0' + secondsRemaining}`
       : time.formattedLocalShortDateSecondary;
   }
   const breakpointOne =

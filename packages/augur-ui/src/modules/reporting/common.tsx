@@ -12,8 +12,10 @@ import {
   HEADER_TYPE,
   INVALID_OUTCOME_ID,
   SUBMIT_REPORT,
-  BUY_PARTICIPATION_TOKENS,
-  REDEEM_PARTICIPATION_TOKENS
+  BUYPARTICIPATIONTOKENS,
+  TRANSACTIONS,
+  REDEEMSTAKE,
+  HELP_CENTER_PARTICIPATION_TOKENS,
 } from 'modules/common/constants';
 import {
   FormattedNumber,
@@ -27,6 +29,7 @@ import {
   CancelTextButton,
   PrimaryButton,
   ProcessingButton,
+  ExternalLinkButton,
 } from 'modules/common/buttons';
 import { Checkbox, TextInput } from 'modules/common/form';
 import {
@@ -254,10 +257,10 @@ export class PreFilledStake extends Component<PreFilledStakeProps, {}> {
       <div className={Styles.PreFilledStake}>
         <span>Add Pre-Filled Stake?</span>
         <span>
-          `Pre-fund future dispute rounds to accelerate market resolution. Any
+          Pre-fund future dispute rounds to accelerate market resolution. Any
           contributed REP will automatically go toward disputing in favor of
           this outcome, if it is no longer the tentative winning outcome in
-          future rounds`
+          future rounds
         </span>
         {!this.props.showInput && (
           <SecondaryButton
@@ -382,6 +385,8 @@ export interface DisputingBondsViewProps {
   GsnEnabled: boolean;
   gasPrice: number;
   ethToDaiRate: BigNumber;
+  warpSyncHash: string;
+  isWarpSync: boolean;
 }
 
 interface DisputingBondsViewState {
@@ -419,11 +424,15 @@ export class DisputingBondsView extends Component<
         scalarError: 'Input value not between scalar market range',
         disabled: true,
       });
-    } else if (isNaN(Number(range)) || range === '') {
+    } else if (!market.isWarpSync && (isNaN(Number(range)) || range === '')) {
       this.setState({ scalarError: 'Enter a valid number', disabled: true });
     } else {
       this.setState({ scalarError: '' });
-      if (this.state.stakeError === '' && stakeValue !== '') {
+      if (
+        this.state.stakeError === '' &&
+        stakeValue !== '' &&
+        stakeValue !== '0'
+      ) {
         this.setState({ disabled: false });
       }
     }
@@ -439,6 +448,7 @@ export class DisputingBondsView extends Component<
       stakeRemaining,
       tentativeWinning,
       isInvalid,
+      warpSyncHash,
     } = this.props;
     let inputToAttoRep = null;
     const { isScalar } = this.state;
@@ -450,11 +460,12 @@ export class DisputingBondsView extends Component<
       );
     }
     if (
-      isNaN(Number(inputStakeValue)) ||
-      inputStakeValue === '' ||
-      inputStakeValue === '0' ||
-      inputStakeValue === '.' ||
-      inputStakeValue === '0.'
+      !!!warpSyncHash &&
+      (isNaN(Number(inputStakeValue)) ||
+        inputStakeValue === '' ||
+        inputStakeValue === '0' ||
+        inputStakeValue === '.' ||
+        inputStakeValue === '0.')
     ) {
       this.setState({ stakeError: 'Enter a valid number', disabled: true });
       return updateInputtedStake({ inputStakeValue, ZERO });
@@ -488,8 +499,9 @@ export class DisputingBondsView extends Component<
     } else {
       this.setState({ stakeError: '' });
       if (
-        (this.state.scalarError === '' &&
-          ((isScalar && inputScalarOutcome !== '') || isInvalid)) ||
+        (isScalar && inputScalarOutcome !== '') ||
+        isInvalid ||
+        !!warpSyncHash ||
         !isScalar
       ) {
         this.setState({ disabled: false });
@@ -509,6 +521,10 @@ export class DisputingBondsView extends Component<
         ),
       });
     }
+    if (this.props.isWarpSync) {
+      this.updateScalarOutcome(this.props.warpSyncHash);
+      this.updateInputtedStake('0');
+    }
   }
 
   render() {
@@ -522,6 +538,7 @@ export class DisputingBondsView extends Component<
       id,
       GsnEnabled,
       ethToDaiRate,
+      warpSyncHash,
     } = this.props;
 
     const {
@@ -542,7 +559,11 @@ export class DisputingBondsView extends Component<
       <div className={classNames(Styles.DisputingBondsView)}>
         {isScalar && id === 'null' && (
           <ScalarOutcomeView
-            inputScalarOutcome={inputScalarOutcome}
+            inputScalarOutcome={
+              !inputScalarOutcome && market.isWarpSync
+                ? warpSyncHash
+                : inputScalarOutcome
+            }
             updateScalarOutcome={this.updateScalarOutcome}
             scalarDenomination={market.scalarDenomination}
             scalarError={scalarError}
@@ -688,7 +709,7 @@ export class ReportingBondsView extends Component<
         scalarError: 'Input value not between scalar market range',
         disabled: true,
       });
-    } else if (isNaN(Number(range)) || range === '') {
+    } else if (!market.isWarpSync && (isNaN(Number(range)) || range === '')) {
       this.setState({ scalarError: 'Enter a valid number', disabled: true });
     } else {
       this.setState({ scalarError: '' });
@@ -941,6 +962,7 @@ export const ReportingCard = (props: ReportingCardProps) => {
         disputeInfo={disputeInfo}
         endTimeFormatted={endTimeFormatted}
         currentAugurTimestamp={currentAugurTimestamp}
+        isWarpSync={market.isWarpSync}
       />
       <MarketTitle id={id} headerType={headerType} />
       {reportingState !== REPORTING_STATE.OPEN_REPORTING && (
@@ -1160,7 +1182,7 @@ export const ParticipationTokensView = (
         <span>Don’t see any reports that need disputing? </span>
         You can earn a proportional share of the profits from this dispute
         window.
-        <span>Learn more</span>
+        <span><a href={HELP_CENTER_PARTICIPATION_TOKENS} target="_blank" rel="noopener noreferrer">Learn more</a></span>
       </span>
 
       <Subheaders
@@ -1192,8 +1214,8 @@ export const ParticipationTokensView = (
         disabled={disablePurchaseButton}
         text="Get Participation Tokens"
         action={openModal}
-        queueName={BUY_PARTICIPATION_TOKENS}
-        queueId={BUY_PARTICIPATION_TOKENS}
+        queueName={TRANSACTIONS}
+        queueId={BUYPARTICIPATIONTOKENS}
       />
 
       <section />
@@ -1225,8 +1247,8 @@ export const ParticipationTokensView = (
         disabled={!hasRedeemable}
         text="Redeem Past Participation Tokens"
         action={openClaimParticipationTokensModal}
-        queueName={REDEEM_PARTICIPATION_TOKENS}
-        queueId={REDEEM_PARTICIPATION_TOKENS}
+        queueName={TRANSACTIONS}
+        queueId={REDEEMSTAKE}
       />
     </div>
   );

@@ -298,7 +298,6 @@ div.Onboarding {
   }
 
   @media @breakpoint-mobile {
-    margin: 0 0 @size-16;
     padding: @size-8 @size-16 @size-16;
   }
 
@@ -344,19 +343,15 @@ div.ButtonsRow:last-of-type {
 }
 
 .FundsHelp {
-  > span {
-    display: flex;
-  }
-
-  > span:first-of-type {
+  > p {
     .text-12-bold;
 
     color: @color-primary-text;
     margin: 50px 0 @size-8;
   }
 
-  > span:nth-of-type(2) {
-    .text-10;
+  > div  {
+    .text-12;
 
     color: @color-secondary-text;
     line-height: 140%;
@@ -365,19 +360,31 @@ div.ButtonsRow:last-of-type {
       width: @size-16;
       height: @size-16;
       margin: 0 @size-2;
-    }
-  }
 
-  @media @breakpoint-mobile {
-    flex-direction: column;
-    justify-content: flex-end;
-    display: flex;
+      > span svg {
+        height: @size-12;
+        transform: translateY(@size-2);
+        width: @size-12;
+      }
+    }
 
     > button {
-      justify-content: flex-start;
-      margin: @size-16 0;
-      width: fit-content;
+      .text-10-bold;
+
+      background: none;
+      border: none;
+      padding: 0 0 0 @size-2;
+
+      @media @breakpoint-mobile {
+        padding: 0;
+      }
+
+      > svg {
+        height: @size-10;
+        width: @size-10;
+      }
     }
+
   }
 }
 
@@ -394,6 +401,10 @@ div.ButtonsRow:last-of-type {
     @media @breakpoint-mobile {
       display: flex;
       margin: @size-48 0;
+    }
+
+    @media all and (max-width: 320px) { // iPhone 5
+      margin: @size-2;
     }
   }
 
@@ -470,6 +481,10 @@ div.ButtonsRow:last-of-type {
         color: @color-secondary-text;
         display: flex;
         padding: @size-9 @size-12;
+
+        @media all and (max-width: 320px) { // iPhone 5
+          display: none;
+        }
       }
     }
 
@@ -489,7 +504,7 @@ div.ButtonsRow:last-of-type {
       }
 
       > h3 {
-        .mono-11-bold;
+        .mono-10-bold;
 
         color: @color-primary-text;
         text-transform: uppercase;
@@ -549,6 +564,10 @@ div.ButtonsRow:last-of-type {
         > span:first-of-type {
           margin: @size-24 0 @size-8;
         }
+      }
+
+      @media all and (max-width: 320px) { // iPhone 5
+        visibility: hidden;
       }
     }
   }
@@ -636,17 +655,38 @@ div.ButtonsRow:last-of-type {
   }
 }
 
-.AddFundsCreditDebitCoinbase {
+
+
+.AddFundsCoinbase,
+.AddFundsCreditDebit {
   > h2 {
     margin: @size-4 0 @size-24 0;
 
     svg {
-      transform: translateY(@size-4);
+      height: @size-12;
+      transform: translateY(2px);
+      width: @size-12;
     }
   }
+}
 
-  > button:last-of-type {
-    margin: @size-16 0 0 0;
+.AddFundsCreditDebit {
+  > button {
+    margin-top: @size-8;
+  }
+}
+
+.AddFundsCoinbase {
+  > button {
+    .text-10-bold;
+
+    background: none;
+    border: none;
+
+    > svg {
+      height: @size-10;
+      width: @size-10;
+    }
   }
 }
 
@@ -656,7 +696,21 @@ div.ButtonsRow:last-of-type {
   }
 
   > ol svg {
-    transform: translateY(@size-3);
+    height: @size-12;
+    transform: translateY(2px);
+    width: @size-12;
+  }
+
+  > button:last-of-type {
+    .text-10-bold;
+
+    background: none;
+    border: none;
+
+    > svg {
+      height: @size-10;
+      width: @size-10;
+    }
   }
 }
 
@@ -1186,7 +1240,6 @@ div.ButtonsRow:last-of-type {
 .Orders {
   .Message;
 
-  background: @color-dark-grey;
   min-width: 842px;
 
   @media @breakpoint-mobile {
@@ -1205,9 +1258,9 @@ div.ButtonsRow:last-of-type {
       padding: @size-12 @size-24;
 
       > span {
-        .mono-10;
+        .text-10-medium;
 
-        color: @color-inactive-text;
+        color: @color-secondary-text;
         flex: 0 0 5.5rem;
         text-transform: uppercase;
       }
@@ -1225,6 +1278,8 @@ div.ButtonsRow:last-of-type {
         height: @size-32;
         margin: 0 -@size-16 @size-4;
         padding: @size-10 @size-16;
+        grid-template-columns: repeat(4, 1fr);
+        display: grid;
 
         > span {
           .mono-9;
@@ -1301,12 +1356,15 @@ div.ButtonsRow:last-of-type {
           flex-flow: row wrap;
           height: 7.25rem;
           padding: @size-12 @size-16;
+          grid-template-columns: repeat(4, 1fr);
+          display: grid;
 
           > span:first-of-type {
             .mono-11;
 
             flex: 1 100%;
             margin-bottom: @size-8;
+            grid-column: 1 / span 5;
           }
 
           > span {
@@ -1322,6 +1380,7 @@ div.ButtonsRow:last-of-type {
           > div {
             flex: 1 100%;
             margin: @size-24 0;
+            grid-column: 4;
           }
         }
       }
@@ -2144,7 +2203,7 @@ div.ButtonsRow:last-of-type {
   display: grid;
   grid-template-columns:
     200px minmax(320px, 2fr) minmax(125px, 1fr) minmax(125px, 150px)
-    repeat(2, 100px) 50px repeat(2, 100px) 80px;
+    repeat(2, 100px) 50px repeat(2, 100px) 100px;
   grid-template-rows: auto;
 }
 
@@ -2366,6 +2425,11 @@ div.ButtonsRow:last-of-type {
   }
 
   > div:first-of-type {
+    max-height: 650px;
+    overflow: overlay;
+  }
+
+  > div:first-of-type > div:first-of-type {
     .TransactionsTable;
     .text-12;
 
@@ -2375,6 +2439,7 @@ div.ButtonsRow:last-of-type {
     margin: @size-24 0 0;
     min-height: @size-32;
     text-transform: uppercase;
+    min-width: fit-content;
 
     @media @breakpoint-mobile {
       margin: 0;
@@ -2404,14 +2469,13 @@ div.ButtonsRow:last-of-type {
     }
   }
 
-  > section:last-of-type {
+  > div:first-of-type > section:last-of-type {
     .TransactionsTable;
 
     border-top: 0;
     color: @color-primary-text;
-    max-height: 650px;
-    overflow: overlay;
     margin-bottom: @size-32;
+    min-width: fit-content;
 
     @media @breakpoint-mobile {
       max-height: 600px;
@@ -2599,24 +2663,24 @@ div.ButtonsRow:last-of-type {
   flex-flow: row nowrap;
   justify-content: space-between;
   line-height: @size-14;
-  margin: @size-8 0 @size-18 0;
+  margin: @size-8 0;
   padding: @size-12 @size-9;
   padding-right: 0;
   width: fit-content;
   position: relative;
 
   > div {
+    font-size: @size-12;
     margin-right: @size-12;
+    max-width: 153px;
     word-break: break-all;
-    max-width: 125px;
   }
 
   > button {
-    .mono-10;
-
     align-items: center;
     color: @color-inactive-text;
     display: flex;
+    font-size: @size-12;
     margin-left: @size-8;
     margin-right: @size-12;
     padding: @size-6;
@@ -2644,7 +2708,7 @@ div.ButtonsRow:last-of-type {
   border-left: solid @size-12 transparent;
   border-right: solid @size-12 transparent;
   position: absolute;
-  right: @size-16;
+  right: @size-21;
   top: -6px;
 }
 
@@ -2972,6 +3036,10 @@ div.ButtonsRow:last-of-type {
     display: flex;
     flex-direction: column;
     padding: @size-16 0 0;
+
+    > section {
+      margin: 0 @size-16;
+    }
 
     > div:first-of-type {
       margin: @size-8 @size-16 @size-24;

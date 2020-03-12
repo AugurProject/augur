@@ -1,5 +1,4 @@
 import { WSClient } from '@0x/mesh-rpc-client';
-import { ContractAddresses } from '@augurproject/artifacts';
 import { ContractInterfaces } from '@augurproject/core';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import {
@@ -25,7 +24,7 @@ import { formatBytes32String } from 'ethers/utils';
 import { Account } from '../constants';
 import { makeGSNDependencies, makeSigner } from './blockchain';
 import { ContractDependenciesGSN } from 'contract-dependencies-gsn';
-
+import { SDKConfiguration } from '@augurproject/artifacts';
 
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 const ETERNAL_APPROVAL_VALUE = new BigNumber('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'); // 2^256 - 1
@@ -34,20 +33,20 @@ export class ContractAPI {
   static async userWrapper(
     account: Account,
     provider: EthersProvider,
-    addresses: ContractAddresses,
+    config: SDKConfiguration,
     connector: Connectors.BaseConnector = new EmptyConnector(),
     meshClient: WSClient = undefined,
     meshBrowser: BrowserMesh = undefined,
   ) {
     const signer = await makeSigner(account, provider);
-    const dependencies = await makeGSNDependencies(provider, signer, addresses.AugurWalletRegistry, addresses.EthExchange, new BigNumber(0), account.publicKey);
+    const dependencies = await makeGSNDependencies(provider, signer, config.addresses.AugurWalletRegistry, config.addresses.EthExchange, new BigNumber(0), account.publicKey);
 
     let zeroX = null;
     if (meshClient || meshBrowser) {
       zeroX = new ZeroX();
       zeroX.rpc = meshClient;
     }
-    const augur = await Augur.create(provider, dependencies, addresses, connector, zeroX, true);
+    const augur = await Augur.create(provider, dependencies, config, connector, zeroX, true);
     if (zeroX && meshBrowser) {
       zeroX.mesh = meshBrowser;
     }
@@ -69,18 +68,18 @@ export class ContractAPI {
   }
 
   async approveCentralAuthority(): Promise<void> {
-    const authority = this.augur.addresses.Augur;
+    const authority = this.augur.config.addresses.Augur;
     await this.augur.contracts.cash.approve(authority, new BigNumber(2).pow(256).minus(new BigNumber(1)));
 
-    const fillOrder = this.augur.addresses.FillOrder;
+    const fillOrder = this.augur.config.addresses.FillOrder;
     await this.augur.contracts.cash.approve(fillOrder, new BigNumber(2).pow(256).minus(new BigNumber(1)));
     await this.augur.contracts.shareToken.setApprovalForAll(fillOrder, true);
 
-    const createOrder = this.augur.addresses.CreateOrder;
+    const createOrder = this.augur.config.addresses.CreateOrder;
     await this.augur.contracts.cash.approve(createOrder, new BigNumber(2).pow(256).minus(new BigNumber(1)));
     await this.augur.contracts.shareToken.setApprovalForAll(createOrder, true);
 
-    await this.augur.contracts.cash.approve(this.augur.addresses.ZeroXTrade, new BigNumber(2).pow(256).minus(new BigNumber(1)));
+    await this.augur.contracts.cash.approve(this.augur.config.addresses.ZeroXTrade, new BigNumber(2).pow(256).minus(new BigNumber(1)));
   }
 
   async createYesNoMarket(params: CreateYesNoMarketParams): Promise<ContractInterfaces.Market> {
@@ -573,8 +572,8 @@ export class ContractAPI {
     await this.augur.contracts.cashFaucet.faucet(attoCash, { sender: account });
   }
 
-  async repFaucet(attoRep: BigNumber, useLegacy: boolean = false): Promise<void> {
-    let reputationToken = this.augur.contracts.getReputationToken();
+  async repFaucet(attoRep: BigNumber, useLegacy = false): Promise<void> {
+    const reputationToken = this.augur.contracts.getReputationToken();
     if (useLegacy) {
       await this.augur.contracts.legacyReputationToken.faucet(attoRep);
     } else {
@@ -605,13 +604,13 @@ export class ContractAPI {
   }
 
   async approve(wei: BigNumber): Promise<void> {
-    await this.augur.contracts.cash.approve(this.augur.addresses.Augur, wei);
+    await this.augur.contracts.cash.approve(this.augur.config.addresses.Augur, wei);
 
-    await this.augur.contracts.cash.approve(this.augur.addresses.FillOrder, wei);
-    await this.augur.contracts.shareToken.setApprovalForAll(this.augur.addresses.FillOrder, true);
+    await this.augur.contracts.cash.approve(this.augur.config.addresses.FillOrder, wei);
+    await this.augur.contracts.shareToken.setApprovalForAll(this.augur.config.addresses.FillOrder, true);
 
-    await this.augur.contracts.cash.approve(this.augur.addresses.CreateOrder, wei);
-    await this.augur.contracts.shareToken.setApprovalForAll(this.augur.addresses.CreateOrder, true);
+    await this.augur.contracts.cash.approve(this.augur.config.addresses.CreateOrder, wei);
+    await this.augur.contracts.shareToken.setApprovalForAll(this.augur.config.addresses.CreateOrder, true);
   }
 
   getLegacyRepBalance(owner: string): Promise<BigNumber> {
@@ -634,7 +633,7 @@ export class ContractAPI {
     const childUniverseAddress = await this.augur.contracts.universe!.getChildUniverse_(parentPayoutDistributionHash);
     const childUniverse = this.augur.contracts.universeFromAddress(childUniverseAddress);
     const repContractAddress = await childUniverse.getReputationToken_();
-    return this.augur.contracts.reputationTokenFromAddress(repContractAddress, this.augur.networkId);
+    return this.augur.contracts.reputationTokenFromAddress(repContractAddress, this.augur.config.networkId);
   }
 
   // TODO: Determine why ETH balance doesn't change when buying complete sets or redeeming reporting participants
@@ -674,12 +673,12 @@ export class ContractAPI {
   }
 
   async approveAugurEternalApprovalValue(owner: string) {
-    const augur = this.augur.addresses.Augur;
+    const augur = this.augur.config.addresses.Augur;
     const allowance = new BigNumber(await this.augur.contracts.cash.allowance_(owner, augur));
 
     if (!allowance.eq(ETERNAL_APPROVAL_VALUE)) {
-      const fillOrder = this.augur.addresses.FillOrder;
-      const createOrder = this.augur.addresses.CreateOrder;
+      const fillOrder = this.augur.config.addresses.FillOrder;
+      const createOrder = this.augur.config.addresses.CreateOrder;
       await this.augur.contracts.cash.approve(augur, ETERNAL_APPROVAL_VALUE, { sender: this.account.publicKey });
       await this.augur.contracts.cash.approve(fillOrder, ETERNAL_APPROVAL_VALUE, { sender: this.account.publicKey });
       await this.augur.contracts.cash.approve(createOrder, ETERNAL_APPROVAL_VALUE, { sender: this.account.publicKey });

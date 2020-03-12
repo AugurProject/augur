@@ -286,12 +286,17 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
 
     let newOrderAmount = formatShares('0').rounded;
     if (numShares && totalCost.fullPrecision && shareCost.fullPrecision) {
-      newOrderAmount = formatShares(
-        createBigNumber(numShares).minus(shareCost.fullPrecision),
-        {
-          decimalsRounded: UPPER_FIXED_PRECISION_BOUND,
-        }
-      ).rounded;
+      newOrderAmount =
+        marketType !== SCALAR
+          ? formatShares(
+              createBigNumber(numShares).minus(shareCost.fullPrecision),
+              {
+                decimalsRounded: UPPER_FIXED_PRECISION_BOUND,
+              }
+            ).rounded
+          : formatShares(
+              createBigNumber(numShares).minus(shareCost.fullPrecision)
+            ).rounded;
     }
 
     const notProfitable =

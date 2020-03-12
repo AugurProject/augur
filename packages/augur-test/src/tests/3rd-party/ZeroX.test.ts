@@ -1,9 +1,5 @@
 import { WSClient } from '@0x/mesh-rpc-client';
-import {
-  Addresses,
-  ContractAddresses,
-  NetworkId,
-} from '@augurproject/artifacts';
+import { buildConfig, SDKConfiguration } from '@augurproject/artifacts';
 import { sleep } from '@augurproject/core/build/libraries/HelperFunctions';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { Connectors } from '@augurproject/sdk';
@@ -26,26 +22,24 @@ describe('3rd Party :: ZeroX :: ', () => {
   let meshClient: WSClient;
   let providerJohn: EthersProvider;
   let providerMary: EthersProvider;
-  let networkId: NetworkId;
-  let addresses: ContractAddresses;
+  let config: SDKConfiguration;
 
   beforeAll(async () => {
+    config = buildConfig('local');
     providerJohn = new EthersProvider(
-      new JsonRpcProvider('http://localhost:8545'),
-      5,
-      0,
-      40
+      new JsonRpcProvider(config.ethereum.http),
+      config.ethereum.rpcRetryCount,
+      config.ethereum.rpcRetryInterval,
+      config.ethereum.rpcConcurrency
     );
     providerMary = new EthersProvider(
-      new JsonRpcProvider('http://localhost:8545'),
-      5,
-      0,
-      40
+      new JsonRpcProvider(config.ethereum.http),
+      config.ethereum.rpcRetryCount,
+      config.ethereum.rpcRetryInterval,
+      config.ethereum.rpcConcurrency
     );
-    networkId = await providerJohn.getNetworkId();
-    addresses = Addresses[networkId];
 
-    meshClient = new WSClient('ws://localhost:60557');
+    meshClient = new WSClient(config.zeroX.rpc.ws);
   }, 240000);
 
   afterAll(() => {
@@ -58,7 +52,7 @@ describe('3rd Party :: ZeroX :: ', () => {
       john = await TestContractAPI.userWrapper(
         ACCOUNTS[0],
         providerJohn,
-        addresses,
+        config,
         johnConnector,
         meshClient,
         undefined
@@ -75,7 +69,7 @@ describe('3rd Party :: ZeroX :: ', () => {
       mary = await TestContractAPI.userWrapper(
         ACCOUNTS[2],
         providerMary,
-        addresses,
+        config,
         maryConnector,
         meshClient,
         undefined
@@ -337,7 +331,7 @@ describe('3rd Party :: ZeroX :: ', () => {
       john = await TestContractAPI.userWrapper(
         ACCOUNTS[0],
         providerJohn,
-        addresses,
+        config,
         connectorJohn,
         meshClient,
         undefined

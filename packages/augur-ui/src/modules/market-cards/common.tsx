@@ -10,6 +10,7 @@ import {
   ZERO,
   INVALID_OUTCOME_NAME,
   SUBMIT_DISPUTE,
+  SCALAR_DOWN_ID,
 } from 'modules/common/constants';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import ReactTooltip from 'react-tooltip';
@@ -30,6 +31,8 @@ import Styles from 'modules/market-cards/common.styles.less';
 import MarketCard from 'modules/market-cards/market-card';
 import { selectSortedDisputingOutcomes } from 'modules/markets/selectors/market';
 import { calculatePosition } from 'modules/market/components/market-scalar-outcome-display/market-scalar-outcome-display';
+import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
+import { SmallSubheadersTooltip } from 'modules/create-market/components/common';
 
 export interface PercentProps {
   percent: number;
@@ -96,6 +99,7 @@ export interface DisputeOutcomeProps {
   canDispute: boolean;
   canSupport: boolean;
   marketId: string;
+  isWarpSync?: boolean;
 }
 
 export const DisputeOutcome = (props: DisputeOutcomeProps) => {
@@ -114,7 +118,7 @@ export const DisputeOutcome = (props: DisputeOutcomeProps) => {
         [Styles[`Outcome-${props.index}`]]: !props.invalid,
       })}
     >
-      <span>{props.description}</span>
+      <span>{props.isWarpSync && !props.invalid ? props.stake.warpSyncHash : props.description}</span>
       {props.stake && props.stake.tentativeWinning ? (
         <span>tentative winner</span>
       ) : (
@@ -133,9 +137,14 @@ export const DisputeOutcome = (props: DisputeOutcomeProps) => {
       <div>
         <div>
           <span>
-            {props.stake && props.stake.tentativeWinning
-              ? 'pre-filled stake'
-              : 'make tentative winner'}
+          {props.stake && props.stake.tentativeWinning
+              ? <SmallSubheadersTooltip
+                  header="pre-filled stake"
+                  subheader={``}
+                  text="Users can add extra support for a Tentative Winning Outcome"
+                />
+              : 'make tentative winner'
+            }
           </span>
           {props.stake && props.stake.tentativeWinning ? (
             <span>
@@ -174,7 +183,7 @@ interface ScalarBlankDisputeOutcomeProps {
   denomination: string;
   dispute: Function;
   canDispute: boolean;
-  marketid: string;
+  marketId: string;
 }
 
 export const ScalarBlankDisputeOutcome = (
@@ -245,22 +254,26 @@ export interface OutcomeGroupProps {
   canDispute: boolean;
   canSupport: boolean;
   marketId: string;
+  isWarpSync?: boolean;
 }
 
 export const OutcomeGroup = (props: OutcomeGroupProps) => {
   const sortedStakeOutcomes = selectSortedDisputingOutcomes(
     props.marketType,
     props.outcomes,
-    props.stakes
+    props.stakes,
+    props.isWarpSync
   );
 
-  const { inDispute, showOutcomeNumber } = props;
+  const { inDispute, showOutcomeNumber, isWarpSync } = props;
   let disputingOutcomes = sortedStakeOutcomes;
   let outcomesCopy = props.outcomes.slice(0);
   const removedInvalid = outcomesCopy.splice(0, 1)[0];
 
   if (inDispute) {
-    if (!props.expanded) {
+    if (isWarpSync) {
+      disputingOutcomes = disputingOutcomes.filter(o => o.id !== SCALAR_DOWN_ID)
+    } else if (!props.expanded) {
       disputingOutcomes.splice(showOutcomeNumber, showOutcomeNumber + 1);
     }
   } else {
@@ -294,7 +307,7 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
             }
             scalarDenomination={props.scalarDenomination}
             marketId={props.marketId}
-            outcomeId={SCALAR_UP_ID}
+            outcomeId={String(SCALAR_UP_ID)}
           />
           <Outcome
             description={removedInvalid.description}
@@ -307,7 +320,7 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
             max={props.max}
             isScalar={props.marketType === SCALAR}
             marketId={props.marketId}
-            outcomeId={INVALID_OUTCOME_ID}
+            outcomeId={String(INVALID_OUTCOME_ID)}
           />
         </>
       )}
@@ -316,7 +329,9 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
           (outcome: OutcomeFormatted, index: number) =>
             ((!props.expanded && index < showOutcomeNumber) ||
               (props.expanded || props.marketType === YES_NO)) &&
-            (inDispute ? (
+            (inDispute && !!props.stakes.find(
+              stake => parseFloat(stake.outcome) === outcome.id
+            ) ? (
               <>
                 {props.marketType === SCALAR &&
                   index === 1 &&
@@ -341,6 +356,7 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
                   id={outcome.id}
                   canDispute={props.canDispute}
                   canSupport={props.canSupport}
+                  isWarpSync={isWarpSync}
                 />
               </>
             ) : (
@@ -450,6 +466,40 @@ export const ResolvedOutcomes = (props: ResolvedOutcomesProps) => {
           </div>
         </div>
       )}
+    </div>
+  );
+};
+
+export interface TentativeWinnerProps {
+  tentativeWinner: Getters.Markets.StakeDetails;
+  market: MarketData;
+  dispute: Function;
+  canDispute: boolean;
+}
+
+export const TentativeWinner = (props: TentativeWinnerProps) => {
+  return (
+    <div className={classNames(Styles.ResolvedOutcomes, Styles.TentativeWinner)}>
+      <span>Tentative Winner</span>
+      <span>
+        {props.tentativeWinner.isInvalidOutcome
+          ? INVALID_OUTCOME_NAME
+          : getOutcomeNameWithOutcome(
+            props.market,
+            props.tentativeWinner.outcome,
+            props.tentativeWinner.isInvalidOutcome,
+            true
+          )}
+      </span>
+      <ProcessingButton
+            small
+            queueName={SUBMIT_DISPUTE}
+            queueId={props.market.id}
+            secondaryButton
+            disabled={!props.canDispute}
+            text={'SUPPORT OR DISPUTE OUTCOME'}
+            action={() => props.dispute()}
+          />
     </div>
   );
 };

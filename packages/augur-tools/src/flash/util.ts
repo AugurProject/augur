@@ -1,9 +1,18 @@
 import readline from 'readline';
 
 export function waitForSigint(): Promise<void> {
-  return new Promise((resolve) => {
-    process.on('SIGINT', () => { resolve(); })
-  })
+  process.stdin.resume();
+  return new Promise((resolve, reject) => {
+    process.prependListener('SIGINT', () => {
+      resolve();
+    });
+    process.prependListener('SIGTERM', () => {
+      resolve();
+    });
+    process.prependListener('SIGHUP', () => {
+      resolve();
+    });
+  });
 }
 
 export function awaitUserInput(question: string): Promise<void> {

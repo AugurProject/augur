@@ -7,20 +7,19 @@ import {
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { NodeStyleCallback } from 'modules/types';
-import { V1_REP_MIGRATE_ESTIMATE, MIGRATE_V1_V2 } from 'modules/common/constants';
-import { addPendingData, removePendingData } from 'modules/pending-queue/actions/pending-queue-management';
+import { V1_REP_MIGRATE_ESTIMATE, MIGRATE_FROM_LEG_REP_TOKEN } from 'modules/common/constants';
+import { addUpdatePendingTransaction } from 'modules/pending-queue/actions/pending-queue-management';
 import { TXEventName } from '@augurproject/sdk';
 
 export default function(callback: NodeStyleCallback = logError) {
   return async (dispatch: ThunkDispatch<void, any, Action>) => {
+    dispatch(addUpdatePendingTransaction(MIGRATE_FROM_LEG_REP_TOKEN, TXEventName.Pending));
     await convertV1ToV2Approve().catch((err: Error) => {
-      dispatch(addPendingData(MIGRATE_V1_V2, MIGRATE_V1_V2, TXEventName.Failure, MIGRATE_V1_V2));
+      dispatch(addUpdatePendingTransaction(MIGRATE_FROM_LEG_REP_TOKEN, TXEventName.Failure));
     });
-    dispatch(addPendingData(MIGRATE_V1_V2, MIGRATE_V1_V2, TXEventName.Pending, MIGRATE_V1_V2));
     await convertV1ToV2().catch((err: Error) => {
-      console.log('error could not migrate v1 REP', err);
       logError(new Error('convertV1ToV2'));
-      dispatch(addPendingData(MIGRATE_V1_V2, MIGRATE_V1_V2, TXEventName.Failure, MIGRATE_V1_V2));
+      dispatch(addUpdatePendingTransaction(MIGRATE_FROM_LEG_REP_TOKEN, TXEventName.Failure));
     });
     callback(null);
   };

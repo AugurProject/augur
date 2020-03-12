@@ -3,7 +3,7 @@ import { selectMarket } from "modules/markets/selectors/market";
 import {
   selectMarketInfosState,
   selectMarketTradingHistoryState,
-  selectOrderCancellationState,
+  selectCancelingOrdersState,
   selectPendingOrdersState,
   selectLoginAccountAddress,
   selectAccountPositionsState
@@ -18,7 +18,7 @@ export default function() {
 export const selectMarkets = createSelector(
   selectMarketInfosState,
   selectMarketTradingHistoryState,
-  selectOrderCancellationState,
+  selectCancelingOrdersState,
   selectLoginAccountAddress,
   selectPendingOrdersState,
   selectAccountPositionsState,

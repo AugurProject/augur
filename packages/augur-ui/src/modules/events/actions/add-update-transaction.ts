@@ -1,11 +1,8 @@
 import { AppState } from 'store';
 import {
-  addCanceledOrder,
-  removeCanceledOrder,
-} from 'modules/orders/actions/update-order-status';
-import {
   CANCELORDER,
   CANCELORDERS,
+  BATCHCANCELORDERS,
   TX_ORDER_ID,
   TX_ORDER_IDS,
   CREATEMARKET,
@@ -19,13 +16,18 @@ import {
   PUBLICFILLORDER,
   BUYPARTICIPATIONTOKENS,
   MODAL_ERROR,
+  MIGRATE_FROM_LEG_REP_TOKEN,
+  REDEEMSTAKE,
+  APPROVE,
+  TRADINGPROCEEDSCLAIMED,
+  CLAIMMARKETSPROCEEDS,
 } from 'modules/common/constants';
 import { CreateMarketData } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { Events, TXEventName } from '@augurproject/sdk';
 import {
-  addPendingData,
+  addPendingData, addUpdatePendingTransaction, addCanceledOrder,
 } from 'modules/pending-queue/actions/pending-queue-management';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { TransactionMetadataParams } from 'contract-dependencies-ethers/build';
@@ -35,6 +37,13 @@ import { addAlert, updateAlert } from 'modules/alerts/actions/alerts';
 import { getDeconstructedMarketId } from 'modules/create-market/helpers/construct-market-params';
 import { updateModal } from 'modules/modal/actions/update-modal';
 
+const ADD_PENDING_QUEUE_METHOD_CALLS = [
+  BUYPARTICIPATIONTOKENS,
+  REDEEMSTAKE,
+  MIGRATE_FROM_LEG_REP_TOKEN,
+  BATCHCANCELORDERS,
+  TRADINGPROCEEDSCLAIMED
+];
 export const getRelayerDownErrorMessage = (walletType, hasEth) => {
   const errorMessage = 'We\'re currently experiencing a technical difficulty processing transaction fees in Dai. If possible please come back later to process this transaction';
 
@@ -53,6 +62,9 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
     const methodCall = transaction.name.toUpperCase();
     const { blockchain, loginAccount } = getState();
 
+    if (ADD_PENDING_QUEUE_METHOD_CALLS.includes(methodCall)) {
+      dispatch(addUpdatePendingTransaction(methodCall, eventName, blockchain.currentBlockNumber, hash, { ...transaction }));
+    }
     if (eventName === TXEventName.RelayerDown) {
       const hasEth = (await loginAccount.meta.signer.provider.getBalance(loginAccount.meta.signer._address)).gt(0);
 
@@ -115,6 +127,25 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
     }
 
     switch (methodCall) {
+      case REDEEMSTAKE: {
+        const params = transaction.params;
+        params._reportingParticipants.map(participant => 
+          dispatch(addPendingData(participant, REDEEMSTAKE, eventName, hash, {...transaction}))
+        );
+        params._disputeWindows.map(window => 
+          dispatch(addPendingData(window, REDEEMSTAKE, eventName, hash, {...transaction}))
+        );
+        break;
+      }
+      case CLAIMMARKETSPROCEEDS: {
+        const params = transaction.params;
+        if (params._markets.length === 1) {
+          dispatch(addPendingData(params._markets[0], CLAIMMARKETSPROCEEDS, eventName, hash, {...transaction}));
+        } else {
+          dispatch(addUpdatePendingTransaction(methodCall, eventName, blockchain.currentBlockNumber, hash, { ...transaction }));
+        }
+        break;
+      }
       case BUYPARTICIPATIONTOKENS: {
         if (eventName === TXEventName.Success) {
           const { universe } = getState();
@@ -170,18 +201,17 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
       }
       case CANCELORDER: {
         const orderId = transaction.params && transaction.params.order[TX_ORDER_ID];
-        dispatch(addCanceledOrder(orderId, eventName));
-        if (eventName === TXEventName.Success) {
-          dispatch(removeCanceledOrder(orderId));
-        }
+        dispatch(addCanceledOrder(orderId, eventName, hash))
+        break;
+      }
+      case BATCHCANCELORDERS: {
+        const orders = transaction.params && transaction.params.orders || [];
+        orders.map(order => dispatch(addCanceledOrder(order.orderId, eventName, hash)));
         break;
       }
       case CANCELORDERS: {
         const orderIds = transaction.params && transaction.params.order[TX_ORDER_IDS];
-        orderIds.map(id => dispatch(addCanceledOrder(id, eventName)));
-        if (eventName === TXEventName.Success) {
-          orderIds.map(id => dispatch(removeCanceledOrder(id)));
-        }
+        orderIds.map(orderId => dispatch(addCanceledOrder(orderId, eventName, hash)));
         break;
       }
 

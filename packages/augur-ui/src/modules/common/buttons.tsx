@@ -43,6 +43,10 @@ export interface DefaultButtonProps {
   status?: string;
   secondaryButton?: boolean;
   cancel?: Function;
+  cancelButton?: boolean;
+  confirmed?: boolean;
+  failed?: boolean;
+  submitTextButtton?: boolean;
 }
 
 export interface SortButtonProps {
@@ -126,11 +130,14 @@ export const PrimaryButton = (props: DefaultButtonProps) => (
     {!props.URL && (
       <button
         onClick={e => props.action(e)}
-        className={Styles.PrimaryButton}
+        className={classNames(Styles.PrimaryButton, {
+          [Styles.Confirmed]: props.confirmed,
+          [Styles.Failed]: props.failed,
+        })}
         disabled={props.disabled}
         title={props.title || props.text}
       >
-        {props.text}
+        {props.text} {props.icon}
       </button>
     )}
   </>
@@ -141,75 +148,82 @@ export const SecondaryButton = (props: DefaultButtonProps) => (
     onClick={e => props.action(e)}
     className={classNames(Styles.SecondaryButton, {
       [Styles.Small]: props.small,
+      [Styles.Confirmed]: props.confirmed,
+      [Styles.Failed]: props.failed,
     })}
     disabled={props.disabled}
     title={props.title || props.text}
   >
-    {!!props.icon && props.icon}
-    {props.text}
+    {props.text} {!!props.icon && props.icon}
   </button>
 );
 
-const FailedButton = (props: DefaultButtonProps) => {
-  return (
-    <button
-      onClick={() => props.action()}
-      className={Styles.FailedButton}
-      disabled={props.disabled}
-      title={props.title || 'Failed'}
-    >
-      Failed
-      {XIcon}
-    </button>
-  )
-}
-
-const ConfirmedButton = (props: DefaultButtonProps) => {
-  return (
-    <button
-      onClick={() => null}
-      className={Styles.ConfirmedButton}
-      disabled={props.disabled}
-      title={props.title || 'Confirmed'}
-    >
-      Confirmed!
-    </button>
-  )
-}
-
 const ProcessingButtonComponent = (props: DefaultButtonProps) => {
+  let isDisabled = props.disabled;
+  let icon = props.icon;
   let buttonText = props.text;
-  if (props.status === TXEventName.Pending) {
+  let buttonAction = props.action;
+  if (
+    props.status === TXEventName.Pending ||
+    props.status === TXEventName.AwaitingSigning
+  ) {
     buttonText = 'Processing...';
+    isDisabled = true;
   }
   const failed = props.status === TXEventName.Failure;
   const confirmed = props.status === TXEventName.Success;
+  if (failed) buttonText = 'Failed';
+  if (confirmed) buttonText = 'Confirmed';
+  if (failed || confirmed) {
+    buttonAction = e => props.cancel(e);
+    icon = XIcon;
+    isDisabled = false;
+  }
   return (
     <>
-      {failed &&
-        <FailedButton
-          action={() => props.cancel()}
-        />
-      }
-      {confirmed &&
-        <ConfirmedButton action={() => null}/>
-      }
-      {!failed && !confirmed && props.secondaryButton &&
+      {props.secondaryButton && (
         <SecondaryButton
           {...props}
+          confirmed={confirmed}
+          failed={failed}
+          icon={icon}
           text={buttonText}
-          action={e => props.action(e)}
-          disabled={props.disabled || Boolean(props.status)}
+          action={buttonAction}
+          disabled={isDisabled}
         />
-      }
-      {!failed && !confirmed && !props.secondaryButton &&
+      )}
+      {!props.secondaryButton && !props.cancelButton && !props.submitTextButtton && (
         <PrimaryButton
           {...props}
+          confirmed={confirmed}
+          failed={failed}
+          icon={icon}
           text={buttonText}
-          action={e => props.action(e)}
-          disabled={props.disabled || Boolean(props.status)}
+          action={buttonAction}
+          disabled={isDisabled}
         />
-      }
+      )}
+      {props.submitTextButtton && (
+        <SubmitTextButton
+          {...props}
+          confirmed={confirmed}
+          failed={failed}
+          text={buttonText}
+          action={buttonAction}
+          disabled={isDisabled}
+        />
+      )}
+      {props.cancelButton && (
+        <CancelTextButton
+          {...props}
+          confirmed={confirmed}
+          failed={failed}
+          icon={icon}
+          text={buttonText}
+          action={buttonAction}
+          disabled={isDisabled}
+        />
+      )}
     </>
   );
 };
@@ -219,13 +233,15 @@ const mapStateToPropsProcessingButton = (state: AppState, ownProps) => {
   let disabled = false;
 
   const pendingData =
-  pendingQueue[ownProps.queueName] &&
-  pendingQueue[ownProps.queueName][ownProps.queueId];
+    pendingQueue[ownProps.queueName] &&
+    pendingQueue[ownProps.queueName][ownProps.queueId];
 
   let status = pendingData && pendingData.status;
 
   if (ownProps.matchingId !== undefined && pendingData) {
-    if (pendingData.data.matchingId.toString() !== ownProps.matchingId.toString()) {
+    if (
+      pendingData.data.matchingId.toString() !== ownProps.matchingId.toString()
+    ) {
       status = null;
       disabled = true;
     }
@@ -242,10 +258,10 @@ const mapDispatchToPropsProcessingButton = (dispatch, ownProps) => ({
     dispatch(removePendingData(ownProps.queueId, ownProps.queueName)),
 });
 
-
-export const ProcessingButton = connect(mapStateToPropsProcessingButton, mapDispatchToPropsProcessingButton)(
-  ProcessingButtonComponent
-);
+export const ProcessingButton = connect(
+  mapStateToPropsProcessingButton,
+  mapDispatchToPropsProcessingButton
+)(ProcessingButtonComponent);
 
 export const PrimarySignInButton = (props: DefaultButtonProps) => (
   <button
@@ -384,16 +400,21 @@ export const CancelTextButton = ({
   action,
   title,
   disabled,
+  confirmed,
+  failed,
+  icon,
 }: DefaultButtonProps) => (
   <button
     onClick={e => action(e)}
     className={classNames(Styles.CancelTextButton, {
       [Styles.IconButton]: !text,
+      [Styles.Confirmed]: confirmed,
+      [Styles.Failed]: failed,
     })}
     disabled={disabled}
     title={title}
   >
-    {text || XIcon}
+    {text} {!icon && !text ? XIcon : icon}
   </button>
 );
 
@@ -418,7 +439,10 @@ export const TextButtonFlip = (props: DefaultButtonProps) => (
 export const SubmitTextButton = (props: DefaultButtonProps) => (
   <button
     onClick={e => props.action(e)}
-    className={Styles.SubmitTextButton}
+    className={classNames(Styles.SubmitTextButton, {
+      [Styles.Confirmed]: props.confirmed,
+      [Styles.Failed]: props.failed,
+    })}
     disabled={props.disabled}
     title={props.title}
   >

@@ -1,16 +1,16 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 
-import ModalNetworkConnect from "modules/modal/containers/modal-network-connect";
-import ModalLoading from "modules/modal/components/common/modal-loading";
+import ModalNetworkConnect from 'modules/modal/containers/modal-network-connect';
+import ModalLoading from 'modules/modal/components/common/modal-loading';
 
-import commonStyles from "modules/modal/components/common/common.styles.less";
+import commonStyles from 'modules/modal/components/common/common.styles.less';
 
-import getValue from "utils/get-value";
-import { EnvObject } from "modules/types";
+import getValue from 'utils/get-value';
+import { SDKConfiguration } from '@augurproject/artifacts';
 
 interface ModalNetworkDisconnectedProps {
   modal: {
-    env: EnvObject;
+    config: SDKConfiguration;
     connection: object;
   };
   updateIsReconnectionPaused: Function;
@@ -56,19 +56,19 @@ export default class ModalNetworkDisconnected extends Component<ModalNetworkDisc
   render() {
     const { modal } = this.props;
     const { showEnvForm } = this.state;
-    const connectionStatus = getValue(this.props, "modal.connection");
-    let nodeTitleText = "";
-    let nodeDescriptionText = "";
+    const connectionStatus = getValue(this.props, 'modal.connection');
+    let nodeTitleText = '';
+    let nodeDescriptionText = '';
     if (
       !connectionStatus.isConnected
     ) {
       // ethereumNode disconnected only
-      nodeTitleText = " to Ethereum Node";
-      nodeDescriptionText = " from your Ethereum Node";
+      nodeTitleText = ' to Ethereum Node';
+      nodeDescriptionText = ' from your Ethereum Node';
     }
     // assemble the text based on disconnections
     const titleText = `Reconnecting${nodeTitleText}`;
-    const descriptionText = `Please wait while we try to reconnect you, or update your node addresses `;
+    const descriptionText = 'Please wait while we try to reconnect you, or update your node addresses ';
 
     return (
       <section className={commonStyles.ModalContainer}>
@@ -83,7 +83,7 @@ export default class ModalNetworkDisconnected extends Component<ModalNetworkDisc
         )}
         {!showEnvForm && <ModalLoading />}
         {showEnvForm && (
-          <ModalNetworkConnect submitForm={this.submitForm} env={modal.env} />
+          <ModalNetworkConnect submitForm={this.submitForm} config={modal.config} />
         )}
       </section>
     );

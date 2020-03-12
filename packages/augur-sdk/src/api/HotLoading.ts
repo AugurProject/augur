@@ -1,16 +1,16 @@
-import { BigNumber } from "bignumber.js";
-import { Augur } from "../Augur";
+import { BigNumber } from 'bignumber.js';
+import { Augur } from '../Augur';
 import { SubscriptionEventName, MarketReportingStateByNum } from '../constants';
-import { Address, MarketTypeName } from "../state/logs/types";
-import { MarketInfoOutcome } from "../state/getter/Markets";
+import { Address, MarketTypeName } from '../state/logs/types';
+import { MarketInfoOutcome } from '../state/getter/Markets';
 import { ExtraInfoTemplate } from '@augurproject/artifacts';
 import {
     convertOnChainPriceToDisplayPrice,
     marketTypeToName,
     numTicksToTickSize,
     QUINTILLION
-  } from "../index";
-  import { calculatePayoutNumeratorsValue, PayoutNumeratorValue } from "../utils";
+  } from '../index';
+  import { calculatePayoutNumeratorsValue, PayoutNumeratorValue } from '../utils';
 
 export interface GetDisputeWindowParams {
   augur: Address;
@@ -65,9 +65,9 @@ export class HotLoading {
   }
 
   async getMarketDataParams(params: GetMarketDataParams): Promise<HotLoadMarketInfo> {
-    const augur = this.augur.addresses.Augur;
-    const fillorder = this.augur.addresses.FillOrder;
-    const orders = this.augur.addresses.Orders;
+    const augur = this.augur.config.addresses.Augur;
+    const fillorder = this.augur.config.addresses.FillOrder;
+    const orders = this.augur.config.addresses.Orders;
 
     const marketData = await this.augur.contracts.hotLoading.getMarketData_(augur, params.market, fillorder, orders);
 
@@ -80,7 +80,7 @@ export class HotLoading {
     if (displayPrices.length == 0) {
         displayPrices = [0, QUINTILLION];
     } else {
-        displayPrices = displayPrices.map((price) => { return new BigNumber(price._hex); });
+        displayPrices = displayPrices.map((price) => new BigNumber(price._hex));
     }
     const designatedReporter = marketData[6];
     const reportingStateNumber: number = marketData[7];
@@ -108,7 +108,7 @@ export class HotLoading {
     let consensus = null;
 
     if (reportingState === 'Finalized') {
-        let payouts = [];
+        const payouts = [];
         for (let i = 0; i < winningPayout.length; i++) {
             payouts[i] = new BigNumber(winningPayout[i]).toString(10);
         }
@@ -122,7 +122,7 @@ export class HotLoading {
     let template = null;
     if (extraInfoString) {
       try {
-        let extraInfo = JSON.parse(extraInfoString);
+        const extraInfo = JSON.parse(extraInfoString);
         categories = extraInfo.categories ? extraInfo.categories : [];
         description = extraInfo.description ? extraInfo.description : null;
         details = extraInfo.longDescription
@@ -145,10 +145,10 @@ export class HotLoading {
 
     const outcomeInfo = [];
     for (let i = 0; i < numOutcomes; i++) {
-      let description = "Invalid";
+      let description = 'Invalid';
       if (i > 0) {
         if (marketType === MarketTypeName.YesNo) {
-          description = i == 1 ? "No" : "Yes";
+          description = i == 1 ? 'No' : 'Yes';
         } else if (marketType === MarketTypeName.Categorical) {
           description = Buffer.from(outcomes[i - 1].substr(2), 'hex').toString().replace(/\0/g, '');
         } else {
@@ -189,7 +189,7 @@ export class HotLoading {
         settlementFee: settlementFee.toFixed(),
         outcomes: outcomeInfo,
         template,
-    }
+    };
 
     this.augur.events.emit(SubscriptionEventName.MarketsUpdated, { marketsInfo });
     return marketsInfo;
@@ -198,7 +198,7 @@ export class HotLoading {
   async getCurrentDisputeWindowData(params: GetDisputeWindowParams): Promise<DisputeWindow> {
     const disputeWindowData = await this.augur.contracts.hotLoading.getCurrentDisputeWindowData_(params.augur, params.universe);
     return {
-      address: disputeWindowData[0] == "0x0000000000000000000000000000000000000000" ? "" : disputeWindowData[0],
+      address: disputeWindowData[0] == '0x0000000000000000000000000000000000000000' ? '' : disputeWindowData[0],
 		  startTime: disputeWindowData[1].toNumber(),
 		  endTime: disputeWindowData[2].toNumber(),
 		  purchased: disputeWindowData[3].toString(),

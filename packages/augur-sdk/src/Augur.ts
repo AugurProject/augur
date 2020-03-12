@@ -1,4 +1,4 @@
-import { ContractAddresses, NetworkId } from '@augurproject/artifacts';
+import { SDKConfiguration, NetworkId } from '@augurproject/artifacts';
 import { ContractInterfaces } from '@augurproject/core';
 import { BigNumber } from 'bignumber.js';
 import { EthersSigner, TransactionStatus, TransactionStatusCallback } from 'contract-dependencies-ethers';
@@ -80,18 +80,17 @@ export class Augur<TProvider extends Provider = Provider> {
   constructor(
     readonly provider: TProvider,
     readonly dependencies: ContractDependenciesGSN,
-    readonly networkId: NetworkId,
-    readonly addresses: ContractAddresses,
+    public config: SDKConfiguration,
     public connector: BaseConnector = new EmptyConnector(),
     private _zeroX = null,
     enableFlexSearch = false
   ) {
     this.provider = provider;
     this.dependencies = dependencies;
-    this.networkId = networkId;
     if (!this.connector || connector.constructor.name !== 'EmptyConnector') {
       this.connector = connector;
     }
+    if (!config.addresses) throw Error(`Augur config must include addresses. Config=${JSON.stringify(config)}`)
 
     this.events = new Subscriptions(augurEmitter);
     this.events.on(SubscriptionEventName.SDKReady, () => {
@@ -103,16 +102,15 @@ export class Augur<TProvider extends Provider = Provider> {
     if(this.zeroX) this.zeroX.client = this;
 
     // API
-    this.addresses = addresses;
-    this.contracts = new Contracts(this.addresses, this.dependencies);
+    this.contracts = new Contracts(this.config.addresses, this.dependencies);
     this.market = new Market(this);
     this.liquidity = new Liquidity(this);
     this.contractEvents = new ContractEvents(
       this.provider,
-      this.addresses.Augur,
-      this.addresses.AugurTrading,
-      this.addresses.ShareToken,
-      this.addresses.Exchange,
+      this.config.addresses.Augur,
+      this.config.addresses.AugurTrading,
+      this.config.addresses.ShareToken,
+      this.config.addresses.Exchange,
       );
     this.warpSync = new WarpSync(this);
     this.hotLoading = new HotLoading(this);
@@ -128,23 +126,25 @@ export class Augur<TProvider extends Provider = Provider> {
   static async create<TProvider extends Provider = Provider>(
     provider: TProvider,
     dependencies: ContractDependenciesGSN,
-    addresses: ContractAddresses,
+    config: SDKConfiguration,
     connector: BaseConnector = new SingleThreadConnector(),
     zeroX: ZeroX = null,
     enableFlexSearch = false
   ): Promise<Augur<Provider>> {
-    const networkId = await provider.getNetworkId();
     const client = new Augur<TProvider>(
       provider,
       dependencies,
-      networkId,
-      addresses,
+      config,
       connector,
       zeroX,
       enableFlexSearch
     );
-    await client.contracts.setReputationToken(networkId)
+    await client.contracts.setReputationToken(config.networkId)
     return client;
+  }
+
+  get networkId(): NetworkId {
+    return this.config.networkId;
   }
 
   async getTransaction(hash: string): Promise<TransactionResponse> {
@@ -216,7 +216,7 @@ export class Augur<TProvider extends Provider = Provider> {
 
   async getGasStation() {
     try {
-      const result = await axios.get("https://ethgasstation.info/json/ethgasAPI.json");
+      const result = await axios.get("https://safe-relay.gnosis.io/api/v1/gas-station/");
       return result.data
     } catch (error) {
       throw error;
@@ -251,7 +251,7 @@ export class Augur<TProvider extends Provider = Provider> {
   getOrders(): ContractInterfaces.Orders {
     return new ContractInterfaces.Orders(
       this.dependencies,
-      this.addresses.Orders
+      this.config.addresses.Orders
     );
   }
 
@@ -396,6 +396,14 @@ export class Augur<TProvider extends Provider = Provider> {
   getMostRecentWarpSync = (
   ): ReturnType<typeof WarpSyncGetter.getMostRecentWarpSync> => {
     return this.bindTo(WarpSyncGetter.getMostRecentWarpSync)(undefined);
+  };
+
+  getPayoutFromWarpSyncHash = (hash: string): Promise<BigNumber[]> => {
+      return this.warpSync.getPayoutFromWarpSyncHash(hash);
+  };
+
+  getWarpSyncHashFromPayout = (payout: BigNumber[]): string => {
+    return this.warpSync.getWarpSyncHashFromPayout(payout);
   };
 
   getProfitLoss = (
