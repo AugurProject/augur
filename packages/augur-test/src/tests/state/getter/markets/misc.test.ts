@@ -120,7 +120,7 @@ describe('State API :: Markets :: ', () => {
     beforeEach(async () => {
       await john.initializeUniverseForWarpSync();
 
-      // This hash won't do anything because it is the IPFS for
+      // This hash won't do anything because it is the IPFS for '0'. Which is an uninitialized warp sync market.
       const someHash = 'QmNLei78zWmzUdbeRB3CiUfAizWUrbeeZh5K1rhAQKCh51';
       expectedMarkets = [
         await john.createReasonableYesNoMarket(),
