@@ -33,7 +33,12 @@ import {
   CopyAlternateIcon,
   Person,
   Rules,
+  DesignatedReporter,
+  DisputeStake,
+  MarketCreator,
+  PositionIcon,
 } from 'modules/common/icons';
+import { isSameAddress } from 'utils/isSameAddress';
 import {
   FormattedNumber,
   MarketData,
@@ -629,7 +634,7 @@ export const LoadingMarketCard = () => (
 
 export interface TopRowProps {
   market: MarketData;
-  categoriesWithClick: Array<{ label: string, onClick: Function }>;
+  categoriesWithClick: Array<{ label: string; onClick: Function }>;
   marketLinkCopied: Function;
   toggleFavorite: Function;
   currentAugurTimestamp: number;
@@ -731,5 +736,57 @@ export const TopRow = ({
         </div>
       </DotSelection>
     </div>
+  );
+};
+
+export interface InfoIconsProps {
+  market: MarketData;
+  address?: string;
+  hasPosition?: boolean;
+  hasStaked?: boolean;
+}
+
+export const InfoIcons = ({
+  market,
+  address,
+  hasPosition,
+  hasStaked,
+}: InfoIconsProps) => {
+  const { id, designatedReporter, author } = market;
+  return (
+    <>
+      {address && isSameAddress(address, author) && (
+        <HoverIcon
+          id={id}
+          label="marketCreator"
+          icon={MarketCreator}
+          hoverText="Market Creator"
+        />
+      )}
+      {address && isSameAddress(address, designatedReporter) && (
+        <HoverIcon
+          id={id}
+          label="reporter"
+          icon={DesignatedReporter}
+          hoverText="Designated Reporter"
+        />
+      )}
+      {hasPosition && (
+        <HoverIcon
+          id={id}
+          label="Position"
+          icon={PositionIcon}
+          hoverText="Position"
+        />
+      )}
+      {hasStaked && (
+        <HoverIcon
+          id={id}
+          label="dispute"
+          icon={DisputeStake}
+          hoverText="Dispute Stake"
+        />
+      )}
+    </>
   );
 };

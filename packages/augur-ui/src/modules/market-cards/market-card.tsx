@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import classNames from 'classnames';
 
 import {
-  HoverIcon,
   LabelValue,
   OutcomeGroup,
   ResolvedOutcomes,
   TentativeWinner,
-  TopRow
+  TopRow,
+  InfoIcons,
 } from 'modules/market-cards/common';
 import toggleCategory from 'modules/routes/helpers/toggle-category';
 import { DISPUTING, MARKETS } from 'modules/routes/constants/views';
@@ -18,12 +18,6 @@ import {
   SCALAR,
   THEMES,
 } from 'modules/common/constants';
-import {
-  DesignatedReporter,
-  DisputeStake,
-  MarketCreator,
-  PositionIcon,
-} from 'modules/common/icons';
 import { MarketProgress } from 'modules/common/progress';
 import ChevronFlip from 'modules/common/chevron-flip';
 import { MarketData } from 'modules/types';
@@ -31,7 +25,21 @@ import { formatAttoRep } from 'utils/format-number';
 import MigrateMarketNotice from 'modules/market-cards/containers/migrate-market-notice';
 import Styles from 'modules/market-cards/market-card.styles.less';
 import MarketTitle from 'modules/market/containers/market-title';
-import { isSameAddress } from 'utils/isSameAddress';
+
+const LoadingCard = () => (<div
+className={classNames(Styles.MarketCard, {
+  [Styles.Loading]: true,
+})}
+>
+  <div />
+  <div />
+  <div />
+  <div />
+  <div />
+  <div />
+  <div />
+</div>
+);
 
 interface MarketCardProps {
   market: MarketData;
@@ -84,74 +92,17 @@ export const MarketCard = ({
     maxPriceBigNumber,
     categories,
     id,
-    author,
     reportingState,
     openInterestFormatted,
     volumeFormatted,
     disputeInfo,
     endTimeFormatted,
-    designatedReporter,
     consensusFormatted,
   } = market;
 
   if (loading) {
-    return (
-      <div
-        className={classNames(Styles.MarketCard, {
-          [Styles.Loading]: loading,
-        })}
-      >
-        {loading && (
-          <>
-            <div />
-            <div />
-            <div />
-            <div />
-            <div />
-            <div />
-            <div />
-          </>
-        )}
-      </div>
-    );
+    return <LoadingCard />;
   }
-
-  const InfoIcons = ({ id }) => (
-    <>
-      {address && isSameAddress(address, author) && (
-        <HoverIcon
-          id={id}
-          label="marketCreator"
-          icon={MarketCreator}
-          hoverText="Market Creator"
-        />
-      )}
-      {address && isSameAddress(address, designatedReporter) && (
-        <HoverIcon
-          id={id}
-          label="reporter"
-          icon={DesignatedReporter}
-          hoverText="Designated Reporter"
-        />
-      )}
-      {hasPosition && (
-        <HoverIcon
-          id={id}
-          label="Position"
-          icon={PositionIcon}
-          hoverText="Position"
-        />
-      )}
-      {hasStaked && (
-        <HoverIcon
-          id={id}
-          label="dispute"
-          icon={DisputeStake}
-          hoverText="Dispute Stake"
-        />
-      )}
-    </>
-  );
 
   const path =
     location.pathname === makePath(MARKETS)
@@ -236,7 +187,14 @@ export const MarketCard = ({
               value={formatAttoRep(disputeInfo.stakeCompletedTotal).full}
             />
           )}
-          <div className={Styles.hoverIconTray}>{InfoIcons}</div>
+          <div className={Styles.hoverIconTray}>
+            <InfoIcons
+              market={market}
+              hasPosition={hasPosition}
+              hasStaked={hasStaked}
+              address={address}
+            />
+          </div>
           <MarketProgress
             reportingState={reportingState}
             currentTime={currentAugurTimestamp}
@@ -307,7 +265,12 @@ export const MarketCard = ({
         )}
       </>
       <div className={Styles.InfoIcons}>
-        <InfoIcons id={id} />
+        <InfoIcons
+          market={market}
+          hasPosition={hasPosition}
+          hasStaked={hasStaked}
+          address={address}
+        />
       </div>
       {notTrading && (
         <MarketProgress
