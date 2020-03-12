@@ -37,7 +37,6 @@ interface WrapperProps {
   selectedOutcome: OutcomeFormatted;
   selectedOrderProperties: SelectedOrderProperties;
   addFundsModal: Function;
-  addPendingOrder: Function;
   disclaimerModal: Function;
   handleFilledOnly: Function;
   loginModal: Function;
