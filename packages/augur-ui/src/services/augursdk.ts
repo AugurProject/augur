@@ -1,6 +1,5 @@
 import {
   NetworkId,
-  getAddressesForNetwork,
   SDKConfiguration
 } from '@augurproject/artifacts';
 import {

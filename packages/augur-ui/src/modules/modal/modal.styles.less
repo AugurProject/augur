@@ -1240,7 +1240,6 @@ div.ButtonsRow:last-of-type {
 .Orders {
   .Message;
 
-  background: @color-dark-grey;
   min-width: 842px;
 
   @media @breakpoint-mobile {
@@ -3037,6 +3036,10 @@ div.ButtonsRow:last-of-type {
     display: flex;
     flex-direction: column;
     padding: @size-16 0 0;
+
+    > section {
+      margin: 0 @size-16;
+    }
 
     > div:first-of-type {
       margin: @size-8 @size-16 @size-24;
