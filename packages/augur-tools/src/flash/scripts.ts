@@ -2092,6 +2092,7 @@ export function addScripts(flash: FlashSession) {
       this.log(`Use fake time: ${fake}`);
       this.log(`Detach: ${detach}`);
 
+      let env;
       try {
         if (dev) {
           spawnSync('yarn', ['workspace', '@augurproject/tools', 'docker:geth:detached']);
@@ -2125,13 +2126,13 @@ export function addScripts(flash: FlashSession) {
         };
 
         this.log('Running dockers. Type ctrl-c to quit:');
-        await spawnSync('docker-compose', ['-f', 'support/docker-compose.yml', 'up', '-d'], {
+        await spawnSync('docker-compose', ['-f', 'docker-compose.yml', 'up', '-d'], {
           env,
           stdio: 'inherit'
         });
         if (detach) return;
 
-        spawn('docker-compose', ['-f', 'support/docker-compose.yml', 'logs'], {env, stdio: 'inherit'});
+        spawn('docker-compose', ['-f', 'docker-compose.yml', 'logs'], {env, stdio: 'inherit'});
         await waitForSigint();
       } catch (err) {
         console.log(`Error: ${err}`);
@@ -2139,10 +2140,7 @@ export function addScripts(flash: FlashSession) {
         if (!detach) {
           this.log('Stopping dockers');
           await spawnSync('docker', ['kill', 'geth'], { stdio: 'inherit' });
-          await spawnSync('yarn', ['workspace', '@augurproject/gnosis-relay-api', 'kill-relay'], {
-            env,
-            stdio: 'inherit'
-          });
+          await spawn('docker-compose', ['-f', 'docker-compose.yml', 'down'], {env, stdio: 'inherit'});
         }
       }
     }
