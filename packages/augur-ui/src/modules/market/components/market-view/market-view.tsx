@@ -712,6 +712,7 @@ export default class MarketView extends Component<
                               hide={extendTradeHistory}
                               market={market}
                               initialLiquidity={preview}
+                              orderBook={outcomeOrderBook}
                               showButtons
                               orderbookLoading={orderbookLoading}
                             />
