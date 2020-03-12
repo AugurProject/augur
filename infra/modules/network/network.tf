@@ -191,7 +191,6 @@ module "ingress-0x-mesh-bootstrap" {
   unauthenticated_priority            = 101
 }
 
-
 module "ingress-0x-mesh-rpc" {
   source                       = "git::https://github.com/cloudposse/terraform-aws-alb-ingress.git?ref=0.9.0"
   namespace                    = var.namespace

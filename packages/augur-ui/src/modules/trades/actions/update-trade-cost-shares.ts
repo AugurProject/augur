@@ -195,7 +195,7 @@ async function runSimulateTrade(
     userShares
   );
 
-  let gasLimit: BigNumber = createBigNumber(ZEROX_GAS_FEE);
+  let gasLimit: BigNumber = createBigNumber(0);
 
   const totalFee = createBigNumber(simulateTradeValue.settlementFees, 10);
   newTradeDetails.totalFee = totalFee.toFixed();

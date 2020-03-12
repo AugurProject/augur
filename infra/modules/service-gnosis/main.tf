@@ -9,8 +9,6 @@ locals {
   redis_port         = 6379
   worker_name        = "gnosis-worker"
   scheduler_name     = "gnosis-scheduler"
-  gnosis_safe_addr   = jsondecode(data.local_file.contract-addresses.content)[var.ethereum_chain_id]["GnosisSafe"]
-  proxy_factory_addr = jsondecode(data.local_file.contract-addresses.content)[var.ethereum_chain_id]["ProxyFactory"]
 }
 
 // Secrets
@@ -18,12 +16,12 @@ data aws_secretsmanager_secret "gnosis-funder-private-key" {
   name = "gnosis-funder-private-key"
 }
 
-data aws_secretsmanager_secret "gnosis-sender-private-key" {
-  name = "gnosis-sender-private-key"
-}
-
 data aws_secretsmanager_secret_version "gnosis-funder-private-key" {
   secret_id = data.aws_secretsmanager_secret.gnosis-funder-private-key.id
+}
+
+data aws_secretsmanager_secret "gnosis-sender-private-key" {
+  name = "gnosis-sender-private-key"
 }
 
 data aws_secretsmanager_secret_version "gnosis-sender-private-key" {
@@ -35,7 +33,7 @@ module "gnosis-security-group" {
   source = "terraform-aws-modules/security-group/aws"
 
   name                = "gnosis-web-sg"
-  vpc_id              = module.vpc.vpc_id
+  vpc_id              = var.vpc_id
   ingress_cidr_blocks = ["0.0.0.0/0"]
   ingress_rules = [
     "postgresql-tcp",
@@ -43,8 +41,8 @@ module "gnosis-security-group" {
   ]
   ingress_with_cidr_blocks = [
     {
-      from_port   = 8888
-      to_port     = 8888
+      from_port   = local.web_port
+      to_port     = local.web_port
       protocol    = "tcp"
       cidr_blocks = "0.0.0.0/0"
     }
@@ -69,7 +67,7 @@ module "task-gnosis-web" {
   log_configuration = {
     logDriver = "awslogs"
     options = {
-      "awslogs-group" : aws_cloudwatch_log_group.ecs.name,
+      "awslogs-group" : var.ecs_log_group,
       "awslogs-region" : var.region,
       "awslogs-stream-prefix" : local.web_name
     }
@@ -86,11 +84,11 @@ module "task-gnosis-web" {
     },
     {
       name : "CELERY_BROKER_URL",
-      value : "redis://gnosis-redis.${var.environment}"
+      value : "redis://${local.redis_name}.${var.environment}"
     },
     {
       name : "DATABASE_URL",
-      value : "psql://postgres@gnosis-postgres.${var.environment}:5432/postgres"
+      value : "psql://postgres@${local.postgres_name}.${var.environment}:${local.postgres_port}/postgres"
     },
     {
       name : "DEBUG",
@@ -130,7 +128,7 @@ module "task-gnosis-web" {
     },
     {
       name : "SAFE_CONTRACT_ADDRESS",
-      value : local.gnosis_safe_addr
+      value : var.gnosis_safe_address
     },
     {
       name : "SAFE_FUNDER_PRIVATE_KEY",
@@ -138,11 +136,11 @@ module "task-gnosis-web" {
     },
     {
       name : "SAFE_OLD_CONTRACT_ADDRESS",
-      value : local.gnosis_safe_addr
+      value : var.gnosis_safe_address
     },
     {
       name : "SAFE_PROXY_FACTORY_ADDRESS",
-      value : local.proxy_factory_addr
+      value : var.proxy_factory_address
     },
     {
       name : "SAFE_TX_SENDER_PRIVATE_KEY",
@@ -158,7 +156,7 @@ module "task-gnosis-web" {
 //TODO: Add real auth
 module "task-gnosis-postgres" {
   source           = "git::https://github.com/cloudposse/terraform-aws-ecs-container-definition.git?ref=tags/0.23.0"
-  container_name   = "gnosis-postgres"
+  container_name   = local.postgres_name
   container_image  = "postgres:10-alpine"
   container_memory = 512
   container_cpu    = 256
@@ -171,15 +169,15 @@ module "task-gnosis-postgres" {
   ]
   port_mappings = [
     {
-      hostPort : 5432,
+      hostPort : local.postgres_port,
       protocol : "tcp",
-      containerPort : 5432
+      containerPort : local.postgres_port
     }
   ]
   log_configuration = {
     logDriver = "awslogs"
     options = {
-      "awslogs-group" : aws_cloudwatch_log_group.ecs.name,
+      "awslogs-group" : var.ecs_log_group,
       "awslogs-region" : var.region,
       "awslogs-stream-prefix" : local.postgres_name
     }
@@ -189,22 +187,22 @@ module "task-gnosis-postgres" {
 
 module "task-gnosis-redis" {
   source           = "git::https://github.com/cloudposse/terraform-aws-ecs-container-definition.git?ref=tags/0.23.0"
-  container_name   = "gnosis-redis"
+  container_name   = local.redis_name
   container_image  = "redis:4-alpine"
   container_memory = 512
   container_cpu    = 256
   command          = []
   port_mappings = [
     {
-      hostPort : 6379,
+      hostPort : local.redis_port,
       protocol : "tcp",
-      containerPort : 6379
+      containerPort : local.redis_port
     }
   ]
   log_configuration = {
     logDriver = "awslogs"
     options = {
-      "awslogs-group" : aws_cloudwatch_log_group.ecs.name,
+      "awslogs-group" : var.ecs_log_group,
       "awslogs-region" : var.region,
       "awslogs-stream-prefix" : local.redis_name
     }
@@ -215,7 +213,7 @@ module "task-gnosis-redis" {
 
 module "task-gnosis-worker" {
   source           = "git::https://github.com/cloudposse/terraform-aws-ecs-container-definition.git?ref=tags/0.23.0"
-  container_name   = "gnosis-worker"
+  container_name   = local.worker_name
   container_image  = "augurproject/safe-relay-service_worker:latest"
   container_memory = 512
   container_cpu    = 256
@@ -223,7 +221,7 @@ module "task-gnosis-worker" {
   log_configuration = {
     logDriver = "awslogs"
     options = {
-      "awslogs-group" : aws_cloudwatch_log_group.ecs.name,
+      "awslogs-group" : var.ecs_log_group,
       "awslogs-region" : var.region,
       "awslogs-stream-prefix" : local.worker_name
     }
@@ -236,11 +234,11 @@ module "task-gnosis-worker" {
     },
     {
       name : "CELERY_BROKER_URL",
-      value : "redis://gnosis-redis.demo"
+      value : "redis://${local.redis_name}.${var.environment}"
     },
     {
       name : "DATABASE_URL",
-      value : "psql://postgres@gnosis-postgres.demo:5432/postgres"
+      value : "psql://postgres@${local.postgres_name}.${var.environment}:${local.postgres_port}/postgres"
     },
     {
       name : "DEBUG",
@@ -260,7 +258,7 @@ module "task-gnosis-worker" {
     },
     {
       name : "ETHEREUM_NODE_URL",
-      value : "https://eth-kovan.alchemyapi.io/jsonrpc/Kd37_uEmJGwU6pYq6jrXaJXXi8u9IoOM"
+      value : var.ethereum_node_url
     },
     {
       name : "PYTHONPATH",
@@ -268,11 +266,11 @@ module "task-gnosis-worker" {
     },
     {
       name : "REDIS_URL",
-      value : "redis://gnosis-redis.demo"
+      value : "redis://${local.redis_name}.${var.environment}"
     },
     {
       name : "SAFE_CONTRACT_ADDRESS",
-      value : local.gnosis_safe_addr
+      value : var.gnosis_safe_address
     },
     {
       name : "SAFE_FUNDER_PRIVATE_KEY",
@@ -280,11 +278,11 @@ module "task-gnosis-worker" {
     },
     {
       name : "SAFE_OLD_CONTRACT_ADDRESS",
-      value : local.gnosis_safe_addr
+      value : var.gnosis_safe_address
     },
     {
       name : "SAFE_PROXY_FACTORY_ADDRESS",
-      value : local.proxy_factory_addr
+      value : var.proxy_factory_address
     },
     {
       name : "SAFE_TX_SENDER_PRIVATE_KEY",
@@ -299,7 +297,7 @@ module "task-gnosis-worker" {
 
 module "task-gnosis-scheduler" {
   source           = "git::https://github.com/cloudposse/terraform-aws-ecs-container-definition.git?ref=tags/0.23.0"
-  container_name   = "gnosis-scheduler"
+  container_name   = local.worker_name
   container_image  = "augurproject/safe-relay-service_scheduler:latest"
   container_memory = 512
   container_cpu    = 256
@@ -307,7 +305,7 @@ module "task-gnosis-scheduler" {
   log_configuration = {
     logDriver = "awslogs"
     options = {
-      "awslogs-group" : aws_cloudwatch_log_group.ecs.name,
+      "awslogs-group" : var.ecs_log_group,
       "awslogs-region" : var.region,
       "awslogs-stream-prefix" : local.scheduler_name
     }
@@ -320,11 +318,11 @@ module "task-gnosis-scheduler" {
     },
     {
       name : "CELERY_BROKER_URL",
-      value : "redis://gnosis-redis.demo"
+      value : "redis://${local.redis_name}.${var.environment}"
     },
     {
       name : "DATABASE_URL",
-      value : "psql://postgres@gnosis-postgres.demo:5432/postgres"
+      value : "psql://postgres@${local.postgres_name}.${var.environment}:${local.postgres_port}/postgres"
     },
     {
       name : "DEBUG",
@@ -352,11 +350,11 @@ module "task-gnosis-scheduler" {
     },
     {
       name : "REDIS_URL",
-      value : "redis://gnosis-redis.demo"
+      value : "redis://${local.redis_name}.${var.environment}"
     },
     {
       name : "SAFE_CONTRACT_ADDRESS",
-      value : local.gnosis_safe_addr
+      value : var.gnosis_safe_address
     },
     {
       name : "SAFE_FUNDER_PRIVATE_KEY",
@@ -364,11 +362,11 @@ module "task-gnosis-scheduler" {
     },
     {
       name : "SAFE_OLD_CONTRACT_ADDRESS",
-      value : local.gnosis_safe_addr
+      value : var.gnosis_safe_address
     },
     {
       name : "SAFE_PROXY_FACTORY_ADDRESS",
-      value : local.proxy_factory_addr
+      value : var.proxy_factory_address
     },
     {
       name : "SAFE_TX_SENDER_PRIVATE_KEY",
@@ -384,8 +382,8 @@ module "task-gnosis-scheduler" {
 
 /* Services */
 module "discovery-gnosis-web" {
-  source       = "./modules/discovery"
-  namespace    = aws_service_discovery_private_dns_namespace.ecs.id
+  source       = "../../modules/discovery"
+  namespace    = var.service_discovery_namespace_id
   service_name = local.web_name
 }
 
@@ -393,26 +391,26 @@ module "service-gnosis-web" {
   source                         = "git::https://github.com/cloudposse/terraform-aws-ecs-alb-service-task.git?ref=tags/0.21.0"
   stage                          = var.environment
   name                           = local.web_name
-  alb_security_group             = module.alb_security_group.this_security_group_id
+  alb_security_group             = var.alb_sg
   container_definition_json      = module.task-gnosis-web.json
   ignore_changes_task_definition = false
-  ecs_cluster_arn                = aws_ecs_cluster.ecs.arn
+  ecs_cluster_arn                = var.ecs_cluster_arn
   launch_type                    = "FARGATE"
   network_mode                   = "awsvpc"
   assign_public_ip               = true
-  vpc_id                         = module.vpc.vpc_id
+  vpc_id                         = var.vpc_id
   security_group_ids = [
-    module.vpc.vpc_default_security_group_id,
+    var.vpc_sg,
     module.gnosis-security-group.this_security_group_id
   ]
-  subnet_ids    = module.subnets.public_subnet_ids
+  subnet_ids    = var.public_subnets
   desired_count = 1
   ecs_load_balancers = [
     {
       container_name   = local.web_name
       container_port   = local.web_port
       elb_name         = null
-      target_group_arn = module.ingress-gnosis-web.target_group_arn
+      target_group_arn = var.gnosis_web_tg_arn
     }
   ]
   service_registries = [
@@ -426,8 +424,8 @@ module "service-gnosis-web" {
 }
 
 module "discovery-gnosis-postgres" {
-  source       = "./modules/discovery"
-  namespace    = aws_service_discovery_private_dns_namespace.ecs.id
+  source       = "../../modules/discovery"
+  namespace    = var.service_discovery_namespace_id
   service_name = local.postgres_name
 }
 
@@ -435,19 +433,19 @@ module "service-gnosis-postgres" {
   source                         = "git::https://github.com/cloudposse/terraform-aws-ecs-alb-service-task.git?ref=tags/0.21.0"
   stage                          = var.environment
   name                           = local.postgres_name
-  alb_security_group             = module.alb_security_group.this_security_group_id
+  alb_security_group             = var.alb_sg
   container_definition_json      = module.task-gnosis-postgres.json
   ignore_changes_task_definition = false
-  ecs_cluster_arn                = aws_ecs_cluster.ecs.arn
+  ecs_cluster_arn                = var.ecs_cluster_arn
   launch_type                    = "FARGATE"
   network_mode                   = "awsvpc"
   assign_public_ip               = true
-  vpc_id                         = module.vpc.vpc_id
+  vpc_id                         = var.vpc_id
   security_group_ids = [
-    module.vpc.vpc_default_security_group_id,
+    var.vpc_sg,
     module.gnosis-security-group.this_security_group_id
   ]
-  subnet_ids    = module.subnets.public_subnet_ids
+  subnet_ids    = var.public_subnets
   desired_count = 1
   service_registries = [
     {
@@ -460,8 +458,8 @@ module "service-gnosis-postgres" {
 }
 
 module "discovery-gnosis-redis" {
-  source       = "./modules/discovery"
-  namespace    = aws_service_discovery_private_dns_namespace.ecs.id
+  source       = "../../modules/discovery"
+  namespace    = var.service_discovery_namespace_id
   service_name = local.redis_name
 }
 
@@ -469,19 +467,19 @@ module "service-gnosis-redis" {
   source                         = "git::https://github.com/cloudposse/terraform-aws-ecs-alb-service-task.git?ref=tags/0.21.0"
   stage                          = var.environment
   name                           = local.redis_name
-  alb_security_group             = module.alb_security_group.this_security_group_id
+  alb_security_group             = var.alb_sg
   container_definition_json      = module.task-gnosis-redis.json
   ignore_changes_task_definition = false
-  ecs_cluster_arn                = aws_ecs_cluster.ecs.arn
+  ecs_cluster_arn                = var.ecs_cluster_arn
   launch_type                    = "FARGATE"
   network_mode                   = "awsvpc"
   assign_public_ip               = true
-  vpc_id                         = module.vpc.vpc_id
+  vpc_id                         = var.vpc_id
   security_group_ids = [
-    module.vpc.vpc_default_security_group_id,
+    var.vpc_sg,
     module.gnosis-security-group.this_security_group_id
   ]
-  subnet_ids    = module.subnets.public_subnet_ids
+  subnet_ids    = var.public_subnets
   desired_count = 1
   service_registries = [
     {
@@ -494,8 +492,8 @@ module "service-gnosis-redis" {
 }
 
 module "discovery-gnosis-worker" {
-  source       = "./modules/discovery"
-  namespace    = aws_service_discovery_private_dns_namespace.ecs.id
+  source       = "../../modules/discovery"
+  namespace    = var.service_discovery_namespace_id
   service_name = local.worker_name
 }
 
@@ -503,19 +501,19 @@ module "service-gnosis-worker" {
   source                         = "git::https://github.com/cloudposse/terraform-aws-ecs-alb-service-task.git?ref=tags/0.21.0"
   stage                          = var.environment
   name                           = local.worker_name
-  alb_security_group             = module.alb_security_group.this_security_group_id
+  alb_security_group             = var.alb_sg
   container_definition_json      = module.task-gnosis-worker.json
   ignore_changes_task_definition = false
-  ecs_cluster_arn                = aws_ecs_cluster.ecs.arn
+  ecs_cluster_arn                = var.ecs_cluster_arn
   launch_type                    = "FARGATE"
   network_mode                   = "awsvpc"
   assign_public_ip               = true
-  vpc_id                         = module.vpc.vpc_id
+  vpc_id                         = var.vpc_id
   security_group_ids = [
-    module.vpc.vpc_default_security_group_id,
+    var.vpc_sg,
     module.gnosis-security-group.this_security_group_id
   ]
-  subnet_ids    = module.subnets.public_subnet_ids
+  subnet_ids    = var.public_subnets
   desired_count = 1
   service_registries = [
     {
@@ -528,8 +526,8 @@ module "service-gnosis-worker" {
 }
 
 module "discovery-gnosis-scheduler" {
-  source       = "./modules/discovery"
-  namespace    = aws_service_discovery_private_dns_namespace.ecs.id
+  source       = "../../modules/discovery"
+  namespace    = var.service_discovery_namespace_id
   service_name = local.scheduler_name
 }
 
@@ -537,19 +535,19 @@ module "service-gnosis-scheduler" {
   source                         = "git::https://github.com/cloudposse/terraform-aws-ecs-alb-service-task.git?ref=tags/0.21.0"
   stage                          = var.environment
   name                           = local.scheduler_name
-  alb_security_group             = module.alb_security_group.this_security_group_id
+  alb_security_group             = var.alb_sg
   container_definition_json      = module.task-gnosis-scheduler.json
   ignore_changes_task_definition = false
-  ecs_cluster_arn                = aws_ecs_cluster.ecs.arn
+  ecs_cluster_arn                = var.ecs_cluster_arn
   launch_type                    = "FARGATE"
   network_mode                   = "awsvpc"
   assign_public_ip               = true
-  vpc_id                         = module.vpc.vpc_id
+  vpc_id                         = var.vpc_id
   security_group_ids = [
-    module.vpc.vpc_default_security_group_id,
+    var.vpc_sg,
     module.gnosis-security-group.this_security_group_id
   ]
-  subnet_ids    = module.subnets.public_subnet_ids
+  subnet_ids    = var.public_subnets
   desired_count = 1
   service_registries = [
     {
