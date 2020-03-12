@@ -84,7 +84,7 @@
     section > button:first-of-type,
     section > button:last-of-type {
       display: block;
-      width: calc(@size-32 * 3);
+      width: @size-96;
     }
 
     section > span {
@@ -123,17 +123,64 @@
     section > button {
       .mono-12-semi-bold;
 
+      line-height: @size-30;
       height: @size-40;
       margin: 0 @size-4 0 0;
+      width: @size-17;
+
+      
+    }
+
+    section > button:first-of-type {
       width: @size-40;
+      margin: 0 @size-21 0 0;
+    }
+
+    section > button:last-of-type {
+      width: @size-40;
+      margin: 0 0 0 @size-17;
+    }
+
+    section > button:not(:first-of-type):not(:last-of-type) {
+      &:hover {
+        &::before,
+        &::after {
+          content: " ";
+          display: block;
+          height: @size-2;
+          margin: 0 auto;
+          width: @size-9;
+        }
+
+        &::before {
+          background: transparent;
+        }
+
+        &::after {
+          background: var(--color-primary-text);
+          border-radius: 0;
+        }
+      }
     }
   }
 
   .Active {
+    &::before,
+    &::after {
+      content: " ";
+      display: block;
+      height: @size-2;
+      margin: 0 auto;
+      width: @size-9;
+    }
+
+    &::before {
+      background: transparent;
+    }
 
     &::after {
       background: var(--color-primary-action);
-      width: @size-9;
+      border-radius: 0;
     }
   }
 
