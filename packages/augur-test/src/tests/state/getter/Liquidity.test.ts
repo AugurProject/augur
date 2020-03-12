@@ -91,6 +91,7 @@ describe('State API :: Liquidity', () => {
       let marketData = await john.db.Markets.get(market.address);
 
       await expect(marketData.liquidity).toEqual({
+        '0': '000000000000000000000000000000',
         '10': '000000000000000000000000000000',
         '100': '000000000000000000000000000000',
         '15': '000000000000000000000000000000',

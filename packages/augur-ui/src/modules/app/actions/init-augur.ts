@@ -44,6 +44,7 @@ import { tryToPersistStorage } from 'utils/storage-manager';
 import { isDevNetworkId, SDKConfiguration } from '@augurproject/artifacts';
 import { getNetwork } from 'utils/get-network-name';
 import { buildConfig } from '@augurproject/artifacts';
+import { showIndexedDbSize } from 'utils/show-indexed-db-size';
 import { isGoogleBot } from 'utils/is-google-bot';
 
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
@@ -314,5 +315,7 @@ export function initAugur(
     dispatch(updateEnv(config));
     tryToPersistStorage();
     connectAugur(history, config, true, callback)(dispatch, getState);
+
+    windowRef.showIndexedDbSize = showIndexedDbSize;
   };
 }
