@@ -108,7 +108,7 @@ export function updateAlert(
       const alertName = alert.name.toUpperCase();
       alert.id = id;
       alert.uniqueId =
-        alertName === PUBLICTRADE ? createUniqueOrderId(alert) : id;
+        alertName === PUBLICTRADE || alertName === PUBLICFILLORDER ? createUniqueOrderId(alert) : id;
 
       if (alertName === DOINITIALREPORT && !dontMakeNewAlerts) {
         dispatch(

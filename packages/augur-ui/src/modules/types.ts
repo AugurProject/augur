@@ -672,6 +672,7 @@ export interface WindowApp extends Window {
   fm?: any;
   torus?: any;
   portis?: any;
+  showIndexedDbSize?: Function;
 }
 
 export type ButtonActionType = (
