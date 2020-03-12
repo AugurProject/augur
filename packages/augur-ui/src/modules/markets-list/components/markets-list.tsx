@@ -115,19 +115,18 @@ export default class MarketsList extends Component<
           />
 
         )}
-        {showPagination && (
-          <div className={PaginationStyles.PaginationContainer}>
-            <Pagination
-              page={offset}
-              itemCount={marketCount}
-              itemsPerPage={limit}
-              updateLimit={updateLimit}
-              maxLimit={marketCount}
-              action={setOffset}
-              showLimitChanger
-            />
-          </div>
-        )}
+        <div className={PaginationStyles.PaginationContainer}>
+          <Pagination
+            showPagination={showPagination}
+            page={offset}
+            itemCount={marketCount}
+            itemsPerPage={limit}
+            updateLimit={updateLimit}
+            maxLimit={marketCount}
+            action={setOffset}
+            showLimitChanger
+          />
+        </div>
       </article>
     );
   }
