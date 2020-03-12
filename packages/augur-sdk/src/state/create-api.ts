@@ -35,7 +35,9 @@ export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: Ethe
     const warpController = new WarpController((await db), client, provider, uploadBlockNumber);
     const warpSyncStrategy = new WarpSyncStrategy(warpController, logFilterAggregator.onLogsAdded);
 
-    const endWarpSyncBlockNumber = await warpSyncStrategy.start();
+    const { warpSyncHash } = await client.warpSync.getLastWarpSyncData(client.contracts.universe.address);
+
+    const endWarpSyncBlockNumber = await warpSyncStrategy.start(warpSyncHash);
     const staringSyncBlock = Math.max(await (await db).getSyncStartingBlock(), endWarpSyncBlockNumber || uploadBlockNumber);
     const endBulkSyncBlockNumber = await bulkSyncStrategy.start(staringSyncBlock, currentBlockNumber);
 

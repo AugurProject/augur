@@ -224,14 +224,6 @@ export class MarketDB extends DerivedDB {
     return marketOrderBookData;
   }
 
-  async getMostRecentWarpSyncMarkets(limit = 2): Promise<MarketData[]> {
-    return this.table
-      .orderBy('timestamp')
-      .and(item => item.isWarpSync)
-      .limit(limit)
-      .sortBy('endTime');
-  }
-
   async getAllWarpSyncMarkets(): Promise<MarketData[]> {
     return this.table
       .orderBy('timestamp')
