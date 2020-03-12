@@ -1,7 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import classNames from 'classnames';
+import Clipboard from 'clipboard';
 
 import MarketLink from 'modules/market/components/market-link/market-link';
+import { FavoritesButton } from 'modules/common/buttons';
+import { DotSelection } from 'modules/common/selection';
+import { MarketProgress } from 'modules/common/progress';
+import SocialMediaButtons from 'modules/market/containers/social-media-buttons';
 import {
   INVALID_OUTCOME_ID,
   SCALAR,
@@ -14,12 +19,21 @@ import {
   THEMES,
   BETTING_BACK,
   BETTING_LAY,
+  MARKET_REPORTING,
+  COPY_MARKET_ID,
+  COPY_AUTHOR,
 } from 'modules/common/constants';
+import { MARKET_LIST_CARD } from 'services/analytics/helpers';
 import { getTheme } from 'modules/app/actions/update-app-status';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
-import { CheckCircleIcon } from 'modules/common/icons';
+import {
+  CheckCircleIcon,
+  CopyAlternateIcon,
+  Person,
+  Rules,
+} from 'modules/common/icons';
 import {
   FormattedNumber,
   MarketData,
@@ -30,7 +44,13 @@ import { formatAttoRep, formatDai, formatNumber } from 'utils/format-number';
 import { Getters } from '@augurproject/sdk';
 import InvalidLabel from 'modules/common/containers/labels';
 import { ProcessingButton, BettingBackLayButton } from 'modules/common/buttons';
-
+import {
+  CategoryTagTrail,
+  InReportingLabel,
+  MarketTypeLabel,
+  RedFlag,
+  TemplateShield,
+} from 'modules/common/labels';
 import Styles from 'modules/market-cards/common.styles.less';
 import { MarketCard } from 'modules/market-cards/market-card';
 import { selectSortedDisputingOutcomes } from 'modules/markets/selectors/market';
@@ -606,3 +626,110 @@ export const TentativeWinner = ({
 export const LoadingMarketCard = () => (
   <MarketCard loading={true} market={{} as MarketData} />
 );
+
+export interface TopRowProps {
+  market: MarketData;
+  categoriesWithClick: Array<{ label: string, onClick: Function }>;
+  marketLinkCopied: Function;
+  toggleFavorite: Function;
+  currentAugurTimestamp: number;
+  isLogged?: boolean;
+  isFavorite?: boolean;
+}
+export const TopRow = ({
+  market,
+  categoriesWithClick,
+  toggleFavorite,
+  marketLinkCopied,
+  currentAugurTimestamp,
+  isLogged,
+  isFavorite,
+}) => {
+  useEffect(() => {
+    const clipboardMarketId = new Clipboard('#copy_marketId');
+    const clipboardAuthor = new Clipboard('#copy_author');
+  }, [market.id, market.author]);
+  const {
+    settlementFeePercent,
+    marketType,
+    id,
+    description,
+    marketStatus,
+    author,
+    reportingState,
+    volumeFormatted,
+    disputeInfo,
+    endTimeFormatted,
+    isTemplate,
+    mostLikelyInvalid,
+    isWarpSync,
+  } = market;
+  const isScalar = marketType === SCALAR;
+
+  return (
+    <div
+      className={classNames(Styles.TopRow, {
+        [Styles.scalar]: isScalar,
+        [Styles.template]: isTemplate,
+        [Styles.invalid]: mostLikelyInvalid,
+      })}
+    >
+      {marketStatus === MARKET_REPORTING && (
+        <InReportingLabel
+          marketStatus={marketStatus}
+          reportingState={reportingState}
+          disputeInfo={disputeInfo}
+          isWarpSync={market.isWarpSync}
+        />
+      )}
+      {isScalar && !isWarpSync && <MarketTypeLabel marketType={marketType} />}
+      <RedFlag market={market} />
+      {isTemplate && <TemplateShield market={market} />}
+      <CategoryTagTrail categories={categoriesWithClick} />
+      {getTheme() !== THEMES.TRADING ? (
+        <>
+          <span className={Styles.MatchedLine}>
+            Matched<b>{` ${volumeFormatted.full}`}</b>
+            {` (${settlementFeePercent.full} fee)`}
+          </span>
+          <button
+            className={Styles.RulesButton}
+            onClick={() => console.log('pop up a rules modal')}
+          >
+            {Rules} Rules
+          </button>
+        </>
+      ) : (
+        <MarketProgress
+          reportingState={reportingState}
+          currentTime={currentAugurTimestamp}
+          endTimeFormatted={endTimeFormatted}
+          reportingWindowEndTime={disputeInfo.disputeWindow.endTime}
+        />
+      )}
+      <FavoritesButton
+        action={() => toggleFavorite(id)}
+        isFavorite={isFavorite}
+        hideText
+        disabled={!isLogged}
+      />
+      <DotSelection>
+        <SocialMediaButtons
+          listView
+          marketDescription={description}
+          marketAddress={id}
+        />
+        <div
+          id="copy_marketId"
+          data-clipboard-text={id}
+          onClick={() => marketLinkCopied(id, MARKET_LIST_CARD)}
+        >
+          {CopyAlternateIcon} {COPY_MARKET_ID}
+        </div>
+        <div id="copy_author" data-clipboard-text={author}>
+          {Person} {COPY_AUTHOR}
+        </div>
+      </DotSelection>
+    </div>
+  );
+};
