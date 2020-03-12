@@ -535,7 +535,7 @@ export class ZeroX {
   ): Promise<MatchingOrders> {
     const orderType = params.direction === 0 ? '1' : '0';
     const outcome = params.outcome.toString();
-    const price = (params.price as unknown as BN).toHexString();
+    const price = new BN(params.price.toString()).toHexString().substr(2);
 
     const zeroXOrders = await this.client.getZeroXOrders({
       marketId: params.market,
