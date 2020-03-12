@@ -141,7 +141,7 @@ export function addScripts(flash: FlashSession) {
       const { addresses } = await deployContracts(
         env,
         this.provider,
-        this.accounts[0],
+        this.accounts[1],
         compilerOutput,
         this.config,
       );
@@ -170,21 +170,21 @@ export function addScripts(flash: FlashSession) {
         required: false
       },
       {
-        name: 'use-gnosis',
+        name: 'use-gsn',
         abbr: 'g',
-        description: 'Faucet via gnosis',
+        description: 'Faucet via gsn',
         flag: true,
         required: false
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const target = args.target as string;
-      const useGnosis = Boolean(args.useGnosis);
+      const useGsn = Boolean(args.useGsn);
       const amount = Number(args.amount);
       const atto = new BigNumber(amount).times(_1_ETH);
 
       if (this.noProvider()) return;
-      const user = await this.ensureUser(undefined, null, true, null, null, useGnosis);
+      const user = await this.ensureUser(undefined, null, true, null, null, useGsn);
 
       await user.faucetOnce(atto);
 
@@ -447,16 +447,16 @@ export function addScripts(flash: FlashSession) {
     name: 'create-canned-markets',
     options: [
       {
-        name: 'use-gnosis',
+        name: 'use-gsn',
         abbr: 'g',
-        description: 'Faucet via gnosis',
+        description: 'Faucet via gsn',
         flag: true,
         required: false
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
-      const useGnosis = Boolean(args.useGnosis);
-      const user = await this.ensureUser(undefined, null, true, null, null, useGnosis);
+      const useGsn = Boolean(args.useGsn);
+      const user = await this.ensureUser(undefined, null, true, null, null, useGsn);
       await user.repFaucet(QUINTILLION.multipliedBy(1000000));
       await user.faucetOnce(QUINTILLION.multipliedBy(1000000));
       await user.approve(QUINTILLION.multipliedBy(3000000));
@@ -520,9 +520,9 @@ export function addScripts(flash: FlashSession) {
           'Which network to connect to. Defaults to "environment" aka local node.',
       },
       {
-        name: 'useGnosis',
+        name: 'useGsn',
         flag: true,
-        description: 'use gnosis safe instead of user account'
+        description: 'use wallet instead of user account'
       },
       {
         name: 'userAccount',
@@ -533,9 +533,9 @@ export function addScripts(flash: FlashSession) {
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const market = String(args.marketId);
-      const useGnosis = Boolean(args.useGnosis);
+      const useGsn = Boolean(args.useGsn);
       const address = args.userAccount ? (args.userAccount as string) : null;
-      const user = await this.ensureUser(this.network, false, true, address, true, useGnosis);
+      const user = await this.ensureUser(this.network, false, true, address, true, useGsn);
       const skipFaucetApproval = args.skipFaucetOrApproval as boolean;
       if (!skipFaucetApproval) {
         await user.faucetOnce(QUINTILLION.multipliedBy(1000000));
@@ -625,9 +625,9 @@ export function addScripts(flash: FlashSession) {
           'Which network to connect to. Defaults to "environment" aka local node.',
       },
       {
-        name: 'useGnosis',
+        name: 'useGsn',
         flag: true,
-        description: 'use gnosis safe instead of user account'
+        description: 'use wallet instead of user account'
       },
       {
         name: 'userAccount',
@@ -639,9 +639,9 @@ export function addScripts(flash: FlashSession) {
     async call(this: FlashSession, args: FlashArguments) {
       const market = String(args.marketId);
       const numOutcomes = Number(args.numOutcomes);
-      const useGnosis = Boolean(args.useGnosis);
+      const useGsn = Boolean(args.useGsn);
       const address = args.userAccount ? (args.userAccount as string) : null;
-      const user = await this.ensureUser(this.network, false, true, address, true, useGnosis);
+      const user = await this.ensureUser(this.network, false, true, address, true, useGsn);
       const skipFaucetApproval = args.skipFaucetOrApproval as boolean;
       if (!skipFaucetApproval) {
         await user.faucetOnce(QUINTILLION.multipliedBy(1000000));
@@ -778,9 +778,9 @@ export function addScripts(flash: FlashSession) {
           'Which network to connect to. Defaults to "environment" aka local node.',
       },
       {
-        name: 'useGnosis',
+        name: 'useGsn',
         flag: true,
-        description: 'use gnosis safe instead of user account'
+        description: 'use wallet instead of user account'
       },
       {
         name: 'userAccount',
@@ -791,9 +791,9 @@ export function addScripts(flash: FlashSession) {
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const market = String(args.marketId);
-      const useGnosis = Boolean(args.useGnosis);
+      const useGsn = Boolean(args.useGsn);
       const address = args.userAccount ? (args.userAccount as string) : null;
-      const user = await this.ensureUser(this.network, false, true, address, true, useGnosis);
+      const user = await this.ensureUser(this.network, false, true, address, true, useGsn);
       const skipFaucetApproval = args.skipFaucetOrApproval as boolean;
       if (!skipFaucetApproval) {
         await user.faucetOnce(QUINTILLION.multipliedBy(1000000));
@@ -2084,7 +2084,6 @@ export function addScripts(flash: FlashSession) {
       this.log(`Use fake time: ${fake}`);
       this.log(`Detach: ${detach}`);
 
-      let env;
       try {
         if (dev) {
           spawnSync('yarn', ['workspace', '@augurproject/tools', 'docker:geth:detached']);
@@ -2116,6 +2115,8 @@ export function addScripts(flash: FlashSession) {
         if (detach) return;
 
         await waitForSigint();
+      } catch (err) {
+        console.log(`Error: ${err}`);
       } finally {
         if (!detach) {
           this.log('Stopping dockers & GSN Relay');

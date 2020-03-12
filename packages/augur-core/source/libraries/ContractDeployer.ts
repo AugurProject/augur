@@ -150,7 +150,7 @@ Deploying to: ${env}
         }
 
         // GSN. The GSN RelayHub is deployed with a static address via create2 so we only need to do anything if we're in a dev environment where it hasnt been deployed
-        if (!this.configuration.isProduction) {
+        if (!this.configuration.deploy.isProduction) {
             const relayHubDeployedCode = await this.provider.getCode(RELAY_HUB_ADDRESS);
             if (relayHubDeployedCode !== "0x") {
                 console.log(`Relay Hub is already deployed to this environment. Skipping Deploy.`)
@@ -191,7 +191,7 @@ Deploying to: ${env}
         }
 
         // Handle some things that make testing less erorr prone that will need to occur naturally in production
-        if (!this.configuration.isProduction) {
+        if (!this.configuration.deploy.isProduction) {
             const cash = new Cash(this.dependencies, this.getContractAddress('Cash'));
 
             console.log("Approving Augur");

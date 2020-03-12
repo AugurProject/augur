@@ -1,7 +1,5 @@
 import { Augur, EmptyConnector } from "@augurproject/sdk";
 import { makeGSNDependencies, makeSigner } from './blockchain';
-import { Augur, EmptyConnector } from '@augurproject/sdk';
-import { makeGnosisDependencies, makeSigner } from './blockchain';
 import { createDbFromSeed, makeGanacheProvider, Seed } from './ganache';
 import { TestEthersProvider } from './TestEthersProvider';
 import { Account } from '../constants';

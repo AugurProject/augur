@@ -1,0 +1,92 @@
+{
+  "networkId": "12346",
+  "ethereum": {
+    "http": "http://localhost:8545",
+    "ws": "ws://localhost:8546",
+    "rpcRetryCount": 5,
+    "rpcRetryInterval": 0,
+    "rpcConcurrency": 40
+  },
+  "gas": {
+    "price": 20000000000,
+    "limit": 7500000
+  },
+  "deploy": {
+    "isProduction": false,
+    "enableFaucets": true,
+    "normalTime": false,
+    "contractInputPath": "/home/achapman/augur/packages/augur-artifacts/build/contracts.json",
+    "writeArtifacts": true,
+    "externalAddresses": {}
+  },
+  "gsn": {
+    "enabled": true
+  },
+  "zeroX": {
+    "rpc": {
+      "enabled": false,
+      "ws": "ws://localhost:60557"
+    },
+    "mesh": {
+      "enabled": true,
+      "useBootstrapList": true,
+      "bootstrapList": [
+        "/dns4/localhost/tcp/60558/ipfs/16Uiu2HAmRMgvPQV2UYKXuuCnNaFLpc36PhLp2UKVcL1ePseVcz4y",
+        "/dns4/localhost/tcp/60559/ws/ipfs/16Uiu2HAmRMgvPQV2UYKXuuCnNaFLpc36PhLp2UKVcL1ePseVcz4y"
+      ]
+    }
+  },
+  "sdk": {
+    "enabled": false,
+    "ws": "ws://localhost:60557"
+  },
+  "server": {
+    "httpPort": 9003,
+    "startHTTP": true,
+    "httpsPort": 9004,
+    "startHTTPS": true,
+    "wsPort": 9001,
+    "startWS": true,
+    "wssPort": 9002,
+    "startWSS": true
+  },
+  "uploadBlockNumber": 0,
+  "addresses": {
+    "Augur": "0xFCaf25bF38E7C86612a25ff18CB8e09aB07c9885",
+    "Universe": "0x8E9D71cb6E9080Bc04F6fD562f5DD68aF0163Baf",
+    "LegacyReputationToken": "0x5f3341EA5989aD3129E325027b8d908b63709A00",
+    "Cash": "0x3a043108953aACf3505503867F8Db7C1585577c7",
+    "CashFaucet": "0x3a043108953aACf3505503867F8Db7C1585577c7",
+    "BuyParticipationTokens": "0xeCAaCA82cDF97f53f478609a98C3d36A5F0ef955",
+    "RedeemStake": "0x575F3c652894360F4b7655379EA1eae53381e012",
+    "WarpSync": "0x0D676967088088546837acCF52a72BBD5066FFEE",
+    "ShareToken": "0x92AF28244b4f60BAe4A299F75FF6d2f738E398B2",
+    "HotLoading": "0x5F3105cc774a5593b5e678B8536FC92DB4dCD4A2",
+    "EthExchange": "0x6e968FE21894A35Ba59ee8EC6f60Ea0DDC3a59E5",
+    "Affiliates": "0xf3bCabd8FAE29F75be271eBE2499EDB4c7C139b7",
+    "AffiliateValidator": "0x8bDAd8Ee0b47E2e7294A5B8b8B74EA3968f4a177",
+    "OICash": "0xE60c9fe85aEE7B4848a97271dA8c86323CdFb897",
+    "AugurWalletRegistry": "0x1FD9274a2FE0E86f5A7b5Bde57b93C8C9b62e21d",
+    "ERC20Proxy": "0xf28fc4b34a7c4534dD3E40e0ad5Df6F2cb69Aec0",
+    "ERC721Proxy": "0x850212e53c1d8898740dd776E78C77B87D94F234",
+    "ERC1155Proxy": "0x15152AaDcA3C571B0Ba332e1020FCeA43F95A3F9",
+    "MultiAssetProxy": "0x2F8F57DBd52Ee20f9258C5232cfbbAb0f8D478F1",
+    "Exchange": "0x2e90e3C430C1470d62587c8983755D717f46F617",
+    "Coordinator": "0x3b02e6f3D9748F0db00afe3E570E8fC0201285Cd",
+    "CoordinatorRegistry": "0x31361B2733223010bB1867E36a3e6abe6cA7403C",
+    "ChaiBridge": "0x92B570781580AE220F8b3EA8A6802dc79e71C77b",
+    "DevUtils": "0xA00A7F098dde7e5FFB66C30305E287A6E86CA499",
+    "WETH9": "0x67a75EBbcd5B6Fd8217D3F856D10F4F6b517a272",
+    "ZRXToken": "0xc9Ad57d6F70e0B72A693f74D2F31aC973448129f",
+    "TimeControlled": "0x7a8f8e48D4CC990BBD8E088FB027e850486e8e0C",
+    "AugurTrading": "0x25Ff5dc79A7c4e34254ff0f4a19d69E491201DD3",
+    "CancelOrder": "0xD65f9c350eD35e8339a228fF27Efd2d9BBA17C0b",
+    "CreateOrder": "0xa2207BB135287a4EB3ae4De32A0b99d112ae57B0",
+    "FillOrder": "0xa2A073790EC3ed745afC374F76B73c3178f5536C",
+    "Orders": "0x658655115E55fa3433B9686865f011874BD71083",
+    "ProfitLoss": "0x642e1eaeD86d4075253c34c307D34362d2247D18",
+    "SimulateTrade": "0x6749E370e7B1955FFa924F4f75f5F12653C7512C",
+    "Trade": "0x6cfC125DF7Ba27B26138CdBCd5804137dC3BA1A6",
+    "ZeroXTrade": "0xB78B2B637d3861E601E54C00c054972c18A5e991"
+  }
+}

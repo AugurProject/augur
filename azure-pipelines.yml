@@ -410,7 +410,7 @@ jobs:
       YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
       ZEROX_RPC_ENABLED: false
       ZEROX_MESH_ENABLED: false
-      GNOSIS_ENABLED: false
+      GSN_ENABLED: false
     steps:
       - checkout: self
       - task: NodeTool@0
