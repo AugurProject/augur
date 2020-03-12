@@ -344,6 +344,138 @@ export const ScalarOutcome = ({
   </MarketLink>
 );
 
+const mockData = [
+  {
+    title: 'Team A',
+    spread: {
+      topLabel: '+ 3.5',
+      label: '-110',
+      action: () => {},
+      volume: '$5,000.43',
+    },
+    moneyLine: {
+      topLabel: null,
+      label: '+132',
+      action: () => {},
+      volume: '$6,500.12',
+    },
+    overUnder: {
+      topLabel: 'O 227.5',
+      label: '-110',
+      action: () => {},
+      volume: '$2,542.00',
+    },
+  },
+  {
+    title: 'Team B',
+    spread: {
+      topLabel: '- 3.5',
+      label: '-110',
+      action: () => {},
+      volume: '$6,093.50',
+    },
+    moneyLine: {
+      topLabel: null,
+      label: '-156',
+      action: () => {},
+      volume: '$10,000.54',
+    },
+    overUnder: {
+      topLabel: 'U 227.5',
+      label: '-110',
+      action: () => {},
+      volume: '$5,000.18',
+    },
+  },
+  {
+    title: 'NoWinner',
+    spread: {
+      topLabel: null,
+      label: '-110',
+      action: () => {},
+      volume: '$500.70',
+    },
+    moneyLine: {
+      topLabel: null,
+      label: '-157',
+      action: () => {},
+      volume: '$740.98',
+    },
+    overUnder: {
+      topLabel: null,
+      label: '-110',
+      action: () => {},
+      volume: '$540.50',
+    },
+  },
+];
+
+export interface MultiMarketTable {
+  multiMarketTableData: Array<{
+    title: string;
+    spread: {
+      topLabel: string | null;
+      label: string;
+      action: Function;
+      volume: string;
+    };
+    moneyLine: {
+      topLabel: string | null;
+      label: string;
+      action: Function;
+      volume: string;
+    };
+    overUnder: {
+      topLabel: string | null;
+      label: string;
+      action: Function;
+      volume: string;
+    };
+  }>;
+}
+
+export const MultiMarketTable = ({ multiMarketTableData = mockData }) => {
+  return (
+    <section className={classNames(Styles.MultiMarketTable)}>
+      <div>
+        <ul>
+          <li>Spread</li>
+          <li>Moneyline</li>
+          <li>Over / Under</li>
+        </ul>
+      </div>
+      <>
+        {multiMarketTableData.map(({ title, spread, moneyLine, overUnder }) => (
+          <article key={title}>
+            <h3>{title}</h3>
+            <div>
+              <button onClick={() => spread.action()}>
+                {spread.topLabel && <span>{spread.topLabel}</span>}
+                <span>{spread.label}</span>
+              </button>
+              <span>{spread.volume}</span>
+            </div>
+            <div>
+              <button onClick={() => moneyLine.action()}>
+                {moneyLine.topLabel && <span>{moneyLine.topLabel}</span>}
+                <span>{moneyLine.label}</span>
+              </button>
+              <span>{moneyLine.volume}</span>
+            </div>
+            <div>
+              <button onClick={() => overUnder.action()}>
+                {overUnder.topLabel && <span>{overUnder.topLabel}</span>}
+                <span>{overUnder.label}</span>
+              </button>
+              <span>{overUnder.volume}</span>
+            </div>
+          </article>
+        ))}
+      </>
+    </section>
+  );
+};
+
 export interface OutcomeGroupProps {
   outcomes: OutcomeFormatted[];
   expanded?: Boolean;
@@ -379,6 +511,9 @@ export const OutcomeGroup = ({
   isWarpSync,
   theme = getTheme(),
 }: OutcomeGroupProps) => {
+  if (theme === THEMES.SPORTS) {
+    return <MultiMarketTable />;
+  }
   const sortedStakeOutcomes = selectSortedDisputingOutcomes(
     marketType,
     outcomes,
@@ -642,6 +777,7 @@ export interface TopRowProps {
   isLogged?: boolean;
   isFavorite?: boolean;
 }
+
 export const TopRow = ({
   market,
   categoriesWithClick,
@@ -857,4 +993,4 @@ export const TradingSideSection = ({
       />
     </div>
   );
-}
+};

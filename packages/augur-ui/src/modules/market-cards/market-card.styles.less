@@ -3,7 +3,7 @@
 .MarketCard {
   background: var(--color-module-background);
   border-radius: @border-radius-default;
-  border: 1px solid var(--color-dark-grey);
+  border: @size-1 solid var(--color-dark-grey);
   margin: @size-4 0;
   display: grid;
   grid-template-columns: 102px auto;
@@ -26,7 +26,7 @@
   > span,
   > h2,
   > h3 {
-    border-left: 1px solid var(--color-dark-grey);
+    border-left: @size-1 solid var(--color-dark-grey);
     padding-left: @size-12;
   }
 
@@ -56,8 +56,8 @@
     grid-row: 4 / span 1;
     grid-column: 1;
     padding-bottom: @size-8;
-    border-right: 1px solid var(--color-dark-grey);
-    margin-right: -1px;
+    border-right: @size-1 solid var(--color-dark-grey);
+    margin-right: -@size-1;
 
     > div {
       margin-right: @size-4;
@@ -102,7 +102,7 @@
     }
   }
 
-  > div:nth-last-of-type(2) {
+  > div[class*="OutcomeGroup"] {
     display: grid;
     grid-column: 2;
   }
@@ -138,7 +138,7 @@
 
   &.Loading {
     display: grid;
-    grid-template-columns: 82px auto 96px;
+    grid-template-columns: @size-82 auto @size-96;
     grid-row-gap: @size-19;
     grid-column-gap: @size-12;
     padding: @size-12;
@@ -162,12 +162,12 @@
     }
 
     > div:nth-of-type(3) {
-      max-width: 96px;
+      max-width: @size-96;
       margin: 0;
     }
 
     > div:nth-of-type(4) {
-      max-width: 82px;
+      max-width: @size-82;
     }
 
     > div:nth-of-type(5) {
@@ -180,7 +180,7 @@
 
     > div:nth-of-type(7) {
       max-width: 70px;
-      padding-bottom: 1px;
+      padding-bottom: @size-1;
       grid-row: 3 / span 1;
     }
   }
@@ -191,7 +191,7 @@
       grid-row: 3 / span 1;
     }
 
-    > div:nth-last-of-type(2) {
+    > div[class*="OutcomeGroup"] {
       padding-bottom: @size-8;
       grid-column: 2;
     }
@@ -243,13 +243,13 @@
     }
 
     &.Nonexpanding {
-      > div:nth-last-of-type(2) {
+      > div[class*="OutcomeGroup"] {
         grid-column: 1 / span 2;
         margin-bottom: 0;
       }
     }
 
-    > div:nth-last-of-type(2) {
+    > div[class*="OutcomeGroup"] {
       column-gap: 0;
     }
 
@@ -291,7 +291,7 @@
     }
 
     > div:nth-of-type(2),
-    > div:nth-last-of-type(2),
+    > div[class*="OutcomeGroup"],
     > span,
     > h2,
     > h3,
@@ -301,7 +301,7 @@
       grid-column: 1 / span 2;
     }
 
-    > div:nth-last-of-type(2) {
+    > div[class*="OutcomeGroup"] {
       grid-column: 1 / span 2;
       margin-bottom: @size-10;
     }
@@ -340,7 +340,7 @@
     }
   }
 
-  > div:nth-last-of-type(2) {
+  > div[class*="OutcomeGroup"] {
     margin-bottom: 0;
   }
 
@@ -475,6 +475,25 @@
     }
     > div:last-of-type {
       border: 0;
+    }
+  }
+}
+
+:root[theme="SPORTS"] {
+  .MarketCard {
+    grid-template-rows: @size-20 0fr 0fr 0fr;
+
+    > div.InfoIcons {
+      display: none;
+    }
+
+    > h3 {
+      grid-column: span 2;
+    }
+
+    > section[class*="MultiMarketTable"] {
+      grid-column: span 2;
+      grid-row: 3;
     }
   }
 }
