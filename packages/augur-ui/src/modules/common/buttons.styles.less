@@ -1049,6 +1049,31 @@
   }
 }
 
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .DirectionButton {
+    background: var(--color-module-background-25);
+    border-color: var(--color-dark-text-25);
+
+    > svg {
+      > path {
+        stroke: var(--color-primary-text-25);
+      }
+    }
+
+    &:hover {
+      background: var(--color-module-background);
+      border-color: var(--color-dark-text);
+  
+      > svg {
+        > path {
+          stroke: var(--color-primary-text);
+        }
+      }
+    }
+  }
+}
+
 .left {
   > svg {
     transform: rotate(180deg);
