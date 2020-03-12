@@ -4,10 +4,11 @@ import * as IPFS from 'ipfs';
 import * as Unixfs from 'ipfs-unixfs';
 import { DAGNode } from 'ipld-dag-pb';
 import _ from 'lodash';
-import { Provider, Augur } from '..';
+import { Provider, Augur, NULL_ADDRESS, MarketReportingState } from '..';
 
 import { DB } from '../state/db/DB';
 import { IpfsInfo } from '../state/db/WarpSyncCheckpointsDB';
+import { Markets } from '../state/getter/Markets';
 import { Address, Log } from '../state/logs/types';
 import { Log as SerializedLog } from '@augurproject/types';
 import { Checkpoints } from './Checkpoints';
@@ -102,7 +103,7 @@ export class WarpController {
     private db: DB,
     private augur: Augur<Provider>,
     private provider: Provider,
-    private uploadBlockNumber: Block,
+    private uploadBlockNumber: number,
     ipfs?: Promise<IPFS>,
     // This is to simplify swapping out file retrieval mechanism.
     private _fileRetrievalFn: (ipfsPath: string) => Promise<any> = (
@@ -128,26 +129,83 @@ export class WarpController {
 
   onNewBlock = async (newBlock: Block): Promise<string | void> => {
     await this.createInitialCheckpoint();
+    /*
+      0. Base case: need to have created initial warp checkpoint.
+      1. Check if we need to create warp sync
+        1. This will happen if the active market endTime has elapsed
+      2. Check if we have a market finalization
+        1. If so, do we dispute?
+        2. If no dispute we make note of new market end time
+    */
+
     const mostRecentCheckpoint = await this.db.warpCheckpoints.getMostRecentCheckpoint();
+
+    // Universe not initialized.
     if (
-      mostRecentCheckpoint &&
-      this.checkpoints.isSameDay(mostRecentCheckpoint.begin, newBlock)
+      !mostRecentCheckpoint
     ) {
       return;
     }
 
-    const hash = await this.createAllCheckpoints(newBlock);
+    // Warp sync has been created. Need to report, dispute or create next unfinished checkpoint record.
+    if(mostRecentCheckpoint.end) {
+      const [marketRecord] = await Markets.getMarketsInfo(this.augur, this.db, {
+        marketIds: [
+          mostRecentCheckpoint.market
+        ]
+      });
 
-    this.augur.events.emit(SubscriptionEventName.WarpSyncHashUpdated, { hash})
 
-    return hash;
+
+
+      switch (marketRecord.reportingState) {
+        case(MarketReportingState.OpenReporting):
+        // Emit event to notify UI to report.
+
+        break;
+        case(MarketReportingState.Finalized):
+          const [begin, end] = await this.checkpoints.calculateBoundary(mostRecentCheckpoint.endTimestamp, mostRecentCheckpoint.end);
+
+          await this.db.warpCheckpoints.createInitialCheckpoint(
+            end,
+            await this.augur.warpSync.getWarpSyncMarket(this.augur.contracts.universe.address)
+          );
+
+          break;
+        default:
+      }
+
+      return;
+    }
+
+    // WarpSync Market has ended. Need to create checkpoint.
+    if(mostRecentCheckpoint.endTimestamp < newBlock.timestamp) {
+      /*
+      * To create the checkpoint properly we need to discover the boundary blocks around the end time.
+      **/
+      const hash = await this.createAllCheckpoints(newBlock);
+
+      this.augur.events.emit(SubscriptionEventName.WarpSyncHashUpdated, { hash});
+
+      return hash;
+    }
+
+    // nothing left to do.
   };
 
   async createInitialCheckpoint() {
     const mostRecentCheckpoint = await this.db.warpCheckpoints.getMostRecentCheckpoint();
     if (!mostRecentCheckpoint) {
+      const market = await this.augur.warpSync.getWarpSyncMarket(this.augur.contracts.universe.address);
+
+      if(market.address === NULL_ADDRESS) {
+        console.log(`Warp sync market not initialized for current universe ${this.augur.contracts.universe.address}.`);
+        return
+      }
+
       await this.db.warpCheckpoints.createInitialCheckpoint(
-        this.uploadBlockNumber
+        await this.provider.getBlock(this.uploadBlockNumber),
+        market
       );
     }
   }
@@ -275,39 +333,51 @@ export class WarpController {
     };
   }
 
-  async updateCheckpointDbByNumber(begin:number, end: number, checkPointIPFSObject: IpfsInfo) {
+  async updateCheckpointDbByNumber(begin:number, checkPointIPFSObject: IpfsInfo) {
     return this.db.warpCheckpoints.createCheckpoint(
       await this.provider.getBlock(begin),
-      await this.provider.getBlock(end),
       checkPointIPFSObject
     );
   };
 
   async createCheckpoints(end: Block) {
-    let endBlock = (await this.db.warpCheckpoints.getMostRecentCheckpoint())
-      .begin;
-    while (!this.checkpoints.isSameDay(endBlock, end)) {
-      const mostRecentCheckpoint = await this.db.warpCheckpoints.getMostRecentCheckpoint();
-      const [
-        newBeginBlock,
-        newEndBlock,
-      ] = await this.checkpoints.calculateBoundary(
-        mostRecentCheckpoint.begin,
-        end
-      );
+    const mostRecentCheckpoint = await this.db.warpCheckpoints.getMostRecentCheckpoint();
 
-      // This is where we actually create the checkpoint.
-      const checkPointIPFSObject = await this.createCheckpoint(
-        mostRecentCheckpoint.begin.number,
-        newBeginBlock.number
-      );
-      await this.db.warpCheckpoints.createCheckpoint(
-        newBeginBlock,
-        newEndBlock,
-        checkPointIPFSObject
-      );
-      endBlock = newEndBlock;
-    }
+    // Ain't quite time yet.
+    if (end.timestamp < mostRecentCheckpoint.endTimestamp) return;
+
+    const [
+      newBeginBlock,
+      newEndBlock,
+    ] = await this.checkpoints.calculateBoundary(
+      mostRecentCheckpoint.endTimestamp,
+      mostRecentCheckpoint.begin,
+      end
+    );
+
+    // This is where we actually create the checkpoint.
+    const checkPointIPFSObject = await this.createCheckpoint(
+      mostRecentCheckpoint.begin.number,
+      newBeginBlock.number
+    );
+    await this.db.warpCheckpoints.createCheckpoint(
+      newBeginBlock,
+      checkPointIPFSObject
+    );
+
+    // We need to be sure we have a checkpoint record for each warp sync market regardless of market status.
+    const allWarpSyncMarkets = await this.db.marketDatabase.getAllWarpSyncMarkets();
+    const nextMarketToCheckpoint = allWarpSyncMarkets.find(
+      (market) => market.endTime < mostRecentCheckpoint.endTimestamp);
+
+    if (!nextMarketToCheckpoint) return;
+
+    await this.db.warpCheckpoints.createInitialCheckpoint(
+      newEndBlock,
+      await this.augur.getMarket(nextMarketToCheckpoint.market)
+    );
+
+    return this.createCheckpoints(end);
   }
 
   queryDB = <P extends AllDBNames>(
@@ -334,7 +404,6 @@ export class WarpController {
     ipfsRootHash: string
   ): Promise<IpfsInfo[]> {
     const files = await (await this.ipfs).ls(`${ipfsRootHash}/checkpoints/`);
-    console.log('getAvailableCheckpointsByHash files', JSON.stringify(files));
     return files.map(({ name, hash }) => ({
       Name: name,
       Hash: hash,
@@ -346,7 +415,7 @@ export class WarpController {
     ipfsRootHash: string,
     checkpointBlockNumber: string | number
   ): Promise<CheckpointInterface> {
-    return await this.getFile(`${ipfsRootHash}/checkpoints/${checkpointBlockNumber}`);
+    return this.getFile(`${ipfsRootHash}/checkpoints/${checkpointBlockNumber}`);
   }
 
   async pinHashByGatewayUrl(urlString: string) {

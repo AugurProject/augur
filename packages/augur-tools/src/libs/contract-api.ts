@@ -820,7 +820,7 @@ export class ContractAPI {
   }
 
   async getWarpSyncHashFromPayout(payout: BigNumber[]): Promise<string> {
-    return this.augur.warpSync.getWarpSyncHashFromPayout(payout);
+    return this.augur.warpSync.getWarpSyncHashFromPayout(payout[2]);
   }
 
   async getPayoutFromWarpSyncHash(hash: string): Promise<BigNumber[]> {

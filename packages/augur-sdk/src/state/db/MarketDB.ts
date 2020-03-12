@@ -240,6 +240,13 @@ export class MarketDB extends DerivedDB {
     return marketOrderBookData;
   }
 
+  async getAllWarpSyncMarkets(): Promise<MarketData[]> {
+    return this.table
+      .orderBy('timestamp')
+      .and(item => item.isWarpSync)
+      .sortBy('endTime');
+  }
+
   async getOrderBook(marketData: MarketData, numOutcomes: number, estimatedTradeGasCostInAttoDai: BigNumber): Promise<OrderBook> {
     let outcomes = ['0x00', '0x01', '0x02'];
 

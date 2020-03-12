@@ -119,7 +119,7 @@ export interface InitialReporterTransferred extends FormattedEventLog {
 
 export interface MarketCreated extends FormattedEventLog {
   universe: Address;
-  endTime: Address;
+  endTime: number;
   topic: Address;
   extraInfo: string;
   market: Address;
