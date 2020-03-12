@@ -727,6 +727,7 @@ export interface Trade {
   side: typeof BUY | typeof SELL;
   orderShareProfit: FormattedNumber;
   orderShareTradingFee: FormattedNumber;
+  numFills: number;
 }
 
 export interface PriceTimeSeriesData {

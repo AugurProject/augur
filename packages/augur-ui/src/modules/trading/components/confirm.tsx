@@ -243,6 +243,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       side,
       orderShareProfit,
       orderShareTradingFee,
+      numFills,
     } = trade;
 
     const { messages } = this.state;
@@ -387,7 +388,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
               value={potentialDaiLoss}
               showDenomination={true}
             />
-            {gasCostDai && gasCostDai.roundedValue.gt(0) > 0 && (
+            {gasCostDai && gasCostDai.roundedValue.gt(0) > 0 && numFills > 0 &&  (
               <LinearPropertyLabel
                 label="Est. TX Fee"
                 value={gasCostDai}
