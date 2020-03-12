@@ -489,7 +489,7 @@
 
     &:focus {
       outline: none;
-      border: @size-2 solid var(--color-outcome-five);
+      border: @size-2 solid var(--color-focused);
     }
 
     &:active {
@@ -500,12 +500,7 @@
     }
 
     &:disabled {
-      border-bottom: var(--color-secondary-action-outline-25);
-      background: var(--color-module-background-25);
-      > button {
-        color: var(--color-secondary-text-25);
-        background: var(--color-module-background-25);
-      }
+      opacity: 0.25;
     }
   }
 
@@ -556,11 +551,11 @@
       }
 
       &:focus {
-        border: @size-2 solid var(--color-outcome-five);
-        border-right: @size-2 solid var(--color-outcome-five);
+        border: @size-2 solid var(--color-focused);
+        border-right: @size-2 solid var(--color-focused);
   
         &:last-of-type {
-          border-right: @size-2 solid var(--color-outcome-five);
+          border-right: @size-2 solid var(--color-focused);
         }
   
         & + li {
