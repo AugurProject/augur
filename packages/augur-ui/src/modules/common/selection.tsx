@@ -27,7 +27,6 @@ export interface DropdownProps {
   stretchOutOnMobile?: boolean;
   sortByStyles?: object;
   openTop?: boolean;
-  highlight?: boolean;
   stretchOut?: boolean;
   activeClassName?: string;
   showColor?: boolean;
@@ -303,7 +302,6 @@ export class StaticLabelDropdown extends Dropdown {
       large,
       staticLabel,
       staticMenuLabel,
-      highlight,
     } = this.props;
     const { selected, showList } = this.state;
     if (!selected) {

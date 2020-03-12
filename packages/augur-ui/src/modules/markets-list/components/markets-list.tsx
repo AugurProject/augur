@@ -19,7 +19,6 @@ interface MarketsListProps {
   location: object;
   toggleFavorite: Function;
   loadMarketsInfoIfNotLoaded: Function;
-  paginationPageParam?: string;
   linkType?: string;
   isMobile: boolean;
   pendingLiquidityOrders?: object;
@@ -47,7 +46,6 @@ export default class MarketsList extends Component<
   static defaultProps = {
     testid: null,
     linkType: TYPE_TRADE,
-    paginationPageParam: PAGINATION_PARAM_NAME,
     pendingLiquidityOrders: {},
     showDisputingCard: false,
     outcomes: null,
@@ -115,19 +113,18 @@ export default class MarketsList extends Component<
           />
 
         )}
-        {showPagination && (
-          <div className={PaginationStyles.PaginationContainer}>
-            <Pagination
-              page={offset}
-              itemCount={marketCount}
-              itemsPerPage={limit}
-              updateLimit={updateLimit}
-              maxLimit={marketCount}
-              action={setOffset}
-              showLimitChanger
-            />
-          </div>
-        )}
+        <div className={PaginationStyles.PaginationContainer}>
+          <Pagination
+            showPagination={showPagination}
+            page={offset}
+            itemCount={marketCount}
+            itemsPerPage={limit}
+            updateLimit={updateLimit}
+            maxLimit={marketCount}
+            action={setOffset}
+            showLimitChanger
+          />
+        </div>
       </article>
     );
   }

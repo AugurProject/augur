@@ -13,6 +13,7 @@ interface PaginationProps {
   updateLimit: Function;
   showLimitChanger?: boolean;
   maxLimit?: number;
+  showPagination?: boolean;
 }
 interface PagesArrayObject {
   page: number | null;
@@ -99,11 +100,17 @@ const getLimitOptions = (itemCount: number, maxLimit: number) => {
   ];
 
   if (itemCount >= 50) {
-    paginationOptions = paginationOptions.concat({ value: 50, label: PAGINATION_VIEW_OPTIONS.FIFTY });
+    paginationOptions = paginationOptions.concat({
+      value: 50,
+      label: PAGINATION_VIEW_OPTIONS.FIFTY,
+    });
   }
 
   if (itemCount >= 100) {
-    paginationOptions = paginationOptions.concat({ value: 100, label: PAGINATION_VIEW_OPTIONS.HUNDRED });
+    paginationOptions = paginationOptions.concat({
+      value: 100,
+      label: PAGINATION_VIEW_OPTIONS.HUNDRED,
+    });
   }
 
   return paginationOptions;
@@ -118,34 +125,39 @@ export const Pagination = (props: PaginationProps) => {
     updateLimit,
     showLimitChanger,
     maxLimit,
+    showPagination = true,
   } = props;
-  const totalPages = itemsPerPage === 1 ? 1 : Math.ceil(itemCount / (itemsPerPage || 10)) || 1;
-
+  const totalPages =
+    itemsPerPage === 1 ? 1 : Math.ceil(itemCount / (itemsPerPage || 10)) || 1;
+  
   return (
     <div className={Styles.Pagination}>
-      <section>
-        <DirectionButton
-          action={() => action(page - 1)}
-          left
-          disabled={page === 1}
-        />
-        {renderPageButtons(createPagesArray(page, totalPages), action)}
-        <span>
-          {page} of {totalPages}
-        </span>
-        <DirectionButton
-          action={() => action(page + 1)}
-          disabled={page === totalPages || totalPages === 0}
-        />
-      </section>
+      {showPagination && (
+        <section>
+          <DirectionButton
+            action={() => action(page - 1)}
+            left
+            disabled={page === 1}
+          />
+          {renderPageButtons(createPagesArray(page, totalPages), action)}
+          <span>
+            {page} of {totalPages}
+          </span>
+          <DirectionButton
+            action={() => action(page + 1)}
+            disabled={page === totalPages || totalPages === 0}
+          />
+        </section>
+      )}
 
-      { showLimitChanger &&
+      {showLimitChanger && (
         <SquareDropdown
+          large
           defaultValue={itemsPerPage}
           options={getLimitOptions(itemCount, maxLimit)}
           onChange={updateLimit}
         />
-      }
+      )}
     </div>
   );
 };
