@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { SelectedOrderProperties } from 'modules/trading/components/wrapper';
 import Wrapper from 'modules/trading/containers/wrapper';
 import Styles from 'modules/trading/components/trading-form.styles.less';
-import { MarketData, OutcomeOrderBook, OutcomeFormatted, NewMarket } from 'modules/types';
+import { MarketData, OutcomeFormatted, NewMarket } from 'modules/types';
 
 interface TradingFormProps {
   market: MarketData | NewMarket;
