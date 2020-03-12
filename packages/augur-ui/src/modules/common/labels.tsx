@@ -146,6 +146,7 @@ export interface ValueLabelProps {
   keyId?: string;
   showEmptyDash?: boolean;
   useFull?: boolean;
+  usePercent?: boolean;
   alert?: boolean;
 }
 
@@ -444,7 +445,7 @@ export const ValueLabel = (props: ValueLabelProps) => {
         data-for={`valueLabel-${fullPrecision}-${denominationLabel}-${props.keyId}`}
         data-iscapture="true"
       >
-        {props.useFull && props.value.full}
+        {props.usePercent ? props.value.percent : props.useFull && props.value.full}
         {!props.useFull && `${frontFacingLabel}${postfix}`}
         {!props.useFull && <span>{denominationLabel}</span>}
       </label>

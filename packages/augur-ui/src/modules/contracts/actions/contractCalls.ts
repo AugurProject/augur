@@ -31,6 +31,7 @@ import {
   CATEGORICAL,
   TEN_TO_THE_EIGHTEENTH_POWER,
   BUY,
+  ZERO,
 } from 'modules/common/constants';
 import { TestNetReputationToken } from '@augurproject/core/build/libraries/GenericContractInterfaces';
 import { CreateMarketData, LiquidityOrder } from 'modules/types';
@@ -156,6 +157,7 @@ export async function getRepBalance(
 export async function getLegacyRepBalance(
   address: string
 ): Promise<BigNumber> {
+  if (!address) return ZERO;
   const { contracts } = augurSdk.get();
   const lagacyRep = contracts.legacyReputationToken.address;
   const networkId = getNetworkId();
@@ -175,6 +177,7 @@ export async function getEthBalance(address: string): Promise<number> {
 }
 
 export async function getDaiBalance(address: string): Promise<number> {
+  if (!address) return 0;
   const { contracts } = augurSdk.get();
   const balance = await contracts.cash.balanceOf_(address);
   return formatAttoDai(balance).value;

@@ -163,6 +163,7 @@ export interface FormattedNumber {
   value: number;
   rounded: number | string;
   full: number | string;
+  percent: number | string;
 }
 
 export interface FormattedNumberOptions {
@@ -210,6 +211,7 @@ export interface PendingOrders {
 
 export interface QuantityOrderBookOrder extends Getters.Markets.MarketOrderBookOrder {
   quantityScale: number;
+  percent: number;
 }
 export interface QuantityOutcomeOrderBook {
   spread: string | BigNumber | null;

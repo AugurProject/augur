@@ -10,6 +10,7 @@ import {
   BUY,
   SELL,
   UPPER_FIXED_PRECISION_BOUND,
+  INVALID_OUTCOME_ID,
 } from 'modules/common/constants';
 import Styles from 'modules/trading/components/wrapper.styles.less';
 import { OrderButton, PrimaryButton } from 'modules/common/buttons';
@@ -36,7 +37,6 @@ interface WrapperProps {
   selectedOutcome: OutcomeFormatted;
   selectedOrderProperties: SelectedOrderProperties;
   addFundsModal: Function;
-  addPendingOrder: Function;
   disclaimerModal: Function;
   handleFilledOnly: Function;
   loginModal: Function;
@@ -163,16 +163,36 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
         ) {
           return this.clearOrderForm();
         }
-
-        this.updateTradeTotalCost(
-          {
-            ...selectedOrderProperties,
-            orderQuantity: convertExponentialToDecimal(
-              selectedOrderProperties.orderQuantity
-            ),
-          },
-          true
-        );
+        // because of invalid outcome on scalars displaying percentage need to clear price before setting it.
+        if (
+          this.props.market.marketType === SCALAR
+        ) {
+          this.setState(
+            {
+              orderPrice: '',
+            },
+            () =>
+              this.updateTradeTotalCost(
+                {
+                  ...selectedOrderProperties,
+                  orderQuantity: convertExponentialToDecimal(
+                    selectedOrderProperties.orderQuantity
+                  ),
+                },
+                true
+              )
+          );
+        } else {
+          this.updateTradeTotalCost(
+            {
+              ...selectedOrderProperties,
+              orderQuantity: convertExponentialToDecimal(
+                selectedOrderProperties.orderQuantity
+              ),
+            },
+            true
+          );
+        }
       }
     }
   }
@@ -334,14 +354,15 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
     if (this.state.expirationDate) {
       trade = {
         ...trade,
-        expirationTime: (this.state.expirationDate)
-      }
+        expirationTime: this.state.expirationDate,
+      };
     }
     this.props.onSubmitPlaceTrade(
       market.id,
       selectedOutcome.id,
       trade,
-      s.doNotCreateOrders)
+      s.doNotCreateOrders
+    );
     this.clearOrderForm();
   }
 
@@ -457,7 +478,9 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
             }
           }
         }}
-        disabled={!trade || !trade.limitPrice || insufficientFunds}
+        disabled={
+          !trade || !trade.limitPrice || gsnUnavailable || insufficientFunds
+        }
       />
     );
     switch (true) {
