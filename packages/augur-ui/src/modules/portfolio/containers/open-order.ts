@@ -11,6 +11,7 @@ import { TXEventName } from '@augurproject/sdk/src/constants';
 import { OPEN } from 'modules/common/constants';
 import { selectCancelingOrdersState } from 'store/select-state';
 import { removeCanceledOrder } from 'modules/pending-queue/actions/pending-queue-management';
+import { removePendingOrder } from 'modules/orders/actions/pending-orders-management';
 
 const { COLUMN_TYPES } = constants;
 
@@ -21,9 +22,11 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   removeCanceledOrder: id => dispatch(removeCanceledOrder(id)),
+  removePendingOrder: (pendingId, marketId) => dispatch(removePendingOrder(pendingId, marketId)),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
+  const marketId = oP.marketId;
   const openOrder = oP.openOrder;
   const tokensEscrowed = getValue(openOrder, 'tokensEscrowed');
   const sharesEscrowed = getValue(openOrder, 'sharesEscrowed');
@@ -90,7 +93,11 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       action: async (e: Event) => {
         e.stopPropagation();
         try {
-          await openOrder.cancelOrder(openOrder);
+          if (openOrder.status === TXEventName.Failure || openOrder.status === TXEventName.Success) {
+            dP.removePendingOrder(openOrder.id, marketId);
+          } else {
+            await openOrder.cancelOrder(openOrder);
+          }
         } catch (error) {
           dP.removeCanceledOrder(openOrder.id);
         }
