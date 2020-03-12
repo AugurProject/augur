@@ -44,7 +44,7 @@ variable "domain" {
 // App Config
 variable "build_environment" {
   description = "Environment for config from augur-artifacts/src/environments"
-  type = string
+  type        = string
 }
 
 variable "ethereum_node_url" {
