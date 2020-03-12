@@ -501,7 +501,7 @@ jobs:
       - bash: |
           set -exuo pipefail
           yarn docker:all --detach
-          sleep 30
+          sleep 60
         displayName: Run 3rd Party Dockers
       - bash: |
           set -exuo pipefail
@@ -511,7 +511,6 @@ jobs:
       - bash: |
           set -exuo pipefail
           docker kill geth
-          yarn workspace @augurproject/gnosis-relay-api kill-relay
         displayName: Stop 3rd Party Dockers
 
 

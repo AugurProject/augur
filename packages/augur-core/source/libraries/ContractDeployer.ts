@@ -74,11 +74,11 @@ Deploying to: ${env}
         return this.provider.getBlock('latest', false).then( (block) => block.number);
     }
 
-    async deploy(env: string): Promise<ContractAddresses> {
+    async deploy(env: string, serial: boolean = true): Promise<ContractAddresses> {
         const blockNumber = await this.getBlockNumber();
         this.augur = await this.uploadAugur();
         this.augurTrading = await this.uploadAugurTrading();
-        await this.uploadAllContracts();
+        await this.uploadAllContracts(serial);
 
         const externalAddresses = this.configuration.deploy.externalAddresses;
 

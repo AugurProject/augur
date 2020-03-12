@@ -123,9 +123,16 @@ export function addScripts(flash: FlashSession) {
         abbr: 'e',
         description: 'name of environment. ex: local, kovan, mainnet'
       },
+      {
+        name: 'parallel',
+        abbr: 'p',
+        description: 'deploy contracts non-serially',
+        flag: true,
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const useSdk = Boolean(args.useSdk);
+      const serial = !Boolean(args.parallel);
       const env = args.environment as string || this.network || 'local';
       if (this.noProvider()) return;
 
@@ -144,6 +151,7 @@ export function addScripts(flash: FlashSession) {
         this.accounts[1],
         compilerOutput,
         this.config,
+        serial
       );
       this.config.addresses = addresses;
 
@@ -2102,7 +2110,7 @@ export function addScripts(flash: FlashSession) {
         if (dev) {
           console.log(`Deploying contracts`);
           const deployMethod = fake ? 'fake-all' : 'normal-all';
-          await this.call(deployMethod, { createMarkets: true });
+          await this.call(deployMethod, { createMarkets: true, parallel: true });
         }
 
         console.log(`Building`);
