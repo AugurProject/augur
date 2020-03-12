@@ -45,26 +45,6 @@
       text-align: left;
     }
 
-    > div.hoverIconTray {
-      display: none;
-
-      > div:nth-of-type(3),
-      > div:nth-of-type(4) {
-        svg {
-          fill: none;
-
-          > circle {
-            fill: none;
-            stroke: var(--color-secondary-action-outline);
-          }
-
-          > path {
-            fill: var(--color-primary-text);
-          }
-        }
-      }
-    }
-
     > div:nth-child(even) {
       margin-top: @size-8;
       padding-bottom: 0;
@@ -345,15 +325,6 @@
       margin-top: @size-12;
       order: 10;
       padding: 0;
-
-      > div.hoverIconTray {
-        display: flex;
-        flex-flow: row nowrap;
-
-        > div:not(:last-of-type) {
-          margin-right: @size-8;
-        }
-      }
 
       > div[class*="LabelValue"]:nth-of-type(2) {
         display: none;

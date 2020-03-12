@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import classNames from 'classnames';
 
 import {
-  LabelValue,
   OutcomeGroup,
   ResolvedOutcomes,
   TentativeWinner,
   TopRow,
   InfoIcons,
+  TradingSideSection
 } from 'modules/market-cards/common';
 import toggleCategory from 'modules/routes/helpers/toggle-category';
 import { DISPUTING, MARKETS } from 'modules/routes/constants/views';
@@ -21,7 +21,6 @@ import {
 import { MarketProgress } from 'modules/common/progress';
 import ChevronFlip from 'modules/common/chevron-flip';
 import { MarketData } from 'modules/types';
-import { formatAttoRep } from 'utils/format-number';
 import MigrateMarketNotice from 'modules/market-cards/containers/migrate-market-notice';
 import Styles from 'modules/market-cards/market-card.styles.less';
 import MarketTitle from 'modules/market/containers/market-title';
@@ -93,8 +92,6 @@ export const MarketCard = ({
     categories,
     id,
     reportingState,
-    openInterestFormatted,
-    volumeFormatted,
     disputeInfo,
     endTimeFormatted,
     consensusFormatted,
@@ -163,45 +160,14 @@ export const MarketCard = ({
       })}
     >
       <>
-        <div>
-          {reportingState === REPORTING_STATE.PRE_REPORTING && (
-            <>
-              <LabelValue
-                label={condensed ? 'Volume' : 'Total Volume'}
-                value={`${volumeFormatted.full}`}
-                condensed
-              />
-              {!condensed && (
-                <LabelValue
-                  label="Open Interest"
-                  value={`${openInterestFormatted.full}`}
-                  condensed
-                />
-              )}
-            </>
-          )}
-          {reportingState !== REPORTING_STATE.PRE_REPORTING && (
-            <LabelValue
-              condensed
-              label="Total Dispute Stake"
-              value={formatAttoRep(disputeInfo.stakeCompletedTotal).full}
-            />
-          )}
-          <div className={Styles.hoverIconTray}>
-            <InfoIcons
-              market={market}
-              hasPosition={hasPosition}
-              hasStaked={hasStaked}
-              address={address}
-            />
-          </div>
-          <MarketProgress
-            reportingState={reportingState}
-            currentTime={currentAugurTimestamp}
-            endTimeFormatted={endTimeFormatted}
-            reportingWindowEndTime={disputeInfo.disputeWindow.endTime}
-          />
-        </div>
+        <TradingSideSection
+          address={address}
+          currentAugurTimestamp={currentAugurTimestamp}
+          market={market}
+          condensed={condensed}
+          hasPosition={hasPosition}
+          hasStaked={hasStaked}
+        />
         <TopRow
           market={market}
           categoriesWithClick={categoriesWithClick}

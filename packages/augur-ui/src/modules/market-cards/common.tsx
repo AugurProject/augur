@@ -22,6 +22,7 @@ import {
   MARKET_REPORTING,
   COPY_MARKET_ID,
   COPY_AUTHOR,
+  REPORTING_STATE,
 } from 'modules/common/constants';
 import { MARKET_LIST_CARD } from 'services/analytics/helpers';
 import { getTheme } from 'modules/app/actions/update-app-status';
@@ -790,3 +791,70 @@ export const InfoIcons = ({
     </>
   );
 };
+
+export interface TradingSideSectionProps {
+  address: string;
+  currentAugurTimestamp: number;
+  market: MarketData;
+  condensed: boolean;
+  hasPosition: boolean;
+  hasStaked: boolean;
+}
+
+export const TradingSideSection = ({
+  address,
+  currentAugurTimestamp,
+  market,
+  condensed,
+  hasPosition,
+  hasStaked,
+}) => {
+  const {
+    disputeInfo,
+    endTimeFormatted,
+    openInterestFormatted,
+    reportingState,
+    volumeFormatted,
+  } = market;
+  return (
+    <div>
+      {reportingState === REPORTING_STATE.PRE_REPORTING && (
+        <>
+          <LabelValue
+            label={condensed ? 'Volume' : 'Total Volume'}
+            value={`${volumeFormatted.full}`}
+            condensed
+          />
+          {!condensed && (
+            <LabelValue
+              label="Open Interest"
+              value={`${openInterestFormatted.full}`}
+              condensed
+            />
+          )}
+        </>
+      )}
+      {reportingState !== REPORTING_STATE.PRE_REPORTING && (
+        <LabelValue
+          condensed
+          label="Total Dispute Stake"
+          value={formatAttoRep(disputeInfo.stakeCompletedTotal).full}
+        />
+      )}
+      <div className={Styles.hoverIconTray}>
+        <InfoIcons
+          market={market}
+          hasPosition={hasPosition}
+          hasStaked={hasStaked}
+          address={address}
+        />
+      </div>
+      <MarketProgress
+        reportingState={reportingState}
+        currentTime={currentAugurTimestamp}
+        endTimeFormatted={endTimeFormatted}
+        reportingWindowEndTime={disputeInfo.disputeWindow.endTime}
+      />
+    </div>
+  );
+}
