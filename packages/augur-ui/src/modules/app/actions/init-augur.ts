@@ -45,6 +45,7 @@ import { isDevNetworkId, SDKConfiguration } from '@augurproject/artifacts';
 import { getNetwork } from 'utils/get-network-name';
 import { buildConfig } from '@augurproject/artifacts';
 import { showIndexedDbSize } from 'utils/show-indexed-db-size';
+import { isGoogleBot } from 'utils/is-google-bot';
 
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
 
@@ -216,6 +217,11 @@ export function connectAugur(
     else {
       // In DEV, use local ethereum node
       provider = new JsonRpcProvider(config.ethereum.http);
+    }
+
+    // Disable mesh for googleBot
+    if (isGoogleBot()) {
+      config.zeroX.mesh.enabled = false
     }
 
     let sdk: Augur<Provider> = null;

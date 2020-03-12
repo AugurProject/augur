@@ -39,6 +39,7 @@ export interface Properties {
   showCountdown?: Boolean;
   expiry?: DateFormattedObject;
   currentTimestamp?: Number;
+  usePercent?: Boolean;
 }
 
 function selectColumn(columnType: string, properties: Properties) {
@@ -79,6 +80,7 @@ function selectColumn(columnType: string, properties: Properties) {
                   keyId={properties.keyId}
                   showEmptyDash={properties.showEmptyDash}
                   useFull={properties.useFull}
+                  usePercent={properties.usePercent}
                   alert={properties.alert}
                 />
               </button>
@@ -89,6 +91,7 @@ function selectColumn(columnType: string, properties: Properties) {
                 keyId={properties.keyId}
                 showEmptyDash={properties.showEmptyDash}
                 useFull={properties.useFull}
+                usePercent={properties.usePercent}
                 alert={properties.alert}
               />
             )}

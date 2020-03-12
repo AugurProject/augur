@@ -11,6 +11,7 @@ import {
   INVALID_OUTCOME_ID,
   ONE,
   SMALL_MOBILE,
+  MIN_ORDER_LIFESPAN,
 } from 'modules/common/constants';
 import FormStyles from 'modules/common/form-styles.less';
 import Styles from 'modules/trading/components/form.styles.less';
@@ -220,7 +221,7 @@ class Form extends Component<FromProps, FormState> {
     } else if (
       market.marketType === SCALAR &&
       selectedOutcome.id === INVALID_OUTCOME_ID &&
-      prevProps[this.INPUT_TYPES.PRICE] !== this.props[this.INPUT_TYPES.PRICE]
+      !prevProps[this.INPUT_TYPES.PRICE] && !this.state.percentage && this.props[this.INPUT_TYPES.PRICE]
     ) {
       const price = this.props[this.INPUT_TYPES.PRICE];
       const percentage = calcPercentageFromPrice(
@@ -419,13 +420,12 @@ class Form extends Component<FromProps, FormState> {
 
     // Check to ensure orders don't expiry within 70s
     // Also consider getGasConfirmEstimate * 1.5 seconds
-    const minOrderLifespan = 70;
     const gasConfirmEstimate = this.state
       ? this.state.confirmationTimeEstimation * 1.5
       : 0; // In Seconds
-    const earliestExp = Math.ceil((minOrderLifespan + gasConfirmEstimate) / 60);
+    const earliestExp = Math.ceil((MIN_ORDER_LIFESPAN + gasConfirmEstimate) / 60);
     const expiryTime = expiration - gasConfirmEstimate - currentTimestamp;
-    if (expiration && expiryTime < minOrderLifespan) {
+    if (expiration && expiryTime < MIN_ORDER_LIFESPAN) {
       errorCount += 1;
       passedTest = false;
       errors[this.INPUT_TYPES.EXPIRATION_DATE].push(
@@ -452,7 +452,7 @@ class Form extends Component<FromProps, FormState> {
       selectedOutcome,
     } = props;
     const isScalar: boolean = market.marketType === SCALAR;
-    const isScalarInvalidOutcome =
+    const usePercent =
       isScalar && selectedOutcome.id === INVALID_OUTCOME_ID;
     const tickSize = createBigNumber(market.tickSize);
     let errorCount = 0;
@@ -465,7 +465,7 @@ class Form extends Component<FromProps, FormState> {
     if (value && (value.lte(minPrice) || value.gte(maxPrice))) {
       errorCount += 1;
       passedTest = false;
-      if (isScalarInvalidOutcome) {
+      if (usePercent) {
         errors[this.INPUT_TYPES.PRICE].push(`Enter a valid percentage`);
       } else {
         errors[this.INPUT_TYPES.PRICE].push(
@@ -493,10 +493,13 @@ class Form extends Component<FromProps, FormState> {
       orderBook.asks.length &&
       value.gte(orderBook.asks[0].price)
     ) {
+      const message = usePercent
+        ? `Percent must be less than best ask of ${calcPercentageFromPrice(orderBook.asks[0].price, minPrice, maxPrice)}`
+        : `Price must be less than best ask of ${orderBook.asks[0].price}`;
       errorCount += 1;
       passedTest = false;
       errors[this.INPUT_TYPES.PRICE].push(
-        `Price must be less than best ask of ${orderBook.asks[0].price}`
+        message
       );
     } else if (
       initialLiquidity &&
@@ -505,10 +508,13 @@ class Form extends Component<FromProps, FormState> {
       orderBook.bids.length &&
       value.lte(orderBook.bids[0].price)
     ) {
+      const message = usePercent
+        ? `Percent must be more than best bid of ${calcPercentageFromPrice(orderBook.bids[0].price, minPrice, maxPrice)}`
+        : `Price must be more than best bid of ${orderBook.bids[0].price}`;
       errorCount += 1;
       passedTest = false;
       errors[this.INPUT_TYPES.PRICE].push(
-        `Price must be more than best bid of ${orderBook.bids[0].price}`
+        message
       );
     }
     return { isOrderValid: passedTest, errors, errorCount };
@@ -851,7 +857,6 @@ class Form extends Component<FromProps, FormState> {
       (isScalar && selectedOutcome.id !== INVALID_OUTCOME_ID) || !isScalar;
 
     const nearestValues = this.findNearestValues(quantityValue);
-    console.log('this.state.percentage', s.percentage);
     return (
       <div className={Styles.TradingForm}>
         <div className={Styles.Outcome}>
