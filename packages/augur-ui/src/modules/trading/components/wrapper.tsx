@@ -303,7 +303,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
     } else {
       updateTradeCost(
         market.id,
-        selectedOutcome.id,
+        order.selectedOutcomeId ? order.selectedOutcomeId : selectedOutcome.id,
         {
           limitPrice: order.orderPrice,
           side: order.selectedNav,

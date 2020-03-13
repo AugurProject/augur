@@ -103,6 +103,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       action: (e) => {
         oP.updateSelectedOutcome(outcome.id, true);
         oP.updateSelectedOrderProperties({
+          selectedOutcomeId: outcome.id,
           orderPrice: topBidPrice && topBidPrice.value.toString(),
           orderQuantity: topBidShares && topBidShares.value.toString(),
           selectedNav: SELL
@@ -120,6 +121,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       action: (e) => {
         oP.updateSelectedOutcome(outcome.id, true);
         oP.updateSelectedOrderProperties({
+          selectedOutcomeId: outcome.id,
           orderPrice: topAskPrice && topAskPrice.value.toString(),
           orderQuantity: topAskShares && topAskShares.value.toString(),
           selectedNav: BUY
