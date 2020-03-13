@@ -238,21 +238,19 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
         <div className={Styles.GasEdit}>
           <div>
             <div>
-              <div>
-                Transaction fee
-                {renderToolTip(
-                  'tooltip--gasEdit',
-                  <p>The fee for processing your transactions.</p>
-                )}
-              </div>
-              <div>
-                $
-                {getGasCostInDai(
-                  ethToDaiRate,
-                  createBigNumber(userDefinedGasPrice).toNumber()
-                )}{' '}
-                / Trade ({gasPriceSpeed} {gasPriceTime})
-              </div>
+              Transaction fee
+              {renderToolTip(
+                'tooltip--gasEdit',
+                <p>The fee for processing your transactions.</p>
+              )}
+            </div>
+            <div>
+              $
+              {getGasCostInDai(
+                ethToDaiRate,
+                createBigNumber(userDefinedGasPrice).toNumber()
+              )}{' '}
+              / Trade ({gasPriceSpeed} {gasPriceTime})
             </div>
           </div>
           <SecondaryButton
@@ -266,12 +264,10 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
         <div className={Styles.GasEdit}>
           <div>
             <div>
-              <div>
-                Refer a friend
-                {renderToolTip('tooltip--referral', referralTooltipContent)}
-              </div>
-              <div>{referralLink}</div>
+              Refer a friend
+              {renderToolTip('tooltip--referral', referralTooltipContent)}
             </div>
+            <div>{referralLink}</div>
           </div>
           <button
             id='copy_referral'
