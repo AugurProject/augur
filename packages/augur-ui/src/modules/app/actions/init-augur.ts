@@ -219,10 +219,10 @@ export function connectAugur(
       provider = new JsonRpcProvider(config.ethereum.http);
     }
 
-    // Disable mesh/gnosis for googleBot
+    // Disable mesh/gsn for googleBot
     if (isGoogleBot()) {
       config.zeroX.mesh.enabled = false;
-      config.gnosis.enabled = false;
+      config.gsn.enabled = false;
     }
 
     let sdk: Augur<Provider> = null;
