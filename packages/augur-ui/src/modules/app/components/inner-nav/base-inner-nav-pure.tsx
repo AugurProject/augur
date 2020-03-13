@@ -56,12 +56,17 @@ const BaseInnerNavPure = ({
   const [maxSpreadFilter, setMaxSpreadFilter] = useState();
   const [showInvalidFilter, setShowInvalidFilter] = useState();
   const [templateFilter, setTemplateFilter] = useState();
+  const [sortOptions, setSortOptions] = useState();
 
   const filterProps = {
     setMaxFeeFilter,
     setMaxSpreadFilter,
     setShowInvalidFilter,
     setTemplateFilter,
+  };
+
+  const sortProps = {
+    setSortOptions,
   };
 
   const getFilters = () => {
@@ -169,7 +174,7 @@ const BaseInnerNavPure = ({
         )}
       >
         <CategoryFilters />
-        <MarketsListSortBy /> {/* MOBILE ONLY */}
+        <MarketsListSortBy {...sortProps} /> {/* MOBILE ONLY */}
         <MarketsListFilters {...filterProps} />
       </ul>
       {showMainMenu && showApply && (
