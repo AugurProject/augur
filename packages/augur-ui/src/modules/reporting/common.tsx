@@ -851,7 +851,7 @@ export class ReportingBondsView extends Component<
           label={repLabel}
           value={`${repAmount} REP`}
         />
-        {initialReport && (
+        {initialReport && !market.isWarpSync && (
           <PreFilledStake
             showInput={showInput}
             toggleInput={this.toggleInput}
@@ -861,18 +861,22 @@ export class ReportingBondsView extends Component<
             threshold={threshold}
           />
         )}
-        <div className={Styles.ShowTotals}>
-          <span>Totals</span>
-          <span>Sum total of Initial Reporter Stake and Pre-Filled Stake</span>
-          <LinearPropertyLabel
-            key="totalRep"
-            label="Total REP Needed"
-            value={totalRep}
-          />
-          {insufficientRep && (
-            <span className={FormStyles.ErrorText}>{insufficientRep}</span>
-          )}
-        </div>
+        {!market.isWarpSync && (
+          <div className={Styles.ShowTotals}>
+            <span>Totals</span>
+            <span>
+              Sum total of Initial Reporter Stake and Pre-Filled Stake
+            </span>
+            <LinearPropertyLabel
+              key="totalRep"
+              label="Total REP Needed"
+              value={totalRep}
+            />
+            {insufficientRep && (
+              <span className={FormStyles.ErrorText}>{insufficientRep}</span>
+            )}
+          </div>
+        )}
 
         <LinearPropertyLabel
           key="totalEstimatedGasFee"
@@ -1182,7 +1186,15 @@ export const ParticipationTokensView = (
         <span>Don’t see any reports that need disputing? </span>
         You can earn a proportional share of the profits from this dispute
         window.
-        <span><a href={HELP_CENTER_PARTICIPATION_TOKENS} target="_blank" rel="noopener noreferrer">Learn more</a></span>
+        <span>
+          <a
+            href={HELP_CENTER_PARTICIPATION_TOKENS}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Learn more
+          </a>
+        </span>
       </span>
 
       <Subheaders

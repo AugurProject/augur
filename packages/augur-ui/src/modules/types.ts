@@ -671,6 +671,7 @@ export interface WindowApp extends Window {
   fm?: any;
   torus?: any;
   portis?: any;
+  showIndexedDbSize?: Function;
 }
 
 export type ButtonActionType = (
@@ -725,6 +726,7 @@ export interface Trade {
   side: typeof BUY | typeof SELL;
   orderShareProfit: FormattedNumber;
   orderShareTradingFee: FormattedNumber;
+  numFills: number;
 }
 
 export interface PriceTimeSeriesData {

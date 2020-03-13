@@ -406,7 +406,7 @@ export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
       orderFilled(marketId, log, isSameAddress(log.orderCreator, address))
     );
     dispatch(throttleLoadUserOpenOrders());
-    handleAlert(log, PUBLICFILLORDER, true, dispatch, getState);
+    if (log.orderFiller) handleAlert(log, PUBLICFILLORDER, true, dispatch, getState);
     dispatch(removePendingOrder(log.tradeGroupId, marketId));
   }
   if (isOnTradePage()) {

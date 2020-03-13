@@ -1,5 +1,6 @@
 import { WSClient } from '@0x/mesh-rpc-client';
 import { SDKConfiguration } from '@augurproject/artifacts';
+import { ContractInterfaces } from '@augurproject/core';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import {
   Augur,
@@ -63,7 +64,7 @@ export class TestContractAPI extends ContractAPI {
 
     const db = await makeDbMock().makeDB(augur);
 
-    return new TestContractAPI(augur, provider, dependencies, account, db);
+    return new TestContractAPI(augur, provider, dependencies, account, db, config);
   }
 
   constructor(
@@ -72,6 +73,7 @@ export class TestContractAPI extends ContractAPI {
     readonly dependencies: ContractDependenciesGSN,
     public account: Account,
     public db: DB,
+    public config: SDKConfiguration,
   ) {
     super(augur, provider, dependencies, account);
 
@@ -92,13 +94,13 @@ export class TestContractAPI extends ContractAPI {
   sync = async (highestBlockNumberToSync?: number) => {
     const { number: blockNumber } = await this.provider.getBlock(highestBlockNumberToSync || 'latest');
     if(this.needsToBulkSync) {
-      console.log('highestSyncedBlock', blockNumber);
+      const syncStartingBlock = await this.db.getSyncStartingBlock();
       await this.bulkSyncStrategy.start(
-        0,
+        syncStartingBlock,
         blockNumber
       );
 
-      await this.db.sync(0);
+      await this.db.sync(blockNumber);
 
       this.augur.events.emit(SubscriptionEventName.BulkSyncComplete, {
         eventName: SubscriptionEventName.BulkSyncComplete,
@@ -118,20 +120,37 @@ export class TestContractAPI extends ContractAPI {
     }
   };
 
-  async reportWarpSyncMarket(hash:string) {
-    const payoutNumerators = await this.getPayoutFromWarpSyncHash(hash);
-    const warpSyncMarket = await this.getWarpSyncMarket();
+  async reportAndFinalizeWarpSyncMarket(hash:string) {
+    const warpSyncMarket = await this.reportWarpSyncMarket(hash);
+    return this.finalizeWarpSyncMarket(warpSyncMarket);
+  }
 
-    const reportedValue = new BigNumber(465);
-    let timestamp = await this.getTimestamp();
-    timestamp = timestamp.plus(1000000);
+  async finalizeWarpSyncMarket(warpSyncMarket: ContractInterfaces.Market) {
+    const timestamp = (await this.getTimestamp()).plus(1000000);;
     await this.setTimestamp(timestamp);
-    await this.doInitialReport(warpSyncMarket, payoutNumerators);
 
-    timestamp = timestamp.plus(1000000);
-    await this.setTimestamp(timestamp);
     await this.finalizeMarket(warpSyncMarket);
 
     return warpSyncMarket;
+  }
+
+  async reportWarpSyncMarket(hash?:string) {
+    if(!hash) {
+      const mostRecentWarpSync = await this.db.warpSync.getMostRecentWarpSync();
+      hash = mostRecentWarpSync.hash;
+    }
+
+    const payoutNumerators = await this.getPayoutFromWarpSyncHash(hash);
+    const warpSyncMarket = await this.getWarpSyncMarket();
+
+    const timestamp = (await this.getTimestamp()).plus(1000000);
+    await this.setTimestamp(timestamp);
+    await this.doInitialReport(warpSyncMarket, payoutNumerators);
+
+    return warpSyncMarket;
+  }
+
+  async initializeUniverse() {
+    return this.augur.warpSync.initializeUniverse(this.augur.contracts.universe.address);
   }
 }
