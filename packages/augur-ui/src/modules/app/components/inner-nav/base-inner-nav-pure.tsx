@@ -80,25 +80,25 @@ const BaseInnerNavPure = ({
       {
         filterType: TEMPLATE_FILTER,
         value: originalFilters
-          ? originalFilterSortOptions.maxFee
+          ? originalFilterSortOptions.templateFilter
           : templateOrCustomFilter,
       },
       {
         filterType: MAXFEE_PARAM_NAME,
         value: originalFilters
-          ? originalFilterSortOptions.maxLiquiditySpread
+          ? originalFilterSortOptions.maxFee
           : maxFeeFilter,
       },
       {
         filterType: SPREAD_PARAM_NAME,
         value: originalFilters
-          ? originalFilterSortOptions.includeInvalidMarkets
+          ? originalFilterSortOptions.maxLiquiditySpread
           : maxSpreadFilter,
       },
       {
         filterType: SHOW_INVALID_MARKETS_PARAM_NAME,
         value: originalFilters
-          ? originalFilterSortOptions.templateFilter
+          ? originalFilterSortOptions.includeInvalidMarkets
           : showInvalidFilter,
       },
     ];
