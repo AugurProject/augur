@@ -6,6 +6,7 @@ export {
   UsefulContractObjects,
   makeSigner,
   makeDependencies,
+  makeGSNDependencies,
 } from './libs/blockchain';
 import * as blockchain from './libs/blockchain';
 

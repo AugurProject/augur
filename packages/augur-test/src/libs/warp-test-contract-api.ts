@@ -59,13 +59,12 @@ export class WarpTestContractApi extends TestContractAPI {
     meshBrowser: BrowserMesh = undefined,
   ) {
     const signer = await makeSigner(account, provider);
-    const dependencies = makeGSNDependencies(
+    const dependencies = await makeGSNDependencies(
       provider,
       signer,
       config.addresses.AugurWalletRegistry,
       config.addresses.EthExchange,
       new BigNumber(0),
-      null,
       account.publicKey,
     );
 
