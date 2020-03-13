@@ -51,18 +51,27 @@ const BaseInnerNavPure = ({
   const [originalFilterSortOptions, setOriginalFilterSortOptions] = useState(
     filterSortOptions
   );
+
+  const {
+    marketSort,
+    maxFee,
+    templateFilter,
+    maxLiquiditySpread,
+    includeInvalidMarkets
+  } = originalSelectedCategories;
+
   const [showApply, setShowApply] = useState(false);
   const [maxFeeFilter, setMaxFeeFilter] = useState();
   const [maxSpreadFilter, setMaxSpreadFilter] = useState();
   const [showInvalidFilter, setShowInvalidFilter] = useState();
-  const [templateFilter, setTemplateFilter] = useState();
+  const [templateOrCustomFilter, setTemplateOrCustomFilter] = useState();
   const [sortOptions, setSortOptions] = useState();
 
   const filterProps = {
     setMaxFeeFilter,
     setMaxSpreadFilter,
     setShowInvalidFilter,
-    setTemplateFilter,
+    setTemplateOrCustomFilter,
   };
 
   const sortProps = {
@@ -70,10 +79,10 @@ const BaseInnerNavPure = ({
   };
 
   const getFilters = () => {
-    return [
+    const filters = [
       {
         filterType: TEMPLATE_FILTER,
-        value: templateFilter,
+        value: templateOrCustomFilter,
       },
       {
         filterType: MAXFEE_PARAM_NAME,
@@ -87,7 +96,38 @@ const BaseInnerNavPure = ({
         filterType: SHOW_INVALID_MARKETS_PARAM_NAME,
         value: showInvalidFilter,
       },
-    ]
+    ];
+
+    return filters.filter(({value}) => !!value);
+  };
+
+  const applyFilters = () => {
+    const changedFilters = getFilters();
+
+    updateMobileMenuState(MOBILE_MENU_STATES.CLOSED);
+
+    if (changedFilters.length > 0) {
+      updateMultipleQueries(changedFilters, location, history);
+
+      changedFilters.forEach(({value, filterType}) => {
+        switch (filterType) {
+          case TEMPLATE_FILTER:
+            updateTemplateFilter(value);
+            break;
+          case MAXFEE_PARAM_NAME:
+            updateMaxFee(value);
+            break;
+          case SPREAD_PARAM_NAME:
+            updateMaxSpread(value);
+            break;
+          case SHOW_INVALID_MARKETS_PARAM_NAME:
+            updateShowInvalid(value);
+            break;
+        }
+      });
+    }
+
+    sortOptions && updateMarketsSortBy(sortOptions);
   };
 
   useEffect(() => {
@@ -99,7 +139,7 @@ const BaseInnerNavPure = ({
 
   useEffect(() => {
     setShowApply(true);
-  }, [templateFilter, maxFeeFilter, maxSpreadFilter, showInvalidFilter]);
+  }, [templateOrCustomFilter, maxFeeFilter, maxSpreadFilter, showInvalidFilter, sortOptions]);
 
   useEffect(() => {
     if (showMainMenu) {
@@ -122,39 +162,38 @@ const BaseInnerNavPure = ({
             onClick={() => {
               if (showMainMenu) {
                 updateSelectedCategories(originalSelectedCategories);
-                updateMarketsSortBy(originalFilterSortOptions.marketSort);
+                updateMarketsSortBy(marketSort);
 
-
-                updateMaxFee(originalFilterSortOptions.maxFee);
+                updateMaxFee(maxFee);
                 updateQuery(
                   MAXFEE_PARAM_NAME,
-                  originalFilterSortOptions.templateFilter,
+                  templateFilter,
                   location,
                   history
                 );
 
-                updateMaxSpread(originalFilterSortOptions.maxLiquiditySpread);
+                updateMaxSpread(maxLiquiditySpread);
                 updateQuery(
                   SPREAD_PARAM_NAME,
-                  originalFilterSortOptions.templateFilter,
+                  maxLiquiditySpread,
                   location,
                   history
                 );
 
                 updateShowInvalid(
-                  originalFilterSortOptions.includeInvalidMarkets
+                  includeInvalidMarkets
                 );
                 updateQuery(
                   SHOW_INVALID_MARKETS_PARAM_NAME,
-                  originalFilterSortOptions.includeInvalidMarkets,
+                  includeInvalidMarkets,
                   location,
                   history
                 );
 
-                updateTemplateFilter(originalFilterSortOptions.templateFilter);
+                updateTemplateFilter(templateFilter);
                 updateQuery(
                   TEMPLATE_FILTER,
-                  originalFilterSortOptions.templateFilter,
+                  templateFilter,
                   location,
                   history
                 );
@@ -181,10 +220,7 @@ const BaseInnerNavPure = ({
         <div>
           <PrimaryButton
             text="Apply"
-            action={() => {
-              updateMobileMenuState(MOBILE_MENU_STATES.CLOSED);
-              updateMultipleQueries(getFilters(), location, history);
-            }}
+            action={() => applyFilters()}
           />
         </div>
       )}

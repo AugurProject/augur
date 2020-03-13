@@ -35,7 +35,7 @@ interface MarketsListFiltersProps {
   setMaxFeeFilter: Function;
   setMaxSpreadFilter: Function;
   setShowInvalidFilter: Function;
-  setTemplateFilter: Function;
+  setTemplateOrCustomFilter: Function;
   isMobile: boolean;
 }
 
@@ -54,7 +54,7 @@ const MarketsListFilters = ({
   setMaxFeeFilter,
   setMaxSpreadFilter,
   setShowInvalidFilter,
-  setTemplateFilter,
+  setTemplateOrCustomFilter,
   isMobile,
 }: MarketsListFiltersProps) => {
   useEffect(() => {
@@ -140,7 +140,7 @@ const MarketsListFilters = ({
             <RadioBarGroup
               radioButtons={templateFilterValues}
               defaultSelected={allTemplateFilter}
-              onChange={(value: string) => isMobile ? setTemplateFilter(value) : updateFilter(value, TEMPLATE_FILTER)}
+              onChange={(value: string) => isMobile ? setTemplateOrCustomFilter(value) : updateFilter(value, TEMPLATE_FILTER)}
             />
 
             <div className={Styles.Filter}>
