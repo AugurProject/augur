@@ -170,7 +170,7 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
     rpcConcurrency: 40
   },
   gas: {
-    price: 20e9,
+    price: 1e9,
     limit: 75e5
   },
   deploy: {

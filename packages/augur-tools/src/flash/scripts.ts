@@ -2119,7 +2119,7 @@ export function addScripts(flash: FlashSession) {
         
         // Run the GSN relay
         this.log(`Running GSN relayer`);
-        spawn('npx', ['oz-gsn', 'run-relayer'], {stdio: 'inherit'});
+        spawn('yarn', ['run:gsn'], {stdio: 'inherit'});
 
         env = {
           ...process.env,
