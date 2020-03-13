@@ -1024,6 +1024,7 @@ export async function migrateRepToUniverseEstimateGas(
 export async function migrateRepToUniverse(migration: doReportDisputeAddStake) {
   const { contracts } = augurSdk.get();
   const payoutNumerators = await getPayoutNumerators(migration);
+
   try {
     contracts.reputationToken.migrateOutByPayout(
       payoutNumerators,
