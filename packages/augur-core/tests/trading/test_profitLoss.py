@@ -87,6 +87,36 @@ def test_binary_and_claim(contractsFixture, cash, market, universe):
     assert profitLoss.getRealizedProfit(market.address, contractsFixture.accounts[2], YES) == 361
     assert profitLoss.getFrozenFunds(market.address, contractsFixture.accounts[2], YES) == 0
 
+def test_simple(contractsFixture, cash, market, universe):
+    createOrder = contractsFixture.contracts["CreateOrder"]
+    fillOrder = contractsFixture.contracts["FillOrder"]
+    profitLoss = contractsFixture.contracts["ProfitLoss"]
+    shareToken = contractsFixture.contracts['ShareToken']
+    augurTrading = contractsFixture.contracts['AugurTrading']
+    test_data = [
+        {
+            "direction": LONG,
+            "outcome": YES,
+            "quantity": 10,
+            "price": .15,
+            "position": 10,
+            "avgPrice": .15,
+            "realizedPL": 0,
+            "frozenFunds": 1.5
+        }, {
+            "direction": LONG,
+            "outcome": YES,
+            "quantity": 10,
+            "price": .18,
+            "position": 20,
+            "avgPrice": 16.5,
+            "realizedPL": 0,
+            "frozenFunds": 3.3
+        }
+    ]
+
+    process_trades(contractsFixture, test_data, cash, market, createOrder, fillOrder, profitLoss)
+
 def test_cat3_1(contractsFixture, cash, categoricalMarket, universe):
     createOrder = contractsFixture.contracts["CreateOrder"]
     fillOrder = contractsFixture.contracts["FillOrder"]
@@ -406,7 +436,7 @@ def process_trades(contractsFixture, trade_data, cash, market, createOrder, fill
         assert cash.faucet(creatorCost, sender = contractsFixture.accounts[1])
         orderID = createOrder.publicCreateOrder(direction, trade['quantity'], onChainLongPrice, market.address, trade['outcome'], longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), nullAddress, sender = contractsFixture.accounts[1])
 
-        avgPrice = int(round((trade['avgPrice'] - minPrice) * market.getNumTicks() / displayRange))
+        avgPrice = int(round((trade['avgPrice'] - minPrice) * market.getNumTicks() / displayRange)) * 10**18
         realizedProfit = int(round(trade['realizedPL'] * market.getNumTicks() / displayRange))
         frozenFunds = int(round(trade['frozenFunds'] * market.getNumTicks() / displayRange))
 
@@ -425,6 +455,7 @@ def process_trades(contractsFixture, trade_data, cash, market, createOrder, fill
         with AssertLog(contractsFixture, "ProfitLossChanged", profitLossChangedLog, skip = 0 if direction == BID else 1):
             fillOrder.publicFillOrder(orderID, trade['quantity'], longTo32Bytes(42), longTo32Bytes(11), sender = contractsFixture.accounts[2])
 
+        import pdb;pdb.set_trace()
         assert profitLoss.getNetPosition(market.address, contractsFixture.accounts[2], trade['outcome']) == trade['position']
         assert profitLoss.getAvgPrice(market.address, contractsFixture.accounts[2], trade['outcome']) == avgPrice
         assert profitLoss.getRealizedProfit(market.address, contractsFixture.accounts[2], trade['outcome']) == realizedProfit
