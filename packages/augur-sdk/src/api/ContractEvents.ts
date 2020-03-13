@@ -9,7 +9,7 @@ export class ContractEvents {
     'OrderEvent': 'AugurTrading',
     'ProfitLossChanged': 'AugurTrading',
     'MarketVolumeChanged': 'AugurTrading',
-    'Cancel': 'Exchange',
+    'CancelZeroXOrder': 'AugurTrading',
   };
 
   private readonly contractAddressToName = {};
@@ -19,20 +19,16 @@ export class ContractEvents {
     private readonly augurAddress: string,
     private readonly augurTradingAddress: string,
     private readonly shareTokenAddress: string,
-    private readonly zeroXExchangeAddress: string,
     ) {
     this.provider.storeAbiData(abi.Augur as Abi, 'Augur');
     this.provider.storeAbiData(abi.AugurTrading as Abi, 'AugurTrading');
     this.provider.storeAbiData(abi.ShareToken as Abi, 'ShareToken');
-    this.provider.storeAbiData(abi.Exchange as Abi, 'Exchange');
     this.augurAddress = this.augurAddress.toLowerCase();
     this.augurTradingAddress = this.augurTradingAddress.toLowerCase();
     this.shareTokenAddress = this.shareTokenAddress.toLowerCase();
-    this.zeroXExchangeAddress = this.zeroXExchangeAddress.toLowerCase();
     this.contractAddressToName[this.augurAddress] = 'Augur';
     this.contractAddressToName[this.augurTradingAddress] = 'AugurTrading';
     this.contractAddressToName[this.shareTokenAddress] = 'ShareToken';
-    this.contractAddressToName[this.zeroXExchangeAddress] = 'Exchange';
   }
 
   getEventContractName = (eventName: string) => {
@@ -45,7 +41,6 @@ export class ContractEvents {
       this.augurAddress,
       this.shareTokenAddress,
       this.augurTradingAddress,
-      this.zeroXExchangeAddress
     ];
   }
 
@@ -53,7 +48,6 @@ export class ContractEvents {
     const contractName = this.getEventContractName(eventName);
     if (contractName === 'ShareToken') return this.shareTokenAddress;
     if (contractName === 'AugurTrading') return this.augurTradingAddress;
-    if (contractName === 'Exchange') return this.zeroXExchangeAddress;
     return this.augurAddress;
   };
 

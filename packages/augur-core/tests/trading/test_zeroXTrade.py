@@ -206,15 +206,30 @@ def test_cancelation(contractsFixture, cash, market, universe):
     rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(BID, fix(2), 60, market.address, YES, expirationTime, salt)
     signature = signOrder(orderHash, contractsFixture.privateKeys[0])
 
+    orders = [rawZeroXOrderData]
+    signatures = [signature]
+
     # Now lets cancel it
-    zeroXExchange.cancelOrder(rawZeroXOrderData)
-    assert zeroXExchange.cancelled(orderHash)
+    maxProtocolFeeDai = 10**18
+
+    CancelZeroXOrderLog = {
+        "universe": universe.address,
+        "market": market.address,
+        "account": contractsFixture.accounts[0],
+        "outcome": YES,
+        "price": 60,
+        "amount": fix(2),
+        "orderType": BID,
+    }
+    with PrintGasUsed(contractsFixture, "Cancel 0x Order"):
+        with AssertLog(contractsFixture, "CancelZeroXOrder", CancelZeroXOrderLog):
+            ZeroXTrade.cancelOrders(orders, signatures, maxProtocolFeeDai)
+
+    assert zeroXExchange.filled(orderHash)
 
     fillAmount = fix(1)
     fingerprint = longTo32Bytes(11)
     tradeGroupId = longTo32Bytes(42)
-    orders = [rawZeroXOrderData]
-    signatures = [signature]
 
     # Lets take the order as another user and confirm we cannot take a canceled order
     assert cash.faucet(fix(1, 60))

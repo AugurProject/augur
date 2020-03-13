@@ -155,7 +155,6 @@ export async function createServer(config: SDKConfiguration, client?: Augur, acc
     client.config.addresses.Augur,
     client.config.addresses.AugurTrading,
     client.config.addresses.ShareToken,
-    client.config.addresses.Exchange
   );
 
   const logFilterAggregator = LogFilterAggregator.create(

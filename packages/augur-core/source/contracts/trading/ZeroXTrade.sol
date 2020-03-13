@@ -326,6 +326,30 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155, CashSender {
         return _orderAmount.isMultipleOf(_tradeInterval);
     }
 
+    function cancelOrders(IExchange.Order[] memory _orders, bytes[] memory _signatures, uint256 _maxProtocolFeeDai) public returns (bool) {
+        require(_orders.length == _signatures.length);
+        uint256 _protocolFee = exchange.protocolFeeMultiplier().mul(tx.gasprice);
+        coverProtocolFee(_protocolFee.mul(_orders.length), _maxProtocolFeeDai);
+        transferFromAllowed = true;
+        for (uint256 i = 0; i < _orders.length; i++) {
+            IExchange.Order memory _order = _orders[i];
+            bytes memory _signature = _signatures[i];
+            require(msg.sender == _order.makerAddress);
+            IExchange.OrderInfo memory _orderInfo = exchange.getOrderInfo(_order);
+            uint256 _amountRemaining = _order.takerAssetAmount.sub(_orderInfo.orderTakerAssetFilledAmount);
+            exchange.fillOrder.value(_protocolFee)(_order, _amountRemaining, _signature);
+            AugurOrderData memory _orderData = parseOrderData(_order);
+            IUniverse _universe = IMarket(_orderData.marketAddress).getUniverse();
+            augurTrading.logZeroXOrderCanceled(address(_universe), _orderData.marketAddress, _order.makerAddress, _orderData.outcome, _orderData.price, _amountRemaining, uint8(_orderData.orderType), _orderInfo.orderHash);
+        }
+        transferFromAllowed = false;
+        if (address(this).balance > 0) {
+            (bool _success,) = msg.sender.call.value(address(this).balance)("");
+            require(_success);
+        }
+        return true;
+    }
+
     function doTrade(IExchange.Order memory _order, uint256 _amount, bytes32 _fingerprint, bytes32 _tradeGroupId, address _taker) private returns (uint256 _amountFilled) {
         // parseOrderData will validate that the token being traded is the leigitmate one for the market
         AugurOrderData memory _augurOrderData = parseOrderData(_order);
