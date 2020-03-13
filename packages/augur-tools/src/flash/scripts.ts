@@ -2118,6 +2118,9 @@ export function addScripts(flash: FlashSession) {
         await spawnSync('yarn', ['build']); // so UI etc will have the correct addresses
 
         // Run the GSN relay
+        console.log(`Running GSN relayer`);
+        await spawnSync('npx', ['oz-gsn', 'run-relayer']);
+        
         env = {
           ...process.env,
           ETHEREUM_CHAIN_ID: this.config.networkId,
