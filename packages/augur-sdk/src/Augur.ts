@@ -111,7 +111,6 @@ export class Augur<TProvider extends Provider = Provider> {
       this.config.addresses.Augur,
       this.config.addresses.AugurTrading,
       this.config.addresses.ShareToken,
-      this.config.addresses.Exchange,
       );
     this.gnosis = new Gnosis(this.provider, this, this.dependencies);
     this.warpSync = new WarpSync(this);

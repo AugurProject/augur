@@ -307,13 +307,13 @@ describe('Augur API :: ZeroX :: ', () => {
       expect(allCancels[0]).toMatchObject({
         account: john.account.publicKey,
         market: market.address,
-        price: '0x00000000000000000016',
+        price: '0x16',
         outcome: '0x00',
-        orderType: '0x00',
+        orderType: 0,
       });
 
       const indexKeyOrders = await john.db.CancelZeroXOrder.where(
-        '[makerAddress+market]'
+        '[account+market]'
       )
         .equals([john.account.publicKey, market.address])
         .toArray();
@@ -321,9 +321,9 @@ describe('Augur API :: ZeroX :: ', () => {
       expect(indexKeyOrders[0]).toMatchObject({
         account: john.account.publicKey,
         market: market.address,
-        price: '0x00000000000000000016',
+        price: '0x16',
         outcome: '0x00',
-        orderType: '0x00',
+        orderType: 0,
       });
     });
   });
