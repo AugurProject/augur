@@ -490,6 +490,27 @@
 	align-items: center;
 	grid-column: 2 / span 1;
 
+	@media @breakpoint-mobile-tablet {
+		display: grid;
+		grid-template-columns: auto @size-16 @size-16;
+		grid-template-rows: auto;
+		grid-gap: @size-8;
+		margin-top: 0;
+		margin-bottom: @size-12;
+
+		> div[class*="CategoryTagTrail"] {
+			> div {
+				align-items: flex-end;
+				display: flex;
+				margin-right: @size-8;
+			}
+
+			grid-column: unset;
+			grid-row: unset;
+			display: flex;
+		}
+	}
+
 	> span {
 		margin-right: @size-10;
 		flex-flow: row nowrap;
@@ -567,13 +588,6 @@
 
 @media @breakpoint-mobile-tablet {
 	.TopRow {
-		display: grid;
-		grid-template-columns: auto @size-16 @size-16;
-		grid-template-rows: auto;
-		grid-gap: @size-8;
-		margin-top: 0;
-		margin-bottom: @size-12;
-
 		div:nth-last-child(2) {
 			margin-right: 0;
 		}
@@ -593,18 +607,6 @@
 		> div:last-of-type {
 			grid-row: 1;
 			grid-column: 3;
-		}
-
-		> div[class*="CategoryTagTrail"] {
-			> div {
-				align-items: flex-end;
-				display: flex;
-				margin-right: @size-8;
-			}
-
-			grid-column: unset;
-			grid-row: unset;
-			display: flex;
 		}
 
 		> span[class*="MarketStatus"] {
@@ -701,13 +703,32 @@
 		grid-row: 1;
 		padding-left: 0;
 
+		@media @breakpoint-mobile-tablet {
+			grid-template-columns: @size-20 1fr 0fr 0fr 0fr;
+			margin-bottom: 0;
+
+			> div[class*="CategoryTagTrail"] {
+				grid-row: 2;
+				grid-column: span 5;
+			}
+		}
+
 		> button[class*="FavoriteButton"] {
 			margin-left: @size-10;
 			margin-right: 0;
 			order: 4;
+
+			@media @breakpoint-mobile-tablet {
+				grid-column: 5;
+			}
 		}
 
 		> div[class*='DotSelection'] {
+
+			@media @breakpoint-mobile-tablet {
+				grid-column: 4;
+			}
+
 			> button > svg {
 				height: @size-18;
 				width: @size-18;
@@ -751,7 +772,11 @@
 	.MatchedLine {
     .text-12;
     color: var(--color-secondary-text);
-    height: @size-18;
+		height: @size-18;
+		
+		@media @breakpoint-mobile-tablet {
+			display: none;
+		}
 
     > b {
       .text-12-bold;
@@ -766,7 +791,11 @@
     color: var(--color-primary-text);
     display: flex;
     flex-flow: row nowrap;
-    height: @size-18;
+		height: @size-18;
+		
+		@media @breakpoint-mobile-tablet {
+			grid-column: 3;
+		}
 
     > svg {
       height: @size-12;
@@ -800,6 +829,12 @@
 				grid-template-columns: repeat(3, @size-120);
 				grid-gap: @size-8;
 				margin: 0 @size-8 0 auto;
+
+				@media @breakpoint-mobile {
+					grid-template-columns: repeat(3, 1fr);
+					width: 100%;
+					margin: 0 @size-8;
+				}
 	
 				> li {
 					.text-10-semi-bold;
@@ -817,11 +852,19 @@
 			grid-template-columns: 1fr repeat(3, @size-120);
 			padding: @size-6 @size-8;
 
+			@media @breakpoint-mobile {
+				grid-template-columns: repeat(3, 1fr);
+			}
+
 			> h3 {
 				.text-14-bold;
 
 				color: var(--color-primary-text);
 				padding: @size-6 @size-8;
+
+				@media @breakpoint-mobile {
+					grid-column: span 3;
+				}
 			}
 
 			> div {
