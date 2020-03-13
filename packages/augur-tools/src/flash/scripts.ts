@@ -2102,25 +2102,25 @@ export function addScripts(flash: FlashSession) {
           await refreshSDKConfig(); // add pop-geth addresses to global
         }
 
-        console.log(`Waiting for Geth to start up`);
+        this.log(`Waiting for Geth to start up`);
         await sleep(10000); // give geth some time to start
         refreshSDKConfig();
         this.config = buildConfig('local');
         this.provider = flash.makeProvider(this.config);
 
         if (dev) {
-          console.log(`Deploying contracts`);
+          this.log(`Deploying contracts`);
           const deployMethod = fake ? 'fake-all' : 'normal-all';
           await this.call(deployMethod, { createMarkets: true, parallel: true });
         }
 
-        console.log(`Building`);
+        this.log(`Building`);
         await spawnSync('yarn', ['build']); // so UI etc will have the correct addresses
-
-        // Run the GSN relay
-        console.log(`Running GSN relayer`);
-        await spawnSync('npx', ['oz-gsn', 'run-relayer']);
         
+        // Run the GSN relay
+        this.log(`Running GSN relayer`);
+        spawn('npx', ['oz-gsn', 'run-relayer'], {stdio: 'inherit'});
+
         env = {
           ...process.env,
           ETHEREUM_CHAIN_ID: this.config.networkId,
@@ -2133,6 +2133,7 @@ export function addScripts(flash: FlashSession) {
           env,
           stdio: 'inherit'
         });
+
         if (detach) return;
 
         spawn('docker-compose', ['-f', 'docker-compose.yml', 'logs'], {env, stdio: 'inherit'});
