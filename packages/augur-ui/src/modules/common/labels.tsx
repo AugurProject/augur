@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import classNames from 'classnames';
 import * as constants from 'modules/common/constants';
 import Styles from 'modules/common/labels.styles.less';
@@ -45,6 +45,7 @@ import { EventDetailsContent } from 'modules/create-market/constants';
 import { ExplainerBlock } from 'modules/create-market/components/common';
 import { hasTemplateTextInputs } from '@augurproject/artifacts';
 import { getDurationBetween } from 'utils/format-date';
+import { useTimer } from 'modules/common/progress';
 
 export interface MarketTypeProps {
   marketType: string;
@@ -228,17 +229,23 @@ interface TimeLabelProps {
 
 interface CountdownLabelProps {
   expiry: DateFormattedObject;
-  currentTimestamp: Number;
 }
 
-export const CountdownLabel = ({ expiry, currentTimestamp }: CountdownLabelProps) => {
+export const CountdownLabel = ({ expiry }: CountdownLabelProps) => {
   if (!expiry) return null;
-  const duration = getDurationBetween(expiry.timestamp, currentTimestamp);
-  const hours = duration.asHours();
-  if (hours > 1) return null;
+  const currentTime = useTimer();
+  const duration = getDurationBetween(expiry.timestamp, currentTime);
+  let durationValue = duration.asSeconds();
+  let unit = 'm';
+  if (durationValue > constants.SECONDS_IN_HOUR) return null;
+  if (durationValue > constants.SECONDS_IN_MINUTE) {
+    durationValue = Math.round(duration.asMinutes());
+  } else {
+    unit = 's';
+  }
   return (
     <div className={Styles.CountdownLabel}>
-      {Math.round(duration.asMinutes())}m
+      {durationValue}{unit}
     </div>
   );
 };

@@ -99,7 +99,8 @@ export const AUTH_TYPES = {
 export const DEFAULT_AUTH_TYPE = REGISTER;
 const SECONDS_PER_DAY = 3600 * 24;
 export const SIXTY_DAYS = 60 * SECONDS_PER_DAY;
-
+export const SECONDS_IN_HOUR = 60 * 60;
+export const SECONDS_IN_MINUTE = 60;
 export const EDGE_WALLET_TYPE = 'wallet:ethereum';
 
 // Add Funds types
