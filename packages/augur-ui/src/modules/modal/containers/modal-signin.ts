@@ -20,6 +20,7 @@ import {
   MODAL_ACCOUNT_CREATED,
   MODAL_ERROR,
   MODAL_HARDWARE_WALLET,
+  HELP_CENTER_THIRD_PARTY_COOKIES,
 } from 'modules/common/constants';
 import { loginWithInjectedWeb3 } from 'modules/auth/actions/login-with-injected-web3';
 import { loginWithPortis } from 'modules/auth/actions/login-with-portis';
@@ -61,10 +62,13 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
     dispatch(loginWithTorus()),
   connectFortmatic: () =>
     dispatch(loginWithFortmatic()),
-  errorModal: (error) => dispatch(
+  errorModal: (error, title = null, link = null, linkLabel = null) => dispatch(
     updateModal({
       type: MODAL_ERROR,
-      error: error ? JSON.stringify(error) : 'Sorry, please try again.',
+      title,
+      error: error ? error : 'Sorry, please try again.',
+      link,
+      linkLabel
     })
   ),
 });
@@ -74,7 +78,11 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
 
   const onError = (error, accountType) => {
     console.error(`ERROR:${accountType}`, error);
-    dP.errorModal(error.message ? error.message : error ? error : '');
+    if (error.message && error.message.toLowerCase().indexOf('cookies') !== -1) {
+      dP.errorModal(`Please enable cookies in your browser to proceed with ${accountType}.`, 'Cookies are disabled', HELP_CENTER_THIRD_PARTY_COOKIES, 'Learn more.');
+    } else {
+      dP.errorModal(error.message ? error.message : error ? JSON.stringify(error) : '');
+    }
   };
 
   const login = () => {
