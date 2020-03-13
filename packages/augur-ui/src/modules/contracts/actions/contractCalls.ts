@@ -988,7 +988,7 @@ export async function reportAndMigrateMarket_estimateGas(
 ) {
   const Augur = augurSdk.get();
   const market = Augur.getMarket(migration.marketId);
-  const payoutNumerators = getPayoutNumerators(migration);
+  const payoutNumerators = await getPayoutNumerators(migration);
   try {
     market.migrateThroughOneFork_estimateGas(payoutNumerators, migration.description);
   } catch (e) {
@@ -1001,7 +1001,7 @@ export async function reportAndMigrateMarket(
 ) {
   const Augur = augurSdk.get();
   const market = Augur.getMarket(migration.marketId);
-  const payoutNumerators = getPayoutNumerators(migration);
+  const payoutNumerators = await getPayoutNumerators(migration);
   try {
     market.migrateThroughOneFork(payoutNumerators, migration.description);
   } catch (e) {
@@ -1013,7 +1013,7 @@ export async function migrateRepToUniverseEstimateGas(
   migration: doReportDisputeAddStake
 ): Promise<BigNumber> {
   const { contracts } = augurSdk.get();
-  const payoutNumerators = getPayoutNumerators(migration);
+  const payoutNumerators = await getPayoutNumerators(migration);
   const gas = await contracts.reputationToken.migrateOutByPayout_estimateGas(
     payoutNumerators,
     createBigNumber(migration.attoRepAmount)
@@ -1023,7 +1023,8 @@ export async function migrateRepToUniverseEstimateGas(
 
 export async function migrateRepToUniverse(migration: doReportDisputeAddStake) {
   const { contracts } = augurSdk.get();
-  const payoutNumerators = getPayoutNumerators(migration);
+  const payoutNumerators = await getPayoutNumerators(migration);
+
   try {
     contracts.reputationToken.migrateOutByPayout(
       payoutNumerators,
