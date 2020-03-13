@@ -424,7 +424,7 @@ export class Augur<TProvider extends Provider = Provider> {
   };
 
   getWarpSyncHashFromPayout = (payout: BigNumber[]): string => {
-    return this.warpSync.getWarpSyncHashFromPayout(payout);
+    return this.warpSync.getWarpSyncHashFromPayout(payout[2]);
   };
 
   getProfitLoss = (

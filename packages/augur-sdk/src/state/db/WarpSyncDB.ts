@@ -8,6 +8,7 @@ export interface WarpSyncDocument {
   _rev?: string;
   begin: Block;
   end: Block;
+  market: string;
   hash: string;
 }
 

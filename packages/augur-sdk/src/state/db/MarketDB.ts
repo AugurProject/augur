@@ -29,6 +29,8 @@ interface MarketOrderBookData {
   _id: string;
   invalidFilter: number;
   liquidity: LiquidityResults;
+  hasRecentlyDepletedLiquidity: boolean;
+  lastPassingLiquidityCheck: number;
 }
 
 interface LiquidityResults {
@@ -99,7 +101,8 @@ export class MarketDB extends DerivedDB {
   async doSync(highestAvailableBlockNumber: number): Promise<void> {
     this.syncing = true;
     await super.doSync(highestAvailableBlockNumber);
-    await this.syncOrderBooks([]);
+    // If syncOrderBooks is being called on inital sync, we pass flag
+    await this.syncOrderBooks([], true);
     const timestamp = (await this.augur.getTimestamp()).toNumber();
     await this.processTimestamp(timestamp, highestAvailableBlockNumber);
     await this.syncFTS();
@@ -120,7 +123,7 @@ export class MarketDB extends DerivedDB {
     return result;
   }
 
-  syncOrderBooks = async (marketIds: string[]): Promise<void> => {;
+  syncOrderBooks = async (marketIds: string[], isFirstSync = false): Promise<void> => {;
     let ids = marketIds;
     const highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(this.dbName);
     const documents = [];
@@ -140,7 +143,7 @@ export class MarketDB extends DerivedDB {
     const marketDataById = _.keyBy(marketsData, 'market');
     for (const marketId of ids) {
       if (Object.keys(marketDataById).includes(marketId)) {
-        const doc = await this.getOrderBookData(this.augur, marketId, marketDataById[marketId], reportingFeeDivisor, ETHInAttoDAI);
+        const doc = await this.getOrderBookData(this.augur, marketId, marketDataById[marketId], reportingFeeDivisor, ETHInAttoDAI, isFirstSync);
         // This is needed to make rollbacks work properly
         doc['blockNumber'] = highestSyncedBlockNumber;
         doc['market'] = marketId;
@@ -155,7 +158,7 @@ export class MarketDB extends DerivedDB {
     liquidityDirty.add(marketId);
   }
 
-  async getOrderBookData(augur: Augur, marketId: string, marketData: MarketData, reportingFeeDivisor: BigNumber, ETHInAttoDAI: BigNumber): Promise<MarketOrderBookData> {
+  async getOrderBookData(augur: Augur, marketId: string, marketData: MarketData, reportingFeeDivisor: BigNumber, ETHInAttoDAI: BigNumber, isFirstSync: Boolean): Promise<MarketOrderBookData> {
     const numOutcomes = marketData.outcomes && marketData.outcomes.length > 0 ? marketData.outcomes.length + 1 : 3;
     const estimatedTradeGasCost = WORST_CASE_FILL[numOutcomes - 1];
     const estimatedGasCost = ETHInAttoDAI.multipliedBy(DEFAULT_GAS_PRICE_IN_GWEI).div(10**9);
@@ -166,6 +169,19 @@ export class MarketDB extends DerivedDB {
     const numTicks = new BigNumber(marketData.numTicks);
     const feeMultiplier = new BigNumber(1).minus(new BigNumber(1).div(reportingFeeDivisor)).minus(new BigNumber(1).div(feeDivisor));
     const orderBook = await this.getOrderBook(marketData, numOutcomes, estimatedTradeGasCostInAttoDai);
+
+    // since zeroX orders will not be hydrated on first sync, we will need to pre-populate
+    // liquidty filter data based off the last stored state of the MaraketDB (if avaiable)
+    if(isFirstSync && marketData) {
+      return {
+        _id: marketId,
+        invalidFilter: marketData.invalidFilter ? 1 : 0,
+        hasRecentlyDepletedLiquidity: marketData.hasRecentlyDepletedLiquidity,
+        lastPassingLiquidityCheck: marketData.lastPassingLiquidityCheck,
+        liquidity: marketData.liquidity,
+      };
+    }
+
     const invalidFilter = await this.recalcInvalidFilter(orderBook, marketData, feeMultiplier, estimatedTradeGasCostInAttoDai, estimatedClaimGasCostInAttoDai);
 
     let marketOrderBookData = {
@@ -222,6 +238,13 @@ export class MarketDB extends DerivedDB {
     }
 
     return marketOrderBookData;
+  }
+
+  async getAllWarpSyncMarkets(): Promise<MarketData[]> {
+    return this.table
+      .orderBy('timestamp')
+      .and(item => item.isWarpSync)
+      .sortBy('endTime');
   }
 
   async getOrderBook(marketData: MarketData, numOutcomes: number, estimatedTradeGasCostInAttoDai: BigNumber): Promise<OrderBook> {
