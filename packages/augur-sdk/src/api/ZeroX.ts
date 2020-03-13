@@ -20,8 +20,8 @@ import {
   NativePlaceTradeDisplayParams,
   TradeTransactionLimits,
 } from './OnChainTrade';
-import { sleep } from '../state/utils/utils';
 import { SubscriptionEventName } from '../constants';
+import { BigNumber as BN} from 'ethers/utils';
 
 
 export enum Verbosity {
@@ -535,11 +535,13 @@ export class ZeroX {
   ): Promise<MatchingOrders> {
     const orderType = params.direction === 0 ? '1' : '0';
     const outcome = params.outcome.toString();
+    const price = new BN(params.price.toString()).toHexString().substr(2);
+
     const zeroXOrders = await this.client.getZeroXOrders({
       marketId: params.market,
       outcome: params.outcome,
       orderType,
-      matchPrice: `0x${params.price.toString(16).padStart(60, '0')}`,
+      matchPrice: `0x${price.padStart(20, '0')}`,
       ignoreOrders,
     });
 
