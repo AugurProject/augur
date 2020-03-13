@@ -55,14 +55,14 @@ contract ProfitLoss is Initializable {
     function recordFrozenFundChange(IUniverse _universe, IMarket _market, address _account, uint256 _outcome, int256 _frozenFundDelta) external returns (bool) {
         require(msg.sender == createOrder || msg.sender == cancelOrder || msg.sender == address(orders) || msg.sender == fillOrder);
         OutcomeData storage _outcomeData = profitLossData[_account][address(_market)][_outcome];
-        _outcomeData.frozenFunds += _frozenFundDelta;
+        _outcomeData.frozenFunds += _frozenFundDelta.mul(10**18);
         augurTrading.logProfitLossChanged(_market, _account, _outcome, _outcomeData.netPosition, uint256(_outcomeData.avgPrice), _outcomeData.realizedProfit, _outcomeData.frozenFunds,  _outcomeData.realizedCost);
         return true;
     }
 
     function adjustTraderProfitForFees(IMarket _market, address _trader, uint256 _outcome, uint256 _fees) external returns (bool) {
         require(msg.sender == fillOrder);
-        profitLossData[_trader][address(_market)][_outcome].realizedProfit -= int256(_fees);
+        profitLossData[_trader][address(_market)][_outcome].realizedProfit -= int256(_fees.mul(10**18));
         return true;
     }
 
@@ -79,13 +79,15 @@ contract ProfitLoss is Initializable {
     function adjustForTrader(IUniverse _universe, IMarket _market, address _address, uint256 _outcome, int256 _amount, int256 _price, int256 _frozenTokenDelta) internal returns (bool) {
         OutcomeData storage _outcomeData = profitLossData[_address][address(_market)][_outcome];
         OutcomeData memory _tmpOutcomeData = profitLossData[_address][address(_market)][_outcome];
+        _price = _price.mul(10**18);
+        _frozenTokenDelta = _frozenTokenDelta.mul(10**18);
 
         bool _sold = _tmpOutcomeData.netPosition < 0 &&  _amount > 0 || _tmpOutcomeData.netPosition > 0 &&  _amount < 0;
         if (_tmpOutcomeData.netPosition != 0 && _sold) {
             int256 _amountSold = _tmpOutcomeData.netPosition.abs().min(_amount.abs());
             int256 _profit = (_tmpOutcomeData.netPosition < 0 ? _tmpOutcomeData.avgPrice.sub(_price) : _price.sub(_tmpOutcomeData.avgPrice)).mul(_amountSold);
             _tmpOutcomeData.realizedProfit += _profit;
-            _tmpOutcomeData.realizedCost += (_tmpOutcomeData.netPosition < 0 ? int256(_market.getNumTicks()).sub(_tmpOutcomeData.avgPrice) : _tmpOutcomeData.avgPrice).mul(_amountSold);
+            _tmpOutcomeData.realizedCost += (_tmpOutcomeData.netPosition < 0 ? int256(_market.getNumTicks()*10**18).sub(_tmpOutcomeData.avgPrice) : _tmpOutcomeData.avgPrice).mul(_amountSold);
             _tmpOutcomeData.frozenFunds += _profit + _frozenTokenDelta;
 
             _outcomeData.realizedProfit = _tmpOutcomeData.realizedProfit;
@@ -123,7 +125,7 @@ contract ProfitLoss is Initializable {
             if (_outcomeData.netPosition == 0) {
                 continue;
             }
-            int256 _salePrice = int256(_market.getWinningPayoutNumerator(_outcome));
+            int256 _salePrice = int256(_market.getWinningPayoutNumerator(_outcome).mul(10**18));
             int256 _amount = _outcomeData.netPosition.abs();
             _outcomeData.realizedProfit += (_outcomeData.netPosition < 0 ? _outcomeData.avgPrice.sub(_salePrice) : _salePrice.sub(_outcomeData.avgPrice)).mul(_amount);
             _outcomeData.realizedProfit -= int256(_outcomeFees[_outcome]);
