@@ -13,7 +13,6 @@ interface ForkingProps {
   hasRepBalance?: boolean;
   isForking?: boolean;
   forkTime?: DateFormattedObject;
-  currentTime?: DateFormattedObject;
   hasStakedRepAction: Function;
   hasRepMigrationAction: Function;
 }
@@ -51,7 +50,6 @@ export const Forking = (props: ForkingProps) => (
       <CountdownProgress
         label={'Time remaining in Fork Window'}
         time={props.forkTime}
-        currentTime={props.currentTime}
         countdownBreakpoint={SIXTY_DAYS}
       />
     </div>
