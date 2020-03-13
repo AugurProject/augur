@@ -56,8 +56,8 @@ export function convertMarketInfoToMarketData(
     }),
     settlementFeePercent: formatPercent(allFee.multipliedBy(100), {
       positiveSign: false,
-      decimals: 4,
-      decimalsRounded: 4,
+      decimals: 2,
+      decimalsRounded: 2,
     }),
     openInterestFormatted: formatDai(marketInfo.openInterest, {
       positiveSign: false,

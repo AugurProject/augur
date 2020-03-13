@@ -199,6 +199,13 @@
 	}
 }
 
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+	.Percent {
+		background: var(--color-dark-grey);
+	}
+}
+
 .ScalarOutcome {
 	background: var(--color-secondary-action);
 	border: 1px solid var(--color-secondary-action-outline);
@@ -256,6 +263,7 @@
 	border-left: 1px solid var(--color-dark-grey);
 
 	grid-template-columns: repeat(3, 1fr);
+	grid-template-rows: min-content;
 
 	@media @breakpoint-mobile {
 		grid-template-columns: repeat(1, 1fr);
@@ -288,6 +296,15 @@
 
   @media @breakpoint-mobile {
     grid-template-columns: repeat(1, 1fr);
+	}
+}
+
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+	.OutcomeGroup {
+		&.Scalar {
+			grid-template-columns: 1fr 0fr;
+		}
 	}
 }
 
@@ -443,5 +460,458 @@
 		margin-left: auto;
 		width: fit-content;
 		height: fit-content;
+	}
+}
+
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+	.BettingOutcome {
+		border: @size-1 solid var(--color-secondary-action-outline);
+		border-radius: @border-radius-default;
+		display: grid;
+		grid-gap: @size-3 @size-4;
+		grid-template-columns: 1fr 1fr;
+		grid-template-rows: 0fr 0fr;
+		padding: @size-5;
+
+		> span {
+			.text-12-semi-bold;
+
+			color: var(--color-primary-text);
+			grid-row: 1;
+			grid-column: span 2;
+			text-align: center;
+		}
+	}
+}
+
+.TopRow {
+	display: flex;
+	align-items: center;
+	grid-column: 2 / span 1;
+
+	@media @breakpoint-mobile-tablet {
+		display: grid;
+		grid-template-columns: auto @size-16 @size-16;
+		grid-template-rows: auto;
+		grid-gap: @size-8;
+		margin-top: 0;
+		margin-bottom: @size-12;
+
+		> div[class*="CategoryTagTrail"] {
+			> div {
+				align-items: flex-end;
+				display: flex;
+				margin-right: @size-8;
+			}
+
+			grid-column: unset;
+			grid-row: unset;
+			display: flex;
+		}
+	}
+
+	> span {
+		margin-right: @size-10;
+		flex-flow: row nowrap;
+	}
+
+	> div[class*='CategoryTagTrail'] {
+		display: flex;
+		flex: 1;
+	}
+
+	> span:last-of-type {
+		margin-right: @size-12;
+
+		> span:first-of-type {
+			margin-right: @size-4;
+		}
+	}
+
+	> button {
+		margin-right: @size-10;
+	}
+
+	> div[class*='DotSelection'] {
+
+		> div > div:first-of-type > svg {
+			stroke: none;
+			height: @size-16;
+			margin-right: @size-8;
+			width: @size-16;
+
+			> path:first-of-type {
+				fill: var(--color-facebook);
+			}
+
+			> path:last-of-type {
+				fill: var(--color-facebook-2);
+			}
+		}
+
+		> div > div:nth-of-type(2) > svg {
+			stroke: none;
+			height: @size-16;
+			margin-right: @size-8;
+			width: @size-16;
+
+			> path:first-of-type {
+				fill: var(--color-twitter);
+			}
+
+			> path:last-of-type {
+				fill: var(--color-twitter-2);
+			}
+
+		}
+
+		> div > div:nth-of-type(3), > div > div:nth-of-type(4) {
+			& > svg {
+				fill: var(--color-primary-text);
+				stroke-width: 0.5;
+				stroke: var(--color-primary-text);
+				height: @size-16;
+				margin-right: @size-8;
+				width: @size-16;
+			}
+		}
+		> button {
+			margin-right: 0 !important;
+
+			&:hover {
+				text-decoration: underline;
+			}
+		}
+	}
+}
+
+@media @breakpoint-mobile-tablet {
+	.TopRow {
+		div:nth-last-child(2) {
+			margin-right: 0;
+		}
+
+		> label {
+			grid-row: 1;
+			grid-column: 1;
+			max-width: fit-content;
+		}
+
+		> button {
+			margin-right: 0;
+			grid-row: 1;
+			grid-column: 2;
+		}
+
+		> div:last-of-type {
+			grid-row: 1;
+			grid-column: 3;
+		}
+
+		> span[class*="MarketStatus"] {
+			order: 10;
+			width: fit-content;
+			order: unset;
+			grid-column: unset;
+		}
+
+		&.template {
+			> div[class*="CategoryTagTrail"] {
+				margin-left: 0;
+			}
+		}
+
+		&.scalar {
+			> label {
+				margin-left: 128px;
+			}
+
+			> div[class*="CategoryTagTrail"] {
+				grid-column: 1;
+				grid-row: 3;
+				margin-left: 0;
+			}
+		}
+
+		&.invalid {
+			grid-template-columns: @size-16 auto @size-16 @size-16;
+			> div[class*='CategoryTagTrail'] {
+				grid-column: 2;
+				margin-left: 0;
+			}
+
+			> label:first-of-type {
+				grid-column: 2;
+			}
+		}
+
+		> div:first-of-type {
+			margin-top: 0;
+
+			> svg {
+				grid-row: 1;
+			}
+		}
+
+		> span[class*="MarketTypeLabel"] {
+			grid-row: 1;
+			grid-column: 1;
+			width: fit-content;
+		}
+
+		> span[class*="ProgressLabel"] {
+			display: none;
+		}
+	}
+}
+
+.hoverIconTray {
+	display: none;
+
+	@media @breakpoint-mobile-tablet {
+		display: flex;
+		flex-flow: row nowrap;
+
+		> div:not(:last-of-type) {
+			margin-right: @size-8;
+		}
+	}
+
+	> div:nth-of-type(3),
+	> div:nth-of-type(4) {
+		svg {
+			fill: none;
+
+			> circle {
+				fill: none;
+				stroke: var(--color-secondary-action-outline);
+			}
+
+			> path {
+				fill: var(--color-primary-text);
+			}
+		}
+	}
+}
+
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+	.TopRow {
+		border: 0;
+		grid-column: span 2;
+		grid-row: 1;
+		padding-left: 0;
+
+		@media @breakpoint-mobile-tablet {
+			grid-template-columns: @size-20 1fr 0fr 0fr 0fr;
+			margin-bottom: 0;
+
+			> div[class*="CategoryTagTrail"] {
+				grid-row: 2;
+				grid-column: span 5;
+			}
+		}
+
+		> button[class*="FavoriteButton"] {
+			margin-left: @size-10;
+			margin-right: 0;
+			order: 4;
+
+			@media @breakpoint-mobile-tablet {
+				grid-column: 5;
+			}
+		}
+
+		> div[class*='DotSelection'] {
+
+			@media @breakpoint-mobile-tablet {
+				grid-column: 4;
+			}
+
+			> button > svg {
+				height: @size-18;
+				width: @size-18;
+				fill: var(--color-inactive-text);
+				stroke: none;
+			}
+			> div {
+				border: 0;
+				box-shadow: 0 0 @size-4 var(--color-primary-text-15);
+				top: @size-22;
+
+				> div {
+					.text-14;
+
+					align-content: center;
+					color: var(--color-secondary-text);
+					height: @size-44;
+
+					&:after {
+						top: @size-13;
+					}
+
+					> span {
+						.text-14;
+
+						color: var(--color-secondary-text);
+					}
+				}
+
+				> div:nth-of-type(3):after {
+					display: none;
+				}
+
+				> div:nth-of-type(4) {
+					display: none;
+				}
+			}
+		}
+	}
+
+	.MatchedLine {
+    .text-12;
+    color: var(--color-secondary-text);
+		height: @size-18;
+		
+		@media @breakpoint-mobile-tablet {
+			display: none;
+		}
+
+    > b {
+      .text-12-bold;
+
+      color: var(--color-primary-text);
+    }
+  }
+
+  .RulesButton {
+    .text-10-semi-bold;
+
+    color: var(--color-primary-text);
+    display: flex;
+    flex-flow: row nowrap;
+		height: @size-18;
+		
+		@media @breakpoint-mobile-tablet {
+			grid-column: 3;
+		}
+
+    > svg {
+      height: @size-12;
+      width: @size-15;
+      margin-right: @size-4;
+
+      > path {
+        stroke: var(--color-secondary-text);
+      }
+    }
+	}
+	
+	.MultiMarketTable {
+		display: flex;
+		flex-flow: column nowrap;
+		flex: 1;
+		background: var(--color-page-background);
+		border: @size-1 solid var(--color-outline);
+		border-radius: @border-radius-default;
+
+		> div {
+			align-items: center;
+			background: var(--color-table-header);
+			display: flex;
+			flex-flow: row nowrap;
+			flex: 1;
+			min-height: @size-24;
+
+			> ul {
+				display: grid;
+				grid-template-columns: repeat(3, @size-120);
+				grid-gap: @size-8;
+				margin: 0 @size-8 0 auto;
+
+				@media @breakpoint-mobile {
+					grid-template-columns: repeat(3, 1fr);
+					width: 100%;
+					margin: 0 @size-8;
+				}
+	
+				> li {
+					.text-10-semi-bold;
+
+					color: var(--color-secondary-text);
+					text-align: center;
+				}
+			}
+		}
+
+		> article {
+			border-top: @size-1 solid var(--color-outline);
+			display: grid;
+			grid-gap: @size-8;
+			grid-template-columns: 1fr repeat(3, @size-120);
+			padding: @size-6 @size-8;
+
+			@media @breakpoint-mobile {
+				grid-template-columns: repeat(3, 1fr);
+			}
+
+			> h3 {
+				.text-14-bold;
+
+				color: var(--color-primary-text);
+				padding: @size-6 @size-8;
+
+				@media @breakpoint-mobile {
+					grid-column: span 3;
+				}
+			}
+
+			> div {
+				display: grid;
+				grid-gap: @size-4;
+
+				> button {
+					border: @size-1 solid var(--color-positive);
+					border-radius: @border-radius-default;
+					background: var(--color-positive-15);
+					display: flex;
+					flex-flow: column nowrap;
+					align-items: center;
+					justify-content: center;
+					height: @size-36;
+
+					&:hover:enabled,
+					&:active:enabled {
+						background: var(--color-positive);
+					}
+
+					&:disabled {
+						opacity: 0.25;
+
+						> span:first-of-type {
+							display: none;
+						}
+					}
+
+					> span {
+						.text-12-semi-bold;
+
+						color: var(--color-primary-text);
+
+						&:last-of-type {
+							.text-12;
+						}
+					}
+				}
+
+				> span {
+					.text-10;
+
+					color: var(--color-primary-text);
+					text-align: center;
+				}
+			}
+		}
 	}
 }

@@ -28,17 +28,18 @@
       padding: 0;
     }
 
-    > button {
-      margin-right: @size-12;
-
-      > svg {
-        width: @size-34;
-        height: @size-24;
-      }
+    > button > svg {
+      width: @size-34;
+      height: @size-24;
     }
 
     > button[class*="SecondaryButton"] {
       margin-left: @size-24;
+      margin-right: @size-12;
+    }
+
+    > button[class*="PrimaryButton"] {
+      margin-right: @size-24;
     }
   }
 }
@@ -244,5 +245,20 @@
 
   .statsContainer {
     display: none;
+  }
+
+  .alerts {
+    border-top: @size-3 solid transparent;
+    padding: @size-13 @size-16 @size-16 @size-24;
+  
+    &:hover {
+      border-top: @size-3 solid var(--color-primary-action);
+      background: var(--color-secondary-text-25);
+    }
+  }
+
+  .alertsDark {
+    border-top: @size-3 solid var(--color-primary-action);
+    background: var(--color-secondary-text-25);
   }
 }
