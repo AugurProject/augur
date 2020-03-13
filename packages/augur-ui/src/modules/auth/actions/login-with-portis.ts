@@ -7,6 +7,7 @@ import {
   ACCOUNT_TYPES,
   PORTIS_API_KEY,
   MODAL_ERROR,
+  HELP_CENTER_THIRD_PARTY_COOKIES,
 } from 'modules/common/constants';
 import { windowRef } from 'utils/window-ref';
 import { updateModal } from 'modules/modal/actions/update-modal';
@@ -66,12 +67,25 @@ import { getNetwork } from 'utils/get-network-name';
 
       portis.onError(error => {
         document.querySelector('.por_portis-container').remove();
-        dispatch(
-          updateModal({
-            type: MODAL_ERROR,
-            error: JSON.stringify(error && error.message ? error.message : 'Sorry, something went wrong.'),
-          })
-        );
+
+        if (error.message && error.message.toLowerCase().indexOf('cookies') !== -1) {
+          dispatch(
+            updateModal({
+              type: MODAL_ERROR,
+              title: 'Cookies are disabled',
+              error: 'Please enable cookies in your browser to proceed with Portis.',
+              link: HELP_CENTER_THIRD_PARTY_COOKIES,
+              linkLabel: 'Learn more.'
+            })
+          );
+        } else {
+          dispatch(
+            updateModal({
+              type: MODAL_ERROR,
+              error: JSON.stringify(error && error.message ? error.message : 'Sorry, something went wrong.'),
+            })
+          );
+        }
       });
 
       await web3.eth.getAccounts();

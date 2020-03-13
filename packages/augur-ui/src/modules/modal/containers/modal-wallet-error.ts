@@ -18,10 +18,17 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 });
 
 const mergeProps = (sP, dP, oP) => {
+  const linkContent = {
+    link: sP.modal.link,
+    label: sP.modal.linkLabel,
+    description: sP.modal.error
+  };
+
   return {
     title: sP.modal.title ? sP.modal.title : 'Something went wrong',
     buttons: [{ text: 'Close', action: () => dP.closeModal() }],
-    description: [sP.modal.error ? sP.modal.error : ''],
+    description: sP.modal.link ? null : [sP.modal.error ? sP.modal.error : ''],
+    descriptionWithLink: sP.modal.link ? linkContent : null,
     showDiscordLink: sP.modal.showDiscordLink,
     showAddFundsHelp: sP.modal.showAddFundsHelp,
     walletType: sP.modal.walletType,
