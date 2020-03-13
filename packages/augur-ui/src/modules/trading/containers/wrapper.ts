@@ -19,7 +19,6 @@ import makePath from 'modules/routes/helpers/make-path';
 import { MARKET } from 'modules/routes/constants/views';
 import makeQuery from 'modules/routes/helpers/make-query';
 import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names';
-import { addPendingOrder } from 'modules/orders/actions/pending-orders-management';
 import { orderSubmitted } from 'services/analytics/helpers';
 import { AppState } from 'store';
 import { totalTradingBalance } from 'modules/auth/selectors/login-account';
@@ -76,7 +75,6 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
       })
     ),
   addFundsModal: () => dispatch(updateModal({ type: MODAL_ADD_FUNDS })),
-  addPendingOrder: (order, marketId) => dispatch(addPendingOrder(order, marketId)),
   loginModal: () =>
     dispatch(
       updateModal({

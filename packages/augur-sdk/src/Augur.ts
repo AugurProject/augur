@@ -111,7 +111,6 @@ export class Augur<TProvider extends Provider = Provider> {
       this.config.addresses.Augur,
       this.config.addresses.AugurTrading,
       this.config.addresses.ShareToken,
-      this.config.addresses.Exchange,
       );
     this.gnosis = new Gnosis(this.provider, this, this.dependencies);
     this.warpSync = new WarpSync(this);
@@ -424,7 +423,7 @@ export class Augur<TProvider extends Provider = Provider> {
   };
 
   getWarpSyncHashFromPayout = (payout: BigNumber[]): string => {
-    return this.warpSync.getWarpSyncHashFromPayout(payout);
+    return this.warpSync.getWarpSyncHashFromPayout(payout[2]);
   };
 
   getProfitLoss = (
@@ -515,16 +514,18 @@ export class Augur<TProvider extends Provider = Provider> {
 
   async cancelOrder(orderHash: string): Promise<void> {
       const order = await this.getOrder({ orderHash });
-      await this.zeroX.cancelOrder(order);
+      await this.zeroX.cancelOrder(order, order.signature);
   }
 
   async batchCancelOrders(orderHashes: string[]): Promise<void> {
     const orders = [];
+    const signatures = [];
     for (let index = 0; index < orderHashes.length; index++) {
       const order = await this.getOrder({ orderHash: orderHashes[index] });
       orders.push(order);
+      signatures.push(order.signature)
     }
-    await this.zeroX.batchCancelOrders(orders);
+    await this.zeroX.batchCancelOrders(orders, signatures);
   }
 
   async createYesNoMarket(

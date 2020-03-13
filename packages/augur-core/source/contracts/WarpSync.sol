@@ -47,12 +47,11 @@ contract WarpSync is IWarpSync, Initializable {
      * @param _universe The universe whose warp sync market to report on
      * @param _payoutNumerators An array indicating the payout for each market outcome
      * @param _description Any additional information or justification for this report
-     * @param _additionalStake Additional optional REP to stake in anticipation of a dispute. This REP will be held in a bond that only activates if the report is disputed
      * @return Bool True
      */
-    function doInitialReport(IUniverse _universe, uint256[] memory _payoutNumerators, string memory _description, uint256 _additionalStake) public returns (bool) {
+    function doInitialReport(IUniverse _universe, uint256[] memory _payoutNumerators, string memory _description) public returns (bool) {
         IMarket _market = IMarket(markets[address(_universe)]);
-        _market.doInitialReport(_payoutNumerators, _description, _additionalStake);
+        _market.doInitialReport(_payoutNumerators, _description, 0);
         _market.getInitialReporter().transferOwnership(msg.sender);
         return true;
     }

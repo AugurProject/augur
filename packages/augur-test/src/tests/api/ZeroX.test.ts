@@ -301,49 +301,29 @@ describe('Augur API :: ZeroX :: ', () => {
       await john.cancelOrder(order.orderId);
       await john.sync();
       await mary.sync();
-      const allCancels = await john.db.Cancel.toArray();
+
+      const allCancels = await john.db.CancelZeroXOrder.toArray();
       expect(allCancels.length).toBe(1);
       expect(allCancels[0]).toMatchObject({
-        name: 'Cancel',
-        makerAddress: john.account.publicKey,
-        feeRecipientAddress: '0x0000000000000000000000000000000000000000',
-        makerAssetData: expect.stringContaining('0x'),
-        takerAssetData: expect.stringContaining('0x'),
-        senderAddress: john.account.publicKey,
-        topics: expect.arrayContaining([
-          expect.stringContaining('0x'),
-          expect.stringContaining('0x'),
-          expect.stringContaining('0x'),
-          expect.stringContaining('0x'),
-        ]),
-      });
-
-      const allDerivedCancels = await john.db.CancelledOrders.toArray();
-      expect(allDerivedCancels.length).toBe(1);
-      expect(allDerivedCancels[0]).toMatchObject({
-        senderAddress: john.account.publicKey,
-        makerAddress: john.account.publicKey,
-        feeRecipientAddress: NULL_ADDRESS,
+        account: john.account.publicKey,
         market: market.address,
-        price: '0x00000000000000000016',
+        price: '0x16',
         outcome: '0x00',
-        orderType: '0x00',
+        orderType: 0,
       });
 
-      const indexKeyOrders = await john.db.CancelledOrders.where(
-        '[makerAddress+market]'
+      const indexKeyOrders = await john.db.CancelZeroXOrder.where(
+        '[account+market]'
       )
         .equals([john.account.publicKey, market.address])
         .toArray();
       expect(indexKeyOrders.length).toBe(1);
       expect(indexKeyOrders[0]).toMatchObject({
-        senderAddress: john.account.publicKey,
-        makerAddress: john.account.publicKey,
-        feeRecipientAddress: NULL_ADDRESS,
+        account: john.account.publicKey,
         market: market.address,
-        price: '0x00000000000000000016',
+        price: '0x16',
         outcome: '0x00',
-        orderType: '0x00',
+        orderType: 0,
       });
     });
   });

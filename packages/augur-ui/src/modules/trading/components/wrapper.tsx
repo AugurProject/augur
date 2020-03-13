@@ -37,7 +37,6 @@ interface WrapperProps {
   selectedOutcome: OutcomeFormatted;
   selectedOrderProperties: SelectedOrderProperties;
   addFundsModal: Function;
-  addPendingOrder: Function;
   disclaimerModal: Function;
   handleFilledOnly: Function;
   loginModal: Function;
@@ -304,7 +303,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
     } else {
       updateTradeCost(
         market.id,
-        selectedOutcome.id,
+        order.selectedOutcomeId ? order.selectedOutcomeId : selectedOutcome.id,
         {
           limitPrice: order.orderPrice,
           side: order.selectedNav,

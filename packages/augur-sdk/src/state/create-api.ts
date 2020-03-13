@@ -21,7 +21,6 @@ import { WarpSyncStrategy } from './sync/WarpSyncStrategy';
 export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: EthersProvider, logFilterAggregator: LogFilterAggregator, config: SDKConfiguration) {
   return async () => {
     const uploadBlockNumber = config.uploadBlockNumber;
-    const uploadBlockHeaders = await provider.getBlock(uploadBlockNumber);
     const currentBlockNumber = await provider.getBlockNumber();
     const contractAddresses = client.contractEvents.getAugurContractAddresses();
 
@@ -33,10 +32,12 @@ export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: Ethe
       client.contractEvents.parseLogs,
     );
 
-    const warpController = new WarpController((await db), client, provider, uploadBlockHeaders);
+    const warpController = new WarpController((await db), client, provider, uploadBlockNumber);
     const warpSyncStrategy = new WarpSyncStrategy(warpController, logFilterAggregator.onLogsAdded);
 
-    const endWarpSyncBlockNumber = await warpSyncStrategy.start();
+    const { warpSyncHash } = await client.warpSync.getLastWarpSyncData(client.contracts.universe.address);
+
+    const endWarpSyncBlockNumber = await warpSyncStrategy.start(warpSyncHash);
     const staringSyncBlock = Math.max(await (await db).getSyncStartingBlock(), endWarpSyncBlockNumber || uploadBlockNumber);
     const endBulkSyncBlockNumber = await bulkSyncStrategy.start(staringSyncBlock, currentBlockNumber);
 
@@ -154,7 +155,6 @@ export async function createServer(config: SDKConfiguration, client?: Augur, acc
     client.config.addresses.Augur,
     client.config.addresses.AugurTrading,
     client.config.addresses.ShareToken,
-    client.config.addresses.Exchange
   );
 
   const logFilterAggregator = LogFilterAggregator.create(

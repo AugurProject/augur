@@ -20,8 +20,8 @@ import {
   NativePlaceTradeDisplayParams,
   TradeTransactionLimits,
 } from './OnChainTrade';
-import { sleep } from '../state/utils/utils';
 import { SubscriptionEventName } from '../constants';
+import { BigNumber as BN} from 'ethers/utils';
 
 
 export enum Verbosity {
@@ -448,14 +448,15 @@ export class ZeroX {
     }
   }
 
-  async cancelOrder(order) {
+  async cancelOrder(order, signature) {
     if (!this.client) throw new Error('To cancel ZeroX orders, make sure your Augur Client instance was initialized with it enabled.');
-    return this.client.contracts.zeroXExchange.cancelOrder(order);
+    return this.batchCancelOrders([order], [signature]);
   }
 
-  async batchCancelOrders(orders) {
+  async batchCancelOrders(orders, signatures) {
     if (!this.client) throw new Error('To cancel ZeroX orders, make sure your Augur Client instance was initialized with it enabled.');
-    return this.client.contracts.zeroXExchange.batchCancelOrders(orders);
+    const maxProtocolFeeInDai = new BigNumber(10).pow(18); // TODO: Calc the real max based on order length, protocol fee and gas price
+    return this.client.contracts.ZeroXTrade.cancelOrders(orders, signatures, maxProtocolFeeInDai);
   }
 
   async simulateTrade(
@@ -535,11 +536,13 @@ export class ZeroX {
   ): Promise<MatchingOrders> {
     const orderType = params.direction === 0 ? '1' : '0';
     const outcome = params.outcome.toString();
+    const price = new BN(params.price.toString()).toHexString().substr(2);
+
     const zeroXOrders = await this.client.getZeroXOrders({
       marketId: params.market,
       outcome: params.outcome,
       orderType,
-      matchPrice: `0x${params.price.toString(16).padStart(60, '0')}`,
+      matchPrice: `0x${price.padStart(20, '0')}`,
       ignoreOrders,
     });
 
