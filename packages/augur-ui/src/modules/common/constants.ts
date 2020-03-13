@@ -28,6 +28,7 @@ export const DAI = 'DAI';
 
 export const TRADING_TUTORIAL = 'TRADING_TUTORIAL';
 export const INVALID_BEST_BID_ALERT_VALUE = createBigNumber('.1');
+export const SCALAR_INVALID_BEST_BID_ALERT_VALUE = createBigNumber('10');
 // # Network Constants
 export const MILLIS_PER_BLOCK = 12000;
 export const UNIVERSE_ID = '0xf69b5';

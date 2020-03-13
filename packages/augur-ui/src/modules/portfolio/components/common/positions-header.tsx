@@ -64,7 +64,7 @@ const PositionsHeader = (props: PositionsHeaderProps) => (
       </li>
     )}
     {props.extendedView && <li>Unrealized<br/>P/L</li>}
-    {props.extendedView && <li>Realized<br/>PP/L</li>}
+    {props.extendedView && <li>Realized<br/>P/L</li>}
   </ul>
 );
 

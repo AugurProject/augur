@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { AppState } from 'store';
-import { COLUMN_TYPES, INVALID_OUTCOME_ID, BUY, SELL, SCALAR, INVALID_BEST_BID_ALERT_VALUE } from 'modules/common/constants';
+import { COLUMN_TYPES, INVALID_OUTCOME_ID, BUY, SELL, SCALAR, INVALID_BEST_BID_ALERT_VALUE, SCALAR_INVALID_BEST_BID_ALERT_VALUE } from 'modules/common/constants';
 import { selectMarketOutcomeBestBidAsk } from 'modules/markets/selectors/select-market-outcome-best-bid-ask';
 import Row from 'modules/common/row';
 import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
@@ -78,6 +78,12 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
         : lastPrice;
   }
 
+  const showInvalidAlert =
+    outcome.id === INVALID_OUTCOME_ID
+      ? topBidPrice.usePercent
+        ? topBidPrice.percent >= SCALAR_INVALID_BEST_BID_ALERT_VALUE
+        : topBidPrice.value >= INVALID_BEST_BID_ALERT_VALUE
+      : false;
   const columnProperties = [
     {
       key: "outcomeName",
@@ -99,7 +105,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       useFull: true,
       showEmptyDash: true,
       usePercent: topBidPrice.usePercent,
-      alert: topBidPrice.usePercent && topBidPrice.percent >= INVALID_BEST_BID_ALERT_VALUE,
+      alert: showInvalidAlert,
       action: (e) => {
         oP.updateSelectedOutcome(outcome.id, true);
         oP.updateSelectedOrderProperties({
