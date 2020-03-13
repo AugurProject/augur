@@ -308,8 +308,8 @@ jobs:
           TESTS: tests/unit
         geth_integration:
           TESTS: integration:geth
-        parity_integration:
-          TESTS: integration:parity
+        # TODO parity_integration:
+        #  TESTS: integration:parity
         security_mithril:
           TESTS: security:mythril
     variables:

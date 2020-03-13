@@ -772,7 +772,7 @@ def test_fill_nothing_failure(contractsFixture, cash, market, universe):
     with raises(TransactionFailed):
         ZeroXTrade.trade(fix(1), longTo32Bytes(11), tradeGroupID, 0, 10, [], [], sender=contractsFixture.accounts[2], value=150000) == fix(1)
 
-def test_augur_wallet_trade(contractsFixture, augur, cash, market, universe):
+def test_augur_wallet_trade(contractsFixture, augur, cash, market, universe, reputationToken):
     RELAY_HUB_ADDRESS = "0xD216153c06E857cD7f72665E0aF1d7D82172F494"
     ZeroXTrade = contractsFixture.contracts['ZeroXTrade']
     zeroXExchange = contractsFixture.contracts["ZeroXExchange"]
@@ -816,19 +816,21 @@ def test_augur_wallet_trade(contractsFixture, augur, cash, market, universe):
 
     assert augurWalletRegistry.getWallet(account) == nullAddress
 
-    maxDaiTxFee = 10**18
+    cashPayment = 10**18
     fingerprint = longTo32Bytes(42)
     additionalFee = 10 # 10%
     gasPrice = 1
     gasLimit = 3000000
     nonce = 0
     approvalData = ""
-    augurWalletCreationData = augurWalletRegistry.publicCreateAugurWallet_encode(nullAddress, fingerprint, maxDaiTxFee)
+    repAmount = 10**18
+    repFaucetData = reputationToken.faucet_encode(repAmount)
+    augurWalletRepFaucetData = augurWalletRegistry.executeWalletTransaction_encode(reputationToken.address, repFaucetData, 0, cashPayment, nullAddress, fingerprint)
 
     messageHash = augurWalletRegistry.getRelayMessageHash(relayer,
         account,
         augurWalletRegistry.address,
-        augurWalletCreationData,
+        augurWalletRepFaucetData,
         additionalFee,
         gasPrice,
         gasLimit,
@@ -838,7 +840,7 @@ def test_augur_wallet_trade(contractsFixture, augur, cash, market, universe):
     relayHub.relayCall(
         account,
         augurWalletRegistry.address,
-        augurWalletCreationData,
+        augurWalletRepFaucetData,
         additionalFee,
         gasPrice,
         gasLimit,
@@ -892,7 +894,7 @@ def test_augur_wallet_trade(contractsFixture, augur, cash, market, universe):
     messageHash = augurWalletRegistry.getRelayMessageHash(relayer,
         senderAccount,
         augurWalletRegistry.address,
-        augurWalletCreationData,
+        augurWalletRepFaucetData,
         additionalFee,
         gasPrice,
         gasLimit,
@@ -902,7 +904,7 @@ def test_augur_wallet_trade(contractsFixture, augur, cash, market, universe):
     relayHub.relayCall(
         senderAccount,
         augurWalletRegistry.address,
-        augurWalletCreationData,
+        augurWalletRepFaucetData,
         additionalFee,
         gasPrice,
         gasLimit,

@@ -52,12 +52,12 @@ def test_augur_wallet_registry(contractsFixture, augur, universe, cash, reputati
     gasLimit = 3000000
     nonce = 0
     approvalData = ""
-    ethPayment = 10**16
+    cashPayment = 10**16
 
     # Now lets have the relayer send an actual tx for the user to faucet cash into their wallet
     repAmount = 10**18
     repFaucetData = reputationToken.faucet_encode(repAmount)
-    augurWalletRepFaucetData = augurWalletRegistry.executeWalletTransaction_encode(reputationToken.address, repFaucetData, 0, ethPayment, nullAddress, fingerprint)
+    augurWalletRepFaucetData = augurWalletRegistry.executeWalletTransaction_encode(reputationToken.address, repFaucetData, 0, cashPayment, nullAddress, fingerprint)
     nonce = 0
 
     messageHash = augurWalletRegistry.getRelayMessageHash(
@@ -118,7 +118,7 @@ def test_augur_wallet_registry(contractsFixture, augur, universe, cash, reputati
     feePerEthInWei = 10**16
     affiliateFeeDivisor = 100
     createMarketData = universe.createYesNoMarket_encode(endTime, feePerEthInWei, nullAddress, affiliateFeeDivisor, account, "")
-    augurWalletCreateMarketData = augurWalletRegistry.executeWalletTransaction_encode(universe.address, createMarketData, 0, ethPayment, nullAddress, fingerprint)
+    augurWalletCreateMarketData = augurWalletRegistry.executeWalletTransaction_encode(universe.address, createMarketData, 0, cashPayment, nullAddress, fingerprint)
 
     nonce += 1
 
