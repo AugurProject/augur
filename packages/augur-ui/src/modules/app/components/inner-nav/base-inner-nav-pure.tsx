@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import classNames from 'classnames';
-import { MOBILE_MENU_STATES, SHOW_INVALID_MARKETS_PARAM_NAME, MAXFEE_PARAM_NAME, SPREAD_PARAM_NAME, TEMPLATE_FILTER } from 'modules/common/constants';
+import {
+  MOBILE_MENU_STATES,
+  SHOW_INVALID_MARKETS_PARAM_NAME,
+  MAXFEE_PARAM_NAME,
+  SPREAD_PARAM_NAME,
+  TEMPLATE_FILTER,
+} from 'modules/common/constants';
 import { XIcon } from 'modules/common/icons';
 import MarketsListFilters from 'modules/app/containers/markets-list-filters';
 import MarketsListSortBy from 'modules/app/containers/markets-list-sortBy';
@@ -41,7 +47,7 @@ const BaseInnerNavPure = ({
   updateTemplateFilter,
   updateSelectedCategories,
   location,
-  history
+  history,
 }: BaseInnerNavPureProps) => {
   const showMainMenu = mobileMenuState >= MOBILE_MENU_STATES.FIRSTMENU_OPEN;
 
@@ -51,15 +57,6 @@ const BaseInnerNavPure = ({
   const [originalFilterSortOptions, setOriginalFilterSortOptions] = useState(
     filterSortOptions
   );
-
-  const {
-    marketSort,
-    maxFee,
-    templateFilter,
-    maxLiquiditySpread,
-    includeInvalidMarkets
-  } = originalSelectedCategories;
-
   const [showApply, setShowApply] = useState(false);
   const [maxFeeFilter, setMaxFeeFilter] = useState();
   const [maxSpreadFilter, setMaxSpreadFilter] = useState();
@@ -78,27 +75,35 @@ const BaseInnerNavPure = ({
     setSortOptions,
   };
 
-  const getFilters = () => {
+  const getFilters = (originalFilters = false) => {
     const filters = [
       {
         filterType: TEMPLATE_FILTER,
-        value: templateOrCustomFilter,
+        value: originalFilters
+          ? originalFilterSortOptions.maxFee
+          : templateOrCustomFilter,
       },
       {
         filterType: MAXFEE_PARAM_NAME,
-        value: maxFeeFilter,
+        value: originalFilters
+          ? originalFilterSortOptions.maxLiquiditySpread
+          : maxFeeFilter,
       },
       {
         filterType: SPREAD_PARAM_NAME,
-        value: maxSpreadFilter,
+        value: originalFilters
+          ? originalFilterSortOptions.includeInvalidMarkets
+          : maxSpreadFilter,
       },
       {
         filterType: SHOW_INVALID_MARKETS_PARAM_NAME,
-        value: showInvalidFilter,
+        value: originalFilters
+          ? originalFilterSortOptions.templateFilter
+          : showInvalidFilter,
       },
     ];
 
-    return filters.filter(({value}) => !!value);
+    return filters.filter(({ value }) => !!value);
   };
 
   const applyFilters = () => {
@@ -109,7 +114,7 @@ const BaseInnerNavPure = ({
     if (changedFilters.length > 0) {
       updateMultipleQueries(changedFilters, location, history);
 
-      changedFilters.forEach(({value, filterType}) => {
+      changedFilters.forEach(({ value, filterType }) => {
         switch (filterType) {
           case TEMPLATE_FILTER:
             updateTemplateFilter(value);
@@ -133,13 +138,20 @@ const BaseInnerNavPure = ({
   useEffect(() => {
     setShowApply(
       selectedCategories.toString() !== originalSelectedCategories.toString() ||
-        JSON.stringify(filterSortOptions) !== JSON.stringify(originalFilterSortOptions)
+        JSON.stringify(filterSortOptions) !==
+          JSON.stringify(originalFilterSortOptions)
     );
   }, [selectedCategories, filterSortOptions]);
 
   useEffect(() => {
     setShowApply(true);
-  }, [templateOrCustomFilter, maxFeeFilter, maxSpreadFilter, showInvalidFilter, sortOptions]);
+  }, [
+    templateOrCustomFilter,
+    maxFeeFilter,
+    maxSpreadFilter,
+    showInvalidFilter,
+    sortOptions,
+  ]);
 
   useEffect(() => {
     if (showMainMenu) {
@@ -162,41 +174,15 @@ const BaseInnerNavPure = ({
             onClick={() => {
               if (showMainMenu) {
                 updateSelectedCategories(originalSelectedCategories);
-                updateMarketsSortBy(marketSort);
-
-                updateMaxFee(maxFee);
-                updateQuery(
-                  MAXFEE_PARAM_NAME,
-                  templateFilter,
-                  location,
-                  history
-                );
-
-                updateMaxSpread(maxLiquiditySpread);
-                updateQuery(
-                  SPREAD_PARAM_NAME,
-                  maxLiquiditySpread,
-                  location,
-                  history
-                );
-
+                updateMarketsSortBy(originalFilterSortOptions.marketSort);
+                updateMaxFee(originalFilterSortOptions.maxFee);
+                updateMaxSpread(originalFilterSortOptions.maxLiquiditySpread);
                 updateShowInvalid(
-                  includeInvalidMarkets
+                  originalFilterSortOptions.includeInvalidMarkets
                 );
-                updateQuery(
-                  SHOW_INVALID_MARKETS_PARAM_NAME,
-                  includeInvalidMarkets,
-                  location,
-                  history
-                );
+                updateTemplateFilter(originalFilterSortOptions.templateFilter);
 
-                updateTemplateFilter(templateFilter);
-                updateQuery(
-                  TEMPLATE_FILTER,
-                  templateFilter,
-                  location,
-                  history
-                );
+                updateMultipleQueries(getFilters(true), location, history);
               }
 
               updateMobileMenuState(MOBILE_MENU_STATES.CLOSED);
@@ -218,10 +204,7 @@ const BaseInnerNavPure = ({
       </ul>
       {showMainMenu && showApply && (
         <div>
-          <PrimaryButton
-            text="Apply"
-            action={() => applyFilters()}
-          />
+          <PrimaryButton text="Apply" action={() => applyFilters()} />
         </div>
       )}
     </aside>
