@@ -67,6 +67,30 @@ const MarketsListFilters = (props: MarketsListFiltersProps) => {
 
   if (!props.maxLiquiditySpread) return null;
 
+  function updateFilter (value: string, whichFilterToUpdate: string) {
+    updateQuery(
+      whichFilterToUpdate,
+      value,
+      props.location,
+      props.history
+    );
+
+    switch (whichFilterToUpdate) {
+      case TEMPLATE_FILTER:
+        props.updateTemplateFilter(value);
+        break;
+      case MAXFEE_PARAM_NAME:
+        props.updateMaxFee(value);
+        break;
+      case SPREAD_PARAM_NAME:
+        props.updateMaxSpread(value);
+        break;
+      case SHOW_INVALID_MARKETS_PARAM_NAME:
+        props.updateShowInvalid(value);
+        break;
+    }
+  };
+
   return (
     <div className={Styles.Filters}>
       <div
@@ -94,15 +118,7 @@ const MarketsListFilters = (props: MarketsListFiltersProps) => {
             <RadioBarGroup
               radioButtons={templateFilterValues}
               defaultSelected={props.allTemplateFilter}
-              onChange={(value: string) => {
-                updateQuery(
-                  TEMPLATE_FILTER,
-                  value,
-                  props.location,
-                  props.history
-                );
-                props.updateTemplateFilter(value);
-              }}
+              onChange={(value: string) => updateFilter(value, TEMPLATE_FILTER)}
             />
 
             <div className={Styles.Filter}>
@@ -116,15 +132,7 @@ const MarketsListFilters = (props: MarketsListFiltersProps) => {
             <RadioBarGroup
               radioButtons={feeFilters}
               defaultSelected={props.maxFee}
-              onChange={(value: string) => {
-                updateQuery(
-                  MAXFEE_PARAM_NAME,
-                  value,
-                  props.location,
-                  props.history
-                );
-                props.updateMaxFee(value);
-              }}
+              onChange={(value: string) => updateFilter(value, MAXFEE_PARAM_NAME)}
             />
 
             <div className={Styles.Filter}>
@@ -138,15 +146,7 @@ const MarketsListFilters = (props: MarketsListFiltersProps) => {
             <RadioBarGroup
               radioButtons={spreadFilters}
               defaultSelected={props.maxLiquiditySpread}
-              onChange={(value: string) => {
-                updateQuery(
-                  SPREAD_PARAM_NAME,
-                  value,
-                  props.location,
-                  props.history
-                );
-                props.updateMaxSpread(value);
-              }}
+              onChange={(value: string) => updateFilter(value, SPREAD_PARAM_NAME)}
             />
 
             <div className={Styles.Filter}>
@@ -160,15 +160,7 @@ const MarketsListFilters = (props: MarketsListFiltersProps) => {
             <RadioBarGroup
               radioButtons={invalidFilters}
               defaultSelected={String(props.includeInvalidMarkets)}
-              onChange={(value: string) => {
-                updateQuery(
-                  SHOW_INVALID_MARKETS_PARAM_NAME,
-                  value,
-                  props.location,
-                  props.history
-                );
-                props.updateShowInvalid(value);
-              }}
+              onChange={(value: string) => updateFilter(value, SHOW_INVALID_MARKETS_PARAM_NAME)}
             />
           </>
         )}
