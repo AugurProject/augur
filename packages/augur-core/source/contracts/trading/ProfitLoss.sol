@@ -32,6 +32,14 @@ contract ProfitLoss is Initializable {
         int256 realizedCost; // Also cannot be negative.
     }
 
+    struct TradeData {
+        int256 adjustedNumTicks;
+        int256 avgPrice; // Cannot actually be negative. Typed for code convenience
+        int256 realizedProfit;
+        int256 frozenFunds;
+        int256 realizedCost; // Also cannot be negative.
+    }
+
     // User => Market => Outcome => Data
     mapping (address => mapping(address => mapping(uint256 => OutcomeData))) private profitLossData;
 
@@ -68,26 +76,27 @@ contract ProfitLoss is Initializable {
 
     function recordTrade(IUniverse _universe, IMarket _market, address _longAddress, address _shortAddress, uint256 _outcome, int256 _amount, int256 _price, uint256 _numLongTokens, uint256 _numShortTokens, uint256 _numLongShares, uint256 _numShortShares) external returns (bool) {
         require(msg.sender == fillOrder);
-        int256 _numTicks = int256(_market.getNumTicks());
-        int256  _longFrozenTokenDelta = int256(_numLongTokens).sub(int256(_numLongShares).mul(_numTicks.sub(_price)));
-        int256  _shortFrozenTokenDelta = int256(_numShortTokens).sub(int256(_numShortShares).mul(_price));
-        adjustForTrader(_universe, _market, _shortAddress, _outcome, -_amount, _price, _shortFrozenTokenDelta);
-        adjustForTrader(_universe, _market, _longAddress, _outcome, _amount, _price, _longFrozenTokenDelta);
+        int256 _numTicks = int256(_market.getNumTicks()).mul(10**18);
+        _price = _price.mul(10**18);
+        {
+            int256  _shortFrozenTokenDelta = int256(_numShortTokens * 10**18).sub(int256(_numShortShares).mul(_price));
+            adjustForTrader(_universe, _market, _numTicks, _shortAddress, _outcome, -_amount, _price, _shortFrozenTokenDelta);
+        }
+        int256  _longFrozenTokenDelta = int256(_numLongTokens * 10**18).sub(int256(_numLongShares).mul(_numTicks.sub(_price)));
+        adjustForTrader(_universe, _market, _numTicks, _longAddress, _outcome, _amount, _price, _longFrozenTokenDelta);
         return true;
     }
 
-    function adjustForTrader(IUniverse _universe, IMarket _market, address _address, uint256 _outcome, int256 _amount, int256 _price, int256 _frozenTokenDelta) internal returns (bool) {
+    function adjustForTrader(IUniverse _universe, IMarket _market, int256 _adjustedNumTicks, address _address, uint256 _outcome, int256 _amount, int256 _price, int256 _frozenTokenDelta) internal returns (bool) {
         OutcomeData storage _outcomeData = profitLossData[_address][address(_market)][_outcome];
         OutcomeData memory _tmpOutcomeData = profitLossData[_address][address(_market)][_outcome];
-        _price = _price.mul(10**18);
-        _frozenTokenDelta = _frozenTokenDelta.mul(10**18);
 
         bool _sold = _tmpOutcomeData.netPosition < 0 &&  _amount > 0 || _tmpOutcomeData.netPosition > 0 &&  _amount < 0;
         if (_tmpOutcomeData.netPosition != 0 && _sold) {
             int256 _amountSold = _tmpOutcomeData.netPosition.abs().min(_amount.abs());
             int256 _profit = (_tmpOutcomeData.netPosition < 0 ? _tmpOutcomeData.avgPrice.sub(_price) : _price.sub(_tmpOutcomeData.avgPrice)).mul(_amountSold);
             _tmpOutcomeData.realizedProfit += _profit;
-            _tmpOutcomeData.realizedCost += (_tmpOutcomeData.netPosition < 0 ? int256(_market.getNumTicks()*10**18).sub(_tmpOutcomeData.avgPrice) : _tmpOutcomeData.avgPrice).mul(_amountSold);
+            _tmpOutcomeData.realizedCost += (_tmpOutcomeData.netPosition < 0 ? _adjustedNumTicks.sub(_tmpOutcomeData.avgPrice) : _tmpOutcomeData.avgPrice).mul(_amountSold);
             _tmpOutcomeData.frozenFunds += _profit + _frozenTokenDelta;
 
             _outcomeData.realizedProfit = _tmpOutcomeData.realizedProfit;
