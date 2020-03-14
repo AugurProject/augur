@@ -86,7 +86,7 @@ export const ModalParticipate = (props: ModalParticipateProps) => {
     }
 
     if (bnQuantity.gt(bnRep)) {
-      errors.push('Insufficient Funds.');
+      errors.push(`Value is bigger than REP balance: ${rep} REP`);
       isValid = false;
     }
 
