@@ -319,6 +319,7 @@ export function formatAttoRep(
       decimals: 4,
       decimalsRounded: 4,
       blankZero: false,
+      roundDown: true,
       denomination: v => `${v} REP`,
     }
   );
