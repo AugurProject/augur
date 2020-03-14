@@ -5,9 +5,8 @@
     "rpcRetryInterval": 0,
     "rpcConcurrency": 40
   },
-  "gnosis": {
-    "enabled": true,
-    "http": "https://gnosis.demo.augur.net/api/"
+  "gsn": {
+    "enabled": true
   },
   "zeroX": {
     "rpc": {

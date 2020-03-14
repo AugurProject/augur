@@ -24,7 +24,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 const mergeProps = (sP: any, dP: any, oP: any) => ({
   icon: OnboardingPaymentIcon,
   largeHeader: 'Add Dai to your account',
-  currentStep: 3,
+  currentStep: 4,
   analyticsEvent: () => dP.track(BUY_DAI, {}),
   linkContent: [
     {

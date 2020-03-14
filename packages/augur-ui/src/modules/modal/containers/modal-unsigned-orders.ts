@@ -39,7 +39,7 @@ const mapStateToProps = (state: AppState) => {
     gasPrice: getGasPrice(state),
     loginAccount: state.loginAccount,
     chunkOrders: !state.appStatus.zeroXEnabled,
-    Gnosis_ENABLED: state.appStatus.gnosisEnabled,
+    GsnEnabled: state.appStatus.gsnEnabled,
     ethToDaiRate: state.appStatus.ethToDaiRate,
     availableDai
   };
@@ -115,7 +115,7 @@ const mergeProps = (sP, dP, oP) => {
     breakdown: [
       {
         label: 'Transaction Fee',
-        value: sP.Gnosis_ENABLED ? displayGasInDai(gasCost, sP.ethToDaiRate) : formatEther(gasCost).full,
+        value: sP.GsnEnabled ? displayGasInDai(gasCost, sP.ethToDaiRate) : formatEther(gasCost).full,
       },
       {
         label: 'Total Cost (DAI)',

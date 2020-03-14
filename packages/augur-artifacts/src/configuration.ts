@@ -28,10 +28,8 @@ export interface SDKConfiguration {
     writeArtifacts?: boolean,
     externalAddresses?: ExternalAddresses,
   },
-  gnosis?: {
+  gsn?: {
     enabled: boolean,
-    http?: string,
-    relayerAddress?: string,
   },
   zeroX?: {
     rpc?: {
@@ -105,6 +103,8 @@ export interface ContractAddresses {
   ProfitLoss?: string;
   EthExchange?: string;
   WarpSync?: string;
+  AugurWalletRegistry?: string;
+  OICash?: string;
 
   // 0x
   //   The 0x contract names must be what 0x mesh expects.
@@ -170,7 +170,7 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
     rpcConcurrency: 40
   },
   gas: {
-    price: 20e9,
+    price: 1e9,
     limit: 75e5
   },
   deploy: {
@@ -181,10 +181,8 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
     contractInputPath: path.join(__dirname, 'contracts.json'),
     writeArtifacts: true,
   },
-  gnosis: {
-    enabled: true,
-    http: 'http://localhost:8888/api/',
-    relayerAddress: '0x9d4c6d4b84cd046381923c9bc136d6ff1fe292d9'
+  gsn: {
+    enabled: true
   },
   zeroX: {
     rpc: {
@@ -298,7 +296,7 @@ export function isValidConfig(suspect: RecursivePartial<SDKConfiguration>): susp
     if (typeof suspect.sdk.enabled === 'undefined') return fail('sdk.enabled');
     if (suspect.sdk.enabled && typeof suspect.sdk.ws === 'undefined') return fail('sdk.ws');
   }
-  if (suspect.gnosis && typeof suspect.gnosis.enabled === 'undefined') return fail('gnosis.enabled');
+  if (suspect.gsn && typeof suspect.gsn.enabled === 'undefined') return fail('gsn.enabled');
   if (suspect.zeroX) {
     if (suspect.zeroX.rpc) {
       if (typeof suspect.zeroX.rpc.enabled === 'undefined') return fail('zeroX.rpc.enabled');
@@ -370,9 +368,7 @@ export function configFromEnvvars(): RecursivePartial<SDKConfiguration> {
   if (e.CONTRACT_INPUT_PATH) config = d(config, { deploy: { contractInputPath: e.CONTRACT_INPUT_PATH }});
   if (e.WRITE_ARTIFACTS) config = d(config, { deploy: { writeArtifacts: bool(e.WRITE_ARTIFACTS) }});
 
-  if (e.GNOSIS_ENABLED) config = d(config, { gnosis: { enabled: bool(e.GNOSIS_ENABLED) }});
-  if (e.GNOSIS_HTTP) config = d(config, { gnosis: { http: e.GNOSIS_HTTP }});
-  if (e.GNOSIS_RELAYER_ADDRESS) config = d(config, { gnosis: { relayerAddress: e.GNOSIS_RELAYER_ADDRESS }});
+  if (e.GSN_ENABLED) config = d(config, { gsn: { enabled: bool(e.GSN_ENABLED) }});
 
   if (e.ZEROX_RPC_ENABLED) config = d(config, { zeroX: { rpc: { enabled: bool(e.ZEROX_RPC_ENABLED) }}});
   if (e.ZEROX_RPC_WS) config = d(config, { zeroX: { rpc: { ws: e.ZEROX_RPC_WS }}});

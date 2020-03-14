@@ -20,12 +20,11 @@ import {
   ProfitLoss,
   SimulateTrade,
   ZeroXTrade,
-  GnosisSafeRegistry,
   WarpSync,
   EthExchange,
+  AugurWalletRegistry,
+  RelayHub,
   // 0x
-  ChaiBridge,
-  DevUtils,
   Exchange,
   ERC1155Proxy,
   ERC20Proxy,
@@ -34,7 +33,7 @@ import {
 import { Contracts, ContractData } from './Contracts';
 import { Dependencies } from '../libraries/GenericContractInterfaces';
 import { ContractAddresses, NetworkId, updateConfig, SDKConfiguration, mergeConfig } from '@augurproject/artifacts';
-import { TRADING_CONTRACTS } from './constants';
+import { TRADING_CONTRACTS, RELAY_HUB_SIGNED_DEPLOY_TX, RELAY_HUB_DEPLOYER_ADDRESS, RELAY_HUB_ADDRESS } from './constants';
 
 export class ContractDeployer {
     private readonly configuration: SDKConfiguration;
@@ -75,11 +74,11 @@ Deploying to: ${env}
         return this.provider.getBlock('latest', false).then( (block) => block.number);
     }
 
-    async deploy(env: string): Promise<ContractAddresses> {
+    async deploy(env: string, serial: boolean = true): Promise<ContractAddresses> {
         const blockNumber = await this.getBlockNumber();
         this.augur = await this.uploadAugur();
         this.augurTrading = await this.uploadAugurTrading();
-        await this.uploadAllContracts();
+        await this.uploadAllContracts(serial);
 
         const externalAddresses = this.configuration.deploy.externalAddresses;
 
@@ -141,19 +140,6 @@ Deploying to: ${env}
             await this.uploadTestDaiContracts();
         }
 
-        // Proxy Factory & Gnosis Safe
-        if (this.configuration.deploy.isProduction || externalAddresses.GnosisSafe || externalAddresses.ProxyFactory) {
-            if (!(externalAddresses.ProxyFactory && externalAddresses.GnosisSafe)) {
-                throw new Error('Must provide ALL Gnosis contracts if any are provided');
-            }
-
-            await this.augur!.registerContract(stringTo32ByteHex('ProxyFactory'), externalAddresses.ProxyFactory);
-
-            await this.augur!.registerContract(stringTo32ByteHex('GnosisSafe'), externalAddresses.GnosisSafe);
-        } else {
-            await this.uploadGnosisContracts();
-        }
-
         // 0x Exchange
         if (this.configuration.deploy.isProduction || externalAddresses.Exchange) {
             if (!externalAddresses.Exchange) throw new Error('Must provide Exchange (ZeroXExchange)');
@@ -161,6 +147,28 @@ Deploying to: ${env}
             await this.augurTrading!.registerContract(stringTo32ByteHex('ZeroXExchange'), externalAddresses.Exchange);
         } else {
             await this.upload0xContracts();
+        }
+
+        // GSN. The GSN RelayHub is deployed with a static address via create2 so we only need to do anything if we're in a dev environment where it hasnt been deployed
+        if (!this.configuration.deploy.isProduction) {
+            const relayHubDeployedCode = await this.provider.getCode(RELAY_HUB_ADDRESS);
+            if (relayHubDeployedCode !== "0x") {
+                console.log(`Relay Hub is already deployed to this environment. Skipping Deploy.`)
+            } else {
+                console.log(`Deploying Relay Hub.`)
+                let response = await this.signer.sendTransaction({
+                    to: RELAY_HUB_DEPLOYER_ADDRESS,
+                    data: '0x00',
+                    value: '0x3A4965BF58A40000',
+                })
+                let reciept = await response.wait();
+                response = await this.provider.sendTransaction(RELAY_HUB_SIGNED_DEPLOY_TX);
+                reciept = await response.wait();
+                if (reciept.contractAddress !== RELAY_HUB_ADDRESS) {
+                    throw new Error(`Relay Hub deployment failed. Deployed address: ${reciept.contractAddress}`);
+                }
+                console.log(`Relay Hub deployed.`)
+            }
         }
 
         await this.initializeAllContracts();
@@ -180,6 +188,26 @@ Deploying to: ${env}
         if (!externalAddresses.LegacyReputationToken) {
             console.log('Migrating from fake legacy REP');
             await this.migrateFromLegacyRep();
+        }
+
+        // Handle some things that make testing less erorr prone that will need to occur naturally in production
+        if (!this.configuration.deploy.isProduction) {
+            const cash = new Cash(this.dependencies, this.getContractAddress('Cash'));
+
+            console.log("Approving Augur");
+            const authority = this.getContractAddress('Augur');
+            await cash.approve(authority, new BigNumber(2).pow(256).minus(new BigNumber(1)));
+
+            console.log("Add ETH exchange liquidity");
+            const ethExchange = new EthExchange(this.dependencies, this.getContractAddress("EthExchange"));
+            const cashAmount = new BigNumber(2000 * 1e18) // 2000 Dai
+            const ethAmount = new BigNumber(10 * 1e18) // 10 ETH
+            console.log("Cash faucet");
+            await cash.faucet(cashAmount.multipliedBy(2));
+            console.log("eth exchange publicMintAuto");
+            // We do this twice to get a store in place for the oracle storage to make future calls less expensive.
+            await ethExchange.publicMintAuto(await this.dependencies.getDefaultAddress(), cashAmount, {attachedEth: ethAmount});
+            await ethExchange.publicMintAuto(await this.dependencies.getDefaultAddress(), cashAmount, {attachedEth: ethAmount});
         }
 
         if (this.configuration.deploy.writeArtifacts) {
@@ -207,6 +235,8 @@ Deploying to: ${env}
         mapping['AugurTrading'] = this.contracts.get('AugurTrading').address!;
         mapping['Exchange'] = this.contracts.get('Exchange').address!;
         mapping['EthExchange'] = this.contracts.get('EthExchange').address!;
+        mapping['OICash'] = this.contracts.get('OICash').address!;
+        mapping['AugurWalletRegistry'] = this.contracts.get('AugurWalletRegistry').address!;
         for (let contract of this.contracts) {
             if (/^I[A-Z].*/.test(contract.contractName)) continue;
             if (contract.contractName === 'TimeControlled') continue;
@@ -308,14 +338,6 @@ Deploying to: ${env}
         await cash.initialize(this.augur!.address);
     }
 
-    private async uploadGnosisContracts(): Promise<void> {
-        const proxyFactoryContract = await this.contracts.get('ProxyFactory');
-        proxyFactoryContract.address = await this.uploadAndAddToAugur(proxyFactoryContract, 'ProxyFactory', []);
-
-        const gnosisSafeContract = await this.contracts.get('GnosisSafe');
-        gnosisSafeContract.address = await this.uploadAndAddToAugur(gnosisSafeContract, 'GnosisSafe', []);
-    }
-
     async uploadLegacyRep(): Promise<string> {
         const contract = await this.contracts.get('LegacyReputationToken');
         contract.address = await this.uploadAndAddToAugur(contract, 'LegacyReputationToken');
@@ -413,7 +435,6 @@ Deploying to: ${env}
         if (contractName === 'Cash') return;
         if (contractName === 'CashFaucet') return;
         if (contractName === 'CashFaucetProxy') return;
-        if (contractName === 'GnosisSafe') return;
         // 0x
         if ([
           'ERC20Proxy',
@@ -500,10 +521,6 @@ Deploying to: ${env}
         const zeroXTrade = new ZeroXTrade(this.dependencies, zeroXTradeContract);
         promises.push(zeroXTrade.initialize(this.augur!.address, this.augurTrading!.address));
 
-        const gnosisSafeRegistryContract = await this.getContractAddress('GnosisSafeRegistry');
-        const gnosisSafeRegistry = new GnosisSafeRegistry(this.dependencies, gnosisSafeRegistryContract);
-        promises.push(gnosisSafeRegistry.initialize(this.augur!.address, this.augurTrading!.address));
-
         const warpSyncContract = await this.getContractAddress('WarpSync');
         const warpSync = new WarpSync(this.dependencies, warpSyncContract);
         promises.push(warpSync.initialize(this.augur!.address));
@@ -511,6 +528,11 @@ Deploying to: ${env}
         const ethExchangeContract = await this.getContractAddress('EthExchange');
         const ethExchange = new EthExchange(this.dependencies, ethExchangeContract);
         promises.push(ethExchange.initialize(this.augur!.address));
+
+        const augurWalletRegistryContract = await this.getContractAddress('AugurWalletRegistry');
+        const augurWalletRegistry = new AugurWalletRegistry(this.dependencies, augurWalletRegistryContract);
+        const initialEthAmount = new BigNumber(1e17).multipliedBy(2.5);
+        promises.push(augurWalletRegistry.initialize(this.augur!.address, this.augurTrading!.address, {attachedEth: initialEthAmount}));
 
         if (!this.configuration.deploy.normalTime) {
             const timeContract = await this.getContractAddress('TimeControlled');
@@ -588,19 +610,17 @@ Deploying to: ${env}
         mapping['Augur'] = this.contracts.get('Augur').address!;
         mapping['LegacyReputationToken'] = this.contracts.get('LegacyReputationToken').address!;
         mapping['Cash'] = this.getContractAddress('Cash');
-        mapping['ProxyFactory'] = this.contracts.get('ProxyFactory').address!;
-        mapping['GnosisSafe'] = this.contracts.get('GnosisSafe').address!;
         if (!this.configuration.deploy.isProduction) mapping['CashFaucet'] = this.getCashFaucetAddress();
         mapping['BuyParticipationTokens'] = this.contracts.get('BuyParticipationTokens').address!;
         mapping['RedeemStake'] = this.contracts.get('RedeemStake').address!;
-        mapping['GnosisSafeRegistry'] = this.contracts.get('GnosisSafeRegistry').address!;
         mapping['WarpSync'] = this.contracts.get('WarpSync').address!;
         mapping['ShareToken'] = this.contracts.get('ShareToken').address!;
         mapping['HotLoading'] = this.contracts.get('HotLoading').address!;
         mapping['EthExchange'] = this.contracts.get('EthExchange').address!;
         mapping['Affiliates'] = this.contracts.get('Affiliates').address!;
         mapping['AffiliateValidator'] = this.contracts.get('AffiliateValidator').address!;
-        mapping['EthExchange'] = this.contracts.get('EthExchange').address!;
+        mapping['OICash'] = this.contracts.get('OICash').address!;
+        mapping['AugurWalletRegistry'] = this.contracts.get('AugurWalletRegistry').address!;
 
         // 0x
         mapping['ERC20Proxy'] = this.contracts.get('ERC20Proxy').address!;
