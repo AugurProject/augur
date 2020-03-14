@@ -32,14 +32,6 @@ contract ProfitLoss is Initializable {
         int256 realizedCost; // Also cannot be negative.
     }
 
-    struct TradeData {
-        int256 adjustedNumTicks;
-        int256 avgPrice; // Cannot actually be negative. Typed for code convenience
-        int256 realizedProfit;
-        int256 frozenFunds;
-        int256 realizedCost; // Also cannot be negative.
-    }
-
     // User => Market => Outcome => Data
     mapping (address => mapping(address => mapping(uint256 => OutcomeData))) private profitLossData;
 
