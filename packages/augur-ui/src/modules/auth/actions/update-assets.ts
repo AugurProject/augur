@@ -49,7 +49,7 @@ function updateBalances(
     const attoRep = amounts[0].toString();
     const legacyAttoRep = amounts[3].toString();
     const legacyAttoRepNonSafe = amounts[4].toString();
-    const rep = formatAttoRep(attoRep).value;
+    const rep = formatAttoRep(attoRep).roundedValue.toNumber();
     const legacyRep = formatAttoRep(legacyAttoRep).value;
     const legacyRepNonSafe = formatAttoRep(legacyAttoRepNonSafe).value;
     const dai = amounts[1];
