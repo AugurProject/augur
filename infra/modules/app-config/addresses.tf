@@ -1,20 +1,24 @@
 // Contract Addresses
-variable "ethereum_chain_id" {
-  type = number
+variable "build_environment" {
+  type = string
 }
 
 data local_file "contract-addresses" {
-  filename = "../../../packages/augur-artifacts/src/addresses.json"
+  filename = "../../../packages/augur-artifacts/src/environments/${var.build_environment}.json"
 }
 
-output "zerox-trade-address" {
-  value = jsondecode(data.local_file.contract-addresses.content)[var.ethereum_chain_id]["ZeroXTrade"]
+output "ethereum_chain_id" {
+  value = parseint(jsondecode(data.local_file.contract-addresses.content)["networkId"], 10)
+}
+
+output "zerox_trade_address" {
+  value = jsondecode(data.local_file.contract-addresses.content)["addresses"]["ZeroXTrade"]
 }
 
 output "gnosis_safe_address" {
-  value = jsondecode(data.local_file.contract-addresses.content)[var.ethereum_chain_id]["GnosisSafe"]
+  value = jsondecode(data.local_file.contract-addresses.content)["addresses"]["GnosisSafe"]
 }
 
-output "proxy_factory_addr" {
-  value = jsondecode(data.local_file.contract-addresses.content)[var.ethereum_chain_id]["ProxyFactory"]
+output "proxy_factory_address" {
+  value = jsondecode(data.local_file.contract-addresses.content)["addresses"]["ProxyFactory"]
 }
