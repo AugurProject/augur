@@ -102,7 +102,7 @@ const login = (account: string) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState,
 ) => {
-  const useGnosis = getState().env['gnosis']?.enabled;
+  const useGSN = getState().env['gsn']?.enabled;
   const provider = new Web3Provider(windowRef.web3.currentProvider);
   const networkId = windowRef.web3.currentProvider.networkVersion;
   const address = toChecksumAddress(account);
@@ -119,5 +119,5 @@ const login = (account: string) => (
       isWeb3: true,
     },
   };
-  dispatch(updateSdk(accountObject, networkId, useGnosis));
+  dispatch(updateSdk(accountObject, networkId, useGSN));
 };

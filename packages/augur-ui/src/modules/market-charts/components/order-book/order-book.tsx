@@ -34,6 +34,7 @@ interface OrderBookSideProps {
   hoveredOrderIndex?: number;
   showButtons: boolean;
   orderbookLoading: boolean;
+  usePercent: boolean;
 }
 
 interface OrderBookProps {
@@ -48,6 +49,7 @@ interface OrderBookProps {
   marketType: string;
   showButtons: boolean;
   orderbookLoading: boolean;
+  usePercent: boolean;
   expirationTime: number;
   currentTimeInSeconds: number;
   loadMarketOrderBook: Function;
@@ -65,6 +67,7 @@ const OrderBookSide = ({
   marketType,
   showButtons,
   orderbookLoading,
+  usePercent,
 }: OrderBookSideProps) => {
   const side = useRef({
     current: { clientHeight: 0, scrollHeight: 0, scrollTop: 0 },
@@ -172,7 +175,7 @@ const OrderBookSide = ({
               showEmptyDash={true}
               showDenomination={false}
             />
-            <span>{createBigNumber(order.price).toFixed(pricePrecision)}</span>
+            <span>{usePercent ? order.percent : createBigNumber(order.price).toFixed(pricePrecision)}</span>
             <span>
               {hasSize
                 ? createBigNumber(order.mySize).toFixed(fixedPrecision)
@@ -196,6 +199,7 @@ const OrderBook = ({
   marketType,
   showButtons,
   orderbookLoading,
+  usePercent,
   expirationTime,
   currentTimeInSeconds,
   loadMarketOrderBook,
@@ -217,7 +221,7 @@ const OrderBook = ({
     <section className={Styles.OrderBook}>
       <OrderHeader
         title="Order Book"
-        headers={['quantity', 'price', 'my quantity']}
+        headers={['quantity', usePercent ? 'percent' : 'price', 'my quantity']}
         toggle={toggle}
         hide={hide}
       />
@@ -233,15 +237,16 @@ const OrderBook = ({
         type={ASKS}
         showButtons={showButtons}
         orderbookLoading={orderbookLoading}
+        usePercent={usePercent}
       />
       {!hide && (
         <div className={Styles.Midmarket}>
           {hasOrders &&
             `spread: ${
               orderBook.spread
-                ? `$${createBigNumber(orderBook.spread).toFixed(
+                ? `${!usePercent ? '$' : ''}${createBigNumber(orderBook.spread).toFixed(
                     pricePrecision
-                  )}`
+                  )} ${usePercent ? '%' : ''}`
                 : '—'
             }`}
         </div>
@@ -258,6 +263,7 @@ const OrderBook = ({
         type={BIDS}
         showButtons={showButtons}
         orderbookLoading={orderbookLoading}
+        usePercent={usePercent}
       />
     </section>
   );

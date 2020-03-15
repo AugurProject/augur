@@ -2,7 +2,7 @@
 
 from eth_tester.exceptions import TransactionFailed
 from pytest import raises, fixture as pytest_fixture
-from utils import stringToBytes, AssertLog
+from utils import stringToBytes, AssertLog, PrintGasUsed
 
 
 def test_eth_exchange(localFixture, augur, cash, ethExchange):
@@ -18,7 +18,7 @@ def test_eth_exchange(localFixture, augur, cash, ethExchange):
     expectedEthAmount = 10**17
     assert roughlyEqual(ethExchange.getTokenPurchaseCost(expectedEthAmount), cashAmount, 2 * 10**17)
     initialETH = localFixture.ethBalance(account)
-    buyEth(ethExchange, cash, cashAmount, account)
+    buyEth(localFixture, ethExchange, cash, cashAmount, account)
     assert roughlyEqual(initialETH + expectedEthAmount, localFixture.ethBalance(account))
 
     # Buy Dai
@@ -39,10 +39,12 @@ def addLiquidity(fixture, exchange, cash, cashAmount, ethAmount, address):
     assert exchange.getTokenBalance() == ethAmount
     exchange.publicMint(address)
 
-def buyEth(exchange, cash, cashAmount, address):
+def buyEth(fixture, exchange, cash, cashAmount, address):
     cash.faucet(cashAmount)
-    cash.transfer(exchange.address, cashAmount)
-    exchange.buyToken(address)
+    with PrintGasUsed(fixture, "Transfer Cash"):
+        cash.transfer(exchange.address, cashAmount)
+    with PrintGasUsed(fixture, "Buy ETH"):
+        exchange.buyToken(address)
 
 def sellEth(fixture, exchange, ethAmount, address):
     fixture.sendEth(address, exchange.address, ethAmount)

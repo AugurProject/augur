@@ -26,12 +26,6 @@
       "path": "../augur-types"
     },
     {
-      "path": "../contract-dependencies-gnosis"
-    },
-    {
-      "path": "../gnosis-relay-api"
-    },
-    {
-      "path": "../contract-dependencies-ethers"
+      "path": "../contract-dependencies-gsn"
     }]
 }
