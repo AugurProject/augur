@@ -12,15 +12,14 @@ import { SDKConfiguration } from '@augurproject/artifacts';
 interface StateProps {
   modal: {
     type: string;
+    config: SDKConfiguration;
   };
-  config: SDKConfiguration;
   connection: string;
   isConnectedThroughWeb3: boolean;
 }
 
 const mapStateToProps = (state: StateProps) => ({
   modal: state.modal,
-  config: state.config,
   connection: state.connection,
   isConnectedThroughWeb3: isWeb3Transport(),
 });
