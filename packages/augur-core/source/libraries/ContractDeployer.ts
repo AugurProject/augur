@@ -23,7 +23,6 @@ import {
   WarpSync,
   EthExchange,
   AugurWalletRegistry,
-  RelayHub,
   // 0x
   Exchange,
   ERC1155Proxy,
@@ -31,7 +30,7 @@ import {
   MultiAssetProxy,
 } from './ContractInterfaces';
 import { Contracts, ContractData } from './Contracts';
-import { Dependencies } from '../libraries/GenericContractInterfaces';
+import { Dependencies } from './GenericContractInterfaces';
 import { ContractAddresses, NetworkId, updateConfig, SDKConfiguration, mergeConfig } from '@augurproject/artifacts';
 import { TRADING_CONTRACTS, RELAY_HUB_SIGNED_DEPLOY_TX, RELAY_HUB_DEPLOYER_ADDRESS, RELAY_HUB_ADDRESS } from './constants';
 
@@ -74,7 +73,7 @@ Deploying to: ${env}
         return this.provider.getBlock('latest', false).then( (block) => block.number);
     }
 
-    async deploy(env: string, serial: boolean = true): Promise<ContractAddresses> {
+    async deploy(env: string, serial = true): Promise<ContractAddresses> {
         const blockNumber = await this.getBlockNumber();
         this.augur = await this.uploadAugur();
         this.augurTrading = await this.uploadAugurTrading();
@@ -152,10 +151,10 @@ Deploying to: ${env}
         // GSN. The GSN RelayHub is deployed with a static address via create2 so we only need to do anything if we're in a dev environment where it hasnt been deployed
         if (!this.configuration.deploy.isProduction) {
             const relayHubDeployedCode = await this.provider.getCode(RELAY_HUB_ADDRESS);
-            if (relayHubDeployedCode !== "0x") {
-                console.log(`Relay Hub is already deployed to this environment. Skipping Deploy.`)
+            if (relayHubDeployedCode !== '0x') {
+                console.log('Relay Hub is already deployed to this environment. Skipping Deploy.')
             } else {
-                console.log(`Deploying Relay Hub.`)
+                console.log('Deploying Relay Hub.')
                 let response = await this.signer.sendTransaction({
                     to: RELAY_HUB_DEPLOYER_ADDRESS,
                     data: '0x00',
@@ -167,11 +166,11 @@ Deploying to: ${env}
                 if (reciept.contractAddress !== RELAY_HUB_ADDRESS) {
                     throw new Error(`Relay Hub deployment failed. Deployed address: ${reciept.contractAddress}`);
                 }
-                console.log(`Relay Hub deployed.`)
+                console.log('Relay Hub deployed.')
             }
         }
 
-        await this.initializeAllContracts();
+        await this.initializeAllContracts(serial);
         await this.doTradingApprovals();
 
         if (!this.configuration.deploy.normalTime) {
@@ -194,17 +193,17 @@ Deploying to: ${env}
         if (!this.configuration.deploy.isProduction) {
             const cash = new Cash(this.dependencies, this.getContractAddress('Cash'));
 
-            console.log("Approving Augur");
+            console.log('Approving Augur');
             const authority = this.getContractAddress('Augur');
             await cash.approve(authority, new BigNumber(2).pow(256).minus(new BigNumber(1)));
 
-            console.log("Add ETH exchange liquidity");
-            const ethExchange = new EthExchange(this.dependencies, this.getContractAddress("EthExchange"));
+            console.log('Add ETH exchange liquidity');
+            const ethExchange = new EthExchange(this.dependencies, this.getContractAddress('EthExchange'));
             const cashAmount = new BigNumber(2000 * 1e18) // 2000 Dai
             const ethAmount = new BigNumber(10 * 1e18) // 10 ETH
-            console.log("Cash faucet");
+            console.log('Cash faucet');
             await cash.faucet(cashAmount.multipliedBy(2));
-            console.log("eth exchange publicMintAuto");
+            console.log('eth exchange publicMintAuto');
             // We do this twice to get a store in place for the oracle storage to make future calls less expensive.
             await ethExchange.publicMintAuto(await this.dependencies.getDefaultAddress(), cashAmount, {attachedEth: ethAmount});
             await ethExchange.publicMintAuto(await this.dependencies.getDefaultAddress(), cashAmount, {attachedEth: ethAmount});
@@ -475,72 +474,39 @@ Deploying to: ${env}
         return contractObj.address;
     }
 
-    private async initializeAllContracts(): Promise<void> {
+    private async initializeAllContracts(serial = true): Promise<void> {
         console.log('Initializing contracts...');
-        let promises: Array<Promise<any>> = [];
 
-        const shareTokenContract = await this.getContractAddress('ShareToken');
-        const shareToken = new ShareToken(this.dependencies, shareTokenContract);
-        promises.push(shareToken.initialize(this.augur!.address));
-
-        const createOrderContract = await this.getContractAddress('CreateOrder');
-        const createOrder = new CreateOrder(this.dependencies, createOrderContract);
-        promises.push(createOrder.initialize(this.augur!.address, this.augurTrading!.address));
-
-        const fillOrderContract = await this.getContractAddress('FillOrder');
-        const fillOrder = new FillOrder(this.dependencies, fillOrderContract);
-        promises.push(fillOrder.initialize(this.augur!.address, this.augurTrading!.address));
-
-        const cancelOrderContract = await this.getContractAddress('CancelOrder');
-        const cancelOrder = new CancelOrder(this.dependencies, cancelOrderContract);
-        promises.push(cancelOrder.initialize(this.augur!.address, this.augurTrading!.address));
-
-        const tradeContract = await this.getContractAddress('Trade');
-        const trade = new Trade(this.dependencies, tradeContract);
-        promises.push(trade.initialize(this.augur!.address, this.augurTrading!.address));
-
-        const ordersContract = await this.getContractAddress('Orders');
-        const orders = new Orders(this.dependencies, ordersContract);
-        promises.push(orders.initialize(this.augur!.address, this.augurTrading!.address));
-
-        const profitLossContract = await this.getContractAddress('ProfitLoss');
-        const profitLoss = new ProfitLoss(this.dependencies, profitLossContract);
-        promises.push(profitLoss.initialize(this.augur!.address, this.augurTrading!.address));
-
-        // Too many txn in flight on kovan breaks things
-        console.log('Awaiting promises before continuing deploy');
-        await resolveAll(promises);
-        promises = [];
-        console.log('Continuing deploy');
-
-        const simulateTradeContract = await this.getContractAddress('SimulateTrade');
-        const simulateTrade = new SimulateTrade(this.dependencies, simulateTradeContract);
-        promises.push(simulateTrade.initialize(this.augur!.address, this.augurTrading!.address));
-
-        const zeroXTradeContract = await this.getContractAddress('ZeroXTrade');
-        const zeroXTrade = new ZeroXTrade(this.dependencies, zeroXTradeContract);
-        promises.push(zeroXTrade.initialize(this.augur!.address, this.augurTrading!.address));
-
-        const warpSyncContract = await this.getContractAddress('WarpSync');
-        const warpSync = new WarpSync(this.dependencies, warpSyncContract);
-        promises.push(warpSync.initialize(this.augur!.address));
-
-        const ethExchangeContract = await this.getContractAddress('EthExchange');
-        const ethExchange = new EthExchange(this.dependencies, ethExchangeContract);
-        promises.push(ethExchange.initialize(this.augur!.address));
-
-        const augurWalletRegistryContract = await this.getContractAddress('AugurWalletRegistry');
-        const augurWalletRegistry = new AugurWalletRegistry(this.dependencies, augurWalletRegistryContract);
-        const initialEthAmount = new BigNumber(1e17).multipliedBy(2.5);
-        promises.push(augurWalletRegistry.initialize(this.augur!.address, this.augurTrading!.address, {attachedEth: initialEthAmount}));
+        const readiedPromises = [
+            async () => new ShareToken(this.dependencies, await this.getContractAddress('ShareToken')).initialize(this.augur!.address),
+            async () => new CreateOrder(this.dependencies, await this.getContractAddress('CreateOrder')).initialize(this.augur!.address, this.augurTrading!.address),
+            async () => new FillOrder(this.dependencies, await this.getContractAddress('FillOrder')).initialize(this.augur!.address, this.augurTrading!.address),
+            async () => new CancelOrder(this.dependencies, await this.getContractAddress('CancelOrder')).initialize(this.augur!.address, this.augurTrading!.address),
+            async () => new Trade(this.dependencies, await this.getContractAddress('Trade')).initialize(this.augur!.address, this.augurTrading!.address),
+            async () => new Orders(this.dependencies, await this.getContractAddress('Orders')).initialize(this.augur!.address, this.augurTrading!.address),
+            async () => new ProfitLoss(this.dependencies, await this.getContractAddress('ProfitLoss')).initialize(this.augur!.address, this.augurTrading!.address),
+            async () => new SimulateTrade(this.dependencies, await this.getContractAddress('SimulateTrade')).initialize(this.augur!.address, this.augurTrading!.address),
+            async () => new ZeroXTrade(this.dependencies, await this.getContractAddress('ZeroXTrade')).initialize(this.augur!.address, this.augurTrading!.address),
+            async () => new WarpSync(this.dependencies, await this.getContractAddress('WarpSync')).initialize(this.augur!.address),
+            async () => new EthExchange(this.dependencies, await this.getContractAddress('EthExchange')).initialize(this.augur!.address),
+            async () => new AugurWalletRegistry(this.dependencies, await this.getContractAddress('AugurWalletRegistry')).initialize(this.augur!.address, this.augurTrading!.address, { attachedEth:  new BigNumber(2.5e17) }),
+        ];
 
         if (!this.configuration.deploy.normalTime) {
-            const timeContract = await this.getContractAddress('TimeControlled');
-            const time = new TimeControlled(this.dependencies, timeContract);
-            promises.push(time.initialize(this.augur!.address));
+            readiedPromises.push(async () => {
+                const timeContract = await this.getContractAddress('TimeControlled');
+                const time = new TimeControlled(this.dependencies, timeContract);
+                return time.initialize(this.augur!.address);
+            })
         }
 
-        await resolveAll(promises);
+        if (serial) {
+            for (const p of readiedPromises) {
+                await p();
+            }
+        } else {
+            await resolveAll(readiedPromises.map((p) => p()));
+        }
     }
 
     private async doTradingApprovals(): Promise<void> {

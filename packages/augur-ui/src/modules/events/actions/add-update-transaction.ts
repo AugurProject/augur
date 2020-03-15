@@ -210,8 +210,8 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
         break;
       }
       case CANCELORDERS: {
-        const orderIds = transaction.params && transaction.params.order[TX_ORDER_IDS];
-        orderIds.map(orderId => dispatch(addCanceledOrder(orderId, eventName, hash)));
+        const orders = transaction.params && transaction.params._orders || [];
+        orders.map(order => dispatch(addCanceledOrder(order.orderId, eventName, hash)));
         break;
       }
 
