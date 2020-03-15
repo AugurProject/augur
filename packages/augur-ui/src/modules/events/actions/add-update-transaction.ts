@@ -27,7 +27,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { Events, TXEventName } from '@augurproject/sdk';
 import {
-  addPendingData, addUpdatePendingTransaction, addCanceledOrder,
+  addPendingData, addUpdatePendingTransaction, addCanceledOrder, removeCanceledOrder,
 } from 'modules/pending-queue/actions/pending-queue-management';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { TransactionMetadataParams } from 'contract-dependencies-ethers/build';
@@ -129,10 +129,10 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
     switch (methodCall) {
       case REDEEMSTAKE: {
         const params = transaction.params;
-        params._reportingParticipants.map(participant => 
+        params._reportingParticipants.map(participant =>
           dispatch(addPendingData(participant, REDEEMSTAKE, eventName, hash, {...transaction}))
         );
-        params._disputeWindows.map(window => 
+        params._disputeWindows.map(window =>
           dispatch(addPendingData(window, REDEEMSTAKE, eventName, hash, {...transaction}))
         );
         break;
@@ -201,17 +201,29 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
       }
       case CANCELORDER: {
         const orderId = transaction.params && transaction.params.order[TX_ORDER_ID];
-        dispatch(addCanceledOrder(orderId, eventName, hash))
+        eventName === TXEventName.Success
+          ? dispatch(removeCanceledOrder(orderId))
+          : dispatch(addCanceledOrder(orderId, eventName, hash));
+
         break;
       }
       case BATCHCANCELORDERS: {
         const orders = transaction.params && transaction.params.orders || [];
-        orders.map(order => dispatch(addCanceledOrder(order.orderId, eventName, hash)));
+        orders.map(order =>
+          eventName === TXEventName.Success
+            ? dispatch(removeCanceledOrder(order.orderId))
+            : dispatch(addCanceledOrder(order.orderId, eventName, hash))
+        );
+
         break;
       }
       case CANCELORDERS: {
         const orders = transaction.params && transaction.params._orders || [];
-        orders.map(order => dispatch(addCanceledOrder(order.orderId, eventName, hash)));
+        orders.map(order =>
+          eventName === TXEventName.Success
+            ? dispatch(removeCanceledOrder(order.orderId))
+            : dispatch(addCanceledOrder(order.orderId, eventName, hash))
+        );
         break;
       }
 
