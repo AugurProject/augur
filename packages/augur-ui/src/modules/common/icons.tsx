@@ -990,31 +990,25 @@ export const Alerts = unseenCount => (
       <g>
         <g
           transform="translate(4.000000, 1.000000)"
-          stroke="#FFFFFF"
           strokeWidth="0"
         >
           <path
             d="M7.9209 2.57172V1.94672C7.9209 1.12172 8.5959 0.446716 9.4209 0.446716C10.2459 0.446716 10.9209 1.12172 10.9209 1.94672V2.54672"
-            stroke="#FFFFFF"
             strokeWidth="0.894"
           />
           <path
             fillRule="evenodd"
             clipRule="evenodd"
             d="M11.4209 20.4472C11.4209 21.5512 10.5249 22.4472 9.4209 22.4472C8.3169 22.4472 7.4209 21.5512 7.4209 20.4472"
-            fill="#FFFFFF"
           />
           <path
             d="M11.4209 20.4472C11.4209 21.5512 10.5249 22.4472 9.4209 22.4472C8.3169 22.4472 7.4209 21.5512 7.4209 20.4472C7.4209 20.4472 8.63985 20.4472 9.4209 20.4472C10.2019 20.4472 11.4209 20.4472 11.4209 20.4472Z"
-            stroke="#FFFFFF"
             strokeWidth="0.894"
           />
           <path
             fillRule="evenodd"
             clipRule="evenodd"
             d="M18.3387 17.4493C16.5787 14.4473 15.2627 11.4473 15.4207 8.44727C15.5787 5.44727 12.7347 2.44727 9.42066 2.44727C6.10666 2.44727 3.24666 5.13827 3.42066 8.44727C3.57866 11.4473 2.57866 14.4473 0.578663 17.4473C-1.42134 20.4473 20.0987 20.4503 18.3387 17.4493Z"
-            fill="#FFFFFF"
-            stroke="#FFFFFF"
             strokeWidth="0.894"
           />
         </g>
@@ -1026,14 +1020,11 @@ export const Alerts = unseenCount => (
               width="21"
               height="13"
               rx="6.5"
-              fill="#FD6266"
-              stroke="#211A32"
             />
             <text
               fontFamily="Inter-Bold, Inter"
               fontSize="8"
               fontWeight="bold"
-              fill="#FFFFFF"
             >
               <tspan x="11.01902362" y="10.0428031">
                 {unseenCount}
@@ -1046,7 +1037,7 @@ export const Alerts = unseenCount => (
   </svg>
 );
 // TODO: ChevronUp and Down are only used by marketHeader... refactor
-export const ChevronUp = () => (
+export const ChevronUp = (
   <svg viewBox="0 0 16 16">
     <g
       stroke="none"
@@ -1056,7 +1047,7 @@ export const ChevronUp = () => (
       strokeLinecap="round"
       strokeLinejoin="round"
     >
-      <g stroke="#A7A2B2">
+      <g>
         <polyline
           transform="translate(8.156854, 11.156854) scale(1, -1) rotate(-225.000000) translate(-8.156854, -11.156854) "
           points="3.65685425 6.65685425 12.6568542 6.65685425 12.6568542 15.6568542"
@@ -1065,7 +1056,8 @@ export const ChevronUp = () => (
     </g>
   </svg>
 );
-export const ChevronDown = p => (
+
+export const ChevronDown = (
   <svg viewBox="0 0 16 16">
     <g
       stroke="none"
@@ -1075,7 +1067,7 @@ export const ChevronDown = p => (
       strokeLinecap="round"
       strokeLinejoin="round"
     >
-      <g stroke={p.stroke || '#A7A2B2'}>
+      <g>
         <polyline
           transform="translate(8.156854, 6.156854) rotate(-225.000000) translate(-8.156854, -6.156854) "
           points="3.65685425 1.65685425 12.6568542 1.65685425 12.6568542 10.6568542"
