@@ -22,7 +22,7 @@ export async function deployContracts(
   account: Account,
   compiledContracts: CompilerOutput,
   config: SDKConfiguration,
-  serial: boolean = true,
+  serial = true,
 ): Promise<UsefulContractObjects> {
   const signer = await makeSigner(account, provider);
   const dependencies = makeDependencies(account, provider, signer);
@@ -42,5 +42,5 @@ export function makeDependencies(account: Account, provider: EthersProvider, sig
 }
 
 export async function makeGSNDependencies(provider: EthersProvider, signer: EthersFastSubmitWallet, augurWalletRegistryAddress: string, ethExchangeAddress: string, gasPrice?: BigNumber, address?: string): Promise<ContractDependenciesGSN> {
-  return await ContractDependenciesGSN.create(provider, signer, augurWalletRegistryAddress, ethExchangeAddress, gasPrice, address);
+  return ContractDependenciesGSN.create(provider, signer, augurWalletRegistryAddress, ethExchangeAddress, gasPrice, address);
 }

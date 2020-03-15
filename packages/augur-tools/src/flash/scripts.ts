@@ -148,7 +148,7 @@ export function addScripts(flash: FlashSession) {
       const { addresses } = await deployContracts(
         env,
         this.provider,
-        this.accounts[1],
+        this.accounts[0],
         compilerOutput,
         this.config,
         serial
@@ -2116,7 +2116,7 @@ export function addScripts(flash: FlashSession) {
 
         this.log(`Building`);
         await spawnSync('yarn', ['build']); // so UI etc will have the correct addresses
-        
+
         // Run the GSN relay
         this.log(`Running GSN relayer`);
         spawn('yarn', ['run:gsn'], {stdio: 'inherit'});
