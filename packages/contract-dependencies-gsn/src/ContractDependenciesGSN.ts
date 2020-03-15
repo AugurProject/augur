@@ -151,6 +151,7 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
       // ethers has `status` on the receipt as optional, even though it isn't and never will be undefined if using a modern network (which this is designed for)
       return receipt as TransactionReceipt;
     } catch (e) {
+      this._currentNonce = -1;
       this.onTransactionStatusChanged(txMetadata, TransactionStatus.FAILURE, hash);
       throw e;
     } finally {
@@ -268,7 +269,7 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
     ethCost = ethCost.multipliedBy((100+this.relayClient.config.txFee) / 100);
     const cashCost: ethers.utils.BigNumber = await this.ethExchange.getTokenPurchaseCost('0x'+ethCost.toString(16));
     let cost = new BigNumber(cashCost.toString());
-    cost = cost.multipliedBy(1.05); // account for slippage; CONSIDER: make this configurable?
+    cost = cost.multipliedBy(1.15); // account for slippage; CONSIDER: make this configurable?
     return cost.decimalPlaces(0);
   }
 }
