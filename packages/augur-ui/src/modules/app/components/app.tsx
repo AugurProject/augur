@@ -168,10 +168,11 @@ export default class AppView extends Component<AppProps> {
         useWeb3Transport,
       },
       (err: any, res: any) => {
-        if (err || (res && !res.ethereumNode) || res) {
+        if (err) {
           updateModal({
             type: MODAL_NETWORK_CONNECT,
             isInitialConnection: true,
+            config: res.config,
           });
         }
       }

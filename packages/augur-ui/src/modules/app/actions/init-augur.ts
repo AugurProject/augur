@@ -230,7 +230,7 @@ export function connectAugur(
       sdk = await augurSdk.makeClient(provider, config);
     } catch (e) {
       console.error(e);
-      return callback('SDK could not be created', null);
+      return callback('SDK could not be created', { config });
     }
 
     let universeId = config.addresses?.Universe || sdk.contracts.universe.address;
