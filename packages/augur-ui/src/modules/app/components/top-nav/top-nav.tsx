@@ -15,6 +15,7 @@ import { helpIcon, Dot } from 'modules/common/icons';
 import {
   TRANSACTIONS,
   MIGRATE_FROM_LEG_REP_TOKEN,
+  CREATEAUGURWALLET
 } from 'modules/common/constants';
 
 import Styles from 'modules/app/components/top-nav/top-nav.styles.less';
@@ -28,6 +29,8 @@ interface TopNavProps {
   showMigrateRepButton: boolean;
   walletBalances: AccountBalances;
   updateModal: Function;
+  showCreateAccountButton: boolean;
+  createFundedGsnWallet: Function;
 }
 
 const SPREAD_INDEX = 3;
@@ -38,7 +41,9 @@ const TopNav = ({
   menuData,
   currentBasePath,
   migrateV1Rep,
+  createFundedGsnWallet,
   showMigrateRepButton = false,
+  showCreateAccountButton = false,
   walletBalances,
 }: TopNavProps) => {
   const isCurrentItem = item => {
@@ -104,6 +109,41 @@ const TopNav = ({
                           walletBalances.legacyRep > 0
                             ? 'You have V1 REP in your Augur account address. Migrate it to V2 REP to use it in Augur V2.'
                             : 'You have V1 REP in your wallet. Migrate it to V2 REP to use it in Augur V2.'
+                        }
+                      </p>
+                    </ReactTooltip>
+                  </span>
+                </li>
+              )}
+              {index === SPREAD_INDEX && showCreateAccountButton && (
+                <li>
+                  <div className={Styles.MigrateRep}>
+                    <ProcessingButton
+                      text={walletBalances.dai === 0 ? 'Waiting for Funding' : 'Initiaize GSN Wallet'}
+                      action={() => createFundedGsnWallet()}
+                      disabled={walletBalances.dai === 0}
+                      queueName={CREATEAUGURWALLET}
+                      queueId={CREATEAUGURWALLET}
+                    />
+                  </div>
+                  <span>
+                    <label
+                      className={classNames(TooltipStyles.TooltipHint)}
+                      data-tip
+                      data-for={'accountCreation'}
+                    >
+                      {helpIcon}
+                    </label>
+                    <ReactTooltip
+                      id={'accountCreation'}
+                      className={TooltipStyles.Tooltip}
+                      effect="solid"
+                      place="top"
+                      type="light"
+                    >
+                      <p>
+                        {
+                          'Account used to interact with Augur, needs to be funded before created'
                         }
                       </p>
                     </ReactTooltip>

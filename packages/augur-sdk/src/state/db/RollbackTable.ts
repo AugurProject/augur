@@ -53,13 +53,11 @@ export class RollbackTable extends AbstractTable {
                 }
                 docIndex++;
             }
-            console.log('bulkPutDocuments-checkpoint-1');
             await this.rollbackTable.bulkPut(rollbackDocuments, rollbackIds);
 
             const maxBlock =_.get(_.maxBy(documents, 'blockNumber'), 'blockNumber');
             await this.prune(maxBlock);
         }
-        console.log('bulkPutDocuments-checkpoint-2');
         await super.bulkPutDocuments(documents);
     }
 

@@ -39,7 +39,7 @@ module ecs-cluster {
 module "app-config" {
   source = "./../../modules/app-config"
 
-  ethereum_chain_id = var.ethereum_chain_id
+  build_environment = var.build_environment
 }
 
 module zeroX {
@@ -57,9 +57,9 @@ module zeroX {
   vpc_id                         = module.network.vpc_id
   vpc_sg                         = module.network.vpc_default_sg
 
-  ethereum_chain_id      = var.ethereum_chain_id
+  ethereum_chain_id      = module.app-config.ethereum_chain_id
   ipfs_pubkey            = var.ipfs_pubkey
-  zerox-trade-address    = module.app-config.zerox-trade-address
+  zerox_trade_address    = module.app-config.zerox_trade_address
   zerox_bootstrap_tg_arn = module.network.zerox_bootstrap_tg_arn
   zerox_rpc_tg_arn       = module.network.zerox_rpc_tg_arn
 }
@@ -82,7 +82,7 @@ module gnosis {
   ethereum_node_url     = var.ethereum_node_url
   gnosis_safe_address   = module.app-config.gnosis_safe_address
   gnosis_web_tg_arn     = module.network.gnosis_web_tg_arn
-  proxy_factory_address = module.app-config.proxy_factory_addr
+  proxy_factory_address = module.app-config.proxy_factory_address
 }
 
 module ipfs {

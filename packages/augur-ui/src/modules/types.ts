@@ -16,7 +16,6 @@ import { EthersSigner } from 'contract-dependencies-ethers/build/ContractDepende
 import { Getters, PayoutNumeratorValue } from '@augurproject/sdk';
 import { TransactionMetadataParams } from 'contract-dependencies-ethers/build';
 import { BigNumber } from 'utils/create-big-number';
-import { GnosisSafeState } from '@augurproject/gnosis-relay-api/build/GnosisRelayAPI';
 import { Template } from '@augurproject/artifacts';
 
 export enum SizeTypes {
@@ -566,9 +565,8 @@ export interface AppStatus {
   isMobileSmall?: boolean;
   isHelpMenuOpen: boolean;
   ethToDaiRate: BigNumber;
-  gnosisEnabled: boolean;
+  gsnEnabled: boolean;
   zeroXEnabled: boolean;
-  gnosisStatus: GnosisSafeState;
 }
 
 export interface AuthStatus {
@@ -614,6 +612,7 @@ export interface AccountBalances {
   legacyRepNonSafe: number;
   attoRep: string;
   legacyAttoRep: string;
+  ethNonSafe: number;
 }
 
 export interface LoginAccountMeta {

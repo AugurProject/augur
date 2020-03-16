@@ -18,4 +18,4 @@ variable "ethereum_chain_id" {}
 variable "ipfs_pubkey" {}
 variable "zerox_bootstrap_tg_arn" {}
 variable "zerox_rpc_tg_arn" {}
-variable "zerox-trade-address" {}
+variable "zerox_trade_address" {}

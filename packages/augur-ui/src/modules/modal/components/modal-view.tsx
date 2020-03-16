@@ -6,6 +6,7 @@ import ModalReporting from 'modules/modal/containers/modal-reporting';
 import ModalConfirm from 'modules/modal/components/modal-confirm';
 import ModalReview from 'modules/modal/components/modal-review';
 import ModalRepFaucet from 'modules/modal/containers/modal-rep-faucet';
+import ModalGsnFaucet from 'modules/modal/containers/modal-gsn-faucet';
 import ModalCreateMarket from 'modules/modal/containers/modal-create-market';
 import ModalDaiFaucet from 'modules/modal/containers/modal-dai-faucet';
 import ModalCreationHelp from 'modules/modal/containers/modal-creation-help';
@@ -41,6 +42,7 @@ import ModalHardwareWallet from 'modules/modal/containers/modal-hardware-wallet'
 import ModalLoading from 'modules/modal/containers/modal-loading';
 import ModalUniverseSelector from 'modules/modal/containers/modal-universe-selector';
 import ModalTestBet from 'modules/modal/containers/modal-test-bet';
+import ModalAugurP2P from 'modules/modal/containers/modal-p2p-trading';
 import ModalGlobalChat from 'modules/modal/containers/modal-global-chat';
 import ModalAccountCreated from 'modules/modal/containers/modal-account-created';
 import ModalWalletError from 'modules/modal/containers/modal-wallet-error';
@@ -76,6 +78,8 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalTransactions />;
     case TYPES.MODAL_REP_FAUCET:
       return <ModalRepFaucet />;
+    case TYPES.MODAL_GSN_FAUCET:
+      return <ModalGsnFaucet />;
     case TYPES.MODAL_CREATE_MARKET:
       return <ModalCreateMarket />;
     case TYPES.MODAL_ADD_FUNDS:
@@ -151,6 +155,8 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalUniverseSelector />;
     case TYPES.MODAL_TEST_BET:
       return <ModalTestBet />;
+    case TYPES.MODAL_AUGUR_P2P:
+      return <ModalAugurP2P />;
     case TYPES.MODAL_TUTORIAL_OUTRO:
       return <ModalTutorialOutro {...modal} />;
     case TYPES.MODAL_TUTORIAL_INTRO:

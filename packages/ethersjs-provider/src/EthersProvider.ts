@@ -66,9 +66,9 @@ export class EthersProvider extends ethers.providers.BaseProvider
           { times, interval },
           async () => {
             if (item.message === "send") {
-              return await _this.provider.send(item.params.method, item.params.params);
+              return await _this.providerSend(item.params.method, item.params.params);
             } else {
-              return await _this.provider.perform(item.message, item.params);
+              return await _this.providerPerform(item.message, item.params);
             }
           },
           callback
@@ -76,6 +76,14 @@ export class EthersProvider extends ethers.providers.BaseProvider
       },
       concurrency
     );
+  }
+
+  async providerSend(method: string, params: any): Promise<any> {
+    return this.provider.send(method, params);
+  }
+
+  async providerPerform(message: string, params: any): Promise<any> {
+    return this.provider.perform(message, params);
   }
 
   async listAccounts(): Promise<string[]> {
@@ -276,7 +284,7 @@ export class EthersProvider extends ethers.providers.BaseProvider
     }));
   }
 
-  // This is to support the 0x Web3 Provider Engine requirements
+  // This is to support the Web3 Spec
   sendAsync(payload: JSONRPCRequestPayload, callback?: JSONRPCErrorCallback): void {
     this.performQueue.push({ message: "send", params: payload }, (error, result) => {
       if (callback) callback(error, {

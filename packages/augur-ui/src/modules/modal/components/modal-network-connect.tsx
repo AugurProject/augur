@@ -16,8 +16,8 @@ interface ModalNetworkConnectProps {
   modal: {
     type: string;
     isInitialConnection?: boolean;
+    config: SDKConfiguration;
   };
-  config: SDKConfiguration;
   submitForm: Function;
   isConnectedThroughWeb3: boolean;
 }
@@ -42,8 +42,8 @@ export default class ModalNetworkConnect extends Component<ModalNetworkConnectPr
     super(props);
     // prioritize ethereumNode connections
     let ethereumNode = "";
-    if (props.config.ethereum?.http) {
-      ethereumNode = props.config.ethereum?.http;
+    if (props.modal.config.ethereum?.http) {
+      ethereumNode = props.modal.config.ethereum?.http;
     }
 
     this.state = {
