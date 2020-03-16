@@ -4969,14 +4969,14 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `Which NFL player will win the [0] [1] award?`,
-                example: `Which NFL player will win the 2020 Most Valuable Player award?`,
+                question: `Which NFL player will win the [0] season [1] award?`,
+                example: `Which NFL player will win the 2019-20 season Most Valuable Player award?`,
                 inputs: [
                   {
                     id: 0,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
-                    values: LIST_VALUES.YEARS,
+                    values: LIST_VALUES.YEAR_RANGE,
                   },
                   {
                     id: 1,
