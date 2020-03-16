@@ -13,7 +13,7 @@ export const loginWithFortmatic = () => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState,
 ) => {
-  const useGnosis = getState().env['gnosis']?.enabled;
+  const useGSN = getState().env['gsn']?.enabled;
   const networkId: string = getState().env['networkId'];
   const supportedNetwork = getNetwork(networkId);
 
@@ -42,7 +42,7 @@ export const loginWithFortmatic = () => async (
         },
       };
 
-      dispatch(updateSdk(accountObject, undefined, useGnosis));
+      dispatch(updateSdk(accountObject, undefined, useGSN));
     }
     catch (error) {
       throw error;

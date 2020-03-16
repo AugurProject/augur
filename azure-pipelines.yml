@@ -308,8 +308,8 @@ jobs:
           TESTS: tests/unit
         geth_integration:
           TESTS: integration:geth
-        parity_integration:
-          TESTS: integration:parity
+        # TODO parity_integration:
+        #  TESTS: integration:parity
         security_mithril:
           TESTS: security:mythril
     variables:
@@ -410,7 +410,7 @@ jobs:
       YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
       ZEROX_RPC_ENABLED: false
       ZEROX_MESH_ENABLED: false
-      GNOSIS_ENABLED: false
+      GSN_ENABLED: false
     steps:
       - checkout: self
       - task: NodeTool@0
@@ -501,7 +501,7 @@ jobs:
       - bash: |
           set -exuo pipefail
           yarn docker:all --detach
-          sleep 30
+          sleep 60
         displayName: Run 3rd Party Dockers
       - bash: |
           set -exuo pipefail
@@ -511,7 +511,6 @@ jobs:
       - bash: |
           set -exuo pipefail
           docker kill geth
-          yarn workspace @augurproject/gnosis-relay-api kill-relay
         displayName: Stop 3rd Party Dockers
 
 

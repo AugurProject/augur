@@ -1,7 +1,6 @@
 import { WSClient } from '@0x/mesh-rpc-client';
 import { SDKConfiguration } from '@augurproject/artifacts';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
-import { IGnosisRelayAPI } from '@augurproject/gnosis-relay-api';
 import {
   Augur,
   BrowserMesh,
@@ -15,10 +14,10 @@ import { WarpSyncStrategy } from '@augurproject/sdk/build/state/sync/WarpSyncStr
 import { WarpController } from '@augurproject/sdk/build/warp/WarpController';
 import { TestContractAPI } from '@augurproject/tools';
 import { Account } from '@augurproject/tools';
-import { makeGnosisDependencies, makeSigner } from '@augurproject/tools/build';
+import { makeGSNDependencies, makeSigner } from '@augurproject/tools/build';
+import { ContractDependenciesGSN } from 'contract-dependencies-gsn';
 import { makeDbMock } from '@augurproject/tools/build/libs/MakeDbMock';
 import { BigNumber } from 'bignumber.js';
-import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis';
 import * as IPFS from 'ipfs';
 
 const filterRetrievelFn = (ipfs: Promise<IPFS>) => async (ipfsPath: string) =>
@@ -34,7 +33,7 @@ export class WarpTestContractApi extends TestContractAPI {
   constructor(
     readonly augur: Augur,
     readonly provider: EthersProvider,
-    readonly dependencies: ContractDependenciesGnosis,
+    readonly dependencies: ContractDependenciesGSN,
     public account: Account,
     public db: DB,
     public config: SDKConfiguration,
@@ -56,18 +55,16 @@ export class WarpTestContractApi extends TestContractAPI {
     config: SDKConfiguration,
     ipfsServer: Promise<IPFS>,
     connector: Connectors.BaseConnector = new EmptyConnector(),
-    gnosisRelay: IGnosisRelayAPI = undefined,
     meshClient: WSClient = undefined,
     meshBrowser: BrowserMesh = undefined,
   ) {
     const signer = await makeSigner(account, provider);
-    const dependencies = makeGnosisDependencies(
+    const dependencies = await makeGSNDependencies(
       provider,
-      gnosisRelay,
       signer,
-      config.addresses.Cash,
+      config.addresses.AugurWalletRegistry,
+      config.addresses.EthExchange,
       new BigNumber(0),
-      null,
       account.publicKey,
     );
 

@@ -161,9 +161,9 @@ export async function getLegacyRepBalance(
   const { contracts } = augurSdk.get();
   const lagacyRep = contracts.legacyReputationToken.address;
   const networkId = getNetworkId();
-  const balance = await contracts
+  const balance = !!address ? await contracts
     .reputationTokenFromAddress(lagacyRep, networkId)
-    .balanceOf_(address);
+    .balanceOf_(address) : createBigNumber(0);
   return balance;
 }
 
@@ -304,6 +304,17 @@ export async function finalizeMarket(marketId: string) {
 export function getDai() {
   const { contracts } = augurSdk.get();
   return contracts.cashFaucet.faucet(new BigNumber('1000000000000000000000'));
+}
+
+export function fundGsnWallet(gsnWalletAddress: string) {
+  const amount = new BigNumber('1000000000000000000000');
+  const { contracts } = augurSdk.get();
+
+  augurSdk.client.setUseRelay(false);
+  contracts.cashFaucet.faucet(amount).then(() => {
+    contracts.cash.transfer(gsnWalletAddress, amount);
+    augurSdk.client.setUseRelay(true);
+  })
 }
 
 export async function uniswapEthForRepRate(wei: BigNumber): Promise<BigNumber> {

@@ -91,6 +91,8 @@ interface AppProps {
   migrateV1Rep: Function;
   walletBalances: AccountBalances;
   saveAffilateAddress: Function;
+  createFundedGsnWallet: Function;
+  showCreateAccountButton: boolean;
   showMigrateRepButton: boolean;
 }
 
@@ -166,10 +168,11 @@ export default class AppView extends Component<AppProps> {
         useWeb3Transport,
       },
       (err: any, res: any) => {
-        if (err || (res && !res.ethereumNode) || res) {
+        if (err) {
           updateModal({
             type: MODAL_NETWORK_CONNECT,
             isInitialConnection: true,
+            config: res.config,
           });
         }
       }
@@ -371,6 +374,8 @@ export default class AppView extends Component<AppProps> {
       isHelpMenuOpen,
       updateHelpMenuState,
       notifications,
+      createFundedGsnWallet,
+      showCreateAccountButton,
       showMigrateRepButton,
     } = this.props;
     this.sideNavMenuData[1].showAlert =
@@ -455,6 +460,8 @@ export default class AppView extends Component<AppProps> {
                 showMigrateRepButton={showMigrateRepButton}
                 walletBalances={walletBalances}
                 updateModal={updateModal}
+                showCreateAccountButton={showCreateAccountButton}
+                createFundedGsnWallet={createFundedGsnWallet}
               />
 
               {/* HIDDEN ON MOBILE */}
@@ -466,6 +473,8 @@ export default class AppView extends Component<AppProps> {
                 showMigrateRepButton={showMigrateRepButton}
                 walletBalances={walletBalances}
                 updateModal={updateModal}
+                showCreateAccountButton={showCreateAccountButton}
+                createFundedGsnWallet={createFundedGsnWallet}
               />
             </section>
             <AlertsContainer

@@ -219,10 +219,10 @@ export function connectAugur(
       provider = new JsonRpcProvider(config.ethereum.http);
     }
 
-    // Disable mesh/gnosis for googleBot
+    // Disable mesh/gsn for googleBot
     if (isGoogleBot()) {
       config.zeroX.mesh.enabled = false;
-      config.gnosis.enabled = false;
+      config.gsn.enabled = false;
     }
 
     let sdk: Augur<Provider> = null;
@@ -230,7 +230,7 @@ export function connectAugur(
       sdk = await augurSdk.makeClient(provider, config);
     } catch (e) {
       console.error(e);
-      return callback('SDK could not be created', null);
+      return callback('SDK could not be created', { config });
     }
 
     let universeId = config.addresses?.Universe || sdk.contracts.universe.address;

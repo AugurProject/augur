@@ -7,8 +7,11 @@ import {
   ViewTransactionsButton,
   REPFaucetButton,
   DAIFaucetButton,
-  ApprovalButton,
+  FundGSNWalletButton,
+  ExternalLinkButton,
 } from 'modules/common/buttons';
+import { AccountAddressDisplay } from 'modules/modal/common';
+import { toChecksumAddress } from 'ethereumjs-util';
 import Styles from 'modules/account/components/transactions.styles.less';
 
 interface TransactionsProps {
@@ -21,6 +24,11 @@ interface TransactionsProps {
   approval: Function;
   addFunds: Function;
   legacyRepFaucet: Function;
+  fundGsnWallet: Function;
+  signingWallet: string;
+  signingEth: number;
+  gsnCreated: boolean;
+  localLabel: string;
 }
 
 export const Transactions = ({
@@ -31,6 +39,11 @@ export const Transactions = ({
   repFaucet,
   daiFaucet,
   legacyRepFaucet,
+  fundGsnWallet,
+  signingWallet,
+  signingEth,
+  gsnCreated,
+  localLabel
 }: TransactionsProps) => (
   <QuadBox
     title="Transactions"
@@ -45,6 +58,25 @@ export const Transactions = ({
           <DepositButton action={addFunds} />
           <WithdrawButton action={withdraw} />
         </div>
+        {!gsnCreated && (
+          <div>
+            <h4>Fund GSN Wallet</h4>
+            <FundGSNWalletButton
+              action={fundGsnWallet}
+              disabled={signingEth === 0}
+              title={signingEth === 0 ? 'Get ETH to fund GSN Wallet' : 'Click to Fund GSN Wallet'}
+            />
+            <ExternalLinkButton
+              URL={!localLabel ? "https://faucet.kovan.network/" : null}
+              showNonLink={!!localLabel}
+              label={localLabel ? localLabel : "faucet.kovan.network"}
+            />
+            <AccountAddressDisplay
+              copyable
+              address={signingWallet ? toChecksumAddress(signingWallet) : 'loading...'}
+            />
+          </div>
+        )}
         {showFaucets && (
           <div>
             <h4>REP for test net</h4>

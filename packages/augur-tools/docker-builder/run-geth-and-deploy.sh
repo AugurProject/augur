@@ -26,7 +26,7 @@ else
 fi
 
 # Still need to double-check builds after deploy
-yarn build
+# yarn build
 
 ###############################################################################
 

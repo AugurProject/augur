@@ -161,7 +161,7 @@ export default class FeesLiquidity extends React.Component<
             smallSubheader
             header="Affiliate fee"
             copyType={MARKET_COPY_LIST.AFFILIATE_FEE}
-            subheader="You have the option of assigning a percentage of the market creator fee to anyone who helps to promote your market (affiliiates)."
+            subheader="You have the option of assigning a percentage of the market creator fee to anyone who helps to promote your market (affiliates)."
           />
           <TextInput
             placeholder="0"

@@ -1,7 +1,7 @@
 import { SDKConfiguration } from '@augurproject/artifacts';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { EthersSigner } from 'contract-dependencies-ethers';
-import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis';
+import { ContractDependenciesGSN } from 'contract-dependencies-gsn';
 import { SupportedProvider } from 'ethereum-types';
 import { JsonRpcProvider } from 'ethers/providers';
 import { ContractEvents } from '../api/ContractEvents';
@@ -89,11 +89,11 @@ export async function createClient(
     throw Error('Config must include addresses');
   }
 
-  const contractDependencies = ContractDependenciesGnosis.create(
+  const contractDependencies = await ContractDependenciesGSN.create(
     ethersProvider,
     signer,
-    config.addresses.Cash,
-    config.gnosis?.http,
+    config.addresses.AugurWalletRegistry,
+    config.addresses.EthExchange
   );
 
   let zeroX: ZeroX = null;

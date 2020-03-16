@@ -22,7 +22,7 @@ import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names';
 import { orderSubmitted } from 'services/analytics/helpers';
 import { AppState } from 'store';
 import { totalTradingBalance } from 'modules/auth/selectors/login-account';
-import { isGnosisUnavailable } from 'modules/app/selectors/gnosis';
+import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
 
 const getMarketPath = id => {
   return {
@@ -38,9 +38,9 @@ const mapStateToProps = (state: AppState, ownProps) => {
   const marketId = ownProps.market.id;
   const hasHistory = !!accountPositions[marketId] || !!userOpenOrders[marketId];
   const {
-    gnosisEnabled: Gnosis_ENABLED,
+    gsnEnabled: GsnEnabled,
   } = appStatus;
-  const hasFunds = Gnosis_ENABLED
+  const hasFunds = GsnEnabled
     ? !!loginAccount.balances.dai
     : !!loginAccount.balances.eth && !!loginAccount.balances.dai;
 
@@ -48,16 +48,17 @@ const mapStateToProps = (state: AppState, ownProps) => {
   if (ownProps.initialLiquidity) {
     availableDai = availableDai.minus(newMarket.initialLiquidityDai);
   }
+
   return {
     hasHistory,
     gasPrice: getGasPrice(state),
     hasFunds,
     isLogged: authStatus.isLogged,
     restoredAccount: authStatus.restoredAccount,
-    Gnosis_ENABLED,
+    GsnEnabled,
     currentTimestamp: blockchain.currentAugurTimestamp,
     availableDai,
-    GnosisUnavailable: isGnosisUnavailable(state),
+    gsnUnavailable: isGSNUnavailable(state),
   };
 };
 
