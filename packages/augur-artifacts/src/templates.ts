@@ -413,7 +413,7 @@ function estimatedDateTimeAfterMarketEndTime(
   if (!input) return false;
   // add number of hours to estimated start timestamp then compare to market event expiration
   const secondsAfterEst = hoursAfterEstimatedStartTime * 60 * 60;
-  return (Number(input.timestamp) + secondsAfterEst) >= Number(endTime);
+  return (Number(input.timestamp) + secondsAfterEst) > Number(endTime);
 }
 
 function dateStartAfterMarketEndTime(

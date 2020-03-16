@@ -353,6 +353,18 @@ export interface NewMarketPropertyValidations {
   inputs?: NewMarketPropertiesValidations[];
   outcomes?: string | string[];
 }
+
+export interface DateTimeComponents {
+  endTime: number;
+  endTimeFormatted: DateFormattedObject;
+  setEndTime: number;
+  hour: number;
+  minute: string;
+  meridiem: string;
+  offsetName: string;
+  offset: number;
+  timezone: string;
+}
 export interface NewMarket {
   uniqueId: string;
   isValid: boolean;
