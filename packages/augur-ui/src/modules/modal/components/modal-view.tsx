@@ -51,6 +51,8 @@ import ModalTutorialOutro from 'modules/modal/containers/modal-tutorial-outro';
 import ModalTutorialIntro from 'modules/modal/containers/modal-tutorial-intro';
 import ModalScalar from 'modules/modal/containers/modal-scalar';
 import ModalInvalidMarketRules from 'modules/modal/containers/modal-invalid-market-rules';
+import ModalInitializeAccounts from 'modules/modal/containers/modal-initialize-account';
+
 
 import * as TYPES from 'modules/common/constants';
 
@@ -173,6 +175,8 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalScalar {...modal} />
     case TYPES.MODAL_INVALID_MARKET_RULES:
       return <ModalInvalidMarketRules />;
+    case TYPES.MODAL_INITIALIZE_ACCOUNT:
+       return <ModalInitializeAccounts />;
     default:
       return <div />;
   }

@@ -5,15 +5,14 @@ import { updateModal } from 'modules/modal/actions/update-modal';
 import { AppState } from 'store';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { MODAL_AUGUR_P2P } from 'modules/common/constants';
+import { MODAL_BUY_DAI } from 'modules/common/constants';
 import { OnboardingDollarDaiIcon } from 'modules/common/icons';
 import { AUGUR_USES_DAI, track } from 'services/analytics/helpers';
 
 const mapStateToProps = (state: AppState) => ({});
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
-  showAugurP2PModal: () =>
-    dispatch(updateModal({ type: MODAL_AUGUR_P2P })),
+  buyDaiModal: () => dispatch(updateModal({ type: MODAL_BUY_DAI })),
   track: (eventName, payload) => dispatch(track(eventName, payload))
 });
 
@@ -37,7 +36,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
       text: 'Continue',
       disabled: false,
       action: () => {
-        dP.showAugurP2PModal();
+        dP.buyDaiModal();
       },
     },
   ],

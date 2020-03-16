@@ -118,6 +118,10 @@ module.exports = {
     new CleanWebpackPlugin(),
     new CopyWebpackPlugin([
       {
+        from: path.resolve(PATHS.APP, "StableIPFSLoader.html"),
+        to: path.resolve(PATHS.BUILD, "StableIPFSLoader.html")
+      },
+      {
         from: path.resolve(PATHS.APP, "config/manifest.json"),
         to: path.resolve(PATHS.BUILD, "config")
       },
