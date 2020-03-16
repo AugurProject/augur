@@ -10,7 +10,6 @@ import {
   LargeDaiIcon,
   DaiLogoIcon,
   EthIcon,
-  ViewIcon,
   helpIcon,
 } from 'modules/common/icons';
 import {
@@ -45,6 +44,12 @@ export interface TitleProps {
 
 export interface DescriptionProps {
   description: string[];
+}
+
+export interface DescriptionWithLinkProps {
+  description: string[];
+  link: string;
+  label: string;
 }
 
 export interface ButtonsRowProps {
@@ -277,6 +282,21 @@ export const Description = (props: DescriptionProps) => {
   ));
 }
 
+export const DescriptionWithLink = (props: DescriptionWithLinkProps) => {
+  const description = props.description.toString().split('\n').map((descriptionText: string) => (
+    <p key={descriptionText.slice(20).replace(/\s+/g, '-')}>
+      {descriptionText}
+    </p>
+  ));
+
+  return (
+    <div className={Styles.DescriptionWithLink}>
+      {description}
+      <a href={props.link} target="_blank">{props.label}</a>
+    </div>
+  );
+}
+
 export const ButtonsRow = (props: ButtonsRowProps) => (
   <div className={Styles.ButtonsRow}>
     {props.buttons.map((Button: DefaultButtonProps, index: number) => {
@@ -333,7 +353,7 @@ export const MediumSubheader = (props: BaseSubheaderProps) => (
   <div className={Styles.MediumSubheader}>{props.text}</div>
 );
 
-interface LinkContentSectionProps {
+export interface LinkContentSectionProps {
   linkContent: LinkContent[];
 }
 

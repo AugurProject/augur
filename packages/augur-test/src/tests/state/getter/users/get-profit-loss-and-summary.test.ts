@@ -114,18 +114,12 @@ describe('State API :: Users :: ', () => {
     const oneDayPLSummary = profitLossSummary['1'];
     const thirtyDayPLSummary = profitLossSummary['30'];
 
-    await expect(Number.parseFloat(oneDayPLSummary.realized)).toEqual(
-      trades[3].realizedPL
-    );
+    await expect(Number.parseFloat(oneDayPLSummary.realized)).toEqual(trades[3].realizedPL);
     await expect(Number.parseFloat(oneDayPLSummary.unrealized)).toEqual(0.5);
     await expect(Number.parseFloat(oneDayPLSummary.frozenFunds)).toEqual(1.5);
 
-    await expect(Number.parseFloat(thirtyDayPLSummary.realized)).toEqual(
-      trades[3].realizedPL
-    );
+    await expect(Number.parseFloat(thirtyDayPLSummary.realized)).toEqual(trades[3].realizedPL);
     await expect(Number.parseFloat(thirtyDayPLSummary.unrealized)).toEqual(0.5);
-    await expect(Number.parseFloat(thirtyDayPLSummary.frozenFunds)).toEqual(
-      9.5
-    );
+    await expect(Number.parseFloat(thirtyDayPLSummary.frozenFunds)).toEqual(9.5);
   });
 });

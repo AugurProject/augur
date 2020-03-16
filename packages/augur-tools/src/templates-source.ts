@@ -691,7 +691,19 @@ export const TEMPLATES = {
                 values: LIST_VALUES.YEAR_RANGE,
               },
             ],
-            resolutionRules: {},
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `In the event a season is officially cancelled and no Stanley Cup is played, this market should resolve as 'No'`,
+                },
+                {
+                  text: `In the event the league suspends play and starts up again at a later date, and the winner of the Stanley Cup is determined before the Market’s Event Resolution begins, this market is still valid and should be settled accordingly.`
+                },
+                {
+                  text: `In the event the league suspends play and starts up again at a later date, and the winner of the Stanley Cup is determined after the Market’s Event Resolution begins, this market should resolve as 'Invalid'.`
+                }
+              ]
+            },
           },
           {
             marketType: CATEGORICAL,
@@ -886,6 +898,15 @@ export const TEMPLATES = {
                 {
                   text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
                 },
+                {
+                  text: `In the event a season is officially cancelled and no Stanley Cup is played, this market should resolve as 'Invalid'`,
+                },
+                {
+                  text: `In the event the league suspends play and starts up again at a later date, and the winner of the Stanley Cup is determined before the Market’s Event Resolution begins, this market is still valid and should be settled accordingly.`
+                },
+                {
+                  text: `In the event the league suspends play and starts up again at a later date, and the winner of the Stanley Cup is determined after the Market’s Event Resolution begins, this market should resolve as 'Invalid'.`
+                }
               ],
             },
           },
@@ -916,6 +937,9 @@ export const TEMPLATES = {
               [REQUIRED]: [
                 {
                   text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                },
+                {
+                  text: `If the award in the market question is not awarded for any reason by event expiration, this market should resolve as 'Invalid'`,
                 },
               ],
             },
@@ -950,6 +974,15 @@ export const TEMPLATES = {
                 {
                   text: `Market should resolve as whole number value of wins`,
                 },
+                {
+                  text: `In the event a season is officially cancelled, the number of wins at the time the league officially stopped should be used to determine the resolution of the market.`,
+                },
+                {
+                  text: `In the event the league suspends play and starts up again at a later date, the total amount of games at the conclusion of the regular season should be used, as long as the regular season concludes before the Market’s Event Resolution begins.`,
+                },
+                {
+                  text: `If the league's regular season will not conclude before the Market’s Event Resolution time begins, this market should resolve as 'Invalid'.`
+                }
               ],
             },
           },
@@ -2117,7 +2150,19 @@ export const TEMPLATES = {
                     values: LIST_VALUES.YEAR_RANGE,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `In the event a season is officially cancelled and no Championship is played, this market should resolve as 'No'`,
+                    },
+                    {
+                      text: `In the event the league suspends play and starts up again at a later date, and the winner of the Championship is determined before the Market’s Event Resolution begins, this market is still valid and should be settled accordingly.`
+                    },
+                    {
+                      text: `In the event the league suspends play and starts up again at a later date, and the winner of the Championship is determined after the Market’s Event Resolution begins, this market should resolve as 'Invalid'.`
+                    }
+                  ],
+                },
               },
               {
                 marketType: YES_NO,
@@ -2150,6 +2195,9 @@ export const TEMPLATES = {
                     {
                       text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`,
                     },
+                    {
+                      text: `If the award in the market question is not awarded for any reason by event expiration, this market should resolve as 'No'.`
+                    }
                   ],
                 },
               },
@@ -2338,6 +2386,15 @@ export const TEMPLATES = {
                     {
                       text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
                     },
+                    {
+                      text: `In the event a season is officially cancelled and no Final is played, this market should resolve as 'Invalid'`,
+                    },
+                    {
+                      text: `In the event the league suspends play and starts up again at a later date, and the winner of the Final is determined before the Market’s Event Resolution begins, this market is still valid and should be settled accordingly.`
+                    },
+                    {
+                      text: `In the event the league suspends play and starts up again at a later date, and the winner of the Final is determined after the Market’s Event Resolution begins, this market should resolve as 'Invalid'.`
+                    }
                   ],
                 },
               },
@@ -2371,6 +2428,9 @@ export const TEMPLATES = {
                     },
                     {
                       text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                    },
+                    {
+                      text: `If the award in the market question is not awarded for any reason, by the start of event expiration, this market should resolve as 'Invalid'`,
                     },
                   ],
                 },
@@ -2451,6 +2511,15 @@ export const TEMPLATES = {
                     {
                       text: `Market should resolve as whole number value of wins`,
                     },
+                    {
+                      text: `In the event a season is officially cancelled, the number of wins at the time the league officially stopped should be used to determine the resolution of the market.`,
+                    },
+                    {
+                      text: `In the event the league suspends play and starts up again at a later date, the total amount of games at the conclusion of the regular season should be used, as long as the regular season concludes before the Market’s Event Resolution begins.`,
+                    },
+                    {
+                      text: `If the league's regular season will not conclude before the Market’s Event Resolution time begins, this market should resolve as 'Invalid'.`
+                    }
                   ],
                 },
               },
@@ -2593,7 +2662,19 @@ export const TEMPLATES = {
                     values: LIST_VALUES.YEAR_RANGE,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `In the event a season is officially cancelled and no Championship is played, this market should resolve as 'No'`,
+                    },
+                    {
+                      text: `In the event the league suspends play and starts up again at a later date, and the winner of the Championship is determined before the Market’s Event Resolution begins, this market is still valid and should be settled accordingly.`
+                    },
+                    {
+                      text: `In the event the league suspends play and starts up again at a later date, and the winner of the Championship is determined after the Market’s Event Resolution begins, this market should resolve as 'Invalid'.`
+                    }
+                  ],
+                },
               },
               {
                 marketType: YES_NO,
@@ -2626,6 +2707,9 @@ export const TEMPLATES = {
                     {
                       text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`,
                     },
+                    {
+                      text: `If the award in the market question is not awarded for any reason by event expiration, this market should resolve as 'No'.`
+                    }
                   ],
                 },
               },
@@ -2804,6 +2888,15 @@ export const TEMPLATES = {
                     {
                       text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
                     },
+                    {
+                      text: `In the event a season is officially cancelled and no Championship is played, this market should resolve as 'Invalid'`,
+                    },
+                    {
+                      text: `In the event the league suspends play and starts up again at a later date, and the winner of the Championship is determined before the Market’s Event Resolution begins, this market is still valid and should be settled accordingly.`
+                    },
+                    {
+                      text: `In the event the league suspends play and starts up again at a later date, and the winner of the Championship is determined after the Market’s Event Resolution begins, this market should resolve as 'Invalid'.`
+                    }
                   ],
                 },
               },
@@ -2837,6 +2930,9 @@ export const TEMPLATES = {
                     },
                     {
                       text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                    },
+                    {
+                      text: `If the award in the market question is not awarded for any reason by event expiration, this market should resolve as 'Invalid'`,
                     },
                   ],
                 },
@@ -2917,6 +3013,15 @@ export const TEMPLATES = {
                     {
                       text: `Market should resolve as whole number value of wins`,
                     },
+                    {
+                      text: `In the event a season is officially cancelled, the number of wins at the time the league officially stopped should be used to determine the resolution of the market.`,
+                    },
+                    {
+                      text: `In the event the league suspends play and starts up again at a later date, the total amount of games at the conclusion of the regular season should be used, as long as the regular season concludes before the Market’s Event Resolution begins.`,
+                    },
+                    {
+                      text: `If the league's regular season will not conclude before the Market’s Event Resolution time begins, this market should resolve as 'Invalid'.`
+                    }
                   ],
                 },
               },
@@ -3083,7 +3188,19 @@ export const TEMPLATES = {
                     values: LIST_VALUES.YEARS,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `In the event a season is officially cancelled and no Championship is played, this market should resolve as 'No'`,
+                    },
+                    {
+                      text: `In the event the league suspends play and starts up again at a later date, and the winner of the Championship is determined before the Market’s Event Resolution begins, this market is still valid and should be settled accordingly.`
+                    },
+                    {
+                      text: `In the event the league suspends play and starts up again at a later date, and the winner of the Championship is determined after the Market’s Event Resolution begins, this market should resolve as 'Invalid'.`
+                    }
+                  ],
+                },
               },
               {
                 marketType: YES_NO,
@@ -3115,7 +3232,19 @@ export const TEMPLATES = {
                     values: LIST_VALUES.NCAA_BASKETBALL_EVENTS,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `In the event a season is officially cancelled and no Final Four is played, this market should resolve as 'No'`,
+                    },
+                    {
+                      text: `In the event the league suspends play and starts up again at a later date, and the winner of the Final Four is determined before the Market’s Event Resolution begins, this market is still valid and should be settled accordingly.`
+                    },
+                    {
+                      text: `In the event the league suspends play and starts up again at a later date, and the winner of the Final Four is determined after the Market’s Event Resolution begins, this market should resolve as 'Invalid'.`
+                    }
+                  ],
+                },
               },
               {
                 marketType: CATEGORICAL,
@@ -3377,6 +3506,15 @@ export const TEMPLATES = {
                     {
                       text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
                     },
+                    {
+                      text: `In the event a season is officially cancelled and no Championship is played, this market should resolve as 'Invalid'`,
+                    },
+                    {
+                      text: `In the event the league suspends play and starts up again at a later date, and the winner of the Championship is determined before the Market’s Event Resolution begins, this market is still valid and should be settled accordingly.`
+                    },
+                    {
+                      text: `In the event the league suspends play and starts up again at a later date, and the winner of the Championship is determined after the Market’s Event Resolution begins, this market should resolve as 'Invalid'.`
+                    }
                   ],
                 },
               },
@@ -3413,7 +3551,19 @@ export const TEMPLATES = {
                 inputDestValues: BASEBALL_EVENT_DEP_TEAMS,
               },
             ],
-            resolutionRules: {},
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `In the event a season is officially cancelled and no World Series is played, this market should resolve as 'No'`,
+                },
+                {
+                  text: `In the event the league suspends play and starts up again at a later date, and the winner of the World Series is determined before the Market’s Event Resolution begins, this market is still valid and should be settled accordingly.`
+                },
+                {
+                  text: `In the event the league suspends play and starts up again at a later date, and the winner of the World Series is determined after the Market’s Event Resolution begins, this market should resolve as 'Invalid'.`
+                }
+              ]
+            },
           },
           {
             marketType: CATEGORICAL,
@@ -3648,6 +3798,9 @@ export const TEMPLATES = {
                 {
                   text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
                 },
+                {
+                  text: `If the award in the market question is not awarded for any reason by event expiration, this market should resolve as 'Invalid'`,
+                },
               ],
             },
           },
@@ -3681,6 +3834,15 @@ export const TEMPLATES = {
                 {
                   text: `Market should resolve as whole number value of wins`,
                 },
+                {
+                  text: `In the event a season is officially cancelled, the number of wins at the time the league officially stopped should be used to determine the resolution of the market.`,
+                },
+                {
+                  text: `In the event the league suspends play and starts up again at a later date, the total amount of games at the conclusion of the regular season should be used, as long as the regular season concludes before the Market’s Event Resolution begins.`,
+                },
+                {
+                  text: `If the league's regular season will not conclude before the Market’s Event Resolution time begins, this market should resolve as 'Invalid'.`
+                }
               ],
             },
           },
@@ -4506,6 +4668,15 @@ export const TEMPLATES = {
                     {
                       text: `Regular Season win totals are for regular season games ONLY and will not include any play-in, playoffs, or championship games`,
                     },
+                    {
+                      text: `In the event a season is officially cancelled and no Championship is played, this market should resolve as 'No'`,
+                    },
+                    {
+                      text: `In the event the league suspends play and starts up again at a later date, and the winner of the Championship is determined before the Market’s Event Resolution begins, this market is still valid and should be settled accordingly.`
+                    },
+                    {
+                      text: `In the event the league suspends play and starts up again at a later date, and the winner of the Championship is determined after the Market’s Event Resolution begins, this market should resolve as 'Invalid'.`
+                    }
                   ],
                 },
               },
@@ -4527,7 +4698,19 @@ export const TEMPLATES = {
                     values: LIST_VALUES.NFL_SUPER_BOWL,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `In the event a season is officially cancelled and no SuperBowl is played, this market should resolve as 'No'`,
+                    },
+                    {
+                      text: `In the event the league suspends play and starts up again at a later date, and the winner of the SuperBowl is determined before the Market’s Event Resolution begins, this market is still valid and should be settled accordingly.`
+                    },
+                    {
+                      text: `In the event the league suspends play and starts up again at a later date, and the winner of the SuperBowl is determined after the Market’s Event Resolution begins, this market should resolve as 'Invalid'.`
+                    }
+                  ],
+                },
               },
               {
                 marketType: YES_NO,
@@ -4557,6 +4740,9 @@ export const TEMPLATES = {
                     {
                       text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`,
                     },
+                    {
+                      text: `If the award in the market question is not awarded for any reason by event expiration, this market should resolve as 'No'.`
+                    }
                   ],
                 },
               },
@@ -4769,19 +4955,28 @@ export const TEMPLATES = {
                     {
                       text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
                     },
+                    {
+                      text: `In the event a season is officially cancelled and no Championship is played, this market should resolve as 'Invalid'`,
+                    },
+                    {
+                      text: `In the event the league suspends play and starts up again at a later date, and the winner of the Championship is determined before the Market’s Event Resolution begins, this market is still valid and should be settled accordingly.`
+                    },
+                    {
+                      text: `In the event the league suspends play and starts up again at a later date, and the winner of the Championship is determined after the Market’s Event Resolution begins, this market should resolve as 'Invalid'.`
+                    }
                   ],
                 },
               },
               {
                 marketType: CATEGORICAL,
-                question: `Which NFL player will win the [0] [1] award?`,
-                example: `Which NFL player will win the 2020 Most Valuable Player award?`,
+                question: `Which NFL player will win the [0] season [1] award?`,
+                example: `Which NFL player will win the 2019-20 season Most Valuable Player award?`,
                 inputs: [
                   {
                     id: 0,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
-                    values: LIST_VALUES.YEARS,
+                    values: LIST_VALUES.YEAR_RANGE,
                   },
                   {
                     id: 1,
@@ -4800,17 +4995,20 @@ export const TEMPLATES = {
                     {
                       text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
                     },
+                    {
+                      text: `If the award in the market question is not awarded for any reason by event expiration, this market should resolve as 'Invalid'`,
+                    },
                   ],
                 },
               },
               {
                 marketType: SCALAR,
-                question: `Total number of wins [0] will finish [1] regular season with?`,
-                example: `Total number of wins NY Giants will finish 2019 regular season with?`,
+                question: `NFL: Total number of wins [0] will finish [1] regular season with?`,
+                example: `NFL: Total number of wins NY Giants will finish 2019 regular season with?`,
                 denomination: 'wins',
                 tickSize: 0.1,
                 minPrice: 0,
-                maxPrice: 16,
+                maxPrice: 17,
                 inputs: [
                   {
                     id: 0,
@@ -4833,6 +5031,15 @@ export const TEMPLATES = {
                     {
                       text: `Market should resolve as whole number value of wins`,
                     },
+                    {
+                      text: `In the event a season is officially cancelled, the number of wins at the time the league officially stopped should be used to determine the resolution of the market.`,
+                    },
+                    {
+                      text: `In the event the league suspends play and starts up again at a later date, the total amount of games at the conclusion of the regular season should be used, as long as the regular season concludes before the Market’s Event Resolution begins.`,
+                    },
+                    {
+                      text: `If the league's regular season will not conclude before the Market’s Event Resolution time begins, this market should resolve as 'Invalid'.`
+                    }
                   ],
                 },
               },
@@ -5200,6 +5407,15 @@ export const TEMPLATES = {
                     {
                       text: `This market is intended to be about a Bowl Game, if this is not the case, this market should settle as 'Invalid'.`,
                     },
+                    {
+                      text: `In the event a season is officially cancelled and no Bowl Game is played, this market should resolve as 'Invalid'`,
+                    },
+                    {
+                      text: `In the event the league suspends play and starts up again at a later date, and the winner of the Bowl Game is determined before the Market’s Event Resolution begins, this market is still valid and should be settled accordingly.`
+                    },
+                    {
+                      text: `In the event the league suspends play and starts up again at a later date, and the winner of the Bowl Game is determined after the Market’s Event Resolution begins, this market should resolve as 'Invalid'.`
+                    }
                   ],
                 },
               },
@@ -5237,6 +5453,15 @@ export const TEMPLATES = {
                     {
                       text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
                     },
+                    {
+                      text: `In the event a season is officially cancelled and no Championship is played, this market should resolve as 'Invalid'`,
+                    },
+                    {
+                      text: `In the event the league suspends play and starts up again at a later date, and the winner of the Championship is determined before the Market’s Event Resolution begins, this market is still valid and should be settled accordingly.`
+                    },
+                    {
+                      text: `In the event the league suspends play and starts up again at a later date, and the winner of the Championship is determined after the Market’s Event Resolution begins, this market should resolve as 'Invalid'.`
+                    }
                   ],
                 },
               },
@@ -5302,6 +5527,15 @@ export const TEMPLATES = {
                     {
                       text: `Market should resolve as whole number value of wins`,
                     },
+                    {
+                      text: `In the event a season is officially cancelled, the number of wins at the time the league officially stopped should be used to determine the resolution of the market.`,
+                    },
+                    {
+                      text: `In the event the league suspends play and starts up again at a later date, the total amount of games at the conclusion of the regular season should be used, as long as the regular season concludes before the Market’s Event Resolution begins.`,
+                    },
+                    {
+                      text: `If the league's regular season will not conclude before the Market’s Event Resolution time begins, this market should resolve as 'Invalid'.`
+                    }
                   ],
                 },
               },

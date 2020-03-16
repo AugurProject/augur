@@ -14,6 +14,11 @@ def signOrder(orderHash, private_key, signaturePostFix="03"):
     v, r, s = ecsign(sha3("\x19Ethereum Signed Message:\n32".encode('utf-8') + orderHash), key)
     return "0x" + v.to_bytes(1, "big").hex() + (zpad(bytearray_to_bytestr(int_to_32bytearray(r)), 32) + zpad(bytearray_to_bytestr(int_to_32bytearray(s)), 32)).hex() + signaturePostFix
 
+def signMessage(messageHash, private_key):
+    key = normalize_key(private_key.to_hex())
+    v, r, s = ecsign(sha3("\x19Ethereum Signed Message:\n32".encode('utf-8') + messageHash), key)
+    return "0x" + (zpad(bytearray_to_bytestr(int_to_32bytearray(r)), 32) + zpad(bytearray_to_bytestr(int_to_32bytearray(s)), 32)).hex() + v.to_bytes(1, "big").hex()
+
 def test_trade_1155_behavior(contractsFixture, augur, cash, market, categoricalMarket, universe):
     ZeroXTrade = contractsFixture.contracts['ZeroXTrade']
     shareToken = contractsFixture.contracts['ShareToken']
@@ -206,15 +211,30 @@ def test_cancelation(contractsFixture, cash, market, universe):
     rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(BID, fix(2), 60, market.address, YES, expirationTime, salt)
     signature = signOrder(orderHash, contractsFixture.privateKeys[0])
 
+    orders = [rawZeroXOrderData]
+    signatures = [signature]
+
     # Now lets cancel it
-    zeroXExchange.cancelOrder(rawZeroXOrderData)
-    assert zeroXExchange.cancelled(orderHash)
+    maxProtocolFeeDai = 10**18
+
+    CancelZeroXOrderLog = {
+        "universe": universe.address,
+        "market": market.address,
+        "account": contractsFixture.accounts[0],
+        "outcome": YES,
+        "price": 60,
+        "amount": fix(2),
+        "orderType": BID,
+    }
+    with PrintGasUsed(contractsFixture, "Cancel 0x Order"):
+        with AssertLog(contractsFixture, "CancelZeroXOrder", CancelZeroXOrderLog):
+            ZeroXTrade.cancelOrders(orders, signatures, maxProtocolFeeDai)
+
+    assert zeroXExchange.filled(orderHash)
 
     fillAmount = fix(1)
     fingerprint = longTo32Bytes(11)
     tradeGroupId = longTo32Bytes(42)
-    orders = [rawZeroXOrderData]
-    signatures = [signature]
 
     # Lets take the order as another user and confirm we cannot take a canceled order
     assert cash.faucet(fix(1, 60))
@@ -752,7 +772,8 @@ def test_fill_nothing_failure(contractsFixture, cash, market, universe):
     with raises(TransactionFailed):
         ZeroXTrade.trade(fix(1), longTo32Bytes(11), tradeGroupID, 0, 10, [], [], sender=contractsFixture.accounts[2], value=150000) == fix(1)
 
-def test_gnosis_safe_trade(contractsFixture, augur, cash, market, universe, gnosisSafeRegistry, gnosisSafeMaster, proxyFactory):
+def test_augur_wallet_trade(contractsFixture, augur, cash, market, universe, reputationToken):
+    RELAY_HUB_ADDRESS = "0xD216153c06E857cD7f72665E0aF1d7D82172F494"
     ZeroXTrade = contractsFixture.contracts['ZeroXTrade']
     zeroXExchange = contractsFixture.contracts["ZeroXExchange"]
     shareToken = contractsFixture.contracts["ShareToken"]
@@ -760,32 +781,96 @@ def test_gnosis_safe_trade(contractsFixture, augur, cash, market, universe, gnos
     fillOrder = contractsFixture.contracts["FillOrder"]
     affiliates = contractsFixture.contracts["Affiliates"]
 
+    augurWalletRegistry = contractsFixture.contracts["AugurWalletRegistry"]
+    ethExchange = contractsFixture.contracts["EthExchange"]
+    relayHub = contractsFixture.applySignature("RelayHub", RELAY_HUB_ADDRESS)
+    account = contractsFixture.accounts[0]
+    accountKey = contractsFixture.privateKeys[0]
+    relayer = contractsFixture.accounts[1]
+    relayOwner = contractsFixture.accounts[2]
+
+    # Register a relay
+    unstakeDelay = 2 * 7 * 24 * 60 * 60
+    relayHub.stake(relayer, unstakeDelay, value=2*10**18, sender=relayOwner)
+    relayHub.registerRelay(10, "url", sender=relayer)
+
+    # Fund the wallet so we can generate it and have it reimburse the relay hub
+    cashAmount = 100*10**18
+    walletAddress = augurWalletRegistry.getCreate2WalletAddress(account)
+    cash.faucet(cashAmount)
+    cash.transfer(walletAddress, cashAmount, sender=account)
+
+    # We'll provide some liquidity to the eth exchange
+    cashAmount = 1000 * 10**18
+    ethAmount = 10 * 10**18
+    cash.faucet(cashAmount)
+    cash.transfer(ethExchange.address, cashAmount)
+    contractsFixture.sendEth(account, ethExchange.address, ethAmount)
+    ethExchange.publicMint(account)
+
+    # We do this again in order to trigger a storage update that will make using the exchange cheaper
+    cash.faucet(cashAmount)
+    cash.transfer(ethExchange.address, cashAmount)
+    contractsFixture.sendEth(account, ethExchange.address, ethAmount)
+    ethExchange.publicMint(account)
+
+    assert augurWalletRegistry.getWallet(account) == nullAddress
+
+    cashPayment = 10**18
+    fingerprint = longTo32Bytes(42)
+    additionalFee = 10 # 10%
+    gasPrice = 1
+    gasLimit = 3000000
+    nonce = 0
+    approvalData = ""
+    repAmount = 10**18
+    repFaucetData = reputationToken.faucet_encode(repAmount)
+    augurWalletRepFaucetData = augurWalletRegistry.executeWalletTransaction_encode(reputationToken.address, repFaucetData, 0, cashPayment, nullAddress, fingerprint)
+
+    messageHash = augurWalletRegistry.getRelayMessageHash(relayer,
+        account,
+        augurWalletRegistry.address,
+        augurWalletRepFaucetData,
+        additionalFee,
+        gasPrice,
+        gasLimit,
+        nonce)
+    signature = signMessage(messageHash, accountKey)
+
+    relayHub.relayCall(
+        account,
+        augurWalletRegistry.address,
+        augurWalletRepFaucetData,
+        additionalFee,
+        gasPrice,
+        gasLimit,
+        nonce,
+        signature,
+        approvalData,
+        sender=relayer
+    )
+
+    assert augurWalletRegistry.getWallet(account) == walletAddress
+    wallet = contractsFixture.applySignature("AugurWallet", walletAddress)
+
     expirationTime = contractsFixture.contracts['Time'].getTimestamp() + 10000
     salt = 5
     account = contractsFixture.accounts[0]
-    saltNonce = 42
-
-    gnosisSafeRegistryData = gnosisSafeRegistry.setupForAugur_encode(augur.address, createOrder.address, fillOrder.address, ZeroXTrade.address, cash.address, shareToken.address, affiliates.address, longTo32Bytes(11), nullAddress)
-    gnosisSafeData = gnosisSafeMaster.setup_encode([account], 1, gnosisSafeRegistry.address, gnosisSafeRegistryData, nullAddress, nullAddress, 0, nullAddress)
-    gnosisSafeAddress = proxyFactory.createProxyWithCallback(gnosisSafeMaster.address, gnosisSafeData, saltNonce, gnosisSafeRegistry.address)
-
-    gnosisSafe = contractsFixture.applySignature("GnosisSafe", gnosisSafeAddress)
 
     # First we'll create a signed order
-    rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrderFor(gnosisSafeAddress, BID, fix(2), 60, market.address, YES, expirationTime, salt)
+    rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrderFor(walletAddress, BID, fix(2), 60, market.address, YES, expirationTime, salt)
     
     EIP1271OrderWithHash = ZeroXTrade.encodeEIP1271OrderWithHash(rawZeroXOrderData, orderHash)
-    messageHash = gnosisSafe.getMessageHash(EIP1271OrderWithHash)
+    messageHash = wallet.getMessageHash(EIP1271OrderWithHash)
     signatureType = "07"
-    key = normalize_key(contractsFixture.privateKeys[0].to_hex())
+    key = normalize_key(accountKey.to_hex())
     v, r, s = ecsign(sha3("\x19Ethereum Signed Message:\n32".encode('utf-8') + messageHash), key)
-    v += 4
     bytesv = v.to_bytes(1, "big").hex()
     bytesr = zpad(bytearray_to_bytestr(int_to_32bytearray(r)), 32).hex()
     bytess = zpad(bytearray_to_bytestr(int_to_32bytearray(s)), 32).hex()
 
     signature = "0x" + bytesr + bytess + bytesv + signatureType
-    assert gnosisSafe.isValidSignature(EIP1271OrderWithHash, signature)
+    assert wallet.isValidSignature(EIP1271OrderWithHash, signature)
     assert zeroXExchange.isValidSignature(rawZeroXOrderData, orderHash, signature)
 
     # Validate the signed order state
@@ -796,51 +881,94 @@ def test_gnosis_safe_trade(contractsFixture, augur, cash, market, universe, gnos
     orders = [rawZeroXOrderData]
     signatures = [signature]
 
-    # Lets take the order as another user also using a gnosis safe and confirm assets are traded
-    saltNonce = 43
+    # Lets take the order as another user also using a wallet and confirm assets are traded
     senderAccount = contractsFixture.accounts[1]
-    gnosisSafeData2 = gnosisSafeMaster.setup_encode([senderAccount], 1, gnosisSafeRegistry.address, gnosisSafeRegistryData, nullAddress, nullAddress, 0, nullAddress)
-    gnosisSafeAddress2 = proxyFactory.createProxyWithNonce(gnosisSafeMaster.address, gnosisSafeData2, saltNonce)
+    senderAccountKey = contractsFixture.privateKeys[1]
 
-    gnosisSafe2 = contractsFixture.applySignature("GnosisSafe", gnosisSafeAddress2)
+    # Fund the wallet so we can generate it and have it reimburse the relay hub
+    cashAmount = 100*10**18
+    walletAddress2 = augurWalletRegistry.getCreate2WalletAddress(senderAccount)
+    cash.faucet(cashAmount)
+    cash.transfer(walletAddress2, cashAmount, sender=account)
+
+    messageHash = augurWalletRegistry.getRelayMessageHash(relayer,
+        senderAccount,
+        augurWalletRegistry.address,
+        augurWalletRepFaucetData,
+        additionalFee,
+        gasPrice,
+        gasLimit,
+        nonce)
+    signature = signMessage(messageHash, senderAccountKey)
+
+    relayHub.relayCall(
+        senderAccount,
+        augurWalletRegistry.address,
+        augurWalletRepFaucetData,
+        additionalFee,
+        gasPrice,
+        gasLimit,
+        nonce,
+        signature,
+        approvalData,
+        sender=relayer
+    )
+
+    assert augurWalletRegistry.getWallet(senderAccount) == walletAddress2
+    wallet2 = contractsFixture.applySignature("AugurWallet", walletAddress2)
 
     assert cash.faucet(fix(1, 60))
-    assert cash.transfer(gnosisSafeAddress, fix(1, 60))
+    assert cash.transfer(walletAddress, fix(1, 60))
     assert cash.faucet(fix(1, 40))
-    assert cash.transfer(gnosisSafeAddress2, fix(1, 40))
+    assert cash.transfer(walletAddress2, fix(1, 40))
+    ethPayment = 10**16
 
-    with TokenDelta(cash, -fix(1, 60), gnosisSafeAddress, "Tester 0 cash not taken"):
-        with TokenDelta(cash, -fix(1, 40), gnosisSafeAddress2, "Tester 1 cash not taken"):
-            with PrintGasUsed(contractsFixture, "ZeroXTrade.trade", 0):
-                nonce = gnosisSafe2.nonce()
-                tradeData = ZeroXTrade.trade_encode(fillAmount, fingerprint, tradeGroupId, 0, 10, orders, signatures)
-                tradeTxHash = gnosisSafe2.getTransactionHash(ZeroXTrade.address, 150000, tradeData, 0, 2000000, 75000, 1, nullAddress, nullAddress, nonce)
-                key = normalize_key(contractsFixture.privateKeys[1].to_hex())
-                v, r, s = ecsign(sha3("\x19Ethereum Signed Message:\n32".encode('utf-8') + tradeTxHash), key)
-                v += 4
-                bytesv = v.to_bytes(1, "big").hex()
-                bytesr = zpad(bytearray_to_bytestr(int_to_32bytearray(r)), 32).hex()
-                bytess = zpad(bytearray_to_bytestr(int_to_32bytearray(s)), 32).hex()
+    walletAddress2InitialBalance = cash.balanceOf(walletAddress2)
+    with TokenDelta(cash, -fix(1, 60), walletAddress, "Tester 0 cash taken incorrect"):
+        with PrintGasUsed(contractsFixture, "ZeroXTrade.trade", 0):
+            nonce+=1
+            tradeData = ZeroXTrade.trade_encode(fillAmount, fingerprint, tradeGroupId, 0, 10, orders, signatures)
+            augurWalletTradeData = augurWalletRegistry.executeWalletTransaction_encode(ZeroXTrade.address, tradeData, 0, ethPayment, nullAddress, fingerprint)
+            messageHash = augurWalletRegistry.getRelayMessageHash(relayer,
+                senderAccount,
+                augurWalletRegistry.address,
+                augurWalletTradeData,
+                additionalFee,
+                gasPrice,
+                gasLimit,
+                nonce)
 
-                gnosisSignatures = "0x" + bytesr + bytess + bytesv
-                contractsFixture.sendEth(account, gnosisSafeAddress2, 10**20)
-                gnosisSafe2.execTransaction(ZeroXTrade.address, 150000, tradeData, 0, 2000000, 75000, 1, nullAddress, nullAddress, gnosisSignatures)
+            signature = signMessage(messageHash, senderAccountKey)
+            relayHub.relayCall(
+                senderAccount,
+                augurWalletRegistry.address,
+                augurWalletTradeData,
+                additionalFee,
+                gasPrice,
+                gasLimit,
+                nonce,
+                signature,
+                approvalData,
+                sender=relayer
+            )
+    
+    assert cash.balanceOf(walletAddress2) <= (walletAddress2InitialBalance - fix(1, 40))
 
-    yesShareTokenBalance = shareToken.balanceOfMarketOutcome(market.address, YES, gnosisSafeAddress)
-    noShareTokenBalance = shareToken.balanceOfMarketOutcome(market.address, NO, gnosisSafeAddress2)
+    yesShareTokenBalance = shareToken.balanceOfMarketOutcome(market.address, YES, walletAddress)
+    noShareTokenBalance = shareToken.balanceOfMarketOutcome(market.address, NO, walletAddress2)
     assert yesShareTokenBalance == fix(1)
     assert noShareTokenBalance == fix(1)
 
     # Another user can fill the rest. We'll also ask to fill more than is available and see that we get back the remaining amount desired
     assert cash.faucet(fix(1, 60))
-    assert cash.transfer(gnosisSafeAddress, fix(1, 60))
+    assert cash.transfer(walletAddress, fix(1, 60))
     assert cash.faucet(fix(1, 40), sender=contractsFixture.accounts[2])
     amountRemaining = ZeroXTrade.trade(fillAmount + 10**17, fingerprint, tradeGroupId, 0, 10, orders, signatures, sender=contractsFixture.accounts[2], value=150000)
     assert amountRemaining == 10**17
 
     # The order is completely filled so further attempts to take it will result in a no-op
     assert cash.faucet(fix(1, 60))
-    assert cash.transfer(gnosisSafeAddress, fix(1, 60))
+    assert cash.transfer(walletAddress, fix(1, 60))
     assert cash.faucet(fix(1, 40), sender=contractsFixture.accounts[1])
     assert ZeroXTrade.trade(fillAmount, fingerprint, tradeGroupId, 0, 10, orders, signatures, sender=contractsFixture.accounts[1], value=150000) == fillAmount
 
@@ -887,7 +1015,7 @@ def test_protocol_fee_coverage(contractsFixture, cash, market):
     contractsFixture.sendEth(account, ethExchange.address, ethAmount)
     ethExchange.publicMint(account)
 
-    # We still fail since we have no approved any purchase of ETH using our DAI
+    # We still fail since we have not approved any purchase of ETH using our DAI
     with raises(TransactionFailed):
         assert ZeroXTrade.trade(fix(5), longTo32Bytes(11), tradeGroupID, 0, 10, orders, signatures, sender=account) == 0
 
@@ -950,14 +1078,3 @@ def test_scalar_order_creation(contractsFixture, augur, universe, cash):
 
     assert orderHash1 is not None
 
-@pytest_fixture
-def gnosisSafeRegistry(contractsFixture):
-    return contractsFixture.contracts["GnosisSafeRegistry"]
-
-@pytest_fixture
-def gnosisSafeMaster(contractsFixture):
-    return contractsFixture.contracts["GnosisSafe"]
-
-@pytest_fixture
-def proxyFactory(contractsFixture):
-    return contractsFixture.contracts["ProxyFactory"]

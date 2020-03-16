@@ -35,6 +35,36 @@ export interface LoadMarketsFilterOptions {
   templateFilter?: string;
 }
 
+export const organizeReportingStates = (reportingState) => {
+  let reportingStates: string[] = [];
+  switch (reportingState) {
+    case MARKET_REPORTING: {
+      // reporting markets only:
+      reportingStates.push(
+        REPORTING_STATE.DESIGNATED_REPORTING,
+        REPORTING_STATE.OPEN_REPORTING,
+        REPORTING_STATE.CROWDSOURCING_DISPUTE,
+        REPORTING_STATE.AWAITING_NEXT_WINDOW,
+        REPORTING_STATE.AWAITING_FORK_MIGRATION
+      );
+      break;
+    }
+    case MARKET_CLOSED: {
+      // resolved markets only:
+      reportingStates.push(REPORTING_STATE.AWAITING_FINALIZATION);
+      reportingStates.push(REPORTING_STATE.FINALIZED);
+      break;
+    }
+    default: {
+      // open markets only:
+      reportingStates.push(REPORTING_STATE.PRE_REPORTING);
+      break;
+    }
+  }
+
+  return reportingStates;
+}
+
 export const loadMarketsByFilter = (
   filterOptions: LoadMarketsFilterOptions,
   cb: Function = () => {}
@@ -51,7 +81,7 @@ export const loadMarketsByFilter = (
 
   const augur = augurSdk.get();
 
-  const reportingStates: string[] = [];
+  const reportingStates: string[] = organizeReportingStates(filterOptions.filter);
   const sort: SortOptions = {};
   switch (filterOptions.sort) {
     case MARKET_SORT_PARAMS.RECENTLY_TRADED: {
@@ -93,31 +123,6 @@ export const loadMarketsByFilter = (
       // Sort By Recently Traded
       sort.sortBy = Getters.Markets.GetMarketsSortBy.lastTradedTimestamp;
       sort.isSortDescending = true;
-      break;
-    }
-  }
-
-  switch (filterOptions.filter) {
-    case MARKET_REPORTING: {
-      // reporting markets only:
-      reportingStates.push(
-        REPORTING_STATE.DESIGNATED_REPORTING,
-        REPORTING_STATE.OPEN_REPORTING,
-        REPORTING_STATE.CROWDSOURCING_DISPUTE,
-        REPORTING_STATE.AWAITING_NEXT_WINDOW,
-        REPORTING_STATE.AWAITING_FORK_MIGRATION
-      );
-      break;
-    }
-    case MARKET_CLOSED: {
-      // resolved markets only:
-      reportingStates.push(REPORTING_STATE.AWAITING_FINALIZATION);
-      reportingStates.push(REPORTING_STATE.FINALIZED);
-      break;
-    }
-    default: {
-      // open markets only:
-      reportingStates.push(REPORTING_STATE.PRE_REPORTING);
       break;
     }
   }

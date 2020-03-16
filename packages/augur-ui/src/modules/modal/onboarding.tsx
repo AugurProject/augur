@@ -13,6 +13,7 @@ import {
 import Styles from 'modules/modal/modal.styles.less';
 import { LinkContent } from 'modules/types';
 import classNames from 'classnames';
+import { ONBOARDING_MAX_STEPS } from 'modules/common/constants';
 
 interface OnboardingProps {
   closeAction: Function;
@@ -52,7 +53,7 @@ export const Onboarding = ({
       </main>
       <div>
         {buttons.length > 0 && <ButtonsRow buttons={buttons} />}
-        {currentStep && <Stepper currentStep={currentStep} maxSteps={4} /> }
+        {currentStep && <Stepper currentStep={currentStep} maxSteps={ONBOARDING_MAX_STEPS} /> }
       </div>
     </div>
   );

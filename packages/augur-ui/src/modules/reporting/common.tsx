@@ -382,7 +382,7 @@ export interface DisputingBondsViewProps {
   stakeRemaining?: string;
   tentativeWinning?: boolean;
   reportAction: Function;
-  Gnosis_ENABLED: boolean;
+  GsnEnabled: boolean;
   gasPrice: number;
   ethToDaiRate: BigNumber;
   warpSyncHash: string;
@@ -511,7 +511,7 @@ export class DisputingBondsView extends Component<
   };
 
   async componentDidMount() {
-    if (this.props.Gnosis_ENABLED) {
+    if (this.props.GsnEnabled) {
       const gasLimit = await this.props.reportAction(true);
       this.setState({
         gasEstimate: formatGasCostToEther(
@@ -536,7 +536,7 @@ export class DisputingBondsView extends Component<
       tentativeWinning,
       reportAction,
       id,
-      Gnosis_ENABLED,
+      GsnEnabled,
       ethToDaiRate,
       warpSyncHash,
     } = this.props;
@@ -603,9 +603,9 @@ export class DisputingBondsView extends Component<
         />
         <LinearPropertyLabel
           key="estimatedGasFee"
-          label={Gnosis_ENABLED ? 'Transaction Fee' : 'Gas Fee'}
+          label={GsnEnabled ? 'Transaction Fee' : 'Gas Fee'}
           value={
-            Gnosis_ENABLED
+            GsnEnabled
               ? displayGasInDai(gasEstimate, ethToDaiRate)
               : gasEstimate
           }
@@ -625,7 +625,7 @@ export interface ReportingBondsViewProps {
   id: string;
   updateScalarOutcome: Function;
   reportAction: Function;
-  Gnosis_ENABLED: boolean;
+  GsnEnabled: boolean;
   gasPrice: number;
   ethToDaiRate: BigNumber;
   inputtedReportingStake: DisputeInputtedValues;
@@ -679,7 +679,7 @@ export class ReportingBondsView extends Component<
       this.setState({
         threshold: String(convertAttoValueToDisplayValue(threshold)),
       });
-      if (this.props.Gnosis_ENABLED) {
+      if (this.props.GsnEnabled) {
         const gasLimit = await this.props
           .reportAction(true)
           .catch(e => console.error(e));
@@ -769,7 +769,7 @@ export class ReportingBondsView extends Component<
       migrateRep,
       initialReport,
       owesRep,
-      Gnosis_ENABLED,
+      GsnEnabled,
       ethToDaiRate,
       openReporting,
       enoughRepBalance,
@@ -851,7 +851,7 @@ export class ReportingBondsView extends Component<
           label={repLabel}
           value={`${repAmount} REP`}
         />
-        {initialReport && (
+        {initialReport && !market.isWarpSync && (
           <PreFilledStake
             showInput={showInput}
             toggleInput={this.toggleInput}
@@ -861,24 +861,28 @@ export class ReportingBondsView extends Component<
             threshold={threshold}
           />
         )}
-        <div className={Styles.ShowTotals}>
-          <span>Totals</span>
-          <span>Sum total of Initial Reporter Stake and Pre-Filled Stake</span>
-          <LinearPropertyLabel
-            key="totalRep"
-            label="Total REP Needed"
-            value={totalRep}
-          />
-          {insufficientRep && (
-            <span className={FormStyles.ErrorText}>{insufficientRep}</span>
-          )}
-        </div>
+        {!market.isWarpSync && (
+          <div className={Styles.ShowTotals}>
+            <span>Totals</span>
+            <span>
+              Sum total of Initial Reporter Stake and Pre-Filled Stake
+            </span>
+            <LinearPropertyLabel
+              key="totalRep"
+              label="Total REP Needed"
+              value={totalRep}
+            />
+            {insufficientRep && (
+              <span className={FormStyles.ErrorText}>{insufficientRep}</span>
+            )}
+          </div>
+        )}
 
         <LinearPropertyLabel
           key="totalEstimatedGasFee"
-          label={Gnosis_ENABLED ? 'Transaction Fee' : 'Gas Fee'}
+          label={GsnEnabled ? 'Transaction Fee' : 'Gas Fee'}
           value={
-            Gnosis_ENABLED
+            GsnEnabled
               ? displayGasInDai(gasEstimate, ethToDaiRate)
               : `${gasEstimate} ETH`
           }
@@ -1182,7 +1186,15 @@ export const ParticipationTokensView = (
         <span>Don’t see any reports that need disputing? </span>
         You can earn a proportional share of the profits from this dispute
         window.
-        <span><a href={HELP_CENTER_PARTICIPATION_TOKENS} target="_blank" rel="noopener noreferrer">Learn more</a></span>
+        <span>
+          <a
+            href={HELP_CENTER_PARTICIPATION_TOKENS}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Learn more
+          </a>
+        </span>
       </span>
 
       <Subheaders

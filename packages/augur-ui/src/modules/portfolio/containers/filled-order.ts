@@ -1,18 +1,21 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { AppState } from 'store';
-import { formatDai, formatShares } from 'utils/format-number';
+import { formatDai, formatShares, calcPercentageFromPrice } from 'utils/format-number';
 import {
   COLUMN_TYPES,
   SCALAR,
   BINARY_CATEGORICAL_FORMAT_OPTIONS,
+  INVALID_OUTCOME_NAME,
 } from 'modules/common/constants';
 
 import Row from 'modules/common/row';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 
-const mapStateToProps = (state: AppState) => ({});
+const mapStateToProps = (state: AppState) => ({
+  marketInfos: state.marketInfos
+});
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({});
 
@@ -23,11 +26,20 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       ? {}
       : { ...BINARY_CATEGORICAL_FORMAT_OPTIONS };
   const orderQuantity = formatShares(filledOrder.amount, opts);
-  const orderPrice = formatDai(filledOrder.price, { roundDown: true});
+  let orderPrice = formatDai(filledOrder.price, { roundDown: true});
   const orderType = filledOrder.type;
 
   const originalQuantity = formatShares(filledOrder.originalQuantity, opts);
-
+  const usePercent = filledOrder.outcome === INVALID_OUTCOME_NAME && filledOrder.marketType === SCALAR;
+  if (usePercent) {
+    const market = sP.marketInfos[filledOrder.marketId];
+    const orderPricePercent = calcPercentageFromPrice(
+      String(orderPrice.value),
+      market.minPrice,
+      market.maxPrice
+    );
+    orderPrice = { ...orderPrice, percent: `${orderPricePercent}%` };
+  }
   const columnProperties = [
     {
       key: 'orderName',
@@ -57,6 +69,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       key: 'orderPrice',
       columnType: COLUMN_TYPES.VALUE,
       value: orderPrice,
+      usePercent: !!orderPrice.percent,
       useFull: true,
       keyId: 'filledOrder-orderPrice-' + filledOrder.id,
     },
