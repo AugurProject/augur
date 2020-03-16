@@ -938,6 +938,9 @@ export const TEMPLATES = {
                 {
                   text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
                 },
+                {
+                  text: `If the award in the market question is not awarded for any reason by event expiration, this market should resolve as 'Invalid'`,
+                },
               ],
             },
           },
@@ -2193,7 +2196,7 @@ export const TEMPLATES = {
                       text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`,
                     },
                     {
-                      text: `If the award in the market question is not awarded for any reason, by the start of the Market’s Event Resolution time, this market should resolve as 'No'.`
+                      text: `If the award in the market question is not awarded for any reason by event expiration, this market should resolve as 'No'.`
                     }
                   ],
                 },
@@ -2383,6 +2386,15 @@ export const TEMPLATES = {
                     {
                       text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
                     },
+                    {
+                      text: `In the event a season is officially cancelled and no Final is played, this market should resolve as 'Invalid'`,
+                    },
+                    {
+                      text: `In the event the league suspends play and starts up again at a later date, and the winner of the Final is determined before the Market’s Event Resolution begins, this market is still valid and should be settled accordingly.`
+                    },
+                    {
+                      text: `In the event the league suspends play and starts up again at a later date, and the winner of the Final is determined after the Market’s Event Resolution begins, this market should resolve as 'Invalid'.`
+                    }
                   ],
                 },
               },
@@ -2416,6 +2428,9 @@ export const TEMPLATES = {
                     },
                     {
                       text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                    },
+                    {
+                      text: `If the award in the market question is not awarded for any reason, by the start of event expiration, this market should resolve as 'Invalid'`,
                     },
                   ],
                 },
@@ -2693,7 +2708,7 @@ export const TEMPLATES = {
                       text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`,
                     },
                     {
-                      text: `If the award in the market question is not awarded for any reason, by the start of the Market’s Event Resolution time, this market should resolve as 'No'.`
+                      text: `If the award in the market question is not awarded for any reason by event expiration, this market should resolve as 'No'.`
                     }
                   ],
                 },
@@ -2915,6 +2930,9 @@ export const TEMPLATES = {
                     },
                     {
                       text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                    },
+                    {
+                      text: `If the award in the market question is not awarded for any reason by event expiration, this market should resolve as 'Invalid'`,
                     },
                   ],
                 },
@@ -3214,7 +3232,19 @@ export const TEMPLATES = {
                     values: LIST_VALUES.NCAA_BASKETBALL_EVENTS,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `In the event a season is officially cancelled and no Final Four is played, this market should resolve as 'No'`,
+                    },
+                    {
+                      text: `In the event the league suspends play and starts up again at a later date, and the winner of the Final Four is determined before the Market’s Event Resolution begins, this market is still valid and should be settled accordingly.`
+                    },
+                    {
+                      text: `In the event the league suspends play and starts up again at a later date, and the winner of the Final Four is determined after the Market’s Event Resolution begins, this market should resolve as 'Invalid'.`
+                    }
+                  ],
+                },
               },
               {
                 marketType: CATEGORICAL,
@@ -3767,6 +3797,9 @@ export const TEMPLATES = {
               [REQUIRED]: [
                 {
                   text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                },
+                {
+                  text: `If the award in the market question is not awarded for any reason by event expiration, this market should resolve as 'Invalid'`,
                 },
               ],
             },
@@ -4708,7 +4741,7 @@ export const TEMPLATES = {
                       text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`,
                     },
                     {
-                      text: `If the award in the market question is not awarded for any reason, by the start of the Market’s Event Resolution time, this market should resolve as 'No'.`
+                      text: `If the award in the market question is not awarded for any reason by event expiration, this market should resolve as 'No'.`
                     }
                   ],
                 },
@@ -4961,6 +4994,9 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     {
                       text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                    },
+                    {
+                      text: `If the award in the market question is not awarded for any reason by event expiration, this market should resolve as 'Invalid'`,
                     },
                   ],
                 },
