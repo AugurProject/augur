@@ -507,6 +507,14 @@ export const DoubleArrowIcon = (
   </svg>
 );
 
+export const Ticket = (
+  <svg viewBox="0 0 48 48" fill="none">
+    <g opacity="0.5">
+      <path fillRule="evenodd" clipRule="evenodd" d="M0 6L48 6V18C44.6863 18 42 20.6863 42 24C42 27.3137 44.6863 30 48 30V42H0L0 30C3.31371 30 6 27.3137 6 24C6 20.6863 3.31371 18 0 18L0 6ZM14 26L34 26V30L14 30V26ZM34 18H14V22H34V18Z" />
+    </g>
+  </svg>
+);
+
 export const RepLogoIcon = (
   <svg viewBox="0 0 21 22">
     <path

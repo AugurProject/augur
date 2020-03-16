@@ -11,6 +11,7 @@ import TopNav from 'modules/app/components/top-nav/top-nav';
 import Routes from 'modules/routes/components/routes/routes';
 import AlertsContainer from 'modules/alerts/containers/alerts-view';
 import ToastsContainer from 'modules/alerts/containers/toasts-view';
+import { Betslip } from 'modules/trading/betslip';
 
 import {
   MobileNavHamburgerIcon,
@@ -68,6 +69,7 @@ interface AppProps {
   updateIsMobileSmall: Function;
   updateModal: Function;
   finalizeMarket: Function;
+  env: any,
   ethereumNodeHttp: string;
   ethereumNodeWs: string;
   sdkEndpoint: string;
@@ -216,7 +218,6 @@ export default class AppView extends Component<AppProps> {
       updateCurrentBasePath,
       updateMobileMenuState,
       sidebarStatus,
-      theme
     } = this.props;
     if (isMobile !== prevProps.isMobile) {
       updateMobileMenuState(MOBILE_MENU_STATES.CLOSED);
@@ -351,7 +352,7 @@ export default class AppView extends Component<AppProps> {
     return (
       <button
         type="button"
-        className={Styles['SideBar__mobile-bars']}
+        className={Styles.MobileBars}
         onClick={() => this.mobileMenuButtonClick()}
       >
         {icon}
@@ -406,7 +407,7 @@ export default class AppView extends Component<AppProps> {
         )}
         <div
           className={classNames({
-            [Styles['App--blur']]: Object.keys(modal).length !== 0,
+            [Styles.AppBlur]: Object.keys(modal).length !== 0,
           })}
         >
           <section
@@ -429,7 +430,7 @@ export default class AppView extends Component<AppProps> {
               </section>
             )}
             <section
-              className={classNames(Styles.TopBar, Styles.TopBar__floatAbove, {
+              className={classNames(Styles.TopBar, Styles.FloatAbove, {
                 [Styles.SideNavOpen]:
                   sidebarStatus.mobileMenuState ===
                   MOBILE_MENU_STATES.SIDEBAR_OPEN,
@@ -497,9 +498,9 @@ export default class AppView extends Component<AppProps> {
                 <section className={Styles.TopBar} />
               )}
             <section
-              className={classNames(Styles.Main__wrap, {
-                [Styles['Main__wrapMarkets']]: currentPath === MARKETS,
-                [Styles['TopBarOpen']]:
+              className={classNames(Styles.Wrap, {
+                [Styles.WrapMarkets]: currentPath === MARKETS,
+                [Styles.TopBarOpen]:
                   sidebarStatus.mobileMenuState ===
                   MOBILE_MENU_STATES.SIDEBAR_OPEN,
               })}
@@ -514,7 +515,7 @@ export default class AppView extends Component<AppProps> {
                 <div className="no-nav-placehold" />
               )}
               <section
-                className={classNames(Styles.Main__content, {
+                className={classNames(Styles.Content, {
                   [Styles.Tutorial]: onTradingTutorial,
                   [Styles.ModalShowing]: Object.keys(modal).length !== 0,
                   [Styles.SideNavOpen]:
@@ -538,6 +539,7 @@ export default class AppView extends Component<AppProps> {
                 <ForkingBanner />
 
                 <Routes isLogged={isLogged || restoredAccount} />
+                <Betslip />
               </section>
             </section>
           </section>

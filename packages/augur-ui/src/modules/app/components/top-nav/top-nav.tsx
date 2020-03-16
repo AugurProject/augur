@@ -79,7 +79,7 @@ const TopNav = ({
                 <li key='fill-space' className={Styles.FillSpace} />
               )}
               {index === SPREAD_INDEX && showMigrateRepButton && (
-                <li key='migrate-rep-button'>
+                <li className={Styles.MigrateRepItem} key='migrate-rep-button'>
                   <div className={Styles.MigrateRep}>
                     <ProcessingButton
                         text={'Migrate V1 to V2 REP'}
@@ -116,7 +116,7 @@ const TopNav = ({
                 </li>
               )}
               {index === SPREAD_INDEX && showCreateAccountButton && (
-                <li>
+                <li className={Styles.CreatAccountButton}>
                   <div className={Styles.MigrateRep}>
                     <ProcessingButton
                       text={walletBalances.dai === 0 ? 'Waiting for Funding' : 'Initiaize GSN Wallet'}

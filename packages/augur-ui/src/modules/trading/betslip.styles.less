@@ -1,0 +1,123 @@
+@import (reference) '~assets/styles/shared';
+
+.Betslip {
+  display: none;
+}
+
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .Betslip {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: flex-start;
+    padding: @size-32;
+  }
+
+  .Container {
+    max-width: @size-326;
+    min-width: @size-326;
+    width: @size-326;
+    border: @size-1 solid var(--color-secondary-action-outline);
+    border-radius: @border-radius-rounded;
+    box-shadow: 0 0 @size-4 var(--color-primary-text-15);
+  }
+
+  .HeaderTabs {
+    align-items: center;
+    background: var(--color-primary-text);
+    border-top-left-radius: @border-radius-rounded;
+    border-top-right-radius: @border-radius-rounded;
+    display: flex;
+    flex-flow: row nowrap;
+    height: @size-48;
+    justify-content: space-around;
+
+    > li {
+      .text-14-bold;
+
+      align-items: center;
+      color: var(--color-dark-text);
+      cursor: pointer;
+      text-transform: uppercase;
+      display: flex;
+      flex: 1;
+      flex-flow: row nowrap;
+      height: 100%;
+      justify-content: center;
+
+      > span {
+        .text-10;
+
+        align-items: center;
+        align-content: center;
+        border: @size-1 solid var(--color-outline);
+        border-radius: @border-radius-default;
+        display: flex;
+        justify-content: center;
+        height: @size-20;
+        width: @size-20;
+        margin-left: @size-10;
+        color: var(--color-module-background);
+      }
+
+      &.Selected {
+        color: var(--color-module-background);
+
+        > span {
+          background: var(--color-module-background);
+          border: @size-1 solid var(--color-module-background);
+          color: var(--color-primary-text);
+        }
+      }
+    }
+  }
+
+  .MainSection {
+    background: var(--color-module-background);
+    border-bottom-left-radius: @border-radius-rounded;
+    border-bottom-right-radius: @border-radius-rounded;
+    min-height: @size-350;
+  }
+
+  .BetSlipEmpty {
+    align-items: center;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+
+    > div {
+      border-radius: 100%;
+      width: @size-80;
+      height: @size-80;
+      background: var(--color-page-background);
+      margin-bottom: @size-16;
+      display: flex;
+
+      align-items: center;
+      justify-content: center;
+
+      > svg {
+        width: @size-48;
+        height: @size-48;
+
+        > g > path {
+          fill: var(--color-secondary-text);
+        }
+      }
+    }
+
+    > h3 {
+      .text-14-bold;
+
+      color: var(--color-primary-text);
+    }
+
+    > h4 {
+      .text-14;
+
+      color: var(--color-primary-text);
+      margin-bottom: @size-8;
+    }
+  }
+}
