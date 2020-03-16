@@ -12,13 +12,21 @@ interface MarketsListFiltersProps {
   marketSort: string;
   isSearching: boolean;
   updateMarketsSortBy: Function;
+  setSortOptions: Function;
+  isMobile: boolean;
 }
 
-const MarketsListFilters = (props: MarketsListFiltersProps) => (
+const MarketsListFilters = ({
+  marketSort,
+  isSearching,
+  updateMarketsSortBy,
+  setSortOptions,
+  isMobile,
+}: MarketsListFiltersProps) => (
   <div className={Styles.Filters}>
     <div
       className={classNames(Styles.FiltersGroup, {
-        [Styles.Searching]: props.isSearching,
+        [Styles.Searching]: isSearching,
       })}
     >
       <div>
@@ -27,10 +35,8 @@ const MarketsListFilters = (props: MarketsListFiltersProps) => (
       </div>
       <RadioBarGroup
         radioButtons={SORT_OPTIONS}
-        defaultSelected={props.marketSort}
-        onChange={(value: string) => {
-          props.updateMarketsSortBy(value);
-        }}
+        defaultSelected={marketSort}
+        onChange={(value: string) => isMobile ? setSortOptions(value) : updateMarketsSortBy(value)}
       />
     </div>
   </div>
