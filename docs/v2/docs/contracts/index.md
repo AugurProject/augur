@@ -1064,7 +1064,7 @@ title: Contracts
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IAugurTrading.lookup(bytes32)"><code class="function-signature">lookup(bytes32 _key)</code></a></li><li><a href="#IAugurTrading.logProfitLossChanged(contract IMarket,address,uint256,int256,uint256,int256,int256,int256)"><code class="function-signature">logProfitLossChanged(contract IMarket _market, address _account, uint256 _outcome, int256 _netPosition, uint256 _avgPrice, int256 _realizedProfit, int256 _frozenFunds, int256 _realizedCost)</code></a></li><li><a href="#IAugurTrading.logOrderCreated(contract IUniverse,bytes32,bytes32)"><code class="function-signature">logOrderCreated(contract IUniverse _universe, bytes32 _orderId, bytes32 _tradeGroupId)</code></a></li><li><a href="#IAugurTrading.logOrderCanceled(contract IUniverse,contract IMarket,address,uint256,uint256,bytes32)"><code class="function-signature">logOrderCanceled(contract IUniverse _universe, contract IMarket _market, address _creator, uint256 _tokenRefund, uint256 _sharesRefund, bytes32 _orderId)</code></a></li><li><a href="#IAugurTrading.logOrderFilled(contract IUniverse,address,address,uint256,uint256,uint256,bytes32,bytes32)"><code class="function-signature">logOrderFilled(contract IUniverse _universe, address _creator, address _filler, uint256 _price, uint256 _fees, uint256 _amountFilled, bytes32 _orderId, bytes32 _tradeGroupId)</code></a></li><li><a href="#IAugurTrading.logMarketVolumeChanged(contract IUniverse,address,uint256,uint256[])"><code class="function-signature">logMarketVolumeChanged(contract IUniverse _universe, address _market, uint256 _volume, uint256[] _outcomeVolumes)</code></a></li><li><a href="#IAugurTrading.logZeroXOrderFilled(contract IUniverse,contract IMarket,bytes32,bytes32,uint8,address[],uint256[])"><code class="function-signature">logZeroXOrderFilled(contract IUniverse _universe, contract IMarket _market, bytes32 _orderHash, bytes32 _tradeGroupId, uint8 _orderType, address[] _addressData, uint256[] _uint256Data)</code></a></li><li><a href="#IAugurTrading.logGnosisSafeRegistered(address,address)"><code class="function-signature">logGnosisSafeRegistered(address _safe, address _owner)</code></a></li><li><a href="#IAugurTrading.logGnosisSafeDeRegistered(address,address)"><code class="function-signature">logGnosisSafeDeRegistered(address _safe, address _owner)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IAugurTrading.lookup(bytes32)"><code class="function-signature">lookup(bytes32 _key)</code></a></li><li><a href="#IAugurTrading.logProfitLossChanged(contract IMarket,address,uint256,int256,uint256,int256,int256,int256)"><code class="function-signature">logProfitLossChanged(contract IMarket _market, address _account, uint256 _outcome, int256 _netPosition, uint256 _avgPrice, int256 _realizedProfit, int256 _frozenFunds, int256 _realizedCost)</code></a></li><li><a href="#IAugurTrading.logOrderCreated(contract IUniverse,bytes32,bytes32)"><code class="function-signature">logOrderCreated(contract IUniverse _universe, bytes32 _orderId, bytes32 _tradeGroupId)</code></a></li><li><a href="#IAugurTrading.logOrderCanceled(contract IUniverse,contract IMarket,address,uint256,uint256,bytes32)"><code class="function-signature">logOrderCanceled(contract IUniverse _universe, contract IMarket _market, address _creator, uint256 _tokenRefund, uint256 _sharesRefund, bytes32 _orderId)</code></a></li><li><a href="#IAugurTrading.logOrderFilled(contract IUniverse,address,address,uint256,uint256,uint256,bytes32,bytes32)"><code class="function-signature">logOrderFilled(contract IUniverse _universe, address _creator, address _filler, uint256 _price, uint256 _fees, uint256 _amountFilled, bytes32 _orderId, bytes32 _tradeGroupId)</code></a></li><li><a href="#IAugurTrading.logMarketVolumeChanged(contract IUniverse,address,uint256,uint256[])"><code class="function-signature">logMarketVolumeChanged(contract IUniverse _universe, address _market, uint256 _volume, uint256[] _outcomeVolumes)</code></a></li><li><a href="#IAugurTrading.logZeroXOrderFilled(contract IUniverse,contract IMarket,bytes32,bytes32,uint8,address[],uint256[])"><code class="function-signature">logZeroXOrderFilled(contract IUniverse _universe, contract IMarket _market, bytes32 _orderHash, bytes32 _tradeGroupId, uint8 _orderType, address[] _addressData, uint256[] _uint256Data)</code></a></li><li><a href="#IAugurTrading.logZeroXOrderCanceled(address,address,address,uint256,uint256,uint256,uint8,bytes32)"><code class="function-signature">logZeroXOrderCanceled(address _universe, address _market, address _account, uint256 _outcome, uint256 _price, uint256 _amount, uint8 _type, bytes32 _orderHash)</code></a></li></ul></div>
 
 
 
@@ -1110,13 +1110,7 @@ title: Contracts
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IAugurTrading.logGnosisSafeRegistered(address,address)"></a><code class="function-signature">logGnosisSafeRegistered(address _safe, address _owner) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IAugurTrading.logGnosisSafeDeRegistered(address,address)"></a><code class="function-signature">logGnosisSafeDeRegistered(address _safe, address _owner) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IAugurTrading.logZeroXOrderCanceled(address,address,address,uint256,uint256,uint256,uint8,bytes32)"></a><code class="function-signature">logZeroXOrderCanceled(address _universe, address _market, address _account, uint256 _outcome, uint256 _price, uint256 _amount, uint8 _type, bytes32 _orderHash)</code><span class="function-visibility">public</span></h4>
 
 
 
@@ -2158,7 +2152,7 @@ MUST emit when the URI is updated for a token ID.
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ISimpleDex.token()"><code class="function-signature">token()</code></a></li><li><a href="#ISimpleDex.cash()"><code class="function-signature">cash()</code></a></li><li><a href="#ISimpleDex.tokenReserve()"><code class="function-signature">tokenReserve()</code></a></li><li><a href="#ISimpleDex.cashReserve()"><code class="function-signature">cashReserve()</code></a></li><li><a href="#ISimpleDex.blockNumberLast()"><code class="function-signature">blockNumberLast()</code></a></li><li><a href="#ISimpleDex.tokenPriceCumulativeLast()"><code class="function-signature">tokenPriceCumulativeLast()</code></a></li><li><a href="#ISimpleDex.buyToken(address)"><code class="function-signature">buyToken(address _recipient)</code></a></li><li><a href="#ISimpleDex.getTokenPurchaseCost(uint256)"><code class="function-signature">getTokenPurchaseCost(uint256 _tokenAmount)</code></a></li><li><a href="#ISimpleDex.publicMint(address)"><code class="function-signature">publicMint(address to)</code></a></li><li><a href="#ISimpleDex.publicBurn(address)"><code class="function-signature">publicBurn(address to)</code></a></li><li><a href="#ISimpleDex.skim(address)"><code class="function-signature">skim(address to)</code></a></li><li><a href="#ISimpleDex.sync()"><code class="function-signature">sync()</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ISimpleDex.token()"><code class="function-signature">token()</code></a></li><li><a href="#ISimpleDex.cash()"><code class="function-signature">cash()</code></a></li><li><a href="#ISimpleDex.tokenReserve()"><code class="function-signature">tokenReserve()</code></a></li><li><a href="#ISimpleDex.cashReserve()"><code class="function-signature">cashReserve()</code></a></li><li><a href="#ISimpleDex.blockNumberLast()"><code class="function-signature">blockNumberLast()</code></a></li><li><a href="#ISimpleDex.tokenPriceCumulativeLast()"><code class="function-signature">tokenPriceCumulativeLast()</code></a></li><li><a href="#ISimpleDex.buyToken(address)"><code class="function-signature">buyToken(address _recipient)</code></a></li><li><a href="#ISimpleDex.autoBuyTokenAmount(address,uint256)"><code class="function-signature">autoBuyTokenAmount(address _recipient, uint256 _tokenAmount)</code></a></li><li><a href="#ISimpleDex.getTokenPurchaseCost(uint256)"><code class="function-signature">getTokenPurchaseCost(uint256 _tokenAmount)</code></a></li><li><a href="#ISimpleDex.getCashSaleProceeds(uint256)"><code class="function-signature">getCashSaleProceeds(uint256 _cashAmount)</code></a></li><li><a href="#ISimpleDex.publicMint(address)"><code class="function-signature">publicMint(address to)</code></a></li><li><a href="#ISimpleDex.publicBurn(address)"><code class="function-signature">publicBurn(address to)</code></a></li><li><a href="#ISimpleDex.skim(address)"><code class="function-signature">skim(address to)</code></a></li><li><a href="#ISimpleDex.sync()"><code class="function-signature">sync()</code></a></li></ul></div>
 
 
 
@@ -2204,7 +2198,19 @@ MUST emit when the URI is updated for a token ID.
 
 
 
+<h4><a class="anchor" aria-hidden="true" id="ISimpleDex.autoBuyTokenAmount(address,uint256)"></a><code class="function-signature">autoBuyTokenAmount(address _recipient, uint256 _tokenAmount) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
 <h4><a class="anchor" aria-hidden="true" id="ISimpleDex.getTokenPurchaseCost(uint256)"></a><code class="function-signature">getTokenPurchaseCost(uint256 _tokenAmount) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ISimpleDex.getCashSaleProceeds(uint256)"></a><code class="function-signature">getCashSaleProceeds(uint256 _cashAmount) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
 
 
 
@@ -2910,6 +2916,859 @@ MUST emit when the URI is updated for a token ID.
 
 
 
+### `AugurWallet`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#AugurWallet.initialize(address,address,bytes32,address,contract IERC20,contract IAffiliates,contract IERC1155,address,address,address)"><code class="function-signature">initialize(address _owner, address _referralAddress, bytes32 _fingerprint, address _augur, contract IERC20 _cash, contract IAffiliates _affiliates, contract IERC1155 _shareToken, address _createOrder, address _fillOrder, address _zeroXTrade)</code></a></li><li><a href="#AugurWallet.transferCash(address,uint256)"><code class="function-signature">transferCash(address _to, uint256 _amount)</code></a></li><li><a href="#AugurWallet.giveRegistryEth(uint256)"><code class="function-signature">giveRegistryEth(uint256 _amount)</code></a></li><li><a href="#AugurWallet.executeTransaction(address,bytes,uint256)"><code class="function-signature">executeTransaction(address _to, bytes _data, uint256 _value)</code></a></li><li><a href="#AugurWallet.isValidSignature(bytes,bytes)"><code class="function-signature">isValidSignature(bytes _data, bytes _signature)</code></a></li><li><a href="#AugurWallet.getMessageHash(bytes)"><code class="function-signature">getMessageHash(bytes _message)</code></a></li><li><a href="#AugurWallet.onTransferOwnership(address,address)"><code class="function-signature">onTransferOwnership(address _oldOwner, address _newOwner)</code></a></li><li><a href="#AugurWallet.fallback()"><code class="function-signature">fallback()</code></a></li><li class="inherited"><a href="#Ownable.constructor()"><code class="function-signature">constructor()</code></a></li><li class="inherited"><a href="#Ownable.getOwner()"><code class="function-signature">getOwner()</code></a></li><li class="inherited"><a href="#Ownable.transferOwnership(address)"><code class="function-signature">transferOwnership(address _newOwner)</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="AugurWallet.initialize(address,address,bytes32,address,contract IERC20,contract IAffiliates,contract IERC1155,address,address,address)"></a><code class="function-signature">initialize(address _owner, address _referralAddress, bytes32 _fingerprint, address _augur, contract IERC20 _cash, contract IAffiliates _affiliates, contract IERC1155 _shareToken, address _createOrder, address _fillOrder, address _zeroXTrade)</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="AugurWallet.transferCash(address,uint256)"></a><code class="function-signature">transferCash(address _to, uint256 _amount)</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="AugurWallet.giveRegistryEth(uint256)"></a><code class="function-signature">giveRegistryEth(uint256 _amount)</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="AugurWallet.executeTransaction(address,bytes,uint256)"></a><code class="function-signature">executeTransaction(address _to, bytes _data, uint256 _value) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="AugurWallet.isValidSignature(bytes,bytes)"></a><code class="function-signature">isValidSignature(bytes _data, bytes _signature) <span class="return-arrow">→</span> <span class="return-type">bytes4</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="AugurWallet.getMessageHash(bytes)"></a><code class="function-signature">getMessageHash(bytes _message) <span class="return-arrow">→</span> <span class="return-type">bytes32</span></code><span class="function-visibility">public</span></h4>
+
+Returns hash of a message that can be signed by owners.
+ @param _message Message that should be hashed
+ @return Message hash.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="AugurWallet.onTransferOwnership(address,address)"></a><code class="function-signature">onTransferOwnership(address _oldOwner, address _newOwner)</code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="AugurWallet.fallback()"></a><code class="function-signature">fallback()</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+
+
+### `IAugurWallet`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IAugurWallet.initialize(address,address,bytes32,address,contract IERC20,contract IAffiliates,contract IERC1155,address,address,address)"><code class="function-signature">initialize(address _owner, address _referralAddress, bytes32 _fingerprint, address _augur, contract IERC20 _cash, contract IAffiliates _affiliates, contract IERC1155 _shareToken, address _createOrder, address _fillOrder, address _zeroXTrade)</code></a></li><li><a href="#IAugurWallet.transferCash(address,uint256)"><code class="function-signature">transferCash(address _to, uint256 _amount)</code></a></li><li><a href="#IAugurWallet.giveRegistryEth(uint256)"><code class="function-signature">giveRegistryEth(uint256 _amount)</code></a></li><li><a href="#IAugurWallet.executeTransaction(address,bytes,uint256)"><code class="function-signature">executeTransaction(address _to, bytes _data, uint256 _value)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IAugurWallet.initialize(address,address,bytes32,address,contract IERC20,contract IAffiliates,contract IERC1155,address,address,address)"></a><code class="function-signature">initialize(address _owner, address _referralAddress, bytes32 _fingerprint, address _augur, contract IERC20 _cash, contract IAffiliates _affiliates, contract IERC1155 _shareToken, address _createOrder, address _fillOrder, address _zeroXTrade)</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IAugurWallet.transferCash(address,uint256)"></a><code class="function-signature">transferCash(address _to, uint256 _amount)</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IAugurWallet.giveRegistryEth(uint256)"></a><code class="function-signature">giveRegistryEth(uint256 _amount)</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IAugurWallet.executeTransaction(address,bytes,uint256)"></a><code class="function-signature">executeTransaction(address _to, bytes _data, uint256 _value) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+
+
+### `IAugurWalletRegistry`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IAugurWalletRegistry.walletTransferedOwnership(address,address)"><code class="function-signature">walletTransferedOwnership(address _oldOwner, address _newOwner)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IAugurWalletRegistry.walletTransferedOwnership(address,address)"></a><code class="function-signature">walletTransferedOwnership(address _oldOwner, address _newOwner)</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+
+
+### `Initializable`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="Initializable.endInitialization()"></a><code class="function-signature">endInitialization()</code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="Initializable.getInitialized()"></a><code class="function-signature">getInitialized() <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+
+
+### `Ownable`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#Ownable.constructor()"><code class="function-signature">constructor()</code></a></li><li><a href="#Ownable.getOwner()"><code class="function-signature">getOwner()</code></a></li><li><a href="#Ownable.transferOwnership(address)"><code class="function-signature">transferOwnership(address _newOwner)</code></a></li><li><a href="#Ownable.onTransferOwnership(address,address)"><code class="function-signature">onTransferOwnership(address, address)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="Ownable.constructor()"></a><code class="function-signature">constructor()</code><span class="function-visibility">public</span></h4>
+
+The Ownable constructor sets the original `owner` of the contract to the sender
+account.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="Ownable.getOwner()"></a><code class="function-signature">getOwner() <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="Ownable.transferOwnership(address)"></a><code class="function-signature">transferOwnership(address _newOwner) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+
+Allows the current owner to transfer control of the contract to a newOwner.
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="Ownable.onTransferOwnership(address,address)"></a><code class="function-signature">onTransferOwnership(address, address)</code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+
+
+### `AugurWalletRegistry`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#AugurWalletRegistry.initialize(contract IAugur,contract IAugurTrading)"><code class="function-signature">initialize(contract IAugur _augur, contract IAugurTrading _augurTrading)</code></a></li><li><a href="#AugurWalletRegistry.acceptRelayedCall(address,address,bytes,uint256,uint256,uint256,uint256,bytes,uint256)"><code class="function-signature">acceptRelayedCall(address, address _from, bytes _encodedFunction, uint256, uint256, uint256, uint256, bytes, uint256 _maxPossibleCharge)</code></a></li><li><a href="#AugurWalletRegistry._preRelayedCall(bytes)"><code class="function-signature">_preRelayedCall(bytes _context)</code></a></li><li><a href="#AugurWalletRegistry._postRelayedCall(bytes,bool,uint256,bytes32)"><code class="function-signature">_postRelayedCall(bytes _context, bool, uint256 _actualCharge, bytes32)</code></a></li><li><a href="#AugurWalletRegistry.getCreate2WalletAddress(address)"><code class="function-signature">getCreate2WalletAddress(address _owner)</code></a></li><li><a href="#AugurWalletRegistry.getWallet(address)"><code class="function-signature">getWallet(address _account)</code></a></li><li><a href="#AugurWalletRegistry.executeWalletTransaction(address,bytes,uint256,uint256,address,bytes32)"><code class="function-signature">executeWalletTransaction(address _to, bytes _data, uint256 _value, uint256 _payment, address _referralAddress, bytes32 _fingerprint)</code></a></li><li><a href="#AugurWalletRegistry.walletTransferedOwnership(address,address)"><code class="function-signature">walletTransferedOwnership(address _oldOwner, address _newOwner)</code></a></li><li><a href="#AugurWalletRegistry.getRelayMessageHash(address,address,address,bytes,uint256,uint256,uint256,uint256)"><code class="function-signature">getRelayMessageHash(address relay, address from, address to, bytes encodedFunction, uint256 transactionFee, uint256 gasPrice, uint256 gasLimit, uint256 nonce)</code></a></li><li><a href="#AugurWalletRegistry.fallback()"><code class="function-signature">fallback()</code></a></li><li class="inherited"><a href="#GSNRecipient.getHubAddr()"><code class="function-signature">getHubAddr()</code></a></li><li class="inherited"><a href="#GSNRecipient._upgradeRelayHub(address)"><code class="function-signature">_upgradeRelayHub(address newRelayHub)</code></a></li><li class="inherited"><a href="#GSNRecipient.relayHubVersion()"><code class="function-signature">relayHubVersion()</code></a></li><li class="inherited"><a href="#GSNRecipient._withdrawDeposits(uint256,address payable)"><code class="function-signature">_withdrawDeposits(uint256 amount, address payable payee)</code></a></li><li class="inherited"><a href="#GSNRecipient._msgSender()"><code class="function-signature">_msgSender()</code></a></li><li class="inherited"><a href="#GSNRecipient._msgData()"><code class="function-signature">_msgData()</code></a></li><li class="inherited"><a href="#GSNRecipient.preRelayedCall(bytes)"><code class="function-signature">preRelayedCall(bytes context)</code></a></li><li class="inherited"><a href="#GSNRecipient.postRelayedCall(bytes,bool,uint256,bytes32)"><code class="function-signature">postRelayedCall(bytes context, bool success, uint256 actualCharge, bytes32 preRetVal)</code></a></li><li class="inherited"><a href="#GSNRecipient._approveRelayedCall()"><code class="function-signature">_approveRelayedCall()</code></a></li><li class="inherited"><a href="#GSNRecipient._approveRelayedCall(bytes)"><code class="function-signature">_approveRelayedCall(bytes context)</code></a></li><li class="inherited"><a href="#GSNRecipient._rejectRelayedCall(uint256)"><code class="function-signature">_rejectRelayedCall(uint256 errorCode)</code></a></li><li class="inherited"><a href="#GSNRecipient._computeCharge(uint256,uint256,uint256)"><code class="function-signature">_computeCharge(uint256 gas, uint256 gasPrice, uint256 serviceFee)</code></a></li><li class="inherited"><a href="#Context.constructor()"><code class="function-signature">constructor()</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#AugurWalletRegistry.ExecuteTransactionStatus(bool)"><code class="function-signature">ExecuteTransactionStatus(bool success)</code></a></li><li class="inherited"><a href="#GSNRecipient.RelayHubChanged(address,address)"><code class="function-signature">RelayHubChanged(address oldRelayHub, address newRelayHub)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="AugurWalletRegistry.initialize(contract IAugur,contract IAugurTrading)"></a><code class="function-signature">initialize(contract IAugur _augur, contract IAugurTrading _augurTrading) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="AugurWalletRegistry.acceptRelayedCall(address,address,bytes,uint256,uint256,uint256,uint256,bytes,uint256)"></a><code class="function-signature">acceptRelayedCall(address, address _from, bytes _encodedFunction, uint256, uint256, uint256, uint256, bytes, uint256 _maxPossibleCharge) <span class="return-arrow">→</span> <span class="return-type">uint256,bytes</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="AugurWalletRegistry._preRelayedCall(bytes)"></a><code class="function-signature">_preRelayedCall(bytes _context) <span class="return-arrow">→</span> <span class="return-type">bytes32</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="AugurWalletRegistry._postRelayedCall(bytes,bool,uint256,bytes32)"></a><code class="function-signature">_postRelayedCall(bytes _context, bool, uint256 _actualCharge, bytes32)</code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="AugurWalletRegistry.getCreate2WalletAddress(address)"></a><code class="function-signature">getCreate2WalletAddress(address _owner) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="AugurWalletRegistry.getWallet(address)"></a><code class="function-signature">getWallet(address _account) <span class="return-arrow">→</span> <span class="return-type">contract IAugurWallet</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="AugurWalletRegistry.executeWalletTransaction(address,bytes,uint256,uint256,address,bytes32)"></a><code class="function-signature">executeWalletTransaction(address _to, bytes _data, uint256 _value, uint256 _payment, address _referralAddress, bytes32 _fingerprint)</code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="AugurWalletRegistry.walletTransferedOwnership(address,address)"></a><code class="function-signature">walletTransferedOwnership(address _oldOwner, address _newOwner)</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="AugurWalletRegistry.getRelayMessageHash(address,address,address,bytes,uint256,uint256,uint256,uint256)"></a><code class="function-signature">getRelayMessageHash(address relay, address from, address to, bytes encodedFunction, uint256 transactionFee, uint256 gasPrice, uint256 gasLimit, uint256 nonce) <span class="return-arrow">→</span> <span class="return-type">bytes32</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="AugurWalletRegistry.fallback()"></a><code class="function-signature">fallback()</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="AugurWalletRegistry.ExecuteTransactionStatus(bool)"></a><code class="function-signature">ExecuteTransactionStatus(bool success)</code><span class="function-visibility"></span></h4>
+
+
+
+
+
+### `Context`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#Context.constructor()"><code class="function-signature">constructor()</code></a></li><li><a href="#Context._msgSender()"><code class="function-signature">_msgSender()</code></a></li><li><a href="#Context._msgData()"><code class="function-signature">_msgData()</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="Context.constructor()"></a><code class="function-signature">constructor()</code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="Context._msgSender()"></a><code class="function-signature">_msgSender() <span class="return-arrow">→</span> <span class="return-type">address payable</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="Context._msgData()"></a><code class="function-signature">_msgData() <span class="return-arrow">→</span> <span class="return-type">bytes</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+
+
+### `GSNRecipient`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#GSNRecipient.getHubAddr()"><code class="function-signature">getHubAddr()</code></a></li><li><a href="#GSNRecipient._upgradeRelayHub(address)"><code class="function-signature">_upgradeRelayHub(address newRelayHub)</code></a></li><li><a href="#GSNRecipient.relayHubVersion()"><code class="function-signature">relayHubVersion()</code></a></li><li><a href="#GSNRecipient._withdrawDeposits(uint256,address payable)"><code class="function-signature">_withdrawDeposits(uint256 amount, address payable payee)</code></a></li><li><a href="#GSNRecipient._msgSender()"><code class="function-signature">_msgSender()</code></a></li><li><a href="#GSNRecipient._msgData()"><code class="function-signature">_msgData()</code></a></li><li><a href="#GSNRecipient.preRelayedCall(bytes)"><code class="function-signature">preRelayedCall(bytes context)</code></a></li><li><a href="#GSNRecipient._preRelayedCall(bytes)"><code class="function-signature">_preRelayedCall(bytes context)</code></a></li><li><a href="#GSNRecipient.postRelayedCall(bytes,bool,uint256,bytes32)"><code class="function-signature">postRelayedCall(bytes context, bool success, uint256 actualCharge, bytes32 preRetVal)</code></a></li><li><a href="#GSNRecipient._postRelayedCall(bytes,bool,uint256,bytes32)"><code class="function-signature">_postRelayedCall(bytes context, bool success, uint256 actualCharge, bytes32 preRetVal)</code></a></li><li><a href="#GSNRecipient._approveRelayedCall()"><code class="function-signature">_approveRelayedCall()</code></a></li><li><a href="#GSNRecipient._approveRelayedCall(bytes)"><code class="function-signature">_approveRelayedCall(bytes context)</code></a></li><li><a href="#GSNRecipient._rejectRelayedCall(uint256)"><code class="function-signature">_rejectRelayedCall(uint256 errorCode)</code></a></li><li><a href="#GSNRecipient._computeCharge(uint256,uint256,uint256)"><code class="function-signature">_computeCharge(uint256 gas, uint256 gasPrice, uint256 serviceFee)</code></a></li><li class="inherited"><a href="#Context.constructor()"><code class="function-signature">constructor()</code></a></li><li class="inherited"><a href="#IRelayRecipient.acceptRelayedCall(address,address,bytes,uint256,uint256,uint256,uint256,bytes,uint256)"><code class="function-signature">acceptRelayedCall(address relay, address from, bytes encodedFunction, uint256 transactionFee, uint256 gasPrice, uint256 gasLimit, uint256 nonce, bytes approvalData, uint256 maxPossibleCharge)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#GSNRecipient.RelayHubChanged(address,address)"><code class="function-signature">RelayHubChanged(address oldRelayHub, address newRelayHub)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="GSNRecipient.getHubAddr()"></a><code class="function-signature">getHubAddr() <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">public</span></h4>
+
+Returns the address of the {IRelayHub} contract for this recipient.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="GSNRecipient._upgradeRelayHub(address)"></a><code class="function-signature">_upgradeRelayHub(address newRelayHub)</code><span class="function-visibility">internal</span></h4>
+
+Switches to a new {IRelayHub} instance. This method is added for future-proofing: there&#x27;s no reason to not
+use the default instance.
+
+IMPORTANT: After upgrading, the {GSNRecipient} will no longer be able to receive relayed calls from the old
+{IRelayHub} instance. Additionally, all funds should be previously withdrawn via {_withdrawDeposits}.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="GSNRecipient.relayHubVersion()"></a><code class="function-signature">relayHubVersion() <span class="return-arrow">→</span> <span class="return-type">string</span></code><span class="function-visibility">public</span></h4>
+
+Returns the version string of the {IRelayHub} for which this recipient implementation was built. If
+{_upgradeRelayHub} is used, the new {IRelayHub} instance should be compatible with this version.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="GSNRecipient._withdrawDeposits(uint256,address payable)"></a><code class="function-signature">_withdrawDeposits(uint256 amount, address payable payee)</code><span class="function-visibility">internal</span></h4>
+
+Withdraws the recipient&#x27;s deposits in [`RelayHub`](gsn#relayhub).
+
+Derived contracts should expose this in an external interface with proper access control.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="GSNRecipient._msgSender()"></a><code class="function-signature">_msgSender() <span class="return-arrow">→</span> <span class="return-type">address payable</span></code><span class="function-visibility">internal</span></h4>
+
+Replacement for msg.sender. Returns the actual sender of a transaction: msg.sender for regular transactions,
+and the end-user for GSN relayed calls (where msg.sender is actually [`RelayHub`](gsn#relayhub)).
+
+IMPORTANT: Contracts derived from {GSNRecipient} should never use `msg.sender`, and use {_msgSender} instead.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="GSNRecipient._msgData()"></a><code class="function-signature">_msgData() <span class="return-arrow">→</span> <span class="return-type">bytes</span></code><span class="function-visibility">internal</span></h4>
+
+Replacement for msg.data. Returns the actual calldata of a transaction: msg.data for regular transactions,
+and a reduced version for GSN relayed calls (where msg.data contains additional information).
+
+IMPORTANT: Contracts derived from {GSNRecipient} should never use `msg.data`, and use {_msgData} instead.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="GSNRecipient.preRelayedCall(bytes)"></a><code class="function-signature">preRelayedCall(bytes context) <span class="return-arrow">→</span> <span class="return-type">bytes32</span></code><span class="function-visibility">external</span></h4>
+
+See [`IRelayRecipient.preRelayedCall`](gsn#IRelayRecipient.preRelayedCall(bytes)).
+
+This function should not be overriden directly, use [`_preRelayedCall`](.#GSNRecipient._preRelayedCall(bytes)) instead.
+
+* Requirements:
+
+- the caller must be the [`RelayHub`](gsn#relayhub) contract.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="GSNRecipient._preRelayedCall(bytes)"></a><code class="function-signature">_preRelayedCall(bytes context) <span class="return-arrow">→</span> <span class="return-type">bytes32</span></code><span class="function-visibility">internal</span></h4>
+
+See [`IRelayRecipient.preRelayedCall`](gsn#IRelayRecipient.preRelayedCall(bytes)).
+
+Called by [`GSNRecipient.preRelayedCall`](.#GSNRecipient.preRelayedCall(bytes)), which asserts the caller is the [`RelayHub`](gsn#relayhub) contract. Derived contracts
+must implement this function with any relayed-call preprocessing they may wish to do.
+     
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="GSNRecipient.postRelayedCall(bytes,bool,uint256,bytes32)"></a><code class="function-signature">postRelayedCall(bytes context, bool success, uint256 actualCharge, bytes32 preRetVal)</code><span class="function-visibility">external</span></h4>
+
+See [`IRelayRecipient.postRelayedCall`](gsn#IRelayRecipient.postRelayedCall(bytes,bool,uint256,bytes32)).
+
+This function should not be overriden directly, use [`_postRelayedCall`](.#GSNRecipient._postRelayedCall(bytes,bool,uint256,bytes32)) instead.
+
+* Requirements:
+
+- the caller must be the [`RelayHub`](gsn#relayhub) contract.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="GSNRecipient._postRelayedCall(bytes,bool,uint256,bytes32)"></a><code class="function-signature">_postRelayedCall(bytes context, bool success, uint256 actualCharge, bytes32 preRetVal)</code><span class="function-visibility">internal</span></h4>
+
+See [`IRelayRecipient.postRelayedCall`](gsn#IRelayRecipient.postRelayedCall(bytes,bool,uint256,bytes32)).
+
+Called by [`GSNRecipient.postRelayedCall`](.#GSNRecipient.postRelayedCall(bytes,bool,uint256,bytes32)), which asserts the caller is the [`RelayHub`](gsn#relayhub) contract. Derived contracts
+must implement this function with any relayed-call postprocessing they may wish to do.
+     
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="GSNRecipient._approveRelayedCall()"></a><code class="function-signature">_approveRelayedCall() <span class="return-arrow">→</span> <span class="return-type">uint256,bytes</span></code><span class="function-visibility">internal</span></h4>
+
+Return this in acceptRelayedCall to proceed with the execution of a relayed call. Note that this contract
+will be charged a fee by RelayHub
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="GSNRecipient._approveRelayedCall(bytes)"></a><code class="function-signature">_approveRelayedCall(bytes context) <span class="return-arrow">→</span> <span class="return-type">uint256,bytes</span></code><span class="function-visibility">internal</span></h4>
+
+See [`GSNRecipient._approveRelayedCall`](.#GSNRecipient._approveRelayedCall()).
+
+This overload forwards `context` to _preRelayedCall and _postRelayedCall.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="GSNRecipient._rejectRelayedCall(uint256)"></a><code class="function-signature">_rejectRelayedCall(uint256 errorCode) <span class="return-arrow">→</span> <span class="return-type">uint256,bytes</span></code><span class="function-visibility">internal</span></h4>
+
+Return this in acceptRelayedCall to impede execution of a relayed call. No fees will be charged.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="GSNRecipient._computeCharge(uint256,uint256,uint256)"></a><code class="function-signature">_computeCharge(uint256 gas, uint256 gasPrice, uint256 serviceFee) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="GSNRecipient.RelayHubChanged(address,address)"></a><code class="function-signature">RelayHubChanged(address oldRelayHub, address newRelayHub)</code><span class="function-visibility"></span></h4>
+
+Emitted when a contract changes its {IRelayHub} contract to a new one.
+
+
+
+### `IRelayHub`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IRelayHub.stake(address,uint256)"><code class="function-signature">stake(address relayaddr, uint256 unstakeDelay)</code></a></li><li><a href="#IRelayHub.registerRelay(uint256,string)"><code class="function-signature">registerRelay(uint256 transactionFee, string url)</code></a></li><li><a href="#IRelayHub.removeRelayByOwner(address)"><code class="function-signature">removeRelayByOwner(address relay)</code></a></li><li><a href="#IRelayHub.unstake(address)"><code class="function-signature">unstake(address relay)</code></a></li><li><a href="#IRelayHub.getRelay(address)"><code class="function-signature">getRelay(address relay)</code></a></li><li><a href="#IRelayHub.depositFor(address)"><code class="function-signature">depositFor(address target)</code></a></li><li><a href="#IRelayHub.balanceOf(address)"><code class="function-signature">balanceOf(address target)</code></a></li><li><a href="#IRelayHub.withdraw(uint256,address payable)"><code class="function-signature">withdraw(uint256 amount, address payable dest)</code></a></li><li><a href="#IRelayHub.canRelay(address,address,address,bytes,uint256,uint256,uint256,uint256,bytes,bytes)"><code class="function-signature">canRelay(address relay, address from, address to, bytes encodedFunction, uint256 transactionFee, uint256 gasPrice, uint256 gasLimit, uint256 nonce, bytes signature, bytes approvalData)</code></a></li><li><a href="#IRelayHub.relayCall(address,address,bytes,uint256,uint256,uint256,uint256,bytes,bytes)"><code class="function-signature">relayCall(address from, address to, bytes encodedFunction, uint256 transactionFee, uint256 gasPrice, uint256 gasLimit, uint256 nonce, bytes signature, bytes approvalData)</code></a></li><li><a href="#IRelayHub.requiredGas(uint256)"><code class="function-signature">requiredGas(uint256 relayedCallStipend)</code></a></li><li><a href="#IRelayHub.maxPossibleCharge(uint256,uint256,uint256)"><code class="function-signature">maxPossibleCharge(uint256 relayedCallStipend, uint256 gasPrice, uint256 transactionFee)</code></a></li><li><a href="#IRelayHub.penalizeRepeatedNonce(bytes,bytes,bytes,bytes)"><code class="function-signature">penalizeRepeatedNonce(bytes unsignedTx1, bytes signature1, bytes unsignedTx2, bytes signature2)</code></a></li><li><a href="#IRelayHub.penalizeIllegalTransaction(bytes,bytes)"><code class="function-signature">penalizeIllegalTransaction(bytes unsignedTx, bytes signature)</code></a></li><li><a href="#IRelayHub.getNonce(address)"><code class="function-signature">getNonce(address from)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#IRelayHub.Staked(address,uint256,uint256)"><code class="function-signature">Staked(address relay, uint256 stake, uint256 unstakeDelay)</code></a></li><li><a href="#IRelayHub.RelayAdded(address,address,uint256,uint256,uint256,string)"><code class="function-signature">RelayAdded(address relay, address owner, uint256 transactionFee, uint256 stake, uint256 unstakeDelay, string url)</code></a></li><li><a href="#IRelayHub.RelayRemoved(address,uint256)"><code class="function-signature">RelayRemoved(address relay, uint256 unstakeTime)</code></a></li><li><a href="#IRelayHub.Unstaked(address,uint256)"><code class="function-signature">Unstaked(address relay, uint256 stake)</code></a></li><li><a href="#IRelayHub.Deposited(address,address,uint256)"><code class="function-signature">Deposited(address recipient, address from, uint256 amount)</code></a></li><li><a href="#IRelayHub.Withdrawn(address,address,uint256)"><code class="function-signature">Withdrawn(address account, address dest, uint256 amount)</code></a></li><li><a href="#IRelayHub.CanRelayFailed(address,address,address,bytes4,uint256)"><code class="function-signature">CanRelayFailed(address relay, address from, address to, bytes4 selector, uint256 reason)</code></a></li><li><a href="#IRelayHub.TransactionRelayed(address,address,address,bytes4,enum IRelayHub.RelayCallStatus,uint256)"><code class="function-signature">TransactionRelayed(address relay, address from, address to, bytes4 selector, enum IRelayHub.RelayCallStatus status, uint256 charge)</code></a></li><li><a href="#IRelayHub.Penalized(address,address,uint256)"><code class="function-signature">Penalized(address relay, address sender, uint256 amount)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IRelayHub.stake(address,uint256)"></a><code class="function-signature">stake(address relayaddr, uint256 unstakeDelay)</code><span class="function-visibility">external</span></h4>
+
+Adds stake to a relay and sets its `unstakeDelay`. If the relay does not exist, it is created, and the caller
+of this function becomes its owner. If the relay already exists, only the owner can call this function. A relay
+cannot be its own owner.
+
+All Ether in this function call will be added to the relay&#x27;s stake.
+Its unstake delay will be assigned to `unstakeDelay`, but the new value must be greater or equal to the current one.
+
+Emits a {Staked} event.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IRelayHub.registerRelay(uint256,string)"></a><code class="function-signature">registerRelay(uint256 transactionFee, string url)</code><span class="function-visibility">external</span></h4>
+
+Registers the caller as a relay.
+The relay must be staked for, and not be a contract (i.e. this function must be called directly from an EOA).
+
+This function can be called multiple times, emitting new {RelayAdded} events. Note that the received
+`transactionFee` is not enforced by {relayCall}.
+
+Emits a {RelayAdded} event.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IRelayHub.removeRelayByOwner(address)"></a><code class="function-signature">removeRelayByOwner(address relay)</code><span class="function-visibility">external</span></h4>
+
+Removes (deregisters) a relay. Unregistered (but staked for) relays can also be removed.
+
+Can only be called by the owner of the relay. After the relay&#x27;s `unstakeDelay` has elapsed, {unstake} will be
+callable.
+
+Emits a {RelayRemoved} event.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IRelayHub.unstake(address)"></a><code class="function-signature">unstake(address relay)</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IRelayHub.getRelay(address)"></a><code class="function-signature">getRelay(address relay) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256,uint256,address payable,enum IRelayHub.RelayState</span></code><span class="function-visibility">external</span></h4>
+
+Returns a relay&#x27;s status. Note that relays can be deleted when unstaked or penalized, causing this function
+to return an empty entry.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IRelayHub.depositFor(address)"></a><code class="function-signature">depositFor(address target)</code><span class="function-visibility">external</span></h4>
+
+Deposits Ether for a contract, so that it can receive (and pay for) relayed transactions.
+
+Unused balance can only be withdrawn by the contract itself, by calling {withdraw}.
+
+Emits a {Deposited} event.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IRelayHub.balanceOf(address)"></a><code class="function-signature">balanceOf(address target) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+Returns an account&#x27;s deposits. These can be either a contracts&#x27;s funds, or a relay owner&#x27;s revenue.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IRelayHub.withdraw(uint256,address payable)"></a><code class="function-signature">withdraw(uint256 amount, address payable dest)</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IRelayHub.canRelay(address,address,address,bytes,uint256,uint256,uint256,uint256,bytes,bytes)"></a><code class="function-signature">canRelay(address relay, address from, address to, bytes encodedFunction, uint256 transactionFee, uint256 gasPrice, uint256 gasLimit, uint256 nonce, bytes signature, bytes approvalData) <span class="return-arrow">→</span> <span class="return-type">uint256,bytes</span></code><span class="function-visibility">external</span></h4>
+
+Checks if the [`RelayHub`](gsn#relayhub) will accept a relayed operation.
+Multiple things must be true for this to happen:
+ - all arguments must be signed for by the sender (`from`)
+ - the sender&#x27;s nonce must be the current one
+ - the recipient must accept this transaction (via {acceptRelayedCall})
+
+Returns a `PreconditionCheck` value (`OK` when the transaction can be relayed), or a recipient-specific error
+code if it returns one in {acceptRelayedCall}.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IRelayHub.relayCall(address,address,bytes,uint256,uint256,uint256,uint256,bytes,bytes)"></a><code class="function-signature">relayCall(address from, address to, bytes encodedFunction, uint256 transactionFee, uint256 gasPrice, uint256 gasLimit, uint256 nonce, bytes signature, bytes approvalData)</code><span class="function-visibility">external</span></h4>
+
+Relays a transaction.
+
+For this to succeed, multiple conditions must be met:
+ - {canRelay} must `return PreconditionCheck.OK`
+ - the sender must be a registered relay
+ - the transaction&#x27;s gas price must be larger or equal to the one that was requested by the sender
+ - the transaction must have enough gas to not run out of gas if all internal transactions (calls to the
+recipient) use all gas available to them
+ - the recipient must have enough balance to pay the relay for the worst-case scenario (i.e. when all gas is
+spent)
+
+If all conditions are met, the call will be relayed and the recipient charged. {preRelayedCall}, the encoded
+function and {postRelayedCall} will be called in that order.
+
+Parameters:
+ - `from`: the client originating the request
+ - `to`: the target {IRelayRecipient} contract
+ - `encodedFunction`: the function call to relay, including data
+ - `transactionFee`: fee (%) the relay takes over actual gas cost
+ - `gasPrice`: gas price the client is willing to pay
+ - `gasLimit`: gas to forward when calling the encoded function
+ - `nonce`: client&#x27;s nonce
+ - `signature`: client&#x27;s signature over all previous params, plus the relay and RelayHub addresses
+ - `approvalData`: dapp-specific data forwared to {acceptRelayedCall}. This value is *not* verified by the
+[`RelayHub`](gsn#relayhub), but it still can be used for e.g. a signature.
+
+Emits a {TransactionRelayed} event.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IRelayHub.requiredGas(uint256)"></a><code class="function-signature">requiredGas(uint256 relayedCallStipend) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+Returns how much gas should be forwarded to a call to {relayCall}, in order to relay a transaction that will
+spend up to `relayedCallStipend` gas.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IRelayHub.maxPossibleCharge(uint256,uint256,uint256)"></a><code class="function-signature">maxPossibleCharge(uint256 relayedCallStipend, uint256 gasPrice, uint256 transactionFee) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+Returns the maximum recipient charge, given the amount of gas forwarded, gas price and relay fee.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IRelayHub.penalizeRepeatedNonce(bytes,bytes,bytes,bytes)"></a><code class="function-signature">penalizeRepeatedNonce(bytes unsignedTx1, bytes signature1, bytes unsignedTx2, bytes signature2)</code><span class="function-visibility">external</span></h4>
+
+Penalize a relay that signed two transactions using the same nonce (making only the first one valid) and
+different data (gas price, gas limit, etc. may be different).
+
+The (unsigned) transaction data and signature for both transactions must be provided.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IRelayHub.penalizeIllegalTransaction(bytes,bytes)"></a><code class="function-signature">penalizeIllegalTransaction(bytes unsignedTx, bytes signature)</code><span class="function-visibility">external</span></h4>
+
+Penalize a relay that sent a transaction that didn&#x27;t target [`RelayHub`](gsn#relayhub)&#x27;s {registerRelay} or {relayCall}.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IRelayHub.getNonce(address)"></a><code class="function-signature">getNonce(address from) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+Returns an account&#x27;s nonce in [`RelayHub`](gsn#relayhub).
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IRelayHub.Staked(address,uint256,uint256)"></a><code class="function-signature">Staked(address relay, uint256 stake, uint256 unstakeDelay)</code><span class="function-visibility"></span></h4>
+
+Emitted when a relay&#x27;s stake or unstakeDelay are increased
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IRelayHub.RelayAdded(address,address,uint256,uint256,uint256,string)"></a><code class="function-signature">RelayAdded(address relay, address owner, uint256 transactionFee, uint256 stake, uint256 unstakeDelay, string url)</code><span class="function-visibility"></span></h4>
+
+Emitted when a relay is registered or re-registerd. Looking at these events (and filtering out
+{RelayRemoved} events) lets a client discover the list of available relays.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IRelayHub.RelayRemoved(address,uint256)"></a><code class="function-signature">RelayRemoved(address relay, uint256 unstakeTime)</code><span class="function-visibility"></span></h4>
+
+Emitted when a relay is removed (deregistered). `unstakeTime` is the time when unstake will be callable.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IRelayHub.Unstaked(address,uint256)"></a><code class="function-signature">Unstaked(address relay, uint256 stake)</code><span class="function-visibility"></span></h4>
+
+Emitted when a relay is unstaked for, including the returned stake.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IRelayHub.Deposited(address,address,uint256)"></a><code class="function-signature">Deposited(address recipient, address from, uint256 amount)</code><span class="function-visibility"></span></h4>
+
+Emitted when {depositFor} is called, including the amount and account that was funded.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IRelayHub.Withdrawn(address,address,uint256)"></a><code class="function-signature">Withdrawn(address account, address dest, uint256 amount)</code><span class="function-visibility"></span></h4>
+
+Emitted when an account withdraws funds from [`RelayHub`](gsn#relayhub).
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IRelayHub.CanRelayFailed(address,address,address,bytes4,uint256)"></a><code class="function-signature">CanRelayFailed(address relay, address from, address to, bytes4 selector, uint256 reason)</code><span class="function-visibility"></span></h4>
+
+Emitted when an attempt to relay a call failed.
+
+This can happen due to incorrect {relayCall} arguments, or the recipient not accepting the relayed call. The
+actual relayed call was not executed, and the recipient not charged.
+
+The `reason` parameter contains an error code: values 1-10 correspond to `PreconditionCheck` entries, and values
+over 10 are custom recipient error codes returned from {acceptRelayedCall}.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IRelayHub.TransactionRelayed(address,address,address,bytes4,enum IRelayHub.RelayCallStatus,uint256)"></a><code class="function-signature">TransactionRelayed(address relay, address from, address to, bytes4 selector, enum IRelayHub.RelayCallStatus status, uint256 charge)</code><span class="function-visibility"></span></h4>
+
+Emitted when a transaction is relayed.
+Useful when monitoring a relay&#x27;s operation and relayed calls to a contract
+
+Note that the actual encoded function might be reverted: this is indicated in the `status` parameter.
+
+`charge` is the Ether value deducted from the recipient&#x27;s balance, paid to the relay&#x27;s owner.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IRelayHub.Penalized(address,address,uint256)"></a><code class="function-signature">Penalized(address relay, address sender, uint256 amount)</code><span class="function-visibility"></span></h4>
+
+Emitted when a relay is penalized.
+
+
+
+### `IRelayRecipient`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IRelayRecipient.getHubAddr()"><code class="function-signature">getHubAddr()</code></a></li><li><a href="#IRelayRecipient.acceptRelayedCall(address,address,bytes,uint256,uint256,uint256,uint256,bytes,uint256)"><code class="function-signature">acceptRelayedCall(address relay, address from, bytes encodedFunction, uint256 transactionFee, uint256 gasPrice, uint256 gasLimit, uint256 nonce, bytes approvalData, uint256 maxPossibleCharge)</code></a></li><li><a href="#IRelayRecipient.preRelayedCall(bytes)"><code class="function-signature">preRelayedCall(bytes context)</code></a></li><li><a href="#IRelayRecipient.postRelayedCall(bytes,bool,uint256,bytes32)"><code class="function-signature">postRelayedCall(bytes context, bool success, uint256 actualCharge, bytes32 preRetVal)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IRelayRecipient.getHubAddr()"></a><code class="function-signature">getHubAddr() <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
+
+Returns the address of the {IRelayHub} instance this recipient interacts with.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IRelayRecipient.acceptRelayedCall(address,address,bytes,uint256,uint256,uint256,uint256,bytes,uint256)"></a><code class="function-signature">acceptRelayedCall(address relay, address from, bytes encodedFunction, uint256 transactionFee, uint256 gasPrice, uint256 gasLimit, uint256 nonce, bytes approvalData, uint256 maxPossibleCharge) <span class="return-arrow">→</span> <span class="return-type">uint256,bytes</span></code><span class="function-visibility">external</span></h4>
+
+Called by {IRelayHub} to validate if this recipient accepts being charged for a relayed call. Note that the
+recipient will be charged regardless of the execution result of the relayed call (i.e. if it reverts or not).
+
+The relay request was originated by `from` and will be served by `relay`. `encodedFunction` is the relayed call
+calldata, so its first four bytes are the function selector. The relayed call will be forwarded `gasLimit` gas,
+and the transaction executed with a gas price of at least `gasPrice`. `relay`&#x27;s fee is `transactionFee`, and the
+recipient will be charged at most `maxPossibleCharge` (in wei). `nonce` is the sender&#x27;s (`from`) nonce for
+replay attack protection in {IRelayHub}, and `approvalData` is a optional parameter that can be used to hold a signature
+over all or some of the previous values.
+
+Returns a tuple, where the first value is used to indicate approval (0) or rejection (custom non-zero error code,
+values 1 to 10 are reserved) and the second one is data to be passed to the other {IRelayRecipient} functions.
+
+{acceptRelayedCall} is called with 50k gas: if it runs out during execution, the request will be considered
+rejected. A regular revert will also trigger a rejection.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IRelayRecipient.preRelayedCall(bytes)"></a><code class="function-signature">preRelayedCall(bytes context) <span class="return-arrow">→</span> <span class="return-type">bytes32</span></code><span class="function-visibility">external</span></h4>
+
+Called by {IRelayHub} on approved relay call requests, before the relayed call is executed. This allows to e.g.
+pre-charge the sender of the transaction.
+
+`context` is the second value returned in the tuple by {acceptRelayedCall}.
+
+Returns a value to be passed to {postRelayedCall}.
+
+{preRelayedCall} is called with 100k gas: if it runs out during exection or otherwise reverts, the relayed call
+will not be executed, but the recipient will still be charged for the transaction&#x27;s cost.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IRelayRecipient.postRelayedCall(bytes,bool,uint256,bytes32)"></a><code class="function-signature">postRelayedCall(bytes context, bool success, uint256 actualCharge, bytes32 preRetVal)</code><span class="function-visibility">external</span></h4>
+
+Called by {IRelayHub} on approved relay call requests, after the relayed call is executed. This allows to e.g.
+charge the user for the relayed call costs, return any overcharges from {preRelayedCall}, or perform
+contract-specific bookkeeping.
+
+`context` is the second value returned in the tuple by {acceptRelayedCall}. `success` is the execution status of
+the relayed call. `actualCharge` is an estimate of how much the recipient will be charged for the transaction,
+not including any gas used by {postRelayedCall} itself. `preRetVal` is {preRelayedCall}&#x27;s return value.
+
+{postRelayedCall} is called with 100k gas: if it runs out during execution or otherwise reverts, the relayed call
+and the call to {preRelayedCall} will be reverted retroactively, but the recipient will still be charged for the
+transaction&#x27;s cost.
+
+
+
+
+
+### `LibBytes`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#LibBytes.equals(bytes,bytes)"><code class="function-signature">equals(bytes lhs, bytes rhs)</code></a></li><li><a href="#LibBytes.contentAddress(bytes)"><code class="function-signature">contentAddress(bytes input)</code></a></li><li><a href="#LibBytes.memCopy(uint256,uint256,uint256)"><code class="function-signature">memCopy(uint256 dest, uint256 source, uint256 length)</code></a></li><li><a href="#LibBytes.slice(bytes,uint256,uint256)"><code class="function-signature">slice(bytes b, uint256 from, uint256 to)</code></a></li><li><a href="#LibBytes.sliceDestructive(bytes,uint256,uint256)"><code class="function-signature">sliceDestructive(bytes b, uint256 from, uint256 to)</code></a></li><li><a href="#LibBytes.popLastByte(bytes)"><code class="function-signature">popLastByte(bytes b)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="LibBytes.equals(bytes,bytes)"></a><code class="function-signature">equals(bytes lhs, bytes rhs) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
+
+Tests equality of two byte arrays.
+ @param lhs First byte array to compare.
+ @param rhs Second byte array to compare.
+ @return True if arrays are the same. False otherwise.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="LibBytes.contentAddress(bytes)"></a><code class="function-signature">contentAddress(bytes input) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
+
+Gets the memory address for the contents of a byte array.
+ @param input Byte array to lookup.
+ @return memoryAddress Memory address of the contents of the byte array.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="LibBytes.memCopy(uint256,uint256,uint256)"></a><code class="function-signature">memCopy(uint256 dest, uint256 source, uint256 length)</code><span class="function-visibility">internal</span></h4>
+
+Copies `length` bytes from memory location `source` to `dest`.
+ @param dest memory address to copy bytes to.
+ @param source memory address to copy bytes from.
+ @param length number of bytes to copy.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="LibBytes.slice(bytes,uint256,uint256)"></a><code class="function-signature">slice(bytes b, uint256 from, uint256 to) <span class="return-arrow">→</span> <span class="return-type">bytes</span></code><span class="function-visibility">internal</span></h4>
+
+Returns a slices from a byte array.
+ @param b The byte array to take a slice from.
+ @param from The starting index for the slice (inclusive).
+ @param to The final index for the slice (exclusive).
+ @return result The slice containing bytes at indices [from, to)
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="LibBytes.sliceDestructive(bytes,uint256,uint256)"></a><code class="function-signature">sliceDestructive(bytes b, uint256 from, uint256 to) <span class="return-arrow">→</span> <span class="return-type">bytes</span></code><span class="function-visibility">internal</span></h4>
+
+Returns a slice from a byte array without preserving the input.
+ @param b The byte array to take a slice from. Will be destroyed in the process.
+ @param from The starting index for the slice (inclusive).
+ @param to The final index for the slice (exclusive).
+ @return result The slice containing bytes at indices [from, to)
+ @dev When `from == 0`, the original array will match the slice. In other cases its state will be corrupted.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="LibBytes.popLastByte(bytes)"></a><code class="function-signature">popLastByte(bytes b) <span class="return-arrow">→</span> <span class="return-type">bytes1</span></code><span class="function-visibility">internal</span></h4>
+
+Pops the last byte off of a byte array by modifying its length.
+ @param b Byte array that will be modified.
+ @return The byte that was popped off.
+
+
+
+
+
+### `RLPReader`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#RLPReader.decodeTransaction(bytes)"><code class="function-signature">decodeTransaction(bytes rawTransaction)</code></a></li><li><a href="#RLPReader.toRlpItem(bytes)"><code class="function-signature">toRlpItem(bytes item)</code></a></li><li><a href="#RLPReader.toList(struct RLPReader.RLPItem)"><code class="function-signature">toList(struct RLPReader.RLPItem item)</code></a></li><li><a href="#RLPReader.isList(struct RLPReader.RLPItem)"><code class="function-signature">isList(struct RLPReader.RLPItem item)</code></a></li><li><a href="#RLPReader.numItems(struct RLPReader.RLPItem)"><code class="function-signature">numItems(struct RLPReader.RLPItem item)</code></a></li><li><a href="#RLPReader._itemLength(uint256)"><code class="function-signature">_itemLength(uint256 memPtr)</code></a></li><li><a href="#RLPReader._payloadOffset(uint256)"><code class="function-signature">_payloadOffset(uint256 memPtr)</code></a></li><li><a href="#RLPReader.toRlpBytes(struct RLPReader.RLPItem)"><code class="function-signature">toRlpBytes(struct RLPReader.RLPItem item)</code></a></li><li><a href="#RLPReader.toBoolean(struct RLPReader.RLPItem)"><code class="function-signature">toBoolean(struct RLPReader.RLPItem item)</code></a></li><li><a href="#RLPReader.toAddress(struct RLPReader.RLPItem)"><code class="function-signature">toAddress(struct RLPReader.RLPItem item)</code></a></li><li><a href="#RLPReader.toUint(struct RLPReader.RLPItem)"><code class="function-signature">toUint(struct RLPReader.RLPItem item)</code></a></li><li><a href="#RLPReader.toBytes(struct RLPReader.RLPItem)"><code class="function-signature">toBytes(struct RLPReader.RLPItem item)</code></a></li><li><a href="#RLPReader.copy(uint256,uint256,uint256)"><code class="function-signature">copy(uint256 src, uint256 dest, uint256 len)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="RLPReader.decodeTransaction(bytes)"></a><code class="function-signature">decodeTransaction(bytes rawTransaction) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256,uint256,address,uint256,bytes</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="RLPReader.toRlpItem(bytes)"></a><code class="function-signature">toRlpItem(bytes item) <span class="return-arrow">→</span> <span class="return-type">struct RLPReader.RLPItem</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="RLPReader.toList(struct RLPReader.RLPItem)"></a><code class="function-signature">toList(struct RLPReader.RLPItem item) <span class="return-arrow">→</span> <span class="return-type">struct RLPReader.RLPItem[]</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="RLPReader.isList(struct RLPReader.RLPItem)"></a><code class="function-signature">isList(struct RLPReader.RLPItem item) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="RLPReader.numItems(struct RLPReader.RLPItem)"></a><code class="function-signature">numItems(struct RLPReader.RLPItem item) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="RLPReader._itemLength(uint256)"></a><code class="function-signature">_itemLength(uint256 memPtr) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="RLPReader._payloadOffset(uint256)"></a><code class="function-signature">_payloadOffset(uint256 memPtr) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="RLPReader.toRlpBytes(struct RLPReader.RLPItem)"></a><code class="function-signature">toRlpBytes(struct RLPReader.RLPItem item) <span class="return-arrow">→</span> <span class="return-type">bytes</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="RLPReader.toBoolean(struct RLPReader.RLPItem)"></a><code class="function-signature">toBoolean(struct RLPReader.RLPItem item) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="RLPReader.toAddress(struct RLPReader.RLPItem)"></a><code class="function-signature">toAddress(struct RLPReader.RLPItem item) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="RLPReader.toUint(struct RLPReader.RLPItem)"></a><code class="function-signature">toUint(struct RLPReader.RLPItem item) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="RLPReader.toBytes(struct RLPReader.RLPItem)"></a><code class="function-signature">toBytes(struct RLPReader.RLPItem item) <span class="return-arrow">→</span> <span class="return-type">bytes</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="RLPReader.copy(uint256,uint256,uint256)"></a><code class="function-signature">copy(uint256 src, uint256 dest, uint256 len)</code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+
+
 ### `Cash`
 
 
@@ -3130,7 +3989,7 @@ MUST emit when the URI is updated for a token ID.
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#BaseSimpleDex.initializeInternal(address,address)"><code class="function-signature">initializeInternal(address _augurAddress, address _token)</code></a></li><li><a href="#BaseSimpleDex.getTokenBalance()"><code class="function-signature">getTokenBalance()</code></a></li><li><a href="#BaseSimpleDex.getCashBalance()"><code class="function-signature">getCashBalance()</code></a></li><li><a href="#BaseSimpleDex.update(uint256,uint256)"><code class="function-signature">update(uint256 _tokenBalance, uint256 _cashBalance)</code></a></li><li><a href="#BaseSimpleDex.onUpdate(uint256,uint256)"><code class="function-signature">onUpdate(uint256 _blocksElapsed, uint256 _priceCumulativeIncrease)</code></a></li><li><a href="#BaseSimpleDex.publicMint(address)"><code class="function-signature">publicMint(address _to)</code></a></li><li><a href="#BaseSimpleDex.publicBurnAuto(address,uint256)"><code class="function-signature">publicBurnAuto(address _to, uint256 _amount)</code></a></li><li><a href="#BaseSimpleDex.publicBurn(address)"><code class="function-signature">publicBurn(address _to)</code></a></li><li><a href="#BaseSimpleDex.getTokenSaleProceeds(uint256)"><code class="function-signature">getTokenSaleProceeds(uint256 _tokenAmount)</code></a></li><li><a href="#BaseSimpleDex.getCashSaleProceeds(uint256)"><code class="function-signature">getCashSaleProceeds(uint256 _cashAmount)</code></a></li><li><a href="#BaseSimpleDex.getSaleProceeds(uint256,uint256,uint256)"><code class="function-signature">getSaleProceeds(uint256 _inputAmount, uint256 _inputReserve, uint256 _outputReserve)</code></a></li><li><a href="#BaseSimpleDex.getTokenPurchaseCost(uint256)"><code class="function-signature">getTokenPurchaseCost(uint256 _tokenAmount)</code></a></li><li><a href="#BaseSimpleDex.getCashPurchaseCost(uint256)"><code class="function-signature">getCashPurchaseCost(uint256 _cashAmount)</code></a></li><li><a href="#BaseSimpleDex.getPurchaseCost(uint256,uint256,uint256)"><code class="function-signature">getPurchaseCost(uint256 _outputAmount, uint256 _inputReserve, uint256 _outputReserve)</code></a></li><li><a href="#BaseSimpleDex.autoSellToken(address,uint256)"><code class="function-signature">autoSellToken(address _recipient, uint256 _tokenAmount)</code></a></li><li><a href="#BaseSimpleDex.sellToken(address)"><code class="function-signature">sellToken(address _recipient)</code></a></li><li><a href="#BaseSimpleDex.autoBuyToken(address,uint256)"><code class="function-signature">autoBuyToken(address _recipient, uint256 _cashAmount)</code></a></li><li><a href="#BaseSimpleDex.buyToken(address)"><code class="function-signature">buyToken(address _recipient)</code></a></li><li><a href="#BaseSimpleDex.skim(address)"><code class="function-signature">skim(address to)</code></a></li><li><a href="#BaseSimpleDex.sync()"><code class="function-signature">sync()</code></a></li><li><a href="#BaseSimpleDex.onTokenTransfer(address,address,uint256)"><code class="function-signature">onTokenTransfer(address _from, address _to, uint256 _value)</code></a></li><li><a href="#BaseSimpleDex.onMint(address,uint256)"><code class="function-signature">onMint(address _target, uint256 _amount)</code></a></li><li><a href="#BaseSimpleDex.onBurn(address,uint256)"><code class="function-signature">onBurn(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#CashSender.initializeCashSender(address,address)"><code class="function-signature">initializeCashSender(address _vat, address _cash)</code></a></li><li class="inherited"><a href="#CashSender.cashBalance(address)"><code class="function-signature">cashBalance(address _account)</code></a></li><li class="inherited"><a href="#CashSender.cashAvailableForTransferFrom(address,address)"><code class="function-signature">cashAvailableForTransferFrom(address _owner, address _sender)</code></a></li><li class="inherited"><a href="#CashSender.cashApprove(address,uint256)"><code class="function-signature">cashApprove(address _spender, uint256 _amount)</code></a></li><li class="inherited"><a href="#CashSender.cashTransfer(address,uint256)"><code class="function-signature">cashTransfer(address _to, uint256 _amount)</code></a></li><li class="inherited"><a href="#CashSender.cashTransferFrom(address,address,uint256)"><code class="function-signature">cashTransferFrom(address _from, address _to, uint256 _amount)</code></a></li><li class="inherited"><a href="#CashSender.shutdownTransfer(address,address,uint256)"><code class="function-signature">shutdownTransfer(address _from, address _to, uint256 _amount)</code></a></li><li class="inherited"><a href="#CashSender.vatDaiToDai(uint256)"><code class="function-signature">vatDaiToDai(uint256 _vDaiAmount)</code></a></li><li class="inherited"><a href="#CashSender.daiToVatDai(uint256)"><code class="function-signature">daiToVatDai(uint256 _daiAmount)</code></a></li><li class="inherited"><a href="#VariableSupplyToken.mint(address,uint256)"><code class="function-signature">mint(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#VariableSupplyToken.burn(address,uint256)"><code class="function-signature">burn(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.balanceOf(address)"><code class="function-signature">balanceOf(address _account)</code></a></li><li class="inherited"><a href="#ERC20.transfer(address,uint256)"><code class="function-signature">transfer(address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.allowance(address,address)"><code class="function-signature">allowance(address _owner, address _spender)</code></a></li><li class="inherited"><a href="#ERC20.approve(address,uint256)"><code class="function-signature">approve(address _spender, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.transferFrom(address,address,uint256)"><code class="function-signature">transferFrom(address _sender, address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.increaseAllowance(address,uint256)"><code class="function-signature">increaseAllowance(address _spender, uint256 _addedValue)</code></a></li><li class="inherited"><a href="#ERC20.decreaseAllowance(address,uint256)"><code class="function-signature">decreaseAllowance(address _spender, uint256 _subtractedValue)</code></a></li><li class="inherited"><a href="#ERC20._transfer(address,address,uint256)"><code class="function-signature">_transfer(address _sender, address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._mint(address,uint256)"><code class="function-signature">_mint(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._burn(address,uint256)"><code class="function-signature">_burn(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._approve(address,address,uint256)"><code class="function-signature">_approve(address _owner, address _spender, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._burnFrom(address,uint256)"><code class="function-signature">_burnFrom(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="#IERC20.totalSupply()"><code class="function-signature">totalSupply()</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#BaseSimpleDex.Mint(address,uint256,uint256)"><code class="function-signature">Mint(address sender, uint256 tokenAmount, uint256 cashAmount)</code></a></li><li><a href="#BaseSimpleDex.Burn(address,uint256,uint256,address)"><code class="function-signature">Burn(address sender, uint256 tokenAmount, uint256 cashAmount, address to)</code></a></li><li><a href="#BaseSimpleDex.Swap(address,address,uint256,uint256,address)"><code class="function-signature">Swap(address sender, address tokenIn, uint256 amountIn, uint256 amountOut, address to)</code></a></li><li><a href="#BaseSimpleDex.Sync(uint256,uint256)"><code class="function-signature">Sync(uint256 tokenReserve, uint256 cashReserve)</code></a></li><li class="inherited"><a href="#IERC20.Transfer(address,address,uint256)"><code class="function-signature">Transfer(address from, address to, uint256 value)</code></a></li><li class="inherited"><a href="#IERC20.Approval(address,address,uint256)"><code class="function-signature">Approval(address owner, address spender, uint256 value)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#BaseSimpleDex.initializeInternal(address,address)"><code class="function-signature">initializeInternal(address _augurAddress, address _token)</code></a></li><li><a href="#BaseSimpleDex.getTokenBalance()"><code class="function-signature">getTokenBalance()</code></a></li><li><a href="#BaseSimpleDex.getCashBalance()"><code class="function-signature">getCashBalance()</code></a></li><li><a href="#BaseSimpleDex.update(uint256,uint256)"><code class="function-signature">update(uint256 _tokenBalance, uint256 _cashBalance)</code></a></li><li><a href="#BaseSimpleDex.onUpdate(uint256,uint256)"><code class="function-signature">onUpdate(uint256 _blocksElapsed, uint256 _priceCumulativeIncrease)</code></a></li><li><a href="#BaseSimpleDex.publicMint(address)"><code class="function-signature">publicMint(address _to)</code></a></li><li><a href="#BaseSimpleDex.publicBurnAuto(address,uint256)"><code class="function-signature">publicBurnAuto(address _to, uint256 _amount)</code></a></li><li><a href="#BaseSimpleDex.publicBurn(address)"><code class="function-signature">publicBurn(address _to)</code></a></li><li><a href="#BaseSimpleDex.getTokenSaleProceeds(uint256)"><code class="function-signature">getTokenSaleProceeds(uint256 _tokenAmount)</code></a></li><li><a href="#BaseSimpleDex.getCashSaleProceeds(uint256)"><code class="function-signature">getCashSaleProceeds(uint256 _cashAmount)</code></a></li><li><a href="#BaseSimpleDex.getSaleProceeds(uint256,uint256,uint256)"><code class="function-signature">getSaleProceeds(uint256 _inputAmount, uint256 _inputReserve, uint256 _outputReserve)</code></a></li><li><a href="#BaseSimpleDex.getTokenPurchaseCost(uint256)"><code class="function-signature">getTokenPurchaseCost(uint256 _tokenAmount)</code></a></li><li><a href="#BaseSimpleDex.getCashPurchaseCost(uint256)"><code class="function-signature">getCashPurchaseCost(uint256 _cashAmount)</code></a></li><li><a href="#BaseSimpleDex.getPurchaseCost(uint256,uint256,uint256)"><code class="function-signature">getPurchaseCost(uint256 _outputAmount, uint256 _inputReserve, uint256 _outputReserve)</code></a></li><li><a href="#BaseSimpleDex.autoSellToken(address,uint256)"><code class="function-signature">autoSellToken(address _recipient, uint256 _tokenAmount)</code></a></li><li><a href="#BaseSimpleDex.sellToken(address)"><code class="function-signature">sellToken(address _recipient)</code></a></li><li><a href="#BaseSimpleDex.autoBuyToken(address,uint256)"><code class="function-signature">autoBuyToken(address _recipient, uint256 _cashAmount)</code></a></li><li><a href="#BaseSimpleDex.autoBuyTokenAmount(address,uint256)"><code class="function-signature">autoBuyTokenAmount(address _recipient, uint256 _tokenAmount)</code></a></li><li><a href="#BaseSimpleDex.buyToken(address)"><code class="function-signature">buyToken(address _recipient)</code></a></li><li><a href="#BaseSimpleDex.skim(address)"><code class="function-signature">skim(address to)</code></a></li><li><a href="#BaseSimpleDex.sync()"><code class="function-signature">sync()</code></a></li><li><a href="#BaseSimpleDex.onTokenTransfer(address,address,uint256)"><code class="function-signature">onTokenTransfer(address _from, address _to, uint256 _value)</code></a></li><li><a href="#BaseSimpleDex.onMint(address,uint256)"><code class="function-signature">onMint(address _target, uint256 _amount)</code></a></li><li><a href="#BaseSimpleDex.onBurn(address,uint256)"><code class="function-signature">onBurn(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#CashSender.initializeCashSender(address,address)"><code class="function-signature">initializeCashSender(address _vat, address _cash)</code></a></li><li class="inherited"><a href="#CashSender.cashBalance(address)"><code class="function-signature">cashBalance(address _account)</code></a></li><li class="inherited"><a href="#CashSender.cashAvailableForTransferFrom(address,address)"><code class="function-signature">cashAvailableForTransferFrom(address _owner, address _sender)</code></a></li><li class="inherited"><a href="#CashSender.cashApprove(address,uint256)"><code class="function-signature">cashApprove(address _spender, uint256 _amount)</code></a></li><li class="inherited"><a href="#CashSender.cashTransfer(address,uint256)"><code class="function-signature">cashTransfer(address _to, uint256 _amount)</code></a></li><li class="inherited"><a href="#CashSender.cashTransferFrom(address,address,uint256)"><code class="function-signature">cashTransferFrom(address _from, address _to, uint256 _amount)</code></a></li><li class="inherited"><a href="#CashSender.shutdownTransfer(address,address,uint256)"><code class="function-signature">shutdownTransfer(address _from, address _to, uint256 _amount)</code></a></li><li class="inherited"><a href="#CashSender.vatDaiToDai(uint256)"><code class="function-signature">vatDaiToDai(uint256 _vDaiAmount)</code></a></li><li class="inherited"><a href="#CashSender.daiToVatDai(uint256)"><code class="function-signature">daiToVatDai(uint256 _daiAmount)</code></a></li><li class="inherited"><a href="#VariableSupplyToken.mint(address,uint256)"><code class="function-signature">mint(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#VariableSupplyToken.burn(address,uint256)"><code class="function-signature">burn(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.balanceOf(address)"><code class="function-signature">balanceOf(address _account)</code></a></li><li class="inherited"><a href="#ERC20.transfer(address,uint256)"><code class="function-signature">transfer(address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.allowance(address,address)"><code class="function-signature">allowance(address _owner, address _spender)</code></a></li><li class="inherited"><a href="#ERC20.approve(address,uint256)"><code class="function-signature">approve(address _spender, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.transferFrom(address,address,uint256)"><code class="function-signature">transferFrom(address _sender, address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.increaseAllowance(address,uint256)"><code class="function-signature">increaseAllowance(address _spender, uint256 _addedValue)</code></a></li><li class="inherited"><a href="#ERC20.decreaseAllowance(address,uint256)"><code class="function-signature">decreaseAllowance(address _spender, uint256 _subtractedValue)</code></a></li><li class="inherited"><a href="#ERC20._transfer(address,address,uint256)"><code class="function-signature">_transfer(address _sender, address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._mint(address,uint256)"><code class="function-signature">_mint(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._burn(address,uint256)"><code class="function-signature">_burn(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._approve(address,address,uint256)"><code class="function-signature">_approve(address _owner, address _spender, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._burnFrom(address,uint256)"><code class="function-signature">_burnFrom(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="#IERC20.totalSupply()"><code class="function-signature">totalSupply()</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#BaseSimpleDex.Mint(address,uint256,uint256)"><code class="function-signature">Mint(address sender, uint256 tokenAmount, uint256 cashAmount)</code></a></li><li><a href="#BaseSimpleDex.Burn(address,uint256,uint256,address)"><code class="function-signature">Burn(address sender, uint256 tokenAmount, uint256 cashAmount, address to)</code></a></li><li><a href="#BaseSimpleDex.Swap(address,address,uint256,uint256,address)"><code class="function-signature">Swap(address sender, address tokenIn, uint256 amountIn, uint256 amountOut, address to)</code></a></li><li><a href="#BaseSimpleDex.Sync(uint256,uint256)"><code class="function-signature">Sync(uint256 tokenReserve, uint256 cashReserve)</code></a></li><li class="inherited"><a href="#IERC20.Transfer(address,address,uint256)"><code class="function-signature">Transfer(address from, address to, uint256 value)</code></a></li><li class="inherited"><a href="#IERC20.Approval(address,address,uint256)"><code class="function-signature">Approval(address owner, address spender, uint256 value)</code></a></li></ul></div>
 
 
 
@@ -3231,6 +4090,12 @@ MUST emit when the URI is updated for a token ID.
 
 
 <h4><a class="anchor" aria-hidden="true" id="BaseSimpleDex.autoBuyToken(address,uint256)"></a><code class="function-signature">autoBuyToken(address _recipient, uint256 _cashAmount) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="BaseSimpleDex.autoBuyTokenAmount(address,uint256)"></a><code class="function-signature">autoBuyTokenAmount(address _recipient, uint256 _tokenAmount) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
 
 
 
@@ -3467,7 +4332,7 @@ See {_burn} and {_approve}.
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#EthExchange.initialize(address)"><code class="function-signature">initialize(address _augurAddress)</code></a></li><li><a href="#EthExchange.getTokenBalance()"><code class="function-signature">getTokenBalance()</code></a></li><li><a href="#EthExchange.autoSellToken(address,uint256)"><code class="function-signature">autoSellToken(address _recipient, uint256 _tokenAmount)</code></a></li><li><a href="#EthExchange.publicMintAuto(address,uint256)"><code class="function-signature">publicMintAuto(address _to, uint256 _cashAmount)</code></a></li><li><a href="#EthExchange.onUpdate(uint256,uint256)"><code class="function-signature">onUpdate(uint256 _blocksElapsed, uint256 _priceCumulativeIncrease)</code></a></li><li><a href="#EthExchange.fallback()"><code class="function-signature">fallback()</code></a></li><li class="inherited"><a href="#BaseSimpleDex.initializeInternal(address,address)"><code class="function-signature">initializeInternal(address _augurAddress, address _token)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.getCashBalance()"><code class="function-signature">getCashBalance()</code></a></li><li class="inherited"><a href="#BaseSimpleDex.update(uint256,uint256)"><code class="function-signature">update(uint256 _tokenBalance, uint256 _cashBalance)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.publicMint(address)"><code class="function-signature">publicMint(address _to)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.publicBurnAuto(address,uint256)"><code class="function-signature">publicBurnAuto(address _to, uint256 _amount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.publicBurn(address)"><code class="function-signature">publicBurn(address _to)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.getTokenSaleProceeds(uint256)"><code class="function-signature">getTokenSaleProceeds(uint256 _tokenAmount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.getCashSaleProceeds(uint256)"><code class="function-signature">getCashSaleProceeds(uint256 _cashAmount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.getSaleProceeds(uint256,uint256,uint256)"><code class="function-signature">getSaleProceeds(uint256 _inputAmount, uint256 _inputReserve, uint256 _outputReserve)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.getTokenPurchaseCost(uint256)"><code class="function-signature">getTokenPurchaseCost(uint256 _tokenAmount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.getCashPurchaseCost(uint256)"><code class="function-signature">getCashPurchaseCost(uint256 _cashAmount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.getPurchaseCost(uint256,uint256,uint256)"><code class="function-signature">getPurchaseCost(uint256 _outputAmount, uint256 _inputReserve, uint256 _outputReserve)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.sellToken(address)"><code class="function-signature">sellToken(address _recipient)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.autoBuyToken(address,uint256)"><code class="function-signature">autoBuyToken(address _recipient, uint256 _cashAmount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.buyToken(address)"><code class="function-signature">buyToken(address _recipient)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.skim(address)"><code class="function-signature">skim(address to)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.sync()"><code class="function-signature">sync()</code></a></li><li class="inherited"><a href="#BaseSimpleDex.onTokenTransfer(address,address,uint256)"><code class="function-signature">onTokenTransfer(address _from, address _to, uint256 _value)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.onMint(address,uint256)"><code class="function-signature">onMint(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.onBurn(address,uint256)"><code class="function-signature">onBurn(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#CashSender.initializeCashSender(address,address)"><code class="function-signature">initializeCashSender(address _vat, address _cash)</code></a></li><li class="inherited"><a href="#CashSender.cashBalance(address)"><code class="function-signature">cashBalance(address _account)</code></a></li><li class="inherited"><a href="#CashSender.cashAvailableForTransferFrom(address,address)"><code class="function-signature">cashAvailableForTransferFrom(address _owner, address _sender)</code></a></li><li class="inherited"><a href="#CashSender.cashApprove(address,uint256)"><code class="function-signature">cashApprove(address _spender, uint256 _amount)</code></a></li><li class="inherited"><a href="#CashSender.cashTransfer(address,uint256)"><code class="function-signature">cashTransfer(address _to, uint256 _amount)</code></a></li><li class="inherited"><a href="#CashSender.cashTransferFrom(address,address,uint256)"><code class="function-signature">cashTransferFrom(address _from, address _to, uint256 _amount)</code></a></li><li class="inherited"><a href="#CashSender.shutdownTransfer(address,address,uint256)"><code class="function-signature">shutdownTransfer(address _from, address _to, uint256 _amount)</code></a></li><li class="inherited"><a href="#CashSender.vatDaiToDai(uint256)"><code class="function-signature">vatDaiToDai(uint256 _vDaiAmount)</code></a></li><li class="inherited"><a href="#CashSender.daiToVatDai(uint256)"><code class="function-signature">daiToVatDai(uint256 _daiAmount)</code></a></li><li class="inherited"><a href="#VariableSupplyToken.mint(address,uint256)"><code class="function-signature">mint(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#VariableSupplyToken.burn(address,uint256)"><code class="function-signature">burn(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.balanceOf(address)"><code class="function-signature">balanceOf(address _account)</code></a></li><li class="inherited"><a href="#ERC20.transfer(address,uint256)"><code class="function-signature">transfer(address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.allowance(address,address)"><code class="function-signature">allowance(address _owner, address _spender)</code></a></li><li class="inherited"><a href="#ERC20.approve(address,uint256)"><code class="function-signature">approve(address _spender, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.transferFrom(address,address,uint256)"><code class="function-signature">transferFrom(address _sender, address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.increaseAllowance(address,uint256)"><code class="function-signature">increaseAllowance(address _spender, uint256 _addedValue)</code></a></li><li class="inherited"><a href="#ERC20.decreaseAllowance(address,uint256)"><code class="function-signature">decreaseAllowance(address _spender, uint256 _subtractedValue)</code></a></li><li class="inherited"><a href="#ERC20._transfer(address,address,uint256)"><code class="function-signature">_transfer(address _sender, address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._mint(address,uint256)"><code class="function-signature">_mint(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._burn(address,uint256)"><code class="function-signature">_burn(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._approve(address,address,uint256)"><code class="function-signature">_approve(address _owner, address _spender, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._burnFrom(address,uint256)"><code class="function-signature">_burnFrom(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="#IERC20.totalSupply()"><code class="function-signature">totalSupply()</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="#BaseSimpleDex.Mint(address,uint256,uint256)"><code class="function-signature">Mint(address sender, uint256 tokenAmount, uint256 cashAmount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.Burn(address,uint256,uint256,address)"><code class="function-signature">Burn(address sender, uint256 tokenAmount, uint256 cashAmount, address to)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.Swap(address,address,uint256,uint256,address)"><code class="function-signature">Swap(address sender, address tokenIn, uint256 amountIn, uint256 amountOut, address to)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.Sync(uint256,uint256)"><code class="function-signature">Sync(uint256 tokenReserve, uint256 cashReserve)</code></a></li><li class="inherited"><a href="#IERC20.Transfer(address,address,uint256)"><code class="function-signature">Transfer(address from, address to, uint256 value)</code></a></li><li class="inherited"><a href="#IERC20.Approval(address,address,uint256)"><code class="function-signature">Approval(address owner, address spender, uint256 value)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#EthExchange.initialize(address)"><code class="function-signature">initialize(address _augurAddress)</code></a></li><li><a href="#EthExchange.getTokenBalance()"><code class="function-signature">getTokenBalance()</code></a></li><li><a href="#EthExchange.autoSellToken(address,uint256)"><code class="function-signature">autoSellToken(address _recipient, uint256 _tokenAmount)</code></a></li><li><a href="#EthExchange.publicMintAuto(address,uint256)"><code class="function-signature">publicMintAuto(address _to, uint256 _cashAmount)</code></a></li><li><a href="#EthExchange.onUpdate(uint256,uint256)"><code class="function-signature">onUpdate(uint256 _blocksElapsed, uint256 _priceCumulativeIncrease)</code></a></li><li><a href="#EthExchange.fallback()"><code class="function-signature">fallback()</code></a></li><li class="inherited"><a href="#BaseSimpleDex.initializeInternal(address,address)"><code class="function-signature">initializeInternal(address _augurAddress, address _token)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.getCashBalance()"><code class="function-signature">getCashBalance()</code></a></li><li class="inherited"><a href="#BaseSimpleDex.update(uint256,uint256)"><code class="function-signature">update(uint256 _tokenBalance, uint256 _cashBalance)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.publicMint(address)"><code class="function-signature">publicMint(address _to)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.publicBurnAuto(address,uint256)"><code class="function-signature">publicBurnAuto(address _to, uint256 _amount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.publicBurn(address)"><code class="function-signature">publicBurn(address _to)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.getTokenSaleProceeds(uint256)"><code class="function-signature">getTokenSaleProceeds(uint256 _tokenAmount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.getCashSaleProceeds(uint256)"><code class="function-signature">getCashSaleProceeds(uint256 _cashAmount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.getSaleProceeds(uint256,uint256,uint256)"><code class="function-signature">getSaleProceeds(uint256 _inputAmount, uint256 _inputReserve, uint256 _outputReserve)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.getTokenPurchaseCost(uint256)"><code class="function-signature">getTokenPurchaseCost(uint256 _tokenAmount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.getCashPurchaseCost(uint256)"><code class="function-signature">getCashPurchaseCost(uint256 _cashAmount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.getPurchaseCost(uint256,uint256,uint256)"><code class="function-signature">getPurchaseCost(uint256 _outputAmount, uint256 _inputReserve, uint256 _outputReserve)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.sellToken(address)"><code class="function-signature">sellToken(address _recipient)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.autoBuyToken(address,uint256)"><code class="function-signature">autoBuyToken(address _recipient, uint256 _cashAmount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.autoBuyTokenAmount(address,uint256)"><code class="function-signature">autoBuyTokenAmount(address _recipient, uint256 _tokenAmount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.buyToken(address)"><code class="function-signature">buyToken(address _recipient)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.skim(address)"><code class="function-signature">skim(address to)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.sync()"><code class="function-signature">sync()</code></a></li><li class="inherited"><a href="#BaseSimpleDex.onTokenTransfer(address,address,uint256)"><code class="function-signature">onTokenTransfer(address _from, address _to, uint256 _value)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.onMint(address,uint256)"><code class="function-signature">onMint(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.onBurn(address,uint256)"><code class="function-signature">onBurn(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#CashSender.initializeCashSender(address,address)"><code class="function-signature">initializeCashSender(address _vat, address _cash)</code></a></li><li class="inherited"><a href="#CashSender.cashBalance(address)"><code class="function-signature">cashBalance(address _account)</code></a></li><li class="inherited"><a href="#CashSender.cashAvailableForTransferFrom(address,address)"><code class="function-signature">cashAvailableForTransferFrom(address _owner, address _sender)</code></a></li><li class="inherited"><a href="#CashSender.cashApprove(address,uint256)"><code class="function-signature">cashApprove(address _spender, uint256 _amount)</code></a></li><li class="inherited"><a href="#CashSender.cashTransfer(address,uint256)"><code class="function-signature">cashTransfer(address _to, uint256 _amount)</code></a></li><li class="inherited"><a href="#CashSender.cashTransferFrom(address,address,uint256)"><code class="function-signature">cashTransferFrom(address _from, address _to, uint256 _amount)</code></a></li><li class="inherited"><a href="#CashSender.shutdownTransfer(address,address,uint256)"><code class="function-signature">shutdownTransfer(address _from, address _to, uint256 _amount)</code></a></li><li class="inherited"><a href="#CashSender.vatDaiToDai(uint256)"><code class="function-signature">vatDaiToDai(uint256 _vDaiAmount)</code></a></li><li class="inherited"><a href="#CashSender.daiToVatDai(uint256)"><code class="function-signature">daiToVatDai(uint256 _daiAmount)</code></a></li><li class="inherited"><a href="#VariableSupplyToken.mint(address,uint256)"><code class="function-signature">mint(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#VariableSupplyToken.burn(address,uint256)"><code class="function-signature">burn(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.balanceOf(address)"><code class="function-signature">balanceOf(address _account)</code></a></li><li class="inherited"><a href="#ERC20.transfer(address,uint256)"><code class="function-signature">transfer(address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.allowance(address,address)"><code class="function-signature">allowance(address _owner, address _spender)</code></a></li><li class="inherited"><a href="#ERC20.approve(address,uint256)"><code class="function-signature">approve(address _spender, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.transferFrom(address,address,uint256)"><code class="function-signature">transferFrom(address _sender, address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.increaseAllowance(address,uint256)"><code class="function-signature">increaseAllowance(address _spender, uint256 _addedValue)</code></a></li><li class="inherited"><a href="#ERC20.decreaseAllowance(address,uint256)"><code class="function-signature">decreaseAllowance(address _spender, uint256 _subtractedValue)</code></a></li><li class="inherited"><a href="#ERC20._transfer(address,address,uint256)"><code class="function-signature">_transfer(address _sender, address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._mint(address,uint256)"><code class="function-signature">_mint(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._burn(address,uint256)"><code class="function-signature">_burn(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._approve(address,address,uint256)"><code class="function-signature">_approve(address _owner, address _spender, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._burnFrom(address,uint256)"><code class="function-signature">_burnFrom(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="#IERC20.totalSupply()"><code class="function-signature">totalSupply()</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="#BaseSimpleDex.Mint(address,uint256,uint256)"><code class="function-signature">Mint(address sender, uint256 tokenAmount, uint256 cashAmount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.Burn(address,uint256,uint256,address)"><code class="function-signature">Burn(address sender, uint256 tokenAmount, uint256 cashAmount, address to)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.Swap(address,address,uint256,uint256,address)"><code class="function-signature">Swap(address sender, address tokenIn, uint256 amountIn, uint256 amountOut, address to)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.Sync(uint256,uint256)"><code class="function-signature">Sync(uint256 tokenReserve, uint256 cashReserve)</code></a></li><li class="inherited"><a href="#IERC20.Transfer(address,address,uint256)"><code class="function-signature">Transfer(address from, address to, uint256 value)</code></a></li><li class="inherited"><a href="#IERC20.Approval(address,address,uint256)"><code class="function-signature">Approval(address owner, address spender, uint256 value)</code></a></li></ul></div>
 
 
 
@@ -3502,28 +4367,6 @@ See {_burn} and {_approve}.
 
 
 <h4><a class="anchor" aria-hidden="true" id="EthExchange.fallback()"></a><code class="function-signature">fallback()</code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-
-
-### `Initializable`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="Initializable.endInitialization()"></a><code class="function-signature">endInitialization()</code><span class="function-visibility">internal</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="Initializable.getInitialized()"></a><code class="function-signature">getInitialized() <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
 
 
 
@@ -3568,692 +4411,6 @@ See {_burn} and {_approve}.
 
 
 <h4><a class="anchor" aria-hidden="true" id="VariableSupplyToken.onBurn(address,uint256)"></a><code class="function-signature">onBurn(address, uint256)</code><span class="function-visibility">internal</span></h4>
-
-
-
-
-
-
-
-### `Enum`
-
-
-
-<div class="contract-index"></div>
-
-
-
-
-
-### `EtherPaymentFallback`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#EtherPaymentFallback.fallback()"><code class="function-signature">fallback()</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="EtherPaymentFallback.fallback()"></a><code class="function-signature">fallback()</code><span class="function-visibility">external</span></h4>
-
-Fallback function accepts Ether transactions.
-
-
-
-
-
-### `Executor`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#Executor.execute(address,uint256,bytes,enum Enum.Operation,uint256)"><code class="function-signature">execute(address to, uint256 value, bytes data, enum Enum.Operation operation, uint256 txGas)</code></a></li><li><a href="#Executor.executeCall(address,uint256,bytes,uint256)"><code class="function-signature">executeCall(address to, uint256 value, bytes data, uint256 txGas)</code></a></li><li><a href="#Executor.executeDelegateCall(address,bytes,uint256)"><code class="function-signature">executeDelegateCall(address to, bytes data, uint256 txGas)</code></a></li><li><a href="#Executor.executeCreate(bytes)"><code class="function-signature">executeCreate(bytes data)</code></a></li><li class="inherited"><a href="#EtherPaymentFallback.fallback()"><code class="function-signature">fallback()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#Executor.ContractCreation(address)"><code class="function-signature">ContractCreation(address newContract)</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="Executor.execute(address,uint256,bytes,enum Enum.Operation,uint256)"></a><code class="function-signature">execute(address to, uint256 value, bytes data, enum Enum.Operation operation, uint256 txGas) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="Executor.executeCall(address,uint256,bytes,uint256)"></a><code class="function-signature">executeCall(address to, uint256 value, bytes data, uint256 txGas) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="Executor.executeDelegateCall(address,bytes,uint256)"></a><code class="function-signature">executeDelegateCall(address to, bytes data, uint256 txGas) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="Executor.executeCreate(bytes)"></a><code class="function-signature">executeCreate(bytes data) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">internal</span></h4>
-
-
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="Executor.ContractCreation(address)"></a><code class="function-signature">ContractCreation(address newContract)</code><span class="function-visibility"></span></h4>
-
-
-
-
-
-### `FallbackManager`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#FallbackManager.internalSetFallbackHandler(address)"><code class="function-signature">internalSetFallbackHandler(address handler)</code></a></li><li><a href="#FallbackManager.setFallbackHandler(address)"><code class="function-signature">setFallbackHandler(address handler)</code></a></li><li><a href="#FallbackManager.fallback()"><code class="function-signature">fallback()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#FallbackManager.IncomingTransaction(address,uint256)"><code class="function-signature">IncomingTransaction(address from, uint256 value)</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="FallbackManager.internalSetFallbackHandler(address)"></a><code class="function-signature">internalSetFallbackHandler(address handler)</code><span class="function-visibility">internal</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="FallbackManager.setFallbackHandler(address)"></a><code class="function-signature">setFallbackHandler(address handler)</code><span class="function-visibility">public</span></h4>
-
-Allows to add a contract to handle fallback calls.
-      Only fallback calls without value and with data will be forwarded.
-      This can only be done via a Safe transaction.
- @param handler contract to handle fallbacks calls.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="FallbackManager.fallback()"></a><code class="function-signature">fallback()</code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="FallbackManager.IncomingTransaction(address,uint256)"></a><code class="function-signature">IncomingTransaction(address from, uint256 value)</code><span class="function-visibility"></span></h4>
-
-
-
-
-
-### `GnosisSafe`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#GnosisSafe.setup(address[],uint256,address,bytes,address,address,uint256,address payable)"><code class="function-signature">setup(address[] _owners, uint256 _threshold, address to, bytes data, address fallbackHandler, address paymentToken, uint256 payment, address payable paymentReceiver)</code></a></li><li><a href="#GnosisSafe.execTransaction(address,uint256,bytes,enum Enum.Operation,uint256,uint256,uint256,address,address payable,bytes)"><code class="function-signature">execTransaction(address to, uint256 value, bytes data, enum Enum.Operation operation, uint256 safeTxGas, uint256 baseGas, uint256 gasPrice, address gasToken, address payable refundReceiver, bytes signatures)</code></a></li><li><a href="#GnosisSafe.checkSignatures(bytes32,bytes,bytes,bool)"><code class="function-signature">checkSignatures(bytes32 dataHash, bytes data, bytes signatures, bool consumeHash)</code></a></li><li><a href="#GnosisSafe.requiredTxGas(address,uint256,bytes,enum Enum.Operation)"><code class="function-signature">requiredTxGas(address to, uint256 value, bytes data, enum Enum.Operation operation)</code></a></li><li><a href="#GnosisSafe.approveHash(bytes32)"><code class="function-signature">approveHash(bytes32 hashToApprove)</code></a></li><li><a href="#GnosisSafe.signMessage(bytes)"><code class="function-signature">signMessage(bytes _data)</code></a></li><li><a href="#GnosisSafe.isValidSignature(bytes,bytes)"><code class="function-signature">isValidSignature(bytes _data, bytes _signature)</code></a></li><li><a href="#GnosisSafe.getMessageHash(bytes)"><code class="function-signature">getMessageHash(bytes message)</code></a></li><li><a href="#GnosisSafe.encodeTransactionData(address,uint256,bytes,enum Enum.Operation,uint256,uint256,uint256,address,address,uint256)"><code class="function-signature">encodeTransactionData(address to, uint256 value, bytes data, enum Enum.Operation operation, uint256 safeTxGas, uint256 baseGas, uint256 gasPrice, address gasToken, address refundReceiver, uint256 _nonce)</code></a></li><li><a href="#GnosisSafe.getTransactionHash(address,uint256,bytes,enum Enum.Operation,uint256,uint256,uint256,address,address,uint256)"><code class="function-signature">getTransactionHash(address to, uint256 value, bytes data, enum Enum.Operation operation, uint256 safeTxGas, uint256 baseGas, uint256 gasPrice, address gasToken, address refundReceiver, uint256 _nonce)</code></a></li><li class="inherited"><a href="#FallbackManager.internalSetFallbackHandler(address)"><code class="function-signature">internalSetFallbackHandler(address handler)</code></a></li><li class="inherited"><a href="#FallbackManager.setFallbackHandler(address)"><code class="function-signature">setFallbackHandler(address handler)</code></a></li><li class="inherited"><a href="#FallbackManager.fallback()"><code class="function-signature">fallback()</code></a></li><li class="inherited"><a href="#SecuredTokenTransfer.transferToken(address,address,uint256)"><code class="function-signature">transferToken(address token, address receiver, uint256 amount)</code></a></li><li class="inherited"><a href="#SignatureDecoder.recoverKey(bytes32,bytes,uint256)"><code class="function-signature">recoverKey(bytes32 messageHash, bytes messageSignature, uint256 pos)</code></a></li><li class="inherited"><a href="#SignatureDecoder.signatureSplit(bytes,uint256)"><code class="function-signature">signatureSplit(bytes signatures, uint256 pos)</code></a></li><li class="inherited"><a href="#OwnerManager.setupOwners(address[],uint256)"><code class="function-signature">setupOwners(address[] _owners, uint256 _threshold)</code></a></li><li class="inherited"><a href="#OwnerManager.addOwnerWithThreshold(address,uint256)"><code class="function-signature">addOwnerWithThreshold(address owner, uint256 _threshold)</code></a></li><li class="inherited"><a href="#OwnerManager.removeOwner(address,address,uint256)"><code class="function-signature">removeOwner(address prevOwner, address owner, uint256 _threshold)</code></a></li><li class="inherited"><a href="#OwnerManager.swapOwner(address,address,address)"><code class="function-signature">swapOwner(address prevOwner, address oldOwner, address newOwner)</code></a></li><li class="inherited"><a href="#OwnerManager.changeThreshold(uint256)"><code class="function-signature">changeThreshold(uint256 _threshold)</code></a></li><li class="inherited"><a href="#OwnerManager.getThreshold()"><code class="function-signature">getThreshold()</code></a></li><li class="inherited"><a href="#OwnerManager.isOwner(address)"><code class="function-signature">isOwner(address owner)</code></a></li><li class="inherited"><a href="#OwnerManager.getOwners()"><code class="function-signature">getOwners()</code></a></li><li class="inherited"><a href="#ModuleManager.setupModules(address,bytes)"><code class="function-signature">setupModules(address to, bytes data)</code></a></li><li class="inherited"><a href="#ModuleManager.enableModule(contract Module)"><code class="function-signature">enableModule(contract Module module)</code></a></li><li class="inherited"><a href="#ModuleManager.disableModule(contract Module,contract Module)"><code class="function-signature">disableModule(contract Module prevModule, contract Module module)</code></a></li><li class="inherited"><a href="#ModuleManager.execTransactionFromModule(address,uint256,bytes,enum Enum.Operation)"><code class="function-signature">execTransactionFromModule(address to, uint256 value, bytes data, enum Enum.Operation operation)</code></a></li><li class="inherited"><a href="#ModuleManager.getModules()"><code class="function-signature">getModules()</code></a></li><li class="inherited"><a href="#Executor.execute(address,uint256,bytes,enum Enum.Operation,uint256)"><code class="function-signature">execute(address to, uint256 value, bytes data, enum Enum.Operation operation, uint256 txGas)</code></a></li><li class="inherited"><a href="#Executor.executeCall(address,uint256,bytes,uint256)"><code class="function-signature">executeCall(address to, uint256 value, bytes data, uint256 txGas)</code></a></li><li class="inherited"><a href="#Executor.executeDelegateCall(address,bytes,uint256)"><code class="function-signature">executeDelegateCall(address to, bytes data, uint256 txGas)</code></a></li><li class="inherited"><a href="#Executor.executeCreate(bytes)"><code class="function-signature">executeCreate(bytes data)</code></a></li><li class="inherited"><a href="#MasterCopy.changeMasterCopy(address)"><code class="function-signature">changeMasterCopy(address _masterCopy)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#GnosisSafe.ApproveHash(bytes32,address)"><code class="function-signature">ApproveHash(bytes32 approvedHash, address owner)</code></a></li><li><a href="#GnosisSafe.SignMsg(bytes32)"><code class="function-signature">SignMsg(bytes32 msgHash)</code></a></li><li><a href="#GnosisSafe.ExecutionFailure(bytes32,uint256)"><code class="function-signature">ExecutionFailure(bytes32 txHash, uint256 payment)</code></a></li><li><a href="#GnosisSafe.ExecutionSuccess(bytes32,uint256)"><code class="function-signature">ExecutionSuccess(bytes32 txHash, uint256 payment)</code></a></li><li class="inherited"><a href="#FallbackManager.IncomingTransaction(address,uint256)"><code class="function-signature">IncomingTransaction(address from, uint256 value)</code></a></li><li class="inherited"><a href="#OwnerManager.AddedOwner(address)"><code class="function-signature">AddedOwner(address owner)</code></a></li><li class="inherited"><a href="#OwnerManager.RemovedOwner(address)"><code class="function-signature">RemovedOwner(address owner)</code></a></li><li class="inherited"><a href="#OwnerManager.ChangedThreshold(uint256)"><code class="function-signature">ChangedThreshold(uint256 threshold)</code></a></li><li class="inherited"><a href="#ModuleManager.EnabledModule(contract Module)"><code class="function-signature">EnabledModule(contract Module module)</code></a></li><li class="inherited"><a href="#ModuleManager.DisabledModule(contract Module)"><code class="function-signature">DisabledModule(contract Module module)</code></a></li><li class="inherited"><a href="#Executor.ContractCreation(address)"><code class="function-signature">ContractCreation(address newContract)</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="GnosisSafe.setup(address[],uint256,address,bytes,address,address,uint256,address payable)"></a><code class="function-signature">setup(address[] _owners, uint256 _threshold, address to, bytes data, address fallbackHandler, address paymentToken, uint256 payment, address payable paymentReceiver)</code><span class="function-visibility">external</span></h4>
-
-Setup function sets initial storage of contract.
- @param _owners List of Safe owners.
- @param _threshold Number of required confirmations for a Safe transaction.
- @param to Contract address for optional delegate call.
- @param data Data payload for optional delegate call.
- @param fallbackHandler Handler for fallback calls to this contract
- @param paymentToken Token that should be used for the payment (0 is ETH)
- @param payment Value that should be paid
- @param paymentReceiver Adddress that should receive the payment (or 0 if tx.origin)
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="GnosisSafe.execTransaction(address,uint256,bytes,enum Enum.Operation,uint256,uint256,uint256,address,address payable,bytes)"></a><code class="function-signature">execTransaction(address to, uint256 value, bytes data, enum Enum.Operation operation, uint256 safeTxGas, uint256 baseGas, uint256 gasPrice, address gasToken, address payable refundReceiver, bytes signatures) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
-
-Allows to execute a Safe transaction confirmed by required number of owners and then pays the account that submitted the transaction.
-      Note: The fees are always transfered, even if the user transaction fails.
- @param to Destination address of Safe transaction.
- @param value Ether value of Safe transaction.
- @param data Data payload of Safe transaction.
- @param operation Operation type of Safe transaction.
- @param safeTxGas Gas that should be used for the Safe transaction.
- @param baseGas Gas costs for that are indipendent of the transaction execution(e.g. base transaction fee, signature check, payment of the refund)
- @param gasPrice Gas price that should be used for the payment calculation.
- @param gasToken Token address (or 0 if ETH) that is used for the payment.
- @param refundReceiver Address of receiver of gas payment (or 0 if tx.origin).
- @param signatures Packed signature data ({bytes32 r}{bytes32 s}{uint8 v})
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="GnosisSafe.checkSignatures(bytes32,bytes,bytes,bool)"></a><code class="function-signature">checkSignatures(bytes32 dataHash, bytes data, bytes signatures, bool consumeHash)</code><span class="function-visibility">internal</span></h4>
-
-Checks whether the signature provided is valid for the provided data, hash. Will revert otherwise.
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="GnosisSafe.requiredTxGas(address,uint256,bytes,enum Enum.Operation)"></a><code class="function-signature">requiredTxGas(address to, uint256 value, bytes data, enum Enum.Operation operation) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
-
-Allows to estimate a Safe transaction.
-      This method is only meant for estimation purpose, therefore two different protection mechanism against execution in a transaction have been made:
-      1.) The method can only be called from the safe itself
-      2.) The response is returned with a revert
-      When estimating set `from` to the address of the safe.
-      Since the `estimateGas` function includes refunds, call this method to get an estimated of the costs that are deducted from the safe with [`execTransaction`](.#GnosisSafe.execTransaction(address,uint256,bytes,enum%20Enum.Operation,uint256,uint256,uint256,address,address%20payable,bytes))
- @param to Destination address of Safe transaction.
- @param value Ether value of Safe transaction.
- @param data Data payload of Safe transaction.
- @param operation Operation type of Safe transaction.
- @return Estimate without refunds and overhead fees (base transaction and payload data gas costs).
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="GnosisSafe.approveHash(bytes32)"></a><code class="function-signature">approveHash(bytes32 hashToApprove)</code><span class="function-visibility">external</span></h4>
-
-Marks a hash as approved. This can be used to validate a hash that is used by a signature.
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="GnosisSafe.signMessage(bytes)"></a><code class="function-signature">signMessage(bytes _data)</code><span class="function-visibility">external</span></h4>
-
-Marks a message as signed
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="GnosisSafe.isValidSignature(bytes,bytes)"></a><code class="function-signature">isValidSignature(bytes _data, bytes _signature) <span class="return-arrow">→</span> <span class="return-type">bytes4</span></code><span class="function-visibility">external</span></h4>
-
-Should return whether the signature provided is valid for the provided data.
-      The save does not implement the interface since [`checkSignatures`](.#GnosisSafe.checkSignatures(bytes32,bytes,bytes,bool)) is not a view method.
-      The method will not perform any state changes (see parameters of [`checkSignatures`](.#GnosisSafe.checkSignatures(bytes32,bytes,bytes,bool)))
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="GnosisSafe.getMessageHash(bytes)"></a><code class="function-signature">getMessageHash(bytes message) <span class="return-arrow">→</span> <span class="return-type">bytes32</span></code><span class="function-visibility">public</span></h4>
-
-Returns hash of a message that can be signed by owners.
- @param message Message that should be hashed
- @return Message hash.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="GnosisSafe.encodeTransactionData(address,uint256,bytes,enum Enum.Operation,uint256,uint256,uint256,address,address,uint256)"></a><code class="function-signature">encodeTransactionData(address to, uint256 value, bytes data, enum Enum.Operation operation, uint256 safeTxGas, uint256 baseGas, uint256 gasPrice, address gasToken, address refundReceiver, uint256 _nonce) <span class="return-arrow">→</span> <span class="return-type">bytes</span></code><span class="function-visibility">public</span></h4>
-
-Returns the bytes that are hashed to be signed by owners.
- @param to Destination address.
- @param value Ether value.
- @param data Data payload.
- @param operation Operation type.
- @param safeTxGas Fas that should be used for the safe transaction.
- @param baseGas Gas costs for data used to trigger the safe transaction.
- @param gasPrice Maximum gas price that should be used for this transaction.
- @param gasToken Token address (or 0 if ETH) that is used for the payment.
- @param refundReceiver Address of receiver of gas payment (or 0 if tx.origin).
- @param _nonce Transaction nonce.
- @return Transaction hash bytes.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="GnosisSafe.getTransactionHash(address,uint256,bytes,enum Enum.Operation,uint256,uint256,uint256,address,address,uint256)"></a><code class="function-signature">getTransactionHash(address to, uint256 value, bytes data, enum Enum.Operation operation, uint256 safeTxGas, uint256 baseGas, uint256 gasPrice, address gasToken, address refundReceiver, uint256 _nonce) <span class="return-arrow">→</span> <span class="return-type">bytes32</span></code><span class="function-visibility">public</span></h4>
-
-Returns hash to be signed by owners.
- @param to Destination address.
- @param value Ether value.
- @param data Data payload.
- @param operation Operation type.
- @param safeTxGas Fas that should be used for the safe transaction.
- @param baseGas Gas costs for data used to trigger the safe transaction.
- @param gasPrice Maximum gas price that should be used for this transaction.
- @param gasToken Token address (or 0 if ETH) that is used for the payment.
- @param refundReceiver Address of receiver of gas payment (or 0 if tx.origin).
- @param _nonce Transaction nonce.
- @return Transaction hash.
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="GnosisSafe.ApproveHash(bytes32,address)"></a><code class="function-signature">ApproveHash(bytes32 approvedHash, address owner)</code><span class="function-visibility"></span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="GnosisSafe.SignMsg(bytes32)"></a><code class="function-signature">SignMsg(bytes32 msgHash)</code><span class="function-visibility"></span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="GnosisSafe.ExecutionFailure(bytes32,uint256)"></a><code class="function-signature">ExecutionFailure(bytes32 txHash, uint256 payment)</code><span class="function-visibility"></span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="GnosisSafe.ExecutionSuccess(bytes32,uint256)"></a><code class="function-signature">ExecutionSuccess(bytes32 txHash, uint256 payment)</code><span class="function-visibility"></span></h4>
-
-
-
-
-
-### `ISignatureValidator`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ISignatureValidator.isValidSignature(bytes,bytes)"><code class="function-signature">isValidSignature(bytes _data, bytes _signature)</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ISignatureValidator.isValidSignature(bytes,bytes)"></a><code class="function-signature">isValidSignature(bytes _data, bytes _signature) <span class="return-arrow">→</span> <span class="return-type">bytes4</span></code><span class="function-visibility">public</span></h4>
-
-Should return whether the signature provided is valid for the provided data
-
-
-
-
-
-
-### `ISignatureValidatorConstants`
-
-
-
-<div class="contract-index"></div>
-
-
-
-
-
-### `MasterCopy`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#MasterCopy.changeMasterCopy(address)"><code class="function-signature">changeMasterCopy(address _masterCopy)</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="MasterCopy.changeMasterCopy(address)"></a><code class="function-signature">changeMasterCopy(address _masterCopy)</code><span class="function-visibility">public</span></h4>
-
-Allows to upgrade the contract. This can only be done via a Safe transaction.
- @param _masterCopy New contract address.
-
-
-
-
-
-### `Module`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#Module.setManager()"><code class="function-signature">setManager()</code></a></li><li class="inherited"><a href="#MasterCopy.changeMasterCopy(address)"><code class="function-signature">changeMasterCopy(address _masterCopy)</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="Module.setManager()"></a><code class="function-signature">setManager()</code><span class="function-visibility">internal</span></h4>
-
-
-
-
-
-
-
-### `ModuleManager`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ModuleManager.setupModules(address,bytes)"><code class="function-signature">setupModules(address to, bytes data)</code></a></li><li><a href="#ModuleManager.enableModule(contract Module)"><code class="function-signature">enableModule(contract Module module)</code></a></li><li><a href="#ModuleManager.disableModule(contract Module,contract Module)"><code class="function-signature">disableModule(contract Module prevModule, contract Module module)</code></a></li><li><a href="#ModuleManager.execTransactionFromModule(address,uint256,bytes,enum Enum.Operation)"><code class="function-signature">execTransactionFromModule(address to, uint256 value, bytes data, enum Enum.Operation operation)</code></a></li><li><a href="#ModuleManager.getModules()"><code class="function-signature">getModules()</code></a></li><li class="inherited"><a href="#Executor.execute(address,uint256,bytes,enum Enum.Operation,uint256)"><code class="function-signature">execute(address to, uint256 value, bytes data, enum Enum.Operation operation, uint256 txGas)</code></a></li><li class="inherited"><a href="#Executor.executeCall(address,uint256,bytes,uint256)"><code class="function-signature">executeCall(address to, uint256 value, bytes data, uint256 txGas)</code></a></li><li class="inherited"><a href="#Executor.executeDelegateCall(address,bytes,uint256)"><code class="function-signature">executeDelegateCall(address to, bytes data, uint256 txGas)</code></a></li><li class="inherited"><a href="#Executor.executeCreate(bytes)"><code class="function-signature">executeCreate(bytes data)</code></a></li><li class="inherited"><a href="#EtherPaymentFallback.fallback()"><code class="function-signature">fallback()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#ModuleManager.EnabledModule(contract Module)"><code class="function-signature">EnabledModule(contract Module module)</code></a></li><li><a href="#ModuleManager.DisabledModule(contract Module)"><code class="function-signature">DisabledModule(contract Module module)</code></a></li><li class="inherited"><a href="#Executor.ContractCreation(address)"><code class="function-signature">ContractCreation(address newContract)</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ModuleManager.setupModules(address,bytes)"></a><code class="function-signature">setupModules(address to, bytes data)</code><span class="function-visibility">internal</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ModuleManager.enableModule(contract Module)"></a><code class="function-signature">enableModule(contract Module module)</code><span class="function-visibility">public</span></h4>
-
-Allows to add a module to the whitelist.
-      This can only be done via a Safe transaction.
- @param module Module to be whitelisted.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ModuleManager.disableModule(contract Module,contract Module)"></a><code class="function-signature">disableModule(contract Module prevModule, contract Module module)</code><span class="function-visibility">public</span></h4>
-
-Allows to remove a module from the whitelist.
-      This can only be done via a Safe transaction.
- @param prevModule Module that pointed to the module to be removed in the linked list
- @param module Module to be removed.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ModuleManager.execTransactionFromModule(address,uint256,bytes,enum Enum.Operation)"></a><code class="function-signature">execTransactionFromModule(address to, uint256 value, bytes data, enum Enum.Operation operation) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
-
-Allows a Module to execute a Safe transaction without any further confirmations.
- @param to Destination address of module transaction.
- @param value Ether value of module transaction.
- @param data Data payload of module transaction.
- @param operation Operation type of module transaction.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ModuleManager.getModules()"></a><code class="function-signature">getModules() <span class="return-arrow">→</span> <span class="return-type">address[]</span></code><span class="function-visibility">public</span></h4>
-
-Returns array of modules.
- @return Array of modules.
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ModuleManager.EnabledModule(contract Module)"></a><code class="function-signature">EnabledModule(contract Module module)</code><span class="function-visibility"></span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ModuleManager.DisabledModule(contract Module)"></a><code class="function-signature">DisabledModule(contract Module module)</code><span class="function-visibility"></span></h4>
-
-
-
-
-
-### `OwnerManager`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#OwnerManager.setupOwners(address[],uint256)"><code class="function-signature">setupOwners(address[] _owners, uint256 _threshold)</code></a></li><li><a href="#OwnerManager.addOwnerWithThreshold(address,uint256)"><code class="function-signature">addOwnerWithThreshold(address owner, uint256 _threshold)</code></a></li><li><a href="#OwnerManager.removeOwner(address,address,uint256)"><code class="function-signature">removeOwner(address prevOwner, address owner, uint256 _threshold)</code></a></li><li><a href="#OwnerManager.swapOwner(address,address,address)"><code class="function-signature">swapOwner(address prevOwner, address oldOwner, address newOwner)</code></a></li><li><a href="#OwnerManager.changeThreshold(uint256)"><code class="function-signature">changeThreshold(uint256 _threshold)</code></a></li><li><a href="#OwnerManager.getThreshold()"><code class="function-signature">getThreshold()</code></a></li><li><a href="#OwnerManager.isOwner(address)"><code class="function-signature">isOwner(address owner)</code></a></li><li><a href="#OwnerManager.getOwners()"><code class="function-signature">getOwners()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#OwnerManager.AddedOwner(address)"><code class="function-signature">AddedOwner(address owner)</code></a></li><li><a href="#OwnerManager.RemovedOwner(address)"><code class="function-signature">RemovedOwner(address owner)</code></a></li><li><a href="#OwnerManager.ChangedThreshold(uint256)"><code class="function-signature">ChangedThreshold(uint256 threshold)</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="OwnerManager.setupOwners(address[],uint256)"></a><code class="function-signature">setupOwners(address[] _owners, uint256 _threshold)</code><span class="function-visibility">internal</span></h4>
-
-Setup function sets initial storage of contract.
- @param _owners List of Safe owners.
- @param _threshold Number of required confirmations for a Safe transaction.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="OwnerManager.addOwnerWithThreshold(address,uint256)"></a><code class="function-signature">addOwnerWithThreshold(address owner, uint256 _threshold)</code><span class="function-visibility">public</span></h4>
-
-Allows to add a new owner to the Safe and update the threshold at the same time.
-      This can only be done via a Safe transaction.
- @param owner New owner address.
- @param _threshold New threshold.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="OwnerManager.removeOwner(address,address,uint256)"></a><code class="function-signature">removeOwner(address prevOwner, address owner, uint256 _threshold)</code><span class="function-visibility">public</span></h4>
-
-Allows to remove an owner from the Safe and update the threshold at the same time.
-      This can only be done via a Safe transaction.
- @param prevOwner Owner that pointed to the owner to be removed in the linked list
- @param owner Owner address to be removed.
- @param _threshold New threshold.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="OwnerManager.swapOwner(address,address,address)"></a><code class="function-signature">swapOwner(address prevOwner, address oldOwner, address newOwner)</code><span class="function-visibility">public</span></h4>
-
-Allows to swap/replace an owner from the Safe with another address.
-      This can only be done via a Safe transaction.
- @param prevOwner Owner that pointed to the owner to be replaced in the linked list
- @param oldOwner Owner address to be replaced.
- @param newOwner New owner address.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="OwnerManager.changeThreshold(uint256)"></a><code class="function-signature">changeThreshold(uint256 _threshold)</code><span class="function-visibility">public</span></h4>
-
-Allows to update the number of required confirmations by Safe owners.
-      This can only be done via a Safe transaction.
- @param _threshold New threshold.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="OwnerManager.getThreshold()"></a><code class="function-signature">getThreshold() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="OwnerManager.isOwner(address)"></a><code class="function-signature">isOwner(address owner) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="OwnerManager.getOwners()"></a><code class="function-signature">getOwners() <span class="return-arrow">→</span> <span class="return-type">address[]</span></code><span class="function-visibility">public</span></h4>
-
-Returns array of owners.
- @return Array of Safe owners.
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="OwnerManager.AddedOwner(address)"></a><code class="function-signature">AddedOwner(address owner)</code><span class="function-visibility"></span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="OwnerManager.RemovedOwner(address)"></a><code class="function-signature">RemovedOwner(address owner)</code><span class="function-visibility"></span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="OwnerManager.ChangedThreshold(uint256)"></a><code class="function-signature">ChangedThreshold(uint256 threshold)</code><span class="function-visibility"></span></h4>
-
-
-
-
-
-### `SafeMath`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#SafeMath.mul(uint256,uint256)"><code class="function-signature">mul(uint256 a, uint256 b)</code></a></li><li><a href="#SafeMath.div(uint256,uint256)"><code class="function-signature">div(uint256 a, uint256 b)</code></a></li><li><a href="#SafeMath.sub(uint256,uint256)"><code class="function-signature">sub(uint256 a, uint256 b)</code></a></li><li><a href="#SafeMath.add(uint256,uint256)"><code class="function-signature">add(uint256 a, uint256 b)</code></a></li><li><a href="#SafeMath.mod(uint256,uint256)"><code class="function-signature">mod(uint256 a, uint256 b)</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="SafeMath.mul(uint256,uint256)"></a><code class="function-signature">mul(uint256 a, uint256 b) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
-
-Multiplies two numbers, reverts on overflow.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="SafeMath.div(uint256,uint256)"></a><code class="function-signature">div(uint256 a, uint256 b) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
-
-Integer division of two numbers truncating the quotient, reverts on division by zero.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="SafeMath.sub(uint256,uint256)"></a><code class="function-signature">sub(uint256 a, uint256 b) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
-
-Subtracts two numbers, reverts on overflow (i.e. if subtrahend is greater than minuend).
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="SafeMath.add(uint256,uint256)"></a><code class="function-signature">add(uint256 a, uint256 b) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
-
-Adds two numbers, reverts on overflow.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="SafeMath.mod(uint256,uint256)"></a><code class="function-signature">mod(uint256 a, uint256 b) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
-
-Divides two numbers and returns the remainder (unsigned integer modulo),
-reverts when dividing by zero.
-
-
-
-
-
-### `SecuredTokenTransfer`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#SecuredTokenTransfer.transferToken(address,address,uint256)"><code class="function-signature">transferToken(address token, address receiver, uint256 amount)</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="SecuredTokenTransfer.transferToken(address,address,uint256)"></a><code class="function-signature">transferToken(address token, address receiver, uint256 amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
-
-Transfers a token and returns if it was a success
- @param token Token that should be transferred
- @param receiver Receiver to whom the token should be transferred
- @param amount The amount of tokens that should be transferred
-
-
-
-
-
-### `SelfAuthorized`
-
-
-
-<div class="contract-index"></div>
-
-
-
-
-
-### `SignatureDecoder`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#SignatureDecoder.recoverKey(bytes32,bytes,uint256)"><code class="function-signature">recoverKey(bytes32 messageHash, bytes messageSignature, uint256 pos)</code></a></li><li><a href="#SignatureDecoder.signatureSplit(bytes,uint256)"><code class="function-signature">signatureSplit(bytes signatures, uint256 pos)</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="SignatureDecoder.recoverKey(bytes32,bytes,uint256)"></a><code class="function-signature">recoverKey(bytes32 messageHash, bytes messageSignature, uint256 pos) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">internal</span></h4>
-
-Recovers address who signed the message
- @param messageHash operation ethereum signed message hash
- @param messageSignature message `txHash` signature
- @param pos which signature to read
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="SignatureDecoder.signatureSplit(bytes,uint256)"></a><code class="function-signature">signatureSplit(bytes signatures, uint256 pos) <span class="return-arrow">→</span> <span class="return-type">uint8,bytes32,bytes32</span></code><span class="function-visibility">internal</span></h4>
-
-divides bytes signature into `uint8 v, bytes32 r, bytes32 s`.
- @notice Make sure to peform a bounds check for @param pos, to avoid out of bounds access on @param signatures
- @param pos which signature to read. A prior bounds check of this parameter should be performed, to avoid out of bounds access
- @param signatures concatenated rsv signatures
-
-
-
-
-
-### `GnosisSafeRegistry`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#GnosisSafeRegistry.initialize(contract IAugur,contract IAugurTrading)"><code class="function-signature">initialize(contract IAugur _augur, contract IAugurTrading _augurTrading)</code></a></li><li><a href="#GnosisSafeRegistry.setupForAugur(address,address,address,address,contract IERC20,contract IERC1155,contract IAffiliates,bytes32,address)"><code class="function-signature">setupForAugur(address _augur, address _createOrder, address _fillOrder, address _zeroXTrade, contract IERC20 _cash, contract IERC1155 _shareToken, contract IAffiliates _affiliates, bytes32 _fingerprint, address _referralAddress)</code></a></li><li><a href="#GnosisSafeRegistry.proxyCreated(address,address,bytes,uint256)"><code class="function-signature">proxyCreated(address _proxy, address _mastercopy, bytes _initializer, uint256 _saltNonce)</code></a></li><li><a href="#GnosisSafeRegistry.validateSafeCreation(address[],address,address,bytes,uint256)"><code class="function-signature">validateSafeCreation(address[] _owners, address _proxy, address _mastercopy, bytes _initializer, uint256 _saltNonce)</code></a></li><li><a href="#GnosisSafeRegistry.generateCreate2(address,bytes32,bytes32)"><code class="function-signature">generateCreate2(address _address, bytes32 _salt, bytes32 _hashedInitCode)</code></a></li><li><a href="#GnosisSafeRegistry.deRegister()"><code class="function-signature">deRegister()</code></a></li><li><a href="#GnosisSafeRegistry.getSafe(address)"><code class="function-signature">getSafe(address _account)</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="GnosisSafeRegistry.initialize(contract IAugur,contract IAugurTrading)"></a><code class="function-signature">initialize(contract IAugur _augur, contract IAugurTrading _augurTrading) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="GnosisSafeRegistry.setupForAugur(address,address,address,address,contract IERC20,contract IERC1155,contract IAffiliates,bytes32,address)"></a><code class="function-signature">setupForAugur(address _augur, address _createOrder, address _fillOrder, address _zeroXTrade, contract IERC20 _cash, contract IERC1155 _shareToken, contract IAffiliates _affiliates, bytes32 _fingerprint, address _referralAddress)</code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="GnosisSafeRegistry.proxyCreated(address,address,bytes,uint256)"></a><code class="function-signature">proxyCreated(address _proxy, address _mastercopy, bytes _initializer, uint256 _saltNonce)</code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="GnosisSafeRegistry.validateSafeCreation(address[],address,address,bytes,uint256)"></a><code class="function-signature">validateSafeCreation(address[] _owners, address _proxy, address _mastercopy, bytes _initializer, uint256 _saltNonce)</code><span class="function-visibility">internal</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="GnosisSafeRegistry.generateCreate2(address,bytes32,bytes32)"></a><code class="function-signature">generateCreate2(address _address, bytes32 _salt, bytes32 _hashedInitCode) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="GnosisSafeRegistry.deRegister()"></a><code class="function-signature">deRegister()</code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="GnosisSafeRegistry.getSafe(address)"></a><code class="function-signature">getSafe(address _account) <span class="return-arrow">→</span> <span class="return-type">contract IGnosisSafe</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-
-
-### `IGnosisSafe`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IGnosisSafe.getThreshold()"><code class="function-signature">getThreshold()</code></a></li><li><a href="#IGnosisSafe.getOwners()"><code class="function-signature">getOwners()</code></a></li><li><a href="#IGnosisSafe.setup(address[],uint256,address,bytes,address,address,uint256,address payable)"><code class="function-signature">setup(address[] _owners, uint256 _threshold, address to, bytes data, address fallbackHandler, address paymentToken, uint256 payment, address payable paymentReceiver)</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IGnosisSafe.getThreshold()"></a><code class="function-signature">getThreshold() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IGnosisSafe.getOwners()"></a><code class="function-signature">getOwners() <span class="return-arrow">→</span> <span class="return-type">address[]</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IGnosisSafe.setup(address[],uint256,address,bytes,address,address,uint256,address payable)"></a><code class="function-signature">setup(address[] _owners, uint256 _threshold, address to, bytes data, address fallbackHandler, address paymentToken, uint256 payment, address payable paymentReceiver)</code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-
-
-### `IProxy`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IProxy.masterCopy()"><code class="function-signature">masterCopy()</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IProxy.masterCopy()"></a><code class="function-signature">masterCopy() <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-
-
-### `IProxyFactory`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IProxyFactory.proxyRuntimeCode()"><code class="function-signature">proxyRuntimeCode()</code></a></li><li><a href="#IProxyFactory.proxyCreationCode()"><code class="function-signature">proxyCreationCode()</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IProxyFactory.proxyRuntimeCode()"></a><code class="function-signature">proxyRuntimeCode() <span class="return-arrow">→</span> <span class="return-type">bytes</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IProxyFactory.proxyCreationCode()"></a><code class="function-signature">proxyCreationCode() <span class="return-arrow">→</span> <span class="return-type">bytes</span></code><span class="function-visibility">public</span></h4>
 
 
 
@@ -4461,126 +4618,11 @@ Copies the allowances of a batch of addresses from the legacy contract. This is 
 
 
 
-### `IProxyCreationCallback`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IProxyCreationCallback.proxyCreated(contract Proxy,address,bytes,uint256)"><code class="function-signature">proxyCreated(contract Proxy proxy, address _mastercopy, bytes initializer, uint256 saltNonce)</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IProxyCreationCallback.proxyCreated(contract Proxy,address,bytes,uint256)"></a><code class="function-signature">proxyCreated(contract Proxy proxy, address _mastercopy, bytes initializer, uint256 saltNonce)</code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-
-
-### `Proxy`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#Proxy.constructor(address)"><code class="function-signature">constructor(address _masterCopy)</code></a></li><li><a href="#Proxy.fallback()"><code class="function-signature">fallback()</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="Proxy.constructor(address)"></a><code class="function-signature">constructor(address _masterCopy)</code><span class="function-visibility">public</span></h4>
-
-Constructor function sets address of master copy contract.
- @param _masterCopy Master copy address.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="Proxy.fallback()"></a><code class="function-signature">fallback()</code><span class="function-visibility">external</span></h4>
-
-Fallback function forwards all transactions and returns all received return data.
-
-
-
-
-
-### `ProxyFactory`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ProxyFactory.createProxy(address,bytes)"><code class="function-signature">createProxy(address masterCopy, bytes data)</code></a></li><li><a href="#ProxyFactory.proxyRuntimeCode()"><code class="function-signature">proxyRuntimeCode()</code></a></li><li><a href="#ProxyFactory.proxyCreationCode()"><code class="function-signature">proxyCreationCode()</code></a></li><li><a href="#ProxyFactory.deployProxyWithNonce(address,bytes,uint256)"><code class="function-signature">deployProxyWithNonce(address _mastercopy, bytes initializer, uint256 saltNonce)</code></a></li><li><a href="#ProxyFactory.createProxyWithNonce(address,bytes,uint256)"><code class="function-signature">createProxyWithNonce(address _mastercopy, bytes initializer, uint256 saltNonce)</code></a></li><li><a href="#ProxyFactory.createProxyWithCallback(address,bytes,uint256,contract IProxyCreationCallback)"><code class="function-signature">createProxyWithCallback(address _mastercopy, bytes initializer, uint256 saltNonce, contract IProxyCreationCallback callback)</code></a></li><li><a href="#ProxyFactory.calculateCreateProxyWithNonceAddress(address,bytes,uint256)"><code class="function-signature">calculateCreateProxyWithNonceAddress(address _mastercopy, bytes initializer, uint256 saltNonce)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#ProxyFactory.ProxyCreation(contract Proxy)"><code class="function-signature">ProxyCreation(contract Proxy proxy)</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ProxyFactory.createProxy(address,bytes)"></a><code class="function-signature">createProxy(address masterCopy, bytes data) <span class="return-arrow">→</span> <span class="return-type">contract Proxy</span></code><span class="function-visibility">public</span></h4>
-
-Allows to create new proxy contact and execute a message call to the new proxy within one transaction.
- @param masterCopy Address of master copy.
- @param data Payload for message call sent to new proxy contract.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ProxyFactory.proxyRuntimeCode()"></a><code class="function-signature">proxyRuntimeCode() <span class="return-arrow">→</span> <span class="return-type">bytes</span></code><span class="function-visibility">public</span></h4>
-
-Allows to retrieve the runtime code of a deployed Proxy. This can be used to check that the expected Proxy was deployed.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ProxyFactory.proxyCreationCode()"></a><code class="function-signature">proxyCreationCode() <span class="return-arrow">→</span> <span class="return-type">bytes</span></code><span class="function-visibility">public</span></h4>
-
-Allows to retrieve the creation code used for the Proxy deployment. With this it is easily possible to calculate predicted address.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ProxyFactory.deployProxyWithNonce(address,bytes,uint256)"></a><code class="function-signature">deployProxyWithNonce(address _mastercopy, bytes initializer, uint256 saltNonce) <span class="return-arrow">→</span> <span class="return-type">contract Proxy</span></code><span class="function-visibility">internal</span></h4>
-
-Allows to create new proxy contact using CREATE2 but it doesn&#x27;t run the initializer.
-      This method is only meant as an utility to be called from other methods
- @param _mastercopy Address of master copy.
- @param initializer Payload for message call sent to new proxy contract.
- @param saltNonce Nonce that will be used to generate the salt to calculate the address of the new proxy contract.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ProxyFactory.createProxyWithNonce(address,bytes,uint256)"></a><code class="function-signature">createProxyWithNonce(address _mastercopy, bytes initializer, uint256 saltNonce) <span class="return-arrow">→</span> <span class="return-type">contract Proxy</span></code><span class="function-visibility">public</span></h4>
-
-Allows to create new proxy contact and execute a message call to the new proxy within one transaction.
- @param _mastercopy Address of master copy.
- @param initializer Payload for message call sent to new proxy contract.
- @param saltNonce Nonce that will be used to generate the salt to calculate the address of the new proxy contract.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ProxyFactory.createProxyWithCallback(address,bytes,uint256,contract IProxyCreationCallback)"></a><code class="function-signature">createProxyWithCallback(address _mastercopy, bytes initializer, uint256 saltNonce, contract IProxyCreationCallback callback) <span class="return-arrow">→</span> <span class="return-type">contract Proxy</span></code><span class="function-visibility">public</span></h4>
-
-Allows to create new proxy contact, execute a message call to the new proxy and call a specified callback within one transaction
- @param _mastercopy Address of master copy.
- @param initializer Payload for message call sent to new proxy contract.
- @param saltNonce Nonce that will be used to generate the salt to calculate the address of the new proxy contract.
- @param callback Callback that will be invoced after the new proxy contract has been successfully deployed and initialized.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ProxyFactory.calculateCreateProxyWithNonceAddress(address,bytes,uint256)"></a><code class="function-signature">calculateCreateProxyWithNonceAddress(address _mastercopy, bytes initializer, uint256 saltNonce) <span class="return-arrow">→</span> <span class="return-type">contract Proxy</span></code><span class="function-visibility">external</span></h4>
-
-Allows to get the address for a new proxy contact created via [`createProxyWithNonce`](.#ProxyFactory.createProxyWithNonce(address,bytes,uint256))
-      This method is only meant for address calculation purpose when you use an initializer that would revert,
-      therefore the response is returned with a revert. When calling this method set `from` to the address of the proxy factory.
- @param _mastercopy Address of master copy.
- @param initializer Payload for message call sent to new proxy contract.
- @param saltNonce Nonce that will be used to generate the salt to calculate the address of the new proxy contract.
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ProxyFactory.ProxyCreation(contract Proxy)"></a><code class="function-signature">ProxyCreation(contract Proxy proxy)</code><span class="function-visibility"></span></h4>
-
-
-
-
-
 ### `RepExchange`
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#RepExchange.initialize(address,address)"><code class="function-signature">initialize(address _augurAddress, address _token)</code></a></li><li><a href="#RepExchange.getTokenBalance()"><code class="function-signature">getTokenBalance()</code></a></li><li><a href="#RepExchange.autoSellToken(address,uint256)"><code class="function-signature">autoSellToken(address _recipient, uint256 _tokenAmount)</code></a></li><li><a href="#RepExchange.publicMintAuto(address,uint256,uint256)"><code class="function-signature">publicMintAuto(address _to, uint256 _tokenAmount, uint256 _cashAmount)</code></a></li><li><a href="#RepExchange.publicBurnAuto(address,uint256,uint256)"><code class="function-signature">publicBurnAuto(address _to, uint256 _tokenAmount, uint256 _cashAmount)</code></a></li><li><a href="#RepExchange.pokePrice()"><code class="function-signature">pokePrice()</code></a></li><li><a href="#RepExchange.onUpdate(uint256,uint256)"><code class="function-signature">onUpdate(uint256 _blocksElapsed, uint256 _priceCumulativeIncrease)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.initializeInternal(address,address)"><code class="function-signature">initializeInternal(address _augurAddress, address _token)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.getCashBalance()"><code class="function-signature">getCashBalance()</code></a></li><li class="inherited"><a href="#BaseSimpleDex.update(uint256,uint256)"><code class="function-signature">update(uint256 _tokenBalance, uint256 _cashBalance)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.publicMint(address)"><code class="function-signature">publicMint(address _to)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.publicBurnAuto(address,uint256)"><code class="function-signature">publicBurnAuto(address _to, uint256 _amount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.publicBurn(address)"><code class="function-signature">publicBurn(address _to)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.getTokenSaleProceeds(uint256)"><code class="function-signature">getTokenSaleProceeds(uint256 _tokenAmount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.getCashSaleProceeds(uint256)"><code class="function-signature">getCashSaleProceeds(uint256 _cashAmount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.getSaleProceeds(uint256,uint256,uint256)"><code class="function-signature">getSaleProceeds(uint256 _inputAmount, uint256 _inputReserve, uint256 _outputReserve)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.getTokenPurchaseCost(uint256)"><code class="function-signature">getTokenPurchaseCost(uint256 _tokenAmount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.getCashPurchaseCost(uint256)"><code class="function-signature">getCashPurchaseCost(uint256 _cashAmount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.getPurchaseCost(uint256,uint256,uint256)"><code class="function-signature">getPurchaseCost(uint256 _outputAmount, uint256 _inputReserve, uint256 _outputReserve)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.sellToken(address)"><code class="function-signature">sellToken(address _recipient)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.autoBuyToken(address,uint256)"><code class="function-signature">autoBuyToken(address _recipient, uint256 _cashAmount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.buyToken(address)"><code class="function-signature">buyToken(address _recipient)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.skim(address)"><code class="function-signature">skim(address to)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.sync()"><code class="function-signature">sync()</code></a></li><li class="inherited"><a href="#BaseSimpleDex.onTokenTransfer(address,address,uint256)"><code class="function-signature">onTokenTransfer(address _from, address _to, uint256 _value)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.onMint(address,uint256)"><code class="function-signature">onMint(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.onBurn(address,uint256)"><code class="function-signature">onBurn(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#CashSender.initializeCashSender(address,address)"><code class="function-signature">initializeCashSender(address _vat, address _cash)</code></a></li><li class="inherited"><a href="#CashSender.cashBalance(address)"><code class="function-signature">cashBalance(address _account)</code></a></li><li class="inherited"><a href="#CashSender.cashAvailableForTransferFrom(address,address)"><code class="function-signature">cashAvailableForTransferFrom(address _owner, address _sender)</code></a></li><li class="inherited"><a href="#CashSender.cashApprove(address,uint256)"><code class="function-signature">cashApprove(address _spender, uint256 _amount)</code></a></li><li class="inherited"><a href="#CashSender.cashTransfer(address,uint256)"><code class="function-signature">cashTransfer(address _to, uint256 _amount)</code></a></li><li class="inherited"><a href="#CashSender.cashTransferFrom(address,address,uint256)"><code class="function-signature">cashTransferFrom(address _from, address _to, uint256 _amount)</code></a></li><li class="inherited"><a href="#CashSender.shutdownTransfer(address,address,uint256)"><code class="function-signature">shutdownTransfer(address _from, address _to, uint256 _amount)</code></a></li><li class="inherited"><a href="#CashSender.vatDaiToDai(uint256)"><code class="function-signature">vatDaiToDai(uint256 _vDaiAmount)</code></a></li><li class="inherited"><a href="#CashSender.daiToVatDai(uint256)"><code class="function-signature">daiToVatDai(uint256 _daiAmount)</code></a></li><li class="inherited"><a href="#VariableSupplyToken.mint(address,uint256)"><code class="function-signature">mint(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#VariableSupplyToken.burn(address,uint256)"><code class="function-signature">burn(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.balanceOf(address)"><code class="function-signature">balanceOf(address _account)</code></a></li><li class="inherited"><a href="#ERC20.transfer(address,uint256)"><code class="function-signature">transfer(address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.allowance(address,address)"><code class="function-signature">allowance(address _owner, address _spender)</code></a></li><li class="inherited"><a href="#ERC20.approve(address,uint256)"><code class="function-signature">approve(address _spender, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.transferFrom(address,address,uint256)"><code class="function-signature">transferFrom(address _sender, address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.increaseAllowance(address,uint256)"><code class="function-signature">increaseAllowance(address _spender, uint256 _addedValue)</code></a></li><li class="inherited"><a href="#ERC20.decreaseAllowance(address,uint256)"><code class="function-signature">decreaseAllowance(address _spender, uint256 _subtractedValue)</code></a></li><li class="inherited"><a href="#ERC20._transfer(address,address,uint256)"><code class="function-signature">_transfer(address _sender, address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._mint(address,uint256)"><code class="function-signature">_mint(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._burn(address,uint256)"><code class="function-signature">_burn(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._approve(address,address,uint256)"><code class="function-signature">_approve(address _owner, address _spender, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._burnFrom(address,uint256)"><code class="function-signature">_burnFrom(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="#IERC20.totalSupply()"><code class="function-signature">totalSupply()</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="#BaseSimpleDex.Mint(address,uint256,uint256)"><code class="function-signature">Mint(address sender, uint256 tokenAmount, uint256 cashAmount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.Burn(address,uint256,uint256,address)"><code class="function-signature">Burn(address sender, uint256 tokenAmount, uint256 cashAmount, address to)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.Swap(address,address,uint256,uint256,address)"><code class="function-signature">Swap(address sender, address tokenIn, uint256 amountIn, uint256 amountOut, address to)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.Sync(uint256,uint256)"><code class="function-signature">Sync(uint256 tokenReserve, uint256 cashReserve)</code></a></li><li class="inherited"><a href="#IERC20.Transfer(address,address,uint256)"><code class="function-signature">Transfer(address from, address to, uint256 value)</code></a></li><li class="inherited"><a href="#IERC20.Approval(address,address,uint256)"><code class="function-signature">Approval(address owner, address spender, uint256 value)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#RepExchange.initialize(address,address)"><code class="function-signature">initialize(address _augurAddress, address _token)</code></a></li><li><a href="#RepExchange.getTokenBalance()"><code class="function-signature">getTokenBalance()</code></a></li><li><a href="#RepExchange.autoSellToken(address,uint256)"><code class="function-signature">autoSellToken(address _recipient, uint256 _tokenAmount)</code></a></li><li><a href="#RepExchange.publicMintAuto(address,uint256,uint256)"><code class="function-signature">publicMintAuto(address _to, uint256 _tokenAmount, uint256 _cashAmount)</code></a></li><li><a href="#RepExchange.publicBurnAuto(address,uint256,uint256)"><code class="function-signature">publicBurnAuto(address _to, uint256 _tokenAmount, uint256 _cashAmount)</code></a></li><li><a href="#RepExchange.pokePrice()"><code class="function-signature">pokePrice()</code></a></li><li><a href="#RepExchange.onUpdate(uint256,uint256)"><code class="function-signature">onUpdate(uint256 _blocksElapsed, uint256 _priceCumulativeIncrease)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.initializeInternal(address,address)"><code class="function-signature">initializeInternal(address _augurAddress, address _token)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.getCashBalance()"><code class="function-signature">getCashBalance()</code></a></li><li class="inherited"><a href="#BaseSimpleDex.update(uint256,uint256)"><code class="function-signature">update(uint256 _tokenBalance, uint256 _cashBalance)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.publicMint(address)"><code class="function-signature">publicMint(address _to)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.publicBurnAuto(address,uint256)"><code class="function-signature">publicBurnAuto(address _to, uint256 _amount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.publicBurn(address)"><code class="function-signature">publicBurn(address _to)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.getTokenSaleProceeds(uint256)"><code class="function-signature">getTokenSaleProceeds(uint256 _tokenAmount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.getCashSaleProceeds(uint256)"><code class="function-signature">getCashSaleProceeds(uint256 _cashAmount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.getSaleProceeds(uint256,uint256,uint256)"><code class="function-signature">getSaleProceeds(uint256 _inputAmount, uint256 _inputReserve, uint256 _outputReserve)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.getTokenPurchaseCost(uint256)"><code class="function-signature">getTokenPurchaseCost(uint256 _tokenAmount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.getCashPurchaseCost(uint256)"><code class="function-signature">getCashPurchaseCost(uint256 _cashAmount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.getPurchaseCost(uint256,uint256,uint256)"><code class="function-signature">getPurchaseCost(uint256 _outputAmount, uint256 _inputReserve, uint256 _outputReserve)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.sellToken(address)"><code class="function-signature">sellToken(address _recipient)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.autoBuyToken(address,uint256)"><code class="function-signature">autoBuyToken(address _recipient, uint256 _cashAmount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.autoBuyTokenAmount(address,uint256)"><code class="function-signature">autoBuyTokenAmount(address _recipient, uint256 _tokenAmount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.buyToken(address)"><code class="function-signature">buyToken(address _recipient)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.skim(address)"><code class="function-signature">skim(address to)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.sync()"><code class="function-signature">sync()</code></a></li><li class="inherited"><a href="#BaseSimpleDex.onTokenTransfer(address,address,uint256)"><code class="function-signature">onTokenTransfer(address _from, address _to, uint256 _value)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.onMint(address,uint256)"><code class="function-signature">onMint(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.onBurn(address,uint256)"><code class="function-signature">onBurn(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#CashSender.initializeCashSender(address,address)"><code class="function-signature">initializeCashSender(address _vat, address _cash)</code></a></li><li class="inherited"><a href="#CashSender.cashBalance(address)"><code class="function-signature">cashBalance(address _account)</code></a></li><li class="inherited"><a href="#CashSender.cashAvailableForTransferFrom(address,address)"><code class="function-signature">cashAvailableForTransferFrom(address _owner, address _sender)</code></a></li><li class="inherited"><a href="#CashSender.cashApprove(address,uint256)"><code class="function-signature">cashApprove(address _spender, uint256 _amount)</code></a></li><li class="inherited"><a href="#CashSender.cashTransfer(address,uint256)"><code class="function-signature">cashTransfer(address _to, uint256 _amount)</code></a></li><li class="inherited"><a href="#CashSender.cashTransferFrom(address,address,uint256)"><code class="function-signature">cashTransferFrom(address _from, address _to, uint256 _amount)</code></a></li><li class="inherited"><a href="#CashSender.shutdownTransfer(address,address,uint256)"><code class="function-signature">shutdownTransfer(address _from, address _to, uint256 _amount)</code></a></li><li class="inherited"><a href="#CashSender.vatDaiToDai(uint256)"><code class="function-signature">vatDaiToDai(uint256 _vDaiAmount)</code></a></li><li class="inherited"><a href="#CashSender.daiToVatDai(uint256)"><code class="function-signature">daiToVatDai(uint256 _daiAmount)</code></a></li><li class="inherited"><a href="#VariableSupplyToken.mint(address,uint256)"><code class="function-signature">mint(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#VariableSupplyToken.burn(address,uint256)"><code class="function-signature">burn(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.balanceOf(address)"><code class="function-signature">balanceOf(address _account)</code></a></li><li class="inherited"><a href="#ERC20.transfer(address,uint256)"><code class="function-signature">transfer(address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.allowance(address,address)"><code class="function-signature">allowance(address _owner, address _spender)</code></a></li><li class="inherited"><a href="#ERC20.approve(address,uint256)"><code class="function-signature">approve(address _spender, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.transferFrom(address,address,uint256)"><code class="function-signature">transferFrom(address _sender, address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.increaseAllowance(address,uint256)"><code class="function-signature">increaseAllowance(address _spender, uint256 _addedValue)</code></a></li><li class="inherited"><a href="#ERC20.decreaseAllowance(address,uint256)"><code class="function-signature">decreaseAllowance(address _spender, uint256 _subtractedValue)</code></a></li><li class="inherited"><a href="#ERC20._transfer(address,address,uint256)"><code class="function-signature">_transfer(address _sender, address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._mint(address,uint256)"><code class="function-signature">_mint(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._burn(address,uint256)"><code class="function-signature">_burn(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._approve(address,address,uint256)"><code class="function-signature">_approve(address _owner, address _spender, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._burnFrom(address,uint256)"><code class="function-signature">_burnFrom(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="#IERC20.totalSupply()"><code class="function-signature">totalSupply()</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="#BaseSimpleDex.Mint(address,uint256,uint256)"><code class="function-signature">Mint(address sender, uint256 tokenAmount, uint256 cashAmount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.Burn(address,uint256,uint256,address)"><code class="function-signature">Burn(address sender, uint256 tokenAmount, uint256 cashAmount, address to)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.Swap(address,address,uint256,uint256,address)"><code class="function-signature">Swap(address sender, address tokenIn, uint256 amountIn, uint256 amountOut, address to)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.Sync(uint256,uint256)"><code class="function-signature">Sync(uint256 tokenReserve, uint256 cashReserve)</code></a></li><li class="inherited"><a href="#IERC20.Transfer(address,address,uint256)"><code class="function-signature">Transfer(address from, address to, uint256 value)</code></a></li><li class="inherited"><a href="#IERC20.Approval(address,address,uint256)"><code class="function-signature">Approval(address owner, address spender, uint256 value)</code></a></li></ul></div>
 
 
 
@@ -5099,7 +5141,7 @@ This can only be done for the Genesis Universe in V2. If a fork occurs and the w
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#WarpSync.initialize(contract IAugur)"><code class="function-signature">initialize(contract IAugur _augur)</code></a></li><li><a href="#WarpSync.doInitialReport(contract IUniverse,uint256[],string,uint256)"><code class="function-signature">doInitialReport(contract IUniverse _universe, uint256[] _payoutNumerators, string _description, uint256 _additionalStake)</code></a></li><li><a href="#WarpSync.initializeUniverse(contract IUniverse)"><code class="function-signature">initializeUniverse(contract IUniverse _universe)</code></a></li><li><a href="#WarpSync.notifyMarketFinalized()"><code class="function-signature">notifyMarketFinalized()</code></a></li><li><a href="#WarpSync.getFinalizationReward(contract IMarket)"><code class="function-signature">getFinalizationReward(contract IMarket _market)</code></a></li><li><a href="#WarpSync.getCreationReward(contract IUniverse)"><code class="function-signature">getCreationReward(contract IUniverse _universe)</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li><li class="inherited"><a href="#IWarpSync.markets(address)"><code class="function-signature">markets(address _universe)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#WarpSync.initialize(contract IAugur)"><code class="function-signature">initialize(contract IAugur _augur)</code></a></li><li><a href="#WarpSync.doInitialReport(contract IUniverse,uint256[],string)"><code class="function-signature">doInitialReport(contract IUniverse _universe, uint256[] _payoutNumerators, string _description)</code></a></li><li><a href="#WarpSync.initializeUniverse(contract IUniverse)"><code class="function-signature">initializeUniverse(contract IUniverse _universe)</code></a></li><li><a href="#WarpSync.notifyMarketFinalized()"><code class="function-signature">notifyMarketFinalized()</code></a></li><li><a href="#WarpSync.getFinalizationReward(contract IMarket)"><code class="function-signature">getFinalizationReward(contract IMarket _market)</code></a></li><li><a href="#WarpSync.getCreationReward(contract IUniverse)"><code class="function-signature">getCreationReward(contract IUniverse _universe)</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li><li class="inherited"><a href="#IWarpSync.markets(address)"><code class="function-signature">markets(address _universe)</code></a></li></ul></div>
 
 
 
@@ -5109,7 +5151,7 @@ This can only be done for the Genesis Universe in V2. If a fork occurs and the w
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="WarpSync.doInitialReport(contract IUniverse,uint256[],string,uint256)"></a><code class="function-signature">doInitialReport(contract IUniverse _universe, uint256[] _payoutNumerators, string _description, uint256 _additionalStake) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="WarpSync.doInitialReport(contract IUniverse,uint256[],string)"></a><code class="function-signature">doInitialReport(contract IUniverse _universe, uint256[] _payoutNumerators, string _description) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
 
 
 

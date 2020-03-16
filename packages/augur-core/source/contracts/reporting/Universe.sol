@@ -467,7 +467,7 @@ contract Universe is IUniverse, CashSender {
     }
 
     function getRepMarketCapInAttoCashInternal(uint256 _attoCashPerRep ) private view returns (uint256) {
-        return reputationToken.totalSupply().mul(_attoCashPerRep).div(10 ** 18);
+        return reputationToken.getTotalTheoreticalSupply().mul(_attoCashPerRep).div(10 ** 18);
     }
 
     /**

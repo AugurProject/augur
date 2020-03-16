@@ -21,10 +21,8 @@
       "Exchange": "0x61935cbdd02287b511119ddb11aeb42f1593b7ef"
     }
   },
-  "gnosis": {
-    "enabled": true,
-    "http": "https://gnosis.kovan.augur.net/api/",
-    "relayerAddress": "0x01d640bff4b3a5e5cc720f0be37847f88edf626e"
+  "gsn": {
+    "enabled": true
   },
   "zeroX": {
     "rpc": {

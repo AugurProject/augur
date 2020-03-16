@@ -113,9 +113,6 @@ test5@augur.net
 password: ** as team **
 ```
 
-Also, you can find the kovan relayer API below -- usful for getting status checks on safes
-https://gnosis.kovan.augur.net/api/v2/safes/{CHECKSUM_ADDRESS}/funded/
-
 ## 100% Open Source
 
 All parts of Augur are entirely open source. You can view, edit, and contribute to Augur via the repositories hosted on GitHub!

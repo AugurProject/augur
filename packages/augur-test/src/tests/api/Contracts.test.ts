@@ -97,7 +97,7 @@ test('Contract :: Universe :: Create Market', async () => {
 
   const reputationToken = contracts.getReputationToken() as TestNetReputationToken;
   const repBond = await universe.getOrCacheMarketRepBond_();
-  await reputationToken.faucet(repBond);
+  await reputationToken.faucet(repBond.plus(10**18));
 
   const endTime = new BigNumber(
     Math.round(new Date().getTime() / 1000) + 30 * 24 * 60 * 60

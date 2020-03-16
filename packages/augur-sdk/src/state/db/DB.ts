@@ -5,8 +5,7 @@ import {
   LogFilterAggregatorInterface,
 } from '../logs/LogFilterAggregator';
 import {
-  CancelledOrderLog,
-  CancelLog,
+  CancelZeroXOrderLog,
   CompleteSetsPurchasedLog,
   CompleteSetsSoldLog,
   CurrentOrder,
@@ -46,7 +45,6 @@ import {
   ReportingFeeChangedLog,
 } from '../logs/types';
 import { BaseSyncableDB } from './BaseSyncableDB';
-import { CancelledOrdersDB } from './CancelledOrdersDB';
 import { CurrentOrdersDatabase } from './CurrentOrdersDB';
 import { DelayedSyncableDB } from './DelayedSyncableDB';
 import { DisputeDatabase } from './DisputeDB';
@@ -74,7 +72,6 @@ export class DB {
   private disputeDatabase: DisputeDatabase;
   private currentOrdersDatabase: CurrentOrdersDatabase;
   marketDatabase: MarketDB;
-  private cancelledOrdersDatabase: CancelledOrdersDB;
   private parsedOrderEventDatabase: ParsedOrderEventDB;
   private zeroXOrders: ZeroXOrders;
   syncStatus: SyncStatus;
@@ -100,7 +97,7 @@ export class DB {
     { EventName: 'MarketVolumeChanged', indexes: [], primaryKey: 'market' },
     { EventName: 'MarketOIChanged', indexes: [], primaryKey: 'market' },
     { EventName: 'OrderEvent', indexes: ['market', 'timestamp', 'orderId', '[universe+eventType+timestamp]', '[market+eventType]', 'eventType', 'orderCreator', 'orderFiller'] },
-    { EventName: 'Cancel', indexes: [], primaryKey: 'orderHash' },
+    { EventName: 'CancelZeroXOrder', indexes: ['[account+market]'] },
     { EventName: 'ParticipationTokensRedeemed', indexes: ['timestamp'] },
     { EventName: 'ProfitLossChanged', indexes: ['[universe+account+timestamp]', 'account'] },
     { EventName: 'ReportingParticipantDisavowed', indexes: [] },
@@ -170,7 +167,6 @@ export class DB {
     this.currentOrdersDatabase = new CurrentOrdersDatabase(this, networkId, 'CurrentOrders', ['OrderEvent'], this.augur);
     this.marketDatabase = new MarketDB(this, networkId, this.augur);
     this.parsedOrderEventDatabase = new ParsedOrderEventDB(this, networkId, this.augur);
-    this.cancelledOrdersDatabase = new CancelledOrdersDB(this, networkId, this.augur);
 
     if (enableZeroX) {
       this.zeroXOrders = ZeroXOrders.create(this, networkId, this.augur);
@@ -202,7 +198,6 @@ export class DB {
     schemas['Dispute'] = '[market+payoutNumerators],market,blockNumber';
     schemas['ParsedOrderEvents'] = '[blockNumber+logIndex],blockNumber,market,timestamp,orderId,[universe+eventType+timestamp],[market+eventType],eventType,orderCreator,orderFiller';
     schemas['ZeroXOrders'] = 'orderHash,[market+outcome+orderType],orderCreator,blockNumber';
-    schemas['CancelledOrders'] = 'orderHash,[makerAddress+market]';
     schemas['SyncStatus'] = 'eventName,blockNumber,syncing';
     schemas['Rollback'] = ',[tableName+rollbackBlockNumber]';
     schemas['WarpSync'] = '[begin.number+end.number],end.number';
@@ -265,7 +260,6 @@ export class DB {
 
     await this.disputeDatabase.sync(highestAvailableBlockNumber);
     await this.currentOrdersDatabase.sync(highestAvailableBlockNumber);
-    await this.cancelledOrdersDatabase.sync(highestAvailableBlockNumber);
 
     // The Market DB syncs after the derived DBs, as it depends on a derived DB
     await this.marketDatabase.sync(highestAvailableBlockNumber);
@@ -366,9 +360,7 @@ export class DB {
   get MarketOIChanged() { return this.dexieDB.table<MarketOIChangedLog>('MarketOIChanged'); }
   get MarketOIChangedRollup() { return this.dexieDB.table<MarketOIChangedLog>('MarketOIChangedRollup'); }
   get OrderEvent() { return this.dexieDB.table<OrderEventLog>('OrderEvent'); }
-  get Cancel() { return this.dexieDB['Cancel'] as Dexie.Table<CancelLog, any>; }
-  get CancelRollup() { return this.dexieDB['CancelRollup'] as Dexie.Table<CancelLog, any>; }
-  get CancelledOrders() { return this.dexieDB['CancelledOrders'] as Dexie.Table<CancelledOrderLog, any>; }
+  get CancelZeroXOrder() { return this.dexieDB['CancelZeroXOrder'] as Dexie.Table<CancelZeroXOrderLog, any>; }
   get ParticipationTokensRedeemed() { return this.dexieDB.table<ParticipationTokensRedeemedLog>('ParticipationTokensRedeemed'); }
   get ProfitLossChanged() { return this.dexieDB.table<ProfitLossChangedLog>('ProfitLossChanged'); }
   get ReportingParticipantDisavowed() { return this.dexieDB.table<ReportingParticipantDisavowedLog>('ReportingParticipantDisavowed'); }

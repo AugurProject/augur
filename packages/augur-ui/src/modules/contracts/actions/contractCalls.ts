@@ -161,9 +161,9 @@ export async function getLegacyRepBalance(
   const { contracts } = augurSdk.get();
   const lagacyRep = contracts.legacyReputationToken.address;
   const networkId = getNetworkId();
-  const balance = await contracts
+  const balance = !!address ? await contracts
     .reputationTokenFromAddress(lagacyRep, networkId)
-    .balanceOf_(address);
+    .balanceOf_(address) : createBigNumber(0);
   return balance;
 }
 
@@ -304,6 +304,17 @@ export async function finalizeMarket(marketId: string) {
 export function getDai() {
   const { contracts } = augurSdk.get();
   return contracts.cashFaucet.faucet(new BigNumber('1000000000000000000000'));
+}
+
+export function fundGsnWallet(gsnWalletAddress: string) {
+  const amount = new BigNumber('1000000000000000000000');
+  const { contracts } = augurSdk.get();
+
+  augurSdk.client.setUseRelay(false);
+  contracts.cashFaucet.faucet(amount).then(() => {
+    contracts.cash.transfer(gsnWalletAddress, amount);
+    augurSdk.client.setUseRelay(true);
+  })
 }
 
 export async function uniswapEthForRepRate(wei: BigNumber): Promise<BigNumber> {
@@ -988,7 +999,7 @@ export async function reportAndMigrateMarket_estimateGas(
 ) {
   const Augur = augurSdk.get();
   const market = Augur.getMarket(migration.marketId);
-  const payoutNumerators = getPayoutNumerators(migration);
+  const payoutNumerators = await getPayoutNumerators(migration);
   try {
     market.migrateThroughOneFork_estimateGas(payoutNumerators, migration.description);
   } catch (e) {
@@ -1001,7 +1012,7 @@ export async function reportAndMigrateMarket(
 ) {
   const Augur = augurSdk.get();
   const market = Augur.getMarket(migration.marketId);
-  const payoutNumerators = getPayoutNumerators(migration);
+  const payoutNumerators = await getPayoutNumerators(migration);
   try {
     market.migrateThroughOneFork(payoutNumerators, migration.description);
   } catch (e) {
@@ -1013,7 +1024,7 @@ export async function migrateRepToUniverseEstimateGas(
   migration: doReportDisputeAddStake
 ): Promise<BigNumber> {
   const { contracts } = augurSdk.get();
-  const payoutNumerators = getPayoutNumerators(migration);
+  const payoutNumerators = await getPayoutNumerators(migration);
   const gas = await contracts.reputationToken.migrateOutByPayout_estimateGas(
     payoutNumerators,
     createBigNumber(migration.attoRepAmount)
@@ -1023,7 +1034,8 @@ export async function migrateRepToUniverseEstimateGas(
 
 export async function migrateRepToUniverse(migration: doReportDisputeAddStake) {
   const { contracts } = augurSdk.get();
-  const payoutNumerators = getPayoutNumerators(migration);
+  const payoutNumerators = await getPayoutNumerators(migration);
+
   try {
     contracts.reputationToken.migrateOutByPayout(
       payoutNumerators,

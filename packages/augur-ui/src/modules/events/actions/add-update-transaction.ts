@@ -36,8 +36,6 @@ import { updateLiqTransactionParamHash } from 'modules/orders/actions/liquidity-
 import { addAlert, updateAlert } from 'modules/alerts/actions/alerts';
 import { getDeconstructedMarketId } from 'modules/create-market/helpers/construct-market-params';
 import { updateModal } from 'modules/modal/actions/update-modal';
-import { updateAppStatus, GNOSIS_STATUS } from 'modules/app/actions/update-app-status';
-import { GnosisSafeState } from '@augurproject/gnosis-relay-api/src/GnosisRelayAPI';
 
 const ADD_PENDING_QUEUE_METHOD_CALLS = [
   BUYPARTICIPATIONTOKENS,
@@ -69,8 +67,6 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
     }
     if (eventName === TXEventName.RelayerDown) {
       const hasEth = (await loginAccount.meta.signer.provider.getBalance(loginAccount.meta.signer._address)).gt(0);
-
-      dispatch(updateAppStatus(GNOSIS_STATUS, GnosisSafeState.ERROR));
 
       dispatch(updateModal({
         type: MODAL_ERROR,
@@ -214,8 +210,8 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
         break;
       }
       case CANCELORDERS: {
-        const orderIds = transaction.params && transaction.params.order[TX_ORDER_IDS];
-        orderIds.map(orderId => dispatch(addCanceledOrder(orderId, eventName, hash)));
+        const orders = transaction.params && transaction.params._orders || [];
+        orders.map(order => dispatch(addCanceledOrder(order.orderId, eventName, hash)));
         break;
       }
 
