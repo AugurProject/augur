@@ -35,6 +35,17 @@ div.Tooltip {
   }
 }
 
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  div.Tooltip {
+    .text-12;
+
+    border: @size-1 solid var(--color-primary-text);
+    box-shadow: none;
+    color: var(--color-module-background)
+  }
+}
+
 div.TooltipInvalidRules {
   max-width: 472px;
   width: 100%;
@@ -210,6 +221,145 @@ div.TooltipInvalidRules {
         right: unset;
         top: 50%;
         width: 0;
+      }
+    }
+  }
+
+  :root[theme="BETTING"],
+  :root[theme="SPORTS"] {
+    div.__react_component_tooltip {
+      transition: none;
+  
+      &.show {
+        opacity: 1;
+      }
+  
+      &.place-top {
+        box-shadow: 0 -1px @size-4 0 rgba(0, 0, 0, 0.2);
+        margin-bottom: -@size-14;
+  
+        &::after {
+          border-top: @size-8 solid var(--color-secondary-action-outline);
+          bottom: -@size-8;
+        }
+  
+        &.type-light::after {
+          border-left-width: @size-8;
+          border-right-width: @size-8;
+          border-top-width: @size-8;
+        }
+  
+        &::before {
+          border: 0 solid transparent;
+          border-left: 0 solid transparent;
+          border-right: 0 solid transparent;
+          border-top-color: var(--color-secondary-action-outline);
+          bottom: -@size-22;
+          content: '';
+          display: block;
+          height: 0;
+          left: 50.5%;
+          margin-left: -@size-8;
+          position: absolute;
+          top: unset;
+          width: 0;
+        }
+      }
+  
+      &.place-bottom {
+        box-shadow: 0 1px @size-4 0 rgba(0, 0, 0, 0.5);
+        margin-top: -@size-14;
+  
+        &::after {
+          border-bottom-color: var(--color-secondary-action-outline);
+          top: -@size-8;
+        }
+  
+        &.type-light::after {
+          border-bottom-width: @size-8;
+          border-left-width: @size-8;
+          border-right-width: @size-8;
+        }
+  
+        &::before {
+          border: 0 solid transparent;
+          border-bottom-color: var(--color-secondary-action-outline);
+          border-left: 0 solid transparent;
+          border-right: 0 solid transparent;
+          bottom: 100%;
+          content: '';
+          display: block;
+          height: 0;
+          left: 50.5%;
+          margin-left: -@size-8;
+          position: absolute;
+          top: unset;
+          width: 0;
+        }
+      }
+  
+      &.place-left {
+        margin-left: -@size-14;
+        margin-top: -@size-8;
+  
+        &::after {
+          border-left-color: var(--color-secondary-action-outline);
+          right: -@size-8;
+        }
+  
+        &.type-light::after {
+          border-bottom-width: @size-8;
+          border-left-width: @size-8;
+          border-top-width: @size-8;
+        }
+  
+        &::before {
+          border: 0 solid transparent;
+          border-bottom: 0 solid transparent;
+          border-left-color: var(--color-secondary-action-outline);
+          border-top: 0 solid transparent;
+          bottom: unset;
+          content: '';
+          display: block;
+          height: 0;
+          left: unset;
+          position: absolute;
+          right: -@size-22;
+          top: 50%;
+          width: 0;
+        }
+      }
+  
+      &.place-right {
+        margin-right: -@size-14;
+        margin-top: -@size-8;
+  
+        &::after {
+          border-right-color: var(--color-primary-text);
+          left: -@size-6;
+        }
+  
+        &.type-light::after {
+          border-bottom-width: @size-8;
+          border-right-width: @size-8;
+          border-top-width: @size-8;
+        }
+  
+        &::before {
+          border: 0 solid transparent;
+          border-bottom: 0 solid transparent;
+          border-right-color: var(--color-primary-text);
+          border-top: 0 solid transparent;
+          bottom: unset;
+          content: '';
+          display: block;
+          height: 0;
+          left: -@size-1;
+          position: absolute;
+          right: unset;
+          top: 50%;
+          width: 0;
+        }
       }
     }
   }
